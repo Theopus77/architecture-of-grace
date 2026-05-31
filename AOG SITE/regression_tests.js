@@ -165,6 +165,27 @@ dom.window.addEventListener("load", () => {
     ok(tabOv().textContent === "Overview", "EN restores dashboard tab labels");
   } else { ok(false, "applyDashLang / setDashLang functions present"); }
 
+  // -- Dashboard language: dynamic content (Pass 2) --
+  group("Dashboard language \u2014 dynamic content");
+  if (typeof w.setDashLang === "function" && typeof w.renderHome === "function") {
+    const rec = { studentId:"S-7", grade:"3", window:"Fall", mode:"rapid", normA:18, normB:82, normC:74,
+      normComposite:44, tier:"High Risk", trustedAdultFlag:true, timestamp:new Date().toISOString(),
+      raw:[0,0,2,0,2,2,2,2,2,2,2,2,2,2,2,2,2,0],
+      intensities:[2,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
+      reflections:["x","",""], closingWord:"y" };
+    w.localStorage.setItem("aogScreener.v2.results", JSON.stringify([rec]));
+    w.setDashLang("es");
+    const st = d.getElementById("studentTable").innerHTML;
+    ok(/Estado/.test(st) && /Necesita apoyo/.test(st), "ES: student table headers + tier translate");
+    ok(/R\u00e1pido/.test(st) && !/>rapid</.test(st), "ES: mode shows display label, never raw 'rapid'");
+    ok(/Regulaci\u00f3n emocional/.test(d.getElementById("domainSummary").innerHTML), "ES: overview domain card translates");
+    d.getElementById("homeFilterStudent").value = "S-7"; w.renderHome();
+    ok(/Iniciadores de conversaci\u00f3n|Qu\u00e9 hacer ahora/.test(d.getElementById("homeReport").innerHTML), "ES: conversation guide translates");
+    w.setDashLang("en");
+    ok(/Status/.test(d.getElementById("studentTable").innerHTML), "EN restores dynamic table headers");
+    w.localStorage.removeItem("aogScreener.v2.results");
+  } else { ok(false, "renderHome present for dynamic-language checks"); }
+
   console.log("\n----------------------------------------");
   console.log(pass + " passed, " + fail + " failed");
   console.log("----------------------------------------");

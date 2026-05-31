@@ -2296,8 +2296,17 @@ function tierClass(tier) {
 
 // Soft, human-facing label per tier. Internal values stay "High/Some/Low Risk"
 // (logic, saved data, and the Google sheet rely on them); only the wording shown changes.
-const TIER_DISPLAY = { "High Risk": "Needs support", "Some Risk": "Worth a check-in", "Low Risk": "Doing well" };
-function tierLabel(t) { return TIER_DISPLAY[t] || t; }
+const TIER_DISPLAY = {
+  "High Risk": { en: "Needs support",   es: "Necesita apoyo" },
+  "Some Risk": { en: "Worth a check-in", es: "Vale un chequeo" },
+  "Low Risk":  { en: "Doing well",      es: "Va bien" }
+};
+function tierLabel(t) { const m = TIER_DISPLAY[t]; const L = (typeof dashLang !== "undefined") ? dashLang : "en"; return m ? (m[L] || m.en) : t; }
+// Dashboard dynamic-text helpers (educator language = dashLang)
+function DT(en, es) { return ((typeof dashLang !== "undefined") && dashLang === "es") ? es : en; }
+const WIN_DISPLAY = { Fall: { en: "Fall", es: "Oto\u00f1o" }, Winter: { en: "Winter", es: "Invierno" }, Spring: { en: "Spring", es: "Primavera" } };
+function winLabel(wn) { const m = WIN_DISPLAY[wn]; const L = (typeof dashLang !== "undefined") ? dashLang : "en"; return m ? m[L] : (wn || ""); }
+function modeLabel(md) { return (md === "depth") ? DT("Thorough", "A fondo") : DT("Quick", "R\u00e1pido"); }
 
 // Heat class for an item's scored value (out of itemMax)
 function heatClass(scored, itemMax) {
@@ -3074,6 +3083,12 @@ const DASH_I18N = {
 function applyDashLang(dl) {
   dashLang = (dl === "es") ? "es" : "en";
   try { localStorage.setItem(DASHLANG_KEY, dashLang); } catch (e) {}
+  const en = document.getElementById("dashLangEn"), es = document.getElementById("dashLangEs");
+  if (en) en.classList.toggle("active", dashLang === "en");
+  if (es) es.classList.toggle("active", dashLang === "es");
+  // Regenerate dynamic content (tables, charts, KPIs, sync, filters) in the new language.
+  if (typeof refreshAdmin === "function") { try { refreshAdmin(); } catch (e) {} }
+  // Translate static chrome + any freshly-rebuilt tagged options.
   const admin = document.getElementById("screen-admin");
   if (admin) {
     admin.querySelectorAll("[data-dl]").forEach(el => {
@@ -3085,11 +3100,16 @@ function applyDashLang(dl) {
       if (m) el.innerHTML = m[dashLang];
     });
   }
-  const en = document.getElementById("dashLangEn"), es = document.getElementById("dashLangEs");
-  if (en) en.classList.toggle("active", dashLang === "en");
-  if (es) es.classList.toggle("active", dashLang === "es");
-  if (typeof renderSyncStatus === "function") renderSyncStatus();
-  if (typeof setTabHint === "function") { const at = document.querySelector("#screen-admin .tab.active"); if (at) setTabHint(at.dataset.tab); }
+  // Tab hint + explainer + help-button label, in the new language.
+  const at = document.querySelector("#screen-admin .tab.active");
+  if (at) {
+    if (typeof setTabHint === "function") setTabHint(at.dataset.tab);
+    if (typeof setTabHelp === "function") setTabHelp(at.dataset.tab);
+  }
+  const helpBtn = document.getElementById("tabHelpBtn");
+  if (helpBtn && typeof tabHelpOpen !== "undefined") {
+    helpBtn.textContent = tabHelpOpen ? DT("Hide","Ocultar") : (DASH_I18N.dl_help_btn ? DASH_I18N.dl_help_btn[dashLang] : "What am I looking at?");
+  }
 }
 function setDashLang(dl) { applyDashLang(dl); }
 
@@ -3397,7 +3417,7 @@ document.addEventListener("DOMContentLoaded", () => {
     tabHelpOpen = !tabHelpOpen;
     const panel = $("#tabHelp");
     if (panel) panel.hidden = !tabHelpOpen;
-    helpBtn.textContent = tabHelpOpen ? "Hide" : "What am I looking at?";
+    helpBtn.textContent = tabHelpOpen ? DT("Hide","Ocultar") : (DASH_I18N.dl_help_btn ? DASH_I18N.dl_help_btn[dashLang] : "What am I looking at?");
   });
 
   ["filterWindow","filterGrade","filterMode","studentFilterWindow","studentFilterGrade","studentFilterTier","homeFilterStudent","homeFilterWindow","growthFilterGrade","growthSort"].forEach(id => {
@@ -3510,13 +3530,13 @@ function populateFilters() {
     const sel = document.getElementById(id);
     if (!sel) return;
     const cur = sel.value;
-    sel.innerHTML = '<option value="" data-dl="dl_opt_allgrades">All Grades</option>' + grades.map(g => '<option value="' + g + '">Grade ' + g + '</option>').join("");
+    sel.innerHTML = '<option value="" data-dl="dl_opt_allgrades">' + DT("All Grades","Todos los grados") + '</option>' + grades.map(g => '<option value="' + g + '">' + DT("Grade ","Grado ") + g + '</option>').join("");
     sel.value = cur;
   });
   const homeSel = document.getElementById("homeFilterStudent");
   if (homeSel) {
     const cur = homeSel.value;
-    homeSel.innerHTML = '<option value="">Select a person to view\u2026</option>' +
+    homeSel.innerHTML = '<option value="" data-dl="dl_opt_selperson">' + DT("Select a person to view\u2026","Selecciona una persona\u2026") + '</option>' +
       ids.map(id => '<option value="' + escapeHtml(id) + '">' + escapeHtml(id) + '</option>').join("");
     homeSel.value = cur;
   }
@@ -3532,15 +3552,33 @@ const TAB_HINTS = {
 };
 function setTabHint(name) { if ($("#tabHint")) { const h = TAB_HINTS[name]; $("#tabHint").textContent = h ? (h[dashLang] || h.en) : ""; } }
 const TAB_HELP = {
-  overview: "<h5>Overview \u2014 the summary</h5>The sentence at the top reads the whole group for you. The three cards show how many <strong>checked in</strong>, the group\u2019s <strong>average score</strong> (out of 100 \u2014 higher is steadier), and how many named <strong>no trusted adult</strong>. The colored bar groups everyone by score: green is doing well, amber is worth a check-in, red needs support. These describe a score, not a person \u2014 a low one is a doorway to a conversation, not a label.",
-  distribute: "<h5>Distribute \u2014 hand it out</h5>Build a <strong>link or QR code</strong> for a class so people can take the check-in, and (optionally) connect a school\u2019s own <strong>Google Sheet</strong> so results pool in one place. Nothing here is sent to us.",
-  students: "<h5>Students \u2014 everyone in a list</h5>Each row is one person, with their scores (<strong>A, B, C,</strong> and <strong>Total</strong> out of 100) and their <strong>status</strong>. Click any column heading to sort \u2014 for example, click <strong>Total</strong> to bring the lowest scores to the top, or <strong>Status</strong> to group everyone who needs support. The <strong>Trusted adult</strong> column flags anyone who named no one they\u2019d turn to.",
-  home: "<h5>Home View \u2014 one person, in depth</h5>Pick a person at the top. The first thing you see is the <strong>conversation starters</strong> \u2014 the gentlest place to begin. Below that is every item, their answer, and anything they wrote in their own words.",
-  growth: "<h5>Growth \u2014 change over time</h5>How a person\u2019s overall score moves across <strong>Fall, Winter, and Spring</strong>. The <strong>Change</strong> column shows the difference \u2014 green is up, red is down. A dip one season often recovers the next.",
-  export: "<h5>Export \u2014 take the data with you</h5>Download the responses as <strong>spreadsheet (CSV) files</strong> you can open in Excel or Google Sheets, or hand to a counselor."
+  overview: {
+    en: "<h5>Overview \u2014 the summary</h5>The sentence at the top reads the whole group for you. The three cards show how many <strong>checked in</strong>, the group\u2019s <strong>average score</strong> (out of 100 \u2014 higher is steadier), and how many named <strong>no trusted adult</strong>. The colored bar groups everyone by score: green is doing well, amber is worth a check-in, red needs support. These describe a score, not a person \u2014 a low one is a doorway to a conversation, not a label.",
+    es: "<h5>Resumen \u2014 el panorama</h5>La frase de arriba lee al grupo entero por ti. Las tres tarjetas muestran cu\u00e1ntos <strong>hicieron el check-in</strong>, el <strong>puntaje promedio</strong> del grupo (de 100 \u2014 m\u00e1s alto es m\u00e1s estable), y cu\u00e1ntos no nombraron a <strong>ning\u00fan adulto de confianza</strong>. La barra de colores agrupa a todos por puntaje: verde va bien, \u00e1mbar vale un chequeo, rojo necesita apoyo. Describen un puntaje, no a una persona \u2014 uno bajo es una puerta a una conversaci\u00f3n, no una etiqueta."
+  },
+  distribute: {
+    en: "<h5>Distribute \u2014 hand it out</h5>Build a <strong>link or QR code</strong> for a class so people can take the check-in, and (optionally) connect a school\u2019s own <strong>Google Sheet</strong> so results pool in one place. Nothing here is sent to us.",
+    es: "<h5>Distribuir \u2014 rep\u00e1rtelo</h5>Crea un <strong>enlace o c\u00f3digo QR</strong> para una clase para que las personas hagan el check-in, y (opcionalmente) conecta la propia <strong>hoja de Google</strong> de una escuela para reunir los resultados en un solo lugar. Nada de aqu\u00ed se nos env\u00eda."
+  },
+  students: {
+    en: "<h5>Students \u2014 everyone in a list</h5>Each row is one person, with their scores (<strong>A, B, C,</strong> and <strong>Total</strong> out of 100) and their <strong>status</strong>. Click any column heading to sort \u2014 for example, click <strong>Total</strong> to bring the lowest scores to the top, or <strong>Status</strong> to group everyone who needs support. The <strong>Trusted adult</strong> column flags anyone who named no one they\u2019d turn to.",
+    es: "<h5>Estudiantes \u2014 todos en una lista</h5>Cada fila es una persona, con sus puntajes (<strong>A, B, C</strong> y <strong>Total</strong> de 100) y su <strong>estado</strong>. Haz clic en cualquier encabezado de columna para ordenar \u2014 por ejemplo, haz clic en <strong>Total</strong> para llevar los puntajes m\u00e1s bajos arriba, o en <strong>Estado</strong> para agrupar a quienes necesitan apoyo. La columna <strong>Adulto de confianza</strong> marca a quien no nombr\u00f3 a nadie a quien acudir."
+  },
+  home: {
+    en: "<h5>Home View \u2014 one person, in depth</h5>Pick a person at the top. The first thing you see is the <strong>conversation starters</strong> \u2014 the gentlest place to begin. Below that is every item, their answer, and anything they wrote in their own words.",
+    es: "<h5>Vista del hogar \u2014 una persona, a fondo</h5>Elige una persona arriba. Lo primero que ves son los <strong>iniciadores de conversaci\u00f3n</strong> \u2014 el lugar m\u00e1s suave para empezar. Debajo est\u00e1 cada \u00edtem, su respuesta y todo lo que escribi\u00f3 con sus propias palabras."
+  },
+  growth: {
+    en: "<h5>Growth \u2014 change over time</h5>How a person\u2019s overall score moves across <strong>Fall, Winter, and Spring</strong>. The <strong>Change</strong> column shows the difference \u2014 green is up, red is down. A dip one season often recovers the next.",
+    es: "<h5>Progreso \u2014 el cambio con el tiempo</h5>C\u00f3mo se mueve el puntaje general de una persona entre <strong>Oto\u00f1o, Invierno y Primavera</strong>. La columna <strong>Cambio</strong> muestra la diferencia \u2014 verde sube, rojo baja. Una ca\u00edda en un per\u00edodo suele recuperarse en el siguiente."
+  },
+  export: {
+    en: "<h5>Export \u2014 take the data with you</h5>Download the responses as <strong>spreadsheet (CSV) files</strong> you can open in Excel or Google Sheets, or hand to a counselor.",
+    es: "<h5>Exportar \u2014 ll\u00e9vate los datos</h5>Descarga las respuestas como <strong>archivos de hoja de c\u00e1lculo (CSV)</strong> que puedes abrir en Excel o Google Sheets, o entregar a un consejero."
+  }
 };
 let tabHelpOpen = false;
-function setTabHelp(name) { const el = $("#tabHelp"); if (el) el.innerHTML = TAB_HELP[name] || ""; }
+function setTabHelp(name) { const el = $("#tabHelp"); if (el) { const h = TAB_HELP[name]; el.innerHTML = h ? (h[dashLang] || h.en) : ""; } }
 
 function refreshAdmin() {
   renderSyncStatus();
@@ -3568,40 +3606,41 @@ function renderOverview() {
   // Plain-language read of the group, shown above the numbers.
   let ovText;
   if (n === 0) {
-    ovText = "No check-ins yet for this view.";
+    ovText = DT("No check-ins yet for this view.", "A\u00fan no hay check-ins para esta vista.");
   } else {
-    const ppl = n === 1 ? "person" : "people";
-    const win = $("#filterWindow").value ? (" in " + $("#filterWindow").value) : "";
-    ovText = "<strong>" + n + "</strong> " + ppl + " checked in" + win + ". " +
-      (low >= Math.ceil(n / 2) ? "Most are doing well" : "Results are mixed across the group");
-    if (some + high > 0) ovText += " \u2014 " + (some + high) + " may benefit from a check-in conversation";
+    const ppl = n === 1 ? DT("person", "persona") : DT("people", "personas");
+    const wv = $("#filterWindow").value;
+    const win = wv ? (DT(" in ", " en ") + winLabel(wv)) : "";
+    ovText = "<strong>" + n + "</strong> " + ppl + " " + DT("checked in", "hicieron el check-in") + win + ". " +
+      (low >= Math.ceil(n / 2) ? DT("Most are doing well", "La mayor\u00eda est\u00e1 bien") : DT("Results are mixed across the group", "Los resultados son variados en el grupo"));
+    if (some + high > 0) ovText += " \u2014 " + (some + high) + DT(" may benefit from a check-in conversation", " podr\u00edan beneficiarse de una conversaci\u00f3n de chequeo");
     ovText += ".";
-    if (flags > 0) ovText += " " + flags + " " + (flags === 1 ? "person" : "people") + " named no trusted adult \u2014 a good place to start.";
+    if (flags > 0) ovText += " " + flags + " " + (flags === 1 ? DT("person", "persona") : DT("people", "personas")) + DT(" named no trusted adult \u2014 a good place to start.", " no nombraron a ning\u00fan adulto de confianza \u2014 un buen lugar para empezar.");
   }
   if ($("#ovSummary")) $("#ovSummary").innerHTML = ovText;
 
   $("#kpiGrid").innerHTML =
     '<div class="kpi"><div class="kpi-accent accent-navy"></div>' +
-      '<div class="kpi-label">Checked in</div>' +
+      '<div class="kpi-label">' + DT("Checked in", "Hicieron el check-in") + '</div>' +
       '<div class="kpi-value">' + n + '</div>' +
-      '<div class="kpi-sub">' + ($("#filterWindow").value || "All windows") + '</div></div>' +
+      '<div class="kpi-sub">' + ($("#filterWindow").value ? winLabel($("#filterWindow").value) : DT("All windows", "Todos los per\u00edodos")) + '</div></div>' +
     '<div class="kpi"><div class="kpi-accent accent-navy"></div>' +
-      '<div class="kpi-label">Average score</div>' +
+      '<div class="kpi-label">' + DT("Average score", "Puntaje promedio") + '</div>' +
       '<div class="kpi-value">' + (n ? avgNorm.toFixed(0) : "\u2014") + '</div>' +
-      '<div class="kpi-sub">out of 100</div></div>' +
+      '<div class="kpi-sub">' + DT("out of 100", "de 100") + '</div></div>' +
     '<div class="kpi"><div class="kpi-accent accent-gold"></div>' +
-      '<div class="kpi-label">No trusted adult</div>' +
+      '<div class="kpi-label">' + DT("No trusted adult", "Sin adulto de confianza") + '</div>' +
       '<div class="kpi-value">' + flags + '</div>' +
-      '<div class="kpi-sub">named no one they trust</div></div>';
+      '<div class="kpi-sub">' + DT("named no one they trust", "no nombraron a nadie de confianza") + '</div></div>';
 
   const distBar = $("#distBar");
   if (n === 0) {
-    distBar.innerHTML = '<div class="dist-segment" style="flex:1;background:var(--rule-soft);color:var(--ink-faint);">No data</div>';
+    distBar.innerHTML = '<div class="dist-segment" style="flex:1;background:var(--rule-soft);color:var(--ink-faint);">' + DT("No data", "Sin datos") + '</div>';
   } else {
     let html = "";
-    if (high > 0) html += '<div class="dist-segment dist-red" style="flex:' + high + '" title="Needs support">' + high + '</div>';
-    if (some > 0) html += '<div class="dist-segment dist-amber" style="flex:' + some + '" title="Worth a check-in">' + some + '</div>';
-    if (low > 0)  html += '<div class="dist-segment dist-green" style="flex:' + low + '" title="Doing well">' + low + '</div>';
+    if (high > 0) html += '<div class="dist-segment dist-red" style="flex:' + high + '" title="' + DT("Needs support","Necesita apoyo") + '">' + high + '</div>';
+    if (some > 0) html += '<div class="dist-segment dist-amber" style="flex:' + some + '" title="' + DT("Worth a check-in","Vale un chequeo") + '">' + some + '</div>';
+    if (low > 0)  html += '<div class="dist-segment dist-green" style="flex:' + low + '" title="' + DT("Doing well","Va bien") + '">' + low + '</div>';
     distBar.innerHTML = html;
   }
 
@@ -3609,9 +3648,9 @@ function renderOverview() {
   const avgB = n ? filtered.reduce((s,r)=>s+(r.normB||0),0)/n : 0;
   const avgC = n ? filtered.reduce((s,r)=>s+(r.normC||0),0)/n : 0;
   $("#domainSummary").innerHTML =
-    domainCard("A \u00B7 Emotional Regulation & Well-Being", avgA) +
-    domainCard("B \u00B7 Self-Compassion & Growth Mindset", avgB) +
-    domainCard("C \u00B7 Social Competency & Repair", avgC);
+    domainCard("A \u00B7 " + DT("Emotional Regulation & Well-Being","Regulaci\u00f3n emocional y bienestar"), avgA) +
+    domainCard("B \u00B7 " + DT("Self-Compassion & Growth Mindset","Autocompasi\u00f3n y mentalidad de crecimiento"), avgB) +
+    domainCard("C \u00B7 " + DT("Social Competency & Repair","Competencia social y reparaci\u00f3n"), avgC);
 }
 
 function domainCard(label, score) {
@@ -3662,18 +3701,18 @@ function renderStudents() {
     grade: $("#studentFilterGrade") ? $("#studentFilterGrade").value : "",
     tier: $("#studentFilterTier") ? $("#studentFilterTier").value : ""
   });
-  if ($("#studentCount")) $("#studentCount").textContent = filtered.length + " record" + (filtered.length === 1 ? "" : "s");
+  if ($("#studentCount")) $("#studentCount").textContent = filtered.length + " " + (filtered.length === 1 ? DT("record","registro") : DT("records","registros"));
 
   if (!filtered.length) {
-    $("#studentTable").innerHTML = '<div class="empty-state"><div class="display-md serif">No records</div><div class="small">Adjust filters or wait for submissions.</div></div>';
+    $("#studentTable").innerHTML = '<div class="empty-state"><div class="display-md serif">' + DT("No records","Sin registros") + '</div><div class="small">' + DT("Adjust filters or wait for submissions.","Ajusta los filtros o espera nuevas respuestas.") + '</div></div>';
     return;
   }
   const rows = filtered.slice().sort(studentSortCmp).map(r =>
     '<tr>' +
       '<td><strong>' + escapeHtml(r.studentId) + '</strong></td>' +
       '<td>' + escapeHtml(String(r.grade)) + '</td>' +
-      '<td>' + escapeHtml(r.window) + '</td>' +
-      '<td><span class="small">' + (r.mode || "rapid") + '</span></td>' +
+      '<td>' + escapeHtml(winLabel(r.window)) + '</td>' +
+      '<td><span class="small">' + modeLabel(r.mode) + '</span></td>' +
       '<td>' + (r.normA != null ? r.normA.toFixed(0) : "\u2014") + '</td>' +
       '<td>' + (r.normB != null ? r.normB.toFixed(0) : "\u2014") + '</td>' +
       '<td>' + (r.normC != null ? r.normC.toFixed(0) : "\u2014") + '</td>' +
@@ -3690,8 +3729,8 @@ function renderStudents() {
   };
   $("#studentTable").innerHTML =
     '<table><thead><tr>' +
-      sTh("name","Name") + sTh("grade","Grade") + sTh("window","Window") + sTh("mode","Mode") +
-      sTh("A","A") + sTh("B","B") + sTh("C","C") + sTh("total","Total") + sTh("status","Status") + sTh("trusted","Trusted adult") + sTh("date","Date") +
+      sTh("name",DT("Name","Nombre")) + sTh("grade",DT("Grade","Grado")) + sTh("window",DT("Window","Per\u00edodo")) + sTh("mode",DT("Mode","Modo")) +
+      sTh("A","A") + sTh("B","B") + sTh("C","C") + sTh("total",DT("Total","Total")) + sTh("status",DT("Status","Estado")) + sTh("trusted",DT("Trusted adult","Adulto de confianza")) + sTh("date",DT("Date","Fecha")) +
     '</tr></thead><tbody>' + rows + '</tbody></table>';
 }
 
@@ -3707,14 +3746,14 @@ function renderHome() {
   const winFilter = $("#homeFilterWindow") ? $("#homeFilterWindow").value : "";
 
   if (!studentId) {
-    target.innerHTML = '<div class="empty-state"><div class="display-md serif">Select a person above to see their full report.</div><div class="small">The Home View shows every item, every answer, every reflection \u2014 and gives you the conversation starters that go with them.</div></div>';
+    target.innerHTML = '<div class="empty-state"><div class="display-md serif">' + DT("Select a person above to see their full report.","Selecciona una persona arriba para ver su informe completo.") + '</div><div class="small">' + DT("The Home View shows every item, every answer, every reflection \u2014 and gives you the conversation starters that go with them.","La Vista del hogar muestra cada \u00edtem, cada respuesta, cada reflexi\u00f3n \u2014 y te da los iniciadores de conversaci\u00f3n que las acompa\u00f1an.") + '</div></div>';
     return;
   }
   const all = getAllRecords();
   let records = all.filter(r => r.studentId === studentId);
   if (winFilter) records = records.filter(r => r.window === winFilter);
   if (!records.length) {
-    target.innerHTML = '<div class="empty-state"><div class="display-md serif">No record for this filter</div></div>';
+    target.innerHTML = '<div class="empty-state"><div class="display-md serif">' + DT("No record for this filter","Sin registro para este filtro") + '</div></div>';
     return;
   }
   records.sort((a,b) => new Date(b.timestamp) - new Date(a.timestamp));
@@ -3725,33 +3764,34 @@ function renderHome() {
   let html = '<div class="home-header">' +
     '<div class="home-header-id">' +
       '<div class="home-name">' + escapeHtml(r.studentId) + '</div>' +
-      '<div class="small">Grade ' + escapeHtml(String(r.grade)) + ' \u00B7 ' + escapeHtml(r.window) + ' \u00B7 ' +
+      '<div class="small">' + DT("Grade ","Grado ") + escapeHtml(String(r.grade)) + ' \u00B7 ' + escapeHtml(winLabel(r.window)) + ' \u00B7 ' +
         '<span class="pill ' + tierClass(r.tier) + '">' + tierLabel(r.tier) + '</span> \u00B7 ' +
-        '<span class="small">' + (r.mode === "depth" ? "Thorough mode" : "Quick mode") + '</span>' +
+        '<span class="small">' + (r.mode === "depth" ? DT("Thorough mode","Modo a fondo") : DT("Quick mode","Modo r\u00e1pido")) + '</span>' +
       '</div>' +
     '</div>' +
     '<div class="home-header-scores">' +
-      '<div class="home-score"><div class="label">Composite</div><div class="val">' + (r.normComposite != null ? r.normComposite.toFixed(0) : "\u2014") + '<span class="max">/100</span></div></div>' +
-      '<div class="home-score"><div class="label">Emotional</div><div class="val">' + (r.normA != null ? r.normA.toFixed(0) : "\u2014") + '<span class="max">/100</span></div></div>' +
-      '<div class="home-score"><div class="label">Compassion</div><div class="val">' + (r.normB != null ? r.normB.toFixed(0) : "\u2014") + '<span class="max">/100</span></div></div>' +
-      '<div class="home-score"><div class="label">Social</div><div class="val">' + (r.normC != null ? r.normC.toFixed(0) : "\u2014") + '<span class="max">/100</span></div></div>' +
+      '<div class="home-score"><div class="label">' + DT("Composite","Compuesto") + '</div><div class="val">' + (r.normComposite != null ? r.normComposite.toFixed(0) : "\u2014") + '<span class="max">/100</span></div></div>' +
+      '<div class="home-score"><div class="label">' + DT("Emotional","Emocional") + '</div><div class="val">' + (r.normA != null ? r.normA.toFixed(0) : "\u2014") + '<span class="max">/100</span></div></div>' +
+      '<div class="home-score"><div class="label">' + DT("Compassion","Compasi\u00f3n") + '</div><div class="val">' + (r.normB != null ? r.normB.toFixed(0) : "\u2014") + '<span class="max">/100</span></div></div>' +
+      '<div class="home-score"><div class="label">' + DT("Social","Social") + '</div><div class="val">' + (r.normC != null ? r.normC.toFixed(0) : "\u2014") + '<span class="max">/100</span></div></div>' +
     '</div>' +
   '</div>';
 
   // Conversation guide first \u2014 the most useful part, at the top.
   html += renderConversationGuide(r);
-  html += '<div class="home-detail-head">The full picture, item by item</div>';
+  html += '<div class="home-detail-head">' + DT("The full picture, item by item","El panorama completo, \u00edtem por \u00edtem") + '</div>';
 
   // Domain sections
   const domains = [
-    { key: "A", name: "Emotional Regulation & Well-Being", range: [0,6], score: r.normA, reflectionIdx: 0 },
-    { key: "B", name: "Self-Compassion & Growth Mindset", range: [6,12], score: r.normB, reflectionIdx: 1 },
-    { key: "C", name: "Social Competency & Repair", range: [12,18], score: r.normC, reflectionIdx: 2 }
+    { key: "A", name: DT("Emotional Regulation & Well-Being","Regulaci\u00f3n emocional y bienestar"), range: [0,6], score: r.normA, reflectionIdx: 0 },
+    { key: "B", name: DT("Self-Compassion & Growth Mindset","Autocompasi\u00f3n y mentalidad de crecimiento"), range: [6,12], score: r.normB, reflectionIdx: 1 },
+    { key: "C", name: DT("Social Competency & Repair","Competencia social y reparaci\u00f3n"), range: [12,18], score: r.normC, reflectionIdx: 2 }
   ];
 
-  const scaleLabels = SCALE_6.en.map(s => s.label);
-  const scaleLabels4 = SCALE_4.en.map(s => s.label);
-  const intLabels = INTENSITY.en.map(i => i.label);
+  const ITEMS_L = (dashLang === "es") ? ITEMS_ES : ITEMS_EN;
+  const scaleLabels = (SCALE_6[dashLang] || SCALE_6.en).map(s => s.label);
+  const scaleLabels4 = (SCALE_4[dashLang] || SCALE_4.en).map(s => s.label);
+  const intLabels = (INTENSITY[dashLang] || INTENSITY.en).map(i => i.label);
 
   domains.forEach(d => {
     html += '<div class="home-domain-section">' +
@@ -3761,18 +3801,18 @@ function renderHome() {
       '</div>';
 
     for (let i = d.range[0]; i < d.range[1]; i++) {
-      const item = ITEMS_EN[i];
+      const item = ITEMS_L[i];
       const raw = r.raw[i];
       const intensity = r.intensities ? r.intensities[i] : null;
       const scored = scoreFrequency(raw, item.reverse, r.mode);
       const heat = heatClass(scored, itemMax);
       const labels = r.mode === "depth" ? scaleLabels : scaleLabels4;
       const ansLabel = (raw == null) ? "\u2014" : labels[raw];
-      const reverseTag = item.reverse ? '<em class="rev-tag">reverse</em>' : '';
+      const reverseTag = item.reverse ? '<em class="rev-tag">' + DT("reverse","inverso") + '</em>' : '';
 
       let intensityHtml = "";
       if (intensity != null) {
-        intensityHtml = '<div class="intensity-badge">Impact: <strong>' + intLabels[intensity] + '</strong></div>';
+        intensityHtml = '<div class="intensity-badge">' + DT("Impact:","Impacto:") + ' <strong>' + intLabels[intensity] + '</strong></div>';
       }
 
       html += '<div class="home-item">' +
@@ -3785,7 +3825,7 @@ function renderHome() {
     // Reflection (if any)
     if (r.reflections && r.reflections[d.reflectionIdx]) {
       html += '<div class="home-reflection">' +
-        '<div class="label">Their own words</div>' +
+        '<div class="label">' + DT("Their own words","Sus propias palabras") + '</div>' +
         '<div class="quote">\u201C' + escapeHtml(r.reflections[d.reflectionIdx]) + '\u201D</div>' +
       '</div>';
     }
@@ -3796,7 +3836,7 @@ function renderHome() {
   // Closing word echo
   if (r.closingWord) {
     html += '<div class="home-reflection" style="margin: 16px 0;">' +
-      '<div class="label">Word they kept</div>' +
+      '<div class="label">' + DT("Word they kept","La palabra que eligieron") + '</div>' +
       '<div class="quote" style="font-size: 22px; color: var(--gold);">\u201C' + escapeHtml(r.closingWord) + '\u201D</div>' +
     '</div>';
   }
@@ -3818,35 +3858,37 @@ function renderConversationGuide(r) {
 
   if (!lowItems.length) {
     return '<div class="home-conversation">' +
-      '<h4>What to do next</h4>' +
-      '<p>This person scored in the healthy range across every item. That doesn\u2019t mean nothing is hard \u2014 it means the skills the curriculum teaches are showing up. Keep doing what you\u2019re doing. Re-screen in the next window to track growth.</p>' +
+      '<h4>' + DT("What to do next","Qu\u00e9 hacer ahora") + '</h4>' +
+      '<p>' + DT("This person scored in the healthy range across every item. That doesn\u2019t mean nothing is hard \u2014 it means the skills the curriculum teaches are showing up. Keep doing what you\u2019re doing. Re-screen in the next window to track growth.","Esta persona obtuvo puntajes en el rango saludable en cada \u00edtem. Eso no significa que nada sea dif\u00edcil \u2014 significa que las habilidades que ense\u00f1a el curr\u00edculo est\u00e1n apareciendo. Sigue haciendo lo que haces. Vuelve a evaluar en el pr\u00f3ximo per\u00edodo para seguir el progreso.") + '</p>' +
     '</div>';
   }
 
-  const prompts = {
-    1: "When something is bothering you, can you usually tell what feeling it is? Is there a feeling that\u2019s hard to name?",
-    2: "When you\u2019re really upset, what helps your body settle? Is there anything that helps every time?",
-    3: "When you\u2019re worried or angry, does it ever feel like it takes over and gets in the way of stuff you want to do?",
-    4: "Is there ever a feeling so big you don\u2019t know what to do with it? What\u2019s that like?",
-    5: "After something hard happens, how long does it usually take you to feel like yourself again?",
-    6: "Can you tell when you\u2019re about to lose it before you actually lose it? What does the warning feel like?",
-    7: "When you mess up, what do you usually say to yourself? Are you kind or harsh?",
-    8: "Do you have a voice in your head that says mean things \u2014 like you\u2019re stupid, or bad? What does it say? (Book 2 calls this the Inner Critic.)",
-    9: "If your best friend made the mistake you made, would you talk to them the way you talk to yourself? Why is it different?",
-    10: "Do mistakes stay with you a long time? Do they replay in your head?",
-    11: "When something is really hard, do you believe you can get better at it? Or does it feel fixed?",
-    12: "When you mess up, can you say sorry, fix what you can, and then let it go? Or does it stick?",
-    13: "When you and someone are in a fight, can you imagine what it looks like from their side?",
-    14: "When you\u2019ve hurt someone, even accidentally, do you find it easy or hard to say so?",
-    15: "When someone hurts your feelings, do you usually assume they meant to? Or could there be another explanation?",
-    16: "How do you treat people who are different from you \u2014 or who you don\u2019t get along with?",
-    17: "Do you know the difference between someone being difficult and someone being unsafe? Who is each in your life right now?",
-    18: "Is there an adult you would actually go to if something was wrong? Who? If not, who could it be?"
+  const PROMPTS = {
+    1:  { en: "When something is bothering you, can you usually tell what feeling it is? Is there a feeling that\u2019s hard to name?", es: "Cuando algo te molesta, \u00bfsueles darte cuenta de qu\u00e9 sentimiento es? \u00bfHay alg\u00fan sentimiento que te cueste nombrar?" },
+    2:  { en: "When you\u2019re really upset, what helps your body settle? Is there anything that helps every time?", es: "Cuando est\u00e1s muy alterado, \u00bfqu\u00e9 ayuda a que tu cuerpo se calme? \u00bfHay algo que ayude siempre?" },
+    3:  { en: "When you\u2019re worried or angry, does it ever feel like it takes over and gets in the way of stuff you want to do?", es: "Cuando est\u00e1s preocupado o enojado, \u00bfalguna vez sientes que te domina y se interpone en cosas que quieres hacer?" },
+    4:  { en: "Is there ever a feeling so big you don\u2019t know what to do with it? What\u2019s that like?", es: "\u00bfAlguna vez hay un sentimiento tan grande que no sabes qu\u00e9 hacer con \u00e9l? \u00bfC\u00f3mo es eso?" },
+    5:  { en: "After something hard happens, how long does it usually take you to feel like yourself again?", es: "Despu\u00e9s de que pasa algo dif\u00edcil, \u00bfcu\u00e1nto tiempo sueles tardar en volver a sentirte t\u00fa mismo?" },
+    6:  { en: "Can you tell when you\u2019re about to lose it before you actually lose it? What does the warning feel like?", es: "\u00bfPuedes darte cuenta de que est\u00e1s por perder el control antes de perderlo? \u00bfC\u00f3mo se siente esa se\u00f1al?" },
+    7:  { en: "When you mess up, what do you usually say to yourself? Are you kind or harsh?", es: "Cuando te equivocas, \u00bfqu\u00e9 sueles decirte a ti mismo? \u00bfEres amable o duro?" },
+    8:  { en: "Do you have a voice in your head that says mean things \u2014 like you\u2019re stupid, or bad? What does it say? (Book 2 calls this the Inner Critic.)", es: "\u00bfTienes una voz en la cabeza que dice cosas crueles \u2014 como que eres tonto o malo? \u00bfQu\u00e9 dice? (El Libro 2 lo llama el \u201cInner Critic\u201d.)" },
+    9:  { en: "If your best friend made the mistake you made, would you talk to them the way you talk to yourself? Why is it different?", es: "Si tu mejor amigo cometiera el error que cometiste, \u00bfle hablar\u00edas como te hablas a ti mismo? \u00bfPor qu\u00e9 es diferente?" },
+    10: { en: "Do mistakes stay with you a long time? Do they replay in your head?", es: "\u00bfLos errores se te quedan mucho tiempo? \u00bfSe repiten en tu cabeza?" },
+    11: { en: "When something is really hard, do you believe you can get better at it? Or does it feel fixed?", es: "Cuando algo es muy dif\u00edcil, \u00bfcrees que puedes mejorar en eso? \u00bfO se siente fijo?" },
+    12: { en: "When you mess up, can you say sorry, fix what you can, and then let it go? Or does it stick?", es: "Cuando te equivocas, \u00bfpuedes pedir perd\u00f3n, arreglar lo que puedas y luego soltarlo? \u00bfO se te queda pegado?" },
+    13: { en: "When you and someone are in a fight, can you imagine what it looks like from their side?", es: "Cuando t\u00fa y otra persona est\u00e1n peleando, \u00bfpuedes imaginar c\u00f3mo se ve desde su lado?" },
+    14: { en: "When you\u2019ve hurt someone, even accidentally, do you find it easy or hard to say so?", es: "Cuando has lastimado a alguien, aunque sea sin querer, \u00bfte resulta f\u00e1cil o dif\u00edcil reconocerlo?" },
+    15: { en: "When someone hurts your feelings, do you usually assume they meant to? Or could there be another explanation?", es: "Cuando alguien hiere tus sentimientos, \u00bfsueles suponer que lo hizo a prop\u00f3sito? \u00bfO podr\u00eda haber otra explicaci\u00f3n?" },
+    16: { en: "How do you treat people who are different from you \u2014 or who you don\u2019t get along with?", es: "\u00bfC\u00f3mo tratas a las personas que son diferentes a ti \u2014 o con las que no te llevas bien?" },
+    17: { en: "Do you know the difference between someone being difficult and someone being unsafe? Who is each in your life right now?", es: "\u00bfSabes la diferencia entre alguien que es dif\u00edcil y alguien que no es seguro? \u00bfQui\u00e9n es cada uno en tu vida ahora mismo?" },
+    18: { en: "Is there an adult you would actually go to if something was wrong? Who? If not, who could it be?", es: "\u00bfHay un adulto al que realmente acudir\u00edas si algo anduviera mal? \u00bfQui\u00e9n? Si no, \u00bfqui\u00e9n podr\u00eda serlo?" }
   };
+  const prompts = {};
+  Object.keys(PROMPTS).forEach(k => { prompts[k] = PROMPTS[k][dashLang] || PROMPTS[k].en; });
 
   let html = '<div class="home-conversation">' +
-    '<h4>Conversation starters</h4>' +
-    '<p>The questions below scored lower. These are not problems \u2014 they are <em>doors</em>. Open one when the moment is right, and ask gently. Don\u2019t do all of them in one sitting.</p>' +
+    '<h4>' + DT("Conversation starters","Iniciadores de conversaci\u00f3n") + '</h4>' +
+    '<p>' + DT("The questions below scored lower. These are not problems \u2014 they are <em>doors</em>. Open one when the moment is right, and ask gently. Don\u2019t do all of them in one sitting.","Las preguntas de abajo obtuvieron puntajes m\u00e1s bajos. No son problemas \u2014 son <em>puertas</em>. Abre una cuando el momento sea adecuado, y pregunta con suavidad. No las hagas todas de una sola vez.") + '</p>' +
     '<ul>';
 
   // Sort lowItems by severity (lowest scored first) so most concerning surface first
@@ -3857,7 +3899,7 @@ function renderConversationGuide(r) {
     const prompt = prompts[x.item.n] || x.item.text;
     let intensityFlag = "";
     if (x.intensity != null && x.intensity >= 2) {
-      intensityFlag = ' <strong style="color:var(--red);">(high impact)</strong>';
+      intensityFlag = ' <strong style="color:var(--red);">' + DT("(high impact)","(alto impacto)") + '</strong>';
     }
     html += '<li>' + escapeHtml(prompt) + intensityFlag + '</li>';
   });
@@ -3868,14 +3910,18 @@ function renderConversationGuide(r) {
   const norms = { A: r.normA || 0, B: r.normB || 0, C: r.normC || 0 };
   const lowestDomain = Object.entries(norms).sort((a,b) => a[1] - b[1])[0][0];
   const guidance = {
-    A: "<strong>Lowest domain: Emotional Regulation.</strong> Start with Book 1 (The Year We Met Sammy) and Book 2 Unit 1 (regulation toolkit and Window of Tolerance). Practice the body-floor protocols when emotions are calm so they\u2019re available when emotions are big.",
-    B: "<strong>Lowest domain: Self-Compassion & Mindset.</strong> Start with Book 2 (The Year of the Inner Critic). The Kind Coach / Grumpy Gus drawing activity and the Self-Compassion Letter are the core practices. Book 3 deepens this for older students.",
-    C: "<strong>Lowest domain: Social Competency & Repair.</strong> Start with Book 3 Unit 2\u20133 (perspective-taking, the Three Sides protocol) and Book 4 Unit 4\u20135 (grace, the Difficult-vs-Unsafe distinction)."
+    A: DT("<strong>Lowest domain: Emotional Regulation.</strong> Start with Book 1 (The Year We Met Sammy) and Book 2 Unit 1 (regulation toolkit and Window of Tolerance). Practice the body-floor protocols when emotions are calm so they\u2019re available when emotions are big.",
+          "<strong>Dominio m\u00e1s bajo: Regulaci\u00f3n emocional.</strong> Empieza con el Libro 1 (The Year We Met Sammy) y el Libro 2, Unidad 1 (kit de regulaci\u00f3n y la Window of Tolerance). Practica los protocolos de body-floor cuando las emociones est\u00e9n calmadas, para que est\u00e9n disponibles cuando las emociones sean grandes."),
+    B: DT("<strong>Lowest domain: Self-Compassion & Mindset.</strong> Start with Book 2 (The Year of the Inner Critic). The Kind Coach / Grumpy Gus drawing activity and the Self-Compassion Letter are the core practices. Book 3 deepens this for older students.",
+          "<strong>Dominio m\u00e1s bajo: Autocompasi\u00f3n y mentalidad.</strong> Empieza con el Libro 2 (The Year of the Inner Critic). La actividad de dibujo Kind Coach / Grumpy Gus y la Self-Compassion Letter son las pr\u00e1cticas centrales. El Libro 3 profundiza esto para estudiantes mayores."),
+    C: DT("<strong>Lowest domain: Social Competency & Repair.</strong> Start with Book 3 Unit 2\u20133 (perspective-taking, the Three Sides protocol) and Book 4 Unit 4\u20135 (grace, the Difficult-vs-Unsafe distinction).",
+          "<strong>Dominio m\u00e1s bajo: Competencia social y reparaci\u00f3n.</strong> Empieza con el Libro 3, Unidades 2\u20133 (toma de perspectiva, el protocolo Three Sides) y el Libro 4, Unidades 4\u20135 (grace, la distinci\u00f3n Difficult-vs-Unsafe).")
   };
   html += '<p style="margin-top:14px;">' + guidance[lowestDomain] + '</p>';
 
   if (r.trustedAdultFlag) {
-    html += '<div class="severity-block"><strong>Trusted-adult item flagged.</strong> This person answered Never or Rarely/Sometimes to having a trusted adult. If this is a child, this is the most important conversation to have. Ask: <em>If something was wrong, who would you actually go to?</em> Then help them name one specific person and rehearse the approach.</div>';
+    html += '<div class="severity-block">' + DT("<strong>Trusted-adult item flagged.</strong> This person answered Never or Rarely/Sometimes to having a trusted adult. If this is a child, this is the most important conversation to have. Ask: <em>If something was wrong, who would you actually go to?</em> Then help them name one specific person and rehearse the approach.",
+      "<strong>\u00cdtem de adulto de confianza marcado.</strong> Esta persona respondi\u00f3 Nunca o Rara vez/A veces a tener un adulto de confianza. Si es un ni\u00f1o, esta es la conversaci\u00f3n m\u00e1s importante que hay que tener. Pregunta: <em>Si algo anduviera mal, \u00bfa qui\u00e9n acudir\u00edas de verdad?</em> Luego ay\u00fadale a nombrar a una persona espec\u00edfica y a ensayar c\u00f3mo acercarse.") + '</div>';
   }
 
   html += '</div>';
@@ -3903,7 +3949,7 @@ function renderGrowth() {
 
   const list = Object.values(byStudent);
   if (!list.length) {
-    $("#growthList").innerHTML = '<div class="empty-state"><div class="display-md serif">No data yet</div></div>';
+    $("#growthList").innerHTML = '<div class="empty-state"><div class="display-md serif">' + DT("No data yet","A\u00fan no hay datos") + '</div></div>';
     return;
   }
 
@@ -3927,7 +3973,7 @@ function renderGrowth() {
     return String(a.studentId).localeCompare(String(b.studentId), undefined, {numeric:true});
   });
 
-  let html = '<table><thead><tr><th>Name</th><th>Grade</th><th>Fall</th><th>Winter</th><th>Spring</th><th>Change</th></tr></thead><tbody>';
+  let html = '<table><thead><tr><th>' + DT("Name","Nombre") + '</th><th>' + DT("Grade","Grado") + '</th><th>' + DT("Fall","Oto\u00f1o") + '</th><th>' + DT("Winter","Invierno") + '</th><th>' + DT("Spring","Primavera") + '</th><th>' + DT("Change","Cambio") + '</th></tr></thead><tbody>';
   list.forEach(s => {
     const cell = w => s[w] ? (s[w].normComposite != null ? s[w].normComposite.toFixed(0) : "\u2014") : "\u2014";
     let deltaCell = "\u2014";
