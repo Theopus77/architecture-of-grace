@@ -349,6 +349,15 @@ body::before {
   box-shadow: 0 0 0 3px rgba(27,58,95,.08);
 }
 
+/* Home / School context toggle (de-identification control) */
+.ctx-block { margin-bottom: 24px; }
+.ctx-toggle { display: inline-flex; gap: 4px; padding: 4px; background: var(--cream-deep); border: 1.5px solid var(--rule); border-radius: 999px; }
+.ctx-opt { border: none; background: transparent; cursor: pointer; padding: 9px 22px; border-radius: 999px; font-family: inherit; font-size: 14px; font-weight: 600; color: var(--ink-soft); letter-spacing: .01em; transition: all .18s var(--ease); }
+.ctx-opt:hover { color: var(--navy); }
+.ctx-opt.active { background: #1B3A5F !important; color: #fff !important; box-shadow: 0 1px 2px rgba(27,58,95,.10); }
+.ctx-note { margin-top: 12px; font-size: 13.5px; color: var(--ink-soft); line-height: 1.55; max-width: 62ch; }
+.ctx-note strong { color: var(--navy); font-weight: 600; }
+
 /* Buttons */
 .nav-row {
   display: flex; justify-content: space-between; align-items: center;
@@ -1343,10 +1352,17 @@ footer .serif { font-style: italic; color: var(--ink-soft); }
 
     <div class="form-section">
       <h2 data-i18n="w_about">About you</h2>
+      <div class="ctx-block">
+        <div class="ctx-toggle" id="ctxToggle" role="group" aria-label="Where this is being used">
+          <button type="button" class="ctx-opt" data-ctx="school" data-i18n="w_ctx_school">School</button>
+          <button type="button" class="ctx-opt" data-ctx="home" data-i18n="w_ctx_home">Home</button>
+        </div>
+        <div class="ctx-note" id="ctxNote"></div>
+      </div>
       <div class="form-grid">
         <div class="field">
-          <label data-i18n="w_name">Name or ID</label>
-          <input type="text" id="studentId" autocomplete="off" placeholder="Your first name works fine" data-i18n-ph="w_name_ph">
+          <label id="lblStudentId">Student code &middot; no names</label>
+          <input type="text" id="studentId" autocomplete="off" placeholder="Initials or seat # &mdash; e.g. J.R. or 14">
         </div>
         <div class="field">
           <label data-i18n="w_grade">Grade or age band</label>
@@ -1378,7 +1394,7 @@ footer .serif { font-style: italic; color: var(--ink-soft); }
     <div class="mode-grid" id="modeGrid">
       <div class="mode-card" data-mode="rapid">
         <div class="mode-left">
-          <div class="mode-eyebrow" data-i18n="m_rapid_ey">For schools &middot; population triage</div>
+          <div class="mode-eyebrow" data-i18n="m_rapid_ey">The universal screener &middot; population view</div>
           <div class="mode-title" data-i18n="m_rapid_t">Quick</div>
           <div class="mode-time" data-i18n="m_rapid_time">~4 minutes</div>
         </div>
@@ -1393,7 +1409,7 @@ footer .serif { font-style: italic; color: var(--ink-soft); }
       </div>
       <div class="mode-card selected" data-mode="depth">
         <div class="mode-left">
-          <div class="mode-eyebrow" data-i18n="m_depth_ey">For home, mentor, or counselor use &middot; thorough</div>
+          <div class="mode-eyebrow" data-i18n="m_depth_ey">The full instrument &middot; in depth</div>
           <div class="mode-title" data-i18n="m_depth_t">Thorough</div>
           <div class="mode-time" data-i18n="m_depth_time">~10 minutes</div>
         </div>
@@ -2286,6 +2302,7 @@ function heatClass(scored, itemMax) {
 let lang = "en";
 let surveyLang = "en";
 let mode = "depth"; // "depth" or "rapid"
+let context = "school"; // "school" (de-identified, no names) or "home" (first name OK). Default = privacy-safe.
 let current = 0;
 let responses = [];       // length 18, frequency values
 let intensities = [];     // length 18, intensity values for items with intensity:true
@@ -2340,14 +2357,14 @@ const I18N_UI = {
   w_lede:      { en: "Take a few quiet minutes, just for you. It\u2019s private, there are no wrong answers, and it helps the people who care about you know how to help.", es: "T\u00f3mate unos minutos tranquilos, solo para ti. Es privado, no hay respuestas incorrectas, y ayuda a las personas que se preocupan por ti a saber c\u00f3mo apoyarte." },
   w_choose:    { en: "Choose how you want to take it", es: "Elige c\u00f3mo quieres hacerla" },
   w_choose_sub:{ en: "Same 18 questions either way \u2014 take the quick version, or a more thorough one with short written reflections.", es: "Las mismas 18 preguntas en ambas \u2014 haz la versi\u00f3n r\u00e1pida, o una m\u00e1s a fondo con breves reflexiones escritas." },
-  m_rapid_ey:  { en: "For schools \u00b7 population triage", es: "Para escuelas \u00b7 evaluaci\u00f3n general" },
+  m_rapid_ey:  { en: "The universal screener \u00b7 population view", es: "El tamizaje universal \u00b7 vista de grupo" },
   m_rapid_t:   { en: "Quick", es: "R\u00e1pida" },
   m_rapid_time:{ en: "~4 minutes", es: "~4 minutos" },
   m_rapid_desc:{ en: "The standard universal check-in. 4-point frequency scale. Designed for whole-school administration three times a year.", es: "El chequeo universal est\u00e1ndar. Escala de frecuencia de 4 puntos. Dise\u00f1ada para administrarse a toda la escuela tres veces al a\u00f1o." },
   m_rapid_f1:  { en: "18 items, single-tap response", es: "18 preguntas, respuesta con un toque" },
   m_rapid_f2:  { en: "Score 0\u201354, flags who may need support", es: "Puntaje 0\u201354, se\u00f1ala qui\u00e9n puede necesitar apoyo" },
   m_rapid_f3:  { en: "Comparable across seasons of life", es: "Comparable entre etapas de la vida" },
-  m_depth_ey:  { en: "For home, mentor, or counselor use \u00b7 thorough", es: "Para casa, mentor o consejero \u00b7 a fondo" },
+  m_depth_ey:  { en: "The full instrument \u00b7 in depth", es: "El instrumento completo \u00b7 a fondo" },
   m_depth_t:   { en: "Thorough", es: "A fondo" },
   m_depth_time:{ en: "~10 minutes", es: "~10 minutos" },
   m_depth_desc:{ en: "The full instrument. 6-point frequency scale, intensity follow-ups on key items, and a brief written reflection after each domain.", es: "El instrumento completo. Escala de frecuencia de 6 puntos, preguntas de intensidad en los \u00edtems clave, y una breve reflexi\u00f3n escrita despu\u00e9s de cada \u00e1rea." },
@@ -2358,6 +2375,8 @@ const I18N_UI = {
   w_script1:   { en: "<strong>Before you begin.</strong> There are no right or wrong answers \u2014 just pick what feels most true for you lately, and go with your first instinct.", es: "<strong>Antes de empezar.</strong> No hay respuestas correctas ni incorrectas: elige lo que sientas m\u00e1s verdadero para ti \u00faltimamente, y ve con tu primer instinto." },
   w_script2:   { en: "If a question brings up something you\u2019d like to talk about, you can reach out to a teacher, counselor, parent, or guardian any time.", es: "Si alguna pregunta despierta algo de lo que quieras hablar, puedes acudir a un maestro, consejero, padre o tutor en cualquier momento." },
   w_about:     { en: "About you", es: "Sobre ti" },
+  w_ctx_school:{ en: "School", es: "Escuela" },
+  w_ctx_home:  { en: "Home", es: "Hogar" },
   w_name:      { en: "Name or ID", es: "Nombre o ID" },
   w_name_ph:   { en: "Your first name works fine", es: "Tu nombre de pila funciona bien" },
   w_grade:     { en: "Grade or age band", es: "Grado o rango de edad" },
@@ -2457,6 +2476,35 @@ const I18N_UI = {
   f_done:      { en: "Done", es: "Listo" },
 };
 
+const CTX_TEXT = {
+  school: {
+    label: { en: "Student code \u00b7 no names", es: "C\u00f3digo del estudiante \u00b7 sin nombres" },
+    ph:    { en: "Initials or seat # \u2014 e.g. J.R. or 14", es: "Iniciales o n.\u00ba de asiento \u2014 p. ej. J.R. o 14" },
+    note:  { en: "<strong>School mode.</strong> Use initials, a seat number, or a roster ID you keep on your own paper. Please don\u2019t enter full names \u2014 this keeps every response de-identified.",
+             es: "<strong>Modo escuela.</strong> Usa iniciales, un n\u00famero de asiento o un ID de lista que guardes en tu propio papel. Por favor no escribas nombres completos \u2014 as\u00ed cada respuesta queda an\u00f3nima." }
+  },
+  home: {
+    label: { en: "Name or ID", es: "Nombre o ID" },
+    ph:    { en: "Your first name works fine", es: "Tu nombre de pila funciona bien" },
+    note:  { en: "<strong>Home mode.</strong> Everything stays on this device only \u2014 nothing is sent anywhere \u2014 so a first name is perfectly fine.",
+             es: "<strong>Modo hogar.</strong> Todo se queda solo en este dispositivo \u2014 no se env\u00eda nada \u2014 as\u00ed que un nombre de pila est\u00e1 bien." }
+  }
+};
+
+function applyContext() {
+  const L = (lang === "es") ? "es" : "en";
+  const t = CTX_TEXT[context] || CTX_TEXT.school;
+  const lbl  = document.getElementById("lblStudentId");
+  const inp  = document.getElementById("studentId");
+  const note = document.getElementById("ctxNote");
+  if (lbl)  lbl.textContent = t.label[L];
+  if (inp)  inp.setAttribute("placeholder", t.ph[L]);
+  if (note) note.innerHTML = t.note[L];
+  document.querySelectorAll("#ctxToggle .ctx-opt").forEach(b => {
+    b.classList.toggle("active", b.dataset.ctx === context);
+  });
+}
+
 function applyLang() {
   const L = (lang === "es") ? "es" : "en";
   document.querySelectorAll("[data-i18n]").forEach(el => {
@@ -2483,6 +2531,7 @@ function setLang(newLang) {
   $("#langEn").classList.toggle("active", newLang === "en");
   $("#langEs").classList.toggle("active", newLang === "es");
   applyLang();
+  applyContext();
   // Re-render any active dynamic screen so questions/reflections flip live
   const active = document.querySelector(".screen.active");
   if (active) {
@@ -2665,6 +2714,7 @@ async function submitFinal() {
   const record = {
     timestamp: new Date().toISOString(),
     studentId: session.studentId,
+    context: session.context || "school",
     grade: session.grade,
     window: session.window,
     districtId: session.districtId || "",
@@ -2943,6 +2993,8 @@ function resetToStart() {
   if ($("#grade")) $("#grade").value = "";
   if ($("#window")) $("#window").value = "";
   if ($("#closingInput")) $("#closingInput").value = "";
+  context = "school";
+  applyContext();
   showScreen("screen-welcome");
 }
 
@@ -2972,6 +3024,15 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
+  // Home / School context (de-identification control)
+  $$("#ctxToggle .ctx-opt").forEach(btn => {
+    btn.addEventListener("click", () => {
+      context = btn.dataset.ctx;
+      applyContext();
+    });
+  });
+  applyContext();
+
   // Start
   $("#btnStart").addEventListener("click", () => {
     const sid = $("#studentId").value.trim();
@@ -2979,12 +3040,22 @@ document.addEventListener("DOMContentLoaded", () => {
     const win = $("#window").value;
     surveyLang = lang;
     if (!sid || !grade || !win) {
+      const idTerm = (context === "school")
+        ? (lang === "es" ? "el c\u00f3digo del estudiante" : "the student code")
+        : (lang === "es" ? "tu nombre/ID" : "your name/ID");
       alert(lang === "es"
-        ? "Por favor completa tu nombre/ID, grado, y per\u00edodo antes de empezar."
-        : "Please fill in your name/ID, grade, and window before starting.");
+        ? "Por favor completa " + idTerm + ", grado, y per\u00edodo antes de empezar."
+        : "Please fill in " + idTerm + ", grade, and window before starting.");
       return;
     }
-    session = { studentId: sid, grade: grade, window: win,
+    // School mode is meant to stay de-identified: gently flag what looks like a full name.
+    if (context === "school" && /\S+\s+\S/.test(sid) && sid.replace(/[^A-Za-z]/g, "").length > 6) {
+      const warn = (lang === "es")
+        ? "Eso parece un nombre completo. El modo escuela debe quedar an\u00f3nimo \u2014 usa iniciales o un n\u00famero de asiento. \u00bfUsarlo de todos modos?"
+        : "That looks like it might be a full name. School mode is meant to stay de-identified \u2014 initials or a seat number are safer. Use it anyway?";
+      if (!confirm(warn)) return;
+    }
+    session = { studentId: sid, grade: grade, window: win, context: context,
                 classId: sessionStorage.getItem(LAUNCH_KEYS.classId) || "",
                 schoolId: sessionStorage.getItem(LAUNCH_KEYS.schoolId) || "",
                 districtId: sessionStorage.getItem(LAUNCH_KEYS.districtId) || "" };
@@ -3671,14 +3742,14 @@ function exportFullCSV() {
   if (!all.length) return alert("No data to export.");
   const itemCols = [];
   for (let i = 1; i <= 18; i++) itemCols.push("item" + i + "_freq", "item" + i + "_intensity");
-  const headers = ["timestamp","studentId","grade","window","mode","language",
+  const headers = ["timestamp","studentId","context","grade","window","mode","language",
     "domainA","domainB","domainC","composite",
     "normA","normB","normC","normComposite",
     "tier","trustedAdultFlag","closingWord",
     "reflectionA","reflectionB","reflectionC",
     ...itemCols];
   const rows = all.map(r => {
-    const row = [r.timestamp, r.studentId, r.grade, r.window, r.mode || "rapid", r.language || "en",
+    const row = [r.timestamp, r.studentId, r.context || "", r.grade, r.window, r.mode || "rapid", r.language || "en",
       r.domainA, r.domainB, r.domainC, r.composite,
       r.normA, r.normB, r.normC, r.normComposite,
       r.tier, r.trustedAdultFlag, r.closingWord || "",
