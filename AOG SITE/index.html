@@ -1586,65 +1586,69 @@ footer .serif { font-style: italic; color: var(--ink-soft); }
   <div class="container-wide">
     <div class="admin-header">
       <div class="admin-title">
-        <div class="eyebrow">Dashboard &middot; Restricted</div>
-        <h1 class="display display-lg">Check-In Results</h1>
-        <p class="muted small">Aggregate view across all administrations</p>
+        <div class="eyebrow" data-dl="dl_eyebrow">Dashboard &middot; Restricted</div>
+        <h1 class="display display-lg" data-dl="dl_h1">Check-In Results</h1>
+        <p class="muted small" data-dl="dl_sub">Aggregate view across all administrations</p>
       </div>
       <div style="display:flex; gap:8px; flex-wrap:wrap; align-items:center;">
+        <div class="lang-toggle" role="group" aria-label="Dashboard language">
+          <button id="dashLangEn" class="active" type="button" onclick="setDashLang('en')">EN</button>
+          <button id="dashLangEs" type="button" onclick="setDashLang('es')">ES</button>
+        </div>
         <span id="hdrSyncPill" class="backend-status backend-offline">
           <span class="dot"></span><span id="hdrSyncPillText">Private &middot; saved on this computer</span>
         </span>
-        <button class="btn btn-secondary btn-sm" onclick="openGuide()">Guide &amp; Library</button>
-        <button class="btn btn-secondary btn-sm" onclick="resetToStart()">Back to survey</button>
+        <button class="btn btn-secondary btn-sm" data-dl="dl_guidebtn" onclick="openGuide()">Guide &amp; Library</button>
+        <button class="btn btn-secondary btn-sm" data-dl="dl_backbtn" onclick="resetToStart()">Back to survey</button>
       </div>
     </div>
 
     <div class="tabs">
-      <button class="tab active" data-tab="overview">Overview</button>
-      <button class="tab" data-tab="distribute">Distribute</button>
-      <button class="tab" data-tab="students">Students</button>
-      <button class="tab" data-tab="home">Home View</button>
-      <button class="tab" data-tab="growth">Growth</button>
-      <button class="tab" data-tab="export">Export</button>
+      <button class="tab active" data-tab="overview" data-dl="dl_t_overview">Overview</button>
+      <button class="tab" data-tab="distribute" data-dl="dl_t_distribute">Distribute</button>
+      <button class="tab" data-tab="students" data-dl="dl_t_students">Students</button>
+      <button class="tab" data-tab="home" data-dl="dl_t_home">Home View</button>
+      <button class="tab" data-tab="growth" data-dl="dl_t_growth">Growth</button>
+      <button class="tab" data-tab="export" data-dl="dl_t_export">Export</button>
     </div>
     <div class="tab-hint-row">
       <div id="tabHint" class="tab-hint"></div>
-      <button id="tabHelpBtn" class="tab-help-btn" type="button">What am I looking at?</button>
+      <button id="tabHelpBtn" class="tab-help-btn" type="button" data-dl="dl_help_btn">What am I looking at?</button>
     </div>
     <div id="tabHelp" class="tab-help" hidden></div>
 
     <div class="tab-panel active" id="panel-overview">
       <div class="filter-bar">
         <select id="filterWindow">
-          <option value="">All Windows</option>
-          <option value="Fall">Fall (Sep&ndash;Nov)</option>
-          <option value="Winter">Winter (Dec&ndash;Feb)</option>
-          <option value="Spring">Spring (Mar&ndash;May)</option>
+          <option value="" data-dl="dl_opt_allwin">All Windows</option>
+          <option value="Fall" data-dl="dl_opt_fall">Fall (Sep&ndash;Nov)</option>
+          <option value="Winter" data-dl="dl_opt_winter">Winter (Dec&ndash;Feb)</option>
+          <option value="Spring" data-dl="dl_opt_spring">Spring (Mar&ndash;May)</option>
         </select>
-        <select id="filterGrade"><option value="">All Grades</option></select>
+        <select id="filterGrade"><option value="" data-dl="dl_opt_allgrades">All Grades</option></select>
         <select id="filterMode">
-          <option value="">All Modes</option>
-          <option value="depth">Thorough only</option>
-          <option value="rapid">Quick only</option>
+          <option value="" data-dl="dl_opt_allmodes">All Modes</option>
+          <option value="depth" data-dl="dl_opt_depthonly">Thorough only</option>
+          <option value="rapid" data-dl="dl_opt_rapidonly">Quick only</option>
         </select>
       </div>
       <div id="ovSummary" class="ov-summary"></div>
       <div class="kpi-grid" id="kpiGrid"></div>
       <div class="section-head">
-        <h2>How everyone&rsquo;s doing</h2>
-        <div class="small">Everyone grouped by overall score (0&ndash;100).</div>
+        <h2 data-dl="dl_ov_h1">How everyone&rsquo;s doing</h2>
+        <div class="small" data-dl="dl_ov_sub">Everyone grouped by overall score (0&ndash;100).</div>
       </div>
       <div class="dist-card">
         <div class="dist-bar" id="distBar"></div>
         <div class="dist-legend">
-          <span><span class="legend-dot dot-green"></span>Doing well (75&ndash;100)</span>
-          <span><span class="legend-dot dot-amber"></span>Worth a check-in (50&ndash;74)</span>
-          <span><span class="legend-dot dot-red"></span>Needs support (0&ndash;49)</span>
+          <span><span class="legend-dot dot-green"></span><span data-dl="dl_band_green">Doing well (75&ndash;100)</span></span>
+          <span><span class="legend-dot dot-amber"></span><span data-dl="dl_band_amber">Worth a check-in (50&ndash;74)</span></span>
+          <span><span class="legend-dot dot-red"></span><span data-dl="dl_band_red">Needs support (0&ndash;49)</span></span>
         </div>
       </div>
       <div class="section-head">
-        <h2>Domain averages</h2>
-        <div class="small">Normalized mean score per domain (0&ndash;100).</div>
+        <h2 data-dl="dl_dom_h1">Domain averages</h2>
+        <div class="small" data-dl="dl_dom_sub">Normalized mean score per domain (0&ndash;100).</div>
       </div>
       <div id="domainSummary"></div>
     </div>
@@ -1652,23 +1656,23 @@ footer .serif { font-style: italic; color: var(--ink-soft); }
     <div class="tab-panel" id="panel-students">
       <div class="filter-bar">
         <select id="studentFilterWindow">
-          <option value="">All Windows</option>
-          <option value="Fall">Fall (Sep&ndash;Nov)</option>
-          <option value="Winter">Winter (Dec&ndash;Feb)</option>
-          <option value="Spring">Spring (Mar&ndash;May)</option>
+          <option value="" data-dl="dl_opt_allwin">All Windows</option>
+          <option value="Fall" data-dl="dl_opt_fall">Fall (Sep&ndash;Nov)</option>
+          <option value="Winter" data-dl="dl_opt_winter">Winter (Dec&ndash;Feb)</option>
+          <option value="Spring" data-dl="dl_opt_spring">Spring (Mar&ndash;May)</option>
         </select>
-        <select id="studentFilterGrade"><option value="">All Grades</option></select>
+        <select id="studentFilterGrade"><option value="" data-dl="dl_opt_allgrades">All Grades</option></select>
         <select id="studentFilterTier">
-          <option value="">Everyone</option>
-          <option value="High Risk">Needs support only</option>
-          <option value="Some Risk">Worth a check-in only</option>
-          <option value="Low Risk">Doing well only</option>
-          <option value="flagged">No trusted adult</option>
+          <option value="" data-dl="dl_opt_everyone">Everyone</option>
+          <option value="High Risk" data-dl="dl_opt_needs">Needs support only</option>
+          <option value="Some Risk" data-dl="dl_opt_worth">Worth a check-in only</option>
+          <option value="Low Risk" data-dl="dl_opt_well">Doing well only</option>
+          <option value="flagged" data-dl="dl_opt_notrust">No trusted adult</option>
         </select>
       </div>
       <div class="table-card">
         <div class="table-card-head">
-          <h3>All responses</h3>
+          <h3 data-dl="dl_stu_h3">All responses</h3>
           <span class="small" id="studentCount"></span>
         </div>
         <div class="table-wrap" id="studentTable"></div>
@@ -1677,16 +1681,16 @@ footer .serif { font-style: italic; color: var(--ink-soft); }
 
     <div class="tab-panel" id="panel-home">
       <div class="section-head">
-        <h2>Home View &middot; Per-person report</h2>
-        <div class="small">The instrument&rsquo;s real depth. Shows each item, the answer, intensity, written reflections, and a conversation guide for the people closest to this person.</div>
+        <h2 data-dl="dl_home_h1">Home View &middot; Per-person report</h2>
+        <div class="small" data-dl="dl_home_sub">The instrument&rsquo;s real depth. Shows each item, the answer, intensity, written reflections, and a conversation guide for the people closest to this person.</div>
       </div>
       <div class="filter-bar">
-        <select id="homeFilterStudent"><option value="">Select a person to view&hellip;</option></select>
+        <select id="homeFilterStudent"><option value="" data-dl="dl_opt_selperson">Select a person to view&hellip;</option></select>
         <select id="homeFilterWindow">
-          <option value="">Most recent window</option>
-          <option value="Fall">Fall (Sep&ndash;Nov)</option>
-          <option value="Winter">Winter (Dec&ndash;Feb)</option>
-          <option value="Spring">Spring (Mar&ndash;May)</option>
+          <option value="" data-dl="dl_opt_recentwin">Most recent window</option>
+          <option value="Fall" data-dl="dl_opt_fall">Fall (Sep&ndash;Nov)</option>
+          <option value="Winter" data-dl="dl_opt_winter">Winter (Dec&ndash;Feb)</option>
+          <option value="Spring" data-dl="dl_opt_spring">Spring (Mar&ndash;May)</option>
         </select>
       </div>
       <div id="homeReport"></div>
@@ -1694,16 +1698,16 @@ footer .serif { font-style: italic; color: var(--ink-soft); }
 
     <div class="tab-panel" id="panel-growth">
       <div class="section-head">
-        <h2>Growth across windows</h2>
-        <div class="small">Composite scores Fall &rarr; Winter &rarr; Spring per person.</div>
+        <h2 data-dl="dl_grw_h1">Growth across windows</h2>
+        <div class="small" data-dl="dl_grw_sub">Composite scores Fall &rarr; Winter &rarr; Spring per person.</div>
       </div>
       <div class="filter-bar">
-        <select id="growthFilterGrade"><option value="">All Grades</option></select>
+        <select id="growthFilterGrade"><option value="" data-dl="dl_opt_allgrades">All Grades</option></select>
         <select id="growthSort">
-          <option value="delta">Sort by growth (largest gain)</option>
-          <option value="deltaDesc">Sort by decline (largest drop)</option>
-          <option value="composite">Sort by latest composite (lowest)</option>
-          <option value="id">Sort by ID</option>
+          <option value="delta" data-dl="dl_opt_sortgain">Sort by growth (largest gain)</option>
+          <option value="deltaDesc" data-dl="dl_opt_sortdrop">Sort by decline (largest drop)</option>
+          <option value="composite" data-dl="dl_opt_sortcomp">Sort by latest composite (lowest)</option>
+          <option value="id" data-dl="dl_opt_sortid">Sort by ID</option>
         </select>
       </div>
       <div class="table-card" style="padding:0;"><div id="growthList" style="padding:24px;"></div></div>
@@ -1711,8 +1715,8 @@ footer .serif { font-style: italic; color: var(--ink-soft); }
 
     <div class="tab-panel" id="panel-distribute">
       <div class="section-head">
-        <h2>Syncing &amp; distribution</h2>
-        <div class="small">By default this device keeps every response local and private. Syncing to your central sheet turns on only when you enable it here, or when someone opens a generated link.</div>
+        <h2 data-dl="dl_dist_h1">Syncing &amp; distribution</h2>
+        <div class="small" data-dl="dl_dist_sub">By default this device keeps every response local and private. Syncing to your central sheet turns on only when you enable it here, or when someone opens a generated link.</div>
       </div>
 
       <div class="table-card" style="padding:20px 28px; margin-bottom:18px;">
@@ -1724,31 +1728,31 @@ footer .serif { font-style: italic; color: var(--ink-soft); }
         <p class="small" id="syncCounts" style="margin:0 0 14px; font-variant-numeric:tabular-nums;"></p>
         <label style="display:flex; align-items:center; gap:10px; cursor:pointer; font-size:14px;">
           <input type="checkbox" id="deviceSyncToggle" style="width:18px; height:18px;">
-          Send check-ins taken on <em>this device</em> to the central sheet
+          <span data-dl-html="dl_dist_togglelabel">Send check-ins taken on <em>this device</em> to the central sheet</span>
         </label>
-        <p class="small" style="margin:8px 0 0; color:var(--ink-faint);">Affects only this device. Students who open a generated link sync regardless of this setting.</p>
+        <p class="small" style="margin:8px 0 0; color:var(--ink-faint);" data-dl="dl_dist_togglenote">Affects only this device. Students who open a generated link sync regardless of this setting.</p>
       </div>
 
       <div class="section-head">
-        <h2>Classroom Link Generator</h2>
-        <div class="small">Build one link to share or post as a QR code. Anyone who opens it syncs to your school&rsquo;s sheet. The link carries only the grade, class, and window &mdash; never the sheet address or passcode.</div>
+        <h2 data-dl="dl_lg_h1">Classroom Link Generator</h2>
+        <div class="small" data-dl="dl_lg_sub">Build one link to share or post as a QR code. Anyone who opens it syncs to your school&rsquo;s sheet. The link carries only the grade, class, and window &mdash; never the sheet address or passcode.</div>
       </div>
       <div class="table-card" style="padding:24px 28px;">
         <div class="welcome-fields" style="display:grid; grid-template-columns:repeat(2,1fr); gap:16px; align-items:end;">
           <div class="field">
-            <label>District ID <span style="color:var(--ink-faint); text-transform:none; letter-spacing:normal; font-weight:400; font-size:11px;">(only for multi-district setups &mdash; leave blank for one shared sheet)</span></label>
+            <label><span data-dl="dl_lg_district">District ID</span> <span data-dl="dl_lg_district_hint" style="color:var(--ink-faint); text-transform:none; letter-spacing:normal; font-weight:400; font-size:11px;">(only for multi-district setups &mdash; leave blank for one shared sheet)</span></label>
             <input type="text" id="lgDistrictId" autocomplete="off" placeholder="e.g. lincoln-usd">
           </div>
           <div class="field">
-            <label>School ID <span style="color:var(--ink-faint); text-transform:none; letter-spacing:normal; font-weight:400; font-size:11px;">(optional)</span></label>
+            <label><span data-dl="dl_lg_school">School ID</span> <span data-dl="dl_lg_optional" style="color:var(--ink-faint); text-transform:none; letter-spacing:normal; font-weight:400; font-size:11px;">(optional)</span></label>
             <input type="text" id="lgSchoolId" autocomplete="off" placeholder="e.g. east-elementary">
           </div>
         </div>
         <div class="welcome-fields" style="display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-top:16px; align-items:end;">
           <div class="field">
-            <label>Grade or age band</label>
+            <label data-dl="dl_lg_grade">Grade or age band</label>
             <select id="lgGrade">
-              <option value="">Any / student selects</option>
+              <option value="" data-dl="dl_opt_any">Any / student selects</option>
               <option>K</option><option>1</option><option>2</option><option>3</option>
               <option>4</option><option>5</option><option>6</option><option>7</option>
               <option>8</option><option>9</option><option>10</option><option>11</option><option>12</option>
@@ -1756,38 +1760,38 @@ footer .serif { font-style: italic; color: var(--ink-soft); }
             </select>
           </div>
           <div class="field">
-            <label>Class / Room ID</label>
+            <label data-dl="dl_lg_class">Class / Room ID</label>
             <input type="text" id="lgClassId" autocomplete="off" placeholder="e.g. Room12">
           </div>
           <div class="field">
-            <label>Window</label>
+            <label data-dl="dl_lg_window">Window</label>
             <select id="lgWindow">
-              <option value="">Any / student selects</option>
-              <option value="Fall">Fall (Sep&ndash;Nov)</option>
-              <option value="Winter">Winter (Dec&ndash;Feb)</option>
-              <option value="Spring">Spring (Mar&ndash;May)</option>
+              <option value="" data-dl="dl_opt_any">Any / student selects</option>
+              <option value="Fall" data-dl="dl_opt_fall">Fall (Sep&ndash;Nov)</option>
+              <option value="Winter" data-dl="dl_opt_winter">Winter (Dec&ndash;Feb)</option>
+              <option value="Spring" data-dl="dl_opt_spring">Spring (Mar&ndash;May)</option>
             </select>
           </div>
         </div>
 
         <div style="margin-top:20px;">
-          <label class="small" style="display:block; margin-bottom:6px; font-weight:600;">Shareable link</label>
+          <label class="small" style="display:block; margin-bottom:6px; font-weight:600;" data-dl="dl_lg_sharelink">Shareable link</label>
           <div style="display:flex; gap:10px; align-items:stretch; flex-wrap:wrap;">
             <input type="text" id="lgUrl" readonly
               style="flex:1; min-width:260px; font-family:monospace; font-size:13px; padding:10px 12px; border:1px solid var(--line, #ddd); border-radius:8px; background:var(--cream, #faf8f4);">
-            <button class="btn btn-sm" id="lgCopy">Copy link</button>
+            <button class="btn btn-sm" id="lgCopy" data-dl="dl_lg_copy">Copy link</button>
           </div>
           <div class="small" id="lgCopyMsg" style="margin-top:6px; height:16px; color:var(--ink-faint);"></div>
         </div>
 
         <div style="margin-top:18px; display:flex; gap:24px; align-items:flex-start; flex-wrap:wrap;">
           <div>
-            <label class="small" style="display:block; margin-bottom:8px; font-weight:600;">QR code</label>
+            <label class="small" style="display:block; margin-bottom:8px; font-weight:600;" data-dl="dl_lg_qr">QR code</label>
             <div id="lgQr" style="width:180px; height:180px; display:flex; align-items:center; justify-content:center; border:1px solid var(--line,#eee); border-radius:8px; background:#fff;"></div>
             <div class="small" id="lgQrMsg" style="margin-top:6px; max-width:200px;"></div>
           </div>
           <div class="small" style="max-width:320px; line-height:1.6;">
-            Project the QR code on the board, or share the link in Google Classroom. Students who scan or click land on the check-in with grade, class, and window already set. Their responses save to the same school Sheet as a staff device &mdash; the link itself carries only the grade, class, and window, never the sheet address or passcode.
+            <span data-dl="dl_lg_qrhelp">Project the QR code on the board, or share the link in Google Classroom. Students who scan or click land on the check-in with grade, class, and window already set. Their responses save to the same school Sheet as a staff device &mdash; the link itself carries only the grade, class, and window, never the sheet address or passcode.</span>
           </div>
         </div>
       </div>
@@ -1795,39 +1799,39 @@ footer .serif { font-style: italic; color: var(--ink-soft); }
 
     <div class="tab-panel" id="panel-export">
       <div class="section-head">
-        <h2>Export &amp; data management</h2>
-        <div class="small">All exports are CSV files compatible with Excel, Google Sheets, and most district SIS platforms.</div>
+        <h2 data-dl="dl_exp_h1">Export &amp; data management</h2>
+        <div class="small" data-dl="dl_exp_sub">All exports are CSV files compatible with Excel, Google Sheets, and most district SIS platforms.</div>
       </div>
       <div class="kpi-grid">
         <div class="kpi" style="cursor:pointer;" onclick="exportFullCSV()">
           <div class="kpi-accent accent-navy"></div>
-          <div class="kpi-label">Export</div>
-          <div class="kpi-value serif" style="font-size:22px; line-height:1.3;">Full responses</div>
-          <div class="kpi-sub">Every item, intensity, reflection, all windows.</div>
+          <div class="kpi-label" data-dl="dl_exp_label">Export</div>
+          <div class="kpi-value serif" style="font-size:22px; line-height:1.3;"><span data-dl="dl_exp_full">Full responses</span></div>
+          <div class="kpi-sub" data-dl="dl_exp_full_sub">Every item, intensity, reflection, all windows.</div>
         </div>
         <div class="kpi" style="cursor:pointer;" onclick="exportRosterCSV()">
           <div class="kpi-accent accent-amber"></div>
-          <div class="kpi-label">Export</div>
-          <div class="kpi-value serif" style="font-size:22px; line-height:1.3;">Tier roster</div>
-          <div class="kpi-sub">Flagged students only.</div>
+          <div class="kpi-label" data-dl="dl_exp_label">Export</div>
+          <div class="kpi-value serif" style="font-size:22px; line-height:1.3;"><span data-dl="dl_exp_roster">Tier roster</span></div>
+          <div class="kpi-sub" data-dl="dl_exp_roster_sub">Flagged students only.</div>
         </div>
         <div class="kpi" style="cursor:pointer;" onclick="exportGrowthCSV()">
           <div class="kpi-accent accent-gold"></div>
-          <div class="kpi-label">Export</div>
-          <div class="kpi-value serif" style="font-size:22px; line-height:1.3;">Growth report</div>
-          <div class="kpi-sub">Fall / Winter / Spring deltas per person.</div>
+          <div class="kpi-label" data-dl="dl_exp_label">Export</div>
+          <div class="kpi-value serif" style="font-size:22px; line-height:1.3;"><span data-dl="dl_exp_growth">Growth report</span></div>
+          <div class="kpi-sub" data-dl="dl_exp_growth_sub">Fall / Winter / Spring deltas per person.</div>
         </div>
       </div>
 
       <div class="table-card" style="padding:24px 28px; margin-top:8px;">
-        <h3 class="serif" style="font-size:18px; color:var(--navy); margin-bottom:8px;">Where your data lives</h3>
+        <h3 class="serif" style="font-size:18px; color:var(--navy); margin-bottom:8px;" data-dl="dl_exp_datalives">Where your data lives</h3>
         <p class="small" id="dataLivesCopy" style="margin:0;">Every response is saved privately in this browser, on this computer only. Use the exports above to keep your own backup copy &mdash; that CSV is your record.</p>
       </div>
 
-      <div class="section-head" style="margin-top:32px;"><h2>Reset</h2></div>
+      <div class="section-head" style="margin-top:32px;"><h2 data-dl="dl_exp_reset">Reset</h2></div>
       <div class="table-card" style="padding:24px 28px;">
-        <p class="small" style="margin-bottom:14px;">Use only after confirming exports are saved.</p>
-        <button class="btn btn-danger btn-sm" onclick="clearLocalData()">Clear local data</button>
+        <p class="small" style="margin-bottom:14px;" data-dl="dl_exp_reset_note">Use only after confirming exports are saved.</p>
+        <button class="btn btn-danger btn-sm" onclick="clearLocalData()" data-dl="dl_exp_clearbtn">Clear local data</button>
       </div>
     </div>
 
@@ -2317,6 +2321,8 @@ let lang = "en";
 let surveyLang = "en";
 let mode = "depth"; // "depth" or "rapid"
 let context = "school"; // "school" (de-identified, no names) or "home" (first name OK). Default = privacy-safe.
+let dashLang = "en"; // educator dashboard language — independent of the participant EN/ES toggle
+const DASHLANG_KEY = "aogScreener.v2.dashlang";
 let current = 0;
 let responses = [];       // length 18, frequency values
 let intensities = [];     // length 18, intensity values for items with intensity:true
@@ -2985,6 +2991,108 @@ async function renderClassroomLink() {
 
 // Reflect the true sync state in the dashboard and in the privacy copy, so
 // what each user is told always matches what the app actually does.
+// ============================================================
+// Educator dashboard language (independent of participant EN/ES)
+// ============================================================
+const DASH_I18N = {
+  dl_eyebrow:       { en: "Dashboard · Restricted", es: "Panel · Restringido" },
+  dl_h1:            { en: "Check-In Results", es: "Resultados del Check-In" },
+  dl_sub:           { en: "Aggregate view across all administrations", es: "Vista agregada de todas las administraciones" },
+  dl_guidebtn:      { en: "Guide & Library", es: "Guía y biblioteca" },
+  dl_backbtn:       { en: "Back to survey", es: "Volver al cuestionario" },
+  dl_t_overview:    { en: "Overview", es: "Resumen" },
+  dl_t_distribute:  { en: "Distribute", es: "Distribuir" },
+  dl_t_students:    { en: "Students", es: "Estudiantes" },
+  dl_t_home:        { en: "Home View", es: "Vista del hogar" },
+  dl_t_growth:      { en: "Growth", es: "Progreso" },
+  dl_t_export:      { en: "Export", es: "Exportar" },
+  dl_help_btn:      { en: "What am I looking at?", es: "¿Qué estoy viendo?" },
+  dl_opt_allwin:    { en: "All Windows", es: "Todos los períodos" },
+  dl_opt_fall:      { en: "Fall (Sep–Nov)", es: "Otoño (sep–nov)" },
+  dl_opt_winter:    { en: "Winter (Dec–Feb)", es: "Invierno (dic–feb)" },
+  dl_opt_spring:    { en: "Spring (Mar–May)", es: "Primavera (mar–may)" },
+  dl_opt_allgrades: { en: "All Grades", es: "Todos los grados" },
+  dl_opt_allmodes:  { en: "All Modes", es: "Todos los modos" },
+  dl_opt_depthonly: { en: "Thorough only", es: "Solo a fondo" },
+  dl_opt_rapidonly: { en: "Quick only", es: "Solo rápido" },
+  dl_opt_everyone:  { en: "Everyone", es: "Todos" },
+  dl_opt_needs:     { en: "Needs support only", es: "Solo necesita apoyo" },
+  dl_opt_worth:     { en: "Worth a check-in only", es: "Solo vale un chequeo" },
+  dl_opt_well:      { en: "Doing well only", es: "Solo va bien" },
+  dl_opt_notrust:   { en: "No trusted adult", es: "Sin adulto de confianza" },
+  dl_opt_selperson: { en: "Select a person to view…", es: "Selecciona una persona…" },
+  dl_opt_recentwin: { en: "Most recent window", es: "Período más reciente" },
+  dl_opt_sortgain:  { en: "Sort by growth (largest gain)", es: "Ordenar por progreso (mayor aumento)" },
+  dl_opt_sortdrop:  { en: "Sort by decline (largest drop)", es: "Ordenar por descenso (mayor caída)" },
+  dl_opt_sortcomp:  { en: "Sort by latest composite (lowest)", es: "Ordenar por compuesto reciente (menor)" },
+  dl_opt_sortid:    { en: "Sort by ID", es: "Ordenar por ID" },
+  dl_opt_any:       { en: "Any / student selects", es: "Cualquiera / lo elige el estudiante" },
+  dl_ov_h1:         { en: "How everyone's doing", es: "Cómo está el grupo" },
+  dl_ov_sub:        { en: "Everyone grouped by overall score (0–100).", es: "Todos agrupados por puntaje general (0–100)." },
+  dl_band_green:    { en: "Doing well (75–100)", es: "Va bien (75–100)" },
+  dl_band_amber:    { en: "Worth a check-in (50–74)", es: "Vale un chequeo (50–74)" },
+  dl_band_red:      { en: "Needs support (0–49)", es: "Necesita apoyo (0–49)" },
+  dl_dom_h1:        { en: "Domain averages", es: "Promedios por dominio" },
+  dl_dom_sub:       { en: "Normalized mean score per domain (0–100).", es: "Puntaje medio normalizado por dominio (0–100)." },
+  dl_stu_h3:        { en: "All responses", es: "Todas las respuestas" },
+  dl_home_h1:       { en: "Home View · Per-person report", es: "Vista del hogar · Informe individual" },
+  dl_home_sub:      { en: "The instrument's real depth. Shows each item, the answer, intensity, written reflections, and a conversation guide for the people closest to this person.", es: "La verdadera profundidad del instrumento. Muestra cada ítem, la respuesta, la intensidad, las reflexiones escritas y una guía de conversación para las personas más cercanas a este estudiante." },
+  dl_grw_h1:        { en: "Growth across windows", es: "Progreso entre períodos" },
+  dl_grw_sub:       { en: "Composite scores Fall → Winter → Spring per person.", es: "Puntaje compuesto Otoño → Invierno → Primavera por persona." },
+  dl_dist_h1:       { en: "Syncing & distribution", es: "Sincronización y distribución" },
+  dl_dist_sub:      { en: "By default this device keeps every response local and private. Syncing to your central sheet turns on only when you enable it here, or when someone opens a generated link.", es: "De forma predeterminada, este dispositivo guarda cada respuesta de manera local y privada. La sincronización con tu hoja central se activa solo cuando la habilitas aquí, o cuando alguien abre un enlace generado." },
+  dl_dist_togglelabel: { en: "Send check-ins taken on <em>this device</em> to the central sheet", es: "Enviar los check-ins de <em>este dispositivo</em> a la hoja central" },
+  dl_dist_togglenote:  { en: "Affects only this device. Students who open a generated link sync regardless of this setting.", es: "Afecta solo a este dispositivo. Los estudiantes que abren un enlace generado se sincronizan sin importar este ajuste." },
+  dl_lg_h1:         { en: "Classroom Link Generator", es: "Generador de enlaces para el aula" },
+  dl_lg_sub:        { en: "Build one link to share or post as a QR code. Anyone who opens it syncs to your school's sheet. The link carries only the grade, class, and window — never the sheet address or passcode.", es: "Crea un enlace para compartir o publicar como código QR. Quien lo abra se sincroniza con la hoja de tu escuela. El enlace lleva solo el grado, la clase y el período — nunca la dirección de la hoja ni la contraseña." },
+  dl_lg_district:   { en: "District ID", es: "ID del distrito" },
+  dl_lg_district_hint: { en: "(only for multi-district setups — leave blank for one shared sheet)", es: "(solo para configuraciones de varios distritos — déjalo en blanco para una sola hoja compartida)" },
+  dl_lg_school:     { en: "School ID", es: "ID de la escuela" },
+  dl_lg_optional:   { en: "(optional)", es: "(opcional)" },
+  dl_lg_grade:      { en: "Grade or age band", es: "Grado o rango de edad" },
+  dl_lg_class:      { en: "Class / Room ID", es: "ID de clase / aula" },
+  dl_lg_window:     { en: "Window", es: "Período" },
+  dl_lg_sharelink:  { en: "Shareable link", es: "Enlace para compartir" },
+  dl_lg_copy:       { en: "Copy link", es: "Copiar enlace" },
+  dl_lg_qr:         { en: "QR code", es: "Código QR" },
+  dl_lg_qrhelp:     { en: "Project the QR code on the board, or share the link in Google Classroom. Students who scan or click land on the check-in with grade, class, and window already set. Their responses save to the same school Sheet as a staff device — the link itself carries only the grade, class, and window, never the sheet address or passcode.", es: "Proyecta el código QR en la pizarra o comparte el enlace en Google Classroom. Los estudiantes que lo escaneen o hagan clic llegan al check-in con el grado, la clase y el período ya configurados. Sus respuestas se guardan en la misma hoja de la escuela que en un dispositivo del personal — el enlace solo lleva el grado, la clase y el período, nunca la dirección de la hoja ni la contraseña." },
+  dl_exp_h1:        { en: "Export & data management", es: "Exportar y gestión de datos" },
+  dl_exp_sub:       { en: "All exports are CSV files compatible with Excel, Google Sheets, and most district SIS platforms.", es: "Todas las exportaciones son archivos CSV compatibles con Excel, Google Sheets y la mayoría de los sistemas SIS del distrito." },
+  dl_exp_label:     { en: "Export", es: "Exportar" },
+  dl_exp_full:      { en: "Full responses", es: "Respuestas completas" },
+  dl_exp_full_sub:  { en: "Every item, intensity, reflection, all windows.", es: "Cada ítem, intensidad, reflexión, todos los períodos." },
+  dl_exp_roster:    { en: "Tier roster", es: "Lista por nivel" },
+  dl_exp_roster_sub:{ en: "Flagged students only.", es: "Solo estudiantes marcados." },
+  dl_exp_growth:    { en: "Growth report", es: "Informe de progreso" },
+  dl_exp_growth_sub:{ en: "Fall / Winter / Spring deltas per person.", es: "Cambios Otoño / Invierno / Primavera por persona." },
+  dl_exp_datalives: { en: "Where your data lives", es: "Dónde viven tus datos" },
+  dl_exp_reset:     { en: "Reset", es: "Restablecer" },
+  dl_exp_reset_note:{ en: "Use only after confirming exports are saved.", es: "Úsalo solo después de confirmar que las exportaciones están guardadas." },
+  dl_exp_clearbtn:  { en: "Clear local data", es: "Borrar datos locales" }
+};
+
+function applyDashLang(dl) {
+  dashLang = (dl === "es") ? "es" : "en";
+  try { localStorage.setItem(DASHLANG_KEY, dashLang); } catch (e) {}
+  const admin = document.getElementById("screen-admin");
+  if (admin) {
+    admin.querySelectorAll("[data-dl]").forEach(el => {
+      const m = DASH_I18N[el.getAttribute("data-dl")];
+      if (m) el.textContent = m[dashLang];
+    });
+    admin.querySelectorAll("[data-dl-html]").forEach(el => {
+      const m = DASH_I18N[el.getAttribute("data-dl-html")];
+      if (m) el.innerHTML = m[dashLang];
+    });
+  }
+  const en = document.getElementById("dashLangEn"), es = document.getElementById("dashLangEs");
+  if (en) en.classList.toggle("active", dashLang === "en");
+  if (es) es.classList.toggle("active", dashLang === "es");
+  if (typeof renderSyncStatus === "function") renderSyncStatus();
+  if (typeof setTabHint === "function") { const at = document.querySelector("#screen-admin .tab.active"); if (at) setTabHint(at.dataset.tab); }
+}
+function setDashLang(dl) { applyDashLang(dl); }
+
 function renderSyncStatus() {
   const deviceOn = localStorage.getItem("aog.sync.enabled") === "1";
   const linkOn = sessionStorage.getItem("aog.launch.sync") === "on" ||
@@ -3007,12 +3115,15 @@ function renderSyncStatus() {
     }
   } catch (_) {}
 
+  const L = (dashLang === "es") ? "es" : "en";
   // Header pill: honest about configuration AND whether anything is still waiting.
   const hpill = $("#hdrSyncPill"), hptxt = $("#hdrSyncPillText");
   if (hpill) hpill.className = "backend-status " + ((on && waiting === 0) ? "backend-online" : "backend-offline");
-  if (hptxt) hptxt.textContent = !on
-    ? "Private \u00b7 saved on this computer"
-    : (waiting > 0 ? ("School sync \u00b7 " + waiting + " waiting to send") : "School sync \u00b7 on");
+  if (hptxt) {
+    if (!on) hptxt.textContent = (L === "es") ? "Privado \u00b7 guardado en esta computadora" : "Private \u00b7 saved on this computer";
+    else if (waiting > 0) hptxt.textContent = (L === "es") ? ("Sincronizaci\u00f3n \u00b7 " + waiting + " en espera") : ("School sync \u00b7 " + waiting + " waiting to send");
+    else hptxt.textContent = (L === "es") ? "Sincronizaci\u00f3n \u00b7 activa" : "School sync \u00b7 on";
+  }
 
   const toggle = $("#deviceSyncToggle");
   if (toggle) toggle.checked = deviceOn;
@@ -3020,24 +3131,31 @@ function renderSyncStatus() {
   const dot = $("#syncStatusDot"), txt = $("#syncStatusText"), detail = $("#syncStatusDetail");
   if (dot)  dot.style.background = !on ? "#9aa0a6" : (waiting > 0 ? "#B8893A" : "#1E6B45");
   if (txt)  txt.textContent = !on
-    ? "Local-only on this device"
-    : (online ? "Sending check-ins from this device" : "Offline \u2014 holding check-ins on this device");
+    ? (L === "es" ? "Solo local en este dispositivo" : "Local-only on this device")
+    : (online ? (L === "es" ? "Enviando check-ins desde este dispositivo" : "Sending check-ins from this device")
+              : (L === "es" ? "Sin conexi\u00f3n \u2014 reteniendo check-ins en este dispositivo" : "Offline \u2014 holding check-ins on this device"));
   if (detail) {
     detail.textContent = !on
-      ? "Responses stay in this browser on this computer. Nothing is sent anywhere unless you enable syncing below or open a generated link."
-      : "Completed check-ins are saved on this device and sent to your configured sheet from here. The browser can\u2019t read a reply back, so it confirms a response was sent \u2014 not that the sheet received it. Treat your Google Sheet as the source of truth, and keep a CSV export as your own backup.";
+      ? (L === "es"
+          ? "Las respuestas permanecen en este navegador, en esta computadora. No se env\u00eda nada a ning\u00fan lugar a menos que actives la sincronizaci\u00f3n abajo o abras un enlace generado."
+          : "Responses stay in this browser on this computer. Nothing is sent anywhere unless you enable syncing below or open a generated link.")
+      : (L === "es"
+          ? "Los check-ins completados se guardan en este dispositivo y se env\u00edan a tu hoja configurada desde aqu\u00ed. El navegador no puede leer una respuesta de vuelta, as\u00ed que confirma que una respuesta fue enviada \u2014 no que la hoja la recibi\u00f3. Trata tu hoja de Google como la fuente de verdad y guarda una exportaci\u00f3n CSV como tu propio respaldo."
+          : "Completed check-ins are saved on this device and sent to your configured sheet from here. The browser can\u2019t read a reply back, so it confirms a response was sent \u2014 not that the sheet received it. Treat your Google Sheet as the source of truth, and keep a CSV export as your own backup.");
   }
 
   // Live counts — surfaces anything stuck instead of hiding it.
   const counts = $("#syncCounts");
   if (counts) {
     if (!on) {
-      counts.textContent = (total === 1 ? "1 response" : total + " responses") + " saved on this device.";
+      counts.textContent = (L === "es")
+        ? (total === 1 ? "1 respuesta guardada en este dispositivo." : total + " respuestas guardadas en este dispositivo.")
+        : (total === 1 ? "1 response saved on this device." : total + " responses saved on this device.");
       counts.style.color = "var(--ink-soft)";
     } else {
-      counts.innerHTML = "On this device: <strong>" + total + "</strong> saved \u00b7 <strong>" +
-        sent + "</strong> sent \u00b7 <strong>" + waiting + "</strong> waiting to send" +
-        (online ? "" : " \u00b7 <strong>offline</strong>") + ".";
+      counts.innerHTML = (L === "es")
+        ? ("En este dispositivo: <strong>" + total + "</strong> guardadas \u00b7 <strong>" + sent + "</strong> enviadas \u00b7 <strong>" + waiting + "</strong> en espera" + (online ? "" : " \u00b7 <strong>sin conexi\u00f3n</strong>") + ".")
+        : ("On this device: <strong>" + total + "</strong> saved \u00b7 <strong>" + sent + "</strong> sent \u00b7 <strong>" + waiting + "</strong> waiting to send" + (online ? "" : " \u00b7 <strong>offline</strong>") + ".");
       counts.style.color = (waiting > 0 || !online) ? "#9a6a1f" : "var(--ink-soft)";
     }
   }
@@ -3045,8 +3163,12 @@ function renderSyncStatus() {
   const copy = $("#dataLivesCopy");
   if (copy) {
     copy.textContent = on
-      ? "Completed check-ins on this device are sent to your school\u2019s own Google Sheet \u2014 the data stays in your school\u2019s Google, never with the School of Life Foundation. The browser can confirm a response was sent from here, but not that the sheet received it \u2014 so check your sheet to be sure, and keep a CSV export as your own record. A copy is always kept in this browser as a backup."
-      : "Every response is saved privately in this browser, on this computer only. Nothing is sent anywhere unless this device or link is set up to sync. Use the exports above to keep your own backup copy \u2014 that CSV is your record.";
+      ? (L === "es"
+          ? "Los check-ins completados en este dispositivo se env\u00edan a la propia hoja de Google de tu escuela \u2014 los datos permanecen en el Google de tu escuela, nunca con School of Life Foundation. El navegador puede confirmar que una respuesta fue enviada desde aqu\u00ed, pero no que la hoja la recibi\u00f3 \u2014 as\u00ed que revisa tu hoja para estar seguro y guarda una exportaci\u00f3n CSV como tu propio registro. Siempre se conserva una copia en este navegador como respaldo."
+          : "Completed check-ins on this device are sent to your school\u2019s own Google Sheet \u2014 the data stays in your school\u2019s Google, never with the School of Life Foundation. The browser can confirm a response was sent from here, but not that the sheet received it \u2014 so check your sheet to be sure, and keep a CSV export as your own record. A copy is always kept in this browser as a backup.")
+      : (L === "es"
+          ? "Cada respuesta se guarda de forma privada en este navegador, solo en esta computadora. No se env\u00eda nada a ning\u00fan lugar a menos que este dispositivo o enlace est\u00e9 configurado para sincronizar. Usa las exportaciones de arriba para guardar tu propia copia de respaldo \u2014 ese CSV es tu registro."
+          : "Every response is saved privately in this browser, on this computer only. Nothing is sent anywhere unless this device or link is set up to sync. Use the exports above to keep your own backup copy \u2014 that CSV is your record.");
   }
 }
 
@@ -3076,6 +3198,11 @@ document.addEventListener("DOMContentLoaded", () => {
   const savedLang = localStorage.getItem(LANG_KEY);
   if (savedLang) setLang(savedLang);
   applyLang();
+
+  // Educator dashboard language (independent of the participant toggle).
+  let savedDash = "en";
+  try { savedDash = localStorage.getItem(DASHLANG_KEY) || "en"; } catch (e) {}
+  applyDashLang(savedDash);
 
   // Resend any records that were saved offline / failed to reach the proxy.
   flushUnsynced();
@@ -3383,7 +3510,7 @@ function populateFilters() {
     const sel = document.getElementById(id);
     if (!sel) return;
     const cur = sel.value;
-    sel.innerHTML = '<option value="">All Grades</option>' + grades.map(g => '<option value="' + g + '">Grade ' + g + '</option>').join("");
+    sel.innerHTML = '<option value="" data-dl="dl_opt_allgrades">All Grades</option>' + grades.map(g => '<option value="' + g + '">Grade ' + g + '</option>').join("");
     sel.value = cur;
   });
   const homeSel = document.getElementById("homeFilterStudent");
@@ -3396,14 +3523,14 @@ function populateFilters() {
 }
 
 const TAB_HINTS = {
-  overview: "The summary \u2014 how many checked in and how the group is doing.",
-  distribute: "Hand out the check-in by link or QR, and connect your school\u2019s sheet.",
-  students: "Everyone in one list, with each person\u2019s scores and status.",
-  home: "One person in depth \u2014 their answers, their words, and what to say next.",
-  growth: "Change over time \u2014 how scores move across Fall, Winter, and Spring.",
-  export: "Download the responses as CSV files."
+  overview:   { en: "The summary \u2014 how many checked in and how the group is doing.", es: "El resumen \u2014 cu\u00e1ntos hicieron el check-in y c\u00f3mo est\u00e1 el grupo." },
+  distribute: { en: "Hand out the check-in by link or QR, and connect your school\u2019s sheet.", es: "Reparte el check-in por enlace o QR, y conecta la hoja de tu escuela." },
+  students:   { en: "Everyone in one list, with each person\u2019s scores and status.", es: "Todos en una lista, con los puntajes y el estado de cada persona." },
+  home:       { en: "One person in depth \u2014 their answers, their words, and what to say next.", es: "Una persona a fondo \u2014 sus respuestas, sus palabras y qu\u00e9 decir despu\u00e9s." },
+  growth:     { en: "Change over time \u2014 how scores move across Fall, Winter, and Spring.", es: "El cambio con el tiempo \u2014 c\u00f3mo se mueven los puntajes entre Oto\u00f1o, Invierno y Primavera." },
+  export:     { en: "Download the responses as CSV files.", es: "Descarga las respuestas como archivos CSV." }
 };
-function setTabHint(name) { if ($("#tabHint")) $("#tabHint").textContent = TAB_HINTS[name] || ""; }
+function setTabHint(name) { if ($("#tabHint")) { const h = TAB_HINTS[name]; $("#tabHint").textContent = h ? (h[dashLang] || h.en) : ""; } }
 const TAB_HELP = {
   overview: "<h5>Overview \u2014 the summary</h5>The sentence at the top reads the whole group for you. The three cards show how many <strong>checked in</strong>, the group\u2019s <strong>average score</strong> (out of 100 \u2014 higher is steadier), and how many named <strong>no trusted adult</strong>. The colored bar groups everyone by score: green is doing well, amber is worth a check-in, red needs support. These describe a score, not a person \u2014 a low one is a doorway to a conversation, not a label.",
   distribute: "<h5>Distribute \u2014 hand it out</h5>Build a <strong>link or QR code</strong> for a class so people can take the check-in, and (optionally) connect a school\u2019s own <strong>Google Sheet</strong> so results pool in one place. Nothing here is sent to us.",

@@ -147,6 +147,24 @@ dom.window.addEventListener("load", () => {
     w.setLang("en");
   }
 
+  // -- Dashboard language (independent EN/ES, Pass 1+) --
+  group("Dashboard language");
+  if (typeof w.applyDashLang === "function" && typeof w.setDashLang === "function") {
+    const tabOv = () => d.querySelector('.tab[data-tab="overview"]');
+    const band  = () => d.querySelector('[data-dl="dl_band_red"]');
+    w.setDashLang("es");
+    ok(tabOv().textContent === "Resumen", "ES: dashboard tab translates (Overview -> Resumen)");
+    ok(band() && band().textContent === "Necesita apoyo (0\u201349)", "ES: score-band label translates");
+    ok(w.localStorage.getItem("aogScreener.v2.dashlang") === "es", "dashLang persists to its own key");
+    // INDEPENDENCE: participant language must NOT flip the dashboard
+    w.setDashLang("en");
+    if (typeof w.setLang === "function") { w.setLang("es"); }
+    ok(tabOv().textContent === "Overview", "participant ES does NOT flip the dashboard (stays EN)");
+    if (typeof w.setLang === "function") { w.setLang("en"); }
+    w.setDashLang("en");
+    ok(tabOv().textContent === "Overview", "EN restores dashboard tab labels");
+  } else { ok(false, "applyDashLang / setDashLang functions present"); }
+
   console.log("\n----------------------------------------");
   console.log(pass + " passed, " + fail + " failed");
   console.log("----------------------------------------");
