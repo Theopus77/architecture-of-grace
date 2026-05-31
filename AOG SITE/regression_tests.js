@@ -59,6 +59,11 @@ ok(/data-mode="rapid"/.test(html) && /data-mode="depth"/.test(html), "internal m
 // Participant-facing wording: no "screener" leaking to families.
 ok(!/universal screener/i.test(html), "no participant-facing 'universal screener' text");
 
+// Accessibility guarantees (static)
+ok(/prefers-reduced-motion/.test(html), "reduced-motion support present");
+ok(/:focus-visible/.test(html), "keyboard focus indicator (:focus-visible) present");
+ok(/for="studentId"/.test(html) && /for="grade"/.test(html) && /for="window"/.test(html), "form labels linked to controls (for=)");
+
 // ----------------------------------------------------------------------
 // 2. Behavioral checks (in a simulated browser)
 // ----------------------------------------------------------------------
@@ -128,6 +133,19 @@ dom.window.addEventListener("load", () => {
     ok(/not that the sheet received it/.test(d.getElementById("syncStatusDetail").textContent), "detail is honest (sent != confirmed received)");
     w.localStorage.removeItem("aog.sync.enabled");
   } else { ok(false, "renderSyncStatus function present"); }
+
+  // -- Accessibility (keyboard + screen reader) --
+  group("Accessibility");
+  ok(d.getElementById("modeGrid").getAttribute("role") === "radiogroup", "mode picker is a radiogroup");
+  const mcards = [...d.querySelectorAll("#modeGrid .mode-card")];
+  ok(mcards.every(c => c.getAttribute("role") === "radio" && c.getAttribute("tabindex") === "0"), "mode cards are focusable radios");
+  const rapidCard = mcards.find(c => c.dataset.mode === "rapid");
+  rapidCard.dispatchEvent(new w.KeyboardEvent("keydown", { key: " ", bubbles: true }));
+  ok(rapidCard.getAttribute("aria-checked") === "true", "Space selects a mode card (aria-checked updates)");
+  if (typeof w.setLang === "function") {
+    w.setLang("es"); ok(d.documentElement.getAttribute("lang") === "es", "language switch updates <html lang>");
+    w.setLang("en");
+  }
 
   console.log("\n----------------------------------------");
   console.log(pass + " passed, " + fail + " failed");

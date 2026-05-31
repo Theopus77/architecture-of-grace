@@ -62,6 +62,19 @@
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
+
+/* Accessibility: respect reduced-motion preferences (matters for the autism-adapted audience) */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+/* Accessibility: clear keyboard focus indicator for anyone navigating without a mouse */
+:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; border-radius: 4px; }
+.response-option:focus-visible, .intensity-option:focus-visible, .mode-card:focus-visible { outline-offset: 3px; }
 html { scroll-behavior: smooth; }
 body {
   font-family: var(--font-sans);
@@ -1361,11 +1374,11 @@ footer .serif { font-style: italic; color: var(--ink-soft); }
       </div>
       <div class="form-grid">
         <div class="field">
-          <label id="lblStudentId">Student ID code</label>
+          <label id="lblStudentId" for="studentId">Student ID code</label>
           <input type="text" id="studentId" autocomplete="off" placeholder="A code you assign &mdash; not their name">
         </div>
         <div class="field">
-          <label data-i18n="w_grade">Grade or age band</label>
+          <label data-i18n="w_grade" for="grade">Grade or age band</label>
           <select id="grade">
             <option value="" data-i18n="w_select">Select</option>
             <option>K</option><option>1</option><option>2</option><option>3</option>
@@ -1375,7 +1388,7 @@ footer .serif { font-style: italic; color: var(--ink-soft); }
           </select>
         </div>
         <div class="field">
-          <label data-i18n="w_window">Window</label>
+          <label data-i18n="w_window" for="window">Window</label>
           <select id="window">
             <option value="" data-i18n="w_select">Select</option>
             <option value="Fall" data-i18n="w_fall">Fall (Sep&ndash;Nov)</option>
@@ -1391,8 +1404,8 @@ footer .serif { font-style: italic; color: var(--ink-soft); }
       <div class="small" data-i18n="w_choose_sub">Same 18 questions either way &mdash; take the quick version, or a more thorough one with short written reflections.</div>
     </div>
 
-    <div class="mode-grid" id="modeGrid">
-      <div class="mode-card" data-mode="rapid">
+    <div class="mode-grid" id="modeGrid" role="radiogroup" aria-label="Choose how to take it">
+      <div class="mode-card" data-mode="rapid" role="radio" tabindex="0" aria-checked="false">
         <div class="mode-left">
           <div class="mode-eyebrow" data-i18n="m_rapid_ey">The Universal Check-In &middot; population view</div>
           <div class="mode-title" data-i18n="m_rapid_t">Quick</div>
@@ -1407,7 +1420,7 @@ footer .serif { font-style: italic; color: var(--ink-soft); }
           </ul>
         </div>
       </div>
-      <div class="mode-card selected" data-mode="depth">
+      <div class="mode-card selected" data-mode="depth" role="radio" tabindex="0" aria-checked="true">
         <div class="mode-left">
           <div class="mode-eyebrow" data-i18n="m_depth_ey">The full instrument &middot; in depth</div>
           <div class="mode-title" data-i18n="m_depth_t">Thorough</div>
@@ -2545,6 +2558,7 @@ function applyLang() {
 function setLang(newLang) {
   lang = newLang;
   surveyLang = newLang;            // one control drives the whole experience
+  try { document.documentElement.setAttribute("lang", newLang); } catch (e) {}
   localStorage.setItem(LANG_KEY, newLang);
   $("#langEn").classList.toggle("active", newLang === "en");
   $("#langEs").classList.toggle("active", newLang === "es");
@@ -2607,10 +2621,12 @@ function renderItem() {
 function renderResponseOptions() {
   const sc = scale();
   const cols = mode === "depth" ? "response-grid-6" : "response-grid-6";
-  let html = '<div class="' + cols + '">';
+  const groupLabel = (lang === "es") ? "Opciones de respuesta" : "Response options";
+  let html = '<div class="' + cols + '" role="radiogroup" aria-label="' + groupLabel + '">';
   sc.forEach(opt => {
     const isSelected = responses[current] === opt.v;
-    html += '<div class="response-option' + (isSelected ? " selected" : "") + '" data-value="' + opt.v + '">' +
+    html += '<div class="response-option' + (isSelected ? " selected" : "") + '" data-value="' + opt.v + '"' +
+      ' role="radio" tabindex="0" aria-checked="' + (isSelected ? "true" : "false") + '">' +
       '<div class="freq-label">' + opt.label + '</div>' +
       (opt.hint ? '<div class="freq-hint">' + opt.hint + '</div>' : "") +
     '</div>';
@@ -2644,11 +2660,12 @@ function renderIntensityOption() {
     : "When this happens, how much does it affect you?";
 
   let html = '<div class="intensity-block">' +
-    '<div class="intensity-prompt">' + promptText + '</div>' +
-    '<div class="intensity-grid">';
+    '<div class="intensity-prompt" id="intensityPrompt">' + promptText + '</div>' +
+    '<div class="intensity-grid" role="radiogroup" aria-labelledby="intensityPrompt">';
   intensityOpts.forEach(opt => {
     const isSelected = intensities[current] === opt.v;
-    html += '<div class="intensity-option' + (isSelected ? " selected" : "") + '" data-intensity="' + opt.v + '">' +
+    html += '<div class="intensity-option' + (isSelected ? " selected" : "") + '" data-intensity="' + opt.v + '"' +
+      ' role="radio" tabindex="0" aria-checked="' + (isSelected ? "true" : "false") + '">' +
       opt.label +
     '</div>';
   });
@@ -3070,10 +3087,18 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Mode selection
   $$("#modeGrid .mode-card").forEach(card => {
-    card.addEventListener("click", () => {
-      $$("#modeGrid .mode-card").forEach(c => c.classList.remove("selected"));
+    const selectCard = () => {
+      $$("#modeGrid .mode-card").forEach(c => {
+        c.classList.remove("selected");
+        c.setAttribute("aria-checked", "false");
+      });
       card.classList.add("selected");
+      card.setAttribute("aria-checked", "true");
       mode = card.dataset.mode;
+    };
+    card.addEventListener("click", selectCard);
+    card.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" || e.key === " ") { e.preventDefault(); selectCard(); card.focus(); }
     });
   });
 
@@ -3130,6 +3155,30 @@ document.addEventListener("DOMContentLoaded", () => {
     const intOpt = e.target.closest("#intensityArea .intensity-option");
     if (intOpt) {
       selectIntensity(parseInt(intOpt.dataset.intensity, 10));
+      return;
+    }
+  });
+
+  // Keyboard activation for the answer "radios" (Enter / Space), with focus
+  // restored after the re-render so screen-reader and keyboard users keep place.
+  document.body.addEventListener("keydown", (e) => {
+    if (e.key !== "Enter" && e.key !== " " && e.key !== "Spacebar") return;
+    const opt = e.target.closest("#responseArea .response-option");
+    if (opt) {
+      e.preventDefault(); e.stopPropagation();
+      const v = parseInt(opt.dataset.value, 10);
+      selectResponse(v);
+      const again = document.querySelector('#responseArea .response-option[data-value="' + v + '"]');
+      if (again) again.focus();
+      return;
+    }
+    const intOpt = e.target.closest("#intensityArea .intensity-option");
+    if (intOpt) {
+      e.preventDefault(); e.stopPropagation();
+      const v = parseInt(intOpt.dataset.intensity, 10);
+      selectIntensity(v);
+      const again = document.querySelector('#intensityArea .intensity-option[data-intensity="' + v + '"]');
+      if (again) again.focus();
       return;
     }
   });
