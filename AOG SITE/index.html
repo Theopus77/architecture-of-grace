@@ -1394,7 +1394,7 @@ footer .serif { font-style: italic; color: var(--ink-soft); }
     <div class="mode-grid" id="modeGrid">
       <div class="mode-card" data-mode="rapid">
         <div class="mode-left">
-          <div class="mode-eyebrow" data-i18n="m_rapid_ey">The universal screener &middot; population view</div>
+          <div class="mode-eyebrow" data-i18n="m_rapid_ey">The Universal Check-In &middot; population view</div>
           <div class="mode-title" data-i18n="m_rapid_t">Quick</div>
           <div class="mode-time" data-i18n="m_rapid_time">~4 minutes</div>
         </div>
@@ -1707,7 +1707,8 @@ footer .serif { font-style: italic; color: var(--ink-soft); }
           <span id="syncStatusDot" style="width:12px; height:12px; border-radius:50%; background:#9aa0a6; flex:0 0 auto;"></span>
           <strong id="syncStatusText">Local-only on this device</strong>
         </div>
-        <p class="small" id="syncStatusDetail" style="margin:8px 0 14px;"></p>
+        <p class="small" id="syncStatusDetail" style="margin:8px 0 10px;"></p>
+        <p class="small" id="syncCounts" style="margin:0 0 14px; font-variant-numeric:tabular-nums;"></p>
         <label style="display:flex; align-items:center; gap:10px; cursor:pointer; font-size:14px;">
           <input type="checkbox" id="deviceSyncToggle" style="width:18px; height:18px;">
           Send check-ins taken on <em>this device</em> to the central sheet
@@ -2357,7 +2358,7 @@ const I18N_UI = {
   w_lede:      { en: "Take a few quiet minutes, just for you. It\u2019s private, there are no wrong answers, and it helps the people who care about you know how to help.", es: "T\u00f3mate unos minutos tranquilos, solo para ti. Es privado, no hay respuestas incorrectas, y ayuda a las personas que se preocupan por ti a saber c\u00f3mo apoyarte." },
   w_choose:    { en: "Choose how you want to take it", es: "Elige c\u00f3mo quieres hacerla" },
   w_choose_sub:{ en: "Same 18 questions either way \u2014 take the quick version, or a more thorough one with short written reflections.", es: "Las mismas 18 preguntas en ambas \u2014 haz la versi\u00f3n r\u00e1pida, o una m\u00e1s a fondo con breves reflexiones escritas." },
-  m_rapid_ey:  { en: "The universal screener \u00b7 population view", es: "El tamizaje universal \u00b7 vista de grupo" },
+  m_rapid_ey:  { en: "The Universal Check-In \u00b7 population view", es: "Universal Check-In \u00b7 vista de grupo" },
   m_rapid_t:   { en: "Quick", es: "R\u00e1pida" },
   m_rapid_time:{ en: "~4 minutes", es: "~4 minutos" },
   m_rapid_desc:{ en: "The standard universal check-in. 4-point frequency scale. Designed for whole-school administration three times a year.", es: "El chequeo universal est\u00e1ndar. Escala de frecuencia de 4 puntos. Dise\u00f1ada para administrarse a toda la escuela tres veces al a\u00f1o." },
@@ -2503,6 +2504,23 @@ function applyContext() {
   document.querySelectorAll("#ctxToggle .ctx-opt").forEach(b => {
     b.classList.toggle("active", b.dataset.ctx === context);
   });
+
+  // Grade band is mode-aware: School mode screens students (K-12), so the
+  // adult bands only make sense in Home mode (a grown-up checking in privately).
+  const gradeSel = document.getElementById("grade");
+  if (gradeSel) {
+    const adultBands = ["College", "Adult"];
+    Array.prototype.forEach.call(gradeSel.options, function (o) {
+      if (adultBands.indexOf(o.value) !== -1) {
+        o.hidden = (context === "school");
+        o.disabled = (context === "school");
+      }
+    });
+    // If an adult band was chosen and we switch to School, clear the now-hidden pick.
+    if (context === "school" && adultBands.indexOf(gradeSel.value) !== -1) {
+      gradeSel.value = "";
+    }
+  }
 }
 
 function applyLang() {
@@ -2778,6 +2796,7 @@ async function finalizeAndSave(closing) {
   // endpoint. Records post directly to the school's Google Apps Script; the
   // School of Life Foundation runs no server in this path.
   if (willSync) await syncRecord(record);
+  renderSyncStatus();
 }
 
 // POST a single record to the SCHOOL'S OWN Apps Script endpoint. Uses no-cors +
@@ -2954,29 +2973,62 @@ function renderSyncStatus() {
   const linkOn = sessionStorage.getItem("aog.launch.sync") === "on" ||
                  !!sessionStorage.getItem(LAUNCH_KEYS.districtId);
   const on = deviceOn || linkOn;
+  const online = navigator.onLine;
 
+  // Real counts from local storage — only what the app can actually know.
+  // synced === true  -> sent from this device (request left without erroring)
+  // synced === false -> should sync but hasn't gone out yet (offline / not yet attempted)
+  // synced === null  -> local-only record, never meant to sync
+  let total = 0, sent = 0, waiting = 0;
+  try {
+    const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+    total = saved.length;
+    for (const r of saved) {
+      if (!r) continue;
+      if (r.synced === true) sent++;
+      else if (r.synced === false) waiting++;
+    }
+  } catch (_) {}
+
+  // Header pill: honest about configuration AND whether anything is still waiting.
   const hpill = $("#hdrSyncPill"), hptxt = $("#hdrSyncPillText");
-  if (hpill) hpill.className = "backend-status " + (on ? "backend-online" : "backend-offline");
-  if (hptxt) hptxt.textContent = on ? "School sync \u00b7 ON" : "Private \u00b7 saved on this computer";
+  if (hpill) hpill.className = "backend-status " + ((on && waiting === 0) ? "backend-online" : "backend-offline");
+  if (hptxt) hptxt.textContent = !on
+    ? "Private \u00b7 saved on this computer"
+    : (waiting > 0 ? ("School sync \u00b7 " + waiting + " waiting to send") : "School sync \u00b7 on");
 
   const toggle = $("#deviceSyncToggle");
   if (toggle) toggle.checked = deviceOn;
 
   const dot = $("#syncStatusDot"), txt = $("#syncStatusText"), detail = $("#syncStatusDetail");
-  if (dot)  dot.style.background = on ? "#1E6B45" : "#9aa0a6";
-  if (txt)  txt.textContent = on ? "Syncing to central sheet" : "Local-only on this device";
+  if (dot)  dot.style.background = !on ? "#9aa0a6" : (waiting > 0 ? "#B8893A" : "#1E6B45");
+  if (txt)  txt.textContent = !on
+    ? "Local-only on this device"
+    : (online ? "Sending check-ins from this device" : "Offline \u2014 holding check-ins on this device");
   if (detail) {
-    detail.textContent = on
-      ? (deviceOn
-          ? "This device is set to send completed check-ins to your configured sheet. Responses are also kept locally as a backup."
-          : "This session was opened from a managed link, so completed check-ins are sent to your configured sheet. Responses are also kept locally as a backup.")
-      : "Responses stay in this browser on this computer. Nothing is sent anywhere unless you enable syncing below or open a generated link.";
+    detail.textContent = !on
+      ? "Responses stay in this browser on this computer. Nothing is sent anywhere unless you enable syncing below or open a generated link."
+      : "Completed check-ins are saved on this device and sent to your configured sheet from here. The browser can\u2019t read a reply back, so it confirms a response was sent \u2014 not that the sheet received it. Treat your Google Sheet as the source of truth, and keep a CSV export as your own backup.";
+  }
+
+  // Live counts — surfaces anything stuck instead of hiding it.
+  const counts = $("#syncCounts");
+  if (counts) {
+    if (!on) {
+      counts.textContent = (total === 1 ? "1 response" : total + " responses") + " saved on this device.";
+      counts.style.color = "var(--ink-soft)";
+    } else {
+      counts.innerHTML = "On this device: <strong>" + total + "</strong> saved \u00b7 <strong>" +
+        sent + "</strong> sent \u00b7 <strong>" + waiting + "</strong> waiting to send" +
+        (online ? "" : " \u00b7 <strong>offline</strong>") + ".";
+      counts.style.color = (waiting > 0 || !online) ? "#9a6a1f" : "var(--ink-soft)";
+    }
   }
 
   const copy = $("#dataLivesCopy");
   if (copy) {
     copy.textContent = on
-      ? "Completed check-ins on this device are sent to your school\u2019s own Google Sheet \u2014 the data stays in your school\u2019s Google, never with the School of Life Foundation \u2014 and a copy is also kept in this browser as a backup. Use the exports above for an additional CSV record."
+      ? "Completed check-ins on this device are sent to your school\u2019s own Google Sheet \u2014 the data stays in your school\u2019s Google, never with the School of Life Foundation. The browser can confirm a response was sent from here, but not that the sheet received it \u2014 so check your sheet to be sure, and keep a CSV export as your own record. A copy is always kept in this browser as a backup."
       : "Every response is saved privately in this browser, on this computer only. Nothing is sent anywhere unless this device or link is set up to sync. Use the exports above to keep your own backup copy \u2014 that CSV is your record.";
   }
 }
@@ -3010,7 +3062,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Resend any records that were saved offline / failed to reach the proxy.
   flushUnsynced();
-  window.addEventListener("online", flushUnsynced);
+  window.addEventListener("online", () => { renderSyncStatus(); flushUnsynced().then(renderSyncStatus); });
+  window.addEventListener("offline", renderSyncStatus);
 
   // Capture classroom launch metadata (grade / classId / window) from the URL.
   parseLaunchParams();
@@ -3191,7 +3244,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (deviceSyncToggle.checked) localStorage.setItem("aog.sync.enabled", "1");
     else localStorage.removeItem("aog.sync.enabled");
     renderSyncStatus();
-    if (deviceSyncToggle.checked) flushUnsynced();
+    if (deviceSyncToggle.checked) flushUnsynced().then(renderSyncStatus);
   });
 
   // Reflect true sync state on load.
