@@ -475,6 +475,11 @@ body::before {
   color: var(--ink);
   font-weight: 500;
   margin-bottom: 32px;
+  /* Reserve a stable height (~max question length) and center the text so the
+     response options and Next button never shift as you move between questions. */
+  min-height: 132px;
+  display: flex;
+  align-items: center;
 }
 
 /* 6-point response - one card per row on mobile, 3+3 grid on desktop */
@@ -1199,13 +1204,13 @@ footer .serif { font-style: italic; color: var(--ink-soft); }
 .eco-head { margin-bottom:2px; }
 .eco-title { font-size:25px !important; margin:2px 0 6px !important; }
 .eco-lede { font-size:13.5px !important; }
-.eco-stage { margin-top:4px !important; gap:20px !important; }
-.eco-canvas { max-width:560px; margin:0 auto; }
+.eco-stage { margin-top:4px !important; gap:18px !important; }
+.eco-canvas { max-width:820px; margin:0 auto; }
 .eco-detail { min-height:0 !important; }
 .eco-head { text-align:center; max-width:620px; margin:0 auto 8px; }
 .eco-title { font-size:30px; color:var(--navy); margin:2px 0 8px; letter-spacing:-.01em; }
 .eco-lede { font-size:14.5px; line-height:1.6; color:var(--ink-soft); }
-.eco-stage { display:grid; grid-template-columns:1.35fr .9fr; gap:26px; align-items:center; margin-top:10px; }
+.eco-stage { display:flex; flex-direction:column; align-items:center; gap:18px; margin-top:10px; }
 .eco-canvas { min-width:0; }
 #ecoSvg { width:100%; height:auto; display:block; }
 .eco-c1 { font-family:var(--serif); font-size:18px; font-weight:600; fill:var(--navy); letter-spacing:.06em; }
@@ -1228,17 +1233,22 @@ footer .serif { font-style: italic; color: var(--ink-soft); }
 .eco-node:nth-child(9) { animation:ecoFloat 7s ease-in-out infinite 1.8s; }
 .eco-node:nth-child(10){ animation:ecoFloat 7s ease-in-out infinite 2.7s; }
 @keyframes ecoFloat { 0%,100%{ transform:translateY(0);} 50%{ transform:translateY(-3px);} }
-.eco-detail { background:#fff; border:1px solid var(--rule); border-left:4px solid var(--gold); border-radius:14px; padding:22px 24px; min-height:210px; box-shadow:0 8px 28px rgba(27,58,95,.07); }
-.eco-detail .ed-tag { font-size:11px; font-weight:700; letter-spacing:.12em; text-transform:uppercase; color:var(--gold); }
-.eco-detail .ed-title { font-family:var(--serif); font-size:23px; font-weight:600; color:var(--navy); margin:6px 0 2px; }
-.eco-detail .ed-role { font-size:12.5px; color:var(--ink-soft); margin-bottom:12px; }
-.eco-detail .ed-blurb { font-size:14px; line-height:1.62; color:var(--ink); }
-.eco-detail .ed-go { display:inline-flex; align-items:center; gap:7px; margin-top:16px; padding:9px 16px; border-radius:9px; background:var(--navy); color:#fff; font-size:13px; font-weight:500; text-decoration:none; cursor:pointer; transition:background .18s, transform .18s; border:none; }
+.eco-detail { width:100%; max-width:560px; margin:0 auto; background:#fff; border:1px solid var(--rule); border-left:4px solid var(--gold); border-radius:11px; padding:10px 20px; box-shadow:0 5px 16px rgba(27,58,95,.05); display:grid; grid-template-columns:minmax(135px,165px) 1fr; column-gap:20px; row-gap:1px; align-items:start; }
+.eco-detail .ed-tag   { grid-column:1; grid-row:1; }
+.eco-detail .ed-title { grid-column:1; grid-row:2; }
+.eco-detail .ed-role  { grid-column:1; grid-row:3; }
+.eco-detail .ed-blurb { grid-column:2; grid-row:1 / 4; align-self:center; }
+.eco-detail .ed-go, .eco-detail .ed-hint { grid-column:2; grid-row:4; justify-self:start; }
+.eco-detail .ed-tag { font-size:10.5px; font-weight:700; letter-spacing:.12em; text-transform:uppercase; color:var(--gold); }
+.eco-detail .ed-title { font-family:var(--serif); font-size:17px; font-weight:600; color:var(--navy); margin:2px 0 1px; }
+.eco-detail .ed-role { font-size:11.5px; color:var(--ink-soft); margin-bottom:3px; }
+.eco-detail .ed-blurb { font-size:12.5px; line-height:1.45; color:var(--ink); }
+.eco-detail .ed-go { display:inline-flex; align-items:center; gap:6px; margin-top:7px; padding:6px 13px; border-radius:7px; background:var(--navy); color:#fff; font-size:12px; font-weight:500; text-decoration:none; cursor:pointer; transition:background .18s, transform .18s; border:none; }
 .eco-detail .ed-go:hover { background:var(--navy-deep,#13283f); transform:translateX(3px); }
-.eco-detail .ed-hint { font-size:12.5px; color:var(--ink-soft); font-style:italic; margin-top:14px; }
+.eco-detail .ed-hint { font-size:11.5px; color:var(--ink-soft); font-style:italic; margin-top:6px; }
 .eco-frame { font-size:13px; line-height:1.6; color:var(--ink-soft); margin-top:24px; padding-top:18px; border-top:1px solid var(--rule-soft); }
 .eco-frame strong { color:var(--navy); }
-@media (max-width:760px){ .eco-stage { grid-template-columns:1fr; } .eco-detail { min-height:0; } }
+@media (max-width:760px){ .eco-detail { display:block; } }
 .guide-section { display:none; }
 .guide-section.active { display:block; }
 
@@ -1308,6 +1318,23 @@ footer .serif { font-style: italic; color: var(--ink-soft); }
 .lib-item-main{ flex:1; padding-right:14px; }
 .lib-item-desc{ font-size:12px; line-height:1.45; color:#6b6552; margin-top:3px; }
 .lib-tie{ display:inline-block; font-size:8.5px; letter-spacing:.08em; text-transform:uppercase; font-weight:700; color:#7a5a1c; background:#FBE7AC; padding:2px 7px; border-radius:20px; vertical-align:middle; margin-left:6px; white-space:nowrap; }
+.lib-tag-fam{ display:inline-block; font-size:8.5px; letter-spacing:.08em; text-transform:uppercase; font-weight:700; color:#2B4D7A; background:#E7EEF6; padding:2px 7px; border-radius:20px; vertical-align:middle; margin-left:6px; white-space:nowrap; }
+.lib-buy{ display:inline-flex; align-items:center; gap:6px; padding:7px 16px; border-radius:7px; background:var(--gold); color:#1a1a18; font-size:13px; font-weight:700; text-decoration:none; white-space:nowrap; }
+.lib-buy:hover{ background:var(--gold-deep,#a87a2e); }
+.lib-license{ display:inline-flex; align-items:center; gap:6px; padding:6px 14px; border-radius:7px; background:transparent; color:var(--navy); border:1.5px solid var(--navy); font-size:12.5px; font-weight:600; text-decoration:none; white-space:nowrap; }
+.lib-license:hover{ background:var(--navy); color:#fff; }
+.lib-actions{ display:flex; align-items:center; gap:8px; flex-wrap:wrap; justify-content:flex-end; }
+.lib-paths{ display:grid; grid-template-columns:1fr 1fr; gap:16px; margin:6px 0 22px; }
+@media (max-width:680px){ .lib-paths{ grid-template-columns:1fr; } }
+.lib-path{ border:1px solid var(--rule); border-radius:14px; padding:20px 22px; background:var(--cream); display:flex; flex-direction:column; }
+.lib-path-ey{ font-size:10.5px; letter-spacing:.2em; text-transform:uppercase; font-weight:700; color:var(--gold); margin-bottom:4px; }
+.lib-path-t{ font-size:21px; color:var(--navy); margin:0 0 7px; line-height:1.1; }
+.lib-path-b{ font-size:13px; line-height:1.55; color:var(--ink-soft); margin:0 0 16px; flex:1; }
+.lib-path-btn{ display:inline-block; align-self:flex-start; padding:10px 18px; border-radius:8px; font-size:13.5px; font-weight:600; text-decoration:none; white-space:nowrap; }
+.lib-path-primary{ background:var(--navy); color:#fff; }
+.lib-path-primary:hover{ background:var(--navy-deep,#13283f); }
+.lib-path-gold{ background:var(--gold); color:#1a1a18; font-weight:700; }
+.lib-path-gold:hover{ background:var(--gold-deep,#a87a2e); }
 </style>
 </head>
 <body>
@@ -1388,13 +1415,15 @@ footer .serif { font-style: italic; color: var(--ink-soft); }
           </select>
         </div>
         <div class="field">
-          <label data-i18n="w_window" for="window">Window</label>
+          <label id="lblWindow" data-i18n="w_window" for="window">Window</label>
           <select id="window">
             <option value="" data-i18n="w_select">Select</option>
             <option value="Fall" data-i18n="w_fall">Fall (Sep&ndash;Nov)</option>
             <option value="Winter" data-i18n="w_winter">Winter (Dec&ndash;Feb)</option>
             <option value="Spring" data-i18n="w_spring">Spring (Mar&ndash;May)</option>
+            <option value="Summer" data-i18n="w_summer">Summer (Jun&ndash;Aug)</option>
           </select>
+          <div id="homeWindowStamp" class="small" style="display:none; padding:11px 0 0; font-weight:600; color:var(--navy);"></div>
         </div>
       </div>
     </div>
@@ -1412,7 +1441,7 @@ footer .serif { font-style: italic; color: var(--ink-soft); }
           <div class="mode-time" data-i18n="m_rapid_time">~4 minutes</div>
         </div>
         <div class="mode-right">
-          <div class="mode-desc" data-i18n="m_rapid_desc">The standard universal check-in. 4-point frequency scale. Designed for whole-school administration three times a year.</div>
+          <div class="mode-desc" data-i18n="m_rapid_desc">The standard universal check-in. 4-point frequency scale. Designed for whole-school administration each seasonal window.</div>
           <ul class="mode-features">
             <li data-i18n="m_rapid_f1">18 items, single-tap response</li>
             <li data-i18n="m_rapid_f2">Score 0&ndash;54, flags who may need support</li>
@@ -1458,7 +1487,7 @@ footer .serif { font-style: italic; color: var(--ink-soft); }
         <div class="door-icon">&#9696;</div>
         <div class="door-text">
           <div class="door-title" data-i18n="w_door_results">Educator Access &middot; Results</div>
-          <div class="door-sub" data-i18n="w_door_results_sub">View check-in results. Code required &mdash; protects private responses.</div>
+          <div class="door-sub" data-i18n="w_door_results_sub">View saved check-in results. A code keeps the dashboard out of casual view &mdash; it is not a security lock.</div>
         </div>
         <div class="door-arrow">&rarr;</div>
       </a>
@@ -1468,9 +1497,9 @@ footer .serif { font-style: italic; color: var(--ink-soft); }
     <section class="aog-what">
       <div class="ey" data-i18n="aog_what_ey">The Foundation</div>
       <h2 data-i18n="aog_what_h">What Is Architecture of Grace?</h2>
-      <p data-i18n="aog_what_p1">Architecture of Grace is a human development framework designed to help individuals understand themselves, strengthen their relationships, and navigate life&rsquo;s challenges with resilience, responsibility, and hope.</p>
-      <p data-i18n="aog_what_p2">Built upon developmental psychology, social-emotional learning, reflective practice, and character formation, the framework provides a structured pathway for growth through lessons, assessments, conversations, and real-world application.</p>
-      <p data-i18n="aog_what_p3">Its purpose is simple: to help people become the healthiest version of themselves while recognizing that growth is a lifelong process.</p>
+      <p data-i18n="aog_what_p1">Architecture of Grace is a human development framework and intuitive digital check-in platform designed to help individuals understand themselves, strengthen relationships, and navigate life&rsquo;s challenges with resilience, responsibility, and hope.</p>
+      <p data-i18n="aog_what_p2">Built upon developmental psychology, social-emotional learning, reflective practice, and character formation, the framework provides a structured pathway for lifelong growth through lessons, assessments, conversations, and real-world application.</p>
+      <p data-i18n="aog_what_p3">By bridging the gap between deep personal development and daily practice, the platform empowers people to become the healthiest versions of themselves &mdash; ultimately reducing burnout, improving retention, and fostering a resilient culture across school districts and families.</p>
       <div class="pillars">
         <div class="pl-label" data-i18n="aog_what_pillars">Four ideas run through everything</div>
         <span class="tag" data-i18n="pillar_identity">Identity</span>
@@ -1624,6 +1653,7 @@ footer .serif { font-style: italic; color: var(--ink-soft); }
           <option value="Fall" data-dl="dl_opt_fall">Fall (Sep&ndash;Nov)</option>
           <option value="Winter" data-dl="dl_opt_winter">Winter (Dec&ndash;Feb)</option>
           <option value="Spring" data-dl="dl_opt_spring">Spring (Mar&ndash;May)</option>
+          <option value="Summer" data-dl="dl_opt_summer">Summer (Jun&ndash;Aug)</option>
         </select>
         <select id="filterGrade"><option value="" data-dl="dl_opt_allgrades">All Grades</option></select>
         <select id="filterMode">
@@ -1660,6 +1690,7 @@ footer .serif { font-style: italic; color: var(--ink-soft); }
           <option value="Fall" data-dl="dl_opt_fall">Fall (Sep&ndash;Nov)</option>
           <option value="Winter" data-dl="dl_opt_winter">Winter (Dec&ndash;Feb)</option>
           <option value="Spring" data-dl="dl_opt_spring">Spring (Mar&ndash;May)</option>
+          <option value="Summer" data-dl="dl_opt_summer">Summer (Jun&ndash;Aug)</option>
         </select>
         <select id="studentFilterGrade"><option value="" data-dl="dl_opt_allgrades">All Grades</option></select>
         <select id="studentFilterTier">
@@ -1691,6 +1722,7 @@ footer .serif { font-style: italic; color: var(--ink-soft); }
           <option value="Fall" data-dl="dl_opt_fall">Fall (Sep&ndash;Nov)</option>
           <option value="Winter" data-dl="dl_opt_winter">Winter (Dec&ndash;Feb)</option>
           <option value="Spring" data-dl="dl_opt_spring">Spring (Mar&ndash;May)</option>
+          <option value="Summer" data-dl="dl_opt_summer">Summer (Jun&ndash;Aug)</option>
         </select>
       </div>
       <div id="homeReport"></div>
@@ -1699,7 +1731,7 @@ footer .serif { font-style: italic; color: var(--ink-soft); }
     <div class="tab-panel" id="panel-growth">
       <div class="section-head">
         <h2 data-dl="dl_grw_h1">Growth across windows</h2>
-        <div class="small" data-dl="dl_grw_sub">Composite scores Fall &rarr; Winter &rarr; Spring per person.</div>
+        <div class="small" data-dl="dl_grw_sub">Composite scores Fall &rarr; Winter &rarr; Spring &rarr; Summer per person.</div>
       </div>
       <div class="filter-bar">
         <select id="growthFilterGrade"><option value="" data-dl="dl_opt_allgrades">All Grades</option></select>
@@ -1782,6 +1814,7 @@ footer .serif { font-style: italic; color: var(--ink-soft); }
               <option value="Fall" data-dl="dl_opt_fall">Fall (Sep&ndash;Nov)</option>
               <option value="Winter" data-dl="dl_opt_winter">Winter (Dec&ndash;Feb)</option>
               <option value="Spring" data-dl="dl_opt_spring">Spring (Mar&ndash;May)</option>
+          <option value="Summer" data-dl="dl_opt_summer">Summer (Jun&ndash;Aug)</option>
             </select>
           </div>
         </div>
@@ -1831,7 +1864,7 @@ footer .serif { font-style: italic; color: var(--ink-soft); }
           <div class="kpi-accent accent-gold"></div>
           <div class="kpi-label" data-dl="dl_exp_label">Export</div>
           <div class="kpi-value serif" style="font-size:22px; line-height:1.3;"><span data-dl="dl_exp_growth">Growth report</span></div>
-          <div class="kpi-sub" data-dl="dl_exp_growth_sub">Fall / Winter / Spring deltas per person.</div>
+          <div class="kpi-sub" data-dl="dl_exp_growth_sub">Fall / Winter / Spring / Summer deltas per person.</div>
         </div>
       </div>
 
@@ -1960,7 +1993,7 @@ footer .serif { font-style: italic; color: var(--ink-soft); }
       <div class="guide-section active" id="guide-docs">
       <div class="table-card" style="padding:28px 32px;">
         <h3 class="serif" style="font-size:22px; color:var(--navy); margin-bottom:6px;" data-i18n="doc_h1">1. What this is</h3>
-        <p style="font-size:14.5px; line-height:1.65; color:var(--ink); margin-bottom:16px;" data-i18n-html="doc_p1">A universal social-emotional learning (SEL) self-report check-in built directly from the Architecture of Grace curriculum. It is brief, universally applicable, and designed to be taken three times a year (Fall, Winter, Spring) to track baseline, growth, and risk over time. It measures three domains &mdash; Emotional Regulation &amp; Well-Being, Self-Compassion &amp; Growth Mindset, and Social Competency &amp; Repair &mdash; with six items each, eighteen total.</p>
+        <p style="font-size:14.5px; line-height:1.65; color:var(--ink); margin-bottom:16px;" data-i18n-html="doc_p1">A universal social-emotional learning (SEL) self-report check-in built directly from the Architecture of Grace curriculum. It is brief, universally applicable, and designed to be taken at regular check-in points across the year &mdash; each season at school, or anytime at home &mdash; to track baseline, growth, and risk over time. It measures three domains &mdash; Emotional Regulation &amp; Well-Being, Self-Compassion &amp; Growth Mindset, and Social Competency &amp; Repair &mdash; with six items each, eighteen total.</p>
 
         <h3 class="serif" style="font-size:22px; color:var(--navy); margin:24px 0 6px;" data-i18n="doc_h2">2. The two modes</h3>
         <p style="font-size:14.5px; line-height:1.65; color:var(--ink); margin-bottom:8px;" data-i18n-html="doc_p2a"><strong>Quick</strong> &mdash; the standard school check-in. A 4-point frequency scale (Never / Sometimes / Often / Almost Always), about four minutes. Use this for whole-school administration where you need to triage many students quickly and compare across schools and windows.</p>
@@ -1975,7 +2008,7 @@ footer .serif { font-style: italic; color: var(--ink-soft); }
         <p style="font-size:14.5px; line-height:1.65; color:var(--ink); margin-bottom:16px;" data-i18n-html="doc_p3f">The trusted-adult item (Item 18) is also tracked on its own. A response of Never or Rarely/Sometimes raises a flag regardless of the composite score, because connection to a trusted adult is protective on its own.</p>
 
         <h3 class="serif" style="font-size:22px; color:var(--navy); margin:24px 0 6px;" data-i18n="doc_h4">4. Access code</h3>
-        <p style="font-size:14.5px; line-height:1.65; color:var(--ink); margin-bottom:16px;" data-i18n-html="doc_p4">The dashboard you are reading is reached with the code <code style="background:var(--cream); padding:2px 8px; border-radius:4px; font-weight:600;">educator</code>. To change it, open this HTML file in any text editor and edit the line <code style="background:var(--cream); padding:2px 8px; border-radius:4px;">const ACCESS_CODE = "educator";</code> near the top of the script section. Save. That is the only change needed.</p>
+        <p style="font-size:14.5px; line-height:1.65; color:var(--ink); margin-bottom:16px;" data-i18n-html="doc_p4">Access to the <strong>results dashboard</strong> is gated by a private code, chosen by whoever published this file. To change it, open this HTML file in any text editor, find the line near the top of the script section that begins <code style="background:var(--cream); padding:2px 8px; border-radius:4px;">const ACCESS_CODE =</code>, and replace the value in quotation marks with your own. Save. That is the only change needed. Be clear-eyed about what this code is, though: a convenience gate, not a security control. It lives inside the page and encrypts nothing, so anyone who can open this file on a device can reach the saved results, and anyone who views the page source can read it. If you need genuine authenticated access across many users, that calls for a hosted version with a real server-side login and a signed district data-privacy agreement.</p>
 
         <h3 class="serif" style="font-size:22px; color:var(--navy); margin:24px 0 6px;" data-i18n="doc_h5">5. How to give it</h3>
         <p style="font-size:14.5px; line-height:1.65; color:var(--ink); margin-bottom:8px;" data-i18n-html="doc_p5a"><strong>At home or 1:1:</strong> Open this file in any browser. Each person enters a name or ID, their grade or age band, and the window. Choose Thorough mode. They answer privately. When everyone is done, come to this dashboard, open Home View, and select each person.</p>
@@ -1993,14 +2026,14 @@ footer .serif { font-style: italic; color: var(--ink-soft); }
         <p style="font-size:14.5px; line-height:1.65; color:var(--ink); margin-bottom:16px;" data-i18n-html="doc_p_share">By default, a check-in stays on the device that took it. A school can choose to pool its results into its <strong>own</strong> Google Sheet, so a counselor sees the whole school in one place. With that turned on, a completed check-in is saved on the device <em>and</em> sent to the school&rsquo;s own Google Sheet &mdash; never to us, and never through any server we run. The sheet builds a simple dashboard on its own (totals, average score, how many named no trusted adult). Setup takes about ten minutes and is covered in the &ldquo;Connecting a School Sheet&rdquo; guide; the data lives in the school&rsquo;s Google, under the school&rsquo;s control.</p>
 
         <h3 class="serif" style="font-size:22px; color:var(--navy); margin:24px 0 6px;" data-i18n="doc_h8">9. A closing note</h3>
-        <p style="font-size:14.5px; line-height:1.65; color:var(--ink);" data-i18n-html="doc_p8">This check-in is a flag, not a diagnosis. A low score in one window can be a high score in the next &mdash; that is the entire reason it is given three times a year. The curriculum is the intervention; the check-in just tells you where to begin.</p>
+        <p style="font-size:14.5px; line-height:1.65; color:var(--ink);" data-i18n-html="doc_p8">This check-in is a flag, not a diagnosis. A low score in one window can be a high score in the next &mdash; that is the entire reason it is repeated across the year. The curriculum is the intervention; the check-in just tells you where to begin.</p>
       </div>
       </div><!-- /guide-docs -->
 
       <div class="guide-section" id="guide-resindex">
         <div class="table-card" style="padding:28px 32px 32px;">
           <h3 class="serif" style="font-size:22px; color:var(--navy); margin-bottom:6px;" data-i18n="ri_h">Construct-to-Resource Index</h3>
-          <p style="font-size:14.5px; line-height:1.6; color:var(--ink-soft); margin-bottom:18px;" data-i18n-html="ri_intro">When the Home View flags a low domain or a specific item, find the matching construct below. Each one lists the exact lesson, anchor chart, and activity in every grade band &mdash; and now, under <strong>In the novels</strong>, the specific book and chapter where that same idea appears as story. (References are by chapter, which stay accurate across print and digital formats, rather than by page.) Both the Quick and Thorough check-ins measure the same items, so a result from either mode maps back to these same lessons, sections, and chapters.</p>
+          <p style="font-size:14.5px; line-height:1.6; color:var(--ink-soft); margin-bottom:18px;" data-i18n-html="ri_intro">When a check-in flags a low domain or a specific item, find the matching construct below. Each one lists the exact lesson, anchor chart, and activity in every grade band &mdash; and now, under <strong>In the novels</strong>, the specific book and chapter where that same idea appears as story. (References are by chapter, which stay accurate across print and digital formats, rather than by page.) Both the Quick and Thorough check-ins measure the same items, so a result from either mode maps back to these same lessons, sections, and chapters.</p>
           <div class="ri-toolbar">
             <input type="text" id="riSearch" placeholder="Search: inner critic, overwhelm, repair, unsafe..." data-i18n-ph="ri_search_ph">
             <select id="riGrade">
@@ -2035,7 +2068,7 @@ footer .serif { font-style: italic; color: var(--ink-soft); }
               <div style="font-size:11px; letter-spacing:.24em; text-transform:uppercase; color:#E7B85E; font-weight:600;" data-i18n="dl_p2_ey">Free Preview &middot; Identity</div>
               <div class="serif" style="font-size:26px; color:#fff; margin:6px 0 7px;" data-i18n-html="dl_p2_t">Who Am I? &mdash; K&ndash;12</div>
               <p style="font-size:13.5px; line-height:1.6; color:#dfe7ef; margin-bottom:16px;" data-i18n-html="dl_p2_b">The identity lesson, K&ndash;12 &mdash; the K&ndash;2 Identity Web growing into the Mask &amp; Mirror, the Curated Self, and the Threshold of adulthood. One question, every grade band.</p>
-              <a href="files/AoG-Anchor-Charts-K12-Sampler.pdf" target="_blank" rel="noopener"
+              <a href="files/AoG-Identity-Preview.pdf" target="_blank" rel="noopener"
                  style="display:inline-block; background:var(--gold); color:#1a1a18; font-weight:700; font-size:13.5px; padding:12px 22px; border-radius:8px; text-decoration:none;" data-i18n-html="dl_open_pdf">&#8599;&nbsp; Open &nbsp;&middot;&nbsp; PDF</a>
             </div>
           </div>
@@ -2051,8 +2084,24 @@ footer .serif { font-style: italic; color: var(--ink-soft); }
                style="display:inline-block; background:var(--navy); color:#fff; font-weight:700; font-size:14px; letter-spacing:.02em; padding:13px 24px; border-radius:8px; text-decoration:none; white-space:nowrap;" data-i18n-html="dl_f_btn">&#8599;&nbsp; Read Chapter One &nbsp;&middot;&nbsp; PDF</a>
           </div>
 
-          <h4 class="serif" style="font-size:18px; color:var(--navy); margin:6px 0 4px;" data-i18n="dl_fullprog_h">The full program</h4>
-          <p style="font-size:13.5px; line-height:1.6; color:var(--ink-soft); margin-bottom:16px;" data-i18n-html="dl_fullprog_p">The complete ecosystem &mdash; novels, curriculum, charts, worksheets, scenario cards, assessments, crosswalks, autism-adapted and home editions. The core is fully secular. An optional secular <em>Somatic Floor</em> track is listed separately so you can choose what fits. Open a category to download.</p>
+          <!-- ============ TWO PATHS: SCHOOLS vs FAMILIES ============ -->
+          <div class="lib-paths">
+            <div class="lib-path">
+              <div class="lib-path-ey" data-i18n="dl_path_s_ey">For schools &amp; districts</div>
+              <div class="serif lib-path-t" data-i18n="dl_path_s_t">License the full program</div>
+              <p class="lib-path-b" data-i18n-html="dl_path_s_b">Bring the whole K&ndash;12 ecosystem to your school or district under a site or district license &mdash; typically billed by purchase order and priced per building or per student. We&rsquo;ll send a quote and help you set it up.</p>
+              <a class="lib-path-btn lib-path-primary" id="licenseTopBtn" href="#" data-i18n="dl_path_s_btn">Request district pricing &rarr;</a>
+            </div>
+            <div class="lib-path">
+              <div class="lib-path-ey" data-i18n="dl_path_f_ey">For families</div>
+              <div class="serif lib-path-t" data-i18n="dl_path_f_t">Buy books &amp; materials for home</div>
+              <p class="lib-path-b" data-i18n-html="dl_path_f_b">Purchase individual books, packs, and home editions for the kitchen table. Free previews are always open below; paid items show a <strong>Buy</strong> button.</p>
+              <a class="lib-path-btn lib-path-gold" id="storeTopBtn" href="#" data-i18n="dl_path_f_btn">Visit the family store &rarr;</a>
+            </div>
+          </div>
+
+          <h4 class="serif" style="font-size:18px; color:var(--navy); margin:6px 0 4px;" data-i18n="dl_fullprog_h">Browse everything</h4>
+          <p style="font-size:13.5px; line-height:1.6; color:var(--ink-soft); margin-bottom:16px;" data-i18n-html="dl_fullprog_p">Free previews download instantly. Everything else is part of the full program &mdash; <strong>license</strong> it for a school, or <strong>buy</strong> individual pieces for home. Open a category to explore.</p>
           <div id="libRoot"></div>
         </div>
       </div><!-- /guide-library -->
@@ -2074,6 +2123,7 @@ footer .serif { font-style: italic; color: var(--ink-soft); }
     <h2 class="display display-md">Access</h2>
     <p>Enter the access code provided by your MTSS coordinator or parent.</p>
     <input type="password" id="accessCode" placeholder="Access code" autocomplete="off">
+    <p class="small" style="margin-top:10px; line-height:1.5;">This code simply keeps the results dashboard out of view during a check-in. It does not encrypt or lock anything &mdash; anyone who can open this page on this device can reach the saved results. Real protection comes from controlling who has access to the device.</p>
     <div class="modal-actions">
       <button class="btn btn-secondary btn-sm" onclick="closeModal('modalAccess')">Cancel</button>
       <button class="btn btn-sm" onclick="submitAccessCode()">Continue</button>
@@ -2316,7 +2366,7 @@ const TIER_DISPLAY = {
 function tierLabel(t) { const m = TIER_DISPLAY[t]; const L = (typeof dashLang !== "undefined") ? dashLang : "en"; return m ? (m[L] || m.en) : t; }
 // Dashboard dynamic-text helpers (educator language = dashLang)
 function DT(en, es) { return ((typeof dashLang !== "undefined") && dashLang === "es") ? es : en; }
-const WIN_DISPLAY = { Fall: { en: "Fall", es: "Oto\u00f1o" }, Winter: { en: "Winter", es: "Invierno" }, Spring: { en: "Spring", es: "Primavera" } };
+const WIN_DISPLAY = { Fall: { en: "Fall", es: "Oto\u00f1o" }, Winter: { en: "Winter", es: "Invierno" }, Spring: { en: "Spring", es: "Primavera" }, Summer: { en: "Summer", es: "Verano" } };
 function winLabel(wn) { const m = WIN_DISPLAY[wn]; const L = (typeof dashLang !== "undefined") ? dashLang : "en"; return m ? m[L] : (wn || ""); }
 function modeLabel(md) { return (md === "depth") ? DT("Thorough", "A fondo") : DT("Quick", "R\u00e1pido"); }
 
@@ -2342,6 +2392,23 @@ let lang = "en";
 let surveyLang = "en";
 let mode = "depth"; // "depth" or "rapid"
 let context = "school"; // "school" (de-identified, no names) or "home" (first name OK). Default = privacy-safe.
+// Home check-ins aren't on a school calendar, so instead of a season they're auto-stamped
+// with the month they were taken. Storage stays canonical (English month) so the dashboard
+// groups the same month consistently no matter the participant's language; display is localized.
+// Home check-ins aren't on a school calendar, so instead of a season they're auto-stamped
+// with the exact date taken. Storage stays canonical (English "Mon D, YYYY") so the dashboard
+// reads it consistently no matter the participant's language; display is localized. Stamping
+// the full date (not just the month) keeps two same-month check-ins distinct at a glance,
+// and removes any need to ask "one-time or tracking?" — the date does both jobs.
+const MONTHS_ABBR_EN = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+const MONTHS_ABBR_ES = ["ene","feb","mar","abr","may","jun","jul","ago","sep","oct","nov","dic"];
+function currentDateCanonical() { const d = new Date(); return MONTHS_ABBR_EN[d.getMonth()] + " " + d.getDate() + ", " + d.getFullYear(); }
+function fmtNiceDate(ts) { if (!ts) return ""; const d = new Date(ts); if (isNaN(d.getTime())) return ""; return MONTHS_ABBR_EN[d.getMonth()] + " " + d.getDate() + ", " + d.getFullYear(); }
+function currentDateLabel(L) {
+  const d = new Date();
+  if (L === "es") { return d.getDate() + " " + MONTHS_ABBR_ES[d.getMonth()] + " " + d.getFullYear(); }
+  return MONTHS_ABBR_EN[d.getMonth()] + " " + d.getDate() + ", " + d.getFullYear();
+}
 let dashLang = "en"; // educator dashboard language — independent of the participant EN/ES toggle
 const DASHLANG_KEY = "aogScreener.v2.dashlang";
 let current = 0;
@@ -2370,8 +2437,8 @@ const ACCESS_CODE = "educator";
 //   4. The school hosts THIS configured copy, so every device that opens it
 //      writes to the school's own Sheet. localStorage stays the backup.
 // ============================================================
-const SCHOOL_SYNC_URL = "https://script.google.com/macros/s/AKfycbwmjlZHD5fa_jS9Pvqm4xLnV4ADooJycelkAGO_Y8iv1Fr0EU9xGzR7rzsteWDlsVcKUw/exec";   // e.g. "https://script.google.com/macros/s/AKfy.../exec"
-const SCHOOL_SYNC_KEY = "sky";   // must match the PASSCODE inside the school's Apps Script
+const SCHOOL_SYNC_URL = "";   // LOCAL-ONLY: blank means nothing is ever transmitted. To enable syncing, paste the school's Apps Script Web App URL here.
+const SCHOOL_SYNC_KEY = "";   // set this to match the school's Apps Script passcode ONLY when enabling sync
 
 const $  = sel => document.querySelector(sel);
 const $$ = sel => document.querySelectorAll(sel);
@@ -2385,9 +2452,9 @@ function scale() { return mode === "depth" ? SCALE_6[surveyLang] : SCALE_4[surve
 const I18N_UI = {
   aog_what_ey:    { en: "The Foundation", es: "La Base" },
   aog_what_h:     { en: "What Is Architecture of Grace?", es: "\u00bfQu\u00e9 es Architecture of Grace?" },
-  aog_what_p1:    { en: "Architecture of Grace is a human development framework designed to help individuals understand themselves, strengthen their relationships, and navigate life\u2019s challenges with resilience, responsibility, and hope.", es: "Architecture of Grace es un marco de desarrollo humano dise\u00f1ado para ayudar a las personas a comprenderse a s\u00ed mismas, fortalecer sus relaciones y afrontar los desaf\u00edos de la vida con resiliencia, responsabilidad y esperanza." },
-  aog_what_p2:    { en: "Built upon developmental psychology, social-emotional learning, reflective practice, and character formation, the framework provides a structured pathway for growth through lessons, assessments, conversations, and real-world application.", es: "Basado en la psicolog\u00eda del desarrollo, el aprendizaje socioemocional, la pr\u00e1ctica reflexiva y la formaci\u00f3n del car\u00e1cter, el marco ofrece un camino estructurado para el crecimiento a trav\u00e9s de lecciones, evaluaciones, conversaciones y aplicaci\u00f3n en la vida real." },
-  aog_what_p3:    { en: "Its purpose is simple: to help people become the healthiest version of themselves while recognizing that growth is a lifelong process.", es: "Su prop\u00f3sito es sencillo: ayudar a las personas a convertirse en la versi\u00f3n m\u00e1s sana de s\u00ed mismas, reconociendo que el crecimiento es un proceso de toda la vida." },
+  aog_what_p1:    { en: "Architecture of Grace is a human development framework and intuitive digital check-in platform designed to help individuals understand themselves, strengthen relationships, and navigate life\u2019s challenges with resilience, responsibility, and hope.", es: "Architecture of Grace es un marco de desarrollo humano y una plataforma intuitiva de chequeo digital, dise\u00f1ada para ayudar a las personas a comprenderse a s\u00ed mismas, fortalecer sus relaciones y afrontar los desaf\u00edos de la vida con resiliencia, responsabilidad y esperanza." },
+  aog_what_p2:    { en: "Built upon developmental psychology, social-emotional learning, reflective practice, and character formation, the framework provides a structured pathway for lifelong growth through lessons, assessments, conversations, and real-world application.", es: "Basado en la psicolog\u00eda del desarrollo, el aprendizaje socioemocional, la pr\u00e1ctica reflexiva y la formaci\u00f3n del car\u00e1cter, el marco ofrece un camino estructurado para el crecimiento a lo largo de la vida a trav\u00e9s de lecciones, evaluaciones, conversaciones y aplicaci\u00f3n en la vida real." },
+  aog_what_p3:    { en: "By bridging the gap between deep personal development and daily practice, the platform empowers people to become the healthiest versions of themselves \u2014 ultimately reducing burnout, improving retention, and fostering a resilient culture across school districts and families.", es: "Al cerrar la brecha entre el desarrollo personal profundo y la pr\u00e1ctica diaria, la plataforma ayuda a las personas a convertirse en la versi\u00f3n m\u00e1s sana de s\u00ed mismas, reduciendo el agotamiento, mejorando la retenci\u00f3n y fomentando una cultura resiliente en los distritos escolares y las familias." },
   aog_what_pillars:{ en: "Four ideas run through everything", es: "Cuatro ideas recorren todo el marco" },
   pillar_identity:{ en: "Identity", es: "Identidad" },
   pillar_selfcomp:{ en: "Self-compassion", es: "Autocompasi\u00f3n" },
@@ -2401,7 +2468,7 @@ const I18N_UI = {
   m_rapid_ey:  { en: "The Universal Check-In \u00b7 population view", es: "Universal Check-In \u00b7 vista de grupo" },
   m_rapid_t:   { en: "Quick", es: "R\u00e1pida" },
   m_rapid_time:{ en: "~4 minutes", es: "~4 minutos" },
-  m_rapid_desc:{ en: "The standard universal check-in. 4-point frequency scale. Designed for whole-school administration three times a year.", es: "El chequeo universal est\u00e1ndar. Escala de frecuencia de 4 puntos. Dise\u00f1ada para administrarse a toda la escuela tres veces al a\u00f1o." },
+  m_rapid_desc:{ en: "The standard universal check-in. 4-point frequency scale. Designed for whole-school administration each seasonal window.", es: "El chequeo universal est\u00e1ndar. Escala de frecuencia de 4 puntos. Dise\u00f1ada para administrarse a toda la escuela en cada periodo estacional." },
   m_rapid_f1:  { en: "18 items, single-tap response", es: "18 preguntas, respuesta con un toque" },
   m_rapid_f2:  { en: "Score 0\u201354, flags who may need support", es: "Puntaje 0\u201354, se\u00f1ala qui\u00e9n puede necesitar apoyo" },
   m_rapid_f3:  { en: "Comparable across seasons of life", es: "Comparable entre etapas de la vida" },
@@ -2426,6 +2493,7 @@ const I18N_UI = {
   w_fall:      { en: "Fall (Sep\u2013Nov)", es: "Oto\u00f1o (sep\u2013nov)" },
   w_winter:    { en: "Winter (Dec\u2013Feb)", es: "Invierno (dic\u2013feb)" },
   w_spring:    { en: "Spring (Mar\u2013May)", es: "Primavera (mar\u2013may)" },
+  w_summer:    { en: "Summer (Jun\u2013Aug)", es: "Verano (jun\u2013ago)" },
   g_back: { es: "Volver al inicio" },
   g_educator: { es: "Acceso del educador &middot; resultados &rarr;" },
   g_slimlabel: { es: "<span class=\"guide-slim-eyebrow\">The Architecture of Grace</span> &nbsp;&middot;&nbsp; Gu\u00eda y biblioteca" },
@@ -2437,13 +2505,13 @@ const I18N_UI = {
   g_tab_resindex: { es: "\u00cdndice de recursos" },
   g_tab_library: { es: "Descargas" },
   ri_h: { es: "\u00cdndice de constructos y recursos" },
-  ri_intro: { es: "Cuando la Vista del hogar marca un dominio bajo o un \u00edtem espec\u00edfico, busca el constructo correspondiente abajo. Cada uno indica la lecci\u00f3n, la l\u00e1mina de anclaje y la actividad exactas en cada nivel; y ahora, bajo <strong>En las novelas</strong>, el libro y el cap\u00edtulo donde esa misma idea aparece como relato. (Las referencias son por cap\u00edtulo, que se mantienen exactas entre los formatos impreso y digital, en lugar de por p\u00e1gina.) Tanto el chequeo Quick como el Thorough miden los mismos \u00edtems, as\u00ed que un resultado de cualquiera de los dos remite a las mismas lecciones, secciones y cap\u00edtulos." },
+  ri_intro: { es: "Cuando un chequeo marca un dominio bajo o un \u00edtem espec\u00edfico, busca el constructo correspondiente abajo. Cada uno indica la lecci\u00f3n, la l\u00e1mina de anclaje y la actividad exactas en cada nivel; y ahora, bajo <strong>En las novelas</strong>, el libro y el cap\u00edtulo donde esa misma idea aparece como relato. (Las referencias son por cap\u00edtulo, que se mantienen exactas entre los formatos impreso y digital, en lugar de por p\u00e1gina.) Tanto el chequeo Quick como el Thorough miden los mismos \u00edtems, as\u00ed que un resultado de cualquiera de los dos remite a las mismas lecciones, secciones y cap\u00edtulos." },
   ri_search_ph: { es: "Buscar: cr\u00edtico interno, agobio, reparaci\u00f3n, inseguro..." },
   ri_allbands: { es: "Todos los niveles" },
   ri_expand: { es: "Expandir todo" },
   lib_h: { es: "Descargas" },
   doc_h1: { es: '1. Qué es esto' },
-  doc_p1: { es: 'Un chequeo universal de autoinforme de aprendizaje socioemocional (SEL) creada directamente a partir del plan de estudios Architecture of Grace. Es breve, de aplicación universal y está diseñada para realizarse tres veces al año (otoño, invierno, primavera) para seguir la línea base, el crecimiento y el riesgo con el tiempo. Mide tres dominios &mdash; Regulación emocional y bienestar, Autocompasión y mentalidad de crecimiento, y Competencia social y reparación &mdash; con seis ítems cada uno, dieciocho en total.' },
+  doc_p1: { es: 'Un chequeo universal de autoinforme de aprendizaje socioemocional (SEL) creada directamente a partir del plan de estudios Architecture of Grace. Es breve, de aplicación universal y está diseñada para realizarse en puntos regulares a lo largo del año &mdash; cada temporada en la escuela, o en cualquier momento en casa &mdash; para seguir la línea base, el crecimiento y el riesgo con el tiempo. Mide tres dominios &mdash; Regulación emocional y bienestar, Autocompasión y mentalidad de crecimiento, y Competencia social y reparación &mdash; con seis ítems cada uno, dieciocho en total.' },
   doc_h2: { es: '2. Los dos modos' },
   doc_p2a: { es: '<strong>Quick</strong> &mdash; el chequeo escolar estándar. Una escala de frecuencia de 4 puntos (Nunca / A veces / A menudo / Casi siempre), unos cuatro minutos. Úsalo para la aplicación en toda la escuela cuando necesitas clasificar rápidamente a muchos estudiantes y comparar entre escuelas y periodos.' },
   doc_p2b: { es: '<strong>Thorough</strong> &mdash; el instrumento completo. Una escala de frecuencia de 6 puntos (Nunca / Rara vez / A veces / A menudo / Muy a menudo / Constantemente), más preguntas de seguimiento de intensidad en los ítems de mayor señal, más tres breves reflexiones escritas. Unos diez minutos. Úsalo en contextos de hogar, mentor o consejero donde quieres comprender y actuar de verdad, no solo clasificar.' },
@@ -2455,7 +2523,7 @@ const I18N_UI = {
   doc_p3e: { es: '<span class="pill pill-green">Va bien &middot; 75&ndash;100</span> &nbsp; Continúa con el apoyo universal.' },
   doc_p3f: { es: 'El ítem del adulto de confianza (Ítem 18) también se sigue por separado. Una respuesta de Nunca o Rara vez/A veces genera una señal sin importar el puntaje compuesto, porque la conexión con un adulto de confianza es protectora por sí misma.' },
   doc_h4: { es: '4. Código de acceso' },
-  doc_p4: { es: 'Al panel que estás leyendo se accede con el código <code style="background:var(--cream); padding:2px 8px; border-radius:4px; font-weight:600;">educator</code>. Para cambiarlo, abre este archivo HTML en cualquier editor de texto y edita la línea <code style="background:var(--cream); padding:2px 8px; border-radius:4px;">const ACCESS_CODE = "educator";</code> cerca del inicio de la sección de script. Guarda. Ese es el único cambio necesario.' },
+  doc_p4: { es: 'El acceso al <strong>panel de resultados</strong> est&#225; controlado por un c&#243;digo privado, elegido por quien public&#243; este archivo. Para cambiarlo, abre este archivo HTML en cualquier editor de texto, busca la l&#237;nea cerca del inicio de la secci&#243;n de script que comienza con <code style="background:var(--cream); padding:2px 8px; border-radius:4px;">const ACCESS_CODE =</code> y reemplaza el valor entre comillas por el tuyo. Guarda. Ese es el &#250;nico cambio necesario. Pero ten claro qu&#233; es este c&#243;digo: una barrera de conveniencia, no un control de seguridad. Vive dentro de la p&#225;gina y no cifra nada, as&#237; que cualquiera que pueda abrir este archivo en un dispositivo puede ver los resultados guardados, y quien vea el c&#243;digo fuente puede leerlo. Si necesitas acceso autenticado real para muchos usuarios, eso requiere una versi&#243;n alojada con un inicio de sesi&#243;n real del lado del servidor y un acuerdo de privacidad de datos firmado con el distrito.' },
   doc_h5: { es: '5. Cómo aplicarla' },
   doc_p5a: { es: '<strong>En casa o 1:1:</strong> Abre este archivo en cualquier navegador. Cada persona ingresa un nombre o ID, su grado o rango de edad, y el periodo. Elige el modo Thorough. Responden en privado. Cuando todos terminen, ve a este panel, abre la Vista del hogar y selecciona a cada persona.' },
   doc_p5b: { es: '<strong>Con un grupo o varias personas:</strong> Cada persona usa su propia computadora (o su propio navegador). Las respuestas permanecen privadas en cada dispositivo &mdash; nada se comparte entre personas automáticamente. Si varias personas comparten una computadora, cada una ingresa su propio nombre, y el panel mantiene sus registros etiquetados y separados.' },
@@ -2468,7 +2536,7 @@ const I18N_UI = {
   doc_h_share: { es: '8. Compartir resultados en toda la escuela (opcional)' },
   doc_p_share: { es: 'De forma predeterminada, un chequeo permanece en el dispositivo que lo realizó. Una escuela puede optar por reunir sus resultados en su <strong>propia</strong> hoja de Google, para que un consejero vea toda la escuela en un solo lugar. Con eso activado, un chequeo completado se guarda en el dispositivo <em>y</em> se envía a la propia hoja de Google de la escuela &mdash; nunca a nosotros, y nunca a través de ningún servidor que operemos. La hoja crea un panel sencillo por sí sola (totales, puntaje promedio, cuántos no nombraron a un adulto de confianza). La configuración toma unos diez minutos y se explica en la guía “Conectar una hoja escolar”; los datos viven en el Google de la escuela, bajo su control.' },
   doc_h8: { es: '9. Una nota final' },
-  doc_p8: { es: 'Este chequeo es una señal, no un diagnóstico. Un puntaje bajo en un periodo puede ser un puntaje alto en el siguiente &mdash; esa es toda la razón por la que se aplica tres veces al año. El plan de estudios es la intervención; el chequeo solo te dice por dónde empezar.' },
+  doc_p8: { es: 'Este chequeo es una señal, no un diagnóstico. Un puntaje bajo en un periodo puede ser un puntaje alto en el siguiente &mdash; esa es toda la razón por la que se repite a lo largo del año. El plan de estudios es la intervención; el chequeo solo te dice por dónde empezar.' },
   eco_closed1: { es: 'EL CICLO' },
   eco_closed2: { es: 'CERRADO' },
   eco_cmta: { es: 'enseñar · medir · actuar' },
@@ -2487,15 +2555,23 @@ const I18N_UI = {
   dl_f_t: { es: 'Lee el primer capítulo' },
   dl_f_b: { es: 'Conoce a Sammy y al Salón 12 en el capítulo inicial de <em>The Year We Met Sammy</em> — el Libro Uno de la serie de novelas complementarias. El año comienza con la misma pregunta con la que abre el plan de estudios: <em>¿quién soy?</em>' },
   dl_f_btn: { es: '&#8599;&nbsp; Lee el capítulo uno &nbsp;&middot;&nbsp; PDF' },
-  dl_fullprog_h: { es: 'El programa completo' },
-  dl_fullprog_p: { es: 'El ecosistema completo &mdash; novelas, plan de estudios, láminas, hojas de trabajo, tarjetas de escenarios, evaluaciones, correlaciones, ediciones adaptadas para el autismo y para el hogar. El núcleo es totalmente secular. Una vía opcional secular, <em>Somatic Floor</em>, se lista por separado para que elijas lo que encaje. Abre una categoría para descargar.' },
+  dl_fullprog_h: { es: 'Explorar todo' },
+  dl_fullprog_p: { es: 'Las vistas previas gratuitas se descargan al instante. Todo lo demás es parte del programa completo &mdash; <strong>obtén una licencia</strong> para una escuela o <strong>compra</strong> piezas individuales para el hogar. Abre una categoría para explorar.' },
+  dl_path_s_ey: { es: 'Para escuelas y distritos' },
+  dl_path_s_t: { es: 'Licencia el programa completo' },
+  dl_path_s_b: { es: 'Lleva todo el ecosistema K&ndash;12 a tu escuela o distrito con una licencia de sede o de distrito &mdash; normalmente facturada por orden de compra y con precio por edificio o por estudiante. Te enviaremos una cotización y te ayudaremos a configurarlo.' },
+  dl_path_s_btn: { es: 'Solicitar precios para distritos →' },
+  dl_path_f_ey: { es: 'Para familias' },
+  dl_path_f_t: { es: 'Compra libros y materiales para el hogar' },
+  dl_path_f_b: { es: 'Compra libros, paquetes y ediciones para el hogar individuales para la mesa de la cocina. Las vistas previas gratuitas siempre están abiertas abajo; los artículos de pago muestran un botón <strong>Comprar</strong>.' },
+  dl_path_f_btn: { es: 'Visitar la tienda para familias →' },
   lib_intro: { es: "Las vistas previas gratuitas siguen las dos lecciones ancla del programa \u2014 <strong>la identidad</strong> y <strong>el cr\u00edtico interno</strong> \u2014 a medida que crecen a lo largo de los doce a\u00f1os. Todo lo que est\u00e1 debajo de las vistas previas es el programa completo, que se abre para descarga a medida que se publica cada pieza." },
   w_admin_link:{ en: "Educator / Parent access \u2192", es: "Acceso de educador / padre \u2192" },
   w_begin:     { en: "Begin Survey", es: "Comenzar encuesta" },
   w_door_guide:{ en: "Explore the Guide & Library", es: "Explorar la gu\u00eda y biblioteca" },
   w_door_guide_sub:{ en: "The ecosystem map, resource index, and every downloadable resource \u2014 no code needed.", es: "El mapa del ecosistema, el \u00edndice de recursos y todas las descargas \u2014 sin c\u00f3digo." },
   w_door_results:{ en: "Educator Access \u00b7 Results", es: "Acceso de educador \u00b7 Resultados" },
-  w_door_results_sub:{ en: "View check-in results. Code required \u2014 protects private responses.", es: "Ver resultados. Requiere c\u00f3digo \u2014 protege las respuestas privadas." },
+  w_door_results_sub:{ en: "View saved check-in results. A code keeps the dashboard out of casual view \u2014 it is not a security lock.", es: "Ver resultados guardados. Un c\u00f3digo mantiene el panel fuera de la vista casual \u2014 no es un candado de seguridad." },
   s_question:  { en: "Question", es: "Pregunta" },
   s_of:        { en: "of", es: "de" },
   s_back:      { en: "\u2190 Back", es: "\u2190 Atr\u00e1s" },
@@ -2559,6 +2635,24 @@ function applyContext() {
     // If an adult band was chosen and we switch to School, clear the now-hidden pick.
     if (context === "school" && adultBands.indexOf(gradeSel.value) !== -1) {
       gradeSel.value = "";
+    }
+  }
+
+  // Window adapts to context: School keeps the academic seasons; Home auto-stamps the
+  // current month (no calendar burden on a parent, and it stays time-comparable).
+  const winSel = document.getElementById("window");
+  const winStamp = document.getElementById("homeWindowStamp");
+  const winLbl = document.getElementById("lblWindow");
+  if (winSel && winStamp) {
+    if (context === "home") {
+      winSel.style.display = "none";
+      winStamp.style.display = "";
+      winStamp.textContent = currentDateLabel(L);
+      if (winLbl) winLbl.textContent = (L === "es") ? "Este chequeo" : "This check-in";
+    } else {
+      winSel.style.display = "";
+      winStamp.style.display = "none";
+      if (winLbl) winLbl.textContent = (L === "es") ? "Per\u00edodo" : "Window";
     }
   }
 }
@@ -3032,6 +3126,7 @@ const DASH_I18N = {
   dl_opt_fall:      { en: "Fall (Sep–Nov)", es: "Otoño (sep–nov)" },
   dl_opt_winter:    { en: "Winter (Dec–Feb)", es: "Invierno (dic–feb)" },
   dl_opt_spring:    { en: "Spring (Mar–May)", es: "Primavera (mar–may)" },
+  dl_opt_summer:    { en: "Summer (Jun–Aug)", es: "Verano (jun–ago)" },
   dl_opt_allgrades: { en: "All Grades", es: "Todos los grados" },
   dl_opt_allmodes:  { en: "All Modes", es: "Todos los modos" },
   dl_opt_depthonly: { en: "Thorough only", es: "Solo a fondo" },
@@ -3059,7 +3154,7 @@ const DASH_I18N = {
   dl_home_h1:       { en: "Home View · Per-person report", es: "Vista del hogar · Informe individual" },
   dl_home_sub:      { en: "The instrument's real depth. Shows each item, the answer, intensity, written reflections, and a conversation guide for the people closest to this person.", es: "La verdadera profundidad del instrumento. Muestra cada ítem, la respuesta, la intensidad, las reflexiones escritas y una guía de conversación para las personas más cercanas a este estudiante." },
   dl_grw_h1:        { en: "Growth across windows", es: "Progreso entre períodos" },
-  dl_grw_sub:       { en: "Composite scores Fall → Winter → Spring per person.", es: "Puntaje compuesto Otoño → Invierno → Primavera por persona." },
+  dl_grw_sub:       { en: "Composite scores Fall → Winter → Spring → Summer per person.", es: "Puntaje compuesto Otoño → Invierno → Primavera → Verano por persona." },
   dl_dist_h1:       { en: "Syncing & distribution", es: "Sincronización y distribución" },
   dl_dist_sub:      { en: "By default this device keeps every response local and private. Syncing to your central sheet turns on only when you enable it here, or when someone opens a generated link.", es: "De forma predeterminada, este dispositivo guarda cada respuesta de manera local y privada. La sincronización con tu hoja central se activa solo cuando la habilitas aquí, o cuando alguien abre un enlace generado." },
   dl_dist_togglelabel: { en: "Send check-ins taken on <em>this device</em> to the central sheet", es: "Enviar los check-ins de <em>este dispositivo</em> a la hoja central" },
@@ -3089,7 +3184,7 @@ const DASH_I18N = {
   dl_exp_roster:    { en: "Tier roster", es: "Lista por nivel" },
   dl_exp_roster_sub:{ en: "Flagged students only.", es: "Solo estudiantes marcados." },
   dl_exp_growth:    { en: "Growth report", es: "Informe de progreso" },
-  dl_exp_growth_sub:{ en: "Fall / Winter / Spring deltas per person.", es: "Cambios Otoño / Invierno / Primavera por persona." },
+  dl_exp_growth_sub:{ en: "Fall / Winter / Spring / Summer deltas per person.", es: "Cambios Otoño / Invierno / Primavera / Verano por persona." },
   dl_exp_datalives: { en: "Where your data lives", es: "Dónde viven tus datos" },
   dl_exp_reset:     { en: "Reset", es: "Restablecer" },
   dl_exp_reset_note:{ en: "Use only after confirming exports are saved.", es: "Úsalo solo después de confirmar que las exportaciones están guardadas." },
@@ -3223,6 +3318,7 @@ function resetToStart() {
   context = "school";
   applyContext();
   showScreen("screen-welcome");
+  if (typeof aogSetHash === "function") aogSetHash("");
 }
 
 
@@ -3278,7 +3374,7 @@ document.addEventListener("DOMContentLoaded", () => {
   $("#btnStart").addEventListener("click", () => {
     const sid = $("#studentId").value.trim();
     const grade = $("#grade").value;
-    const win = $("#window").value;
+    const win = (context === "home") ? currentDateCanonical() : $("#window").value;
     surveyLang = lang;
     if (!sid || !grade || !win) {
       const idTerm = (context === "school")
@@ -3484,7 +3580,7 @@ document.addEventListener("DOMContentLoaded", () => {
 // ============================================================
 // Admin / modal
 // ============================================================
-function openAdmin() { openModal("modalAccess"); }
+function openAdmin() { openModal("modalAccess"); if (typeof aogSetHash === "function") aogSetHash("results"); }
 function openModal(id) { $("#" + id).classList.add("active"); }
 function closeModal(id) { $("#" + id).classList.remove("active"); }
 
@@ -3498,12 +3594,31 @@ function openGuide(sub) {
   const eco = document.getElementById("ecoSvg");
   if (eco && typeof initEcoInteractive === "function") initEcoInteractive();
   if (sub) openGuideSub(sub);
+  else if (typeof aogSetHash === "function") aogSetHash("guide");
 }
 
 function openGuideSub(name) {
   const tab = document.querySelector('.guide-subtab[data-guide="' + name + '"]');
   if (tab) tab.click();
 }
+
+// ---- Deep-link routing: shareable section URLs / QR codes (#downloads, #resource-index, etc.) ----
+const AOG_SUB_TO_HASH = { docs:"documentation", resindex:"resource-index", library:"downloads" };
+function aogSetHash(h) {
+  try { history.replaceState(null, "", h ? ("#" + h) : (location.pathname + location.search)); } catch (e) {}
+}
+function aogRouteFromHash() {
+  const h = (location.hash || "").replace(/^#/, "").trim().toLowerCase();
+  if (!h) return;
+  if (h === "downloads" || h === "library" || h === "store") { openGuide("library"); }
+  else if (h === "resource-index" || h === "resources" || h === "index") { openGuide("resindex"); }
+  else if (h === "documentation" || h === "docs") { openGuide("docs"); }
+  else if (h === "guide" || h === "ecosystem" || h === "explore") { openGuide(); }
+  else if (h === "results" || h === "dashboard" || h === "educator" || h === "admin") { openAdmin(); }
+  else if (h === "start" || h === "welcome" || h === "check-in" || h === "checkin" || h === "survey") { resetToStart(); }
+}
+window.addEventListener("hashchange", aogRouteFromHash);
+window.addEventListener("load", aogRouteFromHash);
 
 function submitAccessCode() {
   const code = $("#accessCode").value;
@@ -3603,11 +3718,32 @@ async function pullFromSheet() {
   }
   if (btn) btn.disabled = true;
   say(DT("Pulling from the sheet\u2026", "Trayendo de la hoja\u2026"));
-  try {
+  // Two ways to read the sheet back. Preferred: a POST with the passcode in the
+  // request BODY, so the key never appears in a URL, log, or history. If the
+  // browser can't read that cross-origin reply (CORS), fall back to a GET with
+  // the key in the query string (still passcode-gated, just less private).
+  async function readViaPost() {
+    const res = await fetch(SCHOOL_SYNC_URL, {
+      method: "POST",
+      headers: { "Content-Type": "text/plain;charset=utf-8" },
+      body: JSON.stringify({ action: "pull", passcode: SCHOOL_SYNC_KEY })
+    });
+    return await res.json();   // throws if the reply isn't readable JSON
+  }
+  async function readViaGet() {
     const url = SCHOOL_SYNC_URL + (SCHOOL_SYNC_URL.indexOf("?") >= 0 ? "&" : "?") +
                 "key=" + encodeURIComponent(SCHOOL_SYNC_KEY);
     const res = await fetch(url, { method: "GET" });
-    const data = await res.json();
+    return await res.json();
+  }
+  try {
+    let data;
+    try {
+      data = await readViaPost();          // secure path first
+    } catch (postErr) {
+      console.warn("Secure POST read unavailable, falling back to GET.", postErr);
+      data = await readViaGet();           // proven fallback
+    }
     if (data && data.error) {
       say(DT("The sheet rejected the passcode. Check that SHEET_PASSCODE matches.",
              "La hoja rechaz\u00f3 el c\u00f3digo. Verifica que SHEET_PASSCODE coincida."), "var(--red)");
@@ -3809,7 +3945,7 @@ function sortStudents(key) {
 }
 function studentSortCmp(a, b) {
   const dir = studentSort.dir === "desc" ? -1 : 1;
-  const winOrder = { Fall: 0, Winter: 1, Spring: 2 };
+  const winOrder = { Fall: 0, Winter: 1, Spring: 2, Summer: 3 };
   const tierRank = { "High Risk": 0, "Some Risk": 1, "Low Risk": 2 };
   let av, bv;
   switch (studentSort.key) {
@@ -3902,7 +4038,11 @@ function renderHome() {
   let html = '<div class="home-header">' +
     '<div class="home-header-id">' +
       '<div class="home-name">' + escapeHtml(r.studentId) + (r._remote ? ' <span style="font-size:12px; font-weight:600; color:var(--gold,#B8893A); border:1px solid var(--gold,#B8893A); border-radius:6px; padding:2px 7px; vertical-align:middle;">' + DT("from sheet","de la hoja") + '</span>' : '') + '</div>' +
-      '<div class="small">' + DT("Grade ","Grado ") + escapeHtml(String(r.grade)) + ' \u00B7 ' + escapeHtml(winLabel(r.window)) + ' \u00B7 ' +
+      '<div class="small">' +
+        [ DT("Grade ","Grado ") + escapeHtml(String(r.grade)),
+          (winLabel(r.window) ? escapeHtml(winLabel(r.window)) : null),
+          (fmtNiceDate(r.timestamp) || null)
+        ].filter(Boolean).join(' \u00B7 ') + ' \u00B7 ' +
         '<span class="pill ' + tierClass(r.tier) + '">' + tierLabel(r.tier) + '</span> \u00B7 ' +
         '<span class="small">' + (r.mode === "depth" ? DT("Thorough mode","Modo a fondo") : DT("Quick mode","Modo r\u00e1pido")) + '</span>' +
       '</div>' +
@@ -4077,7 +4217,7 @@ function renderGrowth() {
   const byStudent = {};
   all.forEach(r => {
     if (grade && String(r.grade) !== String(grade)) return;
-    if (!byStudent[r.studentId]) byStudent[r.studentId] = { studentId: r.studentId, grade: r.grade, Fall: null, Winter: null, Spring: null };
+    if (!byStudent[r.studentId]) byStudent[r.studentId] = { studentId: r.studentId, grade: r.grade, Fall: null, Winter: null, Spring: null, Summer: null };
     const existing = byStudent[r.studentId][r.window];
     if (!existing || new Date(r.timestamp) > new Date(existing.timestamp)) {
       byStudent[r.studentId][r.window] = r;
@@ -4092,7 +4232,7 @@ function renderGrowth() {
   }
 
   list.forEach(s => {
-    const order = ["Fall","Winter","Spring"];
+    const order = ["Fall","Winter","Spring","Summer"];
     const present = order.filter(w => s[w]);
     if (present.length >= 2) {
       s.earliest = s[present[0]].normComposite;
@@ -4111,7 +4251,7 @@ function renderGrowth() {
     return String(a.studentId).localeCompare(String(b.studentId), undefined, {numeric:true});
   });
 
-  let html = '<table><thead><tr><th>' + DT("Name","Nombre") + '</th><th>' + DT("Grade","Grado") + '</th><th>' + DT("Fall","Oto\u00f1o") + '</th><th>' + DT("Winter","Invierno") + '</th><th>' + DT("Spring","Primavera") + '</th><th>' + DT("Change","Cambio") + '</th></tr></thead><tbody>';
+  let html = '<table><thead><tr><th>' + DT("Name","Nombre") + '</th><th>' + DT("Grade","Grado") + '</th><th>' + DT("Fall","Oto\u00f1o") + '</th><th>' + DT("Winter","Invierno") + '</th><th>' + DT("Spring","Primavera") + '</th><th>' + DT("Summer","Verano") + '</th><th>' + DT("Change","Cambio") + '</th></tr></thead><tbody>';
   list.forEach(s => {
     const cell = w => s[w] ? (s[w].normComposite != null ? s[w].normComposite.toFixed(0) : "\u2014") : "\u2014";
     let deltaCell = "\u2014";
@@ -4126,6 +4266,7 @@ function renderGrowth() {
       '<td>' + cell("Fall") + '</td>' +
       '<td>' + cell("Winter") + '</td>' +
       '<td>' + cell("Spring") + '</td>' +
+      '<td>' + cell("Summer") + '</td>' +
       '<td>' + deltaCell + '</td>' +
     '</tr>';
   });
@@ -4198,18 +4339,19 @@ function exportGrowthCSV() {
       byStudent[r.studentId][r.window] = r;
     }
   });
-  const headers = ["studentId","grade","fall","winter","spring","FallToSpringDelta","latestTier"];
+  const headers = ["studentId","grade","fall","winter","spring","summer","firstToLatestDelta","latestTier"];
   const rows = Object.values(byStudent).map(s => {
     const fall = s.Fall ? s.Fall.normComposite : "";
     const winter = s.Winter ? s.Winter.normComposite : "";
     const spring = s.Spring ? s.Spring.normComposite : "";
-    const order = ["Fall","Winter","Spring"];
+    const summer = s.Summer ? s.Summer.normComposite : "";
+    const order = ["Fall","Winter","Spring","Summer"];
     const present = order.filter(w => s[w]);
     const earliest = present.length ? s[present[0]].normComposite : null;
     const latest = present.length ? s[present[present.length-1]].normComposite : null;
     const delta = (earliest != null && latest != null) ? round1(latest - earliest) : "";
     const latestTier = present.length ? s[present[present.length-1]].tier : "";
-    return [s.studentId, s.grade, fall, winter, spring, delta, latestTier];
+    return [s.studentId, s.grade, fall, winter, spring, summer, delta, latestTier];
   });
   downloadCSV("AoG_CheckIn_v2_GrowthReport.csv", headers, rows);
 }
@@ -4334,7 +4476,7 @@ const LIB_CAT_ES = {
   "Assessment & Data":{ cat:"Evaluación y datos", note:"Los instrumentos de evaluación y clínicos." },
   "Crosswalks & Implementation Maps":{ cat:"Correlaciones y mapas de implementación", note:"Cómo se conectan las piezas, y cómo implementarlo." },
   "Secular Somatic Floor Lessons":{ cat:"Lecciones del Piso Somático (seculares)", note:"Compañeras corporales, totalmente seculares — donde estas ideas viven en el sistema nervioso." },
-  "Autism-Adapted Editions":{ cat:"Ediciones adaptadas para el autismo", note:"Las mismas lecciones — incluidas las que viste en la vista previa — reconstruidas para estudiantes autistas." },
+  "Autism-Adapted Charts":{ cat:"Láminas adaptadas para el autismo", note:"Las láminas de anclaje, adaptadas con lenguaje sencillo y apoyos visuales para estudiantes autistas." },
   "Home & Family Editions":{ cat:"Ediciones para el hogar y la familia", note:"El programa, reescrito para que las familias lo usen en la mesa de la cocina." }
 };
 
@@ -4414,13 +4556,35 @@ function riToggle(id) {
 // the files alongside this page on Netlify, short paths like
 // "files/book1.pdf".
 // ============================================================
+// ============================================================
+// WHERE PAID ITEMS GO  ·  EDIT ME
+// Free previews download from their "url" below. Everything else is
+// either licensed by a school/district or bought by a family. Paste
+// your two destinations here once they exist; leave a value blank and
+// that button still shows but stays inert until you're ready.
+//   LICENSE_INQUIRY_URL — the school/district "Request a license" path.
+//        A web form, or a mailto, e.g.
+//        "mailto:hello@yourdomain.org?subject=Architecture%20of%20Grace%20%E2%80%94%20District%20License"
+//   FAMILY_STORE_URL — the storefront families buy from
+//        (Gumroad, Payhip, Shopify, etc.). Used by every "Buy" button.
+// To make any item a family purchase instead of a district license,
+// add  access:"buy"  to it below (and optionally its own buyUrl:"...").
+// ============================================================
+const LICENSE_INQUIRY_URL = "";
+const FAMILY_STORE_URL = "";
+
 const RESOURCE_LIBRARY = [
-  { cat:"The Novels", note:"The five-book narrative companion \u2014 the ideas, lived as story.", items:[
+  { cat:"The Novels", note:"The five-book narrative companion \u2014 the ideas, lived as story. Included in the district curriculum, and available for families to buy on their own.", items:[
     { title:"Book 1 \u2014 The Year We Met Sammy (K\u20132)", desc:"Read Chapter One free \u2014 the morning a class meets Sammy, and the year begins with a question: who am I?", tie:true, url:"files/Room-12-First-Chapter-Preview.pdf" },
+    { title:"The Year We Met Sammy \u2014 full novel (K\u20132)", desc:"The complete Book 1 novel \u2014 part of the curriculum, or buy it on its own.", access:"both", url:"" },
     { title:"Book 2 \u2014 The Year of the Inner Critic (3\u20135)", desc:"Read Chapter One free \u2014 the year a class names the harsh voice inside, and learns to answer it.", tie:true, url:"files/Room-18-First-Chapter-Preview.pdf" },
+    { title:"The Year of the Inner Critic \u2014 full novel (3\u20135)", desc:"The complete Book 2 novel \u2014 part of the curriculum, or buy it on its own.", access:"both", url:"" },
     { title:"Book 3 \u2014 The Year of Two Voices (6\u20138)", desc:"Read Chapter One free \u2014 Amara, a mask, a mirror, and the year she figures out who she is when no one is watching.", tie:true, url:"files/Room-36-First-Chapter-Preview.pdf" },
+    { title:"The Year of Two Voices \u2014 full novel (6\u20138)", desc:"The complete Book 3 novel \u2014 part of the curriculum, or buy it on its own.", access:"both", url:"" },
     { title:"Book 4 \u2014 The Year We Looked Up (9\u201310)", desc:"Read Chapter One free \u2014 the first day of high school, and the version of yourself you choose to show a room of strangers.", tie:true, url:"files/Room-104-First-Chapter-Preview.pdf" },
+    { title:"The Year We Looked Up \u2014 full novel (9\u201310)", desc:"The complete Book 4 novel \u2014 part of the curriculum, or buy it on its own.", access:"both", url:"" },
     { title:"Book 5 \u2014 The Year We Walked Out (11\u201312)", desc:"Read Chapter One free \u2014 the first day of the last year, and the question of what you carry out the door with you.", tie:true, url:"files/Room-207-First-Chapter-Preview.pdf" },
+    { title:"The Year We Walked Out \u2014 full novel (11\u201312)", desc:"The complete Book 5 novel \u2014 part of the curriculum, or buy it on its own.", access:"both", url:"" },
   ]},
   { cat:"The Curriculum", note:"The full K\u201312 secular curriculum \u2014 five grade-band volumes, the spine of the preview running through every one.", items:[
     { title:"Sample Lesson \u00b7 Book 1 (K\u20132)", desc:"One complete lesson from The Foundation \u2014 free to read end to end.", tie:true, url:"files/AoG-Sample-Lesson-Book-1.pdf" },
@@ -4444,34 +4608,34 @@ const RESOURCE_LIBRARY = [
     { title:"Supplemental Anchor Chart Pack", desc:"Extra display-ready charts for the 6\u20138 Interior units.", url:"" },
   ]},
   { cat:"Worksheets & Activities", note:"Reproducible student worksheets, drawing activities, and display examples.", items:[
-    { title:"Worksheets \u00b7 K\u201312 Sampler", desc:"One skill across twelve years \u2014 the inner-critic worksheet, from Grumpy Gus to forgiving the younger self.", tie:true, url:"files/AoG-Worksheets-K12-Sampler.pdf" },
-    { title:"Student Worksheet Packet (3\u20135)", desc:"All nine reproducible worksheets \u2014 including WS3 Two Voices from the preview.", tie:true, url:"" },
-    { title:"Supplemental Worksheet Pack \u00b7 Units 1\u20132", desc:"The 6\u20138 identity and self-compassion sheets \u2014 including the Internal Critic Profile you previewed.", tie:true, url:"" },
-    { title:"Supplemental Worksheet Pack \u00b7 Units 3\u20134", desc:"The 6\u20138 worksheets for empathy, forgiveness, and grace.", url:"" },
-    { title:"Worksheet Pack \u00b7 Book 4 (9\u201310)", desc:"The 9\u201310 reproducible worksheets for the Fa\u00e7ade and self-kindness units.", url:"" },
-    { title:"Worksheet Pack \u00b7 Book 5 (11\u201312)", desc:"The 11\u201312 worksheets for values, repair, and forgiveness.", url:"" },
     { title:"Drawing Activities \u00b7 K\u20132 Sampler", desc:"Four drawings, four pillars \u2014 how K\u20132 students draw identity, self-compassion, forgiveness, and grace.", tie:true, url:"files/AoG-Drawing-Activities-K2-Sampler.pdf" },
     { title:"Drawing Activities (K\u20132)", desc:"Hands-on drawing lessons \u2014 the Identity Web and Kind Message to Myself from the preview.", tie:true, url:"" },
     { title:"Drawing Examples", desc:"Finished display models teachers post before students begin.", url:"" },
+    { title:"Worksheets \u00b7 K\u201312 Sampler", desc:"One skill across twelve years \u2014 the inner-critic worksheet, from Grumpy Gus to forgiving the younger self.", tie:true, url:"files/AoG-Worksheets-K12-Sampler.pdf" },
+    { title:"Worksheet Pack \u00b7 Book 2 (3\u20135)", desc:"All nine reproducible worksheets \u2014 including WS3 Two Voices from the preview.", tie:true, url:"" },
+    { title:"Worksheet Pack \u00b7 Book 3 (6\u20138) \u00b7 Part 1", desc:"The 6\u20138 identity and self-compassion sheets \u2014 including the Internal Critic Profile you previewed.", tie:true, url:"" },
+    { title:"Worksheet Pack \u00b7 Book 3 (6\u20138) \u00b7 Part 2", desc:"The 6\u20138 worksheets for empathy, forgiveness, and grace.", url:"" },
+    { title:"Worksheet Pack \u00b7 Book 4 (9\u201310)", desc:"The 9\u201310 reproducible worksheets for the Fa\u00e7ade and self-kindness units.", url:"" },
+    { title:"Worksheet Pack \u00b7 Book 5 (11\u201312)", desc:"The 11\u201312 worksheets for values, repair, and forgiveness.", url:"" },
   ]},
   { cat:"Scenario Cards", note:"Discussion and role-play decks \u2014 work a dilemma in the room, not on a page.", items:[
     { title:"Scenario Cards \u00b7 K\u201312 Sampler", desc:"Ten cards, one per band \u2014 the identity and inner-critic threads sampled from kindergarten to graduation.", tie:true, url:"files/AoG-Scenario-Cards-K12-Sampler.pdf" },
-    { title:"Scenario Cards (Polished)", desc:"The cross-band deck of dilemmas for discussion and role-play.", url:"" },
-    { title:"Scenario Card Deck \u00b7 Book 2", desc:"The 3\u20135 decks \u2014 including Sofia's failed test (Card 1-G) from the preview.", tie:true, url:"" },
-    { title:"Scenario Cards \u00b7 Units 1\u20132", desc:"Identity and self-compassion dilemmas for the early units.", url:"" },
-    { title:"Scenario Cards \u00b7 Units 3\u20134", desc:"Empathy, repair, and grace dilemmas for older students.", url:"" },
+    { title:"Scenario Cards \u00b7 Book 2 (3\u20135)", desc:"The 3\u20135 decks \u2014 including Sofia's failed test (Card 1-G) from the preview.", tie:true, url:"" },
+    { title:"Scenario Cards \u00b7 Book 3 (6\u20138) \u00b7 Part 1", desc:"Identity and self-compassion dilemmas for the 6\u20138 year.", url:"" },
+    { title:"Scenario Cards \u00b7 Book 3 (6\u20138) \u00b7 Part 2", desc:"Empathy, repair, and grace dilemmas for the 6\u20138 year.", url:"" },
     { title:"Scenario Cards \u00b7 Book 4 (9\u201310)", desc:"The 9\u201310 decks \u2014 including Layla (B4-6A) from the preview.", tie:true, url:"" },
     { title:"Scenario Cards \u00b7 Book 5 (11\u201312)", desc:"The 11\u201312 decks \u2014 including Priya\u2019s Past Self (B5-9A) from the preview.", tie:true, url:"" },
+    { title:"Scenario Cards \u00b7 Complete Deck (all bands)", desc:"The cross-band deck of dilemmas for discussion and role-play.", url:"" },
   ]},
   { cat:"Assessment & Data", note:"The screening and clinical instruments.", items:[
-    { title:"Universal Check-In (this tool)", desc:"The instrument you're in now \u2014 18 items, three domains, three times a year.", url:"" },
+    { title:"Universal Check-In (this tool)", desc:"The instrument you're in now \u2014 18 items, three domains, repeated across the year.", url:"" },
     { title:"Clinical Edition", desc:"The same architecture, deepened for counselors and clinical settings.", url:"" },
   ]},
   { cat:"Crosswalks & Implementation Maps", note:"How the pieces connect, and how to roll it out.", items:[
     { title:"Master Crosswalk \u00b7 Book 2", desc:"Every 3\u20135 construct mapped to its lesson, chart, and activity.", url:"" },
-    { title:"Master Crosswalk \u00b7 Book 3", desc:"Every 6\u20138 construct mapped across the program.", url:"" },
     { title:"Master Integration Map \u00b7 Book 2", desc:"How the secular core and somatic track fit together at 3\u20135.", url:"" },
     { title:"Implementation Master \u00b7 Book 2", desc:"The rollout plan \u2014 pacing, safety, and counselor coordination for 3\u20135.", url:"" },
+    { title:"Master Crosswalk \u00b7 Book 3", desc:"Every 6\u20138 construct mapped across the program.", url:"" },
     { title:"Implementation Master \u00b7 Book 3", desc:"The rollout plan for the 6\u20138 Interior year.", url:"" },
     { title:"Implementation Master \u00b7 Book 4 (9\u201310)", desc:"The rollout plan for the 9\u201310 Fa\u00e7ade year.", url:"" },
     { title:"Implementation Master \u00b7 Book 5 (11\u201312)", desc:"The rollout plan for the 11\u201312 Capstone year.", url:"" },
@@ -4486,60 +4650,83 @@ const RESOURCE_LIBRARY = [
     { title:"Book 3 \u00b7 Rewriting the Script \u00b7 Somatic Floor (D8)", desc:"Somatic grounding for reauthoring the self-story.", url:"" },
     { title:"Book 3 \u00b7 The Agency of Release \u00b7 Somatic Floor (D11)", desc:"Releasing what you carry \u2014 a body-based practice.", url:"" },
   ]},
-  { cat:"Autism-Adapted Editions", note:"The same lessons \u2014 including the ones you previewed \u2014 rebuilt for autistic learners.", items:[
-    { title:"Book 1 \u00b7 Lower Support Needs", desc:"The K\u20132 program, including the Kind Coach lesson, with plain-words supports.", tie:true, url:"" },
-    { title:"Book 1 \u00b7 Moderate Support Needs", desc:"The K\u20132 work rebuilt as \u201cMean Thoughts vs. Helpful Thoughts,\u201d with adult co-regulation.", tie:true, url:"" },
-    { title:"Book 2 \u00b7 Lower Support Needs", desc:"The 3\u20135 Inner Critic work, with literal language and explicit scaffolds.", tie:true, url:"" },
-    { title:"Book 2 \u00b7 Moderate Support Needs", desc:"The 3\u20135 program adapted for moderate support needs.", tie:true, url:"" },
-    { title:"Book 3 \u00b7 Lower Support Needs", desc:"The 6\u20138 Internal Critic work, adapted for autistic learners.", tie:true, url:"" },
-    { title:"Book 3 \u00b7 Moderate Support Needs", desc:"The 6\u20138 program adapted for moderate support needs.", tie:true, url:"" },
-    { title:"Book 4 \u00b7 Lower Support Needs", desc:"The 9\u201310 Fa\u00e7ade work \u2014 performance, authenticity, the Internal Coach \u2014 with literal language and explicit supports.", tie:true, url:"" },
-    { title:"Book 4 \u00b7 Moderate Support Needs", desc:"The 9\u201310 program adapted for moderate support needs.", tie:true, url:"" },
-    { title:"Book 5 \u00b7 Lower Support Needs", desc:"The 11\u201312 work \u2014 values, repair, forgiving the younger self \u2014 adapted for autistic learners.", tie:true, url:"" },
-    { title:"Book 5 \u00b7 Moderate Support Needs", desc:"The 11\u201312 program adapted for moderate support needs.", tie:true, url:"" },
+  { cat:"Autism-Adapted Charts", note:"The anchor charts, adapted with plain language and visual supports for autistic learners.", items:[
+    { title:"Autism-Adapted Anchor Charts", desc:"The program\u2019s anchor charts, rebuilt with literal language and visual supports for autistic learners.", url:"" },
   ]},
   { cat:"Home & Family Editions", note:"The program, rewritten for families to use at the kitchen table.", items:[
-    { title:"Home Edition \u00b7 Book 1 (K\u20132)", desc:"The previewed K\u20132 lessons, in a version parents can lead at home.", url:"" },
-    { title:"Home Edition \u00b7 Book 2 (3\u20135)", desc:"The Inner Critic work, written for families.", url:"" },
-    { title:"Home Edition \u00b7 Book 3 (6\u20138)", desc:"The 6\u20138 interior work, adapted for home.", url:"" },
-    { title:"Home Edition \u00b7 Book 4 (9\u201310)", desc:"The 9\u201310 interior work, written for families at home.", url:"" },
-    { title:"Home Edition \u00b7 Book 5 (11\u201312)", desc:"The 11\u201312 work \u2014 threshold, values, forgiveness \u2014 for families.", url:"" },
+    { title:"Home Edition \u00b7 Book 1 (K\u20132)", desc:"The previewed K\u20132 lessons, in a version parents can lead at home.", access:"buy", url:"" },
+    { title:"Home Edition \u00b7 Book 2 (3\u20135)", desc:"The Inner Critic work, written for families.", access:"buy", url:"" },
+    { title:"Home Edition \u00b7 Book 3 (6\u20138)", desc:"The 6\u20138 interior work, adapted for home.", access:"buy", url:"" },
+    { title:"Home Edition \u00b7 Book 4 (9\u201310)", desc:"The 9\u201310 interior work, written for families at home.", access:"buy", url:"" },
+    { title:"Home Edition \u00b7 Book 5 (11\u201312)", desc:"The 11\u201312 work \u2014 threshold, values, forgiveness \u2014 for families.", access:"buy", url:"" },
   ]},
 ];
 function libEsc(s) { return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
 
+function libItemState(it) {
+  if (it.url && it.url.trim()) return "free";   // a real downloadable file
+  if (it.access === "both") return "both";      // district license OR family purchase
+  if (it.access === "buy") return "buy";        // family purchase
+  return "license";                             // default: school/district license
+}
 function renderLibrary() {
   const root = document.getElementById("libRoot");
   if (!root) return;
+  const es = (lang === "es");
+
+  // Wire the two top-of-tab path buttons to the configured destinations.
+  const lb = document.getElementById("licenseTopBtn");
+  if (lb) { if (LICENSE_INQUIRY_URL) { lb.setAttribute("href", LICENSE_INQUIRY_URL); lb.onclick = null; } else { lb.setAttribute("href", "#"); lb.onclick = function(e){ e.preventDefault(); }; } }
+  const sb = document.getElementById("storeTopBtn");
+  if (sb) { if (FAMILY_STORE_URL) { sb.setAttribute("href", FAMILY_STORE_URL); sb.onclick = null; } else { sb.setAttribute("href", "#"); sb.onclick = function(e){ e.preventDefault(); }; } }
+
   let html = "";
   RESOURCE_LIBRARY.forEach((cat) => {
-    const readyItems = cat.items.filter(i => i.url && i.url.trim());
-    const soonItems  = cat.items.filter(i => !(i.url && i.url.trim()));
-    const ready = readyItems.length;
-    html += '<div class="lib-cat' + (ready ? " open" : "") + '">' +
+    const freeCount = cat.items.filter(i => libItemState(i) === "free").length;
+    const total = cat.items.length;
+    const catName = (es && LIB_CAT_ES[cat.cat]) ? LIB_CAT_ES[cat.cat].cat : cat.cat;
+    const catNote = (es && LIB_CAT_ES[cat.cat]) ? LIB_CAT_ES[cat.cat].note : cat.note;
+    const countLabel = freeCount
+      ? (freeCount + (es ? ' gratis' : ' free'))
+      : (total + (es ? ' en el programa' : ' in the program'));
+    html += '<div class="lib-cat">' +
       '<div class="lib-cat-head">' +
-        '<div><div class="lib-cat-title">' + libEsc((lang==="es"&&LIB_CAT_ES[cat.cat])?LIB_CAT_ES[cat.cat].cat:cat.cat) + '</div>' +
-        (cat.note ? '<div class="lib-cat-note">' + libEsc((lang==="es"&&LIB_CAT_ES[cat.cat])?LIB_CAT_ES[cat.cat].note:cat.note) + '</div>' : '') + '</div>' +
+        '<div><div class="lib-cat-title">' + libEsc(catName) + '</div>' +
+        (catNote ? '<div class="lib-cat-note">' + libEsc(catNote) + '</div>' : '') + '</div>' +
         '<div style="display:flex;align-items:center;gap:12px;">' +
-          '<span class="lib-cat-count">' + (ready ? ready + (lang==="es"?' disponibles':' available') : (lang==="es"?'Próximamente':'Coming soon')) + '</span>' +
+          '<span class="lib-cat-count">' + countLabel + '</span>' +
           '<span class="lib-chevron">\u203A</span>' +
         '</div>' +
       '</div>' +
       '<div class="lib-cat-body">';
-    readyItems.forEach(it => {
+    cat.items.forEach(it => {
+      const st = libItemState(it);
+      let action = "", chip = "";
+      if (st === "free") {
+        action = '<a class="lib-dl" href="' + libEsc(it.url) + '" target="_blank" rel="noopener">' + (es ? "\u2197 Abrir" : "\u2197 Open") + '</a>';
+        if (it.tie) chip = ' <span class="lib-tie">' + (es ? "En la vista previa" : "In the preview") + '</span>';
+      } else if (st === "buy") {
+        const u = (typeof it.buyUrl === "string" && it.buyUrl) ? it.buyUrl : FAMILY_STORE_URL;
+        action = '<a class="lib-buy" href="' + libEsc(u || "#") + '"' + (u ? ' target="_blank" rel="noopener"' : ' onclick="return false;"') + '>' + (es ? "Comprar" : "Buy") + '</a>';
+        chip = ' <span class="lib-tag-fam">' + (es ? "Para familias" : "For families") + '</span>';
+      } else if (st === "both") {
+        const bu = (typeof it.buyUrl === "string" && it.buyUrl) ? it.buyUrl : FAMILY_STORE_URL;
+        const lu = LICENSE_INQUIRY_URL;
+        action = '<div class="lib-actions">' +
+          '<a class="lib-buy" href="' + libEsc(bu || "#") + '"' + (bu ? ' target="_blank" rel="noopener"' : ' onclick="return false;"') + '>' + (es ? "Comprar" : "Buy") + '</a>' +
+          '<a class="lib-license" href="' + libEsc(lu || "#") + '"' + (lu ? ' target="_blank" rel="noopener"' : ' onclick="return false;"') + '>' + (es ? "Solicitar licencia" : "Request a license") + '</a>' +
+          '</div>';
+      } else {
+        const u = LICENSE_INQUIRY_URL;
+        action = '<a class="lib-license" href="' + libEsc(u || "#") + '"' + (u ? ' target="_blank" rel="noopener"' : ' onclick="return false;"') + '>' + (es ? "Solicitar licencia" : "Request a license") + '</a>';
+      }
       html += '<div class="lib-item">' +
         '<div class="lib-item-main">' +
-          '<span class="lib-item-title">' + libEsc(it.title) + '</span>' +
-          (it.tie ? ' <span class="lib-tie">' + (lang==="es"?"En la vista previa":"In the preview") + '</span>' : '') +
+          '<span class="lib-item-title">' + libEsc(it.title) + '</span>' + chip +
           (it.desc ? '<div class="lib-item-desc">' + libEsc(it.desc) + '</div>' : '') +
-        '</div>' +
-        '<a class="lib-dl" href="' + libEsc(it.url) + '" target="_blank" rel="noopener">' + (lang==="es"?"\u2197 Abrir":"\u2197 Open") + '</a>' +
+        '</div>' + action +
         '</div>';
     });
-    if (soonItems.length) {
-      html += '<div class="lib-soon-list"><span class="lib-soon-label">' + (lang==="es"?"En el programa completo":"In the full program") + '</span>' +
-        soonItems.map(it => libEsc(it.title)).join('  \u00b7  ') + '</div>';
-    }
     html += '</div></div>';
   });
   root.innerHTML = html;
@@ -4557,7 +4744,7 @@ const ECO_DETAIL = {
     blurb:"The intervention itself \u2014 five volumes carrying the same four ideas (identity, self-compassion, forgiveness, grace) from kindergarten through graduation, with a companion novel for each band.",
     go:"Open the Downloads library", act:"library" },
   screener: { tag:"Measure", title:"The Check-In", role:"18 items \u00b7 3 domains",
-    blurb:"A brief, private check-in that measures what the curriculum teaches \u2014 designed to be taken three times a year to track baseline, growth, and risk.",
+    blurb:"A brief, private check-in that measures what the curriculum teaches \u2014 designed to be taken at regular check-in points across the year to track baseline, growth, and risk.",
     go:"Take the check-in", act:"survey" },
   index: { tag:"Interpret & Act", title:"Home View & Index", role:"flag \u2192 the right lesson",
     blurb:"The bridge. It turns a flagged result into gentle, ready-to-use questions and points you to the exact lesson \u2014 by book and grade \u2014 that addresses it.",
@@ -4575,7 +4762,7 @@ const ECO_DETAIL_ES = {
     blurb:"La intervención en sí — cinco volúmenes que llevan las mismas cuatro ideas (identidad, autocompasión, perdón, gracia) desde kínder hasta la graduación, con una novela complementaria para cada nivel.",
     go:"Abrir la biblioteca de descargas" },
   screener: { tag:"Medir", title:"El chequeo", role:"18 ítems · 3 dominios",
-    blurb:"Un chequeo breve y privado que mide lo que el plan de estudios enseña — diseñado para realizarse tres veces al año para seguir la línea base, el crecimiento y el riesgo.",
+    blurb:"Un chequeo breve y privado que mide lo que el plan de estudios enseña — diseñado para realizarse en puntos regulares a lo largo del año para seguir la línea base, el crecimiento y el riesgo.",
     go:"Hacer el chequeo" },
   index: { tag:"Interpretar y actuar", title:"Vista del hogar e índice", role:"señal → la lección correcta",
     blurb:"El puente. Convierte un resultado marcado en preguntas suaves y listas para usar, y te señala la lección exacta — por libro y grado — que lo aborda.",
@@ -4640,6 +4827,7 @@ function initGuideExtras() {
       if (tab.dataset.guide === "resindex") riRender(document.getElementById("riSearch").value, document.getElementById("riGrade").value);
       if (tab.dataset.guide === "ecosystem") initEcoInteractive();
       if (tab.dataset.guide === "library") renderLibrary();
+      if (typeof aogSetHash === "function") aogSetHash(AOG_SUB_TO_HASH[tab.dataset.guide] || tab.dataset.guide);
     });
   });
 
