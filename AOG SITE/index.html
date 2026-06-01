@@ -1336,6 +1336,41 @@ footer .serif { font-style: italic; color: var(--ink-soft); }
 .lib-path-gold{ background:var(--gold); color:#1a1a18; font-weight:700; }
 .lib-path-gold:hover{ background:var(--gold-deep,#a87a2e); }
 </style>
+<style>
+/* ===== AoG lobby (front door) ===== */
+.topbar-link{display:inline-flex;align-items:center;gap:7px;font-family:var(--font-sans);font-size:13px;font-weight:600;color:var(--ink-soft);text-decoration:none;margin-right:18px;white-space:nowrap}
+.topbar-link::before{content:"\25CB";color:var(--ink-faint);font-size:12px}
+.topbar-link:hover{color:var(--navy)}
+.aog-hero-e2{position:relative;margin:-32px calc(50% - 50vw) 0;padding:60px 40px 66px;background:radial-gradient(120% 135% at 50% 0%,#21466A 0%,#163048 56%,#0C1C2C 100%);text-align:center;overflow:hidden}
+.aog-hero-glow{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:min(1180px,92vw);height:520px;background:radial-gradient(ellipse at center,rgba(231,184,94,.40) 0%,rgba(231,184,94,.14) 40%,rgba(231,184,94,0) 70%);pointer-events:none}
+.aog-htag{position:relative;font-family:var(--font-serif);font-weight:500;letter-spacing:.4em;text-transform:uppercase;color:#E7C98A;opacity:.92;font-size:clamp(14px,2vw,20px)}
+.aog-lock{position:relative;font-family:var(--font-serif);font-weight:700;line-height:.98;margin-top:10px}
+.aog-lock .l1{display:block;font-size:clamp(40px,7vw,78px);font-weight:500;font-style:italic;letter-spacing:.01em}
+.aog-lock .l2{display:block;font-size:clamp(78px,15vw,168px);letter-spacing:.02em;margin-top:-4px}
+.foil{background:linear-gradient(177deg,#FCEFC8 0%,#F3D58E 19%,#E7B85E 41%,#D2A03F 56%,#B07F26 78%,#8F6418 100%);-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-stroke:1.1px rgba(120,82,20,.28);filter:drop-shadow(0 2px 0 rgba(7,18,31,.40)) drop-shadow(0 16px 30px rgba(0,0,0,.30))}
+.aog-hrule{position:relative;height:0;border:0;border-top:1px solid rgba(231,184,94,.5);width:120px;margin:18px auto 0}
+.aog-intro{text-align:center;padding:40px 0 6px}
+.aog-lede{font-size:clamp(17px,2.2vw,20px);line-height:1.6;color:var(--ink-soft);max-width:760px;margin:0 auto}
+.aog-lede b{color:var(--navy)}
+.aog-aud{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px;justify-content:center}
+.aog-aud span{font-size:13px;color:var(--navy);background:#fff;border:1px solid var(--rule);padding:7px 16px;border-radius:30px}
+.aog-aud span.lead{background:var(--gold);color:#1a130a;border-color:var(--gold);font-weight:600}
+.aog-lobby{padding:32px 0 0;position:relative;z-index:2}
+.aog-doors{display:grid;grid-template-columns:1.12fr .88fr;gap:16px}
+.aog-door{display:flex;align-items:center;gap:16px;text-decoration:none;border-radius:16px;padding:24px 26px;box-shadow:0 14px 30px -10px rgba(27,58,95,.28);transition:transform .18s,box-shadow .18s}
+.aog-door:hover{transform:translateY(-2px);box-shadow:0 18px 36px -10px rgba(27,58,95,.34)}
+.aog-door.primary{background:linear-gradient(180deg,#21466A,#173049);border:1px solid #21466A}
+.aog-door.primary .ic{background:var(--gold);color:#10243a}
+.aog-door.primary .t{color:#fff}.aog-door.primary .s{color:#D8E0EC}.aog-door.primary .arr{color:var(--gold-soft)}
+.aog-door.primary .sh{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:#10243a;background:var(--gold);padding:3px 10px;border-radius:20px;margin-bottom:7px}
+.aog-door.secondary{background:#fff;border:1px solid var(--rule)}
+.aog-door .ic{width:50px;height:50px;flex:0 0 auto;border-radius:12px;display:grid;place-items:center;font-size:23px;background:var(--gold-pale);color:var(--gold)}
+.aog-door .t{font-family:var(--font-serif);font-size:22px;font-weight:600;color:var(--navy)}
+.aog-door .s{font-size:13.5px;color:var(--ink-soft);margin-top:3px}
+.aog-door .arr{margin-left:auto;color:var(--gold);font-size:23px}
+.aog-foundation-rest{margin-top:-14px;position:relative;z-index:1}
+@media (max-width:640px){ .aog-doors{grid-template-columns:1fr} .aog-hero-e2{padding:42px 22px 48px} .aog-lock .l1{font-size:34px} }
+</style>
 </head>
 <body>
 <div class="stage">
@@ -1349,6 +1384,7 @@ footer .serif { font-style: italic; color: var(--ink-soft); }
     </div>
   </a>
   <div class="topbar-actions">
+    <a class="topbar-link" href="#" onclick="event.preventDefault(); openAdmin();" data-i18n="w_door_results">Educator Access &middot; Results</a>
     <div class="lang-toggle">
       <button id="langEn" class="active" onclick="setLang('en')">EN</button>
       <button id="langEs" onclick="setLang('es')">ES</button>
@@ -1361,13 +1397,46 @@ footer .serif { font-style: italic; color: var(--ink-soft); }
 <!-- ============ WELCOME ============ -->
 <section id="screen-welcome" class="screen active">
   <div class="container">
-    <div class="hero hero-center">
-      <div class="eyebrow" data-i18n="w_screener_ey">Universal Check-In &middot; K&ndash;12</div>
-      <h1 class="display display-xl" data-i18n="w_h1">How are you doing, really?</h1>
-      <p class="lede" data-i18n="w_lede">Take a few quiet minutes, just for you. It&rsquo;s private, there are no wrong answers, and it helps the people who care about you know how to help.</p>
+    <!-- ===== LOBBY · front door ===== -->
+    <section class="aog-hero-e2">
+      <div class="aog-hero-glow"></div>
+      <div class="aog-htag">School of Life Foundation</div>
+      <div class="aog-lock foil"><span class="l1">Architecture of</span><span class="l2">Grace</span></div>
+      <hr class="aog-hrule">
+    </section>
+
+    <div class="aog-intro">
+      <p class="aog-lede" data-i18n-html="lobby_lede">A serious, secular <b>K&ndash;12 social-emotional curriculum</b> &mdash; a full program, a companion novel series, and a private check-in that turns reflection into action. Built on identity, self-compassion, forgiveness, and grace.</p>
+      <div class="aog-aud">
+        <span class="lead" data-i18n="aud_k12">K&ndash;12 classrooms</span>
+        <span data-i18n="aud_edu">Educators</span>
+        <span data-i18n="aud_par">Parents</span>
+        <span data-i18n="aud_clin">Clinicians</span>
+        <span data-i18n="aud_any">Anyone doing the work</span>
+      </div>
     </div>
 
-    
+    <div class="aog-lobby">
+      <div class="aog-doors">
+        <a href="#" class="aog-door primary" onclick="event.preventDefault(); openGuide();">
+          <span class="ic">&#9670;</span>
+          <div>
+            <span class="sh" data-i18n="lobby_start_here">Start here</span>
+            <div class="t" data-i18n="w_door_guide">Explore the Guide &amp; Library</div>
+            <div class="s" data-i18n="w_door_guide_sub">The ecosystem map, resource index, and every downloadable resource &mdash; no code needed.</div>
+          </div>
+          <span class="arr">&rarr;</span>
+        </a>
+        <a href="#" class="aog-door secondary" onclick="event.preventDefault(); startCheckin();">
+          <span class="ic">&#9745;</span>
+          <div>
+            <div class="t" data-i18n="lobby_checkin_t">Take the Check-In</div>
+            <div class="s" data-i18n="lobby_checkin_s">A private 5-minute self-reflection. Quick, or thorough.</div>
+          </div>
+          <span class="arr">&rarr;</span>
+        </a>
+      </div>
+    </div>
 
     <style>
       .aog-what{ max-width:780px; margin:10px auto 34px; background:#FFFDF8; border:1px solid #E3D9C4; border-radius:16px; padding:30px 40px 32px; text-align:center; box-shadow:0 1px 0 #fff inset, 0 6px 22px rgba(27,58,95,.06); position:relative; }
@@ -1381,16 +1450,40 @@ footer .serif { font-style: italic; color: var(--ink-soft); }
       .aog-what .pillars span.tag{ font-size:11.5px; color:#1B3A5F; background:#F4EEE1; border:1px solid #E3D9C4; padding:5px 15px; border-radius:20px; letter-spacing:.02em; }
       @media (max-width:600px){ .aog-what{ padding:24px 22px 26px; } .aog-what h2{ font-size:28px; } }
     </style>
+    <div class="aog-foundation-rest"><div class="foundation-wrap">
+    <section class="aog-what">
+      <div class="ey" data-i18n="aog_what_ey">The Foundation</div>
+      <h2 data-i18n="aog_what_h">What Is Architecture of Grace?</h2>
+      <p data-i18n="aog_what_p1">Architecture of Grace is a human development framework and intuitive digital check-in platform designed to help individuals understand themselves, strengthen relationships, and navigate life&rsquo;s challenges with resilience, responsibility, and hope.</p>
+      <p data-i18n="aog_what_p2">Built upon developmental psychology, social-emotional learning, reflective practice, and character formation, the framework provides a structured pathway for lifelong growth through lessons, assessments, conversations, and real-world application.</p>
+      <p data-i18n="aog_what_p3">By bridging the gap between deep personal development and daily practice, the platform empowers people to become the healthiest versions of themselves &mdash; ultimately reducing burnout, improving retention, and fostering a resilient culture across school districts and families.</p>
+      <div class="pillars">
+        <div class="pl-label" data-i18n="aog_what_pillars">Four ideas run through everything</div>
+        <span class="tag" data-i18n="pillar_identity">Identity</span>
+        <span class="tag" data-i18n="pillar_selfcomp">Self-compassion</span>
+        <span class="tag" data-i18n="pillar_forgive">Forgiveness</span>
+        <span class="tag" data-i18n="pillar_grace">Grace</span>
+      </div>
+    </section>
+    </div></div>
     
+</div>
+</section>
 
-    
-
-    <div class="script-card">
+<!-- ============ CHECK-IN (its own screen) ============ -->
+<section id="screen-checkin" class="screen">
+  <div class="container">
+<div id="checkin-funnel">
+<div class="hero hero-center">
+      <div class="eyebrow" data-i18n="w_screener_ey">Universal Check-In &middot; K&ndash;12</div>
+      <h1 class="display display-xl" data-i18n="w_h1">How are you doing, really?</h1>
+      <p class="lede" data-i18n="w_lede">Take a few quiet minutes, just for you. It&rsquo;s private, there are no wrong answers, and it helps the people who care about you know how to help.</p>
+    </div>
+<div class="script-card">
       <p data-i18n-html="w_script1"><strong>Before you begin.</strong> There are no right or wrong answers &mdash; just pick what feels most true for you lately, and go with your first instinct.</p>
       <p data-i18n-html="w_script2">If a question brings up something you&rsquo;d like to talk about, you can reach out to a teacher, counselor, parent, or guardian any time.</p>
     </div>
-
-    <div class="form-section">
+<div class="form-section">
       <h2 data-i18n="w_about">About you</h2>
       <div class="ctx-block">
         <div class="ctx-toggle" id="ctxToggle" role="group" aria-label="Where this is being used">
@@ -1427,13 +1520,11 @@ footer .serif { font-style: italic; color: var(--ink-soft); }
         </div>
       </div>
     </div>
-
-    <div class="section-head">
+<div class="section-head">
       <h2 data-i18n="w_choose">Choose how you want to take it</h2>
       <div class="small" data-i18n="w_choose_sub">Same 18 questions either way &mdash; take the quick version, or a more thorough one with short written reflections.</div>
     </div>
-
-    <div class="mode-grid" id="modeGrid" role="radiogroup" aria-label="Choose how to take it">
+<div class="mode-grid" id="modeGrid" role="radiogroup" aria-label="Choose how to take it">
       <div class="mode-card" data-mode="rapid" role="radio" tabindex="0" aria-checked="false">
         <div class="mode-left">
           <div class="mode-eyebrow" data-i18n="m_rapid_ey">The Universal Check-In &middot; population view</div>
@@ -1466,51 +1557,16 @@ footer .serif { font-style: italic; color: var(--ink-soft); }
         </div>
       </div>
     </div>
-
-    <div class="nav-row" style="justify-content:flex-end;">
+<div class="nav-row" style="justify-content:flex-end;">
       <button class="btn" id="btnStart">
         <span data-i18n="w_begin">Begin Survey</span>
         <span class="btn-arrow">&rarr;</span>
       </button>
     </div>
-
-    <div class="front-doors">
-<a href="#" class="door door-open" onclick="event.preventDefault(); openGuide();">
-        <div class="door-icon">&#9670;</div>
-        <div class="door-text">
-          <div class="door-title" data-i18n="w_door_guide">Explore the Guide &amp; Library</div>
-          <div class="door-sub" data-i18n="w_door_guide_sub">The ecosystem map, resource index, and every downloadable resource &mdash; no code needed.</div>
-        </div>
-        <div class="door-arrow">&rarr;</div>
-      </a>
-<a href="#" class="door door-locked" onclick="event.preventDefault(); openAdmin();">
-        <div class="door-icon">&#9696;</div>
-        <div class="door-text">
-          <div class="door-title" data-i18n="w_door_results">Educator Access &middot; Results</div>
-          <div class="door-sub" data-i18n="w_door_results_sub">View check-in results. Code required &mdash; protects private responses.</div>
-        </div>
-        <div class="door-arrow">&rarr;</div>
-      </a>
-    </div>
-
-    <div class="foundation-wrap">
-    <section class="aog-what">
-      <div class="ey" data-i18n="aog_what_ey">The Foundation</div>
-      <h2 data-i18n="aog_what_h">What Is Architecture of Grace?</h2>
-      <p data-i18n="aog_what_p1">Architecture of Grace is a human development framework and intuitive digital check-in platform designed to help individuals understand themselves, strengthen relationships, and navigate life&rsquo;s challenges with resilience, responsibility, and hope.</p>
-      <p data-i18n="aog_what_p2">Built upon developmental psychology, social-emotional learning, reflective practice, and character formation, the framework provides a structured pathway for lifelong growth through lessons, assessments, conversations, and real-world application.</p>
-      <p data-i18n="aog_what_p3">By bridging the gap between deep personal development and daily practice, the platform empowers people to become the healthiest versions of themselves &mdash; ultimately reducing burnout, improving retention, and fostering a resilient culture across school districts and families.</p>
-      <div class="pillars">
-        <div class="pl-label" data-i18n="aog_what_pillars">Four ideas run through everything</div>
-        <span class="tag" data-i18n="pillar_identity">Identity</span>
-        <span class="tag" data-i18n="pillar_selfcomp">Self-compassion</span>
-        <span class="tag" data-i18n="pillar_forgive">Forgiveness</span>
-        <span class="tag" data-i18n="pillar_grace">Grace</span>
-      </div>
-    </section>
     </div>
   </div>
 </section>
+
 
 <!-- ============ SURVEY ============ -->
 <section id="screen-survey" class="screen">
@@ -2108,20 +2164,34 @@ footer .serif { font-style: italic; color: var(--ink-soft); }
       </div><!-- /guide-library -->
 
       <div class="guide-section" id="guide-about">
-        <div class="table-card" style="padding:30px 34px 34px; max-width:760px; margin:0 auto;">
+        <div class="table-card" style="padding:32px 36px 36px; max-width:760px; margin:0 auto;">
           <div class="eyebrow" style="color:var(--gold);">The Story</div>
           <h3 class="serif" style="font-size:27px; color:var(--navy); margin:4px 0 16px;">The founder, and the why beneath the work</h3>
-          <p style="font-size:15px; line-height:1.72; color:var(--ink); margin-bottom:14px;">My name is Jimmy Ramsden, and I’m a special educator. I didn’t come to this work from a boardroom — I came to it from the classroom, where I still teach today.</p>
-          <p style="font-size:15px; line-height:1.72; color:var(--ink); margin-bottom:14px;">I started at Humboldt State University, up in Northern California, with a degree in political science, and went on to earn a master’s in special education. Somewhere between those two things — the study of how people are meant to live together, and the daily work of helping a struggling child believe in themselves — this project began to take shape.</p>
-          <p style="font-size:15px; line-height:1.72; color:var(--ink); margin-bottom:14px;">It took shape because of something that happened to me. While I was living in Arcata back in 2006, I was in a serious crash that left me with a traumatic brain injury and a neurological disability I’ve carried ever since. I won’t tell you it was easy. But I have always seen it as its own blessing — it changed how I understand struggle, patience, and grace, and it’s a large part of why this work has never been abstract to me. I know what it is to have to rebuild.</p>
-          <p style="font-size:15px; line-height:1.72; color:var(--ink); margin-bottom:14px;">The Architecture of Grace grew out of all of that: a conviction that individuals deserve more than to be measured — they deserve to be understood, and then actually helped. Everything here rests on four ideas: <strong>identity, self-compassion, forgiveness, and grace.</strong> Not behavior management. Something deeper — who a person comes to believe they are.</p>
-          <p style="font-size:15px; line-height:1.72; color:var(--ink); margin-bottom:14px;">I’m also a father, and my own children are never far from my mind when I build this. They’re the reason I care so much about how a young person learns to talk to themselves.</p>
-          <p style="font-size:15px; line-height:1.72; color:var(--ink); margin-bottom:14px;">I build this work under the <strong>School of Life Foundation.</strong></p>
-          <p style="font-size:15px; line-height:1.72; color:var(--ink-soft); margin-bottom:14px;"><em>One note I’d want any parent or educator to hear from me directly: this is still early. The check-in is a pilot — a score is a flag for a conversation, never a diagnosis — and the curriculum is a framework I’m still proving. I’d rather tell you that plainly than oversell it.</em></p>
-          <p style="font-size:15px; line-height:1.72; color:var(--ink); margin-bottom:14px;">If any of this resonates — if you’d like to try it, pilot it, or just tell me what you think — I’d love to hear from you.<a href="mailto:whytheschooloflife@gmail.com" style="color:var(--navy); font-weight:600; text-decoration:none; border-bottom:1px solid var(--gold);">whytheschooloflife@gmail.com</a></p>
-          <p style="font-size:15px; line-height:1.72; color:var(--ink-soft); margin:0;"><em>— Jimmy Ramsden</em></p>
+
+          <p style="font-size:15px; line-height:1.72; color:var(--ink); margin-bottom:14px;">My name is Jimmy Ramsden. I didn&rsquo;t come to this work from a boardroom &mdash; I came to it from the classroom, where I still teach today as a special educator.</p>
+
+          <p style="font-size:15px; line-height:1.72; color:var(--ink); margin-bottom:14px;">My journey started at Humboldt State University with a degree in political science, followed by a master&rsquo;s in special education. But the real catalyst came in 2006, when a serious car crash left me with a traumatic brain injury and a neurological disability. Rebuilding my life changed how I understand struggle, patience, and grace. It&rsquo;s the reason this work isn&rsquo;t abstract to me.</p>
+
+          <p style="font-size:15px; line-height:1.72; color:var(--ink); margin-bottom:14px;">The Architecture of Grace grew out of a conviction that individuals deserve more than to be measured &mdash; they deserve to be understood. Built under the <strong>School of Life Foundation</strong>, everything here rests on four core pillars:</p>
+
+          <ul style="list-style:none; margin:4px 0 16px; padding:0;">
+            <li style="font-size:15px; line-height:1.6; color:var(--ink); margin-bottom:10px; padding-left:20px; position:relative;"><span style="position:absolute; left:0; top:1px; color:var(--gold);">&#9670;</span><strong style="color:var(--navy);">Identity</strong> &mdash; who a person comes to believe they are.</li>
+            <li style="font-size:15px; line-height:1.6; color:var(--ink); margin-bottom:10px; padding-left:20px; position:relative;"><span style="position:absolute; left:0; top:1px; color:var(--gold);">&#9670;</span><strong style="color:var(--navy);">Self-Compassion</strong> &mdash; how a person learns to speak to themselves.</li>
+            <li style="font-size:15px; line-height:1.6; color:var(--ink); margin-bottom:10px; padding-left:20px; position:relative;"><span style="position:absolute; left:0; top:1px; color:var(--gold);">&#9670;</span><strong style="color:var(--navy);">Forgiveness</strong> &mdash; moving past mistakes to make room for growth.</li>
+            <li style="font-size:15px; line-height:1.6; color:var(--ink); margin-bottom:0; padding-left:20px; position:relative;"><span style="position:absolute; left:0; top:1px; color:var(--gold);">&#9670;</span><strong style="color:var(--navy);">Grace</strong> &mdash; meeting a person with understanding rather than only judgment.</li>
+          </ul>
+
+          <p style="font-size:15px; line-height:1.72; color:var(--ink); margin-bottom:14px;">As a teacher and a father, these are the values I want for my students, my own children &mdash; and for anyone willing to do this work.</p>
+
+          <div style="background:var(--cream-deep,#F4EFE0); border:1px solid var(--rule); border-left:4px solid var(--gold); border-radius:12px; padding:16px 20px; margin:20px 0 18px;">
+            <div style="font-size:11px; font-weight:700; letter-spacing:.16em; text-transform:uppercase; color:var(--gold); margin-bottom:6px;">A note on transparency</div>
+            <p style="font-size:14.5px; line-height:1.65; color:var(--ink-soft); margin:0;">This work is in its early stages. The check-in is a pilot &mdash; a score is a flag for a conversation, never a diagnosis &mdash; and the curriculum is a framework I&rsquo;m actively proving. I&rsquo;d rather be honest about that than oversell it.</p>
+          </div>
+
+          <p style="font-size:15px; line-height:1.72; color:var(--ink); margin-bottom:14px;">If you&rsquo;d like to try it, pilot it, or just share your thoughts, please reach out.<!-- EDIT ME: contact email below --> <a href="mailto:whytheschooloflife@gmail.com" style="color:var(--navy); font-weight:600; text-decoration:none; border-bottom:1px solid var(--gold);">whytheschooloflife@gmail.com</a></p>
+          <p style="font-size:15px; line-height:1.72; color:var(--ink-soft); margin:0;"><em>&mdash; Jimmy Ramsden</em></p>
         </div>
-      </div><!-- /guide-about -->
+      </div><!-- /guide-about --><!-- /guide-about -->
 
   </div>
 </section>
@@ -2521,6 +2591,15 @@ const I18N_UI = {
   g_tab_resindex: { es: "\u00cdndice de recursos" },
   g_tab_library: { es: "Descargas" },
   g_tab_about: { es: "Sobre mí · La historia" },
+  lobby_lede:        { es: "Un currículo socioemocional serio y secular para <b>K–12</b> — un programa completo, una serie de novelas complementarias y un chequeo privado que convierte la reflexión en acción. Basado en la identidad, la autocompasión, el perdón y la gracia." },
+  lobby_start_here:  { es: "Empieza aquí" },
+  lobby_checkin_t:   { es: "Hacer el chequeo" },
+  lobby_checkin_s:   { es: "Una autorreflexión privada de 5 minutos. Rápida o exhaustiva." },
+  aud_k12:           { es: "Aulas K–12" },
+  aud_edu:           { es: "Educadores" },
+  aud_par:           { es: "Padres y tutores" },
+  aud_clin:          { es: "Profesionales clínicos" },
+  aud_any:           { es: "Cualquiera que haga el trabajo" },
   ri_h: { es: "\u00cdndice de constructos y recursos" },
   ri_intro: { es: "Cuando un chequeo marca un dominio bajo o un \u00edtem espec\u00edfico, busca el constructo correspondiente abajo. Cada uno indica la lecci\u00f3n, la l\u00e1mina de anclaje y la actividad exactas en cada nivel; y ahora, bajo <strong>En las novelas</strong>, el libro y el cap\u00edtulo donde esa misma idea aparece como relato. (Las referencias son por cap\u00edtulo, que se mantienen exactas entre los formatos impreso y digital, en lugar de por p\u00e1gina.) Tanto el chequeo Quick como el Thorough miden los mismos \u00edtems, as\u00ed que un resultado de cualquiera de los dos remite a las mismas lecciones, secciones y cap\u00edtulos." },
   ri_search_ph: { es: "Buscar: cr\u00edtico interno, agobio, reparaci\u00f3n, inseguro..." },
@@ -3360,6 +3439,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Capture classroom launch metadata (grade / classId / window) from the URL.
   parseLaunchParams();
+  // A directed arrival (QR / class link) opens the check-in directly, skipping the lobby.
+  try {
+    var _q = new URLSearchParams(window.location.search);
+    if (!location.hash && (_q.get("classId") || _q.get("grade") || _q.get("window") || _q.get("sync"))) { startCheckin(); }
+  } catch (e) {}
 
   // Mode selection
   $$("#modeGrid .mode-card").forEach(card => {
@@ -3598,6 +3682,7 @@ document.addEventListener("DOMContentLoaded", () => {
 // Admin / modal
 // ============================================================
 function openAdmin() { openModal("modalAccess"); if (typeof aogSetHash === "function") aogSetHash("results"); }
+function startCheckin() { showScreen("screen-checkin"); if (typeof aogSetHash === "function") aogSetHash("checkin"); }
 function openModal(id) { $("#" + id).classList.add("active"); }
 function closeModal(id) { $("#" + id).classList.remove("active"); }
 
@@ -3632,7 +3717,8 @@ function aogRouteFromHash() {
   else if (h === "documentation" || h === "docs") { openGuide("docs"); }
   else if (h === "guide" || h === "ecosystem" || h === "explore") { openGuide(); }
   else if (h === "results" || h === "dashboard" || h === "educator" || h === "admin") { openAdmin(); }
-  else if (h === "start" || h === "welcome" || h === "check-in" || h === "checkin" || h === "survey") { resetToStart(); }
+  else if (h === "start" || h === "welcome") { resetToStart(); }
+  else if (h === "check-in" || h === "checkin" || h === "survey") { startCheckin(); }
 }
 window.addEventListener("hashchange", aogRouteFromHash);
 window.addEventListener("load", aogRouteFromHash);
@@ -4792,7 +4878,7 @@ const ECO_DETAIL_ES = {
 function ecoNavigate(act) {
   if (act === "library") { openGuideSub("library"); ecoScrollToTabs(); }
   else if (act === "resindex") { openGuideSub("resindex"); ecoScrollToTabs(); }
-  else if (act === "survey") resetToStart();
+  else if (act === "survey") startCheckin();
   else if (act === "admin") openAdmin();
 }
 function ecoScrollToTabs() {
