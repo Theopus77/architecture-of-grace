@@ -1734,6 +1734,18 @@ footer .serif { font-style: italic; color: var(--ink-soft); }
       </div>
 
       <div class="section-head">
+        <h2 data-dl="dl_ri_h1">See results from other devices</h2>
+        <div class="small" data-dl="dl_ri_sub">This dashboard normally shows only check-ins taken on this device. Pull to add the rows synced from links and other devices, so their Home View and conversation starters appear here too. Pulled rows are shown for reading only &mdash; they are never saved onto this device.</div>
+      </div>
+      <div class="table-card" style="padding:20px 28px; margin-bottom:18px;">
+        <div style="display:flex; gap:12px; align-items:center; flex-wrap:wrap;">
+          <button class="btn" id="riPullBtn" data-dl="dl_ri_pull">Pull from sheet</button>
+          <button class="btn btn-sm" id="riClearBtn" data-dl="dl_ri_clear">Show this device only</button>
+        </div>
+        <p class="small" id="riPullStatus" style="margin:12px 0 0; min-height:18px; line-height:1.5;"></p>
+      </div>
+
+      <div class="section-head">
         <h2 data-dl="dl_lg_h1">Classroom Link Generator</h2>
         <div class="small" data-dl="dl_lg_sub">Build one link to share or post as a QR code. Anyone who opens it syncs to your school&rsquo;s sheet. The link carries only the grade, class, and window &mdash; never the sheet address or passcode.</div>
       </div>
@@ -2359,7 +2371,7 @@ const ACCESS_CODE = "educator";
 //      writes to the school's own Sheet. localStorage stays the backup.
 // ============================================================
 const SCHOOL_SYNC_URL = "https://script.google.com/macros/s/AKfycbwmjlZHD5fa_jS9Pvqm4xLnV4ADooJycelkAGO_Y8iv1Fr0EU9xGzR7rzsteWDlsVcKUw/exec";   // e.g. "https://script.google.com/macros/s/AKfy.../exec"
-const SCHOOL_SYNC_KEY = "jesus";   // must match the PASSCODE inside the school's Apps Script
+const SCHOOL_SYNC_KEY = "sky";   // must match the PASSCODE inside the school's Apps Script
 
 const $  = sel => document.querySelector(sel);
 const $$ = sel => document.querySelectorAll(sel);
@@ -3052,6 +3064,10 @@ const DASH_I18N = {
   dl_dist_sub:      { en: "By default this device keeps every response local and private. Syncing to your central sheet turns on only when you enable it here, or when someone opens a generated link.", es: "De forma predeterminada, este dispositivo guarda cada respuesta de manera local y privada. La sincronización con tu hoja central se activa solo cuando la habilitas aquí, o cuando alguien abre un enlace generado." },
   dl_dist_togglelabel: { en: "Send check-ins taken on <em>this device</em> to the central sheet", es: "Enviar los check-ins de <em>este dispositivo</em> a la hoja central" },
   dl_dist_togglenote:  { en: "Affects only this device. Students who open a generated link sync regardless of this setting.", es: "Afecta solo a este dispositivo. Los estudiantes que abren un enlace generado se sincronizan sin importar este ajuste." },
+  dl_ri_h1:         { en: "See results from other devices", es: "Ver resultados de otros dispositivos" },
+  dl_ri_sub:        { en: "This dashboard normally shows only check-ins taken on this device. Pull to add the rows synced from links and other devices, so their Home View and conversation starters appear here too. Pulled rows are shown for reading only \u2014 they are never saved onto this device.", es: "Este panel normalmente muestra solo los check-ins de este dispositivo. Trae las filas sincronizadas desde enlaces y otros dispositivos para que su Vista del hogar e iniciadores de conversaci\u00f3n aparezcan aqu\u00ed tambi\u00e9n. Las filas tra\u00eddas se muestran solo para lectura \u2014 nunca se guardan en este dispositivo." },
+  dl_ri_pull:       { en: "Pull from sheet", es: "Traer de la hoja" },
+  dl_ri_clear:      { en: "Show this device only", es: "Mostrar solo este dispositivo" },
   dl_lg_h1:         { en: "Classroom Link Generator", es: "Generador de enlaces para el aula" },
   dl_lg_sub:        { en: "Build one link to share or post as a QR code. Anyone who opens it syncs to your school's sheet. The link carries only the grade, class, and window — never the sheet address or passcode.", es: "Crea un enlace para compartir o publicar como código QR. Quien lo abra se sincroniza con la hoja de tu escuela. El enlace lleva solo el grado, la clase y el período — nunca la dirección de la hoja ni la contraseña." },
   dl_lg_district:   { en: "District ID", es: "ID del distrito" },
@@ -3445,6 +3461,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Reflect true sync state on load.
   renderSyncStatus();
+  const riPullBtn = document.getElementById("riPullBtn");
+  if (riPullBtn) riPullBtn.addEventListener("click", pullFromSheet);
+  const riClearBtn = document.getElementById("riClearBtn");
+  if (riClearBtn) riClearBtn.addEventListener("click", clearPulledRecords);
+
   const lgCopy = document.getElementById("lgCopy");
   if (lgCopy) lgCopy.addEventListener("click", async () => {
     const url = ($("#lgUrl") || {}).value || buildClassroomLink();
@@ -3502,7 +3523,124 @@ function clearLocalData() {
   refreshAdmin();
 }
 
-function getAllRecords() { return JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]"); }
+// ---- Read-back: records pulled from the central Sheet, kept in memory only ----
+// REMOTE_RECORDS is never written to localStorage. Local records always win on
+// any key collision, so a pull can never overwrite or duplicate on-device data.
+let REMOTE_RECORDS = [];
+
+function getLocalRecords() { return JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]"); }
+
+// Natural identity for one submission, tolerant to timestamp formatting drift
+// through Google Sheets (normalize to whole seconds).
+function recordKey(r) {
+  let t = r && r.timestamp;
+  const ms = Date.parse(t);
+  const stamp = isNaN(ms) ? String(t) : String(Math.floor(ms / 1000));
+  return String(r ? r.studentId : "") + "|" + String(r ? r.window : "") + "|" + stamp;
+}
+
+function getAllRecords() {
+  const local = getLocalRecords();
+  if (!REMOTE_RECORDS.length) return local;
+  const seen = new Set(local.map(recordKey));        // local always wins
+  const remoteOnly = REMOTE_RECORDS.filter(r => !seen.has(recordKey(r)));
+  return local.concat(remoteOnly);
+}
+
+// Map one Sheet row (keyed by the Apps Script HEADERS) into the app's record
+// shape, so Home View + the conversation guide work on pulled rows exactly as
+// they do on local ones.
+function _riNum(v) { const n = parseFloat(v); return isNaN(n) ? null : n; }
+function _riArr(v) {
+  if (Array.isArray(v)) return v;
+  if (v == null || v === "") return [];
+  try { const p = JSON.parse(v); return Array.isArray(p) ? p : []; } catch (e) { return []; }
+}
+function mapSheetRowToRecord(row) {
+  if (!row || !row.timestamp) return null;
+  let taf = row.trustedAdultFlag;
+  if (typeof taf === "string") taf = (taf.trim().toUpperCase() === "TRUE");
+  const normC = _riNum(row.normComposite);
+  return {
+    timestamp: row.timestamp,
+    studentId: String(row.studentId == null ? "" : row.studentId),
+    context: "school",                         // synced rows are school-context
+    grade: row.grade,
+    window: row.window,
+    districtId: row.districtId || "",
+    schoolId: row.schoolId || "",
+    classId: row.classId || "",
+    language: row.language || "en",
+    mode: (row.mode === "depth" ? "depth" : "rapid"),
+    raw: _riArr(row.raw),
+    intensities: _riArr(row.intensities),
+    reflections: [row.reflection1 || "", row.reflection2 || "", row.reflection3 || ""],
+    closingWord: row.closingWord || "",
+    domainA: _riNum(row.domainA), domainB: _riNum(row.domainB), domainC: _riNum(row.domainC),
+    composite: _riNum(row.composite),
+    normA: _riNum(row.normA), normB: _riNum(row.normB), normC: _riNum(row.normC),
+    normComposite: normC,
+    tier: row.tier || tierFromNormComposite(normC == null ? 0 : normC),
+    trustedAdultFlag: !!taf,
+    synced: true,
+    _remote: true                              // marks a pulled row everywhere
+  };
+}
+
+// Pull synced rows from the Sheet via the passcode-gated doGet. A real fetch GET
+// (NOT no-cors) follows the Apps Script redirect with the query string intact,
+// so the key arrives even though pasting the URL in a browser strips it.
+async function pullFromSheet() {
+  const statusEl = document.getElementById("riPullStatus");
+  const btn = document.getElementById("riPullBtn");
+  function say(msg, color) {
+    if (statusEl) { statusEl.textContent = msg; statusEl.style.color = color || "var(--ink-faint)"; }
+  }
+  if (!SCHOOL_SYNC_URL) {
+    say(DT("This is a local-only copy \u2014 no central sheet is configured.",
+           "Esta es una copia solo local \u2014 no hay hoja central configurada."), "var(--ink-faint)");
+    return;
+  }
+  if (btn) btn.disabled = true;
+  say(DT("Pulling from the sheet\u2026", "Trayendo de la hoja\u2026"));
+  try {
+    const url = SCHOOL_SYNC_URL + (SCHOOL_SYNC_URL.indexOf("?") >= 0 ? "&" : "?") +
+                "key=" + encodeURIComponent(SCHOOL_SYNC_KEY);
+    const res = await fetch(url, { method: "GET" });
+    const data = await res.json();
+    if (data && data.error) {
+      say(DT("The sheet rejected the passcode. Check that SHEET_PASSCODE matches.",
+             "La hoja rechaz\u00f3 el c\u00f3digo. Verifica que SHEET_PASSCODE coincida."), "var(--red)");
+      return;
+    }
+    const rows = (data && data.records) || [];
+    REMOTE_RECORDS = rows.map(mapSheetRowToRecord).filter(Boolean);
+    // Count how many are genuinely from other devices (not already on this one).
+    const localKeys = new Set(getLocalRecords().map(recordKey));
+    const fromOthers = REMOTE_RECORDS.filter(r => !localKeys.has(recordKey(r))).length;
+    refreshAdmin();
+    say(DT("Pulled " + REMOTE_RECORDS.length + " from the sheet \u00b7 " + fromOthers +
+           " from other devices, now included below (marked \u201cfrom sheet\u201d).",
+           "Se trajeron " + REMOTE_RECORDS.length + " de la hoja \u00b7 " + fromOthers +
+           " de otros dispositivos, ahora incluidos abajo (marcados \u201cde la hoja\u201d)."),
+        "var(--navy)");
+  } catch (err) {
+    console.warn("Pull failed", err);
+    say(DT("Couldn\u2019t reach the sheet. Confirm the Web App is deployed to \u201cAnyone\u201d and try again.",
+           "No se pudo conectar con la hoja. Confirma que la Web App est\u00e9 desplegada para \u201cCualquiera\u201d e int\u00e9ntalo de nuevo."),
+        "var(--red)");
+  } finally {
+    if (btn) btn.disabled = false;
+  }
+}
+
+function clearPulledRecords() {
+  REMOTE_RECORDS = [];
+  refreshAdmin();
+  const statusEl = document.getElementById("riPullStatus");
+  if (statusEl) { statusEl.textContent = DT("Cleared pulled rows \u2014 showing this device only.",
+                                             "Filas tra\u00eddas eliminadas \u2014 mostrando solo este dispositivo."); statusEl.style.color = "var(--ink-faint)"; }
+}
 
 function pct(n, d) { return d === 0 ? "0%" : Math.round(n/d*100) + "%"; }
 function escapeHtml(s) {
@@ -3709,7 +3847,7 @@ function renderStudents() {
   }
   const rows = filtered.slice().sort(studentSortCmp).map(r =>
     '<tr>' +
-      '<td><strong>' + escapeHtml(r.studentId) + '</strong></td>' +
+      '<td><strong>' + escapeHtml(r.studentId) + '</strong>' + (r._remote ? ' <span style="font-size:10px; font-weight:600; color:var(--gold,#B8893A); border:1px solid var(--gold,#B8893A); border-radius:6px; padding:1px 5px; vertical-align:middle;">' + DT("from sheet","de la hoja") + '</span>' : '') + '</td>' +
       '<td>' + escapeHtml(String(r.grade)) + '</td>' +
       '<td>' + escapeHtml(winLabel(r.window)) + '</td>' +
       '<td><span class="small">' + modeLabel(r.mode) + '</span></td>' +
@@ -3763,7 +3901,7 @@ function renderHome() {
   // Header
   let html = '<div class="home-header">' +
     '<div class="home-header-id">' +
-      '<div class="home-name">' + escapeHtml(r.studentId) + '</div>' +
+      '<div class="home-name">' + escapeHtml(r.studentId) + (r._remote ? ' <span style="font-size:12px; font-weight:600; color:var(--gold,#B8893A); border:1px solid var(--gold,#B8893A); border-radius:6px; padding:2px 7px; vertical-align:middle;">' + DT("from sheet","de la hoja") + '</span>' : '') + '</div>' +
       '<div class="small">' + DT("Grade ","Grado ") + escapeHtml(String(r.grade)) + ' \u00B7 ' + escapeHtml(winLabel(r.window)) + ' \u00B7 ' +
         '<span class="pill ' + tierClass(r.tier) + '">' + tierLabel(r.tier) + '</span> \u00B7 ' +
         '<span class="small">' + (r.mode === "depth" ? DT("Thorough mode","Modo a fondo") : DT("Quick mode","Modo r\u00e1pido")) + '</span>' +
