@@ -1222,6 +1222,19 @@ tr:hover td { background: var(--paper); }
 .home-item .hid-open{ display:inline-flex; align-items:center; gap:3px; flex:0 0 auto; font-size:11px; font-weight:800; letter-spacing:.03em;
   color:#fff; background:var(--gold-deep,#9a6f24); padding:5px 12px; border-radius:999px; white-space:nowrap; }
 /* Voices — public comment wall */
+.hyb-voices{ padding:10px 7vw 6px; }
+.wv-inner{ max-width:1000px; margin:0 auto; }
+.wv-head{ text-align:center; margin-bottom:18px; }
+.wv-title{ font-size:26px; color:var(--navy); margin:4px 0 0; }
+.wv-strip{ display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:14px; }
+.wv-card{ background:#fff; border:1px solid var(--rule); border-left:3px solid var(--gold); border-radius:12px; padding:16px 18px; }
+.wv-quote{ font-family:var(--font-serif); font-size:15.5px; line-height:1.55; color:var(--navy); margin-bottom:10px; }
+.wv-by{ font-size:12.5px; color:var(--ink-soft); }
+.wv-role{ display:inline-block; font-size:10px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:var(--gold-deep,#9a6f24); background:#FBF1D6; border:1px solid var(--gold); border-radius:999px; padding:1px 7px; margin-left:6px; }
+.wv-empty{ text-align:center; color:var(--ink-soft); font-style:italic; font-size:14px; padding:6px 0; }
+.wv-cta{ text-align:center; margin-top:16px; }
+.wv-link{ color:var(--navy); font-weight:700; text-decoration:none; border-bottom:2px solid var(--gold); padding-bottom:2px; cursor:pointer; }
+.wv-link:hover{ color:var(--gold-deep,#9a6f24); }
 .voi-form{ background:#FCF8EE; border:1px solid var(--rule,#e7ddc9); border-radius:14px; padding:18px 18px 16px; margin-bottom:26px; }
 .voi-row{ display:flex; gap:10px; flex-wrap:wrap; margin-bottom:10px; }
 .voi-input{ font-family:var(--font-sans); font-size:14px; color:var(--navy); background:#fff; border:1px solid var(--rule,#cdbfa3); border-radius:9px; padding:10px 12px; }
@@ -2097,6 +2110,20 @@ function toggleTheme(){
         <div class="foot"><span class="meta" data-i18n="hyb_meta_priv">Stays on your device &middot; ~4 minutes</span><span class="arr">&rarr;</span></div>
       </a>
     </div>
+
+    <!-- ===== VOICES STRIP (front-page social proof) ===== -->
+    <section class="hyb-voices reveal" id="welcomeVoices" style="display:none;">
+      <div class="wv-inner">
+        <div class="wv-head">
+          <div class="eyebrow" style="color:var(--gold);" data-i18n="wv_ey">Voices</div>
+          <h3 class="serif wv-title" data-i18n="wv_h">What people are saying</h3>
+        </div>
+        <div class="wv-strip" id="welcomeVoicesStrip"></div>
+        <div class="wv-cta">
+          <a href="#" class="wv-link" onclick="event.preventDefault(); openGuide('voices');" data-i18n="wv_link">Read more &amp; share yours &rarr;</a>
+        </div>
+      </div>
+    </section>
 
     <!-- ===== THE STORY (moved to bottom of main page) ===== -->
     <section class="hyb-story reveal">
@@ -3597,7 +3624,7 @@ const ACCESS_CODE = "educator";
 //   4. The school hosts THIS configured copy, so every device that opens it
 //      writes to the school's own Sheet. sessionStorage stays the backup.
 // ============================================================
-const SCHOOL_SYNC_URL = "https://script.google.com/macros/s/AKfycbyjDpgDxPiFQanGzsvfXO9VqRKazs-UFjCvYIyZ3m-2Wlb2DZ5Bc36MnFRnrXFdruFB/exec";   // e.g. "https://script.google.com/macros/s/AKfy.../exec"
+const SCHOOL_SYNC_URL = "https://script.google.com/macros/s/AKfycbzkHR3JzURidWNlZGSy2YlOHwQTMgXJZhfSfpwcx0ERiLm0FgRE7WOYiXiI6FeyKk8UXA/exec";   // e.g. "https://script.google.com/macros/s/AKfy.../exec"
 const SCHOOL_SYNC_KEY = "sky";   // must match the PASSCODE inside the school's Apps Script
 
 const $  = sel => document.querySelector(sel);
@@ -3679,6 +3706,9 @@ const I18N_UI = {
   w_choose:    { en: "Choose how you want to take it", es: "Elige c\u00f3mo quieres hacerla" },
   w_choose_sub:{ en: "Same 18 questions either way \u2014 take the quick version, or a more thorough one with short written reflections.", es: "Las mismas 18 preguntas en ambas \u2014 haz la versi\u00f3n r\u00e1pida, o una m\u00e1s a fondo con breves reflexiones escritas." },
   g_tab_voices:{ en: "Voices", es: "Voces" },
+  wv_ey:       { en: "Voices", es: "Voces" },
+  wv_h:        { en: "What people are saying", es: "Lo que dicen las personas" },
+  wv_link:     { en: "Read more & share yours \u2192", es: "Leer m\u00e1s y compartir \u2192" },
   voi_h:       { en: "Voices", es: "Voces" },
   voi_intro:   { en: "Teachers, families, and students \u2014 share a few words about your experience. Posts appear on the wall below for everyone to read.", es: "Maestros, familias y estudiantes: comparte unas palabras sobre tu experiencia. Las publicaciones aparecen en el muro de abajo para que todos las lean." },
   voi_name_ph: { en: "First name (optional)", es: "Nombre (opcional)" },
@@ -4019,6 +4049,10 @@ var TOURS = {
       title:{en:"Downloads", es:"Descargas"},
       body:{en:"Free preview packs of the charts, worksheets, and scenario cards \u2014 plus the buttons to request a license or ask about a family copy. No code needed.", es:"Vistas previas gratis de las l\u00e1minas, hojas de trabajo y tarjetas de escenarios \u2014 m\u00e1s los botones para solicitar una licencia o preguntar por una copia para la familia. Sin c\u00f3digo."},
       act:function(){ if (typeof openGuideSub === "function") openGuideSub("library", false); } },
+    { sel:'.guide-subtab[data-guide="voices"]',
+      title:{en:"Voices", es:"Voces"},
+      body:{en:"Leave a few words about your experience, and read what teachers, families, and students have shared. Posts appear on the wall for everyone.", es:"Deja unas palabras sobre tu experiencia y lee lo que han compartido maestros, familias y estudiantes. Las publicaciones aparecen en el muro para todos."},
+      act:function(){ if (typeof openGuideSub === "function") openGuideSub("voices", false); } },
   ],
   dash: [
     { sel:null,
@@ -4938,6 +4972,7 @@ document.addEventListener("DOMContentLoaded", () => {
     var fabScreens = { "screen-welcome": 1, "screen-guide": 1, "screen-admin": 1 };
     if (fab && act) fab.classList.toggle("show", !!fabScreens[act.id]);
   })();
+  try { welcomeVoicesLoad(); } catch (e) {}
   // D: first-visit guided tour on the main page
   setTimeout(maybeStartTour, 950);
   // 3: surface any unfinished check-in
@@ -5364,6 +5399,33 @@ function voicesRender(rows) {
     '</div>';
   });
   list.innerHTML = html;
+}
+// Front-page strip: a few recent comments + a way in to the full wall.
+function welcomeVoicesLoad() {
+  var sec = document.getElementById("welcomeVoices");
+  var strip = document.getElementById("welcomeVoicesStrip");
+  if (!sec || !strip) return;
+  if (!SCHOOL_SYNC_URL) { sec.style.display = "none"; return; }
+  sec.style.display = "";   // show heading + "share yours" link regardless
+  var url = SCHOOL_SYNC_URL + (SCHOOL_SYNC_URL.indexOf("?") >= 0 ? "&" : "?") + "comments=1";
+  fetch(url, { method: "GET" })
+    .then(function (r) { return r.json(); })
+    .then(function (data) {
+      var rows = ((data && data.comments) || []).slice(0, 3);
+      if (!rows.length) {
+        strip.innerHTML = '<p class="wv-empty">' + DT("Be the first to share your experience.", "S\u00e9 el primero en compartir tu experiencia.") + '</p>';
+        return;
+      }
+      var rl = { Teacher: DT("Teacher","Maestro/a"), Parent: DT("Parent","Madre/Padre"), Student: DT("Student","Estudiante"), Counselor: DT("Counselor","Consejero/a"), Administrator: DT("Administrator","Administrador/a"), Other: DT("Other","Otro") };
+      var html = "";
+      rows.forEach(function (c) {
+        var who = (c.name && String(c.name).trim()) ? escapeHtml(String(c.name).trim()) : DT("Anonymous", "An\u00f3nimo");
+        html += '<div class="wv-card"><div class="wv-quote">\u201c' + escapeHtml(String(c.message || "")) + '\u201d</div>' +
+                '<div class="wv-by">\u2014 ' + who + ' <span class="wv-role">' + escapeHtml(rl[c.role] || rl.Other) + '</span></div></div>';
+      });
+      strip.innerHTML = html;
+    })
+    .catch(function () { strip.innerHTML = ""; });
 }
 function voicesLoad() {
   var list = document.getElementById("voicesList");
