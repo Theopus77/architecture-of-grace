@@ -1148,15 +1148,20 @@ tr:hover td { background: var(--paper); }
 .rc-wrap{ margin:22px 0 4px; }
 .rc-head{ font-family:var(--font-serif); font-size:20px; color:var(--navy); margin-bottom:3px; }
 .rc-sub-line{ font-size:12.5px; color:var(--ink-soft,#6b6256); margin-bottom:14px; }
-.rc-hero{ display:block; text-decoration:none; background:linear-gradient(135deg,var(--navy) 0%,#16314f 100%);
+.rc-card.rc-hero{ display:block; background:linear-gradient(135deg,var(--navy) 0%,#16314f 100%);
   color:#fff; border-radius:12px; padding:16px 18px; margin-bottom:12px; box-shadow:var(--shadow-sm);
-  border:1px solid rgba(255,255,255,.06); transition:transform .15s, box-shadow .15s; }
-.rc-hero:hover{ transform:translateY(-1px); box-shadow:0 8px 22px rgba(20,40,63,.28); }
-.rc-hero .rc-kind{ color:var(--gold-light,#E7B85E); }
-.rc-hero .rc-title{ color:#fff; font-size:18px; }
-.rc-hero .rc-sub{ color:rgba(255,255,255,.78); }
-.rc-open{ display:inline-block; margin-top:10px; font-size:12.5px; font-weight:700; letter-spacing:.03em;
-  color:#1a1a18; background:var(--gold-light,#E7B85E); padding:6px 13px; border-radius:7px; }
+  border:1px solid rgba(255,255,255,.06); }
+.rc-card.rc-hero .rc-kind{ color:var(--gold-light,#E7B85E); }
+.rc-card.rc-hero .rc-title{ color:#fff; font-size:18px; }
+.rc-card.rc-hero .rc-sub{ color:rgba(255,255,255,.78); }
+.rc-hero-actions{ display:flex; flex-wrap:wrap; gap:9px; margin-top:12px; }
+.rc-hero-btn{ display:inline-flex; align-items:center; gap:6px; text-decoration:none; font-size:13px; font-weight:700;
+  padding:8px 15px; border-radius:8px; white-space:nowrap; transition:transform .12s, background .12s; }
+.rc-hero-btn:hover{ transform:translateY(-1px); }
+.rc-hero-story{ background:var(--gold-light,#E7B85E); color:#1a1a18; }
+.rc-hero-story:hover{ background:#f2c977; }
+.rc-hero-lesson{ background:transparent; color:#fff; border:1.5px solid var(--gold-light,#E7B85E); }
+.rc-hero-lesson:hover{ background:rgba(231,184,94,.16); }
 .rc-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:12px; }
 .rc-card{ display:flex; flex-direction:column; background:#fff; border:1px solid var(--rule,#e7ddc9);
   border-left:3px solid var(--gold); border-radius:11px; padding:14px 15px; box-shadow:var(--shadow-sm); }
@@ -1183,6 +1188,11 @@ tr:hover td { background: var(--paper); }
 .yr-link:hover{ background:#F3E6C6; }
 .yr-link.yr-lib{ color:var(--ink-soft,#6b6256); font-weight:500; }
 .yr-dot{ color:var(--rule,#cdbfa3); }
+/* always-available accessibility door */
+.rc-access{ margin-top:18px; padding-top:13px; border-top:1px solid var(--rule,#e7ddc9); font-size:13px; line-height:1.5; }
+.rc-access-q{ color:var(--ink-soft,#6b6256); }
+.rc-access-link{ color:var(--navy); font-weight:700; text-decoration:none; border-bottom:1px solid var(--gold); white-space:nowrap; }
+.rc-access-link:hover{ color:var(--gold-deep,#9a6f24); }
 /* clickable chapter chips inside the per-item "In the books" detail */
 .home-item a.hid-link{ display:block; text-decoration:none; color:var(--ink); padding:7px 10px; margin:-3px -4px;
   border-radius:8px; transition:background .12s; }
@@ -5078,6 +5088,14 @@ var DOMAIN_RES_CATS = {
   B:["Worksheets & Activities","Anchor Charts","Scenario Cards"],
   C:["Scenario Cards","Worksheets & Activities","Anchor Charts"]
 };
+// Always-available accessibility door — shown on every result regardless of score,
+// so it never infers or labels. Routes to the autism-adapted charts in the library.
+function accessibilityLink(){
+  return '<div class="rc-access">'
+    + '<span class="rc-access-q">' + DT("Prefer plain-language, visual-support versions?","\u00bfPrefieres versiones en lenguaje sencillo con apoyos visuales?") + '</span> '
+    + '<a class="rc-access-link" href="#" onclick="openGuide(\'library\');return false;">' + DT("Open the autism-adapted charts","Abre las l\u00e1minas adaptadas para el autismo") + ' \u2192</a>'
+    + '</div>';
+}
 // Younger grade-band versions of the same supports, linked for reference
 // (the simpler charts/visuals stay useful above their band).
 function youngerRefStrip(band){
@@ -5121,7 +5139,7 @@ function resultResourceCards(r, lowItems, lowestDomain, isSelf){
     var cands=[];
     lowItems.forEach(function(li){
       var key=ITEM_TO_CONSTRUCT[li.item.n], dom=_CD[key];
-      (RI_NOVELS[key]||[]).forEach(function(x){ cands.push({x:x,dom:dom}); });
+      (RI_NOVELS[key]||[]).forEach(function(x){ cands.push({x:x,dom:dom,key:key}); });
     });
     cands.sort(function(a,b){
       var pa=(a.dom===lowestDomain?0:1), pb=(b.dom===lowestDomain?0:1);
@@ -5130,18 +5148,22 @@ function resultResourceCards(r, lowItems, lowestDomain, isSelf){
       if(da!==db) return da-db;                               // then closest to the reader's band
       return (a.x.b<=band?0:1)-(b.x.b<=band?0:1);             // then at-or-below band
     });
-    var pick = cands.length ? cands[0].x : null;
-    if(pick){
-      {
-        var url = novelJumpUrl(pick.b, chNumOf(pick.ch));
-        if(url){
-          var bk = es?RI_GRADES[pick.b].label.replace("Book","Libro"):RI_GRADES[pick.b].label;
-          storyCard = '<a class="rc-card rc-hero" href="'+url+'" target="_blank" rel="noopener">'
-            + '<div class="rc-kind">'+DT("Read it in the story","Léelo en la historia")+'</div>'
-            + '<div class="rc-title">\u201c'+libEsc(pick.t)+'\u201d</div>'
-            + '<div class="rc-sub">'+bk+' \u00b7 '+pick.ch+'</div>'
-            + '<span class="rc-open">\u2197 '+DT("Open to the page","Abrir en la página")+'</span></a>';
-        }
+    var pickC = cands.length ? cands[0] : null;
+    if(pickC){
+      var pick = pickC.x;
+      var novelUrl  = novelJumpUrl(pick.b, chNumOf(pick.ch));
+      var lessonUrl = curriculumJumpUrl(pick.b, pickC.key);
+      if(novelUrl || lessonUrl){
+        var bk = es?RI_GRADES[pick.b].label.replace("Book","Libro"):RI_GRADES[pick.b].label;
+        var btns = "";
+        if(novelUrl)  btns += '<a class="rc-hero-btn rc-hero-story" href="'+novelUrl+'" target="_blank" rel="noopener">\u2197 '+DT("Read it in the story","Léelo en la historia")+'</a>';
+        if(lessonUrl) btns += '<a class="rc-hero-btn rc-hero-lesson" href="'+lessonUrl+'" target="_blank" rel="noopener">\u2197 '+DT("Open the lesson","Abre la lección")+'</a>';
+        storyCard = '<div class="rc-card rc-hero">'
+          + '<div class="rc-kind">'+DT("Where this idea lives","Dónde vive esta idea")+'</div>'
+          + '<div class="rc-title">\u201c'+libEsc(pick.t)+'\u201d</div>'
+          + '<div class="rc-sub">'+bk+' \u00b7 '+pick.ch+'</div>'
+          + '<div class="rc-hero-actions">'+btns+'</div>'
+          + '</div>';
       }
     }
   }
@@ -5204,11 +5226,11 @@ function renderConversationGuide(r, isSelf) {
   if (!lowItems.length) {
     if (isSelf) return '<div class="home-conversation">' +
       '<h4>' + DT("What to do next","Qu\u00e9 hacer ahora") + '</h4>' +
-      '<p>' + DT("You scored in the healthy range across every item. That doesn\u2019t mean nothing is hard \u2014 it means the skills the curriculum teaches are showing up in you. Keep doing what you\u2019re doing, and take this again next window to see your growth.","Obtuviste puntajes en el rango saludable en cada \u00edtem. Eso no significa que nada sea dif\u00edcil \u2014 significa que las habilidades que ense\u00f1a el curr\u00edculo est\u00e1n apareciendo en ti. Sigue haciendo lo que haces, y vuelve a hacerlo el pr\u00f3ximo per\u00edodo para ver tu progreso.") + '</p>' +
+      '<p>' + DT("You scored in the healthy range across every item. That doesn\u2019t mean nothing is hard \u2014 it means the skills the curriculum teaches are showing up in you. Keep doing what you\u2019re doing, and take this again next window to see your growth.","Obtuviste puntajes en el rango saludable en cada \u00edtem. Eso no significa que nada sea dif\u00edcil \u2014 significa que las habilidades que ense\u00f1a el curr\u00edculo est\u00e1n apareciendo en ti. Sigue haciendo lo que haces, y vuelve a hacerlo el pr\u00f3ximo per\u00edodo para ver tu progreso.") + '</p>' + accessibilityLink() +
     '</div>';
     return '<div class="home-conversation">' +
       '<h4>' + DT("What to do next","Qu\u00e9 hacer ahora") + '</h4>' +
-      '<p>' + DT("This person scored in the healthy range across every item. That doesn\u2019t mean nothing is hard \u2014 it means the skills the curriculum teaches are showing up. Keep doing what you\u2019re doing. Re-screen in the next window to track growth.","Esta persona obtuvo puntajes en el rango saludable en cada \u00edtem. Eso no significa que nada sea dif\u00edcil \u2014 significa que las habilidades que ense\u00f1a el curr\u00edculo est\u00e1n apareciendo. Sigue haciendo lo que haces. Vuelve a evaluar en el pr\u00f3ximo per\u00edodo para seguir el progreso.") + '</p>' +
+      '<p>' + DT("This person scored in the healthy range across every item. That doesn\u2019t mean nothing is hard \u2014 it means the skills the curriculum teaches are showing up. Keep doing what you\u2019re doing. Re-screen in the next window to track growth.","Esta persona obtuvo puntajes en el rango saludable en cada \u00edtem. Eso no significa que nada sea dif\u00edcil \u2014 significa que las habilidades que ense\u00f1a el curr\u00edculo est\u00e1n apareciendo. Sigue haciendo lo que haces. Vuelve a evaluar en el pr\u00f3ximo per\u00edodo para seguir el progreso.") + '</p>' + accessibilityLink() +
     '</div>';
   }
 
@@ -5309,6 +5331,7 @@ function renderConversationGuide(r, isSelf) {
             "<strong>\u00cdtem de adulto de confianza marcado.</strong> Esta persona respondi\u00f3 Nunca o Rara vez/A veces a tener un adulto de confianza. Si es un ni\u00f1o, esta es la conversaci\u00f3n m\u00e1s importante que hay que tener. Pregunta: <em>Si algo anduviera mal, \u00bfa qui\u00e9n acudir\u00edas de verdad?</em> Luego ay\u00fadale a nombrar a una persona espec\u00edfica y a ensayar c\u00f3mo acercarse.")) + '</div>';
   }
 
+  html += accessibilityLink();
   html += '</div>';
   return html;
 }
@@ -5747,6 +5770,23 @@ function novelJumpUrl(book, chapter){
   return pg ? (base + "#page=" + pg) : base;
 }
 function chNumOf(ch){ var m=String(ch).match(/\d+/); return m?parseInt(m[0],10):null; }
+// Full curriculum volumes, for the "Open the lesson" deep-jump. Hosting these makes
+// the full curriculum openable to anyone with the link (it is the district-licensed
+// core) — blank a value to turn that book's lesson jump off and keep it gated.
+const CURRICULUM_URLS = {
+  1:"files/AoG_Book1_The_Foundation_Curriculum_Polished.pdf",
+  2:"files/AoG_Book2_The_Framework_Curriculum_Polished.pdf",
+  3:"files/AoG_Book3_The_Interior_Curriculum_Polished.pdf",
+  4:"files/AoG_Book4_The_Facade_Curriculum_Polished.pdf",
+  5:"files/AoG_Book5_The_Capstone_Curriculum_Polished.pdf"
+};
+// Verified construct -> curriculum lesson page, per book (from each volume's TOC).
+const CURR_LESSON_PAGES = {"Items 1, 2":{1:15,2:15,4:18}, "Items 3, 4":{2:24,4:83}, "Items 5, 6":{1:17,2:45}, "Item 8 (+7, 9)":{1:19,2:20,3:39,4:34}, "Item 9":{1:35,2:49,3:53}, "Item 10":{1:38,2:52,3:56,5:57}, "Items 11, 12":{1:23,2:42,3:49,4:54}, "Item 13":{1:48,2:62,3:67,5:107}, "Item 14":{1:33,2:64}, "Item 15":{1:66,2:93,3:96,4:123}, "Item 16":{1:70,2:98,3:102,4:119,5:136}, "Item 17":{1:50,2:69,3:70,4:92,5:102}};
+function curriculumJumpUrl(book, constructKey){
+  var base=CURRICULUM_URLS[book]; if(!base) return "";
+  var pg=(CURR_LESSON_PAGES[constructKey]||{})[book];
+  return pg ? (base + "#page=" + pg) : "";
+}
 
 
 const RESOURCE_LIBRARY = [
@@ -5827,8 +5867,14 @@ const RESOURCE_LIBRARY = [
     { title:"Book 3 \u00b7 Rewriting the Script \u00b7 Somatic Floor (D8)", desc:"Somatic grounding for reauthoring the self-story.", url:"" },
     { title:"Book 3 \u00b7 The Agency of Release \u00b7 Somatic Floor (D11)", desc:"Releasing what you carry \u2014 a body-based practice.", url:"" },
   ]},
-  { cat:"Autism-Adapted Charts", note:"The anchor charts, adapted with plain language and visual supports for autistic learners.", items:[
-    { title:"Autism-Adapted Anchor Charts", desc:"The program\u2019s anchor charts, rebuilt with literal language and visual supports for autistic learners.", url:"" },
+  { cat:"Autism-Adapted Charts", note:"The anchor charts, rebuilt with plain language and visual supports \u2014 available to anyone who wants the gentlest, most literal version. Two support levels per band.", items:[
+    { title:"Autism-Adapted Charts \u00b7 Book 1 (K\u20132) \u00b7 Lower Support", desc:"The K\u20132 anchor charts in plain language with visual supports.", url:"files/AoG_Book1_AutismAdapted_LowerSupport_1.pdf" },
+    { title:"Autism-Adapted Charts \u00b7 Book 1 (K\u20132) \u00b7 Moderate Support", desc:"The K\u20132 charts with more scaffolding and simpler steps.", url:"files/AoG_Book1_AutismAdapted_ModerateSupport.pdf" },
+    { title:"Autism-Adapted Charts \u00b7 Book 3 (6\u20138) \u00b7 Lower Support", desc:"The 6\u20138 anchor charts in plain language with visual supports.", url:"files/AoG_Book3_AutismAdapted_LowerSupport.pdf" },
+    { title:"Autism-Adapted Charts \u00b7 Book 3 (6\u20138) \u00b7 Moderate Support", desc:"The 6\u20138 charts with more scaffolding and simpler steps.", url:"files/AoG_Book3_AutismAdapted_ModerateSupport.pdf" },
+    { title:"Autism-Adapted Charts \u00b7 Book 2 (3\u20135)", desc:"In polish \u2014 coming soon.", url:"" },
+    { title:"Autism-Adapted Charts \u00b7 Book 4 (9\u201310)", desc:"Material ready; in polish \u2014 coming soon.", url:"" },
+    { title:"Autism-Adapted Charts \u00b7 Book 5 (11\u201312)", desc:"Material ready; in polish \u2014 coming soon.", url:"" },
   ]},
   { cat:"Home & Family Editions", note:"The program, rewritten for families to use at the kitchen table.", items:[
     { title:"Home Edition \u00b7 Book 1 (K\u20132)", desc:"The previewed K\u20132 lessons, in a version parents can lead at home.", access:"buy", url:"" },
