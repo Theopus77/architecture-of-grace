@@ -1358,6 +1358,8 @@ footer .serif { font-style: italic; color: var(--ink-soft); }
 .aog-lobby{padding:32px 0 0;position:relative;z-index:2}
 .aog-doors{display:flex;flex-direction:column;gap:16px}
 .aog-checkins{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+#screen-choose .aog-door{display:grid;grid-template-columns:auto minmax(0,1fr) auto;column-gap:16px;align-items:center}
+#screen-choose .aog-door .arr{margin-left:0}
 .aog-doors>.aog-door.primary{padding:30px 34px}
 .aog-doors>.aog-door.primary .t{font-size:25px}
 .aog-doors>.aog-door.primary .ic{width:56px;height:56px;font-size:26px}
@@ -1433,24 +1435,14 @@ footer .serif { font-style: italic; color: var(--ink-soft); }
           </div>
           <span class="arr">&rarr;</span>
         </a>
-        <div class="aog-checkins">
-          <a href="#" class="aog-door secondary" onclick="event.preventDefault(); startCheckin();">
-            <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg></span>
-            <div>
-              <div class="t" data-i18n="lobby_checkin_t">Take the Check-In</div>
-              <div class="s" data-i18n="lobby_checkin_s">A private 5-minute self-reflection. Quick, or thorough.</div>
-            </div>
-            <span class="arr">&rarr;</span>
-          </a>
-          <a href="#" class="aog-door secondary" onclick="event.preventDefault(); startAdult();">
-            <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 2v2"/><path d="M10 2v2"/><path d="M14 2v2"/><path d="M4 8h14a4 4 0 0 1 0 8h-1"/><path d="M4 8v9a4 4 0 0 0 4 4h5a4 4 0 0 0 4-4V8z"/></svg></span>
-            <div>
-              <div class="t" data-i18n="ad_door_t">A check-in for grown-ups</div>
-              <div class="s" data-i18n="ad_door_s">A private few minutes for the adults doing this work too.</div>
-            </div>
-            <span class="arr">&rarr;</span>
-          </a>
-        </div>
+        <a href="#" class="aog-door secondary" onclick="event.preventDefault(); startChoose();">
+          <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg></span>
+          <div>
+            <div class="t" data-i18n="lobby_checkin_t">Take the Check-In</div>
+            <div class="s" data-i18n="lobby_checkin_s">A private few minutes for yourself &mdash; student or adult.</div>
+          </div>
+          <span class="arr">&rarr;</span>
+        </a>
       </div>
     </div>
 
@@ -1485,6 +1477,43 @@ footer .serif { font-style: italic; color: var(--ink-soft); }
     
 </div>
 </section>
+
+<!-- ============ CHOOSE (student / adult) ============ -->
+<section id="screen-choose" class="screen">
+  <div class="container">
+    <div class="nav-row" style="justify-content:flex-start; margin-bottom:2px;">
+      <button class="btn btn-ghost" onclick="resetToStart()"><span class="btn-arrow">&larr;</span> <span data-i18n="ch_back">Back to start</span></button>
+    </div>
+    <div class="hero hero-center">
+      <div class="eyebrow" data-i18n="ch_ey">The Check-In</div>
+      <h1 class="display display-xl" data-i18n="ch_h1">Who&rsquo;s checking in?</h1>
+      <p class="lede" data-i18n="ch_lede">Same three areas, the same care &mdash; just worded for who&rsquo;s answering. Choose one to begin.</p>
+    </div>
+    <div class="aog-lobby">
+      <div class="aog-doors">
+        <div class="aog-checkins">
+          <a href="#" class="aog-door secondary" onclick="event.preventDefault(); startCheckin();">
+            <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21.42 10.922a1 1 0 0 0-.019-1.838L12.83 5.18a2 2 0 0 0-1.66 0L2.6 9.08a1 1 0 0 0 0 1.832l8.57 3.908a2 2 0 0 0 1.66 0z"/><path d="M22 10v6"/><path d="M6 12.5V16a6 3 0 0 0 12 0v-3.5"/></svg></span>
+            <div>
+              <div class="t" data-i18n="ch_student_t">Student Check-In</div>
+              <div class="s" data-i18n="ch_student_s">K&ndash;12 &middot; a private 5-minute self-reflection. Quick, or thorough.</div>
+            </div>
+            <span class="arr">&rarr;</span>
+          </a>
+          <a href="#" class="aog-door secondary" onclick="event.preventDefault(); startAdult();">
+            <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 2v2"/><path d="M10 2v2"/><path d="M14 2v2"/><path d="M4 8h14a4 4 0 0 1 0 8h-1"/><path d="M4 8v9a4 4 0 0 0 4 4h5a4 4 0 0 0 4-4V8z"/></svg></span>
+            <div>
+              <div class="t" data-i18n="ad_door_t">A check-in for grown-ups</div>
+              <div class="s" data-i18n="ad_door_s">A private few minutes for the adults doing this work too.</div>
+            </div>
+            <span class="arr">&rarr;</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
 
 <!-- ============ CHECK-IN (its own screen) ============ -->
 <section id="screen-checkin" class="screen">
@@ -2692,6 +2721,12 @@ function scale() { return mode === "depth" ? SCALE_6[surveyLang] : SCALE_4[surve
 // Participant-facing UI translations (educator dashboard stays EN)
 // ============================================================
 const I18N_UI = {
+  ch_ey:        { en: "The Check-In", es: "El chequeo" },
+  ch_h1:        { en: "Who’s checking in?", es: "¿Quién hace el chequeo?" },
+  ch_lede:      { en: "Same three areas, the same care — just worded for who’s answering. Choose one to begin.", es: "Las mismas tres áreas, el mismo cuidado — solo redactado según quién responde. Elige uno para empezar." },
+  ch_back:      { en: "Back to start", es: "Volver al inicio" },
+  ch_student_t: { en: "Student Check-In", es: "Chequeo para estudiantes" },
+  ch_student_s: { en: "K–12 · a private 5-minute self-reflection. Quick, or thorough.", es: "K–12 · una reflexión privada de 5 minutos. Rápida o a fondo." },
   ad_ey:        { en: "A check-in for grown-ups", es: "Un chequeo para adultos" },
   ad_h1:        { en: "How are you doing, really?", es: "¿Cómo estás, de verdad?" },
   ad_lede:      { en: "A few quiet minutes, just for you. This is a check-in, not a test — and not a diagnosis. There are no wrong answers. It’s a way to notice how you’ve been, and a flag for a conversation if something needs one.", es: "Unos minutos tranquilos, solo para ti. Esto es un chequeo, no un examen — y no un diagnóstico. No hay respuestas incorrectas. Es una manera de notar cómo has estado, y una señal para conversar si algo lo necesita." },
@@ -3877,7 +3912,8 @@ document.addEventListener("DOMContentLoaded", () => {
 // Admin / modal
 // ============================================================
 function openAdmin() { openModal("modalAccess"); if (typeof aogSetHash === "function") aogSetHash("results"); }
-function startCheckin() { population = "k12"; showScreen("screen-checkin"); if (typeof aogSetHash === "function") aogSetHash("checkin"); }
+function startCheckin() { population = "k12"; showScreen("screen-checkin"); if (typeof aogSetHash === "function") aogSetHash("student"); }
+function startChoose() { showScreen("screen-choose"); if (typeof aogSetHash === "function") aogSetHash("checkin"); }
 
 function startAdult() {
   population = "adult";
@@ -3963,7 +3999,8 @@ function aogRouteFromHash() {
   else if (h === "guide" || h === "ecosystem" || h === "explore") { openGuide(); }
   else if (h === "results" || h === "dashboard" || h === "educator" || h === "admin") { openAdmin(); }
   else if (h === "start" || h === "welcome") { resetToStart(); }
-  else if (h === "check-in" || h === "checkin" || h === "survey") { startCheckin(); }
+  else if (h === "check-in" || h === "checkin") { startChoose(); }
+  else if (h === "student" || h === "survey") { startCheckin(); }
   else if (h === "adult" || h === "adults" || h === "grown-ups" || h === "grownups") { startAdult(); }
 }
 window.addEventListener("hashchange", aogRouteFromHash);
@@ -4388,7 +4425,7 @@ function renderHome() {
     '<div class="home-header-id">' +
       '<div class="home-name">' + escapeHtml(r.studentId) + (r._remote ? ' <span style="font-size:12px; font-weight:600; color:var(--gold,#B8893A); border:1px solid var(--gold,#B8893A); border-radius:6px; padding:2px 7px; vertical-align:middle;">' + DT("from sheet","de la hoja") + '</span>' : '') + '</div>' +
       '<div class="small">' +
-        [ DT("Grade ","Grado ") + escapeHtml(String(r.grade)),
+        [ (r.population === "adult" ? DT("Adult check-in","Chequeo de adultos") : (DT("Grade ","Grado ") + escapeHtml(String(r.grade)))),
           (winLabel(r.window) ? escapeHtml(winLabel(r.window)) : null),
           (fmtNiceDate(r.timestamp) || null)
         ].filter(Boolean).join(' \u00B7 ') + ' \u00B7 ' +
@@ -4415,7 +4452,8 @@ function renderHome() {
     { key: "C", name: DT("Social Competency & Repair","Competencia social y reparaci\u00f3n"), range: [12,18], score: r.normC, reflectionIdx: 2 }
   ];
 
-  const ITEMS_L = (dashLang === "es") ? ITEMS_ES : ITEMS_EN;
+  const _adult = (r.population === "adult");
+  const ITEMS_L = _adult ? ((dashLang === "es") ? ITEMS_ADULT_ES : ITEMS_ADULT_EN) : ((dashLang === "es") ? ITEMS_ES : ITEMS_EN);
   const scaleLabels = (SCALE_6[dashLang] || SCALE_6.en).map(s => s.label);
   const scaleLabels4 = (SCALE_4[dashLang] || SCALE_4.en).map(s => s.label);
   const intLabels = (INTENSITY[dashLang] || INTENSITY.en).map(i => i.label);
@@ -4472,9 +4510,10 @@ function renderHome() {
 }
 
 function renderConversationGuide(r) {
+  const isAdult = (r.population === "adult");
   const itemMax = r.mode === "depth" ? 5 : 3;
   const lowItems = [];
-  ITEMS_EN.forEach((item, i) => {
+  (isAdult ? ITEMS_ADULT_EN : ITEMS_EN).forEach((item, i) => {
     const scored = scoreFrequency(r.raw[i], item.reverse, r.mode);
     if (scored == null) return;
     // Flag items scored less than 40% of max
@@ -4510,8 +4549,29 @@ function renderConversationGuide(r) {
     17: { en: "Do you know the difference between someone being difficult and someone being unsafe? Who is each in your life right now?", es: "\u00bfSabes la diferencia entre alguien que es dif\u00edcil y alguien que no es seguro? \u00bfQui\u00e9n es cada uno en tu vida ahora mismo?" },
     18: { en: "Is there an adult you would actually go to if something was wrong? Who? If not, who could it be?", es: "\u00bfHay un adulto al que realmente acudir\u00edas si algo anduviera mal? \u00bfQui\u00e9n? Si no, \u00bfqui\u00e9n podr\u00eda serlo?" }
   };
+  const PROMPTS_ADULT = {
+    1:  { en: "When something’s bothering you, can you usually tell what the feeling is? Is there one that’s hard to name?", es: "Cuando algo te molesta, ¿sueles darte cuenta de qué sentimiento es? ¿Hay alguno que te cueste nombrar?" },
+    2:  { en: "When you’re really upset, what helps you settle? Is there anything that works reliably?", es: "Cuando estás muy alterado/a, ¿qué te ayuda a calmarte? ¿Hay algo que funcione de manera confiable?" },
+    3:  { en: "When you’re worried or angry, does it ever take over and get in the way of what you’re trying to do?", es: "Cuando estás preocupado/a o enojado/a, ¿alguna vez te domina y se interpone en lo que intentas hacer?" },
+    4:  { en: "Is there ever a feeling so big you don’t know what to do with it? What’s that like?", es: "¿Alguna vez hay un sentimiento tan grande que no sabes qué hacer con él? ¿Cómo es eso?" },
+    5:  { en: "After something hard happens, how long does it usually take you to feel like yourself again?", es: "Después de que pasa algo difícil, ¿cuánto sueles tardar en volver a sentirte tú mismo/a?" },
+    6:  { en: "Can you tell when you’re about to hit your limit before you hit it? What’s the early warning like?", es: "¿Puedes notar que estás por llegar a tu límite antes de llegar? ¿Cómo se siente esa señal?" },
+    7:  { en: "When you make a mistake, what do you tend to say to yourself — kind, or harsh?", es: "Cuando cometes un error, ¿qué sueles decirte a ti mismo/a — amable o duro/a?" },
+    8:  { en: "Is there a voice in your head that turns on you when things go wrong — telling you you’re a failure, or not enough? What does it say?", es: "¿Hay una voz en tu cabeza que se vuelve en tu contra cuando algo sale mal — que te dice que eres un fracaso, o que no eres suficiente? ¿Qué dice?" },
+    9:  { en: "If a close friend made the mistake you made, would you speak to them the way you speak to yourself? What’s different?", es: "Si un amigo/a cercano cometiera el error que cometiste, ¿le hablarías como te hablas a ti mismo/a? ¿Qué es diferente?" },
+    10: { en: "Do mistakes tend to stay with you — replaying long after they’re over?", es: "¿Los errores tienden a quedarse contigo — repitiéndose mucho después de que pasaron?" },
+    11: { en: "When something’s genuinely hard, do you believe you can get better at it? Or does it feel fixed?", es: "Cuando algo es realmente difícil, ¿crees que puedes mejorar? ¿O se siente fijo?" },
+    12: { en: "When you mess up, can you own it, repair what you can, and let it go? Or does it stick?", es: "Cuando te equivocas, ¿puedes reconocerlo, reparar lo que puedas y soltarlo? ¿O se te queda pegado?" },
+    13: { en: "When you’re in conflict with someone, can you picture how it looks from their side?", es: "Cuando estás en conflicto con alguien, ¿puedes imaginar cómo se ve desde su lado?" },
+    14: { en: "When you’ve hurt someone, even by accident, is it easy or hard for you to say so?", es: "Cuando has lastimado a alguien, aunque sea sin querer, ¿te resulta fácil o difícil reconocerlo?" },
+    15: { en: "When someone hurts you, do you tend to assume they meant to? Could there be another read?", es: "Cuando alguien te lastima, ¿sueles suponer que lo hizo a propósito? ¿Podría haber otra lectura?" },
+    16: { en: "How do you treat people who are different from you, or who you find hard to be around?", es: "¿Cómo tratas a las personas que son diferentes a ti, o con las que te cuesta llevarte bien?" },
+    17: { en: "Do you know the difference between someone who’s just difficult and someone who’s unsafe? Who’s each in your life right now?", es: "¿Sabes la diferencia entre alguien que es difícil y alguien que no es seguro? ¿Quién es cada uno en tu vida ahora mismo?" },
+    18: { en: "Is there someone you’d actually turn to if something was wrong? Who? If not, who could it be?", es: "¿Hay alguien a quien realmente acudirías si algo anduviera mal? ¿Quién? Si no, ¿quién podría serlo?" }
+  };
+  const PSET = isAdult ? PROMPTS_ADULT : PROMPTS;
   const prompts = {};
-  Object.keys(PROMPTS).forEach(k => { prompts[k] = PROMPTS[k][dashLang] || PROMPTS[k].en; });
+  Object.keys(PSET).forEach(k => { prompts[k] = PSET[k][dashLang] || PSET[k].en; });
 
   let html = '<div class="home-conversation">' +
     '<h4>' + DT("Conversation starters","Iniciadores de conversaci\u00f3n") + '</h4>' +
@@ -4544,11 +4604,22 @@ function renderConversationGuide(r) {
     C: DT("<strong>Lowest domain: Social Competency & Repair.</strong> Start with Book 3 Unit 2\u20133 (perspective-taking, the Three Sides protocol) and Book 4 Unit 4\u20135 (grace, the Difficult-vs-Unsafe distinction).",
           "<strong>Dominio m\u00e1s bajo: Competencia social y reparaci\u00f3n.</strong> Empieza con el Libro 3, Unidades 2\u20133 (toma de perspectiva, el protocolo Three Sides) y el Libro 4, Unidades 4\u20135 (grace, la distinci\u00f3n Difficult-vs-Unsafe).")
   };
-  html += '<p style="margin-top:14px;">' + guidance[lowestDomain] + '</p>';
+  const guidanceAdult = {
+    A: DT("<strong>Lowest area: Emotional Regulation & Well-Being.</strong> In the novels, the same skills carry into adulthood \u2014 <em>The Year We Walked Out</em> (Book 5): \u201CThe Toolkit at Seventeen\u201D (Ch 3) and \u201CThe Toolkit Has a Limit\u201D (Ch 11), on settling, and on noticing when feeling has outrun capacity. Open the Resource Index for the full map.",
+          "<strong>\u00c1rea m\u00e1s baja: Regulaci\u00f3n emocional y bienestar.</strong> En las novelas, las mismas habilidades llegan a la adultez \u2014 <em>The Year We Walked Out</em> (Libro 5): \u00abThe Toolkit at Seventeen\u00bb (Cap. 3) y \u00abThe Toolkit Has a Limit\u00bb (Cap. 11). Abre el \u00cdndice de recursos para el mapa completo."),
+    B: DT("<strong>Lowest area: Self-Compassion & Growth Mindset.</strong> This is the heart of the mature novels: the inner critic in <em>The Year of Two Voices</em> (Book 3, \u201CThe Voice in Your Head\u201D / \u201CThe Three Tactics,\u201D Ch 8\u20139), again in <em>The Year We Looked Up</em> (Book 4, Ch 3) and <em>The Year We Walked Out</em> (Book 5, Ch 4); plus \u201CThe Friend Test\u201D (Book 3, Ch 11) and \u201CRewriting the Script\u201D (Book 3, Ch 12).",
+          "<strong>\u00c1rea m\u00e1s baja: Autocompasi\u00f3n y mentalidad de crecimiento.</strong> El coraz\u00f3n de las novelas maduras: el cr\u00edtico interno en <em>The Year of Two Voices</em> (Libro 3, \u00abThe Voice in Your Head\u00bb / \u00abThe Three Tactics\u00bb, Cap. 8\u20139), de nuevo en <em>The Year We Looked Up</em> (Libro 4, Cap. 3) y <em>The Year We Walked Out</em> (Libro 5, Cap. 4); m\u00e1s \u00abThe Friend Test\u00bb (Libro 3, Cap. 11) y \u00abRewriting the Script\u00bb (Libro 3, Cap. 12)."),
+    C: DT("<strong>Lowest area: Social Competency & Repair.</strong> The grown-up register lives here: impact vs. intent and charitable reading (<em>Two Voices</em>, Book 3, Ch 14 & Ch 18), grace with hard people (Book 3, Ch 20), and the protective line \u2014 forgiveness is not the same as trust (Book 3, Ch 15; <em>The Year We Walked Out</em>, Book 5, Ch 18).",
+          "<strong>\u00c1rea m\u00e1s baja: Competencia social y reparaci\u00f3n.</strong> El registro adulto vive aqu\u00ed: impacto frente a intenci\u00f3n e interpretaci\u00f3n caritativa (<em>Two Voices</em>, Libro 3, Cap. 14 y Cap. 18), la gracia con personas dif\u00edciles (Libro 3, Cap. 20), y la l\u00ednea protectora \u2014 perdonar no es lo mismo que confiar (Libro 3, Cap. 15; <em>The Year We Walked Out</em>, Libro 5, Cap. 18).")
+  };
+  html += '<p style="margin-top:14px;">' + ((isAdult ? guidanceAdult : guidance)[lowestDomain]) + '</p>';
 
   if (r.trustedAdultFlag) {
-    html += '<div class="severity-block">' + DT("<strong>Trusted-adult item flagged.</strong> This person answered Never or Rarely/Sometimes to having a trusted adult. If this is a child, this is the most important conversation to have. Ask: <em>If something was wrong, who would you actually go to?</em> Then help them name one specific person and rehearse the approach.",
-      "<strong>\u00cdtem de adulto de confianza marcado.</strong> Esta persona respondi\u00f3 Nunca o Rara vez/A veces a tener un adulto de confianza. Si es un ni\u00f1o, esta es la conversaci\u00f3n m\u00e1s importante que hay que tener. Pregunta: <em>Si algo anduviera mal, \u00bfa qui\u00e9n acudir\u00edas de verdad?</em> Luego ay\u00fadale a nombrar a una persona espec\u00edfica y a ensayar c\u00f3mo acercarse.") + '</div>';
+    html += '<div class="severity-block">' + (isAdult
+      ? DT("<strong>Trusted-person item flagged.</strong> This person answered that they don\u2019t have someone they\u2019d readily turn to. That matters at any age. The gentlest door: <em>If something was wrong, who would you actually reach out to?</em> \u2014 and then naming one real person. In the novels, asking for help is its own thread: <em>The Year We Looked Up</em> (Book 4, \u201CThe First Time I Asked,\u201D Ch 10) and <em>The Year We Walked Out</em> (Book 5, Ch 13\u201315). If they\u2019re carrying something heavy, the 988 Suicide & Crisis Lifeline (call or text) is there any time.",
+            "<strong>\u00cdtem de persona de confianza marcado.</strong> Esta persona respondi\u00f3 que no tiene a alguien a quien acudir\u00eda con facilidad. Eso importa a cualquier edad. La puerta m\u00e1s suave: <em>Si algo anduviera mal, \u00bfa qui\u00e9n acudir\u00edas de verdad?</em> \u2014 y luego nombrar a una persona real. En las novelas, pedir ayuda es su propio hilo: <em>The Year We Looked Up</em> (Libro 4, \u00abThe First Time I Asked\u00bb, Cap. 10) y <em>The Year We Walked Out</em> (Libro 5, Cap. 13\u201315). Si est\u00e1 cargando algo pesado, la L\u00ednea 988 (llamar o enviar texto) est\u00e1 disponible a cualquier hora.")
+      : DT("<strong>Trusted-adult item flagged.</strong> This person answered Never or Rarely/Sometimes to having a trusted adult. If this is a child, this is the most important conversation to have. Ask: <em>If something was wrong, who would you actually go to?</em> Then help them name one specific person and rehearse the approach.",
+            "<strong>\u00cdtem de adulto de confianza marcado.</strong> Esta persona respondi\u00f3 Nunca o Rara vez/A veces a tener un adulto de confianza. Si es un ni\u00f1o, esta es la conversaci\u00f3n m\u00e1s importante que hay que tener. Pregunta: <em>Si algo anduviera mal, \u00bfa qui\u00e9n acudir\u00edas de verdad?</em> Luego ay\u00fadale a nombrar a una persona espec\u00edfica y a ensayar c\u00f3mo acercarse.")) + '</div>';
   }
 
   html += '</div>';
@@ -5124,7 +5195,7 @@ const ECO_DETAIL_ES = {
 function ecoNavigate(act) {
   if (act === "library") { openGuideSub("library"); ecoScrollToTabs(); }
   else if (act === "resindex") { openGuideSub("resindex"); ecoScrollToTabs(); }
-  else if (act === "survey") startCheckin();
+  else if (act === "survey") startChoose();
   else if (act === "admin") openAdmin();
 }
 function ecoScrollToTabs() {
