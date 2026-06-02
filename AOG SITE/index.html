@@ -1144,6 +1144,51 @@ tr:hover td { background: var(--paper); }
   line-height: 1.5;
 }
 
+/* ---- Closed-loop resource cards (results -> clickable, viewable) ---- */
+.rc-wrap{ margin:22px 0 4px; }
+.rc-head{ font-family:var(--font-serif); font-size:20px; color:var(--navy); margin-bottom:3px; }
+.rc-sub-line{ font-size:12.5px; color:var(--ink-soft,#6b6256); margin-bottom:14px; }
+.rc-hero{ display:block; text-decoration:none; background:linear-gradient(135deg,var(--navy) 0%,#16314f 100%);
+  color:#fff; border-radius:12px; padding:16px 18px; margin-bottom:12px; box-shadow:var(--shadow-sm);
+  border:1px solid rgba(255,255,255,.06); transition:transform .15s, box-shadow .15s; }
+.rc-hero:hover{ transform:translateY(-1px); box-shadow:0 8px 22px rgba(20,40,63,.28); }
+.rc-hero .rc-kind{ color:var(--gold-light,#E7B85E); }
+.rc-hero .rc-title{ color:#fff; font-size:18px; }
+.rc-hero .rc-sub{ color:rgba(255,255,255,.78); }
+.rc-open{ display:inline-block; margin-top:10px; font-size:12.5px; font-weight:700; letter-spacing:.03em;
+  color:#1a1a18; background:var(--gold-light,#E7B85E); padding:6px 13px; border-radius:7px; }
+.rc-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:12px; }
+.rc-card{ display:flex; flex-direction:column; background:#fff; border:1px solid var(--rule,#e7ddc9);
+  border-left:3px solid var(--gold); border-radius:11px; padding:14px 15px; box-shadow:var(--shadow-sm); }
+.rc-card .rc-kind{ font-size:10px; font-weight:800; letter-spacing:.13em; text-transform:uppercase; color:var(--gold); margin-bottom:5px; }
+.rc-card .rc-title{ font-family:var(--font-serif); font-size:16px; color:var(--navy); line-height:1.25; }
+.rc-card .rc-sub{ font-size:12.5px; color:var(--ink-soft,#6b6256); line-height:1.45; margin-top:5px; flex:1; }
+.rc-go{ align-self:flex-start; margin-top:12px; display:inline-flex; align-items:center; gap:6px;
+  text-decoration:none; font-size:12.5px; font-weight:600; padding:7px 14px; border-radius:7px; white-space:nowrap; }
+.rc-free{ background:var(--navy); color:#fff; }
+.rc-free:hover{ background:var(--navy-deep,#13283f); }
+.rc-buy{ background:var(--gold); color:#1a1a18; font-weight:700; }
+.rc-buy:hover{ background:var(--gold-deep,#a87a2e); }
+.rc-lib{ background:transparent; color:var(--navy); border:1.5px solid var(--navy); }
+.rc-lib:hover{ background:var(--navy); color:#fff; }
+/* younger-band reference strip */
+.yr-wrap{ margin-top:16px; padding:14px 16px; background:#FCF8EE; border:1px dashed var(--rule,#e7ddc9); border-radius:11px; }
+.yr-head{ font-size:11px; font-weight:800; letter-spacing:.12em; text-transform:uppercase; color:var(--gold-deep,#9a6f24); }
+.yr-note{ font-size:12px; color:var(--ink-soft,#6b6256); margin:3px 0 10px; line-height:1.45; }
+.yr-row{ display:flex; align-items:baseline; gap:10px; padding:5px 0; flex-wrap:wrap; }
+.yr-row + .yr-row{ border-top:1px solid #efe6d2; }
+.yr-band{ flex:0 0 auto; min-width:52px; font-family:var(--font-serif); font-weight:600; color:var(--navy); font-size:14.5px; }
+.yr-links{ display:flex; align-items:center; gap:4px; flex-wrap:wrap; }
+.yr-link{ text-decoration:none; color:var(--navy); font-size:12.5px; font-weight:600; padding:3px 8px; border-radius:6px; }
+.yr-link:hover{ background:#F3E6C6; }
+.yr-link.yr-lib{ color:var(--ink-soft,#6b6256); font-weight:500; }
+.yr-dot{ color:var(--rule,#cdbfa3); }
+/* clickable chapter chips inside the per-item "In the books" detail */
+.home-item a.hid-link{ display:block; text-decoration:none; color:var(--ink); padding:7px 10px; margin:-3px -4px;
+  border-radius:8px; transition:background .12s; }
+.home-item a.hid-link:hover{ background:#FBF1D6; }
+.home-item .hid-open{ display:inline-block; margin-left:8px; font-size:10.5px; font-weight:800; letter-spacing:.04em;
+  color:var(--gold-deep,#9a6f24); white-space:nowrap; }
 .home-conversation {
   background: linear-gradient(180deg, #FBF6E8 0%, var(--cream-deep) 100%);
   border-left: 5px solid var(--gold);
@@ -3421,6 +3466,24 @@ function renderItem() {
 
 function renderResponseOptions() {
   const sc = scale();
+  const area = $("#responseArea");
+  // Fast path: if options for this question are already in the DOM, just update
+  // their selected state. Rebuilding innerHTML on every tap causes iOS Safari to
+  // lose its scroll anchor and jump the page, so we avoid it when we can.
+  const existing = area ? area.querySelectorAll(".response-option") : [];
+  const labelsMatch = existing.length === sc.length && Array.from(existing).every((el, i) => {
+    const lbl = el.querySelector(".freq-label");
+    return lbl && lbl.textContent === sc[i].label;
+  });
+  if (labelsMatch) {
+    existing.forEach(el => {
+      const v = parseInt(el.dataset.value, 10);
+      const isSel = responses[current] === v;
+      el.classList.toggle("selected", isSel);
+      el.setAttribute("aria-checked", isSel ? "true" : "false");
+    });
+    return;
+  }
   const cols = mode === "depth" ? "response-grid-6" : "response-grid-6";
   const groupLabel = (lang === "es") ? "Opciones de respuesta" : "Response options";
   let html = '<div class="' + cols + '" role="radiogroup" aria-label="' + groupLabel + '">';
@@ -3433,7 +3496,7 @@ function renderResponseOptions() {
     '</div>';
   });
   html += '</div>';
-  $("#responseArea").innerHTML = html;
+  area.innerHTML = html;
 }
 
 function renderIntensityOption() {
@@ -4068,10 +4131,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Capture classroom launch metadata (grade / classId / window) from the URL.
   parseLaunchParams();
-  // A directed arrival (QR / class link) opens the check-in directly, skipping the lobby.
+  // A directed arrival (QR / class link) opens the "Who's checking in?" chooser,
+  // so the person picks Student or Adult first. The grade/class/window tags from
+  // the link are already captured and carry into whichever path they choose.
   try {
     var _q = new URLSearchParams(window.location.search);
-    if (!location.hash && (_q.get("classId") || _q.get("grade") || _q.get("window") || _q.get("sync"))) { startCheckin(); }
+    if (!location.hash && (_q.get("classId") || _q.get("grade") || _q.get("window") || _q.get("sync"))) { startChoose(); }
   } catch (e) {}
 
   // Mode selection
@@ -4983,6 +5048,146 @@ function showMyResults() {
   showScreen("screen-myresults");
 }
 
+function resultBand(r){
+  if(r.population==="adult") return 5;
+  var g=String(r.grade);
+  if(["K","1","2"].indexOf(g)>=0) return 1;
+  if(["3","4","5"].indexOf(g)>=0) return 2;
+  if(["6","7","8"].indexOf(g)>=0) return 3;
+  if(["9","10"].indexOf(g)>=0) return 4;
+  if(["11","12"].indexOf(g)>=0) return 5;
+  if(g==="College"||g==="Adult") return 5;
+  return 2;
+}
+function libItemBand(t){
+  var m=t.match(/Book\s*([1-5])/); if(m) return +m[1];
+  if(/K\u20132|K-2/.test(t)) return 1;
+  if(/3\u20135|3-5/.test(t)) return 2;
+  if(/6\u20138|6-8/.test(t)) return 3;
+  if(/9\u201310|9-10/.test(t)) return 4;
+  if(/11\u201312|11-12/.test(t)) return 5;
+  return 0;
+}
+function libFind(catName,pred){
+  var c=RESOURCE_LIBRARY.find(function(x){return x.cat===catName;});
+  if(!c) return null;
+  return c.items.find(pred)||null;
+}
+var DOMAIN_RES_CATS = {
+  A:["Anchor Charts","Worksheets & Activities"],
+  B:["Worksheets & Activities","Anchor Charts","Scenario Cards"],
+  C:["Scenario Cards","Worksheets & Activities","Anchor Charts"]
+};
+// Younger grade-band versions of the same supports, linked for reference
+// (the simpler charts/visuals stay useful above their band).
+function youngerRefStrip(band){
+  if(band<=1) return "";
+  var TYPES=[
+    {cat:"Anchor Charts", label:DT("Charts","L\u00e1minas")},
+    {cat:"Worksheets & Activities", label:DT("Worksheets","Hojas")},
+    {cat:"Scenario Cards", label:DT("Scenario","Escenarios")}
+  ];
+  var rows=[];
+  for(var b=band-1;b>=1;b--){
+    var links=TYPES.map(function(t){
+      var it=libFind(t.cat,function(x){return libItemBand(x.title)===b;});
+      if(!it) return "";
+      var st=libItemState(it);
+      if(st==="free") return '<a class="yr-link" href="'+libEsc(it.url)+'" target="_blank" rel="noopener">\u2197 '+t.label+'</a>';
+      return '<a class="yr-link yr-lib" href="#" onclick="openGuide(\'library\');return false;">'+t.label+'</a>';
+    }).filter(Boolean).join('<span class="yr-dot">\u00b7</span>');
+    if(links){
+      rows.push('<div class="yr-row"><span class="yr-band">'+RI_GRADES[b].grade+'</span><span class="yr-links">'+links+'</span></div>');
+    }
+  }
+  if(!rows.length) return "";
+  return '<div class="yr-wrap"><div class="yr-head">'+DT("Simpler versions, for reference","Versiones m\u00e1s simples, como referencia")
+    +'</div><div class="yr-note">'+DT("The same ideas in the younger bands\u2019 visuals \u2014 often the cleanest way to introduce them.","Las mismas ideas en los recursos de los niveles menores \u2014 a menudo la forma m\u00e1s clara de presentarlas.")+'</div>'
+    + rows.join("") + '</div>';
+}
+// Build the clickable, viewable resource cards that a flagged result points to.
+function resultResourceCards(r, lowItems, lowestDomain, isSelf){
+  var band = resultBand(r);
+  var es = (dashLang==="es");
+
+  // 1) Headline: read it in the story — deep-jump to a flagged construct's chapter.
+  //    Prefer a chapter in the reader's own grade band; fall back to the nearest.
+  var storyCard = "";
+  if(lowItems && lowItems.length){
+    // Gather every chapter tied to a flagged construct, then choose the one whose
+    // book sits closest to the reader's band (preferring at-or-below band on ties).
+    // lowItems is pre-sorted by severity, so equal-distance ties keep that order.
+    var _CD={}; RI_CONSTRUCTS.forEach(function(c){ _CD[c.items]=c.domain; });
+    var cands=[];
+    lowItems.forEach(function(li){
+      var key=ITEM_TO_CONSTRUCT[li.item.n], dom=_CD[key];
+      (RI_NOVELS[key]||[]).forEach(function(x){ cands.push({x:x,dom:dom}); });
+    });
+    cands.sort(function(a,b){
+      var pa=(a.dom===lowestDomain?0:1), pb=(b.dom===lowestDomain?0:1);
+      if(pa!==pb) return pa-pb;                               // lowest-domain construct leads
+      var da=Math.abs(a.x.b-band), db=Math.abs(b.x.b-band);
+      if(da!==db) return da-db;                               // then closest to the reader's band
+      return (a.x.b<=band?0:1)-(b.x.b<=band?0:1);             // then at-or-below band
+    });
+    var pick = cands.length ? cands[0].x : null;
+    if(pick){
+      {
+        var url = novelJumpUrl(pick.b, chNumOf(pick.ch));
+        if(url){
+          var bk = es?RI_GRADES[pick.b].label.replace("Book","Libro"):RI_GRADES[pick.b].label;
+          storyCard = '<a class="rc-card rc-hero" href="'+url+'" target="_blank" rel="noopener">'
+            + '<div class="rc-kind">'+DT("Read it in the story","Léelo en la historia")+'</div>'
+            + '<div class="rc-title">\u201c'+libEsc(pick.t)+'\u201d</div>'
+            + '<div class="rc-sub">'+bk+' \u00b7 '+pick.ch+'</div>'
+            + '<span class="rc-open">\u2197 '+DT("Open to the page","Abrir en la página")+'</span></a>';
+        }
+      }
+    }
+  }
+
+  // 2) Band-appropriate supports, ordered by flagged domains (lowest first).
+  var norms = {A:r.normA||0,B:r.normB||0,C:r.normC||0};
+  var domOrder = ["A","B","C"].sort(function(a,b){return norms[a]-norms[b];});
+  var picks=[];
+  domOrder.forEach(function(dom){
+    (DOMAIN_RES_CATS[dom]||[]).forEach(function(cat){
+      var it = libFind(cat, function(x){return libItemBand(x.title)===band;});
+      if(it) picks.push({it:it,cat:cat});
+    });
+  });
+  var sample = libFind("The Curriculum", function(x){return /Sample Lesson/.test(x.title)&&libItemBand(x.title)===band;});
+  if(sample) picks.unshift({it:sample,cat:"The Curriculum"});
+  var seen={};
+  picks=picks.filter(function(p){ if(seen[p.it.title]) return false; seen[p.it.title]=1; return true; });
+  picks.sort(function(a,b){ var fa=(a.it.url&&a.it.url.trim())?0:1, fb=(b.it.url&&b.it.url.trim())?0:1; return fa-fb; });
+  picks=picks.slice(0,4);
+
+  var cardHtml = picks.map(function(p){
+    var it=p.it, st=libItemState(it), act;
+    if(st==="free") act='<a class="rc-go rc-free" href="'+libEsc(it.url)+'" target="_blank" rel="noopener">\u2197 '+DT("Open","Abrir")+'</a>';
+    else if(st==="buy"){ var u=(it.buyUrl||FAMILY_STORE_URL); act='<a class="rc-go rc-buy" href="'+libEsc(u||"#")+'"'+(u?' target="_blank" rel="noopener"':' onclick="return false;"')+'>'+DT("Buy","Comprar")+'</a>'; }
+    else if(st==="both"){ act='<a class="rc-go rc-lib" href="#" onclick="openGuide(\'library\');return false;">'+DT("In the Library \u2192","En la biblioteca \u2192")+'</a>'; }
+    else act='<a class="rc-go rc-lib" href="#" onclick="openGuide(\'library\');return false;">'+DT("In the Library \u2192","En la biblioteca \u2192")+'</a>';
+    var kindName = (es && typeof LIB_CAT_ES!=="undefined" && LIB_CAT_ES[p.cat]) ? LIB_CAT_ES[p.cat].cat : p.cat;
+    return '<div class="rc-card"><div class="rc-kind">'+libEsc(kindName)+'</div>'
+      +'<div class="rc-title">'+libEsc(it.title)+'</div>'
+      +(it.desc?'<div class="rc-sub">'+libEsc(it.desc)+'</div>':'')
+      + act + '</div>';
+  }).join("");
+
+  if(!storyCard && !cardHtml) return "";
+  return '<div class="rc-wrap">'
+    + '<div class="rc-head">'+(isSelf?DT("Open these now","Ábrelos ahora"):DT("Matched resources","Recursos sugeridos"))+'</div>'
+    + '<div class="rc-sub-line">'+(isSelf
+        ? DT("Pointed to where this lives \u2014 tap to open.","Te se\u00f1alan d\u00f3nde vive esto \u2014 toca para abrir.")
+        : DT("Matched to this profile and grade band \u2014 tap to open.","Seg\u00fan este perfil y nivel \u2014 toca para abrir."))+'</div>'
+    + storyCard
+    + (cardHtml?'<div class="rc-grid">'+cardHtml+'</div>':'')
+    + youngerRefStrip(band)
+    + '</div>';
+}
+
 function renderConversationGuide(r, isSelf) {
   const isAdult = (r.population === "adult");
   const itemMax = r.mode === "depth" ? 5 : 3;
@@ -5091,6 +5296,7 @@ function renderConversationGuide(r, isSelf) {
           "<strong>\u00c1rea m\u00e1s baja: Competencia social y reparaci\u00f3n.</strong> El registro adulto vive aqu\u00ed: impacto frente a intenci\u00f3n e interpretaci\u00f3n caritativa (<em>Two Voices</em>, Libro 3, Cap. 14 y Cap. 18), la gracia con personas dif\u00edciles (Libro 3, Cap. 20), y la l\u00ednea protectora \u2014 perdonar no es lo mismo que confiar (Libro 3, Cap. 15; <em>The Year We Walked Out</em>, Libro 5, Cap. 18).")
   };
   html += '<p style="margin-top:14px;">' + ((isAdult ? guidanceAdult : guidance)[lowestDomain]) + '</p>';
+  html += resultResourceCards(r, lowItems, lowestDomain, isSelf);
 
   if (r.trustedAdultFlag) {
     if (isSelf && isAdult) {
@@ -5370,7 +5576,11 @@ function homeItemBooks(n, isAdult) {
   const cname = con ? ((es && RI_ES[key]) ? RI_ES[key].name : con.name) : "";
   const chips = nv.map(x => {
     const bk = es ? RI_GRADES[x.b].label.replace("Book","Libro") : RI_GRADES[x.b].label;
-    return '<span class="hid-novel"><span class="hid-bk">' + bk + ' \u00b7 ' + x.ch + '</span> \u201c' + x.t + '\u201d</span>';
+    const _lab = '<span class="hid-bk">' + bk + ' \u00b7 ' + x.ch + '</span> \u201c' + x.t + '\u201d';
+    const _url = novelJumpUrl(x.b, chNumOf(x.ch));
+    return _url
+      ? '<a class="hid-novel hid-link" href="' + _url + '" target="_blank" rel="noopener" onclick="event.stopPropagation()">' + _lab + '<span class="hid-open">\u2197 ' + DT("Read","Leer") + '</span></a>'
+      : '<span class="hid-novel">' + _lab + '</span>';
   }).join("");
   return '<div class="home-item-detail" onclick="event.stopPropagation()">' +
     (cname ? '<div class="hid-con">' + escapeHtml(cname) + '</div>' : '') +
@@ -5512,6 +5722,33 @@ function riToggle(id) {
 const LICENSE_INQUIRY_URL = "";
 const FAMILY_STORE_URL = "";
 
+// ============================================================
+// CLOSED-LOOP DEEP LINKS  ·  EDIT ME
+// When results flag a construct, the screener can open the exact
+// novel chapter that carries it — jumping straight to the page.
+// Each book's full digital edition lives at the path below; a card
+// links to it as  <path>#page=N  (works in Chrome's PDF viewer and
+// most browsers). To revert a book to "preview only", blank its value
+// and the chapter references become plain text again.
+const NOVEL_DIGITAL_URLS = {
+  1:"files/AoG-Book1-Room12-DIGITAL.pdf",
+  2:"files/AoG-Book2-Room18-DIGITAL.pdf",
+  3:"files/AoG-Book3-Room36-DIGITAL.pdf",
+  4:"files/AoG-Book4-Room104-DIGITAL.pdf",
+  5:"files/AoG-Book5-Room207-DIGITAL.pdf"
+};
+// Verified chapter -> page, read directly from each digital edition's
+// table of contents. Do not hand-edit; regenerate if the books change.
+const NOVEL_PAGES = {1:{1:9,2:12,3:15,4:18,5:22,6:26,7:29,8:33,9:37,10:41,11:45,12:49,13:53,14:59,15:63,16:67,17:71,18:76,19:79,20:82,21:86,22:91,23:95,24:98,25:102,26:105,27:108}, 2:{1:10,2:18,3:24,4:31,5:38,6:42,7:49,8:57,9:63,10:69,11:77,12:82,13:87,14:94,15:99,16:110,17:117,18:122,19:129,20:133,21:143,22:146,23:151,24:156,25:162,26:166,27:170,28:175,29:181,30:185,31:189,32:197}, 3:{1:12,2:19,3:24,4:31,5:39,6:46,7:54,8:62,9:67,10:73,11:80,12:86,13:93,14:100,15:107,16:114,17:122,18:131,19:138,20:146,21:153,22:161}, 4:{1:11,2:17,3:25,4:31,5:39,6:44,7:51,8:58,9:66,10:75,11:82,12:91,13:98,14:108,15:117,16:124,17:132,18:141,19:148,20:158,21:165}, 5:{1:10,2:18,3:26,4:33,5:39,6:48,7:55,8:63,9:72,10:78,11:85,12:92,13:99,14:106,15:113,16:120,17:128,18:136,19:145,20:153,21:162,22:171,23:179,24:185,25:194,26:204,27:215,28:225}};
+function novelJumpUrl(book, chapter){
+  var base = NOVEL_DIGITAL_URLS[book];
+  if(!base) return "";
+  var pg = (NOVEL_PAGES[book]||{})[chapter];
+  return pg ? (base + "#page=" + pg) : base;
+}
+function chNumOf(ch){ var m=String(ch).match(/\d+/); return m?parseInt(m[0],10):null; }
+
+
 const RESOURCE_LIBRARY = [
   { cat:"The Novels", note:"The five-book narrative companion \u2014 the ideas, lived as story. Included in the district curriculum, and available for families to buy on their own.", items:[
     { title:"Book 1 \u2014 The Year We Met Sammy (K\u20132)", desc:"Read Chapter One free \u2014 the morning a class meets Sammy, and the year begins with a question: who am I?", tie:true, url:"files/Room-12-First-Chapter-Preview.pdf" },
@@ -5539,31 +5776,32 @@ const RESOURCE_LIBRARY = [
   ]},
   { cat:"Anchor Charts", note:"Classroom-ready visuals for each skill \u2014 print on cardstock, post all year.", items:[
     { title:"Anchor Charts \u00b7 K\u201312 Sampler", desc:"One chart, every band \u2014 the identity anchor growing from the Identity Web to the Threshold of adulthood.", tie:true, url:"files/AoG-Anchor-Charts-K12-Sampler.pdf" },
-    { title:"Anchor Charts \u00b7 Book 1 (K\u20132)", desc:"Every K\u20132 chart \u2014 including the Identity Web and Kind Coach vs. Grumpy Gus from the preview.", tie:true, url:"" },
-    { title:"Anchor Charts \u00b7 Book 2 (3\u20135)", desc:"The full 3\u20135 set, built around the red/green Inner Critic vs. Inner Coach chart.", tie:true, url:"" },
-    { title:"Anchor Charts \u00b7 Book 3 (6\u20138)", desc:"The 6\u20138 charts \u2014 including The Internal Critic and its three tactics.", tie:true, url:"" },
-    { title:"Anchor Charts \u00b7 Book 4 (9\u201310)", desc:"The 9\u201310 charts \u2014 including the Signal vs. Noise / Internal Coach chart from the preview.", tie:true, url:"" },
-    { title:"Anchor Charts \u00b7 Book 5 (11\u201312)", desc:"The 11\u201312 charts \u2014 including Forgiving the Younger Self from the preview.", tie:true, url:"" },
-    { title:"Supplemental Anchor Chart Pack", desc:"Extra display-ready charts for the 6\u20138 Interior units.", url:"" },
+    { title:"Anchor Charts \u00b7 Book 1 (K\u20132)", desc:"Every K\u20132 chart \u2014 including the Identity Web and Kind Coach vs. Grumpy Gus from the preview.", tie:true, url:"files/AoG-Book1-Anchor-Charts.pdf" },
+    { title:"Anchor Charts \u00b7 Book 2 (3\u20135)", desc:"The full 3\u20135 set, built around the red/green Inner Critic vs. Inner Coach chart.", tie:true, url:"files/AoG-Book2-Anchor-Charts.pdf" },
+    { title:"Anchor Charts \u00b7 Book 3 (6\u20138)", desc:"The 6\u20138 charts \u2014 including The Internal Critic and its three tactics.", tie:true, url:"files/AoG-Book3-Anchor-Charts.pdf" },
+    { title:"Anchor Charts \u00b7 Book 4 (9\u201310)", desc:"The 9\u201310 charts \u2014 including the Signal vs. Noise / Internal Coach chart from the preview.", tie:true, url:"files/AoG-Book4-Anchor-Charts.pdf" },
+    { title:"Anchor Charts \u00b7 Book 5 (11\u201312)", desc:"The 11\u201312 charts \u2014 including Forgiving the Younger Self from the preview.", tie:true, url:"files/AoG-Book5-Anchor-Charts.pdf" },
+    { title:"Supplemental Anchor Chart Pack", desc:"Extra display-ready charts for the 6\u20138 Interior units.", url:"files/AoG-Supplemental-Anchor-Chart-Pack.pdf" },
   ]},
   { cat:"Worksheets & Activities", note:"Reproducible student worksheets, drawing activities, and display examples.", items:[
     { title:"Drawing Activities \u00b7 K\u20132 Sampler", desc:"Four drawings, four pillars \u2014 how K\u20132 students draw identity, self-compassion, forgiveness, and grace.", tie:true, url:"files/AoG-Drawing-Activities-K2-Sampler.pdf" },
-    { title:"Drawing Activities (K\u20132)", desc:"Hands-on drawing lessons \u2014 the Identity Web and Kind Message to Myself from the preview.", tie:true, url:"" },
+    { title:"Drawing Activities (K\u20132)", desc:"Hands-on drawing lessons \u2014 the Identity Web and Kind Message to Myself from the preview.", tie:true, url:"files/AoG-Book1-Drawing-Activities.pdf" },
     { title:"Drawing Examples", desc:"Finished display models teachers post before students begin.", url:"" },
     { title:"Worksheets \u00b7 K\u201312 Sampler", desc:"One skill across twelve years \u2014 the inner-critic worksheet, from Grumpy Gus to forgiving the younger self.", tie:true, url:"files/AoG-Worksheets-K12-Sampler.pdf" },
-    { title:"Worksheet Pack \u00b7 Book 2 (3\u20135)", desc:"All nine reproducible worksheets \u2014 including WS3 Two Voices from the preview.", tie:true, url:"" },
-    { title:"Worksheet Pack \u00b7 Book 3 (6\u20138) \u00b7 Part 1", desc:"The 6\u20138 identity and self-compassion sheets \u2014 including the Internal Critic Profile you previewed.", tie:true, url:"" },
+    { title:"Worksheet Pack \u00b7 Book 2 (3\u20135)", desc:"All nine reproducible worksheets \u2014 including WS3 Two Voices from the preview.", tie:true, url:"files/AoG-Book2-Worksheet-Packet.pdf" },
+    { title:"Worksheet Pack \u00b7 Book 3 (6\u20138) \u00b7 Part 1", desc:"The 6\u20138 identity and self-compassion sheets \u2014 including the Internal Critic Profile you previewed.", tie:true, url:"files/AoG-Book3-Worksheet-Pack.pdf" },
     { title:"Worksheet Pack \u00b7 Book 3 (6\u20138) \u00b7 Part 2", desc:"The 6\u20138 worksheets for empathy, forgiveness, and grace.", url:"" },
-    { title:"Worksheet Pack \u00b7 Book 4 (9\u201310)", desc:"The 9\u201310 reproducible worksheets for the Fa\u00e7ade and self-kindness units.", url:"" },
-    { title:"Worksheet Pack \u00b7 Book 5 (11\u201312)", desc:"The 11\u201312 worksheets for values, repair, and forgiveness.", url:"" },
+    { title:"Worksheet Pack \u00b7 Book 4 (9\u201310)", desc:"The 9\u201310 reproducible worksheets for the Fa\u00e7ade and self-kindness units.", url:"files/AoG-Books4-5-Worksheet-Pack.pdf" },
+    { title:"Worksheet Pack \u00b7 Book 5 (11\u201312)", desc:"The 11\u201312 worksheets for values, repair, and forgiveness.", url:"files/AoG-Books4-5-Worksheet-Pack.pdf" },
   ]},
   { cat:"Scenario Cards", note:"Discussion and role-play decks \u2014 work a dilemma in the room, not on a page.", items:[
     { title:"Scenario Cards \u00b7 K\u201312 Sampler", desc:"Ten cards, one per band \u2014 the identity and inner-critic threads sampled from kindergarten to graduation.", tie:true, url:"files/AoG-Scenario-Cards-K12-Sampler.pdf" },
-    { title:"Scenario Cards \u00b7 Book 2 (3\u20135)", desc:"The 3\u20135 decks \u2014 including Sofia's failed test (Card 1-G) from the preview.", tie:true, url:"" },
-    { title:"Scenario Cards \u00b7 Book 3 (6\u20138) \u00b7 Part 1", desc:"Identity and self-compassion dilemmas for the 6\u20138 year.", url:"" },
+    { title:"Scenario Cards \u00b7 Book 1 (K\u20132)", desc:"The K\u20132 discussion deck \u2014 identity, mistakes, and grace, worked as a class.", tie:true, url:"files/AoG-Book1-Scenario-Card-Deck.pdf" },
+    { title:"Scenario Cards \u00b7 Book 2 (3\u20135)", desc:"The 3\u20135 decks \u2014 including Sofia's failed test (Card 1-G) from the preview.", tie:true, url:"files/AoG-Book2-Scenario-Card-Deck.pdf" },
+    { title:"Scenario Cards \u00b7 Book 3 (6\u20138) \u00b7 Part 1", desc:"Identity and self-compassion dilemmas for the 6\u20138 year.", url:"files/AoG-Book3-Scenario-Card-Deck.pdf" },
     { title:"Scenario Cards \u00b7 Book 3 (6\u20138) \u00b7 Part 2", desc:"Empathy, repair, and grace dilemmas for the 6\u20138 year.", url:"" },
-    { title:"Scenario Cards \u00b7 Book 4 (9\u201310)", desc:"The 9\u201310 decks \u2014 including Layla (B4-6A) from the preview.", tie:true, url:"" },
-    { title:"Scenario Cards \u00b7 Book 5 (11\u201312)", desc:"The 11\u201312 decks \u2014 including Priya\u2019s Past Self (B5-9A) from the preview.", tie:true, url:"" },
+    { title:"Scenario Cards \u00b7 Book 4 (9\u201310)", desc:"The 9\u201310 decks \u2014 including Layla (B4-6A) from the preview.", tie:true, url:"files/AoG-Books4-5-Scenario-Cards.pdf" },
+    { title:"Scenario Cards \u00b7 Book 5 (11\u201312)", desc:"The 11\u201312 decks \u2014 including Priya\u2019s Past Self (B5-9A) from the preview.", tie:true, url:"files/AoG-Books4-5-Scenario-Cards.pdf" },
     { title:"Scenario Cards \u00b7 Complete Deck (all bands)", desc:"The cross-band deck of dilemmas for discussion and role-play.", url:"" },
   ]},
   { cat:"Assessment & Data", note:"The screening and clinical instruments.", items:[
@@ -5598,6 +5836,10 @@ const RESOURCE_LIBRARY = [
     { title:"Home Edition \u00b7 Book 3 (6\u20138)", desc:"The 6\u20138 interior work, adapted for home.", access:"buy", url:"" },
     { title:"Home Edition \u00b7 Book 4 (9\u201310)", desc:"The 9\u201310 interior work, written for families at home.", access:"buy", url:"" },
     { title:"Home Edition \u00b7 Book 5 (11\u201312)", desc:"The 11\u201312 work \u2014 threshold, values, forgiveness \u2014 for families.", access:"buy", url:"" },
+  ]},
+  { cat:"Divine Blueprint \u00b7 Christian Companion Track", note:"An optional faith-based companion that runs alongside the secular core \u2014 for Christian schools, homeschools, and ministry settings. Kept separate by design; the secular check-in never points here.", items:[
+    { title:"Master Crosswalk \u00b7 Book 3 (6\u20138)", desc:"Each secular concept anchored in Scripture, doctrine, and Reformed pastoral practice \u2014 the 6\u20138 companion.", url:"files/AoG-Book3-Divine-Blueprint-Master-Crosswalk.pdf" },
+    { title:"Master Crosswalk \u00b7 Book 2 (3\u20135)", desc:"The 3\u20135 theological companion to The Year of the Inner Critic. Polished edition coming.", url:"" },
   ]},
 ];
 function libEsc(s) { return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
