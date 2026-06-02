@@ -1460,6 +1460,7 @@ tr:hover td { background: var(--paper); }
 .lib-item-main{ flex:1; padding-right:14px; }
 .lib-item-desc{ font-size:12px; line-height:1.45; color:#6b6552; margin-top:3px; }
 .lib-tie{ display:inline-block; font-size:8.5px; letter-spacing:.08em; text-transform:uppercase; font-weight:700; color:#7a5a1c; background:#FBE7AC; padding:2px 7px; border-radius:20px; vertical-align:middle; margin-left:6px; white-space:nowrap; }
+.lib-preview-pill{ display:inline-block; font-size:9px; letter-spacing:.1em; text-transform:uppercase; font-weight:800; color:#fff; background:var(--gold); padding:2px 9px; border-radius:20px; vertical-align:middle; margin-left:8px; white-space:nowrap; }
 .lib-tag-fam{ display:inline-block; font-size:8.5px; letter-spacing:.08em; text-transform:uppercase; font-weight:700; color:#2B4D7A; background:#E7EEF6; padding:2px 7px; border-radius:20px; vertical-align:middle; margin-left:6px; white-space:nowrap; }
 .lib-buy{ display:inline-flex; align-items:center; gap:6px; padding:7px 16px; border-radius:7px; background:var(--gold); color:#1a1a18; font-size:13px; font-weight:700; text-decoration:none; white-space:nowrap; }
 .lib-buy:hover{ background:var(--gold-deep,#a87a2e); }
@@ -1676,6 +1677,23 @@ tr:hover td { background: var(--paper); }
 #screen-welcome .aog-what .pl-label{width:100%;font-family:var(--font-sans);font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:#A8966C;margin-bottom:8px;font-weight:700}
 #screen-welcome .aog-what .pillars span.tag{font-family:var(--font-sans);font-size:13px;font-weight:600;color:var(--navy);background:linear-gradient(180deg,#FBF3DF,#F2E6C8);border:1px solid #DFC894;padding:8px 20px;border-radius:24px;letter-spacing:.02em}
 
+/* ===== B: center the main content on the homepage hero ===== */
+.hyb-hero{text-align:center}
+.hyb-hero .hyb-hk{display:block}
+.hyb-hero .hyb-bar{margin-left:auto;margin-right:auto}
+.hyb-hero .hyb-aud{justify-content:center}
+.hyb-hero .hyb-cta{justify-content:center}
+
+/* ===== B: The Story, moved to bottom of main page ===== */
+.hyb-story{background:var(--cream);padding:62px 7vw 74px;border-top:2.5px solid var(--navy)}
+.hyb-story-card{max-width:760px;margin:0 auto;background:var(--paper);border:1px solid var(--rule);border-radius:20px;padding:40px 44px;box-shadow:0 18px 44px -16px rgba(10,30,51,.14);text-align:left}
+@media (max-width:760px){ .hyb-story{padding:48px 6vw 56px} .hyb-story-card{padding:30px 24px} }
+
+/* ===== B: The Foundation pillars, on the Library page ===== */
+.found-pillars{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:6px;padding-top:18px;border-top:1px dashed var(--rule)}
+.found-pl-label{width:100%;font-family:var(--font-sans);font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:#A8966C;margin-bottom:8px;font-weight:700}
+.found-tag{font-family:var(--font-sans);font-size:13px;font-weight:600;color:var(--navy);background:linear-gradient(180deg,#FBF3DF,#F2E6C8);border:1px solid #DFC894;padding:8px 20px;border-radius:24px;letter-spacing:.02em}
+
 /* reveals */
 .hyb-hero .hyb-hk,.hyb-hero .hyb-title,.hyb-hero .hyb-bar,.hyb-hero .hyb-aud,.hyb-hero .hyb-cta{opacity:0;transform:translateY(16px);animation:hybRise .8s cubic-bezier(.16,1,.3,1) forwards}
 .hyb-hero .hyb-title{animation-delay:.08s}.hyb-hero .hyb-bar{animation-delay:.32s}.hyb-hero .hyb-aud{animation-delay:.42s}.hyb-hero .hyb-cta{animation-delay:.52s}
@@ -1709,6 +1727,115 @@ tr:hover td { background: var(--paper); }
   .reveal{transition:none;opacity:1;transform:none}
 }
 </style>
+<style id="dark-mode-v1">
+/* ============================================================
+   C: DARK MODE — remap SURFACE + INK tokens only.
+   --navy and --cream are intentionally NOT remapped: they double as
+   accent/text-on-dark colors, so flipping them breaks the hero, doors,
+   and footer. Instead we override the few sections that use --cream as
+   a light background, plus inline navy text sitting on dark cards.
+   ============================================================ */
+:root[data-theme="dark"]{
+  --paper:#152331;
+  --cream-deep:#0C141D;
+  --ink:#ECE5D6;
+  --ink-soft:#BAC2D0;
+  --ink-faint:#8893A6;
+  --rule:#2B3B4B;
+  --rule-soft:#22303E;
+  --gold:#E7B85E;
+  --green:#82D08E; --green-bg:#15301B;
+  --amber:#E8C868; --amber-bg:#2E2710;
+  --red:#EC9B93;   --red-bg:#3A1E1C;
+  --shadow-sm:0 1px 2px rgba(0,0,0,.35);
+  --shadow-md:0 4px 10px rgba(0,0,0,.4);
+  --shadow-lg:0 12px 30px rgba(0,0,0,.5);
+  --shadow-xl:0 26px 54px rgba(0,0,0,.6);
+}
+/* surfaces */
+:root[data-theme="dark"] .table-card{ background:var(--paper); border-color:var(--rule); }
+:root[data-theme="dark"] .hyb-story{ background:#0E1822; }
+:root[data-theme="dark"] .hyb-story-card{ background:var(--paper); border-color:var(--rule); }
+:root[data-theme="dark"] .script-card{ background:var(--paper); border-color:var(--rule); }
+:root[data-theme="dark"] .mode-card{ background:var(--paper); border-color:var(--rule); }
+:root[data-theme="dark"] .lib-cat{ border-color:var(--rule); }
+:root[data-theme="dark"] .lib-cat-head{ background:#13202C; }
+:root[data-theme="dark"] .lib-cat-head:hover{ background:#182734; }
+:root[data-theme="dark"] input,
+:root[data-theme="dark"] select,
+:root[data-theme="dark"] textarea{ background:#0E1822; color:var(--ink); border-color:var(--rule); }
+:root[data-theme="dark"] input::placeholder,
+:root[data-theme="dark"] textarea::placeholder{ color:var(--ink-faint); }
+/* inline navy text that sits on dark cards → make legible */
+:root[data-theme="dark"] .table-card [style*="color:var(--navy)"],
+:root[data-theme="dark"] .hyb-story-card [style*="color:var(--navy)"]{ color:var(--gold-soft)!important; }
+/* the secondary door uses a light cream background */
+:root[data-theme="dark"] .hyb-door.sec{ background:#16242F; color:var(--ink); border-left-color:var(--rule); }
+:root[data-theme="dark"] .hyb-door.sec:hover{ background:#1B2C3A; }
+:root[data-theme="dark"] .hyb-door.sec .s{ color:var(--ink-soft); }
+:root[data-theme="dark"] .hyb-door.sec .foot{ border-color:rgba(255,255,255,.12); }
+:root[data-theme="dark"] .hyb-door.sec .foot .meta{ color:var(--ink-soft); }
+/* foundation pillar tags on the Library page */
+:root[data-theme="dark"] .found-tag{ background:linear-gradient(180deg,#2A2415,#1F1B11); border-color:#4A3D1F; color:var(--gold-soft); }
+/* generic last-resort: any element still painting itself white */
+:root[data-theme="dark"] [style*="background:#fff"],
+:root[data-theme="dark"] [style*="background: #fff"],
+:root[data-theme="dark"] [style*="background:white"]{ background:var(--paper)!important; }
+body{ transition:background .25s ease, color .25s ease; }
+/* toggle button */
+.theme-toggle{ display:inline-grid; place-items:center; width:34px; height:34px; border-radius:9px; border:1px solid var(--rule); background:transparent; color:var(--ink-soft); cursor:pointer; transition:background .15s,color .15s,border-color .15s; padding:0; }
+.theme-toggle:hover{ background:rgba(127,127,127,.12); color:var(--ink); }
+.theme-toggle svg{ width:18px; height:18px; }
+.theme-toggle .ti-moon{ display:none; }
+:root[data-theme="dark"] .theme-toggle .ti-sun{ display:none; }
+:root[data-theme="dark"] .theme-toggle .ti-moon{ display:block; }
+
+/* ===== D: onboarding tour ===== */
+.tour-overlay{ position:fixed; inset:0; z-index:4000; }
+.tour-overlay[hidden]{ display:none; }
+.tour-spotlight{ position:absolute; border-radius:14px; box-shadow:0 0 0 9999px rgba(6,12,24,.62); transition:all .3s cubic-bezier(.16,1,.3,1); pointer-events:none; outline:2px solid var(--gold-soft); outline-offset:3px; }
+.tour-pop{ position:absolute; width:300px; max-width:calc(100vw - 28px); background:var(--paper); color:var(--ink); border:1px solid var(--rule); border-radius:16px; box-shadow:0 24px 60px -16px rgba(0,0,0,.5); padding:18px 20px 16px; transition:top .3s cubic-bezier(.16,1,.3,1), left .3s cubic-bezier(.16,1,.3,1); }
+.tour-meta{ font-family:var(--font-sans); font-size:11px; font-weight:700; letter-spacing:.14em; color:var(--gold); margin-bottom:6px; }
+.tour-title{ font-family:var(--font-serif); font-weight:600; font-size:20px; color:var(--ink); line-height:1.15; margin-bottom:7px; }
+:root:not([data-theme="dark"]) .tour-title{ color:var(--navy); }
+.tour-body{ font-family:var(--font-sans); font-size:14px; line-height:1.55; color:var(--ink-soft); margin-bottom:14px; }
+.tour-dots{ display:flex; gap:6px; margin-bottom:14px; }
+.tour-dots i{ width:7px; height:7px; border-radius:50%; background:var(--rule); transition:background .2s,width .2s; }
+.tour-dots i.on{ background:var(--gold); width:18px; border-radius:4px; }
+.tour-actions{ display:flex; align-items:center; justify-content:space-between; gap:10px; }
+.tour-nav{ display:flex; gap:8px; }
+.tour-skip{ background:none; border:none; color:var(--ink-faint); font-family:var(--font-sans); font-size:13px; font-weight:600; cursor:pointer; padding:6px 4px; }
+.tour-skip:hover{ color:var(--ink-soft); }
+.tour-back{ background:transparent; border:1px solid var(--rule); color:var(--ink-soft); border-radius:9px; padding:8px 14px; font-family:var(--font-sans); font-size:13px; font-weight:600; cursor:pointer; }
+.tour-back:hover{ border-color:var(--gold); color:var(--ink); }
+.tour-next{ background:var(--gold); border:1px solid var(--gold); color:#1b1405; border-radius:9px; padding:8px 16px; font-family:var(--font-sans); font-size:13px; font-weight:700; cursor:pointer; }
+.tour-next:hover{ background:var(--gold-soft); border-color:var(--gold-soft); }
+.tour-fab{ position:fixed; right:18px; bottom:18px; z-index:3500; display:none; align-items:center; gap:8px; background:var(--navy); color:var(--gold-soft); border:1px solid rgba(242,201,100,.4); border-radius:40px; padding:11px 16px 11px 13px; font-family:var(--font-sans); font-weight:700; font-size:13.5px; cursor:pointer; box-shadow:0 10px 26px -8px rgba(0,0,0,.4); transition:transform .15s, background .15s; }
+.tour-fab:hover{ transform:translateY(-1px); background:var(--navy-soft); }
+.tour-fab svg{ width:20px; height:20px; }
+.tour-fab.show{ display:inline-flex; }
+@media (max-width:560px){ .tour-fab-label{ display:none; } .tour-fab{ padding:13px; border-radius:50%; } }
+:root[data-theme="dark"] .tour-next{ color:#1b1405; }
+</style>
+<script>
+/* Set theme before first paint to avoid a flash. */
+(function(){
+  var t = "light";
+  try {
+    var saved = localStorage.getItem("aog.theme");
+    if (saved === "dark" || saved === "light") t = saved;
+    else if (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches) t = "dark";
+  } catch (e) {}
+  document.documentElement.setAttribute("data-theme", t);
+})();
+function applyTheme(t){ document.documentElement.setAttribute("data-theme", t === "dark" ? "dark" : "light"); }
+function toggleTheme(){
+  var cur = document.documentElement.getAttribute("data-theme") === "dark" ? "dark" : "light";
+  var next = cur === "dark" ? "light" : "dark";
+  try { localStorage.setItem("aog.theme", next); } catch (e) {}
+  applyTheme(next);
+}
+</script>
 </head>
 <body>
 <div class="stage">
@@ -1723,6 +1850,10 @@ tr:hover td { background: var(--paper); }
   </a>
   <div class="topbar-actions">
     <a class="topbar-link" href="#" onclick="event.preventDefault(); openAdmin();" data-i18n="w_door_results">Educator Access &middot; Results</a>
+    <button id="themeToggle" class="theme-toggle" type="button" onclick="toggleTheme()" aria-label="Toggle dark mode" title="Toggle dark mode">
+      <svg class="ti-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+      <svg class="ti-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
+    </button>
     <div class="lang-toggle">
       <button id="langEn" class="active" onclick="setLang('en')">EN</button>
       <button id="langEs" onclick="setLang('es')">ES</button>
@@ -1785,19 +1916,34 @@ tr:hover td { background: var(--paper); }
       </a>
     </div>
 
-    <!-- ===== FOUNDATION (kept, restyled) ===== -->
-    <section class="aog-what reveal">
-      <div class="ey" data-i18n="aog_what_ey">The Foundation</div>
-      <h2 data-i18n="aog_what_h">What Is Architecture of Grace?</h2>
-      <p data-i18n="aog_what_p1">Architecture of Grace is a human development framework and intuitive digital check-in platform designed to help individuals understand themselves, strengthen relationships, and navigate life&rsquo;s challenges with resilience, responsibility, and hope.</p>
-      <p data-i18n="aog_what_p2">Built upon developmental psychology, social-emotional learning, reflective practice, and character formation, the framework provides a structured pathway for lifelong growth through lessons, assessments, conversations, and real-world application.</p>
-      <p data-i18n="aog_what_p3">By bridging the gap between deep personal development and daily practice, the platform empowers people to become the healthiest versions of themselves &mdash; ultimately reducing burnout, improving retention, and fostering a resilient culture across school districts and families.</p>
-      <div class="pillars">
-        <div class="pl-label" data-i18n="aog_what_pillars">Four ideas run through everything</div>
-        <span class="tag" data-i18n="pillar_identity">Identity</span>
-        <span class="tag" data-i18n="pillar_selfcomp">Self-compassion</span>
-        <span class="tag" data-i18n="pillar_forgive">Forgiveness</span>
-        <span class="tag" data-i18n="pillar_grace">Grace</span>
+    <!-- ===== THE STORY (moved to bottom of main page) ===== -->
+    <section class="hyb-story reveal">
+      <div class="hyb-story-card">
+        <div class="eyebrow" style="color:var(--gold);" data-i18n="story_ey">The Story</div>
+        <h3 class="serif" style="font-size:27px; color:var(--navy); margin:4px 0 16px;" data-i18n="story_h">The founder, and the why beneath the work</h3>
+
+        <p style="font-size:15px; line-height:1.72; color:var(--ink); margin-bottom:14px;" data-i18n="story_p1">My name is Jimmy Ramsden. I didn&rsquo;t come to this work from a boardroom &mdash; I came to it from the classroom, where I still teach today as a special educator.</p>
+
+        <p style="font-size:15px; line-height:1.72; color:var(--ink); margin-bottom:14px;" data-i18n="story_p2">My journey started at Humboldt State University with a degree in political science, followed by a master&rsquo;s in special education. But the real catalyst came in 2006, when a serious car crash left me with a traumatic brain injury and a neurological disability. Rebuilding my life changed how I understand struggle, patience, and grace. It&rsquo;s the reason this work isn&rsquo;t abstract to me.</p>
+
+        <p style="font-size:15px; line-height:1.72; color:var(--ink); margin-bottom:14px;" data-i18n-html="story_p3">The Architecture of Grace grew out of a conviction that individuals deserve more than to be measured &mdash; they deserve to be understood. Built under the <strong>School of Life Foundation</strong>, everything here rests on four core pillars:</p>
+
+        <ul style="list-style:none; margin:4px 0 16px; padding:0;" data-i18n-html="story_pillars">
+          <li style="font-size:15px; line-height:1.6; color:var(--ink); margin-bottom:10px; padding-left:20px; position:relative;"><span style="position:absolute; left:0; top:1px; color:var(--gold);">&#9670;</span><strong style="color:var(--navy);">Identity</strong> &mdash; who a person comes to believe they are.</li>
+          <li style="font-size:15px; line-height:1.6; color:var(--ink); margin-bottom:10px; padding-left:20px; position:relative;"><span style="position:absolute; left:0; top:1px; color:var(--gold);">&#9670;</span><strong style="color:var(--navy);">Self-Compassion</strong> &mdash; how a person learns to speak to themselves.</li>
+          <li style="font-size:15px; line-height:1.6; color:var(--ink); margin-bottom:10px; padding-left:20px; position:relative;"><span style="position:absolute; left:0; top:1px; color:var(--gold);">&#9670;</span><strong style="color:var(--navy);">Forgiveness</strong> &mdash; moving past mistakes to make room for growth.</li>
+          <li style="font-size:15px; line-height:1.6; color:var(--ink); margin-bottom:0; padding-left:20px; position:relative;"><span style="position:absolute; left:0; top:1px; color:var(--gold);">&#9670;</span><strong style="color:var(--navy);">Grace</strong> &mdash; meeting a person with understanding rather than only judgment.</li>
+        </ul>
+
+        <p style="font-size:15px; line-height:1.72; color:var(--ink); margin-bottom:14px;" data-i18n="story_p4">As a teacher and a father, these are the values I want for my students, my own children &mdash; and for anyone willing to do this work.</p>
+
+        <div style="background:var(--cream-deep,#F4EFE0); border:1px solid var(--rule); border-left:4px solid var(--gold); border-radius:12px; padding:16px 20px; margin:20px 0 18px;">
+          <div style="font-size:11px; font-weight:700; letter-spacing:.16em; text-transform:uppercase; color:var(--gold); margin-bottom:6px;" data-i18n="story_note_label">A note on transparency</div>
+          <p style="font-size:14.5px; line-height:1.65; color:var(--ink-soft); margin:0;" data-i18n="story_note">This work is in its early stages. The check-in is a pilot &mdash; a score is a flag for a conversation, never a diagnosis &mdash; and the curriculum is a framework I&rsquo;m actively proving. I&rsquo;d rather be honest about that than oversell it.</p>
+        </div>
+
+        <p style="font-size:15px; line-height:1.72; color:var(--ink); margin-bottom:14px;" data-i18n-html="story_contact">If you&rsquo;d like to try it, pilot it, or just share your thoughts, please reach out.<!-- EDIT ME: contact email below --> <a href="mailto:whytheschooloflife@gmail.com" style="color:var(--navy); font-weight:600; text-decoration:none; border-bottom:1px solid var(--gold);">whytheschooloflife@gmail.com</a></p>
+        <p style="font-size:15px; line-height:1.72; color:var(--ink-soft); margin:0;"><em>&mdash; Jimmy Ramsden</em></p>
       </div>
     </section>
   </div>
@@ -2529,35 +2675,26 @@ tr:hover td { background: var(--paper); }
         <button class="guide-subtab" data-guide="library" data-i18n="g_tab_library">Downloads</button>
       </div>
 
-      <div class="guide-about-feature" id="guide-about">
+      <div class="guide-about-feature" id="guide-foundation">
         <div class="table-card" style="padding:32px 36px 36px; max-width:760px; margin:0 auto;">
-          <div class="eyebrow" style="color:var(--gold);" data-i18n="story_ey">The Story</div>
-          <h3 class="serif" style="font-size:27px; color:var(--navy); margin:4px 0 16px;" data-i18n="story_h">The founder, and the why beneath the work</h3>
+          <div class="eyebrow" style="color:var(--gold);" data-i18n="aog_what_ey">The Foundation</div>
+          <h3 class="serif" style="font-size:27px; color:var(--navy); margin:4px 0 16px;" data-i18n="aog_what_h">What Is Architecture of Grace?</h3>
 
-          <p style="font-size:15px; line-height:1.72; color:var(--ink); margin-bottom:14px;" data-i18n="story_p1">My name is Jimmy Ramsden. I didn&rsquo;t come to this work from a boardroom &mdash; I came to it from the classroom, where I still teach today as a special educator.</p>
+          <p style="font-size:15px; line-height:1.72; color:var(--ink); margin-bottom:14px;" data-i18n="aog_what_p1">Architecture of Grace is a human development framework and intuitive digital check-in platform designed to help individuals understand themselves, strengthen relationships, and navigate life&rsquo;s challenges with resilience, responsibility, and hope.</p>
 
-          <p style="font-size:15px; line-height:1.72; color:var(--ink); margin-bottom:14px;" data-i18n="story_p2">My journey started at Humboldt State University with a degree in political science, followed by a master&rsquo;s in special education. But the real catalyst came in 2006, when a serious car crash left me with a traumatic brain injury and a neurological disability. Rebuilding my life changed how I understand struggle, patience, and grace. It&rsquo;s the reason this work isn&rsquo;t abstract to me.</p>
+          <p style="font-size:15px; line-height:1.72; color:var(--ink); margin-bottom:14px;" data-i18n="aog_what_p2">Built upon developmental psychology, social-emotional learning, reflective practice, and character formation, the framework provides a structured pathway for lifelong growth through lessons, assessments, conversations, and real-world application.</p>
 
-          <p style="font-size:15px; line-height:1.72; color:var(--ink); margin-bottom:14px;" data-i18n-html="story_p3">The Architecture of Grace grew out of a conviction that individuals deserve more than to be measured &mdash; they deserve to be understood. Built under the <strong>School of Life Foundation</strong>, everything here rests on four core pillars:</p>
+          <p style="font-size:15px; line-height:1.72; color:var(--ink); margin-bottom:18px;" data-i18n="aog_what_p3">By bridging the gap between deep personal development and daily practice, the platform empowers people to become the healthiest versions of themselves &mdash; ultimately reducing burnout, improving retention, and fostering a resilient culture across school districts and families.</p>
 
-          <ul style="list-style:none; margin:4px 0 16px; padding:0;" data-i18n-html="story_pillars">
-            <li style="font-size:15px; line-height:1.6; color:var(--ink); margin-bottom:10px; padding-left:20px; position:relative;"><span style="position:absolute; left:0; top:1px; color:var(--gold);">&#9670;</span><strong style="color:var(--navy);">Identity</strong> &mdash; who a person comes to believe they are.</li>
-            <li style="font-size:15px; line-height:1.6; color:var(--ink); margin-bottom:10px; padding-left:20px; position:relative;"><span style="position:absolute; left:0; top:1px; color:var(--gold);">&#9670;</span><strong style="color:var(--navy);">Self-Compassion</strong> &mdash; how a person learns to speak to themselves.</li>
-            <li style="font-size:15px; line-height:1.6; color:var(--ink); margin-bottom:10px; padding-left:20px; position:relative;"><span style="position:absolute; left:0; top:1px; color:var(--gold);">&#9670;</span><strong style="color:var(--navy);">Forgiveness</strong> &mdash; moving past mistakes to make room for growth.</li>
-            <li style="font-size:15px; line-height:1.6; color:var(--ink); margin-bottom:0; padding-left:20px; position:relative;"><span style="position:absolute; left:0; top:1px; color:var(--gold);">&#9670;</span><strong style="color:var(--navy);">Grace</strong> &mdash; meeting a person with understanding rather than only judgment.</li>
-          </ul>
-
-          <p style="font-size:15px; line-height:1.72; color:var(--ink); margin-bottom:14px;" data-i18n="story_p4">As a teacher and a father, these are the values I want for my students, my own children &mdash; and for anyone willing to do this work.</p>
-
-          <div style="background:var(--cream-deep,#F4EFE0); border:1px solid var(--rule); border-left:4px solid var(--gold); border-radius:12px; padding:16px 20px; margin:20px 0 18px;">
-            <div style="font-size:11px; font-weight:700; letter-spacing:.16em; text-transform:uppercase; color:var(--gold); margin-bottom:6px;" data-i18n="story_note_label">A note on transparency</div>
-            <p style="font-size:14.5px; line-height:1.65; color:var(--ink-soft); margin:0;" data-i18n="story_note">This work is in its early stages. The check-in is a pilot &mdash; a score is a flag for a conversation, never a diagnosis &mdash; and the curriculum is a framework I&rsquo;m actively proving. I&rsquo;d rather be honest about that than oversell it.</p>
+          <div class="found-pillars">
+            <div class="found-pl-label" data-i18n="aog_what_pillars">Four ideas run through everything</div>
+            <span class="found-tag" data-i18n="pillar_identity">Identity</span>
+            <span class="found-tag" data-i18n="pillar_selfcomp">Self-compassion</span>
+            <span class="found-tag" data-i18n="pillar_forgive">Forgiveness</span>
+            <span class="found-tag" data-i18n="pillar_grace">Grace</span>
           </div>
-
-          <p style="font-size:15px; line-height:1.72; color:var(--ink); margin-bottom:14px;" data-i18n-html="story_contact">If you&rsquo;d like to try it, pilot it, or just share your thoughts, please reach out.<!-- EDIT ME: contact email below --> <a href="mailto:whytheschooloflife@gmail.com" style="color:var(--navy); font-weight:600; text-decoration:none; border-bottom:1px solid var(--gold);">whytheschooloflife@gmail.com</a></p>
-          <p style="font-size:15px; line-height:1.72; color:var(--ink-soft); margin:0;"><em>&mdash; Jimmy Ramsden</em></p>
         </div>
-      </div><!-- /guide-about-feature -->
+      </div><!-- /guide-foundation -->
 
       <div class="guide-section active" id="guide-docs">
       <div class="table-card" style="padding:28px 32px;">
@@ -3151,6 +3288,7 @@ const I18N_UI = {
   ad_door_s:    { en: "For the grown-ups doing the work — a private few minutes, just for you.", es: "Para los adultos que hacen este trabajo — unos minutos privados, solo para ti." },
   t_lede_adult: { en: "Your answers have been saved, and they’ve gone to the person or team who shared this with you, so someone can follow up with care. If anything here stirred something up, please reach out to someone you trust — you don’t have to sit with it alone.", es: "Tus respuestas se han guardado y han llegado a la persona o al equipo que te compartió esto, para que alguien pueda dar seguimiento con cuidado. Si algo aquí removió algo, por favor acude a alguien en quien confíes — no tienes que enfrentarlo solo/a." },
   aog_what_ey:    { en: "The Foundation", es: "La Base" },
+  tour_fab:       { en: "Quick tour", es: "Recorrido r\u00e1pido" },
   aog_what_h:     { en: "What Is Architecture of Grace?", es: "\u00bfQu\u00e9 es Architecture of Grace?" },
   aog_what_p1:    { en: "Architecture of Grace is a human development framework and intuitive digital check-in platform designed to help individuals understand themselves, strengthen relationships, and navigate life\u2019s challenges with resilience, responsibility, and hope.", es: "Architecture of Grace es un marco de desarrollo humano y una plataforma intuitiva de chequeo digital, dise\u00f1ada para ayudar a las personas a comprenderse a s\u00ed mismas, fortalecer sus relaciones y afrontar los desaf\u00edos de la vida con resiliencia, responsabilidad y esperanza." },
   aog_what_p2:    { en: "Built upon developmental psychology, social-emotional learning, reflective practice, and character formation, the framework provides a structured pathway for lifelong growth through lessons, assessments, conversations, and real-world application.", es: "Basado en la psicolog\u00eda del desarrollo, el aprendizaje socioemocional, la pr\u00e1ctica reflexiva y la formaci\u00f3n del car\u00e1cter, el marco ofrece un camino estructurado para el crecimiento a lo largo de la vida a trav\u00e9s de lecciones, evaluaciones, conversaciones y aplicaci\u00f3n en la vida real." },
@@ -3445,6 +3583,129 @@ function showScreen(id) {
   $$(".screen").forEach(s => s.classList.remove("active"));
   $("#" + id).classList.add("active");
   window.scrollTo({ top: 0, behavior: "smooth" });
+  try {
+    var fab = document.getElementById("tourFab");
+    if (fab) fab.classList.toggle("show", id === "screen-welcome");
+    if (id !== "screen-welcome" && typeof endTour === "function") endTour(true);
+  } catch (e) {}
+}
+
+// ============================================================
+// D: Onboarding tour (welcome screen)
+// ============================================================
+var TOUR_STEPS = [
+  { sel:null,
+    title:{en:"Welcome to Architecture of Grace", es:"Bienvenido a Architecture of Grace"},
+    body:{en:"Here\u2019s a 20-second tour of the front door. You can skip anytime \u2014 and replay it later from the \u201CQuick tour\u201D button.", es:"Aqu\u00ed tienes un recorrido de 20 segundos. Puedes omitirlo cuando quieras y repetirlo luego con el bot\u00f3n \u201CRecorrido r\u00e1pido\u201D."} },
+  { sel:".hyb-door.prim",
+    title:{en:"Explore the Guide & Library", es:"Explora la gu\u00eda y la biblioteca"},
+    body:{en:"The ecosystem map, the resource index, and every free download \u2014 no code needed. Start here to see what the program is.", es:"El mapa del ecosistema, el \u00edndice de recursos y todas las descargas gratuitas, sin c\u00f3digo. Empieza aqu\u00ed para ver qu\u00e9 es el programa."} },
+  { sel:".hyb-door.sec",
+    title:{en:"Take the Check-In", es:"Haz el chequeo"},
+    body:{en:"A private, on-device reflection for a student or an adult. Nothing leaves the device unless a school chooses to turn that on.", es:"Una reflexi\u00f3n privada en el dispositivo, para un estudiante o un adulto. Nada sale del dispositivo a menos que una escuela lo active."} },
+  { sel:"#themeToggle",
+    title:{en:"Light or dark", es:"Claro u oscuro"},
+    body:{en:"Switch the whole site to dark mode whenever you like \u2014 your choice is remembered on this device.", es:"Cambia todo el sitio a modo oscuro cuando quieras; tu elecci\u00f3n se recuerda en este dispositivo."} },
+  { sel:".topbar-link",
+    title:{en:"For educators", es:"Para educadores"},
+    body:{en:"Educators open the aggregate results dashboard here. A private code keeps it just for staff.", es:"Los educadores abren aqu\u00ed el panel de resultados. Un c\u00f3digo privado lo reserva solo para el personal."} },
+];
+var tourIdx = 0, tourActive = false;
+function tourTxt(o){ return (typeof lang !== "undefined" && lang === "es" && o && o.es) ? o.es : (o ? o.en : ""); }
+function startTour(){
+  var welcome = document.getElementById("screen-welcome");
+  if (welcome && !welcome.classList.contains("active")) { if (typeof resetToStart === "function") resetToStart(); }
+  tourIdx = 0; tourActive = true;
+  var ov = document.getElementById("tourOverlay"); if (!ov) return;
+  ov.hidden = false;
+  document.getElementById("tourTotal").textContent = String(TOUR_STEPS.length);
+  var dots = document.getElementById("tourDots"); dots.innerHTML = "";
+  for (var i=0;i<TOUR_STEPS.length;i++){ var d=document.createElement("i"); dots.appendChild(d); }
+  window.addEventListener("resize", tourReposition);
+  window.addEventListener("scroll", tourReposition, true);
+  document.addEventListener("keydown", tourKey);
+  tourGoTo(0);
+}
+function tourKey(e){
+  if (!tourActive) return;
+  if (e.key === "Escape") endTour();
+  else if (e.key === "ArrowRight" || e.key === "Enter") tourNext();
+  else if (e.key === "ArrowLeft") tourPrev();
+}
+function tourNext(){ if (tourIdx >= TOUR_STEPS.length - 1) { endTour(); } else { tourGoTo(tourIdx + 1); } }
+function tourPrev(){ if (tourIdx > 0) tourGoTo(tourIdx - 1); }
+function tourGoTo(i){
+  tourIdx = i;
+  var step = TOUR_STEPS[i];
+  document.getElementById("tourNum").textContent = String(i + 1);
+  document.getElementById("tourTitle").textContent = tourTxt(step.title);
+  document.getElementById("tourBody").textContent = tourTxt(step.body);
+  var dots = document.getElementById("tourDots").children;
+  for (var k=0;k<dots.length;k++) dots[k].classList.toggle("on", k === i);
+  document.getElementById("tourBack").style.visibility = (i === 0) ? "hidden" : "visible";
+  var nextBtn = document.getElementById("tourNext");
+  nextBtn.textContent = (i === TOUR_STEPS.length - 1)
+    ? (typeof lang !== "undefined" && lang === "es" ? "Entendido" : "Got it")
+    : (typeof lang !== "undefined" && lang === "es" ? "Siguiente" : "Next");
+  document.getElementById("tourSkip").textContent = (typeof lang !== "undefined" && lang === "es" ? "Omitir" : "Skip");
+  var tgt = step.sel ? document.querySelector(step.sel) : null;
+  if (tgt && tgt.scrollIntoView) {
+    var r0 = tgt.getBoundingClientRect();
+    if (r0.top < 90 || r0.bottom > window.innerHeight - 60) tgt.scrollIntoView({ block:"center", behavior:"smooth" });
+  }
+  tourReposition();
+  requestAnimationFrame(tourReposition);
+  setTimeout(tourReposition, 80);
+  setTimeout(tourReposition, 340);
+}
+function tourReposition(){
+  if (!tourActive) return;
+  var step = TOUR_STEPS[tourIdx];
+  var spot = document.getElementById("tourSpotlight");
+  var pop = document.getElementById("tourPop");
+  var tgt = step.sel ? document.querySelector(step.sel) : null;
+  var vw = window.innerWidth, vh = window.innerHeight;
+  if (tgt) {
+    var r = tgt.getBoundingClientRect(), pad = 6;
+    spot.style.display = "block";
+    spot.style.top = (r.top - pad) + "px";
+    spot.style.left = (r.left - pad) + "px";
+    spot.style.width = (r.width + pad*2) + "px";
+    spot.style.height = (r.height + pad*2) + "px";
+    var pw = pop.offsetWidth || 300, ph = pop.offsetHeight || 180;
+    var spaceBelow = vh - r.bottom, top;
+    if (spaceBelow > ph + 24) top = r.bottom + 14;
+    else if (r.top > ph + 24) top = r.top - ph - 14;
+    else top = Math.max(12, (vh - ph) / 2);
+    var left = r.left + r.width/2 - pw/2;
+    left = Math.max(14, Math.min(left, vw - pw - 14));
+    pop.style.top = top + "px";
+    pop.style.left = left + "px";
+  } else {
+    // intro: dim everything, center the card
+    spot.style.display = "block";
+    spot.style.top = "-200px"; spot.style.left = "-200px";
+    spot.style.width = "0px"; spot.style.height = "0px";
+    var pw2 = pop.offsetWidth || 300, ph2 = pop.offsetHeight || 180;
+    pop.style.top = Math.max(12, (vh - ph2)/2) + "px";
+    pop.style.left = Math.max(14, (vw - pw2)/2) + "px";
+  }
+}
+function endTour(silent){
+  tourActive = false;
+  var ov = document.getElementById("tourOverlay"); if (ov) ov.hidden = true;
+  window.removeEventListener("resize", tourReposition);
+  window.removeEventListener("scroll", tourReposition, true);
+  document.removeEventListener("keydown", tourKey);
+  if (!silent) { try { localStorage.setItem("aog.tour.seen", "1"); } catch (e) {} }
+}
+function maybeStartTour(){
+  try { if (localStorage.getItem("aog.tour.seen") === "1") return; } catch (e) {}
+  var welcome = document.getElementById("screen-welcome");
+  if (welcome && welcome.classList.contains("active")) {
+    try { localStorage.setItem("aog.tour.seen", "1"); } catch (e) {}
+    startTour();
+  }
 }
 
 function renderItem() {
@@ -4131,6 +4392,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const savedLang = localStorage.getItem(LANG_KEY);
   if (savedLang) setLang(savedLang);
   applyLang();
+  // D: first-visit guided tour on the main page
+  setTimeout(maybeStartTour, 950);
 
   // Educator dashboard language (independent of the participant toggle).
   let savedDash = "en";
@@ -5634,13 +5897,13 @@ const RI_ES = {
 const LIB_CAT_ES = {
   "The Novels":{ cat:"Las novelas", note:"El compañero narrativo de cinco libros — las ideas, vividas como relato." },
   "The Curriculum":{ cat:"El plan de estudios", note:"El plan de estudios secular completo de K–12 — cinco volúmenes por nivel, la columna vertebral de la vista previa recorriendo cada uno." },
-  "Anchor Charts":{ cat:"Láminas de anclaje", note:"Visuales listos para el aula para cada habilidad — imprime en cartulina, exhibe todo el año." },
-  "Worksheets & Activities":{ cat:"Hojas de trabajo y actividades", note:"Hojas de trabajo reproducibles, actividades de dibujo y ejemplos para exhibir." },
-  "Scenario Cards":{ cat:"Tarjetas de escenarios", note:"Mazos de discusión y juego de roles — trabaja un dilema en el aula, no en una hoja." },
+  "Anchor Charts":{ cat:"Láminas de anclaje", note:"Muestras de vista previa gratuitas de las láminas de anclaje listas para el aula — un adelanto de cada juego, no el paquete completo. Los juegos completos vienen con el plan de estudios del distrito." },
+  "Worksheets & Activities":{ cat:"Hojas de trabajo y actividades", note:"Muestras de vista previa gratuitas de las hojas de trabajo reproducibles, actividades de dibujo y ejemplos para exhibir — un adelanto de cada paquete, no el juego completo. Los paquetes completos vienen con el plan de estudios del distrito." },
+  "Scenario Cards":{ cat:"Tarjetas de escenarios", note:"Muestras de vista previa gratuitas de los mazos de discusión y juego de roles — un adelanto de cada mazo, no el juego completo. Los mazos completos vienen con el plan de estudios del distrito." },
   "Assessment & Data":{ cat:"Evaluación y datos", note:"Los instrumentos de evaluación y clínicos." },
   "Crosswalks & Implementation Maps":{ cat:"Correlaciones y mapas de implementación", note:"Cómo se conectan las piezas, y cómo implementarlo." },
   "Secular Somatic Floor Lessons":{ cat:"Lecciones del Piso Somático (seculares)", note:"Compañeras corporales, totalmente seculares — donde estas ideas viven en el sistema nervioso." },
-  "Autism-Adapted Charts":{ cat:"Láminas adaptadas para el autismo", note:"Las láminas de anclaje, adaptadas con lenguaje sencillo y apoyos visuales para estudiantes autistas." },
+  "Autism-Adapted Charts":{ cat:"Láminas adaptadas para el autismo", note:"Muestras de vista previa gratuitas de las láminas de anclaje, adaptadas con lenguaje sencillo y apoyos visuales para estudiantes autistas — un adelanto, no el paquete completo. Dos niveles de apoyo por nivel." },
   "Home & Family Editions":{ cat:"Ediciones para el hogar y la familia", note:"El programa, reescrito para que las familias lo usen en la mesa de la cocina." }
 };
 
@@ -5812,34 +6075,34 @@ const RESOURCE_LIBRARY = [
     { title:"Book 4 \u00b7 The Fa\u00e7ade (9\u201310)", desc:"The curated self, self-kindness, and silencing the noise.", tie:true, url:"" },
     { title:"Book 5 \u00b7 The Capstone (11\u201312)", desc:"Values, the adult repair manual, and forgiving the younger self.", tie:true, url:"" },
   ]},
-  { cat:"Anchor Charts", note:"Classroom-ready visuals for each skill \u2014 print on cardstock, post all year.", items:[
-    { title:"Anchor Charts \u00b7 K\u201312 Sampler", desc:"One chart, every band \u2014 the identity anchor growing from the Identity Web to the Threshold of adulthood.", tie:true, url:"files/AoG-Anchor-Charts-K12-Sampler.pdf" },
-    { title:"Anchor Charts \u00b7 Book 1 (K\u20132)", desc:"Every K\u20132 chart \u2014 including the Identity Web and Kind Coach vs. Grumpy Gus from the preview.", tie:true, url:"files/AoG-Book1-Anchor-Charts.pdf" },
-    { title:"Anchor Charts \u00b7 Book 2 (3\u20135)", desc:"The full 3\u20135 set, built around the red/green Inner Critic vs. Inner Coach chart.", tie:true, url:"files/AoG-Book2-Anchor-Charts.pdf" },
-    { title:"Anchor Charts \u00b7 Book 3 (6\u20138)", desc:"The 6\u20138 charts \u2014 including The Internal Critic and its three tactics.", tie:true, url:"files/AoG-Book3-Anchor-Charts.pdf" },
-    { title:"Anchor Charts \u00b7 Book 4 (9\u201310)", desc:"The 9\u201310 charts \u2014 including the Signal vs. Noise / Internal Coach chart from the preview.", tie:true, url:"files/AoG-Book4-Anchor-Charts.pdf" },
-    { title:"Anchor Charts \u00b7 Book 5 (11\u201312)", desc:"The 11\u201312 charts \u2014 including Forgiving the Younger Self from the preview.", tie:true, url:"files/AoG-Book5-Anchor-Charts.pdf" },
-    { title:"Supplemental Anchor Chart Pack", desc:"Extra display-ready charts for the 6\u20138 Interior units.", url:"files/AoG-Supplemental-Anchor-Chart-Pack.pdf" },
+  { cat:"Anchor Charts", preview:true, note:"Free preview samplers of the classroom-ready anchor charts \u2014 a taste of each set, not the full pack. Complete sets come with the district curriculum.", items:[
+    { title:"Anchor Charts \u00b7 K\u201312 Sampler", desc:"Preview \u2014 one chart per band, sampling the identity anchor from the Identity Web to the Threshold of adulthood.", tie:true, url:"files/AoG-Anchor-Charts-K12-Sampler.pdf" },
+    { title:"Anchor Charts \u00b7 Book 1 (K\u20132)", desc:"Preview of the K\u20132 set \u2014 a sample including the Identity Web and Kind Coach vs. Grumpy Gus. Full pack with the curriculum.", tie:true, url:"files/AoG-Book1-Anchor-Charts.pdf" },
+    { title:"Anchor Charts \u00b7 Book 2 (3\u20135)", desc:"Preview of the 3\u20135 set \u2014 a sample built around the red/green Inner Critic vs. Inner Coach chart. Full pack with the curriculum.", tie:true, url:"files/AoG-Book2-Anchor-Charts.pdf" },
+    { title:"Anchor Charts \u00b7 Book 3 (6\u20138)", desc:"Preview of the 6\u20138 set \u2014 a sample including The Internal Critic and its three tactics. Full pack with the curriculum.", tie:true, url:"files/AoG-Book3-Anchor-Charts.pdf" },
+    { title:"Anchor Charts \u00b7 Book 4 (9\u201310)", desc:"Preview of the 9\u201310 set \u2014 a sample including the Signal vs. Noise / Internal Coach chart. Full pack with the curriculum.", tie:true, url:"files/AoG-Book4-Anchor-Charts.pdf" },
+    { title:"Anchor Charts \u00b7 Book 5 (11\u201312)", desc:"Preview of the 11\u201312 set \u2014 a sample including Forgiving the Younger Self. Full pack with the curriculum.", tie:true, url:"files/AoG-Book5-Anchor-Charts.pdf" },
+    { title:"Supplemental Anchor Chart Pack", desc:"Preview of the supplemental display-ready charts for the 6\u20138 Interior units.", url:"files/AoG-Supplemental-Anchor-Chart-Pack.pdf" },
   ]},
-  { cat:"Worksheets & Activities", note:"Reproducible student worksheets, drawing activities, and display examples.", items:[
-    { title:"Drawing Activities \u00b7 K\u20132 Sampler", desc:"Four drawings, four pillars \u2014 how K\u20132 students draw identity, self-compassion, forgiveness, and grace.", tie:true, url:"files/AoG-Drawing-Activities-K2-Sampler.pdf" },
-    { title:"Drawing Activities (K\u20132)", desc:"Hands-on drawing lessons \u2014 the Identity Web and Kind Message to Myself from the preview.", tie:true, url:"files/AoG-Book1-Drawing-Activities.pdf" },
+  { cat:"Worksheets & Activities", preview:true, note:"Free preview samplers of the reproducible worksheets, drawing activities, and display examples \u2014 a taste of each pack, not the full set. Complete packs come with the district curriculum.", items:[
+    { title:"Drawing Activities \u00b7 K\u20132 Sampler", desc:"Preview \u2014 four drawings, four pillars: how K\u20132 students draw identity, self-compassion, forgiveness, and grace.", tie:true, url:"files/AoG-Drawing-Activities-K2-Sampler.pdf" },
+    { title:"Drawing Activities (K\u20132)", desc:"Preview of the hands-on drawing lessons \u2014 a sample including the Identity Web and Kind Message to Myself. Full pack with the curriculum.", tie:true, url:"files/AoG-Book1-Drawing-Activities.pdf" },
     { title:"Drawing Examples", desc:"Finished display models teachers post before students begin.", url:"" },
-    { title:"Worksheets \u00b7 K\u201312 Sampler", desc:"One skill across twelve years \u2014 the inner-critic worksheet, from Grumpy Gus to forgiving the younger self.", tie:true, url:"files/AoG-Worksheets-K12-Sampler.pdf" },
-    { title:"Worksheet Pack \u00b7 Book 2 (3\u20135)", desc:"All nine reproducible worksheets \u2014 including WS3 Two Voices from the preview.", tie:true, url:"files/AoG-Book2-Worksheet-Packet.pdf" },
-    { title:"Worksheet Pack \u00b7 Book 3 (6\u20138) \u00b7 Part 1", desc:"The 6\u20138 identity and self-compassion sheets \u2014 including the Internal Critic Profile you previewed.", tie:true, url:"files/AoG-Book3-Worksheet-Pack.pdf" },
+    { title:"Worksheets \u00b7 K\u201312 Sampler", desc:"Preview \u2014 one skill across twelve years: the inner-critic worksheet, from Grumpy Gus to forgiving the younger self.", tie:true, url:"files/AoG-Worksheets-K12-Sampler.pdf" },
+    { title:"Worksheet Pack \u00b7 Book 2 (3\u20135)", desc:"Preview of the 3\u20135 worksheet pack \u2014 a sample including WS3 Two Voices. Full pack with the curriculum.", tie:true, url:"files/AoG-Book2-Worksheet-Packet.pdf" },
+    { title:"Worksheet Pack \u00b7 Book 3 (6\u20138) \u00b7 Part 1", desc:"Preview of the 6\u20138 identity and self-compassion sheets \u2014 a sample including the Internal Critic Profile. Full pack with the curriculum.", tie:true, url:"files/AoG-Book3-Worksheet-Pack.pdf" },
     { title:"Worksheet Pack \u00b7 Book 3 (6\u20138) \u00b7 Part 2", desc:"The 6\u20138 worksheets for empathy, forgiveness, and grace.", url:"" },
-    { title:"Worksheet Pack \u00b7 Book 4 (9\u201310)", desc:"The 9\u201310 reproducible worksheets for the Fa\u00e7ade and self-kindness units.", url:"files/AoG-Books4-5-Worksheet-Pack.pdf" },
-    { title:"Worksheet Pack \u00b7 Book 5 (11\u201312)", desc:"The 11\u201312 worksheets for values, repair, and forgiveness.", url:"files/AoG-Books4-5-Worksheet-Pack.pdf" },
+    { title:"Worksheet Pack \u00b7 Book 4 (9\u201310)", desc:"Preview of the 9\u201310 reproducible worksheets for the Fa\u00e7ade and self-kindness units. Full pack with the curriculum.", url:"files/AoG-Books4-5-Worksheet-Pack.pdf" },
+    { title:"Worksheet Pack \u00b7 Book 5 (11\u201312)", desc:"Preview of the 11\u201312 worksheets for values, repair, and forgiveness. Full pack with the curriculum.", url:"files/AoG-Books4-5-Worksheet-Pack.pdf" },
   ]},
-  { cat:"Scenario Cards", note:"Discussion and role-play decks \u2014 work a dilemma in the room, not on a page.", items:[
-    { title:"Scenario Cards \u00b7 K\u201312 Sampler", desc:"Ten cards, one per band \u2014 the identity and inner-critic threads sampled from kindergarten to graduation.", tie:true, url:"files/AoG-Scenario-Cards-K12-Sampler.pdf" },
-    { title:"Scenario Cards \u00b7 Book 1 (K\u20132)", desc:"The K\u20132 discussion deck \u2014 identity, mistakes, and grace, worked as a class.", tie:true, url:"files/AoG-Book1-Scenario-Card-Deck.pdf" },
-    { title:"Scenario Cards \u00b7 Book 2 (3\u20135)", desc:"The 3\u20135 decks \u2014 including Sofia's failed test (Card 1-G) from the preview.", tie:true, url:"files/AoG-Book2-Scenario-Card-Deck.pdf" },
-    { title:"Scenario Cards \u00b7 Book 3 (6\u20138) \u00b7 Part 1", desc:"Identity and self-compassion dilemmas for the 6\u20138 year.", url:"files/AoG-Book3-Scenario-Card-Deck.pdf" },
+  { cat:"Scenario Cards", preview:true, note:"Free preview samplers of the discussion and role-play decks \u2014 a taste of each deck, not the full set. Complete decks come with the district curriculum.", items:[
+    { title:"Scenario Cards \u00b7 K\u201312 Sampler", desc:"Preview \u2014 ten cards, one per band, sampling the identity and inner-critic threads from kindergarten to graduation.", tie:true, url:"files/AoG-Scenario-Cards-K12-Sampler.pdf" },
+    { title:"Scenario Cards \u00b7 Book 1 (K\u20132)", desc:"Preview of the K\u20132 discussion deck \u2014 a sample of identity, mistakes, and grace worked as a class. Full deck with the curriculum.", tie:true, url:"files/AoG-Book1-Scenario-Card-Deck.pdf" },
+    { title:"Scenario Cards \u00b7 Book 2 (3\u20135)", desc:"Preview of the 3\u20135 deck \u2014 a sample including Sofia's failed test (Card 1-G). Full deck with the curriculum.", tie:true, url:"files/AoG-Book2-Scenario-Card-Deck.pdf" },
+    { title:"Scenario Cards \u00b7 Book 3 (6\u20138) \u00b7 Part 1", desc:"Preview of the 6\u20138 deck \u2014 a sample of identity and self-compassion dilemmas. Full deck with the curriculum.", url:"files/AoG-Book3-Scenario-Card-Deck.pdf" },
     { title:"Scenario Cards \u00b7 Book 3 (6\u20138) \u00b7 Part 2", desc:"Empathy, repair, and grace dilemmas for the 6\u20138 year.", url:"" },
-    { title:"Scenario Cards \u00b7 Book 4 (9\u201310)", desc:"The 9\u201310 decks \u2014 including Layla (B4-6A) from the preview.", tie:true, url:"files/AoG-Books4-5-Scenario-Cards.pdf" },
-    { title:"Scenario Cards \u00b7 Book 5 (11\u201312)", desc:"The 11\u201312 decks \u2014 including Priya\u2019s Past Self (B5-9A) from the preview.", tie:true, url:"files/AoG-Books4-5-Scenario-Cards.pdf" },
+    { title:"Scenario Cards \u00b7 Book 4 (9\u201310)", desc:"Preview of the 9\u201310 deck \u2014 a sample including Layla (B4-6A). Full deck with the curriculum.", tie:true, url:"files/AoG-Books4-5-Scenario-Cards.pdf" },
+    { title:"Scenario Cards \u00b7 Book 5 (11\u201312)", desc:"Preview of the 11\u201312 deck \u2014 a sample including Priya\u2019s Past Self (B5-9A). Full deck with the curriculum.", tie:true, url:"files/AoG-Books4-5-Scenario-Cards.pdf" },
     { title:"Scenario Cards \u00b7 Complete Deck (all bands)", desc:"The cross-band deck of dilemmas for discussion and role-play.", url:"" },
   ]},
   { cat:"Assessment & Data", note:"The screening and clinical instruments.", items:[
@@ -5865,11 +6128,11 @@ const RESOURCE_LIBRARY = [
     { title:"Book 3 \u00b7 Rewriting the Script \u00b7 Somatic Floor (D8)", desc:"Somatic grounding for reauthoring the self-story.", url:"" },
     { title:"Book 3 \u00b7 The Agency of Release \u00b7 Somatic Floor (D11)", desc:"Releasing what you carry \u2014 a body-based practice.", url:"" },
   ]},
-  { cat:"Autism-Adapted Charts", note:"The anchor charts, rebuilt with plain language and visual supports \u2014 available to anyone who wants the gentlest, most literal version. Two support levels per band.", items:[
-    { title:"Autism-Adapted Charts \u00b7 Book 1 (K\u20132) \u00b7 Lower Support", desc:"The K\u20132 anchor charts in plain language with visual supports.", url:"files/AoG_Book1_AutismAdapted_LowerSupport_1.pdf" },
-    { title:"Autism-Adapted Charts \u00b7 Book 1 (K\u20132) \u00b7 Moderate Support", desc:"The K\u20132 charts with more scaffolding and simpler steps.", url:"files/AoG_Book1_AutismAdapted_ModerateSupport.pdf" },
-    { title:"Autism-Adapted Charts \u00b7 Book 3 (6\u20138) \u00b7 Lower Support", desc:"The 6\u20138 anchor charts in plain language with visual supports.", url:"files/AoG_Book3_AutismAdapted_LowerSupport.pdf" },
-    { title:"Autism-Adapted Charts \u00b7 Book 3 (6\u20138) \u00b7 Moderate Support", desc:"The 6\u20138 charts with more scaffolding and simpler steps.", url:"files/AoG_Book3_AutismAdapted_ModerateSupport.pdf" },
+  { cat:"Autism-Adapted Charts", preview:true, note:"Free preview samplers of the anchor charts rebuilt with plain language and visual supports \u2014 a taste of the gentlest, most literal version, not the full pack. Two support levels per band.", items:[
+    { title:"Autism-Adapted Charts \u00b7 Book 1 (K\u20132) \u00b7 Lower Support", desc:"Preview of the K\u20132 anchor charts in plain language with visual supports.", url:"files/AoG_Book1_AutismAdapted_LowerSupport_1.pdf" },
+    { title:"Autism-Adapted Charts \u00b7 Book 1 (K\u20132) \u00b7 Moderate Support", desc:"Preview of the K\u20132 charts with more scaffolding and simpler steps.", url:"files/AoG_Book1_AutismAdapted_ModerateSupport.pdf" },
+    { title:"Autism-Adapted Charts \u00b7 Book 3 (6\u20138) \u00b7 Lower Support", desc:"Preview of the 6\u20138 anchor charts in plain language with visual supports.", url:"files/AoG_Book3_AutismAdapted_LowerSupport.pdf" },
+    { title:"Autism-Adapted Charts \u00b7 Book 3 (6\u20138) \u00b7 Moderate Support", desc:"Preview of the 6\u20138 charts with more scaffolding and simpler steps.", url:"files/AoG_Book3_AutismAdapted_ModerateSupport.pdf" },
     { title:"Autism-Adapted Charts \u00b7 Book 2 (3\u20135)", desc:"In polish \u2014 coming soon.", url:"" },
     { title:"Autism-Adapted Charts \u00b7 Book 4 (9\u201310)", desc:"Material ready; in polish \u2014 coming soon.", url:"" },
     { title:"Autism-Adapted Charts \u00b7 Book 5 (11\u201312)", desc:"Material ready; in polish \u2014 coming soon.", url:"" },
@@ -5916,7 +6179,8 @@ function renderLibrary() {
       : (total + (es ? ' en el programa' : ' in the program'));
     html += '<div class="lib-cat">' +
       '<div class="lib-cat-head">' +
-        '<div><div class="lib-cat-title">' + libEsc(catName) + '</div>' +
+        '<div><div class="lib-cat-title">' + libEsc(catName) +
+        (cat.preview ? ' <span class="lib-preview-pill">' + (es ? "Vista previa" : "Preview") + '</span>' : '') + '</div>' +
         (catNote ? '<div class="lib-cat-note">' + libEsc(catNote) + '</div>' : '') + '</div>' +
         '<div style="display:flex;align-items:center;gap:12px;">' +
           '<span class="lib-cat-count">' + countLabel + '</span>' +
@@ -6096,5 +6360,26 @@ if (document.readyState === "loading") {
 }
 
 </script>
+<!-- ============ D: ONBOARDING TOUR (main page) ============ -->
+<div id="tourOverlay" class="tour-overlay" hidden>
+  <div id="tourSpotlight" class="tour-spotlight"></div>
+  <div id="tourPop" class="tour-pop" role="dialog" aria-modal="true" aria-labelledby="tourTitle">
+    <div class="tour-meta"><span id="tourNum">1</span> <span style="opacity:.5">/</span> <span id="tourTotal">5</span></div>
+    <div class="tour-title" id="tourTitle"></div>
+    <div class="tour-body" id="tourBody"></div>
+    <div class="tour-dots" id="tourDots"></div>
+    <div class="tour-actions">
+      <button class="tour-skip" id="tourSkip" type="button" onclick="endTour()">Skip</button>
+      <div class="tour-nav">
+        <button class="tour-back" id="tourBack" type="button" onclick="tourPrev()">Back</button>
+        <button class="tour-next" id="tourNext" type="button" onclick="tourNext()">Next</button>
+      </div>
+    </div>
+  </div>
+</div>
+<button id="tourFab" class="tour-fab" type="button" onclick="startTour()" aria-label="Take a quick tour">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M9.1 9a3 3 0 0 1 5.8 1c0 2-3 2.5-3 4"/><path d="M12 17h.01"/></svg>
+  <span class="tour-fab-label" data-i18n="tour_fab">Quick tour</span>
+</button>
 </body>
 </html>
