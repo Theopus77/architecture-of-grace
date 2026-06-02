@@ -75,7 +75,7 @@
 /* Accessibility: clear keyboard focus indicator for anyone navigating without a mouse */
 :focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; border-radius: 4px; }
 .response-option:focus-visible, .intensity-option:focus-visible, .mode-card:focus-visible { outline-offset: 3px; }
-html { scroll-behavior: smooth; }
+html { scroll-behavior: smooth; overflow-x: clip; }
 body {
   font-family: var(--font-sans);
   color: var(--ink);
@@ -85,6 +85,7 @@ body {
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
   min-height: 100vh;
+  overflow-x: clip;
 }
 body::before {
   content: "";
@@ -996,6 +997,17 @@ footer .serif { font-style: italic; color: var(--ink-soft); }
   align-items: center;
 }
 .home-item:last-child { border-bottom: none; }
+.home-item.has-books { cursor: pointer; }
+.home-item .hi-toggle { display:inline-flex; align-items:center; gap:4px; margin-left:10px; font-size:11px; font-weight:600; letter-spacing:.04em; color:var(--gold); white-space:nowrap; vertical-align:middle; }
+.home-item .hi-chev { display:inline-block; transition:transform .2s; }
+.home-item.open .hi-chev { transform:rotate(180deg); }
+.home-item-detail { grid-column:1 / -1; display:none; margin:12px 0 2px; padding:14px 16px; background:#FBF7EC; border:1px solid var(--rule); border-left:3px solid var(--gold); border-radius:9px; }
+.home-item.open .home-item-detail { display:block; }
+.home-item .hid-con { font-family:var(--font-serif); font-size:15.5px; color:var(--navy); margin-bottom:8px; }
+.home-item .hid-label { font-size:10.5px; font-weight:700; letter-spacing:.12em; text-transform:uppercase; color:var(--gold); margin-bottom:8px; }
+.home-item .hid-novels { display:flex; flex-direction:column; gap:7px; }
+.home-item .hid-novel { font-size:13px; line-height:1.45; color:var(--ink); }
+.home-item .hid-bk { font-weight:700; color:var(--navy); }
 .home-item-num {
   font-family: var(--font-serif);
   font-style: italic;
@@ -1119,7 +1131,7 @@ footer .serif { font-style: italic; color: var(--ink-soft); }
 /* ============================================================
    GUIDE SUB-SECTIONS — Resource Index & Ecosystem
    ============================================================ */
-.guide-subnav { display:flex; gap:4px; border-bottom:1px solid var(--rule); margin-bottom:24px; flex-wrap:wrap; }
+.guide-subnav { display:flex; justify-content:center; gap:4px; border-bottom:1px solid var(--rule); margin-bottom:24px; flex-wrap:wrap; }
 .guide-subtab {
   background:transparent; border:none; padding:10px 16px;
   font-family:inherit; font-size:13.5px; font-weight:600;
@@ -1360,6 +1372,8 @@ footer .serif { font-style: italic; color: var(--ink-soft); }
 .aog-checkins{display:grid;grid-template-columns:1fr 1fr;gap:16px}
 #screen-choose .aog-door{display:grid;grid-template-columns:auto minmax(0,1fr) auto;column-gap:16px;align-items:center}
 #screen-choose .aog-door .arr{margin-left:0}
+.ri-adult-note{background:#FBF4E4;border:1px solid var(--gold);border-left:4px solid var(--gold);border-radius:10px;padding:12px 16px;margin:0 0 18px;font-size:13.5px;line-height:1.55;color:var(--ink)}
+.ri-adult-note strong{color:var(--navy)}
 .aog-doors>.aog-door.primary{padding:30px 34px}
 .aog-doors>.aog-door.primary .t{font-size:25px}
 .aog-doors>.aog-door.primary .ic{width:56px;height:56px;font-size:26px}
@@ -1377,7 +1391,7 @@ footer .serif { font-style: italic; color: var(--ink-soft); }
 .aog-door .s{font-size:13.5px;color:var(--ink-soft);margin-top:3px}
 .aog-door .arr{margin-left:auto;color:var(--gold);font-size:23px}
 .aog-foundation-rest{margin-top:-14px;position:relative;z-index:1}
-@media (max-width:640px){ .aog-checkins{grid-template-columns:1fr} .aog-hero-e2{padding:42px 22px 48px} .aog-lock .l1{font-size:34px} }
+@media (max-width:640px){ .aog-checkins{grid-template-columns:1fr} .aog-hero-e2{padding:42px 20px 46px} .aog-lock .l1{font-size:30px} .aog-lock .l2{font-size:clamp(54px,16vw,108px)} .aog-htag{font-size:12px;letter-spacing:.28em} .topbar{padding:12px 16px;flex-wrap:wrap;row-gap:8px} .topbar-link{margin-right:10px} }
 </style>
 </head>
 <body>
@@ -1632,7 +1646,7 @@ footer .serif { font-style: italic; color: var(--ink-soft); }
 
     <div class="script-card">
       <p data-i18n-html="ad_script1"><strong>Before you begin.</strong> Just pick what feels most true for you lately, and go with your first instinct.</p>
-      <p data-i18n-html="ad_script2">Your responses come back to me so I can follow up with care &mdash; they aren&rsquo;t anonymous. If something here brings up a lot, please reach out to someone you trust.</p>
+      <p data-i18n-html="ad_script2">Your responses aren&rsquo;t anonymous &mdash; they go to the person or team who shared this with you, so someone can follow up with care. If something here brings up a lot, please reach out to someone you trust.</p>
     </div>
 
     <div class="form-section">
@@ -2069,7 +2083,6 @@ footer .serif { font-style: italic; color: var(--ink-soft); }
       <div class="guide-slim-label" data-i18n-html="g_slimlabel"><span class="guide-slim-eyebrow">The Architecture of Grace</span> &nbsp;&middot;&nbsp; Guide &amp; Library</div>
       <div style="display:flex; gap:8px; flex-wrap:wrap; align-items:center;">
         <button class="btn btn-secondary btn-sm" onclick="resetToStart()" data-i18n="g_back">Back to start</button>
-        <button class="btn btn-secondary btn-sm" onclick="openAdmin()" data-i18n-html="g_educator">Educator access &middot; results &rarr;</button>
       </div>
     </div>
 
@@ -2167,8 +2180,37 @@ footer .serif { font-style: italic; color: var(--ink-soft); }
         <button class="guide-subtab active" data-guide="docs" data-i18n="g_tab_docs">Documentation</button>
         <button class="guide-subtab" data-guide="resindex" data-i18n="g_tab_resindex">Resource Index</button>
         <button class="guide-subtab" data-guide="library" data-i18n="g_tab_library">Downloads</button>
-        <button class="guide-subtab" data-guide="about" data-i18n="g_tab_about">About · The Story</button>
       </div>
+
+      <div class="guide-about-feature" id="guide-about">
+        <div class="table-card" style="padding:32px 36px 36px; max-width:760px; margin:0 auto;">
+          <div class="eyebrow" style="color:var(--gold);">The Story</div>
+          <h3 class="serif" style="font-size:27px; color:var(--navy); margin:4px 0 16px;">The founder, and the why beneath the work</h3>
+
+          <p style="font-size:15px; line-height:1.72; color:var(--ink); margin-bottom:14px;">My name is Jimmy Ramsden. I didn&rsquo;t come to this work from a boardroom &mdash; I came to it from the classroom, where I still teach today as a special educator.</p>
+
+          <p style="font-size:15px; line-height:1.72; color:var(--ink); margin-bottom:14px;">My journey started at Humboldt State University with a degree in political science, followed by a master&rsquo;s in special education. But the real catalyst came in 2006, when a serious car crash left me with a traumatic brain injury and a neurological disability. Rebuilding my life changed how I understand struggle, patience, and grace. It&rsquo;s the reason this work isn&rsquo;t abstract to me.</p>
+
+          <p style="font-size:15px; line-height:1.72; color:var(--ink); margin-bottom:14px;">The Architecture of Grace grew out of a conviction that individuals deserve more than to be measured &mdash; they deserve to be understood. Built under the <strong>School of Life Foundation</strong>, everything here rests on four core pillars:</p>
+
+          <ul style="list-style:none; margin:4px 0 16px; padding:0;">
+            <li style="font-size:15px; line-height:1.6; color:var(--ink); margin-bottom:10px; padding-left:20px; position:relative;"><span style="position:absolute; left:0; top:1px; color:var(--gold);">&#9670;</span><strong style="color:var(--navy);">Identity</strong> &mdash; who a person comes to believe they are.</li>
+            <li style="font-size:15px; line-height:1.6; color:var(--ink); margin-bottom:10px; padding-left:20px; position:relative;"><span style="position:absolute; left:0; top:1px; color:var(--gold);">&#9670;</span><strong style="color:var(--navy);">Self-Compassion</strong> &mdash; how a person learns to speak to themselves.</li>
+            <li style="font-size:15px; line-height:1.6; color:var(--ink); margin-bottom:10px; padding-left:20px; position:relative;"><span style="position:absolute; left:0; top:1px; color:var(--gold);">&#9670;</span><strong style="color:var(--navy);">Forgiveness</strong> &mdash; moving past mistakes to make room for growth.</li>
+            <li style="font-size:15px; line-height:1.6; color:var(--ink); margin-bottom:0; padding-left:20px; position:relative;"><span style="position:absolute; left:0; top:1px; color:var(--gold);">&#9670;</span><strong style="color:var(--navy);">Grace</strong> &mdash; meeting a person with understanding rather than only judgment.</li>
+          </ul>
+
+          <p style="font-size:15px; line-height:1.72; color:var(--ink); margin-bottom:14px;">As a teacher and a father, these are the values I want for my students, my own children &mdash; and for anyone willing to do this work.</p>
+
+          <div style="background:var(--cream-deep,#F4EFE0); border:1px solid var(--rule); border-left:4px solid var(--gold); border-radius:12px; padding:16px 20px; margin:20px 0 18px;">
+            <div style="font-size:11px; font-weight:700; letter-spacing:.16em; text-transform:uppercase; color:var(--gold); margin-bottom:6px;">A note on transparency</div>
+            <p style="font-size:14.5px; line-height:1.65; color:var(--ink-soft); margin:0;">This work is in its early stages. The check-in is a pilot &mdash; a score is a flag for a conversation, never a diagnosis &mdash; and the curriculum is a framework I&rsquo;m actively proving. I&rsquo;d rather be honest about that than oversell it.</p>
+          </div>
+
+          <p style="font-size:15px; line-height:1.72; color:var(--ink); margin-bottom:14px;">If you&rsquo;d like to try it, pilot it, or just share your thoughts, please reach out.<!-- EDIT ME: contact email below --> <a href="mailto:whytheschooloflife@gmail.com" style="color:var(--navy); font-weight:600; text-decoration:none; border-bottom:1px solid var(--gold);">whytheschooloflife@gmail.com</a></p>
+          <p style="font-size:15px; line-height:1.72; color:var(--ink-soft); margin:0;"><em>&mdash; Jimmy Ramsden</em></p>
+        </div>
+      </div><!-- /guide-about-feature -->
 
       <div class="guide-section active" id="guide-docs">
       <div class="table-card" style="padding:28px 32px;">
@@ -2223,6 +2265,7 @@ footer .serif { font-style: italic; color: var(--ink-soft); }
               <option value="3">Book 3 · 6–8</option>
               <option value="4">Book 4 · 9–10</option>
               <option value="5">Book 5 · 11–12</option>
+              <option value="adult" data-i18n="ri_adults">Adults · Books 3–5</option>
             </select>
             <button class="btn btn-secondary btn-sm" id="riExpand" type="button" data-i18n="ri_expand">Expand all</button>
           </div>
@@ -2286,35 +2329,7 @@ footer .serif { font-style: italic; color: var(--ink-soft); }
         </div>
       </div><!-- /guide-library -->
 
-      <div class="guide-section" id="guide-about">
-        <div class="table-card" style="padding:32px 36px 36px; max-width:760px; margin:0 auto;">
-          <div class="eyebrow" style="color:var(--gold);">The Story</div>
-          <h3 class="serif" style="font-size:27px; color:var(--navy); margin:4px 0 16px;">The founder, and the why beneath the work</h3>
 
-          <p style="font-size:15px; line-height:1.72; color:var(--ink); margin-bottom:14px;">My name is Jimmy Ramsden. I didn&rsquo;t come to this work from a boardroom &mdash; I came to it from the classroom, where I still teach today as a special educator.</p>
-
-          <p style="font-size:15px; line-height:1.72; color:var(--ink); margin-bottom:14px;">My journey started at Humboldt State University with a degree in political science, followed by a master&rsquo;s in special education. But the real catalyst came in 2006, when a serious car crash left me with a traumatic brain injury and a neurological disability. Rebuilding my life changed how I understand struggle, patience, and grace. It&rsquo;s the reason this work isn&rsquo;t abstract to me.</p>
-
-          <p style="font-size:15px; line-height:1.72; color:var(--ink); margin-bottom:14px;">The Architecture of Grace grew out of a conviction that individuals deserve more than to be measured &mdash; they deserve to be understood. Built under the <strong>School of Life Foundation</strong>, everything here rests on four core pillars:</p>
-
-          <ul style="list-style:none; margin:4px 0 16px; padding:0;">
-            <li style="font-size:15px; line-height:1.6; color:var(--ink); margin-bottom:10px; padding-left:20px; position:relative;"><span style="position:absolute; left:0; top:1px; color:var(--gold);">&#9670;</span><strong style="color:var(--navy);">Identity</strong> &mdash; who a person comes to believe they are.</li>
-            <li style="font-size:15px; line-height:1.6; color:var(--ink); margin-bottom:10px; padding-left:20px; position:relative;"><span style="position:absolute; left:0; top:1px; color:var(--gold);">&#9670;</span><strong style="color:var(--navy);">Self-Compassion</strong> &mdash; how a person learns to speak to themselves.</li>
-            <li style="font-size:15px; line-height:1.6; color:var(--ink); margin-bottom:10px; padding-left:20px; position:relative;"><span style="position:absolute; left:0; top:1px; color:var(--gold);">&#9670;</span><strong style="color:var(--navy);">Forgiveness</strong> &mdash; moving past mistakes to make room for growth.</li>
-            <li style="font-size:15px; line-height:1.6; color:var(--ink); margin-bottom:0; padding-left:20px; position:relative;"><span style="position:absolute; left:0; top:1px; color:var(--gold);">&#9670;</span><strong style="color:var(--navy);">Grace</strong> &mdash; meeting a person with understanding rather than only judgment.</li>
-          </ul>
-
-          <p style="font-size:15px; line-height:1.72; color:var(--ink); margin-bottom:14px;">As a teacher and a father, these are the values I want for my students, my own children &mdash; and for anyone willing to do this work.</p>
-
-          <div style="background:var(--cream-deep,#F4EFE0); border:1px solid var(--rule); border-left:4px solid var(--gold); border-radius:12px; padding:16px 20px; margin:20px 0 18px;">
-            <div style="font-size:11px; font-weight:700; letter-spacing:.16em; text-transform:uppercase; color:var(--gold); margin-bottom:6px;">A note on transparency</div>
-            <p style="font-size:14.5px; line-height:1.65; color:var(--ink-soft); margin:0;">This work is in its early stages. The check-in is a pilot &mdash; a score is a flag for a conversation, never a diagnosis &mdash; and the curriculum is a framework I&rsquo;m actively proving. I&rsquo;d rather be honest about that than oversell it.</p>
-          </div>
-
-          <p style="font-size:15px; line-height:1.72; color:var(--ink); margin-bottom:14px;">If you&rsquo;d like to try it, pilot it, or just share your thoughts, please reach out.<!-- EDIT ME: contact email below --> <a href="mailto:whytheschooloflife@gmail.com" style="color:var(--navy); font-weight:600; text-decoration:none; border-bottom:1px solid var(--gold);">whytheschooloflife@gmail.com</a></p>
-          <p style="font-size:15px; line-height:1.72; color:var(--ink-soft); margin:0;"><em>&mdash; Jimmy Ramsden</em></p>
-        </div>
-      </div><!-- /guide-about --><!-- /guide-about -->
 
   </div>
 </section>
@@ -2721,6 +2736,7 @@ function scale() { return mode === "depth" ? SCALE_6[surveyLang] : SCALE_4[surve
 // Participant-facing UI translations (educator dashboard stays EN)
 // ============================================================
 const I18N_UI = {
+  ri_adults:    { en: "Adults \u00b7 Books 3\u20135", es: "Adultos \u00b7 Libros 3\u20135" },
   ch_ey:        { en: "The Check-In", es: "El chequeo" },
   ch_h1:        { en: "Who’s checking in?", es: "¿Quién hace el chequeo?" },
   ch_lede:      { en: "Same three areas, the same care — just worded for who’s answering. Choose one to begin.", es: "Las mismas tres áreas, el mismo cuidado — solo redactado según quién responde. Elige uno para empezar." },
@@ -2732,7 +2748,7 @@ const I18N_UI = {
   ad_lede:      { en: "A few quiet minutes, just for you. This is a check-in, not a test — and not a diagnosis. There are no wrong answers. It’s a way to notice how you’ve been, and a flag for a conversation if something needs one.", es: "Unos minutos tranquilos, solo para ti. Esto es un chequeo, no un examen — y no un diagnóstico. No hay respuestas incorrectas. Es una manera de notar cómo has estado, y una señal para conversar si algo lo necesita." },
   ad_support:   { en: "If you’re carrying something heavy right now, you don’t have to carry it alone. In the U.S. you can call or text <strong>988</strong> (the Suicide &amp; Crisis Lifeline), any time, day or night. Reaching out is a strong thing to do.", es: "Si estás cargando algo pesado en este momento, no tienes que cargarlo solo/a. En EE. UU. puedes llamar o enviar un mensaje de texto al <strong>988</strong> (la Línea de Prevención del Suicidio y Crisis; hay ayuda en español), a cualquier hora, de día o de noche. Pedir ayuda es algo valiente." },
   ad_script1:   { en: "<strong>Before you begin.</strong> Just pick what feels most true for you lately, and go with your first instinct.", es: "<strong>Antes de empezar.</strong> Solo elige lo que te resulte más cierto últimamente, y ve con tu primer instinto." },
-  ad_script2:   { en: "Your responses come back to me so I can follow up with care — they aren’t anonymous. If something here brings up a lot, please reach out to someone you trust.", es: "Tus respuestas vuelven a mí para poder dar seguimiento con cuidado — no son anónimas. Si algo aquí remueve mucho, por favor acude a alguien en quien confíes." },
+  ad_script2:   { en: "Your responses aren’t anonymous — they go to the person or team who shared this with you, so someone can follow up with care. If something here brings up a lot, please reach out to someone you trust.", es: "Tus respuestas no son anónimas — llegan a la persona o al equipo que te compartió esto, para que alguien pueda dar seguimiento con cuidado. Si algo aquí remueve mucho, por favor acude a alguien en quien confíes." },
   ad_about:     { en: "About you", es: "Sobre ti" },
   ad_name:      { en: "Your name or initials", es: "Tu nombre o iniciales" },
   ad_rel:       { en: "How we know each other (optional)", es: "Cómo nos conocemos (opcional)" },
@@ -2746,7 +2762,7 @@ const I18N_UI = {
   ad_back:      { en: "Back", es: "Atrás" },
   ad_door_t:    { en: "A check-in for grown-ups", es: "Un chequeo para adultos" },
   ad_door_s:    { en: "A private few minutes for the adults doing this work too.", es: "Unos minutos privados para los adultos que también hacen este trabajo." },
-  t_lede_adult: { en: "Your answers have been saved, and they’ve come back to me so I can follow up with care. If anything here stirred something up, please reach out to someone you trust — you don’t have to sit with it alone.", es: "Tus respuestas se han guardado y han vuelto a mí para poder dar seguimiento con cuidado. Si algo aquí removió algo, por favor acude a alguien en quien confíes — no tienes que enfrentarlo solo/a." },
+  t_lede_adult: { en: "Your answers have been saved, and they’ve gone to the person or team who shared this with you, so someone can follow up with care. If anything here stirred something up, please reach out to someone you trust — you don’t have to sit with it alone.", es: "Tus respuestas se han guardado y han llegado a la persona o al equipo que te compartió esto, para que alguien pueda dar seguimiento con cuidado. Si algo aquí removió algo, por favor acude a alguien en quien confíes — no tienes que enfrentarlo solo/a." },
   aog_what_ey:    { en: "The Foundation", es: "La Base" },
   aog_what_h:     { en: "What Is Architecture of Grace?", es: "\u00bfQu\u00e9 es Architecture of Grace?" },
   aog_what_p1:    { en: "Architecture of Grace is a human development framework and intuitive digital check-in platform designed to help individuals understand themselves, strengthen relationships, and navigate life\u2019s challenges with resilience, responsibility, and hope.", es: "Architecture of Grace es un marco de desarrollo humano y una plataforma intuitiva de chequeo digital, dise\u00f1ada para ayudar a las personas a comprenderse a s\u00ed mismas, fortalecer sus relaciones y afrontar los desaf\u00edos de la vida con resiliencia, responsabilidad y esperanza." },
@@ -4480,10 +4496,13 @@ function renderHome() {
         intensityHtml = '<div class="intensity-badge">' + DT("Impact:","Impacto:") + ' <strong>' + intLabels[intensity] + '</strong></div>';
       }
 
-      html += '<div class="home-item">' +
+      const _books = homeItemBooks(item.n, _adult);
+      const _moreHint = _books ? '<span class="hi-toggle">' + DT("In the books","En los libros") + ' <span class="hi-chev">\u25be</span></span>' : '';
+      html += '<div class="home-item' + (_books ? ' has-books' : '') + '"' + (_books ? ' onclick="homeItemToggle(this)"' : '') + '>' +
         '<div class="home-item-num">' + item.n + '.</div>' +
-        '<div class="home-item-text">' + escapeHtml(item.text) + reverseTag + intensityHtml + '</div>' +
+        '<div class="home-item-text">' + escapeHtml(item.text) + reverseTag + intensityHtml + _moreHint + '</div>' +
         '<div class="heat-cell ' + heat + '">' + ansLabel + '</div>' +
+        _books +
       '</div>';
     }
 
@@ -4867,6 +4886,35 @@ const RI_NOVELS = {
   "Item 18":[ {b:1,ch:"Ch 9",t:"Carrying Too Much"},{b:4,ch:"Ch 10",t:"The First Time I Asked"},{b:5,ch:"Ch 13",t:"The Conversation with My Grandmother"},{b:5,ch:"Ch 14",t:"Theo Asks"},{b:5,ch:"Ch 15",t:"The Conversation with My Mother"} ],
 };
 
+const ITEM_TO_CONSTRUCT = {
+  1:"Items 1, 2", 2:"Items 1, 2",
+  3:"Items 3, 4", 4:"Items 3, 4",
+  5:"Items 5, 6", 6:"Items 5, 6",
+  7:"Item 8 (+7, 9)", 8:"Item 8 (+7, 9)", 9:"Item 9",
+  10:"Item 10",
+  11:"Items 11, 12", 12:"Items 11, 12",
+  13:"Item 13", 14:"Item 14", 15:"Item 15", 16:"Item 16", 17:"Item 17", 18:"Item 18"
+};
+function homeItemBooks(n, isAdult) {
+  const key = ITEM_TO_CONSTRUCT[n]; if (!key) return "";
+  let nv = (RI_NOVELS[key] || []).slice();
+  if (isAdult) nv = nv.filter(x => x.b >= 3);
+  if (!nv.length) return "";
+  const es = (dashLang === "es");
+  const con = RI_CONSTRUCTS.find(c => c.items === key);
+  const cname = con ? ((es && RI_ES[key]) ? RI_ES[key].name : con.name) : "";
+  const chips = nv.map(x => {
+    const bk = es ? RI_GRADES[x.b].label.replace("Book","Libro") : RI_GRADES[x.b].label;
+    return '<span class="hid-novel"><span class="hid-bk">' + bk + ' \u00b7 ' + x.ch + '</span> \u201c' + x.t + '\u201d</span>';
+  }).join("");
+  return '<div class="home-item-detail" onclick="event.stopPropagation()">' +
+    (cname ? '<div class="hid-con">' + escapeHtml(cname) + '</div>' : '') +
+    '<div class="hid-label">' + DT("Where this lives in the novels","D\u00f3nde aparece en las novelas") + '</div>' +
+    '<div class="hid-novels">' + chips + '</div>' +
+  '</div>';
+}
+function homeItemToggle(el) { if (el) el.classList.toggle("open"); }
+
 const RI_DOMAIN_ES = {
   A:{ name:"Regulación emocional y bienestar", sub:"Autoconciencia · Autogestión" },
   B:{ name:"Autocompasión y mentalidad de crecimiento", sub:"Autogestión · Autoconciencia" },
@@ -4927,7 +4975,8 @@ function riRender(filterText, gradeFilter) {
       const cid = "ri-" + dom + "-" + idx;
       let books = "";
       Object.keys(RI_GRADES).forEach(g => {
-        if (gradeFilter && g !== gradeFilter) return;
+        if (gradeFilter === "adult") { if (g !== "3" && g !== "4" && g !== "5") return; }
+        else if (gradeFilter && g !== gradeFilter) return;
         const r = c.resources[g];
         if (!r) return;
         books += '<div class="ri-book">' +
@@ -4937,7 +4986,7 @@ function riRender(filterText, gradeFilter) {
       });
       // Where it lives in the novels (verified chapter crosswalk)
       let novels = "";
-      const nv = (RI_NOVELS[c.items] || []).filter(n => !gradeFilter || String(n.b) === String(gradeFilter));
+      const nv = (RI_NOVELS[c.items] || []).filter(n => (gradeFilter === "adult") ? (n.b >= 3) : (!gradeFilter || String(n.b) === String(gradeFilter)));
       if (nv.length) {
         novels = '<div class="ri-novels"><div class="ri-novels-label">' + (lang==="es"?"En las novelas":"In the novels") + '</div><div class="ri-novels-list">' +
           nv.map(n => '<span class="ri-novel"><span class="ri-novel-bk">' + (lang==="es"?RI_GRADES[n.b].label.replace("Book","Libro"):RI_GRADES[n.b].label) + ' \u00b7 ' + n.ch + '</span> &ldquo;' + n.t + '&rdquo;</span>').join("") +
@@ -4958,7 +5007,12 @@ function riRender(filterText, gradeFilter) {
     html += '</div>';
   });
   if (!any) html = '<div class="ri-empty">' + (lang==="es"?"No hay constructos que coincidan. Prueba otro término o quita el filtro de nivel.":"No matching constructs. Try a different term or clear the grade filter.") + '</div>';
-  root.innerHTML = html;
+  var adultNote = (gradeFilter === "adult" && any)
+    ? '<div class="ri-adult-note">' + (lang==="es"
+        ? "<strong>Vista para adultos.</strong> El registro maduro de la serie. Las novelas aqu\u00ed \u2014 <em>Two Voices</em> (Libro 3), <em>Looked Up</em> (Libro 4) y <em>Walked Out</em> (Libro 5) \u2014 se leen como historias para adultos por s\u00ed solas."
+        : "<strong>Adults view.</strong> The mature register of the series. The novels here \u2014 <em>Two Voices</em> (Book 3), <em>Looked Up</em> (Book 4), and <em>Walked Out</em> (Book 5) \u2014 read as grown-up stories on their own.") + '</div>'
+    : "";
+  root.innerHTML = adultNote + html;
   if (ft) document.querySelectorAll(".ri-card").forEach(c => c.classList.add("open"));
 }
 
@@ -5193,8 +5247,8 @@ const ECO_DETAIL_ES = {
 };
 
 function ecoNavigate(act) {
-  if (act === "library") { openGuideSub("library"); ecoScrollToTabs(); }
-  else if (act === "resindex") { openGuideSub("resindex"); ecoScrollToTabs(); }
+  if (act === "library") { openGuideSub("library"); }
+  else if (act === "resindex") { openGuideSub("resindex"); }
   else if (act === "survey") startChoose();
   else if (act === "admin") openAdmin();
 }
@@ -5248,6 +5302,14 @@ function initGuideExtras() {
       if (tab.dataset.guide === "ecosystem") initEcoInteractive();
       if (tab.dataset.guide === "library") renderLibrary();
       if (typeof aogSetHash === "function") aogSetHash(AOG_SUB_TO_HASH[tab.dataset.guide] || tab.dataset.guide);
+      if (sec) {
+        requestAnimationFrame(function () {
+          var tb = document.querySelector(".topbar");
+          var off = (tb ? tb.offsetHeight : 70) + 14;
+          var top = sec.getBoundingClientRect().top + window.pageYOffset - off;
+          window.scrollTo({ top: Math.max(0, top), behavior: "smooth" });
+        });
+      }
     });
   });
 
