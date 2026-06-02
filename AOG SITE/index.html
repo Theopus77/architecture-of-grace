@@ -1075,7 +1075,8 @@ tr:hover td { background: var(--paper); }
 }
 .home-item:last-child { border-bottom: none; }
 .home-item.has-books { cursor: pointer; }
-.home-item .hi-toggle { display:inline-flex; align-items:center; gap:4px; margin-left:10px; font-size:11px; font-weight:600; letter-spacing:.04em; color:var(--gold); white-space:nowrap; vertical-align:middle; }
+.home-item .hi-toggle { display:inline-flex; align-items:center; gap:5px; margin-left:10px; font-size:11px; font-weight:700; letter-spacing:.03em; color:var(--gold-deep,#9a6f24); white-space:nowrap; vertical-align:middle; background:#FBF1D6; border:1px solid var(--gold); border-radius:999px; padding:3px 11px; }
+.home-item.has-books:hover .hi-toggle { background:#F3E6C6; }
 .home-item .hi-chev { display:inline-block; transition:transform .2s; }
 .home-item.open .hi-chev { transform:rotate(180deg); }
 .home-item-detail { grid-column:1 / -1; display:none; margin:12px 0 2px; padding:14px 16px; background:#FBF7EC; border:1px solid var(--rule); border-left:3px solid var(--gold); border-radius:9px; }
@@ -1205,21 +1206,39 @@ tr:hover td { background: var(--paper); }
 .yr-row + .yr-row{ border-top:1px solid #efe6d2; }
 .yr-band{ flex:0 0 auto; min-width:52px; font-family:var(--font-serif); font-weight:600; color:var(--navy); font-size:14.5px; }
 .yr-links{ display:flex; align-items:center; gap:4px; flex-wrap:wrap; }
-.yr-link{ text-decoration:none; color:var(--navy); font-size:12.5px; font-weight:600; padding:3px 8px; border-radius:6px; }
+.yr-link{ text-decoration:none; color:var(--navy); font-size:12.5px; font-weight:700; padding:4px 10px; border-radius:999px; border:1px solid var(--gold,#cdbfa3); background:#FCF6E6; }
 .yr-link:hover{ background:#F3E6C6; }
-.yr-link.yr-lib{ color:var(--ink-soft,#6b6256); font-weight:500; }
-.yr-dot{ color:var(--rule,#cdbfa3); }
+.yr-link.yr-lib{ color:var(--ink-soft,#6b6256); font-weight:600; }
+.yr-dot{ display:none; }
 /* always-available accessibility door */
 .rc-access{ margin-top:18px; padding-top:13px; border-top:1px solid var(--rule,#e7ddc9); font-size:13px; line-height:1.5; }
 .rc-access-q{ color:var(--ink-soft,#6b6256); }
 .rc-access-link{ color:var(--navy); font-weight:700; text-decoration:none; border-bottom:1px solid var(--gold); white-space:nowrap; }
 .rc-access-link:hover{ color:var(--gold-deep,#9a6f24); }
 /* clickable chapter chips inside the per-item "In the books" detail */
-.home-item a.hid-link{ display:block; text-decoration:none; color:var(--ink); padding:7px 10px; margin:-3px -4px;
-  border-radius:8px; transition:background .12s; }
-.home-item a.hid-link:hover{ background:#FBF1D6; }
-.home-item .hid-open{ display:inline-block; margin-left:8px; font-size:10.5px; font-weight:800; letter-spacing:.04em;
-  color:var(--gold-deep,#9a6f24); white-space:nowrap; }
+.home-item a.hid-link{ display:flex; align-items:center; justify-content:space-between; gap:10px; text-decoration:none; color:var(--navy); padding:9px 12px; margin:3px 0;
+  border:1px solid var(--rule); border-radius:8px; background:#fff; transition:background .12s, border-color .12s; }
+.home-item a.hid-link:hover{ background:#FBF1D6; border-color:var(--gold); }
+.home-item .hid-open{ display:inline-flex; align-items:center; gap:3px; flex:0 0 auto; font-size:11px; font-weight:800; letter-spacing:.03em;
+  color:#fff; background:var(--gold-deep,#9a6f24); padding:5px 12px; border-radius:999px; white-space:nowrap; }
+/* Voices — public comment wall */
+.voi-form{ background:#FCF8EE; border:1px solid var(--rule,#e7ddc9); border-radius:14px; padding:18px 18px 16px; margin-bottom:26px; }
+.voi-row{ display:flex; gap:10px; flex-wrap:wrap; margin-bottom:10px; }
+.voi-input{ font-family:var(--font-sans); font-size:14px; color:var(--navy); background:#fff; border:1px solid var(--rule,#cdbfa3); border-radius:9px; padding:10px 12px; }
+.voi-row .voi-input{ flex:1; min-width:160px; }
+.voi-select{ cursor:pointer; }
+.voi-textarea{ width:100%; resize:vertical; line-height:1.5; }
+.voi-formfoot{ display:flex; align-items:center; justify-content:space-between; gap:12px; margin-top:10px; flex-wrap:wrap; }
+.voi-count{ font-size:12px; color:var(--ink-soft,#6b6256); }
+.voi-status{ font-size:13px; margin:8px 0 0; line-height:1.5; }
+.voi-fineprint{ font-size:11.5px; color:var(--ink-soft,#6b6256); line-height:1.5; margin:10px 0 0; }
+.voi-wall{ display:flex; flex-direction:column; gap:12px; }
+.voi-card{ background:#fff; border:1px solid var(--rule,#e7ddc9); border-left:3px solid var(--gold); border-radius:11px; padding:14px 16px; }
+.voi-card .voi-meta{ font-size:12px; color:var(--ink-soft,#6b6256); margin-bottom:5px; }
+.voi-card .voi-who{ font-weight:700; color:var(--navy); }
+.voi-card .voi-role{ display:inline-block; font-size:10.5px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:var(--gold-deep,#9a6f24); background:#FBF1D6; border:1px solid var(--gold); border-radius:999px; padding:1px 8px; margin-left:6px; }
+.voi-card .voi-body{ font-family:var(--font-serif); font-size:15.5px; color:var(--navy); line-height:1.5; }
+.voi-empty{ font-size:13.5px; color:var(--ink-soft,#6b6256); font-style:italic; }
 .home-conversation {
   background: linear-gradient(180deg, #FBF6E8 0%, var(--cream-deep) 100%);
   border-left: 5px solid var(--gold);
@@ -2881,6 +2900,7 @@ function toggleTheme(){
         <button class="guide-subtab active" data-guide="docs" data-i18n="g_tab_docs">Documentation</button>
         <button class="guide-subtab" data-guide="resindex" data-i18n="g_tab_resindex">Resource Index</button>
         <button class="guide-subtab" data-guide="library" data-i18n="g_tab_library">Downloads</button>
+        <button class="guide-subtab" data-guide="voices" data-i18n="g_tab_voices">Voices</button>
       </div>
 
       <div class="guide-about-feature" id="guide-foundation">
@@ -3020,6 +3040,36 @@ function toggleTheme(){
           <div id="libRoot"></div>
         </div>
       </div><!-- /guide-library -->
+
+      <div class="guide-section" id="guide-voices">
+        <div class="table-card" style="padding:28px 32px 32px;">
+          <h3 class="serif" style="font-size:22px; color:var(--navy); margin-bottom:6px;" data-i18n="voi_h">Voices</h3>
+          <p style="font-size:14.5px; line-height:1.6; color:var(--ink-soft); margin-bottom:22px;" data-i18n="voi_intro">Teachers, families, and students &mdash; share a few words about your experience. Posts appear on the wall below for everyone to read.</p>
+
+          <div class="voi-form">
+            <div class="voi-row">
+              <input id="voiName" type="text" maxlength="40" class="voi-input" placeholder="First name (optional)" data-i18n-ph="voi_name_ph" autocomplete="off">
+              <select id="voiRole" class="voi-input voi-select">
+                <option value="Teacher" data-i18n="voi_role_teacher">Teacher</option>
+                <option value="Parent" data-i18n="voi_role_parent">Parent</option>
+                <option value="Student" data-i18n="voi_role_student">Student</option>
+                <option value="Counselor" data-i18n="voi_role_counselor">Counselor</option>
+                <option value="Administrator" data-i18n="voi_role_admin">Administrator</option>
+                <option value="Other" data-i18n="voi_role_other">Other</option>
+              </select>
+            </div>
+            <textarea id="voiMsg" class="voi-input voi-textarea" rows="3" maxlength="300" placeholder="Share your experience&hellip;" data-i18n-ph="voi_msg_ph"></textarea>
+            <div class="voi-formfoot">
+              <span id="voiCount" class="voi-count">0 / 300</span>
+              <button class="btn" id="voiPost" data-i18n="voi_post">Post to the wall</button>
+            </div>
+            <p id="voiStatus" class="voi-status" style="min-height:18px;"></p>
+            <p class="voi-fineprint" data-i18n="voi_fine">Please don&rsquo;t include emails, phone numbers, links, or last names &mdash; posts with contact details are blocked automatically to keep the wall safe.</p>
+          </div>
+
+          <div id="voicesList" class="voi-wall"></div>
+        </div>
+      </div><!-- /guide-voices -->
 
 
 
@@ -3628,6 +3678,19 @@ const I18N_UI = {
   w_reassure:  { en: "A private 4\u201310 minute reflection \u00b7 no wrong answers \u00b7 nothing leaves this device unless you choose.", es: "Una reflexi\u00f3n privada de 4\u201310 minutos \u00b7 sin respuestas incorrectas \u00b7 nada sale de este dispositivo a menos que t\u00fa lo decidas." },
   w_choose:    { en: "Choose how you want to take it", es: "Elige c\u00f3mo quieres hacerla" },
   w_choose_sub:{ en: "Same 18 questions either way \u2014 take the quick version, or a more thorough one with short written reflections.", es: "Las mismas 18 preguntas en ambas \u2014 haz la versi\u00f3n r\u00e1pida, o una m\u00e1s a fondo con breves reflexiones escritas." },
+  g_tab_voices:{ en: "Voices", es: "Voces" },
+  voi_h:       { en: "Voices", es: "Voces" },
+  voi_intro:   { en: "Teachers, families, and students \u2014 share a few words about your experience. Posts appear on the wall below for everyone to read.", es: "Maestros, familias y estudiantes: comparte unas palabras sobre tu experiencia. Las publicaciones aparecen en el muro de abajo para que todos las lean." },
+  voi_name_ph: { en: "First name (optional)", es: "Nombre (opcional)" },
+  voi_msg_ph:  { en: "Share your experience\u2026", es: "Comparte tu experiencia\u2026" },
+  voi_post:    { en: "Post to the wall", es: "Publicar en el muro" },
+  voi_fine:    { en: "Please don\u2019t include emails, phone numbers, links, or last names \u2014 posts with contact details are blocked automatically to keep the wall safe.", es: "Por favor no incluyas correos, tel\u00e9fonos, enlaces ni apellidos \u2014 las publicaciones con datos de contacto se bloquean autom\u00e1ticamente para mantener el muro seguro." },
+  voi_role_teacher:{ en: "Teacher", es: "Maestro/a" },
+  voi_role_parent:{ en: "Parent", es: "Madre/Padre" },
+  voi_role_student:{ en: "Student", es: "Estudiante" },
+  voi_role_counselor:{ en: "Counselor", es: "Consejero/a" },
+  voi_role_admin:{ en: "Administrator", es: "Administrador/a" },
+  voi_role_other:{ en: "Other", es: "Otro" },
   m_rapid_ey:  { en: "The Universal Check-In \u00b7 population view", es: "Universal Check-In \u00b7 vista de grupo" },
   m_rapid_t:   { en: "Quick", es: "R\u00e1pida" },
   m_rapid_time:{ en: "~4 minutes", es: "~4 minutos" },
@@ -5082,6 +5145,8 @@ document.addEventListener("DOMContentLoaded", () => {
   var _emr = $("#btnEmailMyResults"); if (_emr) _emr.addEventListener("click", emailMyResults);
   var _pmrT = $("#btnPrintMyResultsTop"); if (_pmrT) _pmrT.addEventListener("click", printMyResults);
   var _emrT = $("#btnEmailMyResultsTop"); if (_emrT) _emrT.addEventListener("click", emailMyResults);
+  var _vpost = $("#voiPost"); if (_vpost) _vpost.addEventListener("click", voicesPost);
+  var _vmsg = $("#voiMsg"); if (_vmsg) _vmsg.addEventListener("input", voicesCount);
 
   // Admin tabs
   $$(".tab").forEach(tab => {
@@ -5247,6 +5312,7 @@ function activateGuideSection(name, doScroll) {
   }
   if (name === "ecosystem" && typeof initEcoInteractive === "function") initEcoInteractive();
   if (name === "library" && typeof renderLibrary === "function") renderLibrary();
+  if (name === "voices" && typeof voicesLoad === "function") voicesLoad();
   if (typeof aogSetHash === "function") aogSetHash(AOG_SUB_TO_HASH[name] || name);
   if (sec && doScroll) {
     requestAnimationFrame(function () {
@@ -5263,8 +5329,88 @@ function openGuideSub(name, scroll) {
   activateGuideSection(name, scroll !== false);
 }
 
+// ---- Voices: public comment wall (reads/writes the Comments tab via the script) ----
+// Client-side filter MIRRORS the server's _blockReason so the person gets instant
+// feedback; the server enforces the same rules as the real backstop.
+function voiceBlockReason(text) {
+  var t = String(text || "");
+  if (/[\w.+-]+@[\w-]+\.[\w.-]+/.test(t)) return "email";
+  if (/(https?:\/\/|www\.)/i.test(t)) return "link";
+  if (/[\w-]+\.(com|net|org|io|co|edu|gov|us|me|app|xyz|info|biz|tv|ly)\b/i.test(t)) return "link";
+  if (/(?:\d[\s().+-]?){7,}/.test(t)) return "phone";
+  var bad = ["fuck","shit","bitch","cunt","asshole","nigger","nigga","faggot","fag","retard","whore","slut","dick","pussy","bastard","kys"];
+  var low = " " + t.toLowerCase().replace(/[^a-z\s]/g, " ") + " ";
+  for (var i = 0; i < bad.length; i++) { if (low.indexOf(" " + bad[i] + " ") >= 0) return "blocked"; }
+  return "";
+}
+function voicesCount() {
+  var el = document.getElementById("voiMsg"), c = document.getElementById("voiCount");
+  if (el && c) c.textContent = el.value.length + " / 300";
+}
+function voicesRender(rows) {
+  var list = document.getElementById("voicesList");
+  if (!list) return;
+  if (!rows.length) { list.innerHTML = '<p class="voi-empty">' + DT("No posts yet \u2014 be the first to share.", "A\u00fan no hay publicaciones \u2014 s\u00e9 el primero en compartir.") + '</p>'; return; }
+  var rl = { Teacher: DT("Teacher","Maestro/a"), Parent: DT("Parent","Madre/Padre"), Student: DT("Student","Estudiante"), Counselor: DT("Counselor","Consejero/a"), Administrator: DT("Administrator","Administrador/a"), Other: DT("Other","Otro") };
+  var html = "";
+  rows.forEach(function (c) {
+    var who = (c.name && String(c.name).trim()) ? escapeHtml(String(c.name).trim()) : DT("Anonymous", "An\u00f3nimo");
+    var when = (typeof fmtNiceDate === "function") ? fmtNiceDate(c.timestamp) : "";
+    html += '<div class="voi-card">' +
+      '<div class="voi-meta"><span class="voi-who">' + who + '</span>' +
+      '<span class="voi-role">' + escapeHtml(rl[c.role] || rl.Other) + '</span>' +
+      (when ? ' \u00b7 ' + escapeHtml(when) : '') + '</div>' +
+      '<div class="voi-body">' + escapeHtml(String(c.message || "")) + '</div>' +
+    '</div>';
+  });
+  list.innerHTML = html;
+}
+function voicesLoad() {
+  var list = document.getElementById("voicesList");
+  if (!list) return;
+  if (!SCHOOL_SYNC_URL) { list.innerHTML = '<p class="voi-empty">' + DT("The wall isn\u2019t set up yet.", "El muro a\u00fan no est\u00e1 configurado.") + '</p>'; return; }
+  list.innerHTML = '<p class="voi-empty">' + DT("Loading\u2026", "Cargando\u2026") + '</p>';
+  var url = SCHOOL_SYNC_URL + (SCHOOL_SYNC_URL.indexOf("?") >= 0 ? "&" : "?") + "comments=1";
+  fetch(url, { method: "GET" })
+    .then(function (r) { return r.json(); })
+    .then(function (data) { voicesRender((data && data.comments) || []); })
+    .catch(function () { list.innerHTML = '<p class="voi-empty">' + DT("Couldn\u2019t load the wall right now.", "No se pudo cargar el muro ahora.") + '</p>'; });
+}
+function voicesPost() {
+  var status = document.getElementById("voiStatus");
+  var msgEl = document.getElementById("voiMsg"), nameEl = document.getElementById("voiName"), roleEl = document.getElementById("voiRole"), btn = document.getElementById("voiPost");
+  function say(m, c) { if (status) { status.textContent = m; status.style.color = c || "var(--ink-soft)"; } }
+  if (!SCHOOL_SYNC_URL) { say(DT("The wall isn\u2019t connected yet.", "El muro a\u00fan no est\u00e1 conectado."), "var(--red)"); return; }
+  var msg = (msgEl && msgEl.value || "").replace(/\s+/g, " ").trim();
+  var name = (nameEl && nameEl.value || "").trim();
+  var role = (roleEl && roleEl.value) || "Other";
+  if (!msg) { say(DT("Please write something first.", "Escribe algo primero."), "var(--red)"); return; }
+  var reason = voiceBlockReason(msg) || voiceBlockReason(name);
+  if (reason) {
+    var rm = { email: DT("Please remove the email address.", "Quita la direcci\u00f3n de correo."),
+               link:  DT("Links aren\u2019t allowed on the wall.", "No se permiten enlaces en el muro."),
+               phone: DT("Please remove the phone number.", "Quita el n\u00famero de tel\u00e9fono."),
+               blocked: DT("Let\u2019s keep it kind \u2014 please reword that.", "Mantengamos la amabilidad \u2014 reescribe eso.") };
+    say(rm[reason] || DT("That can\u2019t be posted.", "Eso no se puede publicar."), "var(--red)");
+    return;
+  }
+  if (btn) btn.disabled = true;
+  say(DT("Posting\u2026", "Publicando\u2026"));
+  var body = JSON.stringify({ action: "comment_add", name: name, role: role, message: msg });
+  fetch(SCHOOL_SYNC_URL, { method: "POST", mode: "no-cors", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: body })
+    .then(function () {
+      if (msgEl) msgEl.value = ""; voicesCount();
+      say(DT("Thanks \u2014 posted to the wall.", "Gracias \u2014 publicado en el muro."), "#1E6B45");
+      setTimeout(function () { voicesLoad(); if (btn) btn.disabled = false; }, 1000);
+    })
+    .catch(function () {
+      say(DT("Couldn\u2019t post right now \u2014 try again.", "No se pudo publicar ahora \u2014 int\u00e9ntalo de nuevo."), "var(--red)");
+      if (btn) btn.disabled = false;
+    });
+}
+
 // ---- Deep-link routing: shareable section URLs / QR codes (#downloads, #resource-index, etc.) ----
-const AOG_SUB_TO_HASH = { docs:"documentation", resindex:"resource-index", library:"downloads" };
+const AOG_SUB_TO_HASH = { docs:"documentation", resindex:"resource-index", library:"downloads", voices:"voices" };
 function aogSetHash(h) {
   try { history.replaceState(null, "", h ? ("#" + h) : (location.pathname + location.search)); } catch (e) {}
 }
