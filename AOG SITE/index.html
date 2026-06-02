@@ -682,6 +682,14 @@ body::before {
   box-shadow: 0 0 0 3px rgba(27,58,95,.08);
 }
 .reflection-card .small { margin-top: 8px; }
+.choice-chips{ display:flex; flex-wrap:wrap; gap:10px; margin:4px 0; }
+.choice-chip{ font-family:inherit; font-size:15px; line-height:1; padding:11px 16px; border-radius:999px; border:1.5px solid var(--rule); background:#fff; color:var(--ink); cursor:pointer; transition:background .15s ease,border-color .15s ease,color .15s ease; -webkit-appearance:none; appearance:none; }
+.choice-chip:hover{ border-color:var(--gold); }
+.choice-chip.on{ background:var(--navy); color:#fff; border-color:var(--navy); }
+:root[data-theme="dark"] .choice-chip{ background:#0E1822; border-color:var(--rule); color:var(--ink); }
+:root[data-theme="dark"] .choice-chip:hover{ border-color:var(--gold); }
+:root[data-theme="dark"] .choice-chip.on{ background:var(--gold); color:var(--navy); border-color:var(--gold); }
+@media (max-width:600px){ .choice-chip{ font-size:16px; padding:13px 16px; } }
 
 /* Thanks / Farewell */
 .thanks-stage { text-align: center; padding: 80px 20px; }
@@ -1967,7 +1975,7 @@ body{ transition:background .25s ease, color .25s ease; }
 (function(){
   var t = "light";
   try {
-    var saved = localStorage.getItem("aog.theme");
+    var saved = sessionStorage.getItem("aog.theme");
     if (saved === "dark" || saved === "light") t = saved;
     else if (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches) t = "dark";
   } catch (e) {}
@@ -1977,7 +1985,7 @@ function applyTheme(t){ document.documentElement.setAttribute("data-theme", t ==
 function toggleTheme(){
   var cur = document.documentElement.getAttribute("data-theme") === "dark" ? "dark" : "light";
   var next = cur === "dark" ? "light" : "dark";
-  try { localStorage.setItem("aog.theme", next); } catch (e) {}
+  try { sessionStorage.setItem("aog.theme", next); } catch (e) {}
   applyTheme(next);
 }
 </script>
@@ -2380,7 +2388,7 @@ function toggleTheme(){
       <div class="domain-chip" id="reflectionDomainChip"></div>
       <h2 id="reflectionTitle"></h2>
       <p class="prompt" id="reflectionPrompt"></p>
-      <textarea id="reflectionInput" placeholder="Optional. Write as much or as little as you want." data-i18n-ph="r_ph"></textarea>
+      <div id="reflectionOptions" class="choice-chips"></div>
       <div class="small" data-i18n="r_priv">This is private to you. It is saved with your results but only shown to a trusted adult who can help. You can skip it.</div>
     </div>
 
@@ -2417,12 +2425,12 @@ function toggleTheme(){
     <div class="hero" style="padding-top:48px;">
       <div class="eyebrow" data-i18n="c_eyebrow">A closing reflection &middot; just for you</div>
       <h1 class="display display-lg" data-i18n="c_h1">Name something true about yourself.</h1>
-      <p class="lede" data-i18n="c_lede">Before you go, write one or two positive words you would use to describe yourself today.</p>
+      <p class="lede" data-i18n="c_lede">Before you go, tap one or two positive words that describe you today.</p>
     </div>
     <div class="form-section">
       <div class="field">
-        <label data-i18n="c_label">A positive word about me</label>
-        <input type="text" id="closingInput" maxlength="60" autocomplete="off" placeholder="kind, curious, strong, funny, patient..." data-i18n-ph="c_ph">
+        <label data-i18n="c_label">Tap the words that fit</label>
+        <div id="closingOptions" class="choice-chips"></div>
       </div>
     </div>
     <div class="nav-row">
@@ -2515,8 +2523,8 @@ function toggleTheme(){
     <div class="tabs">
       <button class="tab active" data-tab="overview" data-dl="dl_t_overview">Overview</button>
       <button class="tab" data-tab="distribute" data-dl="dl_t_distribute">Distribute</button>
-      <button class="tab" data-tab="students" data-dl="dl_t_students">Students</button>
-      <button class="tab" data-tab="home" data-dl="dl_t_home">Home View</button>
+      <button class="tab" data-tab="students" data-dl="dl_t_students">Class trends</button>
+      <button class="tab" data-tab="home" data-dl="dl_t_home">Family view</button>
       <button class="tab" data-tab="growth" data-dl="dl_t_growth">Growth</button>
       <button class="tab" data-tab="export" data-dl="dl_t_export">Export</button>
     </div>
@@ -2583,7 +2591,7 @@ function toggleTheme(){
       </div>
       <div class="table-card">
         <div class="table-card-head">
-          <h3 data-dl="dl_stu_h3">All responses</h3>
+          <h3 data-dl="dl_stu_h3">Class trends</h3>
           <span class="small" id="studentCount"></span>
         </div>
         <div class="table-wrap" id="studentTable"></div>
@@ -2592,18 +2600,8 @@ function toggleTheme(){
 
     <div class="tab-panel" id="panel-home">
       <div class="section-head">
-        <h2 data-dl="dl_home_h1">Home View &middot; Per-person report</h2>
-        <div class="small" data-dl="dl_home_sub">The instrument&rsquo;s real depth. Shows each item, the answer, intensity, written reflections, and a conversation guide for the people closest to this person.</div>
-      </div>
-      <div class="filter-bar">
-        <select id="homeFilterStudent"><option value="" data-dl="dl_opt_selperson">Select a person to view&hellip;</option></select>
-        <select id="homeFilterWindow">
-          <option value="" data-dl="dl_opt_recentwin">Most recent window</option>
-          <option value="Fall" data-dl="dl_opt_fall">Fall (Sep&ndash;Nov)</option>
-          <option value="Winter" data-dl="dl_opt_winter">Winter (Dec&ndash;Feb)</option>
-          <option value="Spring" data-dl="dl_opt_spring">Spring (Mar&ndash;May)</option>
-          <option value="Summer" data-dl="dl_opt_summer">Summer (Jun&ndash;Aug)</option>
-        </select>
+        <h2 data-dl="dl_home_h1">Family &amp; adult results</h2>
+        <div class="small" data-dl="dl_home_sub">Where each person&rsquo;s full report lives &mdash; shown privately to families and adults, not on this dashboard.</div>
       </div>
       <div id="homeReport"></div>
     </div>
@@ -2611,16 +2609,10 @@ function toggleTheme(){
     <div class="tab-panel" id="panel-growth">
       <div class="section-head">
         <h2 data-dl="dl_grw_h1">Growth across windows</h2>
-        <div class="small" data-dl="dl_grw_sub">Composite scores Fall &rarr; Winter &rarr; Spring &rarr; Summer per person.</div>
+        <div class="small" data-dl="dl_grw_sub">The class average composite, Fall &rarr; Winter &rarr; Spring &rarr; Summer. No individual student is shown.</div>
       </div>
       <div class="filter-bar">
         <select id="growthFilterGrade"><option value="" data-dl="dl_opt_allgrades">All Grades</option></select>
-        <select id="growthSort">
-          <option value="delta" data-dl="dl_opt_sortgain">Sort by growth (largest gain)</option>
-          <option value="deltaDesc" data-dl="dl_opt_sortdrop">Sort by decline (largest drop)</option>
-          <option value="composite" data-dl="dl_opt_sortcomp">Sort by latest composite (lowest)</option>
-          <option value="id" data-dl="dl_opt_sortid">Sort by ID</option>
-        </select>
       </div>
       <div class="table-card" style="padding:0;"><div id="growthList" style="padding:24px;"></div></div>
     </div>
@@ -2731,26 +2723,26 @@ function toggleTheme(){
         <div class="kpi" style="cursor:pointer;" onclick="exportFullCSV()">
           <div class="kpi-accent accent-navy"></div>
           <div class="kpi-label" data-dl="dl_exp_label">Export</div>
-          <div class="kpi-value serif" style="font-size:22px; line-height:1.3;"><span data-dl="dl_exp_full">Full responses</span></div>
-          <div class="kpi-sub" data-dl="dl_exp_full_sub">Every item, intensity, reflection, all windows.</div>
+          <div class="kpi-value serif" style="font-size:22px; line-height:1.3;"><span data-dl="dl_exp_full">Class summary</span></div>
+          <div class="kpi-sub" data-dl="dl_exp_full_sub">Band shares &amp; domain averages, by grade and window.</div>
         </div>
         <div class="kpi" style="cursor:pointer;" onclick="exportRosterCSV()">
           <div class="kpi-accent accent-amber"></div>
           <div class="kpi-label" data-dl="dl_exp_label">Export</div>
-          <div class="kpi-value serif" style="font-size:22px; line-height:1.3;"><span data-dl="dl_exp_roster">Tier roster</span></div>
-          <div class="kpi-sub" data-dl="dl_exp_roster_sub">Flagged students only.</div>
+          <div class="kpi-value serif" style="font-size:22px; line-height:1.3;"><span data-dl="dl_exp_roster">Band distribution</span></div>
+          <div class="kpi-sub" data-dl="dl_exp_roster_sub">How many in each band, by window.</div>
         </div>
         <div class="kpi" style="cursor:pointer;" onclick="exportGrowthCSV()">
           <div class="kpi-accent accent-gold"></div>
           <div class="kpi-label" data-dl="dl_exp_label">Export</div>
-          <div class="kpi-value serif" style="font-size:22px; line-height:1.3;"><span data-dl="dl_exp_growth">Growth report</span></div>
-          <div class="kpi-sub" data-dl="dl_exp_growth_sub">Fall / Winter / Spring / Summer deltas per person.</div>
+          <div class="kpi-value serif" style="font-size:22px; line-height:1.3;"><span data-dl="dl_exp_growth">Class growth</span></div>
+          <div class="kpi-sub" data-dl="dl_exp_growth_sub">Class average composite, Fall / Winter / Spring / Summer.</div>
         </div>
       </div>
 
       <div class="table-card" style="padding:24px 28px; margin-top:8px;">
         <h3 class="serif" style="font-size:18px; color:var(--navy); margin-bottom:8px;" data-dl="dl_exp_datalives">Where your data lives</h3>
-        <p class="small" id="dataLivesCopy" style="margin:0;">Every response is saved privately in this browser, on this computer only. Use the exports above to keep your own backup copy &mdash; that CSV is your record.</p>
+        <p class="small" id="dataLivesCopy" style="margin:0;">Responses are saved privately in this browser for this session only, on this computer. The exports above are <strong>class-level summaries</strong> &mdash; they never include student names, individual scores, or written responses.</p>
       </div>
 
       <div class="section-head" style="margin-top:32px;"><h2 data-dl="dl_exp_reset">Reset</h2></div>
@@ -3011,7 +3003,7 @@ function toggleTheme(){
               <div class="lib-path-ey" data-i18n="dl_path_f_ey">For families</div>
               <div class="serif lib-path-t" data-i18n="dl_path_f_t">Buy books &amp; materials for home</div>
               <p class="lib-path-b" data-i18n-html="dl_path_f_b">Purchase individual books, packs, and home editions for the kitchen table. Free previews are always open below; paid items show a <strong>Buy</strong> button.</p>
-              <a class="lib-path-btn lib-path-gold" id="storeTopBtn" href="#" data-i18n="dl_path_f_btn">Visit the family store &rarr;</a>
+              <a class="lib-path-btn lib-path-gold" id="storeTopBtn" href="#" data-i18n="dl_path_f_btn">Ask about a family copy &rarr;</a>
             </div>
           </div>
 
@@ -3388,6 +3380,106 @@ const REFLECTIONS_ADULT = {
   ]
 };
 
+// ============================================================
+// STRUCTURED CHOICE BANKS  (pilot-safe: replace free-text reflections + closing word)
+// Students/participants choose words; no open text is ever entered.
+// Stored as pipe-joined value keys (e.g. "calm|tired"); decodeChoices() renders labels.
+// ============================================================
+const REFLECT_OPTIONS = {
+  A: [
+    {v:"calm",en:"Calm",es:"Tranquilo/a"},
+    {v:"okay",en:"Okay",es:"Bien"},
+    {v:"tired",en:"Tired",es:"Cansado/a"},
+    {v:"tense",en:"Tense or tight",es:"Tenso/a"},
+    {v:"restless",en:"Restless",es:"Inquieto/a"},
+    {v:"heavy",en:"Heavy or low",es:"Pesado/a o bajo/a"},
+    {v:"worried",en:"Worried",es:"Preocupado/a"},
+    {v:"overwhelmed",en:"Overwhelmed",es:"Abrumado/a"}
+  ],
+  B: [
+    {v:"kindself",en:"Kind to myself",es:"Amable conmigo"},
+    {v:"patient",en:"Patient with myself",es:"Paciente conmigo"},
+    {v:"cheer",en:"I cheer myself on",es:"Me animo"},
+    {v:"tryagain",en:"I try again",es:"Lo intento de nuevo"},
+    {v:"hardself",en:"Hard on myself",es:"Duro/a conmigo"},
+    {v:"critical",en:"Critical",es:"Cr\u00edtico/a"},
+    {v:"frustrated",en:"Frustrated",es:"Frustrado/a"},
+    {v:"giveup",en:"I want to give up",es:"Quiero rendirme"}
+  ],
+  C: [
+    {v:"supported",en:"Supported",es:"Apoyado/a"},
+    {v:"connected",en:"Connected",es:"Conectado/a"},
+    {v:"safe",en:"Safe",es:"Seguro/a"},
+    {v:"close",en:"Close to someone",es:"Cercano/a a alguien"},
+    {v:"lonely",en:"Lonely",es:"Solo/a"},
+    {v:"leftout",en:"Left out",es:"Excluido/a"},
+    {v:"tension",en:"Tension with someone",es:"Tensi\u00f3n con alguien"},
+    {v:"missing",en:"Missing someone",es:"Extra\u00f1o a alguien"}
+  ]
+};
+const CLOSING_OPTIONS = [
+  {v:"kind",en:"Kind",es:"Amable"},
+  {v:"curious",en:"Curious",es:"Curioso/a"},
+  {v:"strong",en:"Strong",es:"Fuerte"},
+  {v:"funny",en:"Funny",es:"Divertido/a"},
+  {v:"patient",en:"Patient",es:"Paciente"},
+  {v:"caring",en:"Caring",es:"Cari\u00f1oso/a"},
+  {v:"brave",en:"Brave",es:"Valiente"},
+  {v:"creative",en:"Creative",es:"Creativo/a"},
+  {v:"honest",en:"Honest",es:"Honesto/a"},
+  {v:"hardworking",en:"Hard-working",es:"Trabajador/a"},
+  {v:"friendly",en:"Friendly",es:"Amistoso/a"},
+  {v:"calm",en:"Calm",es:"Tranquilo/a"}
+];
+const CHOICE_LOOKUP = (function(){
+  const m = {};
+  ["A","B","C"].forEach(function(d){ REFLECT_OPTIONS[d].forEach(function(o){ m[o.v]=o; }); });
+  CLOSING_OPTIONS.forEach(function(o){ m[o.v]=o; });
+  return m;
+})();
+function decodeChoices(str, L){
+  if (!str) return "";
+  L = (L === "es") ? "es" : "en";
+  return String(str).split("|").filter(Boolean).map(function(v){
+    return CHOICE_LOOKUP[v] ? CHOICE_LOOKUP[v][L] : v;
+  }).join(", ");
+}
+function renderReflectChips(domain){
+  const host = document.getElementById("reflectionOptions");
+  if (!host) return;
+  const opts = REFLECT_OPTIONS[domain] || [];
+  const sel = (reflections[reflectionIdx]||"").split("|").filter(Boolean);
+  host.innerHTML = opts.map(function(o){
+    const on = sel.indexOf(o.v) >= 0;
+    const label = (surveyLang === "es") ? o.es : o.en;
+    return '<button type="button" class="choice-chip'+(on?' on':'')+'" data-v="'+o.v+'" onclick="toggleReflectChip(this)">'+escapeHtml(label)+'</button>';
+  }).join("");
+}
+function toggleReflectChip(btn){
+  const v = btn.getAttribute("data-v");
+  let sel = (reflections[reflectionIdx]||"").split("|").filter(Boolean);
+  const i = sel.indexOf(v);
+  if (i >= 0) sel.splice(i,1); else sel.push(v);
+  reflections[reflectionIdx] = sel.join("|");
+  btn.classList.toggle("on");
+  if (typeof saveDraft === "function") saveDraft("reflection");
+}
+function renderClosing(){
+  const host = document.getElementById("closingOptions");
+  if (!host) return;
+  host.innerHTML = CLOSING_OPTIONS.map(function(o){
+    const on = closingSel.indexOf(o.v) >= 0;
+    const label = (surveyLang === "es") ? o.es : o.en;
+    return '<button type="button" class="choice-chip'+(on?' on':'')+'" data-v="'+o.v+'" onclick="toggleClosingChip(this)">'+escapeHtml(label)+'</button>';
+  }).join("");
+}
+function toggleClosingChip(btn){
+  const v = btn.getAttribute("data-v");
+  const i = closingSel.indexOf(v);
+  if (i >= 0) closingSel.splice(i,1); else closingSel.push(v);
+  btn.classList.toggle("on");
+}
+
 let lang = "en";
 let surveyLang = "en";
 let mode = "depth"; // "depth" or "rapid"
@@ -3427,6 +3519,7 @@ let reflections = ["", "", ""]; // 3 domain reflections
 let reflectionIdx = 0;
 let session = {};
 let closingWord = "";
+let closingSel = [];
 
 const STORAGE_KEY = "aogScreener.v2.results";
 const LANG_KEY = "aogScreener.v2.lang";
@@ -3444,7 +3537,7 @@ const ACCESS_CODE = "educator";
 //   2. Paste the school's Apps Script Web App URL into SCHOOL_SYNC_URL.
 //   3. Paste the same passcode into SCHOOL_SYNC_KEY.
 //   4. The school hosts THIS configured copy, so every device that opens it
-//      writes to the school's own Sheet. localStorage stays the backup.
+//      writes to the school's own Sheet. sessionStorage stays the backup.
 // ============================================================
 const SCHOOL_SYNC_URL = "https://script.google.com/macros/s/AKfycbwmjlZHD5fa_jS9Pvqm4xLnV4ADooJycelkAGO_Y8iv1Fr0EU9xGzR7rzsteWDlsVcKUw/exec";   // e.g. "https://script.google.com/macros/s/AKfy.../exec"
 const SCHOOL_SYNC_KEY = "sky";   // must match the PASSCODE inside the school's Apps Script
@@ -3658,7 +3751,7 @@ const I18N_UI = {
   dl_path_f_ey: { es: 'Para familias' },
   dl_path_f_t: { es: 'Compra libros y materiales para el hogar' },
   dl_path_f_b: { es: 'Compra libros, paquetes y ediciones para el hogar individuales para la mesa de la cocina. Las vistas previas gratuitas siempre están abiertas abajo; los artículos de pago muestran un botón <strong>Comprar</strong>.' },
-  dl_path_f_btn: { es: 'Visitar la tienda para familias →' },
+  dl_path_f_btn: { es: 'Pregunta por una copia para la familia →' },
   lib_intro: { es: "Las vistas previas gratuitas siguen las dos lecciones ancla del programa \u2014 <strong>la identidad</strong> y <strong>el cr\u00edtico interno</strong> \u2014 a medida que crecen a lo largo de los doce a\u00f1os. Todo lo que est\u00e1 debajo de las vistas previas es el programa completo, que se abre para descarga a medida que se publica cada pieza." },
   w_admin_link:{ en: "Educator / Parent access \u2192", es: "Acceso de educador / padre \u2192" },
   w_begin:     { en: "Begin Survey", es: "Comenzar encuesta" },
@@ -3677,8 +3770,8 @@ const I18N_UI = {
   t_btn:       { en: "One more thing \u2192", es: "Una cosa m\u00e1s \u2192" },
   c_eyebrow:   { en: "A closing reflection \u00b7 just for you", es: "Una reflexi\u00f3n final \u00b7 solo para ti" },
   c_h1:        { en: "Name something true about yourself.", es: "Nombra algo verdadero sobre ti." },
-  c_lede:      { en: "Before you go, write one or two positive words you would use to describe yourself today.", es: "Antes de irte, escribe una o dos palabras positivas que usar\u00edas para describirte hoy." },
-  c_label:     { en: "A positive word about me", es: "Una palabra positiva sobre m\u00ed" },
+  c_lede:      { en: "Before you go, tap one or two positive words that describe you today.", es: "Antes de irte, toca una o dos palabras positivas que te describan hoy." },
+  c_label:     { en: "Tap the words that fit", es: "Toca las palabras que te describan" },
   c_ph:        { en: "kind, curious, strong, funny, patient...", es: "amable, curioso, fuerte, divertido, paciente..." },
   c_skip:      { en: "Skip", es: "Omitir" },
   c_save:      { en: "Keep this word", es: "Guardar esta palabra" },
@@ -3774,7 +3867,7 @@ function setLang(newLang) {
   lang = newLang;
   surveyLang = newLang;            // one control drives the whole experience
   try { document.documentElement.setAttribute("lang", newLang); } catch (e) {}
-  localStorage.setItem(LANG_KEY, newLang);
+  sessionStorage.setItem(LANG_KEY, newLang);
   $("#langEn").classList.toggle("active", newLang === "en");
   $("#langEs").classList.toggle("active", newLang === "es");
   applyLang();
@@ -3784,9 +3877,10 @@ function setLang(newLang) {
   if (active) {
     if (active.id === "screen-survey") renderItem();
     else if (active.id === "screen-reflection") {
-      const ta = $("#reflectionInput");
-      if (ta) reflections[reflectionIdx] = ta.value;
       renderReflection();
+    }
+    else if (active.id === "screen-closing") {
+      renderClosing();
     }
   }
   if (typeof ecoRenderDetail === "function" && document.getElementById("ecoDetail")) {
@@ -3840,12 +3934,18 @@ var TOURS = {
     { sel:"#guide-ecosystem",
       title:{en:"The ecosystem map", es:"El mapa del ecosistema"},
       body:{en:"Tap any piece to see how teaching, measuring, and acting connect into one closed loop.", es:"Toca cualquier pieza para ver c\u00f3mo ense\u00f1ar, medir y actuar se conectan en un solo ciclo."} },
-    { sel:".guide-subnav",
-      title:{en:"Three views", es:"Tres vistas"},
-      body:{en:"Documentation explains the program, the Resource Index maps every skill, and Downloads has the files.", es:"Documentaci\u00f3n explica el programa, el \u00cdndice de recursos mapea cada habilidad, y Descargas tiene los archivos."} },
+    { sel:'.guide-subtab[data-guide="docs"]',
+      title:{en:"Documentation", es:"Documentaci\u00f3n"},
+      body:{en:"Start here for the written guide \u2014 what the program is, the four core ideas behind it, and how to put it to work.", es:"Empieza aqu\u00ed por la gu\u00eda escrita \u2014 qu\u00e9 es el programa, las cuatro ideas centrales y c\u00f3mo ponerlo en pr\u00e1ctica."},
+      act:function(){ if (typeof openGuideSub === "function") openGuideSub("docs", false); } },
+    { sel:'.guide-subtab[data-guide="resindex"]',
+      title:{en:"The Resource Index", es:"El \u00cdndice de recursos"},
+      body:{en:"This maps every skill to its lesson, anchor chart, and activity by grade band \u2014 and to the exact chapter in the companion novels. The clearest way to see how it all connects.", es:"Mapea cada habilidad con su lecci\u00f3n, l\u00e1mina y actividad por nivel \u2014 y con el cap\u00edtulo exacto en las novelas. La forma m\u00e1s clara de ver c\u00f3mo todo se conecta."},
+      act:function(){ if (typeof openGuideSub === "function") openGuideSub("resindex", false); } },
     { sel:'.guide-subtab[data-guide="library"]',
-      title:{en:"Free downloads & previews", es:"Descargas y vistas previas gratis"},
-      body:{en:"Open Downloads for preview packs of the charts, worksheets, and scenario cards \u2014 no code needed.", es:"Abre Descargas para vistas previas de las l\u00e1minas, hojas de trabajo y tarjetas de escenarios, sin c\u00f3digo."} },
+      title:{en:"Downloads", es:"Descargas"},
+      body:{en:"Free preview packs of the charts, worksheets, and scenario cards \u2014 plus the buttons to request a license or ask about a family copy. No code needed.", es:"Vistas previas gratis de las l\u00e1minas, hojas de trabajo y tarjetas de escenarios \u2014 m\u00e1s los botones para solicitar una licencia o preguntar por una copia para la familia. Sin c\u00f3digo."},
+      act:function(){ if (typeof openGuideSub === "function") openGuideSub("library", false); } },
   ],
   dash: [
     { sel:null,
@@ -3853,13 +3953,13 @@ var TOURS = {
       body:{en:"Aggregate results, private to this device. A 20-second tour of how to read it.", es:"Resultados agregados, privados en este dispositivo. Un recorrido de 20 segundos para leerlo."} },
     { sel:".tabs",
       title:{en:"Six views", es:"Seis vistas"},
-      body:{en:"Overview, Students, Home View, Growth and more sit across the top.", es:"Resumen, Estudiantes, Vista del hogar, Progreso y m\u00e1s est\u00e1n arriba."} },
+      body:{en:"Overview, Class trends, Family view, Growth and more sit across the top.", es:"Resumen, Tendencias de la clase, Vista familiar, Progreso y m\u00e1s est\u00e1n arriba."} },
     { sel:".filter-bar",
       title:{en:"Filter the group", es:"Filtra el grupo"},
       body:{en:"Narrow by window, grade, or mode anywhere you see these controls.", es:"Filtra por per\u00edodo, grado o modo donde veas estos controles."} },
     { sel:'.tab[data-tab="home"]',
-      title:{en:"Home View", es:"Vista del hogar"},
-      body:{en:"The deepest view \u2014 each person\u2019s report, written reflections, and conversation starters.", es:"La vista m\u00e1s profunda: el informe de cada persona, sus reflexiones y preguntas para conversar."} },
+      title:{en:"Family view", es:"Vista familiar"},
+      body:{en:"Where each person\u2019s full report lives \u2014 shown privately to families and adults, not on this dashboard. For planning, use Class trends.", es:"Donde vive el informe completo de cada persona \u2014 mostrado de forma privada a familias y adultos, no en este panel. Para planificar, usa Tendencias de la clase."} },
     { sel:"#btnDemoData",
       title:{en:"Try demo data", es:"Prueba datos de ejemplo"},
       body:{en:"Load sample check-ins to explore everything safely, then clear them anytime.", es:"Carga check-ins de ejemplo para explorar con seguridad, y bórralos cuando quieras."} },
@@ -3918,6 +4018,7 @@ function tourGoTo(i){
     ? (typeof lang !== "undefined" && lang === "es" ? "Entendido" : "Got it")
     : (typeof lang !== "undefined" && lang === "es" ? "Siguiente" : "Next");
   document.getElementById("tourSkip").textContent = (typeof lang !== "undefined" && lang === "es" ? "Omitir" : "Skip");
+  if (typeof step.act === "function") { try { step.act(); } catch (e) {} }
   var tgt = step.sel ? document.querySelector(step.sel) : null;
   if (tgt && tgt.scrollIntoView) {
     var r0 = tgt.getBoundingClientRect();
@@ -3966,14 +4067,14 @@ function endTour(silent){
   window.removeEventListener("resize", tourReposition);
   window.removeEventListener("scroll", tourReposition, true);
   document.removeEventListener("keydown", tourKey);
-  if (!silent) { try { localStorage.setItem(TOUR_SEEN[_tourKey] || "aog.tour.seen", "1"); } catch (e) {} }
+  if (!silent) { try { sessionStorage.setItem(TOUR_SEEN[_tourKey] || "aog.tour.seen", "1"); } catch (e) {} }
 }
 function maybeStartTour(key){
   key = key || "welcome";
-  try { if (localStorage.getItem(TOUR_SEEN[key]) === "1") return; } catch (e) {}
+  try { if (sessionStorage.getItem(TOUR_SEEN[key]) === "1") return; } catch (e) {}
   var scr = document.getElementById(TOUR_SCREEN[key]);
   if (scr && scr.classList.contains("active")) {
-    try { localStorage.setItem(TOUR_SEEN[key], "1"); } catch (e) {}
+    try { sessionStorage.setItem(TOUR_SEEN[key], "1"); } catch (e) {}
     startTour(key);
   }
 }
@@ -4131,11 +4232,11 @@ function saveDraft(stage){
       responses:responses, intensities:intensities, reflections:reflections,
       current:current, reflectionIdx:(typeof reflectionIdx!=="undefined"?reflectionIdx:0),
       mode:mode, population:population, context:context, surveyLang:surveyLang, ts:Date.now() };
-    localStorage.setItem(DRAFT_KEY, JSON.stringify(d));
+    sessionStorage.setItem(DRAFT_KEY, JSON.stringify(d));
   }catch(e){}
 }
-function clearDraft(){ try{ localStorage.removeItem(DRAFT_KEY); }catch(e){} }
-function getDraft(){ try{ var d=JSON.parse(localStorage.getItem(DRAFT_KEY)||"null"); return (d&&d.session&&d.session.studentId)?d:null; }catch(e){ return null; } }
+function clearDraft(){ try{ sessionStorage.removeItem(DRAFT_KEY); }catch(e){} }
+function getDraft(){ try{ var d=JSON.parse(sessionStorage.getItem(DRAFT_KEY)||"null"); return (d&&d.session&&d.session.studentId)?d:null; }catch(e){ return null; } }
 function resumeDraft(){
   var d=getDraft(); if(!d) return;
   session=d.session;
@@ -4194,17 +4295,18 @@ function renderReflection() {
   $("#reflectionProgressFill").style.width = ((reflectionIdx) / 3 * 100) + "%";
   $("#reflectionDomainChip").textContent = domainLabel;
   $("#reflectionTitle").textContent = r.title;
-  $("#reflectionPrompt").textContent = r.prompt;
-  $("#reflectionInput").value = reflections[reflectionIdx] || "";
+  $("#reflectionPrompt").textContent = (surveyLang === "es")
+    ? "Toca las palabras que reflejen c\u00f3mo te sientes ahora. Puedes elegir varias \u2014 o saltar."
+    : "Tap any words that fit how you feel right now. You can pick more than one \u2014 or skip.";
+  renderReflectChips(r.domain);
   $("#btnReflectionLabel").textContent = (reflectionIdx === 2)
     ? (lang === "es" ? "Terminar" : "Finish")
     : (lang === "es" ? "Siguiente" : "Next");
-  setTimeout(() => $("#reflectionInput").focus(), 200);
   saveDraft("reflection");
 }
 
 function advanceReflection() {
-  reflections[reflectionIdx] = $("#reflectionInput").value.trim();
+  // reflections[reflectionIdx] is kept current by chip toggles
   reflectionIdx++;
   if (reflectionIdx >= 3) {
     submitFinal();
@@ -4290,7 +4392,7 @@ async function submitFinal() {
 // A device opened at the bare URL stays a private local island.
 function syncDestinationConfigured() {
   if (!SCHOOL_SYNC_URL) return false; // local-only copy → never sync anywhere
-  if (localStorage.getItem("aog.sync.enabled") === "1") return true;
+  if (sessionStorage.getItem("aog.sync.enabled") === "1") return true;
   if (sessionStorage.getItem("aog.launch.sync") === "on") return true;
   if (sessionStorage.getItem(LAUNCH_KEYS.districtId)) return true;
   return false;
@@ -4307,9 +4409,9 @@ async function finalizeAndSave(closing) {
   // pending (false) until the send succeeds; when local-only, mark it null so
   // flushUnsynced() never tries to send it anywhere.
   record.synced = willSync ? false : null;
-  const all = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+  const all = JSON.parse(sessionStorage.getItem(STORAGE_KEY) || "[]");
   all.push(record);
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(all));
+  sessionStorage.setItem(STORAGE_KEY, JSON.stringify(all));
   window._pendingRecord = null;
   window._lastResult = record;
   // Completed: clear any saved draft. If this was a family/home check-in,
@@ -4327,7 +4429,7 @@ async function finalizeAndSave(closing) {
 // POST a single record to the SCHOOL'S OWN Apps Script endpoint. Uses no-cors +
 // text/plain so it works from a static page against Apps Script without a CORS
 // preflight. The response is opaque by design, so we optimistically mark synced;
-// localStorage stays the source of truth and flushUnsynced() re-sends anything
+// sessionStorage stays the source of truth and flushUnsynced() re-sends anything
 // still pending if the page is reopened.
 async function syncRecord(record) {
   if (!SCHOOL_SYNC_URL) return false;
@@ -4347,14 +4449,14 @@ async function syncRecord(record) {
   }
 }
 
-// Match a record in localStorage by its timestamp+studentId and flag synced.
+// Match a record in sessionStorage by its timestamp+studentId and flag synced.
 function markSynced(record) {
-  const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+  const saved = JSON.parse(sessionStorage.getItem(STORAGE_KEY) || "[]");
   const hit = saved.find(r =>
     r.timestamp === record.timestamp && r.studentId === record.studentId);
   if (hit) {
     hit.synced = true;
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(saved));
+    sessionStorage.setItem(STORAGE_KEY, JSON.stringify(saved));
   }
 }
 
@@ -4362,7 +4464,7 @@ function markSynced(record) {
 async function flushUnsynced() {
   if (!navigator.onLine) return;
   if (!syncDestinationConfigured()) return; // local-only: nothing to flush
-  const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+  const saved = JSON.parse(sessionStorage.getItem(STORAGE_KEY) || "[]");
   for (const r of saved.filter(x => x && x.synced === false)) {
     await syncRecord(r);
   }
@@ -4507,8 +4609,8 @@ const DASH_I18N = {
   dl_backbtn:       { en: "Back to survey", es: "Volver al cuestionario" },
   dl_t_overview:    { en: "Overview", es: "Resumen" },
   dl_t_distribute:  { en: "Distribute", es: "Distribuir" },
-  dl_t_students:    { en: "Students", es: "Estudiantes" },
-  dl_t_home:        { en: "Home View", es: "Vista del hogar" },
+  dl_t_students:    { en: "Class trends", es: "Tendencias" },
+  dl_t_home:        { en: "Family view", es: "Vista familiar" },
   dl_t_growth:      { en: "Growth", es: "Progreso" },
   dl_t_export:      { en: "Export", es: "Exportar" },
   dl_help_btn:      { en: "What am I looking at?", es: "¿Qué estoy viendo?" },
@@ -4540,11 +4642,11 @@ const DASH_I18N = {
   dl_band_red:      { en: "Needs support (0–49)", es: "Necesita apoyo (0–49)" },
   dl_dom_h1:        { en: "Domain averages", es: "Promedios por dominio" },
   dl_dom_sub:       { en: "Normalized mean score per domain (0–100).", es: "Puntaje medio normalizado por dominio (0–100)." },
-  dl_stu_h3:        { en: "All responses", es: "Todas las respuestas" },
-  dl_home_h1:       { en: "Home View · Per-person report", es: "Vista del hogar · Informe individual" },
-  dl_home_sub:      { en: "The instrument's real depth. Shows each item, the answer, intensity, written reflections, and a conversation guide for the people closest to this person.", es: "La verdadera profundidad del instrumento. Muestra cada ítem, la respuesta, la intensidad, las reflexiones escritas y una guía de conversación para las personas más cercanas a este estudiante." },
+  dl_stu_h3:        { en: "Class trends", es: "Tendencias de la clase" },
+  dl_home_h1:       { en: "Family & adult results", es: "Resultados de familias y adultos" },
+  dl_home_sub:      { en: "Where each person's full report lives — shown privately to families and adults, not on this dashboard.", es: "Donde vive el informe completo de cada persona — mostrado de forma privada a familias y adultos, no en este panel." },
   dl_grw_h1:        { en: "Growth across windows", es: "Progreso entre períodos" },
-  dl_grw_sub:       { en: "Composite scores Fall → Winter → Spring → Summer per person.", es: "Puntaje compuesto Otoño → Invierno → Primavera → Verano por persona." },
+  dl_grw_sub:       { en: "The class average composite, Fall → Winter → Spring → Summer. No individual student is shown.", es: "El compuesto promedio de la clase, Otoño → Invierno → Primavera → Verano. No se muestra a ningún estudiante individual." },
   dl_dist_h1:       { en: "Syncing & distribution", es: "Sincronización y distribución" },
   dl_dist_sub:      { en: "By default this device keeps every response local and private. Syncing to your central sheet turns on only when you enable it here, or when someone opens a generated link.", es: "De forma predeterminada, este dispositivo guarda cada respuesta de manera local y privada. La sincronización con tu hoja central se activa solo cuando la habilitas aquí, o cuando alguien abre un enlace generado." },
   dl_dist_togglelabel: { en: "Send check-ins taken on <em>this device</em> to the central sheet", es: "Enviar los check-ins de <em>este dispositivo</em> a la hoja central" },
@@ -4567,14 +4669,14 @@ const DASH_I18N = {
   dl_lg_qr:         { en: "QR code", es: "Código QR" },
   dl_lg_qrhelp:     { en: "Project the QR code on the board, or share the link in Google Classroom. Students who scan or click land on the check-in with grade, class, and window already set. Their responses save to the same school Sheet as a staff device — the link itself carries only the grade, class, and window, never the sheet address or passcode.", es: "Proyecta el código QR en la pizarra o comparte el enlace en Google Classroom. Los estudiantes que lo escaneen o hagan clic llegan al check-in con el grado, la clase y el período ya configurados. Sus respuestas se guardan en la misma hoja de la escuela que en un dispositivo del personal — el enlace solo lleva el grado, la clase y el período, nunca la dirección de la hoja ni la contraseña." },
   dl_exp_h1:        { en: "Export & data management", es: "Exportar y gestión de datos" },
-  dl_exp_sub:       { en: "All exports are CSV files compatible with Excel, Google Sheets, and most district SIS platforms.", es: "Todas las exportaciones son archivos CSV compatibles con Excel, Google Sheets y la mayoría de los sistemas SIS del distrito." },
+  dl_exp_sub:       { en: "All exports are class-level summary CSV files — no student names, individual scores, or written responses. Compatible with Excel and Google Sheets.", es: "Todas las exportaciones son archivos CSV de resumen de la clase — sin nombres, puntajes individuales ni respuestas escritas. Compatibles con Excel y Google Sheets." },
   dl_exp_label:     { en: "Export", es: "Exportar" },
-  dl_exp_full:      { en: "Full responses", es: "Respuestas completas" },
-  dl_exp_full_sub:  { en: "Every item, intensity, reflection, all windows.", es: "Cada ítem, intensidad, reflexión, todos los períodos." },
-  dl_exp_roster:    { en: "Tier roster", es: "Lista por nivel" },
-  dl_exp_roster_sub:{ en: "Flagged students only.", es: "Solo estudiantes marcados." },
-  dl_exp_growth:    { en: "Growth report", es: "Informe de progreso" },
-  dl_exp_growth_sub:{ en: "Fall / Winter / Spring / Summer deltas per person.", es: "Cambios Otoño / Invierno / Primavera / Verano por persona." },
+  dl_exp_full:      { en: "Class summary", es: "Resumen de la clase" },
+  dl_exp_full_sub:  { en: "Band shares & domain averages, by grade and window.", es: "Proporciones por banda y promedios por área, según grado y período." },
+  dl_exp_roster:    { en: "Band distribution", es: "Distribución por banda" },
+  dl_exp_roster_sub:{ en: "How many in each band, by window.", es: "Cuántos en cada banda, por período." },
+  dl_exp_growth:    { en: "Class growth", es: "Progreso de la clase" },
+  dl_exp_growth_sub:{ en: "Class average composite, Fall / Winter / Spring / Summer.", es: "Compuesto promedio de la clase, Otoño / Invierno / Primavera / Verano." },
   dl_exp_datalives: { en: "Where your data lives", es: "Dónde viven tus datos" },
   dl_exp_reset:     { en: "Reset", es: "Restablecer" },
   dl_exp_reset_note:{ en: "Use only after confirming exports are saved.", es: "Úsalo solo después de confirmar que las exportaciones están guardadas." },
@@ -4583,7 +4685,7 @@ const DASH_I18N = {
 
 function applyDashLang(dl) {
   dashLang = (dl === "es") ? "es" : "en";
-  try { localStorage.setItem(DASHLANG_KEY, dashLang); } catch (e) {}
+  try { sessionStorage.setItem(DASHLANG_KEY, dashLang); } catch (e) {}
   const en = document.getElementById("dashLangEn"), es = document.getElementById("dashLangEs");
   if (en) en.classList.toggle("active", dashLang === "en");
   if (es) es.classList.toggle("active", dashLang === "es");
@@ -4615,7 +4717,7 @@ function applyDashLang(dl) {
 function setDashLang(dl) { applyDashLang(dl); }
 
 function renderSyncStatus() {
-  const deviceOn = localStorage.getItem("aog.sync.enabled") === "1";
+  const deviceOn = sessionStorage.getItem("aog.sync.enabled") === "1";
   const linkOn = sessionStorage.getItem("aog.launch.sync") === "on" ||
                  !!sessionStorage.getItem(LAUNCH_KEYS.districtId);
   const on = deviceOn || linkOn;
@@ -4627,7 +4729,7 @@ function renderSyncStatus() {
   // synced === null  -> local-only record, never meant to sync
   let total = 0, sent = 0, waiting = 0;
   try {
-    const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+    const saved = JSON.parse(sessionStorage.getItem(STORAGE_KEY) || "[]");
     total = saved.length;
     for (const r of saved) {
       if (!r) continue;
@@ -4704,7 +4806,8 @@ function resetToStart() {
   if ($("#studentId")) $("#studentId").value = "";
   if ($("#grade")) $("#grade").value = "";
   if ($("#window")) $("#window").value = "";
-  if ($("#closingInput")) $("#closingInput").value = "";
+  closingSel = [];
+  if ($("#closingOptions")) $("#closingOptions").innerHTML = "";
   context = "school";
   population = "k12";
   window._famFlow = false;
@@ -4740,7 +4843,7 @@ function resetToStart() {
 // ============================================================
 
 document.addEventListener("DOMContentLoaded", () => {
-  const savedLang = localStorage.getItem(LANG_KEY);
+  const savedLang = sessionStorage.getItem(LANG_KEY);
   if (savedLang) setLang(savedLang);
   applyLang();
   // D: first-visit guided tour on the main page
@@ -4750,7 +4853,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Educator dashboard language (independent of the participant toggle).
   let savedDash = "en";
-  try { savedDash = localStorage.getItem(DASHLANG_KEY) || "en"; } catch (e) {}
+  try { savedDash = sessionStorage.getItem(DASHLANG_KEY) || "en"; } catch (e) {}
   applyDashLang(savedDash);
 
   // Resend any records that were saved offline / failed to reach the proxy.
@@ -4903,7 +5006,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Reflections
   $("#btnNextReflection").addEventListener("click", advanceReflection);
-  (function(){ var ri=$("#reflectionInput"); if(ri) ri.addEventListener("input", function(){ if(typeof reflectionIdx!=="undefined"){ reflections[reflectionIdx]=ri.value; saveDraft("reflection"); } }); })();
+  // reflection selections are captured by chip toggles (toggleReflectChip)
   $("#btnSkipReflection").addEventListener("click", () => {
     reflections[reflectionIdx] = "";
     reflectionIdx++;
@@ -4913,9 +5016,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Closing word flow
   $("#btnToClosing").addEventListener("click", () => {
-    if ($("#closingInput")) $("#closingInput").value = "";
+    closingSel = [];
+    renderClosing();
     showScreen("screen-closing");
-    setTimeout(() => $("#closingInput") && $("#closingInput").focus(), 200);
   });
 
   $("#btnSkipClosing").addEventListener("click", async () => {
@@ -4924,10 +5027,10 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   $("#btnSaveClosing").addEventListener("click", async () => {
-    const word = $("#closingInput").value.trim();
+    const word = closingSel.join("|");
     await finalizeAndSave(word);
     if (word) {
-      $("#farewellWord").textContent = word;
+      $("#farewellWord").textContent = decodeChoices(word, surveyLang);
       showScreen("screen-farewell");
     } else {
       resetToStart();
@@ -4979,8 +5082,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const deviceSyncToggle = document.getElementById("deviceSyncToggle");
   if (deviceSyncToggle) deviceSyncToggle.addEventListener("change", () => {
-    if (deviceSyncToggle.checked) localStorage.setItem("aog.sync.enabled", "1");
-    else localStorage.removeItem("aog.sync.enabled");
+    if (deviceSyncToggle.checked) sessionStorage.setItem("aog.sync.enabled", "1");
+    else sessionStorage.removeItem("aog.sync.enabled");
     renderSyncStatus();
     if (deviceSyncToggle.checked) flushUnsynced().then(renderSyncStatus);
   });
@@ -5087,9 +5190,33 @@ function openGuide(sub) {
   else if (typeof aogSetHash === "function") aogSetHash("guide");
 }
 
-function openGuideSub(name) {
+function activateGuideSection(name, doScroll) {
+  document.querySelectorAll(".guide-subtab").forEach(t => t.classList.remove("active"));
+  document.querySelectorAll(".guide-section").forEach(s => s.classList.remove("active"));
   const tab = document.querySelector('.guide-subtab[data-guide="' + name + '"]');
-  if (tab) tab.click();
+  if (tab) tab.classList.add("active");
+  const sec = document.getElementById("guide-" + name);
+  if (sec) sec.classList.add("active");
+  if (name === "resindex" && typeof riRender === "function") {
+    const s = document.getElementById("riSearch"), g = document.getElementById("riGrade");
+    riRender(s ? s.value : "", g ? g.value : "");
+  }
+  if (name === "ecosystem" && typeof initEcoInteractive === "function") initEcoInteractive();
+  if (name === "library" && typeof renderLibrary === "function") renderLibrary();
+  if (typeof aogSetHash === "function") aogSetHash(AOG_SUB_TO_HASH[name] || name);
+  if (sec && doScroll) {
+    requestAnimationFrame(function () {
+      var tb = document.querySelector(".topbar");
+      var off = (tb ? tb.offsetHeight : 70) + 14;
+      var top = sec.getBoundingClientRect().top + window.pageYOffset - off;
+      window.scrollTo({ top: Math.max(0, top), behavior: "smooth" });
+    });
+  }
+}
+function openGuideSub(name, scroll) {
+  // scroll defaults to true; the guided tour passes false so it can own positioning
+  // and avoid a second smooth-scroll fighting the tour's own.
+  activateGuideSection(name, scroll !== false);
 }
 
 // ---- Deep-link routing: shareable section URLs / QR codes (#downloads, #resource-index, etc.) ----
@@ -5128,7 +5255,7 @@ function submitAccessCode() {
 
 function clearLocalData() {
   if (!confirm("Permanently delete ALL check-in data on this device?")) return;
-  localStorage.removeItem(STORAGE_KEY);
+  sessionStorage.removeItem(STORAGE_KEY);
   refreshAdmin();
 }
 
@@ -5149,42 +5276,45 @@ function buildDemoRecords() {
       const a = Math.max(15,Math.min(100,comp + (i%3-1)*6));
       const b = Math.max(15,Math.min(100,comp + ((i+1)%3-1)*6));
       const c = Math.max(15,Math.min(100,comp + ((i+2)%3-1)*6));
-      const tier = comp>=75?"low":comp>=50?"some":"high";
+      const tier = comp>=75?"Low Risk":comp>=50?"Some Risk":"High Risk";
+      // a few demo respondents name no trusted adult, so the class-level read has something to show
+      const taf = (i === 2 || i === 8) && wi === 0;
       out.push({ timestamp:new Date(Date.now()-(2-wi)*86400000*40 - i*60000).toISOString(),
         studentId:nm, context:"school", grade:grades[i], window:win, districtId:"", schoolId:"", classId:"Demo",
         language:"en", mode:"rapid", population:"k12", relationship:"",
         raw:new Array(18).fill(2), intensities:new Array(18).fill(null), reflections:["","",""], closingWord:"",
-        domainA:a, domainB:b, domainC:c, composite:comp, normComposite:comp, tier:tier, synced:null });
+        domainA:a, domainB:b, domainC:c, composite:comp, normComposite:comp,
+        normA:a, normB:b, normC:c, tier:tier, trustedAdultFlag:taf, synced:null });
     });
   });
   return out;
 }
 function toggleDemoData() {
   const btn = document.getElementById("btnDemoData");
-  const active = localStorage.getItem(DEMO_FLAG) === "1";
+  const active = sessionStorage.getItem(DEMO_FLAG) === "1";
   if (!active) {
     // stash whatever is currently there, then load demo
-    localStorage.setItem(DEMO_STASH, localStorage.getItem(STORAGE_KEY) || "[]");
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(buildDemoRecords()));
-    localStorage.setItem(DEMO_FLAG, "1");
+    sessionStorage.setItem(DEMO_STASH, sessionStorage.getItem(STORAGE_KEY) || "[]");
+    sessionStorage.setItem(STORAGE_KEY, JSON.stringify(buildDemoRecords()));
+    sessionStorage.setItem(DEMO_FLAG, "1");
     if (btn) { btn.textContent = "Clear demo data"; btn.style.background = "transparent"; btn.style.color = "var(--gold)"; }
   } else {
     // restore real data
-    const stash = localStorage.getItem(DEMO_STASH);
-    if (stash != null) localStorage.setItem(STORAGE_KEY, stash);
-    localStorage.removeItem(DEMO_STASH);
-    localStorage.removeItem(DEMO_FLAG);
+    const stash = sessionStorage.getItem(DEMO_STASH);
+    if (stash != null) sessionStorage.setItem(STORAGE_KEY, stash);
+    sessionStorage.removeItem(DEMO_STASH);
+    sessionStorage.removeItem(DEMO_FLAG);
     if (btn) { btn.textContent = "Try demo data"; btn.style.background = "var(--gold)"; btn.style.color = "var(--navy)"; }
   }
   refreshAdmin();
 }
 
 // ---- Read-back: records pulled from the central Sheet, kept in memory only ----
-// REMOTE_RECORDS is never written to localStorage. Local records always win on
+// REMOTE_RECORDS is never written to sessionStorage. Local records always win on
 // any key collision, so a pull can never overwrite or duplicate on-device data.
 let REMOTE_RECORDS = [];
 
-function getLocalRecords() { return JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]"); }
+function getLocalRecords() { return JSON.parse(sessionStorage.getItem(STORAGE_KEY) || "[]"); }
 
 // Natural identity for one submission, tolerant to timestamp formatting drift
 // through Google Sheets (normalize to whole seconds).
@@ -5360,10 +5490,10 @@ function populateFilters() {
 const TAB_HINTS = {
   overview:   { en: "The summary \u2014 how many checked in and how the group is doing.", es: "El resumen \u2014 cu\u00e1ntos hicieron el check-in y c\u00f3mo est\u00e1 el grupo." },
   distribute: { en: "Hand out the check-in by link or QR, and connect your school\u2019s sheet.", es: "Reparte el check-in por enlace o QR, y conecta la hoja de tu escuela." },
-  students:   { en: "Everyone in one list, with each person\u2019s scores and status.", es: "Todos en una lista, con los puntajes y el estado de cada persona." },
-  home:       { en: "One person in depth \u2014 their answers, their words, and what to say next.", es: "Una persona a fondo \u2014 sus respuestas, sus palabras y qu\u00e9 decir despu\u00e9s." },
-  growth:     { en: "Change over time \u2014 how scores move across Fall, Winter, and Spring.", es: "El cambio con el tiempo \u2014 c\u00f3mo se mueven los puntajes entre Oto\u00f1o, Invierno y Primavera." },
-  export:     { en: "Download the responses as CSV files.", es: "Descarga las respuestas como archivos CSV." }
+  students:   { en: "How the whole class is doing, and where to focus next \u2014 no individual scores.", es: "C\u00f3mo va toda la clase y d\u00f3nde enfocarse \u2014 sin puntajes individuales." },
+  home:       { en: "Where each person\u2019s private report lives \u2014 with families and adults, not here.", es: "D\u00f3nde vive el informe privado de cada persona \u2014 con familias y adultos, no aqu\u00ed." },
+  growth:     { en: "How the class average moves across Fall, Winter, and Spring.", es: "C\u00f3mo se mueve el promedio de la clase entre Oto\u00f1o, Invierno y Primavera." },
+  export:     { en: "Download class-level summaries as CSV files.", es: "Descarga res\u00famenes de la clase como archivos CSV." }
 };
 function setTabHint(name) { if ($("#tabHint")) { const h = TAB_HINTS[name]; $("#tabHint").textContent = h ? (h[dashLang] || h.en) : ""; } }
 const TAB_HELP = {
@@ -5376,27 +5506,27 @@ const TAB_HELP = {
     es: "<h5>Distribuir \u2014 rep\u00e1rtelo</h5>Crea un <strong>enlace o c\u00f3digo QR</strong> para una clase para que las personas hagan el check-in, y (opcionalmente) conecta la propia <strong>hoja de Google</strong> de una escuela para reunir los resultados en un solo lugar. Nada de aqu\u00ed se nos env\u00eda."
   },
   students: {
-    en: "<h5>Students \u2014 everyone in a list</h5>Each row is one person, with their scores (<strong>A, B, C,</strong> and <strong>Total</strong> out of 100) and their <strong>status</strong>. Click any column heading to sort \u2014 for example, click <strong>Total</strong> to bring the lowest scores to the top, or <strong>Status</strong> to group everyone who needs support. The <strong>Trusted adult</strong> column flags anyone who named no one they\u2019d turn to.",
-    es: "<h5>Estudiantes \u2014 todos en una lista</h5>Cada fila es una persona, con sus puntajes (<strong>A, B, C</strong> y <strong>Total</strong> de 100) y su <strong>estado</strong>. Haz clic en cualquier encabezado de columna para ordenar \u2014 por ejemplo, haz clic en <strong>Total</strong> para llevar los puntajes m\u00e1s bajos arriba, o en <strong>Estado</strong> para agrupar a quienes necesitan apoyo. La columna <strong>Adulto de confianza</strong> marca a quien no nombr\u00f3 a nadie a quien acudir."
+    en: "<h5>Class trends \u2014 the group, not the individual</h5>This view shows how the <strong>whole class</strong> is doing: the share in each band (doing well / worth a check-in / needs support) and the <strong>class average</strong> for each domain, with a teaching pointer when a domain runs low. Individual scores are intentionally hidden here \u2014 the focus stays on what to teach next, not on evaluating any one child.",
+    es: "<h5>Tendencias de la clase \u2014 el grupo, no el individuo</h5>Esta vista muestra c\u00f3mo va <strong>toda la clase</strong>: la proporci\u00f3n en cada banda (va bien / vale un chequeo / necesita apoyo) y el <strong>promedio de la clase</strong> en cada \u00e1rea, con una sugerencia de ense\u00f1anza cuando un \u00e1rea queda baja. Los puntajes individuales se ocultan a prop\u00f3sito aqu\u00ed \u2014 el enfoque se mantiene en qu\u00e9 ense\u00f1ar despu\u00e9s, no en evaluar a ning\u00fan ni\u00f1o."
   },
   home: {
-    en: "<h5>Home View \u2014 one person, in depth</h5>Pick a person at the top. The first thing you see is the <strong>conversation starters</strong> \u2014 the gentlest place to begin. Below that is every item, their answer, and anything they wrote in their own words.",
-    es: "<h5>Vista del hogar \u2014 una persona, a fondo</h5>Elige una persona arriba. Lo primero que ves son los <strong>iniciadores de conversaci\u00f3n</strong> \u2014 el lugar m\u00e1s suave para empezar. Debajo est\u00e1 cada \u00edtem, su respuesta y todo lo que escribi\u00f3 con sus propias palabras."
+    en: "<h5>Family &amp; adult results</h5>Each person\u2019s full report \u2014 their answers, their words, and the conversation starters \u2014 is shown privately to that student and their family through <strong>family mode</strong> and <strong>adult mode</strong>. It is never routed through this dashboard. For planning, use <strong>Class trends</strong>.",
+    es: "<h5>Resultados de familias y adultos</h5>El informe completo de cada persona \u2014 sus respuestas, sus palabras y los iniciadores de conversaci\u00f3n \u2014 se muestra de forma privada a ese estudiante y su familia a trav\u00e9s del <strong>modo familiar</strong> y el <strong>modo para adultos</strong>. Nunca pasa por este panel. Para planificar, usa <strong>Tendencias de la clase</strong>."
   },
   growth: {
-    en: "<h5>Growth \u2014 change over time</h5>How a person\u2019s overall score moves across <strong>Fall, Winter, and Spring</strong>. The <strong>Change</strong> column shows the difference \u2014 green is up, red is down. A dip one season often recovers the next.",
-    es: "<h5>Progreso \u2014 el cambio con el tiempo</h5>C\u00f3mo se mueve el puntaje general de una persona entre <strong>Oto\u00f1o, Invierno y Primavera</strong>. La columna <strong>Cambio</strong> muestra la diferencia \u2014 verde sube, rojo baja. Una ca\u00edda en un per\u00edodo suele recuperarse en el siguiente."
+    en: "<h5>Growth \u2014 the class over time</h5>How the <strong>class average</strong> moves across <strong>Fall, Winter, and Spring</strong>. A rising line means the group is trending steadier; a dip one season often recovers the next. No individual student is shown.",
+    es: "<h5>Progreso \u2014 la clase con el tiempo</h5>C\u00f3mo se mueve el <strong>promedio de la clase</strong> entre <strong>Oto\u00f1o, Invierno y Primavera</strong>. Una l\u00ednea que sube significa que el grupo tiende a estar m\u00e1s estable; una ca\u00edda en un per\u00edodo suele recuperarse en el siguiente. No se muestra a ning\u00fan estudiante individual."
   },
   export: {
-    en: "<h5>Export \u2014 take the data with you</h5>Download the responses as <strong>spreadsheet (CSV) files</strong> you can open in Excel or Google Sheets, or hand to a counselor.",
-    es: "<h5>Exportar \u2014 ll\u00e9vate los datos</h5>Descarga las respuestas como <strong>archivos de hoja de c\u00e1lculo (CSV)</strong> que puedes abrir en Excel o Google Sheets, o entregar a un consejero."
+    en: "<h5>Export \u2014 class summaries</h5>Download <strong>class-level summaries</strong> as spreadsheet (CSV) files \u2014 group counts, band shares, and domain averages by window. No student names, individual scores, or written responses are included.",
+    es: "<h5>Exportar \u2014 res\u00famenes de la clase</h5>Descarga <strong>res\u00famenes de la clase</strong> como archivos de hoja de c\u00e1lculo (CSV) \u2014 conteos del grupo, proporciones por banda y promedios por \u00e1rea seg\u00fan el per\u00edodo. No se incluyen nombres, puntajes individuales ni respuestas escritas."
   }
 };
 let tabHelpOpen = false;
 function setTabHelp(name) { const el = $("#tabHelp"); if (el) { const h = TAB_HELP[name]; el.innerHTML = h ? (h[dashLang] || h.en) : ""; } }
 
 function refreshAdmin() {
-  (function(){ var b=document.getElementById("btnDemoData"); if(b){ var on=localStorage.getItem(DEMO_FLAG)==="1"; b.textContent= on?"Clear demo data":"Try demo data"; b.style.background= on?"transparent":"var(--gold)"; b.style.color="var(--gold)"; if(!on) b.style.color="var(--navy)"; } })();
+  (function(){ var b=document.getElementById("btnDemoData"); if(b){ var on=sessionStorage.getItem(DEMO_FLAG)==="1"; b.textContent= on?"Clear demo data":"Try demo data"; b.style.background= on?"transparent":"var(--gold)"; b.style.color="var(--gold)"; if(!on) b.style.color="var(--navy)"; } })();
   renderSyncStatus();
   populateFilters();
   renderOverview();
@@ -5510,71 +5640,179 @@ function studentSortCmp(a, b) {
   if (av > bv) return 1 * dir;
   return 0;
 }
+// ---- Counselor-only trusted-adult follow-up ----------------------------------
+// The one protective exception to the no-individuals rule. A student who names no
+// trusted adult is exactly who a counselor may need to reach. This surfaces ONLY
+// that signal (code + grade + window) behind a deliberate re-entry of the access
+// code \u2014 never scores, tiers, reflections, or any other field. It is on-screen
+// only (never exported) and re-collapses whenever the view re-renders.
+let _followupList = [];
+function revealFollowupList() {
+  const code = prompt(DT("Counselor follow-up. Re-enter the access code to view the students who named no trusted adult:",
+                         "Seguimiento del consejero. Vuelve a ingresar el c\u00f3digo de acceso para ver a los estudiantes que no nombraron a ning\u00fan adulto de confianza:") || "");
+  if (code == null) return;
+  if (code !== ACCESS_CODE) { alert(DT("Incorrect code.","C\u00f3digo incorrecto.")); return; }
+  const target = document.getElementById("followupReveal");
+  if (!target) return;
+  if (!_followupList.length) {
+    target.innerHTML = '<div class="small" style="color:var(--ink-faint);">' + DT("No one in this view named a lack of trusted adult.","Nadie en esta vista indic\u00f3 falta de un adulto de confianza.") + '</div>';
+    return;
+  }
+  const rows = _followupList.map(r =>
+    '<tr><td><strong>' + escapeHtml(String(r.studentId || "\u2014")) + '</strong></td>' +
+    '<td>' + escapeHtml(String(r.grade || "\u2014")) + '</td>' +
+    '<td>' + escapeHtml(winLabel(r.window) || String(r.window || "\u2014")) + '</td>' +
+    '<td>' + escapeHtml(fmtNiceDate(r.timestamp) || "\u2014") + '</td></tr>'
+  ).join("");
+  target.innerHTML =
+    '<div class="small" style="margin:0 0 10px; line-height:1.6;">' +
+      DT("These students named no one they\u2019d turn to. Start with connection, not assessment \u2014 a small, steady relationship is the intervention.",
+         "Estos estudiantes no nombraron a nadie a quien acudir. Empieza por la conexi\u00f3n, no por la evaluaci\u00f3n \u2014 una relaci\u00f3n peque\u00f1a y constante es la intervenci\u00f3n.") + '</div>' +
+    '<table style="width:100%;"><thead><tr>' +
+      '<th>' + DT("Code","C\u00f3digo") + '</th><th>' + DT("Grade","Grado") + '</th><th>' + DT("Window","Per\u00edodo") + '</th><th>' + DT("Taken","Fecha") + '</th>' +
+    '</tr></thead><tbody>' + rows + '</tbody></table>' +
+    '<div class="small" style="margin-top:10px; color:var(--ink-faint);">' +
+      DT("On-screen only \u2014 this list is never exported. It clears when you change a filter or leave this tab.",
+         "Solo en pantalla \u2014 esta lista nunca se exporta. Se borra al cambiar un filtro o salir de esta pesta\u00f1a.") + '</div>' +
+    '<div style="margin-top:12px;"><button class="btn btn-sm" onclick="hideFollowupList()">' + DT("Hide again","Ocultar de nuevo") + '</button></div>';
+}
+function hideFollowupList() {
+  const target = document.getElementById("followupReveal");
+  if (target) target.innerHTML = "";
+}
+
 function renderStudents() {
+  // PILOT-SAFE CLASS TRENDS — individual student numbers are intentionally not shown here.
+  // This view reports class-wide trends only, so the educator's role stays "teacher," not "evaluator."
   const all = getAllRecords();
   const filtered = applyFilters(all, {
     window: $("#studentFilterWindow") ? $("#studentFilterWindow").value : "",
     grade: $("#studentFilterGrade") ? $("#studentFilterGrade").value : "",
     tier: $("#studentFilterTier") ? $("#studentFilterTier").value : ""
   });
-  if ($("#studentCount")) $("#studentCount").textContent = filtered.length + " " + (filtered.length === 1 ? DT("record","registro") : DT("records","registros"));
+  const n = filtered.length;
+  // Counselor follow-up is scoped to window + grade only (NOT the score-band filter),
+  // because a student can name no trusted adult while scoring fine overall.
+  _followupList = applyFilters(all, {
+    window: $("#studentFilterWindow") ? $("#studentFilterWindow").value : "",
+    grade: $("#studentFilterGrade") ? $("#studentFilterGrade").value : ""
+  }).filter(r => r.trustedAdultFlag)
+    .sort((a,b) => new Date(b.timestamp) - new Date(a.timestamp));
+  if ($("#studentCount")) $("#studentCount").textContent = n + " " + (n === 1 ? DT("response","respuesta") : DT("responses","respuestas"));
+  const host = $("#studentTable");
+  if (!host) return;
 
-  if (!filtered.length) {
-    $("#studentTable").innerHTML = '<div class="empty-state"><div class="display-md serif">' + DT("No records","Sin registros") + '</div><div class="small">' + DT("Adjust filters or wait for submissions.","Ajusta los filtros o espera nuevas respuestas.") + '</div></div>';
+  if (!n) {
+    host.innerHTML = '<div class="empty-state"><div class="display-md serif">' + DT("No responses yet","Sin respuestas a\u00fan") + '</div><div class="small">' + DT("Class trends appear here once check-ins come in.","Las tendencias de la clase aparecer\u00e1n aqu\u00ed cuando lleguen los check-ins.") + '</div></div>';
     return;
   }
-  const rows = filtered.slice().sort(studentSortCmp).map(r =>
-    '<tr>' +
-      '<td><strong>' + escapeHtml(r.studentId) + '</strong>' + (r._remote ? ' <span style="font-size:10px; font-weight:600; color:var(--gold,#B8893A); border:1px solid var(--gold,#B8893A); border-radius:6px; padding:1px 5px; vertical-align:middle;">' + DT("from sheet","de la hoja") + '</span>' : '') + '</td>' +
-      '<td>' + escapeHtml(String(r.grade)) + '</td>' +
-      '<td>' + escapeHtml(winLabel(r.window)) + '</td>' +
-      '<td><span class="small">' + modeLabel(r.mode) + '</span></td>' +
-      '<td>' + (r.normA != null ? r.normA.toFixed(0) : "\u2014") + '</td>' +
-      '<td>' + (r.normB != null ? r.normB.toFixed(0) : "\u2014") + '</td>' +
-      '<td>' + (r.normC != null ? r.normC.toFixed(0) : "\u2014") + '</td>' +
-      '<td><strong>' + (r.normComposite != null ? r.normComposite.toFixed(0) : "\u2014") + '</strong></td>' +
-      '<td><span class="pill ' + tierClass(r.tier) + '">' + tierLabel(r.tier) + '</span></td>' +
-      '<td>' + (r.trustedAdultFlag ? '<span class="pill pill-red">\u26A0</span>' : "") + '</td>' +
-      '<td class="small">' + new Date(r.timestamp).toLocaleDateString() + '</td>' +
-    '</tr>'
-  ).join("");
-  const sTh = (key, label) => {
-    const active = studentSort.key === key;
-    const arrow = active ? (studentSort.dir === "asc" ? " \u25B4" : " \u25BE") : "";
-    return '<th class="sortable' + (active ? ' sorted' : '') + '" onclick="sortStudents(\'' + key + '\')">' + label + '<span class="sort-ind">' + arrow + '</span></th>';
-  };
-  $("#studentTable").innerHTML =
-    '<table><thead><tr>' +
-      sTh("name",DT("Name","Nombre")) + sTh("grade",DT("Grade","Grado")) + sTh("window",DT("Window","Per\u00edodo")) + sTh("mode",DT("Mode","Modo")) +
-      sTh("A","A") + sTh("B","B") + sTh("C","C") + sTh("total",DT("Total","Total")) + sTh("status",DT("Status","Estado")) + sTh("trusted",DT("Trusted adult","Adulto de confianza")) + sTh("date",DT("Date","Fecha")) +
-    '</tr></thead><tbody>' + rows + '</tbody></table>';
-}
 
+  const tc = { "Low Risk": 0, "Some Risk": 0, "High Risk": 0 };
+  let flags = 0;
+  filtered.forEach(r => { tc[r.tier] = (tc[r.tier] || 0) + 1; if (r.trustedAdultFlag) flags++; });
+  const low = tc["Low Risk"], some = tc["Some Risk"], high = tc["High Risk"];
+  const pct = x => Math.round((x / n) * 100);
 
-// ============================================================
+  // Per-domain class statistics. "Lower range" uses the app's own band (norm < 50 = needs support).
+  function domStat(key) {
+    const vals = filtered.map(r => r["norm" + key]).filter(v => v != null);
+    const m = vals.length ? vals.reduce((a,b)=>a+b,0) / vals.length : 0;
+    const lowN = vals.filter(v => v < 50).length;
+    return { avg: m, lowPct: vals.length ? Math.round(lowN / vals.length * 100) : 0, nv: vals.length };
+  }
+  const DOMAINS = [
+    { key:"A", label: DT("Emotional Regulation & Well-Being","Regulaci\u00f3n emocional y bienestar"),
+      rec: DT("Revisit this week\u2019s lessons on naming and regulating big feelings in your grade-band volume.","Retoma las lecciones de esta semana sobre nombrar y regular las emociones fuertes en tu volumen por grado.") },
+    { key:"B", label: DT("Self-Compassion & Growth Mindset","Autocompasi\u00f3n y mentalidad de crecimiento"),
+      rec: DT("Revisit the inner-critic and self-talk lessons \u2014 and the self-compassion thread in the companion novel for this band.","Retoma las lecciones sobre el cr\u00edtico interno y el di\u00e1logo interno \u2014 y el hilo de autocompasi\u00f3n en la novela complementaria de este nivel.") },
+    { key:"C", label: DT("Social Competency & Repair","Competencia social y reparaci\u00f3n"),
+      rec: DT("Revisit the repair, boundaries, and trusted-adult lessons in your grade-band volume.","Retoma las lecciones sobre reparaci\u00f3n, l\u00edmites y el adulto de confianza en tu volumen por grado.") }
+  ];
+
+  // Headline read of the group.
+  let head = "<strong>" + n + "</strong> " + (n === 1 ? DT("response","respuesta") : DT("responses","respuestas")) + " " + DT("in this view","en esta vista") + ". " +
+    (low >= Math.ceil(n/2) ? DT("Most of the class is doing well","La mayor\u00eda de la clase est\u00e1 bien") : DT("Results are mixed across the class","Los resultados son variados en la clase"));
+  if (some + high > 0) head += " \u2014 " + pct(some + high) + DT("% may benefit from a check-in conversation","% podr\u00eda beneficiarse de una conversaci\u00f3n de chequeo");
+  head += ".";
+  if (flags > 0) head += " " + pct(flags) + DT("% named no trusted adult \u2014 a good place to start as a class.","% no nombr\u00f3 a ning\u00fan adulto de confianza \u2014 un buen punto de partida para la clase.");
+
+  // Class snapshot bar (no individuals).
+  let bar = "";
+  if (high > 0) bar += '<div class="dist-segment dist-red" style="flex:' + high + '" title="' + DT("Needs support","Necesita apoyo") + '">' + pct(high) + '%</div>';
+  if (some > 0) bar += '<div class="dist-segment dist-amber" style="flex:' + some + '" title="' + DT("Worth a check-in","Vale un chequeo") + '">' + pct(some) + '%</div>';
+  if (low > 0)  bar += '<div class="dist-segment dist-green" style="flex:' + low + '" title="' + DT("Doing well","Va bien") + '">' + pct(low) + '%</div>';
+
+  // Domain trend cards with a class-level teaching pointer when a domain runs low.
+  const cards = DOMAINS.map(d => {
+    const st = domStat(d.key);
+    const elevated = st.lowPct >= 40;
+    const lead = '<strong>' + st.lowPct + '%</strong> ' + DT("of this class scored in the lower range on","de esta clase puntu\u00f3 en el rango bajo en") + ' ' + escapeHtml(d.label) + '.';
+    const recBlock = elevated
+      ? '<div class="small" style="margin-top:10px; padding:10px 12px; background:rgba(184,137,58,.10); border-left:3px solid var(--gold); border-radius:6px;"><strong>' + DT("Suggested focus this week:","Enfoque sugerido esta semana:") + '</strong> ' + d.rec + '</div>'
+      : '<div class="small" style="margin-top:10px; color:var(--ink-faint);">' + DT("This domain looks steady across the class.","Esta \u00e1rea se ve estable en la clase.") + '</div>';
+    return '<div class="domain-card" style="margin-bottom:14px;">' +
+        '<div class="domain-card-head">' +
+          '<div class="domain-card-title">' + d.key + ' \u00b7 ' + escapeHtml(d.label) + '</div>' +
+          '<div class="domain-card-score">' + st.avg.toFixed(0) + '<span> / 100</span></div>' +
+        '</div>' +
+        '<div class="bar"><div class="bar-fill" style="width:' + st.avg.toFixed(0) + '%"></div></div>' +
+        '<div class="small" style="margin-top:10px;">' + lead + '</div>' +
+        recBlock +
+      '</div>';
+  }).join("");
+
+  host.innerHTML =
+    '<div class="ov-summary" style="margin:4px 0 18px; font-size:15px; line-height:1.6;">' + head + '</div>' +
+    '<div class="section-head" style="margin-bottom:8px;"><h3>' + DT("Class snapshot","Panorama de la clase") + '</h3>' +
+      '<div class="small">' + DT("Share of the class in each band \u2014 no individual scores.","Proporci\u00f3n de la clase en cada banda \u2014 sin puntajes individuales.") + '</div></div>' +
+    '<div class="dist-bar" style="margin-bottom:20px;">' + bar + '</div>' +
+    '<div class="section-head" style="margin-bottom:8px;"><h3>' + DT("Where to focus","D\u00f3nde enfocarse") + '</h3>' +
+      '<div class="small">' + DT("Class averages and the share scoring lower, by domain.","Promedios de la clase y la proporci\u00f3n con puntaje m\u00e1s bajo, por \u00e1rea.") + '</div></div>' +
+    cards +
+    '<div class="small" style="margin-top:8px; color:var(--ink-faint); border-top:1px solid var(--rule); padding-top:12px;">' +
+      DT("Individual student scores are intentionally not shown on this dashboard. This view reports class-wide trends only \u2014 keeping the focus on teaching, not on evaluating any one child.",
+         "Los puntajes individuales no se muestran a prop\u00f3sito en este panel. Esta vista reporta solo tendencias de toda la clase \u2014 manteniendo el enfoque en ense\u00f1ar, no en evaluar a ning\u00fan ni\u00f1o.") +
+    '</div>' +
+    // Counselor-only exception: trusted-adult follow-up, collapsed and code-gated.
+    '<div class="table-card" style="margin-top:18px; padding:18px 22px; border-left:3px solid var(--gold);">' +
+      '<div style="display:flex; justify-content:space-between; align-items:center; gap:14px; flex-wrap:wrap;">' +
+        '<div>' +
+          '<div style="font-weight:700; color:var(--navy);">' + DT("Counselor follow-up","Seguimiento del consejero") + '</div>' +
+          '<div class="small" style="margin-top:2px;">' +
+            (_followupList.length
+              ? '<strong>' + _followupList.length + '</strong> ' + (_followupList.length === 1
+                  ? DT("student in this view named no trusted adult.","estudiante en esta vista no nombr\u00f3 a ning\u00fan adulto de confianza.")
+                  : DT("students in this view named no trusted adult.","estudiantes en esta vista no nombraron a ning\u00fan adulto de confianza."))
+              : DT("No one in this view named a lack of trusted adult.","Nadie en esta vista indic\u00f3 falta de un adulto de confianza.")) +
+          '</div>' +
+        '</div>' +
+        (_followupList.length
+          ? '<button class="btn btn-sm" onclick="revealFollowupList()">' + DT("Reveal list (counselor use)","Mostrar lista (uso del consejero)") + '</button>'
+          : '') +
+      '</div>' +
+      '<div id="followupReveal" style="margin-top:14px;"></div>' +
+    '</div>';
+}// ============================================================
 // HOME VIEW — the per-person depth report
 // ============================================================
 
 function renderHome() {
+  // PILOT-SAFE: the teacher dashboard does not surface any one person's report.
+  // Individual results reach the people closest to a student privately, through
+  // family mode and adult mode \u2014 they are never pushed out from this dashboard.
   const target = $("#homeReport");
   if (!target) return;
-  const studentId = $("#homeFilterStudent") ? $("#homeFilterStudent").value : "";
-  const winFilter = $("#homeFilterWindow") ? $("#homeFilterWindow").value : "";
-
-  if (!studentId) {
-    target.innerHTML = '<div class="empty-state"><div class="display-md serif">' + DT("Select a person above to see their full report.","Selecciona una persona arriba para ver su informe completo.") + '</div><div class="small">' + DT("The Home View shows every item, every answer, every reflection \u2014 and gives you the conversation starters that go with them.","La Vista del hogar muestra cada \u00edtem, cada respuesta, cada reflexi\u00f3n \u2014 y te da los iniciadores de conversaci\u00f3n que las acompa\u00f1an.") + '</div></div>';
-    return;
-  }
-  const all = getAllRecords();
-  let records = all.filter(r => r.studentId === studentId);
-  if (winFilter) records = records.filter(r => r.window === winFilter);
-  if (!records.length) {
-    target.innerHTML = '<div class="empty-state"><div class="display-md serif">' + DT("No record for this filter","Sin registro para este filtro") + '</div></div>';
-    return;
-  }
-  records.sort((a,b) => new Date(b.timestamp) - new Date(a.timestamp));
-  const r = records[0];
-  target.innerHTML = buildHomeReport(r);
+  target.innerHTML =
+    '<div class="table-card" style="padding:26px 30px;">' +
+      '<h3 class="serif" style="font-size:20px; color:var(--navy); margin:0 0 10px;">' +
+        DT("Individual results live with the family, not on this dashboard","Los resultados individuales viven con la familia, no en este panel") + '</h3>' +
+      '<p class="small" style="margin:0 0 14px; line-height:1.65;">' +
+        DT("Each person\u2019s full report \u2014 every answer, every reflection, and the conversation starters that go with them \u2014 is shown privately to that student and the people closest to them through <strong>family mode</strong> and <strong>adult mode</strong>. It opens on their own device, from their own results, and is never routed through a teacher or counselor here.",
+           "El informe completo de cada persona \u2014 cada respuesta, cada reflexi\u00f3n y los iniciadores de conversaci\u00f3n que los acompa\u00f1an \u2014 se muestra de forma privada a ese estudiante y a quienes le son m\u00e1s cercanos a trav\u00e9s del <strong>modo familiar</strong> y el <strong>modo para adultos</strong>. Se abre en su propio dispositivo, desde sus propios resultados, y nunca pasa por un docente o consejero aqu\u00ed.") + '</p>' +
+      '<p class="small" style="margin:0; line-height:1.65;">' +
+        DT("For your planning, head to <strong>Class trends</strong> \u2014 it shows how the group is doing and where to focus next, without naming or scoring any one child.",
+           "Para tu planificaci\u00f3n, ve a <strong>Tendencias de la clase</strong> \u2014 muestra c\u00f3mo va el grupo y d\u00f3nde enfocarse, sin nombrar ni puntuar a ning\u00fan ni\u00f1o.") + '</p>' +
+    '</div>';
 }
 
 function buildHomeReport(r, isSelf) {
@@ -5654,7 +5892,7 @@ function buildHomeReport(r, isSelf) {
     if (r.reflections && r.reflections[d.reflectionIdx]) {
       html += '<div class="home-reflection">' +
         '<div class="label">' + (isSelf ? DT("In your words","En tus palabras") : DT("Their own words","Sus propias palabras")) + '</div>' +
-        '<div class="quote">\u201C' + escapeHtml(r.reflections[d.reflectionIdx]) + '\u201D</div>' +
+        '<div class="quote">\u201C' + escapeHtml(decodeChoices(r.reflections[d.reflectionIdx], isSelf ? surveyLang : dashLang)) + '\u201D</div>' +
       '</div>';
     }
 
@@ -5665,7 +5903,7 @@ function buildHomeReport(r, isSelf) {
   if (r.closingWord) {
     html += '<div class="home-reflection" style="margin: 16px 0;">' +
       '<div class="label">' + (isSelf ? DT("A word you kept","La palabra que elegiste") : DT("Word they kept","La palabra que eligieron")) + '</div>' +
-      '<div class="quote" style="font-size: 22px; color: var(--gold);">\u201C' + escapeHtml(r.closingWord) + '\u201D</div>' +
+      '<div class="quote" style="font-size: 22px; color: var(--gold);">\u201C' + escapeHtml(decodeChoices(r.closingWord, isSelf ? surveyLang : dashLang)) + '\u201D</div>' +
     '</div>';
   }
 
@@ -5692,8 +5930,8 @@ function showMyResults() {
 // 1: Family Mode — multi-child roster, progress chart, PDF export
 // ============================================================
 var FAMILY_KEY = "aog.family.v1";
-function getFamilyRoster(){ try { var v = JSON.parse(localStorage.getItem(FAMILY_KEY) || "[]"); return Array.isArray(v) ? v : []; } catch (e) { return []; } }
-function saveFamilyRoster(arr){ try { localStorage.setItem(FAMILY_KEY, JSON.stringify(arr)); } catch (e) {} }
+function getFamilyRoster(){ try { var v = JSON.parse(sessionStorage.getItem(FAMILY_KEY) || "[]"); return Array.isArray(v) ? v : []; } catch (e) { return []; } }
+function saveFamilyRoster(arr){ try { sessionStorage.setItem(FAMILY_KEY, JSON.stringify(arr)); } catch (e) {} }
 function familyRosterAdd(name, grade){
   name = (name || "").trim(); if (!name) return;
   var r = getFamilyRoster();
@@ -6227,68 +6465,72 @@ function renderConversationGuide(r, isSelf) {
 // Growth
 // ============================================================
 function renderGrowth() {
+  // PILOT-SAFE: shows the class average per window, never a single student's trajectory.
   const all = getAllRecords();
   const grade = $("#growthFilterGrade") ? $("#growthFilterGrade").value : "";
-  const sortBy = $("#growthSort") ? $("#growthSort").value : "delta";
+  const records = all.filter(r => !(grade && String(r.grade) !== String(grade)));
 
-  const byStudent = {};
-  all.forEach(r => {
-    if (grade && String(r.grade) !== String(grade)) return;
-    if (!byStudent[r.studentId]) byStudent[r.studentId] = { studentId: r.studentId, grade: r.grade, Fall: null, Winter: null, Spring: null, Summer: null };
-    const existing = byStudent[r.studentId][r.window];
-    if (!existing || new Date(r.timestamp) > new Date(existing.timestamp)) {
-      byStudent[r.studentId][r.window] = r;
-    }
-    byStudent[r.studentId].grade = r.grade;
-  });
-
-  const list = Object.values(byStudent);
-  if (!list.length) {
+  if (!records.length) {
     $("#growthList").innerHTML = '<div class="empty-state"><div class="display-md serif">' + DT("No data yet","A\u00fan no hay datos") + '</div></div>';
     return;
   }
 
-  list.forEach(s => {
-    const order = ["Fall","Winter","Spring","Summer"];
-    const present = order.filter(w => s[w]);
-    if (present.length >= 2) {
-      s.earliest = s[present[0]].normComposite;
-      s.latest = s[present[present.length-1]].normComposite;
-      s.delta = round1(s.latest - s.earliest);
-    } else if (present.length === 1) {
-      s.latest = s[present[0]].normComposite;
-      s.delta = null;
-    }
+  const order = ["Fall","Winter","Spring","Summer"];
+  const winLabels = {
+    Fall: DT("Fall","Oto\u00f1o"), Winter: DT("Winter","Invierno"),
+    Spring: DT("Spring","Primavera"), Summer: DT("Summer","Verano")
+  };
+  // class average composite per window (latest response per person per window, then averaged)
+  const perWin = {};
+  order.forEach(w => perWin[w] = { byPerson: {} });
+  records.forEach(r => {
+    if (!order.includes(r.window)) return;
+    if (r.normComposite == null) return;
+    const slot = perWin[r.window].byPerson;
+    const prev = slot[r.studentId];
+    if (!prev || new Date(r.timestamp) > new Date(prev.timestamp)) slot[r.studentId] = r;
   });
+  const stats = order.map(w => {
+    const vals = Object.values(perWin[w].byPerson).map(r => r.normComposite);
+    const avg = vals.length ? vals.reduce((a,b)=>a+b,0) / vals.length : null;
+    return { w, label: winLabels[w], avg, n: vals.length };
+  }).filter(s => s.n > 0);
 
-  list.sort((a,b) => {
-    if (sortBy === "delta") return (b.delta == null ? -999 : b.delta) - (a.delta == null ? -999 : a.delta);
-    if (sortBy === "deltaDesc") return (a.delta == null ? 999 : a.delta) - (b.delta == null ? 999 : b.delta);
-    if (sortBy === "composite") return (a.latest == null ? 999 : a.latest) - (b.latest == null ? 999 : b.latest);
-    return String(a.studentId).localeCompare(String(b.studentId), undefined, {numeric:true});
-  });
+  if (!stats.length) {
+    $("#growthList").innerHTML = '<div class="empty-state"><div class="display-md serif">' + DT("No data yet","A\u00fan no hay datos") + '</div></div>';
+    return;
+  }
 
-  let html = '<table><thead><tr><th>' + DT("Name","Nombre") + '</th><th>' + DT("Grade","Grado") + '</th><th>' + DT("Fall","Oto\u00f1o") + '</th><th>' + DT("Winter","Invierno") + '</th><th>' + DT("Spring","Primavera") + '</th><th>' + DT("Summer","Verano") + '</th><th>' + DT("Change","Cambio") + '</th></tr></thead><tbody>';
-  list.forEach(s => {
-    const cell = w => s[w] ? (s[w].normComposite != null ? s[w].normComposite.toFixed(0) : "\u2014") : "\u2014";
-    let deltaCell = "\u2014";
-    if (s.delta != null) {
-      const cls = s.delta > 0 ? "pill-green" : s.delta < 0 ? "pill-red" : "pill-amber";
-      const sign = s.delta > 0 ? "+" : "";
-      deltaCell = '<span class="pill ' + cls + '">' + sign + s.delta.toFixed(0) + '</span>';
-    }
-    html += '<tr>' +
-      '<td><strong>' + escapeHtml(s.studentId) + '</strong></td>' +
-      '<td>' + escapeHtml(String(s.grade)) + '</td>' +
-      '<td>' + cell("Fall") + '</td>' +
-      '<td>' + cell("Winter") + '</td>' +
-      '<td>' + cell("Spring") + '</td>' +
-      '<td>' + cell("Summer") + '</td>' +
-      '<td>' + deltaCell + '</td>' +
-    '</tr>';
-  });
-  html += '</tbody></table>';
-  $("#growthList").innerHTML = html;
+  // direction read across the first and last window with data
+  let head = "";
+  if (stats.length >= 2) {
+    const d = round1(stats[stats.length-1].avg - stats[0].avg);
+    const dir = d > 1 ? DT("rising","subiendo") : d < -1 ? DT("dipping","bajando") : DT("holding steady","manteni\u00e9ndose estable");
+    head = DT("The class average is ","El promedio de la clase est\u00e1 ") + "<strong>" + dir + "</strong> " +
+      DT("from","de") + " " + stats[0].label + " (" + stats[0].avg.toFixed(0) + ") " +
+      DT("to","a") + " " + stats[stats.length-1].label + " (" + stats[stats.length-1].avg.toFixed(0) + ")" +
+      (d !== 0 ? " \u00b7 " + (d>0?"+":"") + d.toFixed(0) + DT(" points","  puntos") : "") + ".";
+  } else {
+    head = DT("One window of data so far \u2014 a trend will appear as more windows come in.","Un per\u00edodo de datos por ahora \u2014 la tendencia aparecer\u00e1 cuando lleguen m\u00e1s per\u00edodos.");
+  }
+
+  const bars = stats.map(s => {
+    return '<div style="margin-bottom:16px;">' +
+        '<div style="display:flex; justify-content:space-between; align-items:baseline; margin-bottom:6px;">' +
+          '<span class="small" style="font-weight:600; color:var(--navy);">' + s.label + '</span>' +
+          '<span class="small" style="color:var(--ink-faint);">' + s.avg.toFixed(0) + ' / 100 \u00b7 ' + s.n + ' ' + (s.n === 1 ? DT("response","respuesta") : DT("responses","respuestas")) + '</span>' +
+        '</div>' +
+        '<div class="bar"><div class="bar-fill" style="width:' + s.avg.toFixed(0) + '%"></div></div>' +
+      '</div>';
+  }).join("");
+
+  $("#growthList").innerHTML =
+    '<div class="ov-summary" style="margin:2px 0 18px; font-size:15px; line-height:1.6;">' + head + '</div>' +
+    bars +
+    '<div class="small" style="margin-top:8px; color:var(--ink-faint); border-top:1px solid var(--rule); padding-top:12px;">' +
+      DT("This is the class average per window \u2014 individual trajectories are not shown here.",
+         "Este es el promedio de la clase por per\u00edodo \u2014 las trayectorias individuales no se muestran aqu\u00ed.") +
+    '</div>';
 }
 
 // ============================================================
@@ -6308,69 +6550,88 @@ function downloadCSV(filename, headers, rows) {
   URL.revokeObjectURL(url);
 }
 
+// All exports are class-level aggregates only. No student names, individual
+// scores, intensities, or written responses ever leave the dashboard.
+function _aggGroups(all, keyFn) {
+  const g = {};
+  all.forEach(r => {
+    const k = keyFn(r);
+    if (!g[k]) g[k] = [];
+    g[k].push(r);
+  });
+  return g;
+}
+function _avg(arr) { const v = arr.filter(x => x != null); return v.length ? Math.round(v.reduce((a,b)=>a+b,0)/v.length) : ""; }
+function _bandCounts(rows) {
+  let low=0, some=0, high=0, flags=0;
+  rows.forEach(r => {
+    if (r.tier === "Low Risk") low++; else if (r.tier === "Some Risk") some++; else if (r.tier === "High Risk") high++;
+    if (r.trustedAdultFlag) flags++;
+  });
+  return { low, some, high, flags };
+}
+
 function exportFullCSV() {
+  // Class summary: one row per grade x window group.
   const all = getAllRecords();
   if (!all.length) return alert("No data to export.");
-  const itemCols = [];
-  for (let i = 1; i <= 18; i++) itemCols.push("item" + i + "_freq", "item" + i + "_intensity");
-  const headers = ["timestamp","studentId","context","grade","window","mode","language",
-    "domainA","domainB","domainC","composite",
-    "normA","normB","normC","normComposite",
-    "tier","trustedAdultFlag","closingWord",
-    "reflectionA","reflectionB","reflectionC",
-    ...itemCols];
-  const rows = all.map(r => {
-    const row = [r.timestamp, r.studentId, r.context || "", r.grade, r.window, r.mode || "rapid", r.language || "en",
-      r.domainA, r.domainB, r.domainC, r.composite,
-      r.normA, r.normB, r.normC, r.normComposite,
-      r.tier, r.trustedAdultFlag, r.closingWord || "",
-      (r.reflections && r.reflections[0]) || "",
-      (r.reflections && r.reflections[1]) || "",
-      (r.reflections && r.reflections[2]) || ""];
-    for (let i = 0; i < 18; i++) {
-      row.push(r.raw ? r.raw[i] : "");
-      row.push(r.intensities ? r.intensities[i] : "");
-    }
-    return row;
+  const groups = _aggGroups(all, r => String(r.grade) + "||" + (r.window || ""));
+  const headers = ["grade","window","responses",
+    "pctDoingWell","pctWorthCheckin","pctNeedsSupport",
+    "avgEmotional_A","avgCompassion_B","avgSocial_C","avgComposite",
+    "namedNoTrustedAdult"];
+  const rows = Object.keys(groups).sort().map(k => {
+    const rs = groups[k];
+    const [grade, window] = k.split("||");
+    const n = rs.length;
+    const b = _bandCounts(rs);
+    const pct = x => n ? Math.round(x/n*100) : 0;
+    return [grade, window, n,
+      pct(b.low), pct(b.some), pct(b.high),
+      _avg(rs.map(r=>r.normA)), _avg(rs.map(r=>r.normB)), _avg(rs.map(r=>r.normC)), _avg(rs.map(r=>r.normComposite)),
+      b.flags];
   });
-  downloadCSV("AoG_CheckIn_v2_FullResponses.csv", headers, rows);
+  downloadCSV("AoG_CheckIn_ClassSummary.csv", headers, rows);
 }
 
 function exportRosterCSV() {
+  // Band distribution by window (no individuals; replaces the old per-student roster).
   const all = getAllRecords();
-  const flagged = all.filter(r => r.tier !== "Low Risk" || r.trustedAdultFlag);
-  if (!flagged.length) return alert("No flagged students.");
-  const headers = ["studentId","grade","window","mode","normComposite","normA","normB","normC","tier","trustedAdultFlag","timestamp"];
-  const rows = flagged.map(r => [r.studentId, r.grade, r.window, r.mode || "rapid", r.normComposite, r.normA, r.normB, r.normC, r.tier, r.trustedAdultFlag, r.timestamp]);
-  downloadCSV("AoG_CheckIn_v2_TierRoster.csv", headers, rows);
+  if (!all.length) return alert("No data to export.");
+  const groups = _aggGroups(all, r => r.window || "");
+  const headers = ["window","responses","doingWell","worthCheckin","needsSupport",
+    "pctDoingWell","pctWorthCheckin","pctNeedsSupport","namedNoTrustedAdult"];
+  const rows = Object.keys(groups).sort().map(w => {
+    const rs = groups[w];
+    const n = rs.length;
+    const b = _bandCounts(rs);
+    const pct = x => n ? Math.round(x/n*100) : 0;
+    return [w, n, b.low, b.some, b.high, pct(b.low), pct(b.some), pct(b.high), b.flags];
+  });
+  downloadCSV("AoG_CheckIn_BandDistribution.csv", headers, rows);
 }
 
 function exportGrowthCSV() {
+  // Class average composite per window (no individuals).
   const all = getAllRecords();
   if (!all.length) return alert("No data to export.");
-  const byStudent = {};
+  const order = ["Fall","Winter","Spring","Summer"];
+  // latest response per person per window, then average
+  const perWin = {};
+  order.forEach(w => perWin[w] = {});
   all.forEach(r => {
-    if (!byStudent[r.studentId]) byStudent[r.studentId] = { studentId: r.studentId, grade: r.grade };
-    const existing = byStudent[r.studentId][r.window];
-    if (!existing || new Date(r.timestamp) > new Date(existing.timestamp)) {
-      byStudent[r.studentId][r.window] = r;
-    }
+    if (!order.includes(r.window) || r.normComposite == null) return;
+    const prev = perWin[r.window][r.studentId];
+    if (!prev || new Date(r.timestamp) > new Date(prev.timestamp)) perWin[r.window][r.studentId] = r;
   });
-  const headers = ["studentId","grade","fall","winter","spring","summer","firstToLatestDelta","latestTier"];
-  const rows = Object.values(byStudent).map(s => {
-    const fall = s.Fall ? s.Fall.normComposite : "";
-    const winter = s.Winter ? s.Winter.normComposite : "";
-    const spring = s.Spring ? s.Spring.normComposite : "";
-    const summer = s.Summer ? s.Summer.normComposite : "";
-    const order = ["Fall","Winter","Spring","Summer"];
-    const present = order.filter(w => s[w]);
-    const earliest = present.length ? s[present[0]].normComposite : null;
-    const latest = present.length ? s[present[present.length-1]].normComposite : null;
-    const delta = (earliest != null && latest != null) ? round1(latest - earliest) : "";
-    const latestTier = present.length ? s[present[present.length-1]].tier : "";
-    return [s.studentId, s.grade, fall, winter, spring, summer, delta, latestTier];
-  });
-  downloadCSV("AoG_CheckIn_v2_GrowthReport.csv", headers, rows);
+  const headers = ["window","responses","classAvgComposite"];
+  const rows = order.map(w => {
+    const rs = Object.values(perWin[w]);
+    if (!rs.length) return null;
+    return [w, rs.length, _avg(rs.map(r=>r.normComposite))];
+  }).filter(Boolean);
+  if (!rows.length) return alert("No data to export.");
+  downloadCSV("AoG_CheckIn_ClassGrowth.csv", headers, rows);
 }
 
 
@@ -6629,8 +6890,8 @@ function riToggle(id) {
 // To make any item a family purchase instead of a district license,
 // add  access:"buy"  to it below (and optionally its own buyUrl:"...").
 // ============================================================
-const LICENSE_INQUIRY_URL = "";
-const FAMILY_STORE_URL = "";
+const LICENSE_INQUIRY_URL = "mailto:whytheschooloflife@gmail.com?subject=Architecture%20of%20Grace%20%E2%80%94%20District%20License";
+const FAMILY_STORE_URL = "mailto:whytheschooloflife@gmail.com?subject=Architecture%20of%20Grace%20%E2%80%94%20Family%20Purchase%20Inquiry";
 
 // ============================================================
 // CLOSED-LOOP DEEP LINKS  ·  EDIT ME
@@ -6933,25 +7194,7 @@ function initEcoInteractive() {
 function initGuideExtras() {
   // Sub-tab wiring
   document.querySelectorAll(".guide-subtab").forEach(tab => {
-    tab.addEventListener("click", () => {
-      document.querySelectorAll(".guide-subtab").forEach(t => t.classList.remove("active"));
-      document.querySelectorAll(".guide-section").forEach(s => s.classList.remove("active"));
-      tab.classList.add("active");
-      const sec = document.getElementById("guide-" + tab.dataset.guide);
-      if (sec) sec.classList.add("active");
-      if (tab.dataset.guide === "resindex") riRender(document.getElementById("riSearch").value, document.getElementById("riGrade").value);
-      if (tab.dataset.guide === "ecosystem") initEcoInteractive();
-      if (tab.dataset.guide === "library") renderLibrary();
-      if (typeof aogSetHash === "function") aogSetHash(AOG_SUB_TO_HASH[tab.dataset.guide] || tab.dataset.guide);
-      if (sec) {
-        requestAnimationFrame(function () {
-          var tb = document.querySelector(".topbar");
-          var off = (tb ? tb.offsetHeight : 70) + 14;
-          var top = sec.getBoundingClientRect().top + window.pageYOffset - off;
-          window.scrollTo({ top: Math.max(0, top), behavior: "smooth" });
-        });
-      }
-    });
+    tab.addEventListener("click", () => activateGuideSection(tab.dataset.guide, true));
   });
 
   // Resource Library accordion (event delegation)
