@@ -1162,6 +1162,9 @@ tr:hover td { background: var(--paper); }
 .rc-hero-story:hover{ background:#f2c977; }
 .rc-hero-lesson{ background:transparent; color:#fff; border:1.5px solid var(--gold-light,#E7B85E); }
 .rc-hero-lesson:hover{ background:rgba(231,184,94,.16); }
+.rc-go.rc-locked{ display:inline-flex; align-items:center; background:transparent; color:var(--navy);
+  border:1.5px solid var(--rule,#d9cdb2); font-weight:700; }
+.rc-go.rc-locked:hover{ border-color:var(--gold); color:var(--gold-deep,#9a6f24); }
 .rc-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:12px; }
 .rc-card{ display:flex; flex-direction:column; background:#fff; border:1px solid var(--rule,#e7ddc9);
   border-left:3px solid var(--gold); border-radius:11px; padding:14px 15px; box-shadow:var(--shadow-sm); }
@@ -5110,8 +5113,6 @@ function youngerRefStrip(band){
     var links=TYPES.map(function(t){
       var it=libFind(t.cat,function(x){return libItemBand(x.title)===b;});
       if(!it) return "";
-      var st=libItemState(it);
-      if(st==="free") return '<a class="yr-link" href="'+libEsc(it.url)+'" target="_blank" rel="noopener">\u2197 '+t.label+'</a>';
       return '<a class="yr-link yr-lib" href="#" onclick="openGuide(\'library\');return false;">'+t.label+'</a>';
     }).filter(Boolean).join('<span class="yr-dot">\u00b7</span>');
     if(links){
@@ -5124,6 +5125,7 @@ function youngerRefStrip(band){
     + rows.join("") + '</div>';
 }
 // Build the clickable, viewable resource cards that a flagged result points to.
+var LOCK_SVG='<svg viewBox=\"0 0 24 24\" width=\"11\" height=\"11\" fill=\"currentColor\" style=\"vertical-align:-1px;margin-right:5px\"><path d=\"M12 1a5 5 0 0 0-5 5v3H6a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-9a2 2 0 0 0-2-2h-1V6a5 5 0 0 0-5-5zm3 8H9V6a3 3 0 0 1 6 0v3z\"/></svg>';
 function resultResourceCards(r, lowItems, lowestDomain, isSelf){
   var band = resultBand(r);
   var es = (dashLang==="es");
@@ -5178,19 +5180,15 @@ function resultResourceCards(r, lowItems, lowestDomain, isSelf){
       if(it) picks.push({it:it,cat:cat});
     });
   });
-  var sample = libFind("The Curriculum", function(x){return /Sample Lesson/.test(x.title)&&libItemBand(x.title)===band;});
-  if(sample) picks.unshift({it:sample,cat:"The Curriculum"});
   var seen={};
   picks=picks.filter(function(p){ if(seen[p.it.title]) return false; seen[p.it.title]=1; return true; });
   picks.sort(function(a,b){ var fa=(a.it.url&&a.it.url.trim())?0:1, fb=(b.it.url&&b.it.url.trim())?0:1; return fa-fb; });
   picks=picks.slice(0,4);
 
   var cardHtml = picks.map(function(p){
-    var it=p.it, st=libItemState(it), act;
-    if(st==="free") act='<a class="rc-go rc-free" href="'+libEsc(it.url)+'" target="_blank" rel="noopener">\u2197 '+DT("Open","Abrir")+'</a>';
-    else if(st==="buy"){ var u=(it.buyUrl||FAMILY_STORE_URL); act='<a class="rc-go rc-buy" href="'+libEsc(u||"#")+'"'+(u?' target="_blank" rel="noopener"':' onclick="return false;"')+'>'+DT("Buy","Comprar")+'</a>'; }
-    else if(st==="both"){ act='<a class="rc-go rc-lib" href="#" onclick="openGuide(\'library\');return false;">'+DT("In the Library \u2192","En la biblioteca \u2192")+'</a>'; }
-    else act='<a class="rc-go rc-lib" href="#" onclick="openGuide(\'library\');return false;">'+DT("In the Library \u2192","En la biblioteca \u2192")+'</a>';
+    var it=p.it;
+    // Lock fully: the full packs are the paid product. Route to the library to license/buy.
+    var act='<a class="rc-go rc-locked" href="#" onclick="openGuide(\'library\');return false;">'+LOCK_SVG+DT("Available with a license","Disponible con licencia")+'</a>';
     var kindName = (es && typeof LIB_CAT_ES!=="undefined" && LIB_CAT_ES[p.cat]) ? LIB_CAT_ES[p.cat].cat : p.cat;
     return '<div class="rc-card"><div class="rc-kind">'+libEsc(kindName)+'</div>'
       +'<div class="rc-title">'+libEsc(it.title)+'</div>'
@@ -5764,15 +5762,15 @@ const NOVEL_DIGITAL_URLS = {
 // table of contents. Do not hand-edit; regenerate if the books change.
 const NOVEL_PAGES = {1:{1:9,2:12,3:15,4:18,5:22,6:26,7:29,8:33,9:37,10:41,11:45,12:49,13:53,14:59,15:63,16:67,17:71,18:76,19:79,20:82,21:86,22:91,23:95,24:98,25:102,26:105,27:108}, 2:{1:10,2:18,3:24,4:31,5:38,6:42,7:49,8:57,9:63,10:69,11:77,12:82,13:87,14:94,15:99,16:110,17:117,18:122,19:129,20:133,21:143,22:146,23:151,24:156,25:162,26:166,27:170,28:175,29:181,30:185,31:189,32:197}, 3:{1:12,2:19,3:24,4:31,5:39,6:46,7:54,8:62,9:67,10:73,11:80,12:86,13:93,14:100,15:107,16:114,17:122,18:131,19:138,20:146,21:153,22:161}, 4:{1:11,2:17,3:25,4:31,5:39,6:44,7:51,8:58,9:66,10:75,11:82,12:91,13:98,14:108,15:117,16:124,17:132,18:141,19:148,20:158,21:165}, 5:{1:10,2:18,3:26,4:33,5:39,6:48,7:55,8:63,9:72,10:78,11:85,12:92,13:99,14:106,15:113,16:120,17:128,18:136,19:145,20:153,21:162,22:171,23:179,24:185,25:194,26:204,27:215,28:225}};
 function novelJumpUrl(book, chapter){
-  var base = NOVEL_DIGITAL_URLS[book];
-  if(!base) return "";
-  var pg = (NOVEL_PAGES[book]||{})[chapter];
-  return pg ? (base + "#page=" + pg) : base;
+  // Free preview: a standalone PDF of just this chapter. The full novel is the paid product.
+  if(!book || !chapter) return "";
+  return PREVIEW_DIR + "Story-B" + book + "-Ch" + chapter + ".pdf";
 }
 function chNumOf(ch){ var m=String(ch).match(/\d+/); return m?parseInt(m[0],10):null; }
 // Full curriculum volumes, for the "Open the lesson" deep-jump. Hosting these makes
 // the full curriculum openable to anyone with the link (it is the district-licensed
 // core) — blank a value to turn that book's lesson jump off and keep it gated.
+const PREVIEW_DIR = "previews/";  // free per-chapter / per-lesson extracts
 const CURRICULUM_URLS = {
   1:"files/AoG_Book1_The_Foundation_Curriculum_Polished.pdf",
   2:"files/AoG_Book2_The_Framework_Curriculum_Polished.pdf",
@@ -5783,9 +5781,9 @@ const CURRICULUM_URLS = {
 // Verified construct -> curriculum lesson page, per book (from each volume's TOC).
 const CURR_LESSON_PAGES = {"Items 1, 2":{1:15,2:15,4:18}, "Items 3, 4":{2:24,4:83}, "Items 5, 6":{1:17,2:45}, "Item 8 (+7, 9)":{1:19,2:20,3:39,4:34}, "Item 9":{1:35,2:49,3:53}, "Item 10":{1:38,2:52,3:56,5:57}, "Items 11, 12":{1:23,2:42,3:49,4:54}, "Item 13":{1:48,2:62,3:67,5:107}, "Item 14":{1:33,2:64}, "Item 15":{1:66,2:93,3:96,4:123}, "Item 16":{1:70,2:98,3:102,4:119,5:136}, "Item 17":{1:50,2:69,3:70,4:92,5:102}};
 function curriculumJumpUrl(book, constructKey){
-  var base=CURRICULUM_URLS[book]; if(!base) return "";
+  // Free preview: a standalone PDF of just this lesson. The full curriculum is licensed.
   var pg=(CURR_LESSON_PAGES[constructKey]||{})[book];
-  return pg ? (base + "#page=" + pg) : "";
+  return pg ? (PREVIEW_DIR + "Lesson-B" + book + "-p" + pg + ".pdf") : "";
 }
 
 
