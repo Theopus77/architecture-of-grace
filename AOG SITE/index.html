@@ -7,7 +7,7 @@
 <meta name="description" content="The Architecture of Grace Universal Check-In. Bilingual, MTSS-ready, with a depth mode, intensity follow-ups, written reflections, and a per-person Home View report.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Inter:wght@300;400;500;600;700&family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..700&family=Bricolage+Grotesque:opsz,wght@12..96,300..800&display=swap" rel="stylesheet">
 <style>
 /* ============================================================
    ARCHITECTURE OF GRACE · UNIVERSAL CHECK-IN · v2
@@ -15,19 +15,19 @@
    ============================================================ */
 
 :root {
-  --navy:        #1B3A5F;
-  --navy-deep:   #122843;
-  --navy-soft:   #2B4D7A;
-  --gold:        #B8893A;
-  --gold-soft:   #D4A85F;
-  --gold-pale:   #F5E9CC;
-  --cream:       #FAF6EC;
-  --cream-deep:  #F4EFE0;
-  --paper:       #FDFCF7;
-  --ink:         #1A1F2C;
-  --ink-soft:    #4A5266;
+  --navy:        #0A1E33;
+  --navy-deep:   #06121F;
+  --navy-soft:   #13314F;
+  --gold:        #D9A33B;
+  --gold-soft:   #F2C964;
+  --gold-pale:   #F1DFA8;
+  --cream:       #F4EEE2;
+  --cream-deep:  #EDE6D6;
+  --paper:       #FCF8F0;
+  --ink:         #0A1E33;
+  --ink-soft:    #46506E;
   --ink-faint:   #8A92A6;
-  --rule:        #E5DFD0;
+  --rule:        #E4DAC5;
   --rule-soft:   #EFEADB;
 
   --green:       #2E6B3A;
@@ -54,7 +54,7 @@
   --radius:      10px;
   --radius-lg:   16px;
 
-  --font-serif:  "Cormorant Garamond", Georgia, serif;
+  --font-serif:  "Fraunces", "Cormorant Garamond", Georgia, serif;
   --font-sans:   "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 
   --ease:        cubic-bezier(0.32, 0.72, 0, 1);
@@ -290,6 +290,7 @@ body::before {
 }
 
 /* Script Card */
+.checkin-reassure{ text-align:center; font-size:13px; font-weight:600; letter-spacing:.01em; color:var(--gold); margin:6px auto 0; max-width:560px; }
 .script-card {
   background: linear-gradient(180deg, var(--cream) 0%, var(--cream-deep) 100%);
   border-radius: var(--radius-lg);
@@ -487,21 +488,26 @@ body::before {
 .response-grid-6 {
   display: grid;
   grid-template-columns: repeat(6, 1fr);
-  gap: 8px;
+  gap: 10px;
   margin-bottom: 8px;
 }
-@media (max-width: 900px) { .response-grid-6 { grid-template-columns: repeat(3, 1fr); } }
-@media (max-width: 500px) { .response-grid-6 { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 900px) { .response-grid-6 { grid-template-columns: repeat(3, 1fr); gap: 12px; } }
+@media (max-width: 560px) {
+  .response-grid-6 { grid-template-columns: 1fr; gap: 14px; }
+}
 
 .response-option {
   background: var(--paper);
   border: 2px solid var(--rule);
   border-radius: var(--radius);
-  padding: 18px 8px;
+  padding: 22px 10px;
+  min-height: 64px;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
   cursor: pointer; text-align: center;
   transition: all 0.2s var(--ease);
   user-select: none;
   position: relative;
+  -webkit-tap-highlight-color: transparent;
 }
 .response-option:hover {
   border-color: var(--navy-soft);
@@ -513,8 +519,12 @@ body::before {
   background: var(--navy);
   border-color: var(--navy);
   color: white;
-  box-shadow: 0 8px 16px -4px rgba(27,58,95,.3);
+  box-shadow: 0 8px 18px -4px rgba(10,30,51,.32), 0 0 0 3px var(--gold-pale);
   transform: translateY(-2px);
+}
+.response-option.selected::after{
+  content:"";position:absolute;top:8px;right:8px;width:7px;height:7px;border-radius:50%;
+  background:var(--gold-soft);box-shadow:0 0 0 2px rgba(242,201,100,.3);
 }
 .response-option .freq-label {
   font-size: 13px; font-weight: 600;
@@ -530,6 +540,43 @@ body::before {
   transition: color 0.2s var(--ease);
 }
 .response-option.selected .freq-hint { color: var(--gold-soft); }
+
+/* Mobile: finger-friendly answer options (placed after base so it wins) */
+@media (max-width: 560px) {
+  .response-option {
+    min-height: 64px;
+    padding: 16px 20px 16px 56px;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    text-align: left;
+    border-radius: 14px;
+    gap: 2px;
+  }
+  /* left-side radio indicator */
+  .response-option::before {
+    content: "";
+    position: absolute;
+    left: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    border: 2px solid var(--rule);
+    background: #fff;
+    transition: border-color .15s, background .15s;
+  }
+  .response-option.selected::before {
+    border-color: var(--gold-soft);
+    background: var(--gold-soft);
+    box-shadow: inset 0 0 0 4px var(--navy);
+  }
+  .response-option .freq-label { font-size: 17px; font-weight: 600; margin-bottom: 0; }
+  .response-option .freq-hint { font-size: 12.5px; margin: 0; padding: 0; text-align: left; max-width: none; }
+  /* hide the old top-right corner dot on mobile; the radio replaces it */
+  .response-option.selected::after { display: none; }
+}
 
 /* Intensity follow-up - appears below */
 .intensity-block {
@@ -674,7 +721,7 @@ body::before {
   transition: all 0.2s var(--ease);
 }
 .tab:hover { color: var(--navy); }
-.tab.active { color: var(--navy); border-bottom-color: var(--gold); }
+.tab.active { color: var(--navy); border-bottom-color: var(--gold); font-weight: 700; }
 .tab-panel { display: none; animation: fadeIn 0.3s var(--ease-out); }
 .tab-panel.active { display: block; }
 .tab-hint-row { display: flex; align-items: center; justify-content: space-between; gap: 14px; margin: -20px 0 6px; flex-wrap: wrap; }
@@ -708,11 +755,13 @@ th.sorted { color: var(--navy); }
 .kpi {
   background: white;
   border: 1px solid var(--rule);
-  border-radius: var(--radius);
-  padding: 20px;
+  border-radius: var(--radius-lg);
+  padding: 24px;
   box-shadow: var(--shadow-sm);
   position: relative; overflow: hidden;
+  transition: transform .18s var(--ease), box-shadow .18s var(--ease);
 }
+.kpi:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
 .kpi-label {
   font-size: 11px; color: var(--ink-faint);
   text-transform: uppercase; letter-spacing: 0.1em;
@@ -723,7 +772,7 @@ th.sorted { color: var(--navy); }
   color: var(--navy); line-height: 1; margin-bottom: 6px;
 }
 .kpi-sub { font-size: 12px; color: var(--ink-soft); }
-.kpi-accent { position: absolute; top: 0; left: 0; width: 100%; height: 3px; }
+.kpi-accent { position: absolute; top: 0; left: 0; width: 100%; height: 4px; background: linear-gradient(90deg, var(--gold-soft), var(--gold)); }
 .accent-navy { background: var(--navy); }
 .accent-gold { background: var(--gold); }
 .accent-green { background: var(--green); }
@@ -876,15 +925,25 @@ tr:hover td { background: var(--paper); }
   color: var(--navy); font-weight: 600; margin-bottom: 4px;
 }
 
-footer {
-  text-align: center;
-  padding: 40px 20px;
-  border-top: 1px solid var(--rule);
-  margin-top: 60px;
-  color: var(--ink-faint);
-  font-size: 12px;
-}
-footer .serif { font-style: italic; color: var(--ink-soft); }
+.hyb-foot{background:var(--navy);color:#C9D2DE;padding:56px 7vw 40px;margin-top:0}
+.hyb-foot .sf-inner{max-width:1000px;margin:0 auto;text-align:center}
+.hyb-foot .sf-brand{display:inline-flex;gap:12px;align-items:center;margin-bottom:18px}
+.hyb-foot .sf-mk{width:42px;height:42px;background:linear-gradient(180deg,#F2C964,#D9A33B);color:var(--navy);display:grid;place-items:center;font-family:var(--font-serif);font-weight:700;font-size:22px;border-radius:6px}
+.hyb-foot .sf-nm{font-family:var(--font-serif);font-weight:600;font-size:19px;color:var(--cream);text-align:left}
+.hyb-foot .sf-sb{font-size:11.5px;color:#8FA0B5;text-align:left}
+.hyb-foot .sf-mission{font-family:var(--font-sans);font-size:14px;line-height:1.6;max-width:620px;margin:0 auto 22px;color:#A9B6C7}
+.hyb-foot .sf-pillars{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-bottom:24px}
+.hyb-foot .sf-pillars span{font-family:var(--font-sans);font-size:12px;font-weight:600;color:var(--gold-soft);border:1px solid rgba(242,201,100,.3);padding:6px 15px;border-radius:30px}
+.hyb-foot .sf-links{display:flex;gap:26px;flex-wrap:wrap;justify-content:center;padding:22px 0;border-top:1px solid rgba(255,255,255,.1);border-bottom:1px solid rgba(255,255,255,.1);margin-bottom:20px}
+.hyb-foot .sf-links a{color:#C9D2DE;text-decoration:none;font-family:var(--font-sans);font-size:13.5px;font-weight:500;transition:color .15s;cursor:pointer}
+.hyb-foot .sf-links a:hover{color:var(--gold-soft)}
+.hyb-foot .sf-social{display:flex;gap:14px;justify-content:center;margin-bottom:22px}
+.hyb-foot .sf-social a{width:38px;height:38px;border-radius:50%;border:1px solid rgba(255,255,255,.16);display:grid;place-items:center;color:#A9B6C7;transition:all .15s}
+.hyb-foot .sf-social a:hover{color:var(--navy);background:var(--gold-soft);border-color:var(--gold-soft);transform:translateY(-2px)}
+.hyb-foot .sf-social svg{width:18px;height:18px}
+.hyb-foot .sf-legal{font-family:var(--font-sans);font-size:11.5px;color:#7E8EA3;line-height:1.6;max-width:680px;margin:0 auto}
+.hyb-foot .sf-made{font-family:var(--font-serif);font-style:italic;font-size:13px;color:var(--gold-soft);margin-top:14px;letter-spacing:.01em}
+@media (max-width:760px){ .hyb-foot{padding:44px 6vw 34px} .hyb-foot .sf-links{gap:16px 22px} }
 
 /* Modal */
 .modal-back {
@@ -1209,6 +1268,18 @@ footer .serif { font-style: italic; color: var(--ink-soft); }
 
 /* Interactive Ecosystem */
 .eco-hero { margin:4px 0 22px; }
+/* Bold hybrid Guide header */
+#screen-guide .container-wide{padding-top:0 !important}
+.guide-hero{background:radial-gradient(125% 150% at 50% 0%, #244D75 0%, #143049 55%, #07151F 100%);margin:-32px calc(50% - 50vw) 28px;padding:64px 7vw 56px;position:relative;overflow:hidden}
+.guide-hero::before{content:"";position:absolute;top:-30%;right:-5%;width:55%;height:160%;background:radial-gradient(circle,rgba(242,201,100,.15),transparent 65%);pointer-events:none}
+.guide-hero-inner{max-width:1200px;margin:0 auto;display:flex;align-items:flex-start;justify-content:space-between;gap:28px;position:relative}
+.guide-hero-ey{font-family:var(--font-sans);font-size:12px;font-weight:700;letter-spacing:.32em;text-transform:uppercase;color:var(--gold-soft)}
+.guide-hero-title{font-family:var(--font-serif);font-weight:600;font-size:clamp(40px,6vw,76px);line-height:.95;letter-spacing:-.02em;color:var(--cream);margin:12px 0 14px}
+.guide-hero-lede{font-family:var(--font-sans);font-size:clamp(15px,1.7vw,18px);line-height:1.6;color:#C2CEDD;max-width:680px}
+.guide-hero-lede em{color:var(--gold-soft);font-style:italic}
+.guide-hero-back{flex:0 0 auto;background:rgba(244,238,226,.10);border:1.5px solid rgba(242,201,100,.4);color:var(--cream);white-space:nowrap}
+.guide-hero-back:hover{background:rgba(242,201,100,.16);transform:translateY(-2px)}
+@media (max-width:760px){ .guide-hero{padding:44px 6vw 40px} .guide-hero-inner{flex-direction:column} .guide-hero-back{align-self:flex-start} }
 .guide-slimbar { display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; padding:2px 0 14px; margin-bottom:16px; border-bottom:1px solid var(--rule); }
 .guide-slim-label { font-size:14px; color:var(--ink-soft); }
 .guide-slim-eyebrow { color:var(--gold); font-weight:700; letter-spacing:.08em; text-transform:uppercase; font-size:11.5px; }
@@ -1217,7 +1288,7 @@ footer .serif { font-style: italic; color: var(--ink-soft); }
 .eco-title { font-size:25px !important; margin:2px 0 6px !important; }
 .eco-lede { font-size:13.5px !important; }
 .eco-stage { margin-top:4px !important; gap:18px !important; }
-.eco-canvas { max-width:820px; margin:0 auto; }
+.eco-canvas { width:100%; max-width:920px; margin:0 auto; }
 .eco-detail { min-height:0 !important; }
 .eco-head { text-align:center; max-width:620px; margin:0 auto 8px; }
 .eco-title { font-size:30px; color:var(--navy); margin:2px 0 8px; letter-spacing:-.01em; }
@@ -1229,21 +1300,22 @@ footer .serif { font-style: italic; color: var(--ink-soft); }
 .eco-c2 { font-family:var(--sans,Inter,sans-serif); font-size:9.5px; fill:#9A7B3C; letter-spacing:.14em; text-transform:uppercase; }
 .eco-elabel { font-family:var(--sans,Inter,sans-serif); font-size:10.5px; fill:#5C6678; font-style:italic; }
 .eco-elabel-g { fill:#8a6a1f; }
-.eco-ring { transform-box:fill-box; transform-origin:center; animation:ecoSpin 90s linear infinite; }
+.eco-ring { transform-box:fill-box; transform-origin:center; animation:ecoPulse 4.5s ease-in-out infinite; }
 .eco-flow { animation:ecoDash 1.1s linear infinite; }
-@keyframes ecoSpin { to { transform:rotate(360deg);} }
+@keyframes ecoPulse { 0%,100%{ opacity:.5;} 50%{ opacity:.9;} }
 @keyframes ecoDash { to { stroke-dashoffset:-26; } }
 .eco-node { cursor:pointer; transition:transform .2s var(--ease-out); transform-box:fill-box; transform-origin:center; }
 .eco-cardbox { fill:url(#ecoCard); stroke:#E0D7C2; stroke-width:1.25; filter:url(#ecoSoft); transition:stroke .2s, filter .2s; }
+.eco-cardbox-hero { fill:url(#ecoHero); stroke:#D9A33B; stroke-width:2; }
+.eco-name-hero { fill:#FFFFFF !important; }
+.eco-role-hero { fill:#C2CEDD !important; }
+.eco-live { animation:ecoBlink 2.6s ease-in-out infinite; }
+@keyframes ecoBlink { 0%,100%{ opacity:.35;} 50%{ opacity:1;} }
 .eco-tag { font-family:var(--sans,Inter,sans-serif); font-size:9.5px; font-weight:700; letter-spacing:.12em; }
-.eco-name { font-family:var(--serif); font-size:16.5px; font-weight:600; fill:var(--navy); }
+.eco-name { font-family:var(--serif); font-size:15.5px; font-weight:600; fill:var(--navy); }
 .eco-role { font-family:var(--sans,Inter,sans-serif); font-size:10px; fill:#7A8194; }
 .eco-node:hover, .eco-node:focus, .eco-node.is-active { transform:translateY(-4px); outline:none; }
 .eco-node:hover .eco-cardbox, .eco-node:focus .eco-cardbox, .eco-node.is-active .eco-cardbox { stroke:var(--gold); stroke-width:2; filter:url(#ecoGlow); }
-.eco-node:nth-child(7) { animation:ecoFloat 7s ease-in-out infinite; }
-.eco-node:nth-child(8) { animation:ecoFloat 7s ease-in-out infinite .9s; }
-.eco-node:nth-child(9) { animation:ecoFloat 7s ease-in-out infinite 1.8s; }
-.eco-node:nth-child(10){ animation:ecoFloat 7s ease-in-out infinite 2.7s; }
 @keyframes ecoFloat { 0%,100%{ transform:translateY(0);} 50%{ transform:translateY(-3px);} }
 .eco-detail { width:100%; max-width:560px; margin:0 auto; background:#fff; border:1px solid var(--rule); border-left:4px solid var(--gold); border-radius:11px; padding:10px 20px; box-shadow:0 5px 16px rgba(27,58,95,.05); display:grid; grid-template-columns:minmax(135px,165px) 1fr; column-gap:20px; row-gap:1px; align-items:start; }
 .eco-detail .ed-tag   { grid-column:1; grid-row:1; }
@@ -1384,6 +1456,16 @@ footer .serif { font-style: italic; color: var(--ink-soft); }
 .aog-door.primary .t{color:#fff}.aog-door.primary .s{color:#D8E0EC}.aog-door.primary .arr{color:var(--gold-soft)}
 .aog-door.primary .sh{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:#10243a;background:var(--gold);padding:3px 10px;border-radius:20px;margin-bottom:7px}
 .aog-door.secondary{background:#fff;border:1px solid var(--rule)}
+/* Choose-screen card distinction */
+.aog-door.choose-card{border-radius:18px}
+.aog-door.choose-student{background:linear-gradient(165deg,#FFF8E8,#F8EBCB);border:1px solid #E5D2A2}
+.aog-door.choose-student .ic{background:linear-gradient(180deg,#F2C964,#D9A33B);color:var(--navy)}
+.aog-door.choose-student .t{color:var(--navy)}
+.aog-door.choose-adult{background:linear-gradient(165deg,#13314F,#0A1E33);border:1px solid #1E4A72}
+.aog-door.choose-adult .ic{background:rgba(242,201,100,.18);color:var(--gold-soft)}
+.aog-door.choose-adult .t{color:#fff}
+.aog-door.choose-adult .s{color:#C2CEDD}
+.aog-door.choose-adult .arr{color:var(--gold-soft)}
 .aog-door .ic{width:50px;height:50px;flex:0 0 auto;border-radius:12px;display:grid;place-items:center;font-size:23px;background:var(--gold-pale);color:var(--gold)}
 .aog-door .ic svg{width:25px;height:25px}
 .aog-doors>.aog-door.primary .ic svg{width:29px;height:29px}
@@ -1392,6 +1474,182 @@ footer .serif { font-style: italic; color: var(--ink-soft); }
 .aog-door .arr{margin-left:auto;color:var(--gold);font-size:23px}
 .aog-foundation-rest{margin-top:-14px;position:relative;z-index:1}
 @media (max-width:640px){ .aog-checkins{grid-template-columns:1fr} .aog-hero-e2{padding:42px 20px 46px} .aog-lock .l1{font-size:30px} .aog-lock .l2{font-size:clamp(54px,16vw,108px)} .aog-htag{font-size:12px;letter-spacing:.28em} .topbar{padding:12px 16px;flex-wrap:wrap;row-gap:8px} .topbar-link{margin-right:10px} }
+</style>
+<style id="bold-pass-v1">
+/* ============================================================
+   BOLD PASS v1 — additive overrides only. Modern + confident.
+   Navy/gold brand kept. Structure untouched.
+   ============================================================ */
+
+/* 1. Hero: keep the well-tuned baseline foil; only deepen the navy + a touch more scale */
+.aog-hero-e2{
+  padding:84px 40px 90px !important;
+  background:radial-gradient(125% 140% at 50% 0%, #244D75 0%, #143049 54%, #07151F 100%) !important;
+  border-bottom:1px solid rgba(231,184,94,.20);
+}
+.aog-htag{letter-spacing:.46em !important;color:#EDD49A !important;opacity:1 !important}
+.aog-lock .l2{font-size:clamp(84px,15.5vw,182px) !important}
+.aog-hrule{width:150px !important;border-top:1px solid rgba(231,184,94,.55) !important;margin-top:24px !important}
+
+/* 2. Lede + audience chips: more presence */
+.aog-intro{padding:52px 0 6px !important}
+.aog-lede{font-size:clamp(18px,2.3vw,22px) !important;line-height:1.62 !important;color:#3A4355 !important}
+.aog-aud span{
+  font-size:13px !important;padding:8px 18px !important;
+  border:1px solid #DCD2BC !important;box-shadow:0 1px 2px rgba(27,58,95,.05) !important;
+  transition:transform .15s, box-shadow .15s;
+}
+.aog-aud span:hover{transform:translateY(-1px);box-shadow:0 4px 10px rgba(27,58,95,.10)}
+.aog-aud span.lead{
+  background:linear-gradient(180deg,#D8AB54,#B8893A) !important;color:#1a130a !important;
+  border-color:#B8893A !important;box-shadow:0 4px 12px rgba(184,137,58,.32) !important;
+}
+
+/* 3. Door cards: bolder lift + crisper edges */
+.aog-door{border-radius:18px !important;transition:transform .2s var(--ease, ease), box-shadow .2s !important}
+.aog-door:hover{transform:translateY(-4px) !important;box-shadow:0 26px 50px -14px rgba(15,42,74,.42) !important}
+.aog-door.primary{
+  background:linear-gradient(165deg,#28527C 0%,#15324C 78%) !important;
+  border:1px solid #2C5882 !important;box-shadow:0 22px 44px -14px rgba(15,42,74,.5) !important;
+}
+.aog-door.primary .sh{
+  background:linear-gradient(180deg,#E7C98A,#C19A4F) !important;color:#10243a !important;
+  letter-spacing:.18em !important;box-shadow:0 2px 8px rgba(184,137,58,.4);
+}
+.aog-door.primary .ic{box-shadow:0 6px 16px rgba(184,137,58,.4) !important}
+
+/* 4. Foundation card: warmer, bolder, the four ideas become real tokens */
+.aog-what{
+  border-radius:20px !important;padding:42px 48px 40px !important;
+  border:1px solid #E6DBC2 !important;
+  box-shadow:0 1px 0 #fff inset, 0 18px 44px -16px rgba(27,58,95,.14) !important;
+}
+.aog-what::before{width:84px !important;height:4px !important;background:linear-gradient(90deg,#E7C98A,#B8893A) !important}
+.aog-what h2{font-size:clamp(30px,3.4vw,42px) !important;letter-spacing:-0.01em !important;margin:9px 0 17px !important}
+.aog-what .ey{letter-spacing:.32em !important}
+.aog-what .pillars span.tag{
+  font-size:13px !important;font-weight:600 !important;letter-spacing:.02em !important;
+  color:#15324C !important;
+  background:linear-gradient(180deg,#FBF3DF,#F2E6C8) !important;
+  border:1px solid #DFC894 !important;padding:8px 20px !important;border-radius:24px !important;
+  box-shadow:0 2px 6px rgba(184,137,58,.14);
+  transition:transform .15s, box-shadow .15s;
+}
+.aog-what .pillars span.tag:hover{
+  transform:translateY(-2px);
+  box-shadow:0 8px 18px rgba(184,137,58,.26);
+  background:linear-gradient(180deg,#F7E9C6,#EBD9A8) !important;
+}
+.aog-what .pl-label{letter-spacing:.22em !important;color:#A8966C !important}
+
+/* 5. Top bar: a touch more authority */
+.topbar{backdrop-filter:saturate(1.1)}
+.brand-mark{box-shadow:0 4px 12px -2px rgba(15,42,74,.3)}
+</style>
+<style id="hybrid-welcome">
+/* ============================================================
+   HYBRID WELCOME — blocky editorial front door
+   Uses app tokens (--navy/--gold/etc). Fonts: Fraunces + Inter.
+   ============================================================ */
+#screen-welcome .hyb-welcome{margin:-32px calc(50% - 50vw) 0;width:100vw}
+.hyb-hero{background:var(--navy);color:var(--cream);padding:70px 7vw 0;position:relative;overflow:hidden}
+.hyb-hero::before{content:"";position:absolute;top:-30%;right:-5%;width:60%;height:160%;background:radial-gradient(circle,rgba(242,201,100,.16),transparent 65%);pointer-events:none}
+.hyb-hk{position:relative;font-family:var(--font-sans);font-weight:700;font-size:13px;letter-spacing:.32em;text-transform:uppercase;color:var(--gold-soft)}
+.hyb-title{position:relative;font-family:var(--font-serif);font-weight:600;line-height:.82;margin:18px 0 0;letter-spacing:-.02em}
+.hyb-title .l1{display:block;font-size:clamp(38px,6vw,82px);font-style:italic;font-weight:400;color:#D7C9A8}
+.hyb-title .l2{display:block;font-size:clamp(110px,21vw,300px);
+  background:linear-gradient(176deg,#FBEFC9 0%,#F2CE7E 28%,#DCAB4C 58%,#B5821F 100%);
+  -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent;
+  filter:drop-shadow(4px 6px 0 #06121f) drop-shadow(9px 14px 24px rgba(0,0,0,.4))}
+.hyb-bar{position:relative;display:inline-flex;align-items:center;gap:18px;margin-top:34px;padding:14px 0;border-top:2px solid rgba(242,201,100,.3);border-bottom:2px solid rgba(242,201,100,.18)}
+.hyb-bar .word{font-family:var(--font-sans);font-weight:600;font-size:clamp(14px,1.5vw,17px);color:#CFC09C;white-space:nowrap}
+.hyb-bar .word b{color:var(--gold-soft)}
+.hyb-bar .dot{width:5px;height:5px;border-radius:50%;background:var(--gold-soft);opacity:.55}
+.hyb-aud{position:relative;display:flex;gap:9px;flex-wrap:wrap;align-items:center;margin-top:26px}
+.hyb-aud .hyb-aud-label{font-family:var(--font-sans);font-size:11px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:#8FA0B5;padding:0 4px 0 0}
+.hyb-aud span:not(.hyb-aud-label){font-family:var(--font-sans);font-size:13px;font-weight:600;color:var(--cream);background:rgba(244,238,226,.10);border:1px solid rgba(242,201,100,.28);padding:9px 17px;border-radius:40px;transition:background .15s,border-color .15s}
+.hyb-aud span:not(.hyb-aud-label):hover{background:rgba(242,201,100,.14);border-color:rgba(242,201,100,.5)}
+.hyb-cta{position:relative;display:flex;gap:0;margin:30px 0 0;padding-bottom:0}
+.hyb-cta a{font-family:var(--font-sans);font-weight:700;font-size:16px;padding:22px 38px;text-decoration:none;display:inline-flex;align-items:center;gap:10px;transition:all .18s;cursor:pointer}
+.hyb-cta .hyb-c1{background:var(--gold-soft);color:var(--navy)}
+.hyb-cta .hyb-c1:hover{background:#fff;transform:none}
+.hyb-cta .hyb-c2{background:transparent;color:var(--cream);border:2px solid rgba(244,238,226,.35);margin-left:-2px}
+.hyb-cta .hyb-c2:hover{background:rgba(244,238,226,.1)}
+
+/* statement band */
+.hyb-statement{background:var(--gold);color:var(--navy);padding:58px 7vw;text-align:center;margin:0}
+.hyb-statement .emo-line{font-family:var(--font-serif);font-weight:500;font-style:italic;font-size:clamp(25px,3.3vw,42px);line-height:1.12;max-width:840px;margin:0 auto;letter-spacing:-.015em;color:var(--navy)}
+.hyb-statement .lead-line{font-family:var(--font-sans);font-weight:500;font-size:clamp(16px,1.9vw,21px);line-height:1.45;max-width:720px;margin:22px auto 0;color:#23415e}
+.hyb-statement .pillar-line{font-family:var(--font-serif);font-weight:400;font-style:italic;font-size:clamp(19px,2.3vw,28px);line-height:1.3;margin:16px auto 0;color:#16304a}
+.hyb-statement .pillar-line em{font-style:italic;font-weight:600;border-bottom:3px solid var(--navy);padding-bottom:1px}
+
+/* doors */
+.hyb-doors{display:grid;grid-template-columns:1.3fr 1fr;gap:0;border-bottom:2.5px solid var(--navy)}
+.hyb-door{padding:46px 7vw;text-decoration:none;display:block;position:relative;transition:background .2s;cursor:pointer}
+.hyb-door .ic{width:58px;height:58px;border-radius:14px;display:grid;place-items:center;margin-bottom:22px}
+.hyb-door .ic svg{width:29px;height:29px}
+.hyb-door .badge{display:inline-block;font-family:var(--font-sans);font-size:11px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;padding:5px 12px;border-radius:2px;margin-bottom:14px}
+.hyb-door .t{font-family:var(--font-serif);font-size:clamp(28px,3.4vw,40px);font-weight:600;line-height:1;letter-spacing:-.01em}
+.hyb-door .s{font-family:var(--font-sans);font-size:15px;margin-top:14px;max-width:440px;line-height:1.5}
+.hyb-door .foot{display:flex;align-items:center;justify-content:space-between;margin-top:24px;padding-top:18px;border-top:1px solid currentColor}
+.hyb-door .foot .meta{font-family:var(--font-sans);font-size:12.5px;font-weight:600;letter-spacing:.01em}
+.hyb-door .foot .arr{font-size:26px;line-height:1}
+.hyb-door.prim{background:var(--navy);color:var(--cream)}
+.hyb-door.prim .ic{background:linear-gradient(180deg,#F2C964,#D9A33B);color:var(--navy)}
+.hyb-door.prim .badge{background:var(--gold-soft);color:var(--navy)}
+.hyb-door.prim .foot{border-color:rgba(242,201,100,.22)}
+.hyb-door.prim .foot .meta,.hyb-door.prim .foot .arr{color:var(--gold-soft)}
+.hyb-door.prim:hover{background:var(--navy-deep)}
+.hyb-door.sec{background:var(--cream);color:var(--navy);border-left:2.5px solid var(--navy)}
+.hyb-door.sec .ic{background:var(--gold-pale);color:var(--gold)}
+.hyb-door.sec .badge{background:transparent;color:var(--gold);border:2px solid var(--gold)}
+.hyb-door.sec .s{color:#465062cc}
+.hyb-door.sec .foot{border-color:rgba(10,30,51,.14)}
+.hyb-door.sec .foot .meta{color:#5A6072}.hyb-door.sec .foot .arr{color:var(--gold)}
+.hyb-door.sec:hover{background:#fff}
+
+/* foundation — restyled to match, centered card on cream */
+#screen-welcome .aog-what{max-width:880px;margin:64px auto;background:var(--paper);border:1px solid var(--rule);border-radius:20px;padding:48px 7vw;text-align:center;position:relative;box-shadow:0 18px 44px -16px rgba(10,30,51,.14)}
+#screen-welcome .aog-what::before{content:"";position:absolute;top:0;left:50%;transform:translateX(-50%);width:84px;height:4px;background:linear-gradient(90deg,#F2C964,#D9A33B);border-radius:0 0 4px 4px}
+#screen-welcome .aog-what .ey{font-family:var(--font-sans);font-size:11px;letter-spacing:.32em;text-transform:uppercase;color:var(--gold);font-weight:700}
+#screen-welcome .aog-what h2{font-family:var(--font-serif);font-weight:600;font-size:clamp(30px,3.4vw,42px);color:var(--navy);margin:9px 0 17px;line-height:1.05;letter-spacing:-.01em}
+#screen-welcome .aog-what p{font-family:var(--font-sans);font-size:15px;line-height:1.62;color:#3f3d37;margin:0 auto 11px;max-width:680px}
+#screen-welcome .aog-what .pillars{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin-top:22px;padding-top:18px;border-top:1px dashed var(--rule)}
+#screen-welcome .aog-what .pl-label{width:100%;font-family:var(--font-sans);font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:#A8966C;margin-bottom:8px;font-weight:700}
+#screen-welcome .aog-what .pillars span.tag{font-family:var(--font-sans);font-size:13px;font-weight:600;color:var(--navy);background:linear-gradient(180deg,#FBF3DF,#F2E6C8);border:1px solid #DFC894;padding:8px 20px;border-radius:24px;letter-spacing:.02em}
+
+/* reveals */
+.hyb-hero .hyb-hk,.hyb-hero .hyb-title,.hyb-hero .hyb-bar,.hyb-hero .hyb-aud,.hyb-hero .hyb-cta{opacity:0;transform:translateY(16px);animation:hybRise .8s cubic-bezier(.16,1,.3,1) forwards}
+.hyb-hero .hyb-title{animation-delay:.08s}.hyb-hero .hyb-bar{animation-delay:.32s}.hyb-hero .hyb-aud{animation-delay:.42s}.hyb-hero .hyb-cta{animation-delay:.52s}
+@keyframes hybRise{to{opacity:1;transform:none}}
+.js-reveal .reveal{opacity:0;transform:translateY(26px);transition:opacity .7s ease,transform .7s cubic-bezier(.16,1,.3,1)}
+.reveal.in{opacity:1;transform:none}
+.aog-what.reveal{margin-top:64px}
+
+/* mobile */
+@media (max-width:760px){
+  .hyb-hero{padding:44px 6vw 0}
+  .hyb-title .l2{font-size:23vw;line-height:.86;filter:drop-shadow(3px 4px 0 #06121f) drop-shadow(6px 9px 16px rgba(0,0,0,.4))}
+  .hyb-bar{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;margin-top:22px;width:100%;padding:12px 0}
+  .hyb-bar .word{white-space:nowrap;font-size:12.5px}
+  .hyb-bar .hyb-mid,.hyb-bar .dot-mid{display:none}
+  .hyb-cta{flex-direction:column;width:100%}
+  .hyb-cta a{justify-content:center;padding:18px 24px}
+  .hyb-cta .hyb-c2{margin-left:0;margin-top:-2px}
+  .hyb-statement{padding:42px 6vw}
+  .hyb-doors{grid-template-columns:1fr}
+  .hyb-door{padding:34px 6vw}
+  .hyb-door.sec{border-left:none;border-top:2.5px solid var(--navy)}
+}
+@media (max-width:400px){
+  .hyb-title .l2{font-size:24vw}
+  .hyb-bar .dot{display:none}
+  .hyb-bar .word{font-size:11.5px}
+}
+@media (prefers-reduced-motion:reduce){
+  .hyb-hero .hyb-hk,.hyb-hero .hyb-title,.hyb-hero .hyb-bar,.hyb-hero .hyb-aud,.hyb-hero .hyb-cta{animation:none;opacity:1;transform:none}
+  .reveal{transition:none;opacity:1;transform:none}
+}
 </style>
 </head>
 <body>
@@ -1418,62 +1676,59 @@ footer .serif { font-style: italic; color: var(--ink-soft); }
 
 <!-- ============ WELCOME ============ -->
 <section id="screen-welcome" class="screen active">
-  <div class="container">
-    <!-- ===== LOBBY · front door ===== -->
-    <section class="aog-hero-e2">
-      <div class="aog-hero-glow"></div>
-      <div class="aog-htag">School of Life Foundation</div>
-      <div class="aog-lock foil"><span class="l1">Architecture of</span><span class="l2">Grace</span></div>
-      <hr class="aog-hrule">
-    </section>
-
-    <div class="aog-intro">
-      <p class="aog-lede" data-i18n-html="lobby_lede">A serious, secular <b>K&ndash;12 social-emotional curriculum</b> &mdash; a full program, a companion novel series, and a private check-in that turns reflection into action. Built on identity, self-compassion, forgiveness, and grace.</p>
-      <div class="aog-aud">
-        <span class="lead" data-i18n="aud_k12">K&ndash;12 classrooms</span>
+  <div class="hyb-welcome">
+    <!-- ===== HYBRID HERO ===== -->
+    <section class="hyb-hero">
+      <div class="hyb-hk" data-i18n="hyb_foundation">School of Life Foundation</div>
+      <h1 class="hyb-title foil"><span class="l1">Architecture of</span><span class="l2">Grace</span></h1>
+      <div class="hyb-bar">
+        <span class="word"><b data-i18n="hyb_b1">Reflection into action</b></span>
+        <span class="dot"></span>
+        <span class="word hyb-mid" data-i18n="hyb_b2">For students &amp; adults</span>
+        <span class="dot dot-mid"></span>
+        <span class="word"><b data-i18n="hyb_b3">Built by a teacher</b></span>
+      </div>
+      <div class="hyb-aud">
+        <span class="hyb-aud-label" data-i18n="hyb_madefor">Made for</span>
+        <span data-i18n="aud_k12">K&ndash;12 classrooms</span>
         <span data-i18n="aud_edu">Educators</span>
         <span data-i18n="aud_par">Parents</span>
         <span data-i18n="aud_clin">Clinicians</span>
         <span data-i18n="aud_any">Anyone doing the work</span>
       </div>
-    </div>
-
-    <div class="aog-lobby">
-      <div class="aog-doors">
-        <a href="#" class="aog-door primary" onclick="event.preventDefault(); openGuide();">
-          <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg></span>
-          <div>
-            <span class="sh" data-i18n="lobby_start_here">Start here</span>
-            <div class="t" data-i18n="w_door_guide">Explore the Guide &amp; Library</div>
-            <div class="s" data-i18n="w_door_guide_sub">The ecosystem map, resource index, and every downloadable resource &mdash; no code needed.</div>
-          </div>
-          <span class="arr">&rarr;</span>
-        </a>
-        <a href="#" class="aog-door secondary" onclick="event.preventDefault(); startChoose();">
-          <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg></span>
-          <div>
-            <div class="t" data-i18n="lobby_checkin_t">Take the Check-In</div>
-            <div class="s" data-i18n="lobby_checkin_s">A private few minutes for yourself &mdash; student or adult.</div>
-          </div>
-          <span class="arr">&rarr;</span>
-        </a>
+      <div class="hyb-cta">
+        <a href="#" class="hyb-c1" onclick="event.preventDefault(); openGuide();"><span data-i18n="w_door_guide">Explore the Guide &amp; Library</span> &rarr;</a>
+        <a href="#" class="hyb-c2" onclick="event.preventDefault(); startChoose();" data-i18n="lobby_checkin_t">Take the Check-In</a>
       </div>
+    </section>
+
+    <!-- ===== STATEMENT BAND ===== -->
+    <section class="hyb-statement reveal">
+      <p class="emo-line" data-i18n="hyb_emo">Everyone deserves to be seen, understood, and helped to grow.</p>
+      <p class="lead-line" data-i18n="hyb_lead">A full program. A companion novel series. A private check-in that turns reflection into action.</p>
+      <p class="pillar-line" data-i18n-html="hyb_pillars">Built on <em>identity</em>, <em>self-compassion</em>, <em>forgiveness</em>, and <em>grace</em>.</p>
+    </section>
+
+    <!-- ===== DOORS ===== -->
+    <div class="hyb-doors reveal">
+      <a href="#" class="hyb-door prim" onclick="event.preventDefault(); openGuide();">
+        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg></div>
+        <span class="badge" data-i18n="lobby_start_here">Start here</span>
+        <div class="t" data-i18n="w_door_guide">Explore the Guide &amp; Library</div>
+        <div class="s" data-i18n="w_door_guide_sub">The ecosystem map, resource index, and every downloadable resource &mdash; no code needed.</div>
+        <div class="foot"><span class="meta" data-i18n="hyb_meta_free">Free to browse &middot; no sign-up, no code</span><span class="arr">&rarr;</span></div>
+      </a>
+      <a href="#" class="hyb-door sec" onclick="event.preventDefault(); startChoose();">
+        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg></div>
+        <span class="badge" data-i18n="hyb_private">100% Private</span>
+        <div class="t" data-i18n="lobby_checkin_t">Take the Check-In</div>
+        <div class="s" data-i18n="lobby_checkin_s">A private few minutes for yourself &mdash; student or adult.</div>
+        <div class="foot"><span class="meta" data-i18n="hyb_meta_priv">Stays on your device &middot; ~4 minutes</span><span class="arr">&rarr;</span></div>
+      </a>
     </div>
 
-    <style>
-      .aog-what{ max-width:780px; margin:10px auto 34px; background:#FFFDF8; border:1px solid #E3D9C4; border-radius:16px; padding:30px 40px 32px; text-align:center; box-shadow:0 1px 0 #fff inset, 0 6px 22px rgba(27,58,95,.06); position:relative; }
-      .aog-what::before{ content:""; position:absolute; top:0; left:50%; transform:translateX(-50%); width:64px; height:3px; background:#B8893A; border-radius:0 0 3px 3px; }
-      .aog-what .ey{ font-size:11px; letter-spacing:.28em; text-transform:uppercase; color:#B8893A; font-weight:600; }
-      .aog-what h2{ font-family:'Cormorant Garamond',serif; font-weight:700; font-size:34px; color:#1B3A5F; margin:7px 0 15px; line-height:1.05; }
-      .aog-what p{ font-size:15px; line-height:1.62; color:#3f3d37; margin:0 auto 11px; max-width:680px; }
-      .aog-what p:last-of-type{ margin-bottom:0; }
-      .aog-what .pillars{ display:flex; flex-wrap:wrap; justify-content:center; gap:8px; margin-top:20px; padding-top:18px; border-top:1px dashed #E3D9C4; }
-      .aog-what .pl-label{ width:100%; font-size:10px; letter-spacing:.18em; text-transform:uppercase; color:#9a8c66; margin-bottom:6px; font-weight:600; }
-      .aog-what .pillars span.tag{ font-size:11.5px; color:#1B3A5F; background:#F4EEE1; border:1px solid #E3D9C4; padding:5px 15px; border-radius:20px; letter-spacing:.02em; }
-      @media (max-width:600px){ .aog-what{ padding:24px 22px 26px; } .aog-what h2{ font-size:28px; } }
-    </style>
-    <div class="aog-foundation-rest"><div class="foundation-wrap">
-    <section class="aog-what">
+    <!-- ===== FOUNDATION (kept, restyled) ===== -->
+    <section class="aog-what reveal">
       <div class="ey" data-i18n="aog_what_ey">The Foundation</div>
       <h2 data-i18n="aog_what_h">What Is Architecture of Grace?</h2>
       <p data-i18n="aog_what_p1">Architecture of Grace is a human development framework and intuitive digital check-in platform designed to help individuals understand themselves, strengthen relationships, and navigate life&rsquo;s challenges with resilience, responsibility, and hope.</p>
@@ -1487,9 +1742,7 @@ footer .serif { font-style: italic; color: var(--ink-soft); }
         <span class="tag" data-i18n="pillar_grace">Grace</span>
       </div>
     </section>
-    </div></div>
-    
-</div>
+  </div>
 </section>
 
 <!-- ============ CHOOSE (student / adult) ============ -->
@@ -1506,7 +1759,7 @@ footer .serif { font-style: italic; color: var(--ink-soft); }
     <div class="aog-lobby">
       <div class="aog-doors">
         <div class="aog-checkins">
-          <a href="#" class="aog-door secondary" onclick="event.preventDefault(); startCheckin();">
+          <a href="#" class="aog-door secondary choose-card choose-student" onclick="event.preventDefault(); startCheckin();">
             <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21.42 10.922a1 1 0 0 0-.019-1.838L12.83 5.18a2 2 0 0 0-1.66 0L2.6 9.08a1 1 0 0 0 0 1.832l8.57 3.908a2 2 0 0 0 1.66 0z"/><path d="M22 10v6"/><path d="M6 12.5V16a6 3 0 0 0 12 0v-3.5"/></svg></span>
             <div>
               <div class="t" data-i18n="ch_student_t">Student Check-In</div>
@@ -1514,11 +1767,11 @@ footer .serif { font-style: italic; color: var(--ink-soft); }
             </div>
             <span class="arr">&rarr;</span>
           </a>
-          <a href="#" class="aog-door secondary" onclick="event.preventDefault(); startAdult();">
+          <a href="#" class="aog-door secondary choose-card choose-adult" onclick="event.preventDefault(); startAdult();">
             <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 2v2"/><path d="M10 2v2"/><path d="M14 2v2"/><path d="M4 8h14a4 4 0 0 1 0 8h-1"/><path d="M4 8v9a4 4 0 0 0 4 4h5a4 4 0 0 0 4-4V8z"/></svg></span>
             <div>
               <div class="t" data-i18n="ad_door_t">A check-in for grown-ups</div>
-              <div class="s" data-i18n="ad_door_s">A private few minutes for the adults doing this work too.</div>
+              <div class="s" data-i18n="ad_door_s">For the grown-ups doing the work &mdash; a private few minutes, just for you.</div>
             </div>
             <span class="arr">&rarr;</span>
           </a>
@@ -1537,6 +1790,7 @@ footer .serif { font-style: italic; color: var(--ink-soft); }
       <div class="eyebrow" data-i18n="w_screener_ey">Universal Check-In &middot; K&ndash;12</div>
       <h1 class="display display-xl" data-i18n="w_h1">How are you doing, really?</h1>
       <p class="lede" data-i18n="w_lede">Take a few quiet minutes, just for you. It&rsquo;s private, there are no wrong answers, and it helps the people who care about you know how to help.</p>
+      <p class="checkin-reassure" data-i18n="w_reassure">A private 4&ndash;10 minute reflection &middot; no wrong answers &middot; nothing leaves this device unless you choose.</p>
     </div>
 <div class="script-card">
       <p data-i18n-html="w_script1"><strong>Before you begin.</strong> There are no right or wrong answers &mdash; just pick what feels most true for you lately, and go with your first instinct.</p>
@@ -1765,6 +2019,7 @@ footer .serif { font-style: italic; color: var(--ink-soft); }
       <div id="thanksSupport" class="support-card" style="display:none; margin-top:18px;">
         <p data-i18n-html="ad_support">If you&rsquo;re carrying something heavy right now, you don&rsquo;t have to carry it alone. In the U.S. you can call or text <strong>988</strong> (the Suicide &amp; Crisis Lifeline), any time, day or night. Reaching out is a strong thing to do.</p>
       </div>
+      <button class="btn" id="btnMyResults" style="display:none;" data-i18n-html="t_btn_results">See your results &rarr;</button>
       <button class="btn" id="btnToClosing" data-i18n-html="t_btn">One more thing &rarr;</button>
     </div>
   </div>
@@ -1798,7 +2053,26 @@ footer .serif { font-style: italic; color: var(--ink-soft); }
       <div class="eyebrow" data-i18n="f_eyebrow">Take it with you</div>
       <h1 class="display display-lg" id="farewellWord" style="color:var(--gold); font-style:italic; margin-bottom:24px;">&mdash;</h1>
       <p class="lede" data-i18n="f_lede">Carry that word with you today.</p>
-      <button class="btn" id="btnDone" style="margin-top:24px;" data-i18n="f_done">Done</button>
+      <button class="btn" id="btnMyResultsFarewell" style="display:none; margin-top:24px;" data-i18n-html="t_btn_results">See your results &rarr;</button>
+      <button class="btn" id="btnDone" style="margin-top:12px;" data-i18n="f_done">Done</button>
+    </div>
+  </div>
+</section>
+
+<!-- ============ MY RESULTS (participant self-view, no code) ============ -->
+<section id="screen-myresults" class="screen">
+  <div class="container">
+    <div class="nav-row" style="justify-content:flex-start; margin-bottom:8px;">
+      <button class="btn btn-ghost" id="btnResultsDone"><span class="btn-arrow">&larr;</span> <span data-i18n="mr_done">Done</span></button>
+    </div>
+    <div class="hero hero-center" style="padding-top:8px; padding-bottom:6px;">
+      <div class="eyebrow" data-i18n="mr_eyebrow">Your results &middot; just for you</div>
+      <h1 class="display display-lg" data-i18n="mr_h1">How you&rsquo;re doing</h1>
+      <p class="lede" data-i18n="mr_lede">Here&rsquo;s everything you just shared &mdash; and where each piece lives in the books.</p>
+    </div>
+    <div id="myResultsReport"></div>
+    <div class="nav-row" style="justify-content:center; margin:28px 0 8px;">
+      <button class="btn" id="btnResultsDone2" data-i18n="mr_done2">Done</button>
     </div>
   </div>
 </section>
@@ -1822,6 +2096,7 @@ footer .serif { font-style: italic; color: var(--ink-soft); }
         </span>
         <button class="btn btn-secondary btn-sm" data-dl="dl_guidebtn" onclick="openGuide()">Guide &amp; Library</button>
         <button class="btn btn-secondary btn-sm" data-dl="dl_backbtn" onclick="resetToStart()">Back to survey</button>
+        <button class="btn btn-sm" id="btnDemoData" onclick="toggleDemoData()" style="background:var(--gold);border-color:var(--gold);color:var(--navy);">Try demo data</button>
       </div>
     </div>
 
@@ -2079,90 +2354,104 @@ footer .serif { font-style: italic; color: var(--ink-soft); }
 <!-- ============ GUIDE & LIBRARY (public, no code) ============ -->
 <section id="screen-guide" class="screen">
   <div class="container-wide" style="padding-top:18px;">
-    <div class="guide-slimbar">
-      <div class="guide-slim-label" data-i18n-html="g_slimlabel"><span class="guide-slim-eyebrow">The Architecture of Grace</span> &nbsp;&middot;&nbsp; Guide &amp; Library</div>
-      <div style="display:flex; gap:8px; flex-wrap:wrap; align-items:center;">
-        <button class="btn btn-secondary btn-sm" onclick="resetToStart()" data-i18n="g_back">Back to start</button>
+    <div class="guide-hero">
+      <div class="guide-hero-inner">
+        <div class="guide-hero-text">
+          <div class="guide-hero-ey" data-i18n="g_eco_ey">The Architecture</div>
+          <h1 class="guide-hero-title" data-i18n="g_eco_title">One Living Ecosystem</h1>
+          <p class="guide-hero-lede" data-i18n-html="g_eco_lede">A curriculum becomes an <em>ecosystem</em> when it can teach, measure what it taught, and use what it learns to teach better. Hover any piece to see what it does &mdash; tap it to go there.</p>
+        </div>
+        <button class="btn guide-hero-back" onclick="resetToStart()" data-i18n="g_back">Back to start</button>
       </div>
     </div>
 
       <div class="eco-hero" id="guide-ecosystem">
         <div class="table-card eco-shell" style="padding:18px 30px 22px;">
-          <div class="eco-head">
-            <div class="eyebrow" style="color:var(--gold);" data-i18n="g_eco_ey">The Architecture</div>
-            <h3 class="serif eco-title" data-i18n="g_eco_title">One Living Ecosystem</h3>
-            <p class="eco-lede" data-i18n-html="g_eco_lede">A curriculum becomes an <em>ecosystem</em> when it can teach, measure what it taught, and use what it learns to teach better. Hover any piece to see what it does &mdash; tap it to go there.</p>
-          </div>
 
           <div class="eco-stage">
             <div class="eco-canvas">
-              <svg id="ecoSvg" viewBox="0 0 600 520" role="img" aria-label="Interactive ecosystem map" xmlns="http://www.w3.org/2000/svg">
+              <svg id="ecoSvg" viewBox="0 60 600 340" role="img" aria-label="Interactive ecosystem map" xmlns="http://www.w3.org/2000/svg">
                 <defs>
                   <radialGradient id="ecoBg" cx="50%" cy="48%" r="60%">
                     <stop offset="0%" stop-color="#FBF7EE"/>
                     <stop offset="100%" stop-color="#F4EEDF"/>
                   </radialGradient>
+                  <radialGradient id="ecoCenterGlow" cx="50%" cy="50%" r="50%">
+                    <stop offset="0%" stop-color="#F1DFA8" stop-opacity="0.7"/>
+                    <stop offset="70%" stop-color="#F4EEDF" stop-opacity="0.15"/>
+                    <stop offset="100%" stop-color="#F4EEDF" stop-opacity="0"/>
+                  </radialGradient>
                   <linearGradient id="ecoCard" x1="0" y1="0" x2="0" y2="1">
                     <stop offset="0%" stop-color="#FFFFFF"/>
                     <stop offset="100%" stop-color="#FBF8F1"/>
+                  </linearGradient>
+                  <linearGradient id="ecoHero" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stop-color="#15355A"/>
+                    <stop offset="100%" stop-color="#0A1E33"/>
                   </linearGradient>
                   <filter id="ecoGlow" x="-40%" y="-40%" width="180%" height="180%">
                     <feGaussianBlur stdDeviation="6" result="b"/>
                     <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
                   </filter>
                   <filter id="ecoSoft" x="-30%" y="-30%" width="160%" height="160%">
-                    <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#1B3A5F" flood-opacity="0.14"/>
+                    <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#0A1E33" flood-opacity="0.14"/>
                   </filter>
-                  <marker id="ecoArrowN" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#2B4D7A"/></marker>
-                  <marker id="ecoArrowG" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7.5" markerHeight="7.5" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#B8893A"/></marker>
+                  <marker id="ecoArrowN" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#13314F"/></marker>
+                  <marker id="ecoArrowG" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7.5" markerHeight="7.5" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#D9A33B"/></marker>
                 </defs>
 
-                <rect x="0" y="0" width="600" height="520" rx="18" fill="url(#ecoBg)"/>
+                <rect x="0" y="60" width="600" height="340" rx="18" fill="url(#ecoBg)"/>
 
-                <!-- concentric rings + the closed loop -->
+                <!-- tilted closed loop (circle seen in perspective) -->
                 <g class="eco-center">
-                  <circle cx="300" cy="262" r="150" fill="none" stroke="#E4DBC4" stroke-width="1"/>
-                  <circle cx="300" cy="262" r="92" fill="none" stroke="#EAE2CD" stroke-width="1"/>
-                  <circle class="eco-ring" cx="300" cy="262" r="124" fill="none" stroke="#B8893A" stroke-width="1.6" stroke-dasharray="2 9" stroke-linecap="round" opacity="0.85"/>
-                  <text x="300" y="252" text-anchor="middle" class="eco-c1" data-i18n="eco_closed1">THE CLOSED</text>
-                  <text x="300" y="276" text-anchor="middle" class="eco-c1" data-i18n="eco_closed2">LOOP</text>
-                  <text x="300" y="298" text-anchor="middle" class="eco-c2" data-i18n="eco_cmta">teach &middot; measure &middot; act</text>
+                  <ellipse cx="300" cy="230" rx="232" ry="92" fill="url(#ecoCenterGlow)"/>
+                  <ellipse class="eco-ring" cx="300" cy="230" rx="232" ry="92" fill="none" stroke="#D9A33B" stroke-width="1.8" stroke-dasharray="2 11" stroke-linecap="round" opacity="0.75"/>
+                  <ellipse cx="300" cy="230" rx="168" ry="66" fill="none" stroke="#E4DBC4" stroke-width="1"/>
+                  <text x="300" y="224" text-anchor="middle" class="eco-c1" data-i18n="eco_closed1">THE CLOSED</text>
+                  <text x="300" y="246" text-anchor="middle" class="eco-c1" data-i18n="eco_closed2">LOOP</text>
+                  <text x="300" y="266" text-anchor="middle" class="eco-c2" data-i18n="eco_cmta">teach &middot; measure &middot; act</text>
                 </g>
 
-                <!-- connectors (clockwise) -->
-                <path class="eco-edge" d="M372 118 Q452 150 470 214" fill="none" stroke="#2B4D7A" stroke-width="1.6" marker-end="url(#ecoArrowN)"/>
-                <text class="eco-elabel" x="455" y="150" text-anchor="middle" data-i18n="eco_e1">teaches</text>
-                <path class="eco-edge" d="M470 310 Q452 374 372 406" fill="none" stroke="#2B4D7A" stroke-width="1.6" marker-end="url(#ecoArrowN)"/>
-                <text class="eco-elabel" x="455" y="378" text-anchor="middle" data-i18n="eco_e2">flags</text>
-                <path class="eco-edge" d="M228 406 Q148 374 130 310" fill="none" stroke="#2B4D7A" stroke-width="1.6" marker-end="url(#ecoArrowN)"/>
-                <text class="eco-elabel" x="145" y="378" text-anchor="middle" data-i18n="eco_e3">aggregates</text>
-                <path class="eco-edge eco-flow" d="M130 214 Q148 150 228 118" fill="none" stroke="#B8893A" stroke-width="2.2" stroke-dasharray="7 6" marker-end="url(#ecoArrowG)"/>
-                <text class="eco-elabel eco-elabel-g" x="142" y="150" text-anchor="middle" data-i18n="eco_e4">points back</text>
+                <!-- connectors follow the ellipse (clockwise) -->
+                <path class="eco-edge" d="M392 158 A 232 92 0 0 1 524 224" fill="none" stroke="#13314F" stroke-width="1.8" opacity="0.85" marker-end="url(#ecoArrowN)"/>
+                <text class="eco-elabel" x="436" y="174" text-anchor="middle" data-i18n="eco_e1">teaches</text>
+                <path class="eco-edge" d="M524 238 A 232 92 0 0 1 384 308" fill="none" stroke="#13314F" stroke-width="1.8" opacity="0.85" marker-end="url(#ecoArrowN)"/>
+                <text class="eco-elabel" x="470" y="290" text-anchor="middle" data-i18n="eco_e2">flags</text>
+                <path class="eco-edge" d="M216 308 A 232 92 0 0 1 76 240" fill="none" stroke="#13314F" stroke-width="1.8" opacity="0.85" marker-end="url(#ecoArrowN)"/>
+                <text class="eco-elabel" x="130" y="290" text-anchor="middle" data-i18n="eco_e3">aggregates</text>
+                <path class="eco-edge eco-flow" d="M76 222 A 232 92 0 0 1 208 158" fill="none" stroke="#D9A33B" stroke-width="2.6" stroke-dasharray="8 7" opacity="0.95" marker-end="url(#ecoArrowG)"/>
+                <text class="eco-elabel eco-elabel-g" x="136" y="174" text-anchor="middle" data-i18n="eco_e4">points back</text>
 
-                <!-- NODES -->
+                <!-- NODES (standing around the tilted ring) -->
                 <g class="eco-node" data-node="curriculum" tabindex="0" role="button" aria-label="The Curriculum">
-                  <rect class="eco-cardbox" x="216" y="38" width="168" height="74" rx="14"/>
-                  <text class="eco-tag" x="300" y="64" text-anchor="middle" fill="#2E6B3A">TEACH</text>
-                  <text class="eco-name" x="300" y="86" text-anchor="middle">The Curriculum</text>
-                  <text class="eco-role" x="300" y="102" text-anchor="middle">Books 1&#8211;5 &middot; K&#8211;12</text>
+                  <line x1="300" y1="132" x2="300" y2="146" stroke="#0A1E33" stroke-width="1" opacity="0.2"/>
+                  <rect class="eco-cardbox" x="234" y="78" width="132" height="60" rx="12"/>
+                  <text class="eco-tag" x="300" y="100" text-anchor="middle" fill="#2E6B3A">TEACH</text>
+                  <text class="eco-name" x="300" y="119" text-anchor="middle">The Curriculum</text>
+                  <text class="eco-role" x="300" y="133" text-anchor="middle">Books 1&#8211;5 &middot; K&#8211;12</text>
                 </g>
                 <g class="eco-node" data-node="screener" tabindex="0" role="button" aria-label="The Check-In">
-                  <rect class="eco-cardbox" x="426" y="214" width="168" height="74" rx="14"/>
-                  <text class="eco-tag" x="510" y="240" text-anchor="middle" fill="#8a6a1f">MEASURE</text>
-                  <text class="eco-name" x="510" y="262" text-anchor="middle">The Check-In</text>
-                  <text class="eco-role" x="510" y="278" text-anchor="middle">18 items &middot; 3 domains</text>
+                  <line x1="524" y1="230" x2="508" y2="230" stroke="#0A1E33" stroke-width="1" opacity="0.25"/>
+                  <rect class="eco-cardbox eco-cardbox-hero" x="452" y="192" width="148" height="78" rx="13"/>
+                  <text class="eco-tag" x="526" y="216" text-anchor="middle" fill="#F2C964">MEASURE</text>
+                  <text class="eco-name eco-name-hero" x="526" y="236" text-anchor="middle">The Check-In</text>
+                  <text class="eco-role eco-role-hero" x="526" y="252" text-anchor="middle">18 items &middot; 3 domains</text>
+                  <circle class="eco-live" cx="470" cy="259" r="3" fill="#7BD389"/>
+                  <text class="eco-role-hero" x="528" y="263" text-anchor="middle" font-size="8.5">live &middot; closed loop</text>
                 </g>
                 <g class="eco-node" data-node="index" tabindex="0" role="button" aria-label="Home View and Resource Index">
-                  <rect class="eco-cardbox" x="216" y="410" width="168" height="74" rx="14"/>
-                  <text class="eco-tag" x="300" y="436" text-anchor="middle" fill="#2B4D7A">INTERPRET &amp; ACT</text>
-                  <text class="eco-name" x="300" y="458" text-anchor="middle">Home View &amp; Index</text>
-                  <text class="eco-role" x="300" y="474" text-anchor="middle">flag &#8594; the right lesson</text>
+                  <line x1="300" y1="320" x2="300" y2="306" stroke="#0A1E33" stroke-width="1" opacity="0.3"/>
+                  <rect class="eco-cardbox" x="218" y="320" width="164" height="66" rx="12"/>
+                  <text class="eco-tag" x="300" y="343" text-anchor="middle" fill="#13314F">INTERPRET &amp; ACT</text>
+                  <text class="eco-name" x="300" y="362" text-anchor="middle">Home View &amp; Index</text>
+                  <text class="eco-role" x="300" y="377" text-anchor="middle">flag &#8594; the right lesson</text>
                 </g>
                 <g class="eco-node" data-node="dashboard" tabindex="0" role="button" aria-label="The Dashboard">
-                  <rect class="eco-cardbox" x="6" y="214" width="168" height="74" rx="14"/>
-                  <text class="eco-tag" x="90" y="240" text-anchor="middle" fill="#6B5230">AGGREGATE</text>
-                  <text class="eco-name" x="90" y="262" text-anchor="middle">The Dashboard</text>
-                  <text class="eco-role" x="90" y="278" text-anchor="middle">tiers &middot; equity &middot; growth</text>
+                  <line x1="76" y1="230" x2="92" y2="230" stroke="#0A1E33" stroke-width="1" opacity="0.25"/>
+                  <rect class="eco-cardbox" x="2" y="194" width="146" height="62" rx="12"/>
+                  <text class="eco-tag" x="75" y="216" text-anchor="middle" fill="#6B5230">AGGREGATE</text>
+                  <text class="eco-name" x="75" y="234" text-anchor="middle">The Dashboard</text>
+                  <text class="eco-role" x="75" y="249" text-anchor="middle">tiers &middot; equity &middot; growth</text>
                 </g>
               </svg>
             </div>
@@ -2184,30 +2473,30 @@ footer .serif { font-style: italic; color: var(--ink-soft); }
 
       <div class="guide-about-feature" id="guide-about">
         <div class="table-card" style="padding:32px 36px 36px; max-width:760px; margin:0 auto;">
-          <div class="eyebrow" style="color:var(--gold);">The Story</div>
-          <h3 class="serif" style="font-size:27px; color:var(--navy); margin:4px 0 16px;">The founder, and the why beneath the work</h3>
+          <div class="eyebrow" style="color:var(--gold);" data-i18n="story_ey">The Story</div>
+          <h3 class="serif" style="font-size:27px; color:var(--navy); margin:4px 0 16px;" data-i18n="story_h">The founder, and the why beneath the work</h3>
 
-          <p style="font-size:15px; line-height:1.72; color:var(--ink); margin-bottom:14px;">My name is Jimmy Ramsden. I didn&rsquo;t come to this work from a boardroom &mdash; I came to it from the classroom, where I still teach today as a special educator.</p>
+          <p style="font-size:15px; line-height:1.72; color:var(--ink); margin-bottom:14px;" data-i18n="story_p1">My name is Jimmy Ramsden. I didn&rsquo;t come to this work from a boardroom &mdash; I came to it from the classroom, where I still teach today as a special educator.</p>
 
-          <p style="font-size:15px; line-height:1.72; color:var(--ink); margin-bottom:14px;">My journey started at Humboldt State University with a degree in political science, followed by a master&rsquo;s in special education. But the real catalyst came in 2006, when a serious car crash left me with a traumatic brain injury and a neurological disability. Rebuilding my life changed how I understand struggle, patience, and grace. It&rsquo;s the reason this work isn&rsquo;t abstract to me.</p>
+          <p style="font-size:15px; line-height:1.72; color:var(--ink); margin-bottom:14px;" data-i18n="story_p2">My journey started at Humboldt State University with a degree in political science, followed by a master&rsquo;s in special education. But the real catalyst came in 2006, when a serious car crash left me with a traumatic brain injury and a neurological disability. Rebuilding my life changed how I understand struggle, patience, and grace. It&rsquo;s the reason this work isn&rsquo;t abstract to me.</p>
 
-          <p style="font-size:15px; line-height:1.72; color:var(--ink); margin-bottom:14px;">The Architecture of Grace grew out of a conviction that individuals deserve more than to be measured &mdash; they deserve to be understood. Built under the <strong>School of Life Foundation</strong>, everything here rests on four core pillars:</p>
+          <p style="font-size:15px; line-height:1.72; color:var(--ink); margin-bottom:14px;" data-i18n-html="story_p3">The Architecture of Grace grew out of a conviction that individuals deserve more than to be measured &mdash; they deserve to be understood. Built under the <strong>School of Life Foundation</strong>, everything here rests on four core pillars:</p>
 
-          <ul style="list-style:none; margin:4px 0 16px; padding:0;">
+          <ul style="list-style:none; margin:4px 0 16px; padding:0;" data-i18n-html="story_pillars">
             <li style="font-size:15px; line-height:1.6; color:var(--ink); margin-bottom:10px; padding-left:20px; position:relative;"><span style="position:absolute; left:0; top:1px; color:var(--gold);">&#9670;</span><strong style="color:var(--navy);">Identity</strong> &mdash; who a person comes to believe they are.</li>
             <li style="font-size:15px; line-height:1.6; color:var(--ink); margin-bottom:10px; padding-left:20px; position:relative;"><span style="position:absolute; left:0; top:1px; color:var(--gold);">&#9670;</span><strong style="color:var(--navy);">Self-Compassion</strong> &mdash; how a person learns to speak to themselves.</li>
             <li style="font-size:15px; line-height:1.6; color:var(--ink); margin-bottom:10px; padding-left:20px; position:relative;"><span style="position:absolute; left:0; top:1px; color:var(--gold);">&#9670;</span><strong style="color:var(--navy);">Forgiveness</strong> &mdash; moving past mistakes to make room for growth.</li>
             <li style="font-size:15px; line-height:1.6; color:var(--ink); margin-bottom:0; padding-left:20px; position:relative;"><span style="position:absolute; left:0; top:1px; color:var(--gold);">&#9670;</span><strong style="color:var(--navy);">Grace</strong> &mdash; meeting a person with understanding rather than only judgment.</li>
           </ul>
 
-          <p style="font-size:15px; line-height:1.72; color:var(--ink); margin-bottom:14px;">As a teacher and a father, these are the values I want for my students, my own children &mdash; and for anyone willing to do this work.</p>
+          <p style="font-size:15px; line-height:1.72; color:var(--ink); margin-bottom:14px;" data-i18n="story_p4">As a teacher and a father, these are the values I want for my students, my own children &mdash; and for anyone willing to do this work.</p>
 
           <div style="background:var(--cream-deep,#F4EFE0); border:1px solid var(--rule); border-left:4px solid var(--gold); border-radius:12px; padding:16px 20px; margin:20px 0 18px;">
-            <div style="font-size:11px; font-weight:700; letter-spacing:.16em; text-transform:uppercase; color:var(--gold); margin-bottom:6px;">A note on transparency</div>
-            <p style="font-size:14.5px; line-height:1.65; color:var(--ink-soft); margin:0;">This work is in its early stages. The check-in is a pilot &mdash; a score is a flag for a conversation, never a diagnosis &mdash; and the curriculum is a framework I&rsquo;m actively proving. I&rsquo;d rather be honest about that than oversell it.</p>
+            <div style="font-size:11px; font-weight:700; letter-spacing:.16em; text-transform:uppercase; color:var(--gold); margin-bottom:6px;" data-i18n="story_note_label">A note on transparency</div>
+            <p style="font-size:14.5px; line-height:1.65; color:var(--ink-soft); margin:0;" data-i18n="story_note">This work is in its early stages. The check-in is a pilot &mdash; a score is a flag for a conversation, never a diagnosis &mdash; and the curriculum is a framework I&rsquo;m actively proving. I&rsquo;d rather be honest about that than oversell it.</p>
           </div>
 
-          <p style="font-size:15px; line-height:1.72; color:var(--ink); margin-bottom:14px;">If you&rsquo;d like to try it, pilot it, or just share your thoughts, please reach out.<!-- EDIT ME: contact email below --> <a href="mailto:whytheschooloflife@gmail.com" style="color:var(--navy); font-weight:600; text-decoration:none; border-bottom:1px solid var(--gold);">whytheschooloflife@gmail.com</a></p>
+          <p style="font-size:15px; line-height:1.72; color:var(--ink); margin-bottom:14px;" data-i18n-html="story_contact">If you&rsquo;d like to try it, pilot it, or just share your thoughts, please reach out.<!-- EDIT ME: contact email below --> <a href="mailto:whytheschooloflife@gmail.com" style="color:var(--navy); font-weight:600; text-decoration:none; border-bottom:1px solid var(--gold);">whytheschooloflife@gmail.com</a></p>
           <p style="font-size:15px; line-height:1.72; color:var(--ink-soft); margin:0;"><em>&mdash; Jimmy Ramsden</em></p>
         </div>
       </div><!-- /guide-about-feature -->
@@ -2336,9 +2625,35 @@ footer .serif { font-style: italic; color: var(--ink-soft); }
 
 </main>
 
-<footer>
-  <div class="serif">School of Life Foundation</div>
-  <div style="margin-top:6px;">Architecture of Grace &middot; Universal Check-In</div>
+<footer class="hyb-foot">
+  <div class="sf-inner">
+    <div class="sf-brand">
+      <div class="sf-mk">A</div>
+      <div>
+        <div class="sf-nm">Architecture of Grace</div>
+        <div class="sf-sb" data-i18n="brand_sub">A School of Life Foundation project</div>
+      </div>
+    </div>
+    <p class="sf-mission" data-i18n="foot_mission">A secular framework for human development — helping students and adults understand themselves, strengthen relationships, and grow with resilience and hope.</p>
+    <div class="sf-pillars">
+      <span data-i18n="pillar_identity">Identity</span>
+      <span data-i18n="pillar_selfcomp">Self-compassion</span>
+      <span data-i18n="pillar_forgive">Forgiveness</span>
+      <span data-i18n="pillar_grace">Grace</span>
+    </div>
+    <div class="sf-links">
+      <a href="#" onclick="event.preventDefault(); openGuide();" data-i18n="w_door_guide">Explore the Guide &amp; Library</a>
+      <a href="#" onclick="event.preventDefault(); startChoose();" data-i18n="lobby_checkin_t">Take the Check-In</a>
+      <a href="#" onclick="event.preventDefault(); openAdmin();" data-i18n="w_door_results">Educator Access &middot; Results</a>
+    </div>
+    <div class="sf-social">
+      <a href="#" aria-label="Email"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 6L2 7"/></svg></a>
+      <a href="#" aria-label="Website"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15 15 0 0 1 0 20 15 15 0 0 1 0-20"/></svg></a>
+      <a href="#" aria-label="Newsletter"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v16H4z"/><path d="M4 9h16M9 4v16"/></svg></a>
+    </div>
+    <div class="sf-legal">© <span id="footYr"></span> School of Life Foundation · Architecture of Grace. All rights reserved. · Pilot project — every score is a flag, not a diagnosis.</div>
+    <div class="sf-made" data-i18n="foot_made">Made with care in Illinois.</div>
+  </div>
 </footer>
 
 </div>
@@ -2686,6 +3001,14 @@ let population = "k12"; // "k12" (default) or "adult" — selects the item set +
 const MONTHS_ABBR_EN = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
 const MONTHS_ABBR_ES = ["ene","feb","mar","abr","may","jun","jul","ago","sep","oct","nov","dic"];
 function currentDateCanonical() { const d = new Date(); return MONTHS_ABBR_EN[d.getMonth()] + " " + d.getDate() + ", " + d.getFullYear(); }
+function seasonFromDate(d) {
+  d = d || new Date();
+  var m = d.getMonth(); // 0 = Jan
+  if (m >= 8 && m <= 10) return "Fall";    // Sep-Nov
+  if (m === 11 || m <= 1) return "Winter"; // Dec-Feb
+  if (m >= 2 && m <= 4) return "Spring";   // Mar-May
+  return "Summer";                          // Jun-Aug
+}
 function fmtNiceDate(ts) { if (!ts) return ""; const d = new Date(ts); if (isNaN(d.getTime())) return ""; return MONTHS_ABBR_EN[d.getMonth()] + " " + d.getDate() + ", " + d.getFullYear(); }
 function currentDateLabel(L) {
   const d = new Date();
@@ -2736,6 +3059,12 @@ function scale() { return mode === "depth" ? SCALE_6[surveyLang] : SCALE_4[surve
 // Participant-facing UI translations (educator dashboard stays EN)
 // ============================================================
 const I18N_UI = {
+  t_btn_results:{ en: "See your results \u2192", es: "Ver tus resultados \u2192" },
+  mr_eyebrow:   { en: "Your results \u00b7 just for you", es: "Tus resultados \u00b7 solo para ti" },
+  mr_h1:        { en: "How you\u2019re doing", es: "C\u00f3mo te va" },
+  mr_lede:      { en: "Here\u2019s everything you just shared \u2014 and where each piece lives in the books.", es: "Esto es todo lo que compartiste \u2014 y d\u00f3nde vive cada parte en los libros." },
+  mr_done:      { en: "Done", es: "Listo" },
+  mr_done2:     { en: "Done", es: "Listo" },
   ri_adults:    { en: "Adults \u00b7 Books 3\u20135", es: "Adultos \u00b7 Libros 3\u20135" },
   ch_ey:        { en: "The Check-In", es: "El chequeo" },
   ch_h1:        { en: "Who’s checking in?", es: "¿Quién hace el chequeo?" },
@@ -2761,7 +3090,7 @@ const I18N_UI = {
   ad_begin:     { en: "Begin Check-In", es: "Comenzar el chequeo" },
   ad_back:      { en: "Back", es: "Atrás" },
   ad_door_t:    { en: "A check-in for grown-ups", es: "Un chequeo para adultos" },
-  ad_door_s:    { en: "A private few minutes for the adults doing this work too.", es: "Unos minutos privados para los adultos que también hacen este trabajo." },
+  ad_door_s:    { en: "For the grown-ups doing the work — a private few minutes, just for you.", es: "Para los adultos que hacen este trabajo — unos minutos privados, solo para ti." },
   t_lede_adult: { en: "Your answers have been saved, and they’ve gone to the person or team who shared this with you, so someone can follow up with care. If anything here stirred something up, please reach out to someone you trust — you don’t have to sit with it alone.", es: "Tus respuestas se han guardado y han llegado a la persona o al equipo que te compartió esto, para que alguien pueda dar seguimiento con cuidado. Si algo aquí removió algo, por favor acude a alguien en quien confíes — no tienes que enfrentarlo solo/a." },
   aog_what_ey:    { en: "The Foundation", es: "La Base" },
   aog_what_h:     { en: "What Is Architecture of Grace?", es: "\u00bfQu\u00e9 es Architecture of Grace?" },
@@ -2776,6 +3105,7 @@ const I18N_UI = {
   w_screener_ey: { en: "Universal Check-In · K–12", es: "Universal Check-In · K–12" },
   w_h1:        { en: "How are you doing, really?", es: "\u00bfC\u00f3mo est\u00e1s, de verdad?" },
   w_lede:      { en: "Take a few quiet minutes, just for you. It\u2019s private, there are no wrong answers, and it helps the people who care about you know how to help.", es: "T\u00f3mate unos minutos tranquilos, solo para ti. Es privado, no hay respuestas incorrectas, y ayuda a las personas que se preocupan por ti a saber c\u00f3mo apoyarte." },
+  w_reassure:  { en: "A private 4\u201310 minute reflection \u00b7 no wrong answers \u00b7 nothing leaves this device unless you choose.", es: "Una reflexi\u00f3n privada de 4\u201310 minutos \u00b7 sin respuestas incorrectas \u00b7 nada sale de este dispositivo a menos que t\u00fa lo decidas." },
   w_choose:    { en: "Choose how you want to take it", es: "Elige c\u00f3mo quieres hacerla" },
   w_choose_sub:{ en: "Same 18 questions either way \u2014 take the quick version, or a more thorough one with short written reflections.", es: "Las mismas 18 preguntas en ambas \u2014 haz la versi\u00f3n r\u00e1pida, o una m\u00e1s a fondo con breves reflexiones escritas." },
   m_rapid_ey:  { en: "The Universal Check-In \u00b7 population view", es: "Universal Check-In \u00b7 vista de grupo" },
@@ -2808,6 +3138,16 @@ const I18N_UI = {
   w_spring:    { en: "Spring (Mar\u2013May)", es: "Primavera (mar\u2013may)" },
   w_summer:    { en: "Summer (Jun\u2013Aug)", es: "Verano (jun\u2013ago)" },
   g_back: { es: "Volver al inicio" },
+  story_ey: { es: "La historia" },
+  story_h: { es: "El fundador, y el porqu\u00e9 detr\u00e1s de este trabajo" },
+  story_p1: { es: "Me llamo Jimmy Ramsden. No llegu\u00e9 a este trabajo desde una sala de juntas, sino desde el aula, donde sigo ense\u00f1ando hoy como educador especial." },
+  story_p2: { es: "Mi camino comenz\u00f3 en Humboldt State University con una licenciatura en ciencias pol\u00edticas, seguida de una maestr\u00eda en educaci\u00f3n especial. Pero el verdadero punto de inflexi\u00f3n lleg\u00f3 en 2006, cuando un grave accidente automovil\u00edstico me dej\u00f3 con una lesi\u00f3n cerebral traum\u00e1tica y una discapacidad neurol\u00f3gica. Reconstruir mi vida cambi\u00f3 mi forma de entender la lucha, la paciencia y la gracia. Es la raz\u00f3n por la que este trabajo no es abstracto para m\u00ed." },
+  story_p3: { es: "The Architecture of Grace naci\u00f3 de la convicci\u00f3n de que las personas merecen m\u00e1s que ser medidas: merecen ser comprendidas. Construido bajo la <strong>School of Life Foundation</strong>, todo aqu\u00ed se apoya en cuatro pilares fundamentales:" },
+  story_pillars: { es: '<li style="font-size:15px; line-height:1.6; color:var(--ink); margin-bottom:10px; padding-left:20px; position:relative;"><span style="position:absolute; left:0; top:1px; color:var(--gold);">&#9670;</span><strong style="color:var(--navy);">Identidad</strong> &mdash; qui\u00e9n llega una persona a creer que es.</li><li style="font-size:15px; line-height:1.6; color:var(--ink); margin-bottom:10px; padding-left:20px; position:relative;"><span style="position:absolute; left:0; top:1px; color:var(--gold);">&#9670;</span><strong style="color:var(--navy);">Autocompasi\u00f3n</strong> &mdash; c\u00f3mo aprende una persona a hablarse a s\u00ed misma.</li><li style="font-size:15px; line-height:1.6; color:var(--ink); margin-bottom:10px; padding-left:20px; position:relative;"><span style="position:absolute; left:0; top:1px; color:var(--gold);">&#9670;</span><strong style="color:var(--navy);">Perd\u00f3n</strong> &mdash; superar los errores para dar espacio al crecimiento.</li><li style="font-size:15px; line-height:1.6; color:var(--ink); margin-bottom:0; padding-left:20px; position:relative;"><span style="position:absolute; left:0; top:1px; color:var(--gold);">&#9670;</span><strong style="color:var(--navy);">Gracia</strong> &mdash; recibir a una persona con comprensi\u00f3n y no solo con juicio.</li>' },
+  story_p4: { es: "Como maestro y como padre, estos son los valores que deseo para mis estudiantes, para mis propios hijos, y para cualquiera dispuesto a hacer este trabajo." },
+  story_note_label: { es: "Una nota sobre la transparencia" },
+  story_note: { es: "Este trabajo est\u00e1 en sus primeras etapas. El chequeo es un programa piloto: un puntaje es una se\u00f1al para una conversaci\u00f3n, nunca un diagn\u00f3stico, y el plan de estudios es un marco que estoy probando activamente. Prefiero ser honesto al respecto antes que exagerar." },
+  story_contact: { es: 'Si deseas probarlo, pilotearlo o simplemente compartir tus ideas, por favor cont\u00e1ctame. <a href="mailto:whytheschooloflife@gmail.com" style="color:var(--navy); font-weight:600; text-decoration:none; border-bottom:1px solid var(--gold);">whytheschooloflife@gmail.com</a>' },
   g_educator: { es: "Acceso del educador &middot; resultados &rarr;" },
   g_slimlabel: { es: "<span class=\"guide-slim-eyebrow\">The Architecture of Grace</span> &nbsp;&middot;&nbsp; Gu\u00eda y biblioteca" },
   g_eco_ey: { es: "La arquitectura" },
@@ -2828,6 +3168,19 @@ const I18N_UI = {
   aud_par:           { es: "Padres y tutores" },
   aud_clin:          { es: "Profesionales clínicos" },
   aud_any:           { es: "Cualquiera que haga el trabajo" },
+  hyb_foundation:    { es: "School of Life Foundation" },
+  hyb_b1:            { es: "De la reflexión a la acción" },
+  hyb_b2:            { es: "Para estudiantes y adultos" },
+  hyb_b3:            { es: "Creado por un maestro" },
+  hyb_madefor:       { es: "Creado para" },
+  hyb_emo:           { es: "Todos merecen ser vistos, comprendidos y ayudados a crecer." },
+  hyb_lead:          { es: "Un programa completo. Una serie de novelas complementarias. Un chequeo privado que convierte la reflexión en acción." },
+  hyb_pillars:       { es: "Basado en <em>identidad</em>, <em>autocompasión</em>, <em>perdón</em> y <em>gracia</em>." },
+  hyb_private:       { es: "100% Privado" },
+  hyb_meta_free:     { es: "Gratis para explorar · sin registro, sin código" },
+  hyb_meta_priv:     { es: "Permanece en tu dispositivo · ~4 minutos" },
+  foot_mission:      { es: "Un marco secular para el desarrollo humano — ayudando a estudiantes y adultos a comprenderse, fortalecer sus relaciones y crecer con resiliencia y esperanza." },
+  foot_made:         { es: "Hecho con cariño en Illinois." },
   ri_h: { es: "\u00cdndice de constructos y recursos" },
   ri_intro: { es: "Cuando un chequeo marca un dominio bajo o un \u00edtem espec\u00edfico, busca el constructo correspondiente abajo. Cada uno indica la lecci\u00f3n, la l\u00e1mina de anclaje y la actividad exactas en cada nivel; y ahora, bajo <strong>En las novelas</strong>, el libro y el cap\u00edtulo donde esa misma idea aparece como relato. (Las referencias son por cap\u00edtulo, que se mantienen exactas entre los formatos impreso y digital, en lugar de por p\u00e1gina.) Tanto el chequeo Quick como el Thorough miden los mismos \u00edtems, as\u00ed que un resultado de cualquiera de los dos remite a las mismas lecciones, secciones y cap\u00edtulos." },
   ri_search_ph: { es: "Buscar: cr\u00edtico interno, agobio, reparaci\u00f3n, inseguro..." },
@@ -3037,6 +3390,9 @@ function showScreen(id) {
 }
 
 function renderItem() {
+  // Bring each new question to the top of the viewport (covers Next/Back/first load).
+  // Instant, not smooth — iOS Safari can drop an in-flight smooth scroll on re-render.
+  try { window.scrollTo(0, 0); } catch (e) {}
   const list = items();
   const item = list[current];
   const domainLabel = item.d === "A"
@@ -3235,6 +3591,15 @@ async function submitFinal() {
     if (_le) _le.setAttribute("data-i18n", "t_lede");
     if (_sp) _sp.style.display = "none";
   }
+  var _ad = (population === "adult");
+  var _mrt = document.getElementById("btnMyResults");
+  var _mrf = document.getElementById("btnMyResultsFarewell");
+  var _tc = document.getElementById("btnToClosing");
+  var _dn = document.getElementById("btnDone");
+  if (_mrt) _mrt.style.display = _ad ? "" : "none";
+  if (_mrf) _mrf.style.display = _ad ? "" : "none";
+  if (_tc) _tc.className = _ad ? "btn btn-ghost" : "btn";
+  if (_dn) _dn.className = _ad ? "btn btn-ghost" : "btn";
   if (typeof applyLang === "function") applyLang();
 
   showScreen("screen-thanks");
@@ -3268,6 +3633,7 @@ async function finalizeAndSave(closing) {
   all.push(record);
   localStorage.setItem(STORAGE_KEY, JSON.stringify(all));
   window._pendingRecord = null;
+  window._lastResult = record;
 
   // Only reach out to the network when the school has configured its own
   // endpoint. Records post directly to the school's Google Apps Script; the
@@ -3659,6 +4025,23 @@ function resetToStart() {
   if ($("#adultId")) $("#adultId").value = "";
   if ($("#adultRel")) $("#adultRel").value = "";
   applyContext();
+  (function(){
+    var els=document.querySelectorAll('.reveal');
+    if(!els.length) return;
+    var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion:reduce)').matches;
+    if(reduce || !('IntersectionObserver' in window)){
+      els.forEach(function(e){e.classList.add('in')}); return;
+    }
+    // only NOW do we allow hiding — so if any of this fails, content stays visible
+    document.documentElement.classList.add('js-reveal');
+    var io=new IntersectionObserver(function(entries){
+      entries.forEach(function(en){ if(en.isIntersecting){ en.target.classList.add('in'); io.unobserve(en.target); } });
+    },{threshold:0, rootMargin:'0px 0px -8% 0px'});
+    els.forEach(function(e){io.observe(e)});
+    // safety net: reveal anything still hidden shortly after load, no matter what
+    setTimeout(function(){ els.forEach(function(e){ e.classList.add('in'); }); }, 1200);
+  })();
+  (function(){var y=document.getElementById('footYr'); if(y) y.textContent=new Date().getFullYear();})();
   showScreen("screen-welcome");
   if (typeof aogSetHash === "function") aogSetHash("");
 }
@@ -3721,7 +4104,7 @@ document.addEventListener("DOMContentLoaded", () => {
   $("#btnStart").addEventListener("click", () => {
     const sid = $("#studentId").value.trim();
     const grade = $("#grade").value;
-    const win = (context === "home") ? currentDateCanonical() : $("#window").value;
+    const win = (context === "home") ? seasonFromDate() : $("#window").value;
     surveyLang = lang;
     if (!sid || !grade || !win) {
       const idTerm = (context === "school")
@@ -3856,6 +4239,10 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   $("#btnDone").addEventListener("click", resetToStart);
+  var _br = $("#btnMyResults"); if (_br) _br.addEventListener("click", showMyResults);
+  var _brf = $("#btnMyResultsFarewell"); if (_brf) _brf.addEventListener("click", showMyResults);
+  var _brd = $("#btnResultsDone"); if (_brd) _brd.addEventListener("click", resetToStart);
+  var _brd2 = $("#btnResultsDone2"); if (_brd2) _brd2.addEventListener("click", resetToStart);
 
   // Admin tabs
   $$(".tab").forEach(tab => {
@@ -3970,7 +4357,7 @@ window.addEventListener("load", function () {
     surveyLang = lang;
     var relEl = document.getElementById("adultRel");
     var rel = (relEl && relEl.value || "").trim();
-    session = { studentId: sid, grade: "Adult", window: currentDateCanonical(), context: "home",
+    session = { studentId: sid, grade: "Adult", window: seasonFromDate(), context: "home",
                 relationship: rel, classId: "", schoolId: "", districtId: "" };
     responses = new Array(18).fill(null);
     intensities = new Array(18).fill(null);
@@ -4037,6 +4424,53 @@ function submitAccessCode() {
 function clearLocalData() {
   if (!confirm("Permanently delete ALL check-in data on this device?")) return;
   localStorage.removeItem(STORAGE_KEY);
+  refreshAdmin();
+}
+
+// ---- Demo data: lets a teacher preview the dashboard without entering real data.
+// Real data is stashed and restored on toggle off, so it's never lost or mixed. ----
+const DEMO_FLAG = "aogScreener.demoActive";
+const DEMO_STASH = "aogScreener.realStash";
+function buildDemoRecords() {
+  const names = ["Ava R.","Marcus T.","Lena K.","Diego M.","Priya S.","Sam W.","Noah B.","Mia C.","Jordan L.","Ella F."];
+  const grades = ["3","4","4","5","4","3","5","4","3","5"];
+  const out = [];
+  const windows = ["Fall","Winter","Spring"];
+  names.forEach((nm,i)=>{
+    windows.forEach((win,wi)=>{
+      // gentle upward drift across windows so Growth has a story
+      const base = [82,58,41,77,67,90,63,71,49,85][i];
+      const comp = Math.max(20, Math.min(100, base + wi*5 + (i%2?2:-1)));
+      const a = Math.max(15,Math.min(100,comp + (i%3-1)*6));
+      const b = Math.max(15,Math.min(100,comp + ((i+1)%3-1)*6));
+      const c = Math.max(15,Math.min(100,comp + ((i+2)%3-1)*6));
+      const tier = comp>=75?"low":comp>=50?"some":"high";
+      out.push({ timestamp:new Date(Date.now()-(2-wi)*86400000*40 - i*60000).toISOString(),
+        studentId:nm, context:"school", grade:grades[i], window:win, districtId:"", schoolId:"", classId:"Demo",
+        language:"en", mode:"rapid", population:"k12", relationship:"",
+        raw:new Array(18).fill(2), intensities:new Array(18).fill(null), reflections:["","",""], closingWord:"",
+        domainA:a, domainB:b, domainC:c, composite:comp, normComposite:comp, tier:tier, synced:null });
+    });
+  });
+  return out;
+}
+function toggleDemoData() {
+  const btn = document.getElementById("btnDemoData");
+  const active = localStorage.getItem(DEMO_FLAG) === "1";
+  if (!active) {
+    // stash whatever is currently there, then load demo
+    localStorage.setItem(DEMO_STASH, localStorage.getItem(STORAGE_KEY) || "[]");
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(buildDemoRecords()));
+    localStorage.setItem(DEMO_FLAG, "1");
+    if (btn) { btn.textContent = "Clear demo data"; btn.style.background = "transparent"; btn.style.color = "var(--gold)"; }
+  } else {
+    // restore real data
+    const stash = localStorage.getItem(DEMO_STASH);
+    if (stash != null) localStorage.setItem(STORAGE_KEY, stash);
+    localStorage.removeItem(DEMO_STASH);
+    localStorage.removeItem(DEMO_FLAG);
+    if (btn) { btn.textContent = "Try demo data"; btn.style.background = "var(--gold)"; btn.style.color = "var(--navy)"; }
+  }
   refreshAdmin();
 }
 
@@ -4257,6 +4691,7 @@ let tabHelpOpen = false;
 function setTabHelp(name) { const el = $("#tabHelp"); if (el) { const h = TAB_HELP[name]; el.innerHTML = h ? (h[dashLang] || h.en) : ""; } }
 
 function refreshAdmin() {
+  (function(){ var b=document.getElementById("btnDemoData"); if(b){ var on=localStorage.getItem(DEMO_FLAG)==="1"; b.textContent= on?"Clear demo data":"Try demo data"; b.style.background= on?"transparent":"var(--gold)"; b.style.color="var(--gold)"; if(!on) b.style.color="var(--navy)"; } })();
   renderSyncStatus();
   populateFilters();
   renderOverview();
@@ -4434,6 +4869,10 @@ function renderHome() {
   }
   records.sort((a,b) => new Date(b.timestamp) - new Date(a.timestamp));
   const r = records[0];
+  target.innerHTML = buildHomeReport(r);
+}
+
+function buildHomeReport(r, isSelf) {
   const itemMax = r.mode === "depth" ? 5 : 3;
 
   // Header
@@ -4458,7 +4897,7 @@ function renderHome() {
   '</div>';
 
   // Conversation guide first \u2014 the most useful part, at the top.
-  html += renderConversationGuide(r);
+  html += renderConversationGuide(r, isSelf);
   html += '<div class="home-detail-head">' + DT("The full picture, item by item","El panorama completo, \u00edtem por \u00edtem") + '</div>';
 
   // Domain sections
@@ -4509,7 +4948,7 @@ function renderHome() {
     // Reflection (if any)
     if (r.reflections && r.reflections[d.reflectionIdx]) {
       html += '<div class="home-reflection">' +
-        '<div class="label">' + DT("Their own words","Sus propias palabras") + '</div>' +
+        '<div class="label">' + (isSelf ? DT("In your words","En tus palabras") : DT("Their own words","Sus propias palabras")) + '</div>' +
         '<div class="quote">\u201C' + escapeHtml(r.reflections[d.reflectionIdx]) + '\u201D</div>' +
       '</div>';
     }
@@ -4520,15 +4959,31 @@ function renderHome() {
   // Closing word echo
   if (r.closingWord) {
     html += '<div class="home-reflection" style="margin: 16px 0;">' +
-      '<div class="label">' + DT("Word they kept","La palabra que eligieron") + '</div>' +
+      '<div class="label">' + (isSelf ? DT("A word you kept","La palabra que elegiste") : DT("Word they kept","La palabra que eligieron")) + '</div>' +
       '<div class="quote" style="font-size: 22px; color: var(--gold);">\u201C' + escapeHtml(r.closingWord) + '\u201D</div>' +
     '</div>';
   }
 
-  target.innerHTML = html;
+  return html;
 }
 
-function renderConversationGuide(r) {
+function renderMyResults() {
+  const r = window._lastResult || window._pendingRecord;
+  const target = document.getElementById("myResultsReport");
+  if (!target) return;
+  if (!r) { target.innerHTML = ""; return; }
+  const prev = (typeof dashLang !== "undefined") ? dashLang : "en";
+  dashLang = (typeof lang !== "undefined") ? lang : prev;   // show in the participant's language
+  target.innerHTML = buildHomeReport(r, true);
+  dashLang = prev;
+}
+function showMyResults() {
+  if (window._pendingRecord && !window._lastResult) { finalizeAndSave(""); }
+  renderMyResults();
+  showScreen("screen-myresults");
+}
+
+function renderConversationGuide(r, isSelf) {
   const isAdult = (r.population === "adult");
   const itemMax = r.mode === "depth" ? 5 : 3;
   const lowItems = [];
@@ -4542,6 +4997,10 @@ function renderConversationGuide(r) {
   });
 
   if (!lowItems.length) {
+    if (isSelf) return '<div class="home-conversation">' +
+      '<h4>' + DT("What to do next","Qu\u00e9 hacer ahora") + '</h4>' +
+      '<p>' + DT("You scored in the healthy range across every item. That doesn\u2019t mean nothing is hard \u2014 it means the skills the curriculum teaches are showing up in you. Keep doing what you\u2019re doing, and take this again next window to see your growth.","Obtuviste puntajes en el rango saludable en cada \u00edtem. Eso no significa que nada sea dif\u00edcil \u2014 significa que las habilidades que ense\u00f1a el curr\u00edculo est\u00e1n apareciendo en ti. Sigue haciendo lo que haces, y vuelve a hacerlo el pr\u00f3ximo per\u00edodo para ver tu progreso.") + '</p>' +
+    '</div>';
     return '<div class="home-conversation">' +
       '<h4>' + DT("What to do next","Qu\u00e9 hacer ahora") + '</h4>' +
       '<p>' + DT("This person scored in the healthy range across every item. That doesn\u2019t mean nothing is hard \u2014 it means the skills the curriculum teaches are showing up. Keep doing what you\u2019re doing. Re-screen in the next window to track growth.","Esta persona obtuvo puntajes en el rango saludable en cada \u00edtem. Eso no significa que nada sea dif\u00edcil \u2014 significa que las habilidades que ense\u00f1a el curr\u00edculo est\u00e1n apareciendo. Sigue haciendo lo que haces. Vuelve a evaluar en el pr\u00f3ximo per\u00edodo para seguir el progreso.") + '</p>' +
@@ -4593,8 +5052,8 @@ function renderConversationGuide(r) {
   Object.keys(PSET).forEach(k => { prompts[k] = PSET[k][dashLang] || PSET[k].en; });
 
   let html = '<div class="home-conversation">' +
-    '<h4>' + DT("Conversation starters","Iniciadores de conversaci\u00f3n") + '</h4>' +
-    '<p>' + DT("The questions below scored lower. These are not problems \u2014 they are <em>doors</em>. Open one when the moment is right, and ask gently. Don\u2019t do all of them in one sitting.","Las preguntas de abajo obtuvieron puntajes m\u00e1s bajos. No son problemas \u2014 son <em>puertas</em>. Abre una cuando el momento sea adecuado, y pregunta con suavidad. No las hagas todas de una sola vez.") + '</p>' +
+    '<h4>' + (isSelf ? DT("Worth sitting with","Para reflexionar") : DT("Conversation starters","Iniciadores de conversaci\u00f3n")) + '</h4>' +
+    '<p>' + (isSelf ? DT("These are the questions where you scored a bit lower. They aren\u2019t problems \u2014 they\u2019re <em>doors</em>. Sit with one when the moment feels right; there\u2019s no need to do them all at once.","Estas son las preguntas donde obtuviste puntajes m\u00e1s bajos. No son problemas \u2014 son <em>puertas</em>. Si\u00e9ntate con una cuando el momento se sienta adecuado; no hace falta hacerlas todas de una vez.") : DT("The questions below scored lower. These are not problems \u2014 they are <em>doors</em>. Open one when the moment is right, and ask gently. Don\u2019t do all of them in one sitting.","Las preguntas de abajo obtuvieron puntajes m\u00e1s bajos. No son problemas \u2014 son <em>puertas</em>. Abre una cuando el momento sea adecuado, y pregunta con suavidad. No las hagas todas de una sola vez.")) + '</p>' +
     '<ul>';
 
   // Sort lowItems by severity (lowest scored first) so most concerning surface first
@@ -4634,6 +5093,9 @@ function renderConversationGuide(r) {
   html += '<p style="margin-top:14px;">' + ((isAdult ? guidanceAdult : guidance)[lowestDomain]) + '</p>';
 
   if (r.trustedAdultFlag) {
+    if (isSelf && isAdult) {
+      html += '<div class="severity-block">' + DT("<strong>A note on reaching out.</strong> You answered that you don\u2019t have someone you\u2019d readily turn to. That matters at any age. A gentle question to sit with: <em>if something was wrong, who would you actually reach out to?</em> \u2014 and then naming one real person. In the novels, asking for help is its own thread: <em>The Year We Looked Up</em> (Book 4, \u201CThe First Time I Asked,\u201D Ch 10) and <em>The Year We Walked Out</em> (Book 5, Ch 13\u201315). If you\u2019re carrying something heavy, the 988 Suicide & Crisis Lifeline (call or text) is there any time.","<strong>Una nota sobre pedir ayuda.</strong> Respondiste que no tienes a alguien a quien acudir\u00edas con facilidad. Eso importa a cualquier edad. Una pregunta suave para reflexionar: <em>si algo anduviera mal, \u00bfa qui\u00e9n acudir\u00edas de verdad?</em> \u2014 y luego nombrar a una persona real. En las novelas, pedir ayuda es su propio hilo: <em>The Year We Looked Up</em> (Libro 4, \u00abThe First Time I Asked\u00bb, Cap. 10) y <em>The Year We Walked Out</em> (Libro 5, Cap. 13\u201315). Si est\u00e1s cargando algo pesado, la L\u00ednea 988 (llamar o enviar texto) est\u00e1 disponible a cualquier hora.") + '</div>';
+    } else
     html += '<div class="severity-block">' + (isAdult
       ? DT("<strong>Trusted-person item flagged.</strong> This person answered that they don\u2019t have someone they\u2019d readily turn to. That matters at any age. The gentlest door: <em>If something was wrong, who would you actually reach out to?</em> \u2014 and then naming one real person. In the novels, asking for help is its own thread: <em>The Year We Looked Up</em> (Book 4, \u201CThe First Time I Asked,\u201D Ch 10) and <em>The Year We Walked Out</em> (Book 5, Ch 13\u201315). If they\u2019re carrying something heavy, the 988 Suicide & Crisis Lifeline (call or text) is there any time.",
             "<strong>\u00cdtem de persona de confianza marcado.</strong> Esta persona respondi\u00f3 que no tiene a alguien a quien acudir\u00eda con facilidad. Eso importa a cualquier edad. La puerta m\u00e1s suave: <em>Si algo anduviera mal, \u00bfa qui\u00e9n acudir\u00edas de verdad?</em> \u2014 y luego nombrar a una persona real. En las novelas, pedir ayuda es su propio hilo: <em>The Year We Looked Up</em> (Libro 4, \u00abThe First Time I Asked\u00bb, Cap. 10) y <em>The Year We Walked Out</em> (Libro 5, Cap. 13\u201315). Si est\u00e1 cargando algo pesado, la L\u00ednea 988 (llamar o enviar texto) est\u00e1 disponible a cualquier hora.")
@@ -4898,7 +5360,10 @@ const ITEM_TO_CONSTRUCT = {
 function homeItemBooks(n, isAdult) {
   const key = ITEM_TO_CONSTRUCT[n]; if (!key) return "";
   let nv = (RI_NOVELS[key] || []).slice();
-  if (isAdult) nv = nv.filter(x => x.b >= 3);
+  if (isAdult) {
+    const mature = nv.filter(x => x.b >= 3);
+    nv = mature.length ? mature : nv;   // prefer Book 3-5; if a construct has none, show the verified earlier-band chapters rather than hiding the link
+  }
   if (!nv.length) return "";
   const es = (dashLang === "es");
   const con = RI_CONSTRUCTS.find(c => c.items === key);
