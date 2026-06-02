@@ -2464,9 +2464,17 @@ function toggleTheme(){
       <h1 class="display display-lg" data-i18n="mr_h1">How you&rsquo;re doing</h1>
       <p class="lede" data-i18n="mr_lede">Here&rsquo;s everything you just shared &mdash; and where each piece lives in the books.</p>
     </div>
+    <div class="nav-row" style="justify-content:center; gap:12px; flex-wrap:wrap; margin:4px 0 22px;">
+      <button class="btn" id="btnPrintMyResultsTop" data-i18n="mr_save">Save / Print</button>
+      <button class="btn btn-ghost" id="btnEmailMyResultsTop" data-i18n="mr_email">Email it to myself</button>
+    </div>
     <div id="myResultsReport"></div>
-    <div class="nav-row" style="justify-content:center; margin:28px 0 8px;">
-      <button class="btn" id="btnResultsDone2" data-i18n="mr_done2">Done</button>
+    <div class="nav-row" style="justify-content:center; gap:12px; flex-wrap:wrap; margin:26px 0 4px;">
+      <button class="btn" id="btnPrintMyResults" data-i18n="mr_save">Save / Print</button>
+      <button class="btn btn-ghost" id="btnEmailMyResults" data-i18n="mr_email">Email it to myself</button>
+    </div>
+    <div class="nav-row" style="justify-content:center; margin:6px 0 8px;">
+      <button class="btn btn-ghost" id="btnResultsDone2" data-i18n="mr_done2">Done</button>
     </div>
   </div>
 </section>
@@ -3568,6 +3576,8 @@ const I18N_UI = {
   mr_lede:      { en: "Here\u2019s everything you just shared \u2014 and where each piece lives in the books.", es: "Esto es todo lo que compartiste \u2014 y d\u00f3nde vive cada parte en los libros." },
   mr_done:      { en: "Done", es: "Listo" },
   mr_done2:     { en: "Done", es: "Listo" },
+  mr_save:      { en: "Save / Print", es: "Guardar / Imprimir" },
+  mr_email:     { en: "Email it to myself", es: "Enviármelo por correo" },
   ri_adults:    { en: "Adults \u00b7 Books 3\u20135", es: "Adultos \u00b7 Libros 3\u20135" },
   ch_ey:        { en: "The Check-In", es: "El chequeo" },
   ch_h1:        { en: "Who’s checking in?", es: "¿Quién hace el chequeo?" },
@@ -3967,6 +3977,11 @@ var TOURS = {
 };
 var TOUR_SCREEN = { welcome:"screen-welcome", guide:"screen-guide", dash:"screen-admin" };
 var TOUR_SEEN   = { welcome:"aog.tour.seen", guide:"aog.tour.guide.seen", dash:"aog.tour.dash.seen" };
+// The "you've already seen the tour" flag is a harmless UI preference, not student
+// data, so it lives in localStorage (remembered across visits) while everything
+// else stays session-only. Falls back silently if storage is unavailable.
+function tourSeenGet(key) { try { return localStorage.getItem(key) === "1"; } catch (e) { return false; } }
+function tourSeenSet(key) { try { localStorage.setItem(key, "1"); } catch (e) {} }
 var _tourSteps = TOURS.welcome, _tourKey = "welcome";
 var tourIdx = 0, tourActive = false;
 function tourTxt(o){ return (typeof lang !== "undefined" && lang === "es" && o && o.es) ? o.es : (o ? o.en : ""); }
@@ -4067,14 +4082,14 @@ function endTour(silent){
   window.removeEventListener("resize", tourReposition);
   window.removeEventListener("scroll", tourReposition, true);
   document.removeEventListener("keydown", tourKey);
-  if (!silent) { try { sessionStorage.setItem(TOUR_SEEN[_tourKey] || "aog.tour.seen", "1"); } catch (e) {} }
+  if (!silent) { tourSeenSet(TOUR_SEEN[_tourKey] || "aog.tour.seen"); }
 }
 function maybeStartTour(key){
   key = key || "welcome";
-  try { if (sessionStorage.getItem(TOUR_SEEN[key]) === "1") return; } catch (e) {}
+  if (tourSeenGet(TOUR_SEEN[key])) return;
   var scr = document.getElementById(TOUR_SCREEN[key]);
   if (scr && scr.classList.contains("active")) {
-    try { sessionStorage.setItem(TOUR_SEEN[key], "1"); } catch (e) {}
+    tourSeenSet(TOUR_SEEN[key]);
     startTour(key);
   }
 }
@@ -4390,9 +4405,15 @@ async function submitFinal() {
 //   1. This device was explicitly designated to sync (set in the dashboard), or
 //   2. The session was launched from a managed link (?sync=on or a districtId).
 // A device opened at the bare URL stays a private local island.
+// The device "send my check-ins to the sheet" choice is a device configuration
+// preference, not student data, so it persists in localStorage (shared across
+// tabs and remembered across sessions) while student responses stay session-only.
+function deviceSyncGet() { try { return localStorage.getItem("aog.sync.enabled") === "1"; } catch (e) { return false; } }
+function deviceSyncSet(on) { try { if (on) localStorage.setItem("aog.sync.enabled", "1"); else localStorage.removeItem("aog.sync.enabled"); } catch (e) {} }
+
 function syncDestinationConfigured() {
   if (!SCHOOL_SYNC_URL) return false; // local-only copy → never sync anywhere
-  if (sessionStorage.getItem("aog.sync.enabled") === "1") return true;
+  if (deviceSyncGet()) return true;
   if (sessionStorage.getItem("aog.launch.sync") === "on") return true;
   if (sessionStorage.getItem(LAUNCH_KEYS.districtId)) return true;
   return false;
@@ -4717,7 +4738,7 @@ function applyDashLang(dl) {
 function setDashLang(dl) { applyDashLang(dl); }
 
 function renderSyncStatus() {
-  const deviceOn = sessionStorage.getItem("aog.sync.enabled") === "1";
+  const deviceOn = deviceSyncGet();
   const linkOn = sessionStorage.getItem("aog.launch.sync") === "on" ||
                  !!sessionStorage.getItem(LAUNCH_KEYS.districtId);
   const on = deviceOn || linkOn;
@@ -5031,7 +5052,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   $("#btnSkipClosing").addEventListener("click", async () => {
     await finalizeAndSave("");
-    resetToStart();
+    if (population === "adult") showMyResults(); else resetToStart();
   });
 
   $("#btnSaveClosing").addEventListener("click", async () => {
@@ -5040,16 +5061,27 @@ document.addEventListener("DOMContentLoaded", () => {
     if (word) {
       $("#farewellWord").textContent = decodeChoices(word, surveyLang);
       showScreen("screen-farewell");
+    } else if (population === "adult") {
+      showMyResults();
     } else {
       resetToStart();
     }
   });
 
-  $("#btnDone").addEventListener("click", resetToStart);
+  // On the farewell screen, "Done" sends an adult to their own results (their
+  // reason for taking it) rather than straight back to the start; everyone else
+  // returns to start as before.
+  $("#btnDone").addEventListener("click", () => {
+    if (population === "adult") showMyResults(); else resetToStart();
+  });
   var _br = $("#btnMyResults"); if (_br) _br.addEventListener("click", showMyResults);
   var _brf = $("#btnMyResultsFarewell"); if (_brf) _brf.addEventListener("click", showMyResults);
   var _brd = $("#btnResultsDone"); if (_brd) _brd.addEventListener("click", resetToStart);
   var _brd2 = $("#btnResultsDone2"); if (_brd2) _brd2.addEventListener("click", resetToStart);
+  var _pmr = $("#btnPrintMyResults"); if (_pmr) _pmr.addEventListener("click", printMyResults);
+  var _emr = $("#btnEmailMyResults"); if (_emr) _emr.addEventListener("click", emailMyResults);
+  var _pmrT = $("#btnPrintMyResultsTop"); if (_pmrT) _pmrT.addEventListener("click", printMyResults);
+  var _emrT = $("#btnEmailMyResultsTop"); if (_emrT) _emrT.addEventListener("click", emailMyResults);
 
   // Admin tabs
   $$(".tab").forEach(tab => {
@@ -5090,8 +5122,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const deviceSyncToggle = document.getElementById("deviceSyncToggle");
   if (deviceSyncToggle) deviceSyncToggle.addEventListener("change", () => {
-    if (deviceSyncToggle.checked) sessionStorage.setItem("aog.sync.enabled", "1");
-    else sessionStorage.removeItem("aog.sync.enabled");
+    deviceSyncSet(deviceSyncToggle.checked);
     renderSyncStatus();
     if (deviceSyncToggle.checked) flushUnsynced().then(renderSyncStatus);
   });
@@ -5937,6 +5968,67 @@ function showMyResults() {
   if (window._pendingRecord && !window._lastResult) { finalizeAndSave(""); }
   renderMyResults();
   showScreen("screen-myresults");
+}
+
+// Let a participant keep their own copy. Both paths are fully private: print/PDF
+// stays on the device; the email opens the person's own mail app, prefilled, and
+// is sent by them to whomever they choose. Nothing is transmitted through us.
+function printMyResults() {
+  var r = window._lastResult || window._pendingRecord;
+  if (!r) return;
+  var host = document.getElementById("printReport");
+  if (!host) return;
+  var es = (typeof lang !== "undefined" && lang === "es");
+  var prev = (typeof dashLang !== "undefined") ? dashLang : "en";
+  if (typeof dashLang !== "undefined") dashLang = (typeof lang !== "undefined") ? lang : prev; // print in the participant's language
+  var head = '<div style="font-family:Fraunces,serif;border-bottom:2px solid #B8893A;padding-bottom:10px;margin-bottom:16px;">' +
+      '<div style="font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:#B8893A;font-weight:700;">Architecture of Grace \u00b7 ' + (es ? "Mis resultados" : "My results") + '</div>' +
+      '<div style="font-size:24px;color:#0A1E33;font-weight:600;">' + (es ? "C\u00f3mo me va" : "How I\u2019m doing") + '</div>' +
+      '<div style="font-size:12px;color:#46506E;">' + escapeHtml([ (typeof winLabel === "function" && r.window ? winLabel(r.window) : null), (typeof fmtNiceDate === "function" ? fmtNiceDate(r.timestamp) : null) ].filter(Boolean).join(" \u00b7 ")) + '</div>' +
+    '</div>';
+  host.innerHTML = '<div class="home-view">' + head + buildHomeReport(r, true) + '</div>';
+  if (typeof dashLang !== "undefined") dashLang = prev;
+  var oldTitle = document.title;
+  document.title = "AoG_My_Results_" + (r.window || "") + "_" + (typeof fmtNiceDate === "function" ? (fmtNiceDate(r.timestamp) || "").replace(/[^A-Za-z0-9]+/g, "_") : "");
+  host.querySelectorAll(".home-item.has-books").forEach(function (el) { el.classList.add("open"); });
+  setTimeout(function () { window.print(); setTimeout(function () { document.title = oldTitle; host.innerHTML = ""; }, 400); }, 120);
+}
+
+function buildMyResultsMailto(r) {
+  if (!r) return "";
+  var es = (typeof lang !== "undefined" && lang === "es");
+  var n = function (v) { return (v == null) ? "\u2014" : Math.round(v); };
+  var when = (typeof fmtNiceDate === "function" ? fmtNiceDate(r.timestamp) : "") || "";
+  var L = es ? {
+    subject: "Mis resultados \u2014 Architecture of Grace",
+    title: "Mis resultados del chequeo \u2014 Architecture of Grace",
+    date: "Fecha", overall: "General", a: "Regulaci\u00f3n emocional y bienestar",
+    b: "Autocompasi\u00f3n y mentalidad de crecimiento", c: "Competencia social y reparaci\u00f3n",
+    scale: "(de 100; m\u00e1s alto es m\u00e1s estable)",
+    note: "Esto es un punto de partida para una conversaci\u00f3n, no un diagn\u00f3stico."
+  } : {
+    subject: "My results \u2014 Architecture of Grace",
+    title: "My Check-In results \u2014 Architecture of Grace",
+    date: "Date", overall: "Overall", a: "Emotional Regulation & Well-Being",
+    b: "Self-Compassion & Growth Mindset", c: "Social Competency & Repair",
+    scale: "(out of 100; higher is steadier)",
+    note: "This is a starting point for a conversation, not a diagnosis."
+  };
+  var body = [
+    L.title, "",
+    L.date + ": " + when, "",
+    L.overall + ": " + n(r.normComposite) + "/100",
+    L.a + ": " + n(r.normA) + "/100",
+    L.b + ": " + n(r.normB) + "/100",
+    L.c + ": " + n(r.normC) + "/100", "",
+    L.scale, "", L.note
+  ].join("\n");
+  return "mailto:?subject=" + encodeURIComponent(L.subject) + "&body=" + encodeURIComponent(body);
+}
+function emailMyResults() {
+  var r = window._lastResult || window._pendingRecord;
+  if (!r) return;
+  window.location.href = buildMyResultsMailto(r);
 }
 
 // ============================================================
