@@ -1356,7 +1356,11 @@ footer .serif { font-style: italic; color: var(--ink-soft); }
 .aog-aud span{font-size:13px;color:var(--navy);background:#fff;border:1px solid var(--rule);padding:7px 16px;border-radius:30px}
 .aog-aud span.lead{background:var(--gold);color:#1a130a;border-color:var(--gold);font-weight:600}
 .aog-lobby{padding:32px 0 0;position:relative;z-index:2}
-.aog-doors{display:grid;grid-template-columns:1.12fr .88fr;gap:16px}
+.aog-doors{display:flex;flex-direction:column;gap:16px}
+.aog-checkins{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.aog-doors>.aog-door.primary{padding:30px 34px}
+.aog-doors>.aog-door.primary .t{font-size:25px}
+.aog-doors>.aog-door.primary .ic{width:56px;height:56px;font-size:26px}
 .aog-door{display:flex;align-items:center;gap:16px;text-decoration:none;border-radius:16px;padding:24px 26px;box-shadow:0 14px 30px -10px rgba(27,58,95,.28);transition:transform .18s,box-shadow .18s}
 .aog-door:hover{transform:translateY(-2px);box-shadow:0 18px 36px -10px rgba(27,58,95,.34)}
 .aog-door.primary{background:linear-gradient(180deg,#21466A,#173049);border:1px solid #21466A}
@@ -1365,11 +1369,13 @@ footer .serif { font-style: italic; color: var(--ink-soft); }
 .aog-door.primary .sh{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:#10243a;background:var(--gold);padding:3px 10px;border-radius:20px;margin-bottom:7px}
 .aog-door.secondary{background:#fff;border:1px solid var(--rule)}
 .aog-door .ic{width:50px;height:50px;flex:0 0 auto;border-radius:12px;display:grid;place-items:center;font-size:23px;background:var(--gold-pale);color:var(--gold)}
+.aog-door .ic svg{width:25px;height:25px}
+.aog-doors>.aog-door.primary .ic svg{width:29px;height:29px}
 .aog-door .t{font-family:var(--font-serif);font-size:22px;font-weight:600;color:var(--navy)}
 .aog-door .s{font-size:13.5px;color:var(--ink-soft);margin-top:3px}
 .aog-door .arr{margin-left:auto;color:var(--gold);font-size:23px}
 .aog-foundation-rest{margin-top:-14px;position:relative;z-index:1}
-@media (max-width:640px){ .aog-doors{grid-template-columns:1fr} .aog-hero-e2{padding:42px 22px 48px} .aog-lock .l1{font-size:34px} }
+@media (max-width:640px){ .aog-checkins{grid-template-columns:1fr} .aog-hero-e2{padding:42px 22px 48px} .aog-lock .l1{font-size:34px} }
 </style>
 </head>
 <body>
@@ -1380,7 +1386,7 @@ footer .serif { font-style: italic; color: var(--ink-soft); }
     <div class="brand-mark">A</div>
     <div>
       <div class="brand-name">Architecture of Grace</div>
-      <div class="brand-sub">Universal Check-In &middot; K&ndash;12</div>
+      <div class="brand-sub" data-i18n="brand_sub">A School of Life Foundation project</div>
     </div>
   </a>
   <div class="topbar-actions">
@@ -1419,7 +1425,7 @@ footer .serif { font-style: italic; color: var(--ink-soft); }
     <div class="aog-lobby">
       <div class="aog-doors">
         <a href="#" class="aog-door primary" onclick="event.preventDefault(); openGuide();">
-          <span class="ic">&#9670;</span>
+          <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg></span>
           <div>
             <span class="sh" data-i18n="lobby_start_here">Start here</span>
             <div class="t" data-i18n="w_door_guide">Explore the Guide &amp; Library</div>
@@ -1427,14 +1433,24 @@ footer .serif { font-style: italic; color: var(--ink-soft); }
           </div>
           <span class="arr">&rarr;</span>
         </a>
-        <a href="#" class="aog-door secondary" onclick="event.preventDefault(); startCheckin();">
-          <span class="ic">&#9745;</span>
-          <div>
-            <div class="t" data-i18n="lobby_checkin_t">Take the Check-In</div>
-            <div class="s" data-i18n="lobby_checkin_s">A private 5-minute self-reflection. Quick, or thorough.</div>
-          </div>
-          <span class="arr">&rarr;</span>
-        </a>
+        <div class="aog-checkins">
+          <a href="#" class="aog-door secondary" onclick="event.preventDefault(); startCheckin();">
+            <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg></span>
+            <div>
+              <div class="t" data-i18n="lobby_checkin_t">Take the Check-In</div>
+              <div class="s" data-i18n="lobby_checkin_s">A private 5-minute self-reflection. Quick, or thorough.</div>
+            </div>
+            <span class="arr">&rarr;</span>
+          </a>
+          <a href="#" class="aog-door secondary" onclick="event.preventDefault(); startAdult();">
+            <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 2v2"/><path d="M10 2v2"/><path d="M14 2v2"/><path d="M4 8h14a4 4 0 0 1 0 8h-1"/><path d="M4 8v9a4 4 0 0 0 4 4h5a4 4 0 0 0 4-4V8z"/></svg></span>
+            <div>
+              <div class="t" data-i18n="ad_door_t">A check-in for grown-ups</div>
+              <div class="s" data-i18n="ad_door_s">A private few minutes for the adults doing this work too.</div>
+            </div>
+            <span class="arr">&rarr;</span>
+          </a>
+        </div>
       </div>
     </div>
 
@@ -1568,6 +1584,81 @@ footer .serif { font-style: italic; color: var(--ink-soft); }
 </section>
 
 
+<section id="screen-adult" class="screen">
+  <style>
+  .support-card{ max-width:680px; margin:0 auto 22px; background:#FBF4E4; border:1px solid var(--gold); border-left:4px solid var(--gold); border-radius:12px; padding:15px 22px; text-align:left; }
+  .support-card p{ font-size:13.5px; line-height:1.6; color:var(--ink); margin:0; }
+  .support-card strong{ color:var(--navy); }
+  </style>
+  <div class="container">
+    <div class="hero hero-center">
+      <div class="eyebrow" data-i18n="ad_ey">A check-in for grown-ups</div>
+      <h1 class="display display-xl" data-i18n="ad_h1">How are you doing, really?</h1>
+      <p class="lede" data-i18n="ad_lede">A few quiet minutes, just for you. This is a check-in, not a test &mdash; and not a diagnosis. There are no wrong answers. It&rsquo;s a way to notice how you&rsquo;ve been, and a flag for a conversation if something needs one.</p>
+    </div>
+
+    <div class="support-card">
+      <p data-i18n-html="ad_support">If you&rsquo;re carrying something heavy right now, you don&rsquo;t have to carry it alone. In the U.S. you can call or text <strong>988</strong> (the Suicide &amp; Crisis Lifeline), any time, day or night. Reaching out is a strong thing to do.</p>
+    </div>
+
+    <div class="script-card">
+      <p data-i18n-html="ad_script1"><strong>Before you begin.</strong> Just pick what feels most true for you lately, and go with your first instinct.</p>
+      <p data-i18n-html="ad_script2">Your responses come back to me so I can follow up with care &mdash; they aren&rsquo;t anonymous. If something here brings up a lot, please reach out to someone you trust.</p>
+    </div>
+
+    <div class="form-section">
+      <h2 data-i18n="ad_about">About you</h2>
+      <div class="form-grid">
+        <div class="field">
+          <label data-i18n="ad_name" for="adultId">Your name or initials</label>
+          <input id="adultId" type="text" autocomplete="off" maxlength="60">
+        </div>
+        <div class="field">
+          <label data-i18n="ad_rel" for="adultRel">How we know each other (optional)</label>
+          <input id="adultRel" type="text" autocomplete="off" maxlength="60">
+        </div>
+      </div>
+    </div>
+
+    <div class="section-head">
+      <h2 data-i18n="ad_choose">Choose how you want to take it</h2>
+      <div class="small" data-i18n="ad_choose_sub">Same 18 questions either way &mdash; a quick version, or a more thorough one with a few short written reflections.</div>
+    </div>
+
+    <div class="mode-grid" id="modeGridAdult" role="radiogroup" aria-label="Choose how to take it">
+      <div class="mode-card selected" data-mode="rapid" role="radio" tabindex="0" aria-checked="true">
+        <div class="mode-left">
+          <div class="mode-eyebrow" data-i18n="ad_m_rapid_ey">A brief check-in</div>
+          <div class="mode-title" data-i18n="m_rapid_t">Quick</div>
+          <div class="mode-time" data-i18n="m_rapid_time">~4 minutes</div>
+        </div>
+        <div class="mode-right">
+          <div class="mode-desc" data-i18n="ad_m_rapid_desc">A quick read on how you&rsquo;ve been. 4-point scale, a single tap per question.</div>
+        </div>
+      </div>
+      <div class="mode-card" data-mode="depth" role="radio" tabindex="0" aria-checked="false">
+        <div class="mode-left">
+          <div class="mode-eyebrow" data-i18n="ad_m_depth_ey">In a little more depth</div>
+          <div class="mode-title" data-i18n="m_depth_t">Thorough</div>
+          <div class="mode-time" data-i18n="m_depth_time">~10 minutes</div>
+        </div>
+        <div class="mode-right">
+          <div class="mode-desc" data-i18n="ad_m_depth_desc">A fuller version. 6-point scale, a few follow-ups, and three short written reflections &mdash; for when you want to sit with it a bit.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="nav-row" style="justify-content:space-between;">
+      <button class="btn btn-ghost" onclick="resetToStart()" data-i18n="ad_back">Back</button>
+      <button class="btn" id="btnStartAdult">
+        <span data-i18n="ad_begin">Begin Check-In</span>
+        <span class="btn-arrow">&rarr;</span>
+      </button>
+    </div>
+  </div>
+</section>
+
+
 <!-- ============ SURVEY ============ -->
 <section id="screen-survey" class="screen">
   <div class="container survey-stage">
@@ -1627,7 +1718,10 @@ footer .serif { font-style: italic; color: var(--ink-soft); }
     <div class="thanks-stage">
       <div class="thanks-mark">&#10003;</div>
       <h1 class="display display-lg" data-i18n="t_h1">Thank you.</h1>
-      <p class="lede" data-i18n="t_lede">Your answers have been saved. A trusted adult will review them to make sure you have the support you need.</p>
+      <p class="lede" id="thanksLede" data-i18n="t_lede">Your answers have been saved. A trusted adult will review them to make sure you have the support you need.</p>
+      <div id="thanksSupport" class="support-card" style="display:none; margin-top:18px;">
+        <p data-i18n-html="ad_support">If you&rsquo;re carrying something heavy right now, you don&rsquo;t have to carry it alone. In the U.S. you can call or text <strong>988</strong> (the Suicide &amp; Crisis Lifeline), any time, day or night. Reaching out is a strong thing to do.</p>
+      </div>
       <button class="btn" id="btnToClosing" data-i18n-html="t_btn">One more thing &rarr;</button>
     </div>
   </div>
@@ -2474,10 +2568,69 @@ function heatClass(scored, itemMax) {
 // State management & survey flow
 // ============================================================
 
+// ============================================================
+//  ADULT CHECK-IN  ·  re-voiced from the K-12 18-item instrument
+//  Same constructs, domains, reverse/intensity flags as the K-12 set;
+//  adult wording only. Records are tagged population:"adult".
+// ============================================================
+const ITEMS_ADULT_EN = [
+  { n:1,  d:"A", text:"I can name what I am feeling, even when the feeling is big or hard to sort out.", reverse:false, intensity:false },
+  { n:2,  d:"A", text:"When I am upset, I know at least one thing I can do to help myself settle.", reverse:false, intensity:false },
+  { n:3,  d:"A", text:"Strong feelings \u2014 like worry, anger, or sadness \u2014 get in the way of what I am trying to do.", reverse:true, intensity:false },
+  { n:4,  d:"A", text:"I feel overwhelmed and don\u2019t know what to do about it.", reverse:true, intensity:true },
+  { n:5,  d:"A", text:"After something hard happens, I am able to find my way back to feeling okay.", reverse:false, intensity:false },
+  { n:6,  d:"A", text:"I can notice when I am starting to get worked up before it spills into how I act.", reverse:false, intensity:false },
+  { n:7,  d:"B", text:"When I make a mistake, I can learn from it without turning on myself.", reverse:false, intensity:false },
+  { n:8,  d:"B", text:"When something goes wrong, a voice in my head tells me I am a failure, bad, or not good enough.", reverse:true, intensity:true },
+  { n:9,  d:"B", text:"I treat myself the way I would treat a good friend who was having a hard time.", reverse:false, intensity:false },
+  { n:10, d:"B", text:"I keep replaying my mistakes long after they are over.", reverse:true, intensity:true },
+  { n:11, d:"B", text:"When something is hard, I believe I can get better at it if I keep at it.", reverse:false, intensity:true },
+  { n:12, d:"B", text:"I can own a mistake, repair what I can, and then move forward.", reverse:false, intensity:false },
+  { n:13, d:"C", text:"When I am in conflict with someone, I can consider how the other person might be seeing it.", reverse:false, intensity:false },
+  { n:14, d:"C", text:"When I have hurt someone \u2014 even by accident \u2014 I can say so and try to make it right.", reverse:false, intensity:false },
+  { n:15, d:"C", text:"When someone upsets me or hurts me, I assume the worst about them right away.", reverse:true, intensity:true },
+  { n:16, d:"C", text:"I can be kind to people even when they are different from me or hard to get along with.", reverse:false, intensity:false },
+  { n:17, d:"C", text:"I know the difference between someone who is difficult and someone who is unsafe, and I protect myself from people who are unsafe.", reverse:false, intensity:false },
+  { n:18, d:"C", text:"I have at least one person in my life I trust enough to turn to if something was wrong.", reverse:false, intensity:true }
+];
+const ITEMS_ADULT_ES = [
+  { n:1,  d:"A", text:"Puedo nombrar lo que estoy sintiendo, incluso cuando el sentimiento es grande o dif\u00edcil de descifrar.", reverse:false, intensity:false },
+  { n:2,  d:"A", text:"Cuando estoy molesto/a, conozco al menos una cosa que puedo hacer para calmarme.", reverse:false, intensity:false },
+  { n:3,  d:"A", text:"Los sentimientos fuertes \u2014 como preocupaci\u00f3n, enojo o tristeza \u2014 se interponen en lo que estoy tratando de hacer.", reverse:true, intensity:false },
+  { n:4,  d:"A", text:"Me siento abrumado/a y no s\u00e9 qu\u00e9 hacer al respecto.", reverse:true, intensity:true },
+  { n:5,  d:"A", text:"Despu\u00e9s de que algo dif\u00edcil sucede, soy capaz de volver a sentirme bien.", reverse:false, intensity:false },
+  { n:6,  d:"A", text:"Puedo darme cuenta cuando empiezo a alterarme antes de que afecte c\u00f3mo act\u00fao.", reverse:false, intensity:false },
+  { n:7,  d:"B", text:"Cuando cometo un error, puedo aprender de \u00e9l sin ser duro/a conmigo mismo/a.", reverse:false, intensity:false },
+  { n:8,  d:"B", text:"Cuando algo sale mal, una voz en mi cabeza me dice que soy un fracaso, malo/a, o que no soy suficiente.", reverse:true, intensity:true },
+  { n:9,  d:"B", text:"Me trato a m\u00ed mismo/a como tratar\u00eda a un buen amigo/a que est\u00e1 pasando un momento dif\u00edcil.", reverse:false, intensity:false },
+  { n:10, d:"B", text:"Sigo repitiendo mis errores en mi cabeza mucho despu\u00e9s de que ya pasaron.", reverse:true, intensity:true },
+  { n:11, d:"B", text:"Cuando algo es dif\u00edcil, creo que puedo mejorar si sigo intent\u00e1ndolo.", reverse:false, intensity:true },
+  { n:12, d:"B", text:"Puedo reconocer un error, arreglar lo que puedo, y seguir adelante.", reverse:false, intensity:false },
+  { n:13, d:"C", text:"Cuando tengo un conflicto con alguien, puedo pensar en c\u00f3mo la otra persona podr\u00eda estar vi\u00e9ndolo.", reverse:false, intensity:false },
+  { n:14, d:"C", text:"Cuando he lastimado a alguien \u2014 incluso sin querer \u2014 puedo reconocerlo e intentar reparar las cosas.", reverse:false, intensity:false },
+  { n:15, d:"C", text:"Cuando alguien me molesta o me lastima, asumo lo peor de esa persona enseguida.", reverse:true, intensity:true },
+  { n:16, d:"C", text:"Soy amable con la gente incluso cuando son diferentes a m\u00ed o dif\u00edciles de tratar.", reverse:false, intensity:false },
+  { n:17, d:"C", text:"S\u00e9 la diferencia entre alguien que es dif\u00edcil y alguien que no es seguro, y me protejo de las personas que no son seguras.", reverse:false, intensity:false },
+  { n:18, d:"C", text:"Tengo al menos una persona en mi vida en quien conf\u00edo lo suficiente como para acudir si algo estuviera mal.", reverse:false, intensity:true }
+];
+const REFLECTIONS_ADULT = {
+  en: [
+    { domain:"A", title:"About your feelings and your body", prompt:"Is there anything you want to add about how feelings have been showing up for you lately \u2014 in your body, in your head, in how you act?" },
+    { domain:"B", title:"About how you talk to yourself", prompt:"What does the voice in your head sound like when something goes wrong? What does it say?" },
+    { domain:"C", title:"About the people around you", prompt:"Is there someone in your life right now \u2014 a friend, family member, partner, or coworker \u2014 who feels really good, or really hard? You don\u2019t have to name them." }
+  ],
+  es: [
+    { domain:"A", title:"Sobre tus sentimientos y tu cuerpo", prompt:"\u00bfHay algo que quieras agregar sobre c\u00f3mo se han manifestado tus sentimientos \u00faltimamente \u2014 en tu cuerpo, en tu mente, en c\u00f3mo act\u00faas?" },
+    { domain:"B", title:"Sobre c\u00f3mo te hablas a ti mismo/a", prompt:"\u00bfC\u00f3mo suena la voz en tu cabeza cuando algo sale mal? \u00bfQu\u00e9 dice?" },
+    { domain:"C", title:"Sobre las personas a tu alrededor", prompt:"\u00bfHay alguien en tu vida en este momento \u2014 un amigo/a, familiar, pareja o compa\u00f1ero/a de trabajo \u2014 que se siente muy bien, o muy dif\u00edcil? No tienes que nombrarlo." }
+  ]
+};
+
 let lang = "en";
 let surveyLang = "en";
 let mode = "depth"; // "depth" or "rapid"
 let context = "school"; // "school" (de-identified, no names) or "home" (first name OK). Default = privacy-safe.
+let population = "k12"; // "k12" (default) or "adult" — selects the item set + reflections the survey uses
 // Home check-ins aren't on a school calendar, so instead of a season they're auto-stamped
 // with the month they were taken. Storage stays canonical (English month) so the dashboard
 // groups the same month consistently no matter the participant's language; display is localized.
@@ -2529,13 +2682,36 @@ const SCHOOL_SYNC_KEY = "sky";   // must match the PASSCODE inside the school's 
 const $  = sel => document.querySelector(sel);
 const $$ = sel => document.querySelectorAll(sel);
 
-function items() { return surveyLang === "es" ? ITEMS_ES : ITEMS_EN; }
+function items() {
+  if (population === "adult") return surveyLang === "es" ? ITEMS_ADULT_ES : ITEMS_ADULT_EN;
+  return surveyLang === "es" ? ITEMS_ES : ITEMS_EN;
+}
 function scale() { return mode === "depth" ? SCALE_6[surveyLang] : SCALE_4[surveyLang]; }
 
 // ============================================================
 // Participant-facing UI translations (educator dashboard stays EN)
 // ============================================================
 const I18N_UI = {
+  ad_ey:        { en: "A check-in for grown-ups", es: "Un chequeo para adultos" },
+  ad_h1:        { en: "How are you doing, really?", es: "¿Cómo estás, de verdad?" },
+  ad_lede:      { en: "A few quiet minutes, just for you. This is a check-in, not a test — and not a diagnosis. There are no wrong answers. It’s a way to notice how you’ve been, and a flag for a conversation if something needs one.", es: "Unos minutos tranquilos, solo para ti. Esto es un chequeo, no un examen — y no un diagnóstico. No hay respuestas incorrectas. Es una manera de notar cómo has estado, y una señal para conversar si algo lo necesita." },
+  ad_support:   { en: "If you’re carrying something heavy right now, you don’t have to carry it alone. In the U.S. you can call or text <strong>988</strong> (the Suicide &amp; Crisis Lifeline), any time, day or night. Reaching out is a strong thing to do.", es: "Si estás cargando algo pesado en este momento, no tienes que cargarlo solo/a. En EE. UU. puedes llamar o enviar un mensaje de texto al <strong>988</strong> (la Línea de Prevención del Suicidio y Crisis; hay ayuda en español), a cualquier hora, de día o de noche. Pedir ayuda es algo valiente." },
+  ad_script1:   { en: "<strong>Before you begin.</strong> Just pick what feels most true for you lately, and go with your first instinct.", es: "<strong>Antes de empezar.</strong> Solo elige lo que te resulte más cierto últimamente, y ve con tu primer instinto." },
+  ad_script2:   { en: "Your responses come back to me so I can follow up with care — they aren’t anonymous. If something here brings up a lot, please reach out to someone you trust.", es: "Tus respuestas vuelven a mí para poder dar seguimiento con cuidado — no son anónimas. Si algo aquí remueve mucho, por favor acude a alguien en quien confíes." },
+  ad_about:     { en: "About you", es: "Sobre ti" },
+  ad_name:      { en: "Your name or initials", es: "Tu nombre o iniciales" },
+  ad_rel:       { en: "How we know each other (optional)", es: "Cómo nos conocemos (opcional)" },
+  ad_choose:    { en: "Choose how you want to take it", es: "Elige cómo quieres tomarlo" },
+  ad_choose_sub:{ en: "Same 18 questions either way — a quick version, or a more thorough one with a few short written reflections.", es: "Las mismas 18 preguntas en ambos casos — una versión rápida, o una más completa con algunas reflexiones escritas breves." },
+  ad_m_rapid_ey:  { en: "A brief check-in", es: "Un chequeo breve" },
+  ad_m_rapid_desc:{ en: "A quick read on how you’ve been. 4-point scale, a single tap per question.", es: "Una lectura rápida de cómo has estado. Escala de 4 puntos, un toque por pregunta." },
+  ad_m_depth_ey:  { en: "In a little more depth", es: "Con un poco más de profundidad" },
+  ad_m_depth_desc:{ en: "A fuller version. 6-point scale, a few follow-ups, and three short written reflections — for when you want to sit with it a bit.", es: "Una versión más completa. Escala de 6 puntos, algunas preguntas de seguimiento, y tres breves reflexiones escritas — para cuando quieras detenerte un poco." },
+  ad_begin:     { en: "Begin Check-In", es: "Comenzar el chequeo" },
+  ad_back:      { en: "Back", es: "Atrás" },
+  ad_door_t:    { en: "A check-in for grown-ups", es: "Un chequeo para adultos" },
+  ad_door_s:    { en: "A private few minutes for the adults doing this work too.", es: "Unos minutos privados para los adultos que también hacen este trabajo." },
+  t_lede_adult: { en: "Your answers have been saved, and they’ve come back to me so I can follow up with care. If anything here stirred something up, please reach out to someone you trust — you don’t have to sit with it alone.", es: "Tus respuestas se han guardado y han vuelto a mí para poder dar seguimiento con cuidado. Si algo aquí removió algo, por favor acude a alguien en quien confíes — no tienes que enfrentarlo solo/a." },
   aog_what_ey:    { en: "The Foundation", es: "La Base" },
   aog_what_h:     { en: "What Is Architecture of Grace?", es: "\u00bfQu\u00e9 es Architecture of Grace?" },
   aog_what_p1:    { en: "Architecture of Grace is a human development framework and intuitive digital check-in platform designed to help individuals understand themselves, strengthen relationships, and navigate life\u2019s challenges with resilience, responsibility, and hope.", es: "Architecture of Grace es un marco de desarrollo humano y una plataforma intuitiva de chequeo digital, dise\u00f1ada para ayudar a las personas a comprenderse a s\u00ed mismas, fortalecer sus relaciones y afrontar los desaf\u00edos de la vida con resiliencia, responsabilidad y esperanza." },
@@ -2591,6 +2767,7 @@ const I18N_UI = {
   g_tab_resindex: { es: "\u00cdndice de recursos" },
   g_tab_library: { es: "Descargas" },
   g_tab_about: { es: "Sobre mí · La historia" },
+  brand_sub:         { es: "Un proyecto de School of Life Foundation" },
   lobby_lede:        { es: "Un currículo socioemocional serio y secular para <b>K–12</b> — un programa completo, una serie de novelas complementarias y un chequeo privado que convierte la reflexión en acción. Basado en la identidad, la autocompasión, el perdón y la gracia." },
   lobby_start_here:  { es: "Empieza aquí" },
   lobby_checkin_t:   { es: "Hacer el chequeo" },
@@ -2931,7 +3108,8 @@ function startReflections() {
 }
 
 function renderReflection() {
-  const r = REFLECTIONS[surveyLang][reflectionIdx];
+  const _refSet = (population === "adult") ? REFLECTIONS_ADULT : REFLECTIONS;
+  const r = _refSet[surveyLang][reflectionIdx];
   const domainLabel = r.domain === "A"
     ? (lang === "es" ? "Regulaci\u00f3n Emocional" : "Emotional Regulation")
     : r.domain === "B"
@@ -2974,6 +3152,8 @@ async function submitFinal() {
     classId: session.classId || "",
     language: surveyLang,
     mode: mode,
+    population: population,
+    relationship: session.relationship || "",
     raw: responses.slice(),
     intensities: intensities.slice(),
     reflections: reflections.slice(),
@@ -2993,6 +3173,18 @@ async function submitFinal() {
 
   // Stash record temporarily so closing word can be added
   window._pendingRecord = record;
+
+  // Adult check-ins get a warmer, support-pointing closing.
+  var _le = document.getElementById("thanksLede");
+  var _sp = document.getElementById("thanksSupport");
+  if (population === "adult") {
+    if (_le) _le.setAttribute("data-i18n", "t_lede_adult");
+    if (_sp) _sp.style.display = "";
+  } else {
+    if (_le) _le.setAttribute("data-i18n", "t_lede");
+    if (_sp) _sp.style.display = "none";
+  }
+  if (typeof applyLang === "function") applyLang();
 
   showScreen("screen-thanks");
 }
@@ -3412,6 +3604,9 @@ function resetToStart() {
   if ($("#window")) $("#window").value = "";
   if ($("#closingInput")) $("#closingInput").value = "";
   context = "school";
+  population = "k12";
+  if ($("#adultId")) $("#adultId").value = "";
+  if ($("#adultRel")) $("#adultRel").value = "";
   applyContext();
   showScreen("screen-welcome");
   if (typeof aogSetHash === "function") aogSetHash("");
@@ -3682,7 +3877,57 @@ document.addEventListener("DOMContentLoaded", () => {
 // Admin / modal
 // ============================================================
 function openAdmin() { openModal("modalAccess"); if (typeof aogSetHash === "function") aogSetHash("results"); }
-function startCheckin() { showScreen("screen-checkin"); if (typeof aogSetHash === "function") aogSetHash("checkin"); }
+function startCheckin() { population = "k12"; showScreen("screen-checkin"); if (typeof aogSetHash === "function") aogSetHash("checkin"); }
+
+function startAdult() {
+  population = "adult";
+  mode = "rapid";
+  surveyLang = lang;
+  var ag = document.getElementById("modeGridAdult");
+  if (ag) ag.querySelectorAll(".mode-card").forEach(function (c) {
+    var on = c.dataset.mode === "rapid";
+    c.classList.toggle("selected", on);
+    c.setAttribute("aria-checked", on ? "true" : "false");
+  });
+  showScreen("screen-adult");
+  if (typeof aogSetHash === "function") aogSetHash("adult");
+}
+
+window.addEventListener("load", function () {
+  document.querySelectorAll("#modeGridAdult .mode-card").forEach(function (card) {
+    var selectCard = function () {
+      document.querySelectorAll("#modeGridAdult .mode-card").forEach(function (c) {
+        c.classList.remove("selected"); c.setAttribute("aria-checked", "false");
+      });
+      card.classList.add("selected"); card.setAttribute("aria-checked", "true");
+      mode = card.dataset.mode;
+    };
+    card.addEventListener("click", selectCard);
+    card.addEventListener("keydown", function (e) {
+      if (e.key === "Enter" || e.key === " ") { e.preventDefault(); selectCard(); card.focus(); }
+    });
+  });
+  var bsa = document.getElementById("btnStartAdult");
+  if (bsa) bsa.addEventListener("click", function () {
+    var sid = (document.getElementById("adultId").value || "").trim();
+    if (!sid) {
+      alert(lang === "es" ? "Por favor ingresa tu nombre o iniciales antes de empezar." : "Please enter your name or initials before starting.");
+      return;
+    }
+    population = "adult";
+    surveyLang = lang;
+    var relEl = document.getElementById("adultRel");
+    var rel = (relEl && relEl.value || "").trim();
+    session = { studentId: sid, grade: "Adult", window: currentDateCanonical(), context: "home",
+                relationship: rel, classId: "", schoolId: "", districtId: "" };
+    responses = new Array(18).fill(null);
+    intensities = new Array(18).fill(null);
+    reflections = ["", "", ""];
+    current = 0;
+    showScreen("screen-survey");
+    renderItem();
+  });
+});
 function openModal(id) { $("#" + id).classList.add("active"); }
 function closeModal(id) { $("#" + id).classList.remove("active"); }
 
@@ -3719,6 +3964,7 @@ function aogRouteFromHash() {
   else if (h === "results" || h === "dashboard" || h === "educator" || h === "admin") { openAdmin(); }
   else if (h === "start" || h === "welcome") { resetToStart(); }
   else if (h === "check-in" || h === "checkin" || h === "survey") { startCheckin(); }
+  else if (h === "adult" || h === "adults" || h === "grown-ups" || h === "grownups") { startAdult(); }
 }
 window.addEventListener("hashchange", aogRouteFromHash);
 window.addEventListener("load", aogRouteFromHash);
