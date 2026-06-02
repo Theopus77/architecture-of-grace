@@ -378,6 +378,16 @@ body::before {
   display: flex; justify-content: space-between; align-items: center;
   margin-top: 32px; gap: 12px;
 }
+/* Keep Back/Next reachable when the intensity box expands the card */
+.survey-stage .nav-row{
+  position: sticky; bottom: 0; z-index: 6;
+  background: var(--paper);
+  margin-top: 18px; padding: 14px 0 16px;
+}
+.survey-stage .nav-row::before{
+  content:""; position:absolute; left:0; right:0; top:-24px; height:24px;
+  background:linear-gradient(to top, var(--paper), transparent); pointer-events:none;
+}
 .btn {
   background: var(--navy); color: white;
   border: 1.5px solid var(--navy);
@@ -1753,6 +1763,8 @@ tr:hover td { background: var(--paper); }
   --shadow-xl:0 26px 54px rgba(0,0,0,.6);
 }
 /* surfaces */
+:root[data-theme="dark"] body,
+:root[data-theme="dark"] .stage{ background:#101A24; }
 :root[data-theme="dark"] .table-card{ background:var(--paper); border-color:var(--rule); }
 :root[data-theme="dark"] .hyb-story{ background:#0E1822; }
 :root[data-theme="dark"] .hyb-story-card{ background:var(--paper); border-color:var(--rule); }
@@ -1793,7 +1805,7 @@ body{ transition:background .25s ease, color .25s ease; }
 /* ===== D: onboarding tour ===== */
 .tour-overlay{ position:fixed; inset:0; z-index:4000; }
 .tour-overlay[hidden]{ display:none; }
-.tour-spotlight{ position:absolute; border-radius:14px; box-shadow:0 0 0 9999px rgba(6,12,24,.62); transition:all .3s cubic-bezier(.16,1,.3,1); pointer-events:none; outline:2px solid var(--gold-soft); outline-offset:3px; }
+.tour-spotlight{ position:absolute; border-radius:14px; box-shadow:0 0 0 9999px rgba(6,12,24,.74), 0 0 0 3px var(--gold-soft), 0 0 24px 6px rgba(242,201,100,.45); transition:all .3s cubic-bezier(.16,1,.3,1); pointer-events:none; background:rgba(242,201,100,.06); }
 .tour-pop{ position:absolute; width:300px; max-width:calc(100vw - 28px); background:var(--paper); color:var(--ink); border:1px solid var(--rule); border-radius:16px; box-shadow:0 24px 60px -16px rgba(0,0,0,.5); padding:18px 20px 16px; transition:top .3s cubic-bezier(.16,1,.3,1), left .3s cubic-bezier(.16,1,.3,1); }
 .tour-meta{ font-family:var(--font-sans); font-size:11px; font-weight:700; letter-spacing:.14em; color:var(--gold); margin-bottom:6px; }
 .tour-title{ font-family:var(--font-serif); font-weight:600; font-size:20px; color:var(--ink); line-height:1.15; margin-bottom:7px; }
@@ -1816,6 +1828,139 @@ body{ transition:background .25s ease, color .25s ease; }
 .tour-fab.show{ display:inline-flex; }
 @media (max-width:560px){ .tour-fab-label{ display:none; } .tour-fab{ padding:13px; border-radius:50%; } }
 :root[data-theme="dark"] .tour-next{ color:#1b1405; }
+
+/* ===== Family Mode entry bar (welcome) ===== */
+.hyb-family{ display:flex; align-items:center; gap:18px; max-width:880px; margin:30px auto 0; padding:20px 26px; background:var(--paper); border:1px solid var(--rule); border-radius:18px; text-decoration:none; box-shadow:0 10px 30px -18px rgba(10,30,51,.2); transition:transform .15s, border-color .15s; }
+.hyb-family:hover{ transform:translateY(-1px); border-color:var(--gold); }
+.hyb-family-ic{ flex:0 0 auto; width:50px; height:50px; border-radius:13px; display:grid; place-items:center; background:var(--gold-pale); color:var(--gold); }
+.hyb-family-ic svg{ width:26px; height:26px; }
+.hyb-family-t{ font-family:var(--font-serif); font-weight:600; font-size:21px; color:var(--navy); line-height:1.1; }
+:root[data-theme="dark"] .hyb-family-t{ color:var(--ink); }
+.hyb-family-s{ font-family:var(--font-sans); font-size:13.5px; color:var(--ink-soft); margin-top:3px; line-height:1.45; }
+.hyb-family-arr{ flex:0 0 auto; margin-left:auto; font-size:24px; color:var(--gold); }
+@media (max-width:760px){ .hyb-family{ margin:24px 5vw 0; padding:18px 18px; gap:14px; } .hyb-family-arr{ display:none; } }
+
+/* ===== Family Mode screen ===== */
+.fam-switch{ display:flex; flex-wrap:wrap; gap:8px; justify-content:center; margin:6px 0 22px; }
+.fam-chip{ display:inline-flex; align-items:center; gap:8px; padding:9px 16px; border-radius:999px; border:1px solid var(--rule); background:var(--paper); color:var(--ink-soft); font-family:var(--font-sans); font-weight:600; font-size:14px; cursor:pointer; transition:all .15s; }
+.fam-chip:hover{ border-color:var(--gold); color:var(--ink); }
+.fam-chip.active{ background:var(--navy); border-color:var(--navy); color:#fff; }
+.fam-chip .fc-grade{ font-size:11px; font-weight:700; opacity:.7; }
+.fam-chip.add{ border-style:dashed; color:var(--gold); }
+.fam-empty{ text-align:center; max-width:520px; margin:10px auto; padding:34px 26px; background:var(--paper); border:1px solid var(--rule); border-radius:18px; }
+.fam-empty h3{ font-family:var(--font-serif); font-size:22px; color:var(--navy); margin-bottom:8px; }
+:root[data-theme="dark"] .fam-empty h3{ color:var(--ink); }
+.fam-empty p{ font-size:14.5px; color:var(--ink-soft); line-height:1.55; margin-bottom:18px; }
+.fam-panel{ max-width:760px; margin:0 auto; }
+.fam-card{ background:var(--paper); border:1px solid var(--rule); border-radius:18px; padding:24px 26px; margin-bottom:18px; }
+.fam-card-h{ display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:14px; flex-wrap:wrap; }
+.fam-card-h .t{ font-family:var(--font-serif); font-size:19px; color:var(--navy); font-weight:600; }
+:root[data-theme="dark"] .fam-card-h .t{ color:var(--ink); }
+.fam-chart-wrap{ width:100%; overflow:hidden; }
+.fam-chart svg{ width:100%; height:auto; display:block; }
+.fam-legend{ display:flex; gap:16px; flex-wrap:wrap; font-size:12px; color:var(--ink-soft); margin-top:10px; }
+.fam-legend i{ display:inline-block; width:11px; height:11px; border-radius:3px; vertical-align:middle; margin-right:5px; }
+.fam-hist{ display:flex; flex-direction:column; gap:10px; }
+.fam-row{ display:flex; align-items:center; gap:14px; padding:13px 16px; border:1px solid var(--rule); border-radius:12px; background:var(--cream-deep); flex-wrap:wrap; }
+:root[data-theme="dark"] .fam-row{ background:#0E1822; }
+.fam-row .fr-date{ font-weight:600; color:var(--ink); font-size:14px; min-width:120px; }
+.fam-row .fr-score{ font-family:var(--font-serif); font-size:22px; color:var(--navy); font-weight:600; }
+:root[data-theme="dark"] .fam-row .fr-score{ color:var(--gold-soft); }
+.fam-row .fr-actions{ margin-left:auto; display:flex; gap:8px; }
+.fam-mini-btn{ background:transparent; border:1px solid var(--rule); color:var(--ink-soft); border-radius:8px; padding:7px 12px; font-family:var(--font-sans); font-size:12.5px; font-weight:600; cursor:pointer; }
+.fam-mini-btn:hover{ border-color:var(--gold); color:var(--ink); }
+.fam-report-host{ margin-top:8px; }
+.fam-actions-row{ display:flex; gap:10px; flex-wrap:wrap; justify-content:center; margin:6px 0 26px; }
+
+/* ===== print: isolate the individual report ===== */
+#printReport{ display:none; }
+@media print{
+  body * { visibility:hidden !important; }
+  #printReport, #printReport * { visibility:visible !important; }
+  #printReport{ display:block !important; position:absolute; left:0; top:0; width:100%; padding:0 6mm; }
+  .topbar, .tour-fab, .theme-toggle, .hyb-foot { display:none !important; }
+  @page { margin:14mm; }
+  .home-item{ break-inside:avoid; }
+  .rc-card, .home-domain-section{ break-inside:avoid; }
+}
+
+/* ===== 3: resume bar ===== */
+.resume-bar{ width:100%; margin:32px 0 0; background:var(--navy); color:var(--cream); }
+.resume-bar-inner{ max-width:880px; margin:0 auto; display:flex; align-items:center; gap:12px; padding:13px 7vw; font-family:var(--font-sans); }
+.resume-ic{ flex:0 0 auto; color:var(--gold-soft); display:inline-flex; }
+.resume-ic svg{ width:20px; height:20px; }
+.resume-txt{ font-size:14px; font-weight:600; }
+.resume-actions{ margin-left:auto; display:flex; gap:8px; flex:0 0 auto; }
+.resume-go{ background:var(--gold-soft); color:var(--navy); border:none; border-radius:8px; padding:8px 16px; font-family:var(--font-sans); font-weight:700; font-size:13px; cursor:pointer; }
+.resume-go:hover{ background:#fff; }
+.resume-x{ background:transparent; color:var(--cream); border:1px solid rgba(244,238,226,.35); border-radius:8px; padding:8px 14px; font-family:var(--font-sans); font-weight:600; font-size:13px; cursor:pointer; }
+.resume-x:hover{ background:rgba(244,238,226,.12); }
+@media (max-width:560px){ .resume-bar-inner{ flex-wrap:wrap; padding:12px 6vw; } .resume-txt{ flex-basis:100%; } .resume-actions{ margin-left:0; } }
+
+/* ===== usability: text-entry polish (mobile) ===== */
+.reflection-card textarea{ -webkit-appearance:none; appearance:none; }
+:root[data-theme="dark"] .reflection-card textarea:focus{ background:#0E1822; box-shadow:0 0 0 3px rgba(242,201,100,.18); border-color:var(--gold); }
+@media (max-width:760px){
+  .reflection-card textarea{ font-size:16px; min-height:150px; padding:15px 16px; line-height:1.6; }
+  .reflection-card{ padding-left:18px; padding-right:18px; }
+  #closingInput, input[type="text"], select{ font-size:16px; }
+  .nav-row{ gap:10px; }
+}
+
+/* ===== video walkthrough slots ===== */
+.vid-slot{ max-width:560px; margin:18px auto 0; border:1px solid var(--rule); border-radius:16px; overflow:hidden; background:var(--paper); }
+.vid-frame{ position:relative; aspect-ratio:16/9; background:linear-gradient(135deg,var(--navy),var(--navy-soft)); display:grid; place-items:center; }
+.vid-frame iframe{ position:absolute; inset:0; width:100%; height:100%; border:0; }
+.vid-play{ width:62px; height:62px; border-radius:50%; background:rgba(242,201,100,.95); display:grid; place-items:center; color:var(--navy); box-shadow:0 8px 22px rgba(0,0,0,.3); }
+.vid-play svg{ width:26px; height:26px; margin-left:3px; }
+.vid-cap{ padding:13px 18px; }
+.vid-cap .vt{ font-family:var(--font-sans); font-weight:700; font-size:13.5px; color:var(--ink); }
+.vid-cap .vs{ font-size:12.5px; color:var(--ink-faint); margin-top:2px; }
+.vid-soon{ position:absolute; bottom:10px; right:12px; font-size:10px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--gold-soft); background:rgba(6,12,24,.5); padding:3px 9px; border-radius:20px; }
+
+/* ===== good-conversation examples ===== */
+.gc-card{ max-width:760px; margin:0 auto 18px; background:var(--paper); border:1px solid var(--rule); border-radius:18px; overflow:hidden; }
+.gc-head{ display:flex; align-items:center; gap:10px; padding:18px 22px; cursor:pointer; user-select:none; }
+.gc-head .gt{ font-family:var(--font-serif); font-size:18px; color:var(--navy); font-weight:600; }
+:root[data-theme="dark"] .gc-head .gt{ color:var(--ink); }
+.gc-head .gchev{ margin-left:auto; color:var(--gold); transition:transform .2s; }
+.gc-card.open .gchev{ transform:rotate(180deg); }
+.gc-body{ display:none; padding:0 22px 20px; }
+.gc-card.open .gc-body{ display:block; }
+.gc-intro{ font-size:14px; color:var(--ink-soft); line-height:1.55; margin-bottom:14px; }
+.gc-ex{ border-left:3px solid var(--gold); padding:4px 0 4px 16px; margin:0 0 16px; }
+.gc-ex .gc-when{ font-size:11px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--gold); margin-bottom:7px; }
+.gc-turn{ font-size:14px; line-height:1.5; margin:5px 0; color:var(--ink); }
+.gc-turn b{ color:var(--navy); }
+:root[data-theme="dark"] .gc-turn b{ color:var(--gold-soft); }
+.gc-note{ font-size:12.5px; color:var(--ink-faint); font-style:italic; margin-top:6px; }
+
+/* ===== C (extended): educator dashboard + report surfaces in dark ===== */
+:root[data-theme="dark"] .kpi{ background:var(--paper); border-color:var(--rule); }
+:root[data-theme="dark"] .kpi-value{ color:var(--gold-soft); }
+:root[data-theme="dark"] th{ background:#0E1822; color:var(--ink-soft); border-bottom-color:var(--rule); }
+:root[data-theme="dark"] td{ border-bottom-color:var(--rule-soft); }
+:root[data-theme="dark"] tr:hover td{ background:#0E1822; }
+:root[data-theme="dark"] th.sortable:hover, :root[data-theme="dark"] th.sorted{ color:var(--ink); }
+:root[data-theme="dark"] .modal{ background:var(--paper); border:1px solid var(--rule); }
+:root[data-theme="dark"] .modal h2{ color:var(--ink); }
+:root[data-theme="dark"] .modal input{ background:#0E1822; color:var(--ink); border-color:var(--rule); }
+:root[data-theme="dark"] .filter-bar select,
+:root[data-theme="dark"] .ri-toolbar select,
+:root[data-theme="dark"] .lib-cat{ background:#0E1822; }
+:root[data-theme="dark"] .lib-cat{ background:transparent; }
+:root[data-theme="dark"] .rc-card{ background:var(--paper); border-color:var(--rule); }
+:root[data-theme="dark"] .home-item-detail{ background:#0E1822; border-color:var(--rule); }
+:root[data-theme="dark"] .home-item .hid-con,
+:root[data-theme="dark"] .home-item .hid-bk{ color:var(--gold-soft); }
+:root[data-theme="dark"] .door{ background:var(--paper); border-color:var(--rule); }
+:root[data-theme="dark"] .eco-detail{ background:var(--paper); border-color:var(--rule); }
+:root[data-theme="dark"] .ov-summary{ background:#0E1822; color:var(--ink); }
+:root[data-theme="dark"] .ov-summary strong{ color:var(--gold-soft); }
+:root[data-theme="dark"] .dist-card{ background:var(--paper); border-color:var(--rule); }
+:root[data-theme="dark"] .filter-bar{ background:#0E1822; border-color:var(--rule); }
+:root[data-theme="dark"] .survey-stage .nav-row{ background:#101A24; }
+:root[data-theme="dark"] .survey-stage .nav-row::before{ background:linear-gradient(to top,#101A24,transparent); }
 </style>
 <script>
 /* Set theme before first paint to avoid a flash. */
@@ -1866,6 +2011,16 @@ function toggleTheme(){
 <!-- ============ WELCOME ============ -->
 <section id="screen-welcome" class="screen active">
   <div class="hyb-welcome">
+    <div id="resumeBar" class="resume-bar" style="display:none;">
+      <div class="resume-bar-inner">
+        <span class="resume-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg></span>
+        <span id="resumeBarText" class="resume-txt">Unfinished check-in</span>
+        <span class="resume-actions">
+          <button id="resumeBtn" class="resume-go" type="button" onclick="resumeDraft()">Resume</button>
+          <button id="resumeDiscard" class="resume-x" type="button" onclick="discardDraft()">Discard</button>
+        </span>
+      </div>
+    </div>
     <!-- ===== HYBRID HERO ===== -->
     <section class="hyb-hero">
       <div class="hyb-hk" data-i18n="hyb_foundation">School of Life Foundation</div>
@@ -1979,6 +2134,14 @@ function toggleTheme(){
             </div>
             <span class="arr">&rarr;</span>
           </a>
+          <a href="#" class="aog-door secondary choose-card choose-family" onclick="event.preventDefault(); openFamily();">
+            <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z"/><path d="M17 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z"/><path d="M2 21v-1a5 5 0 0 1 5-5"/><path d="M14 21v-1a5 5 0 0 1 5-5"/><path d="M11 21v-2a3 3 0 0 1 3-3"/></svg></span>
+            <div>
+              <div class="t" data-i18n="ch_family_t">Family Mode</div>
+              <div class="s" data-i18n="ch_family_s">For parents at home &mdash; add each child once and track them across the year, with conversation starters you can print.</div>
+            </div>
+            <span class="arr">&rarr;</span>
+          </a>
         </div>
       </div>
     </div>
@@ -1991,7 +2154,7 @@ function toggleTheme(){
   <div class="container">
 <div id="checkin-funnel">
 <div class="hero hero-center">
-      <div class="eyebrow" data-i18n="w_screener_ey">Universal Check-In &middot; K&ndash;12</div>
+      <div class="eyebrow" id="checkinEyebrow" data-i18n="w_screener_ey">Universal Check-In &middot; K&ndash;12</div>
       <h1 class="display display-xl" data-i18n="w_h1">How are you doing, really?</h1>
       <p class="lede" data-i18n="w_lede">Take a few quiet minutes, just for you. It&rsquo;s private, there are no wrong answers, and it helps the people who care about you know how to help.</p>
       <p class="checkin-reassure" data-i18n="w_reassure">A private 4&ndash;10 minute reflection &middot; no wrong answers &middot; nothing leaves this device unless you choose.</p>
@@ -2000,9 +2163,18 @@ function toggleTheme(){
       <p data-i18n-html="w_script1"><strong>Before you begin.</strong> There are no right or wrong answers &mdash; just pick what feels most true for you lately, and go with your first instinct.</p>
       <p data-i18n-html="w_script2">If a question brings up something you&rsquo;d like to talk about, you can reach out to a teacher, counselor, parent, or guardian any time.</p>
     </div>
+<!-- VIDEO SLOT (Student). To go live, replace the .vid-frame contents with an iframe, e.g.
+     <div class="vid-frame"><iframe src="https://www.youtube.com/embed/XXXX" allowfullscreen></iframe></div> -->
+<div class="vid-slot">
+  <div class="vid-frame">
+    <div class="vid-play"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg></div>
+    <span class="vid-soon" data-i18n="vid_soon">Video coming soon</span>
+  </div>
+  <div class="vid-cap"><div class="vt" data-i18n="vid_student_t">How the Student Check-In works</div><div class="vs" data-i18n="vid_student_s">A 2-minute walkthrough for students.</div></div>
+</div>
 <div class="form-section">
       <h2 data-i18n="w_about">About you</h2>
-      <div class="ctx-block">
+      <div class="ctx-block" id="ctxBlock">
         <div class="ctx-toggle" id="ctxToggle" role="group" aria-label="Where this is being used">
           <button type="button" class="ctx-opt" data-ctx="school" data-i18n="w_ctx_school">School</button>
           <button type="button" class="ctx-opt" data-ctx="home" data-i18n="w_ctx_home">Home</button>
@@ -2106,6 +2278,15 @@ function toggleTheme(){
       <p data-i18n-html="ad_script1"><strong>Before you begin.</strong> Just pick what feels most true for you lately, and go with your first instinct.</p>
       <p data-i18n-html="ad_script2">Your responses aren&rsquo;t anonymous &mdash; they go to the person or team who shared this with you, so someone can follow up with care. If something here brings up a lot, please reach out to someone you trust.</p>
     </div>
+
+<!-- VIDEO SLOT (Adult). Swap .vid-frame contents for an <iframe> to go live. -->
+<div class="vid-slot">
+  <div class="vid-frame">
+    <div class="vid-play"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg></div>
+    <span class="vid-soon" data-i18n="vid_soon">Video coming soon</span>
+  </div>
+  <div class="vid-cap"><div class="vt" data-i18n="vid_adult_t">How the Adult Check-In works</div><div class="vs" data-i18n="vid_adult_s">A 2-minute walkthrough for grown-ups.</div></div>
+</div>
 
     <div class="form-section">
       <h2 data-i18n="ad_about">About you</h2>
@@ -2224,6 +2405,7 @@ function toggleTheme(){
         <p data-i18n-html="ad_support">If you&rsquo;re carrying something heavy right now, you don&rsquo;t have to carry it alone. In the U.S. you can call or text <strong>988</strong> (the Suicide &amp; Crisis Lifeline), any time, day or night. Reaching out is a strong thing to do.</p>
       </div>
       <button class="btn" id="btnMyResults" style="display:none;" data-i18n-html="t_btn_results">See your results &rarr;</button>
+      <button class="btn" id="btnFamilyReturn" style="display:none;" onclick="(function(){var c=window._famReturn;window._famReturn=null;openFamily(c);})()">See progress &rarr;</button>
       <button class="btn" id="btnToClosing" data-i18n-html="t_btn">One more thing &rarr;</button>
     </div>
   </div>
@@ -2281,7 +2463,24 @@ function toggleTheme(){
   </div>
 </section>
 
-<!-- ============ ADMIN DASHBOARD ============ -->
+<!-- ============ FAMILY MODE ============ -->
+<section id="screen-family" class="screen">
+  <div class="container">
+    <div class="nav-row" style="justify-content:flex-start; margin-bottom:8px;">
+      <button class="btn btn-ghost" onclick="resetToStart()"><span class="btn-arrow">&larr;</span> <span data-i18n="fam_back">Back to start</span></button>
+    </div>
+    <div class="hero hero-center" style="padding-top:8px; padding-bottom:6px;">
+      <div class="eyebrow" data-i18n="fam_eyebrow">Family Mode &middot; private to this device</div>
+      <h1 class="display display-lg" data-i18n="fam_h1">Your family&rsquo;s check-ins</h1>
+      <p class="lede" data-i18n="fam_lede">Add each child once, then check in together a few times a year. Everything stays on this device &mdash; see growth over time and print conversation starters.</p>
+    </div>
+    <div id="familyRoot"></div>
+  </div>
+</section>
+
+<!-- print-only individual report container -->
+<div id="printReport" aria-hidden="true"></div>
+
 <section id="screen-admin" class="screen">
   <div class="container-wide">
     <div class="admin-header">
@@ -2303,6 +2502,15 @@ function toggleTheme(){
         <button class="btn btn-sm" id="btnDemoData" onclick="toggleDemoData()" style="background:var(--gold);border-color:var(--gold);color:var(--navy);">Try demo data</button>
       </div>
     </div>
+
+<!-- VIDEO SLOT (Dashboard). Swap .vid-frame contents for an <iframe> to go live. -->
+<div class="vid-slot" style="margin:0 0 18px;">
+  <div class="vid-frame">
+    <div class="vid-play"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg></div>
+    <span class="vid-soon" data-dl="vid_soon">Video coming soon</span>
+  </div>
+  <div class="vid-cap"><div class="vt" data-dl="vid_dash_t">How the Dashboard works</div><div class="vs" data-dl="vid_dash_s">A 2-minute walkthrough for educators.</div></div>
+</div>
 
     <div class="tabs">
       <button class="tab active" data-tab="overview" data-dl="dl_t_overview">Overview</button>
@@ -3254,6 +3462,13 @@ function scale() { return mode === "depth" ? SCALE_6[surveyLang] : SCALE_4[surve
 // Participant-facing UI translations (educator dashboard stays EN)
 // ============================================================
 const I18N_UI = {
+  vid_soon:     { en: "Video coming soon", es: "Video próximamente" },
+  vid_student_t:{ en: "How the Student Check-In works", es: "Cómo funciona el chequeo del estudiante" },
+  vid_student_s:{ en: "A 2-minute walkthrough for students.", es: "Un recorrido de 2 minutos para estudiantes." },
+  vid_adult_t:  { en: "How the Adult Check-In works", es: "Cómo funciona el chequeo para adultos" },
+  vid_adult_s:  { en: "A 2-minute walkthrough for grown-ups.", es: "Un recorrido de 2 minutos para adultos." },
+  ch_family_t:  { en: "Family Mode", es: "Modo familiar" },
+  ch_family_s:  { en: "For parents at home \u2014 add each child once and track them across the year, with conversation starters you can print.", es: "Para madres y padres en casa: a\u00f1ade a cada ni\u00f1o/a una vez y haz seguimiento durante el a\u00f1o, con preguntas para conversar que puedes imprimir." },
   t_btn_results:{ en: "See your results \u2192", es: "Ver tus resultados \u2192" },
   mr_eyebrow:   { en: "Your results \u00b7 just for you", es: "Tus resultados \u00b7 solo para ti" },
   mr_h1:        { en: "How you\u2019re doing", es: "C\u00f3mo te va" },
@@ -3289,6 +3504,12 @@ const I18N_UI = {
   t_lede_adult: { en: "Your answers have been saved, and they’ve gone to the person or team who shared this with you, so someone can follow up with care. If anything here stirred something up, please reach out to someone you trust — you don’t have to sit with it alone.", es: "Tus respuestas se han guardado y han llegado a la persona o al equipo que te compartió esto, para que alguien pueda dar seguimiento con cuidado. Si algo aquí removió algo, por favor acude a alguien en quien confíes — no tienes que enfrentarlo solo/a." },
   aog_what_ey:    { en: "The Foundation", es: "La Base" },
   tour_fab:       { en: "Quick tour", es: "Recorrido r\u00e1pido" },
+  fam_entry_t:    { en: "Family Mode", es: "Modo familiar" },
+  fam_entry_s:    { en: "Set up a private space for your children \u2014 track each child across the year, with conversation starters you can print.", es: "Crea un espacio privado para tus hijos: sigue a cada nin\u0303o/a a lo largo del an\u0303o, con preguntas para conversar que puedes imprimir." },
+  fam_back:       { en: "Back to start", es: "Volver al inicio" },
+  fam_eyebrow:    { en: "Family Mode \u00b7 private to this device", es: "Modo familiar \u00b7 privado en este dispositivo" },
+  fam_h1:         { en: "Your family\u2019s check-ins", es: "Los chequeos de tu familia" },
+  fam_lede:       { en: "Add each child once, then check in together a few times a year. Everything stays on this device \u2014 see growth over time and print conversation starters.", es: "An\u0303ade a cada nin\u0303o/a una vez, y luego hagan chequeos juntos varias veces al an\u0303o. Todo se queda en este dispositivo: observa el progreso e imprime preguntas para conversar." },
   aog_what_h:     { en: "What Is Architecture of Grace?", es: "\u00bfQu\u00e9 es Architecture of Grace?" },
   aog_what_p1:    { en: "Architecture of Grace is a human development framework and intuitive digital check-in platform designed to help individuals understand themselves, strengthen relationships, and navigate life\u2019s challenges with resilience, responsibility, and hope.", es: "Architecture of Grace es un marco de desarrollo humano y una plataforma intuitiva de chequeo digital, dise\u00f1ada para ayudar a las personas a comprenderse a s\u00ed mismas, fortalecer sus relaciones y afrontar los desaf\u00edos de la vida con resiliencia, responsabilidad y esperanza." },
   aog_what_p2:    { en: "Built upon developmental psychology, social-emotional learning, reflective practice, and character formation, the framework provides a structured pathway for lifelong growth through lessons, assessments, conversations, and real-world application.", es: "Basado en la psicolog\u00eda del desarrollo, el aprendizaje socioemocional, la pr\u00e1ctica reflexiva y la formaci\u00f3n del car\u00e1cter, el marco ofrece un camino estructurado para el crecimiento a lo largo de la vida a trav\u00e9s de lecciones, evaluaciones, conversaciones y aplicaci\u00f3n en la vida real." },
@@ -3585,42 +3806,91 @@ function showScreen(id) {
   window.scrollTo({ top: 0, behavior: "smooth" });
   try {
     var fab = document.getElementById("tourFab");
-    if (fab) fab.classList.toggle("show", id === "screen-welcome");
-    if (id !== "screen-welcome" && typeof endTour === "function") endTour(true);
+    var fabScreens = { "screen-welcome":1, "screen-guide":1, "screen-admin":1 };
+    if (fab) fab.classList.toggle("show", !!fabScreens[id]);
+    if (typeof tourActive !== "undefined" && tourActive && typeof endTour === "function") endTour(true);
   } catch (e) {}
 }
 
 // ============================================================
 // D: Onboarding tour (welcome screen)
 // ============================================================
-var TOUR_STEPS = [
-  { sel:null,
-    title:{en:"Welcome to Architecture of Grace", es:"Bienvenido a Architecture of Grace"},
-    body:{en:"Here\u2019s a 20-second tour of the front door. You can skip anytime \u2014 and replay it later from the \u201CQuick tour\u201D button.", es:"Aqu\u00ed tienes un recorrido de 20 segundos. Puedes omitirlo cuando quieras y repetirlo luego con el bot\u00f3n \u201CRecorrido r\u00e1pido\u201D."} },
-  { sel:".hyb-door.prim",
-    title:{en:"Explore the Guide & Library", es:"Explora la gu\u00eda y la biblioteca"},
-    body:{en:"The ecosystem map, the resource index, and every free download \u2014 no code needed. Start here to see what the program is.", es:"El mapa del ecosistema, el \u00edndice de recursos y todas las descargas gratuitas, sin c\u00f3digo. Empieza aqu\u00ed para ver qu\u00e9 es el programa."} },
-  { sel:".hyb-door.sec",
-    title:{en:"Take the Check-In", es:"Haz el chequeo"},
-    body:{en:"A private, on-device reflection for a student or an adult. Nothing leaves the device unless a school chooses to turn that on.", es:"Una reflexi\u00f3n privada en el dispositivo, para un estudiante o un adulto. Nada sale del dispositivo a menos que una escuela lo active."} },
-  { sel:"#themeToggle",
-    title:{en:"Light or dark", es:"Claro u oscuro"},
-    body:{en:"Switch the whole site to dark mode whenever you like \u2014 your choice is remembered on this device.", es:"Cambia todo el sitio a modo oscuro cuando quieras; tu elecci\u00f3n se recuerda en este dispositivo."} },
-  { sel:".topbar-link",
-    title:{en:"For educators", es:"Para educadores"},
-    body:{en:"Educators open the aggregate results dashboard here. A private code keeps it just for staff.", es:"Los educadores abren aqu\u00ed el panel de resultados. Un c\u00f3digo privado lo reserva solo para el personal."} },
-];
+var TOURS = {
+  welcome: [
+    { sel:null,
+      title:{en:"Welcome to Architecture of Grace", es:"Bienvenido a Architecture of Grace"},
+      body:{en:"Here\u2019s a 20-second tour of the front door. You can skip anytime \u2014 and replay it later from the \u201CQuick tour\u201D button.", es:"Aqu\u00ed tienes un recorrido de 20 segundos. Puedes omitirlo cuando quieras y repetirlo luego con el bot\u00f3n \u201CRecorrido r\u00e1pido\u201D."} },
+    { sel:".hyb-door.prim",
+      title:{en:"Explore the Guide & Library", es:"Explora la gu\u00eda y la biblioteca"},
+      body:{en:"The ecosystem map, the resource index, and every free download \u2014 no code needed. Start here to see what the program is.", es:"El mapa del ecosistema, el \u00edndice de recursos y todas las descargas gratuitas, sin c\u00f3digo. Empieza aqu\u00ed para ver qu\u00e9 es el programa."} },
+    { sel:".hyb-door.sec",
+      title:{en:"Take the Check-In", es:"Haz el chequeo"},
+      body:{en:"A private, on-device reflection for a student, an adult, or your whole family. Nothing leaves the device unless a school chooses to turn that on.", es:"Una reflexi\u00f3n privada en el dispositivo, para un estudiante, un adulto o toda tu familia. Nada sale del dispositivo a menos que una escuela lo active."} },
+    { sel:"#themeToggle",
+      title:{en:"Light or dark", es:"Claro u oscuro"},
+      body:{en:"Switch the whole site to dark mode whenever you like \u2014 your choice is remembered on this device.", es:"Cambia todo el sitio a modo oscuro cuando quieras; tu elecci\u00f3n se recuerda en este dispositivo."} },
+    { sel:".topbar-link",
+      title:{en:"For educators", es:"Para educadores"},
+      body:{en:"Educators open the aggregate results dashboard here. A private code keeps it just for staff.", es:"Los educadores abren aqu\u00ed el panel de resultados. Un c\u00f3digo privado lo reserva solo para el personal."} },
+  ],
+  guide: [
+    { sel:null,
+      title:{en:"This is the Library", es:"Esta es la biblioteca"},
+      body:{en:"Everything the program offers lives here, free to browse \u2014 here\u2019s a quick tour.", es:"Todo lo que ofrece el programa est\u00e1 aqu\u00ed, gratis para explorar. Aqu\u00ed tienes un recorrido r\u00e1pido."} },
+    { sel:"#guide-ecosystem",
+      title:{en:"The ecosystem map", es:"El mapa del ecosistema"},
+      body:{en:"Tap any piece to see how teaching, measuring, and acting connect into one closed loop.", es:"Toca cualquier pieza para ver c\u00f3mo ense\u00f1ar, medir y actuar se conectan en un solo ciclo."} },
+    { sel:".guide-subnav",
+      title:{en:"Three views", es:"Tres vistas"},
+      body:{en:"Documentation explains the program, the Resource Index maps every skill, and Downloads has the files.", es:"Documentaci\u00f3n explica el programa, el \u00cdndice de recursos mapea cada habilidad, y Descargas tiene los archivos."} },
+    { sel:'.guide-subtab[data-guide="library"]',
+      title:{en:"Free downloads & previews", es:"Descargas y vistas previas gratis"},
+      body:{en:"Open Downloads for preview packs of the charts, worksheets, and scenario cards \u2014 no code needed.", es:"Abre Descargas para vistas previas de las l\u00e1minas, hojas de trabajo y tarjetas de escenarios, sin c\u00f3digo."} },
+  ],
+  dash: [
+    { sel:null,
+      title:{en:"Welcome to the dashboard", es:"Bienvenido al panel"},
+      body:{en:"Aggregate results, private to this device. A 20-second tour of how to read it.", es:"Resultados agregados, privados en este dispositivo. Un recorrido de 20 segundos para leerlo."} },
+    { sel:".tabs",
+      title:{en:"Six views", es:"Seis vistas"},
+      body:{en:"Overview, Students, Home View, Growth and more sit across the top.", es:"Resumen, Estudiantes, Vista del hogar, Progreso y m\u00e1s est\u00e1n arriba."} },
+    { sel:".filter-bar",
+      title:{en:"Filter the group", es:"Filtra el grupo"},
+      body:{en:"Narrow by window, grade, or mode anywhere you see these controls.", es:"Filtra por per\u00edodo, grado o modo donde veas estos controles."} },
+    { sel:'.tab[data-tab="home"]',
+      title:{en:"Home View", es:"Vista del hogar"},
+      body:{en:"The deepest view \u2014 each person\u2019s report, written reflections, and conversation starters.", es:"La vista m\u00e1s profunda: el informe de cada persona, sus reflexiones y preguntas para conversar."} },
+    { sel:"#btnDemoData",
+      title:{en:"Try demo data", es:"Prueba datos de ejemplo"},
+      body:{en:"Load sample check-ins to explore everything safely, then clear them anytime.", es:"Carga check-ins de ejemplo para explorar con seguridad, y bórralos cuando quieras."} },
+  ],
+};
+var TOUR_SCREEN = { welcome:"screen-welcome", guide:"screen-guide", dash:"screen-admin" };
+var TOUR_SEEN   = { welcome:"aog.tour.seen", guide:"aog.tour.guide.seen", dash:"aog.tour.dash.seen" };
+var _tourSteps = TOURS.welcome, _tourKey = "welcome";
 var tourIdx = 0, tourActive = false;
 function tourTxt(o){ return (typeof lang !== "undefined" && lang === "es" && o && o.es) ? o.es : (o ? o.en : ""); }
-function startTour(){
-  var welcome = document.getElementById("screen-welcome");
-  if (welcome && !welcome.classList.contains("active")) { if (typeof resetToStart === "function") resetToStart(); }
+function tourDetectKey(){
+  for (var k in TOUR_SCREEN){
+    var s = document.getElementById(TOUR_SCREEN[k]);
+    if (s && s.classList.contains("active")) return k;
+  }
+  return "welcome";
+}
+function startTour(key){
+  if (!key) key = tourDetectKey();
+  if (key === "welcome"){
+    var welcome = document.getElementById("screen-welcome");
+    if (welcome && !welcome.classList.contains("active")) { if (typeof resetToStart === "function") resetToStart(); }
+  }
+  _tourKey = key;
+  _tourSteps = TOURS[key] || TOURS.welcome;
   tourIdx = 0; tourActive = true;
   var ov = document.getElementById("tourOverlay"); if (!ov) return;
   ov.hidden = false;
-  document.getElementById("tourTotal").textContent = String(TOUR_STEPS.length);
+  document.getElementById("tourTotal").textContent = String(_tourSteps.length);
   var dots = document.getElementById("tourDots"); dots.innerHTML = "";
-  for (var i=0;i<TOUR_STEPS.length;i++){ var d=document.createElement("i"); dots.appendChild(d); }
+  for (var i=0;i<_tourSteps.length;i++){ var d=document.createElement("i"); dots.appendChild(d); }
   window.addEventListener("resize", tourReposition);
   window.addEventListener("scroll", tourReposition, true);
   document.addEventListener("keydown", tourKey);
@@ -3632,11 +3902,11 @@ function tourKey(e){
   else if (e.key === "ArrowRight" || e.key === "Enter") tourNext();
   else if (e.key === "ArrowLeft") tourPrev();
 }
-function tourNext(){ if (tourIdx >= TOUR_STEPS.length - 1) { endTour(); } else { tourGoTo(tourIdx + 1); } }
+function tourNext(){ if (tourIdx >= _tourSteps.length - 1) { endTour(); } else { tourGoTo(tourIdx + 1); } }
 function tourPrev(){ if (tourIdx > 0) tourGoTo(tourIdx - 1); }
 function tourGoTo(i){
   tourIdx = i;
-  var step = TOUR_STEPS[i];
+  var step = _tourSteps[i];
   document.getElementById("tourNum").textContent = String(i + 1);
   document.getElementById("tourTitle").textContent = tourTxt(step.title);
   document.getElementById("tourBody").textContent = tourTxt(step.body);
@@ -3644,7 +3914,7 @@ function tourGoTo(i){
   for (var k=0;k<dots.length;k++) dots[k].classList.toggle("on", k === i);
   document.getElementById("tourBack").style.visibility = (i === 0) ? "hidden" : "visible";
   var nextBtn = document.getElementById("tourNext");
-  nextBtn.textContent = (i === TOUR_STEPS.length - 1)
+  nextBtn.textContent = (i === _tourSteps.length - 1)
     ? (typeof lang !== "undefined" && lang === "es" ? "Entendido" : "Got it")
     : (typeof lang !== "undefined" && lang === "es" ? "Siguiente" : "Next");
   document.getElementById("tourSkip").textContent = (typeof lang !== "undefined" && lang === "es" ? "Omitir" : "Skip");
@@ -3660,7 +3930,7 @@ function tourGoTo(i){
 }
 function tourReposition(){
   if (!tourActive) return;
-  var step = TOUR_STEPS[tourIdx];
+  var step = _tourSteps[tourIdx];
   var spot = document.getElementById("tourSpotlight");
   var pop = document.getElementById("tourPop");
   var tgt = step.sel ? document.querySelector(step.sel) : null;
@@ -3682,7 +3952,6 @@ function tourReposition(){
     pop.style.top = top + "px";
     pop.style.left = left + "px";
   } else {
-    // intro: dim everything, center the card
     spot.style.display = "block";
     spot.style.top = "-200px"; spot.style.left = "-200px";
     spot.style.width = "0px"; spot.style.height = "0px";
@@ -3697,14 +3966,15 @@ function endTour(silent){
   window.removeEventListener("resize", tourReposition);
   window.removeEventListener("scroll", tourReposition, true);
   document.removeEventListener("keydown", tourKey);
-  if (!silent) { try { localStorage.setItem("aog.tour.seen", "1"); } catch (e) {} }
+  if (!silent) { try { localStorage.setItem(TOUR_SEEN[_tourKey] || "aog.tour.seen", "1"); } catch (e) {} }
 }
-function maybeStartTour(){
-  try { if (localStorage.getItem("aog.tour.seen") === "1") return; } catch (e) {}
-  var welcome = document.getElementById("screen-welcome");
-  if (welcome && welcome.classList.contains("active")) {
-    try { localStorage.setItem("aog.tour.seen", "1"); } catch (e) {}
-    startTour();
+function maybeStartTour(key){
+  key = key || "welcome";
+  try { if (localStorage.getItem(TOUR_SEEN[key]) === "1") return; } catch (e) {}
+  var scr = document.getElementById(TOUR_SCREEN[key]);
+  if (scr && scr.classList.contains("active")) {
+    try { localStorage.setItem(TOUR_SEEN[key], "1"); } catch (e) {}
+    startTour(key);
   }
 }
 
@@ -3834,13 +4104,71 @@ function selectResponse(value) {
   renderResponseOptions();
   renderIntensityOption();
   updateNextButton();
+  saveDraft("survey");
+  // If the follow-up intensity question just appeared, bring it into view so it
+  // isn't hidden behind the sticky nav on shorter screens.
+  var ia = document.getElementById("intensityArea");
+  if (ia && ia.querySelector(".intensity-block")) {
+    setTimeout(function(){ try { ia.scrollIntoView({ behavior:"smooth", block:"center" }); } catch(e){} }, 60);
+  }
 }
 
 function selectIntensity(value) {
   intensities[current] = value;
   renderIntensityOption();
   updateNextButton();
+  saveDraft("survey");
 }
+
+// ============================================================
+// 3: Auto-save & resume (survey + reflections)
+// ============================================================
+var DRAFT_KEY = "aog.draft.v1";
+function saveDraft(stage){
+  try{
+    if(!session || !session.studentId) return;
+    var d = { v:1, stage:stage||"survey", session:session,
+      responses:responses, intensities:intensities, reflections:reflections,
+      current:current, reflectionIdx:(typeof reflectionIdx!=="undefined"?reflectionIdx:0),
+      mode:mode, population:population, context:context, surveyLang:surveyLang, ts:Date.now() };
+    localStorage.setItem(DRAFT_KEY, JSON.stringify(d));
+  }catch(e){}
+}
+function clearDraft(){ try{ localStorage.removeItem(DRAFT_KEY); }catch(e){} }
+function getDraft(){ try{ var d=JSON.parse(localStorage.getItem(DRAFT_KEY)||"null"); return (d&&d.session&&d.session.studentId)?d:null; }catch(e){ return null; } }
+function resumeDraft(){
+  var d=getDraft(); if(!d) return;
+  session=d.session;
+  responses=Array.isArray(d.responses)?d.responses:new Array(18).fill(null);
+  intensities=Array.isArray(d.intensities)?d.intensities:new Array(18).fill(null);
+  reflections=Array.isArray(d.reflections)?d.reflections:["","",""];
+  current=d.current||0; reflectionIdx=d.reflectionIdx||0;
+  mode=d.mode||"depth"; population=d.population||"k12"; context=d.context||"home";
+  surveyLang=d.surveyLang||(typeof lang!=="undefined"?lang:"en");
+  hideResumeBar();
+  if(d.stage==="reflection"){ showScreen("screen-reflection"); renderReflection(); }
+  else { showScreen("screen-survey"); renderItem(); }
+}
+function discardDraft(){
+  var es=(typeof lang!=="undefined"&&lang==="es");
+  if(confirm(es?"\u00bfDescartar el chequeo sin terminar? No se puede deshacer.":"Discard the unfinished check-in? This can\u2019t be undone.")){
+    clearDraft(); hideResumeBar();
+  }
+}
+function showResumeBar(){
+  var d=getDraft(); var bar=document.getElementById("resumeBar"); if(!bar) return;
+  if(!d){ bar.style.display="none"; return; }
+  var es=(typeof lang!=="undefined"&&lang==="es");
+  var who=d.session.studentId||"";
+  var prog = d.stage==="reflection" ? (es?"en las reflexiones":"on the reflections")
+    : ((es?"pregunta ":"question ")+((d.current||0)+1)+"/18");
+  var lbl=document.getElementById("resumeBarText");
+  if(lbl) lbl.textContent=(es?"Chequeo sin terminar":"Unfinished check-in")+" \u2014 "+who+" \u00b7 "+prog+".";
+  var rb=document.getElementById("resumeBtn"); if(rb) rb.textContent=(es?"Continuar":"Resume");
+  var db=document.getElementById("resumeDiscard"); if(db) db.textContent=(es?"Descartar":"Discard");
+  bar.style.display="";
+}
+function hideResumeBar(){ var b=document.getElementById("resumeBar"); if(b) b.style.display="none"; }
 
 // ============================================================
 // Reflection flow (Depth mode only)
@@ -3872,6 +4200,7 @@ function renderReflection() {
     ? (lang === "es" ? "Terminar" : "Finish")
     : (lang === "es" ? "Siguiente" : "Next");
   setTimeout(() => $("#reflectionInput").focus(), 200);
+  saveDraft("reflection");
 }
 
 function advanceReflection() {
@@ -3937,6 +4266,18 @@ async function submitFinal() {
   if (_mrf) _mrf.style.display = _ad ? "" : "none";
   if (_tc) _tc.className = _ad ? "btn btn-ghost" : "btn";
   if (_dn) _dn.className = _ad ? "btn btn-ghost" : "btn";
+  // Family flow: offer a direct path back to the child's progress.
+  var _fr = document.getElementById("btnFamilyReturn");
+  if (_fr) {
+    if (window._famReturn) {
+      var _es = (typeof lang !== "undefined" && lang === "es");
+      _fr.textContent = (_es ? "Ver el progreso de " : "See ") + window._famReturn + (_es ? "" : "\u2019s progress") + " \u2192";
+      _fr.style.display = "";
+      if (_tc) _tc.className = "btn btn-ghost"; // make the closing step secondary
+    } else {
+      _fr.style.display = "none";
+    }
+  }
   if (typeof applyLang === "function") applyLang();
 
   showScreen("screen-thanks");
@@ -3971,6 +4312,10 @@ async function finalizeAndSave(closing) {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(all));
   window._pendingRecord = null;
   window._lastResult = record;
+  // Completed: clear any saved draft. If this was a family/home check-in,
+  // make sure the child is in the family roster so they appear in Family Mode.
+  try { clearDraft(); } catch (e) {}
+  try { if (record.context === "home" && record.population !== "adult" && typeof familyRosterAdd === "function") familyRosterAdd(record.studentId, record.grade); } catch (e) {}
 
   // Only reach out to the network when the school has configured its own
   // endpoint. Records post directly to the school's Google Apps Script; the
@@ -4152,6 +4497,9 @@ async function renderClassroomLink() {
 // Educator dashboard language (independent of participant EN/ES)
 // ============================================================
 const DASH_I18N = {
+  vid_soon:         { en: "Video coming soon", es: "Video próximamente" },
+  vid_dash_t:       { en: "How the Dashboard works", es: "Cómo funciona el panel" },
+  vid_dash_s:       { en: "A 2-minute walkthrough for educators.", es: "Un recorrido de 2 minutos para educadores." },
   dl_eyebrow:       { en: "Dashboard · Restricted", es: "Panel · Restringido" },
   dl_h1:            { en: "Check-In Results", es: "Resultados del Check-In" },
   dl_sub:           { en: "Aggregate view across all administrations", es: "Vista agregada de todas las administraciones" },
@@ -4359,6 +4707,8 @@ function resetToStart() {
   if ($("#closingInput")) $("#closingInput").value = "";
   context = "school";
   population = "k12";
+  window._famFlow = false;
+  (function(){ var cb=document.getElementById("ctxBlock"); if(cb) cb.style.display=""; })();
   if ($("#adultId")) $("#adultId").value = "";
   if ($("#adultRel")) $("#adultRel").value = "";
   applyContext();
@@ -4381,6 +4731,7 @@ function resetToStart() {
   (function(){var y=document.getElementById('footYr'); if(y) y.textContent=new Date().getFullYear();})();
   showScreen("screen-welcome");
   if (typeof aogSetHash === "function") aogSetHash("");
+  try { showResumeBar(); } catch (e) {}
 }
 
 
@@ -4394,6 +4745,8 @@ document.addEventListener("DOMContentLoaded", () => {
   applyLang();
   // D: first-visit guided tour on the main page
   setTimeout(maybeStartTour, 950);
+  // 3: surface any unfinished check-in
+  setTimeout(showResumeBar, 300);
 
   // Educator dashboard language (independent of the participant toggle).
   let savedDash = "en";
@@ -4527,10 +4880,11 @@ document.addEventListener("DOMContentLoaded", () => {
     }
     current++;
     renderItem();
+    saveDraft("survey");
   });
 
   $("#btnBack").addEventListener("click", () => {
-    if (current > 0) { current--; renderItem(); }
+    if (current > 0) { current--; renderItem(); saveDraft("survey"); }
   });
 
   document.addEventListener("keydown", e => {
@@ -4549,6 +4903,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Reflections
   $("#btnNextReflection").addEventListener("click", advanceReflection);
+  (function(){ var ri=$("#reflectionInput"); if(ri) ri.addEventListener("input", function(){ if(typeof reflectionIdx!=="undefined"){ reflections[reflectionIdx]=ri.value; saveDraft("reflection"); } }); })();
   $("#btnSkipReflection").addEventListener("click", () => {
     reflections[reflectionIdx] = "";
     reflectionIdx++;
@@ -4656,7 +5011,14 @@ document.addEventListener("DOMContentLoaded", () => {
 // Admin / modal
 // ============================================================
 function openAdmin() { openModal("modalAccess"); if (typeof aogSetHash === "function") aogSetHash("results"); }
-function startCheckin() { population = "k12"; showScreen("screen-checkin"); if (typeof aogSetHash === "function") aogSetHash("student"); }
+function startCheckin() {
+  // Normal (non-family) student path: clear any family-flow chrome.
+  window._famFlow = false;
+  var cb = document.getElementById("ctxBlock"); if (cb) cb.style.display = "";
+  var eb = document.getElementById("checkinEyebrow");
+  if (eb) { eb.setAttribute("data-i18n", "w_screener_ey"); eb.textContent = (typeof lang !== "undefined" && lang === "es") ? "Chequeo universal \u00b7 K\u201312" : "Universal Check-In \u00b7 K\u201312"; }
+  population = "k12"; showScreen("screen-checkin"); if (typeof aogSetHash === "function") aogSetHash("student");
+}
 function startChoose() { showScreen("screen-choose"); if (typeof aogSetHash === "function") aogSetHash("checkin"); }
 
 function startAdult() {
@@ -4714,6 +5076,7 @@ function closeModal(id) { $("#" + id).classList.remove("active"); }
 function openGuide(sub) {
   showScreen("screen-guide");
   if (typeof renderLibrary === "function") renderLibrary();
+  setTimeout(function(){ try { maybeStartTour("guide"); } catch (e) {} }, 750);
   if (typeof riRender === "function") {
     const s = document.getElementById("riSearch"), g = document.getElementById("riGrade");
     riRender(s ? s.value : "", g ? g.value : "");
@@ -4757,6 +5120,7 @@ function submitAccessCode() {
   if (code === ACCESS_CODE) {
     showScreen("screen-admin");
     refreshAdmin();
+    setTimeout(function(){ try { maybeStartTour("dash"); } catch (e) {} }, 750);
   } else {
     alert(lang === "es" ? "C\u00f3digo incorrecto." : "Incorrect code.");
   }
@@ -5322,6 +5686,268 @@ function showMyResults() {
   if (window._pendingRecord && !window._lastResult) { finalizeAndSave(""); }
   renderMyResults();
   showScreen("screen-myresults");
+}
+
+// ============================================================
+// 1: Family Mode — multi-child roster, progress chart, PDF export
+// ============================================================
+var FAMILY_KEY = "aog.family.v1";
+function getFamilyRoster(){ try { var v = JSON.parse(localStorage.getItem(FAMILY_KEY) || "[]"); return Array.isArray(v) ? v : []; } catch (e) { return []; } }
+function saveFamilyRoster(arr){ try { localStorage.setItem(FAMILY_KEY, JSON.stringify(arr)); } catch (e) {} }
+function familyRosterAdd(name, grade){
+  name = (name || "").trim(); if (!name) return;
+  var r = getFamilyRoster();
+  var hit = r.find(function(c){ return c.id.toLowerCase() === name.toLowerCase(); });
+  if (hit) { if (grade) hit.grade = grade; } else { r.push({ id:name, grade:grade || "" }); }
+  saveFamilyRoster(r);
+}
+// All children = roster entries + any home, non-adult studentIds found in saved records.
+function familyAllChildren(){
+  var map = {};
+  getFamilyRoster().forEach(function(c){ map[c.id] = { id:c.id, grade:c.grade || "" }; });
+  (typeof getLocalRecords === "function" ? getLocalRecords() : []).forEach(function(rec){
+    if (!rec || !rec.studentId) return;
+    if (rec.population === "adult") return;
+    if (rec.context && rec.context !== "home") return; // family = home check-ins
+    if (!map[rec.studentId]) map[rec.studentId] = { id:rec.studentId, grade:rec.grade || "" };
+    else if (!map[rec.studentId].grade && rec.grade) map[rec.studentId].grade = rec.grade;
+  });
+  return Object.keys(map).map(function(k){ return map[k]; });
+}
+function familyRecordsFor(id){
+  return (typeof getLocalRecords === "function" ? getLocalRecords() : [])
+    .filter(function(r){ return r && r.studentId === id && r.population !== "adult"; })
+    .sort(function(a,b){ return new Date(a.timestamp) - new Date(b.timestamp); });
+}
+var _familySel = null;
+function openFamily(sel){
+  var kids = familyAllChildren();
+  _familySel = sel || (_familySel && kids.some(function(k){return k.id===_familySel;}) ? _familySel : (kids[0] ? kids[0].id : null));
+  renderFamily();
+  showScreen("screen-family");
+}
+function familySelectChild(id){ _familySel = id; renderFamily(); }
+function familyAddChild(){
+  var es = (typeof lang !== "undefined" && lang === "es");
+  var name = prompt(es ? "Nombre o apodo del nin\u0303o/a (se guarda solo en este dispositivo):" : "Child\u2019s first name or nickname (saved only on this device):");
+  if (!name || !name.trim()) return;
+  var grade = prompt(es ? "Grado o nivel (K, 1, 2 \u2026 12). Puedes dejarlo en blanco:" : "Grade (K, 1, 2 \u2026 12). You can leave this blank:") || "";
+  familyRosterAdd(name.trim(), grade.trim());
+  _familySel = name.trim();
+  familyNewCheckin(name.trim(), grade.trim());
+}
+function familyNewCheckin(name, grade){
+  if (typeof startCheckin === "function") startCheckin(); // population=k12, shows check-in screen
+  window._famFlow = true;
+  context = "home";
+  mode = "depth"; // Thorough by default in Family Mode
+  if (typeof applyContext === "function") applyContext();
+  // Hide the School/Home toggle — a family check-in is always Home, never "school mode".
+  var cb = document.getElementById("ctxBlock"); if (cb) cb.style.display = "none";
+  var es = (typeof lang !== "undefined" && lang === "es");
+  var eb = document.getElementById("checkinEyebrow");
+  if (eb) eb.textContent = (es ? "Chequeo familiar" : "Family Check-In") + (name ? " \u00b7 " + name : "");
+  // reflect Thorough selection on the mode cards
+  document.querySelectorAll("#modeGrid .mode-card").forEach(function(c){
+    var on = c.getAttribute("data-mode") === "depth";
+    c.classList.toggle("selected", on); c.setAttribute("aria-checked", on ? "true" : "false");
+  });
+  var sid = document.getElementById("studentId"); if (sid) sid.value = name || "";
+  var g = document.getElementById("grade"); if (g && grade) g.value = grade;
+  window._famReturn = name || null;
+}
+function famDateShort(ts){
+  try { var d = new Date(ts); return d.toLocaleDateString((typeof lang!=="undefined"&&lang==="es")?"es":"en", { month:"short", year:"numeric" }); } catch (e) { return ""; }
+}
+function familyChart(records){
+  var es = (typeof lang !== "undefined" && lang === "es");
+  var W = 680, H = 240, padL = 38, padR = 18, padT = 16, padB = 42;
+  var ix = function(i,n){ return n<=1 ? (padL+(W-padL-padR)/2) : padL + (W-padL-padR) * (i/(n-1)); };
+  var iy = function(v){ return padT + (H-padT-padB) * (1 - (v/100)); };
+  var bands = [ {lo:75,hi:100,c:"var(--green-bg)"}, {lo:50,hi:75,c:"var(--amber-bg)"}, {lo:0,hi:50,c:"var(--red-bg)"} ];
+  var svg = '<svg viewBox="0 0 '+W+' '+H+'" role="img" aria-label="'+(es?"Progreso a lo largo del an\u0303o":"Progress over the year")+'">';
+  bands.forEach(function(b){ var y1=iy(b.hi), y2=iy(b.lo); svg += '<rect x="'+padL+'" y="'+y1+'" width="'+(W-padL-padR)+'" height="'+(y2-y1)+'" fill="'+b.c+'" opacity="0.6"/>'; });
+  [0,25,50,75,100].forEach(function(g){ var y=iy(g); svg += '<line x1="'+padL+'" y1="'+y+'" x2="'+(W-padR)+'" y2="'+y+'" stroke="var(--rule)" stroke-width="1"/>'; svg += '<text x="'+(padL-6)+'" y="'+(y+3)+'" text-anchor="end" font-family="Inter,sans-serif" font-size="10" fill="var(--ink-faint)">'+g+'</text>'; });
+  var n = records.length;
+  var pts = records.map(function(r,i){ return { x:ix(i,n), y:iy(r.normComposite||0), v:r.normComposite||0, r:r, i:i }; });
+  if (n >= 2){
+    var d = pts.map(function(p,i){ return (i?"L":"M")+p.x.toFixed(1)+" "+p.y.toFixed(1); }).join(" ");
+    svg += '<path d="'+d+'" fill="none" stroke="var(--ink)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>';
+  }
+  pts.forEach(function(p){
+    var tier = (typeof tierFromNormComposite==="function") ? tierFromNormComposite(p.v) : "";
+    var col = tier==="green" ? "var(--green)" : tier==="amber" ? "var(--amber)" : "var(--red)";
+    svg += '<circle cx="'+p.x.toFixed(1)+'" cy="'+p.y.toFixed(1)+'" r="6" fill="'+col+'" stroke="#fff" stroke-width="2"/>';
+    svg += '<text x="'+p.x.toFixed(1)+'" y="'+(p.y-12).toFixed(1)+'" text-anchor="middle" font-family="Fraunces,serif" font-size="13" font-weight="600" fill="var(--ink)">'+Math.round(p.v)+'</text>';
+    var lbl = (typeof winLabel==="function" && p.r.window ? winLabel(p.r.window) : "") || famDateShort(p.r.timestamp);
+    svg += '<text x="'+p.x.toFixed(1)+'" y="'+(H-22)+'" text-anchor="middle" font-family="Inter,sans-serif" font-size="10.5" fill="var(--ink-soft)">'+escapeHtml(String(lbl).split(" ")[0])+'</text>';
+    svg += '<text x="'+p.x.toFixed(1)+'" y="'+(H-9)+'" text-anchor="middle" font-family="Inter,sans-serif" font-size="9" fill="var(--ink-faint)">'+escapeHtml(famDateShort(p.r.timestamp))+'</text>';
+  });
+  svg += '</svg>';
+  return svg;
+}
+function renderFamily(){
+  var root = document.getElementById("familyRoot"); if (!root) return;
+  var es = (typeof lang !== "undefined" && lang === "es");
+  var kids = familyAllChildren();
+  if (!_familySel && kids[0]) _familySel = kids[0].id;
+  // switcher
+  var html = '<div class="fam-switch">';
+  kids.forEach(function(k){
+    html += '<button class="fam-chip'+(k.id===_familySel?' active':'')+'" onclick="familySelectChild(\''+k.id.replace(/'/g,"\\'")+'\')">'+escapeHtml(k.id)+(k.grade?' <span class="fc-grade">'+escapeHtml(es?("Gr "+k.grade):(k.grade==="Adult"?"Adult":"Gr "+k.grade))+'</span>':'')+'</button>';
+  });
+  html += '<button class="fam-chip add" onclick="familyAddChild()">+ '+(es?"An\u0303adir nin\u0303o/a":"Add child")+'</button>';
+  html += '</div>';
+
+  if (!kids.length){
+    html += '<div class="fam-empty"><h3>'+(es?"A\u0301n no hay nin\u0303os":"No children yet")+'</h3>'+
+      '<p>'+(es?"An\u0303ade a tu primer nin\u0303o/a y haz un chequeo a fondo juntos. Todo se guarda en privado en este dispositivo.":"Add your first child and do a Thorough check-in together. Everything is saved privately on this device.")+'</p>'+
+      '<button class="btn" onclick="familyAddChild()">'+(es?"An\u0303adir tu primer nin\u0303o/a":"Add your first child")+' &rarr;</button></div>';
+    root.innerHTML = html; return;
+  }
+
+  var recs = familyRecordsFor(_familySel);
+  html += '<div class="fam-panel">';
+  html += '<div class="fam-actions-row"><button class="btn" onclick="familyNewCheckin(\''+_familySel.replace(/'/g,"\\'")+'\',\''+((kids.find(function(k){return k.id===_familySel;})||{}).grade||"")+'\')">'+(es?"Nuevo chequeo a fondo para ":"New Thorough check-in for ")+escapeHtml(_familySel)+' &rarr;</button></div>';
+
+  // progress chart
+  html += '<div class="fam-card"><div class="fam-card-h"><div class="t">'+(es?"Progreso a lo largo del an\u0303o":"Progress over the year")+'</div></div>';
+  if (recs.length){
+    html += '<div class="fam-chart-wrap fam-chart">'+familyChart(recs)+'</div>';
+    html += '<div class="fam-legend"><span><i style="background:var(--green)"></i>'+(es?"Va bien (75\u2013100)":"Doing well (75\u2013100)")+'</span><span><i style="background:var(--amber)"></i>'+(es?"Vale la pena conversar (50\u201374)":"Worth a check-in (50\u201374)")+'</span><span><i style="background:var(--red)"></i>'+(es?"Necesita apoyo (0\u201349)":"Needs support (0\u201349)")+'</span></div>';
+    if (recs.length === 1) html += '<p class="small" style="margin-top:10px;color:var(--ink-soft)">'+(es?"Un chequeo hasta ahora \u2014 an\u0303ade otro m\u0301s adelante en el an\u0303o para ver la tendencia.":"One check-in so far \u2014 add another later in the year to see the trend.")+'</p>';
+  } else {
+    html += '<p class="small" style="color:var(--ink-soft)">'+(es?"Todav\u0301a sin chequeos para "+escapeHtml(_familySel)+". Empieza uno arriba.":"No check-ins yet for "+escapeHtml(_familySel)+". Start one above.")+'</p>';
+  }
+  html += '</div>';
+
+  // history
+  if (recs.length){
+    html += '<div class="fam-card"><div class="fam-card-h"><div class="t">'+(es?"Chequeos":"Check-ins")+'</div></div><div class="fam-hist">';
+    recs.slice().reverse().forEach(function(r){
+      var key = (typeof recordKey==="function") ? recordKey(r) : r.timestamp;
+      var tier = r.tier || (typeof tierFromNormComposite==="function" ? tierFromNormComposite(r.normComposite) : "");
+      var tlabel = (typeof tierLabel==="function") ? tierLabel(tier) : "";
+      var tcls = (typeof tierClass==="function") ? tierClass(tier) : "";
+      var dlabel = [ (typeof winLabel==="function" && r.window ? winLabel(r.window) : null), famDateShort(r.timestamp) ].filter(Boolean).join(" \u00b7 ");
+      html += '<div class="fam-row" data-key="'+escapeHtml(key)+'">'+
+        '<div class="fr-date">'+escapeHtml(dlabel)+'</div>'+
+        '<div class="fr-score">'+(r.normComposite!=null?Math.round(r.normComposite):"\u2014")+'<span class="small" style="font-size:12px;color:var(--ink-faint)">/100</span></div>'+
+        '<span class="pill '+tcls+'">'+tlabel+'</span>'+
+        '<div class="fr-actions">'+
+          '<button class="fam-mini-btn" onclick="familyOpenReport(this,\''+encodeURIComponent(key)+'\')">'+(es?"Ver informe":"Open report")+'</button>'+
+          '<button class="fam-mini-btn" onclick="exportChildPdf(\''+encodeURIComponent(key)+'\')">'+(es?"Exportar PDF":"Export PDF")+'</button>'+
+        '</div>'+
+        '<div class="fam-report-host" style="flex-basis:100%"></div>'+
+      '</div>';
+    });
+    html += '</div></div>';
+  }
+  html += gcExamplesHtml();
+  html += '</div>';
+  root.innerHTML = html;
+}
+function _famFindRecordByKey(key){
+  var want = decodeURIComponent(key);
+  return (typeof getLocalRecords==="function"?getLocalRecords():[]).find(function(r){
+    var k = (typeof recordKey==="function") ? recordKey(r) : r.timestamp;
+    return k === want;
+  });
+}
+function familyOpenReport(btn, key){
+  var row = btn.closest(".fam-row"); if (!row) return;
+  var host = row.querySelector(".fam-report-host"); if (!host) return;
+  if (host.dataset.open === "1"){ host.innerHTML = ""; host.dataset.open = "0"; return; }
+  var r = _famFindRecordByKey(key); if (!r) return;
+  var prev = (typeof dashLang !== "undefined") ? dashLang : "en";
+  if (typeof dashLang !== "undefined") dashLang = (typeof lang !== "undefined") ? lang : prev;
+  host.innerHTML = '<div class="home-view" style="margin-top:14px">' + buildHomeReport(r, false) + '</div>';
+  if (typeof dashLang !== "undefined") dashLang = prev;
+  host.dataset.open = "1";
+}
+function exportChildPdf(key){
+  var r = _famFindRecordByKey(key); if (!r) return;
+  var host = document.getElementById("printReport"); if (!host) return;
+  var es = (typeof lang !== "undefined" && lang === "es");
+  var prev = (typeof dashLang !== "undefined") ? dashLang : "en";
+  if (typeof dashLang !== "undefined") dashLang = (typeof lang !== "undefined") ? lang : prev;
+  var head = '<div style="font-family:Fraunces,serif;border-bottom:2px solid #B8893A;padding-bottom:10px;margin-bottom:16px;">'+
+    '<div style="font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:#B8893A;font-weight:700;">Architecture of Grace \u00b7 '+(es?"Informe familiar":"Family report")+'</div>'+
+    '<div style="font-size:24px;color:#0A1E33;font-weight:600;">'+escapeHtml(r.studentId)+'</div>'+
+    '<div style="font-size:12px;color:#46506E;">'+escapeHtml([ (typeof winLabel==="function"&&r.window?winLabel(r.window):null), famDateShort(r.timestamp) ].filter(Boolean).join(" \u00b7 "))+'</div>'+
+  '</div>';
+  host.innerHTML = '<div class="home-view">' + head + buildHomeReport(r, false) + '</div>';
+  if (typeof dashLang !== "undefined") dashLang = prev;
+  var oldTitle = document.title;
+  document.title = "AoG_" + String(r.studentId).replace(/[^A-Za-z0-9]+/g,"_") + "_" + (r.window || "") ;
+  // expand any collapsible "in the books" panels for print
+  host.querySelectorAll(".home-item.has-books").forEach(function(el){ el.classList.add("open"); });
+  setTimeout(function(){ window.print(); setTimeout(function(){ document.title = oldTitle; host.innerHTML = ""; }, 400); }, 120);
+}
+
+function gcToggle(el){ var c = el.closest(".gc-card"); if (c) c.classList.toggle("open"); }
+function gcExamplesHtml(){
+  var es = (typeof lang !== "undefined" && lang === "es");
+  var DT = function(a,b){ return es ? b : a; };
+  var ex = [
+    { when: DT("If \u201CI talk to myself harshly when I mess up\u201D scored low",
+              "Si \u201CMe hablo con dureza cuando me equivoco\u201D obtuvo un puntaje bajo"),
+      turns: [
+        DT("Parent: I noticed you got really down on yourself after the test. What did the voice in your head say?",
+           "Madre/Padre: Noté que te pusiste muy duro contigo después del examen. ¿Qué dijo la voz en tu cabeza?"),
+        DT("Child: That I\u2019m just stupid.",
+           "Niño/a: Que soy un tonto."),
+        DT("Parent: That sounds like the Inner Critic. If your best friend bombed that test, would you call them stupid?",
+           "Madre/Padre: Eso suena al \u201CInner Critic\u201D. Si tu mejor amigo reprobara, ¿le dirías que es tonto?"),
+        DT("Child: No\u2026 I\u2019d say everyone has bad days.",
+           "Niño/a: No\u2026 le diría que todos tienen días malos.")
+      ],
+      note: DT("Goal: name the critic, then offer the kinder coach voice. You don\u2019t fix it in one talk \u2014 you just open the door.",
+               "Meta: nombrar al crítico y ofrecer la voz del entrenador amable. No se arregla en una charla \u2014 solo abres la puerta.") },
+    { when: DT("If \u201CBig feelings take over\u201D scored low",
+              "Si \u201CLos sentimientos grandes me dominan\u201D obtuvo un puntaje bajo"),
+      turns: [
+        DT("Parent: When you got that angry earlier, where did you feel it in your body?",
+           "Madre/Padre: Cuando te enojaste tanto antes, ¿dónde lo sentiste en tu cuerpo?"),
+        DT("Child: My chest got tight and hot.",
+           "Niño/a: El pecho se me puso apretado y caliente."),
+        DT("Parent: That\u2019s good noticing. Next time it gets tight, what\u2019s one thing that helps you settle?",
+           "Madre/Padre: Qué bien que lo notaste. La próxima vez que se apriete, ¿qué te ayuda a calmarte?")
+      ],
+      note: DT("Goal: build awareness first (where it lives in the body), then a plan \u2014 while things are calm, not mid-storm.",
+               "Meta: primero la conciencia (dónde vive en el cuerpo), luego un plan \u2014 en calma, no en plena tormenta.") },
+    { when: DT("If \u201CThere\u2019s an adult I\u2019d go to\u201D scored low",
+              "Si \u201CHay un adulto al que acudiría\u201D obtuvo un puntaje bajo"),
+      turns: [
+        DT("Parent: If something was really wrong, who\u2019s a grown-up you\u2019d actually go to?",
+           "Madre/Padre: Si algo anduviera muy mal, ¿a qué adulto acudirías de verdad?"),
+        DT("Child: I don\u2019t know. Maybe no one.",
+           "Niño/a: No sé. Tal vez a nadie."),
+        DT("Parent: Thank you for telling me that honestly. Let\u2019s find your people together \u2014 could it be me, a teacher, an aunt?",
+           "Madre/Padre: Gracias por decírmelo con honestidad. Busquemos juntos a tu gente \u2014 ¿podría ser yo, un maestro, una tía?")
+      ],
+      note: DT("Goal: don\u2019t panic at \u201Cno one.\u201D Stay warm, and help build the list. A trusted adult is protective on its own.",
+               "Meta: no entres en pánico ante \u201Cnadie.\u201D Mantente cálido y ayuda a armar la lista. Un adulto de confianza protege por sí solo.") }
+  ];
+  var inner = '<div class="gc-intro">' + DT(
+    "Real conversations are short, gentle, and one at a time. Here\u2019s what \u201Cgood\u201D can look like for a few common flags \u2014 follow the child\u2019s lead, and stop while it\u2019s still going well.",
+    "Las buenas conversaciones son breves, suaves y de a una. Así puede verse algo \u201Cbueno\u201D para algunas señales comunes \u2014 sigue el ritmo del niño y detente mientras todavía va bien."
+  ) + '</div>';
+  ex.forEach(function(e){
+    inner += '<div class="gc-ex"><div class="gc-when">' + e.when + '</div>' +
+      e.turns.map(function(t){
+        var idx = t.indexOf(":");
+        return '<div class="gc-turn"><b>' + escapeHtml(t.slice(0, idx+1)) + '</b>' + escapeHtml(t.slice(idx+1)) + '</div>';
+      }).join("") +
+      '<div class="gc-note">' + e.note + '</div></div>';
+  });
+  return '<div class="gc-card">' +
+    '<div class="gc-head" onclick="gcToggle(this)">' +
+      '<span class="gt">' + DT("What a good conversation looks like","Cómo se ve una buena conversación") + '</span>' +
+      '<span class="gchev">\u25be</span>' +
+    '</div>' +
+    '<div class="gc-body">' + inner + '</div>' +
+  '</div>';
 }
 
 function resultBand(r){
