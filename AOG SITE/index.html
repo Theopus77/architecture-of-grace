@@ -1691,6 +1691,15 @@ tr:hover td { background: var(--paper); }
 .hyb-statement .lead-line{font-family:var(--font-sans);font-weight:500;font-size:clamp(16px,1.9vw,21px);line-height:1.45;max-width:720px;margin:22px auto 0;color:rgba(244,238,226,.78)}
 .hyb-statement .pillar-line{font-family:var(--font-serif);font-weight:400;font-style:italic;font-size:clamp(19px,2.3vw,28px);line-height:1.3;margin:16px auto 0;color:var(--cream)}
 .hyb-statement .pillar-line em{font-style:italic;font-weight:600;color:var(--gold-soft);border-bottom:2px solid var(--gold-soft);padding-bottom:1px}
+/* ===== four-pillar emblems (founder story) ===== */
+.pillar-grid{ display:flex; flex-direction:column; gap:9px; margin:6px 0 18px; }
+.pillar-card{ display:flex; align-items:flex-start; gap:14px; background:var(--cream-deep); border:1px solid var(--rule); border-radius:13px; padding:13px 16px; }
+:root[data-theme="dark"] .pillar-card{ border-color:rgba(242,201,100,.16); }
+.pillar-emblem{ flex:0 0 auto; width:42px; height:42px; border-radius:11px; display:flex; align-items:center; justify-content:center; background:rgba(217,163,59,.10); border:1px solid rgba(217,163,59,.30); }
+.pillar-emblem svg{ width:25px; height:25px; color:var(--ink); }
+.pillar-card-tx{ font-size:15px; line-height:1.55; color:var(--ink); padding-top:3px; }
+.pillar-card-tx strong{ color:var(--navy); font-weight:600; }
+:root[data-theme="dark"] .pillar-card-tx strong{ color:var(--gold-soft); }
 
 /* doors */
 .hyb-doors{display:grid;grid-template-columns:1.3fr 1fr;gap:0;border-bottom:2.5px solid var(--navy)}
@@ -2149,12 +2158,24 @@ function toggleTheme(){
 
         <p style="font-size:15px; line-height:1.72; color:var(--ink); margin-bottom:14px;" data-i18n-html="story_p3">The Architecture of Grace grew out of a conviction that individuals deserve more than to be measured &mdash; they deserve to be understood. Built under the <strong>School of Life Foundation</strong>, everything here rests on four core pillars:</p>
 
-        <ul style="list-style:none; margin:4px 0 16px; padding:0;" data-i18n-html="story_pillars">
-          <li style="font-size:15px; line-height:1.6; color:var(--ink); margin-bottom:10px; padding-left:20px; position:relative;"><span style="position:absolute; left:0; top:1px; color:var(--gold);">&#9670;</span><strong style="color:var(--navy);">Identity</strong> &mdash; who a person comes to believe they are.</li>
-          <li style="font-size:15px; line-height:1.6; color:var(--ink); margin-bottom:10px; padding-left:20px; position:relative;"><span style="position:absolute; left:0; top:1px; color:var(--gold);">&#9670;</span><strong style="color:var(--navy);">Self-Compassion</strong> &mdash; how a person learns to speak to themselves.</li>
-          <li style="font-size:15px; line-height:1.6; color:var(--ink); margin-bottom:10px; padding-left:20px; position:relative;"><span style="position:absolute; left:0; top:1px; color:var(--gold);">&#9670;</span><strong style="color:var(--navy);">Forgiveness</strong> &mdash; moving past mistakes to make room for growth.</li>
-          <li style="font-size:15px; line-height:1.6; color:var(--ink); margin-bottom:0; padding-left:20px; position:relative;"><span style="position:absolute; left:0; top:1px; color:var(--gold);">&#9670;</span><strong style="color:var(--navy);">Grace</strong> &mdash; meeting a person with understanding rather than only judgment.</li>
-        </ul>
+        <div class="pillar-grid">
+          <div class="pillar-card">
+            <span class="pillar-emblem"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4.8 13a7.2 7.2 0 0 1 14.4 0"/><path d="M7.6 13.4a4.4 4.4 0 0 1 8.8 0v1.1"/><path d="M16.4 17.7c-.3 1-.7 1.9-1.2 2.6"/><path d="M7.6 17.7c.4 1.1 1 2 1.7 2.7"/><path stroke="var(--gold)" d="M10.4 13.2a1.6 1.6 0 0 1 3.2 0c0 1.7-.5 3.3-1.6 4.7"/></svg></span>
+            <span class="pillar-card-tx" data-i18n-html="pd_identity"><strong>Identity</strong> &mdash; who a person comes to believe they are.</span>
+          </div>
+          <div class="pillar-card">
+            <span class="pillar-emblem"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 14.6c1.9 2.7 4.8 4 8 4s6.1-1.3 8-4"/><path d="M4 14.6l1.7-2.1M20 14.6l-1.7-2.1"/><path stroke="var(--gold)" d="M12 12.5c-1.5-1.2-2.7-2.2-2.7-3.6A1.55 1.55 0 0 1 12 7.8a1.55 1.55 0 0 1 2.7 1.1c0 1.4-1.2 2.4-2.7 3.6z"/></svg></span>
+            <span class="pillar-card-tx" data-i18n-html="pd_selfcomp"><strong>Self-Compassion</strong> &mdash; how a person learns to speak to themselves.</span>
+          </div>
+          <div class="pillar-card">
+            <span class="pillar-emblem"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20.5V12"/><path stroke="var(--gold)" d="M12 14c-3 0-5.4-1.7-5.4-4.7 3 0 5.4 1.7 5.4 4.7z"/><path stroke="var(--gold)" d="M12 11.6c0-2.7 2.2-4.7 5-4.7 0 2.7-2.2 4.7-5 4.7z"/></svg></span>
+            <span class="pillar-card-tx" data-i18n-html="pd_forgive"><strong>Forgiveness</strong> &mdash; moving past mistakes to make room for growth.</span>
+          </div>
+          <div class="pillar-card">
+            <span class="pillar-emblem"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="12" r="5.2"/><circle cx="15" cy="12" r="5.2"/><path stroke="var(--gold)" d="M12 7.4a5.2 5.2 0 0 1 0 9.2 5.2 5.2 0 0 1 0-9.2z"/></svg></span>
+            <span class="pillar-card-tx" data-i18n-html="pd_grace"><strong>Grace</strong> &mdash; meeting a person with understanding rather than only judgment.</span>
+          </div>
+        </div>
 
         <p style="font-size:15px; line-height:1.72; color:var(--ink); margin-bottom:14px;" data-i18n="story_p4">As a teacher and a father, these are the values I want for my students, my own children &mdash; and for anyone willing to do this work.</p>
 
@@ -3769,6 +3790,10 @@ const I18N_UI = {
   story_p2: { es: "Mi camino comenz\u00f3 en Humboldt State University con una licenciatura en ciencias pol\u00edticas, seguida de una maestr\u00eda en educaci\u00f3n especial. Pero el verdadero punto de inflexi\u00f3n lleg\u00f3 en 2006, cuando un grave accidente automovil\u00edstico me dej\u00f3 con una lesi\u00f3n cerebral traum\u00e1tica y una discapacidad neurol\u00f3gica. Reconstruir mi vida cambi\u00f3 mi forma de entender la lucha, la paciencia y la gracia. Es la raz\u00f3n por la que este trabajo no es abstracto para m\u00ed." },
   story_p3: { es: "The Architecture of Grace naci\u00f3 de la convicci\u00f3n de que las personas merecen m\u00e1s que ser medidas: merecen ser comprendidas. Construido bajo la <strong>School of Life Foundation</strong>, todo aqu\u00ed se apoya en cuatro pilares fundamentales:" },
   story_pillars: { es: '<li style="font-size:15px; line-height:1.6; color:var(--ink); margin-bottom:10px; padding-left:20px; position:relative;"><span style="position:absolute; left:0; top:1px; color:var(--gold);">&#9670;</span><strong style="color:var(--navy);">Identidad</strong> &mdash; qui\u00e9n llega una persona a creer que es.</li><li style="font-size:15px; line-height:1.6; color:var(--ink); margin-bottom:10px; padding-left:20px; position:relative;"><span style="position:absolute; left:0; top:1px; color:var(--gold);">&#9670;</span><strong style="color:var(--navy);">Autocompasi\u00f3n</strong> &mdash; c\u00f3mo aprende una persona a hablarse a s\u00ed misma.</li><li style="font-size:15px; line-height:1.6; color:var(--ink); margin-bottom:10px; padding-left:20px; position:relative;"><span style="position:absolute; left:0; top:1px; color:var(--gold);">&#9670;</span><strong style="color:var(--navy);">Perd\u00f3n</strong> &mdash; superar los errores para dar espacio al crecimiento.</li><li style="font-size:15px; line-height:1.6; color:var(--ink); margin-bottom:0; padding-left:20px; position:relative;"><span style="position:absolute; left:0; top:1px; color:var(--gold);">&#9670;</span><strong style="color:var(--navy);">Gracia</strong> &mdash; recibir a una persona con comprensi\u00f3n y no solo con juicio.</li>' },
+  pd_identity: { es: '<strong>Identidad</strong> &mdash; qui\u00e9n llega una persona a creer que es.' },
+  pd_selfcomp: { es: '<strong>Autocompasi\u00f3n</strong> &mdash; c\u00f3mo aprende una persona a hablarse a s\u00ed misma.' },
+  pd_forgive: { es: '<strong>Perd\u00f3n</strong> &mdash; superar los errores para dar espacio al crecimiento.' },
+  pd_grace: { es: '<strong>Gracia</strong> &mdash; recibir a una persona con comprensi\u00f3n y no solo con juicio.' },
   story_p4: { es: "Como maestro y como padre, estos son los valores que deseo para mis estudiantes, para mis propios hijos, y para cualquiera dispuesto a hacer este trabajo." },
   story_note_label: { es: "Una nota sobre la transparencia" },
   story_note: { es: "Este trabajo est\u00e1 en sus primeras etapas. El chequeo es un programa piloto: un puntaje es una se\u00f1al para una conversaci\u00f3n, nunca un diagn\u00f3stico, y el plan de estudios es un marco que estoy probando activamente. Prefiero ser honesto al respecto antes que exagerar." },
@@ -7287,34 +7312,34 @@ const RESOURCE_LIBRARY = [
     { title:"Book 4 \u00b7 The Fa\u00e7ade (9\u201310)", desc:"The curated self, self-kindness, and silencing the noise.", tie:true, url:"" },
     { title:"Book 5 \u00b7 The Capstone (11\u201312)", desc:"Values, the adult repair manual, and forgiving the younger self.", tie:true, url:"" },
   ]},
-  { cat:"Anchor Charts", preview:true, note:"Free preview samplers of the classroom-ready anchor charts \u2014 a taste of each set, not the full pack. Complete sets come with the district curriculum.", items:[
-    { title:"Anchor Charts \u00b7 K\u201312 Sampler", desc:"Preview \u2014 one chart per band, sampling the identity anchor from the Identity Web to the Threshold of adulthood.", tie:true, url:"files/AoG-Anchor-Charts-K12-Sampler.pdf" },
-    { title:"Anchor Charts \u00b7 Book 1 (K\u20132)", desc:"Preview of the K\u20132 set \u2014 a sample including the Identity Web and Kind Coach vs. Grumpy Gus. Full pack with the curriculum.", tie:true, url:"files/AoG-Book1-Anchor-Charts.pdf" },
-    { title:"Anchor Charts \u00b7 Book 2 (3\u20135)", desc:"Preview of the 3\u20135 set \u2014 a sample built around the red/green Inner Critic vs. Inner Coach chart. Full pack with the curriculum.", tie:true, url:"files/AoG-Book2-Anchor-Charts.pdf" },
-    { title:"Anchor Charts \u00b7 Book 3 (6\u20138)", desc:"Preview of the 6\u20138 set \u2014 a sample including The Internal Critic and its three tactics. Full pack with the curriculum.", tie:true, url:"files/AoG-Book3-Anchor-Charts.pdf" },
-    { title:"Anchor Charts \u00b7 Book 4 (9\u201310)", desc:"Preview of the 9\u201310 set \u2014 a sample including the Signal vs. Noise / Internal Coach chart. Full pack with the curriculum.", tie:true, url:"files/AoG-Book4-Anchor-Charts.pdf" },
-    { title:"Anchor Charts \u00b7 Book 5 (11\u201312)", desc:"Preview of the 11\u201312 set \u2014 a sample including Forgiving the Younger Self. Full pack with the curriculum.", tie:true, url:"files/AoG-Book5-Anchor-Charts.pdf" },
-    { title:"Supplemental Anchor Chart Pack", desc:"Preview of the supplemental display-ready charts for the 6\u20138 Interior units.", url:"files/AoG-Supplemental-Anchor-Chart-Pack.pdf" },
+  { cat:"Anchor Charts", closed:true, note:"The classroom-ready anchor chart sets \u2014 the full packs that ship with the district curriculum. License them for a school, or buy a pack on its own. (Free samplers live in the showcase preview.)", items:[
+    { title:"Anchor Charts \u00b7 K\u201312 Sampler", desc:"One chart per band \u2014 the cross-band sampler, from the Identity Web to the Threshold of adulthood.", tie:true, url:"files/AoG-Anchor-Charts-K12-Sampler.pdf" },
+    { title:"Anchor Charts \u00b7 Book 1 (K\u20132)", desc:"The full K\u20132 set, including the Identity Web and Kind Coach vs. Grumpy Gus.", tie:true, url:"files/AoG-Book1-Anchor-Charts.pdf" },
+    { title:"Anchor Charts \u00b7 Book 2 (3\u20135)", desc:"The full 3\u20135 set, built around the red/green Inner Critic vs. Inner Coach chart.", tie:true, url:"files/AoG-Book2-Anchor-Charts.pdf" },
+    { title:"Anchor Charts \u00b7 Book 3 (6\u20138)", desc:"The full 6\u20138 set, including The Internal Critic and its three tactics.", tie:true, url:"files/AoG-Book3-Anchor-Charts.pdf" },
+    { title:"Anchor Charts \u00b7 Book 4 (9\u201310)", desc:"The full 9\u201310 set, including the Signal vs. Noise / Internal Coach chart.", tie:true, url:"files/AoG-Book4-Anchor-Charts.pdf" },
+    { title:"Anchor Charts \u00b7 Book 5 (11\u201312)", desc:"The full 11\u201312 set, including Forgiving the Younger Self.", tie:true, url:"files/AoG-Book5-Anchor-Charts.pdf" },
+    { title:"Supplemental Anchor Chart Pack", desc:"The supplemental display-ready charts for the 6\u20138 Interior units.", url:"files/AoG-Supplemental-Anchor-Chart-Pack.pdf" },
   ]},
-  { cat:"Worksheets & Activities", preview:true, note:"Free preview samplers of the reproducible worksheets, drawing activities, and display examples \u2014 a taste of each pack, not the full set. Complete packs come with the district curriculum.", items:[
-    { title:"Drawing Activities \u00b7 K\u20132 Sampler", desc:"Preview \u2014 four drawings, four pillars: how K\u20132 students draw identity, self-compassion, forgiveness, and grace.", tie:true, url:"files/AoG-Drawing-Activities-K2-Sampler.pdf" },
-    { title:"Drawing Activities (K\u20132)", desc:"Preview of the hands-on drawing lessons \u2014 a sample including the Identity Web and Kind Message to Myself. Full pack with the curriculum.", tie:true, url:"files/AoG-Book1-Drawing-Activities.pdf" },
+  { cat:"Worksheets & Activities", closed:true, note:"The reproducible worksheets, drawing activities, and display examples \u2014 the full packs that ship with the district curriculum. License them for a school, or buy a pack for home. (Free samplers live in the showcase preview.)", items:[
+    { title:"Drawing Activities \u00b7 K\u20132 Sampler", desc:"Four drawings, four pillars: how K\u20132 students draw identity, self-compassion, forgiveness, and grace.", tie:true, url:"files/AoG-Drawing-Activities-K2-Sampler.pdf" },
+    { title:"Drawing Activities (K\u20132)", desc:"The hands-on drawing lessons, including the Identity Web and Kind Message to Myself.", tie:true, url:"files/AoG-Book1-Drawing-Activities.pdf" },
     { title:"Drawing Examples", desc:"Finished display models teachers post before students begin.", url:"" },
-    { title:"Worksheets \u00b7 K\u201312 Sampler", desc:"Preview \u2014 one skill across twelve years: the inner-critic worksheet, from Grumpy Gus to forgiving the younger self.", tie:true, url:"files/AoG-Worksheets-K12-Sampler.pdf" },
-    { title:"Worksheet Pack \u00b7 Book 2 (3\u20135)", desc:"Preview of the 3\u20135 worksheet pack \u2014 a sample including WS3 Two Voices. Full pack with the curriculum.", tie:true, url:"files/AoG-Book2-Worksheet-Packet.pdf" },
-    { title:"Worksheet Pack \u00b7 Book 3 (6\u20138) \u00b7 Part 1", desc:"Preview of the 6\u20138 identity and self-compassion sheets \u2014 a sample including the Internal Critic Profile. Full pack with the curriculum.", tie:true, url:"files/AoG-Book3-Worksheet-Pack.pdf" },
+    { title:"Worksheets \u00b7 K\u201312 Sampler", desc:"One skill across twelve years: the inner-critic worksheet, from Grumpy Gus to forgiving the younger self.", tie:true, url:"files/AoG-Worksheets-K12-Sampler.pdf" },
+    { title:"Worksheet Pack \u00b7 Book 2 (3\u20135)", desc:"The full 3\u20135 worksheet pack, including WS3 Two Voices.", tie:true, url:"files/AoG-Book2-Worksheet-Packet.pdf" },
+    { title:"Worksheet Pack \u00b7 Book 3 (6\u20138) \u00b7 Part 1", desc:"The 6\u20138 identity and self-compassion sheets, including the Internal Critic Profile.", tie:true, url:"files/AoG-Book3-Worksheet-Pack.pdf" },
     { title:"Worksheet Pack \u00b7 Book 3 (6\u20138) \u00b7 Part 2", desc:"The 6\u20138 worksheets for empathy, forgiveness, and grace.", url:"" },
-    { title:"Worksheet Pack \u00b7 Book 4 (9\u201310)", desc:"Preview of the 9\u201310 reproducible worksheets for the Fa\u00e7ade and self-kindness units. Full pack with the curriculum.", url:"files/AoG-Books4-5-Worksheet-Pack.pdf" },
-    { title:"Worksheet Pack \u00b7 Book 5 (11\u201312)", desc:"Preview of the 11\u201312 worksheets for values, repair, and forgiveness. Full pack with the curriculum.", url:"files/AoG-Books4-5-Worksheet-Pack.pdf" },
+    { title:"Worksheet Pack \u00b7 Book 4 (9\u201310)", desc:"The 9\u201310 reproducible worksheets for the Fa\u00e7ade and self-kindness units.", url:"files/AoG-Books4-5-Worksheet-Pack.pdf" },
+    { title:"Worksheet Pack \u00b7 Book 5 (11\u201312)", desc:"The 11\u201312 worksheets for values, repair, and forgiveness.", url:"files/AoG-Books4-5-Worksheet-Pack.pdf" },
   ]},
-  { cat:"Scenario Cards", preview:true, note:"Free preview samplers of the discussion and role-play decks \u2014 a taste of each deck, not the full set. Complete decks come with the district curriculum.", items:[
-    { title:"Scenario Cards \u00b7 K\u201312 Sampler", desc:"Preview \u2014 ten cards, one per band, sampling the identity and inner-critic threads from kindergarten to graduation.", tie:true, url:"files/AoG-Scenario-Cards-K12-Sampler.pdf" },
-    { title:"Scenario Cards \u00b7 Book 1 (K\u20132)", desc:"Preview of the K\u20132 discussion deck \u2014 a sample of identity, mistakes, and grace worked as a class. Full deck with the curriculum.", tie:true, url:"files/AoG-Book1-Scenario-Card-Deck.pdf" },
-    { title:"Scenario Cards \u00b7 Book 2 (3\u20135)", desc:"Preview of the 3\u20135 deck \u2014 a sample including Sofia's failed test (Card 1-G). Full deck with the curriculum.", tie:true, url:"files/AoG-Book2-Scenario-Card-Deck.pdf" },
-    { title:"Scenario Cards \u00b7 Book 3 (6\u20138) \u00b7 Part 1", desc:"Preview of the 6\u20138 deck \u2014 a sample of identity and self-compassion dilemmas. Full deck with the curriculum.", url:"files/AoG-Book3-Scenario-Card-Deck.pdf" },
+  { cat:"Scenario Cards", closed:true, note:"The discussion and role-play decks \u2014 the complete sets that ship with the district curriculum. License them for a school, or buy a deck on its own. (Free samplers live in the showcase preview.)", items:[
+    { title:"Scenario Cards \u00b7 K\u201312 Sampler", desc:"Ten cards, one per band, tracing the identity and inner-critic threads from kindergarten to graduation.", tie:true, url:"files/AoG-Scenario-Cards-K12-Sampler.pdf" },
+    { title:"Scenario Cards \u00b7 Book 1 (K\u20132)", desc:"The full K\u20132 discussion deck \u2014 identity, mistakes, and grace, worked as a class.", tie:true, url:"files/AoG-Book1-Scenario-Card-Deck.pdf" },
+    { title:"Scenario Cards \u00b7 Book 2 (3\u20135)", desc:"The full 3\u20135 deck, including Sofia's failed test (Card 1-G).", tie:true, url:"files/AoG-Book2-Scenario-Card-Deck.pdf" },
+    { title:"Scenario Cards \u00b7 Book 3 (6\u20138) \u00b7 Part 1", desc:"The 6\u20138 deck of identity and self-compassion dilemmas.", url:"files/AoG-Book3-Scenario-Card-Deck.pdf" },
     { title:"Scenario Cards \u00b7 Book 3 (6\u20138) \u00b7 Part 2", desc:"Empathy, repair, and grace dilemmas for the 6\u20138 year.", url:"" },
-    { title:"Scenario Cards \u00b7 Book 4 (9\u201310)", desc:"Preview of the 9\u201310 deck \u2014 a sample including Layla (B4-6A). Full deck with the curriculum.", tie:true, url:"files/AoG-Books4-5-Scenario-Cards.pdf" },
-    { title:"Scenario Cards \u00b7 Book 5 (11\u201312)", desc:"Preview of the 11\u201312 deck \u2014 a sample including Priya\u2019s Past Self (B5-9A). Full deck with the curriculum.", tie:true, url:"files/AoG-Books4-5-Scenario-Cards.pdf" },
+    { title:"Scenario Cards \u00b7 Book 4 (9\u201310)", desc:"The full 9\u201310 deck, including Layla (B4-6A).", tie:true, url:"files/AoG-Books4-5-Scenario-Cards.pdf" },
+    { title:"Scenario Cards \u00b7 Book 5 (11\u201312)", desc:"The full 11\u201312 deck, including Priya\u2019s Past Self (B5-9A).", tie:true, url:"files/AoG-Books4-5-Scenario-Cards.pdf" },
     { title:"Scenario Cards \u00b7 Complete Deck (all bands)", desc:"The cross-band deck of dilemmas for discussion and role-play.", url:"" },
   ]},
   { cat:"Assessment & Data", note:"The screening and clinical instruments.", items:[
@@ -7340,14 +7365,14 @@ const RESOURCE_LIBRARY = [
     { title:"Book 3 \u00b7 Rewriting the Script \u00b7 Somatic Floor (D8)", desc:"Somatic grounding for reauthoring the self-story.", url:"" },
     { title:"Book 3 \u00b7 The Agency of Release \u00b7 Somatic Floor (D11)", desc:"Releasing what you carry \u2014 a body-based practice.", url:"" },
   ]},
-  { cat:"Autism-Adapted Charts", preview:true, note:"Free preview samplers of the anchor charts rebuilt with plain language and visual supports \u2014 a taste of the gentlest, most literal version, not the full pack. Two support levels per band.", items:[
-    { title:"Autism-Adapted Charts \u00b7 Book 1 (K\u20132) \u00b7 Lower Support", desc:"Preview of the K\u20132 anchor charts in plain language with visual supports.", url:"files/AoG_Book1_AutismAdapted_LowerSupport_1.pdf" },
-    { title:"Autism-Adapted Charts \u00b7 Book 1 (K\u20132) \u00b7 Moderate Support", desc:"Preview of the K\u20132 charts with more scaffolding and simpler steps.", url:"files/AoG_Book1_AutismAdapted_ModerateSupport.pdf" },
-    { title:"Autism-Adapted Charts \u00b7 Book 3 (6\u20138) \u00b7 Lower Support", desc:"Preview of the 6\u20138 anchor charts in plain language with visual supports.", url:"files/AoG_Book3_AutismAdapted_LowerSupport.pdf" },
-    { title:"Autism-Adapted Charts \u00b7 Book 3 (6\u20138) \u00b7 Moderate Support", desc:"Preview of the 6\u20138 charts with more scaffolding and simpler steps.", url:"files/AoG_Book3_AutismAdapted_ModerateSupport.pdf" },
-    { title:"Autism-Adapted Charts \u00b7 Book 2 (3\u20135)", desc:"In polish \u2014 coming soon.", url:"" },
-    { title:"Autism-Adapted Charts \u00b7 Book 4 (9\u201310)", desc:"Material ready; in polish \u2014 coming soon.", url:"" },
-    { title:"Autism-Adapted Charts \u00b7 Book 5 (11\u201312)", desc:"Material ready; in polish \u2014 coming soon.", url:"" },
+  { cat:"Autism-Adapted Charts", closed:true, note:"The anchor charts rebuilt with plain language and visual supports \u2014 two support levels per band. License them for a school, or buy a set for home.", items:[
+    { title:"Autism-Adapted Charts \u00b7 Book 1 (K\u20132) \u00b7 Lower Support", desc:"The K\u20132 anchor charts in plain language with visual supports.", url:"files/AoG_Book1_AutismAdapted_LowerSupport_1.pdf" },
+    { title:"Autism-Adapted Charts \u00b7 Book 1 (K\u20132) \u00b7 Moderate Support", desc:"The K\u20132 charts with more scaffolding and simpler steps.", url:"files/AoG_Book1_AutismAdapted_ModerateSupport.pdf" },
+    { title:"Autism-Adapted Charts \u00b7 Book 3 (6\u20138) \u00b7 Lower Support", desc:"The 6\u20138 anchor charts in plain language with visual supports.", url:"files/AoG_Book3_AutismAdapted_LowerSupport.pdf" },
+    { title:"Autism-Adapted Charts \u00b7 Book 3 (6\u20138) \u00b7 Moderate Support", desc:"The 6\u20138 charts with more scaffolding and simpler steps.", url:"files/AoG_Book3_AutismAdapted_ModerateSupport.pdf" },
+    { title:"Autism-Adapted Charts \u00b7 Book 2 (3\u20135)", desc:"The 3\u20135 anchor charts in plain language with visual supports.", url:"" },
+    { title:"Autism-Adapted Charts \u00b7 Book 4 (9\u201310)", desc:"The 9\u201310 anchor charts in plain language with visual supports.", url:"" },
+    { title:"Autism-Adapted Charts \u00b7 Book 5 (11\u201312)", desc:"The 11\u201312 anchor charts in plain language with visual supports.", url:"" },
   ]},
   { cat:"Home & Family Editions", note:"The program, rewritten for families to use at the kitchen table.", items:[
     { title:"Home Edition \u00b7 Book 1 (K\u20132)", desc:"The previewed K\u20132 lessons, in a version parents can lead at home.", access:"buy", url:"" },
@@ -7356,14 +7381,24 @@ const RESOURCE_LIBRARY = [
     { title:"Home Edition \u00b7 Book 4 (9\u201310)", desc:"The 9\u201310 interior work, written for families at home.", access:"buy", url:"" },
     { title:"Home Edition \u00b7 Book 5 (11\u201312)", desc:"The 11\u201312 work \u2014 threshold, values, forgiveness \u2014 for families.", access:"buy", url:"" },
   ]},
-  { cat:"Divine Blueprint \u00b7 Christian Companion Track", note:"An optional faith-based companion that runs alongside the secular core \u2014 for Christian schools, homeschools, and ministry settings. Kept separate by design; the secular check-in never points here.", items:[
+  { cat:"Divine Blueprint \u00b7 Christian Companion Track", closed:true, note:"An optional faith-based companion that runs alongside the secular core \u2014 for Christian schools, homeschools, and ministry settings. Kept separate by design; the secular check-in never points here.", items:[
     { title:"Master Crosswalk \u00b7 Book 3 (6\u20138)", desc:"Each secular concept anchored in Scripture, doctrine, and Reformed pastoral practice \u2014 the 6\u20138 companion.", url:"files/AoG-Book3-Divine-Blueprint-Master-Crosswalk.pdf" },
-    { title:"Master Crosswalk \u00b7 Book 2 (3\u20135)", desc:"The 3\u20135 theological companion to The Year of the Inner Critic. Polished edition coming.", url:"" },
+    { title:"Master Crosswalk \u00b7 Book 2 (3\u20135)", desc:"The 3\u20135 theological companion to The Year of the Inner Critic.", url:"" },
   ]},
 ];
 function libEsc(s) { return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
 
-function libItemState(it) {
+function libItemState(it, cat) {
+  if (it.soon) return "soon";                   // not yet ready: quiet tag, no buttons
+  // A "closed" category no longer offers free Opens: anything that would have
+  // been a free download instead shows Buy + Request a license (the full pack
+  // is the paid/licensed product; the free taste lives in the showcase + the
+  // Novels/Curriculum sections). The url is kept in the data but goes inert.
+  if (cat && cat.closed) {
+    // Closed category: every item is part of the paid/licensed program, so
+    // they all match — Buy + Request a license (or Buy alone for family-only).
+    return (it.access === "buy") ? "buy" : "both";
+  }
   if (it.url && it.url.trim()) return "free";   // a real downloadable file
   if (it.access === "both") return "both";      // district license OR family purchase
   if (it.access === "buy") return "buy";        // family purchase
@@ -7382,7 +7417,7 @@ function renderLibrary() {
 
   let html = "";
   RESOURCE_LIBRARY.forEach((cat) => {
-    const freeCount = cat.items.filter(i => libItemState(i) === "free").length;
+    const freeCount = cat.items.filter(i => libItemState(i, cat) === "free").length;
     const total = cat.items.length;
     const catName = (es && LIB_CAT_ES[cat.cat]) ? LIB_CAT_ES[cat.cat].cat : cat.cat;
     const catNote = (es && LIB_CAT_ES[cat.cat]) ? LIB_CAT_ES[cat.cat].note : cat.note;
@@ -7401,9 +7436,11 @@ function renderLibrary() {
       '</div>' +
       '<div class="lib-cat-body">';
     cat.items.forEach(it => {
-      const st = libItemState(it);
+      const st = libItemState(it, cat);
       let action = "", chip = "";
-      if (st === "free") {
+      if (st === "soon") {
+        action = '<span class="lib-soon">' + (es ? "Pr\u00f3ximamente" : "Coming soon") + '</span>';
+      } else if (st === "free") {
         action = '<a class="lib-dl" href="' + libEsc(it.url) + '" target="_blank" rel="noopener">' + (es ? "\u2197 Abrir" : "\u2197 Open") + '</a>';
         if (it.tie) chip = ' <span class="lib-tie">' + (es ? "En la vista previa" : "In the preview") + '</span>';
       } else if (st === "buy") {
