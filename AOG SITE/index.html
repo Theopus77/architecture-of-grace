@@ -1245,6 +1245,8 @@ tr:hover td { background: var(--paper); }
 .voi-count{ font-size:12px; color:var(--ink-soft,#6b6256); }
 .voi-status{ font-size:13px; margin:8px 0 0; line-height:1.5; }
 .voi-fineprint{ font-size:11.5px; color:var(--ink-soft,#6b6256); line-height:1.5; margin:10px 0 0; }
+.voi-public{ font-size:12px; font-weight:600; color:var(--gold-strong,#8a6a25); margin:8px 0 2px; }
+:root[data-theme="dark"] .voi-public{ color:var(--gold-soft); }
 .voi-wall{ display:flex; flex-direction:column; gap:12px; }
 .voi-card{ background:#fff; border:1px solid var(--rule,#e7ddc9); border-left:3px solid var(--gold); border-radius:11px; padding:14px 16px; }
 .voi-card .voi-meta{ font-size:12px; color:var(--ink-soft,#6b6256); margin-bottom:5px; }
@@ -3171,6 +3173,7 @@ function toggleTheme(){
               </select>
             </div>
             <textarea id="voiMsg" class="voi-input voi-textarea" rows="3" maxlength="300" placeholder="Share your experience&hellip;" data-i18n-ph="voi_msg_ph"></textarea>
+            <p class="voi-public" data-i18n="voi_public">Comments you post are shown publicly on this page.</p>
             <div class="voi-formfoot">
               <span id="voiCount" class="voi-count">0 / 300</span>
               <button class="btn" id="voiPost" data-i18n="voi_post">Post to the wall</button>
@@ -3709,8 +3712,9 @@ const ACCESS_CODE = "educator";
 //   4. The school hosts THIS configured copy, so every device that opens it
 //      writes to the school's own Sheet. sessionStorage stays the backup.
 // ============================================================
-const SCHOOL_SYNC_URL = "https://script.google.com/macros/s/AKfycbw0Qdwka1HXPPA_OxsQP2FXxOK8zzFwu_MBrXoahoO2YwRvwQ83RzvkJW__9KCC_DwgaA/exec";   // e.g. "https://script.google.com/macros/s/AKfy.../exec"
-const SCHOOL_SYNC_KEY = "sky";   // must match the PASSCODE inside the school's Apps Script
+const SCHOOL_SYNC_URL = "";   // e.g. "https://script.google.com/macros/s/AKfy.../exec"
+const SCHOOL_SYNC_KEY = "";   // must match the PASSCODE inside the school's Apps Script
+const VOICES_URL = "https://script.google.com/macros/s/AKfycbw0Qdwka1HXPPA_OxsQP2FXxOK8zzFwu_MBrXoahoO2YwRvwQ83RzvkJW__9KCC_DwgaA/exec";   // PUBLIC comments wall ONLY — student check-in responses never sync here
 
 const $  = sel => document.querySelector(sel);
 const $$ = sel => document.querySelectorAll(sel);
@@ -3800,6 +3804,7 @@ const I18N_UI = {
   voi_msg_ph:  { en: "Share your experience\u2026", es: "Comparte tu experiencia\u2026" },
   voi_post:    { en: "Post to the wall", es: "Publicar en el muro" },
   voi_fine:    { en: "Please don\u2019t include emails, phone numbers, links, or last names \u2014 posts with contact details are blocked automatically to keep the wall safe.", es: "Por favor no incluyas correos, tel\u00e9fonos, enlaces ni apellidos \u2014 las publicaciones con datos de contacto se bloquean autom\u00e1ticamente para mantener el muro seguro." },
+  voi_public: { en: "Comments you post are shown publicly on this page.", es: "Los comentarios que publiques se muestran p\u00fablicamente en esta p\u00e1gina." },
   voi_role_teacher:{ en: "Teacher", es: "Maestro/a" },
   voi_role_parent:{ en: "Parent", es: "Madre/Padre" },
   voi_role_student:{ en: "Student", es: "Estudiante" },
@@ -5508,9 +5513,9 @@ function welcomeVoicesLoad() {
   var sec = document.getElementById("welcomeVoices");
   var strip = document.getElementById("welcomeVoicesStrip");
   if (!sec || !strip) return;
-  if (!SCHOOL_SYNC_URL) { sec.style.display = "none"; return; }
+  if (!VOICES_URL) { sec.style.display = "none"; return; }
   sec.style.display = "";   // show heading + "share yours" link regardless
-  var url = SCHOOL_SYNC_URL + (SCHOOL_SYNC_URL.indexOf("?") >= 0 ? "&" : "?") + "comments=1";
+  var url = VOICES_URL + (VOICES_URL.indexOf("?") >= 0 ? "&" : "?") + "comments=1";
   fetch(url, { method: "GET" })
     .then(function (r) { return r.json(); })
     .then(function (data) {
@@ -5533,9 +5538,9 @@ function welcomeVoicesLoad() {
 function voicesLoad() {
   var list = document.getElementById("voicesList");
   if (!list) return;
-  if (!SCHOOL_SYNC_URL) { list.innerHTML = '<p class="voi-empty">' + DT("The wall isn\u2019t set up yet.", "El muro a\u00fan no est\u00e1 configurado.") + '</p>'; return; }
+  if (!VOICES_URL) { list.innerHTML = '<p class="voi-empty">' + DT("The wall isn\u2019t set up yet.", "El muro a\u00fan no est\u00e1 configurado.") + '</p>'; return; }
   list.innerHTML = '<p class="voi-empty">' + DT("Loading\u2026", "Cargando\u2026") + '</p>';
-  var url = SCHOOL_SYNC_URL + (SCHOOL_SYNC_URL.indexOf("?") >= 0 ? "&" : "?") + "comments=1";
+  var url = VOICES_URL + (VOICES_URL.indexOf("?") >= 0 ? "&" : "?") + "comments=1";
   fetch(url, { method: "GET" })
     .then(function (r) { return r.json(); })
     .then(function (data) { voicesRender((data && data.comments) || []); })
@@ -5545,7 +5550,7 @@ function voicesPost() {
   var status = document.getElementById("voiStatus");
   var msgEl = document.getElementById("voiMsg"), nameEl = document.getElementById("voiName"), roleEl = document.getElementById("voiRole"), btn = document.getElementById("voiPost");
   function say(m, c) { if (status) { status.textContent = m; status.style.color = c || "var(--ink-soft)"; } }
-  if (!SCHOOL_SYNC_URL) { say(DT("The wall isn\u2019t connected yet.", "El muro a\u00fan no est\u00e1 conectado."), "var(--red)"); return; }
+  if (!VOICES_URL) { say(DT("The wall isn\u2019t connected yet.", "El muro a\u00fan no est\u00e1 conectado."), "var(--red)"); return; }
   var msg = (msgEl && msgEl.value || "").replace(/\s+/g, " ").trim();
   var name = (nameEl && nameEl.value || "").trim();
   var role = (roleEl && roleEl.value) || "Other";
@@ -5562,7 +5567,7 @@ function voicesPost() {
   if (btn) btn.disabled = true;
   say(DT("Posting\u2026", "Publicando\u2026"));
   var body = JSON.stringify({ action: "comment_add", name: name, role: role, message: msg });
-  fetch(SCHOOL_SYNC_URL, { method: "POST", mode: "no-cors", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: body })
+  fetch(VOICES_URL, { method: "POST", mode: "no-cors", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: body })
     .then(function () {
       if (msgEl) msgEl.value = ""; voicesCount();
       say(DT("Thanks \u2014 posted to the wall.", "Gracias \u2014 publicado en el muro."), "#1E6B45");
