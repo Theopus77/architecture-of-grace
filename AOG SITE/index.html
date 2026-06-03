@@ -1700,6 +1700,34 @@ tr:hover td { background: var(--paper); }
 .pillar-card-tx{ font-size:15px; line-height:1.55; color:var(--ink); padding-top:3px; }
 .pillar-card-tx strong{ color:var(--navy); font-weight:600; }
 :root[data-theme="dark"] .pillar-card-tx strong{ color:var(--gold-soft); }
+/* ===== Documentation: audience pathways + after-a-flag ===== */
+.doc-who{ padding-bottom:22px; border-bottom:1px dashed var(--rule); margin-bottom:24px; }
+.doc-paths{ display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:14px; }
+@media(max-width:560px){ .doc-paths{ grid-template-columns:1fr; } }
+.doc-path{ background:var(--cream-deep); border:1px solid var(--rule); border-radius:12px; padding:13px 15px; }
+:root[data-theme="dark"] .doc-path{ border-color:rgba(242,201,100,.16); }
+.doc-path .dp-t{ font-family:var(--font-sans); font-weight:700; font-size:13.5px; color:var(--navy); margin-bottom:4px; }
+:root[data-theme="dark"] .doc-path .dp-t{ color:var(--gold-soft); }
+.doc-path .dp-s{ font-size:13px; line-height:1.5; color:var(--ink-soft); }
+.doc-flag-note{ background:var(--cream-deep); border:1px solid var(--rule); border-left:4px solid var(--gold); border-radius:12px; padding:16px 20px; margin:10px 0 16px; }
+.doc-flag-note .dfn-label{ font-size:11px; font-weight:700; letter-spacing:.16em; text-transform:uppercase; color:var(--gold); margin-bottom:7px; }
+.doc-flag-note p{ font-size:14px; line-height:1.6; color:var(--ink); margin:0 0 8px; }
+.doc-flag-note p:last-child{ margin-bottom:0; }
+.doc-flag-note em{ color:var(--navy); font-style:italic; font-weight:600; }
+:root[data-theme="dark"] .doc-flag-note em{ color:var(--gold-soft); }
+/* ===== welcome: Who it's for ===== */
+.hyb-whofor{ padding:6px 22px 2px; }
+.whofor-inner{ max-width:760px; margin:0 auto; text-align:center; }
+.home-who-ey{ text-align:center; }
+.home-who-h{ font-size:clamp(24px,3vw,30px); color:var(--navy); margin:5px 0 8px; line-height:1.15; }
+:root[data-theme="dark"] .home-who-h{ color:var(--gold-soft); }
+.whofor-lede{ font-size:15.5px; line-height:1.6; color:var(--ink-soft); max-width:600px; margin:0 auto; }
+.hyb-whofor .doc-paths{ text-align:left; margin-top:18px; }
+.whofor-inner{ max-width:820px; }
+.hyb-whofor .doc-paths{ gap:14px; }
+.hyb-whofor .doc-path{ padding:18px 22px; border-radius:14px; }
+.hyb-whofor .doc-path .dp-t{ font-size:15px; margin-bottom:6px; }
+.hyb-whofor .doc-path .dp-s{ font-size:14px; line-height:1.55; }
 
 /* doors */
 .hyb-doors{display:grid;grid-template-columns:1.3fr 1fr;gap:0;border-bottom:2.5px solid var(--navy)}
@@ -2093,14 +2121,6 @@ function toggleTheme(){
         <span class="dot dot-mid"></span>
         <span class="word"><b data-i18n="hyb_b3">Built by a teacher</b></span>
       </div>
-      <div class="hyb-aud">
-        <span class="hyb-aud-label" data-i18n="hyb_madefor">Made for</span>
-        <span data-i18n="aud_k12">K&ndash;12 classrooms</span>
-        <span data-i18n="aud_edu">Educators</span>
-        <span data-i18n="aud_par">Parents</span>
-        <span data-i18n="aud_clin">Clinicians</span>
-        <span data-i18n="aud_any">Anyone doing the work</span>
-      </div>
       <div class="hyb-cta">
         <a href="#" class="hyb-c1" onclick="event.preventDefault(); openGuide();"><span data-i18n="w_door_guide">Explore the Guide &amp; Library</span> &rarr;</a>
         <a href="#" class="hyb-c2" onclick="event.preventDefault(); startChoose();" data-i18n="lobby_checkin_t">Take the Check-In</a>
@@ -2131,6 +2151,21 @@ function toggleTheme(){
         <div class="foot"><span class="meta" data-i18n="hyb_meta_priv">Stays on your device &middot; ~4 minutes</span><span class="arr">&rarr;</span></div>
       </a>
     </div>
+
+    <!-- ===== WHO IT'S FOR (front page) ===== -->
+    <section class="hyb-whofor reveal">
+      <div class="whofor-inner">
+        <div class="eyebrow home-who-ey" style="color:var(--gold);" data-i18n="doc_who_ey">Who it&rsquo;s for</div>
+        <h3 class="serif home-who-h" data-i18n="doc_who_h">Four ways in, one framework</h3>
+        <p class="whofor-lede" data-i18n-html="doc_who_p">The same eighteen items and the same care, worded for whoever is answering. Each path is already built into this file &mdash; choose the door that fits.</p>
+        <div class="doc-paths">
+          <div class="doc-path"><div class="dp-t" data-i18n="doc_path_student_t">Students &middot; K&ndash;12</div><div class="dp-s" data-i18n-html="doc_path_student_s">A private self-reflection, quick or thorough, taken each season. The school view aggregates results for MTSS.</div></div>
+          <div class="doc-path"><div class="dp-t" data-i18n="doc_path_adult_t">Independent adults</div><div class="dp-s" data-i18n-html="doc_path_adult_s">The grown-up check-in &mdash; a private few minutes for yourself, with a full personal report and conversation starters. Nothing is routed to anyone else.</div></div>
+          <div class="doc-path"><div class="dp-t" data-i18n="doc_path_family_t">Families &middot; at home</div><div class="dp-s" data-i18n-html="doc_path_family_s">Family Mode keeps each child on this device, tracked across the year, with printable conversation starters for the kitchen table.</div></div>
+          <div class="doc-path"><div class="dp-t" data-i18n="doc_path_clin_t">Counselors &amp; clinicians</div><div class="dp-s" data-i18n-html="doc_path_clin_s">Use Thorough mode for the fuller instrument and the per-person Home View. The separate Clinical Edition deepens the framework for clinical settings.</div></div>
+        </div>
+      </div>
+    </section>
 
     <!-- ===== VOICES STRIP (front-page social proof) ===== -->
     <section class="hyb-voices reveal" id="welcomeVoices" style="display:none;">
@@ -2986,6 +3021,18 @@ function toggleTheme(){
 
       <div class="guide-section active" id="guide-docs">
       <div class="table-card" style="padding:28px 32px;">
+        <div class="doc-who">
+          <div class="eyebrow" style="color:var(--gold);" data-i18n="doc_who_ey">Who it&rsquo;s for</div>
+          <h3 class="serif" style="font-size:22px; color:var(--navy); margin:4px 0 6px;" data-i18n="doc_who_h">Four ways in, one framework</h3>
+          <p style="font-size:14.5px; line-height:1.65; color:var(--ink); margin:0;" data-i18n-html="doc_who_p">The same eighteen items and the same care, worded for whoever is answering. Each path is already built into this file &mdash; choose the door that fits.</p>
+          <div class="doc-paths">
+            <div class="doc-path"><div class="dp-t" data-i18n="doc_path_student_t">Students &middot; K&ndash;12</div><div class="dp-s" data-i18n-html="doc_path_student_s">A private self-reflection, quick or thorough, taken each season. The school view aggregates results for MTSS.</div></div>
+            <div class="doc-path"><div class="dp-t" data-i18n="doc_path_adult_t">Independent adults</div><div class="dp-s" data-i18n-html="doc_path_adult_s">The grown-up check-in &mdash; a private few minutes for yourself, with a full personal report and conversation starters. Nothing is routed to anyone else.</div></div>
+            <div class="doc-path"><div class="dp-t" data-i18n="doc_path_family_t">Families &middot; at home</div><div class="dp-s" data-i18n-html="doc_path_family_s">Family Mode keeps each child on this device, tracked across the year, with printable conversation starters for the kitchen table.</div></div>
+            <div class="doc-path"><div class="dp-t" data-i18n="doc_path_clin_t">Counselors &amp; clinicians</div><div class="dp-s" data-i18n-html="doc_path_clin_s">Use Thorough mode for the fuller instrument and the per-person Home View. The separate Clinical Edition deepens the framework for clinical settings.</div></div>
+          </div>
+        </div>
+
         <h3 class="serif" style="font-size:22px; color:var(--navy); margin-bottom:6px;" data-i18n="doc_h1">1. What this is</h3>
         <p style="font-size:14.5px; line-height:1.65; color:var(--ink); margin-bottom:16px;" data-i18n-html="doc_p1">A universal social-emotional learning (SEL) self-report check-in built directly from the Architecture of Grace curriculum. It is brief, universally applicable, and designed to be taken at regular check-in points across the year &mdash; each season at school, or anytime at home &mdash; to track baseline, growth, and risk over time. It measures three domains &mdash; Emotional Regulation &amp; Well-Being, Self-Compassion &amp; Growth Mindset, and Social Competency &amp; Repair &mdash; with six items each, eighteen total.</p>
 
@@ -3011,6 +3058,11 @@ function toggleTheme(){
 
         <h3 class="serif" style="font-size:22px; color:var(--navy); margin:24px 0 6px;" data-i18n="doc_h6">6. Reading the Home View</h3>
         <p style="font-size:14.5px; line-height:1.65; color:var(--ink); margin-bottom:16px;" data-i18n-html="doc_p6">Home View shows every item, the actual answer color-coded from green (healthy) to deep orange (concerning), the intensity badge where one was recorded, and any written reflections in the person&rsquo;s own words. At the bottom is a conversation guide: the items that scored lowest, rewritten as gentle questions you can ask, plus a pointer to the curriculum book that addresses that domain. Do not ask all of them at once. Open one door at a time.</p>
+        <div class="doc-flag-note">
+          <div class="dfn-label" data-i18n="doc_flag_ey">After a flag: the next step is built in</div>
+          <p data-i18n-html="doc_flag_p1">A flag is never a dead end. The conversation guide points from each low-scoring item to the exact lesson in the curriculum that addresses it &mdash; <em>flag &rarr; the right lesson</em>. The number tells you where to begin; the curriculum is the intervention.</p>
+          <p data-i18n-html="doc_flag_p2">Those lessons aren&rsquo;t a separate purchase. A district license includes the full K&ndash;12 program and the companion novels; families can buy individual pieces &agrave; la carte for home.</p>
+        </div>
 
         <h3 class="serif" style="font-size:22px; color:var(--navy); margin:24px 0 6px;" data-i18n="doc_h7">7. Privacy</h3>
         <p style="font-size:14.5px; line-height:1.65; color:var(--ink); margin-bottom:8px;" data-i18n-html="doc_p7a">By default, all responses are stored only in this browser, on this computer, and nothing is sent anywhere &mdash; unless a school turns on syncing to its own Google Sheet (see section 8). The reflections and the written word are saved with the response so a trusted adult can read them &mdash; appropriate for home and counselor use. If you ever use this with students in a school setting, treat the responses as part of the student record under FERPA and limit access accordingly.</p>
@@ -3794,6 +3846,20 @@ const I18N_UI = {
   pd_selfcomp: { es: '<strong>Autocompasi\u00f3n</strong> &mdash; c\u00f3mo aprende una persona a hablarse a s\u00ed misma.' },
   pd_forgive: { es: '<strong>Perd\u00f3n</strong> &mdash; superar los errores para dar espacio al crecimiento.' },
   pd_grace: { es: '<strong>Gracia</strong> &mdash; recibir a una persona con comprensi\u00f3n y no solo con juicio.' },
+  doc_who_ey: { es: "Para qui\u00e9n es" },
+  doc_who_h: { es: "Cuatro maneras de entrar, un mismo marco" },
+  doc_who_p: { es: "Los mismos dieciocho \u00edtems y el mismo cuidado, redactados seg\u00fan qui\u00e9n responde. Cada camino ya est\u00e1 integrado en este archivo: elige la puerta que corresponda." },
+  doc_path_student_t: { es: "Estudiantes \u00b7 K\u201312" },
+  doc_path_student_s: { es: "Una reflexi\u00f3n privada, r\u00e1pida o a fondo, realizada cada temporada. La vista escolar agrupa los resultados para el MTSS." },
+  doc_path_adult_t: { es: "Adultos por su cuenta" },
+  doc_path_adult_s: { es: "El chequeo para adultos: unos minutos privados para ti, con un informe personal completo y preguntas para iniciar la conversaci\u00f3n. Nada se env\u00eda a nadie m\u00e1s." },
+  doc_path_family_t: { es: "Familias \u00b7 en casa" },
+  doc_path_family_s: { es: "El Modo familiar guarda a cada hijo en este dispositivo, con seguimiento a lo largo del a\u00f1o y preguntas imprimibles para conversar en la mesa." },
+  doc_path_clin_t: { es: "Consejeros y cl\u00ednicos" },
+  doc_path_clin_s: { es: "Usa el modo a fondo para el instrumento m\u00e1s completo y el Home View por persona. La Edici\u00f3n cl\u00ednica aparte profundiza el marco para entornos cl\u00ednicos." },
+  doc_flag_ey: { es: "Tras una se\u00f1al: el siguiente paso ya est\u00e1 integrado" },
+  doc_flag_p1: { es: "Una se\u00f1al nunca es un callej\u00f3n sin salida. La gu\u00eda de conversaci\u00f3n lleva de cada \u00edtem con puntaje bajo a la lecci\u00f3n exacta del plan de estudios que lo aborda \u2014 <em>se\u00f1al &rarr; la lecci\u00f3n indicada</em>. El n\u00famero te dice por d\u00f3nde empezar; el plan de estudios es la intervenci\u00f3n." },
+  doc_flag_p2: { es: "Esas lecciones no son una compra aparte. Una licencia de distrito incluye todo el programa K\u201312 y las novelas complementarias; las familias pueden comprar piezas individuales para casa." },
   story_p4: { es: "Como maestro y como padre, estos son los valores que deseo para mis estudiantes, para mis propios hijos, y para cualquiera dispuesto a hacer este trabajo." },
   story_note_label: { es: "Una nota sobre la transparencia" },
   story_note: { es: "Este trabajo est\u00e1 en sus primeras etapas. El chequeo es un programa piloto: un puntaje es una se\u00f1al para una conversaci\u00f3n, nunca un diagn\u00f3stico, y el plan de estudios es un marco que estoy probando activamente. Prefiero ser honesto al respecto antes que exagerar." },
