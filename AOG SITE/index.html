@@ -5053,9 +5053,9 @@ async function finalizeAndSave(closing) {
   // pending (false) until the send succeeds; when local-only, mark it null so
   // flushUnsynced() never tries to send it anywhere.
   record.synced = willSync ? false : null;
-  const all = JSON.parse(sessionStorage.getItem(STORAGE_KEY) || "[]");
+  const all = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
   all.push(record);
-  sessionStorage.setItem(STORAGE_KEY, JSON.stringify(all));
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(all));
   window._pendingRecord = null;
   window._lastResult = record;
   // Completed: clear any saved draft. If this was a family/home check-in,
@@ -5095,12 +5095,12 @@ async function syncRecord(record) {
 
 // Match a record in sessionStorage by its timestamp+studentId and flag synced.
 function markSynced(record) {
-  const saved = JSON.parse(sessionStorage.getItem(STORAGE_KEY) || "[]");
+  const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
   const hit = saved.find(r =>
     r.timestamp === record.timestamp && r.studentId === record.studentId);
   if (hit) {
     hit.synced = true;
-    sessionStorage.setItem(STORAGE_KEY, JSON.stringify(saved));
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(saved));
   }
 }
 
@@ -5108,7 +5108,7 @@ function markSynced(record) {
 async function flushUnsynced() {
   if (!navigator.onLine) return;
   if (!syncDestinationConfigured()) return; // local-only: nothing to flush
-  const saved = JSON.parse(sessionStorage.getItem(STORAGE_KEY) || "[]");
+  const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
   for (const r of saved.filter(x => x && x.synced === false)) {
     await syncRecord(r);
   }
@@ -5373,7 +5373,7 @@ function renderSyncStatus() {
   // synced === null  -> local-only record, never meant to sync
   let total = 0, sent = 0, waiting = 0;
   try {
-    const saved = JSON.parse(sessionStorage.getItem(STORAGE_KEY) || "[]");
+    const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
     total = saved.length;
     for (const r of saved) {
       if (!r) continue;
@@ -6044,7 +6044,8 @@ function submitAccessCode() {
 
 function clearLocalData() {
   if (!confirm("Permanently delete ALL check-in data on this device?")) return;
-  sessionStorage.removeItem(STORAGE_KEY);
+  localStorage.removeItem(STORAGE_KEY);
+  try { localStorage.removeItem(FAMILY_KEY); } catch (e) {}
   refreshAdmin();
 }
 
@@ -6080,19 +6081,19 @@ function buildDemoRecords() {
 }
 function toggleDemoData() {
   const btn = document.getElementById("btnDemoData");
-  const active = sessionStorage.getItem(DEMO_FLAG) === "1";
+  const active = localStorage.getItem(DEMO_FLAG) === "1";
   if (!active) {
     // stash whatever is currently there, then load demo
-    sessionStorage.setItem(DEMO_STASH, sessionStorage.getItem(STORAGE_KEY) || "[]");
-    sessionStorage.setItem(STORAGE_KEY, JSON.stringify(buildDemoRecords()));
-    sessionStorage.setItem(DEMO_FLAG, "1");
+    localStorage.setItem(DEMO_STASH, localStorage.getItem(STORAGE_KEY) || "[]");
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(buildDemoRecords()));
+    localStorage.setItem(DEMO_FLAG, "1");
     if (btn) { btn.textContent = "Clear demo data"; btn.style.background = "transparent"; btn.style.color = "var(--gold)"; }
   } else {
     // restore real data
-    const stash = sessionStorage.getItem(DEMO_STASH);
-    if (stash != null) sessionStorage.setItem(STORAGE_KEY, stash);
-    sessionStorage.removeItem(DEMO_STASH);
-    sessionStorage.removeItem(DEMO_FLAG);
+    const stash = localStorage.getItem(DEMO_STASH);
+    if (stash != null) localStorage.setItem(STORAGE_KEY, stash);
+    localStorage.removeItem(DEMO_STASH);
+    localStorage.removeItem(DEMO_FLAG);
     if (btn) { btn.textContent = "Try demo data"; btn.style.background = "var(--gold)"; btn.style.color = "var(--navy)"; }
   }
   refreshAdmin();
@@ -6103,7 +6104,7 @@ function toggleDemoData() {
 // any key collision, so a pull can never overwrite or duplicate on-device data.
 let REMOTE_RECORDS = [];
 
-function getLocalRecords() { return JSON.parse(sessionStorage.getItem(STORAGE_KEY) || "[]"); }
+function getLocalRecords() { return JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]"); }
 
 // Natural identity for one submission, tolerant to timestamp formatting drift
 // through Google Sheets (normalize to whole seconds).
@@ -6315,7 +6316,7 @@ let tabHelpOpen = false;
 function setTabHelp(name) { const el = $("#tabHelp"); if (el) { const h = TAB_HELP[name]; el.innerHTML = h ? (h[dashLang] || h.en) : ""; } }
 
 function refreshAdmin() {
-  (function(){ var b=document.getElementById("btnDemoData"); if(b){ var on=sessionStorage.getItem(DEMO_FLAG)==="1"; b.textContent= on?"Clear demo data":"Try demo data"; b.style.background= on?"transparent":"var(--gold)"; b.style.color="var(--gold)"; if(!on) b.style.color="var(--navy)"; } })();
+  (function(){ var b=document.getElementById("btnDemoData"); if(b){ var on=localStorage.getItem(DEMO_FLAG)==="1"; b.textContent= on?"Clear demo data":"Try demo data"; b.style.background= on?"transparent":"var(--gold)"; b.style.color="var(--gold)"; if(!on) b.style.color="var(--navy)"; } })();
   renderSyncStatus();
   populateFilters();
   renderOverview();
@@ -6885,8 +6886,8 @@ async function showShareQr() {
 // 1: Family Mode — multi-child roster, progress chart, PDF export
 // ============================================================
 var FAMILY_KEY = "aog.family.v1";
-function getFamilyRoster(){ try { var v = JSON.parse(sessionStorage.getItem(FAMILY_KEY) || "[]"); return Array.isArray(v) ? v : []; } catch (e) { return []; } }
-function saveFamilyRoster(arr){ try { sessionStorage.setItem(FAMILY_KEY, JSON.stringify(arr)); } catch (e) {} }
+function getFamilyRoster(){ try { var v = JSON.parse(localStorage.getItem(FAMILY_KEY) || "[]"); return Array.isArray(v) ? v : []; } catch (e) { return []; } }
+function saveFamilyRoster(arr){ try { localStorage.setItem(FAMILY_KEY, JSON.stringify(arr)); } catch (e) {} }
 function familyRosterAdd(name, grade){
   name = (name || "").trim(); if (!name) return;
   var r = getFamilyRoster();
@@ -8210,6 +8211,21 @@ function initGuideExtras() {
   riRender("", "");
   initEcoInteractive();
 }
+
+// One-time migration. Earlier builds kept results + the family roster in
+// sessionStorage, which the browser clears on close (so growth history was lost
+// between visits). Now that those stores live in localStorage, copy across any
+// data still sitting in the current session so nothing on screen is lost.
+(function migratePersistentStores(){
+  try {
+    [STORAGE_KEY, FAMILY_KEY, DEMO_STASH, DEMO_FLAG].forEach(function(k){
+      if (localStorage.getItem(k) == null) {
+        var v = sessionStorage.getItem(k);
+        if (v != null) { try { localStorage.setItem(k, v); } catch (e) {} }
+      }
+    });
+  } catch (e) {}
+})();
 
 if (document.readyState === "loading") {
   document.addEventListener("DOMContentLoaded", initGuideExtras);
