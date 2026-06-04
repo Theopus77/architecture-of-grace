@@ -292,6 +292,14 @@ body::before {
 .checkin-reassure{ text-align:center; font-size:13px; font-weight:600; letter-spacing:.01em; color:var(--gold); margin:6px auto 0; max-width:560px; }
 .made-with{ text-align:center; font-family:var(--font-serif); font-style:italic; font-size:16px; line-height:1.5; color:var(--navy-soft); max-width:540px; margin:20px auto 4px; opacity:.9; }
 .made-with::before{ content:""; display:block; width:42px; height:1px; background:var(--gold); opacity:.7; margin:0 auto 14px; }
+.share-card{ max-width:560px; margin:22px auto 0; background:var(--cream-deep,#F4EFE0); border:1px solid var(--rule,#E6DCC4); border-left:4px solid var(--gold); border-radius:14px; padding:18px 20px; }
+.share-card-head{ display:flex; gap:12px; align-items:flex-start; margin-bottom:12px; }
+.share-card-head h4{ font-family:var(--font-serif); font-size:18px; color:var(--navy); margin:0 0 4px; }
+.share-card-head p{ font-size:13.5px; line-height:1.55; color:var(--ink-soft); margin:0; }
+.share-ico{ flex:0 0 auto; color:var(--gold); margin-top:2px; }
+.share-qr{ width:206px; height:206px; margin:14px auto 8px; align-items:center; justify-content:center; background:#fff; border:1px solid var(--rule,#E6DCC4); border-radius:10px; padding:8px; }
+.share-qr-msg{ text-align:center; color:var(--ink-soft); max-width:380px; margin:0 auto; }
+@media print{ .share-card{ display:none !important; } }
 .script-card {
   background: linear-gradient(180deg, var(--cream) 0%, var(--cream-deep) 100%);
   border-radius: var(--radius-lg);
@@ -1717,6 +1725,73 @@ tr:hover td { background: var(--paper); }
 .doc-flag-note p:last-child{ margin-bottom:0; }
 .doc-flag-note em{ color:var(--navy); font-style:italic; font-weight:600; }
 :root[data-theme="dark"] .doc-flag-note em{ color:var(--gold-soft); }
+
+/* ===== Decision-maker surfacing (Guide › Documentation) ===== */
+.dm-intro{ background:var(--cream-deep); border:1px solid var(--rule); border-left:4px solid var(--gold); border-radius:14px; padding:22px 26px; margin:0 0 26px; }
+:root[data-theme="dark"] .dm-intro{ border-color:rgba(242,201,100,.16); }
+.dm-intro .dm-ey{ font-size:11px; font-weight:700; letter-spacing:.18em; text-transform:uppercase; color:var(--gold); margin-bottom:7px; }
+.dm-intro h3{ font-family:var(--font-serif); font-size:24px; color:var(--navy); margin:0 0 9px; line-height:1.12; }
+:root[data-theme="dark"] .dm-intro h3{ color:var(--gold-soft); }
+.dm-intro p{ font-size:15px; line-height:1.66; color:var(--ink); margin:0; }
+.dm-intro p em{ color:var(--navy); font-style:italic; font-weight:600; }
+:root[data-theme="dark"] .dm-intro p em{ color:var(--gold-soft); }
+
+/* audience router */
+.dm-router{ display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin:0 0 30px; }
+@media(max-width:620px){ .dm-router{ grid-template-columns:1fr; } }
+.dm-route{ display:block; text-decoration:none; background:#fff; border:1px solid var(--rule); border-radius:14px; padding:18px 18px 16px; transition:border-color .18s, transform .18s, box-shadow .18s; cursor:pointer; }
+:root[data-theme="dark"] .dm-route{ background:rgba(255,255,255,.03); border-color:rgba(242,201,100,.16); }
+.dm-route:hover{ border-color:var(--gold); transform:translateY(-2px); box-shadow:0 8px 22px rgba(27,58,95,.10); }
+.dm-route .dm-r-ic{ width:40px; height:40px; border-radius:11px; display:flex; align-items:center; justify-content:center; background:rgba(217,163,59,.10); border:1px solid rgba(217,163,59,.30); color:var(--navy); margin-bottom:12px; }
+:root[data-theme="dark"] .dm-route .dm-r-ic{ color:var(--gold-soft); }
+.dm-route .dm-r-ic svg{ width:21px; height:21px; }
+.dm-route .dm-r-t{ font-family:var(--font-sans); font-weight:700; font-size:15px; color:var(--navy); margin-bottom:3px; }
+:root[data-theme="dark"] .dm-route .dm-r-t{ color:var(--gold-soft); }
+.dm-route .dm-r-s{ font-size:13px; line-height:1.5; color:var(--ink-soft); margin-bottom:10px; }
+.dm-route .dm-r-go{ font-family:var(--font-sans); font-weight:700; font-size:12.5px; letter-spacing:.02em; color:var(--gold); }
+
+/* section heads shared by the two grids */
+.dm-sec{ margin:0 0 30px; }
+.dm-sec-ey{ font-size:11px; font-weight:700; letter-spacing:.18em; text-transform:uppercase; color:var(--gold); margin-bottom:5px; }
+.dm-sec h3{ font-family:var(--font-serif); font-size:22px; color:var(--navy); margin:0 0 4px; }
+:root[data-theme="dark"] .dm-sec h3{ color:var(--gold-soft); }
+.dm-sec-sub{ font-size:14px; line-height:1.55; color:var(--ink-soft); margin:0 0 16px; max-width:640px; }
+
+/* what this platform includes — feature grid */
+.plat-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:13px; }
+@media(max-width:760px){ .plat-grid{ grid-template-columns:1fr 1fr; } }
+@media(max-width:480px){ .plat-grid{ grid-template-columns:1fr; } }
+.plat-card{ background:var(--cream-deep); border:1px solid var(--rule); border-radius:13px; padding:16px 17px; }
+:root[data-theme="dark"] .plat-card{ border-color:rgba(242,201,100,.16); }
+.plat-card .plat-ic{ width:38px; height:38px; border-radius:10px; display:flex; align-items:center; justify-content:center; background:rgba(217,163,59,.10); border:1px solid rgba(217,163,59,.30); color:var(--navy); margin-bottom:11px; }
+:root[data-theme="dark"] .plat-card .plat-ic{ color:var(--gold-soft); }
+.plat-card .plat-ic svg{ width:20px; height:20px; }
+.plat-card .plat-t{ font-family:var(--font-sans); font-weight:700; font-size:14px; color:var(--navy); margin-bottom:5px; }
+:root[data-theme="dark"] .plat-card .plat-t{ color:var(--gold-soft); }
+.plat-card .plat-s{ font-size:12.8px; line-height:1.52; color:var(--ink-soft); }
+
+/* for administrators — value band */
+.admin-band{ background:linear-gradient(135deg,#24496f 0%,var(--navy) 62%,#142c47 100%); border:1px solid var(--gold); border-radius:16px; padding:26px 30px 28px; margin:0 0 28px; color:var(--cream); }
+.admin-band .ab-ey{ font-size:11px; font-weight:700; letter-spacing:.2em; text-transform:uppercase; color:#E7B85E; margin-bottom:6px; }
+.admin-band .ab-h{ font-family:var(--font-serif); font-size:24px; color:#fff; margin:0 0 6px; line-height:1.14; }
+.admin-band .ab-sub{ font-size:14px; line-height:1.58; color:#dfe7ef; margin:0 0 20px; max-width:600px; }
+.admin-grid{ display:grid; grid-template-columns:1fr 1fr; gap:13px 22px; margin-bottom:22px; }
+@media(max-width:560px){ .admin-grid{ grid-template-columns:1fr; } }
+.admin-point{ display:flex; align-items:flex-start; gap:11px; }
+.admin-point .ap-ck{ flex:0 0 auto; width:22px; height:22px; border-radius:50%; display:flex; align-items:center; justify-content:center; background:rgba(231,184,94,.16); border:1px solid rgba(231,184,94,.5); margin-top:1px; }
+.admin-point .ap-ck svg{ width:12px; height:12px; color:#E7B85E; }
+.admin-point .ap-t{ font-family:var(--font-sans); font-weight:700; font-size:13.5px; color:#fff; margin-bottom:2px; }
+.admin-point .ap-s{ font-size:12.8px; line-height:1.5; color:#cfdaea; }
+.admin-flag{ display:flex; align-items:center; gap:10px; background:rgba(231,184,94,.10); border:1px solid rgba(231,184,94,.32); border-radius:10px; padding:11px 15px; margin-bottom:20px; }
+.admin-flag svg{ flex:0 0 auto; width:18px; height:18px; color:#E7B85E; }
+.admin-flag span{ font-size:13px; line-height:1.5; color:#f0e7d4; }
+.admin-flag em{ color:#E7B85E; font-style:normal; font-weight:700; }
+.admin-cta{ display:flex; gap:12px; flex-wrap:wrap; }
+.admin-cta a{ display:inline-block; font-family:var(--font-sans); font-weight:700; font-size:13.5px; padding:12px 22px; border-radius:9px; text-decoration:none; }
+.admin-cta .ac-gold{ background:var(--gold); color:#1a1a18; }
+.admin-cta .ac-ghost{ background:transparent; color:#fff; border:1.5px solid rgba(255,255,255,.45); }
+.admin-cta .ac-ghost:hover{ border-color:#E7B85E; }
+
 /* ===== welcome: Who it's for ===== */
 .hyb-whofor{ padding:6px 22px 2px; }
 .whofor-inner{ max-width:760px; margin:0 auto; text-align:center; }
@@ -2131,9 +2206,9 @@ function toggleTheme(){
 
     <!-- ===== STATEMENT BAND ===== -->
     <section class="hyb-statement reveal">
-      <p class="emo-line" data-i18n="hyb_emo">Everyone deserves to be seen, understood, and helped to grow.</p>
-      <p class="lead-line" data-i18n="hyb_lead">A full program. A companion novel series. A private check-in that turns reflection into action.</p>
-      <p class="pillar-line" data-i18n-html="hyb_pillars">Built on <em>identity</em>, <em>self-compassion</em>, <em>forgiveness</em>, and <em>grace</em>.</p>
+      <p class="emo-line" data-i18n="hyb_emo">This is a project about relationships &mdash; the one you build with yourself, and the ones you share with each other.</p>
+      <p class="lead-line" data-i18n="hyb_lead">The check-in (K through adult), the conversation starters, the companion novels, the four pillars &mdash; every piece leads to the same place: knowing ourselves, and growing closer to one another.</p>
+      <p class="pillar-line" data-i18n-html="hyb_pillars">Built on <em>identity</em>, <em>self-compassion</em>, <em>forgiveness</em>, and <em>grace</em> &mdash; the ground every healthy relationship stands on.</p>
     </section>
 
     <!-- ===== DOORS ===== -->
@@ -2191,7 +2266,7 @@ function toggleTheme(){
 
         <p style="font-size:15px; line-height:1.72; color:var(--ink); margin-bottom:14px;" data-i18n="story_p1">My name is Jimmy Ramsden. I didn&rsquo;t come to this work from a boardroom &mdash; I came to it from the classroom, where I still teach today as a special educator.</p>
 
-        <p style="font-size:15px; line-height:1.72; color:var(--ink); margin-bottom:14px;" data-i18n="story_bio">For more than a decade I&rsquo;ve worked as an Illinois-certified special educator across elementary and junior-high classrooms &mdash; in self-contained, resource, and social-behavioral settings &mdash; and I hold a Learning Behavior Specialist endorsement for students from preschool through age twenty-two. Along the way I built and ran my district&rsquo;s elementary Social-Behavioral Learning resource program, where I coach students in the very skills this curriculum is built around: naming what they feel, steadying themselves, and trying again. The Architecture of Grace isn&rsquo;t a departure from that classroom work &mdash; it&rsquo;s two decades of it, gathered into something I can hand to other teachers.</p>
+        <p style="font-size:15px; line-height:1.72; color:var(--ink); margin-bottom:14px;" data-i18n="story_bio">For more than a decade I&rsquo;ve worked as an Illinois-certified special educator across elementary and junior-high classrooms &mdash; in self-contained, resource, and social-behavioral settings &mdash; and I hold a Learning Behavior Specialist endorsement for students from preschool through age twenty-two. Along the way I built and ran an elementary Social-Behavioral Learning resource program, where I coach students in the very skills this curriculum is built around: naming what they feel, steadying themselves, and trying again. The Architecture of Grace isn&rsquo;t a departure from that classroom work &mdash; it&rsquo;s two decades of it, gathered into something I can hand to other teachers.</p>
 
         <p style="font-size:15px; line-height:1.72; color:var(--ink); margin-bottom:14px;" data-i18n="story_p2">My journey started at Humboldt State University with a degree in political science, followed by a master&rsquo;s in special education. But the real catalyst came in 2006, when a serious car crash left me with a traumatic brain injury and a neurological disability. Rebuilding my life changed how I understand struggle, patience, and grace. It&rsquo;s the reason this work isn&rsquo;t abstract to me.</p>
 
@@ -2588,6 +2663,20 @@ function toggleTheme(){
       <button class="btn btn-ghost" id="btnEmailMyResultsTop" data-i18n="mr_email">Email it to myself</button>
     </div>
     <div id="myResultsReport"></div>
+    <div class="share-card" id="shareCard">
+      <div class="share-card-head">
+        <span class="share-ico"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z"/><path d="M3 20a6 6 0 0 1 12 0"/><path d="M16 7h5M18.5 4.5v5"/></svg></span>
+        <div>
+          <h4 data-i18n="mr_share_h">Share with a grown-up</h4>
+          <p data-i18n="mr_share_sub">Make a QR a parent or trusted adult can scan to take a few gentle conversation starters with them. Your written answers stay here, just for you.</p>
+        </div>
+      </div>
+      <div class="nav-row" style="justify-content:center; margin:0;">
+        <button class="btn btn-ghost" id="btnShareQr" data-i18n="mr_share_btn">Show a QR code</button>
+      </div>
+      <div id="shareQrBox" class="share-qr" style="display:none;"></div>
+      <div id="shareQrMsg" class="small share-qr-msg"></div>
+    </div>
     <div class="nav-row" style="justify-content:center; gap:12px; flex-wrap:wrap; margin:26px 0 4px;">
       <button class="btn" id="btnPrintMyResults" data-i18n="mr_save">Save / Print</button>
       <button class="btn btn-ghost" id="btnEmailMyResults" data-i18n="mr_email">Email it to myself</button>
@@ -3026,6 +3115,109 @@ function toggleTheme(){
 
       <div class="guide-section active" id="guide-docs">
       <div class="table-card" style="padding:28px 32px;">
+        <!-- ===== DECISION-MAKER SURFACING (router · features · admin) ===== -->
+        <!-- audience router -->
+        <div class="dm-router">
+          <a href="#" class="dm-route" onclick="event.preventDefault(); startCheckin();">
+            <span class="dm-r-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21.42 10.922a1 1 0 0 0-.019-1.838L12.83 5.18a2 2 0 0 0-1.66 0L2.6 9.08a1 1 0 0 0 0 1.832l8.57 3.908a2 2 0 0 0 1.66 0z"/><path d="M22 10v6"/><path d="M6 12.5V16a6 3 0 0 0 12 0v-3.5"/></svg></span>
+            <div class="dm-r-t">I&rsquo;m a student</div>
+            <div class="dm-r-s">Take a private few minutes for yourself &mdash; quick or thorough.</div>
+            <div class="dm-r-go">Start the check-in &rarr;</div>
+          </a>
+          <a href="#" class="dm-route" onclick="event.preventDefault(); openFamily();">
+            <span class="dm-r-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z"/><path d="M17 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z"/><path d="M2 21v-1a5 5 0 0 1 5-5"/><path d="M14 21v-1a5 5 0 0 1 5-5"/><path d="M11 21v-2a3 3 0 0 1 3-3"/></svg></span>
+            <div class="dm-r-t">I&rsquo;m a parent or family</div>
+            <div class="dm-r-s">Add each child once, track them across the year, print conversation starters.</div>
+            <div class="dm-r-go">Open Family Mode &rarr;</div>
+          </a>
+          <a href="#" class="dm-route" onclick="event.preventDefault(); dmScrollTo('dm-platform');">
+            <span class="dm-r-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3v16a2 2 0 0 0 2 2h16"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/></svg></span>
+            <div class="dm-r-t">I&rsquo;m an educator or leader</div>
+            <div class="dm-r-s">See what the platform includes and what it does for a school or district.</div>
+            <div class="dm-r-go">See what it does &darr;</div>
+          </a>
+        </div>
+
+        <!-- what this platform includes -->
+        <div class="dm-sec" id="dm-platform">
+          <div class="dm-sec-ey">The whole system</div>
+          <h3 class="serif">What this platform includes</h3>
+          <p class="dm-sec-sub">Every piece below is built into this one file or its library &mdash; not a roadmap, but what ships today.</p>
+          <div class="plat-grid">
+            <div class="plat-card">
+              <span class="plat-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1"/><path d="m9 14 2 2 4-4"/></svg></span>
+              <div class="plat-t">Universal Check-In</div>
+              <div class="plat-s">A self-report check-in for K&ndash;12 students and adults &mdash; 18 items, three domains, Quick or Thorough, taken each season.</div>
+            </div>
+            <div class="plat-card">
+              <span class="plat-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z"/><path d="M17 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z"/><path d="M2 21v-1a5 5 0 0 1 5-5"/><path d="M14 21v-1a5 5 0 0 1 5-5"/><path d="M11 21v-2a3 3 0 0 1 3-3"/></svg></span>
+              <div class="plat-t">Family Mode</div>
+              <div class="plat-s">Parents add each child once and track them across the year at home, with conversation starters you can print.</div>
+            </div>
+            <div class="plat-card">
+              <span class="plat-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg></span>
+              <div class="plat-t">MTSS Dashboard</div>
+              <div class="plat-s">A code-gated results view: domain averages, a frequency-by-intensity heat map, and tier bands across a class or school.</div>
+            </div>
+            <div class="plat-card">
+              <span class="plat-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/><path d="M8 12h.01"/><path d="M12 12h.01"/><path d="M16 12h.01"/></svg></span>
+              <div class="plat-t">Student Reflections</div>
+              <div class="plat-s">In Thorough mode, three short written reflections are saved with the response &mdash; in the student&rsquo;s own words.</div>
+            </div>
+            <div class="plat-card">
+              <span class="plat-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H19a1 1 0 0 1 1 1v18a1 1 0 0 1-1 1H6.5a1 1 0 0 1 0-5H20"/></svg></span>
+              <div class="plat-t">Resource Library</div>
+              <div class="plat-s">Anchor charts, worksheet packs, scenario cards, drawing activities, and the companion novels &mdash; with a construct-to-resource index.</div>
+            </div>
+            <div class="plat-card">
+              <span class="plat-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 7h6v6"/><path d="m22 7-8.5 8.5-5-5L2 17"/></svg></span>
+              <div class="plat-t">Progress Monitoring</div>
+              <div class="plat-s">Growth tracked across Fall, Winter, and Spring windows, normalized 0&ndash;100 so any two responses compare directly.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- for administrators -->
+        <div class="admin-band" id="dm-admin">
+          <div class="ab-ey">For administrators</div>
+          <div class="ab-h">What problem does this solve?</div>
+          <p class="ab-sub">If you lead a building or a district, here is the operational picture &mdash; screening, tiering, and follow-through in one tool you host yourself.</p>
+          <div class="admin-grid">
+            <div class="admin-point">
+              <span class="ap-ck"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>
+              <div><div class="ap-t">Universal screening</div><div class="ap-s">Every student, three windows a year, in about four minutes each.</div></div>
+            </div>
+            <div class="admin-point">
+              <span class="ap-ck"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>
+              <div><div class="ap-t">Tier identification</div><div class="ap-s">Normalized 0&ndash;100 cut points sort responses into universal, targeted, and intensive support.</div></div>
+            </div>
+            <div class="admin-point">
+              <span class="ap-ck"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>
+              <div><div class="ap-t">Family engagement</div><div class="ap-s">Family Mode and printable conversation starters bring caregivers into the loop.</div></div>
+            </div>
+            <div class="admin-point">
+              <span class="ap-ck"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>
+              <div><div class="ap-t">Progress monitoring</div><div class="ap-s">Season-over-season growth across the year, per student and per domain.</div></div>
+            </div>
+            <div class="admin-point">
+              <span class="ap-ck"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>
+              <div><div class="ap-t">MTSS support</div><div class="ap-s">Every flag points to the exact curriculum lesson that addresses it &mdash; flag &rarr; the right lesson.</div></div>
+            </div>
+            <div class="admin-point">
+              <span class="ap-ck"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>
+              <div><div class="ap-t">Classroom trends</div><div class="ap-s">Class-level results and domain averages show where a whole group needs support.</div></div>
+            </div>
+          </div>
+          <div class="admin-flag">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></svg>
+            <span>Every score is a <em>flag for a conversation, never a diagnosis.</em> The number tells you where to begin; the curriculum is the intervention.</span>
+          </div>
+          <div class="admin-cta">
+            <a href="#" class="ac-gold" onclick="event.preventDefault(); openGuideSub('library');">Request district pricing &rarr;</a>
+            <a href="#" class="ac-ghost" onclick="event.preventDefault(); openAdmin();">Educator access &middot; results</a>
+          </div>
+        </div>
+
         <div class="doc-who">
           <div class="eyebrow" style="color:var(--gold);" data-i18n="doc_who_ey">Who it&rsquo;s for</div>
           <h3 class="serif" style="font-size:22px; color:var(--navy); margin:4px 0 6px;" data-i18n="doc_who_h">Four ways in, one framework</h3>
@@ -3746,6 +3938,9 @@ const I18N_UI = {
   mr_done:      { en: "Done", es: "Listo" },
   mr_done2:     { en: "Done", es: "Listo" },
   mr_save:      { en: "Save / Print", es: "Guardar / Imprimir" },
+  mr_share_h:   { en: "Share with a grown-up", es: "Comp\u00e1rtelo con un adulto" },
+  mr_share_sub: { en: "Make a QR a parent or trusted adult can scan to take a few gentle conversation starters with them. Your written answers stay here, just for you.", es: "Crea un c\u00f3digo QR que un padre, madre o adulto de confianza pueda escanear para llevarse algunas preguntas suaves para conversar. Tus respuestas escritas se quedan aqu\u00ed, solo para ti." },
+  mr_share_btn: { en: "Show a QR code", es: "Mostrar un c\u00f3digo QR" },
   mr_email:     { en: "Email it to myself", es: "Enviármelo por correo" },
   ri_adults:    { en: "Adults \u00b7 Books 3\u20135", es: "Adultos \u00b7 Libros 3\u20135" },
   ch_ey:        { en: "The Check-In", es: "El chequeo" },
@@ -3848,7 +4043,7 @@ const I18N_UI = {
   story_ey: { es: "La historia" },
   story_h: { es: "El fundador, y el porqu\u00e9 detr\u00e1s de este trabajo" },
   story_p1: { es: "Me llamo Jimmy Ramsden. No llegu\u00e9 a este trabajo desde una sala de juntas, sino desde el aula, donde sigo ense\u00f1ando hoy como educador especial." },
-  story_bio: { es: "Durante m\u00e1s de una d\u00e9cada he trabajado como educador especial certificado en Illinois en aulas de primaria y secundaria \u2014 en entornos autocontenidos, de recursos y socioconductuales \u2014 y cuento con un endoso de Especialista en Conducta del Aprendizaje para estudiantes desde preescolar hasta los veintid\u00f3s a\u00f1os. En el camino constru\u00ed y dirig\u00ed el programa de recursos de Aprendizaje Socioconductual de primaria de mi distrito, donde acompa\u00f1o a los estudiantes en las mismas destrezas sobre las que se construye este plan de estudios: nombrar lo que sienten, calmarse y volver a intentarlo. The Architecture of Grace no es una desviaci\u00f3n de ese trabajo en el aula \u2014 son dos d\u00e9cadas de ese trabajo, reunidas en algo que puedo entregar a otros maestros." },
+  story_bio: { es: "Durante m\u00e1s de una d\u00e9cada he trabajado como educador especial certificado en Illinois en aulas de primaria y secundaria \u2014 en entornos autocontenidos, de recursos y socioconductuales \u2014 y cuento con un endoso de Especialista en Conducta del Aprendizaje para estudiantes desde preescolar hasta los veintid\u00f3s a\u00f1os. En el camino constru\u00ed y dirig\u00ed un programa de recursos de Aprendizaje Socioconductual de primaria, donde acompa\u00f1o a los estudiantes en las mismas destrezas sobre las que se construye este plan de estudios: nombrar lo que sienten, calmarse y volver a intentarlo. The Architecture of Grace no es una desviaci\u00f3n de ese trabajo en el aula \u2014 son dos d\u00e9cadas de ese trabajo, reunidas en algo que puedo entregar a otros maestros." },
   story_p2: { es: "Mi camino comenz\u00f3 en Humboldt State University con una licenciatura en ciencias pol\u00edticas, seguida de una maestr\u00eda en educaci\u00f3n especial. Pero el verdadero punto de inflexi\u00f3n lleg\u00f3 en 2006, cuando un grave accidente automovil\u00edstico me dej\u00f3 con una lesi\u00f3n cerebral traum\u00e1tica y una discapacidad neurol\u00f3gica. Reconstruir mi vida cambi\u00f3 mi forma de entender la lucha, la paciencia y la gracia. Es la raz\u00f3n por la que este trabajo no es abstracto para m\u00ed." },
   story_p3: { es: "The Architecture of Grace naci\u00f3 de la convicci\u00f3n de que las personas merecen m\u00e1s que ser medidas: merecen ser comprendidas. Construido bajo la <strong>School of Life Foundation</strong>, todo aqu\u00ed se apoya en cuatro pilares fundamentales:" },
   story_pillars: { es: '<li style="font-size:15px; line-height:1.6; color:var(--ink); margin-bottom:10px; padding-left:20px; position:relative;"><span style="position:absolute; left:0; top:1px; color:var(--gold);">&#9670;</span><strong style="color:var(--navy);">Identidad</strong> &mdash; qui\u00e9n llega una persona a creer que es.</li><li style="font-size:15px; line-height:1.6; color:var(--ink); margin-bottom:10px; padding-left:20px; position:relative;"><span style="position:absolute; left:0; top:1px; color:var(--gold);">&#9670;</span><strong style="color:var(--navy);">Autocompasi\u00f3n</strong> &mdash; c\u00f3mo aprende una persona a hablarse a s\u00ed misma.</li><li style="font-size:15px; line-height:1.6; color:var(--ink); margin-bottom:10px; padding-left:20px; position:relative;"><span style="position:absolute; left:0; top:1px; color:var(--gold);">&#9670;</span><strong style="color:var(--navy);">Perd\u00f3n</strong> &mdash; superar los errores para dar espacio al crecimiento.</li><li style="font-size:15px; line-height:1.6; color:var(--ink); margin-bottom:0; padding-left:20px; position:relative;"><span style="position:absolute; left:0; top:1px; color:var(--gold);">&#9670;</span><strong style="color:var(--navy);">Gracia</strong> &mdash; recibir a una persona con comprensi\u00f3n y no solo con juicio.</li>' },
@@ -3899,9 +4094,9 @@ const I18N_UI = {
   hyb_b2:            { es: "Para estudiantes y adultos" },
   hyb_b3:            { es: "Creado por un maestro" },
   hyb_madefor:       { es: "Creado para" },
-  hyb_emo:           { es: "Todos merecen ser vistos, comprendidos y ayudados a crecer." },
-  hyb_lead:          { es: "Un programa completo. Una serie de novelas complementarias. Un chequeo privado que convierte la reflexión en acción." },
-  hyb_pillars:       { es: "Basado en <em>identidad</em>, <em>autocompasión</em>, <em>perdón</em> y <em>gracia</em>." },
+  hyb_emo:           { es: "Este es un proyecto sobre las relaciones \u2014 la que construyes contigo mismo/a, y las que compartes con los dem\u00e1s." },
+  hyb_lead:          { es: "El chequeo (desde K hasta adultos), las preguntas para conversar, las novelas complementarias, los cuatro pilares \u2014 cada pieza lleva al mismo lugar: conocernos a nosotros mismos y acercarnos los unos a los otros." },
+  hyb_pillars:       { es: "Basado en <em>identidad</em>, <em>autocompasi\u00f3n</em>, <em>perd\u00f3n</em> y <em>gracia</em> \u2014 la base sobre la que se sostiene toda relaci\u00f3n sana." },
   hyb_private:       { es: "100% Privado" },
   hyb_meta_free:     { es: "Gratis para explorar · sin registro, sin código" },
   hyb_meta_priv:     { es: "Permanece en tu dispositivo · ~4 minutos" },
@@ -5293,6 +5488,7 @@ document.addEventListener("DOMContentLoaded", () => {
   var _emr = $("#btnEmailMyResults"); if (_emr) _emr.addEventListener("click", emailMyResults);
   var _pmrT = $("#btnPrintMyResultsTop"); if (_pmrT) _pmrT.addEventListener("click", printMyResults);
   var _emrT = $("#btnEmailMyResultsTop"); if (_emrT) _emrT.addEventListener("click", emailMyResults);
+  var _sqr = $("#btnShareQr"); if (_sqr) _sqr.addEventListener("click", showShareQr);
   var _vpost = $("#voiPost"); if (_vpost) _vpost.addEventListener("click", voicesPost);
   var _vmsg = $("#voiMsg"); if (_vmsg) _vmsg.addEventListener("input", voicesCount);
 
@@ -5475,6 +5671,16 @@ function openGuideSub(name, scroll) {
   // scroll defaults to true; the guided tour passes false so it can own positioning
   // and avoid a second smooth-scroll fighting the tour's own.
   activateGuideSection(name, scroll !== false);
+}
+function dmScrollTo(id){
+  var el = document.getElementById(id);
+  if (!el) return;
+  requestAnimationFrame(function(){
+    var tb = document.querySelector(".topbar");
+    var off = (tb ? tb.offsetHeight : 70) + 14;
+    var top = el.getBoundingClientRect().top + window.pageYOffset - off;
+    window.scrollTo({ top: Math.max(0, top), behavior: "smooth" });
+  });
 }
 
 // ---- Voices: public comment wall (reads/writes the Comments tab via the script) ----
@@ -6284,6 +6490,11 @@ function renderMyResults() {
   dashLang = (typeof lang !== "undefined") ? lang : prev;   // show in the participant's language
   target.innerHTML = buildHomeReport(r, true);
   dashLang = prev;
+  var _sb = document.getElementById("shareQrBox");
+  if (_sb) { _sb.innerHTML = ""; _sb.style.display = "none"; _sb.removeAttribute("data-on"); }
+  var _sm = document.getElementById("shareQrMsg"); if (_sm) _sm.textContent = "";
+  var _sbtn = document.getElementById("btnShareQr");
+  if (_sbtn) _sbtn.textContent = ((typeof lang !== "undefined" && lang === "es") ? "Mostrar un c\u00f3digo QR" : "Show a QR code");
 }
 function showMyResults() {
   if (window._pendingRecord && !window._lastResult) { finalizeAndSave(""); }
@@ -6350,6 +6561,106 @@ function emailMyResults() {
   var r = window._lastResult || window._pendingRecord;
   if (!r) return;
   window.location.href = buildMyResultsMailto(r);
+}
+
+// "Share with a grown-up" — builds a short, plain-text conversation card that a
+// parent can scan from the student's screen. It carries ONLY the plain-language
+// domain bands and a couple of gentle conversation starters — never the written
+// reflections, never a name or ID. The QR is generated and shown locally; nothing
+// is transmitted. Save / Print remains the fully-offline companion.
+function buildShareText(r) {
+  if (!r) return "";
+  var es = (typeof lang !== "undefined" && lang === "es");
+  var isAdult = (r.population === "adult");
+  var itemMax = r.mode === "depth" ? 5 : 3;
+  function bandLabel(v) {
+    if (v == null) return es ? "\u2014" : "\u2014";
+    if (v >= 75) return es ? "va bien" : "doing well";
+    if (v >= 50) return es ? "vale un chequeo con calma" : "worth a gentle check-in";
+    return es ? "le vendr\u00eda bien algo de apoyo" : "could use some support";
+  }
+  var domNames = es
+    ? ["Sentimientos y mantener la calma", "Ser amable conmigo mismo/a", "Llevarse bien y reparar"]
+    : ["Feelings & staying calm", "Being kind to myself", "Getting along & making things right"];
+  var lines = [];
+  lines.push("Architecture of Grace \u2014 " + (es ? "un chequeo para conversar juntos" : "a check-in to talk over together"));
+  lines.push("");
+  lines.push(es ? "C\u00f3mo han estado las cosas:" : "How things have been:");
+  lines.push("\u2022 " + domNames[0] + ": " + bandLabel(r.normA));
+  lines.push("\u2022 " + domNames[1] + ": " + bandLabel(r.normB));
+  lines.push("\u2022 " + domNames[2] + ": " + bandLabel(r.normC));
+  lines.push("");
+
+  // Same low-item logic as the conversation guide; reuse the same prompt tables.
+  var ITM = isAdult ? ITEMS_ADULT_EN : ITEMS_EN;
+  var low = [];
+  ITM.forEach(function (item, i) {
+    var scored = scoreFrequency(r.raw[i], item.reverse, r.mode);
+    if (scored == null) return;
+    if (scored < itemMax * 0.4) low.push({ n: item.n, scored: scored });
+  });
+  low.sort(function (a, b) { return a.scored - b.scored; });
+
+  if (!low.length) {
+    lines.push(es
+      ? "Todo qued\u00f3 en un rango saludable \u2014 un buen momento para celebrar juntos y preguntar qu\u00e9 ha ido bien."
+      : "Everything landed in a healthy range \u2014 a good moment to celebrate together, and to ask what\u2019s been going well.");
+  } else {
+    var PSET = isAdult ? PROMPTS_ADULT : PROMPTS;
+    var Lkey = es ? "es" : "en";
+    lines.push(es
+      ? "Un par de cosas para preguntar con suavidad \u2014 de a una:"
+      : "A couple of gentle things to ask about \u2014 one at a time:");
+    low.slice(0, 2).forEach(function (x, idx) {
+      var p = PSET[x.n] ? (PSET[x.n][Lkey] || PSET[x.n].en) : "";
+      if (p) lines.push((idx + 1) + ". " + p);
+    });
+  }
+  lines.push("");
+  lines.push(es
+    ? "Un puntaje es una se\u00f1al para conversar, nunca un diagn\u00f3stico."
+    : "A score is a flag for a conversation, never a diagnosis.");
+  return lines.join("\n");
+}
+
+async function showShareQr() {
+  var box = document.getElementById("shareQrBox");
+  var msg = document.getElementById("shareQrMsg");
+  var btn = document.getElementById("btnShareQr");
+  var r = window._lastResult || window._pendingRecord;
+  if (!box || !r) return;
+  var es = (typeof lang !== "undefined" && lang === "es");
+  // Toggle off if already showing
+  if (box.getAttribute("data-on") === "1") {
+    box.innerHTML = ""; box.style.display = "none"; box.removeAttribute("data-on");
+    if (msg) msg.textContent = "";
+    if (btn) btn.textContent = es ? "Mostrar un c\u00f3digo QR" : "Show a QR code";
+    return;
+  }
+  box.style.display = "flex";
+  if (msg) msg.textContent = es ? "Generando\u2026" : "Generating\u2026";
+  var ok = await ensureQrLib();
+  if (!ok || !window.QRCode) {
+    box.style.display = "none";
+    if (msg) msg.textContent = es
+      ? "El generador de QR necesita conexi\u00f3n a internet por un momento. La opci\u00f3n Guardar / Imprimir siempre funciona sin conexi\u00f3n."
+      : "The QR maker needs an internet connection for a moment. Save / Print always works offline.";
+    return;
+  }
+  try {
+    box.innerHTML = "";
+    new QRCode(box, { text: buildShareText(r), width: 190, height: 190, correctLevel: QRCode.CorrectLevel.L });
+    box.setAttribute("data-on", "1");
+    if (msg) msg.textContent = es
+      ? "P\u00eddele a un adulto de confianza que apunte la c\u00e1mara de su tel\u00e9fono aqu\u00ed."
+      : "Ask a trusted grown-up to point their phone camera here.";
+    if (btn) btn.textContent = es ? "Ocultar el c\u00f3digo QR" : "Hide the QR code";
+  } catch (_) {
+    box.style.display = "none";
+    if (msg) msg.textContent = es
+      ? "No se pudo crear el QR. Usa Guardar / Imprimir."
+      : "Couldn\u2019t make the QR. Use Save / Print instead.";
+  }
 }
 
 // ============================================================
@@ -6761,6 +7072,46 @@ function resultResourceCards(r, lowItems, lowestDomain, isSelf){
     + '</div>';
 }
 
+const PROMPTS = {
+  1:  { en: "When something is bothering you, can you usually tell what feeling it is? Is there a feeling that\u2019s hard to name?", es: "Cuando algo te molesta, \u00bfsueles darte cuenta de qu\u00e9 sentimiento es? \u00bfHay alg\u00fan sentimiento que te cueste nombrar?" },
+  2:  { en: "When you\u2019re really upset, what helps your body settle? Is there anything that helps every time?", es: "Cuando est\u00e1s muy alterado, \u00bfqu\u00e9 ayuda a que tu cuerpo se calme? \u00bfHay algo que ayude siempre?" },
+  3:  { en: "When you\u2019re worried or angry, does it ever feel like it takes over and gets in the way of stuff you want to do?", es: "Cuando est\u00e1s preocupado o enojado, \u00bfalguna vez sientes que te domina y se interpone en cosas que quieres hacer?" },
+  4:  { en: "Is there ever a feeling so big you don\u2019t know what to do with it? What\u2019s that like?", es: "\u00bfAlguna vez hay un sentimiento tan grande que no sabes qu\u00e9 hacer con \u00e9l? \u00bfC\u00f3mo es eso?" },
+  5:  { en: "After something hard happens, how long does it usually take you to feel like yourself again?", es: "Despu\u00e9s de que pasa algo dif\u00edcil, \u00bfcu\u00e1nto tiempo sueles tardar en volver a sentirte t\u00fa mismo?" },
+  6:  { en: "Can you tell when you\u2019re about to lose it before you actually lose it? What does the warning feel like?", es: "\u00bfPuedes darte cuenta de que est\u00e1s por perder el control antes de perderlo? \u00bfC\u00f3mo se siente esa se\u00f1al?" },
+  7:  { en: "When you mess up, what do you usually say to yourself? Are you kind or harsh?", es: "Cuando te equivocas, \u00bfqu\u00e9 sueles decirte a ti mismo? \u00bfEres amable o duro?" },
+  8:  { en: "Do you have a voice in your head that says mean things \u2014 like you\u2019re stupid, or bad? What does it say? (Book 2 calls this the Inner Critic.)", es: "\u00bfTienes una voz en la cabeza que dice cosas crueles \u2014 como que eres tonto o malo? \u00bfQu\u00e9 dice? (El Libro 2 lo llama el \u201cInner Critic\u201d.)" },
+  9:  { en: "If your best friend made the mistake you made, would you talk to them the way you talk to yourself? Why is it different?", es: "Si tu mejor amigo cometiera el error que cometiste, \u00bfle hablar\u00edas como te hablas a ti mismo? \u00bfPor qu\u00e9 es diferente?" },
+  10: { en: "Do mistakes stay with you a long time? Do they replay in your head?", es: "\u00bfLos errores se te quedan mucho tiempo? \u00bfSe repiten en tu cabeza?" },
+  11: { en: "When something is really hard, do you believe you can get better at it? Or does it feel fixed?", es: "Cuando algo es muy dif\u00edcil, \u00bfcrees que puedes mejorar en eso? \u00bfO se siente fijo?" },
+  12: { en: "When you mess up, can you say sorry, fix what you can, and then let it go? Or does it stick?", es: "Cuando te equivocas, \u00bfpuedes pedir perd\u00f3n, arreglar lo que puedas y luego soltarlo? \u00bfO se te queda pegado?" },
+  13: { en: "When you and someone are in a fight, can you imagine what it looks like from their side?", es: "Cuando t\u00fa y otra persona est\u00e1n peleando, \u00bfpuedes imaginar c\u00f3mo se ve desde su lado?" },
+  14: { en: "When you\u2019ve hurt someone, even accidentally, do you find it easy or hard to say so?", es: "Cuando has lastimado a alguien, aunque sea sin querer, \u00bfte resulta f\u00e1cil o dif\u00edcil reconocerlo?" },
+  15: { en: "When someone hurts your feelings, do you usually assume they meant to? Or could there be another explanation?", es: "Cuando alguien hiere tus sentimientos, \u00bfsueles suponer que lo hizo a prop\u00f3sito? \u00bfO podr\u00eda haber otra explicaci\u00f3n?" },
+  16: { en: "How do you treat people who are different from you \u2014 or who you don\u2019t get along with?", es: "\u00bfC\u00f3mo tratas a las personas que son diferentes a ti \u2014 o con las que no te llevas bien?" },
+  17: { en: "Do you know the difference between someone being difficult and someone being unsafe? Who is each in your life right now?", es: "\u00bfSabes la diferencia entre alguien que es dif\u00edcil y alguien que no es seguro? \u00bfQui\u00e9n es cada uno en tu vida ahora mismo?" },
+  18: { en: "Is there an adult you would actually go to if something was wrong? Who? If not, who could it be?", es: "\u00bfHay un adulto al que realmente acudir\u00edas si algo anduviera mal? \u00bfQui\u00e9n? Si no, \u00bfqui\u00e9n podr\u00eda serlo?" }
+};
+const PROMPTS_ADULT = {
+  1:  { en: "When something’s bothering you, can you usually tell what the feeling is? Is there one that’s hard to name?", es: "Cuando algo te molesta, ¿sueles darte cuenta de qué sentimiento es? ¿Hay alguno que te cueste nombrar?" },
+  2:  { en: "When you’re really upset, what helps you settle? Is there anything that works reliably?", es: "Cuando estás muy alterado/a, ¿qué te ayuda a calmarte? ¿Hay algo que funcione de manera confiable?" },
+  3:  { en: "When you’re worried or angry, does it ever take over and get in the way of what you’re trying to do?", es: "Cuando estás preocupado/a o enojado/a, ¿alguna vez te domina y se interpone en lo que intentas hacer?" },
+  4:  { en: "Is there ever a feeling so big you don’t know what to do with it? What’s that like?", es: "¿Alguna vez hay un sentimiento tan grande que no sabes qué hacer con él? ¿Cómo es eso?" },
+  5:  { en: "After something hard happens, how long does it usually take you to feel like yourself again?", es: "Después de que pasa algo difícil, ¿cuánto sueles tardar en volver a sentirte tú mismo/a?" },
+  6:  { en: "Can you tell when you’re about to hit your limit before you hit it? What’s the early warning like?", es: "¿Puedes notar que estás por llegar a tu límite antes de llegar? ¿Cómo se siente esa señal?" },
+  7:  { en: "When you make a mistake, what do you tend to say to yourself — kind, or harsh?", es: "Cuando cometes un error, ¿qué sueles decirte a ti mismo/a — amable o duro/a?" },
+  8:  { en: "Is there a voice in your head that turns on you when things go wrong — telling you you’re a failure, or not enough? What does it say?", es: "¿Hay una voz en tu cabeza que se vuelve en tu contra cuando algo sale mal — que te dice que eres un fracaso, o que no eres suficiente? ¿Qué dice?" },
+  9:  { en: "If a close friend made the mistake you made, would you speak to them the way you speak to yourself? What’s different?", es: "Si un amigo/a cercano cometiera el error que cometiste, ¿le hablarías como te hablas a ti mismo/a? ¿Qué es diferente?" },
+  10: { en: "Do mistakes tend to stay with you — replaying long after they’re over?", es: "¿Los errores tienden a quedarse contigo — repitiéndose mucho después de que pasaron?" },
+  11: { en: "When something’s genuinely hard, do you believe you can get better at it? Or does it feel fixed?", es: "Cuando algo es realmente difícil, ¿crees que puedes mejorar? ¿O se siente fijo?" },
+  12: { en: "When you mess up, can you own it, repair what you can, and let it go? Or does it stick?", es: "Cuando te equivocas, ¿puedes reconocerlo, reparar lo que puedas y soltarlo? ¿O se te queda pegado?" },
+  13: { en: "When you’re in conflict with someone, can you picture how it looks from their side?", es: "Cuando estás en conflicto con alguien, ¿puedes imaginar cómo se ve desde su lado?" },
+  14: { en: "When you’ve hurt someone, even by accident, is it easy or hard for you to say so?", es: "Cuando has lastimado a alguien, aunque sea sin querer, ¿te resulta fácil o difícil reconocerlo?" },
+  15: { en: "When someone hurts you, do you tend to assume they meant to? Could there be another read?", es: "Cuando alguien te lastima, ¿sueles suponer que lo hizo a propósito? ¿Podría haber otra lectura?" },
+  16: { en: "How do you treat people who are different from you, or who you find hard to be around?", es: "¿Cómo tratas a las personas que son diferentes a ti, o con las que te cuesta llevarte bien?" },
+  17: { en: "Do you know the difference between someone who’s just difficult and someone who’s unsafe? Who’s each in your life right now?", es: "¿Sabes la diferencia entre alguien que es difícil y alguien que no es seguro? ¿Quién es cada uno en tu vida ahora mismo?" },
+  18: { en: "Is there someone you’d actually turn to if something was wrong? Who? If not, who could it be?", es: "¿Hay alguien a quien realmente acudirías si algo anduviera mal? ¿Quién? Si no, ¿quién podría serlo?" }
+};
 function renderConversationGuide(r, isSelf) {
   const isAdult = (r.population === "adult");
   const itemMax = r.mode === "depth" ? 5 : 3;
@@ -6785,46 +7136,7 @@ function renderConversationGuide(r, isSelf) {
     '</div>';
   }
 
-  const PROMPTS = {
-    1:  { en: "When something is bothering you, can you usually tell what feeling it is? Is there a feeling that\u2019s hard to name?", es: "Cuando algo te molesta, \u00bfsueles darte cuenta de qu\u00e9 sentimiento es? \u00bfHay alg\u00fan sentimiento que te cueste nombrar?" },
-    2:  { en: "When you\u2019re really upset, what helps your body settle? Is there anything that helps every time?", es: "Cuando est\u00e1s muy alterado, \u00bfqu\u00e9 ayuda a que tu cuerpo se calme? \u00bfHay algo que ayude siempre?" },
-    3:  { en: "When you\u2019re worried or angry, does it ever feel like it takes over and gets in the way of stuff you want to do?", es: "Cuando est\u00e1s preocupado o enojado, \u00bfalguna vez sientes que te domina y se interpone en cosas que quieres hacer?" },
-    4:  { en: "Is there ever a feeling so big you don\u2019t know what to do with it? What\u2019s that like?", es: "\u00bfAlguna vez hay un sentimiento tan grande que no sabes qu\u00e9 hacer con \u00e9l? \u00bfC\u00f3mo es eso?" },
-    5:  { en: "After something hard happens, how long does it usually take you to feel like yourself again?", es: "Despu\u00e9s de que pasa algo dif\u00edcil, \u00bfcu\u00e1nto tiempo sueles tardar en volver a sentirte t\u00fa mismo?" },
-    6:  { en: "Can you tell when you\u2019re about to lose it before you actually lose it? What does the warning feel like?", es: "\u00bfPuedes darte cuenta de que est\u00e1s por perder el control antes de perderlo? \u00bfC\u00f3mo se siente esa se\u00f1al?" },
-    7:  { en: "When you mess up, what do you usually say to yourself? Are you kind or harsh?", es: "Cuando te equivocas, \u00bfqu\u00e9 sueles decirte a ti mismo? \u00bfEres amable o duro?" },
-    8:  { en: "Do you have a voice in your head that says mean things \u2014 like you\u2019re stupid, or bad? What does it say? (Book 2 calls this the Inner Critic.)", es: "\u00bfTienes una voz en la cabeza que dice cosas crueles \u2014 como que eres tonto o malo? \u00bfQu\u00e9 dice? (El Libro 2 lo llama el \u201cInner Critic\u201d.)" },
-    9:  { en: "If your best friend made the mistake you made, would you talk to them the way you talk to yourself? Why is it different?", es: "Si tu mejor amigo cometiera el error que cometiste, \u00bfle hablar\u00edas como te hablas a ti mismo? \u00bfPor qu\u00e9 es diferente?" },
-    10: { en: "Do mistakes stay with you a long time? Do they replay in your head?", es: "\u00bfLos errores se te quedan mucho tiempo? \u00bfSe repiten en tu cabeza?" },
-    11: { en: "When something is really hard, do you believe you can get better at it? Or does it feel fixed?", es: "Cuando algo es muy dif\u00edcil, \u00bfcrees que puedes mejorar en eso? \u00bfO se siente fijo?" },
-    12: { en: "When you mess up, can you say sorry, fix what you can, and then let it go? Or does it stick?", es: "Cuando te equivocas, \u00bfpuedes pedir perd\u00f3n, arreglar lo que puedas y luego soltarlo? \u00bfO se te queda pegado?" },
-    13: { en: "When you and someone are in a fight, can you imagine what it looks like from their side?", es: "Cuando t\u00fa y otra persona est\u00e1n peleando, \u00bfpuedes imaginar c\u00f3mo se ve desde su lado?" },
-    14: { en: "When you\u2019ve hurt someone, even accidentally, do you find it easy or hard to say so?", es: "Cuando has lastimado a alguien, aunque sea sin querer, \u00bfte resulta f\u00e1cil o dif\u00edcil reconocerlo?" },
-    15: { en: "When someone hurts your feelings, do you usually assume they meant to? Or could there be another explanation?", es: "Cuando alguien hiere tus sentimientos, \u00bfsueles suponer que lo hizo a prop\u00f3sito? \u00bfO podr\u00eda haber otra explicaci\u00f3n?" },
-    16: { en: "How do you treat people who are different from you \u2014 or who you don\u2019t get along with?", es: "\u00bfC\u00f3mo tratas a las personas que son diferentes a ti \u2014 o con las que no te llevas bien?" },
-    17: { en: "Do you know the difference between someone being difficult and someone being unsafe? Who is each in your life right now?", es: "\u00bfSabes la diferencia entre alguien que es dif\u00edcil y alguien que no es seguro? \u00bfQui\u00e9n es cada uno en tu vida ahora mismo?" },
-    18: { en: "Is there an adult you would actually go to if something was wrong? Who? If not, who could it be?", es: "\u00bfHay un adulto al que realmente acudir\u00edas si algo anduviera mal? \u00bfQui\u00e9n? Si no, \u00bfqui\u00e9n podr\u00eda serlo?" }
-  };
-  const PROMPTS_ADULT = {
-    1:  { en: "When something’s bothering you, can you usually tell what the feeling is? Is there one that’s hard to name?", es: "Cuando algo te molesta, ¿sueles darte cuenta de qué sentimiento es? ¿Hay alguno que te cueste nombrar?" },
-    2:  { en: "When you’re really upset, what helps you settle? Is there anything that works reliably?", es: "Cuando estás muy alterado/a, ¿qué te ayuda a calmarte? ¿Hay algo que funcione de manera confiable?" },
-    3:  { en: "When you’re worried or angry, does it ever take over and get in the way of what you’re trying to do?", es: "Cuando estás preocupado/a o enojado/a, ¿alguna vez te domina y se interpone en lo que intentas hacer?" },
-    4:  { en: "Is there ever a feeling so big you don’t know what to do with it? What’s that like?", es: "¿Alguna vez hay un sentimiento tan grande que no sabes qué hacer con él? ¿Cómo es eso?" },
-    5:  { en: "After something hard happens, how long does it usually take you to feel like yourself again?", es: "Después de que pasa algo difícil, ¿cuánto sueles tardar en volver a sentirte tú mismo/a?" },
-    6:  { en: "Can you tell when you’re about to hit your limit before you hit it? What’s the early warning like?", es: "¿Puedes notar que estás por llegar a tu límite antes de llegar? ¿Cómo se siente esa señal?" },
-    7:  { en: "When you make a mistake, what do you tend to say to yourself — kind, or harsh?", es: "Cuando cometes un error, ¿qué sueles decirte a ti mismo/a — amable o duro/a?" },
-    8:  { en: "Is there a voice in your head that turns on you when things go wrong — telling you you’re a failure, or not enough? What does it say?", es: "¿Hay una voz en tu cabeza que se vuelve en tu contra cuando algo sale mal — que te dice que eres un fracaso, o que no eres suficiente? ¿Qué dice?" },
-    9:  { en: "If a close friend made the mistake you made, would you speak to them the way you speak to yourself? What’s different?", es: "Si un amigo/a cercano cometiera el error que cometiste, ¿le hablarías como te hablas a ti mismo/a? ¿Qué es diferente?" },
-    10: { en: "Do mistakes tend to stay with you — replaying long after they’re over?", es: "¿Los errores tienden a quedarse contigo — repitiéndose mucho después de que pasaron?" },
-    11: { en: "When something’s genuinely hard, do you believe you can get better at it? Or does it feel fixed?", es: "Cuando algo es realmente difícil, ¿crees que puedes mejorar? ¿O se siente fijo?" },
-    12: { en: "When you mess up, can you own it, repair what you can, and let it go? Or does it stick?", es: "Cuando te equivocas, ¿puedes reconocerlo, reparar lo que puedas y soltarlo? ¿O se te queda pegado?" },
-    13: { en: "When you’re in conflict with someone, can you picture how it looks from their side?", es: "Cuando estás en conflicto con alguien, ¿puedes imaginar cómo se ve desde su lado?" },
-    14: { en: "When you’ve hurt someone, even by accident, is it easy or hard for you to say so?", es: "Cuando has lastimado a alguien, aunque sea sin querer, ¿te resulta fácil o difícil reconocerlo?" },
-    15: { en: "When someone hurts you, do you tend to assume they meant to? Could there be another read?", es: "Cuando alguien te lastima, ¿sueles suponer que lo hizo a propósito? ¿Podría haber otra lectura?" },
-    16: { en: "How do you treat people who are different from you, or who you find hard to be around?", es: "¿Cómo tratas a las personas que son diferentes a ti, o con las que te cuesta llevarte bien?" },
-    17: { en: "Do you know the difference between someone who’s just difficult and someone who’s unsafe? Who’s each in your life right now?", es: "¿Sabes la diferencia entre alguien que es difícil y alguien que no es seguro? ¿Quién es cada uno en tu vida ahora mismo?" },
-    18: { en: "Is there someone you’d actually turn to if something was wrong? Who? If not, who could it be?", es: "¿Hay alguien a quien realmente acudirías si algo anduviera mal? ¿Quién? Si no, ¿quién podría serlo?" }
-  };
+
   const PSET = isAdult ? PROMPTS_ADULT : PROMPTS;
   const prompts = {};
   Object.keys(PSET).forEach(k => { prompts[k] = PSET[k][dashLang] || PSET[k].en; });
