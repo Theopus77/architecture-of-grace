@@ -4870,11 +4870,11 @@ function saveDraft(stage){
       responses:responses, intensities:intensities, reflections:reflections,
       current:current, reflectionIdx:(typeof reflectionIdx!=="undefined"?reflectionIdx:0),
       mode:mode, population:population, context:context, surveyLang:surveyLang, ts:Date.now() };
-    sessionStorage.setItem(DRAFT_KEY, JSON.stringify(d));
+    localStorage.setItem(DRAFT_KEY, JSON.stringify(d));
   }catch(e){}
 }
-function clearDraft(){ try{ sessionStorage.removeItem(DRAFT_KEY); }catch(e){} }
-function getDraft(){ try{ var d=JSON.parse(sessionStorage.getItem(DRAFT_KEY)||"null"); return (d&&d.session&&d.session.studentId)?d:null; }catch(e){ return null; } }
+function clearDraft(){ try{ localStorage.removeItem(DRAFT_KEY); }catch(e){} }
+function getDraft(){ try{ var d=JSON.parse(localStorage.getItem(DRAFT_KEY)||"null"); return (d&&d.session&&d.session.studentId)?d:null; }catch(e){ return null; } }
 function resumeDraft(){
   var d=getDraft(); if(!d) return;
   session=d.session;
@@ -5053,11 +5053,25 @@ async function finalizeAndSave(closing) {
   // pending (false) until the send succeeds; when local-only, mark it null so
   // flushUnsynced() never tries to send it anywhere.
   record.synced = willSync ? false : null;
-  const all = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
-  all.push(record);
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(all));
+  let _saved = true;
+  try {
+    const all = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+    all.push(record);
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(all));
+  } catch (e) { _saved = false; }
   window._pendingRecord = null;
-  window._lastResult = record;
+  window._lastResult = record;   // results still render from memory either way
+
+  if (!_saved) {
+    // Storage write failed (full, or private-browsing mode). Don't fail silently:
+    // warn, keep the draft so it can be recovered, and skip sync + roster.
+    alert(lang === "es"
+      ? "No se pudo guardar este chequeo en el dispositivo. El almacenamiento del navegador puede estar lleno o en modo privado. Los resultados se muestran ahora, pero podr\u00edan no estar aqu\u00ed la pr\u00f3xima vez \u2014 considera exportarlos o anotarlos."
+      : "This check-in couldn't be saved on this device. Your browser storage may be full or in private mode. The results are shown now, but may not be here next time \u2014 consider exporting or writing them down.");
+    renderSyncStatus();
+    return;
+  }
+
   // Completed: clear any saved draft. If this was a family/home check-in,
   // make sure the child is in the family roster so they appear in Family Mode.
   try { clearDraft(); } catch (e) {}
@@ -6046,6 +6060,7 @@ function clearLocalData() {
   if (!confirm("Permanently delete ALL check-in data on this device?")) return;
   localStorage.removeItem(STORAGE_KEY);
   try { localStorage.removeItem(FAMILY_KEY); } catch (e) {}
+  try { localStorage.removeItem(DRAFT_KEY); } catch (e) {}
   refreshAdmin();
 }
 
@@ -6242,6 +6257,18 @@ function clearPulledRecords() {
 function pct(n, d) { return d === 0 ? "0%" : Math.round(n/d*100) + "%"; }
 function escapeHtml(s) {
   return String(s == null ? "" : s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+}
+
+// Safe to drop into  onclick="fn('VALUE')"  — escapes for the JS single-quoted
+// string AND the surrounding double-quoted HTML attribute, so a name containing
+// ' or " (e.g. O'Brien, Ja"y) can't break the handler. Escape & FIRST.
+function jsAttr(s) {
+  return String(s == null ? "" : s)
+    .replace(/\\/g, "\\\\")
+    .replace(/'/g, "\\'")
+    .replace(/&/g, "&amp;")
+    .replace(/"/g, "&quot;")
+    .replace(/</g, "&lt;");
 }
 
 function applyFilters(records, opts) {
@@ -6988,7 +7015,7 @@ function renderFamily(){
   // switcher
   var html = '<div class="fam-switch">';
   kids.forEach(function(k){
-    html += '<button class="fam-chip'+(k.id===_familySel?' active':'')+'" onclick="familySelectChild(\''+k.id.replace(/'/g,"\\'")+'\')">'+escapeHtml(k.id)+(k.grade?' <span class="fc-grade">'+escapeHtml(es?("Gr "+k.grade):(k.grade==="Adult"?"Adult":"Gr "+k.grade))+'</span>':'')+'</button>';
+    html += '<button class="fam-chip'+(k.id===_familySel?' active':'')+'" onclick="familySelectChild(\''+jsAttr(k.id)+'\')">'+escapeHtml(k.id)+(k.grade?' <span class="fc-grade">'+escapeHtml(es?("Gr "+k.grade):(k.grade==="Adult"?"Adult":"Gr "+k.grade))+'</span>':'')+'</button>';
   });
   html += '<button class="fam-chip add" onclick="familyAddChild()">+ '+(es?"An\u0303adir nin\u0303o/a":"Add child")+'</button>';
   html += '</div>';
@@ -7002,7 +7029,7 @@ function renderFamily(){
 
   var recs = familyRecordsFor(_familySel);
   html += '<div class="fam-panel">';
-  html += '<div class="fam-actions-row"><button class="btn" onclick="familyNewCheckin(\''+_familySel.replace(/'/g,"\\'")+'\',\''+((kids.find(function(k){return k.id===_familySel;})||{}).grade||"")+'\')">'+(es?"Nuevo chequeo a fondo para ":"New Thorough check-in for ")+escapeHtml(_familySel)+' &rarr;</button></div>';
+  html += '<div class="fam-actions-row"><button class="btn" onclick="familyNewCheckin(\''+jsAttr(_familySel)+'\',\''+((kids.find(function(k){return k.id===_familySel;})||{}).grade||"")+'\')">'+(es?"Nuevo chequeo a fondo para ":"New Thorough check-in for ")+escapeHtml(_familySel)+' &rarr;</button></div>';
 
   // progress chart
   html += '<div class="fam-card"><div class="fam-card-h"><div class="t">'+(es?"Progreso a lo largo del an\u0303o":"Progress over the year")+'</div></div>';
@@ -7495,7 +7522,11 @@ function renderGrowth() {
 // ============================================================
 function downloadCSV(filename, headers, rows) {
   const esc = v => {
-    const s = String(v == null ? "" : v);
+    let s = String(v == null ? "" : v);
+    // Neutralize spreadsheet formula injection: a cell starting with = + - @
+    // (or a leading tab/CR) is run as a formula by Excel/Sheets. Prefix with '
+    // so it's treated as plain text.
+    if (/^[=+\-@\t\r]/.test(s)) s = "'" + s;
     return /[",\n]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s;
   };
   const csv = [headers.join(","), ...rows.map(r => r.map(esc).join(","))].join("\n");
@@ -8218,7 +8249,7 @@ function initGuideExtras() {
 // data still sitting in the current session so nothing on screen is lost.
 (function migratePersistentStores(){
   try {
-    [STORAGE_KEY, FAMILY_KEY, DEMO_STASH, DEMO_FLAG].forEach(function(k){
+    [STORAGE_KEY, FAMILY_KEY, DEMO_STASH, DEMO_FLAG, DRAFT_KEY].forEach(function(k){
       if (localStorage.getItem(k) == null) {
         var v = sessionStorage.getItem(k);
         if (v != null) { try { localStorage.setItem(k, v); } catch (e) {} }
