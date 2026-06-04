@@ -1735,6 +1735,26 @@ tr:hover td { background: var(--paper); }
 a.doc-path{ display:block; text-decoration:none; cursor:pointer; transition:border-color .18s, transform .18s, box-shadow .18s; }
 a.doc-path:hover{ border-color:var(--gold); transform:translateY(-2px); box-shadow:0 8px 20px rgba(27,58,95,.08); }
 a.doc-path .dp-t::after{ content:" \2192"; color:var(--gold); font-weight:700; }
+/* consolidated free shelf */
+.free-shelf{ display:grid; grid-template-columns:repeat(2,1fr); gap:12px; }
+@media(max-width:680px){ .free-shelf{ grid-template-columns:1fr; } }
+.free-card{ display:block; text-decoration:none; background:var(--cream-deep); border:1px solid var(--rule); border-radius:12px; padding:15px 17px; position:relative; transition:border-color .18s, transform .18s, box-shadow .18s; }
+.free-card:hover{ border-color:var(--gold); transform:translateY(-2px); box-shadow:0 8px 20px rgba(27,58,95,.08); }
+:root[data-theme="dark"] .free-card{ background:rgba(255,255,255,.03); border-color:rgba(242,201,100,.16); }
+.free-card .fc-t{ font-family:var(--font-sans); font-weight:700; font-size:14px; color:var(--navy); margin-bottom:4px; padding-right:58px; }
+:root[data-theme="dark"] .free-card .fc-t{ color:var(--gold-soft); }
+.free-card .fc-d{ font-size:12.5px; line-height:1.5; color:var(--ink-soft); padding-right:58px; }
+.free-card .fc-go{ position:absolute; top:15px; right:16px; font-family:var(--font-sans); font-weight:700; font-size:12px; color:var(--gold); white-space:nowrap; }
+/* main-page free link */
+.hyb-freelink{ text-align:center; padding:24px 22px 4px; }
+.hyb-freelink a{ font-family:var(--font-sans); font-weight:700; font-size:15px; color:var(--navy); text-decoration:none; border-bottom:2px solid var(--gold-soft); padding-bottom:2px; cursor:pointer; }
+.hyb-freelink a:hover{ color:var(--gold); }
+:root[data-theme="dark"] .hyb-freelink a{ color:var(--cream); }
+.hyb-free{ padding:14px 22px 18px; }
+.hyb-free-inner{ max-width:980px; margin:0 auto; }
+.hyb-free-h{ font-size:clamp(24px,3vw,32px); color:var(--navy); text-align:center; margin:0 0 6px; letter-spacing:-.01em; }
+.hyb-free-lede{ font-family:var(--font-sans); font-size:15px; line-height:1.6; color:var(--ink-soft); text-align:center; max-width:660px; margin:0 auto 22px; }
+:root[data-theme="dark"] .hyb-free-h{ color:var(--cream); }
 .doc-flag-note{ background:var(--cream-deep); border:1px solid var(--rule); border-left:4px solid var(--gold); border-radius:12px; padding:16px 20px; margin:10px 0 16px; }
 .doc-flag-note .dfn-label{ font-size:11px; font-weight:700; letter-spacing:.16em; text-transform:uppercase; color:var(--gold); margin-bottom:7px; }
 .doc-flag-note p{ font-size:14px; line-height:1.6; color:var(--ink); margin:0 0 8px; }
@@ -2284,6 +2304,15 @@ function toggleTheme(){
         <div class="foot"><span class="meta" data-i18n="hyb_meta_priv">Stays on your device &middot; ~4 minutes</span><span class="arr">&rarr;</span></div>
       </a>
     </div>
+
+    <!-- ===== FREE PREVIEWS (front page) ===== -->
+    <section class="hyb-free reveal">
+      <div class="hyb-free-inner">
+        <h3 class="serif hyb-free-h" data-i18n="dl_free_h">Free to read &amp; download</h3>
+        <p class="hyb-free-lede" data-i18n="dl_free_sub">Every chapter preview and sample lesson, in one place &mdash; no code, no purchase, no sign-up. Open or download any of them.</p>
+        <div id="freeShelfHome" class="free-shelf"></div>
+      </div>
+    </section>
 
     <!-- ===== WHO IT'S FOR (front page) ===== -->
     <section class="hyb-whofor reveal">
@@ -3454,6 +3483,13 @@ function toggleTheme(){
                style="display:inline-block; background:var(--navy); color:#fff; font-weight:700; font-size:14px; letter-spacing:.02em; padding:13px 24px; border-radius:8px; text-decoration:none; white-space:nowrap;" data-i18n-html="dl_f_btn">&#8599;&nbsp; Read Chapter One &nbsp;&middot;&nbsp; PDF</a>
           </div>
 
+          <!-- ============ CONSOLIDATED FREE SHELF ============ -->
+          <div id="dl-free" style="margin:6px 0 30px;">
+            <h4 class="serif" style="font-size:18px; color:var(--navy); margin:0 0 4px;" data-i18n="dl_free_h">Free to read &amp; download</h4>
+            <p style="font-size:13.5px; line-height:1.6; color:var(--ink-soft); margin:0 0 16px;" data-i18n="dl_free_sub">Every chapter preview and sample lesson, in one place &mdash; no code, no purchase, no sign-up. Open or download any of them.</p>
+            <div id="freeShelf" class="free-shelf"></div>
+          </div>
+
           <!-- ============ TWO PATHS: SCHOOLS vs FAMILIES ============ -->
           <div class="lib-paths">
             <div class="lib-path">
@@ -4300,6 +4336,9 @@ const I18N_UI = {
   dl_path_f_t: { es: 'Compra libros y materiales para el hogar' },
   dl_path_f_b: { es: 'Compra libros, paquetes y ediciones para el hogar individuales para la mesa de la cocina. Las vistas previas gratuitas siempre están abiertas abajo; los artículos de pago muestran un botón <strong>Comprar</strong>.' },
   dl_path_f_btn: { es: 'Pregunta por una copia para la familia →' },
+  dl_free_h:  { en: "Free to read & download", es: "Gratis para leer y descargar" },
+  dl_free_sub:{ en: "Every chapter preview and sample lesson, in one place \u2014 no code, no purchase, no sign-up. Open or download any of them.", es: "Cada vista previa de cap\u00edtulo y lecci\u00f3n de muestra, en un solo lugar \u2014 sin c\u00f3digo, sin compra, sin registro. Abre o descarga cualquiera." },
+  hyb_freelink:{ en: "Just want to look first? Read free previews & samples \u2192", es: "\u00bfSolo quieres mirar primero? Lee vistas previas y muestras gratis \u2192" },
   lib_intro: { es: "Las vistas previas gratuitas siguen las dos lecciones ancla del programa \u2014 <strong>la identidad</strong> y <strong>el cr\u00edtico interno</strong> \u2014 a medida que crecen a lo largo de los doce a\u00f1os. Todo lo que est\u00e1 debajo de las vistas previas es el programa completo, que se abre para descarga a medida que se publica cada pieza." },
   w_admin_link:{ en: "Educator / Parent access \u2192", es: "Acceso de educador / padre \u2192" },
   w_begin:     { en: "Begin Survey", es: "Comenzar encuesta" },
@@ -4409,6 +4448,7 @@ function applyLang() {
     const t = I18N_UI[el.getAttribute("data-i18n-ph")];
     el.setAttribute("placeholder", (t && t[L] != null) ? t[L] : el.getAttribute("data-i18n-orig"));
   });
+  try { if (typeof renderFreeShelf === "function") renderFreeShelf(); } catch (e) {}
 }
 
 function setLang(newLang) {
@@ -4462,13 +4502,16 @@ var TOURS = {
   welcome: [
     { sel:null,
       title:{en:"Welcome to Architecture of Grace", es:"Bienvenido a Architecture of Grace"},
-      body:{en:"Here\u2019s a 20-second tour of the front door. You can skip anytime \u2014 and replay it later from the \u201CQuick tour\u201D button.", es:"Aqu\u00ed tienes un recorrido de 20 segundos. Puedes omitirlo cuando quieras y repetirlo luego con el bot\u00f3n \u201CRecorrido r\u00e1pido\u201D."} },
+      body:{en:"Here\u2019s a 20-second tour of the front door \u2014 and everything on it is free to read and browse, no sign-up and no code. You can skip anytime and replay it later from the \u201CQuick tour\u201D button.", es:"Aqu\u00ed tienes un recorrido de 20 segundos por la p\u00e1gina principal, y todo en ella es gratis para leer y explorar, sin registro y sin c\u00f3digo. Puedes omitirlo cuando quieras y repetirlo luego con el bot\u00f3n \u201CRecorrido r\u00e1pido\u201D."} },
     { sel:".hyb-door.prim",
       title:{en:"Explore the Guide & Library", es:"Explora la gu\u00eda y la biblioteca"},
       body:{en:"The ecosystem map, the resource index, and every free download \u2014 no code needed. Start here to see what the program is.", es:"El mapa del ecosistema, el \u00edndice de recursos y todas las descargas gratuitas, sin c\u00f3digo. Empieza aqu\u00ed para ver qu\u00e9 es el programa."} },
     { sel:".hyb-door.sec",
       title:{en:"Take the Check-In", es:"Haz el chequeo"},
       body:{en:"A private, on-device reflection for a student, an adult, or your whole family. Nothing leaves the device unless a school chooses to turn that on.", es:"Una reflexi\u00f3n privada en el dispositivo, para un estudiante, un adulto o toda tu familia. Nada sale del dispositivo a menos que una escuela lo active."} },
+    { sel:".hyb-free",
+      title:{en:"Free to read & download", es:"Gratis para leer y descargar"},
+      body:{en:"Every chapter preview, sample lesson, and the anchor-chart and scenario-card preview packs are free to open or download right here \u2014 no sign-up, no code.", es:"Cada vista previa de cap\u00edtulo, lecci\u00f3n de muestra y los paquetes de l\u00e1minas y tarjetas de escenarios son gratis para abrir o descargar aqu\u00ed: sin registro y sin c\u00f3digo."} },
     { sel:"#themeToggle",
       title:{en:"Light or dark", es:"Claro u oscuro"},
       body:{en:"Switch the whole site to dark mode whenever you like \u2014 your choice is remembered on this device.", es:"Cambia todo el sitio a modo oscuro cuando quieras; tu elecci\u00f3n se recuerda en este dispositivo."} },
@@ -4506,7 +4549,10 @@ var TOURS = {
       body:{en:"Aggregate results, private to this device. A 20-second tour of how to read it.", es:"Resultados agregados, privados en este dispositivo. Un recorrido de 20 segundos para leerlo."} },
     { sel:".tabs",
       title:{en:"Six views", es:"Seis vistas"},
-      body:{en:"Overview, Class trends, Family view, Growth and more sit across the top.", es:"Resumen, Tendencias de la clase, Vista familiar, Progreso y m\u00e1s est\u00e1n arriba."} },
+      body:{en:"Overview, Distribute, Class trends, Family view, Growth, and Export sit across the top.", es:"Resumen, Distribuir, Tendencias de la clase, Vista familiar, Progreso y Exportar est\u00e1n arriba."} },
+    { sel:'.tab[data-tab="distribute"]',
+      title:{en:"Hand it out", es:"Comp\u00e1rtelo"},
+      body:{en:"The Distribute tab builds a classroom link or QR code to share. Every device stays private by default \u2014 syncing turns on only when you enable it here, or when a student opens a generated link.", es:"La pesta\u00f1a Distribuir crea un enlace o c\u00f3digo QR para compartir. Cada dispositivo es privado por defecto: la sincronizaci\u00f3n se activa solo cuando la enciendes aqu\u00ed o cuando un estudiante abre un enlace generado."} },
     { sel:".filter-bar",
       title:{en:"Filter the group", es:"Filtra el grupo"},
       body:{en:"Narrow by window, grade, or mode anywhere you see these controls.", es:"Filtra por per\u00edodo, grado o modo donde veas estos controles."} },
@@ -7839,6 +7885,7 @@ const RESOURCE_LIBRARY = [
     { title:"Book 5 \u00b7 The Capstone (11\u201312)", desc:"Values, the adult repair manual, and forgiving the younger self.", tie:true, url:"" },
   ]},
   { cat:"Anchor Charts", closed:true, note:"The classroom-ready anchor chart sets \u2014 the full packs that ship with the district curriculum. License them for a school, or buy a pack on its own. (Free samplers live in the showcase preview.)", items:[
+    { title:"Anchor Charts \u00b7 Free Preview", desc:"Three signature charts \u2014 the Identity Web (K\u20132), Inner Critic vs. Inner Coach (3\u20135), and The Internal Critic (6\u20138).", free:true, url:"files/AoG-Anchor-Charts-Preview.pdf" },
     { title:"Anchor Charts \u00b7 K\u201312 Sampler", desc:"One chart per band \u2014 the cross-band sampler, from the Identity Web to the Threshold of adulthood.", tie:true, url:"files/AoG-Anchor-Charts-K12-Sampler.pdf" },
     { title:"Anchor Charts \u00b7 Book 1 (K\u20132)", desc:"The full K\u20132 set, including the Identity Web and Kind Coach vs. Grumpy Gus.", tie:true, url:"files/AoG-Book1-Anchor-Charts.pdf" },
     { title:"Anchor Charts \u00b7 Book 2 (3\u20135)", desc:"The full 3\u20135 set, built around the red/green Inner Critic vs. Inner Coach chart.", tie:true, url:"files/AoG-Book2-Anchor-Charts.pdf" },
@@ -7853,17 +7900,16 @@ const RESOURCE_LIBRARY = [
     { title:"Drawing Examples", desc:"Finished display models teachers post before students begin.", url:"" },
     { title:"Worksheets \u00b7 K\u201312 Sampler", desc:"One skill across twelve years: the inner-critic worksheet, from Grumpy Gus to forgiving the younger self.", tie:true, url:"files/AoG-Worksheets-K12-Sampler.pdf" },
     { title:"Worksheet Pack \u00b7 Book 2 (3\u20135)", desc:"The full 3\u20135 worksheet pack, including WS3 Two Voices.", tie:true, url:"files/AoG-Book2-Worksheet-Packet.pdf" },
-    { title:"Worksheet Pack \u00b7 Book 3 (6\u20138) \u00b7 Part 1", desc:"The 6\u20138 identity and self-compassion sheets, including the Internal Critic Profile.", tie:true, url:"files/AoG-Book3-Worksheet-Pack.pdf" },
-    { title:"Worksheet Pack \u00b7 Book 3 (6\u20138) \u00b7 Part 2", desc:"The 6\u20138 worksheets for empathy, forgiveness, and grace.", url:"" },
+    { title:"Worksheet Pack \u00b7 Book 3 (6\u20138)", desc:"The full 6\u20138 worksheet pack, including the Internal Critic Profile.", tie:true, url:"files/AoG-Book3-Worksheet-Pack.pdf" },
     { title:"Worksheet Pack \u00b7 Book 4 (9\u201310)", desc:"The 9\u201310 reproducible worksheets for the Fa\u00e7ade and self-kindness units.", url:"files/AoG-Books4-5-Worksheet-Pack.pdf" },
     { title:"Worksheet Pack \u00b7 Book 5 (11\u201312)", desc:"The 11\u201312 worksheets for values, repair, and forgiveness.", url:"files/AoG-Books4-5-Worksheet-Pack.pdf" },
   ]},
   { cat:"Scenario Cards", closed:true, note:"The discussion and role-play decks \u2014 the complete sets that ship with the district curriculum. License them for a school, or buy a deck on its own. (Free samplers live in the showcase preview.)", items:[
+    { title:"Scenario Cards \u00b7 Free Preview", desc:"Four sample cards, one per pillar \u2014 identity, the inner voice, self-compassion, and forgiveness.", free:true, url:"files/AoG-Scenario-Cards-Preview.pdf" },
     { title:"Scenario Cards \u00b7 K\u201312 Sampler", desc:"Ten cards, one per band, tracing the identity and inner-critic threads from kindergarten to graduation.", tie:true, url:"files/AoG-Scenario-Cards-K12-Sampler.pdf" },
     { title:"Scenario Cards \u00b7 Book 1 (K\u20132)", desc:"The full K\u20132 discussion deck \u2014 identity, mistakes, and grace, worked as a class.", tie:true, url:"files/AoG-Book1-Scenario-Card-Deck.pdf" },
     { title:"Scenario Cards \u00b7 Book 2 (3\u20135)", desc:"The full 3\u20135 deck, including Sofia's failed test (Card 1-G).", tie:true, url:"files/AoG-Book2-Scenario-Card-Deck.pdf" },
-    { title:"Scenario Cards \u00b7 Book 3 (6\u20138) \u00b7 Part 1", desc:"The 6\u20138 deck of identity and self-compassion dilemmas.", url:"files/AoG-Book3-Scenario-Card-Deck.pdf" },
-    { title:"Scenario Cards \u00b7 Book 3 (6\u20138) \u00b7 Part 2", desc:"Empathy, repair, and grace dilemmas for the 6\u20138 year.", url:"" },
+    { title:"Scenario Cards \u00b7 Book 3 (6\u20138)", desc:"The full 6\u20138 deck of identity, self-compassion, repair, and grace dilemmas.", tie:true, url:"files/AoG-Book3-Scenario-Card-Deck.pdf" },
     { title:"Scenario Cards \u00b7 Book 4 (9\u201310)", desc:"The full 9\u201310 deck, including Layla (B4-6A).", tie:true, url:"files/AoG-Books4-5-Scenario-Cards.pdf" },
     { title:"Scenario Cards \u00b7 Book 5 (11\u201312)", desc:"The full 11\u201312 deck, including Priya\u2019s Past Self (B5-9A).", tie:true, url:"files/AoG-Books4-5-Scenario-Cards.pdf" },
     { title:"Scenario Cards \u00b7 Complete Deck (all bands)", desc:"The cross-band deck of dilemmas for discussion and role-play.", url:"" },
@@ -7912,10 +7958,30 @@ const RESOURCE_LIBRARY = [
     { title:"Master Crosswalk \u00b7 Book 2 (3\u20135)", desc:"The 3\u20135 theological companion to The Year of the Inner Critic.", url:"" },
   ]},
 ];
+function renderFreeShelf(){
+  var roots = document.querySelectorAll(".free-shelf");
+  if(!roots.length) return;
+  var es = (typeof lang!=="undefined" && lang==="es");
+  var html="";
+  RESOURCE_LIBRARY.forEach(function(cat){
+    (cat.items||[]).forEach(function(it){
+      if(libItemState(it,cat)==="free"){
+        html += '<a class="free-card" href="'+libEsc(it.url)+'" target="_blank" rel="noopener">'
+          + '<div class="fc-t">'+libEsc(it.title)+'</div>'
+          + (it.desc?'<div class="fc-d">'+libEsc(it.desc)+'</div>':'')
+          + '<span class="fc-go">'+(es?"\u2197 Abrir":"\u2197 Open")+'</span>'
+          + '</a>';
+      }
+    });
+  });
+  var fallback = '<div class="small" style="color:var(--ink-soft);">'+(es?"Pr\u00f3ximamente":"Coming soon")+'</div>';
+  roots.forEach(function(r){ r.innerHTML = html || fallback; });
+}
 function libEsc(s) { return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
 
 function libItemState(it, cat) {
   if (it.soon) return "soon";                   // not yet ready: quiet tag, no buttons
+  if (it.free && it.url && it.url.trim()) return "free";  // explicit free preview, even inside a licensed pack
   // A "closed" category no longer offers free Opens: anything that would have
   // been a free download instead shows Buy + Request a license (the full pack
   // is the paid/licensed product; the free taste lives in the showcase + the
@@ -7995,6 +8061,7 @@ function renderLibrary() {
   });
   root.innerHTML = html;
   root.dataset.rendered = "1";
+  try { renderFreeShelf(); } catch(e){}
 }
 
 // ============================================================
