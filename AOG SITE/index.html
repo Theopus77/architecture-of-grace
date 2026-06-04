@@ -134,8 +134,7 @@ body::before {
   padding: 18px 28px;
   border-bottom: 1px solid var(--rule);
   position: sticky; top: 0; z-index: 50;
-  backdrop-filter: saturate(180%) blur(8px);
-  background: rgba(253,252,247,0.85);
+  background: #FDFCF7;
 }
 .brand { display: flex; align-items: center; gap: 12px; text-decoration: none; color: var(--navy); }
 .brand-mark {
@@ -291,6 +290,8 @@ body::before {
 
 /* Script Card */
 .checkin-reassure{ text-align:center; font-size:13px; font-weight:600; letter-spacing:.01em; color:var(--gold); margin:6px auto 0; max-width:560px; }
+.made-with{ text-align:center; font-family:var(--font-serif); font-style:italic; font-size:16px; line-height:1.5; color:var(--navy-soft); max-width:540px; margin:20px auto 4px; opacity:.9; }
+.made-with::before{ content:""; display:block; width:42px; height:1px; background:var(--gold); opacity:.7; margin:0 auto 14px; }
 .script-card {
   background: linear-gradient(180deg, var(--cream) 0%, var(--cream-deep) 100%);
   border-radius: var(--radius-lg);
@@ -1654,7 +1655,6 @@ tr:hover td { background: var(--paper); }
 .aog-what .pl-label{letter-spacing:.22em !important;color:#A8966C !important}
 
 /* 5. Top bar: a touch more authority */
-.topbar{backdrop-filter:saturate(1.1)}
 .brand-mark{box-shadow:0 4px 12px -2px rgba(15,42,74,.3)}
 </style>
 <style id="hybrid-welcome">
@@ -1663,7 +1663,7 @@ tr:hover td { background: var(--paper); }
    Uses app tokens (--navy/--gold/etc). Fonts: Fraunces + Inter.
    ============================================================ */
 #screen-welcome .hyb-welcome{margin:-32px calc(50% - 50vw) 0;width:100vw}
-.hyb-hero{background:var(--navy);color:var(--cream);padding:70px 7vw 0;position:relative;overflow:hidden}
+.hyb-hero{background:var(--navy);color:var(--cream);padding:112px 7vw 0;position:relative;overflow:hidden}
 .hyb-hero::before{content:"";position:absolute;top:-30%;right:-5%;width:60%;height:160%;background:radial-gradient(circle,rgba(242,201,100,.16),transparent 65%);pointer-events:none}
 .hyb-hk{position:relative;font-family:var(--font-sans);font-weight:700;font-size:13px;letter-spacing:.32em;text-transform:uppercase;color:var(--gold-soft)}
 .hyb-title{position:relative;font-family:var(--font-serif);font-weight:600;line-height:.82;margin:18px 0 0;letter-spacing:-.02em}
@@ -1672,7 +1672,7 @@ tr:hover td { background: var(--paper); }
   background:linear-gradient(176deg,#FBEFC9 0%,#F2CE7E 28%,#DCAB4C 58%,#B5821F 100%);
   -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent;
   filter:drop-shadow(4px 6px 0 #06121f) drop-shadow(9px 14px 24px rgba(0,0,0,.4))}
-.hyb-bar{position:relative;display:inline-flex;align-items:center;gap:18px;margin-top:34px;padding:14px 0;border-top:2px solid rgba(242,201,100,.3);border-bottom:2px solid rgba(242,201,100,.18)}
+.hyb-bar{position:relative;display:inline-flex;align-items:center;gap:18px;margin-top:34px;padding:14px 0}
 .hyb-bar .word{font-family:var(--font-sans);font-weight:600;font-size:clamp(14px,1.5vw,17px);color:#CFC09C;white-space:nowrap}
 .hyb-bar .word b{color:var(--gold-soft)}
 .hyb-bar .dot{width:5px;height:5px;border-radius:50%;background:var(--gold-soft);opacity:.55}
@@ -1793,7 +1793,7 @@ tr:hover td { background: var(--paper); }
 
 /* mobile */
 @media (max-width:760px){
-  .hyb-hero{padding:44px 6vw 0}
+  .hyb-hero{padding:66px 6vw 0}
   .hyb-title .l2{font-size:23vw;line-height:.86;filter:drop-shadow(3px 4px 0 #06121f) drop-shadow(6px 9px 16px rgba(0,0,0,.4))}
   .hyb-bar{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;margin-top:22px;width:100%;padding:12px 0}
   .hyb-bar .word{white-space:nowrap;font-size:12.5px}
@@ -1873,7 +1873,7 @@ tr:hover td { background: var(--paper); }
 :root[data-theme="dark"] [style*="background: #fff"],
 :root[data-theme="dark"] [style*="background:white"]{ background:var(--paper)!important; }
 /* --- dark-mode contrast fixes: top bar brand, welcome Voices strip, comment wall --- */
-:root[data-theme="dark"] .topbar{ background:rgba(16,26,36,0.85); border-bottom-color:var(--rule); }
+:root[data-theme="dark"] .topbar{ background:#101A24; border-bottom-color:var(--rule); }
 :root[data-theme="dark"] .brand-name{ color:var(--ink); }
 :root[data-theme="dark"] .brand-sub{ color:var(--ink-soft); }
 :root[data-theme="dark"] .wv-title{ color:var(--ink); }
@@ -2191,6 +2191,8 @@ function toggleTheme(){
 
         <p style="font-size:15px; line-height:1.72; color:var(--ink); margin-bottom:14px;" data-i18n="story_p1">My name is Jimmy Ramsden. I didn&rsquo;t come to this work from a boardroom &mdash; I came to it from the classroom, where I still teach today as a special educator.</p>
 
+        <p style="font-size:15px; line-height:1.72; color:var(--ink); margin-bottom:14px;" data-i18n="story_bio">For more than a decade I&rsquo;ve worked as an Illinois-certified special educator across elementary and junior-high classrooms &mdash; in self-contained, resource, and social-behavioral settings &mdash; and I hold a Learning Behavior Specialist endorsement for students from preschool through age twenty-two. Along the way I built and ran my district&rsquo;s elementary Social-Behavioral Learning resource program, where I coach students in the very skills this curriculum is built around: naming what they feel, steadying themselves, and trying again. The Architecture of Grace isn&rsquo;t a departure from that classroom work &mdash; it&rsquo;s two decades of it, gathered into something I can hand to other teachers.</p>
+
         <p style="font-size:15px; line-height:1.72; color:var(--ink); margin-bottom:14px;" data-i18n="story_p2">My journey started at Humboldt State University with a degree in political science, followed by a master&rsquo;s in special education. But the real catalyst came in 2006, when a serious car crash left me with a traumatic brain injury and a neurological disability. Rebuilding my life changed how I understand struggle, patience, and grace. It&rsquo;s the reason this work isn&rsquo;t abstract to me.</p>
 
         <p style="font-size:15px; line-height:1.72; color:var(--ink); margin-bottom:14px;" data-i18n-html="story_p3">The Architecture of Grace grew out of a conviction that individuals deserve more than to be measured &mdash; they deserve to be understood. Built under the <strong>School of Life Foundation</strong>, everything here rests on four core pillars:</p>
@@ -2221,7 +2223,7 @@ function toggleTheme(){
           <p style="font-size:14.5px; line-height:1.65; color:var(--ink-soft); margin:0;" data-i18n="story_note">This work is in its early stages. The check-in is a pilot &mdash; a score is a flag for a conversation, never a diagnosis &mdash; and the curriculum is a framework I&rsquo;m actively proving. I&rsquo;d rather be honest about that than oversell it.</p>
         </div>
 
-        <p style="font-size:15px; line-height:1.72; color:var(--ink); margin-bottom:14px;" data-i18n-html="story_contact">If you&rsquo;d like to try it, pilot it, or just share your thoughts, please reach out.<!-- EDIT ME: contact email below --> <a href="mailto:whytheschooloflife@gmail.com" style="color:var(--navy); font-weight:600; text-decoration:none; border-bottom:1px solid var(--gold);">whytheschooloflife@gmail.com</a></p>
+        <p style="font-size:15px; line-height:1.72; color:var(--ink); margin-bottom:14px;" data-i18n-html="story_contact">If you&rsquo;d like to try it or share your thoughts, please reach out.<!-- EDIT ME: contact email below --> <a href="mailto:whytheschooloflife@gmail.com" style="color:var(--navy); font-weight:600; text-decoration:none; border-bottom:1px solid var(--gold);">whytheschooloflife@gmail.com</a></p>
         <p style="font-size:15px; line-height:1.72; color:var(--ink-soft); margin:0;"><em>&mdash; Jimmy Ramsden</em></p>
       </div>
     </section>
@@ -2287,6 +2289,7 @@ function toggleTheme(){
       <p data-i18n-html="w_script1"><strong>Before you begin.</strong> There are no right or wrong answers &mdash; just pick what feels most true for you lately, and go with your first instinct.</p>
       <p data-i18n-html="w_script2">If a question brings up something you&rsquo;d like to talk about, you can reach out to a teacher, counselor, parent, or guardian any time.</p>
     </div>
+<p class="made-with" data-i18n="w_madewith">Some of these questions were shaped with the help of children &mdash; so the words would sound a little more like yours, and a little less like ours.</p>
 <!-- VIDEO SLOT (Student). To go live, replace the .vid-frame contents with an iframe, e.g.
      <div class="vid-frame"><iframe src="https://www.youtube.com/embed/XXXX" allowfullscreen></iframe></div> -->
 <div class="vid-slot">
@@ -3258,7 +3261,7 @@ const ITEMS_EN = [
   { n:10, d:"B", text:"I keep replaying my mistakes in my head long after they are over.", reverse:true, intensity:true },
   { n:11, d:"B", text:"When something is hard, I believe I can get better at it if I keep trying.", reverse:false, intensity:true },
   { n:12, d:"B", text:"I can own a mistake, fix what I can, and then move on.", reverse:false, intensity:false },
-  { n:13, d:"C", text:"When I have a conflict with someone, I can think about how the other person might be seeing it.", reverse:false, intensity:false },
+  { n:13, d:"C", text:"I notice when someone around me is having a hard time, and I care about how they feel.", reverse:false, intensity:false },
   { n:14, d:"C", text:"When I have hurt someone \u2014 even by accident \u2014 I am able to say so and try to make it right.", reverse:false, intensity:false },
   { n:15, d:"C", text:"When someone bothers me or hurts my feelings, I assume the worst about them right away.", reverse:true, intensity:true },
   { n:16, d:"C", text:"I am kind to people even when they are different from me or hard to get along with.", reverse:false, intensity:false },
@@ -3279,7 +3282,7 @@ const ITEMS_ES = [
   { n:10, d:"B", text:"Sigo repitiendo mis errores en mi cabeza mucho despu\u00e9s de que ya pasaron.", reverse:true, intensity:true },
   { n:11, d:"B", text:"Cuando algo es dif\u00edcil, creo que puedo mejorar si sigo intent\u00e1ndolo.", reverse:false, intensity:true },
   { n:12, d:"B", text:"Puedo reconocer un error, arreglar lo que puedo, y seguir adelante.", reverse:false, intensity:false },
-  { n:13, d:"C", text:"Cuando tengo un conflicto con alguien, puedo pensar en c\u00f3mo la otra persona podr\u00eda estar vi\u00e9ndolo.", reverse:false, intensity:false },
+  { n:13, d:"C", text:"Me doy cuenta cuando alguien a mi alrededor est\u00e1 pasando un momento dif\u00edcil, y me importa c\u00f3mo se siente.", reverse:false, intensity:false },
   { n:14, d:"C", text:"Cuando he lastimado a alguien \u2014 incluso sin querer \u2014 puedo reconocerlo e intentar reparar las cosas.", reverse:false, intensity:false },
   { n:15, d:"C", text:"Cuando alguien me molesta o me lastima los sentimientos, asumo lo peor de esa persona enseguida.", reverse:true, intensity:true },
   { n:16, d:"C", text:"Soy amable con la gente incluso cuando son diferentes a m\u00ed o dif\u00edciles de tratar.", reverse:false, intensity:false },
@@ -3513,7 +3516,7 @@ const ITEMS_ADULT_EN = [
   { n:10, d:"B", text:"I keep replaying my mistakes long after they are over.", reverse:true, intensity:true },
   { n:11, d:"B", text:"When something is hard, I believe I can get better at it if I keep at it.", reverse:false, intensity:true },
   { n:12, d:"B", text:"I can own a mistake, repair what I can, and then move forward.", reverse:false, intensity:false },
-  { n:13, d:"C", text:"When I am in conflict with someone, I can consider how the other person might be seeing it.", reverse:false, intensity:false },
+  { n:13, d:"C", text:"I notice when someone around me is struggling, and I care about how they feel.", reverse:false, intensity:false },
   { n:14, d:"C", text:"When I have hurt someone \u2014 even by accident \u2014 I can say so and try to make it right.", reverse:false, intensity:false },
   { n:15, d:"C", text:"When someone upsets me or hurts me, I assume the worst about them right away.", reverse:true, intensity:true },
   { n:16, d:"C", text:"I can be kind to people even when they are different from me or hard to get along with.", reverse:false, intensity:false },
@@ -3533,7 +3536,7 @@ const ITEMS_ADULT_ES = [
   { n:10, d:"B", text:"Sigo repitiendo mis errores en mi cabeza mucho despu\u00e9s de que ya pasaron.", reverse:true, intensity:true },
   { n:11, d:"B", text:"Cuando algo es dif\u00edcil, creo que puedo mejorar si sigo intent\u00e1ndolo.", reverse:false, intensity:true },
   { n:12, d:"B", text:"Puedo reconocer un error, arreglar lo que puedo, y seguir adelante.", reverse:false, intensity:false },
-  { n:13, d:"C", text:"Cuando tengo un conflicto con alguien, puedo pensar en c\u00f3mo la otra persona podr\u00eda estar vi\u00e9ndolo.", reverse:false, intensity:false },
+  { n:13, d:"C", text:"Me doy cuenta cuando alguien a mi alrededor est\u00e1 pasando un momento dif\u00edcil, y me importa c\u00f3mo se siente.", reverse:false, intensity:false },
   { n:14, d:"C", text:"Cuando he lastimado a alguien \u2014 incluso sin querer \u2014 puedo reconocerlo e intentar reparar las cosas.", reverse:false, intensity:false },
   { n:15, d:"C", text:"Cuando alguien me molesta o me lastima, asumo lo peor de esa persona enseguida.", reverse:true, intensity:true },
   { n:16, d:"C", text:"Soy amable con la gente incluso cuando son diferentes a m\u00ed o dif\u00edciles de tratar.", reverse:false, intensity:false },
@@ -3828,6 +3831,7 @@ const I18N_UI = {
   m_depth_f4:  { en: "Score 0\u201390 with rich Home View report", es: "Puntaje 0\u201390 con informe detallado" },
   w_script1:   { en: "<strong>Before you begin.</strong> There are no right or wrong answers \u2014 just pick what feels most true for you lately, and go with your first instinct.", es: "<strong>Antes de empezar.</strong> No hay respuestas correctas ni incorrectas: elige lo que sientas m\u00e1s verdadero para ti \u00faltimamente, y ve con tu primer instinto." },
   w_script2:   { en: "If a question brings up something you\u2019d like to talk about, you can reach out to a teacher, counselor, parent, or guardian any time.", es: "Si alguna pregunta despierta algo de lo que quieras hablar, puedes acudir a un maestro, consejero, padre o tutor en cualquier momento." },
+  w_madewith:  { en: "Some of these questions were shaped with the help of children \u2014 so the words would sound a little more like yours, and a little less like ours.", es: "Algunas de estas preguntas se crearon con la ayuda de ni\u00f1os \u2014 para que las palabras sonaran un poco m\u00e1s como las tuyas, y un poco menos como las nuestras." },
   w_about:     { en: "About you", es: "Sobre ti" },
   w_ctx_school:{ en: "School", es: "Escuela" },
   w_ctx_home:  { en: "Home", es: "Hogar" },
@@ -3844,6 +3848,7 @@ const I18N_UI = {
   story_ey: { es: "La historia" },
   story_h: { es: "El fundador, y el porqu\u00e9 detr\u00e1s de este trabajo" },
   story_p1: { es: "Me llamo Jimmy Ramsden. No llegu\u00e9 a este trabajo desde una sala de juntas, sino desde el aula, donde sigo ense\u00f1ando hoy como educador especial." },
+  story_bio: { es: "Durante m\u00e1s de una d\u00e9cada he trabajado como educador especial certificado en Illinois en aulas de primaria y secundaria \u2014 en entornos autocontenidos, de recursos y socioconductuales \u2014 y cuento con un endoso de Especialista en Conducta del Aprendizaje para estudiantes desde preescolar hasta los veintid\u00f3s a\u00f1os. En el camino constru\u00ed y dirig\u00ed el programa de recursos de Aprendizaje Socioconductual de primaria de mi distrito, donde acompa\u00f1o a los estudiantes en las mismas destrezas sobre las que se construye este plan de estudios: nombrar lo que sienten, calmarse y volver a intentarlo. The Architecture of Grace no es una desviaci\u00f3n de ese trabajo en el aula \u2014 son dos d\u00e9cadas de ese trabajo, reunidas en algo que puedo entregar a otros maestros." },
   story_p2: { es: "Mi camino comenz\u00f3 en Humboldt State University con una licenciatura en ciencias pol\u00edticas, seguida de una maestr\u00eda en educaci\u00f3n especial. Pero el verdadero punto de inflexi\u00f3n lleg\u00f3 en 2006, cuando un grave accidente automovil\u00edstico me dej\u00f3 con una lesi\u00f3n cerebral traum\u00e1tica y una discapacidad neurol\u00f3gica. Reconstruir mi vida cambi\u00f3 mi forma de entender la lucha, la paciencia y la gracia. Es la raz\u00f3n por la que este trabajo no es abstracto para m\u00ed." },
   story_p3: { es: "The Architecture of Grace naci\u00f3 de la convicci\u00f3n de que las personas merecen m\u00e1s que ser medidas: merecen ser comprendidas. Construido bajo la <strong>School of Life Foundation</strong>, todo aqu\u00ed se apoya en cuatro pilares fundamentales:" },
   story_pillars: { es: '<li style="font-size:15px; line-height:1.6; color:var(--ink); margin-bottom:10px; padding-left:20px; position:relative;"><span style="position:absolute; left:0; top:1px; color:var(--gold);">&#9670;</span><strong style="color:var(--navy);">Identidad</strong> &mdash; qui\u00e9n llega una persona a creer que es.</li><li style="font-size:15px; line-height:1.6; color:var(--ink); margin-bottom:10px; padding-left:20px; position:relative;"><span style="position:absolute; left:0; top:1px; color:var(--gold);">&#9670;</span><strong style="color:var(--navy);">Autocompasi\u00f3n</strong> &mdash; c\u00f3mo aprende una persona a hablarse a s\u00ed misma.</li><li style="font-size:15px; line-height:1.6; color:var(--ink); margin-bottom:10px; padding-left:20px; position:relative;"><span style="position:absolute; left:0; top:1px; color:var(--gold);">&#9670;</span><strong style="color:var(--navy);">Perd\u00f3n</strong> &mdash; superar los errores para dar espacio al crecimiento.</li><li style="font-size:15px; line-height:1.6; color:var(--ink); margin-bottom:0; padding-left:20px; position:relative;"><span style="position:absolute; left:0; top:1px; color:var(--gold);">&#9670;</span><strong style="color:var(--navy);">Gracia</strong> &mdash; recibir a una persona con comprensi\u00f3n y no solo con juicio.</li>' },
@@ -3868,7 +3873,7 @@ const I18N_UI = {
   story_p4: { es: "Como maestro y como padre, estos son los valores que deseo para mis estudiantes, para mis propios hijos, y para cualquiera dispuesto a hacer este trabajo." },
   story_note_label: { es: "Una nota sobre la transparencia" },
   story_note: { es: "Este trabajo est\u00e1 en sus primeras etapas. El chequeo es un programa piloto: un puntaje es una se\u00f1al para una conversaci\u00f3n, nunca un diagn\u00f3stico, y el plan de estudios es un marco que estoy probando activamente. Prefiero ser honesto al respecto antes que exagerar." },
-  story_contact: { es: 'Si deseas probarlo, pilotearlo o simplemente compartir tus ideas, por favor cont\u00e1ctame. <a href="mailto:whytheschooloflife@gmail.com" style="color:var(--navy); font-weight:600; text-decoration:none; border-bottom:1px solid var(--gold);">whytheschooloflife@gmail.com</a>' },
+  story_contact: { es: 'Si deseas probarlo o compartir tus ideas, por favor cont\u00e1ctame. <a href="mailto:whytheschooloflife@gmail.com" style="color:var(--navy); font-weight:600; text-decoration:none; border-bottom:1px solid var(--gold);">whytheschooloflife@gmail.com</a>' },
   g_educator: { es: "Acceso del educador &middot; resultados &rarr;" },
   g_slimlabel: { es: "<span class=\"guide-slim-eyebrow\">The Architecture of Grace</span> &nbsp;&middot;&nbsp; Gu\u00eda y biblioteca" },
   g_eco_ey: { es: "La arquitectura" },
