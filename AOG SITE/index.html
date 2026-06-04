@@ -4846,12 +4846,10 @@ function selectResponse(value) {
   renderIntensityOption();
   updateNextButton();
   saveDraft("survey");
-  // If the follow-up intensity question just appeared, bring it into view so it
-  // isn't hidden behind the sticky nav on shorter screens.
-  var ia = document.getElementById("intensityArea");
-  if (ia && ia.querySelector(".intensity-block")) {
-    setTimeout(function(){ try { ia.scrollIntoView({ behavior:"smooth", block:"center" }); } catch(e){} }, 60);
-  }
+  // NOTE: intentionally do NOT auto-scroll when the intensity follow-up appears.
+  // The block renders directly beneath the answer options (above the sticky nav),
+  // so it's already in view; auto-scrolling made the page lurch down inconsistently
+  // between questions. Each new question is still pinned to the top in renderItem().
 }
 
 function selectIntensity(value) {
