@@ -1737,7 +1737,7 @@ tr:hover td { background: var(--paper); }
 :root[data-theme="dark"] .dm-intro p em{ color:var(--gold-soft); }
 
 /* audience router */
-.dm-router{ display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin:0 0 30px; }
+.dm-router{ display:grid; grid-template-columns:repeat(auto-fit, minmax(216px,1fr)); gap:12px; margin:0 0 30px; }
 @media(max-width:620px){ .dm-router{ grid-template-columns:1fr; } }
 .dm-route{ display:block; text-decoration:none; background:#fff; border:1px solid var(--rule); border-radius:14px; padding:18px 18px 16px; transition:border-color .18s, transform .18s, box-shadow .18s; cursor:pointer; }
 :root[data-theme="dark"] .dm-route{ background:rgba(255,255,255,.03); border-color:rgba(242,201,100,.16); }
@@ -1791,6 +1791,37 @@ tr:hover td { background: var(--paper); }
 .admin-cta .ac-gold{ background:var(--gold); color:#1a1a18; }
 .admin-cta .ac-ghost{ background:transparent; color:#fff; border:1.5px solid rgba(255,255,255,.45); }
 .admin-cta .ac-ghost:hover{ border-color:#E7B85E; }
+
+/* ===== concrete lead in the foundation card ===== */
+.aog-what-lead{ font-size:17px; line-height:1.6; color:var(--navy); font-weight:500; margin:0 0 16px; padding-left:14px; border-left:3px solid var(--gold); }
+:root[data-theme="dark"] .aog-what-lead{ color:var(--gold-soft); }
+.aog-what-lead strong{ font-weight:700; }
+
+/* ===== student-journey flow ===== */
+.aog-flow{ display:flex; align-items:stretch; flex-wrap:nowrap; gap:0; margin:0; }
+@media(max-width:860px){ .aog-flow{ flex-direction:column; align-items:center; } }
+.flow-step{ flex:1 1 0; min-width:0; display:flex; flex-direction:column; align-items:center; text-align:center; gap:7px; background:var(--cream-deep); border:1px solid var(--rule); border-radius:13px; padding:15px 9px; }
+:root[data-theme="dark"] .flow-step{ border-color:rgba(242,201,100,.16); }
+.flow-step .fs-ic{ width:34px; height:34px; border-radius:9px; display:flex; align-items:center; justify-content:center; background:rgba(217,163,59,.10); border:1px solid rgba(217,163,59,.30); color:var(--navy); }
+:root[data-theme="dark"] .flow-step .fs-ic{ color:var(--gold-soft); }
+.flow-step .fs-ic svg{ width:18px; height:18px; }
+.flow-step .fs-t{ font-family:var(--font-sans); font-weight:700; font-size:12.5px; color:var(--navy); line-height:1.18; }
+:root[data-theme="dark"] .flow-step .fs-t{ color:var(--gold-soft); }
+.flow-step .fs-s{ font-size:11px; line-height:1.35; color:var(--ink-soft); }
+.flow-arr{ flex:0 0 auto; display:flex; align-items:center; justify-content:center; color:var(--gold); padding:0 5px; }
+.flow-arr svg{ width:18px; height:18px; }
+@media(max-width:860px){ .flow-step{ width:100%; max-width:340px; } .flow-arr{ transform:rotate(90deg); padding:7px 0; } }
+
+/* ===== how it's different ===== */
+.diff-list{ display:flex; flex-direction:column; gap:11px; }
+.diff-pt{ background:var(--cream-deep); border:1px solid var(--rule); border-left:3px solid var(--gold); border-radius:12px; padding:14px 18px; }
+:root[data-theme="dark"] .diff-pt{ border-color:rgba(242,201,100,.16); border-left-color:var(--gold); }
+.diff-pt .dp-h{ font-family:var(--font-sans); font-weight:700; font-size:14.5px; color:var(--navy); margin-bottom:4px; line-height:1.3; }
+:root[data-theme="dark"] .diff-pt .dp-h{ color:var(--gold-soft); }
+.diff-pt .dp-b{ font-size:13.2px; line-height:1.56; color:var(--ink); }
+.diff-pt .dp-b em{ color:var(--navy); font-style:italic; font-weight:600; }
+:root[data-theme="dark"] .diff-pt .dp-b em{ color:var(--gold-soft); }
+
 
 /* ===== welcome: Who it's for ===== */
 .hyb-whofor{ padding:6px 22px 2px; }
@@ -3097,6 +3128,8 @@ function toggleTheme(){
           <div class="eyebrow" style="color:var(--gold);" data-i18n="aog_what_ey">The Foundation</div>
           <h3 class="serif" style="font-size:27px; color:var(--navy); margin:4px 0 16px;" data-i18n="aog_what_h">What Is Architecture of Grace?</h3>
 
+          <p class="aog-what-lead" data-i18n-html="aog_what_lead">In plain terms &mdash; it&rsquo;s a developmental, secular SEL framework that combines <strong>honest self-reflection</strong>, <strong>universal screening</strong>, <strong>family engagement</strong>, <strong>literature-based learning</strong>, and <strong>practical intervention supports</strong> into one connected system &mdash; for students and adults alike, from kindergarten through adulthood.</p>
+
           <p style="font-size:15px; line-height:1.72; color:var(--ink); margin-bottom:14px;" data-i18n="aog_what_p1">Architecture of Grace is a human development framework and intuitive digital check-in platform designed to help individuals understand themselves, strengthen relationships, and navigate life&rsquo;s challenges with resilience, responsibility, and hope.</p>
 
           <p style="font-size:15px; line-height:1.72; color:var(--ink); margin-bottom:14px;" data-i18n="aog_what_p2">Built upon developmental psychology, social-emotional learning, reflective practice, and character formation, the framework provides a structured pathway for lifelong growth through lessons, assessments, conversations, and real-world application.</p>
@@ -3115,6 +3148,51 @@ function toggleTheme(){
 
       <div class="guide-section active" id="guide-docs">
       <div class="table-card" style="padding:28px 32px;">
+        <!-- student-journey flow -->
+        <div class="dm-sec" id="dm-flow">
+          <div class="dm-sec-ey">How it works</div>
+          <h3 class="serif">How a check-in becomes support</h3>
+          <p class="dm-sec-sub">Every piece hands off to the next &mdash; a check-in becomes a conversation, and a conversation becomes the right support.</p>
+          <div class="aog-flow">
+            <div class="flow-step">
+              <span class="fs-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1"/><path d="m9 14 2 2 4-4"/></svg></span>
+              <span class="fs-t">Student Check-In</span>
+              <span class="fs-s">A private K&ndash;12 self-report</span>
+            </div>
+            <span class="flow-arr"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></span>
+            <div class="flow-step">
+              <span class="fs-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg></span>
+              <span class="fs-t">Reflection</span>
+              <span class="fs-s">Their own words, in Thorough</span>
+            </div>
+            <span class="flow-arr"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></span>
+            <div class="flow-step">
+              <span class="fs-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/></svg></span>
+              <span class="fs-t">Family View</span>
+              <span class="fs-s">Caregivers see it at home</span>
+            </div>
+            <span class="flow-arr"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></span>
+            <div class="flow-step">
+              <span class="fs-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3v16a2 2 0 0 0 2 2h16"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/></svg></span>
+              <span class="fs-t">Teacher Insights</span>
+              <span class="fs-s">Class &amp; school dashboard</span>
+            </div>
+            <span class="flow-arr"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></span>
+            <div class="flow-step">
+              <span class="fs-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></span>
+              <span class="fs-t">Targeted Supports</span>
+              <span class="fs-s">Each flag &rarr; the right lesson</span>
+            </div>
+            <span class="flow-arr"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></span>
+            <div class="flow-step">
+              <span class="fs-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H19a1 1 0 0 1 1 1v18a1 1 0 0 1-1 1H6.5a1 1 0 0 1 0-5H20"/></svg></span>
+              <span class="fs-t">Literature Connections</span>
+              <span class="fs-s">The same idea, met as story</span>
+            </div>
+          </div>
+          <p style="font-size:12.8px; line-height:1.55; color:var(--ink-soft); margin:15px 0 0; padding-top:13px; border-top:1px dashed var(--rule);">That&rsquo;s the path in a school. On their own, an adult takes the <em style="color:var(--navy); font-style:italic; font-weight:600;">very same check-in</em> privately &mdash; the personal report and conversation starters are theirs alone. This is for every age, not only the classroom.</p>
+        </div>
+
         <!-- ===== DECISION-MAKER SURFACING (router · features · admin) ===== -->
         <!-- audience router -->
         <div class="dm-router">
@@ -3123,6 +3201,12 @@ function toggleTheme(){
             <div class="dm-r-t">I&rsquo;m a student</div>
             <div class="dm-r-s">Take a private few minutes for yourself &mdash; quick or thorough.</div>
             <div class="dm-r-go">Start the check-in &rarr;</div>
+          </a>
+          <a href="#" class="dm-route" onclick="event.preventDefault(); startAdult();">
+            <span class="dm-r-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span>
+            <div class="dm-r-t">I&rsquo;m an adult, for myself</div>
+            <div class="dm-r-s">A private few minutes just for you &mdash; with your own report and conversation starters.</div>
+            <div class="dm-r-go">Take the grown-up check-in &rarr;</div>
           </a>
           <a href="#" class="dm-route" onclick="event.preventDefault(); openFamily();">
             <span class="dm-r-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z"/><path d="M17 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z"/><path d="M2 21v-1a5 5 0 0 1 5-5"/><path d="M14 21v-1a5 5 0 0 1 5-5"/><path d="M11 21v-2a3 3 0 0 1 3-3"/></svg></span>
@@ -3173,6 +3257,27 @@ function toggleTheme(){
               <span class="plat-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 7h6v6"/><path d="m22 7-8.5 8.5-5-5L2 17"/></svg></span>
               <div class="plat-t">Progress Monitoring</div>
               <div class="plat-s">Growth tracked across Fall, Winter, and Spring windows, normalized 0&ndash;100 so any two responses compare directly.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- how it's different -->
+        <div class="dm-sec" id="dm-different">
+          <div class="dm-sec-ey">The difference</div>
+          <h3 class="serif">How Architecture of Grace is different</h3>
+          <p class="dm-sec-sub">Not a knock on other tools &mdash; just where this one stands apart from most SEL programs.</p>
+          <div class="diff-list">
+            <div class="diff-pt">
+              <div class="dp-h">Most tools either measure or teach. This connects the two.</div>
+              <div class="dp-b">Every check-in item traces to a construct the curriculum actually teaches, so a flag doesn&rsquo;t just sit on a chart &mdash; it points straight to the <em>exact lesson</em> that addresses it.</div>
+            </div>
+            <div class="diff-pt">
+              <div class="dp-h">The same ideas appear again as story.</div>
+              <div class="dp-b">A companion novel series runs alongside the curriculum, so students meet each idea twice &mdash; once as a skill to practice, once as a character&rsquo;s journey they can recognize themselves in.</div>
+            </div>
+            <div class="diff-pt">
+              <div class="dp-h">One file. Every scale. Private by default.</div>
+              <div class="dp-b">The same tool runs at a kitchen table, in one classroom, or across a district without changing &mdash; and every response stays on the device that took it, unless a school chooses to pool its own.</div>
             </div>
           </div>
         </div>
@@ -3978,6 +4083,7 @@ const I18N_UI = {
   fam_h1:         { en: "Your family\u2019s check-ins", es: "Los chequeos de tu familia" },
   fam_lede:       { en: "Add each child once, then check in together a few times a year. Everything stays on this device \u2014 see growth over time and print conversation starters.", es: "An\u0303ade a cada nin\u0303o/a una vez, y luego hagan chequeos juntos varias veces al an\u0303o. Todo se queda en este dispositivo: observa el progreso e imprime preguntas para conversar." },
   aog_what_h:     { en: "What Is Architecture of Grace?", es: "\u00bfQu\u00e9 es Architecture of Grace?" },
+  aog_what_lead:  { en: "In plain terms \u2014 it\u2019s a developmental, secular SEL framework that combines <strong>honest self-reflection</strong>, <strong>universal screening</strong>, <strong>family engagement</strong>, <strong>literature-based learning</strong>, and <strong>practical intervention supports</strong> into one connected system \u2014 for students and adults alike, from kindergarten through adulthood.", es: "En pocas palabras: es un marco de SEL evolutivo y laico que combina <strong>la reflexi\u00f3n personal sincera</strong>, <strong>el cribado universal</strong>, <strong>la participaci\u00f3n de las familias</strong>, <strong>el aprendizaje basado en la literatura</strong> y <strong>apoyos pr\u00e1cticos de intervenci\u00f3n</strong> en un solo sistema conectado, para estudiantes y adultos por igual, desde el k\u00ednder hasta la adultez." },
   aog_what_p1:    { en: "Architecture of Grace is a human development framework and intuitive digital check-in platform designed to help individuals understand themselves, strengthen relationships, and navigate life\u2019s challenges with resilience, responsibility, and hope.", es: "Architecture of Grace es un marco de desarrollo humano y una plataforma intuitiva de chequeo digital, dise\u00f1ada para ayudar a las personas a comprenderse a s\u00ed mismas, fortalecer sus relaciones y afrontar los desaf\u00edos de la vida con resiliencia, responsabilidad y esperanza." },
   aog_what_p2:    { en: "Built upon developmental psychology, social-emotional learning, reflective practice, and character formation, the framework provides a structured pathway for lifelong growth through lessons, assessments, conversations, and real-world application.", es: "Basado en la psicolog\u00eda del desarrollo, el aprendizaje socioemocional, la pr\u00e1ctica reflexiva y la formaci\u00f3n del car\u00e1cter, el marco ofrece un camino estructurado para el crecimiento a lo largo de la vida a trav\u00e9s de lecciones, evaluaciones, conversaciones y aplicaci\u00f3n en la vida real." },
   aog_what_p3:    { en: "By bridging the gap between deep personal development and daily practice, the platform empowers people to become the healthiest versions of themselves \u2014 ultimately reducing burnout, improving retention, and fostering a resilient culture across school districts and families.", es: "Al cerrar la brecha entre el desarrollo personal profundo y la pr\u00e1ctica diaria, la plataforma ayuda a las personas a convertirse en la versi\u00f3n m\u00e1s sana de s\u00ed mismas, reduciendo el agotamiento, mejorando la retenci\u00f3n y fomentando una cultura resiliente en los distritos escolares y las familias." },
