@@ -150,6 +150,10 @@ body::before {
 }
 .brand-sub { font-size: 10.5px; color: var(--ink-faint); letter-spacing: 0.05em; }
 .topbar-actions { display: flex; gap: 8px; align-items: center; }
+.topbar-back{ display:inline-flex; align-items:center; gap:6px; font-family:var(--font-sans); font-size:13px; font-weight:700; color:var(--navy); text-decoration:none; margin-right:16px; white-space:nowrap; cursor:pointer; }
+.topbar-back .tb-arr{ color:var(--gold); font-weight:700; }
+.topbar-back:hover{ color:var(--gold); }
+:root[data-theme="dark"] .topbar-back{ color:var(--cream); }
 
 .lang-toggle {
   display: inline-flex;
@@ -1701,6 +1705,15 @@ tr:hover td { background: var(--paper); }
 .hyb-statement .lead-line{font-family:var(--font-sans);font-weight:500;font-size:clamp(16px,1.9vw,21px);line-height:1.45;max-width:720px;margin:22px auto 0;color:rgba(244,238,226,.78)}
 .hyb-statement .pillar-line{font-family:var(--font-serif);font-weight:400;font-style:italic;font-size:clamp(19px,2.3vw,28px);line-height:1.3;margin:16px auto 0;color:var(--cream)}
 .hyb-statement .pillar-line em{font-style:italic;font-weight:600;color:var(--gold-soft);border-bottom:2px solid var(--gold-soft);padding-bottom:1px}
+#screen-welcome .hyb-hero{padding-bottom:48px}
+.hyb-onesent{position:relative;font-family:var(--font-sans);font-weight:500;font-size:clamp(17px,2vw,22px);line-height:1.5;color:rgba(244,238,226,.93);max-width:700px;margin:26px auto 0}
+.hyb-leaders{position:relative;margin:26px 0 0;padding-top:22px;border-top:1px solid rgba(242,201,100,.16)}
+.hyb-leaders .hl-ey{font-size:11px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--gold-soft);margin-bottom:11px}
+.hyb-leaders .hl-chips{display:flex;flex-wrap:wrap;justify-content:center;gap:8px}
+.hyb-leaders .hl-chip{font-family:var(--font-sans);font-weight:600;font-size:12.5px;color:var(--cream);background:rgba(244,238,226,.06);border:1px solid rgba(242,201,100,.30);border-radius:999px;padding:7px 14px}
+.hyb-leaders .hl-link{display:inline-block;margin-top:15px;font-family:var(--font-sans);font-weight:700;font-size:13.5px;color:var(--gold-soft);text-decoration:none}
+.hyb-leaders .hl-link:hover{color:#fff}
+@media(max-width:600px){.hyb-onesent{font-size:16px}}
 /* ===== four-pillar emblems (founder story) ===== */
 .pillar-grid{ display:flex; flex-direction:column; gap:9px; margin:6px 0 18px; }
 .pillar-card{ display:flex; align-items:flex-start; gap:14px; background:var(--cream-deep); border:1px solid var(--rule); border-radius:13px; padding:13px 16px; }
@@ -1719,6 +1732,9 @@ tr:hover td { background: var(--paper); }
 .doc-path .dp-t{ font-family:var(--font-sans); font-weight:700; font-size:13.5px; color:var(--navy); margin-bottom:4px; }
 :root[data-theme="dark"] .doc-path .dp-t{ color:var(--gold-soft); }
 .doc-path .dp-s{ font-size:13px; line-height:1.5; color:var(--ink-soft); }
+a.doc-path{ display:block; text-decoration:none; cursor:pointer; transition:border-color .18s, transform .18s, box-shadow .18s; }
+a.doc-path:hover{ border-color:var(--gold); transform:translateY(-2px); box-shadow:0 8px 20px rgba(27,58,95,.08); }
+a.doc-path .dp-t::after{ content:" \2192"; color:var(--gold); font-weight:700; }
 .doc-flag-note{ background:var(--cream-deep); border:1px solid var(--rule); border-left:4px solid var(--gold); border-radius:12px; padding:16px 20px; margin:10px 0 16px; }
 .doc-flag-note .dfn-label{ font-size:11px; font-weight:700; letter-spacing:.16em; text-transform:uppercase; color:var(--gold); margin-bottom:7px; }
 .doc-flag-note p{ font-size:14px; line-height:1.6; color:var(--ink); margin:0 0 8px; }
@@ -2191,6 +2207,7 @@ function toggleTheme(){
     </div>
   </a>
   <div class="topbar-actions">
+    <a id="topbarBack" class="topbar-back" href="#" onclick="event.preventDefault(); resetToStart();" style="display:none;"><span class="tb-arr">&larr;</span> <span data-i18n="nav_back_start">Back to start</span></a>
     <a class="topbar-link" href="#" onclick="event.preventDefault(); openAdmin();" data-i18n="w_door_results">Educator Access &middot; Results</a>
     <button id="themeToggle" class="theme-toggle" type="button" onclick="toggleTheme()" aria-label="Toggle dark mode" title="Toggle dark mode">
       <svg class="ti-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
@@ -2229,9 +2246,17 @@ function toggleTheme(){
         <span class="dot dot-mid"></span>
         <span class="word"><b data-i18n="hyb_b3">Built by a teacher</b></span>
       </div>
-      <div class="hyb-cta">
-        <a href="#" class="hyb-c1" onclick="event.preventDefault(); openGuide();"><span data-i18n="w_door_guide">Explore the Guide &amp; Library</span> &rarr;</a>
-        <a href="#" class="hyb-c2" onclick="event.preventDefault(); startChoose();" data-i18n="lobby_checkin_t">Take the Check-In</a>
+      <p class="hyb-onesent" data-i18n="hyb_onesent">A developmental SEL framework that identifies needs, connects them to lessons, and supports growth through curriculum, conversation, and literature.</p>
+      <div class="hyb-leaders">
+        <div class="hl-ey" data-i18n="lead_ey">For schools &amp; districts</div>
+        <div class="hl-chips">
+          <span class="hl-chip" data-i18n="lead_c1">Universal screening</span>
+          <span class="hl-chip" data-i18n="lead_c2">Tier identification</span>
+          <span class="hl-chip" data-i18n="lead_c3">Family engagement</span>
+          <span class="hl-chip" data-i18n="lead_c4">Growth monitoring</span>
+          <span class="hl-chip" data-i18n="lead_c5">Lesson alignment</span>
+        </div>
+        <a href="#" class="hl-link" onclick="event.preventDefault(); openGuide(); setTimeout(function(){ if(typeof dmScrollTo==='function') dmScrollTo('dm-admin'); }, 700);" data-i18n="lead_link">See what it does for a school &rarr;</a>
       </div>
     </section>
 
@@ -2267,10 +2292,10 @@ function toggleTheme(){
         <h3 class="serif home-who-h" data-i18n="doc_who_h">Four ways in, one framework</h3>
         <p class="whofor-lede" data-i18n-html="doc_who_p">The same eighteen items and the same care, worded for whoever is answering. Each path is already built into this file &mdash; choose the door that fits.</p>
         <div class="doc-paths">
-          <div class="doc-path"><div class="dp-t" data-i18n="doc_path_student_t">Students &middot; K&ndash;12</div><div class="dp-s" data-i18n-html="doc_path_student_s">A private self-reflection, quick or thorough, taken each season. The school view aggregates results for MTSS.</div></div>
-          <div class="doc-path"><div class="dp-t" data-i18n="doc_path_adult_t">Independent adults</div><div class="dp-s" data-i18n-html="doc_path_adult_s">The grown-up check-in &mdash; a private few minutes for yourself, with a full personal report and conversation starters. Nothing is routed to anyone else.</div></div>
-          <div class="doc-path"><div class="dp-t" data-i18n="doc_path_family_t">Families &middot; at home</div><div class="dp-s" data-i18n-html="doc_path_family_s">Family Mode keeps each child on this device, tracked across the year, with printable conversation starters for the kitchen table.</div></div>
-          <div class="doc-path"><div class="dp-t" data-i18n="doc_path_clin_t">Counselors &amp; clinicians</div><div class="dp-s" data-i18n-html="doc_path_clin_s">Use Thorough mode for the fuller instrument and the per-person Home View. The separate Clinical Edition deepens the framework for clinical settings.</div></div>
+          <a href="#" class="doc-path" onclick="event.preventDefault(); startCheckin()"><div class="dp-t" data-i18n="doc_path_student_t">Students &middot; K&ndash;12</div><div class="dp-s" data-i18n-html="doc_path_student_s">A private self-reflection, quick or thorough, taken each season. The school view aggregates results for MTSS.</div></a>
+          <a href="#" class="doc-path" onclick="event.preventDefault(); startAdult()"><div class="dp-t" data-i18n="doc_path_adult_t">Independent adults</div><div class="dp-s" data-i18n-html="doc_path_adult_s">The grown-up check-in &mdash; a private few minutes for yourself, with a full personal report and conversation starters. Nothing is routed to anyone else.</div></a>
+          <a href="#" class="doc-path" onclick="event.preventDefault(); openFamily()"><div class="dp-t" data-i18n="doc_path_family_t">Families &middot; at home</div><div class="dp-s" data-i18n-html="doc_path_family_s">Family Mode keeps each child on this device, tracked across the year, with printable conversation starters for the kitchen table.</div></a>
+          <a href="#" class="doc-path" onclick="event.preventDefault(); openAdmin()"><div class="dp-t" data-i18n="doc_path_clin_t">Counselors &amp; clinicians</div><div class="dp-s" data-i18n-html="doc_path_clin_s">Use Thorough mode for the fuller instrument and the per-person Home View. The separate Clinical Edition deepens the framework for clinical settings.</div></a>
         </div>
       </div>
     </section>
@@ -3217,33 +3242,17 @@ function toggleTheme(){
           <p style="font-size:12.8px; line-height:1.55; color:var(--ink-soft); margin:15px 0 0; padding-top:13px; border-top:1px dashed var(--rule);">That&rsquo;s the path in a school. On their own, an adult takes the <em style="color:var(--navy); font-style:italic; font-weight:600;">very same check-in</em> privately &mdash; the personal report and conversation starters are theirs alone. This is for every age, not only the classroom.</p>
         </div>
 
-        <!-- ===== DECISION-MAKER SURFACING (router · features · admin) ===== -->
-        <!-- audience router -->
-        <div class="dm-router">
-          <a href="#" class="dm-route" onclick="event.preventDefault(); startCheckin();">
-            <span class="dm-r-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21.42 10.922a1 1 0 0 0-.019-1.838L12.83 5.18a2 2 0 0 0-1.66 0L2.6 9.08a1 1 0 0 0 0 1.832l8.57 3.908a2 2 0 0 0 1.66 0z"/><path d="M22 10v6"/><path d="M6 12.5V16a6 3 0 0 0 12 0v-3.5"/></svg></span>
-            <div class="dm-r-t">I&rsquo;m a student</div>
-            <div class="dm-r-s">Take a private few minutes for yourself &mdash; quick or thorough.</div>
-            <div class="dm-r-go">Start the check-in &rarr;</div>
-          </a>
-          <a href="#" class="dm-route" onclick="event.preventDefault(); startAdult();">
-            <span class="dm-r-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span>
-            <div class="dm-r-t">I&rsquo;m an adult, for myself</div>
-            <div class="dm-r-s">A private few minutes just for you &mdash; with your own report and conversation starters.</div>
-            <div class="dm-r-go">Take the grown-up check-in &rarr;</div>
-          </a>
-          <a href="#" class="dm-route" onclick="event.preventDefault(); openFamily();">
-            <span class="dm-r-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z"/><path d="M17 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z"/><path d="M2 21v-1a5 5 0 0 1 5-5"/><path d="M14 21v-1a5 5 0 0 1 5-5"/><path d="M11 21v-2a3 3 0 0 1 3-3"/></svg></span>
-            <div class="dm-r-t">I&rsquo;m a parent or family</div>
-            <div class="dm-r-s">Add each child once, track them across the year, print conversation starters.</div>
-            <div class="dm-r-go">Open Family Mode &rarr;</div>
-          </a>
-          <a href="#" class="dm-route" onclick="event.preventDefault(); dmScrollTo('dm-platform');">
-            <span class="dm-r-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3v16a2 2 0 0 0 2 2h16"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/></svg></span>
-            <div class="dm-r-t">I&rsquo;m an educator or leader</div>
-            <div class="dm-r-s">See what the platform includes and what it does for a school or district.</div>
-            <div class="dm-r-go">See what it does &darr;</div>
-          </a>
+        <!-- ===== DECISION-MAKER SURFACING (who it’s for · features · admin) ===== -->
+        <div class="doc-who">
+          <div class="eyebrow" style="color:var(--gold);" data-i18n="doc_who_ey">Who it&rsquo;s for</div>
+          <h3 class="serif" style="font-size:22px; color:var(--navy); margin:4px 0 6px;" data-i18n="doc_who_h">Four ways in, one framework</h3>
+          <p style="font-size:14.5px; line-height:1.65; color:var(--ink); margin:0;" data-i18n-html="doc_who_p">The same eighteen items and the same care, worded for whoever is answering. Each path is already built into this file &mdash; choose the door that fits.</p>
+          <div class="doc-paths">
+            <a href="#" class="doc-path" onclick="event.preventDefault(); startCheckin()"><div class="dp-t" data-i18n="doc_path_student_t">Students &middot; K&ndash;12</div><div class="dp-s" data-i18n-html="doc_path_student_s">A private self-reflection, quick or thorough, taken each season. The school view aggregates results for MTSS.</div></a>
+            <a href="#" class="doc-path" onclick="event.preventDefault(); startAdult()"><div class="dp-t" data-i18n="doc_path_adult_t">Independent adults</div><div class="dp-s" data-i18n-html="doc_path_adult_s">The grown-up check-in &mdash; a private few minutes for yourself, with a full personal report and conversation starters. Nothing is routed to anyone else.</div></a>
+            <a href="#" class="doc-path" onclick="event.preventDefault(); openFamily()"><div class="dp-t" data-i18n="doc_path_family_t">Families &middot; at home</div><div class="dp-s" data-i18n-html="doc_path_family_s">Family Mode keeps each child on this device, tracked across the year, with printable conversation starters for the kitchen table.</div></a>
+            <a href="#" class="doc-path" onclick="event.preventDefault(); openAdmin()"><div class="dp-t" data-i18n="doc_path_clin_t">Counselors &amp; clinicians</div><div class="dp-s" data-i18n-html="doc_path_clin_s">Use Thorough mode for the fuller instrument and the per-person Home View. The separate Clinical Edition deepens the framework for clinical settings.</div></a>
+          </div>
         </div>
 
         <!-- what this platform includes -->
@@ -3344,18 +3353,6 @@ function toggleTheme(){
           <div class="admin-cta">
             <a href="#" class="ac-gold" onclick="event.preventDefault(); openGuideSub('library');">Request district pricing &rarr;</a>
             <a href="#" class="ac-ghost" onclick="event.preventDefault(); openAdmin();">Educator access &middot; results</a>
-          </div>
-        </div>
-
-        <div class="doc-who">
-          <div class="eyebrow" style="color:var(--gold);" data-i18n="doc_who_ey">Who it&rsquo;s for</div>
-          <h3 class="serif" style="font-size:22px; color:var(--navy); margin:4px 0 6px;" data-i18n="doc_who_h">Four ways in, one framework</h3>
-          <p style="font-size:14.5px; line-height:1.65; color:var(--ink); margin:0;" data-i18n-html="doc_who_p">The same eighteen items and the same care, worded for whoever is answering. Each path is already built into this file &mdash; choose the door that fits.</p>
-          <div class="doc-paths">
-            <div class="doc-path"><div class="dp-t" data-i18n="doc_path_student_t">Students &middot; K&ndash;12</div><div class="dp-s" data-i18n-html="doc_path_student_s">A private self-reflection, quick or thorough, taken each season. The school view aggregates results for MTSS.</div></div>
-            <div class="doc-path"><div class="dp-t" data-i18n="doc_path_adult_t">Independent adults</div><div class="dp-s" data-i18n-html="doc_path_adult_s">The grown-up check-in &mdash; a private few minutes for yourself, with a full personal report and conversation starters. Nothing is routed to anyone else.</div></div>
-            <div class="doc-path"><div class="dp-t" data-i18n="doc_path_family_t">Families &middot; at home</div><div class="dp-s" data-i18n-html="doc_path_family_s">Family Mode keeps each child on this device, tracked across the year, with printable conversation starters for the kitchen table.</div></div>
-            <div class="doc-path"><div class="dp-t" data-i18n="doc_path_clin_t">Counselors &amp; clinicians</div><div class="dp-s" data-i18n-html="doc_path_clin_s">Use Thorough mode for the fuller instrument and the per-person Home View. The separate Clinical Edition deepens the framework for clinical settings.</div></div>
           </div>
         </div>
 
@@ -4226,6 +4223,14 @@ const I18N_UI = {
   hyb_b2:            { es: "Para estudiantes y adultos" },
   hyb_b3:            { es: "Creado por un maestro" },
   hyb_madefor:       { es: "Creado para" },
+  hyb_onesent:       { en: "A developmental SEL framework that identifies needs, connects them to lessons, and supports growth through curriculum, conversation, and literature.", es: "Un marco de SEL evolutivo que identifica necesidades, las conecta con lecciones y apoya el crecimiento a trav\u00e9s del curr\u00edculo, la conversaci\u00f3n y la literatura." },
+  lead_ey:           { en: "For schools & districts", es: "Para escuelas y distritos" },
+  lead_c1:           { en: "Universal screening", es: "Cribado universal" },
+  lead_c2:           { en: "Tier identification", es: "Identificaci\u00f3n de niveles" },
+  lead_c3:           { en: "Family engagement", es: "Participaci\u00f3n familiar" },
+  lead_c4:           { en: "Growth monitoring", es: "Seguimiento del progreso" },
+  lead_c5:           { en: "Lesson alignment", es: "Alineaci\u00f3n con lecciones" },
+  lead_link:         { en: "See what it does for a school \u2192", es: "Vea lo que ofrece a una escuela \u2192" },
   hyb_emo:           { es: "Este es un proyecto sobre las relaciones \u2014 la que construyes contigo mismo/a, y las que compartes con los dem\u00e1s." },
   hyb_lead:          { es: "El chequeo (desde K hasta adultos), las preguntas para conversar, las novelas complementarias, los cuatro pilares \u2014 cada pieza lleva al mismo lugar: conocernos a nosotros mismos y acercarnos los unos a los otros." },
   hyb_pillars:       { es: "Basado en <em>identidad</em>, <em>autocompasi\u00f3n</em>, <em>perd\u00f3n</em> y <em>gracia</em> \u2014 la base sobre la que se sostiene toda relaci\u00f3n sana." },
@@ -4440,6 +4445,7 @@ function setLang(newLang) {
 function showScreen(id) {
   $$(".screen").forEach(s => s.classList.remove("active"));
   $("#" + id).classList.add("active");
+  try { var _tbk=document.getElementById("topbarBack"); if(_tbk) _tbk.style.display = (id==="screen-welcome") ? "none" : ""; } catch(e){}
   window.scrollTo({ top: 0, behavior: "smooth" });
   try {
     var fab = document.getElementById("tourFab");
