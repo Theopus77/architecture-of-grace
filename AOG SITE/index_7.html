@@ -2384,6 +2384,10 @@ function toggleTheme(){
 <!-- ============ CHECK-IN (its own screen) ============ -->
 <section id="screen-checkin" class="screen">
   <div class="container">
+    <div class="nav-row" style="justify-content:flex-start; gap:10px; margin-bottom:2px;">
+      <button class="btn btn-ghost" onclick="startChoose()"><span class="btn-arrow">&larr;</span> <span data-i18n="nav_back">Back</span></button>
+      <button class="btn btn-ghost" onclick="resetToStart()" data-i18n="nav_back_start">Back to start</button>
+    </div>
 <div id="checkin-funnel">
 <div class="hero hero-center">
       <div class="eyebrow" id="checkinEyebrow" data-i18n="w_screener_ey">Universal Check-In &middot; K&ndash;12</div>
@@ -2497,6 +2501,10 @@ function toggleTheme(){
   .support-card strong{ color:var(--navy); }
   </style>
   <div class="container">
+    <div class="nav-row" style="justify-content:flex-start; gap:10px; margin-bottom:2px;">
+      <button class="btn btn-ghost" onclick="startChoose()"><span class="btn-arrow">&larr;</span> <span data-i18n="nav_back">Back</span></button>
+      <button class="btn btn-ghost" onclick="resetToStart()" data-i18n="nav_back_start">Back to start</button>
+    </div>
     <div class="hero hero-center">
       <div class="eyebrow" data-i18n="ad_ey">A check-in for grown-ups</div>
       <h1 class="display display-xl" data-i18n="ad_h1">How are you doing, really?</h1>
@@ -2563,8 +2571,7 @@ function toggleTheme(){
       </div>
     </div>
 
-    <div class="nav-row" style="justify-content:space-between;">
-      <button class="btn btn-ghost" onclick="resetToStart()" data-i18n="ad_back">Back</button>
+    <div class="nav-row" style="justify-content:flex-end;">
       <button class="btn" id="btnStartAdult">
         <span data-i18n="ad_begin">Begin Check-In</span>
         <span class="btn-arrow">&rarr;</span>
@@ -2577,6 +2584,10 @@ function toggleTheme(){
 <!-- ============ SURVEY ============ -->
 <section id="screen-survey" class="screen">
   <div class="container survey-stage">
+    <div class="nav-row" style="justify-content:flex-start; margin-bottom:2px;">
+      <button class="btn btn-ghost" onclick="resetToStart()"><span class="btn-arrow">&larr;</span> <span data-i18n="nav_back_start">Back to start</span></button>
+    </div>
+
     <div class="progress-bar">
       <div class="progress-meta">
         <span data-i18n="s_question">Question</span> <span id="qNum">1</span> <span data-i18n="s_of">of</span> <span id="qTotal">18</span>
@@ -2604,6 +2615,10 @@ function toggleTheme(){
 <!-- ============ REFLECTION (Depth mode only) ============ -->
 <section id="screen-reflection" class="screen">
   <div class="container survey-stage">
+    <div class="nav-row" style="justify-content:flex-start; margin-bottom:2px;">
+      <button class="btn btn-ghost" onclick="resetToStart()"><span class="btn-arrow">&larr;</span> <span data-i18n="nav_back_start">Back to start</span></button>
+    </div>
+
     <div class="progress-bar">
       <div class="progress-meta" id="reflectionProgress">Reflection 1 of 3</div>
       <div class="progress-track"><div class="progress-fill" id="reflectionProgressFill"></div></div>
@@ -2630,6 +2645,9 @@ function toggleTheme(){
 <!-- ============ THANKS ============ -->
 <section id="screen-thanks" class="screen">
   <div class="container">
+    <div class="nav-row" style="justify-content:flex-start; margin-bottom:2px;">
+      <button class="btn btn-ghost" onclick="resetToStart()"><span class="btn-arrow">&larr;</span> <span data-i18n="nav_back_start">Back to start</span></button>
+    </div>
     <div class="thanks-stage">
       <div class="thanks-mark">&#10003;</div>
       <h1 class="display display-lg" data-i18n="t_h1">Thank you.</h1>
@@ -2647,6 +2665,9 @@ function toggleTheme(){
 <!-- ============ CLOSING WORD ============ -->
 <section id="screen-closing" class="screen">
   <div class="container">
+    <div class="nav-row" style="justify-content:flex-start; margin-bottom:2px;">
+      <button class="btn btn-ghost" onclick="resetToStart()"><span class="btn-arrow">&larr;</span> <span data-i18n="nav_back_start">Back to start</span></button>
+    </div>
     <div class="hero" style="padding-top:48px;">
       <div class="eyebrow" data-i18n="c_eyebrow">A closing reflection &middot; just for you</div>
       <h1 class="display display-lg" data-i18n="c_h1">Name something true about yourself.</h1>
@@ -2668,6 +2689,9 @@ function toggleTheme(){
 <!-- ============ FAREWELL ============ -->
 <section id="screen-farewell" class="screen">
   <div class="container">
+    <div class="nav-row" style="justify-content:flex-start; margin-bottom:2px;">
+      <button class="btn btn-ghost" onclick="resetToStart()"><span class="btn-arrow">&larr;</span> <span data-i18n="nav_back_start">Back to start</span></button>
+    </div>
     <div class="thanks-stage">
       <div class="eyebrow" data-i18n="f_eyebrow">Take it with you</div>
       <h1 class="display display-lg" id="farewellWord" style="color:var(--gold); font-style:italic; margin-bottom:24px;">&mdash;</h1>
@@ -4052,6 +4076,8 @@ const I18N_UI = {
   ch_h1:        { en: "Who’s checking in?", es: "¿Quién hace el chequeo?" },
   ch_lede:      { en: "Same three areas, the same care — just worded for who’s answering. Choose one to begin.", es: "Las mismas tres áreas, el mismo cuidado — solo redactado según quién responde. Elige uno para empezar." },
   ch_back:      { en: "Back to start", es: "Volver al inicio" },
+  nav_back:       { en: "Back", es: "Atr\u00e1s" },
+  nav_back_start: { en: "Back to start", es: "Volver al inicio" },
   ch_student_t: { en: "Student Check-In", es: "Chequeo para estudiantes" },
   ch_student_s: { en: "K–12 · a private 5-minute self-reflection. Quick, or thorough.", es: "K–12 · una reflexión privada de 5 minutos. Rápida o a fondo." },
   ad_ey:        { en: "A check-in for grown-ups", es: "Un chequeo para adultos" },
