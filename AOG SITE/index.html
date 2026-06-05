@@ -2372,30 +2372,28 @@ function toggleTheme() {
           <div class="t" data-i18n="lobby_checkin_t">Take the Check-In</div>
           <div class="s" data-i18n="lobby_checkin_s">A private few minutes for yourself &mdash; student or adult.</div>
         </a>
+        <a href="#" class="hc-card" onclick="event.preventDefault(); openAbout();">
+          <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg></div>
+          <div class="t" data-i18n="aog_about_t">What it is</div>
+          <div class="s" data-i18n="aog_about_s">What Architecture of Grace is &mdash; and how it&rsquo;s different.</div>
+        </a>
         <a href="#" class="hc-card" onclick="event.preventDefault(); openGuide();">
           <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg></div>
           <div class="t" data-i18n="aog_edu_t">For educators</div>
           <div class="s" data-i18n="aog_edu_s">The framework, the ecosystem map, and the full resource index.</div>
-        </a>
-        <a href="#" class="hc-card" onclick="event.preventDefault(); openWorkplace();">
-          <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg></div>
-          <div class="t" data-i18n="wp_band_t">For workplaces &amp; teams</div>
-          <div class="s" data-i18n="wp_band_s">A private check-in for the people who hold others.</div>
         </a>
         <a href="#" class="hc-card" onclick="event.preventDefault(); openGuide(); setTimeout(function(){ if(typeof dmScrollTo==='function') dmScrollTo('dm-admin'); }, 700);">
           <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21h18"/><path d="M5 21V8l7-4 7 4v13"/><path d="M9 21v-6h6v6"/></svg></div>
           <div class="t" data-i18n="lead_ey">For schools &amp; districts</div>
           <div class="s">Screening, tiering, and growth monitoring in one tool.</div>
         </a>
-        <a href="#" class="hc-card" onclick="event.preventDefault(); openAbout();">
-          <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg></div>
-          <div class="t" data-i18n="aog_about_t">What it is</div>
-          <div class="s" data-i18n="aog_about_s">What Architecture of Grace is &mdash; and how it&rsquo;s different.</div>
-        </a>
-        <a href="#" class="hc-card" onclick="event.preventDefault(); var f=document.querySelector('.hyb-free'); if(f) f.scrollIntoView({behavior:'smooth',block:'start'});">
-          <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg></div>
-          <div class="t" data-i18n="dl_free_h">Free to read &amp; download</div>
-          <div class="s" data-i18n="aog_lib_s">Every chapter preview, sample lesson, and downloadable &mdash; free, no sign-up.</div>
+        <a href="#" class="hc-card hc-trust" onclick="event.preventDefault(); openWorkplace();">
+          <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg></div>
+          <div class="tx">
+            <div class="t" data-i18n="wp_band_t">For workplaces &amp; teams</div>
+            <div class="s" data-i18n="wp_band_s">A private check-in for the people who hold others.</div>
+          </div>
+          <span class="arr" aria-hidden="true">&rarr;</span>
         </a>
         <a href="#" class="hc-card hc-trust" onclick="event.preventDefault(); aogGoStore();">
           <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg></div>
@@ -2455,14 +2453,6 @@ function toggleTheme() {
       </div>
     </section>
 
-    <!-- ===== FREE PREVIEWS (front page) ===== -->
-    <section class="hyb-free reveal">
-      <div class="hyb-free-inner">
-        <h3 class="serif hyb-free-h" data-i18n="dl_free_h">Free to read &amp; download</h3>
-        <p class="hyb-free-lede" data-i18n="dl_free_sub">Every chapter preview and sample lesson, in one place &mdash; no code, no purchase, no sign-up. Open or download any of them.</p>
-        <div id="freeShelfHome" class="free-shelf"></div>
-      </div>
-    </section>
 
   </div>
 </section>
@@ -2476,7 +2466,7 @@ function toggleTheme() {
     <div class="hero hero-center">
       <div class="eyebrow" data-i18n="ch_ey">The Check-In</div>
       <h1 class="display display-xl" data-i18n="ch_h1">Who&rsquo;s checking in?</h1>
-      <p class="lede" data-i18n="ch_lede">Same four areas, the same care &mdash; just worded for who&rsquo;s answering. Choose one to begin.</p>
+      <p class="lede" data-i18n="ch_lede">The same four ideas &mdash; identity, self-compassion, forgiveness, and grace &mdash; the same care, just worded for who&rsquo;s answering. Choose one to begin.</p>
     </div>
     <div class="aog-lobby">
       <div class="aog-doors">
@@ -5733,8 +5723,8 @@ const I18N_UI = {
     es: "¿Quién hace el chequeo?"
   },
   ch_lede: {
-    en: "Same four areas, the same care — just worded for who’s answering. Choose one to begin.",
-    es: "Las mismas cuatro áreas, el mismo cuidado — solo redactado según quién responde. Elige uno para empezar."
+    en: "The same four ideas — identity, self-compassion, forgiveness, and grace — the same care, just worded for who’s answering. Choose one to begin.",
+    es: "Las mismas cuatro ideas — identidad, autocompasión, perdón y gracia — el mismo cuidado, solo redactado según quién responde. Elige uno para empezar."
   },
   ch_back: {
     en: "Back to start",
