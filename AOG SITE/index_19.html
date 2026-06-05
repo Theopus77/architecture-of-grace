@@ -1733,10 +1733,10 @@ tr:hover td { background: var(--paper); }
 #screen-welcome .hyb-hero{padding-bottom:48px}
 .hyb-onesent{position:relative;font-family:var(--font-sans);font-weight:500;font-size:clamp(17px,2vw,22px);line-height:1.5;color:rgba(244,238,226,.93);max-width:700px;margin:26px auto 0}
 .hyb-forall{position:relative;font-family:var(--font-serif);font-style:italic;font-weight:500;font-size:clamp(18px,2.1vw,24px);line-height:1.4;color:var(--cream);max-width:660px;margin:20px auto 0}
-.hyb-leaders{position:relative;margin:26px 0 0;padding-top:22px;border-top:1px solid rgba(242,201,100,.16)}
+.hyb-leaders{position:relative;margin:26px 0 0;padding-top:22px;border-top:1px solid rgba(242,201,100,.28)}
 .hyb-leaders .hl-ey{font-size:11px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--gold-soft);margin-bottom:11px}
 .hyb-leaders .hl-chips{display:flex;flex-wrap:wrap;justify-content:center;gap:8px}
-.hyb-leaders .hl-chip{font-family:var(--font-sans);font-weight:600;font-size:12.5px;color:var(--cream);background:rgba(244,238,226,.06);border:1px solid rgba(242,201,100,.30);border-radius:999px;padding:7px 14px}
+.hyb-leaders .hl-chip{font-family:var(--font-sans);font-weight:600;font-size:12.5px;color:#fff;background:rgba(242,201,100,.14);border:1px solid rgba(242,201,100,.6);border-radius:999px;padding:7px 14px;box-shadow:0 1px 0 rgba(0,0,0,.15)}
 .hyb-leaders .hl-link{display:inline-block;margin-top:15px;font-family:var(--font-sans);font-weight:700;font-size:13.5px;color:var(--gold-soft);text-decoration:none}
 .hyb-leaders .hl-link:hover{color:#fff}
 @media(max-width:600px){.hyb-onesent{font-size:16px}}
@@ -2314,6 +2314,41 @@ function toggleTheme(){
       <p class="pillar-line" data-i18n-html="hyb_pillars">Built on <em>identity</em>, <em>self-compassion</em>, <em>forgiveness</em>, and <em>grace</em> &mdash; the ground every healthy relationship stands on.</p>
     </section>
 
+    <!-- ===== WORKPLACE BAND (corporate-wellness entry) ===== -->
+    <div class="wp-band-mat">
+    <a href="#" class="wp-front-band reveal" onclick="event.preventDefault(); openWorkplace();">
+      <style>
+      /* navy mat removes the cream island behind the gold band; flows out of the statement above */
+      .wp-band-mat{ margin:0; padding:26px 7vw; background:var(--navy); }
+      :root[data-theme="dark"] .wp-band-mat{ background:transparent; padding:14px 7vw; }
+      /* DAY MODE (default): bold gold band so it pops on cream */
+      .wp-front-band{ display:flex; align-items:center; gap:18px; max-width:780px; margin:0 auto; padding:18px 24px;
+        background:linear-gradient(135deg,var(--gold-soft),var(--gold)); border:1px solid rgba(154,111,36,.45); border-radius:16px;
+        text-decoration:none; box-shadow:var(--shadow-md); transition:transform .15s var(--ease), box-shadow .15s var(--ease); }
+      .wp-front-band:hover{ transform:translateY(-2px); box-shadow:var(--shadow-lg); }
+      .wp-front-band .ic{ width:42px; height:42px; flex:0 0 auto; border-radius:10px; background:rgba(10,30,51,.13); color:var(--navy); display:grid; place-items:center; }
+      .wp-front-band .ic svg{ width:22px; height:22px; }
+      .wp-front-band .tx{ flex:1 1 auto; }
+      .wp-front-band .tx .t{ font-family:var(--font-serif); font-size:18px; font-weight:600; color:var(--navy); line-height:1.25; }
+      .wp-front-band .tx .s{ font-size:13px; color:rgba(10,30,51,.74); margin-top:2px; }
+      .wp-front-band .arr{ color:var(--navy); font-size:20px; flex:0 0 auto; }
+      /* DARK MODE: keep the navy band (the version Jimmy likes) */
+      :root[data-theme="dark"] .wp-front-band{ background:linear-gradient(165deg,var(--navy-soft,#13314F),var(--navy)); border:1px solid #1E4A72; box-shadow:var(--shadow-sm); }
+      :root[data-theme="dark"] .wp-front-band .ic{ background:rgba(242,201,100,.18); color:var(--gold-soft); }
+      :root[data-theme="dark"] .wp-front-band .tx .t{ color:#fff; }
+      :root[data-theme="dark"] .wp-front-band .tx .s{ color:#C2CEDD; }
+      :root[data-theme="dark"] .wp-front-band .arr{ color:var(--gold-soft); }
+      @media (max-width:560px){ .wp-front-band .tx .s{ display:none; } }
+      </style>
+      <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg></span>
+      <span class="tx">
+        <span class="t" data-i18n="wp_band_t">For workplaces &amp; teams</span>
+        <span class="s" data-i18n="wp_band_s">You can&rsquo;t co-regulate from an empty cup. A private check-in for the people who hold others.</span>
+      </span>
+      <span class="arr">&rarr;</span>
+    </a>
+    </div>
+
     <!-- ===== DOORS ===== -->
     <div class="hyb-doors reveal">
       <a href="#" class="hyb-door prim" onclick="event.preventDefault(); openGuide();">
@@ -2345,11 +2380,12 @@ function toggleTheme(){
     <section class="hyb-whofor reveal">
       <div class="whofor-inner">
         <div class="eyebrow home-who-ey" style="color:var(--gold);" data-i18n="doc_who_ey">Who it&rsquo;s for</div>
-        <h3 class="serif home-who-h" data-i18n="doc_who_h">Four ways in, one framework</h3>
+        <h3 class="serif home-who-h" data-i18n="doc_who_h">Five ways in, one framework</h3>
         <p class="whofor-lede" data-i18n-html="doc_who_p">The same eighteen items and the same care, worded for whoever is answering. Each path is already built into this file &mdash; choose the door that fits.</p>
         <div class="doc-paths">
           <a href="#" class="doc-path" onclick="event.preventDefault(); startCheckin()"><div class="dp-t" data-i18n="doc_path_student_t">Students &middot; K&ndash;12</div><div class="dp-s" data-i18n-html="doc_path_student_s">A private self-reflection, quick or thorough, taken each season. The school view aggregates results for MTSS.</div></a>
           <a href="#" class="doc-path" onclick="event.preventDefault(); startAdult()"><div class="dp-t" data-i18n="doc_path_adult_t">Independent adults</div><div class="dp-s" data-i18n-html="doc_path_adult_s">The grown-up check-in &mdash; a private few minutes for yourself, with a full personal report and conversation starters. Nothing is routed to anyone else.</div></a>
+          <a href="#" class="doc-path" onclick="event.preventDefault(); openWorkplace()"><div class="dp-t" data-i18n="doc_path_work_t">Workplaces &amp; teams</div><div class="dp-s" data-i18n-html="doc_path_work_s">For the people who hold others &mdash; educators, nurses, leaders, caregivers. A private check-in (and a 60-second burnout read) on the device, routed to no one.</div></a>
           <a href="#" class="doc-path" onclick="event.preventDefault(); openFamily()"><div class="dp-t" data-i18n="doc_path_family_t">Families &middot; at home</div><div class="dp-s" data-i18n-html="doc_path_family_s">Family Mode keeps each child on this device, tracked across the year, with printable conversation starters for the kitchen table.</div></a>
           <a href="#" class="doc-path" onclick="event.preventDefault(); openAdmin()"><div class="dp-t" data-i18n="doc_path_clin_t">Counselors &amp; clinicians</div><div class="dp-s" data-i18n-html="doc_path_clin_s">Use Thorough mode for the fuller instrument and the per-person Home View. The separate Clinical Edition deepens the framework for clinical settings.</div></a>
         </div>
@@ -2454,6 +2490,14 @@ function toggleTheme(){
             <div>
               <div class="t" data-i18n="ch_family_t">Family Mode</div>
               <div class="s" data-i18n="ch_family_s">For parents at home &mdash; add each child once and track them across the year, with conversation starters you can print.</div>
+            </div>
+            <span class="arr">&rarr;</span>
+          </a>
+          <a href="#" class="aog-door secondary choose-card choose-adult" onclick="event.preventDefault(); openWorkplace();">
+            <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg></span>
+            <div>
+              <div class="t" data-i18n="wp_card_t">Workplaces &amp; teams</div>
+              <div class="s" data-i18n="wp_card_s">For the people who hold others &mdash; educators, nurses, leaders, caregivers. You can&rsquo;t co-regulate from an empty cup.</div>
             </div>
             <span class="arr">&rarr;</span>
           </a>
@@ -2663,6 +2707,272 @@ function toggleTheme(){
   </div>
 </section>
 
+
+
+<!-- ============ WORKPLACE / TEAMS (corporate wellness front door) ============ -->
+<section id="screen-workplace" class="screen">
+  <style>
+  /* scoped wp- styles; reuse global tokens (navy/gold/Fraunces/Inter) */
+  .wp-wrap{ max-width:880px; margin:0 auto; }
+  .wp-eyebrow-rule{ display:flex; align-items:center; justify-content:center; gap:14px; margin:2px 0 14px; }
+  .wp-eyebrow-rule .ln{ height:1px; width:46px; background:linear-gradient(90deg,transparent,var(--gold)); }
+  .wp-eyebrow-rule .ln.r{ background:linear-gradient(90deg,var(--gold),transparent); }
+  .wp-thesis{ max-width:760px; margin:30px auto 6px; text-align:center; }
+  .wp-thesis p{ font-family:var(--font-serif); font-size:23px; line-height:1.5; color:var(--ink); font-weight:500; }
+  .wp-thesis p em{ color:var(--gold-deep,#9a6f24); font-style:italic; }
+  .wp-beats{ display:grid; grid-template-columns:repeat(3,1fr); gap:14px; max-width:780px; margin:26px auto 4px; }
+  .wp-beat{ background:var(--paper); border:1px solid var(--rule); border-radius:14px; padding:18px 16px; text-align:center; }
+  .wp-beat .bt{ font-family:var(--font-serif); font-size:18px; font-weight:600; color:var(--navy); margin-bottom:4px; }
+  .wp-beat .bs{ font-size:13px; line-height:1.5; color:var(--ink-soft); }
+  .wp-section-head{ text-align:center; max-width:680px; margin:54px auto 22px; }
+  .wp-section-head .ey{ font-family:var(--font-sans); font-size:12px; font-weight:700; letter-spacing:.14em; text-transform:uppercase; color:var(--gold-deep,#9a6f24); margin-bottom:8px; }
+  .wp-section-head h2{ font-family:var(--font-serif); font-size:30px; font-weight:600; color:var(--navy); line-height:1.2; }
+  .wp-section-head p{ font-size:15px; line-height:1.65; color:var(--ink-soft); margin-top:10px; }
+  .wp-who{ display:grid; grid-template-columns:repeat(3,1fr); gap:14px; max-width:840px; margin:0 auto; }
+  .wp-who-card{ background:var(--paper); border:1px solid var(--rule); border-radius:14px; padding:18px; transition:transform .15s var(--ease), box-shadow .15s var(--ease); }
+  .wp-who-card:hover{ transform:translateY(-2px); box-shadow:var(--shadow-md); }
+  .wp-who-card .ic{ width:38px; height:38px; border-radius:9px; background:rgba(217,163,59,.14); color:var(--gold-deep,#9a6f24); display:grid; place-items:center; margin-bottom:10px; }
+  .wp-who-card .ic svg{ width:20px; height:20px; }
+  .wp-who-card .wt{ font-family:var(--font-serif); font-size:17px; font-weight:600; color:var(--navy); margin-bottom:3px; }
+  .wp-who-card .ws{ font-size:13px; line-height:1.5; color:var(--ink-soft); }
+  .wp-pillars{ display:flex; flex-wrap:wrap; justify-content:center; gap:10px; max-width:640px; margin:18px auto 0; }
+  .wp-pillars .pill{ font-family:var(--font-serif); font-style:italic; font-size:16px; color:var(--navy); background:#FBF4E4; border:1px solid var(--gold); border-radius:999px; padding:6px 18px; }
+  /* privacy promise — the make-or-break card */
+  .wp-privacy{ background:linear-gradient(165deg,var(--navy-soft,#13314F),var(--navy)); color:#fff; border-radius:20px; padding:38px 36px; max-width:820px; margin:46px auto 0; box-shadow:var(--shadow-lg); }
+  .wp-privacy .pe{ font-size:12px; font-weight:700; letter-spacing:.14em; text-transform:uppercase; color:var(--gold-soft); text-align:center; margin-bottom:8px; }
+  .wp-privacy h2{ font-family:var(--font-serif); font-size:30px; font-weight:600; text-align:center; line-height:1.2; margin-bottom:8px; }
+  .wp-privacy .psub{ text-align:center; color:#C9D4E1; font-size:14.5px; line-height:1.6; max-width:560px; margin:0 auto 22px; }
+  .wp-promises{ display:grid; grid-template-columns:repeat(2,1fr); gap:13px 22px; max-width:680px; margin:0 auto; list-style:none; padding:0; }
+  .wp-promises li{ display:flex; gap:11px; align-items:flex-start; font-size:14px; line-height:1.5; color:#E7EDF4; }
+  .wp-promises li svg{ width:19px; height:19px; flex:0 0 auto; color:var(--gold-soft); margin-top:1px; }
+  /* launch card */
+  .wp-launch{ background:var(--paper); border:1px solid var(--rule); border-radius:20px; padding:34px 32px; max-width:760px; margin:46px auto 0; box-shadow:var(--shadow-md); }
+  .wp-launch .lh{ font-family:var(--font-serif); font-size:26px; font-weight:600; color:var(--navy); text-align:center; }
+  .wp-launch .ls{ text-align:center; color:var(--ink-soft); font-size:14.5px; line-height:1.6; margin:8px auto 18px; max-width:520px; }
+  .wp-launch .field{ max-width:420px; margin:0 auto 18px; }
+  .wp-launch .field label{ display:block; font-size:13px; font-weight:600; color:var(--navy); margin-bottom:6px; }
+  .wp-launch .field .hint{ font-weight:400; color:var(--ink-faint); }
+  .wp-launch .field input{ width:100%; padding:12px 14px; border:1px solid var(--rule); border-radius:10px; font-family:var(--font-sans); font-size:15px; color:var(--ink); background:#fff; }
+  .wp-launch .field input:focus{ outline:none; border-color:var(--gold); box-shadow:0 0 0 3px rgba(217,163,59,.18); }
+  /* org soft-sell */
+  .wp-org{ background:#FBF4E4; border:1px solid var(--gold); border-radius:18px; padding:32px 30px; max-width:820px; margin:46px auto 8px; text-align:center; }
+  .wp-org .oe{ font-size:12px; font-weight:700; letter-spacing:.14em; text-transform:uppercase; color:var(--gold-deep,#9a6f24); margin-bottom:8px; }
+  .wp-org h2{ font-family:var(--font-serif); font-size:27px; font-weight:600; color:var(--navy); line-height:1.22; }
+  .wp-org p{ font-size:14.5px; line-height:1.7; color:var(--ink); max-width:600px; margin:12px auto 20px; }
+  .wp-org p strong{ color:var(--navy); }
+  .wp-mission{ text-align:center; font-size:13px; color:var(--ink-faint); max-width:560px; margin:34px auto 0; line-height:1.6; }
+  @media (max-width:720px){
+    .wp-beats{ grid-template-columns:1fr; }
+    .wp-who{ grid-template-columns:1fr; }
+    .wp-promises{ grid-template-columns:1fr; }
+    .wp-thesis p{ font-size:20px; }
+  }
+  </style>
+  <div class="container">
+    <div class="nav-row" style="justify-content:flex-start; gap:10px; margin-bottom:2px;">
+      <button class="btn btn-ghost" onclick="resetToStart()"><span class="btn-arrow">&larr;</span> <span data-i18n="nav_back_start">Back to start</span></button>
+    </div>
+
+    <div class="hero hero-center wp-wrap">
+      <div class="wp-eyebrow-rule"><span class="ln"></span><span class="eyebrow" style="margin:0;" data-i18n="wp_ey">For workplaces &amp; teams</span><span class="ln r"></span></div>
+      <h1 class="display display-xl" data-i18n="wp_h1">You can&rsquo;t co-regulate from an empty cup.</h1>
+      <p class="lede" data-i18n="wp_lede">Every helping role runs on the same quiet machinery: a teacher steadying a child who&rsquo;s come undone, a nurse calming a frightened patient, a manager holding a team through a brutal quarter. None of it works when the person doing the steadying is running on fumes. You cannot help someone else find their footing while you&rsquo;re losing your own &mdash; and this is the part most workplace-wellness programs skip entirely: tending to the helper first.</p>
+    </div>
+
+    <div class="wp-thesis">
+      <p data-i18n-html="wp_thesis">Regulation is contagious. So is depletion. <em>We start with you.</em></p>
+    </div>
+
+    <div class="wp-beats">
+      <div class="wp-beat"><div class="bt" data-i18n="wp_b1t">Notice first</div><div class="bs" data-i18n="wp_b1s">A few honest minutes to see how you&rsquo;ve actually been &mdash; not how you&rsquo;ve been performing.</div></div>
+      <div class="wp-beat"><div class="bt" data-i18n="wp_b2t">Steady yourself</div><div class="bs" data-i18n="wp_b2s">The same skill you give everyone else, turned inward: catching the wave before it breaks.</div></div>
+      <div class="wp-beat"><div class="bt" data-i18n="wp_b3t">Then show up</div><div class="bs" data-i18n="wp_b3s">A steadier you is the most powerful thing you bring to the people who depend on you.</div></div>
+    </div>
+
+    <div class="wp-section-head">
+      <div class="ey" data-i18n="wp_who_ey">Who this is for</div>
+      <h2 data-i18n="wp_who_h">Anyone whose job is holding others</h2>
+      <p data-i18n="wp_who_p">The work is whole-person, not job-specific &mdash; because regulation doesn&rsquo;t clock out. If people lean on you, this is for you.</p>
+    </div>
+    <div class="wp-who">
+      <div class="wp-who-card">
+        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg></div>
+        <div class="wt" data-i18n="wp_w1t">Educators &amp; school staff</div>
+        <div class="ws" data-i18n="wp_w1s">Teachers, aides, counselors &mdash; the original audience for this idea.</div>
+      </div>
+      <div class="wp-who-card">
+        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 2v2M5 2v2M3 4h10v9a5 5 0 0 1-10 0z"/><path d="M8 15v3a4 4 0 0 0 8 0v-2"/><circle cx="20" cy="10" r="2"/></svg></div>
+        <div class="wt" data-i18n="wp_w2t">Nurses &amp; care workers</div>
+        <div class="ws" data-i18n="wp_w2s">Clinicians, aides, and caregivers who absorb a lot and rarely get tended to.</div>
+      </div>
+      <div class="wp-who-card">
+        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-8 0v2"/><circle cx="12" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M3 21v-2a4 4 0 0 1 3-3.87"/></svg></div>
+        <div class="wt" data-i18n="wp_w3t">Leaders &amp; managers</div>
+        <div class="ws" data-i18n="wp_w3s">Whoever sets the emotional weather for a team feels every storm first.</div>
+      </div>
+      <div class="wp-who-card">
+        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7z"/></svg></div>
+        <div class="wt" data-i18n="wp_w4t">Parents &amp; caregivers</div>
+        <div class="ws" data-i18n="wp_w4s">The hardest, least-resourced helping role of them all.</div>
+      </div>
+      <div class="wp-who-card">
+        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 4 6v6c0 5 3.5 8 8 10 4.5-2 8-5 8-10V6z"/><path d="M9 12l2 2 4-4"/></svg></div>
+        <div class="wt" data-i18n="wp_w5t">First responders</div>
+        <div class="ws" data-i18n="wp_w5s">Built for the moments after the moment &mdash; when the adrenaline drains out.</div>
+      </div>
+      <div class="wp-who-card">
+        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-4.5-9.5-9A5 5 0 0 1 12 6a5 5 0 0 1 9.5 6c-2.5 4.5-9.5 9-9.5 9z"/></svg></div>
+        <div class="wt" data-i18n="wp_w6t">Helpers of every kind</div>
+        <div class="ws" data-i18n="wp_w6s">Social workers, chaplains, coaches &mdash; anyone people turn to.</div>
+      </div>
+    </div>
+
+    <div class="wp-section-head">
+      <div class="ey" data-i18n="wp_what_ey">What it is</div>
+      <h2 data-i18n="wp_what_h">The same check-in &mdash; voiced for the adult in the room</h2>
+      <p data-i18n="wp_what_p">Eighteen honest items across three areas: steadying yourself, how you speak to yourself, and showing up for the people around you. Take it quick (~4 minutes) or thorough (~10 minutes). It rests on the four ideas the whole framework is built on.</p>
+    </div>
+    <div class="wp-pillars">
+      <span class="pill" data-i18n="wp_p1">identity</span>
+      <span class="pill" data-i18n="wp_p2">self-compassion</span>
+      <span class="pill" data-i18n="wp_p3">forgiveness</span>
+      <span class="pill" data-i18n="wp_p4">grace</span>
+    </div>
+
+    <div class="wp-privacy">
+      <div class="pe" data-i18n="wp_priv_ey">The promise that makes it work</div>
+      <h2 data-i18n="wp_priv_h">This is a mirror, not a report.</h2>
+      <p class="psub" data-i18n="wp_priv_sub">Honesty only works when it&rsquo;s safe &mdash; so we made it safe. There is no version of this where your manager, HR, or anyone else sees what you said. It&rsquo;s yours.</p>
+      <ul class="wp-promises">
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg><span data-i18n="wp_pr1">Your answers never leave this device &mdash; nothing is transmitted, anywhere.</span></li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg><span data-i18n="wp_pr2">No login, no account, no email required to begin.</span></li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg><span data-i18n="wp_pr3">No manager and no HR dashboard ever sees a single response.</span></li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg><span data-i18n="wp_pr4">Take it as often as you like &mdash; it&rsquo;s a check-in, not an exam.</span></li>
+      </ul>
+    </div>
+
+    <div class="wp-tank" id="wpTank">
+      <style>
+      .wp-tank{ background:var(--paper); border:1px solid var(--gold); border-top:4px solid var(--gold); border-radius:18px; padding:30px 30px 26px; max-width:760px; margin:46px auto 0; box-shadow:var(--shadow-sm); }
+      .wp-tank-head{ text-align:center; max-width:600px; margin:0 auto 16px; }
+      .wp-tank-head .ey{ font-size:12px; font-weight:700; letter-spacing:.14em; text-transform:uppercase; color:var(--gold-deep,#9a6f24); margin-bottom:6px; }
+      .wp-tank-head h2{ font-family:var(--font-serif); font-size:26px; font-weight:600; color:var(--navy); line-height:1.2; }
+      .wp-tank-head p{ font-size:13.5px; line-height:1.6; color:var(--ink-soft); margin-top:8px; }
+      .tk-item{ padding:14px 0; border-top:1px solid var(--rule-soft); }
+      .tk-item:first-child{ border-top:none; }
+      .tk-q{ font-size:15px; color:var(--ink); font-weight:500; margin-bottom:10px; }
+      .tk-opts{ display:flex; flex-wrap:wrap; gap:8px; }
+      .tk-pill{ flex:1 1 auto; min-width:118px; text-align:center; cursor:pointer; font-family:var(--font-sans); font-size:13px; font-weight:600; color:var(--ink-soft); background:#fff; border:1px solid var(--rule); border-radius:999px; padding:9px 12px; transition:all .12s var(--ease); }
+      .tk-pill:hover{ border-color:var(--gold); }
+      .tk-pill.on{ background:var(--navy); border-color:var(--navy); color:#fff; }
+      .wp-tank .tk-go{ display:block; margin:18px auto 0; }
+      .wp-tank-result{ margin-top:18px; border-radius:14px; padding:18px 20px; border:1px solid var(--rule); }
+      .wp-tank-result .band{ font-family:var(--font-serif); font-size:19px; font-weight:600; margin-bottom:6px; }
+      .wp-tank-result p{ font-size:14px; line-height:1.6; margin:0; }
+      .wp-tank-result .flag{ margin-top:10px; font-size:12px; color:var(--ink-faint); font-style:italic; }
+      .wp-tank-result.ok{ background:var(--green-bg); border-color:#bcd6bf; } .wp-tank-result.ok .band{ color:var(--green); }
+      .wp-tank-result.low{ background:var(--amber-bg); border-color:#e3d199; } .wp-tank-result.low .band{ color:var(--amber); }
+      .wp-tank-result.empty{ background:var(--red-bg); border-color:#e3b9b4; } .wp-tank-result.empty .band{ color:var(--red); }
+      .wp-tank-result.warn{ background:#fff; }
+      </style>
+      <div class="wp-tank-head">
+        <div class="ey" data-i18n="wp_tank_ey">A 60-second read</div>
+        <h2 data-i18n="wp_tank_h">How full is your tank?</h2>
+        <p data-i18n="wp_tank_p">Burnout&rsquo;s clearest signal is energy, not attitude. Four quick reads on your tank &mdash; private, instant, and saved nowhere. This isn&rsquo;t a clinical burnout score; it&rsquo;s a quick mirror. If it rings true, the full check-in below goes deeper.</p>
+      </div>
+      <div class="tk-item">
+        <div class="tk-q" data-i18n="wp_tq1">By the end of most days, I feel used up &mdash; like there&rsquo;s little left to give.</div>
+        <div class="tk-opts" role="radiogroup" aria-label="By the end of most days I feel used up">
+          <span class="tk-pill" data-q="1" data-v="0" role="radio" tabindex="0" data-i18n="wp_opt0" aria-checked="false">Rarely / never</span>
+          <span class="tk-pill" data-q="1" data-v="1" role="radio" tabindex="0" data-i18n="wp_opt1" aria-checked="false">Sometimes</span>
+          <span class="tk-pill" data-q="1" data-v="2" role="radio" tabindex="0" data-i18n="wp_opt2" aria-checked="false">Often</span>
+          <span class="tk-pill" data-q="1" data-v="3" role="radio" tabindex="0" data-i18n="wp_opt3" aria-checked="false">Almost always</span>
+        </div>
+      </div>
+      <div class="tk-item">
+        <div class="tk-q" data-i18n="wp_tq2">I wake up already tired at the thought of the day ahead.</div>
+        <div class="tk-opts" role="radiogroup" aria-label="I wake up already tired at the thought of the day ahead">
+          <span class="tk-pill" data-q="2" data-v="0" role="radio" tabindex="0" data-i18n="wp_opt0" aria-checked="false">Rarely / never</span>
+          <span class="tk-pill" data-q="2" data-v="1" role="radio" tabindex="0" data-i18n="wp_opt1" aria-checked="false">Sometimes</span>
+          <span class="tk-pill" data-q="2" data-v="2" role="radio" tabindex="0" data-i18n="wp_opt2" aria-checked="false">Often</span>
+          <span class="tk-pill" data-q="2" data-v="3" role="radio" tabindex="0" data-i18n="wp_opt3" aria-checked="false">Almost always</span>
+        </div>
+      </div>
+      <div class="tk-item">
+        <div class="tk-q" data-i18n="wp_tq3">Even when I rest, I don&rsquo;t really feel refilled.</div>
+        <div class="tk-opts" role="radiogroup" aria-label="Even when I rest I do not really feel refilled">
+          <span class="tk-pill" data-q="3" data-v="0" role="radio" tabindex="0" data-i18n="wp_opt0" aria-checked="false">Rarely / never</span>
+          <span class="tk-pill" data-q="3" data-v="1" role="radio" tabindex="0" data-i18n="wp_opt1" aria-checked="false">Sometimes</span>
+          <span class="tk-pill" data-q="3" data-v="2" role="radio" tabindex="0" data-i18n="wp_opt2" aria-checked="false">Often</span>
+          <span class="tk-pill" data-q="3" data-v="3" role="radio" tabindex="0" data-i18n="wp_opt3" aria-checked="false">Almost always</span>
+        </div>
+      </div>
+      <div class="tk-item">
+        <div class="tk-q" data-i18n="wp_tq4">Lately I&rsquo;m on autopilot &mdash; going through the motions without really being there.</div>
+        <div class="tk-opts" role="radiogroup" aria-label="Lately I am on autopilot">
+          <span class="tk-pill" data-q="4" data-v="0" role="radio" tabindex="0" data-i18n="wp_opt0" aria-checked="false">Rarely / never</span>
+          <span class="tk-pill" data-q="4" data-v="1" role="radio" tabindex="0" data-i18n="wp_opt1" aria-checked="false">Sometimes</span>
+          <span class="tk-pill" data-q="4" data-v="2" role="radio" tabindex="0" data-i18n="wp_opt2" aria-checked="false">Often</span>
+          <span class="tk-pill" data-q="4" data-v="3" role="radio" tabindex="0" data-i18n="wp_opt3" aria-checked="false">Almost always</span>
+        </div>
+      </div>
+      <button class="btn tk-go" id="wpTankBtn"><span data-i18n="wp_tank_btn">Show my read</span> <span class="btn-arrow">&rarr;</span></button>
+      <div id="wpTankResult" class="wp-tank-result" hidden></div>
+    </div>
+
+    <div class="wp-launch">
+      <div class="lh" data-i18n="wp_launch_h">Take a few quiet minutes.</div>
+      <p class="ls" data-i18n="wp_launch_s">Pick what feels most true for you lately, and go with your first instinct. When you finish, you get a private report and a few gentle conversation starters &mdash; for you alone.</p>
+      <div class="field">
+        <label for="wpId" data-i18n-html="wp_field_label">First name or initials <span class="hint">&mdash; optional, for your report only; it stays on this device</span></label>
+        <input id="wpId" type="text" autocomplete="off" maxlength="60" placeholder="(optional)" data-i18n-ph="wp_field_ph">
+      </div>
+      <div class="section-head" style="text-align:center;">
+        <h2 style="font-size:18px;" data-i18n="wp_mode_h">Choose how you want to take it</h2>
+      </div>
+      <div class="mode-grid" id="modeGridWorkplace" role="radiogroup" aria-label="Choose how to take it">
+        <div class="mode-card selected" data-mode="rapid" role="radio" tabindex="0" aria-checked="true">
+          <div class="mode-left">
+            <div class="mode-eyebrow" data-i18n="ad_m_rapid_ey">A brief check-in</div>
+            <div class="mode-title" data-i18n="m_rapid_t">Quick</div>
+            <div class="mode-time" data-i18n="m_rapid_time">~4 minutes</div>
+          </div>
+          <div class="mode-right">
+            <div class="mode-desc" data-i18n="ad_m_rapid_desc">A quick read on how you&rsquo;ve been. 4-point scale, a single tap per question.</div>
+          </div>
+        </div>
+        <div class="mode-card" data-mode="depth" role="radio" tabindex="0" aria-checked="false">
+          <div class="mode-left">
+            <div class="mode-eyebrow" data-i18n="ad_m_depth_ey">In a little more depth</div>
+            <div class="mode-title" data-i18n="m_depth_t">Thorough</div>
+            <div class="mode-time" data-i18n="m_depth_time">~10 minutes</div>
+          </div>
+          <div class="mode-right">
+            <div class="mode-desc" data-i18n="ad_m_depth_desc">A fuller version. 6-point scale, a few follow-ups, and three short written reflections.</div>
+          </div>
+        </div>
+      </div>
+      <div class="support-card" style="margin-top:18px;">
+        <p data-i18n-html="ad_support">If you&rsquo;re carrying something heavy right now, you don&rsquo;t have to carry it alone. In the U.S. you can call or text <strong>988</strong> (the Suicide &amp; Crisis Lifeline), any time, day or night. Reaching out is a strong thing to do.</p>
+      </div>
+      <div class="nav-row" style="justify-content:flex-end; margin-top:18px;">
+        <button class="btn" id="btnStartWorkplace">
+          <span data-i18n="wp_begin">Begin your check-in</span>
+          <span class="btn-arrow">&rarr;</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="wp-org">
+      <div class="oe" data-i18n="wp_org_ey">Bringing this to your people</div>
+      <h2 data-i18n="wp_org_h">Care for the team, without surveilling it</h2>
+      <p data-i18n-html="wp_org_p">Organizations don&rsquo;t buy access to anyone&rsquo;s answers &mdash; those stay private, always. What you bring your people is the <strong>program and the practice</strong>: a shared language for steadying yourself so you can show up for the people you serve. On day one, leadership sees participation, never scores. Real outcome data &mdash; anonymized and consent-based &mdash; can come later.</p>
+      <a class="btn" id="btnWorkplaceInquiry" href="#" target="_blank" rel="noopener"><span data-i18n="wp_org_btn">Talk to us about your team</span> <span class="btn-arrow">&rarr;</span></a>
+    </div>
+
+    <p class="wp-mission" data-i18n="wp_mission">A program of the School of Life Foundation &mdash; a secular framework for human development, helping people understand themselves, strengthen their relationships, and grow with resilience and hope.</p>
+  </div>
+</section>
 
 <!-- ============ SURVEY ============ -->
 <section id="screen-survey" class="screen">
@@ -3303,11 +3613,12 @@ function toggleTheme(){
         <!-- ===== DECISION-MAKER SURFACING (who it’s for · features · admin) ===== -->
         <div class="doc-who">
           <div class="eyebrow" style="color:var(--gold);" data-i18n="doc_who_ey">Who it&rsquo;s for</div>
-          <h3 class="serif" style="font-size:22px; color:var(--navy); margin:4px 0 6px;" data-i18n="doc_who_h">Four ways in, one framework</h3>
+          <h3 class="serif" style="font-size:22px; color:var(--navy); margin:4px 0 6px;" data-i18n="doc_who_h">Five ways in, one framework</h3>
           <p style="font-size:14.5px; line-height:1.65; color:var(--ink); margin:0;" data-i18n-html="doc_who_p">The same eighteen items and the same care, worded for whoever is answering. Each path is already built into this file &mdash; choose the door that fits.</p>
           <div class="doc-paths">
             <a href="#" class="doc-path" onclick="event.preventDefault(); startCheckin()"><div class="dp-t" data-i18n="doc_path_student_t">Students &middot; K&ndash;12</div><div class="dp-s" data-i18n-html="doc_path_student_s">A private self-reflection, quick or thorough, taken each season. The school view aggregates results for MTSS.</div></a>
             <a href="#" class="doc-path" onclick="event.preventDefault(); startAdult()"><div class="dp-t" data-i18n="doc_path_adult_t">Independent adults</div><div class="dp-s" data-i18n-html="doc_path_adult_s">The grown-up check-in &mdash; a private few minutes for yourself, with a full personal report and conversation starters. Nothing is routed to anyone else.</div></a>
+          <a href="#" class="doc-path" onclick="event.preventDefault(); openWorkplace()"><div class="dp-t" data-i18n="doc_path_work_t">Workplaces &amp; teams</div><div class="dp-s" data-i18n-html="doc_path_work_s">For the people who hold others &mdash; educators, nurses, leaders, caregivers. A private check-in (and a 60-second burnout read) on the device, routed to no one.</div></a>
             <a href="#" class="doc-path" onclick="event.preventDefault(); openFamily()"><div class="dp-t" data-i18n="doc_path_family_t">Families &middot; at home</div><div class="dp-s" data-i18n-html="doc_path_family_s">Family Mode keeps each child on this device, tracked across the year, with printable conversation starters for the kitchen table.</div></a>
             <a href="#" class="doc-path" onclick="event.preventDefault(); openAdmin()"><div class="dp-t" data-i18n="doc_path_clin_t">Counselors &amp; clinicians</div><div class="dp-s" data-i18n-html="doc_path_clin_s">Use Thorough mode for the fuller instrument and the per-person Home View. The separate Clinical Edition deepens the framework for clinical settings.</div></a>
           </div>
@@ -4247,7 +4558,75 @@ const I18N_UI = {
   pd_forgive: { es: '<strong>Perd\u00f3n</strong> &mdash; superar los errores para dar espacio al crecimiento.' },
   pd_grace: { es: '<strong>Gracia</strong> &mdash; recibir a una persona con comprensi\u00f3n y no solo con juicio.' },
   doc_who_ey: { es: "Para qui\u00e9n es" },
-  doc_who_h: { es: "Cuatro maneras de entrar, un mismo marco" },
+  doc_who_h: { es: "Cinco maneras de entrar, un mismo marco" },
+  doc_path_work_t: { es: "Lugares de trabajo y equipos" },
+  wp_band_t: { es: "Para lugares de trabajo y equipos" },
+  wp_band_s: { es: "No puedes sostener a otros con la taza vacía. Un chequeo privado para quienes sostienen a los demás." },
+  wp_card_t: { es: "Lugares de trabajo y equipos" },
+  wp_card_s: { es: "Para quienes sostienen a los demás — docentes, enfermeros, líderes, cuidadores. No puedes sostener a otros con la taza vacía." },
+  wp_ey: { es: "Para lugares de trabajo y equipos" },
+  wp_h1: { es: "No puedes sostener a otros con la taza vacía." },
+  wp_lede: { es: "Todo rol de ayuda funciona con la misma maquinaria silenciosa: un maestro que calma a un niño que se ha desbordado, una enfermera que tranquiliza a un paciente asustado, un gerente que sostiene a su equipo durante un trimestre brutal. Nada de eso funciona cuando quien sostiene está funcionando con las reservas vacías. No puedes ayudar a otra persona a recuperar el equilibrio mientras pierdes el tuyo — y esta es la parte que casi todos los programas de bienestar laboral se saltan por completo: cuidar primero a quien cuida." },
+  wp_thesis: { es: "La regulación se contagia. El agotamiento también. <em>Empezamos por ti.</em>" },
+  wp_b1t: { es: "Date cuenta primero" },
+  wp_b1s: { es: "Unos minutos honestos para ver cómo has estado de verdad — no cómo has rendido." },
+  wp_b2t: { es: "Estabílizate" },
+  wp_b2s: { es: "La misma habilidad que les das a los demás, vuelta hacia adentro: atrapar la ola antes de que rompa." },
+  wp_b3t: { es: "Luego preséntate" },
+  wp_b3s: { es: "Un tú más sereno es lo más poderoso que puedes ofrecer a quienes dependen de ti." },
+  wp_who_ey: { es: "Para quién es" },
+  wp_who_h: { es: "Cualquiera cuyo trabajo sea sostener a otros" },
+  wp_who_p: { es: "El trabajo es integral, no específico de un puesto — porque la regulación no ficha la salida. Si la gente se apoya en ti, esto es para ti." },
+  wp_w1t: { es: "Docentes y personal escolar" },
+  wp_w1s: { es: "Maestros, asistentes, consejeros — el público original de esta idea." },
+  wp_w2t: { es: "Enfermeros y personal de cuidado" },
+  wp_w2s: { es: "Clínicos, asistentes y cuidadores que absorben mucho y rara vez son cuidados." },
+  wp_w3t: { es: "Líderes y gerentes" },
+  wp_w3s: { es: "Quien marca el clima emocional de un equipo siente cada tormenta primero." },
+  wp_w4t: { es: "Padres y cuidadores" },
+  wp_w4s: { es: "El rol de ayuda más difícil y con menos recursos de todos." },
+  wp_w5t: { es: "Personal de emergencias" },
+  wp_w5s: { es: "Pensado para los momentos después del momento — cuando la adrenalina se agota." },
+  wp_w6t: { es: "Quienes ayudan, de cualquier tipo" },
+  wp_w6s: { es: "Trabajadores sociales, capellanes, entrenadores — cualquiera a quien la gente acude." },
+  wp_what_ey: { es: "Qué es" },
+  wp_what_h: { es: "El mismo chequeo — con la voz del adulto en la sala" },
+  wp_what_p: { es: "Dieciocho preguntas honestas en tres áreas: estabilizarte, cómo te hablas a ti mismo y estar presente para quienes te rodean. Hazlo rápido (~4 minutos) o a fondo (~10 minutos). Se apoya en las cuatro ideas sobre las que se construye todo el marco." },
+  wp_p1: { es: "identidad" },
+  wp_p2: { es: "autocompasión" },
+  wp_p3: { es: "perdón" },
+  wp_p4: { es: "gracia" },
+  wp_priv_ey: { es: "La promesa que lo hace funcionar" },
+  wp_priv_h: { es: "Esto es un espejo, no un informe." },
+  wp_priv_sub: { es: "La honestidad solo funciona cuando es segura — así que la hicimos segura. No existe una versión de esto donde tu jefe, Recursos Humanos o cualquier otra persona vea lo que dijiste. Es tuyo." },
+  wp_pr1: { es: "Tus respuestas nunca salen de este dispositivo — nada se transmite, a ningún lugar." },
+  wp_pr2: { es: "Sin inicio de sesión, sin cuenta, sin correo para empezar." },
+  wp_pr3: { es: "Ningún jefe ni panel de Recursos Humanos ve una sola respuesta." },
+  wp_pr4: { es: "Hazlo tan seguido como quieras — es un chequeo, no un examen." },
+  wp_tank_ey: { es: "Una lectura de 60 segundos" },
+  wp_tank_h: { es: "¿Qué tan lleno está tu tanque?" },
+  wp_tank_p: { es: "La señal más clara del agotamiento es la energía, no la actitud. Cuatro lecturas rápidas de tu tanque — privadas, instantáneas y que no se guardan en ningún lado. Esto no es un puntaje clínico de agotamiento; es un espejo rápido. Si te resuena, el chequeo completo de abajo profundiza más." },
+  wp_tq1: { es: "Al final de la mayoría de los días, me siento agotado/a — como si quedara poco para dar." },
+  wp_tq2: { es: "Me despierto ya cansado/a de solo pensar en el día que viene." },
+  wp_tq3: { es: "Incluso cuando descanso, no me siento realmente recargado/a." },
+  wp_tq4: { es: "Últimamente estoy en piloto automático — haciendo las cosas sin estar realmente presente." },
+  wp_opt0: { es: "Casi nunca" },
+  wp_opt1: { es: "A veces" },
+  wp_opt2: { es: "A menudo" },
+  wp_opt3: { es: "Casi siempre" },
+  wp_tank_btn: { es: "Ver mi lectura" },
+  wp_launch_h: { es: "Tómate unos minutos de calma." },
+  wp_launch_s: { es: "Elige lo que se sienta más cierto para ti últimamente y ve con tu primer instinto. Al terminar, recibes un informe privado y algunas preguntas suaves para conversar — solo para ti." },
+  wp_field_label: { es: "Nombre o iniciales <span class=\"hint\">— opcional, solo para tu informe; se queda en este dispositivo</span>" },
+  wp_field_ph: { es: "(opcional)" },
+  wp_mode_h: { es: "Elige cómo quieres hacerlo" },
+  wp_begin: { es: "Comienza tu chequeo" },
+  wp_org_ey: { es: "Llevar esto a tu gente" },
+  wp_org_h: { es: "Cuida al equipo, sin vigilarlo" },
+  wp_org_p: { es: "Las organizaciones no compran acceso a las respuestas de nadie — esas quedan privadas, siempre. Lo que le das a tu gente es el <strong>programa y la práctica</strong>: un lenguaje compartido para estabilizarte y poder estar presente para quienes atiendes. El primer día, el liderazgo ve la participación, nunca los puntajes. Los datos de resultados — anónimos y con consentimiento — pueden venir después." },
+  wp_org_btn: { es: "Hablemos sobre tu equipo" },
+  wp_mission: { es: "Un programa de la School of Life Foundation — un marco secular para el desarrollo humano, que ayuda a las personas a entenderse a sí mismas, fortalecer sus relaciones y crecer con resiliencia y esperanza." },
+  doc_path_work_s: { es: "Para quienes sostienen a otros \u2014 docentes, enfermeros, l\u00edderes, cuidadores. Un chequeo privado (y una lectura de agotamiento de 60 segundos) en el dispositivo, sin enviarse a nadie." },
   doc_who_p: { es: "Los mismos dieciocho \u00edtems y el mismo cuidado, redactados seg\u00fan qui\u00e9n responde. Cada camino ya est\u00e1 integrado en este archivo: elige la puerta que corresponda." },
   doc_path_student_t: { es: "Estudiantes \u00b7 K\u201312" },
   doc_path_student_s: { es: "Una reflexi\u00f3n privada, r\u00e1pida o a fondo, realizada cada temporada. La vista escolar agrupa los resultados para el MTSS." },
@@ -4534,6 +4913,9 @@ var TOURS = {
     { sel:null,
       title:{en:"Welcome to Architecture of Grace", es:"Bienvenido a Architecture of Grace"},
       body:{en:"Here\u2019s a 20-second tour of the front door \u2014 and everything on it is free to read and browse, no sign-up and no code. You can skip anytime and replay it later from the \u201CQuick tour\u201D button.", es:"Aqu\u00ed tienes un recorrido de 20 segundos por la p\u00e1gina principal, y todo en ella es gratis para leer y explorar, sin registro y sin c\u00f3digo. Puedes omitirlo cuando quieras y repetirlo luego con el bot\u00f3n \u201CRecorrido r\u00e1pido\u201D."} },
+    { sel:".wp-front-band",
+      title:{en:"For workplaces & teams", es:"Para lugares de trabajo y equipos"},
+      body:{en:"New \u2014 a private check-in for the adults who hold others: teachers, nurses, leaders, caregivers. It includes a 60-second burnout read, and like everything here, nothing leaves the device.", es:"Nuevo \u2014 un chequeo privado para los adultos que sostienen a otros: docentes, enfermeros, l\u00edderes, cuidadores. Incluye una lectura de agotamiento de 60 segundos y, como todo aqu\u00ed, nada sale del dispositivo."} },
     { sel:".hyb-door.prim",
       title:{en:"Explore the Guide & Library", es:"Explora la gu\u00eda y la biblioteca"},
       body:{en:"The ecosystem map, the resource index, and every free download \u2014 no code needed. Start here to see what the program is.", es:"El mapa del ecosistema, el \u00edndice de recursos y todas las descargas gratuitas, sin c\u00f3digo. Empieza aqu\u00ed para ver qu\u00e9 es el programa."} },
@@ -5853,6 +6235,130 @@ window.addEventListener("load", function () {
     renderItem();
   });
 });
+
+// ============================================================
+//  WORKPLACE / TEAMS  ·  corporate-wellness front door
+//  Routes into the SAME private adult check-in (population:"adult"),
+//  but with workplace framing and a clean private-mirror intro --
+//  it never shows the "your responses go to the person who shared this"
+//  copy. Everything stays on-device; nothing is transmitted.
+// ============================================================
+
+// ============================================================
+//  WORKPLACE "tank" energy/depletion read  ·  fully self-contained
+//  4 items, 0-3 each (sum 0-12). NOT saved, NOT transmitted, and NEVER
+//  folded into the 18-item composite -- it is a private inline mirror only.
+// ============================================================
+(function () {
+  var picks = {};
+  function pick(q, v, el) {
+    document.querySelectorAll('#wpTank .tk-pill[data-q="' + q + '"]').forEach(function (x) {
+      x.classList.remove("on"); x.setAttribute("aria-checked", "false");
+    });
+    el.classList.add("on"); el.setAttribute("aria-checked", "true");
+    picks[q] = v;
+  }
+  function read() {
+    var ES = (typeof lang !== "undefined" && lang === "es");
+    var qs = ["1", "2", "3", "4"], sum = 0, answered = 0;
+    qs.forEach(function (q) { if (picks[q] != null) { sum += picks[q]; answered++; } });
+    var box = document.getElementById("wpTankResult");
+    if (!box) return;
+    box.hidden = false;
+    if (answered < 4) {
+      box.className = "wp-tank-result warn";
+      box.innerHTML = "<p>" + (ES ? "Toca una opci\u00f3n en cada una de las cuatro l\u00edneas y vuelve a intentarlo." : "Tap one option for each of the four lines, then try again.") + "</p>";
+      return;
+    }
+    var band, cls, msg;
+    if (sum <= 3) {
+      cls = "ok";
+      band = ES ? "Tu tanque se ve razonablemente lleno por ahora." : "Your tank looks reasonably full right now.";
+      msg = ES ? "Vale la pena notarlo y protegerlo. El chequeo completo de abajo sigue siendo un buen h\u00e1bito \u2014 detecta las cosas peque\u00f1as antes de que se vuelvan grandes." : "That\u2019s worth noticing and protecting. The full check-in below is still a good habit \u2014 it catches the small things before they become the big ones.";
+    } else if (sum <= 7) {
+      cls = "low";
+      band = ES ? "Est\u00e1s m\u00e1s bajo/a de lo que quiz\u00e1 crees." : "You\u2019re running lower than you might realize.";
+      msg = ES ? "No vac\u00edo \u2014 pero el indicador est\u00e1 bajando, y ese es justo el momento en que es m\u00e1s f\u00e1cil ignorarlo. Unos minutos con el chequeo completo pueden mostrarte d\u00f3nde poner tu energ\u00eda primero. No puedes servir de una taza que se vac\u00eda m\u00e1s r\u00e1pido de lo que se llena." : "Not empty \u2014 but the gauge is dropping, and that\u2019s exactly when it\u2019s easiest to ignore. A few minutes with the full check-in can show you where to put your energy first. You can\u2019t pour from a cup that\u2019s draining faster than it fills.";
+    } else {
+      cls = "empty";
+      band = ES ? "Estas son se\u00f1ales reales de agotamiento \u2014 del tipo que vale la pena escuchar." : "These are real signs of depletion \u2014 the kind worth listening to.";
+      msg = ES ? "Este es el estado del que trata toda la idea: desde aqu\u00ed no puedes sostener a nadie. Por favor, s\u00e9 amable contigo hoy y considera hablar con alguien de confianza. Si cargas con algo pesado, en EE.\u00a0UU. puedes llamar o enviar un mensaje al <strong>988</strong> a cualquier hora. El chequeo completo de abajo puede ayudarte a nombrar por d\u00f3nde empezar." : "This is the state the whole idea is about: you can\u2019t co-regulate anyone from here. Please be gentle with yourself today, and consider talking with someone you trust. If you\u2019re carrying something heavy, in the U.S. you can call or text <strong>988</strong> any time. The full check-in below can help you name where to start.";
+    }
+    box.className = "wp-tank-result " + cls;
+    box.innerHTML = "<div class=\"band\">" + band + "</div><p>" + msg + "</p>" +
+                    "<p class=\"flag\">" + (ES ? "Una se\u00f1al, no un diagn\u00f3stico \u00b7 nada de esto se guard\u00f3." : "A flag, not a diagnosis \u00b7 nothing here was saved.") + "</p>";
+    try { box.scrollIntoView({ behavior: "smooth", block: "center" }); } catch (e) {}
+  }
+  function wire() {
+    if (!document.getElementById("wpTank")) return;
+    document.querySelectorAll("#wpTank .tk-pill").forEach(function (el) {
+      var q = el.dataset.q, v = parseInt(el.dataset.v, 10);
+      el.addEventListener("click", function () { pick(q, v, el); });
+      el.addEventListener("keydown", function (e) {
+        if (e.key === "Enter" || e.key === " ") { e.preventDefault(); pick(q, v, el); }
+      });
+    });
+    var b = document.getElementById("wpTankBtn");
+    if (b) b.addEventListener("click", read);
+  }
+  if (document.readyState !== "loading") wire();
+  else window.addEventListener("load", wire);
+})();
+
+function openWorkplace() {
+  population = "adult";
+  mode = "rapid";
+  surveyLang = lang;
+  var g = document.getElementById("modeGridWorkplace");
+  if (g) g.querySelectorAll(".mode-card").forEach(function (c) {
+    var on = c.dataset.mode === "rapid";
+    c.classList.toggle("selected", on);
+    c.setAttribute("aria-checked", on ? "true" : "false");
+  });
+  // wire the org-inquiry button (the only outbound link; carries no answers)
+  var ib = document.getElementById("btnWorkplaceInquiry");
+  if (ib) {
+    if (typeof WORKPLACE_INQUIRY_URL === "string" && WORKPLACE_INQUIRY_URL) {
+      ib.setAttribute("href", WORKPLACE_INQUIRY_URL); ib.onclick = null;
+    } else {
+      ib.setAttribute("href", "#"); ib.onclick = function (e) { e.preventDefault(); };
+    }
+  }
+  showScreen("screen-workplace");
+  if (typeof aogSetHash === "function") aogSetHash("workplace");
+}
+
+window.addEventListener("load", function () {
+  document.querySelectorAll("#modeGridWorkplace .mode-card").forEach(function (card) {
+    var selectCard = function () {
+      document.querySelectorAll("#modeGridWorkplace .mode-card").forEach(function (c) {
+        c.classList.remove("selected"); c.setAttribute("aria-checked", "false");
+      });
+      card.classList.add("selected"); card.setAttribute("aria-checked", "true");
+      mode = card.dataset.mode;
+    };
+    card.addEventListener("click", selectCard);
+    card.addEventListener("keydown", function (e) {
+      if (e.key === "Enter" || e.key === " ") { e.preventDefault(); selectCard(); card.focus(); }
+    });
+  });
+  var bsw = document.getElementById("btnStartWorkplace");
+  if (bsw) bsw.addEventListener("click", function () {
+    population = "adult";
+    surveyLang = lang;
+    var sid = (document.getElementById("wpId").value || "").trim();
+    if (!sid) sid = (lang === "es") ? "Yo" : "You"; // name is OPTIONAL for the private mirror
+    session = { studentId: sid, grade: "Adult", window: seasonFromDate(), context: "home",
+                relationship: "", classId: "", schoolId: "", districtId: "" };
+    responses = new Array(18).fill(null);
+    intensities = new Array(18).fill(null);
+    reflections = ["", "", ""];
+    current = 0;
+    showScreen("screen-survey");
+    renderItem();
+  });
+});
+
 function openModal(id) { $("#" + id).classList.add("active"); }
 function closeModal(id) { $("#" + id).classList.remove("active"); }
 
@@ -7880,6 +8386,10 @@ function riToggle(id) {
 // ============================================================
 const LICENSE_INQUIRY_URL = "mailto:whytheschooloflife@gmail.com?subject=Architecture%20of%20Grace%20%E2%80%94%20District%20License";
 const FAMILY_STORE_URL = "mailto:whytheschooloflife@gmail.com?subject=Architecture%20of%20Grace%20%E2%80%94%20Family%20Purchase%20Inquiry";
+//   WORKPLACE_INQUIRY_URL — the "bring this to your team" path for organizations.
+//   It is the ONLY workplace url that ever leaves the device; it carries no answers,
+//   just opens a message so an org can ask about a deployment. Swap to a form if you like.
+const WORKPLACE_INQUIRY_URL = "mailto:whytheschooloflife@gmail.com?subject=Architecture%20of%20Grace%20%E2%80%94%20Workplace%20%26%20Team%20Inquiry";
 
 // ============================================================
 // CLOSED-LOOP DEEP LINKS  ·  EDIT ME
