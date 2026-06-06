@@ -9764,7 +9764,7 @@ window.addEventListener("load", function () {
       "</div>";
 
     var ctaLabel = es ? "Profundiza con el chequeo completo" : "Go deeper with the full check-in";
-    var ctaHtml = "<a href=\"#\" class=\"tk-go2\" onclick=\"event.preventDefault(); if(typeof openWorkplace==='function'){openWorkplace();}\">" + ctaLabel + " <span aria-hidden=\"true\">&rarr;</span></a>";
+    var ctaHtml = "<a href=\"#\" class=\"tk-go2\" onclick=\"event.preventDefault(); if(typeof openWorkplaceCheckin==='function'){openWorkplaceCheckin();}else if(typeof openWorkplace==='function'){openWorkplace();}\">" + ctaLabel + " <span aria-hidden=\"true\">&rarr;</span></a>";
 
     var flag = es ? "Una señal, no un diagnóstico · nada de esto se guardó." : "A flag, not a diagnosis · nothing here was saved.";
 
@@ -9833,6 +9833,16 @@ function openWorkplace() {
   showScreen("screen-workplace");
   if (typeof aogSetHash === "function") {
     aogSetHash("workplace");
+  }
+}
+function openWorkplaceCheckin() {
+  openWorkplace();
+  var _0xtgt = document.getElementById("wpLaunch");
+  if (_0xtgt) {
+    setTimeout(function () {
+      try { _0xtgt.scrollIntoView({ behavior: "smooth", block: "start" }); }
+      catch (_0xe) { _0xtgt.scrollIntoView(); }
+    }, 60);
   }
 }
 window.addEventListener("load", function () {
