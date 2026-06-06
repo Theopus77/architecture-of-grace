@@ -13608,12 +13608,12 @@ function aogBindStore(root){
   function hasSnapshot(){ try{ return !!localStorage.getItem(SNAP_KEY); }catch(e){ return false; } }
 
   function decorateChart(rep){
-    try{
-      rep.querySelectorAll('.home-header-scores, .home-score, .home-domain-section, .home-domain-score, .home-domain-head, .home-domain-name').forEach(function(el){
-        el.style.cursor = 'pointer';
-        el.setAttribute('title', isES() ? 'Toca para ver las vistas previas gratuitas' : 'Tap to browse the free previews');
-      });
-    }catch(e){}
+    /* P0 FIX (2026-06-05): no longer mark the score/domain region as a tappable
+       control. It used to add cursor:pointer + a "tap to browse previews"
+       tooltip, which (combined with the click handler above) made the chart a
+       hidden button that ejected users from their results. Left as a no-op so
+       all existing callers keep working without re-introducing the footgun. */
+    return;
   }
 
   function snapshotReport(){
@@ -13701,9 +13701,15 @@ function aogBindStore(root){
     var rep = document.getElementById('myResultsReport');
     if(rep){
       rep.addEventListener('click', function(e){
-        if(e.target.closest('a, button, input, .rc-card, .rc-go, .rc-hero, .rc-hero-btn, .hid-link, .yr-link, .rc-access-link')) return;
-        var chart = e.target.closest('.home-header-scores, .home-score, .home-domain-section, .home-domain-score, .home-domain-head, .home-domain-name');
-        if(chart){ e.preventDefault(); openFreePreviews(); }
+        /* P0 FIX (2026-06-05): Previously, a tap anywhere on the score/domain
+           region called openFreePreviews() -> openGuide('library'), which
+           navigated the user OFF their own results screen into the Library
+           with no clear return path. To the user this looked like their
+           results vanished and "could not be recovered." Genuine links/cards
+           inside the report keep working; the chart region itself is no longer
+           a hidden navigation button, so the session view can never be lost by
+           an accidental tap. */
+        return;
       });
       try{ new MutationObserver(snapshotReport).observe(rep, {childList:true, subtree:true}); }catch(e){}
       snapshotReport();
