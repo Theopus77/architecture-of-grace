@@ -1799,6 +1799,9 @@ tr:hover td { background: var(--paper); }
 .hyb-statement .lead-line{font-family:var(--font-sans);font-weight:500;font-size:clamp(16px,1.9vw,21px);line-height:1.45;max-width:720px;margin:22px auto 0;color:rgba(244,238,226,.78)}
 .hyb-statement .pillar-line{font-family:var(--font-serif);font-weight:400;font-style:italic;font-size:clamp(19px,2.3vw,28px);line-height:1.3;margin:16px auto 0;color:var(--cream)}
 .hyb-statement .pillar-line em{font-style:italic;font-weight:600;color:var(--gold-soft);border-bottom:2px solid var(--gold-soft);padding-bottom:1px}
+/* statement band when it lives inside the hero fold: hero already supplies side padding + navy bg, so drop the band's own horizontal padding and divider */
+.hyb-statement.hyb-statement--in-hero{padding:34px 0 8px;border-top:none}
+@media (max-width:640px){ .hyb-statement.hyb-statement--in-hero{padding:26px 0 6px} }
 #screen-welcome .hyb-hero{padding-bottom:48px}
 .hyb-onesent{position:relative;font-family:var(--font-sans);font-weight:500;font-size:clamp(17px,2vw,22px);line-height:1.5;color:rgba(244,238,226,.93);max-width:700px;margin:26px auto 0}
 .hyb-forall{position:relative;font-family:var(--font-serif);font-style:italic;font-weight:500;font-size:clamp(18px,2.1vw,24px);line-height:1.4;color:var(--cream);max-width:660px;margin:20px auto 0}
@@ -2550,95 +2553,38 @@ function toggleTheme() {
         <span class="dot dot-mid"></span>
         <span class="word"><b data-i18n="hyb_b3">Built by a teacher</b></span>
       </div>
+      <div class="hyb-start-wrap" style="text-align:center; margin-top:22px;">
+        <style>
+        .hyb-start-link{ display:inline-flex; align-items:center; gap:10px; font-family:var(--font-sans); font-weight:800; font-size:16.5px; letter-spacing:.01em; color:var(--navy); background:var(--gold); border:1.5px solid var(--gold); border-radius:999px; padding:15px 32px; text-decoration:none; cursor:pointer; box-shadow:0 8px 24px -6px rgba(0,0,0,.42); transition:background .15s var(--ease), transform .15s var(--ease); }
+        .hyb-start-link:hover{ background:var(--gold-soft); transform:translateY(-1px); }
+        .hyb-start-link svg{ width:19px; height:19px; }
+        .hyb-start-hint{ display:block; margin-top:11px; font-family:var(--font-sans); font-size:13px; color:var(--gold-soft); font-weight:600; }
+        </style>
+        <a href="#" class="hyb-start-link" onclick="event.preventDefault(); if(typeof startChoose==='function'){startChoose();}">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+          <span data-i18n="hyb_start_btn">Start your check-in</span>
+          <span aria-hidden="true">&rarr;</span>
+        </a>
+        <span class="hyb-start-hint" data-i18n="hyb_start_hint">Pick who you are &mdash; student, grown-up, family, or team.</span>
+      </div>
       <div style="text-align:center; margin-top:18px;">
         <style>
         .hyb-voices-link{ display:inline-flex; align-items:center; gap:8px; font-family:var(--font-sans); font-weight:800; font-size:14.5px; letter-spacing:.02em; color:var(--gold-soft); background:rgba(242,201,100,.16); border:1.5px solid var(--gold); border-radius:999px; padding:11px 24px; text-decoration:none; cursor:pointer; box-shadow:0 2px 12px rgba(0,0,0,.18); transition:background .15s var(--ease), transform .15s var(--ease), color .15s; }
         .hyb-voices-link:hover{ background:var(--gold); color:var(--navy); transform:translateY(-1px); }
         .hyb-voices-link svg{ width:17px; height:17px; }
+        .hyb-voices-hint{ display:block; margin-top:9px; font-family:var(--font-sans); font-size:12.5px; line-height:1.4; color:rgba(244,238,226,.62); font-weight:500; }
         </style>
         <a href="#" class="hyb-voices-link" onclick="event.preventDefault(); openGuide('voices');">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
           <span data-i18n="g_tab_voices">Voices</span> <span aria-hidden="true">&rarr;</span>
         </a>
+        <span class="hyb-voices-hint" data-i18n="hyb_voices_hint">Real stories from students, families, and educators &mdash; share yours, too.</span>
       </div>
-      <!-- P1 (2026-06-05): interactive demo preview, in the hero fold -->
-      <section class="hero-demo reveal" aria-label="Live dashboard demo">
-        <style>
-        .hero-demo{ position:relative; max-width:560px; margin:30px auto 4px; }
-        .hero-demo-sub{ font-family:var(--font-sans); font-weight:600; font-size:14.5px; color:var(--gold-soft); margin:0 0 12px; letter-spacing:.01em; }
-        .hd-card{ background:var(--paper); border:1px solid var(--rule); border-radius:16px; padding:16px 16px 14px; box-shadow:0 20px 54px -26px rgba(0,0,0,.6); text-align:left; }
-        :root[data-theme="dark"] .hd-card{ background:#13314F; border-color:#1E4A72; }
-        .hd-top{ display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:12px; flex-wrap:wrap; }
-        .hd-title{ font-family:var(--font-sans); font-size:13px; font-weight:700; color:var(--ink); }
-        .hd-muted{ color:var(--ink-faint); font-weight:500; }
-        .hd-toggle{ display:inline-flex; border:1px solid var(--rule); border-radius:999px; overflow:hidden; background:var(--paper); }
-        .hdt-btn{ font-family:var(--font-sans); font-size:11.5px; font-weight:700; color:var(--ink-soft); background:transparent; border:none; padding:6px 13px; cursor:pointer; transition:background .15s,color .15s; }
-        .hdt-btn + .hdt-btn{ border-left:1px solid var(--rule); }
-        .hdt-btn:hover{ color:var(--ink); }
-        .hdt-btn.active{ background:var(--gold); color:var(--navy); }
-        .hd-kpis{ display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-bottom:12px; }
-        .hd-kpi{ background:rgba(127,127,127,.08); border:1px solid var(--rule); border-radius:10px; padding:9px 10px; }
-        .hd-k-l{ font-family:var(--font-sans); font-size:11px; color:var(--ink-soft); }
-        .hd-k-v{ font-family:var(--font-sans); font-size:21px; font-weight:700; color:var(--ink); line-height:1.1; margin-top:2px; }
-        .hd-k-v span{ font-size:11px; color:var(--ink-faint); font-weight:500; }
-        .hd-bar{ display:flex; height:30px; border-radius:8px; overflow:hidden; }
-        .hd-view{ padding:4px 0 0; }
-        /* CHART FRAME (2026-06): hold a constant height so switching Bar/Dials/Trend
-           doesn't shift the legend, "teach next" card, or footer below. Sized to the
-           tallest view (dials); the active view is centered within the frame. */
-        .hd-chart{ min-height:156px; display:flex; flex-direction:column; justify-content:center; }
-        /* SAMPLE-CLASS SWITCHER (2026-06): different numbers -> different outcomes */
-        .hd-scn{ display:flex; flex-wrap:wrap; gap:6px; align-items:center; margin:0 0 13px; }
-        .hd-scn-label{ font-family:var(--font-sans); font-size:10px; font-weight:800; letter-spacing:.06em; text-transform:uppercase; color:var(--ink-faint); margin-right:3px; }
-        .hd-scn-btn{ font-family:var(--font-sans); font-size:11.5px; font-weight:600; color:var(--ink-soft); background:rgba(127,127,127,.08); border:1px solid var(--rule); border-radius:999px; padding:5px 11px; cursor:pointer; transition:background .15s,color .15s,border-color .15s; }
-        .hd-scn-btn:hover{ color:var(--ink); border-color:var(--ink-faint); }
-        .hd-scn-btn.active{ background:var(--gold); border-color:var(--gold); color:var(--navy); }
-        .hd-legend{ display:flex; gap:14px; margin-top:9px; font-family:var(--font-sans); font-size:11.5px; color:var(--ink-soft); flex-wrap:wrap; }
-        .hd-foot{ display:flex; align-items:center; justify-content:space-between; gap:10px; margin-top:13px; flex-wrap:wrap; }
-        .hd-link{ font-family:var(--font-sans); font-size:13px; font-weight:700; color:var(--ink); text-decoration:none; }
-        .hd-link:hover{ text-decoration:underline; }
-        .hd-note{ font-family:var(--font-sans); font-size:11px; color:var(--ink-faint); }
-        /* TEACH-NEXT (2026-06): class-level "what to teach next" card — hero demo + dashboard overview */
-        .hd-teach{ margin-top:13px; padding:11px 12px; border:1px solid var(--rule); border-left:3px solid var(--gold); border-radius:10px; background:rgba(127,127,127,.05); }
-        .ov-teach{ margin-top:16px; padding:14px 16px; border:1px solid var(--rule); border-left:3px solid var(--gold); border-radius:12px; background:rgba(127,127,127,.05); }
-        .hd-teach-h, .ov-teach-h{ display:flex; align-items:center; gap:7px; font-family:var(--font-sans); font-weight:800; letter-spacing:.06em; text-transform:uppercase; color:var(--gold-soft); }
-        .hd-teach-h{ font-size:10.5px; margin-bottom:5px; }
-        .ov-teach-h{ font-size:11px; margin-bottom:7px; }
-        .hd-teach-h::before, .ov-teach-h::before{ content:"\2192"; font-weight:700; }
-        .hd-teach-b, .ov-teach-b{ font-family:var(--font-sans); line-height:1.5; color:var(--ink-soft); }
-        .hd-teach-b{ font-size:12px; }
-        .ov-teach-b{ font-size:13.5px; line-height:1.55; }
-        .hd-teach-b strong, .ov-teach-b strong{ color:var(--ink); }
-        .hd-teach-b em, .ov-teach-b em{ color:var(--ink); font-style:italic; }
-        @media (max-width:520px){ .hero-demo{ margin-top:22px; } .hd-kpis{ gap:6px; } .hd-k-v{ font-size:18px; } }
-        </style>
-        <p class="hero-demo-sub" data-i18n="hero_demo_sub">Experience the serverless, zero-liability dashboard instantly below.</p>
-        <div class="hd-card">
-          <div class="hd-top">
-            <div class="hd-title">How everyone&rsquo;s doing <span class="hd-muted">&middot; sample classes</span></div>
-            <div class="hd-toggle" role="group" aria-label="Chart view">
-              <button type="button" class="hdt-btn active" data-hview="bar">Bar</button>
-              <button type="button" class="hdt-btn" data-hview="radar">Dials</button>
-              <button type="button" class="hdt-btn" data-hview="trend">Trend</button>
-            </div>
-          </div>
-          <div class="hd-scn" id="hdScn"></div>
-          <div class="hd-kpis" id="hdKpis"></div>
-          <div class="hd-chart" id="hdChart">
-            <div class="hd-bar" id="hdBar"></div>
-            <div class="hd-view" id="hdView" style="display:none;"></div>
-          </div>
-          <div class="hd-legend" id="hdLegend">
-            <span><span class="legend-dot dot-green"></span><span data-i18n="dl_band_green">Doing well</span></span>
-            <span><span class="legend-dot dot-amber"></span><span data-i18n="dl_band_amber">Worth a check-in</span></span>
-            <span><span class="legend-dot dot-red"></span><span data-i18n="dl_band_red">Needs support</span></span>
-          </div>
-          <div class="hd-teach" id="hdTeach"></div>
-          <div class="hd-foot">
-            <a href="#" class="hd-link" onclick="event.preventDefault(); aogOpenDemoDashboard();" data-i18n="hero_demo_link">Open the full dashboard &rarr;</a>
-            <span class="hd-note" data-i18n="hero_demo_note">Sample data &middot; nothing saved &middot; no sign-up</span>
-          </div>
-        </div>
+      <!-- ===== STATEMENT BAND (in the hero fold) ===== -->
+      <section class="hyb-statement hyb-statement--in-hero reveal">
+        <p class="emo-line" data-i18n="hyb_emo">This is a project about relationships &mdash; the one you build with yourself, and the ones you share with each other.</p>
+        <p class="lead-line" data-i18n="hyb_lead">The check-in (K through adult), the conversation starters, the companion novels, the four pillars &mdash; every piece leads to the same place: knowing ourselves, and growing closer to one another.</p>
+        <p class="pillar-line" data-i18n-html="hyb_pillars">Built on <em>identity</em>, <em>self-compassion</em>, <em>forgiveness</em>, and <em>grace</em> &mdash; the ground every healthy relationship stands on.</p>
       </section>
 
       <!-- P2 (2026-06-06): 60-second burnout "tank" read — its own WOW moment in the hero fold -->
@@ -2716,8 +2662,109 @@ function toggleTheme() {
         </div>
       </section>
 
-      <p class="hyb-onesent" data-i18n="hyb_onesent">The only closed-loop SEL ecosystem that targets the need, delivers the lesson, and sustains the growth — for students, families, and every adult in between.</p>
-      <p class="hyb-forall" data-i18n="hyb_forall">Made for students, families, and independent adults &mdash; and the counselors who walk beside them.</p>
+      <!-- P1 (2026-06-05): interactive demo preview, in the hero fold -->
+      <section class="hero-demo reveal" aria-label="Live dashboard demo">
+        <style>
+        .hero-demo{ position:relative; max-width:560px; margin:30px auto 4px; }
+        .hero-demo-sub{ font-family:var(--font-sans); font-weight:600; font-size:14.5px; color:var(--gold-soft); margin:0 0 12px; letter-spacing:.01em; }
+        .hd-demo-badge{ display:inline-flex; align-items:center; gap:7px; font-family:var(--font-sans); font-size:11px; font-weight:800; letter-spacing:.1em; text-transform:uppercase; color:var(--navy); background:var(--gold); border-radius:999px; padding:5px 13px; margin:0 0 11px; box-shadow:0 3px 12px rgba(0,0,0,.22); }
+        .hd-live-dot{ position:relative; width:7px; height:7px; border-radius:999px; background:var(--navy); }
+        .hd-live-dot::after{ content:""; position:absolute; inset:-4px; border-radius:999px; border:2px solid var(--navy); animation:hdLive 1.6s ease-out infinite; }
+        @keyframes hdLive{ 0%{ transform:scale(.55); opacity:.7; } 100%{ transform:scale(1.5); opacity:0; } }
+        @media (prefers-reduced-motion: reduce){ .hd-live-dot::after{ animation:none; opacity:0; } }
+        .hd-tryhint{ display:flex; align-items:center; gap:7px; font-family:var(--font-sans); font-size:11.5px; font-weight:600; color:var(--gold-deep,#9a6f24); margin:0 0 12px; transition:opacity .4s ease; }
+        .hd-tryhint svg{ width:15px; height:15px; flex:0 0 auto; }
+        .hd-tryhint.hd-hide{ opacity:0; height:0; margin:0; overflow:hidden; pointer-events:none; }
+        :root[data-theme="dark"] .hd-tryhint{ color:var(--gold-soft); }
+        .hd-card{ background:var(--paper); border:1px solid var(--rule); border-radius:16px; padding:16px 16px 14px; box-shadow:0 20px 54px -26px rgba(0,0,0,.6); text-align:left; }
+        :root[data-theme="dark"] .hd-card{ background:#13314F; border-color:#1E4A72; }
+        .hd-top{ display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:12px; flex-wrap:wrap; }
+        .hd-title{ font-family:var(--font-sans); font-size:13px; font-weight:700; color:var(--ink); }
+        .hd-muted{ color:var(--ink-faint); font-weight:500; }
+        .hd-toggle-wrap{ display:inline-flex; align-items:center; gap:8px; }
+        .hd-toggle-label{ font-family:var(--font-sans); font-size:10.5px; font-weight:800; letter-spacing:.09em; text-transform:uppercase; color:var(--ink-faint); }
+        .hd-toggle{ display:inline-flex; border:1.5px solid var(--gold); border-radius:999px; overflow:hidden; background:var(--paper); }
+        .hdt-btn{ font-family:var(--font-sans); font-size:12.5px; font-weight:700; color:var(--ink-soft); background:transparent; border:none; padding:7px 16px; cursor:pointer; transition:background .15s,color .15s; }
+        .hdt-btn + .hdt-btn{ border-left:1px solid var(--rule); }
+        .hdt-btn:hover{ color:var(--ink); background:rgba(217,163,59,.12); }
+        .hdt-btn.active{ background:var(--gold); color:var(--navy); }
+        /* one-time attention pulse so the toggle reads as interactive; removed on first interaction */
+        @keyframes hdNudge{ 0%{ box-shadow:0 0 0 0 rgba(217,163,59,.5);} 70%{ box-shadow:0 0 0 9px rgba(217,163,59,0);} 100%{ box-shadow:0 0 0 0 rgba(217,163,59,0);} }
+        .hd-toggle--nudge{ animation:hdNudge 1.7s var(--ease) infinite; }
+        @media (prefers-reduced-motion: reduce){ .hd-toggle--nudge{ animation:none; } }
+        .hd-kpis{ display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-bottom:12px; }
+        .hd-kpi{ background:rgba(127,127,127,.08); border:1px solid var(--rule); border-radius:10px; padding:9px 10px; }
+        .hd-k-l{ font-family:var(--font-sans); font-size:11px; color:var(--ink-soft); }
+        .hd-k-v{ font-family:var(--font-sans); font-size:21px; font-weight:700; color:var(--ink); line-height:1.1; margin-top:2px; }
+        .hd-k-v span{ font-size:11px; color:var(--ink-faint); font-weight:500; }
+        .hd-bar{ display:flex; height:30px; border-radius:8px; overflow:hidden; }
+        .hd-view{ padding:4px 0 0; }
+        /* CHART FRAME (2026-06): hold a constant height so switching Bar/Dials/Trend
+           doesn't shift the legend, "teach next" card, or footer below. Sized to the
+           tallest view (dials); the active view is centered within the frame. */
+        .hd-chart{ min-height:156px; display:flex; flex-direction:column; justify-content:center; }
+        /* SAMPLE-CLASS SWITCHER (2026-06): different numbers -> different outcomes */
+        .hd-scn{ display:flex; flex-wrap:wrap; gap:6px; align-items:center; margin:0 0 13px; }
+        .hd-scn-label{ font-family:var(--font-sans); font-size:10px; font-weight:800; letter-spacing:.06em; text-transform:uppercase; color:var(--ink-faint); margin-right:3px; }
+        .hd-scn-btn{ font-family:var(--font-sans); font-size:11.5px; font-weight:600; color:var(--ink-soft); background:rgba(127,127,127,.08); border:1px solid var(--rule); border-radius:999px; padding:5px 11px; cursor:pointer; transition:background .15s,color .15s,border-color .15s; }
+        .hd-scn-btn:hover{ color:var(--ink); border-color:var(--ink-faint); }
+        .hd-scn-btn.active{ background:var(--gold); border-color:var(--gold); color:var(--navy); }
+        .hd-legend{ display:flex; gap:14px; margin-top:9px; font-family:var(--font-sans); font-size:11.5px; color:var(--ink-soft); flex-wrap:wrap; }
+        .hd-foot{ display:flex; align-items:center; justify-content:space-between; gap:10px; margin-top:13px; flex-wrap:wrap; }
+        .hd-link{ font-family:var(--font-sans); font-size:13px; font-weight:700; color:var(--ink); text-decoration:none; }
+        .hd-link:hover{ text-decoration:underline; }
+        .hd-note{ font-family:var(--font-sans); font-size:11px; color:var(--ink-faint); }
+        /* TEACH-NEXT (2026-06): class-level "what to teach next" card — hero demo + dashboard overview */
+        .hd-teach{ margin-top:13px; padding:11px 12px; border:1px solid var(--rule); border-left:3px solid var(--gold); border-radius:10px; background:rgba(127,127,127,.05); }
+        .ov-teach{ margin-top:16px; padding:14px 16px; border:1px solid var(--rule); border-left:3px solid var(--gold); border-radius:12px; background:rgba(127,127,127,.05); }
+        .hd-teach-h, .ov-teach-h{ display:flex; align-items:center; gap:7px; font-family:var(--font-sans); font-weight:800; letter-spacing:.06em; text-transform:uppercase; color:var(--gold-soft); }
+        .hd-teach-h{ font-size:10.5px; margin-bottom:5px; }
+        .ov-teach-h{ font-size:11px; margin-bottom:7px; }
+        .hd-teach-h::before, .ov-teach-h::before{ content:"\2192"; font-weight:700; }
+        .hd-teach-b, .ov-teach-b{ font-family:var(--font-sans); line-height:1.5; color:var(--ink-soft); }
+        .hd-teach-b{ font-size:12px; }
+        .ov-teach-b{ font-size:13.5px; line-height:1.55; }
+        .hd-teach-b strong, .ov-teach-b strong{ color:var(--ink); }
+        .hd-teach-b em, .ov-teach-b em{ color:var(--ink); font-style:italic; }
+        @media (max-width:520px){ .hero-demo{ margin-top:22px; } .hd-kpis{ gap:6px; } .hd-k-v{ font-size:18px; } }
+        </style>
+        <div class="hd-demo-badge"><span class="hd-live-dot" aria-hidden="true"></span><span data-i18n="hero_demo_badge">Interactive demo</span></div>
+        <p class="hero-demo-sub" data-i18n="hero_demo_sub">Try it live &mdash; switch the view or the sample class, and watch the numbers move.</p>
+        <div class="hd-card hd-card--interactive">
+          <div class="hd-top">
+            <div class="hd-title">How everyone&rsquo;s doing <span class="hd-muted">&middot; sample classes</span></div>
+            <div class="hd-toggle-wrap">
+              <span class="hd-toggle-label" data-i18n="hero_demo_view">View</span>
+              <div class="hd-toggle hd-toggle--nudge" id="hdToggle" role="group" aria-label="Chart view">
+                <button type="button" class="hdt-btn active" data-hview="bar">Bar</button>
+                <button type="button" class="hdt-btn" data-hview="radar">Dials</button>
+                <button type="button" class="hdt-btn" data-hview="trend">Trend</button>
+              </div>
+            </div>
+          </div>
+          <div class="hd-tryhint" id="hdTryHint">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 11V6a2 2 0 0 1 4 0v5"/><path d="M13 9a2 2 0 0 1 4 0v3"/><path d="M17 10a2 2 0 0 1 4 0v5a6 6 0 0 1-6 6h-2a7 7 0 0 1-5-3l-2.7-3.6a2 2 0 0 1 3.4-2l1.3 1.6"/></svg>
+            <span data-i18n="hero_demo_tryhint">Tap a view above &mdash; or a sample class below &mdash; and watch it change.</span>
+          </div>
+          <div class="hd-scn" id="hdScn"></div>
+          <div class="hd-kpis" id="hdKpis"></div>
+          <div class="hd-chart" id="hdChart">
+            <div class="hd-bar" id="hdBar"></div>
+            <div class="hd-view" id="hdView" style="display:none;"></div>
+          </div>
+          <div class="hd-legend" id="hdLegend">
+            <span><span class="legend-dot dot-green"></span><span data-i18n="dl_band_green">Doing well</span></span>
+            <span><span class="legend-dot dot-amber"></span><span data-i18n="dl_band_amber">Worth a check-in</span></span>
+            <span><span class="legend-dot dot-red"></span><span data-i18n="dl_band_red">Needs support</span></span>
+          </div>
+          <div class="hd-teach" id="hdTeach"></div>
+          <div class="hd-foot">
+            <a href="#" class="hd-link" onclick="event.preventDefault(); aogOpenDemoDashboard();" data-i18n="hero_demo_link">Open the full dashboard &rarr;</a>
+            <span class="hd-note" data-i18n="hero_demo_note">Sample data &middot; nothing saved &middot; no sign-up</span>
+          </div>
+        </div>
+      </section>
+
       <!-- ===== FOUR-CORNER ENTRY (primary destinations, surfaced) ===== -->
       <div class="hyb-corners reveal">
         <style>
@@ -2795,14 +2842,13 @@ function toggleTheme() {
           <span class="arr" aria-hidden="true">&rarr;</span>
         </a>
       </div>
+
+      <p class="hyb-onesent" data-i18n="hyb_onesent">One quiet check-in that listens, points to the right next step, and grows with you — for students, families, and every adult in between.</p>
+      <p class="hyb-forall" data-i18n="hyb_forall">Made for students, families, and independent adults &mdash; and the counselors who walk beside them.</p>
+
     </section>
 
-    <!-- ===== STATEMENT BAND ===== -->
-    <section class="hyb-statement reveal">
-      <p class="emo-line" data-i18n="hyb_emo">This is a project about relationships &mdash; the one you build with yourself, and the ones you share with each other.</p>
-      <p class="lead-line" data-i18n="hyb_lead">The check-in (K through adult), the conversation starters, the companion novels, the four pillars &mdash; every piece leads to the same place: knowing ourselves, and growing closer to one another.</p>
-      <p class="pillar-line" data-i18n-html="hyb_pillars">Built on <em>identity</em>, <em>self-compassion</em>, <em>forgiveness</em>, and <em>grace</em> &mdash; the ground every healthy relationship stands on.</p>
-    </section>
+    <!-- ===== STATEMENT BAND (moved up into the hero fold) ===== -->
 
     <!-- ===== DOORS ===== -->
     <div class="hyb-doors reveal" style="display:none">
@@ -4727,8 +4773,52 @@ function toggleTheme() {
             <div class="lib-path">
               <div class="lib-path-ey" data-i18n="dl_path_f_ey">For families</div>
               <div class="serif lib-path-t" data-i18n="dl_path_f_t">Buy books &amp; materials for home</div>
-              <p class="lib-path-b" data-i18n-html="dl_path_f_b">Purchase individual books, packs, and home editions for the kitchen table. Free previews are always open in the Library; paid items show a <strong>Buy</strong> button.</p>
-              <a class="lib-path-btn lib-path-gold" id="storeTopBtn" href="#" data-i18n="dl_path_f_btn">Ask about a family copy &rarr;</a>
+              <p class="lib-path-b" data-i18n-html="dl_path_f_b">Free previews are always open in the Library &mdash; read before you buy. When you&rsquo;re ready, take it home:</p>
+              <style>
+                .lp-prices{ list-style:none; margin:8px 0 14px; padding:0; display:flex; flex-direction:column; gap:8px; }
+                .lp-row{ display:flex; align-items:center; gap:12px; padding:11px 13px; border:1px solid var(--rule); border-radius:12px; background:var(--paper); }
+                :root[data-theme="dark"] .lp-row{ background:var(--navy-soft); border-color:rgba(242,201,100,.14); }
+                .lp-row .lp-tx{ flex:1 1 auto; min-width:0; }
+                .lp-name{ font-family:var(--font-sans); font-weight:700; font-size:14px; color:var(--ink); line-height:1.25; }
+                .lp-desc{ font-family:var(--font-sans); font-size:12px; color:var(--ink-soft); margin-top:2px; line-height:1.4; }
+                .lp-price{ font-family:var(--font-serif); font-weight:600; font-size:17px; color:var(--navy); white-space:nowrap; }
+                :root[data-theme="dark"] .lp-price{ color:var(--gold-pale); }
+                .lp-buy{ flex:0 0 auto; font-family:var(--font-sans); font-weight:700; font-size:13px; color:var(--navy); background:var(--gold); border:1px solid var(--gold); border-radius:999px; padding:8px 16px; text-decoration:none; transition:transform .15s var(--ease), background .15s; white-space:nowrap; }
+                .lp-buy:hover{ transform:translateY(-1px); background:var(--gold-soft); }
+                .lp-best{ display:inline-block; font-family:var(--font-sans); font-size:9.5px; font-weight:800; letter-spacing:.08em; text-transform:uppercase; color:var(--navy); background:var(--gold-pale); border-radius:999px; padding:2px 7px; margin-left:7px; vertical-align:middle; }
+                .lp-ask{ font-family:var(--font-sans); font-size:12.5px; color:var(--ink-soft); margin-top:2px; }
+                .lp-ask a{ color:var(--navy); font-weight:600; text-decoration:none; border-bottom:1px solid var(--gold); }
+                .lp-ask a:hover{ color:var(--gold-deep,#9a6f24); }
+              </style>
+              <!-- EDIT ME: set href to your real checkout link (Stripe Payment Link / Gumroad / etc.)
+                   and update each .lp-price to your real price. Placeholders shown below. -->
+              <ul class="lp-prices">
+                <li class="lp-row">
+                  <div class="lp-tx">
+                    <div class="lp-name" data-i18n="fam_novel_n">The companion novel &middot; Book One</div>
+                    <div class="lp-desc" data-i18n="fam_novel_d">The story the whole framework grows from. Paperback or eBook.</div>
+                  </div>
+                  <span class="lp-price">$14.99</span>
+                  <a class="lp-buy" id="famBuyNovel" href="#" onclick="event.preventDefault(); aogStoreScrollBrowse();" data-i18n="fam_buy">Buy</a>
+                </li>
+                <li class="lp-row">
+                  <div class="lp-tx">
+                    <div class="lp-name" data-i18n="fam_pack_n">Home edition &middot; charts &amp; cards</div>
+                    <div class="lp-desc" data-i18n="fam_pack_d">Print-at-home anchor charts and scenario cards for the kitchen table.</div>
+                  </div>
+                  <span class="lp-price">$9.99</span>
+                  <a class="lp-buy" id="famBuyPack" href="#" onclick="event.preventDefault(); aogStoreScrollBrowse();" data-i18n="fam_buy">Buy</a>
+                </li>
+                <li class="lp-row">
+                  <div class="lp-tx">
+                    <div class="lp-name" data-i18n="fam_bundle_n">Family bundle &middot; all five books<span class="lp-best" data-i18n="fam_best">Best value</span></div>
+                    <div class="lp-desc" data-i18n="fam_bundle_d">Every novel, chart, and card deck for home, in one pack.</div>
+                  </div>
+                  <span class="lp-price">$49</span>
+                  <a class="lp-buy" id="famBuyBundle" href="#" onclick="event.preventDefault(); aogStoreScrollBrowse();" data-i18n="fam_buy">Buy</a>
+                </li>
+              </ul>
+              <p class="lp-ask" data-i18n-html="fam_ask">Home-schooling, or want a set for several kids? <a href="#" id="storeTopBtn">Ask us &rarr;</a></p>
             </div>
           </div>
 
@@ -7143,12 +7233,37 @@ const I18N_UI = {
   hyb_b3: {
     es: "Creado por un maestro"
   },
+  hyb_start_btn: {
+    es: "Comienza tu chequeo"
+  },
+  hyb_start_hint: {
+    es: "Elige quién eres — estudiante, adulto, familia o equipo."
+  },
+  hyb_voices_hint: {
+    es: "Historias reales de estudiantes, familias y educadores — comparte la tuya también."
+  },
+  hero_demo_badge: {
+    en: "Interactive demo",
+    es: "Demo interactiva"
+  },
+  hero_demo_sub: {
+    en: "Try it live — switch the view or the sample class, and watch the numbers move.",
+    es: "Pruébalo en vivo — cambia la vista o la clase de muestra y mira cómo se mueven los números."
+  },
+  hero_demo_view: {
+    en: "View",
+    es: "Vista"
+  },
+  hero_demo_tryhint: {
+    en: "Tap a view above — or a sample class below — and watch it change.",
+    es: "Toca una vista arriba — o una clase de muestra abajo — y mira cómo cambia."
+  },
   hyb_madefor: {
     es: "Creado para"
   },
   hyb_onesent: {
-    en: "The only closed-loop SEL ecosystem that targets the need, delivers the lesson, and sustains the growth — for students, families, and every adult in between.",
-    es: "El único ecosistema de SEL de ciclo cerrado que identifica la necesidad, entrega la lección y sostiene el crecimiento — para estudiantes, familias y cada adulto que los acompaña."
+    en: "One quiet check-in that listens, points to the right next step, and grows with you — for students, families, and every adult in between.",
+    es: "Un momento tranquilo para mirar hacia adentro que escucha, señala el siguiente paso y crece contigo — para estudiantes, familias y cada adulto que los acompaña."
   },
   lead_ey: {
     en: "For schools & districts",
@@ -7396,7 +7511,44 @@ const I18N_UI = {
     es: "Compra libros y materiales para el hogar"
   },
   dl_path_f_b: {
-    es: "Compra libros, paquetes y ediciones para el hogar individuales para la mesa de la cocina. Las vistas previas gratuitas siempre están disponibles en la Biblioteca; los artículos de pago muestran un botón <strong>Comprar</strong>."
+    en: "Free previews are always open in the Library — read before you buy. When you're ready, take it home:",
+    es: "Las vistas previas gratuitas siempre están abiertas en la Biblioteca — léelas antes de comprar. Cuando estés listo, llévalo a casa:"
+  },
+  fam_novel_n: {
+    en: "The companion novel · Book One",
+    es: "La novela complementaria · Libro Uno"
+  },
+  fam_novel_d: {
+    en: "The story the whole framework grows from. Paperback or eBook.",
+    es: "La historia de la que crece todo el marco. Tapa blanda o eBook."
+  },
+  fam_pack_n: {
+    en: "Home edition · charts & cards",
+    es: "Edición para el hogar · láminas y tarjetas"
+  },
+  fam_pack_d: {
+    en: "Print-at-home anchor charts and scenario cards for the kitchen table.",
+    es: "Láminas y tarjetas de situaciones para imprimir en casa, para la mesa de la cocina."
+  },
+  fam_bundle_n: {
+    en: "Family bundle · all five books",
+    es: "Paquete familiar · los cinco libros"
+  },
+  fam_bundle_d: {
+    en: "Every novel, chart, and card deck for home, in one pack.",
+    es: "Todas las novelas, láminas y barajas para el hogar, en un solo paquete."
+  },
+  fam_best: {
+    en: "Best value",
+    es: "Mejor precio"
+  },
+  fam_buy: {
+    en: "Buy",
+    es: "Comprar"
+  },
+  fam_ask: {
+    en: "Home-schooling, or want a set for several kids? <a href=\"#\" id=\"storeTopBtn\">Ask us &rarr;</a>",
+    es: "¿Educas en casa o quieres un set para varios niños? <a href=\"#\" id=\"storeTopBtn\">Escríbenos &rarr;</a>"
   },
   dl_path_f_btn: {
     es: "Pregunta por una copia para la familia →"
@@ -9422,10 +9574,12 @@ document.addEventListener("DOMContentLoaded", () => {
     _hb.addEventListener("click", () => {
       aogHeroView = _hb.dataset.hview || "bar";
       $$(".hdt-btn").forEach(_x => _x.classList.toggle("active", _x === _hb));
+      if (typeof aogDemoEngaged === "function") aogDemoEngaged();
       if (typeof renderHeroDemo === "function") renderHeroDemo();
     });
   });
   try { if (typeof renderHeroDemo === "function") renderHeroDemo(); } catch (_e) {}
+  try { setTimeout(function () { var _t = document.getElementById("hdToggle"); if (_t) _t.classList.remove("hd-toggle--nudge"); }, 7000); } catch (_e) {}
   const _0x386980 = document.querySelector(".tab.active") ? document.querySelector(".tab.active").dataset.tab : "overview";
   setTabHint(_0x386980);
   setTabHelp(_0x386980);
@@ -9509,16 +9663,28 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 });
 function openAdmin() {
-  openModal("modalAccess");
+  if (typeof showScreen === "function") showScreen("screen-admin");
+  if (typeof refreshAdmin === "function") refreshAdmin();
   if (typeof aogSetHash === "function") {
     aogSetHash("results");
   }
+  setTimeout(function () {
+    try {
+      maybeStartTour("dash");
+    } catch (_e) {}
+  }, 750);
 }
 /* P1/B (2026-06-05): open the full dashboard directly. The gate exists to
    protect real synced data, but data only syncs when someone shares a private
    link — so an unsynced visit shows only local/demo rows, nothing private.
    Loads the demo set only when the device has no real check-ins, so a real
    educator's data is never replaced. */
+function aogDemoEngaged() {
+  var t = document.getElementById("hdToggle");
+  if (t) t.classList.remove("hd-toggle--nudge");
+  var h = document.getElementById("hdTryHint");
+  if (h) h.classList.add("hd-hide");
+}
 function aogOpenDemoDashboard() {
   try {
     var hasReal = false;
@@ -10099,17 +10265,21 @@ function voicesRender(_0x33b762) {
   });
   _0x208f6d.innerHTML = _0x309be5;
 }
+// Homepage social proof: the section stays HIDDEN unless there are at least
+// WELCOME_VOICES_MIN real voices. An empty social-proof block reads as
+// "nobody uses this," so on no-URL / empty / error we keep it hidden. The full
+// Voices wall (voicesLoad) still shows the "be the first" invite separately.
+var WELCOME_VOICES_MIN = 2;
 function welcomeVoicesLoad() {
   var _0x3b000d = document.getElementById("welcomeVoices");
   var _0x4d1e88 = document.getElementById("welcomeVoicesStrip");
   if (!_0x3b000d || !_0x4d1e88) {
     return;
   }
+  _0x3b000d.style.display = "none";   // hidden until proven otherwise
   if (!VOICES_URL) {
-    _0x3b000d.style.display = "none";
     return;
   }
-  _0x3b000d.style.display = "";
   var _0xcc51c6 = VOICES_URL + (VOICES_URL.indexOf("?") >= 0 ? "&" : "?") + "comments=1";
   fetch(_0xcc51c6, {
     method: "GET"
@@ -10117,9 +10287,8 @@ function welcomeVoicesLoad() {
     return _0x289584.json();
   }).then(function (_0x1364dd) {
     var _0x5eb19a = (_0x1364dd && _0x1364dd.comments || []).slice(0, 3);
-    if (!_0x5eb19a.length) {
-      _0x4d1e88.innerHTML = "<p class=\"wv-empty\">" + DT("Be the first to share your experience.", "Sé el primero en compartir tu experiencia.") + "</p>";
-      return;
+    if (_0x5eb19a.length < WELCOME_VOICES_MIN) {
+      return;   // not enough real voices yet — leave the section hidden
     }
     var _0x2567d4 = {
       Teacher: DT("Teacher", "Maestro/a"),
@@ -10135,8 +10304,9 @@ function welcomeVoicesLoad() {
       _0x2a0c4d += "<div class=\"wv-card\"><div class=\"wv-quote\">“" + escapeHtml(String(_0x36bec5.message || "")) + "”</div><div class=\"wv-by\">— " + _0x3f3227 + " <span class=\"wv-role\">" + escapeHtml(_0x2567d4[_0x36bec5.role] || _0x2567d4.Other) + "</span></div></div>";
     });
     _0x4d1e88.innerHTML = _0x2a0c4d;
+    _0x3b000d.style.display = "";   // real voices present — now reveal
   }).catch(function () {
-    _0x4d1e88.innerHTML = "";
+    _0x4d1e88.innerHTML = "";       // network error — leave hidden
   });
 }
 function voicesLoad() {
@@ -10829,7 +10999,7 @@ function renderHeroDemo() {
   if (scn) {
     var _all = aogHeroScenarios();
     scn.innerHTML = '<span class="hd-scn-label">' + DT("Try a class", "Prueba una clase") + '</span>' + _all.map(function (sc, i) {
-      return '<button type="button" class="hd-scn-btn' + (i === aogHeroScenarioIdx ? ' active' : '') + '" onclick="aogHeroScenarioIdx=' + i + ';renderHeroDemo();">' + sc.name + '</button>';
+      return '<button type="button" class="hd-scn-btn' + (i === aogHeroScenarioIdx ? ' active' : '') + '" onclick="aogHeroScenarioIdx=' + i + ';if(typeof aogDemoEngaged===\'function\')aogDemoEngaged();renderHeroDemo();">' + sc.name + '</button>';
     }).join("");
   }
   if (kpis) {
@@ -11068,14 +11238,6 @@ function studentSortCmp(_0xf2218c, _0x2374dd) {
 }
 let _followupList = [];
 function revealFollowupList() {
-  const _0x52799e = prompt(DT("Counselor follow-up. Re-enter the access code to view the students who named no trusted adult:", "Seguimiento del consejero. Vuelve a ingresar el código de acceso para ver a los estudiantes que no nombraron a ningún adulto de confianza:") || "");
-  if (_0x52799e == null) {
-    return;
-  }
-  if (_0x52799e !== ACCESS_CODE) {
-    alert(DT("Incorrect code.", "Código incorrecto."));
-    return;
-  }
   const _0x38e3c8 = document.getElementById("followupReveal");
   if (!_0x38e3c8) {
     return;
@@ -14506,6 +14668,14 @@ function aogGoStore(){
     if(el){ var tb=document.querySelector('.topbar'); var off=(tb?tb.offsetHeight:72)+16;
       var y=el.getBoundingClientRect().top+window.pageYOffset-off; window.scrollTo({top:Math.max(0,y),behavior:'smooth'}); }
   }, 480);
+}
+/* Family "Buy" buttons land here until real checkout links are wired.
+   EDIT ME: replace these onclick calls (or the button hrefs) with your
+   Stripe Payment Link / Gumroad URLs when checkout is live. */
+function aogStoreScrollBrowse(){
+  var el=document.getElementById('storeBrowseHead');
+  if(el){ var tb=document.querySelector('.topbar'); var off=(tb?tb.offsetHeight:72)+16;
+    var y=el.getBoundingClientRect().top+window.pageYOffset-off; window.scrollTo({top:Math.max(0,y),behavior:'smooth'}); }
 }
 function aogStoreToTop(){
   var el=document.getElementById('storeBrowseHead');
