@@ -1343,6 +1343,33 @@ tr:hover td { background: var(--paper); }
 }
 .home-conversation .severity-block strong { color: var(--red); }
 
+/* ===== P4 (2026-06-05) · "NOW WHAT?" ACTION BLOCKS ====================
+   One concrete next step per lower-scoring domain on the viewer's own
+   report, so results never dead-end on data. ======================== */
+.now-what{
+  margin:14px 0 4px;
+  padding:14px 16px 13px;
+  border-radius:var(--radius-sm);
+  background:var(--gold-pale, #FBF3DC);
+  border-left:3px solid var(--gold);
+}
+:root[data-theme="dark"] .now-what{ background:rgba(242,201,100,.10); }
+.now-what .nw-head{ display:flex; align-items:center; gap:8px; margin-bottom:6px; }
+.now-what .nw-dot{ width:7px; height:7px; border-radius:50%; background:var(--gold); flex:0 0 auto; }
+.now-what .nw-kind{
+  font-family:var(--font-sans);
+  font-size:11px; font-weight:800; letter-spacing:.08em; text-transform:uppercase;
+  color:var(--gold-strong, #9A7320);
+}
+:root[data-theme="dark"] .now-what .nw-kind{ color:var(--gold-soft); }
+.now-what .nw-step{ font-size:14px; line-height:1.55; color:var(--ink); margin:0 0 8px; }
+.now-what .nw-link{
+  font-family:var(--font-sans); font-size:12.5px; font-weight:700;
+  color:var(--navy); text-decoration:none;
+}
+:root[data-theme="dark"] .now-what .nw-link{ color:var(--gold-soft); }
+.now-what .nw-link:hover{ text-decoration:underline; }
+
 /* ============================================================
    GUIDE SUB-SECTIONS — Resource Index & Ecosystem
    ============================================================ */
@@ -4537,6 +4564,36 @@ function toggleTheme() {
 /* toast */
 .st-toast{position:fixed;left:50%;bottom:28px;transform:translate(-50%,20px);opacity:0;pointer-events:none;background:var(--st-navy);color:#F4EEE2;font-size:13px;font-weight:500;padding:12px 20px;border-radius:11px;box-shadow:0 18px 40px -18px rgba(0,0,0,.6);transition:.3s var(--st-ease);z-index:9000;}
 .st-toast.st-show{opacity:1;transform:translate(-50%,0);}
+
+/* ===== P2 (2026-06-05) · MOBILE STORE DENSITY ==========================
+   Reduce scroll fatigue on phones: product cards go 2-up and compact, and
+   the novel "doors" shrink so they don't dominate the scroll. Scoped to
+   <=768px so the desktop store is untouched. Declared after the older
+   560px rule so these win where they overlap. ========================== */
+@media (max-width:768px){
+  /* product grid: 2-up, denser */
+  .aog-store .st-grid{grid-template-columns:repeat(2,1fr);gap:12px;}
+  .aog-store .st-card{flex-direction:column;gap:9px;padding:11px;}
+  .aog-store .st-tile{width:42px;height:50px;}
+  .aog-store .st-tile svg{width:21px;height:21px;}
+  .aog-store .st-card h4{font-size:14px;}
+  .aog-store .st-desc{font-size:11.5px;line-height:1.45;margin-bottom:10px;}
+  .aog-store .st-cfoot{flex-wrap:wrap;gap:8px;}
+  .aog-store .st-cprice{font-size:15px;}
+  .aog-store .st-mbuy,.aog-store .st-freebtn{font-size:11.5px;padding:7px 11px;}
+  .aog-store .st-prev{font-size:11px;}
+  /* novel doors: shrink the covers/text so the shelf scrolls less */
+  .aog-store .st-doors{grid-template-columns:repeat(2,1fr);gap:12px;}
+  .aog-store .st-door-body{padding:11px 12px 13px;}
+  .aog-store .st-title{font-size:14.5px;}
+  .aog-store .st-hook{font-size:11.5px;line-height:1.45;margin-bottom:10px;}
+  .aog-store .st-price{font-size:15px;}
+}
+@media (max-width:420px){
+  .aog-store .st-grid{gap:10px;}
+  .aog-store .st-card{padding:10px;}
+  .aog-store .st-doors{gap:10px;}
+}
 
 </style>
 <script>
@@ -10106,6 +10163,37 @@ function renderHome() {
   }
   _0x5f1322.innerHTML = "<div class=\"table-card\" style=\"padding:26px 30px;\"><h3 class=\"serif\" style=\"font-size:20px; color:var(--navy); margin:0 0 10px;\">" + DT("Individual results live with the family, not on this dashboard", "Los resultados individuales viven con la familia, no en este panel") + "</h3><p class=\"small\" style=\"margin:0 0 14px; line-height:1.65;\">" + DT("Each person’s full report — every answer, every reflection, and the conversation starters that go with them — is shown privately to that student and the people closest to them through <strong>family mode</strong> and <strong>adult mode</strong>. It opens on their own device, from their own results, and is never routed through a teacher or counselor here.", "El informe completo de cada persona — cada respuesta, cada reflexión y los iniciadores de conversación que los acompañan — se muestra de forma privada a ese estudiante y a quienes le son más cercanos a través del <strong>modo familiar</strong> y el <strong>modo para adultos</strong>. Se abre en su propio dispositivo, desde sus propios resultados, y nunca pasa por un docente o consejero aquí.") + "</p><p class=\"small\" style=\"margin:0; line-height:1.65;\">" + DT("For your planning, head to <strong>Class trends</strong> — it shows how the group is doing and where to focus next, without naming or scoring any one child.", "Para tu planificación, ve a <strong>Tendencias de la clase</strong> — muestra cómo va el grupo y dónde enfocarse, sin nombrar ni puntuar a ningún niño.") + "</p></div>";
 }
+/* P4 (2026-06-05): per-domain "now what" next step on the viewer's own report. */
+function aogNowWhat(_domKey, _score, _isSelf) {
+  if (!_isSelf) return "";
+  if (_score == null || _score >= 75) return "";
+  var _map = {
+    A: {
+      kind: DT("Suggested practice", "Práctica sugerida"),
+      step: DT("Next time a feeling runs big, name it out loud and take one settling step — a slow breath, feet on the floor — before you decide anything.", "La próxima vez que una emoción sea grande, nómbrala en voz alta y da un paso para calmarte — una respiración lenta, los pies en el suelo — antes de decidir nada.")
+    },
+    B: {
+      kind: DT("Recommended reflection", "Reflexión recomendada"),
+      step: DT("Notice the voice in your head this week. When it turns harsh, ask: would I say this to someone I love? Then try the kinder version.", "Observa la voz en tu cabeza esta semana. Cuando se vuelva dura, pregúntate: ¿le diría esto a alguien que quiero? Luego prueba la versión más amable.")
+    },
+    C: {
+      kind: DT("Conversation guide", "Guía de conversación"),
+      step: DT("Pick one relationship that feels strained and try a single repair: name your part first, then ask about theirs.", "Elige una relación que se sienta tensa e intenta una sola reparación: nombra tu parte primero, luego pregunta por la suya.")
+    }
+  };
+  var _m = _map[_domKey];
+  if (!_m) return "";
+  var _link = "<a class=\"nw-link\" href=\"#\" onclick=\"aogScrollToStarters();return false;\">" + DT("See your conversation starters", "Ve tus iniciadores de conversación") + " ↑</a>";
+  return "<div class=\"now-what nw-" + _domKey + "\"><div class=\"nw-head\"><span class=\"nw-dot\"></span><span class=\"nw-kind\">" + _m.kind + "</span></div><p class=\"nw-step\">" + _m.step + "</p>" + _link + "</div>";
+}
+function aogScrollToStarters() {
+  try {
+    var _el = document.querySelector("#myResultsReport .home-conversation");
+    if (_el && _el.scrollIntoView) {
+      _el.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  } catch (_e) {}
+}
 function buildHomeReport(_0x196b68, _0x3d8f48) {
   const _0x406975 = _0x196b68.mode === "depth" ? 5 : 3;
   let _0x349b7c = "<div class=\"home-header\"><div class=\"home-header-id\"><div class=\"home-name\">" + escapeHtml(_0x196b68.studentId) + (_0x196b68._remote ? " <span style=\"font-size:12px; font-weight:600; color:var(--gold,#B8893A); border:1px solid var(--gold,#B8893A); border-radius:6px; padding:2px 7px; vertical-align:middle;\">" + DT("from sheet", "de la hoja") + "</span>" : "") + "</div><div class=\"small\">" + [_0x196b68.population === "adult" ? DT("Adult check-in", "Chequeo de adultos") : DT("Grade ", "Grado ") + escapeHtml(String(_0x196b68.grade)), winLabel(_0x196b68.window) ? escapeHtml(winLabel(_0x196b68.window)) : null, fmtNiceDate(_0x196b68.timestamp) || null].filter(Boolean).join(" · ") + " · <span class=\"pill " + tierClass(_0x196b68.tier) + "\">" + tierLabel(_0x196b68.tier) + "</span> · <span class=\"small\">" + (_0x196b68.mode === "depth" ? DT("Thorough mode", "Modo a fondo") : DT("Quick mode", "Modo rápido")) + "</span></div></div><div class=\"home-header-scores\"><div class=\"home-score\"><div class=\"label\">" + DT("Composite", "Compuesto") + "</div><div class=\"val\">" + (_0x196b68.normComposite != null ? _0x196b68.normComposite.toFixed(0) : "—") + "<span class=\"max\">/100</span></div></div><div class=\"home-score\"><div class=\"label\">" + DT("Emotional", "Emocional") + "</div><div class=\"val\">" + (_0x196b68.normA != null ? _0x196b68.normA.toFixed(0) : "—") + "<span class=\"max\">/100</span></div></div><div class=\"home-score\"><div class=\"label\">" + DT("Compassion", "Compasión") + "</div><div class=\"val\">" + (_0x196b68.normB != null ? _0x196b68.normB.toFixed(0) : "—") + "<span class=\"max\">/100</span></div></div><div class=\"home-score\"><div class=\"label\">" + DT("Social", "Social") + "</div><div class=\"val\">" + (_0x196b68.normC != null ? _0x196b68.normC.toFixed(0) : "—") + "<span class=\"max\">/100</span></div></div></div></div>";
@@ -10157,6 +10245,7 @@ function buildHomeReport(_0x196b68, _0x3d8f48) {
     if (_0x196b68.reflections && _0x196b68.reflections[_0x14ca29.reflectionIdx]) {
       _0x349b7c += "<div class=\"home-reflection\"><div class=\"label\">" + (_0x3d8f48 ? DT("In your words", "En tus palabras") : DT("Their own words", "Sus propias palabras")) + "</div><div class=\"quote\">“" + escapeHtml(decodeChoices(_0x196b68.reflections[_0x14ca29.reflectionIdx], _0x3d8f48 ? surveyLang : dashLang)) + "”</div></div>";
     }
+    _0x349b7c += aogNowWhat(_0x14ca29.key, _0x14ca29.score, _0x3d8f48);
     _0x349b7c += "</div>";
   });
   if (_0x196b68.closingWord) {
