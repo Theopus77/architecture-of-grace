@@ -4771,10 +4771,16 @@ function toggleTheme() {
 .st-head p{font-size:13px;line-height:1.5;color:var(--st-sub);margin:0;max-width:440px;}
 
 /* jump nav */
-.st-jump{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 8px;}
-.st-jump a{font-size:12.5px;font-weight:600;color:var(--st-navy-soft);text-decoration:none;border:1px solid var(--st-border);background:var(--st-surface);border-radius:999px;padding:7px 14px;transition:.18s;}
-[data-theme="dark"] .st-jump a{color:var(--st-ink);}
-.st-jump a:hover{border-color:var(--st-gold);box-shadow:0 6px 16px -12px rgba(10,30,51,.5);}
+.st-jump{display:flex;flex-direction:column;gap:18px;margin:2px 0 16px;}
+.st-jump-label{font-family:var(--sans,sans-serif);font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--st-gold);margin:0 0 9px;}
+.st-jump-row{display:flex;flex-wrap:wrap;gap:10px;}
+.st-jump .st-door-chip{display:inline-flex;align-items:center;gap:10px;font-family:var(--sans,sans-serif);font-size:13.5px;font-weight:700;color:var(--st-navy);text-decoration:none;background:var(--st-surface);border:1.5px solid var(--st-border);border-radius:13px;padding:11px 16px;box-shadow:0 1px 0 rgba(10,30,51,.04),0 10px 22px -18px rgba(10,30,51,.5);transition:transform .18s var(--st-ease),box-shadow .18s var(--st-ease),border-color .18s,background .18s;}
+[data-theme="dark"] .st-jump .st-door-chip{color:var(--st-ink);}
+.st-jump .st-dc-arrow{color:var(--st-gold);font-weight:800;font-size:15px;line-height:1;transition:transform .18s var(--st-ease);}
+.st-jump .st-door-chip:hover{transform:translateY(-3px);border-color:var(--st-gold);background:var(--st-gold-soft);color:var(--st-navy);box-shadow:0 16px 30px -16px rgba(10,30,51,.45);}
+[data-theme="dark"] .st-jump .st-door-chip:hover{background:rgba(242,201,100,.16);color:var(--st-ink);}
+.st-jump .st-door-chip:hover .st-dc-arrow{transform:translateX(4px);}
+@media (max-width:560px){ .st-jump-row{gap:8px;} .st-jump .st-door-chip{flex:1 1 calc(50% - 4px);justify-content:space-between;font-size:13px;padding:11px 13px;} }
 
 /* ---- NOVEL DOORS (cover-forward, 5 across) ---- */
 .st-doors{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,168px));gap:16px 18px;justify-content:start;}
@@ -14168,13 +14174,32 @@ function renderLibrary(){
   const sto = document.getElementById("storeTopBtn");
   if(sto){ if(typeof FAMILY_STORE_URL!=="undefined" && FAMILY_STORE_URL){ sto.setAttribute("href",FAMILY_STORE_URL); sto.onclick=null; } else { sto.setAttribute("href","#"); sto.onclick=e=>e.preventDefault(); } }
 
-  /* display order: Novels, Home & Family Editions, Curriculum, then the rest */
-  const AOG_ORDER = ["The Novels","The Curriculum","Home & Family Editions","Anchor Charts","Worksheets & Activities","Scenario Cards","Autism-Adapted Charts"];
-  const ordered = RESOURCE_LIBRARY.slice().sort((a,b)=>{ const ia=AOG_ORDER.indexOf(a.cat), ib=AOG_ORDER.indexOf(b.cat); return (ia<0?99:ia)-(ib<0?99:ib); });
+  /* GROUPED catalog (2026-06): organize categories into labeled tiers so the nav reads
+     as clear "category doors" and the shelves below follow the same order. */
+  const AOG_GROUPS = [
+    { label: DT("The core program","El programa central"),             cats: ["The Curriculum","The Novels","Home & Family Editions"] },
+    { label: DT("Classroom materials","Materiales para el aula"),       cats: ["Anchor Charts","Worksheets & Activities","Scenario Cards","Autism-Adapted Charts","Secular Somatic Floor Lessons"] },
+    { label: DT("Implementation & data","Implementaci\u00f3n y datos"), cats: ["Assessment & Data","Crosswalks & Implementation Maps"] },
+    { label: DT("Faith track (optional)","V\u00eda de fe (opcional)"),  cats: ["Divine Blueprint \u00b7 Christian Companion Track"] }
+  ];
+  const byCat = {}; RESOURCE_LIBRARY.forEach(c=>{ byCat[c.cat]=c; });
+  const ordered = []; const grouped = [];
+  AOG_GROUPS.forEach(g=>{
+    const items = g.cats.map(n=>byCat[n]).filter(Boolean);
+    if(!items.length) return;
+    grouped.push({ label:g.label, items });
+    items.forEach(c=>ordered.push(c));
+  });
+  const leftover = RESOURCE_LIBRARY.filter(c=>ordered.indexOf(c)<0);
+  if(leftover.length){ grouped.push({ label:DT("More","M\u00e1s"), items:leftover }); leftover.forEach(c=>ordered.push(c)); }
 
-  /* jump nav */
+  /* jump nav: grouped, pronounced category "doors" */
   let jump = '<nav class="st-jump">';
-  ordered.forEach((c,i)=> jump += `<a href="#st-shelf-${i}">${libEsc(aogCatName(c.cat))}</a>`);
+  grouped.forEach(g=>{
+    jump += '<div class="st-jump-group"><div class="st-jump-label">'+libEsc(g.label)+'</div><div class="st-jump-row">';
+    g.items.forEach(c=>{ jump += `<a class="st-door-chip" href="#st-shelf-${ordered.indexOf(c)}"><span class="st-dc-name">${libEsc(aogCatName(c.cat))}</span><span class="st-dc-arrow" aria-hidden="true">\u2192</span></a>`; });
+    jump += '</div></div>';
+  });
   jump += '</nav>';
 
   let html = jump;
