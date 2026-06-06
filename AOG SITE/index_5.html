@@ -1573,6 +1573,13 @@ tr:hover td { background: var(--paper); }
 .ri-card.open .ri-chev { transform:rotate(180deg); }
 .ri-body { max-height:0; overflow:hidden; transition:max-height .3s var(--ease); }
 .ri-card.open .ri-body { max-height:2600px; }
+/* CLOSED-LOOP DEEP LINK (2026-06) */
+.ri-card.ri-hit{ box-shadow:0 0 0 3px var(--gold,#B8893A); border-color:var(--gold,#B8893A); animation:riHitPulse 2.2s var(--ease,ease); }
+@keyframes riHitPulse{ 0%{box-shadow:0 0 0 0 rgba(184,137,58,.55);} 25%{box-shadow:0 0 0 5px rgba(184,137,58,.40);} 100%{box-shadow:0 0 0 3px rgba(184,137,58,.0);} }
+@media (prefers-reduced-motion: reduce){ .ri-card.ri-hit{ animation:none; } }
+.nw-links{ display:flex; flex-wrap:wrap; gap:6px 18px; align-items:center; }
+.hd-teach-link,.ov-teach-link{ display:inline-block; margin-top:8px; font-size:12.5px; font-weight:700; color:var(--gold,#B8893A); text-decoration:none; }
+.hd-teach-link:hover,.ov-teach-link:hover{ text-decoration:underline; }
 
 /* In-the-novels block inside a construct card */
 .ri-novels { margin-top:14px; padding-top:14px; border-top:1px dashed var(--gold); }
@@ -10273,7 +10280,7 @@ function renderHeroDemo() {
   var teach = document.getElementById("hdTeach");
   if (teach) {
     var lowKey = aogLowestDomainKey(d.A, d.B, d.C);
-    teach.innerHTML = '<div class="hd-teach-h">' + DT("Teach this next", "Enseñar esto a continuación") + "</div>" + '<div class="hd-teach-b">' + aogTeachNextStudentMap()[lowKey] + "</div>";
+    teach.innerHTML = '<div class="hd-teach-h">' + DT("Teach this next", "Enseñar esto a continuación") + "</div>" + '<div class="hd-teach-b">' + aogTeachNextStudentMap()[lowKey] + "</div>" + '<a class="hd-teach-link" href="#" onclick="aogOpenResindex(\'' + lowKey + '\');return false;">' + DT("See where it maps", "Ve dónde se conecta") + " &rarr;</a>";
   }
 }
 function renderOverview() {
@@ -10348,7 +10355,7 @@ function renderOverview() {
       _ovTeach.innerHTML = "";
     } else {
       var _ovLow = aogLowestDomainKey(_0x10c6c6, _0xa951a1, _0x29fef6);
-      _ovTeach.innerHTML = "<div class=\"ov-teach-h\">" + DT("Teach this next", "Enseñar esto a continuación") + "</div><div class=\"ov-teach-b\">" + aogTeachNextStudentMap()[_ovLow] + "</div>";
+      _ovTeach.innerHTML = "<div class=\"ov-teach-h\">" + DT("Teach this next", "Enseñar esto a continuación") + "</div><div class=\"ov-teach-b\">" + aogTeachNextStudentMap()[_ovLow] + "</div><a class=\"ov-teach-link\" href=\"#\" onclick=\"aogOpenResindex('" + _ovLow + "');return false;\">" + DT("See where it maps", "Ve dónde se conecta") + " &rarr;</a>";
       _ovTeach.style.display = "";
     }
   }
@@ -10622,7 +10629,8 @@ function aogNowWhat(_domKey, _score, _isSelf) {
   var _m = _map[_domKey];
   if (!_m) return "";
   var _link = "<a class=\"nw-link\" href=\"#\" onclick=\"aogScrollToStarters();return false;\">" + DT("See your conversation starters", "Ve tus iniciadores de conversación") + " ↑</a>";
-  return "<div class=\"now-what nw-" + _domKey + "\"><div class=\"nw-head\"><span class=\"nw-dot\"></span><span class=\"nw-kind\">" + _m.kind + "</span></div><p class=\"nw-step\">" + _m.step + "</p>" + _link + "</div>";
+  var _maps = "<a class=\"nw-link\" href=\"#\" onclick=\"aogOpenResindex('" + _domKey + "');return false;\">" + DT("See the lessons that build this", "Ve las lecciones que desarrollan esto") + " →</a>";
+  return "<div class=\"now-what nw-" + _domKey + "\"><div class=\"nw-head\"><span class=\"nw-dot\"></span><span class=\"nw-kind\">" + _m.kind + "</span></div><p class=\"nw-step\">" + _m.step + "</p><div class=\"nw-links\">" + _link + _maps + "</div></div>";
 }
 function aogScrollToStarters() {
   try {
@@ -10631,6 +10639,37 @@ function aogScrollToStarters() {
       _el.scrollIntoView({ behavior: "smooth", block: "start" });
     }
   } catch (_e) {}
+}
+/* CLOSED-LOOP DEEP LINK (2026-06): from a flagged domain (or specific item pair),
+   jump to the Construct-to-Resource Index, auto-open the matching construct(s),
+   highlight briefly, and scroll it into view. Completes Identify -> Flag -> Sustain. */
+function aogOpenResindex(domain, itemsLabel) {
+  try {
+    var _s = document.getElementById("riSearch"); if (_s) _s.value = "";
+    var _g = document.getElementById("riGrade");  if (_g) _g.value  = "";
+  } catch (_e) {}
+  if (typeof openGuideSub === "function") openGuideSub("resindex");
+  /* openGuideSub re-renders (riRender) and smooth-scrolls to the section;
+     run the open/highlight just after so our centered scroll wins. */
+  setTimeout(function () {
+    var cards = [];
+    if (itemsLabel) {
+      var one = document.querySelector('.ri-card[data-riitems="' + itemsLabel + '"]');
+      if (one) cards = [one];
+    }
+    if (!cards.length && domain) {
+      /* open the primary (first) construct of the flagged domain; its siblings
+         sit right below, collapsed, so the reveal stays focused not a wall. */
+      var _first = document.querySelector('.ri-card[data-ridomain="' + domain + '"]');
+      if (_first) cards = [_first];
+    }
+    if (!cards.length) return;
+    cards.forEach(function (c) { c.classList.add("open"); });
+    var first = cards[0];
+    first.classList.add("ri-hit");
+    setTimeout(function () { first.classList.remove("ri-hit"); }, 2400);
+    try { first.scrollIntoView({ behavior: "smooth", block: "center" }); } catch (_e2) {}
+  }, 160);
 }
 function buildHomeReport(_0x196b68, _0x3d8f48) {
   const _0x406975 = _0x196b68.mode === "depth" ? 5 : 3;
@@ -12770,7 +12809,7 @@ function riRender(_0x4f8a98, _0x4f89b6) {
       if (_0x1b614d.length) {
         _0x55af6d = "<div class=\"ri-novels\"><div class=\"ri-novels-label\">" + (lang === "es" ? "En las novelas" : "In the novels") + "</div><div class=\"ri-novels-list\">" + _0x1b614d.map(_0x4796dd => "<span class=\"ri-novel\"><span class=\"ri-novel-bk\">" + (lang === "es" ? RI_GRADES[_0x4796dd.b].label.replace("Book", "Libro") : RI_GRADES[_0x4796dd.b].label) + " · " + _0x4796dd.ch + "</span> &ldquo;" + _0x4796dd.t + "&rdquo;</span>").join("") + "</div></div>";
       }
-      _0x4e5390 += "<div class=\"ri-card\" data-ricard=\"" + _0xa9f631 + "\"><div class=\"ri-card-head\" onclick=\"riToggle('" + _0xa9f631 + "')\"><div class=\"ri-card-left\"><span class=\"ri-tag ri-tag-" + _0x518208 + "\">" + (lang === "es" ? _0x14d5f7.items.replace(/Items/g, "Ítems").replace(/Item /g, "Ítem ") : _0x14d5f7.items) + "</span><div><div class=\"ri-name\">" + (lang === "es" && RI_ES[_0x14d5f7.items] ? RI_ES[_0x14d5f7.items].name : _0x14d5f7.name) + "</div><div class=\"ri-flag\">" + (lang === "es" && RI_ES[_0x14d5f7.items] ? RI_ES[_0x14d5f7.items].flag : _0x14d5f7.flag) + "</div></div></div><span class=\"ri-chev\">▾</span></div><div class=\"ri-body\"><div class=\"ri-inner\"><div class=\"ri-what\"><strong>" + (lang === "es" ? "Qué es:" : "What it is:") + "</strong> " + (lang === "es" && RI_ES[_0x14d5f7.items] ? RI_ES[_0x14d5f7.items].what : _0x14d5f7.what) + "</div>" + _0x27c43b + _0x55af6d + "</div></div></div>";
+      _0x4e5390 += "<div class=\"ri-card\" data-ricard=\"" + _0xa9f631 + "\" data-ridomain=\"" + _0x518208 + "\" data-riitems=\"" + _0x14d5f7.items + "\"><div class=\"ri-card-head\" onclick=\"riToggle('" + _0xa9f631 + "')\"><div class=\"ri-card-left\"><span class=\"ri-tag ri-tag-" + _0x518208 + "\">" + (lang === "es" ? _0x14d5f7.items.replace(/Items/g, "Ítems").replace(/Item /g, "Ítem ") : _0x14d5f7.items) + "</span><div><div class=\"ri-name\">" + (lang === "es" && RI_ES[_0x14d5f7.items] ? RI_ES[_0x14d5f7.items].name : _0x14d5f7.name) + "</div><div class=\"ri-flag\">" + (lang === "es" && RI_ES[_0x14d5f7.items] ? RI_ES[_0x14d5f7.items].flag : _0x14d5f7.flag) + "</div></div></div><span class=\"ri-chev\">▾</span></div><div class=\"ri-body\"><div class=\"ri-inner\"><div class=\"ri-what\"><strong>" + (lang === "es" ? "Qué es:" : "What it is:") + "</strong> " + (lang === "es" && RI_ES[_0x14d5f7.items] ? RI_ES[_0x14d5f7.items].what : _0x14d5f7.what) + "</div>" + _0x27c43b + _0x55af6d + "</div></div></div>";
     });
     _0x4e5390 += "</div>";
   });
