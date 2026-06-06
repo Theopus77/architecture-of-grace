@@ -2495,7 +2495,7 @@ function toggleTheme() {
             <div class="hd-title">How everyone&rsquo;s doing <span class="hd-muted">&middot; sample class</span></div>
             <div class="hd-toggle" role="group" aria-label="Chart view">
               <button type="button" class="hdt-btn active" data-hview="bar">Bar</button>
-              <button type="button" class="hdt-btn" data-hview="radar">Radar</button>
+              <button type="button" class="hdt-btn" data-hview="radar">Dials</button>
               <button type="button" class="hdt-btn" data-hview="trend">Trend</button>
             </div>
           </div>
@@ -3433,7 +3433,7 @@ function toggleTheme() {
         </div>
         <div class="ov-toggle" id="ovViewToggle" role="group" aria-label="Chart view">
           <button type="button" class="ovt-btn active" data-view="bar">Bar</button>
-          <button type="button" class="ovt-btn" data-view="radar">Radar</button>
+          <button type="button" class="ovt-btn" data-view="radar">Dials</button>
           <button type="button" class="ovt-btn" data-view="trend">Trend</button>
         </div>
       </div>
@@ -10161,24 +10161,29 @@ function refreshAdmin() {
 /* P3 (2026-06-05): overview chart view ('bar' | 'radar' | 'trend'). */
 var aogViewType = "bar";
 function aogRadarSvg(_a, _b, _c) {
-  var cx = 130, cy = 118, R = 84;
+  // DIALS (2026-06): replaced the 3-axis radar with one donut gauge per domain,
+  // arc colored by band (green 75+, amber 50-74, red <50). Function name kept so
+  // both callers (hero demo + dashboard overview) and the "radar" view state work unchanged.
   var clamp = function (v) { return Math.max(0, Math.min(100, v || 0)); };
-  var axes = [{ k: "A", v: clamp(_a), ang: -90 }, { k: "B", v: clamp(_b), ang: 30 }, { k: "C", v: clamp(_c), ang: 150 }];
-  var pt = function (ang, r) { var rad = ang * Math.PI / 180; return [cx + Math.cos(rad) * r, cy + Math.sin(rad) * r]; };
-  var rings = "";
-  [25, 50, 75, 100].forEach(function (p) {
-    var pts = axes.map(function (l) { var xy = pt(l.ang, R * p / 100); return xy[0].toFixed(1) + "," + xy[1].toFixed(1); }).join(" ");
-    rings += '<polygon points="' + pts + '" fill="none" stroke="var(--rule)" stroke-width="1"' + (p === 100 ? "" : ' stroke-dasharray="3 3"') + "/>";
+  var bandColor = function (v) { return v >= 75 ? "var(--green)" : v >= 50 ? "var(--amber)" : "var(--red)"; };
+  var doms = [
+    { k: "A", v: clamp(_a), name: DT("Regulation", "Regulaci\u00f3n") },
+    { k: "B", v: clamp(_b), name: DT("Compassion", "Compasi\u00f3n") },
+    { k: "C", v: clamp(_c), name: DT("Social", "Social") }
+  ];
+  var r = 33, sw = 9, cy = 50, C = 2 * Math.PI * r;
+  var g = "";
+  doms.forEach(function (d, i) {
+    var cx = 50 + i * 100;
+    var val = C * d.v / 100;
+    g += "<g>"
+      + '<circle cx="' + cx + '" cy="' + cy + '" r="' + r + '" fill="none" stroke="var(--rule)" stroke-width="' + sw + '"/>'
+      + '<circle cx="' + cx + '" cy="' + cy + '" r="' + r + '" fill="none" stroke="' + bandColor(d.v) + '" stroke-width="' + sw + '" stroke-linecap="round" stroke-dasharray="' + val.toFixed(1) + " " + (C - val).toFixed(1) + '" transform="rotate(-90 ' + cx + " " + cy + ')"/>'
+      + '<text x="' + cx + '" y="' + cy + '" text-anchor="middle" dominant-baseline="central" font-size="21" font-weight="700" fill="var(--ink)">' + Math.round(d.v) + "</text>"
+      + '<text x="' + cx + '" y="102" text-anchor="middle" font-size="11" font-weight="700" fill="var(--ink-soft)">' + d.k + " \u00b7 " + d.name + "</text>"
+      + "</g>";
   });
-  var spokes = axes.map(function (l) { var xy = pt(l.ang, R); return '<line x1="' + cx + '" y1="' + cy + '" x2="' + xy[0].toFixed(1) + '" y2="' + xy[1].toFixed(1) + '" stroke="var(--rule)" stroke-width="1"/>'; }).join("");
-  var dataPts = axes.map(function (l) { var xy = pt(l.ang, R * l.v / 100); return xy[0].toFixed(1) + "," + xy[1].toFixed(1); }).join(" ");
-  var dots = axes.map(function (l) { var xy = pt(l.ang, R * l.v / 100); return '<circle cx="' + xy[0].toFixed(1) + '" cy="' + xy[1].toFixed(1) + '" r="3.6" fill="var(--gold)"/>'; }).join("");
-  var labels = axes.map(function (l) {
-    var xy = pt(l.ang, R + 20);
-    var anchor = l.ang === -90 ? "middle" : l.ang === 30 ? "start" : "end";
-    return '<text x="' + xy[0].toFixed(1) + '" y="' + (xy[1] + 4).toFixed(1) + '" text-anchor="' + anchor + '" font-size="12.5" font-weight="700" fill="var(--ink-soft)">' + l.k + " · " + Math.round(l.v) + "</text>";
-  }).join("");
-  return '<svg viewBox="0 0 260 236" width="100%" style="max-width:330px;display:block;margin:4px auto 2px;" role="img" aria-label="Domain average radar">' + rings + spokes + '<polygon points="' + dataPts + '" fill="rgba(242,201,100,.30)" stroke="var(--gold)" stroke-width="2"/>' + dots + labels + "</svg>";
+  return '<svg viewBox="0 0 300 120" width="100%" style="max-width:340px;display:block;margin:6px auto 2px;" role="img" aria-label="Domain score dials">' + g + "</svg>";
 }
 function aogTrendGrid(_records) {
   var order = ["Fall", "Winter", "Spring", "Summer"];
@@ -10246,7 +10251,7 @@ function renderHeroDemo() {
   }
   if (aogHeroView === "radar") {
     bar.style.display = "none"; view.style.display = ""; view.innerHTML = aogRadarSvg(d.A, d.B, d.C);
-    if (legend) legend.style.display = "none";
+    if (legend) legend.style.display = "";
   } else if (aogHeroView === "trend") {
     bar.style.display = "none"; view.style.display = ""; view.innerHTML = aogTrendGrid(d.records);
     if (legend) legend.style.display = "";
@@ -10350,8 +10355,8 @@ function renderOverview() {
       _bar.style.display = "none";
       _view.style.display = "";
       _view.innerHTML = _0x5e01d8 ? aogRadarSvg(_0x10c6c6, _0xa951a1, _0x29fef6) : _empty;
-      if (_legend) _legend.style.display = "none";
-      if (_sub) _sub.textContent = DT("Average score shape across the three domains (0–100).", "Forma del puntaje promedio en los tres dominios (0–100).");
+      if (_legend) _legend.style.display = "";
+      if (_sub) _sub.textContent = DT("Average score in each of the three domains (0–100).", "Puntaje promedio en cada uno de los tres dominios (0–100).");
     } else if (_vt === "trend") {
       _bar.style.display = "none";
       _view.style.display = "";
