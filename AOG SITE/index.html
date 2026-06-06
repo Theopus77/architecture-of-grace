@@ -4430,7 +4430,7 @@ function toggleTheme() {
             </div>
           </div>
 
-          <h4 class="serif" style="font-size:18px; color:var(--navy); margin:6px 0 4px;" data-i18n="dl_fullprog_h">Browse everything</h4>
+          <h4 id="storeBrowseHead" class="serif" style="font-size:18px; color:var(--navy); margin:6px 0 4px; scroll-margin-top:88px;" data-i18n="dl_fullprog_h">Browse everything</h4>
           <p style="font-size:13.5px; line-height:1.6; color:var(--ink-soft); margin-bottom:16px;" data-i18n-html="dl_fullprog_p">Free previews download instantly. Everything else is part of the full program &mdash; <strong>license</strong> it for a school, or <strong>buy</strong> individual pieces for home. Open a category to explore.</p>
           <div id="libRoot"></div>
     </div>
@@ -4763,8 +4763,13 @@ function toggleTheme() {
 .aog-store{font-family:var(--sans,"Inter",sans-serif);}
 
 /* shelf headers */
-.st-shelf{scroll-margin-top:20px;margin-top:42px;}
+.st-shelf{scroll-margin-top:88px;margin-top:42px;}
 .st-shelf:first-child{margin-top:8px;}
+.st-shelf-group{display:flex;align-items:center;gap:14px;margin:48px 0 2px;scroll-margin-top:88px;}
+.st-shelf-group:first-of-type{margin-top:16px;}
+.st-shelf-group-label{font-family:var(--sans,sans-serif);font-size:12px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--st-gold);white-space:nowrap;}
+.st-shelf-group::after{content:"";height:1px;background:var(--st-border);flex:1;}
+.st-shelf-group + .st-shelf{margin-top:10px;}
 .st-head{display:flex;align-items:flex-end;justify-content:space-between;gap:18px;margin:0 0 20px;flex-wrap:wrap;}
 .st-eyebrow{font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--st-gold);font-weight:700;margin-bottom:5px;}
 .st-head h3{font-family:var(--serif,Georgia,serif);font-size:24px;font-weight:600;color:var(--st-ink);margin:0;line-height:1.1;}
@@ -14001,7 +14006,11 @@ function aogGoStore(){
   if(typeof showScreen==="function") showScreen("screen-store");
   if(typeof renderLibrary==="function") renderLibrary();
   if(typeof aogSetHash==="function") aogSetHash("store");
-  setTimeout(function(){ var el=document.getElementById('st-shelf-0'); if(el) el.scrollIntoView({behavior:'smooth',block:'start'}); }, 480);
+  setTimeout(function(){
+    var el=document.getElementById('storeBrowseHead');
+    if(el){ var tb=document.querySelector('.topbar'); var off=(tb?tb.offsetHeight:72)+16;
+      var y=el.getBoundingClientRect().top+window.pageYOffset-off; window.scrollTo({top:Math.max(0,y),behavior:'smooth'}); }
+  }, 480);
 }
 function aogGoLibrary(){
   /* STORE/LIBRARY SPLIT (2026-06): Library (free downloads) is now its own screen. */
@@ -14178,7 +14187,7 @@ function renderLibrary(){
      as clear "category doors" and the shelves below follow the same order. */
   const AOG_GROUPS = [
     { label: DT("The core program","El programa central"),             cats: ["The Curriculum","The Novels","Home & Family Editions"] },
-    { label: DT("Classroom materials","Materiales para el aula"),       cats: ["Anchor Charts","Worksheets & Activities","Scenario Cards","Autism-Adapted Charts","Secular Somatic Floor Lessons"] },
+    { label: DT("Classroom & home materials","Materiales para el aula y el hogar"),       cats: ["Anchor Charts","Worksheets & Activities","Scenario Cards","Autism-Adapted Charts","Secular Somatic Floor Lessons"] },
     { label: DT("Implementation & data","Implementaci\u00f3n y datos"), cats: ["Assessment & Data","Crosswalks & Implementation Maps"] },
     { label: DT("Faith track (optional)","V\u00eda de fe (opcional)"),  cats: ["Divine Blueprint \u00b7 Christian Companion Track"] }
   ];
@@ -14203,9 +14212,12 @@ function renderLibrary(){
   jump += '</nav>';
 
   let html = jump;
-  ordered.forEach((c,i)=>{
-    const body = (c.cat==="The Novels") ? aogNovelDoors(c) : aogMaterialCards(c);
-    html += `
+  grouped.forEach(g=>{
+    html += `<div class="st-shelf-group"><span class="st-shelf-group-label">${libEsc(g.label)}</span></div>`;
+    g.items.forEach(c=>{
+      const i = ordered.indexOf(c);
+      const body = (c.cat==="The Novels") ? aogNovelDoors(c) : aogMaterialCards(c);
+      html += `
     <section class="st-shelf" id="st-shelf-${i}">
       <div class="st-head">
         <div><div class="st-eyebrow">${libEsc(AOG_EYEBROW[c.cat]||'')}</div><h3>${libEsc(aogCatName(c.cat))}</h3></div>
@@ -14213,6 +14225,7 @@ function renderLibrary(){
       </div>
       ${body}
     </section>`;
+    });
   });
 
   root.classList.add("aog-store");
