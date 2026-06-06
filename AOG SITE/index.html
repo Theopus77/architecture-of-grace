@@ -2182,6 +2182,105 @@ a.doc-path .dp-t::after{ content:" \2192"; color:var(--gold); font-weight:700; }
 :root[data-theme="dark"] .voi-card{ background:var(--paper); border-color:var(--rule); }
 :root[data-theme="dark"] .voi-card .voi-body,
 :root[data-theme="dark"] .voi-card .voi-who{ color:var(--ink); }
+
+/* ===== DARK-MODE CONTRAST AUDIT PATCH (2026-06) =====================
+   Fixes two systemic issues found in dark mode:
+   (1) cards/inputs with hard-coded light backgrounds that never flipped,
+       leaving light text on a light surface;
+   (2) var(--navy) text (navy is NOT remapped in dark) sitting on dark
+       surfaces, rendering it nearly invisible.
+   QR code (.share-qr) intentionally left white. ============================ */
+
+/* (1) Stray light card/surface backgrounds -> dark surface */
+:root[data-theme="dark"] .form-section,
+:root[data-theme="dark"] .support-card,
+:root[data-theme="dark"] .lib-path,
+:root[data-theme="dark"] .aog-door.secondary,
+:root[data-theme="dark"] .door,
+:root[data-theme="dark"] .rc-card,
+:root[data-theme="dark"] .wv-card,
+:root[data-theme="dark"] .voi-input,
+:root[data-theme="dark"] .ri-card,
+:root[data-theme="dark"] .eco-detail,
+:root[data-theme="dark"] .dm-route{ background:var(--paper); border-color:var(--rule); }
+
+:root[data-theme="dark"] .ri-toolbar input,
+:root[data-theme="dark"] .ri-toolbar select,
+:root[data-theme="dark"] .aog-aud span,
+:root[data-theme="dark"] .ri-novel,
+:root[data-theme="dark"] .tk-pill{ background:#0E1822; color:var(--ink); border-color:var(--rule); }
+
+:root[data-theme="dark"] .home-item-detail{ background:#0E1822; border-color:var(--rule); }
+:root[data-theme="dark"] .home-item a.hid-link{ background:#0E1822; border-color:var(--rule); }
+
+/* (2) Navy text on dark surfaces -> legible light ink */
+:root[data-theme="dark"] .aog-door .t,
+:root[data-theme="dark"] .mode-title,
+:root[data-theme="dark"] .section-head h2,
+:root[data-theme="dark"] .wp-tank-head h2,
+:root[data-theme="dark"] .wp-section-head h2,
+:root[data-theme="dark"] .wp-beat .bt,
+:root[data-theme="dark"] .wp-who-card .wt,
+:root[data-theme="dark"] .wp-launch .lh{ color:var(--ink); }
+
+:root[data-theme="dark"] .made-with{ color:var(--ink-soft); }
+
+/* secondary buttons: navy-on-transparent -> readable on dark */
+:root[data-theme="dark"] .btn-secondary{ color:var(--ink); border-color:var(--rule); }
+:root[data-theme="dark"] .btn-secondary:hover:not(:disabled){ background:#1B2C3A; color:var(--cream); }
+
+/* active tabs / subtabs: navy underline text -> light (gold underline kept) */
+:root[data-theme="dark"] .tab.active,
+:root[data-theme="dark"] .guide-subtab.active{ color:var(--ink); }
+:root[data-theme="dark"] .tab:hover,
+:root[data-theme="dark"] .guide-subtab:hover{ color:var(--cream); }
+
+/* gold-deep eyebrow labels (#9a6f24) are too dark on dark surfaces -> bright gold */
+:root[data-theme="dark"] .ey,
+:root[data-theme="dark"] .at-ey,
+:root[data-theme="dark"] .oe,
+:root[data-theme="dark"] .wp-section-head .ey,
+:root[data-theme="dark"] .yr-head,
+:root[data-theme="dark"] .wp-thesis p em{ color:var(--gold); }
+
+/* language toggle: cream container -> dark so inactive label is legible */
+:root[data-theme="dark"] .lang-toggle{ background:#0E1822; border-color:var(--rule); }
+:root[data-theme="dark"] .lang-toggle button{ color:var(--ink-soft); }
+:root[data-theme="dark"] .lang-toggle button.active{ background:var(--gold); color:#1b1405; }
+
+/* distribution bars: bright pastel segments -> dark numerals for contrast */
+:root[data-theme="dark"] .dist-green,
+:root[data-theme="dark"] .dist-amber,
+:root[data-theme="dark"] .dist-red{ color:#0A1E33; }
+
+/* --- second pass: remaining light cards + headings inside dark cards --- */
+:root[data-theme="dark"] .wp-org,
+:root[data-theme="dark"] .reflection-card,
+:root[data-theme="dark"] .domain-card{ background:var(--paper); border-color:var(--rule); }
+
+/* inline cream backgrounds (set via style="") that don't flip */
+:root[data-theme="dark"] [style*="background:var(--cream)"],
+:root[data-theme="dark"] [style*="background: var(--cream)"]{ background:var(--paper)!important; }
+
+/* navy headings / emphasis that now sit on dark card surfaces */
+:root[data-theme="dark"] .form-section h2,
+:root[data-theme="dark"] .form-section h3,
+:root[data-theme="dark"] .share-card-head h4,
+:root[data-theme="dark"] .wp-org h2,
+:root[data-theme="dark"] .lib-path-t,
+:root[data-theme="dark"] .domain-card-score,
+:root[data-theme="dark"] .domain-card-title,
+:root[data-theme="dark"] .ctx-note strong,
+:root[data-theme="dark"] .eco-frame strong,
+:root[data-theme="dark"] .wp-launch .field label{ color:var(--ink); }
+
+:root[data-theme="dark"] .support-card strong,
+:root[data-theme="dark"] .wp-org p strong{ color:var(--gold-soft); }
+
+/* nudge faint caption colour up to clear AA on the navy demo cards */
+:root[data-theme="dark"]{ --ink-faint:#9BA6B9; }
+/* ===== END DARK-MODE CONTRAST AUDIT PATCH ===== */
+
 body{ transition:background .25s ease, color .25s ease; }
 /* toggle button */
 .theme-toggle{ display:inline-grid; place-items:center; width:34px; height:34px; border-radius:9px; border:1px solid var(--rule); background:transparent; color:var(--ink-soft); cursor:pointer; transition:background .15s,color .15s,border-color .15s; padding:0; }
