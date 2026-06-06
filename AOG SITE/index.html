@@ -2209,6 +2209,7 @@ a.doc-path .dp-t::after{ content:" \2192"; color:var(--gold); font-weight:700; }
 :root[data-theme="dark"] .aog-aud span,
 :root[data-theme="dark"] .ri-novel,
 :root[data-theme="dark"] .tk-pill{ background:#0E1822; color:var(--ink); border-color:var(--rule); }
+:root[data-theme="dark"] .tk-pill.on{ background:var(--gold); color:var(--navy); border-color:var(--gold); }
 
 :root[data-theme="dark"] .home-item-detail{ background:#0E1822; border-color:var(--rule); }
 :root[data-theme="dark"] .home-item a.hid-link{ background:#0E1822; border-color:var(--rule); }
@@ -2660,6 +2661,11 @@ function toggleTheme() {
         .wp-tank-result .tk-go2{ display:inline-flex; align-items:center; gap:7px; margin-top:14px; font-family:var(--font-sans); font-size:13.5px; font-weight:700; text-decoration:none; color:var(--navy); background:var(--gold); border:1px solid var(--gold); border-radius:999px; padding:9px 18px; transition:transform .15s var(--ease), background .15s; }
         .wp-tank-result .tk-go2:hover{ transform:translateY(-1px); background:var(--gold-soft); }
         .wp-tank-result.empty .tk-go2, .wp-tank-result.low .tk-go2{ box-shadow:0 4px 14px rgba(0,0,0,.12); }
+        .tk-tips{ margin-top:14px; padding-top:13px; border-top:1px solid var(--rule); }
+        .tk-tips-h{ font-family:var(--font-sans); font-size:12px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:var(--ink-soft); margin-bottom:8px; }
+        .tk-tips ul{ list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:8px; }
+        .tk-tips li{ position:relative; padding-left:22px; font-family:var(--font-sans); font-size:13.5px; line-height:1.55; color:var(--ink); }
+        .tk-tips li::before{ content:""; position:absolute; left:4px; top:8px; width:7px; height:7px; border-radius:999px; background:var(--gold); }
         @media (max-width:520px){ .hero-tank-wrap{ margin-top:26px; } .hero-tank.wp-tank{ padding:20px 16px 18px; } }
         </style>
         <p class="hero-tank-sub" data-i18n="hero_tank_sub">Or take a private 60-second read on your own tank, right here.</p>
@@ -9667,7 +9673,7 @@ window.addEventListener("load", function () {
       _0x4aee09 = _0x4162f2 ? "Este es el estado del que trata toda la idea: desde aquí no puedes sostener a nadie. Por favor, sé amable contigo hoy y considera hablar con alguien de confianza. Si cargas con algo pesado, en EE.\xA0UU. puedes llamar o enviar un mensaje al <strong>988</strong> a cualquier hora. El chequeo completo de abajo puede ayudarte a nombrar por dónde empezar." : "This is the state the whole idea is about: you can’t co-regulate anyone from here. Please be gentle with yourself today, and consider talking with someone you trust. If you’re carrying something heavy, in the U.S. you can call or text <strong>988</strong> any time. The full check-in below can help you name where to start.";
     }
     _0xb29ba3.className = "wp-tank-result " + _0x4e84e2;
-    _0xb29ba3.innerHTML = "<div class=\"band\">" + _0x14d7d4 + "</div><p>" + _0x4aee09 + "</p><p class=\"flag\">" + (_0x4162f2 ? "Una señal, no un diagnóstico · nada de esto se guardó." : "A flag, not a diagnosis · nothing here was saved.") + "</p>";
+    _0xb29ba3.innerHTML = "<div class=\"band\">" + _0x14d7d4 + "</div><p>" + _0x4aee09 + "</p>" + (typeof aogTankTips === "function" ? aogTankTips(_0x4e84e2, _0x4162f2) : "") + "<p class=\"flag\">" + (_0x4162f2 ? "Una señal, no un diagnóstico · nada de esto se guardó." : "A flag, not a diagnosis · nothing here was saved.") + "</p>";
     try {
       _0xb29ba3.scrollIntoView({
         behavior: "smooth",
@@ -9773,6 +9779,7 @@ window.addEventListener("load", function () {
       "<div class=\"band\">" + title + "</div>" +
       gaugeHtml +
       "<p>" + body + "</p>" +
+      (typeof aogTankTips === "function" ? aogTankTips(band, es) : "") +
       ctaHtml +
       "<p class=\"flag\">" + flag + "</p>";
 
@@ -9844,6 +9851,43 @@ function openWorkplaceCheckin() {
       catch (_0xe) { _0xtgt.scrollIntoView(); }
     }, 60);
   }
+}
+function aogTankTips(band, es) {
+  var head = es ? "Un par de cosas pequeñas que pueden ayudar" : "A couple of small things that can help";
+  var tips;
+  if (band === "ok") {
+    tips = es ? [
+      "Nombra una cosa que te haya estado recargando últimamente — y protégele un espacio en tu semana.",
+      "Fíjate ahora en tus primeras señales de desgaste, mientras es fácil, para notar antes la próxima bajada.",
+      "Comparte algo de esa energía — una pequeña amabilidad con alguien que ande bajo/a."
+    ] : [
+      "Name one thing that’s been refilling you lately — and protect a slot for it this week.",
+      "Notice your early warning signs now, while it’s easy, so you catch the next dip sooner.",
+      "Pass a little of that fullness on — a small kindness to someone running low."
+    ];
+  } else if (band === "low") {
+    tips = es ? [
+      "Quita una cosa pequeña de tu lista esta semana — di que no, aplázala o pide ayuda.",
+      "Protege un descanso breve y de verdad reparador cada día — no el teléfono, sino algo que te asiente.",
+      "Reconéctate con una persona que te dé calma, aunque sea un mensaje de dos minutos."
+    ] : [
+      "Take one small thing off your plate this week — say no, defer it, or ask for help.",
+      "Protect one short, genuinely restful break a day — not scrolling, something that settles you.",
+      "Reconnect with one person who steadies you, even a two-minute message."
+    ];
+  } else {
+    tips = es ? [
+      "Baja el listón por hoy — haz lo poco que de verdad tiene que pasar y deja que el resto espere.",
+      "Empieza por lo básico que es fácil saltarse cuando estás agotado/a — descanso, agua y un poco de aire libre.",
+      "Dile a una persona de confianza que estás sin reservas — no tienes que cargarlo solo/a."
+    ] : [
+      "Lower the bar for today — do the few things that truly must happen, and let the rest wait.",
+      "Start with the basics that are easy to skip when you’re drained — rest, water, a little fresh air.",
+      "Tell one person you trust that you’re running on empty — you don’t have to carry it alone."
+    ];
+  }
+  var lis = tips.map(function (t) { return "<li>" + t + "</li>"; }).join("");
+  return "<div class=\"tk-tips\"><div class=\"tk-tips-h\">" + head + "</div><ul>" + lis + "</ul></div>";
 }
 window.addEventListener("load", function () {
   document.querySelectorAll("#modeGridWorkplace .mode-card").forEach(function (_0x3e5387) {
