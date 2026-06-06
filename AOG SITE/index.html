@@ -4435,6 +4435,7 @@ function toggleTheme() {
           <div id="libRoot"></div>
     </div>
   </div>
+  <button id="stToTop" class="st-totop" type="button" aria-label="Back to top" title="Back to top" onclick="aogStoreToTop()"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5"></path><path d="M6 11l6-6 6 6"></path></svg></button>
 </section>
 
 <!-- ============ PRIVACY & YOUR DATA ============ -->
@@ -4761,6 +4762,12 @@ function toggleTheme() {
   --st-navy:#0E2238; --st-navy-soft:#1A3A5A;
 }
 .aog-store{font-family:var(--sans,"Inter",sans-serif);}
+/* BACK TO TOP (2026-06): jumps back to the "Browse everything" doors */
+.st-totop{position:fixed;right:22px;bottom:22px;z-index:3400;display:inline-flex;align-items:center;justify-content:center;width:46px;height:46px;border-radius:50%;background:var(--st-navy);color:var(--st-gold-soft);border:1px solid rgba(242,201,100,.4);box-shadow:0 12px 28px -10px rgba(0,0,0,.45);cursor:pointer;opacity:0;transform:translateY(10px);pointer-events:none;transition:opacity .2s var(--st-ease),transform .2s var(--st-ease),background .15s;}
+.st-totop.show{opacity:1;transform:translateY(0);pointer-events:auto;}
+.st-totop:hover{background:var(--st-navy-soft);}
+.st-totop svg{display:block;}
+@media (max-width:560px){.st-totop{right:16px;bottom:16px;width:44px;height:44px;}}
 
 /* shelf headers */
 .st-shelf{scroll-margin-top:88px;margin-top:42px;}
@@ -14012,6 +14019,17 @@ function aogGoStore(){
       var y=el.getBoundingClientRect().top+window.pageYOffset-off; window.scrollTo({top:Math.max(0,y),behavior:'smooth'}); }
   }, 480);
 }
+function aogStoreToTop(){
+  var el=document.getElementById('storeBrowseHead');
+  if(el){ var tb=document.querySelector('.topbar'); var off=(tb?tb.offsetHeight:72)+16;
+    var y=el.getBoundingClientRect().top+window.pageYOffset-off; window.scrollTo({top:Math.max(0,y),behavior:'smooth'}); }
+  else { window.scrollTo({top:0,behavior:'smooth'}); }
+}
+(function(){
+  function _tog(){ var b=document.getElementById('stToTop'); if(b) b.classList.toggle('show', (window.scrollY||window.pageYOffset)>520); }
+  window.addEventListener('scroll', _tog, {passive:true});
+  if(document.readyState!=="loading") _tog(); else document.addEventListener('DOMContentLoaded', _tog);
+})();
 function aogGoLibrary(){
   /* STORE/LIBRARY SPLIT (2026-06): Library (free downloads) is now its own screen. */
   if(typeof showScreen==="function") showScreen("screen-library");
