@@ -922,6 +922,8 @@ th.sorted { color: var(--navy); }
 .ovt-btn:hover{ color:var(--ink); }
 .ovt-btn.active{ background:var(--gold); color:var(--navy); }
 .dist-view{ padding:6px 4px 2px; }
+/* CHART FRAME (2026-06): constant height so Bar/Dials/Trend switching stays put. */
+.dist-chart{ min-height:164px; display:flex; flex-direction:column; justify-content:center; }
 /* trend: per-window distribution rows */
 .trend-grid{ display:flex; flex-direction:column; gap:10px; }
 .trend-row{ display:flex; align-items:center; gap:12px; }
@@ -2477,6 +2479,16 @@ function toggleTheme() {
         .hd-k-v span{ font-size:11px; color:var(--ink-faint); font-weight:500; }
         .hd-bar{ display:flex; height:30px; border-radius:8px; overflow:hidden; }
         .hd-view{ padding:4px 0 0; }
+        /* CHART FRAME (2026-06): hold a constant height so switching Bar/Dials/Trend
+           doesn't shift the legend, "teach next" card, or footer below. Sized to the
+           tallest view (dials); the active view is centered within the frame. */
+        .hd-chart{ min-height:156px; display:flex; flex-direction:column; justify-content:center; }
+        /* SAMPLE-CLASS SWITCHER (2026-06): different numbers -> different outcomes */
+        .hd-scn{ display:flex; flex-wrap:wrap; gap:6px; align-items:center; margin:0 0 13px; }
+        .hd-scn-label{ font-family:var(--font-sans); font-size:10px; font-weight:800; letter-spacing:.06em; text-transform:uppercase; color:var(--ink-faint); margin-right:3px; }
+        .hd-scn-btn{ font-family:var(--font-sans); font-size:11.5px; font-weight:600; color:var(--ink-soft); background:rgba(127,127,127,.08); border:1px solid var(--rule); border-radius:999px; padding:5px 11px; cursor:pointer; transition:background .15s,color .15s,border-color .15s; }
+        .hd-scn-btn:hover{ color:var(--ink); border-color:var(--ink-faint); }
+        .hd-scn-btn.active{ background:var(--gold); border-color:var(--gold); color:var(--navy); }
         .hd-legend{ display:flex; gap:14px; margin-top:9px; font-family:var(--font-sans); font-size:11.5px; color:var(--ink-soft); flex-wrap:wrap; }
         .hd-foot{ display:flex; align-items:center; justify-content:space-between; gap:10px; margin-top:13px; flex-wrap:wrap; }
         .hd-link{ font-family:var(--font-sans); font-size:13px; font-weight:700; color:var(--ink); text-decoration:none; }
@@ -2499,16 +2511,19 @@ function toggleTheme() {
         <p class="hero-demo-sub" data-i18n="hero_demo_sub">Experience the serverless, zero-liability dashboard instantly below.</p>
         <div class="hd-card">
           <div class="hd-top">
-            <div class="hd-title">How everyone&rsquo;s doing <span class="hd-muted">&middot; sample class</span></div>
+            <div class="hd-title">How everyone&rsquo;s doing <span class="hd-muted">&middot; sample classes</span></div>
             <div class="hd-toggle" role="group" aria-label="Chart view">
               <button type="button" class="hdt-btn active" data-hview="bar">Bar</button>
               <button type="button" class="hdt-btn" data-hview="radar">Dials</button>
               <button type="button" class="hdt-btn" data-hview="trend">Trend</button>
             </div>
           </div>
+          <div class="hd-scn" id="hdScn"></div>
           <div class="hd-kpis" id="hdKpis"></div>
-          <div class="hd-bar" id="hdBar"></div>
-          <div class="hd-view" id="hdView" style="display:none;"></div>
+          <div class="hd-chart" id="hdChart">
+            <div class="hd-bar" id="hdBar"></div>
+            <div class="hd-view" id="hdView" style="display:none;"></div>
+          </div>
           <div class="hd-legend" id="hdLegend">
             <span><span class="legend-dot dot-green"></span><span data-i18n="dl_band_green">Doing well</span></span>
             <span><span class="legend-dot dot-amber"></span><span data-i18n="dl_band_amber">Worth a check-in</span></span>
@@ -3445,8 +3460,10 @@ function toggleTheme() {
         </div>
       </div>
       <div class="dist-card">
-        <div class="dist-bar" id="distBar"></div>
-        <div class="dist-view" id="distView" style="display:none;"></div>
+        <div class="dist-chart" id="distChart">
+          <div class="dist-bar" id="distBar"></div>
+          <div class="dist-view" id="distView" style="display:none;"></div>
+        </div>
         <div class="dist-legend" id="distLegend">
           <span><span class="legend-dot dot-green"></span><span data-dl="dl_band_green">Doing well (75&ndash;100)</span></span>
           <span><span class="legend-dot dot-amber"></span><span data-dl="dl_band_amber">Worth a check-in (50&ndash;74)</span></span>
@@ -4763,7 +4780,7 @@ function toggleTheme() {
 .st-doors{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,168px));gap:16px 18px;justify-content:start;}
 .st-door{background:var(--st-surface);border:1px solid var(--st-border);border-radius:15px;overflow:hidden;display:flex;flex-direction:column;
   transition:transform .3s var(--st-ease),box-shadow .3s var(--st-ease),border-color .3s;}
-.st-door:hover{transform:translateY(-6px);box-shadow:0 24px 44px -26px rgba(10,30,51,.5);border-color:var(--st-gold);}
+.st-door:hover{transform:translateY(-3px);box-shadow:0 14px 28px -22px rgba(10,30,51,.40);border-color:var(--st-gold-soft);}
 .st-cover{position:relative;display:block;overflow:hidden;background:#06121F;border-bottom:1px solid var(--st-border);}
 .st-cover img{display:block;width:100%;height:auto;transition:transform .55s var(--st-ease);}
 .st-door:hover .st-cover img{transform:scale(1.04);}
@@ -4822,7 +4839,7 @@ function toggleTheme() {
 .st-freebtn:hover{background:var(--st-gold);}
 .st-soon{font-size:11.5px;font-weight:700;color:var(--st-faint);letter-spacing:.04em;text-transform:uppercase;}
 /* DIGITAL + PRINT two-price layout (2026-06) */
-.st-foot.st-foot-2{align-items:flex-end;gap:10px;}
+.st-foot.st-foot-2{flex-direction:column;align-items:stretch;justify-content:flex-start;gap:8px;}
 .st-prices{display:flex;flex-direction:column;gap:1px;}
 .st-buys{display:flex;flex-direction:column;gap:6px;align-items:stretch;}
 .st-buys .st-buy{width:100%;text-align:center;}
@@ -10226,19 +10243,35 @@ function aogTrendGrid(_records) {
    sample set; never reads or writes localStorage or real check-in records, and
    never touches the live dashboard's state. Reuses the P3 radar/trend builders. */
 var aogHeroView = "bar";
-function aogHeroDemoData() {
-  var recs = [];
-  var add = function (win, g, a, d) {
-    for (var i = 0; i < g; i++) recs.push({ window: win, tier: "Low Risk" });
-    for (var j = 0; j < a; j++) recs.push({ window: win, tier: "Some Risk" });
-    for (var k = 0; k < d; k++) recs.push({ window: win, tier: "High Risk" });
+var aogHeroScenarioIdx = 0;
+function aogHeroScenarios() {
+  // Build the trend records from per-window [name, green, amber, red] counts.
+  var build = function (wins) {
+    var recs = [];
+    wins.forEach(function (w) {
+      for (var i = 0; i < w[1]; i++) recs.push({ window: w[0], tier: "Low Risk" });
+      for (var j = 0; j < w[2]; j++) recs.push({ window: w[0], tier: "Some Risk" });
+      for (var k = 0; k < w[3]; k++) recs.push({ window: w[0], tier: "High Risk" });
+    });
+    var g = 0, a = 0, d = 0;
+    recs.forEach(function (r) { if (r.tier === "Low Risk") g++; else if (r.tier === "Some Risk") a++; else d++; });
+    return { records: recs, total: recs.length, green: g, amber: a, red: d };
   };
-  add("Fall", 28, 18, 8);
-  add("Winter", 34, 12, 4);
-  add("Spring", 36, 5, 1);
-  var g = 0, a = 0, d = 0;
-  recs.forEach(function (r) { if (r.tier === "Low Risk") g++; else if (r.tier === "Some Risk") a++; else d++; });
-  return { records: recs, total: recs.length, green: g, amber: a, red: d, avg: 71, noTrust: 9, A: 68, B: 64, C: 76 };
+  // Three classes whose different numbers lead to a different "teach next":
+  //  - Rivera: lowest domain B (Self-Compassion)   - steady, mostly green
+  //  - Ellis:  lowest domain A (Regulation)         - more struggle, lots of amber/red
+  //  - Park:   lowest domain C (Social)             - strong class, social is the gap
+  var s1 = build([["Fall", 28, 18, 8], ["Winter", 34, 12, 4], ["Spring", 36, 5, 1]]);
+  s1.name = DT("Ms. Rivera \u00b7 Grade 4", "Sra. Rivera \u00b7 4.\u00ba grado"); s1.avg = 71; s1.noTrust = 9;  s1.A = 68; s1.B = 64; s1.C = 76;
+  var s2 = build([["Fall", 16, 20, 11], ["Winter", 20, 18, 8], ["Spring", 24, 13, 5]]);
+  s2.name = DT("Mr. Ellis \u00b7 Grade 7", "Sr. Ellis \u00b7 7.\u00ba grado");   s2.avg = 63; s2.noTrust = 15; s2.A = 56; s2.B = 70; s2.C = 67;
+  var s3 = build([["Fall", 24, 7, 2], ["Winter", 27, 5, 1], ["Spring", 29, 3, 1]]);
+  s3.name = DT("Ms. Park \u00b7 Grade 2", "Sra. Park \u00b7 2.\u00ba grado");    s3.avg = 80; s3.noTrust = 3;  s3.A = 82; s3.B = 84; s3.C = 70;
+  return [s1, s2, s3];
+}
+function aogHeroDemoData() {
+  var all = aogHeroScenarios();
+  return all[aogHeroScenarioIdx % all.length];
 }
 // TEACH-NEXT (2026-06): single source of truth for the student-facing domain -> book/lesson
 // recommendation. Reused by renderConversationGuide (the _0x1bcbee map), the hero demo, and
@@ -10262,6 +10295,13 @@ function renderHeroDemo() {
   var kpis = document.getElementById("hdKpis");
   var legend = document.getElementById("hdLegend");
   var d = aogHeroDemoData();
+  var scn = document.getElementById("hdScn");
+  if (scn) {
+    var _all = aogHeroScenarios();
+    scn.innerHTML = '<span class="hd-scn-label">' + DT("Try a class", "Prueba una clase") + '</span>' + _all.map(function (sc, i) {
+      return '<button type="button" class="hd-scn-btn' + (i === aogHeroScenarioIdx ? ' active' : '') + '" onclick="aogHeroScenarioIdx=' + i + ';renderHeroDemo();">' + sc.name + '</button>';
+    }).join("");
+  }
   if (kpis) {
     kpis.innerHTML = '<div class="hd-kpi"><div class="hd-k-l">' + DT("Checked in", "Hicieron el check-in") + '</div><div class="hd-k-v">' + d.total + "</div></div>" + '<div class="hd-kpi"><div class="hd-k-l">' + DT("Average score", "Puntaje promedio") + '</div><div class="hd-k-v">' + d.avg + "<span>/100</span></div></div>" + '<div class="hd-kpi"><div class="hd-k-l">' + DT("No trusted adult", "Sin adulto de confianza") + '</div><div class="hd-k-v">' + d.noTrust + "</div></div>";
   }
@@ -10648,9 +10688,11 @@ function aogOpenResindex(domain, itemsLabel) {
     var _s = document.getElementById("riSearch"); if (_s) _s.value = "";
     var _g = document.getElementById("riGrade");  if (_g) _g.value  = "";
   } catch (_e) {}
-  if (typeof openGuideSub === "function") openGuideSub("resindex");
-  /* openGuideSub re-renders (riRender) and smooth-scrolls to the section;
-     run the open/highlight just after so our centered scroll wins. */
+  /* Navigate to the guide SCREEN first (openGuideSub alone only toggles a subtab,
+     which does nothing when called from the landing/dashboard screen). openGuide
+     shows screen-guide, renders the index, then activates the resindex subtab. */
+  if (typeof openGuide === "function") { openGuide("resindex"); }
+  else if (typeof openGuideSub === "function") { openGuideSub("resindex"); }
   setTimeout(function () {
     var cards = [];
     if (itemsLabel) {
@@ -10669,7 +10711,7 @@ function aogOpenResindex(domain, itemsLabel) {
     first.classList.add("ri-hit");
     setTimeout(function () { first.classList.remove("ri-hit"); }, 2400);
     try { first.scrollIntoView({ behavior: "smooth", block: "center" }); } catch (_e2) {}
-  }, 160);
+  }, 300);
 }
 function buildHomeReport(_0x196b68, _0x3d8f48) {
   const _0x406975 = _0x196b68.mode === "depth" ? 5 : 3;
@@ -14076,7 +14118,7 @@ function renderLibrary(){
   if(sto){ if(typeof FAMILY_STORE_URL!=="undefined" && FAMILY_STORE_URL){ sto.setAttribute("href",FAMILY_STORE_URL); sto.onclick=null; } else { sto.setAttribute("href","#"); sto.onclick=e=>e.preventDefault(); } }
 
   /* display order: Novels, Home & Family Editions, Curriculum, then the rest */
-  const AOG_ORDER = ["The Novels","Home & Family Editions","The Curriculum","Anchor Charts","Worksheets & Activities","Scenario Cards","Autism-Adapted Charts"];
+  const AOG_ORDER = ["The Novels","The Curriculum","Home & Family Editions","Anchor Charts","Worksheets & Activities","Scenario Cards","Autism-Adapted Charts"];
   const ordered = RESOURCE_LIBRARY.slice().sort((a,b)=>{ const ia=AOG_ORDER.indexOf(a.cat), ib=AOG_ORDER.indexOf(b.cat); return (ia<0?99:ia)-(ib<0?99:ib); });
 
   /* jump nav */
