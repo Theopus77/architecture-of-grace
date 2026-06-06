@@ -2551,10 +2551,13 @@ function toggleTheme() {
         <span class="dot"></span>
         <span class="word hyb-mid" data-i18n="hyb_b2">For students, families &amp; adults</span>
         <span class="dot dot-mid"></span>
-        <span class="word"><b data-i18n="hyb_b3">Built by a teacher</b></span>
+        <span class="word"><b data-i18n="hyb_b3">Built by a special educator</b></span>
       </div>
+      <p class="hyb-byline" data-i18n="hyb_byline">Created by Jimmy Ramsden — a practicing special educator with a master&rsquo;s in special education, built from the classroom, not a boardroom.</p>
       <div class="hyb-start-wrap" style="text-align:center; margin-top:22px;">
         <style>
+        .hyb-byline{ max-width:560px; margin:14px auto 0; font-family:var(--font-serif); font-style:italic; font-size:14.5px; line-height:1.5; color:rgba(244,238,226,.66); text-align:center; }
+        @media (max-width:600px){ .hyb-byline{ font-size:13.5px; } }
         .hyb-start-link{ display:inline-flex; align-items:center; gap:10px; font-family:var(--font-sans); font-weight:800; font-size:16.5px; letter-spacing:.01em; color:var(--navy); background:var(--gold); border:1.5px solid var(--gold); border-radius:999px; padding:15px 32px; text-decoration:none; cursor:pointer; box-shadow:0 8px 24px -6px rgba(0,0,0,.42); transition:background .15s var(--ease), transform .15s var(--ease); }
         .hyb-start-link:hover{ background:var(--gold-soft); transform:translateY(-1px); }
         .hyb-start-link svg{ width:19px; height:19px; }
@@ -7231,7 +7234,11 @@ const I18N_UI = {
     es: "Para estudiantes, familias y adultos"
   },
   hyb_b3: {
-    es: "Creado por un maestro"
+    es: "Creado por un educador especial"
+  },
+  hyb_byline: {
+    en: "Created by Jimmy Ramsden — a practicing special educator with a master\u2019s in special education, built from the classroom, not a boardroom.",
+    es: "Creado por Jimmy Ramsden — educador especial en ejercicio con una maestr\u00eda en educaci\u00f3n especial, construido desde el aula, no desde una oficina."
   },
   hyb_start_btn: {
     es: "Comienza tu chequeo"
@@ -10269,7 +10276,7 @@ function voicesRender(_0x33b762) {
 // WELCOME_VOICES_MIN real voices. An empty social-proof block reads as
 // "nobody uses this," so on no-URL / empty / error we keep it hidden. The full
 // Voices wall (voicesLoad) still shows the "be the first" invite separately.
-var WELCOME_VOICES_MIN = 2;
+var WELCOME_VOICES_MIN = 1;
 function welcomeVoicesLoad() {
   var _0x3b000d = document.getElementById("welcomeVoices");
   var _0x4d1e88 = document.getElementById("welcomeVoicesStrip");
