@@ -909,6 +909,27 @@ th.sorted { color: var(--navy); }
 .dot-amber { background: var(--amber); }
 .dot-red   { background: var(--red); }
 
+/* ===== P3 (2026-06-05) · OVERVIEW CHART TOGGLE (bar / radar / trend) ===== */
+.ov-head-row{ display:flex; align-items:flex-start; justify-content:space-between; gap:16px; flex-wrap:wrap; }
+.ov-toggle{ display:inline-flex; border:1px solid var(--rule); border-radius:999px; overflow:hidden; background:var(--paper,#fff); flex:0 0 auto; }
+:root[data-theme="dark"] .ov-toggle{ background:#0E1822; }
+.ovt-btn{
+  font-family:var(--font-sans); font-size:12.5px; font-weight:700; letter-spacing:.01em;
+  color:var(--ink-soft); background:transparent; border:none; padding:7px 15px; cursor:pointer;
+  transition:background .15s,color .15s;
+}
+.ovt-btn + .ovt-btn{ border-left:1px solid var(--rule); }
+.ovt-btn:hover{ color:var(--ink); }
+.ovt-btn.active{ background:var(--gold); color:var(--navy); }
+.dist-view{ padding:6px 4px 2px; }
+/* trend: per-window distribution rows */
+.trend-grid{ display:flex; flex-direction:column; gap:10px; }
+.trend-row{ display:flex; align-items:center; gap:12px; }
+.trend-win{ flex:0 0 92px; font-size:12.5px; font-weight:700; color:var(--ink-soft); }
+.trend-bar{ flex:1; display:flex; height:30px; border-radius:var(--radius-sm); overflow:hidden; box-shadow:var(--shadow-sm); }
+.trend-n{ flex:0 0 auto; font-size:12px; color:var(--ink-faint); font-variant-numeric:tabular-nums; min-width:22px; text-align:right; }
+@media (max-width:560px){ .trend-win{ flex-basis:64px; font-size:11.5px; } }
+
 .table-card {
   background: white;
   border: 1px solid var(--rule);
@@ -1893,6 +1914,61 @@ a.doc-path .dp-t::after{ content:" \2192"; color:var(--gold); font-weight:700; }
 .admin-cta .ac-ghost{ background:transparent; color:#fff; border:1.5px solid rgba(255,255,255,.45); }
 .admin-cta .ac-ghost:hover{ border-color:#E7B85E; }
 
+/* ===== P3 (2026-06-05) · "ACCESS DASHBOARD" VISIBILITY ==================
+   High-contrast, gently pulsing treatment so the dashboard entry point
+   stops getting lost next to the other links. Reusable utility. ====== */
+.aog-pop{
+  background:var(--gold) !important; color:var(--navy) !important;
+  border:1.5px solid var(--gold) !important;
+  box-shadow:0 6px 18px -8px rgba(242,201,100,.7);
+  animation:aogPulseSubtle 2.6s var(--ease, ease-in-out) infinite;
+}
+.aog-pop:hover{ background:#E7B85E !important; border-color:#E7B85E !important; box-shadow:0 8px 22px -8px rgba(242,201,100,.85); }
+@keyframes aogPulseSubtle{
+  0%,100%{ box-shadow:0 6px 18px -8px rgba(242,201,100,.55); }
+  50%{ box-shadow:0 8px 24px -6px rgba(242,201,100,.95); }
+}
+@media (prefers-reduced-motion:reduce){ .aog-pop{ animation:none; } }
+
+/* ===== P6 (2026-06-05) · PROFESSIONAL DEVELOPMENT SECTION ============== */
+.pd-wrap{ max-width:920px; }
+.pd-head{ margin-bottom:22px; }
+.pd-title{ font-size:30px; color:var(--navy); margin:6px 0 10px; line-height:1.12; }
+.pd-lede{ font-size:15px; line-height:1.7; color:var(--ink-soft); max-width:680px; margin:0; }
+.pd-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(238px,1fr)); gap:16px; }
+.pd-card{ background:var(--paper,#fff); border:1px solid var(--rule); border-left:4px solid var(--gold); border-radius:14px; padding:18px 18px 16px; box-shadow:var(--shadow-sm); }
+:root[data-theme="dark"] .pd-card{ background:#13314F; border-color:#1E4A72; border-left-color:var(--gold); }
+.pd-card h3{ font-family:var(--font-serif); font-size:18px; color:var(--navy); margin:0 0 7px; line-height:1.2; }
+:root[data-theme="dark"] .pd-card h3{ color:#fff; }
+.pd-card p{ font-size:13px; line-height:1.55; color:var(--ink-soft); margin:0; }
+.pd-cta{ display:flex; gap:12px; flex-wrap:wrap; margin-top:24px; }
+.pd-cta a{ display:inline-block; font-family:var(--font-sans); font-weight:700; font-size:13.5px; padding:12px 22px; border-radius:9px; text-decoration:none; }
+.pd-cta .ac-gold{ background:var(--gold); color:var(--navy); }
+.pd-cta .pd-ghost{ background:transparent; color:var(--navy); border:1.5px solid var(--rule); }
+:root[data-theme="dark"] .pd-cta .pd-ghost{ color:var(--cream); border-color:#2A4A6A; }
+.pd-cta .pd-ghost:hover{ border-color:var(--gold); }
+
+/* ===== P5 (2026-06-05) · "HOW THE FULL LIBRARY WORKS" ONE-PAGER ======== */
+.lw-band{ background:linear-gradient(180deg,var(--cream) 0%,var(--paper,#fff) 100%); border:1px solid var(--rule); border-radius:18px; padding:26px 30px 24px; margin-bottom:22px; box-shadow:var(--shadow-sm); }
+:root[data-theme="dark"] .lw-band{ background:#0E1822; border-color:#1E4A72; }
+.lw-head{ margin-bottom:18px; }
+.lw-title{ font-size:26px; color:var(--navy); margin:6px 0 8px; line-height:1.14; }
+:root[data-theme="dark"] .lw-title{ color:#fff; }
+.lw-sub{ font-size:14.5px; line-height:1.65; color:var(--ink-soft); max-width:660px; margin:0; }
+.lw-steps{ display:flex; align-items:stretch; gap:14px; }
+.lw-step{ flex:1; background:var(--paper,#fff); border:1px solid var(--rule); border-top:3px solid var(--gold); border-radius:14px; padding:18px 16px; box-shadow:var(--shadow-sm); }
+:root[data-theme="dark"] .lw-step{ background:#13314F; border-color:#1E4A72; border-top-color:var(--gold); }
+.lw-num{ width:30px; height:30px; border-radius:50%; background:var(--gold); color:var(--navy); font-family:var(--font-sans); font-weight:800; font-size:15px; display:grid; place-items:center; margin-bottom:10px; }
+.lw-st{ font-family:var(--font-serif); font-size:17px; font-weight:600; color:var(--navy); margin-bottom:6px; }
+:root[data-theme="dark"] .lw-st{ color:#fff; }
+.lw-sp{ font-size:12.5px; line-height:1.5; color:var(--ink-soft); margin:0; }
+.lw-arrow{ align-self:center; color:var(--gold); font-size:24px; font-weight:700; flex:0 0 auto; }
+.lw-foot{ margin-top:16px; }
+.lw-link{ font-family:var(--font-sans); font-weight:700; font-size:13.5px; color:var(--navy); text-decoration:none; }
+:root[data-theme="dark"] .lw-link{ color:var(--gold-soft); }
+.lw-link:hover{ text-decoration:underline; }
+@media (max-width:680px){ .lw-steps{ flex-direction:column; } .lw-arrow{ transform:rotate(90deg); } }
+
 /* ===== concrete lead in the foundation card ===== */
 .aog-what-lead{ font-size:17px; line-height:1.6; color:var(--navy); font-weight:500; margin:0 0 16px; padding-left:14px; border-left:3px solid var(--gold); }
 :root[data-theme="dark"] .aog-what-lead{ color:var(--gold-soft); }
@@ -2303,6 +2379,10 @@ function toggleTheme() {
   </a>
   <div class="topbar-actions">
     <a id="topbarBack" class="topbar-back" href="#" onclick="event.preventDefault(); resetToStart();" style="display:none;"><span class="tb-arr">&larr;</span> <span data-i18n="nav_back_start">Back to start</span></a>
+    <a class="topbar-store topbar-lib" href="#" onclick="event.preventDefault(); openGuide('library');" title="Free Library">
+      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+      <span>Library</span>
+    </a>
     <a class="topbar-store" href="#" onclick="event.preventDefault(); aogGoStore();" title="The Store">
       <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
       <span data-i18n="aog_store_nav">Store</span>
@@ -2368,6 +2448,59 @@ function toggleTheme() {
           <span data-i18n="g_tab_voices">Voices</span> <span aria-hidden="true">&rarr;</span>
         </a>
       </div>
+      <!-- P1 (2026-06-05): interactive demo preview, in the hero fold -->
+      <section class="hero-demo reveal" aria-label="Live dashboard demo">
+        <style>
+        .hero-demo{ position:relative; max-width:560px; margin:30px auto 4px; }
+        .hero-demo-sub{ font-family:var(--font-sans); font-weight:600; font-size:14.5px; color:var(--gold-soft); margin:0 0 12px; letter-spacing:.01em; }
+        .hd-card{ background:var(--paper); border:1px solid var(--rule); border-radius:16px; padding:16px 16px 14px; box-shadow:0 20px 54px -26px rgba(0,0,0,.6); text-align:left; }
+        :root[data-theme="dark"] .hd-card{ background:#13314F; border-color:#1E4A72; }
+        .hd-top{ display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:12px; flex-wrap:wrap; }
+        .hd-title{ font-family:var(--font-sans); font-size:13px; font-weight:700; color:var(--ink); }
+        .hd-muted{ color:var(--ink-faint); font-weight:500; }
+        .hd-toggle{ display:inline-flex; border:1px solid var(--rule); border-radius:999px; overflow:hidden; background:var(--paper); }
+        .hdt-btn{ font-family:var(--font-sans); font-size:11.5px; font-weight:700; color:var(--ink-soft); background:transparent; border:none; padding:6px 13px; cursor:pointer; transition:background .15s,color .15s; }
+        .hdt-btn + .hdt-btn{ border-left:1px solid var(--rule); }
+        .hdt-btn:hover{ color:var(--ink); }
+        .hdt-btn.active{ background:var(--gold); color:var(--navy); }
+        .hd-kpis{ display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-bottom:12px; }
+        .hd-kpi{ background:rgba(127,127,127,.08); border:1px solid var(--rule); border-radius:10px; padding:9px 10px; }
+        .hd-k-l{ font-family:var(--font-sans); font-size:11px; color:var(--ink-soft); }
+        .hd-k-v{ font-family:var(--font-sans); font-size:21px; font-weight:700; color:var(--ink); line-height:1.1; margin-top:2px; }
+        .hd-k-v span{ font-size:11px; color:var(--ink-faint); font-weight:500; }
+        .hd-bar{ display:flex; height:30px; border-radius:8px; overflow:hidden; }
+        .hd-view{ padding:4px 0 0; }
+        .hd-legend{ display:flex; gap:14px; margin-top:9px; font-family:var(--font-sans); font-size:11.5px; color:var(--ink-soft); flex-wrap:wrap; }
+        .hd-foot{ display:flex; align-items:center; justify-content:space-between; gap:10px; margin-top:13px; flex-wrap:wrap; }
+        .hd-link{ font-family:var(--font-sans); font-size:13px; font-weight:700; color:var(--ink); text-decoration:none; }
+        .hd-link:hover{ text-decoration:underline; }
+        .hd-note{ font-family:var(--font-sans); font-size:11px; color:var(--ink-faint); }
+        @media (max-width:520px){ .hero-demo{ margin-top:22px; } .hd-kpis{ gap:6px; } .hd-k-v{ font-size:18px; } }
+        </style>
+        <p class="hero-demo-sub" data-i18n="hero_demo_sub">Experience the serverless, zero-liability dashboard instantly below.</p>
+        <div class="hd-card">
+          <div class="hd-top">
+            <div class="hd-title">How everyone&rsquo;s doing <span class="hd-muted">&middot; sample class</span></div>
+            <div class="hd-toggle" role="group" aria-label="Chart view">
+              <button type="button" class="hdt-btn active" data-hview="bar">Bar</button>
+              <button type="button" class="hdt-btn" data-hview="radar">Radar</button>
+              <button type="button" class="hdt-btn" data-hview="trend">Trend</button>
+            </div>
+          </div>
+          <div class="hd-kpis" id="hdKpis"></div>
+          <div class="hd-bar" id="hdBar"></div>
+          <div class="hd-view" id="hdView" style="display:none;"></div>
+          <div class="hd-legend" id="hdLegend">
+            <span><span class="legend-dot dot-green"></span><span data-i18n="dl_band_green">Doing well</span></span>
+            <span><span class="legend-dot dot-amber"></span><span data-i18n="dl_band_amber">Worth a check-in</span></span>
+            <span><span class="legend-dot dot-red"></span><span data-i18n="dl_band_red">Needs support</span></span>
+          </div>
+          <div class="hd-foot">
+            <a href="#" class="hd-link" onclick="event.preventDefault(); aogOpenDemoDashboard();" data-i18n="hero_demo_link">Open the full dashboard &rarr;</a>
+            <span class="hd-note" data-i18n="hero_demo_note">Sample data &middot; nothing saved &middot; no sign-up</span>
+          </div>
+        </div>
+      </section>
       <p class="hyb-onesent" data-i18n="hyb_onesent">The only closed-loop SEL ecosystem that targets the need, delivers the lesson, and sustains the growth — for students, families, and every adult in between.</p>
       <p class="hyb-forall" data-i18n="hyb_forall">Made for students, families, and independent adults &mdash; and the counselors who walk beside them.</p>
       <!-- ===== FOUR-CORNER ENTRY (primary destinations, surfaced) ===== -->
@@ -2419,6 +2552,14 @@ function toggleTheme() {
           <div class="tx">
             <div class="t" data-i18n="wp_band_t">For workplaces &amp; teams</div>
             <div class="s" data-i18n="wp_band_s">A private check-in for the people who hold others.</div>
+          </div>
+          <span class="arr" aria-hidden="true">&rarr;</span>
+        </a>
+        <a href="#" class="hc-card hc-trust" onclick="event.preventDefault(); openGuide('library');">
+          <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></div>
+          <div class="tx">
+            <div class="t">Explore the Library</div>
+            <div class="s">Browse and download every anchor chart, worksheet, scenario card, and sample lesson &mdash; free, no sign-up, no code.</div>
           </div>
           <span class="arr" aria-hidden="true">&rarr;</span>
         </a>
@@ -3272,13 +3413,21 @@ function toggleTheme() {
       </div>
       <div id="ovSummary" class="ov-summary"></div>
       <div class="kpi-grid" id="kpiGrid"></div>
-      <div class="section-head">
-        <h2 data-dl="dl_ov_h1">How everyone&rsquo;s doing</h2>
-        <div class="small" data-dl="dl_ov_sub">Everyone grouped by overall score (0&ndash;100).</div>
+      <div class="section-head ov-head-row">
+        <div>
+          <h2 data-dl="dl_ov_h1">How everyone&rsquo;s doing</h2>
+          <div class="small" id="ovViewSub" data-dl="dl_ov_sub">Everyone grouped by overall score (0&ndash;100).</div>
+        </div>
+        <div class="ov-toggle" id="ovViewToggle" role="group" aria-label="Chart view">
+          <button type="button" class="ovt-btn active" data-view="bar">Bar</button>
+          <button type="button" class="ovt-btn" data-view="radar">Radar</button>
+          <button type="button" class="ovt-btn" data-view="trend">Trend</button>
+        </div>
       </div>
       <div class="dist-card">
         <div class="dist-bar" id="distBar"></div>
-        <div class="dist-legend">
+        <div class="dist-view" id="distView" style="display:none;"></div>
+        <div class="dist-legend" id="distLegend">
           <span><span class="legend-dot dot-green"></span><span data-dl="dl_band_green">Doing well (75&ndash;100)</span></span>
           <span><span class="legend-dot dot-amber"></span><span data-dl="dl_band_amber">Worth a check-in (50&ndash;74)</span></span>
           <span><span class="legend-dot dot-red"></span><span data-dl="dl_band_red">Needs support (0&ndash;49)</span></span>
@@ -3761,6 +3910,7 @@ function toggleTheme() {
 
       <div class="guide-subnav">
         <button class="guide-subtab active" data-guide="docs" data-i18n="g_tab_docs">Documentation</button>
+        <button class="guide-subtab" data-guide="pd">Professional Development</button>
         <button class="guide-subtab" data-guide="resindex" data-i18n="g_tab_resindex">Resource Index</button>
         <button class="guide-subtab" data-guide="library" data-i18n="g_tab_library">Downloads</button>
         <button class="guide-subtab" data-guide="voices" data-i18n="g_tab_voices">Voices</button>
@@ -3768,6 +3918,36 @@ function toggleTheme() {
 
 
       <div class="guide-section active" id="guide-docs">
+      <!-- P5 (2026-06-05): closed-loop one-pager -->
+      <div class="lw-band">
+        <div class="lw-head">
+          <div class="eyebrow" style="color:var(--gold);">The closed loop</div>
+          <h2 class="serif lw-title">How the full library works</h2>
+          <p class="lw-sub">One result becomes one targeted next step &mdash; and then a sustained one. This is the loop that ties measuring, flagging, and teaching into a single system.</p>
+        </div>
+        <div class="lw-steps">
+          <div class="lw-step">
+            <div class="lw-num">1</div>
+            <div class="lw-st">Identify the need</div>
+            <p class="lw-sp">A check-in surfaces a low domain &mdash; say, Self-Compassion &amp; Growth Mindset &mdash; for one student or a whole group.</p>
+          </div>
+          <div class="lw-arrow" aria-hidden="true">&rarr;</div>
+          <div class="lw-step">
+            <div class="lw-num">2</div>
+            <div class="lw-st">Targeted flag</div>
+            <p class="lw-sp">The result raises a flag on the counselor follow-up view &mdash; who to sit with, and where to focus &mdash; without ever issuing a diagnosis.</p>
+          </div>
+          <div class="lw-arrow" aria-hidden="true">&rarr;</div>
+          <div class="lw-step">
+            <div class="lw-num">3</div>
+            <div class="lw-st">Sustain growth</div>
+            <p class="lw-sp">The Resource Index maps that flag straight to the book, chapter, lesson, and anchor chart that teach the skill &mdash; so the score leads to instruction.</p>
+          </div>
+        </div>
+        <div class="lw-foot">
+          <a href="#" class="lw-link" onclick="event.preventDefault(); openGuideSub('resindex');">Open the Construct-to-Resource Index &rarr;</a>
+        </div>
+      </div>
       <div class="table-card" style="padding:28px 32px;">
         <style>
         .docnav{ display:flex; flex-wrap:wrap; gap:8px; justify-content:center; margin:0 0 24px; }
@@ -3921,7 +4101,7 @@ function toggleTheme() {
           </div>
           <div class="admin-cta">
             <a href="#" class="ac-gold" onclick="event.preventDefault(); openGuideSub('library');">Request district pricing &rarr;</a>
-            <a href="#" class="ac-ghost" onclick="event.preventDefault(); openAdmin();">Educator access &middot; results</a>
+            <a href="#" class="ac-ghost aog-pop" onclick="event.preventDefault(); openAdmin();">Educator access &middot; results</a>
           </div>
         </div>
 
@@ -4045,6 +4225,42 @@ function toggleTheme() {
         </div>
       </div>
       </div><!-- /guide-docs -->
+
+      <div class="guide-section" id="guide-pd">
+        <div class="pd-wrap">
+          <div class="pd-head">
+            <div class="eyebrow" style="color:var(--gold);">For staff &amp; leadership</div>
+            <h2 class="serif pd-title">Professional Development</h2>
+            <p class="pd-lede">The adult-facing strand that already runs through every book&rsquo;s table of contents &mdash; gathered here in one place. Each thread supports the grown-ups first, so the framework holds for the students they carry.</p>
+          </div>
+          <div class="pd-grid">
+            <div class="pd-card">
+              <h3>Staff Wellness</h3>
+              <p>Protect the people who hold everyone else. A private adult check-in, a 60-second burnout read, and practices a team can run without adding another meeting.</p>
+            </div>
+            <div class="pd-card">
+              <h3>Trauma-Informed Reflection</h3>
+              <p>Recognize stress responses in yourself and your students, and respond from regulation rather than reaction &mdash; the Window of Tolerance, applied to the adults first.</p>
+            </div>
+            <div class="pd-card">
+              <h3>Adult SEL</h3>
+              <p>The same four pillars &mdash; identity, self-compassion, forgiveness, and grace &mdash; translated for grown-ups, so staff practice the skills before they ever teach them.</p>
+            </div>
+            <div class="pd-card">
+              <h3>Building a Culture of Grace</h3>
+              <p>Move grace from a poster to a practice: repair routines, charitable reading, and the difficult-vs-unsafe line that keep a staff culture healthy under pressure.</p>
+            </div>
+            <div class="pd-card">
+              <h3>Implementation Training</h3>
+              <p>Onboarding for the whole system &mdash; the check-in, the dashboard, family and adult modes &mdash; with a mid-year session tied to your curriculum calendar.</p>
+            </div>
+          </div>
+          <div class="pd-cta">
+            <a href="#" class="ac-gold aog-pop" onclick="event.preventDefault(); openGuideSub('library');">Request district pricing &rarr;</a>
+            <a href="#" class="pd-ghost" onclick="event.preventDefault(); openGuideSub('resindex');">See where it maps in the books &rarr;</a>
+          </div>
+        </div>
+      </div><!-- /guide-pd -->
 
       <div class="guide-section" id="guide-resindex">
         <div class="table-card" style="padding:28px 32px 32px;">
@@ -4466,6 +4682,13 @@ function toggleTheme() {
 :root[data-theme="dark"] .topbar-store svg{color:var(--gold-soft);}
 :root[data-theme="dark"] .topbar-store:hover{background:var(--gold-soft);color:var(--navy);}
 @media (max-width:480px){.topbar-store span{display:none;} .topbar-store{padding:7px 9px;margin-right:8px;}}
+/* standalone Library entry — neutral pill so the gold Store stays the commerce CTA */
+.topbar-lib{background:transparent;border-color:var(--rule);color:var(--ink-soft);}
+.topbar-lib svg{color:var(--ink-soft);}
+.topbar-lib:hover{background:rgba(127,127,127,.12);color:var(--ink);transform:translateY(-1px);}
+.topbar-lib:hover svg{color:var(--ink);}
+:root[data-theme="dark"] .topbar-lib{color:var(--cream);background:transparent;border-color:#2A4A6A;}
+:root[data-theme="dark"] .topbar-lib:hover{background:rgba(255,255,255,.08);color:#fff;}
 /* ============================================================
    AoG STOREFRONT — paste this block inside your existing <style>
    All classes are namespaced .st- / wrapped in .aog-store so they
@@ -4499,7 +4722,7 @@ function toggleTheme() {
 .st-jump a:hover{border-color:var(--st-gold);box-shadow:0 6px 16px -12px rgba(10,30,51,.5);}
 
 /* ---- NOVEL DOORS (cover-forward, 5 across) ---- */
-.st-doors{display:grid;grid-template-columns:repeat(auto-fill,minmax(195px,1fr));gap:20px;}
+.st-doors{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,168px));gap:16px 18px;justify-content:start;}
 .st-door{background:var(--st-surface);border:1px solid var(--st-border);border-radius:15px;overflow:hidden;display:flex;flex-direction:column;
   transition:transform .3s var(--st-ease),box-shadow .3s var(--st-ease),border-color .3s;}
 .st-door:hover{transform:translateY(-6px);box-shadow:0 24px 44px -26px rgba(10,30,51,.5);border-color:var(--st-gold);}
@@ -4510,7 +4733,7 @@ function toggleTheme() {
 .st-door:hover .st-seam{width:10px;}
 .st-knob{position:absolute;top:50%;left:12px;width:6px;height:6px;border-radius:50%;background:var(--st-gold-soft);box-shadow:0 0 0 3px rgba(242,201,100,.25);opacity:0;transform:translateY(-50%) scale(.4);transition:.4s var(--st-ease);pointer-events:none;}
 .st-door:hover .st-knob{opacity:1;transform:translateY(-50%) scale(1);}
-.st-enter{position:absolute;left:0;right:0;bottom:0;padding:22px 12px 11px;font-size:11.5px;font-weight:700;letter-spacing:.03em;color:#fff;text-align:center;background:linear-gradient(to top,rgba(6,18,31,.86),transparent);opacity:0;transform:translateY(8px);transition:.3s var(--st-ease);pointer-events:none;}
+.st-enter{display:none;}
 .st-door:hover .st-enter{opacity:1;transform:none;}
 .st-door-body{padding:14px 15px 16px;display:flex;flex-direction:column;flex:1;}
 .st-tags{display:flex;gap:6px;margin-bottom:8px;flex-wrap:wrap;}
@@ -7004,6 +7227,11 @@ function applyLang() {
       renderFreeShelf();
     }
   } catch (_0x206b0e) {}
+  try {
+    if (typeof renderHeroDemo === "function") {
+      renderHeroDemo();
+    }
+  } catch (_e) {}
 }
 function setLang(_0x3f9e05) {
   lang = _0x3f9e05;
@@ -8795,6 +9023,21 @@ document.addEventListener("DOMContentLoaded", () => {
       refreshAdmin();
     });
   });
+  $$(".ovt-btn").forEach(_btn => {
+    _btn.addEventListener("click", () => {
+      aogViewType = _btn.dataset.view || "bar";
+      $$(".ovt-btn").forEach(_b => _b.classList.toggle("active", _b === _btn));
+      if (typeof renderOverview === "function") renderOverview();
+    });
+  });
+  $$(".hdt-btn").forEach(_hb => {
+    _hb.addEventListener("click", () => {
+      aogHeroView = _hb.dataset.hview || "bar";
+      $$(".hdt-btn").forEach(_x => _x.classList.toggle("active", _x === _hb));
+      if (typeof renderHeroDemo === "function") renderHeroDemo();
+    });
+  });
+  try { if (typeof renderHeroDemo === "function") renderHeroDemo(); } catch (_e) {}
   const _0x386980 = document.querySelector(".tab.active") ? document.querySelector(".tab.active").dataset.tab : "overview";
   setTabHint(_0x386980);
   setTabHelp(_0x386980);
@@ -8882,6 +9125,25 @@ function openAdmin() {
   if (typeof aogSetHash === "function") {
     aogSetHash("results");
   }
+}
+/* P1/B (2026-06-05): open the full dashboard directly. The gate exists to
+   protect real synced data, but data only syncs when someone shares a private
+   link — so an unsynced visit shows only local/demo rows, nothing private.
+   Loads the demo set only when the device has no real check-ins, so a real
+   educator's data is never replaced. */
+function aogOpenDemoDashboard() {
+  try {
+    var hasReal = false;
+    try { hasReal = (JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]") || []).length > 0; } catch (_e) {}
+    var demoOn = false;
+    try { demoOn = localStorage.getItem(DEMO_FLAG) === "1"; } catch (_e2) {}
+    if (!demoOn && !hasReal && typeof toggleDemoData === "function") {
+      toggleDemoData();
+    }
+  } catch (_e3) {}
+  if (typeof showScreen === "function") showScreen("screen-admin");
+  if (typeof refreshAdmin === "function") refreshAdmin();
+  if (typeof aogSetHash === "function") aogSetHash("results");
 }
 function startCheckin() {
   window._famFlow = false;
@@ -9878,6 +10140,89 @@ function refreshAdmin() {
   renderHome();
   renderGrowth();
 }
+/* P3 (2026-06-05): overview chart view ('bar' | 'radar' | 'trend'). */
+var aogViewType = "bar";
+function aogRadarSvg(_a, _b, _c) {
+  var cx = 130, cy = 118, R = 84;
+  var clamp = function (v) { return Math.max(0, Math.min(100, v || 0)); };
+  var axes = [{ k: "A", v: clamp(_a), ang: -90 }, { k: "B", v: clamp(_b), ang: 30 }, { k: "C", v: clamp(_c), ang: 150 }];
+  var pt = function (ang, r) { var rad = ang * Math.PI / 180; return [cx + Math.cos(rad) * r, cy + Math.sin(rad) * r]; };
+  var rings = "";
+  [25, 50, 75, 100].forEach(function (p) {
+    var pts = axes.map(function (l) { var xy = pt(l.ang, R * p / 100); return xy[0].toFixed(1) + "," + xy[1].toFixed(1); }).join(" ");
+    rings += '<polygon points="' + pts + '" fill="none" stroke="var(--rule)" stroke-width="1"' + (p === 100 ? "" : ' stroke-dasharray="3 3"') + "/>";
+  });
+  var spokes = axes.map(function (l) { var xy = pt(l.ang, R); return '<line x1="' + cx + '" y1="' + cy + '" x2="' + xy[0].toFixed(1) + '" y2="' + xy[1].toFixed(1) + '" stroke="var(--rule)" stroke-width="1"/>'; }).join("");
+  var dataPts = axes.map(function (l) { var xy = pt(l.ang, R * l.v / 100); return xy[0].toFixed(1) + "," + xy[1].toFixed(1); }).join(" ");
+  var dots = axes.map(function (l) { var xy = pt(l.ang, R * l.v / 100); return '<circle cx="' + xy[0].toFixed(1) + '" cy="' + xy[1].toFixed(1) + '" r="3.6" fill="var(--gold)"/>'; }).join("");
+  var labels = axes.map(function (l) {
+    var xy = pt(l.ang, R + 20);
+    var anchor = l.ang === -90 ? "middle" : l.ang === 30 ? "start" : "end";
+    return '<text x="' + xy[0].toFixed(1) + '" y="' + (xy[1] + 4).toFixed(1) + '" text-anchor="' + anchor + '" font-size="12.5" font-weight="700" fill="var(--ink-soft)">' + l.k + " · " + Math.round(l.v) + "</text>";
+  }).join("");
+  return '<svg viewBox="0 0 260 236" width="100%" style="max-width:330px;display:block;margin:4px auto 2px;" role="img" aria-label="Domain average radar">' + rings + spokes + '<polygon points="' + dataPts + '" fill="rgba(242,201,100,.30)" stroke="var(--gold)" stroke-width="2"/>' + dots + labels + "</svg>";
+}
+function aogTrendGrid(_records) {
+  var order = ["Fall", "Winter", "Spring", "Summer"];
+  var byWin = {};
+  _records.forEach(function (r) {
+    var w = r.window || "—";
+    byWin[w] = byWin[w] || { g: 0, a: 0, d: 0, n: 0 };
+    if (r.tier === "Low Risk") byWin[w].g++; else if (r.tier === "Some Risk") byWin[w].a++; else if (r.tier === "High Risk") byWin[w].d++;
+    byWin[w].n++;
+  });
+  var wins = order.filter(function (w) { return byWin[w]; });
+  Object.keys(byWin).forEach(function (w) { if (order.indexOf(w) < 0) wins.push(w); });
+  if (!wins.length) return '<div class="dist-segment" style="flex:1;background:var(--rule-soft);color:var(--ink-faint);">' + DT("No data", "Sin datos") + "</div>";
+  var rows = wins.map(function (w) {
+    var c = byWin[w], seg = "";
+    if (c.d > 0) seg += '<div class="dist-segment dist-red" style="flex:' + c.d + '" title="' + DT("Needs support", "Necesita apoyo") + '">' + c.d + "</div>";
+    if (c.a > 0) seg += '<div class="dist-segment dist-amber" style="flex:' + c.a + '" title="' + DT("Worth a check-in", "Vale un chequeo") + '">' + c.a + "</div>";
+    if (c.g > 0) seg += '<div class="dist-segment dist-green" style="flex:' + c.g + '" title="' + DT("Doing well", "Va bien") + '">' + c.g + "</div>";
+    return '<div class="trend-row"><div class="trend-win">' + escapeHtml(winLabel(w) || w) + '</div><div class="trend-bar">' + seg + '</div><div class="trend-n">' + c.n + "</div></div>";
+  }).join("");
+  return '<div class="trend-grid">' + rows + "</div>";
+}
+/* P1 (2026-06-05): hero demo preview — fully isolated. Uses a fixed in-memory
+   sample set; never reads or writes localStorage or real check-in records, and
+   never touches the live dashboard's state. Reuses the P3 radar/trend builders. */
+var aogHeroView = "bar";
+function aogHeroDemoData() {
+  var recs = [];
+  var add = function (win, g, a, d) {
+    for (var i = 0; i < g; i++) recs.push({ window: win, tier: "Low Risk" });
+    for (var j = 0; j < a; j++) recs.push({ window: win, tier: "Some Risk" });
+    for (var k = 0; k < d; k++) recs.push({ window: win, tier: "High Risk" });
+  };
+  add("Fall", 28, 18, 8);
+  add("Winter", 34, 12, 4);
+  add("Spring", 36, 5, 1);
+  var g = 0, a = 0, d = 0;
+  recs.forEach(function (r) { if (r.tier === "Low Risk") g++; else if (r.tier === "Some Risk") a++; else d++; });
+  return { records: recs, total: recs.length, green: g, amber: a, red: d, avg: 71, noTrust: 9, A: 68, B: 64, C: 76 };
+}
+function renderHeroDemo() {
+  var bar = document.getElementById("hdBar");
+  var view = document.getElementById("hdView");
+  if (!bar || !view) return;
+  var kpis = document.getElementById("hdKpis");
+  var legend = document.getElementById("hdLegend");
+  var d = aogHeroDemoData();
+  if (kpis) {
+    kpis.innerHTML = '<div class="hd-kpi"><div class="hd-k-l">' + DT("Checked in", "Hicieron el check-in") + '</div><div class="hd-k-v">' + d.total + "</div></div>" + '<div class="hd-kpi"><div class="hd-k-l">' + DT("Average score", "Puntaje promedio") + '</div><div class="hd-k-v">' + d.avg + "<span>/100</span></div></div>" + '<div class="hd-kpi"><div class="hd-k-l">' + DT("No trusted adult", "Sin adulto de confianza") + '</div><div class="hd-k-v">' + d.noTrust + "</div></div>";
+  }
+  if (aogHeroView === "radar") {
+    bar.style.display = "none"; view.style.display = ""; view.innerHTML = aogRadarSvg(d.A, d.B, d.C);
+    if (legend) legend.style.display = "none";
+  } else if (aogHeroView === "trend") {
+    bar.style.display = "none"; view.style.display = ""; view.innerHTML = aogTrendGrid(d.records);
+    if (legend) legend.style.display = "";
+  } else {
+    bar.innerHTML = '<div class="dist-segment dist-green" style="flex:' + d.green + '" title="' + DT("Doing well", "Va bien") + '">' + d.green + "</div>" + '<div class="dist-segment dist-amber" style="flex:' + d.amber + '" title="' + DT("Worth a check-in", "Vale un chequeo") + '">' + d.amber + "</div>" + '<div class="dist-segment dist-red" style="flex:' + d.red + '" title="' + DT("Needs support", "Necesita apoyo") + '">' + d.red + "</div>";
+    bar.style.display = ""; view.style.display = "none"; view.innerHTML = "";
+    if (legend) legend.style.display = "";
+  }
+}
 function renderOverview() {
   const _0xea7412 = getAllRecords();
   const _0x21f93f = applyFilters(_0xea7412, {
@@ -9942,6 +10287,34 @@ function renderOverview() {
   const _0xa951a1 = _0x5e01d8 ? _0x21f93f.reduce((_0x5efabe, _0x3d3530) => _0x5efabe + (_0x3d3530.normB || 0), 0) / _0x5e01d8 : 0;
   const _0x29fef6 = _0x5e01d8 ? _0x21f93f.reduce((_0x89c64f, _0x1d628f) => _0x89c64f + (_0x1d628f.normC || 0), 0) / _0x5e01d8 : 0;
   $("#domainSummary").innerHTML = domainCard("A · " + DT("Emotional Regulation & Well-Being", "Regulación emocional y bienestar"), _0x10c6c6) + domainCard("B · " + DT("Self-Compassion & Growth Mindset", "Autocompasión y mentalidad de crecimiento"), _0xa951a1) + domainCard("C · " + DT("Social Competency & Repair", "Competencia social y reparación"), _0x29fef6);
+  (function () {
+    var _vt = typeof aogViewType !== "undefined" ? aogViewType : "bar";
+    var _bar = document.getElementById("distBar");
+    var _view = document.getElementById("distView");
+    var _legend = document.getElementById("distLegend");
+    var _sub = document.getElementById("ovViewSub");
+    if (!_bar || !_view) return;
+    var _empty = '<div class="dist-segment" style="flex:1;background:var(--rule-soft);color:var(--ink-faint);">' + DT("No data", "Sin datos") + "</div>";
+    if (_vt === "radar") {
+      _bar.style.display = "none";
+      _view.style.display = "";
+      _view.innerHTML = _0x5e01d8 ? aogRadarSvg(_0x10c6c6, _0xa951a1, _0x29fef6) : _empty;
+      if (_legend) _legend.style.display = "none";
+      if (_sub) _sub.textContent = DT("Average score shape across the three domains (0–100).", "Forma del puntaje promedio en los tres dominios (0–100).");
+    } else if (_vt === "trend") {
+      _bar.style.display = "none";
+      _view.style.display = "";
+      _view.innerHTML = _0x5e01d8 ? aogTrendGrid(_0x21f93f) : _empty;
+      if (_legend) _legend.style.display = "";
+      if (_sub) _sub.textContent = DT("How the group’s distribution shifts across windows.", "Cómo cambia la distribución del grupo entre períodos.");
+    } else {
+      _bar.style.display = "";
+      _view.style.display = "none";
+      _view.innerHTML = "";
+      if (_legend) _legend.style.display = "";
+      if (_sub) _sub.textContent = DT("Everyone grouped by overall score (0–100).", "Todos agrupados por puntaje general (0–100).");
+    }
+  })();
 }
 function domainCard(_0x4eb3ea, _0x5c261b) {
   return "<div class=\"domain-card\"><div class=\"domain-card-head\"><div class=\"domain-card-title\">" + escapeHtml(_0x4eb3ea) + "</div><div class=\"domain-card-score\">" + _0x5c261b.toFixed(0) + "<span> / 100</span></div></div><div class=\"bar\"><div class=\"bar-fill\" style=\"width:" + _0x5c261b.toFixed(0) + "%\"></div></div></div>";
