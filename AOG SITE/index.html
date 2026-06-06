@@ -10262,11 +10262,11 @@ function aogHeroScenarios() {
   //  - Ellis:  lowest domain A (Regulation)         - more struggle, lots of amber/red
   //  - Park:   lowest domain C (Social)             - strong class, social is the gap
   var s1 = build([["Fall", 28, 18, 8], ["Winter", 34, 12, 4], ["Spring", 36, 5, 1]]);
-  s1.name = DT("Ms. Rivera \u00b7 Grade 4", "Sra. Rivera \u00b7 4.\u00ba grado"); s1.avg = 71; s1.noTrust = 9;  s1.A = 68; s1.B = 64; s1.C = 76;
+  s1.name = DT("Ms. Rivera \u00b7 Grade 4", "Sra. Rivera \u00b7 4.\u00ba grado"); s1.avg = 71; s1.noTrust = 9;  s1.A = 68; s1.B = 64; s1.C = 76; s1.band = "3\u20135";
   var s2 = build([["Fall", 16, 20, 11], ["Winter", 20, 18, 8], ["Spring", 24, 13, 5]]);
-  s2.name = DT("Mr. Ellis \u00b7 Grade 7", "Sr. Ellis \u00b7 7.\u00ba grado");   s2.avg = 63; s2.noTrust = 15; s2.A = 56; s2.B = 70; s2.C = 67;
+  s2.name = DT("Mr. Ellis \u00b7 Grade 7", "Sr. Ellis \u00b7 7.\u00ba grado");   s2.avg = 63; s2.noTrust = 15; s2.A = 56; s2.B = 70; s2.C = 67; s2.band = "6\u20138";
   var s3 = build([["Fall", 24, 7, 2], ["Winter", 27, 5, 1], ["Spring", 29, 3, 1]]);
-  s3.name = DT("Ms. Park \u00b7 Grade 2", "Sra. Park \u00b7 2.\u00ba grado");    s3.avg = 80; s3.noTrust = 3;  s3.A = 82; s3.B = 84; s3.C = 70;
+  s3.name = DT("Ms. Park \u00b7 Grade 2", "Sra. Park \u00b7 2.\u00ba grado");    s3.avg = 80; s3.noTrust = 3;  s3.A = 82; s3.B = 84; s3.C = 70; s3.band = "K\u20132";
   return [s1, s2, s3];
 }
 function aogHeroDemoData() {
@@ -10276,6 +10276,46 @@ function aogHeroDemoData() {
 // TEACH-NEXT (2026-06): single source of truth for the student-facing domain -> book/lesson
 // recommendation. Reused by renderConversationGuide (the _0x1bcbee map), the hero demo, and
 // the dashboard overview so the "what to teach next" language stays consistent everywhere.
+function aogBandBook(band) {
+  if (!band) return null;
+  var key = String(band).replace(/\u2013/g, "-").replace(/\s+/g, "").toUpperCase();
+  var m = {
+    "K-2":   { n: "Book 1", t: "The Year We Met Sammy" },
+    "3-5":   { n: "Book 2", t: "The Year of the Inner Critic" },
+    "6-8":   { n: "Book 3", t: "The Year of Two Voices" },
+    "9-10":  { n: "Book 4", t: "The Year We Looked Up" },
+    "11-12": { n: "Book 5", t: "The Year We Walked Out" }
+  };
+  return m[key] || null;
+}
+function aogGradeToBand(grade) {
+  if (grade == null) return null;
+  var g = String(grade).trim().toUpperCase();
+  if (g === "K" || g === "PK" || g === "TK" || g === "KK" || g.indexOf("KIND") === 0) return "K\u20132";
+  var n = parseInt(g, 10);
+  if (isNaN(n)) return null;
+  if (n <= 2) return "K\u20132";
+  if (n <= 5) return "3\u20135";
+  if (n <= 8) return "6\u20138";
+  if (n <= 10) return "9\u201310";
+  return "11\u201312";
+}
+function aogTeachNextStudent(domainKey, band) {
+  var book = aogBandBook(band);
+  var domEN = { A: "Emotional Regulation & Well-Being", B: "Self-Compassion & Growth Mindset", C: "Social Competency & Repair" };
+  var domES = { A: "Regulaci\u00f3n emocional y bienestar", B: "Autocompasi\u00f3n y mentalidad de crecimiento", C: "Competencia social y reparaci\u00f3n" };
+  var focusEN = { A: "naming feelings, the Window of Tolerance, and a calm-down toolkit the class can reach for when emotions run big", B: "the inner-critic / kind-coach work and steady self-compassion practice", C: "perspective-taking, repairing after conflict, and telling the difference between difficult and unsafe" };
+  var focusES = { A: "nombrar las emociones, la Window of Tolerance y un kit de calma al que la clase pueda recurrir cuando las emociones sean grandes", B: "el trabajo del cr\u00edtico interior / kind-coach y una pr\u00e1ctica constante de autocompasi\u00f3n", C: "la toma de perspectiva, reparar despu\u00e9s de un conflicto y distinguir lo dif\u00edcil de lo inseguro" };
+  var en, es;
+  if (book) {
+    en = "<strong>Lowest domain: " + domEN[domainKey] + ".</strong> For this grade band, that work lives in " + book.n + " (" + book.t + ") \u2014 focus on " + focusEN[domainKey] + ".";
+    es = "<strong>Dominio m\u00e1s bajo: " + domES[domainKey] + ".</strong> Para esta banda de grado, ese trabajo est\u00e1 en el " + book.n.replace("Book", "Libro") + " (" + book.t + ") \u2014 enf\u00f3quense en " + focusES[domainKey] + ".";
+  } else {
+    en = "<strong>Lowest domain: " + domEN[domainKey] + ".</strong> Start in the volume for this class\u2019s grade band \u2014 focus on " + focusEN[domainKey] + ".";
+    es = "<strong>Dominio m\u00e1s bajo: " + domES[domainKey] + ".</strong> Comiencen con el volumen de la banda de grado de esta clase \u2014 enf\u00f3quense en " + focusES[domainKey] + ".";
+  }
+  return DT(en, es);
+}
 function aogTeachNextStudentMap() {
   return {
     A: DT("<strong>Lowest domain: Emotional Regulation.</strong> Start with Book 1 (The Year We Met Sammy) and Book 2 Unit 1 (regulation toolkit and Window of Tolerance). Practice the body-floor protocols when emotions are calm so they’re available when emotions are big.", "<strong>Dominio más bajo: Regulación emocional.</strong> Empieza con el Libro 1 (The Year We Met Sammy) y el Libro 2, Unidad 1 (kit de regulación y la Window of Tolerance). Practica los protocolos de body-floor cuando las emociones estén calmadas, para que estén disponibles cuando las emociones sean grandes."),
@@ -10320,7 +10360,7 @@ function renderHeroDemo() {
   var teach = document.getElementById("hdTeach");
   if (teach) {
     var lowKey = aogLowestDomainKey(d.A, d.B, d.C);
-    teach.innerHTML = '<div class="hd-teach-h">' + DT("Teach this next", "Enseñar esto a continuación") + "</div>" + '<div class="hd-teach-b">' + aogTeachNextStudentMap()[lowKey] + "</div>" + '<a class="hd-teach-link" href="#" onclick="aogOpenResindex(\'' + lowKey + '\');return false;">' + DT("See where it maps", "Ve dónde se conecta") + " &rarr;</a>";
+    teach.innerHTML = '<div class="hd-teach-h">' + DT("Teach this next", "Enseñar esto a continuación") + "</div>" + '<div class="hd-teach-b">' + aogTeachNextStudent(lowKey, d.band) + "</div>" + '<a class="hd-teach-link" href="#" onclick="aogOpenResindex(\'' + lowKey + '\');return false;">' + DT("See where it maps", "Ve dónde se conecta") + " &rarr;</a>";
   }
 }
 function renderOverview() {
@@ -10395,7 +10435,18 @@ function renderOverview() {
       _ovTeach.innerHTML = "";
     } else {
       var _ovLow = aogLowestDomainKey(_0x10c6c6, _0xa951a1, _0x29fef6);
-      _ovTeach.innerHTML = "<div class=\"ov-teach-h\">" + DT("Teach this next", "Enseñar esto a continuación") + "</div><div class=\"ov-teach-b\">" + aogTeachNextStudentMap()[_ovLow] + "</div><a class=\"ov-teach-link\" href=\"#\" onclick=\"aogOpenResindex('" + _ovLow + "');return false;\">" + DT("See where it maps", "Ve dónde se conecta") + " &rarr;</a>";
+      var _ovBand = null;
+      try {
+        var _ovFg = $("#filterGrade") ? $("#filterGrade").value : "";
+        if (_ovFg) { _ovBand = aogGradeToBand(_ovFg); }
+        else {
+          var _ovB = {};
+          _0x21f93f.forEach(function (r) { var b = aogGradeToBand(r.grade); if (b) _ovB[b] = (_ovB[b] || 0) + 1; });
+          var _ovK = Object.keys(_ovB);
+          if (_ovK.length === 1) _ovBand = _ovK[0];
+        }
+      } catch (e) {}
+      _ovTeach.innerHTML = "<div class=\"ov-teach-h\">" + DT("Teach this next", "Enseñar esto a continuación") + "</div><div class=\"ov-teach-b\">" + aogTeachNextStudent(_ovLow, _ovBand) + "</div><a class=\"ov-teach-link\" href=\"#\" onclick=\"aogOpenResindex('" + _ovLow + "');return false;\">" + DT("See where it maps", "Ve dónde se conecta") + " &rarr;</a>";
       _ovTeach.style.display = "";
     }
   }
@@ -11789,7 +11840,7 @@ function renderConversationGuide(_0x4f18c8, _0x5e1ad5) {
     B: DT("<strong>Lowest area: Self-Compassion & Growth Mindset.</strong> This is the heart of the mature novels: the inner critic in <em>The Year of Two Voices</em> (Book 3, “The Voice in Your Head” / “The Three Tactics,” Ch 8–9), again in <em>The Year We Looked Up</em> (Book 4, Ch 3) and <em>The Year We Walked Out</em> (Book 5, Ch 4); plus “The Friend Test” (Book 3, Ch 11) and “Rewriting the Script” (Book 3, Ch 12).", "<strong>Área más baja: Autocompasión y mentalidad de crecimiento.</strong> El corazón de las novelas maduras: el crítico interno en <em>The Year of Two Voices</em> (Libro 3, «The Voice in Your Head» / «The Three Tactics», Cap. 8–9), de nuevo en <em>The Year We Looked Up</em> (Libro 4, Cap. 3) y <em>The Year We Walked Out</em> (Libro 5, Cap. 4); más «The Friend Test» (Libro 3, Cap. 11) y «Rewriting the Script» (Libro 3, Cap. 12)."),
     C: DT("<strong>Lowest area: Social Competency & Repair.</strong> The grown-up register lives here: impact vs. intent and charitable reading (<em>Two Voices</em>, Book 3, Ch 14 & Ch 18), grace with hard people (Book 3, Ch 20), and the protective line — forgiveness is not the same as trust (Book 3, Ch 15; <em>The Year We Walked Out</em>, Book 5, Ch 18).", "<strong>Área más baja: Competencia social y reparación.</strong> El registro adulto vive aquí: impacto frente a intención e interpretación caritativa (<em>Two Voices</em>, Libro 3, Cap. 14 y Cap. 18), la gracia con personas difíciles (Libro 3, Cap. 20), y la línea protectora — perdonar no es lo mismo que confiar (Libro 3, Cap. 15; <em>The Year We Walked Out</em>, Libro 5, Cap. 18).")
   };
-  _0x1280bd += "<p style=\"margin-top:14px;\">" + (_0x504790 ? _0x29fc53 : _0x1bcbee)[_0x1e2f7f] + "</p>";
+  _0x1280bd += "<p style=\"margin-top:14px;\">" + (_0x504790 ? _0x29fc53[_0x1e2f7f] : aogTeachNextStudent(_0x1e2f7f, aogGradeToBand(_0x4f18c8.grade))) + "</p>";
   _0x1280bd += resultResourceCards(_0x4f18c8, _0x40141e, _0x1e2f7f, _0x5e1ad5);
   if (_0x4f18c8.trustedAdultFlag) {
     if (_0x5e1ad5 && _0x504790) {
