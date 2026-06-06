@@ -4814,6 +4814,15 @@ function toggleTheme() {
 .st-freebtn{font-size:12px;font-weight:700;color:var(--st-navy);background:var(--st-gold-soft);border-radius:8px;padding:8px 13px;text-decoration:none;white-space:nowrap;transition:.18s;}
 .st-freebtn:hover{background:var(--st-gold);}
 .st-soon{font-size:11.5px;font-weight:700;color:var(--st-faint);letter-spacing:.04em;text-transform:uppercase;}
+/* DIGITAL + PRINT two-price layout (2026-06) */
+.st-foot.st-foot-2{align-items:flex-end;gap:10px;}
+.st-prices{display:flex;flex-direction:column;gap:1px;}
+.st-buys{display:flex;flex-direction:column;gap:6px;align-items:stretch;}
+.st-buys .st-buy{width:100%;text-align:center;}
+.st-cprices{display:flex;flex-direction:column;gap:1px;}
+.st-cprice-sub{font-family:var(--sans,sans-serif);font-size:10px;font-weight:500;color:var(--st-faint);}
+.st-prices .st-price,.st-cprices .st-cprice{font-size:15px;}
+.st-actions{flex-wrap:wrap;justify-content:flex-end;gap:6px;}
 
 /* toast */
 .st-toast{position:fixed;left:50%;bottom:28px;transform:translate(-50%,20px);opacity:0;pointer-events:none;background:var(--st-navy);color:#F4EEE2;font-size:13px;font-weight:500;padding:12px 20px;border-radius:11px;box-shadow:0 18px 40px -18px rgba(0,0,0,.6);transition:.3s var(--st-ease);z-index:9000;}
@@ -13874,14 +13883,16 @@ const AOG_COVERS = {12:"data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDA
 
 /* ---- EDITABLE PRICE LAYER (home / family prices, USD) ---- */
 const AOG_PRICES = {
-  "The Novels":              { 1:16, 2:16, 3:17, 4:17, 5:18 },
-  "The Curriculum":          { 1:39, 2:39, 3:42, 4:42, 5:45 },
-  "Home & Family Editions":  { 1:24, 2:24, 3:26, 4:26, 5:28 },
-  "Anchor Charts":           { default:9 },
-  "Worksheets & Activities": { default:8 },
-  "Scenario Cards":          { default:11 }
-  // categories not listed (Assessment, Crosswalks, Somatic, Autism, Divine Blueprint)
-  // carry no home price and render as "District license" / "Included".
+  // Each entry now carries BOTH a digital and a print price: { d:digital, p:print } (USD).
+  "The Novels":              { 1:{d:9,p:16},  2:{d:9,p:16},  3:{d:10,p:17}, 4:{d:10,p:17}, 5:{d:11,p:18} },
+  "The Curriculum":          { 1:{d:29,p:39}, 2:{d:29,p:39}, 3:{d:32,p:42}, 4:{d:32,p:42}, 5:{d:35,p:45} },
+  "Home & Family Editions":  { 1:{d:16,p:24}, 2:{d:16,p:24}, 3:{d:18,p:26}, 4:{d:18,p:26}, 5:{d:20,p:28} },
+  "Anchor Charts":           { default:{d:6,p:9} },
+  "Worksheets & Activities": { default:{d:5,p:8} },
+  "Scenario Cards":          { default:{d:7,p:11} },
+  "Autism-Adapted Charts":   { default:{d:8,p:12} }
+  // Institutional-only categories (Assessment, Crosswalks, Somatic, Divine Blueprint)
+  // carry no consumer price and render as "District license" / "Included".
 };
 function storePrice(cat, band){
   const m = AOG_PRICES[cat]; if(!m) return null;
@@ -13958,9 +13969,15 @@ function aogNovelDoors(cat){
           <p class="st-kicker">Book ${b} &middot; ${AOG_VOL[b]}</p>
           <h4 class="st-title">${libEsc(title)}</h4>
           <p class="st-hook">${libEsc(hook)}</p>
-          <div class="st-foot">
-            <span class="st-price">${price!=null?'$'+price.toFixed(2):'$&mdash;'}<span class="st-price-sub">&nbsp;home</span></span>
-            <button class="st-buy" data-buy="Room ${room} &mdash; ${libEsc(title)}" data-price="${price!=null?price:''}">Add to cart</button>
+          <div class="st-foot st-foot-2">
+            <div class="st-prices">
+              <span class="st-price">${price!=null?'$'+price.d.toFixed(2):'$&mdash;'}<span class="st-price-sub">&nbsp;${DT('digital','digital')}</span></span>
+              <span class="st-price">${price!=null?'$'+price.p.toFixed(2):'$&mdash;'}<span class="st-price-sub">&nbsp;${DT('print','impreso')}</span></span>
+            </div>
+            <div class="st-buys">
+              <button class="st-buy" data-buy="Room ${room} &mdash; ${libEsc(title)} (${DT('Digital','Digital')})" data-price="${price!=null?price.d:''}">${DT('Add digital','Agregar digital')}</button>
+              <button class="st-buy" data-buy="Room ${room} &mdash; ${libEsc(title)} (${DT('Print','Impreso')})" data-price="${price!=null?price.p:''}">${DT('Add print','Agregar impreso')}</button>
+            </div>
           </div>
           ${preview?`<a class="st-free" href="${libEsc(preview.url)}" target="_blank" rel="noopener">Read Chapter One free &rarr;</a>`:''}
         </div>
@@ -13986,9 +14003,10 @@ function aogMaterialCards(cat){
       priceHtml = '<span class="st-cprice st-free-txt">Free</span>';
       actions = `<a class="st-freebtn" href="${libEsc(it.url)}" target="_blank" rel="noopener">Open free &nearr;</a>`;
     }else if(state==="buy" || state==="both"){
-      priceHtml = `<span class="st-cprice">${price!=null?'$'+price.toFixed(2):'$&mdash;'}</span>`;
+      priceHtml = `<div class="st-cprices"><span class="st-cprice">${price!=null?'$'+price.d.toFixed(2):'$&mdash;'}<span class="st-cprice-sub">&nbsp;${DT('digital','digital')}</span></span><span class="st-cprice">${price!=null?'$'+price.p.toFixed(2):'$&mdash;'}<span class="st-cprice-sub">&nbsp;${DT('print','impreso')}</span></span></div>`;
       const prev = it.url && it.url.trim() ? `<a class="st-prev" href="${libEsc(it.url)}" target="_blank" rel="noopener">Preview &rarr;</a>` : '';
-      actions = `${prev}<button class="st-mbuy" data-buy="${libEsc(it.title)}" data-price="${price!=null?price:''}"${state==="both"?' title="Also included in the district license"':''}>Add to cart</button>`;
+      const _titleAttr = state==="both"?' title="Also included in the district license"':'';
+      actions = `${prev}<button class="st-mbuy" data-buy="${libEsc(it.title)} (${DT('Digital','Digital')})" data-price="${price!=null?price.d:''}"${_titleAttr}>${DT('Add digital','Agregar digital')}</button><button class="st-mbuy" data-buy="${libEsc(it.title)} (${DT('Print','Impreso')})" data-price="${price!=null?price.p:''}"${_titleAttr}>${DT('Add print','Agregar impreso')}</button>`;
     }else{ /* license */
       priceHtml = '<span class="st-cprice st-tag">District license</span>';
       actions = it.url && it.url.trim() ? `<a class="st-prev" href="${libEsc(it.url)}" target="_blank" rel="noopener">Preview &rarr;</a>` : '';
@@ -14019,7 +14037,7 @@ function renderLibrary(){
   if(sto){ if(typeof FAMILY_STORE_URL!=="undefined" && FAMILY_STORE_URL){ sto.setAttribute("href",FAMILY_STORE_URL); sto.onclick=null; } else { sto.setAttribute("href","#"); sto.onclick=e=>e.preventDefault(); } }
 
   /* display order: Novels, Home & Family Editions, Curriculum, then the rest */
-  const AOG_ORDER = ["The Novels","Home & Family Editions","The Curriculum","Anchor Charts","Worksheets & Activities","Scenario Cards"];
+  const AOG_ORDER = ["The Novels","Home & Family Editions","The Curriculum","Anchor Charts","Worksheets & Activities","Scenario Cards","Autism-Adapted Charts"];
   const ordered = RESOURCE_LIBRARY.slice().sort((a,b)=>{ const ia=AOG_ORDER.indexOf(a.cat), ib=AOG_ORDER.indexOf(b.cat); return (ia<0?99:ia)-(ib<0?99:ib); });
 
   /* jump nav */
