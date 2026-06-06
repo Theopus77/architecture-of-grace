@@ -2639,6 +2639,77 @@ function toggleTheme() {
           </div>
         </div>
       </section>
+
+      <!-- P2 (2026-06-06): 60-second burnout "tank" read — its own WOW moment in the hero fold -->
+      <section class="hero-tank-wrap reveal" aria-label="60-second burnout read">
+        <style>
+        .hero-tank-wrap{ max-width:600px; margin:34px auto 4px; }
+        .hero-tank-sub{ font-family:var(--font-sans); font-weight:600; font-size:14.5px; color:var(--gold-soft); margin:0 0 12px; letter-spacing:.01em; text-align:center; }
+        /* sits on the navy hero like the dashboard demo: paper card, deep lift, gold cap */
+        .hero-tank.wp-tank{ margin:0 auto; max-width:600px; padding:24px 24px 22px; box-shadow:0 20px 54px -26px rgba(0,0,0,.6); }
+        :root[data-theme="dark"] .hero-tank.wp-tank{ background:#13314F; border-color:var(--gold); }
+        .hero-tank .wp-tank-head h2{ font-size:24px; }
+        .hero-tank .wp-tank-head p{ font-size:13px; }
+        /* the wow: a fuel gauge that fills to match the read */
+        .tk-gauge{ margin:2px 0 12px; }
+        .tk-gauge-track{ position:relative; height:16px; border-radius:999px; background:rgba(10,30,51,.10); overflow:hidden; box-shadow:inset 0 1px 3px rgba(0,0,0,.16); }
+        .tk-gauge-fill{ height:100%; width:0; border-radius:999px; transition:width 1.15s var(--ease-out); background:linear-gradient(90deg, rgba(255,255,255,.28), rgba(255,255,255,0) 40%) , currentColor; }
+        .tk-gauge-label{ display:flex; align-items:center; gap:7px; font-family:var(--font-sans); font-size:12.5px; font-weight:700; color:var(--ink-soft); margin-top:9px; }
+        .tk-gauge-label svg{ width:15px; height:15px; flex:0 0 auto; }
+        .tk-gauge-pct{ color:var(--ink); }
+        .wp-tank-result .tk-go2{ display:inline-flex; align-items:center; gap:7px; margin-top:14px; font-family:var(--font-sans); font-size:13.5px; font-weight:700; text-decoration:none; color:var(--navy); background:var(--gold); border:1px solid var(--gold); border-radius:999px; padding:9px 18px; transition:transform .15s var(--ease), background .15s; }
+        .wp-tank-result .tk-go2:hover{ transform:translateY(-1px); background:var(--gold-soft); }
+        .wp-tank-result.empty .tk-go2, .wp-tank-result.low .tk-go2{ box-shadow:0 4px 14px rgba(0,0,0,.12); }
+        @media (max-width:520px){ .hero-tank-wrap{ margin-top:26px; } .hero-tank.wp-tank{ padding:20px 16px 18px; } }
+        </style>
+        <p class="hero-tank-sub" data-i18n="hero_tank_sub">Or take a private 60-second read on your own tank, right here.</p>
+        <div class="wp-tank hero-tank" id="heroTank">
+          <div class="wp-tank-head">
+            <div class="ey" data-i18n="wp_tank_ey">A 60-second read</div>
+            <h2 data-i18n="wp_tank_h">How full is your tank?</h2>
+            <p data-i18n="wp_tank_p">Burnout&rsquo;s clearest signal is energy, not attitude. Four quick reads on your tank &mdash; private, instant, and saved nowhere. This isn&rsquo;t a clinical burnout score; it&rsquo;s a quick mirror. If it rings true, the full check-in goes deeper.</p>
+          </div>
+          <div class="tk-item">
+            <div class="tk-q" data-i18n="wp_tq1">By the end of most days, I feel used up &mdash; like there&rsquo;s little left to give.</div>
+            <div class="tk-opts" role="radiogroup" aria-label="By the end of most days I feel used up">
+              <span class="tk-pill" data-q="1" data-v="0" role="radio" tabindex="0" data-i18n="wp_opt0" aria-checked="false">Rarely / never</span>
+              <span class="tk-pill" data-q="1" data-v="1" role="radio" tabindex="0" data-i18n="wp_opt1" aria-checked="false">Sometimes</span>
+              <span class="tk-pill" data-q="1" data-v="2" role="radio" tabindex="0" data-i18n="wp_opt2" aria-checked="false">Often</span>
+              <span class="tk-pill" data-q="1" data-v="3" role="radio" tabindex="0" data-i18n="wp_opt3" aria-checked="false">Almost always</span>
+            </div>
+          </div>
+          <div class="tk-item">
+            <div class="tk-q" data-i18n="wp_tq2">I wake up already tired at the thought of the day ahead.</div>
+            <div class="tk-opts" role="radiogroup" aria-label="I wake up already tired at the thought of the day ahead">
+              <span class="tk-pill" data-q="2" data-v="0" role="radio" tabindex="0" data-i18n="wp_opt0" aria-checked="false">Rarely / never</span>
+              <span class="tk-pill" data-q="2" data-v="1" role="radio" tabindex="0" data-i18n="wp_opt1" aria-checked="false">Sometimes</span>
+              <span class="tk-pill" data-q="2" data-v="2" role="radio" tabindex="0" data-i18n="wp_opt2" aria-checked="false">Often</span>
+              <span class="tk-pill" data-q="2" data-v="3" role="radio" tabindex="0" data-i18n="wp_opt3" aria-checked="false">Almost always</span>
+            </div>
+          </div>
+          <div class="tk-item">
+            <div class="tk-q" data-i18n="wp_tq3">Even when I rest, I don&rsquo;t really feel refilled.</div>
+            <div class="tk-opts" role="radiogroup" aria-label="Even when I rest I do not really feel refilled">
+              <span class="tk-pill" data-q="3" data-v="0" role="radio" tabindex="0" data-i18n="wp_opt0" aria-checked="false">Rarely / never</span>
+              <span class="tk-pill" data-q="3" data-v="1" role="radio" tabindex="0" data-i18n="wp_opt1" aria-checked="false">Sometimes</span>
+              <span class="tk-pill" data-q="3" data-v="2" role="radio" tabindex="0" data-i18n="wp_opt2" aria-checked="false">Often</span>
+              <span class="tk-pill" data-q="3" data-v="3" role="radio" tabindex="0" data-i18n="wp_opt3" aria-checked="false">Almost always</span>
+            </div>
+          </div>
+          <div class="tk-item">
+            <div class="tk-q" data-i18n="wp_tq4">Lately I&rsquo;m on autopilot &mdash; going through the motions without really being there.</div>
+            <div class="tk-opts" role="radiogroup" aria-label="Lately I am on autopilot">
+              <span class="tk-pill" data-q="4" data-v="0" role="radio" tabindex="0" data-i18n="wp_opt0" aria-checked="false">Rarely / never</span>
+              <span class="tk-pill" data-q="4" data-v="1" role="radio" tabindex="0" data-i18n="wp_opt1" aria-checked="false">Sometimes</span>
+              <span class="tk-pill" data-q="4" data-v="2" role="radio" tabindex="0" data-i18n="wp_opt2" aria-checked="false">Often</span>
+              <span class="tk-pill" data-q="4" data-v="3" role="radio" tabindex="0" data-i18n="wp_opt3" aria-checked="false">Almost always</span>
+            </div>
+          </div>
+          <button class="btn tk-go" id="heroTankBtn"><span data-i18n="wp_tank_btn">Show my read</span> <span class="btn-arrow">&rarr;</span></button>
+          <div id="heroTankResult" class="wp-tank-result" hidden></div>
+        </div>
+      </section>
+
       <p class="hyb-onesent" data-i18n="hyb_onesent">The only closed-loop SEL ecosystem that targets the need, delivers the lesson, and sustains the growth — for students, families, and every adult in between.</p>
       <p class="hyb-forall" data-i18n="hyb_forall">Made for students, families, and independent adults &mdash; and the counselors who walk beside them.</p>
       <!-- ===== FOUR-CORNER ENTRY (primary destinations, surfaced) ===== -->
@@ -6910,6 +6981,9 @@ const I18N_UI = {
   wp_tank_btn: {
     es: "Ver mi lectura"
   },
+  hero_tank_sub: {
+    es: "O hazte una lectura privada de 60 segundos de tu propio tanque, aquí mismo."
+  },
   wp_launch_h: {
     es: "Tómate unos minutos de calma."
   },
@@ -9629,6 +9703,109 @@ window.addEventListener("load", function () {
     window.addEventListener("load", _0x51f0fe);
   }
 })();
+
+/* ===== Hero "How full is your tank?" — front-page 60-second read =====
+   Self-contained so it never collides with the workplace #wpTank instance.
+   Same scoring + copy, plus an animated fuel-gauge and a "go deeper" CTA. */
+(function () {
+  var ROOT = "heroTank";
+  var picks = {};
+
+  function setPick(q, v, el) {
+    document.querySelectorAll("#" + ROOT + " .tk-pill[data-q=\"" + q + "\"]").forEach(function (p) {
+      p.classList.remove("on");
+      p.setAttribute("aria-checked", "false");
+    });
+    el.classList.add("on");
+    el.setAttribute("aria-checked", "true");
+    picks[q] = v;
+  }
+
+  function show() {
+    var es = (typeof lang !== "undefined" && lang === "es");
+    var keys = ["1", "2", "3", "4"];
+    var total = 0, answered = 0;
+    keys.forEach(function (k) {
+      if (picks[k] != null) { total += picks[k]; answered++; }
+    });
+    var box = document.getElementById(ROOT + "Result");
+    if (!box) return;
+    box.hidden = false;
+
+    if (answered < 4) {
+      box.className = "wp-tank-result warn";
+      box.innerHTML = "<p>" + (es ? "Toca una opción en cada una de las cuatro líneas y vuelve a intentarlo." : "Tap one option for each of the four lines, then try again.") + "</p>";
+      return;
+    }
+
+    var band, title, body, accent;
+    if (total <= 3) {
+      band = "ok"; accent = "var(--green)";
+      title = es ? "Tu tanque se ve razonablemente lleno por ahora." : "Your tank looks reasonably full right now.";
+      body = es ? "Vale la pena notarlo y protegerlo. El chequeo completo sigue siendo un buen hábito — detecta las cosas pequeñas antes de que se vuelvan grandes." : "That’s worth noticing and protecting. The full check-in is still a good habit — it catches the small things before they become the big ones.";
+    } else if (total <= 7) {
+      band = "low"; accent = "var(--amber)";
+      title = es ? "Estás más bajo/a de lo que quizá crees." : "You’re running lower than you might realize.";
+      body = es ? "No vacío — pero el indicador está bajando, y ese es justo el momento en que es más fácil ignorarlo. Unos minutos con el chequeo completo pueden mostrarte dónde poner tu energía primero. No puedes servir de una taza que se vacía más rápido de lo que se llena." : "Not empty — but the gauge is dropping, and that’s exactly when it’s easiest to ignore. A few minutes with the full check-in can show you where to put your energy first. You can’t pour from a cup that’s draining faster than it fills.";
+    } else {
+      band = "empty"; accent = "var(--red)";
+      title = es ? "Estas son señales reales de agotamiento — del tipo que vale la pena escuchar." : "These are real signs of depletion — the kind worth listening to.";
+      body = es ? "Este es el estado del que trata toda la idea: desde aquí no puedes sostener a nadie. Por favor, sé amable contigo hoy y considera hablar con alguien de confianza. Si cargas con algo pesado, en EE.\xA0UU. puedes llamar o enviar un mensaje al <strong>988</strong> a cualquier hora. El chequeo completo puede ayudarte a nombrar por dónde empezar." : "This is the state the whole idea is about: you can’t co-regulate anyone from here. Please be gentle with yourself today, and consider talking with someone you trust. If you’re carrying something heavy, in the U.S. you can call or text <strong>988</strong> any time. The full check-in can help you name where to start.";
+    }
+
+    /* fuel gauge: 0 depletion = full tank, 12 = empty */
+    var fullness = Math.round((12 - total) / 12 * 100);
+    var gaugeLabel = es ? "Tanque" : "Tank";
+    var dropIcon = "<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z\"/></svg>";
+    var gaugeHtml =
+      "<div class=\"tk-gauge\" style=\"color:" + accent + "\">" +
+        "<div class=\"tk-gauge-track\"><div class=\"tk-gauge-fill\" id=\"" + ROOT + "GaugeFill\"></div></div>" +
+        "<div class=\"tk-gauge-label\">" + dropIcon + "<span>" + gaugeLabel + "</span> <span class=\"tk-gauge-pct\">" + fullness + "%" + (es ? " lleno" : " full") + "</span></div>" +
+      "</div>";
+
+    var ctaLabel = es ? "Profundiza con el chequeo completo" : "Go deeper with the full check-in";
+    var ctaHtml = "<a href=\"#\" class=\"tk-go2\" onclick=\"event.preventDefault(); if(typeof openWorkplace==='function'){openWorkplace();}\">" + ctaLabel + " <span aria-hidden=\"true\">&rarr;</span></a>";
+
+    var flag = es ? "Una señal, no un diagnóstico · nada de esto se guardó." : "A flag, not a diagnosis · nothing here was saved.";
+
+    box.className = "wp-tank-result " + band;
+    box.innerHTML =
+      "<div class=\"band\">" + title + "</div>" +
+      gaugeHtml +
+      "<p>" + body + "</p>" +
+      ctaHtml +
+      "<p class=\"flag\">" + flag + "</p>";
+
+    /* animate the gauge fill in */
+    var fill = document.getElementById(ROOT + "GaugeFill");
+    if (fill) {
+      fill.style.width = "0%";
+      requestAnimationFrame(function () {
+        requestAnimationFrame(function () { fill.style.width = fullness + "%"; });
+      });
+    }
+
+    try { box.scrollIntoView({ behavior: "smooth", block: "center" }); } catch (e) {}
+  }
+
+  function init() {
+    if (!document.getElementById(ROOT)) return;
+    document.querySelectorAll("#" + ROOT + " .tk-pill").forEach(function (pill) {
+      var q = pill.dataset.q;
+      var v = parseInt(pill.dataset.v, 10);
+      pill.addEventListener("click", function () { setPick(q, v, pill); });
+      pill.addEventListener("keydown", function (ev) {
+        if (ev.key === "Enter" || ev.key === " ") { ev.preventDefault(); setPick(q, v, pill); }
+      });
+    });
+    var btn = document.getElementById(ROOT + "Btn");
+    if (btn) btn.addEventListener("click", show);
+  }
+
+  if (document.readyState !== "loading") { init(); }
+  else { window.addEventListener("load", init); }
+})();
+
 function openWorkplace() {
   population = "adult";
   mode = "rapid";
