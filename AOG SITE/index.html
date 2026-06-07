@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Architecture of Grace · Universal Check-In</title>
-<meta name="description" content="The Architecture of Grace Universal Check-In. Bilingual, MTSS-ready, with a depth mode, intensity follow-ups, written reflections, and a per-person Home View report.">
+<meta name="description" content="Social-emotional learning built by a teacher, for real classrooms — the SEL that tends to the grown-ups before it measures a child. Private, de-identified, K–adult. A check-in, not an exam.">
 
 <!-- ===== LINK PREVIEW + ICONS · EDIT ME ====================================
      The 3 URLs below are ABSOLUTE and point at the live Netlify address
@@ -15,7 +15,7 @@
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Architecture of Grace">
 <meta property="og:title" content="Architecture of Grace · Universal Check-In">
-<meta property="og:description" content="A developmental SEL framework — a private check-in, conversation starters, companion novels, and a K–adult resource library. A check-in, not an exam.">
+<meta property="og:description" content="Built by a teacher, for real classrooms. A private, de-identified check-in points each student to the next lesson — and tends to the grown-ups first. Grace over performance. A check-in, not an exam.">
 <meta property="og:url" content="https://architectureofgrace.org/"><!-- SWAP to your .com when live -->
 <meta property="og:image" content="https://architectureofgrace.org/og-image.png"><!-- SWAP to your .com when live -->
 <meta property="og:image:width" content="1200">
@@ -23,7 +23,7 @@
 <meta property="og:image:alt" content="Architecture of Grace — Universal Check-In">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Architecture of Grace · Universal Check-In">
-<meta name="twitter:description" content="A check-in, not an exam — a developmental SEL framework for students and adults.">
+<meta name="twitter:description" content="Built by a teacher, for real classrooms — the SEL that starts with the grown-ups. Private and de-identified. A check-in, not an exam.">
 <meta name="twitter:image" content="https://architectureofgrace.org/og-image.png"><!-- SWAP to your .com when live -->
 <link rel="icon" href="/favicon.ico" sizes="any">
 <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
@@ -1502,6 +1502,22 @@ tr:hover td { background: var(--paper); }
 .eco-stage { display:flex; flex-direction:column; align-items:center; gap:18px; margin-top:10px; }
 .eco-canvas { min-width:0; }
 #ecoSvg { width:100%; height:auto; display:block; }
+/* P1 (2026): compress the ecosystem hero on wider screens so the Guide's tab row
+   (.guide-subnav, already sticky) reaches the fold instead of sitting under a
+   full-height diagram. Mobile keeps its existing full-width stacking untouched. */
+@media (min-width:761px){
+  /* tighten the navy title band */
+  .guide-hero{ padding:40px 7vw 34px !important; }
+  .guide-hero-title{ font-size:clamp(34px,4.6vw,60px); margin:10px 0 12px; }
+  .guide-hero-lede{ font-size:15px; }
+  /* compress the diagram block */
+  .eco-hero{ margin:4px 0 12px; }
+  .eco-hero .eco-shell{ padding:14px 30px 16px !important; }
+  .eco-canvas{ max-width:620px; }
+  #ecoSvg{ max-height:34vh; }
+  .eco-stage{ gap:12px !important; }
+  .eco-frame{ margin-top:12px; padding-top:12px; }
+}
 .eco-c1 { font-family:var(--serif); font-size:18px; font-weight:600; fill:var(--navy); letter-spacing:.06em; }
 .eco-c2 { font-family:var(--sans,Inter,sans-serif); font-size:9.5px; fill:#9A7B3C; letter-spacing:.14em; text-transform:uppercase; }
 .eco-elabel { font-family:var(--sans,Inter,sans-serif); font-size:10.5px; fill:#5C6678; font-style:italic; paint-order:stroke; stroke:#FCFAF4; stroke-width:4px; stroke-linejoin:round; }
@@ -2547,13 +2563,13 @@ function toggleTheme() {
       <div class="hyb-hk" data-i18n="hyb_foundation">architectureofgrace.org</div>
       <h1 class="hyb-title foil"><span class="l1">Architecture of</span><span class="l2">Grace</span></h1>
       <div class="hyb-bar">
-        <span class="word"><b data-i18n="hyb_b1">Reflection into action</b></span>
+        <span class="word"><b data-i18n="hyb_b1">Grace over performance</b></span>
         <span class="dot"></span>
         <span class="word hyb-mid" data-i18n="hyb_b2">For students, families &amp; adults</span>
         <span class="dot dot-mid"></span>
         <span class="word"><b data-i18n="hyb_b3">Built by a special educator</b></span>
       </div>
-      <p class="hyb-byline" data-i18n="hyb_byline">Created by Jimmy Ramsden — a practicing special educator with a master&rsquo;s in special education, built from the classroom, not a boardroom.</p>
+      <p class="hyb-byline" data-i18n="hyb_byline">Built by a teacher, for real classrooms &mdash; the SEL that tends to the grown-ups before it ever measures a child. Created by Jimmy Ramsden, a special educator with a master&rsquo;s in special education: from the classroom, not a boardroom.</p>
       <div class="hyb-start-wrap" style="text-align:center; margin-top:22px;">
         <style>
         .hyb-byline{ max-width:560px; margin:14px auto 0; font-family:var(--font-serif); font-style:italic; font-size:14.5px; line-height:1.5; color:rgba(244,238,226,.66); text-align:center; }
@@ -3620,7 +3636,7 @@ function toggleTheme() {
   <div class="container-wide">
     <div class="admin-header">
       <div class="admin-title">
-        <div class="eyebrow" data-dl="dl_eyebrow">Dashboard &middot; Restricted</div>
+        <div class="eyebrow" data-dl="dl_eyebrow">Dashboard &middot; Educators</div>
         <h1 class="display display-lg" data-dl="dl_h1">Check-In Results</h1>
         <p class="muted small" data-dl="dl_sub">Aggregate view across all administrations</p>
       </div>
@@ -3638,14 +3654,88 @@ function toggleTheme() {
       </div>
     </div>
 
-<!-- VIDEO SLOT (Dashboard). Swap .vid-frame contents for an <iframe> to go live. -->
-<div class="vid-slot" style="margin:0 0 18px;">
-  <div class="vid-frame">
-    <div class="vid-play"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg></div>
-    <span class="vid-soon" data-dl="vid_soon">Video coming soon</span>
+<!-- ===== QUICK START (Dashboard) =====================================
+     Replaces the old "video coming soon" slot. A self-teaching, bilingual
+     4-step walkthrough in the project's own voice. When the walkthrough
+     video is ready, drop an <iframe> into .qs-video-frame below and it
+     will sit at the top of this card. ============================== -->
+<style id="aog-qs-styles">
+  .qs-card{ max-width:780px; margin:0 auto 20px; background:var(--paper); border:1px solid var(--rule); border-radius:var(--radius-lg); box-shadow:var(--shadow-md); overflow:hidden; }
+  .qs-head{ padding:22px 26px 4px; border-top:4px solid var(--gold); }
+  .qs-eyebrow{ font-family:var(--font-sans); font-size:11px; font-weight:700; letter-spacing:.14em; text-transform:uppercase; color:var(--gold); margin-bottom:6px; }
+  .qs-title{ font-family:var(--font-serif); font-size:23px; line-height:1.16; color:var(--navy); margin:0 0 8px; }
+  .qs-lede{ font-family:var(--font-sans); font-size:14px; line-height:1.6; color:var(--ink-soft); margin:0; }
+  .qs-steps{ list-style:none; margin:14px 0 0; padding:14px 18px 4px; display:grid; gap:11px; }
+  @media(min-width:640px){ .qs-steps{ grid-template-columns:1fr 1fr; } }
+  .qs-step{ display:flex; gap:13px; align-items:flex-start; padding:15px 16px; background:var(--cream); border:1px solid var(--rule-soft); border-radius:var(--radius); }
+  .qs-num{ flex:0 0 auto; width:29px; height:29px; border-radius:50%; background:var(--navy); color:var(--gold-soft); font-family:var(--font-serif); font-weight:600; font-size:15px; display:grid; place-items:center; box-shadow:var(--shadow-sm); }
+  .qs-body{ min-width:0; }
+  .qs-step-t{ font-family:var(--font-sans); font-weight:700; font-size:14px; color:var(--navy); margin-bottom:3px; }
+  .qs-step-s{ font-family:var(--font-sans); font-size:13px; line-height:1.55; color:var(--ink-soft); }
+  .qs-step-s strong{ color:var(--ink); font-weight:600; }
+  .qs-jump{ margin-top:9px; background:transparent; border:0; padding:0; font-family:var(--font-sans); font-size:12.5px; font-weight:600; color:var(--amber); cursor:pointer; }
+  .qs-jump:hover{ text-decoration:underline; }
+  .qs-foot{ display:flex; gap:10px; flex-wrap:wrap; align-items:center; padding:10px 26px 22px; }
+  .qs-video-frame{ display:none; } /* reveal + add an <iframe> here when the video is ready */
+  .qs-note{ display:flex; align-items:flex-start; gap:9px; margin:0 26px; padding:13px 0 20px; border-top:1px solid var(--rule-soft); }
+  .qs-note svg{ flex:0 0 auto; width:16px; height:16px; margin-top:1px; color:var(--gold); }
+  .qs-note span{ font-family:var(--font-sans); font-size:12.5px; line-height:1.55; color:var(--ink-soft); }
+  .qs-note strong{ color:var(--navy); font-weight:600; }
+</style>
+<section class="qs-card" aria-label="Dashboard quick start">
+  <div class="qs-video-frame"></div>
+  <div class="qs-head">
+    <div class="qs-eyebrow" data-dl="qs_eyebrow">In 4 steps</div>
+    <h2 class="qs-title" data-dl="qs_title">How the dashboard works</h2>
+    <p class="qs-lede" data-dl="qs_lede">A short video walkthrough is on the way. Until then, here&rsquo;s the whole flow at a glance &mdash; a check-in, not an exam.</p>
   </div>
-  <div class="vid-cap"><div class="vt" data-dl="vid_dash_t">How the Dashboard works</div><div class="vs" data-dl="vid_dash_s">A 2-minute walkthrough for educators.</div></div>
-</div>
+  <ol class="qs-steps">
+    <li class="qs-step">
+      <span class="qs-num">1</span>
+      <div class="qs-body">
+        <div class="qs-step-t" data-dl="qs_s1_t">Hand it out</div>
+        <div class="qs-step-s" data-dl-html="qs_s1_s">Open <strong>Distribute</strong> to make a link or QR code for your class. Every device stays private by default.</div>
+        <button class="qs-jump" type="button" onclick="aogQsTab('distribute')" data-dl="qs_s1_b">Go to Distribute &rarr;</button>
+      </div>
+    </li>
+    <li class="qs-step">
+      <span class="qs-num">2</span>
+      <div class="qs-body">
+        <div class="qs-step-t" data-dl="qs_s2_t">They check in privately</div>
+        <div class="qs-step-s" data-dl-html="qs_s2_s">Each person answers on their own device. Nothing is shared between people automatically &mdash; their words stay theirs.</div>
+      </div>
+    </li>
+    <li class="qs-step">
+      <span class="qs-num">3</span>
+      <div class="qs-body">
+        <div class="qs-step-t" data-dl="qs_s3_t">Read the group</div>
+        <div class="qs-step-s" data-dl-html="qs_s3_s"><strong>Overview</strong> reads the whole group for you; <strong>Class trends</strong> shows where to focus next. Individual scores are hidden here on purpose.</div>
+        <button class="qs-jump" type="button" onclick="aogQsTab('students')" data-dl="qs_s3_b">Go to Class trends &rarr;</button>
+      </div>
+    </li>
+    <li class="qs-step">
+      <span class="qs-num">4</span>
+      <div class="qs-body">
+        <div class="qs-step-t" data-dl="qs_s4_t">Open the conversation</div>
+        <div class="qs-step-s" data-dl-html="qs_s4_s">A person&rsquo;s full report lives privately with them in <strong>Family view</strong>. Use it to start a conversation, never to grade one.</div>
+        <button class="qs-jump" type="button" onclick="aogQsTab('home')" data-dl="qs_s4_b">Go to Family view &rarr;</button>
+      </div>
+    </li>
+  </ol>
+  <div class="qs-foot">
+    <button class="btn btn-sm" type="button" onclick="aogQsTour()" data-dl="qs_replay">Replay the guided tour</button>
+    <button class="btn btn-secondary btn-sm" type="button" onclick="aogQsDemo()" data-dl="qs_demo">Explore with demo data</button>
+    <!-- Printable one-pager (second, dashboard-side spot). Upload the PDFs to the
+         site root next to index.html. Swaps to the Spanish PDF when the dashboard
+         is in ES; if JS fails, the href still serves the English PDF. -->
+    <a class="btn btn-secondary btn-sm" href="AoG-Teacher-QuickStart.pdf" target="_blank" rel="noopener" onclick="return aogQsPrintable(this)" data-dl="qs_print">Download the one-pager (PDF) &#8599;</a>
+  </div>
+  <div class="qs-note">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 11V7a5 5 0 0 1 9.9-1"/><rect x="3" y="11" width="18" height="11" rx="2"/></svg>
+    <span data-dl-html="qs_note"><strong>No code needed.</strong> Privacy lives in the link &mdash; results sync only when someone opens a private link you share, never just by opening this dashboard.</span>
+  </div>
+</section>
+<!-- ===== END QUICK START ============================================ -->
 
     <div class="tabs">
       <button class="tab active" data-tab="overview" data-dl="dl_t_overview">Overview</button>
@@ -4291,6 +4381,33 @@ function toggleTheme() {
             <a href="#" class="doc-path" onclick="event.preventDefault(); openFamily()"><div class="dp-t" data-i18n="doc_path_family_t">Families &middot; at home</div><div class="dp-s" data-i18n-html="doc_path_family_s">Family Mode keeps each child on this device, tracked across the year, with printable conversation starters for the kitchen table.</div></a>
             <a href="#" class="doc-path" onclick="event.preventDefault(); openAdmin()"><div class="dp-t" data-i18n="doc_path_clin_t">Counselors &amp; clinicians</div><div class="dp-s" data-i18n-html="doc_path_clin_s">Use Thorough mode for the fuller instrument and the per-person Home View. The separate Clinical Edition deepens the framework for clinical settings.</div></a>
           </div>
+
+          <!-- ===== TEACHER PRINTABLE (public download) ============================
+               Links to the one-page quick start hosted at the site root. Upload
+               AoG-Teacher-QuickStart.pdf and AoG-Guia-Rapida-Docentes.pdf next to
+               index.html. The onclick swaps to the Spanish PDF when the site is in
+               ES; if JS fails, the href still serves the English PDF. ========== -->
+          <style>
+            .doc-print-cta{ display:flex; align-items:center; gap:16px; margin-top:16px; padding:16px 20px; background:var(--cream); border:1px solid var(--rule); border-left:3px solid var(--gold); border-radius:12px; text-decoration:none; transition:border-color .18s, transform .18s, box-shadow .18s; }
+            .doc-print-cta:hover{ border-color:var(--gold); transform:translateY(-2px); box-shadow:0 8px 20px rgba(27,58,95,.08); }
+            .doc-print-cta .dpc-ic{ flex:0 0 auto; width:42px; height:42px; border-radius:50%; background:var(--navy); color:var(--gold-soft); display:grid; place-items:center; }
+            .doc-print-cta .dpc-ic svg{ width:21px; height:21px; }
+            .doc-print-cta .dpc-tx{ flex:1; min-width:0; }
+            .doc-print-cta .dpc-t{ display:block; font-family:var(--font-sans); font-weight:700; font-size:14px; color:var(--navy); }
+            .doc-print-cta .dpc-s{ display:block; font-family:var(--font-sans); font-size:12.8px; line-height:1.5; color:var(--ink-soft); margin-top:2px; }
+            .doc-print-cta .dpc-go{ flex:0 0 auto; font-family:var(--font-sans); font-weight:700; font-size:12.5px; color:var(--gold); white-space:nowrap; }
+            .doc-print-cta.dpc-flash{ border-color:var(--gold); box-shadow:0 0 0 3px var(--gold-soft), 0 10px 24px rgba(27,58,95,.14); transform:translateY(-2px); }
+            @media(max-width:560px){ .doc-print-cta{ flex-wrap:wrap; } .doc-print-cta .dpc-go{ width:100%; } }
+          </style>
+          <a class="doc-print-cta" href="AoG-Teacher-QuickStart.pdf" target="_blank" rel="noopener" onclick="return aogOpenQuickStart(this)">
+            <span class="dpc-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9V2h12v7"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8" rx="1"/></svg></span>
+            <span class="dpc-tx">
+              <span class="dpc-t" data-i18n="doc_print_t">For teachers: a one-page quick start</span>
+              <span class="dpc-s" data-i18n="doc_print_s">The whole flow on one sheet &mdash; print it, email it, or post it by the classroom door. No code needed.</span>
+            </span>
+            <span class="dpc-go" data-i18n="doc_print_b">Download the PDF &#8599;</span>
+          </a>
+          <!-- ===== END TEACHER PRINTABLE ===================================== -->
         </div>
 
         <!-- what this platform includes -->
@@ -4312,7 +4429,7 @@ function toggleTheme() {
             <div class="plat-card">
               <span class="plat-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg></span>
               <div class="plat-t">MTSS Dashboard</div>
-              <div class="plat-s">A code-gated results view: domain averages, a frequency-by-intensity heat map, and tier bands across a class or school.</div>
+              <div class="plat-s">A private results view: domain averages, a frequency-by-intensity heat map, and tier bands across a class or school.</div>
             </div>
             <div class="plat-card">
               <span class="plat-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/><path d="M8 12h.01"/><path d="M12 12h.01"/><path d="M16 12h.01"/></svg></span>
@@ -4334,42 +4451,79 @@ function toggleTheme() {
 
         <!-- for administrators -->
         <div class="admin-band docpane" id="dm-admin" hidden>
-          <div class="ab-ey">For administrators</div>
-          <div class="ab-h">What problem does this solve?</div>
-          <p class="ab-sub">If you lead a building or a district, here is the operational picture &mdash; screening, tiering, and follow-through in one tool you host yourself.</p>
+          <div class="ab-ey" data-i18n="dm_ad_ey">For administrators</div>
+          <div class="ab-h" data-i18n="dm_ad_h">What problem does this solve?</div>
+          <p class="ab-sub" data-i18n="dm_ad_sub">If you lead a building or a district, here is the operational picture &mdash; screening, tiering, and follow-through in one tool you host yourself.</p>
           <div class="admin-grid">
             <div class="admin-point">
               <span class="ap-ck"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>
-              <div><div class="ap-t">Universal screening</div><div class="ap-s">Every student, three windows a year, in about four minutes each.</div></div>
+              <div><div class="ap-t" data-i18n="dm_ad_p1t">Universal screening</div><div class="ap-s" data-i18n="dm_ad_p1s">Every student, three windows a year, in about four minutes each.</div></div>
             </div>
             <div class="admin-point">
               <span class="ap-ck"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>
-              <div><div class="ap-t">Tier identification</div><div class="ap-s">Normalized 0&ndash;100 cut points sort responses into universal, targeted, and intensive support.</div></div>
+              <div><div class="ap-t" data-i18n="dm_ad_p2t">Tier identification</div><div class="ap-s" data-i18n="dm_ad_p2s">Normalized 0&ndash;100 cut points sort responses into universal, targeted, and intensive support.</div></div>
             </div>
             <div class="admin-point">
               <span class="ap-ck"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>
-              <div><div class="ap-t">Family engagement</div><div class="ap-s">Family Mode and printable conversation starters bring caregivers into the loop.</div></div>
+              <div><div class="ap-t" data-i18n="dm_ad_p3t">Family engagement</div><div class="ap-s" data-i18n="dm_ad_p3s">Family Mode and printable conversation starters bring caregivers into the loop.</div></div>
             </div>
             <div class="admin-point">
               <span class="ap-ck"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>
-              <div><div class="ap-t">Progress monitoring</div><div class="ap-s">Season-over-season growth across the year, per student and per domain.</div></div>
+              <div><div class="ap-t" data-i18n="dm_ad_p4t">Progress monitoring</div><div class="ap-s" data-i18n="dm_ad_p4s">Season-over-season growth across the year, per student and per domain.</div></div>
             </div>
             <div class="admin-point">
               <span class="ap-ck"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>
-              <div><div class="ap-t">MTSS support</div><div class="ap-s">Every flag points to the exact curriculum lesson that addresses it &mdash; flag &rarr; the right lesson.</div></div>
+              <div><div class="ap-t" data-i18n="dm_ad_p5t">MTSS support</div><div class="ap-s" data-i18n="dm_ad_p5s">Every flag points to the exact curriculum lesson that addresses it &mdash; flag &rarr; the right lesson.</div></div>
             </div>
             <div class="admin-point">
               <span class="ap-ck"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>
-              <div><div class="ap-t">Classroom trends</div><div class="ap-s">Class-level results and domain averages show where a whole group needs support.</div></div>
+              <div><div class="ap-t" data-i18n="dm_ad_p6t">Classroom trends</div><div class="ap-s" data-i18n="dm_ad_p6s">Class-level results and domain averages show where a whole group needs support.</div></div>
             </div>
           </div>
           <div class="admin-flag">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></svg>
-            <span>Every score is a <em>flag for a conversation, never a diagnosis.</em> The number tells you where to begin; the curriculum is the intervention.</span>
+            <span data-i18n-html="dm_ad_flag">Every score is a <em>flag for a conversation, never a diagnosis.</em> The number tells you where to begin; the curriculum is the intervention.</span>
           </div>
+          <!-- ===== DIFFERENTIATORS (the strategic "why us," before the CTA) ===== -->
+          <style>
+            .aog-diff{ max-width:920px; margin:26px auto 0; padding-top:22px; border-top:1px solid var(--rule); }
+            .aog-diff .diff-ey{ font-family:var(--font-sans); font-size:11px; font-weight:700; letter-spacing:.16em; text-transform:uppercase; color:var(--gold); text-align:center; margin-bottom:16px; }
+            .diff-grid{ display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+            @media(max-width:600px){ .diff-grid{ grid-template-columns:1fr; } }
+            .diff-item{ background:var(--cream); border:1px solid var(--rule-soft); border-left:3px solid var(--gold); border-radius:12px; padding:14px 16px; }
+            .diff-item--wide{ grid-column:1 / -1; }
+            .diff-item .di-t{ font-family:var(--font-sans); font-weight:700; font-size:14px; color:var(--navy); margin-bottom:3px; }
+            .diff-item .di-s{ font-family:var(--font-sans); font-size:12.8px; line-height:1.55; color:var(--ink-soft); }
+          </style>
+          <div class="aog-diff">
+            <div class="diff-ey" data-i18n="dm_diff_ey">Why this, specifically</div>
+            <div class="diff-grid">
+              <div class="diff-item">
+                <div class="di-t" data-i18n="dm_diff_1t">Adults first</div>
+                <div class="di-s" data-i18n="dm_diff_1s">A private adult check-in and staff-wellness tools, so the people who hold everyone else are resourced before they carry students.</div>
+              </div>
+              <div class="diff-item">
+                <div class="di-t" data-i18n="dm_diff_2t">Privacy by design</div>
+                <div class="di-s" data-i18n="dm_diff_2s">Answers stay on the device; the school only ever sees de-identified, class-level trends. Nothing sold, nothing tracked.</div>
+              </div>
+              <div class="diff-item">
+                <div class="di-t" data-i18n="dm_diff_3t">A genuinely free library</div>
+                <div class="di-s" data-i18n="dm_diff_3s">Chapter previews, sample lessons, and downloadables &mdash; no sign-up, no code.</div>
+              </div>
+              <div class="diff-item">
+                <div class="di-t" data-i18n="dm_diff_4t">&ldquo;Teach this next&rdquo;</div>
+                <div class="di-s" data-i18n="dm_diff_4s">The dashboard turns a class&rsquo;s flags into the next lesson to teach &mdash; not a number to judge a child by.</div>
+              </div>
+              <div class="diff-item diff-item--wide">
+                <div class="di-t" data-i18n="dm_diff_5t">Four-pillar coherence</div>
+                <div class="di-s" data-i18n="dm_diff_5s">Identity, self-compassion, forgiveness, and grace &mdash; one throughline from K&ndash;12, carried by the companion novels and the curriculum.</div>
+              </div>
+            </div>
+          </div>
+          <!-- ===== END DIFFERENTIATORS ===== -->
           <div class="admin-cta">
-            <a href="#" class="ac-gold" onclick="event.preventDefault(); aogGoStore();">Request district pricing &rarr;</a>
-            <a href="#" class="ac-ghost aog-pop" onclick="event.preventDefault(); openAdmin();">Educator access &middot; results</a>
+            <a href="#" class="ac-gold" onclick="event.preventDefault(); aogGoStore();" data-i18n="dm_ad_cta1">Request district pricing &rarr;</a>
+            <a href="#" class="ac-ghost aog-pop" onclick="event.preventDefault(); openAdmin();" data-i18n="dm_ad_cta2">Educator access &middot; results</a>
           </div>
         </div>
 
@@ -4429,11 +4583,11 @@ function toggleTheme() {
           </div>
           <div class="aog-acc">
             <button class="aog-acc-head" type="button" aria-expanded="false" onclick="aogAccToggle(this)">
-              <span class="aog-acc-title" data-i18n="doc_h4">4. Access code</span>
+              <span class="aog-acc-title" data-i18n="doc_h4">4. Opening the dashboard</span>
               <svg class="aog-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
             </button>
             <div class="aog-acc-body"><div class="aog-acc-inner">
-<p style="font-size:14.5px; line-height:1.65; color:var(--ink); margin-bottom:16px;" data-i18n-html="doc_p4">Access to the <strong>results dashboard</strong> is protected by a private code, chosen by whoever published this file. To change it, open this HTML file in any text editor, find the line near the top of the script section that begins <code style="background:var(--cream); padding:2px 8px; border-radius:4px;">const ACCESS_CODE =</code>, and replace the value in quotation marks with your own. Save. That is the only change needed.</p>
+<p style="font-size:14.5px; line-height:1.65; color:var(--ink); margin-bottom:16px;" data-i18n-html="doc_p4">The results dashboard opens directly &mdash; there is no longer an access code. Privacy travels with the link instead: results sync to your school&rsquo;s sheet only when someone opens a private link you generate under <strong>Distribute</strong>, and that link never carries the sheet address or any passcode. Open the dashboard with nothing synced and it shows only the check-ins taken on this device (or demo data), so simply opening it never exposes anyone&rsquo;s private results. The device itself stays the thing to protect &mdash; on a shared computer, use the <strong>Delete</strong> control on the Privacy page when you&rsquo;re done.</p>
             </div></div>
           </div>
           <div class="aog-acc">
@@ -5055,17 +5209,8 @@ function toggleTheme() {
 
 </div>
 
-<div class="modal-back" id="modalAccess">
-  <div class="modal">
-    <h2 class="display display-md">Access</h2>
-    <p>Enter the access code provided by your MTSS coordinator or parent.</p>
-    <input type="password" id="accessCode" placeholder="Access code" autocomplete="off">
-    <div class="modal-actions">
-      <button class="btn btn-secondary btn-sm" onclick="closeModal('modalAccess')">Cancel</button>
-      <button class="btn btn-sm" onclick="submitAccessCode()">Continue</button>
-    </div>
-  </div>
-</div>
+<!-- Access-code modal removed (2026): the dashboard now opens directly.
+     Privacy is carried by the synced private link, not a gate. -->
 
 
 <style id="aog-store-styles">
@@ -6361,7 +6506,8 @@ let closingWord = "";
 let closingSel = [];
 const STORAGE_KEY = "aogScreener.v2.results";
 const LANG_KEY = "aogScreener.v2.lang";
-const ACCESS_CODE = "educator";
+/* ACCESS_CODE removed (2026): the educator dashboard opens directly; privacy
+   is carried by the synced private link, not a code gate. */
 const SCHOOL_SYNC_URL = "";
 const SCHOOL_SYNC_KEY = "";
 const VOICES_URL = "https://script.google.com/macros/s/AKfycbw0Qdwka1HXPPA_OxsQP2FXxOK8zzFwu_MBrXoahoO2YwRvwQ83RzvkJW__9KCC_DwgaA/exec";
@@ -7234,7 +7380,7 @@ const I18N_UI = {
     es: "architectureofgrace.org"
   },
   hyb_b1: {
-    es: "De la reflexión a la acción"
+    es: "La gracia por encima del rendimiento"
   },
   hyb_b2: {
     es: "Para estudiantes, familias y adultos"
@@ -7243,8 +7389,8 @@ const I18N_UI = {
     es: "Creado por un educador especial"
   },
   hyb_byline: {
-    en: "Created by Jimmy Ramsden — a practicing special educator with a master\u2019s in special education, built from the classroom, not a boardroom.",
-    es: "Creado por Jimmy Ramsden — educador especial en ejercicio con una maestr\u00eda en educaci\u00f3n especial, construido desde el aula, no desde una oficina."
+    en: "Built by a teacher, for real classrooms — the SEL that tends to the grown-ups before it ever measures a child. Created by Jimmy Ramsden, a special educator with a master\u2019s in special education: from the classroom, not a boardroom.",
+    es: "Hecho por un docente, para aulas reales — el SEL que cuida a los adultos antes de medir a un ni\u00f1o. Creado por Jimmy Ramsden, educador especial con una maestr\u00eda en educaci\u00f3n especial: desde el aula, no desde una oficina."
   },
   hyb_start_btn: {
     es: "Comienza tu chequeo"
@@ -7389,10 +7535,10 @@ const I18N_UI = {
     es: "El ítem del adulto de confianza (Ítem 18) también se sigue por separado. Una respuesta de Nunca o Rara vez/A veces genera una señal sin importar el puntaje compuesto, porque la conexión con un adulto de confianza es protectora por sí misma."
   },
   doc_h4: {
-    es: "4. Código de acceso"
+    es: "4. Abrir el panel"
   },
   doc_p4: {
-    es: "El acceso al <strong>panel de resultados</strong> está protegido por un código privado, elegido por quien publicó este archivo. Para cambiarlo, abre este archivo HTML en cualquier editor de texto, busca la línea cerca del inicio de la sección de script que comienza con <code style=\"background:var(--cream); padding:2px 8px; border-radius:4px;\">const ACCESS_CODE =</code> y reemplaza el valor entre comillas por el tuyo. Guarda. Ese es el único cambio necesario."
+    es: "El panel de resultados se abre directamente — ya no hay código de acceso. La privacidad viaja con el enlace: los resultados se sincronizan con la hoja de tu escuela solo cuando alguien abre un enlace privado que generas en <strong>Distribuir</strong>, y ese enlace nunca lleva la dirección de la hoja ni ninguna contraseña. Si abres el panel sin nada sincronizado, solo muestra los chequeos hechos en este dispositivo (o datos de ejemplo), así que con solo abrirlo nunca se exponen los resultados privados de nadie. El dispositivo mismo sigue siendo lo que hay que proteger — en una computadora compartida, usa el control <strong>Borrar</strong> en la página de Privacidad cuando termines."
   },
   doc_h5: {
     es: "5. Cómo aplicarla"
@@ -8210,6 +8356,9 @@ function endTour(_0x21397c) {
   }
 }
 function maybeStartTour(_0x387e62) {
+  // Auto-start disabled: the Quick Tour only opens when the user taps the "Quick tour" button.
+  // (Delete the next line to bring back automatic first-visit tours.)
+  return;
   _0x387e62 = _0x387e62 || "welcome";
   if (tourSeenGet(TOUR_SEEN[_0x387e62])) {
     return;
@@ -8784,8 +8933,8 @@ const DASH_I18N = {
     es: "Un recorrido de 2 minutos para educadores."
   },
   dl_eyebrow: {
-    en: "Dashboard · Restricted",
-    es: "Panel · Restringido"
+    en: "Dashboard · Educators",
+    es: "Panel · Educadores"
   },
   dl_h1: {
     en: "Check-In Results",
@@ -10441,6 +10590,8 @@ function aogRouteFromHash() {
     openAbout();
   } else if (_0xaa0d73 === "guide" || _0xaa0d73 === "ecosystem" || _0xaa0d73 === "explore") {
     openGuide();
+  } else if (_0xaa0d73 === "quickstart" || _0xaa0d73 === "quick-start" || _0xaa0d73 === "teacher") {
+    if (typeof aogGoQuickStart === "function") aogGoQuickStart();
   } else if (_0xaa0d73 === "results" || _0xaa0d73 === "dashboard" || _0xaa0d73 === "educator" || _0xaa0d73 === "admin") {
     openAdmin();
   } else if (_0xaa0d73 === "start" || _0xaa0d73 === "welcome") {
@@ -10455,22 +10606,8 @@ function aogRouteFromHash() {
 }
 window.addEventListener("hashchange", aogRouteFromHash);
 window.addEventListener("load", aogRouteFromHash);
-function submitAccessCode() {
-  const _0xa3936 = $("#accessCode").value;
-  $("#accessCode").value = "";
-  closeModal("modalAccess");
-  if (_0xa3936 === ACCESS_CODE) {
-    showScreen("screen-admin");
-    refreshAdmin();
-    setTimeout(function () {
-      try {
-        maybeStartTour("dash");
-      } catch (_0x11b4c0) {}
-    }, 750);
-  } else {
-    alert(lang === "es" ? "Código incorrecto." : "Incorrect code.");
-  }
-}
+/* submitAccessCode() removed (2026): the dashboard opens directly via openAdmin();
+   there is no longer an access code to verify. */
 function clearLocalData() {
   if (!confirm("Permanently delete ALL check-in data on this device?")) {
     return;
@@ -14159,8 +14296,18 @@ const RESOURCE_LIBRARY = [{
   }]
 }, {
   cat: "Secular Somatic Floor Lessons",
-  note: "Body-based, fully secular companions — where these ideas live in the nervous system.",
+  note: "Body-based, fully secular companions — where these ideas live in the nervous system. Read the complete opening lesson of either companion free before you buy.",
   items: [{
+    title: "Somatic Floor · Book 2 (3–5) · Free Preview",
+    desc: "The cover, the contents, and the complete first lesson — Where the Inner Critic Lives in the Body — free to read end to end.",
+    free: true,
+    url: "files/AoG-Book2-Somatic-Floor-Preview.pdf"
+  }, {
+    title: "Somatic Floor · Book 3 (6–8) · Free Preview",
+    desc: "The cover, the contents, and the complete first lesson — Mask vs. Mirror — free to read end to end.",
+    free: true,
+    url: "files/AoG-Book3-Somatic-Floor-Preview.pdf"
+  }, {
     title: "Book 2 · Inner Critic · Body Floor (D3)",
     desc: "Where the Inner Critic shows up in the body — fully secular.",
     url: ""
@@ -14192,59 +14339,156 @@ const RESOURCE_LIBRARY = [{
 }, {
   cat: "Autism-Adapted Charts",
   closed: true,
-  note: "The anchor charts rebuilt with plain language and visual supports — two support levels per band. License them for a school, or buy a set for home.",
+  note: "The anchor charts rebuilt with plain language and visual supports — two support levels per band. Read the cover, the editorial note, and the first charts of any set free before you buy. License them for a school, or buy a set for home.",
   items: [{
+    title: "Autism-Adapted Charts · Book 1 (K–2) · Lower Support · Free Preview",
+    desc: "The cover, the Before You Begin note, and the first two charts — including the Identity Web — free to read.",
+    free: true,
+    url: "files/AoG-Book1-Autism-Charts-Lower-Support-Preview.pdf"
+  }, {
     title: "Autism-Adapted Charts · Book 1 (K–2) · Lower Support",
-    desc: "The K–2 anchor charts in plain language with visual supports.",
-    url: "files/AoG_Book1_AutismAdapted_LowerSupport_1.pdf"
+    desc: "All fourteen K–2 anchor charts in plain language with visual supports, body-first scaffolding, and a Specialist Note per chart.",
+    access: "buy",
+    url: ""
+  }, {
+    title: "Autism-Adapted Charts · Book 1 (K–2) · Moderate Support · Free Preview",
+    desc: "The cover, the Before You Begin note, and the first two charts — with more scaffolding and simpler steps — free to read.",
+    free: true,
+    url: "files/AoG-Book1-Autism-Charts-Moderate-Support-Preview.pdf"
   }, {
     title: "Autism-Adapted Charts · Book 1 (K–2) · Moderate Support",
-    desc: "The K–2 charts with more scaffolding and simpler steps.",
-    url: "files/AoG_Book1_AutismAdapted_ModerateSupport.pdf"
+    desc: "The full K–2 set with heavier scaffolding and simpler steps.",
+    access: "buy",
+    url: ""
+  }, {
+    title: "Autism-Adapted Charts · Book 2 (3–5) · Lower Support · Free Preview",
+    desc: "The cover, the Before You Begin note, and the first two charts — including the Identity Web — free to read.",
+    free: true,
+    url: "files/AoG-Book2-Autism-Charts-Lower-Support-Preview.pdf"
+  }, {
+    title: "Autism-Adapted Charts · Book 2 (3–5) · Lower Support",
+    desc: "The full 3–5 anchor charts in plain language with visual supports.",
+    access: "buy",
+    url: ""
+  }, {
+    title: "Autism-Adapted Charts · Book 2 (3–5) · Moderate Support · Free Preview",
+    desc: "The cover, the Before You Begin note, and the first two charts — with more scaffolding and simpler steps — free to read.",
+    free: true,
+    url: "files/AoG-Book2-Autism-Charts-Moderate-Support-Preview.pdf"
+  }, {
+    title: "Autism-Adapted Charts · Book 2 (3–5) · Moderate Support",
+    desc: "The full 3–5 set with heavier scaffolding and simpler steps.",
+    access: "buy",
+    url: ""
+  }, {
+    title: "Autism-Adapted Charts · Book 3 (6–8) · Lower Support · Free Preview",
+    desc: "The cover, the Before You Begin note, and the first two charts — including Mask vs. Mirror — free to read.",
+    free: true,
+    url: "files/AoG-Book3-Autism-Charts-Lower-Support-Preview.pdf"
   }, {
     title: "Autism-Adapted Charts · Book 3 (6–8) · Lower Support",
-    desc: "The 6–8 anchor charts in plain language with visual supports.",
-    url: "files/AoG_Book3_AutismAdapted_LowerSupport.pdf"
+    desc: "The full 6–8 anchor charts in plain language with visual supports.",
+    access: "buy",
+    url: ""
+  }, {
+    title: "Autism-Adapted Charts · Book 3 (6–8) · Moderate Support · Free Preview",
+    desc: "The cover, the Before You Begin note, and the first two charts — with more scaffolding and simpler steps — free to read.",
+    free: true,
+    url: "files/AoG-Book3-Autism-Charts-Moderate-Support-Preview.pdf"
   }, {
     title: "Autism-Adapted Charts · Book 3 (6–8) · Moderate Support",
-    desc: "The 6–8 charts with more scaffolding and simpler steps.",
-    url: "files/AoG_Book3_AutismAdapted_ModerateSupport.pdf"
-  }, {
-    title: "Autism-Adapted Charts · Book 2 (3–5)",
-    desc: "The 3–5 anchor charts in plain language with visual supports.",
+    desc: "The full 6–8 set with heavier scaffolding and simpler steps.",
+    access: "buy",
     url: ""
   }, {
-    title: "Autism-Adapted Charts · Book 4 (9–10)",
-    desc: "The 9–10 anchor charts in plain language with visual supports.",
+    title: "Autism-Adapted Charts · Book 4 (9–10) · Lower Support · Free Preview",
+    desc: "The cover, the Before You Begin note, the contents, and the first two charts — including The Social Battery — free to read.",
+    free: true,
+    url: "files/AoG-Book4-Autism-Charts-Lower-Support-Preview.pdf"
+  }, {
+    title: "Autism-Adapted Charts · Book 4 (9–10) · Lower Support",
+    desc: "All twenty-eight 9–10 anchor charts in plain language, with the autistic-adolescent panels and pattern-tracking guardrails.",
+    access: "buy",
     url: ""
   }, {
-    title: "Autism-Adapted Charts · Book 5 (11–12)",
-    desc: "The 11–12 anchor charts in plain language with visual supports.",
+    title: "Autism-Adapted Charts · Book 4 (9–10) · Moderate Support · Free Preview",
+    desc: "The cover, the Before You Begin note, the contents, and the first two charts — with more scaffolding and simpler steps — free to read.",
+    free: true,
+    url: "files/AoG-Book4-Autism-Charts-Moderate-Support-Preview.pdf"
+  }, {
+    title: "Autism-Adapted Charts · Book 4 (9–10) · Moderate Support",
+    desc: "The full 9–10 set with heavier scaffolding and simpler steps.",
+    access: "buy",
+    url: ""
+  }, {
+    title: "Autism-Adapted Charts · Book 5 (11–12) · Lower Support · Free Preview",
+    desc: "The cover, the Before You Begin note, the contents, and the first two charts — including The Exit Interview — free to read.",
+    free: true,
+    url: "files/AoG-Book5-Autism-Charts-Lower-Support-Preview.pdf"
+  }, {
+    title: "Autism-Adapted Charts · Book 5 (11–12) · Lower Support",
+    desc: "The full 11–12 anchor charts in plain language, with the values, repair, and forgiveness charts.",
+    access: "buy",
+    url: ""
+  }, {
+    title: "Autism-Adapted Charts · Book 5 (11–12) · Moderate Support · Free Preview",
+    desc: "The cover, the Before You Begin note, the contents, and the first two charts — with more scaffolding and simpler steps — free to read.",
+    free: true,
+    url: "files/AoG-Book5-Autism-Charts-Moderate-Support-Preview.pdf"
+  }, {
+    title: "Autism-Adapted Charts · Book 5 (11–12) · Moderate Support",
+    desc: "The full 11–12 set with heavier scaffolding and simpler steps.",
+    access: "buy",
     url: ""
   }]
 }, {
   cat: "Home & Family Editions",
-  note: "The program, rewritten for families to use at the kitchen table.",
+  note: "The program, rewritten for families to use at the kitchen table. Read the first complete lesson of any book free before you buy.",
   items: [{
+    title: "Home Edition · Book 1 (K–2) · Free Preview",
+    desc: "The parent's letter, how to use the book, the crisis & safety reference, and the first complete lesson — free to read end to end.",
+    free: true,
+    url: "files/AoG-Home-Edition-Book-1-Preview.pdf"
+  }, {
     title: "Home Edition · Book 1 (K–2)",
     desc: "The previewed K–2 lessons, in a version parents can lead at home.",
     access: "buy",
     url: ""
+  }, {
+    title: "Home Edition · Book 2 (3–5) · Free Preview",
+    desc: "The parent's letter, how to use the book, the crisis & safety reference, and the first complete lesson — free to read end to end.",
+    free: true,
+    url: "files/AoG-Home-Edition-Book-2-Preview.pdf"
   }, {
     title: "Home Edition · Book 2 (3–5)",
     desc: "The Inner Critic work, written for families.",
     access: "buy",
     url: ""
   }, {
+    title: "Home Edition · Book 3 (6–8) · Free Preview",
+    desc: "The parent's letter, how to use the book, the crisis & safety reference, and the first complete lesson — free to read end to end.",
+    free: true,
+    url: "files/AoG-Home-Edition-Book-3-Preview.pdf"
+  }, {
     title: "Home Edition · Book 3 (6–8)",
     desc: "The 6–8 interior work, adapted for home.",
     access: "buy",
     url: ""
   }, {
+    title: "Home Edition · Book 4 (9–10) · Free Preview",
+    desc: "The parent's letter, how to use the book, the crisis & safety reference, and the first complete lesson — free to read end to end.",
+    free: true,
+    url: "files/AoG-Home-Edition-Book-4-Preview.pdf"
+  }, {
     title: "Home Edition · Book 4 (9–10)",
     desc: "The 9–10 interior work, written for families at home.",
     access: "buy",
     url: ""
+  }, {
+    title: "Home Edition · Book 5 (11–12) · Free Preview",
+    desc: "The parent's letter, how to use the book, the crisis & safety reference, and the first complete lesson — free to read end to end.",
+    free: true,
+    url: "files/AoG-Home-Edition-Book-5-Preview.pdf"
   }, {
     title: "Home Edition · Book 5 (11–12)",
     desc: "The 11–12 work — threshold, values, forgiveness — for families.",
@@ -14427,7 +14671,7 @@ const ECO_DETAIL = {
     title: "The Dashboard",
     role: "tiers · equity · growth",
     blurb: "Every administration aggregates here into tier flags, equity views, and growth over time — the read-out that points instruction back where it's needed most.",
-    go: "Educator access (code)",
+    go: "Open the dashboard",
     act: "admin"
   }
 };
@@ -14465,7 +14709,7 @@ const ECO_DETAIL_ES = {
     title: "El panel",
     role: "niveles · equidad · crecimiento",
     blurb: "Cada aplicación se agrupa aquí en señales por nivel, vistas de equidad y crecimiento con el tiempo — el reporte que dirige la enseñanza hacia donde más se necesita.",
-    go: "Acceso del educador (código)"
+    go: "Abrir el panel"
   }
 };
 function ecoNavigate(_0xe1b049) {
@@ -15032,12 +15276,45 @@ function aogBindStore(root){
     if(typeof I18N_UI !== 'undefined' && I18N_UI){
       I18N_UI.aog_edu_t = {en:'For educators', es:'Para educadores'};
       I18N_UI.aog_edu_s = {en:'The framework, the ecosystem map, and the full resource index.', es:'El marco, el mapa del ecosistema y el \u00edndice completo de recursos.'};
+      I18N_UI.doc_print_t = {en:'For teachers: a one-page quick start', es:'Para docentes: una gu\u00eda r\u00e1pida de una p\u00e1gina'};
+      I18N_UI.doc_print_s = {en:'The whole flow on one sheet \u2014 print it, email it, or post it by the classroom door. No code needed.', es:'Todo el recorrido en una hoja \u2014 impr\u00edmela, env\u00edala por correo o col\u00f3cala junto a la puerta del sal\u00f3n. Sin c\u00f3digo.'};
+      I18N_UI.doc_print_b = {en:'Download the PDF \u2197', es:'Descargar el PDF \u2197'};
       I18N_UI.aog_lib_t = {en:'Library', es:'Biblioteca'};
       I18N_UI.aog_lib_s = {en:'Every chapter preview, sample lesson, and downloadable \u2014 free, no sign-up.', es:'Vistas previas de cap\u00edtulos, lecciones de muestra y descargables \u2014 gratis, sin registro.'};
       I18N_UI.aog_dn_flow = {en:'How it works', es:'C\u00f3mo funciona'};
       I18N_UI.aog_dn_system = {en:'The whole system', es:'El sistema completo'};
       I18N_UI.aog_dn_schools = {en:'For schools & districts', es:'Para escuelas y distritos'};
       I18N_UI.aog_dn_manual = {en:'The manual', es:'El manual'};
+      /* For schools & districts pane + differentiators strip (es; en falls back to inline markup) */
+      I18N_UI.dm_ad_ey   = {es:'Para administradores'};
+      I18N_UI.dm_ad_h    = {es:'\u00bfQu\u00e9 problema resuelve esto?'};
+      I18N_UI.dm_ad_sub  = {es:'Si diriges una escuela o un distrito, este es el panorama operativo \u2014 detecci\u00f3n, niveles y seguimiento en una sola herramienta que t\u00fa mismo alojas.'};
+      I18N_UI.dm_ad_p1t  = {es:'Detecci\u00f3n universal'};
+      I18N_UI.dm_ad_p1s  = {es:'Cada estudiante, tres per\u00edodos al a\u00f1o, en unos cuatro minutos cada uno.'};
+      I18N_UI.dm_ad_p2t  = {es:'Identificaci\u00f3n por niveles'};
+      I18N_UI.dm_ad_p2s  = {es:'Puntos de corte normalizados de 0\u2013100 clasifican las respuestas en apoyo universal, dirigido e intensivo.'};
+      I18N_UI.dm_ad_p3t  = {es:'Participaci\u00f3n de las familias'};
+      I18N_UI.dm_ad_p3s  = {es:'El Modo familiar y los iniciadores de conversaci\u00f3n imprimibles integran a los cuidadores en el proceso.'};
+      I18N_UI.dm_ad_p4t  = {es:'Monitoreo del progreso'};
+      I18N_UI.dm_ad_p4s  = {es:'Crecimiento de un per\u00edodo a otro durante el a\u00f1o, por estudiante y por \u00e1rea.'};
+      I18N_UI.dm_ad_p5t  = {es:'Apoyo MTSS'};
+      I18N_UI.dm_ad_p5s  = {es:'Cada se\u00f1al apunta a la lecci\u00f3n exacta del curr\u00edculo que la atiende \u2014 se\u00f1al \u2192 la lecci\u00f3n correcta.'};
+      I18N_UI.dm_ad_p6t  = {es:'Tendencias del sal\u00f3n'};
+      I18N_UI.dm_ad_p6s  = {es:'Los resultados por clase y los promedios por \u00e1rea muestran d\u00f3nde necesita apoyo todo un grupo.'};
+      I18N_UI.dm_ad_flag = {es:'Cada puntuaci\u00f3n es una <em>se\u00f1al para conversar, nunca un diagn\u00f3stico.</em> El n\u00famero te dice por d\u00f3nde empezar; el curr\u00edculo es la intervenci\u00f3n.'};
+      I18N_UI.dm_ad_cta1 = {es:'Solicitar precios para distritos \u2192'};
+      I18N_UI.dm_ad_cta2 = {es:'Acceso del educador \u00b7 resultados'};
+      I18N_UI.dm_diff_ey = {es:'Por qu\u00e9 esto, en concreto'};
+      I18N_UI.dm_diff_1t = {es:'Los adultos primero'};
+      I18N_UI.dm_diff_1s = {es:'Un chequeo privado para adultos y herramientas de bienestar para el personal, para que quienes sostienen a los dem\u00e1s tengan apoyo antes de acompa\u00f1ar a los estudiantes.'};
+      I18N_UI.dm_diff_2t = {es:'Privacidad por dise\u00f1o'};
+      I18N_UI.dm_diff_2s = {es:'Las respuestas se quedan en el dispositivo; la escuela solo ve tendencias por clase, sin identificar a nadie. Nada se vende, nada se rastrea.'};
+      I18N_UI.dm_diff_3t = {es:'Una biblioteca verdaderamente gratuita'};
+      I18N_UI.dm_diff_3s = {es:'Vistas previas de cap\u00edtulos, lecciones de muestra y descargables \u2014 sin registro, sin c\u00f3digo.'};
+      I18N_UI.dm_diff_4t = {es:'\u00abEnse\u00f1a esto a continuaci\u00f3n\u00bb'};
+      I18N_UI.dm_diff_4s = {es:'El panel convierte las se\u00f1ales de una clase en la pr\u00f3xima lecci\u00f3n que ense\u00f1ar \u2014 no en un n\u00famero para juzgar a un ni\u00f1o.'};
+      I18N_UI.dm_diff_5t = {es:'Coherencia de cuatro pilares'};
+      I18N_UI.dm_diff_5s = {es:'Identidad, autocompasi\u00f3n, perd\u00f3n y gracia \u2014 un mismo hilo de K a 12.\u00ba, sostenido por las novelas y el curr\u00edculo.'};
       I18N_UI.aog_about_tab = {en:'About', es:'Acerca de'};
       I18N_UI.aog_about_t = {en:'What it is', es:'Qu\u00e9 es'};
       I18N_UI.aog_about_s = {en:'What Architecture of Grace is \u2014 and how it\u2019s different.', es:'Qu\u00e9 es Architecture of Grace \u2014 y en qu\u00e9 se diferencia.'};
@@ -15479,6 +15756,83 @@ window.aogAccToggle = function(btn){
       I18N_UI.wp_skip = {en:"Skip straight to the check-in →", es:"Ir directo al chequeo →"};
     }
   }catch(e){}
+})();
+</script>
+<script>
+/* ===== QUICK START (Dashboard) · strings + button helpers =============
+   Mirrors the file's existing late-binding i18n pattern. EN text is already
+   inline in the markup, so if anything here fails the card still reads in
+   English — nothing breaks. ES is added to DASH_I18N for the dashboard
+   language toggle. =================================================== */
+(function(){
+  try{
+    if (typeof DASH_I18N !== "undefined"){
+      DASH_I18N.qs_eyebrow = {en:"In 4 steps", es:"En 4 pasos"};
+      DASH_I18N.qs_title   = {en:"How the dashboard works", es:"Cómo funciona el panel"};
+      DASH_I18N.qs_lede    = {en:"A short video walkthrough is on the way. Until then, here’s the whole flow at a glance — a check-in, not an exam.", es:"Pronto habrá un breve video. Mientras tanto, aquí está todo el recorrido de un vistazo — un chequeo, no un examen."};
+      DASH_I18N.qs_s1_t    = {en:"Hand it out", es:"Repártelo"};
+      DASH_I18N.qs_s1_s    = {en:"Open <strong>Distribute</strong> to make a link or QR code for your class. Every device stays private by default.", es:"Abre <strong>Distribuir</strong> para crear un enlace o código QR para tu clase. Cada dispositivo es privado por defecto."};
+      DASH_I18N.qs_s1_b    = {en:"Go to Distribute →", es:"Ir a Distribuir →"};
+      DASH_I18N.qs_s2_t    = {en:"They check in privately", es:"Hacen el chequeo en privado"};
+      DASH_I18N.qs_s2_s    = {en:"Each person answers on their own device. Nothing is shared between people automatically — their words stay theirs.", es:"Cada persona responde en su propio dispositivo. Nada se comparte entre personas automáticamente — sus palabras son suyas."};
+      DASH_I18N.qs_s3_t    = {en:"Read the group", es:"Lee al grupo"};
+      DASH_I18N.qs_s3_s    = {en:"<strong>Overview</strong> reads the whole group for you; <strong>Class trends</strong> shows where to focus next. Individual scores are hidden here on purpose.", es:"<strong>Resumen</strong> lee al grupo entero por ti; <strong>Tendencias de la clase</strong> muestra dónde enfocarse. Los puntajes individuales se ocultan aquí a propósito."};
+      DASH_I18N.qs_s3_b    = {en:"Go to Class trends →", es:"Ir a Tendencias de la clase →"};
+      DASH_I18N.qs_s4_t    = {en:"Open the conversation", es:"Abre la conversación"};
+      DASH_I18N.qs_s4_s    = {en:"A person’s full report lives privately with them in <strong>Family view</strong>. Use it to start a conversation, never to grade one.", es:"El informe completo de una persona vive en privado con ella en <strong>Vista familiar</strong>. Úsalo para iniciar una conversación, nunca para calificar."};
+      DASH_I18N.qs_s4_b    = {en:"Go to Family view →", es:"Ir a Vista familiar →"};
+      DASH_I18N.qs_replay  = {en:"Replay the guided tour", es:"Repetir el recorrido guiado"};
+      DASH_I18N.qs_demo    = {en:"Explore with demo data", es:"Explorar con datos de ejemplo"};
+      DASH_I18N.qs_print   = {en:"Download the one-pager (PDF) ↗", es:"Descargar la guía de una página (PDF) ↗"};
+      DASH_I18N.qs_note    = {en:"<strong>No code needed.</strong> Privacy lives in the link — results sync only when someone opens a private link you share, never just by opening this dashboard.", es:"<strong>No se necesita código.</strong> La privacidad vive en el enlace: los resultados se sincronizan solo cuando alguien abre un enlace privado que compartes, nunca con solo abrir este panel."};
+    }
+  }catch(e){}
+
+  /* jump to a dashboard tab by clicking its real tab button (no internal-name coupling) */
+  window.aogQsTab = function(name){
+    try{ var t = document.querySelector('.tab[data-tab="' + name + '"]'); if (t) t.click(); }catch(e){}
+  };
+  window.aogQsTour = function(){
+    try{ if (typeof startTour === "function") startTour("dash"); }catch(e){}
+  };
+  window.aogQsDemo = function(){
+    try{ if (typeof toggleDemoData === "function") toggleDemoData(); }catch(e){}
+  };
+  /* Dashboard-side printable: matches the DASHBOARD language toggle (dashLang). */
+  window.aogQsPrintable = function(a){
+    try{
+      var es = (typeof dashLang !== "undefined" && dashLang === "es");
+      if (a) a.href = es ? "AoG-Guia-Rapida-Docentes.pdf" : "AoG-Teacher-QuickStart.pdf";
+    }catch(e){}
+    return true;
+  };
+  /* Open the printable one-pager that matches the SITE language (public side).
+     Falls back to the English PDF (the href) if anything here fails. */
+  window.aogOpenQuickStart = function(a){
+    try{
+      var es = (typeof lang !== "undefined" && lang === "es");
+      if (a) a.href = es ? "AoG-Guia-Rapida-Docentes.pdf" : "AoG-Teacher-QuickStart.pdf";
+    }catch(e){}
+    return true;
+  };
+  /* Deep link target for #quickstart : open the Guide's docs and bring the
+     teacher printable CTA into view with a brief highlight. Used by the hash
+     router so a coordinator can email architectureofgrace.org/#quickstart. */
+  window.aogGoQuickStart = function(){
+    try{ if (typeof openGuide === "function") openGuide("docs"); }catch(e){}
+    var tries = 0;
+    (function find(){
+      var el = document.querySelector(".doc-print-cta");
+      if (el){
+        try{ el.scrollIntoView({behavior:"smooth", block:"center"}); }
+        catch(e){ try{ el.scrollIntoView(); }catch(_){} }
+        el.classList.add("dpc-flash");
+        setTimeout(function(){ try{ el.classList.remove("dpc-flash"); }catch(e){} }, 2200);
+      } else if (tries++ < 20){
+        setTimeout(find, 120);
+      }
+    })();
+  };
 })();
 </script>
 </body>
