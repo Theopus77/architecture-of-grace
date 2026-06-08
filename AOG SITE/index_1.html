@@ -2806,10 +2806,18 @@ function toggleTheme() {
           <div class="wp-tank-head">
             <div class="ey" data-i18n="wp_tank_ey">A 60-second read</div>
             <h2 data-i18n="wp_tank_h">How full is your tank?</h2>
-            <p data-i18n="wp_tank_p">Burnout&rsquo;s clearest signal is energy, not attitude. Four quick reads on your tank &mdash; private, instant, and saved nowhere. This isn&rsquo;t a clinical burnout score; it&rsquo;s a quick mirror. If it rings true, the full check-in goes deeper.</p>
+            <p class="tk-intro">Burnout&rsquo;s clearest signal is energy, not attitude. Four quick reads on your tank &mdash; private, instant, and saved nowhere. This isn&rsquo;t a clinical burnout score; it&rsquo;s a quick mirror. If it rings true, the full check-in goes deeper.</p>
+          </div>
+          <div class="ages-toggle-wrap tk-ages-wrap" id="tankAgesWrap" style="margin:0 auto 16px;">
+            <span class="ages-toggle-label" data-i18n="tank_aud_label">Taking it as</span>
+            <div class="ages-toggle" id="tankAgesToggle" role="group" aria-label="Who is taking this read">
+              <button type="button" class="ages-btn" data-taud="child" onclick="aogSetTankAudience('child')" data-i18n="ages_child">Child</button>
+              <button type="button" class="ages-btn" data-taud="teen" onclick="aogSetTankAudience('teen')" data-i18n="ages_teen">Teen</button>
+              <button type="button" class="ages-btn active" data-taud="adult" onclick="aogSetTankAudience('adult')" data-i18n="ages_adult">Adult / Educator</button>
+            </div>
           </div>
           <div class="tk-item">
-            <div class="tk-q" data-i18n="wp_tq1">By the end of most days, I feel used up &mdash; like there&rsquo;s little left to give.</div>
+            <div class="tk-q">By the end of most days, I feel used up &mdash; like there&rsquo;s little left to give.</div>
             <div class="tk-opts" role="radiogroup" aria-label="By the end of most days I feel used up">
               <span class="tk-pill" data-q="1" data-v="0" role="radio" tabindex="0" data-i18n="wp_opt0" aria-checked="false">Rarely / never</span>
               <span class="tk-pill" data-q="1" data-v="1" role="radio" tabindex="0" data-i18n="wp_opt1" aria-checked="false">Sometimes</span>
@@ -2818,7 +2826,7 @@ function toggleTheme() {
             </div>
           </div>
           <div class="tk-item">
-            <div class="tk-q" data-i18n="wp_tq2">I wake up already tired at the thought of the day ahead.</div>
+            <div class="tk-q">I wake up already tired at the thought of the day ahead.</div>
             <div class="tk-opts" role="radiogroup" aria-label="I wake up already tired at the thought of the day ahead">
               <span class="tk-pill" data-q="2" data-v="0" role="radio" tabindex="0" data-i18n="wp_opt0" aria-checked="false">Rarely / never</span>
               <span class="tk-pill" data-q="2" data-v="1" role="radio" tabindex="0" data-i18n="wp_opt1" aria-checked="false">Sometimes</span>
@@ -2827,7 +2835,7 @@ function toggleTheme() {
             </div>
           </div>
           <div class="tk-item">
-            <div class="tk-q" data-i18n="wp_tq3">Even when I rest, I don&rsquo;t really feel refilled.</div>
+            <div class="tk-q">Even when I rest, I don&rsquo;t really feel refilled.</div>
             <div class="tk-opts" role="radiogroup" aria-label="Even when I rest I do not really feel refilled">
               <span class="tk-pill" data-q="3" data-v="0" role="radio" tabindex="0" data-i18n="wp_opt0" aria-checked="false">Rarely / never</span>
               <span class="tk-pill" data-q="3" data-v="1" role="radio" tabindex="0" data-i18n="wp_opt1" aria-checked="false">Sometimes</span>
@@ -2836,7 +2844,7 @@ function toggleTheme() {
             </div>
           </div>
           <div class="tk-item">
-            <div class="tk-q" data-i18n="wp_tq4">Lately I feel like I&rsquo;m just getting through the day without really noticing it &mdash; like my mind is somewhere else.</div>
+            <div class="tk-q">Lately I feel like I&rsquo;m just getting through the day without really noticing it &mdash; like my mind is somewhere else.</div>
             <div class="tk-opts" role="radiogroup" aria-label="Lately I feel like I am just getting through the day without really noticing it">
               <span class="tk-pill" data-q="4" data-v="0" role="radio" tabindex="0" data-i18n="wp_opt0" aria-checked="false">Rarely / never</span>
               <span class="tk-pill" data-q="4" data-v="1" role="radio" tabindex="0" data-i18n="wp_opt1" aria-checked="false">Sometimes</span>
@@ -7918,6 +7926,7 @@ const I18N_UI = {
   a11y_dyslexic: { en: "Dyslexia-friendly font", es: "Fuente para dislexia" },
   a11y_dyslexic_s: { en: "Easier letter shapes & spacing", es: "Letras y espaciado m\u00e1s legibles" },
   ages_view_as: { en: "View as", es: "Ver como" },
+  tank_aud_label: { en: "Taking it as", es: "Lo hace" },
   ages_child: { en: "Child", es: "Ni\u00f1o/a" },
   ages_teen: { en: "Teen", es: "Adolescente" },
   ages_adult: { en: "Adult / Educator", es: "Adulto / Educador" },
@@ -8479,6 +8488,7 @@ function setLang(_0x3f9e05) {
   $("#langEn").classList.toggle("active", _0x3f9e05 === "en");
   $("#langEs").classList.toggle("active", _0x3f9e05 === "es");
   applyLang();
+  if (typeof aogRenderTankCopy === "function") { try { aogRenderTankCopy(); } catch (_e) {} }
   applyContext();
   const _0xb15a77 = document.querySelector(".screen.active");
   if (_0xb15a77) {
@@ -10560,20 +10570,15 @@ window.addEventListener("load", function () {
       return;
     }
 
-    var band, title, body, accent;
-    if (total <= 3) {
-      band = "ok"; accent = "var(--green)";
-      title = es ? "Tu tanque se ve razonablemente lleno por ahora." : "Your tank looks reasonably full right now.";
-      body = es ? "Vale la pena notarlo y protegerlo. El chequeo completo sigue siendo un buen hábito — detecta las cosas pequeñas antes de que se vuelvan grandes." : "That’s worth noticing and protecting. The full check-in is still a good habit — it catches the small things before they become the big ones.";
-    } else if (total <= 7) {
-      band = "low"; accent = "var(--amber)";
-      title = es ? "Estás más bajo/a de lo que quizá crees." : "You’re running lower than you might realize.";
-      body = es ? "No vacío — pero el indicador está bajando, y ese es justo el momento en que es más fácil ignorarlo. Unos minutos con el chequeo completo pueden mostrarte dónde poner tu energía primero. No puedes servir de una taza que se vacía más rápido de lo que se llena." : "Not empty — but the gauge is dropping, and that’s exactly when it’s easiest to ignore. A few minutes with the full check-in can show you where to put your energy first. You can’t pour from a cup that’s draining faster than it fills.";
-    } else {
-      band = "empty"; accent = "var(--red)";
-      title = es ? "Estas son señales reales de agotamiento — del tipo que vale la pena escuchar." : "These are real signs of depletion — the kind worth listening to.";
-      body = es ? "Este es el estado del que trata toda la idea: desde aquí no puedes sostener a nadie. Por favor, sé amable contigo hoy y considera hablar con alguien de confianza. Si cargas con algo pesado, en EE.\xA0UU. puedes llamar o enviar un mensaje al <strong>988</strong> a cualquier hora. El chequeo completo puede ayudarte a nombrar por dónde empezar." : "This is the state the whole idea is about: you can’t co-regulate anyone from here. Please be gentle with yourself today, and consider talking with someone you trust. If you’re carrying something heavy, in the U.S. you can call or text <strong>988</strong> any time. The full check-in can help you name where to start.";
-    }
+    var band, accent;
+    if (total <= 3) { band = "ok"; accent = "var(--green)"; }
+    else if (total <= 7) { band = "low"; accent = "var(--amber)"; }
+    else { band = "empty"; accent = "var(--red)"; }
+    var _taud = (typeof window !== "undefined" && window.aogTankAudience) || "adult";
+    var _rmap = (typeof AOG_TANK_RESULT !== "undefined") ? (AOG_TANK_RESULT[_taud] || AOG_TANK_RESULT.adult) : null;
+    var _rb = (_rmap && _rmap[band]) ? _rmap[band][es ? "es" : "en"] : null;
+    var title = _rb ? _rb.title : "";
+    var body  = _rb ? _rb.body  : "";
 
     /* fuel gauge: 0 depletion = full tank, 12 = empty */
     var fullness = Math.round((12 - total) / 12 * 100);
@@ -10662,6 +10667,121 @@ window.addEventListener("load", function () {
 
   if (document.readyState !== "loading") { init(); }
   else { window.addEventListener("load", init); }
+})();
+
+/* 60-second read — audience-aware wording (Child / Teen / Adult).
+   Rewords the intro + four questions on #heroTank to fit who's taking it. The
+   toggle's own button labels stay bilingual via the existing ages_* i18n keys;
+   only the audience-varied copy here is driven by aogRenderTankCopy(), which is
+   also called from setLang() so language switches keep the right wording.
+   NOTE: child/teen wording below is a first draft — refine to taste. */
+var AOG_TANK_COPY = {
+  adult: {
+    p:  { en: "Burnout\u2019s clearest signal is energy, not attitude. Four quick reads on your tank \u2014 private, instant, and saved nowhere. This isn\u2019t a clinical burnout score; it\u2019s a quick mirror. If it rings true, the full check-in goes deeper.", es: "La se\u00f1al m\u00e1s clara del agotamiento es la energ\u00eda, no la actitud. Cuatro lecturas r\u00e1pidas de tu tanque \u2014 privadas, instant\u00e1neas y que no se guardan en ning\u00fan lado. Esto no es un puntaje cl\u00ednico de agotamiento; es un espejo r\u00e1pido. Si te resuena, el chequeo completo de abajo profundiza m\u00e1s." },
+    q1: { en: "By the end of most days, I feel used up \u2014 like there\u2019s little left to give.", es: "Al final de la mayor\u00eda de los d\u00edas, me siento agotado/a \u2014 como si quedara poco para dar." },
+    q2: { en: "I wake up already tired at the thought of the day ahead.", es: "Me despierto ya cansado/a de solo pensar en el d\u00eda que viene." },
+    q3: { en: "Even when I rest, I don\u2019t really feel refilled.", es: "Incluso cuando descanso, no me siento realmente recargado/a." },
+    q4: { en: "Lately I feel like I\u2019m just getting through the day without really noticing it \u2014 like my mind is somewhere else.", es: "\u00daltimamente siento que solo paso el d\u00eda sin darme cuenta de verdad \u2014 como si mi mente estuviera en otra parte." }
+  },
+  teen: {
+    p:  { en: "How full is your tank lately? Four quick reads \u2014 private, instant, and saved nowhere. There are no right answers; it\u2019s just a way to notice how you\u2019ve been.", es: "\u00bfQu\u00e9 tan lleno est\u00e1 tu tanque \u00faltimamente? Cuatro lecturas r\u00e1pidas \u2014 privadas, instant\u00e1neas y que no se guardan. No hay respuestas correctas; es solo una forma de notar c\u00f3mo has estado." },
+    q1: { en: "By the end of most days, I feel wiped out \u2014 like I\u2019ve got nothing left.", es: "Al final de la mayor\u00eda de los d\u00edas, me siento agotado/a \u2014 como si no me quedara nada." },
+    q2: { en: "I wake up already tired just thinking about the day ahead.", es: "Me despierto ya cansado/a de solo pensar en el d\u00eda que viene." },
+    q3: { en: "Even when I get downtime, I don\u2019t really feel recharged.", es: "Incluso cuando tengo tiempo libre, no me siento realmente recargado/a." },
+    q4: { en: "Lately I feel like I\u2019m just going through the motions \u2014 like my head is somewhere else.", es: "\u00daltimamente siento que solo hago las cosas en autom\u00e1tico \u2014 como si mi mente estuviera en otra parte." }
+  },
+  child: {
+    p:  { en: "How full is your tank today? Pick what feels true for you. There are no wrong answers \u2014 it just helps you notice how you feel.", es: "\u00bfQu\u00e9 tan lleno est\u00e1 tu tanque hoy? Elige lo que sientas verdadero para ti. No hay respuestas incorrectas \u2014 solo te ayuda a notar c\u00f3mo te sientes." },
+    q1: { en: "By the end of the day, I feel really tired \u2014 like my energy is all used up.", es: "Al final del d\u00eda, me siento muy cansado/a \u2014 como si se me acabara toda la energ\u00eda." },
+    q2: { en: "When I wake up, I already feel tired about the day.", es: "Cuando me despierto, ya me siento cansado/a por el d\u00eda." },
+    q3: { en: "Even after I rest, I still feel tired.", es: "Incluso despu\u00e9s de descansar, sigo sinti\u00e9ndome cansado/a." },
+    q4: { en: "Lately my mind feels far away, like I\u2019m not really here.", es: "\u00daltimamente mi mente se siente lejos, como si no estuviera aqu\u00ed del todo." }
+  }
+};
+function aogRenderTankCopy() {
+  var root = document.getElementById("heroTank");
+  if (!root) return;
+  var aud = window.aogTankAudience || "adult";
+  if (!AOG_TANK_COPY[aud]) aud = "adult";
+  var L = (typeof lang !== "undefined" && lang === "es") ? "es" : "en";
+  var c = AOG_TANK_COPY[aud];
+  var intro = root.querySelector(".tk-intro");
+  if (intro) intro.textContent = c.p[L];
+  var qs = root.querySelectorAll(".tk-q");
+  var keys = ["q1", "q2", "q3", "q4"];
+  for (var i = 0; i < qs.length && i < keys.length; i++) {
+    if (c[keys[i]]) qs[i].textContent = c[keys[i]][L];
+  }
+  var btns = document.querySelectorAll("#tankAgesToggle .ages-btn");
+  for (var j = 0; j < btns.length; j++) {
+    var on = btns[j].getAttribute("data-taud") === aud;
+    btns[j].classList.toggle("active", on);
+    btns[j].setAttribute("aria-pressed", on ? "true" : "false");
+  }
+  if (typeof aogStabilizeTank === "function") { try { aogStabilizeTank(); } catch (e) {} }
+}
+/* Audience-specific RESULT copy for the 60-second read. Adult = original wording;
+   child/teen are first drafts to refine. Read via window.aogTankAudience in show(). */
+var AOG_TANK_RESULT = {
+  adult: {
+    ok:    { en: { title: "Your tank looks reasonably full right now.", body: "That’s worth noticing and protecting. The full check-in is still a good habit — it catches the small things before they become the big ones." }, es: { title: "Tu tanque se ve razonablemente lleno por ahora.", body: "Vale la pena notarlo y protegerlo. El chequeo completo sigue siendo un buen hábito — detecta las cosas pequeñas antes de que se vuelvan grandes." } },
+    low:   { en: { title: "You’re running lower than you might realize.", body: "Not empty — but the gauge is dropping, and that’s exactly when it’s easiest to ignore. A few minutes with the full check-in can show you where to put your energy first. You can’t pour from a cup that’s draining faster than it fills." }, es: { title: "Estás más bajo/a de lo que quizá crees.", body: "No vacío — pero el indicador está bajando, y ese es justo el momento en que es más fácil ignorarlo. Unos minutos con el chequeo completo pueden mostrarte dónde poner tu energía primero. No puedes servir de una taza que se vacía más rápido de lo que se llena." } },
+    empty: { en: { title: "These are real signs of depletion — the kind worth listening to.", body: "This is the state the whole idea is about: you can’t co-regulate anyone from here. Please be gentle with yourself today, and consider talking with someone you trust. If you’re carrying something heavy, in the U.S. you can call or text <strong>988</strong> any time. The full check-in can help you name where to start." }, es: { title: "Estas son señales reales de agotamiento — del tipo que vale la pena escuchar.", body: "Este es el estado del que trata toda la idea: desde aquí no puedes sostener a nadie. Por favor, sé amable contigo hoy y considera hablar con alguien de confianza. Si cargas con algo pesado, en EE. UU. puedes llamar o enviar un mensaje al <strong>988</strong> a cualquier hora. El chequeo completo puede ayudarte a nombrar por dónde empezar." } }
+  },
+  teen: {
+    ok:    { en: { title: "Your tank’s looking pretty full right now.", body: "That’s worth noticing — and protecting. Checking in like this every so often helps you catch the small stuff before it piles up." }, es: { title: "Tu tanque se ve bastante lleno ahora mismo.", body: "Vale la pena notarlo — y protegerlo. Hacer un chequeo así de vez en cuando te ayuda a detectar las cosas pequeñas antes de que se acumulen." } },
+    low:   { en: { title: "You’re running lower than you might realize.", body: "Not empty — but the needle’s dropping, and that’s exactly when it’s easiest to ignore. A few minutes with the full check-in can help you figure out where to put your energy first. It’s hard to keep giving from a tank that’s running low." }, es: { title: "Estás más bajo/a de lo que quizá crees.", body: "No vacío — pero la aguja está bajando, y ese es justo el momento en que es más fácil ignorarlo. Unos minutos con el chequeo completo pueden ayudarte a ver dónde poner tu energía primero. Es difícil seguir dando desde un tanque que está bajo." } },
+    empty: { en: { title: "These are real signs you’re running on empty — and that’s worth listening to.", body: "Running this low makes everything harder, and you don’t have to handle it alone. Please be kind to yourself today, and think about talking to someone you trust — a parent, a teacher, or a counselor. If things feel like too much, in the U.S. you can call or text <strong>988</strong> any time, day or night. The full check-in can help you name where to start." }, es: { title: "Estas son señales reales de que estás al límite — y vale la pena escucharlas.", body: "Estar tan bajo/a hace que todo sea más difícil, y no tienes que enfrentarlo solo/a. Por favor, sé amable contigo hoy y piensa en hablar con alguien de confianza — un padre, un maestro o un consejero. Si sientes que es demasiado, en EE. UU. puedes llamar o enviar un mensaje al <strong>988</strong> a cualquier hora, de día o de noche. El chequeo completo puede ayudarte a nombrar por dónde empezar." } }
+  },
+  child: {
+    ok:    { en: { title: "Your tank looks pretty full today!", body: "That’s great — and worth taking care of. Checking in like this helps you notice how you feel. Keep it up!" }, es: { title: "¡Tu tanque se ve bastante lleno hoy!", body: "¡Qué bien! — y vale la pena cuidarlo. Hacer un chequeo así te ayuda a notar cómo te sientes. ¡Sigue así!" } },
+    low:   { en: { title: "Your tank is getting a little low.", body: "That’s okay — everybody runs low sometimes. It can help to slow down, rest, and tell a grown-up you trust how you’ve been feeling." }, es: { title: "Tu tanque se está quedando un poco bajo.", body: "Está bien — todos nos quedamos bajos a veces. Puede ayudar ir más despacio, descansar y contarle a una persona adulta de confianza cómo te has sentido." } },
+    empty: { en: { title: "Your tank feels really empty right now.", body: "Feeling this tired and worn out is hard, and you don’t have to handle it by yourself. Please tell a grown-up you trust — a parent, a teacher, or a counselor — how you’re feeling. They can help." }, es: { title: "Tu tanque se siente muy vacío ahora mismo.", body: "Sentirse tan cansado/a y agotado/a es difícil, y no tienes que enfrentarlo solo/a. Por favor, cuéntale a una persona adulta de confianza — un papá o mamá, un maestro o un consejero — cómo te sientes. Ellos pueden ayudarte." } }
+  }
+};
+/* Keep the tank from jumping when the audience changes: reserve the tallest
+   wording height per row across all three audiences (re-measured on resize). */
+function _aogTankMaxHeight(el, texts) {
+  var w = el.offsetWidth; if (!w) return;
+  var probe = document.createElement(el.tagName);
+  probe.className = el.className;
+  probe.style.cssText = "position:absolute;left:-9999px;top:0;visibility:hidden;box-sizing:border-box;min-height:0;width:" + w + "px;";
+  (el.parentNode || document.body).appendChild(probe);
+  var max = 0;
+  for (var i = 0; i < texts.length; i++) { probe.textContent = texts[i]; if (probe.offsetHeight > max) max = probe.offsetHeight; }
+  if (probe.parentNode) probe.parentNode.removeChild(probe);
+  if (max > 0) el.style.minHeight = max + "px";
+}
+function aogStabilizeTank() {
+  var root = document.getElementById("heroTank");
+  if (!root || typeof AOG_TANK_COPY === "undefined") return;
+  var L = (typeof lang !== "undefined" && lang === "es") ? "es" : "en";
+  var auds = ["child", "teen", "adult"];
+  var intro = root.querySelector(".tk-intro");
+  if (intro) _aogTankMaxHeight(intro, auds.map(function (a) { return AOG_TANK_COPY[a].p[L]; }));
+  var qs = root.querySelectorAll(".tk-q");
+  var keys = ["q1", "q2", "q3", "q4"];
+  for (var i = 0; i < qs.length && i < keys.length; i++) {
+    (function (el, k) { _aogTankMaxHeight(el, auds.map(function (a) { return AOG_TANK_COPY[a][k][L]; })); })(qs[i], keys[i]);
+  }
+}
+(function () {
+  var t;
+  window.addEventListener("resize", function () { clearTimeout(t); t = setTimeout(function () { if (typeof aogStabilizeTank === "function") aogStabilizeTank(); }, 150); });
+})();
+function aogSetTankAudience(a) {
+  if (!AOG_TANK_COPY[a]) a = "adult";
+  window.aogTankAudience = a;
+  try { localStorage.setItem("aog.tank.audience", a); } catch (e) {}
+  aogRenderTankCopy();
+}
+(function () {
+  try { window.aogTankAudience = localStorage.getItem("aog.tank.audience") || "adult"; }
+  catch (e) { window.aogTankAudience = "adult"; }
+  if (!AOG_TANK_COPY[window.aogTankAudience]) window.aogTankAudience = "adult";
+  function _initTankCopy() { aogRenderTankCopy(); }
+  if (document.readyState !== "loading") { _initTankCopy(); }
+  else { window.addEventListener("load", _initTankCopy); }
 })();
 
 function openWorkplace() {
@@ -12209,6 +12329,7 @@ function buildHomeReport(_0x196b68, _0x3d8f48) {
   return _0x349b7c;
 }
 function renderMyResults() {
+  window._aogAudUserChose = false;
   const _0x525fe1 = window._lastResult || window._pendingRecord;
   const _0x1ef59c = document.getElementById("myResultsReport");
   if (!_0x1ef59c) {
@@ -16571,7 +16692,23 @@ var AOG_AGES_COPY = {
 window.aogResultsAudience = (function () {
   try { return localStorage.getItem("aog.results.audience") || "adult"; } catch (e) { return "adult"; }
 })();
+function aogAudienceFromRecord(rec) {
+  if (!rec) return "adult";
+  if (rec.population === "adult" || rec.grade === "Adult") return "adult";
+  var g = rec.grade;
+  var sgr = String(g == null ? "" : g).trim().toUpperCase();
+  if (sgr === "K" || sgr === "PK" || sgr === "TK" || sgr.indexOf("KIND") === 0) return "child";
+  var n = parseInt(sgr, 10);
+  if (!isNaN(n)) return n <= 5 ? "child" : "teen";
+  if (typeof aogGradeToBand === "function") {
+    var b = aogGradeToBand(g);
+    if (b === "K–2" || b === "3–5") return "child";
+    if (b) return "teen";
+  }
+  return "adult";
+}
 window.aogSetAudience = function (a) {
+  window._aogAudUserChose = true;
   window.aogResultsAudience = a;
   try { localStorage.setItem("aog.results.audience", a); } catch (e) {}
   var btns = document.querySelectorAll("#agesToggle .ages-btn");
@@ -16593,6 +16730,7 @@ window.aogRenderAgesPanel = function () {
   var nc = (rec.normComposite != null) ? rec.normComposite : null;
   var tier = rec.tier || (typeof tierFromNormComposite === "function" && nc != null ? tierFromNormComposite(nc) : "Some Risk");
   var band = tier === "Low Risk" ? "green" : (tier === "High Risk" ? "red" : "amber");
+  if (!window._aogAudUserChose && typeof aogAudienceFromRecord === "function") { window.aogResultsAudience = aogAudienceFromRecord(rec); }
   var aud = window.aogResultsAudience || "adult";
   /* reflect the active button (covers first render + language switches) */
   var btns = document.querySelectorAll("#agesToggle .ages-btn");
