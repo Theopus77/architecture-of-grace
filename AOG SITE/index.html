@@ -3179,6 +3179,9 @@ function toggleTheme() {
     <div class="fw-tabs" role="group" aria-label="Explore further">
       <button type="button" class="fw-tab" aria-expanded="false" aria-controls="fw-panel-difference" onclick="aogFwPanel(this,'difference')" data-i18n="fw_tab_difference">The Difference</button>
       <button type="button" class="fw-tab" aria-expanded="false" aria-controls="fw-panel-framework" onclick="aogFwPanel(this,'framework')" data-i18n="fw_tab_framework">The Framework</button>
+      <button type="button" class="fw-tab" aria-expanded="false" aria-controls="fw-panel-educators" onclick="aogFwPanel(this,'educators')" data-i18n="fw_tab_educators">For Educators</button>
+      <button type="button" class="fw-tab" aria-expanded="false" aria-controls="fw-panel-admin" onclick="aogFwPanel(this,'admin')" data-i18n="fw_tab_admin">For Administration</button>
+      <button type="button" class="fw-tab" aria-expanded="false" aria-controls="fw-panel-workplace" onclick="aogFwPanel(this,'workplace')" data-i18n="fw_tab_workplace">For the Workplace</button>
       <button type="button" class="fw-tab" aria-expanded="false" aria-controls="fw-panel-story" onclick="aogFwPanel(this,'story')" data-i18n="fw_tab_story">The Story</button>
     </div>
 
@@ -3303,6 +3306,30 @@ function toggleTheme() {
           <p data-i18n="fw_who_ia_d">A quiet practice for anyone choosing to grow on their own terms. A structured moment to pause, reflect, and extend a little grace inward — no classroom or program required.</p>
         </div>
       </div>
+    </div>
+    </div>
+
+    <div class="fw-panel" id="fw-panel-educators" hidden>
+    <div class="fw-sec">
+      <h2 class="fw-h" data-i18n="fw_ed_h">For Educators</h2>
+      <p class="fw-sub" data-i18n="fw_ed_p">The classroom view of the framework: the Universal Check-In, the lesson-by-lesson curriculum, anchor charts, and conversation guides &mdash; with a private Guide &amp; Library to explore everything before you teach it.</p>
+      <button type="button" class="btn" style="margin-top:6px;" onclick="if(typeof openGuide==='function')openGuide();"><span data-i18n="fw_ed_cta">Open the Educator Guide &amp; Library</span> <span class="btn-arrow">&rarr;</span></button>
+    </div>
+    </div>
+
+    <div class="fw-panel" id="fw-panel-admin" hidden>
+    <div class="fw-sec">
+      <h2 class="fw-h" data-i18n="fw_ad_h">For Administration</h2>
+      <p class="fw-sub" data-i18n="fw_ad_p">For school and district leaders: de-identified, class- and school-level trends for MTSS &mdash; never individual scores &mdash; alongside licensing, privacy, and rollout details.</p>
+      <button type="button" class="btn" style="margin-top:6px;" onclick="if(typeof openAdmin==='function')openAdmin();"><span data-i18n="fw_ad_cta">Open the Administration view</span> <span class="btn-arrow">&rarr;</span></button>
+    </div>
+    </div>
+
+    <div class="fw-panel" id="fw-panel-workplace" hidden>
+    <div class="fw-sec">
+      <h2 class="fw-h" data-i18n="fw_wk_h">For the Workplace</h2>
+      <p class="fw-sub" data-i18n="fw_wk_p">The same framework, voiced for the adults who hold everyone else &mdash; educators, nurses, leaders, caregivers. A private check-in and a 60-second burnout read, with team practices that need no extra meeting.</p>
+      <button type="button" class="btn" style="margin-top:6px;" onclick="if(typeof openWorkplace==='function')openWorkplace();"><span data-i18n="fw_wk_cta">Open the Workplace view</span> <span class="btn-arrow">&rarr;</span></button>
     </div>
     </div>
 
@@ -7791,6 +7818,18 @@ const I18N_UI = {
   fw_tab_difference: { en: "The Difference", es: "La diferencia" },
   fw_tab_framework: { en: "The Framework", es: "El marco" },
   fw_tab_story: { en: "The Story", es: "La historia" },
+  fw_tab_educators: { en: "For Educators", es: "Para educadores" },
+  fw_tab_admin: { en: "For Administration", es: "Para administraci\u00f3n" },
+  fw_tab_workplace: { en: "For the Workplace", es: "Para el trabajo" },
+  fw_ed_h: { en: "For Educators", es: "Para educadores" },
+  fw_ed_p: { en: "The classroom view of the framework: the Universal Check-In, the lesson-by-lesson curriculum, anchor charts, and conversation guides \u2014 with a private Guide & Library to explore everything before you teach it.", es: "La vista del marco para el aula: el Chequeo Universal, el curr\u00edculo lecci\u00f3n por lecci\u00f3n, los anchor charts y las gu\u00edas de conversaci\u00f3n \u2014 con una Gu\u00eda y Biblioteca privada para explorar todo antes de ense\u00f1arlo." },
+  fw_ed_cta: { en: "Open the Educator Guide & Library", es: "Abrir la Gu\u00eda y Biblioteca del educador" },
+  fw_ad_h: { en: "For Administration", es: "Para administraci\u00f3n" },
+  fw_ad_p: { en: "For school and district leaders: de-identified, class- and school-level trends for MTSS \u2014 never individual scores \u2014 alongside licensing, privacy, and rollout details.", es: "Para l\u00edderes de escuelas y distritos: tendencias sin identificaci\u00f3n a nivel de clase y de escuela para MTSS \u2014 nunca puntajes individuales \u2014 junto con detalles de licencias, privacidad e implementaci\u00f3n." },
+  fw_ad_cta: { en: "Open the Administration view", es: "Abrir la vista de administraci\u00f3n" },
+  fw_wk_h: { en: "For the Workplace", es: "Para el trabajo" },
+  fw_wk_p: { en: "The same framework, voiced for the adults who hold everyone else \u2014 educators, nurses, leaders, caregivers. A private check-in and a 60-second burnout read, with team practices that need no extra meeting.", es: "El mismo marco, expresado para los adultos que sostienen a los dem\u00e1s \u2014 educadores, enfermeros, l\u00edderes, cuidadores. Un chequeo privado y una lectura de agotamiento de 60 segundos, con pr\u00e1cticas de equipo que no requieren otra reuni\u00f3n." },
+  fw_wk_cta: { en: "Open the Workplace view", es: "Abrir la vista del trabajo" },
   fw_intro: {
     en: "<p class='fw-lead'>People are often measured long before they are understood.</p><p>As a special educator, I spent years working alongside students, families, educators, and caregivers. I saw remarkable people carrying the weight of expectations, labels, mistakes, and the constant pressure to perform. Everyone seemed to be asking how they were doing. Far fewer were asking who they were becoming.</p><p>Architecture of Grace grew from a different belief.</p><p class='fw-ask'>Growth is strongest when it begins with identity rather than achievement, self-compassion rather than shame, forgiveness rather than judgment, and grace rather than performance.</p><p>The framework was created to help people reflect honestly, strengthen relationships, and engage in meaningful conversations about growth. It is not a behavior program, a diagnosis, or a scorecard. It is a practical way to better understand ourselves and one another.</p><p>Today, Architecture of Grace serves students, families, educators, caregivers, teams, and independent adults through reflection tools, conversation guides, and resources designed to foster understanding and connection.</p><p>The Universal Check-In is one expression of this work.</p><p class='fw-mission-lead'>The mission is larger:</p><p class='fw-ask'>To create spaces where people are known before they are measured, understood before they are evaluated, and supported as they grow.</p><p class='fw-close-line'>Because lasting growth begins not with performance, but with grace.</p>",
     es: "<p class='fw-lead'>A las personas a menudo se las mide mucho antes de comprenderlas.</p><p>Como educador especial, pasé años trabajando junto a estudiantes, familias, educadores y cuidadores. Vi a personas admirables cargando el peso de las expectativas, las etiquetas, los errores y la presión constante de rendir. Todos parecían preguntar cómo estaban. Muy pocos preguntaban en quién se estaban convirtiendo.</p><p>Architecture of Grace nació de una creencia distinta.</p><p class='fw-ask'>El crecimiento es más fuerte cuando comienza con la identidad en lugar del logro, la autocompasión en lugar de la vergüenza, el perdón en lugar del juicio y la gracia en lugar del rendimiento.</p><p>El marco fue creado para ayudar a las personas a reflexionar con honestidad, fortalecer sus relaciones y mantener conversaciones significativas sobre el crecimiento. No es un programa de conducta, un diagnóstico ni una boleta de calificaciones. Es una forma práctica de comprendernos mejor a nosotros mismos y entre nosotros.</p><p>Hoy, Architecture of Grace acompaña a estudiantes, familias, educadores, cuidadores, equipos y adultos independientes con herramientas de reflexión, guías de conversación y recursos diseñados para fomentar la comprensión y la conexión.</p><p>El Chequeo Universal es una expresión de este trabajo.</p><p class='fw-mission-lead'>La misión es más amplia:</p><p class='fw-ask'>Crear espacios donde las personas sean conocidas antes de ser medidas, comprendidas antes de ser evaluadas, y acompañadas mientras crecen.</p><p class='fw-close-line'>Porque el crecimiento duradero no comienza con el rendimiento, sino con la gracia.</p>"
