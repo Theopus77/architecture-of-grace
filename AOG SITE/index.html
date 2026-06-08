@@ -2614,7 +2614,7 @@ function toggleTheme() {
     </div>
   </a>
   <div class="topbar-actions">
-    <a id="topbarBack" class="topbar-back" href="#" onclick="event.preventDefault(); resetToStart();" style="display:none;"><span class="tb-arr">&larr;</span> <span data-i18n="nav_back_start">Back to start</span></a>
+    <a id="topbarBack" class="topbar-back" href="#" onclick="event.preventDefault(); goBack();" style="display:none;"><span class="tb-arr">&larr;</span> <span data-i18n="nav_back">Back</span></a>
     <a class="topbar-store topbar-lib" href="#" onclick="event.preventDefault(); aogGoLibrary();" title="Free Library">
       <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
       <span>Library</span>
@@ -3172,7 +3172,7 @@ function toggleTheme() {
   </style>
 
   <div class="nav-row" style="justify-content:flex-start; margin-bottom:0; padding:0 24px;">
-    <button class="btn btn-ghost" onclick="resetToStart()"><span class="btn-arrow">&larr;</span> <span data-i18n="nav_back_start">Back to start</span></button>
+    <button class="btn btn-ghost" onclick="goBack()"><span class="btn-arrow">&larr;</span> <span data-i18n="nav_back">Back</span></button>
   </div>
 
   <div class="fw-hero">
@@ -3363,7 +3363,7 @@ function toggleTheme() {
 <section id="screen-choose" class="screen">
   <div class="container">
     <div class="nav-row" style="justify-content:flex-start; margin-bottom:2px;">
-      <button class="btn btn-ghost" onclick="resetToStart()"><span class="btn-arrow">&larr;</span> <span data-i18n="ch_back">Back to start</span></button>
+      <button class="btn btn-ghost" onclick="goBack()"><span class="btn-arrow">&larr;</span> <span data-i18n="nav_back">Back</span></button>
     </div>
     <div class="hero hero-center">
       <div class="eyebrow" data-i18n="ch_ey">The Check-In</div>
@@ -3431,7 +3431,7 @@ function toggleTheme() {
 <section id="screen-checkin" class="screen">
   <div class="container">
     <div class="nav-row" style="justify-content:flex-start; gap:10px; margin-bottom:2px;">
-      <button class="btn btn-ghost" onclick="startChoose()"><span class="btn-arrow">&larr;</span> <span data-i18n="nav_back">Back</span></button>
+      <button class="btn btn-ghost" onclick="goBack()"><span class="btn-arrow">&larr;</span> <span data-i18n="nav_back">Back</span></button>
       <button class="btn btn-ghost" onclick="resetToStart()" data-i18n="nav_back_start">Back to start</button>
     </div>
 <div id="checkin-funnel">
@@ -3549,7 +3549,7 @@ function toggleTheme() {
   </style>
   <div class="container">
     <div class="nav-row" style="justify-content:flex-start; gap:10px; margin-bottom:2px;">
-      <button class="btn btn-ghost" onclick="startChoose()"><span class="btn-arrow">&larr;</span> <span data-i18n="nav_back">Back</span></button>
+      <button class="btn btn-ghost" onclick="goBack()"><span class="btn-arrow">&larr;</span> <span data-i18n="nav_back">Back</span></button>
       <button class="btn btn-ghost" onclick="resetToStart()" data-i18n="nav_back_start">Back to start</button>
     </div>
     <div class="hero hero-center">
@@ -3692,7 +3692,7 @@ function toggleTheme() {
   </style>
   <div class="container">
     <div class="nav-row" style="justify-content:flex-start; gap:10px; margin-bottom:2px;">
-      <button class="btn btn-ghost" onclick="resetToStart()"><span class="btn-arrow">&larr;</span> <span data-i18n="nav_back_start">Back to start</span></button>
+      <button class="btn btn-ghost" onclick="goBack()"><span class="btn-arrow">&larr;</span> <span data-i18n="nav_back">Back</span></button>
     </div>
 
     <div class="hero hero-center wp-wrap">
@@ -4378,7 +4378,7 @@ function toggleTheme() {
     <!-- ============ ABOUT (its own page) ============ -->
     <section id="screen-about" class="screen">
       <div class="container" style="padding-top:22px;">
-        <button class="btn btn-ghost" onclick="resetToStart()"><span class="btn-arrow">&larr;</span> <span data-i18n="ch_back">Back to start</span></button>
+        <button class="btn btn-ghost" onclick="goBack()"><span class="btn-arrow">&larr;</span> <span data-i18n="nav_back">Back</span></button>
         <div class="eyebrow" style="color:var(--gold); text-align:center; margin-top:18px;" data-i18n="aog_about_tab">About</div>
         <h1 class="about-page-title">Architecture of Grace</h1>
       <style>
@@ -4555,7 +4555,7 @@ function toggleTheme() {
           <h1 class="guide-hero-title" data-i18n="g_eco_title">One Living Ecosystem</h1>
           <p class="guide-hero-lede" data-i18n-html="g_eco_lede">A curriculum becomes an <em>ecosystem</em> when it can teach, measure what it taught, and use what it learns to teach better. Hover any piece to see what it does &mdash; tap it to go there.</p>
         </div>
-        <button class="btn guide-hero-back" onclick="resetToStart()" data-i18n="g_back">Back to start</button>
+        <button class="btn guide-hero-back" onclick="goBack()" data-i18n="nav_back">Back</button>
       </div>
     </div>
 
@@ -11219,12 +11219,39 @@ function aogSetHash(_0xcb963) {
     // browser Back button returns to the previous screen; same-screen updates just
     // replace, to avoid piling up duplicate entries.
     if ((_0xcb963 || "") !== _aogCur) {
-      history.pushState(null, "", _aogTarget);
+      // Item 1: stamp each pushed entry with an incrementing in-app index so
+      // goBack() can tell whether there is a prior in-app step to return to
+      // (vs. a deep link / first load where Back would leave the site).
+      window.__aogIdx = (window.__aogIdx || 0) + 1;
+      history.pushState({ aogIdx: window.__aogIdx }, "", _aogTarget);
     } else {
-      history.replaceState(null, "", _aogTarget);
+      var _aogKeep = (history.state && history.state.aogIdx) || window.__aogIdx || 0;
+      history.replaceState({ aogIdx: _aogKeep }, "", _aogTarget);
     }
   } catch (_0x2cf689) {}
 }
+/* Item 1: context-aware one-step Back. Distinct from resetToStart() (which is a
+   full, destructive "start over"). goBack() returns the user exactly one step
+   along their actual browsing path by leaning on the browser history that
+   aogSetHash() already maintains, so in-app Back and the browser Back button
+   stay consistent. It never wipes in-progress answers. If there is no in-app
+   history entry to return to (deep link or very first screen), it falls back to
+   the welcome screen without clearing anything. */
+function goBack() {
+  try {
+    var _st = history.state;
+    if (_st && _st.aogIdx && _st.aogIdx > 0) {
+      window.__aogRestoreScroll = true;   // restore prior scroll on the screen we return to
+      history.back();                     // popstate -> aogRouteFromHash routes to the prior screen
+      return;
+    }
+  } catch (_aogBE) {}
+  // No prior in-app entry: go home, but non-destructively (no resetToStart()).
+  try { window.__aogRestoreScroll = true; } catch (_e) {}
+  if (typeof showScreen === "function") showScreen("screen-welcome");
+  if (typeof aogSetHash === "function") aogSetHash("");
+}
+try { window.goBack = goBack; } catch (_aogGB) {}
 function aogRouteFromHash() {
   const _0xaa0d73 = (location.hash || "").replace(/^#/, "").trim().toLowerCase();
   if (!_0xaa0d73) {
