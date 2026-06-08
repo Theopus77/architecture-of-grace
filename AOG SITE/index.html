@@ -11739,9 +11739,9 @@ function aogTrendGrid(_records) {
   if (!wins.length) return '<div class="dist-segment" style="flex:1;background:var(--rule-soft);color:var(--ink-faint);">' + DT("No data", "Sin datos") + "</div>";
   var rows = wins.map(function (w) {
     var c = byWin[w], seg = "";
-    if (c.d > 0) seg += '<div class="dist-segment dist-red" style="flex:' + c.d + '" title="' + DT("Needs support", "Necesita apoyo") + '">' + c.d + "</div>";
-    if (c.a > 0) seg += '<div class="dist-segment dist-amber" style="flex:' + c.a + '" title="' + DT("Worth a check-in", "Vale un chequeo") + '">' + c.a + "</div>";
     if (c.g > 0) seg += '<div class="dist-segment dist-green" style="flex:' + c.g + '" title="' + DT("Doing well", "Va bien") + '">' + c.g + "</div>";
+    if (c.a > 0) seg += '<div class="dist-segment dist-amber" style="flex:' + c.a + '" title="' + DT("Worth a check-in", "Vale un chequeo") + '">' + c.a + "</div>";
+    if (c.d > 0) seg += '<div class="dist-segment dist-red" style="flex:' + c.d + '" title="' + DT("Needs support", "Necesita apoyo") + '">' + c.d + "</div>";
     return '<div class="trend-row"><div class="trend-win">' + escapeHtml(winLabel(w) || w) + '</div><div class="trend-bar">' + seg + '</div><div class="trend-n">' + c.n + "</div></div>";
   }).join("");
   return '<div class="trend-grid">' + rows + "</div>";
@@ -11946,14 +11946,14 @@ function renderOverview() {
     _0x5b79f9.innerHTML = "<div class=\"dist-segment\" style=\"flex:1;background:var(--rule-soft);color:var(--ink-faint);\">" + DT("No data", "Sin datos") + "</div>";
   } else {
     let _0x3ffa56 = "";
-    if (_0xa9c713 > 0) {
-      _0x3ffa56 += "<div class=\"dist-segment dist-red\" style=\"flex:" + _0xa9c713 + "\" title=\"" + DT("Needs support", "Necesita apoyo") + "\">" + _0xa9c713 + "</div>";
+    if (_0x379e0a > 0) {
+      _0x3ffa56 += "<div class=\"dist-segment dist-green\" style=\"flex:" + _0x379e0a + "\" title=\"" + DT("Doing well", "Va bien") + "\">" + _0x379e0a + "</div>";
     }
     if (_0x1b8b05 > 0) {
       _0x3ffa56 += "<div class=\"dist-segment dist-amber\" style=\"flex:" + _0x1b8b05 + "\" title=\"" + DT("Worth a check-in", "Vale un chequeo") + "\">" + _0x1b8b05 + "</div>";
     }
-    if (_0x379e0a > 0) {
-      _0x3ffa56 += "<div class=\"dist-segment dist-green\" style=\"flex:" + _0x379e0a + "\" title=\"" + DT("Doing well", "Va bien") + "\">" + _0x379e0a + "</div>";
+    if (_0xa9c713 > 0) {
+      _0x3ffa56 += "<div class=\"dist-segment dist-red\" style=\"flex:" + _0xa9c713 + "\" title=\"" + DT("Needs support", "Necesita apoyo") + "\">" + _0xa9c713 + "</div>";
     }
     _0x5b79f9.innerHTML = _0x3ffa56;
   }
@@ -12201,14 +12201,14 @@ function renderStudents() {
     _0xa13221 += " " + _0x40e09b(_0x3fdc40) + DT("% named no trusted adult — a good place to start as a class.", "% no nombró a ningún adulto de confianza — un buen punto de partida para la clase.");
   }
   let _0x4cbb93 = "";
-  if (_0x5063be > 0) {
-    _0x4cbb93 += "<div class=\"dist-segment dist-red\" style=\"flex:" + _0x5063be + "\" title=\"" + DT("Needs support", "Necesita apoyo") + "\">" + _0x40e09b(_0x5063be) + "%</div>";
+  if (_0x2c9652 > 0) {
+    _0x4cbb93 += "<div class=\"dist-segment dist-green\" style=\"flex:" + _0x2c9652 + "\" title=\"" + DT("Doing well", "Va bien") + "\">" + _0x40e09b(_0x2c9652) + "%</div>";
   }
   if (_0x1f35e4 > 0) {
     _0x4cbb93 += "<div class=\"dist-segment dist-amber\" style=\"flex:" + _0x1f35e4 + "\" title=\"" + DT("Worth a check-in", "Vale un chequeo") + "\">" + _0x40e09b(_0x1f35e4) + "%</div>";
   }
-  if (_0x2c9652 > 0) {
-    _0x4cbb93 += "<div class=\"dist-segment dist-green\" style=\"flex:" + _0x2c9652 + "\" title=\"" + DT("Doing well", "Va bien") + "\">" + _0x40e09b(_0x2c9652) + "%</div>";
+  if (_0x5063be > 0) {
+    _0x4cbb93 += "<div class=\"dist-segment dist-red\" style=\"flex:" + _0x5063be + "\" title=\"" + DT("Needs support", "Necesita apoyo") + "\">" + _0x40e09b(_0x5063be) + "%</div>";
   }
   const _0x4108ec = _0x2a6ef9.map(_0x139982 => {
     const _0x3dc6fa = _0x22a773(_0x139982.key);
