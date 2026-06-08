@@ -3911,7 +3911,7 @@ function toggleTheme() {
         <p data-i18n-html="ad_support">If you&rsquo;re carrying something heavy right now, you don&rsquo;t have to carry it alone. In the U.S. you can call or text <strong>988</strong> (the Suicide &amp; Crisis Lifeline), any time, day or night. Reaching out is a strong thing to do.</p>
       </div>
       <button class="btn" id="btnMyResults" style="display:none;" data-i18n-html="t_btn_results">See your results &rarr;</button>
-      <button class="btn" id="btnFamilyReturn" style="display:none;" onclick="(function(){var c=window._famReturn;window._famReturn=null;openFamily(c);})()">See progress &rarr;</button>
+      <button class="btn" id="btnFamilyReturn" style="display:none;" onclick="familyReturnFromThanks()">See progress &rarr;</button>
       <button class="btn" id="btnToClosing" data-i18n-html="t_btn">One more thing &rarr;</button>
     </div>
   </div>
@@ -5192,7 +5192,7 @@ function toggleTheme() {
       <div class="guide-section" id="guide-resindex">
         <div class="table-card" style="padding:28px 32px 32px;">
           <h3 class="serif" style="font-size:22px; color:var(--navy); margin-bottom:6px;" data-i18n="ri_h">Construct-to-Resource Index</h3>
-          <p style="font-size:14.5px; line-height:1.6; color:var(--ink-soft); margin-bottom:18px;" data-i18n-html="ri_intro">When a check-in flags a low domain or a specific item, find the matching construct below. Each one lists the exact lesson, anchor chart, and activity in every grade band &mdash; and now, under <strong>In the novels</strong>, the specific book and chapter where that same idea appears as story. (References are by chapter, which stay accurate across print and digital formats, rather than by page.) Both the Quick and Thorough check-ins measure the same items, so a result from either mode maps back to these same lessons, sections, and chapters.</p>
+          <p style="font-size:14.5px; line-height:1.6; color:var(--ink-soft); margin-bottom:18px;" data-i18n-html="ri_intro">When a check-in flags a low domain or a specific item, find the matching construct below. Each one points you to the exact lesson, anchor chart, and activity in every grade band &mdash; in both the School Curriculum and the matching Home Edition &mdash; and, under <strong>In the novels</strong>, the specific book and chapter where that same idea appears as story. (References are by chapter, which stay accurate across print and digital formats, rather than by page.) Both the Quick and Thorough check-ins measure the same items, so a result from either mode maps back to these same lessons, sections, and chapters.</p>
           <div class="ri-toolbar">
             <input type="text" id="riSearch" placeholder="Search: inner critic, overwhelm, repair, unsafe..." data-i18n-ph="ri_search_ph">
             <select id="riGrade">
@@ -8019,7 +8019,7 @@ const I18N_UI = {
     es: "Índice de constructos y recursos"
   },
   ri_intro: {
-    es: "Cuando un chequeo marca un dominio bajo o un ítem específico, busca el constructo correspondiente abajo. Cada uno indica la lección, la lámina de anclaje y la actividad exactas en cada nivel; y ahora, bajo <strong>En las novelas</strong>, el libro y el capítulo donde esa misma idea aparece como relato. (Las referencias son por capítulo, que se mantienen exactas entre los formatos impreso y digital, en lugar de por página.) Tanto el chequeo Quick como el Thorough miden los mismos ítems, así que un resultado de cualquiera de los dos remite a las mismas lecciones, secciones y capítulos."
+    es: "Cuando un chequeo marca un dominio bajo o un ítem específico, busca el constructo correspondiente abajo. Cada uno te lleva a la lección, la lámina de anclaje y la actividad exactas en cada nivel — tanto en el Plan de Estudios Escolar como en la Edición en Casa correspondiente — y, bajo <strong>En las novelas</strong>, el libro y el capítulo donde esa misma idea aparece como relato. (Las referencias son por capítulo, que se mantienen exactas entre los formatos impreso y digital, en lugar de por página.) Tanto el chequeo Quick como el Thorough miden los mismos ítems, así que un resultado de cualquiera de los dos remite a las mismas lecciones, secciones y capítulos."
   },
   ri_search_ph: {
     es: "Buscar: crítico interno, agobio, reparación, inseguro..."
@@ -10213,7 +10213,9 @@ document.addEventListener("DOMContentLoaded", () => {
   });
   $("#btnSkipClosing").addEventListener("click", async () => {
     await finalizeAndSave("");
-    if (population === "adult") {
+    if (window._famFlow || window._famReturn) {
+      familyReturnFromThanks();
+    } else if (population === "adult") {
       showMyResults();
     } else {
       resetToStart();
@@ -10225,6 +10227,8 @@ document.addEventListener("DOMContentLoaded", () => {
     if (_0xe8d5d2) {
       $("#farewellWord").textContent = decodeChoices(_0xe8d5d2, surveyLang);
       showScreen("screen-farewell");
+    } else if (window._famFlow || window._famReturn) {
+      familyReturnFromThanks();
     } else if (population === "adult") {
       showMyResults();
     } else {
@@ -10232,7 +10236,9 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
   $("#btnDone").addEventListener("click", () => {
-    if (population === "adult") {
+    if (window._famFlow || window._famReturn) {
+      familyReturnFromThanks();
+    } else if (population === "adult") {
       showMyResults();
     } else {
       resetToStart();
@@ -12684,6 +12690,23 @@ function familyRecordsFor(_0x1b1baa) {
   });
 }
 var _familySel = null;
+/* Fix: the "See progress" button on the thanks screen used to open Family Mode
+   without persisting the just-completed check-in. submitFinal() only stages the
+   record in window._pendingRecord; the actual save (and familyRosterAdd) happens
+   in finalizeAndSave(), which the family-return path skipped — so quick family
+   check-ins (which go straight to thanks with no closing/affirmation step) were
+   never stored, and Family progress showed no results. Persist first, then open. */
+async function familyReturnFromThanks() {
+  try {
+    if (window._pendingRecord && !window._lastResult && typeof finalizeAndSave === "function") {
+      await finalizeAndSave("");
+    }
+  } catch (_aogFR) {}
+  var _c = window._famReturn;
+  window._famReturn = null;
+  openFamily(_c);
+}
+try { window.familyReturnFromThanks = familyReturnFromThanks; } catch (_aogFRX) {}
 function openFamily(_0x18aeb2) {
   var _0x57a251 = familyAllChildren();
   _familySel = _0x18aeb2 || (_familySel && _0x57a251.some(function (_0x5cb845) {
@@ -13039,9 +13062,9 @@ function libFind(_0x73e531, _0x43ab14) {
   return _0x49f889.items.find(_0x43ab14) || null;
 }
 var DOMAIN_RES_CATS = {
-  A: ["Anchor Charts", "Worksheets & Activities"],
-  B: ["Worksheets & Activities", "Anchor Charts", "Scenario Cards"],
-  C: ["Scenario Cards", "Worksheets & Activities", "Anchor Charts"]
+  A: ["Anchor Charts", "Worksheets & Activities", "Home & Family Editions"],
+  B: ["Worksheets & Activities", "Anchor Charts", "Scenario Cards", "Home & Family Editions"],
+  C: ["Scenario Cards", "Worksheets & Activities", "Anchor Charts", "Home & Family Editions"]
 };
 function accessibilityLink() {
   return "<div class=\"rc-access\"><span class=\"rc-access-q\">" + DT("Prefer plain-language, visual-support versions?", "¿Prefieres versiones en lenguaje sencillo con apoyos visuales?") + "</span> <a class=\"rc-access-link\" href=\"#\" onclick=\"aogGoLibrary();return false;\">" + DT("Open the autism-adapted charts", "Abre las láminas adaptadas para el autismo") + " →</a></div>";
@@ -13171,7 +13194,7 @@ function resultResourceCards(_0x21278e, _0x35400d, _0x4565d8, _0xcf009e) {
   _0x272246 = _0x272246.slice(0, 4);
   var _0x30266e = _0x272246.map(function (_0x5cbd88) {
     var _0x1b78e1 = _0x5cbd88.it;
-    var _0x97d0f3 = "<a class=\"rc-go rc-locked\" href=\"#\" onclick=\"aogGoStore();return false;\">" + LOCK_SVG + DT("Available with a license", "Disponible con licencia") + "</a>";
+    var _0x97d0f3 = _0x1b78e1.url && _0x1b78e1.url.trim() ? "<a class=\"rc-go\" href=\"" + _0x1b78e1.url + "\" target=\"_blank\" rel=\"noopener\">↗ " + DT("Open — free", "Abrir — gratis") + "</a>" : "<a class=\"rc-go rc-locked\" href=\"#\" onclick=\"aogGoStore();return false;\">" + LOCK_SVG + DT("Available with a license", "Disponible con licencia") + "</a>";
     var _0x1d67bb = _0x4310ab && typeof LIB_CAT_ES !== "undefined" && LIB_CAT_ES[_0x5cbd88.cat] ? LIB_CAT_ES[_0x5cbd88.cat].cat : _0x5cbd88.cat;
     return "<div class=\"rc-card\"><div class=\"rc-kind\">" + libEsc(_0x1d67bb) + "</div><div class=\"rc-title\">" + libEsc(_0x1b78e1.title) + "</div>" + (_0x1b78e1.desc ? "<div class=\"rc-sub\">" + libEsc(_0x1b78e1.desc) + "</div>" : "") + _0x97d0f3 + "</div>";
   }).join("");
@@ -13776,7 +13799,7 @@ const RI_CONSTRUCTS = [{
       res: "“Guilt vs. Shame” + “When Self-Forgiveness Feels Impossible” (★★)"
     },
     3: {
-      loc: "U3·L1 (★★)",
+      loc: "U2·L6 (★★)",
       res: "“Rewriting the Script” — counselor on-site; somatic floor (D7/D8)"
     },
     4: {
@@ -13940,7 +13963,7 @@ const RI_CONSTRUCTS = [{
       res: "“Grace With Hard People” with “grace has limits” panel; tell-a-trusted-grown-up script"
     },
     2: {
-      loc: "U4·L5 + R&R Strand",
+      loc: "U3·L3 + U4 R&R Strand",
       res: "Hard vs. Unsafe Person pre-activity + “Boundaries from Strength” + “Forgiveness Is Not the Same as Trust” (★★)"
     },
     3: {
@@ -14438,6 +14461,9 @@ function riRender(_0x4f8a98, _0x4f89b6) {
         }
         _0x27c43b += "<div class=\"ri-book\"><div class=\"ri-chip\">" + (lang === "es" ? RI_GRADES[_0x3024b4].label.replace("Book", "Libro") : RI_GRADES[_0x3024b4].label) + "<span class=\"ri-chip-grade\">" + RI_GRADES[_0x3024b4].grade + "</span></div><div class=\"ri-res\"><span class=\"loc\">" + _0x5d5b54.loc + "</span> &mdash; <span class=\"res\">" + _0x5d5b54.res + "</span></div></div>";
       });
+      if (_0x27c43b) {
+        _0x27c43b = "<div class=\"ri-novels-label\">" + (lang === "es" ? "En el plan de estudios (Escolar y Edición en Casa)" : "In the School & Home Curriculum") + "</div>" + _0x27c43b;
+      }
       let _0x55af6d = "";
       const _0x1b614d = (RI_NOVELS[_0x14d5f7.items] || []).filter(_0x533a3f => _0x4f89b6 === "adult" ? _0x533a3f.b >= 3 : !_0x4f89b6 || String(_0x533a3f.b) === String(_0x4f89b6));
       if (_0x1b614d.length) {
