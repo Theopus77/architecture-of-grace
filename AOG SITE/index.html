@@ -3447,22 +3447,9 @@ function toggleTheme() {
     </div>
 <div class="pv-strip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg><span data-i18n="pv_strip_device">Your answers stay on this device unless your school turns on sync.</span><a href="#" onclick="event.preventDefault(); openPrivacy();" data-i18n="pv_strip_link">Privacy &amp; your data &rarr;</a></div>
 <p class="made-with" data-i18n="w_madewith">Some of these questions were shaped with the help of children &mdash; so the words would sound a little more like yours, and a little less like ours.</p>
-<!-- VIDEO SLOT (Student). To go live, replace the .vid-frame contents with an iframe, e.g.
-     <div class="vid-frame"><iframe src="https://www.youtube.com/embed/XXXX" allowfullscreen></iframe></div> -->
-<div class="vid-slot">
-  <div class="vid-frame">
-    <div class="vid-play"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg></div>
-    <span class="vid-soon" data-i18n="vid_soon">Video coming soon</span>
-  </div>
-  <div class="vid-cap"><div class="vt" data-i18n="vid_student_t">How the Student Check-In works</div><div class="vs" data-i18n="vid_student_s">A 2-minute walkthrough for students.</div></div>
-</div>
 <div class="form-section">
       <h2 data-i18n="w_about">About you</h2>
       <div class="ctx-block" id="ctxBlock">
-        <div class="ctx-toggle" id="ctxToggle" role="group" aria-label="Where this is being used">
-          <button type="button" class="ctx-opt" data-ctx="school" data-i18n="w_ctx_school">School</button>
-          <button type="button" class="ctx-opt" data-ctx="home" data-i18n="w_ctx_home">Home</button>
-        </div>
         <div class="ctx-note" id="ctxNote"></div>
       </div>
       <div class="form-grid">
@@ -3493,7 +3480,7 @@ function toggleTheme() {
         </div>
       </div>
     </div>
-<div class="section-head">
+<div class="section-head" id="modeChooseHead">
       <h2 data-i18n="w_choose">Choose how you want to take it</h2>
       <div class="small" data-i18n="w_choose_sub">Same 18 questions either way &mdash; take the quick version, or a more thorough one with short written reflections.</div>
     </div>
@@ -3569,14 +3556,6 @@ function toggleTheme() {
 
 <div class="pv-strip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg><span data-i18n="pv_strip_handled">See exactly how your answers are handled and where they go.</span><a href="#" onclick="event.preventDefault(); openPrivacy();" data-i18n="pv_strip_link">Privacy &amp; your data &rarr;</a></div>
 
-<!-- VIDEO SLOT (Adult). Swap .vid-frame contents for an <iframe> to go live. -->
-<div class="vid-slot">
-  <div class="vid-frame">
-    <div class="vid-play"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg></div>
-    <span class="vid-soon" data-i18n="vid_soon">Video coming soon</span>
-  </div>
-  <div class="vid-cap"><div class="vt" data-i18n="vid_adult_t">How the Adult Check-In works</div><div class="vs" data-i18n="vid_adult_s">A 2-minute walkthrough for grown-ups.</div></div>
-</div>
 
     <div class="form-section">
       <h2 data-i18n="ad_about">About you</h2>
@@ -10441,12 +10420,22 @@ function startCheckin() {
   if (_0x32595d) {
     _0x32595d.style.display = "";
   }
+  ["modeChooseHead", "modeGrid"].forEach(function (_aogMid) {
+    var _aogMel = document.getElementById(_aogMid);
+    if (_aogMel) {
+      _aogMel.style.display = "";
+    }
+  });
   var _0x4197c2 = document.getElementById("checkinEyebrow");
   if (_0x4197c2) {
     _0x4197c2.setAttribute("data-i18n", "w_screener_ey");
     _0x4197c2.textContent = typeof lang !== "undefined" && lang === "es" ? "Chequeo universal · K–12" : "Universal Check-In · K–12";
   }
   population = "k12";
+  context = "school";
+  if (typeof applyContext === "function") {
+    applyContext();
+  }
   showScreen("screen-checkin");
   if (typeof aogSetHash === "function") {
     aogSetHash("student");
@@ -12754,6 +12743,12 @@ function familyNewCheckin(_0x3f4c9b, _0x509aee) {
     _0x538699.classList.toggle("selected", _0x216287);
     _0x538699.setAttribute("aria-checked", _0x216287 ? "true" : "false");
   });
+  ["modeChooseHead", "modeGrid"].forEach(function (_aogMid) {
+    var _aogMel = document.getElementById(_aogMid);
+    if (_aogMel) {
+      _aogMel.style.display = "none";
+    }
+  });
   var _0x155562 = document.getElementById("studentId");
   if (_0x155562) {
     _0x155562.value = _0x3f4c9b || "";
@@ -13069,6 +13064,9 @@ var DOMAIN_RES_CATS = {
 function accessibilityLink() {
   return "<div class=\"rc-access\"><span class=\"rc-access-q\">" + DT("Prefer plain-language, visual-support versions?", "¿Prefieres versiones en lenguaje sencillo con apoyos visuales?") + "</span> <a class=\"rc-access-link\" href=\"#\" onclick=\"aogGoLibrary();return false;\">" + DT("Open the autism-adapted charts", "Abre las láminas adaptadas para el autismo") + " →</a></div>";
 }
+function resourceIndexLink() {
+  return "<div class=\"rc-access\"><span class=\"rc-access-q\">" + DT("Want the full map — every lesson, chart, and chapter for this idea, in the School Curriculum and the Home Edition?", "¿Quieres el mapa completo — cada lección, lámina y capítulo de esta idea, en el currículo escolar y la edición para el hogar?") + "</span> <a class=\"rc-access-link\" href=\"#\" onclick=\"openGuide('resindex');return false;\">" + DT("Open the full Resource Index", "Abre el Índice de Recursos completo") + " →</a></div>";
+}
 function youngerRefStrip(_0x44f841) {
   if (_0x44f841 <= 1) {
     return "";
@@ -13370,10 +13368,18 @@ function renderConversationGuide(_0x4f18c8, _0x5e1ad5) {
     }
   });
   if (!_0x40141e.length) {
+    var _aogLowDom = Object.entries({
+      A: _0x4f18c8.normA || 0,
+      B: _0x4f18c8.normB || 0,
+      C: _0x4f18c8.normC || 0
+    }).sort(function (_a, _b) {
+      return _a[1] - _b[1];
+    })[0][0];
+    var _aogExtras = resultResourceCards(_0x4f18c8, [], _aogLowDom, false) + resourceIndexLink();
     if (_0x5e1ad5) {
-      return "<div class=\"home-conversation\"><h4>" + DT("What to do next", "Qué hacer ahora") + "</h4><p>" + DT("You scored in the healthy range across every item. That doesn’t mean nothing is hard — it means the skills the curriculum teaches are showing up in you. Keep doing what you’re doing, and take this again next window to see your growth.", "Obtuviste puntajes en el rango saludable en cada ítem. Eso no significa que nada sea difícil — significa que las habilidades que enseña el currículo están apareciendo en ti. Sigue haciendo lo que haces, y vuelve a hacerlo el próximo período para ver tu progreso.") + "</p>" + accessibilityLink() + "</div>";
+      return "<div class=\"home-conversation\"><h4>" + DT("What to do next", "Qué hacer ahora") + "</h4><p>" + DT("You scored in the healthy range across every item. That doesn’t mean nothing is hard — it means the skills the curriculum teaches are showing up in you. Keep doing what you’re doing, and take this again next window to see your growth.", "Obtuviste puntajes en el rango saludable en cada ítem. Eso no significa que nada sea difícil — significa que las habilidades que enseña el currículo están apareciendo en ti. Sigue haciendo lo que haces, y vuelve a hacerlo el próximo período para ver tu progreso.") + "</p>" + _aogExtras + accessibilityLink() + "</div>";
     }
-    return "<div class=\"home-conversation\"><h4>" + DT("What to do next", "Qué hacer ahora") + "</h4><p>" + DT("This person scored in the healthy range across every item. That doesn’t mean nothing is hard — it means the skills the curriculum teaches are showing up. Keep doing what you’re doing. Re-screen in the next window to track growth.", "Esta persona obtuvo puntajes en el rango saludable en cada ítem. Eso no significa que nada sea difícil — significa que las habilidades que enseña el currículo están apareciendo. Sigue haciendo lo que haces. Vuelve a evaluar en el próximo período para seguir el progreso.") + "</p>" + accessibilityLink() + "</div>";
+    return "<div class=\"home-conversation\"><h4>" + DT("What to do next", "Qué hacer ahora") + "</h4><p>" + DT("This person scored in the healthy range across every item. That doesn’t mean nothing is hard — it means the skills the curriculum teaches are showing up. Keep doing what you’re doing. Re-screen in the next window to track growth.", "Esta persona obtuvo puntajes en el rango saludable en cada ítem. Eso no significa que nada sea difícil — significa que las habilidades que enseña el currículo están apareciendo. Sigue haciendo lo que haces. Vuelve a evaluar en el próximo período para seguir el progreso.") + "</p>" + _aogExtras + accessibilityLink() + "</div>";
   }
   const _0x16cb5c = _0x504790 ? PROMPTS_ADULT : PROMPTS;
   const _0x237ee2 = {};
@@ -13413,6 +13419,7 @@ function renderConversationGuide(_0x4f18c8, _0x5e1ad5) {
       _0x1280bd += "<div class=\"severity-block\">" + (_0x504790 ? DT("<strong>Trusted-person item flagged.</strong> This person answered that they don’t have someone they’d readily turn to. That matters at any age. The gentlest door: <em>If something was wrong, who would you actually reach out to?</em> — and then naming one real person. In the novels, asking for help is its own thread: <em>The Year We Looked Up</em> (Book 4, “The First Time I Asked,” Ch 10) and <em>The Year We Walked Out</em> (Book 5, Ch 13–15). If they’re carrying something heavy, the 988 Suicide & Crisis Lifeline (call or text) is there any time.", "<strong>Ítem de persona de confianza marcado.</strong> Esta persona respondió que no tiene a alguien a quien acudiría con facilidad. Eso importa a cualquier edad. La puerta más suave: <em>Si algo anduviera mal, ¿a quién acudirías de verdad?</em> — y luego nombrar a una persona real. En las novelas, pedir ayuda es su propio hilo: <em>The Year We Looked Up</em> (Libro 4, «The First Time I Asked», Cap. 10) y <em>The Year We Walked Out</em> (Libro 5, Cap. 13–15). Si está cargando algo pesado, la Línea 988 (llamar o enviar texto) está disponible a cualquier hora.") : DT("<strong>Trusted-adult item flagged.</strong> This person answered Never or Rarely/Sometimes to having a trusted adult. If this is a child, this is the most important conversation to have. Ask: <em>If something was wrong, who would you actually go to?</em> Then help them name one specific person and rehearse the approach.", "<strong>Ítem de adulto de confianza marcado.</strong> Esta persona respondió Nunca o Rara vez/A veces a tener un adulto de confianza. Si es un niño, esta es la conversación más importante que hay que tener. Pregunta: <em>Si algo anduviera mal, ¿a quién acudirías de verdad?</em> Luego ayúdale a nombrar a una persona específica y a ensayar cómo acercarse.")) + "</div>";
     }
   }
+  _0x1280bd += resourceIndexLink();
   _0x1280bd += accessibilityLink();
   _0x1280bd += "</div>";
   return _0x1280bd;
@@ -14289,7 +14296,31 @@ function homeItemBooks(_0x12062e, _0x50af5a) {
       return "<span class=\"hid-novel\">" + _0x263ab2 + "</span>";
     }
   }).join("");
-  return "<div class=\"home-item-detail\" onclick=\"event.stopPropagation()\">" + (_0x2f94d5 ? "<div class=\"hid-con\">" + escapeHtml(_0x2f94d5) + "</div>" : "") + "<div class=\"hid-label\">" + DT("Where this lives in the novels", "Dónde aparece en las novelas") + "</div><div class=\"hid-novels\">" + _0x227433 + "</div></div>";
+  var _aogCurr = "";
+  if (_0x380adf && _0x380adf.resources) {
+    var _aogBooks = Object.keys(RI_GRADES).filter(function (_aogB) {
+      if (_0x50af5a) {
+        return _aogB === "3" || _aogB === "4" || _aogB === "5";
+      }
+      return true;
+    }).map(function (_aogB) {
+      var _aogR = _0x380adf.resources[_aogB];
+      if (!_aogR) {
+        return "";
+      }
+      var _aogLbl = _0x3795a0 ? RI_GRADES[_aogB].label.replace("Book", "Libro") : RI_GRADES[_aogB].label;
+      var _aogHead = "<span class=\"hid-bk\">" + _aogLbl + " · " + RI_GRADES[_aogB].grade + "</span> " + _aogR.loc + " — " + _aogR.res;
+      var _aogUrl = typeof curriculumJumpUrl === "function" ? curriculumJumpUrl(+_aogB, _0xeeef1c) : "";
+      if (_aogUrl) {
+        return "<a class=\"hid-novel hid-link\" href=\"" + _aogUrl + "\" target=\"_blank\" rel=\"noopener\" onclick=\"event.stopPropagation()\">" + _aogHead + "<span class=\"hid-open\">↗ " + DT("Open the lesson", "Abre la lección") + "</span></a>";
+      }
+      return "<span class=\"hid-novel\">" + _aogHead + "</span>";
+    }).join("");
+    if (_aogBooks) {
+      _aogCurr = "<div class=\"hid-label\">" + DT("In the School & Home Curriculum", "En el plan de estudios (Escolar y Edición en Casa)") + "</div><div class=\"hid-novels\">" + _aogBooks + "</div>";
+    }
+  }
+  return "<div class=\"home-item-detail\" onclick=\"event.stopPropagation()\">" + (_0x2f94d5 ? "<div class=\"hid-con\">" + escapeHtml(_0x2f94d5) + "</div>" : "") + _aogCurr + "<div class=\"hid-label\">" + DT("Where this lives in the novels", "Dónde aparece en las novelas") + "</div><div class=\"hid-novels\">" + _0x227433 + "</div></div>";
 }
 function homeItemToggle(_0x435751) {
   if (_0x435751) {
