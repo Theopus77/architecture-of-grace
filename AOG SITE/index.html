@@ -2691,7 +2691,7 @@ function toggleTheme() {
       <div class="hyb-bar">
         <span class="word"><b data-i18n="hyb_b1">Grace Over Performance</b></span>
       </div>
-      <div class="hyb-lede" data-i18n-html="hyb_lede"><p class="hl-lead">So often, people are measured before they are understood. Architecture of Grace offers another way.</p><p>Built by a special educator, it&rsquo;s a framework for students, families, educators, caregivers, teams, and independent adults &mdash; a way to strengthen relationships, with yourself and with one another, through identity, self-compassion, forgiveness, and grace.</p><p class="hl-close">Because growth begins with grace, not performance.</p></div>
+      <div class="hyb-lede" data-i18n-html="hyb_lede"><p class="hl-lead">So often, people are measured before they are understood. Architecture of Grace offers another way.</p><p>Built by a special educator, it&rsquo;s a framework to strengthen relationships&mdash;with yourself and with one another&mdash;through identity, self-compassion, forgiveness, and grace.</p><p class="hl-close">Because growth begins with grace, not performance.</p></div>
       <div class="hyb-start-wrap" style="text-align:center; margin-top:22px;">
         <style>
         .hyb-lede{ max-width:644px; margin:16px auto 0; text-align:center; }
@@ -2729,6 +2729,29 @@ function toggleTheme() {
         <style>
         .hero-tank-wrap{ max-width:600px; margin:34px auto 4px; }
         .hero-tank-sub{ font-family:var(--font-sans); font-weight:600; font-size:14.5px; color:var(--gold-soft); margin:0 0 12px; letter-spacing:.01em; text-align:center; }
+        /* Base tank styles — shared by the hero 60-second read. Restored here after the
+           duplicate Workplace tank (which previously housed these definitions) was removed. */
+        .wp-tank{ background:var(--paper); border:1px solid var(--gold); border-top:4px solid var(--gold); border-radius:18px; padding:30px 30px 26px; max-width:760px; margin:46px auto 0; box-shadow:var(--shadow-sm); }
+        .wp-tank-head{ text-align:center; max-width:600px; margin:0 auto 16px; }
+        .wp-tank-head .ey{ font-size:12px; font-weight:700; letter-spacing:.14em; text-transform:uppercase; color:var(--gold-deep,#9a6f24); margin-bottom:6px; }
+        .wp-tank-head h2{ font-family:var(--font-serif); font-size:26px; font-weight:600; color:var(--navy); line-height:1.2; }
+        .wp-tank-head p{ font-size:13.5px; line-height:1.6; color:var(--ink-soft); margin-top:8px; }
+        .tk-item{ padding:14px 0; border-top:1px solid var(--rule-soft); }
+        .tk-item:first-child{ border-top:none; }
+        .tk-q{ font-size:15px; color:var(--ink); font-weight:500; margin-bottom:10px; }
+        .tk-opts{ display:flex; flex-wrap:wrap; gap:8px; }
+        .tk-pill{ flex:1 1 auto; min-width:118px; text-align:center; cursor:pointer; font-family:var(--font-sans); font-size:13px; font-weight:600; color:var(--ink-soft); background:#fff; border:1px solid var(--rule); border-radius:999px; padding:9px 12px; transition:all .12s var(--ease); }
+        .tk-pill:hover{ border-color:var(--gold); }
+        .tk-pill.on{ background:var(--navy); border-color:var(--navy); color:#fff; }
+        .wp-tank .tk-go{ display:block; margin:18px auto 0; }
+        .wp-tank-result{ margin-top:18px; border-radius:14px; padding:18px 20px; border:1px solid var(--rule); }
+        .wp-tank-result .band{ font-family:var(--font-serif); font-size:19px; font-weight:600; margin-bottom:6px; }
+        .wp-tank-result p{ font-size:14px; line-height:1.6; margin:0; }
+        .wp-tank-result .flag{ margin-top:10px; font-size:12px; color:var(--ink-faint); font-style:italic; }
+        .wp-tank-result.ok{ background:var(--green-bg); border-color:#bcd6bf; } .wp-tank-result.ok .band{ color:var(--green); }
+        .wp-tank-result.low{ background:var(--amber-bg); border-color:#e3d199; } .wp-tank-result.low .band{ color:var(--amber); }
+        .wp-tank-result.empty{ background:var(--red-bg); border-color:#e3b9b4; } .wp-tank-result.empty .band{ color:var(--red); }
+        .wp-tank-result.warn{ background:var(--paper); }
         /* sits on the navy hero like the dashboard demo: paper card, deep lift, gold cap */
         .hero-tank.wp-tank{ margin:0 auto; max-width:600px; padding:24px 24px 22px; box-shadow:0 20px 54px -26px rgba(0,0,0,.6); }
         :root[data-theme="dark"] .hero-tank.wp-tank{ background:#13314F; border-color:var(--gold); }
@@ -2904,7 +2927,7 @@ function toggleTheme() {
               <span class="hd-toggle-label" data-i18n="hero_demo_view">View</span>
               <div class="hd-toggle hd-toggle--nudge" id="hdToggle" role="group" aria-label="Chart view">
                 <button type="button" class="hdt-btn active" data-hview="trend">Trend</button>
-                <button type="button" class="hdt-btn" data-hview="bar">Bar</button>
+                <button type="button" class="hdt-btn" data-hview="radar">Dials</button>
               </div>
             </div>
           </div>
@@ -3724,75 +3747,6 @@ function toggleTheme() {
         <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg><span data-i18n="wp_pr4">Take it as often as you like &mdash; it&rsquo;s a check-in, not an exam.</span></li>
       </ul>
       <div class="wp-priv-more"><a href="#" onclick="event.preventDefault(); openPrivacy();" data-i18n="pv_strip_full">Read the full privacy page &amp; manage your data &rarr;</a></div>
-    </div>
-
-    <div class="wp-tank" id="wpTank">
-      <style>
-      .wp-tank{ background:var(--paper); border:1px solid var(--gold); border-top:4px solid var(--gold); border-radius:18px; padding:30px 30px 26px; max-width:760px; margin:46px auto 0; box-shadow:var(--shadow-sm); }
-      .wp-tank-head{ text-align:center; max-width:600px; margin:0 auto 16px; }
-      .wp-tank-head .ey{ font-size:12px; font-weight:700; letter-spacing:.14em; text-transform:uppercase; color:var(--gold-deep,#9a6f24); margin-bottom:6px; }
-      .wp-tank-head h2{ font-family:var(--font-serif); font-size:26px; font-weight:600; color:var(--navy); line-height:1.2; }
-      .wp-tank-head p{ font-size:13.5px; line-height:1.6; color:var(--ink-soft); margin-top:8px; }
-      .tk-item{ padding:14px 0; border-top:1px solid var(--rule-soft); }
-      .tk-item:first-child{ border-top:none; }
-      .tk-q{ font-size:15px; color:var(--ink); font-weight:500; margin-bottom:10px; }
-      .tk-opts{ display:flex; flex-wrap:wrap; gap:8px; }
-      .tk-pill{ flex:1 1 auto; min-width:118px; text-align:center; cursor:pointer; font-family:var(--font-sans); font-size:13px; font-weight:600; color:var(--ink-soft); background:#fff; border:1px solid var(--rule); border-radius:999px; padding:9px 12px; transition:all .12s var(--ease); }
-      .tk-pill:hover{ border-color:var(--gold); }
-      .tk-pill.on{ background:var(--navy); border-color:var(--navy); color:#fff; }
-      .wp-tank .tk-go{ display:block; margin:18px auto 0; }
-      .wp-tank-result{ margin-top:18px; border-radius:14px; padding:18px 20px; border:1px solid var(--rule); }
-      .wp-tank-result .band{ font-family:var(--font-serif); font-size:19px; font-weight:600; margin-bottom:6px; }
-      .wp-tank-result p{ font-size:14px; line-height:1.6; margin:0; }
-      .wp-tank-result .flag{ margin-top:10px; font-size:12px; color:var(--ink-faint); font-style:italic; }
-      .wp-tank-result.ok{ background:var(--green-bg); border-color:#bcd6bf; } .wp-tank-result.ok .band{ color:var(--green); }
-      .wp-tank-result.low{ background:var(--amber-bg); border-color:#e3d199; } .wp-tank-result.low .band{ color:var(--amber); }
-      .wp-tank-result.empty{ background:var(--red-bg); border-color:#e3b9b4; } .wp-tank-result.empty .band{ color:var(--red); }
-      .wp-tank-result.warn{ background:var(--paper); }
-      </style>
-      <div class="wp-tank-head">
-        <div class="ey" data-i18n="wp_tank_ey">A 60-second read</div>
-        <h2 data-i18n="wp_tank_h">How full is your tank?</h2>
-        <p data-i18n="wp_tank_p">Burnout&rsquo;s clearest signal is energy, not attitude. Four quick reads on your tank &mdash; private, instant, and saved nowhere. This isn&rsquo;t a clinical burnout score; it&rsquo;s a quick mirror. If it rings true, the full check-in below goes deeper.</p>
-      </div>
-      <div class="tk-item">
-        <div class="tk-q" data-i18n="wp_tq1">By the end of most days, I feel used up &mdash; like there&rsquo;s little left to give.</div>
-        <div class="tk-opts" role="radiogroup" aria-label="By the end of most days I feel used up">
-          <span class="tk-pill" data-q="1" data-v="0" role="radio" tabindex="0" data-i18n="wp_opt0" aria-checked="false">Rarely / never</span>
-          <span class="tk-pill" data-q="1" data-v="1" role="radio" tabindex="0" data-i18n="wp_opt1" aria-checked="false">Sometimes</span>
-          <span class="tk-pill" data-q="1" data-v="2" role="radio" tabindex="0" data-i18n="wp_opt2" aria-checked="false">Often</span>
-          <span class="tk-pill" data-q="1" data-v="3" role="radio" tabindex="0" data-i18n="wp_opt3" aria-checked="false">Almost always</span>
-        </div>
-      </div>
-      <div class="tk-item">
-        <div class="tk-q" data-i18n="wp_tq2">I wake up already tired at the thought of the day ahead.</div>
-        <div class="tk-opts" role="radiogroup" aria-label="I wake up already tired at the thought of the day ahead">
-          <span class="tk-pill" data-q="2" data-v="0" role="radio" tabindex="0" data-i18n="wp_opt0" aria-checked="false">Rarely / never</span>
-          <span class="tk-pill" data-q="2" data-v="1" role="radio" tabindex="0" data-i18n="wp_opt1" aria-checked="false">Sometimes</span>
-          <span class="tk-pill" data-q="2" data-v="2" role="radio" tabindex="0" data-i18n="wp_opt2" aria-checked="false">Often</span>
-          <span class="tk-pill" data-q="2" data-v="3" role="radio" tabindex="0" data-i18n="wp_opt3" aria-checked="false">Almost always</span>
-        </div>
-      </div>
-      <div class="tk-item">
-        <div class="tk-q" data-i18n="wp_tq3">Even when I rest, I don&rsquo;t really feel refilled.</div>
-        <div class="tk-opts" role="radiogroup" aria-label="Even when I rest I do not really feel refilled">
-          <span class="tk-pill" data-q="3" data-v="0" role="radio" tabindex="0" data-i18n="wp_opt0" aria-checked="false">Rarely / never</span>
-          <span class="tk-pill" data-q="3" data-v="1" role="radio" tabindex="0" data-i18n="wp_opt1" aria-checked="false">Sometimes</span>
-          <span class="tk-pill" data-q="3" data-v="2" role="radio" tabindex="0" data-i18n="wp_opt2" aria-checked="false">Often</span>
-          <span class="tk-pill" data-q="3" data-v="3" role="radio" tabindex="0" data-i18n="wp_opt3" aria-checked="false">Almost always</span>
-        </div>
-      </div>
-      <div class="tk-item">
-        <div class="tk-q" data-i18n="wp_tq4">Lately I feel like I&rsquo;m just getting through the day without really noticing it &mdash; like my mind is somewhere else.</div>
-        <div class="tk-opts" role="radiogroup" aria-label="Lately I feel like I am just getting through the day without really noticing it">
-          <span class="tk-pill" data-q="4" data-v="0" role="radio" tabindex="0" data-i18n="wp_opt0" aria-checked="false">Rarely / never</span>
-          <span class="tk-pill" data-q="4" data-v="1" role="radio" tabindex="0" data-i18n="wp_opt1" aria-checked="false">Sometimes</span>
-          <span class="tk-pill" data-q="4" data-v="2" role="radio" tabindex="0" data-i18n="wp_opt2" aria-checked="false">Often</span>
-          <span class="tk-pill" data-q="4" data-v="3" role="radio" tabindex="0" data-i18n="wp_opt3" aria-checked="false">Almost always</span>
-        </div>
-      </div>
-      <button class="btn tk-go" id="wpTankBtn"><span data-i18n="wp_tank_btn">Show my read</span> <span class="btn-arrow">&rarr;</span></button>
-      <div id="wpTankResult" class="wp-tank-result" hidden></div>
     </div>
 
     <div class="wp-launch" id="wpLaunch">
@@ -7909,8 +7863,8 @@ const I18N_UI = {
   fw_7_p: { en: "<p>My name is Jimmy Ramsden. I didn’t come to this work from a boardroom — I came to it from the classroom, where I still teach today as a special educator.</p><p>For more than a decade I’ve worked as an Illinois-certified special educator across elementary and junior-high classrooms — in self-contained, resource, and social-behavioral settings — and I hold a Learning Behavior Specialist endorsement for students from preschool through age twenty-two. Along the way I built and ran an elementary Social-Behavioral Learning resource program, where I coach students in the very skills this curriculum is built around: naming what they feel, steadying themselves, and trying again. The Architecture of Grace isn’t a departure from that classroom work — it’s two decades of it, gathered into something I can hand to other teachers.</p><p>My journey started at Humboldt State University with a degree in political science. But the real catalyst came in 2006. I was driving up to Oregon for a show — Anticon, the hip-hop collective whose music had been part of my life for as long as I can remember — when a serious car crash left me with a traumatic brain injury and a neurological disability. Rebuilding my life changed how I understand struggle, patience, and grace, and it’s what turned me toward special education and a master’s at Aurora University in Aurora, Illinois. It’s the reason this work isn’t abstract to me.</p><p>Anticon never left me. The only tattoos I carry come from them — ants for my family (my sister, my parents, and me) and the name itself. Over the years I came to read it the way I try to teach: anti-con — without lies. Meeting people honestly, as they really are, is the ground everything here is built on.</p><p>The Architecture of Grace grew out of a conviction that individuals deserve more than to be measured — they deserve to be understood. Built under The Architecture of Grace Foundation, everything here rests on four core pillars:</p><ul class='fw-story-pillars'><li><strong>Identity</strong> — who a person comes to believe they are.</li><li><strong>Self-Compassion</strong> — how a person learns to speak to themselves.</li><li><strong>Forgiveness</strong> — moving past mistakes to make room for growth.</li><li><strong>Grace</strong> — meeting a person with understanding rather than only judgment.</li></ul><p>As a teacher and a father, these are the values I want for my students, my own children — and for anyone willing to do this work.</p><div class='fw-note'><div class='fw-note-h'>A note on transparency</div><p>This work is in its early stages. The check-in is a pilot — a score is a flag for a conversation, never a diagnosis — and the curriculum is a framework I’m actively proving. I’d rather be honest about that than oversell it.</p><p>If you’d like to try it or share your thoughts, please reach out. <a href='mailto:whytheschooloflife@gmail.com'>whytheschooloflife@gmail.com</a></p></div><p class='fw-story-sign'>— Jimmy Ramsden</p>", es: "<p>Me llamo Jimmy Ramsden. No llegué a este trabajo desde una sala de juntas, sino desde el aula, donde sigo enseñando hoy como educador especial.</p><p>Durante más de una década he trabajado como educador especial certificado en Illinois en aulas de primaria y secundaria —en entornos autónomos, de recursos y socioconductuales— y cuento con la certificación de Learning Behavior Specialist para estudiantes desde preescolar hasta los veintidós años. En el camino creé y dirigí un programa de recursos de Aprendizaje Socioconductual en primaria, donde acompaño a los estudiantes en las mismas destrezas sobre las que se construye este currículo: nombrar lo que sienten, serenarse e intentarlo de nuevo. The Architecture of Grace no es una desviación de ese trabajo en el aula: son dos décadas de ese trabajo, reunidas en algo que puedo entregar a otros docentes.</p><p>Mi camino comenzó en Humboldt State University con una licenciatura en ciencias políticas. Pero el verdadero punto de inflexión llegó en 2006. Conducía hacia Oregón para asistir a un concierto —Anticon, el colectivo de hip-hop cuya música ha sido parte de mi vida desde que tengo memoria— cuando un grave accidente de auto me dejó con una lesión cerebral traumática y una discapacidad neurológica. Reconstruir mi vida cambió mi forma de entender la lucha, la paciencia y la gracia, y es lo que me orientó hacia la educación especial y hacia una maestría en Aurora University, en Aurora, Illinois. Es la razón por la que este trabajo no es algo abstracto para mí.</p><p>Anticon nunca me abandonó. Los únicos tatuajes que llevo vienen de ellos: hormigas por mi familia (mi hermana, mis padres y yo) y el propio nombre. Con los años llegué a leerlo como intento enseñar: anti-con, sin mentiras. Encontrarse con las personas con honestidad, tal como realmente son, es el terreno sobre el que se construye todo aquí.</p><p>The Architecture of Grace surgió de la convicción de que las personas merecen algo más que ser medidas: merecen ser comprendidas. Creado bajo The Architecture of Grace Foundation, todo aquí se apoya en cuatro pilares fundamentales:</p><ul class='fw-story-pillars'><li><strong>Identidad</strong> — quién llega una persona a creer que es.</li><li><strong>Autocompasión</strong> — cómo aprende una persona a hablarse a sí misma.</li><li><strong>Perdón</strong> — dejar atrás los errores para dar espacio al crecimiento.</li><li><strong>Gracia</strong> — encontrarse con una persona desde la comprensión y no solo desde el juicio.</li></ul><p>Como maestro y como padre, estos son los valores que deseo para mis estudiantes, para mis propios hijos, y para cualquiera dispuesto a hacer este trabajo.</p><div class='fw-note'><div class='fw-note-h'>Una nota sobre la transparencia</div><p>Este trabajo está en sus primeras etapas. El chequeo es un piloto —una puntuación es una señal para conversar, nunca un diagnóstico— y el currículo es un marco que estoy probando activamente. Prefiero ser honesto al respecto antes que prometer de más.</p><p>Si quieres probarlo o compartir tus ideas, no dudes en escribir. <a href='mailto:whytheschooloflife@gmail.com'>whytheschooloflife@gmail.com</a></p></div><p class='fw-story-sign'>— Jimmy Ramsden</p>" },
   fw_browse: { en: "Browse the guide & resources \u2192", es: "Explora la gu\u00eda y los recursos \u2192" },
   hyb_lede: {
-    en: "<p class='hl-lead'>So often, people are measured before they are understood. Architecture of Grace offers another way.</p><p>Built by a special educator, it\u2019s a framework for students, families, educators, caregivers, teams, and independent adults \u2014 a way to strengthen relationships, with yourself and with one another, through identity, self-compassion, forgiveness, and grace.</p><p class='hl-close'>Because growth begins with grace, not performance.</p>",
-    es: "<p class='hl-lead'>Con demasiada frecuencia, a las personas se las mide antes de comprenderlas. Architecture of Grace ofrece otro camino.</p><p>Creado por un educador especial, es un marco para estudiantes, familias, educadores, cuidadores, equipos y adultos independientes \u2014 una forma de fortalecer las relaciones, contigo mismo y con los dem\u00e1s, a trav\u00e9s de la identidad, la autocompasi\u00f3n, el perd\u00f3n y la gracia.</p><p class='hl-close'>Porque el crecimiento comienza con la gracia, no con el rendimiento.</p>"
+    en: "<p class='hl-lead'>So often, people are measured before they are understood. Architecture of Grace offers another way.</p><p>Built by a special educator, it\u2019s a framework to strengthen relationships\u2014with yourself and with one another\u2014through identity, self-compassion, forgiveness, and grace.</p><p class='hl-close'>Because growth begins with grace, not performance.</p>",
+    es: "<p class='hl-lead'>Con demasiada frecuencia, a las personas se las mide antes de comprenderlas. Architecture of Grace ofrece otro camino.</p><p>Creado por un educador especial, es un marco para fortalecer las relaciones \u2014contigo mismo y con los dem\u00e1s\u2014 a trav\u00e9s de la identidad, la autocompasi\u00f3n, el perd\u00f3n y la gracia.</p><p class='hl-close'>Porque el crecimiento comienza con la gracia, no con el rendimiento.</p>"
   },
   hyb_byline: {
     en: "A framework for students, families, educators, caregivers, teams, and independent adults. Built by a special educator to help people strengthen relationships through identity, self-compassion, forgiveness, and grace.",
@@ -8539,15 +8493,21 @@ function showScreen(_0x2dc9c2) {
       var _aogTop = _aogY;
       requestAnimationFrame(function () {
         requestAnimationFrame(function () {
-          try { window.scrollTo({ top: _aogTop, behavior: "auto" }); }
+          // "instant" forces an immediate jump; "auto" would defer to the global
+          // html{scroll-behavior:smooth}, animating a slow scroll back to the spot.
+          try { window.scrollTo({ top: _aogTop, behavior: "instant" }); }
           catch (_e) { window.scrollTo(0, _aogTop); }
         });
       });
     } else {
-      window.scrollTo({ top: 0, behavior: "smooth" });
+      // New screen: jump straight to the top rather than smooth-scrolling up from
+      // the previous screen's offset (which looked like a snap/lag on view switch).
+      try { window.scrollTo({ top: 0, behavior: "instant" }); }
+      catch (_e2) { window.scrollTo(0, 0); }
     }
   } catch (_aogE1) {
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    try { window.scrollTo({ top: 0, behavior: "instant" }); }
+    catch (_e3) { window.scrollTo(0, 0); }
   }
   try {
     var _0x534f7a = document.getElementById("tourFab");
@@ -10526,91 +10486,6 @@ window.addEventListener("load", function () {
     });
   }
 });
-(function () {
-  var _0x442f8f = {};
-  function _0x313d64(_0x25a493, _0x4ad1a9, _0x393de4) {
-    document.querySelectorAll("#wpTank .tk-pill[data-q=\"" + _0x25a493 + "\"]").forEach(function (_0x5f24c9) {
-      _0x5f24c9.classList.remove("on");
-      _0x5f24c9.setAttribute("aria-checked", "false");
-    });
-    _0x393de4.classList.add("on");
-    _0x393de4.setAttribute("aria-checked", "true");
-    _0x442f8f[_0x25a493] = _0x4ad1a9;
-  }
-  function _0x177314() {
-    var _0x4162f2 = typeof lang !== "undefined" && lang === "es";
-    var _0x1c45b9 = ["1", "2", "3", "4"];
-    var _0x2f6a5b = 0;
-    var _0x488ac0 = 0;
-    _0x1c45b9.forEach(function (_0x48d889) {
-      if (_0x442f8f[_0x48d889] != null) {
-        _0x2f6a5b += _0x442f8f[_0x48d889];
-        _0x488ac0++;
-      }
-    });
-    var _0xb29ba3 = document.getElementById("wpTankResult");
-    if (!_0xb29ba3) {
-      return;
-    }
-    _0xb29ba3.hidden = false;
-    if (_0x488ac0 < 4) {
-      _0xb29ba3.className = "wp-tank-result warn";
-      _0xb29ba3.innerHTML = "<p>" + (_0x4162f2 ? "Toca una opción en cada una de las cuatro líneas y vuelve a intentarlo." : "Tap one option for each of the four lines, then try again.") + "</p>";
-      return;
-    }
-    var _0x14d7d4;
-    var _0x4e84e2;
-    var _0x4aee09;
-    if (_0x2f6a5b <= 3) {
-      _0x4e84e2 = "ok";
-      _0x14d7d4 = _0x4162f2 ? "Tu tanque se ve razonablemente lleno por ahora." : "Your tank looks reasonably full right now.";
-      _0x4aee09 = _0x4162f2 ? "Vale la pena notarlo y protegerlo. El chequeo completo de abajo sigue siendo un buen hábito — detecta las cosas pequeñas antes de que se vuelvan grandes." : "That’s worth noticing and protecting. The full check-in below is still a good habit — it catches the small things before they become the big ones.";
-    } else if (_0x2f6a5b <= 7) {
-      _0x4e84e2 = "low";
-      _0x14d7d4 = _0x4162f2 ? "Estás más bajo/a de lo que quizá crees." : "You’re running lower than you might realize.";
-      _0x4aee09 = _0x4162f2 ? "No vacío — pero el indicador está bajando, y ese es justo el momento en que es más fácil ignorarlo. Unos minutos con el chequeo completo pueden mostrarte dónde poner tu energía primero. No puedes servir de una taza que se vacía más rápido de lo que se llena." : "Not empty — but the gauge is dropping, and that’s exactly when it’s easiest to ignore. A few minutes with the full check-in can show you where to put your energy first. You can’t pour from a cup that’s draining faster than it fills.";
-    } else {
-      _0x4e84e2 = "empty";
-      _0x14d7d4 = _0x4162f2 ? "Estas son señales reales de agotamiento — del tipo que vale la pena escuchar." : "These are real signs of depletion — the kind worth listening to.";
-      _0x4aee09 = _0x4162f2 ? "Este es el estado del que trata toda la idea: desde aquí no puedes sostener a nadie. Por favor, sé amable contigo hoy y considera hablar con alguien de confianza. Si cargas con algo pesado, en EE.\xA0UU. puedes llamar o enviar un mensaje al <strong>988</strong> a cualquier hora. El chequeo completo de abajo puede ayudarte a nombrar por dónde empezar." : "This is the state the whole idea is about: you can’t co-regulate anyone from here. Please be gentle with yourself today, and consider talking with someone you trust. If you’re carrying something heavy, in the U.S. you can call or text <strong>988</strong> any time. The full check-in below can help you name where to start.";
-    }
-    _0xb29ba3.className = "wp-tank-result " + _0x4e84e2;
-    _0xb29ba3.innerHTML = "<div class=\"band\">" + _0x14d7d4 + "</div><p>" + _0x4aee09 + "</p>" + (typeof aogTankTips === "function" ? aogTankTips(_0x4e84e2, _0x4162f2) : "") + "<p class=\"flag\">" + (_0x4162f2 ? "Una señal, no un diagnóstico · nada de esto se guardó." : "A flag, not a diagnosis · nothing here was saved.") + "</p>";
-    try {
-      _0xb29ba3.scrollIntoView({
-        behavior: "smooth",
-        block: "center"
-      });
-    } catch (_0xc3ad68) {}
-  }
-  function _0x51f0fe() {
-    if (!document.getElementById("wpTank")) {
-      return;
-    }
-    document.querySelectorAll("#wpTank .tk-pill").forEach(function (_0x1e13d4) {
-      var _0x295669 = _0x1e13d4.dataset.q;
-      var _0x30ff9a = parseInt(_0x1e13d4.dataset.v, 10);
-      _0x1e13d4.addEventListener("click", function () {
-        _0x313d64(_0x295669, _0x30ff9a, _0x1e13d4);
-      });
-      _0x1e13d4.addEventListener("keydown", function (_0x6a15a0) {
-        if (_0x6a15a0.key === "Enter" || _0x6a15a0.key === " ") {
-          _0x6a15a0.preventDefault();
-          _0x313d64(_0x295669, _0x30ff9a, _0x1e13d4);
-        }
-      });
-    });
-    var _0x306f33 = document.getElementById("wpTankBtn");
-    if (_0x306f33) {
-      _0x306f33.addEventListener("click", _0x177314);
-    }
-  }
-  if (document.readyState !== "loading") {
-    _0x51f0fe();
-  } else {
-    window.addEventListener("load", _0x51f0fe);
-  }
-})();
 
 /* ===== Hero "How full is your tank?" — front-page 60-second read =====
    Self-contained so it never collides with the workplace #wpTank instance.
