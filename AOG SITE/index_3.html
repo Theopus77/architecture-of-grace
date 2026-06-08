@@ -1596,8 +1596,9 @@ tr:hover td { background: var(--paper); }
 @keyframes riHitPulse{ 0%{box-shadow:0 0 0 0 rgba(184,137,58,.55);} 25%{box-shadow:0 0 0 5px rgba(184,137,58,.40);} 100%{box-shadow:0 0 0 3px rgba(184,137,58,.0);} }
 @media (prefers-reduced-motion: reduce){ .ri-card.ri-hit{ animation:none; } }
 .nw-links{ display:flex; flex-wrap:wrap; gap:6px 18px; align-items:center; }
-.hd-teach-link,.ov-teach-link{ display:inline-block; margin-top:8px; font-size:12.5px; font-weight:700; color:var(--gold,#B8893A); text-decoration:none; }
-.hd-teach-link:hover,.ov-teach-link:hover{ text-decoration:underline; }
+.hd-teach-link,.ov-teach-link{ display:inline-block; margin-top:8px; font-size:12.5px; font-weight:800; color:var(--gold-deep,#9a6f24); text-decoration:underline; text-underline-offset:2px; text-decoration-thickness:1.5px; }
+:root[data-theme="dark"] .hd-teach-link,:root[data-theme="dark"] .ov-teach-link{ color:var(--gold-soft); }
+.hd-teach-link:hover,.ov-teach-link:hover{ text-decoration-thickness:2.5px; }
 
 /* In-the-novels block inside a construct card */
 .ri-novels { margin-top:14px; padding-top:14px; border-top:1px dashed var(--gold); }
@@ -1940,7 +1941,7 @@ a.doc-path .dp-t::after{ content:" \2192"; color:var(--gold); font-weight:700; }
 .admin-flag svg{ flex:0 0 auto; width:18px; height:18px; color:#E7B85E; }
 .admin-flag span{ font-size:13px; line-height:1.5; color:#f0e7d4; }
 .admin-flag em{ color:#E7B85E; font-style:normal; font-weight:700; }
-.admin-cta{ display:flex; gap:12px; flex-wrap:wrap; }
+.admin-cta{ display:flex; gap:12px; flex-wrap:wrap; margin-top:26px; }
 .admin-cta a{ display:inline-block; font-family:var(--font-sans); font-weight:700; font-size:13.5px; padding:12px 22px; border-radius:9px; text-decoration:none; }
 .admin-cta .ac-gold{ background:var(--gold); color:#1a1a18; }
 .admin-cta .ac-ghost{ background:transparent; color:#fff; border:1.5px solid rgba(255,255,255,.45); }
@@ -2485,6 +2486,16 @@ body{ transition:background .25s ease, color .25s ease; }
   } catch (_0x54efd3) {}
   document.documentElement.setAttribute("data-theme", _0x6324bc);
 })();
+/* Item 6: apply saved accessibility preferences before first paint so there's no
+   flash of un-adjusted UI. High-contrast and dyslexia-friendly font persist in
+   localStorage (accessibility settings should survive across sessions). */
+(function () {
+  try {
+    var de = document.documentElement;
+    if (localStorage.getItem("aog.a11y.contrast") === "1") de.classList.add("a11y-contrast");
+    if (localStorage.getItem("aog.a11y.dyslexic") === "1") de.classList.add("a11y-dyslexic");
+  } catch (_e) {}
+})();
 function applyTheme(_0x29d9d3) {
   document.documentElement.setAttribute("data-theme", _0x29d9d3 === "dark" ? "dark" : "light");
 }
@@ -2497,6 +2508,99 @@ function toggleTheme() {
   applyTheme(_0x524d5c);
 }
 </script>
+<style>
+/* ===================================================================
+   ITEM 6 · ACCESSIBILITY (A11y) — high-contrast + dyslexia-friendly font
+   =================================================================== */
+/* OpenDyslexic via CDN, with graceful system fallbacks if the font can't load. */
+@font-face{
+  font-family:"OpenDyslexic";
+  font-style:normal; font-weight:400; font-display:swap;
+  src:url("https://cdn.jsdelivr.net/npm/@fontsource/opendyslexic@5.0.0/files/opendyslexic-latin-400-normal.woff2") format("woff2");
+}
+@font-face{
+  font-family:"OpenDyslexic";
+  font-style:normal; font-weight:700; font-display:swap;
+  src:url("https://cdn.jsdelivr.net/npm/@fontsource/opendyslexic@5.0.0/files/opendyslexic-latin-700-normal.woff2") format("woff2");
+}
+
+/* --- header control + popover --- */
+.a11y-wrap{ position:relative; display:inline-flex; }
+.a11y-btn.active{ border-color:var(--gold); color:var(--gold); }
+.a11y-menu{
+  position:absolute; top:calc(100% + 8px); right:0; z-index:120;
+  width:268px; max-width:80vw; padding:8px;
+  background:var(--paper); border:1px solid var(--rule); border-radius:14px;
+  box-shadow:var(--shadow-lg, 0 12px 30px rgba(0,0,0,.5));
+}
+.a11y-menu[hidden]{ display:none; }
+.a11y-menu-h{ font-family:var(--font-sans); font-size:11px; font-weight:800; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-faint); padding:6px 8px 8px; }
+.a11y-row{
+  display:flex; align-items:center; gap:10px; width:100%;
+  padding:10px 8px; border:none; background:transparent; border-radius:10px;
+  cursor:pointer; text-align:left; font-family:var(--font-sans); color:var(--ink);
+  transition:background .12s var(--ease);
+}
+.a11y-row:hover{ background:rgba(217,163,59,.12); }
+.a11y-row-tx{ flex:1 1 auto; display:flex; flex-direction:column; gap:1px; }
+.a11y-row-t{ font-size:14px; font-weight:700; }
+.a11y-row-s{ font-size:11.5px; color:var(--ink-soft); }
+.a11y-switch{ flex:0 0 auto; position:relative; width:38px; height:22px; border-radius:999px; background:var(--rule); transition:background .15s var(--ease); }
+.a11y-switch::after{ content:""; position:absolute; top:2px; left:2px; width:18px; height:18px; border-radius:999px; background:#fff; box-shadow:0 1px 3px rgba(0,0,0,.3); transition:transform .15s var(--ease); }
+.a11y-row[aria-checked="true"] .a11y-switch{ background:var(--gold); }
+.a11y-row[aria-checked="true"] .a11y-switch::after{ transform:translateX(16px); }
+
+/* --- dyslexia-friendly font: swap the two global font-family tokens --- */
+:root.a11y-dyslexic{
+  --font-sans:"OpenDyslexic","Comic Sans MS","Trebuchet MS",Verdana,sans-serif;
+  --font-serif:"OpenDyslexic","Comic Sans MS","Trebuchet MS",Verdana,sans-serif;
+}
+:root.a11y-dyslexic body{ letter-spacing:.012em; word-spacing:.05em; line-height:1.7; }
+
+/* --- high-contrast mode: strengthen text/background boundaries --- */
+:root.a11y-contrast{
+  --ink:#000; --ink-soft:#1c2230; --ink-faint:#3a4254; --rule:#4a4a4a; --rule-soft:#6a6a6a;
+}
+:root.a11y-contrast[data-theme="dark"]{
+  --ink:#fff; --ink-soft:#e8edf5; --ink-faint:#c4ccd9; --rule:#9aa3b2; --rule-soft:#7c869a; --paper:#0c1622;
+}
+:root.a11y-contrast a:not(.btn):not(.brand):not(.topbar-back):not(.topbar-store):not(.hyb-cta):not(.hyb-door){ text-decoration:underline; text-underline-offset:2px; }
+:root.a11y-contrast .btn, :root.a11y-contrast .card, :root.a11y-contrast .kpi,
+:root.a11y-contrast input, :root.a11y-contrast select, :root.a11y-contrast .mode-card,
+:root.a11y-contrast .domain-card, :root.a11y-contrast .a11y-switch{ border:1px solid var(--ink) !important; }
+:root.a11y-contrast :focus-visible{ outline:3px solid var(--gold); outline-offset:2px; }
+@media (max-width:600px){ .a11y-menu{ right:-6px; } }
+
+/* ===================================================================
+   ITEM 5 · AGES & STAGES — audience toggle + interpretive panel
+   =================================================================== */
+.ages-toggle-wrap{ display:flex; align-items:center; justify-content:center; gap:10px; flex-wrap:wrap; margin:0 0 14px; }
+.ages-toggle-label{ font-family:var(--font-sans); font-size:12px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:var(--ink-faint); }
+.ages-toggle{ display:inline-flex; background:var(--cream, rgba(10,30,51,.05)); border:1px solid var(--rule); border-radius:999px; padding:3px; }
+:root[data-theme="dark"] .ages-toggle{ background:#0E1822; }
+.ages-btn{ font-family:var(--font-sans); font-size:13px; font-weight:700; color:var(--ink-soft); background:transparent; border:none; padding:8px 16px; border-radius:999px; cursor:pointer; transition:background .15s var(--ease), color .15s; }
+.ages-btn:hover{ color:var(--ink); }
+.ages-btn.active{ background:var(--gold); color:var(--navy); }
+.ages-panel{ max-width:680px; margin:0 auto 22px; padding:16px 20px; border-radius:14px; border:1px solid var(--rule); border-left:4px solid var(--gold); background:var(--paper); box-shadow:var(--shadow-sm); }
+.ages-panel.band-green{ border-left-color:var(--green); background:var(--green-bg); }
+.ages-panel.band-amber{ border-left-color:var(--amber); background:var(--amber-bg); }
+.ages-panel.band-red{ border-left-color:var(--red); background:var(--red-bg); }
+.ages-panel-h{ font-family:var(--font-sans); font-size:11px; font-weight:800; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-faint); margin-bottom:6px; }
+.ages-panel-p{ font-family:var(--font-sans); font-size:15px; line-height:1.62; color:var(--ink); margin:0; }
+
+/* ===================================================================
+   ITEM 8 · CONTEXTUAL TOOLTIPS — floating, fixed-position (no layout shift)
+   =================================================================== */
+#aogTip{ position:fixed; z-index:2000; max-width:260px; padding:9px 12px; border-radius:10px; background:var(--navy); color:var(--cream); font-family:var(--font-sans); font-size:12.5px; font-weight:500; line-height:1.5; box-shadow:0 10px 30px -8px rgba(0,0,0,.5); pointer-events:none; opacity:0; transform:translateY(4px); transition:opacity .12s ease, transform .12s ease; }
+#aogTip.on{ opacity:1; transform:translateY(0); }
+#aogTip::after{ content:""; position:absolute; left:var(--tip-arrow,50%); bottom:-6px; transform:translateX(-50%); border:6px solid transparent; border-top-color:var(--navy); }
+#aogTip.below::after{ top:-6px; bottom:auto; border-top-color:transparent; border-bottom-color:var(--navy); }
+:root[data-theme="dark"] #aogTip{ background:#0E1822; color:var(--ink); border:1px solid var(--rule); }
+:root[data-theme="dark"] #aogTip::after{ border-top-color:#0E1822; }
+:root[data-theme="dark"] #aogTip.below::after{ border-bottom-color:#0E1822; }
+[data-tip]{ cursor:help; }
+[data-tip]:focus-visible{ outline:2px solid var(--gold); outline-offset:2px; border-radius:6px; }
+</style>
 </head>
 <body>
 <div class="stage">
@@ -2523,6 +2627,28 @@ function toggleTheme() {
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
       <span class="aogcart-badge" id="aogCartCount" hidden>0</span>
     </button>
+    <div class="a11y-wrap">
+      <button id="a11yBtn" class="theme-toggle a11y-btn" type="button" onclick="aogToggleA11yMenu(event)" aria-haspopup="true" aria-expanded="false" aria-label="Accessibility options" title="Accessibility options">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="4" r="1.6"/><path d="M5 8h14M9 8l1 11M15 8l-1 11M12 8v5"/></svg>
+      </button>
+      <div id="a11yMenu" class="a11y-menu" role="menu" aria-label="Accessibility options" hidden>
+        <div class="a11y-menu-h" data-i18n="a11y_title">Accessibility</div>
+        <button type="button" class="a11y-row" role="menuitemcheckbox" aria-checked="false" id="a11yContrastRow" onclick="aogToggleContrast()">
+          <span class="a11y-row-tx">
+            <span class="a11y-row-t" data-i18n="a11y_contrast">High contrast</span>
+            <span class="a11y-row-s" data-i18n="a11y_contrast_s">Stronger text &amp; edges</span>
+          </span>
+          <span class="a11y-switch" aria-hidden="true"></span>
+        </button>
+        <button type="button" class="a11y-row" role="menuitemcheckbox" aria-checked="false" id="a11yDyslexicRow" onclick="aogToggleDyslexic()">
+          <span class="a11y-row-tx">
+            <span class="a11y-row-t" data-i18n="a11y_dyslexic">Dyslexia-friendly font</span>
+            <span class="a11y-row-s" data-i18n="a11y_dyslexic_s">Easier letter shapes &amp; spacing</span>
+          </span>
+          <span class="a11y-switch" aria-hidden="true"></span>
+        </button>
+      </div>
+    </div>
     <button id="themeToggle" class="theme-toggle" type="button" onclick="toggleTheme()" aria-label="Toggle dark mode" title="Toggle dark mode">
       <svg class="ti-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
       <svg class="ti-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
@@ -2563,41 +2689,33 @@ function toggleTheme() {
       <div class="hyb-hk" data-i18n="hyb_foundation">architectureofgrace.org</div>
       <h1 class="hyb-title foil"><span class="l1">Architecture of</span><span class="l2">Grace</span></h1>
       <div class="hyb-bar">
-        <span class="word"><b data-i18n="hyb_b1">Grace over performance</b></span>
-        <span class="dot"></span>
-        <span class="word hyb-mid" data-i18n="hyb_b2">For students, families &amp; adults</span>
-        <span class="dot dot-mid"></span>
-        <span class="word"><b data-i18n="hyb_b3">Built by a special educator</b></span>
+        <span class="word"><b data-i18n="hyb_b1">Grace Over Performance</b></span>
       </div>
-      <p class="hyb-byline" data-i18n="hyb_byline">Built by a teacher, for real classrooms &mdash; the SEL that tends to the grown-ups before it ever measures a child. Created by Jimmy Ramsden, a special educator with a master&rsquo;s in special education: from the classroom, not a boardroom.</p>
+      <div class="hyb-lede" data-i18n-html="hyb_lede"><p class="hl-lead">Built by a special educator, Architecture of Grace is a framework for students, families, educators, caregivers, teams, and independent adults.</p><p>Through reflection, conversation, and practical tools, it helps people strengthen relationships&mdash;with themselves and with one another&mdash;through identity, self-compassion, forgiveness, and grace.</p><p>In a culture that often measures worth through achievement, Architecture of Grace offers a different path. It invites people to pause, reflect, and grow without shame, judgment, or comparison.</p><p>Whether used in classrooms, homes, organizations, or personal practice, the framework creates space for honest conversations, deeper understanding, and healthier relationships.</p><p class="hl-close">Because lasting growth begins not with performance, but with grace.</p></div>
       <div class="hyb-start-wrap" style="text-align:center; margin-top:22px;">
         <style>
-        .hyb-byline{ max-width:560px; margin:14px auto 0; font-family:var(--font-serif); font-style:italic; font-size:14.5px; line-height:1.5; color:rgba(244,238,226,.66); text-align:center; }
-        @media (max-width:600px){ .hyb-byline{ font-size:13.5px; } }
-        .hyb-start-link{ display:inline-flex; align-items:center; gap:10px; font-family:var(--font-sans); font-weight:800; font-size:16.5px; letter-spacing:.01em; color:var(--navy); background:var(--gold); border:1.5px solid var(--gold); border-radius:999px; padding:15px 32px; text-decoration:none; cursor:pointer; box-shadow:0 8px 24px -6px rgba(0,0,0,.42); transition:background .15s var(--ease), transform .15s var(--ease); }
-        .hyb-start-link:hover{ background:var(--gold-soft); transform:translateY(-1px); }
-        .hyb-start-link svg{ width:19px; height:19px; }
-        .hyb-start-hint{ display:block; margin-top:11px; font-family:var(--font-sans); font-size:13px; color:var(--gold-soft); font-weight:600; }
+        .hyb-lede{ max-width:644px; margin:16px auto 0; text-align:center; }
+        .hyb-lede p{ font-family:var(--font-sans); font-size:15px; line-height:1.62; color:rgba(244,238,226,.82); margin:0 0 12px; }
+        .hyb-lede p:last-child{ margin-bottom:0; }
+        .hyb-lede .hl-lead{ font-size:16.5px; color:rgba(244,238,226,.95); }
+        .hyb-lede .hl-close{ font-family:var(--font-serif); font-style:italic; font-size:18px; color:var(--gold-soft); margin-top:6px; }
+        @media (max-width:600px){ .hyb-lede p{ font-size:14px; } .hyb-lede .hl-lead{ font-size:15px; } .hyb-lede .hl-close{ font-size:16px; } }
+        .hyb-cta-row{ display:flex; gap:14px; justify-content:center; flex-wrap:wrap; }
+        .hyb-cta{ display:inline-flex; align-items:center; gap:9px; font-family:var(--font-sans); font-weight:800; font-size:16px; letter-spacing:.01em; border-radius:999px; padding:15px 30px; text-decoration:none; cursor:pointer; transition:background .15s var(--ease), transform .15s var(--ease), color .15s, border-color .15s; }
+        .hyb-cta-primary{ color:var(--navy); background:var(--gold); border:1.5px solid var(--gold); box-shadow:0 8px 24px -6px rgba(0,0,0,.42); }
+        .hyb-cta-primary:hover{ background:var(--gold-soft); transform:translateY(-1px); }
+        .hyb-cta-secondary{ color:var(--gold-soft); background:rgba(242,201,100,.14); border:1.5px solid var(--gold); }
+        .hyb-cta-secondary:hover{ background:var(--gold); color:var(--navy); transform:translateY(-1px); }
+        @media (max-width:600px){ .hyb-cta{ width:100%; justify-content:center; font-size:15px; padding:14px 24px; } }
         </style>
-        <a href="#" class="hyb-start-link" onclick="event.preventDefault(); if(typeof startChoose==='function'){startChoose();}">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
-          <span data-i18n="hyb_start_btn">Start your check-in</span>
-          <span aria-hidden="true">&rarr;</span>
-        </a>
-        <span class="hyb-start-hint" data-i18n="hyb_start_hint">Pick who you are &mdash; student, grown-up, family, or team.</span>
-      </div>
-      <div style="text-align:center; margin-top:18px;">
-        <style>
-        .hyb-voices-link{ display:inline-flex; align-items:center; gap:8px; font-family:var(--font-sans); font-weight:800; font-size:14.5px; letter-spacing:.02em; color:var(--gold-soft); background:rgba(242,201,100,.16); border:1.5px solid var(--gold); border-radius:999px; padding:11px 24px; text-decoration:none; cursor:pointer; box-shadow:0 2px 12px rgba(0,0,0,.18); transition:background .15s var(--ease), transform .15s var(--ease), color .15s; }
-        .hyb-voices-link:hover{ background:var(--gold); color:var(--navy); transform:translateY(-1px); }
-        .hyb-voices-link svg{ width:17px; height:17px; }
-        .hyb-voices-hint{ display:block; margin-top:9px; font-family:var(--font-sans); font-size:12.5px; line-height:1.4; color:rgba(244,238,226,.62); font-weight:500; }
-        </style>
-        <a href="#" class="hyb-voices-link" onclick="event.preventDefault(); openGuide('voices');">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-          <span data-i18n="g_tab_voices">Voices</span> <span aria-hidden="true">&rarr;</span>
-        </a>
-        <span class="hyb-voices-hint" data-i18n="hyb_voices_hint">Real stories from students, families, and educators &mdash; share yours, too.</span>
+        <div class="hyb-cta-row">
+          <a href="#" class="hyb-cta hyb-cta-primary" onclick="event.preventDefault(); if(typeof openFramework==='function'){openFramework();}">
+            <span data-i18n="hyb_cta_explore">Explore the Framework</span> <span aria-hidden="true">&rarr;</span>
+          </a>
+          <a href="#" class="hyb-cta hyb-cta-secondary" onclick="event.preventDefault(); if(typeof startChoose==='function'){startChoose();}">
+            <span data-i18n="hyb_cta_checkin">Take the Check-In</span> <span aria-hidden="true">&rarr;</span>
+          </a>
+        </div>
       </div>
       <!-- ===== STATEMENT BAND (in the hero fold) ===== -->
       <section class="hyb-statement hyb-statement--in-hero reveal">
@@ -2631,6 +2749,33 @@ function toggleTheme() {
         .tk-tips ul{ list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:8px; }
         .tk-tips li{ position:relative; padding-left:22px; font-family:var(--font-sans); font-size:13.5px; line-height:1.55; color:var(--ink); }
         .tk-tips li::before{ content:""; position:absolute; left:4px; top:8px; width:7px; height:7px; border-radius:999px; background:var(--gold); }
+
+        /* 2A: instant-results header inside the result screen */
+        .tk-instant-top{ display:flex; flex-wrap:wrap; align-items:center; gap:9px; margin-bottom:12px; }
+        .tk-instant-badge{ display:inline-flex; align-items:center; font-family:var(--font-sans); font-size:10.5px; font-weight:800; letter-spacing:.12em; text-transform:uppercase; color:var(--navy); background:var(--gold); border-radius:999px; padding:4px 11px; box-shadow:0 2px 8px rgba(0,0,0,.18); }
+        .tk-supports{ font-family:var(--font-sans); font-size:12.5px; font-weight:600; line-height:1.4; color:var(--ink-soft); }
+
+        /* 2C: result text must not inherit the navy hero's light cream color.
+           Force theme-aware ink so the "low tank" amber band stays readable in
+           Day Mode (light text on light amber was unreadable). Band accent colors
+           are set with higher specificity in the main sheet and are preserved. */
+        .wp-tank-result, .wp-tank-result p{ color:var(--ink); }
+        .wp-tank-result .flag{ color:var(--ink-faint); }
+
+        /* Item 7: Grace Step micro-intervention callout + breathing animation */
+        .grace-step{ margin:14px 0 4px; padding:16px 16px 14px; border-radius:14px; background:linear-gradient(180deg, rgba(242,201,100,.20), rgba(242,201,100,.07)); border:1.5px solid var(--gold); box-shadow:0 6px 18px -8px rgba(0,0,0,.3); }
+        .grace-step-h{ display:flex; align-items:center; gap:8px; font-family:var(--font-sans); font-size:12px; font-weight:800; letter-spacing:.06em; text-transform:uppercase; color:var(--gold-deep,#9a6f24); }
+        .grace-step-h svg{ width:16px; height:16px; flex:0 0 auto; }
+        :root[data-theme="dark"] .grace-step-h{ color:var(--gold-soft); }
+        .grace-step-p{ font-family:var(--font-sans); font-size:14px; line-height:1.55; color:var(--ink); margin:8px 0 12px; }
+        .grace-step-btn{ display:inline-flex; align-items:center; gap:7px; font-family:var(--font-sans); font-size:13.5px; font-weight:800; color:var(--navy); background:var(--gold); border:1px solid var(--gold); border-radius:999px; padding:10px 20px; cursor:pointer; transition:transform .15s var(--ease), background .15s; }
+        .grace-step-btn:hover{ transform:translateY(-1px); background:var(--gold-soft); }
+        .grace-breath{ display:flex; flex-direction:column; align-items:center; gap:12px; padding:14px 0 4px; }
+        .grace-breath[hidden]{ display:none; }
+        .grace-orb{ width:92px; height:92px; border-radius:999px; background:radial-gradient(circle at 50% 38%, var(--gold-soft), var(--gold)); box-shadow:0 0 0 8px rgba(242,201,100,.16), 0 8px 24px -6px rgba(0,0,0,.35); transform:scale(.6); }
+        .grace-orb.gb-anim{ transition:transform var(--gb-dur,4s) ease-in-out; }
+        .grace-cue{ font-family:var(--font-serif); font-style:italic; font-size:17px; color:var(--ink); min-height:24px; text-align:center; }
+        @media (prefers-reduced-motion: reduce){ .grace-orb.gb-anim{ transition:none; } }
         @media (max-width:520px){ .hero-tank-wrap{ margin-top:26px; } .hero-tank.wp-tank{ padding:20px 16px 18px; } }
         </style>
         <p class="hero-tank-sub" data-i18n="hero_tank_sub">Take a private 60-second read on your own tank, right here.</p>
@@ -2668,8 +2813,8 @@ function toggleTheme() {
             </div>
           </div>
           <div class="tk-item">
-            <div class="tk-q" data-i18n="wp_tq4">Lately I&rsquo;m on autopilot &mdash; going through the motions without really being there.</div>
-            <div class="tk-opts" role="radiogroup" aria-label="Lately I am on autopilot">
+            <div class="tk-q" data-i18n="wp_tq4">Lately I feel like I&rsquo;m just getting through the day without really noticing it &mdash; like my mind is somewhere else.</div>
+            <div class="tk-opts" role="radiogroup" aria-label="Lately I feel like I am just getting through the day without really noticing it">
               <span class="tk-pill" data-q="4" data-v="0" role="radio" tabindex="0" data-i18n="wp_opt0" aria-checked="false">Rarely / never</span>
               <span class="tk-pill" data-q="4" data-v="1" role="radio" tabindex="0" data-i18n="wp_opt1" aria-checked="false">Sometimes</span>
               <span class="tk-pill" data-q="4" data-v="2" role="radio" tabindex="0" data-i18n="wp_opt2" aria-checked="false">Often</span>
@@ -2732,8 +2877,9 @@ function toggleTheme() {
         .hd-scn-btn.active{ background:var(--gold); border-color:var(--gold); color:var(--navy); }
         .hd-legend{ display:flex; gap:14px; margin-top:9px; font-family:var(--font-sans); font-size:11.5px; color:var(--ink-soft); flex-wrap:wrap; }
         .hd-foot{ display:flex; align-items:center; justify-content:space-between; gap:10px; margin-top:13px; flex-wrap:wrap; }
-        .hd-link{ font-family:var(--font-sans); font-size:13px; font-weight:700; color:var(--ink); text-decoration:none; }
-        .hd-link:hover{ text-decoration:underline; }
+        .hd-link{ font-family:var(--font-sans); font-size:13px; font-weight:800; color:var(--gold-deep,#9a6f24); text-decoration:underline; text-underline-offset:2px; text-decoration-thickness:1.5px; }
+        :root[data-theme="dark"] .hd-link{ color:var(--gold-soft); }
+        .hd-link:hover{ text-decoration-thickness:2.5px; }
         .hd-note{ font-family:var(--font-sans); font-size:11px; color:var(--ink-faint); }
         /* TEACH-NEXT (2026-06): class-level "what to teach next" card — hero demo + dashboard overview */
         .hd-teach{ margin-top:13px; padding:11px 12px; border:1px solid var(--rule); border-left:3px solid var(--gold); border-radius:10px; background:rgba(127,127,127,.05); }
@@ -2757,9 +2903,8 @@ function toggleTheme() {
             <div class="hd-toggle-wrap">
               <span class="hd-toggle-label" data-i18n="hero_demo_view">View</span>
               <div class="hd-toggle hd-toggle--nudge" id="hdToggle" role="group" aria-label="Chart view">
-                <button type="button" class="hdt-btn active" data-hview="bar">Bar</button>
-                <button type="button" class="hdt-btn" data-hview="radar">Dials</button>
-                <button type="button" class="hdt-btn" data-hview="trend">Trend</button>
+                <button type="button" class="hdt-btn active" data-hview="trend">Trend</button>
+                <button type="button" class="hdt-btn" data-hview="bar">Bar</button>
               </div>
             </div>
           </div>
@@ -2825,7 +2970,7 @@ function toggleTheme() {
           <div class="t" data-i18n="aog_edu_t">For educators</div>
           <div class="s" data-i18n="aog_edu_s">The framework, the ecosystem map, and the full resource index.</div>
         </a>
-        <a href="#" class="hc-card" onclick="event.preventDefault(); openGuide(); setTimeout(function(){ if(typeof dmScrollTo==='function') dmScrollTo('dm-admin'); }, 700);">
+        <a href="#" class="hc-card" onclick="event.preventDefault(); openGuide(); setTimeout(function(){ if(typeof aogGoDoc==='function') aogGoDoc('dm-admin'); else if(typeof dmScrollTo==='function') dmScrollTo('dm-admin'); }, 650);">
           <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21h18"/><path d="M5 21V8l7-4 7 4v13"/><path d="M9 21v-6h6v6"/></svg></div>
           <div class="t" data-i18n="lead_ey">For schools &amp; districts</div>
           <div class="s">Screening, tiering, and growth monitoring in one tool.</div>
@@ -2903,6 +3048,263 @@ function toggleTheme() {
       </div>
     </section>
 
+
+  </div>
+</section>
+
+<!-- ============ EXPLORE THE FRAMEWORK (the philosophy) ============ -->
+<section id="screen-framework" class="screen">
+  <style>
+    .fw-hero{ position:relative; margin:6px calc(50% - 50vw) 0; width:100vw; padding:72px 7vw 60px; background:radial-gradient(125% 150% at 50% 0%, #244D75 0%, #143049 55%, #07151F 100%); text-align:center; overflow:hidden; }
+    .fw-hero::before{ content:""; position:absolute; top:-30%; right:-5%; width:55%; height:160%; background:radial-gradient(circle, rgba(242,201,100,.15), transparent 65%); pointer-events:none; }
+    .fw-hero .fw-ey{ font-family:var(--font-sans); font-size:12px; font-weight:700; letter-spacing:.26em; text-transform:uppercase; color:var(--gold-soft); }
+    .fw-hero h1{ font-family:var(--font-serif); font-weight:600; font-size:clamp(34px,5vw,56px); line-height:1.04; color:#fff; margin:12px 0 14px; letter-spacing:-.01em; }
+    .fw-hero p{ max-width:620px; margin:0 auto; font-family:var(--font-sans); font-size:clamp(16px,2vw,19px); line-height:1.55; color:rgba(244,238,226,.86); }
+    .fw-wrap{ max-width:1000px; margin:0 auto; padding:0 24px; }
+    .fw-sec{ padding:54px 0; border-top:1px solid var(--rule); }
+    .fw-sec:first-of-type{ border-top:none; }
+    .fw-num{ font-family:var(--font-sans); font-size:12px; font-weight:700; letter-spacing:.2em; text-transform:uppercase; color:var(--gold); }
+    .fw-h{ font-family:var(--font-serif); font-weight:600; font-size:clamp(26px,3.4vw,38px); line-height:1.1; color:var(--ink); margin:8px 0 6px; letter-spacing:-.01em; }
+    .fw-sub{ font-family:var(--font-sans); font-size:15px; color:var(--ink-soft); margin:0 0 26px; max-width:60ch; }
+    /* 1 — problem */
+    .fw-quote{ position:relative; background:var(--paper); border:1px solid var(--rule); border-left:4px solid var(--gold); border-radius:16px; padding:30px 34px; box-shadow:var(--shadow-sm); }
+    .fw-quote p{ font-family:var(--font-serif); font-style:italic; font-size:clamp(18px,2.3vw,23px); line-height:1.5; color:var(--ink); margin:0; }
+    /* 2 — pillars */
+    .fw-pillars{ display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+    .fw-pillar{ background:var(--paper); border:1px solid var(--rule); border-radius:16px; padding:24px 24px 22px; box-shadow:var(--shadow-sm); transition:transform .18s var(--ease), box-shadow .18s var(--ease); }
+    .fw-pillar:hover{ transform:translateY(-3px); box-shadow:0 16px 38px -18px rgba(10,30,51,.4); }
+    .fw-pillar-ic{ width:46px; height:46px; border-radius:12px; display:grid; place-items:center; background:rgba(217,163,59,.12); border:1px solid rgba(217,163,59,.32); color:var(--navy); margin-bottom:14px; }
+    :root[data-theme="dark"] .fw-pillar-ic{ color:var(--gold-soft); }
+    .fw-pillar-ic svg{ width:23px; height:23px; }
+    .fw-pillar h3{ font-family:var(--font-serif); font-weight:600; font-size:22px; color:var(--navy); margin:0 0 4px; }
+    :root[data-theme="dark"] .fw-pillar h3{ color:var(--gold-soft); }
+    .fw-pillar .fw-q{ font-family:var(--font-serif); font-style:italic; font-size:15px; color:var(--gold-deep,#9a6f24); margin:0 0 9px; }
+    :root[data-theme="dark"] .fw-pillar .fw-q{ color:var(--gold-soft); }
+    .fw-pillar p{ font-family:var(--font-sans); font-size:14.5px; line-height:1.6; color:var(--ink-soft); margin:0; }
+    /* 3 — grace over performance */
+    .fw-gop{ background:linear-gradient(180deg, #0E2840, #0A1E33); border-radius:22px; padding:38px clamp(20px,4vw,48px); color:#fff; box-shadow:0 26px 60px -28px rgba(0,0,0,.6); }
+    .fw-gop .fw-num{ color:var(--gold-soft); }
+    .fw-gop .fw-h{ color:#fff; }
+    .fw-gop .fw-sub{ color:rgba(244,238,226,.74); }
+    .fw-table{ display:grid; grid-template-columns:1fr auto 1fr; gap:0 0; margin-top:18px; border-radius:14px; overflow:hidden; }
+    .fw-th{ font-family:var(--font-sans); font-size:12px; font-weight:800; letter-spacing:.1em; text-transform:uppercase; padding:14px 18px; }
+    .fw-th-perf{ color:rgba(244,238,226,.6); }
+    .fw-th-grace{ color:var(--gold-soft); text-align:right; }
+    .fw-th-mid{ }
+    .fw-row{ display:contents; }
+    .fw-cell{ padding:15px 18px; font-family:var(--font-sans); font-size:clamp(15px,1.9vw,17px); border-top:1px solid rgba(255,255,255,.10); display:flex; align-items:center; }
+    .fw-cell-perf{ color:rgba(244,238,226,.62); }
+    .fw-cell-grace{ color:#fff; font-weight:600; justify-content:flex-end; text-align:right; }
+    .fw-cell-arrow{ border-top:1px solid rgba(255,255,255,.10); display:grid; place-items:center; padding:0 8px; color:var(--gold); }
+    .fw-cell-arrow svg{ width:18px; height:18px; }
+    .fw-gop-foot{ margin-top:18px; font-family:var(--font-sans); font-size:12.5px; color:rgba(244,238,226,.55); text-align:center; }
+    /* 4 — how it works */
+    .fw-flow{ display:flex; align-items:stretch; justify-content:center; gap:0; flex-wrap:wrap; margin-bottom:24px; }
+    .fw-step{ flex:1 1 0; min-width:120px; text-align:center; background:var(--paper); border:1px solid var(--rule); border-radius:14px; padding:18px 12px; box-shadow:var(--shadow-sm); }
+    .fw-step .fw-step-n{ font-family:var(--font-sans); font-size:11px; font-weight:700; color:var(--gold); letter-spacing:.12em; }
+    .fw-step .fw-step-t{ font-family:var(--font-serif); font-weight:600; font-size:17px; color:var(--navy); margin-top:4px; }
+    :root[data-theme="dark"] .fw-step .fw-step-t{ color:var(--ink); }
+    .fw-arrow{ display:grid; place-items:center; color:var(--gold); flex:0 0 auto; padding:0 6px; }
+    .fw-arrow svg{ width:22px; height:22px; }
+    @media (max-width:760px){ .fw-flow{ flex-direction:column; align-items:stretch; } .fw-arrow{ transform:rotate(90deg); padding:6px 0; } }
+    .fw-flow-note{ background:var(--paper); border:1px solid var(--rule); border-left:4px solid var(--gold); border-radius:14px; padding:20px 24px; }
+    .fw-flow-note p{ font-family:var(--font-sans); font-size:15.5px; line-height:1.62; color:var(--ink); margin:0; }
+    /* 5 — who it's for */
+    .fw-who{ display:grid; grid-template-columns:repeat(3,1fr); gap:16px; }
+    .fw-who-card{ background:var(--paper); border:1px solid var(--rule); border-top:3px solid var(--gold); border-radius:14px; padding:20px; box-shadow:var(--shadow-sm); }
+    .fw-who-card h4{ font-family:var(--font-serif); font-weight:600; font-size:19px; color:var(--navy); margin:0 0 7px; }
+    :root[data-theme="dark"] .fw-who-card h4{ color:var(--gold-soft); }
+    .fw-who-card p{ font-family:var(--font-sans); font-size:13.8px; line-height:1.58; color:var(--ink-soft); margin:0; }
+    /* 6 — the tool */
+    .fw-tool{ text-align:center; background:linear-gradient(165deg,#FFF8E8,#F8EBCB); border:1px solid #E5D2A2; border-radius:20px; padding:40px clamp(20px,4vw,48px); }
+    :root[data-theme="dark"] .fw-tool{ background:linear-gradient(165deg,#1c2c1a00,#13314F); border-color:var(--gold); }
+    .fw-tool .fw-num{ color:var(--gold-deep,#9a6f24); }
+    .fw-tool p{ font-family:var(--font-serif); font-style:italic; font-size:clamp(18px,2.4vw,24px); line-height:1.45; color:var(--navy); max-width:640px; margin:10px auto 22px; }
+    :root[data-theme="dark"] .fw-tool p{ color:var(--ink); }
+    .fw-cta{ display:inline-flex; align-items:center; gap:9px; font-family:var(--font-sans); font-weight:800; font-size:16.5px; color:var(--navy); background:var(--gold); border:1.5px solid var(--gold); border-radius:999px; padding:15px 34px; text-decoration:none; cursor:pointer; box-shadow:0 10px 28px -8px rgba(0,0,0,.4); transition:background .15s var(--ease), transform .15s var(--ease); }
+    .fw-cta:hover{ background:var(--gold-soft); transform:translateY(-1px); }
+    /* 7 — founder */
+    .fw-founder{ display:flex; gap:24px; align-items:flex-start; background:var(--paper); border:1px solid var(--rule); border-radius:18px; padding:30px 32px; box-shadow:var(--shadow-sm); }
+    .fw-founder-mark{ flex:0 0 auto; width:64px; height:64px; border-radius:16px; display:grid; place-items:center; background:var(--navy); color:var(--gold-soft); font-family:var(--font-serif); font-weight:600; font-size:34px; }
+    .fw-founder p{ font-family:var(--font-serif); font-style:italic; font-size:clamp(17px,2.1vw,21px); line-height:1.5; color:var(--ink); margin:0; }
+    .fw-close{ text-align:center; padding:48px 0 8px; }
+    .fw-close a.sec{ display:inline-block; margin-top:16px; font-family:var(--font-sans); font-weight:700; font-size:14px; color:var(--gold-deep,#9a6f24); text-decoration:underline; text-underline-offset:2px; }
+    :root[data-theme="dark"] .fw-close a.sec{ color:var(--gold-soft); }
+    @media (max-width:760px){ .fw-pillars{ grid-template-columns:1fr; } .fw-who{ grid-template-columns:1fr; } .fw-founder{ flex-direction:column; align-items:center; text-align:center; } }
+    @media (min-width:761px) and (max-width:980px){ .fw-who{ grid-template-columns:repeat(2,1fr); } }
+  </style>
+
+  <div class="nav-row" style="justify-content:flex-start; margin-bottom:0; padding:0 24px;">
+    <button class="btn btn-ghost" onclick="resetToStart()"><span class="btn-arrow">&larr;</span> <span data-i18n="nav_back_start">Back to start</span></button>
+  </div>
+
+  <div class="fw-hero">
+    <div class="fw-ey" data-i18n="fw_ey">The Framework</div>
+    <h1>Architecture of Grace</h1>
+    <p data-i18n="fw_hero_p">What it is, and the core ideas it&rsquo;s built on &mdash; a foundation for growth rooted in identity, self-compassion, forgiveness, and grace.</p>
+  </div>
+
+  <div class="fw-wrap">
+
+    <!-- 1 · The Problem -->
+    <div class="fw-sec">
+      <div class="fw-num" data-i18n="fw_1_num">01 &middot; The Problem</div>
+      <h2 class="fw-h" data-i18n="fw_1_h">Why Architecture of Grace exists</h2>
+      <div class="fw-quote">
+        <p data-i18n="fw_1_q">Many systems measure behavior, performance, compliance, or achievement. Few help people understand themselves and one another with compassion. Architecture of Grace was created to offer a different foundation for growth &mdash; one rooted in identity, self-compassion, forgiveness, and grace.</p>
+      </div>
+    </div>
+
+    <!-- 2 · The Four Pillars -->
+    <div class="fw-sec">
+      <div class="fw-num" data-i18n="fw_2_num">02 &middot; The Four Pillars</div>
+      <h2 class="fw-h" data-i18n="fw_2_h">The four ideas everything rests on</h2>
+      <p class="fw-sub" data-i18n="fw_2_sub">One throughline, worded for whoever&rsquo;s answering &mdash; from a kindergartener to a CEO.</p>
+      <div class="fw-pillars">
+        <div class="fw-pillar">
+          <div class="fw-pillar-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg></div>
+          <h3 data-i18n="fw_p_id_t">Identity</h3>
+          <div class="fw-q" data-i18n="fw_p_id_q">Who am I beyond what I do?</div>
+          <p data-i18n="fw_p_id_d">Understanding worth, belonging, strengths, and personal story.</p>
+        </div>
+        <div class="fw-pillar">
+          <div class="fw-pillar-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-4.35-9-8a5 5 0 0 1 9-3 5 5 0 0 1 9 3c-2 3.65-9 8-9 8z"/></svg></div>
+          <h3 data-i18n="fw_p_sc_t">Self-Compassion</h3>
+          <div class="fw-q" data-i18n="fw_p_sc_q">How do I respond when I struggle?</div>
+          <p data-i18n="fw_p_sc_d">Learning to replace shame with honesty, resilience, and care.</p>
+        </div>
+        <div class="fw-pillar">
+          <div class="fw-pillar-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg></div>
+          <h3 data-i18n="fw_p_fg_t">Forgiveness</h3>
+          <div class="fw-q" data-i18n="fw_p_fg_q">How do I move forward after hurt, mistakes, or conflict?</div>
+          <p data-i18n="fw_p_fg_d">Creating space for healing, accountability, and restoration.</p>
+        </div>
+        <div class="fw-pillar">
+          <div class="fw-pillar-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l2.09 5.26L20 9.27l-4 3.64 1.18 5.59L12 16.5l-5.18 2-1.18-5.59-4-3.64 5.91-1.01z"/></svg></div>
+          <h3 data-i18n="fw_p_gr_t">Grace</h3>
+          <div class="fw-q" data-i18n="fw_p_gr_q">How do I extend understanding to myself and others?</div>
+          <p data-i18n="fw_p_gr_d">Choosing connection over judgment, and growth over perfection.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3 · Grace Over Performance -->
+    <div class="fw-sec">
+      <div class="fw-gop">
+        <div class="fw-num" data-i18n="fw_3_num">03 &middot; Grace Over Performance</div>
+        <h2 class="fw-h" data-i18n="fw_3_h">Two ways to hold a human being</h2>
+        <p class="fw-sub" data-i18n="fw_3_sub">The same moment, read through two very different lenses.</p>
+        <div class="fw-table" role="table" aria-label="Performance culture versus grace culture">
+          <div class="fw-th fw-th-perf" role="columnheader" data-i18n="fw_th_perf">Performance Culture</div>
+          <div class="fw-th fw-th-mid" role="columnheader" aria-hidden="true"></div>
+          <div class="fw-th fw-th-grace" role="columnheader" data-i18n="fw_th_grace">Grace Culture</div>
+
+          <div class="fw-cell fw-cell-perf" data-i18n="fw_perf_1">Earn worth</div>
+          <div class="fw-cell-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg></div>
+          <div class="fw-cell fw-cell-grace" data-i18n="fw_grace_1">Recognize worth</div>
+
+          <div class="fw-cell fw-cell-perf" data-i18n="fw_perf_2">Fear mistakes</div>
+          <div class="fw-cell-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg></div>
+          <div class="fw-cell fw-cell-grace" data-i18n="fw_grace_2">Learn from mistakes</div>
+
+          <div class="fw-cell fw-cell-perf" data-i18n="fw_perf_3">Comparison</div>
+          <div class="fw-cell-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg></div>
+          <div class="fw-cell fw-cell-grace" data-i18n="fw_grace_3">Connection</div>
+
+          <div class="fw-cell fw-cell-perf" data-i18n="fw_perf_4">Judgment</div>
+          <div class="fw-cell-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg></div>
+          <div class="fw-cell fw-cell-grace" data-i18n="fw_grace_4">Understanding</div>
+
+          <div class="fw-cell fw-cell-perf" data-i18n="fw_perf_5">Perfection</div>
+          <div class="fw-cell-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg></div>
+          <div class="fw-cell fw-cell-grace" data-i18n="fw_grace_5">Growth</div>
+
+          <div class="fw-cell fw-cell-perf" data-i18n="fw_perf_6">Compliance</div>
+          <div class="fw-cell-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg></div>
+          <div class="fw-cell fw-cell-grace" data-i18n="fw_grace_6">Reflection</div>
+        </div>
+        <div class="fw-gop-foot" data-i18n="fw_gop_foot">Architecture of Grace lives on the right-hand side.</div>
+      </div>
+    </div>
+
+    <!-- 4 · How the Framework Works -->
+    <div class="fw-sec">
+      <div class="fw-num" data-i18n="fw_4_num">04 &middot; How It Works</div>
+      <h2 class="fw-h" data-i18n="fw_4_h">From a quiet moment to real growth</h2>
+      <p class="fw-sub" data-i18n="fw_4_sub">Not a test to pass &mdash; a path to walk.</p>
+      <div class="fw-flow">
+        <div class="fw-step"><div class="fw-step-n">01</div><div class="fw-step-t" data-i18n="fw_step_1">Reflection</div></div>
+        <div class="fw-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg></div>
+        <div class="fw-step"><div class="fw-step-n">02</div><div class="fw-step-t" data-i18n="fw_step_2">Awareness</div></div>
+        <div class="fw-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg></div>
+        <div class="fw-step"><div class="fw-step-n">03</div><div class="fw-step-t" data-i18n="fw_step_3">Conversation</div></div>
+        <div class="fw-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg></div>
+        <div class="fw-step"><div class="fw-step-n">04</div><div class="fw-step-t" data-i18n="fw_step_4">Understanding</div></div>
+        <div class="fw-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg></div>
+        <div class="fw-step"><div class="fw-step-n">05</div><div class="fw-step-t" data-i18n="fw_step_5">Growth</div></div>
+      </div>
+      <div class="fw-flow-note">
+        <p data-i18n="fw_flow_note">The check-in is not an assessment. It is a conversation starter. It helps individuals and communities identify areas of strength and areas that may need attention, then provides opportunities for reflection and growth.</p>
+      </div>
+    </div>
+
+    <!-- 5 · Who It's For -->
+    <div class="fw-sec">
+      <div class="fw-num" data-i18n="fw_5_num">05 &middot; Who It&rsquo;s For</div>
+      <h2 class="fw-h" data-i18n="fw_5_h">Made for everyone in the room</h2>
+      <p class="fw-sub" data-i18n="fw_5_sub">The same four ideas, met where each person actually is.</p>
+      <div class="fw-who">
+        <div class="fw-who-card">
+          <h4 data-i18n="fw_who_st_t">Students</h4>
+          <p data-i18n="fw_who_st_d">A private, age-aware way to notice how they&rsquo;re really doing &mdash; beyond grades and behavior charts. It gives students language for their inner world, and the message that who they are matters more than how they perform.</p>
+        </div>
+        <div class="fw-who-card">
+          <h4 data-i18n="fw_who_fa_t">Families</h4>
+          <p data-i18n="fw_who_fa_d">A shared vocabulary for the conversations that matter most at home. Families use it to check in with one another, name what&rsquo;s hard without blame, and grow closer through honesty rather than pressure.</p>
+        </div>
+        <div class="fw-who-card">
+          <h4 data-i18n="fw_who_ed_t">Educators</h4>
+          <p data-i18n="fw_who_ed_d">Support for the people who carry classrooms every day. Educators get a clearer read on a group&rsquo;s needs &mdash; and a way to tend to their own wellbeing first, because you can&rsquo;t pour from an empty cup.</p>
+        </div>
+        <div class="fw-who-card">
+          <h4 data-i18n="fw_who_cg_t">Caregivers</h4>
+          <p data-i18n="fw_who_cg_d">For those who hold space for others &mdash; parents, counselors, aides, and helpers. It honors the weight they carry and helps them stay grounded, resourced, and gentle with themselves.</p>
+        </div>
+        <div class="fw-who-card">
+          <h4 data-i18n="fw_who_tm_t">Teams</h4>
+          <p data-i18n="fw_who_tm_d">A way for groups and organizations to build trust and reflect together. Teams use the framework to move from compliance toward connection, surfacing what people need before burnout sets in.</p>
+        </div>
+        <div class="fw-who-card">
+          <h4 data-i18n="fw_who_ia_t">Independent Adults</h4>
+          <p data-i18n="fw_who_ia_d">A quiet practice for anyone choosing to grow on their own terms. It offers a structured moment to pause, reflect, and extend grace inward &mdash; no classroom or program required.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 6 · The Universal Check-In -->
+    <div class="fw-sec">
+      <div class="fw-tool">
+        <div class="fw-num" data-i18n="fw_6_num">06 &middot; The Tool</div>
+        <p data-i18n="fw_6_p">The Universal Check-In is one practical expression of the Architecture of Grace framework.</p>
+        <a href="#" class="fw-cta" onclick="event.preventDefault(); if(typeof startChoose==='function'){startChoose();}"><span data-i18n="hyb_cta_checkin">Take the Check-In</span> <span aria-hidden="true">&rarr;</span></a>
+      </div>
+    </div>
+
+    <!-- 7 · About the Founder -->
+    <div class="fw-sec">
+      <div class="fw-num" data-i18n="fw_7_num">07 &middot; About the Founder</div>
+      <h2 class="fw-h" data-i18n="fw_7_h">Where it began</h2>
+      <div class="fw-founder">
+        <div class="fw-founder-mark" aria-hidden="true">A</div>
+        <p data-i18n="fw_7_p">Built by a special educator who spent years working with students, families, and support teams, Architecture of Grace emerged from a simple question: what if growth began with grace instead of performance?</p>
+      </div>
+    </div>
+
+    <!-- Close -->
+    <div class="fw-close">
+      <a href="#" class="fw-cta" onclick="event.preventDefault(); if(typeof startChoose==='function'){startChoose();}"><span data-i18n="hyb_cta_checkin">Take the Check-In</span> <span aria-hidden="true">&rarr;</span></a>
+      <div><a href="#" class="sec" onclick="event.preventDefault(); if(typeof openGuide==='function'){openGuide();}"><span data-i18n="fw_browse">Browse the guide &amp; resources &rarr;</span></a></div>
+    </div>
 
   </div>
 </section>
@@ -3354,7 +3756,7 @@ function toggleTheme() {
       .wp-tank-result.ok{ background:var(--green-bg); border-color:#bcd6bf; } .wp-tank-result.ok .band{ color:var(--green); }
       .wp-tank-result.low{ background:var(--amber-bg); border-color:#e3d199; } .wp-tank-result.low .band{ color:var(--amber); }
       .wp-tank-result.empty{ background:var(--red-bg); border-color:#e3b9b4; } .wp-tank-result.empty .band{ color:var(--red); }
-      .wp-tank-result.warn{ background:#fff; }
+      .wp-tank-result.warn{ background:var(--paper); }
       </style>
       <div class="wp-tank-head">
         <div class="ey" data-i18n="wp_tank_ey">A 60-second read</div>
@@ -3389,8 +3791,8 @@ function toggleTheme() {
         </div>
       </div>
       <div class="tk-item">
-        <div class="tk-q" data-i18n="wp_tq4">Lately I&rsquo;m on autopilot &mdash; going through the motions without really being there.</div>
-        <div class="tk-opts" role="radiogroup" aria-label="Lately I am on autopilot">
+        <div class="tk-q" data-i18n="wp_tq4">Lately I feel like I&rsquo;m just getting through the day without really noticing it &mdash; like my mind is somewhere else.</div>
+        <div class="tk-opts" role="radiogroup" aria-label="Lately I feel like I am just getting through the day without really noticing it">
           <span class="tk-pill" data-q="4" data-v="0" role="radio" tabindex="0" data-i18n="wp_opt0" aria-checked="false">Rarely / never</span>
           <span class="tk-pill" data-q="4" data-v="1" role="radio" tabindex="0" data-i18n="wp_opt1" aria-checked="false">Sometimes</span>
           <span class="tk-pill" data-q="4" data-v="2" role="radio" tabindex="0" data-i18n="wp_opt2" aria-checked="false">Often</span>
@@ -3589,6 +3991,15 @@ function toggleTheme() {
       <button class="btn" id="btnPrintMyResultsTop" data-i18n="mr_save">Save / Print</button>
       <button class="btn btn-ghost" id="btnEmailMyResultsTop" data-i18n="mr_email">Email it to myself</button>
     </div>
+    <div class="ages-toggle-wrap" id="agesToggleWrap">
+      <span class="ages-toggle-label" data-i18n="ages_view_as">View as</span>
+      <div class="ages-toggle" id="agesToggle" role="group" aria-label="Read these results as">
+        <button type="button" class="ages-btn" data-aud="child" onclick="aogSetAudience('child')" data-i18n="ages_child">Child</button>
+        <button type="button" class="ages-btn" data-aud="teen" onclick="aogSetAudience('teen')" data-i18n="ages_teen">Teen</button>
+        <button type="button" class="ages-btn active" data-aud="adult" onclick="aogSetAudience('adult')" data-i18n="ages_adult">Adult / Educator</button>
+      </div>
+    </div>
+    <div id="aogAgesPanel" class="ages-panel" style="display:none;"></div>
     <div id="myResultsReport"></div>
     <div class="share-card" id="shareCard">
       <div class="share-card-head">
@@ -3775,9 +4186,8 @@ function toggleTheme() {
           <div class="small" id="ovViewSub" data-dl="dl_ov_sub">Everyone grouped by overall score (0&ndash;100).</div>
         </div>
         <div class="ov-toggle" id="ovViewToggle" role="group" aria-label="Chart view">
-          <button type="button" class="ovt-btn active" data-view="bar">Bar</button>
-          <button type="button" class="ovt-btn" data-view="radar">Dials</button>
-          <button type="button" class="ovt-btn" data-view="trend">Trend</button>
+          <button type="button" class="ovt-btn active" data-view="trend">Trend</button>
+          <button type="button" class="ovt-btn" data-view="bar">Bar</button>
         </div>
       </div>
       <div class="dist-card">
@@ -4367,9 +4777,9 @@ function toggleTheme() {
             </div>
           </div>
           <p style="font-size:12.8px; line-height:1.55; color:var(--ink-soft); margin:15px 0 0; padding-top:13px; border-top:1px dashed var(--rule);">That&rsquo;s the path in a school. On their own, an adult takes the <em style="color:var(--navy); font-style:italic; font-weight:600;">very same check-in</em> privately &mdash; the personal report and conversation starters are theirs alone. This is for every age, not only the classroom.</p>
-        </div>
 
-        <!-- ===== DECISION-MAKER SURFACING (who it’s for · features · admin) ===== -->
+        <!-- ===== WHO IT'S FOR — moved inside the "How it works" pane (2026) so it
+             shows only on this tab, not persistently above every Documentation tab. ===== -->
         <div class="doc-who">
           <div class="eyebrow" style="color:var(--gold);" data-i18n="doc_who_ey">Who it&rsquo;s for</div>
           <h3 class="serif" style="font-size:22px; color:var(--navy); margin:4px 0 6px;" data-i18n="doc_who_h">Five ways in, one framework</h3>
@@ -4409,6 +4819,7 @@ function toggleTheme() {
           </a>
           <!-- ===== END TEACHER PRINTABLE ===================================== -->
         </div>
+        </div><!-- /dm-flow (now also wraps "Who it's for") -->
 
         <!-- what this platform includes -->
         <div class="dm-sec docpane" id="dm-platform" hidden>
@@ -4876,6 +5287,25 @@ function toggleTheme() {
                  style="display:inline-block; background:var(--gold); color:#1a1a18; font-weight:700; font-size:13.5px; padding:12px 22px; border-radius:8px; text-decoration:none;" data-i18n-html="dl_open_pdf">&#8599;&nbsp; Open &nbsp;&middot;&nbsp; PDF</a>
             </div>
           </div>
+
+          <!-- ============ CROSSWALK MATRIX PREVIEWS (English-only block) ============ -->
+          <div style="display:flex; gap:18px; flex-wrap:wrap; margin-bottom:28px;">
+            <div style="flex:1; min-width:258px; background:linear-gradient(135deg,#24496f 0%,var(--navy) 60%,#142c47 100%); border:1px solid var(--gold); border-radius:14px; padding:24px 26px; color:var(--cream);">
+              <div style="font-size:11px; letter-spacing:.24em; text-transform:uppercase; color:#E7B85E; font-weight:600;">Free Preview &middot; The Crosswalk Matrix</div>
+              <div class="serif" style="font-size:26px; color:#fff; margin:6px 0 7px;">Where the Story Meets the Lesson</div>
+              <p style="font-size:13.5px; line-height:1.6; color:#dfe7ef; margin-bottom:16px;">The teacher&rsquo;s master map, K&ndash;12 &mdash; every load-bearing scene crosswalked to a lesson, an anchor chart, and a concrete neuro-affirming adjustment. Universal edition; no faith framework required.</p>
+              <a href="files/AoG-Crosswalk-Matrix-Preview-Secular.pdf" target="_blank" rel="noopener"
+                 style="display:inline-block; background:var(--gold); color:#1a1a18; font-weight:700; font-size:13.5px; padding:12px 22px; border-radius:8px; text-decoration:none;">&#8599;&nbsp; Open &nbsp;&middot;&nbsp; PDF</a>
+            </div>
+            <div style="flex:1; min-width:258px; background:linear-gradient(135deg,#24496f 0%,var(--navy) 60%,#142c47 100%); border:1px solid var(--gold); border-radius:14px; padding:24px 26px; color:var(--cream);">
+              <div style="font-size:11px; letter-spacing:.24em; text-transform:uppercase; color:#E7B85E; font-weight:600;">Free Preview &middot; Crosswalk &middot; Divine</div>
+              <div class="serif" style="font-size:26px; color:#fff; margin:6px 0 7px;">The Scripture Bridge, Woven In</div>
+              <p style="font-size:13.5px; line-height:1.6; color:#dfe7ef; margin-bottom:16px;">The same K&ndash;12 crosswalk, faith-integrated &mdash; a Scripture &amp; faith-link anchor keyed to every scene (ESV), from a K&ndash;2 whisper-line to 11&ndash;12 doctrine. Standalone; no separate secular book required.</p>
+              <a href="files/AoG-Crosswalk-Matrix-Preview-Divine.pdf" target="_blank" rel="noopener"
+                 style="display:inline-block; background:var(--gold); color:#1a1a18; font-weight:700; font-size:13.5px; padding:12px 22px; border-radius:8px; text-decoration:none;">&#8599;&nbsp; Open &nbsp;&middot;&nbsp; PDF</a>
+            </div>
+          </div>
+          <!-- ============ /CROSSWALK MATRIX PREVIEWS ============ -->
 
                     <!-- ============ FEATURED NOVEL PREVIEW ============ -->
           <div style="border:1px solid var(--gold); border-radius:14px; padding:22px 26px; margin-bottom:28px; background:var(--cream); display:flex; gap:22px; align-items:center; flex-wrap:wrap;">
@@ -5393,9 +5823,8 @@ function toggleTheme() {
 .st-cprice.st-free-txt{font-style:italic;color:#5C6B4A;font-size:15px;}
 [data-theme="dark"] .st-cprice.st-free-txt{color:#9CC08A;}
 .st-actions{display:inline-flex;align-items:center;gap:10px;}
-.st-prev{font-size:11.5px;font-weight:600;color:var(--st-navy-soft);text-decoration:none;white-space:nowrap;}
-[data-theme="dark"] .st-prev{color:var(--st-gold-soft);}
-.st-prev:hover{color:var(--st-gold);}
+.st-prev{font-size:12px;font-weight:700;color:var(--st-navy);background:var(--st-gold-soft);border-radius:8px;padding:8px 13px;text-decoration:none;white-space:nowrap;transition:.18s;}
+.st-prev:hover{background:var(--st-gold);}
 .st-mbuy{font-size:12px;font-weight:600;color:#fff;background:var(--st-navy);border:none;border-radius:8px;padding:8px 13px;cursor:pointer;transition:.18s;white-space:nowrap;}
 .st-mbuy:hover{background:var(--st-navy-soft);}
 .st-mbuy.st-added{background:var(--st-gold);color:var(--st-navy);}
@@ -5431,8 +5860,7 @@ function toggleTheme() {
   .aog-store .st-desc{font-size:11.5px;line-height:1.45;margin-bottom:10px;}
   .aog-store .st-cfoot{flex-wrap:wrap;gap:8px;}
   .aog-store .st-cprice{font-size:15px;}
-  .aog-store .st-mbuy,.aog-store .st-freebtn{font-size:11.5px;padding:7px 11px;}
-  .aog-store .st-prev{font-size:11px;}
+  .aog-store .st-mbuy,.aog-store .st-freebtn,.aog-store .st-prev{font-size:11.5px;padding:7px 11px;}
   /* novel doors: shrink the covers/text so the shelf scrolls less */
   .aog-store .st-doors{grid-template-columns:repeat(2,1fr);gap:12px;}
   .aog-store .st-door-body{padding:11px 12px 13px;}
@@ -7215,7 +7643,8 @@ const I18N_UI = {
     es: "Incluso cuando descanso, no me siento realmente recargado/a."
   },
   wp_tq4: {
-    es: "Últimamente estoy en piloto automático — haciendo las cosas sin estar realmente presente."
+    en: "Lately I feel like I\u2019m just getting through the day without really noticing it \u2014 like my mind is somewhere else.",
+    es: "\u00daltimamente siento que solo paso el d\u00eda sin darme cuenta de verdad \u2014 como si mi mente estuviera en otra parte."
   },
   wp_opt0: {
     es: "Casi nunca"
@@ -7380,6 +7809,7 @@ const I18N_UI = {
     es: "architectureofgrace.org"
   },
   hyb_b1: {
+    en: "Grace Over Performance",
     es: "La gracia por encima del rendimiento"
   },
   hyb_b2: {
@@ -7388,13 +7818,96 @@ const I18N_UI = {
   hyb_b3: {
     es: "Creado por un educador especial"
   },
+  hyb_cta_explore: { en: "Explore the Framework", es: "Explora el marco" },
+  hyb_cta_checkin: { en: "Take the Check-In", es: "Haz el chequeo" },
+  fw_ey: { en: "The Framework", es: "El marco" },
+  fw_hero_p: { en: "What it is, and the core ideas it\u2019s built on \u2014 a foundation for growth rooted in identity, self-compassion, forgiveness, and grace.", es: "Qu\u00e9 es y las ideas centrales sobre las que se construye: una base para crecer arraigada en la identidad, la autocompasi\u00f3n, el perd\u00f3n y la gracia." },
+  fw_1_num: { en: "01 \u00b7 The Problem", es: "01 \u00b7 El problema" },
+  fw_1_h: { en: "Why Architecture of Grace exists", es: "Por qu\u00e9 existe Architecture of Grace" },
+  fw_1_q: { en: "Many systems measure behavior, performance, compliance, or achievement. Few help people understand themselves and one another with compassion. Architecture of Grace was created to offer a different foundation for growth \u2014 one rooted in identity, self-compassion, forgiveness, and grace.", es: "Muchos sistemas miden el comportamiento, el rendimiento, el cumplimiento o los logros. Pocos ayudan a las personas a comprenderse a s\u00ed mismas y a los dem\u00e1s con compasi\u00f3n. Architecture of Grace naci\u00f3 para ofrecer una base distinta para el crecimiento: una arraigada en la identidad, la autocompasi\u00f3n, el perd\u00f3n y la gracia." },
+  fw_2_num: { en: "02 \u00b7 The Four Pillars", es: "02 \u00b7 Los cuatro pilares" },
+  fw_2_h: { en: "The four ideas everything rests on", es: "Las cuatro ideas sobre las que se apoya todo" },
+  fw_2_sub: { en: "One throughline, worded for whoever\u2019s answering \u2014 from a kindergartener to a CEO.", es: "Un mismo hilo conductor, expresado seg\u00fan qui\u00e9n responda, desde un ni\u00f1o de k\u00ednder hasta un director ejecutivo." },
+  fw_p_id_t: { en: "Identity", es: "Identidad" },
+  fw_p_id_q: { en: "Who am I beyond what I do?", es: "\u00bfQui\u00e9n soy m\u00e1s all\u00e1 de lo que hago?" },
+  fw_p_id_d: { en: "Understanding worth, belonging, strengths, and personal story.", es: "Comprender el valor propio, la pertenencia, las fortalezas y la historia personal." },
+  fw_p_sc_t: { en: "Self-Compassion", es: "Autocompasi\u00f3n" },
+  fw_p_sc_q: { en: "How do I respond when I struggle?", es: "\u00bfC\u00f3mo respondo cuando me cuesta?" },
+  fw_p_sc_d: { en: "Learning to replace shame with honesty, resilience, and care.", es: "Aprender a reemplazar la verg\u00fcenza con honestidad, resiliencia y cuidado." },
+  fw_p_fg_t: { en: "Forgiveness", es: "Perd\u00f3n" },
+  fw_p_fg_q: { en: "How do I move forward after hurt, mistakes, or conflict?", es: "\u00bfC\u00f3mo sigo adelante tras el da\u00f1o, los errores o el conflicto?" },
+  fw_p_fg_d: { en: "Creating space for healing, accountability, and restoration.", es: "Crear espacio para la sanaci\u00f3n, la responsabilidad y la restauraci\u00f3n." },
+  fw_p_gr_t: { en: "Grace", es: "Gracia" },
+  fw_p_gr_q: { en: "How do I extend understanding to myself and others?", es: "\u00bfC\u00f3mo ofrezco comprensi\u00f3n a m\u00ed mismo y a los dem\u00e1s?" },
+  fw_p_gr_d: { en: "Choosing connection over judgment, and growth over perfection.", es: "Elegir la conexi\u00f3n por encima del juicio, y el crecimiento por encima de la perfecci\u00f3n." },
+  fw_3_num: { en: "03 \u00b7 Grace Over Performance", es: "03 \u00b7 La gracia por encima del rendimiento" },
+  fw_3_h: { en: "Two ways to hold a human being", es: "Dos formas de sostener a una persona" },
+  fw_3_sub: { en: "The same moment, read through two very different lenses.", es: "El mismo momento, le\u00eddo a trav\u00e9s de dos lentes muy distintas." },
+  fw_th_perf: { en: "Performance Culture", es: "Cultura del rendimiento" },
+  fw_th_grace: { en: "Grace Culture", es: "Cultura de la gracia" },
+  fw_perf_1: { en: "Earn worth", es: "Ganarse el valor" },
+  fw_grace_1: { en: "Recognize worth", es: "Reconocer el valor" },
+  fw_perf_2: { en: "Fear mistakes", es: "Temer los errores" },
+  fw_grace_2: { en: "Learn from mistakes", es: "Aprender de los errores" },
+  fw_perf_3: { en: "Comparison", es: "Comparaci\u00f3n" },
+  fw_grace_3: { en: "Connection", es: "Conexi\u00f3n" },
+  fw_perf_4: { en: "Judgment", es: "Juicio" },
+  fw_grace_4: { en: "Understanding", es: "Comprensi\u00f3n" },
+  fw_perf_5: { en: "Perfection", es: "Perfecci\u00f3n" },
+  fw_grace_5: { en: "Growth", es: "Crecimiento" },
+  fw_perf_6: { en: "Compliance", es: "Cumplimiento" },
+  fw_grace_6: { en: "Reflection", es: "Reflexi\u00f3n" },
+  fw_gop_foot: { en: "Architecture of Grace lives on the right-hand side.", es: "Architecture of Grace vive en la columna de la derecha." },
+  fw_4_num: { en: "04 \u00b7 How It Works", es: "04 \u00b7 C\u00f3mo funciona" },
+  fw_4_h: { en: "From a quiet moment to real growth", es: "De un momento de calma a un crecimiento real" },
+  fw_4_sub: { en: "Not a test to pass \u2014 a path to walk.", es: "No es un examen que aprobar, sino un camino que recorrer." },
+  fw_step_1: { en: "Reflection", es: "Reflexi\u00f3n" },
+  fw_step_2: { en: "Awareness", es: "Conciencia" },
+  fw_step_3: { en: "Conversation", es: "Conversaci\u00f3n" },
+  fw_step_4: { en: "Understanding", es: "Comprensi\u00f3n" },
+  fw_step_5: { en: "Growth", es: "Crecimiento" },
+  fw_flow_note: { en: "The check-in is not an assessment. It is a conversation starter. It helps individuals and communities identify areas of strength and areas that may need attention, then provides opportunities for reflection and growth.", es: "El chequeo no es una evaluaci\u00f3n. Es un punto de partida para la conversaci\u00f3n. Ayuda a las personas y a las comunidades a identificar \u00e1reas de fortaleza y \u00e1reas que pueden necesitar atenci\u00f3n, y luego ofrece oportunidades para la reflexi\u00f3n y el crecimiento." },
+  fw_5_num: { en: "05 \u00b7 Who It\u2019s For", es: "05 \u00b7 Para qui\u00e9n es" },
+  fw_5_h: { en: "Made for everyone in the room", es: "Hecho para todos los presentes" },
+  fw_5_sub: { en: "The same four ideas, met where each person actually is.", es: "Las mismas cuatro ideas, al encuentro de cada persona all\u00ed donde est\u00e1." },
+  fw_who_st_t: { en: "Students", es: "Estudiantes" },
+  fw_who_st_d: { en: "A private, age-aware way to notice how they\u2019re really doing \u2014 beyond grades and behavior charts. It gives students language for their inner world, and the message that who they are matters more than how they perform.", es: "Una forma privada y adecuada a la edad de notar c\u00f3mo est\u00e1n realmente, m\u00e1s all\u00e1 de las calificaciones y los registros de conducta. Les da lenguaje para su mundo interior y el mensaje de que qui\u00e9nes son importa m\u00e1s que c\u00f3mo rinden." },
+  fw_who_fa_t: { en: "Families", es: "Familias" },
+  fw_who_fa_d: { en: "A shared vocabulary for the conversations that matter most at home. Families use it to check in with one another, name what\u2019s hard without blame, and grow closer through honesty rather than pressure.", es: "Un vocabulario compartido para las conversaciones que m\u00e1s importan en casa. Las familias lo usan para conectar entre s\u00ed, nombrar lo dif\u00edcil sin culpa y acercarse a trav\u00e9s de la honestidad en lugar de la presi\u00f3n." },
+  fw_who_ed_t: { en: "Educators", es: "Educadores" },
+  fw_who_ed_d: { en: "Support for the people who carry classrooms every day. Educators get a clearer read on a group\u2019s needs \u2014 and a way to tend to their own wellbeing first, because you can\u2019t pour from an empty cup.", es: "Apoyo para quienes sostienen las aulas cada d\u00eda. Los educadores obtienen una lectura m\u00e1s clara de las necesidades de un grupo y una forma de cuidar primero su propio bienestar, porque no se puede servir de una taza vac\u00eda." },
+  fw_who_cg_t: { en: "Caregivers", es: "Cuidadores" },
+  fw_who_cg_d: { en: "For those who hold space for others \u2014 parents, counselors, aides, and helpers. It honors the weight they carry and helps them stay grounded, resourced, and gentle with themselves.", es: "Para quienes sostienen a los dem\u00e1s: madres, padres, consejeros, asistentes y ayudantes. Honra el peso que cargan y les ayuda a mantenerse centrados, con recursos y amables consigo mismos." },
+  fw_who_tm_t: { en: "Teams", es: "Equipos" },
+  fw_who_tm_d: { en: "A way for groups and organizations to build trust and reflect together. Teams use the framework to move from compliance toward connection, surfacing what people need before burnout sets in.", es: "Una forma de que los grupos y las organizaciones construyan confianza y reflexionen juntos. Los equipos usan el marco para pasar del cumplimiento a la conexi\u00f3n, revelando lo que las personas necesitan antes de que llegue el agotamiento." },
+  fw_who_ia_t: { en: "Independent Adults", es: "Adultos independientes" },
+  fw_who_ia_d: { en: "A quiet practice for anyone choosing to grow on their own terms. It offers a structured moment to pause, reflect, and extend grace inward \u2014 no classroom or program required.", es: "Una pr\u00e1ctica tranquila para quien elige crecer a su manera. Ofrece un momento estructurado para hacer una pausa, reflexionar y ofrecerse gracia hacia adentro, sin necesidad de aula ni programa." },
+  fw_6_num: { en: "06 \u00b7 The Tool", es: "06 \u00b7 La herramienta" },
+  fw_6_p: { en: "The Universal Check-In is one practical expression of the Architecture of Grace framework.", es: "El Chequeo Universal es una expresi\u00f3n pr\u00e1ctica del marco Architecture of Grace." },
+  fw_7_num: { en: "07 \u00b7 About the Founder", es: "07 \u00b7 Sobre el fundador" },
+  fw_7_h: { en: "Where it began", es: "D\u00f3nde comenz\u00f3" },
+  fw_7_p: { en: "Built by a special educator who spent years working with students, families, and support teams, Architecture of Grace emerged from a simple question: what if growth began with grace instead of performance?", es: "Creado por un educador especial que pas\u00f3 a\u00f1os trabajando con estudiantes, familias y equipos de apoyo, Architecture of Grace surgi\u00f3 de una pregunta sencilla: \u00bfy si el crecimiento comenzara con la gracia en lugar del rendimiento?" },
+  fw_browse: { en: "Browse the guide & resources \u2192", es: "Explora la gu\u00eda y los recursos \u2192" },
+  hyb_lede: {
+    en: "<p class='hl-lead'>Built by a special educator, Architecture of Grace is a framework for students, families, educators, caregivers, teams, and independent adults.</p><p>Through reflection, conversation, and practical tools, it helps people strengthen relationships\u2014with themselves and with one another\u2014through identity, self-compassion, forgiveness, and grace.</p><p>In a culture that often measures worth through achievement, Architecture of Grace offers a different path. It invites people to pause, reflect, and grow without shame, judgment, or comparison.</p><p>Whether used in classrooms, homes, organizations, or personal practice, the framework creates space for honest conversations, deeper understanding, and healthier relationships.</p><p class='hl-close'>Because lasting growth begins not with performance, but with grace.</p>",
+    es: "<p class='hl-lead'>Creado por un educador especial, Architecture of Grace es un marco para estudiantes, familias, educadores, cuidadores, equipos y adultos independientes.</p><p>Mediante la reflexi\u00f3n, la conversaci\u00f3n y herramientas pr\u00e1cticas, ayuda a las personas a fortalecer sus relaciones \u2014consigo mismas y entre s\u00ed\u2014 a trav\u00e9s de la identidad, la autocompasi\u00f3n, el perd\u00f3n y la gracia.</p><p>En una cultura que a menudo mide el valor por los logros, Architecture of Grace ofrece un camino distinto. Invita a las personas a hacer una pausa, reflexionar y crecer sin verg\u00fcenza, juicio ni comparaci\u00f3n.</p><p>Ya sea en aulas, hogares, organizaciones o la pr\u00e1ctica personal, el marco crea espacio para conversaciones honestas, una comprensi\u00f3n m\u00e1s profunda y relaciones m\u00e1s sanas.</p><p class='hl-close'>Porque el crecimiento duradero no comienza con el rendimiento, sino con la gracia.</p>"
+  },
   hyb_byline: {
-    en: "Built by a teacher, for real classrooms — the SEL that tends to the grown-ups before it ever measures a child. Created by Jimmy Ramsden, a special educator with a master\u2019s in special education: from the classroom, not a boardroom.",
-    es: "Hecho por un docente, para aulas reales — el SEL que cuida a los adultos antes de medir a un ni\u00f1o. Creado por Jimmy Ramsden, educador especial con una maestr\u00eda en educaci\u00f3n especial: desde el aula, no desde una oficina."
+    en: "A framework for students, families, educators, caregivers, teams, and independent adults. Built by a special educator to help people strengthen relationships through identity, self-compassion, forgiveness, and grace.",
+    es: "Un marco para estudiantes, familias, educadores, cuidadores, equipos y adultos independientes. Creado por un educador especial para ayudar a las personas a fortalecer sus relaciones a trav\u00e9s de la identidad, la autocompasi\u00f3n, el perd\u00f3n y la gracia."
   },
   hyb_start_btn: {
     es: "Comienza tu chequeo"
   },
+  a11y_title: { en: "Accessibility", es: "Accesibilidad" },
+  a11y_contrast: { en: "High contrast", es: "Alto contraste" },
+  a11y_contrast_s: { en: "Stronger text & edges", es: "Texto y bordes m\u00e1s marcados" },
+  a11y_dyslexic: { en: "Dyslexia-friendly font", es: "Fuente para dislexia" },
+  a11y_dyslexic_s: { en: "Easier letter shapes & spacing", es: "Letras y espaciado m\u00e1s legibles" },
+  ages_view_as: { en: "View as", es: "Ver como" },
+  ages_child: { en: "Child", es: "Ni\u00f1o/a" },
+  ages_teen: { en: "Teen", es: "Adolescente" },
+  ages_adult: { en: "Adult / Educator", es: "Adulto / Educador" },
   hyb_start_hint: {
     es: "Elige quién eres — estudiante, adulto, familia o equipo."
   },
@@ -7978,6 +8491,15 @@ function setLang(_0x3f9e05) {
   }
 }
 function showScreen(_0x2dc9c2) {
+  try {
+    // Item 4: remember where the user was on the screen they're leaving, so a
+    // later Back/Forward can return them to that exact spot.
+    var _aogPrev = document.querySelector(".screen.active");
+    if (_aogPrev) {
+      window.__aogScrollMem = window.__aogScrollMem || {};
+      window.__aogScrollMem[_aogPrev.id] = window.scrollY || window.pageYOffset || 0;
+    }
+  } catch (_aogE0) {}
   $$(".screen").forEach(_0x1ec822 => _0x1ec822.classList.remove("active"));
   $("#" + _0x2dc9c2).classList.add("active");
   try {
@@ -7986,10 +8508,27 @@ function showScreen(_0x2dc9c2) {
       _0x26edce.style.display = _0x2dc9c2 === "screen-welcome" ? "none" : "";
     }
   } catch (_0x3f12b1) {}
-  window.scrollTo({
-    top: 0,
-    behavior: "smooth"
-  });
+  try {
+    // Item 4: on a Back/Forward navigation, restore the previous scroll position
+    // for this screen instead of resetting the viewport to the top.
+    var _aogY = (window.__aogRestoreScroll && window.__aogScrollMem &&
+                 window.__aogScrollMem[_0x2dc9c2] != null)
+                ? window.__aogScrollMem[_0x2dc9c2] : null;
+    window.__aogRestoreScroll = false;
+    if (_aogY != null) {
+      var _aogTop = _aogY;
+      requestAnimationFrame(function () {
+        requestAnimationFrame(function () {
+          try { window.scrollTo({ top: _aogTop, behavior: "auto" }); }
+          catch (_e) { window.scrollTo(0, _aogTop); }
+        });
+      });
+    } else {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  } catch (_aogE1) {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
   try {
     var _0x534f7a = document.getElementById("tourFab");
     var _0x27d166 = {
@@ -8013,7 +8552,7 @@ var TOURS = {
   }, {
     sel: ".hd-card",
     title: { en: "See it with demo data", es: "Míralo con datos de ejemplo" },
-    body: { en: "This dashboard is already live on sample data — switch between Bar, Dials, and Trend to see how a whole group reads at a glance. Nothing is saved, no sign-up, no code.", es: "Este panel ya funciona con datos de ejemplo: cambia entre Barras, Diales y Tendencia para ver cómo se lee todo un grupo de un vistazo. No se guarda nada, sin registro y sin código." }
+    body: { en: "This dashboard is already live on sample data — switch between Trend and Bar to see how a whole group reads at a glance. Nothing is saved, no sign-up, no code.", es: "Este panel ya funciona con datos de ejemplo: cambia entre Tendencia y Barras para ver cómo se lee todo un grupo de un vistazo. No se guarda nada, sin registro y sin código." }
   }, {
     sel: ".hyb-corners",
     title: { en: "Ways in", es: "Maneras de entrar" },
@@ -9884,6 +10423,12 @@ function startChoose() {
     aogSetHash("checkin");
   }
 }
+function openFramework() {
+  showScreen("screen-framework");
+  if (typeof aogSetHash === "function") {
+    aogSetHash("framework");
+  }
+}
 function startAdult() {
   population = "adult";
   mode = "rapid";
@@ -10102,11 +10647,46 @@ window.addEventListener("load", function () {
 
     var flag = es ? "Una señal, no un diagnóstico · nada de esto se guardó." : "A flag, not a diagnosis · nothing here was saved.";
 
+    /* 2A: instant-results header — names the value prop ("INSTANT RESULTS")
+       and what the read does ("supports") right inside the result screen. */
+    var instantLabel = es ? "RESULTADOS AL INSTANTE" : "INSTANT RESULTS";
+    var supportsLine = es
+      ? "Tu lectura privada est\u00e1 lista \u2014 esto es lo que te apoya ahora mismo."
+      : "Your private read is ready \u2014 here\u2019s what supports you right now.";
+    var instantHtml =
+      "<div class=\"tk-instant-top\">" +
+        "<span class=\"tk-instant-badge\">" + instantLabel + "</span>" +
+        "<span class=\"tk-supports\">" + supportsLine + "</span>" +
+      "</div>";
+
+    /* Item 7: a single, zero-friction micro-intervention shown right under a
+       low/empty read — proof-of-concept of the framework, before any "go deeper". */
+    var graceHtml = "";
+    if (band === "low" || band === "empty") {
+      var gHead = es ? "Una cosa peque\u00f1a, ahora mismo" : "One small thing, right now";
+      var gLede = es
+        ? "Tu tanque est\u00e1 bajo. Antes que nada, respira despacio tres veces conmigo \u2014 ese es todo el paso."
+        : "Your tank is low. Before anything else, take three slow breaths with me \u2014 that\u2019s the whole step.";
+      var gBtn = es ? "Respira conmigo" : "Breathe with me";
+      graceHtml =
+        "<div class=\"grace-step\">" +
+          "<div class=\"grace-step-h\">" +
+            "<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M12 21s-7-4.35-9-8a5 5 0 0 1 9-3 5 5 0 0 1 9 3c-2 3.65-9 8-9 8z\"/></svg>" +
+            "<span>" + gHead + "</span>" +
+          "</div>" +
+          "<p class=\"grace-step-p\">" + gLede + "</p>" +
+          "<button type=\"button\" class=\"grace-step-btn\" onclick=\"aogGraceBreathe(this)\">" + gBtn + "</button>" +
+          "<div class=\"grace-breath\" hidden><div class=\"grace-orb\"></div><div class=\"grace-cue\" aria-live=\"polite\"></div></div>" +
+        "</div>";
+    }
+
     box.className = "wp-tank-result " + band;
     box.innerHTML =
+      instantHtml +
       "<div class=\"band\">" + title + "</div>" +
       gaugeHtml +
       "<p>" + body + "</p>" +
+      graceHtml +
       (typeof aogTankTips === "function" ? aogTankTips(band, es) : "") +
       ctaHtml +
       "<p class=\"flag\">" + flag + "</p>";
@@ -10570,7 +11150,16 @@ const AOG_SUB_TO_HASH = {
 };
 function aogSetHash(_0xcb963) {
   try {
-    history.replaceState(null, "", _0xcb963 ? "#" + _0xcb963 : location.pathname + location.search);
+    var _aogTarget = _0xcb963 ? "#" + _0xcb963 : location.pathname + location.search;
+    var _aogCur = (location.hash || "").replace(/^#/, "");
+    // Item 4: distinct destinations get their own history entry (pushState) so the
+    // browser Back button returns to the previous screen; same-screen updates just
+    // replace, to avoid piling up duplicate entries.
+    if ((_0xcb963 || "") !== _aogCur) {
+      history.pushState(null, "", _aogTarget);
+    } else {
+      history.replaceState(null, "", _aogTarget);
+    }
   } catch (_0x2cf689) {}
 }
 function aogRouteFromHash() {
@@ -10590,6 +11179,8 @@ function aogRouteFromHash() {
     openAbout();
   } else if (_0xaa0d73 === "guide" || _0xaa0d73 === "ecosystem" || _0xaa0d73 === "explore") {
     openGuide();
+  } else if (_0xaa0d73 === "framework" || _0xaa0d73 === "the-framework") {
+    openFramework();
   } else if (_0xaa0d73 === "quickstart" || _0xaa0d73 === "quick-start" || _0xaa0d73 === "teacher") {
     if (typeof aogGoQuickStart === "function") aogGoQuickStart();
   } else if (_0xaa0d73 === "results" || _0xaa0d73 === "dashboard" || _0xaa0d73 === "educator" || _0xaa0d73 === "admin") {
@@ -10605,6 +11196,27 @@ function aogRouteFromHash() {
   }
 }
 window.addEventListener("hashchange", aogRouteFromHash);
+/* Item 4: a Back/Forward press flags the next screen change to restore scroll
+   instead of jumping to top. popstate fires before the hashchange that routes,
+   so the flag is set in time. The empty-hash (landing) case is handled here
+   because aogRouteFromHash intentionally ignores an empty hash. */
+window.addEventListener("popstate", function () {
+  window.__aogRestoreScroll = true;
+  try {
+    var _aogH = (location.hash || "").replace(/^#/, "").trim().toLowerCase();
+    if (!_aogH) {
+      var _aogSurvey = document.getElementById("screen-survey");
+      var _aogInSurvey = _aogSurvey && _aogSurvey.classList.contains("active");
+      var _aogW = document.getElementById("screen-welcome");
+      if (!_aogInSurvey && _aogW && !_aogW.classList.contains("active") && typeof resetToStart === "function") {
+        resetToStart();
+      }
+    }
+  } catch (_aogE2) {}
+  // Clear the flag if no screen change consumed it (e.g. a guarded survey-cancel),
+  // so it can't trigger an unexpected restore on the next forward navigation.
+  setTimeout(function () { window.__aogRestoreScroll = false; }, 400);
+});
 window.addEventListener("load", aogRouteFromHash);
 /* submitAccessCode() removed (2026): the dashboard opens directly via openAdmin();
    there is no longer an access code to verify. */
@@ -11002,7 +11614,7 @@ function refreshAdmin() {
   renderGrowth();
 }
 /* P3 (2026-06-05): overview chart view ('bar' | 'radar' | 'trend'). */
-var aogViewType = "bar";
+var aogViewType = "trend";
 function aogRadarSvg(_a, _b, _c) {
   // DIALS (2026-06): replaced the 3-axis radar with one donut gauge per domain,
   // arc colored by band (green 75+, amber 50-74, red <50). Function name kept so
@@ -11052,7 +11664,7 @@ function aogTrendGrid(_records) {
 /* P1 (2026-06-05): hero demo preview — fully isolated. Uses a fixed in-memory
    sample set; never reads or writes localStorage or real check-in records, and
    never touches the live dashboard's state. Reuses the P3 radar/trend builders. */
-var aogHeroView = "bar";
+var aogHeroView = "trend";
 var aogHeroScenarioIdx = 0;
 function aogHeroScenarios() {
   // Build the trend records from per-window [name, green, amber, red] counts.
@@ -11173,6 +11785,7 @@ function renderHeroDemo() {
     teach.innerHTML = '<div class="hd-teach-h">' + DT("Teach this next", "Enseñar esto a continuación") + "</div>" + '<div class="hd-teach-b">' + aogTeachNextStudent(lowKey, d.band) + "</div>" + '<a class="hd-teach-link" href="#" onclick="aogOpenResindex(\'' + lowKey + '\');return false;">' + DT("See where it maps", "Ve dónde se conecta") + " &rarr;</a>";
     aogStabilizeHeroTeach(teach);
   }
+  if (typeof aogAnnotateTips === "function") { try { aogAnnotateTips(); } catch (_e) {} }
 }
 /* LAYOUT STABILITY (2026-06): each sample class has a different-length "teach next"
    blurb, which changed the card height when switching classes. Reserve the tallest
@@ -11314,6 +11927,7 @@ function renderOverview() {
       if (_sub) _sub.textContent = DT("Everyone grouped by overall score (0–100).", "Todos agrupados por puntaje general (0–100).");
     }
   })();
+  if (typeof aogAnnotateTips === "function") { try { aogAnnotateTips(); } catch (_e) {} }
 }
 function domainCard(_0x4eb3ea, _0x5c261b) {
   return "<div class=\"domain-card\"><div class=\"domain-card-head\"><div class=\"domain-card-title\">" + escapeHtml(_0x4eb3ea) + "</div><div class=\"domain-card-score\">" + _0x5c261b.toFixed(0) + "<span> / 100</span></div></div><div class=\"bar\"><div class=\"bar-fill\" style=\"width:" + _0x5c261b.toFixed(0) + "%\"></div></div></div>";
@@ -11659,11 +12273,16 @@ function renderMyResults() {
   }
   if (!_0x525fe1) {
     _0x1ef59c.innerHTML = "";
+    var _agp = document.getElementById("aogAgesPanel");
+    if (_agp) { _agp.innerHTML = ""; _agp.style.display = "none"; }
+    var _agw = document.getElementById("agesToggleWrap");
+    if (_agw) _agw.style.display = "none";
     return;
   }
   const _0x1b0e6f = typeof dashLang !== "undefined" ? dashLang : "en";
   dashLang = typeof lang !== "undefined" ? lang : _0x1b0e6f;
   _0x1ef59c.innerHTML = buildHomeReport(_0x525fe1, true);
+  if (typeof aogRenderAgesPanel === "function") { try { aogRenderAgesPanel(); } catch (_e) {} }
   dashLang = _0x1b0e6f;
   var _0x1059e2 = document.getElementById("shareQrBox");
   if (_0x1059e2) {
@@ -14262,6 +14881,11 @@ const RESOURCE_LIBRARY = [{
   cat: "Crosswalks & Implementation Maps",
   note: "How the pieces connect, and how to roll it out.",
   items: [{
+    title: "Master Crosswalk Matrix · K–12 (all books)",
+    desc: "The teacher master-map — every load-bearing novel scene crosswalked to its SEL theme, lesson alignment, anchor-chart trigger, and a concrete neuro-affirming adjustment, K–12 in one document.",
+    url: "files/AoG-Crosswalk-Matrix-Preview-Secular.pdf",
+    access: "license"
+  }, {
     title: "Master Crosswalk · Book 2",
     desc: "Every 3–5 construct mapped to its lesson, chart, and activity.",
     url: ""
@@ -14500,6 +15124,10 @@ const RESOURCE_LIBRARY = [{
   closed: true,
   note: "An optional faith-based companion that runs alongside the secular core — for Christian schools, homeschools, and ministry settings. Kept separate by design; the secular check-in never points here.",
   items: [{
+    title: "Master Crosswalk Matrix · Divine — K–12 (all books)",
+    desc: "The faith-integrated master-map — each scene anchored to Scripture and a faith-link (ESV), scaling from a K–2 whisper-line to 11–12 doctrine, with the Faith Trauma-Guardrail built in.",
+    url: "files/AoG-Crosswalk-Matrix-Preview-Divine.pdf"
+  }, {
     title: "Master Crosswalk · Book 3 (6–8)",
     desc: "Each secular concept anchored in Scripture, doctrine, and Reformed pastoral practice — the 6–8 companion.",
     url: "files/AoG-Book3-Divine-Blueprint-Master-Crosswalk.pdf"
@@ -14551,6 +15179,9 @@ function libItemState(_0x5990aa, _0xf5043c) {
     } else {
       return "both";
     }
+  }
+  if (_0x5990aa.access === "license") {
+    return "license";
   }
   if (_0x5990aa.url && _0x5990aa.url.trim()) {
     return "free";
@@ -15483,13 +16114,41 @@ function aogBindStore(root){
           b.classList.toggle('active', b.getAttribute('data-pane') === key);
         });
       };
+      var scrollToDocNav = function(){
+        try{
+          var tb = document.querySelector('.topbar');
+          var sub = document.querySelector('.guide-subnav');
+          var off = (tb ? tb.offsetHeight : 70) + (sub ? sub.offsetHeight : 0) + 14;
+          var y = docNav.getBoundingClientRect().top + window.pageYOffset - off;
+          window.scrollTo({ top: Math.max(0, y), behavior:'smooth' });
+        }catch(e){}
+      };
       Array.prototype.forEach.call(docNav.querySelectorAll('.docnav-btn'), function(b){
         b.addEventListener('click', function(){
           showDocPane(b.getAttribute('data-pane'));
-          try{ docNav.scrollIntoView({behavior:'smooth', block:'start'}); }catch(e){}
+          scrollToDocNav();
         });
       });
       showDocPane('dm-flow');
+      /* expose for deep links (e.g., the homepage "For schools & districts" door):
+         switch to a pane and land on its content, clear of both sticky bars. */
+      var scrollToEl = function(el){
+        try{
+          var tb = document.querySelector('.topbar');
+          var sub = document.querySelector('.guide-subnav');
+          var off = (tb ? tb.offsetHeight : 70) + (sub ? sub.offsetHeight : 0) + 14;
+          var y = el.getBoundingClientRect().top + window.pageYOffset - off;
+          window.scrollTo({ top: Math.max(0, y), behavior:'smooth' });
+        }catch(e){}
+      };
+      try{
+        window.aogShowDocPane = showDocPane;
+        window.aogGoDoc = function(key){
+          showDocPane(key);
+          var target = document.getElementById(key) || docNav;
+          requestAnimationFrame(function(){ scrollToEl(target); });
+        };
+      }catch(e){}
     }
 
     syncLink();
@@ -15820,18 +16479,290 @@ window.aogAccToggle = function(btn){
      router so a coordinator can email architectureofgrace.org/#quickstart. */
   window.aogGoQuickStart = function(){
     try{ if (typeof openGuide === "function") openGuide("docs"); }catch(e){}
+    /* the printable CTA now lives inside the "How it works" (dm-flow) pane, so
+       make sure that pane is active before scrolling to it. */
+    try{ if (typeof aogShowDocPane === "function") aogShowDocPane("dm-flow"); }catch(e){}
     var tries = 0;
     (function find(){
       var el = document.querySelector(".doc-print-cta");
-      if (el){
+      if (el && el.offsetParent !== null){
         try{ el.scrollIntoView({behavior:"smooth", block:"center"}); }
         catch(e){ try{ el.scrollIntoView(); }catch(_){} }
         el.classList.add("dpc-flash");
         setTimeout(function(){ try{ el.classList.remove("dpc-flash"); }catch(e){} }, 2200);
-      } else if (tries++ < 20){
+      } else if (tries++ < 25){
         setTimeout(find, 120);
       }
     })();
+  };
+})();
+</script>
+<script>
+/* ===================================================================
+   ITEM 6 · ACCESSIBILITY toggles — menu open/close + persistent state
+   =================================================================== */
+(function () {
+  function de(){ return document.documentElement; }
+  function syncRows(){
+    var c = de().classList.contains("a11y-contrast");
+    var d = de().classList.contains("a11y-dyslexic");
+    var cr = document.getElementById("a11yContrastRow");
+    var dr = document.getElementById("a11yDyslexicRow");
+    if (cr) cr.setAttribute("aria-checked", c ? "true" : "false");
+    if (dr) dr.setAttribute("aria-checked", d ? "true" : "false");
+    var btn = document.getElementById("a11yBtn");
+    if (btn) btn.classList.toggle("active", c || d);
+  }
+  window.aogToggleContrast = function () {
+    var on = de().classList.toggle("a11y-contrast");
+    try { localStorage.setItem("aog.a11y.contrast", on ? "1" : "0"); } catch (e) {}
+    syncRows();
+  };
+  window.aogToggleDyslexic = function () {
+    var on = de().classList.toggle("a11y-dyslexic");
+    try { localStorage.setItem("aog.a11y.dyslexic", on ? "1" : "0"); } catch (e) {}
+    syncRows();
+  };
+  window.aogToggleA11yMenu = function (ev) {
+    if (ev) { ev.preventDefault(); ev.stopPropagation(); }
+    var menu = document.getElementById("a11yMenu");
+    var btn = document.getElementById("a11yBtn");
+    if (!menu) return;
+    var open = menu.hasAttribute("hidden");
+    if (open) { menu.removeAttribute("hidden"); } else { menu.setAttribute("hidden", ""); }
+    if (btn) btn.setAttribute("aria-expanded", open ? "true" : "false");
+    syncRows();
+  };
+  /* close on outside click or Escape */
+  document.addEventListener("click", function (e) {
+    var menu = document.getElementById("a11yMenu");
+    if (!menu || menu.hasAttribute("hidden")) return;
+    var wrap = e.target.closest && e.target.closest(".a11y-wrap");
+    if (!wrap) { menu.setAttribute("hidden", ""); var b = document.getElementById("a11yBtn"); if (b) b.setAttribute("aria-expanded", "false"); }
+  });
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape") {
+      var menu = document.getElementById("a11yMenu");
+      if (menu && !menu.hasAttribute("hidden")) { menu.setAttribute("hidden", ""); var b = document.getElementById("a11yBtn"); if (b){ b.setAttribute("aria-expanded","false"); b.focus(); } }
+    }
+  });
+  if (document.readyState !== "loading") syncRows();
+  else window.addEventListener("load", syncRows);
+})();
+</script>
+<script>
+/* ===================================================================
+   ITEM 7 · GRACE STEP — a guided 3-breath micro-interaction
+   =================================================================== */
+window.aogGraceBreathe = function (btn) {
+  var step = btn.closest ? btn.closest(".grace-step") : null;
+  if (!step) return;
+  var es = (typeof lang !== "undefined" && lang === "es");
+  var box = step.querySelector(".grace-breath");
+  var orb = step.querySelector(".grace-orb");
+  var cue = step.querySelector(".grace-cue");
+  if (!box || !orb || !cue) return;
+  btn.style.display = "none";
+  box.hidden = false;
+  var reduce = false;
+  try { reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion:reduce)").matches; } catch (e) {}
+  var IN = es ? "Inhala\u2026" : "Breathe in\u2026";
+  var HOLD = es ? "Sost\u00e9n" : "Hold";
+  var OUT = es ? "Exhala\u2026" : "Breathe out\u2026";
+  var DONE = es ? "Bien. Eso ya cuenta." : "Nice. That counts.";
+  orb.classList.add("gb-anim");
+  var seq = [], i;
+  for (i = 0; i < 3; i++) {
+    seq.push([IN, 1, 4000]);
+    seq.push([HOLD, 1, 1500]);
+    seq.push([OUT, 0.6, 4000]);
+  }
+  seq.push([DONE, 0.78, 0]);
+  (function run(idx) {
+    if (idx >= seq.length) {
+      setTimeout(function () {
+        if (btn) { btn.style.display = ""; btn.textContent = es ? "Otra vez" : "Again"; }
+      }, 1200);
+      return;
+    }
+    var s = seq[idx];
+    cue.textContent = s[0];
+    orb.style.setProperty("--gb-dur", (reduce ? 0 : s[2] / 1000) + "s");
+    orb.style.transform = "scale(" + s[1] + ")";
+    setTimeout(function () { run(idx + 1); }, s[2]);
+  })(0);
+};
+</script>
+<script>
+/* ===================================================================
+   ITEM 5 · AGES & STAGES — switch the interpretive copy by audience.
+   The backend payload is identical; only the frontend copy mapping
+   changes. Band is derived from the same score/tier used everywhere.
+   =================================================================== */
+var AOG_AGES_COPY = {
+  child: {
+    green: { en: "You\u2019re doing really well right now. You shared lots of good, steady feelings. Keep doing the things that help you feel safe and happy \u2014 and tell a grown-up about the good stuff too.",
+             es: "Lo est\u00e1s haciendo muy bien ahora mismo. Compartiste muchos sentimientos buenos y tranquilos. Sigue haciendo las cosas que te ayudan a sentirte seguro/a y feliz \u2014 y cu\u00e9ntale lo bueno a una persona mayor." },
+    amber: { en: "Some parts feel good and some feel a little hard right now \u2014 and that\u2019s okay. Everybody has bumpy days. Talking with a grown-up you trust can help things feel lighter.",
+             es: "Algunas cosas se sienten bien y otras un poco dif\u00edciles ahora mismo \u2014 y eso est\u00e1 bien. Todos tenemos d\u00edas dif\u00edciles. Hablar con una persona mayor de confianza puede ayudarte a sentirte mejor." },
+    red:   { en: "It sounds like things feel really heavy right now. That\u2019s not your fault, and you don\u2019t have to carry it by yourself. Please tell a grown-up you trust how you\u2019re feeling \u2014 they want to help you.",
+             es: "Parece que las cosas se sienten muy pesadas ahora mismo. No es tu culpa, y no tienes que cargarlo solo/a. Por favor, cu\u00e9ntale a una persona mayor de confianza c\u00f3mo te sientes \u2014 quieren ayudarte." }
+  },
+  teen: {
+    green: { en: "Your check-in looks solid right now. Whatever you\u2019re doing to take care of yourself is working \u2014 it\u2019s worth noticing what those things are so you can keep them going.",
+             es: "Tu chequeo se ve s\u00f3lido ahora mismo. Lo que sea que est\u00e9s haciendo para cuidarte est\u00e1 funcionando \u2014 vale la pena notar qu\u00e9 es para poder mantenerlo." },
+    amber: { en: "This is a mixed read \u2014 some things feel steady, some are weighing on you. That\u2019s normal. It\u2019s a good moment to talk it through with someone you trust before it builds up.",
+             es: "Esta es una lectura mixta \u2014 algunas cosas se sienten estables y otras te pesan. Es normal. Es un buen momento para hablarlo con alguien de confianza antes de que se acumule." },
+    red:   { en: "This points to a lot of strain right now. That\u2019s real, and it\u2019s worth taking seriously. Reaching out to a trusted adult or counselor isn\u2019t a big deal \u2014 it\u2019s just smart. You don\u2019t have to sort this out alone.",
+             es: "Esto apunta a mucha tensi\u00f3n ahora mismo. Es real y vale la pena tomarlo en serio. Acudir a un adulto de confianza o a un consejero no es para tanto \u2014 es lo inteligente. No tienes que resolver esto solo/a." }
+  },
+  adult: {
+    green: { en: "Overall composite sits in the \u201cdoing well\u201d band, with indicators stable across domains. Maintain current supports and use the lowest domain below as a light-touch growth focus at the next window.",
+             es: "El compuesto general est\u00e1 en la banda de \u201cva bien\u201d, con indicadores estables en los dominios. Mant\u00e9n los apoyos actuales y usa el dominio m\u00e1s bajo de abajo como un foco de crecimiento ligero en el pr\u00f3ximo per\u00edodo." },
+    amber: { en: "Composite falls in the \u201cworth a check-in\u201d band \u2014 a mixed profile rather than acute risk. A brief supportive conversation now and monitoring at the next window are appropriate; see the domain detail below for where to focus.",
+             es: "El compuesto cae en la banda de \u201cvale un chequeo\u201d \u2014 un perfil mixto m\u00e1s que un riesgo agudo. Una conversaci\u00f3n breve de apoyo ahora y seguimiento en el pr\u00f3ximo per\u00edodo son apropiados; revisa el detalle por dominio para enfocar." },
+    red:   { en: "Composite is in the \u201cneeds support\u201d band. Recommend a timely, structured check-in conversation and, where relevant, a referral pathway. Prioritize the lowest domains below and confirm a trusted-adult connection.",
+             es: "El compuesto est\u00e1 en la banda de \u201cnecesita apoyo\u201d. Se recomienda una conversaci\u00f3n de chequeo oportuna y estructurada y, cuando corresponda, una v\u00eda de derivaci\u00f3n. Prioriza los dominios m\u00e1s bajos de abajo y confirma una conexi\u00f3n con un adulto de confianza." }
+  }
+};
+window.aogResultsAudience = (function () {
+  try { return localStorage.getItem("aog.results.audience") || "adult"; } catch (e) { return "adult"; }
+})();
+window.aogSetAudience = function (a) {
+  window.aogResultsAudience = a;
+  try { localStorage.setItem("aog.results.audience", a); } catch (e) {}
+  var btns = document.querySelectorAll("#agesToggle .ages-btn");
+  for (var i = 0; i < btns.length; i++) {
+    var on = btns[i].getAttribute("data-aud") === a;
+    btns[i].classList.toggle("active", on);
+    btns[i].setAttribute("aria-pressed", on ? "true" : "false");
+  }
+  if (typeof aogRenderAgesPanel === "function") aogRenderAgesPanel();
+};
+window.aogRenderAgesPanel = function () {
+  var panel = document.getElementById("aogAgesPanel");
+  var wrap = document.getElementById("agesToggleWrap");
+  if (!panel) return;
+  var rec = window._lastResult || window._pendingRecord;
+  if (!rec) { panel.innerHTML = ""; panel.style.display = "none"; if (wrap) wrap.style.display = "none"; return; }
+  if (wrap) wrap.style.display = "";
+  var es = (typeof lang !== "undefined" && lang === "es");
+  var nc = (rec.normComposite != null) ? rec.normComposite : null;
+  var tier = rec.tier || (typeof tierFromNormComposite === "function" && nc != null ? tierFromNormComposite(nc) : "Some Risk");
+  var band = tier === "Low Risk" ? "green" : (tier === "High Risk" ? "red" : "amber");
+  var aud = window.aogResultsAudience || "adult";
+  /* reflect the active button (covers first render + language switches) */
+  var btns = document.querySelectorAll("#agesToggle .ages-btn");
+  for (var i = 0; i < btns.length; i++) {
+    var on = btns[i].getAttribute("data-aud") === aud;
+    btns[i].classList.toggle("active", on);
+    btns[i].setAttribute("aria-pressed", on ? "true" : "false");
+  }
+  var entry = AOG_AGES_COPY[aud] && AOG_AGES_COPY[aud][band];
+  var copy = entry ? (entry[es ? "es" : "en"]) : "";
+  var head = es ? "Qu\u00e9 significa esto" : "What this means";
+  panel.style.display = "";
+  panel.className = "ages-panel band-" + band;
+  panel.innerHTML = "<div class=\"ages-panel-h\">" + head + "</div><p class=\"ages-panel-p\">" + copy + "</p>";
+};
+</script>
+<script>
+/* ===================================================================
+   ITEM 8 · CONTEXTUAL TOOLTIPS — a single floating tip (position:fixed,
+   so it overlays and never shifts the dashboard layout) plus an
+   annotator that tags dashboard metrics with plain-English explanations.
+   =================================================================== */
+(function () {
+  var tip = null;
+  function ensureTip() {
+    if (!tip) {
+      tip = document.createElement("div");
+      tip.id = "aogTip";
+      tip.setAttribute("role", "tooltip");
+      document.body.appendChild(tip);
+    }
+    return tip;
+  }
+  function show(el) {
+    var txt = el.getAttribute("data-tip");
+    if (!txt) return;
+    var t = ensureTip();
+    t.textContent = txt;
+    t.classList.remove("below");
+    t.style.left = "0px"; t.style.top = "0px";
+    t.classList.add("on");
+    var r = el.getBoundingClientRect();
+    var tr = t.getBoundingClientRect();
+    var cx = r.left + r.width / 2;
+    var left = Math.max(8, Math.min(cx - tr.width / 2, window.innerWidth - tr.width - 8));
+    var top = r.top - tr.height - 10;
+    if (top < 8) { top = r.bottom + 10; t.classList.add("below"); }
+    t.style.left = left + "px";
+    t.style.top = top + "px";
+    t.style.setProperty("--tip-arrow", (cx - left) + "px");
+  }
+  function hide() { if (tip) tip.classList.remove("on"); }
+  function closestTip(e) { return e.target && e.target.closest ? e.target.closest("[data-tip]") : null; }
+  document.addEventListener("mouseover", function (e) { var el = closestTip(e); if (el) show(el); });
+  document.addEventListener("mouseout", function (e) { if (closestTip(e)) hide(); });
+  document.addEventListener("focusin", function (e) { var el = closestTip(e); if (el) show(el); });
+  document.addEventListener("focusout", hide);
+  /* tap toggles on touch devices */
+  document.addEventListener("click", function (e) {
+    var el = closestTip(e);
+    if (!el) return;
+    if (tip && tip.classList.contains("on") && tip.textContent === el.getAttribute("data-tip")) hide();
+    else show(el);
+  });
+  window.addEventListener("scroll", hide, true);
+  window.addEventListener("resize", hide);
+
+  window.aogAnnotateTips = function () {
+    var es = (typeof lang !== "undefined" && lang === "es");
+    function T(en, esT) { return es ? esT : en; }
+    var kpiTips = [
+      T("How many people completed a check-in in this view. The filters above narrow it by window, grade, or mode.",
+        "Cu\u00e1ntas personas completaron un chequeo en esta vista. Los filtros de arriba lo acotan por per\u00edodo, grado o modo."),
+      T("The group\u2019s average overall score, from 0 to 100. Higher means more strengths reported across the domains.",
+        "El puntaje general promedio del grupo, de 0 a 100. M\u00e1s alto significa m\u00e1s fortalezas reportadas en los dominios."),
+      T("How many people didn\u2019t name an adult they trust \u2014 often a good first place to reach out.",
+        "Cu\u00e1ntas personas no nombraron a un adulto de confianza \u2014 suele ser un buen primer lugar para acercarse.")
+    ];
+    function annotateKpis(sel) {
+      var cards = document.querySelectorAll(sel);
+      for (var i = 0; i < cards.length && i < kpiTips.length; i++) {
+        cards[i].setAttribute("data-tip", kpiTips[i]);
+        cards[i].setAttribute("tabindex", "0");
+      }
+    }
+    annotateKpis("#panel-overview .kpi-grid .kpi");
+    annotateKpis("#hdKpis .hd-kpi");
+
+    var segTip = {
+      "dist-green": T("People scoring 75\u2013100 \u2014 doing well across the domains.", "Personas con 75\u2013100 \u2014 van bien en los dominios."),
+      "dist-amber": T("People scoring 50\u201374 \u2014 worth a gentle check-in.", "Personas con 50\u201374 \u2014 vale un chequeo amable."),
+      "dist-red": T("People scoring 0\u201349 \u2014 likely need some support.", "Personas con 0\u201349 \u2014 probablemente necesitan apoyo.")
+    };
+    [].forEach.call(document.querySelectorAll("#distChart .dist-segment, #hdChart .dist-segment, .trend-bar .dist-segment"), function (s) {
+      var key = s.classList.contains("dist-green") ? "dist-green"
+              : s.classList.contains("dist-amber") ? "dist-amber"
+              : s.classList.contains("dist-red") ? "dist-red" : null;
+      if (key) { s.setAttribute("data-tip", segTip[key]); s.setAttribute("tabindex", "0"); }
+    });
+
+    [].forEach.call(document.querySelectorAll("#domainSummary .domain-card"), function (c) {
+      var nm = c.querySelector(".domain-card-title");
+      var name = nm ? nm.textContent.trim() : T("this domain", "este dominio");
+      c.setAttribute("data-tip", T("Average score (0\u2013100) for " + name + " across everyone in this view. Lower domains are where to focus support next.",
+                                    "Puntaje promedio (0\u2013100) de " + name + " en todas las personas de esta vista. Los dominios m\u00e1s bajos son donde enfocar el apoyo."));
+      c.setAttribute("tabindex", "0");
+    });
+
+    [].forEach.call(document.querySelectorAll(".trend-row"), function (r) {
+      r.setAttribute("data-tip", T("How this window splits across the three bands. Compare rows to see how the group moves over time.",
+                                    "C\u00f3mo se reparte este per\u00edodo entre las tres bandas. Compara filas para ver c\u00f3mo cambia el grupo con el tiempo."));
+      r.setAttribute("tabindex", "0");
+    });
   };
 })();
 </script>
