@@ -2963,51 +2963,92 @@ function toggleTheme() {
       </section>
 
       <!-- ===== FOUR-CORNER ENTRY (primary destinations, surfaced) ===== -->
-      <div class="hyb-corners reveal">
-        <style>
-        .hyb-corners{display:grid;grid-template-columns:1fr 1fr;gap:14px;max-width:640px;margin:32px auto 0;}
-        .hc-card{display:block;text-decoration:none;background:var(--paper);border:1px solid var(--rule);border-radius:16px;padding:18px 16px;transition:transform .15s var(--ease),box-shadow .15s var(--ease),background .15s;box-shadow:var(--shadow-sm);}
-        .hc-card:hover{transform:translateY(-2px);box-shadow:var(--shadow-md);}
-        .hc-card .ic{width:42px;height:42px;border-radius:11px;display:grid;place-items:center;background:var(--gold-pale);color:var(--gold);margin-bottom:12px;}
-        .hc-card .ic svg{width:22px;height:22px;}
-        .hc-card .t{font-family:var(--font-serif);font-size:19px;font-weight:600;color:var(--navy);line-height:1.2;}
-        .hc-card .s{font-family:var(--font-sans);font-size:12.5px;color:var(--ink-soft);margin-top:4px;line-height:1.45;}
-        :root[data-theme="dark"] .hc-card{background:#13314F;border-color:#1E4A72;}
-        :root[data-theme="dark"] .hc-card:hover{background:#16395B;}
-        :root[data-theme="dark"] .hc-card .ic{background:rgba(242,201,100,.16);color:var(--gold-soft);}
-        :root[data-theme="dark"] .hc-card .t{color:#fff;}
-        :root[data-theme="dark"] .hc-card .s{color:#9FB0C4;}
-        @media (max-width:420px){.hyb-corners{gap:10px;}.hc-card{padding:15px 13px;}.hc-card .t{font-size:17px;}}
-        .hc-card.hc-trust{grid-column:1 / -1;display:flex;align-items:center;gap:16px;background:linear-gradient(180deg,var(--cream) 0%,var(--paper) 100%);border-color:var(--gold-pale);}
-        .hc-card.hc-trust .ic{margin-bottom:0;flex:0 0 auto;background:var(--gold);color:var(--navy);}
-        .hc-card.hc-trust .tx{flex:1 1 auto;min-width:0;}
-        .hc-card.hc-trust .arr{flex:0 0 auto;color:var(--gold);font-size:22px;line-height:1;transition:transform .18s var(--ease-out);}
-        .hc-card.hc-trust:hover .arr{transform:translateX(4px);}
-        :root[data-theme="dark"] .hc-card.hc-trust{background:#13314F;border-color:rgba(242,201,100,.30);}
-        :root[data-theme="dark"] .hc-card.hc-trust .ic{background:var(--gold-soft);color:var(--navy);}
-        </style>
-        <a href="#" class="hc-card" onclick="event.preventDefault(); openGuide();">
-          <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg></div>
-          <div class="t" data-i18n="aog_edu_t">For educators</div>
-          <div class="s" data-i18n="aog_edu_s">The framework, the ecosystem map, and the full resource index.</div>
-        </a>
-        <a href="#" class="hc-card" onclick="event.preventDefault(); openGuide(); setTimeout(function(){ if(typeof aogGoDoc==='function') aogGoDoc('dm-admin'); else if(typeof dmScrollTo==='function') dmScrollTo('dm-admin'); }, 650);">
-          <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21h18"/><path d="M5 21V8l7-4 7 4v13"/><path d="M9 21v-6h6v6"/></svg></div>
-          <div class="t" data-i18n="lead_ey">For schools &amp; districts</div>
-          <div class="s">Screening, tiering, and growth monitoring in one tool.</div>
-        </a>
-        <a href="#" class="hc-card hc-trust" onclick="event.preventDefault(); openWorkplace();">
-          <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg></div>
-          <div class="tx">
-            <div class="t" data-i18n="wp_band_t">For workplaces &amp; teams</div>
-            <div class="s" data-i18n="wp_band_s">A private check-in for the people who hold others.</div>
-          </div>
-          <span class="arr" aria-hidden="true">&rarr;</span>
-        </a>
-      </div>
-
       <p class="hyb-onesent" data-i18n="hyb_onesent">One quiet check-in that listens, points to the right next step, and grows with you — for students, families, and every adult in between.</p>
 
+    </section>
+
+    <!-- ===== P2 (2026-06-08): "How One Answer Becomes Growth" — make the ecosystem visible.
+         A real check-in answer, traced through the framework to growth, in under 30 seconds.
+         The fuller, per-stage version of this same journey lives on the "How It Works" page
+         in About (about-view-howitworks). Both link to each other. ===== -->
+    <section class="p2-grow reveal" aria-labelledby="p2GrowH">
+      <style id="aog-flow-styles">
+      /* ---- Homepage band shell (mirrors the .aog-what below-hero card pattern) ---- */
+      #screen-welcome .p2-grow{ max-width:880px; margin:64px auto; background:var(--paper); border:1px solid var(--rule); border-radius:20px; padding:46px 7vw 40px; text-align:center; position:relative; box-shadow:0 18px 44px -16px rgba(10,30,51,.14); }
+      #screen-welcome .p2-grow::before{ content:""; position:absolute; top:0; left:50%; transform:translateX(-50%); width:84px; height:4px; background:linear-gradient(90deg,#F2C964,#D9A33B); border-radius:0 0 4px 4px; }
+      .p2-grow .p2-ey{ font-family:var(--font-sans); font-size:11px; letter-spacing:.28em; text-transform:uppercase; color:var(--gold); font-weight:700; }
+      .p2-grow h2{ font-family:var(--font-serif); font-weight:600; font-size:clamp(27px,3.3vw,38px); color:var(--navy); margin:9px auto 12px; line-height:1.08; letter-spacing:-.01em; max-width:16ch; }
+      .p2-grow .p2-lede{ font-family:var(--font-sans); font-size:15px; line-height:1.62; color:var(--ink-soft); margin:0 auto 6px; max-width:600px; }
+      :root[data-theme="dark"] #screen-welcome .p2-grow{ background:#13314F; border-color:#1E4A72; }
+      :root[data-theme="dark"] .p2-grow h2{ color:#fff; }
+
+      /* ---- Shared horizontal chip-flow (homepage) ---- */
+      .aogf-track{ display:flex; flex-wrap:wrap; align-items:stretch; justify-content:center; gap:10px; max-width:760px; margin:30px auto 4px; }
+      .aogf-chip{ position:relative; flex:0 1 auto; min-width:118px; max-width:170px; background:#fff; border:1px solid var(--rule); border-radius:14px; padding:13px 14px; text-align:left; box-shadow:var(--shadow-sm); }
+      .aogf-chip .c-ey{ font-family:var(--font-sans); font-size:9.5px; font-weight:700; letter-spacing:.13em; text-transform:uppercase; color:var(--gold-deep,#9a6f24); display:block; }
+      .aogf-chip .c-v{ font-family:var(--font-serif); font-size:14px; font-weight:600; color:var(--navy); line-height:1.28; margin-top:3px; }
+      .aogf-chip.c-start{ border-color:var(--gold-soft); background:linear-gradient(180deg,var(--cream) 0%,#fff 100%); }
+      .aogf-chip.c-end{ border-color:var(--gold); background:var(--navy); }
+      .aogf-chip.c-end .c-ey{ color:var(--gold-soft); }
+      .aogf-chip.c-end .c-v{ color:var(--cream); }
+      .aogf-arrow{ align-self:center; color:var(--gold); font-size:17px; line-height:1; flex:0 0 auto; }
+      :root[data-theme="dark"] .aogf-chip{ background:#16395B; border-color:#1E4A72; }
+      :root[data-theme="dark"] .aogf-chip .c-v{ color:#fff; }
+      :root[data-theme="dark"] .aogf-chip.c-start{ background:#13314F; }
+      .p2-grow .p2-cta{ display:inline-flex; align-items:center; gap:8px; margin-top:26px; background:var(--navy); color:var(--cream); font-family:var(--font-sans); font-size:14.5px; font-weight:600; text-decoration:none; padding:12px 22px; border-radius:999px; transition:transform .15s var(--ease-out), box-shadow .15s var(--ease-out); box-shadow:var(--shadow-sm); }
+      .p2-grow .p2-cta:hover{ transform:translateY(-2px); box-shadow:var(--shadow-md); }
+      .p2-grow .p2-cta .arr{ color:var(--gold-soft); transition:transform .18s var(--ease-out); }
+      .p2-grow .p2-cta:hover .arr{ transform:translateX(4px); }
+      :root[data-theme="dark"] .p2-grow .p2-cta{ background:var(--gold); color:var(--navy); }
+      :root[data-theme="dark"] .p2-grow .p2-cta .arr{ color:var(--navy); }
+      @media (max-width:560px){
+        #screen-welcome .p2-grow{ padding:38px 22px 34px; }
+        .aogf-track{ flex-direction:column; align-items:stretch; gap:6px; }
+        .aogf-chip{ max-width:none; min-width:0; }
+        .aogf-arrow{ transform:rotate(90deg); align-self:center; margin:1px 0; }
+      }
+      @media (prefers-reduced-motion: reduce){ .p2-grow .p2-cta, .p2-grow .p2-cta .arr{ transition:none; } }
+      </style>
+
+      <div class="p2-ey" data-i18n="p2g_ey">The framework, in motion</div>
+      <h2 id="p2GrowH" data-i18n="p2g_h">How one answer becomes growth</h2>
+      <p class="p2-lede" data-i18n="p2g_lede">Nothing here is a stand-alone tool. Watch a single honest answer travel through the framework — from a quiet flag to a real next step.</p>
+
+      <div class="aogf-track" role="list" aria-label="One answer traced through the framework">
+        <div class="aogf-chip c-start" role="listitem">
+          <span class="c-ey" data-i18n="p2g_s1_ey">The check-in</span>
+          <div class="c-v" data-i18n="p2g_s1_v">“I keep replaying mistakes long after they are over.”</div>
+        </div>
+        <span class="aogf-arrow" aria-hidden="true">&rarr;</span>
+        <div class="aogf-chip" role="listitem">
+          <span class="c-ey" data-i18n="p2g_s2_ey">The result</span>
+          <div class="c-v" data-i18n="p2g_s2_v">Rumination &amp; letting go — a gentle flag</div>
+        </div>
+        <span class="aogf-arrow" aria-hidden="true">&rarr;</span>
+        <div class="aogf-chip" role="listitem">
+          <span class="c-ey" data-i18n="p2g_s3_ey">The resource index</span>
+          <div class="c-v" data-i18n="p2g_s3_v">Maps it to one exact lesson</div>
+        </div>
+        <span class="aogf-arrow" aria-hidden="true">&rarr;</span>
+        <div class="aogf-chip" role="listitem">
+          <span class="c-ey" data-i18n="p2g_s4_ey">Lesson &amp; story</span>
+          <div class="c-v" data-i18n="p2g_s4_v">Book 3 · “Rewriting the Script”</div>
+        </div>
+        <span class="aogf-arrow" aria-hidden="true">&rarr;</span>
+        <div class="aogf-chip" role="listitem">
+          <span class="c-ey" data-i18n="p2g_s5_ey">Practice &amp; talk</span>
+          <div class="c-v" data-i18n="p2g_s5_v">Worksheet, scenario card, a reflection</div>
+        </div>
+        <span class="aogf-arrow" aria-hidden="true">&rarr;</span>
+        <div class="aogf-chip c-end" role="listitem">
+          <span class="c-ey" data-i18n="p2g_s6_ey">Growth</span>
+          <div class="c-v" data-i18n="p2g_s6_v">The next check-in shows the loop loosening</div>
+        </div>
+      </div>
+
+      <a href="#how-it-works" class="p2-cta" onclick="event.preventDefault(); aogOpenHowItWorks();">
+        <span data-i18n="p2g_cta">See how the whole system connects</span> <span class="arr" aria-hidden="true">&rarr;</span>
+      </a>
     </section>
 
     <!-- ===== STATEMENT BAND (moved up into the hero fold) ===== -->
@@ -3432,7 +3473,6 @@ function toggleTheme() {
   <div class="container">
     <div class="nav-row" style="justify-content:flex-start; gap:10px; margin-bottom:2px;">
       <button class="btn btn-ghost" onclick="goBack()"><span class="btn-arrow">&larr;</span> <span data-i18n="nav_back">Back</span></button>
-      <button class="btn btn-ghost" onclick="resetToStart()" data-i18n="nav_back_start">Back to start</button>
     </div>
 <div id="checkin-funnel">
 <div class="hero hero-center">
@@ -3537,7 +3577,6 @@ function toggleTheme() {
   <div class="container">
     <div class="nav-row" style="justify-content:flex-start; gap:10px; margin-bottom:2px;">
       <button class="btn btn-ghost" onclick="goBack()"><span class="btn-arrow">&larr;</span> <span data-i18n="nav_back">Back</span></button>
-      <button class="btn btn-ghost" onclick="resetToStart()" data-i18n="nav_back_start">Back to start</button>
     </div>
     <div class="hero hero-center">
       <div class="eyebrow" data-i18n="ad_ey">A check-in for grown-ups</div>
@@ -3880,7 +3919,7 @@ function toggleTheme() {
 <section id="screen-thanks" class="screen">
   <div class="container">
     <div class="nav-row" style="justify-content:flex-start; margin-bottom:2px;">
-      <button class="btn btn-ghost" onclick="resetToStart()"><span class="btn-arrow">&larr;</span> <span data-i18n="nav_back_start">Back to start</span></button>
+      <button class="btn btn-ghost" onclick="goBack()"><span class="btn-arrow">&larr;</span> <span data-i18n="nav_back">Back</span></button>
     </div>
     <div class="thanks-stage">
       <div class="thanks-mark">&#10003;</div>
@@ -3900,7 +3939,7 @@ function toggleTheme() {
 <section id="screen-closing" class="screen">
   <div class="container">
     <div class="nav-row" style="justify-content:flex-start; margin-bottom:2px;">
-      <button class="btn btn-ghost" onclick="resetToStart()"><span class="btn-arrow">&larr;</span> <span data-i18n="nav_back_start">Back to start</span></button>
+      <button class="btn btn-ghost" onclick="goBack()"><span class="btn-arrow">&larr;</span> <span data-i18n="nav_back">Back</span></button>
     </div>
     <div class="hero" style="padding-top:48px;">
       <div class="eyebrow" data-i18n="c_eyebrow">A closing reflection &middot; just for you</div>
@@ -3924,7 +3963,7 @@ function toggleTheme() {
 <section id="screen-farewell" class="screen">
   <div class="container">
     <div class="nav-row" style="justify-content:flex-start; margin-bottom:2px;">
-      <button class="btn btn-ghost" onclick="resetToStart()"><span class="btn-arrow">&larr;</span> <span data-i18n="nav_back_start">Back to start</span></button>
+      <button class="btn btn-ghost" onclick="goBack()"><span class="btn-arrow">&larr;</span> <span data-i18n="nav_back">Back</span></button>
     </div>
     <div class="thanks-stage">
       <div class="eyebrow" data-i18n="f_eyebrow">Take it with you</div>
@@ -3990,7 +4029,7 @@ function toggleTheme() {
 <section id="screen-family" class="screen">
   <div class="container">
     <div class="nav-row" style="justify-content:flex-start; margin-bottom:8px;">
-      <button class="btn btn-ghost" onclick="resetToStart()"><span class="btn-arrow">&larr;</span> <span data-i18n="fam_back">Back to start</span></button>
+      <button class="btn btn-ghost" onclick="goBack()"><span class="btn-arrow">&larr;</span> <span data-i18n="nav_back">Back</span></button>
     </div>
     <div class="hero hero-center" style="padding-top:8px; padding-bottom:6px;">
       <div class="eyebrow" data-i18n="fam_eyebrow">Family Mode &middot; private to this device</div>
@@ -4021,7 +4060,7 @@ function toggleTheme() {
           <span class="dot"></span><span id="hdrSyncPillText">Private &middot; saved on this computer</span>
         </span>
         <button class="btn btn-secondary btn-sm" data-dl="dl_guidebtn" onclick="openGuide()">Guide &amp; Library</button>
-        <button class="btn btn-secondary btn-sm" data-dl="dl_backbtn" onclick="resetToStart()">Back to survey</button>
+        <button class="btn btn-secondary btn-sm" data-dl="dl_backbtn" onclick="goBack()">Back</button>
         <button class="btn btn-sm" id="btnDemoData" onclick="toggleDemoData()" style="background:var(--gold);border-color:var(--gold);color:var(--navy);">Try demo data</button>
       </div>
     </div>
@@ -4391,6 +4430,15 @@ function toggleTheme() {
 
       <!-- ABOUT INDEX: pick a topic -->
       <div id="about-index" class="about-tiles">
+        <button class="about-tile" type="button" onclick="aogAboutOpen('howitworks')">
+          <span class="about-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M19 5l-2 2M7 17l-2 2"/></svg></span>
+          <span class="at-tx">
+            <span class="at-ey" data-i18n="hiw_tile_ey">How it works</span>
+            <span class="at-t" data-i18n="hiw_tile_t">How Architecture of Grace works</span>
+            <span class="at-s" data-i18n="hiw_tile_s">Follow one answer from check-in to growth — and see how every piece connects.</span>
+          </span>
+          <span class="at-arr">&rarr;</span>
+        </button>
         <button class="about-tile" type="button" onclick="aogAboutOpen('difference')">
           <span class="about-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></span>
           <span class="at-tx">
@@ -4418,6 +4466,113 @@ function toggleTheme() {
           </span>
           <span class="at-arr">&rarr;</span>
         </button>
+      </div>
+
+      <!-- ABOUT DETAIL: how it works (P2 2026-06-08) — the system, traced through one real answer -->
+      <div class="about-view" id="about-view-howitworks" hidden>
+        <button class="about-back" type="button" onclick="aogAboutBack()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg> <span data-i18n="aog_back_about">Back to About</span></button>
+        <style>
+        #about-view-howitworks .hiw-card{ max-width:760px; margin:0 auto; }
+        .hiw-head{ text-align:center; max-width:600px; margin:0 auto 8px; }
+        .hiw-lede{ font-size:15px; line-height:1.7; color:var(--ink); margin:14px auto 0; }
+        .hiw-aud{ font-size:13px; line-height:1.6; color:var(--ink-soft); margin:10px auto 0; }
+        .hiw-aud b{ color:var(--navy); font-weight:600; }
+        :root[data-theme="dark"] .hiw-aud b{ color:var(--cream); }
+        /* worked-example callout */
+        .hiw-eg{ background:var(--cream-deep,#F4EFE0); border:1px solid var(--rule); border-left:4px solid var(--gold); border-radius:12px; padding:14px 18px; margin:26px 0 8px; }
+        .hiw-eg .eg-l{ font-size:11px; font-weight:700; letter-spacing:.16em; text-transform:uppercase; color:var(--gold-deep,#9a6f24); margin-bottom:5px; }
+        .hiw-eg .eg-q{ font-family:var(--font-serif); font-size:17px; font-weight:600; color:var(--navy); line-height:1.35; font-style:italic; }
+        :root[data-theme="dark"] .hiw-eg{ background:#0E2942; }
+        :root[data-theme="dark"] .hiw-eg .eg-q{ color:#fff; }
+        /* vertical journey */
+        .hiw-flow{ max-width:600px; margin:22px auto 4px; position:relative; }
+        .hiw-step{ position:relative; padding:0 0 26px 56px; }
+        .hiw-step:last-child{ padding-bottom:0; }
+        .hiw-step::before{ content:""; position:absolute; left:18px; top:30px; bottom:-2px; width:2px; background:linear-gradient(var(--gold) 0%, var(--gold-pale) 100%); }
+        .hiw-step:last-child::before{ display:none; }
+        .hiw-node{ position:absolute; left:4px; top:2px; width:30px; height:30px; border-radius:50%; background:var(--gold-pale); color:var(--gold-deep,#9a6f24); display:grid; place-items:center; font-family:var(--font-serif); font-size:14px; font-weight:700; box-shadow:0 0 0 4px var(--paper); }
+        .hiw-step.is-last .hiw-node{ background:var(--gold); color:var(--navy); }
+        .hiw-ey{ font-size:11px; font-weight:700; letter-spacing:.14em; text-transform:uppercase; color:var(--gold-deep,#9a6f24); }
+        .hiw-t{ font-family:var(--font-serif); font-size:19px; font-weight:600; color:var(--navy); line-height:1.2; margin:2px 0 5px; }
+        .hiw-b{ font-size:14px; line-height:1.62; color:var(--ink-soft); }
+        .hiw-b b{ color:var(--navy); font-weight:600; }
+        :root[data-theme="dark"] .hiw-node{ box-shadow:0 0 0 4px #13314F; }
+        :root[data-theme="dark"] .hiw-t{ color:#fff; }
+        :root[data-theme="dark"] .hiw-b b{ color:var(--cream); }
+        .hiw-ctas{ display:flex; flex-wrap:wrap; gap:12px; justify-content:center; margin:30px 0 4px; }
+        @media (max-width:520px){ .hiw-step{ padding-left:48px; } .hiw-node{ width:26px; height:26px; font-size:13px; } .hiw-step::before{ left:16px; } }
+        @media (prefers-reduced-motion: reduce){ #about-view-howitworks{ animation:none; } }
+        </style>
+        <div class="table-card hiw-card" style="padding:32px 36px 36px;">
+          <div class="hiw-head">
+            <span class="about-ic" style="margin:0 auto 14px;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M19 5l-2 2M7 17l-2 2"/></svg></span>
+            <div class="eyebrow" style="color:var(--gold);" data-i18n="hiw_ey">How it works</div>
+            <h3 class="serif" style="font-size:27px; color:var(--navy); margin:4px 0 0;" data-i18n="hiw_h">How Architecture of Grace works</h3>
+            <p class="hiw-lede" data-i18n="hiw_lede">Architecture of Grace is not a curriculum, an assessment, and a library sitting side by side — it is one connected framework. The clearest way to see that is to follow a single honest answer all the way from a quiet check-in to real growth.</p>
+            <p class="hiw-aud" data-i18n-html="hiw_aud">Whether you are a <b>family</b> at the kitchen table, an <b>educator</b> in one classroom, an <b>administrator</b>, or a <b>district leader</b> — the path below is the same. Only the scale changes.</p>
+          </div>
+
+          <div class="hiw-eg">
+            <div class="eg-l" data-i18n="hiw_eg_l">One real example</div>
+            <div class="eg-q" data-i18n="hiw_eg_q">“I keep replaying mistakes long after they are over.”</div>
+          </div>
+
+          <div class="hiw-flow">
+            <div class="hiw-step">
+              <div class="hiw-node">1</div>
+              <div class="hiw-ey" data-i18n="hiw_1_ey">The check-in</div>
+              <div class="hiw-t" data-i18n="hiw_1_t">A few honest minutes</div>
+              <div class="hiw-b" data-i18n-html="hiw_1_b">A short, private, bilingual check-in — for a student or an adult. It asks how things really are, not how they should be. One answer reads: <b>“I keep replaying mistakes long after they are over.”</b></div>
+            </div>
+            <div class="hiw-step">
+              <div class="hiw-node">2</div>
+              <div class="hiw-ey" data-i18n="hiw_2_ey">The result</div>
+              <div class="hiw-t" data-i18n="hiw_2_t">A gentle flag, never a label</div>
+              <div class="hiw-b" data-i18n-html="hiw_2_b">That answer surfaces as a flag for one construct — <b>Rumination &amp; letting go</b> — on the private Home View. It is a place to look, not a diagnosis or a score to fear.</div>
+            </div>
+            <div class="hiw-step">
+              <div class="hiw-node">3</div>
+              <div class="hiw-ey" data-i18n="hiw_3_ey">The resource index</div>
+              <div class="hiw-t" data-i18n="hiw_3_t">The flag points to one exact lesson</div>
+              <div class="hiw-b" data-i18n-html="hiw_3_b">The Resource Index maps that construct to the <b>exact lesson</b> in every grade band — in both the School Curriculum and the matching Home Edition. For grades 6–8, that is <b>Book 3 · Unit 2 · Lesson 6</b>.</div>
+            </div>
+            <div class="hiw-step">
+              <div class="hiw-node">4</div>
+              <div class="hiw-ey" data-i18n="hiw_4_ey">The stories</div>
+              <div class="hiw-t" data-i18n="hiw_4_t">The same idea, met as a story</div>
+              <div class="hiw-b" data-i18n-html="hiw_4_b">The same idea is waiting in the companion novel — the chapter <b>“Rewriting the Script”</b> — so the skill is met twice: once to practice, once as a character’s journey a reader can recognize themselves in.</div>
+            </div>
+            <div class="hiw-step">
+              <div class="hiw-node">5</div>
+              <div class="hiw-ey" data-i18n="hiw_5_ey">The lessons</div>
+              <div class="hiw-t" data-i18n="hiw_5_t">Taught directly and kindly</div>
+              <div class="hiw-b" data-i18n-html="hiw_5_b">The lesson teaches the distinction at the heart of it — <b>guilt</b> (about a behavior, useful) versus <b>shame</b> (about identity, corrosive) — and a concrete letting-go practice. A high-intensity flag is routed to a counselor on-site.</div>
+            </div>
+            <div class="hiw-step">
+              <div class="hiw-node">6</div>
+              <div class="hiw-ey" data-i18n="hiw_6_ey">The worksheets</div>
+              <div class="hiw-t" data-i18n="hiw_6_t">Practice on something low-stakes</div>
+              <div class="hiw-b" data-i18n-html="hiw_6_b">A worksheet and a <b>scenario card</b> let the skill be tried on a small, safe situation first — before it is ever needed for the real one.</div>
+            </div>
+            <div class="hiw-step">
+              <div class="hiw-node">7</div>
+              <div class="hiw-ey" data-i18n="hiw_7_ey">The conversations</div>
+              <div class="hiw-t" data-i18n="hiw_7_t">Something to talk through together</div>
+              <div class="hiw-b" data-i18n-html="hiw_7_b">A reflection gives an adult and a young person something to sit with side by side — turning a private flag into a shared, unhurried conversation.</div>
+            </div>
+            <div class="hiw-step is-last">
+              <div class="hiw-node">8</div>
+              <div class="hiw-ey" data-i18n="hiw_8_ey">Growth</div>
+              <div class="hiw-t" data-i18n="hiw_8_t">The next check-in tells the story</div>
+              <div class="hiw-b" data-i18n-html="hiw_8_b">When the check-in comes around again, it shows whether the loop is starting to loosen. The number is never the point — the <b>growth</b> is. Then the path begins again, one step further on.</div>
+            </div>
+          </div>
+
+          <div class="hiw-ctas">
+            <button class="btn" type="button" onclick="startChoose()"><span data-i18n="hiw_cta_checkin">Take the check-in</span> <span class="btn-arrow">&rarr;</span></button>
+            <button class="btn btn-secondary" type="button" onclick="openGuide('resindex')"><span data-i18n="hiw_cta_index">Open the Resource Index</span> <span class="btn-arrow">&rarr;</span></button>
+          </div>
+        </div>
       </div>
 
       <!-- ABOUT DETAIL: difference -->
@@ -5170,7 +5325,19 @@ function toggleTheme() {
 
       <div class="guide-section" id="guide-resindex">
         <div class="table-card" style="padding:28px 32px 32px;">
-          <h3 class="serif" style="font-size:22px; color:var(--navy); margin-bottom:6px;" data-i18n="ri_h">Construct-to-Resource Index</h3>
+          <style>
+          #guide-resindex .ri-master-ey{ font-family:var(--font-sans); font-size:11px; font-weight:700; letter-spacing:.18em; text-transform:uppercase; color:var(--gold); margin-bottom:7px; }
+          #guide-resindex .ri-lead{ font-size:15.5px; line-height:1.62; color:var(--ink); margin:0 0 12px; font-weight:500; }
+          #guide-resindex .ri-lead b{ color:var(--navy); font-weight:600; }
+          :root[data-theme="dark"] #guide-resindex .ri-lead b{ color:var(--cream); }
+          #guide-resindex .ri-hiw-link{ display:inline-flex; align-items:center; gap:6px; font-family:var(--font-sans); font-size:13.5px; font-weight:600; color:var(--navy); text-decoration:none; border-bottom:1px solid var(--gold); padding-bottom:1px; margin:0 0 20px; }
+          #guide-resindex .ri-hiw-link:hover{ color:var(--gold-deep,#9a6f24); }
+          :root[data-theme="dark"] #guide-resindex .ri-hiw-link{ color:var(--cream); }
+          </style>
+          <div class="ri-master-ey" data-i18n="ri_master_ey">The master map of the framework</div>
+          <h3 class="serif" style="font-size:22px; color:var(--navy); margin-bottom:8px;" data-i18n="ri_h">Construct-to-Resource Index</h3>
+          <p class="ri-lead" data-i18n-html="ri_master_lead">This is not a search page — it is the map of how everything connects. <b>Every assessment item, lesson, story, worksheet, anchor chart, and scenario card is linked here.</b> Start with a challenge, a skill, or a check-in result, and follow it straight through the Architecture of Grace framework.</p>
+          <a href="#how-it-works" class="ri-hiw-link" onclick="event.preventDefault(); aogOpenHowItWorks();" data-i18n="ri_hiw_link">See how one answer becomes growth &rarr;</a>
           <p style="font-size:14.5px; line-height:1.6; color:var(--ink-soft); margin-bottom:18px;" data-i18n-html="ri_intro">When a check-in flags a low domain or a specific item, find the matching construct below. Each one points you to the exact lesson, anchor chart, and activity in every grade band &mdash; in both the School Curriculum and the matching Home Edition &mdash; and, under <strong>In the novels</strong>, the specific book and chapter where that same idea appears as story. (References are by chapter, which stay accurate across print and digital formats, rather than by page.) Both the Quick and Thorough check-ins measure the same items, so a result from either mode maps back to these same lessons, sections, and chapters.</p>
           <div class="ri-toolbar">
             <input type="text" id="riSearch" placeholder="Search: inner critic, overwhelm, repair, unsafe..." data-i18n-ph="ri_search_ph">
@@ -7392,8 +7559,8 @@ const I18N_UI = {
     es: "Hogar"
   },
   w_name: {
-    en: "Name or ID",
-    es: "Nombre o ID"
+    en: "Name or nickname",
+    es: "Nombre o apodo"
   },
   w_name_ph: {
     en: "Your first name works fine",
@@ -8000,6 +8167,60 @@ const I18N_UI = {
   ri_intro: {
     es: "Cuando un chequeo marca un dominio bajo o un ítem específico, busca el constructo correspondiente abajo. Cada uno te lleva a la lección, la lámina de anclaje y la actividad exactas en cada nivel — tanto en el Plan de Estudios Escolar como en la Edición en Casa correspondiente — y, bajo <strong>En las novelas</strong>, el libro y el capítulo donde esa misma idea aparece como relato. (Las referencias son por capítulo, que se mantienen exactas entre los formatos impreso y digital, en lugar de por página.) Tanto el chequeo Quick como el Thorough miden los mismos ítems, así que un resultado de cualquiera de los dos remite a las mismas lecciones, secciones y capítulos."
   },
+  ri_master_ey: { es: "El mapa maestro del marco" },
+  ri_master_lead: { es: "Esto no es una página de búsqueda: es el mapa de cómo todo se conecta. <b>Cada ítem de evaluación, lección, historia, hoja de trabajo, lámina de anclaje y tarjeta de escenario está enlazado aquí.</b> Empieza con un desafío, una habilidad o un resultado del chequeo, y síguelo directamente a través del marco Architecture of Grace." },
+  ri_hiw_link: { es: "Mira cómo una respuesta se convierte en crecimiento →" },
+  p2g_ey: { es: "El marco, en movimiento" },
+  p2g_h: { es: "Cómo una respuesta se convierte en crecimiento" },
+  p2g_lede: { es: "Nada aquí es una herramienta aislada. Mira cómo una sola respuesta sincera recorre el marco — de una señal silenciosa a un siguiente paso real." },
+  p2g_s1_ey: { es: "El chequeo" },
+  p2g_s1_v: { es: "«Sigo repasando mis errores mucho después de que pasaron.»" },
+  p2g_s2_ey: { es: "El resultado" },
+  p2g_s2_v: { es: "Rumiación y dejar ir — una señal amable" },
+  p2g_s3_ey: { es: "El índice de recursos" },
+  p2g_s3_v: { es: "Lo conecta con una lección exacta" },
+  p2g_s4_ey: { es: "Lección e historia" },
+  p2g_s4_v: { es: "Libro 3 · «Reescribir el guion»" },
+  p2g_s5_ey: { es: "Practicar y conversar" },
+  p2g_s5_v: { es: "Hoja de trabajo, tarjeta de escenario, una reflexión" },
+  p2g_s6_ey: { es: "Crecimiento" },
+  p2g_s6_v: { es: "El siguiente chequeo muestra que el bucle se afloja" },
+  p2g_cta: { es: "Mira cómo se conecta todo el sistema" },
+  hiw_tile_ey: { es: "Cómo funciona" },
+  hiw_tile_t: { es: "Cómo funciona Architecture of Grace" },
+  hiw_tile_s: { es: "Sigue una respuesta del chequeo al crecimiento — y mira cómo se conecta cada pieza." },
+  hiw_ey: { es: "Cómo funciona" },
+  hiw_h: { es: "Cómo funciona Architecture of Grace" },
+  hiw_lede: { es: "Architecture of Grace no es un plan de estudios, una evaluación y una biblioteca uno al lado del otro: es un solo marco conectado. La forma más clara de verlo es seguir una sola respuesta sincera desde un chequeo silencioso hasta un crecimiento real." },
+  hiw_aud: { es: "Ya seas una <b>familia</b> en la mesa de la cocina, un <b>educador</b> en un aula, un <b>administrador</b> o un <b>líder de distrito</b>, el camino de abajo es el mismo. Solo cambia la escala." },
+  hiw_eg_l: { es: "Un ejemplo real" },
+  hiw_eg_q: { es: "«Sigo repasando mis errores mucho después de que pasaron.»" },
+  hiw_1_ey: { es: "El chequeo" },
+  hiw_1_t: { es: "Unos minutos sinceros" },
+  hiw_1_b: { es: "Un chequeo breve, privado y bilingüe — para un estudiante o un adulto. Pregunta cómo están las cosas de verdad, no cómo deberían estar. Una respuesta dice: <b>«Sigo repasando mis errores mucho después de que pasaron.»</b>" },
+  hiw_2_ey: { es: "El resultado" },
+  hiw_2_t: { es: "Una señal amable, nunca una etiqueta" },
+  hiw_2_b: { es: "Esa respuesta aparece como una señal de un constructo — <b>Rumiación y dejar ir</b> — en la Vista del Hogar privada. Es un lugar donde mirar, no un diagnóstico ni una nota que temer." },
+  hiw_3_ey: { es: "El índice de recursos" },
+  hiw_3_t: { es: "La señal apunta a una lección exacta" },
+  hiw_3_b: { es: "El Índice de Recursos conecta ese constructo con la <b>lección exacta</b> en cada nivel — tanto en el Plan de Estudios Escolar como en la Edición en Casa correspondiente. Para los grados 6.º a 8.º, es el <b>Libro 3 · Unidad 2 · Lección 6</b>." },
+  hiw_4_ey: { es: "Las historias" },
+  hiw_4_t: { es: "La misma idea, vivida como relato" },
+  hiw_4_b: { es: "La misma idea espera en la novela complementaria — el capítulo <b>«Reescribir el guion»</b> — para encontrar la habilidad dos veces: una para practicarla, otra como el camino de un personaje en el que el lector puede reconocerse." },
+  hiw_5_ey: { es: "Las lecciones" },
+  hiw_5_t: { es: "Enseñada de forma directa y amable" },
+  hiw_5_b: { es: "La lección enseña la distinción esencial — <b>culpa</b> (sobre una conducta, útil) frente a <b>vergüenza</b> (sobre la identidad, corrosiva) — y una práctica concreta para dejar ir. Una señal de alta intensidad se deriva a un consejero en el lugar." },
+  hiw_6_ey: { es: "Las hojas de trabajo" },
+  hiw_6_t: { es: "Practicar con algo de bajo riesgo" },
+  hiw_6_b: { es: "Una hoja de trabajo y una <b>tarjeta de escenario</b> permiten probar la habilidad en una situación pequeña y segura primero — antes de necesitarla de verdad." },
+  hiw_7_ey: { es: "Las conversaciones" },
+  hiw_7_t: { es: "Algo para conversar juntos" },
+  hiw_7_b: { es: "Una reflexión le da a un adulto y a un joven algo que compartir lado a lado — convirtiendo una señal privada en una conversación compartida y sin prisa." },
+  hiw_8_ey: { es: "Crecimiento" },
+  hiw_8_t: { es: "El siguiente chequeo cuenta la historia" },
+  hiw_8_b: { es: "Cuando el chequeo vuelve, muestra si el bucle empieza a aflojarse. El número nunca es lo importante — lo es el <b>crecimiento</b>. Y entonces el camino comienza de nuevo, un paso más adelante." },
+  hiw_cta_checkin: { es: "Hacer el chequeo" },
+  hiw_cta_index: { es: "Abrir el Índice de Recursos" },
   ri_search_ph: {
     es: "Buscar: crítico interno, agobio, reparación, inseguro..."
   },
@@ -8359,12 +8580,12 @@ const CTX_TEXT = {
   },
   home: {
     label: {
-      en: "Name or ID",
-      es: "Nombre o ID"
+      en: "Name or nickname",
+      es: "Nombre o apodo"
     },
     ph: {
-      en: "Your first name works fine",
-      es: "Tu nombre de pila funciona bien"
+      en: "A first name or nickname is fine",
+      es: "Un nombre o apodo está bien"
     },
     note: {
       en: "<strong>Home mode.</strong> Everything stays on this device only — nothing is sent anywhere — so a first name is perfectly fine.",
@@ -8562,9 +8783,9 @@ var TOURS = {
     title: { en: "See it with demo data", es: "Míralo con datos de ejemplo" },
     body: { en: "This dashboard is already live on sample data — switch between Trend and Bar to see how a whole group reads at a glance. Nothing is saved, no sign-up, no code.", es: "Este panel ya funciona con datos de ejemplo: cambia entre Tendencia y Barras para ver cómo se lee todo un grupo de un vistazo. No se guarda nada, sin registro y sin código." }
   }, {
-    sel: ".hyb-corners",
+    sel: ".hyb-cta-row",
     title: { en: "Ways in", es: "Maneras de entrar" },
-    body: { en: "Eight ways in — the check-in; what it is; the guide for educators, for schools & districts, or for workplaces & teams; the free library; the Store; and your privacy & data. Pick whichever fits.", es: "Ocho maneras de entrar: el chequeo; qué es; la guía para educadores, para escuelas y distritos, o para lugares de trabajo y equipos; la biblioteca gratuita; la Tienda; y tu privacidad y datos. Elige la que mejor te quede." }
+    body: { en: "Two ways in from here: Explore the Framework to see how everything connects — for educators, for schools & districts, and for workplaces & teams — or take the private Check-In. Everything’s free to browse, no sign-up, no code.", es: "Dos maneras de entrar desde aquí: Explora el marco para ver cómo se conecta todo — para educadores, para escuelas y distritos, y para lugares de trabajo y equipos — o haz el Chequeo privado. Todo es gratis para explorar, sin registro y sin código." }
   }, {
     sel: ".topbar-lib",
     title: { en: "Free to read & download", es: "Gratis para leer y descargar" },
@@ -9496,8 +9717,8 @@ const DASH_I18N = {
     es: "Guía y biblioteca"
   },
   dl_backbtn: {
-    en: "Back to survey",
-    es: "Volver al cuestionario"
+    en: "Back",
+    es: "Atrás"
   },
   dl_t_overview: {
     en: "Overview",
@@ -10952,6 +11173,27 @@ function openAbout() {
     }
   } catch (e) {}
 }
+/* P2 (2026-06-08): open the "How Architecture of Grace works" page directly.
+   We defer the view-reveal to the next frame so it runs AFTER the about screen's
+   MutationObserver (which otherwise snaps any active-About view back to the topic
+   index) has fired — guaranteeing the How-It-Works view is the final visible state,
+   even when the user was previously on another About detail view. */
+function aogOpenHowItWorks() {
+  showScreen("screen-about");
+  if (typeof aogSetHash === "function") {
+    aogSetHash("how-it-works");
+  }
+  requestAnimationFrame(function () {
+    try {
+      document.querySelectorAll(".about-view").forEach(function (v) { v.hidden = true; });
+      var idx = document.getElementById("about-index");
+      if (idx) { idx.hidden = true; }
+      var v = document.getElementById("about-view-howitworks");
+      if (v) { v.hidden = false; v.scrollIntoView({ behavior: "smooth", block: "start" }); }
+    } catch (e) {}
+  });
+}
+try { window.aogOpenHowItWorks = aogOpenHowItWorks; } catch (_aogHIW) {}
 function activateGuideSection(_0x5cdba5, _0x195f4d) {
   document.querySelectorAll(".guide-subtab").forEach(_0x358e9f => _0x358e9f.classList.remove("active"));
   document.querySelectorAll(".guide-section").forEach(_0x268a9e => _0x268a9e.classList.remove("active"));
@@ -11262,6 +11504,8 @@ function aogRouteFromHash() {
     openGuide("docs");
   } else if (_0xaa0d73 === "about") {
     openAbout();
+  } else if (_0xaa0d73 === "how-it-works" || _0xaa0d73 === "howitworks" || _0xaa0d73 === "how-aog-works") {
+    if (typeof aogOpenHowItWorks === "function") aogOpenHowItWorks();
   } else if (_0xaa0d73 === "guide" || _0xaa0d73 === "ecosystem" || _0xaa0d73 === "explore") {
     openGuide();
   } else if (_0xaa0d73 === "framework" || _0xaa0d73 === "the-framework") {
