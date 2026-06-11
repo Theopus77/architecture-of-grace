@@ -322,6 +322,22 @@
     var grid = document.querySelector('#screen-teacher-tools .tools-grid');
     if (!grid) return;
     grid.querySelectorAll('.tool-card').forEach(function (card) {
+      // BUGFIX: the app's original InteractiveCard binds a button click handler
+      // that runs a fake "Practiced ✓" animation + stopPropagation but never
+      // opens the tool — so Start/Open/Guide buttons did nothing (only the card
+      // body worked). Replace the button with a clean clone (drops all those
+      // interfering listeners) and wire it straight to the card's action.
+      var btn = card.querySelector('.btn');
+      if (btn && !btn.dataset.graceWired) {
+        var clean = btn.cloneNode(true);
+        clean.dataset.graceWired = '1';
+        clean.addEventListener('click', function (ev) {
+          ev.stopPropagation();
+          try { if (typeof card.onclick === 'function') card.onclick.call(card); } catch (e) {}
+        });
+        if (btn.parentNode) btn.parentNode.replaceChild(clean, btn);
+      }
+      // Custom monochrome icon swap.
       var oc = card.getAttribute('onclick') || '';
       var m = oc.match(/toolOpen\('([^']+)'\)/);
       var key = m ? m[1] : (/screen-pecs/.test(oc) ? 'pecs' : null);
@@ -478,7 +494,7 @@
     // Re-render the localized PECS whenever the language toggles.
     if (typeof window.applyLang === 'function' && !window.applyLang.__gracePecsEs) {
       var _al = window.applyLang;
-      window.applyLang = function () { var r = _al.apply(this, arguments); if (document.getElementById('pecsTabs')) gPecsRenderAll(); return r; };
+      window.applyLang = function () { var r = _al.apply(this, arguments); if (document.getElementById('pecsTabs')) gPecsRenderAll(); try { if (window.__aogFlowRefresh) window.__aogFlowRefresh(); } catch (e) {} return r; };
       window.applyLang.__gracePecsEs = true;
     }
   }
@@ -567,6 +583,7 @@
       I18N_UI.gt_body_t = { en: 'How’s your weather?', es: '¿Cómo está tu clima?' };
       I18N_UI.gt_body_d = { en: 'Find your sky — blue, green, yellow or red — then a tool that fits', es: 'Encuentra tu cielo — azul, verde, amarillo o rojo — y una herramienta que ayude' };
       I18N_UI.gt_body_b = { en: 'Check in', es: 'Empezar' };
+      I18N_UI.p2g_replay = { en: '↻ Watch it again', es: '↻ Verlo otra vez' };
       I18N_UI.pecs_sos_btn = { en: '🙋 Show to Teacher', es: '🙋 Mostrar al maestro' };
       I18N_UI.gt_ground_btn = { en: 'Reset myself (10s)', es: 'Centrarme (10s)' };
       I18N_UI.pecs_eyebrow = { en: 'Communication Support', es: 'Apoyo a la comunicación' };
@@ -595,6 +612,160 @@
     } catch (e) {}
   }
 
+  // =========================================================================
+  // "How one answer becomes growth" — PICK an answer, watch its real journey
+  // travel the framework. Every journey is drawn from the real curriculum:
+  // the actual check-in items + the resource-index→book mapping in the app.
+  //   stages = [check-in, result, resource index, lesson & story, practice, growth]
+  // =========================================================================
+  // Grade bands → the real book for that band (from the app's aogBandBook map).
+  var BANDS = [
+    { label: 'K–2', book: { en: 'Book 1 · The Year We Met Sammy', es: 'Libro 1 · The Year We Met Sammy' } },
+    { label: '3–5', book: { en: 'Book 2 · The Year of the Inner Critic', es: 'Libro 2 · The Year of the Inner Critic' } },
+    { label: '6–8', book: { en: 'Book 3 · The Year of Two Voices', es: 'Libro 3 · The Year of Two Voices' } },
+    { label: '9–10', book: { en: 'Book 4 · The Year We Looked Up', es: 'Libro 4 · The Year We Looked Up' } },
+    { label: '11–12', book: { en: 'Book 5 · The Year We Walked Out', es: 'Libro 5 · The Year We Walked Out' } }
+  ];
+  // The three domains (A/B/C) — answer + the universal result/resource/practice/
+  // growth, drawn from the app's real domain focus map (aogTeachNextStudentMap).
+  var DOMAINS = [
+    { answer: { en: 'Feeling overwhelmed', es: 'Me siento sobrepasado/a' },
+      checkin: { en: '“I feel overwhelmed and don’t know what to do about it.”', es: '“Me siento sobrepasado/a y no sé qué hacer.”' },
+      result: { en: 'Big feelings outrunning the tools — a gentle flag', es: 'Emociones grandes que superan las herramientas — una señal suave' },
+      ri: { en: 'Maps it to the regulation toolkit', es: 'Lo conecta con el kit de regulación' },
+      practice: { en: 'The Window of Tolerance, a body reset, a calm-down plan', es: 'La Window of Tolerance, un reinicio corporal, un plan de calma' },
+      growth: { en: 'The next check-in: a tool ready before the wave', es: 'El próximo chequeo: una herramienta lista antes de la ola' } },
+    { answer: { en: 'A harsh inner voice', es: 'Una voz interior dura' },
+      checkin: { en: '“A voice in my head says I’m not good enough.”', es: '“Una voz en mi cabeza dice que no soy suficiente.”' },
+      result: { en: 'A loud inner critic — a gentle flag', es: 'Un crítico interior fuerte — una señal suave' },
+      ri: { en: 'Maps it to the Kind Coach work', es: 'Lo conecta con el trabajo del Kind Coach' },
+      practice: { en: 'The Kind Coach drawing, a Self-Compassion Letter, a reflection', es: 'El dibujo del Kind Coach, una Self-Compassion Letter, una reflexión' },
+      growth: { en: 'The next check-in: the critic quieter, the coach louder', es: 'El próximo chequeo: el crítico más callado, el coach más fuerte' } },
+    { answer: { en: 'Assuming the worst', es: 'Asumo lo peor' },
+      checkin: { en: '“When someone hurts my feelings, I assume the worst about them.”', es: '“Cuando alguien me lastima, asumo lo peor de esa persona.”' },
+      result: { en: 'Jumping to the worst — a gentle flag', es: 'Saltar a lo peor — una señal suave' },
+      ri: { en: 'Maps it to perspective-taking & repair', es: 'Lo conecta con la toma de perspectiva y la reparación' },
+      practice: { en: 'The Three Sides protocol, a scenario card, a reflection', es: 'El protocolo Three Sides, una tarjeta de escenario, una reflexión' },
+      growth: { en: 'The next check-in: a pause before the worst-case', es: 'El próximo chequeo: una pausa antes del peor caso' } }
+  ];
+  var _flowBand = 1, _flowDom = 1; // default: 3–5 · inner critic
+  function initFlowAnimation() {
+    var track = document.querySelector('.aogf-track');
+    if (!track || track.dataset.flowInit) return;
+    track.dataset.flowInit = '1';
+    var chips = [].slice.call(track.querySelectorAll('.aogf-chip'));
+    var arrows = [].slice.call(track.querySelectorAll('.aogf-arrow'));
+    if (chips.length < 2) return;
+    var reduce = reduceMotion();
+    var spark = document.createElement('div');
+    spark.className = 'aogf-spark';
+    track.appendChild(spark);
+
+    // --- Two-level picker (grade band → answer), inserted above the track ---
+    var picker = document.createElement('div');
+    picker.className = 'aogf-picker';
+    var hBand = document.createElement('div');
+    hBand.className = 'aogf-picker-h';
+    picker.appendChild(hBand);
+    var bandWrap = document.createElement('div');
+    bandWrap.className = 'aogf-band-btns';
+    var bandBtns = BANDS.map(function (bd, i) {
+      var btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'aogf-band' + (i === _flowBand ? ' active' : '');
+      btn.textContent = bd.label;
+      btn.addEventListener('click', function () { _flowBand = i; refreshFlowText(); play(); });
+      bandWrap.appendChild(btn);
+      return btn;
+    });
+    picker.appendChild(bandWrap);
+    var hDom = document.createElement('div');
+    hDom.className = 'aogf-picker-h aogf-picker-h2';
+    picker.appendChild(hDom);
+    var domWrap = document.createElement('div');
+    domWrap.className = 'aogf-picker-btns';
+    var domBtns = DOMAINS.map(function (dm, i) {
+      var btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'aogf-pick' + (i === _flowDom ? ' active' : '');
+      btn.addEventListener('click', function () { _flowDom = i; refreshFlowText(); play(); });
+      domWrap.appendChild(btn);
+      return btn;
+    });
+    picker.appendChild(domWrap);
+    if (track.parentNode) track.parentNode.insertBefore(picker, track);
+
+    // Apply the current (band × domain) journey's localized text everywhere.
+    function refreshFlowText() {
+      hBand.textContent = T('1 · Pick a grade band', '1 · Elige una banda de grado');
+      hDom.textContent = T('2 · Pick a check-in answer — watch it travel', '2 · Elige una respuesta — míralo viajar');
+      bandBtns.forEach(function (b, i) { b.classList.toggle('active', i === _flowBand); });
+      domBtns.forEach(function (b, i) { b.textContent = DOMAINS[i].answer[L()]; b.classList.toggle('active', i === _flowDom); });
+      var d = DOMAINS[_flowDom], bk = BANDS[_flowBand].book;
+      var stages = [d.checkin, d.result, d.ri, bk, d.practice, d.growth];
+      chips.forEach(function (c, i) {
+        var v = c.querySelector('.c-v');
+        if (v && stages[i]) { v.removeAttribute('data-i18n'); v.removeAttribute('data-i18n-html'); v.textContent = stages[i][L()]; }
+      });
+    }
+    window.__aogFlowRefresh = refreshFlowText;
+    refreshFlowText();
+
+    // "Watch it again" control, placed just after the track.
+    var ctrl = document.createElement('button');
+    ctrl.type = 'button';
+    ctrl.className = 'aogf-replay';
+    ctrl.setAttribute('data-i18n', 'p2g_replay');
+    ctrl.textContent = '↻ ' + T('Watch it again', 'Verlo otra vez');
+    if (track.parentNode) track.parentNode.insertBefore(ctrl, track.nextSibling);
+    var timer = null;
+    function moveSpark(chip) {
+      var tr = track.getBoundingClientRect(), cr = chip.getBoundingClientRect();
+      spark.style.left = (cr.left - tr.left + cr.width / 2) + 'px';
+      spark.style.top = (cr.top - tr.top + cr.height / 2) + 'px';
+    }
+    function reset() {
+      chips.forEach(function (c) { c.classList.remove('aogf-seen', 'aogf-current', 'aogf-pulse'); });
+      arrows.forEach(function (a) { a.classList.remove('aogf-lit'); });
+    }
+    function play() {
+      if (timer) clearTimeout(timer);
+      track.classList.add('aogf-anim');
+      reset();
+      if (reduce) {
+        chips.forEach(function (c) { c.classList.add('aogf-seen'); });
+        arrows.forEach(function (a) { a.classList.add('aogf-lit'); });
+        return;
+      }
+      spark.classList.add('on');
+      moveSpark(chips[0]);
+      var i = 0;
+      function step() {
+        if (i > 0) { chips[i - 1].classList.remove('aogf-current'); chips[i - 1].classList.add('aogf-seen'); }
+        if (i >= chips.length) { finish(); return; }
+        chips[i].classList.add('aogf-current');
+        if (i > 0 && arrows[i - 1]) arrows[i - 1].classList.add('aogf-lit');
+        moveSpark(chips[i]);
+        i++;
+        timer = setTimeout(step, 1500);
+      }
+      timer = setTimeout(step, 220);
+    }
+    function finish() {
+      var last = chips[chips.length - 1];
+      last.classList.remove('aogf-current');
+      last.classList.add('aogf-seen', 'aogf-pulse');
+      timer = setTimeout(function () { spark.classList.remove('on'); }, 450);
+    }
+    ctrl.addEventListener('click', play);
+    if ('IntersectionObserver' in window) {
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) { if (e.isIntersecting) { io.disconnect(); setTimeout(play, 350); } });
+      }, { threshold: 0.35 });
+      io.observe(track);
+    } else { setTimeout(play, 700); }
+  }
+
   function boot() {
     addSensoryCategories();
     augmentPecsEs();
@@ -604,6 +775,7 @@
     // refresh PECS if the screen is already mounted
     try { if (document.getElementById('pecsTabs')) gPecsRenderAll(); } catch (e) {}
     try { upgradeToolIcons(); } catch (e) {}
+    try { initFlowAnimation(); } catch (e) {}
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
   else boot();
