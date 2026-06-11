@@ -721,8 +721,9 @@
     var timer = null;
     function moveSpark(chip) {
       var tr = track.getBoundingClientRect(), cr = chip.getBoundingClientRect();
-      spark.style.left = (cr.left - tr.left + cr.width / 2) + 'px';
-      spark.style.top = (cr.top - tr.top + cr.height / 2) + 'px';
+      var inset = 18; // sit in the top-right corner, away from the text
+      spark.style.left = (cr.left - tr.left + cr.width - inset) + 'px';
+      spark.style.top = (cr.top - tr.top + inset) + 'px';
     }
     function reset() {
       chips.forEach(function (c) { c.classList.remove('aogf-seen', 'aogf-current', 'aogf-pulse'); });
@@ -747,9 +748,9 @@
         if (i > 0 && arrows[i - 1]) arrows[i - 1].classList.add('aogf-lit');
         moveSpark(chips[i]);
         i++;
-        timer = setTimeout(step, 1500);
+        timer = setTimeout(step, 2300);
       }
-      timer = setTimeout(step, 220);
+      timer = setTimeout(step, 260);
     }
     function finish() {
       var last = chips[chips.length - 1];

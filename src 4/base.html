@@ -1616,6 +1616,15 @@ tr:hover td { background: var(--paper); }
 .ri-res { font-size:13.5px; color:var(--ink); line-height:1.5; }
 .ri-res .loc { font-weight:600; color:var(--navy); }
 .ri-res .res { color:var(--ink-soft); }
+/* Clickable resource rows — open the lesson/story preview, like the results page */
+a.ri-book.ri-book-link { grid-template-columns:auto 1fr auto; text-decoration:none; cursor:pointer; border-radius:8px; margin:0 -8px; padding:10px 8px; transition:background .15s ease, box-shadow .15s ease; }
+a.ri-book.ri-book-link:hover { background:var(--gold-pale,#FBF3DF); box-shadow:inset 3px 0 0 var(--gold); }
+a.ri-book.ri-book-link .ri-open { align-self:center; color:var(--gold); font-weight:700; font-size:13px; opacity:.5; transition:opacity .15s ease, transform .15s ease; }
+a.ri-book.ri-book-link:hover .ri-open { opacity:1; transform:translate(2px,-2px); }
+a.ri-novel.ri-novel-link { display:inline-flex; align-items:center; gap:6px; text-decoration:none; cursor:pointer; transition:background .15s ease, border-color .15s ease, transform .15s ease; }
+a.ri-novel.ri-novel-link:hover { background:var(--gold-pale,#FBF3DF); border-color:var(--gold); transform:translateY(-1px); }
+a.ri-novel.ri-novel-link .ri-open { color:var(--gold); font-weight:700; font-size:12px; opacity:.6; transition:opacity .15s ease; }
+a.ri-novel.ri-novel-link:hover .ri-open { opacity:1; }
 .ri-empty { text-align:center; padding:40px 20px; color:var(--ink-faint); }
 
 /* Ecosystem layers inside guide */
@@ -15146,7 +15155,13 @@ function riRender(_0x4f8a98, _0x4f89b6) {
         if (!_0x5d5b54) {
           return;
         }
-        _0x27c43b += "<div class=\"ri-book\"><div class=\"ri-chip\">" + (lang === "es" ? RI_GRADES[_0x3024b4].label.replace("Book", "Libro") : RI_GRADES[_0x3024b4].label) + "<span class=\"ri-chip-grade\">" + RI_GRADES[_0x3024b4].grade + "</span></div><div class=\"ri-res\"><span class=\"loc\">" + _0x5d5b54.loc + "</span> &mdash; <span class=\"res\">" + _0x5d5b54.res + "</span></div></div>";
+        var __riCurUrl = (typeof curriculumJumpUrl === "function") ? curriculumJumpUrl(_0x3024b4, _0x14d5f7.items) : "";
+        var __riBookInner = "<div class=\"ri-chip\">" + (lang === "es" ? RI_GRADES[_0x3024b4].label.replace("Book", "Libro") : RI_GRADES[_0x3024b4].label) + "<span class=\"ri-chip-grade\">" + RI_GRADES[_0x3024b4].grade + "</span></div><div class=\"ri-res\"><span class=\"loc\">" + _0x5d5b54.loc + "</span> &mdash; <span class=\"res\">" + _0x5d5b54.res + "</span></div>";
+        if (__riCurUrl) {
+          _0x27c43b += "<a class=\"ri-book ri-book-link\" href=\"" + __riCurUrl + "\" target=\"_blank\" rel=\"noopener\" title=\"" + (lang === "es" ? "Abrir la lección" : "Open the lesson") + "\">" + __riBookInner + "<span class=\"ri-open\" aria-hidden=\"true\">&#8599;</span></a>";
+        } else {
+          _0x27c43b += "<div class=\"ri-book\">" + __riBookInner + "</div>";
+        }
       });
       if (_0x27c43b) {
         _0x27c43b = "<div class=\"ri-novels-label\">" + (lang === "es" ? "En el plan de estudios (Escolar y Edición en Casa)" : "In the School & Home Curriculum") + "</div>" + _0x27c43b;
@@ -15154,7 +15169,13 @@ function riRender(_0x4f8a98, _0x4f89b6) {
       let _0x55af6d = "";
       const _0x1b614d = (RI_NOVELS[_0x14d5f7.items] || []).filter(_0x533a3f => _0x4f89b6 === "adult" ? _0x533a3f.b >= 3 : !_0x4f89b6 || String(_0x533a3f.b) === String(_0x4f89b6));
       if (_0x1b614d.length) {
-        _0x55af6d = "<div class=\"ri-novels\"><div class=\"ri-novels-label\">" + (lang === "es" ? "En las novelas" : "In the novels") + "</div><div class=\"ri-novels-list\">" + _0x1b614d.map(_0x4796dd => "<span class=\"ri-novel\"><span class=\"ri-novel-bk\">" + (lang === "es" ? RI_GRADES[_0x4796dd.b].label.replace("Book", "Libro") : RI_GRADES[_0x4796dd.b].label) + " · " + _0x4796dd.ch + "</span> &ldquo;" + _0x4796dd.t + "&rdquo;</span>").join("") + "</div></div>";
+        _0x55af6d = "<div class=\"ri-novels\"><div class=\"ri-novels-label\">" + (lang === "es" ? "En las novelas" : "In the novels") + "</div><div class=\"ri-novels-list\">" + _0x1b614d.map(_0x4796dd => {
+          var __riNovUrl = (typeof novelJumpUrl === "function") ? novelJumpUrl(_0x4796dd.b, chNumOf(_0x4796dd.ch)) : "";
+          var __riNovInner = "<span class=\"ri-novel-bk\">" + (lang === "es" ? RI_GRADES[_0x4796dd.b].label.replace("Book", "Libro") : RI_GRADES[_0x4796dd.b].label) + " · " + _0x4796dd.ch + "</span> &ldquo;" + _0x4796dd.t + "&rdquo;";
+          return __riNovUrl
+            ? "<a class=\"ri-novel ri-novel-link\" href=\"" + __riNovUrl + "\" target=\"_blank\" rel=\"noopener\" title=\"" + (lang === "es" ? "Léelo en la historia" : "Read it in the story") + "\">" + __riNovInner + "<span class=\"ri-open\" aria-hidden=\"true\">&#8599;</span></a>"
+            : "<span class=\"ri-novel\">" + __riNovInner + "</span>";
+        }).join("") + "</div></div>";
       }
       _0x4e5390 += "<div class=\"ri-card\" data-ricard=\"" + _0xa9f631 + "\" data-ridomain=\"" + _0x518208 + "\" data-riitems=\"" + _0x14d5f7.items + "\"><div class=\"ri-card-head\" onclick=\"riToggle('" + _0xa9f631 + "')\"><div class=\"ri-card-left\"><span class=\"ri-tag ri-tag-" + _0x518208 + "\">" + (lang === "es" ? _0x14d5f7.items.replace(/Items/g, "Ítems").replace(/Item /g, "Ítem ") : _0x14d5f7.items) + "</span><div><div class=\"ri-name\">" + (lang === "es" && RI_ES[_0x14d5f7.items] ? RI_ES[_0x14d5f7.items].name : _0x14d5f7.name) + "</div><div class=\"ri-flag\">" + (lang === "es" && RI_ES[_0x14d5f7.items] ? RI_ES[_0x14d5f7.items].flag : _0x14d5f7.flag) + "</div></div></div><span class=\"ri-chev\">▾</span></div><div class=\"ri-body\"><div class=\"ri-inner\"><div class=\"ri-what\"><strong>" + (lang === "es" ? "Qué es:" : "What it is:") + "</strong> " + (lang === "es" && RI_ES[_0x14d5f7.items] ? RI_ES[_0x14d5f7.items].what : _0x14d5f7.what) + "</div>" + _0x27c43b + _0x55af6d + "</div></div></div>";
     });

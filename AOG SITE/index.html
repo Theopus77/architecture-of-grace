@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="aog-build" content="2026.06.11.2327">
+<meta name="aog-build" content="2026.06.11.2330">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Architecture of Grace · Universal Check-In</title>
 <meta name="description" content="Social-emotional learning built by a teacher, for real classrooms — the SEL that tends to the grown-ups before it measures a child. Private, de-identified, K–adult. A check-in, not an exam.">
@@ -3938,7 +3938,7 @@ function toggleTheme() {
 .aogf-track.aogf-anim .aogf-arrow.aogf-lit{opacity:1;color:var(--gold);transform:scale(1.4);}
 .aogf-chip.aogf-pulse{animation:aogfPulse 1.15s ease 1;}
 @keyframes aogfPulse{0%,100%{box-shadow:0 0 0 3px var(--gold),0 16px 30px -10px rgba(27,58,95,.42);}50%{box-shadow:0 0 0 8px rgba(217,163,59,.4),0 18px 36px -8px rgba(27,58,95,.5);}}
-.aogf-spark{position:absolute;top:0;left:0;width:18px;height:18px;border-radius:50%;background:radial-gradient(circle,#fff 0%,var(--gold-soft) 38%,var(--gold) 72%);box-shadow:0 0 18px 5px rgba(242,201,100,.7);transform:translate(-50%,-50%);transition:left 1.05s cubic-bezier(.45,0,.25,1),top 1.05s cubic-bezier(.45,0,.25,1),opacity .35s ease;opacity:0;pointer-events:none;z-index:3;}
+.aogf-spark{position:absolute;top:0;left:0;width:18px;height:18px;border-radius:50%;background:radial-gradient(circle,#fff 0%,var(--gold-soft) 38%,var(--gold) 72%);box-shadow:0 0 18px 5px rgba(242,201,100,.7);transform:translate(-50%,-50%);transition:left 1.5s cubic-bezier(.45,0,.25,1),top 1.5s cubic-bezier(.45,0,.25,1),opacity .35s ease;opacity:0;pointer-events:none;z-index:3;}
 .aogf-spark.on{opacity:1;}
 .aogf-replay{display:inline-flex;align-items:center;gap:7px;margin:14px auto 0;background:transparent;border:1.5px solid var(--gold);color:var(--gold-deep,#9a6f24);font-family:var(--font-sans);font-weight:600;font-size:13px;padding:7px 17px;border-radius:999px;cursor:pointer;transition:background .15s ease,color .15s ease,transform .15s ease;}
 .aogf-replay:hover{background:var(--gold);color:var(--navy);transform:translateY(-1px);}
@@ -6645,7 +6645,7 @@ function toggleTheme() {
     </div>
     <div class="sf-legal">© <span id="footYr"></span> The Architecture of Grace Foundation. All rights reserved. · Every score is a flag, not a diagnosis.</div>
     <div class="sf-made" data-i18n="foot_made">Made with care in Illinois.</div>
-    <div class="sf-build" style="margin-top:10px;font-size:10.5px;color:#5f6e80;letter-spacing:.04em;">Build 2026.06.11.2327</div>
+    <div class="sf-build" style="margin-top:10px;font-size:10.5px;color:#5f6e80;letter-spacing:.04em;">Build 2026.06.11.2330</div>
   </div>
 </footer>
 
@@ -19905,8 +19905,9 @@ window.addEventListener('load', _installToolScreenHook);
     var timer = null;
     function moveSpark(chip) {
       var tr = track.getBoundingClientRect(), cr = chip.getBoundingClientRect();
-      spark.style.left = (cr.left - tr.left + cr.width / 2) + 'px';
-      spark.style.top = (cr.top - tr.top + cr.height / 2) + 'px';
+      var inset = 18; // sit in the top-right corner, away from the text
+      spark.style.left = (cr.left - tr.left + cr.width - inset) + 'px';
+      spark.style.top = (cr.top - tr.top + inset) + 'px';
     }
     function reset() {
       chips.forEach(function (c) { c.classList.remove('aogf-seen', 'aogf-current', 'aogf-pulse'); });
@@ -19931,9 +19932,9 @@ window.addEventListener('load', _installToolScreenHook);
         if (i > 0 && arrows[i - 1]) arrows[i - 1].classList.add('aogf-lit');
         moveSpark(chips[i]);
         i++;
-        timer = setTimeout(step, 1500);
+        timer = setTimeout(step, 2300);
       }
-      timer = setTimeout(step, 220);
+      timer = setTimeout(step, 260);
     }
     function finish() {
       var last = chips[chips.length - 1];
