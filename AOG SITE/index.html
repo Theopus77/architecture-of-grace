@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<meta name="aog-build" content="2026.06.11.2248">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Architecture of Grace · Universal Check-In</title>
 <meta name="description" content="Social-emotional learning built by a teacher, for real classrooms — the SEL that tends to the grown-ups before it measures a child. Private, de-identified, K–adult. A check-in, not an exam.">
@@ -2611,12 +2612,12 @@ function toggleTheme() {
 @font-face{
   font-family:"OpenDyslexic";
   font-style:normal; font-weight:400; font-display:swap;
-  src:url("https://cdn.jsdelivr.net/npm/@fontsource/opendyslexic@5.0.0/files/opendyslexic-latin-400-normal.woff2") format("woff2");
+  src:url("fonts/opendyslexic-400.woff2") format("woff2"), url("https://cdn.jsdelivr.net/npm/@fontsource/opendyslexic@5.0.0/files/opendyslexic-latin-400-normal.woff2") format("woff2");
 }
 @font-face{
   font-family:"OpenDyslexic";
   font-style:normal; font-weight:700; font-display:swap;
-  src:url("https://cdn.jsdelivr.net/npm/@fontsource/opendyslexic@5.0.0/files/opendyslexic-latin-700-normal.woff2") format("woff2");
+  src:url("fonts/opendyslexic-700.woff2") format("woff2"), url("https://cdn.jsdelivr.net/npm/@fontsource/opendyslexic@5.0.0/files/opendyslexic-latin-700-normal.woff2") format("woff2");
 }
 
 /* --- header control + popover --- */
@@ -3836,6 +3837,73 @@ function toggleTheme() {
 .gg-actions{display:flex;gap:10px;justify-content:center;margin:8px 0 14px;flex-wrap:wrap;}
 .gg-why{font-size:12.5px;color:var(--ink-soft);line-height:1.5;border-top:1px solid var(--rule-soft);padding-top:12px;}
 .gg-reset-btn{font-size:13px;padding:8px 16px;}
+
+/* ===== Educator "Inside a lesson" sample package ===== */
+.edu-sample{margin-top:26px;padding-top:24px;border-top:1px solid var(--rule);}
+.edu-sample .es-ey{font-family:var(--font-sans);font-size:11px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:var(--gold-deep,#9a6f24);}
+.edu-sample h3{font-family:var(--font-serif);font-size:22px;color:var(--navy);margin:6px 0 6px;font-weight:600;}
+:root[data-theme="dark"] .edu-sample h3{color:var(--cream);}
+.edu-sample .es-lead{font-size:14px;line-height:1.6;color:var(--ink-soft);max-width:640px;margin:0 0 18px;}
+.edu-sample-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:18px;}
+@media(max-width:760px){.edu-sample-grid{grid-template-columns:repeat(2,1fr);}}
+@media(max-width:420px){.edu-sample-grid{grid-template-columns:1fr;}}
+.edu-sample-card{display:flex;flex-direction:column;gap:6px;text-decoration:none;background:var(--paper);border:1px solid var(--rule);border-radius:var(--radius-lg);padding:16px 14px;transition:transform .15s ease,box-shadow .15s ease,border-color .15s ease;}
+.edu-sample-card:hover{transform:translateY(-3px);box-shadow:var(--shadow-md);border-color:var(--gold);}
+:root[data-theme="dark"] .edu-sample-card{background:var(--navy-soft);}
+.edu-sample-card .es-ic{width:40px;height:40px;border-radius:10px;background:var(--gold-pale);color:var(--navy);display:grid;place-items:center;margin-bottom:2px;}
+.edu-sample-card .es-ic svg{width:22px;height:22px;}
+.edu-sample-card .es-t{font-family:var(--font-serif);font-size:16px;font-weight:600;color:var(--navy);}
+:root[data-theme="dark"] .edu-sample-card .es-t{color:var(--cream);}
+.edu-sample-card .es-s{font-size:12.5px;line-height:1.45;color:var(--ink-soft);flex:1;}
+.edu-sample-card .es-go{font-size:12px;font-weight:700;color:var(--gold-deep,#9a6f24);letter-spacing:.02em;}
+.edu-sample-cta{display:inline-flex;align-items:center;gap:8px;background:var(--gold);color:var(--navy);font-family:var(--font-sans);font-weight:700;font-size:14.5px;padding:13px 22px;border-radius:999px;text-decoration:none;box-shadow:var(--shadow-sm);transition:transform .15s ease,background .15s ease;}
+.edu-sample-cta:hover{transform:translateY(-1px);background:var(--gold-soft);}
+
+/* ===== Take 5 (trace your hand) ===== */
+.t5-stage{position:relative;width:240px;margin:8px auto 2px;text-align:center;}
+.t5-svg{width:200px;height:230px;display:block;margin:0 auto;}
+.t5-palm{fill:rgba(217,163,59,.14);stroke:var(--gold);stroke-width:2;}
+.t5-finger{stroke:rgba(217,163,59,.30);stroke-width:20;}
+.t5-tracer{fill:var(--gold);stroke:#fff;stroke-width:2;filter:drop-shadow(0 0 6px var(--gold));}
+.t5-cue{font-family:var(--font-serif);font-size:22px;color:var(--navy);font-weight:600;margin-top:6px;}
+:root[data-theme="dark"] .t5-cue{color:var(--cream);}
+
+/* ===== Body Check matrix ===== */
+.bc-states{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:6px 0 16px;}
+@media(max-width:520px){.bc-states{grid-template-columns:1fr;}}
+.bc-state{display:flex;flex-direction:column;align-items:center;gap:6px;padding:16px 10px;border:1.5px solid var(--rule);border-radius:var(--radius-lg);background:var(--paper);color:var(--navy);font-family:var(--font-sans);font-weight:600;font-size:14px;cursor:pointer;transition:transform .15s ease,box-shadow .15s ease,border-color .15s ease;}
+.bc-state:hover{transform:translateY(-2px);box-shadow:var(--shadow-md);border-color:var(--gold);}
+.bc-state.active{border-color:var(--gold);background:var(--gold-pale);}
+:root[data-theme="dark"] .bc-state{background:var(--navy-soft);color:var(--cream);}
+.bc-emoji{font-size:30px;line-height:1;}
+.bc-card{background:var(--cream-deep);border:1px solid var(--rule);border-left:4px solid var(--gold);border-radius:var(--radius);padding:16px 18px;animation:graceFade .25s ease;}
+:root[data-theme="dark"] .bc-card{background:var(--navy-soft);}
+.bc-card-d{font-size:15px;color:var(--ink);line-height:1.55;margin:0 0 12px;}
+.bc-card-h{font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--gold-deep,#9a6f24);margin-bottom:8px;}
+.bc-tools{display:flex;gap:8px;flex-wrap:wrap;}
+.bc-tool{appearance:none;border:1.5px solid var(--gold);background:var(--paper);color:var(--navy);font-family:var(--font-sans);font-weight:600;font-size:13.5px;padding:9px 15px;border-radius:999px;cursor:pointer;transition:background .15s ease,transform .15s ease;}
+.bc-tool:hover{background:var(--gold);transform:translateY(-1px);}
+:root[data-theme="dark"] .bc-tool{background:var(--navy);color:var(--cream);}
+
+/* ===== Four-sky (zone) check-in ===== */
+.zc-zones{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:6px 0 16px;}
+@media(max-width:560px){.zc-zones{grid-template-columns:repeat(2,1fr);}}
+.zc-zone{display:flex;flex-direction:column;align-items:center;gap:9px;padding:16px 8px;border:2px solid var(--rule);border-radius:var(--radius-lg);background:var(--paper);cursor:pointer;font-family:var(--font-sans);font-weight:600;font-size:13px;color:var(--navy);text-align:center;transition:transform .15s ease,box-shadow .15s ease,border-color .15s ease;}
+.zc-zone:hover{transform:translateY(-2px);box-shadow:var(--shadow-md);}
+.zc-zone.active{border-color:var(--zc);box-shadow:0 0 0 3px color-mix(in srgb, var(--zc) 22%, transparent);}
+.zc-dot{width:30px;height:30px;border-radius:50%;box-shadow:inset 0 0 0 2px rgba(255,255,255,.55),0 2px 6px rgba(0,0,0,.15);}
+:root[data-theme="dark"] .zc-zone{background:var(--navy-soft);color:var(--cream);}
+.zc-feel{font-size:12.5px;font-weight:700;letter-spacing:.02em;margin-bottom:8px;}
+
+/* ===== Elevated tool grid: depth, spacing, custom icon badges, hover ===== */
+#screen-teacher-tools .tools-grid{gap:18px;}
+#screen-teacher-tools .tool-card{padding:22px 16px;border-radius:18px;box-shadow:0 1px 2px rgba(27,58,95,.05),0 8px 20px -10px rgba(27,58,95,.16);transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease;}
+#screen-teacher-tools .tool-card:hover{transform:translateY(-4px);box-shadow:0 14px 30px -10px rgba(27,58,95,.26);border-color:var(--gold);}
+.tool-icon.tool-icon-svg{display:inline-grid;place-items:center;width:54px;height:54px;margin:0 auto 8px;border-radius:16px;background:linear-gradient(155deg,var(--gold-pale),var(--cream-deep));color:var(--navy);box-shadow:inset 0 0 0 1px rgba(217,163,59,.3),0 4px 10px -4px rgba(27,58,95,.15);transition:transform .18s ease;}
+.tool-icon.tool-icon-svg svg{width:27px;height:27px;}
+#screen-teacher-tools .tool-card:hover .tool-icon-svg{transform:scale(1.07) rotate(-2deg);}
+:root[data-theme="dark"] .tool-icon.tool-icon-svg{background:var(--navy);color:var(--gold-soft);box-shadow:inset 0 0 0 1px rgba(242,201,100,.25);}
+.tool-card-coreg .tool-icon-svg{background:linear-gradient(155deg,var(--gold-soft),var(--gold-pale));}
 </style>
 </head>
 <body>
@@ -3853,11 +3921,11 @@ function toggleTheme() {
     <a id="topbarBack" class="topbar-back" href="#" onclick="event.preventDefault(); goBack();" style="display:none;"><span class="tb-arr">&larr;</span> <span data-i18n="nav_back">Back</span></a>
     <a class="topbar-store topbar-lib" href="#" onclick="event.preventDefault(); aogGoLibrary();" title="Free Library">
       <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
-      <span>Library</span>
+      <span data-i18n="aog_lib_nav">Library</span>
     </a>
     <a class="topbar-store topbar-lib" href="#" onclick="event.preventDefault(); if(typeof showScreen==='function'){showScreen('screen-teacher-tools');}" title="Teacher Tools" style="color:var(--gold);">
       <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2a5 5 0 0 1 5 5c0 2.76-2.24 5-5 5S7 9.76 7 7a5 5 0 0 1 5-5z"/><path d="M3 21v-1a7 7 0 0 1 7-7h4a7 7 0 0 1 7 7v1"/><circle cx="19" cy="8" r="3" fill="var(--gold)" stroke="none"/><path d="M19 7v2m-1-1h2" stroke="var(--navy)" stroke-width="1.5"/></svg>
-      <span>Tools</span>
+      <span data-i18n="aog_tools_nav">Tools</span>
     </a>
     <a class="topbar-store" href="#" onclick="event.preventDefault(); aogGoStore();" title="The Store">
       <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
@@ -3978,6 +4046,20 @@ function toggleTheme() {
       </a>
     </section>
 
+      <!-- ===== PRIMARY CTAs — moved directly below "How one answer becomes growth" ===== -->
+              <div class="hyb-cta-row">
+          <a href="#" class="hyb-cta hyb-cta-primary" onclick="event.preventDefault(); if(typeof openFramework==='function'){openFramework();}">
+            <span data-i18n="hyb_cta_explore">Explore the Framework</span> <span aria-hidden="true">&rarr;</span>
+          </a>
+          <a href="#" class="hyb-cta hyb-cta-secondary" onclick="event.preventDefault(); if(typeof startChoose==='function'){startChoose();}">
+            <span data-i18n="hyb_cta_checkin">Take the Check-In</span> <span aria-hidden="true">&rarr;</span>
+          </a>
+          <a href="#" class="hyb-cta hyb-cta-secondary" onclick="event.preventDefault(); if(typeof showScreen==='function'){showScreen('screen-teacher-tools');}">
+            <span data-i18n="hyb_cta_tools">Calm &amp; Regulation Tools</span> <span aria-hidden="true">&rarr;</span>
+          </a>
+        </div>
+
+
       <!-- ===== HOW ONE ANSWER BECOMES GROWTH — moved above statement band ===== -->
       <!-- ===== P2 (2026-06-08): "How One Answer Becomes Growth" — make the ecosystem visible.
            A real check-in answer, traced through the framework to growth, in under 30 seconds.
@@ -4054,17 +4136,6 @@ function toggleTheme() {
            assessment, so the framework reads as the centerpiece. Lives on the dark hero, so
            colors are cream/gold on navy. Reuses pillar_* names + the About-page emblems. -->
         
-        <div class="hyb-cta-row">
-          <a href="#" class="hyb-cta hyb-cta-primary" onclick="event.preventDefault(); if(typeof openFramework==='function'){openFramework();}">
-            <span data-i18n="hyb_cta_explore">Explore the Framework</span> <span aria-hidden="true">&rarr;</span>
-          </a>
-          <a href="#" class="hyb-cta hyb-cta-secondary" onclick="event.preventDefault(); if(typeof startChoose==='function'){startChoose();}">
-            <span data-i18n="hyb_cta_checkin">Take the Check-In</span> <span aria-hidden="true">&rarr;</span>
-          </a>
-          <a href="#" class="hyb-cta hyb-cta-secondary" onclick="event.preventDefault(); if(typeof showScreen==='function'){showScreen('screen-teacher-tools');}">
-            <span data-i18n="hyb_cta_tools">Calm &amp; Regulation Tools</span> <span aria-hidden="true">&rarr;</span>
-          </a>
-        </div>
 
       <!-- P2 (2026-06-06): 60-second burnout "tank" read — its own WOW moment in the hero fold -->
 
@@ -4251,6 +4322,39 @@ function toggleTheme() {
       <h2 class="fw-h" data-i18n="fw_ed_h">For Educators</h2>
       <p class="fw-sub" data-i18n="fw_ed_p">The classroom view of the framework: the Universal Check-In, the lesson-by-lesson curriculum, anchor charts, and conversation guides &mdash; with a private Guide &amp; Library to explore everything before you teach it.</p>
       <button type="button" class="btn" style="margin-top:6px;" onclick="if(typeof openGuide==='function')openGuide();"><span data-i18n="fw_ed_cta">Open the Educator Guide &amp; Library</span> <span class="btn-arrow">&rarr;</span></button>
+      <!-- "Inside a lesson" — real free samplers, surfaced on the Educator landing -->
+      <div class="edu-sample">
+        <div class="es-ey" data-i18n="edu_s_ey">See it first · Free</div>
+        <h3 data-i18n="edu_s_h">Inside a lesson</h3>
+        <p class="es-lead" data-i18n="edu_s_lead">Every lesson ships as a small package — anchor charts, scenario cards, worksheets, and drawing activities. Open any sampler below; no code, no sign-up.</p>
+        <div class="edu-sample-grid">
+          <a class="edu-sample-card" href="files/AoG-Anchor-Charts-Preview.pdf" target="_blank" rel="noopener">
+            <span class="es-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 3h20"/><path d="M21 3v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V3"/><path d="m7 21 5-5 5 5"/></svg></span>
+            <span class="es-t" data-i18n="edu_s_anchor_t">Anchor Charts</span>
+            <span class="es-s" data-i18n="edu_s_anchor_s">The visual that anchors the lesson</span>
+            <span class="es-go" data-i18n="edu_s_open">Open PDF ↗</span>
+          </a>
+          <a class="edu-sample-card" href="files/AoG-Scenario-Cards-K12-Sampler.pdf" target="_blank" rel="noopener">
+            <span class="es-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></span>
+            <span class="es-t" data-i18n="edu_s_scenario_t">Scenario Cards</span>
+            <span class="es-s" data-i18n="edu_s_scenario_s">Real moments to talk through</span>
+            <span class="es-go" data-i18n="edu_s_open">Open PDF ↗</span>
+          </a>
+          <a class="edu-sample-card" href="files/AoG-Worksheets-K12-Sampler.pdf" target="_blank" rel="noopener">
+            <span class="es-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M8 13h8"/><path d="M8 17h8"/></svg></span>
+            <span class="es-t" data-i18n="edu_s_worksheet_t">Worksheets</span>
+            <span class="es-s" data-i18n="edu_s_worksheet_s">Reflect, practice, apply</span>
+            <span class="es-go" data-i18n="edu_s_open">Open PDF ↗</span>
+          </a>
+          <a class="edu-sample-card" href="files/AoG-Drawing-Activities-K2-Sampler.pdf" target="_blank" rel="noopener">
+            <span class="es-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4z"/></svg></span>
+            <span class="es-t" data-i18n="edu_s_drawing_t">Drawing Activities</span>
+            <span class="es-s" data-i18n="edu_s_drawing_s">Make the idea their own</span>
+            <span class="es-go" data-i18n="edu_s_open">Open PDF ↗</span>
+          </a>
+        </div>
+        <a class="edu-sample-cta" href="files/AoG-Sample-Lesson-Book-1.pdf" target="_blank" rel="noopener" data-i18n="edu_s_cta">Open a full free sample lesson · PDF →</a>
+      </div>
     </div>
     </div>
 
@@ -6384,9 +6488,11 @@ function toggleTheme() {
       </div>
 
       <!-- START row -->
+      <div class="tool-card" onclick="toolOpen('bodycheck')" style="grid-column:1 / -1; max-width:520px; margin:0 auto 24px; border-color:var(--gold);"><span class="tool-icon">🧭</span><div class="tool-title" data-i18n="gt_body_t">Body Check</div><p class="tool-desc" data-i18n="gt_body_d">Tell us how your body feels — get the right tool</p><button class="btn btn-secondary" style="width:100%" data-i18n="gt_body_b">Check in</button></div>
       <div class="tools-row-header">START</div>
       <div class="tool-card" onclick="toolOpen('breathing')"><span class="tool-icon">🫁</span><div class="tool-title">4-7-8 Breathing</div><p class="tool-desc">Animated breath guide</p><button class="btn btn-secondary" style="width:100%">Start</button></div>
       <div class="tool-card" onclick="toolOpen('boxbreath')"><span class="tool-icon">🫁</span><div class="tool-title" data-i18n="gt_box_t">Paced Breathing</div><p class="tool-desc" data-i18n="gt_box_d">Box 4·4·4·4 or 4·7·8 vagal</p><button class="btn btn-secondary" style="width:100%" data-i18n="gt_box_b">Start</button></div>
+      <div class="tool-card" onclick="toolOpen('take5')"><span class="tool-icon">🖐️</span><div class="tool-title" data-i18n="gt_t5_t">Take 5</div><p class="tool-desc" data-i18n="gt_t5_d">Trace your hand, breath by breath</p><button class="btn btn-secondary" style="width:100%" data-i18n="gt_t5_b">Start</button></div>
       <div class="tool-card" onclick="toolOpen('grounding')"><span class="tool-icon">🌿</span><div class="tool-title">5-4-3-2-1 Grounding</div><p class="tool-desc">Step-through sensory anchor</p><button class="btn btn-secondary" style="width:100%">Start</button></div>
       <div class="tool-card" onclick="toolOpen('rainbow')"><span class="tool-icon">🌈</span><div class="tool-title">Rainbow Breathing</div><p class="tool-desc">Breathe in every color!</p><button class="btn btn-secondary" style="width:100%">Start</button></div>
       <div class="tool-card" onclick="toolOpen('movement')"><span class="tool-icon">🏃</span><div class="tool-title">Movement Break</div><p class="tool-desc">Timed shake-out sequence</p><button class="btn btn-secondary" style="width:100%">Start</button></div>
@@ -6435,15 +6541,15 @@ function toggleTheme() {
       <div class="brand"><div class="brand-mark">AoG</div></div>
     </div>
     <div style="text-align:center; margin:32px 0 16px;">
-      <div class="eyebrow">COMMUNICATION SUPPORT</div>
-      <h1 class="display-lg">PECS Cards</h1>
-      <p class="lede">Tap a card to add it to your sequence. Build your message, then share it.</p>
+      <div class="eyebrow" data-i18n="pecs_eyebrow">COMMUNICATION SUPPORT</div>
+      <h1 class="display-lg" data-i18n="pecs_h1">PECS Cards</h1>
+      <p class="lede" data-i18n="pecs_lede">Tap a card to add it to your sequence. Build your message, then share it.</p>
     </div>
     <div class="pecs-strip-wrap"><div id="pecsStrip" class="pecs-strip"><span class="pecs-empty-strip">Tap cards below to build a message &#x2193;</span></div></div>
     <div style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:24px;">
-      <button onclick="pecsClearStrip()" class="btn btn-secondary">🗑️ Clear</button>
-      <button onclick="pecsPrintStrip()" class="btn btn-secondary">🖨️ Print Strip</button>
-      <button onclick="pecsSpeakStrip()" class="btn" style="background:var(--gold);color:var(--navy);">🔊 Speak</button>
+      <button onclick="pecsClearStrip()" class="btn btn-secondary" data-i18n="pecs_clear">🗑️ Clear</button>
+      <button onclick="pecsPrintStrip()" class="btn btn-secondary" data-i18n="pecs_print">🖨️ Print Strip</button>
+      <button onclick="pecsSpeakStrip()" class="btn" style="background:var(--gold);color:var(--navy);" data-i18n="pecs_speak">🔊 Speak</button>
       <button onclick="if(typeof pecsShowToTeacher==='function'){pecsShowToTeacher();}" class="btn pecs-sos-trigger" data-i18n="pecs_sos_btn">🙋 Show to Teacher</button>
     </div>
     <div class="pecs-category-tabs" id="pecsTabs"></div>
@@ -6482,6 +6588,7 @@ function toggleTheme() {
     </div>
     <div class="sf-legal">© <span id="footYr"></span> The Architecture of Grace Foundation. All rights reserved. · Every score is a flag, not a diagnosis.</div>
     <div class="sf-made" data-i18n="foot_made">Made with care in Illinois.</div>
+    <div class="sf-build" style="margin-top:10px;font-size:10.5px;color:#5f6e80;letter-spacing:.04em;">Build 2026.06.11.2248</div>
   </div>
 </footer>
 
@@ -18177,7 +18284,7 @@ function _buildCalmJar() {
     '<p style="text-align:center;color:var(--ink-soft);font-size:14px;">Tap the jar — then breathe slowly while the glitter settles.</p>';
 }
 window.shakeJar = function(el) {
-  if (window.GraceAudio) GraceAudio.playJarTinkle();
+  try { if (window.GraceAudio && typeof window.GraceAudio.playJarTinkle === 'function') window.GraceAudio.playJarTinkle(); } catch (e) {}
   el.style.animation = 'jarShake 0.6s ease';
   var g = document.getElementById('glitterLayer');
   if (g) {
@@ -19040,7 +19147,9 @@ window.addEventListener('load', _installToolScreenHook);
   // =========================================================================
   var BREATH_PATTERNS = {
     box: { label: { en: 'Box · 4·4·4·4', es: 'Caja · 4·4·4·4' }, phases: [['in', 4], ['hold', 4], ['out', 4], ['hold', 4]] },
-    v478: { label: { en: 'Vagal · 4·7·8', es: 'Vagal · 4·7·8' }, phases: [['in', 4], ['hold', 7], ['out', 8]] }
+    v478: { label: { en: 'Vagal · 4·7·8', es: 'Vagal · 4·7·8' }, phases: [['in', 4], ['hold', 7], ['out', 8]] },
+    calm: { label: { en: 'Calm · 4·2·6·2', es: 'Calma · 4·2·6·2' }, phases: [['in', 4], ['hold', 2], ['out', 6], ['hold', 2]] },
+    focus: { label: { en: 'Balanced · 5·5', es: 'Equilibrio · 5·5' }, phases: [['in', 5], ['out', 5]] }
   };
   var PHASE_TXT = {
     in: { en: 'Breathe in', es: 'Inhala' },
@@ -19170,8 +19279,198 @@ window.addEventListener('load', _installToolScreenHook);
     pad.addEventListener('keydown', function (e) { if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); var rr = pad.getBoundingClientRect(); onTap(rr.left + rr.width / 2, rr.top + rr.height / 2); } });
   }
 
-  // register the two new tools
+  // =========================================================================
+  // A3. TAKE 5 — trace-your-hand breathing (breathe in up a finger, out down)
+  // =========================================================================
+  // Each finger: [baseX, baseY, tipX, tipY] in a 200x230 viewBox.
+  var T5_FINGERS = [
+    [60, 168, 34, 120],   // thumb
+    [80, 150, 76, 52],    // index
+    [102, 148, 102, 40],  // middle
+    [124, 150, 128, 54],  // ring
+    [145, 156, 156, 92]   // pinky
+  ];
+  function buildTake5() {
+    var fingers = T5_FINGERS.map(function (f) {
+      return '<line x1="' + f[0] + '" y1="' + f[1] + '" x2="' + f[2] + '" y2="' + f[3] + '" class="t5-finger" stroke-linecap="round"/>';
+    }).join('');
+    return '<div class="tool-modal-icon">🖐️</div>' +
+      '<div class="tool-modal-title">' + T('Take 5', 'Toma 5') + '</div>' +
+      '<div class="tool-modal-sub">' + T('Trace your hand. Breathe in as you slide up a finger, out as you slide down the other side.', 'Traza tu mano. Inhala al subir por un dedo y exhala al bajar por el otro lado.') + '</div>' +
+      '<div class="t5-stage">' +
+        '<svg class="t5-svg" viewBox="0 0 200 230" aria-hidden="true">' +
+          '<path class="t5-palm" d="M58 168 Q50 210 88 214 L120 214 Q156 210 148 168 Z"/>' +
+          fingers +
+          '<circle class="t5-tracer" id="t5Tracer" cx="102" cy="148" r="9"/>' +
+        '</svg>' +
+        '<div class="t5-cue" id="t5Cue" aria-live="polite">' + T('Get ready…', 'Prepárate…') + '</div>' +
+      '</div>' +
+      '<div class="gbx-round" id="t5Count"></div>';
+  }
+  function initTake5() {
+    var tracer = document.getElementById('t5Tracer');
+    var cueEl = document.getElementById('t5Cue');
+    var countEl = document.getElementById('t5Count');
+    if (!tracer) return;
+    var IN = 4, OUT = 4, stopped = false, raf = null, t = null;
+    addCleanup(function () { stopped = true; if (raf) cancelAnimationFrame(raf); if (t) clearTimeout(t); });
+    function moveTo(x, y) { tracer.setAttribute('cx', x); tracer.setAttribute('cy', y); }
+    function phase(fi, going) { // going: 'up' (in) or 'down' (out)
+      if (stopped) return;
+      if (fi >= T5_FINGERS.length) { finish(); return; }
+      var f = T5_FINGERS[fi];
+      var from = going === 'up' ? [f[0], f[1]] : [f[2], f[3]];
+      var to = going === 'up' ? [f[2], f[3]] : [f[0], f[1]];
+      if (cueEl) cueEl.textContent = going === 'up' ? PHASE_TXT.in[L()] : PHASE_TXT.out[L()];
+      if (countEl) countEl.textContent = T('Finger ', 'Dedo ') + (fi + 1) + T(' of 5', ' de 5');
+      var dur = (going === 'up' ? IN : OUT) * 1000;
+      if (reduceMotion()) { moveTo(to[0], to[1]); t = setTimeout(function () { nxt(fi, going); }, dur); return; }
+      var start = performance.now();
+      (function step(now) {
+        if (stopped) return;
+        var p = Math.min(1, (now - start) / dur);
+        moveTo(from[0] + (to[0] - from[0]) * p, from[1] + (to[1] - from[1]) * p);
+        if (p < 1) { raf = requestAnimationFrame(step); } else { nxt(fi, going); }
+      })(start);
+    }
+    function nxt(fi, going) {
+      if (going === 'up') phase(fi, 'down');
+      else phase(fi + 1, 'up');
+    }
+    function finish() {
+      if (cueEl) cueEl.textContent = T('Nicely done', 'Bien hecho');
+      if (countEl) countEl.innerHTML = '<button type="button" class="btn btn-secondary" id="t5Again">' + T('Again', 'Otra vez') + '</button>';
+      var again = document.getElementById('t5Again');
+      if (again) again.addEventListener('click', function () { phase(0, 'up'); });
+      try { if (window.GraceAudio && window.GraceAudio.playSuccess) window.GraceAudio.playSuccess(); } catch (e) {}
+    }
+    moveTo(T5_FINGERS[0][0], T5_FINGERS[0][1]);
+    t = setTimeout(function () { phase(0, 'up'); }, 900);
+  }
+
+  // =========================================================================
+  // A4. BODY CHECK — "How does your body feel?" routes to the right real tool
+  // =========================================================================
+  // Four skies (blue/green/yellow/red — the familiar color framework, in the AoG
+  // "weather" voice), each routing to real tools already on the page.
+  var ZONES = [
+    { key: 'blue', color: '#3b82f6',
+      sky: { en: 'Low & slow', es: 'Bajo y lento' },
+      feel: { en: 'sad · tired · bored · sick · lonely', es: 'triste · cansado · aburrido · enfermo · solo' },
+      d: { en: 'Running low or heavy — let’s gently lift and reconnect.', es: 'Con poca energía o pesado — vamos a animarnos y reconectar con calma.' },
+      tools: [['movement', { en: 'Movement Break', es: 'Pausa de movimiento' }], ['soundscape', { en: 'Soundscapes', es: 'Paisajes sonoros' }], ['coreg', { en: 'Co-Regulation', es: 'Corregulación' }]] },
+    { key: 'green', color: '#22c55e',
+      sky: { en: 'Calm & ready', es: 'Tranquilo y listo' },
+      feel: { en: 'calm · happy · focused · proud', es: 'tranquilo · feliz · concentrado · orgulloso' },
+      d: { en: 'You’re steady — a good place to be. Savor it, or keep it going.', es: 'Estás equilibrado — un buen lugar. Disfrútalo o mantenlo.' },
+      tools: [['feelwheel', { en: 'Feelings Wheel', es: 'Rueda de emociones' }], ['calmjar', { en: 'Calm Down Jar', es: 'Frasco de la calma' }], ['safeplace', { en: 'Safe Place', es: 'Lugar seguro' }]] },
+    { key: 'yellow', color: '#eab308',
+      sky: { en: 'Bright & buzzy', es: 'Brillante e inquieto' },
+      feel: { en: 'worried · frustrated · silly · excited · wiggly', es: 'preocupado · frustrado · juguetón · emocionado · inquieto' },
+      d: { en: 'Revved up — let’s slow the engine and find focus.', es: 'Acelerado — bajemos las revoluciones y encontremos enfoque.' },
+      tools: [['boxbreath', { en: 'Paced Breathing', es: 'Respiración guiada' }], ['grounding', { en: '5-4-3-2-1 Grounding', es: 'Anclaje 5-4-3-2-1' }], ['take5', { en: 'Take 5', es: 'Toma 5' }]] },
+    { key: 'red', color: '#ef4444',
+      sky: { en: 'Stormy', es: 'Tormenta' },
+      feel: { en: 'angry · panicked · overwhelmed · out of control', es: 'enojado · en pánico · sobrepasado · sin control' },
+      d: { en: 'Big storm. Strong, steadying tools first — and you don’t have to do it alone.', es: 'Gran tormenta. Primero herramientas fuertes y calmantes — y no tienes que hacerlo solo/a.' },
+      tools: [['breathing', { en: '4-7-8 Breathing', es: 'Respiración 4-7-8' }], ['coldwater', { en: 'Cold Water Reset', es: 'Reinicio con agua fría' }], ['coreg', { en: 'Co-Regulation', es: 'Corregulación' }]] }
+  ];
+  function buildBody() {
+    var zones = ZONES.map(function (z, i) {
+      return '<button type="button" class="zc-zone" data-i="' + i + '" style="--zc:' + z.color + '">' +
+        '<span class="zc-dot" style="background:' + z.color + '"></span>' +
+        '<span class="zc-sky">' + esc(z.sky[L()]) + '</span></button>';
+    }).join('');
+    return '<div class="tool-modal-icon">⛅</div>' +
+      '<div class="tool-modal-title">' + T('How’s your weather?', '¿Cómo está tu clima?') + '</div>' +
+      '<div class="tool-modal-sub">' + T('Pick the sky that fits right now — we’ll point you to something that helps.', 'Elige el cielo que encaje ahora — te mostraremos algo que ayuda.') + '</div>' +
+      '<div class="zc-zones">' + zones + '</div>' +
+      '<div class="bc-result" id="bcResult"></div>';
+  }
+  function initBody() {
+    var res = document.getElementById('bcResult');
+    document.querySelectorAll('.zc-zone').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        document.querySelectorAll('.zc-zone').forEach(function (b) { b.classList.remove('active'); });
+        btn.classList.add('active');
+        var z = ZONES[+btn.getAttribute('data-i')];
+        try { if (window.GraceAudio && window.GraceAudio.playPop) window.GraceAudio.playPop(); } catch (e) {}
+        var btns = z.tools.map(function (tp) {
+          return '<button type="button" class="bc-tool" onclick="toolOpen(\'' + tp[0] + '\')">' + esc(tp[1][L()]) + ' →</button>';
+        }).join('');
+        if (res) res.innerHTML = '<div class="bc-card" style="border-left-color:' + z.color + '">' +
+          '<div class="zc-feel" style="color:' + z.color + '">' + esc(z.feel[L()]) + '</div>' +
+          '<p class="bc-card-d">' + esc(z.d[L()]) + '</p>' +
+          '<div class="bc-card-h">' + T('Try one of these', 'Prueba una de estas') + '</div>' +
+          '<div class="bc-tools">' + btns + '</div></div>';
+      });
+    });
+  }
+
+  // =========================================================================
+  // ICON SET — custom monochrome line icons that replace the tool-card emoji.
+  // Keyed by tool. Each value is the inner markup of a 24x24 stroke SVG.
+  // =========================================================================
+  var ICONS = {
+    breathing: '<path d="M3 8h11a3 3 0 1 0-3-3"/><path d="M2 12h15a3 3 0 1 1-3 3"/><path d="M3 16h9a2.5 2.5 0 1 1-2.5 2.5"/>',
+    boxbreath: '<rect x="4" y="4" width="16" height="16" rx="3"/><circle cx="12" cy="12" r="3"/>',
+    take5: '<path d="M7 12V7a1.5 1.5 0 0 1 3 0v4"/><path d="M10 11V5a1.5 1.5 0 0 1 3 0v6"/><path d="M13 11V6.5a1.5 1.5 0 0 1 3 0V12"/><path d="M16 12.5a1.5 1.5 0 0 1 3 0V16a5 5 0 0 1-5 5h-2a5 5 0 0 1-4.2-2.3L6 16.5a1.5 1.5 0 0 1 2.5-1.6L9 15"/>',
+    grounding: '<circle cx="12" cy="5" r="2"/><path d="M12 7v13"/><path d="M5 12a7 7 0 0 0 14 0"/><path d="M3 12h2M19 12h2"/>',
+    rainbow: '<path d="M4 17a8 8 0 0 1 16 0"/><path d="M7 17a5 5 0 0 1 10 0"/><path d="M10 17a2 2 0 0 1 4 0"/>',
+    movement: '<path d="M22 12h-4l-3 8L9 4l-3 8H2"/>',
+    tappad: '<circle cx="12" cy="12" r="2"/><path d="M7.8 12a4.2 4.2 0 0 1 8.4 0"/><path d="M4.5 12a7.5 7.5 0 0 1 15 0"/>',
+    safeplace: '<path d="M3 11l9-8 9 8"/><path d="M5 9.5V20h14V9.5"/><path d="M10 20v-5h4v5"/>',
+    pmr: '<path d="M4 8V6a2 2 0 0 1 2-2h2"/><path d="M16 4h2a2 2 0 0 1 2 2v2"/><path d="M20 16v2a2 2 0 0 1-2 2h-2"/><path d="M8 20H6a2 2 0 0 1-2-2v-2"/><path d="M8 12h8"/>',
+    bilateral: '<path d="M12 6v12"/><path d="M12 8C9 3.5 3.5 4.5 3.5 9c0 3.8 4.8 4.8 8.5 3"/><path d="M12 8c3-4.5 8.5-3.5 8.5 1 0 3.8-4.8 4.8-8.5 3"/>',
+    animalyoga: '<circle cx="6.5" cy="11" r="1.6"/><circle cx="10" cy="7" r="1.6"/><circle cx="14" cy="7" r="1.6"/><circle cx="17.5" cy="11" r="1.6"/><path d="M8.5 16.5c0-2.2 1.6-3.5 3.5-3.5s3.5 1.3 3.5 3.5S14 20.5 12 20.5s-3.5-1.8-3.5-4z"/>',
+    emotion: '<circle cx="12" cy="12" r="9"/><path d="M12 12V3"/><path d="M12 12l7.8 4.5"/><path d="M12 12l-7.8 4.5"/>',
+    feelwheel: '<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3"/>',
+    coldwater: '<path d="M12 3c4 5 6 8 6 11a6 6 0 0 1-12 0c0-3 2-6 6-11z"/>',
+    calmjar: '<path d="M8 3h8"/><path d="M9 3v3L7 9v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V9l-2-3V3"/><path d="M7.5 13h9"/>',
+    coreg: '<path d="M19 13.5c1.6-1.6 3-3.6 3-6A4 4 0 0 0 15 5l-3 2.5L9 5a4 4 0 0 0-7 2.5c0 2.4 1.4 4.4 3 6l7 6.5z"/>',
+    soundscape: '<path d="M4 9v6M8 6v12M12 3v18M16 7v10M20 10v4"/>',
+    safeplace2: '',
+    pecs: '<rect x="3" y="3" width="18" height="18" rx="2.5"/><circle cx="8.5" cy="8.5" r="1.6"/><path d="M21 15.5l-4.5-4.5L6 21.5"/>',
+    bodycheck: '<circle cx="8" cy="8" r="3"/><path d="M8 2v1.5M8 12.5V14M2 8h1.5M12.5 8H14M4.3 4.3l1 1M11.7 4.3l-1 1"/><path d="M17.5 13a3.5 3.5 0 0 1 0 7H9a4 4 0 0 1-1-7.87"/>'
+  };
+  function upgradeToolIcons() {
+    var grid = document.querySelector('#screen-teacher-tools .tools-grid');
+    if (!grid) return;
+    grid.querySelectorAll('.tool-card').forEach(function (card) {
+      // BUGFIX: the app's original InteractiveCard binds a button click handler
+      // that runs a fake "Practiced ✓" animation + stopPropagation but never
+      // opens the tool — so Start/Open/Guide buttons did nothing (only the card
+      // body worked). Replace the button with a clean clone (drops all those
+      // interfering listeners) and wire it straight to the card's action.
+      var btn = card.querySelector('.btn');
+      if (btn && !btn.dataset.graceWired) {
+        var clean = btn.cloneNode(true);
+        clean.dataset.graceWired = '1';
+        clean.addEventListener('click', function (ev) {
+          ev.stopPropagation();
+          try { if (typeof card.onclick === 'function') card.onclick.call(card); } catch (e) {}
+        });
+        if (btn.parentNode) btn.parentNode.replaceChild(clean, btn);
+      }
+      // Custom monochrome icon swap.
+      var oc = card.getAttribute('onclick') || '';
+      var m = oc.match(/toolOpen\('([^']+)'\)/);
+      var key = m ? m[1] : (/screen-pecs/.test(oc) ? 'pecs' : null);
+      if (!key || !ICONS[key]) return;
+      var ic = card.querySelector('.tool-icon');
+      if (!ic || ic.dataset.iconUpgraded) return;
+      ic.dataset.iconUpgraded = '1';
+      ic.classList.add('tool-icon-svg');
+      ic.removeAttribute('style'); // drop inline emoji font-size
+      ic.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + ICONS[key] + '</svg>';
+    });
+  }
+  window.__graceUpgradeIcons = upgradeToolIcons;
+
+  // register the new tools
   if (window.TOOLS) {
+    window.TOOLS.take5 = { builder: buildTake5, init: initTake5 };
+    window.TOOLS.bodycheck = { builder: buildBody, init: initBody };
     window.TOOLS.boxbreath = { builder: buildBox, init: initBox };
     window.TOOLS.tappad = { builder: buildTap, init: initTap };
   }
@@ -19213,31 +19512,108 @@ window.addEventListener('load', _installToolScreenHook);
     window.PECS_LIBRARY = reordered;
   }
 
-  // Localized category tabs. The app's pecsRenderTabs is called internally (not
-  // via window.*), so overriding it doesn't help — instead we relocalize the
-  // rendered tab labels in place, keeping each button's onclick key intact.
-  function relocalizePecsTabs() {
-    var t = document.getElementById('pecsTabs'); if (!t) return;
-    t.querySelectorAll('.pecs-tab').forEach(function (b) {
-      var m = /pecsSetCategory\('([^']+)'\)/.exec(b.getAttribute('onclick') || '');
-      if (m && CAT_LABELS[m[1]]) b.textContent = CAT_LABELS[m[1]][L()];
+  // Full Spanish deck. Keyed by "Category|EnglishLabel" (category names are
+  // stable strings we control, which avoids fragile emoji-key matching and the
+  // label collisions, e.g. Sick = Enfermo in Feelings but Con náuseas in Sensations).
+  var CARD_ES = {
+    'Feelings|Happy': 'Feliz', 'Feelings|Sad': 'Triste', 'Feelings|Angry': 'Enojado', 'Feelings|Scared': 'Asustado', 'Feelings|Confused': 'Confundido', 'Feelings|Hurt': 'Lastimado', 'Feelings|Tired': 'Cansado', 'Feelings|Sick': 'Enfermo', 'Feelings|Excited': 'Emocionado', 'Feelings|Calm': 'Tranquilo',
+    'Sensations|Too Loud': 'Muy fuerte', 'Sensations|Too Bright': 'Muy brillante', 'Sensations|Too Hot': 'Mucho calor', 'Sensations|Too Cold': 'Mucho frío', 'Sensations|Dizzy': 'Mareado', 'Sensations|Sick': 'Con náuseas', 'Sensations|It Hurts': 'Me duele', 'Sensations|Itchy': 'Con comezón', 'Sensations|Bad Smell': 'Mal olor', 'Sensations|Too Much': 'Demasiado',
+    'Sensory Needs|Headphones': 'Audífonos', 'Sensory Needs|Quiet Space': 'Lugar tranquilo', 'Sensory Needs|Dark / Dim': 'Oscuro / tenue', 'Sensory Needs|Pressure / Squeeze': 'Presión / apretón', 'Sensory Needs|Movement': 'Movimiento', 'Sensory Needs|Fidget': 'Juguete', 'Sensory Needs|Step Out': 'Salir', 'Sensory Needs|Sit Down': 'Sentarse', 'Sensory Needs|Water': 'Agua', 'Sensory Needs|More Time': 'Más tiempo',
+    'Needs|Bathroom': 'Baño', 'Needs|Water': 'Agua', 'Needs|Food': 'Comida', 'Needs|Break': 'Descanso', 'Needs|Help': 'Ayuda', 'Needs|Quiet': 'Silencio', 'Needs|Read': 'Leer', 'Needs|Work': 'Trabajo', 'Needs|Play': 'Jugar', 'Needs|Rest': 'Descansar',
+    'Actions|Yes': 'Sí', 'Actions|No': 'No', 'Actions|Stop': 'Parar', 'Actions|Go': 'Ir', 'Actions|Talk': 'Hablar', 'Actions|More': 'Más', 'Actions|Done': 'Terminé', 'Actions|Again': 'Otra vez', 'Actions|That': 'Eso', 'Actions|Together': 'Juntos',
+    'Places|Class': 'Clase', 'Places|Bathroom': 'Baño', 'Places|Gym': 'Gimnasio', 'Places|Lunch': 'Almuerzo', 'Places|Library': 'Biblioteca', 'Places|Home': 'Casa', 'Places|Outside': 'Afuera', 'Places|Office': 'Oficina', 'Places|Nurse': 'Enfermería', 'Places|Bus': 'Autobús',
+    'People|Teacher': 'Maestro', 'People|Friend': 'Amigo', 'People|Family': 'Familia', 'People|Nurse': 'Enfermero', 'People|Helper': 'Ayudante', 'People|Aide': 'Asistente'
+  };
+  function cardLabel(c) { return (L() === 'es' && c && c.es) ? c.es : (c ? c.l : ''); }
+  function augmentPecsEs() {
+    if (!window.PECS_LIBRARY) return;
+    Object.keys(window.PECS_LIBRARY).forEach(function (cat) {
+      window.PECS_LIBRARY[cat].forEach(function (c) { c.es = CARD_ES[cat + '|' + c.l] || c.l; });
     });
   }
+  // Language-aware re-renders that fully replace the app's English PECS output.
+  function gPecsRenderTabs() {
+    var t = document.getElementById('pecsTabs'); if (!t || !window.PECS_LIBRARY) return;
+    var active = window.pecsActiveCategory || Object.keys(window.PECS_LIBRARY)[0];
+    t.innerHTML = Object.keys(window.PECS_LIBRARY).map(function (cat) {
+      var lbl = CAT_LABELS[cat] ? CAT_LABELS[cat][L()] : cat;
+      return '<button class="pecs-tab' + (cat === active ? ' active' : '') + '" onclick="pecsSetCategory(\'' + cat + '\')">' + esc(lbl) + '</button>';
+    }).join('');
+  }
+  function gPecsRenderLibrary() {
+    var lib = document.getElementById('pecsLibrary'); if (!lib || !window.PECS_LIBRARY) return;
+    var cat = window.pecsActiveCategory || Object.keys(window.PECS_LIBRARY)[0];
+    var cards = window.PECS_LIBRARY[cat] || [];
+    lib.innerHTML = cards.map(function (c, idx) {
+      var lbl = cardLabel(c);
+      return '<button class="pecs-card" onclick="gPecsAdd(\'' + cat + '\',' + idx + ')" aria-label="' + esc(lbl) + '"><span class="pecs-card-icon">' + c.i + '</span><span class="pecs-card-label">' + esc(lbl) + '</span></button>';
+    }).join('');
+  }
+  function gPecsRenderStrip() {
+    var s = document.getElementById('pecsStrip'); if (!s) return;
+    var strip = window.pecsStrip || [];
+    if (!strip.length) { s.innerHTML = '<span class="pecs-empty-strip">' + T('Tap cards below to build a message ↓', 'Toca las tarjetas para crear un mensaje ↓') + '</span>'; return; }
+    s.innerHTML = strip.map(function (c, i) {
+      var lbl = cardLabel(c);
+      return '<div class="pecs-strip-card"><button class="remove-btn" onclick="gPecsRemove(' + i + ')" aria-label="' + T('Remove', 'Quitar') + ' ' + esc(lbl) + '">✕</button><span class="pecs-card-icon" style="font-size:28px">' + c.i + '</span><span class="pecs-card-label">' + esc(lbl) + '</span></div>';
+    }).join('');
+  }
+  function gPecsRenderAll() { augmentPecsEs(); gPecsRenderTabs(); gPecsRenderLibrary(); gPecsRenderStrip(); }
+
+  window.gPecsAdd = function (cat, idx) {
+    var c = window.PECS_LIBRARY && window.PECS_LIBRARY[cat] && window.PECS_LIBRARY[cat][idx];
+    if (!c) return;
+    window.pecsStrip = window.pecsStrip || [];
+    window.pecsStrip.push({ i: c.i, l: c.l, es: c.es });
+    try { if (window.GraceAudio) GraceAudio.playPop(); } catch (e) {}
+    gPecsRenderStrip();
+  };
+  window.gPecsRemove = function (i) { (window.pecsStrip || []).splice(i, 1); gPecsRenderStrip(); };
+
   function installLocalizedTabs() {
-    // Re-localize after a tab click re-renders the (English) tab strip.
-    if (typeof window.pecsSetCategory === 'function' && !window.pecsSetCategory.__graceLoc) {
-      var _ps = window.pecsSetCategory;
-      window.pecsSetCategory = function () { var r = _ps.apply(this, arguments); relocalizePecsTabs(); return r; };
-      window.pecsSetCategory.__graceLoc = true;
-    }
-    // Re-localize when the language toggles (applyLang runs on every setLang).
-    if (typeof window.applyLang === 'function' && !window.applyLang.__graceTabsLoc) {
+    window.pecsSetCategory = function (cat) { window.pecsActiveCategory = cat; gPecsRenderTabs(); gPecsRenderLibrary(); };
+    window.pecsAddToStrip = function (icon, label) {
+      var es = label;
+      if (window.PECS_LIBRARY) {
+        Object.keys(window.PECS_LIBRARY).some(function (cat) {
+          var f = window.PECS_LIBRARY[cat].filter(function (x) { return x.i === icon && x.l === label; })[0];
+          if (f) { es = f.es || label; return true; } return false;
+        });
+      }
+      window.pecsStrip = window.pecsStrip || [];
+      window.pecsStrip.push({ i: icon, l: label, es: es });
+      gPecsRenderStrip();
+    };
+    window.pecsRemove = function (i) { (window.pecsStrip || []).splice(i, 1); gPecsRenderStrip(); };
+    window.pecsClearStrip = function () { window.pecsStrip = []; gPecsRenderStrip(); };
+    window.pecsSpeakStrip = function () {
+      var strip = window.pecsStrip || [];
+      if (!strip.length || !('speechSynthesis' in window)) return;
+      var cards = document.querySelectorAll('#pecsStrip .pecs-strip-card');
+      var u = new SpeechSynthesisUtterance(strip.map(function (c) { return cardLabel(c); }).join('. '));
+      u.rate = 0.85; u.pitch = 1.1; u.lang = (L() === 'es' ? 'es-ES' : 'en-US');
+      var wi = 0;
+      u.onboundary = function (ev) { if (ev.name && ev.name !== 'word') return; cards.forEach(function (c) { c.classList.remove('speaking-highlight'); }); if (cards[wi]) cards[wi].classList.add('speaking-highlight'); wi++; };
+      u.onend = function () { cards.forEach(function (c) { c.classList.remove('speaking-highlight'); }); try { if (window.GraceAudio) GraceAudio.playSuccess(); } catch (e) {} };
+      window.speechSynthesis.cancel(); window.speechSynthesis.speak(u);
+    };
+    window.pecsPrintStrip = function () {
+      var strip = window.pecsStrip || [];
+      if (!strip.length) { alert(T('Add cards to the strip first.', 'Agrega tarjetas primero.')); return; }
+      var win = window.open(''); if (!win) return;
+      var cards = strip.map(function (c) {
+        return '<div style="display:inline-flex;flex-direction:column;align-items:center;border:2px solid #D9A33B;border-radius:8px;padding:10px 8px;margin:6px;min-width:70px;font-family:sans-serif;"><span style="font-size:32px">' + c.i + '</span><span style="font-size:11px;font-weight:600;margin-top:4px;">' + esc(cardLabel(c)) + '</span></div>';
+      }).join('');
+      win.document.write('<html><body style="font-family:sans-serif;padding:20px;"><h2 style="color:#0A1E33">' + T('My Message', 'Mi mensaje') + '</h2><div style="display:flex;flex-wrap:wrap;">' + cards + '</div></body></html>');
+    };
+    // Re-render the localized PECS whenever the language toggles.
+    if (typeof window.applyLang === 'function' && !window.applyLang.__gracePecsEs) {
       var _al = window.applyLang;
-      window.applyLang = function () { var r = _al.apply(this, arguments); relocalizePecsTabs(); return r; };
-      window.applyLang.__graceTabsLoc = true;
+      window.applyLang = function () { var r = _al.apply(this, arguments); if (document.getElementById('pecsTabs')) gPecsRenderAll(); return r; };
+      window.applyLang.__gracePecsEs = true;
     }
   }
-  window.__graceRelocalizePecsTabs = relocalizePecsTabs;
+  window.__gracePecsRenderAll = gPecsRenderAll;
 
   // Full-screen SOS: hold the device up; no speech required.
   window.pecsShowToTeacher = function () {
@@ -19250,7 +19626,7 @@ window.addEventListener('load', _installToolScreenHook);
       body = '<div class="pecs-sos-empty">' + T('Add cards first, then hold this up.', 'Agrega tarjetas primero y luego muestra esto.') + '</div>';
     } else {
       body = '<div class="pecs-sos-cards" style="--n:' + strip.length + '">' + strip.map(function (c) {
-        return '<div class="pecs-sos-card"><span class="pecs-sos-emoji">' + c.i + '</span><span class="pecs-sos-label">' + esc(c.l) + '</span></div>';
+        return '<div class="pecs-sos-card"><span class="pecs-sos-emoji">' + c.i + '</span><span class="pecs-sos-label">' + esc(cardLabel(c)) + '</span></div>';
       }).join('') + '</div>';
     }
     overlay.innerHTML = head + body;
@@ -19297,8 +19673,8 @@ window.addEventListener('load', _installToolScreenHook);
     var orig = window.showScreen;
     window.showScreen = function (id) {
       var r = orig.apply(this, arguments);
-      if (id === 'screen-teacher-tools') { try { window.graceAdultGrounding(false); } catch (e) {} }
-      if (id === 'screen-pecs') { setTimeout(relocalizePecsTabs, 160); }
+      if (id === 'screen-teacher-tools') { try { window.graceAdultGrounding(false); } catch (e) {} setTimeout(upgradeToolIcons, 50); }
+      if (id === 'screen-pecs') { setTimeout(gPecsRenderAll, 160); }
       return r;
     };
     window.showScreen.__graceGated = true;
@@ -19311,28 +19687,58 @@ window.addEventListener('load', _installToolScreenHook);
     try {
       if (typeof I18N_UI === 'undefined' || !I18N_UI) return;
       I18N_UI.gt_box_t = { en: 'Paced Breathing', es: 'Respiración guiada' };
-      I18N_UI.gt_box_d = { en: 'Box 4·4·4·4 or 4·7·8 vagal', es: 'Caja 4·4·4·4 o 4·7·8 vagal' };
+      I18N_UI.gt_box_d = { en: 'Box, vagal, calming & balanced patterns', es: 'Patrones: caja, vagal, calma y equilibrio' };
       I18N_UI.gt_box_b = { en: 'Start', es: 'Comenzar' };
       I18N_UI.gt_tap_t = { en: 'Tap Pad', es: 'Almohadilla táctil' };
       I18N_UI.gt_tap_d = { en: 'Tap a rhythm to steady your heart', es: 'Toca un ritmo para calmar el corazón' };
       I18N_UI.gt_tap_b = { en: 'Open', es: 'Abrir' };
+      I18N_UI.gt_t5_t = { en: 'Take 5', es: 'Toma 5' };
+      I18N_UI.gt_t5_d = { en: 'Trace your hand, breath by breath', es: 'Traza tu mano, respiración a respiración' };
+      I18N_UI.gt_t5_b = { en: 'Start', es: 'Comenzar' };
+      I18N_UI.gt_body_t = { en: 'How’s your weather?', es: '¿Cómo está tu clima?' };
+      I18N_UI.gt_body_d = { en: 'Find your sky — blue, green, yellow or red — then a tool that fits', es: 'Encuentra tu cielo — azul, verde, amarillo o rojo — y una herramienta que ayude' };
+      I18N_UI.gt_body_b = { en: 'Check in', es: 'Empezar' };
       I18N_UI.pecs_sos_btn = { en: '🙋 Show to Teacher', es: '🙋 Mostrar al maestro' };
       I18N_UI.gt_ground_btn = { en: 'Reset myself (10s)', es: 'Centrarme (10s)' };
+      I18N_UI.pecs_eyebrow = { en: 'Communication Support', es: 'Apoyo a la comunicación' };
+      I18N_UI.pecs_h1 = { en: 'PECS Cards', es: 'Tarjetas PECS' };
+      I18N_UI.pecs_lede = { en: 'Tap a card to add it to your sequence. Build your message, then share it.', es: 'Toca una tarjeta para agregarla a tu secuencia. Crea tu mensaje y compártelo.' };
+      I18N_UI.pecs_clear = { en: '🗑️ Clear', es: '🗑️ Borrar' };
+      I18N_UI.pecs_print = { en: '🖨️ Print Strip', es: '🖨️ Imprimir' };
+      I18N_UI.pecs_speak = { en: '🔊 Speak', es: '🔊 Hablar' };
+      I18N_UI.aog_lib_nav = { en: 'Library', es: 'Biblioteca' };
+      I18N_UI.aog_tools_nav = { en: 'Tools', es: 'Herramientas' };
+      // Educator "Inside a lesson" sample package
+      I18N_UI.edu_s_ey = { en: 'See it first · Free', es: 'Míralo primero · Gratis' };
+      I18N_UI.edu_s_h = { en: 'Inside a lesson', es: 'Por dentro de una lección' };
+      I18N_UI.edu_s_lead = { en: 'Every lesson ships as a small package — anchor charts, scenario cards, worksheets, and drawing activities. Open any sampler below; no code, no sign-up.', es: 'Cada lección viene como un pequeño paquete — carteles de anclaje, tarjetas de escenario, hojas de trabajo y actividades de dibujo. Abre cualquier muestra abajo; sin código, sin registro.' };
+      I18N_UI.edu_s_anchor_t = { en: 'Anchor Charts', es: 'Carteles de anclaje' };
+      I18N_UI.edu_s_anchor_s = { en: 'The visual that anchors the lesson', es: 'El visual que ancla la lección' };
+      I18N_UI.edu_s_scenario_t = { en: 'Scenario Cards', es: 'Tarjetas de escenario' };
+      I18N_UI.edu_s_scenario_s = { en: 'Real moments to talk through', es: 'Momentos reales para conversar' };
+      I18N_UI.edu_s_worksheet_t = { en: 'Worksheets', es: 'Hojas de trabajo' };
+      I18N_UI.edu_s_worksheet_s = { en: 'Reflect, practice, apply', es: 'Reflexionar, practicar, aplicar' };
+      I18N_UI.edu_s_drawing_t = { en: 'Drawing Activities', es: 'Actividades de dibujo' };
+      I18N_UI.edu_s_drawing_s = { en: 'Make the idea their own', es: 'Hacer la idea suya' };
+      I18N_UI.edu_s_open = { en: 'Open PDF ↗', es: 'Abrir PDF ↗' };
+      I18N_UI.edu_s_cta = { en: 'Open a full free sample lesson · PDF →', es: 'Abre una lección de muestra gratis · PDF →' };
       if (typeof applyLang === 'function') applyLang();
     } catch (e) {}
   }
 
   function boot() {
     addSensoryCategories();
+    augmentPecsEs();
     installLocalizedTabs();
     installToolsGate();
     registerI18N();
     // refresh PECS if the screen is already mounted
-    try { if (typeof pecsRenderTabs === 'function' && document.getElementById('pecsTabs')) { pecsRenderTabs(); pecsRenderLibrary(); } } catch (e) {}
+    try { if (document.getElementById('pecsTabs')) gPecsRenderAll(); } catch (e) {}
+    try { upgradeToolIcons(); } catch (e) {}
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
   else boot();
-  window.addEventListener('load', function () { addSensoryCategories(); installLocalizedTabs(); installToolsGate(); registerI18N(); });
+  window.addEventListener('load', function () { addSensoryCategories(); installLocalizedTabs(); installToolsGate(); registerI18N(); try { upgradeToolIcons(); } catch (e) {} });
 })();
 
 </script>

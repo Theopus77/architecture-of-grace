@@ -1,0 +1,16 @@
+/* accessibility.css — global a11y rules (REFERENCE extract from base.html)
+   Global reduced-motion + focus-visible. NOTE: component-level reduced-motion guards
+   also live next to their components in base.html and components.css. Read-only audit copy. */
+
+/* Accessibility: respect reduced-motion preferences (matters for the autism-adapted audience) */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+/* Accessibility: clear keyboard focus indicator for anyone navigating without a mouse */
+:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; border-radius: 4px; }
+.response-option:focus-visible, .intensity-option:focus-visible, .mode-card:focus-visible { outline-offset: 3px; }
