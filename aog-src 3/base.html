@@ -2195,8 +2195,8 @@ a.doc-path .dp-t::after{ content:" \2192"; color:var(--gold); font-weight:700; }
 .found-tag{font-family:var(--font-sans);font-size:13px;font-weight:600;color:var(--navy);background:linear-gradient(180deg,#FBF3DF,#F2E6C8);border:1px solid #DFC894;padding:8px 20px;border-radius:24px;letter-spacing:.02em}
 
 /* reveals */
-.hyb-hero .hyb-hk,.hyb-hero .hyb-title,.hyb-hero .hyb-bar,.hyb-hero .hyb-aud,.hyb-hero .hyb-cta{opacity:0;transform:translateY(16px);animation:hybRise .8s cubic-bezier(.16,1,.3,1) forwards}
-.hyb-hero .hyb-title{animation-delay:.08s}.hyb-hero .hyb-bar{animation-delay:.32s}.hyb-hero .hyb-aud{animation-delay:.42s}.hyb-hero .hyb-cta{animation-delay:.52s}
+.hyb-hero .hyb-hk,.hyb-hero .hyb-title,.hyb-hero .hyb-bar,.hyb-hero .hyb-vp,.hyb-hero .hyb-aud,.hyb-hero .hyb-cta{opacity:0;transform:translateY(16px);animation:hybRise .8s cubic-bezier(.16,1,.3,1) forwards}
+.hyb-hero .hyb-title{animation-delay:.08s}.hyb-hero .hyb-bar{animation-delay:.32s}.hyb-hero .hyb-vp{animation-delay:.4s}.hyb-hero .hyb-aud{animation-delay:.42s}.hyb-hero .hyb-cta{animation-delay:.52s}
 @keyframes hybRise{to{opacity:1;transform:none}}
 .js-reveal .reveal{opacity:0;transform:translateY(26px);transition:opacity .7s ease,transform .7s cubic-bezier(.16,1,.3,1)}
 .reveal.in{opacity:1;transform:none}
@@ -2713,6 +2713,13 @@ function toggleTheme() {
 
 <style id="aog-body-styles-moved">
 
+        /* Plain-language value prop — the first clear thing a newcomer reads */
+        .hyb-vp{ position:relative; max-width:660px; margin:20px auto 0; text-align:center;
+          font-family:var(--font-sans); font-size:clamp(17px,2vw,21px); line-height:1.5; font-weight:500;
+          color:rgba(244,238,226,.96); }
+        .hyb-vp strong{ font-weight:800; color:#fff; }
+        .hyb-vp .hyb-vp-em{ font-family:var(--font-serif); font-style:italic; font-weight:600; color:var(--gold-soft); white-space:nowrap; }
+        @media (max-width:600px){ .hyb-vp{ font-size:16px; margin-top:16px; } }
         .hyb-lede{ max-width:644px; margin:16px auto 0; text-align:center; }
         .hyb-lede p{ font-family:var(--font-sans); font-size:15px; line-height:1.62; color:rgba(244,238,226,.82); margin:0 0 12px; }
         .hyb-lede p:last-child{ margin-bottom:0; }
@@ -3344,7 +3351,11 @@ function toggleTheme() {
 .st-foot{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:9px;}
 .st-price{font-family:var(--serif,Georgia,serif);font-size:17px;font-weight:600;color:var(--st-ink);}
 .st-price-sub{font-family:var(--sans,sans-serif);font-size:10px;font-weight:500;color:var(--st-faint);}
-.st-buy{font-family:var(--sans,sans-serif);font-size:12px;font-weight:600;color:#fff;background:var(--st-navy);border:none;border-radius:8px;padding:8px 12px;cursor:pointer;transition:.18s;white-space:nowrap;}
+/* clickable price labels — add to cart on click (belt-and-suspenders with the buttons) */
+.st-price-buy{cursor:pointer;border-radius:6px;padding:1px 4px;margin:0 -4px;transition:background .15s,color .15s;}
+.st-price-buy:hover{background:color-mix(in srgb, var(--st-gold) 18%, transparent);color:var(--st-navy);}
+.st-price-buy:focus-visible{outline:2px solid var(--st-gold);outline-offset:1px;}
+.st-buy{font-family:var(--sans,sans-serif);font-size:12px;font-weight:700;color:#fff;background:var(--st-navy);border:none;border-radius:8px;padding:9px 12px;cursor:pointer;transition:.18s;white-space:normal;line-height:1.25;}
 .st-buy:hover{background:var(--st-navy-soft);}
 .st-buy.st-added{background:var(--st-gold);color:var(--st-navy);}
 .st-free{font-size:11.5px;font-weight:600;color:var(--st-navy-soft);text-decoration:none;border-top:1px solid var(--st-border-soft);padding-top:10px;transition:.18s;}
@@ -3373,7 +3384,7 @@ function toggleTheme() {
 .st-actions{display:inline-flex;align-items:center;gap:10px;}
 .st-prev{font-size:12px;font-weight:700;color:var(--st-navy);background:var(--st-gold-soft);border-radius:8px;padding:8px 13px;text-decoration:none;white-space:nowrap;transition:.18s;}
 .st-prev:hover{background:var(--st-gold);}
-.st-mbuy{font-size:12px;font-weight:600;color:#fff;background:var(--st-navy);border:none;border-radius:8px;padding:8px 13px;cursor:pointer;transition:.18s;white-space:nowrap;}
+.st-mbuy{font-size:12px;font-weight:700;color:#fff;background:var(--st-navy);border:none;border-radius:8px;padding:9px 13px;cursor:pointer;transition:.18s;white-space:normal;line-height:1.25;}
 .st-mbuy:hover{background:var(--st-navy-soft);}
 .st-mbuy.st-added{background:var(--st-gold);color:var(--st-navy);}
 .st-freebtn{font-size:12px;font-weight:700;color:var(--st-navy);background:var(--st-gold-soft);border-radius:8px;padding:8px 13px;text-decoration:none;white-space:nowrap;transition:.18s;}
@@ -4085,7 +4096,8 @@ function toggleTheme() {
       <div class="hyb-bar">
         <span class="word"><b data-i18n="hyb_b1">Grace Over Performance</b></span>
       </div>
-      <div class="hyb-lede" data-i18n-html="hyb_lede"><p class="hl-lead">So often, people are measured before they are understood. Architecture of Grace offers another way.</p><p>Built by a special educator, it&rsquo;s a framework to strengthen relationships&mdash;with yourself and with one another&mdash;through identity, self-compassion, forgiveness, and grace.</p><p class="hl-close">Because growth begins with grace, not performance.</p></div>
+      <p class="hyb-vp" data-i18n-html="hyb_vp">Most things measure people. <strong>This helps you understand them.</strong> A free, five-minute reflection for students, families, and educators &mdash; <span class="hyb-vp-em">grace before grades</span>.</p>
+      <div class="hyb-lede" data-i18n-html="hyb_lede"><p class="hl-lead">Built by a special educator, it&rsquo;s a framework to strengthen relationships&mdash;with yourself and with one another&mdash;through identity, self-compassion, forgiveness, and grace.</p><p class="hl-close">Because growth begins with grace, not performance.</p></div>
       <!-- ===== PRIMARY CTAs — placed above "How one answer becomes growth" ===== -->
               <div class="hyb-cta-row">
           <a href="#" class="hyb-cta hyb-cta-primary" onclick="event.preventDefault(); if(typeof openFramework==='function'){openFramework();}">
@@ -8750,9 +8762,13 @@ const I18N_UI = {
   fw_7_h: { en: "The founder, and the why beneath the work", es: "El fundador, y el porqu\u00e9 detr\u00e1s del trabajo" },
   fw_7_p: { en: "<p>My name is Jimmy Ramsden. I didn’t come to this work from a boardroom — I came to it from the classroom, where I still teach today as a special educator.</p><p>For more than a decade I’ve worked as an Illinois-certified special educator across elementary and junior-high classrooms — in self-contained, resource, and social-behavioral settings — and I hold a Learning Behavior Specialist endorsement for students from preschool through age twenty-two. Along the way I built and ran an elementary Social-Behavioral Learning resource program, where I coach students in the very skills this curriculum is built around: naming what they feel, steadying themselves, and trying again. The Architecture of Grace isn’t a departure from that classroom work — it’s two decades of it, gathered into something I can hand to other teachers.</p><p>My journey started at Humboldt State University with a degree in political science. But the real catalyst came in 2006. I was driving up to Oregon for a show — Anticon, the hip-hop collective whose music had been part of my life for as long as I can remember — when a serious car crash left me with a traumatic brain injury and a neurological disability. Rebuilding my life changed how I understand struggle, patience, and grace, and it’s what turned me toward special education and a master’s at Aurora University in Aurora, Illinois. It’s the reason this work isn’t abstract to me.</p><p>Anticon never left me. The only tattoos I carry come from them — ants for my family (my sister, my parents, and me) and the name itself. Over the years I came to read it the way I try to teach: anti-con — without lies. Meeting people honestly, as they really are, is the ground everything here is built on.</p><p>The Architecture of Grace grew out of a conviction that individuals deserve more than to be measured — they deserve to be understood. Built under The Architecture of Grace Foundation, everything here rests on four core pillars:</p><ul class='fw-story-pillars'><li><strong>Identity</strong> — who a person comes to believe they are.</li><li><strong>Self-Compassion</strong> — how a person learns to speak to themselves.</li><li><strong>Forgiveness</strong> — moving past mistakes to make room for growth.</li><li><strong>Grace</strong> — meeting a person with understanding rather than only judgment.</li></ul><p>As a teacher and a father, these are the values I want for my students, my own children — and for anyone willing to do this work.</p><p class='fw-story-sign'>— Jimmy Ramsden</p>", es: "<p>Me llamo Jimmy Ramsden. No llegué a este trabajo desde una sala de juntas, sino desde el aula, donde sigo enseñando hoy como educador especial.</p><p>Durante más de una década he trabajado como educador especial certificado en Illinois en aulas de primaria y secundaria —en entornos autónomos, de recursos y socioconductuales— y cuento con la certificación de Learning Behavior Specialist para estudiantes desde preescolar hasta los veintidós años. En el camino creé y dirigí un programa de recursos de Aprendizaje Socioconductual en primaria, donde acompaño a los estudiantes en las mismas destrezas sobre las que se construye este currículo: nombrar lo que sienten, serenarse e intentarlo de nuevo. The Architecture of Grace no es una desviación de ese trabajo en el aula: son dos décadas de ese trabajo, reunidas en algo que puedo entregar a otros docentes.</p><p>Mi camino comenzó en Humboldt State University con una licenciatura en ciencias políticas. Pero el verdadero punto de inflexión llegó en 2006. Conducía hacia Oregón para asistir a un concierto —Anticon, el colectivo de hip-hop cuya música ha sido parte de mi vida desde que tengo memoria— cuando un grave accidente de auto me dejó con una lesión cerebral traumática y una discapacidad neurológica. Reconstruir mi vida cambió mi forma de entender la lucha, la paciencia y la gracia, y es lo que me orientó hacia la educación especial y hacia una maestría en Aurora University, en Aurora, Illinois. Es la razón por la que este trabajo no es algo abstracto para mí.</p><p>Anticon nunca me abandonó. Los únicos tatuajes que llevo vienen de ellos: hormigas por mi familia (mi hermana, mis padres y yo) y el propio nombre. Con los años llegué a leerlo como intento enseñar: anti-con, sin mentiras. Encontrarse con las personas con honestidad, tal como realmente son, es el terreno sobre el que se construye todo aquí.</p><p>The Architecture of Grace surgió de la convicción de que las personas merecen algo más que ser medidas: merecen ser comprendidas. Creado bajo The Architecture of Grace Foundation, todo aquí se apoya en cuatro pilares fundamentales:</p><ul class='fw-story-pillars'><li><strong>Identidad</strong> — quién llega una persona a creer que es.</li><li><strong>Autocompasión</strong> — cómo aprende una persona a hablarse a sí misma.</li><li><strong>Perdón</strong> — dejar atrás los errores para dar espacio al crecimiento.</li><li><strong>Gracia</strong> — encontrarse con una persona desde la comprensión y no solo desde el juicio.</li></ul><p>Como maestro y como padre, estos son los valores que deseo para mis estudiantes, para mis propios hijos, y para cualquiera dispuesto a hacer este trabajo.</p><p class='fw-story-sign'>— Jimmy Ramsden</p>" },
   fw_browse: { en: "Browse the guide & resources \u2192", es: "Explora la gu\u00eda y los recursos \u2192" },
+  hyb_vp: {
+    en: "Most things measure people. <strong>This helps you understand them.</strong> A free, five-minute reflection for students, families, and educators \u2014 <span class='hyb-vp-em'>grace before grades</span>.",
+    es: "Casi todo mide a las personas. <strong>Esto te ayuda a comprenderlas.</strong> Una reflexi\u00f3n gratuita de cinco minutos para estudiantes, familias y educadores \u2014 <span class='hyb-vp-em'>gracia antes que calificaciones</span>."
+  },
   hyb_lede: {
-    en: "<p class='hl-lead'>So often, people are measured before they are understood. Architecture of Grace offers another way.</p><p>Built by a special educator, it\u2019s a framework to strengthen relationships\u2014with yourself and with one another\u2014through identity, self-compassion, forgiveness, and grace.</p><p class='hl-close'>Because growth begins with grace, not performance.</p>",
-    es: "<p class='hl-lead'>Con demasiada frecuencia, a las personas se las mide antes de comprenderlas. Architecture of Grace ofrece otro camino.</p><p>Creado por un educador especial, es un marco para fortalecer las relaciones \u2014contigo mismo y con los dem\u00e1s\u2014 a trav\u00e9s de la identidad, la autocompasi\u00f3n, el perd\u00f3n y la gracia.</p><p class='hl-close'>Porque el crecimiento comienza con la gracia, no con el rendimiento.</p>"
+    en: "<p class='hl-lead'>Built by a special educator, it\u2019s a framework to strengthen relationships\u2014with yourself and with one another\u2014through identity, self-compassion, forgiveness, and grace.</p><p class='hl-close'>Because growth begins with grace, not performance.</p>",
+    es: "<p class='hl-lead'>Creado por un educador especial, es un marco para fortalecer las relaciones \u2014contigo mismo y con los dem\u00e1s\u2014 a trav\u00e9s de la identidad, la autocompasi\u00f3n, el perd\u00f3n y la gracia.</p><p class='hl-close'>Porque el crecimiento comienza con la gracia, no con el rendimiento.</p>"
   },
   hyb_byline: {
     en: "A framework for students, families, educators, caregivers, teams, and independent adults. Built by a special educator to help people strengthen relationships through identity, self-compassion, forgiveness, and grace.",
@@ -16648,7 +16664,7 @@ if (document.readyState === "loading") {
 
 /* ===== AoG CART MODULE (interim — no checkout backend) ===== */
 /* EDIT THIS when you have a real fulfillment address: */
-const AOG_ORDER_EMAIL = "orders@architectureofgrace.org";
+const AOG_ORDER_EMAIL = "whytheschooloflife@gmail.com";
 
 let aogCartItems = [];
 try { const s = localStorage.getItem("aog_cart"); if (s) aogCartItems = JSON.parse(s) || []; } catch(e) {}
@@ -16743,11 +16759,20 @@ function fallbackCopy(t, done){ try{ const ta=document.createElement("textarea")
       + '</div>';
     document.body.appendChild(overlay); document.body.appendChild(drawer);
     // add to cart via delegation (works across re-renders of the library)
+    // Catches the buy buttons AND the clickable price labels (.st-price-buy).
     document.addEventListener("click", function(e){
-      const btn = e.target.closest(".st-buy, .st-mbuy"); if(!btn) return;
+      const btn = e.target.closest(".st-buy, .st-mbuy, .st-price-buy"); if(!btn) return;
       const key = (btn.getAttribute("data-buy")||"Item").replace(/&mdash;/g,"\u2014").replace(/&amp;/g,"&");
       const p = parseFloat(btn.getAttribute("data-price"));
       aogCartAdd(key, isNaN(p)?null:p);
+      // buttons already show feedback via aogBindStore; toast here only for price-label clicks
+      if(btn.classList.contains("st-price-buy") && typeof aogToast==="function") aogToast("Added: " + key);
+    });
+    // clickable price labels are role="button" \u2014 let Enter/Space activate them
+    document.addEventListener("keydown", function(e){
+      if((e.key==="Enter"||e.key===" "||e.key==="Spacebar") && e.target.closest && e.target.closest(".st-price-buy")){
+        e.preventDefault(); e.target.closest(".st-price-buy").click();
+      }
     });
     document.addEventListener("keydown", e=>{ if(e.key==="Escape") aogCloseCart(); });
     aogCartBadge();
@@ -16909,12 +16934,12 @@ function aogNovelDoors(cat){
           <p class="st-hook">${libEsc(hook)}</p>
           <div class="st-foot st-foot-2">
             <div class="st-prices">
-              <span class="st-price">${price!=null?'$'+price.d.toFixed(2):'$&mdash;'}<span class="st-price-sub">&nbsp;${DT('digital','digital')}</span></span>
-              <span class="st-price">${price!=null?'$'+price.p.toFixed(2):'$&mdash;'}<span class="st-price-sub">&nbsp;${DT('print','impreso')}</span></span>
+              <span class="st-price st-price-buy" role="button" tabindex="0" title="${DT('Add to cart','Agregar al carrito')}" data-buy="${buyPrefix}${libEsc(title)} (${DT('Digital','Digital')})" data-price="${price!=null?price.d:''}">${price!=null?'$'+price.d.toFixed(2):'$&mdash;'}<span class="st-price-sub">&nbsp;${DT('digital','digital')}</span></span>
+              <span class="st-price st-price-buy" role="button" tabindex="0" title="${DT('Add to cart','Agregar al carrito')}" data-buy="${buyPrefix}${libEsc(title)} (${DT('Print','Impreso')})" data-price="${price!=null?price.p:''}">${price!=null?'$'+price.p.toFixed(2):'$&mdash;'}<span class="st-price-sub">&nbsp;${DT('print','impreso')}</span></span>
             </div>
             <div class="st-buys">
-              <button class="st-buy" data-buy="${buyPrefix}${libEsc(title)} (${DT('Digital','Digital')})" data-price="${price!=null?price.d:''}">${DT('Add digital','Agregar digital')}</button>
-              <button class="st-buy" data-buy="${buyPrefix}${libEsc(title)} (${DT('Print','Impreso')})" data-price="${price!=null?price.p:''}">${DT('Add print','Agregar impreso')}</button>
+              <button class="st-buy" data-buy="${buyPrefix}${libEsc(title)} (${DT('Digital','Digital')})" data-price="${price!=null?price.d:''}">${DT('Add to cart','Agregar al carrito')} &middot; ${price!=null?'$'+price.d.toFixed(2):DT('on request','a pedir')} ${DT('digital','digital')}</button>
+              <button class="st-buy" data-buy="${buyPrefix}${libEsc(title)} (${DT('Print','Impreso')})" data-price="${price!=null?price.p:''}">${DT('Add to cart','Agregar al carrito')} &middot; ${price!=null?'$'+price.p.toFixed(2):DT('on request','a pedir')} ${DT('print','impreso')}</button>
             </div>
           </div>
           ${preview?`<a class="st-free" href="${libEsc(preview.url)}" target="_blank" rel="noopener">Read Chapter One free &rarr;</a>`:''}
@@ -16941,10 +16966,10 @@ function aogMaterialCards(cat){
       priceHtml = '<span class="st-cprice st-free-txt">Free</span>';
       actions = `<a class="st-freebtn" href="${libEsc(it.url)}" target="_blank" rel="noopener">Open free &nearr;</a>`;
     }else if(state==="buy" || state==="both"){
-      priceHtml = `<div class="st-cprices"><span class="st-cprice">${price!=null?'$'+price.d.toFixed(2):'$&mdash;'}<span class="st-cprice-sub">&nbsp;${DT('digital','digital')}</span></span><span class="st-cprice">${price!=null?'$'+price.p.toFixed(2):'$&mdash;'}<span class="st-cprice-sub">&nbsp;${DT('print','impreso')}</span></span></div>`;
+      priceHtml = `<div class="st-cprices"><span class="st-cprice st-price-buy" role="button" tabindex="0" title="${DT('Add to cart','Agregar al carrito')}" data-buy="${libEsc(it.title)} (${DT('Digital','Digital')})" data-price="${price!=null?price.d:''}">${price!=null?'$'+price.d.toFixed(2):'$&mdash;'}<span class="st-cprice-sub">&nbsp;${DT('digital','digital')}</span></span><span class="st-cprice st-price-buy" role="button" tabindex="0" title="${DT('Add to cart','Agregar al carrito')}" data-buy="${libEsc(it.title)} (${DT('Print','Impreso')})" data-price="${price!=null?price.p:''}">${price!=null?'$'+price.p.toFixed(2):'$&mdash;'}<span class="st-cprice-sub">&nbsp;${DT('print','impreso')}</span></span></div>`;
       const prev = it.url && it.url.trim() ? `<a class="st-prev" href="${libEsc(it.url)}" target="_blank" rel="noopener">Preview &rarr;</a>` : '';
       const _titleAttr = state==="both"?' title="Also included in the district license"':'';
-      actions = `${prev}<button class="st-mbuy" data-buy="${libEsc(it.title)} (${DT('Digital','Digital')})" data-price="${price!=null?price.d:''}"${_titleAttr}>${DT('Add digital','Agregar digital')}</button><button class="st-mbuy" data-buy="${libEsc(it.title)} (${DT('Print','Impreso')})" data-price="${price!=null?price.p:''}"${_titleAttr}>${DT('Add print','Agregar impreso')}</button>`;
+      actions = `${prev}<button class="st-mbuy" data-buy="${libEsc(it.title)} (${DT('Digital','Digital')})" data-price="${price!=null?price.d:''}"${_titleAttr}>${DT('Add to cart','Agregar al carrito')} &middot; ${price!=null?'$'+price.d.toFixed(2):DT('on request','a pedir')} ${DT('digital','digital')}</button><button class="st-mbuy" data-buy="${libEsc(it.title)} (${DT('Print','Impreso')})" data-price="${price!=null?price.p:''}"${_titleAttr}>${DT('Add to cart','Agregar al carrito')} &middot; ${price!=null?'$'+price.p.toFixed(2):DT('on request','a pedir')} ${DT('print','impreso')}</button>`;
     }else{ /* license */
       priceHtml = '<span class="st-cprice st-tag">District license</span>';
       actions = it.url && it.url.trim() ? `<a class="st-prev" href="${libEsc(it.url)}" target="_blank" rel="noopener">Preview &rarr;</a>` : '';
