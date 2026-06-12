@@ -661,6 +661,32 @@
     spark.className = 'aogf-spark';
     track.appendChild(spark);
 
+    // Make each box clickable — open this journey's real materials in the
+    // Resource Index: the matching construct, slid down to the selected grade
+    // band's book row (with its lesson + story links).
+    var DOM_LETTERS = ['A', 'B', 'C'];
+    // Each flow answer → the Resource Index construct that owns its materials.
+    var DOM_ITEMS = ['Items 3, 4', 'Item 8 (+7, 9)', 'Item 13'];
+    function openFlowMaterials() {
+      var dl = DOM_LETTERS[_flowDom] || 'A';
+      var items = DOM_ITEMS[_flowDom] || '';
+      var book = _flowBand + 1; // band 0..4 → Book 1..5
+      if (typeof window.aogOpenResindex === 'function') { window.aogOpenResindex(dl, items, book); }
+      else if (typeof window.openGuide === 'function') { window.openGuide('resindex'); }
+    }
+    chips.forEach(function (c) {
+      if (c.dataset.flowClick) return;
+      c.dataset.flowClick = '1';
+      c.classList.add('aogf-clickable');
+      c.setAttribute('role', 'button');
+      c.setAttribute('tabindex', '0');
+      c.setAttribute('title', T('Open these materials in the Resource Index', 'Abre estos materiales en el Índice de recursos'));
+      c.addEventListener('click', function () { openFlowMaterials(); });
+      c.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openFlowMaterials(); }
+      });
+    });
+
     // --- Two-level picker (grade band → answer), inserted above the track ---
     var picker = document.createElement('div');
     picker.className = 'aogf-picker';
@@ -718,6 +744,13 @@
     ctrl.setAttribute('data-i18n', 'p2g_replay');
     ctrl.textContent = '↻ ' + T('Watch it again', 'Verlo otra vez');
     if (track.parentNode) track.parentNode.insertBefore(ctrl, track.nextSibling);
+
+    // Small note: tell people the boxes are live and where they lead.
+    var hint = document.createElement('p');
+    hint.className = 'aogf-hint';
+    hint.textContent = T('Tap any box to open its exact material in the Resource Index.',
+                         'Toca cualquier cuadro para abrir su material exacto en el Índice de recursos.');
+    if (track.parentNode) track.parentNode.insertBefore(hint, track);
     var timer = null;
     function moveSpark(chip) {
       var tr = track.getBoundingClientRect(), cr = chip.getBoundingClientRect();

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="aog-build" content="2026.06.11.2330">
+<meta name="aog-build" content="2026.06.12.0011">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Architecture of Grace · Universal Check-In</title>
 <meta name="description" content="Social-emotional learning built by a teacher, for real classrooms — the SEL that tends to the grown-ups before it measures a child. Private, de-identified, K–adult. A check-in, not an exam.">
@@ -1596,6 +1596,9 @@ tr:hover td { background: var(--paper); }
 .ri-card.ri-hit{ box-shadow:0 0 0 3px var(--gold,#B8893A); border-color:var(--gold,#B8893A); animation:riHitPulse 2.2s var(--ease,ease); }
 @keyframes riHitPulse{ 0%{box-shadow:0 0 0 0 rgba(184,137,58,.55);} 25%{box-shadow:0 0 0 5px rgba(184,137,58,.40);} 100%{box-shadow:0 0 0 3px rgba(184,137,58,.0);} }
 @media (prefers-reduced-motion: reduce){ .ri-card.ri-hit{ animation:none; } }
+.ri-book.ri-book-hit{ border-radius:8px; box-shadow:0 0 0 3px var(--gold,#B8893A); background:var(--gold-pale,#FBF3DF); animation:riBookHit 2.4s var(--ease,ease); }
+@keyframes riBookHit{ 0%{box-shadow:0 0 0 0 rgba(184,137,58,.6);} 22%{box-shadow:0 0 0 5px rgba(184,137,58,.42);} 100%{box-shadow:0 0 0 3px rgba(184,137,58,0);} }
+@media (prefers-reduced-motion: reduce){ .ri-book.ri-book-hit{ animation:none; } }
 .nw-links{ display:flex; flex-wrap:wrap; gap:6px 18px; align-items:center; }
 .hd-teach-link,.ov-teach-link{ display:inline-block; margin-top:8px; font-size:12.5px; font-weight:800; color:var(--gold-deep,#9a6f24); text-decoration:underline; text-underline-offset:2px; text-decoration-thickness:1.5px; }
 :root[data-theme="dark"] .hd-teach-link,:root[data-theme="dark"] .ov-teach-link{ color:var(--gold-soft); }
@@ -3927,6 +3930,18 @@ function toggleTheme() {
   .topbar-actions{gap:11px;}
   .topbar-store,.topbar-lib{padding:7px 16px;}
 }
+/* Phone toolbar: it was overcrowded and clipped the EN/ES toggle (worse on pages
+   that also show the Back button). Drop the cart (Store still covers buying),
+   tighten the pills, give the wrapped row a full width to lay out predictably,
+   and add bottom clearance so the language toggle is never cut by the divider. */
+@media (max-width:640px){
+  #aogCartBtn, .topbar-cart{ display:none !important; }
+  .topbar{ padding:12px 16px 16px; align-items:center; }
+  .topbar-actions{ flex-wrap:wrap; justify-content:center; align-items:center; gap:6px; row-gap:10px; width:100%; }
+  .topbar-store, .topbar-lib{ padding:6px 10px; font-size:13px; }
+  .topbar-store svg, .topbar-lib svg{ width:14px; height:14px; }
+  .lang-toggle{ flex:0 0 auto; margin-bottom:2px; }
+}
 
 /* ===== "How one answer becomes growth" — interactive walkthrough ===== */
 .aogf-track{position:relative;}
@@ -3936,6 +3951,10 @@ function toggleTheme() {
 .aogf-track .aogf-arrow{transition:color .3s ease,transform .3s ease,opacity .3s ease;}
 .aogf-track.aogf-anim .aogf-arrow{opacity:.4;}
 .aogf-track.aogf-anim .aogf-arrow.aogf-lit{opacity:1;color:var(--gold);transform:scale(1.4);}
+.aogf-hint{text-align:center;font-size:13px;color:var(--ink-soft,#5a6b7b);margin:2px auto 14px;max-width:560px;line-height:1.5;font-style:italic;}
+.aogf-chip.aogf-clickable{cursor:pointer;transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease;}
+.aogf-chip.aogf-clickable:hover{transform:translateY(-3px);box-shadow:0 0 0 2px var(--gold),0 14px 26px -12px rgba(27,58,95,.45);}
+.aogf-chip.aogf-clickable:focus-visible{outline:none;box-shadow:0 0 0 3px var(--gold),0 14px 26px -12px rgba(27,58,95,.45);}
 .aogf-chip.aogf-pulse{animation:aogfPulse 1.15s ease 1;}
 @keyframes aogfPulse{0%,100%{box-shadow:0 0 0 3px var(--gold),0 16px 30px -10px rgba(27,58,95,.42);}50%{box-shadow:0 0 0 8px rgba(217,163,59,.4),0 18px 36px -8px rgba(27,58,95,.5);}}
 .aogf-spark{position:absolute;top:0;left:0;width:18px;height:18px;border-radius:50%;background:radial-gradient(circle,#fff 0%,var(--gold-soft) 38%,var(--gold) 72%);box-shadow:0 0 18px 5px rgba(242,201,100,.7);transform:translate(-50%,-50%);transition:left 1.5s cubic-bezier(.45,0,.25,1),top 1.5s cubic-bezier(.45,0,.25,1),opacity .35s ease;opacity:0;pointer-events:none;z-index:3;}
@@ -4059,6 +4078,19 @@ function toggleTheme() {
         <span class="word"><b data-i18n="hyb_b1">Grace Over Performance</b></span>
       </div>
       <div class="hyb-lede" data-i18n-html="hyb_lede"><p class="hl-lead">So often, people are measured before they are understood. Architecture of Grace offers another way.</p><p>Built by a special educator, it&rsquo;s a framework to strengthen relationships&mdash;with yourself and with one another&mdash;through identity, self-compassion, forgiveness, and grace.</p><p class="hl-close">Because growth begins with grace, not performance.</p></div>
+      <!-- ===== PRIMARY CTAs — placed above "How one answer becomes growth" ===== -->
+              <div class="hyb-cta-row">
+          <a href="#" class="hyb-cta hyb-cta-primary" onclick="event.preventDefault(); if(typeof openFramework==='function'){openFramework();}">
+            <span data-i18n="hyb_cta_explore">Explore the Framework</span> <span aria-hidden="true">&rarr;</span>
+          </a>
+          <a href="#" class="hyb-cta hyb-cta-secondary" onclick="event.preventDefault(); if(typeof startChoose==='function'){startChoose();}">
+            <span data-i18n="hyb_cta_checkin">Take the Check-In</span> <span aria-hidden="true">&rarr;</span>
+          </a>
+          <a href="#" class="hyb-cta hyb-cta-secondary" onclick="event.preventDefault(); if(typeof showScreen==='function'){showScreen('screen-teacher-tools');}">
+            <span data-i18n="hyb_cta_tools">Calm &amp; Regulation Tools</span> <span aria-hidden="true">&rarr;</span>
+          </a>
+        </div>
+
     <section class="p2-grow reveal" aria-labelledby="p2GrowH">
       
 
@@ -4102,20 +4134,6 @@ function toggleTheme() {
         <span data-i18n="p2g_cta">See how the whole system connects</span> <span class="arr" aria-hidden="true">&rarr;</span>
       </a>
     </section>
-
-      <!-- ===== PRIMARY CTAs — moved directly below "How one answer becomes growth" ===== -->
-              <div class="hyb-cta-row">
-          <a href="#" class="hyb-cta hyb-cta-primary" onclick="event.preventDefault(); if(typeof openFramework==='function'){openFramework();}">
-            <span data-i18n="hyb_cta_explore">Explore the Framework</span> <span aria-hidden="true">&rarr;</span>
-          </a>
-          <a href="#" class="hyb-cta hyb-cta-secondary" onclick="event.preventDefault(); if(typeof startChoose==='function'){startChoose();}">
-            <span data-i18n="hyb_cta_checkin">Take the Check-In</span> <span aria-hidden="true">&rarr;</span>
-          </a>
-          <a href="#" class="hyb-cta hyb-cta-secondary" onclick="event.preventDefault(); if(typeof showScreen==='function'){showScreen('screen-teacher-tools');}">
-            <span data-i18n="hyb_cta_tools">Calm &amp; Regulation Tools</span> <span aria-hidden="true">&rarr;</span>
-          </a>
-        </div>
-
 
       <!-- ===== HOW ONE ANSWER BECOMES GROWTH — moved above statement band ===== -->
       <!-- ===== P2 (2026-06-08): "How One Answer Becomes Growth" — make the ecosystem visible.
@@ -6645,7 +6663,7 @@ function toggleTheme() {
     </div>
     <div class="sf-legal">© <span id="footYr"></span> The Architecture of Grace Foundation. All rights reserved. · Every score is a flag, not a diagnosis.</div>
     <div class="sf-made" data-i18n="foot_made">Made with care in Illinois.</div>
-    <div class="sf-build" style="margin-top:10px;font-size:10.5px;color:#5f6e80;letter-spacing:.04em;">Build 2026.06.11.2330</div>
+    <div class="sf-build" style="margin-top:10px;font-size:10.5px;color:#5f6e80;letter-spacing:.04em;">Build 2026.06.12.0011</div>
   </div>
 </footer>
 
@@ -12143,6 +12161,16 @@ function aogSetHash(_0xcb963) {
    history entry to return to (deep link or very first screen), it falls back to
    the welcome screen without clearing anything. */
 function goBack() {
+  // If a regulation tool is open in the modal, Back should close the tool and
+  // return to the Tools page underneath — not navigate the whole app home.
+  try {
+    var _tm = document.getElementById("toolModal");
+    if (_tm && _tm.classList.contains("open")) {
+      if (typeof window.toolClose === "function") { window.toolClose(); }
+      else { _tm.classList.remove("open"); }
+      return;
+    }
+  } catch (_aogTM) {}
   try {
     var _st = history.state;
     if (_st && _st.aogIdx && _st.aogIdx > 0) {
@@ -13173,7 +13201,7 @@ function aogScrollToStarters() {
 /* CLOSED-LOOP DEEP LINK (2026-06): from a flagged domain (or specific item pair),
    jump to the Construct-to-Resource Index, auto-open the matching construct(s),
    highlight briefly, and scroll it into view. Completes Identify -> Flag -> Sustain. */
-function aogOpenResindex(domain, itemsLabel) {
+function aogOpenResindex(domain, itemsLabel, bookNum) {
   try {
     var _s = document.getElementById("riSearch"); if (_s) _s.value = "";
     var _g = document.getElementById("riGrade");  if (_g) _g.value  = "";
@@ -13200,7 +13228,22 @@ function aogOpenResindex(domain, itemsLabel) {
     var first = cards[0];
     first.classList.add("ri-hit");
     setTimeout(function () { first.classList.remove("ri-hit"); }, 2400);
-    try { first.scrollIntoView({ behavior: "smooth", block: "center" }); } catch (_e2) {}
+    if (bookNum) {
+      /* A specific grade band was requested — wait for the card body to expand,
+         then slide to THAT book's row and highlight it (not the card top). */
+      setTimeout(function () {
+        var row = first.querySelector('.ri-book[data-ri-book="' + bookNum + '"]');
+        if (row) {
+          row.classList.add("ri-book-hit");
+          setTimeout(function () { row.classList.remove("ri-book-hit"); }, 2600);
+          try { row.scrollIntoView({ behavior: "smooth", block: "center" }); } catch (_e3) {}
+          return;
+        }
+        try { first.scrollIntoView({ behavior: "smooth", block: "center" }); } catch (_e4) {}
+      }, 440);
+    } else {
+      try { first.scrollIntoView({ behavior: "smooth", block: "center" }); } catch (_e2) {}
+    }
   }, 300);
 }
 function buildHomeReport(_0x196b68, _0x3d8f48) {
@@ -15405,9 +15448,9 @@ function riRender(_0x4f8a98, _0x4f89b6) {
         var __riCurUrl = (typeof curriculumJumpUrl === "function") ? curriculumJumpUrl(_0x3024b4, _0x14d5f7.items) : "";
         var __riBookInner = "<div class=\"ri-chip\">" + (lang === "es" ? RI_GRADES[_0x3024b4].label.replace("Book", "Libro") : RI_GRADES[_0x3024b4].label) + "<span class=\"ri-chip-grade\">" + RI_GRADES[_0x3024b4].grade + "</span></div><div class=\"ri-res\"><span class=\"loc\">" + _0x5d5b54.loc + "</span> &mdash; <span class=\"res\">" + _0x5d5b54.res + "</span></div>";
         if (__riCurUrl) {
-          _0x27c43b += "<a class=\"ri-book ri-book-link\" href=\"" + __riCurUrl + "\" target=\"_blank\" rel=\"noopener\" title=\"" + (lang === "es" ? "Abrir la lección" : "Open the lesson") + "\">" + __riBookInner + "<span class=\"ri-open\" aria-hidden=\"true\">&#8599;</span></a>";
+          _0x27c43b += "<a class=\"ri-book ri-book-link\" data-ri-book=\"" + _0x3024b4 + "\" href=\"" + __riCurUrl + "\" target=\"_blank\" rel=\"noopener\" title=\"" + (lang === "es" ? "Abrir la lección" : "Open the lesson") + "\">" + __riBookInner + "<span class=\"ri-open\" aria-hidden=\"true\">&#8599;</span></a>";
         } else {
-          _0x27c43b += "<div class=\"ri-book\">" + __riBookInner + "</div>";
+          _0x27c43b += "<div class=\"ri-book\" data-ri-book=\"" + _0x3024b4 + "\">" + __riBookInner + "</div>";
         }
       });
       if (_0x27c43b) {
@@ -17888,6 +17931,14 @@ var TOOLS = {
 
 window.toolOpen = function(type) {
   if (_toolTimer) { clearTimeout(_toolTimer); _toolTimer = null; }
+  // The overlay lives inside <main>, whose stacking context traps it BELOW the
+  // sticky topbar — so on mobile the bar covered the top of tall tools (e.g. the
+  // weather check-in). Re-home it to <body> so its z-index covers the whole
+  // screen, topbar included. Its own ✕ closes it.
+  try {
+    var _modalEl = document.getElementById('toolModal');
+    if (_modalEl && _modalEl.parentNode !== document.body) { document.body.appendChild(_modalEl); }
+  } catch (_aogRH) {}
   var tool = TOOLS[type];
   var body = document.getElementById('toolModalBody');
   if (tool && typeof tool.builder === 'function') {
@@ -19845,6 +19896,32 @@ window.addEventListener('load', _installToolScreenHook);
     spark.className = 'aogf-spark';
     track.appendChild(spark);
 
+    // Make each box clickable — open this journey's real materials in the
+    // Resource Index: the matching construct, slid down to the selected grade
+    // band's book row (with its lesson + story links).
+    var DOM_LETTERS = ['A', 'B', 'C'];
+    // Each flow answer → the Resource Index construct that owns its materials.
+    var DOM_ITEMS = ['Items 3, 4', 'Item 8 (+7, 9)', 'Item 13'];
+    function openFlowMaterials() {
+      var dl = DOM_LETTERS[_flowDom] || 'A';
+      var items = DOM_ITEMS[_flowDom] || '';
+      var book = _flowBand + 1; // band 0..4 → Book 1..5
+      if (typeof window.aogOpenResindex === 'function') { window.aogOpenResindex(dl, items, book); }
+      else if (typeof window.openGuide === 'function') { window.openGuide('resindex'); }
+    }
+    chips.forEach(function (c) {
+      if (c.dataset.flowClick) return;
+      c.dataset.flowClick = '1';
+      c.classList.add('aogf-clickable');
+      c.setAttribute('role', 'button');
+      c.setAttribute('tabindex', '0');
+      c.setAttribute('title', T('Open these materials in the Resource Index', 'Abre estos materiales en el Índice de recursos'));
+      c.addEventListener('click', function () { openFlowMaterials(); });
+      c.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openFlowMaterials(); }
+      });
+    });
+
     // --- Two-level picker (grade band → answer), inserted above the track ---
     var picker = document.createElement('div');
     picker.className = 'aogf-picker';
@@ -19902,6 +19979,13 @@ window.addEventListener('load', _installToolScreenHook);
     ctrl.setAttribute('data-i18n', 'p2g_replay');
     ctrl.textContent = '↻ ' + T('Watch it again', 'Verlo otra vez');
     if (track.parentNode) track.parentNode.insertBefore(ctrl, track.nextSibling);
+
+    // Small note: tell people the boxes are live and where they lead.
+    var hint = document.createElement('p');
+    hint.className = 'aogf-hint';
+    hint.textContent = T('Tap any box to open its exact material in the Resource Index.',
+                         'Toca cualquier cuadro para abrir su material exacto en el Índice de recursos.');
+    if (track.parentNode) track.parentNode.insertBefore(hint, track);
     var timer = null;
     function moveSpark(chip) {
       var tr = track.getBoundingClientRect(), cr = chip.getBoundingClientRect();

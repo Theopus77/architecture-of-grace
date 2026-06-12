@@ -137,6 +137,18 @@
   .topbar-actions{gap:11px;}
   .topbar-store,.topbar-lib{padding:7px 16px;}
 }
+/* Phone toolbar: it was overcrowded and clipped the EN/ES toggle (worse on pages
+   that also show the Back button). Drop the cart (Store still covers buying),
+   tighten the pills, give the wrapped row a full width to lay out predictably,
+   and add bottom clearance so the language toggle is never cut by the divider. */
+@media (max-width:640px){
+  #aogCartBtn, .topbar-cart{ display:none !important; }
+  .topbar{ padding:12px 16px 16px; align-items:center; }
+  .topbar-actions{ flex-wrap:wrap; justify-content:center; align-items:center; gap:6px; row-gap:10px; width:100%; }
+  .topbar-store, .topbar-lib{ padding:6px 10px; font-size:13px; }
+  .topbar-store svg, .topbar-lib svg{ width:14px; height:14px; }
+  .lang-toggle{ flex:0 0 auto; margin-bottom:2px; }
+}
 
 /* ===== "How one answer becomes growth" — interactive walkthrough ===== */
 .aogf-track{position:relative;}
@@ -146,6 +158,10 @@
 .aogf-track .aogf-arrow{transition:color .3s ease,transform .3s ease,opacity .3s ease;}
 .aogf-track.aogf-anim .aogf-arrow{opacity:.4;}
 .aogf-track.aogf-anim .aogf-arrow.aogf-lit{opacity:1;color:var(--gold);transform:scale(1.4);}
+.aogf-hint{text-align:center;font-size:13px;color:var(--ink-soft,#5a6b7b);margin:2px auto 14px;max-width:560px;line-height:1.5;font-style:italic;}
+.aogf-chip.aogf-clickable{cursor:pointer;transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease;}
+.aogf-chip.aogf-clickable:hover{transform:translateY(-3px);box-shadow:0 0 0 2px var(--gold),0 14px 26px -12px rgba(27,58,95,.45);}
+.aogf-chip.aogf-clickable:focus-visible{outline:none;box-shadow:0 0 0 3px var(--gold),0 14px 26px -12px rgba(27,58,95,.45);}
 .aogf-chip.aogf-pulse{animation:aogfPulse 1.15s ease 1;}
 @keyframes aogfPulse{0%,100%{box-shadow:0 0 0 3px var(--gold),0 16px 30px -10px rgba(27,58,95,.42);}50%{box-shadow:0 0 0 8px rgba(217,163,59,.4),0 18px 36px -8px rgba(27,58,95,.5);}}
 .aogf-spark{position:absolute;top:0;left:0;width:18px;height:18px;border-radius:50%;background:radial-gradient(circle,#fff 0%,var(--gold-soft) 38%,var(--gold) 72%);box-shadow:0 0 18px 5px rgba(242,201,100,.7);transform:translate(-50%,-50%);transition:left 1.5s cubic-bezier(.45,0,.25,1),top 1.5s cubic-bezier(.45,0,.25,1),opacity .35s ease;opacity:0;pointer-events:none;z-index:3;}

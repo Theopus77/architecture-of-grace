@@ -1595,6 +1595,9 @@ tr:hover td { background: var(--paper); }
 .ri-card.ri-hit{ box-shadow:0 0 0 3px var(--gold,#B8893A); border-color:var(--gold,#B8893A); animation:riHitPulse 2.2s var(--ease,ease); }
 @keyframes riHitPulse{ 0%{box-shadow:0 0 0 0 rgba(184,137,58,.55);} 25%{box-shadow:0 0 0 5px rgba(184,137,58,.40);} 100%{box-shadow:0 0 0 3px rgba(184,137,58,.0);} }
 @media (prefers-reduced-motion: reduce){ .ri-card.ri-hit{ animation:none; } }
+.ri-book.ri-book-hit{ border-radius:8px; box-shadow:0 0 0 3px var(--gold,#B8893A); background:var(--gold-pale,#FBF3DF); animation:riBookHit 2.4s var(--ease,ease); }
+@keyframes riBookHit{ 0%{box-shadow:0 0 0 0 rgba(184,137,58,.6);} 22%{box-shadow:0 0 0 5px rgba(184,137,58,.42);} 100%{box-shadow:0 0 0 3px rgba(184,137,58,0);} }
+@media (prefers-reduced-motion: reduce){ .ri-book.ri-book-hit{ animation:none; } }
 .nw-links{ display:flex; flex-wrap:wrap; gap:6px 18px; align-items:center; }
 .hd-teach-link,.ov-teach-link{ display:inline-block; margin-top:8px; font-size:12.5px; font-weight:800; color:var(--gold-deep,#9a6f24); text-decoration:underline; text-underline-offset:2px; text-decoration-thickness:1.5px; }
 :root[data-theme="dark"] .hd-teach-link,:root[data-theme="dark"] .ov-teach-link{ color:var(--gold-soft); }
@@ -11896,6 +11899,16 @@ function aogSetHash(_0xcb963) {
    history entry to return to (deep link or very first screen), it falls back to
    the welcome screen without clearing anything. */
 function goBack() {
+  // If a regulation tool is open in the modal, Back should close the tool and
+  // return to the Tools page underneath — not navigate the whole app home.
+  try {
+    var _tm = document.getElementById("toolModal");
+    if (_tm && _tm.classList.contains("open")) {
+      if (typeof window.toolClose === "function") { window.toolClose(); }
+      else { _tm.classList.remove("open"); }
+      return;
+    }
+  } catch (_aogTM) {}
   try {
     var _st = history.state;
     if (_st && _st.aogIdx && _st.aogIdx > 0) {
@@ -12926,7 +12939,7 @@ function aogScrollToStarters() {
 /* CLOSED-LOOP DEEP LINK (2026-06): from a flagged domain (or specific item pair),
    jump to the Construct-to-Resource Index, auto-open the matching construct(s),
    highlight briefly, and scroll it into view. Completes Identify -> Flag -> Sustain. */
-function aogOpenResindex(domain, itemsLabel) {
+function aogOpenResindex(domain, itemsLabel, bookNum) {
   try {
     var _s = document.getElementById("riSearch"); if (_s) _s.value = "";
     var _g = document.getElementById("riGrade");  if (_g) _g.value  = "";
@@ -12953,7 +12966,22 @@ function aogOpenResindex(domain, itemsLabel) {
     var first = cards[0];
     first.classList.add("ri-hit");
     setTimeout(function () { first.classList.remove("ri-hit"); }, 2400);
-    try { first.scrollIntoView({ behavior: "smooth", block: "center" }); } catch (_e2) {}
+    if (bookNum) {
+      /* A specific grade band was requested — wait for the card body to expand,
+         then slide to THAT book's row and highlight it (not the card top). */
+      setTimeout(function () {
+        var row = first.querySelector('.ri-book[data-ri-book="' + bookNum + '"]');
+        if (row) {
+          row.classList.add("ri-book-hit");
+          setTimeout(function () { row.classList.remove("ri-book-hit"); }, 2600);
+          try { row.scrollIntoView({ behavior: "smooth", block: "center" }); } catch (_e3) {}
+          return;
+        }
+        try { first.scrollIntoView({ behavior: "smooth", block: "center" }); } catch (_e4) {}
+      }, 440);
+    } else {
+      try { first.scrollIntoView({ behavior: "smooth", block: "center" }); } catch (_e2) {}
+    }
   }, 300);
 }
 function buildHomeReport(_0x196b68, _0x3d8f48) {
@@ -15158,9 +15186,9 @@ function riRender(_0x4f8a98, _0x4f89b6) {
         var __riCurUrl = (typeof curriculumJumpUrl === "function") ? curriculumJumpUrl(_0x3024b4, _0x14d5f7.items) : "";
         var __riBookInner = "<div class=\"ri-chip\">" + (lang === "es" ? RI_GRADES[_0x3024b4].label.replace("Book", "Libro") : RI_GRADES[_0x3024b4].label) + "<span class=\"ri-chip-grade\">" + RI_GRADES[_0x3024b4].grade + "</span></div><div class=\"ri-res\"><span class=\"loc\">" + _0x5d5b54.loc + "</span> &mdash; <span class=\"res\">" + _0x5d5b54.res + "</span></div>";
         if (__riCurUrl) {
-          _0x27c43b += "<a class=\"ri-book ri-book-link\" href=\"" + __riCurUrl + "\" target=\"_blank\" rel=\"noopener\" title=\"" + (lang === "es" ? "Abrir la lección" : "Open the lesson") + "\">" + __riBookInner + "<span class=\"ri-open\" aria-hidden=\"true\">&#8599;</span></a>";
+          _0x27c43b += "<a class=\"ri-book ri-book-link\" data-ri-book=\"" + _0x3024b4 + "\" href=\"" + __riCurUrl + "\" target=\"_blank\" rel=\"noopener\" title=\"" + (lang === "es" ? "Abrir la lección" : "Open the lesson") + "\">" + __riBookInner + "<span class=\"ri-open\" aria-hidden=\"true\">&#8599;</span></a>";
         } else {
-          _0x27c43b += "<div class=\"ri-book\">" + __riBookInner + "</div>";
+          _0x27c43b += "<div class=\"ri-book\" data-ri-book=\"" + _0x3024b4 + "\">" + __riBookInner + "</div>";
         }
       });
       if (_0x27c43b) {
@@ -17641,6 +17669,14 @@ var TOOLS = {
 
 window.toolOpen = function(type) {
   if (_toolTimer) { clearTimeout(_toolTimer); _toolTimer = null; }
+  // The overlay lives inside <main>, whose stacking context traps it BELOW the
+  // sticky topbar — so on mobile the bar covered the top of tall tools (e.g. the
+  // weather check-in). Re-home it to <body> so its z-index covers the whole
+  // screen, topbar included. Its own ✕ closes it.
+  try {
+    var _modalEl = document.getElementById('toolModal');
+    if (_modalEl && _modalEl.parentNode !== document.body) { document.body.appendChild(_modalEl); }
+  } catch (_aogRH) {}
   var tool = TOOLS[type];
   var body = document.getElementById('toolModalBody');
   if (tool && typeof tool.builder === 'function') {

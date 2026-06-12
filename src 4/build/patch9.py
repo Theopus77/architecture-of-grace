@@ -21,13 +21,15 @@ if not m:
 block = m.group(0).strip('\n')
 s = s[:m.start()] + s[m.end():]   # remove from old position
 
-# Insert right after the p2-grow section's closing </section>.
-anchor_txt = 'See how the whole system connects'
-ai = s.index(anchor_txt)
-close = s.index('</section>', ai) + len('</section>')
-INSERT = ('\n\n      <!-- ===== PRIMARY CTAs — moved directly below "How one answer becomes growth" ===== -->\n'
-          '      ' + block + '\n')
-s = s[:close] + INSERT + s[close:]
+# Insert right BEFORE the "How one answer becomes growth" (p2-grow) section, so
+# the primary doors come first (right under the hero) and the walkthrough plays
+# afterwards as the supporting "here's how it all connects" beat.
+open_anchor = '<section class="p2-grow reveal" aria-labelledby="p2GrowH">'
+oi = s.index(open_anchor)
+line_start = s.rfind('\n', 0, oi) + 1   # start of the <section> line, keep indent
+INSERT = ('      <!-- ===== PRIMARY CTAs — placed above "How one answer becomes growth" ===== -->\n'
+          '      ' + block + '\n\n')
+s = s[:line_start] + INSERT + s[line_start:]
 
 # 2) Localize the top-bar Library / Tools links (keys registered in grace-tools.js)
 s = replace_once(s, '<span>Library</span>', '<span data-i18n="aog_lib_nav">Library</span>', "topbar Library")
