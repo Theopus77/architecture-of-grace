@@ -4575,14 +4575,6 @@ function toggleTheme() {
             </div>
             <span class="arr">&rarr;</span>
           </a>
-          <a href="#" class="aog-door secondary choose-card" style="background:linear-gradient(165deg,#EDE6D6,#F4EEE2);border:1px solid var(--gold-pale);" onclick="event.preventDefault(); if(typeof showScreen==='function'){showScreen('screen-teacher-tools');}">
-            <span class="ic" style="background:var(--gold);color:var(--navy);">🧰</span>
-            <div>
-              <div class="t" style="color:var(--navy);" data-i18n="ch_tools_t">Calm &amp; Regulation Tools</div>
-              <div class="s" style="color:var(--ink-soft);" data-i18n="ch_tools_s">De-regulation tools, PECS cards, breathing guides &mdash; for anyone who needs a calm moment: students, teachers, aides, and families.</div>
-            </div>
-            <span class="arr" style="color:var(--gold);">&rarr;</span>
-          </a>
         </div>
       </div>
     </div>
@@ -5202,8 +5194,8 @@ function toggleTheme() {
 <!-- ===== END QUICK START ============================================ -->
 
     <div class="tabs">
-      <button class="tab active" data-tab="overview" data-dl="dl_t_overview">Overview</button>
-      <button class="tab" data-tab="distribute" data-dl="dl_t_distribute">Distribute</button>
+      <button class="tab active" data-tab="distribute" data-dl="dl_t_distribute">Distribute</button>
+      <button class="tab" data-tab="overview" data-dl="dl_t_overview">Overview</button>
       <button class="tab" data-tab="students" data-dl="dl_t_students">Class trends</button>
       <button class="tab" data-tab="home" data-dl="dl_t_home">Family view</button>
       <button class="tab" data-tab="growth" data-dl="dl_t_growth">Growth</button>
@@ -5215,7 +5207,7 @@ function toggleTheme() {
     </div>
     <div id="tabHelp" class="tab-help" hidden></div>
 
-    <div class="tab-panel active" id="panel-overview">
+    <div class="tab-panel" id="panel-overview">
       <div class="filter-bar">
         <select id="filterWindow">
           <option value="" data-dl="dl_opt_allwin">All Windows</option>
@@ -5308,38 +5300,7 @@ function toggleTheme() {
       <div class="table-card" style="padding:0;"><div id="growthList" style="padding:24px;"></div></div>
     </div>
 
-    <div class="tab-panel" id="panel-distribute">
-      <div class="section-head">
-        <h2 data-dl="dl_dist_h1">Syncing &amp; distribution</h2>
-        <div class="small" data-dl="dl_dist_sub">By default this device keeps every response local and private. Syncing to your central sheet turns on only when you enable it here, or when someone opens a generated link.</div>
-      </div>
-
-      <div class="table-card" style="padding:20px 28px; margin-bottom:18px;">
-        <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
-          <span id="syncStatusDot" style="width:12px; height:12px; border-radius:50%; background:#9aa0a6; flex:0 0 auto;"></span>
-          <strong id="syncStatusText">Local-only on this device</strong>
-        </div>
-        <p class="small" id="syncStatusDetail" style="margin:8px 0 10px;"></p>
-        <p class="small" id="syncCounts" style="margin:0 0 14px; font-variant-numeric:tabular-nums;"></p>
-        <label style="display:flex; align-items:center; gap:10px; cursor:pointer; font-size:14px;">
-          <input type="checkbox" id="deviceSyncToggle" style="width:18px; height:18px;">
-          <span data-dl-html="dl_dist_togglelabel">Send check-ins taken on <em>this device</em> to the central sheet</span>
-        </label>
-        <p class="small" style="margin:8px 0 0; color:var(--ink-faint);" data-dl="dl_dist_togglenote">Affects only this device. Students who open a generated link sync regardless of this setting.</p>
-      </div>
-
-      <div class="section-head">
-        <h2 data-dl="dl_ri_h1">See results from other devices</h2>
-        <div class="small" data-dl="dl_ri_sub">This dashboard normally shows only check-ins taken on this device. Pull to add the rows synced from links and other devices, so their Home View and conversation starters appear here too. Pulled rows are shown for reading only &mdash; they are never saved onto this device.</div>
-      </div>
-      <div class="table-card" style="padding:20px 28px; margin-bottom:18px;">
-        <div style="display:flex; gap:12px; align-items:center; flex-wrap:wrap;">
-          <button class="btn" id="riPullBtn" data-dl="dl_ri_pull">Pull from sheet</button>
-          <button class="btn btn-sm" id="riClearBtn" data-dl="dl_ri_clear">Show this device only</button>
-        </div>
-        <p class="small" id="riPullStatus" style="margin:12px 0 0; min-height:18px; line-height:1.5;"></p>
-      </div>
-
+    <div class="tab-panel active" id="panel-distribute">
       <div class="section-head">
         <h2 data-dl="dl_lg_h1">Classroom Link Generator</h2>
         <div class="small" data-dl="dl_lg_sub">Build one link to share or post as a QR code. Anyone who opens it syncs to your school&rsquo;s sheet. The link carries only the grade, class, and window &mdash; never the sheet address or passcode.</div>
@@ -5403,6 +5364,37 @@ function toggleTheme() {
           </div>
         </div>
       </div>
+      <div class="section-head">
+        <h2 data-dl="dl_dist_h1">Syncing &amp; distribution</h2>
+        <div class="small" data-dl="dl_dist_sub">By default this device keeps every response local and private. Syncing to your central sheet turns on only when you enable it here, or when someone opens a generated link.</div>
+      </div>
+
+      <div class="table-card" style="padding:20px 28px; margin-bottom:18px;">
+        <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
+          <span id="syncStatusDot" style="width:12px; height:12px; border-radius:50%; background:#9aa0a6; flex:0 0 auto;"></span>
+          <strong id="syncStatusText">Local-only on this device</strong>
+        </div>
+        <p class="small" id="syncStatusDetail" style="margin:8px 0 10px;"></p>
+        <p class="small" id="syncCounts" style="margin:0 0 14px; font-variant-numeric:tabular-nums;"></p>
+        <label style="display:flex; align-items:center; gap:10px; cursor:pointer; font-size:14px;">
+          <input type="checkbox" id="deviceSyncToggle" style="width:18px; height:18px;">
+          <span data-dl-html="dl_dist_togglelabel">Send check-ins taken on <em>this device</em> to the central sheet</span>
+        </label>
+        <p class="small" style="margin:8px 0 0; color:var(--ink-faint);" data-dl="dl_dist_togglenote">Affects only this device. Students who open a generated link sync regardless of this setting.</p>
+      </div>
+
+      <div class="section-head">
+        <h2 data-dl="dl_ri_h1">See results from other devices</h2>
+        <div class="small" data-dl="dl_ri_sub">This dashboard normally shows only check-ins taken on this device. Pull to add the rows synced from links and other devices, so their Home View and conversation starters appear here too. Pulled rows are shown for reading only &mdash; they are never saved onto this device.</div>
+      </div>
+      <div class="table-card" style="padding:20px 28px; margin-bottom:18px;">
+        <div style="display:flex; gap:12px; align-items:center; flex-wrap:wrap;">
+          <button class="btn" id="riPullBtn" data-dl="dl_ri_pull">Pull from sheet</button>
+          <button class="btn btn-sm" id="riClearBtn" data-dl="dl_ri_clear">Show this device only</button>
+        </div>
+        <p class="small" id="riPullStatus" style="margin:12px 0 0; min-height:18px; line-height:1.5;"></p>
+      </div>
+
     </div>
 
     <div class="tab-panel" id="panel-export">
@@ -5436,10 +5428,21 @@ function toggleTheme() {
         <p class="small" id="dataLivesCopy" style="margin:0;">Responses are saved privately in this browser for this session only, on this computer. The exports above are <strong>class-level summaries</strong> &mdash; they never include student names, individual scores, or written responses.</p>
       </div>
 
-      <div class="section-head" style="margin-top:32px;"><h2 data-dl="dl_exp_reset">Reset</h2></div>
-      <div class="table-card" style="padding:24px 28px;">
-        <p class="small" style="margin-bottom:14px;" data-dl="dl_exp_reset_note">Use only after confirming exports are saved.</p>
-        <button class="btn btn-danger btn-sm" onclick="clearLocalData()" data-dl="dl_exp_clearbtn">Clear local data</button>
+      <div class="section-head" style="margin-top:32px;"><h2 data-dl="dl_data_h">Your data on this device</h2></div>
+      <div class="table-card aog-data-card">
+        <p class="small" style="margin-bottom:2px;" data-dl="dl_data_top">Read live from this browser. Nothing here is sent anywhere — download a backup first, then delete if you need to.</p>
+        <div class="aog-data-stats">
+          <div class="aog-data-stat"><div class="aog-data-stat-n" id="aogDashCheckins">0</div><div class="aog-data-stat-l" data-dl="dl_data_checkins">Saved check-ins</div></div>
+          <div class="aog-data-stat"><div class="aog-data-stat-n" id="aogDashFamily">0</div><div class="aog-data-stat-l" data-dl="dl_data_family">Family profiles</div></div>
+          <div class="aog-data-stat"><div class="aog-data-stat-n" id="aogDashDraft">0</div><div class="aog-data-stat-l" data-dl="dl_data_draft">Unfinished draft</div></div>
+        </div>
+        <div class="aog-data-actions">
+          <button class="btn" type="button" onclick="aogDashBackup()" data-dl="dl_data_backup">Download a full backup (.json)</button>
+          <button class="btn btn-secondary" type="button" onclick="aogDashCsv()" data-dl="dl_data_csv">Export as a spreadsheet (.csv)</button>
+          <button class="btn btn-danger aog-data-delete" type="button" onclick="aogDashDelete()" data-dl="dl_data_delete">Delete everything on this device</button>
+        </div>
+        <div class="aog-data-done" id="aogDashDone" data-dl="dl_data_done">Done — all check-in data on this device has been deleted.</div>
+        <div class="aog-data-note" data-dl="dl_data_note">A backup is a plain file saved to this device's downloads — your copy to keep, not sent to us. Deleting is permanent and cannot be undone.</div>
       </div>
     </div>
 
@@ -10707,6 +10710,46 @@ const DASH_I18N = {
   dl_exp_clearbtn: {
     en: "Clear local data",
     es: "Borrar datos locales"
+  },
+  dl_data_h: {
+    en: "Your data on this device",
+    es: "Tus datos en este dispositivo"
+  },
+  dl_data_top: {
+    en: "Read live from this browser. Nothing here is sent anywhere — download a backup first, then delete if you need to.",
+    es: "Leído en vivo desde este navegador. Nada se envía a ningún lugar — descarga un respaldo primero y luego borra si lo necesitas."
+  },
+  dl_data_checkins: {
+    en: "Saved check-ins",
+    es: "Chequeos guardados"
+  },
+  dl_data_family: {
+    en: "Family profiles",
+    es: "Perfiles familiares"
+  },
+  dl_data_draft: {
+    en: "Unfinished draft",
+    es: "Borrador sin terminar"
+  },
+  dl_data_backup: {
+    en: "Download a full backup (.json)",
+    es: "Descargar un respaldo completo (.json)"
+  },
+  dl_data_csv: {
+    en: "Export as a spreadsheet (.csv)",
+    es: "Exportar como hoja de cálculo (.csv)"
+  },
+  dl_data_delete: {
+    en: "Delete everything on this device",
+    es: "Borrar todo en este dispositivo"
+  },
+  dl_data_done: {
+    en: "Done — all check-in data on this device has been deleted.",
+    es: "Listo — se han borrado de este dispositivo todos los datos de chequeos."
+  },
+  dl_data_note: {
+    en: "A backup is a plain file saved to this device's downloads — your copy to keep, not sent to us. Deleting is permanent and cannot be undone.",
+    es: "Un respaldo es un archivo simple guardado en las descargas de este dispositivo — tu copia para conservar, no se nos envía. Borrar es permanente y no se puede deshacer."
   }
 };
 function applyDashLang(_0x223f12) {
@@ -17596,6 +17639,13 @@ window.aogAccToggle = function(btn){
   };
   window.aogQsDemo = function(){
     try{ if (typeof toggleDemoData === "function") toggleDemoData(); }catch(e){}
+    try{
+      var on=false; try{ on = localStorage.getItem(DEMO_FLAG)==="1"; }catch(_e){}
+      var es=(typeof dashLang!=="undefined" && dashLang==="es");
+      setTimeout(function(){ document.querySelectorAll('[data-dl="qs_demo"]').forEach(function(b){ b.textContent = on ? (es?"Borrar datos de demostraci\u00f3n":"Clear demo data") : (es?"Explorar con datos de demostraci\u00f3n":"Explore with demo data"); }); },60);
+      var tgt=document.querySelector('#screen-admin .tabs');
+      if(tgt){ if(tgt.scrollIntoView) tgt.scrollIntoView({behavior:"smooth",block:"start"}); tgt.classList.remove('aog-demo-flash'); void tgt.offsetWidth; tgt.classList.add('aog-demo-flash'); setTimeout(function(){ tgt.classList.remove('aog-demo-flash'); },1700); }
+    }catch(_e2){}
   };
   /* Dashboard-side printable: matches the DASHBOARD language toggle (dashLang). */
   window.aogQsPrintable = function(a){

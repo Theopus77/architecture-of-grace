@@ -82,21 +82,23 @@
 
   // ---- the iconic MTSS triangle, filled with live data ----
   function triangle(counts, n) {
-    var apexY = 14, baseY = 222, cx = 182, halfBase = 162, H = baseY - apexY;
+    var apexY = 42, baseY = 252, cx = 182, halfBase = 162, H = baseY - apexY;
     function hw(y) { return halfBase * (y - apexY) / H; }
     function xl(y) { return (cx - hw(y)).toFixed(1); }
     function xr(y) { return (cx + hw(y)).toFixed(1); }
     var y1 = baseY - 0.50 * H, y2 = y1 - 0.28 * H; // band tops
     var pct = function (x) { return n ? Math.round(x / n * 100) : 0; };
     function band(yb, yt, col) { return '<polygon points="' + xl(yb) + ',' + yb.toFixed(1) + ' ' + xr(yb) + ',' + yb.toFixed(1) + ' ' + xr(yt) + ',' + yt.toFixed(1) + ' ' + xl(yt) + ',' + yt.toFixed(1) + '" fill="' + col + '" stroke="#fff" stroke-width="2.5"/>'; }
-    function lbl(y, tn, fs, col) { return '<text x="' + cx + '" y="' + y.toFixed(0) + '" text-anchor="middle" fill="' + (col || "#fff") + '" font-weight="800" font-size="' + fs + '">' + t("Tier", "Nivel") + ' ' + tn + ' · ' + counts[tn] + ' (' + pct(counts[tn]) + '%)</text>'; }
-    var s = '<svg viewBox="0 0 364 250" width="100%" style="max-width:430px;display:block;margin:6px auto 10px;" role="img" aria-label="MTSS tier triangle">';
+    function inLbl(y, tn, fs) { return '<text x="' + cx + '" y="' + y.toFixed(0) + '" text-anchor="middle" fill="#fff" font-weight="800" font-size="' + fs + '">' + t("Tier", "Nivel") + ' ' + tn + ' · ' + counts[tn] + ' (' + pct(counts[tn]) + '%)</text>'; }
+    var s = '<svg viewBox="0 0 364 270" width="100%" style="max-width:430px;display:block;margin:6px auto 10px;" role="img" aria-label="MTSS tier triangle">';
     s += band(baseY, y1, TIER[1].color);
     s += band(y1, y2, TIER[2].color);
     s += '<polygon points="' + xl(y2) + ',' + y2.toFixed(1) + ' ' + xr(y2) + ',' + y2.toFixed(1) + ' ' + cx + ',' + apexY + '" fill="' + TIER[3].color + '" stroke="#fff" stroke-width="2.5"/>';
-    s += lbl((baseY + y1) / 2 + 4, 1, 14);
-    s += lbl((y1 + y2) / 2 + 4, 2, 13);
-    s += lbl((y2 + apexY) / 2 + 8, 3, 11);
+    s += inLbl((baseY + y1) / 2 + 5, 1, 14);
+    s += inLbl((y1 + y2) / 2 + 5, 2, 12);
+    // Tier 3 apex is too small for text — label it above the tip with a leader.
+    s += '<line x1="' + cx + '" y1="' + (apexY - 12) + '" x2="' + cx + '" y2="' + apexY + '" stroke="' + TIER[3].color + '" stroke-width="1.2"/>';
+    s += '<text x="' + cx + '" y="24" text-anchor="middle" fill="' + TIER[3].color + '" font-weight="800" font-size="13">' + t("Tier", "Nivel") + ' 3 · ' + counts[3] + ' (' + pct(counts[3]) + '%)</text>';
     s += '</svg>';
     return s;
   }
@@ -145,7 +147,13 @@
     return s;
   }
 
-  function emptyMsg() { return '<div class="mtss-empty">' + t("No check-ins are saved on this device yet. Run a check-in, or load demo data on the dashboard, then reopen this report.", "Aún no hay chequeos guardados en este dispositivo. Haz un chequeo, o carga datos de demostración en el panel, y vuelve a abrir este informe.") + '</div>'; }
+  function emptyMsg() {
+    return '<div class="mtss-empty">'
+      + t("No check-ins are saved on this device yet. Run a check-in to populate this report — or load demo data to explore it right now.", "Aún no hay chequeos guardados en este dispositivo. Haz un chequeo para llenar este informe — o carga datos de demostración para explorarlo ahora mismo.")
+      + '<div style="margin-top:16px;"><button type="button" class="mtss-print" onclick="window.aogMTSSLoadDemo&&window.aogMTSSLoadDemo()">'
+      + t("Load demo data", "Cargar datos de demostración") + '</button></div>'
+      + '</div>';
+  }
 
   // =========================== VIEWS ===========================
   var _view = "individual", _student = null;
@@ -325,6 +333,14 @@
     ov.querySelectorAll(".mtss-tab").forEach(function (b) { b.addEventListener("click", function () { _view = b.dataset.v; render(); }); });
   }
 
+  window.aogMTSSLoadDemo = function () {
+    try {
+      var active = false;
+      try { active = localStorage.getItem("aogScreener.demoActive") === "1"; } catch (e) {}
+      if (!active && typeof toggleDemoData === "function") toggleDemoData();
+    } catch (e) {}
+    render();
+  };
   window.aogOpenMTSS = function () { ensureOverlay(); _view = "individual"; document.getElementById("mtssOverlay").classList.add("open"); render(); };
   window.aogCloseMTSS = function () { var o = document.getElementById("mtssOverlay"); if (o) o.classList.remove("open"); };
 })();

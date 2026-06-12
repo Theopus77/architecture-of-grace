@@ -102,6 +102,9 @@
 
 /* Print: cover page, then just the report card */
 @media print{
+  /* The host app prints with `body * {visibility:hidden}` (only #printReport shows).
+     Force our overlay + everything inside it back to visible, or the report prints blank. */
+  #mtssOverlay, #mtssOverlay *{visibility:visible !important;}
   body > *:not(#mtssOverlay){display:none !important;}
   .mtss-overlay{position:static !important;display:block !important;padding:0;background:#fff;backdrop-filter:none;overflow:visible;}
   .mtss-modal{box-shadow:none;max-width:none;border-radius:0;}
