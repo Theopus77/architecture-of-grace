@@ -14,6 +14,39 @@
   function $(id) { return document.getElementById(id); }
   function reduce() { try { return window.matchMedia("(prefers-reduced-motion: reduce)").matches; } catch (e) { return false; } }
 
+  /* Pick the warmest, most human voice the device offers (voices load async). */
+  function pickVoice(langPrefix) {
+    try {
+      var vs = window.speechSynthesis ? window.speechSynthesis.getVoices() : [];
+      if (!vs || !vs.length) return null;
+      var pool = vs.filter(function (v) { return (v.lang || "").toLowerCase().indexOf(langPrefix) === 0; });
+      if (!pool.length) pool = vs;
+      // preference order: high-quality/natural names first
+      var prefs = ["natural", "google", "samantha", "karen", "aria", "jenny", "libby", "sonia", "ava", "allison", "nicky", "moira", "tessa", "daniel", "alex"];
+      for (var i = 0; i < prefs.length; i++) {
+        for (var j = 0; j < pool.length; j++) { if ((pool[j].name || "").toLowerCase().indexOf(prefs[i]) >= 0) return pool[j]; }
+      }
+      // else first local voice, else first
+      for (var k = 0; k < pool.length; k++) { if (pool[k].localService) return pool[k]; }
+      return pool[0];
+    } catch (e) { return null; }
+  }
+  function speakWarm(text, langPrefix) {
+    try {
+      if (!('speechSynthesis' in window)) return;
+      var go = function () {
+        var u = new SpeechSynthesisUtterance(text);
+        var v = pickVoice(langPrefix); if (v) u.voice = v;
+        u.lang = langPrefix === "es" ? "es-ES" : "en-US";
+        u.rate = 0.9; u.pitch = 1.0; u.volume = 1;
+        window.speechSynthesis.cancel(); window.speechSynthesis.speak(u);
+      };
+      var have = window.speechSynthesis.getVoices();
+      if (have && have.length) { go(); }
+      else { window.speechSynthesis.onvoiceschanged = function () { window.speechSynthesis.onvoiceschanged = null; go(); }; window.speechSynthesis.getVoices(); after(go, 250); }
+    } catch (e) {}
+  }
+
   var TIMERS = [];
   function clearTimers() { for (var i = 0; i < TIMERS.length; i++) { clearTimeout(TIMERS[i]); clearInterval(TIMERS[i]); } TIMERS = []; }
   function after(fn, ms) { var id = setTimeout(fn, ms); TIMERS.push(id); return id; }
@@ -145,13 +178,7 @@
           read.innerHTML = '<div class="fw2-feel" style="color:' + f.c + '">' + esc(f.n) + '</div>'
             + '<div class="fw2-desc">' + esc(f.d) + '</div><div class="fw2-tip">' + esc(f.tip) + '</div>';
         }
-        try {
-          if ('speechSynthesis' in window) {
-            var u = new SpeechSynthesisUtterance(f.n + ". " + f.d);
-            u.rate = 0.92; u.pitch = 1.05; u.lang = L() === "es" ? "es-ES" : "en-US";
-            window.speechSynthesis.cancel(); window.speechSynthesis.speak(u);
-          }
-        } catch (e) {}
+        speakWarm(f.n + ". " + f.d, L() === "es" ? "es" : "en");
         btn.disabled = false; btn.textContent = t("Spin again", "Girar otra vez");
       }, wait);
     };
@@ -238,33 +265,99 @@
       + '<circle id="ayRingFill" cx="60" cy="60" r="54" fill="none" stroke="var(--gold,#D9A33B)" stroke-width="7" stroke-linecap="round" stroke-dasharray="339.3" stroke-dashoffset="339.3" transform="rotate(-90 60 60)"/></svg>'
       + '<div class="ay-animal" id="ayAnimal">🦋</div></div>'
       + '<div class="ay-name" id="ayName"></div><div class="ay-do" id="ayDo"></div><div class="ay-hold" id="ayHold"></div>'
+      + '<div class="aogt-controls"><button class="btn" id="ayStart" style="background:var(--gold);color:var(--navy);">' + t("Start the hold", "Empezar a sostener") + '</button></div>'
       + '<div class="ay-thumbs" id="ayThumbs">' + thumbs + '</div></div>';
   }
   function ayInit() {
     clearTimers();
     var P = poses(), animal = $("ayAnimal"), nameEl = $("ayName"), doEl = $("ayDo"), holdEl = $("ayHold"),
-      ring = $("ayRingFill"), thumbs = document.querySelectorAll(".ay-thumb");
-    var C = 339.3;
-    function select(i) {
-      clearTimers();
+      ring = $("ayRingFill"), startBtn = $("ayStart"), thumbs = document.querySelectorAll(".ay-thumb");
+    var C = 339.3, cur = 0;
+    function ready(i) {
+      clearTimers(); cur = i;
       var p = P[i];
       if (animal) { animal.className = "ay-animal " + p.cls; animal.textContent = p.e; }
       if (nameEl) nameEl.textContent = p.n;
       if (doEl) doEl.textContent = p.d;
+      if (ring) ring.setAttribute("stroke-dashoffset", C);
+      if (holdEl) holdEl.textContent = t("Get into the pose — then press Start.", "Ponte en la pose — luego pulsa Empezar.");
+      if (startBtn) { startBtn.disabled = false; startBtn.textContent = t("Start the hold", "Empezar a sostener"); }
       for (var k = 0; k < thumbs.length; k++) thumbs[k].classList.toggle("on", k === i);
-      // hold-and-breathe: 4 slow breaths, ring counts down
+    }
+    function startHold() {
+      clearTimers();
+      if (startBtn) { startBtn.disabled = true; startBtn.textContent = t("Holding…", "Sosteniendo…"); }
       var total = reduce() ? 8 : 16, left = total;
       function tick() {
         if (ring) ring.setAttribute("stroke-dashoffset", (C * (1 - left / total)).toFixed(1));
         var phase = Math.floor((total - left) / 2) % 2;
         if (holdEl) holdEl.textContent = (left <= 0) ? t("Nice. Shake it out! 🌟", "¡Bien hecho. Sacúdete! 🌟") : (phase === 0 ? t("Breathe in…", "Inhala…") : t("Breathe out…", "Exhala…")) + "  " + left;
-        if (left <= 0) { if (ring) ring.setAttribute("stroke-dashoffset", 0); return; }
+        if (left <= 0) { if (ring) ring.setAttribute("stroke-dashoffset", 0); if (startBtn) { startBtn.disabled = false; startBtn.textContent = t("Hold again", "Sostener otra vez"); } return; }
         left--; after(tick, 1000);
       }
       tick();
     }
-    for (var i = 0; i < thumbs.length; i++) (function (idx) { thumbs[idx].onclick = function () { select(idx); }; })(i);
-    select(0);
+    if (startBtn) startBtn.onclick = startHold;
+    for (var i = 0; i < thumbs.length; i++) (function (idx) { thumbs[idx].onclick = function () { ready(idx); }; })(i);
+    ready(0);
+  }
+
+  /* ===================================================================
+     COLD WATER RESET
+     =================================================================== */
+  var CW_SVG =
+    '<svg class="cw-fig" viewBox="0 0 160 200" width="100%" role="img" aria-label="Faucet and cupped hands">'
+    + '<rect x="8" y="12" width="22" height="11" rx="3" fill="var(--ink-soft,#46506E)"/>'
+    + '<path d="M19 22 L19 42 Q19 46 23 46 L80 46 L80 56" fill="none" stroke="var(--ink-soft,#46506E)" stroke-width="9" stroke-linecap="round"/>'
+    + '<g class="cw-stream">'
+    + '<circle class="cw-drop" cx="80" cy="60" r="4.2" fill="#5BB8E8"/>'
+    + '<circle class="cw-drop" cx="80" cy="60" r="3.4" fill="#84CDF0"/>'
+    + '<circle class="cw-drop" cx="80" cy="60" r="4.2" fill="#5BB8E8"/>'
+    + '<circle class="cw-drop" cx="80" cy="60" r="3.2" fill="#84CDF0"/>'
+    + '<circle class="cw-drop" cx="80" cy="60" r="4.2" fill="#5BB8E8"/>'
+    + '</g>'
+    + '<ellipse class="cw-ripple" cx="80" cy="132" rx="30" ry="8" fill="none" stroke="#5BB8E8" stroke-width="2.5"/>'
+    + '<path d="M40 122 Q80 158 120 122 Q120 142 80 148 Q40 142 40 122 Z" fill="var(--gold-pale,#F1DFA8)" stroke="var(--navy,#0A1E33)" stroke-width="2.5"/>'
+    + '</svg>';
+  function cwBuilder() {
+    return '<div class="tool-modal-icon">💧</div>'
+      + '<div class="tool-modal-title">' + t("Cold Water Reset", "Reinicio con agua fría") + '</div>'
+      + '<div class="tool-modal-sub">' + t("Cold water on your wrists or face wakes up the body's own calm-down signal.", "El agua fría en las muñecas o la cara activa la señal de calma del cuerpo.") + '</div>'
+      + '<div class="aogt-wrap"><div class="cw-stage" id="cwStage">' + CW_SVG + '</div>'
+      + '<div class="aogt-cue" id="cwCue">' + t("Press start, then hold your wrists under cool water.", "Pulsa empezar y pon las muñecas bajo agua fresca.") + '</div>'
+      + '<div class="aogt-progress" id="cwCount"></div>'
+      + '<div class="aogt-controls"><button class="btn" id="cwStart" style="background:var(--gold);color:var(--navy);">' + t("Turn on the cold water", "Abrir el agua fría") + '</button></div>'
+      + '<div class="cw-opts"><b>' + t("No sink nearby?", "¿No hay lavabo?") + '</b> '
+      + t("Splash your face 3 times, or hold a cold bottle to the back of your neck or wrists. Exhale with each one.", "Salpica tu cara 3 veces, o sostén una botella fría en la nuca o las muñecas. Exhala con cada una.") + '</div></div>';
+  }
+  function cwInit() {
+    clearTimers();
+    var stage = $("cwStage"), btn = $("cwStart"), cue = $("cwCue"), cnt = $("cwCount"); if (!btn) return;
+    var cues = [
+      t("Feel the cold on your skin.", "Siente el frío en tu piel."),
+      t("Breathe out — slow and long.", "Exhala — lento y largo."),
+      t("Let your shoulders drop.", "Deja caer los hombros."),
+      t("Your body is getting the calm signal.", "Tu cuerpo recibe la señal de calma.")
+    ];
+    btn.onclick = function () {
+      clearTimers();
+      if (stage) stage.classList.add("flowing");
+      btn.disabled = true; btn.textContent = t("Flowing…", "Fluyendo…");
+      var total = reduce() ? 12 : 30, left = total;
+      function tick() {
+        if (cnt) cnt.textContent = left + "s";
+        if (cue && (total - left) % 7 === 0) { cue.style.opacity = 0; (function (c) { after(function () { cue.textContent = c; cue.style.opacity = 1; }, 160); })(cues[((total - left) / 7) % cues.length | 0]); }
+        if (left <= 0) {
+          if (stage) stage.classList.remove("flowing");
+          if (cue) cue.textContent = t("Off. Notice — a little calmer? That's biology, not willpower. 💧", "Cierra. ¿Un poco más en calma? Es biología, no fuerza de voluntad. 💧");
+          if (cnt) cnt.textContent = "";
+          btn.disabled = false; btn.textContent = t("Again", "Otra vez");
+          return;
+        }
+        left--; after(tick, 1000);
+      }
+      tick();
+    };
   }
 
   /* ===================================================================
@@ -275,6 +368,7 @@
     if (window.TOOLS.pmr) window.TOOLS.pmr = { builder: bsBuilder, init: bsInit };
     if (window.TOOLS.bilateral) window.TOOLS.bilateral = { builder: bhBuilder, init: bhInit };
     if (window.TOOLS.animalyoga) window.TOOLS.animalyoga = { builder: ayBuilder, init: ayInit };
+    if (window.TOOLS.coldwater) window.TOOLS.coldwater = { builder: cwBuilder, init: cwInit };
     window.TOOLS.feelwheel = { builder: fwBuilder, init: fwInit };
   }
   function wrapOpen() {

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="aog-build" content="2026.06.12.0624">
+<meta name="aog-build" content="2026.06.12.0635">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Architecture of Grace · Universal Check-In</title>
 <meta name="description" content="Social-emotional learning built by a teacher, for real classrooms — the SEL that tends to the grown-ups before it measures a child. Private, de-identified, K–adult. A check-in, not an exam.">
@@ -4557,15 +4557,15 @@ function toggleTheme() {
 .bs-beam rect{ transition:transform 1.6s cubic-bezier(.45,.05,.55,.95); }
 
 /* ---------- FEELINGS WHEEL ---------- */
-.fw2-stage{ position:relative; width:230px; height:230px; margin:6px auto 0; }
+.fw2-stage{ position:relative; width:186px; height:186px; margin:4px auto 0; }
 .fw2-wheel{ transform-origin:50% 50%; transition:transform 4.2s cubic-bezier(.15,.85,.25,1); }
 .fw2-pointer{ position:absolute; top:-2px; left:50%; transform:translateX(-50%); z-index:3;
-  width:0;height:0;border-left:13px solid transparent;border-right:13px solid transparent;border-top:20px solid var(--navy,#0A1E33);
+  width:0;height:0;border-left:11px solid transparent;border-right:11px solid transparent;border-top:17px solid var(--navy,#0A1E33);
   filter:drop-shadow(0 2px 3px rgba(0,0,0,.3)); }
 .fw2-hub{ position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); z-index:2;
-  width:62px;height:62px;border-radius:50%; background:var(--paper,#fff); border:3px solid var(--navy,#0A1E33);
-  display:grid; place-items:center; font-size:26px; box-shadow:0 4px 12px rgba(0,0,0,.18); }
-.fw2-readout{ max-width:420px; margin:14px auto 0; min-height:88px; padding:14px 18px; border-radius:14px;
+  width:46px;height:46px;border-radius:50%; background:var(--paper,#fff); border:3px solid var(--navy,#0A1E33);
+  display:grid; place-items:center; font-size:20px; box-shadow:0 4px 12px rgba(0,0,0,.18); }
+.fw2-readout{ max-width:420px; margin:12px auto 0; min-height:72px; padding:12px 16px; border-radius:14px;
   background:var(--cream-deep,#EDE6D6); border:1px solid var(--rule,#E4DAC5); transition:background .4s ease; }
 :root[data-theme="dark"] .fw2-readout{ background:rgba(255,255,255,.05); }
 .fw2-feel{ font-family:var(--font-serif,Georgia,serif); font-size:22px; font-weight:700; }
@@ -4611,8 +4611,24 @@ function toggleTheme() {
 .ay-thumb.on{ border-color:var(--gold,#D9A33B); box-shadow:0 0 0 3px color-mix(in srgb, var(--gold) 26%, transparent); }
 .ay-hold{ font-family:var(--font-sans,system-ui); font-size:13px; font-weight:800; letter-spacing:.06em; text-transform:uppercase; color:var(--gold-deep,#9a6f24); margin-top:8px; }
 
+/* ---------- COLD WATER RESET ---------- */
+.cw-stage{ position:relative; width:148px; margin:8px auto 2px; }
+.cw-drop{ opacity:0; transform-box:fill-box; }
+.cw-stage.flowing .cw-drop{ animation:cwFall 0.85s linear infinite; }
+.cw-stage.flowing .cw-drop:nth-of-type(2){ animation-delay:.17s; }
+.cw-stage.flowing .cw-drop:nth-of-type(3){ animation-delay:.34s; }
+.cw-stage.flowing .cw-drop:nth-of-type(4){ animation-delay:.51s; }
+.cw-stage.flowing .cw-drop:nth-of-type(5){ animation-delay:.68s; }
+@keyframes cwFall{ 0%{ transform:translateY(0); opacity:0;} 15%{ opacity:1;} 80%{ opacity:1;} 100%{ transform:translateY(66px); opacity:0;} }
+.cw-ripple{ opacity:0; transform-box:fill-box; transform-origin:center; }
+.cw-stage.flowing .cw-ripple{ animation:cwRipple 1.15s ease-out infinite; }
+@keyframes cwRipple{ 0%{ transform:scale(.5); opacity:.75;} 100%{ transform:scale(1.7); opacity:0;} }
+.cw-opts{ font-family:var(--font-sans,system-ui); font-size:12.5px; line-height:1.55; color:var(--ink-soft,#46506E); max-width:380px; margin:16px auto 0; text-align:left; }
+.cw-opts b{ color:var(--navy,#0A1E33); }
+:root[data-theme="dark"] .cw-opts b{ color:var(--cream,#F4ECDA); }
+
 @media (prefers-reduced-motion: reduce){
-  .bs-region.on, .ay-animal, .bh-hand.tap { animation:none !important; }
+  .bs-region.on, .ay-animal, .bh-hand.tap, .cw-drop, .cw-ripple { animation:none !important; }
   .fw2-wheel{ transition:transform .4s ease; }
   .bs-beam rect{ transition:none; }
 }
@@ -4986,16 +5002,100 @@ function toggleTheme() {
     <div class="fw-sec">
       <h2 class="fw-h" data-i18n="fw_4_h">From a quiet moment to real growth</h2>
       <p class="fw-sub" data-i18n="fw_4_sub">Not a test to pass &mdash; a path to walk.</p>
-      <div class="fw-flow">
-        <div class="fw-step"><div class="fw-step-n">01</div><div class="fw-step-t" data-i18n="fw_step_1">Reflection</div></div>
-        <div class="fw-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg></div>
-        <div class="fw-step"><div class="fw-step-n">02</div><div class="fw-step-t" data-i18n="fw_step_2">Awareness</div></div>
-        <div class="fw-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg></div>
-        <div class="fw-step"><div class="fw-step-n">03</div><div class="fw-step-t" data-i18n="fw_step_3">Conversation</div></div>
-        <div class="fw-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg></div>
-        <div class="fw-step"><div class="fw-step-n">04</div><div class="fw-step-t" data-i18n="fw_step_4">Understanding</div></div>
-        <div class="fw-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg></div>
-        <div class="fw-step"><div class="fw-step-n">05</div><div class="fw-step-t" data-i18n="fw_step_5">Growth</div></div>
+      <style>
+        .fwl-stage{ position:relative; width:100%; max-width:360px; aspect-ratio:1/1; margin:12px auto 6px; }
+        .fwl-ring{ position:absolute; inset:0; width:100%; height:100%; }
+        .fwl-flow{ animation:fwlDash 3.4s linear infinite; }
+        @keyframes fwlDash{ to{ stroke-dashoffset:-44; } }
+        .fwl-orbit{ transform-origin:170px 170px; animation:fwlSpin 9s linear infinite; }
+        @keyframes fwlSpin{ to{ transform:rotate(360deg); } }
+        .fwl-pulse{ filter:drop-shadow(0 0 6px var(--gold)); }
+        .fwl-node{ position:absolute; transform:translate(-50%,-50%); display:flex; flex-direction:column; align-items:center; gap:4px;
+          background:var(--paper,#fff); border:2px solid var(--gold-pale,#F1DFA8); border-radius:14px; padding:8px 12px; min-width:96px; text-align:center; box-shadow:0 8px 18px -12px rgba(10,30,51,.45); }
+        :root[data-theme="dark"] .fwl-node{ background:#13283f; border-color:var(--rule); }
+        .fwl-num{ width:22px; height:22px; border-radius:50%; background:var(--gold,#D9A33B); color:#fff; font-family:var(--font-sans); font-size:12px; font-weight:800; display:grid; place-items:center; }
+        .fwl-lbl{ font-family:var(--font-serif,Georgia,serif); font-size:14px; font-weight:700; color:var(--navy,#0A1E33); line-height:1.1; }
+        :root[data-theme="dark"] .fwl-lbl{ color:var(--cream,#F4ECDA); }
+        .fwl-center{ position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); display:flex; flex-direction:column; align-items:center; gap:1px;
+          font-family:var(--font-sans); font-size:10.5px; font-weight:800; letter-spacing:.08em; text-transform:uppercase; color:var(--gold-deep,#9a6f24); pointer-events:none; }
+        .fwl-center-ic{ font-size:30px; line-height:1; color:var(--gold,#D9A33B); animation:fwlSpin 9s linear infinite; }
+        /* worked-example proof — pure-CSS switchable tabs */
+        .fwl-proof{ max-width:760px; margin:8px auto 0; }
+        .fwl-proof input{ position:absolute; opacity:0; pointer-events:none; }
+        .fwl-proof-h{ font-family:var(--font-sans); font-size:12px; font-weight:800; letter-spacing:.12em; text-transform:uppercase; color:var(--gold-deep,#9a6f24); text-align:center; margin-bottom:10px; }
+        .fwl-proof-tabs{ display:flex; gap:8px; justify-content:center; flex-wrap:wrap; margin-bottom:14px; }
+        .fwl-proof-tabs label{ font-family:var(--font-sans); font-size:13.5px; font-weight:700; color:var(--ink-soft,#46506E); background:var(--paper,#fff); border:1.5px solid var(--rule,#E4DAC5); border-radius:999px; padding:8px 18px; cursor:pointer; transition:all .15s ease; }
+        .fwl-proof-tabs label:hover{ border-color:var(--gold,#D9A33B); }
+        .fwl-journey{ display:none; }
+        #fwlp-s:checked ~ .fwl-proof-tabs label[for="fwlp-s"],
+        #fwlp-a:checked ~ .fwl-proof-tabs label[for="fwlp-a"],
+        #fwlp-c:checked ~ .fwl-proof-tabs label[for="fwlp-c"]{ background:var(--navy,#0A1E33); color:#fff; border-color:var(--navy,#0A1E33); }
+        #fwlp-s:checked ~ .fwl-proof-body .fwl-journey[data-for="s"],
+        #fwlp-a:checked ~ .fwl-proof-body .fwl-journey[data-for="a"],
+        #fwlp-c:checked ~ .fwl-proof-body .fwl-journey[data-for="c"]{ display:block; }
+        .fwl-steps{ list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:0; }
+        .fwl-jstep{ display:grid; grid-template-columns:128px 1fr; gap:14px; align-items:start; padding:12px 0; border-top:1px solid var(--rule-soft,#EFEADB); }
+        .fwl-jstep:first-child{ border-top:none; }
+        .fwl-jstage{ font-family:var(--font-sans); font-size:11px; font-weight:800; letter-spacing:.06em; text-transform:uppercase; color:var(--gold-deep,#9a6f24); display:flex; align-items:center; gap:8px; }
+        .fwl-jstage b{ width:22px; height:22px; border-radius:50%; background:color-mix(in srgb, var(--gold) 18%, transparent); color:var(--gold-deep,#9a6f24); display:grid; place-items:center; font-size:11px; }
+        .fwl-jtx{ font-family:var(--font-sans); font-size:14px; line-height:1.5; color:var(--ink,#0A1E33); }
+        :root[data-theme="dark"] .fwl-jtx{ color:var(--cream,#F4ECDA); }
+        .fwl-jstep.is-loop .fwl-jtx{ color:var(--gold-deep,#9a6f24); font-style:italic; font-weight:600; }
+        @media (max-width:560px){ .fwl-jstep{ grid-template-columns:1fr; gap:4px; } .fwl-node{ min-width:78px; padding:6px 9px; } .fwl-lbl{ font-size:12px; } }
+        /* comparison arrows: gentle left→right flow */
+        .fw-cell-arrow svg, .fw-cell-arrow{ animation:fwArrowFlow 2s ease-in-out infinite; }
+        @keyframes fwArrowFlow{ 0%,100%{ transform:translateX(-3px); opacity:.55; } 50%{ transform:translateX(3px); opacity:1; } }
+        @media (prefers-reduced-motion: reduce){
+          .fwl-flow, .fwl-orbit, .fwl-center-ic, .fw-cell-arrow, .fw-cell-arrow svg{ animation:none !important; }
+        }
+      </style>
+      <div class="fwl-stage" role="img" aria-label="The loop: reflection, awareness, conversation, understanding, growth — and back to reflection.">
+        <svg class="fwl-ring" viewBox="0 0 340 340" aria-hidden="true">
+          <circle cx="170" cy="170" r="120" fill="none" stroke="var(--rule,#E4DAC5)" stroke-width="2"/>
+          <circle class="fwl-flow" cx="170" cy="170" r="120" fill="none" stroke="var(--gold,#D9A33B)" stroke-width="3" stroke-linecap="round" stroke-dasharray="5 17" opacity="0.6"/>
+          <g class="fwl-orbit"><circle class="fwl-pulse" cx="170" cy="50" r="14" fill="var(--gold,#D9A33B)" opacity="0.28"/><circle class="fwl-pulse" cx="170" cy="50" r="8" fill="var(--gold,#D9A33B)"/></g>
+        </svg>
+        <div class="fwl-center"><span class="fwl-center-ic" aria-hidden="true">&#8635;</span><span data-i18n="fwl_center">it begins again</span></div>
+        <div class="fwl-node" style="top:14.7%;left:50%"><span class="fwl-num">1</span><span class="fwl-lbl" data-i18n="fw_step_1">Reflection</span></div>
+        <div class="fwl-node" style="top:39.1%;left:83.5%"><span class="fwl-num">2</span><span class="fwl-lbl" data-i18n="fw_step_2">Awareness</span></div>
+        <div class="fwl-node" style="top:78.5%;left:70.6%"><span class="fwl-num">3</span><span class="fwl-lbl" data-i18n="fw_step_3">Conversation</span></div>
+        <div class="fwl-node" style="top:78.5%;left:29.4%"><span class="fwl-num">4</span><span class="fwl-lbl" data-i18n="fw_step_4">Understanding</span></div>
+        <div class="fwl-node" style="top:39.1%;left:16.5%"><span class="fwl-num">5</span><span class="fwl-lbl" data-i18n="fw_step_5">Growth</span></div>
+      </div>
+
+      <div class="fwl-proof">
+        <input type="radio" name="fwlp" id="fwlp-s" checked>
+        <input type="radio" name="fwlp" id="fwlp-a">
+        <input type="radio" name="fwlp" id="fwlp-c">
+        <div class="fwl-proof-h" data-i18n="fwl_proof_h">Watch the loop close — pick a path</div>
+        <div class="fwl-proof-tabs">
+          <label for="fwlp-s" data-i18n="fwl_tab_s">A student</label>
+          <label for="fwlp-a" data-i18n="fwl_tab_a">An adult</label>
+          <label for="fwlp-c" data-i18n="fwl_tab_c">A class</label>
+        </div>
+        <div class="fwl-proof-body">
+          <div class="fwl-journey" data-for="s"><ol class="fwl-steps">
+            <li class="fwl-jstep"><span class="fwl-jstage"><b>1</b><span data-i18n="fw_step_1">Reflection</span></span><span class="fwl-jtx" data-i18n="fwl_s1">A 6th-grader answers, &ldquo;I keep replaying my mistakes long after they&rsquo;re over.&rdquo;</span></li>
+            <li class="fwl-jstep"><span class="fwl-jstage"><b>2</b><span data-i18n="fw_step_2">Awareness</span></span><span class="fwl-jtx" data-i18n="fwl_s2">It flags rumination &amp; letting go &mdash; a gentle signal, never a label.</span></li>
+            <li class="fwl-jstep"><span class="fwl-jstage"><b>3</b><span data-i18n="fw_step_3">Conversation</span></span><span class="fwl-jtx" data-i18n="fwl_s3">It opens a two-minute talk: &ldquo;What&rsquo;s one mistake you&rsquo;re still carrying?&rdquo;</span></li>
+            <li class="fwl-jstep"><span class="fwl-jstage"><b>4</b><span data-i18n="fw_step_4">Understanding</span></span><span class="fwl-jtx" data-i18n="fwl_s4">It maps to Book 2 &middot; The Year of the Inner Critic &mdash; the lesson on answering the harsh voice.</span></li>
+            <li class="fwl-jstep is-loop"><span class="fwl-jstage"><b>5</b><span data-i18n="fw_step_5">Growth</span></span><span class="fwl-jtx" data-i18n="fwl_s5">At the next check-in, that same question scores higher &mdash; and the loop begins again.</span></li>
+          </ol></div>
+          <div class="fwl-journey" data-for="a"><ol class="fwl-steps">
+            <li class="fwl-jstep"><span class="fwl-jstage"><b>1</b><span data-i18n="fw_step_1">Reflection</span></span><span class="fwl-jtx" data-i18n="fwl_a1">An educator answers, &ldquo;By the end of most days, I feel used up.&rdquo;</span></li>
+            <li class="fwl-jstep"><span class="fwl-jstage"><b>2</b><span data-i18n="fw_step_2">Awareness</span></span><span class="fwl-jtx" data-i18n="fwl_a2">It flags low emotional regulation &mdash; a burnout signal, read privately.</span></li>
+            <li class="fwl-jstep"><span class="fwl-jstage"><b>3</b><span data-i18n="fw_step_3">Conversation</span></span><span class="fwl-jtx" data-i18n="fwl_a3">A quiet nudge: try a calm tool, and &mdash; you can&rsquo;t pour from an empty cup.</span></li>
+            <li class="fwl-jstep"><span class="fwl-jstage"><b>4</b><span data-i18n="fw_step_4">Understanding</span></span><span class="fwl-jtx" data-i18n="fwl_a4">It maps to the adult companion and the Co-Regulation reminder.</span></li>
+            <li class="fwl-jstep is-loop"><span class="fwl-jstage"><b>5</b><span data-i18n="fw_step_5">Growth</span></span><span class="fwl-jtx" data-i18n="fwl_a5">A week later, the tank reads fuller &mdash; and the loop begins again.</span></li>
+          </ol></div>
+          <div class="fwl-journey" data-for="c"><ol class="fwl-steps">
+            <li class="fwl-jstep"><span class="fwl-jstage"><b>1</b><span data-i18n="fw_step_1">Reflection</span></span><span class="fwl-jtx" data-i18n="fwl_c1">A class of 24 takes the check-in on their own devices.</span></li>
+            <li class="fwl-jstep"><span class="fwl-jstage"><b>2</b><span data-i18n="fw_step_2">Awareness</span></span><span class="fwl-jtx" data-i18n="fwl_c2">The dashboard reads the group: average &ldquo;worth a check-in,&rdquo; lowest domain Emotional Regulation.</span></li>
+            <li class="fwl-jstep"><span class="fwl-jstage"><b>3</b><span data-i18n="fw_step_3">Conversation</span></span><span class="fwl-jtx" data-i18n="fwl_c3">The teacher reads the room and picks one focus for the week.</span></li>
+            <li class="fwl-jstep"><span class="fwl-jstage"><b>4</b><span data-i18n="fw_step_4">Understanding</span></span><span class="fwl-jtx" data-i18n="fwl_c4">The MTSS report maps it to Tier supports and Book 4 lessons.</span></li>
+            <li class="fwl-jstep is-loop"><span class="fwl-jstage"><b>5</b><span data-i18n="fw_step_5">Growth</span></span><span class="fwl-jtx" data-i18n="fwl_c5">By the next window, the class average rises a band &mdash; and the loop begins again.</span></li>
+          </ol></div>
+        </div>
       </div>
       <div class="fw-flow-note">
         <p data-i18n="fw_flow_note">The check-in is not an assessment. It is a conversation starter. It helps individuals and communities identify areas of strength and areas that may need attention, then provides opportunities for reflection and growth.</p>
@@ -7377,7 +7477,7 @@ function toggleTheme() {
     </div>
     <div class="sf-legal">© <span id="footYr"></span> The Architecture of Grace Foundation. All rights reserved. · Every score is a flag, not a diagnosis.</div>
     <div class="sf-made" data-i18n="foot_made">Made with care in Illinois.</div>
-    <div class="sf-build" style="margin-top:10px;font-size:10.5px;color:#5f6e80;letter-spacing:.04em;">Build 2026.06.12.0624</div>
+    <div class="sf-build" style="margin-top:10px;font-size:10.5px;color:#5f6e80;letter-spacing:.04em;">Build 2026.06.12.0635</div>
   </div>
 </footer>
 
@@ -9449,6 +9549,26 @@ const I18N_UI = {
   fw_step_3: { en: "Conversation", es: "Conversaci\u00f3n" },
   fw_step_4: { en: "Understanding", es: "Comprensi\u00f3n" },
   fw_step_5: { en: "Growth", es: "Crecimiento" },
+  fwl_center: { en: "it begins again", es: "vuelve a empezar" },
+  fwl_proof_h: { en: "Watch the loop close — pick a path", es: "Mira cerrarse el ciclo — elige un camino" },
+  fwl_tab_s: { en: "A student", es: "Un estudiante" },
+  fwl_tab_a: { en: "An adult", es: "Un adulto" },
+  fwl_tab_c: { en: "A class", es: "Una clase" },
+  fwl_s1: { en: "A 6th-grader answers, “I keep replaying my mistakes long after they’re over.”", es: "Un estudiante de 6.º responde: “Sigo repasando mis errores mucho después de que pasaron.”" },
+  fwl_s2: { en: "It flags rumination & letting go — a gentle signal, never a label.", es: "Señala rumiación y soltar — una señal suave, nunca una etiqueta." },
+  fwl_s3: { en: "It opens a two-minute talk: “What’s one mistake you’re still carrying?”", es: "Abre una charla de dos minutos: “¿Qué error sigues cargando?”" },
+  fwl_s4: { en: "It maps to Book 2 · The Year of the Inner Critic — the lesson on answering the harsh voice.", es: "Se conecta con el Libro 2 · El año del crítico interior — la lección sobre responder a la voz dura." },
+  fwl_s5: { en: "At the next check-in, that same question scores higher — and the loop begins again.", es: "En el siguiente chequeo, esa misma pregunta sube — y el ciclo vuelve a empezar." },
+  fwl_a1: { en: "An educator answers, “By the end of most days, I feel used up.”", es: "Un educador responde: “Al final de casi todos los días, me siento agotado.”" },
+  fwl_a2: { en: "It flags low emotional regulation — a burnout signal, read privately.", es: "Señala baja regulación emocional — una señal de agotamiento, leída en privado." },
+  fwl_a3: { en: "A quiet nudge: try a calm tool, and — you can’t pour from an empty cup.", es: "Un empujón suave: prueba una herramienta de calma — no puedes dar desde una taza vacía." },
+  fwl_a4: { en: "It maps to the adult companion and the Co-Regulation reminder.", es: "Se conecta con el compañero para adultos y el recordatorio de correregulación." },
+  fwl_a5: { en: "A week later, the tank reads fuller — and the loop begins again.", es: "Una semana después, el tanque se lee más lleno — y el ciclo vuelve a empezar." },
+  fwl_c1: { en: "A class of 24 takes the check-in on their own devices.", es: "Una clase de 24 hace el chequeo en sus propios dispositivos." },
+  fwl_c2: { en: "The dashboard reads the group: average “worth a check-in,” lowest domain Emotional Regulation.", es: "El panel lee al grupo: promedio “vale un chequeo”, área más baja Regulación emocional." },
+  fwl_c3: { en: "The teacher reads the room and picks one focus for the week.", es: "El docente lee al grupo y elige un enfoque para la semana." },
+  fwl_c4: { en: "The MTSS report maps it to Tier supports and Book 4 lessons.", es: "El informe MTSS lo conecta con apoyos por nivel y lecciones del Libro 4." },
+  fwl_c5: { en: "By the next window, the class average rises a band — and the loop begins again.", es: "Para el siguiente período, el promedio de la clase sube una banda — y el ciclo vuelve a empezar." },
   fw_flow_note: { en: "The check-in is not an assessment. It is a conversation starter. It helps individuals and communities identify areas of strength and areas that may need attention, then provides opportunities for reflection and growth.", es: "El chequeo no es una evaluaci\u00f3n. Es un punto de partida para la conversaci\u00f3n. Ayuda a las personas y a las comunidades a identificar \u00e1reas de fortaleza y \u00e1reas que pueden necesitar atenci\u00f3n, y luego ofrece oportunidades para la reflexi\u00f3n y el crecimiento." },
   fw_5_num: { en: "05 \u00b7 Who It\u2019s For", es: "05 \u00b7 Para qui\u00e9n es" },
   fw_5_h: { en: "Made for everyone in the room", es: "Hecho para todos los presentes" },
@@ -21921,6 +22041,39 @@ window.addEventListener('load', _installToolScreenHook);
   function $(id) { return document.getElementById(id); }
   function reduce() { try { return window.matchMedia("(prefers-reduced-motion: reduce)").matches; } catch (e) { return false; } }
 
+  /* Pick the warmest, most human voice the device offers (voices load async). */
+  function pickVoice(langPrefix) {
+    try {
+      var vs = window.speechSynthesis ? window.speechSynthesis.getVoices() : [];
+      if (!vs || !vs.length) return null;
+      var pool = vs.filter(function (v) { return (v.lang || "").toLowerCase().indexOf(langPrefix) === 0; });
+      if (!pool.length) pool = vs;
+      // preference order: high-quality/natural names first
+      var prefs = ["natural", "google", "samantha", "karen", "aria", "jenny", "libby", "sonia", "ava", "allison", "nicky", "moira", "tessa", "daniel", "alex"];
+      for (var i = 0; i < prefs.length; i++) {
+        for (var j = 0; j < pool.length; j++) { if ((pool[j].name || "").toLowerCase().indexOf(prefs[i]) >= 0) return pool[j]; }
+      }
+      // else first local voice, else first
+      for (var k = 0; k < pool.length; k++) { if (pool[k].localService) return pool[k]; }
+      return pool[0];
+    } catch (e) { return null; }
+  }
+  function speakWarm(text, langPrefix) {
+    try {
+      if (!('speechSynthesis' in window)) return;
+      var go = function () {
+        var u = new SpeechSynthesisUtterance(text);
+        var v = pickVoice(langPrefix); if (v) u.voice = v;
+        u.lang = langPrefix === "es" ? "es-ES" : "en-US";
+        u.rate = 0.9; u.pitch = 1.0; u.volume = 1;
+        window.speechSynthesis.cancel(); window.speechSynthesis.speak(u);
+      };
+      var have = window.speechSynthesis.getVoices();
+      if (have && have.length) { go(); }
+      else { window.speechSynthesis.onvoiceschanged = function () { window.speechSynthesis.onvoiceschanged = null; go(); }; window.speechSynthesis.getVoices(); after(go, 250); }
+    } catch (e) {}
+  }
+
   var TIMERS = [];
   function clearTimers() { for (var i = 0; i < TIMERS.length; i++) { clearTimeout(TIMERS[i]); clearInterval(TIMERS[i]); } TIMERS = []; }
   function after(fn, ms) { var id = setTimeout(fn, ms); TIMERS.push(id); return id; }
@@ -22052,13 +22205,7 @@ window.addEventListener('load', _installToolScreenHook);
           read.innerHTML = '<div class="fw2-feel" style="color:' + f.c + '">' + esc(f.n) + '</div>'
             + '<div class="fw2-desc">' + esc(f.d) + '</div><div class="fw2-tip">' + esc(f.tip) + '</div>';
         }
-        try {
-          if ('speechSynthesis' in window) {
-            var u = new SpeechSynthesisUtterance(f.n + ". " + f.d);
-            u.rate = 0.92; u.pitch = 1.05; u.lang = L() === "es" ? "es-ES" : "en-US";
-            window.speechSynthesis.cancel(); window.speechSynthesis.speak(u);
-          }
-        } catch (e) {}
+        speakWarm(f.n + ". " + f.d, L() === "es" ? "es" : "en");
         btn.disabled = false; btn.textContent = t("Spin again", "Girar otra vez");
       }, wait);
     };
@@ -22145,33 +22292,99 @@ window.addEventListener('load', _installToolScreenHook);
       + '<circle id="ayRingFill" cx="60" cy="60" r="54" fill="none" stroke="var(--gold,#D9A33B)" stroke-width="7" stroke-linecap="round" stroke-dasharray="339.3" stroke-dashoffset="339.3" transform="rotate(-90 60 60)"/></svg>'
       + '<div class="ay-animal" id="ayAnimal">🦋</div></div>'
       + '<div class="ay-name" id="ayName"></div><div class="ay-do" id="ayDo"></div><div class="ay-hold" id="ayHold"></div>'
+      + '<div class="aogt-controls"><button class="btn" id="ayStart" style="background:var(--gold);color:var(--navy);">' + t("Start the hold", "Empezar a sostener") + '</button></div>'
       + '<div class="ay-thumbs" id="ayThumbs">' + thumbs + '</div></div>';
   }
   function ayInit() {
     clearTimers();
     var P = poses(), animal = $("ayAnimal"), nameEl = $("ayName"), doEl = $("ayDo"), holdEl = $("ayHold"),
-      ring = $("ayRingFill"), thumbs = document.querySelectorAll(".ay-thumb");
-    var C = 339.3;
-    function select(i) {
-      clearTimers();
+      ring = $("ayRingFill"), startBtn = $("ayStart"), thumbs = document.querySelectorAll(".ay-thumb");
+    var C = 339.3, cur = 0;
+    function ready(i) {
+      clearTimers(); cur = i;
       var p = P[i];
       if (animal) { animal.className = "ay-animal " + p.cls; animal.textContent = p.e; }
       if (nameEl) nameEl.textContent = p.n;
       if (doEl) doEl.textContent = p.d;
+      if (ring) ring.setAttribute("stroke-dashoffset", C);
+      if (holdEl) holdEl.textContent = t("Get into the pose — then press Start.", "Ponte en la pose — luego pulsa Empezar.");
+      if (startBtn) { startBtn.disabled = false; startBtn.textContent = t("Start the hold", "Empezar a sostener"); }
       for (var k = 0; k < thumbs.length; k++) thumbs[k].classList.toggle("on", k === i);
-      // hold-and-breathe: 4 slow breaths, ring counts down
+    }
+    function startHold() {
+      clearTimers();
+      if (startBtn) { startBtn.disabled = true; startBtn.textContent = t("Holding…", "Sosteniendo…"); }
       var total = reduce() ? 8 : 16, left = total;
       function tick() {
         if (ring) ring.setAttribute("stroke-dashoffset", (C * (1 - left / total)).toFixed(1));
         var phase = Math.floor((total - left) / 2) % 2;
         if (holdEl) holdEl.textContent = (left <= 0) ? t("Nice. Shake it out! 🌟", "¡Bien hecho. Sacúdete! 🌟") : (phase === 0 ? t("Breathe in…", "Inhala…") : t("Breathe out…", "Exhala…")) + "  " + left;
-        if (left <= 0) { if (ring) ring.setAttribute("stroke-dashoffset", 0); return; }
+        if (left <= 0) { if (ring) ring.setAttribute("stroke-dashoffset", 0); if (startBtn) { startBtn.disabled = false; startBtn.textContent = t("Hold again", "Sostener otra vez"); } return; }
         left--; after(tick, 1000);
       }
       tick();
     }
-    for (var i = 0; i < thumbs.length; i++) (function (idx) { thumbs[idx].onclick = function () { select(idx); }; })(i);
-    select(0);
+    if (startBtn) startBtn.onclick = startHold;
+    for (var i = 0; i < thumbs.length; i++) (function (idx) { thumbs[idx].onclick = function () { ready(idx); }; })(i);
+    ready(0);
+  }
+
+  /* ===================================================================
+     COLD WATER RESET
+     =================================================================== */
+  var CW_SVG =
+    '<svg class="cw-fig" viewBox="0 0 160 200" width="100%" role="img" aria-label="Faucet and cupped hands">'
+    + '<rect x="8" y="12" width="22" height="11" rx="3" fill="var(--ink-soft,#46506E)"/>'
+    + '<path d="M19 22 L19 42 Q19 46 23 46 L80 46 L80 56" fill="none" stroke="var(--ink-soft,#46506E)" stroke-width="9" stroke-linecap="round"/>'
+    + '<g class="cw-stream">'
+    + '<circle class="cw-drop" cx="80" cy="60" r="4.2" fill="#5BB8E8"/>'
+    + '<circle class="cw-drop" cx="80" cy="60" r="3.4" fill="#84CDF0"/>'
+    + '<circle class="cw-drop" cx="80" cy="60" r="4.2" fill="#5BB8E8"/>'
+    + '<circle class="cw-drop" cx="80" cy="60" r="3.2" fill="#84CDF0"/>'
+    + '<circle class="cw-drop" cx="80" cy="60" r="4.2" fill="#5BB8E8"/>'
+    + '</g>'
+    + '<ellipse class="cw-ripple" cx="80" cy="132" rx="30" ry="8" fill="none" stroke="#5BB8E8" stroke-width="2.5"/>'
+    + '<path d="M40 122 Q80 158 120 122 Q120 142 80 148 Q40 142 40 122 Z" fill="var(--gold-pale,#F1DFA8)" stroke="var(--navy,#0A1E33)" stroke-width="2.5"/>'
+    + '</svg>';
+  function cwBuilder() {
+    return '<div class="tool-modal-icon">💧</div>'
+      + '<div class="tool-modal-title">' + t("Cold Water Reset", "Reinicio con agua fría") + '</div>'
+      + '<div class="tool-modal-sub">' + t("Cold water on your wrists or face wakes up the body's own calm-down signal.", "El agua fría en las muñecas o la cara activa la señal de calma del cuerpo.") + '</div>'
+      + '<div class="aogt-wrap"><div class="cw-stage" id="cwStage">' + CW_SVG + '</div>'
+      + '<div class="aogt-cue" id="cwCue">' + t("Press start, then hold your wrists under cool water.", "Pulsa empezar y pon las muñecas bajo agua fresca.") + '</div>'
+      + '<div class="aogt-progress" id="cwCount"></div>'
+      + '<div class="aogt-controls"><button class="btn" id="cwStart" style="background:var(--gold);color:var(--navy);">' + t("Turn on the cold water", "Abrir el agua fría") + '</button></div>'
+      + '<div class="cw-opts"><b>' + t("No sink nearby?", "¿No hay lavabo?") + '</b> '
+      + t("Splash your face 3 times, or hold a cold bottle to the back of your neck or wrists. Exhale with each one.", "Salpica tu cara 3 veces, o sostén una botella fría en la nuca o las muñecas. Exhala con cada una.") + '</div></div>';
+  }
+  function cwInit() {
+    clearTimers();
+    var stage = $("cwStage"), btn = $("cwStart"), cue = $("cwCue"), cnt = $("cwCount"); if (!btn) return;
+    var cues = [
+      t("Feel the cold on your skin.", "Siente el frío en tu piel."),
+      t("Breathe out — slow and long.", "Exhala — lento y largo."),
+      t("Let your shoulders drop.", "Deja caer los hombros."),
+      t("Your body is getting the calm signal.", "Tu cuerpo recibe la señal de calma.")
+    ];
+    btn.onclick = function () {
+      clearTimers();
+      if (stage) stage.classList.add("flowing");
+      btn.disabled = true; btn.textContent = t("Flowing…", "Fluyendo…");
+      var total = reduce() ? 12 : 30, left = total;
+      function tick() {
+        if (cnt) cnt.textContent = left + "s";
+        if (cue && (total - left) % 7 === 0) { cue.style.opacity = 0; (function (c) { after(function () { cue.textContent = c; cue.style.opacity = 1; }, 160); })(cues[((total - left) / 7) % cues.length | 0]); }
+        if (left <= 0) {
+          if (stage) stage.classList.remove("flowing");
+          if (cue) cue.textContent = t("Off. Notice — a little calmer? That's biology, not willpower. 💧", "Cierra. ¿Un poco más en calma? Es biología, no fuerza de voluntad. 💧");
+          if (cnt) cnt.textContent = "";
+          btn.disabled = false; btn.textContent = t("Again", "Otra vez");
+          return;
+        }
+        left--; after(tick, 1000);
+      }
+      tick();
+    };
   }
 
   /* ===================================================================
@@ -22182,6 +22395,7 @@ window.addEventListener('load', _installToolScreenHook);
     if (window.TOOLS.pmr) window.TOOLS.pmr = { builder: bsBuilder, init: bsInit };
     if (window.TOOLS.bilateral) window.TOOLS.bilateral = { builder: bhBuilder, init: bhInit };
     if (window.TOOLS.animalyoga) window.TOOLS.animalyoga = { builder: ayBuilder, init: ayInit };
+    if (window.TOOLS.coldwater) window.TOOLS.coldwater = { builder: cwBuilder, init: cwInit };
     window.TOOLS.feelwheel = { builder: fwBuilder, init: fwInit };
   }
   function wrapOpen() {
