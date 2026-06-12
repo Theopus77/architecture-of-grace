@@ -116,7 +116,7 @@
     var isHype = tone() === "hype";
     el.className = "aog-grace-word" + (isHype ? " tone-hype" : "");
     el.innerHTML =
-      '<button class="agw-cog" type="button" aria-label="' + t("Personalize", "Personalizar") + '" title="' + t("Personalize", "Personalizar") + '" data-aog-open-pz="1">'
+      '<button class="agw-cog" type="button" aria-haspopup="true" aria-label="' + t("Personalize", "Personalizar") + '" title="' + t("Personalize", "Personalizar") + '" data-aog-open-pz="1">'
         + '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="4" y1="8" x2="20" y2="8"/><circle cx="9" cy="8" r="2.4"/><line x1="4" y1="16" x2="20" y2="16"/><circle cx="15" cy="16" r="2.4"/></svg>'
       + '</button>'
       + '<span class="agw-dot" aria-hidden="true"></span>'
@@ -177,6 +177,15 @@
   function bloom() {
     var modal = document.querySelector("#toolModal .tool-modal") || document.getElementById("toolModalBody");
     if (!modal) return;
+    if (modal.querySelector(".aog-bloom") || modal.__aogBlooming) return;
+    // Mark immediately so a rapid double-fire can't stack, but hold the visual
+    // ~350ms so quick tools (e.g. Take 5) land with a beat instead of snapping.
+    modal.__aogBlooming = 1;
+    setTimeout(function () { modal.__aogBlooming = 0; renderBloom(modal); }, 350);
+  }
+  function renderBloom(modal) {
+    if (!modal) return;
+    try { if (document.contains && !document.contains(modal)) return; } catch (e) {} // tool closed during the delay
     if (modal.querySelector(".aog-bloom")) return;
 
     var count = bumpStreak();

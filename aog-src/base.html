@@ -5199,7 +5199,7 @@ function toggleTheme() {
       <button class="tab" data-tab="students" data-dl="dl_t_students">Class trends</button>
       <button class="tab" data-tab="home" data-dl="dl_t_home">Family view</button>
       <button class="tab" data-tab="growth" data-dl="dl_t_growth">Growth</button>
-      <button class="tab" data-tab="export" data-dl="dl_t_export">Export</button>
+      <button class="tab" data-tab="export" data-dl="dl_t_export">Export &amp; data</button>
     </div>
     <div class="tab-hint-row">
       <div id="tabHint" class="tab-hint"></div>
@@ -5398,8 +5398,24 @@ function toggleTheme() {
     </div>
 
     <div class="tab-panel" id="panel-export">
+      <div class="section-head"><h2 data-dl="dl_data_h">Your data on this device</h2></div>
+      <div class="table-card aog-data-card" style="border:2px solid var(--gold-pale); margin-bottom:28px;">
+        <p class="small" style="margin-bottom:2px;" data-dl="dl_data_top">Read live from this browser. Nothing here is sent anywhere — download a backup first, then delete if you need to.</p>
+        <div class="aog-data-stats">
+          <div class="aog-data-stat"><div class="aog-data-stat-n" id="aogDashCheckins">0</div><div class="aog-data-stat-l" data-dl="dl_data_checkins">Saved check-ins</div></div>
+          <div class="aog-data-stat"><div class="aog-data-stat-n" id="aogDashFamily">0</div><div class="aog-data-stat-l" data-dl="dl_data_family">Family profiles</div></div>
+          <div class="aog-data-stat"><div class="aog-data-stat-n" id="aogDashDraft">0</div><div class="aog-data-stat-l" data-dl="dl_data_draft">Unfinished draft</div></div>
+        </div>
+        <div class="aog-data-actions">
+          <button class="btn" type="button" onclick="aogDashBackup()" data-dl="dl_data_backup">Download a full backup (.json)</button>
+          <button class="btn btn-secondary" type="button" onclick="aogDashCsv()" data-dl="dl_data_csv">Export as a spreadsheet (.csv)</button>
+          <button class="btn btn-danger aog-data-delete" type="button" onclick="aogDashDelete()" data-dl="dl_data_delete">Delete everything on this device</button>
+        </div>
+        <div class="aog-data-done" id="aogDashDone" data-dl="dl_data_done">Done — all check-in data on this device has been deleted.</div>
+        <div class="aog-data-note" data-dl="dl_data_note">A backup is a plain file saved to this device's downloads — your copy to keep, not sent to us. Deleting is permanent and cannot be undone.</div>
+      </div>
       <div class="section-head">
-        <h2 data-dl="dl_exp_h1">Export &amp; data management</h2>
+        <h2 data-dl="dl_exp_h1">Class-summary exports</h2>
         <div class="small" data-dl="dl_exp_sub">All exports are CSV files compatible with Excel, Google Sheets, and most district SIS platforms.</div>
       </div>
       <div class="kpi-grid">
@@ -5428,22 +5444,6 @@ function toggleTheme() {
         <p class="small" id="dataLivesCopy" style="margin:0;">Responses are saved privately in this browser for this session only, on this computer. The exports above are <strong>class-level summaries</strong> &mdash; they never include student names, individual scores, or written responses.</p>
       </div>
 
-      <div class="section-head" style="margin-top:32px;"><h2 data-dl="dl_data_h">Your data on this device</h2></div>
-      <div class="table-card aog-data-card">
-        <p class="small" style="margin-bottom:2px;" data-dl="dl_data_top">Read live from this browser. Nothing here is sent anywhere — download a backup first, then delete if you need to.</p>
-        <div class="aog-data-stats">
-          <div class="aog-data-stat"><div class="aog-data-stat-n" id="aogDashCheckins">0</div><div class="aog-data-stat-l" data-dl="dl_data_checkins">Saved check-ins</div></div>
-          <div class="aog-data-stat"><div class="aog-data-stat-n" id="aogDashFamily">0</div><div class="aog-data-stat-l" data-dl="dl_data_family">Family profiles</div></div>
-          <div class="aog-data-stat"><div class="aog-data-stat-n" id="aogDashDraft">0</div><div class="aog-data-stat-l" data-dl="dl_data_draft">Unfinished draft</div></div>
-        </div>
-        <div class="aog-data-actions">
-          <button class="btn" type="button" onclick="aogDashBackup()" data-dl="dl_data_backup">Download a full backup (.json)</button>
-          <button class="btn btn-secondary" type="button" onclick="aogDashCsv()" data-dl="dl_data_csv">Export as a spreadsheet (.csv)</button>
-          <button class="btn btn-danger aog-data-delete" type="button" onclick="aogDashDelete()" data-dl="dl_data_delete">Delete everything on this device</button>
-        </div>
-        <div class="aog-data-done" id="aogDashDone" data-dl="dl_data_done">Done — all check-in data on this device has been deleted.</div>
-        <div class="aog-data-note" data-dl="dl_data_note">A backup is a plain file saved to this device's downloads — your copy to keep, not sent to us. Deleting is permanent and cannot be undone.</div>
-      </div>
     </div>
 
   </div>
@@ -10436,8 +10436,8 @@ const DASH_I18N = {
     es: "Progreso"
   },
   dl_t_export: {
-    en: "Export",
-    es: "Exportar"
+    en: "Export & data",
+    es: "Exportar y datos"
   },
   dl_help_btn: {
     en: "What am I looking at?",
@@ -10660,8 +10660,8 @@ const DASH_I18N = {
     es: "Proyecta el código QR en la pizarra o comparte el enlace en Google Classroom. Los estudiantes que lo escaneen o hagan clic llegan al check-in con el grado, la clase y el período ya configurados. Sus respuestas se guardan en la misma hoja de la escuela que en un dispositivo del personal — el enlace solo lleva el grado, la clase y el período, nunca la dirección de la hoja ni la contraseña."
   },
   dl_exp_h1: {
-    en: "Export & data management",
-    es: "Exportar y gestión de datos"
+    en: "Class-summary exports",
+    es: "Exportaciones de resumen de clase"
   },
   dl_exp_sub: {
     en: "All exports are class-level summary CSV files — no student names, individual scores, or written responses. Compatible with Excel and Google Sheets.",

@@ -2,7 +2,7 @@
    ARCHITECTURE OF GRACE · polish.js
    Behaviour for the pilot-feedback fixes. ES5, defensive, additive.
      1) Intensity space-reserve (kills the mobile nav jump)
-     2) Hero subtle fade on scroll
+     2) (hero mobile rhythm is CSS-only; scroll-fade was removed)
      3) Dashboard "Your data on this device" wiring (counts + actions)
      4) First-run nudge
      5) Save-to-homescreen after first completion (PWA)
@@ -44,27 +44,8 @@
     syncIntensityReserve();
   }
 
-  /* =====================================================================
-     2) HERO FADE ON SCROLL
-     ===================================================================== */
-  var heroTicking = false;
-  function updateHeroFade() {
-    heroTicking = false;
-    var hero = document.querySelector(".hyb-hero");
-    var welcome = document.getElementById("screen-welcome");
-    if (!hero || !welcome || !welcome.classList.contains("active")) return;
-    if (reduceMotion()) { hero.style.setProperty("--aog-hero-fade", "1"); return; }
-    var y = window.pageYOffset || document.documentElement.scrollTop || 0;
-    var f = 1 - (y / 360);
-    if (f < 0.25) f = 0.25; if (f > 1) f = 1;
-    hero.style.setProperty("--aog-hero-fade", f.toFixed(3));
-  }
-  function onScroll() { if (!heroTicking) { heroTicking = true; (window.requestAnimationFrame || function (fn) { setTimeout(fn, 16); })(updateHeroFade); } }
-  function hookHeroFade() {
-    var hero = document.querySelector(".hyb-hero");
-    if (hero && !hero.classList.contains("aog-fade")) hero.classList.add("aog-fade");
-    updateHeroFade();
-  }
+  /* (2) Hero scroll-fade was removed — fading a dark hero's opacity revealed
+     the bright page behind it and read as a white-out. Mobile rhythm stays in CSS. */
 
   /* =====================================================================
      3) DASHBOARD · "Your data on this device"
@@ -233,7 +214,7 @@
   function onScreen(id) {
     try {
       if (id === "screen-survey") { watchResponses(); syncIntensityReserve(); }
-      if (id === "screen-welcome") { hookHeroFade(); setTimeout(maybeNudge, 1100); }
+      if (id === "screen-welcome") { setTimeout(maybeNudge, 1100); }
       if (id === "screen-thanks") { setTimeout(showA2HS, 900); }
       applyFocusable();
     } catch (e) {}
@@ -251,7 +232,6 @@
     wrapRefreshAdmin();
     watchResponses();
     applyFocusable();
-    window.addEventListener("scroll", onScroll, { passive: true });
     try { window.aogDashRefreshData(); } catch (e) {}
     var active = document.querySelector(".screen.active");
     if (active && active.id) onScreen(active.id);

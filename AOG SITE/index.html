@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="aog-build" content="2026.06.12.0306">
+<meta name="aog-build" content="2026.06.12.0322">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Architecture of Grace · Universal Check-In</title>
 <meta name="description" content="Social-emotional learning built by a teacher, for real classrooms — the SEL that tends to the grown-ups before it measures a child. Private, de-identified, K–adult. A check-in, not an exam.">
@@ -4219,12 +4219,12 @@ function toggleTheme() {
 :root[data-theme="dark"] .aog-grace-word .agw-text{ color:var(--cream,#F4ECDA); }
 .aog-grace-word.tone-hype .agw-text{ font-style:normal; font-weight:800; font-family:var(--font-sans,system-ui); letter-spacing:-.01em; }
 .agw-cog{
-  position:absolute; top:8px; right:9px; width:24px; height:24px; border:none; border-radius:8px;
+  position:absolute; top:8px; right:9px; width:22px; height:22px; border:none; border-radius:8px;
   background:transparent; color:var(--ink-faint,#8A92A6); cursor:pointer; display:grid; place-items:center;
-  opacity:.55; transition:opacity .15s ease, background .15s ease;
+  opacity:.32; transition:opacity .15s ease, background .15s ease, color .15s ease;
 }
-.aog-grace-word:hover .agw-cog{ opacity:1; }
-.agw-cog:hover{ background:color-mix(in srgb, var(--gold) 14%, transparent); color:var(--gold-deep,#9a6f24); }
+.aog-grace-word:hover .agw-cog{ opacity:.85; }
+.agw-cog:hover, .agw-cog:focus-visible{ opacity:1; background:color-mix(in srgb, var(--gold) 14%, transparent); color:var(--gold-deep,#9a6f24); }
 
 /* =====================================================================
    5) Earned completion on calm tools — replaces the sticker bloom.
@@ -4272,8 +4272,16 @@ function toggleTheme() {
   width:280px; max-width:84vw; padding:10px;
   background:var(--paper); border:1px solid var(--rule); border-radius:14px;
   box-shadow:var(--shadow-lg, 0 12px 30px rgba(0,0,0,.5));
+  max-height:min(72vh, 480px); overflow-y:auto; -webkit-overflow-scrolling:touch;
 }
 .aog-pz-menu[hidden]{ display:none; }
+/* tighter on small screens so the menu never feels too tall */
+@media (max-width:560px){
+  .aog-pz-menu{ padding:8px; max-height:68vh; }
+  .aog-pz-sec{ padding:5px 6px 9px; }
+  .aog-swatches{ gap:8px; }
+  .aog-sw{ width:28px; height:28px; }
+}
 .aog-pz-h{ font-family:var(--font-sans); font-size:11px; font-weight:800; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-faint); padding:8px 8px 6px; }
 .aog-pz-sub{ font-family:var(--font-sans); font-size:11.5px; color:var(--ink-soft); padding:0 8px 8px; }
 .aog-pz-sec{ padding:6px 8px 12px; border-top:1px solid var(--rule-soft); }
@@ -4365,10 +4373,13 @@ function toggleTheme() {
 @media (prefers-reduced-motion: reduce){ #intensityArea{ transition:none; } }
 
 /* =====================================================================
-   2) HERO — tighten vertical rhythm on phones + a subtle fade on scroll.
-   polish.js sets --aog-hero-fade (1 → 0) as the hero scrolls away.
+   2) HERO — tighten vertical rhythm on phones. (Scroll-fade was removed.)
    ===================================================================== */
 @media (max-width:600px){
+  /* showcase row (door · graffiti · door) can read crowded on phones — shave a few px */
+  .hero-showcase{ gap:10px; margin:4px 0 22px; }
+  .door-flank{ padding:13px 15px; gap:11px; }
+  .door-flank .door-icon{ width:40px; height:40px; font-size:18px; }
   .hyb-hero{ padding-top:84px; }
   #screen-welcome .hyb-hero{ padding-bottom:36px; }
   .hyb-title{ margin-top:12px; }
@@ -4379,11 +4390,8 @@ function toggleTheme() {
   .hyb-forall{ margin-top:14px; }
   .hyb-leaders{ margin-top:18px; padding-top:16px; }
 }
-.hyb-hero{ will-change:opacity; }
-.hyb-hero.aog-fade{ opacity:var(--aog-hero-fade, 1); transition:opacity .12s linear; }
-@media (prefers-reduced-motion: reduce){
-  .hyb-hero.aog-fade{ opacity:1 !important; }
-}
+/* (Scroll-fade removed: the hero is a dark navy block, so fading its opacity
+   revealed the bright page behind it and read as a harsh white-out.) */
 
 /* =====================================================================
    3) ECOSYSTEM DIAGRAM — give node + edge labels a little more room on
@@ -5683,7 +5691,7 @@ function toggleTheme() {
       <button class="tab" data-tab="students" data-dl="dl_t_students">Class trends</button>
       <button class="tab" data-tab="home" data-dl="dl_t_home">Family view</button>
       <button class="tab" data-tab="growth" data-dl="dl_t_growth">Growth</button>
-      <button class="tab" data-tab="export" data-dl="dl_t_export">Export</button>
+      <button class="tab" data-tab="export" data-dl="dl_t_export">Export &amp; data</button>
     </div>
     <div class="tab-hint-row">
       <div id="tabHint" class="tab-hint"></div>
@@ -5882,8 +5890,24 @@ function toggleTheme() {
     </div>
 
     <div class="tab-panel" id="panel-export">
+      <div class="section-head"><h2 data-dl="dl_data_h">Your data on this device</h2></div>
+      <div class="table-card aog-data-card" style="border:2px solid var(--gold-pale); margin-bottom:28px;">
+        <p class="small" style="margin-bottom:2px;" data-dl="dl_data_top">Read live from this browser. Nothing here is sent anywhere — download a backup first, then delete if you need to.</p>
+        <div class="aog-data-stats">
+          <div class="aog-data-stat"><div class="aog-data-stat-n" id="aogDashCheckins">0</div><div class="aog-data-stat-l" data-dl="dl_data_checkins">Saved check-ins</div></div>
+          <div class="aog-data-stat"><div class="aog-data-stat-n" id="aogDashFamily">0</div><div class="aog-data-stat-l" data-dl="dl_data_family">Family profiles</div></div>
+          <div class="aog-data-stat"><div class="aog-data-stat-n" id="aogDashDraft">0</div><div class="aog-data-stat-l" data-dl="dl_data_draft">Unfinished draft</div></div>
+        </div>
+        <div class="aog-data-actions">
+          <button class="btn" type="button" onclick="aogDashBackup()" data-dl="dl_data_backup">Download a full backup (.json)</button>
+          <button class="btn btn-secondary" type="button" onclick="aogDashCsv()" data-dl="dl_data_csv">Export as a spreadsheet (.csv)</button>
+          <button class="btn btn-danger aog-data-delete" type="button" onclick="aogDashDelete()" data-dl="dl_data_delete">Delete everything on this device</button>
+        </div>
+        <div class="aog-data-done" id="aogDashDone" data-dl="dl_data_done">Done — all check-in data on this device has been deleted.</div>
+        <div class="aog-data-note" data-dl="dl_data_note">A backup is a plain file saved to this device's downloads — your copy to keep, not sent to us. Deleting is permanent and cannot be undone.</div>
+      </div>
       <div class="section-head">
-        <h2 data-dl="dl_exp_h1">Export &amp; data management</h2>
+        <h2 data-dl="dl_exp_h1">Class-summary exports</h2>
         <div class="small" data-dl="dl_exp_sub">All exports are CSV files compatible with Excel, Google Sheets, and most district SIS platforms.</div>
       </div>
       <div class="kpi-grid">
@@ -5912,22 +5936,6 @@ function toggleTheme() {
         <p class="small" id="dataLivesCopy" style="margin:0;">Responses are saved privately in this browser for this session only, on this computer. The exports above are <strong>class-level summaries</strong> &mdash; they never include student names, individual scores, or written responses.</p>
       </div>
 
-      <div class="section-head" style="margin-top:32px;"><h2 data-dl="dl_data_h">Your data on this device</h2></div>
-      <div class="table-card aog-data-card">
-        <p class="small" style="margin-bottom:2px;" data-dl="dl_data_top">Read live from this browser. Nothing here is sent anywhere — download a backup first, then delete if you need to.</p>
-        <div class="aog-data-stats">
-          <div class="aog-data-stat"><div class="aog-data-stat-n" id="aogDashCheckins">0</div><div class="aog-data-stat-l" data-dl="dl_data_checkins">Saved check-ins</div></div>
-          <div class="aog-data-stat"><div class="aog-data-stat-n" id="aogDashFamily">0</div><div class="aog-data-stat-l" data-dl="dl_data_family">Family profiles</div></div>
-          <div class="aog-data-stat"><div class="aog-data-stat-n" id="aogDashDraft">0</div><div class="aog-data-stat-l" data-dl="dl_data_draft">Unfinished draft</div></div>
-        </div>
-        <div class="aog-data-actions">
-          <button class="btn" type="button" onclick="aogDashBackup()" data-dl="dl_data_backup">Download a full backup (.json)</button>
-          <button class="btn btn-secondary" type="button" onclick="aogDashCsv()" data-dl="dl_data_csv">Export as a spreadsheet (.csv)</button>
-          <button class="btn btn-danger aog-data-delete" type="button" onclick="aogDashDelete()" data-dl="dl_data_delete">Delete everything on this device</button>
-        </div>
-        <div class="aog-data-done" id="aogDashDone" data-dl="dl_data_done">Done — all check-in data on this device has been deleted.</div>
-        <div class="aog-data-note" data-dl="dl_data_note">A backup is a plain file saved to this device's downloads — your copy to keep, not sent to us. Deleting is permanent and cannot be undone.</div>
-      </div>
     </div>
 
   </div>
@@ -7158,7 +7166,7 @@ function toggleTheme() {
     </div>
     <div class="sf-legal">© <span id="footYr"></span> The Architecture of Grace Foundation. All rights reserved. · Every score is a flag, not a diagnosis.</div>
     <div class="sf-made" data-i18n="foot_made">Made with care in Illinois.</div>
-    <div class="sf-build" style="margin-top:10px;font-size:10.5px;color:#5f6e80;letter-spacing:.04em;">Build 2026.06.12.0306</div>
+    <div class="sf-build" style="margin-top:10px;font-size:10.5px;color:#5f6e80;letter-spacing:.04em;">Build 2026.06.12.0322</div>
   </div>
 </footer>
 
@@ -10920,8 +10928,8 @@ const DASH_I18N = {
     es: "Progreso"
   },
   dl_t_export: {
-    en: "Export",
-    es: "Exportar"
+    en: "Export & data",
+    es: "Exportar y datos"
   },
   dl_help_btn: {
     en: "What am I looking at?",
@@ -11144,8 +11152,8 @@ const DASH_I18N = {
     es: "Proyecta el código QR en la pizarra o comparte el enlace en Google Classroom. Los estudiantes que lo escaneen o hagan clic llegan al check-in con el grado, la clase y el período ya configurados. Sus respuestas se guardan en la misma hoja de la escuela que en un dispositivo del personal — el enlace solo lleva el grado, la clase y el período, nunca la dirección de la hoja ni la contraseña."
   },
   dl_exp_h1: {
-    en: "Export & data management",
-    es: "Exportar y gestión de datos"
+    en: "Class-summary exports",
+    es: "Exportaciones de resumen de clase"
   },
   dl_exp_sub: {
     en: "All exports are class-level summary CSV files — no student names, individual scores, or written responses. Compatible with Excel and Google Sheets.",
@@ -20979,7 +20987,11 @@ window.addEventListener('load', _installToolScreenHook);
       try { active = localStorage.getItem("aogScreener.demoActive") === "1"; } catch (e) {}
       if (!active && typeof toggleDemoData === "function") toggleDemoData();
     } catch (e) {}
+    // Render now, and again next tick — belt-and-suspenders so the demo data
+    // always shows immediately (no "leave and come back" needed).
     render();
+    try { if (window.requestAnimationFrame) requestAnimationFrame(render); } catch (e) {}
+    setTimeout(render, 60);
   };
   window.aogOpenMTSS = function () { ensureOverlay(); _view = "individual"; document.getElementById("mtssOverlay").classList.add("open"); render(); };
   window.aogCloseMTSS = function () { var o = document.getElementById("mtssOverlay"); if (o) o.classList.remove("open"); };
@@ -21106,7 +21118,7 @@ window.addEventListener('load', _installToolScreenHook);
     var isHype = tone() === "hype";
     el.className = "aog-grace-word" + (isHype ? " tone-hype" : "");
     el.innerHTML =
-      '<button class="agw-cog" type="button" aria-label="' + t("Personalize", "Personalizar") + '" title="' + t("Personalize", "Personalizar") + '" data-aog-open-pz="1">'
+      '<button class="agw-cog" type="button" aria-haspopup="true" aria-label="' + t("Personalize", "Personalizar") + '" title="' + t("Personalize", "Personalizar") + '" data-aog-open-pz="1">'
         + '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="4" y1="8" x2="20" y2="8"/><circle cx="9" cy="8" r="2.4"/><line x1="4" y1="16" x2="20" y2="16"/><circle cx="15" cy="16" r="2.4"/></svg>'
       + '</button>'
       + '<span class="agw-dot" aria-hidden="true"></span>'
@@ -21167,6 +21179,15 @@ window.addEventListener('load', _installToolScreenHook);
   function bloom() {
     var modal = document.querySelector("#toolModal .tool-modal") || document.getElementById("toolModalBody");
     if (!modal) return;
+    if (modal.querySelector(".aog-bloom") || modal.__aogBlooming) return;
+    // Mark immediately so a rapid double-fire can't stack, but hold the visual
+    // ~350ms so quick tools (e.g. Take 5) land with a beat instead of snapping.
+    modal.__aogBlooming = 1;
+    setTimeout(function () { modal.__aogBlooming = 0; renderBloom(modal); }, 350);
+  }
+  function renderBloom(modal) {
+    if (!modal) return;
+    try { if (document.contains && !document.contains(modal)) return; } catch (e) {} // tool closed during the delay
     if (modal.querySelector(".aog-bloom")) return;
 
     var count = bumpStreak();
@@ -21351,7 +21372,7 @@ window.addEventListener('load', _installToolScreenHook);
    ARCHITECTURE OF GRACE · polish.js
    Behaviour for the pilot-feedback fixes. ES5, defensive, additive.
      1) Intensity space-reserve (kills the mobile nav jump)
-     2) Hero subtle fade on scroll
+     2) (hero mobile rhythm is CSS-only; scroll-fade was removed)
      3) Dashboard "Your data on this device" wiring (counts + actions)
      4) First-run nudge
      5) Save-to-homescreen after first completion (PWA)
@@ -21393,27 +21414,8 @@ window.addEventListener('load', _installToolScreenHook);
     syncIntensityReserve();
   }
 
-  /* =====================================================================
-     2) HERO FADE ON SCROLL
-     ===================================================================== */
-  var heroTicking = false;
-  function updateHeroFade() {
-    heroTicking = false;
-    var hero = document.querySelector(".hyb-hero");
-    var welcome = document.getElementById("screen-welcome");
-    if (!hero || !welcome || !welcome.classList.contains("active")) return;
-    if (reduceMotion()) { hero.style.setProperty("--aog-hero-fade", "1"); return; }
-    var y = window.pageYOffset || document.documentElement.scrollTop || 0;
-    var f = 1 - (y / 360);
-    if (f < 0.25) f = 0.25; if (f > 1) f = 1;
-    hero.style.setProperty("--aog-hero-fade", f.toFixed(3));
-  }
-  function onScroll() { if (!heroTicking) { heroTicking = true; (window.requestAnimationFrame || function (fn) { setTimeout(fn, 16); })(updateHeroFade); } }
-  function hookHeroFade() {
-    var hero = document.querySelector(".hyb-hero");
-    if (hero && !hero.classList.contains("aog-fade")) hero.classList.add("aog-fade");
-    updateHeroFade();
-  }
+  /* (2) Hero scroll-fade was removed — fading a dark hero's opacity revealed
+     the bright page behind it and read as a white-out. Mobile rhythm stays in CSS. */
 
   /* =====================================================================
      3) DASHBOARD · "Your data on this device"
@@ -21582,7 +21584,7 @@ window.addEventListener('load', _installToolScreenHook);
   function onScreen(id) {
     try {
       if (id === "screen-survey") { watchResponses(); syncIntensityReserve(); }
-      if (id === "screen-welcome") { hookHeroFade(); setTimeout(maybeNudge, 1100); }
+      if (id === "screen-welcome") { setTimeout(maybeNudge, 1100); }
       if (id === "screen-thanks") { setTimeout(showA2HS, 900); }
       applyFocusable();
     } catch (e) {}
@@ -21600,7 +21602,6 @@ window.addEventListener('load', _installToolScreenHook);
     wrapRefreshAdmin();
     watchResponses();
     applyFocusable();
-    window.addEventListener("scroll", onScroll, { passive: true });
     try { window.aogDashRefreshData(); } catch (e) {}
     var active = document.querySelector(".screen.active");
     if (active && active.id) onScreen(active.id);

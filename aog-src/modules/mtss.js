@@ -339,7 +339,11 @@
       try { active = localStorage.getItem("aogScreener.demoActive") === "1"; } catch (e) {}
       if (!active && typeof toggleDemoData === "function") toggleDemoData();
     } catch (e) {}
+    // Render now, and again next tick — belt-and-suspenders so the demo data
+    // always shows immediately (no "leave and come back" needed).
     render();
+    try { if (window.requestAnimationFrame) requestAnimationFrame(render); } catch (e) {}
+    setTimeout(render, 60);
   };
   window.aogOpenMTSS = function () { ensureOverlay(); _view = "individual"; document.getElementById("mtssOverlay").classList.add("open"); render(); };
   window.aogCloseMTSS = function () { var o = document.getElementById("mtssOverlay"); if (o) o.classList.remove("open"); };

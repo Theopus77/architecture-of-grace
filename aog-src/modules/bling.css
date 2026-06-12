@@ -101,12 +101,12 @@
 :root[data-theme="dark"] .aog-grace-word .agw-text{ color:var(--cream,#F4ECDA); }
 .aog-grace-word.tone-hype .agw-text{ font-style:normal; font-weight:800; font-family:var(--font-sans,system-ui); letter-spacing:-.01em; }
 .agw-cog{
-  position:absolute; top:8px; right:9px; width:24px; height:24px; border:none; border-radius:8px;
+  position:absolute; top:8px; right:9px; width:22px; height:22px; border:none; border-radius:8px;
   background:transparent; color:var(--ink-faint,#8A92A6); cursor:pointer; display:grid; place-items:center;
-  opacity:.55; transition:opacity .15s ease, background .15s ease;
+  opacity:.32; transition:opacity .15s ease, background .15s ease, color .15s ease;
 }
-.aog-grace-word:hover .agw-cog{ opacity:1; }
-.agw-cog:hover{ background:color-mix(in srgb, var(--gold) 14%, transparent); color:var(--gold-deep,#9a6f24); }
+.aog-grace-word:hover .agw-cog{ opacity:.85; }
+.agw-cog:hover, .agw-cog:focus-visible{ opacity:1; background:color-mix(in srgb, var(--gold) 14%, transparent); color:var(--gold-deep,#9a6f24); }
 
 /* =====================================================================
    5) Earned completion on calm tools — replaces the sticker bloom.
@@ -154,8 +154,16 @@
   width:280px; max-width:84vw; padding:10px;
   background:var(--paper); border:1px solid var(--rule); border-radius:14px;
   box-shadow:var(--shadow-lg, 0 12px 30px rgba(0,0,0,.5));
+  max-height:min(72vh, 480px); overflow-y:auto; -webkit-overflow-scrolling:touch;
 }
 .aog-pz-menu[hidden]{ display:none; }
+/* tighter on small screens so the menu never feels too tall */
+@media (max-width:560px){
+  .aog-pz-menu{ padding:8px; max-height:68vh; }
+  .aog-pz-sec{ padding:5px 6px 9px; }
+  .aog-swatches{ gap:8px; }
+  .aog-sw{ width:28px; height:28px; }
+}
 .aog-pz-h{ font-family:var(--font-sans); font-size:11px; font-weight:800; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-faint); padding:8px 8px 6px; }
 .aog-pz-sub{ font-family:var(--font-sans); font-size:11.5px; color:var(--ink-soft); padding:0 8px 8px; }
 .aog-pz-sec{ padding:6px 8px 12px; border-top:1px solid var(--rule-soft); }

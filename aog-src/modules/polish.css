@@ -20,10 +20,13 @@
 @media (prefers-reduced-motion: reduce){ #intensityArea{ transition:none; } }
 
 /* =====================================================================
-   2) HERO — tighten vertical rhythm on phones + a subtle fade on scroll.
-   polish.js sets --aog-hero-fade (1 → 0) as the hero scrolls away.
+   2) HERO — tighten vertical rhythm on phones. (Scroll-fade was removed.)
    ===================================================================== */
 @media (max-width:600px){
+  /* showcase row (door · graffiti · door) can read crowded on phones — shave a few px */
+  .hero-showcase{ gap:10px; margin:4px 0 22px; }
+  .door-flank{ padding:13px 15px; gap:11px; }
+  .door-flank .door-icon{ width:40px; height:40px; font-size:18px; }
   .hyb-hero{ padding-top:84px; }
   #screen-welcome .hyb-hero{ padding-bottom:36px; }
   .hyb-title{ margin-top:12px; }
@@ -34,11 +37,8 @@
   .hyb-forall{ margin-top:14px; }
   .hyb-leaders{ margin-top:18px; padding-top:16px; }
 }
-.hyb-hero{ will-change:opacity; }
-.hyb-hero.aog-fade{ opacity:var(--aog-hero-fade, 1); transition:opacity .12s linear; }
-@media (prefers-reduced-motion: reduce){
-  .hyb-hero.aog-fade{ opacity:1 !important; }
-}
+/* (Scroll-fade removed: the hero is a dark navy block, so fading its opacity
+   revealed the bright page behind it and read as a harsh white-out.) */
 
 /* =====================================================================
    3) ECOSYSTEM DIAGRAM — give node + edge labels a little more room on
