@@ -116,7 +116,7 @@
       + '<div class="tool-modal-title">' + t("Feelings Wheel", "Rueda de emociones") + '</div>'
       + '<div class="tool-modal-sub">' + t("Give it a spin — then meet the feeling it lands on.", "Gírala — y conoce el sentimiento donde se detenga.") + '</div>'
       + '<div class="aogt-wrap"><div class="fw2-stage"><div class="fw2-pointer"></div>'
-      + '<svg class="fw2-wheel" id="fw2Wheel" viewBox="0 0 280 280" width="280" height="280" role="img" aria-label="Feelings wheel">' + g + '</svg>'
+      + '<svg class="fw2-wheel" id="fw2Wheel" viewBox="0 0 280 280" width="100%" height="100%" style="display:block" role="img" aria-label="Feelings wheel">' + g + '</svg>'
       + '<div class="fw2-hub">🎡</div></div>'
       + '<div class="fw2-readout" id="fw2Read"><div class="fw2-desc">' + t("Press spin to begin.", "Pulsa girar para empezar.") + '</div></div>'
       + '<div class="aogt-controls"><button class="btn" id="fw2Spin" style="background:var(--gold);color:var(--navy);">' + t("Spin the wheel", "Girar la rueda") + '</button></div></div>';
