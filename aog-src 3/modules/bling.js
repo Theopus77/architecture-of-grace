@@ -281,7 +281,7 @@
      PERSONALIZE POPOVER (header) — tone · accent · sound
      ===================================================================== */
   function pzMenuHtml() {
-    var a = accent(), aud = audience(), snd = soundOn();
+    var a = accent(), aud = audience();
     var sw = "";
     for (var i = 0; i < ACCENTS.length; i++) {
       var name = ACCENTS[i];
@@ -301,13 +301,6 @@
       + '<div class="aog-pz-sec">'
         + '<div class="aog-pz-row-t" style="padding:0 4px 8px;">' + t("Accent color", "Color de acento") + '</div>'
         + '<div class="aog-swatches">' + sw + '</div>'
-      + '</div>'
-      + '<div class="aog-pz-sec">'
-        + '<button type="button" class="aog-pz-row" id="aogSoundRow" role="menuitemcheckbox" aria-checked="' + (snd ? "true" : "false") + '">'
-          + '<span class="aog-pz-row-tx"><span class="aog-pz-row-t">' + t("Sound", "Sonido") + '</span>'
-          + '<span class="aog-pz-row-s">' + t("Gentle tones on actions (off by default)", "Tonos suaves en las acciones (apagado por defecto)") + '</span></span>'
-          + '<span class="aog-pz-switch" aria-hidden="true"></span>'
-        + '</button>'
       + '</div>';
   }
   function buildPz() {
@@ -331,14 +324,8 @@
       e.stopPropagation();
       var tb = e.target.closest ? e.target.closest("[data-aud]") : null;
       var ab = e.target.closest ? e.target.closest("[data-accent]") : null;
-      var sr = e.target.closest ? e.target.closest("#aogSoundRow") : null;
       if (tb) { lsSet(K_AUD, tb.getAttribute("data-aud")); refreshGrace(); refreshPz(); }
       else if (ab) { lsSet(K_ACCENT, ab.getAttribute("data-accent")); applyAccent(); refreshPz(); }
-      else if (sr) {
-        var on = !soundOn(); lsSet(K_SOUND, on ? "1" : "0");
-        if (on) { try { gateAudio(); if (window.GraceAudio) { if (window.GraceAudio.init) window.GraceAudio.init(); if (window.GraceAudio.playPop) window.GraceAudio.playPop(); } } catch (e2) {} }
-        refreshPz();
-      }
     });
   }
   function refreshPz() { var m = document.getElementById("aogPzMenu"); if (m && !m.hidden) m.innerHTML = pzMenuHtml(); }

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="aog-build" content="2026.06.12.0539">
+<meta name="aog-build" content="2026.06.12.0618">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Architecture of Grace · Universal Check-In</title>
 <meta name="description" content="Social-emotional learning built by a teacher, for real classrooms — the SEL that tends to the grown-ups before it measures a child. Private, de-identified, K–adult. A check-in, not an exam.">
@@ -872,6 +872,22 @@ th.sorted { color: var(--navy); }
   border-radius: 4px;
   transition: width 0.6s var(--ease-out);
 }
+/* ===== Dashboard "pop": band-colored, plain-language domain cards ===== */
+.domain-card.dom-pop { border-radius: var(--radius-lg, 14px); }
+.dom-pop .bar { height: 11px; margin: 12px 0 14px; }
+.dom-pop .bar-fill { transform-origin: left center; animation: aogBarGrow 0.9s cubic-bezier(.16,1,.3,1) both; }
+@keyframes aogBarGrow { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+.dom-pop .domain-card-score { font-size: 40px; font-weight: 800; }
+.dom-pop .domain-card-score span { font-size: 15px; font-weight: 600; }
+.dom-band {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-family: var(--font-sans); font-size: 12px; font-weight: 800;
+  letter-spacing: .03em; padding: 5px 13px; border-radius: 999px;
+}
+.dom-band::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
+/* KPI numbers — bigger, bolder pop */
+.kpi-value { font-size: 44px; font-weight: 800; line-height: 1.05; }
+@media (prefers-reduced-motion: reduce){ .dom-pop .bar-fill { animation: none; } }
 
 .dist-card {
   background: white;
@@ -4515,6 +4531,93 @@ function toggleTheme() {
 .pecs-card[tabindex]{ outline-offset:2px; }
 
 </style>
+<style id="aog-tools-styles">
+/* =====================================================================
+   ARCHITECTURE OF GRACE · tools.css
+   Rich, animated versions of four calm tools: Body Scan, Feelings Wheel,
+   Bilateral Tapping, Animal Yoga. Reduced-motion respected. No libraries.
+   ===================================================================== */
+
+/* shared */
+.aogt-wrap{ max-width:460px; margin:8px auto 0; text-align:center; }
+.aogt-cue{ font-family:var(--font-serif,Georgia,serif); font-size:18px; line-height:1.45; color:var(--navy,#0A1E33); min-height:54px; padding:0 6px;
+  transition:opacity .35s ease; }
+:root[data-theme="dark"] .aogt-cue{ color:var(--cream,#F4ECDA); }
+.aogt-controls{ display:flex; gap:10px; justify-content:center; margin-top:18px; flex-wrap:wrap; }
+.aogt-controls .btn{ min-width:120px; justify-content:center; }
+.aogt-progress{ font-family:var(--font-sans,system-ui); font-size:12px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--gold-deep,#9a6f24); margin-top:10px; }
+
+/* ---------- BODY SCAN ---------- */
+.bs-stage{ position:relative; width:170px; margin:14px auto 6px; }
+.bs-body path, .bs-body circle, .bs-body rect{ transition:fill .5s ease, opacity .5s ease; }
+.bs-region{ fill:var(--rule,#E4DAC5); opacity:.55; }
+.bs-region.on{ fill:var(--gold,#D9A33B); opacity:1; animation:bsPulse 2.2s ease-in-out infinite; }
+@keyframes bsPulse{ 0%,100%{ filter:drop-shadow(0 0 0 rgba(217,163,59,0)); } 50%{ filter:drop-shadow(0 0 7px rgba(217,163,59,.85)); } }
+.bs-beam{ pointer-events:none; }
+.bs-beam rect{ transition:transform 1.6s cubic-bezier(.45,.05,.55,.95); }
+
+/* ---------- FEELINGS WHEEL ---------- */
+.fw2-stage{ position:relative; width:280px; height:300px; margin:6px auto 0; }
+.fw2-wheel{ transform-origin:50% 50%; transition:transform 4.2s cubic-bezier(.15,.85,.25,1); }
+.fw2-pointer{ position:absolute; top:-2px; left:50%; transform:translateX(-50%); z-index:3;
+  width:0;height:0;border-left:13px solid transparent;border-right:13px solid transparent;border-top:20px solid var(--navy,#0A1E33);
+  filter:drop-shadow(0 2px 3px rgba(0,0,0,.3)); }
+.fw2-hub{ position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); z-index:2;
+  width:62px;height:62px;border-radius:50%; background:var(--paper,#fff); border:3px solid var(--navy,#0A1E33);
+  display:grid; place-items:center; font-size:26px; box-shadow:0 4px 12px rgba(0,0,0,.18); }
+.fw2-readout{ max-width:420px; margin:14px auto 0; min-height:88px; padding:14px 18px; border-radius:14px;
+  background:var(--cream-deep,#EDE6D6); border:1px solid var(--rule,#E4DAC5); transition:background .4s ease; }
+:root[data-theme="dark"] .fw2-readout{ background:rgba(255,255,255,.05); }
+.fw2-feel{ font-family:var(--font-serif,Georgia,serif); font-size:22px; font-weight:700; }
+.fw2-desc{ font-family:var(--font-sans,system-ui); font-size:14px; line-height:1.5; color:var(--ink,#0A1E33); margin-top:5px; }
+:root[data-theme="dark"] .fw2-desc{ color:var(--cream,#F4ECDA); }
+.fw2-tip{ font-family:var(--font-sans,system-ui); font-size:13px; font-style:italic; color:var(--ink-soft,#46506E); margin-top:7px; }
+
+/* ---------- BILATERAL TAPPING (butterfly hug) ---------- */
+.bh-stage{ width:230px; margin:12px auto 4px; }
+.bh-hand{ transform-origin:center; transition:transform .14s ease; }
+.bh-hand.tap{ animation:bhTap .42s ease; }
+@keyframes bhTap{ 0%{ transform:scale(1);} 35%{ transform:scale(1.35); } 100%{ transform:scale(1);} }
+.bh-glow{ opacity:0; transition:opacity .15s ease; }
+.bh-glow.on{ opacity:1; }
+.bh-beat{ display:inline-flex; gap:8px; margin-top:8px; }
+.bh-beat span{ width:11px;height:11px;border-radius:50%; background:var(--rule,#E4DAC5); transition:background .15s ease, transform .15s ease; }
+.bh-beat span.on{ background:var(--gold,#D9A33B); transform:scale(1.25); }
+
+/* ---------- ANIMAL YOGA ---------- */
+.ay-stage{ position:relative; width:200px; height:200px; margin:8px auto 0; display:grid; place-items:center; }
+.ay-ring{ position:absolute; inset:0; }
+.ay-ring circle{ transition:stroke-dashoffset 1s linear; }
+.ay-animal{ font-size:88px; line-height:1; user-select:none; }
+.ay-animal.go-butterfly{ animation:ayFlap 1.1s ease-in-out infinite; }
+.ay-animal.go-cat{ animation:ayArch 2.4s ease-in-out infinite; }
+.ay-animal.go-lion{ animation:ayRoar 1.8s ease-in-out infinite; }
+.ay-animal.go-dog{ animation:ayBob 1.6s ease-in-out infinite; }
+.ay-animal.go-frog{ animation:ayHop 1.3s ease-in-out infinite; }
+.ay-animal.go-bear{ animation:aySway 2.6s ease-in-out infinite; }
+@keyframes ayFlap{ 0%,100%{ transform:scaleX(1) rotate(-4deg);} 50%{ transform:scaleX(.62) rotate(4deg);} }
+@keyframes ayArch{ 0%,100%{ transform:rotate(-8deg) translateY(0);} 50%{ transform:rotate(8deg) translateY(-6px);} }
+@keyframes ayRoar{ 0%,100%{ transform:scale(1);} 45%{ transform:scale(1.22);} 60%{ transform:scale(1.12);} }
+@keyframes ayBob{ 0%,100%{ transform:translateY(0) rotate(0);} 50%{ transform:translateY(-10px) rotate(-5deg);} }
+@keyframes ayHop{ 0%,100%{ transform:translateY(0) scale(1,1);} 30%{ transform:translateY(0) scale(1.15,.82);} 60%{ transform:translateY(-26px) scale(.9,1.12);} }
+@keyframes aySway{ 0%,100%{ transform:rotate(-6deg);} 50%{ transform:rotate(6deg);} }
+.ay-name{ font-family:var(--font-serif,Georgia,serif); font-size:21px; font-weight:700; color:var(--navy,#0A1E33); margin-top:6px; }
+:root[data-theme="dark"] .ay-name{ color:var(--cream,#F4ECDA); }
+.ay-do{ font-family:var(--font-sans,system-ui); font-size:14px; line-height:1.5; color:var(--ink-soft,#46506E); max-width:380px; margin:4px auto 0; }
+.ay-thumbs{ display:flex; gap:8px; justify-content:center; flex-wrap:wrap; margin-top:16px; }
+.ay-thumb{ width:48px;height:48px;border-radius:12px; border:2px solid var(--rule,#E4DAC5); background:var(--paper,#fff); font-size:26px; cursor:pointer; line-height:1;
+  display:grid; place-items:center; transition:transform .14s ease, border-color .14s ease; }
+.ay-thumb:hover{ transform:translateY(-2px); }
+.ay-thumb.on{ border-color:var(--gold,#D9A33B); box-shadow:0 0 0 3px color-mix(in srgb, var(--gold) 26%, transparent); }
+.ay-hold{ font-family:var(--font-sans,system-ui); font-size:13px; font-weight:800; letter-spacing:.06em; text-transform:uppercase; color:var(--gold-deep,#9a6f24); margin-top:8px; }
+
+@media (prefers-reduced-motion: reduce){
+  .bs-region.on, .ay-animal, .bh-hand.tap { animation:none !important; }
+  .fw2-wheel{ transition:transform .4s ease; }
+  .bs-beam rect{ transition:none; }
+}
+
+</style>
 </head>
 <body>
 <div class="stage">
@@ -4615,7 +4718,7 @@ function toggleTheme() {
       <div class="hyb-bar">
         <span class="word"><b data-i18n="hyb_b1">Grace Over Performance</b></span>
       </div>
-      <p class="hyb-vp" data-i18n-html="hyb_vp">Most things measure people. <strong>This helps you understand them.</strong> A free, five-minute reflection for students, families, and educators &mdash; <span class="hyb-vp-em">grace before grades</span>.</p>
+      <p class="hyb-vp" data-i18n-html="hyb_vp">Most things measure people. <strong>This helps you understand them.</strong> A free, five-minute reflection for students, families, and educators.</p>
       <div class="hyb-lede" data-i18n-html="hyb_lede"><p class="hl-lead">Built by a special educator, it&rsquo;s a framework to strengthen relationships&mdash;with yourself and with one another&mdash;through identity, self-compassion, forgiveness, and grace.</p><p class="hl-close">Because growth begins with grace, not performance.</p></div>
       <!-- ===== PRIMARY CTAs — placed above "How one answer becomes growth" ===== -->
               <div class="hyb-cta-row">
@@ -5598,6 +5701,74 @@ function toggleTheme() {
     <div id="aogAgesPanel" class="ages-panel" style="display:none;"></div>
     <div id="myResultsReport"></div>
     <div class="fw-note" style="max-width:640px;margin:18px auto 6px;" data-i18n-html="mr_grace_close"><div class="fw-note-h">Grace, not performance</div><p>A score is a flag for a conversation, never a diagnosis &mdash; never a verdict on who you are. It&rsquo;s a starting point for being understood. Because growth begins with grace, not performance.</p></div>
+
+    <!-- ===== RESULTS LAUNCHPAD — the post-check-in pathway ===== -->
+    <style>
+      .aog-lp{ max-width:760px; margin:30px auto 8px; padding:24px 22px 26px; text-align:center;
+        background:linear-gradient(180deg, color-mix(in srgb, var(--gold-pale,#F1DFA8) 36%, var(--paper,#fff)), var(--paper,#fff));
+        border:1px solid var(--rule,#E4DAC5); border-radius:18px; box-shadow:0 14px 34px -22px rgba(10,30,51,.5); }
+      :root[data-theme="dark"] .aog-lp{ background:linear-gradient(180deg, rgba(20,34,48,.6), rgba(14,24,34,.5)); }
+      .aog-lp-eyebrow{ font-family:var(--font-sans); font-size:11px; font-weight:800; letter-spacing:.18em; text-transform:uppercase; color:var(--gold-deep,#9a6f24); }
+      .aog-lp-h{ font-family:var(--font-serif,Georgia,serif); font-size:clamp(22px,3vw,28px); color:var(--navy,#0A1E33); margin:4px 0 2px; }
+      .aog-lp-sub{ font-family:var(--font-sans); font-size:14px; color:var(--ink-soft,#46506E); max-width:520px; margin:0 auto 18px; line-height:1.5; }
+      :root[data-theme="dark"] .aog-lp-h{ color:var(--cream,#F4ECDA); }
+      /* progress strip */
+      .aog-lp-steps{ list-style:none; display:flex; align-items:flex-start; justify-content:center; gap:0; flex-wrap:wrap; margin:6px auto 22px; padding:0; max-width:640px; }
+      .aog-lp-step{ position:relative; flex:1 1 0; min-width:84px; display:flex; flex-direction:column; align-items:center; gap:6px; }
+      .aog-lp-step:not(:last-child)::after{ content:""; position:absolute; top:15px; left:calc(50% + 18px); right:calc(-50% + 18px); height:2px; background:var(--rule,#E4DAC5); }
+      .aog-lp-step.done:not(:last-child)::after{ background:var(--gold,#D9A33B); }
+      .aog-lp-num{ position:relative; z-index:1; width:30px; height:30px; border-radius:50%; display:grid; place-items:center;
+        font-family:var(--font-sans); font-size:13px; font-weight:800; background:var(--cream-deep,#EDE6D6); color:var(--ink-faint,#8A92A6); border:1.5px solid var(--rule,#E4DAC5); }
+      .aog-lp-step.done .aog-lp-num{ background:var(--gold,#D9A33B); color:#fff; border-color:var(--gold,#D9A33B); }
+      .aog-lp-step.current .aog-lp-num{ background:var(--navy,#0A1E33); color:#fff; border-color:var(--navy,#0A1E33); box-shadow:0 0 0 4px color-mix(in srgb, var(--gold) 28%, transparent); }
+      .aog-lp-lbl{ font-family:var(--font-sans); font-size:11.5px; font-weight:600; color:var(--ink-soft,#46506E); line-height:1.25; max-width:90px; }
+      .aog-lp-step.current .aog-lp-lbl{ color:var(--navy,#0A1E33); font-weight:800; }
+      :root[data-theme="dark"] .aog-lp-step.current .aog-lp-lbl{ color:var(--cream,#F4ECDA); }
+      .aog-lp-here{ font-family:var(--font-sans); font-size:9.5px; font-weight:800; letter-spacing:.08em; text-transform:uppercase; color:var(--gold-deep,#9a6f24); }
+      /* action cards */
+      .aog-lp-cards{ display:grid; grid-template-columns:repeat(3,1fr); gap:14px; text-align:left; }
+      @media (max-width:640px){ .aog-lp-cards{ grid-template-columns:1fr; } }
+      .aog-lp-card{ display:flex; flex-direction:column; background:var(--paper,#fff); border:1px solid var(--rule,#E4DAC5); border-radius:14px; padding:16px 16px 18px; }
+      :root[data-theme="dark"] .aog-lp-card{ background:rgba(255,255,255,.04); }
+      .aog-lp-ic{ width:38px; height:38px; border-radius:10px; display:grid; place-items:center; background:color-mix(in srgb, var(--gold,#D9A33B) 16%, transparent); color:var(--gold-deep,#9a6f24); margin-bottom:10px; }
+      .aog-lp-card h3{ font-family:var(--font-serif,Georgia,serif); font-size:17px; color:var(--navy,#0A1E33); margin:0 0 5px; }
+      :root[data-theme="dark"] .aog-lp-card h3{ color:var(--cream,#F4ECDA); }
+      .aog-lp-card p{ font-family:var(--font-sans); font-size:13px; line-height:1.5; color:var(--ink-soft,#46506E); margin:0 0 14px; flex:1 1 auto; }
+      .aog-lp-card .btn{ width:100%; justify-content:center; }
+    </style>
+    <section class="aog-lp" aria-labelledby="aogLpH">
+      <div class="aog-lp-eyebrow" data-i18n="lp_eyebrow">What now?</div>
+      <h2 id="aogLpH" class="aog-lp-h" data-i18n="lp_h">Your path from here</h2>
+      <p class="aog-lp-sub" data-i18n="lp_sub">A check-in is a beginning, not an ending. Here&rsquo;s where to go next.</p>
+      <ol class="aog-lp-steps" aria-label="Your journey">
+        <li class="aog-lp-step done"><span class="aog-lp-num" aria-hidden="true">&#10003;</span><span class="aog-lp-lbl" data-i18n="lp_s1">Check in</span></li>
+        <li class="aog-lp-step current"><span class="aog-lp-num" aria-hidden="true">2</span><span class="aog-lp-lbl" data-i18n="lp_s2">See results</span><span class="aog-lp-here" data-i18n="lp_here">You&rsquo;re here</span></li>
+        <li class="aog-lp-step"><span class="aog-lp-num" aria-hidden="true">3</span><span class="aog-lp-lbl" data-i18n="lp_s3">Explore resources</span></li>
+        <li class="aog-lp-step"><span class="aog-lp-num" aria-hidden="true">4</span><span class="aog-lp-lbl" data-i18n="lp_s4">Apply it</span></li>
+        <li class="aog-lp-step"><span class="aog-lp-num" aria-hidden="true">5</span><span class="aog-lp-lbl" data-i18n="lp_s5">Keep growing</span></li>
+      </ol>
+      <div class="aog-lp-cards">
+        <div class="aog-lp-card">
+          <span class="aog-lp-ic"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></span>
+          <h3 data-i18n="lp_a_t">Explore your resources</h3>
+          <p data-i18n="lp_a_s">See the lessons, charts, and novel chapters that match what you just shared.</p>
+          <button class="btn btn-secondary" type="button" onclick="if(typeof aogGoLibrary==='function'){aogGoLibrary();}" data-i18n="lp_a_b">Open the Library</button>
+        </div>
+        <div class="aog-lp-card">
+          <span class="aog-lp-ic"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg></span>
+          <h3 data-i18n="lp_b_t">Put the framework to work</h3>
+          <p data-i18n="lp_b_s">The full K&ndash;12 curriculum and the six-book novel series bring this into a classroom or home.</p>
+          <button class="btn" type="button" onclick="if(typeof aogGoStore==='function'){aogGoStore();}" data-i18n="lp_b_b">Browse the Store</button>
+        </div>
+        <div class="aog-lp-card">
+          <span class="aog-lp-ic"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2v4M12 18v4M2 12h4M18 12h4M4.9 4.9l2.8 2.8M16.3 16.3l2.8 2.8M19.1 4.9l-2.8 2.8M7.7 16.3l-2.8 2.8"/><circle cx="12" cy="12" r="3"/></svg></span>
+          <h3 data-i18n="lp_c_t">Keep growing</h3>
+          <p data-i18n="lp_c_s">Check in again over time, or use Family Mode to track it together.</p>
+          <button class="btn btn-secondary" type="button" onclick="if(typeof startChoose==='function'){startChoose();}" data-i18n="lp_c_b">Check in again</button>
+        </div>
+      </div>
+    </section>
+
     <div class="share-card" id="shareCard">
       <div class="share-card-head">
         <span class="share-ico"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z"/><path d="M3 20a6 6 0 0 1 12 0"/><path d="M16 7h5M18.5 4.5v5"/></svg></span>
@@ -7206,7 +7377,7 @@ function toggleTheme() {
     </div>
     <div class="sf-legal">© <span id="footYr"></span> The Architecture of Grace Foundation. All rights reserved. · Every score is a flag, not a diagnosis.</div>
     <div class="sf-made" data-i18n="foot_made">Made with care in Illinois.</div>
-    <div class="sf-build" style="margin-top:10px;font-size:10.5px;color:#5f6e80;letter-spacing:.04em;">Build 2026.06.12.0539</div>
+    <div class="sf-build" style="margin-top:10px;font-size:10.5px;color:#5f6e80;letter-spacing:.04em;">Build 2026.06.12.0618</div>
   </div>
 </footer>
 
@@ -8360,6 +8531,24 @@ const I18N_UI = {
     en: "Your results · just for you",
     es: "Tus resultados · solo para ti"
   },
+  lp_eyebrow: { en: "What now?", es: "¿Y ahora qué?" },
+  lp_h: { en: "Your path from here", es: "Tu camino desde aquí" },
+  lp_sub: { en: "A check-in is a beginning, not an ending. Here’s where to go next.", es: "Un chequeo es un comienzo, no un final. Esto es lo que sigue." },
+  lp_s1: { en: "Check in", es: "Chequeo" },
+  lp_s2: { en: "See results", es: "Ver resultados" },
+  lp_s3: { en: "Explore resources", es: "Explorar recursos" },
+  lp_s4: { en: "Apply it", es: "Aplicarlo" },
+  lp_s5: { en: "Keep growing", es: "Seguir creciendo" },
+  lp_here: { en: "You’re here", es: "Estás aquí" },
+  lp_a_t: { en: "Explore your resources", es: "Explora tus recursos" },
+  lp_a_s: { en: "See the lessons, charts, and novel chapters that match what you just shared.", es: "Mira las lecciones, láminas y capítulos de las novelas que coinciden con lo que compartiste." },
+  lp_a_b: { en: "Open the Library", es: "Abrir la biblioteca" },
+  lp_b_t: { en: "Put the framework to work", es: "Pon en práctica el marco" },
+  lp_b_s: { en: "The full K–12 curriculum and the six-book novel series bring this into a classroom or home.", es: "El currículo completo K–12 y la serie de seis novelas lo llevan al aula o al hogar." },
+  lp_b_b: { en: "Browse the Store", es: "Explorar la tienda" },
+  lp_c_t: { en: "Keep growing", es: "Sigue creciendo" },
+  lp_c_s: { en: "Check in again over time, or use Family Mode to track it together.", es: "Vuelve a hacer el chequeo con el tiempo, o usa el Modo Familiar para seguirlo juntos." },
+  lp_c_b: { en: "Check in again", es: "Hacer otro chequeo" },
   mr_h1: {
     en: "How you’re doing",
     es: "Cómo te va"
@@ -9283,8 +9472,8 @@ const I18N_UI = {
   fw_7_p: { en: "<p>My name is Jimmy Ramsden. I didn’t come to this work from a boardroom — I came to it from the classroom, where I still teach today as a special educator.</p><p>For more than a decade I’ve worked as an Illinois-certified special educator across elementary and junior-high classrooms — in self-contained, resource, and social-behavioral settings — and I hold a Learning Behavior Specialist endorsement for students from preschool through age twenty-two. Along the way I built and ran an elementary Social-Behavioral Learning resource program, where I coach students in the very skills this curriculum is built around: naming what they feel, steadying themselves, and trying again. The Architecture of Grace isn’t a departure from that classroom work — it’s two decades of it, gathered into something I can hand to other teachers.</p><p>My journey started at Humboldt State University with a degree in political science. But the real catalyst came in 2006. I was driving up to Oregon for a show — Anticon, the hip-hop collective whose music had been part of my life for as long as I can remember — when a serious car crash left me with a traumatic brain injury and a neurological disability. Rebuilding my life changed how I understand struggle, patience, and grace, and it’s what turned me toward special education and a master’s at Aurora University in Aurora, Illinois. It’s the reason this work isn’t abstract to me.</p><p>Anticon never left me. The only tattoos I carry come from them — ants for my family (my sister, my parents, and me) and the name itself. Over the years I came to read it the way I try to teach: anti-con — without lies. Meeting people honestly, as they really are, is the ground everything here is built on.</p><p>The Architecture of Grace grew out of a conviction that individuals deserve more than to be measured — they deserve to be understood. Built under The Architecture of Grace Foundation, everything here rests on four core pillars:</p><ul class='fw-story-pillars'><li><strong>Identity</strong> — who a person comes to believe they are.</li><li><strong>Self-Compassion</strong> — how a person learns to speak to themselves.</li><li><strong>Forgiveness</strong> — moving past mistakes to make room for growth.</li><li><strong>Grace</strong> — meeting a person with understanding rather than only judgment.</li></ul><p>As a teacher and a father, these are the values I want for my students, my own children — and for anyone willing to do this work.</p><p class='fw-story-sign'>— Jimmy Ramsden</p>", es: "<p>Me llamo Jimmy Ramsden. No llegué a este trabajo desde una sala de juntas, sino desde el aula, donde sigo enseñando hoy como educador especial.</p><p>Durante más de una década he trabajado como educador especial certificado en Illinois en aulas de primaria y secundaria —en entornos autónomos, de recursos y socioconductuales— y cuento con la certificación de Learning Behavior Specialist para estudiantes desde preescolar hasta los veintidós años. En el camino creé y dirigí un programa de recursos de Aprendizaje Socioconductual en primaria, donde acompaño a los estudiantes en las mismas destrezas sobre las que se construye este currículo: nombrar lo que sienten, serenarse e intentarlo de nuevo. The Architecture of Grace no es una desviación de ese trabajo en el aula: son dos décadas de ese trabajo, reunidas en algo que puedo entregar a otros docentes.</p><p>Mi camino comenzó en Humboldt State University con una licenciatura en ciencias políticas. Pero el verdadero punto de inflexión llegó en 2006. Conducía hacia Oregón para asistir a un concierto —Anticon, el colectivo de hip-hop cuya música ha sido parte de mi vida desde que tengo memoria— cuando un grave accidente de auto me dejó con una lesión cerebral traumática y una discapacidad neurológica. Reconstruir mi vida cambió mi forma de entender la lucha, la paciencia y la gracia, y es lo que me orientó hacia la educación especial y hacia una maestría en Aurora University, en Aurora, Illinois. Es la razón por la que este trabajo no es algo abstracto para mí.</p><p>Anticon nunca me abandonó. Los únicos tatuajes que llevo vienen de ellos: hormigas por mi familia (mi hermana, mis padres y yo) y el propio nombre. Con los años llegué a leerlo como intento enseñar: anti-con, sin mentiras. Encontrarse con las personas con honestidad, tal como realmente son, es el terreno sobre el que se construye todo aquí.</p><p>The Architecture of Grace surgió de la convicción de que las personas merecen algo más que ser medidas: merecen ser comprendidas. Creado bajo The Architecture of Grace Foundation, todo aquí se apoya en cuatro pilares fundamentales:</p><ul class='fw-story-pillars'><li><strong>Identidad</strong> — quién llega una persona a creer que es.</li><li><strong>Autocompasión</strong> — cómo aprende una persona a hablarse a sí misma.</li><li><strong>Perdón</strong> — dejar atrás los errores para dar espacio al crecimiento.</li><li><strong>Gracia</strong> — encontrarse con una persona desde la comprensión y no solo desde el juicio.</li></ul><p>Como maestro y como padre, estos son los valores que deseo para mis estudiantes, para mis propios hijos, y para cualquiera dispuesto a hacer este trabajo.</p><p class='fw-story-sign'>— Jimmy Ramsden</p>" },
   fw_browse: { en: "Browse the guide & resources \u2192", es: "Explora la gu\u00eda y los recursos \u2192" },
   hyb_vp: {
-    en: "Most things measure people. <strong>This helps you understand them.</strong> A free, five-minute reflection for students, families, and educators \u2014 <span class='hyb-vp-em'>grace before grades</span>.",
-    es: "Casi todo mide a las personas. <strong>Esto te ayuda a comprenderlas.</strong> Una reflexi\u00f3n gratuita de cinco minutos para estudiantes, familias y educadores \u2014 <span class='hyb-vp-em'>gracia antes que calificaciones</span>."
+    en: "Most things measure people. <strong>This helps you understand them.</strong> A free, five-minute reflection for students, families, and educators.",
+    es: "Casi todo mide a las personas. <strong>Esto te ayuda a comprenderlas.</strong> Una reflexi\u00f3n gratuita de cinco minutos para estudiantes, familias y educadores."
   },
   hyb_lede: {
     en: "<p class='hl-lead'>Built by a special educator, it\u2019s a framework to strengthen relationships\u2014with yourself and with one another\u2014through identity, self-compassion, forgiveness, and grace.</p><p class='hl-close'>Because growth begins with grace, not performance.</p>",
@@ -11949,10 +12138,26 @@ function aogFwPanel(btn, name) {
   var panel = document.getElementById("fw-panel-" + name);
   if (!panel) return;
   var opening = panel.hasAttribute("hidden");
+  // Single-open: close every other panel and clear every other tab first.
+  document.querySelectorAll(".fw-panel").forEach(function (p) { if (p !== panel) p.setAttribute("hidden", ""); });
+  document.querySelectorAll(".fw-tab").forEach(function (t) {
+    if (t !== btn) { t.classList.remove("active"); t.setAttribute("aria-expanded", "false"); }
+  });
   if (opening) { panel.removeAttribute("hidden"); } else { panel.setAttribute("hidden", ""); }
   btn.classList.toggle("active", opening);
   btn.setAttribute("aria-expanded", opening ? "true" : "false");
-  if (opening) { setTimeout(function () { try { panel.scrollIntoView({ behavior: "smooth", block: "nearest" }); } catch (e) {} }, 70); }
+  if (opening) {
+    setTimeout(function () {
+      try {
+        var topbar = document.querySelector(".topbar");
+        var off = (topbar ? topbar.offsetHeight : 70) + 14;
+        // anchor on the tab row so the active tab stays in view and the panel begins right below it
+        var anchor = document.querySelector(".fw-tabs") || panel;
+        var y = anchor.getBoundingClientRect().top + window.pageYOffset - off;
+        window.scrollTo({ top: Math.max(0, y), behavior: "smooth" });
+      } catch (e) {}
+    }, 70);
+  }
 }
 function startAdult() {
   population = "adult";
@@ -13471,7 +13676,11 @@ function renderOverview() {
   if ($("#ovSummary")) {
     $("#ovSummary").innerHTML = _0x139ba8;
   }
-  $("#kpiGrid").innerHTML = "<div class=\"kpi\"><div class=\"kpi-accent accent-navy\"></div><div class=\"kpi-label\">" + DT("Checked in", "Hicieron el check-in") + "</div><div class=\"kpi-value\">" + _0x5e01d8 + "</div><div class=\"kpi-sub\">" + ($("#filterWindow").value ? winLabel($("#filterWindow").value) : DT("All windows", "Todos los períodos")) + "</div></div><div class=\"kpi\"><div class=\"kpi-accent accent-navy\"></div><div class=\"kpi-label\">" + DT("Average score", "Puntaje promedio") + "</div><div class=\"kpi-value\">" + (_0x5e01d8 ? _0x2c6b81.toFixed(0) : "—") + "</div><div class=\"kpi-sub\">" + DT("out of 100", "de 100") + "</div></div><div class=\"kpi\"><div class=\"kpi-accent accent-gold\"></div><div class=\"kpi-label\">" + DT("No trusted adult", "Sin adulto de confianza") + "</div><div class=\"kpi-value\">" + _0x41f97b + "</div><div class=\"kpi-sub\">" + DT("named no one they trust", "no nombraron a nadie de confianza") + "</div></div>";
+  var _ovAvg = _0x5e01d8 ? _0x2c6b81 : null;
+  var _ovAvgC = _ovAvg == null ? "var(--ink)" : (_ovAvg >= 75 ? "var(--green)" : _ovAvg >= 50 ? "var(--amber)" : "var(--red)");
+  var _ovAvgSub = _ovAvg == null ? DT("out of 100", "de 100") : (_ovAvg >= 75 ? DT("Doing well · out of 100", "Va bien · de 100") : _ovAvg >= 50 ? DT("Worth a check-in · out of 100", "Vale un chequeo · de 100") : DT("Needs support · out of 100", "Necesita apoyo · de 100"));
+  var _ovTaC = _0x41f97b > 0 ? "var(--red)" : "var(--green)";
+  $("#kpiGrid").innerHTML = "<div class=\"kpi\"><div class=\"kpi-accent accent-navy\"></div><div class=\"kpi-label\">" + DT("Checked in", "Hicieron el check-in") + "</div><div class=\"kpi-value\">" + _0x5e01d8 + "</div><div class=\"kpi-sub\">" + ($("#filterWindow").value ? winLabel($("#filterWindow").value) : DT("All windows", "Todos los períodos")) + "</div></div><div class=\"kpi\"><div class=\"kpi-accent accent-navy\"></div><div class=\"kpi-label\">" + DT("Average score", "Puntaje promedio") + "</div><div class=\"kpi-value\" style=\"color:" + _ovAvgC + "\">" + (_0x5e01d8 ? _0x2c6b81.toFixed(0) : "—") + "</div><div class=\"kpi-sub\">" + _ovAvgSub + "</div></div><div class=\"kpi\"><div class=\"kpi-accent accent-gold\"></div><div class=\"kpi-label\">" + DT("No trusted adult", "Sin adulto de confianza") + "</div><div class=\"kpi-value\" style=\"color:" + _ovTaC + "\">" + _0x41f97b + "</div><div class=\"kpi-sub\">" + DT("named no one they trust", "no nombraron a nadie de confianza") + "</div></div>";
   const _0x5b79f9 = $("#distBar");
   if (_0x5e01d8 === 0) {
     _0x5b79f9.innerHTML = "<div class=\"dist-segment\" style=\"flex:1;background:var(--rule-soft);color:var(--ink-faint);\">" + DT("No data", "Sin datos") + "</div>";
@@ -13546,7 +13755,17 @@ function renderOverview() {
   if (typeof aogAnnotateTips === "function") { try { aogAnnotateTips(); } catch (_e) {} }
 }
 function domainCard(_0x4eb3ea, _0x5c261b) {
-  return "<div class=\"domain-card\"><div class=\"domain-card-head\"><div class=\"domain-card-title\">" + escapeHtml(_0x4eb3ea) + "</div><div class=\"domain-card-score\">" + _0x5c261b.toFixed(0) + "<span> / 100</span></div></div><div class=\"bar\"><div class=\"bar-fill\" style=\"width:" + _0x5c261b.toFixed(0) + "%\"></div></div></div>";
+  var v = Math.max(0, Math.min(100, _0x5c261b || 0));
+  var c, bg, lbl;
+  if (v >= 75) { c = "var(--green)"; bg = "var(--green-bg)"; lbl = DT("Doing well", "Va bien"); }
+  else if (v >= 50) { c = "var(--amber)"; bg = "var(--amber-bg)"; lbl = DT("Worth a check-in", "Vale un chequeo"); }
+  else { c = "var(--red)"; bg = "var(--red-bg)"; lbl = DT("Needs support", "Necesita apoyo"); }
+  return "<div class=\"domain-card dom-pop\" style=\"border-left:5px solid " + c + "\">"
+    + "<div class=\"domain-card-head\"><div class=\"domain-card-title\">" + escapeHtml(_0x4eb3ea) + "</div>"
+    + "<div class=\"domain-card-score\" style=\"color:" + c + "\">" + v.toFixed(0) + "<span> / 100</span></div></div>"
+    + "<div class=\"bar\"><div class=\"bar-fill\" style=\"width:" + v.toFixed(0) + "%;background:" + c + "\"></div></div>"
+    + "<span class=\"dom-band\" style=\"background:" + bg + ";color:" + c + "\">" + lbl + "</span>"
+    + "</div>";
 }
 let studentSort = {
   key: "date",
@@ -21336,7 +21555,7 @@ window.addEventListener('load', _installToolScreenHook);
      PERSONALIZE POPOVER (header) — tone · accent · sound
      ===================================================================== */
   function pzMenuHtml() {
-    var a = accent(), aud = audience(), snd = soundOn();
+    var a = accent(), aud = audience();
     var sw = "";
     for (var i = 0; i < ACCENTS.length; i++) {
       var name = ACCENTS[i];
@@ -21356,13 +21575,6 @@ window.addEventListener('load', _installToolScreenHook);
       + '<div class="aog-pz-sec">'
         + '<div class="aog-pz-row-t" style="padding:0 4px 8px;">' + t("Accent color", "Color de acento") + '</div>'
         + '<div class="aog-swatches">' + sw + '</div>'
-      + '</div>'
-      + '<div class="aog-pz-sec">'
-        + '<button type="button" class="aog-pz-row" id="aogSoundRow" role="menuitemcheckbox" aria-checked="' + (snd ? "true" : "false") + '">'
-          + '<span class="aog-pz-row-tx"><span class="aog-pz-row-t">' + t("Sound", "Sonido") + '</span>'
-          + '<span class="aog-pz-row-s">' + t("Gentle tones on actions (off by default)", "Tonos suaves en las acciones (apagado por defecto)") + '</span></span>'
-          + '<span class="aog-pz-switch" aria-hidden="true"></span>'
-        + '</button>'
       + '</div>';
   }
   function buildPz() {
@@ -21386,14 +21598,8 @@ window.addEventListener('load', _installToolScreenHook);
       e.stopPropagation();
       var tb = e.target.closest ? e.target.closest("[data-aud]") : null;
       var ab = e.target.closest ? e.target.closest("[data-accent]") : null;
-      var sr = e.target.closest ? e.target.closest("#aogSoundRow") : null;
       if (tb) { lsSet(K_AUD, tb.getAttribute("data-aud")); refreshGrace(); refreshPz(); }
       else if (ab) { lsSet(K_ACCENT, ab.getAttribute("data-accent")); applyAccent(); refreshPz(); }
-      else if (sr) {
-        var on = !soundOn(); lsSet(K_SOUND, on ? "1" : "0");
-        if (on) { try { gateAudio(); if (window.GraceAudio) { if (window.GraceAudio.init) window.GraceAudio.init(); if (window.GraceAudio.playPop) window.GraceAudio.playPop(); } } catch (e2) {} }
-        refreshPz();
-      }
     });
   }
   function refreshPz() { var m = document.getElementById("aogPzMenu"); if (m && !m.hidden) m.innerHTML = pzMenuHtml(); }
@@ -21694,6 +21900,311 @@ window.addEventListener('load', _installToolScreenHook);
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init);
   else init();
   window.addEventListener("load", function () { try { hookShowScreen(); wrapRefreshAdmin(); watchResponses(); applyFocusable(); } catch (e) {} });
+})();
+
+</script>
+<!-- AOG TOOLS -->
+<script>
+/* =====================================================================
+   ARCHITECTURE OF GRACE · tools.js
+   Rich, animated replacements for four calm tools. Overrides TOOLS so the
+   originals stay intact. ES5, defensive, reduced-motion aware, no libraries.
+     · Body Scan  — glowing scan-line travels the body, cues soften each part
+     · Feelings Wheel — a real spinning wheel that lands and reads the feeling
+     · Bilateral Tapping — animated butterfly hug you tap along with
+     · Animal Yoga — animated poses with a hold-and-breathe timer
+   ===================================================================== */
+(function () {
+  'use strict';
+  function L() { try { if (typeof lang !== "undefined" && lang) return lang; } catch (e) {} return "en"; }
+  function t(en, es) { return L() === "es" ? es : en; }
+  function $(id) { return document.getElementById(id); }
+  function reduce() { try { return window.matchMedia("(prefers-reduced-motion: reduce)").matches; } catch (e) { return false; } }
+
+  var TIMERS = [];
+  function clearTimers() { for (var i = 0; i < TIMERS.length; i++) { clearTimeout(TIMERS[i]); clearInterval(TIMERS[i]); } TIMERS = []; }
+  function after(fn, ms) { var id = setTimeout(fn, ms); TIMERS.push(id); return id; }
+  function every(fn, ms) { var id = setInterval(fn, ms); TIMERS.push(id); return id; }
+
+  /* ===================================================================
+     BODY SCAN
+     =================================================================== */
+  function bsRegions() {
+    return [
+      { reg: "face", cy: 30, cue: t("Let your face go soft. Unclench your jaw.", "Suaviza tu cara. Afloja la mandíbula.") },
+      { reg: "shoulders", cy: 66, cue: t("Let your shoulders drop down, away from your ears.", "Deja caer los hombros, lejos de las orejas.") },
+      { reg: "arms", cy: 98, cue: t("Let your arms grow heavy. Open your hands.", "Deja los brazos pesados. Abre las manos.") },
+      { reg: "belly", cy: 120, cue: t("Let your belly rise and fall. Nothing to hold.", "Deja que la barriga suba y baje. Nada que sostener.") },
+      { reg: "legs", cy: 176, cue: t("Let your legs feel heavy and loose.", "Siente las piernas pesadas y sueltas.") },
+      { reg: "feet", cy: 228, cue: t("Let your feet rest. You're all the way down — take one slow breath.", "Deja descansar los pies. Llegaste hasta abajo — respira lento.") }
+    ];
+  }
+  var BS_SVG =
+    '<svg class="bs-body" viewBox="0 0 120 250" width="100%" role="img" aria-label="Body figure">'
+    + '<circle data-reg="face" class="bs-region" cx="60" cy="30" r="19"/>'
+    + '<rect data-reg="shoulders" class="bs-region" x="30" y="52" width="60" height="17" rx="8"/>'
+    + '<rect data-reg="arms" class="bs-region" x="20" y="60" width="12" height="64" rx="6"/>'
+    + '<rect data-reg="arms" class="bs-region" x="88" y="60" width="12" height="64" rx="6"/>'
+    + '<rect data-reg="belly" class="bs-region" x="40" y="66" width="40" height="58" rx="14"/>'
+    + '<rect data-reg="legs" class="bs-region" x="45" y="122" width="13" height="92" rx="6"/>'
+    + '<rect data-reg="legs" class="bs-region" x="62" y="122" width="13" height="92" rx="6"/>'
+    + '<rect data-reg="feet" class="bs-region" x="42" y="214" width="18" height="13" rx="5"/>'
+    + '<rect data-reg="feet" class="bs-region" x="60" y="214" width="18" height="13" rx="5"/>'
+    + '<g class="bs-beam"><rect x="4" y="-6" width="112" height="12" rx="6" fill="var(--gold-soft,#F2C964)" opacity="0.55"/></g>'
+    + '</svg>';
+  function bsBuilder() {
+    return '<div class="tool-modal-icon">🧘</div>'
+      + '<div class="tool-modal-title">' + t("Body Scan", "Escaneo corporal") + '</div>'
+      + '<div class="tool-modal-sub">' + t("Watch the light travel down. Soften each part as it glows.", "Mira la luz bajar. Suaviza cada parte cuando brille.") + '</div>'
+      + '<div class="aogt-wrap"><div class="bs-stage">' + BS_SVG + '</div>'
+      + '<div class="aogt-cue" id="bsCue">' + t("Press start when you're ready.", "Pulsa empezar cuando estés listo.") + '</div>'
+      + '<div class="aogt-progress" id="bsProg"></div>'
+      + '<div class="aogt-controls"><button class="btn" id="bsStart" style="background:var(--gold);color:var(--navy);">' + t("Start the scan", "Empezar el escaneo") + '</button></div></div>';
+  }
+  function bsHi(reg) {
+    var nodes = document.querySelectorAll(".bs-body .bs-region");
+    for (var i = 0; i < nodes.length; i++) { nodes[i].classList.toggle("on", nodes[i].getAttribute("data-reg") === reg); }
+  }
+  function bsInit() {
+    clearTimers();
+    var btn = $("bsStart"); if (!btn) return;
+    btn.onclick = function () {
+      var regs = bsRegions(), beam = document.querySelector(".bs-beam rect"), i = 0;
+      var dwell = reduce() ? 3200 : 5200;
+      btn.disabled = true; btn.textContent = t("Scanning…", "Escaneando…");
+      function step() {
+        if (i >= regs.length) {
+          bsHi(null);
+          var cue = $("bsCue"); if (cue) cue.textContent = t("Done. Your whole body just got a little softer. 💛", "Listo. Todo tu cuerpo se suavizó un poco. 💛");
+          var prog = $("bsProg"); if (prog) prog.textContent = "";
+          btn.disabled = false; btn.textContent = t("Scan again", "Escanear otra vez");
+          return;
+        }
+        var r = regs[i];
+        bsHi(r.reg);
+        if (beam) beam.setAttribute("transform", "translate(0," + r.cy + ")");
+        var cue = $("bsCue"); if (cue) { cue.style.opacity = 0; after(function () { cue.textContent = r.cue; cue.style.opacity = 1; }, 180); }
+        var prog = $("bsProg"); if (prog) prog.textContent = t("Part ", "Parte ") + (i + 1) + t(" of ", " de ") + regs.length;
+        i++; after(step, dwell);
+      }
+      step();
+    };
+  }
+
+  /* ===================================================================
+     FEELINGS WHEEL
+     =================================================================== */
+  function feelings() {
+    return [
+      { n: t("Happy", "Feliz"), c: "#E6A817", d: t("A warm, light feeling — things feel good right now.", "Un sentimiento cálido y ligero — todo se siente bien."), tip: t("Share it with someone — happy grows when you do.", "Compártelo con alguien — la alegría crece al hacerlo.") },
+      { n: t("Calm", "Tranquilo"), c: "#2BA199", d: t("Settled and easy, like still water. Nothing to rush.", "En calma, como agua quieta. Nada de prisa."), tip: t("Notice it. This is what safe feels like.", "Nótalo. Así se siente estar a salvo.") },
+      { n: t("Sad", "Triste"), c: "#2E7CD6", d: t("A heavy, quiet feeling. Something feels like a loss.", "Un sentimiento pesado y callado. Algo se siente como una pérdida."), tip: t("It's okay to feel it. Tell someone you trust.", "Está bien sentirlo. Dile a alguien de confianza.") },
+      { n: t("Angry", "Enojado"), c: "#D85A30", d: t("A hot, strong feeling — something felt unfair.", "Un sentimiento fuerte y caliente — algo se sintió injusto."), tip: t("Take one slow breath before you act. You're the boss of it.", "Respira lento antes de actuar. Tú mandas sobre el enojo.") },
+      { n: t("Scared", "Asustado"), c: "#7C5CD6", d: t("A jumpy feeling — your body thinks something might be wrong.", "Un sentimiento nervioso — tu cuerpo cree que algo anda mal."), tip: t("You're safe right now. Find one grown-up or one safe spot.", "Ahora estás a salvo. Busca un adulto o un lugar seguro.") },
+      { n: t("Worried", "Preocupado"), c: "#4F9E3A", d: t("Your mind keeps circling a what-if that hasn't happened.", "Tu mente da vueltas a un \"y si\" que no ha pasado."), tip: t("Name the worry out loud — it shrinks when you do.", "Di la preocupación en voz alta — se hace pequeña.") },
+      { n: t("Excited", "Emocionado"), c: "#D4537E", d: t("A buzzy, can't-wait feeling — big energy inside.", "Un sentimiento vibrante — mucha energía por dentro."), tip: t("Wiggle it out, then take a breath to steady it.", "Sacúdela, luego respira para calmarla.") },
+      { n: t("Tired", "Cansado"), c: "#888780", d: t("Low and slow — your body or mind needs a rest.", "Bajo y lento — tu cuerpo o mente necesita descansar."), tip: t("Rest isn't lazy. Give yourself a quiet minute.", "Descansar no es pereza. Date un minuto de calma.") }
+    ];
+  }
+  function fwPolar(cx, cy, r, a) { var rad = (a - 90) * Math.PI / 180; return [cx + r * Math.cos(rad), cy + r * Math.sin(rad)]; }
+  function fwWedge(cx, cy, r, a0, a1) {
+    var p0 = fwPolar(cx, cy, r, a0), p1 = fwPolar(cx, cy, r, a1);
+    return "M" + cx + " " + cy + " L" + p0[0].toFixed(1) + " " + p0[1].toFixed(1) + " A" + r + " " + r + " 0 0 1 " + p1[0].toFixed(1) + " " + p1[1].toFixed(1) + " Z";
+  }
+  function fwBuilder() {
+    var F = feelings(), n = F.length, seg = 360 / n, cx = 140, cy = 140, r = 132, g = "";
+    for (var i = 0; i < n; i++) {
+      var a0 = i * seg, a1 = a0 + seg, mid = a0 + seg / 2;
+      g += '<path d="' + fwWedge(cx, cy, r, a0, a1) + '" fill="' + F[i].c + '" stroke="#fff" stroke-width="2"/>';
+      var lp = fwPolar(cx, cy, 88, mid);
+      g += '<text x="' + lp[0].toFixed(1) + '" y="' + lp[1].toFixed(1) + '" text-anchor="middle" dominant-baseline="central" font-family="var(--font-sans,system-ui)" font-size="14" font-weight="800" fill="#fff" transform="rotate(' + mid + ' ' + lp[0].toFixed(1) + ' ' + lp[1].toFixed(1) + ')">' + esc(F[i].n) + '</text>';
+    }
+    return '<div class="tool-modal-icon">🎡</div>'
+      + '<div class="tool-modal-title">' + t("Feelings Wheel", "Rueda de emociones") + '</div>'
+      + '<div class="tool-modal-sub">' + t("Give it a spin — then meet the feeling it lands on.", "Gírala — y conoce el sentimiento donde se detenga.") + '</div>'
+      + '<div class="aogt-wrap"><div class="fw2-stage"><div class="fw2-pointer"></div>'
+      + '<svg class="fw2-wheel" id="fw2Wheel" viewBox="0 0 280 280" width="280" height="280" role="img" aria-label="Feelings wheel">' + g + '</svg>'
+      + '<div class="fw2-hub">🎡</div></div>'
+      + '<div class="fw2-readout" id="fw2Read"><div class="fw2-desc">' + t("Press spin to begin.", "Pulsa girar para empezar.") + '</div></div>'
+      + '<div class="aogt-controls"><button class="btn" id="fw2Spin" style="background:var(--gold);color:var(--navy);">' + t("Spin the wheel", "Girar la rueda") + '</button></div></div>';
+  }
+  function esc(s) { return String(s == null ? "" : s).replace(/[&<>"]/g, function (c) { return ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]; }); }
+  var _fwRot = 0;
+  function fwInit() {
+    clearTimers(); _fwRot = 0;
+    var wheel = $("fw2Wheel"), btn = $("fw2Spin"); if (!wheel || !btn) return;
+    var F = feelings(), n = F.length, seg = 360 / n;
+    btn.onclick = function () {
+      btn.disabled = true;
+      var i = Math.floor(Math.random() * n);
+      var base = ((360 - (i * seg + seg / 2)) % 360 + 360) % 360;
+      var jitter = (Math.random() - 0.5) * (seg * 0.5);
+      var turns = reduce() ? 1 : 4;
+      var target = _fwRot - (_fwRot % 360) + turns * 360 + base + jitter;
+      while (target <= _fwRot + 360) target += 360;
+      _fwRot = target;
+      wheel.style.transform = "rotate(" + target.toFixed(1) + "deg)";
+      var wait = reduce() ? 500 : 4300;
+      after(function () {
+        var f = F[i], read = $("fw2Read");
+        if (read) {
+          read.style.background = "color-mix(in srgb, " + f.c + " 16%, var(--cream-deep,#EDE6D6))";
+          read.innerHTML = '<div class="fw2-feel" style="color:' + f.c + '">' + esc(f.n) + '</div>'
+            + '<div class="fw2-desc">' + esc(f.d) + '</div><div class="fw2-tip">' + esc(f.tip) + '</div>';
+        }
+        try {
+          if ('speechSynthesis' in window) {
+            var u = new SpeechSynthesisUtterance(f.n + ". " + f.d);
+            u.rate = 0.92; u.pitch = 1.05; u.lang = L() === "es" ? "es-ES" : "en-US";
+            window.speechSynthesis.cancel(); window.speechSynthesis.speak(u);
+          }
+        } catch (e) {}
+        btn.disabled = false; btn.textContent = t("Spin again", "Girar otra vez");
+      }, wait);
+    };
+  }
+
+  /* ===================================================================
+     BILATERAL TAPPING — Butterfly Hug
+     =================================================================== */
+  var BH_SVG =
+    '<svg class="bh-fig" viewBox="0 0 200 180" width="100%" role="img" aria-label="Butterfly hug figure">'
+    + '<circle cx="100" cy="34" r="22" fill="var(--gold-pale,#F1DFA8)" stroke="var(--navy,#0A1E33)" stroke-width="2.5"/>'
+    + '<path d="M64 150 Q64 78 100 78 Q136 78 136 150 Z" fill="var(--gold-soft,#F2C964)" stroke="var(--navy,#0A1E33)" stroke-width="2.5"/>'
+    + '<path d="M132 96 Q108 104 86 120" fill="none" stroke="var(--navy,#0A1E33)" stroke-width="6" stroke-linecap="round"/>'
+    + '<path d="M68 96 Q92 104 114 120" fill="none" stroke="var(--navy,#0A1E33)" stroke-width="6" stroke-linecap="round"/>'
+    + '<circle class="bh-glow" id="bhGlowL" cx="86" cy="120" r="20" fill="var(--gold,#D9A33B)" opacity="0"/>'
+    + '<circle class="bh-glow" id="bhGlowR" cx="114" cy="120" r="20" fill="var(--gold,#D9A33B)" opacity="0"/>'
+    + '<circle class="bh-hand" id="bhLeft" cx="86" cy="120" r="13" fill="#fff" stroke="var(--navy,#0A1E33)" stroke-width="2.5"/>'
+    + '<circle class="bh-hand" id="bhRight" cx="114" cy="120" r="13" fill="#fff" stroke="var(--navy,#0A1E33)" stroke-width="2.5"/>'
+    + '</svg>';
+  function bhBuilder() {
+    return '<div class="tool-modal-icon">🦋</div>'
+      + '<div class="tool-modal-title">' + t("Butterfly Hug", "Abrazo de mariposa") + '</div>'
+      + '<div class="tool-modal-sub">' + t("Cross your arms, hands on your shoulders. Tap along — left, right, left, right.", "Cruza los brazos, manos en los hombros. Toca al ritmo — izquierda, derecha.") + '</div>'
+      + '<div class="aogt-wrap"><div class="bh-stage">' + BH_SVG + '</div>'
+      + '<div class="bh-beat" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span><span></span></div>'
+      + '<div class="aogt-cue" id="bhCue">' + t("Press start and tap with the glow.", "Pulsa empezar y toca con el brillo.") + '</div>'
+      + '<div class="aogt-controls"><button class="btn" id="bhStart" style="background:var(--gold);color:var(--navy);">' + t("Start tapping", "Empezar a tocar") + '</button></div></div>';
+  }
+  function bhInit() {
+    clearTimers();
+    var btn = $("bhStart"); if (!btn) return;
+    var running = false, side = 0, count = 0;
+    var cues = [
+      t("Right… left… right… left.", "Derecha… izquierda…"),
+      t("Slow and steady. Let your shoulders drop.", "Lento y constante. Baja los hombros."),
+      t("Breathe in… and out… keep tapping.", "Inhala… exhala… sigue tocando."),
+      t("You're doing great. Calm is coming.", "Lo haces muy bien. La calma llega.")
+    ];
+    function beat() {
+      var hand = $(side ? "bhRight" : "bhLeft"), glow = $(side ? "bhGlowR" : "bhGlowL");
+      var beats = document.querySelectorAll(".bh-beat span");
+      if (hand) { hand.classList.remove("tap"); void hand.offsetWidth; hand.classList.add("tap"); }
+      if (glow) { glow.classList.add("on"); after(function () { glow.classList.remove("on"); }, 220); }
+      if (beats.length) { for (var b = 0; b < beats.length; b++) beats[b].classList.toggle("on", b === count % beats.length); }
+      try { if (window.GraceAudio && window.GraceAudio.playPop) window.GraceAudio.playPop(); } catch (e) {}
+      side ^= 1; count++;
+      var cue = $("bhCue"); if (cue && count % 8 === 0) cue.textContent = cues[(count / 8) % cues.length | 0];
+      if (count >= 40 && !reduce()) { stop(true); }
+    }
+    function stop(done) {
+      running = false; clearTimers();
+      btn.disabled = false; btn.textContent = done ? t("Again", "Otra vez") : t("Start tapping", "Empezar a tocar");
+      var cue = $("bhCue"); if (cue && done) cue.textContent = t("Rest your hands. Notice — a little calmer? That's your body resetting. 💛", "Descansa las manos. ¿Un poco más en calma? Tu cuerpo se reinicia. 💛");
+    }
+    btn.onclick = function () {
+      if (running) { stop(false); return; }
+      running = true; side = 0; count = 0;
+      btn.textContent = t("Pause", "Pausa");
+      beat(); every(beat, reduce() ? 1100 : 760);
+    };
+  }
+
+  /* ===================================================================
+     ANIMAL YOGA
+     =================================================================== */
+  function poses() {
+    return [
+      { e: "🦋", cls: "go-butterfly", n: t("Butterfly", "Mariposa"), d: t("Sit tall, feet together, and flap your knees like wings.", "Siéntate derecho, pies juntos, y mueve las rodillas como alas.") },
+      { e: "🐱", cls: "go-cat", n: t("Cat", "Gato"), d: t("On hands and knees — arch your back up, then round it down.", "En cuatro patas — arquea la espalda y luego redondéala.") },
+      { e: "🦁", cls: "go-lion", n: t("Lion", "León"), d: t("Take a big breath, open wide, and let out a roar!", "Respira hondo, abre grande, ¡y suelta un rugido!") },
+      { e: "🐶", cls: "go-dog", n: t("Dog", "Perro"), d: t("Hands and feet down, hips up high — Downward Dog!", "Manos y pies abajo, cadera arriba — ¡perro boca abajo!") },
+      { e: "🐸", cls: "go-frog", n: t("Frog", "Rana"), d: t("Squat down low, then spring up — hop like a frog!", "Agáchate y salta — ¡brinca como una rana!") },
+      { e: "🐻", cls: "go-bear", n: t("Bear", "Oso"), d: t("Stand tall and sway side to side, slow and strong.", "Ponte de pie y balancéate de lado a lado, lento y fuerte.") }
+    ];
+  }
+  function ayBuilder() {
+    var P = poses(), thumbs = "";
+    for (var i = 0; i < P.length; i++) thumbs += '<button class="ay-thumb" data-i="' + i + '">' + P[i].e + '</button>';
+    return '<div class="tool-modal-icon">🦁</div>'
+      + '<div class="tool-modal-title">' + t("Animal Yoga", "Yoga animal") + '</div>'
+      + '<div class="tool-modal-sub">' + t("Pick an animal and copy the pose. Hold and breathe!", "Elige un animal y copia la pose. ¡Sostén y respira!") + '</div>'
+      + '<div class="aogt-wrap"><div class="ay-stage">'
+      + '<svg class="ay-ring" id="ayRing" viewBox="0 0 120 120"><circle cx="60" cy="60" r="54" fill="none" stroke="var(--rule,#E4DAC5)" stroke-width="7"/>'
+      + '<circle id="ayRingFill" cx="60" cy="60" r="54" fill="none" stroke="var(--gold,#D9A33B)" stroke-width="7" stroke-linecap="round" stroke-dasharray="339.3" stroke-dashoffset="339.3" transform="rotate(-90 60 60)"/></svg>'
+      + '<div class="ay-animal" id="ayAnimal">🦋</div></div>'
+      + '<div class="ay-name" id="ayName"></div><div class="ay-do" id="ayDo"></div><div class="ay-hold" id="ayHold"></div>'
+      + '<div class="ay-thumbs" id="ayThumbs">' + thumbs + '</div></div>';
+  }
+  function ayInit() {
+    clearTimers();
+    var P = poses(), animal = $("ayAnimal"), nameEl = $("ayName"), doEl = $("ayDo"), holdEl = $("ayHold"),
+      ring = $("ayRingFill"), thumbs = document.querySelectorAll(".ay-thumb");
+    var C = 339.3;
+    function select(i) {
+      clearTimers();
+      var p = P[i];
+      if (animal) { animal.className = "ay-animal " + p.cls; animal.textContent = p.e; }
+      if (nameEl) nameEl.textContent = p.n;
+      if (doEl) doEl.textContent = p.d;
+      for (var k = 0; k < thumbs.length; k++) thumbs[k].classList.toggle("on", k === i);
+      // hold-and-breathe: 4 slow breaths, ring counts down
+      var total = reduce() ? 8 : 16, left = total;
+      function tick() {
+        if (ring) ring.setAttribute("stroke-dashoffset", (C * (1 - left / total)).toFixed(1));
+        var phase = Math.floor((total - left) / 2) % 2;
+        if (holdEl) holdEl.textContent = (left <= 0) ? t("Nice. Shake it out! 🌟", "¡Bien hecho. Sacúdete! 🌟") : (phase === 0 ? t("Breathe in…", "Inhala…") : t("Breathe out…", "Exhala…")) + "  " + left;
+        if (left <= 0) { if (ring) ring.setAttribute("stroke-dashoffset", 0); return; }
+        left--; after(tick, 1000);
+      }
+      tick();
+    }
+    for (var i = 0; i < thumbs.length; i++) (function (idx) { thumbs[idx].onclick = function () { select(idx); }; })(i);
+    select(0);
+  }
+
+  /* ===================================================================
+     OVERRIDE + lifecycle
+     =================================================================== */
+  function override() {
+    if (!window.TOOLS) return;
+    if (window.TOOLS.pmr) window.TOOLS.pmr = { builder: bsBuilder, init: bsInit };
+    if (window.TOOLS.bilateral) window.TOOLS.bilateral = { builder: bhBuilder, init: bhInit };
+    if (window.TOOLS.animalyoga) window.TOOLS.animalyoga = { builder: ayBuilder, init: ayInit };
+    window.TOOLS.feelwheel = { builder: fwBuilder, init: fwInit };
+  }
+  function wrapOpen() {
+    if (typeof window.toolOpen === "function") {
+      if (!window.toolOpen.__aogtWrap) {
+        var o = window.toolOpen;
+        window.toolOpen = function () { try { override(); clearTimers(); } catch (e) {} return o.apply(this, arguments); };
+        window.toolOpen.__aogtWrap = 1;
+      }
+    } else { setTimeout(wrapOpen, 200); }
+  }
+  function wrapClose() {
+    if (typeof window.toolClose === "function") {
+      if (!window.toolClose.__aogtWrap) {
+        var o = window.toolClose;
+        window.toolClose = function () { try { clearTimers(); if ('speechSynthesis' in window) window.speechSynthesis.cancel(); } catch (e) {} return o.apply(this, arguments); };
+        window.toolClose.__aogtWrap = 1;
+      }
+    } else { setTimeout(wrapClose, 200); }
+  }
+  function boot() { override(); wrapOpen(); wrapClose(); }
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", boot); else boot();
+  window.addEventListener("load", function () { override(); setTimeout(override, 500); });
 })();
 
 </script>
