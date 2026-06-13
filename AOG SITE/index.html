@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="aog-build" content="2026.06.12.2036">
+<meta name="aog-build" content="2026.06.13-page-banners">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Architecture of Grace · Universal Check-In</title>
 <meta name="description" content="Social-emotional learning built by a teacher, for real classrooms — the SEL that tends to the grown-ups before it measures a child. Private, de-identified, K–adult. A check-in, not an exam.">
@@ -1212,6 +1212,15 @@ tr:hover td { background: var(--paper); }
   color: var(--ink);
   border: 1px solid rgba(0,0,0,0.06);
 }
+/* Phones: the item rows (number · text · frequency pill) were overflowing the right
+   edge because the pill has a 110px min-width. Tighten padding/gap and let the pill
+   size to its label so the row stays inside the card. */
+@media (max-width:640px){
+  .home-item{ padding:14px 12px; grid-template-columns:22px minmax(0,1fr) auto; gap:10px; }
+  .home-item-num{ font-size:14px; }
+  .home-item-text{ font-size:13.5px; }
+  .heat-cell{ min-width:0; padding:7px 10px; font-size:11.5px; }
+}
 .heat-0 { background: var(--heat-0); }
 .heat-1 { background: var(--heat-1); }
 .heat-2 { background: var(--heat-2); }
@@ -1899,7 +1908,7 @@ a.ri-novel.ri-novel-link:hover .ri-open { opacity:1; }
    Uses app tokens (--navy/--gold/etc). Fonts: Fraunces + Inter.
    ============================================================ */
 #screen-welcome .hyb-welcome{margin:-32px calc(50% - 50vw) 0;width:100vw}
-.hyb-hero{background:var(--navy);color:var(--cream);padding:112px 7vw 0;position:relative;overflow:hidden}
+.hyb-hero{background:var(--navy);color:var(--cream);padding:52px 7vw 0;position:relative;overflow:hidden}
 .hyb-hero::before{content:"";position:absolute;top:-30%;right:-5%;width:60%;height:160%;background:radial-gradient(circle,rgba(242,201,100,.16),transparent 65%);pointer-events:none}
 .hyb-hk{position:relative;font-family:var(--font-sans);font-weight:700;font-size:13px;letter-spacing:.32em;text-transform:uppercase;color:var(--gold-soft)}
 .hyb-title{position:relative;font-family:var(--font-serif);font-weight:600;line-height:.82;margin:18px 0 0;letter-spacing:-.02em}
@@ -1933,6 +1942,13 @@ a.ri-novel.ri-novel-link:hover .ri-open { opacity:1; }
 .hyb-statement.hyb-statement--in-hero{padding:34px 0 8px;border-top:none}
 @media (max-width:640px){ .hyb-statement.hyb-statement--in-hero{padding:26px 0 6px} }
 #screen-welcome .hyb-hero{padding-bottom:48px}
+/* Hero photo band — warm human image under the headline, contained so it stays crisp */
+.hyb-photo{ margin:32px auto 6px; max-width:940px; border-radius:18px; overflow:hidden; line-height:0;
+  box-shadow:0 22px 60px -24px rgba(0,0,0,.6); border:1px solid rgba(242,201,100,.22); }
+.hyb-photo img{ display:block; width:100%; height:auto; }
+@media (max-width:640px){ .hyb-photo{ margin:22px auto 4px; border-radius:14px; } }
+/* Hero stays a single centered column on all sizes — the photo band sits under the
+   headline (the original layout). No desktop two-column split. */
 .hyb-onesent{position:relative;font-family:var(--font-sans);font-weight:500;font-size:clamp(17px,2vw,22px);line-height:1.5;color:rgba(244,238,226,.93);max-width:700px;margin:26px auto 0}
 .hyb-forall{position:relative;font-family:var(--font-serif);font-style:italic;font-weight:500;font-size:clamp(18px,2.1vw,24px);line-height:1.4;color:var(--cream);max-width:660px;margin:20px auto 0}
 .hyb-leaders{position:relative;margin:26px 0 0;padding-top:22px;border-top:1px solid rgba(242,201,100,.28)}
@@ -2239,7 +2255,7 @@ body > div > main style { display: none !important; height: 0 !important; width:
 
 /* mobile */
 @media (max-width:760px){
-  .hyb-hero{padding:66px 6vw 0}
+  .hyb-hero{padding:38px 6vw 0}
   .hyb-title .l2{font-size:20vw;line-height:.86;filter:drop-shadow(3px 4px 0 #06121f) drop-shadow(6px 9px 16px rgba(0,0,0,.4))}
   .hyb-bar{display:flex;flex-direction:column;align-items:center;gap:7px;margin-top:22px;width:100%;padding:12px 0}
   .hyb-bar .word{white-space:nowrap;font-size:13px;text-align:center}
@@ -2503,10 +2519,32 @@ body{ transition:background .25s ease, color .25s ease; }
 .fam-row .fr-date{ font-weight:600; color:var(--ink); font-size:14px; min-width:120px; }
 .fam-row .fr-score{ font-family:var(--font-serif); font-size:22px; color:var(--navy); font-weight:600; }
 :root[data-theme="dark"] .fam-row .fr-score{ color:var(--gold-soft); }
-.fam-row .fr-actions{ margin-left:auto; display:flex; gap:8px; }
+.fam-row .fr-actions{ margin-left:auto; display:flex; gap:8px; flex-wrap:wrap; row-gap:8px; }
 .fam-mini-btn{ background:transparent; border:1px solid var(--rule); color:var(--ink-soft); border-radius:8px; padding:7px 12px; font-family:var(--font-sans); font-size:12.5px; font-weight:600; cursor:pointer; }
 .fam-mini-btn:hover{ border-color:var(--gold); color:var(--ink); }
 .fam-report-host{ margin-top:8px; }
+/* On phones, the full report opened inside a row was using desktop-sized padding and a
+   space-between header, which read as off-center. Center it and tame the padding. */
+@media (max-width:680px){
+  /* let the action buttons wrap instead of pushing the row (and the report) off-screen */
+  .fam-row{ align-items:flex-start; }
+  .fam-row .fr-date{ min-width:0; flex:1 1 auto; }
+  .fam-row .fr-actions{ width:100%; margin-left:0; justify-content:flex-start; }
+  /* keep the opened report fully inside the viewport */
+  .fam-report-host{ max-width:100%; }
+  .fam-report-host .home-view, .fam-report-host .aog-tm, .fam-report-host .aog-sustain,
+  .fam-report-host .home-conversation, .fam-report-host .home-header{ max-width:100%; box-sizing:border-box; }
+  .fam-report-host .home-view{ width:100%; }
+  .fam-report-host .home-header{ flex-direction:column; align-items:center; text-align:center; padding:18px 16px; gap:10px; }
+  .fam-report-host .home-header-id{ text-align:center; }
+  .fam-report-host .home-header-id .home-name{ font-size:25px; }
+  .fam-report-host .home-header-scores{ justify-content:center; width:100%; gap:14px; }
+  .fam-report-host .home-domain-section{ padding-left:16px; padding-right:16px; }
+  .fam-report-host .home-conversation{ padding:18px 16px; }
+  /* tool & sustain grids/tables single-column so nothing overflows */
+  .fam-report-host .aog-tm-grid, .fam-report-host .aog-srt-grid{ grid-template-columns:1fr; }
+  .fam-report-host .aog-sus-tbl{ font-size:12.5px; }
+}
 .fam-actions-row{ display:flex; gap:10px; flex-wrap:wrap; justify-content:center; margin:6px 0 26px; }
 
 /* ===== print: isolate the individual report ===== */
@@ -2889,7 +2927,7 @@ function toggleTheme() {
     .fw-founder{ display:flex; gap:24px; align-items:flex-start; background:var(--paper); border:1px solid var(--rule); border-radius:18px; padding:30px 32px; box-shadow:var(--shadow-sm); }
     .fw-founder-mark{ flex:0 0 auto; width:64px; height:64px; border-radius:16px; display:grid; place-items:center; background:var(--navy); color:var(--gold-soft); font-family:var(--font-serif); font-weight:600; font-size:34px; }
     .fw-founder p{ font-family:var(--font-serif); font-style:italic; font-size:clamp(17px,2.1vw,21px); line-height:1.5; color:var(--ink); margin:0; }
-    .fw-story{ max-width:64ch; margin:0; }
+    .fw-story{ max-width:64ch; margin:0 auto; }
     .fw-story p{ font-family:var(--font-sans); font-size:16px; line-height:1.72; color:var(--ink-soft); margin:0 0 17px; }
     .fw-story p:first-child{ font-size:17.5px; color:var(--ink); font-weight:500; }
     .fw-story strong{ color:var(--ink); font-weight:700; }
@@ -2925,7 +2963,16 @@ function toggleTheme() {
     :root[data-theme="dark"] .fw-intro .fw-close-line{ color:var(--gold-soft); }
     .fw-intro .fw-mission-lead{ font-family:var(--font-sans); font-size:13px; font-weight:700; letter-spacing:.03em; color:var(--gold-deep,#9a6f24); margin:8px 0 2px; }
     :root[data-theme="dark"] .fw-intro .fw-mission-lead{ color:var(--gold-soft); }
-    .fw-tabs{ display:flex; gap:12px; justify-content:center; flex-wrap:wrap; margin:34px 0 0; }
+    .fw-tabs{ display:flex; gap:12px; justify-content:center; flex-wrap:wrap; margin:22px 0 0; }
+    /* ===== Grace over Performance — framework graphic (image) ===== */
+    .fw-arch{ max-width:860px; margin:30px auto 8px; border-radius:18px; overflow:hidden; line-height:0;
+      box-shadow:0 22px 55px -26px rgba(10,30,51,.45); }
+    .fw-arch img{ display:block; width:100%; height:auto; }
+    /* Reusable warm page banner (Tools, Dashboard). Hides itself if the image is missing. */
+    .aog-page-banner{ max-width:900px; margin:6px auto 22px; border-radius:16px; overflow:hidden; line-height:0;
+      box-shadow:0 18px 45px -24px rgba(10,30,51,.4); }
+    .aog-page-banner img{ display:block; width:100%; height:auto; max-height:300px; object-fit:cover; object-position:center 30%; }
+    @media (max-width:560px){ .aog-page-banner img{ max-height:190px; } }
     .fw-tab{ font-family:var(--font-sans); font-weight:700; font-size:14.5px; color:var(--navy); background:var(--paper); border:1.5px solid var(--gold); border-radius:999px; padding:12px 24px; cursor:pointer; transition:background .15s var(--ease), color .15s, transform .15s var(--ease); }
     :root[data-theme="dark"] .fw-tab{ color:var(--gold-soft); background:transparent; }
     .fw-tab:hover{ transform:translateY(-1px); background:var(--gold-pale); }
@@ -3989,6 +4036,15 @@ function toggleTheme() {
   .topbar-store svg, .topbar-lib svg{ width:14px; height:14px; }
   .lang-toggle{ flex:0 0 auto; margin-bottom:2px; }
 }
+/* Tablet (iPad): the full-label nav doesn't fit and was clipping the cart on the
+   right. Tighten the pills, drop the per-item right margins (the flex gap handles
+   spacing), and let the row wrap to a second line instead of overflowing. */
+@media (min-width:641px) and (max-width:1200px){
+  .topbar{ flex-wrap:wrap; row-gap:8px; padding-right:20px; }
+  .topbar-actions{ flex-wrap:wrap; justify-content:flex-end; gap:8px; row-gap:8px; }
+  .topbar-store, .topbar-lib, .topbar-checkin{ margin-right:0; padding:6px 12px; }
+  .topbar-store svg, .topbar-lib svg, .topbar-checkin svg{ width:15px; height:15px; }
+}
 
 /* ===== "How one answer becomes growth" — interactive walkthrough ===== */
 .aogf-track{position:relative;}
@@ -4451,7 +4507,7 @@ function toggleTheme() {
   .hero-showcase{ gap:16px; margin:8px 0 28px; }
   .door-flank{ padding:17px 19px; gap:12px; }
   .door-flank .door-icon{ width:42px; height:42px; font-size:19px; }
-  .hyb-hero{ padding-top:84px; }
+  .hyb-hero{ padding-top:40px; }
   #screen-welcome .hyb-hero{ padding-bottom:36px; }
   .hyb-title{ margin-top:12px; }
   .hyb-bar{ margin-top:22px; padding:10px 0; }
@@ -4987,12 +5043,21 @@ function toggleTheme() {
     </div>
     <!-- ===== HYBRID HERO ===== -->
     <section class="hyb-hero">
-      <div class="hyb-hk" data-i18n="hyb_foundation">architectureofgrace.org</div>
+      <!-- TOP BLOCK: stacks on phone/iPad-portrait (text -> photo -> CTAs); becomes
+           a two-column side-by-side (text left, photo right) on wide screens. -->
+      <div class="hyb-top">
+       <div class="hyb-top-a">
       <h1 class="hyb-title foil"><span class="l1">Architecture of</span><span class="l2">Grace</span></h1>
       <div class="hyb-bar">
         <span class="word"><b data-i18n="hyb_b1">Grace Over Performance</b></span>
       </div>
       <p class="hyb-vp" data-i18n-html="hyb_vp">Most things measure people. <strong>This helps you understand them.</strong> A free, five-minute reflection for students, families, and educators.</p>
+       </div>
+      <!-- Hero photo band. Drop hero.jpg at the site root; if it's missing this hides itself (no broken icon). -->
+      <figure class="hyb-photo">
+        <img src="hero.jpg" alt="An educator and parents gathered around a wooden table with a group of children, in warm, attentive conversation" loading="eager" decoding="async" onerror="var f=this.closest('.hyb-photo'); if(f) f.style.display='none';">
+      </figure>
+       <div class="hyb-top-b">
       <div class="hyb-lede" data-i18n-html="hyb_lede"><p class="hl-lead">Built by a special educator, it&rsquo;s a framework to strengthen relationships&mdash;with yourself and with one another&mdash;through identity, self-compassion, forgiveness, and grace.</p><p class="hl-close">Because growth begins with grace, not performance.</p></div>
       <!-- ===== PRIMARY CTAs — placed above "How one answer becomes growth" ===== -->
               <div class="hyb-cta-row">
@@ -5006,6 +5071,8 @@ function toggleTheme() {
             <span data-i18n="hyb_cta_tools">Calm &amp; Regulation Tools</span> <span aria-hidden="true">&rarr;</span>
           </a>
         </div>
+       </div><!-- /.hyb-top-b -->
+      </div><!-- /.hyb-top -->
 
         <div class="aog-showcase" role="img" aria-label="Device mockups showing the Architecture of Grace check-in, results dashboard, and framework on phone, laptop, and tablet.">
           <div class="dvc dvc-phone">
@@ -5199,9 +5266,8 @@ function toggleTheme() {
 
   <div class="fw-wrap">
 
-    <div class="fw-intro" data-i18n-html="fw_intro"><p class='fw-lead'>People are often measured long before they are understood.</p><p>As a special educator, I spent years working alongside students, families, educators, and caregivers. I saw remarkable people carrying the weight of expectations, labels, mistakes, and the constant pressure to perform. Everyone seemed to be asking how they were doing. Far fewer were asking who they were becoming.</p><p>Architecture of Grace grew from a different belief.</p><p class='fw-ask'>Growth is strongest when it begins with identity rather than achievement, self-compassion rather than shame, forgiveness rather than judgment, and grace rather than performance.</p><p>The framework was created to help people reflect honestly, strengthen relationships, and engage in meaningful conversations about growth. It is not a behavior program, a diagnosis, or a scorecard. It is a practical way to better understand ourselves and one another.</p><p>Today, Architecture of Grace serves students, families, educators, caregivers, teams, and independent adults through reflection tools, conversation guides, and resources designed to foster understanding and connection.</p><p>The Universal Check-In is one expression of this work.</p><p class='fw-mission-lead'>The mission is larger:</p><p class='fw-ask'>To create spaces where people are known before they are measured, understood before they are evaluated, and supported as they grow.</p><p class='fw-close-line'>Because lasting growth begins not with performance, but with grace.</p></div>
-
     <div class="fw-tabs" role="group" aria-label="Explore further">
+      <button type="button" class="fw-tab" aria-expanded="false" aria-controls="fw-panel-why" onclick="aogFwPanel(this,'why')" data-i18n="fw_tab_why">Our Why</button>
       <button type="button" class="fw-tab" aria-expanded="false" aria-controls="fw-panel-difference" onclick="aogFwPanel(this,'difference')" data-i18n="fw_tab_difference">The Difference</button>
       <button type="button" class="fw-tab" aria-expanded="false" aria-controls="fw-panel-framework" onclick="aogFwPanel(this,'framework')" data-i18n="fw_tab_framework">The Framework</button>
       <button type="button" class="fw-tab" aria-expanded="false" aria-controls="fw-panel-educators" onclick="aogFwPanel(this,'educators')" data-i18n="fw_tab_educators">For Educators</button>
@@ -5209,6 +5275,12 @@ function toggleTheme() {
       <button type="button" class="fw-tab" aria-expanded="false" aria-controls="fw-panel-workplace" onclick="aogFwPanel(this,'workplace')" data-i18n="fw_tab_workplace">For the Workplace</button>
       <button type="button" class="fw-tab" aria-expanded="false" aria-controls="fw-panel-story" onclick="aogFwPanel(this,'story')" data-i18n="fw_tab_story">The Story</button>
     </div>
+
+    <div class="fw-panel" id="fw-panel-why" hidden>
+    <div class="fw-intro" data-i18n-html="fw_intro"><p class='fw-lead'>People are often measured long before they are understood.</p><p>As a special educator, I spent years working alongside students, families, educators, and caregivers. I saw remarkable people carrying the weight of expectations, labels, mistakes, and the constant pressure to perform. Everyone seemed to be asking how they were doing. Far fewer were asking who they were becoming.</p><p>Architecture of Grace grew from a different belief.</p><p class='fw-ask'>Growth is strongest when it begins with identity rather than achievement, self-compassion rather than shame, forgiveness rather than judgment, and grace rather than performance.</p><p>The framework was created to help people reflect honestly, strengthen relationships, and engage in meaningful conversations about growth. It is not a behavior program, a diagnosis, or a scorecard. It is a practical way to better understand ourselves and one another.</p><p>Today, Architecture of Grace serves students, families, educators, caregivers, teams, and independent adults through reflection tools, conversation guides, and resources designed to foster understanding and connection.</p><p>The Universal Check-In is one expression of this work.</p><p class='fw-mission-lead'>The mission is larger:</p><p class='fw-ask'>To create spaces where people are known before they are measured, understood before they are evaluated, and supported as they grow.</p><p class='fw-close-line'>Because lasting growth begins not with performance, but with grace.</p></div>
+
+    </div><!-- /fw-panel-why -->
+
 
     <div class="fw-panel" id="fw-panel-difference" hidden>
 
@@ -5482,6 +5554,12 @@ function toggleTheme() {
     </div>
     </div>
 
+
+    <!-- Grace over Performance graphic — sits beneath whatever the tabs open.
+         Drop framework-pillars.jpg at the site root; if missing this hides itself. -->
+    <figure class="fw-arch">
+      <img src="framework-pillars.jpg" alt="Grace over Performance — the four pillars: Identity, Self-Compassion, Forgiveness, and Grace" loading="lazy" decoding="async" onerror="var f=this.closest('.fw-arch'); if(f) f.style.display='none';">
+    </figure>
 
     <div class="fw-sec">
       <div class="fw-tool">
@@ -6197,6 +6275,11 @@ function toggleTheme() {
         <button class="btn btn-sm" id="btnDemoData" onclick="toggleDemoData()" style="background:var(--gold);border-color:var(--gold);color:var(--navy);">Try demo data</button>
       </div>
     </div>
+
+    <!-- Dashboard banner. Drop dashboard-hero.jpg at the site root; hides itself if missing. -->
+    <figure class="aog-page-banner">
+      <img src="dashboard-hero.jpg" alt="An educator quietly reading a check-in report" loading="lazy" decoding="async" onerror="var f=this.closest('.aog-page-banner'); if(f) f.style.display='none';">
+    </figure>
 
 <!-- ===== QUICK START (Dashboard) =====================================
      Replaces the old "video coming soon" slot. A self-teaching, bilingual
@@ -7643,6 +7726,10 @@ function toggleTheme() {
       <h1 class="display-lg" data-i18n="ch_tools_t">Calm &amp; Regulation Tools</h1>
       <p class="lede">Tap a tool to begin. Each one takes 60–90 seconds.</p>
     </div>
+    <!-- Warm banner. Drop tools-hero.jpg at the site root; hides itself if missing. -->
+    <figure class="aog-page-banner">
+      <img src="tools-hero.jpg" alt="A parent and child smiling together in a calm, warm moment" loading="lazy" decoding="async" onerror="var f=this.closest('.aog-page-banner'); if(f) f.style.display='none';">
+    </figure>
     <!-- Grace Engine: crisis triage + progress -->
     <div style="text-align:center;margin:-4px 0 16px;"><button class="btn btn-secondary gg-reset-btn" onclick="if(typeof graceAdultGrounding==='function'){graceAdultGrounding(true);}" data-i18n="gt_ground_btn">Reset myself (10s)</button></div>
     <div id="grace-practiced-banner" class="grace-practiced-banner" aria-live="polite"></div>
@@ -9796,6 +9883,13 @@ const I18N_UI = {
   hyb_cta_checkin: { en: "Take the Check-In", es: "Haz el chequeo" },
   fw_ey: { en: "The Framework", es: "El marco" },
   fw_title: { en: "Why Architecture of Grace Exists", es: "Por qu\u00e9 existe Architecture of Grace" },
+  fw_tab_why: { en: "Our Why", es: "Nuestro porqué" },
+  fw_pillars_beam: { en: "Grace over Performance", es: "La gracia por encima del rendimiento" },
+  fw_pillars_note: { en: "The four pillars every healthy relationship stands on.", es: "Los cuatro pilares sobre los que se sostiene toda relación sana." },
+  fw_p_identity: { en: "Identity", es: "Identidad" },
+  fw_p_selfcomp: { en: "Self-Compassion", es: "Autocompasión" },
+  fw_p_forgive: { en: "Forgiveness", es: "Perdón" },
+  fw_p_grace: { en: "Grace", es: "Gracia" },
   fw_tab_difference: { en: "The Difference", es: "La diferencia" },
   fw_tab_framework: { en: "The Framework", es: "El marco" },
   fw_tab_story: { en: "The Story", es: "La historia" },
@@ -11082,6 +11176,17 @@ function selectResponse(_0x510e21) {
   renderIntensityOption();
   updateNextButton();
   saveDraft("survey");
+  /* If a follow-up (intensity) response is now required, scroll it into view so the
+     person clearly sees a second response is needed and doesn't think they're done. */
+  try {
+    var _ia = document.getElementById("intensityArea");
+    if (_ia && _ia.querySelector(".intensity-block")) {
+      var _reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      requestAnimationFrame(function () {
+        try { _ia.scrollIntoView({ behavior: _reduce ? "auto" : "smooth", block: "center" }); } catch (_e) {}
+      });
+    }
+  } catch (_e2) {}
 }
 function selectIntensity(_0x4c4d86) {
   intensities[current] = _0x4c4d86;
@@ -14590,7 +14695,7 @@ function aogReportList(opts){
     var pillC = typeof tierClass === "function" ? tierClass(tier) : "";
     var meta = [aogIsAdultRec(r) ? (es?"Adulto":"Adult") : (es?"Gr ":"Gr ") + escapeHtml(String(r.grade || "")), (!aogIsAdultRec(r) && r.context === "home") ? (es?"En casa":"Home") : null, typeof winLabel === "function" && r.window ? winLabel(r.window) : null, typeof famDateShort === "function" ? famDateShort(r.timestamp) : ""].filter(Boolean).join(" · ");
     var nameKey = String(r.studentId || "").toLowerCase();
-    return "<div class=\"fam-row\" data-name=\"" + escapeHtml(nameKey) + "\" data-key=\"" + escapeHtml(key) + "\"><div class=\"fr-date\" style=\"min-width:160px\"><div style=\"font-weight:700;color:var(--navy)\">" + escapeHtml(r.studentId || "—") + "</div><div class=\"small\" style=\"color:var(--ink-faint)\">" + escapeHtml(meta) + "</div>" + aogFocusChips(r, es) + "</div><div class=\"fr-score\">" + (r.normComposite != null ? Math.round(r.normComposite) : "—") + "<span class=\"small\" style=\"font-size:12px;color:var(--ink-faint)\">/100</span></div><span class=\"pill " + pillC + "\">" + pill + "</span><div class=\"fr-actions\"><button class=\"fam-mini-btn aog-openrep-btn\" onclick=\"dashOpenReport(this,'" + encodeURIComponent(key) + "')\">" + (es ? "Ver informe" : "Open report") + "</button><button class=\"fam-mini-btn aog-tools-btn\" onclick=\"dashOpenTools(this,'" + encodeURIComponent(key) + "')\">🧰 " + (es ? "Herramientas" : "Suggested tools") + "</button><button class=\"fam-mini-btn\" onclick=\"dashExportPdf('" + encodeURIComponent(key) + "')\">" + (es ? "Exportar PDF" : "Export PDF") + "</button></div><div class=\"fam-report-host\" style=\"flex-basis:100%\"></div></div>";
+    return "<div class=\"fam-row\" data-name=\"" + escapeHtml(nameKey) + "\" data-key=\"" + escapeHtml(key) + "\"><div class=\"fr-date\" style=\"min-width:160px\"><div style=\"font-weight:700;color:var(--navy)\">" + escapeHtml(r.studentId || "—") + "</div><div class=\"small\" style=\"color:var(--ink-faint)\">" + escapeHtml(meta) + "</div>" + aogFocusChips(r, es) + "</div><div class=\"fr-score\">" + (r.normComposite != null ? Math.round(r.normComposite) : "—") + "<span class=\"small\" style=\"font-size:12px;color:var(--ink-faint)\">/100</span></div><span class=\"pill " + pillC + "\">" + pill + "</span><div class=\"fr-actions\"><button class=\"fam-mini-btn aog-openrep-btn\" onclick=\"dashOpenReport(this,'" + encodeURIComponent(key) + "')\">" + (es ? "Ver informe" : "Open report") + "</button><button class=\"fam-mini-btn aog-tools-btn\" onclick=\"dashOpenTools(this,'" + encodeURIComponent(key) + "')\">🧰 " + (es ? "Herramientas" : "Suggested tools") + "</button><button class=\"fam-mini-btn aog-convo-btn\" onclick=\"dashOpenConvo(this,'" + encodeURIComponent(key) + "')\">💬 " + (es ? "Iniciadores de conversación" : "Conversation starters") + "</button><button class=\"fam-mini-btn\" onclick=\"dashExportPdf('" + encodeURIComponent(key) + "')\">" + (es ? "Exportar PDF" : "Export PDF") + "</button></div><div class=\"fam-report-host\" style=\"flex-basis:100%\"></div></div>";
   }).join("");
   host.innerHTML = "<div class=\"table-card\" style=\"padding:24px 26px;\">" + opts.note + search + "<div class=\"fam-hist aog-report-rows\">" + rows + "</div></div>";
 }
@@ -14625,6 +14730,29 @@ function dashOpenTools(_btn, _key) {
   _btn.textContent = "🧰 " + (es ? "Ocultar" : "Hide tools");
   var ob = row.querySelector(".aog-openrep-btn");
   if (ob) { ob.textContent = es ? "Ver informe" : "Open report"; }
+  try { hostEl.scrollIntoView({ behavior: "smooth", block: "nearest" }); } catch (e) {}
+}
+
+/* open ONLY the conversation starters inline for a row */
+function dashOpenConvo(_btn, _key) {
+  var es = (typeof dashLang !== "undefined" && dashLang === "es");
+  var row = _btn.closest(".fam-row");
+  if (!row) { return; }
+  var hostEl = row.querySelector(".fam-report-host");
+  if (!hostEl) { return; }
+  if (hostEl.dataset.open === "convo") {
+    hostEl.innerHTML = "";
+    hostEl.dataset.open = "";
+    _btn.textContent = "💬 " + (es ? "Iniciadores de conversación" : "Conversation starters");
+    return;
+  }
+  var rec = dashFindRecordByKey(_key);
+  if (!rec) { return; }
+  hostEl.innerHTML = "<div class=\"home-view\" style=\"margin-top:14px\">" + ((typeof renderConversationGuide === "function") ? renderConversationGuide(rec, false) : "") + "</div>";
+  hostEl.dataset.open = "convo";
+  _btn.textContent = "💬 " + (es ? "Ocultar" : "Hide");
+  var ob = row.querySelector(".aog-openrep-btn"); if (ob) { ob.textContent = es ? "Ver informe" : "Open report"; }
+  var tb = row.querySelector(".aog-tools-btn"); if (tb) { tb.textContent = "🧰 " + (es ? "Herramientas" : "Suggested tools"); }
   try { hostEl.scrollIntoView({ behavior: "smooth", block: "nearest" }); } catch (e) {}
 }
 
@@ -14715,7 +14843,7 @@ function dashOpenReport(_btn, _key) {
   if (!rec) { return; }
   var _sustain  = (typeof aogSustainPanel === "function") ? aogSustainPanel(rec) : "";
   var _toolPanel = (typeof aogToolMatchPanel === "function") ? aogToolMatchPanel(rec, _key) : "";
-  hostEl.innerHTML = "<div class=\"home-view\" style=\"margin-top:14px\">" + buildHomeReport(rec, false) + "</div>" + _sustain + _toolPanel;
+  hostEl.innerHTML = "<div class=\"home-view\" style=\"margin-top:14px\">" + buildHomeReport(rec, false, _toolPanel) + "</div>" + _sustain;
   hostEl.dataset.open = "1";
   _btn.textContent = es ? "Ocultar informe" : "Hide report";
   if (toolsBtn) { toolsBtn.textContent = "🧰 " + (es ? "Herramientas" : "Suggested tools"); }
@@ -14816,9 +14944,16 @@ function aogOpenResindex(domain, itemsLabel, bookNum) {
     }
   }, 300);
 }
-function buildHomeReport(_0x196b68, _0x3d8f48) {
+function buildHomeReport(_0x196b68, _0x3d8f48, _topToolsHtml) {
   const _0x406975 = _0x196b68.mode === "depth" ? 5 : 3;
   let _0x349b7c = "<div class=\"home-header\"><div class=\"home-header-id\"><div class=\"home-name\">" + escapeHtml(_0x196b68.studentId) + (_0x196b68._remote ? " <span style=\"font-size:12px; font-weight:600; color:var(--gold,#B8893A); border:1px solid var(--gold,#B8893A); border-radius:6px; padding:2px 7px; vertical-align:middle;\">" + DT("from sheet", "de la hoja") + "</span>" : "") + "</div><div class=\"small\">" + [_0x196b68.population === "adult" ? DT("Adult check-in", "Chequeo de adultos") : DT("Grade ", "Grado ") + escapeHtml(String(_0x196b68.grade)), winLabel(_0x196b68.window) ? escapeHtml(winLabel(_0x196b68.window)) : null, fmtNiceDate(_0x196b68.timestamp) || null].filter(Boolean).join(" · ") + " · <span class=\"pill " + tierClass(_0x196b68.tier) + "\">" + tierLabel(_0x196b68.tier) + "</span> · <span class=\"small\">" + (_0x196b68.mode === "depth" ? DT("Thorough mode", "Modo a fondo") : DT("Quick mode", "Modo rápido")) + "</span></div></div><div class=\"home-header-scores\"><div class=\"home-score\"><div class=\"label\">" + DT("Composite", "Compuesto") + "</div><div class=\"val\">" + (_0x196b68.normComposite != null ? _0x196b68.normComposite.toFixed(0) : "—") + "<span class=\"max\">/100</span></div></div><div class=\"home-score\"><div class=\"label\">" + DT("Emotional", "Emocional") + "</div><div class=\"val\">" + (_0x196b68.normA != null ? _0x196b68.normA.toFixed(0) : "—") + "<span class=\"max\">/100</span></div></div><div class=\"home-score\"><div class=\"label\">" + DT("Compassion", "Compasión") + "</div><div class=\"val\">" + (_0x196b68.normB != null ? _0x196b68.normB.toFixed(0) : "—") + "<span class=\"max\">/100</span></div></div><div class=\"home-score\"><div class=\"label\">" + DT("Social", "Social") + "</div><div class=\"val\">" + (_0x196b68.normC != null ? _0x196b68.normC.toFixed(0) : "—") + "<span class=\"max\">/100</span></div></div></div></div>";
+  /* on the person's OWN report, surface the matched calm & regulation tools right at the
+     top (just under the scores) so they're the first thing seen, not buried at the bottom */
+  if (_0x3d8f48 && typeof aogStudentToolsBlock === "function") {
+    try { _0x349b7c += aogStudentToolsBlock(_0x196b68, typeof dashLang !== "undefined" && dashLang === "es"); } catch (_aogTbTop) {}
+  } else if (_topToolsHtml) {
+    _0x349b7c += _topToolsHtml;
+  }
   _0x349b7c += renderConversationGuide(_0x196b68, _0x3d8f48);
   _0x349b7c += "<div class=\"home-detail-head\">" + DT("The full picture, item by item", "El panorama completo, ítem por ítem") + "</div>";
   const _0x209041 = [{
@@ -14872,10 +15007,6 @@ function buildHomeReport(_0x196b68, _0x3d8f48) {
   });
   if (_0x196b68.closingWord) {
     _0x349b7c += "<div class=\"home-reflection\" style=\"margin: 16px 0;\"><div class=\"label\">" + (_0x3d8f48 ? DT("A word you kept", "La palabra que elegiste") : DT("Word they kept", "La palabra que eligieron")) + "</div><div class=\"quote\" style=\"font-size: 22px; color: var(--gold);\">“" + escapeHtml(decodeChoices(_0x196b68.closingWord, _0x3d8f48 ? surveyLang : dashLang)) + "”</div></div>";
-  }
-  /* on the person's OWN report, surface the matched calm & regulation tools they can tap right now */
-  if (_0x3d8f48 && typeof aogStudentToolsBlock === "function") {
-    try { _0x349b7c += aogStudentToolsBlock(_0x196b68, typeof dashLang !== "undefined" && dashLang === "es"); } catch (_aogTb) {}
   }
   return _0x349b7c;
 }
@@ -15395,6 +15526,7 @@ function renderFamily() {
   _0x3dd78a += "<div class=\"fam-actions-row\"><button class=\"btn\" onclick=\"familyNewCheckin('" + jsAttr(_familySel) + "','" + ((_0xf62665.find(function (_0x180269) {
     return _0x180269.id === _familySel;
   }) || {}).grade || "") + "')\">" + (_0xd0adc ? "Nuevo chequeo a fondo para " : "New Thorough check-in for ") + escapeHtml(_familySel) + " &rarr;</button></div>";
+  _0x3dd78a += gcExamplesHtml();
   _0x3dd78a += "<div class=\"fam-card\"><div class=\"fam-card-h\"><div class=\"t\">" + (_0xd0adc ? "Progreso a lo largo del año" : "Progress over the year") + "</div></div>";
   if (_0x8374a4.length) {
     _0x3dd78a += "<div class=\"fam-chart-wrap fam-chart\">" + familyChart(_0x8374a4) + "</div>";
@@ -15414,11 +15546,10 @@ function renderFamily() {
       var _0x2a1c91 = typeof tierLabel === "function" ? tierLabel(_0x5a1ea6) : "";
       var _0x3fd253 = typeof tierClass === "function" ? tierClass(_0x5a1ea6) : "";
       var _0x1fdca5 = [typeof winLabel === "function" && _0x573ad0.window ? winLabel(_0x573ad0.window) : null, famDateShort(_0x573ad0.timestamp)].filter(Boolean).join(" · ");
-      _0x3dd78a += "<div class=\"fam-row\" data-key=\"" + escapeHtml(_0x6a8db4) + "\"><div class=\"fr-date\">" + escapeHtml(_0x1fdca5) + "</div><div class=\"fr-score\">" + (_0x573ad0.normComposite != null ? Math.round(_0x573ad0.normComposite) : "—") + "<span class=\"small\" style=\"font-size:12px;color:var(--ink-faint)\">/100</span></div><span class=\"pill " + _0x3fd253 + "\">" + _0x2a1c91 + "</span><div class=\"fr-actions\"><button class=\"fam-mini-btn\" onclick=\"familyOpenReport(this,'" + encodeURIComponent(_0x6a8db4) + "')\">" + (_0xd0adc ? "Ver informe" : "Open report") + "</button><button class=\"fam-mini-btn\" onclick=\"exportChildPdf('" + encodeURIComponent(_0x6a8db4) + "')\">" + (_0xd0adc ? "Exportar PDF" : "Export PDF") + "</button></div><div class=\"fam-report-host\" style=\"flex-basis:100%\"></div></div>";
+      _0x3dd78a += "<div class=\"fam-row\" data-key=\"" + escapeHtml(_0x6a8db4) + "\"><div class=\"fr-date\">" + escapeHtml(_0x1fdca5) + "</div><div class=\"fr-score\">" + (_0x573ad0.normComposite != null ? Math.round(_0x573ad0.normComposite) : "—") + "<span class=\"small\" style=\"font-size:12px;color:var(--ink-faint)\">/100</span></div><span class=\"pill " + _0x3fd253 + "\">" + _0x2a1c91 + "</span><div class=\"fr-actions\"><button class=\"fam-mini-btn\" onclick=\"familyOpenReport(this,'" + encodeURIComponent(_0x6a8db4) + "')\">" + (_0xd0adc ? "Ver informe" : "Open report") + "</button><button class=\"fam-mini-btn aog-fam-tools-btn\" onclick=\"familyOpenTools(this,'" + encodeURIComponent(_0x6a8db4) + "')\">🧰 " + (_0xd0adc ? "Herramientas" : "Suggested tools") + "</button><button class=\"fam-mini-btn aog-convo-btn\" onclick=\"familyOpenConvo(this,'" + encodeURIComponent(_0x6a8db4) + "')\">💬 " + (_0xd0adc ? "Iniciadores de conversación" : "Conversation starters") + "</button><button class=\"fam-mini-btn\" onclick=\"exportChildPdf('" + encodeURIComponent(_0x6a8db4) + "')\">" + (_0xd0adc ? "Exportar PDF" : "Export PDF") + "</button></div><div class=\"fam-report-host\" style=\"flex-basis:100%\"></div></div>";
     });
     _0x3dd78a += "</div></div>";
   }
-  _0x3dd78a += gcExamplesHtml();
   _0x3dd78a += "</div>";
   _0x51534e.innerHTML = _0x3dd78a;
 }
@@ -15428,6 +15559,52 @@ function _famFindRecordByKey(_0x531474) {
     var _0x50f04d = typeof recordKey === "function" ? recordKey(_0x339c78) : _0x339c78.timestamp;
     return _0x50f04d === _0x17d536;
   });
+}
+/* Family-mode quick "Suggested tools" button — opens just the matched tappable tools
+   inline for that check-in (mirrors the dashboard's tools button). */
+function familyOpenTools(_btn, _key) {
+  var es = typeof lang !== "undefined" && lang === "es";
+  var row = _btn.closest(".fam-row");
+  if (!row) { return; }
+  var host = row.querySelector(".fam-report-host");
+  if (!host) { return; }
+  if (host.dataset.open === "tools") {
+    host.innerHTML = "";
+    host.dataset.open = "";
+    _btn.textContent = "🧰 " + (es ? "Herramientas" : "Suggested tools");
+    return;
+  }
+  var rec = _famFindRecordByKey(_key);
+  if (!rec) { return; }
+  var html = (typeof aogStudentToolsBlock === "function") ? aogStudentToolsBlock(rec, es) : "";
+  host.innerHTML = "<div class=\"home-view\" style=\"margin-top:14px\">" + html + "</div>";
+  host.dataset.open = "tools";
+  _btn.textContent = "🧰 " + (es ? "Ocultar" : "Hide tools");
+  try { host.scrollIntoView({ behavior: "smooth", block: "nearest" }); } catch (e) {}
+}
+/* Family-mode quick "Conversation starters" button — opens just the starters inline. */
+function familyOpenConvo(_btn, _key) {
+  var es = typeof lang !== "undefined" && lang === "es";
+  var row = _btn.closest(".fam-row");
+  if (!row) { return; }
+  var host = row.querySelector(".fam-report-host");
+  if (!host) { return; }
+  if (host.dataset.open === "convo") {
+    host.innerHTML = "";
+    host.dataset.open = "";
+    _btn.textContent = "💬 " + (es ? "Iniciadores de conversación" : "Conversation starters");
+    return;
+  }
+  var rec = _famFindRecordByKey(_key);
+  if (!rec) { return; }
+  var prev = typeof dashLang !== "undefined" ? dashLang : "en";
+  if (typeof dashLang !== "undefined") { dashLang = typeof lang !== "undefined" ? lang : prev; }
+  var html = (typeof renderConversationGuide === "function") ? renderConversationGuide(rec, true) : "";
+  if (typeof dashLang !== "undefined") { dashLang = prev; }
+  host.innerHTML = "<div class=\"home-view\" style=\"margin-top:14px\">" + html + "</div>";
+  host.dataset.open = "convo";
+  _btn.textContent = "💬 " + (es ? "Ocultar" : "Hide");
+  try { host.scrollIntoView({ behavior: "smooth", block: "nearest" }); } catch (e) {}
 }
 function familyOpenReport(_0x3f621f, _0x7d6766) {
   var _0x5757dd = _0x3f621f.closest(".fam-row");
@@ -15451,7 +15628,7 @@ function familyOpenReport(_0x3f621f, _0x7d6766) {
   if (typeof dashLang !== "undefined") {
     dashLang = typeof lang !== "undefined" ? lang : _0x18a2a9;
   }
-  _0x454998.innerHTML = "<div class=\"home-view\" style=\"margin-top:14px\">" + buildHomeReport(_0x5aa7d8, false) + "</div>";
+  _0x454998.innerHTML = "<div class=\"home-view\" style=\"margin-top:14px\">" + buildHomeReport(_0x5aa7d8, true) + "</div>";
   if (typeof dashLang !== "undefined") {
     dashLang = _0x18a2a9;
   }
@@ -23874,10 +24051,10 @@ window.addEventListener('load', _installToolScreenHook);
 .aog-tm-item input{ margin-top:3px; flex:0 0 auto; width:16px; height:16px; accent-color:var(--gold-deep,#9a6f24); }
 .aog-tm-ic{ font-size:20px; line-height:1.1; }
 .aog-tm-tx{ flex:1 1 auto; min-width:0; }
-.aog-tm-tt{ font-weight:700; color:var(--navy); font-size:13.5px; }
-.aog-tm-ds{ font-size:11.5px; color:var(--ink-faint); line-height:1.4; }
-.aog-tm-dm{ display:inline-block; font-size:10px; font-weight:700; letter-spacing:.04em; text-transform:uppercase; color:var(--gold-deep,#9a6f24); margin-top:3px; }
-.aog-tm-prev{ background:none; border:none; color:var(--navy); font-size:11px; font-weight:800; cursor:pointer; padding:2px 4px; text-decoration:underline; }
+.aog-tm-tt{ display:block; font-weight:700; color:var(--navy); font-size:13.5px; line-height:1.25; }
+.aog-tm-ds{ display:block; margin-top:2px; font-size:11.5px; color:var(--ink-faint); line-height:1.4; }
+.aog-tm-dm{ display:block; margin-top:5px; font-size:10px; font-weight:700; letter-spacing:.04em; text-transform:uppercase; color:var(--gold-deep,#9a6f24); }
+.aog-tm-prev{ flex:0 0 auto; align-self:flex-start; white-space:nowrap; background:none; border:none; color:var(--navy); font-size:11px; font-weight:800; cursor:pointer; padding:2px 0 2px 4px; text-decoration:underline; }
 .aog-tm-actions{ display:flex; gap:12px; align-items:center; flex-wrap:wrap; margin-top:16px; }
 .aog-tm-name{ display:flex; align-items:center; gap:7px; font-size:12.5px; color:var(--ink-soft); }
 .aog-tm-out{ margin-top:14px; }
