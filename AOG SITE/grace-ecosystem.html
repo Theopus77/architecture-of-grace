@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Grace Ecosystem — Architecture of Grace</title>
+<meta name="description" content="Home, school, and adult-life resources built on the four pillars of Architecture of Grace: Identity, Self-Compassion, Forgiveness, and Grace.">
+<style>
+  :root{
+    --ink:#2C3A47; --navy:#1B3A5F; --slate:#46506E; --faint:#8a96a3;
+    --gold:#B8893A; --gold-dk:#9a6f24; --gold-lt:#E7D9B6; --cream:#FBF3DF; --cream2:#F4EEE2;
+    --identity:#1C5499; --compassion:#356B25; --forgive:#9a6f24; --grace:#523C9E;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0; padding:0;}
+  body{
+    font-family:Georgia,"Times New Roman",serif; color:var(--ink);
+    background:
+      radial-gradient(at 8% -2%, rgba(184,137,58,.08) 0, transparent 38%),
+      radial-gradient(at 98% 4%, rgba(27,58,95,.06) 0, transparent 40%),
+      var(--cream);
+    line-height:1.6;
+  }
+  .wrap{max-width:1000px; margin:0 auto; padding:34px 22px 60px;}
+  header.top{display:flex; align-items:center; gap:13px; margin-bottom:8px;}
+  .mark{width:50px; height:50px; border-radius:12px; background:var(--navy); color:#E7C77B;
+    display:flex; align-items:center; justify-content:center; font-size:29px; font-weight:700; flex:none;}
+  .brand{font-size:21px; font-weight:700; color:var(--navy);}
+  .brand small{display:block; font-family:Arial,Helvetica,sans-serif; font-size:10.5px; font-weight:400;
+    color:#5A6B7B; letter-spacing:.05em; margin-top:2px;}
+  h1{font-size:clamp(32px,5vw,46px); color:var(--navy); margin:22px 0 6px; letter-spacing:-.5px; line-height:1.05;}
+  .tagline{font-style:italic; font-size:clamp(16px,2.4vw,19px); color:var(--slate); margin:0 0 4px; max-width:40ch;}
+  .rule{height:2px; background:var(--gold); border:0; margin:18px 0 22px; max-width:120px; margin-left:0;}
+  p.intro{font-size:16px; color:var(--slate); max-width:68ch; margin:0 0 8px;}
+  .pillrow{display:flex; flex-wrap:wrap; gap:8px; margin:18px 0 30px;}
+  .chip{font-family:Arial,sans-serif; font-size:12px; font-weight:700; letter-spacing:.04em; color:#fff;
+    padding:6px 13px; border-radius:30px;}
+  .c-id{background:var(--identity);} .c-sc{background:var(--compassion);} .c-fg{background:var(--forgive);} .c-gr{background:var(--grace);}
+  h2.sec{font-family:Arial,Helvetica,sans-serif; font-size:12.5px; font-weight:700; letter-spacing:.16em;
+    text-transform:uppercase; color:var(--gold-dk); margin:34px 0 14px;}
+  .grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(290px,1fr)); gap:16px;}
+  .card{background:#fff; border:1.5px solid var(--gold-lt); border-top:5px solid var(--gold);
+    border-radius:14px; padding:18px 20px 16px; display:flex; flex-direction:column;
+    box-shadow:0 1px 4px rgba(27,58,95,.06); transition:transform .12s ease, box-shadow .12s ease;}
+  .card:hover{transform:translateY(-2px); box-shadow:0 6px 18px rgba(27,58,95,.12);}
+  .card.t-hub{border-top-color:var(--navy);} .card.t-id{border-top-color:var(--identity);}
+  .card.t-sc{border-top-color:var(--compassion);} .card.t-fg{border-top-color:var(--forgive);} .card.t-gr{border-top-color:var(--grace);}
+  .card .kicker{font-family:Arial,sans-serif; font-size:10px; font-weight:700; letter-spacing:.12em;
+    text-transform:uppercase; color:var(--gold-dk); margin-bottom:5px;}
+  .card h3{font-size:20px; color:var(--navy); margin:0 0 7px; line-height:1.15;}
+  .card p{font-size:13.5px; color:var(--slate); margin:0 0 16px; flex:1;}
+  .actions{display:flex; gap:9px; flex-wrap:wrap;}
+  a.btn{font-family:Arial,Helvetica,sans-serif; font-size:12.5px; font-weight:700; text-decoration:none;
+    padding:8px 15px; border-radius:24px; letter-spacing:.02em; display:inline-block;}
+  a.btn.open{background:var(--navy); color:#fff;}
+  a.btn.open:hover{background:#16314f;}
+  a.btn.pdf{background:transparent; color:var(--navy); border:1.5px solid var(--gold);}
+  a.btn.pdf:hover{background:var(--cream2);}
+  .note{margin-top:34px; background:#fff; border:1.5px solid var(--gold-lt); border-left:5px solid var(--gold);
+    border-radius:12px; padding:15px 18px; font-size:13.5px; color:var(--slate); max-width:72ch;}
+  .note b{color:var(--navy);}
+  footer{margin-top:40px; padding-top:16px; border-top:1px solid var(--gold-lt);
+    font-family:Arial,Helvetica,sans-serif; font-size:12px; color:var(--faint);
+    display:flex; justify-content:space-between; flex-wrap:wrap; gap:8px;}
+  footer b{color:var(--navy);}
+  footer .stick{font-family:Georgia,serif; font-style:italic; font-size:13px; color:var(--gold-dk);}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <div class="mark">A</div>
+    <div class="brand">Architecture of Grace<small>A PROJECT OF THE ARCHITECTURE OF GRACE FOUNDATION</small></div>
+  </header>
+
+  <h1>The Grace Ecosystem</h1>
+  <p class="tagline">One language for relationships — practiced at home, in school, and across adult life.</p>
+  <hr class="rule">
+
+  <p class="intro">Architecture of Grace is built on four pillars. The Grace Ecosystem carries them beyond the classroom — into the home, across the home–school bridge, and into the relationships adults hold for the rest of their lives. Every resource below is print-ready and built to be used in just 5–15 minutes.</p>
+
+  <div class="pillrow">
+    <span class="chip c-id">Identity</span>
+    <span class="chip c-sc">Self-Compassion</span>
+    <span class="chip c-fg">Forgiveness</span>
+    <span class="chip c-gr">Grace</span>
+  </div>
+
+  <h2 class="sec">For Families &amp; Schools</h2>
+  <div class="grid">
+    <div class="card t-id">
+      <div class="kicker">Part One · For Families</div>
+      <h3>Grace at Home</h3>
+      <p>A weekly family rhythm — prompts, activities, check-ins, and challenges across all four pillars, plus a ready-to-use "This Week" card.</p>
+      <div class="actions">
+        <a class="btn open" href="files/AoG-Grace-at-Home-System.html">Read online</a>
+        <a class="btn pdf" href="files/AoG-Grace-at-Home-System.pdf">Download PDF</a>
+      </div>
+    </div>
+    <div class="card t-gr">
+      <div class="kicker">Part Two · The Bridge</div>
+      <h3>Home–School Connection</h3>
+      <p>Shared vocabulary, a reflection loop, assessment follow-ups, growth tracking, and a family reflection journal.</p>
+      <div class="actions">
+        <a class="btn open" href="files/AoG-Home-School-Connection.html">Read online</a>
+        <a class="btn pdf" href="files/AoG-Home-School-Connection.pdf">Download PDF</a>
+      </div>
+    </div>
+  </div>
+
+  <h2 class="sec">For Grown-Ups</h2>
+  <div class="grid">
+    <div class="card t-sc">
+      <div class="kicker">Part Three · For Parents</div>
+      <h3>Grace for Parents</h3>
+      <p>A self-development pathway for the grown-ups: identity, self-compassion, forgiveness, and grace in the hardest job there is.</p>
+      <div class="actions">
+        <a class="btn open" href="files/AoG-Grace-for-Parents.html">Read online</a>
+        <a class="btn pdf" href="files/AoG-Grace-for-Parents.pdf">Download PDF</a>
+      </div>
+    </div>
+    <div class="card t-fg">
+      <div class="kicker">Part Four · For Educators</div>
+      <h3>Grace for Educators</h3>
+      <p>Professional growth that protects the people who do the work: burnout prevention, repair, staff trust, and leadership through grace.</p>
+      <div class="actions">
+        <a class="btn open" href="files/AoG-Grace-for-Educators.html">Read online</a>
+        <a class="btn pdf" href="files/AoG-Grace-for-Educators.pdf">Download PDF</a>
+      </div>
+    </div>
+    <div class="card t-gr">
+      <div class="kicker">Part Five · For Everyone</div>
+      <h3>Grace for Adult Life</h3>
+      <p>The framework beyond education — teams, leadership, couples, friendships, caregivers, communities, and personal growth.</p>
+      <div class="actions">
+        <a class="btn open" href="files/AoG-Grace-for-Adult-Life.html">Read online</a>
+        <a class="btn pdf" href="files/AoG-Grace-for-Adult-Life.pdf">Download PDF</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="note">
+    <b>How to use these.</b> Start with Grace at Home and the shared vocabulary in the Home–School Connection — they build the common language everything else depends on. Add the adult pathways as the language takes hold. Each page prints cleanly to Letter size for fridge, classroom, or staff room.
+  </div>
+
+  <footer>
+    <span>A project of <b>The Architecture of Grace Foundation</b> &nbsp;·&nbsp; architectureofgrace.org</span>
+    <span class="stick">Home. School. The whole life.</span>
+  </footer>
+
+</div>
+</body>
+</html>

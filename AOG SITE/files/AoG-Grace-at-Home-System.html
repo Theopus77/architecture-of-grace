@@ -1,0 +1,361 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Grace at Home — The Family System · Architecture of Grace</title>
+<style>
+  @page { size: Letter; margin: 0; }
+  :root{
+    --ink:#2C3A47; --navy:#1B3A5F; --slate:#46506E; --faint:#8a96a3;
+    --gold:#B8893A; --gold-dk:#9a6f24; --gold-lt:#E7D9B6; --cream:#FBF3DF;
+    --identity:#1C5499; --compassion:#356B25; --forgive:#9a6f24; --grace:#523C9E;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{font-family:Georgia,"Times New Roman",serif; color:var(--ink); background:#e7ddc4;
+    -webkit-print-color-adjust:exact; print-color-adjust:exact;}
+  .page{width:8.5in; min-height:11in; margin:0 auto 18px; padding:0.55in 0.6in 0.5in;
+    background:radial-gradient(at 12% 0%, rgba(184,137,58,.07) 0, transparent 42%),
+      radial-gradient(at 92% 100%, rgba(27,58,95,.06) 0, transparent 45%), var(--cream);
+    box-shadow:0 1px 6px rgba(0,0,0,.12);}
+  .brandrow{display:flex; align-items:center; gap:12px;}
+  .mark{width:46px; height:46px; border-radius:11px; background:var(--navy); color:#E7C77B;
+    display:flex; align-items:center; justify-content:center; font-size:27px; font-weight:700;}
+  .brand{font-size:19px; font-weight:700; color:var(--navy); letter-spacing:.2px;}
+  .brand small{display:block; font-family:Arial,Helvetica,sans-serif; font-size:10px; font-weight:400;
+    color:#5A6B7B; letter-spacing:.04em; margin-top:2px;}
+  h1{font-size:33px; color:var(--navy); margin:18px 0 4px; letter-spacing:-.4px;}
+  .tagline{font-style:italic; font-size:15px; color:var(--slate); margin:0 0 4px; max-width:6.7in;}
+  .rule{height:2px; background:var(--gold); border:0; margin:12px 0 14px;}
+  p.body{font-size:13.5px; line-height:1.6; color:var(--slate); margin:0 0 10px; max-width:6.9in;}
+  .domainhead{display:flex; align-items:center; gap:11px; margin:6px 0 12px;}
+  .badge{width:38px; height:38px; border-radius:9px; display:flex; align-items:center; justify-content:center;
+    color:#fff; font-family:Arial,sans-serif; font-weight:700; font-size:15px; flex:none;}
+  .domainhead .meta .k{font-family:Arial,sans-serif; font-size:9.5px; font-weight:700; letter-spacing:.12em;
+    text-transform:uppercase; color:var(--gold-dk);}
+  .domainhead .meta .n{font-size:23px; color:var(--navy); line-height:1.05;}
+  .domainhead .meta .s{font-size:12px; font-style:italic; color:var(--slate);}
+  .b-id{background:var(--identity);} .b-sc{background:var(--compassion);}
+  .b-fg{background:var(--forgive);} .b-gr{background:var(--grace);}
+  .grid2{display:grid; grid-template-columns:1fr 1fr; gap:12px;}
+  .box{background:#fff; border:1.5px solid var(--gold-lt); border-radius:11px; padding:11px 13px;}
+  .box.l-id{border-left:5px solid var(--identity);} .box.l-sc{border-left:5px solid var(--compassion);}
+  .box.l-fg{border-left:5px solid var(--forgive);} .box.l-gr{border-left:5px solid var(--grace);}
+  .box h4{font-family:Arial,sans-serif; font-size:9.5px; font-weight:700; letter-spacing:.1em; text-transform:uppercase;
+    color:var(--gold-dk); margin:0 0 6px;}
+  .box ul{margin:0; padding-left:16px;}
+  .box ul li{font-size:12px; line-height:1.5; color:var(--ink); margin-bottom:5px;}
+  .box ul li b{color:var(--navy);}
+  .box p{font-size:12px; line-height:1.5; color:var(--ink); margin:0 0 6px;}
+  .ageline{font-family:Arial,sans-serif; font-size:9px; color:var(--faint); letter-spacing:.04em; margin-top:2px;}
+  .challenge{background:var(--cream); border:1.5px dashed var(--gold); border-radius:11px; padding:11px 13px; margin-top:12px;}
+  .challenge .k{font-family:Arial,sans-serif; font-size:9.5px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--gold-dk);}
+  .challenge p{font-size:12.5px; line-height:1.5; color:var(--ink); margin:4px 0 0;}
+  .foot{margin-top:16px; display:flex; justify-content:space-between; align-items:baseline;
+    font-family:Arial,sans-serif; font-size:10.5px; color:var(--faint); border-top:1px solid var(--gold-lt); padding-top:8px;}
+  .foot b{color:var(--navy);}
+  .stick{font-style:italic; font-family:Georgia,serif; font-size:12px; color:var(--gold-dk);}
+  /* This Week card */
+  .tw{width:100%; border-collapse:separate; border-spacing:0; border:2px solid var(--gold);
+    border-radius:16px; overflow:hidden; margin-top:6px; background:#fff;}
+  .tw .toprow td{background:var(--navy); padding:0;}
+  .tw .topbar{display:flex; justify-content:space-between; align-items:center; padding:13px 18px;}
+  .tw .topbar .ttl{font-size:20px; font-weight:700; color:#fff;}
+  .tw .topbar .pilltag{font-family:Arial,sans-serif; font-size:10px; font-weight:700; letter-spacing:.1em; text-transform:uppercase;
+    color:#fff; background:var(--grace); padding:4px 10px; border-radius:20px;}
+  .tw td.cell{padding:13px 18px; border-top:1px solid var(--gold-lt); border-right:1px solid var(--gold-lt); width:50%; vertical-align:top;}
+  .tw td.cell.last{border-right:0;}
+  .tw td.full{padding:13px 18px; border-top:1px solid var(--gold-lt); background:var(--cream); vertical-align:top;}
+  .tw .lab{font-family:Arial,sans-serif; font-size:9px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--gold-dk); margin-bottom:4px;}
+  .tw .txt{font-size:13px; line-height:1.5; color:var(--ink);}
+  .tw .txt em{color:var(--navy); font-style:italic;}
+  @media print{ body{background:#fff;} .page{box-shadow:none; margin:0 auto;} }
+</style>
+</head>
+<body>
+
+<!-- PAGE 1: intro + how it works -->
+<div class="page">
+  <div class="brandrow">
+    <div class="mark">A</div>
+    <div class="brand">Architecture of Grace<small>A PROJECT OF THE ARCHITECTURE OF GRACE FOUNDATION</small></div>
+  </div>
+  <h1>Grace at Home</h1>
+  <p class="tagline">A simple weekly rhythm that turns four pillars into ordinary, around-the-table conversation.</p>
+  <hr class="rule">
+  <p class="body">This is the family side of Architecture of Grace. Every practice here aligns to one of the four pillars your child is learning about — <b>Identity, Self-Compassion, Forgiveness,</b> and <b>Grace</b> — so the language at home matches the language at school. Nothing takes more than 5–15 minutes. Nothing requires a worksheet, a degree, or a perfect parent. You go first; they follow.</p>
+
+  <div class="grid2">
+    <div class="box l-id"><h4>How a week works</h4>
+      <ul>
+        <li><b>Pick the pillar of the week</b> (rotate through all four each month).</li>
+        <li><b>Open with the prompt</b> at dinner or in the car — one question, no lecture.</li>
+        <li><b>Do one activity</b> sometime that week. Ten minutes is plenty.</li>
+        <li><b>Close with a reflection</b> question and let the follow-up come naturally.</li>
+      </ul>
+    </div>
+    <div class="box l-sc"><h4>Make it work for any age</h4>
+      <ul>
+        <li><b>Little ones (4–7):</b> keep it concrete — name feelings, draw it, act it out.</li>
+        <li><b>Middle (8–12):</b> ask for examples from their day; let them quiz you back.</li>
+        <li><b>Teens (13+):</b> trade stories as equals; resist fixing, just listen.</li>
+        <li><b>Mixed ages:</b> let older kids model; let younger kids surprise you.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="grid2" style="margin-top:12px;">
+    <div class="box l-fg"><h4>The four-week month</h4>
+      <ul>
+        <li><b>Week 1 — Identity:</b> who we are, and who we're becoming.</li>
+        <li><b>Week 2 — Self-Compassion:</b> how we treat ourselves when we fall.</li>
+        <li><b>Week 3 — Forgiveness:</b> how we repair and start again.</li>
+        <li><b>Week 4 — Grace:</b> how we meet each other gently.</li>
+      </ul>
+    </div>
+    <div class="box l-gr"><h4>Three small rules</h4>
+      <ul>
+        <li><b>You go first.</b> Kids practice grace they've watched, not grace they've been told about.</li>
+        <li><b>No grades.</b> There are no wrong answers here — only honest ones.</li>
+        <li><b>Keep it short.</b> A two-minute exchange you repeat beats a long talk you dread.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="challenge">
+    <div class="k">The whole system on one page</div>
+    <p>Pages 2–5 give you, for each pillar: <b>weekly prompts, a monthly challenge, family activities, reflection questions,</b> and <b>follow-up discussions.</b> Page 6 is a ready-to-use <b>"Grace at Home This Week"</b> card you can copy for any week of the year.</p>
+  </div>
+
+  <div class="foot">
+    <span>A project of <b>The Architecture of Grace Foundation</b> &nbsp;·&nbsp; architectureofgrace.org</span>
+    <span class="stick">Stick it on the fridge.</span>
+  </div>
+</div>
+
+<!-- PAGE 2: IDENTITY -->
+<div class="page">
+  <div class="domainhead">
+    <div class="badge b-id">1</div>
+    <div class="meta"><div class="k">Pillar One</div><div class="n">Identity</div><div class="s">Who we come to believe we are — shaped by what we notice out loud.</div></div>
+  </div>
+  <div class="grid2">
+    <div class="box l-id"><h4>Weekly prompts — pick one</h4>
+      <ul>
+        <li>"What's one thing you did today that felt <b>like you</b>?"</li>
+        <li>"When were you proud of <b>who you were</b>, not just what you got?"</li>
+        <li>"What's something you're good at that has nothing to do with school?"</li>
+        <li>"If your friends described you in three words, what would you want them to say?"</li>
+        <li>"Who in our family are you most like — and what part?"</li>
+      </ul>
+      <div class="ageline">Younger: "What makes you <i>you</i>?" · Teens: "Where do you feel most yourself?"</div>
+    </div>
+    <div class="box l-id"><h4>Reflection questions</h4>
+      <ul>
+        <li>"Did anyone make you feel seen today? Did you do that for anyone?"</li>
+        <li>"What's a label you've outgrown?"</li>
+        <li>"What do you hope is true about you a year from now?"</li>
+      </ul>
+      <h4 style="margin-top:9px;">Follow-up discussion</h4>
+      <p>Later in the week: "You said you felt most like yourself when ___. How can we make more room for that?" Naming it once is good; protecting it is better.</p>
+    </div>
+  </div>
+  <div class="grid2" style="margin-top:12px;">
+    <div class="box l-id"><h4>Family activities (5–15 min)</h4>
+      <ul>
+        <li><b>Catch them being.</b> Each day, name one <i>true thing you saw them be</i> — patient, curious, brave — not just what they achieved.</li>
+        <li><b>The strengths jar.</b> All week, drop in slips naming a strength you noticed in each other. Read them Sunday.</li>
+        <li><b>Three-word portraits.</b> Everyone writes three words for each family member. Compare. Talk about the surprises.</li>
+      </ul>
+    </div>
+    <div class="box l-id"><h4>Reinforces at school</h4>
+      <p>Classrooms explore identity through "I am" statements and strengths language. At home you're doing the same work — praising the <b>person, not only the grade</b> — so a child hears one consistent message about who they are.</p>
+    </div>
+  </div>
+  <div class="challenge">
+    <div class="k">Monthly Grace Challenge — Identity</div>
+    <p><b>"The Out-Loud Week."</b> For seven days, say one specific, character-based thing you notice in each family member <i>out loud</i>, every day. No achievements allowed — only who they were being. Notice what changes by day seven.</p>
+  </div>
+  <div class="foot"><span>Grace at Home &nbsp;·&nbsp; Pillar One: Identity</span><span class="stick">Praise the person.</span></div>
+</div>
+
+<!-- PAGE 3: SELF-COMPASSION -->
+<div class="page">
+  <div class="domainhead">
+    <div class="badge b-sc">2</div>
+    <div class="meta"><div class="k">Pillar Two</div><div class="n">Self-Compassion</div><div class="s">How we learn to speak to ourselves when things go wrong.</div></div>
+  </div>
+  <div class="grid2">
+    <div class="box l-sc"><h4>Weekly prompts — pick one</h4>
+      <ul>
+        <li>"What's something hard you tried today, even though it scared you?"</li>
+        <li>"When you messed up today, what did you <b>say to yourself</b>?"</li>
+        <li>"Would you talk to a friend the way you talk to yourself?"</li>
+        <li>"What does your kind inside-voice sound like? What about the harsh one?"</li>
+        <li>"What do you need when you're disappointed in yourself?"</li>
+      </ul>
+      <div class="ageline">Younger: "Can we be gentle with ourselves like we are with a puppy?" · Teens: "What's your inner critic's favorite line?"</div>
+    </div>
+    <div class="box l-sc"><h4>Reflection questions</h4>
+      <ul>
+        <li>"Was today a 'be gentle' day or a 'push yourself' day? How do you know?"</li>
+        <li>"What would you tell a friend in your exact situation?"</li>
+        <li>"What's one kind thing you could say to yourself tonight?"</li>
+      </ul>
+      <h4 style="margin-top:9px;">Follow-up discussion</h4>
+      <p>Circle back: "Earlier you were really hard on yourself about ___. How are you feeling about it now?" Self-compassion grows when someone notices the storm has passed.</p>
+    </div>
+  </div>
+  <div class="grid2" style="margin-top:12px;">
+    <div class="box l-sc"><h4>Family activities (5–15 min)</h4>
+      <ul>
+        <li><b>Flip the critic.</b> When the harsh voice shows up — theirs or yours — help each other "talk to yourself like a friend," out loud.</li>
+        <li><b>Mistake of the day.</b> At dinner, everyone shares one slip-up and one kind thing they told themselves. You go first.</li>
+        <li><b>The friend test.</b> Write down a harsh self-thought, then rewrite it as if it were advice to your best friend.</li>
+      </ul>
+    </div>
+    <div class="box l-sc"><h4>Reinforces at school</h4>
+      <p>Lessons teach kids to notice self-talk and reframe it ("I made a mistake — that's being human"). When the same reframing happens at home, the kind voice gets louder than the critic in both places.</p>
+    </div>
+  </div>
+  <div class="challenge">
+    <div class="k">Monthly Grace Challenge — Self-Compassion</div>
+    <p><b>"Talk to Yourself Like a Friend."</b> This month, when anyone in the family catches themselves in harsh self-talk, they say it out loud — and someone helps them rephrase it the way they'd speak to a friend. Keep a tally on the fridge of how many flips you make together.</p>
+  </div>
+  <div class="foot"><span>Grace at Home &nbsp;·&nbsp; Pillar Two: Self-Compassion</span><span class="stick">Be your own friend.</span></div>
+</div>
+
+<!-- PAGE 4: FORGIVENESS -->
+<div class="page">
+  <div class="domainhead">
+    <div class="badge b-fg">3</div>
+    <div class="meta"><div class="k">Pillar Three</div><div class="n">Forgiveness</div><div class="s">Moving past mistakes to make room for growth — theirs and ours.</div></div>
+  </div>
+  <div class="grid2">
+    <div class="box l-fg"><h4>Weekly prompts — pick one</h4>
+      <ul>
+        <li>"Is there anything between us that needs a <b>redo</b>?"</li>
+        <li>"What's harder for you — saying sorry, or accepting one?"</li>
+        <li>"Are you carrying something today that you'd feel lighter to set down?"</li>
+        <li>"When someone forgave you, how did it feel?"</li>
+        <li>"What does a <b>real</b> apology include?"</li>
+      </ul>
+      <div class="ageline">Younger: "Should we have a do-over?" · Teens: "What makes forgiveness feel earned vs. fake?"</div>
+    </div>
+    <div class="box l-fg"><h4>Reflection questions</h4>
+      <ul>
+        <li>"Did anything get repaired today? What helped?"</li>
+        <li>"Is there a grudge that's costing you more than it's worth?"</li>
+        <li>"What's the difference between forgiving and pretending it didn't happen?"</li>
+      </ul>
+      <h4 style="margin-top:9px;">Follow-up discussion</h4>
+      <p>A day after a repair: "How are we doing since our redo? Anything still tender?" Forgiveness isn't a single moment — checking back tells a child repair is real, not performance.</p>
+    </div>
+  </div>
+  <div class="grid2" style="margin-top:12px;">
+    <div class="box l-fg"><h4>Family activities (5–15 min)</h4>
+      <ul>
+        <li><b>The four-step redo.</b> Practice the repair steps together: <b>own it · name the impact · make it right · reset.</b> You model one of your own first.</li>
+        <li><b>Mistake of the week.</b> At a weekly meal, each person shares a mistake and what they'd redo. The grown-ups go first — it makes repair normal, not scary.</li>
+        <li><b>Set it down.</b> Write a grudge on paper, talk about it, then crumple or recycle it together.</li>
+      </ul>
+    </div>
+    <div class="box l-fg"><h4>Reinforces at school</h4>
+      <p>The classroom teaches repair as a skill with clear steps, not just "say sorry." Walking the same four steps at home means a child practices real accountability in the place it matters most.</p>
+    </div>
+  </div>
+  <div class="challenge">
+    <div class="k">Monthly Grace Challenge — Forgiveness</div>
+    <p><b>"One Real Repair."</b> Sometime this month, every family member completes one genuine four-step redo with someone — inside or outside the family. Come back and share what was hard about it and what felt better afterward. The goal isn't perfection; it's practice.</p>
+  </div>
+  <div class="foot"><span>Grace at Home &nbsp;·&nbsp; Pillar Three: Forgiveness</span><span class="stick">Own it. Make it right. Reset.</span></div>
+</div>
+
+<!-- PAGE 5: GRACE -->
+<div class="page">
+  <div class="domainhead">
+    <div class="badge b-gr">4</div>
+    <div class="meta"><div class="k">Pillar Four</div><div class="n">Grace</div><div class="s">Meeting each other with understanding rather than only judgment.</div></div>
+  </div>
+  <div class="grid2">
+    <div class="box l-gr"><h4>Weekly prompts — pick one</h4>
+      <ul>
+        <li>"Who could use a little extra patience from you this week?"</li>
+        <li>"When did someone give <b>you</b> grace today?"</li>
+        <li>"What's a story we don't know about why someone acted the way they did?"</li>
+        <li>"Where could we choose <b>connection before correction</b> this week?"</li>
+        <li>"What's something kind you did that no one noticed?"</li>
+      </ul>
+      <div class="ageline">Younger: "How can we be extra gentle with someone today?" · Teens: "When is grace hardest to give?"</div>
+    </div>
+    <div class="box l-gr"><h4>Reflection questions</h4>
+      <ul>
+        <li>"Did I lead with curiosity or with judgment today?"</li>
+        <li>"Who deserves the benefit of the doubt from me right now?"</li>
+        <li>"What would change if I assumed the best about them?"</li>
+      </ul>
+      <h4 style="margin-top:9px;">Follow-up discussion</h4>
+      <p>End of week: "Where did grace change how a moment went this week — for you or for us?" Naming the wins teaches kids that gentleness is powerful, not weak.</p>
+    </div>
+  </div>
+  <div class="grid2" style="margin-top:12px;">
+    <div class="box l-gr"><h4>Family activities (5–15 min)</h4>
+      <ul>
+        <li><b>Connection before correction.</b> Before the lecture, take one calm breath and ask one kind question. Your calm is the intervention.</li>
+        <li><b>Grace you received.</b> Go around and each name one moment today someone was gentle with you.</li>
+        <li><b>The benefit of the doubt.</b> Pick a frustrating moment and invent three kind reasons the other person might have acted that way.</li>
+      </ul>
+    </div>
+    <div class="box l-gr"><h4>Reinforces at school</h4>
+      <p>Classrooms frame grace as meeting others (and ourselves) with understanding first. At home, "connection before correction" gives a child the same gentle on-ramp back from a hard moment.</p>
+    </div>
+  </div>
+  <div class="challenge">
+    <div class="k">Monthly Grace Challenge — Grace</div>
+    <p><b>"Connection Before Correction."</b> For one month, before any correction, the adults pause for a single breath and one kind question first. Notice how often the lecture turns out to be unnecessary. Invite the kids to call it out — gently — when you forget.</p>
+  </div>
+  <div class="foot"><span>Grace at Home &nbsp;·&nbsp; Pillar Four: Grace</span><span class="stick">Your calm is the intervention.</span></div>
+</div>
+
+<!-- PAGE 6: THIS WEEK CARD -->
+<div class="page">
+  <h1 style="font-size:28px; margin-top:6px;">Grace at Home <span style="color:var(--gold-dk);">This Week</span></h1>
+  <p class="tagline">A ready-to-use card. Copy it for any week — just swap the pillar and the five fields.</p>
+  <hr class="rule">
+
+  <table class="tw">
+    <tr class="toprow"><td colspan="2"><div class="topbar"><div class="ttl">This Week's Pillar</div><div class="pilltag">Grace</div></div></td></tr>
+    <tr>
+      <td class="cell"><div class="lab">Parent Prompt</div><div class="txt">Before any correction this week, take one breath and ask one kind question first. Then tell your child at dinner: <em>"I tried leading with a question today instead of a lecture — here's what happened."</em></div></td>
+      <td class="cell last"><div class="lab">Student Prompt</div><div class="txt">"When did someone give <em>you</em> grace today — went easy on you, gave you the benefit of the doubt? How did it feel?"</div></td>
+    </tr>
+    <tr>
+      <td class="cell"><div class="lab">Family Activity</div><div class="txt"><b>Benefit of the doubt.</b> Pick one frustrating moment from the week. Together, invent three kind reasons the other person might have acted that way. (10 min)</div></td>
+      <td class="cell last"><div class="lab">Reflection Question</div><div class="txt">"Did I lead with curiosity or with judgment today? Who deserves the benefit of the doubt from me right now?"</div></td>
+    </tr>
+    <tr><td class="full" colspan="2"><div class="lab">Extension Activity</div><div class="txt">Pick one person outside the family — a sibling's friend, a neighbor, a teacher — and offer them a small, unprompted bit of grace this week (patience, a kind note, a second chance). At the next dinner, share what you did and what you noticed. <em>Grace grows when it leaves the house.</em></div></td></tr>
+  </table>
+
+  <div class="grid2" style="margin-top:14px;">
+    <div class="box l-id"><h4>How to run "This Week"</h4>
+      <ul>
+        <li>Post the card somewhere everyone sees it — fridge, table, family chat.</li>
+        <li>Use the <b>Parent</b> and <b>Student</b> prompts as conversation openers, not assignments.</li>
+        <li>Fit the <b>Activity</b> into a meal or car ride once during the week.</li>
+        <li>Close the week with the <b>Reflection</b> question; let the <b>Extension</b> stretch grace beyond the four walls.</li>
+      </ul>
+    </div>
+    <div class="box l-fg"><h4>Make your own each week</h4>
+      <p>Rotate the pillar (Identity → Self-Compassion → Forgiveness → Grace) and pull the five fields straight from that pillar's page in this packet. Four cards gives you a full month; twelve months of cards gives you a <b>Family Grace Journey.</b></p>
+    </div>
+  </div>
+
+  <div class="foot">
+    <span>A project of <b>The Architecture of Grace Foundation</b> &nbsp;·&nbsp; architectureofgrace.org</span>
+    <span class="stick">One pillar. One week. One conversation.</span>
+  </div>
+</div>
+
+</body>
+</html>

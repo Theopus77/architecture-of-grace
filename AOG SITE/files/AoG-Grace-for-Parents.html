@@ -1,0 +1,268 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Grace for Parents · Architecture of Grace</title>
+<style>
+  @page { size: Letter; margin: 0; }
+  :root{
+    --ink:#2C3A47; --navy:#1B3A5F; --slate:#46506E; --faint:#8a96a3;
+    --gold:#B8893A; --gold-dk:#9a6f24; --gold-lt:#E7D9B6; --cream:#FBF3DF;
+    --identity:#1C5499; --compassion:#356B25; --forgive:#9a6f24; --grace:#523C9E;
+  }
+  *{box-sizing:border-box;} html,body{margin:0;padding:0;}
+  body{font-family:Georgia,"Times New Roman",serif; color:var(--ink); background:#e7ddc4;
+    -webkit-print-color-adjust:exact; print-color-adjust:exact;}
+  .page{width:8.5in; min-height:11in; margin:0 auto 18px; padding:0.55in 0.6in 0.5in;
+    background:radial-gradient(at 12% 0%, rgba(184,137,58,.07) 0, transparent 42%),
+      radial-gradient(at 92% 100%, rgba(27,58,95,.06) 0, transparent 45%), var(--cream);
+    box-shadow:0 1px 6px rgba(0,0,0,.12);}
+  .brandrow{display:flex; align-items:center; gap:12px;}
+  .mark{width:46px; height:46px; border-radius:11px; background:var(--navy); color:#E7C77B;
+    display:flex; align-items:center; justify-content:center; font-size:27px; font-weight:700;}
+  .brand{font-size:19px; font-weight:700; color:var(--navy); letter-spacing:.2px;}
+  .brand small{display:block; font-family:Arial,Helvetica,sans-serif; font-size:10px; font-weight:400; color:#5A6B7B; letter-spacing:.04em; margin-top:2px;}
+  h1{font-size:33px; color:var(--navy); margin:18px 0 4px; letter-spacing:-.4px;}
+  h2{font-family:Arial,Helvetica,sans-serif; font-size:12px; font-weight:700; letter-spacing:.14em; text-transform:uppercase; color:var(--gold-dk); margin:22px 0 9px;}
+  .tagline{font-style:italic; font-size:15px; color:var(--slate); margin:0 0 4px; max-width:6.7in;}
+  .rule{height:2px; background:var(--gold); border:0; margin:12px 0 14px;}
+  p.body{font-size:13.5px; line-height:1.6; color:var(--slate); margin:0 0 10px; max-width:6.9in;}
+  .domainhead{display:flex; align-items:center; gap:11px; margin:6px 0 12px;}
+  .badge{width:38px; height:38px; border-radius:9px; display:flex; align-items:center; justify-content:center; color:#fff; font-family:Arial,sans-serif; font-weight:700; font-size:15px; flex:none;}
+  .domainhead .meta .k{font-family:Arial,sans-serif; font-size:9.5px; font-weight:700; letter-spacing:.12em; text-transform:uppercase; color:var(--gold-dk);}
+  .domainhead .meta .n{font-size:22px; color:var(--navy); line-height:1.05;}
+  .domainhead .meta .s{font-size:12px; font-style:italic; color:var(--slate);}
+  .b-id{background:var(--identity);} .b-sc{background:var(--compassion);} .b-fg{background:var(--forgive);} .b-gr{background:var(--grace);}
+  .grid2{display:grid; grid-template-columns:1fr 1fr; gap:12px;}
+  .box{background:#fff; border:1.5px solid var(--gold-lt); border-left:5px solid var(--gold); border-radius:11px; padding:11px 13px;}
+  .box.l-id{border-left-color:var(--identity);} .box.l-sc{border-left-color:var(--compassion);} .box.l-fg{border-left-color:var(--forgive);} .box.l-gr{border-left-color:var(--grace);}
+  .box h4{font-family:Arial,sans-serif; font-size:9.5px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--gold-dk); margin:0 0 6px;}
+  .box ul{margin:0; padding-left:16px;} .box ul li{font-size:12px; line-height:1.5; color:var(--ink); margin-bottom:5px;}
+  .box p{font-size:12px; line-height:1.5; color:var(--ink); margin:0 0 6px;}
+  .box ul li b, .box p b{color:var(--navy);}
+  .challenge{background:var(--cream); border:1.5px dashed var(--gold); border-radius:11px; padding:11px 13px; margin-top:12px;}
+  .challenge .k{font-family:Arial,sans-serif; font-size:9.5px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--gold-dk);}
+  .challenge p{font-size:12.5px; line-height:1.5; color:var(--ink); margin:4px 0 0;}
+  .path{display:grid; grid-template-columns:1fr 1fr 1fr 1fr; gap:8px;}
+  .path .st{background:#fff; border:1.5px solid var(--gold-lt); border-radius:11px; padding:10px 11px;}
+  .path .st .s{font-family:Arial,sans-serif; font-size:9px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--gold-dk);}
+  .path .st .h{font-size:13.5px; color:var(--navy); font-weight:700; margin:2px 0 3px;}
+  .path .st .p{font-size:11px; line-height:1.4; color:var(--slate);}
+  .foot{margin-top:16px; display:flex; justify-content:space-between; align-items:baseline; font-family:Arial,sans-serif; font-size:10.5px; color:var(--faint); border-top:1px solid var(--gold-lt); padding-top:8px;}
+  .foot b{color:var(--navy);} .stick{font-style:italic; font-family:Georgia,serif; font-size:12px; color:var(--gold-dk);}
+  .tool{display:flex; gap:9px; align-items:flex-start; margin-bottom:8px;}
+  .tool .ic{width:24px;height:24px;border-radius:6px;background:var(--navy);color:#E7C77B;font-size:13px;display:flex;align-items:center;justify-content:center;flex:none;font-family:Arial,sans-serif;}
+  .tool .tx{font-size:12px; line-height:1.45; color:var(--ink);} .tool .tx b{color:var(--navy);}
+  @media print{ body{background:#fff;} .page{box-shadow:none; margin:0 auto;} }
+</style>
+</head>
+<body>
+
+<!-- PAGE 1 -->
+<div class="page">
+  <div class="brandrow">
+    <div class="mark">A</div>
+    <div class="brand">Architecture of Grace<small>A PROJECT OF THE ARCHITECTURE OF GRACE FOUNDATION</small></div>
+  </div>
+  <h1>Grace for Parents</h1>
+  <p class="tagline">The four pillars, turned toward you. You can't give a child grace you've never given yourself.</p>
+  <hr class="rule">
+  <p class="body">Most parenting help is about the child. This is about you. The same four pillars your child is learning — <b>Identity, Self-Compassion, Forgiveness,</b> and <b>Grace</b> — describe the inner work of parenting, too. When you practice them on yourself, your child gets the most powerful lesson of all: a grown-up modeling, in real time, how a person treats themselves and others when things are hard. This is a growth pathway, not a rulebook. Take one pillar at a time.</p>
+
+  <div class="grid2">
+    <div class="box l-id"><h4>What this is</h4>
+      <ul>
+        <li>A <b>self-development pathway</b> for the parent — reflection, not instruction.</li>
+        <li>Four short modules, one per pillar, usable in 10 minutes.</li>
+        <li>Reflection exercises, conversation starters, journaling prompts, and challenges.</li>
+        <li>A growth pathway from <b>noticing</b> to <b>practicing</b> to <b>modeling</b>.</li>
+      </ul>
+    </div>
+    <div class="box l-gr"><h4>How to walk it</h4>
+      <ul>
+        <li>Spend a week (or a month) with each pillar; there's no race.</li>
+        <li>Start where you feel the most friction — that's the growth edge.</li>
+        <li>Pair it with the Grace at Home pages so you and your kids grow together.</li>
+        <li>Be as gentle with yourself here as you're learning to be with them.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="challenge">
+    <div class="k">A note before you begin</div>
+    <p>There is no such thing as a parent who has mastered these. The goal isn't a calmer, more perfect you — it's a more <b>honest, repairing, self-compassionate</b> you. Children don't need flawless parents. They need parents who model what to do <i>after</i> the flaw.</p>
+  </div>
+
+  <div class="foot">
+    <span>A project of <b>The Architecture of Grace Foundation</b> &nbsp;·&nbsp; architectureofgrace.org</span>
+    <span class="stick">Grow the grown-up.</span>
+  </div>
+</div>
+
+<!-- PAGE 2: Identity as a parent -->
+<div class="page">
+  <div class="domainhead">
+    <div class="badge b-id">1</div>
+    <div class="meta"><div class="k">Module One</div><div class="n">Identity as a Parent</div><div class="s">Who you are as a parent — beneath the roles, the comparison, and the noise.</div></div>
+  </div>
+  <div class="grid2">
+    <div class="box l-id"><h4>Reflection exercises</h4>
+      <ul>
+        <li>Finish the sentence five ways: "As a parent, I want to be the kind of person who ___."</li>
+        <li>Name the parent you're <b>imitating</b> and the parent you're <b>becoming</b>. Where do they differ?</li>
+        <li>List three values you want your kids to absorb from watching you — not from your lectures.</li>
+      </ul>
+    </div>
+    <div class="box l-id"><h4>Journaling prompts</h4>
+      <ul>
+        <li>"When do I feel most like the parent I want to be?"</li>
+        <li>"Whose approval am I parenting for? Is it serving my child?"</li>
+        <li>"What story about 'good parents' do I need to put down?"</li>
+      </ul>
+    </div>
+  </div>
+  <div class="grid2" style="margin-top:12px;">
+    <div class="box l-id"><h4>Conversation starters (with a partner or friend)</h4>
+      <ul>
+        <li>"What kind of parent did you decide to be — and what changed your mind?"</li>
+        <li>"What part of parenting feels most like the real you?"</li>
+        <li>"Where do we compare ourselves to other families, and what does it cost us?"</li>
+      </ul>
+    </div>
+    <div class="box l-id"><h4>Parenting challenge</h4>
+      <p><b>Define your "one line."</b> Write a single sentence describing the parent you're becoming. Put it where only you can see it. For one week, make one small choice a day that's true to that line — and note which moments made it hard.</p>
+    </div>
+  </div>
+  <div class="challenge"><div class="k">Growth move — from noticing to modeling</div><p>This week, say your "one line" value out loud to your child once, in a real moment: "I'm trying to be someone who stays calm when I'm frustrated. I didn't nail it just now — but that's who I'm working to be." Naming your own identity work teaches them theirs.</p></div>
+  <div class="foot"><span>Grace for Parents &nbsp;·&nbsp; Module One: Identity</span><span class="stick">Become it on purpose.</span></div>
+</div>
+
+<!-- PAGE 3: Self-Compassion in parenting -->
+<div class="page">
+  <div class="domainhead">
+    <div class="badge b-sc">2</div>
+    <div class="meta"><div class="k">Module Two</div><div class="n">Self-Compassion in Parenting</div><div class="s">How you speak to yourself at the end of a hard day.</div></div>
+  </div>
+  <div class="grid2">
+    <div class="box l-sc"><h4>Reflection exercises</h4>
+      <ul>
+        <li>Catch one "bad parent" thought today. Write it down, then rewrite it as advice to a friend.</li>
+        <li>List what you did <b>well</b> today as a parent — aim for three, however small.</li>
+        <li>Notice the gap between the standard you hold yourself to and the one you'd hold anyone else to.</li>
+      </ul>
+    </div>
+    <div class="box l-sc"><h4>Journaling prompts</h4>
+      <ul>
+        <li>"What's the harshest thing I told myself as a parent this week? Is it even true?"</li>
+        <li>"What do I need at the end of a hard day — and do I ever let myself have it?"</li>
+        <li>"If my child grows up to talk to themselves the way I talk to myself, would I be okay with that?"</li>
+      </ul>
+    </div>
+  </div>
+  <div class="grid2" style="margin-top:12px;">
+    <div class="box l-sc"><h4>Conversation starters</h4>
+      <ul>
+        <li>"What's your inner-critic voice as a parent? When is it loudest?"</li>
+        <li>"How do we recover after a rough parenting moment — together and alone?"</li>
+        <li>"What would 'being on our own team' look like this week?"</li>
+      </ul>
+    </div>
+    <div class="box l-sc"><h4>Parenting challenge</h4>
+      <p><b>The friend standard.</b> For one week, every time you catch a harsh self-judgment, ask: "Would I say this to another parent I love?" If not, say the kinder, truer version instead — out loud if your kids are nearby. Let them watch you flip your own critic.</p>
+    </div>
+  </div>
+  <div class="challenge"><div class="k">Growth move — the reset, not the spiral</div><p>That last child's tantrum and your reaction to it are over. Self-compassion isn't excusing the hard moment — it's refusing to add a second injury (to yourself) on top of the first. A regulated, self-kind parent has more left to give than a guilty, depleted one.</p></div>
+  <div class="foot"><span>Grace for Parents &nbsp;·&nbsp; Module Two: Self-Compassion</span><span class="stick">On your own team.</span></div>
+</div>
+
+<!-- PAGE 4: Forgiveness in family relationships -->
+<div class="page">
+  <div class="domainhead">
+    <div class="badge b-fg">3</div>
+    <div class="meta"><div class="k">Module Three</div><div class="n">Forgiveness in Family Relationships</div><div class="s">Repairing with your kids, your partner, and the family you came from.</div></div>
+  </div>
+  <div class="grid2">
+    <div class="box l-fg"><h4>Reflection exercises</h4>
+      <ul>
+        <li>Walk the four repair steps on a recent moment with your child: <b>own it · name the impact · make it right · reset.</b></li>
+        <li>Name one pattern you inherited that you don't want to pass on. What's the redo?</li>
+        <li>Identify a resentment you're carrying inside the family. What is it costing the relationship?</li>
+      </ul>
+    </div>
+    <div class="box l-fg"><h4>Journaling prompts</h4>
+      <ul>
+        <li>"When did I last repair <i>with</i> my child instead of just moving on?"</li>
+        <li>"What do I need to forgive my own parents for — and what do I want to do differently?"</li>
+        <li>"Where am I confusing forgiving with forgetting?"</li>
+      </ul>
+    </div>
+  </div>
+  <div class="grid2" style="margin-top:12px;">
+    <div class="box l-fg"><h4>Conversation starters</h4>
+      <ul>
+        <li>"How was repair handled in the house you grew up in? What do we want to keep or change?"</li>
+        <li>"Is there anything unrepaired between us right now?"</li>
+        <li>"What makes an apology feel real to you?"</li>
+      </ul>
+    </div>
+    <div class="box l-fg"><h4>Parenting challenge</h4>
+      <p><b>The parent redo.</b> This week, when you get it wrong with your child, go back and repair out loud — all four steps. "I raised my voice. That probably felt scary. I'm sorry. Next time I'll take a breath first." A child who sees a parent repair learns that mistakes are survivable.</p>
+    </div>
+  </div>
+  <div class="challenge"><div class="k">Growth move — repair is the lesson</div><p>You will get it wrong; every parent does. The repair <i>is</i> the parenting. When you own a mistake to your child, you don't lose authority — you teach them exactly how to come back from their own. The redo is your most powerful, most underused tool.</p></div>
+  <div class="foot"><span>Grace for Parents &nbsp;·&nbsp; Module Three: Forgiveness</span><span class="stick">The repair is the parenting.</span></div>
+</div>
+
+<!-- PAGE 5: Grace during difficult moments + pathway + tools -->
+<div class="page">
+  <div class="domainhead">
+    <div class="badge b-gr">4</div>
+    <div class="meta"><div class="k">Module Four</div><div class="n">Grace During Difficult Parenting Moments</div><div class="s">Meeting yourself and your child with understanding when it's hardest.</div></div>
+  </div>
+  <div class="grid2">
+    <div class="box l-gr"><h4>Reflection exercises</h4>
+      <ul>
+        <li>Recall a recent flashpoint. What was your child <i>needing</i> underneath the behavior?</li>
+        <li>Find your early warning signs (jaw, voice, breath). What's your one calming move?</li>
+        <li>Practice the pause: one breath, one kind question, before the correction.</li>
+      </ul>
+    </div>
+    <div class="box l-gr"><h4>Journaling prompts</h4>
+      <ul>
+        <li>"What triggers me most — and what is it really about?"</li>
+        <li>"When I imagine the calm parent I want to be in that moment, what do they do first?"</li>
+        <li>"Where could I give my child (and myself) the benefit of the doubt today?"</li>
+      </ul>
+    </div>
+  </div>
+  <div class="challenge"><div class="k">Parenting challenge — Connection Before Correction</div><p>For one month, in every hard moment, do this first: <b>one calm breath, one kind question.</b> "Looks like a rough one — tell me what happened." Correction can come after. You'll be amazed how often the breath does the work the lecture never could. <b>Your calm is the intervention.</b></p></div>
+
+  <h2 style="margin-top:18px;">The Parent Growth Pathway</h2>
+  <div class="path">
+    <div class="st"><div class="s">Stage 1</div><div class="h">Notice</div><div class="p">See your patterns and self-talk without judgment. Awareness first.</div></div>
+    <div class="st"><div class="s">Stage 2</div><div class="h">Practice</div><div class="p">Try one small move per pillar. Repair out loud. Flip one critic.</div></div>
+    <div class="st"><div class="s">Stage 3</div><div class="h">Model</div><div class="p">Name your own grace work to your kids in real moments.</div></div>
+    <div class="st"><div class="s">Stage 4</div><div class="h">Sustain</div><div class="p">Make it a rhythm — journaling, check-ins, and self-grace as a habit.</div></div>
+  </div>
+
+  <h2>Downloadable Tools</h2>
+  <div class="grid2">
+    <div class="box l-id">
+      <div class="tool"><div class="ic">◇</div><div class="tx"><b>The "One Line" card.</b> A printable place to write the parent you're becoming. Fridge or wallet.</div></div>
+      <div class="tool"><div class="ic">✎</div><div class="tx"><b>Parent reflection journal.</b> A weekly page mirroring the four modules.</div></div>
+    </div>
+    <div class="box l-gr">
+      <div class="tool"><div class="ic">↺</div><div class="tx"><b>The Parent Redo card.</b> The four repair steps, pocket-sized, for the heat of the moment.</div></div>
+      <div class="tool"><div class="ic">❋</div><div class="tx"><b>Pause-and-breathe card.</b> "One breath, one kind question." Tape it near the trouble spot.</div></div>
+    </div>
+  </div>
+
+  <div class="foot">
+    <span>A project of <b>The Architecture of Grace Foundation</b> &nbsp;·&nbsp; architectureofgrace.org</span>
+    <span class="stick">Your calm is the intervention.</span>
+  </div>
+</div>
+
+</body>
+</html>

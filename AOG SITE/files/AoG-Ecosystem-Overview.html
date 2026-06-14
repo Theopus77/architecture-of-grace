@@ -1,0 +1,209 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Grace Ecosystem — Architecture of Grace</title>
+<style>
+  @page { size: Letter; margin: 0; }
+  :root{
+    --ink:#2C3A47; --navy:#1B3A5F; --slate:#46506E; --faint:#8a96a3;
+    --gold:#B8893A; --gold-dk:#9a6f24; --gold-lt:#E7D9B6; --cream:#FBF3DF; --cream-card:#fff;
+    --identity:#1C5499; --compassion:#356B25; --forgive:#9a6f24; --grace:#523C9E;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    font-family:Georgia,"Times New Roman",serif; color:var(--ink); background:#e7ddc4;
+    -webkit-print-color-adjust:exact; print-color-adjust:exact;
+  }
+  .page{
+    width:8.5in; min-height:11in; margin:0 auto 18px; padding:0.55in 0.6in 0.5in;
+    background:
+      radial-gradient(at 12% 0%, rgba(184,137,58,.07) 0, transparent 42%),
+      radial-gradient(at 92% 100%, rgba(27,58,95,.06) 0, transparent 45%),
+      var(--cream);
+    box-shadow:0 1px 6px rgba(0,0,0,.12);
+  }
+  .brandrow{display:flex; align-items:center; gap:12px;}
+  .mark{width:46px; height:46px; border-radius:11px; background:var(--navy); color:#E7C77B;
+    display:flex; align-items:center; justify-content:center; font-size:27px; font-weight:700;}
+  .brand{font-size:19px; font-weight:700; color:var(--navy); letter-spacing:.2px;}
+  .brand small{display:block; font-family:Arial,Helvetica,sans-serif; font-size:10px; font-weight:400;
+    color:#5A6B7B; letter-spacing:.04em; margin-top:2px;}
+  h1{font-size:34px; color:var(--navy); margin:18px 0 4px; letter-spacing:-.4px;}
+  h2{font-family:Arial,Helvetica,sans-serif; font-size:12px; font-weight:700; letter-spacing:.14em;
+    text-transform:uppercase; color:var(--gold-dk); margin:26px 0 10px;}
+  .tagline{font-style:italic; font-size:15.5px; color:var(--slate); margin:0 0 4px; max-width:6.6in;}
+  .rule{height:2px; background:var(--gold); border:0; margin:12px 0 14px;}
+  p.body{font-size:13.5px; line-height:1.6; color:var(--slate); margin:0 0 10px; max-width:6.9in;}
+  .lead{font-size:14.5px; line-height:1.65; color:var(--ink);}
+  .pillars{display:grid; grid-template-columns:1fr 1fr 1fr 1fr; gap:10px; margin:6px 0 4px;}
+  .pill{border-radius:11px; padding:11px 12px; color:#fff;}
+  .pill .n{font-family:Arial,sans-serif; font-size:9px; font-weight:700; letter-spacing:.12em; text-transform:uppercase; opacity:.85;}
+  .pill .t{font-size:17px; font-weight:700; margin:2px 0 4px;}
+  .pill .d{font-size:11px; line-height:1.4; opacity:.95;}
+  .p-id{background:var(--identity);} .p-sc{background:var(--compassion);}
+  .p-fg{background:var(--forgive);} .p-gr{background:var(--grace);}
+  .grid2{display:grid; grid-template-columns:1fr 1fr; gap:13px;}
+  .card{background:var(--cream-card); border:1.5px solid var(--gold-lt); border-left:5px solid var(--gold);
+    border-radius:12px; padding:13px 15px; break-inside:avoid;}
+  .grid2,.pillars{break-inside:avoid;}
+  .card h3{font-size:15.5px; color:var(--navy); margin:0 0 5px;}
+  .card .num{font-family:Arial,sans-serif; font-size:10px; font-weight:700; letter-spacing:.1em;
+    text-transform:uppercase; color:var(--gold-dk);}
+  .card p{font-size:12.5px; line-height:1.5; color:var(--slate); margin:4px 0 0;}
+  .tag{display:inline-block; font-family:Arial,sans-serif; font-size:8.5px; font-weight:700; letter-spacing:.08em;
+    text-transform:uppercase; padding:2px 7px; border-radius:20px; margin-top:7px;}
+  .t-high{background:#e7f0e7; color:#2E6B3A;} .t-med{background:#fbf0d6; color:#9a6f24;} .t-low{background:#eef0f4; color:#5A6B7B;}
+  table.road{width:100%; border-collapse:collapse; font-size:12px;}
+  table.road th{font-family:Arial,sans-serif; font-size:9.5px; font-weight:700; letter-spacing:.08em; text-transform:uppercase;
+    color:#fff; background:var(--navy); text-align:left; padding:7px 9px;}
+  table.road td{border-bottom:1px solid var(--gold-lt); padding:8px 9px; line-height:1.45; color:var(--ink); vertical-align:top;}
+  table.road tr:nth-child(even) td{background:rgba(184,137,58,.05);}
+  .phase{font-family:Arial,sans-serif; font-weight:700; font-size:11px; color:var(--navy);}
+  .foot{margin-top:18px; display:flex; justify-content:space-between; align-items:baseline;
+    font-family:Arial,sans-serif; font-size:10.5px; color:var(--faint); border-top:1px solid var(--gold-lt); padding-top:8px;}
+  .foot b{color:var(--navy);}
+  .stick{font-style:italic; font-family:Georgia,serif; font-size:12px; color:var(--gold-dk);}
+  .callout{background:#fff; border:1.5px solid var(--gold-lt); border-radius:12px; padding:13px 16px; margin:10px 0;}
+  .callout b{color:var(--navy);}
+  ul.clean{margin:4px 0 0; padding-left:18px;}
+  ul.clean li{font-size:12.5px; line-height:1.55; color:var(--slate); margin-bottom:4px;}
+  @media print{ body{background:#fff;} .page{box-shadow:none; margin:0 auto;} }
+</style>
+</head>
+<body>
+
+<!-- PAGE 1 -->
+<div class="page">
+  <div class="brandrow">
+    <div class="mark">A</div>
+    <div class="brand">Architecture of Grace<small>A PROJECT OF THE ARCHITECTURE OF GRACE FOUNDATION</small></div>
+  </div>
+
+  <div style="font-family:Arial,Helvetica,sans-serif; font-size:11px; font-weight:700; letter-spacing:.16em; text-transform:uppercase; color:#9a6f24; margin-top:16px;">For Partners &amp; Schools</div>
+  <h1 style="margin-top:4px;">The Grace Ecosystem</h1>
+  <p class="tagline">A strategic overview for leaders and partners — how the framework spans home, school, and adult life.</p>
+  <hr class="rule">
+
+  <p class="body lead">Architecture of Grace is built on four pillars: <b>Identity, Self-Compassion, Forgiveness,</b> and <b>Grace.</b> Most programs teach these as classroom lessons that stop at the school door. The Grace Ecosystem extends them into the home, across the home–school bridge, and into the relationships adults carry for the rest of their lives — using a single, shared vocabulary the whole family and community can speak together.</p>
+
+  <div class="pillars">
+    <div class="pill p-id"><div class="n">Pillar One</div><div class="t">Identity</div><div class="d">Who we come to believe we are — shaped by what others notice out loud.</div></div>
+    <div class="pill p-sc"><div class="n">Pillar Two</div><div class="t">Self-Compassion</div><div class="d">How we speak to ourselves when things go wrong.</div></div>
+    <div class="pill p-fg"><div class="n">Pillar Three</div><div class="t">Forgiveness</div><div class="d">Repairing what's broken to make room for growth.</div></div>
+    <div class="pill p-gr"><div class="n">Pillar Four</div><div class="t">Grace</div><div class="d">Meeting people with understanding before judgment.</div></div>
+  </div>
+
+  <h2>Why This Matters — Strategic Rationale</h2>
+  <p class="body">Social-emotional skills don't stick when they live only in a classroom. A child learns to "flip the critic" in a Tuesday lesson, then goes home to a house that speaks a different language entirely. The Grace Ecosystem closes that gap. It is designed around four convictions:</p>
+  <div class="grid2">
+    <div class="card"><div class="num">Conviction 01</div><h3>Relationships are the skill</h3><p>Not a soft add-on to academics — the foundation everything else stands on. We treat connection as the core competency, not the warm-up.</p></div>
+    <div class="card"><div class="num">Conviction 02</div><h3>The same language, everywhere</h3><p>When a parent, teacher, counselor, and child all say "connection before correction," the concept becomes a culture instead of a worksheet.</p></div>
+    <div class="card"><div class="num">Conviction 03</div><h3>Adults grow too</h3><p>We don't just hand parents and educators tools for kids. We give them a development pathway of their own. You can't give grace you've never received.</p></div>
+    <div class="card"><div class="num">Conviction 04</div><h3>Five minutes, not a curriculum</h3><p>Every practice fits a real life — 5 to 15 minutes, conversational, no training required. Repeatable beats elaborate.</p></div>
+  </div>
+
+  <div class="callout">
+    <p class="body" style="margin:0;"><b>The positioning shift.</b> Architecture of Grace is not "another SEL program for students." It is a <b>relationship-development framework for the whole lifespan</b> — home, school, and adulthood — anchored by four pillars anyone can practice and a vocabulary everyone can share.</p>
+  </div>
+
+  <div class="foot">
+    <span>A project of <b>The Architecture of Grace Foundation</b> &nbsp;·&nbsp; architectureofgrace.org</span>
+    <span class="stick">Start anywhere. Speak one language.</span>
+  </div>
+</div>
+
+<!-- PAGE 2 -->
+<div class="page">
+  <h2 style="margin-top:4px;">The Ecosystem at a Glance</h2>
+  <p class="body">Six connected components. Each works on its own — and each reinforces the others.</p>
+  <div class="grid2">
+    <div class="card"><div class="num">Part One</div><h3>Grace at Home</h3><p>A weekly family rhythm: prompts, activities, check-ins, and challenges that turn the four pillars into ordinary kitchen-table conversation.</p></div>
+    <div class="card"><div class="num">Part Two</div><h3>Home–School Connection</h3><p>The bridge: shared vocabulary, assessment follow-ups, and growth tracking so home and school pull in the same direction.</p></div>
+    <div class="card"><div class="num">Part Three</div><h3>Grace for Parents</h3><p>A development pathway for the grown-ups — identity, self-compassion, forgiveness, and grace in the hardest job there is.</p></div>
+    <div class="card"><div class="num">Part Four</div><h3>Grace for Educators</h3><p>Professional growth that protects the people who do the work: burnout prevention, repair, staff trust, leadership through grace.</p></div>
+    <div class="card"><div class="num">Part Five</div><h3>Grace for Adult Life</h3><p>The framework beyond education — teams, couples, friendships, caregivers, communities, and personal growth.</p></div>
+    <div class="card"><div class="num">Part Six</div><h3>Signature Features</h3><p>Ten distinctive, hard-to-copy experiences that turn a set of resources into a movement people belong to.</p></div>
+  </div>
+
+  <div class="foot">
+    <span>The Grace Ecosystem &nbsp;·&nbsp; The Six Components</span>
+    <span class="stick">Six parts, one language.</span>
+  </div>
+</div>
+
+<!-- PAGE 3: features -->
+<div class="page">
+  <h2 style="margin-top:4px;">Ten Signature Features</h2>
+  <p class="body">Designed to be practical, scalable, mission-aligned, memorable — and clearly different from traditional SEL.</p>
+  <div class="grid2">
+    <div class="card"><div class="num">Feature 01</div><h3>The Family Grace Journey</h3><p>A guided, multi-week path a household walks together, one pillar at a time, with a keepsake to show how far they've come.<span class="tag t-high">High priority · MVP</span></p></div>
+    <div class="card"><div class="num">Feature 02</div><h3>The Home–School Reflection Loop</h3><p>A simple round-trip: school sends a prompt home, the family reflects, a note returns to the teacher. Connection, not homework.<span class="tag t-high">High priority · MVP</span></p></div>
+    <div class="card"><div class="num">Feature 03</div><h3>Grace Conversation Cards</h3><p>A deck of pillar-coded prompts for dinner tables, car rides, classrooms, and staff meetings — same cards, every setting.<span class="tag t-high">High priority · MVP</span></p></div>
+    <div class="card"><div class="num">Feature 04</div><h3>Relationship Growth Maps</h3><p>A visual of where a person or family is growing across the four pillars — strengths, edges, and a next step.<span class="tag t-med">Medium · Phase 2</span></p></div>
+    <div class="card"><div class="num">Feature 05</div><h3>Multi-Generational Reflection Tools</h3><p>Prompts a grandparent, parent, and child can answer side by side — surfacing the family's inherited patterns of grace.<span class="tag t-med">Medium · Phase 2</span></p></div>
+    <div class="card"><div class="num">Feature 06</div><h3>Grace Challenges</h3><p>Monthly, low-effort dares ("repair one thing this week") that make the abstract concrete and a little bit fun.<span class="tag t-high">High priority · MVP</span></p></div>
+    <div class="card"><div class="num">Feature 07</div><h3>Shared Family Dashboard</h3><p>A light, opt-in view of the family's streaks, reflections, and current pillar — the fridge chart, grown up.<span class="tag t-low">Lower · Phase 3</span></p></div>
+    <div class="card"><div class="num">Feature 08</div><h3>Adult Grace Pathways</h3><p>Self-guided tracks for parents, educators, couples, leaders, and caregivers — the framework applied to a grown-up life.<span class="tag t-med">Medium · Phase 2</span></p></div>
+    <div class="card"><div class="num">Feature 09</div><h3>The Grace Vocabulary</h3><p>A shared lexicon — "catch them being," "flip the critic," "the redo," "connection before correction" — that travels across every setting.<span class="tag t-high">High priority · MVP</span></p></div>
+    <div class="card"><div class="num">Feature 10</div><h3>Repair Rituals</h3><p>Named, repeatable four-step routines for making things right — at the dinner table, in the classroom, and in the staff room.<span class="tag t-high">High priority · MVP</span></p></div>
+  </div>
+
+  <div class="foot">
+    <span>The Grace Ecosystem &nbsp;·&nbsp; Overview</span>
+    <span class="stick">Different by design.</span>
+  </div>
+</div>
+
+<!-- PAGE 3 -->
+<div class="page">
+  <h2 style="margin-top:4px;">Implementation Roadmap</h2>
+  <p class="body">Three phases, sequenced so each builds the audience and proof for the next. The MVP can ship with materials you already produce.</p>
+  <table class="road">
+    <thead>
+      <tr><th style="width:13%">Phase</th><th style="width:30%">Ship</th><th style="width:30%">Why first</th><th style="width:27%">Proof it's working</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="phase">Phase 1<br>MVP</span><br><span style="font-size:10px;color:var(--faint)">Months 0–3</span></td>
+        <td>Grace at Home weekly system · "This Week" cards · Grace Conversation Cards · Home–School Reflection Loop · the shared Grace Vocabulary · Repair Rituals</td>
+        <td>Lowest cost, highest reach. Uses your existing pillar content and printable style. Builds the common language everything else depends on.</td>
+        <td>Families complete a 4-week cycle; teachers report home prompts coming back; vocabulary shows up unprompted in conversation.</td>
+      </tr>
+      <tr>
+        <td><span class="phase">Phase 2<br>Grow</span><br><span style="font-size:10px;color:var(--faint)">Months 3–9</span></td>
+        <td>Adult Grace Pathways (Parents + Educators) · Relationship Growth Maps · Multi-Generational Tools · Grace Challenges library</td>
+        <td>Converts the audience from "users of kid resources" into people growing themselves. Deepens loyalty and word of mouth.</td>
+        <td>Adults self-enroll in a pathway; schools adopt the educator track for PD; repeat engagement month over month.</td>
+      </tr>
+      <tr>
+        <td><span class="phase">Phase 3<br>Scale</span><br><span style="font-size:10px;color:var(--faint)">Months 9–18</span></td>
+        <td>Shared Family Dashboard · Grace for Adult Life (teams, couples, caregivers, community, faith) · facilitator/licensing kits</td>
+        <td>Turns the framework into a platform others can run. Opens revenue and partnership beyond schools and families.</td>
+        <td>Organizations license the framework; dashboard retention; new audiences enter outside of K–12.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>Priority Ranking</h2>
+  <div class="grid2">
+    <div class="card" style="border-left-color:#2E6B3A;"><div class="num" style="color:#2E6B3A;">Build first · High</div><h3>The common language</h3><p>Grace at Home weekly system, "This Week" cards, Conversation Cards, the Vocabulary, Repair Rituals, and the Reflection Loop. Everything else assumes these exist.</p></div>
+    <div class="card" style="border-left-color:#9a6f24;"><div class="num" style="color:#9a6f24;">Build next · Medium</div><h3>The adult pathways</h3><p>Grace for Parents and Grace for Educators, Growth Maps, Multi-Generational tools, and the Challenges library. These deepen the relationship and differentiate hard.</p></div>
+    <div class="card" style="border-left-color:#5A6B7B;"><div class="num" style="color:#5A6B7B;">Build later · Lower</div><h3>The platform</h3><p>Shared Family Dashboard, the full Adult Life expansion, and licensing kits. High value, but they depend on Phase 1–2 traction and more build effort.</p></div>
+    <div class="card"><div class="num">MVP vs. Future</div><h3>What to launch with</h3><p><b>MVP:</b> the printable home system, the cards, the vocabulary, the reflection loop. <b>Future:</b> dashboards, growth maps, and the broader adult-life and licensing layers.</p></div>
+  </div>
+
+  <div class="callout">
+    <p class="body" style="margin:0;"><b>How to use this packet.</b> The pages that follow are the working resources — Grace at Home, the Home–School Connection, and the three adult pathways. Each is print-ready in this same style and built to be used in 5–15 minutes. Start with Grace at Home; add the rest as the language takes hold.</p>
+  </div>
+
+  <div class="foot">
+    <span>A project of <b>The Architecture of Grace Foundation</b> &nbsp;·&nbsp; architectureofgrace.org</span>
+    <span class="stick">Home. School. The whole life.</span>
+  </div>
+</div>
+
+</body>
+</html>

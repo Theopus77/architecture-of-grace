@@ -1,0 +1,239 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Grace for Educators · Architecture of Grace</title>
+<style>
+  @page { size: Letter; margin: 0; }
+  :root{
+    --ink:#2C3A47; --navy:#1B3A5F; --slate:#46506E; --faint:#8a96a3;
+    --gold:#B8893A; --gold-dk:#9a6f24; --gold-lt:#E7D9B6; --cream:#FBF3DF;
+    --identity:#1C5499; --compassion:#356B25; --forgive:#9a6f24; --grace:#523C9E;
+  }
+  *{box-sizing:border-box;} html,body{margin:0;padding:0;}
+  body{font-family:Georgia,"Times New Roman",serif; color:var(--ink); background:#e7ddc4;
+    -webkit-print-color-adjust:exact; print-color-adjust:exact;}
+  .page{width:8.5in; min-height:11in; margin:0 auto 18px; padding:0.55in 0.6in 0.5in;
+    background:radial-gradient(at 12% 0%, rgba(184,137,58,.07) 0, transparent 42%),
+      radial-gradient(at 92% 100%, rgba(27,58,95,.06) 0, transparent 45%), var(--cream);
+    box-shadow:0 1px 6px rgba(0,0,0,.12);}
+  .brandrow{display:flex; align-items:center; gap:12px;}
+  .mark{width:46px; height:46px; border-radius:11px; background:var(--navy); color:#E7C77B;
+    display:flex; align-items:center; justify-content:center; font-size:27px; font-weight:700;}
+  .brand{font-size:19px; font-weight:700; color:var(--navy); letter-spacing:.2px;}
+  .brand small{display:block; font-family:Arial,Helvetica,sans-serif; font-size:10px; font-weight:400; color:#5A6B7B; letter-spacing:.04em; margin-top:2px;}
+  h1{font-size:33px; color:var(--navy); margin:18px 0 4px; letter-spacing:-.4px;}
+  h2{font-family:Arial,Helvetica,sans-serif; font-size:12px; font-weight:700; letter-spacing:.14em; text-transform:uppercase; color:var(--gold-dk); margin:22px 0 9px;}
+  .tagline{font-style:italic; font-size:15px; color:var(--slate); margin:0 0 4px; max-width:6.7in;}
+  .rule{height:2px; background:var(--gold); border:0; margin:12px 0 14px;}
+  p.body{font-size:13.5px; line-height:1.6; color:var(--slate); margin:0 0 10px; max-width:6.9in;}
+  .domainhead{display:flex; align-items:center; gap:11px; margin:6px 0 12px;}
+  .badge{width:38px; height:38px; border-radius:9px; display:flex; align-items:center; justify-content:center; color:#fff; font-family:Arial,sans-serif; font-weight:700; font-size:15px; flex:none;}
+  .domainhead .meta .k{font-family:Arial,sans-serif; font-size:9.5px; font-weight:700; letter-spacing:.12em; text-transform:uppercase; color:var(--gold-dk);}
+  .domainhead .meta .n{font-size:22px; color:var(--navy); line-height:1.05;}
+  .domainhead .meta .s{font-size:12px; font-style:italic; color:var(--slate);}
+  .b-id{background:var(--identity);} .b-sc{background:var(--compassion);} .b-fg{background:var(--forgive);} .b-gr{background:var(--grace);}
+  .grid2{display:grid; grid-template-columns:1fr 1fr; gap:12px;}
+  .box{background:#fff; border:1.5px solid var(--gold-lt); border-left:5px solid var(--gold); border-radius:11px; padding:11px 13px;}
+  .box.l-id{border-left-color:var(--identity);} .box.l-sc{border-left-color:var(--compassion);} .box.l-fg{border-left-color:var(--forgive);} .box.l-gr{border-left-color:var(--grace);}
+  .box h4{font-family:Arial,sans-serif; font-size:9.5px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--gold-dk); margin:0 0 6px;}
+  .box ul{margin:0; padding-left:16px;} .box ul li{font-size:12px; line-height:1.5; color:var(--ink); margin-bottom:5px;}
+  .box p{font-size:12px; line-height:1.5; color:var(--ink); margin:0 0 6px;}
+  .box ul li b, .box p b{color:var(--navy);}
+  .challenge{background:var(--cream); border:1.5px dashed var(--gold); border-radius:11px; padding:11px 13px; margin-top:12px;}
+  .challenge .k{font-family:Arial,sans-serif; font-size:9.5px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--gold-dk);}
+  .challenge p{font-size:12.5px; line-height:1.5; color:var(--ink); margin:4px 0 0;}
+  .proto{counter-reset:step; }
+  .proto .ps{display:flex; gap:10px; align-items:flex-start; margin-bottom:7px;}
+  .proto .ps .num{width:22px;height:22px;border-radius:50%;background:var(--navy);color:#fff;font-family:Arial,sans-serif;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex:none;}
+  .proto .ps .tx{font-size:12px; line-height:1.45; color:var(--ink);} .proto .ps .tx b{color:var(--navy);}
+  .path{display:grid; grid-template-columns:1fr 1fr 1fr 1fr; gap:8px;}
+  .path .st{background:#fff; border:1.5px solid var(--gold-lt); border-radius:11px; padding:10px 11px;}
+  .path .st .s{font-family:Arial,sans-serif; font-size:9px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--gold-dk);}
+  .path .st .h{font-size:13.5px; color:var(--navy); font-weight:700; margin:2px 0 3px;}
+  .path .st .p{font-size:11px; line-height:1.4; color:var(--slate);}
+  .foot{margin-top:16px; display:flex; justify-content:space-between; align-items:baseline; font-family:Arial,sans-serif; font-size:10.5px; color:var(--faint); border-top:1px solid var(--gold-lt); padding-top:8px;}
+  .foot b{color:var(--navy);} .stick{font-style:italic; font-family:Georgia,serif; font-size:12px; color:var(--gold-dk);}
+  @media print{ body{background:#fff;} .page{box-shadow:none; margin:0 auto;} }
+</style>
+</head>
+<body>
+
+<!-- PAGE 1 -->
+<div class="page">
+  <div class="brandrow">
+    <div class="mark">A</div>
+    <div class="brand">Architecture of Grace<small>A PROJECT OF THE ARCHITECTURE OF GRACE FOUNDATION</small></div>
+  </div>
+  <h1>Grace for Educators</h1>
+  <p class="tagline">A professional-growth pathway for the people who do the work — because you can't pour relationship from an empty cup.</p>
+  <hr class="rule">
+  <p class="body">Relationship-centered teaching asks a lot of a person. This pathway turns the four pillars — <b>Identity, Self-Compassion, Forgiveness,</b> and <b>Grace</b> — toward the educator: protecting your sense of purpose, guarding against compassion fatigue and burnout, giving you a clean way to repair hard interactions, and building a staff culture of trust and leadership through grace. Use the modules solo, or run the team activities and protocols at a staff meeting or PD day.</p>
+
+  <div class="grid2">
+    <div class="box l-id"><h4>The four educator modules</h4>
+      <ul>
+        <li><b>Identity</b> — teacher identity & relationship-centered teaching.</li>
+        <li><b>Self-Compassion</b> — compassion fatigue, burnout prevention, wellness.</li>
+        <li><b>Forgiveness</b> — repairing difficult interactions, with students and colleagues.</li>
+        <li><b>Grace</b> — staff trust, team culture, leadership through grace.</li>
+      </ul>
+    </div>
+    <div class="box l-gr"><h4>What's inside</h4>
+      <ul>
+        <li>Reflection exercises for individual use.</li>
+        <li>Team-meeting activities and staff discussion protocols.</li>
+        <li>Four PD modules and a leadership reflection toolkit.</li>
+        <li>Quick wellness check-ins for the rhythm of a school year.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="challenge">
+    <div class="k">A two-minute staff wellness check-in</div>
+    <p>Open any meeting with one round: <b>"One word for your tank today — full, fine, or running low."</b> No fixing, no follow-up required. Naming it is the practice. A staff that can say "running low" out loud is a staff that catches burnout before it catches them.</p>
+  </div>
+
+  <div class="foot">
+    <span>A project of <b>The Architecture of Grace Foundation</b> &nbsp;·&nbsp; architectureofgrace.org</span>
+    <span class="stick">Refill the people who pour.</span>
+  </div>
+</div>
+
+<!-- PAGE 2: Identity -->
+<div class="page">
+  <div class="domainhead">
+    <div class="badge b-id">1</div>
+    <div class="meta"><div class="k">Module One</div><div class="n">Teacher Identity &amp; Relationship-Centered Teaching</div><div class="s">Why you came, who you are in the room, and the relationships at the center of the work.</div></div>
+  </div>
+  <div class="grid2">
+    <div class="box l-id"><h4>Reflection exercises</h4>
+      <ul>
+        <li>Write your "why I teach" in one sentence. Compare it to how you spent last Tuesday.</li>
+        <li>Name a student who changed because of your relationship, not your lesson plan. What did you do?</li>
+        <li>Identify the gap between the teacher you meant to be and the one the workload made you.</li>
+      </ul>
+    </div>
+    <div class="box l-id"><h4>Journaling / wellness prompts</h4>
+      <ul>
+        <li>"When did I last feel like the teacher I set out to be?"</li>
+        <li>"Which relationships in my room am I investing in — and which am I avoiding?"</li>
+        <li>"What part of my identity is mine, versus assigned by the system?"</li>
+      </ul>
+    </div>
+  </div>
+  <div class="box l-id" style="margin-top:12px;"><h4>Team-meeting activity — "Why we came"</h4>
+    <p>Pairs share their one-sentence "why I teach," then the group surfaces the common threads on the board. Close by naming one way the team can protect those reasons this month. <b>10–15 minutes.</b> Rebuilds shared purpose fast — especially mid-year.</p>
+  </div>
+  <div class="challenge"><div class="k">Growth move — relationship as the method</div><p>Relationship-centered teaching isn't extra work on top of instruction — it <i>is</i> the instruction's foundation. The two minutes you spend greeting a struggling student by name buys back twenty minutes of compliance battles later. Protect the relationship and the rest gets easier.</p></div>
+  <div class="foot"><span>Grace for Educators &nbsp;·&nbsp; Module One: Identity</span><span class="stick">Remember why you came.</span></div>
+</div>
+
+<!-- PAGE 3: Self-Compassion -->
+<div class="page">
+  <div class="domainhead">
+    <div class="badge b-sc">2</div>
+    <div class="meta"><div class="k">Module Two</div><div class="n">Compassion Fatigue, Burnout &amp; Wellness</div><div class="s">Caring is renewable — but only if you tend the source.</div></div>
+  </div>
+  <div class="grid2">
+    <div class="box l-sc"><h4>Reflection exercises</h4>
+      <ul>
+        <li>Map your week's energy: what fills the tank, what drains it, what's non-negotiable.</li>
+        <li>Spot your early burnout signals (cynicism, dread, numbness). Name your first one.</li>
+        <li>List three things only you can do — and three you've been carrying that someone else could.</li>
+      </ul>
+    </div>
+    <div class="box l-sc"><h4>Wellness check-ins</h4>
+      <ul>
+        <li>Daily: "Full / fine / running low?" — and one small refill if low.</li>
+        <li>Weekly: "What did I do this week that was just for me?"</li>
+        <li>Seasonal: a tank-check at each grading period; adjust before empty.</li>
+      </ul>
+    </div>
+  </div>
+  <div class="box l-sc" style="margin-top:12px;"><h4>Team-meeting activity — "The honest tank"</h4>
+    <p>Each person rates their tank 1–5 anonymously (sticky notes in a jar). Average them, post it, and as a team choose <b>one</b> collective drain to reduce this month — a meeting to cut, a duty to share, an expectation to lower. <b>Compassion fatigue is a team condition, treated with team decisions.</b></p>
+  </div>
+  <div class="challenge"><div class="k">Growth move — flip the educator critic</div><p>The voice that says "a good teacher would have reached that kid" is the same critic your students fight. Talk to yourself like you'd talk to a first-year teacher you admire. Self-compassion isn't lowering the bar — it's staying in the profession long enough to clear it.</p></div>
+  <div class="foot"><span>Grace for Educators &nbsp;·&nbsp; Module Two: Self-Compassion</span><span class="stick">Caring is renewable.</span></div>
+</div>
+
+<!-- PAGE 4: Forgiveness -->
+<div class="page">
+  <div class="domainhead">
+    <div class="badge b-fg">3</div>
+    <div class="meta"><div class="k">Module Three</div><div class="n">Repairing Difficult Interactions</div><div class="s">With a student, a parent, or a colleague — the clean way back.</div></div>
+  </div>
+  <div class="grid2">
+    <div class="box l-fg"><h4>Reflection exercises</h4>
+      <ul>
+        <li>Recall an interaction you'd redo. Walk the four steps: <b>own it · name the impact · make it right · reset.</b></li>
+        <li>Name a student you've quietly written off. What would one repair look like?</li>
+        <li>Identify a colleague tension you've been avoiding. What's the cost of leaving it?</li>
+      </ul>
+    </div>
+    <div class="box l-fg"><h4>Journaling prompts</h4>
+      <ul>
+        <li>"When I lose patience with a student, what's usually true about my own day?"</li>
+        <li>"What grudge am I carrying in this building, and what's it costing my teaching?"</li>
+        <li>"Who do I owe a redo — and what's stopping me?"</li>
+      </ul>
+    </div>
+  </div>
+  <div class="box l-fg" style="margin-top:12px;"><h4>Staff discussion protocol — "The Repair Round"</h4>
+    <div class="proto">
+      <div class="ps"><div class="num">1</div><div class="tx"><b>Name it safely.</b> One person shares a hard interaction; the group listens without fixing.</div></div>
+      <div class="ps"><div class="num">2</div><div class="tx"><b>Find the need.</b> Together, name what each party was likely needing underneath.</div></div>
+      <div class="ps"><div class="num">3</div><div class="tx"><b>Walk the steps.</b> Draft a real four-step repair the person could actually use.</div></div>
+      <div class="ps"><div class="num">4</div><div class="tx"><b>Normalize it.</b> Close by sharing that everyone in the room has owed a redo. Repair becomes culture, not failure.</div></div>
+    </div>
+  </div>
+  <div class="challenge"><div class="k">Growth move — repair in front of students</div><p>When you repair with a class — "I was short with you yesterday; that wasn't fair, and I'm sorry" — you don't lose authority. You model the single most important relationship skill they'll ever need, and you make your room safe to make mistakes in.</p></div>
+  <div class="foot"><span>Grace for Educators &nbsp;·&nbsp; Module Three: Forgiveness</span><span class="stick">Repair is a skill, not a defeat.</span></div>
+</div>
+
+<!-- PAGE 5: Grace + leadership + PD -->
+<div class="page">
+  <div class="domainhead">
+    <div class="badge b-gr">4</div>
+    <div class="meta"><div class="k">Module Four</div><div class="n">Staff Trust, Team Culture &amp; Leadership Through Grace</div><div class="s">The culture the adults build is the culture the students inherit.</div></div>
+  </div>
+  <div class="grid2">
+    <div class="box l-gr"><h4>Leadership reflection tools</h4>
+      <ul>
+        <li>"Do my staff experience me as connection-before-correction, or the reverse?"</li>
+        <li>"Where am I assuming the worst about a struggling colleague?"</li>
+        <li>"What would it look like to extend a teacher the grace I ask them to extend students?"</li>
+      </ul>
+    </div>
+    <div class="box l-gr"><h4>Team-meeting activity — "Grace we received"</h4>
+      <ul>
+        <li>Open with each person naming one moment a colleague had their back.</li>
+        <li>Send one written thank-you to someone in the building this week.</li>
+        <li>Name one team norm that would make trust easier; adopt it.</li>
+      </ul>
+    </div>
+  </div>
+  <div class="box l-gr" style="margin-top:12px;"><h4>Staff discussion protocol — "Benefit of the Doubt"</h4>
+    <p>When a staff frustration surfaces (a missed deadline, a tense email), the team pauses and generates <b>three kind reasons</b> the person might have acted that way before responding. It rewires a building from suspicion to trust — and models exactly what we ask teachers to do with students.</p>
+  </div>
+
+  <h2 style="margin-top:16px;">Professional Development Pathway</h2>
+  <div class="path">
+    <div class="st"><div class="s">Session 1</div><div class="h">Identity</div><div class="p">Reconnect to purpose; relationship-centered teaching as method.</div></div>
+    <div class="st"><div class="s">Session 2</div><div class="h">Self-Compassion</div><div class="p">Burnout literacy; team-level tank checks and refills.</div></div>
+    <div class="st"><div class="s">Session 3</div><div class="h">Forgiveness</div><div class="p">The Repair Round; making redos normal in the building.</div></div>
+    <div class="st"><div class="s">Session 4</div><div class="h">Grace</div><div class="p">Trust norms; leadership through grace; sustaining the culture.</div></div>
+  </div>
+
+  <div class="challenge"><div class="k">Leadership challenge — model it first</div><p>Staff culture is caught, not mandated. For one month, lead with the four pillars yourself: name a teacher's character out loud (Identity), normalize your own tank running low (Self-Compassion), repair a misstep with staff (Forgiveness), and open every meeting with connection before the agenda (Grace). The building will follow what it sees you do.</p></div>
+
+  <div class="foot">
+    <span>A project of <b>The Architecture of Grace Foundation</b> &nbsp;·&nbsp; architectureofgrace.org</span>
+    <span class="stick">The adults set the weather.</span>
+  </div>
+</div>
+
+</body>
+</html>

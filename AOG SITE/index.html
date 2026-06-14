@@ -1720,6 +1720,20 @@ a.ri-novel.ri-novel-link:hover .ri-open { opacity:1; }
 @media (max-width: 380px) {
   .tools-grid { grid-template-columns: 1fr; }
 }
+/* Top feature pair: Co-Regulation + Beyond "Fine" — side-by-side on desktop,
+   stacked on phones for big, thumb-friendly cards. */
+.aog-top-pair {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+  max-width: 760px;
+  margin: 0 auto 24px;
+}
+.aog-top-pair .tool-card { margin: 0; max-width: none; height: 100%; }
+@media (max-width: 700px) {
+  .aog-top-pair { grid-template-columns: 1fr; max-width: 520px; gap: 16px; }
+}
 .tool-card {
   display: flex;
   flex-direction: column;
@@ -2470,6 +2484,20 @@ body > div > main style { display: none !important; height: 0 !important; width:
 
 /* nudge faint caption colour up to clear AA on the navy demo cards */
 :root[data-theme="dark"]{ --ink-faint:#9BA6B9; }
+/* Dark-mode fix: cream-background cards stayed light while text flipped light
+   (light-on-light). Give them a dark surface + light text, and lift the dark
+   gold-deep eyebrow labels to a readable light gold. */
+:root[data-theme="dark"] .home-reflection{ background:#0E1822; border-left-color:var(--gold); }
+:root[data-theme="dark"] .home-reflection .quote{ color:var(--ink); }
+:root[data-theme="dark"] .rn-affirm{ background:#0E1822; }
+:root[data-theme="dark"] .rn-grownup{ background:#0E1822; color:var(--ink); }
+:root[data-theme="dark"] .rn-grownup strong{ color:var(--gold-soft); }
+:root[data-theme="dark"] .ic-coach{ background:#0E1822; }
+:root[data-theme="dark"] .ic-coach p{ color:var(--ink); }
+:root[data-theme="dark"] .ic-coach-h,
+:root[data-theme="dark"] .rn-bridge-h,
+:root[data-theme="dark"] .tc-crumbs-h,
+:root[data-theme="dark"] .rn-teacher-sum{ color:var(--gold-soft); }
 /* ===== END DARK-MODE CONTRAST AUDIT PATCH ===== */
 
 body{ transition:background .25s ease, color .25s ease; }
@@ -4975,6 +5003,27 @@ function toggleTheme() {
 </style>
 </head>
 <body>
+<!--
+  ============================================================================
+  ARCHITECTURE OF GRACE — single-file app · SECTION MAP (for future modularizing)
+  ============================================================================
+  Search these markers to jump around. When the time comes to split into modules,
+  each block below is a natural seam.
+
+    TOP BAR / NAV ............ <header class="topbar">  (brand · Right Now · Explore menu · utilities)
+    QUICK START (dashboard) .. id="screen-aog-quickstart"-area / "END QUICK START"
+    DASHBOARD ................ id="screen-admin"           (educator view · curate panel)
+    FRAMEWORK ................ id="screen-framework"        (the four pillars · "why")
+    GRACE ECOSYSTEM .......... "THE ECOSYSTEM MAP"          (homepage system map)
+    CHECK-IN ................. id="screen-survey" / "screen-reflection" / "screen-closing"
+    RESULTS / REPORT ......... id="myResultsReport" + "tools picked for you" (.aog-srt)
+    FAMILY MODE .............. id="screen-family"
+    CALM & REGULATION TOOLS .. id="screen-teacher-tools"    (hub · filter chips)
+    PERSONALIZED TOOLS ....... id="screen-aog-mytools"      (#mytools shared link)
+    PECS CARDS ............... id="screen-pecs"
+    TOOL MATCHING / CURATE ... "TOOL MATCHING (2026-06)"    (META · domains · share)
+  ============================================================================
+-->
 <div class="stage">
 
 <header class="topbar">
@@ -4995,18 +5044,69 @@ function toggleTheme() {
       <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
       <span data-i18n="nav_checkin">Check-In</span>
     </a>
-    <a class="topbar-store topbar-lib" href="#" onclick="event.preventDefault(); aogGoLibrary();" title="Free Library">
+    <style>
+      .exnav{ position:relative; }
+      .exnav-btn{ display:inline-flex; align-items:center; gap:8px; cursor:pointer; }
+      .exnav-chev{ width:13px; height:13px; transition:transform .16s ease; }
+      #exNavBtn[aria-expanded="true"] .exnav-chev{ transform:rotate(180deg); }
+      .exnav-menu{ position:absolute; top:calc(100% + 10px); right:0; min-width:238px;
+        background:var(--paper,#fff); border:1px solid var(--rule,rgba(10,30,51,.12));
+        border-radius:14px; box-shadow:0 20px 46px -18px rgba(10,30,51,.5); padding:7px; z-index:1200; }
+      :root[data-theme="dark"] .exnav-menu{ background:#13283f; border-color:rgba(255,255,255,.14); }
+      .exnav-menu a{ display:flex !important; align-items:center; gap:12px; width:100%;
+        padding:10px 12px !important; margin:0 !important; border-radius:10px; text-decoration:none; white-space:nowrap;
+        background:none !important; border:0 !important; box-shadow:none !important; color:var(--navy,#1B3A5F) !important;
+        font-weight:600; font-size:14.5px; }
+      :root[data-theme="dark"] .exnav-menu a{ color:var(--cream,#F4ECDA) !important; }
+      .exnav-menu a:hover{ background:rgba(184,137,58,.14) !important; }
+      .exnav-menu a svg{ width:18px !important; height:18px !important; color:var(--gold,#D9A33B); flex:none; }
+    </style>
+    <div class="exnav">
+      <a href="#" class="topbar-store exnav-btn" id="exNavBtn" aria-haspopup="true" aria-expanded="false" onclick="aogToggleExplore(event)" title="Explore Architecture of Grace">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+        <span>Explore</span>
+        <svg class="exnav-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+      </a>
+      <div class="exnav-menu" id="exNavMenu" role="menu" aria-label="Explore Architecture of Grace" hidden>
+    <a class="topbar-store topbar-lib" role="menuitem" href="#" onclick="event.preventDefault(); aogGoLibrary();" title="Free Library">
       <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
       <span data-i18n="aog_lib_nav">Library</span>
     </a>
-    <a class="topbar-store topbar-lib" href="#" onclick="event.preventDefault(); if(typeof showScreen==='function'){showScreen('screen-teacher-tools');}" title="Teacher Tools" style="color:var(--gold);">
+    <a class="topbar-store topbar-lib" role="menuitem" href="#" onclick="event.preventDefault(); if(typeof showScreen==='function'){showScreen('screen-teacher-tools');}" title="Calm &amp; Regulation Tools">
       <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2a5 5 0 0 1 5 5c0 2.76-2.24 5-5 5S7 9.76 7 7a5 5 0 0 1 5-5z"/><path d="M3 21v-1a7 7 0 0 1 7-7h4a7 7 0 0 1 7 7v1"/><circle cx="19" cy="8" r="3" fill="var(--gold)" stroke="none"/><path d="M19 7v2m-1-1h2" stroke="var(--navy)" stroke-width="1.5"/></svg>
-      <span data-i18n="aog_tools_nav">Tools</span>
+      <span data-i18n="aog_tools_nav">Calm &amp; Regulation Tools</span>
     </a>
-    <a class="topbar-store" href="#" onclick="event.preventDefault(); if(typeof openAdmin==='function'){openAdmin();}" title="Education Dashboard">
+    <a class="topbar-store topbar-lib" role="menuitem" href="grace-ecosystem.html" title="The Grace Ecosystem — home, school &amp; adult-life resources">
+      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="2.5"/><circle cx="5" cy="6" r="2"/><circle cx="19" cy="6" r="2"/><circle cx="5" cy="18" r="2"/><circle cx="19" cy="18" r="2"/><path d="M10.2 10.6 6.4 7.4M13.8 10.6l3.8-3.2M10.2 13.4 6.4 16.6M13.8 13.4l3.8 3.2"/></svg>
+      <span>Ecosystem</span>
+    </a>
+    <a class="topbar-store" role="menuitem" href="#" onclick="event.preventDefault(); if(typeof openAdmin==='function'){openAdmin();}" title="Education Dashboard">
       <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 13h8V3H3zM13 21h8V3h-8zM3 21h8v-6H3z"/></svg>
       <span data-i18n="aog_dash_nav">Dashboard</span>
     </a>
+        <a class="topbar-store" role="menuitem" href="#" onclick="event.preventDefault(); if(typeof aogGoStore==='function'){aogGoStore();}" title="The Store">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+          <span data-i18n="aog_store_nav">Store</span>
+        </a>
+      </div><!-- /exnav-menu -->
+    </div><!-- /exnav -->
+    <script>
+      function aogToggleExplore(e){ if(e){e.preventDefault();} var b=document.getElementById('exNavBtn'),m=document.getElementById('exNavMenu'); if(!b||!m)return; if(m.hasAttribute('hidden')){ m.removeAttribute('hidden'); b.setAttribute('aria-expanded','true'); var f=m.querySelector('a'); if(f) f.focus(); } else { aogCloseExplore(); } }
+      function aogCloseExplore(){ var b=document.getElementById('exNavBtn'),m=document.getElementById('exNavMenu'); if(!b||!m)return; m.setAttribute('hidden',''); b.setAttribute('aria-expanded','false'); }
+      document.addEventListener('click', function(ev){ var m=document.getElementById('exNavMenu'); if(!m||m.hasAttribute('hidden'))return; if(ev.target.closest && ev.target.closest('.exnav-menu')){ aogCloseExplore(); return; } if(ev.target.closest && ev.target.closest('#exNavBtn'))return; aogCloseExplore(); });
+      document.addEventListener('keydown', function(ev){
+        var m=document.getElementById('exNavMenu');
+        if(ev.key==='Escape'){ aogCloseExplore(); var b=document.getElementById('exNavBtn'); if(b) b.focus(); return; }
+        if(!m || m.hasAttribute('hidden')) return;
+        if(ev.key==='ArrowDown' || ev.key==='ArrowUp'){
+          ev.preventDefault();
+          var items=Array.prototype.slice.call(m.querySelectorAll('a')); if(!items.length) return;
+          var idx=items.indexOf(document.activeElement);
+          idx = (ev.key==='ArrowDown') ? (idx+1)%items.length : (idx<=0 ? items.length-1 : idx-1);
+          items[idx].focus();
+        }
+      });
+    </script>
     <div class="a11y-wrap">
       <button id="a11yBtn" class="theme-toggle a11y-btn" type="button" onclick="aogToggleA11yMenu(event)" aria-haspopup="true" aria-expanded="false" aria-label="Accessibility options" title="Accessibility options">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="4" r="1.6"/><path d="M5 8h14M9 8l1 11M15 8l-1 11M12 8v5"/></svg>
@@ -5037,10 +5137,7 @@ function toggleTheme() {
       <button id="langEn" class="active" onclick="setLang('en')">EN</button>
       <button id="langEs" onclick="setLang('es')">ES</button>
     </div>
-    <a class="topbar-store" href="#" onclick="event.preventDefault(); aogGoStore();" title="The Store">
-      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
-      <span data-i18n="aog_store_nav">Store</span>
-    </a>
+    <!-- Store moved into the Explore dropdown -->
     <button id="aogCartBtn" class="topbar-cart" type="button" onclick="aogOpenCart()" aria-label="Open cart" title="Cart">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
       <span class="aogcart-badge" id="aogCartCount" hidden>0</span>
@@ -5091,7 +5188,7 @@ function toggleTheme() {
         <img src="hero.jpg" alt="An educator and parents gathered around a wooden table with a group of children, in warm, attentive conversation" loading="eager" decoding="async" onerror="var f=this.closest('.hyb-photo'); if(f) f.style.display='none';">
       </figure>
        <div class="hyb-top-b">
-      <div class="hyb-lede" data-i18n-html="hyb_lede"><p class="hl-lead">Built by a special educator, it&rsquo;s a framework to strengthen relationships&mdash;with yourself and with one another&mdash;through identity, self-compassion, forgiveness, and grace.</p><p class="hl-close">Because growth begins with grace, not performance.</p></div>
+      <div class="hyb-lede" data-i18n-html="hyb_lede"><p class="hl-lead">Built by a special educator, it&rsquo;s a framework for building stronger relationships&mdash;with yourself and with others&mdash;through identity, self-compassion, forgiveness, and grace, at home, at school, and throughout life.</p><p class="hl-close">Because growth begins with grace, not performance.</p></div>
       <!-- ===== PRIMARY CTAs — placed above "How one answer becomes growth" ===== -->
               <div class="hyb-cta-row">
           <a href="#" class="hyb-cta hyb-cta-primary" onclick="event.preventDefault(); if(typeof startChoose==='function'){startChoose();}">
@@ -5263,6 +5360,91 @@ function toggleTheme() {
 
     </section>
 
+    <!-- ===== THE ECOSYSTEM MAP — how every piece connects (added 2026-06-14) ===== -->
+    <section class="aoge reveal" aria-labelledby="aogeH">
+      <style>
+        .aoge{ padding:30px 20px 8px; }
+        .aoge-panel{ max-width:860px; margin:0 auto; background:var(--navy,#1B3A5F);
+          border-radius:22px; padding:34px 26px 30px; box-shadow:0 18px 44px -22px rgba(10,30,51,.7);
+          text-align:center; }
+        .aoge-ey{ font-family:var(--font-sans,Arial,sans-serif); font-size:11.5px; font-weight:800;
+          letter-spacing:.16em; text-transform:uppercase; color:var(--gold,#D9A33B); }
+        .aoge-panel h2{ font-family:var(--font-serif,Georgia,serif); color:#fff; font-size:clamp(24px,4vw,33px);
+          line-height:1.12; margin:8px 0 12px; letter-spacing:-.3px; }
+        .aoge-intro{ color:#dbe4ee; font-size:15px; line-height:1.6; max-width:60ch; margin:0 auto 24px; }
+        .aoge-flow{ display:flex; flex-direction:column; align-items:center; gap:0; margin:0 auto; }
+        .aoge-step{ display:flex; align-items:center; gap:13px; width:100%; max-width:430px; text-align:left;
+          background:rgba(255,255,255,.06); border:1px solid rgba(231,217,182,.22);
+          border-left:4px solid var(--gold,#D9A33B); border-radius:13px; padding:11px 16px; }
+        .aoge-step .dot{ width:9px; height:9px; border-radius:50%; background:var(--gold,#D9A33B); flex:none; }
+        .aoge-step .tx .t{ display:block; font-family:var(--font-serif,Georgia,serif); color:#fff; font-size:16px; font-weight:700; line-height:1.15; }
+        .aoge-step .tx .d{ display:block; font-family:var(--font-sans,Arial,sans-serif); color:#b9c6d6; font-size:12px; line-height:1.4; margin-top:3px; }
+        .aoge-step{ box-shadow:0 6px 16px -12px rgba(0,0,0,.5); }
+        .aoge-arrow{ color:var(--gold,#D9A33B); font-size:18px; line-height:1; margin:5px 0; }
+        .aoge-loopback{ display:flex; flex-direction:column; align-items:center; gap:6px; margin-top:2px; }
+        .aoge-loop{ display:inline-flex; align-items:center; gap:11px; max-width:460px;
+          background:rgba(217,163,59,.13); border:1.5px solid var(--gold,#D9A33B); border-radius:14px; padding:11px 18px; }
+        .aoge-loop svg{ width:22px; height:22px; color:var(--gold,#D9A33B); flex:none; }
+        .aoge-loop span{ font-family:var(--font-sans,Arial,sans-serif); font-size:13px; line-height:1.45; color:#f1e9d6; text-align:left; }
+        .aoge-conv{ margin:26px auto 4px; padding-top:22px; border-top:1px solid rgba(231,217,182,.18); max-width:640px; }
+        .aoge-conv-h{ font-family:var(--font-sans,Arial,sans-serif); font-size:11px; font-weight:800; letter-spacing:.12em; text-transform:uppercase; color:var(--gold,#D9A33B); margin-bottom:12px; }
+        .aoge-conv-flow{ display:flex; flex-wrap:wrap; align-items:center; justify-content:center; gap:8px 10px; }
+        .aoge-pill{ font-family:var(--font-serif,Georgia,serif); color:#fff; font-size:14px; font-weight:600;
+          background:rgba(231,217,182,.12); border:1px solid rgba(231,217,182,.28); border-radius:999px; padding:7px 15px; }
+        .aoge-pill-arr{ color:var(--gold,#D9A33B); font-weight:800; }
+        .aoge-cta{ display:inline-block; margin-top:26px; font-family:var(--font-sans,Arial,sans-serif);
+          font-size:14px; font-weight:800; text-decoration:none; background:var(--gold,#D9A33B);
+          color:var(--navy,#1B3A5F); border-radius:999px; padding:12px 24px; }
+        @media (min-width:680px){
+          .aoge-step{ max-width:460px; }
+        }
+      </style>
+      <div class="aoge-panel">
+        <div class="aoge-ey">The whole picture</div>
+        <h2 id="aogeH">The Architecture of Grace Ecosystem</h2>
+        <p class="aoge-intro">Architecture of Grace is more than an assessment or a curriculum. It is a connected ecosystem that helps students, families, educators, and independent adults move from awareness to reflection, conversation, practice, and growth &mdash; growth that feeds back into who we are.</p>
+
+        <div class="aoge-flow" role="list" aria-label="The Architecture of Grace ecosystem, stage by stage">
+          <div class="aoge-step" role="listitem"><span class="dot"></span><span class="tx"><span class="t">Framework</span><span class="d">Identity · Self-Compassion · Forgiveness · Grace</span></span></div>
+          <div class="aoge-arrow" aria-hidden="true">&darr;</div>
+          <div class="aoge-step" role="listitem"><span class="dot"></span><span class="tx"><span class="t">Assessment</span><span class="d">The Universal Check-In — a snapshot, not a score</span></span></div>
+          <div class="aoge-arrow" aria-hidden="true">&darr;</div>
+          <div class="aoge-step" role="listitem"><span class="dot"></span><span class="tx"><span class="t">Reflection</span><span class="d">Honest questions instead of labels</span></span></div>
+          <div class="aoge-arrow" aria-hidden="true">&darr;</div>
+          <div class="aoge-step" role="listitem"><span class="dot"></span><span class="tx"><span class="t">Practice &amp; Activities</span><span class="d">Hands-on activities to try in real moments</span></span></div>
+          <div class="aoge-arrow" aria-hidden="true">&darr;</div>
+          <div class="aoge-step" role="listitem"><span class="dot"></span><span class="tx"><span class="t">Stories &amp; Lessons</span><span class="d">Novels and lessons that make the pillars real</span></span></div>
+          <div class="aoge-arrow" aria-hidden="true">&darr;</div>
+          <div class="aoge-step" role="listitem"><span class="dot"></span><span class="tx"><span class="t">Family Conversations</span><span class="d">Prompts that carry growth to the dinner table</span></span></div>
+          <div class="aoge-arrow" aria-hidden="true">&darr;</div>
+          <div class="aoge-step" role="listitem"><span class="dot"></span><span class="tx"><span class="t">Growth</span><span class="d">Awareness becomes lasting change</span></span></div>
+        </div>
+
+        <div class="aoge-loopback">
+          <div class="aoge-arrow" aria-hidden="true">&darr;</div>
+          <div class="aoge-loop">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a9 9 0 1 1-3-6.7"/><path d="M21 3v5h-5"/></svg>
+            <span>Growth feeds back into who we are &mdash; and the journey begins again.</span>
+          </div>
+        </div>
+
+        <div class="aoge-conv">
+          <div class="aoge-conv-h">Growth happens in conversation</div>
+          <div class="aoge-conv-flow">
+            <span class="aoge-pill">Student Prompt</span>
+            <span class="aoge-pill-arr" aria-hidden="true">&rarr;</span>
+            <span class="aoge-pill">Family Conversation</span>
+            <span class="aoge-pill-arr" aria-hidden="true">&rarr;</span>
+            <span class="aoge-pill">Shared Reflection</span>
+            <span class="aoge-pill-arr" aria-hidden="true">&rarr;</span>
+            <span class="aoge-pill">Practice</span>
+          </div>
+        </div>
+
+        <a class="aoge-cta" href="grace-ecosystem.html">Explore the Ecosystem &rarr;</a>
+      </div>
+    </section>
+
     <!-- ===== STATEMENT BAND (moved up into the hero fold) ===== -->
 
     <!-- ===== DOORS ===== -->
@@ -5392,6 +5574,17 @@ function toggleTheme() {
           <p data-i18n="fw_p_gr_d">Choosing connection over judgment, and growth over perfection.</p>
         </div>
       </div>
+    </div>
+
+    <div class="fw-sec">
+      <a href="grace-ecosystem.html" style="display:flex; flex-wrap:wrap; align-items:center; gap:14px 18px; justify-content:space-between; text-decoration:none; background:var(--navy,#1B3A5F); color:#fff; border-radius:16px; padding:20px 24px; box-shadow:0 8px 22px -12px rgba(10,30,51,.5);">
+        <span style="flex:1; min-width:240px;">
+          <span style="display:block; font-family:var(--font-sans,Arial,sans-serif); font-size:11px; font-weight:800; letter-spacing:.14em; text-transform:uppercase; color:var(--gold,#D9A33B); margin-bottom:5px;">See the framework in action</span>
+          <span style="display:block; font-family:var(--font-serif,Georgia,serif); font-size:21px; font-weight:700; line-height:1.2;">The Grace Ecosystem</span>
+          <span style="display:block; font-size:14px; line-height:1.5; color:#dbe4ee; margin-top:5px; max-width:52ch;">Put the four pillars to work — ready-to-use resources for home, school, parents, educators, and adult life.</span>
+        </span>
+        <span style="font-family:var(--font-sans,Arial,sans-serif); font-size:14px; font-weight:800; background:var(--gold,#D9A33B); color:var(--navy,#1B3A5F); border-radius:999px; padding:11px 20px; white-space:nowrap;">Explore the Ecosystem &rarr;</span>
+      </a>
     </div>
 
     <div class="fw-sec">
@@ -5575,6 +5768,7 @@ function toggleTheme() {
       <h2 class="fw-h" data-i18n="fw_ad_h">For Administration</h2>
       <p class="fw-sub" data-i18n="fw_ad_p">For school and district leaders: de-identified, class- and school-level trends for MTSS &mdash; never individual scores &mdash; alongside licensing, privacy, and rollout details.</p>
       <button type="button" class="btn" style="margin-top:6px;" onclick="if(typeof openAdmin==='function')openAdmin();"><span data-i18n="fw_ad_cta">Open the Administration view</span> <span class="btn-arrow">&rarr;</span></button>
+      <a class="btn btn-secondary" style="margin-top:6px; margin-left:8px;" href="files/AoG-Ecosystem-Overview.html" target="_blank" rel="noopener">The Grace Ecosystem — strategic overview <span class="btn-arrow">&rarr;</span></a>
     </div>
     </div>
 
@@ -6435,6 +6629,10 @@ function toggleTheme() {
       <div class="eyebrow" data-i18n="fam_eyebrow">Family Mode &middot; private to this device</div>
       <h1 class="display display-lg" data-i18n="fam_h1">Your family&rsquo;s check-ins</h1>
       <p class="lede" data-i18n="fam_lede">Add each family member once, then check in together a few times a year. Everything stays on this device &mdash; see growth over time and print conversation starters.</p>
+      <div style="display:flex; gap:10px; flex-wrap:wrap; justify-content:center; margin:14px 0 2px;">
+        <a class="btn btn-secondary" href="AoG-Four-Pillars-at-Home.pdf" target="_blank" rel="noopener" onclick="return aogOpenPrintable(event,'home');" data-i18n="fam_print_home">📄 The Four Pillars at Home (printable)</a>
+        <a class="btn btn-secondary" href="AoG-Four-Pillars-in-the-Classroom.pdf" target="_blank" rel="noopener" onclick="return aogOpenPrintable(event,'cls');" data-i18n="fam_print_class">🏫 The Four Pillars in the Classroom</a>
+      </div>
     </div>
     <div id="familyRoot"></div>
   </div>
@@ -6521,7 +6719,7 @@ function toggleTheme() {
   <div class="qs-foot">
     <button class="btn btn-sm" type="button" onclick="aogQsTour()" data-dl="qs_replay">Replay the guided tour</button>
     <button class="btn btn-secondary btn-sm" type="button" onclick="aogQsDemo()" data-dl="qs_demo">Explore with demo data</button>
-    <button class="btn btn-secondary btn-sm" type="button" onclick="aogToggleIntroScript(this)" data-dl="qs_intro">How to introduce this (60 sec)</button>
+    <button class="btn btn-sm qs-intro-cta" type="button" onclick="aogToggleIntroScript(this)" data-dl="qs_intro">▶ How to introduce this (60 sec)</button>
     <!-- Printable one-pager (second, dashboard-side spot). Upload the PDFs to the
          site root next to index.html. Swaps to the Spanish PDF when the dashboard
          is in ES; if JS fails, the href still serves the English PDF. -->
@@ -6532,7 +6730,39 @@ function toggleTheme() {
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 11V7a5 5 0 0 1 9.9-1"/><rect x="3" y="11" width="18" height="11" rx="2"/></svg>
     <span data-dl-html="qs_note"><strong>No code needed.</strong> Privacy lives in the link &mdash; results sync only when someone opens a private link you share, never just by opening this dashboard.</span>
   </div>
+  <div class="qs-data">
+    <button class="btn btn-secondary btn-sm" type="button" onclick="aogClearMyData()" data-dl="qs_cleardata">🗑 Clear my data on this device</button>
+    <span class="qs-data-note" data-dl="qs_cleardata_note">Removes tool logs, Family Mode entries, and this site&rsquo;s saved settings from this device only.</span>
+  </div>
 </section>
+<style>
+  /* Onboarding: make the 60-second intro stand out among the quick-start buttons */
+  .qs-intro-cta{ background:var(--gold,#D9A33B) !important; color:var(--navy,#0A1E33) !important; border-color:var(--gold,#D9A33B) !important; font-weight:700; }
+  .qs-intro-cta:hover{ filter:brightness(.96); }
+  /* Data management control */
+  .qs-data{ margin-top:14px; display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
+  .qs-data-note{ font-size:11.5px; color:var(--ink-faint,#8A92A6); line-height:1.4; max-width:46ch; }
+  /* Global polish (additive, low-risk) */
+  body{ -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale; }
+  a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible, [tabindex]:focus-visible{
+    outline:2px solid var(--gold,#D9A33B); outline-offset:2px; border-radius:6px; }
+  .btn{ transition:transform .12s ease, box-shadow .15s ease, background .15s ease, filter .15s ease; }
+</style>
+<script>
+  window.aogClearMyData = function(){
+    var es = (typeof lang!=="undefined" && lang==="es");
+    var msg = es
+      ? "¿Borrar todos los datos guardados en este dispositivo? (registros de herramientas, modo familia y preferencias de este sitio). Esto no se puede deshacer."
+      : "Clear all saved data on this device? (tool logs, Family Mode entries, and this site’s saved settings). This can’t be undone.";
+    if (!window.confirm(msg)) return;
+    try{
+      var rm = [];
+      for (var i=0; i<localStorage.length; i++){ var k = localStorage.key(i); if (k){ var kl = k.toLowerCase(); if (kl.indexOf("aog")===0 || kl.indexOf("grace")===0) rm.push(k); } }
+      rm.forEach(function(k){ try{ localStorage.removeItem(k); }catch(e){} });
+    }catch(e){}
+    window.alert(es ? "Listo. Tus datos de este dispositivo se han borrado." : "Done. Your data on this device has been cleared.");
+  };
+</script>
 <!-- ===== END QUICK START ============================================ -->
 
     <div class="tabs">
@@ -7920,7 +8150,7 @@ function toggleTheme() {
 
 
   <div class="container">
-    <div style="text-align:center; margin:40px 0 20px;">
+    <div style="text-align:center; margin:24px 0 10px;">
       <h1 class="display-lg" data-i18n="ch_tools_t">Calm &amp; Regulation Tools</h1>
       <p class="lede">Tap a tool to begin. Each one takes 60–90 seconds.</p>
     </div>
@@ -7929,30 +8159,148 @@ function toggleTheme() {
       <img src="tools-hero.jpg" alt="A parent and child smiling together in a calm, warm moment" loading="lazy" decoding="async" onerror="var f=this.closest('.aog-page-banner'); if(f) f.style.display='none';">
     </figure>
     <!-- Grace Engine: crisis triage + progress -->
-    <div style="text-align:center;margin:-4px 0 16px;"><button class="btn btn-secondary gg-reset-btn" onclick="if(typeof graceAdultGrounding==='function'){graceAdultGrounding(true);}" data-i18n="gt_ground_btn">Reset myself (10s)</button></div>
+    <div style="text-align:center;margin:-4px 0 16px;"><button class="btn btn-secondary gg-reset-btn" onclick="if(typeof graceAdultGrounding==='function'){graceAdultGrounding(true);}" data-i18n="gt_ground_btn">Quick Reset</button></div>
     <div id="grace-practiced-banner" class="grace-practiced-banner" aria-live="polite"></div>
     <div id="persistent-history-anchor"></div>
-    <p class="triage-lead" data-i18n="gw_triage_lead">In a hard moment right now? Start here.</p>
-    <div id="aide-triage-wrapper"></div>
     <div class="tools-grid">
 
-      <!-- Co-Regulation — prominent top card -->
-      <div class="tool-card tool-card-coreg" onclick="toolOpen('coreg')" style="grid-column: 1 / -1; max-width: 520px; margin: 0 auto 24px;">
-        <span class="tool-icon" style="font-size: 52px;">🧡</span>
-        <div class="tool-title">Co-Regulation</div>
-        <p class="tool-desc">Regulate yourself first — your calm is the intervention</p>
-        <button class="btn btn-secondary" style="width:100%">Read</button>
+      <!-- Top feature pair: Co-Regulation (adult) + Beyond "Fine" (connect) -->
+      <div class="aog-top-pair">
+        <div class="tool-card tool-card-coreg" onclick="toolOpen('coreg')">
+          <span class="tool-icon" style="font-size: 52px;">🧡</span>
+          <div class="tool-title">Co-Regulation</div>
+          <p class="tool-desc">Regulate yourself first — your calm is the intervention</p>
+          <button class="btn" style="width:100%">Start here</button>
+        </div>
+        <div class="tool-card" onclick="toolOpen('beyondfine')" style="border-color:var(--gold);">
+          <span class="tool-icon" style="font-size: 52px;">💬</span>
+          <div class="tool-title" data-i18n="gt_bf_t">Beyond &ldquo;Fine&rdquo;</div>
+          <p class="tool-desc" data-i18n="gt_bf_d">Everyday questions that get past &ldquo;how was your day?&rdquo;</p>
+          <button class="btn" style="width:100%" data-i18n="gt_bf_b">Open</button>
+        </div>
       </div>
 
       <!-- START row -->
       <div class="tool-card" onclick="toolOpen('bodycheck')" style="grid-column:1 / -1; max-width:520px; margin:0 auto 24px; border-color:var(--gold);"><span class="tool-icon">🧭</span><div class="tool-title" data-i18n="gt_body_t">Body Check</div><p class="tool-desc" data-i18n="gt_body_d">Tell us how your body feels — get the right tool</p><button class="btn btn-secondary" style="width:100%" data-i18n="gt_body_b">Check in</button></div>
-      <div class="tools-row-header">Breathe</div>
+      <style>
+        .tool-filters{ grid-column:1 / -1; position:sticky; top:0; z-index:30;
+          display:flex; flex-wrap:nowrap; gap:8px; overflow-x:auto; -webkit-overflow-scrolling:touch;
+          padding:12px 4px; margin:0 0 8px; background:var(--paper,#FBF3DF); border-bottom:1px solid var(--rule,rgba(10,30,51,.1)); }
+        :root[data-theme="dark"] .tool-filters{ background:#0C141D; border-bottom-color:rgba(255,255,255,.1); }
+        .tool-filters::-webkit-scrollbar{ height:0; }
+        .tool-chip{ flex:0 0 auto; font-family:inherit; font-size:14px; font-weight:700; cursor:pointer;
+          border:1.5px solid var(--gold,#D9A33B); background:transparent; color:var(--navy,#1B3A5F);
+          border-radius:999px; padding:8px 16px; white-space:nowrap; }
+        :root[data-theme="dark"] .tool-chip{ color:var(--cream,#F4ECDA); }
+        .tool-chip.active{ background:var(--gold,#D9A33B); color:var(--navy,#1B3A5F); border-color:var(--gold,#D9A33B); }
+        .tool-chip:hover{ background:rgba(184,137,58,.16); }
+        .tool-chip.active:hover{ background:var(--gold,#D9A33B); }
+        /* Speed-to-value: shrink the banner & tighten the top so tools surface faster */
+        #screen-teacher-tools .aog-page-banner{ margin:6px 0 14px; }
+        #screen-teacher-tools .aog-page-banner img{ max-height:210px; width:100%; object-fit:cover; }
+        #screen-teacher-tools #grace-practiced-banner:not(:empty){ margin:4px auto 10px; display:flex; justify-content:center; text-align:center; }
+        #screen-teacher-tools #grace-practiced-banner:not(:empty) > *{ margin-left:auto; margin-right:auto; }
+        /* Make the two primary cards feel more substantial & inviting */
+        #screen-teacher-tools .aog-top-pair .tool-card{ border:1.5px solid var(--gold,#D9A33B);
+          box-shadow:0 12px 30px -16px rgba(27,58,95,.5); padding:22px 20px; }
+        #screen-teacher-tools .aog-top-pair .tool-icon{ font-size:58px !important; }
+        #screen-teacher-tools .aog-top-pair .tool-title{ font-size:1.18em; }
+        /* Warmth for the personalized #mytools page (consistent with the hub's cards) */
+        #screen-aog-mytools .myt-trusted{ font-family:Georgia,serif; font-size:14.5px; line-height:1.55;
+          color:var(--ink-soft,#46506E); text-align:center; max-width:42ch; margin:24px auto 0; }
+        #screen-aog-mytools .myt-warm{ font-family:Georgia,serif; font-style:italic;
+          color:var(--ink-faint,#5A6B7B); font-size:16px; line-height:1.5; margin:8px auto 2px; max-width:40ch; }
+        /* ===== PREMIUM TOOL CARDS — #mytools page ===== */
+        #myToolsGrid .tool-card{ background:#FBF7EC; border:1px solid #EDE6D6; border-left:6px solid var(--gold);
+          border-radius:18px; padding:26px 26px 22px;
+          box-shadow:0 4px 12px rgba(27,58,95,.07), inset 0 1px 0 rgba(255,255,255,.6);
+          transition:transform .25s var(--ease), box-shadow .25s var(--ease), border-color .2s ease;
+          display:flex; flex-direction:column; position:relative; overflow:hidden; }
+        #myToolsGrid .tool-card::before{ content:""; position:absolute; inset:0;
+          background-image:radial-gradient(circle at 30% 20%, rgba(242,201,100,.035) 0%, transparent 50%);
+          pointer-events:none; z-index:0; }
+        #myToolsGrid .tool-card:hover{ transform:translateY(-4px);
+          box-shadow:0 14px 32px rgba(27,58,95,.11), inset 0 1px 0 rgba(255,255,255,.7); border-color:#E4DAC5; }
+        #myToolsGrid .tool-card .tool-icon{ font-size:34px; line-height:1; margin-bottom:10px; display:block; position:relative; z-index:1; }
+        #myToolsGrid .tool-card .tool-title{ font-family:var(--font-serif); font-size:20px; font-weight:600; color:var(--navy); line-height:1.25; margin-bottom:6px; position:relative; z-index:1; }
+        #myToolsGrid .tool-card .tool-desc{ font-size:14.5px; line-height:1.55; color:var(--ink-soft); margin-bottom:18px; flex:1; position:relative; z-index:1; }
+        #myToolsGrid .tool-card .btn.btn-secondary{ background:linear-gradient(180deg,#0A1E33 0%,#06121F 100%); color:white; border:1.5px solid #0A1E33; font-weight:600; font-size:14px; padding:12px 22px; border-radius:12px; transition:all .2s var(--ease); position:relative; z-index:1; box-shadow:0 2px 6px rgba(10,30,51,.15); }
+        #myToolsGrid .tool-card .btn.btn-secondary:hover{ background:linear-gradient(180deg,#13314F 0%,#0A1E33 100%); border-color:#13314F; transform:translateY(-1px); box-shadow:0 4px 12px rgba(10,30,51,.2); }
+        #myToolsGrid .tool-card .myt-fb{ margin-top:10px; padding-top:14px; border-top:1px dashed #D9CDB2; position:relative; z-index:1; }
+        /* dark-mode legibility for the premium cards */
+        :root[data-theme="dark"] #myToolsGrid .tool-card{ background:#13212E; border-color:rgba(255,255,255,.08); box-shadow:0 4px 12px rgba(0,0,0,.32); }
+        :root[data-theme="dark"] #myToolsGrid .tool-card::before{ background-image:none; }
+        :root[data-theme="dark"] #myToolsGrid .tool-card .tool-title{ color:var(--cream,#F4ECDA); }
+        :root[data-theme="dark"] #myToolsGrid .tool-card .tool-desc{ color:#b9c6d6; }
+        /* ===== same premium treatment on the main hub cards (one consistent system) ===== */
+        #screen-teacher-tools .tool-card{ background:#FBF7EC; border:1px solid #EDE6D6; border-left:6px solid var(--gold);
+          border-radius:18px; padding:24px 22px 20px;
+          box-shadow:0 4px 12px rgba(27,58,95,.07), inset 0 1px 0 rgba(255,255,255,.6);
+          transition:transform .25s var(--ease), box-shadow .25s var(--ease), border-color .2s ease;
+          display:flex; flex-direction:column; position:relative; overflow:hidden; }
+        #screen-teacher-tools .tool-card::before{ content:""; position:absolute; inset:0;
+          background-image:radial-gradient(circle at 30% 20%, rgba(242,201,100,.035) 0%, transparent 50%);
+          pointer-events:none; z-index:0; }
+        #screen-teacher-tools .tool-card:hover{ transform:translateY(-4px);
+          box-shadow:0 14px 32px rgba(27,58,95,.11), inset 0 1px 0 rgba(255,255,255,.7); border-color:#E4DAC5; }
+        #screen-teacher-tools .tool-card .tool-icon{ font-size:34px; line-height:1; margin-bottom:10px; display:block; position:relative; z-index:1; }
+        #screen-teacher-tools .tool-card .tool-title{ font-family:var(--font-serif); font-size:20px; font-weight:600; color:var(--navy); line-height:1.25; margin-bottom:6px; position:relative; z-index:1; }
+        #screen-teacher-tools .tool-card .tool-desc{ font-size:14.5px; line-height:1.55; color:var(--ink-soft); margin-bottom:18px; flex:1; position:relative; z-index:1; }
+        #screen-teacher-tools .tool-card .btn.btn-secondary{ background:linear-gradient(180deg,#0A1E33 0%,#06121F 100%); color:white; border:1.5px solid #0A1E33; font-weight:600; font-size:14px; padding:12px 22px; border-radius:12px; transition:all .2s var(--ease); position:relative; z-index:1; box-shadow:0 2px 6px rgba(10,30,51,.15); }
+        #screen-teacher-tools .tool-card .btn.btn-secondary:hover{ background:linear-gradient(180deg,#13314F 0%,#0A1E33 100%); border-color:#13314F; transform:translateY(-1px); box-shadow:0 4px 12px rgba(10,30,51,.2); }
+        :root[data-theme="dark"] #screen-teacher-tools .tool-card{ background:#13212E; border-color:rgba(255,255,255,.08); box-shadow:0 4px 12px rgba(0,0,0,.32); }
+        :root[data-theme="dark"] #screen-teacher-tools .tool-card::before{ background-image:none; }
+        :root[data-theme="dark"] #screen-teacher-tools .tool-card .tool-title{ color:var(--cream,#F4ECDA); }
+        :root[data-theme="dark"] #screen-teacher-tools .tool-card .tool-desc{ color:#b9c6d6; }
+        /* === Dashboard Domain Cards — warm premium shell. NOTE: domainCard() sets the
+           left border / score / bar color inline by SCORE BAND (green/amber/red), which we
+           keep as the "needs support" signal; the cream shell below adds the warmth. === */
+        .domain-card{ background:#FBF7EC; border:1px solid #EDE6D6; border-left:5px solid var(--gold);
+          border-radius:16px; padding:24px 26px;
+          box-shadow:0 6px 18px rgba(27,58,95,.09), inset 0 1px 0 rgba(255,255,255,.6);
+          transition:transform .18s var(--ease), box-shadow .18s var(--ease); }
+        .domain-card:hover{ transform:translateY(-2px); box-shadow:0 12px 28px rgba(27,58,95,.12); }
+        .dom-pop{ border-radius:16px; }
+        .dom-pop .bar{ height:10px; margin:14px 0 16px; background:#EDE6D6; border-radius:999px; overflow:hidden; }
+        .dom-pop .bar-fill{ transition:width .7s cubic-bezier(.16,1,.3,1); }
+        .dom-pop .domain-card-score{ font-size:42px; font-weight:800; line-height:1; }
+        .dom-pop .domain-card-score span{ font-size:15px; font-weight:600; color:var(--ink-faint); }
+        .domain-card-title{ font-family:var(--font-serif); font-size:20px; color:var(--navy); font-weight:600; margin-bottom:4px; }
+        :root[data-theme="dark"] .domain-card{ background:#13212E; border-color:rgba(255,255,255,.08); box-shadow:0 6px 18px rgba(0,0,0,.3); }
+        :root[data-theme="dark"] .domain-card-title{ color:var(--cream,#F4ECDA); }
+        /* === KPI Cards — warm premium treatment === */
+        .kpi{ background:#FBF7EC; border:1px solid #EDE6D6; border-radius:16px; padding:24px 26px;
+          box-shadow:0 6px 18px rgba(27,58,95,.09), inset 0 1px 0 rgba(255,255,255,.6);
+          transition:transform .18s var(--ease), box-shadow .18s var(--ease); position:relative; overflow:hidden; }
+        .kpi:hover{ transform:translateY(-2px); box-shadow:0 12px 28px rgba(27,58,95,.12); }
+        .kpi::before{ content:""; position:absolute; top:0; left:0; right:0; height:4px;
+          background:linear-gradient(90deg, var(--gold-soft), var(--gold)); opacity:.9; }
+        .kpi-label{ font-size:11px; color:var(--ink-faint); text-transform:uppercase; letter-spacing:.1em; font-weight:700; margin-bottom:8px; }
+        .kpi-value{ font-family:var(--font-serif); font-size:42px; font-weight:800; color:var(--navy); line-height:1.05; margin-bottom:4px; }
+        .kpi-sub{ font-size:13px; color:var(--ink-soft); }
+        :root[data-theme="dark"] .kpi{ background:#13212E; border-color:rgba(255,255,255,.08); box-shadow:0 6px 18px rgba(0,0,0,.3); }
+        :root[data-theme="dark"] .kpi-value{ color:var(--cream,#F4ECDA); }
+        #myToolsGrid .tools-row-header{ margin-top:6px; }
+        /* a soft "made for you" cue, only on personalized (?for=) links */
+        #screen-aog-mytools.is-personalized .container::before{ content:""; display:block;
+          width:54px; height:4px; border-radius:999px; background:var(--gold,#D9A33B); margin:8px auto 0; }
+      </style>
+      <div class="tool-filters" id="toolFilters" role="group" aria-label="Filter tools by category">
+        <button type="button" class="tool-chip active" aria-pressed="true" onclick="aogToolFilter('all', this)">All</button>
+        <button type="button" class="tool-chip" aria-pressed="false" onclick="aogToolFilter('breathe', this)">Breathe</button>
+        <button type="button" class="tool-chip" aria-pressed="false" onclick="aogToolFilter('move', this)">Move &amp; Play</button>
+        <button type="button" class="tool-chip" aria-pressed="false" onclick="aogToolFilter('ground', this)">Ground &amp; Soothe</button>
+        <button type="button" class="tool-chip" aria-pressed="false" onclick="aogToolFilter('express', this)">Express</button>
+        <button type="button" class="tool-chip" aria-pressed="false" onclick="aogToolFilter('printables', this)">Printables</button>
+        <button type="button" class="tool-chip" aria-pressed="false" onclick="aogToolFilter('pecs', this)">PECS</button>
+      </div>
+      <div class="tools-row-header" data-cat="breathe">Breathe</div>
       <div class="tool-card" onclick="toolOpen('breathing')"><span class="tool-icon">🫁</span><div class="tool-title">4-7-8 Breathing</div><p class="tool-desc">Animated breath guide</p><button class="btn btn-secondary" style="width:100%">Start</button></div>
       <div class="tool-card" onclick="toolOpen('boxbreath')"><span class="tool-icon">🫁</span><div class="tool-title" data-i18n="gt_box_t">Paced Breathing</div><p class="tool-desc" data-i18n="gt_box_d">Box 4·4·4·4 or 4·7·8 vagal</p><button class="btn btn-secondary" style="width:100%" data-i18n="gt_box_b">Start</button></div>
       <div class="tool-card" onclick="toolOpen('rainbow')"><span class="tool-icon">🌈</span><div class="tool-title">Rainbow Breathing</div><p class="tool-desc">Breathe in every color!</p><button class="btn btn-secondary" style="width:100%">Start</button></div>
       <div class="tool-card" onclick="toolOpen('take5')"><span class="tool-icon">🖐️</span><div class="tool-title" data-i18n="gt_t5_t">Take 5</div><p class="tool-desc" data-i18n="gt_t5_d">Trace your hand, breath by breath</p><button class="btn btn-secondary" style="width:100%" data-i18n="gt_t5_b">Start</button></div>
 
-      <div class="tools-row-header">Move &amp; Play</div>
+      <div class="tools-row-header" data-cat="move">Move &amp; Play</div>
       <div class="tool-card" onclick="toolOpen('movement')"><span class="tool-icon">🏃</span><div class="tool-title">Movement Break</div><p class="tool-desc">Timed shake-out sequence</p><button class="btn btn-secondary" style="width:100%">Start</button></div>
       <div class="tool-card" onclick="toolOpen('animalyoga')"><span class="tool-icon">🦁</span><div class="tool-title">Animal Yoga</div><p class="tool-desc">Fun animal poses</p><button class="btn btn-secondary" style="width:100%">Play</button></div>
       <div class="tool-card" onclick="toolOpen('tappad')"><span class="tool-icon">👆</span><div class="tool-title" data-i18n="gt_tap_t">Tap Pad</div><p class="tool-desc" data-i18n="gt_tap_d">Tap a rhythm to steady your heart</p><button class="btn btn-secondary" style="width:100%" data-i18n="gt_tap_b">Open</button></div>
@@ -7960,7 +8308,7 @@ function toggleTheme() {
       <div class="tool-card" onclick="toolOpen('catch')"><span class="tool-icon">⭐</span><div class="tool-title">Catch the Stars</div><p class="tool-desc">Catch the falling stars</p><button class="btn btn-secondary" style="width:100%">Play</button></div>
       <div class="tool-card" onclick="toolOpen('snake')"><span class="tool-icon">🐍</span><div class="tool-title">Gentle Snake</div><p class="tool-desc">Guide it to the dots</p><button class="btn btn-secondary" style="width:100%">Play</button></div>
 
-      <div class="tools-row-header">Ground &amp; Soothe</div>
+      <div class="tools-row-header" data-cat="ground">Ground &amp; Soothe</div>
       <div class="tool-card" onclick="toolOpen('grounding')"><span class="tool-icon">🌿</span><div class="tool-title">5-4-3-2-1 Grounding</div><p class="tool-desc">Step-through sensory anchor</p><button class="btn btn-secondary" style="width:100%">Start</button></div>
       <div class="tool-card" onclick="toolOpen('safeplace')"><span class="tool-icon">🌱</span><div class="tool-title">Safe Place</div><p class="tool-desc">Guided visualization</p><button class="btn btn-secondary" style="width:100%">Begin</button></div>
       <div class="tool-card" onclick="toolOpen('pmr')"><span class="tool-icon">🧘</span><div class="tool-title">Body Scan / PMR</div><p class="tool-desc">Progressive muscle release</p><button class="btn btn-secondary" style="width:100%">Start</button></div>
@@ -7968,14 +8316,20 @@ function toggleTheme() {
       <div class="tool-card" onclick="toolOpen('coldwater')"><span class="tool-icon">💧</span><div class="tool-title">Cold Water Reset</div><p class="tool-desc">Vagus nerve reset guide</p><button class="btn btn-secondary" style="width:100%">Guide</button></div>
       <div class="tool-card" onclick="toolOpen('calmjar')"><span class="tool-icon">🫙</span><div class="tool-title">Calm Down Jar</div><p class="tool-desc">Shake &amp; watch it settle</p><button class="btn btn-secondary" style="width:100%">Shake</button></div>
 
-      <div class="tools-row-header">Express</div>
+      <div class="tools-row-header" data-cat="express">Express</div>
+      <div class="tool-card" onclick="toolOpen('harshkind')" style="border-color:var(--gold);"><span class="tool-icon">🪞</span><div class="tool-title" data-i18n="gt_hk_t">Harsh → Kind</div><p class="tool-desc" data-i18n="gt_hk_d">Flip the inner critic into a kind coach</p><button class="btn btn-secondary" style="width:100%" data-i18n="gt_hk_b">Open</button></div>
       <div class="tool-card" onclick="toolOpen('emotion')"><span class="tool-icon">🟡</span><div class="tool-title">Emotion Wheel</div><p class="tool-desc">Name it to tame it</p><button class="btn btn-secondary" style="width:100%">Open</button></div>
       <div class="tool-card" onclick="toolOpen('feelwheel')"><span class="tool-icon">🎡</span><div class="tool-title" data-i18n="gw_card_t">Feelings Wheel</div><p class="tool-desc" data-i18n="gw_card_d">Tap a feeling, hear it named</p><button class="btn btn-secondary" style="width:100%" data-i18n="gw_card_btn">Spin</button></div>
       <div class="tool-card" onclick="toolOpen('instrument')"><span class="tool-icon">🎹</span><div class="tool-title" data-i18n="gt_inst_t">Calm Keys</div><p class="tool-desc" data-i18n="gt_inst_d">Pick an instrument &amp; play — every note's in tune</p><button class="btn btn-secondary" style="width:100%" data-i18n="gt_inst_b">Play</button></div>
       <div class="tool-card" onclick="toolOpen('djdeck')"><span class="tool-icon">🎧</span><div class="tool-title">DJ Deck</div><p class="tool-desc">Make beats &amp; scratch the record</p><button class="btn btn-secondary" style="width:100%">Play</button></div>
 
+      <!-- Printables (take-home / classroom) -->
+      <div class="tools-row-header" data-cat="printables">Printables</div>
+      <a class="tool-card" href="AoG-Four-Pillars-at-Home.pdf" target="_blank" rel="noopener" onclick="return aogOpenPrintable(event,'home');" style="text-decoration:none;"><span class="tool-icon">🏠</span><div class="tool-title" data-i18n="gt_pr_home_t">Four Pillars at Home</div><p class="tool-desc" data-i18n="gt_pr_home_d">One-page parent printable (PDF)</p><span class="btn btn-secondary" style="width:100%;display:inline-block;text-align:center;" data-i18n="gt_pr_home_b">Download</span></a>
+      <a class="tool-card" href="AoG-Four-Pillars-in-the-Classroom.pdf" target="_blank" rel="noopener" onclick="return aogOpenPrintable(event,'cls');" style="text-decoration:none;"><span class="tool-icon">🏫</span><div class="tool-title" data-i18n="gt_pr_class_t">Four Pillars in the Classroom</div><p class="tool-desc" data-i18n="gt_pr_class_d">One-page teacher printable (PDF)</p><span class="btn btn-secondary" style="width:100%;display:inline-block;text-align:center;" data-i18n="gt_pr_class_b">Download</span></a>
+
       <!-- PECS -->
-      <div class="tools-row-header">PECS CARDS</div>
+      <div class="tools-row-header" data-cat="pecs">PECS CARDS</div>
       <div class="tool-card" onclick="showScreen('screen-pecs')" style="grid-column: 1 / -1; max-width: 520px; margin: 0 auto;">
         <span class="tool-icon" style="font-size: 48px;">🖼️</span>
         <div class="tool-title">PECS Cards</div>
@@ -7984,6 +8338,30 @@ function toggleTheme() {
       </div>
 
     </div>
+    <script>
+      (function(){
+        function init(){
+          var grid=document.querySelector('#screen-teacher-tools .tools-grid'); if(!grid) return;
+          var cur='__pinned__';
+          Array.prototype.forEach.call(grid.children, function(el){
+            if(el.tagName==='STYLE' || el.id==='toolFilters') return;
+            if(el.classList.contains('tools-row-header')){ cur = el.getAttribute('data-cat') || el.textContent.trim().toLowerCase(); }
+            el.setAttribute('data-tcat', cur);
+          });
+          window.aogToolFilter=function(cat, btn){
+            Array.prototype.forEach.call(grid.children, function(el){
+              if(el.tagName==='STYLE' || el.id==='toolFilters') return;
+              var c=el.getAttribute('data-tcat');
+              if(c==='__pinned__'){ el.style.display=''; return; }
+              el.style.display = (cat==='all' || c===cat) ? '' : 'none';
+            });
+            var chips=document.querySelectorAll('#toolFilters .tool-chip');
+            Array.prototype.forEach.call(chips, function(b){ var on=(b===btn); b.classList.toggle('active', on); b.setAttribute('aria-pressed', on?'true':'false'); });
+          };
+        }
+        if(document.readyState==='loading'){ document.addEventListener('DOMContentLoaded', init); } else { init(); }
+      })();
+    </script>
     <div style="text-align:center; margin-top:40px; padding-bottom:40px;">
       <button onclick="printTeacherTools()" class="btn btn-secondary">🖨 Print Reference Sheet</button>
     </div>
@@ -8028,7 +8406,8 @@ function toggleTheme() {
     </div>
     <div id="myToolsControls" style="text-align:center; margin:4px 0 0;"></div>
     <div class="tools-grid" id="myToolsGrid" style="margin-top:18px;"></div>
-    <div style="text-align:center; margin:28px 0 48px;">
+    <p class="myt-trusted">If things feel too big, these can help for now &mdash; and please tell a grown-up you trust. You don&rsquo;t have to handle it alone. 💛</p>
+    <div style="text-align:center; margin:18px 0 48px;">
       <button class="btn btn-secondary" onclick="showScreen('screen-teacher-tools')" id="myToolsSeeAll">See all calming tools &rarr;</button>
     </div>
   </div>
@@ -10239,8 +10618,8 @@ const I18N_UI = {
     es: "Casi todo mide a las personas. <strong>Esto te ayuda a comprenderlas.</strong> Una reflexi\u00f3n gratuita de cinco minutos para estudiantes, familias y educadores."
   },
   hyb_lede: {
-    en: "<p class='hl-lead'>Built by a special educator, it\u2019s a framework to strengthen relationships\u2014with yourself and with one another\u2014through identity, self-compassion, forgiveness, and grace.</p><p class='hl-close'>Because growth begins with grace, not performance.</p>",
-    es: "<p class='hl-lead'>Creado por un educador especial, es un marco para fortalecer las relaciones \u2014contigo mismo y con los dem\u00e1s\u2014 a trav\u00e9s de la identidad, la autocompasi\u00f3n, el perd\u00f3n y la gracia.</p><p class='hl-close'>Porque el crecimiento comienza con la gracia, no con el rendimiento.</p>"
+    en: "<p class='hl-lead'>Built by a special educator, it\u2019s a framework for building stronger relationships\u2014with yourself and with others\u2014through identity, self-compassion, forgiveness, and grace, at home, at school, and throughout life.</p><p class='hl-close'>Because growth begins with grace, not performance.</p>",
+    es: "<p class='hl-lead'>Creado por un educador especial, es un marco para construir relaciones m\u00e1s fuertes \u2014contigo mismo y con los dem\u00e1s\u2014 a trav\u00e9s de la identidad, la autocompasi\u00f3n, el perd\u00f3n y la gracia, en casa, en la escuela y a lo largo de la vida.</p><p class='hl-close'>Porque el crecimiento comienza con la gracia, no con el rendimiento.</p>"
   },
   hyb_byline: {
     en: "A framework for students, families, educators, caregivers, teams, and independent adults. Built by a special educator to help people strengthen relationships through identity, self-compassion, forgiveness, and grace.",
@@ -13893,9 +14272,9 @@ function clearLocalData() {
 const DEMO_FLAG = "aogScreener.demoActive";
 const DEMO_STASH = "aogScreener.realStash";
 function buildDemoRecords() {
-  const names = ["Ava R.", "Marcus T.", "Lena K.", "Diego M.", "Priya S.", "Sam W.", "Noah B.", "Mia C.", "Jordan L.", "Ella F."];
-  const grades = ["3", "4", "4", "5", "4", "3", "5", "4", "3", "5"];
-  const bases = [82, 58, 41, 77, 67, 90, 63, 71, 49, 85];
+  const names = ["Liam P.", "Harper J.", "Aiden R.", "Ava R.", "Marcus T.", "Zoe H.", "Lena K.", "Diego M.", "Priya S.", "Tyler S.", "Sam W.", "Noah B.", "Mia C.", "Grace W.", "Jordan L.", "Ella F."];
+  const grades = ["K", "1", "2", "3", "4", "4", "5", "6", "7", "7", "8", "9", "10", "10", "11", "12"];
+  const bases = [88, 70, 54, 82, 58, 46, 41, 77, 67, 38, 90, 63, 71, 92, 49, 85];
   const out = [];
   const windows = ["Fall", "Winter", "Spring"];
   /* warm, realistic reflection pools per domain — rotated by student for variety */
@@ -13913,6 +14292,22 @@ function buildDemoRecords() {
     "Me and my friend had a rough week — I want to fix it but I’m not sure how to start.",
     "I’d like to be better at saying sorry first instead of waiting for the other person.",
     "There’s an adult at school I’d go to if something was really wrong, which feels good."
+  ];
+  /* older-student (grades 6–12) reflection pools — same domains, teen voice */
+  const reflTeenA = [
+    "When I’m stressed I kind of shut down, but I’m catching it earlier than I used to.",
+    "I get overwhelmed before tests. Taking a minute to breathe actually helps a little.",
+    "Some days my mood swings a lot and I can’t always explain why."
+  ];
+  const reflTeenB = [
+    "I’m really hard on myself when my grades slip. Trying to ease up on that.",
+    "The voice in my head is brutal sometimes. I’m working on talking to myself like a friend.",
+    "One bad day used to wreck my whole week. I bounce back a little faster now."
+  ];
+  const reflTeenC = [
+    "Me and a friend fell out and I keep waiting for them to text first.",
+    "I want to be the kind of person who apologizes instead of just going quiet.",
+    "There’s a teacher I trust if something serious came up, which actually helps."
   ];
   /* map a 0–100 domain score to six item values on the active scale, with gentle variety */
   function itemsFor(score, maxIdx, salt) {
@@ -13933,7 +14328,7 @@ function buildDemoRecords() {
       const nB = Math.max(15, Math.min(100, comp + ((s + 1) % 3 - 1) * 8));
       const nC = Math.max(15, Math.min(100, comp + ((s + 2) % 3 - 1) * 8));
       const tier = comp >= 75 ? "Low Risk" : comp >= 50 ? "Some Risk" : "High Risk";
-      const flagged = (s === 2 || s === 8) && w === 0;
+      const flagged = bases[s] < 45 && w === 0;
       /* make the most recent window a Thorough (depth) check-in so reflections,
          intensities, and a fuller heatmap show when a teacher opens the report */
       const depth = (w === windows.length - 1);
@@ -13942,7 +14337,9 @@ function buildDemoRecords() {
       let reflections = ["", "", ""];
       const intensities = new Array(18).fill(null);
       if (depth) {
-        reflections = [reflA[s % reflA.length], reflB[(s + 1) % reflB.length], reflC[(s + 2) % reflC.length]];
+        var _teen = (function (g) { var n = parseInt(g, 10); return !isNaN(n) && n >= 6; })(grades[s]);
+        var _rA = _teen ? reflTeenA : reflA, _rB = _teen ? reflTeenB : reflB, _rC = _teen ? reflTeenC : reflC;
+        reflections = [_rA[s % _rA.length], _rB[(s + 1) % _rB.length], _rC[(s + 2) % _rC.length]];
         const low = lowestDomain(nA, nB, nC);          // give the toughest domain an intensity follow-up
         intensities[low * 6] = 2; intensities[low * 6 + 2] = 1;
       }
@@ -16365,8 +16762,160 @@ const PROMPTS_ADULT = {
     es: "¿Hay alguien a quien realmente acudirías si algo anduviera mal? ¿Quién? Si no, ¿quién podría serlo?"
   }
 };
+/* =====================================================================
+   BRIDGE / HAND-OFF MOMENT — when a child finishes a check-in, give the
+   grown-up at home ONE gentle, low-pressure question mapped to the single
+   strongest flag (e.g. "replaying mistakes" -> a forgiveness question).
+   Caregiver-voiced, child/teen variants, bilingual. Reuses the existing
+   construct detection (scoreFrequency / ITEMS_EN) and QR lib (ensureQrLib).
+   ===================================================================== */
+const BRIDGE_WHY = {
+  A: { en: "settling big feelings", es: "calmar las emociones grandes" },
+  B: { en: "being kinder to themselves", es: "tratarse con más amabilidad" },
+  C: { en: "working things out with others", es: "resolver las cosas con los demás" }
+};
+const BRIDGE_DOMAIN = {
+  A: { child: { en: "What's something that made you feel calm today?", es: "¿Qué te hizo sentir tranquilo/a hoy?" },
+       teen:  { en: "What helped you feel steady today?", es: "¿Qué te ayudó a sentirte en equilibrio hoy?" } },
+  B: { child: { en: "What's something you did today that you're proud of?", es: "¿Qué hiciste hoy que te enorgullece?" },
+       teen:  { en: "What's something you handled today that you're proud of?", es: "¿Qué manejaste hoy de lo que te sientes orgulloso/a?" } },
+  C: { child: { en: "Who were you kind to today?", es: "¿Con quién fuiste amable hoy?" },
+       teen:  { en: "Who showed up for you today — or who did you show up for?", es: "¿Quién estuvo ahí para ti hoy — o por quién estuviste tú?" } }
+};
+const BRIDGE_Q = {
+  1:  { child: { en: "What's one feeling you had today — even a tricky one to name?", es: "¿Qué sentimiento tuviste hoy — aunque sea difícil de nombrar?" },
+        teen:  { en: "If you had to name how today actually felt, what word fits?", es: "Si tuvieras que nombrar cómo se sintió hoy, ¿qué palabra encaja?" } },
+  2:  { child: { en: "When you got upset today, what helped your body feel better?", es: "Cuando te molestaste hoy, ¿qué ayudó a que tu cuerpo se sintiera mejor?" },
+        teen:  { en: "What actually helps you settle when your day gets heavy?", es: "¿Qué te ayuda de verdad a calmarte cuando el día se pone pesado?" } },
+  3:  { child: { en: "Did a big feeling get in the way of anything today?", es: "¿Un sentimiento grande se interpuso en algo hoy?" },
+        teen:  { en: "Did anything throw you off today more than you wanted it to?", es: "¿Algo te desestabilizó hoy más de lo que querías?" } },
+  4:  { child: { en: "Was there a moment today that felt like too much?", es: "¿Hubo un momento hoy que se sintió como demasiado?" },
+        teen:  { en: "Was there a point today that felt like a lot to carry?", es: "¿Hubo un momento hoy que se sintió como mucho que cargar?" } },
+  5:  { child: { en: "After something hard today, what helped you feel okay again?", es: "Después de algo difícil hoy, ¿qué te ayudó a sentirte bien otra vez?" },
+        teen:  { en: "When something hard hit today, what helped you come back?", es: "Cuando algo difícil pasó hoy, ¿qué te ayudó a recuperarte?" } },
+  6:  { child: { en: "Can you tell when you're starting to get upset? What's the first sign?", es: "¿Te das cuenta cuando empiezas a molestarte? ¿Cuál es la primera señal?" },
+        teen:  { en: "What's the first sign for you that you're about to hit your limit?", es: "¿Cuál es la primera señal de que estás por llegar a tu límite?" } },
+  7:  { child: { en: "When you made a mistake today, how did you talk to yourself about it?", es: "Cuando cometiste un error hoy, ¿cómo te hablaste a ti mismo/a?" },
+        teen:  { en: "When something went wrong today, were you kind or hard on yourself?", es: "Cuando algo salió mal hoy, ¿fuiste amable o duro/a contigo?" } },
+  8:  { child: { en: "Did a voice in your head say anything mean today? What did it say?", es: "¿Una voz en tu cabeza dijo algo cruel hoy? ¿Qué dijo?" },
+        teen:  { en: "Was the voice in your head rough on you today? What did it say?", es: "¿La voz en tu cabeza fue dura contigo hoy? ¿Qué dijo?" } },
+  9:  { child: { en: "If your best friend had your day, what kind thing would you tell them?", es: "Si tu mejor amigo/a tuviera tu día, ¿qué cosa amable le dirías?" },
+        teen:  { en: "What would you say to a friend who had your exact day?", es: "¿Qué le dirías a un amigo/a que tuviera exactamente tu día?" } },
+  10: { child: { en: "What's one small thing you could let yourself off the hook for today?", es: "¿Qué cosa pequeña podrías perdonarte hoy?" },
+        teen:  { en: "What's something minor you want to forgive yourself for today?", es: "¿Qué cosa menor te gustaría perdonarte hoy?" } },
+  11: { child: { en: "What's something hard right now that you're slowly getting better at?", es: "¿Qué cosa difícil estás mejorando poco a poco?" },
+        teen:  { en: "What's something you're not good at yet but could be?", es: "¿En qué no eres bueno/a todavía pero podrías serlo?" } },
+  12: { child: { en: "Is there something from today you wish you could fix? What would help?", es: "¿Hay algo de hoy que te gustaría arreglar? ¿Qué ayudaría?" },
+        teen:  { en: "Anything from today you'd want to make right — and then let go?", es: "¿Algo de hoy que querrías reparar — y luego soltar?" } },
+  13: { child: { en: "If you had a disagreement today, what do you think the other person felt?", es: "Si tuviste un desacuerdo hoy, ¿qué crees que sintió la otra persona?" },
+        teen:  { en: "In a disagreement today, what might it have looked like from their side?", es: "En un desacuerdo hoy, ¿cómo se habrá visto desde su lado?" } },
+  14: { child: { en: "Was there a moment today you wish you'd said sorry? What for?", es: "¿Hubo un momento hoy en que desearías haber pedido perdón? ¿Por qué?" },
+        teen:  { en: "Anyone you might owe an “I'm sorry” to from today?", es: "¿Le debes un “perdón” a alguien por algo de hoy?" } },
+  15: { child: { en: "When someone bugged you today, could there be another reason they acted that way?", es: "Cuando alguien te molestó hoy, ¿podría haber otra razón por la que actuó así?" },
+        teen:  { en: "When someone got under your skin today, what's a kinder explanation?", es: "Cuando alguien te irritó hoy, ¿cuál sería una explicación más amable?" } },
+  16: { child: { en: "Did you meet anyone today who's different from you? What was that like?", es: "¿Conociste hoy a alguien diferente a ti? ¿Cómo fue?" },
+        teen:  { en: "How did you treat someone today you don't really click with?", es: "¿Cómo trataste hoy a alguien con quien no congenias?" } },
+  17: { child: { en: "Is there anyone who feels hard to be around right now?", es: "¿Hay alguien con quien sea difícil estar ahora mismo?" },
+        teen:  { en: "Anyone in your life who's just difficult, vs. someone who doesn't feel safe?", es: "¿Alguien en tu vida que solo es difícil, frente a alguien que no se siente seguro?" } },
+  18: { child: { en: "If something was really wrong, who's a grown-up you'd go to?", es: "Si algo anduviera muy mal, ¿a qué adulto acudirías?" },
+        teen:  { en: "If something serious came up, who would you actually go to?", es: "Si surgiera algo serio, ¿a quién acudirías de verdad?" } }
+};
+function aogTopFlaggedItem(rec) {
+  try {
+    if (!rec || !rec.raw) return null;
+    var isAdult = rec.population === "adult";
+    var maxIdx = rec.mode === "depth" ? 5 : 3;
+    var items = isAdult ? ITEMS_ADULT_EN : ITEMS_EN;
+    var flagged = [];
+    items.forEach(function (it, i) {
+      var sc = scoreFrequency(rec.raw[i], it.reverse, rec.mode);
+      if (sc == null) return;
+      if (sc < maxIdx * 0.4) flagged.push({ item: it, scored: sc, intensity: (rec.intensities ? rec.intensities[i] : null) });
+    });
+    if (!flagged.length) return null;
+    flagged.sort(function (a, b) { return (a.scored - b.scored) || ((b.intensity || 0) - (a.intensity || 0)); });
+    return flagged[0];
+  } catch (e) { return null; }
+}
+function aogBridgeCard(rec) {
+  try {
+    if (!rec || rec.population === "adult") return "";
+    var lang2 = (typeof dashLang !== "undefined" && dashLang) ? dashLang : "en";
+    var band = (typeof aogGradeToBand === "function") ? aogGradeToBand(rec.grade) : "";
+    var aud = (band === "K–2" || band === "3–5") ? "child" : "teen";
+    var top = aogTopFlaggedItem(rec);
+    var dom, qobj;
+    if (top && BRIDGE_Q[top.item.n]) { dom = top.item.d; qobj = BRIDGE_Q[top.item.n][aud] || BRIDGE_Q[top.item.n].teen; }
+    if (!qobj) {
+      var d = { A: rec.normA == null ? 100 : rec.normA, B: rec.normB == null ? 100 : rec.normB, C: rec.normC == null ? 100 : rec.normC };
+      dom = Object.keys(d).sort(function (a, c) { return d[a] - d[c]; })[0];
+      qobj = BRIDGE_DOMAIN[dom][aud] || BRIDGE_DOMAIN[dom].teen;
+    }
+    if (!qobj) return "";
+    var qx = qobj[lang2] || qobj.en;
+    var name = escapeHtml((String(rec.studentId || "").trim().split(" ")[0]) || (lang2 === "es" ? "tu hijo/a" : "your child"));
+    var why = BRIDGE_WHY[dom] ? (BRIDGE_WHY[dom][lang2] || BRIDGE_WHY[dom].en) : "";
+    var gold = "border:1.5px solid var(--gold);background:var(--gold,#B8893A);color:var(--navy);border-radius:999px;padding:8px 15px;font-family:var(--font-sans);font-size:13px;font-weight:800;cursor:pointer;";
+    var ghost = "border:1.5px solid var(--rule,#D9CBA8);background:#fff;color:var(--navy);border-radius:999px;padding:8px 15px;font-family:var(--font-sans);font-size:13px;font-weight:700;cursor:pointer;";
+    return '<div class="aog-bridge" style="margin:0 0 16px;border:1.5px solid var(--gold);background:var(--cream,#FBF3DF);border-radius:14px;padding:16px 18px;">'
+      + '<div style="font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--gold-deep,#9a6f24);margin-bottom:6px;">' + DT("For the grown-up at home", "Para el adulto en casa") + '</div>'
+      + '<div style="font-family:var(--font-sans);font-size:13px;color:var(--ink-soft,#5A6B7B);margin-bottom:10px;">' + DT("One gentle thing to ask tonight — no pressure, no right answer.", "Una cosa suave para preguntar esta noche — sin presión, sin respuesta correcta.") + '</div>'
+      + '<p class="aog-bridge-q" style="font-family:var(--font-serif);font-size:20px;line-height:1.4;color:var(--navy);margin:0 0 10px;">' + escapeHtml(qx) + '</p>'
+      + (why ? '<div style="font-size:12.5px;color:var(--ink-soft,#5A6B7B);margin-bottom:14px;">' + DT("Because", "Porque") + ' ' + name + ' ' + DT("is working on", "está trabajando en") + ' ' + escapeHtml(why) + '.</div>' : '<div style="margin-bottom:14px;"></div>')
+      + '<div class="aog-bridge-actions" style="display:flex;gap:8px;flex-wrap:wrap;">'
+        + '<button type="button" onclick="aogBridgeCopy(this)" style="' + gold + '">' + DT("Copy", "Copiar") + '</button>'
+        + '<button type="button" onclick="aogBridgePrint(this)" style="' + ghost + '">' + DT("Print card", "Imprimir tarjeta") + '</button>'
+        + '<button type="button" onclick="aogBridgeQr(this)" style="' + ghost + '">' + DT("Take-home QR", "QR para casa") + '</button>'
+      + '</div>'
+      + '<div class="aog-bridge-qr" style="display:none;margin-top:14px;text-align:center;"></div>'
+      + '</div>';
+  } catch (e) { return ""; }
+}
+window.aogBridgeCopy = function (btn) {
+  var card = btn.closest(".aog-bridge"); if (!card) return;
+  var q = card.querySelector(".aog-bridge-q"); if (!q) return;
+  var txt = q.textContent || "";
+  var es = (typeof dashLang !== "undefined" && dashLang === "es");
+  function done() { var o = btn.textContent; btn.textContent = es ? "✓ Copiado" : "✓ Copied"; setTimeout(function () { btn.textContent = o; }, 1400); }
+  function fallback() { try { var ta = document.createElement("textarea"); ta.value = txt; document.body.appendChild(ta); ta.select(); document.execCommand("copy"); document.body.removeChild(ta); done(); } catch (e) {} }
+  try { if (navigator.clipboard) { navigator.clipboard.writeText(txt).then(done, fallback); return; } } catch (e) {}
+  fallback();
+};
+window.aogBridgePrint = function (btn) {
+  var card = btn.closest(".aog-bridge"); if (!card) return;
+  var q = card.querySelector(".aog-bridge-q"); var txt = (q ? q.textContent : "") || "";
+  var es = (typeof dashLang !== "undefined" && dashLang === "es");
+  var head = es ? "Para el adulto en casa" : "For the grown-up at home";
+  var sub = es ? "Una cosa suave para preguntar — sin presión." : "One gentle thing to ask — no pressure.";
+  var w = window.open("", "_blank", "width=620,height=440"); if (!w) return;
+  var safe = txt.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  w.document.write('<!doctype html><meta charset="utf-8"><title>' + head + '</title><div style="font-family:Georgia,serif;max-width:460px;margin:54px auto;text-align:center;padding:32px;border:2px solid #B8893A;border-radius:16px;"><div style="font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:#9a6f24;font-family:Arial,sans-serif;margin-bottom:14px;">' + head + '</div><div style="font-size:13px;color:#666;font-family:Arial,sans-serif;margin-bottom:20px;">' + sub + '</div><div style="font-size:24px;line-height:1.45;color:#1B3A5F;">' + safe + '</div><div style="margin-top:28px;font-size:11px;color:#999;font-family:Arial,sans-serif;">Architecture of Grace</div></div>');
+  w.document.close();
+  setTimeout(function () { try { w.focus(); w.print(); } catch (e) {} }, 250);
+};
+window.aogBridgeQr = function (btn) {
+  var card = btn.closest(".aog-bridge"); if (!card) return;
+  var box = card.querySelector(".aog-bridge-qr"); var q = card.querySelector(".aog-bridge-q");
+  if (!box || !q) return;
+  var es = (typeof dashLang !== "undefined" && dashLang === "es");
+  if (box.style.display !== "none") { box.style.display = "none"; box.innerHTML = ""; return; }
+  var txt = q.textContent || "";
+  box.style.display = "block";
+  box.innerHTML = "<div style='font-size:12px;color:#5A6B7B'>" + (es ? "Generando…" : "Generating…") + "</div>";
+  function go(ok) {
+    if (!ok || !window.QRCode) { box.innerHTML = "<div style='font-size:12px;color:#5A6B7B'>" + (es ? "El QR necesita conexión a internet." : "QR needs an internet connection.") + "</div>"; return; }
+    box.innerHTML = "";
+    try { new QRCode(box, { text: txt, width: 148, height: 148, correctLevel: QRCode.CorrectLevel.M }); } catch (e) {}
+    var cap = document.createElement("div"); cap.style.cssText = "font-size:11px;color:#5A6B7B;margin-top:8px;"; cap.textContent = es ? "Escanéalo para llevar la pregunta a casa." : "Scan to take the question home."; box.appendChild(cap);
+  }
+  if (window.QRCode) go(true);
+  else if (typeof ensureQrLib === "function") ensureQrLib().then(go);
+  else go(false);
+};
+
 function renderConversationGuide(_0x4f18c8, _0x5e1ad5) {
   const _0x504790 = _0x4f18c8.population === "adult";
+  const _aogBridge = _0x504790 ? "" : (typeof aogBridgeCard === "function" ? aogBridgeCard(_0x4f18c8) : "");
   const _0x38a587 = _0x4f18c8.mode === "depth" ? 5 : 3;
   const _0x40141e = [];
   (_0x504790 ? ITEMS_ADULT_EN : ITEMS_EN).forEach((_0x5216ba, _0x32c4af) => {
@@ -16393,9 +16942,9 @@ function renderConversationGuide(_0x4f18c8, _0x5e1ad5) {
     })[0][0];
     var _aogExtras = resultResourceCards(_0x4f18c8, [], _aogLowDom, false) + resourceIndexLink();
     if (_0x5e1ad5) {
-      return "<div class=\"home-conversation\"><h4>" + DT("What to do next", "Qué hacer ahora") + "</h4><p>" + DT("You scored in the healthy range across every item. That doesn’t mean nothing is hard — it means the skills the curriculum teaches are showing up in you. Keep doing what you’re doing, and take this again next window to see your growth.", "Obtuviste puntajes en el rango saludable en cada ítem. Eso no significa que nada sea difícil — significa que las habilidades que enseña el currículo están apareciendo en ti. Sigue haciendo lo que haces, y vuelve a hacerlo el próximo período para ver tu progreso.") + "</p>" + _aogExtras + accessibilityLink() + "</div>";
+      return _aogBridge + "<div class=\"home-conversation\"><h4>" + DT("What to do next", "Qué hacer ahora") + "</h4><p>" + DT("You scored in the healthy range across every item. That doesn’t mean nothing is hard — it means the skills the curriculum teaches are showing up in you. Keep doing what you’re doing, and take this again next window to see your growth.", "Obtuviste puntajes en el rango saludable en cada ítem. Eso no significa que nada sea difícil — significa que las habilidades que enseña el currículo están apareciendo en ti. Sigue haciendo lo que haces, y vuelve a hacerlo el próximo período para ver tu progreso.") + "</p>" + _aogExtras + accessibilityLink() + "</div>";
     }
-    return "<div class=\"home-conversation\"><h4>" + DT("What to do next", "Qué hacer ahora") + "</h4><p>" + DT("This person scored in the healthy range across every item. That doesn’t mean nothing is hard — it means the skills the curriculum teaches are showing up. Keep doing what you’re doing. Re-screen in the next window to track growth.", "Esta persona obtuvo puntajes en el rango saludable en cada ítem. Eso no significa que nada sea difícil — significa que las habilidades que enseña el currículo están apareciendo. Sigue haciendo lo que haces. Vuelve a evaluar en el próximo período para seguir el progreso.") + "</p>" + _aogExtras + accessibilityLink() + "</div>";
+    return _aogBridge + "<div class=\"home-conversation\"><h4>" + DT("What to do next", "Qué hacer ahora") + "</h4><p>" + DT("This person scored in the healthy range across every item. That doesn’t mean nothing is hard — it means the skills the curriculum teaches are showing up. Keep doing what you’re doing. Re-screen in the next window to track growth.", "Esta persona obtuvo puntajes en el rango saludable en cada ítem. Eso no significa que nada sea difícil — significa que las habilidades que enseña el currículo están apareciendo. Sigue haciendo lo que haces. Vuelve a evaluar en el próximo período para seguir el progreso.") + "</p>" + _aogExtras + accessibilityLink() + "</div>";
   }
   const _0x16cb5c = _0x504790 ? PROMPTS_ADULT : PROMPTS;
   const _0x237ee2 = {};
@@ -16438,7 +16987,7 @@ function renderConversationGuide(_0x4f18c8, _0x5e1ad5) {
   _0x1280bd += resourceIndexLink();
   _0x1280bd += accessibilityLink();
   _0x1280bd += "</div>";
-  return _0x1280bd;
+  return _aogBridge + _0x1280bd;
 }
 function renderGrowth() {
   const _0x207d80 = getAllRecords();
@@ -20146,8 +20695,19 @@ window.aogGraceBreathe = function (btn) {
     if (typeof startChoose === "function") { startChoose(); }
     else if (typeof showScreen === "function") { showScreen("screen-choose"); }
     setTimeout(function () {
-      var el = document.getElementById("rightNow");
-      if (el) { try { el.scrollIntoView({ behavior: "smooth", block: "start" }); } catch (e) { el.scrollIntoView(); } }
+      var el = document.getElementById("rightNowWrap") || document.getElementById("rightNow");
+      if (!el) return;
+      // Offset by the live sticky-topbar height (it wraps taller on phones), so
+      // the top of the survey clears the header instead of hiding beneath it.
+      var off = 0;
+      try {
+        var bars = document.querySelectorAll(".topbar");
+        for (var i = 0; i < bars.length; i++) { if (bars[i].offsetParent !== null) { off = bars[i].getBoundingClientRect().height; break; } }
+      } catch (e) {}
+      var y = el.getBoundingClientRect().top + (window.pageYOffset || document.documentElement.scrollTop || 0) - off - 10;
+      y = Math.max(0, y);
+      try { window.scrollTo({ top: y, behavior: "smooth" }); }
+      catch (e) { try { window.scrollTo(0, y); } catch (e2) { el.scrollIntoView(); } }
     }, 90);
   };
 
@@ -20376,7 +20936,7 @@ window.aogGraceBreathe = function (btn) {
       var _e = (L === "es");
       function _tb(key, label) { return "<button type=\"button\" onclick=\"if(window.toolOpen){window.toolOpen('" + key + "');}\">" + label + "</button>"; }
       tt.innerHTML =
-        _tb("classreset", _e ? "Reinicio de clase" : "Whole-class reset") +
+        _tb("classreset", (aud === "child") ? (_e ? "Momento en círculo" : "Circle Time") : (_e ? "Círculo comunitario" : "Community Circle")) +
         _tb("coreg", _e ? "Co-regulación" : "Co-regulation script") +
         _tb("innercoach", _e ? "Guía interior" : "Inner Coach") +
         _tb("makeitright", _e ? "Reparar" : "Make it right");
@@ -20469,18 +21029,84 @@ window.aogGraceBreathe = function (btn) {
       '</div>';
   }
 
-  /* ---- Whole-Class Reset (teacher, projectable) ---- */
+  /* ---- Circle Time / Community Circle hub (teacher, projectable) ----
+     Audience-adaptive umbrella name: "Circle Time" for the Child audience,
+     "Community Circle" for Teen / Adult (reads in advisory + secondary rooms).
+     Five flagship activities, each projectable, bilingual, and ending in the
+     standard paid breadcrumbs. Renders into #toolModalBody and swaps content
+     in place. The classreset key + every existing entry point are unchanged. */
+  function ctAud() { return window.aogRightNowAudience || "adult"; }
+  function ctIsChild() { return ctAud() === "child"; }
+  function ctHubName() { return ctIsChild() ? L("Circle Time", "Momento en círculo") : L("Community Circle", "Círculo comunitario"); }
+  function ctBody() { return document.getElementById("toolModalBody"); }
+  function ctBackBar() {
+    return '<button type="button" class="ct-back" onclick="aogCtBack()" style="background:none;border:none;color:var(--navy);font-family:var(--font-sans);font-weight:800;font-size:13px;cursor:pointer;padding:2px 0;margin:0 0 6px;display:inline-flex;align-items:center;gap:6px;">← ' + ctHubName() + '</button>';
+  }
+  window.aogCtBack = function () { var b = ctBody(); if (!b) return; b.innerHTML = buildClassReset(); setTimeout(initClassReset, 30); };
+  window.aogCtGo = function (key) {
+    var A = CT_ACT[key], b = ctBody(); if (!A || !b) return;
+    b.innerHTML = ctBackBar() + A.build();
+    if (A.init) setTimeout(A.init, 30);
+  };
+
+  /* Rotating content for the discussion circles */
+  var CT_STATE = {};
+  var CT_STEMS = [
+    { en: "Right now I feel ___.", es: "Ahora mismo me siento ___." },
+    { en: "Today I'm arriving as a ___ (weather, animal, or color).", es: "Hoy llego como un/a ___ (clima, animal o color)." },
+    { en: "One word for my energy right now is ___.", es: "Una palabra para mi energía ahora es ___." },
+    { en: "Something I'm bringing into this room is ___.", es: "Algo que traigo a este salón es ___." }
+  ];
+  var CT_SCEN = [
+    { en: "Someone laughed at a classmate's answer and the room went quiet.", es: "Alguien se rió de la respuesta de un compañero y el salón se quedó en silencio." },
+    { en: "Two people grabbed the same materials and one walked off upset.", es: "Dos personas tomaron los mismos materiales y una se fue molesta." },
+    { en: "A group left someone out of the activity on purpose.", es: "Un grupo dejó a alguien fuera de la actividad a propósito." },
+    { en: "Words got sharp during a disagreement and feelings got hurt.", es: "Las palabras se pusieron duras en un desacuerdo y alguien salió herido." }
+  ];
+  var CT_STR = [
+    { en: "Name one strength you used this week.", es: "Nombra una fortaleza que usaste esta semana." },
+    { en: "Tell the person on your right one thing they're good at.", es: "Dile a la persona a tu derecha algo en lo que es buena." },
+    { en: "Name one thing that went right today — yours or someone else's.", es: "Nombra algo que salió bien hoy — tuyo o de alguien más." },
+    { en: "Finish: “Something I'm proud of lately is ___.”", es: "Completa: “Algo de lo que estoy orgulloso/a últimamente es ___.”" }
+  ];
+  function ctRotate(list, elId, key) {
+    CT_STATE[key] = ((CT_STATE[key] || 0) + 1) % list.length;
+    var el = document.getElementById(elId);
+    if (el) el.textContent = L(list[CT_STATE[key]].en, list[CT_STATE[key]].es);
+  }
+
+  /* Hub menu — the landing screen for classreset */
   function buildClassReset() {
+    var cards = CT_MENU.map(function (m) {
+      return '<button type="button" onclick="aogCtGo(\'' + m.key + '\')" style="display:flex;gap:12px;align-items:flex-start;width:100%;text-align:left;background:#fff;border:1.5px solid rgba(0,0,0,.10);border-radius:14px;padding:13px 15px;cursor:pointer;font-family:var(--font-sans);margin:0;transition:border-color .15s,transform .15s;" onmouseover="this.style.borderColor=\'var(--gold)\';this.style.transform=\'translateY(-1px)\';" onmouseout="this.style.borderColor=\'rgba(0,0,0,.10)\';this.style.transform=\'none\';">' +
+        '<span style="font-size:22px;line-height:1.2;">' + m.icon + '</span>' +
+        '<span style="display:block;"><span style="display:block;font-weight:800;color:var(--navy);font-size:15px;">' + m.name() + '</span>' +
+        '<span style="display:block;color:var(--ink);opacity:.8;font-size:12.5px;line-height:1.45;margin-top:2px;">' + m.desc() + '</span></span>' +
+        '</button>';
+    }).join("");
+    return '<div class="tool-modal-icon">⭕</div>' +
+      '<div class="tool-modal-title">' + ctHubName() + '</div>' +
+      '<div class="tool-modal-sub">' + (ctIsChild()
+        ? L("Pick a circle to do together. Each one is made to project, and takes just a few minutes.", "Elige un círculo para hacer juntos. Cada uno se proyecta y toma solo unos minutos.")
+        : L("Pick a circle to run with your group — works for advisory or a class meeting. Each is projectable and takes a few minutes.", "Elige un círculo para tu grupo — sirve para tutoría o reunión de clase. Cada uno se proyecta y toma unos minutos.")) + '</div>' +
+      '<div style="display:flex;flex-direction:column;gap:10px;max-width:520px;margin:14px auto 4px;">' + cards + '</div>';
+  }
+  function initClassReset() { /* hub is static; nothing to wire */ }
+
+  /* ===== Activity 1 · Reset Together (group breathing) ===== */
+  function buildReset() {
     return '<div class="tool-modal-icon">🌬️</div>' +
-      '<div class="tool-modal-title">' + L("Whole-Class Reset", "Reinicio de toda la clase") + '</div>' +
-      '<div class="tool-modal-sub">' + L("Project this. Everyone breathes together for one minute — after recess, before a test, or when the room needs to land.", "Proyéctalo. Todos respiran juntos por un minuto — después del recreo, antes de un examen, o cuando el salón necesita calmarse.") + '</div>' +
+      '<div class="tool-modal-title">' + L("Reset Together", "Reinicio juntos") + '</div>' +
+      '<div class="tool-modal-sub">' + (ctIsChild()
+        ? L("Everyone breathes together for one minute — after recess, or when the room needs to land.", "Todos respiran juntos por un minuto — después del recreo, o cuando el salón necesita calmarse.")
+        : L("Everyone breathes together for one minute — before a test, after a tough transition, or when the room needs to land.", "Todos respiran juntos por un minuto — antes de un examen, tras una transición difícil, o cuando el grupo necesita calmarse.")) + '</div>' +
       '<div class="cr-stage"><div class="cr-orb" id="crOrb"></div></div>' +
       '<div class="cr-cue" id="crCue" aria-live="polite">' + L("Press start. Eyes on the circle, or closed.", "Pulsa empezar. Mira el círculo, o cierra los ojos.") + '</div>' +
       '<div class="cr-round" id="crRound" aria-live="polite"></div>' +
       '<div class="aogt-controls"><button class="btn" id="crStart" style="background:var(--gold);border-color:var(--gold);color:var(--navy);">' + L("Start — together", "Empezar — juntos") + '</button></div>' +
       crumbs("window of tolerance", "previews/Story-B1-Ch9.pdf", L("Carrying Too Much", "Cargando demasiado"));
   }
-  function initClassReset() {
+  function initReset() {
     var orb = document.getElementById("crOrb"), cue = document.getElementById("crCue"), btn = document.getElementById("crStart"), round = document.getElementById("crRound");
     if (!orb || !btn) return;
     var IN = L("Breathe in…", "Inhala…"), HOLD = L("Hold", "Sostén"), OUT = L("Breathe out…", "Exhala…"), DONE = L("Nice. Welcome back, everyone.", "Bien. Bienvenidos de vuelta.");
@@ -20501,6 +21127,93 @@ window.aogGraceBreathe = function (btn) {
       })(0);
     };
   }
+
+  /* ===== Activity 2 · Feelings Go-Round (check-in) ===== */
+  function buildFeelings() {
+    return '<div class="tool-modal-icon">💬</div>' +
+      '<div class="tool-modal-title">' + L("Feelings Go-Round", "Ronda de sentimientos") + '</div>' +
+      '<div class="tool-modal-sub">' + (ctIsChild()
+        ? L("Go around the circle. Each person says one word for how they feel — no fixing, no questions. You go first.", "Da la vuelta al círculo. Cada quien dice una palabra de cómo se siente — sin arreglar, sin preguntas. Tú empiezas.")
+        : L("Go around the group. One word each for how you're arriving — “pass” is always allowed. Model it first.", "Da la vuelta al grupo. Una palabra cada uno de cómo llegas — “paso” siempre vale. Modélalo tú primero.")) + '</div>' +
+      '<div id="ctStem" style="font-family:var(--font-serif);font-size:22px;line-height:1.4;color:var(--navy);text-align:center;background:#FBF7EC;border-radius:14px;padding:20px 18px;margin:6px auto 12px;max-width:520px;">' + L(CT_STEMS[0].en, CT_STEMS[0].es) + '</div>' +
+      '<div class="aogt-controls"><button class="btn" id="ctStemBtn" style="background:var(--gold);border-color:var(--gold);color:var(--navy);">' + L("New prompt", "Otra frase") + '</button></div>' +
+      '<div style="font-family:var(--font-sans);font-size:12.5px;color:var(--ink);opacity:.75;text-align:center;max-width:520px;margin:10px auto 0;">' + L("Stuck? Words that help: calm, tired, nervous, excited, frustrated, okay, hopeful, worn out, ready.", "¿Atascado? Palabras que ayudan: tranquilo, cansado, nervioso, emocionado, frustrado, bien, esperanzado, agotado, listo.") + '</div>' +
+      crumbs("self-awareness");
+  }
+  function initFeelings() { var b = document.getElementById("ctStemBtn"); if (b) b.onclick = function () { ctRotate(CT_STEMS, "ctStem", "feelings"); }; }
+
+  /* ===== Activity 3 · Coach the Critic (group reframe) ===== */
+  function buildCoach() {
+    var first = (typeof IC_LINES !== "undefined" && IC_LINES[0]) ? IC_LINES[0] : { c: "", k: "" };
+    return '<div class="tool-modal-icon">🧭</div>' +
+      '<div class="tool-modal-title">' + L("Coach the Critic", "Guía al crítico") + '</div>' +
+      '<div class="tool-modal-sub">' + (ctIsChild()
+        ? L("The Critic is the mean voice in our heads. Read it out loud, then let the class flip it into what a kind Coach would say.", "El crítico es la voz dura en nuestra cabeza. Léela en voz alta y deja que la clase la convierta en lo que diría un guía amable.")
+        : L("Project what the Critic says. As a group, flip it into a Coach's voice. Reveal one version — but hear the room's first.", "Proyecta lo que dice el crítico. En grupo, conviértelo en la voz de un guía. Revela una versión — pero escucha primero al grupo.")) + '</div>' +
+      '<div id="ctCritic" style="font-family:var(--font-serif);font-size:22px;line-height:1.4;color:#8a2b2b;text-align:center;background:#FBEFEF;border-radius:14px;padding:20px 18px;margin:6px auto 10px;max-width:520px;">' + first.c + '</div>' +
+      '<div id="ctCoachBox" hidden style="font-family:var(--font-sans);font-size:15.5px;line-height:1.55;color:var(--navy);text-align:center;background:#EAF3EC;border-radius:14px;padding:16px;margin:0 auto 12px;max-width:520px;"></div>' +
+      '<div class="aogt-controls" style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">' +
+        '<button class="btn" id="ctCoachBtn" style="background:var(--gold);border-color:var(--gold);color:var(--navy);">' + L("Reveal a coach response", "Revelar respuesta del guía") + '</button>' +
+        '<button class="btn" id="ctCoachNext" style="background:#fff;border-color:var(--navy);color:var(--navy);">' + L("Next thought", "Siguiente pensamiento") + '</button>' +
+      '</div>' +
+      crumbs("inner critic");
+  }
+  function initCoach() {
+    CT_STATE.coach = 0;
+    var rev = document.getElementById("ctCoachBtn"), nxt = document.getElementById("ctCoachNext"), crit = document.getElementById("ctCritic"), box = document.getElementById("ctCoachBox");
+    if (typeof IC_LINES === "undefined" || !crit) return;
+    if (rev) rev.onclick = function () { var o = IC_LINES[CT_STATE.coach]; if (!o || !box) return; box.hidden = false; box.textContent = o.k; };
+    if (nxt) nxt.onclick = function () { CT_STATE.coach = (CT_STATE.coach + 1) % IC_LINES.length; crit.textContent = IC_LINES[CT_STATE.coach].c; if (box) { box.hidden = true; box.textContent = ""; } };
+  }
+
+  /* ===== Activity 4 · Repair Circle (group repair practice) ===== */
+  function buildRepair() {
+    return '<div class="tool-modal-icon">🤝</div>' +
+      '<div class="tool-modal-title">' + L("Repair Circle", "Círculo de reparación") + '</div>' +
+      '<div class="tool-modal-sub">' + (ctIsChild()
+        ? L("Project a pretend situation. As a class, say the four repair steps out loud — so they're ready when something real happens.", "Proyecta una situación de práctica. En clase, digan los cuatro pasos en voz alta — para tenerlos listos cuando pase algo real.")
+        : L("Project a low-stakes scenario. As a group, walk the four repair steps out loud — rehearsing repair makes it usable when it counts.", "Proyecta un caso de bajo riesgo. En grupo, recorran los cuatro pasos en voz alta — ensayar la reparación la hace usable cuando importa.")) + '</div>' +
+      '<div id="ctScen" style="font-family:var(--font-serif);font-size:20px;line-height:1.45;color:var(--navy);text-align:center;background:#FBF7EC;border-radius:14px;padding:18px;margin:6px auto 12px;max-width:520px;">' + L(CT_SCEN[0].en, CT_SCEN[0].es) + '</div>' +
+      '<ol style="font-family:var(--font-sans);font-size:14.5px;line-height:1.5;color:var(--ink);max-width:520px;margin:0 auto 6px;text-align:left;padding-left:22px;">' +
+        '<li><b>' + L("Own it.", "Recónocelo.") + '</b> ' + L("“I'm sorry I ___.” Name it, no excuses.", "“Perdón por ___.” Nómbralo, sin excusas.") + '</li>' +
+        '<li><b>' + L("Name the impact.", "Nombra el impacto.") + '</b> ' + L("“That probably made you feel ___.”", "“Eso probablemente te hizo sentir ___.”") + '</li>' +
+        '<li><b>' + L("Make it right.", "Repáralo.") + '</b> ' + L("“To make it better, I could ___.”", "“Para mejorarlo, podría ___.”") + '</li>' +
+        '<li><b>' + L("Reset.", "Reinicia.") + '</b> ' + L("“Next time, I'll ___.” Then let it go.", "“La próxima vez, ___.” Luego suéltalo.") + '</li>' +
+      '</ol>' +
+      '<div class="aogt-controls"><button class="btn" id="ctScenBtn" style="background:var(--gold);border-color:var(--gold);color:var(--navy);">' + L("New scenario", "Otro caso") + '</button></div>' +
+      crumbs("repair");
+  }
+  function initRepair() { var b = document.getElementById("ctScenBtn"); if (b) b.onclick = function () { ctRotate(CT_SCEN, "ctScen", "repair"); }; }
+
+  /* ===== Activity 5 · Strengths Circle (affirmation go-round) ===== */
+  function buildStrengths() {
+    return '<div class="tool-modal-icon">✨</div>' +
+      '<div class="tool-modal-title">' + L("Strengths Circle", "Círculo de fortalezas") + '</div>' +
+      '<div class="tool-modal-sub">' + (ctIsChild()
+        ? L("Go around the circle and answer together. Saying good things out loud helps them stick.", "Da la vuelta al círculo y respondan juntos. Decir cosas buenas en voz alta ayuda a que se queden.")
+        : L("Go around the group with the prompt below — “pass” is allowed. Naming strengths out loud builds the muscle.", "Da la vuelta al grupo con la frase de abajo — “paso” vale. Nombrar fortalezas en voz alta entrena el músculo.")) + '</div>' +
+      '<div id="ctStr" style="font-family:var(--font-serif);font-size:21px;line-height:1.4;color:var(--navy);text-align:center;background:#FBF7EC;border-radius:14px;padding:20px 18px;margin:6px auto 12px;max-width:520px;">' + L(CT_STR[0].en, CT_STR[0].es) + '</div>' +
+      '<div class="aogt-controls"><button class="btn" id="ctStrBtn" style="background:var(--gold);border-color:var(--gold);color:var(--navy);">' + L("New prompt", "Otra frase") + '</button></div>' +
+      '<div style="font-family:var(--font-sans);font-size:12.5px;color:var(--ink);opacity:.75;text-align:center;max-width:520px;margin:10px auto 0;">' + L("Strength words: kind, brave, patient, funny, careful, loyal, curious, steady, generous, determined.", "Palabras de fortaleza: amable, valiente, paciente, gracioso, cuidadoso, leal, curioso, firme, generoso, determinado.") + '</div>' +
+      crumbs("self-compassion");
+  }
+  function initStrengths() { var b = document.getElementById("ctStrBtn"); if (b) b.onclick = function () { ctRotate(CT_STR, "ctStr", "strengths"); }; }
+
+  /* Menu + activity registry */
+  var CT_MENU = [
+    { key: "reset",     icon: "🌬️", name: function () { return L("Reset Together", "Reinicio juntos"); },        desc: function () { return L("One minute of breathing to land the room.", "Un minuto de respiración para calmar el salón."); } },
+    { key: "feelings",  icon: "💬", name: function () { return L("Feelings Go-Round", "Ronda de sentimientos"); }, desc: function () { return L("One word each — how everyone's arriving.", "Una palabra cada uno — cómo llega cada quien."); } },
+    { key: "coach",     icon: "🧭", name: function () { return L("Coach the Critic", "Guía al crítico"); },        desc: function () { return L("Flip a harsh thought into a coach's voice, together.", "Convierte un pensamiento duro en la voz de un guía, juntos."); } },
+    { key: "repair",    icon: "🤝", name: function () { return L("Repair Circle", "Círculo de reparación"); },     desc: function () { return L("Practice the four repair steps on a pretend slip-up.", "Practica los cuatro pasos de reparación con un caso de práctica."); } },
+    { key: "strengths", icon: "✨", name: function () { return L("Strengths Circle", "Círculo de fortalezas"); },  desc: function () { return L("A quick go-round naming strengths and wins.", "Una ronda rápida nombrando fortalezas y logros."); } }
+  ];
+  var CT_ACT = {
+    reset:     { build: buildReset,     init: initReset },
+    feelings:  { build: buildFeelings,  init: initFeelings },
+    coach:     { build: buildCoach,     init: initCoach },
+    repair:    { build: buildRepair,    init: initRepair },
+    strengths: { build: buildStrengths, init: initStrengths }
+  };
 
   /* ---- Inner Coach in the Moment (student, Domain B) ---- */
   var IC_LINES = [
@@ -20565,12 +21278,294 @@ window.aogGraceBreathe = function (btn) {
       crumbs("window of tolerance", "previews/Story-B1-Ch9.pdf", L("Carrying Too Much", "Cargando demasiado"));
   }
 
+  /* ===== Beyond "Fine" — everyday parent conversation deck =====
+     Beats the "How was your day?" -> "fine" wall: bite-size, open-ended
+     questions by vibe, plus a short strip coaching the adult on HOW to ask.
+     Reuses the global Copy / Print / Take-home QR handlers from the Bridge card. */
+  var BF_STATE = { aud: "child", cat: "all", last: -1 };
+  var BF_CATS = [
+    { k: "all",      label: function () { return L("All", "Todas"); } },
+    { k: "silly",    label: function () { return L("Silly", "Divertidas"); } },
+    { k: "feelings", label: function () { return L("Feelings", "Sentimientos"); } },
+    { k: "friends",  label: function () { return L("Friends", "Amigos"); } },
+    { k: "school",   label: function () { return L("School", "Escuela"); } },
+    { k: "wins",     label: function () { return L("Wins", "Logros"); } },
+    { k: "hard",     label: function () { return L("Hard stuff", "Lo difícil"); } }
+  ];
+  var BF_Q = {
+    silly: {
+      child: [
+        { en: "If our pet could talk, what would it have said today?", es: "Si nuestra mascota pudiera hablar, ¿qué habría dicho hoy?" },
+        { en: "What's the silliest thing that happened at school?", es: "¿Qué fue lo más gracioso que pasó en la escuela?" },
+        { en: "If today were an animal, which animal would it be?", es: "Si hoy fuera un animal, ¿cuál sería?" },
+        { en: "What's a food that should NOT exist?", es: "¿Qué comida NO debería existir?" },
+        { en: "If you could rename today, what would you call it?", es: "Si pudieras renombrar el día de hoy, ¿cómo lo llamarías?" },
+        { en: "What made you laugh today?", es: "¿Qué te hizo reír hoy?" }
+      ],
+      teen: [
+        { en: "What's the dumbest thing that made you laugh today?", es: "¿Qué tontería te hizo reír hoy?" },
+        { en: "If today had a soundtrack, what song was it?", es: "Si hoy tuviera banda sonora, ¿qué canción sería?" },
+        { en: "What's the most chaotic thing you saw today?", es: "¿Qué fue lo más caótico que viste hoy?" },
+        { en: "What's an unpopular opinion you stand by?", es: "¿Qué opinión impopular defiendes?" },
+        { en: "If you could swap lives with anyone for a day, who?", es: "Si pudieras cambiar de vida con alguien por un día, ¿con quién?" },
+        { en: "What meme describes your day?", es: "¿Qué meme describe tu día?" }
+      ]
+    },
+    feelings: {
+      child: [
+        { en: "What was a happy moment and a not-so-happy moment today?", es: "¿Cuál fue un momento feliz y uno no tan feliz de hoy?" },
+        { en: "When did you feel proud today?", es: "¿Cuándo te sentiste orgulloso/a hoy?" },
+        { en: "Was there a moment you felt nervous? What happened?", es: "¿Hubo un momento en que te sentiste nervioso/a? ¿Qué pasó?" },
+        { en: "What color matches your mood right now?", es: "¿Qué color va con tu ánimo ahora mismo?" },
+        { en: "What's something that made you feel calm today?", es: "¿Qué te hizo sentir tranquilo/a hoy?" },
+        { en: "Did anything frustrate you today?", es: "¿Algo te frustró hoy?" }
+      ],
+      teen: [
+        { en: "What's something that's been on your mind lately?", es: "¿Qué te ha estado rondando la cabeza últimamente?" },
+        { en: "When did you feel most like yourself today?", es: "¿Cuándo te sentiste más tú mismo/a hoy?" },
+        { en: "Was there a moment today that stressed you out?", es: "¿Hubo un momento hoy que te estresó?" },
+        { en: "On a scale of 1–10, how was today — and what moved the number?", es: "Del 1 al 10, ¿cómo estuvo hoy — y qué movió el número?" },
+        { en: "What's something you're looking forward to, even a little?", es: "¿Qué esperas con ganas, aunque sea un poco?" },
+        { en: "What drained you today, and what gave you energy?", es: "¿Qué te agotó hoy y qué te dio energía?" }
+      ]
+    },
+    friends: {
+      child: [
+        { en: "Who did you sit with at lunch?", es: "¿Con quién te sentaste en el almuerzo?" },
+        { en: "Who made you smile today?", es: "¿Quién te hizo sonreír hoy?" },
+        { en: "Did anyone need help today? Did you help?", es: "¿Alguien necesitó ayuda hoy? ¿Ayudaste?" },
+        { en: "What's something kind a friend did?", es: "¿Qué cosa amable hizo un amigo/a?" },
+        { en: "Who do you want to play with tomorrow?", es: "¿Con quién quieres jugar mañana?" },
+        { en: "Was anyone left out today?", es: "¿Alguien quedó excluido hoy?" }
+      ],
+      teen: [
+        { en: "Who'd you end up talking to today?", es: "¿Con quién terminaste hablando hoy?" },
+        { en: "Any drama going on you can tell me about?", es: "¿Hay algún drama que me puedas contar?" },
+        { en: "Who's someone you'd want to hang out with more?", es: "¿Con quién te gustaría pasar más tiempo?" },
+        { en: "Did anyone surprise you today — good or bad?", es: "¿Alguien te sorprendió hoy — para bien o para mal?" },
+        { en: "Who makes school easier to get through?", es: "¿Quién hace que la escuela sea más llevadera?" },
+        { en: "Is anyone you know going through something hard right now?", es: "¿Alguien que conoces está pasando por algo difícil ahora?" }
+      ]
+    },
+    school: {
+      child: [
+        { en: "What's one thing you learned that surprised you?", es: "¿Qué aprendiste que te sorprendió?" },
+        { en: "What was the easiest part of today? The hardest?", es: "¿Qué fue lo más fácil de hoy? ¿Y lo más difícil?" },
+        { en: "If you were the teacher, what would you do differently?", es: "Si fueras el maestro/a, ¿qué harías diferente?" },
+        { en: "What's a question you wish someone would ask you?", es: "¿Qué pregunta te gustaría que alguien te hiciera?" },
+        { en: "What are you working on that's tricky?", es: "¿En qué estás trabajando que sea complicado?" },
+        { en: "What's the best thing in your classroom right now?", es: "¿Qué es lo mejor de tu salón ahora mismo?" }
+      ],
+      teen: [
+        { en: "What's a class that actually held your attention today?", es: "¿Qué clase realmente te mantuvo atento/a hoy?" },
+        { en: "What's something you're stuck on right now?", es: "¿En qué estás atascado/a ahora mismo?" },
+        { en: "If you could drop one assignment, which and why?", es: "Si pudieras eliminar una tarea, ¿cuál y por qué?" },
+        { en: "What's a teacher doing that actually works for you?", es: "¿Qué hace algún maestro/a que de verdad te funciona?" },
+        { en: "What's something you aced, or almost, lately?", es: "¿En qué te fue genial, o casi, últimamente?" },
+        { en: "What part of school feels pointless to you right now?", es: "¿Qué parte de la escuela te parece sin sentido ahora?" }
+      ]
+    },
+    wins: {
+      child: [
+        { en: "What's something hard you did anyway today?", es: "¿Qué cosa difícil hiciste de todos modos hoy?" },
+        { en: "What's a tiny win from today?", es: "¿Cuál fue un pequeño logro de hoy?" },
+        { en: "What's something you got a little better at?", es: "¿En qué mejoraste un poquito?" },
+        { en: "What did you try that was new?", es: "¿Qué cosa nueva probaste?" },
+        { en: "What's something you're proud of, even if it's small?", es: "¿De qué estás orgulloso/a, aunque sea pequeño?" },
+        { en: "Did you make someone's day better today?", es: "¿Le alegraste el día a alguien hoy?" }
+      ],
+      teen: [
+        { en: "What's something you handled today that you're proud of?", es: "¿Qué manejaste hoy de lo que te sientes orgulloso/a?" },
+        { en: "What's a small win nobody noticed but you?", es: "¿Cuál fue un pequeño logro que solo tú notaste?" },
+        { en: "What did you push through today?", es: "¿Qué superaste hoy?" },
+        { en: "What's something you're getting better at?", es: "¿En qué estás mejorando?" },
+        { en: "What's a risk you took, even a small one?", es: "¿Qué riesgo tomaste, aunque sea pequeño?" },
+        { en: "What's something you did today that 'past you' couldn't?", es: "¿Qué hiciste hoy que el 'tú de antes' no podía?" }
+      ]
+    },
+    hard: {
+      child: [
+        { en: "Was there a moment today that felt unfair?", es: "¿Hubo un momento hoy que se sintió injusto?" },
+        { en: "Did anything worry you today?", es: "¿Algo te preocupó hoy?" },
+        { en: "What's something you wish had gone differently?", es: "¿Qué te gustaría que hubiera salido distinto?" },
+        { en: "Was there a time you felt left out or sad?", es: "¿Hubo un momento en que te sentiste excluido/a o triste?" },
+        { en: "Is there something hard you haven't told me yet?", es: "¿Hay algo difícil que no me has contado todavía?" },
+        { en: "What's something you need help with?", es: "¿En qué necesitas ayuda?" }
+      ],
+      teen: [
+        { en: "What's something that's been weighing on you?", es: "¿Qué te ha estado pesando?" },
+        { en: "Was there a moment today you wish you could redo?", es: "¿Hubo un momento hoy que te gustaría repetir?" },
+        { en: "Is there something you've been meaning to tell me but haven't?", es: "¿Hay algo que has querido decirme pero no lo has hecho?" },
+        { en: "What's feeling heavy right now, even a little?", es: "¿Qué se siente pesado ahora mismo, aunque sea un poco?" },
+        { en: "What's something you need from me this week?", es: "¿Qué necesitas de mí esta semana?" },
+        { en: "Is there anything you're dreading tomorrow?", es: "¿Hay algo que temes de mañana?" }
+      ]
+    }
+  };
+  function bfPool() {
+    var aud = BF_STATE.aud, cat = BF_STATE.cat;
+    if (cat && cat !== "all") return (BF_Q[cat] && BF_Q[cat][aud]) || [];
+    var all = []; Object.keys(BF_Q).forEach(function (k) { all = all.concat(BF_Q[k][aud] || []); }); return all;
+  }
+  function bfRender() {
+    var pool = bfPool(); if (!pool.length) return;
+    var idx;
+    if (pool.length === 1) idx = 0;
+    else { do { idx = Math.floor(Math.random() * pool.length); } while (idx === BF_STATE.last); }
+    BF_STATE.last = idx;
+    var el = document.getElementById("bfQ"); if (el) el.textContent = L(pool[idx].en, pool[idx].es);
+    var qr = document.querySelector("#beyondFineCard .aog-bridge-qr"); if (qr) { qr.style.display = "none"; qr.innerHTML = ""; }
+  }
+  window.aogBfNext = function () { bfRender(); };
+  window.aogBfAud = function (a) {
+    BF_STATE.aud = a; BF_STATE.last = -1;
+    document.querySelectorAll("#bfAud .bf-aud").forEach(function (b) { var on = b.getAttribute("data-a") === a; b.style.background = on ? "var(--gold)" : "#fff"; b.style.color = "var(--navy)"; b.style.fontWeight = on ? "800" : "600"; });
+    bfRender();
+  };
+  window.aogBfCat = function (c) {
+    BF_STATE.cat = c; BF_STATE.last = -1;
+    document.querySelectorAll("#bfCats .bf-chip").forEach(function (b) { var on = b.getAttribute("data-c") === c; b.style.background = on ? "var(--navy)" : "#fff"; b.style.color = on ? "#fff" : "var(--navy)"; });
+    bfRender();
+  };
+  function buildBeyondFine() {
+    var tips =
+      '<div style="background:#fff;border:1px solid var(--rule,#D9CBA8);border-radius:12px;padding:12px 14px;margin:0 auto 14px;max-width:560px;text-align:left;">' +
+      '<div style="font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--gold-deep,#9a6f24);margin-bottom:7px;">' + L("How to get past “fine”", "Cómo pasar de “bien”") + '</div>' +
+      '<div style="font-family:var(--font-sans);font-size:13px;line-height:1.55;color:var(--ink,#2C3A47);">' +
+        '• ' + L("Ask about a <b>moment</b>, not the whole day.", "Pregunta por un <b>momento</b>, no por todo el día.") + '<br>' +
+        '• ' + L("Keep it to <b>one small question</b> — then listen.", "Haz <b>una sola pregunta pequeña</b> — luego escucha.") + '<br>' +
+        '• ' + L("<b>Silence is okay.</b> Give them a few seconds.", "<b>El silencio está bien.</b> Dales unos segundos.") + '<br>' +
+        '• ' + L("<b>Go first</b> — share a bit of your day to model it.", "<b>Empieza tú</b> — comparte algo de tu día para dar el ejemplo.") +
+      '</div></div>';
+    var auds =
+      '<div id="bfAud" style="display:inline-flex;gap:6px;background:var(--cream-deep,#F4ECDA);border-radius:999px;padding:4px;margin:0 auto 12px;">' +
+      '<button type="button" class="bf-aud" data-a="child" onclick="aogBfAud(\'child\')" style="border:none;border-radius:999px;padding:7px 16px;font-family:var(--font-sans);font-size:13px;font-weight:800;color:var(--navy);background:var(--gold);cursor:pointer;">' + L("Younger", "Más pequeños") + '</button>' +
+      '<button type="button" class="bf-aud" data-a="teen" onclick="aogBfAud(\'teen\')" style="border:none;border-radius:999px;padding:7px 16px;font-family:var(--font-sans);font-size:13px;font-weight:600;color:var(--navy);background:#fff;cursor:pointer;">' + L("Older / teen", "Mayores / adolescentes") + '</button>' +
+      '</div>';
+    var chips = '<div id="bfCats" style="display:flex;gap:7px;flex-wrap:wrap;justify-content:center;max-width:560px;margin:0 auto 14px;">';
+    BF_CATS.forEach(function (c) {
+      var on = c.k === BF_STATE.cat;
+      chips += '<button type="button" class="bf-chip" data-c="' + c.k + '" onclick="aogBfCat(\'' + c.k + '\')" style="border:1.5px solid var(--navy);border-radius:999px;padding:6px 13px;font-family:var(--font-sans);font-size:12.5px;font-weight:700;cursor:pointer;background:' + (on ? "var(--navy)" : "#fff") + ';color:' + (on ? "#fff" : "var(--navy)") + ';">' + c.label() + '</button>';
+    });
+    chips += '</div>';
+    var gold = "border:1.5px solid var(--gold);background:var(--gold,#B8893A);color:var(--navy);border-radius:999px;padding:8px 15px;font-family:var(--font-sans);font-size:13px;font-weight:800;cursor:pointer;";
+    var ghost = "border:1.5px solid var(--rule,#D9CBA8);background:#fff;color:var(--navy);border-radius:999px;padding:8px 15px;font-family:var(--font-sans);font-size:13px;font-weight:700;cursor:pointer;";
+    var card =
+      '<div class="aog-bridge" id="beyondFineCard" style="margin:0 auto;max-width:560px;border:1.5px solid var(--gold);background:var(--cream,#FBF3DF);border-radius:14px;padding:18px;">' +
+      '<p class="aog-bridge-q" id="bfQ" style="font-family:var(--font-serif);font-size:21px;line-height:1.4;color:var(--navy);margin:0 0 14px;text-align:center;">&nbsp;</p>' +
+      '<div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center;">' +
+        '<button type="button" onclick="aogBfNext()" style="' + gold + '">' + L("Another", "Otra") + '</button>' +
+        '<button type="button" onclick="aogBridgeCopy(this)" style="' + ghost + '">' + L("Copy", "Copiar") + '</button>' +
+        '<button type="button" onclick="aogBridgePrint(this)" style="' + ghost + '">' + L("Print card", "Imprimir tarjeta") + '</button>' +
+        '<button type="button" onclick="aogBridgeQr(this)" style="' + ghost + '">' + L("Take-home QR", "QR para casa") + '</button>' +
+      '</div>' +
+      '<div class="aog-bridge-qr" style="display:none;margin-top:14px;text-align:center;"></div>' +
+      '</div>';
+    return '<div class="tool-modal-icon">💬</div>' +
+      '<div class="tool-modal-title">' + L("Beyond “Fine”", "Más allá de “bien”") + '</div>' +
+      '<div class="tool-modal-sub">' + L("Turn “How was your day?” → “fine” into a real conversation. Pick a lane, ask one small question, and let them lead.", "Convierte “¿Cómo te fue?” → “bien” en una conversación real. Elige un tema, haz una pregunta pequeña y deja que ellos guíen.") + '</div>' +
+      tips + auds + chips + card +
+      crumbs("self-awareness");
+  }
+  function initBeyondFine() { BF_STATE.last = -1; bfRender(); }
+
+  /* ===== Harsh -> Kind — self-compassion reframes =====
+     The loud voice in our heads isn't the truth; it's just loud. Shows a harsh
+     line and the kinder coach version beside it — a reference for modeling kind
+     self-talk with a child (Pillar: Self-Compassion). Bilingual, child/teen. */
+  var HK_STATE = { aud: "child", last: -1 };
+  var HK_PAIRS = {
+    child: [
+      { h: { en: "“I'm so stupid.”", es: "“Soy tan tonto/a.”" }, k: { en: "I made a mistake — that's being human, not being stupid. What can I learn?", es: "Cometí un error — eso es ser humano, no tonto/a. ¿Qué puedo aprender?" } },
+      { h: { en: "“I always mess everything up.”", es: "“Siempre arruino todo.”" }, k: { en: "One hard moment isn't every moment. I handled some things okay today.", es: "Un momento difícil no es todos los momentos. Hoy manejé bien algunas cosas." } },
+      { h: { en: "“Nobody likes me.”", es: "“Nadie me quiere.”" }, k: { en: "That's the feeling talking, not the whole truth. One person glad I exist is ___.", es: "Eso es el sentimiento, no toda la verdad. Una persona que se alegra de que exista es ___." } },
+      { h: { en: "“I can't do this.”", es: "“No puedo con esto.”" }, k: { en: "I can't do this yet. The smallest next step is ___.", es: "No puedo con esto todavía. El paso más pequeño es ___." } },
+      { h: { en: "“I'm the worst.”", es: "“Soy lo peor.”" }, k: { en: "I'm having a hard time — that's different from being bad.", es: "Estoy pasando un momento difícil — eso es distinto de ser malo/a." } },
+      { h: { en: "“Everyone is better than me.”", es: "“Todos son mejores que yo.”" }, k: { en: "I'm on my own path. I'm getting better at ___.", es: "Voy por mi propio camino. Estoy mejorando en ___." } },
+      { h: { en: "“I ruin everything.”", es: "“Lo arruino todo.”" }, k: { en: "I can fix some of this. Let me start with one thing.", es: "Puedo arreglar parte de esto. Empiezo con una cosa." } },
+      { h: { en: "“I'll never get it.”", es: "“Nunca lo voy a entender.”" }, k: { en: "Not yet. Hard things take practice, and I'm practicing.", es: "Todavía no. Las cosas difíciles toman práctica, y estoy practicando." } }
+    ],
+    teen: [
+      { h: { en: "“I'm such an idiot.”", es: "“Soy un idiota.”" }, k: { en: "I made a mistake. That makes me human, not an idiot.", es: "Cometí un error. Eso me hace humano, no un idiota." } },
+      { h: { en: "“I always screw things up.”", es: "“Siempre arruino las cosas.”" }, k: { en: "Always? That's the critic exaggerating. Name one thing that went fine.", es: "¿Siempre? Es el crítico exagerando. Nombra una cosa que salió bien." } },
+      { h: { en: "“Nobody actually likes me.”", es: "“En realidad nadie me quiere.”" }, k: { en: "That's a feeling, not a fact. Who's one person glad I'm around?", es: "Eso es un sentimiento, no un hecho. ¿Quién se alegra de tenerme cerca?" } },
+      { h: { en: "“I can't do this.”", es: "“No puedo con esto.”" }, k: { en: "I can't do this yet. What's the smallest next move?", es: "No puedo con esto todavía. ¿Cuál es el siguiente paso más pequeño?" } },
+      { h: { en: "“I'm a failure.”", es: "“Soy un fracaso.”" }, k: { en: "A setback isn't an identity. What would I tell a friend here?", es: "Un tropiezo no es una identidad. ¿Qué le diría a un amigo/a aquí?" } },
+      { h: { en: "“Everyone has it figured out but me.”", es: "“Todos lo tienen resuelto menos yo.”" }, k: { en: "Most people are figuring it out too. I'm allowed to still be learning.", es: "Casi todos también lo están resolviendo. Tengo permiso de seguir aprendiendo." } },
+      { h: { en: "“It's all my fault.”", es: "“Todo es mi culpa.”" }, k: { en: "Some is mine, some isn't. What's actually mine to own?", es: "Una parte es mía, otra no. ¿Qué es realmente mío para reconocer?" } },
+      { h: { en: "“I'm too far behind.”", es: "“Estoy demasiado atrasado/a.”" }, k: { en: "Behind isn't stuck. One small step still counts.", es: "Atrasado/a no es atascado/a. Un paso pequeño igual cuenta." } }
+    ]
+  };
+  function hkRender() {
+    var pool = HK_PAIRS[HK_STATE.aud] || HK_PAIRS.child; if (!pool.length) return;
+    var idx;
+    if (pool.length === 1) idx = 0;
+    else { do { idx = Math.floor(Math.random() * pool.length); } while (idx === HK_STATE.last); }
+    HK_STATE.last = idx;
+    var p = pool[idx];
+    var hEl = document.getElementById("hkHarsh"); if (hEl) hEl.textContent = L(p.h.en, p.h.es);
+    var kEl = document.getElementById("hkKind"); if (kEl) kEl.textContent = L(p.k.en, p.k.es);
+    var qr = document.querySelector("#harshKindCard .aog-bridge-qr"); if (qr) { qr.style.display = "none"; qr.innerHTML = ""; }
+  }
+  window.aogHkNext = function () { hkRender(); };
+  window.aogHkAud = function (a) {
+    HK_STATE.aud = a; HK_STATE.last = -1;
+    document.querySelectorAll("#hkAud .bf-aud").forEach(function (b) { var on = b.getAttribute("data-a") === a; b.style.background = on ? "var(--gold)" : "#fff"; b.style.fontWeight = on ? "800" : "600"; });
+    hkRender();
+  };
+  function buildHarshKind() {
+    var auds =
+      '<div id="hkAud" style="display:inline-flex;gap:6px;background:var(--cream-deep,#F4ECDA);border-radius:999px;padding:4px;margin:0 auto 14px;">' +
+      '<button type="button" class="bf-aud" data-a="child" onclick="aogHkAud(\'child\')" style="border:none;border-radius:999px;padding:7px 16px;font-family:var(--font-sans);font-size:13px;font-weight:800;color:var(--navy);background:var(--gold);cursor:pointer;">' + L("Younger", "Más pequeños") + '</button>' +
+      '<button type="button" class="bf-aud" data-a="teen" onclick="aogHkAud(\'teen\')" style="border:none;border-radius:999px;padding:7px 16px;font-family:var(--font-sans);font-size:13px;font-weight:600;color:var(--navy);background:#fff;cursor:pointer;">' + L("Older / teen", "Mayores / adolescentes") + '</button>' +
+      '</div>';
+    var gold = "border:1.5px solid var(--gold);background:var(--gold,#B8893A);color:var(--navy);border-radius:999px;padding:8px 15px;font-family:var(--font-sans);font-size:13px;font-weight:800;cursor:pointer;";
+    var ghost = "border:1.5px solid var(--rule,#D9CBA8);background:#fff;color:var(--navy);border-radius:999px;padding:8px 15px;font-family:var(--font-sans);font-size:13px;font-weight:700;cursor:pointer;";
+    var card =
+      '<div class="aog-bridge" id="harshKindCard" style="margin:0 auto;max-width:560px;border:1.5px solid var(--gold);background:var(--cream,#FBF3DF);border-radius:14px;padding:18px;">' +
+      '<div style="font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#8a2b2b;margin-bottom:4px;">' + L("The Critic says", "El crítico dice") + '</div>' +
+      '<p id="hkHarsh" style="font-family:var(--font-serif);font-size:18px;line-height:1.4;color:#8a2b2b;margin:0 0 12px;">&nbsp;</p>' +
+      '<div style="font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#2E6B3A;margin-bottom:4px;">' + L("The Coach says", "El guía dice") + '</div>' +
+      '<p class="aog-bridge-q" id="hkKind" style="font-family:var(--font-serif);font-size:20px;line-height:1.42;color:var(--navy);margin:0 0 14px;">&nbsp;</p>' +
+      '<div style="display:flex;gap:8px;flex-wrap:wrap;">' +
+        '<button type="button" onclick="aogHkNext()" style="' + gold + '">' + L("Another", "Otra") + '</button>' +
+        '<button type="button" onclick="aogBridgeCopy(this)" style="' + ghost + '">' + L("Copy the kind line", "Copiar la frase amable") + '</button>' +
+        '<button type="button" onclick="aogBridgePrint(this)" style="' + ghost + '">' + L("Print card", "Imprimir tarjeta") + '</button>' +
+        '<button type="button" onclick="aogBridgeQr(this)" style="' + ghost + '">' + L("Take-home QR", "QR para casa") + '</button>' +
+      '</div>' +
+      '<div class="aog-bridge-qr" style="display:none;margin-top:14px;text-align:center;"></div>' +
+      '</div>';
+    return '<div class="tool-modal-icon">🪞</div>' +
+      '<div class="tool-modal-title">' + L("Harsh → Kind", "Duro → Amable") + '</div>' +
+      '<div class="tool-modal-sub">' + L("The loud voice in our heads isn't the truth — it's just loud. Here's how to flip it. Great for modeling kind self-talk with a child.", "La voz fuerte en nuestra cabeza no es la verdad — solo es fuerte. Así se le da la vuelta. Ideal para modelar el habla interna amable con un niño/a.") + '</div>' +
+      auds + card +
+      crumbs("inner critic");
+  }
+  function initHarshKind() { HK_STATE.last = -1; hkRender(); }
+
+  /* Language-aware printable opener: serves the ES PDF when the site is in Spanish. */
+  window.aogOpenPrintable = function (ev, which) {
+    try {
+      var es = (typeof lang !== "undefined" && lang === "es");
+      var map = {
+        home: ["AoG-Four-Pillars-at-Home.pdf", "AoG-Four-Pillars-at-Home-ES.pdf"],
+        cls:  ["AoG-Four-Pillars-in-the-Classroom.pdf", "AoG-Four-Pillars-in-the-Classroom-ES.pdf"]
+      };
+      var f = map[which]; if (!f) return true;
+      window.open(es ? f[1] : f[0], "_blank", "noopener");
+      if (ev && ev.preventDefault) ev.preventDefault();
+      return false;
+    } catch (e) { return true; }
+  };
+
   function register() {
     if (!window.TOOLS) return;
     window.TOOLS.classreset  = { builder: buildClassReset, init: initClassReset };
     window.TOOLS.innercoach  = { builder: buildInnerCoach, init: initInnerCoach };
     window.TOOLS.makeitright = { builder: buildMakeRight,  init: initMakeRight };
     window.TOOLS.coreg       = { builder: buildCoreg,       init: function () {} };
+    window.TOOLS.beyondfine  = { builder: buildBeyondFine,  init: initBeyondFine };
+    window.TOOLS.harshkind   = { builder: buildHarshKind,   init: initHarshKind };
   }
   if (window.TOOLS) { register(); } else { window.addEventListener("load", register); }
 })();
@@ -22705,6 +23700,20 @@ window.addEventListener('load', _installToolScreenHook);
   function registerI18N() {
     try {
       if (typeof I18N_UI === 'undefined' || !I18N_UI) return;
+      I18N_UI.fam_print_home = { en: '📄 The Four Pillars at Home (printable)', es: '📄 Los cuatro pilares en casa (imprimible)' };
+      I18N_UI.fam_print_class = { en: '🏫 The Four Pillars in the Classroom', es: '🏫 Los cuatro pilares en el aula' };
+      I18N_UI.gt_pr_home_t = { en: 'Four Pillars at Home', es: 'Los cuatro pilares en casa' };
+      I18N_UI.gt_pr_home_d = { en: 'One-page parent printable (PDF)', es: 'Hoja imprimible para familias (PDF)' };
+      I18N_UI.gt_pr_home_b = { en: 'Download', es: 'Descargar' };
+      I18N_UI.gt_pr_class_t = { en: 'Four Pillars in the Classroom', es: 'Los cuatro pilares en el aula' };
+      I18N_UI.gt_pr_class_d = { en: 'One-page teacher printable (PDF)', es: 'Hoja imprimible para docentes (PDF)' };
+      I18N_UI.gt_pr_class_b = { en: 'Download', es: 'Descargar' };
+      I18N_UI.gt_hk_t = { en: 'Harsh → Kind', es: 'Duro → Amable' };
+      I18N_UI.gt_hk_d = { en: 'Flip the inner critic into a kind coach', es: 'Convierte al crítico interior en un guía amable' };
+      I18N_UI.gt_hk_b = { en: 'Open', es: 'Abrir' };
+      I18N_UI.gt_bf_t = { en: 'Beyond “Fine”', es: 'Más allá de “bien”' };
+      I18N_UI.gt_bf_d = { en: 'Everyday questions that get past “how was your day?”', es: 'Preguntas diarias que superan el “¿cómo te fue?”' };
+      I18N_UI.gt_bf_b = { en: 'Open', es: 'Abrir' };
       I18N_UI.gt_box_t = { en: 'Paced Breathing', es: 'Respiración guiada' };
       I18N_UI.gt_box_d = { en: 'Box, vagal, calming & balanced patterns', es: 'Patrones: caja, vagal, calma y equilibrio' };
       I18N_UI.gt_box_b = { en: 'Start', es: 'Comenzar' };
@@ -22719,7 +23728,7 @@ window.addEventListener('load', _installToolScreenHook);
       I18N_UI.gt_body_b = { en: 'Check in', es: 'Empezar' };
       I18N_UI.p2g_replay = { en: '↻ Watch it again', es: '↻ Verlo otra vez' };
       I18N_UI.pecs_sos_btn = { en: '🙋 Show to Teacher', es: '🙋 Mostrar al maestro' };
-      I18N_UI.gt_ground_btn = { en: 'Reset myself (10s)', es: 'Centrarme (10s)' };
+      I18N_UI.gt_ground_btn = { en: 'Quick Reset', es: 'Reinicio rápido' };
       I18N_UI.pecs_eyebrow = { en: 'Communication Support', es: 'Apoyo a la comunicación' };
       I18N_UI.pecs_h1 = { en: 'PECS Cards', es: 'Tarjetas PECS' };
       I18N_UI.pecs_lede = { en: 'Tap a card to add it to your sequence. Build your message, then share it.', es: 'Toca una tarjeta para agregarla a tu secuencia. Crea tu mensaje y compártelo.' };
@@ -22727,7 +23736,7 @@ window.addEventListener('load', _installToolScreenHook);
       I18N_UI.pecs_print = { en: '🖨️ Print Strip', es: '🖨️ Imprimir' };
       I18N_UI.pecs_speak = { en: '🔊 Speak', es: '🔊 Hablar' };
       I18N_UI.aog_lib_nav = { en: 'Library', es: 'Biblioteca' };
-      I18N_UI.aog_tools_nav = { en: 'Tools', es: 'Herramientas' };
+      I18N_UI.aog_tools_nav = { en: 'Calm & Regulation Tools', es: 'Herramientas de calma y regulación' };
       // Educator "Inside a lesson" sample package
       I18N_UI.edu_s_ey = { en: 'See it first · Free', es: 'Míralo primero · Gratis' };
       I18N_UI.edu_s_h = { en: 'Inside a lesson', es: 'Por dentro de una lección' };
@@ -23114,6 +24123,22 @@ window.addEventListener('load', _installToolScreenHook);
   // =========================== VIEWS ===========================
   var _view = "individual", _student = null;
 
+  // ---- grade-band scoping (lets a teacher narrow to their own band) ----
+  function bandKey(r) {
+    if (r.population === "adult") return "adults";
+    var g = String(r.grade == null ? "" : r.grade).trim().toUpperCase();
+    if (g === "K" || g === "PK" || g === "TK") return "k2";
+    var n = parseInt(g, 10);
+    if (isNaN(n)) return "other";
+    return n <= 2 ? "k2" : n <= 5 ? "35" : n <= 8 ? "68" : "912";
+  }
+  function bandLabel(k) {
+    return ({ k2: "K–2", "35": "3–5", "68": "6–8", "912": "9–12", adults: t("Adults", "Adultos"), other: t("Other", "Otro") })[k] || k;
+  }
+  var BAND_ORDER = ["k2", "35", "68", "912", "adults", "other"];
+  var _grade = "";
+  function scoped(rows) { if (!_grade) return rows; return rows.filter(function (r) { return bandKey(r) === _grade; }); }
+
   function metaBar() {
     var m = meta();
     return '<div class="mtss-meta">'
@@ -23221,7 +24246,7 @@ window.addEventListener('load', _installToolScreenHook);
 
   // exports
   window.__mtssCSV = function () {
-    var people = latestByStudent(load());
+    var people = latestByStudent(scoped(load()));
     var rows = [["Student", "Grade", "Composite", "A", "B", "C", "AoG tier", "MTSS tier", "Date"]];
     people.forEach(function (p) { rows.push([p.studentId || "", p.population === "adult" ? "Adult" : (p.grade == null ? "" : p.grade), compOf(p), num(p.normA) == null ? "" : num(p.normA), num(p.normB) == null ? "" : num(p.normB), num(p.normC) == null ? "" : num(p.normC), p.tier || "", "Tier " + tierOf(p), fmtDate(p.timestamp)]); });
     var csv = rows.map(function (r) { return r.map(function (c) { var s = String(c); return /[",\n]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s; }).join(","); }).join("\n");
@@ -23232,12 +24257,13 @@ window.addEventListener('load', _installToolScreenHook);
     } catch (e) {}
   };
   window.__mtssCopy = function () {
-    var txt = execSummary(load());
+    var txt = execSummary(scoped(load()));
     try { if (navigator.clipboard) { navigator.clipboard.writeText(txt); return flash(); } } catch (e) {}
     try { var ta = document.createElement("textarea"); ta.value = txt; document.body.appendChild(ta); ta.select(); document.execCommand("copy"); document.body.removeChild(ta); flash(); } catch (e) {}
     function flash() { var b = document.querySelector('.mtss-xbtn'); if (b) { var o = b.textContent; b.textContent = t("✓ Copied", "✓ Copiado"); setTimeout(function () { b.textContent = o; }, 1400); } }
   };
   window.__mtssPickStudent = function (id) { _student = id; render(); };
+  window.__mtssPickGrade = function (v) { _grade = v; _student = null; render(); };
 
   // persist meta inputs
   function wireMeta() {
@@ -23255,7 +24281,17 @@ window.addEventListener('load', _installToolScreenHook);
 
   function render() {
     var body = document.getElementById("mtssBody"); if (!body) return;
-    var rows = load();
+    var all = load();
+    // keep the band filter honest if the underlying data changed (e.g. demo cleared)
+    var present = {}; all.forEach(function (r) { present[bandKey(r)] = true; });
+    if (_grade && !present[_grade]) _grade = "";
+    var rows = scoped(all);
+    var sel = document.getElementById("mtssGradeSel");
+    if (sel) {
+      var opts = '<option value="">' + t("All grades", "Todos los grados") + '</option>';
+      BAND_ORDER.forEach(function (k) { if (present[k]) opts += '<option value="' + k + '"' + (k === _grade ? " selected" : "") + '>' + bandLabel(k) + '</option>'; });
+      sel.innerHTML = opts; sel.value = _grade; sel.style.display = all.length ? "" : "none";
+    }
     document.querySelectorAll(".mtss-tab").forEach(function (b) { b.classList.toggle("active", b.dataset.v === _view); });
     body.innerHTML = _view === "individual" ? viewIndividual(rows) : _view === "class" ? viewClass(rows) : viewSchool(rows);
     wireMeta(); syncCover();
@@ -23283,6 +24319,7 @@ window.addEventListener('load', _installToolScreenHook);
       + '<button class="mtss-tab active" data-v="individual" type="button">' + t("Individual student", "Estudiante individual") + '</button>'
       + '<button class="mtss-tab" data-v="class" type="button">' + t("Class & group", "Clase y grupo") + '</button>'
       + '<button class="mtss-tab" data-v="school" type="button">' + t("School-wide", "Toda la escuela") + '</button>'
+      + '<select id="mtssGradeSel" aria-label="' + t("Grade band", "Banda de grado") + '" onchange="window.__mtssPickGrade && window.__mtssPickGrade(this.value)" style="margin-left:auto;align-self:center;margin-bottom:8px;font-family:inherit;font-size:12.5px;font-weight:700;color:var(--navy,#1B3A5F);background:#fff;border:1px solid var(--rule,#D9CBA8);border-radius:8px;padding:6px 10px;cursor:pointer;"></select>'
       + '</div><div class="mtss-body" id="mtssBody"></div></div>';
     document.body.appendChild(ov);
     ov.addEventListener("click", function (e) { if (e.target === ov) window.aogCloseMTSS(); });
@@ -25126,7 +26163,11 @@ window.addEventListener('load', _installToolScreenHook);
 .aog-tm-grid{ display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:14px; }
 .aog-tm-ghead{ grid-column:1 / -1; font-size:11.5px; font-weight:800; letter-spacing:.1em; text-transform:uppercase; color:var(--gold-deep,#9a6f24); margin:18px 0 2px; padding-bottom:7px; border-bottom:1px solid var(--rule); }
 .aog-tm-ghead:first-child{ margin-top:0; }
-.aog-tm-item{ display:flex; align-items:flex-start; gap:12px; border:1px solid var(--rule); border-radius:10px; background:var(--cream,#fff); padding:13px 14px; }
+.aog-tm-item{ display:flex; align-items:flex-start; gap:12px; border:1px solid #EDE6D6; border-left:4px solid var(--gold); border-radius:12px; background:#FBF7EC; padding:14px 15px; transition:box-shadow .15s ease, border-color .15s ease; }
+.aog-tm-item:hover{ box-shadow:0 5px 14px rgba(27,58,95,.08); }
+.aog-tm-item[data-dom="A"]{ border-left-color:#3F6B91; }
+.aog-tm-item[data-dom="B"]{ border-left-color:#5F8A63; }
+.aog-tm-item[data-dom="C"]{ border-left-color:#9A6F4E; }
 :root[data-theme="dark"] .aog-tm-item{ background:#0B131C; }
 .aog-tm-item.sel{ border-color:var(--gold); box-shadow:0 0 0 1px var(--gold) inset; }
 .aog-tm-item input{ margin-top:3px; flex:0 0 auto; width:16px; height:16px; accent-color:var(--gold-deep,#9a6f24); }
@@ -25173,13 +26214,40 @@ window.addEventListener('load', _installToolScreenHook);
 .aog-isc p{ font-size:14.5px; line-height:1.6; color:var(--ink); margin:0 0 10px; }
 .aog-isc-tip{ font-size:12.5px; color:var(--ink-soft); border-top:1px solid var(--rule); padding-top:10px; margin-top:4px; }
 /* "tools picked for you" block inside a person's own report */
-.aog-srt{ margin-top:22px; border:1px solid var(--rule); border-left:3px solid var(--gold); border-radius:14px; background:#FBF7EC; padding:18px 20px; }
-:root[data-theme="dark"] .aog-srt{ background:#0E1822; }
-.aog-srt-h{ font-family:var(--font-serif); font-size:19px; color:var(--navy); margin:0 0 4px; }
+.aog-srt{ margin-top:22px; border:1px solid #EDE6D6; border-left:5px solid var(--gold); border-radius:16px; background:#FBF7EC; padding:22px 24px;
+  box-shadow:0 6px 18px rgba(27,58,95,.09), inset 0 1px 0 rgba(255,255,255,.6); }
+:root[data-theme="dark"] .aog-srt{ background:#0E1822; border-color:rgba(255,255,255,.08); box-shadow:0 6px 18px rgba(0,0,0,.3); }
+.aog-srt-h{ font-family:var(--font-serif); font-size:22px; font-weight:600; color:var(--navy); margin:0 0 5px; }
 .aog-srt-sub{ font-size:13.5px; color:var(--ink-soft); line-height:1.55; margin:0 0 6px; }
-.aog-srt-grid{ margin-top:6px; }
+.aog-srt-grid{ margin-top:10px; }
+.aog-srt-grid .tool-card{ background:#fff; border:1px solid #EDE6D6; border-left:5px solid var(--gold); border-radius:14px;
+  padding:18px 18px 16px; box-shadow:0 2px 8px rgba(27,58,95,.06); display:flex; flex-direction:column; transition:transform .18s var(--ease), box-shadow .18s var(--ease); }
+.aog-srt-grid .tool-card:hover{ transform:translateY(-3px); box-shadow:0 12px 26px rgba(27,58,95,.1); }
+.aog-srt-grid .tool-card[data-dom="A"]{ border-left-color:#3F6B91; }
+.aog-srt-grid .tool-card[data-dom="B"]{ border-left-color:#5F8A63; }
+.aog-srt-grid .tool-card[data-dom="C"]{ border-left-color:#9A6F4E; }
+.aog-srt-grid .tool-card .tool-title{ font-family:var(--font-serif); color:var(--navy); }
+.aog-srt-grid .tool-card .btn.btn-secondary{ background:linear-gradient(180deg,#0A1E33 0%,#06121F 100%); color:#fff; border:1.5px solid #0A1E33; border-radius:10px; font-weight:600; }
+:root[data-theme="dark"] .aog-srt-grid .tool-card{ background:#13212E; border-color:rgba(255,255,255,.08); }
+:root[data-theme="dark"] .aog-srt-grid .tool-card .tool-title{ color:var(--cream,#F4ECDA); }
 .aog-srt .tools-row-header{ text-align:left; }
 @media print { .aog-srt .tool-card button{ display:none; } }
+/* curate panel: collapsible groups, suggested button, live "why these tools" */
+.aog-tm-ghead{ width:100%; background:none; border:0; border-bottom:1px solid var(--rule); cursor:pointer; display:flex; align-items:center; gap:7px; text-align:left; font-family:inherit; }
+.aog-tm-ghead:hover{ color:var(--navy); }
+.aog-tm-gchev{ font-size:10px; transition:transform .15s ease; color:var(--gold-deep,#9a6f24); }
+.aog-tm-ghead[aria-expanded="false"] .aog-tm-gchev{ transform:rotate(-90deg); }
+.aog-tm-why{ font-size:12.5px; font-weight:600; color:var(--gold-deep,#9a6f24); margin:14px 0 0; line-height:1.5; }
+.aog-tm-why:empty{ display:none; }
+.aog-tm-gcount{ font-weight:600; color:var(--ink-faint); margin-left:2px; }
+/* micro-interaction: briefly flash items checked by "Use suggested tools" */
+.aog-tm-item.just-set{ animation:aogTmFlash .9s ease; }
+@keyframes aogTmFlash{ 0%{ background:#FBF1D6; box-shadow:0 0 0 2px var(--gold) inset; } 100%{ background:var(--cream,#fff); box-shadow:none; } }
+/* domain accents on the personalized #mytools cards — softer, harmonious with navy+gold
+   (A=calm body · dusty blue, B=self-compassion · sage, C=connect · clay) */
+#myToolsGrid .tool-card[data-dom="A"]{ border-left-color:#3F6B91; }
+#myToolsGrid .tool-card[data-dom="B"]{ border-left-color:#5F8A63; }
+#myToolsGrid .tool-card[data-dom="C"]{ border-left-color:#9A6F4E; }
 </style>
 <script>
 (function(){
@@ -25241,6 +26309,48 @@ window.addEventListener('load', _installToolScreenHook);
   }
   window.aogMatchTools = aogMatchTools;
 
+  /* live "why these tools" sentence from a set of ids */
+  function toolWhyText(ids, es){
+    ids = ids || [];
+    if (!ids.length) return es ? "Aún no hay herramientas seleccionadas." : "No tools selected yet.";
+    var counts = {A:0,B:0,C:0};
+    ids.forEach(function(id){ var dk = primaryDom(id); if (counts[dk]!=null) counts[dk]++; });
+    var parts = GORDER.filter(function(dk){ return counts[dk]; }).map(function(dk){
+      return (es?GROUPS[dk].kid_es:GROUPS[dk].kid_en) + " (" + counts[dk] + ")";
+    });
+    return (es ? ("Estas " + ids.length + " herramientas ayudan a: ") : ("These " + ids.length + " tools help: ")) + parts.join("  ·  ");
+  }
+  window.aogUpdateToolWhy = function(panel){
+    if (!panel) return;
+    var ids = Array.prototype.slice.call(panel.querySelectorAll(".aog-tm-chk:checked")).map(function(c){ return c.value; });
+    var el = panel.querySelector(".aog-tm-why");
+    if (el) el.textContent = toolWhyText(ids, isEs());
+  };
+  /* auto-check exactly the suggested (matched) set */
+  window.aogUseSuggested = function(btn){
+    var panel = btn.closest(".aog-tm"); if (!panel) return;
+    var sug = (panel.getAttribute("data-suggested")||"").split(",").filter(Boolean);
+    Array.prototype.forEach.call(panel.querySelectorAll(".aog-tm-chk"), function(c){
+      var on = sug.indexOf(c.value) >= 0;
+      var wasOff = !c.checked;
+      c.checked = on;
+      var item = c.closest(".aog-tm-item");
+      if (item){
+        item.classList.toggle("sel", on);
+        if (on && wasOff){ item.classList.add("just-set"); setTimeout(function(){ item.classList.remove("just-set"); }, 900); }
+      }
+    });
+    aogUpdateToolWhy(panel);
+  };
+  /* collapse / expand a domain group of tools */
+  window.aogToggleToolGroup = function(head){
+    var dk = head.getAttribute("data-dom");
+    var panel = head.closest(".aog-tm"); if (!panel) return;
+    var next = head.getAttribute("aria-expanded") === "false";
+    head.setAttribute("aria-expanded", next ? "true" : "false");
+    Array.prototype.forEach.call(panel.querySelectorAll(".aog-tm-item[data-dom=\"" + dk + "\"]"), function(el){ el.style.display = next ? "" : "none"; });
+  };
+
   /* the curate panel shown under a student's report on the dashboard */
   window.aogToolMatchPanel = function(rec, key){
     if (!rec) return "";
@@ -25259,8 +26369,8 @@ window.addEventListener('load', _installToolScreenHook);
       var m = META[id];
       var on = matched.indexOf(id) >= 0;
       var second = (m.d||[]).slice(1).map(function(x){ return domNames[x]; }).join(" · ");
-      return "<label class=\"aog-tm-item" + (on?" sel":"") + "\">" +
-        "<input type=\"checkbox\" class=\"aog-tm-chk\" value=\"" + id + "\"" + (on?" checked":"") + " onchange=\"this.closest('.aog-tm-item').classList.toggle('sel',this.checked)\">" +
+      return "<label class=\"aog-tm-item" + (on?" sel":"") + "\" data-dom=\"" + primaryDom(id) + "\">" +
+        "<input type=\"checkbox\" class=\"aog-tm-chk\" value=\"" + id + "\"" + (on?" checked":"") + " onchange=\"this.closest('.aog-tm-item').classList.toggle('sel',this.checked); if(typeof aogUpdateToolWhy==='function') aogUpdateToolWhy(this.closest('.aog-tm'));\">" +
         "<span class=\"aog-tm-ic\">" + m.ic + "</span>" +
         "<span class=\"aog-tm-tx\"><span class=\"aog-tm-tt\">" + esc(es?m.es:m.en) + "</span>" +
         "<span class=\"aog-tm-ds\">" + esc(es?m.des:m.den) + "</span>" +
@@ -25272,19 +26382,21 @@ window.addEventListener('load', _installToolScreenHook);
     var items = GORDER.map(function(dk){
       var gids = ORDER.filter(function(id){ return META[id] && primaryDom(id) === dk; });
       if (!gids.length) return "";
-      return "<div class=\"aog-tm-ghead\">" + esc(es?GROUPS[dk].fw_es:GROUPS[dk].fw_en) + "</div>" + gids.map(itemHtml).join("");
+      return "<button type=\"button\" class=\"aog-tm-ghead\" data-dom=\"" + dk + "\" aria-expanded=\"true\" onclick=\"aogToggleToolGroup(this)\"><span class=\"aog-tm-gchev\" aria-hidden=\"true\">▾</span> " + esc(es?GROUPS[dk].fw_es:GROUPS[dk].fw_en) + " <span class=\"aog-tm-gcount\">(" + gids.length + ")</span></button>" + gids.map(itemHtml).join("");
     }).join("");
-    return "<div class=\"aog-tm\" data-key=\"" + esc(key) + "\">" +
+    return "<div class=\"aog-tm\" data-key=\"" + esc(key) + "\" data-suggested=\"" + esc(matched.join(",")) + "\">" +
       "<h4>" + (es?"Herramientas de regulación sugeridas para ":"Suggested regulation tools for ") + esc(rec.studentId||"") + "</h4>" +
       "<p class=\"aog-tm-sub\">" + why + ". " + (es?"Marca o desmarca, luego crea un enlace o QR para enviarle solo estas herramientas.":"Check or uncheck, then create a link or QR to send just these tools.") + "</p>" +
       "<div class=\"aog-tm-history\">" + renderHistoryLine(rec.studentId||"", es) + "</div>" +
       "<div class=\"aog-tm-grid\">" + items + "</div>" +
+      "<div class=\"aog-tm-why\">" + esc(toolWhyText(matched, es)) + "</div>" +
       "<div class=\"aog-tm-actions\">" +
+        "<button type=\"button\" class=\"btn btn-secondary btn-sm\" onclick=\"aogUseSuggested(this)\">" + (es?"Usar sugeridas":"Use suggested tools") + "</button>" +
         "<button type=\"button\" class=\"btn btn-sm\" onclick=\"aogBuildToolLink(this)\">" + (es?"Crear enlace y QR":"Create link & QR") + "</button>" +
         "<label class=\"aog-tm-name\"><input type=\"checkbox\" class=\"aog-tm-incname\"> " + (es?"Incluir el nombre":"Include first name") + "</label>" +
       "</div>" +
       "<div class=\"aog-tm-out\" hidden>" +
-        "<div class=\"aog-tm-linkrow\"><input type=\"text\" class=\"aog-tm-url\" readonly onclick=\"this.select()\"><button type=\"button\" class=\"btn btn-secondary btn-sm aog-tm-copy\" onclick=\"aogCopyToolLink(this)\">" + (es?"Copiar":"Copy") + "</button></div>" +
+        "<div class=\"aog-tm-linkrow\"><input type=\"text\" class=\"aog-tm-url\" readonly onclick=\"this.select()\"><button type=\"button\" class=\"btn btn-secondary btn-sm aog-tm-copy\" onclick=\"aogCopyToolLink(this)\">" + (es?"Copiar":"Copy") + "</button>" + ((typeof navigator!=="undefined" && navigator.share) ? "<button type=\"button\" class=\"btn btn-sm\" onclick=\"aogShareToolLink(this)\">" + (es?"Compartir":"Share") + "</button>" : "") + "</div>" +
         "<div class=\"aog-tm-qr\"></div>" +
       "</div>" +
       "</div>";
@@ -25338,6 +26450,14 @@ window.addEventListener('load', _installToolScreenHook);
     }
   };
 
+  window.aogShareToolLink = function(btn){
+    var panel = btn.closest(".aog-tm"); if (!panel) return;
+    var inp = panel.querySelector(".aog-tm-url"); var url = inp ? inp.value : "";
+    if (!url) return;
+    var es = isEs();
+    if (navigator.share){ navigator.share({ title: es?"Herramientas de calma":"Calm & regulation tools", url: url }).catch(function(){}); }
+    else { aogCopyToolLink(btn); }
+  };
   window.aogCopyToolLink = function(btn){
     var panel = btn.closest(".aog-tm");
     var inp = panel && panel.querySelector(".aog-tm-url");
@@ -25363,14 +26483,32 @@ window.addEventListener('load', _installToolScreenHook);
     var who = String(p.get("for")||"").trim().slice(0,40);
     var title = document.getElementById("myToolsTitle");
     var eyebrow = document.getElementById("myToolsEyebrow");
-    if (eyebrow) eyebrow.textContent = es ? "ELEGIDAS PARA TI" : "PICKED FOR YOU";
+    if (eyebrow) eyebrow.textContent = who ? (es ? "SOLO PARA TI" : "JUST FOR YOU") : (es ? "TÓMATE UN MOMENTO" : "TAKE A MOMENT");
     if (title) title.textContent = who
-      ? (es ? "Herramientas de calma para " + who : who + "’s calm & regulation tools")
+      ? (es ? "Para ti, " + who : "For you, " + who)
       : (es ? "Tus herramientas de calma y regulación" : "Your calm & regulation tools");
     var lede = document.getElementById("myToolsLede");
-    if (lede) lede.textContent = es
-      ? "Toca una herramienta para empezar. Cada una dura como un minuto. No hay una incorrecta — elige la que sientas bien."
-      : "Tap a tool to begin. Each one takes about a minute. There’s no wrong one — pick what feels right.";
+    if (lede) lede.textContent = who
+      ? (es ? "Cuando las cosas se sientan mucho, estas están aquí para ti. Toca cualquiera — no hay una incorrecta."
+            : "Whenever things feel like a lot, these are here for you. Tap any one — there’s no wrong choice.")
+      : (es ? "Toca una herramienta para empezar. Cada una dura como un minuto. No hay una incorrecta — elige la que sientas bien."
+            : "Tap a tool to begin. Each one takes about a minute. There’s no wrong one — pick what feels right.");
+    /* personalized cue + warm banner placed right under the title (only when a name is present) */
+    var screenEl = document.getElementById("screen-aog-mytools");
+    if (screenEl) screenEl.classList.toggle("is-personalized", !!who);
+    var oldWarm = document.getElementById("myToolsWarm");
+    if (oldWarm) oldWarm.remove();
+    if (lede){
+      var wm = document.createElement("p");
+      wm.id = "myToolsWarm";
+      wm.className = "myt-warm";
+      wm.textContent = who
+        ? (es ? "Sea como sea tu día, no tienes que cargarlo solo. 💛"
+              : "No matter what kind of day it’s been, you don’t have to carry it alone. 💛")
+        : (es ? "Tómate un momento para ti. Empieza por donde se sienta bien."
+              : "Take a moment for yourself. Start wherever feels right.");
+      lede.parentNode.insertBefore(wm, lede);
+    }
     var seeAll = document.getElementById("myToolsSeeAll");
     if (seeAll) seeAll.textContent = (es ? "Ver todas las herramientas de calma" : "See all calming tools") + " →";
     /* read-aloud control for striving / younger readers */
@@ -25382,7 +26520,7 @@ window.addEventListener('load', _installToolScreenHook);
     }
     function cardHtml(id){
       var m = META[id];
-      return "<div class=\"tool-card\" data-tool=\"" + id + "\" onclick=\"aogToolTap(this,'" + id + "')\">" +
+      return "<div class=\"tool-card\" data-tool=\"" + id + "\" data-dom=\"" + primaryDom(id) + "\" onclick=\"aogToolTap(this,'" + id + "')\">" +
         "<span class=\"tool-icon\">" + m.ic + "</span>" +
         "<div class=\"tool-title\">" + esc(es?m.es:m.en) + "</div>" +
         "<p class=\"tool-desc\">" + esc(es?m.des:m.den) + "</p>" +
@@ -25417,7 +26555,7 @@ window.addEventListener('load', _installToolScreenHook);
     if (!ids.length) return "";
     function card(id){
       var m = META[id]; if (!m) return "";
-      return "<div class=\"tool-card aog-srt-card\" onclick=\"if(typeof toolOpen==='function')toolOpen('" + id + "')\">" +
+      return "<div class=\"tool-card aog-srt-card\" data-dom=\"" + primaryDom(id) + "\" onclick=\"if(typeof toolOpen==='function')toolOpen('" + id + "')\">" +
         "<span class=\"tool-icon\">" + m.ic + "</span>" +
         "<div class=\"tool-title\">" + esc(es?m.es:m.en) + "</div>" +
         "<p class=\"tool-desc\">" + esc(es?m.des:m.den) + "</p>" +
