@@ -1581,9 +1581,8 @@ tr:hover td { background: var(--paper); }
 .eco-tag { font-family:var(--sans,Inter,sans-serif); font-size:9.5px; font-weight:700; letter-spacing:.12em; }
 .eco-name { font-family:var(--serif); font-size:15.5px; font-weight:600; fill:var(--navy); }
 .eco-role { font-family:var(--sans,Inter,sans-serif); font-size:10px; fill:#7A8194; }
-.eco-node:hover, .eco-node:focus, .eco-node.is-active { transform:translateY(-6px) scale(1.035); outline:none; }
-.eco-node:focus-visible .eco-cardbox { stroke:var(--gold); stroke-width:3; }
-.eco-node:hover .eco-cardbox, .eco-node:focus .eco-cardbox, .eco-node.is-active .eco-cardbox { stroke:var(--gold); stroke-width:2.75; filter:url(#ecoGlow); }
+.eco-node:hover, .eco-node:focus, .eco-node.is-active { transform:translateY(-4px); outline:none; }
+.eco-node:hover .eco-cardbox, .eco-node:focus .eco-cardbox, .eco-node.is-active .eco-cardbox { stroke:var(--gold); stroke-width:2; filter:url(#ecoGlow); }
 @keyframes ecoFloat { 0%,100%{ transform:translateY(0);} 50%{ transform:translateY(-3px);} }
 .eco-detail { width:100%; max-width:560px; margin:0 auto; background:#fff; border:1px solid var(--rule); border-left:4px solid var(--gold); border-radius:11px; padding:10px 20px; box-shadow:0 5px 16px rgba(27,58,95,.05); display:grid; grid-template-columns:minmax(135px,165px) 1fr; column-gap:20px; row-gap:1px; align-items:start; }
 .eco-detail .ed-tag   { grid-column:1; grid-row:1; }
@@ -1601,7 +1600,6 @@ tr:hover td { background: var(--paper); }
 .eco-frame { font-size:13px; line-height:1.6; color:var(--ink-soft); margin-top:24px; padding-top:18px; border-top:1px solid var(--rule-soft); }
 .eco-frame strong { color:var(--navy); }
 @media (max-width:760px){ .eco-detail { display:block; } }
-@media (min-width:1200px){ .eco-detail{ max-width:680px; padding:14px 26px; column-gap:26px; } }
 .guide-section { display:none; }
 .guide-section.active { display:block; animation:aogFadeIn .28s var(--ease, ease) both; }
 .docpane:not([hidden]) { animation:aogFadeIn .24s var(--ease, ease) both; }
@@ -5102,7 +5100,7 @@ function toggleTheme() {
     </a>
     <a class="topbar-store" role="menuitem" href="#" onclick="event.preventDefault(); if(typeof aogGoPilot==='function'){aogGoPilot();}" title="Pilot Program — quick-starts, feedback forms, and the pilot kit">
       <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 3v16l7-3 7 3V3z"/><path d="M9 8h6M9 12h6"/></svg>
-      <span data-i18n="pp_nav">Pilot Program</span>
+      <span>Pilot Program</span>
     </a>
         <a class="topbar-store" role="menuitem" href="#" onclick="event.preventDefault(); if(typeof aogGoStore==='function'){aogGoStore();}" title="The Store">
           <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
@@ -7666,7 +7664,7 @@ function toggleTheme() {
               <div><div class="ap-t" data-i18n="dm_ad_p6t">Classroom trends</div><div class="ap-s" data-i18n="dm_ad_p6s">Class-level results and domain averages show where a whole group needs support.</div></div>
             </div>
           </div>
-          <p class="admin-aggregate" data-i18n="dm_ad_aggregate" style="font-size:13.5px; line-height:1.55; color:#eaf1f9; font-weight:700; margin:16px 0 0;">Leadership sees only aggregate trends &mdash; never individual student responses.</p>
+          <p class="admin-aggregate" data-i18n="dm_ad_aggregate" style="font-size:13.5px; line-height:1.55; color:var(--navy); font-weight:600; margin:16px 0 0;">Leadership sees only aggregate trends &mdash; never individual student responses.</p>
           <div class="admin-flag">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></svg>
             <span data-i18n-html="dm_ad_flag">Every score is a <em>flag for a conversation, never a diagnosis.</em> The number tells you where to begin; the curriculum is the intervention.</span>
@@ -7699,22 +7697,22 @@ function toggleTheme() {
             </div>
           </div>
           <!-- ===== END DIFFERENTIATORS ===== -->
-          <div class="admin-notes" style="margin:4px 0 18px; padding:14px 16px; border:1px solid rgba(231,184,94,.28); border-radius:12px; background:rgba(0,0,0,.18);">
+          <div class="admin-notes" style="margin:4px 0 18px; padding:14px 16px; border:1px solid var(--rule); border-radius:12px; background:rgba(0,0,0,.015);">
             <div class="an-ey" data-i18n="dm_ad_notes_ey" style="font-size:11px; font-weight:800; letter-spacing:.08em; text-transform:uppercase; color:var(--gold); margin-bottom:6px;">Easy to start, ready to scale</div>
-            <p class="an-line" data-i18n-html="dm_rollout" style="font-size:13.5px; line-height:1.55; color:#dfe7ef; margin:0 0 6px;"><strong style="color:#ffffff;">Low-effort rollout:</strong> Start with one class or grade band. Scale across buildings using shared links and your own Google Sheets.</p>
-            <p class="an-line" data-i18n-html="dm_ad_scale" style="font-size:13.5px; line-height:1.55; color:#dfe7ef; margin:0 0 6px;"><strong style="color:#ffffff;">District scale:</strong> License available via purchase order for multi-building use.</p>
-            <p class="an-line" data-i18n="dm_ad_train" style="font-size:13.5px; line-height:1.55; color:#dfe7ef; margin:0;">SEL coordinators can use demo data to train staff quickly before going live with real students.</p>
+            <p class="an-line" data-i18n-html="dm_rollout" style="font-size:13.5px; line-height:1.55; color:var(--ink); margin:0 0 6px;"><strong style="color:var(--navy);">Low-effort rollout:</strong> Start with one class or grade band. Scale across buildings using shared links and your own Google Sheets.</p>
+            <p class="an-line" data-i18n-html="dm_ad_scale" style="font-size:13.5px; line-height:1.55; color:var(--ink); margin:0 0 6px;"><strong style="color:var(--navy);">District scale:</strong> License available via purchase order for multi-building use.</p>
+            <p class="an-line" data-i18n="dm_ad_train" style="font-size:13.5px; line-height:1.55; color:var(--ink); margin:0;">SEL coordinators can use demo data to train staff quickly before going live with real students.</p>
           </div>
           <div class="admin-cta">
             <a href="#" class="ac-gold" onclick="event.preventDefault(); aogGoStore();" data-i18n="dm_ad_cta1">Request a pilot or district licensing discussion &rarr;</a>
             <a href="#" class="ac-ghost aog-pop" onclick="event.preventDefault(); openAdmin();" data-i18n="dm_ad_cta2">Educator access &middot; results</a>
           </div>
-                    <!-- ===== PRIVACY & LEGAL DOCUMENTS (2026-06 · removable as one block) ===== -->
+          <!-- ===== PRIVACY & LEGAL DOCUMENTS (2026-06 · removable as one block) ===== -->
           <style id="aogLegalCSS">
-            .aoglegal{ margin:26px 0 6px; padding:22px 22px 20px; border:1px solid rgba(231,184,94,.28); border-radius:16px; background:rgba(0,0,0,.18); }
-            .aoglegal .lg-ey{ font-size:11px; font-weight:800; letter-spacing:.12em; text-transform:uppercase; color:#E7B85E; margin-bottom:6px; }
-            .aoglegal h3{ font-family:var(--font-serif,Georgia,serif); font-size:20px; color:#ffffff; margin:0 0 6px; }
-            .aoglegal .lg-sub{ font-size:13.5px; line-height:1.55; color:#dfe7ef; margin:0 0 16px; max-width:62ch; }
+            .aoglegal{ margin:26px 0 6px; padding:22px 22px 20px; border:1px solid var(--rule); border-radius:16px; background:rgba(0,0,0,.015); }
+            .aoglegal .lg-ey{ font-size:11px; font-weight:800; letter-spacing:.12em; text-transform:uppercase; color:var(--gold); margin-bottom:6px; }
+            .aoglegal h3{ font-family:var(--font-serif,Georgia,serif); font-size:20px; color:var(--navy); margin:0 0 6px; }
+            .aoglegal .lg-sub{ font-size:13.5px; line-height:1.55; color:var(--ink-soft); margin:0 0 16px; max-width:62ch; }
             .aoglegal .lg-grid{ display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:12px; }
             .aoglegal .lg-doc{ display:flex; gap:12px; align-items:flex-start; background:#fff; border:1px solid var(--rule); border-radius:12px; padding:14px 15px; }
             :root[data-theme="dark"] .aoglegal .lg-doc{ background:#16242F; border-color:#34465A; }
@@ -7728,54 +7726,54 @@ function toggleTheme() {
             .aoglegal .lg-dl svg{ width:13px; height:13px; }
             .aoglegal .lg-dl:hover{ color:var(--gold); }
             .aoglegal .lg-foot{ display:flex; gap:14px; flex-wrap:wrap; align-items:center; margin-top:14px; font-size:13px; }
-            .aoglegal .lg-foot a{ color:#eaf1f9; font-weight:700; text-decoration:none; }
+            .aoglegal .lg-foot a{ color:var(--navy); font-weight:700; text-decoration:none; }
             :root[data-theme="dark"] .aoglegal .lg-foot a{ color:#C3D6EF; }
             .aoglegal .lg-foot a:hover{ color:var(--gold); }
-            .aoglegal .lg-disc{ font-size:11.5px; line-height:1.5; color:#bcc8d8; margin:12px 0 0; font-style:italic; }
+            .aoglegal .lg-disc{ font-size:11.5px; line-height:1.5; color:var(--ink-soft); margin:12px 0 0; font-style:italic; }
           </style>
           <div class="aoglegal">
-            <div class="lg-ey" data-i18n="lg_ey">For schools &amp; districts</div>
-            <h3 data-i18n="lg_h">Privacy &amp; legal documents</h3>
-            <p class="lg-sub" data-i18n-html="lg_sub">Everything your IT, privacy, and legal teams need to evaluate the check-in &mdash; written in plain language for busy administrators. All are PDFs you can download, share, and review.</p>
+            <div class="lg-ey">For schools &amp; districts</div>
+            <h3>Privacy &amp; legal documents</h3>
+            <p class="lg-sub">Everything your IT, privacy, and legal teams need to evaluate the check-in &mdash; written in plain language for busy administrators. All are PDFs you can download, share, and review.</p>
             <div class="lg-grid">
               <div class="lg-doc">
                 <span class="lg-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M9 15l2 2 4-4"/></svg></span>
                 <div>
-                  <h4 data-i18n="lg_d1h">Data Privacy Agreement (DPA)</h4>
-                  <p data-i18n-html="lg_d1p">A ready-to-edit DPA modeled on the SDPC national template &mdash; a starting draft for your counsel, covering FERPA, COPPA, and PPRA.</p>
-                  <a class="lg-dl" href="legal-updated/AoG_DPA_Template_CORRECTED.pdf" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5"/><path d="M12 15V3"/></svg> <span data-i18n="lg_dl">Download PDF</span></a>
+                  <h4>Data Privacy Agreement (DPA)</h4>
+                  <p>A ready-to-edit DPA modeled on the SDPC national template &mdash; a starting draft for your counsel, covering FERPA, COPPA, and PPRA.</p>
+                  <a class="lg-dl" href="legal-updated/AoG_DPA_Template_CORRECTED.pdf" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5"/><path d="M12 15V3"/></svg> Download PDF</a>
                 </div>
               </div>
               <div class="lg-doc">
                 <span class="lg-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg></span>
                 <div>
-                  <h4 data-i18n="lg_d2h">IT Deployment Guide</h4>
-                  <p data-i18n-html="lg_d2p">Step-by-step setup for your IT team, including the optional Google Sheets sync script. The data lives in your Google, under your control &mdash; no servers of ours.</p>
-                  <a class="lg-dl" href="legal-updated/AoG_IT_Deployment_Guide_CORRECTED.pdf" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5"/><path d="M12 15V3"/></svg> <span data-i18n="lg_dl">Download PDF</span></a>
+                  <h4>IT Deployment Guide</h4>
+                  <p>Step-by-step setup for your IT team, including the optional Google Sheets sync script. The data lives in your Google, under your control &mdash; no servers of ours.</p>
+                  <a class="lg-dl" href="legal-updated/AoG_IT_Deployment_Guide_CORRECTED.pdf" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5"/><path d="M12 15V3"/></svg> Download PDF</a>
                 </div>
               </div>
               <div class="lg-doc">
                 <span class="lg-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></span>
                 <div>
-                  <h4 data-i18n="lg_d3h">Data &amp; Privacy Statement</h4>
-                  <p data-i18n-html="lg_d3p">A plain-language summary of what is collected, where it lives, and the on-device-by-default design &mdash; the quick read for a privacy review.</p>
-                  <a class="lg-dl" href="legal-updated/AoG_Data_Privacy_Statement_CORRECTED.pdf" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5"/><path d="M12 15V3"/></svg> <span data-i18n="lg_dl">Download PDF</span></a>
+                  <h4>Data &amp; Privacy Statement</h4>
+                  <p>A plain-language summary of what is collected, where it lives, and the on-device-by-default design &mdash; the quick read for a privacy review.</p>
+                  <a class="lg-dl" href="legal-updated/AoG_Data_Privacy_Statement_CORRECTED.pdf" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5"/><path d="M12 15V3"/></svg> Download PDF</a>
                 </div>
               </div>
               <div class="lg-doc">
                 <span class="lg-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9z"/></svg></span>
                 <div>
-                  <h4 data-i18n="lg_d4h">How to Drop Everything In</h4>
-                  <p data-i18n-html="lg_d4p">The fast implementation guide &mdash; how to get the whole check-in running in your environment, start to finish.</p>
-                  <a class="lg-dl" href="legal-updated/AoG_How_to_Drop_Everything_In_CORRECTED.pdf" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5"/><path d="M12 15V3"/></svg> <span data-i18n="lg_dl">Download PDF</span></a>
+                  <h4>How to Drop Everything In</h4>
+                  <p>The fast implementation guide &mdash; how to get the whole check-in running in your environment, start to finish.</p>
+                  <a class="lg-dl" href="legal-updated/AoG_How_to_Drop_Everything_In_CORRECTED.pdf" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5"/><path d="M12 15V3"/></svg> Download PDF</a>
                 </div>
               </div>
             </div>
             <div class="lg-foot">
-              <a href="#" data-i18n="lg_foot1" onclick="event.preventDefault(); if(typeof aogGoPilot==='function'){aogGoPilot();}">Explore the Pilot Program &rarr;</a>
-              <a href="#" data-i18n="lg_foot2" onclick="event.preventDefault(); if(typeof showScreen==='function'){showScreen('screen-privacy');}">Read the full Privacy page &rarr;</a>
+              <a href="#" onclick="event.preventDefault(); if(typeof aogGoPilot==='function'){aogGoPilot();}">Explore the Pilot Program &rarr;</a>
+              <a href="#" onclick="event.preventDefault(); if(typeof showScreen==='function'){showScreen('screen-privacy');}">Read the full Privacy page &rarr;</a>
             </div>
-            <p class="lg-disc" data-i18n="lg_disc">The DPA is a draft template for discussion, not legal advice; have it reviewed by qualified counsel for your LEA and jurisdiction before signing.</p>
+            <p class="lg-disc">The DPA is a draft template for discussion, not legal advice; have it reviewed by qualified counsel for your LEA and jurisdiction before signing.</p>
           </div>
           <!-- ===== /PRIVACY & LEGAL DOCUMENTS ===== -->
 
@@ -8039,7 +8037,7 @@ function toggleTheme() {
                 <option value="Other" data-i18n="voi_role_other">Other</option>
               </select>
             </div>
-            <textarea id="voiMsg" class="voi-input voi-textarea" rows="4" maxlength="300" placeholder="What did the check-in open up? A moment, a conversation, a change you noticed&hellip;" data-i18n-ph="voi_msg_ph"></textarea>
+            <textarea id="voiMsg" class="voi-input voi-textarea" rows="3" maxlength="300" placeholder="Share your experience&hellip;" data-i18n-ph="voi_msg_ph"></textarea>
             <p class="voi-public" data-i18n="voi_public">Comments you post are shown publicly on this page.</p>
             <div class="voi-formfoot">
               <span id="voiCount" class="voi-count">0 / 300</span>
@@ -8061,26 +8059,26 @@ function toggleTheme() {
 
 <!-- ============ PILOT PROGRAM — standalone screen (2026-06) ============ -->
 <!-- One self-contained block: styles + markup + interactive forms engine.    -->
-<!-- Removable as one unit. Bilingual EN/ES via I18N_UI + the forms engine.    -->
+<!-- Removable as one unit. English at launch (like the Wellbeing preview).    -->
 <style id="aogPilotCSS">
   .aogpilot{ --pp-navy:var(--navy,#0A1E33); --pp-gold:var(--gold,#D9A33B); --pp-ink:var(--ink,#22303f); --pp-soft:var(--ink-soft,#46506E); --pp-rule:var(--rule,rgba(10,30,51,.12)); }
   .aogpilot .pp-intro{ padding:28px 32px 26px; }
   .aogpilot .pp-ey{ font-size:11px; letter-spacing:.22em; text-transform:uppercase; color:var(--pp-gold); font-weight:800; margin-bottom:8px; }
   .aogpilot .pp-h{ font-family:var(--font-serif,Georgia,serif); font-size:26px; color:var(--pp-navy); margin:0 0 10px; }
   .aogpilot .pp-lead{ font-size:15px; line-height:1.65; color:var(--pp-soft); max-width:64ch; margin:0 0 4px; }
+  /* how-a-pilot-works steps */
   .aogpilot .pp-steps{ display:flex; flex-wrap:wrap; gap:12px; margin:22px 0 4px; }
   .aogpilot .pp-step{ flex:1; min-width:180px; background:rgba(0,0,0,.015); border:1px solid var(--pp-rule); border-radius:12px; padding:14px 16px; }
   .aogpilot .pp-step .n{ display:inline-flex; align-items:center; justify-content:center; width:26px; height:26px; border-radius:50%; background:var(--pp-navy); color:#fff; font-weight:800; font-size:13px; margin-bottom:8px; }
   .aogpilot .pp-step h4{ margin:0 0 3px; font-size:14.5px; color:var(--pp-navy); }
   .aogpilot .pp-step p{ margin:0; font-size:13px; line-height:1.5; color:var(--pp-soft); }
+  /* audience cards */
   .aogpilot .pp-grid{ display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:18px; margin:8px 0 8px; }
   .aogpilot .pp-card{ background:#fff; border:1px solid var(--pp-rule); border-radius:16px; padding:22px 22px 20px; display:flex; flex-direction:column; box-shadow:0 12px 30px -22px rgba(10,30,51,.5); }
-  :root[data-theme="dark"] .aogpilot .pp-card{ background:#16242F; border-color:#34465A; }
   .aogpilot .pp-card-top{ display:flex; align-items:center; gap:12px; margin-bottom:8px; }
   .aogpilot .pp-ic{ flex:none; width:42px; height:42px; border-radius:11px; background:linear-gradient(135deg,#24496f,var(--pp-navy)); display:flex; align-items:center; justify-content:center; color:var(--pp-gold); }
   .aogpilot .pp-ic svg{ width:22px; height:22px; }
   .aogpilot .pp-card h3{ margin:0; font-size:17.5px; color:var(--pp-navy); font-family:var(--font-serif,Georgia,serif); }
-  :root[data-theme="dark"] .aogpilot .pp-card h3{ color:#C3D6EF; }
   .aogpilot .pp-who{ font-size:13.5px; line-height:1.55; color:var(--pp-soft); margin:0 0 14px; flex:1; }
   .aogpilot .pp-asset{ margin-top:12px; }
   .aogpilot .pp-asset-lab{ font-size:10.5px; letter-spacing:.12em; text-transform:uppercase; color:var(--pp-gold); font-weight:800; margin:0 0 7px; }
@@ -8093,53 +8091,27 @@ function toggleTheme() {
   .aogpilot .pp-b-navy{ background:var(--pp-navy); color:#fff; }
   .aogpilot .pp-b-navy:hover{ background:#13304d; }
   .aogpilot .pp-b-ghost{ background:#fff; color:var(--pp-navy); border-color:var(--pp-rule); }
-  :root[data-theme="dark"] .aogpilot .pp-b-ghost{ background:#1B2A38; color:#C3D6EF; }
   .aogpilot .pp-b-ghost:hover{ border-color:var(--pp-gold); color:#13304d; }
   .aogpilot .pp-note{ font-size:12px; color:var(--pp-soft); margin:10px 0 0; font-style:italic; }
+  /* request-to-pilot CTA */
   .aogpilot .pp-cta{ margin:26px 0 6px; background:linear-gradient(135deg,#24496f 0%,var(--pp-navy) 60%,#142c47 100%); border:1px solid var(--pp-gold); border-radius:18px; padding:30px 32px; text-align:center; color:#fff; }
   .aogpilot .pp-cta h3{ font-family:var(--font-serif,Georgia,serif); font-size:23px; color:#fff; margin:0 0 8px; }
   .aogpilot .pp-cta p{ font-size:14px; line-height:1.6; color:#dfe7ef; max-width:60ch; margin:0 auto 18px; }
   .aogpilot .pp-cta-btns{ display:flex; gap:12px; justify-content:center; flex-wrap:wrap; }
   .aogpilot .pp-priv{ display:flex; align-items:flex-start; gap:10px; margin:20px 0 4px; padding:14px 16px; border:1px solid var(--pp-rule); border-radius:12px; background:rgba(0,0,0,.015); font-size:13px; line-height:1.55; color:var(--pp-soft); }
   .aogpilot .pp-priv svg{ flex:none; width:20px; height:20px; color:var(--pp-gold); margin-top:1px; }
+  /* ===== modal (shared by previews + interactive forms) ===== */
   .ppm-overlay{ position:fixed; inset:0; background:rgba(8,18,30,.62); backdrop-filter:blur(3px); z-index:4000; display:none; align-items:flex-start; justify-content:center; padding:28px 16px; overflow-y:auto; }
   .ppm-overlay.open{ display:flex; }
-  .ppm{ background:#FCF9F2; border:1px solid var(--rule,#E4DAC5); border-radius:18px; width:100%; max-width:720px; box-shadow:0 30px 70px -20px rgba(8,18,30,.7); margin:auto; overflow:hidden; display:flex; flex-direction:column; max-height:92vh; }
+  .ppm{ background:#FCF9F2; border:1px solid var(--rule,#E4DAC5); border-radius:18px; width:100%; max-width:720px; box-shadow:0 30px 70px -20px rgba(8,18,30,.7); margin:auto; overflow:hidden; }
   :root[data-theme="dark"] .ppm{ background:#16242F; border-color:#34465A; color:#E6ECF3; }
-  .ppm-head{ flex:none; display:flex; align-items:center; justify-content:space-between; gap:14px; padding:18px 22px; background:linear-gradient(135deg,#24496f,var(--navy,#0A1E33)); color:#fff; }
+  .ppm-head{ position:sticky; top:0; display:flex; align-items:center; justify-content:space-between; gap:14px; padding:18px 22px; background:linear-gradient(135deg,#24496f,var(--navy,#0A1E33)); color:#fff; }
   .ppm-head h3{ margin:0; font-family:var(--font-serif,Georgia,serif); font-size:19px; color:#fff; }
   .ppm-head .ppm-sub{ display:block; font-size:11.5px; letter-spacing:.14em; text-transform:uppercase; color:var(--gold,#E7B85E); font-weight:700; margin-bottom:3px; }
   .ppm-x{ flex:none; background:rgba(255,255,255,.14); border:0; color:#fff; width:34px; height:34px; border-radius:9px; cursor:pointer; font-size:20px; line-height:1; display:flex; align-items:center; justify-content:center; }
   .ppm-x:hover{ background:rgba(255,255,255,.26); }
-  .ppm-body{ padding:22px 24px 26px; overflow-y:auto; flex:1 1 auto; }
-  /* progress bar */
-  .ppf-prog{ position:sticky; top:0; z-index:6; margin:-22px -24px 16px; padding:11px 24px 10px; background:#FCF9F2; border-bottom:1px solid rgba(0,0,0,.08); }
-  :root[data-theme="dark"] .ppf-prog{ background:#16242F; border-color:#34465A; }
-  .ppf-prog-row{ display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:6px; }
-  .ppf-prog-lab{ font-size:11.5px; font-weight:700; color:var(--ink-soft,#46506E); letter-spacing:.02em; }
-  .ppf-prog-pct{ font-size:11.5px; font-weight:800; color:var(--gold,#b8893a); }
-  .ppf-prog-track{ height:6px; border-radius:999px; background:rgba(10,30,51,.10); overflow:hidden; }
-  :root[data-theme="dark"] .ppf-prog-track{ background:rgba(255,255,255,.12); }
-  .ppf-prog-fill{ height:100%; width:0; border-radius:999px; background:linear-gradient(90deg,var(--gold,#D9A33B),#c8922f); transition:width .3s ease; }
-  /* collapsible sections */
-  .ppf-sec-head{ display:flex; align-items:center; justify-content:space-between; gap:10px; width:100%; background:none; border:0; border-top:1px solid rgba(0,0,0,.08); padding:11px 0 9px; cursor:pointer; text-align:left; font-family:inherit; }
-  :root[data-theme="dark"] .ppf-sec-head{ border-color:rgba(255,255,255,.10); }
-  .ppf-sec:first-of-type .ppf-sec-head{ border-top:0; }
-  .ppf-sec-head .ppf-sec-h{ margin:0; }
-  .ppf-sec-meta{ display:flex; align-items:center; gap:9px; flex:none; }
-  .ppf-sec-count{ font-size:10.5px; font-weight:800; color:var(--ink-soft,#46506E); background:rgba(10,30,51,.07); padding:3px 9px; border-radius:999px; white-space:nowrap; }
-  :root[data-theme="dark"] .ppf-sec-count{ background:rgba(255,255,255,.10); color:#C3CEDC; }
-  .ppf-sec-count.done{ color:#2c6b3f; background:rgba(62,124,79,.16); }
-  :root[data-theme="dark"] .ppf-sec-count.done{ color:#8fdca8; background:rgba(62,124,79,.26); }
-  .ppf-chev2{ width:16px; height:16px; transition:transform .2s; color:var(--ink-soft,#46506E); flex:none; }
-  .ppf-sec.collapsed .ppf-chev2{ transform:rotate(-90deg); }
-  .ppf-sec.collapsed .ppf-sec-body{ display:none; }
-  .ppf-likert-wrap{ overflow-x:auto; -webkit-overflow-scrolling:touch; }
-  /* submit loading + success */
-  .ppf-spin{ width:15px; height:15px; border:2px solid rgba(0,0,0,.28); border-top-color:#1a1a18; border-radius:50%; display:inline-block; animation:ppspin .7s linear infinite; vertical-align:-2px; }
-  @keyframes ppspin{ to{ transform:rotate(360deg); } }
-  .ppf-resend{ margin:16px auto 0; max-width:520px; background:rgba(217,163,59,.12); border:1px solid rgba(217,163,59,.42); border-radius:12px; padding:12px 15px; font-size:12.5px; line-height:1.55; color:var(--ink,#22303f); }
-  :root[data-theme="dark"] .ppf-resend{ color:#E6ECF3; }
+  .ppm-body{ padding:22px 24px 26px; max-height:none; }
+  /* preview content */
   .ppm-prev h4{ font-size:11px; letter-spacing:.18em; text-transform:uppercase; color:var(--gold,#b8893a); margin:18px 0 6px; }
   .ppm-prev ol{ margin:0 0 8px; padding-left:0; list-style:none; counter-reset:s; }
   .ppm-prev ol li{ position:relative; padding:10px 0 10px 40px; border-top:1px solid rgba(0,0,0,.07); counter-increment:s; }
@@ -8149,6 +8121,7 @@ function toggleTheme() {
   .ppm-prev .lede{ font-size:14.5px; line-height:1.6; color:var(--ink,#22303f); margin:0 0 6px; }
   :root[data-theme="dark"] .ppm-prev ol li b, :root[data-theme="dark"] .ppm-prev .lede{ color:#E6ECF3; }
   .ppm-prevfoot{ display:flex; gap:10px; flex-wrap:wrap; margin-top:18px; padding-top:16px; border-top:1px solid rgba(0,0,0,.1); }
+  /* ===== interactive form ===== */
   .ppf-intro{ font-size:13.5px; line-height:1.6; color:var(--ink-soft,#46506E); margin:0 0 18px; }
   .ppf-sec{ margin:0 0 20px; }
   .ppf-sec-h{ font-size:15px; font-weight:800; color:var(--navy,#0A1E33); margin:0 0 3px; }
@@ -8168,6 +8141,7 @@ function toggleTheme() {
   .ppf-chip.on{ background:var(--navy,#0A1E33); border-color:var(--navy,#0A1E33); color:#fff; }
   :root[data-theme="dark"] .ppf-chip{ background:#1B2A38; border-color:#34465A; color:#C3CEDC; }
   :root[data-theme="dark"] .ppf-chip.on{ background:var(--gold,#E2B65A); border-color:var(--gold,#E2B65A); color:#0E1A26; }
+  /* likert table */
   .ppf-likert{ width:100%; border-collapse:collapse; font-size:12.5px; }
   .ppf-likert th{ font-size:10.5px; font-weight:700; color:var(--ink-soft,#46506E); text-align:center; padding:4px 3px; vertical-align:bottom; line-height:1.2; }
   .ppf-likert th.s{ text-align:left; }
@@ -8176,6 +8150,7 @@ function toggleTheme() {
   :root[data-theme="dark"] .ppf-likert td.s{ color:#E6ECF3; }
   .ppf-likert input[type=radio]{ width:17px; height:17px; accent-color:var(--navy,#0A1E33); cursor:pointer; }
   :root[data-theme="dark"] .ppf-likert input[type=radio]{ accent-color:var(--gold,#E2B65A); }
+  /* nps */
   .ppf-nps{ display:flex; flex-wrap:wrap; gap:6px; align-items:center; }
   .ppf-nps label{ cursor:pointer; }
   .ppf-nps .n{ display:inline-flex; align-items:center; justify-content:center; width:32px; height:34px; border:1.5px solid var(--rule,#E4DAC5); border-radius:8px; font-size:13px; font-weight:700; color:#46506E; background:#fff; }
@@ -8199,39 +8174,28 @@ function toggleTheme() {
   @media (max-width:560px){
     .aogpilot .pp-intro{ padding:22px 18px; }
     .ppm-body{ padding:18px 16px 22px; }
-    .ppf-prog{ margin:-18px -16px 14px; padding:11px 16px 10px; }
     .ppf-likert th{ font-size:9px; }
     .ppf-likert td.s, .ppf-likert th.s{ font-size:12px; }
-    .ppf-likert{ min-width:340px; }
-    .ppf-face{ gap:9px; }
-    .ppf-face .f{ min-width:98px; padding:15px 18px; font-size:14px; }
-    .ppf-face .f .em{ font-size:40px; }
-  }
-  @media (max-width:380px){
-    .ppf-face{ flex-direction:column; }
-    .ppf-face label{ width:100%; }
-    .ppf-face .f{ flex-direction:row; justify-content:flex-start; gap:14px; width:100%; box-sizing:border-box; min-width:0; }
-    .ppf-face .f .em{ font-size:32px; }
   }
 </style>
 
 <section id="screen-pilot" class="screen aogpilot">
   <div class="container-wide" style="padding-top:18px;">
     <figure class="aog-page-banner">
-      <img src="pilot-hero.jpg" alt="A diverse team of educators collaborating over laptops during a pilot planning session" loading="lazy" decoding="async" onerror="var f=this.closest('.aog-page-banner'); if(f) f.style.display='none';">
+      <img src="checkin-hero.jpg" alt="A calm, sunlit classroom where students check in at their own pace" loading="lazy" decoding="async" onerror="var f=this.closest('.aog-page-banner'); if(f) f.style.display='none';">
     </figure>
 
     <div class="table-card" style="padding:0; overflow:hidden;">
       <div class="pp-intro">
-        <div class="pp-ey" data-i18n="pp_ey">Pilot Program</div>
-        <h3 class="pp-h" data-i18n="pp_h">Run a pilot with confidence</h3>
-        <p class="pp-lead" data-i18n-html="pp_lead">Everything a school, family, or team needs to try the Universal Check-In &mdash; a five-minute Quick-Start for each role, and a short feedback form you can fill out right here or print. No sign-up, no code. Answers stay on the device by default; your feedback is the only thing you choose to send.</p>
+        <div class="pp-ey">Pilot Program</div>
+        <h3 class="pp-h">Run a pilot with confidence</h3>
+        <p class="pp-lead">Everything a school, family, or team needs to try the Universal Check-In &mdash; a five-minute Quick-Start for each role, and a short feedback form you can fill out right here or print. No sign-up, no code. Answers stay on the device by default; your feedback is the only thing you choose to send.</p>
 
         <div class="pp-steps">
-          <div class="pp-step"><span class="n">1</span><h4 data-i18n="pp_s1t">Pick your role</h4><p data-i18n="pp_s1b">Teacher, specialist, parent, child, adult, or leader &mdash; choose the card that fits you.</p></div>
-          <div class="pp-step"><span class="n">2</span><h4 data-i18n="pp_s2t">Open the Quick-Start</h4><p data-i18n="pp_s2b">Preview it here or download the PDF. About five minutes to your first check-in.</p></div>
-          <div class="pp-step"><span class="n">3</span><h4 data-i18n="pp_s3t">Run the check-in</h4><p data-i18n="pp_s3b">With a class, a child, a team, or just yourself. Nothing is sent anywhere.</p></div>
-          <div class="pp-step"><span class="n">4</span><h4 data-i18n="pp_s4t">Share your read</h4><p data-i18n="pp_s4b">Fill out the feedback form online or on paper. What confused someone or broke is gold.</p></div>
+          <div class="pp-step"><span class="n">1</span><h4>Pick your role</h4><p>Teacher, specialist, parent, child, adult, or leader &mdash; choose the card that fits you.</p></div>
+          <div class="pp-step"><span class="n">2</span><h4>Open the Quick-Start</h4><p>Preview it here or download the PDF. About five minutes to your first check-in.</p></div>
+          <div class="pp-step"><span class="n">3</span><h4>Run the check-in</h4><p>With a class, a child, a team, or just yourself. Nothing is sent anywhere.</p></div>
+          <div class="pp-step"><span class="n">4</span><h4>Share your read</h4><p>Fill out the feedback form online or on paper. What confused someone or broke is gold.</p></div>
         </div>
       </div>
 
@@ -8240,21 +8204,22 @@ function toggleTheme() {
 
         <div class="pp-priv">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-          <span data-i18n-html="pp_priv"><strong>About the online forms:</strong> nothing you type is stored on this site or sent to any server. When you press <em>Send feedback</em>, your own email app opens with the answers filled in, addressed to the project &mdash; you stay in control of what goes. Prefer paper? Every form is also a printable PDF.</span>
+          <span><strong>About the online forms:</strong> nothing you type is stored on this site or sent to any server. When you press <em>Send feedback</em>, your own email app opens with the answers filled in, addressed to the project &mdash; you stay in control of what goes. Prefer paper? Every form is also a printable PDF.</span>
         </div>
 
         <div class="pp-cta">
-          <h3 data-i18n="pp_cta_h">Ready to pilot Architecture of Grace?</h3>
-          <p data-i18n="pp_cta_p">Tell us a little about your school, district, or family and we&rsquo;ll help you set up a pilot &mdash; including licensing, privacy paperwork, and a walkthrough if you&rsquo;d like one.</p>
+          <h3>Ready to pilot Architecture of Grace?</h3>
+          <p>Tell us a little about your school, district, or family and we&rsquo;ll help you set up a pilot &mdash; including licensing, privacy paperwork, and a walkthrough if you&rsquo;d like one.</p>
           <div class="pp-cta-btns">
-            <a href="#" class="pp-b pp-b-gold" style="font-size:14px; padding:13px 22px;" data-i18n-html="pp_cta_b1" onclick="event.preventDefault(); if(typeof aogGoStore==='function'){aogGoStore();}">Request to pilot &rarr;</a>
-            <a href="#" class="pp-b pp-b-ghost" style="font-size:14px; padding:13px 22px; background:transparent; color:#fff; border-color:rgba(255,255,255,.5);" data-i18n-html="pp_cta_b2" onclick="event.preventDefault(); if(typeof aogGoSchools==='function'){aogGoSchools();}">For schools &amp; districts &rarr;</a>
+            <a href="#" class="pp-b pp-b-gold" style="font-size:14px; padding:13px 22px;" onclick="event.preventDefault(); if(typeof aogGoStore==='function'){aogGoStore();}">Request to pilot &rarr;</a>
+            <a href="#" class="pp-b pp-b-ghost" style="font-size:14px; padding:13px 22px; background:transparent; color:#fff; border-color:rgba(255,255,255,.5);" onclick="event.preventDefault(); if(typeof aogGoSchools==='function'){aogGoSchools();}">For schools &amp; districts &rarr;</a>
           </div>
         </div>
       </div>
     </div>
   </div>
 
+  <!-- shared modal shell -->
   <div class="ppm-overlay" id="ppmOverlay" role="dialog" aria-modal="true" aria-labelledby="ppmTitle">
     <div class="ppm">
       <div class="ppm-head">
@@ -8789,7 +8754,7 @@ function toggleTheme() {
       <a href="#" onclick="event.preventDefault(); openGuide();" data-i18n="w_door_guide">Explore the Guide &amp; Library</a>
       <a href="#" onclick="event.preventDefault(); startChoose();" data-i18n="lobby_checkin_t">Take the Check-In</a>
       <a href="#" onclick="event.preventDefault(); if(typeof aogGoSchools==='function'){aogGoSchools();}" data-i18n="aog_schools_foot">For Schools &amp; Districts</a>
-      <a href="#" onclick="event.preventDefault(); if(typeof aogGoPilot==='function'){aogGoPilot();}" data-i18n="pp_nav">Pilot Program</a>
+      <a href="#" onclick="event.preventDefault(); if(typeof aogGoPilot==='function'){aogGoPilot();}">Pilot Program</a>
       <a href="#" onclick="event.preventDefault(); openAdmin();" data-i18n="w_door_results">Educator Access &middot; Results</a>
       <a href="#" onclick="event.preventDefault(); openPrivacy();" data-i18n="pv_foot_link">Privacy &amp; your data</a>
     </div>
@@ -10323,8 +10288,8 @@ const I18N_UI = {
     es: "Nombre (opcional)"
   },
   voi_msg_ph: {
-    en: "What did the check-in open up? A moment, a conversation, a change you noticed…",
-    es: "¿Qué abrió el chequeo? Un momento, una conversación, un cambio que notaste…"
+    en: "Share your experience…",
+    es: "Comparte tu experiencia…"
   },
   voi_post: {
     en: "Post to the wall",
@@ -14342,7 +14307,7 @@ function voicesRender(_0x33b762) {
     return;
   }
   if (!_0x33b762.length) {
-    _0x208f6d.innerHTML = "<p class=\"voi-empty\">" + DT("No voices yet — yours could be the first. Tell us how the check-in landed for your students, your family, or you.", "Aún no hay voces — la tuya podría ser la primera. Cuéntanos cómo te fue el chequeo con tus estudiantes, tu familia o contigo.") + "</p>";
+    _0x208f6d.innerHTML = "<p class=\"voi-empty\">" + DT("No posts yet — be the first to share.", "Aún no hay publicaciones — sé el primero en compartir.") + "</p>";
     return;
   }
   var _0x5e127a = {
@@ -20085,12 +20050,12 @@ function aogBindStore(root){
       /* ===== School & district readiness micro-copy (added 2026-06-14) ===== */
       I18N_UI.hyb_classline    = {en:'Built for classrooms. Share via link or QR in seconds. No student accounts or logins needed.', es:'Hecho para el aula. Compártelo por enlace o código QR en segundos. Sin cuentas ni inicios de sesión para el estudiante.'};
       I18N_UI.hp_bridge        = {en:'These four pillars run through the check-in, lessons, novels, and conversations — so a flagged need maps directly to the <strong>exact</strong> support a student needs.', es:'Estos cuatro pilares recorren el chequeo, las lecciones, las novelas y las conversaciones — de modo que una necesidad señalada apunta directamente al apoyo <strong>exacto</strong> que un estudiante necesita.'};
-      I18N_UI.dm_rollout       = {en:'<strong style="color:#ffffff;">Low-effort rollout:</strong> Start with one class or grade band. Scale across buildings using shared links and your own Google Sheets.', es:'<strong style="color:#ffffff;">Implementación de bajo esfuerzo:</strong> Empieza con una sola clase o nivel. Crece entre edificios con enlaces compartidos y tus propias Hojas de cálculo de Google.'};
+      I18N_UI.dm_rollout       = {en:'<strong style="color:var(--navy);">Low-effort rollout:</strong> Start with one class or grade band. Scale across buildings using shared links and your own Google Sheets.', es:'<strong style="color:var(--navy);">Implementación de bajo esfuerzo:</strong> Empieza con una sola clase o nivel. Crece entre edificios con enlaces compartidos y tus propias Hojas de cálculo de Google.'};
       I18N_UI.dm_ad_aggregate  = {en:'Leadership sees only aggregate trends — never individual student responses.', es:'El liderazgo ve solo tendencias agregadas — nunca las respuestas individuales de los estudiantes.'};
       I18N_UI.w_reassure_sync  = {en:'(School-controlled sync to your Google Sheet is optional and off by default.)', es:'(La sincronización controlada por la escuela con tu Hoja de cálculo de Google es opcional y está desactivada de forma predeterminada.)'};
       I18N_UI.wp_staff_note    = {en:'Voluntary adult check-ins available for staff wellness — no evaluation or surveillance.', es:'Chequeos voluntarios para adultos disponibles para el bienestar del personal — sin evaluación ni vigilancia.'};
       I18N_UI.dm_ad_notes_ey   = {en:'Easy to start, ready to scale', es:'Fácil de empezar, listo para crecer'};
-      I18N_UI.dm_ad_scale      = {en:'<strong style="color:#ffffff;">District scale:</strong> License available via purchase order for multi-building use.', es:'<strong style="color:#ffffff;">Escala de distrito:</strong> Licencia disponible mediante orden de compra para uso en varios edificios.'};
+      I18N_UI.dm_ad_scale      = {en:'<strong style="color:var(--navy);">District scale:</strong> License available via purchase order for multi-building use.', es:'<strong style="color:var(--navy);">Escala de distrito:</strong> Licencia disponible mediante orden de compra para uso en varios edificios.'};
       I18N_UI.dm_ad_train      = {en:'SEL coordinators can use demo data to train staff quickly before going live with real students.', es:'Los coordinadores de SEL pueden usar datos de demostración para capacitar al personal rápidamente antes de empezar con estudiantes reales.'};
       I18N_UI.aog_schools_nav  = {en:'For Schools', es:'Para escuelas'};
       I18N_UI.aog_schools_foot = {en:'For Schools & Districts', es:'Para escuelas y distritos'};
@@ -26584,11 +26549,9 @@ window.addEventListener('load', _installToolScreenHook);
 .aog-sus-tbl th{ text-align:left; font-size:11px; letter-spacing:.06em; text-transform:uppercase; color:var(--ink-faint); padding:6px 10px; border-bottom:1px solid var(--rule); }
 .aog-sus-tbl td{ padding:11px 10px; border-bottom:1px solid var(--rule); color:var(--ink); }
 .aog-sus-tbl td:first-child{ font-weight:700; color:var(--navy); }
-.aog-sus-tbl .sus-up{ display:inline-block; color:#13692f; background:rgba(33,138,67,.15); font-weight:800; font-size:11px; padding:1px 7px; border-radius:999px; white-space:nowrap; }
-.aog-sus-tbl .sus-dn{ display:inline-block; color:#a4201a; background:rgba(176,38,30,.13); font-weight:800; font-size:11px; padding:1px 7px; border-radius:999px; white-space:nowrap; }
-.aog-sus-tbl .sus-fl{ display:inline-block; color:var(--ink-soft); font-weight:700; font-size:11px; }
-:root[data-theme="dark"] .aog-sus-tbl .sus-up{ color:#86e0a0; background:rgba(33,138,67,.26); }
-:root[data-theme="dark"] .aog-sus-tbl .sus-dn{ color:#f4a8a0; background:rgba(176,38,30,.30); }
+.aog-sus-tbl .sus-up{ color:var(--green); font-weight:700; font-size:11.5px; }
+.aog-sus-tbl .sus-dn{ color:var(--red); font-weight:700; font-size:11.5px; }
+.aog-sus-tbl .sus-fl{ color:var(--ink-faint); }
 .aog-sus-key{ font-size:11px; color:var(--ink-faint); margin:8px 0 0; line-height:1.5; }
 .aog-sus-sent{ font-size:12px; color:var(--gold-deep,#9a6f24); margin-top:10px; line-height:1.6; }
 /* fidelity intro script */
@@ -27066,9 +27029,9 @@ window.addEventListener('load', _installToolScreenHook);
       var v = (cur==null) ? "—" : Math.round(cur);
       if (prev==null || cur==null) return "" + v;
       var d = Math.round(cur - prev);
-      if (d > 0) return v + " <span class=\"sus-up\">▲&nbsp;+" + d + "</span>";
-      if (d < 0) return v + " <span class=\"sus-dn\">▼&nbsp;-" + Math.abs(d) + "</span>";
-      return v + " <span class=\"sus-fl\">→&nbsp;0</span>";
+      if (d > 0) return v + " <span class=\"sus-up\">▲" + d + "</span>";
+      if (d < 0) return v + " <span class=\"sus-dn\">▼" + Math.abs(d) + "</span>";
+      return v + " <span class=\"sus-fl\">•</span>";
     }
     var prev = null;
     var trs = rows.map(function(r){
@@ -27128,93 +27091,8 @@ window.addEventListener('load', _installToolScreenHook);
   "use strict";
   var PILOT_EMAIL = "whytheschooloflife@gmail.com";
   var PDIR = "pilot/";
-  function T(en,es){ return {en:en, es:es}; }
-  function curLang(){ try{ return (window.lang==='es')?'es':'en'; }catch(e){ return 'en'; } }
-  function tx(v){ return (v && typeof v==='object' && ('en' in v)) ? (v[curLang()]!=null?v[curLang()]:v.en) : v; }
 
-  /* ---------- static-chrome Spanish (registered into the site's I18N_UI) ---------- */
-  var PILOT_I18N = {
-    pp_nav:{en:'Pilot Program', es:'Programa piloto'},
-    pp_ey:{en:'Pilot Program', es:'Programa piloto'},
-    pp_h:{en:'Run a pilot with confidence', es:'Lleva a cabo un piloto con confianza'},
-    pp_lead:{en:'Everything a school, family, or team needs to try the Universal Check-In — a five-minute Quick-Start for each role, and a short feedback form you can fill out right here or print. No sign-up, no code. Answers stay on the device by default; your feedback is the only thing you choose to send.',
-             es:'Todo lo que una escuela, familia o equipo necesita para probar el Chequeo Universal: una Guía rápida de cinco minutos para cada rol y un breve formulario de comentarios que puedes completar aquí mismo o imprimir. Sin registro, sin código. Las respuestas se quedan en el dispositivo por defecto; tus comentarios son lo único que eliges enviar.'},
-    pp_s1t:{en:'Pick your role', es:'Elige tu rol'},
-    pp_s1b:{en:'Teacher, specialist, parent, child, adult, or leader — choose the card that fits you.', es:'Docente, especialista, familia, niño, adulto o líder: elige la tarjeta que te corresponde.'},
-    pp_s2t:{en:'Open the Quick-Start', es:'Abre la Guía rápida'},
-    pp_s2b:{en:'Preview it here or download the PDF. About five minutes to your first check-in.', es:'Míralo aquí o descarga el PDF. Unos cinco minutos hasta tu primer chequeo.'},
-    pp_s3t:{en:'Run the check-in', es:'Haz el chequeo'},
-    pp_s3b:{en:'With a class, a child, a team, or just yourself. Nothing is sent anywhere.', es:'Con una clase, un niño, un equipo o solo contigo. No se envía nada a ningún lugar.'},
-    pp_s4t:{en:'Share your read', es:'Comparte tu opinión'},
-    pp_s4b:{en:'Fill out the feedback form online or on paper. What confused someone or broke is gold.', es:'Completa el formulario de comentarios en línea o en papel. Lo que confundió a alguien o falló vale oro.'},
-    pp_priv:{en:'<strong>About the online forms:</strong> nothing you type is stored on this site or sent to any server. When you press <em>Send feedback</em>, your own email app opens with the answers filled in, addressed to the project — you stay in control of what goes. Prefer paper? Every form is also a printable PDF.',
-             es:'<strong>Sobre los formularios en línea:</strong> nada de lo que escribes se guarda en este sitio ni se envía a ningún servidor. Al pulsar <em>Enviar comentarios</em>, se abre tu propia app de correo con las respuestas completadas y dirigida al proyecto: tú decides qué se envía. ¿Prefieres papel? Cada formulario también es un PDF para imprimir.'},
-    pp_cta_h:{en:'Ready to pilot Architecture of Grace?', es:'¿Listo para hacer un piloto de Architecture of Grace?'},
-    pp_cta_p:{en:'Tell us a little about your school, district, or family and we’ll help you set up a pilot — including licensing, privacy paperwork, and a walkthrough if you’d like one.',
-              es:'Cuéntanos un poco sobre tu escuela, distrito o familia y te ayudaremos a preparar un piloto, incluyendo licencias, los documentos de privacidad y una orientación guiada si la deseas.'},
-    pp_cta_b1:{en:'Request to pilot &rarr;', es:'Solicitar un piloto &rarr;'},
-    pp_cta_b2:{en:'For schools &amp; districts &rarr;', es:'Para escuelas y distritos &rarr;'},
-    /* legal block */
-    lg_ey:{en:'For schools &amp; districts', es:'Para escuelas y distritos'},
-    lg_h:{en:'Privacy &amp; legal documents', es:'Documentos de privacidad y legales'},
-    lg_sub:{en:'Everything your IT, privacy, and legal teams need to evaluate the check-in — written in plain language for busy administrators. All are PDFs you can download, share, and review.',
-            es:'Todo lo que tus equipos de TI, privacidad y legal necesitan para evaluar el chequeo, en lenguaje claro para administradores ocupados. Todos son PDF que puedes descargar, compartir y revisar.'},
-    lg_d1h:{en:'Data Privacy Agreement (DPA)', es:'Acuerdo de privacidad de datos (DPA)'},
-    lg_d1p:{en:'A ready-to-edit DPA modeled on the SDPC national template — a starting draft for your counsel, covering FERPA, COPPA, and PPRA.',
-            es:'Un DPA listo para editar, basado en la plantilla nacional del SDPC: un borrador inicial para tu asesoría legal, que cubre FERPA, COPPA y PPRA.'},
-    lg_d2h:{en:'IT Deployment Guide', es:'Guía de implementación para TI'},
-    lg_d2p:{en:'Step-by-step setup for your IT team, including the optional Google Sheets sync script. The data lives in your Google, under your control — no servers of ours.',
-            es:'Configuración paso a paso para tu equipo de TI, incluido el script opcional de sincronización con Hojas de Google. Los datos viven en tu Google, bajo tu control; sin servidores nuestros.'},
-    lg_d3h:{en:'Data &amp; Privacy Statement', es:'Declaración de datos y privacidad'},
-    lg_d3p:{en:'A plain-language summary of what is collected, where it lives, and the on-device-by-default design — the quick read for a privacy review.',
-            es:'Un resumen en lenguaje claro de qué se recopila, dónde vive y el diseño en el dispositivo por defecto: la lectura rápida para una revisión de privacidad.'},
-    lg_d4h:{en:'How to Drop Everything In', es:'Cómo integrarlo todo'},
-    lg_d4p:{en:'The fast implementation guide — how to get the whole check-in running in your environment, start to finish.',
-            es:'La guía de implementación rápida: cómo poner en marcha todo el chequeo en tu entorno, de principio a fin.'},
-    lg_dl:{en:'Download PDF', es:'Descargar PDF'},
-    lg_foot1:{en:'Explore the Pilot Program &rarr;', es:'Explora el Programa piloto &rarr;'},
-    lg_foot2:{en:'Read the full Privacy page &rarr;', es:'Lee la página completa de Privacidad &rarr;'},
-    lg_disc:{en:'The DPA is a draft template for discussion, not legal advice; have it reviewed by qualified counsel for your LEA and jurisdiction before signing.',
-             es:'El DPA es una plantilla preliminar para discusión, no asesoría legal; haz que un abogado calificado lo revise para tu LEA y jurisdicción antes de firmarlo.'}
-  };
-
-  /* ---------- UI strings (dynamic) ---------- */
-  var UI = {
-    quickstart:T('Quick-Start','Guía rápida'), feedback:T('Feedback','Comentarios'),
-    preview:T('Preview','Vista previa'), pdf:T('PDF','PDF'),
-    fill:T('Fill out online','Completar en línea'), printpdf:T('Print PDF','PDF para imprimir'),
-    subFb:T('Feedback · about 5–8 min','Comentarios · unos 5–8 min'),
-    subQs:T('Quick-Start','Guía rápida'),
-    dlQs:T('Download Quick-Start (PDF)','Descargar Guía rápida (PDF)'),
-    goForm:T('Go to feedback form &rarr;','Ir al formulario de comentarios &rarr;'),
-    send:T('Send feedback &rarr;','Enviar comentarios &rarr;'),
-    privMini:T('Your answers aren’t saved on this site. Pressing <b>Send feedback</b> opens your email app with everything filled in.','Tus respuestas no se guardan en este sitio. Al pulsar <b>Enviar comentarios</b> se abre tu app de correo con todo completado.'),
-    doneH:T('Thank you — your email is ready','Gracias: tu correo está listo'),
-    doneP:T('Your email app should have opened with your answers filled in, addressed to the project. Just press <b>send</b> in your email app to finish. Didn’t open, or no email app on this device? Use a button below.','Tu app de correo debería haberse abierto con tus respuestas completadas y dirigida al proyecto. Solo pulsa <b>enviar</b> en tu app de correo para terminar. ¿No se abrió, o no hay app de correo en este dispositivo? Usa un botón abajo.'),
-    openAgain:T('Open email again','Abrir el correo de nuevo'),
-    copy:T('Copy my answers','Copiar mis respuestas'), copied:T('Copied ✓','Copiado ✓'),
-    done:T('Done','Listo'),
-    copyNote:T('If you copy your answers, you can paste them into an email to <b>'+PILOT_EMAIL+'</b> yourself.','Si copias tus respuestas, puedes pegarlas tú mismo en un correo a <b>'+PILOT_EMAIL+'</b>.'),
-    mailHdr:T('Architecture of Grace — Universal Check-In pilot feedback','Architecture of Grace — Comentarios del piloto del Chequeo Universal'),
-    mailForm:T('Form','Formulario'), mailDate:T('Date submitted','Fecha de envío'),
-    mailFoot:T('(Sent from the pilot form on architectureofgrace.org)','(Enviado desde el formulario del piloto en architectureofgrace.org)'),
-    noAns:T('(no answer)','(sin respuesta)'), none:T('(none)','(ninguna)'), blank:T('(blank)','(en blanco)'),
-    subj:T('AoG Pilot Feedback','Comentarios del piloto AoG'),
-    progLab:T('Your progress','Tu progreso'),
-    preparing:T('Preparing email…','Preparando el correo…'),
-    resend:T('<b>Still need to send?</b> Your email app should be open — just press send there. No email app on this device? Use <b>Copy my answers</b> and paste them into an email to <b>'+PILOT_EMAIL+'</b>.','<b>¿Aún falta enviar?</b> Tu app de correo debería estar abierta: solo pulsa enviar allí. ¿No hay app de correo en este dispositivo? Usa <b>Copiar mis respuestas</b> y pégalas en un correo a <b>'+PILOT_EMAIL+'</b>.')
-  };
-
-  /* ---------- audience cards ---------- */
-  var CARDS = [
-    {key:'teacher', title:T('Teachers &amp; Educators','Docentes y educadores'), who:T('Run the check-in with a class and read the group at a glance.','Haz el chequeo con una clase y lee al grupo de un vistazo.'), qs:'AoG-QuickStart-Teacher.pdf', fb:'AoG-Feedback-Teacher.pdf', form:'teacher'},
-    {key:'specialist', title:T('Specialists &amp; Support Staff','Especialistas y personal de apoyo'), who:T('Counselors, psychologists, social workers, SLPs, OTs, and behavior staff working across tiers.','Consejeros, psicólogos, trabajadores sociales, fonoaudiólogos, terapeutas ocupacionales y personal de conducta que trabajan en todos los niveles.'), qs:'AoG-QuickStart-Specialist.pdf', fb:'AoG-Feedback-Specialist.pdf', form:'specialist'},
-    {key:'parent', title:T('Parents &amp; Families','Familias y cuidadores'), who:T('Five quiet minutes with your child at home, with conversation starters you can print.','Cinco minutos tranquilos con tu hijo en casa, con preguntas para conversar que puedes imprimir.'), qs:'AoG-QuickStart-Parent.pdf', fb:'AoG-Feedback-Parent.pdf', form:'parent'},
-    {key:'child', title:T('Children (simplified)','Niños (versión simple)'), who:T('A kid-friendly version with faces and short questions — given by a parent or teacher.','Una versión para niños con caritas y preguntas cortas, guiada por una familia o un docente.'), qs:null, fb:'AoG-Feedback-Child.pdf', form:'child', note:T('Set it up using the Parent or Teacher Quick-Start.','Configúralo con la Guía rápida de familias o de docentes.')},
-    {key:'adult', title:T('Adults (self-use)','Adultos (uso personal)'), who:T('A private check-in for the grown-up in the room — a mirror, not a report.','Un chequeo privado para el adulto presente: un espejo, no un informe.'), qs:'AoG-QuickStart-Adult.pdf', fb:'AoG-Feedback-Adult.pdf', form:'adult'},
-    {key:'leader', title:T('Leadership','Liderazgo'), who:T('Principals, curriculum &amp; SEL directors, and MTSS coordinators — a five-minute look built around the decision.','Directores, coordinadores de currículo y SEL, y coordinadores de MTSS: una mirada de cinco minutos centrada en la decisión.'), qs:'AoG-QuickStart-Leadership.pdf', fb:null, form:'leader', note:T('Leadership feedback is an online form for now.','Por ahora, los comentarios de liderazgo se recogen en un formulario en línea.')}
-  ];
-
+  /* ---------- icons ---------- */
   var IC = {
     teacher:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>',
     specialist:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/><path d="M19 8l2 2-2 2"/></svg>',
@@ -27224,233 +27102,239 @@ window.addEventListener('load', _installToolScreenHook);
     leader:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"/><path d="M5 21V7l7-4 7 4v14"/><path d="M9 9h.01M15 9h.01M9 13h.01M15 13h.01"/></svg>'
   };
 
-  /* ---------- Quick-Start previews ---------- */
+  /* ---------- audience cards ---------- */
+  var CARDS = [
+    {key:'teacher', title:'Teachers &amp; Educators', who:'Run the check-in with a class and read the group at a glance.', qs:'AoG-QuickStart-Teacher.pdf', fb:'AoG-Feedback-Teacher.pdf', form:'teacher'},
+    {key:'specialist', title:'Specialists &amp; Support Staff', who:'Counselors, psychologists, social workers, SLPs, OTs, and behavior staff working across tiers.', qs:'AoG-QuickStart-Specialist.pdf', fb:'AoG-Feedback-Specialist.pdf', form:'specialist'},
+    {key:'parent', title:'Parents &amp; Families', who:'Five quiet minutes with your child at home, with conversation starters you can print.', qs:'AoG-QuickStart-Parent.pdf', fb:'AoG-Feedback-Parent.pdf', form:'parent'},
+    {key:'child', title:'Children (simplified)', who:'A kid-friendly version with faces and short questions — given by a parent or teacher.', qs:null, fb:'AoG-Feedback-Child.pdf', form:'child', note:'Set it up using the Parent or Teacher Quick-Start.'},
+    {key:'adult', title:'Adults (self-use)', who:'A private check-in for the grown-up in the room — a mirror, not a report.', qs:'AoG-QuickStart-Adult.pdf', fb:'AoG-Feedback-Adult.pdf', form:'adult'},
+    {key:'leader', title:'Leadership', who:'Principals, curriculum &amp; SEL directors, and MTSS coordinators — a five-minute look built around the decision.', qs:'AoG-QuickStart-Leadership.pdf', fb:null, form:'leader', note:'Leadership feedback is an online form for now.'}
+  ];
+
+  /* ---------- Quick-Start preview content ---------- */
   var QS = {
-    teacher:{lede:T('Run your first check-in in about five minutes. No login, no code.','Haz tu primer chequeo en unos cinco minutos. Sin cuenta, sin código.'), steps:[
-      [T('Open the site','Abre el sitio'),T('Go to architectureofgrace.org on a laptop, tablet, phone, or interactive board. It works offline once it has loaded.','Entra a architectureofgrace.org en una computadora, tableta, teléfono o pizarra interactiva. Funciona sin conexión una vez que ha cargado.')],
-      [T('Start a check-in','Inicia un chequeo'),T('Tap <b>Take the Check-In</b>, choose <b>Student Check-In</b>, then select a grade band and <b>Quick</b> or <b>Thorough</b> mode.','Toca <b>Hacer el Chequeo</b>, elige <b>Chequeo del estudiante</b>, luego selecciona un nivel de grado y el modo <b>Rápido</b> o <b>Completo</b>.')],
-      [T('Let students answer','Deja que respondan'),T('Students can use their own devices or pass one around. Their answers stay on each device — nothing is sent anywhere.','Los estudiantes pueden usar sus propios dispositivos o pasar uno. Sus respuestas se quedan en cada dispositivo: no se envía nada.')],
-      [T('Read the group','Lee al grupo'),T('Open the <b>Dashboard</b> (top bar) → Overview and Class trends. Individual scores stay private on purpose.','Abre el <b>Panel</b> (barra superior) → Resumen y Tendencias de la clase. Los puntajes individuales se mantienen privados a propósito.')],
-      [T('See the tiers','Ve los niveles'),T('Go to <b>Dashboard → MTSS Report</b> (gold button). No data yet? Tap <b>Load demo data</b> to explore it instantly.','Ve a <b>Panel → Informe MTSS</b> (botón dorado). ¿Aún sin datos? Toca <b>Cargar datos de ejemplo</b> para explorarlo al instante.')]
-    ], close:T('Then fill out the Teacher Feedback Form — what confused a student or broke is the most useful thing you can tell us.','Luego completa el Formulario de comentarios del docente: lo que confundió a un estudiante o falló es lo más útil que puedes contarnos.')},
-    specialist:{lede:T('A five-minute orientation for counselors, psychologists, social workers, SLPs, OTs, and behavior staff.','Una orientación de cinco minutos para consejeros, psicólogos, trabajadores sociales, fonoaudiólogos, terapeutas ocupacionales y personal de conducta.'), steps:[
-      [T('Open the site','Abre el sitio'),T('Go to architectureofgrace.org (laptop, tablet, or phone). It works offline once loaded.','Entra a architectureofgrace.org (computadora, tableta o teléfono). Funciona sin conexión una vez cargado.')],
-      [T('See how it connects','Mira cómo conecta'),T('Tap <b>Explore the Framework</b> — the four pillars and how one answer becomes a next step.','Toca <b>Explora el marco</b>: los cuatro pilares y cómo una respuesta se convierte en un siguiente paso.')],
-      [T('Run a check-in','Haz un chequeo'),T('Take the Check-In → Student Check-In → grade band → Quick or Thorough, with a student you support.','Hacer el Chequeo → Chequeo del estudiante → nivel de grado → Rápido o Completo, con un estudiante que apoyas.')],
-      [T('Open the MTSS report','Abre el informe MTSS'),T('Dashboard → <b>MTSS Report</b> (gold button) for tier movement and an auto summary. No data? Load demo data.','Panel → <b>Informe MTSS</b> (botón dorado) para ver el movimiento entre niveles y un resumen automático. ¿Sin datos? Carga datos de ejemplo.')],
-      [T('Find the materials','Encuentra los materiales'),T('The Library maps lessons, anchor charts, and scenario cards to each need.','La Biblioteca relaciona lecciones, láminas y tarjetas de escenarios con cada necesidad.')]
-    ], close:T('Then fill out the Specialists &amp; Support Staff Feedback Form.','Luego completa el Formulario de comentarios de especialistas y personal de apoyo.')},
-    parent:{lede:T('Five quiet minutes with your child. Everything stays private on your device.','Cinco minutos tranquilos con tu hijo. Todo se queda privado en tu dispositivo.'), steps:[
-      [T('Open the site','Abre el sitio'),T('Go to architectureofgrace.org on your phone, tablet, or computer.','Entra a architectureofgrace.org en tu teléfono, tableta o computadora.')],
-      [T('Set up Family Mode','Configura el Modo Familia'),T('Tap <b>Take the Check-In → Family Mode</b>, and add each child once.','Toca <b>Hacer el Chequeo → Modo Familia</b> y agrega a cada hijo una vez.')],
-      [T('Check in together','Hagan el chequeo juntos'),T('Let your child answer honestly — there are no wrong answers.','Deja que tu hijo responda con sinceridad: no hay respuestas incorrectas.')],
-      [T('Talk it through','Conversen'),T('Read the results together and use the conversation starters (you can print them).','Lean juntos los resultados y usen las preguntas para conversar (puedes imprimirlas).')],
-      [T('Make it theirs','Hazlo suyo'),T('Nothing is sent anywhere. Use <b>Personalize</b> (sliders icon) to set the Word of Grace to Child or Teen.','No se envía nada. Usa <b>Personalizar</b> (icono de controles) para ajustar la Palabra de Gracia a Niño o Adolescente.')]
-    ], close:T('Then fill out the Parent Feedback Form.','Luego completa el Formulario de comentarios de familias.')},
-    adult:{lede:T('A private check-in for the adult in the room. About five minutes — a mirror, not a report.','Un chequeo privado para el adulto presente. Unos cinco minutos: un espejo, no un informe.'), steps:[
-      [T('Open the site','Abre el sitio'),T('Go to architectureofgrace.org.','Entra a architectureofgrace.org.')],
-      [T('Take it for yourself','Hazlo para ti'),T('Tap <b>Take the Check-In → For grown-ups &amp; teams</b>, then <b>Quick</b> or <b>Thorough</b>.','Toca <b>Hacer el Chequeo → Para adultos y equipos</b>, luego <b>Rápido</b> o <b>Completo</b>.')],
-      [T('Answer honestly','Responde con sinceridad'),T('Nothing is shared; your responses stay on your device.','No se comparte nada; tus respuestas se quedan en tu dispositivo.')],
-      [T('Catch your breath','Toma un respiro'),T('Read your results, and try a tool from the Tools menu (breathing, Take 5) if you’d like.','Lee tus resultados y prueba una herramienta del menú de Herramientas (respiración, Take 5) si quieres.')],
-      [T('Make it yours','Hazlo tuyo'),T('Use <b>Personalize</b> (sliders icon) — set the Word of Grace to Adult and pick an accent color.','Usa <b>Personalizar</b> (icono de controles): ajusta la Palabra de Gracia a Adulto y elige un color de acento.')]
-    ], close:T('Then fill out the Adult Feedback Form.','Luego completa el Formulario de comentarios de adultos.')},
-    leader:{lede:T('A five-minute look built around the decision, not the classroom.','Una mirada de cinco minutos centrada en la decisión, no en el aula.'), steps:[
-      [T('See the why','Ve el porqué'),T('Go to architectureofgrace.org and tap <b>Explore the Framework</b> — the four pillars and how one answer becomes a next step.','Entra a architectureofgrace.org y toca <b>Explora el marco</b>: los cuatro pilares y cómo una respuesta se convierte en un siguiente paso.')],
-      [T('Explore with demo data','Explora con datos de ejemplo'),T('Open the <b>Dashboard</b>, then <b>Load demo data</b> to see Overview and Class trends on a sample group.','Abre el <b>Panel</b> y luego <b>Cargar datos de ejemplo</b> para ver Resumen y Tendencias de la clase en un grupo de muestra.')],
-      [T('Open the MTSS report','Abre el informe MTSS'),T('Dashboard → <b>MTSS Report</b> (gold button): Individual / Class / School-wide, tier movement, auto summary, CSV + print cover.','Panel → <b>Informe MTSS</b> (botón dorado): Individual / Clase / Toda la escuela, movimiento entre niveles, resumen automático, CSV + portada para imprimir.')],
-      [T('Check the data story','Revisa el tema de los datos'),T('Privacy is on-device by default — no account, no login. Schools can optionally sync to their own Google Sheet. See Export &amp; data.','La privacidad es en el dispositivo por defecto: sin cuenta, sin inicio de sesión. Las escuelas pueden sincronizar opcionalmente con su propia Hoja de Google. Ve Exportar y datos.')],
-      [T('Picture rollout','Imagina la implementación'),T('The <b>Distribute</b> tab makes a link or QR for a class — no code, no login. The Library and Store hold the curriculum.','La pestaña <b>Distribuir</b> crea un enlace o QR para una clase, sin código ni inicio de sesión. La Biblioteca y la Tienda contienen el currículo.')]
-    ], close:T('Then share your read on reporting, privacy, and rollout — it’s what moves this from promising to adopted.','Luego comparte tu opinión sobre informes, privacidad e implementación: es lo que lleva esto de prometedor a adoptado.')}
+    teacher:{lede:'Run your first check-in in about five minutes. No login, no code.', steps:[
+      ['Open the site','Go to architectureofgrace.org on a laptop, tablet, phone, or interactive board. It works offline once it has loaded.'],
+      ['Start a check-in','Tap <b>Take the Check-In</b>, choose <b>Student Check-In</b>, then select a grade band and <b>Quick</b> or <b>Thorough</b> mode.'],
+      ['Let students answer','Students can use their own devices or pass one around. Their answers stay on each device &mdash; nothing is sent anywhere.'],
+      ['Read the group','Open the <b>Dashboard</b> (top bar) &rarr; Overview and Class trends. Individual scores stay private on purpose.'],
+      ['See the tiers','Go to <b>Dashboard &rarr; MTSS Report</b> (gold button). No data yet? Tap <b>Load demo data</b> to explore it instantly.']
+    ], close:'Then fill out the Teacher Feedback Form &mdash; what confused a student or broke is the most useful thing you can tell us.'},
+    specialist:{lede:'A five-minute orientation for counselors, psychologists, social workers, SLPs, OTs, and behavior staff.', steps:[
+      ['Open the site','Go to architectureofgrace.org (laptop, tablet, or phone). It works offline once loaded.'],
+      ['See how it connects','Tap <b>Explore the Framework</b> &mdash; the four pillars and how one answer becomes a next step.'],
+      ['Run a check-in','Take the Check-In &rarr; Student Check-In &rarr; grade band &rarr; Quick or Thorough, with a student you support.'],
+      ['Open the MTSS report','Dashboard &rarr; <b>MTSS Report</b> (gold button) for tier movement and an auto summary. No data? Load demo data.'],
+      ['Find the materials','The Library maps lessons, anchor charts, and scenario cards to each need.']
+    ], close:'Then fill out the Specialists &amp; Support Staff Feedback Form.'},
+    parent:{lede:'Five quiet minutes with your child. Everything stays private on your device.', steps:[
+      ['Open the site','Go to architectureofgrace.org on your phone, tablet, or computer.'],
+      ['Set up Family Mode','Tap <b>Take the Check-In &rarr; Family Mode</b>, and add each child once.'],
+      ['Check in together','Let your child answer honestly &mdash; there are no wrong answers.'],
+      ['Talk it through','Read the results together and use the conversation starters (you can print them).'],
+      ['Make it theirs','Nothing is sent anywhere. Use <b>Personalize</b> (sliders icon) to set the Word of Grace to Child or Teen.']
+    ], close:'Then fill out the Parent Feedback Form.'},
+    adult:{lede:'A private check-in for the adult in the room. About five minutes &mdash; a mirror, not a report.', steps:[
+      ['Open the site','Go to architectureofgrace.org.'],
+      ['Take it for yourself','Tap <b>Take the Check-In &rarr; For grown-ups &amp; teams</b>, then <b>Quick</b> or <b>Thorough</b>.'],
+      ['Answer honestly','Nothing is shared; your responses stay on your device.'],
+      ['Catch your breath','Read your results, and try a tool from the Tools menu (breathing, Take 5) if you’d like.'],
+      ['Make it yours','Use <b>Personalize</b> (sliders icon) &mdash; set the Word of Grace to Adult and pick an accent color.']
+    ], close:'Then fill out the Adult Feedback Form.'},
+    leader:{lede:'A five-minute look built around the decision, not the classroom.', steps:[
+      ['See the why','Go to architectureofgrace.org and tap <b>Explore the Framework</b> &mdash; the four pillars and how one answer becomes a next step.'],
+      ['Explore with demo data','Open the <b>Dashboard</b>, then <b>Load demo data</b> to see Overview and Class trends on a sample group.'],
+      ['Open the MTSS report','Dashboard &rarr; <b>MTSS Report</b> (gold button): Individual / Class / School-wide, tier movement, auto summary, CSV + print cover.'],
+      ['Check the data story','Privacy is on-device by default &mdash; no account, no login. Schools can optionally sync to their own Google Sheet. See Export &amp; data.'],
+      ['Picture rollout','The <b>Distribute</b> tab makes a link or QR for a class &mdash; no code, no login. The Library and Store hold the curriculum.']
+    ], close:'Then share your read on reporting, privacy, and rollout &mdash; it’s what moves this from promising to adopted.'}
   };
 
-  /* ---------- scales ---------- */
-  var S5 = [T('Strongly disagree','Muy en desacuerdo'),T('Disagree','En desacuerdo'),T('Neutral','Neutral'),T('Agree','De acuerdo'),T('Strongly agree','Muy de acuerdo')];
-  var S3 = [T('Yes!','¡Sí!'),T('Kind of','Más o menos'),T('Not really','La verdad no')];
-  function L(rows){ return {type:'likert', scale:S5, rows:rows}; }
-  var YMN = [T('Yes','Sí'),T('Maybe','Quizás'),T('No','No')];
-  var LANGOPT = [T('English','Inglés'),T('Spanish','Español'),T('Both','Ambos')];
-  var npsL = T('Not likely','Nada probable'), npsR = T('Extremely likely','Muy probable');
-  var GRADES6 = ['K–2','3–5','6–8','9–10','11–12',T('Adults','Adultos')];
-  var GRADES5 = ['K–2','3–5','6–8','9–10','11–12'];
+  /* ---------- shared scales ---------- */
+  var S5 = ['Strongly disagree','Disagree','Neutral','Agree','Strongly agree'];
+  var S3 = ['Yes!','Kind of','Not really'];
 
-  /* ---------- feedback forms ---------- */
+  function L(rows){ return {type:'likert', scale:S5, rows:rows}; }
+
+  /* ---------- feedback form schemas ---------- */
   var FORMS = {
-    teacher:{ title:T('Teacher &amp; Educator Feedback','Comentarios de docentes y educadores'),
-      intro:T('Thank you for piloting the check-in with your students. About 6–8 minutes. Be candid — what confused a student or broke on your device is the most useful thing you can tell us. There are no wrong answers.','Gracias por probar el chequeo con tus estudiantes. Unos 6 a 8 minutos. Sé sincero: lo que confundió a un estudiante o falló en tu dispositivo es lo más útil que puedes contarnos. No hay respuestas incorrectas.'),
+    teacher:{ title:'Teacher &amp; Educator Feedback', sub:'Pilot feedback',
+      intro:'Thank you for piloting the check-in with your students. About 6–8 minutes. Be candid &mdash; what confused a student or broke on your device is the most useful thing you can tell us. There are no wrong answers.',
       sections:[
-        {title:T('About you','Sobre ti'), fields:[
-          {type:'text', id:'name', label:T('Name (optional)','Nombre (opcional)')},
-          {type:'radio', id:'role', label:T('Your role','Tu rol'), opts:[T('Teacher','Docente'),T('Counselor','Consejero'),T('Aide / Para','Asistente'),T('Administrator','Administrador'),T('Other','Otro')]},
-          {type:'radio', id:'grade', label:T('Grade band piloted','Nivel de grado del piloto'), opts:GRADES6},
-          {type:'radio', id:'lang', label:T('Language used','Idioma usado'), opts:LANGOPT},
-          {type:'radio', id:'device', label:T('Device','Dispositivo'), opts:[T('Laptop','Portátil'),T('Tablet','Tableta'),T('Phone','Teléfono'),T('Interactive board','Pizarra interactiva')]},
-          {type:'date', id:'date', label:T('Date piloted','Fecha del piloto')},
-          {type:'number', id:'count', label:T('Approx. # of students','N.º aprox. de estudiantes')},
-          {type:'radio', id:'conn', label:T('Connection','Conexión'), opts:[T('Online','En línea'),T('Offline / no wifi','Sin conexión / sin wifi')]}
+        {title:'About you', fields:[
+          {type:'text', id:'name', label:'Name (optional)'},
+          {type:'radio', id:'role', label:'Your role', opts:['Teacher','Counselor','Aide / Para','Administrator','Other']},
+          {type:'radio', id:'grade', label:'Grade band piloted', opts:['K–2','3–5','6–8','9–10','11–12','Adults']},
+          {type:'radio', id:'lang', label:'Language used', opts:['English','Spanish','Both']},
+          {type:'radio', id:'device', label:'Device', opts:['Laptop','Tablet','Phone','Interactive board']},
+          {type:'date', id:'date', label:'Date piloted'},
+          {type:'number', id:'count', label:'Approx. # of students'},
+          {type:'radio', id:'conn', label:'Connection', opts:['Online','Offline / no wifi']}
         ]},
-        {title:T('1 · The Welcome (Hero) Page','1 · La página de inicio'), desc:T('Your very first impression when the site loads.','Tu primera impresión al cargar el sitio.'), fields:[
-          L([T('The opening page made the purpose clear within a few seconds.','La página de inicio dejó claro el propósito en pocos segundos.'),T('It felt calm and trustworthy — not clinical or salesy.','Se sintió tranquila y confiable, no clínica ni comercial.'),T('It was obvious what to do next (the three doors / options).','Era obvio qué hacer a continuación (las tres puertas / opciones).'),T('It’s polished enough that I’d comfortably show it to a colleague or parent.','Está lo bastante pulida como para mostrarla con confianza a un colega o a una familia.')])]},
-        {title:T('2 · Explore the Framework','2 · Explora el marco'), desc:T('The four pillars, the “How one answer becomes growth” walkthrough, the Resource Index, and linked materials.','Los cuatro pilares, el recorrido “Cómo una respuesta se convierte en crecimiento”, el Índice de recursos y los materiales enlazados.'), fields:[
-          L([T('The four pillars were easy to understand.','Los cuatro pilares fueron fáciles de entender.'),T('The “How one answer becomes growth” walkthrough made the closed-loop system clear.','El recorrido “Cómo una respuesta se convierte en crecimiento” dejó claro el sistema de ciclo cerrado.'),T('The Resource Index helped me find relevant lessons or stories.','El Índice de recursos me ayudó a encontrar lecciones o historias relevantes.'),T('The linked lesson and story materials were genuinely useful.','Los materiales de lecciones e historias enlazados fueron realmente útiles.')])]},
-        {title:T('3 · The Check-In','3 · El chequeo'), desc:T('The reflection itself — the questions, scoring, and results view.','La reflexión en sí: las preguntas, el puntaje y la vista de resultados.'), fields:[
-          L([T('The questions were age-appropriate for my students.','Las preguntas eran apropiadas para la edad de mis estudiantes.'),T('Students understood what was being asked.','Los estudiantes entendieron lo que se preguntaba.'),T('The length felt right (Quick vs Thorough modes worked well).','La duración se sintió adecuada (los modos Rápido y Completo funcionaron bien).'),T('The results felt accurate and useful to me.','Los resultados me parecieron precisos y útiles.'),T('The results read as kind and supportive, not as a scorecard.','Los resultados se leían amables y de apoyo, no como una calificación.')])]},
-        {title:T('4 · Calm &amp; Regulation Tools','4 · Herramientas de calma y regulación'), fields:[
-          {type:'checks', id:'tools', label:T('Which tools did you or your students actually try?','¿Qué herramientas probaron tú o tus estudiantes realmente?'), opts:[T('Paced Breathing','Respiración guiada'),T('Take 5 (hand tracing)','Take 5 (traza la mano)'),T('Tap Pad','Tablero táctil'),T('Calm-Down Jar','Frasco de la calma'),T('Weather Check-in','Chequeo del clima'),T('Emotion / Feelings Wheel','Rueda de emociones'),T('Grounding (5-4-3-2-1)','Anclaje (5-4-3-2-1)'),T('Other','Otra')]},
-          L([T('At least one tool helped a student settle or refocus.','Al menos una herramienta ayudó a un estudiante a calmarse o reenfocarse.'),T('The tools were easy for students to use on their own.','Las herramientas fueron fáciles de usar por sí solos para los estudiantes.')]),
-          {type:'textarea', id:'toolhelp', label:T('If a tool helped in a real moment, tell us what happened:','Si una herramienta ayudó en un momento real, cuéntanos qué pasó:')},
-          {type:'textarea', id:'toolbad', label:T('Any tool that was confusing, unused, or didn’t work well?','¿Alguna herramienta confusa, sin usar o que no funcionó bien?')}
+        {title:'1 · The Welcome (Hero) Page', desc:'Your very first impression when the site loads.', fields:[
+          L(['The opening page made the purpose clear within a few seconds.','It felt calm and trustworthy — not clinical or salesy.','It was obvious what to do next (the three doors / options).','It’s polished enough that I’d comfortably show it to a colleague or parent.'])]},
+        {title:'2 · Explore the Framework', desc:'The four pillars, the “How one answer becomes growth” walkthrough, the Resource Index, and linked materials.', fields:[
+          L(['The four pillars were easy to understand.','The “How one answer becomes growth” walkthrough made the closed-loop system clear.','The Resource Index helped me find relevant lessons or stories.','The linked lesson and story materials were genuinely useful.'])]},
+        {title:'3 · The Check-In', desc:'The reflection itself — the questions, scoring, and results view.', fields:[
+          L(['The questions were age-appropriate for my students.','Students understood what was being asked.','The length felt right (Quick vs Thorough modes worked well).','The results felt accurate and useful to me.','The results read as kind and supportive, not as a scorecard.'])]},
+        {title:'4 · Calm &amp; Regulation Tools', fields:[
+          {type:'checks', id:'tools', label:'Which tools did you or your students actually try?', opts:['Paced Breathing','Take 5 (hand tracing)','Tap Pad','Calm-Down Jar','Weather Check-in','Emotion / Feelings Wheel','Grounding (5-4-3-2-1)','Other']},
+          L(['At least one tool helped a student settle or refocus.','The tools were easy for students to use on their own.']),
+          {type:'textarea', id:'toolhelp', label:'If a tool helped in a real moment, tell us what happened:'},
+          {type:'textarea', id:'toolbad', label:'Any tool that was confusing, unused, or didn’t work well?'}
         ]},
-        {title:T('5 · Personal Touches &amp; Polish','5 · Detalles personales y acabado'), desc:T('Daily Word of Grace, Personalize menu, and the streak / “time back” moment after a calm tool.','Palabra de Gracia diaria, menú Personalizar y el momento de racha / “tiempo recuperado” tras una herramienta de calma.'), fields:[
-          L([T('The daily Word of Grace felt meaningful and age-appropriate.','La Palabra de Gracia diaria se sintió significativa y apropiada para la edad.'),T('Tailoring the message by audience (Child / Teen / Adult) was useful.','Adaptar el mensaje por público (Niño / Adolescente / Adulto) fue útil.'),T('The Personalize options (accent color, optional sound) were easy to find and use.','Las opciones de Personalizar (color de acento, sonido opcional) fueron fáciles de encontrar y usar.'),T('The calm-tool finish (streak + time-back note) felt encouraging, not gimmicky.','El cierre de la herramienta de calma (racha + nota de tiempo recuperado) se sintió alentador, no artificial.')])]},
-        {title:T('Overall — did it help?','En general, ¿ayudó?'), fields:[
-          {type:'radio', id:'again', label:T('Would you use this again?','¿Lo usarías de nuevo?'), opts:YMN},
-          {type:'nps', id:'nps', label:T('How likely are you to recommend it to a colleague?','¿Qué tan probable es que se lo recomiendes a un colega?'), left:npsL, right:npsR},
-          L([T('This helped me understand a student a little better.','Esto me ayudó a entender un poco mejor a un estudiante.'),T('It led to a real next step — a lesson, a conversation, or a plan.','Llevó a un siguiente paso real: una lección, una conversación o un plan.')])]},
-        {title:T('In your own words','En tus palabras'), fields:[
-          {type:'textarea', id:'best', label:T('Which of the five areas above worked best, and why?','¿Cuál de las cinco áreas anteriores funcionó mejor y por qué?')},
-          {type:'textarea', id:'broke', label:T('One thing that confused a student or broke:','Una cosa que confundió a un estudiante o falló:')},
-          {type:'textarea', id:'change', label:T('One thing you would add or change:','Una cosa que agregarías o cambiarías:')},
-          {type:'textarea', id:'safety', label:T('Any wellbeing or safety concern we should know about? (For anything urgent about a specific student, follow your school’s safeguarding protocol first.)','¿Alguna preocupación de bienestar o seguridad que debamos saber? (Para algo urgente sobre un estudiante específico, sigue primero el protocolo de protección de tu escuela.)')}
+        {title:'5 · Personal Touches &amp; Polish', desc:'Daily Word of Grace, Personalize menu, and the streak / “time back” moment after a calm tool.', fields:[
+          L(['The daily Word of Grace felt meaningful and age-appropriate.','Tailoring the message by audience (Child / Teen / Adult) was useful.','The Personalize options (accent color, optional sound) were easy to find and use.','The calm-tool finish (streak + time-back note) felt encouraging, not gimmicky.'])]},
+        {title:'Overall — did it help?', fields:[
+          {type:'radio', id:'again', label:'Would you use this again?', opts:['Yes','Maybe','No']},
+          {type:'nps', id:'nps', label:'How likely are you to recommend it to a colleague?', left:'Not likely', right:'Extremely likely'},
+          L(['This helped me understand a student a little better.','It led to a real next step — a lesson, a conversation, or a plan.'])]},
+        {title:'In your own words', fields:[
+          {type:'textarea', id:'best', label:'Which of the five areas above worked best, and why?'},
+          {type:'textarea', id:'broke', label:'One thing that confused a student or broke:'},
+          {type:'textarea', id:'change', label:'One thing you would add or change:'},
+          {type:'textarea', id:'safety', label:'Any wellbeing or safety concern we should know about? (For anything urgent about a specific student, follow your school’s safeguarding protocol first.)'}
         ]}
       ]},
 
-    specialist:{ title:T('Specialist &amp; Support Staff Feedback','Comentarios de especialistas y personal de apoyo'),
-      intro:T('Thank you for piloting the check-in with the students you support. About 6–8 minutes. You see students across classrooms and tiers, so your read on fit, accessibility, and follow-through is especially valuable.','Gracias por probar el chequeo con los estudiantes que apoyas. Unos 6 a 8 minutos. Ves estudiantes de distintas aulas y niveles, así que tu opinión sobre el ajuste, la accesibilidad y el seguimiento es especialmente valiosa.'),
+    specialist:{ title:'Specialist &amp; Support Staff Feedback', sub:'Pilot feedback',
+      intro:'Thank you for piloting the check-in with the students you support. About 6–8 minutes. You see students across classrooms and tiers, so your read on fit, accessibility, and follow-through is especially valuable.',
       sections:[
-        {title:T('About you','Sobre ti'), fields:[
-          {type:'text', id:'name', label:T('Name (optional)','Nombre (opcional)')},
-          {type:'radio', id:'role', label:T('Your role','Tu rol'), opts:[T('School Counselor','Consejero escolar'),T('School Psychologist','Psicólogo escolar'),T('Social Worker','Trabajador social'),T('SLP','Fonoaudiólogo'),T('OT','Terapeuta ocupacional'),T('Behavior Specialist','Especialista en conducta'),T('Special Educator','Educador especial'),T('Administrator','Administrador'),T('Other','Otro')]},
-          {type:'radio', id:'grade', label:T('Grade band piloted','Nivel de grado del piloto'), opts:GRADES6},
-          {type:'radio', id:'lang', label:T('Language used','Idioma usado'), opts:LANGOPT},
-          {type:'radio', id:'device', label:T('Device','Dispositivo'), opts:[T('Laptop','Portátil'),T('Tablet','Tableta'),T('Phone','Teléfono'),T('Board','Pizarra')]},
-          {type:'number', id:'count', label:T('# of students','N.º de estudiantes')},
-          {type:'date', id:'date', label:T('Date piloted','Fecha del piloto')}
+        {title:'About you', fields:[
+          {type:'text', id:'name', label:'Name (optional)'},
+          {type:'radio', id:'role', label:'Your role', opts:['School Counselor','School Psychologist','Social Worker','SLP','OT','Behavior Specialist','Special Educator','Administrator','Other']},
+          {type:'radio', id:'grade', label:'Grade band piloted', opts:['K–2','3–5','6–8','9–10','11–12','Adults']},
+          {type:'radio', id:'lang', label:'Language used', opts:['English','Spanish','Both']},
+          {type:'radio', id:'device', label:'Device', opts:['Laptop','Tablet','Phone','Board']},
+          {type:'number', id:'count', label:'# of students'},
+          {type:'date', id:'date', label:'Date piloted'}
         ]},
-        {title:T('1 · The Welcome (Hero) Page','1 · La página de inicio'), fields:[
-          L([T('The opening page made the purpose clear within a few seconds.','La página de inicio dejó claro el propósito en pocos segundos.'),T('It felt calm and trustworthy — not clinical or salesy.','Se sintió tranquila y confiable, no clínica ni comercial.'),T('It was obvious what to do next (the three doors).','Era obvio qué hacer a continuación (las tres puertas).'),T('It’s polished enough that I’d comfortably show it to a colleague or parent.','Está lo bastante pulida como para mostrarla con confianza a un colega o a una familia.')])]},
-        {title:T('2 · Explore the Framework','2 · Explora el marco'), fields:[
-          L([T('The four pillars (Identity, Self-Compassion, Forgiveness, Grace) were easy to understand.','Los cuatro pilares (Identidad, Autocompasión, Perdón, Gracia) fueron fáciles de entender.'),T('The “How one answer becomes growth” walkthrough made the closed-loop system clear.','El recorrido “Cómo una respuesta se convierte en crecimiento” dejó claro el sistema de ciclo cerrado.'),T('The Resource Index helped me find relevant lessons or stories.','El Índice de recursos me ayudó a encontrar lecciones o historias relevantes.'),T('The linked lesson and story materials were genuinely useful.','Los materiales de lecciones e historias enlazados fueron realmente útiles.')])]},
-        {title:T('3 · The Check-In','3 · El chequeo'), fields:[
-          L([T('The questions were age-appropriate for the students I support.','Las preguntas eran apropiadas para la edad de los estudiantes que apoyo.'),T('Students understood what was being asked.','Los estudiantes entendieron lo que se preguntaba.'),T('The length felt right (Quick vs Thorough modes).','La duración se sintió adecuada (los modos Rápido y Completo).'),T('The results felt accurate and useful to me.','Los resultados me parecieron precisos y útiles.'),T('The results read as kind and supportive, not as a scorecard.','Los resultados se leían amables y de apoyo, no como una calificación.')])]},
-        {title:T('4 · Calm &amp; Regulation Tools','4 · Herramientas de calma y regulación'), fields:[
-          {type:'checks', id:'tools', label:T('Which tools were tried?','¿Qué herramientas se probaron?'), opts:[T('Paced Breathing','Respiración guiada'),T('Take 5','Take 5'),T('Tap Pad','Tablero táctil'),T('Calm-Down Jar','Frasco de la calma'),T('Weather Check-in','Chequeo del clima'),T('Emotion/Feelings Wheel','Rueda de emociones'),T('Grounding (5-4-3-2-1)','Anclaje (5-4-3-2-1)'),T('PECS / Show-to-Teacher','PECS / Mostrar al docente')]},
-          L([T('At least one tool helped a student settle or refocus.','Al menos una herramienta ayudó a un estudiante a calmarse o reenfocarse.'),T('The tools were easy for students to use on their own.','Las herramientas fueron fáciles de usar por sí solos para los estudiantes.')]),
-          {type:'textarea', id:'toolhelp', label:T('If a tool helped in a real moment, tell us what happened:','Si una herramienta ayudó en un momento real, cuéntanos qué pasó:')}]},
-        {title:T('5 · Personal Touches &amp; Polish','5 · Detalles personales y acabado'), fields:[
-          L([T('The daily Word of Grace felt meaningful and age-appropriate.','La Palabra de Gracia diaria se sintió significativa y apropiada para la edad.'),T('Tailoring by audience (Child / Teen / Adult) was useful.','Adaptar por público (Niño / Adolescente / Adulto) fue útil.'),T('The Personalize options (accent color, optional sound) were easy to find and use.','Las opciones de Personalizar (color de acento, sonido opcional) fueron fáciles de encontrar y usar.'),T('The calm-tool finish (streak + time-back note) felt encouraging, not gimmicky.','El cierre de la herramienta de calma (racha + nota de tiempo recuperado) se sintió alentador, no artificial.')])]},
-        {title:T('Overall — did it help?','En general, ¿ayudó?'), fields:[
-          {type:'radio', id:'again', label:T('Would you use this again?','¿Lo usarías de nuevo?'), opts:YMN},
-          {type:'nps', id:'nps', label:T('How likely are you to recommend it to a colleague?','¿Qué tan probable es que se lo recomiendes a un colega?'), left:npsL, right:npsR},
-          L([T('This helped me understand a student a little better.','Esto me ayudó a entender un poco mejor a un estudiante.'),T('It led to a real next step — a lesson, conversation, or plan.','Llevó a un siguiente paso real: una lección, conversación o plan.')])]},
-        {title:T('In your own words','En tus palabras'), fields:[
-          {type:'textarea', id:'best', label:T('Which area worked best for the students you support, and why?','¿Qué área funcionó mejor para los estudiantes que apoyas y por qué?')},
-          {type:'textarea', id:'broke', label:T('One thing that confused a student or broke:','Una cosa que confundió a un estudiante o falló:')},
-          {type:'textarea', id:'change', label:T('One thing you would add or change (especially for accessibility or MTSS fit):','Una cosa que agregarías o cambiarías (especialmente para accesibilidad o ajuste con MTSS):')},
-          {type:'textarea', id:'safety', label:T('Any wellbeing or safety concern we should know about?','¿Alguna preocupación de bienestar o seguridad que debamos saber?')}]}
+        {title:'1 · The Welcome (Hero) Page', fields:[
+          L(['The opening page made the purpose clear within a few seconds.','It felt calm and trustworthy — not clinical or salesy.','It was obvious what to do next (the three doors).','It’s polished enough that I’d comfortably show it to a colleague or parent.'])]},
+        {title:'2 · Explore the Framework', fields:[
+          L(['The four pillars (Identity, Self-Compassion, Forgiveness, Grace) were easy to understand.','The “How one answer becomes growth” walkthrough made the closed-loop system clear.','The Resource Index helped me find relevant lessons or stories.','The linked lesson and story materials were genuinely useful.'])]},
+        {title:'3 · The Check-In', fields:[
+          L(['The questions were age-appropriate for the students I support.','Students understood what was being asked.','The length felt right (Quick vs Thorough modes).','The results felt accurate and useful to me.','The results read as kind and supportive, not as a scorecard.'])]},
+        {title:'4 · Calm &amp; Regulation Tools', fields:[
+          {type:'checks', id:'tools', label:'Which tools were tried?', opts:['Paced Breathing','Take 5','Tap Pad','Calm-Down Jar','Weather Check-in','Emotion/Feelings Wheel','Grounding (5-4-3-2-1)','PECS / Show-to-Teacher']},
+          L(['At least one tool helped a student settle or refocus.','The tools were easy for students to use on their own.']),
+          {type:'textarea', id:'toolhelp', label:'If a tool helped in a real moment, tell us what happened:'}]},
+        {title:'5 · Personal Touches &amp; Polish', fields:[
+          L(['The daily Word of Grace felt meaningful and age-appropriate.','Tailoring by audience (Child / Teen / Adult) was useful.','The Personalize options (accent color, optional sound) were easy to find and use.','The calm-tool finish (streak + time-back note) felt encouraging, not gimmicky.'])]},
+        {title:'Overall — did it help?', fields:[
+          {type:'radio', id:'again', label:'Would you use this again?', opts:['Yes','Maybe','No']},
+          {type:'nps', id:'nps', label:'How likely are you to recommend it to a colleague?', left:'Not likely', right:'Extremely likely'},
+          L(['This helped me understand a student a little better.','It led to a real next step — a lesson, conversation, or plan.'])]},
+        {title:'In your own words', fields:[
+          {type:'textarea', id:'best', label:'Which area worked best for the students you support, and why?'},
+          {type:'textarea', id:'broke', label:'One thing that confused a student or broke:'},
+          {type:'textarea', id:'change', label:'One thing you would add or change (especially for accessibility or MTSS fit):'},
+          {type:'textarea', id:'safety', label:'Any wellbeing or safety concern we should know about?'}]}
       ]},
 
-    parent:{ title:T('Parent &amp; Caregiver Feedback','Comentarios de familias y cuidadores'),
-      intro:T('Your child used the check-in (on their own or together with you). About 6–8 minutes. Be candid — what confused your child or broke is the most useful thing you can tell us.','Tu hijo usó el chequeo (solo o contigo). Unos 6 a 8 minutos. Sé sincero: lo que confundió a tu hijo o falló es lo más útil que puedes contarnos.'),
+    parent:{ title:'Parent &amp; Caregiver Feedback', sub:'Pilot feedback',
+      intro:'Your child used the check-in (on their own or together with you). About 6–8 minutes. Be candid — what confused your child or broke is the most useful thing you can tell us.',
       sections:[
-        {title:T('About you','Sobre ti'), fields:[
-          {type:'text', id:'name', label:T('Name (optional)','Nombre (opcional)')},
-          {type:'radio', id:'grade', label:T('Your child’s grade band','Nivel de grado de tu hijo'), opts:GRADES5},
-          {type:'radio', id:'how', label:T('How was it done?','¿Cómo se hizo?'), opts:[T('Child alone','Solo el niño'),T('Together','Juntos'),T('Mostly me reading','Sobre todo yo leyendo')]},
-          {type:'radio', id:'lang', label:T('Language','Idioma'), opts:LANGOPT},
-          {type:'radio', id:'device', label:T('Device','Dispositivo'), opts:[T('Laptop','Portátil'),T('Tablet','Tableta'),T('Phone','Teléfono')]},
-          {type:'date', id:'date', label:T('Date','Fecha')}]},
-        {title:T('1 · The Welcome (Hero) Page','1 · La página de inicio'), fields:[
-          L([T('The opening page made the purpose clear within a few seconds.','La página de inicio dejó claro el propósito en pocos segundos.'),T('It felt calm and trustworthy — right for my family.','Se sintió tranquila y confiable, adecuada para mi familia.'),T('It was obvious what to do next.','Era obvio qué hacer a continuación.'),T('It looked polished and safe to hand to my child.','Se veía pulida y segura para dársela a mi hijo.')])]},
-        {title:T('2 · Explore the Framework','2 · Explora el marco'), fields:[
-          L([T('The four pillars (Identity, Self-Compassion, Forgiveness, Grace) were easy to understand.','Los cuatro pilares (Identidad, Autocompasión, Perdón, Gracia) fueron fáciles de entender.'),T('The “How one answer becomes growth” walkthrough made the system clear.','El recorrido “Cómo una respuesta se convierte en crecimiento” dejó claro el sistema.'),T('The Resource Index helped me find relevant lessons or stories.','El Índice de recursos me ayudó a encontrar lecciones o historias relevantes.'),T('The linked lesson and story materials were useful to me.','Los materiales de lecciones e historias enlazados me fueron útiles.')])]},
-        {title:T('3 · The Check-In','3 · El chequeo'), fields:[
-          L([T('My child understood the questions.','Mi hijo entendió las preguntas.'),T('The questions felt age-appropriate.','Las preguntas se sintieron apropiadas para la edad.'),T('The length felt right for my child.','La duración se sintió adecuada para mi hijo.'),T('The results felt accurate and useful to me.','Los resultados me parecieron precisos y útiles.'),T('The results read as kind, not as a scorecard.','Los resultados se leían amables, no como una calificación.')])]},
-        {title:T('4 · Calm &amp; Regulation Tools','4 · Herramientas de calma y regulación'), fields:[
-          {type:'checks', id:'tools', label:T('Which tools were tried?','¿Qué herramientas se probaron?'), opts:[T('Paced Breathing','Respiración guiada'),T('Take 5','Take 5'),T('Tap Pad','Tablero táctil'),T('Calm-Down Jar','Frasco de la calma'),T('Weather Check-in','Chequeo del clima'),T('Emotion/Feelings Wheel','Rueda de emociones'),T('Grounding (5-4-3-2-1)','Anclaje (5-4-3-2-1)')]},
-          L([T('A tool helped my child settle or refocus.','Una herramienta ayudó a mi hijo a calmarse o reenfocarse.'),T('The tools were easy for my child to use.','Las herramientas fueron fáciles de usar para mi hijo.')]),
-          {type:'textarea', id:'toolhelp', label:T('If a tool helped in a real moment, tell us what happened:','Si una herramienta ayudó en un momento real, cuéntanos qué pasó:')}]},
-        {title:T('Overall — did it help?','En general, ¿ayudó?'), fields:[
-          {type:'radio', id:'again', label:T('Would you use this again?','¿Lo usarías de nuevo?'), opts:YMN},
-          {type:'nps', id:'nps', label:T('How likely are you to recommend it to another parent?','¿Qué tan probable es que se lo recomiendes a otra familia?'), left:npsL, right:npsR},
-          L([T('It helped me understand my child a little better.','Me ayudó a entender un poco mejor a mi hijo.'),T('It opened a helpful conversation at home.','Abrió una conversación útil en casa.')])]},
-        {title:T('In your own words','En tus palabras'), fields:[
-          {type:'textarea', id:'best', label:T('Which area worked best for your child, and why?','¿Qué área funcionó mejor para tu hijo y por qué?')},
-          {type:'textarea', id:'broke', label:T('One thing that confused your child or broke:','Una cosa que confundió a tu hijo o falló:')},
-          {type:'textarea', id:'change', label:T('One thing you would add or change:','Una cosa que agregarías o cambiarías:')},
-          {type:'textarea', id:'safety', label:T('Any wellbeing or safety concern we should know about? (For anything urgent, please contact your child’s school or a professional first.)','¿Alguna preocupación de bienestar o seguridad que debamos saber? (Para algo urgente, contacta primero a la escuela de tu hijo o a un profesional.)')}]}
+        {title:'About you', fields:[
+          {type:'text', id:'name', label:'Name (optional)'},
+          {type:'radio', id:'grade', label:'Your child’s grade band', opts:['K–2','3–5','6–8','9–10','11–12']},
+          {type:'radio', id:'how', label:'How was it done?', opts:['Child alone','Together','Mostly me reading']},
+          {type:'radio', id:'lang', label:'Language', opts:['English','Spanish','Both']},
+          {type:'radio', id:'device', label:'Device', opts:['Laptop','Tablet','Phone']},
+          {type:'date', id:'date', label:'Date'}]},
+        {title:'1 · The Welcome (Hero) Page', fields:[
+          L(['The opening page made the purpose clear within a few seconds.','It felt calm and trustworthy — right for my family.','It was obvious what to do next.','It looked polished and safe to hand to my child.'])]},
+        {title:'2 · Explore the Framework', fields:[
+          L(['The four pillars (Identity, Self-Compassion, Forgiveness, Grace) were easy to understand.','The “How one answer becomes growth” walkthrough made the system clear.','The Resource Index helped me find relevant lessons or stories.','The linked lesson and story materials were useful to me.'])]},
+        {title:'3 · The Check-In', fields:[
+          L(['My child understood the questions.','The questions felt age-appropriate.','The length felt right for my child.','The results felt accurate and useful to me.','The results read as kind, not as a scorecard.'])]},
+        {title:'4 · Calm &amp; Regulation Tools', fields:[
+          {type:'checks', id:'tools', label:'Which tools were tried?', opts:['Paced Breathing','Take 5','Tap Pad','Calm-Down Jar','Weather Check-in','Emotion/Feelings Wheel','Grounding (5-4-3-2-1)']},
+          L(['A tool helped my child settle or refocus.','The tools were easy for my child to use.']),
+          {type:'textarea', id:'toolhelp', label:'If a tool helped in a real moment, tell us what happened:'}]},
+        {title:'Overall — did it help?', fields:[
+          {type:'radio', id:'again', label:'Would you use this again?', opts:['Yes','Maybe','No']},
+          {type:'nps', id:'nps', label:'How likely are you to recommend it to another parent?', left:'Not likely', right:'Extremely likely'},
+          L(['It helped me understand my child a little better.','It opened a helpful conversation at home.'])]},
+        {title:'In your own words', fields:[
+          {type:'textarea', id:'best', label:'Which area worked best for your child, and why?'},
+          {type:'textarea', id:'broke', label:'One thing that confused your child or broke:'},
+          {type:'textarea', id:'change', label:'One thing you would add or change:'},
+          {type:'textarea', id:'safety', label:'Any wellbeing or safety concern we should know about? (For anything urgent, please contact your child’s school or a professional first.)'}]}
       ]},
 
-    adult:{ title:T('Adult Self-Use Feedback','Comentarios de uso personal (adultos)'),
-      intro:T('You used the check-in for yourself. About 6 minutes. Be candid; this is to improve the tool, not to evaluate you.','Usaste el chequeo para ti. Unos 6 minutos. Sé sincero; esto es para mejorar la herramienta, no para evaluarte.'),
+    adult:{ title:'Adult Self-Use Feedback', sub:'Pilot feedback',
+      intro:'You used the check-in for yourself. About 6 minutes. Be candid; this is to improve the tool, not to evaluate you.',
       sections:[
-        {title:T('About you','Sobre ti'), fields:[
-          {type:'text', id:'name', label:T('Name (optional)','Nombre (opcional)')},
-          {type:'radio', id:'mainly', label:T('This is mainly','Esto es principalmente'), opts:[T('Just for me','Solo para mí'),T('As an educator','Como educador'),T('As a caregiver','Como cuidador'),T('As a professional','Como profesional')]},
-          {type:'radio', id:'lang', label:T('Language','Idioma'), opts:LANGOPT},
-          {type:'radio', id:'device', label:T('Device','Dispositivo'), opts:[T('Laptop','Portátil'),T('Tablet','Tableta'),T('Phone','Teléfono')]},
-          {type:'date', id:'date', label:T('Date','Fecha')}]},
-        {title:T('1 · The Welcome (Hero) Page','1 · La página de inicio'), fields:[
-          L([T('The opening page made the purpose clear within a few seconds.','La página de inicio dejó claro el propósito en pocos segundos.'),T('It felt calm and trustworthy, and it felt like it was for someone like me.','Se sintió tranquila y confiable, y como si fuera para alguien como yo.'),T('I could tell what to do next.','Pude darme cuenta de qué hacer a continuación.'),T('It looked polished and well-made.','Se veía pulida y bien hecha.')])]},
-        {title:T('2 · Explore the Framework','2 · Explora el marco'), fields:[
-          L([T('The framework (Identity, Self-Compassion, Forgiveness, Grace) was easy to understand.','El marco (Identidad, Autocompasión, Perdón, Gracia) fue fácil de entender.'),T('The “How one answer becomes growth” walkthrough made the system click.','El recorrido “Cómo una respuesta se convierte en crecimiento” hizo que el sistema encajara.'),T('The Resource Index helped me find something relevant to me.','El Índice de recursos me ayudó a encontrar algo relevante para mí.'),T('The linked lesson and story materials were useful.','Los materiales de lecciones e historias enlazados fueron útiles.')])]},
-        {title:T('3 · The Check-In','3 · El chequeo'), fields:[
-          L([T('The questions felt relevant to my real life.','Las preguntas se sintieron relevantes para mi vida real.'),T('I understood what each question was asking.','Entendí qué preguntaba cada pregunta.'),T('The length felt right.','La duración se sintió adecuada.'),T('The results felt accurate to me.','Los resultados me parecieron precisos.'),T('The results felt kind, not judgmental.','Los resultados se sintieron amables, no críticos.')])]},
-        {title:T('4 · Calm &amp; Regulation Tools','4 · Herramientas de calma y regulación'), fields:[
-          {type:'checks', id:'tools', label:T('Which tools were tried?','¿Qué herramientas se probaron?'), opts:[T('Paced Breathing','Respiración guiada'),T('Take 5','Take 5'),T('Tap Pad','Tablero táctil'),T('Calm-Down Jar','Frasco de la calma'),T('Weather Check-in','Chequeo del clima'),T('Emotion/Feelings Wheel','Rueda de emociones'),T('Grounding (5-4-3-2-1)','Anclaje (5-4-3-2-1)'),T('Other','Otra')]},
-          L([T('At least one tool helped me settle or refocus.','Al menos una herramienta me ayudó a calmarme o reenfocarme.'),T('The tools were easy to use on my own.','Las herramientas fueron fáciles de usar por mi cuenta.')]),
-          {type:'textarea', id:'toolhelp', label:T('If a tool helped in a real moment, tell us what happened:','Si una herramienta ayudó en un momento real, cuéntanos qué pasó:')}]},
-        {title:T('Overall — did it help?','En general, ¿ayudó?'), fields:[
-          {type:'radio', id:'again', label:T('Would you use this again?','¿Lo usarías de nuevo?'), opts:YMN},
-          {type:'nps', id:'nps', label:T('How likely are you to recommend it to someone you know?','¿Qué tan probable es que se lo recomiendes a alguien que conoces?'), left:npsL, right:npsR},
-          L([T('This helped me understand myself a little better.','Esto me ayudó a entenderme un poco mejor.'),T('It led to a real next step — a tool, a habit, or a conversation.','Llevó a un siguiente paso real: una herramienta, un hábito o una conversación.')])]},
-        {title:T('In your own words','En tus palabras'), fields:[
-          {type:'textarea', id:'best', label:T('Which of the four areas worked best for you, and why?','¿Cuál de las cuatro áreas funcionó mejor para ti y por qué?')},
-          {type:'textarea', id:'broke', label:T('One thing that confused you or broke:','Una cosa que te confundió o falló:')},
-          {type:'textarea', id:'change', label:T('One thing you would add or change:','Una cosa que agregarías o cambiarías:')}]}
+        {title:'About you', fields:[
+          {type:'text', id:'name', label:'Name (optional)'},
+          {type:'radio', id:'mainly', label:'This is mainly', opts:['Just for me','As an educator','As a caregiver','As a professional']},
+          {type:'radio', id:'lang', label:'Language', opts:['English','Spanish','Both']},
+          {type:'radio', id:'device', label:'Device', opts:['Laptop','Tablet','Phone']},
+          {type:'date', id:'date', label:'Date'}]},
+        {title:'1 · The Welcome (Hero) Page', fields:[
+          L(['The opening page made the purpose clear within a few seconds.','It felt calm and trustworthy, and it felt like it was for someone like me.','I could tell what to do next.','It looked polished and well-made.'])]},
+        {title:'2 · Explore the Framework', fields:[
+          L(['The framework (Identity, Self-Compassion, Forgiveness, Grace) was easy to understand.','The “How one answer becomes growth” walkthrough made the system click.','The Resource Index helped me find something relevant to me.','The linked lesson and story materials were useful.'])]},
+        {title:'3 · The Check-In', fields:[
+          L(['The questions felt relevant to my real life.','I understood what each question was asking.','The length felt right.','The results felt accurate to me.','The results felt kind, not judgmental.'])]},
+        {title:'4 · Calm &amp; Regulation Tools', fields:[
+          {type:'checks', id:'tools', label:'Which tools were tried?', opts:['Paced Breathing','Take 5','Tap Pad','Calm-Down Jar','Weather Check-in','Emotion/Feelings Wheel','Grounding (5-4-3-2-1)','Other']},
+          L(['At least one tool helped me settle or refocus.','The tools were easy to use on my own.']),
+          {type:'textarea', id:'toolhelp', label:'If a tool helped in a real moment, tell us what happened:'}]},
+        {title:'Overall — did it help?', fields:[
+          {type:'radio', id:'again', label:'Would you use this again?', opts:['Yes','Maybe','No']},
+          {type:'nps', id:'nps', label:'How likely are you to recommend it to someone you know?', left:'Not likely', right:'Extremely likely'},
+          L(['This helped me understand myself a little better.','It led to a real next step — a tool, a habit, or a conversation.'])]},
+        {title:'In your own words', fields:[
+          {type:'textarea', id:'best', label:'Which of the four areas worked best for you, and why?'},
+          {type:'textarea', id:'broke', label:'One thing that confused you or broke:'},
+          {type:'textarea', id:'change', label:'One thing you would add or change:'}]}
       ]},
 
-    child:{ title:T('How Was It For You?','¿Cómo te fue?'), subKey:'kids',
-      intro:T('Thanks for trying this! Tell us what you thought. There are no wrong answers — just be honest.','¡Gracias por probarlo! Cuéntanos qué pensaste. No hay respuestas incorrectas: solo sé sincero.'),
+    child:{ title:'How Was It For You?', sub:'For kids',
+      intro:'Thanks for trying this! Tell us what you thought. There are no wrong answers — just be honest.',
       sections:[
-        {title:T('About you','Sobre ti'), fields:[
-          {type:'text', id:'grade', label:T('My grade','Mi grado')},
-          {type:'radio', id:'where', label:T('I did this','Hice esto'), opts:[T('at school','en la escuela'),T('at home','en casa')]},
-          {type:'date', id:'date', label:T('Today’s date','Fecha de hoy')}]},
-        {title:T('How did it make you feel?','¿Cómo te hizo sentir?'), fields:[
-          {type:'face', id:'feel', label:T('Pick the face that fits best:','Elige la carita que mejor te quede:'), opts:[{em:'🙂',t:T('Good','Bien')},{em:'😐',t:T('Okay','Más o menos')},{em:'🙁',t:T('Not great','No muy bien')}]}]},
-        {title:T('A few quick questions','Unas preguntas rápidas'), fields:[
-          {type:'likert', scale:S3, rows:[T('Was it easy to use?','¿Fue fácil de usar?'),T('Did you understand the questions?','¿Entendiste las preguntas?'),T('Did a calm tool help you feel better?','¿Una herramienta de calma te ayudó a sentirte mejor?'),T('Was it nice or fun to use?','¿Fue agradable o divertido usarlo?'),T('Would you want to use it again?','¿Te gustaría usarlo de nuevo?')]}]},
-        {title:T('Which tool did you like best?','¿Qué herramienta te gustó más?'), fields:[
-          {type:'radio', id:'tool', label:T('Pick one:','Elige una:'), opts:[T('Breathing circle','Círculo de respiración'),T('Trace your hand (Take 5)','Traza tu mano (Take 5)'),T('Tap pad','Tablero táctil'),T('Calm-down jar','Frasco de la calma'),T('Weather check-in','Chequeo del clima'),T('Feelings wheel','Rueda de emociones')]}]},
-        {title:T('Tell us more','Cuéntanos más'), fields:[
-          {type:'textarea', id:'liked', label:T('One thing you liked:','Una cosa que te gustó:')},
-          {type:'textarea', id:'tricky', label:T('One thing that was tricky:','Una cosa que fue difícil:')}]}
+        {title:'About you', fields:[
+          {type:'text', id:'grade', label:'My grade'},
+          {type:'radio', id:'where', label:'I did this', opts:['at school','at home']},
+          {type:'date', id:'date', label:'Today’s date'}]},
+        {title:'How did it make you feel?', fields:[
+          {type:'face', id:'feel', label:'Pick the face that fits best:', opts:[{em:'🙂',t:'Good'},{em:'😐',t:'Okay'},{em:'🙁',t:'Not great'}]}]},
+        {title:'A few quick questions', fields:[
+          {type:'likert', scale:S3, rows:['Was it easy to use?','Did you understand the questions?','Did a calm tool help you feel better?','Was it nice or fun to use?','Would you want to use it again?']}]},
+        {title:'Which tool did you like best?', fields:[
+          {type:'radio', id:'tool', label:'Pick one:', opts:['Breathing circle','Trace your hand (Take 5)','Tap pad','Calm-down jar','Weather check-in','Feelings wheel']}]},
+        {title:'Tell us more', fields:[
+          {type:'textarea', id:'liked', label:'One thing you liked:'},
+          {type:'textarea', id:'tricky', label:'One thing that was tricky:'}]}
       ]},
 
-    leader:{ title:T('Leadership Feedback','Comentarios de liderazgo'),
-      intro:T('Thank you for taking a leadership look at the pilot. About 5 minutes. Your read on reporting, privacy, and rollout is what moves this from promising to adopted.','Gracias por dar una mirada de liderazgo al piloto. Unos 5 minutos. Tu opinión sobre informes, privacidad e implementación es lo que lleva esto de prometedor a adoptado.'),
+    leader:{ title:'Leadership Feedback', sub:'Pilot feedback',
+      intro:'Thank you for taking a leadership look at the pilot. About 5 minutes. Your read on reporting, privacy, and rollout is what moves this from promising to adopted.',
       sections:[
-        {title:T('About you','Sobre ti'), fields:[
-          {type:'text', id:'name', label:T('Name (optional)','Nombre (opcional)')},
-          {type:'radio', id:'role', label:T('Your role','Tu rol'), opts:[T('Principal / AP','Director / Subdirector'),T('Curriculum Director','Director de currículo'),T('SEL Director','Director de SEL'),T('MTSS Coordinator','Coordinador de MTSS'),T('Superintendent / Cabinet','Superintendente / Gabinete'),T('Other','Otro')]},
-          {type:'text', id:'setting', label:T('School or district (optional)','Escuela o distrito (opcional)')},
-          {type:'radio', id:'size', label:T('Approx. size','Tamaño aproximado'), opts:[T('1 school','1 escuela'),T('2–5 schools','2–5 escuelas'),T('District-wide','Todo el distrito')]},
-          {type:'date', id:'date', label:T('Date','Fecha')}]},
-        {title:T('The framework &amp; the why','El marco y el porqué'), fields:[
-          L([T('The four pillars and the closed-loop made sense quickly.','Los cuatro pilares y el ciclo cerrado se entendieron rápido.'),T('I could see how one answer becomes a next step (flag → the right lesson).','Pude ver cómo una respuesta se convierte en un siguiente paso (señal → la lección adecuada).')])]},
-        {title:T('Reporting &amp; dashboard','Informes y panel'), fields:[
-          L([T('The Overview and Class trends would be useful to my teams.','El Resumen y las Tendencias de la clase serían útiles para mis equipos.'),T('The MTSS Report (Individual / Class / School-wide) fits how we tier.','El Informe MTSS (Individual / Clase / Toda la escuela) encaja con cómo organizamos los niveles.'),T('Leadership seeing only aggregate trends — never individual responses — is the right call.','Que el liderazgo vea solo tendencias agregadas, nunca respuestas individuales, es la decisión correcta.')])]},
-        {title:T('Privacy &amp; data','Privacidad y datos'), fields:[
-          L([T('On-device-by-default privacy is clear and reassuring.','La privacidad en el dispositivo por defecto es clara y tranquilizadora.'),T('The optional Google Sheets sync (school owns the data) fits our IT posture.','La sincronización opcional con Hojas de Google (la escuela es dueña de los datos) encaja con nuestra postura de TI.'),T('I’d be comfortable bringing this to our privacy / IT review.','Me sentiría cómodo llevando esto a nuestra revisión de privacidad / TI.')])]},
-        {title:T('Rollout','Implementación'), fields:[
-          L([T('The no-code link / QR distribution looks feasible for our staff.','La distribución por enlace / QR sin código parece viable para nuestro personal.'),T('I can picture starting with one class or grade band and scaling.','Puedo imaginar empezar con una clase o nivel de grado e ir escalando.'),T('The licensing path (pilot → purchase order) is clear enough to act on.','La ruta de licencias (piloto → orden de compra) es lo bastante clara para actuar.')])]},
-        {title:T('Overall','En general'), fields:[
-          {type:'radio', id:'again', label:T('Would you move toward a pilot?','¿Avanzarías hacia un piloto?'), opts:[T('Yes','Sí'),T('Maybe','Quizás'),T('Not yet','Aún no')]},
-          {type:'nps', id:'nps', label:T('How likely are you to recommend exploring this to a peer leader?','¿Qué tan probable es que recomiendes explorar esto a otro líder?'), left:npsL, right:npsR}]},
-        {title:T('In your own words','En tus palabras'), fields:[
-          {type:'textarea', id:'best', label:T('What stood out as most useful for a decision?','¿Qué destacó como lo más útil para tomar una decisión?')},
-          {type:'textarea', id:'concern', label:T('Biggest question or concern before adopting:','¿Tu mayor duda o preocupación antes de adoptarlo?')},
-          {type:'textarea', id:'need', label:T('What would you need to see to say yes?','¿Qué necesitarías ver para decir que sí?')}]}
+        {title:'About you', fields:[
+          {type:'text', id:'name', label:'Name (optional)'},
+          {type:'radio', id:'role', label:'Your role', opts:['Principal / AP','Curriculum Director','SEL Director','MTSS Coordinator','Superintendent / Cabinet','Other']},
+          {type:'text', id:'setting', label:'School or district (optional)'},
+          {type:'radio', id:'size', label:'Approx. size', opts:['1 school','2–5 schools','District-wide']},
+          {type:'date', id:'date', label:'Date'}]},
+        {title:'The framework &amp; the why', fields:[
+          L(['The four pillars and the closed-loop made sense quickly.','I could see how one answer becomes a next step (flag → the right lesson).'])]},
+        {title:'Reporting &amp; dashboard', fields:[
+          L(['The Overview and Class trends would be useful to my teams.','The MTSS Report (Individual / Class / School-wide) fits how we tier.','Leadership seeing only aggregate trends — never individual responses — is the right call.'])]},
+        {title:'Privacy &amp; data', fields:[
+          L(['On-device-by-default privacy is clear and reassuring.','The optional Google Sheets sync (school owns the data) fits our IT posture.','I’d be comfortable bringing this to our privacy / IT review.'])]},
+        {title:'Rollout', fields:[
+          L(['The no-code link / QR distribution looks feasible for our staff.','I can picture starting with one class or grade band and scaling.','The licensing path (pilot → purchase order) is clear enough to act on.'])]},
+        {title:'Overall', fields:[
+          {type:'radio', id:'again', label:'Would you move toward a pilot?', opts:['Yes','Maybe','Not yet']},
+          {type:'nps', id:'nps', label:'How likely are you to recommend exploring this to a peer leader?', left:'Not likely', right:'Extremely likely'}]},
+        {title:'In your own words', fields:[
+          {type:'textarea', id:'best', label:'What stood out as most useful for a decision?'},
+          {type:'textarea', id:'concern', label:'Biggest question or concern before adopting:'},
+          {type:'textarea', id:'need', label:'What would you need to see to say yes?'}]}
       ]}
   };
 
@@ -27458,155 +27342,120 @@ window.addEventListener('load', _installToolScreenHook);
   function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
   function deTag(s){ return String(s).replace(/&mdash;/g,'—').replace(/&amp;/g,'&').replace(/&rarr;/g,'→').replace(/&[a-z]+;/g,' ').replace(/<[^>]+>/g,''); }
   var $ov = function(){ return document.getElementById('ppmOverlay'); };
-  window.__ppOpen = null;
 
   /* ---------- build cards ---------- */
   function buildCards(){
     var g = document.getElementById('ppGrid'); if(!g) return;
     g.innerHTML = CARDS.map(function(c){
       var qsBtns = c.qs ? (
-        '<div class="pp-asset"><div class="pp-asset-lab">'+tx(UI.quickstart)+'</div><div class="pp-btns">'+
+        '<div class="pp-asset"><div class="pp-asset-lab">Quick-Start</div><div class="pp-btns">'+
           '<button type="button" class="pp-b pp-b-ghost" onclick="aogPilotPreview(\''+c.key+'\')">'+
-            '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg> '+tx(UI.preview)+'</button>'+
+            '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg> Preview</button>'+
           '<a class="pp-b pp-b-navy" href="'+PDIR+c.qs+'" target="_blank" rel="noopener">'+
-            '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5"/><path d="M12 15V3"/></svg> '+tx(UI.pdf)+'</a>'+
+            '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5"/><path d="M12 15V3"/></svg> PDF</a>'+
         '</div></div>') : '';
-      var fbBtns = '<div class="pp-asset"><div class="pp-asset-lab">'+tx(UI.feedback)+'</div><div class="pp-btns">'+
+      var fbBtns = '<div class="pp-asset"><div class="pp-asset-lab">Feedback</div><div class="pp-btns">'+
           '<button type="button" class="pp-b pp-b-gold" onclick="aogPilotForm(\''+c.form+'\')">'+
-            '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4z"/></svg> '+tx(UI.fill)+'</button>'+
+            '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4z"/></svg> Fill out online</button>'+
           (c.fb ? '<a class="pp-b pp-b-ghost" href="'+PDIR+c.fb+'" target="_blank" rel="noopener">'+
-            '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5"/><path d="M12 15V3"/></svg> '+tx(UI.printpdf)+'</a>' : '')+
+            '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5"/><path d="M12 15V3"/></svg> Print PDF</a>' : '')+
         '</div></div>';
-      var note = c.note ? '<p class="pp-note">'+tx(c.note)+'</p>' : '';
+      var note = c.note ? '<p class="pp-note">'+c.note+'</p>' : '';
       return '<div class="pp-card">'+
-        '<div class="pp-card-top"><span class="pp-ic">'+(IC[c.key]||'')+'</span><h3>'+tx(c.title)+'</h3></div>'+
-        '<p class="pp-who">'+tx(c.who)+'</p>'+ qsBtns + fbBtns + note +
+        '<div class="pp-card-top"><span class="pp-ic">'+(IC[c.key]||'')+'</span><h3>'+c.title+'</h3></div>'+
+        '<p class="pp-who">'+c.who+'</p>'+ qsBtns + fbBtns + note +
       '</div>';
     }).join('');
   }
 
-  /* ---------- modal ---------- */
-  var lastFocus=null;
+  /* ---------- modal open/close ---------- */
+  var lastFocus = null;
   function openModal(sub, title){
     var ov=$ov(); if(!ov) return;
-    document.getElementById('ppmSub').textContent=sub;
-    document.getElementById('ppmTitle').innerHTML=title;
-    lastFocus=document.activeElement; ov.classList.add('open'); document.body.style.overflow='hidden'; ov.scrollTop=0;
+    document.getElementById('ppmSub').textContent = sub;
+    document.getElementById('ppmTitle').innerHTML = title;
+    lastFocus = document.activeElement;
+    ov.classList.add('open');
+    document.body.style.overflow='hidden';
+    ov.scrollTop = 0;
   }
-  window.aogPilotCloseModal=function(){
+  window.aogPilotCloseModal = function(){
     var ov=$ov(); if(!ov) return;
-    ov.classList.remove('open'); document.body.style.overflow=''; document.getElementById('ppmBody').innerHTML='';
-    window.__ppOpen=null;
-    if(lastFocus&&lastFocus.focus){ try{lastFocus.focus();}catch(e){} }
+    ov.classList.remove('open'); document.body.style.overflow='';
+    document.getElementById('ppmBody').innerHTML='';
+    if(lastFocus && lastFocus.focus){ try{ lastFocus.focus(); }catch(e){} }
   };
-  document.addEventListener('keydown',function(e){ if(e.key==='Escape'){ var ov=$ov(); if(ov&&ov.classList.contains('open')) window.aogPilotCloseModal(); } });
-  document.addEventListener('click',function(e){ var ov=$ov(); if(ov&&ov.classList.contains('open')&&e.target===ov) window.aogPilotCloseModal(); });
+  document.addEventListener('keydown', function(e){ if(e.key==='Escape'){ var ov=$ov(); if(ov&&ov.classList.contains('open')) window.aogPilotCloseModal(); } });
+  document.addEventListener('click', function(e){ var ov=$ov(); if(ov&&ov.classList.contains('open')&&e.target===ov) window.aogPilotCloseModal(); });
 
-  /* ---------- quick-start preview ---------- */
-  window.aogPilotPreview=function(key){
+  /* ---------- Quick-Start preview ---------- */
+  window.aogPilotPreview = function(key){
     var c=null,i; for(i=0;i<CARDS.length;i++){ if(CARDS[i].key===key) c=CARDS[i]; }
     var q=QS[key]; if(!q||!c) return;
-    window.__ppOpen={type:'preview', key:key};
-    var steps=q.steps.map(function(s){ return '<li><b>'+tx(s[0])+'</b><br>'+tx(s[1])+'</li>'; }).join('');
-    var html='<div class="ppm-prev">'+
-      '<p class="lede">'+tx(q.lede)+'</p><ol>'+steps+'</ol>'+
-      '<p class="lede" style="font-size:13.5px;color:var(--ink-soft,#46506E);">'+tx(q.close)+'</p>'+
+    var steps = q.steps.map(function(s){ return '<li><b>'+s[0]+'</b><br>'+s[1]+'</li>'; }).join('');
+    var html = '<div class="ppm-prev">'+
+      '<p class="lede">'+q.lede+'</p>'+
+      '<ol>'+steps+'</ol>'+
+      '<p class="lede" style="font-size:13.5px;color:var(--ink-soft,#46506E);">'+q.close+'</p>'+
       '<div class="ppm-prevfoot">'+
-        (c.qs ? '<a class="pp-b pp-b-navy" href="'+PDIR+c.qs+'" target="_blank" rel="noopener">'+tx(UI.dlQs)+'</a>' : '')+
-        '<button type="button" class="pp-b pp-b-gold" onclick="aogPilotForm(\''+c.form+'\')">'+tx(UI.goForm)+'</button>'+
+        (c.qs ? '<a class="pp-b pp-b-navy" href="'+PDIR+c.qs+'" target="_blank" rel="noopener">Download Quick-Start (PDF)</a>' : '')+
+        '<button type="button" class="pp-b pp-b-gold" onclick="aogPilotForm(\''+c.form+'\')">Go to feedback form &rarr;</button>'+
       '</div></div>';
-    openModal(tx(UI.subQs)+' · '+deTag(tx(c.title)), tx(c.title));
-    document.getElementById('ppmBody').innerHTML=html;
+    openModal('Quick-Start · '+deTag(c.title), c.title);
+    document.getElementById('ppmBody').innerHTML = html;
   };
 
-  /* ---------- render form ---------- */
-  function fid(formKey,f,idx,sec){ return 'pp_'+formKey+'_'+(f.id||('f'+sec.title.en.replace(/\W/g,'')+idx)); }
-  function fieldHTML(formKey,f,nm){
+  /* ---------- render a feedback form ---------- */
+  function fieldHTML(formKey, f, idx){
+    var nm = 'pp_'+formKey+'_'+(f.id||('f'+idx));
     if(f.type==='likert'){
-      var scale=f.scale, head='<tr><th class="s"></th>'+scale.map(function(s){return '<th>'+tx(s).replace(/ /g,'<br>')+'</th>';}).join('')+'</tr>';
+      var scale=f.scale, head='<tr><th class="s"></th>'+scale.map(function(s){return '<th>'+s.replace(/ /g,'<br>')+'</th>';}).join('')+'</tr>';
       var body=f.rows.map(function(rt,ri){
         var rnm=nm+'_r'+ri;
-        var cells=scale.map(function(s){ return '<td><input type="radio" name="'+rnm+'" value="'+esc(tx(s))+'" aria-label="'+esc(tx(s))+'"></td>'; }).join('');
-        return '<tr><td class="s">'+tx(rt)+'</td>'+cells+'</tr>';
+        var cells=scale.map(function(s,si){ return '<td><input type="radio" name="'+rnm+'" value="'+esc(s)+'" aria-label="'+esc(s)+'"></td>'; }).join('');
+        return '<tr><td class="s">'+rt+'</td>'+cells+'</tr>';
       }).join('');
-      return '<div class="ppf-field"><div class="ppf-likert-wrap"><table class="ppf-likert"><thead>'+head+'</thead><tbody>'+body+'</tbody></table></div></div>';
+      return '<div class="ppf-field" data-likert="'+nm+'"><table class="ppf-likert"><thead>'+head+'</thead><tbody>'+body+'</tbody></table></div>';
     }
     if(f.type==='checks'){
-      var ch=f.opts.map(function(o){ return '<label class="ppf-chip"><input type="checkbox" name="'+nm+'" value="'+esc(tx(o))+'" onchange="this.closest(\'.ppf-chip\').classList.toggle(\'on\',this.checked)">'+tx(o)+'</label>'; }).join('');
-      return '<div class="ppf-field"><label class="ppf-q">'+tx(f.label)+'</label><div class="ppf-opts">'+ch+'</div></div>';
+      var ch=f.opts.map(function(o){ return '<label class="ppf-chip"><input type="checkbox" name="'+nm+'" value="'+esc(o)+'" onchange="this.closest(\'.ppf-chip\').classList.toggle(\'on\',this.checked)">'+o+'</label>'; }).join('');
+      return '<div class="ppf-field"><label class="ppf-q">'+f.label+'</label><div class="ppf-opts">'+ch+'</div></div>';
     }
     if(f.type==='radio'){
-      var rd=f.opts.map(function(o){ return '<label class="ppf-chip"><input type="radio" name="'+nm+'" value="'+esc(tx(o))+'" onchange="var p=this.closest(\'.ppf-opts\'); if(p){var l=p.querySelectorAll(\'.ppf-chip\'); for(var k=0;k<l.length;k++)l[k].classList.remove(\'on\');} this.closest(\'.ppf-chip\').classList.add(\'on\')">'+tx(o)+'</label>'; }).join('');
-      return '<div class="ppf-field"><label class="ppf-q">'+tx(f.label)+'</label><div class="ppf-opts">'+rd+'</div></div>';
+      var rd=f.opts.map(function(o){ return '<label class="ppf-chip"><input type="radio" name="'+nm+'" value="'+esc(o)+'" onchange="var p=this.closest(\'.ppf-opts\'); if(p){var l=p.querySelectorAll(\'.ppf-chip\'); for(var k=0;k<l.length;k++)l[k].classList.remove(\'on\');} this.closest(\'.ppf-chip\').classList.add(\'on\')">'+o+'</label>'; }).join('');
+      return '<div class="ppf-field"><label class="ppf-q">'+f.label+'</label><div class="ppf-opts">'+rd+'</div></div>';
     }
     if(f.type==='nps'){
       var cells=''; for(var n=0;n<=10;n++){ cells+='<label><input type="radio" name="'+nm+'" value="'+n+'"><span class="n">'+n+'</span></label>'; }
-      return '<div class="ppf-field"><label class="ppf-q">'+tx(f.label)+'</label><div class="ppf-nps"><span class="ends">'+tx(f.left)+'</span>'+cells+'<span class="ends">'+tx(f.right)+'</span></div></div>';
+      return '<div class="ppf-field"><label class="ppf-q">'+f.label+'</label><div class="ppf-nps"><span class="ends">'+(f.left||'')+'</span>'+cells+'<span class="ends">'+(f.right||'')+'</span></div></div>';
     }
     if(f.type==='face'){
-      var fc=f.opts.map(function(o){ return '<label><input type="radio" name="'+nm+'" value="'+esc(tx(o.t))+'"><span class="f"><span class="em">'+o.em+'</span>'+tx(o.t)+'</span></label>'; }).join('');
-      return '<div class="ppf-field"><label class="ppf-q">'+tx(f.label)+'</label><div class="ppf-face">'+fc+'</div></div>';
+      var fc=f.opts.map(function(o){ return '<label><input type="radio" name="'+nm+'" value="'+esc(o.t)+'"><span class="f"><span class="em">'+o.em+'</span>'+o.t+'</span></label>'; }).join('');
+      return '<div class="ppf-field"><label class="ppf-q">'+f.label+'</label><div class="ppf-face">'+fc+'</div></div>';
     }
     if(f.type==='textarea'){
-      return '<div class="ppf-field"><label class="ppf-q" for="'+nm+'">'+tx(f.label)+'</label><textarea id="'+nm+'" name="'+nm+'" rows="2"></textarea></div>';
+      return '<div class="ppf-field"><label class="ppf-q" for="'+nm+'">'+f.label+'</label><textarea id="'+nm+'" name="'+nm+'" rows="2"></textarea></div>';
     }
-    var t=f.type==='date'?'date':(f.type==='number'?'number':'text');
-    return '<div class="ppf-field"><label class="ppf-q" for="'+nm+'">'+tx(f.label)+'</label><input type="'+t+'" id="'+nm+'" name="'+nm+'"></div>';
+    // text / date / number
+    var t = f.type==='date'?'date':(f.type==='number'?'number':'text');
+    return '<div class="ppf-field"><label class="ppf-q" for="'+nm+'">'+f.label+'</label><input type="'+t+'" id="'+nm+'" name="'+nm+'"></div>';
   }
 
-  window.aogPilotForm=function(formKey){
+  window.aogPilotForm = function(formKey){
     var F=FORMS[formKey]; if(!F) return;
-    window.__ppOpen={type:'form', key:formKey};
-    var secs=F.sections.map(function(sec,si){
-      var fields=sec.fields.map(function(f,i){ return fieldHTML(formKey,f,fid(formKey,f,i,sec)); }).join('');
-      var collapsed = si>0 ? ' collapsed' : '';
-      var head='<button type="button" class="ppf-sec-head" aria-expanded="'+(si>0?'false':'true')+'" onclick="aogPilotToggleSec(this)">'+
-        '<span class="ppf-sec-h">'+tx(sec.title)+'</span>'+
-        '<span class="ppf-sec-meta"><span class="ppf-sec-count" id="ppfcnt_'+si+'"></span>'+
-          '<svg class="ppf-chev2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></span></button>';
-      var bodyInner=(sec.desc?'<div class="ppf-sec-d">'+tx(sec.desc)+'</div>':'')+fields;
-      return '<div class="ppf-sec'+collapsed+'">'+head+'<div class="ppf-sec-body">'+bodyInner+'</div></div>';
+    var secs = F.sections.map(function(sec){
+      var fields = sec.fields.map(function(f,i){ return fieldHTML(formKey,f,sec.title.replace(/\W/g,'')+i); }).join('');
+      return '<div class="ppf-sec"><div class="ppf-sec-h">'+sec.title+'</div>'+(sec.desc?'<div class="ppf-sec-d">'+sec.desc+'</div>':'')+fields+'</div>';
     }).join('');
-    var prog='<div class="ppf-prog"><div class="ppf-prog-row"><span class="ppf-prog-lab">'+tx(UI.progLab)+'</span><span class="ppf-prog-pct" id="ppfPct">0%</span></div><div class="ppf-prog-track"><div class="ppf-prog-fill" id="ppfFill"></div></div></div>';
-    var html='<form id="ppfForm" onsubmit="return aogPilotSubmit(event,\''+formKey+'\')">'+
-      prog+'<p class="ppf-intro">'+tx(F.intro)+'</p>'+secs+
-      '<div class="ppf-actions"><span class="ppf-priv-mini">'+tx(UI.privMini)+'</span>'+
-      '<button type="submit" class="pp-b pp-b-gold" id="ppfSend" style="font-size:14px;padding:12px 20px;">'+tx(UI.send)+'</button></div></form>';
-    openModal(tx(UI.subFb), tx(F.title));
-    document.getElementById('ppmBody').innerHTML=html;
-    var form=document.getElementById('ppfForm');
-    if(form){ var upd=function(){ window.aogPilotProgress(formKey); }; form.addEventListener('input',upd); form.addEventListener('change',upd); }
-    window.aogPilotProgress(formKey);
-    $ov().scrollTop=0; var pb=document.getElementById('ppmBody'); if(pb) pb.scrollTop=0;
-  };
-
-  window.aogPilotToggleSec=function(btn){
-    var sec=btn.closest('.ppf-sec'); if(!sec) return;
-    var c=sec.classList.toggle('collapsed');
-    btn.setAttribute('aria-expanded', c?'false':'true');
-  };
-
-  function secCounts(formKey,sec,root){
-    var total=0, ans=0;
-    sec.fields.forEach(function(f,i){
-      var nm=fid(formKey,f,i,sec);
-      if(f.type==='likert'){ f.rows.forEach(function(rt,ri){ total++; if(root.querySelector('input[name="'+nm+'_r'+ri+'"]:checked')) ans++; }); }
-      else if(f.type==='radio'||f.type==='nps'||f.type==='face'){ total++; if(root.querySelector('input[name="'+nm+'"]:checked')) ans++; }
-      else if(f.type==='checks'){ total++; if(root.querySelector('input[name="'+nm+'"]:checked')) ans++; }
-    });
-    return {total:total, ans:ans};
-  }
-  window.aogPilotProgress=function(formKey){
-    var F=FORMS[formKey], root=document.getElementById('ppfForm'); if(!F||!root) return;
-    var T=0,A=0;
-    F.sections.forEach(function(sec,si){
-      var c=secCounts(formKey,sec,root); T+=c.total; A+=c.ans;
-      var pill=document.getElementById('ppfcnt_'+si);
-      if(pill){ if(c.total===0){ pill.style.display='none'; } else { pill.style.display=''; pill.textContent=c.ans+'/'+c.total; pill.classList.toggle('done', c.ans===c.total && c.total>0); } }
-    });
-    var pct=T?Math.round(A/T*100):0;
-    var fill=document.getElementById('ppfFill'), pe=document.getElementById('ppfPct');
-    if(fill) fill.style.width=pct+'%'; if(pe) pe.textContent=pct+'%';
+    var html = '<form id="ppfForm" onsubmit="return aogPilotSubmit(event,\''+formKey+'\')">'+
+      '<p class="ppf-intro">'+F.intro+'</p>'+ secs +
+      '<div class="ppf-actions">'+
+        '<span class="ppf-priv-mini">Your answers aren’t saved on this site. Pressing <b>Send feedback</b> opens your email app with everything filled in.</span>'+
+        '<button type="submit" class="pp-b pp-b-gold" style="font-size:14px;padding:12px 20px;">Send feedback &rarr;</button>'+
+      '</div></form>';
+    openModal('Feedback · about 5–8 min', F.title);
+    var b=document.getElementById('ppmBody'); b.innerHTML=html;
+    $ov().scrollTop=0;
   };
 
   /* ---------- collect + submit ---------- */
@@ -27614,159 +27463,69 @@ window.addEventListener('load', _installToolScreenHook);
     var F=FORMS[formKey], root=document.getElementById('ppfForm'); if(!F||!root) return '';
     var out=[];
     F.sections.forEach(function(sec){
-      var lines=[];
+      var secLines=[];
       sec.fields.forEach(function(f,i){
-        var nm=fid(formKey,f,i,sec);
+        var nm='pp_'+formKey+'_'+(f.id||('f'+sec.title.replace(/\W/g,'')+i));
         if(f.type==='likert'){
-          f.rows.forEach(function(rt,ri){ var sel=root.querySelector('input[name="'+nm+'_r'+ri+'"]:checked'); lines.push('  - '+deTag(tx(rt))+' : '+(sel?sel.value:tx(UI.noAns))); });
+          f.rows.forEach(function(rt,ri){
+            var sel=root.querySelector('input[name="'+nm+'_r'+ri+'"]:checked');
+            secLines.push('  - '+deTag(rt)+' : '+(sel?sel.value:'(no answer)'));
+          });
         } else if(f.type==='checks'){
           var picked=[]; root.querySelectorAll('input[name="'+nm+'"]:checked').forEach(function(x){picked.push(x.value);});
-          lines.push('  '+deTag(tx(f.label))+' '+(picked.length?picked.join(', '):tx(UI.none)));
+          secLines.push('  '+deTag(f.label)+' '+(picked.length?picked.join(', '):'(none)'));
         } else if(f.type==='radio'||f.type==='nps'||f.type==='face'){
-          var s=root.querySelector('input[name="'+nm+'"]:checked'); lines.push('  '+deTag(tx(f.label))+' '+(s?s.value:tx(UI.noAns)));
+          var s=root.querySelector('input[name="'+nm+'"]:checked');
+          secLines.push('  '+deTag(f.label)+' '+(s?s.value:'(no answer)'));
         } else {
-          var el=root.querySelector('[name="'+nm+'"]'); var v=el?el.value.trim():''; lines.push('  '+deTag(tx(f.label))+' '+(v||tx(UI.blank)));
+          var el=root.querySelector('[name="'+nm+'"]');
+          var v=el?el.value.trim():'';
+          if(v||f.type!=='textarea') secLines.push('  '+deTag(f.label)+' '+(v||'(blank)'));
         }
       });
-      out.push('== '+deTag(tx(sec.title))+' ==\n'+lines.join('\n'));
+      out.push('== '+deTag(sec.title)+' ==\n'+secLines.join('\n'));
     });
     return out.join('\n\n');
   }
 
   window.__ppLastBody=''; window.__ppLastSubject='';
-  window.aogPilotSubmit=function(ev,formKey){
-    if(ev&&ev.preventDefault) ev.preventDefault();
-    var btn=document.getElementById('ppfSend');
-    if(btn){ btn.disabled=true; btn.style.opacity='.85'; btn.innerHTML='<span class="ppf-spin"></span> '+tx(UI.preparing); }
-    setTimeout(function(){ try{ window.aogPilotDoSubmit(formKey); }catch(e){} }, 480);
-    return false;
-  };
-  window.aogPilotDoSubmit=function(formKey){
+  window.aogPilotSubmit = function(ev, formKey){
+    ev.preventDefault();
     var F=FORMS[formKey];
-    var subject=tx(UI.subj)+' — '+deTag(tx(F.title));
-    var body=tx(UI.mailHdr)+'\n'+tx(UI.mailForm)+': '+deTag(tx(F.title))+'\n'+tx(UI.mailDate)+': '+new Date().toLocaleString()+'\n\n'+collect(formKey)+'\n\n'+tx(UI.mailFoot);
+    var subject='AoG Pilot Feedback — '+deTag(F.title);
+    var body='Architecture of Grace — Universal Check-In pilot feedback\nForm: '+deTag(F.title)+'\nDate submitted: '+new Date().toLocaleString()+'\n\n'+collect(formKey)+'\n\n(Sent from the pilot form on architectureofgrace.org)';
     window.__ppLastBody=body; window.__ppLastSubject=subject;
     var mailto='mailto:'+PILOT_EMAIL+'?subject='+encodeURIComponent(subject)+'&body='+encodeURIComponent(body);
     try{ window.location.href=mailto; }catch(e){}
+    // success panel
     var b=document.getElementById('ppmBody');
     b.innerHTML='<div class="ppf-done">'+
       '<div class="ck"><svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></div>'+
-      '<h4>'+tx(UI.doneH)+'</h4><p>'+tx(UI.doneP)+'</p>'+
+      '<h4>Thank you — your email is ready</h4>'+
+      '<p>Your email app should have opened with your answers filled in, addressed to the project. Just press <b>send</b> in your email app to finish. Didn’t open, or no email app on this device? Use a button below.</p>'+
       '<div class="ppf-actions" style="justify-content:center;border-top:0;position:static;background:none;">'+
-        '<button type="button" class="pp-b pp-b-gold" style="font-size:15px;padding:14px 26px;" onclick="aogPilotCopy(this)">'+tx(UI.copy)+'</button>'+
-        '<a class="pp-b pp-b-navy" style="font-size:14px;padding:13px 20px;" href="'+mailto.replace(/"/g,'&quot;')+'">'+tx(UI.openAgain)+'</a>'+
-        '<button type="button" class="pp-b pp-b-ghost" onclick="aogPilotCloseModal()">'+tx(UI.done)+'</button>'+
-      '</div><div class="ppf-resend">'+tx(UI.resend)+'</div></div>';
-    window.__ppOpen=null; $ov().scrollTop=0;
+        '<a class="pp-b pp-b-gold" href="'+mailto.replace(/"/g,'&quot;')+'">Open email again</a>'+
+        '<button type="button" class="pp-b pp-b-navy" onclick="aogPilotCopy(this)">Copy my answers</button>'+
+        '<button type="button" class="pp-b pp-b-ghost" onclick="aogPilotCloseModal()">Done</button>'+
+      '</div>'+
+      '<p style="font-size:12px;margin-top:12px;">If you copy your answers, you can paste them into an email to <b>'+PILOT_EMAIL+'</b> yourself.</p>'+
+    '</div>';
+    $ov().scrollTop=0;
     return false;
   };
-  window.aogPilotCopy=function(btn){
+  window.aogPilotCopy = function(btn){
     var txt='To: '+PILOT_EMAIL+'\nSubject: '+window.__ppLastSubject+'\n\n'+window.__ppLastBody;
-    function done(){ if(btn){ btn.textContent=tx(UI.copied); setTimeout(function(){btn.textContent=tx(UI.copy);},1800);} }
-    if(navigator.clipboard&&navigator.clipboard.writeText){ navigator.clipboard.writeText(txt).then(done,fallback); } else { fallback(); }
+    function done(){ if(btn){ btn.textContent='Copied ✓'; setTimeout(function(){btn.textContent='Copy my answers';},1800);} }
+    if(navigator.clipboard&&navigator.clipboard.writeText){ navigator.clipboard.writeText(txt).then(done,function(){fallback();}); } else { fallback(); }
     function fallback(){ var ta=document.createElement('textarea'); ta.value=txt; document.body.appendChild(ta); ta.select(); try{document.execCommand('copy');}catch(e){} document.body.removeChild(ta); done(); }
   };
 
-  /* ---------- relang: rebuild dynamic content on EN/ES switch ---------- */
-  window.aogPilotRelang=function(){
-    try{ buildCards(); }catch(e){}
-    var o=window.__ppOpen, ov=$ov();
-    if(o && ov && ov.classList.contains('open')){
-      if(o.type==='preview') window.aogPilotPreview(o.key);
-      else if(o.type==='form') window.aogPilotForm(o.key);
-    }
-  };
+  /* ---------- entry point + nav ---------- */
+  window.aogGoPilot = function(){ if(typeof showScreen==='function') showScreen('screen-pilot'); try{ if(typeof aogCloseExplore==='function') aogCloseExplore(); }catch(e){} try{ if(typeof aogSetHash==='function') aogSetHash('pilot'); }catch(e){} };
 
-  /* register static-chrome Spanish into the site's dictionary */
-  try{ if(window.I18N_UI){ for(var k in PILOT_I18N){ window.I18N_UI[k]=PILOT_I18N[k]; } } }catch(e){}
-
-  /* hook the site's language switch so dynamic content re-renders too */
-  try{
-    var _origSetLang=window.setLang;
-    if(typeof _origSetLang==='function'){
-      window.setLang=function(){ var r=_origSetLang.apply(this,arguments); try{ if(typeof applyLang==='function') applyLang(); }catch(e){} try{ window.aogPilotRelang(); }catch(e){} return r; };
-    }
-  }catch(e){}
-
-  /* entry point + nav */
-  window.aogGoPilot=function(){ if(typeof showScreen==='function') showScreen('screen-pilot'); try{ if(typeof aogCloseExplore==='function') aogCloseExplore(); }catch(e){} try{ if(typeof aogSetHash==='function') aogSetHash('pilot'); }catch(e){} };
-
-  function init(){ buildCards(); try{ if(window.lang==='es' && typeof applyLang==='function') applyLang(); }catch(e){} }
-  if(document.readyState==='loading'){ document.addEventListener('DOMContentLoaded',init); } else { init(); }
-  try{ window.addEventListener('load', function(){ try{ buildCards(); }catch(e){} }); }catch(e){}
+  if(document.readyState==='loading'){ document.addEventListener('DOMContentLoaded', buildCards); } else { buildCards(); }
 })();
 </script>
-
-<!-- ============ SAMPLE-DATA BANNER (2026-06 · removable as one block) ============ -->
-<style id="aogDemoBannerCSS">
-  #aogDemoBanner{ position:fixed; top:84px; left:50%; transform:translateX(-50%); z-index:2200; display:flex; align-items:center; gap:10px; max-width:calc(100vw - 28px); background:#FCE9C2; color:#5A4214; border:1px solid #E2B65A; border-radius:999px; padding:9px 10px 9px 16px; box-shadow:0 12px 32px -12px rgba(90,66,20,.55); font-family:var(--font-sans,Inter,-apple-system,sans-serif); font-size:13px; font-weight:600; }
-  #aogDemoBanner[hidden]{ display:none; }
-  #aogDemoBanner svg{ width:17px; height:17px; flex:none; color:#9a6f24; }
-  #aogDemoBanner .adb-txt{ line-height:1.3; }
-  #aogDemoBanner button{ font-family:inherit; cursor:pointer; border:0; border-radius:999px; font-weight:700; flex:none; }
-  #aogDemoBanner .adb-clear{ background:#0A1E33; color:#fff; font-size:12px; padding:6px 14px; }
-  #aogDemoBanner .adb-clear:hover{ background:#13304d; }
-  #aogDemoBanner .adb-x{ background:rgba(0,0,0,.08); color:#5A4214; width:26px; height:26px; font-size:17px; line-height:1; display:flex; align-items:center; justify-content:center; }
-  #aogDemoBanner .adb-x:hover{ background:rgba(0,0,0,.16); }
-  :root[data-theme="dark"] #aogDemoBanner{ background:#3a3115; color:#F1E9D2; border-color:#E2B65A; }
-  :root[data-theme="dark"] #aogDemoBanner svg{ color:#E2B65A; }
-  :root[data-theme="dark"] #aogDemoBanner .adb-x{ background:rgba(255,255,255,.14); color:#F1E9D2; }
-  @media (max-width:560px){ #aogDemoBanner{ top:auto; bottom:14px; font-size:12px; padding:8px 9px 8px 13px; } }
-</style>
-<script id="aogDemoBannerJS">
-(function(){
-  "use strict";
-  var DEMO_FLAG="aogScreener.demoActive";
-  var SES_DISMISS="aogDemoBannerDismissed";
-  function L(en,es){ try{ return (window.lang==='es')?es:en; }catch(e){ return en; } }
-  function demoOn(){ try{ return localStorage.getItem(DEMO_FLAG)==='1'; }catch(e){ return false; } }
-  function onDash(){ var s=document.getElementById('screen-admin'); return !!(s && s.classList.contains('active')); }
-  function dismissed(){ try{ return sessionStorage.getItem(SES_DISMISS)==='1'; }catch(e){ return false; } }
-  function ensure(){
-    var b=document.getElementById('aogDemoBanner'); if(b) return b;
-    b=document.createElement('div'); b.id='aogDemoBanner'; b.setAttribute('hidden','');
-    b.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>'+
-      '<span class="adb-txt"></span>'+
-      '<button type="button" class="adb-clear"></button>'+
-      '<button type="button" class="adb-x" aria-label="Dismiss">&times;</button>';
-    document.body.appendChild(b);
-    b.querySelector('.adb-clear').addEventListener('click', function(){
-      try{ if(demoOn() && typeof window.toggleDemoData==='function') window.toggleDemoData(); }catch(e){}
-      sync();
-    });
-    b.querySelector('.adb-x').addEventListener('click', function(){
-      try{ sessionStorage.setItem(SES_DISMISS,'1'); }catch(e){}
-      b.setAttribute('hidden','');
-    });
-    return b;
-  }
-  function sync(){
-    var b=ensure();
-    if(!demoOn()){ try{ sessionStorage.removeItem(SES_DISMISS); }catch(e){} }
-    if(demoOn() && onDash() && !dismissed()){
-      b.querySelector('.adb-txt').textContent=L("You’re viewing sample data — not real students.","Estás viendo datos de ejemplo — no estudiantes reales.");
-      b.querySelector('.adb-clear').textContent=L("Clear","Borrar");
-      b.removeAttribute('hidden');
-    } else {
-      b.setAttribute('hidden','');
-    }
-  }
-  window.aogDemoBannerSync=sync;
-  function wrap(name){
-    try{
-      var o=window[name];
-      if(typeof o==='function' && !o.__demoWrapped){
-        var w=function(){ var r=o.apply(this,arguments); try{ sync(); }catch(e){} return r; };
-        w.__demoWrapped=true; window[name]=w;
-      }
-    }catch(e){}
-  }
-  function boot(){ wrap('toggleDemoData'); wrap('aogMTSSLoadDemo'); wrap('showScreen'); sync(); }
-  if(document.readyState==='loading'){ document.addEventListener('DOMContentLoaded', boot); } else { boot(); }
-  try{ window.addEventListener('load', sync); }catch(e){}
-})();
-</script>
-<!-- ============ /SAMPLE-DATA BANNER ============ -->
 
 </body>
 </html>

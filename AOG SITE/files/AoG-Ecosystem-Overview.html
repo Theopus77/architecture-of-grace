@@ -3,6 +3,9 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Fraunces:ital,opsz,wght@0,9..144,400..900;1,9..144,400..700&display=swap" rel="stylesheet">
 <title>The Grace Ecosystem — Architecture of Grace</title>
 <style>
   @page { size: Letter; margin: 0; }
@@ -14,7 +17,7 @@
   *{box-sizing:border-box;}
   html,body{margin:0;padding:0;}
   body{
-    font-family:Georgia,"Times New Roman",serif; color:var(--ink); background:#e7ddc4;
+    font-family:Georgia,"Times New Roman",serif; color:var(--ink); background:#FCF8F0;
     -webkit-print-color-adjust:exact; print-color-adjust:exact;
   }
   .page{
@@ -71,14 +74,88 @@
   ul.clean{margin:4px 0 0; padding-left:18px;}
   ul.clean li{font-size:12.5px; line-height:1.55; color:var(--slate); margin-bottom:4px;}
   @media print{ body{background:#fff;} .page{box-shadow:none; margin:0 auto;} }
+
+  /* ===== site nav (screen only; hidden in print) ===== */
+  .aognav{position:sticky; top:0; z-index:60; display:flex; align-items:center; justify-content:space-between; gap:14px; flex-wrap:wrap; row-gap:10px; background:#FDFCF7; border-bottom:1px solid #E4DAC5; padding:18px 28px; box-shadow:0 2px 10px rgba(10,30,51,.06);}
+  .aognav .nbrand{display:flex; align-items:center; gap:12px; text-decoration:none;}
+  .aognav .nbrand .mk{width:36px; height:36px; border-radius:6px; background:#0A1E33; color:#F2C964; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:18px; box-shadow:0 1px 4px rgba(10,30,51,.18);}
+  .aognav .nbrand .bn{font-family:"Fraunces","Cormorant Garamond",Georgia,serif; font-weight:600; font-size:17px; color:#0A1E33; line-height:1.1;}
+  .aognav .nbrand .bs{display:block; font-family:Arial,Helvetica,sans-serif; font-size:10.5px; font-weight:400; color:#8A92A6; letter-spacing:.05em; margin-top:2px;}
+  .aognav .nactions{display:flex; align-items:center; gap:8px; flex-wrap:nowrap;}
+  .aognav .pill{display:inline-flex; align-items:center; gap:6px; font-family:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; font-size:13px; font-weight:800; text-decoration:none; border-radius:999px; white-space:nowrap; cursor:pointer; border:1px solid transparent; line-height:1;}
+  .aognav .pill .pic{flex:none;}
+  .aognav .pill.rn .pic, .aognav .pill.ci .pic{color:#F2C964;}
+  .aognav .pill.rn{background:#D9A33B; color:#0A1E33; border-color:#0A1E33; padding:6px 14px; margin-right:14px; flex:none;}
+  .aognav .pill.ci{background:#0A1E33; color:#F4EEE2; border-color:#0A1E33; padding:7px 16px; flex:none;}
+  .aognav .pill.ex{background:#F1DFA8; color:#0A1E33; border-color:#D9A33B; font-weight:700; padding:6px 13px;}
+  .aognav .pill:hover{filter:brightness(.97);}
+  .aognav .pill.back{background:transparent; color:#0A1E33; border:none; outline:none; -webkit-appearance:none; appearance:none; font-weight:700; padding:0; margin-right:16px; cursor:pointer; flex:none;}
+  .aognav .pill.back:focus{outline:none;}
+  .aognav .pill.back:focus-visible{outline:2px solid #D9A33B; outline-offset:3px; border-radius:6px;}
+  .aognav .pill.back:hover{color:#D9A33B;}
+  .aognav .pill.back .arr{color:#D9A33B; font-weight:700;}
+  .aognav .exwrap{position:relative; margin-right:14px; flex:none;}
+  .aognav .exmenu{position:absolute; top:calc(100% + 8px); right:0; min-width:232px; background:#FCF8F0; border:1px solid #E4DAC5; border-radius:14px; box-shadow:0 18px 40px -16px rgba(10,30,51,.4); padding:7px; z-index:80;}
+  .aognav .exmenu[hidden]{display:none;}
+  .aognav .exmenu a{display:flex; align-items:center; gap:11px; padding:10px 12px; border-radius:10px; text-decoration:none; color:#0A1E33; font-family:Arial,Helvetica,sans-serif; font-size:14.5px; font-weight:600; white-space:nowrap;}
+  .aognav .exmenu a svg{width:18px; height:18px; color:#D9A33B; flex:none;}
+  .aognav .exmenu a:hover{background:rgba(184,137,58,.14);}
+  .aognav .exchev{transition:transform .15s ease;}
+  .aognav .pill.ex[aria-expanded="true"] .exchev{transform:rotate(180deg);}
+  .aognav .nutil{display:flex; align-items:center; gap:8px;}
+  .aognav .uic{width:34px; height:34px; border:1px solid #E4DAC5; border-radius:9px; display:inline-grid; place-items:center; color:#46506E; text-decoration:none; flex:none;}
+  .aognav .uic[href*="#store"]{width:38px;}
+  .aognav .lang{flex:none;}
+  .aognav .uic:hover{background:rgba(184,137,58,.12);}
+  .aognav .uic svg{width:18px; height:18px;}
+  .aognav .lang{display:inline-flex; background:#F4EEE2; border:1px solid #E4DAC5; border-radius:999px; padding:3px;}
+  .aognav .lang .on, .aognav .lang a{background:transparent; padding:5px 12px; border-radius:999px; font-family:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; font-size:12px; font-weight:600; text-decoration:none; color:#46506E;}
+  .aognav .lang .on{background:#0A1E33; color:#fff; box-shadow:0 1px 2px rgba(10,30,51,.18);}
+  @media (max-width:600px){ .aognav{ flex-wrap:wrap; gap:8px; justify-content:center; } .aognav .nbrand{ width:100%; text-align:center; } .aognav .nactions{ flex-wrap:wrap; justify-content:center; } }
+  @media print{ .aognav{display:none !important;} }
 </style>
 </head>
 <body>
 
+<nav class="aognav" aria-label="Site navigation">
+  <a class="nbrand" href="../index.html"><span class="mk">A</span><span><span class="bn">Architecture of Grace</span><span class="bs" data-i18n="nav.sub">A project of The Architecture of Grace Foundation</span></span></a>
+  <div class="nactions">
+    <button class="pill back" type="button" onclick="aognavBack()"><span class="arr">&#8592;</span> <span data-i18n="nav.back">Back</span></button>
+  <a class="pill rn" href="../index.html#right-now"><svg class="pic" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-4.35-9-8a5 5 0 0 1 9-3 5 5 0 0 1 9 3c-2 3.65-9 8-9 8z"/></svg> <span data-i18n="nav.rn">Right Now</span></a>
+  <a class="pill ci" href="../index.html#checkin"><svg class="pic" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg> <span data-i18n="nav.ci">Check-In</span></a>
+  <div class="exwrap">
+    <button class="pill ex" id="aognavEx" type="button" aria-haspopup="true" aria-expanded="false" onclick="aognavToggle(event)"><svg class="pic" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18"/></svg> <span data-i18n="nav.explore">Explore</span> <svg class="exchev" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button>
+    <div class="exmenu" id="aognavMenu" role="menu" hidden>
+      <a role="menuitem" href="../start-here.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/><circle cx="4" cy="12" r="1.4" fill="currentColor" stroke="none"/></svg> <span data-i18n="nav.start">Start Here</span></a>
+      <a role="menuitem" href="../index.html#library"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg> <span data-i18n="nav.library">Library</span></a>
+      <a role="menuitem" href="../index.html#tools"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2a5 5 0 0 1 5 5c0 2.76-2.24 5-5 5S7 9.76 7 7a5 5 0 0 1 5-5z"/><path d="M3 21v-1a7 7 0 0 1 7-7h4a7 7 0 0 1 7 7v1"/></svg> <span data-i18n="nav.tools">Calm &amp; Regulation Tools</span></a>
+      <a role="menuitem" href="../grace-ecosystem.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="2.5"/><circle cx="5" cy="6" r="2"/><circle cx="19" cy="6" r="2"/><circle cx="5" cy="18" r="2"/><circle cx="19" cy="18" r="2"/><path d="M10.2 10.6 6.4 7.4M13.8 10.6l3.8-3.2M10.2 13.4 6.4 16.6M13.8 13.4l3.8 3.2"/></svg> <span data-i18n="nav.eco">Ecosystem</span></a>
+      <a role="menuitem" href="../index.html#framework"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21h18"/><path d="M4 21V9l8-5 8 5v12"/><path d="M9 21v-6h6v6"/></svg> <span data-i18n="nav.framework">Framework</span></a>
+      <a role="menuitem" href="../index.html#dashboard"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 13h8V3H3zM13 21h8V3h-8zM3 21h8v-6H3z"/></svg> <span data-i18n="nav.dashboard">Dashboard</span></a>
+      <a role="menuitem" href="../index.html#store"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg> <span data-i18n="nav.store">Store</span></a>
+    </div>
+  </div>
+  <div class="nutil">
+    <a class="uic" href="../index.html" title="Accessibility options (in the app)" aria-label="Accessibility options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="4" r="1.6"/><path d="M5 8h14M9 8l1 11M15 8l-1 11M12 8v5"/></svg></a>
+    <a class="uic" href="../index.html" title="Personalize" aria-label="Personalize"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="4" y1="7" x2="20" y2="7"/><circle cx="9" cy="7" r="2.3"/><line x1="4" y1="17" x2="20" y2="17"/><circle cx="15" cy="17" r="2.3"/></svg></a>
+    <a class="uic" href="../index.html" title="Display &amp; dark mode (in the app)" aria-label="Display options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg></a>
+    <span class="lang"><span class="on">EN</span><a href="../index.html" title="Espanol (in the app)">ES</a></span>
+    <a class="uic" href="../index.html#store" title="Store" aria-label="Store"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.7 13.4a2 2 0 0 0 2 1.6h9.7a2 2 0 0 0 2-1.6L23 6H6"/></svg></a>
+  </div>
+  </div>
+</nav>
+<script>
+  function aognavBack(){ if(window.history.length>1){window.history.back();} else {window.location.href='../index.html'; } }
+  function aognavToggle(e){ if(e)e.preventDefault(); var b=document.getElementById('aognavEx'),m=document.getElementById('aognavMenu'); if(!b||!m)return; if(m.hasAttribute('hidden')){ m.removeAttribute('hidden'); b.setAttribute('aria-expanded','true'); } else { m.setAttribute('hidden',''); b.setAttribute('aria-expanded','false'); } }
+  document.addEventListener('click', function(ev){ var m=document.getElementById('aognavMenu'); if(!m||m.hasAttribute('hidden'))return; if(ev.target.closest && (ev.target.closest('#aognavMenu')||ev.target.closest('#aognavEx')))return; m.setAttribute('hidden',''); var b=document.getElementById('aognavEx'); if(b)b.setAttribute('aria-expanded','false'); });
+  document.addEventListener('keydown', function(ev){ if(ev.key==='Escape'){ var m=document.getElementById('aognavMenu'); if(m)m.setAttribute('hidden',''); var b=document.getElementById('aognavEx'); if(b)b.setAttribute('aria-expanded','false'); } });
+</script>
+
+
 <!-- PAGE 1 -->
 <div class="page">
   <div class="brandrow">
-    <div class="mark">A</div>
+    <a class="mark" href="../index.html" title="Architecture of Grace" style="text-decoration:none;">A</a>
     <div class="brand">Architecture of Grace<small>A PROJECT OF THE ARCHITECTURE OF GRACE FOUNDATION</small></div>
   </div>
 
@@ -205,5 +282,6 @@
   </div>
 </div>
 
+<script src="../aog-nav.js"></script>
 </body>
 </html>
