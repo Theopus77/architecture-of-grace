@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="aog-build" content="2026.06.13-page-banners">
+<meta name="aog-build" content="2026.06.13-store-hero">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Architecture of Grace · Universal Check-In</title>
 <meta name="description" content="Social-emotional learning built by a teacher, for real classrooms — the SEL that tends to the grown-ups before it measures a child. Private, de-identified, K–adult. A check-in, not an exam.">
@@ -477,9 +477,9 @@ body::before {
    SURVEY ITEM STYLES — v2 with 6-point scale + intensity
    ============================================================ */
 
-.survey-stage { padding-top: 24px; }
+.survey-stage { padding-top: 16px; }
 
-.progress-bar { display: flex; align-items: center; gap: 16px; margin-bottom: 36px; }
+.progress-bar { display: flex; align-items: center; gap: 16px; margin-bottom: 20px; }
 .progress-meta {
   font-size: 12px; color: var(--ink-faint); font-weight: 600;
   letter-spacing: 0.08em; text-transform: uppercase; white-space: nowrap;
@@ -501,9 +501,9 @@ body::before {
   background: white;
   border: 1px solid var(--rule);
   border-radius: var(--radius-lg);
-  padding: 44px 44px 40px;
+  padding: 30px 34px 26px;
   box-shadow: var(--shadow-md);
-  margin-bottom: 32px;
+  margin-bottom: 18px;
   animation: slideUp 0.35s var(--ease-out);
 }
 @keyframes slideUp {
@@ -529,17 +529,31 @@ body::before {
 }
 .item-text {
   font-family: var(--font-serif);
-  font-size: clamp(22px, 3vw, 30px);
-  line-height: 1.35;
+  font-size: clamp(20px, 2.4vw, 26px);
+  line-height: 1.3;
   color: var(--ink);
   font-weight: 500;
-  margin-bottom: 32px;
-  /* Reserve a stable height (~max question length) and center the text so the
+  margin-bottom: 20px;
+  /* Reserve a stable height (~longest question) and center the text so the
      response options and Next button never shift as you move between questions. */
-  min-height: 132px;
+  min-height: 150px;
   display: flex;
   align-items: center;
 }
+
+/* Sticky survey/reflection action bar: keeps Back/Next always visible and stops
+   the buttons from jumping when the intensity follow-up appears (every device). */
+.survey-actions {
+  position: sticky;
+  bottom: 0;
+  background: var(--paper);
+  margin-top: 18px;
+  padding: 12px 0 14px;
+  border-top: 1px solid var(--rule);
+  z-index: 30;
+}
+.survey-stage { padding-bottom: 6px; }
+#intensityArea:not(:empty) { margin-top: 14px; }
 
 /* 6-point response - one card per row on mobile, 3+3 grid on desktop */
 .response-grid-6 {
@@ -1982,6 +1996,18 @@ a.doc-path .dp-t::after{ content:" \2192"; color:var(--gold); font-weight:700; }
 /* consolidated free shelf */
 .free-shelf{ display:grid; grid-template-columns:repeat(2,1fr); gap:12px; }
 @media(max-width:680px){ .free-shelf{ grid-template-columns:1fr; } }
+/* Collapsible free-shelf groups (cuts mobile scrolling) */
+.free-shelf.is-grouped{ display:block; }
+.fs-group{ border:1px solid var(--rule, #e6e1d5); border-radius:12px; margin-bottom:10px; background:var(--card, #fff); overflow:hidden; }
+.fs-group>summary{ list-style:none; cursor:pointer; display:flex; align-items:center; justify-content:space-between; gap:10px; padding:14px 16px; font-family:var(--font-sans); font-weight:800; font-size:14.5px; color:var(--navy); }
+.fs-group>summary::-webkit-details-marker{ display:none; }
+.fs-group>summary .fs-sum-r{ display:flex; align-items:center; gap:9px; }
+.fs-group>summary .fs-sum-n{ font-size:12px; font-weight:700; color:var(--ink-soft); background:rgba(217,163,59,.14); border:1px solid rgba(217,163,59,.3); border-radius:999px; padding:2px 9px; }
+.fs-group>summary .fs-chev{ transition:transform .18s ease; flex:0 0 auto; color:var(--ink-soft); }
+.fs-group[open]>summary .fs-chev{ transform:rotate(180deg); }
+.fs-group[open]>summary{ border-bottom:1px solid var(--rule, #e6e1d5); }
+.fs-grid{ display:grid; grid-template-columns:repeat(2,1fr); gap:12px; padding:14px; }
+@media(max-width:680px){ .fs-grid{ grid-template-columns:1fr; padding:12px; } }
 .free-card{ display:block; text-decoration:none; background:var(--cream-deep); border:1px solid var(--rule); border-radius:12px; padding:15px 17px; position:relative; transition:border-color .18s, transform .18s, box-shadow .18s; }
 .free-card:hover{ border-color:var(--gold); transform:translateY(-2px); box-shadow:0 8px 20px rgba(27,58,95,.08); }
 :root[data-theme="dark"] .free-card{ background:rgba(255,255,255,.03); border-color:rgba(242,201,100,.16); }
@@ -2971,8 +2997,7 @@ function toggleTheme() {
     /* Reusable warm page banner (Tools, Dashboard). Hides itself if the image is missing. */
     .aog-page-banner{ max-width:900px; margin:6px auto 22px; border-radius:16px; overflow:hidden; line-height:0;
       box-shadow:0 18px 45px -24px rgba(10,30,51,.4); }
-    .aog-page-banner img{ display:block; width:100%; height:auto; max-height:300px; object-fit:cover; object-position:center 30%; }
-    @media (max-width:560px){ .aog-page-banner img{ max-height:190px; } }
+    .aog-page-banner img{ display:block; width:100%; height:auto; }
     .fw-tab{ font-family:var(--font-sans); font-weight:700; font-size:14.5px; color:var(--navy); background:var(--paper); border:1.5px solid var(--gold); border-radius:999px; padding:12px 24px; cursor:pointer; transition:background .15s var(--ease), color .15s, transform .15s var(--ease); }
     :root[data-theme="dark"] .fw-tab{ color:var(--gold-soft); background:transparent; }
     .fw-tab:hover{ transform:translateY(-1px); background:var(--gold-pale); }
@@ -3590,11 +3615,15 @@ function toggleTheme() {
 #screen-pecs.active {
   display: block !important;
   position: fixed !important;
-  inset: 0 !important;
+  top: var(--aog-topbar-h, 72px) !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
   z-index: 100 !important;
   background: var(--paper) !important;
   overflow-y: auto !important;
   padding-top: 0 !important;
+  -webkit-overflow-scrolling: touch;
 }
 :root[data-theme="dark"] #screen-teacher-tools.active,
 :root[data-theme="dark"] #screen-pecs.active {
@@ -4317,7 +4346,7 @@ function toggleTheme() {
 .aog-grace-word .agw-text{ font-family:var(--font-serif,Georgia,serif); font-size:19px; line-height:1.4; color:var(--navy,#1B3A5F); font-style:italic; }
 :root[data-theme="dark"] .aog-grace-word .agw-text{ color:var(--cream,#F4ECDA); }
 .agw-cog{
-  position:absolute; top:8px; right:9px; width:22px; height:22px; border:none; border-radius:8px;
+  position:absolute; top:7px; right:8px; width:30px; height:30px; border:none; border-radius:9px;
   background:transparent; color:var(--ink-faint,#8A92A6); cursor:pointer; display:grid; place-items:center;
   opacity:.45; transition:opacity .15s ease, background .15s ease, color .15s ease;
 }
@@ -4958,7 +4987,11 @@ function toggleTheme() {
   </a>
   <div class="topbar-actions">
     <a id="topbarBack" class="topbar-back" href="#" onclick="event.preventDefault(); goBack();" style="display:none;"><span class="tb-arr">&larr;</span> <span data-i18n="nav_back">Back</span></a>
-    <a class="topbar-checkin" href="#" onclick="event.preventDefault(); if(typeof startChoose==='function'){startChoose();}" title="Take the Check-In">
+    <a class="topbar-checkin" id="rnNavBtn" href="#" onclick="event.preventDefault(); if(typeof openRightNow==='function'){openRightNow();}" title="Right Now — in-the-moment help" style="background:var(--gold); color:var(--navy); border-radius:999px; padding:6px 14px; font-weight:800;">
+      <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-4.35-9-8a5 5 0 0 1 9-3 5 5 0 0 1 9 3c-2 3.65-9 8-9 8z"/></svg>
+      <span id="rnNavLabel">Right Now</span>
+    </a>
+    <a class="topbar-checkin" href="#" onclick="event.preventDefault(); if(typeof openCheckinPicker==='function'){openCheckinPicker();}else if(typeof startChoose==='function'){startChoose();}" title="Take the Check-In">
       <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
       <span data-i18n="nav_checkin">Check-In</span>
     </a>
@@ -5266,6 +5299,12 @@ function toggleTheme() {
 
   <div class="fw-wrap">
 
+    <!-- Grace over Performance graphic — between the hero and the tabs.
+         Drop framework-pillars.jpg at the site root; if missing this hides itself. -->
+    <figure class="fw-arch">
+      <img src="framework-pillars.jpg" alt="Grace over Performance — the four pillars: Identity, Self-Compassion, Forgiveness, and Grace" loading="lazy" decoding="async" onerror="var f=this.closest('.fw-arch'); if(f) f.style.display='none';">
+    </figure>
+
     <div class="fw-tabs" role="group" aria-label="Explore further">
       <button type="button" class="fw-tab" aria-expanded="false" aria-controls="fw-panel-why" onclick="aogFwPanel(this,'why')" data-i18n="fw_tab_why">Our Why</button>
       <button type="button" class="fw-tab" aria-expanded="false" aria-controls="fw-panel-difference" onclick="aogFwPanel(this,'difference')" data-i18n="fw_tab_difference">The Difference</button>
@@ -5555,12 +5594,6 @@ function toggleTheme() {
     </div>
 
 
-    <!-- Grace over Performance graphic — sits beneath whatever the tabs open.
-         Drop framework-pillars.jpg at the site root; if missing this hides itself. -->
-    <figure class="fw-arch">
-      <img src="framework-pillars.jpg" alt="Grace over Performance — the four pillars: Identity, Self-Compassion, Forgiveness, and Grace" loading="lazy" decoding="async" onerror="var f=this.closest('.fw-arch'); if(f) f.style.display='none';">
-    </figure>
-
     <div class="fw-sec">
       <div class="fw-tool">
         <p data-i18n="fw_6_p">The Universal Check-In is one practical expression of the Architecture of Grace framework.</p>
@@ -5571,13 +5604,9 @@ function toggleTheme() {
   </div>
 </section>
 
-<!-- ============ CHOOSE (student / adult) ============ -->
-<section id="screen-choose" class="screen">
-
-
+<!-- ============ TANK — 60-second read (its own screen, opened from the 4th check-in door) ============ -->
+<section id="screen-tank" class="screen">
   <div class="container">
-
-    <!-- 60-second read lives at top of check-in page -->
       <section class="hero-tank-wrap reveal" aria-label="60-second burnout read">
         
         <p class="hero-tank-sub" data-i18n="hero_tank_sub">Take a private 60-second read on your own tank, right here.</p>
@@ -5635,12 +5664,163 @@ function toggleTheme() {
           <div id="heroTankResult" class="wp-tank-result" hidden></div>
         </div>
       </section>
+  </div>
+</section>
 
-    <div class="hero hero-center">
+<!-- ============ CHOOSE (student / adult) ============ -->
+<section id="screen-choose" class="screen">
+  <div class="container">
+
+    <!-- ============ RIGHT NOW — in-the-moment rescue read (state, not trait) ============ -->
+    <style>
+      #rightNowWrap{ max-width:680px; margin:8px auto 0; }
+      #rightNow .rn-intro{ font-family:var(--font-sans); font-size:14.5px; line-height:1.6; color:var(--ink); }
+      .rn-steps{ list-style:none; margin:10px 0 4px; padding:0; counter-reset:rn; }
+      .rn-steps li{ position:relative; padding:9px 0 9px 36px; font-family:var(--font-sans); font-size:14.5px; line-height:1.5; color:var(--ink); border-top:1px solid var(--rule,#E6DCC4); }
+      .rn-steps li:first-child{ border-top:none; }
+      .rn-steps li::before{ counter-increment:rn; content:counter(rn); position:absolute; left:0; top:8px; width:23px; height:23px; border-radius:999px; background:var(--gold); color:var(--navy); font-weight:800; font-size:12px; display:grid; place-items:center; }
+      .rn-lead{ font-family:var(--font-sans); font-size:15px; line-height:1.62; color:var(--ink); margin:2px 0 8px; }
+      .rn-support{ margin-top:13px; font-size:13px; line-height:1.5; color:var(--ink); opacity:.9; }
+      .rn-grownup{ margin-top:11px; padding:11px 13px; border-radius:11px; background:var(--cream,#FBF7EC); border:1px dashed var(--gold); font-family:var(--font-sans); font-size:13px; line-height:1.5; color:var(--ink); }
+      .rn-grownup strong{ color:var(--navy); }
+      .rn-privacy{ display:inline-flex; align-items:center; gap:6px; margin-top:10px; font-family:var(--font-sans); font-size:12px; font-weight:700; letter-spacing:.01em; color:var(--ink); opacity:.8; }
+      .rn-privacy svg{ width:13px; height:13px; flex:0 0 auto; }
+      .rn-affirm{ font-family:var(--font-sans); font-size:15.5px; line-height:1.5; font-weight:700; color:var(--navy); background:var(--cream,#FBF7EC); border-left:3px solid var(--gold); border-radius:0 10px 10px 0; padding:11px 14px; margin:2px 0 12px; }
+      :root[data-theme="dark"] .rn-affirm{ color:var(--gold-soft, #F2C964); }
+      .rn-tools{ display:flex; flex-wrap:wrap; gap:8px; margin-top:14px; }
+      .rn-tool-btn, .rn-deeper-btn{ display:inline-flex; align-items:center; gap:7px; font-family:var(--font-sans); font-size:13px; font-weight:800; cursor:pointer; border-radius:999px; padding:9px 15px; transition:transform .15s var(--ease), background .15s; }
+      .rn-tool-btn{ border:1.5px solid var(--gold); background:var(--gold); color:var(--navy); }
+      .rn-tool-btn:hover{ transform:translateY(-1px); background:var(--gold-soft, #F2C964); }
+      .rn-deeper-btn{ border:1.5px solid var(--rule,#E6DCC4); background:transparent; color:var(--navy); }
+      .rn-deeper-btn:hover{ transform:translateY(-1px); border-color:var(--gold); }
+      :root[data-theme="dark"] .rn-deeper-btn{ color:var(--gold-soft, #F2C964); }
+      .rn-followup{ margin-top:14px; padding-top:13px; border-top:1px dashed var(--rule,#E6DCC4); }
+      .rn-fb-q{ font-family:var(--font-sans); font-size:13.5px; font-weight:800; color:var(--navy); margin-bottom:9px; }
+      :root[data-theme="dark"] .rn-fb-q{ color:var(--gold-soft,#F2C964); }
+      .rn-fb-btns{ display:flex; flex-wrap:wrap; gap:8px; }
+      .rn-fb-resp{ font-family:var(--font-sans); font-size:14px; line-height:1.55; color:var(--ink); margin-bottom:6px; }
+      .rn-fb-resp strong{ color:var(--navy); }
+      :root[data-theme="dark"] .rn-fb-resp strong{ color:var(--cream); }
+      .rn-shift{ font-family:var(--font-sans); font-size:14px; color:var(--ink); margin-bottom:8px; }
+      .rn-shift b{ color:var(--navy); }
+      :root[data-theme="dark"] .rn-shift b{ color:var(--cream); }
+      .rn-teacher{ margin:0 0 14px; border-bottom:1px dashed var(--rule,#E6DCC4); padding-bottom:11px; }
+      .rn-teacher-sum{ cursor:pointer; font-family:var(--font-sans); font-size:12px; font-weight:800; letter-spacing:.04em; text-transform:uppercase; color:var(--gold-deep,#9a6f24); list-style:none; }
+      .rn-teacher-sum::-webkit-details-marker{ display:none; }
+      .rn-teacher-sum::before{ content:"\203A"; display:inline-block; margin-right:7px; transition:transform .15s; }
+      .rn-teacher[open] .rn-teacher-sum::before{ transform:rotate(90deg); }
+      .rn-teacher-body{ margin-top:9px; font-family:var(--font-sans); font-size:13px; line-height:1.6; color:var(--ink); }
+      .rn-teacher-tools{ display:flex; flex-wrap:wrap; gap:8px; margin-top:11px; }
+      .rn-teacher-tools button{ font-family:var(--font-sans); font-size:12.5px; font-weight:800; color:var(--navy); background:var(--gold); border:1px solid var(--gold); border-radius:999px; padding:8px 13px; cursor:pointer; }
+      .rn-teacher-tools button:hover{ filter:brightness(1.05); }
+      /* Compact the Right Now card so it fits without scrolling (scoped to #rightNow) */
+      #rightNow.wp-tank{ padding:18px 22px 16px; }
+      #rightNow .wp-tank-head{ margin:0 auto 8px; }
+      #rightNow .wp-tank-head h2{ font-size:20px; }
+      #rightNow .rn-intro{ display:none; }
+      #rightNowWrap .hero-tank-sub{ margin:0 0 8px; }
+      #rightNow .rn-privacy{ margin-top:5px; }
+      #rightNow #rnAgesWrap{ margin:0 auto 8px !important; }
+      #rightNow .tk-item{ padding:8px 0; }
+      #rightNow .tk-q{ font-size:14px; margin-bottom:6px; }
+      #rightNow .tk-opts{ gap:6px; }
+      #rightNow .tk-pill{ padding:7px 11px; font-size:12.5px; min-width:90px; }
+      #rightNow .tk-go{ margin-top:12px; }
+      @media (max-width:520px){ #rightNow.wp-tank{ padding:15px 14px 15px; } #rightNow .tk-pill{ min-width:78px; } }
+      @keyframes rnSoftIn { from { opacity:.25; transform:translateY(5px); } to { opacity:1; transform:none; } }
+      #rnFollowup.rn-soft { animation: rnSoftIn .3s ease; }
+      @media (prefers-reduced-motion: reduce){ #rnFollowup.rn-soft { animation:none; } }
+      /* Roomier, easier-to-tap Right Now result on phones (less dense when dysregulated) */
+      @media (max-width:600px){
+        #rightNowResult{ padding:16px 15px 18px; }
+        #rightNowResult .rn-affirm{ font-size:15.5px; line-height:1.55; padding:13px 14px; margin-bottom:14px; }
+        #rightNowResult .band{ font-size:18px; }
+        #rightNowResult .rn-lead{ font-size:15px; line-height:1.65; }
+        #rightNowResult .rn-steps li{ font-size:15px; line-height:1.55; padding:10px 0 10px 36px; }
+        #rightNowResult .rn-tools{ flex-direction:column; gap:9px; margin-top:16px; }
+        #rightNowResult .rn-tools .rn-tool-btn, #rightNowResult .rn-tools .rn-deeper-btn{ width:100%; justify-content:center; text-align:center; padding:13px 14px; font-size:14px; }
+        #rightNowResult .rn-fb-btns{ display:grid; grid-template-columns:1fr 1fr; gap:9px; }
+        #rightNowResult .rn-fb-btns .rn-tool-btn, #rightNowResult .rn-fb-btns .rn-deeper-btn{ width:100%; justify-content:center; text-align:center; padding:13px 10px; }
+        #rightNowResult .rn-followup{ margin-top:16px; padding-top:15px; }
+        #rightNowResult .rn-fb-q{ font-size:14.5px; }
+      }
+      .rn-bridge{ margin-top:16px; border:1px solid var(--gold); border-radius:12px; background:var(--cream,#FBF7EC); padding:14px 16px; }
+      :root[data-theme="dark"] .rn-bridge{ background:#0B131C; }
+      .rn-bridge-h{ font-family:var(--font-sans); font-size:13px; font-weight:800; letter-spacing:.03em; color:var(--gold-deep,#9a6f24); margin-bottom:5px; }
+      .rn-bridge-p{ font-family:var(--font-sans); font-size:13.5px; line-height:1.55; color:var(--ink); margin:0 0 10px; }
+      .rn-bridge-btns{ display:flex; flex-wrap:wrap; gap:8px; }
+    </style>
+    <section class="hero-tank-wrap reveal" id="rightNowWrap" aria-label="In-the-moment read">
+      <p class="hero-tank-sub" data-i18n="rn_sub">Something hard happening right now? Get one practical thing to do this minute.</p>
+      <div class="wp-tank hero-tank" id="rightNow">
+        <details class="rn-teacher" id="rnTeacher">
+          <summary class="rn-teacher-sum">For teachers</summary>
+          <div class="rn-teacher-body"></div>
+          <div class="rn-teacher-tools" id="rnTeacherTools"></div>
+        </details>
+        <div class="wp-tank-head">
+          <div class="ey" data-i18n="rn_ey">An in-the-moment read</div>
+          <h2 data-i18n="rn_h">What&rsquo;s happening right now?</h2>
+          <p class="rn-intro">Something just got hard? This isn&rsquo;t about your week &mdash; it&rsquo;s about right now. Four quick taps, and you&rsquo;ll get one practical thing to do this minute. Private, instant, saved nowhere.</p>
+          <div class="rn-privacy"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg><span>Private &middot; not tracked &middot; nothing you tap is saved.</span></div>
+        </div>
+        <div class="ages-toggle-wrap tk-ages-wrap" id="rnAgesWrap" style="margin:0 auto 16px;">
+          <span class="ages-toggle-label" data-i18n="tank_aud_label">Taking it as</span>
+          <div class="ages-toggle" id="rnAgesToggle" role="group" aria-label="Who is taking this read">
+            <button type="button" class="ages-btn" data-raud="child" onclick="aogSetRightNowAudience('child')" data-i18n="ages_child">Child</button>
+            <button type="button" class="ages-btn" data-raud="teen" onclick="aogSetRightNowAudience('teen')" data-i18n="ages_teen">Teen</button>
+            <button type="button" class="ages-btn active" data-raud="adult" onclick="aogSetRightNowAudience('adult')" data-i18n="ages_adult">Adult / Educator</button>
+          </div>
+        </div>
+        <div class="tk-item">
+          <div class="tk-q" data-qid="q1">Right now, my body feels&hellip;</div>
+          <div class="tk-opts" role="radiogroup" aria-label="My body right now">
+            <span class="tk-pill" data-q="1" data-state="hyper"  role="radio" tabindex="0" aria-checked="false">Revved / tight</span>
+            <span class="tk-pill" data-q="1" data-state="window" role="radio" tabindex="0" aria-checked="false">Pretty settled</span>
+            <span class="tk-pill" data-q="1" data-state="hypo"   role="radio" tabindex="0" aria-checked="false">Heavy / numb</span>
+          </div>
+        </div>
+        <div class="tk-item">
+          <div class="tk-q" data-qid="q2">The voice in my head right now is&hellip;</div>
+          <div class="tk-opts" role="radiogroup" aria-label="The voice in my head right now">
+            <span class="tk-pill" data-q="2" data-state="quiet" role="radio" tabindex="0" aria-checked="false">Quiet / kind</span>
+            <span class="tk-pill" data-q="2" data-state="nag"   role="radio" tabindex="0" aria-checked="false">Nagging</span>
+            <span class="tk-pill" data-q="2" data-state="loud"  role="radio" tabindex="0" aria-checked="false">Loud</span>
+            <span class="tk-pill" data-q="2" data-state="rail"  role="radio" tabindex="0" aria-checked="false">Won&rsquo;t stop &mdash; railing me</span>
+          </div>
+        </div>
+        <div class="tk-item">
+          <div class="tk-q" data-qid="q3">My thinking right now is&hellip;</div>
+          <div class="tk-opts" role="radiogroup" aria-label="My thinking right now">
+            <span class="tk-pill" data-q="3" data-state="clear"     role="radio" tabindex="0" aria-checked="false">Clear</span>
+            <span class="tk-pill" data-q="3" data-state="scattered" role="radio" tabindex="0" aria-checked="false">Scattered</span>
+            <span class="tk-pill" data-q="3" data-state="loop"      role="radio" tabindex="0" aria-checked="false">Stuck on a loop</span>
+            <span class="tk-pill" data-q="3" data-state="fog"       role="radio" tabindex="0" aria-checked="false">Foggy / blank</span>
+          </div>
+        </div>
+        <div class="tk-item">
+          <div class="tk-q" data-qid="q4">And right now it feels&hellip;</div>
+          <div class="tk-opts" role="radiogroup" aria-label="How big it feels right now">
+            <span class="tk-pill" data-q="4" data-state="small" role="radio" tabindex="0" aria-checked="false">Pretty small</span>
+            <span class="tk-pill" data-q="4" data-state="wave"  role="radio" tabindex="0" aria-checked="false">Like a wave</span>
+            <span class="tk-pill" data-q="4" data-state="big"   role="radio" tabindex="0" aria-checked="false">Big</span>
+            <span class="tk-pill" data-q="4" data-state="over"  role="radio" tabindex="0" aria-checked="false">Taking over</span>
+          </div>
+        </div>
+        <button class="btn tk-go" id="rightNowBtn"><span>Show me one thing</span> <span class="btn-arrow">&rarr;</span></button>
+        <div id="rightNowResult" class="wp-tank-result" hidden></div>
+      </div>
+    </section>
+    <!-- ============ /RIGHT NOW ============ -->
+
+    <div class="hero hero-center" id="checkinPicker">
       <div class="eyebrow" data-i18n="ch_ey">The Check-In</div>
       <h1 class="display display-xl" data-i18n="ch_h1">Who&rsquo;s checking in?</h1>
       <p class="lede" data-i18n="ch_lede">This is a moment to be understood, not measured. The same four ideas &mdash; identity, self-compassion, forgiveness, and grace &mdash; the same care, just worded for who&rsquo;s answering. Choose one to begin.</p>
     </div>
+    <figure class="aog-page-banner">
+      <img src="checkin-hero.jpg" alt="A young person doing a quiet check-in on a tablet, with a caring adult nearby" loading="lazy" decoding="async" onerror="var f=this.closest('.aog-page-banner'); if(f) f.style.display='none';">
+    </figure>
     <div class="aog-lobby">
       <div class="aog-doors">
         <div class="aog-checkins">
@@ -5668,6 +5848,14 @@ function toggleTheme() {
             </div>
             <span class="arr">&rarr;</span>
           </a>
+          <a href="#" class="aog-door secondary choose-card choose-tank" onclick="event.preventDefault(); openTank();">
+            <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg></span>
+            <div>
+              <div class="t" data-i18n="ch_tank_t">How full is your tank?</div>
+              <div class="s" data-i18n="ch_tank_s">A private 60-second read on your energy &mdash; for kids, teens, or adults. A quick mirror, not a score.</div>
+            </div>
+            <span class="arr">&rarr;</span>
+          </a>
         </div>
       </div>
     </div>
@@ -5688,6 +5876,9 @@ function toggleTheme() {
       <p class="lede" data-i18n="w_lede">Take a few quiet minutes for yourself. There are no wrong answers, and what you share helps the people who care about you know how to support you.</p>
       <p class="checkin-reassure" data-i18n="w_reassure">A private 4&ndash;10 minute reflection &middot; no wrong answers &middot; nothing leaves this device unless you choose.</p>
     </div>
+    <figure class="aog-page-banner">
+      <img src="checkin-hero.jpg" alt="A young person doing a quiet check-in on a tablet, with a caring adult nearby" loading="lazy" decoding="async" onerror="var f=this.closest('.aog-page-banner'); if(f) f.style.display='none';">
+    </figure>
 <div class="script-card">
       <p data-i18n-html="w_script1"><strong>Before you begin.</strong> There are no right or wrong answers &mdash; just pick what feels most true for you lately, and go with your first instinct.</p>
       <p data-i18n-html="w_script2">If a question brings up something you&rsquo;d like to talk about, you can reach out to a teacher, counselor, parent, or guardian any time.</p>
@@ -6025,7 +6216,7 @@ function toggleTheme() {
       <div id="intensityArea"></div>
     </div>
 
-    <div class="nav-row">
+    <div class="nav-row survey-actions">
       <button class="btn btn-secondary" id="btnBack" data-i18n-html="s_back">&larr; Back</button>
       <button class="btn" id="btnNext" disabled>
         <span id="btnNextLabel">Next</span>
@@ -6055,7 +6246,7 @@ function toggleTheme() {
       <div class="small" data-i18n="r_priv">This is private to you. It is saved with your results but only shown to a trusted adult who can help. You can skip it.</div>
     </div>
 
-    <div class="nav-row">
+    <div class="nav-row survey-actions">
       <button class="btn btn-ghost" id="btnSkipReflection" data-i18n="r_skip">Skip this one</button>
       <button class="btn" id="btnNextReflection">
         <span id="btnReflectionLabel">Next</span>
@@ -6429,6 +6620,7 @@ function toggleTheme() {
           <option value="Some Risk" data-dl="dl_opt_worth">Worth a check-in only</option>
           <option value="Low Risk" data-dl="dl_opt_well">Doing well only</option>
           <option value="flagged" data-dl="dl_opt_notrust">No trusted adult</option>
+          <option value="unsafe">May not self-protect</option>
         </select>
       </div>
       <div class="table-card">
@@ -7504,6 +7696,9 @@ function toggleTheme() {
 
 
   <div class="container-wide" style="padding-top:18px;">
+    <figure class="aog-page-banner">
+      <img src="library-hero.jpg" alt="A warm, sunlit room of diverse students reading and learning together" loading="lazy" decoding="async" onerror="var f=this.closest('.aog-page-banner'); if(f) f.style.display='none';">
+    </figure>
     <div class="table-card" style="padding:28px 32px 32px;">
       <h3 class="serif" style="font-size:22px; color:var(--navy); margin-bottom:6px;" data-i18n="lib_h">Library</h3>
       <p style="font-size:14.5px; line-height:1.6; color:var(--ink-soft); margin-bottom:20px;" data-i18n-html="lib_intro">Browse and download every free preview, sample lesson, and resource pack &mdash; no sign-up, no code. To buy the novels, home editions, and the full curriculum, visit the <a href="#" onclick="event.preventDefault(); aogGoStore();" style="color:var(--navy); font-weight:700;">Store</a>.</p>
@@ -7554,6 +7749,9 @@ function toggleTheme() {
 
 
   <div class="container-wide" style="padding-top:18px;">
+    <figure class="aog-page-banner">
+      <img src="store-hero.jpg" alt="Architecture of Grace books, lesson plan, and resource packs arranged on a table" loading="lazy" decoding="async" onerror="var f=this.closest('.aog-page-banner'); if(f) f.style.display='none';">
+    </figure>
     <div class="table-card" style="padding:28px 32px 32px;">
       <h3 class="serif" style="font-size:22px; color:var(--navy); margin-bottom:6px;" data-i18n="aog_store_t">The Store</h3>
       <p style="font-size:14.5px; line-height:1.6; color:var(--ink-soft); margin-bottom:20px;" data-i18n="aog_store_s">Shop the novels, curriculum, anchor charts, worksheets &amp; card decks &mdash; for home or school.</p>
@@ -7947,7 +8145,7 @@ const ITEMS_EN = [{
   d: "B",
   text: "When something is hard, I believe I can get better at it if I keep trying.",
   reverse: false,
-  intensity: true
+  intensity: false
 }, {
   n: 12,
   d: "B",
@@ -7957,7 +8155,7 @@ const ITEMS_EN = [{
 }, {
   n: 13,
   d: "C",
-  text: "I notice when someone around me is having a hard time, and I care about how they feel.",
+  text: "When someone around me is having a hard time, I care about how they feel.",
   reverse: false,
   intensity: false
 }, {
@@ -7975,13 +8173,13 @@ const ITEMS_EN = [{
 }, {
   n: 16,
   d: "C",
-  text: "I am kind to people even when they are different from me or hard to get along with.",
+  text: "I am kind to people even when they are hard to get along with.",
   reverse: false,
   intensity: false
 }, {
   n: 17,
   d: "C",
-  text: "I know the difference between someone who is difficult and someone who is unsafe, and I protect myself from people who are unsafe.",
+  text: "I can tell the difference between someone who is just difficult and someone who is actually unsafe.",
   reverse: false,
   intensity: false
 }, {
@@ -7989,7 +8187,14 @@ const ITEMS_EN = [{
   d: "C",
   text: "I have at least one trusted adult in my life I could go to if something was wrong.",
   reverse: false,
-  intensity: true
+  intensity: false
+}, {
+  n: 19,
+  d: "C",
+  text: "When someone is unsafe, I do something to protect myself — like leaving or telling an adult.",
+  reverse: false,
+  intensity: false,
+  noScore: true
 }];
 const ITEMS_ES = [{
   n: 1,
@@ -8056,7 +8261,7 @@ const ITEMS_ES = [{
   d: "B",
   text: "Cuando algo es difícil, creo que puedo mejorar si sigo intentándolo.",
   reverse: false,
-  intensity: true
+  intensity: false
 }, {
   n: 12,
   d: "B",
@@ -8066,7 +8271,7 @@ const ITEMS_ES = [{
 }, {
   n: 13,
   d: "C",
-  text: "Me doy cuenta cuando alguien a mi alrededor está pasando un momento difícil, y me importa cómo se siente.",
+  text: "Cuando alguien a mi alrededor está pasando un momento difícil, me importa cómo se siente.",
   reverse: false,
   intensity: false
 }, {
@@ -8084,13 +8289,13 @@ const ITEMS_ES = [{
 }, {
   n: 16,
   d: "C",
-  text: "Soy amable con la gente incluso cuando son diferentes a mí o difíciles de tratar.",
+  text: "Soy amable con la gente incluso cuando son difíciles de tratar.",
   reverse: false,
   intensity: false
 }, {
   n: 17,
   d: "C",
-  text: "Sé la diferencia entre alguien que es difícil y alguien que no es seguro, y me protejo de las personas que no son seguras.",
+  text: "Puedo notar la diferencia entre alguien que es solo difícil y alguien que de verdad no es seguro.",
   reverse: false,
   intensity: false
 }, {
@@ -8098,7 +8303,14 @@ const ITEMS_ES = [{
   d: "C",
   text: "Tengo al menos un adulto de confianza en mi vida a quien podría acudir si algo estuviera mal.",
   reverse: false,
-  intensity: true
+  intensity: false
+}, {
+  n: 19,
+  d: "C",
+  text: "Cuando alguien no es seguro, hago algo para protegerme — como irme o decirle a un adulto.",
+  reverse: false,
+  intensity: false,
+  noScore: true
 }];
 const SCALE_6 = {
   en: [{
@@ -8284,6 +8496,9 @@ function computeResult(_0x727793, _0x2d868e) {
     if (_0x131325 == null) {
       return;
     }
+    if (_0x4e76ae.noScore) {
+      return;
+    }
     if (_0x4e76ae.d === "A") {
       _0x749b14 += _0x131325;
     } else if (_0x4e76ae.d === "B") {
@@ -8306,7 +8521,8 @@ function computeResult(_0x727793, _0x2d868e) {
     domainMax: _0x328702,
     totalMax: _0xc7b1ed,
     scored: _0x42fab1,
-    trustedAdultFlag: _0x727793.raw[17] != null && _0x727793.raw[17] <= 1
+    trustedAdultFlag: _0x727793.raw[17] != null && _0x727793.raw[17] <= 1,
+    unsafeFlag: _0x727793.raw[18] != null && _0x727793.raw[18] <= 1
   };
 }
 function round1(_0x1e5f7f) {
@@ -8481,7 +8697,7 @@ const ITEMS_ADULT_EN = [{
   d: "B",
   text: "When something is hard, I believe I can get better at it if I keep at it.",
   reverse: false,
-  intensity: true
+  intensity: false
 }, {
   n: 12,
   d: "B",
@@ -8491,7 +8707,7 @@ const ITEMS_ADULT_EN = [{
 }, {
   n: 13,
   d: "C",
-  text: "I notice when someone around me is struggling, and I care about how they feel.",
+  text: "When someone around me is struggling, I care about how they feel.",
   reverse: false,
   intensity: false
 }, {
@@ -8509,13 +8725,13 @@ const ITEMS_ADULT_EN = [{
 }, {
   n: 16,
   d: "C",
-  text: "I can be kind to people even when they are different from me or hard to get along with.",
+  text: "I can be kind to people even when they are hard to get along with.",
   reverse: false,
   intensity: false
 }, {
   n: 17,
   d: "C",
-  text: "I know the difference between someone who is difficult and someone who is unsafe, and I protect myself from people who are unsafe.",
+  text: "I can tell the difference between someone who is just difficult and someone who is actually unsafe.",
   reverse: false,
   intensity: false
 }, {
@@ -8523,7 +8739,14 @@ const ITEMS_ADULT_EN = [{
   d: "C",
   text: "I have at least one person in my life I trust enough to turn to if something was wrong.",
   reverse: false,
-  intensity: true
+  intensity: false
+}, {
+  n: 19,
+  d: "C",
+  text: "When someone is unsafe, I protect myself — like leaving or telling someone.",
+  reverse: false,
+  intensity: false,
+  noScore: true
 }];
 const ITEMS_ADULT_ES = [{
   n: 1,
@@ -8590,7 +8813,7 @@ const ITEMS_ADULT_ES = [{
   d: "B",
   text: "Cuando algo es difícil, creo que puedo mejorar si sigo intentándolo.",
   reverse: false,
-  intensity: true
+  intensity: false
 }, {
   n: 12,
   d: "B",
@@ -8600,7 +8823,7 @@ const ITEMS_ADULT_ES = [{
 }, {
   n: 13,
   d: "C",
-  text: "Me doy cuenta cuando alguien a mi alrededor está pasando un momento difícil, y me importa cómo se siente.",
+  text: "Cuando alguien a mi alrededor está pasando un momento difícil, me importa cómo se siente.",
   reverse: false,
   intensity: false
 }, {
@@ -8618,13 +8841,13 @@ const ITEMS_ADULT_ES = [{
 }, {
   n: 16,
   d: "C",
-  text: "Soy amable con la gente incluso cuando son diferentes a mí o difíciles de tratar.",
+  text: "Soy amable con la gente incluso cuando son difíciles de tratar.",
   reverse: false,
   intensity: false
 }, {
   n: 17,
   d: "C",
-  text: "Sé la diferencia entre alguien que es difícil y alguien que no es seguro, y me protejo de las personas que no son seguras.",
+  text: "Puedo notar la diferencia entre alguien que es solo difícil y alguien que de verdad no es seguro.",
   reverse: false,
   intensity: false
 }, {
@@ -8632,7 +8855,14 @@ const ITEMS_ADULT_ES = [{
   d: "C",
   text: "Tengo al menos una persona en mi vida en quien confío lo suficiente como para acudir si algo estuviera mal.",
   reverse: false,
-  intensity: true
+  intensity: false
+}, {
+  n: 19,
+  d: "C",
+  text: "Cuando alguien no es seguro, me protejo — como irme o decirle a alguien.",
+  reverse: false,
+  intensity: false,
+  noScore: true
 }];
 const REFLECTIONS_ADULT = {
   en: [{
@@ -9012,6 +9242,14 @@ const I18N_UI = {
   ch_family_s: {
     en: "For parents at home — add each family member once and track them across the year, with conversation starters you can print.",
     es: "Para madres y padres en casa: añade a cada miembro de la familia una vez y haz seguimiento durante el año, con preguntas para conversar que puedes imprimir."
+  },
+  ch_tank_t: {
+    en: "How full is your tank?",
+    es: "¿Qué tan lleno está tu tanque?"
+  },
+  ch_tank_s: {
+    en: "A private 60-second read on your energy — for kids, teens, or adults. A quick mirror, not a score.",
+    es: "Una lectura privada de 60 segundos sobre tu energía — para niños, adolescentes o adultos. Un espejo rápido, no un puntaje."
   },
   t_btn_results: {
     en: "See your results →",
@@ -10634,6 +10872,7 @@ function setLang(_0x3f9e05) {
   $("#langEs").classList.toggle("active", _0x3f9e05 === "es");
   applyLang();
   if (typeof aogRenderTankCopy === "function") { try { aogRenderTankCopy(); } catch (_e) {} }
+  if (typeof aogRenderRightNow === "function") { try { aogRenderRightNow(); } catch (_e) {} }
   applyContext();
   const _0xb15a77 = document.querySelector(".screen.active");
   if (_0xb15a77) {
@@ -11090,7 +11329,7 @@ function renderItem() {
   const _0x2067f6 = _0x16446a[current];
   const _0x2d9a15 = _0x2067f6.d === "A" ? lang === "es" ? "Regulación Emocional" : "Emotional Regulation" : _0x2067f6.d === "B" ? lang === "es" ? "Autocompasión y Mentalidad" : "Self-Compassion & Mindset" : lang === "es" ? "Competencia Social y Reparación" : "Social Competency & Repair";
   $("#qNum").textContent = String(current + 1);
-  $("#qTotal").textContent = "18";
+  $("#qTotal").textContent = String(_0x16446a.length);
   $("#domainChip").textContent = _0x2d9a15;
   $("#itemText").textContent = _0x2067f6.text;
   $("#progress").style.width = current / _0x16446a.length * 100 + "%";
@@ -11355,6 +11594,7 @@ async function submitFinal() {
   _0x272b07.normComposite = _0x26b401.normComposite;
   _0x272b07.tier = tierFromNormComposite(_0x26b401.normComposite);
   _0x272b07.trustedAdultFlag = _0x26b401.trustedAdultFlag;
+  _0x272b07.unsafeFlag = _0x26b401.unsafeFlag;
   window._pendingRecord = _0x272b07;
   var _0x3879c2 = document.getElementById("thanksLede");
   var _0x55cf31 = document.getElementById("thanksSupport");
@@ -12677,12 +12917,51 @@ function startCheckin() {
     aogSetHash("student");
   }
 }
+function openCheckinPicker() {
+  showScreen("screen-choose");
+  if (typeof aogSetHash === "function") { aogSetHash("checkin"); }
+  setTimeout(function () {
+    var el = document.getElementById("checkinPicker");
+    if (el) { try { el.scrollIntoView({ behavior: "smooth", block: "start" }); } catch (e) { el.scrollIntoView(); } }
+  }, 90);
+}
+try { window.openCheckinPicker = openCheckinPicker; } catch (_aogCP) {}
 function startChoose() {
   showScreen("screen-choose");
   if (typeof aogSetHash === "function") {
     aogSetHash("checkin");
   }
 }
+function openTank() {
+  showScreen("screen-tank");
+  if (typeof aogSetHash === "function") {
+    aogSetHash("tank");
+  }
+}
+try { window.openTank = openTank; } catch (_aogOT) {}
+/* Open the Resource Index and latch onto a specific construct (e.g. the Inner
+   Critic / Coach lessons) by driving its search box, then scrolling to the match. */
+function aogGoConstruct(_q, _grade) {
+  try { if (typeof openGuide === "function") { openGuide("resindex"); } }
+  catch (_e0) {}
+  setTimeout(function () {
+    try {
+      var s = document.getElementById("riSearch");
+      if (s) { s.value = _q; }
+      var g = document.getElementById("riGrade");
+      if (g && _grade) { for (var i = 0; i < g.options.length; i++) { if (g.options[i].value === _grade) { g.value = _grade; break; } } }
+      if (typeof riRender === "function") { riRender(_q, _grade || (g ? g.value : "")); }
+      var idx = document.getElementById("riIndex");
+      var target = (idx && idx.querySelector(".ri-domain")) || idx ||
+                   document.getElementById("guide-resindex");
+      if (target) {
+        try { target.scrollIntoView({ behavior: "smooth", block: "start" }); }
+        catch (_e1) { target.scrollIntoView(); }
+      }
+    } catch (_e2) {}
+  }, 240);
+}
+try { window.aogGoConstruct = aogGoConstruct; } catch (_aogGC) {}
 function openFramework() {
   showScreen("screen-framework");
   if (typeof aogSetHash === "function") {
@@ -13565,6 +13844,8 @@ function aogRouteFromHash() {
     resetToStart();
   } else if (_0xaa0d73 === "check-in" || _0xaa0d73 === "checkin") {
     startChoose();
+  } else if (_0xaa0d73 === "tank") {
+    if (typeof openTank === "function") openTank();
   } else if (_0xaa0d73 === "student" || _0xaa0d73 === "survey") {
     startCheckin();
   } else if (_0xaa0d73 === "adult" || _0xaa0d73 === "adults" || _0xaa0d73 === "grown-ups" || _0xaa0d73 === "grownups") {
@@ -13790,6 +14071,10 @@ function mapSheetRowToRecord(_0x1c2578) {
   if (typeof _0x526fd0 === "string") {
     _0x526fd0 = _0x526fd0.trim().toUpperCase() === "TRUE";
   }
+  let _0xUnsafe = _0x1c2578.unsafeFlag;
+  if (typeof _0xUnsafe === "string") {
+    _0xUnsafe = _0xUnsafe.trim().toUpperCase() === "TRUE";
+  }
   const _0x465bb4 = _riNum(_0x1c2578.normComposite);
   return {
     timestamp: _0x1c2578.timestamp,
@@ -13816,6 +14101,7 @@ function mapSheetRowToRecord(_0x1c2578) {
     normComposite: _0x465bb4,
     tier: _0x1c2578.tier || tierFromNormComposite(_0x465bb4 == null ? 0 : _0x465bb4),
     trustedAdultFlag: !!_0x526fd0,
+    unsafeFlag: !!_0xUnsafe,
     synced: true,
     _remote: true
   };
@@ -14826,6 +15112,29 @@ async function dashHomePull(btn) {
     dst.style.color = src.style.color || "var(--ink-soft)";
   }
 }
+/* Bridge: when a domain is low on the periodic check-in, offer a gentle, contextual
+   in-the-moment entry that pre-loads the matching tool (A→breathe, B→Inner Coach, C→repair). */
+function aogRightNowBridge(rec, es) {
+  if (!rec) return "";
+  var a = rec.normA, b = rec.normB, c = rec.normC;
+  if (a == null && b == null && c == null) return "";
+  var lowKey = (typeof aogLowestDomainKey === "function") ? aogLowestDomainKey(a || 0, b || 0, c || 0) : "A";
+  var lowVal = lowKey === "A" ? a : (lowKey === "B" ? b : c);
+  if (lowVal == null || lowVal >= 75) return "";
+  var MAP = {
+    A: { tool: "breathing",   name: es ? "regulación emocional" : "emotional regulation", btn: es ? "Prueba: Respiración 4-7-8" : "Try: 4-7-8 Breathing" },
+    B: { tool: "innercoach",  name: es ? "autocompasión" : "self-compassion",             btn: es ? "Abre tu Guía Interior" : "Open your Inner Coach" },
+    C: { tool: "makeitright", name: es ? "competencia social" : "social competency",       btn: es ? "Abre Reparar" : "Open Make It Right" }
+  };
+  var m = MAP[lowKey] || MAP.A;
+  return '<div class="rn-bridge">' +
+    '<div class="rn-bridge-h">' + (es ? "¿Necesitas algo ahora mismo?" : "Need something right now?") + '</div>' +
+    '<p class="rn-bridge-p">' + (es ? ("El área más baja ahora es la " + m.name + ". Abre una herramienta para usarla en el momento.") : ("The lowest area right now is " + m.name + ". Open a tool to use on the spot.")) + '</p>' +
+    '<div class="rn-bridge-btns">' +
+      '<button type="button" class="rn-tool-btn" onclick="if(window.toolOpen){window.toolOpen(\'' + m.tool + '\');}">' + m.btn + '</button>' +
+      '<button type="button" class="rn-deeper-btn" onclick="if(window.openRightNow){openRightNow();}">' + (es ? "Abrir Ahora mismo" : "Open Right Now") + ' →</button>' +
+    '</div></div>';
+}
 function dashOpenReport(_btn, _key) {
   var row = _btn.closest(".fam-row");
   if (!row) { return; }
@@ -14843,7 +15152,8 @@ function dashOpenReport(_btn, _key) {
   if (!rec) { return; }
   var _sustain  = (typeof aogSustainPanel === "function") ? aogSustainPanel(rec) : "";
   var _toolPanel = (typeof aogToolMatchPanel === "function") ? aogToolMatchPanel(rec, _key) : "";
-  hostEl.innerHTML = "<div class=\"home-view\" style=\"margin-top:14px\">" + buildHomeReport(rec, false, _toolPanel) + "</div>" + _sustain;
+  var _bridge = (typeof aogRightNowBridge === "function") ? aogRightNowBridge(rec, es) : "";
+  hostEl.innerHTML = "<div class=\"home-view\" style=\"margin-top:14px\">" + buildHomeReport(rec, false, _toolPanel) + "</div>" + _bridge + _sustain;
   hostEl.dataset.open = "1";
   _btn.textContent = es ? "Ocultar informe" : "Hide report";
   if (toolsBtn) { toolsBtn.textContent = "🧰 " + (es ? "Herramientas" : "Suggested tools"); }
@@ -17185,8 +17495,12 @@ function riRender(_0x4f8a98, _0x4f89b6) {
       const _0xa9f631 = "ri-" + _0x518208 + "-" + _0x80ef16;
       let _0x27c43b = "";
       Object.keys(RI_GRADES).forEach(_0x3024b4 => {
-        if (_0x4f89b6 === "adult") {
+        if (_0x4f89b6 === "adult" || _0x4f89b6 === "teen") {
           if (_0x3024b4 !== "3" && _0x3024b4 !== "4" && _0x3024b4 !== "5") {
+            return;
+          }
+        } else if (_0x4f89b6 === "child") {
+          if (_0x3024b4 !== "1" && _0x3024b4 !== "2") {
             return;
           }
         } else if (_0x4f89b6 && _0x3024b4 !== _0x4f89b6) {
@@ -17208,7 +17522,7 @@ function riRender(_0x4f8a98, _0x4f89b6) {
         _0x27c43b = "<div class=\"ri-novels-label\">" + (lang === "es" ? "En el plan de estudios (Escolar y Edición en Casa)" : "In the School & Home Curriculum") + "</div>" + _0x27c43b;
       }
       let _0x55af6d = "";
-      const _0x1b614d = (RI_NOVELS[_0x14d5f7.items] || []).filter(_0x533a3f => _0x4f89b6 === "adult" ? _0x533a3f.b >= 3 : !_0x4f89b6 || String(_0x533a3f.b) === String(_0x4f89b6));
+      const _0x1b614d = (RI_NOVELS[_0x14d5f7.items] || []).filter(_0x533a3f => (_0x4f89b6 === "adult" || _0x4f89b6 === "teen") ? _0x533a3f.b >= 3 : _0x4f89b6 === "child" ? _0x533a3f.b <= 2 : !_0x4f89b6 || String(_0x533a3f.b) === String(_0x4f89b6));
       if (_0x1b614d.length) {
         _0x55af6d = "<div class=\"ri-novels\"><div class=\"ri-novels-label\">" + (lang === "es" ? "En las novelas" : "In the novels") + "</div><div class=\"ri-novels-list\">" + _0x1b614d.map(_0x4796dd => {
           var __riNovUrl = (typeof novelJumpUrl === "function") ? novelJumpUrl(_0x4796dd.b, chNumOf(_0x4796dd.ch)) : "";
@@ -18022,23 +18336,30 @@ function renderFreeShelf() {
     return;
   }
   var _0x355cb0 = typeof lang !== "undefined" && lang === "es";
+  var _chev = "<svg class=\"fs-chev\" width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.4\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><polyline points=\"6 9 12 15 18 9\"></polyline></svg>";
+  function _cardHtml(_0x4b57d3) {
+    var _aogCov = aogPreviewCover(_0x4b57d3.url);
+    var _aogBody = "<div class=\"fc-t\">" + libEsc(_0x4b57d3.title) + "</div>" + (_0x4b57d3.desc ? "<div class=\"fc-d\">" + libEsc(_0x4b57d3.desc) + "</div>" : "");
+    var _aogGo = "<span class=\"fc-go\">" + (_0x355cb0 ? "↗ Abrir" : "↗ Open") + "</span>";
+    if (_aogCov) {
+      return "<a class=\"free-card has-cover\" href=\"" + libEsc(_0x4b57d3.url) + "\" target=\"_blank\" rel=\"noopener\"><div class=\"fc-cover\"><img src=\"" + _aogCov + "\" alt=\"\" loading=\"lazy\"></div><div class=\"fc-body\">" + _aogBody + "</div>" + _aogGo + "</a>";
+    }
+    return "<a class=\"free-card\" href=\"" + libEsc(_0x4b57d3.url) + "\" target=\"_blank\" rel=\"noopener\">" + _aogBody + _aogGo + "</a>";
+  }
   var _0x346929 = "";
+  var _openIdx = 0;
   RESOURCE_LIBRARY.forEach(function (_0xda6cbf) {
-    (_0xda6cbf.items || []).forEach(function (_0x4b57d3) {
-      if (libItemState(_0x4b57d3, _0xda6cbf) === "free") {
-        var _aogCov = aogPreviewCover(_0x4b57d3.url);
-        var _aogBody = "<div class=\"fc-t\">" + libEsc(_0x4b57d3.title) + "</div>" + (_0x4b57d3.desc ? "<div class=\"fc-d\">" + libEsc(_0x4b57d3.desc) + "</div>" : "");
-        var _aogGo = "<span class=\"fc-go\">" + (_0x355cb0 ? "↗ Abrir" : "↗ Open") + "</span>";
-        if (_aogCov) {
-          _0x346929 += "<a class=\"free-card has-cover\" href=\"" + libEsc(_0x4b57d3.url) + "\" target=\"_blank\" rel=\"noopener\"><div class=\"fc-cover\"><img src=\"" + _aogCov + "\" alt=\"\" loading=\"lazy\"></div><div class=\"fc-body\">" + _aogBody + "</div>" + _aogGo + "</a>";
-        } else {
-          _0x346929 += "<a class=\"free-card\" href=\"" + libEsc(_0x4b57d3.url) + "\" target=\"_blank\" rel=\"noopener\">" + _aogBody + _aogGo + "</a>";
-        }
-      }
-    });
+    var _free = (_0xda6cbf.items || []).filter(function (_it) { return libItemState(_it, _0xda6cbf) === "free"; });
+    if (!_free.length) { return; }
+    var _cards = _free.map(_cardHtml).join("");
+    var _label = libEsc(_0xda6cbf.cat || (_0x355cb0 ? "Recursos" : "Resources"));
+    var _open = (_openIdx === 0) ? " open" : "";
+    _openIdx++;
+    _0x346929 += "<details class=\"fs-group\"" + _open + "><summary><span class=\"fs-sum-r\">" + _chev + "<span class=\"fs-sum-t\">" + _label + "</span></span><span class=\"fs-sum-n\">" + _free.length + "</span></summary><div class=\"fs-grid\">" + _cards + "</div></details>";
   });
   var _0x20e2c4 = "<div class=\"small\" style=\"color:var(--ink-soft);\">" + (_0x355cb0 ? "Próximamente" : "Coming soon") + "</div>";
   _0x164954.forEach(function (_0x47ff77) {
+    if (_0x346929) { _0x47ff77.classList.add("is-grouped"); } else { _0x47ff77.classList.remove("is-grouped"); }
     _0x47ff77.innerHTML = _0x346929 || _0x20e2c4;
   });
 }
@@ -19498,6 +19819,761 @@ window.aogGraceBreathe = function (btn) {
     setTimeout(function () { run(idx + 1); }, s[2]);
   })(0);
 };
+</script>
+<script>
+/* ===================================================================
+   RIGHT NOW — in-the-moment rescue read.
+   Measures STATE (this moment), not trait (lately). Four taps route to
+   one matched, practical micro-intervention. Built on the same tank
+   classes + the grace-breathe orb. Child/Teen/Adult, EN/ES.
+   Centerpiece teaching: a feeling is a wave (~90s); the Critic is the
+   story that re-lights the fuse.
+   =================================================================== */
+(function () {
+  var ROOT = "rightNow";
+  var picks = {};
+
+  /* ---- question + option copy, by audience + language ---- */
+  var RN_COPY = {
+    adult: {
+      en: {
+        sub: "Something hard happening right now? Get one practical thing to do this minute.",
+        ey: "An in-the-moment read", h: "What’s happening right now?",
+        intro: "Something just got hard? This isn’t about your week — it’s about right now. Four quick taps, and you’ll get one practical thing to do this minute. Private, instant, saved nowhere.",
+        q1: "Right now, my body feels…", q2: "The voice in my head right now is…", q3: "My thinking right now is…", q4: "And right now it feels…",
+        opts: { "1": { hyper: "Revved / tight", window: "Pretty settled", hypo: "Heavy / numb" },
+                "2": { quiet: "Quiet / kind", nag: "Nagging", loud: "Loud", rail: "Won’t stop — railing me" },
+                "3": { clear: "Clear", scattered: "Scattered", loop: "Stuck on a loop", fog: "Foggy / blank" },
+                "4": { small: "Pretty small", wave: "Like a wave", big: "Big", over: "Taking over" } },
+        btn: "Show me one thing"
+      },
+      es: {
+        sub: "¿Algo difícil ahora mismo? Recibe una cosa práctica para hacer en este minuto.",
+        ey: "Una lectura del momento", h: "¿Qué está pasando ahora mismo?",
+        intro: "¿Algo se acaba de poner difícil? Esto no es sobre tu semana — es sobre ahora mismo. Cuatro toques rápidos y recibirás una cosa práctica para hacer en este minuto. Privado, instantáneo, no se guarda nada.",
+        q1: "Ahora mismo, mi cuerpo se siente…", q2: "La voz en mi cabeza ahora mismo está…", q3: "Mi pensamiento ahora mismo está…", q4: "Y ahora mismo se siente…",
+        opts: { "1": { hyper: "Acelerado / tenso", window: "Bastante tranquilo", hypo: "Pesado / adormecido" },
+                "2": { quiet: "Tranquila / amable", nag: "Insistente", loud: "Fuerte", rail: "No para — me ataca" },
+                "3": { clear: "Claro", scattered: "Disperso", loop: "Atascado en un bucle", fog: "Nublado / en blanco" },
+                "4": { small: "Bastante pequeño", wave: "Como una ola", big: "Grande", over: "Me domina" } },
+        btn: "Muéstrame una cosa"
+      }
+    },
+    teen: {
+      en: {
+        sub: "Something just hit? Get one thing to actually do this minute.",
+        ey: "An in-the-moment read", h: "What’s happening right now?",
+        intro: "Something just hit? This isn’t about your whole week — just right now. Four quick taps and you get one thing to actually do this minute. Private, instant, nothing saved.",
+        q1: "Right now, my body feels…", q2: "The voice in my head right now is…", q3: "My head right now is…", q4: "And right now it feels…",
+        opts: { "1": { hyper: "Revved / tight", window: "Pretty chill", hypo: "Heavy / numb" },
+                "2": { quiet: "Quiet / kind", nag: "Nagging", loud: "Loud", rail: "Won’t shut up — going off on me" },
+                "3": { clear: "Clear", scattered: "All over the place", loop: "Stuck on one thing", fog: "Foggy / blank" },
+                "4": { small: "Pretty small", wave: "Like a wave", big: "Big", over: "Taking over" } },
+        btn: "Show me one thing"
+      },
+      es: {
+        sub: "¿Algo te acaba de golpear? Recibe una cosa para hacer en este minuto.",
+        ey: "Una lectura del momento", h: "¿Qué está pasando ahora mismo?",
+        intro: "¿Algo te acaba de golpear? Esto no es sobre toda tu semana — solo ahora mismo. Cuatro toques rápidos y recibes una cosa para hacer en este minuto. Privado, instantáneo, no se guarda nada.",
+        q1: "Ahora mismo, mi cuerpo se siente…", q2: "La voz en mi cabeza ahora mismo está…", q3: "Mi cabeza ahora mismo está…", q4: "Y ahora mismo se siente…",
+        opts: { "1": { hyper: "Acelerado / tenso", window: "Bastante tranquilo", hypo: "Pesado / adormecido" },
+                "2": { quiet: "Tranquila / amable", nag: "Insistente", loud: "Fuerte", rail: "No se calla — me ataca" },
+                "3": { clear: "Claro", scattered: "Por todos lados", loop: "Atascado en una cosa", fog: "Nublado / en blanco" },
+                "4": { small: "Bastante pequeño", wave: "Como una ola", big: "Grande", over: "Me domina" } },
+        btn: "Muéstrame una cosa"
+      }
+    },
+    child: {
+      en: {
+        sub: "Is something hard right now? Let’s do one thing that helps.",
+        ey: "A right-now check", h: "What’s happening right now?",
+        intro: "Is something hard right now? Tap what feels true. Then we’ll do one thing to help — right now.",
+        q1: "Right now, my body feels…", q2: "The voice in my head is…", q3: "My brain right now is…", q4: "And my feeling is…",
+        opts: { "1": { hyper: "Fast / jumpy", window: "Calm", hypo: "Heavy / tired" },
+                "2": { quiet: "Kind / quiet", nag: "A little grumpy", loud: "Loud and mean", rail: "Yelling at me" },
+                "3": { clear: "Clear", scattered: "All mixed up", loop: "Stuck on one thing", fog: "Foggy / far away" },
+                "4": { small: "Little", wave: "Medium", big: "Big", over: "Really, really big" } },
+        btn: "Show me what helps"
+      },
+      es: {
+        sub: "¿Algo es difícil ahora mismo? Hagamos una cosa que ayude.",
+        ey: "Un chequeo de ahora", h: "¿Qué pasa ahora mismo?",
+        intro: "¿Algo es difícil ahora mismo? Toca lo que sientas verdadero. Luego haremos una cosa para ayudar — ahora mismo.",
+        q1: "Ahora mismo, mi cuerpo se siente…", q2: "La voz en mi cabeza está…", q3: "Mi cerebro ahora mismo está…", q4: "Y mi sentimiento es…",
+        opts: { "1": { hyper: "Rápido / inquieto", window: "Tranquilo", hypo: "Pesado / cansado" },
+                "2": { quiet: "Amable / tranquila", nag: "Un poco gruñona", loud: "Fuerte y mala", rail: "Me grita" },
+                "3": { clear: "Claro", scattered: "Todo revuelto", loop: "Atascado en una cosa", fog: "Nublado / lejos" },
+                "4": { small: "Pequeño", wave: "Mediano", big: "Grande", over: "Muy, muy grande" } },
+        btn: "Muéstrame qué ayuda"
+      }
+    }
+  };
+
+  /* ---- matched advice, by route + audience + language ---- */
+  var RN_ADVICE = {
+    critic: {
+      adult: {
+        en: { title: "That’s the Critic — not the verdict.", lead: "What you’re feeling is a wave. The hard part crests and clears faster than it feels — often in about 90 seconds. What stretches it out is the voice, not the truth. Three moves:",
+              steps: ["One long breath out — longer than the breath in. Do it twice.", "Name it: “that’s the Critic talking,” not the facts. You can even give it a name.", "Say to yourself what you’d say to a friend this voice was hammering. That’s your Coach."] },
+        es: { title: "Esa es la Crítica — no el veredicto.", lead: "Lo que sientes es una ola. Lo más duro sube y se va más rápido de lo que parece — a menudo en unos 90 segundos. Lo que lo alarga es la voz, no la verdad. Tres pasos:",
+              steps: ["Una exhalación larga — más larga que la inhalación. Hazlo dos veces.", "Nombra: “es la Crítica hablando,” no los hechos. Hasta puedes ponerle un nombre.", "Dite lo que le dirías a un amigo al que esa voz estuviera atacando. Esa es tu Guía."] }
+      },
+      teen: {
+        en: { title: "That’s the Critic, not the truth.", lead: "This is a wave — the worst of it usually passes in about 90 seconds. What keeps it going is the voice in your head, not what’s actually true. Try this:",
+              steps: ["Breathe out slow, longer than you breathe in. Twice.", "Call it out: that’s the Critic, not facts.", "Say to yourself what you’d say to a friend it was going off on."] },
+        es: { title: "Esa es la Crítica, no la verdad.", lead: "Esto es una ola — lo peor suele pasar en unos 90 segundos. Lo que lo mantiene es la voz en tu cabeza, no lo que de verdad es cierto. Prueba esto:",
+              steps: ["Exhala despacio, más tiempo del que inhalas. Dos veces.", "Dilo: esa es la Crítica, no los hechos.", "Dite lo que le dirías a un amigo al que estuviera atacando."] }
+      },
+      child: {
+        en: { title: "That’s the grumpy voice — not the real you.", lead: "Big feelings come like waves. They get really big… and then they get smaller. Let’s help it get smaller:",
+              steps: ["Take a slow breath out, like blowing out a candle. Two times.", "Tell the grumpy voice: “you’re not the boss of me.”", "Say something kind to yourself, like you would to a friend."] },
+        es: { title: "Esa es la voz gruñona — no el verdadero tú.", lead: "Los sentimientos grandes vienen como olas. Se hacen muy grandes… y luego se hacen más pequeños. Ayudémoslo a hacerse pequeño:",
+              steps: ["Sopla despacio, como apagando una vela. Dos veces.", "Dile a la voz gruñona: “no mandas en mí.”", "Dite algo amable, como se lo dirías a un amigo."] }
+      }
+    },
+    storm: {
+      adult: {
+        en: { title: "Your system is revved — let’s bring it down.", lead: "This is a surge of energy, and it will pass. Right now your job isn’t to think clearly — it’s to come down a notch. Three moves:",
+              steps: ["Make your exhale longer than your inhale — that’s the brake. A few rounds.", "Both feet on the floor. Name five things you can see.", "Move the energy: push against a wall, shake out your hands, take a short walk."] },
+        es: { title: "Tu sistema está acelerado — vamos a bajarlo.", lead: "Esto es una oleada de energía, y va a pasar. Ahora mismo tu trabajo no es pensar claro — es bajar un nivel. Tres pasos:",
+              steps: ["Haz tu exhalación más larga que la inhalación — ese es el freno. Varias veces.", "Los dos pies en el piso. Nombra cinco cosas que puedas ver.", "Mueve la energía: empuja una pared, sacude las manos, camina un poco."] }
+      },
+      teen: {
+        en: { title: "You’re fired up — let’s cool the engine.", lead: "That’s a surge, and surges pass. You don’t have to fix anything yet — just come down a level:",
+              steps: ["Long breath out, longer than in. A few times.", "Feet on the floor. Name five things you can see.", "Burn it off — push a wall, shake your hands, walk it out."] },
+        es: { title: "Estás encendido — enfriemos el motor.", lead: "Eso es una oleada, y las oleadas pasan. No tienes que arreglar nada todavía — solo baja un nivel:",
+              steps: ["Exhala largo, más que al inhalar. Varias veces.", "Pies en el piso. Nombra cinco cosas que puedas ver.", "Suéltala — empuja una pared, sacude las manos, camina."] }
+      },
+      child: {
+        en: { title: "Your body is going really fast — let’s slow it down.", lead: "Your body has a lot of zoom right now. Let’s help it slow down:",
+              steps: ["Blow out slow, like blowing bubbles. A few times.", "Press your feet into the floor and find five things you can see.", "Wiggle it out — push the wall or shake your hands."] },
+        es: { title: "Tu cuerpo va muy rápido — vamos a frenarlo.", lead: "Tu cuerpo tiene mucha energía ahora. Ayudémoslo a ir despacio:",
+              steps: ["Sopla despacio, como haciendo burbujas. Varias veces.", "Aprieta los pies en el piso y busca cinco cosas que puedas ver.", "Suéltalo — empuja la pared o sacude las manos."] }
+      }
+    },
+    fog: {
+      adult: {
+        en: { title: "You’ve gone quiet and far away — let’s gently come back.", lead: "Numb and foggy is the body pulling back. You don’t need big energy — just one small signal that you’re here:",
+              steps: ["Stand up and feel your feet. Take a sip of water.", "Name five sounds you can hear right now.", "Move something small — stretch, step outside, feel sun or cool air on your skin."] },
+        es: { title: "Te has ido callado y lejos — volvamos con calma.", lead: "El adormecimiento y la niebla son el cuerpo replegándose. No necesitas mucha energía — solo una señal pequeña de que estás aquí:",
+              steps: ["Ponte de pie y siente tus pies. Toma un sorbo de agua.", "Nombra cinco sonidos que puedas escuchar ahora.", "Mueve algo pequeño — estírate, sal afuera, siente el sol o el aire fresco."] }
+      },
+      teen: {
+        en: { title: "Feeling numb or blank? Let’s reconnect.", lead: "Going numb is the body checking out for a bit. Small signals bring you back — no big energy needed:",
+              steps: ["Stand up, feel your feet, drink some water.", "Name five sounds around you.", "Small move — stretch, step outside, splash some water on your face."] },
+        es: { title: "¿Te sientes adormecido o en blanco? Reconectemos.", lead: "El adormecimiento es el cuerpo desconectándose un rato. Las señales pequeñas te traen de vuelta:",
+              steps: ["Ponte de pie, siente tus pies, toma agua.", "Nombra cinco sonidos a tu alrededor.", "Movimiento pequeño — estírate, sal afuera, mójate la cara."] }
+      },
+      child: {
+        en: { title: "Feeling far away or sleepy inside? Let’s wake your body up gently.", lead: "Sometimes our body gets quiet and far away. Let’s help it come back:",
+              steps: ["Stand up and wiggle your toes. Take a sip of water.", "Find five sounds you can hear.", "Stretch up tall like a tree, then shake your hands."] },
+        es: { title: "¿Te sientes lejos o con sueño por dentro? Despertemos tu cuerpo con calma.", lead: "A veces nuestro cuerpo se pone callado y lejano. Ayudémoslo a volver:",
+              steps: ["Ponte de pie y mueve los dedos de los pies. Toma un sorbo de agua.", "Busca cinco sonidos que puedas escuchar.", "Estírate alto como un árbol, luego sacude las manos."] }
+      }
+    },
+    loop: {
+      adult: {
+        en: { title: "You’re stuck on a loop — let’s loosen it.", lead: "Replaying the same thought won’t solve it — it just deepens the groove. The move is to change your state, not win the argument:",
+              steps: ["Say it as “I’m having the thought that…” — that little gap is freedom.", "Give it a time: “I’ll think about this at 5pm,” then set it down.", "Change the channel physically — a different room, cold water, one song."] },
+        es: { title: "Estás atascado en un bucle — vamos a aflojarlo.", lead: "Repetir el mismo pensamiento no lo resuelve — solo profundiza el surco. El paso es cambiar tu estado, no ganar la discusión:",
+              steps: ["Dilo como “estoy teniendo el pensamiento de que…” — ese pequeño espacio es libertad.", "Ponle hora: “lo pensaré a las 5,” y suéltalo.", "Cambia el canal físicamente — otro cuarto, agua fría, una canción."] }
+      },
+      teen: {
+        en: { title: "Caught in a loop? Let’s break it.", lead: "Looping the same thought just digs the groove deeper. Don’t win the argument — change your state:",
+              steps: ["Reword it: “I’m having the thought that…”", "Park it — “I’ll deal with this later,” pick a time.", "Change something — new room, cold water, a song."] },
+        es: { title: "¿Atrapado en un bucle? Vamos a romperlo.", lead: "Repetir el mismo pensamiento solo cava más hondo. No ganes la discusión — cambia tu estado:",
+              steps: ["Reformúlalo: “estoy teniendo el pensamiento de que…”", "Apárcalo — “lo veré más tarde,” elige una hora.", "Cambia algo — otro cuarto, agua fría, una canción."] }
+      },
+      child: {
+        en: { title: "Is your brain stuck on the same thing? Let’s change it.", lead: "Sometimes a thought gets stuck and goes round and round. Let’s help it move:",
+              steps: ["Tell your brain: “not right now.”", "Do something different — draw, jump, get a drink of water.", "Find one thing that makes you smile."] },
+        es: { title: "¿Tu cerebro está atascado en lo mismo? Vamos a cambiarlo.", lead: "A veces un pensamiento se atasca y da vueltas y vueltas. Ayudémoslo a moverse:",
+              steps: ["Dile a tu cerebro: “ahora no.”", "Haz algo diferente — dibuja, salta, toma agua.", "Busca una cosa que te haga sonreír."] }
+      }
+    },
+    steady: {
+      adult: {
+        en: { title: "You’re actually pretty steady right now.", lead: "Good — notice it. Steady is a skill, and noticing it makes it easier to find your way back next time.",
+              steps: ["Name one thing keeping you steady right now.", "Take one slow breath and let yourself feel okay for a second.", "If someone near you is struggling, this is a good moment to offer a little steadiness."] },
+        es: { title: "En realidad estás bastante estable ahora mismo.", lead: "Bien — nótalo. La estabilidad es una habilidad, y notarla hace más fácil volver a encontrarla la próxima vez.",
+              steps: ["Nombra una cosa que te mantiene estable ahora mismo.", "Toma una respiración lenta y permítete sentirte bien por un momento.", "Si alguien cerca de ti la está pasando mal, es un buen momento para ofrecer un poco de calma."] }
+      },
+      teen: {
+        en: { title: "You’re in a pretty good spot right now.", lead: "Nice — worth noticing. Catching the steady moments makes them easier to find again.",
+              steps: ["Notice one thing that’s helping right now.", "Take a slow breath and just let it be okay.", "Maybe check in on someone who isn’t having as good a day."] },
+        es: { title: "Estás en un buen momento ahora mismo.", lead: "Bien — vale la pena notarlo. Captar los momentos estables hace más fácil volver a encontrarlos.",
+              steps: ["Nota una cosa que te está ayudando ahora.", "Toma una respiración lenta y deja que esté bien.", "Tal vez pregunta cómo está alguien que no tiene un día tan bueno."] }
+      },
+      child: {
+        en: { title: "You’re feeling pretty good right now!", lead: "That’s great — let’s notice the good feeling so it’s easier to find again.",
+              steps: ["Notice one thing that feels nice right now.", "Take a slow, happy breath.", "Maybe share a smile with someone."] },
+        es: { title: "¡Te sientes bastante bien ahora mismo!", lead: "¡Qué bien! — notemos el sentimiento bueno para que sea más fácil encontrarlo otra vez.",
+              steps: ["Nota una cosa que se siente bien ahora.", "Toma una respiración lenta y feliz.", "Tal vez comparte una sonrisa con alguien."] }
+      }
+    }
+  };
+
+  /* privacy + nav labels (audience-agnostic) */
+  var RN_PRIV = { en: "Private · not tracked · nothing you tap is saved.", es: "Privado · sin seguimiento · nada de lo que tocas se guarda." };
+  var RN_NAV  = { en: "Right Now", es: "Ahora mismo" };
+
+  /* per-route: a raw affirmation, an in-app calming tool, and a doorway into the curriculum */
+  var RN_EXTRA = {
+    critic: {
+      toolKey: "innercoach", altKey: "emotion", deeperAction: "library", query: "inner critic",
+      toolLabel: { en: "Try: 4-7-8 Breathing", es: "Prueba: Respiración 4-7-8" },
+      deeper: { en: "Meet your Inner Coach — open the lessons", es: "Conoce a tu Guía Interior — abre las lecciones" },
+      affirm: {
+        adult: { en: "You are not the things that voice is calling you. It is loud — that does not make it right.", es: "No eres lo que esa voz te dice. Es fuerte — eso no la hace verdad." },
+        teen:  { en: "You are not what that voice says. It’s loud right now — loud isn’t the same as true.", es: "No eres lo que dice esa voz. Ahora está fuerte — fuerte no es lo mismo que verdad." },
+        child: { en: "You are good, even when the grumpy voice is loud. This feeling will get smaller.", es: "Eres bueno/a, aunque la voz gruñona esté fuerte. Este sentimiento se hará más pequeño." }
+      }
+    },
+    storm: {
+      toolKey: "coldwater", altKey: "movement", deeperAction: "library", query: "window of tolerance",
+      toolLabel: { en: "Try: 4-7-8 Breathing", es: "Prueba: Respiración 4-7-8" },
+      deeper: { en: "Learn the Window of Tolerance", es: "Aprende la Ventana de Tolerancia" },
+      affirm: {
+        adult: { en: "Nothing has to be solved this second. Your only job right now is to come down a notch.", es: "No hay que resolver nada en este segundo. Tu única tarea ahora es bajar un nivel." },
+        teen:  { en: "You don’t have to fix anything yet. Right now, you just have to land.", es: "No tienes que arreglar nada todavía. Ahora solo tienes que aterrizar." },
+        child: { en: "Your body is just going fast. We can help it slow down together.", es: "Tu cuerpo solo va rápido. Podemos ayudarlo a ir despacio juntos." }
+      }
+    },
+    fog: {
+      toolKey: "grounding", altKey: "movement", deeperAction: "library", query: "window of tolerance",
+      toolLabel: { en: "Try: 5-4-3-2-1 Grounding", es: "Prueba: Anclaje 5-4-3-2-1" },
+      deeper: { en: "Learn the Window of Tolerance", es: "Aprende la Ventana de Tolerancia" },
+      affirm: {
+        adult: { en: "Going numb isn’t broken — it’s your body protecting you. You’re allowed to come back slowly.", es: "Adormecerse no es estar roto — es tu cuerpo protegiéndote. Puedes volver despacio." },
+        teen:  { en: "Feeling blank doesn’t mean something’s wrong with you. You can come back slowly.", es: "Sentirte en blanco no significa que algo esté mal contigo. Puedes volver despacio." },
+        child: { en: "It’s okay to feel far away sometimes. Your body knows how to come back.", es: "Está bien sentirse lejos a veces. Tu cuerpo sabe cómo volver." }
+      }
+    },
+    loop: {
+      toolKey: "movement", altKey: "emotion", deeperAction: "library", query: "rumination",
+      toolLabel: { en: "Try: a Movement Break", es: "Prueba: una pausa de movimiento" },
+      deeper: { en: "The Letting-Go practice — open the lessons", es: "La práctica de Soltar — abre las lecciones" },
+      affirm: {
+        adult: { en: "Thinking about it more is not the same as solving it. You’re allowed to set it down.", es: "Pensarlo más no es lo mismo que resolverlo. Puedes soltarlo." },
+        teen:  { en: "Replaying it isn’t fixing it. You’re allowed to put it down for now.", es: "Repetirlo no lo arregla. Puedes soltarlo por ahora." },
+        child: { en: "You don’t have to think about the stuck thing right now. Let’s give your brain a break.", es: "No tienes que pensar en la cosa atascada ahora. Démosle un descanso a tu cerebro." }
+      }
+    },
+    steady: {
+      toolKey: null, deeperAction: "mytools",
+      toolLabel: { en: "", es: "" },
+      deeper: { en: "Explore your calm & regulation tools", es: "Explora tus herramientas de calma" },
+      affirm: {
+        adult: { en: "Steady is real, and it’s yours. Notice how you got here — that’s the map back.", es: "La calma es real, y es tuya. Nota cómo llegaste aquí — ese es el mapa de regreso." },
+        teen:  { en: "This good moment counts. Notice what helped — that’s how you find it again.", es: "Este buen momento cuenta. Nota qué ayudó — así lo encuentras otra vez." },
+        child: { en: "You’re doing great right now. Remember this good feeling!", es: "Lo estás haciendo muy bien ahora. ¡Recuerda este buen sentimiento!" }
+      }
+    }
+  };
+
+  /* generic in-app tool labels (for the "try a different one" follow-up) */
+  var RN_TOOL_LABEL = {
+    breathing: { en: "Try: 4-7-8 Breathing", es: "Prueba: Respiración 4-7-8" },
+    grounding: { en: "Try: 5-4-3-2-1 Grounding", es: "Prueba: Anclaje 5-4-3-2-1" },
+    movement:  { en: "Try: a Movement Break", es: "Prueba: una pausa de movimiento" },
+    emotion:   { en: "Try: Name it to tame it", es: "Prueba: Nómbralo para calmarlo" },
+    bilateral: { en: "Try: a Butterfly Hug", es: "Prueba: un Abrazo mariposa" },
+    coldwater: { en: "Try: Cold Water", es: "Prueba: Agua fría" },
+    innercoach:{ en: "Try: Your Inner Coach", es: "Prueba: Tu Guía Interior" },
+    makeitright:{ en: "Try: Make It Right", es: "Prueba: Reparar" }
+  };
+
+  /* "Did that help?" check-back copy, by audience + language */
+  var RN_FB = {
+    yesLabel: { en: "Yes, a little", es: "Sí, un poco" },
+    noLabel:  { en: "Not yet", es: "Todavía no" },
+    prompt: {
+      adult: { en: "You’ve tried something — where’s it at right now?", es: "Probaste algo — ¿en qué punto estás ahora?" },
+      teen:  { en: "Okay — where’s it at right now?", es: "Bien — ¿en qué punto estás ahora?" },
+      child: { en: "Where’s your feeling now?", es: "¿Dónde está tu sentimiento ahora?" }
+    },
+    again: {
+      adult: { en: "Give it a try, then check back:", es: "Inténtalo y vuelve a revisar:" },
+      teen:  { en: "Try it, then check back:", es: "Pruébalo y vuelve a revisar:" },
+      child: { en: "Try it, then tell me:", es: "Pruébalo y luego dime:" }
+    },
+    yes: {
+      adult: { en: "That’s the skill working — and you did that. The wave moved through because you rode it, not because it wasn’t real. You can come back here any time.", es: "Esa es la habilidad funcionando — y lo hiciste tú. La ola pasó porque la surfeaste, no porque no fuera real. Puedes volver aquí cuando quieras." },
+      teen:  { en: "Nice — that’s you doing the thing. The wave passed because you rode it out. This is always here when you need it.", es: "Bien — eso lo hiciste tú. La ola pasó porque la aguantaste. Esto está aquí siempre que lo necesites." },
+      child: { en: "Yay! You helped your big feeling get smaller. You can come back any time you need to.", es: "¡Bien! Ayudaste a que tu sentimiento grande se hiciera más pequeño. Puedes volver cuando lo necesites." }
+    },
+    no1: {
+      adult: { en: "Still up there — that’s okay, and not you failing. You don’t have to start over; let’s just add one more thing on top of what you did:", es: "Aún alto — está bien, y no es un fracaso tuyo. No tienes que empezar de nuevo; solo agreguemos una cosa más a lo que ya hiciste:" },
+      teen:  { en: "Still up there — that’s okay, and not on you. No need to start over — let’s stack one more on top:", es: "Aún alto — está bien, y no es tu culpa. No hay que empezar de nuevo — agreguemos una más encima:" },
+      child: { en: "Still big — that’s okay! We don’t start over. Let’s just add one more thing:", es: "Aún grande — ¡está bien! No empezamos de nuevo. Solo agreguemos una cosa más:" }
+    },
+    no2: {
+      adult: { en: "You’ve tried, and it’s still heavy — thank you for staying with it. This is the kind of thing that gets lighter with another person, not alone. Reach out to someone you trust. If it’s a lot, in the U.S. you can call or text <strong>988</strong> any time.", es: "Lo intentaste, y aún pesa — gracias por quedarte con ello. Esto se aligera con otra persona, no en soledad. Habla con alguien de confianza. Si es mucho, en EE. UU. puedes llamar o enviar un mensaje al <strong>988</strong> a cualquier hora." },
+      teen:  { en: "You really tried, and it’s still heavy — that takes guts. When a feeling stays this big, the bravest move is to tell someone you trust. If it’s a lot, in the U.S. you can call or text <strong>988</strong> any time, day or night.", es: "Lo intentaste de verdad, y aún pesa — eso toma valor. Cuando un sentimiento sigue así de grande, lo más valiente es contárselo a alguien de confianza. Si es mucho, en EE. UU. puedes llamar o enviar un mensaje al <strong>988</strong> a cualquier hora." },
+      child: { en: "You’re being so brave. When a feeling stays big even after we try, the best next step is a grown-up you trust — your teacher counts. Please tell them how you feel.", es: "Estás siendo muy valiente. Cuando un sentimiento sigue grande aunque lo intentemos, el mejor paso es una persona adulta de confianza — tu maestro cuenta. Por favor, cuéntale cómo te sientes." }
+    },
+    cameIn:  { en: "You came in at", es: "Llegaste en" },
+    nowLbl:  { en: "now", es: "ahora" },
+    readyLabel: { en: "I’m ready to go back", es: "Estoy listo/a para volver" },
+    stayLabel:  { en: "Stay a minute", es: "Quédate un minuto" },
+    freshLabel: { en: "Start fresh for the next person →", es: "Empezar de nuevo para la siguiente persona →" },
+    postOk: {
+      adult: { en: "That’s a steady place to be. Nice work settling yourself.", es: "Ese es un lugar estable. Buen trabajo calmándote." },
+      teen:  { en: "That’s a solid place to land. Nice work settling.", es: "Ese es un buen lugar para aterrizar. Bien hecho." },
+      child: { en: "That’s a good, calm spot. Great job!", es: "Ese es un lugar bueno y tranquilo. ¡Muy bien!" }
+    },
+    sendoff: {
+      adult: { en: "Go easy heading back — you did the work. This is here any time you need it.", es: "Ve con calma al volver — hiciste el trabajo. Esto está aquí cuando lo necesites." },
+      teen:  { en: "Head back when you’re ready — you handled that. This is here whenever you need it.", es: "Vuelve cuando estés listo/a — manejaste eso. Esto está aquí cuando lo necesites." },
+      child: { en: "Great job! You can walk back to your seat now. Come back any time you need to.", es: "¡Muy bien! Ya puedes volver a tu asiento. Vuelve cuando lo necesites." }
+    },
+    stayMsg: {
+      adult: { en: "Take all the time you need. Try one more, then check again:", es: "Tómate el tiempo que necesites. Prueba una más y vuelve a revisar:" },
+      teen:  { en: "Take the time you need. Try one more, then check again:", es: "Tómate el tiempo que necesites. Prueba una más y vuelve a revisar:" },
+      child: { en: "Take your time. Let’s try one more:", es: "Tómate tu tiempo. Probemos una más:" }
+    }
+  };
+  var RN_TEACHER = {
+    en: { sum: "For teachers — using this as a calm-down station",
+          body: "Keep it a reset, never a consequence. Try: “Go take a Right Now at the computer, be honest with it, try what it suggests, then check where you’re at and come back when you’re ready.” Nothing is saved — it’s private to the student. You’re looking for a calmer kid returning on their own, not a report." },
+    es: { sum: "Para docentes — usar esto como una estación de calma",
+          body: "Que sea un reinicio, nunca un castigo. Prueba: “Ve a hacer un Ahora mismo en la computadora, sé honesto/a, prueba lo que sugiere, luego revisa cómo estás y vuelve cuando estés listo/a.” No se guarda nada — es privado del estudiante. Buscas a un niño/a más tranquilo/a que regresa por su cuenta, no un reporte." }
+  };
+  var rnLastRoute = null, rnLastAud = null, rnNoRounds = 0, rnFirstSize = null;
+
+  window.openRightNow = function () {
+    if (typeof window.aogRnReset === "function") { try { window.aogRnReset(false); } catch (e) {} }
+    if (typeof startChoose === "function") { startChoose(); }
+    else if (typeof showScreen === "function") { showScreen("screen-choose"); }
+    setTimeout(function () {
+      var el = document.getElementById("rightNow");
+      if (el) { try { el.scrollIntoView({ behavior: "smooth", block: "start" }); } catch (e) { el.scrollIntoView(); } }
+    }, 90);
+  };
+
+  function setPick(q, state, el) {
+    document.querySelectorAll("#" + ROOT + " .tk-pill[data-q=\"" + q + "\"]").forEach(function (p) {
+      p.classList.remove("on"); p.setAttribute("aria-checked", "false");
+    });
+    el.classList.add("on"); el.setAttribute("aria-checked", "true");
+    picks[q] = state;
+  }
+
+  function routeOf(p) {
+    if (p["2"] === "loud" || p["2"] === "rail") return "critic";
+    if (p["1"] === "hyper" || p["4"] === "over" || p["4"] === "big") return "storm";
+    if (p["1"] === "hypo" || p["3"] === "fog") return "fog";
+    if (p["3"] === "loop") return "loop";
+    return "steady";
+  }
+
+  function breatheBlock(es) {
+    var heart = "<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M12 21s-7-4.35-9-8a5 5 0 0 1 9-3 5 5 0 0 1 9 3c-2 3.65-9 8-9 8z\"/></svg>";
+    return "<div class=\"grace-step\">" +
+        "<div class=\"grace-step-h\">" + heart + "<span>" + (es ? "Respira conmigo (3 rondas)" : "Breathe with me (3 rounds)") + "</span></div>" +
+        "<button type=\"button\" class=\"grace-step-btn\" onclick=\"aogGraceBreathe(this)\">" + (es ? "Empezar" : "Start") + "</button>" +
+        "<div class=\"grace-breath\" hidden><div class=\"grace-orb\"></div><div class=\"grace-cue\" aria-live=\"polite\"></div></div>" +
+      "</div>";
+  }
+
+  function show() {
+    var es = (typeof lang !== "undefined" && lang === "es");
+    var L = es ? "es" : "en";
+    var aud = window.aogRightNowAudience || "adult";
+    if (!RN_ADVICE.steady[aud]) aud = "adult";
+    var box = document.getElementById(ROOT + "Result");
+    if (!box) return;
+    box.hidden = false;
+
+    var keys = ["1", "2", "3", "4"], answered = 0;
+    keys.forEach(function (k) { if (picks[k] != null) answered++; });
+    if (answered < 4) {
+      box.className = "wp-tank-result warn";
+      box.innerHTML = "<p>" + (es ? "Toca una opción en cada una de las cuatro líneas." : "Tap one option for each of the four lines.") + "</p>";
+      return;
+    }
+
+    var route = routeOf(picks);
+    var severe = (picks["4"] === "over");
+    var band = (route === "steady") ? "ok"
+             : ((route === "critic" || route === "storm") && severe) ? "empty"
+             : "low";
+
+    var a = (RN_ADVICE[route][aud] || RN_ADVICE[route].adult)[L];
+    var eyebrow = es ? "EN ESTE MOMENTO" : "RIGHT NOW";
+    var stepsHtml = "<ol class=\"rn-steps\">";
+    a.steps.forEach(function (s) { stepsHtml += "<li>" + s + "</li>"; });
+    stepsHtml += "</ol>";
+
+    var breathe = (route === "critic" || route === "storm") ? breatheBlock(es) : "";
+
+    /* affirmation (raw, validating) + tools row (in-app tool + curriculum doorway) */
+    var ex = RN_EXTRA[route] || RN_EXTRA.steady;
+    var affirmHtml = "<div class=\"rn-affirm\">" + ((ex.affirm[aud] || ex.affirm.adult)[L]) + "</div>";
+    var myt = "if(typeof showScreen==='function'){showScreen('screen-aog-mytools');}";
+    var lib = ex.query
+      ? "if(window.aogGoConstruct){aogGoConstruct('" + ex.query + "','" + aud + "');}else if(window.aogGoLibrary){aogGoLibrary();}"
+      : "if(window.aogGoLibrary){aogGoLibrary();}else if(typeof showScreen==='function'){showScreen('screen-library');}";
+    var deeperOnclick = (ex.deeperAction === "mytools") ? myt : lib;
+    var toolBtn = ex.toolKey
+      ? "<button type=\"button\" class=\"rn-tool-btn\" onclick=\"if(window.toolOpen){window.toolOpen('" + ex.toolKey + "');}\">" + ((RN_TOOL_LABEL[ex.toolKey] && RN_TOOL_LABEL[ex.toolKey][L]) || (ex.toolLabel && ex.toolLabel[L]) || "") + "</button>"
+      : "";
+    var deeperBtn = "<button type=\"button\" class=\"rn-deeper-btn\" onclick=\"" + deeperOnclick + "\">" + ex.deeper[L] + " →</button>";
+    var toolsHtml = "<div class=\"rn-tools\">" + toolBtn + deeperBtn + "</div>";
+
+    /* post-test ("where's it at now?") — remember context + the first intensity */
+    rnLastRoute = route; rnLastAud = aud; rnNoRounds = 0; rnFirstSize = picks["4"];
+    var _sizeLabels = (RN_COPY[aud] && RN_COPY[aud][L] && RN_COPY[aud][L].opts["4"]) || RN_COPY.adult.en.opts["4"];
+    var _postPills = ["small", "wave", "big", "over"].map(function (k) {
+      return "<button type=\"button\" class=\"rn-deeper-btn\" onclick=\"aogRnPost('" + k + "')\">" + _sizeLabels[k] + "</button>";
+    }).join("");
+    var followupHtml =
+      "<div class=\"rn-followup\" id=\"rnFollowup\">" +
+        "<div class=\"rn-fb-q\">" + ((RN_FB.prompt[aud] || RN_FB.prompt.adult)[L]) + "</div>" +
+        "<div class=\"rn-fb-btns\">" + _postPills + "</div>" +
+      "</div>";
+
+    /* safeguarding door — adults/teens get 988; children get a trusted-adult line */
+    var support = "";
+    var showSupport = (route === "critic" || route === "storm" || severe);
+    if (aud === "child") {
+      support = "<div class=\"rn-grownup\"><strong>" + (es ? "Para un adulto cercano:" : "For a grown-up nearby:") + "</strong> " +
+        (es ? "Acércate, baja la voz y respira con el niño. Eres la calma que toma prestada." : "Sit close, lower your voice, and breathe with the child. You are the calm they borrow.") + "</div>";
+      if (showSupport) {
+        support += "<p class=\"rn-support\">" + (es ? "Si esto se siente demasiado grande, cuéntale a una persona adulta de confianza cómo te sientes." : "If this feels too big, tell a grown-up you trust how you’re feeling.") + "</p>";
+      }
+    } else if (showSupport) {
+      support = "<p class=\"rn-support\">" + (es
+        ? "Si la voz se convierte en pensamientos de hacerte daño, no tienes que pasarlo solo/a — en EE. UU. llama o envía un mensaje al <strong>988</strong> a cualquier hora."
+        : "If the voice turns into thoughts of harming yourself, you don’t have to ride it out alone — in the U.S. call or text <strong>988</strong> any time.") + "</p>";
+    }
+
+    var flag = es ? "Una señal, no un diagnóstico · nada de esto se guardó." : "A flag, not a diagnosis · nothing here was saved.";
+
+    box.className = "wp-tank-result " + band;
+    box.innerHTML =
+      "<div class=\"tk-instant-top\"><span class=\"tk-instant-badge\">" + eyebrow + "</span></div>" +
+      affirmHtml +
+      "<div class=\"band\">" + a.title + "</div>" +
+      "<p class=\"rn-lead\">" + a.lead + "</p>" +
+      stepsHtml +
+      breathe +
+      toolsHtml +
+      followupHtml +
+      support +
+      "<p class=\"flag\">" + flag + "</p>";
+
+    try { box.scrollIntoView({ behavior: "smooth", block: "center" }); } catch (e) {}
+  }
+
+  function rnPickFb(o, aud, L) { return (o[aud] || o.adult)[L]; }
+  function rnFade(box) { if (!box) return; try { box.classList.remove("rn-soft"); void box.offsetWidth; box.classList.add("rn-soft"); } catch (e) {} }
+  function rnPostPills(aud, L) {
+    var lab = (RN_COPY[aud] && RN_COPY[aud][L] && RN_COPY[aud][L].opts["4"]) || RN_COPY.adult.en.opts["4"];
+    return ["small", "wave", "big", "over"].map(function (k) {
+      return "<button type=\"button\" class=\"rn-deeper-btn\" onclick=\"aogRnPost('" + k + "')\">" + lab[k] + "</button>";
+    }).join("");
+  }
+  function rnReturnButtons(L) {
+    return "<div class=\"rn-fb-btns\" style=\"margin-top:10px;\">" +
+      "<button type=\"button\" class=\"rn-tool-btn\" onclick=\"aogRnReturn()\">" + RN_FB.readyLabel[L] + "</button>" +
+      "<button type=\"button\" class=\"rn-deeper-btn\" onclick=\"aogRnStay()\">" + RN_FB.stayLabel[L] + "</button>" +
+      "</div>";
+  }
+
+  /* the post-test: compare "where's it at now?" to the first read, show the shift */
+  window.aogRnPost = function (now) {
+    var es = (typeof lang !== "undefined" && lang === "es"); var L = es ? "es" : "en";
+    var aud = rnLastAud || window.aogRightNowAudience || "adult";
+    var box = document.getElementById("rnFollowup"); if (!box) return;
+    var order = { small: 0, wave: 1, big: 2, over: 3 };
+    var lab = (RN_COPY[aud] && RN_COPY[aud][L] && RN_COPY[aud][L].opts["4"]) || RN_COPY.adult.en.opts["4"];
+    var before = rnFirstSize || "over"; var bi = order[before], ni = order[now];
+    var improved = ni < bi, lowNow = ni <= 1;
+    var arrow = improved ? " ↓" : (ni > bi ? " ↑" : "");
+    var shift = "<div class=\"rn-shift\">" + RN_FB.cameIn[L] + " <b>" + lab[before] + "</b> &nbsp;→&nbsp; " + RN_FB.nowLbl[L] + " <b>" + lab[now] + "</b>" + arrow + "</div>";
+    if (improved || lowNow) {
+      box.innerHTML = shift + "<div class=\"rn-fb-resp\">" + rnPickFb(improved ? RN_FB.yes : RN_FB.postOk, aud, L) + "</div>" + rnReturnButtons(L);
+    } else {
+      rnNoRounds++;
+      if (rnNoRounds >= 2) {
+        box.innerHTML = shift + "<div class=\"rn-fb-resp\">" + rnPickFb(RN_FB.no2, aud, L) + "</div>";
+      } else {
+        var alt = (RN_EXTRA[rnLastRoute] && RN_EXTRA[rnLastRoute].altKey) || "grounding";
+        box.innerHTML = shift +
+          "<div class=\"rn-fb-resp\">" + rnPickFb(RN_FB.no1, aud, L) + "</div>" +
+          "<div class=\"rn-tools\"><button type=\"button\" class=\"rn-tool-btn\" onclick=\"if(window.toolOpen){window.toolOpen('" + alt + "');}\">" + RN_TOOL_LABEL[alt][L] + "</button></div>" +
+          "<div class=\"rn-fb-q\">" + rnPickFb(RN_FB.again, aud, L) + "</div>" +
+          "<div class=\"rn-fb-btns\">" + rnPostPills(aud, L) + "</div>";
+      }
+    }
+    rnFade(box);
+    try { box.scrollIntoView({ behavior: "smooth", block: "center" }); } catch (e) {}
+  };
+
+  window.aogRnReturn = function () {
+    var es = (typeof lang !== "undefined" && lang === "es"); var L = es ? "es" : "en";
+    var aud = rnLastAud || "adult";
+    var box = document.getElementById("rnFollowup"); if (!box) return;
+    box.innerHTML = "<div class=\"rn-fb-resp\">" + rnPickFb(RN_FB.sendoff, aud, L) + "</div>" +
+      "<div class=\"rn-fb-btns\"><button type=\"button\" class=\"rn-deeper-btn\" onclick=\"aogRnReset(true)\">" + RN_FB.freshLabel[L] + "</button></div>";
+    rnFade(box);
+  };
+
+  window.aogRnStay = function () {
+    var es = (typeof lang !== "undefined" && lang === "es"); var L = es ? "es" : "en";
+    var aud = rnLastAud || "adult";
+    var box = document.getElementById("rnFollowup"); if (!box) return;
+    var routeTool = (RN_EXTRA[rnLastRoute] && RN_EXTRA[rnLastRoute].toolKey) || "breathing";
+    var alt = (RN_EXTRA[rnLastRoute] && RN_EXTRA[rnLastRoute].altKey) || (routeTool === "grounding" ? "breathing" : "grounding");
+    box.innerHTML = "<div class=\"rn-fb-resp\">" + rnPickFb(RN_FB.stayMsg, aud, L) + "</div>" +
+      "<div class=\"rn-tools\">" +
+        "<button type=\"button\" class=\"rn-tool-btn\" onclick=\"if(window.toolOpen){window.toolOpen('" + routeTool + "');}\">" + RN_TOOL_LABEL[routeTool][L] + "</button>" +
+        "<button type=\"button\" class=\"rn-tool-btn\" onclick=\"if(window.toolOpen){window.toolOpen('" + alt + "');}\">" + RN_TOOL_LABEL[alt][L] + "</button>" +
+      "</div>" +
+      "<div class=\"rn-fb-q\">" + rnPickFb(RN_FB.again, aud, L) + "</div>" +
+      "<div class=\"rn-fb-btns\">" + rnPostPills(aud, L) + "</div>";
+    rnFade(box);
+  };
+
+  /* auto-reset so the next student starts fresh and private */
+  window.aogRnReset = function (doScroll) {
+    picks = {}; rnNoRounds = 0; rnFirstSize = null; rnLastRoute = null;
+    document.querySelectorAll("#" + ROOT + " .tk-pill.on").forEach(function (p) { p.classList.remove("on"); p.setAttribute("aria-checked", "false"); });
+    var box = document.getElementById(ROOT + "Result"); if (box) { box.hidden = true; box.innerHTML = ""; }
+    if (doScroll) { var root = document.getElementById(ROOT); if (root) { try { root.scrollIntoView({ behavior: "smooth", block: "start" }); } catch (e) {} } }
+  };
+
+  window.aogRenderRightNow = function () {
+    var root = document.getElementById(ROOT);
+    if (!root) return;
+    var aud = window.aogRightNowAudience || "adult";
+    if (!RN_COPY[aud]) aud = "adult";
+    var L = (typeof lang !== "undefined" && lang === "es") ? "es" : "en";
+    var c = RN_COPY[aud][L];
+    var sub = document.querySelector("#rightNowWrap .hero-tank-sub"); if (sub) sub.textContent = c.sub;
+    var ey = root.querySelector(".ey"); if (ey) ey.textContent = c.ey;
+    var h = root.querySelector(".wp-tank-head h2"); if (h) h.textContent = c.h;
+    var intro = root.querySelector(".rn-intro"); if (intro) intro.textContent = c.intro;
+    ["q1", "q2", "q3", "q4"].forEach(function (qid) {
+      var el = root.querySelector(".tk-q[data-qid=\"" + qid + "\"]"); if (el) el.textContent = c[qid];
+    });
+    root.querySelectorAll(".tk-pill").forEach(function (pill) {
+      var q = pill.dataset.q, st = pill.dataset.state;
+      if (c.opts[q] && c.opts[q][st] != null) pill.textContent = c.opts[q][st];
+    });
+    var btn = document.querySelector("#rightNowBtn span:first-child"); if (btn) btn.textContent = c.btn;
+    document.querySelectorAll("#rnAgesToggle .ages-btn").forEach(function (b) {
+      var on = b.getAttribute("data-raud") === aud;
+      b.classList.toggle("active", on); b.setAttribute("aria-pressed", on ? "true" : "false");
+    });
+    var pv = document.querySelector("#rightNowWrap .rn-privacy span"); if (pv) pv.textContent = RN_PRIV[L];
+    var nav = document.getElementById("rnNavLabel"); if (nav) nav.textContent = RN_NAV[L];
+    var tSum = document.querySelector("#rnTeacher .rn-teacher-sum"); if (tSum) tSum.textContent = RN_TEACHER[L].sum;
+    var tBody = document.querySelector("#rnTeacher .rn-teacher-body"); if (tBody) tBody.textContent = RN_TEACHER[L].body;
+    var tt = document.getElementById("rnTeacherTools");
+    if (tt) {
+      var _e = (L === "es");
+      function _tb(key, label) { return "<button type=\"button\" onclick=\"if(window.toolOpen){window.toolOpen('" + key + "');}\">" + label + "</button>"; }
+      tt.innerHTML =
+        _tb("classreset", _e ? "Reinicio de clase" : "Whole-class reset") +
+        _tb("coreg", _e ? "Co-regulación" : "Co-regulation script") +
+        _tb("innercoach", _e ? "Guía interior" : "Inner Coach") +
+        _tb("makeitright", _e ? "Reparar" : "Make it right");
+    }
+  };
+
+  window.aogSetRightNowAudience = function (a) {
+    if (!RN_COPY[a]) a = "adult";
+    window.aogRightNowAudience = a;
+    try { localStorage.setItem("aog.rightnow.audience", a); } catch (e) {}
+    window.aogRenderRightNow();
+  };
+
+  function init() {
+    if (!document.getElementById(ROOT)) return;
+    try { window.aogRightNowAudience = localStorage.getItem("aog.rightnow.audience") || "adult"; }
+    catch (e) { window.aogRightNowAudience = "adult"; }
+    if (!RN_COPY[window.aogRightNowAudience]) window.aogRightNowAudience = "adult";
+    document.querySelectorAll("#" + ROOT + " .tk-pill").forEach(function (pill) {
+      var q = pill.dataset.q, st = pill.dataset.state;
+      pill.addEventListener("click", function () { setPick(q, st, pill); });
+      pill.addEventListener("keydown", function (ev) {
+        if (ev.key === "Enter" || ev.key === " ") { ev.preventDefault(); setPick(q, st, pill); }
+      });
+    });
+    var btn = document.getElementById(ROOT + "Btn");
+    if (btn) btn.addEventListener("click", show);
+    window.aogRenderRightNow();
+  }
+
+  if (document.readyState !== "loading") { init(); }
+  else { window.addEventListener("load", init); }
+})();
+</script>
+<style>
+  .cr-stage{ display:flex; justify-content:center; align-items:center; height:160px; margin:6px 0 2px; }
+  .cr-orb{ width:120px; height:120px; border-radius:50%; background:radial-gradient(circle at 50% 38%, var(--gold-soft,#F2C964), var(--gold,#D9A33B)); transform:scale(0.55); box-shadow:0 0 0 10px rgba(242,201,100,.14); }
+  .cr-cue{ text-align:center; font-family:var(--font-sans); font-size:16px; font-weight:700; color:var(--navy); min-height:22px; margin-bottom:6px; }
+  .cr-round{ text-align:center; font-family:var(--font-sans); font-size:12px; font-weight:700; letter-spacing:.04em; color:var(--gold-deep,#9a6f24); min-height:16px; margin-bottom:8px; }
+  :root[data-theme="dark"] .cr-cue{ color:var(--cream); }
+  .ic-lines{ display:flex; flex-direction:column; gap:8px; margin:8px 0; }
+  .ic-line{ text-align:left; font-family:var(--font-sans); font-size:15px; font-weight:600; color:var(--navy); background:rgba(0,0,0,.03); border:1px solid var(--rule,#E6DCC4); border-radius:12px; padding:12px 14px; cursor:pointer; }
+  .ic-line:hover{ border-color:var(--gold); }
+  .ic-line.sel{ border-color:var(--gold); background:var(--cream,#FBF7EC); box-shadow:inset 0 0 0 1px var(--gold); }
+  :root[data-theme="dark"] .ic-line{ color:var(--cream); background:rgba(255,255,255,.05); }
+  .ic-coach{ margin-top:10px; padding:13px 15px; border-radius:12px; background:var(--cream,#FBF7EC); border-left:3px solid var(--gold); }
+  .ic-coach[hidden]{ display:none; }
+  .ic-coach-h{ font-family:var(--font-sans); font-size:12px; font-weight:800; letter-spacing:.04em; text-transform:uppercase; color:var(--gold-deep,#9a6f24); margin-bottom:5px; }
+  .ic-coach p{ font-family:var(--font-sans); font-size:15px; line-height:1.55; color:var(--ink); margin:0; }
+  .mr-steps{ list-style:none; counter-reset:mr; margin:8px 0 4px; padding:0; text-align:left; }
+  .mr-steps li{ position:relative; padding:10px 0 10px 34px; font-family:var(--font-sans); font-size:14.5px; line-height:1.5; color:var(--ink); border-top:1px solid var(--rule,#E6DCC4); }
+  .mr-steps li:first-child{ border-top:none; }
+  .mr-steps li::before{ counter-increment:mr; content:counter(mr); position:absolute; left:0; top:9px; width:22px; height:22px; border-radius:50%; background:var(--gold); color:var(--navy); font-weight:800; font-size:12px; display:flex; align-items:center; justify-content:center; }
+  .mr-steps b{ color:var(--navy); }
+  :root[data-theme="dark"] .mr-steps b{ color:var(--cream); }
+  .tc-crumbs{ margin-top:16px; padding-top:12px; border-top:1px dashed var(--rule,#E6DCC4); display:flex; flex-direction:column; gap:7px; text-align:left; }
+  .tc-crumbs-h{ font-family:var(--font-sans); font-size:11px; font-weight:800; letter-spacing:.06em; text-transform:uppercase; color:var(--gold-deep,#9a6f24); }
+  .tc-crumb{ text-align:left; font-family:var(--font-sans); font-size:13.5px; font-weight:700; color:var(--navy); background:transparent; border:1px solid var(--rule,#E6DCC4); border-radius:999px; padding:9px 14px; cursor:pointer; }
+  .tc-crumb:hover{ border-color:var(--gold); }
+  :root[data-theme="dark"] .tc-crumb{ color:var(--cream); }
+</style>
+<script>
+/* ===================================================================
+   IN-THE-MOMENT CLASS TOOLS — Whole-Class Reset & Co-Regulation
+   (teacher), Inner Coach & Make It Right (student). Each ends with paid
+   breadcrumbs: the lesson (Resource Index) + a free novel chapter.
+   Registered into window.TOOLS so toolOpen() opens them anywhere.
+   =================================================================== */
+(function () {
+  function L(en, es) { return (typeof lang !== "undefined" && lang === "es") ? es : en; }
+
+  window.aogToolBreadcrumb = function (kind, query) {
+    try {
+      var m = document.getElementById("toolModal");
+      if (m) { if (typeof window.toolClose === "function") { window.toolClose(); } else { m.classList.remove("open"); } }
+    } catch (e) {}
+    setTimeout(function () {
+      if (kind === "lesson" && window.aogGoConstruct) { window.aogGoConstruct(query || ""); }
+      else if (window.aogGoLibrary) { window.aogGoLibrary(); }
+    }, 90);
+  };
+  function crumbs(query, novelPath, novelTitle) {
+    var novel = novelPath
+      ? '<a class="tc-crumb" href="' + novelPath + '" target="_blank" rel="noopener">' + L("See it in the story", "Vélo en la historia") + ' — “' + novelTitle + '” →</a>'
+      : '<button type="button" class="tc-crumb" onclick="aogToolBreadcrumb(\'novel\')">' + L("See it in the story — read a chapter free", "Vélo en la historia — lee un capítulo gratis") + ' →</button>';
+    return '<div class="tc-crumbs">' +
+      '<div class="tc-crumbs-h">' + L("Go further", "Profundiza") + '</div>' +
+      '<button type="button" class="tc-crumb" onclick="aogToolBreadcrumb(\'lesson\',\'' + query + '\')">' + L("Teach it — the lesson", "Enséñalo — la lección") + ' →</button>' +
+      novel +
+      '</div>';
+  }
+
+  /* ---- Whole-Class Reset (teacher, projectable) ---- */
+  function buildClassReset() {
+    return '<div class="tool-modal-icon">🌬️</div>' +
+      '<div class="tool-modal-title">' + L("Whole-Class Reset", "Reinicio de toda la clase") + '</div>' +
+      '<div class="tool-modal-sub">' + L("Project this. Everyone breathes together for one minute — after recess, before a test, or when the room needs to land.", "Proyéctalo. Todos respiran juntos por un minuto — después del recreo, antes de un examen, o cuando el salón necesita calmarse.") + '</div>' +
+      '<div class="cr-stage"><div class="cr-orb" id="crOrb"></div></div>' +
+      '<div class="cr-cue" id="crCue" aria-live="polite">' + L("Press start. Eyes on the circle, or closed.", "Pulsa empezar. Mira el círculo, o cierra los ojos.") + '</div>' +
+      '<div class="cr-round" id="crRound" aria-live="polite"></div>' +
+      '<div class="aogt-controls"><button class="btn" id="crStart" style="background:var(--gold);border-color:var(--gold);color:var(--navy);">' + L("Start — together", "Empezar — juntos") + '</button></div>' +
+      crumbs("window of tolerance", "previews/Story-B1-Ch9.pdf", L("Carrying Too Much", "Cargando demasiado"));
+  }
+  function initClassReset() {
+    var orb = document.getElementById("crOrb"), cue = document.getElementById("crCue"), btn = document.getElementById("crStart"), round = document.getElementById("crRound");
+    if (!orb || !btn) return;
+    var IN = L("Breathe in…", "Inhala…"), HOLD = L("Hold", "Sostén"), OUT = L("Breathe out…", "Exhala…"), DONE = L("Nice. Welcome back, everyone.", "Bien. Bienvenidos de vuelta.");
+    var reduce = false; try { reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion:reduce)").matches; } catch (e) {}
+    btn.onclick = function () {
+      btn.disabled = true; btn.textContent = L("Breathing…", "Respirando…");
+      var seq = [], i;
+      for (i = 0; i < 5; i++) { seq.push([IN, 1, 4000]); seq.push([HOLD, 1, 2000]); seq.push([OUT, 0.55, 6000]); }
+      seq.push([DONE, 0.75, 0]);
+      (function run(idx) {
+        if (idx >= seq.length) { btn.disabled = false; btn.textContent = L("Again", "Otra vez"); if (round) round.textContent = ""; return; }
+        var s = seq[idx];
+        if (round && idx < 15 && idx % 3 === 0) { round.textContent = L("Round ", "Ronda ") + (idx / 3 + 1) + L(" of 5", " de 5"); }
+        cue.textContent = s[0];
+        orb.style.transition = "transform " + (reduce ? 0 : s[2] / 1000) + "s ease-in-out";
+        orb.style.transform = "scale(" + s[1] + ")";
+        setTimeout(function () { run(idx + 1); }, s[2]);
+      })(0);
+    };
+  }
+
+  /* ---- Inner Coach in the Moment (student, Domain B) ---- */
+  var IC_LINES = [
+    { c: L("“I'm so stupid.”", "“Soy tan tonto/a.”"), k: L("You made a mistake — that's being human, not being stupid. What would you say to a friend who said that about themselves?", "Cometiste un error — eso es ser humano, no ser tonto/a. ¿Qué le dirías a un amigo que dijera eso de sí mismo?") },
+    { c: L("“I always mess everything up.”", "“Siempre arruino todo.”"), k: L("Always? Your Coach checks the facts. One hard moment isn't every moment. Name one thing you handled okay today.", "¿Siempre? Tu Guía revisa los hechos. Un momento difícil no es todos los momentos. Nombra una cosa que hiciste bien hoy.") },
+    { c: L("“Nobody likes me.”", "“Nadie me quiere.”"), k: L("That's the feeling talking, not the whole truth. Name one person who's glad you exist — even one counts.", "Eso es el sentimiento hablando, no toda la verdad. Nombra a una persona que se alegra de que existas — una basta.") },
+    { c: L("“I can't do this.”", "“No puedo con esto.”"), k: L("Not yet — that's different from never. What's the smallest next step you CAN take?", "Todavía no — eso es distinto de nunca. ¿Cuál es el paso más pequeño que SÍ puedes dar?") }
+  ];
+  function buildInnerCoach() {
+    var picks = IC_LINES.map(function (o, i) {
+      return '<button type="button" class="ic-line" onclick="aogIcReveal(this,' + i + ')">' + o.c + '</button>';
+    }).join("");
+    return '<div class="tool-modal-icon">🧭</div>' +
+      '<div class="tool-modal-title">' + L("Your Inner Coach", "Tu Guía Interior") + '</div>' +
+      '<div class="tool-modal-sub">' + L("The loud voice in your head isn't the truth — it's just loud. Tap what it's saying, and hear your Coach answer it.", "La voz fuerte en tu cabeza no es la verdad — solo es fuerte. Toca lo que dice y escucha a tu Guía responder.") + '</div>' +
+      '<div class="ic-lines">' + picks + '</div>' +
+      '<div class="ic-coach" id="icCoach" hidden></div>' +
+      crumbs("inner critic", "previews/Story-B2-Ch4.pdf", L("My Inner Critic vs. My Inner Coach", "Mi Crítica vs. mi Guía Interior"));
+  }
+  window.aogIcReveal = function (el, i) {
+    var box = document.getElementById("icCoach"); if (!box) return;
+    var o = IC_LINES[i]; if (!o) return;
+    try {
+      var lines = document.querySelectorAll(".ic-lines .ic-line");
+      for (var j = 0; j < lines.length; j++) { lines[j].classList.remove("sel"); }
+      if (el && el.classList) { el.classList.add("sel"); }
+    } catch (e) {}
+    box.hidden = false;
+    box.innerHTML = '<div class="ic-coach-h">' + L("Your Coach says…", "Tu Guía dice…") + '</div><p>' + o.k + '</p>';
+    try { box.scrollIntoView({ behavior: "smooth", block: "nearest" }); } catch (e) {}
+  };
+  function initInnerCoach() {}
+
+  /* ---- Make It Right (student, Domain C — repair) ---- */
+  function buildMakeRight() {
+    return '<div class="tool-modal-icon">🤝</div>' +
+      '<div class="tool-modal-title">' + L("Make It Right", "Reparar") + '</div>' +
+      '<div class="tool-modal-sub">' + L("Hurt someone — even by accident? Repair is a skill, not a punishment. You don't have to be perfect, just honest. Four steps:", "¿Lastimaste a alguien — incluso sin querer? Reparar es una habilidad, no un castigo. No tienes que ser perfecto/a, solo honesto/a. Cuatro pasos:") + '</div>' +
+      '<ol class="mr-steps">' +
+        '<li><b>' + L("Own it.", "Recónocelo.") + '</b> ' + L("“I'm sorry I ___.” Name the thing, no excuses.", "“Perdón por ___.” Nombra la acción, sin excusas.") + '</li>' +
+        '<li><b>' + L("Name the impact.", "Nombra el impacto.") + '</b> ' + L("“That probably made you feel ___.”", "“Eso probablemente te hizo sentir ___.”") + '</li>' +
+        '<li><b>' + L("Make it right.", "Repáralo.") + '</b> ' + L("“To make it better, I could ___.” Ask what would help.", "“Para mejorarlo, podría ___.” Pregunta qué ayudaría.") + '</li>' +
+        '<li><b>' + L("Reset.", "Reinicia.") + '</b> ' + L("“Next time, I'll ___.” Then let it go — guilt is about what you did, not who you are.", "“La próxima vez, ___.” Luego suéltalo — la culpa es por lo que hiciste, no por quién eres.") + '</li>' +
+      '</ol>' +
+      crumbs("repair", "previews/Story-B2-Ch19.pdf", L("Repair That Actually Works", "Reparar de verdad"));
+  }
+  function initMakeRight() {}
+
+  /* ---- Co-Regulation cheat-card (teacher) — bilingual rewrite of the legacy English-only tool ---- */
+  function buildCoreg() {
+    return '<div class="tool-modal-icon">🧡</div>' +
+      '<div class="tool-modal-title">' + L("Co-Regulation Reminder", "Recordatorio de co-regulación") + '</div>' +
+      '<div class="tool-modal-sub" style="font-size:15px;line-height:1.7;text-align:left;margin-top:14px;">' +
+        '<p style="font-family:var(--font-serif);font-style:italic;font-size:18px;margin-bottom:14px;">' + L("Before you regulate the student, regulate yourself.", "Antes de regular al estudiante, regúlate tú.") + '</p>' +
+        '<p><strong>1. ' + L("Check your breath.", "Revisa tu respiración.") + '</strong> ' + L("Take one slow breath right now, before you say anything.", "Toma una respiración lenta ahora, antes de decir nada.") + '</p>' +
+        '<p><strong>2. ' + L("Relax your jaw.", "Relaja la mandíbula.") + '</strong> ' + L("Most people don’t notice they’ve been clenching. Drop it.", "La mayoría no nota que la aprieta. Suéltala.") + '</p>' +
+        '<p><strong>3. ' + L("Lower your shoulders.", "Baja los hombros.") + '</strong> ' + L("They’ve crept up. Let them fall.", "Se subieron. Déjalos caer.") + '</p>' +
+        '<p><strong>4. ' + L("Soften your voice.", "Suaviza la voz.") + '</strong> ' + L("One full tone quieter than you think you need.", "Un tono más bajo de lo que crees necesitar.") + '</p>' +
+        '<p><strong>5. ' + L("Check your face.", "Revisa tu cara.") + '</strong> ' + L("A neutral or warm expression signals safety to a dysregulated nervous system.", "Una expresión neutral o cálida le señala seguridad a un sistema nervioso alterado.") + '</p>' +
+        '<p style="font-family:var(--font-serif);font-style:italic;font-size:16px;margin-top:18px;color:var(--gold-deep,#9a6f24);">' + L("Your calm is the intervention. Everything else is secondary.", "Tu calma es la intervención. Todo lo demás es secundario.") + '</p>' +
+      '</div>' +
+      crumbs("window of tolerance", "previews/Story-B1-Ch9.pdf", L("Carrying Too Much", "Cargando demasiado"));
+  }
+
+  function register() {
+    if (!window.TOOLS) return;
+    window.TOOLS.classreset  = { builder: buildClassReset, init: initClassReset };
+    window.TOOLS.innercoach  = { builder: buildInnerCoach, init: initInnerCoach };
+    window.TOOLS.makeitright = { builder: buildMakeRight,  init: initMakeRight };
+    window.TOOLS.coreg       = { builder: buildCoreg,       init: function () {} };
+  }
+  if (window.TOOLS) { register(); } else { window.addEventListener("load", register); }
+})();
 </script>
 <script>
 /* ===================================================================
@@ -21616,7 +22692,7 @@ window.addEventListener('load', _installToolScreenHook);
     var orig = window.showScreen;
     window.showScreen = function (id) {
       var r = orig.apply(this, arguments);
-      if (id === 'screen-teacher-tools') { try { window.graceAdultGrounding(false); } catch (e) {} setTimeout(upgradeToolIcons, 50); }
+      if (id === 'screen-teacher-tools') { setTimeout(upgradeToolIcons, 50); }
       if (id === 'screen-pecs') { setTimeout(gPecsRenderAll, 160); }
       return r;
     };
@@ -22362,7 +23438,7 @@ window.addEventListener('load', _installToolScreenHook);
     el.className = "aog-grace-word";
     el.innerHTML =
       '<button class="agw-cog" type="button" aria-haspopup="true" aria-label="' + t("Personalize", "Personalizar") + '" title="' + t("Personalize", "Personalizar") + '" data-aog-open-pz="1">'
-        + '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="4" y1="8" x2="20" y2="8"/><circle cx="9" cy="8" r="2.4"/><line x1="4" y1="16" x2="20" y2="16"/><circle cx="15" cy="16" r="2.4"/></svg>'
+        + '<svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="4" y1="8" x2="20" y2="8"/><circle cx="9" cy="8" r="2.4"/><line x1="4" y1="16" x2="20" y2="16"/><circle cx="15" cy="16" r="2.4"/></svg>'
       + '</button>'
       + '<span class="agw-dot" aria-hidden="true"></span>'
       + '<span class="agw-eyebrow">' + t("A word of grace today", "Una palabra de gracia hoy") + '</span>'
@@ -22848,6 +23924,7 @@ window.addEventListener('load', _installToolScreenHook);
       if (w && r.window !== w) return false;
       if (g && String(r.grade) !== String(g)) return false;
       if (tr === "flagged") { if (!r.trustedAdultFlag) return false; }
+      else if (tr === "unsafe") { if (!r.unsafeFlag) return false; }
       else if (tr) { if (r.tier !== tr) return false; }
       return true;
     });
@@ -22879,6 +23956,7 @@ window.addEventListener('load', _installToolScreenHook);
       h += '<div class="rost-det-refl rost-muted">' + t("Quick check-in — no written reflections.", "Chequeo rápido — sin reflexiones escritas.") + '</div>';
     }
     if (r.trustedAdultFlag) h += '<div class="rost-det-flag">⚑ ' + t("This person named no trusted adult — a good place to start a conversation.", "Esta persona no nombró a un adulto de confianza — un buen punto de partida.") + '</div>';
+    if (r.unsafeFlag) h += '<div class="rost-det-flag">⚑ ' + t("This person indicated they may not protect themselves from someone unsafe — worth a gentle, direct check-in.", "Esta persona indicó que tal vez no se protege de alguien que no es seguro — vale la pena un acercamiento amable y directo.") + '</div>';
     return h + '</div>';
   }
   function aogRenderRoster() {
@@ -22897,7 +23975,10 @@ window.addEventListener('load', _installToolScreenHook);
       var b = rBand(r), code = (r.studentId && String(r.studentId).trim()) || t("(no code)", "(sin código)");
       var dt = "—"; try { dt = new Date(r.timestamp).toLocaleDateString(L() === "es" ? "es" : "en", { month: "short", day: "numeric", year: "numeric" }); } catch (e) {}
       var sc = r.normComposite != null ? Math.round(r.normComposite) : "—";
-      var trust = r.trustedAdultFlag ? '<span class="rost-flag">⚑ ' + t("No trusted adult", "Sin adulto") + '</span>' : '<span class="rost-ok">—</span>';
+      var _flags = [];
+      if (r.trustedAdultFlag) _flags.push('<span class="rost-flag">⚑ ' + t("No trusted adult", "Sin adulto") + '</span>');
+      if (r.unsafeFlag) _flags.push('<span class="rost-flag">⚑ ' + t("May not self-protect", "Puede no protegerse") + '</span>');
+      var trust = _flags.length ? _flags.join('<br>') : '<span class="rost-ok">—</span>';
       rows += '<tr class="rost-row" data-i="' + i + '">'
         + '<td class="rost-code">' + escH(code) + '</td>'
         + '<td>' + escH(r.grade || "—") + '</td>'
@@ -23295,13 +24376,13 @@ window.addEventListener('load', _installToolScreenHook);
   function cwBuilder() {
     return '<div class="tool-modal-icon">💧</div>'
       + '<div class="tool-modal-title">' + t("Cold Water Reset", "Reinicio con agua fría") + '</div>'
-      + '<div class="tool-modal-sub">' + t("Cold water on your wrists or face wakes up the body's own calm-down signal.", "El agua fría en las muñecas o la cara activa la señal de calma del cuerpo.") + '</div>'
+      + '<div class="tool-modal-sub">' + t("Cold on your skin flips your body’s calm-down switch (the vagus nerve). A cold water bottle works great — no sink needed.", "El frío en la piel activa el interruptor de calma del cuerpo (el nervio vago). Una botella de agua fría funciona muy bien — sin lavabo.") + '</div>'
       + '<div class="aogt-wrap"><div class="cw-stage" id="cwStage">' + CW_SVG + '</div>'
-      + '<div class="aogt-cue" id="cwCue">' + t("Press start, then hold your wrists under cool water.", "Pulsa empezar y pon las muñecas bajo agua fresca.") + '</div>'
+      + '<div class="aogt-cue" id="cwCue">' + t("Press start, then press your cold bottle to your wrists or neck — or take a slow, cold sip.", "Pulsa empezar y presiona tu botella fría en las muñecas o el cuello — o toma un sorbo lento y frío.") + '</div>'
       + '<div class="aogt-progress" id="cwCount"></div>'
-      + '<div class="aogt-controls"><button class="btn" id="cwStart" style="background:var(--gold);color:var(--navy);">' + t("Turn on the cold water", "Abrir el agua fría") + '</button></div>'
-      + '<div class="cw-opts"><b>' + t("No sink nearby?", "¿No hay lavabo?") + '</b> '
-      + t("Splash your face 3 times, or hold a cold bottle to the back of your neck or wrists. Exhale with each one.", "Salpica tu cara 3 veces, o sostén una botella fría en la nuca o las muñecas. Exhala con cada una.") + '</div></div>';
+      + '<div class="aogt-controls"><button class="btn" id="cwStart" style="background:var(--gold);color:var(--navy);">' + t("Start", "Empezar") + '</button></div>'
+      + '<div class="cw-opts"><b>' + t("At your desk:", "En tu escritorio:") + '</b> '
+      + t("Hold your cold water bottle to your wrists, the back of your neck, or your cheeks for 20–30 seconds — or take slow, cold sips. Breathe out each time. <b>Near a sink?</b> Cool water over your wrists, or splash your face 3 times.", "Sostén tu botella de agua fría en las muñecas, la nuca o las mejillas por 20–30 segundos — o toma sorbos lentos y fríos. Exhala cada vez. <b>¿Cerca de un lavabo?</b> Agua fresca sobre las muñecas, o salpica tu cara 3 veces.") + '</div></div>';
   }
   function cwInit() {
     clearTimers();
@@ -23315,14 +24396,14 @@ window.addEventListener('load', _installToolScreenHook);
     btn.onclick = function () {
       clearTimers();
       if (stage) stage.classList.add("flowing");
-      btn.disabled = true; btn.textContent = t("Flowing…", "Fluyendo…");
+      btn.disabled = true; btn.textContent = t("Holding…", "Sosteniendo…");
       var total = reduce() ? 12 : 30, left = total;
       function tick() {
         if (cnt) cnt.textContent = left + "s";
         if (cue && (total - left) % 7 === 0) { cue.style.opacity = 0; (function (c) { after(function () { cue.textContent = c; cue.style.opacity = 1; }, 160); })(cues[((total - left) / 7) % cues.length | 0]); }
         if (left <= 0) {
           if (stage) stage.classList.remove("flowing");
-          if (cue) cue.textContent = t("Off. Notice — a little calmer? That's biology, not willpower. 💧", "Cierra. ¿Un poco más en calma? Es biología, no fuerza de voluntad. 💧");
+          if (cue) cue.textContent = t("Done. Notice — a little calmer? That's biology, not willpower. 💧", "Listo. ¿Un poco más en calma? Es biología, no fuerza de voluntad. 💧");
           if (cnt) cnt.textContent = "";
           btn.disabled = false; btn.textContent = t("Again", "Otra vez");
           return;
@@ -24038,24 +25119,24 @@ window.addEventListener('load', _installToolScreenHook);
      let the adult curate them, and generate a child-specific link/QR that opens a
      focused tools page. Self-contained; reuses toolOpen / showScreen / ensureQrLib. ===== -->
 <style>
-.aog-tm{ margin-top:18px; border:1px solid var(--rule); border-left:3px solid var(--gold); border-radius:12px; background:#FBF7EC; padding:18px 20px; }
+.aog-tm{ margin-top:22px; border:1px solid var(--rule); border-left:4px solid var(--gold); border-radius:12px; background:#FBF7EC; padding:22px 24px; }
 :root[data-theme="dark"] .aog-tm{ background:#0E1822; }
-.aog-tm h4{ margin:0 0 4px; font-family:var(--font-serif); font-size:18px; color:var(--navy); }
-.aog-tm .aog-tm-sub{ font-size:13px; color:var(--ink-soft); line-height:1.55; margin:0 0 14px; }
-.aog-tm-grid{ display:grid; grid-template-columns:repeat(auto-fill,minmax(210px,1fr)); gap:10px; }
-.aog-tm-ghead{ grid-column:1 / -1; font-size:11px; font-weight:800; letter-spacing:.1em; text-transform:uppercase; color:var(--gold-deep,#9a6f24); margin:10px 0 -2px; padding-bottom:5px; border-bottom:1px solid var(--rule); }
+.aog-tm h4{ margin:0 0 6px; font-family:var(--font-serif); font-size:20px; color:var(--navy); }
+.aog-tm .aog-tm-sub{ font-size:13.5px; color:var(--ink-soft); line-height:1.6; margin:0 0 18px; padding-bottom:14px; border-bottom:1px solid var(--rule); }
+.aog-tm-grid{ display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:14px; }
+.aog-tm-ghead{ grid-column:1 / -1; font-size:11.5px; font-weight:800; letter-spacing:.1em; text-transform:uppercase; color:var(--gold-deep,#9a6f24); margin:18px 0 2px; padding-bottom:7px; border-bottom:1px solid var(--rule); }
 .aog-tm-ghead:first-child{ margin-top:0; }
-.aog-tm-item{ display:flex; align-items:flex-start; gap:10px; border:1px solid var(--rule); border-radius:10px; background:var(--cream,#fff); padding:10px 12px; }
+.aog-tm-item{ display:flex; align-items:flex-start; gap:12px; border:1px solid var(--rule); border-radius:10px; background:var(--cream,#fff); padding:13px 14px; }
 :root[data-theme="dark"] .aog-tm-item{ background:#0B131C; }
 .aog-tm-item.sel{ border-color:var(--gold); box-shadow:0 0 0 1px var(--gold) inset; }
 .aog-tm-item input{ margin-top:3px; flex:0 0 auto; width:16px; height:16px; accent-color:var(--gold-deep,#9a6f24); }
 .aog-tm-ic{ font-size:20px; line-height:1.1; }
 .aog-tm-tx{ flex:1 1 auto; min-width:0; }
-.aog-tm-tt{ display:block; font-weight:700; color:var(--navy); font-size:13.5px; line-height:1.25; }
-.aog-tm-ds{ display:block; margin-top:2px; font-size:11.5px; color:var(--ink-faint); line-height:1.4; }
+.aog-tm-tt{ display:block; font-weight:700; color:var(--navy); font-size:14.5px; line-height:1.3; }
+.aog-tm-ds{ display:block; margin-top:3px; font-size:12.5px; color:var(--ink-faint); line-height:1.45; }
 .aog-tm-dm{ display:block; margin-top:5px; font-size:10px; font-weight:700; letter-spacing:.04em; text-transform:uppercase; color:var(--gold-deep,#9a6f24); }
 .aog-tm-prev{ flex:0 0 auto; align-self:flex-start; white-space:nowrap; background:none; border:none; color:var(--navy); font-size:11px; font-weight:800; cursor:pointer; padding:2px 0 2px 4px; text-decoration:underline; }
-.aog-tm-actions{ display:flex; gap:12px; align-items:center; flex-wrap:wrap; margin-top:16px; }
+.aog-tm-actions{ display:flex; gap:12px; align-items:center; flex-wrap:wrap; margin-top:20px; padding-top:16px; border-top:1px solid var(--rule); }
 .aog-tm-name{ display:flex; align-items:center; gap:7px; font-size:12.5px; color:var(--ink-soft); }
 .aog-tm-out{ margin-top:14px; }
 .aog-tm-linkrow{ display:flex; gap:8px; flex-wrap:wrap; align-items:center; }
@@ -24071,13 +25152,13 @@ window.addEventListener('load', _installToolScreenHook);
 .myt-fb button{ background:none; border:1px solid var(--rule); border-radius:999px; padding:3px 9px; font-size:15px; cursor:pointer; line-height:1; }
 .myt-fb button:hover{ border-color:var(--gold); background:#FBF1D6; }
 /* per-child sustain view */
-.aog-sustain{ margin-top:18px; border:1px solid var(--rule); border-radius:12px; background:var(--cream,#fff); padding:16px 18px; }
+.aog-sustain{ margin-top:22px; border:1px solid var(--rule); border-radius:12px; background:var(--cream,#fff); padding:20px 24px; }
 :root[data-theme="dark"] .aog-sustain{ background:#0B131C; }
-.aog-sustain h4{ margin:0 0 10px; font-family:var(--font-serif); font-size:17px; color:var(--navy); }
+.aog-sustain h4{ margin:0 0 12px; padding-bottom:12px; border-bottom:1px solid var(--rule); font-family:var(--font-serif); font-size:19px; color:var(--navy); }
 .aog-sus-note{ font-size:13px; color:var(--ink-soft); line-height:1.55; margin:0; }
-.aog-sus-tbl{ width:100%; border-collapse:collapse; font-size:13.5px; }
-.aog-sus-tbl th{ text-align:left; font-size:10.5px; letter-spacing:.06em; text-transform:uppercase; color:var(--ink-faint); padding:4px 8px; border-bottom:1px solid var(--rule); }
-.aog-sus-tbl td{ padding:7px 8px; border-bottom:1px solid var(--rule); color:var(--ink); }
+.aog-sus-tbl{ width:100%; border-collapse:collapse; font-size:14px; }
+.aog-sus-tbl th{ text-align:left; font-size:11px; letter-spacing:.06em; text-transform:uppercase; color:var(--ink-faint); padding:6px 10px; border-bottom:1px solid var(--rule); }
+.aog-sus-tbl td{ padding:11px 10px; border-bottom:1px solid var(--rule); color:var(--ink); }
 .aog-sus-tbl td:first-child{ font-weight:700; color:var(--navy); }
 .aog-sus-tbl .sus-up{ color:var(--green); font-weight:700; font-size:11.5px; }
 .aog-sus-tbl .sus-dn{ color:var(--red); font-weight:700; font-size:11.5px; }
