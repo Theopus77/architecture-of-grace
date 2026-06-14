@@ -18,14 +18,14 @@
 <meta property="og:title" content="Architecture of Grace · Universal Check-In">
 <meta property="og:description" content="Built by a teacher, for real classrooms. A private, de-identified check-in points each student to the next lesson — and tends to the grown-ups first. Grace over performance. A check-in, not an exam.">
 <meta property="og:url" content="https://architectureofgrace.org/"><!-- SWAP to your .com when live -->
-<meta property="og:image" content="https://architectureofgrace.org/og-image.png"><!-- SWAP to your .com when live -->
+<meta property="og:image" content="https://architectureofgrace.org/og-image.jpg"><!-- SWAP to your .com when live -->
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="Architecture of Grace — Universal Check-In">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Architecture of Grace · Universal Check-In">
 <meta name="twitter:description" content="Built by a teacher, for real classrooms — the SEL that starts with the grown-ups. Private and de-identified. A check-in, not an exam.">
-<meta name="twitter:image" content="https://architectureofgrace.org/og-image.png"><!-- SWAP to your .com when live -->
+<meta name="twitter:image" content="https://architectureofgrace.org/og-image.jpg"><!-- SWAP to your .com when live -->
 <link rel="icon" href="/favicon.ico" sizes="any">
 <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png">
@@ -5402,7 +5402,7 @@ function toggleTheme() {
       <div class="aoge-panel">
         <div class="aoge-ey">The whole picture</div>
         <h2 id="aogeH">The Architecture of Grace Ecosystem</h2>
-        <p class="aoge-intro">Architecture of Grace is more than an assessment or a curriculum. It is a connected ecosystem that helps students, families, educators, and independent adults move from awareness to reflection, conversation, practice, and growth &mdash; growth that feeds back into who we are.</p>
+        <p class="aoge-intro">Architecture of Grace is more than an assessment or a curriculum. It is a connected ecosystem that helps students, families, educators, and independent adults move from awareness to reflection, conversation, practice, and growth that feeds back into who they are.</p>
 
         <div class="aoge-flow" role="list" aria-label="The Architecture of Grace ecosystem, stage by stage">
           <div class="aoge-step" role="listitem"><span class="dot"></span><span class="tx"><span class="t">Framework</span><span class="d">Identity · Self-Compassion · Forgiveness · Grace</span></span></div>
@@ -6724,6 +6724,7 @@ function toggleTheme() {
          site root next to index.html. Swaps to the Spanish PDF when the dashboard
          is in ES; if JS fails, the href still serves the English PDF. -->
     <a class="btn btn-secondary btn-sm" href="AoG-Teacher-QuickStart.pdf" target="_blank" rel="noopener" onclick="return aogQsPrintable(this)" data-dl="qs_print">Download the one-pager (PDF) &#8599;</a>
+    <a class="btn btn-secondary btn-sm" href="AoG-Flyer.pdf" target="_blank" rel="noopener" data-dl="qs_flyer">Download the flyer (PDF) &#8599;</a>
   </div>
   <div id="aogIntroScript" class="aog-intro-script" hidden></div>
   <div class="qs-note">
@@ -8255,27 +8256,33 @@ function toggleTheme() {
         /* === Dashboard Domain Cards — warm premium shell. NOTE: domainCard() sets the
            left border / score / bar color inline by SCORE BAND (green/amber/red), which we
            keep as the "needs support" signal; the cream shell below adds the warmth. === */
+        /* === Dashboard Domain Cards — Warm Premium Treatment (score-band colors stay
+           via the inline style domainCard() sets; data-dom rules below are a fallback) === */
         .domain-card{ background:#FBF7EC; border:1px solid #EDE6D6; border-left:5px solid var(--gold);
           border-radius:16px; padding:24px 26px;
           box-shadow:0 6px 18px rgba(27,58,95,.09), inset 0 1px 0 rgba(255,255,255,.6);
-          transition:transform .18s var(--ease), box-shadow .18s var(--ease); }
+          transition:transform .18s var(--ease), box-shadow .18s var(--ease); margin-bottom:16px; }
         .domain-card:hover{ transform:translateY(-2px); box-shadow:0 12px 28px rgba(27,58,95,.12); }
-        .dom-pop{ border-radius:16px; }
-        .dom-pop .bar{ height:10px; margin:14px 0 16px; background:#EDE6D6; border-radius:999px; overflow:hidden; }
-        .dom-pop .bar-fill{ transition:width .7s cubic-bezier(.16,1,.3,1); }
-        .dom-pop .domain-card-score{ font-size:42px; font-weight:800; line-height:1; }
+        .domain-card[data-dom="A"], .domain-card.dom-pop[data-dom="A"]{ border-left-color:#3F6B91; }
+        .domain-card[data-dom="B"], .domain-card.dom-pop[data-dom="B"]{ border-left-color:#5F8A63; }
+        .domain-card[data-dom="C"], .domain-card.dom-pop[data-dom="C"]{ border-left-color:#9A6F4E; }
+        .domain-card.dom-pop{ border-radius:16px; }
+        .dom-pop .bar{ height:11px; margin:12px 0 14px; background:#EDE6D6; border-radius:999px; overflow:hidden; }
+        .dom-pop .bar-fill{ background:linear-gradient(90deg, var(--navy) 0%, var(--gold) 100%); transition:width .7s cubic-bezier(.16,1,.3,1); }
+        .dom-pop .domain-card-score{ font-size:40px; font-weight:800; line-height:1; }
         .dom-pop .domain-card-score span{ font-size:15px; font-weight:600; color:var(--ink-faint); }
         .domain-card-title{ font-family:var(--font-serif); font-size:20px; color:var(--navy); font-weight:600; margin-bottom:4px; }
         :root[data-theme="dark"] .domain-card{ background:#13212E; border-color:rgba(255,255,255,.08); box-shadow:0 6px 18px rgba(0,0,0,.3); }
         :root[data-theme="dark"] .domain-card-title{ color:var(--cream,#F4ECDA); }
-        /* === KPI Cards — warm premium treatment === */
+        :root[data-theme="dark"] .dom-pop .bar{ background:rgba(255,255,255,.1); }
+        /* === KPI Cards — Warm Premium Treatment === */
         .kpi{ background:#FBF7EC; border:1px solid #EDE6D6; border-radius:16px; padding:24px 26px;
           box-shadow:0 6px 18px rgba(27,58,95,.09), inset 0 1px 0 rgba(255,255,255,.6);
           transition:transform .18s var(--ease), box-shadow .18s var(--ease); position:relative; overflow:hidden; }
         .kpi:hover{ transform:translateY(-2px); box-shadow:0 12px 28px rgba(27,58,95,.12); }
         .kpi::before{ content:""; position:absolute; top:0; left:0; right:0; height:4px;
           background:linear-gradient(90deg, var(--gold-soft), var(--gold)); opacity:.9; }
-        .kpi-label{ font-size:11px; color:var(--ink-faint); text-transform:uppercase; letter-spacing:.1em; font-weight:700; margin-bottom:8px; }
+        .kpi-label{ font-size:11px; color:var(--ink-faint); text-transform:uppercase; letter-spacing:.1em; font-weight:600; margin-bottom:8px; }
         .kpi-value{ font-family:var(--font-serif); font-size:42px; font-weight:800; color:var(--navy); line-height:1.05; margin-bottom:4px; }
         .kpi-sub{ font-size:13px; color:var(--ink-soft); }
         :root[data-theme="dark"] .kpi{ background:#13212E; border-color:rgba(255,255,255,.08); box-shadow:0 6px 18px rgba(0,0,0,.3); }
