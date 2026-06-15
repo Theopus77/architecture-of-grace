@@ -1795,13 +1795,13 @@ a.ri-novel.ri-novel-link:hover .ri-open { opacity:1; }
 .lib-license{ display:inline-flex; align-items:center; gap:6px; padding:6px 14px; border-radius:7px; background:transparent; color:var(--navy); border:1.5px solid var(--navy); font-size:12.5px; font-weight:600; text-decoration:none; white-space:nowrap; }
 .lib-license:hover{ background:var(--navy); color:#fff; }
 .lib-actions{ display:flex; align-items:center; gap:8px; flex-wrap:wrap; justify-content:flex-end; }
-.lib-paths{ display:grid; grid-template-columns:1fr 1fr; gap:16px; margin:6px 0 22px; }
-@media (max-width:680px){ .lib-paths{ grid-template-columns:1fr; } }
-.lib-path{ border:1px solid var(--rule); border-radius:14px; padding:20px 22px; background:var(--cream); display:flex; flex-direction:column; }
+.lib-paths{ display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:16px; margin:6px 0 22px; }
+@media (max-width:680px){ .lib-paths{ grid-template-columns:minmax(0,1fr); } }
+.lib-path{ border:1px solid var(--rule); border-radius:14px; padding:20px 22px; background:var(--cream); display:flex; flex-direction:column; min-width:0; }
 .lib-path-ey{ font-size:10.5px; letter-spacing:.2em; text-transform:uppercase; font-weight:700; color:var(--gold); margin-bottom:4px; }
 .lib-path-t{ font-size:21px; color:var(--navy); margin:0 0 7px; line-height:1.1; }
 .lib-path-b{ font-size:13px; line-height:1.55; color:var(--ink-soft); margin:0 0 16px; flex:1; }
-.lib-path-btn{ display:inline-block; align-self:flex-start; padding:10px 18px; border-radius:8px; font-size:13.5px; font-weight:600; text-decoration:none; white-space:nowrap; }
+.lib-path-btn{ display:inline-block; align-self:flex-start; padding:10px 18px; border-radius:8px; font-size:13.5px; font-weight:600; text-decoration:none; }
 .lib-path-primary{ background:var(--navy); color:#fff; }
 .lib-path-primary:hover{ background:var(--navy-deep,#13283f); }
 .lib-path-gold{ background:var(--gold); color:#1a1a18; font-weight:700; }
@@ -3870,14 +3870,17 @@ function toggleTheme() {
 :root[data-theme="dark"] .topbar-store{color:var(--cream);background:rgba(242,201,100,.16);border-color:rgba(242,201,100,.40);}
 :root[data-theme="dark"] .topbar-store svg{color:var(--gold-soft);}
 :root[data-theme="dark"] .topbar-store:hover{background:var(--gold-soft);color:var(--navy);}
-@media (max-width:480px){.topbar-store span{display:none;} .topbar-store{padding:7px 9px;margin-right:8px;}}
+@media (max-width:480px){.topbar-store{padding:7px 10px;margin-right:8px;}}
 /* Check-In — the single PRIMARY (filled) action; everything else stays an outline/pale pill */
 .topbar-checkin{display:inline-flex;align-items:center;gap:6px;font-family:var(--font-sans);font-size:13px;font-weight:800;color:var(--cream,#FBF7EC);text-decoration:none;margin-right:14px;white-space:nowrap;cursor:pointer;padding:7px 16px;border:1px solid var(--navy);border-radius:999px;background:var(--navy);box-shadow:0 1px 4px rgba(10,30,51,.18);transition:transform .15s,filter .15s;}
 .topbar-checkin:hover{transform:translateY(-1px);filter:brightness(1.1);}
 .topbar-checkin svg{color:var(--gold-soft,#F2C964);}
 :root[data-theme="dark"] .topbar-checkin{background:var(--gold);border-color:var(--gold);color:var(--navy);}
 :root[data-theme="dark"] .topbar-checkin svg{color:var(--navy);}
-@media (max-width:480px){.topbar-checkin span{display:none;} .topbar-checkin{padding:7px 9px;margin-right:8px;}}
+@media (max-width:480px){.topbar-checkin{padding:7px 11px;margin-right:7px;} #checkinNavBtn{display:none !important;}}
+/* Check-In moves into the Explore dropdown on phones; hidden in the dropdown on larger screens */
+.exnav-menu a.exnav-mobileonly{display:none !important;}
+@media (max-width:480px){.exnav-menu a.exnav-mobileonly{display:flex !important;}}
 /* standalone Library entry — neutral pill so the gold Store stays the commerce CTA */
 .topbar-lib{background:transparent;border-color:var(--rule);color:var(--ink-soft);}
 .topbar-lib svg{color:var(--ink-soft);}
@@ -5043,9 +5046,13 @@ function toggleTheme() {
       <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-4.35-9-8a5 5 0 0 1 9-3 5 5 0 0 1 9 3c-2 3.65-9 8-9 8z"/></svg>
       <span id="rnNavLabel">Right Now</span>
     </a>
-    <a class="topbar-checkin" href="#" onclick="event.preventDefault(); if(typeof openCheckinPicker==='function'){openCheckinPicker();}else if(typeof startChoose==='function'){startChoose();}" title="Take the Check-In">
+    <a class="topbar-checkin" id="checkinNavBtn" href="#" onclick="event.preventDefault(); if(typeof openCheckinPicker==='function'){openCheckinPicker();}else if(typeof startChoose==='function'){startChoose();}" title="Take the Check-In">
       <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
       <span data-i18n="nav_checkin">Check-In</span>
+    </a>
+    <a class="topbar-checkin" id="pilotNavBtn" href="#" onclick="event.preventDefault(); if(typeof aogGoPilot==='function'){aogGoPilot();}" title="Pilot Program — quick-starts, feedback forms, and the pilot kit" style="border:1.5px solid var(--gold); background:transparent; color:var(--navy); border-radius:999px; padding:6px 14px; font-weight:700;">
+      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 3v16l7-3 7 3V3z"/><path d="M9 8h6M9 12h6"/></svg>
+      <span data-i18n="pp_nav">Pilot Program</span>
     </a>
     <style>
       .exnav{ position:relative; }
@@ -5055,6 +5062,8 @@ function toggleTheme() {
       .exnav-menu{ position:absolute; top:calc(100% + 10px); right:0; min-width:238px;
         background:var(--paper,#fff); border:1px solid var(--rule,rgba(10,30,51,.12));
         border-radius:14px; box-shadow:0 20px 46px -18px rgba(10,30,51,.5); padding:7px; z-index:1200; }
+      /* On phones the Explore button sits on the left, so anchor the menu to its left edge and keep it on-screen */
+      @media (max-width:560px){ .exnav-menu{ right:auto; left:0; min-width:0; width:max-content; max-width:calc(100vw - 20px); } }
       :root[data-theme="dark"] .exnav-menu{ background:#13283f; border-color:rgba(255,255,255,.14); }
       .exnav-menu a{ display:flex !important; align-items:center; gap:12px; width:100%;
         padding:10px 12px !important; margin:0 !important; border-radius:10px; text-decoration:none; white-space:nowrap;
@@ -5072,6 +5081,10 @@ function toggleTheme() {
         <svg class="exnav-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
       </a>
       <div class="exnav-menu" id="exNavMenu" role="menu" aria-label="Explore Architecture of Grace" hidden>
+    <a class="topbar-store topbar-lib exnav-mobileonly" role="menuitem" href="#" onclick="event.preventDefault(); aogCloseExplore(); if(typeof openCheckinPicker==='function'){openCheckinPicker();}else if(typeof startChoose==='function'){startChoose();}" title="Take the Check-In">
+      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+      <span data-i18n="nav_checkin">Check-In</span>
+    </a>
     <a class="topbar-store topbar-lib" role="menuitem" href="start-here.html" title="New here? Start Here">
       <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/><circle cx="4" cy="12" r="1.4" fill="currentColor" stroke="none"/></svg>
       <span>Start Here</span>
@@ -5581,8 +5594,8 @@ function toggleTheme() {
     </div>
 
     <div class="fw-sec" style="order:-1;">
-      <h2 class="fw-h" data-i18n="fw_4_h">From a quiet moment to real growth</h2>
-      <p class="fw-sub" data-i18n="fw_4_sub">Not a test to pass &mdash; a path to walk.</p>
+      <h2 class="fw-h" data-i18n="fw_4_h" style="text-align:center;">From a quiet moment to real growth</h2>
+      <p class="fw-sub" data-i18n="fw_4_sub" style="text-align:center;">Not a test to pass &mdash; a path to walk.</p>
       <style>
         .fwl-stage{ position:relative; width:100%; max-width:360px; aspect-ratio:1/1; margin:12px auto 6px; }
         .fwl-ring{ position:absolute; inset:0; width:100%; height:100%; }
@@ -7762,14 +7775,6 @@ function toggleTheme() {
                   <a class="lg-dl" href="legal-updated/AoG_Data_Privacy_Statement_CORRECTED.pdf" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5"/><path d="M12 15V3"/></svg> <span data-i18n="lg_dl">Download PDF</span></a>
                 </div>
               </div>
-              <div class="lg-doc">
-                <span class="lg-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9z"/></svg></span>
-                <div>
-                  <h4 data-i18n="lg_d4h">How to Drop Everything In</h4>
-                  <p data-i18n-html="lg_d4p">The fast implementation guide &mdash; how to get the whole check-in running in your environment, start to finish.</p>
-                  <a class="lg-dl" href="legal-updated/AoG_How_to_Drop_Everything_In_CORRECTED.pdf" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5"/><path d="M12 15V3"/></svg> <span data-i18n="lg_dl">Download PDF</span></a>
-                </div>
-              </div>
             </div>
             <div class="lg-foot">
               <a href="#" data-i18n="lg_foot1" onclick="event.preventDefault(); if(typeof aogGoPilot==='function'){aogGoPilot();}">Explore the Pilot Program &rarr;</a>
@@ -8111,7 +8116,7 @@ function toggleTheme() {
   .ppm-head .ppm-sub{ display:block; font-size:11.5px; letter-spacing:.14em; text-transform:uppercase; color:var(--gold,#E7B85E); font-weight:700; margin-bottom:3px; }
   .ppm-x{ flex:none; background:rgba(255,255,255,.14); border:0; color:#fff; width:34px; height:34px; border-radius:9px; cursor:pointer; font-size:20px; line-height:1; display:flex; align-items:center; justify-content:center; }
   .ppm-x:hover{ background:rgba(255,255,255,.26); }
-  .ppm-body{ padding:22px 24px 26px; overflow-y:auto; flex:1 1 auto; }
+  .ppm-body{ padding:22px 24px 26px; overflow-y:auto; overflow-x:hidden; scrollbar-gutter:stable; flex:1 1 auto; }
   /* progress bar */
   .ppf-prog{ position:sticky; top:0; z-index:6; margin:-22px -24px 16px; padding:11px 24px 10px; background:#FCF9F2; border-bottom:1px solid rgba(0,0,0,.08); }
   :root[data-theme="dark"] .ppf-prog{ background:#16242F; border-color:#34465A; }
@@ -8168,7 +8173,8 @@ function toggleTheme() {
   .ppf-chip.on{ background:var(--navy,#0A1E33); border-color:var(--navy,#0A1E33); color:#fff; }
   :root[data-theme="dark"] .ppf-chip{ background:#1B2A38; border-color:#34465A; color:#C3CEDC; }
   :root[data-theme="dark"] .ppf-chip.on{ background:var(--gold,#E2B65A); border-color:var(--gold,#E2B65A); color:#0E1A26; }
-  .ppf-likert{ width:100%; border-collapse:collapse; font-size:12.5px; }
+  .ppf-likert{ width:100%; border-collapse:collapse; font-size:12.5px; table-layout:fixed; }
+  .ppf-likert th.s, .ppf-likert td.s{ width:42%; }
   .ppf-likert th{ font-size:10.5px; font-weight:700; color:var(--ink-soft,#46506E); text-align:center; padding:4px 3px; vertical-align:bottom; line-height:1.2; }
   .ppf-likert th.s{ text-align:left; }
   .ppf-likert td{ padding:9px 3px; border-top:1px solid rgba(0,0,0,.07); text-align:center; }
@@ -8201,8 +8207,8 @@ function toggleTheme() {
     .ppm-body{ padding:18px 16px 22px; }
     .ppf-prog{ margin:-18px -16px 14px; padding:11px 16px 10px; }
     .ppf-likert th{ font-size:9px; }
-    .ppf-likert td.s, .ppf-likert th.s{ font-size:12px; }
-    .ppf-likert{ min-width:340px; }
+    .ppf-likert td.s, .ppf-likert th.s{ font-size:11.5px; }
+    .ppf-likert th{ font-size:8.5px; }
     .ppf-face{ gap:9px; }
     .ppf-face .f{ min-width:98px; padding:15px 18px; font-size:14px; }
     .ppf-face .f .em{ font-size:40px; }
@@ -8536,6 +8542,8 @@ function toggleTheme() {
           padding:12px 4px; margin:0 0 8px; background:var(--paper,#FBF3DF); border-bottom:1px solid var(--rule,rgba(10,30,51,.1)); }
         :root[data-theme="dark"] .tool-filters{ background:#0C141D; border-bottom-color:rgba(255,255,255,.1); }
         .tool-filters::-webkit-scrollbar{ height:0; }
+        /* On phones, wrap the category chips so they all stay on screen instead of scrolling off the right edge */
+        @media (max-width:560px){ .tool-filters{ flex-wrap:wrap; overflow-x:visible; justify-content:center; } }
         .tool-chip{ flex:0 0 auto; font-family:inherit; font-size:14px; font-weight:700; cursor:pointer;
           border:1.5px solid var(--gold,#D9A33B); background:transparent; color:var(--navy,#1B3A5F);
           border-radius:999px; padding:8px 16px; white-space:nowrap; }
@@ -13720,9 +13728,10 @@ function aogFwPanel(btn, name) {
     setTimeout(function () {
       try {
         var topbar = document.querySelector(".topbar");
-        var off = (topbar ? topbar.offsetHeight : 70) + 14;
-        // anchor on the tab row so the active tab stays in view and the panel begins right below it
-        var anchor = document.querySelector(".fw-tabs") || panel;
+        var off = (topbar ? topbar.offsetHeight : 70) + 12;
+        // Anchor on the tapped tab itself so it scrolls just under the sticky header and its
+        // content opens right beneath it — consistent for every tab, not only the top row.
+        var anchor = btn || panel;
         var y = anchor.getBoundingClientRect().top + window.pageYOffset - off;
         window.scrollTo({ top: Math.max(0, y), behavior: "smooth" });
       } catch (e) {}
@@ -27188,9 +27197,10 @@ window.addEventListener('load', _installToolScreenHook);
     dlQs:T('Download Quick-Start (PDF)','Descargar Guía rápida (PDF)'),
     goForm:T('Go to feedback form &rarr;','Ir al formulario de comentarios &rarr;'),
     send:T('Send feedback &rarr;','Enviar comentarios &rarr;'),
-    privMini:T('Your answers aren’t saved on this site. Pressing <b>Send feedback</b> opens your email app with everything filled in.','Tus respuestas no se guardan en este sitio. Al pulsar <b>Enviar comentarios</b> se abre tu app de correo con todo completado.'),
-    doneH:T('Thank you — your email is ready','Gracias: tu correo está listo'),
-    doneP:T('Your email app should have opened with your answers filled in, addressed to the project. Just press <b>send</b> in your email app to finish. Didn’t open, or no email app on this device? Use a button below.','Tu app de correo debería haberse abierto con tus respuestas completadas y dirigida al proyecto. Solo pulsa <b>enviar</b> en tu app de correo para terminar. ¿No se abrió, o no hay app de correo en este dispositivo? Usa un botón abajo.'),
+    privMini:T('Your answers aren’t saved on this site. When you’re done, you’ll tap once to open your email app with everything filled in.','Tus respuestas no se guardan en este sitio. Al terminar, tocarás una vez para abrir tu app de correo con todo completado.'),
+    doneH:T('Thank you — one last step','Gracias: un último paso'),
+    doneP:T('Your answers are ready. Tap <b>Open email app</b> below to finish — it opens already filled in and addressed to the project; just press send there. No email app on this device? Tap <b>Copy my answers</b> instead.','Tus respuestas están listas. Toca <b>Abrir app de correo</b> abajo para terminar: se abre ya completado y dirigido al proyecto; solo pulsa enviar allí. ¿No hay app de correo en este dispositivo? Toca <b>Copiar mis respuestas</b>.'),
+    openEmail:T('Open email app','Abrir app de correo'),
     openAgain:T('Open email again','Abrir el correo de nuevo'),
     copy:T('Copy my answers','Copiar mis respuestas'), copied:T('Copied ✓','Copiado ✓'),
     done:T('Done','Listo'),
@@ -27201,8 +27211,8 @@ window.addEventListener('load', _installToolScreenHook);
     noAns:T('(no answer)','(sin respuesta)'), none:T('(none)','(ninguna)'), blank:T('(blank)','(en blanco)'),
     subj:T('AoG Pilot Feedback','Comentarios del piloto AoG'),
     progLab:T('Your progress','Tu progreso'),
-    preparing:T('Preparing email…','Preparando el correo…'),
-    resend:T('<b>Still need to send?</b> Your email app should be open — just press send there. No email app on this device? Use <b>Copy my answers</b> and paste them into an email to <b>'+PILOT_EMAIL+'</b>.','<b>¿Aún falta enviar?</b> Tu app de correo debería estar abierta: solo pulsa enviar allí. ¿No hay app de correo en este dispositivo? Usa <b>Copiar mis respuestas</b> y pégalas en un correo a <b>'+PILOT_EMAIL+'</b>.')
+    preparing:T('Finishing up…','Finalizando…'),
+    resend:T('<b>Nothing is sent until you press send</b> in your email app. Your typed answers are never stored on this site.','<b>Nada se envía hasta que pulses enviar</b> en tu app de correo. Tus respuestas no se guardan en este sitio.')
   };
 
   /* ---------- audience cards ---------- */
@@ -27647,17 +27657,19 @@ window.addEventListener('load', _installToolScreenHook);
     var body=tx(UI.mailHdr)+'\n'+tx(UI.mailForm)+': '+deTag(tx(F.title))+'\n'+tx(UI.mailDate)+': '+new Date().toLocaleString()+'\n\n'+collect(formKey)+'\n\n'+tx(UI.mailFoot);
     window.__ppLastBody=body; window.__ppLastSubject=subject;
     var mailto='mailto:'+PILOT_EMAIL+'?subject='+encodeURIComponent(subject)+'&body='+encodeURIComponent(body);
-    try{ window.location.href=mailto; }catch(e){}
+    // Note: we deliberately do NOT auto-navigate to the mailto here. On phones that
+    // jumps straight into the mail app, so the person never sees this confirmation and
+    // returns to a reset app. Instead they tap "Open email app" below when ready.
     var b=document.getElementById('ppmBody');
     b.innerHTML='<div class="ppf-done">'+
       '<div class="ck"><svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></div>'+
       '<h4>'+tx(UI.doneH)+'</h4><p>'+tx(UI.doneP)+'</p>'+
       '<div class="ppf-actions" style="justify-content:center;border-top:0;position:static;background:none;">'+
-        '<button type="button" class="pp-b pp-b-gold" style="font-size:15px;padding:14px 26px;" onclick="aogPilotCopy(this)">'+tx(UI.copy)+'</button>'+
-        '<a class="pp-b pp-b-navy" style="font-size:14px;padding:13px 20px;" href="'+mailto.replace(/"/g,'&quot;')+'">'+tx(UI.openAgain)+'</a>'+
+        '<a class="pp-b pp-b-gold" style="font-size:15px;padding:14px 26px;" href="'+mailto.replace(/"/g,'&quot;')+'">'+tx(UI.openEmail)+'</a>'+
+        '<button type="button" class="pp-b pp-b-navy" style="font-size:14px;padding:13px 20px;" onclick="aogPilotCopy(this)">'+tx(UI.copy)+'</button>'+
         '<button type="button" class="pp-b pp-b-ghost" onclick="aogPilotCloseModal()">'+tx(UI.done)+'</button>'+
       '</div><div class="ppf-resend">'+tx(UI.resend)+'</div></div>';
-    window.__ppOpen=null; $ov().scrollTop=0;
+    window.__ppOpen=null; var pb=document.getElementById('ppmBody'); if(pb) pb.scrollTop=0;
     return false;
   };
   window.aogPilotCopy=function(btn){
