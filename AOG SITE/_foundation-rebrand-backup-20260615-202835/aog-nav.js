@@ -199,7 +199,7 @@
     "nav.framework": "Marco",
     "nav.dashboard": "Panel",
     "nav.store": "Tienda",
-    "nav.sub": ""
+    "nav.sub": "Un proyecto de The Architecture of Grace Foundation"
   };
   var DICT = {};
   (function () { var k; for (k in NAV_I18N) DICT[k] = NAV_I18N[k]; var p = window.AOG_I18N || {}; for (k in p) DICT[k] = p[k]; })();

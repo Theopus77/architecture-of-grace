@@ -7,7 +7,7 @@
  * on every build — so each new deploy invalidates the old cache and returning
  * visitors always get the fresh page. No manual version bumping required.
  */
-const CACHE = 'aog-cache-2026.06.12.2036';
+const CACHE = 'aog-cache-2026.06.15.1016';
 
 // Same-origin essentials — reliable to precache at install.
 const PRECACHE = [
