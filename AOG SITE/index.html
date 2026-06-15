@@ -3517,8 +3517,11 @@ function toggleTheme() {
 .st-price{font-family:var(--serif,Georgia,serif);font-size:17px;font-weight:600;color:var(--st-ink);}
 .st-price-sub{font-family:var(--sans,sans-serif);font-size:10px;font-weight:500;color:var(--st-faint);}
 /* clickable price labels — add to cart on click (belt-and-suspenders with the buttons) */
-.st-price-buy{cursor:pointer;border-radius:6px;padding:1px 4px;margin:0 -4px;transition:background .15s,color .15s;}
-.st-price-buy:hover{background:color-mix(in srgb, var(--st-gold) 18%, transparent);color:var(--st-navy);}
+.st-price-buy{cursor:pointer;display:inline-flex;align-items:center;gap:6px;align-self:flex-start;border:1.5px solid var(--st-gold,#D9A33B);border-radius:999px;padding:5px 13px 5px 11px;margin:2px 0;background:color-mix(in srgb, var(--st-gold,#D9A33B) 12%, transparent);transition:background .15s,color .15s,transform .1s,box-shadow .15s;}
+.st-price-buy::before{content:"+";font-weight:800;font-size:1.1em;line-height:1;color:var(--st-gold-deep,#9a6f24);}
+.st-price-buy:hover{background:var(--st-gold,#D9A33B);color:var(--st-navy,#0A1E33);transform:translateY(-1px);box-shadow:0 6px 14px -8px rgba(10,30,51,.45);}
+.st-price-buy:hover::before{color:var(--st-navy,#0A1E33);}
+.st-price-buy:active{transform:translateY(0);}
 .st-price-buy:focus-visible{outline:2px solid var(--st-gold);outline-offset:1px;}
 .st-buy{font-family:var(--sans,sans-serif);font-size:12px;font-weight:700;color:#fff;background:var(--st-navy);border:none;border-radius:8px;padding:9px 12px;cursor:pointer;transition:.18s;white-space:normal;line-height:1.25;}
 .st-buy:hover{background:var(--st-navy-soft);}
@@ -3566,7 +3569,7 @@ function toggleTheme() {
 .st-actions{flex-wrap:wrap;justify-content:flex-end;gap:6px;}
 
 /* toast */
-.st-toast{position:fixed;left:50%;bottom:28px;transform:translate(-50%,20px);opacity:0;pointer-events:none;background:var(--st-navy);color:#F4EEE2;font-size:13px;font-weight:500;padding:12px 20px;border-radius:11px;box-shadow:0 18px 40px -18px rgba(0,0,0,.6);transition:.3s var(--st-ease);z-index:9000;}
+.st-toast{position:fixed;left:50%;bottom:28px;transform:translate(-50%,20px);opacity:0;pointer-events:none;background:var(--st-navy,#0A1E33);color:#F4EEE2;font-size:14px;font-weight:600;padding:12px 22px;border-radius:11px;box-shadow:0 18px 40px -18px rgba(0,0,0,.6);transition:.3s var(--st-ease,cubic-bezier(0.16,1,0.3,1));z-index:9000;}
 .st-toast.st-show{opacity:1;transform:translate(-50%,0);}
 
 /* ===== P2 (2026-06-05) · MOBILE STORE DENSITY ==========================
@@ -3851,6 +3854,8 @@ function toggleTheme() {
 .topbar-cart svg{width:18px;height:18px;}
 .aogcart-badge{position:absolute;top:-6px;right:-6px;min-width:18px;height:18px;padding:0 5px;border-radius:999px;background:var(--gold);color:#0A1E33;font-family:var(--font-sans);font-size:11px;font-weight:800;display:inline-flex;align-items:center;justify-content:center;line-height:1;box-shadow:0 2px 6px -1px rgba(10,30,51,.5);}
 .aogcart-badge[hidden]{display:none;}
+@keyframes aogCartBump{0%{transform:scale(1);}30%{transform:scale(1.45);}100%{transform:scale(1);}}
+.aogcart-badge.bump{animation:aogCartBump .42s var(--ease,ease);}
 :root[data-theme="dark"] .topbar-cart{color:var(--cream);}
 
 .aogcart-overlay{position:fixed;inset:0;background:rgba(6,18,31,.55);opacity:0;pointer-events:none;transition:opacity .28s ease;z-index:9500;}
@@ -5180,10 +5185,6 @@ function toggleTheme() {
        <div class="hyb-top-a">
       <div class="hyb-eyebrow" aria-hidden="true"><span class="ln"></span><span class="tx" data-i18n="hyb_eyebrow">Architecture of Grace</span><span class="ln r"></span></div>
       <h1 class="hyb-title foil"><span class="l1">Architecture of</span><span class="l2">Grace</span></h1>
-      <div class="hyb-bar">
-        <span class="word"><b data-i18n="hyb_b1">Grace Over Performance</b></span>
-      </div>
-      <p class="hyb-trust" data-i18n-html="hyb_trust"><b>Free</b><span class="sep">&middot;</span><b>Private</b><span class="sep">&middot;</span><b>5 minutes</b><span class="sep">&middot;</span>Built by a special educator</p>
         <div class="hyb-pillars" aria-hidden="true"><span class="ln"></span><span class="tx" data-i18n="hyb_pillars">Identity &middot; Self-Compassion &middot; Forgiveness &middot; Grace</span><span class="ln r"></span></div>
        </div>
       <!-- Hero photo band. Drop hero.jpg at the site root; if it's missing this hides itself (no broken icon). -->
@@ -5227,6 +5228,7 @@ function toggleTheme() {
       </style>
       <div class="aogd-in">
         <div class="aogd-ey" data-i18n="aogd_ey">The Difference</div>
+        <div class="hyb-bar" style="margin-top:8px;"><span class="word"><b data-i18n="hyb_b1">Grace Over Performance</b></span></div>
         <h3 data-i18n="aogd_h">Why Architecture of Grace stands apart</h3>
         <div class="aogd-grid">
           <div class="aogd-card">
@@ -5932,38 +5934,8 @@ function toggleTheme() {
       <p class="lede" data-i18n="ch_lede">This is a moment to be understood, not measured. The same four ideas &mdash; identity, self-compassion, forgiveness, and grace &mdash; the same care, just worded for who&rsquo;s answering. Choose one to begin.</p>
     </div>
 
-    <!-- Product preview — device mockups, under the check-in hero -->
-        <div class="aog-showcase" role="img" aria-label="Device mockups showing the Architecture of Grace check-in, results dashboard, and framework on phone, laptop, and tablet.">
-          <div class="dvc dvc-phone">
-            <div class="dvc-scr"><div class="mk">
-              <div class="mk-top"><span class="mk-dot"></span></div>
-              <div class="mk-eyebrow">Check-in</div>
-              <div class="mk-q">&ldquo;I keep replaying mistakes long after they&rsquo;re over.&rdquo;</div>
-              <div class="mk-optcol"><span></span><span class="on"></span><span></span><span></span></div>
-            </div></div>
-          </div>
-          <div class="dvc dvc-laptop">
-            <div class="dvc-scr"><div class="mk">
-              <div class="mk-top"><span class="mk-dot"></span><span class="mk-brand">Architecture of Grace</span></div>
-              <div class="mk-eyebrow">How everyone&rsquo;s doing</div>
-              <div class="mk-kpis"><div><b>24</b><span>checked in</span></div><div><b>72</b><span>average</span></div><div><b>0</b><span>no adult</span></div></div>
-              <div class="mk-dist"><i class="g" style="--w:58%"></i><i class="a" style="--w:30%"></i><i class="r" style="--w:12%"></i></div>
-              <div class="mk-cards"><div class="mk-card"></div><div class="mk-card"></div><div class="mk-card"></div></div>
-            </div></div>
-            <div class="dvc-base"></div>
-          </div>
-          <div class="dvc dvc-tablet">
-            <div class="dvc-scr"><div class="mk">
-              <div class="mk-eyebrow">The framework, in motion</div>
-              <div class="mk-q" style="font-size:9px">One answer becomes growth</div>
-              <div class="mk-flow"><span>Honest check-in</span><span>Rumination &middot; gentle flag</span><span>One exact lesson</span><span>Book 3 &middot; Rewriting the Script</span><span class="loop">&#8635; begins again</span></div>
-            </div></div>
-          </div>
-        </div>
 
-    <figure class="aog-page-banner">
-      <img src="checkin-hero.jpg" alt="A young person doing a quiet check-in on a tablet, with a caring adult nearby" loading="lazy" decoding="async" onerror="var f=this.closest('.aog-page-banner'); if(f) f.style.display='none';">
-    </figure>
+
     <div class="aog-lobby">
       <div class="aog-doors">
         <div class="aog-checkins">
@@ -6021,9 +5993,6 @@ function toggleTheme() {
       <p class="checkin-reassure" data-i18n="w_reassure">A private 4&ndash;10 minute reflection &middot; no wrong answers &middot; nothing leaves this device unless you choose.</p>
       <p class="checkin-reassure-sub" data-i18n="w_reassure_sync" style="font-size:12.5px; line-height:1.5; color:var(--ink-soft); font-style:italic; margin:4px 0 0;">(School-controlled sync to your Google Sheet is optional and off by default.)</p>
     </div>
-    <figure class="aog-page-banner">
-      <img src="checkin-hero.jpg" alt="A young person doing a quiet check-in on a tablet, with a caring adult nearby" loading="lazy" decoding="async" onerror="var f=this.closest('.aog-page-banner'); if(f) f.style.display='none';">
-    </figure>
 <div class="script-card">
       <p data-i18n-html="w_script1"><strong>Before you begin.</strong> There are no right or wrong answers &mdash; just pick what feels most true for you lately, and go with your first instinct.</p>
       <p data-i18n-html="w_script2">If a question brings up something you&rsquo;d like to talk about, you can reach out to a teacher, counselor, parent, or guardian any time.</p>
@@ -8179,9 +8148,35 @@ function toggleTheme() {
 
 <section id="screen-pilot" class="screen aogpilot">
   <div class="container-wide" style="padding-top:18px;">
-    <figure class="aog-page-banner">
-      <img src="pilot-hero.jpg" alt="A diverse team of educators collaborating over laptops during a pilot planning session" loading="lazy" decoding="async" onerror="var f=this.closest('.aog-page-banner'); if(f) f.style.display='none';">
-    </figure>
+
+    <!-- Product preview — device mockups (top of the Pilot page) -->
+        <div class="aog-showcase" role="img" aria-label="Device mockups showing the Architecture of Grace check-in, results dashboard, and framework on phone, laptop, and tablet.">
+          <div class="dvc dvc-phone">
+            <div class="dvc-scr"><div class="mk">
+              <div class="mk-top"><span class="mk-dot"></span></div>
+              <div class="mk-eyebrow">Check-in</div>
+              <div class="mk-q">&ldquo;I keep replaying mistakes long after they&rsquo;re over.&rdquo;</div>
+              <div class="mk-optcol"><span></span><span class="on"></span><span></span><span></span></div>
+            </div></div>
+          </div>
+          <div class="dvc dvc-laptop">
+            <div class="dvc-scr"><div class="mk">
+              <div class="mk-top"><span class="mk-dot"></span><span class="mk-brand">Architecture of Grace</span></div>
+              <div class="mk-eyebrow">How everyone&rsquo;s doing</div>
+              <div class="mk-kpis"><div><b>24</b><span>checked in</span></div><div><b>72</b><span>average</span></div><div><b>0</b><span>no adult</span></div></div>
+              <div class="mk-dist"><i class="g" style="--w:58%"></i><i class="a" style="--w:30%"></i><i class="r" style="--w:12%"></i></div>
+              <div class="mk-cards"><div class="mk-card"></div><div class="mk-card"></div><div class="mk-card"></div></div>
+            </div></div>
+            <div class="dvc-base"></div>
+          </div>
+          <div class="dvc dvc-tablet">
+            <div class="dvc-scr"><div class="mk">
+              <div class="mk-eyebrow">The framework, in motion</div>
+              <div class="mk-q" style="font-size:9px">One answer becomes growth</div>
+              <div class="mk-flow"><span>Honest check-in</span><span>Rumination &middot; gentle flag</span><span>One exact lesson</span><span>Book 3 &middot; Rewriting the Script</span><span class="loop">&#8635; begins again</span></div>
+            </div></div>
+          </div>
+        </div>
 
     <div class="table-card" style="padding:0; overflow:hidden;">
       <div class="pp-intro">
@@ -19742,6 +19737,7 @@ function aogCartAdd(key, price){
   if(ex){ ex.qty++; if(ex.price==null && price!=null) ex.price=price; }
   else aogCartItems.push({key, price: (price!=null?price:null), qty:1});
   aogCartPersist(); aogCartRefresh();
+  try { var _cb=document.getElementById("aogCartCount"); if(_cb){ _cb.classList.remove("bump"); void _cb.offsetWidth; _cb.classList.add("bump"); } } catch(e){}
 }
 function aogCartSetQty(idx, delta){
   const it = aogCartItems[idx]; if(!it) return;
@@ -25012,8 +25008,8 @@ window.addEventListener('load', _installToolScreenHook);
     var el = document.getElementById("aogGraceWordHero");
     if (!el) {
       el = document.createElement("div"); el.id = "aogGraceWordHero"; el.className = "aog-grace-word--hero";
-      var trust = hero.querySelector(".hyb-trust");
-      if (trust && trust.parentNode) trust.parentNode.insertBefore(el, trust);
+      var anchor = hero.querySelector(".hyb-pillars");
+      if (anchor && anchor.parentNode) anchor.parentNode.insertBefore(el, anchor);
       else hero.appendChild(el);
     }
     el.innerHTML =
@@ -26904,9 +26900,9 @@ window.addEventListener('load', _installToolScreenHook);
     {key:'teacher', title:T('Teachers &amp; Educators','Docentes y educadores'), who:T('Run the check-in with a class and read the group at a glance.','Haz el chequeo con una clase y lee al grupo de un vistazo.'), qs:'AoG-QuickStart-Teacher.pdf', fb:'AoG-Feedback-Teacher.pdf', form:'teacher'},
     {key:'specialist', title:T('Specialists &amp; Support Staff','Especialistas y personal de apoyo'), who:T('Counselors, psychologists, social workers, SLPs, OTs, and behavior staff working across tiers.','Consejeros, psicólogos, trabajadores sociales, fonoaudiólogos, terapeutas ocupacionales y personal de conducta que trabajan en todos los niveles.'), qs:'AoG-QuickStart-Specialist.pdf', fb:'AoG-Feedback-Specialist.pdf', form:'specialist'},
     {key:'parent', title:T('Parents &amp; Families','Familias y cuidadores'), who:T('Five quiet minutes with your child at home, with conversation starters you can print.','Cinco minutos tranquilos con tu hijo en casa, con preguntas para conversar que puedes imprimir.'), qs:'AoG-QuickStart-Parent.pdf', fb:'AoG-Feedback-Parent.pdf', form:'parent'},
-    {key:'child', title:T('Children (simplified)','Niños (versión simple)'), who:T('A kid-friendly version with faces and short questions — given by a parent or teacher.','Una versión para niños con caritas y preguntas cortas, guiada por una familia o un docente.'), qs:null, fb:'AoG-Feedback-Child.pdf', form:'child', note:T('Set it up using the Parent or Teacher Quick-Start.','Configúralo con la Guía rápida de familias o de docentes.')},
     {key:'adult', title:T('Adults (self-use)','Adultos (uso personal)'), who:T('A private check-in for the grown-up in the room — a mirror, not a report.','Un chequeo privado para el adulto presente: un espejo, no un informe.'), qs:'AoG-QuickStart-Adult.pdf', fb:'AoG-Feedback-Adult.pdf', form:'adult'},
-    {key:'leader', title:T('Leadership','Liderazgo'), who:T('Principals, curriculum &amp; SEL directors, and MTSS coordinators — a five-minute look built around the decision.','Directores, coordinadores de currículo y SEL, y coordinadores de MTSS: una mirada de cinco minutos centrada en la decisión.'), qs:'AoG-QuickStart-Leadership.pdf', fb:null, form:'leader', note:T('Leadership feedback is an online form for now.','Por ahora, los comentarios de liderazgo se recogen en un formulario en línea.')}
+    {key:'leader', title:T('Leadership','Liderazgo'), who:T('Principals, curriculum &amp; SEL directors, and MTSS coordinators — a five-minute look built around the decision.','Directores, coordinadores de currículo y SEL, y coordinadores de MTSS: una mirada de cinco minutos centrada en la decisión.'), qs:'AoG-QuickStart-Leadership.pdf', fb:null, form:'leader', note:T('Leadership feedback is an online form for now.','Por ahora, los comentarios de liderazgo se recogen en un formulario en línea.')},
+    {key:'child', title:T('Children (simplified)','Niños (versión simple)'), who:T('A kid-friendly version with faces and short questions — given by a parent or teacher.','Una versión para niños con caritas y preguntas cortas, guiada por una familia o un docente.'), qs:null, fb:'AoG-Feedback-Child.pdf', form:'child', note:T('Set it up using the Parent or Teacher Quick-Start.','Configúralo con la Guía rápida de familias o de docentes.')},
   ];
 
   var IC = {
