@@ -5964,6 +5964,41 @@ function toggleTheme() {
           <summary class="rn-teacher-sum">For teachers</summary>
           <div class="rn-teacher-body"></div>
           <div class="rn-teacher-tools" id="rnTeacherTools"></div>
+
+          <!-- ===== What To Say Instead (styles consolidated in #aog-quietspace-css at end of body) ===== -->
+          <details class="aog-saysinstead">
+            <summary>
+              <h3 class="aog-saysinstead-h"><span aria-hidden="true">🗣️</span><span data-i18n="si_head">What To Say Instead</span></h3>
+              <p class="aog-saysinstead-sub" data-i18n="si_sub">Five small language shifts that help a student feel met instead of managed. The goal is connection, not compliance.</p>
+            </summary>
+            <div class="aog-si-grid">
+              <div class="aog-si-card">
+                <div class="aog-si-when" data-i18n="si1_when">Student is overwhelmed</div>
+                <p class="aog-si-line aog-si-instead"><span class="tag" data-i18n="si_instead">Instead of</span><span class="ph" data-i18n="si1_no">&ldquo;Calm down.&rdquo;</span></p>
+                <p class="aog-si-line aog-si-try"><span class="tag" data-i18n="si_try">Try</span><span data-i18n="si1_yes">&ldquo;Tell me what feels hardest right now.&rdquo;</span></p>
+              </div>
+              <div class="aog-si-card">
+                <div class="aog-si-when" data-i18n="si2_when">Student is frustrated</div>
+                <p class="aog-si-line aog-si-instead"><span class="tag" data-i18n="si_instead">Instead of</span><span class="ph" data-i18n="si2_no">&ldquo;You&rsquo;re fine.&rdquo;</span></p>
+                <p class="aog-si-line aog-si-try"><span class="tag" data-i18n="si_try">Try</span><span data-i18n="si2_yes">&ldquo;Something feels off. Tell me about it.&rdquo;</span></p>
+              </div>
+              <div class="aog-si-card">
+                <div class="aog-si-when" data-i18n="si3_when">Student is dysregulated</div>
+                <p class="aog-si-line aog-si-instead"><span class="tag" data-i18n="si_instead">Instead of</span><span class="ph" data-i18n="si3_no">&ldquo;Go sit down.&rdquo;</span></p>
+                <p class="aog-si-line aog-si-try"><span class="tag" data-i18n="si_try">Try</span><span data-i18n="si3_yes">&ldquo;Take a reset and come back when you&rsquo;re ready.&rdquo;</span></p>
+              </div>
+              <div class="aog-si-card">
+                <div class="aog-si-when" data-i18n="si4_when">Student made a mistake</div>
+                <p class="aog-si-line aog-si-instead"><span class="tag" data-i18n="si_instead">Instead of</span><span class="ph" data-i18n="si4_no">&ldquo;You know better.&rdquo;</span></p>
+                <p class="aog-si-line aog-si-try"><span class="tag" data-i18n="si_try">Try</span><span data-i18n="si4_yes">&ldquo;What happened, and what would help make it right?&rdquo;</span></p>
+              </div>
+              <div class="aog-si-card">
+                <div class="aog-si-when" data-i18n="si5_when">Student shuts down</div>
+                <p class="aog-si-line aog-si-instead"><span class="tag" data-i18n="si_instead">Instead of</span><span class="ph" data-i18n="si5_no">&ldquo;Use your words.&rdquo;</span></p>
+                <p class="aog-si-line aog-si-try"><span class="tag" data-i18n="si_try">Try</span><span data-i18n="si5_yes">&ldquo;We can start small. What&rsquo;s one thing I should know?&rdquo;</span></p>
+              </div>
+            </div>
+          </details>
         </details>
         <div class="wp-tank-head">
           <div class="ey" data-i18n="rn_ey">An in-the-moment reset</div>
@@ -6015,7 +6050,9 @@ function toggleTheme() {
           </div>
         </div>
         <button class="btn tk-go" id="rightNowBtn"><span>Show me one thing</span> <span class="btn-arrow">&rarr;</span></button>
+        <button type="button" class="rn-idk-trigger" id="rnIdkBtn" onclick="if(window.aogRnIdkOpen){aogRnIdkOpen();}" data-i18n="rn_idk_btn">I don&rsquo;t know how I feel</button>
         <div id="rightNowResult" class="wp-tank-result" hidden></div>
+        <div id="rnIdkBox" hidden></div>
       </div>
     </section>
     <!-- ============ /RIGHT NOW ============ -->
@@ -6024,6 +6061,7 @@ function toggleTheme() {
       <div class="eyebrow" data-i18n="ch_ey">The Self-Reflection &middot; the full reflection</div>
       <h1 class="display display-xl" data-i18n="ch_h1">Who&rsquo;s checking in?</h1>
       <p class="lede" data-i18n="ch_lede">This is a moment to be understood, not measured. The same four ideas &mdash; identity, self-compassion, forgiveness, and grace &mdash; the same care, just worded for who&rsquo;s answering. Choose one to begin.</p>
+      <div id="aogWisdomIntro" class="aog-wisdom" style="display:none;"></div>
     </div>
 
 
@@ -6508,6 +6546,7 @@ function toggleTheme() {
       <div class="eyebrow" data-i18n="f_eyebrow">Take it with you</div>
       <h1 class="display display-lg" id="farewellWord" style="color:var(--gold); font-style:italic; margin-bottom:24px;">&mdash;</h1>
       <p class="lede" data-i18n="f_lede">Carry that word with you today.</p>
+      <div id="aogWisdomFarewell" class="aog-wisdom" style="display:none;"></div>
       <button class="btn" id="btnMyResultsFarewell" style="display:none; margin-top:24px;" data-i18n-html="t_btn_results">See your results &rarr;</button>
       <button class="btn" id="btnDone" style="margin-top:12px;" data-i18n="f_done">Done</button>
     </div>
@@ -8659,6 +8698,39 @@ function toggleTheme() {
         </ol>
       </details>
     </div>
+
+    <!-- "What To Say Instead" now lives in the Quiet Space "For teachers" section -->
+
+    <!-- ===== Grace Lens reference (styles consolidated in #aog-quietspace-css at end of body) ===== -->
+    <details class="aog-glref" open>
+      <summary>
+        <h3 class="aog-glref-h"><span aria-hidden="true">🕊️</span><span data-i18n="gl_head">Grace Lens</span></h3>
+        <p class="aog-glref-sub" data-i18n="gl_sub">The deeper idea beneath each Circle Time activity — a shared language of grace, reflection, repair, and belonging.</p>
+      </summary>
+      <div class="aog-glref-grid">
+        <div class="aog-glref-card">
+          <div class="aog-glref-act" data-i18n="gl1_act">Reset Together</div>
+          <p class="aog-glref-txt" data-i18n="gl1_txt">&ldquo;Our goal is not perfect focus. Our goal is arriving together.&rdquo;</p>
+        </div>
+        <div class="aog-glref-card">
+          <div class="aog-glref-act" data-i18n="gl2_act">Feelings Go-Round</div>
+          <p class="aog-glref-txt" data-i18n="gl2_txt">&ldquo;Every feeling belongs. No feeling earns more value than another.&rdquo;</p>
+        </div>
+        <div class="aog-glref-card">
+          <div class="aog-glref-act" data-i18n="gl3_act">Coach the Critic</div>
+          <p class="aog-glref-txt" data-i18n="gl3_txt">&ldquo;We speak to ourselves the way we would speak to a friend.&rdquo;</p>
+        </div>
+        <div class="aog-glref-card">
+          <div class="aog-glref-act" data-i18n="gl4_act">Repair Circle</div>
+          <p class="aog-glref-txt" data-i18n="gl4_txt">&ldquo;Repair is not punishment. Repair is how trust grows.&rdquo;</p>
+        </div>
+        <div class="aog-glref-card">
+          <div class="aog-glref-act" data-i18n="gl5_act">Strengths Circle</div>
+          <p class="aog-glref-txt" data-i18n="gl5_txt">&ldquo;We notice strengths so people can see themselves more clearly.&rdquo;</p>
+        </div>
+      </div>
+    </details>
+
     <div class="tools-grid">
 
       <!-- Top feature pair: Co-Regulation (adult) + Beyond "Fine" (connect) -->
@@ -11215,6 +11287,38 @@ const I18N_UI = {
   ages_view_as: { en: "View as", es: "Ver como" },
   tank_aud_label: { en: "Taking it as", es: "Lo hace" },
   ages_child: { en: "Child", es: "Ni\u00f1o/a" },
+  rn_idk_btn: { en: "I don\u2019t know how I feel", es: "No s\u00e9 c\u00f3mo me siento" },
+  si_head: { en: "What To Say Instead", es: "Qu\u00e9 decir en su lugar" },
+  si_sub: { en: "Five small language shifts that help a student feel met instead of managed. The goal is connection, not compliance.", es: "Cinco peque\u00f1os cambios de lenguaje que ayudan a que un estudiante se sienta comprendido en lugar de controlado. La meta es la conexi\u00f3n, no la obediencia." },
+  si_instead: { en: "Instead of", es: "En lugar de" },
+  si_try: { en: "Try", es: "Intenta" },
+  si1_when: { en: "Student is overwhelmed", es: "El estudiante est\u00e1 abrumado" },
+  si1_no: { en: "\u201cCalm down.\u201d", es: "\u201cC\u00e1lmate.\u201d" },
+  si1_yes: { en: "\u201cTell me what feels hardest right now.\u201d", es: "\u201cDime qu\u00e9 se siente m\u00e1s dif\u00edcil ahora mismo.\u201d" },
+  si2_when: { en: "Student is frustrated", es: "El estudiante est\u00e1 frustrado" },
+  si2_no: { en: "\u201cYou\u2019re fine.\u201d", es: "\u201cEst\u00e1s bien.\u201d" },
+  si2_yes: { en: "\u201cSomething feels off. Tell me about it.\u201d", es: "\u201cAlgo no anda bien. Cu\u00e9ntame.\u201d" },
+  si3_when: { en: "Student is dysregulated", es: "El estudiante est\u00e1 desregulado" },
+  si3_no: { en: "\u201cGo sit down.\u201d", es: "\u201cVe a sentarte.\u201d" },
+  si3_yes: { en: "\u201cTake a reset and come back when you\u2019re ready.\u201d", es: "\u201cT\u00f3mate un reinicio y vuelve cuando est\u00e9s listo.\u201d" },
+  si4_when: { en: "Student made a mistake", es: "El estudiante cometi\u00f3 un error" },
+  si4_no: { en: "\u201cYou know better.\u201d", es: "\u201cSabes que eso no se hace.\u201d" },
+  si4_yes: { en: "\u201cWhat happened, and what would help make it right?\u201d", es: "\u201c\u00bfQu\u00e9 pas\u00f3, y qu\u00e9 ayudar\u00eda a repararlo?\u201d" },
+  si5_when: { en: "Student shuts down", es: "El estudiante se cierra" },
+  si5_no: { en: "\u201cUse your words.\u201d", es: "\u201cUsa tus palabras.\u201d" },
+  si5_yes: { en: "\u201cWe can start small. What\u2019s one thing I should know?\u201d", es: "\u201cPodemos empezar de a poco. \u00bfQu\u00e9 es una cosa que deber\u00eda saber?\u201d" },
+  gl_head: { en: "Grace Lens", es: "La lente de la gracia" },
+  gl_sub: { en: "The deeper idea beneath each Circle Time activity \u2014 a shared language of grace, reflection, repair, and belonging.", es: "La idea m\u00e1s profunda detr\u00e1s de cada actividad del c\u00edrculo \u2014 un lenguaje com\u00fan de gracia, reflexi\u00f3n, reparaci\u00f3n y pertenencia." },
+  gl1_act: { en: "Reset Together", es: "Reinicio juntos" },
+  gl1_txt: { en: "\u201cOur goal is not perfect focus. Our goal is arriving together.\u201d", es: "\u201cNuestra meta no es la concentraci\u00f3n perfecta. Nuestra meta es llegar juntos.\u201d" },
+  gl2_act: { en: "Feelings Go-Round", es: "Ronda de sentimientos" },
+  gl2_txt: { en: "\u201cEvery feeling belongs. No feeling earns more value than another.\u201d", es: "\u201cCada sentimiento tiene un lugar. Ning\u00fan sentimiento vale m\u00e1s que otro.\u201d" },
+  gl3_act: { en: "Coach the Critic", es: "Gu\u00eda al cr\u00edtico" },
+  gl3_txt: { en: "\u201cWe speak to ourselves the way we would speak to a friend.\u201d", es: "\u201cNos hablamos como le hablar\u00edamos a un amigo.\u201d" },
+  gl4_act: { en: "Repair Circle", es: "C\u00edrculo de reparaci\u00f3n" },
+  gl4_txt: { en: "\u201cRepair is not punishment. Repair is how trust grows.\u201d", es: "\u201cReparar no es castigo. Reparar es c\u00f3mo crece la confianza.\u201d" },
+  gl5_act: { en: "Strengths Circle", es: "C\u00edrculo de fortalezas" },
+  gl5_txt: { en: "\u201cWe notice strengths so people can see themselves more clearly.\u201d", es: "\u201cNotamos las fortalezas para que las personas se vean con m\u00e1s claridad.\u201d" },
   ages_teen: { en: "Teen", es: "Adolescente" },
   ages_adult: { en: "Adult / Educator", es: "Adulto / Educador" },
   hyb_start_hint: {
@@ -11868,6 +11972,7 @@ function showScreen(_0x2dc9c2) {
   } catch (_aogE0) {}
   $$(".screen").forEach(_0x1ec822 => _0x1ec822.classList.remove("active"));
   $("#" + _0x2dc9c2).classList.add("active");
+  try { if (typeof window.aogWisdomOnScreen === "function") window.aogWisdomOnScreen(_0x2dc9c2); } catch (_awe) {}
   try {
     var _0x26edce = document.getElementById("topbarBack");
     if (_0x26edce) {
@@ -14985,6 +15090,9 @@ function clearLocalData() {
   try {
     localStorage.removeItem(DRAFT_KEY);
   } catch (_0x3f6782) {}
+  try {
+    localStorage.removeItem("aog_preferred_support");
+  } catch (_0xwisdom) {}
   refreshAdmin();
 }
 const DEMO_FLAG = "aogScreener.demoActive";
@@ -21299,9 +21407,9 @@ window.aogGraceBreathe = function (btn) {
               steps: ["Haz tu exhalación más larga que la inhalación — ese es el freno. Varias veces.", "Los dos pies en el piso. Nombra cinco cosas que puedas ver.", "Mueve la energía: empuja una pared, sacude las manos, camina un poco."] }
       },
       teen: {
-        en: { title: "You’re fired up — let’s cool the engine.", lead: "That’s a surge, and surges pass. You don’t have to fix anything yet — just come down a level:",
+        en: { title: "Fired up? Let’s cool the engine.", lead: "That’s a surge, and surges pass. You don’t have to fix anything yet — just come down a level:",
               steps: ["Long breath out, longer than in. A few times.", "Feet on the floor. Name five things you can see.", "Burn it off — push a wall, shake your hands, walk it out."] },
-        es: { title: "Estás encendido — enfriemos el motor.", lead: "Eso es una oleada, y las oleadas pasan. No tienes que arreglar nada todavía — solo baja un nivel:",
+        es: { title: "¿Encendido? Enfriemos el motor.", lead: "Eso es una oleada, y las oleadas pasan. No tienes que arreglar nada todavía — solo baja un nivel:",
               steps: ["Exhala largo, más que al inhalar. Varias veces.", "Pies en el piso. Nombra cinco cosas que puedas ver.", "Suéltala — empuja una pared, sacude las manos, camina."] }
       },
       child: {
@@ -21313,29 +21421,29 @@ window.aogGraceBreathe = function (btn) {
     },
     fog: {
       adult: {
-        en: { title: "You’ve gone quiet and far away — let’s gently come back.", lead: "Numb and foggy is the body pulling back. You don’t need big energy — just one small signal that you’re here:",
+        en: { title: "Quiet and far away? Let’s gently come back.", lead: "Numb and foggy is the body pulling back. You don’t need big energy — just one small signal that you’re here:",
               steps: ["Stand up and feel your feet. Take a sip of water.", "Name five sounds you can hear right now.", "Move something small — stretch, step outside, feel sun or cool air on your skin."] },
-        es: { title: "Te has ido callado y lejos — volvamos con calma.", lead: "El adormecimiento y la niebla son el cuerpo replegándose. No necesitas mucha energía — solo una señal pequeña de que estás aquí:",
+        es: { title: "¿Callado y lejos? Volvamos con calma.", lead: "El adormecimiento y la niebla son el cuerpo replegándose. No necesitas mucha energía — solo una señal pequeña de que estás aquí:",
               steps: ["Ponte de pie y siente tus pies. Toma un sorbo de agua.", "Nombra cinco sonidos que puedas escuchar ahora.", "Mueve algo pequeño — estírate, sal afuera, siente el sol o el aire fresco."] }
       },
       teen: {
         en: { title: "Feeling numb or blank? Let’s reconnect.", lead: "Going numb is the body checking out for a bit. Small signals bring you back — no big energy needed:",
               steps: ["Stand up, feel your feet, drink some water.", "Name five sounds around you.", "Small move — stretch, step outside, splash some water on your face."] },
-        es: { title: "¿Te sientes adormecido o en blanco? Reconectemos.", lead: "El adormecimiento es el cuerpo desconectándose un rato. Las señales pequeñas te traen de vuelta:",
+        es: { title: "¿Adormecido o en blanco? Reconectemos.", lead: "El adormecimiento es el cuerpo desconectándose un rato. Las señales pequeñas te traen de vuelta:",
               steps: ["Ponte de pie, siente tus pies, toma agua.", "Nombra cinco sonidos a tu alrededor.", "Movimiento pequeño — estírate, sal afuera, mójate la cara."] }
       },
       child: {
         en: { title: "Feeling far away or sleepy inside? Let’s wake your body up gently.", lead: "Sometimes our body gets quiet and far away. Let’s help it come back:",
               steps: ["Stand up and wiggle your toes. Take a sip of water.", "Find five sounds you can hear.", "Stretch up tall like a tree, then shake your hands."] },
-        es: { title: "¿Te sientes lejos o con sueño por dentro? Despertemos tu cuerpo con calma.", lead: "A veces nuestro cuerpo se pone callado y lejano. Ayudémoslo a volver:",
+        es: { title: "¿Lejos o con sueño por dentro? Despertemos tu cuerpo con calma.", lead: "A veces nuestro cuerpo se pone callado y lejano. Ayudémoslo a volver:",
               steps: ["Ponte de pie y mueve los dedos de los pies. Toma un sorbo de agua.", "Busca cinco sonidos que puedas escuchar.", "Estírate alto como un árbol, luego sacude las manos."] }
       }
     },
     loop: {
       adult: {
-        en: { title: "You’re stuck on a loop — let’s loosen it.", lead: "Replaying the same thought won’t solve it — it just deepens the groove. The move is to change your state, not win the argument:",
+        en: { title: "Stuck on a loop? Let’s loosen it.", lead: "Replaying the same thought won’t solve it — it just deepens the groove. The move is to change your state, not win the argument:",
               steps: ["Say it as “I’m having the thought that…” — that little gap is freedom.", "Give it a time: “I’ll think about this at 5pm,” then set it down.", "Change the channel physically — a different room, cold water, one song."] },
-        es: { title: "Estás atascado en un bucle — vamos a aflojarlo.", lead: "Repetir el mismo pensamiento no lo resuelve — solo profundiza el surco. El paso es cambiar tu estado, no ganar la discusión:",
+        es: { title: "¿Atascado en un bucle? Vamos a aflojarlo.", lead: "Repetir el mismo pensamiento no lo resuelve — solo profundiza el surco. El paso es cambiar tu estado, no ganar la discusión:",
               steps: ["Dilo como “estoy teniendo el pensamiento de que…” — ese pequeño espacio es libertad.", "Ponle hora: “lo pensaré a las 5,” y suéltalo.", "Cambia el canal físicamente — otro cuarto, agua fría, una canción."] }
       },
       teen: {
@@ -21353,21 +21461,21 @@ window.aogGraceBreathe = function (btn) {
     },
     steady: {
       adult: {
-        en: { title: "You’re actually pretty steady right now.", lead: "Good — notice it. Steady is a skill, and noticing it makes it easier to find your way back next time.",
+        en: { title: "A steady moment — worth noticing.", lead: "Good — notice it. Steady is a skill, and noticing it makes it easier to find your way back next time.",
               steps: ["Name one thing keeping you steady right now.", "Take one slow breath and let yourself feel okay for a second.", "If someone near you is struggling, this is a good moment to offer a little steadiness."] },
-        es: { title: "En realidad estás bastante estable ahora mismo.", lead: "Bien — nótalo. La estabilidad es una habilidad, y notarla hace más fácil volver a encontrarla la próxima vez.",
+        es: { title: "Un momento estable — vale la pena notarlo.", lead: "Bien — nótalo. La estabilidad es una habilidad, y notarla hace más fácil volver a encontrarla la próxima vez.",
               steps: ["Nombra una cosa que te mantiene estable ahora mismo.", "Toma una respiración lenta y permítete sentirte bien por un momento.", "Si alguien cerca de ti la está pasando mal, es un buen momento para ofrecer un poco de calma."] }
       },
       teen: {
-        en: { title: "You’re in a pretty good spot right now.", lead: "Nice — worth noticing. Catching the steady moments makes them easier to find again.",
+        en: { title: "A pretty good moment right now.", lead: "Nice — worth noticing. Catching the steady moments makes them easier to find again.",
               steps: ["Notice one thing that’s helping right now.", "Take a slow breath and just let it be okay.", "Maybe check in on someone who isn’t having as good a day."] },
-        es: { title: "Estás en un buen momento ahora mismo.", lead: "Bien — vale la pena notarlo. Captar los momentos estables hace más fácil volver a encontrarlos.",
+        es: { title: "Un buen momento ahora mismo.", lead: "Bien — vale la pena notarlo. Captar los momentos estables hace más fácil volver a encontrarlos.",
               steps: ["Nota una cosa que te está ayudando ahora.", "Toma una respiración lenta y deja que esté bien.", "Tal vez pregunta cómo está alguien que no tiene un día tan bueno."] }
       },
       child: {
-        en: { title: "You’re feeling pretty good right now!", lead: "That’s great — let’s notice the good feeling so it’s easier to find again.",
+        en: { title: "A good moment right now!", lead: "That’s great — let’s notice the good feeling so it’s easier to find again.",
               steps: ["Notice one thing that feels nice right now.", "Take a slow, happy breath.", "Maybe share a smile with someone."] },
-        es: { title: "¡Te sientes bastante bien ahora mismo!", lead: "¡Qué bien! — notemos el sentimiento bueno para que sea más fácil encontrarlo otra vez.",
+        es: { title: "¡Un buen momento ahora mismo!", lead: "¡Qué bien! — notemos el sentimiento bueno para que sea más fácil encontrarlo otra vez.",
               steps: ["Nota una cosa que se siente bien ahora.", "Toma una respiración lenta y feliz.", "Tal vez comparte una sonrisa con alguien."] }
       }
     }
@@ -21384,9 +21492,9 @@ window.aogGraceBreathe = function (btn) {
       toolLabel: { en: "Try: 4-7-8 Breathing", es: "Prueba: Respiración 4-7-8" },
       deeper: { en: "Meet your Inner Coach — open the lessons", es: "Conoce a tu Guía Interior — abre las lecciones" },
       affirm: {
-        adult: { en: "You are not the things that voice is calling you. It is loud — that does not make it right.", es: "No eres lo que esa voz te dice. Es fuerte — eso no la hace verdad." },
-        teen:  { en: "You are not what that voice says. It’s loud right now — loud isn’t the same as true.", es: "No eres lo que dice esa voz. Ahora está fuerte — fuerte no es lo mismo que verdad." },
-        child: { en: "You are good, even when the grumpy voice is loud. This feeling will get smaller.", es: "Eres bueno/a, aunque la voz gruñona esté fuerte. Este sentimiento se hará más pequeño." }
+        adult: { en: "It sounds like that inner voice is being loud and hard on you right now. Loud doesn’t make it true — you don’t have to believe everything it says.", es: "Parece que esa voz interior está fuerte y dura contigo ahora mismo. Que sea fuerte no la hace verdad — no tienes que creer todo lo que dice." },
+        teen:  { en: "It sounds like that voice in your head is being really loud right now. Loud isn’t the same as true — you can let it talk without taking it as fact.", es: "Parece que esa voz en tu cabeza está muy fuerte ahora mismo. Fuerte no es lo mismo que verdad — puedes dejarla hablar sin tomarla como un hecho." },
+        child: { en: "It sounds like a grumpy voice is being loud right now. Loud feelings get smaller, and this one can get smaller too.", es: "Parece que una voz gruñona está fuerte ahora mismo. Los sentimientos fuertes se hacen más pequeños, y este también puede hacerse más pequeño." }
       }
     },
     storm: {
@@ -21394,9 +21502,9 @@ window.aogGraceBreathe = function (btn) {
       toolLabel: { en: "Try: 4-7-8 Breathing", es: "Prueba: Respiración 4-7-8" },
       deeper: { en: "Learn the Window of Tolerance", es: "Aprende la Ventana de Tolerancia" },
       affirm: {
-        adult: { en: "Nothing has to be solved this second. Your only job right now is to come down a notch.", es: "No hay que resolver nada en este segundo. Tu única tarea ahora es bajar un nivel." },
-        teen:  { en: "You don’t have to fix anything yet. Right now, you just have to land.", es: "No tienes que arreglar nada todavía. Ahora solo tienes que aterrizar." },
-        child: { en: "Your body is just going fast. We can help it slow down together.", es: "Tu cuerpo solo va rápido. Podemos ayudarlo a ir despacio juntos." }
+        adult: { en: "It sounds like a lot may be moving through you very fast right now. Nothing has to be solved this second — the one small thing that matters now is coming down a notch.", es: "Parece que mucho puede estar moviéndose muy rápido dentro de ti ahora mismo. No hay que resolver nada en este segundo — lo único que importa ahora es bajar un nivel." },
+        teen:  { en: "It sounds like everything may be moving really fast right now. You don’t have to fix anything yet — the only thing for right now is letting yourself land.", es: "Parece que todo puede estar moviéndose muy rápido ahora mismo. No tienes que arreglar nada todavía — lo único para este momento es dejarte aterrizar." },
+        child: { en: "It sounds like your body may be going really fast right now. We can help it slow down together, one breath at a time.", es: "Parece que tu cuerpo puede estar yendo muy rápido ahora mismo. Podemos ayudarlo a ir más despacio juntos, una respiración a la vez." }
       }
     },
     fog: {
@@ -21404,9 +21512,9 @@ window.aogGraceBreathe = function (btn) {
       toolLabel: { en: "Try: 5-4-3-2-1 Grounding", es: "Prueba: Anclaje 5-4-3-2-1" },
       deeper: { en: "Learn the Window of Tolerance", es: "Aprende la Ventana de Tolerancia" },
       affirm: {
-        adult: { en: "Going numb isn’t broken — it’s your body protecting you. You’re allowed to come back slowly.", es: "Adormecerse no es estar roto — es tu cuerpo protegiéndote. Puedes volver despacio." },
-        teen:  { en: "Feeling blank doesn’t mean something’s wrong with you. You can come back slowly.", es: "Sentirte en blanco no significa que algo esté mal contigo. Puedes volver despacio." },
-        child: { en: "It’s okay to feel far away sometimes. Your body knows how to come back.", es: "Está bien sentirse lejos a veces. Tu cuerpo sabe cómo volver." }
+        adult: { en: "It sounds like things may feel far away or hard to reach right now. That’s your body easing off — coming back slowly, at your own pace, is okay.", es: "Parece que las cosas pueden sentirse lejanas o difíciles de alcanzar ahora mismo. Es tu cuerpo bajando el ritmo — volver despacio, a tu propio paso, está bien." },
+        teen:  { en: "It sounds like everything may feel kind of blank or far away right now. That doesn’t mean something’s wrong — coming back slowly is okay, no rush.", es: "Parece que todo puede sentirse en blanco o lejano ahora mismo. Eso no significa que algo esté mal — volver despacio está bien, sin prisa." },
+        child: { en: "It sounds like you may feel a little far away right now. That’s okay — your body knows how to come back, and you can take your time.", es: "Parece que podrías sentirte un poco lejos ahora mismo. Está bien — tu cuerpo sabe cómo volver, y puedes tomarte tu tiempo." }
       }
     },
     loop: {
@@ -21414,9 +21522,9 @@ window.aogGraceBreathe = function (btn) {
       toolLabel: { en: "Try: a Movement Break", es: "Prueba: una pausa de movimiento" },
       deeper: { en: "The Letting-Go practice — open the lessons", es: "La práctica de Soltar — abre las lecciones" },
       affirm: {
-        adult: { en: "Thinking about it more is not the same as solving it. You’re allowed to set it down.", es: "Pensarlo más no es lo mismo que resolverlo. Puedes soltarlo." },
-        teen:  { en: "Replaying it isn’t fixing it. You’re allowed to put it down for now.", es: "Repetirlo no lo arregla. Puedes soltarlo por ahora." },
-        child: { en: "You don’t have to think about the stuck thing right now. Let’s give your brain a break.", es: "No tienes que pensar en la cosa atascada ahora. Démosle un descanso a tu cerebro." }
+        adult: { en: "It sounds like your mind may be circling the same thing over and over. Thinking about it more isn’t the same as solving it — setting it down for now is okay.", es: "Parece que tu mente puede estar dando vueltas a lo mismo una y otra vez. Pensarlo más no es lo mismo que resolverlo — soltarlo por ahora está bien." },
+        teen:  { en: "It sounds like your brain may be replaying the same thing on a loop. Replaying it isn’t fixing it — putting it down for a bit is okay.", es: "Parece que tu cerebro puede estar repitiendo lo mismo en bucle. Repetirlo no lo arregla — soltarlo por un rato está bien." },
+        child: { en: "It sounds like your brain may be stuck on one thing right now. You don’t have to think about it this minute — let’s give your brain a little break.", es: "Parece que tu cerebro puede estar atascado en una sola cosa ahora mismo. No tienes que pensar en eso este minuto — démosle un pequeño descanso a tu cerebro." }
       }
     },
     steady: {
@@ -21424,9 +21532,9 @@ window.aogGraceBreathe = function (btn) {
       toolLabel: { en: "", es: "" },
       deeper: { en: "Explore your calm & regulation tools", es: "Explora tus herramientas de calma" },
       affirm: {
-        adult: { en: "Steady is real, and it’s yours. Notice how you got here — that’s the map back.", es: "La calma es real, y es tuya. Nota cómo llegaste aquí — ese es el mapa de regreso." },
-        teen:  { en: "This good moment counts. Notice what helped — that’s how you find it again.", es: "Este buen momento cuenta. Nota qué ayudó — así lo encuentras otra vez." },
-        child: { en: "You’re doing great right now. Remember this good feeling!", es: "Lo estás haciendo muy bien ahora. ¡Recuerda este buen sentimiento!" }
+        adult: { en: "It sounds like things may feel steady right now. Notice what’s helping in this moment — that’s worth carrying forward.", es: "Parece que las cosas pueden sentirse estables ahora mismo. Nota qué te está ayudando en este momento — eso vale la pena llevarlo contigo." },
+        teen:  { en: "It sounds like you may be in a pretty good moment right now. Notice what’s helping — that’s how you find your way back to it.", es: "Parece que puedes estar en un buen momento ahora mismo. Nota qué te está ayudando — así encuentras el camino de regreso a él." },
+        child: { en: "It sounds like you may be feeling calm right now. Notice what feels good — you can remember it for next time.", es: "Parece que puedes estar sintiéndote en calma ahora mismo. Nota qué se siente bien — puedes recordarlo para la próxima vez." }
       }
     }
   };
@@ -21550,6 +21658,32 @@ window.aogGraceBreathe = function (btn) {
       "</div>";
   }
 
+  /* ---- Grace Response Engine ("A grace note") ----
+     Three canonical lines for the archetype combinations (body · voice · brain),
+     with a gentle fallback for every other combination. The live pills use a
+     richer vocabulary, so we map them onto the engine's vocab first. */
+  var GRACE_RESPONSES = [
+    { body: "fast",  voice: "mean",    brain: "stuck",
+      en: "Your mind may be working very hard right now. Let’s focus on one small thing you can do next.",
+      es: "Tu mente puede estar trabajando muy duro ahora mismo. Concentrémonos en una pequeña cosa que puedas hacer a continuación." },
+    { body: "tired", voice: "yelling", brain: "foggy",
+      en: "It sounds like today may feel heavier than usual. You do not have to carry everything at once.",
+      es: "Parece que hoy puede sentirse más pesado de lo normal. No tienes que cargarlo todo a la vez." },
+    { body: "calm",  voice: "kind",    brain: "clear",
+      en: "You seem grounded right now. Notice what’s helping and carry it forward.",
+      es: "Pareces estar con los pies en la tierra ahora mismo. Nota qué te está ayudando y llévalo contigo." }
+  ];
+  function gnMapBody(v)  { return v === "hyper" ? "fast" : v === "hypo" ? "tired" : v === "window" ? "calm" : ""; }
+  function gnMapVoice(v) { return v === "quiet" ? "kind" : v === "rail" ? "yelling" : (v === "loud" || v === "nag") ? "mean" : ""; }
+  function gnMapBrain(v) { return v === "clear" ? "clear" : v === "fog" ? "foggy" : (v === "loop" || v === "scattered") ? "stuck" : ""; }
+  function getGraceResponse(body, voice, brain, L) {
+    var m = GRACE_RESPONSES.find(function (it) { return it.body === body && it.voice === voice && it.brain === brain; });
+    if (m) return L === "es" ? m.es : m.en;
+    return L === "es"
+      ? "Gracias por registrarte. Concentrémonos en un siguiente paso útil."
+      : "Thank you for checking in. Let’s focus on one helpful next step.";
+  }
+
   function show() {
     var es = (typeof lang !== "undefined" && lang === "es");
     var L = es ? "es" : "en";
@@ -21584,6 +21718,9 @@ window.aogGraceBreathe = function (btn) {
     /* affirmation (raw, validating) + tools row (in-app tool + curriculum doorway) */
     var ex = RN_EXTRA[route] || RN_EXTRA.steady;
     var affirmHtml = "<div class=\"rn-affirm\">" + ((ex.affirm[aud] || ex.affirm.adult)[L]) + "</div>";
+    /* "A grace note" — short, non-diagnostic line from the Grace Response Engine */
+    var graceText = getGraceResponse(gnMapBody(picks["1"]), gnMapVoice(picks["2"]), gnMapBrain(picks["3"]), L);
+    var graceNoteHtml = "<div class=\"rn-grace-note\"><div class=\"rn-grace-note-ey\">" + (es ? "UNA NOTA DE GRACIA" : "A GRACE NOTE") + "</div><p>" + graceText + "</p></div>";
     var myt = "if(window.aogRenderMyTools){window.aogRenderMyTools();}else if(typeof showScreen==='function'){showScreen('screen-aog-mytools');}if(typeof aogSetHash==='function'){aogSetHash('mytools');}";
     var lib = ex.query
       ? "if(window.aogGoConstruct){aogGoConstruct('" + ex.query + "','" + aud + "');}else if(window.aogGoLibrary){aogGoLibrary();}"
@@ -21678,6 +21815,7 @@ window.aogGraceBreathe = function (btn) {
     box.className = "wp-tank-result " + band;
     box.innerHTML =
       "<div class=\"tk-instant-top\"><span class=\"tk-instant-badge\">" + eyebrow + "</span></div>" +
+      graceNoteHtml +
       affirmHtml +
       "<div class=\"band\">" + a.title + "</div>" +
       "<p class=\"rn-lead\">" + a.lead + "</p>" +
@@ -21945,6 +22083,26 @@ window.aogGraceBreathe = function (btn) {
     if (el) el.textContent = L(list[CT_STATE[key]].en, list[CT_STATE[key]].es);
   }
 
+  /* Grace Lens — a collapsible "why we do this" frame beneath each circle.
+     Teacher-facing intention, not a script to read aloud. Bilingual. */
+  function ctGraceLens(key) {
+    var LENS = {
+      reset:     { en: "Our goal is not perfect focus. Our goal is arriving together.", es: "Nuestra meta no es la concentración perfecta. Nuestra meta es llegar juntos." },
+      feelings:  { en: "Every feeling belongs. No feeling earns more value than another.", es: "Cada sentimiento tiene un lugar. Ningún sentimiento vale más que otro." },
+      coach:     { en: "We speak to ourselves the way we would speak to a friend.", es: "Nos hablamos como le hablaríamos a un amigo." },
+      repair:    { en: "Repair is not punishment. Repair is how trust grows.", es: "Reparar no es castigo. Reparar es cómo crece la confianza." },
+      strengths: { en: "We notice strengths so people can see themselves more clearly.", es: "Notamos las fortalezas para que las personas se vean con más claridad." }
+    };
+    var t = LENS[key];
+    if (!t) return "";
+    return '<details class="ct-grace-lens" style="max-width:520px;margin:16px auto 4px;border:1px solid rgba(217,163,59,.5);border-radius:12px;background:#FBF7EC;overflow:hidden;">' +
+        '<summary style="cursor:pointer;list-style:none;padding:11px 15px;font-family:var(--font-sans);font-weight:800;font-size:13px;letter-spacing:.02em;color:var(--navy);display:flex;align-items:center;gap:8px;">' +
+          '<span aria-hidden="true">🕊️</span>' + L("Grace Lens", "La lente de la gracia") +
+        '</summary>' +
+        '<div style="padding:0 15px 14px;font-family:var(--font-serif);font-size:16px;line-height:1.5;color:var(--navy);font-style:italic;">“' + L(t.en, t.es) + '”</div>' +
+      '</details>';
+  }
+
   /* Hub menu — the landing screen for classreset */
   function buildClassReset() {
     var cards = CT_MENU.map(function (m) {
@@ -21974,6 +22132,7 @@ window.aogGraceBreathe = function (btn) {
       '<div class="cr-cue" id="crCue" aria-live="polite">' + L("Press start. Eyes on the circle, or closed.", "Pulsa empezar. Mira el círculo, o cierra los ojos.") + '</div>' +
       '<div class="cr-round" id="crRound" aria-live="polite"></div>' +
       '<div class="aogt-controls"><button class="btn" id="crStart" style="background:var(--gold);border-color:var(--gold);color:var(--navy);">' + L("Start — together", "Empezar — juntos") + '</button></div>' +
+      ctGraceLens("reset") +
       crumbs("window of tolerance", "previews/Story-B1-Ch9.pdf", L("Carrying Too Much", "Cargando demasiado"));
   }
   function initReset() {
@@ -22008,6 +22167,7 @@ window.aogGraceBreathe = function (btn) {
       '<div id="ctStem" style="font-family:var(--font-serif);font-size:22px;line-height:1.4;color:var(--navy);text-align:center;background:#FBF7EC;border-radius:14px;padding:20px 18px;margin:6px auto 12px;max-width:520px;">' + L(CT_STEMS[0].en, CT_STEMS[0].es) + '</div>' +
       '<div class="aogt-controls"><button class="btn" id="ctStemBtn" style="background:var(--gold);border-color:var(--gold);color:var(--navy);">' + L("New prompt", "Otra frase") + '</button></div>' +
       '<div style="font-family:var(--font-sans);font-size:12.5px;color:var(--ink);opacity:.75;text-align:center;max-width:520px;margin:10px auto 0;">' + L("Stuck? Words that help: calm, tired, nervous, excited, frustrated, okay, hopeful, worn out, ready.", "¿Atascado? Palabras que ayudan: tranquilo, cansado, nervioso, emocionado, frustrado, bien, esperanzado, agotado, listo.") + '</div>' +
+      ctGraceLens("feelings") +
       crumbs("self-awareness");
   }
   function initFeelings() { var b = document.getElementById("ctStemBtn"); if (b) b.onclick = function () { ctRotate(CT_STEMS, "ctStem", "feelings"); }; }
@@ -22026,6 +22186,7 @@ window.aogGraceBreathe = function (btn) {
         '<button class="btn" id="ctCoachBtn" style="background:var(--gold);border-color:var(--gold);color:var(--navy);">' + L("Reveal a coach response", "Revelar respuesta del guía") + '</button>' +
         '<button class="btn" id="ctCoachNext" style="background:#fff;border-color:var(--navy);color:var(--navy);">' + L("Next thought", "Siguiente pensamiento") + '</button>' +
       '</div>' +
+      ctGraceLens("coach") +
       crumbs("inner critic");
   }
   function initCoach() {
@@ -22051,6 +22212,7 @@ window.aogGraceBreathe = function (btn) {
         '<li><b>' + L("Reset.", "Reinicia.") + '</b> ' + L("“Next time, I'll ___.” Then let it go.", "“La próxima vez, ___.” Luego suéltalo.") + '</li>' +
       '</ol>' +
       '<div class="aogt-controls"><button class="btn" id="ctScenBtn" style="background:var(--gold);border-color:var(--gold);color:var(--navy);">' + L("New scenario", "Otro caso") + '</button></div>' +
+      ctGraceLens("repair") +
       crumbs("repair");
   }
   function initRepair() { var b = document.getElementById("ctScenBtn"); if (b) b.onclick = function () { ctRotate(CT_SCEN, "ctScen", "repair"); }; }
@@ -22065,6 +22227,7 @@ window.aogGraceBreathe = function (btn) {
       '<div id="ctStr" style="font-family:var(--font-serif);font-size:21px;line-height:1.4;color:var(--navy);text-align:center;background:#FBF7EC;border-radius:14px;padding:20px 18px;margin:6px auto 12px;max-width:520px;">' + L(CT_STR[0].en, CT_STR[0].es) + '</div>' +
       '<div class="aogt-controls"><button class="btn" id="ctStrBtn" style="background:var(--gold);border-color:var(--gold);color:var(--navy);">' + L("New prompt", "Otra frase") + '</button></div>' +
       '<div style="font-family:var(--font-sans);font-size:12.5px;color:var(--ink);opacity:.75;text-align:center;max-width:520px;margin:10px auto 0;">' + L("Strength words: kind, brave, patient, funny, careful, loyal, curious, steady, generous, determined.", "Palabras de fortaleza: amable, valiente, paciente, gracioso, cuidadoso, leal, curioso, firme, generoso, determinado.") + '</div>' +
+      ctGraceLens("strengths") +
       crumbs("self-compassion");
   }
   function initStrengths() { var b = document.getElementById("ctStrBtn"); if (b) b.onclick = function () { ctRotate(CT_STR, "ctStr", "strengths"); }; }
@@ -32002,5 +32165,385 @@ window.addEventListener('load', _installToolScreenHook);
 </body>
 </html>
 </script>
+
+<!-- ============ PERSONAL WISDOM MEMORY (local-only regulation strategies) ============ -->
+<style id="aog-quietspace-css">
+  /* ===== Personal Wisdom Memory ===== */
+  .aog-wisdom{ max-width:560px; margin:22px auto 0; }
+  .aog-wisdom-recall{ display:flex; gap:12px; align-items:flex-start; text-align:left;
+    background:var(--cream,#FBF7EC); border:1px solid var(--rule,#E6DCC4); border-left:3px solid var(--gold,#D9A33B);
+    border-radius:0 12px 12px 0; padding:13px 16px; margin:0 auto 18px; }
+  :root[data-theme="dark"] .aog-wisdom-recall{ background:#0E1822; }
+  .aog-wisdom-recall-ic{ font-size:20px; line-height:1.3; flex:0 0 auto; }
+  .aog-wisdom-recall-line{ font-family:var(--font-sans); font-size:14.5px; line-height:1.55; color:var(--navy,#0A1E33); font-weight:600; }
+  :root[data-theme="dark"] .aog-wisdom-recall-line{ color:var(--cream,#F4ECDA); }
+  .aog-wisdom-others{ font-family:var(--font-sans); font-size:12.5px; color:var(--ink-soft,#46506E); margin-top:5px; }
+  .aog-wisdom-picker{ text-align:center; }
+  .aog-wisdom-q{ font-family:var(--font-serif,Georgia,serif); font-size:18px; color:var(--navy,#0A1E33); margin:2px 0 4px; }
+  :root[data-theme="dark"] .aog-wisdom-q{ color:var(--cream,#F4ECDA); }
+  .aog-wisdom-sub{ font-family:var(--font-sans); font-size:12.5px; color:var(--ink-soft,#46506E); margin:0 0 14px; }
+  .aog-wisdom-chips{ display:flex; flex-wrap:wrap; gap:8px; justify-content:center; }
+  .aog-wisdom-chip{ display:inline-flex; align-items:center; gap:6px; }
+  .aog-wisdom-chip .wic{ font-size:15px; }
+  .aog-wisdom-else{ display:flex; gap:8px; justify-content:center; margin-top:12px; }
+  .aog-wisdom-else input{ flex:1; max-width:260px; padding:9px 12px; border:1px solid var(--rule,#E6DCC4); border-radius:10px; font-size:14px; background:var(--paper,#fff); color:var(--ink,#26303f); }
+  .aog-wisdom-saved{ font-family:var(--font-sans); font-size:12.5px; color:var(--gold-deep,#9a6f24); margin-top:10px; }
+
+  /* ===== "I don't know" pathway ===== */
+  .rn-idk-trigger{ display:block; margin:12px auto 0; background:none; border:none; cursor:pointer;
+    font-family:var(--font-sans); font-size:13.5px; font-weight:600; color:var(--ink-soft,#46506E);
+    text-decoration:underline; text-underline-offset:3px; }
+  .rn-idk-trigger:hover{ color:var(--navy,#0A1E33); }
+  :root[data-theme="dark"] .rn-idk-trigger{ color:var(--cream,#F4ECDA); }
+  #rnIdkBox{ max-width:560px; margin:16px auto 0; text-align:center; }
+  .rn-idk-title{ font-family:var(--font-serif,Georgia,serif); font-size:22px; color:var(--navy,#0A1E33); margin:2px 0 6px; }
+  :root[data-theme="dark"] .rn-idk-title{ color:var(--cream,#F4ECDA); }
+  .rn-idk-msg{ font-family:var(--font-sans); font-size:14.5px; line-height:1.55; color:var(--ink,#26303f); margin:0 auto 16px; max-width:460px; }
+  :root[data-theme="dark"] .rn-idk-msg{ color:var(--cream,#F4ECDA); }
+  .rn-idk-q{ font-family:var(--font-serif,Georgia,serif); font-size:19px; color:var(--navy,#0A1E33); margin:6px 0 12px; }
+  :root[data-theme="dark"] .rn-idk-q{ color:var(--cream,#F4ECDA); }
+  .rn-idk-opts{ display:flex; gap:10px; justify-content:center; flex-wrap:wrap; }
+  #rnIdkBox .tk-pill.aog-suggested{ border-color:var(--gold,#D9A33B); box-shadow:0 0 0 2px rgba(217,163,59,.28); }
+  .rn-idk-suggest{ font-family:var(--font-sans); font-size:12.5px; font-style:italic; color:var(--ink-soft,#46506E); margin:12px auto 0; max-width:420px; }
+  .rn-idk-grace{ max-width:480px; margin:2px auto 14px; padding:15px 18px; border-radius:16px; text-align:center;
+    background:linear-gradient(180deg, color-mix(in srgb, var(--gold-pale,#F1DFA8) 32%, var(--paper,#fff)), var(--paper,#fff));
+    border:1px solid var(--rule,#E4DAC5); box-shadow:0 10px 26px -20px rgba(10,30,51,.5); }
+  :root[data-theme="dark"] .rn-idk-grace{ background:linear-gradient(180deg, rgba(20,34,48,.7), rgba(14,24,34,.55)); border-color:rgba(255,255,255,.12); }
+  .rn-idk-grace-ey{ font-family:var(--font-sans); font-size:10.5px; font-weight:800; letter-spacing:.16em; text-transform:uppercase; color:var(--gold-deep,#9a6f24); margin-bottom:6px; }
+  .rn-idk-grace p{ font-family:var(--font-serif,Georgia,serif); font-size:17px; line-height:1.55; color:var(--navy,#0A1E33); margin:0; font-style:italic; }
+  :root[data-theme="dark"] .rn-idk-grace p{ color:var(--cream,#F4ECDA); }
+  .rn-idk-say{ font-family:var(--font-sans); font-size:15px; line-height:1.6; color:var(--ink,#26303f); background:var(--cream,#FBF7EC);
+    border-left:3px solid var(--gold,#D9A33B); border-radius:0 10px 10px 0; padding:12px 14px; margin:0 auto 14px; max-width:460px; text-align:left; }
+  :root[data-theme="dark"] .rn-idk-say{ background:#0E1822; color:var(--cream,#F4ECDA); }
+  .rn-idk-tools{ display:flex; gap:10px; justify-content:center; flex-wrap:wrap; margin-top:6px; }
+  .rn-idk-flag{ font-family:var(--font-sans); font-size:12px; color:var(--ink-faint,#8A93A6); margin-top:14px; }
+
+  /* ===== "A grace note" card (Right Now result) ===== */
+  .rn-grace-note{ max-width:560px; margin:2px auto 14px; padding:16px 18px 17px; border-radius:16px;
+    background:linear-gradient(180deg, color-mix(in srgb, var(--gold-pale,#F1DFA8) 32%, var(--paper,#fff)), var(--paper,#fff));
+    border:1px solid var(--rule,#E4DAC5); text-align:center; box-shadow:0 10px 26px -20px rgba(10,30,51,.5); }
+  :root[data-theme="dark"] .rn-grace-note{ background:linear-gradient(180deg, rgba(20,34,48,.7), rgba(14,24,34,.55)); border-color:rgba(255,255,255,.12); }
+  .rn-grace-note-ey{ font-family:var(--font-sans); font-size:10.5px; font-weight:800; letter-spacing:.16em; text-transform:uppercase; color:var(--gold-deep,#9a6f24); margin-bottom:7px; }
+  .rn-grace-note p{ font-family:var(--font-serif,Georgia,serif); font-size:17px; line-height:1.6; color:var(--navy,#0A1E33); margin:0; font-style:italic; }
+  :root[data-theme="dark"] .rn-grace-note p{ color:var(--cream,#F4ECDA); }
+
+  /* ===== Reference-card panels — shared chrome (What To Say Instead + Grace Lens) ===== */
+  .aog-saysinstead, .aog-glref{ border:1px solid var(--rule,#E4DAC5); background:var(--paper,#fff); overflow:hidden; }
+  :root[data-theme="dark"] .aog-saysinstead, :root[data-theme="dark"] .aog-glref{ background:#0E1822; border-color:rgba(255,255,255,.12); }
+  .aog-saysinstead > summary, .aog-glref > summary{ cursor:pointer; list-style:none; }
+  .aog-saysinstead > summary::-webkit-details-marker, .aog-glref > summary::-webkit-details-marker{ display:none; }
+  .aog-saysinstead-h, .aog-glref-h{ font-family:var(--font-serif,Georgia,serif); color:var(--navy); margin:0; display:flex; align-items:center; }
+  :root[data-theme="dark"] .aog-saysinstead-h, :root[data-theme="dark"] .aog-glref-h{ color:var(--cream,#F4ECDA); }
+  .aog-saysinstead-sub, .aog-glref-sub{ font-family:var(--font-sans); color:var(--ink-soft,#46506E); line-height:1.5; }
+  .aog-si-card, .aog-glref-card{ border:1px solid var(--rule,#E6DCC4); border-left:3px solid var(--gold,#D9A33B); border-radius:0 12px 12px 0; background:var(--cream,#FBF7EC); }
+  :root[data-theme="dark"] .aog-si-card, :root[data-theme="dark"] .aog-glref-card{ background:#13212f; border-color:rgba(255,255,255,.10); }
+
+  /* What To Say Instead — compact (Quiet Space "For teachers") */
+  .aog-saysinstead{ max-width:100%; margin:14px 0 2px; border-radius:14px; box-shadow:0 8px 22px -16px rgba(10,30,51,.4); }
+  .aog-saysinstead > summary{ padding:13px 15px; }
+  .aog-saysinstead-h{ font-size:17px; gap:9px; }
+  .aog-saysinstead-sub{ font-size:12.5px; margin:5px 0 0; }
+  .aog-si-grid{ display:grid; grid-template-columns:1fr; gap:10px; padding:4px 15px 16px; }
+  .aog-si-card{ padding:11px 13px; }
+  .aog-si-when{ font-family:var(--font-sans); font-weight:800; font-size:11.5px; letter-spacing:.04em; text-transform:uppercase; color:var(--gold-deep,#9a6f24); margin-bottom:7px; }
+  .aog-si-line{ font-family:var(--font-sans); font-size:14px; line-height:1.5; margin:0 0 5px; }
+  .aog-si-line .tag{ display:inline-block; font-weight:800; font-size:10px; letter-spacing:.07em; text-transform:uppercase; margin-right:7px; }
+  .aog-si-instead{ color:var(--ink-soft,#6b7280); }
+  .aog-si-instead .tag{ color:#a23b3b; }
+  .aog-si-instead .ph{ text-decoration:line-through; opacity:.75; }
+  .aog-si-try{ color:var(--navy); font-weight:600; }
+  :root[data-theme="dark"] .aog-si-try{ color:var(--cream,#F4ECDA); }
+  .aog-si-try .tag{ color:#2e7d52; }
+
+  /* Grace Lens reference — wide (Teacher Space tools page) */
+  .aog-glref{ max-width:760px; margin:14px auto 18px; border-radius:16px; box-shadow:0 10px 26px -18px rgba(10,30,51,.4); }
+  .aog-glref > summary{ padding:16px 20px; }
+  .aog-glref-h{ font-size:21px; gap:10px; }
+  .aog-glref-sub{ font-size:13.5px; margin:6px 0 0; }
+  .aog-glref-grid{ display:grid; grid-template-columns:1fr 1fr; gap:12px; padding:4px 20px 22px; }
+  @media (max-width:600px){ .aog-glref-grid{ grid-template-columns:1fr; } }
+  .aog-glref-card{ padding:12px 14px; }
+  .aog-glref-act{ font-family:var(--font-sans); font-weight:800; font-size:12px; letter-spacing:.04em; text-transform:uppercase; color:var(--gold-deep,#9a6f24); margin-bottom:7px; }
+  .aog-glref-txt{ font-family:var(--font-serif,Georgia,serif); font-size:15.5px; line-height:1.5; color:var(--navy); font-style:italic; margin:0; }
+  :root[data-theme="dark"] .aog-glref-txt{ color:var(--cream,#F4ECDA); }
+</style>
+<script id="aog-wisdom-js">
+/* Personal Wisdom Memory — students mark what helps them regulate.
+   PRIVACY: stored ONLY in localStorage under "aog_preferred_support".
+   It is never written into STORAGE_KEY records, never passed to syncRecord(),
+   and therefore never included in MTSS reporting or Google Sheets sync.
+   clearLocalData() also removes it. No dashboard, no export. */
+(function () {
+  "use strict";
+  var KEY = "aog_preferred_support";
+  var MAX = 6;
+  var OPTS = [
+    { v: "quiet",      ic: "🤫", en: "Quiet",              es: "Silencio" },
+    { v: "movement",   ic: "🏃", en: "Movement",           es: "Movimiento" },
+    { v: "music",      ic: "🎵", en: "Music",              es: "Música" },
+    { v: "drawing",    ic: "🎨", en: "Drawing",            es: "Dibujar" },
+    { v: "reading",    ic: "📖", en: "Reading",            es: "Leer" },
+    { v: "breathing",  ic: "🫁", en: "Deep Breathing",     es: "Respiración profunda" },
+    { v: "talking",    ic: "💬", en: "Talking to Someone", es: "Hablar con alguien" },
+    { v: "water",      ic: "💧", en: "Water Break",        es: "Pausa de agua" },
+    { v: "nature",     ic: "🌿", en: "Nature",             es: "Naturaleza" },
+    { v: "stretching", ic: "🤸", en: "Stretching",         es: "Estiramiento" },
+    { v: "else",       ic: "✨",       en: "Something Else",     es: "Algo más" }
+  ];
+  function curLang() {
+    var es = (typeof surveyLang !== "undefined" && surveyLang === "es") ||
+             (typeof lang !== "undefined" && lang === "es");
+    return es ? "es" : "en";
+  }
+  function esc(s) {
+    if (typeof escapeHtml === "function") { try { return escapeHtml(s); } catch (e) {} }
+    return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) {
+      return ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", "\"": "&quot;", "'": "&#39;" })[c];
+    });
+  }
+  function read() {
+    try { var a = JSON.parse(localStorage.getItem(KEY) || "[]"); return Array.isArray(a) ? a : []; }
+    catch (e) { return []; }
+  }
+  function write(a) {
+    try { localStorage.setItem(KEY, JSON.stringify(a.slice(0, MAX))); } catch (e) {}
+  }
+  function optFor(v) { for (var i = 0; i < OPTS.length; i++) { if (OPTS[i].v === v) return OPTS[i]; } return null; }
+  function labelOf(entry, l) {
+    l = l || curLang();
+    if (entry.v === "else" && entry.text) return entry.text;
+    var o = optFor(entry.v);
+    return o ? (l === "es" ? o.es : o.en) : (entry.text || entry.v);
+  }
+  function sameEntry(e, v, text) {
+    if (e.v !== v) return false;
+    if (v === "else") return (e.text || "") === (text || "");
+    return true;
+  }
+
+  // ---- public data API ----
+  window.aogWisdomGet = read;
+  window.aogWisdomAdd = function (v, text) {
+    var a = read().filter(function (e) { return !sameEntry(e, v, text); });
+    var entry = { v: v, ts: Date.now() };
+    if (v === "else" && text) entry.text = text;
+    a.unshift(entry);
+    write(a);
+    return a;
+  };
+  window.aogWisdomRemove = function (v, text) {
+    var a = read().filter(function (e) { return !sameEntry(e, v, text); });
+    write(a);
+    return a;
+  };
+
+  // ---- rendering ----
+  function pickerHtml(l, prefs) {
+    var prompt = l === "es" ? "¿Qué suele ayudarte cuando te sientes así?" : "What usually helps when you’re feeling this way?";
+    var sub = l === "es" ? "Toca lo que te funcione. Se guarda solo en este dispositivo." : "Tap what works for you — saved only on this device.";
+    var savedSet = {};
+    prefs.forEach(function (e) { if (e.v !== "else") savedSet[e.v] = 1; });
+    var chips = OPTS.map(function (o) {
+      var on = savedSet[o.v] ? " on" : "";
+      var labtxt = l === "es" ? o.es : o.en;
+      return "<button type=\"button\" class=\"choice-chip aog-wisdom-chip" + on + "\" data-v=\"" + o.v +
+        "\" onclick=\"aogWisdomToggle(this)\"><span class=\"wic\" aria-hidden=\"true\">" + o.ic + "</span>" + esc(labtxt) + "</button>";
+    }).join("");
+    var elseRow = "<div id=\"aogWisdomElseRow\" class=\"aog-wisdom-else\" hidden>" +
+        "<input type=\"text\" id=\"aogWisdomElseInput\" maxlength=\"40\" placeholder=\"" +
+        (l === "es" ? "Escribe lo que te ayuda…" : "Type what helps…") +
+        "\" onkeydown=\"if(event.key==='Enter'){event.preventDefault();aogWisdomSaveElse();}\">" +
+        "<button type=\"button\" class=\"btn\" onclick=\"aogWisdomSaveElse()\">" + (l === "es" ? "Guardar" : "Save") + "</button>" +
+      "</div>";
+    return "<div class=\"aog-wisdom-picker\">" +
+        "<div class=\"aog-wisdom-q\">" + prompt + "</div>" +
+        "<div class=\"aog-wisdom-sub\">" + sub + "</div>" +
+        "<div class=\"aog-wisdom-chips\">" + chips + "</div>" +
+        elseRow +
+        "<div class=\"aog-wisdom-saved\" id=\"aogWisdomSavedNote\" hidden></div>" +
+      "</div>";
+  }
+  function recallHtml(l, prefs, mode) {
+    if (!prefs.length) return "";
+    var top = esc(labelOf(prefs[0], l));
+    var line = (mode === "farewell")
+      ? (l === "es" ? "La última vez, “" + top + "” te ayudó. ¿Quieres intentarlo otra vez?"
+                    : "Last time, “" + top + "” helped. Would you like to try that again?")
+      : (l === "es" ? "La última vez elegiste “" + top + "” como algo que te ayuda. Llévalo contigo hoy."
+                    : "You previously chose “" + top + "” as a helpful strategy. Keep it close today.");
+    var others = prefs.slice(1, 4).map(function (e) { return esc(labelOf(e, l)); });
+    var othersLine = others.length
+      ? "<div class=\"aog-wisdom-others\">" + (l === "es" ? "También guardaste: " : "You’ve also saved: ") + others.join(" · ") + "</div>"
+      : "";
+    return "<div class=\"aog-wisdom-recall\">" +
+        "<div class=\"aog-wisdom-recall-ic\" aria-hidden=\"true\">🌱</div>" +
+        "<div><div class=\"aog-wisdom-recall-line\">" + line + "</div>" + othersLine + "</div>" +
+      "</div>";
+  }
+
+  window.aogWisdomMount = function (id, mode) {
+    var box = document.getElementById(id);
+    if (!box) return;
+    var l = curLang();
+    var prefs = read();
+    var html = recallHtml(l, prefs, mode);
+    if (mode === "farewell") html += pickerHtml(l, prefs);
+    box.innerHTML = html;
+    box.style.display = html ? "" : "none";
+  };
+
+  window.aogWisdomToggle = function (btn) {
+    var v = btn.getAttribute("data-v");
+    if (v === "else") {
+      var row = document.getElementById("aogWisdomElseRow");
+      if (row) {
+        row.hidden = !row.hidden;
+        if (!row.hidden) { var inp = document.getElementById("aogWisdomElseInput"); if (inp) inp.focus(); }
+      }
+      return;
+    }
+    var on = btn.classList.toggle("on");
+    if (on) window.aogWisdomAdd(v); else window.aogWisdomRemove(v);
+    flashSaved(on);
+  };
+  window.aogWisdomSaveElse = function () {
+    var inp = document.getElementById("aogWisdomElseInput");
+    if (!inp) return;
+    var t = (inp.value || "").trim();
+    if (!t) return;
+    window.aogWisdomAdd("else", t);
+    inp.value = "";
+    var row = document.getElementById("aogWisdomElseRow");
+    if (row) row.hidden = true;
+    flashSaved(true);
+  };
+  function flashSaved(saved) {
+    var n = document.getElementById("aogWisdomSavedNote");
+    if (!n) return;
+    var l = curLang();
+    n.textContent = saved
+      ? (l === "es" ? "Guardado en este dispositivo ✓" : "Saved on this device ✓")
+      : (l === "es" ? "Quitado" : "Removed");
+    n.hidden = false;
+  }
+
+  // mount on the right screens, via showScreen
+  window.aogWisdomOnScreen = function (screenId) {
+    if (screenId === "screen-choose") window.aogWisdomMount("aogWisdomIntro", "intro");
+    else if (screenId === "screen-farewell") window.aogWisdomMount("aogWisdomFarewell", "farewell");
+  };
+
+  // initial load: if the choose screen is already active, show the welcome-back recall
+  document.addEventListener("DOMContentLoaded", function () {
+    var active = document.querySelector(".screen.active");
+    if (active && active.id === "screen-choose") window.aogWisdomMount("aogWisdomIntro", "intro");
+  });
+})();
+</script>
+
+<!-- ============ "I DON'T KNOW" — trauma-informed Quiet Space on-ramp (NOT recorded) ============ -->
+<script id="aog-rnidk-js">
+/* "I don't know" — the Unknown Skill Pathway. A guided route for students who
+   cannot name a feeling yet: how the BODY feels (Fast / Calm / Tired) → what
+   would help most → a real Quiet Space tool, ending with a Word of Grace.
+   It teaches moving from uncertainty to awareness — not an error state.
+   PRIVACY: in-the-moment only. The single body choice is held in a local
+   variable for the session step; nothing is written to localStorage, no record
+   is created, syncRecord() is never called. No scoring, reporting, or MTSS. */
+(function () {
+  "use strict";
+  function IL() { return (typeof lang !== "undefined" && lang === "es") ? "es" : "en"; }
+  function T(en, es) { return IL() === "es" ? es : en; }
+  function box() { return document.getElementById("rnIdkBox"); }
+  var idkBody = null; /* in-memory only; cleared on each new run */
+
+  var BODY = [
+    { v: "fast",  ic: "⚡", en: "Fast",  es: "Rápido" },
+    { v: "calm",  ic: "🌿", en: "Calm",  es: "Tranquilo" },
+    { v: "tired", ic: "🌙", en: "Tired", es: "Cansado" }
+  ];
+  /* body acknowledgment + a gentle suggestion toward one helper (still free choice) */
+  var BODY_ACK = {
+    fast:  { en: "It sounds like your body may feel fast right now.",  es: "Parece que tu cuerpo puede sentirse acelerado ahora mismo.",  suggest: "breath",
+             sEn: "Bodies that feel fast often settle with a deep breath.", sEs: "Los cuerpos acelerados suelen calmarse con una respiración profunda." },
+    calm:  { en: "It sounds like your body may feel calm right now.",  es: "Parece que tu cuerpo puede sentirse en calma ahora mismo.",  suggest: "time",
+             sEn: "When your body feels calm, a little time helps you stay there.", sEs: "Cuando tu cuerpo está en calma, un poco de tiempo te ayuda a quedarte ahí." },
+    tired: { en: "It sounds like your body may feel tired right now.", es: "Parece que tu cuerpo puede sentirse cansado ahora mismo.", suggest: "quiet",
+             sEn: "When your body feels tired, a quiet corner can help.", sEs: "Cuando tu cuerpo está cansado, un rincón tranquilo puede ayudar." }
+  };
+  /* what would help → route to a real Quiet Space tool, or a gentle in-the-moment cue */
+  var HELP = [
+    { v: "quiet",    ic: "🤫", en: "Quiet",           es: "Silencio",            tool: "safeplace", tEn: "Open a quiet corner",      tEs: "Abrir un rincón tranquilo" },
+    { v: "movement", ic: "🤸", en: "Movement",        es: "Movimiento",          tool: "movement",  tEn: "Open a movement break",    tEs: "Abrir una pausa de movimiento" },
+    { v: "water",    ic: "💧", en: "Water",           es: "Agua",                say: { en: "Go take a slow sip of water. Cool water helps your body settle.", es: "Toma un sorbo lento de agua. El agua fresca ayuda a que tu cuerpo se calme." } },
+    { v: "breath",   ic: "🫁", en: "Deep Breath",     es: "Respiración profunda", tool: "breathing", tEn: "Open deep breathing",      tEs: "Abrir respiración profunda" },
+    { v: "talk",     ic: "💬", en: "Talk to Someone", es: "Hablar con alguien",  say: { en: "Find a trusted adult or friend and tell them one small thing.", es: "Busca a un adulto de confianza o a un amigo y cuéntale una pequeña cosa." } },
+    { v: "time",     ic: "⏳", en: "Time",            es: "Tiempo",              say: { en: "Take a few quiet minutes for yourself. There’s no rush — come back when you’re ready.", es: "Tómate unos minutos tranquilos para ti. No hay prisa — vuelve cuando estés listo." } }
+  ];
+  function helpFor(v) { for (var i = 0; i < HELP.length; i++) { if (HELP[i].v === v) return HELP[i]; } return null; }
+
+  /* Step 1 — reassure + ask how the body feels */
+  window.aogRnIdkOpen = function () {
+    var b = box(); if (!b) return;
+    idkBody = null;
+    var res = document.getElementById("rightNowResult"); if (res) res.hidden = true;
+    var opts = BODY.map(function (o) {
+      return '<span class="tk-pill" role="button" tabindex="0" data-v="' + o.v +
+        '" onclick="aogRnIdkBody(\'' + o.v + '\')" onkeydown="if(event.key===\'Enter\'||event.key===\' \'){event.preventDefault();aogRnIdkBody(\'' + o.v + '\');}">' +
+        '<span aria-hidden="true">' + o.ic + '</span> ' + T(o.en, o.es) + '</span>';
+    }).join("");
+    b.innerHTML =
+      '<div class="rn-idk-title">' + T("That’s okay.", "Está bien.") + '</div>' +
+      '<p class="rn-idk-msg">' + T("Many people aren’t sure right away. Let’s start smaller.", "Muchas personas no están seguras de inmediato. Empecemos con algo más pequeño.") + '</p>' +
+      '<div class="rn-idk-q">' + T("How does your body feel right now?", "¿Cómo se siente tu cuerpo ahora mismo?") + '</div>' +
+      '<div class="rn-idk-opts" role="group" aria-label="' + T("How your body feels", "Cómo se siente tu cuerpo") + '">' + opts + '</div>';
+    b.hidden = false;
+    try { b.scrollIntoView({ behavior: "smooth", block: "center" }); } catch (e) {}
+  };
+
+  /* Step 2 — acknowledge the body, then ask what would help */
+  window.aogRnIdkBody = function (v) {
+    var b = box(); if (!b) return;
+    var ack = BODY_ACK[v]; if (!ack) return;
+    idkBody = v;
+    var opts = HELP.map(function (o) {
+      var hint = (o.v === ack.suggest) ? ' aog-suggested' : '';
+      return '<span class="tk-pill' + hint + '" role="button" tabindex="0" data-v="' + o.v +
+        '" onclick="aogRnIdkHelp(\'' + o.v + '\')" onkeydown="if(event.key===\'Enter\'||event.key===\' \'){event.preventDefault();aogRnIdkHelp(\'' + o.v + '\');}">' +
+        '<span aria-hidden="true">' + o.ic + '</span> ' + T(o.en, o.es) + '</span>';
+    }).join("");
+    b.innerHTML =
+      '<p class="rn-idk-msg">' + T(ack.en, ack.es) + '</p>' +
+      '<div class="rn-idk-q">' + T("What would help most right now?", "¿Qué te ayudaría más ahora mismo?") + '</div>' +
+      '<div class="rn-idk-opts" role="group" aria-label="' + T("What would help most", "Qué ayudaría más") + '">' + opts + '</div>' +
+      '<p class="rn-idk-suggest">' + T(ack.sEn, ack.sEs) + '</p>';
+    try { b.scrollIntoView({ behavior: "smooth", block: "center" }); } catch (e) {}
+  };
+
+  /* Step 3 — Word of Grace, then route to the tool (or a gentle cue) */
+  window.aogRnIdkHelp = function (v) {
+    var b = box(); if (!b) return;
+    var h = helpFor(v); if (!h) return;
+    var grace =
+      '<div class="rn-idk-grace"><div class="rn-idk-grace-ey">' + T("A GRACE NOTE", "UNA NOTA DE GRACIA") + '</div>' +
+      '<p>' + T("Not knowing is okay. You started where you were.", "No saber está bien. Empezaste desde donde estabas.") + '</p></div>';
+    var action;
+    if (h.tool && typeof window.toolOpen === "function") {
+      action = '<div class="rn-idk-tools">' +
+          '<button type="button" class="btn" onclick="window.toolOpen(\'' + h.tool + '\')">' + T(h.tEn, h.tEs) + '</button>' +
+          '<button type="button" class="btn btn-ghost" onclick="aogRnIdkOpen()">' + T("Start over", "Empezar de nuevo") + '</button>' +
+        '</div>';
+    } else if (h.say) {
+      action = '<div class="rn-idk-say">' + T(h.say.en, h.say.es) + '</div>' +
+        '<div class="rn-idk-tools"><button type="button" class="btn btn-ghost" onclick="aogRnIdkOpen()">' + T("Start over", "Empezar de nuevo") + '</button></div>';
+    } else {
+      action = '<div class="rn-idk-tools"><button type="button" class="btn btn-ghost" onclick="aogRnIdkOpen()">' + T("Start over", "Empezar de nuevo") + '</button></div>';
+    }
+    b.innerHTML = grace + action + '<p class="rn-idk-flag">' + T("Nothing here is saved.", "Nada de esto se guarda.") + '</p>';
+    try { b.scrollIntoView({ behavior: "smooth", block: "center" }); } catch (e) {}
+  };
+})();
+</script>
+
 </body>
 </html>
