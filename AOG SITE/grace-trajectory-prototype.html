@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Grace Trajectory · Multi-Year View (Prototype)</title>
+<style>
+  :root{
+    --navy:#0A1E33; --navy-soft:#13314f; --gold:#D9A33B; --gold-deep:#9a6f24;
+    --cream:#F4EEE2; --cream-deep:#EDE6D6; --ink:#0A1E33; --ink-soft:#46506E; --ink-faint:#8A92A6;
+    --rule:#E4DAC5; --rule-soft:#EFE7D2;
+    --green:#2E6B3A; --green-bg:#E8F0E7; --amber:#8A6D1F; --amber-bg:#F5EAC8; --red:#8B2A2A; --red-bg:#F3DFDC;
+    --serif:Georgia,'Times New Roman',serif; --sans:-apple-system,BlinkMacSystemFont,'Segoe UI',Inter,system-ui,sans-serif;
+    --radius:14px; --shadow:0 1px 3px rgba(10,30,51,.08),0 8px 24px rgba(10,30,51,.06);
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--cream);color:var(--ink);font-family:var(--sans);line-height:1.5;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1080px;margin:0 auto;padding:24px 20px 60px}
+
+  /* topbar */
+  .top{display:flex;align-items:center;gap:13px;padding:6px 0 18px;border-bottom:1px solid var(--rule)}
+  .mk{width:40px;height:40px;border-radius:8px;background:linear-gradient(180deg,#F2C964,#D9A33B);color:var(--navy);
+      display:grid;place-items:center;font-family:var(--serif);font-weight:700;font-size:22px;box-shadow:var(--shadow)}
+  .top h1{font-family:var(--serif);font-size:20px;margin:0;font-weight:600;letter-spacing:.01em}
+  .top .sub{font-size:12px;color:var(--ink-faint);margin-top:1px}
+  .pill{margin-left:auto;font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--gold-deep);
+        border:1px solid var(--gold);border-radius:999px;padding:5px 12px;background:#fff}
+
+  .lead{font-size:14px;color:var(--ink-soft);margin:16px 0 22px;max-width:760px}
+  .lead b{color:var(--navy)}
+
+  /* controls */
+  .controls{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:18px}
+  .seg{display:inline-flex;background:#fff;border:1px solid var(--rule);border-radius:999px;padding:3px;box-shadow:var(--shadow)}
+  .seg button{border:0;background:transparent;font-family:var(--sans);font-size:13px;font-weight:700;color:var(--ink-soft);
+      padding:7px 15px;border-radius:999px;cursor:pointer;transition:.15s}
+  .seg button.on{background:var(--navy);color:#fff}
+  select{font-family:var(--sans);font-size:13px;font-weight:700;color:var(--navy);background:#fff;border:1px solid var(--rule);
+      border-radius:10px;padding:8px 12px;cursor:pointer;box-shadow:var(--shadow)}
+  label.lbl{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-faint);margin-right:2px}
+
+  /* cards */
+  .card{background:#fff;border:1px solid var(--rule);border-radius:var(--radius);box-shadow:var(--shadow);padding:20px 22px;margin-bottom:18px}
+  .card h2{font-family:var(--serif);font-size:18px;font-weight:600;margin:0 0 3px}
+  .card .ch-sub{font-size:12.5px;color:var(--ink-faint);margin:0 0 16px}
+
+  /* student head */
+  .shead{display:flex;flex-wrap:wrap;gap:18px;align-items:center;margin-bottom:6px}
+  .savatar{width:46px;height:46px;border-radius:50%;background:var(--navy);color:var(--cream);display:grid;place-items:center;
+      font-family:var(--serif);font-size:19px;font-weight:700;flex:0 0 auto}
+  .smeta .nm{font-family:var(--serif);font-size:19px;font-weight:600}
+  .smeta .cd{font-size:12px;color:var(--ink-faint);font-variant-numeric:tabular-nums}
+  .tiernow{margin-left:auto;display:flex;align-items:center;gap:9px;font-weight:700;font-size:13px}
+  .dotL{width:11px;height:11px;border-radius:50%}
+
+  /* legend */
+  .legend{display:flex;flex-wrap:wrap;gap:6px;margin:2px 0 10px}
+  .lgi{font-size:12px;font-weight:700;border:1.5px solid;border-radius:999px;padding:4px 11px;cursor:pointer;user-select:none;background:#fff;transition:.12s}
+  .lgi .sw{display:inline-block;width:9px;height:9px;border-radius:2px;margin-right:6px;vertical-align:middle}
+  .lgi.off{opacity:.32;filter:grayscale(.6)}
+
+  .chartwrap{width:100%;overflow-x:auto}
+  svg{display:block;max-width:100%}
+  text{font-family:var(--sans)}
+
+  /* domain profile bars */
+  .dbars{display:grid;grid-template-columns:1fr;gap:13px;margin-top:4px}
+  .dbar .dlab{display:flex;justify-content:space-between;font-size:13px;font-weight:600;margin-bottom:5px}
+  .dbar .dlab .sc{font-variant-numeric:tabular-nums;font-weight:800}
+  .track{height:13px;border-radius:999px;background:var(--cream-deep);overflow:hidden;position:relative}
+  .fill{height:100%;border-radius:999px;transition:width .5s ease}
+
+  /* tier journey */
+  .journey{display:flex;flex-wrap:wrap;gap:7px;margin-top:6px}
+  .jstep{display:flex;flex-direction:column;align-items:center;gap:5px;min-width:46px}
+  .jdot{width:22px;height:22px;border-radius:50%;border:2px solid #fff;box-shadow:0 0 0 1px var(--rule)}
+  .jwin{font-size:10px;font-weight:700;color:var(--ink-soft);text-align:center;line-height:1.15}
+
+  /* flag */
+  .flag{display:flex;gap:11px;align-items:flex-start;background:var(--amber-bg);border:1px solid #e7d49a;border-left:4px solid var(--amber);
+      border-radius:10px;padding:11px 14px;margin-top:14px;font-size:13px;color:#5e4d12}
+  .flag.ok{background:var(--green-bg);border-color:#bcd6bb;border-left-color:var(--green);color:#234b29}
+  .flag b{font-weight:800}
+
+  /* two col */
+  .grid2{display:grid;grid-template-columns:1.15fr .85fr;gap:18px}
+  @media(max-width:820px){.grid2{grid-template-columns:1fr}}
+
+  /* class bars */
+  .cbar-row{display:flex;align-items:center;gap:11px;margin-bottom:9px}
+  .cbar-win{width:62px;font-size:11.5px;font-weight:700;color:var(--ink-soft);text-align:right;flex:0 0 auto}
+  .cbar{flex:1;display:flex;height:24px;border-radius:7px;overflow:hidden;border:1px solid var(--rule)}
+  .cseg{display:grid;place-items:center;color:#fff;font-size:11px;font-weight:800}
+  .cbar-n{width:30px;font-size:11px;color:var(--ink-faint);font-weight:700;flex:0 0 auto}
+
+  .foot{font-size:11.5px;color:var(--ink-faint);text-align:center;margin-top:26px;line-height:1.6}
+  .foot b{color:var(--gold-deep)}
+  .note{font-size:12.5px;color:var(--ink-soft);background:var(--cream-deep);border-radius:10px;padding:12px 15px;margin-top:8px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="top">
+    <div class="mk">A</div>
+    <div>
+      <h1>The Grace Trajectory</h1>
+      <div class="sub">Multi-year view · Architecture of Grace · Universal Check-In</div>
+    </div>
+    <div class="pill">Prototype</div>
+  </div>
+
+  <p class="lead">This is the one piece goal&nbsp;2 was missing: a single student's <b>line across years and grades</b>.
+  It is built entirely in your existing model — the three domains, your tier cut points
+  (<b>0–49</b> needs support · <b>50–74</b> worth a reflection · <b>75–100</b> doing well), your Fall/Winter/Spring windows,
+  and your palette — so it can drop straight into the dashboard. Data below is illustrative.</p>
+
+  <!-- ============ PER-STUDENT ============ -->
+  <div class="card">
+    <div class="controls">
+      <label class="lbl" for="stu">Student</label>
+      <select id="stu"></select>
+      <div class="seg" id="viewSeg" style="margin-left:auto">
+        <button data-v="line" class="on">Trajectory line</button>
+        <button data-v="profile">Latest profile</button>
+      </div>
+    </div>
+
+    <div class="shead">
+      <div class="savatar" id="savatar">M</div>
+      <div class="smeta">
+        <div class="nm" id="sname">—</div>
+        <div class="cd" id="scode">—</div>
+      </div>
+      <div class="tiernow"><span class="dotL" id="tdot"></span><span id="tnow">—</span></div>
+    </div>
+
+    <div class="legend" id="legend"></div>
+
+    <div id="lineView">
+      <div class="chartwrap"><svg id="lineSvg" viewBox="0 0 900 320" role="img" aria-label="Multi-year trajectory"></svg></div>
+    </div>
+
+    <div id="profileView" style="display:none">
+      <p class="ch-sub" id="profWin">—</p>
+      <div class="dbars" id="dbars"></div>
+    </div>
+
+    <div style="margin-top:18px">
+      <div class="ch-sub" style="font-weight:700;color:var(--ink-soft);margin-bottom:8px">Tier journey (composite, every window)</div>
+      <div class="journey" id="journey"></div>
+    </div>
+
+    <div id="flagBox"></div>
+  </div>
+
+  <!-- ============ CLASS CROSS-YEAR ============ -->
+  <div class="grid2">
+    <div class="card">
+      <h2>Class movement, year over year</h2>
+      <p class="ch-sub">Band composition per window — the class average climbing across years. (Room 3B)</p>
+      <div id="classBars"></div>
+    </div>
+    <div class="card">
+      <h2>Why this is the missing layer</h2>
+      <div class="note">Your dashboard already buckets results by <b>season</b> (Fall/Winter/Spring). To be truly multi-year, windows must be <b>year-qualified</b> (F'25 → F'26 → F'27) and sit on one continuous line per student.</div>
+      <div class="note">That requires the one real lift from the spec: a <b>durable, school-owned student record</b> keyed to a stable code — so Spring of one grade and Fall of the next land on the same line instead of resetting.</div>
+      <div class="note">Everything else here — items, scoring, tiers, domains, recommendations — is <b>already built</b>. This view is the visualization that lift unlocks.</div>
+    </div>
+  </div>
+
+  <div class="foot">
+    Built in the existing 3-domain model and tier system · <b>illustrative sample data</b> · drop-in component for the Education Dashboard.<br>
+    A · Emotional Regulation &amp; Well-Being &nbsp;·&nbsp; B · Self-Compassion &amp; Growth Mindset &nbsp;·&nbsp; C · Social Competency &amp; Repair
+  </div>
+</div>
+
+<script>
+// ---- palette / tiers ----
+const CSS = getComputedStyle(document.documentElement);
+const C = n => CSS.getPropertyValue(n).trim();
+const COL = { A:'#0A1E33', B:'#9a6f24', C:'#3a6ea5', comp:'#8B2A2A' }; // composite = brand red-ish for emphasis
+const COMPCOL = '#C0392B';
+function tier(v){ if(v>=75) return {k:'Doing well', c:C('--green'), bg:C('--green-bg')};
+                  if(v>=50) return {k:'Worth a reflection', c:C('--amber'), bg:C('--amber-bg')};
+                  return {k:'Needs support', c:C('--red'), bg:C('--red-bg')}; }
+
+// ---- sample data: students tracked across years ----
+// each window: year-qualified label + composite + 3 domains + trusted-adult(item18) 0-3
+function mk(label,year,season,comp,a,b,c,ta){return{label,year,season,comp,A:a,B:b,C:c,ta};}
+const STUDENTS = [
+  { name:"Maya R.", code:"RM3B-7HQ4", initials:"M",
+    rows:[
+      mk("F'24",2024,"Fall",   44,38,46,48,2),
+      mk("W'25",2025,"Winter", 52,48,55,53,2),
+      mk("Sp'25",2025,"Spring",58,55,62,57,3),
+      mk("F'25",2025,"Fall",   55,52,60,53,1),  // dip — new grade, item18 flag
+      mk("W'26",2026,"Winter", 67,64,71,66,2),
+      mk("Sp'26",2026,"Spring",78,76,82,76,3),
+    ]},
+  { name:"Devon T.", code:"RM3B-2KP9", initials:"D",
+    rows:[
+      mk("F'24",2024,"Fall",   71,74,70,69,3),
+      mk("W'25",2025,"Winter", 76,78,77,73,3),
+      mk("Sp'25",2025,"Spring",81,83,80,80,3),
+      mk("F'25",2025,"Fall",   79,80,79,78,3),
+      mk("W'26",2026,"Winter", 84,86,83,83,3),
+      mk("Sp'26",2026,"Spring",88,90,86,88,3),
+    ]},
+  { name:"Aaliyah K.", code:"RM3B-5XT1", initials:"A",
+    rows:[
+      mk("F'24",2024,"Fall",   33,28,40,31,1),
+      mk("W'25",2025,"Winter", 39,35,45,37,1),
+      mk("Sp'25",2025,"Spring",47,44,52,45,2),
+      mk("F'25",2025,"Fall",   43,40,49,40,1),
+      mk("W'26",2026,"Winter", 51,49,56,48,2),
+      mk("Sp'26",2026,"Spring",61,59,66,58,2),
+    ]},
+];
+
+const DOMS = [
+  {k:'comp', label:'Composite', col:COMPCOL, w:3.2},
+  {k:'A', label:'A · Regulation', col:COL.A, w:2},
+  {k:'B', label:'B · Self-Compassion', col:COL.B, w:2},
+  {k:'C', label:'C · Social & Repair', col:COL.C, w:2},
+];
+let visible = {comp:true, A:true, B:true, C:true};
+let view = 'line';
+
+// ---- populate student select ----
+const sel = document.getElementById('stu');
+STUDENTS.forEach((s,i)=>{const o=document.createElement('option');o.value=i;o.textContent=s.name+'  ('+s.code+')';sel.appendChild(o);});
+sel.addEventListener('change',render);
+
+// ---- legend ----
+const legend = document.getElementById('legend');
+DOMS.forEach(d=>{
+  const b=document.createElement('span'); b.className='lgi'; b.dataset.k=d.k;
+  b.style.borderColor=d.col; b.style.color=d.col;
+  b.innerHTML='<span class="sw" style="background:'+d.col+'"></span>'+d.label;
+  b.onclick=()=>{visible[d.k]=!visible[d.k]; b.classList.toggle('off',!visible[d.k]); render();};
+  legend.appendChild(b);
+});
+
+// ---- view toggle ----
+document.querySelectorAll('#viewSeg button').forEach(btn=>{
+  btn.onclick=()=>{document.querySelectorAll('#viewSeg button').forEach(x=>x.classList.remove('on'));
+    btn.classList.add('on'); view=btn.dataset.v;
+    document.getElementById('lineView').style.display = view==='line'?'':'none';
+    document.getElementById('profileView').style.display = view==='profile'?'':'none';};
+});
+
+// ---- line chart ----
+function drawLine(s){
+  const W=900,H=320, ml=44,mr=18,mt=18,mb=42;
+  const rows=s.rows, n=rows.length;
+  const x=i=> ml + (W-ml-mr)*(n===1?0.5:i/(n-1));
+  const y=v=> mt + (H-mt-mb)*(1 - v/100);
+  let svg='';
+  // tier bands
+  const bands=[{lo:75,hi:100,c:C('--green-bg')},{lo:50,hi:75,c:C('--amber-bg')},{lo:0,hi:50,c:C('--red-bg')}];
+  bands.forEach(bd=>{ svg+=`<rect x="${ml}" y="${y(bd.hi)}" width="${W-ml-mr}" height="${y(bd.lo)-y(bd.hi)}" fill="${bd.c}" opacity="0.6"/>`; });
+  // gridlines + labels
+  [0,25,50,75,100].forEach(t=>{ svg+=`<line x1="${ml}" y1="${y(t)}" x2="${W-mr}" y2="${y(t)}" stroke="${C('--rule')}" stroke-width="1"/>`+
+    `<text x="${ml-7}" y="${y(t)+3}" text-anchor="end" font-size="10" fill="${C('--ink-faint')}">${t}</text>`; });
+  // tier labels right
+  svg+=`<text x="${W-mr}" y="${y(88)}" text-anchor="end" font-size="9.5" font-weight="700" fill="${C('--green')}">DOING WELL</text>`;
+  svg+=`<text x="${W-mr}" y="${y(62)}" text-anchor="end" font-size="9.5" font-weight="700" fill="${C('--amber')}">WORTH A REFLECTION</text>`;
+  svg+=`<text x="${W-mr}" y="${y(24)}" text-anchor="end" font-size="9.5" font-weight="700" fill="${C('--red')}">NEEDS SUPPORT</text>`;
+  // x labels + grade separators
+  rows.forEach((r,i)=>{ svg+=`<text x="${x(i)}" y="${H-mb+18}" text-anchor="middle" font-size="11" font-weight="700" fill="${C('--ink-soft')}">${r.label}</text>`; });
+  // year/grade band marker (vertical line at each Fall = new year)
+  rows.forEach((r,i)=>{ if(r.season==='Fall' && i>0){ svg+=`<line x1="${x(i)}" y1="${mt}" x2="${x(i)}" y2="${H-mb}" stroke="${C('--ink-faint')}" stroke-width="1" stroke-dasharray="3 4" opacity="0.5"/>`+
+    `<text x="${x(i)}" y="${mt+11}" text-anchor="middle" font-size="9" font-weight="700" fill="${C('--ink-faint')}">new grade</text>`; } });
+  // lines
+  DOMS.forEach(d=>{ if(!visible[d.k]) return;
+    let path=''; rows.forEach((r,i)=>{ path += (i?'L':'M')+x(i).toFixed(1)+' '+y(r[d.k]).toFixed(1)+' '; });
+    svg+=`<path d="${path}" fill="none" stroke="${d.col}" stroke-width="${d.w}" stroke-linecap="round" stroke-linejoin="round" opacity="${d.k==='comp'?1:0.85}"/>`;
+    // points
+    rows.forEach((r,i)=>{ svg+=`<circle cx="${x(i)}" cy="${y(r[d.k])}" r="${d.k==='comp'?4.5:3}" fill="#fff" stroke="${d.col}" stroke-width="2"/>`;
+      if(d.k==='comp') svg+=`<text x="${x(i)}" y="${y(r[d.k])-10}" text-anchor="middle" font-size="10.5" font-weight="800" fill="${d.col}">${r.comp}</text>`;
+    });
+  });
+  document.getElementById('lineSvg').innerHTML=svg;
+}
+
+// ---- domain profile (latest) ----
+function drawProfile(s){
+  const last=s.rows[s.rows.length-1];
+  document.getElementById('profWin').textContent='Latest window — '+last.label+'  ·  '+last.season+' '+last.year;
+  const D=[{k:'A',name:'A · Emotional Regulation & Well-Being'},{k:'B',name:'B · Self-Compassion & Growth Mindset'},{k:'C',name:'C · Social Competency & Repair'}];
+  let html='';
+  D.forEach(d=>{ const v=last[d.k]; const t=tier(v);
+    html+=`<div class="dbar"><div class="dlab"><span>${d.name}</span><span class="sc" style="color:${t.c}">${v} · ${t.k}</span></div>
+      <div class="track"><div class="fill" style="width:${v}%;background:${t.c}"></div></div></div>`; });
+  // composite
+  const t=tier(last.comp);
+  html+=`<div class="dbar" style="margin-top:4px"><div class="dlab"><span style="font-weight:800">Composite</span><span class="sc" style="color:${t.c}">${last.comp} · ${t.k}</span></div>
+    <div class="track" style="height:16px"><div class="fill" style="width:${last.comp}%;background:${t.c}"></div></div></div>`;
+  document.getElementById('dbars').innerHTML=html;
+}
+
+// ---- tier journey ----
+function drawJourney(s){
+  let html='';
+  s.rows.forEach(r=>{ const t=tier(r.comp);
+    html+=`<div class="jstep"><div class="jdot" style="background:${t.c}" title="${t.k} (${r.comp})"></div><div class="jwin">${r.label}</div></div>`; });
+  document.getElementById('journey').innerHTML=html;
+}
+
+// ---- trusted adult flag (item 18) ----
+function drawFlag(s){
+  const last=s.rows[s.rows.length-1];
+  const box=document.getElementById('flagBox');
+  if(last.ta<=1){
+    box.innerHTML=`<div class="flag"><span>⚑</span><div><b>Trusted-adult flag.</b> On the latest window, Item&nbsp;18 (connection to a trusted adult) was answered <b>Never / Rarely</b>. This raises a flag on its own, regardless of the composite — connection is protective by itself.</div></div>`;
+  } else {
+    box.innerHTML=`<div class="flag ok"><span>✓</span><div><b>Trusted-adult connection present.</b> Item&nbsp;18 is in a healthy range on the latest window.</div></div>`;
+  }
+}
+
+// ---- class cross-year band composition ----
+function drawClass(){
+  // aggregate all students by window label, count tiers
+  const order=["F'24","W'25","Sp'25","F'25","W'26","Sp'26"];
+  const byWin={};
+  STUDENTS.forEach(s=>s.rows.forEach(r=>{ byWin[r.label]=byWin[r.label]||{g:0,a:0,d:0,n:0};
+    const t=tier(r.comp); if(t.k==='Doing well')byWin[r.label].g++; else if(t.k==='Worth a reflection')byWin[r.label].a++; else byWin[r.label].d++; byWin[r.label].n++; }));
+  // pad with extra synthetic classmates for a fuller bar
+  const extra={ "F'24":[1,3,5],"W'25":[2,4,3],"Sp'25":[3,4,2],"F'25":[2,4,3],"W'26":[4,4,1],"Sp'26":[6,2,1] }; // g,a,d
+  let html='';
+  order.forEach(w=>{ const base=byWin[w]||{g:0,a:0,d:0,n:0}; const e=extra[w]||[0,0,0];
+    const g=base.g+e[0], a=base.a+e[1], d=base.d+e[2], n=g+a+d;
+    const seg=(v,c,t)=> v>0?`<div class="cseg" style="flex:${v};background:${c}" title="${t}: ${v}">${v}</div>`:'';
+    html+=`<div class="cbar-row"><div class="cbar-win">${w}</div><div class="cbar">${seg(g,C('--green'),'Doing well')}${seg(a,C('--amber'),'Worth a reflection')}${seg(d,C('--red'),'Needs support')}</div><div class="cbar-n">${n}</div></div>`;
+  });
+  document.getElementById('classBars').innerHTML=html;
+}
+
+function render(){
+  const s=STUDENTS[+sel.value];
+  document.getElementById('savatar').textContent=s.initials;
+  document.getElementById('sname').textContent=s.name;
+  document.getElementById('scode').textContent='Code '+s.code+'  ·  Room 3B  ·  '+s.rows.length+' windows tracked';
+  const last=s.rows[s.rows.length-1]; const t=tier(last.comp);
+  document.getElementById('tdot').style.background=t.c;
+  document.getElementById('tnow').textContent=last.comp+' · '+t.k;
+  document.getElementById('tnow').style.color=t.c;
+  drawLine(s); drawProfile(s); drawJourney(s); drawFlag(s);
+}
+
+render(); drawClass();
+</script>
+</body>
+</html>
