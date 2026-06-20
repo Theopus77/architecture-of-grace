@@ -34,6 +34,23 @@ The framing is a "trinity": **Daily Pulse** (private Quiet Space), **Smart Scree
 - **Daily Log** (`#panel-daily`, `<script id="aog-daily-js">`): store `aog.daily.v1` = `{tpl:{student:{skills,periods}}, logs:{student:{date:{skills,periods:[{name,checks[],note}]}}}}`. Per-student/day skill×period checklist → auto %/smiley (bands 40/60) → daily total. Editable skills (Behavior-log set / Grace competencies / custom) + periods. `aogDailyTrendSVG(student,gran,store)` is the shared trend renderer (also used by Trajectory zoom). History + weekly rollup; CSV export (`aogDailyExport`). Empty (unchecked) days are excluded from trend/history/CSV and not persisted on mere open.
 - **Sheet sync** (`#panel-export` area + bottom script): `SCHOOL_SYNC_URL/KEY` from `localStorage` `aog.sync.url`/`aog.sync.key`; in-app connect panel with a green "Connected" banner (`aogSyncRenderState`).
 
+## Grace Compass — precision mapping engine (added 2026-06-18)
+Self-contained blocks near `</body>`, each with a stable `id`:
+- **`#aog-gc-data`** — `window.AOG_CROSSWALK` (81 K-12 crosswalk rows from the 5 SECULAR DOCX; fields `b,dom,risk,theme,lesson,scene,chart,neuro`). **Single source of truth for K-12 mappings.** Re-tag a row by editing its `dom` (`A|B|C|ALL`).
+- **`#aog-gc-es-data` + `#aog-gc-es-data2`** — `window.AOG_CROSSWALK_ES` (all 81 rows, **provisional** Spanish; English stays canonical; UI shows a "Traducción provisional · revisión pendiente" tag). Keyed `"band|lesson"`.
+- **`#aog-gc-adult`** — `window.AOG_SESSIONS` (12 Practitioner/Clinical-Edition sessions) + `window.aogGraceCompassAdult(rec)`. Adult records route here; cite "Practitioner Edition · Session N".
+- **`#aog-gc-engine`** — `window.aogGraceCompass(rec)`: grade→band, lowest domain → exact crosswalk row(s) with nearest-band fallback; curated ≤5 tools (`aogMatchTools`); one home question; Phase-3 ★/★★ risk banner + protocol; low-contrast storefront link (`architectureofgrace.org/#store`); print-friendly.
+- **`#aog-gc-viewer` + `#aog-xw-css`** — internal **Crosswalk tab** (`#panel-crosswalk`, `aogRenderCrosswalk()`). Hidden; reveal via `#crosswalk` hash or `aogShowCrosswalkTab(true)` (persists via `localStorage["aog.internal"]`). `.xw-*` namespaced.
+- **Wiring:** `dashOpenReport` (Student + Family/adults) and `dashExportPdf` prepend `aogGraceCompass(rec)` (both guarded by try/catch); `refreshAdmin()` calls `aogRenderCrosswalk()`.
+- **Print fix:** the MTSS-overlay `@media print` killer was hiding `#printReport` on every print → blank PDF. Now gated: `body:has(#mtssOverlay.open) > *:not(#mtssOverlay):not(#printReport)` and `.mtss-overlay.open`.
+- Reference docs in `AOG SITE/`: `AoG-GraceCompass-Mapping.md` (mapping logic), `AoG-GraceCompass-Preview.html` (demo, EN/ES + adult). The old standalone `AoG-Crosswalk-Viewer.html` is superseded by the in-app tab (safe to delete).
+
+## Grace Compass — accessibility & tests
+- **WCAG 2.1 AA:** all Compass text/background pairs verified ≥4.5:1 in light **and** dark themes (worst 4.82). Fixes live in `#aog-gc-css`: label fallback `#9a6f24`→`#7a5a12` (the base palette has no `--gold-deep`; accent themes do and already pass), white text on the `.gc-mid` score pill, darker `.gc-risk-1` text, and a dark-mode legibility block. Semantics in the engine: panel `role="region"`, score pill `role="img"` + `aria-label` (band stated, not color-only), decorative `◉`/★/emoji `aria-hidden`, tool chips `role="button"`, risk banners `role="note"`, `.gc-sr` visually-hidden helper, `:focus-visible` ring. **If you change Compass colors, re-check contrast.**
+- **Build stamp:** bump `window.AOG_BUILD` in the `#aog-build-stamp` script (one line) before each deploy — it stamps the footer label, the `<meta name="aog-build">`, and the console, so you can always tell what's live (no build step does it automatically).
+- **Reading support (a11y):** the student self-reflection has read-aloud (on-device `speechSynthesis`, offline, EN/ES) + picture/level answers, toggled from the accessibility menu (`#aog-a11y-read-js`, `aogA11yEnhance`/`aogSpeak`). Persisted in `localStorage` (`aog.a11y.readaloud`/`aog.a11y.pictures`). Decoupled via MutationObserver — does not touch the survey render. **If you change Compass/app colors, re-run the contrast checks.**
+- **Test harness:** `AoG-GraceCompass.test.mjs` **and** `AoG-App.test.mjs` (run `npm test` — runs both; 54 checks total) — dependency-free; loads the GC blocks out of `index.html` via `node:vm` and asserts data integrity (81 rows / 81 ES / no gaps), mapping + fallback + traceability, the three audience modes (student-safe / practitioner / adult), bilingual, Phase-3 risk flags, the ARIA semantics, and `darien`=0. 33 checks. Run it after any Compass edit.
+
 ## How to verify changes (the workflow used throughout)
 1. Edit `index.html`.
 2. Syntax-check changed script blocks with Node:
@@ -43,6 +60,12 @@ The framing is a "trinity": **Daily Pulse** (private Quiet Space), **Smart Scree
 5. `cp` index.html (and any changed `pilot/*`) into `aog-deploy/`.
 
 ## Recently completed (newest first)
+- **Grace Compass** precision mapping engine: K-12 report + PDF now surface the exact lesson/scene/anchor-chart/neuro-adjustment for a student's lowest domain, traceable to a crosswalk row; curated ≤5 tools; one home question; storefront link.
+- **Adult/Practitioner pathway** mapped to the 12-session Clinical Edition with the manual's risk protocols.
+- **Provisional ES** for all 81 crosswalk rows (English canonical; review pending).
+- **Internal Crosswalk tab** (hidden; `#crosswalk`) — filter/search the 81 rows + 12 sessions.
+- **Phase-3 risk flags** (★/★★ + protocol banner) in the student report.
+- **Fixed blank Export PDF** (ungated MTSS print-CSS rule was hiding `#printReport`).
 - Trajectory **Zoom** toggle (Seasonal + day/3-day/week/2-wk/3-wk/month) pulling Daily Log data; "•" dropdown marker for students with daily logs.
 - **Daily Log** tab (checklist grid, %/smiley, editable skills+periods, history, weekly rollup, CSV export) + **Growth trend** chart with granularity buckets.
 - Discoverability: renamed Trajectory "Both" → **"Home + School"**; added "Compare home & school →" pill on the Growth tab.
