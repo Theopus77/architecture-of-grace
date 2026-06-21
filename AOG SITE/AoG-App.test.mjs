@@ -50,10 +50,18 @@ if (bands && !bands.__err) {
   ok("circle", ["k2", "35", "68", "912"].every((k) => bands[k].every((p) => p.en && p.es)), "every prompt is bilingual");
 }
 
-/* ===================== INNER COACH lines ===================== */
-const ic = evalLiteral(/var IC_LINES\s*=\s*(\[[\s\S]*?\n  \]);/, true);
-ok("coach", Array.isArray(ic), "IC_LINES parses");
-if (Array.isArray(ic)) ok("coach", ic.length >= 10, "Inner Coach has 10+ critic/coach lines (was 4) — got " + ic.length);
+/* ===================== INNER COACH — grade-banded ===================== */
+const icBands = ["k2", "35", "68", "912", "adult"];
+const icBlock = (html.match(/var IC_BANDS\s*=\s*(\{[\s\S]*?\n  \});/) || [])[1] || "";
+ok("coach", /var IC_BANDS\s*=/.test(html), "Inner Coach is grade-banded (IC_BANDS)");
+ok("coach", icBands.every((b) => new RegExp('(^|[^A-Za-z])' + b.replace(/(\d)/, '$1') + '(:|")').test(icBlock) || icBlock.includes('"' + b + '"') || icBlock.includes(b + ":")), "Inner Coach has all five bands (k2/35/68/912/adult)");
+
+/* ===================== Engagement tools all grade-banded ===================== */
+ok("bands", /var AOG_BANDS\s*=/.test(html) && /function aogBandChips/.test(html), "shared grade-band system present");
+["HK_PAIRS", "TS_PAIRS", "MR_BANDS"].forEach((v) => {
+  const blk = (html.match(new RegExp("var " + v + "\\s*=\\s*(\\{[\\s\\S]*?\\n  \\});")) || [])[1] || "";
+  ok("bands", icBands.every((b) => blk.includes('"' + b + '"') || blk.includes(b + ":")), v + " has all five grade bands");
+});
 
 /* ===================== BUILD STAMP ===================== */
 ok("build", /<script id="aog-build-stamp">/.test(html) && /window\.AOG_BUILD\s*=/.test(html), "build stamp script + AOG_BUILD constant present");
