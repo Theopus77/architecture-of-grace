@@ -5551,9 +5551,12 @@ function toggleTheme() {
         .aog-of-h .g{ background:linear-gradient(94deg,#F6D479,#D9A33B 55%,#F2C964); -webkit-background-clip:text;
           background-clip:text; -webkit-text-fill-color:transparent; color:transparent; }
         .aog-of-sub{ font-family:var(--font-sans,Inter,sans-serif); font-size:clamp(15px,1.8vw,18px);
-          line-height:1.62; color:#C2CEDD; max-width:680px; margin:0 auto; }
+          line-height:1.7; letter-spacing:.004em; color:#C8D4E2; max-width:660px; margin:0 auto; }
         .aog-of-sub b{ color:var(--gold-pale,#F1DFA8); font-weight:600; }
-        .aog-of-priv{ font-family:var(--font-sans,Inter,sans-serif); font-size:12.5px; line-height:1.5; color:var(--gold-pale,#F1DFA8); margin:12px auto 0; opacity:.9; }
+        /* subtle divider for hierarchy between the lede and the privacy line */
+        .aog-of-div{ width:58px; height:2px; margin:18px auto 14px; border-radius:2px; opacity:.75;
+          background:linear-gradient(90deg, transparent, var(--gold-soft,#F2C964), transparent); }
+        .aog-of-priv{ font-family:var(--font-sans,Inter,sans-serif); font-size:12.5px; line-height:1.5; color:var(--gold-pale,#F1DFA8); margin:0 auto; opacity:.92; }
         .aog-of-priv svg{ color:var(--gold-soft,#F2C964); }
         .aog-of-sub2{ font-family:var(--font-sans,Inter,sans-serif); font-size:clamp(13.5px,1.5vw,15.5px); line-height:1.6; color:#AEBED0; max-width:660px; margin:16px auto 0; }
         .aog-of-sub2 b{ color:var(--gold-pale,#F1DFA8); font-weight:600; }
@@ -5564,14 +5567,16 @@ function toggleTheme() {
         .aog-of-fig svg{ display:block; width:100%; height:auto; overflow:visible; }
         /* iPhone portrait (≤560px wide): let the star use the full screen width — iPad/desktop untouched */
         @media (max-width:560px){
-          #one-framework.aog-of{ padding-left:0; padding-right:0; padding-top:44px; padding-bottom:48px; }
-          #one-framework .aog-of-fig{ max-width:94vw; margin-left:auto; margin-right:auto; margin-top:0; }
+          /* overflow:visible + generous vertical room so the curved labels' descenders
+             ("p" in Relationship, etc.) are never clipped by the section edge on phones */
+          #one-framework.aog-of{ padding:50px 10px 72px; overflow:visible; }
+          #one-framework .aog-of-fig{ max-width:none; margin:0 auto; }
           #one-framework .aog-of-head{ margin-bottom:18px; padding:0 14px; }
         }
         /* Short / landscape screens (phone turned sideways): size the star by HEIGHT so the
            whole wheel fits instead of overflowing off the bottom. */
         @media (max-height:560px){
-          #one-framework.aog-of{ padding-top:24px; padding-bottom:28px; }
+          #one-framework.aog-of{ padding-top:24px; padding-bottom:34px; overflow:visible; }
           #one-framework .aog-of-fig{ max-width:min(660px, 66vh); margin-top:0; }
           #one-framework .aog-of-head{ margin-bottom:10px; }
         }
@@ -5588,8 +5593,11 @@ function toggleTheme() {
         .aog-of-fig .orbit-door:nth-of-type(7){ animation-delay:.62s; }
         .aog-of-fig .orbit-door:nth-of-type(8){ animation-delay:.70s; }
         .aog-of-fig .orbit-door:nth-of-type(9){ animation-delay:.78s; }
-        .aog-of-fig .orbit-door circle{ transition:transform .2s ease; transform-origin:center; transform-box:fill-box; }
-        .aog-of-fig .orbit-door:hover circle{ transform:scale(1.05); }
+        .aog-of-fig .orbit-door circle{ transition:transform .24s cubic-bezier(.34,1.32,.5,1); transform-origin:center; transform-box:fill-box; }
+        .aog-of-fig .orbit-door{ transition:filter .2s ease; }
+        .aog-of-fig .orbit-door:hover circle, .aog-of-fig .orbit-door:focus-visible circle{ transform:scale(1.08); }
+        .aog-of-fig .orbit-door:active circle{ transform:scale(1.03); }
+        .aog-of-fig .orbit-door:hover, .aog-of-fig .orbit-door:focus-visible{ filter:drop-shadow(0 3px 13px rgba(242,201,100,.55)); }
         @media (prefers-reduced-motion: reduce){ .aog-of-fig, .aog-of-fig .orbit-door{ animation:none !important; } }
         .aog-of-fig .orbit-door rect, .aog-of-fig .orbit-door circle{ transition:stroke .15s ease; }
         .aog-of-fig .orbit-door:hover rect, .aog-of-fig .orbit-door:hover circle{ stroke:#D9A33B; stroke-width:2.5; }
@@ -5630,14 +5638,14 @@ function toggleTheme() {
             </defs>
             <circle cx="310" cy="310" r="199" fill="none" stroke="#D9A33B" stroke-width="1.1" stroke-opacity=".18"/>
             <circle cx="310" cy="310" r="150" fill="none" stroke="#D9A33B" stroke-width="1.1" stroke-opacity=".42" class="aog-of-flow"/>
-            <g class="aog-star" fill="none" stroke="#C99A3E" stroke-width="1.4" stroke-opacity=".34" stroke-linejoin="round">
+            <g class="aog-star" fill="none" stroke="#C99A3E" stroke-width="1.5" stroke-opacity=".5" stroke-linejoin="round">
               <polygon points="310.0,111.0 450.7,450.7 111.0,310.0 450.7,169.3 310.0,509.0 169.3,169.3 509.0,310.0 169.3,450.7"/>
             </g>
-            <g stroke="#C99A3E" stroke-width="1.6" stroke-opacity=".34">
+            <g stroke="#C99A3E" stroke-width="1.7" stroke-opacity=".48">
               <line x1="310.0" y1="216.0" x2="310.0" y2="158.0"/><line x1="376.5" y1="243.5" x2="417.5" y2="202.5"/><line x1="404.0" y1="310.0" x2="462.0" y2="310.0"/><line x1="376.5" y1="376.5" x2="417.5" y2="417.5"/><line x1="310.0" y1="404.0" x2="310.0" y2="462.0"/><line x1="243.5" y1="376.5" x2="202.5" y2="417.5"/><line x1="216.0" y1="310.0" x2="158.0" y2="310.0"/><line x1="243.5" y1="243.5" x2="202.5" y2="202.5"/>
             </g>
             <g class="aog-of-spin">
-              <circle cx="310.0" cy="170.0" r="3.4" fill="#D9A33B"/><circle cx="409.0" cy="211.0" r="3.4" fill="#D9A33B"/><circle cx="450.0" cy="310.0" r="3.4" fill="#D9A33B"/><circle cx="409.0" cy="409.0" r="3.4" fill="#D9A33B"/><circle cx="310.0" cy="450.0" r="3.4" fill="#D9A33B"/><circle cx="211.0" cy="409.0" r="3.4" fill="#D9A33B"/><circle cx="170.0" cy="310.0" r="3.4" fill="#D9A33B"/><circle cx="211.0" cy="211.0" r="3.4" fill="#D9A33B"/>
+              <circle cx="310.0" cy="170.0" r="4.3" fill="#F2C964"/><circle cx="409.0" cy="211.0" r="4.3" fill="#F2C964"/><circle cx="450.0" cy="310.0" r="4.3" fill="#F2C964"/><circle cx="409.0" cy="409.0" r="4.3" fill="#F2C964"/><circle cx="310.0" cy="450.0" r="4.3" fill="#F2C964"/><circle cx="211.0" cy="409.0" r="4.3" fill="#F2C964"/><circle cx="170.0" cy="310.0" r="4.3" fill="#F2C964"/><circle cx="211.0" cy="211.0" r="4.3" fill="#F2C964"/>
             </g>
             <text font-family="Fraunces,serif" font-size="25" font-weight="600" fill="url(#ofArc)" aria-hidden="true"><textPath href="#ofArcTop" startOffset="50%" text-anchor="middle">One Language of Grace</textPath></text>
             <text font-family="Fraunces,serif" font-size="25" font-weight="600" fill="url(#ofArc)" aria-hidden="true"><textPath href="#ofArcBot" startOffset="50%" text-anchor="middle">For Every Relationship</textPath></text>
@@ -5675,6 +5683,7 @@ function toggleTheme() {
         </div>
         <div class="aog-of-head" style="margin:auto auto 6px;">
           <p class="aog-of-sub">Architecture of Grace is a <b>shared relationship framework</b> &mdash; connecting schools, families, clinics, and communities through <b>one common language</b>: identity, self-compassion, forgiveness, and grace.</p>
+          <div class="aog-of-div" aria-hidden="true"></div>
           <p class="aog-of-priv"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="vertical-align:-2px;margin-right:5px;"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>Privacy-first &middot; no accounts, no tracking, no surveillance.</p>
           <div class="aog-of-hint">Tap the center to explore the Framework &middot; tap any point to enter that world</div>
         </div>
@@ -5751,8 +5760,9 @@ function toggleTheme() {
       #screen-welcome #one-framework .aog-of-head{ margin-bottom:12px; }
       #screen-welcome #one-framework .aog-of-ey{ font-size:10px; }
       #screen-welcome #one-framework .aog-of-h{ font-size:clamp(24px,3vw,36px); margin:6px 0 8px; }
-      #screen-welcome #one-framework .aog-of-sub{ font-size:11px; line-height:1.4; max-width:560px; }
-      #screen-welcome #one-framework .aog-of-priv{ font-size:10.5px; margin-top:5px; }
+      #screen-welcome #one-framework .aog-of-sub{ font-size:12px; line-height:1.5; max-width:560px; }
+      #screen-welcome #one-framework .aog-of-div{ margin:10px auto 8px; width:46px; }
+      #screen-welcome #one-framework .aog-of-priv{ font-size:10.5px; }
       /* the graphic is the star — big, but capped by viewport height so the page
          always fits at 100%: wide on tall screens, auto-shrinking on short ones. */
       #screen-welcome #one-framework .aog-of-fig{ width:100%; max-width:1400px; margin-top:auto; align-self:center; }
