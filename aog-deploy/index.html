@@ -5562,6 +5562,19 @@ function toggleTheme() {
         #one-framework #aogGraceWordHero{ border-top:1px solid color-mix(in srgb, var(--gold-soft,#F2C964) 22%, transparent); margin:20px auto 0; padding-top:16px; }
         .aog-of-fig{ max-width:660px; margin:6px auto 0; }
         .aog-of-fig svg{ display:block; width:100%; height:auto; overflow:visible; }
+        /* iPhone portrait (≤560px wide): let the star use the full screen width — iPad/desktop untouched */
+        @media (max-width:560px){
+          #one-framework.aog-of{ padding-left:6px; padding-right:6px; padding-top:46px; padding-bottom:50px; }
+          #one-framework .aog-of-fig{ max-width:none; margin-top:0; }
+          #one-framework .aog-of-head{ margin-bottom:18px; }
+        }
+        /* Short / landscape screens (phone turned sideways): size the star by HEIGHT so the
+           whole wheel fits instead of overflowing off the bottom. */
+        @media (max-height:560px){
+          #one-framework.aog-of{ padding-top:24px; padding-bottom:28px; }
+          #one-framework .aog-of-fig{ max-width:min(660px, 66vh); margin-top:0; }
+          #one-framework .aog-of-head{ margin-bottom:10px; }
+        }
         @keyframes aogHeroFade{ from{ opacity:0; } to{ opacity:1; } }
         @keyframes aogOrbitIn{ from{ opacity:0; transform:scale(.55); } to{ opacity:1; transform:scale(1); } }
         .aog-of-fig{ animation:aogHeroFade .7s ease both; }
@@ -5605,15 +5618,15 @@ function toggleTheme() {
       </style>
       <div class="aog-of-in">
         <div class="aog-of-fig">
-          <svg viewBox="18 14 584 592" role="img" aria-labelledby="aogOfTitle aogOfDesc">
+          <svg viewBox="40 12 540 588" role="img" aria-labelledby="aogOfTitle aogOfDesc">
             <title id="aogOfTitle">One Language of Grace. For Every Relationship.</title>
             <desc id="aogOfDesc">An eight-pointed star of Grace. At each point is a doorway — Teachers, Specialists, Outside &amp; Community Providers, Leadership, Families, Children, Adults, and Faith — orbiting one shared language of grace at the center.</desc>
             <defs>
               <radialGradient id="hpCore" cx="50%" cy="42%" r="65%"><stop offset="0%" stop-color="#244D75"/><stop offset="100%" stop-color="#0E2A45"/></radialGradient>
               <linearGradient id="hpRing" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#F2C964"/><stop offset="100%" stop-color="#D9A33B"/></linearGradient>
               <linearGradient id="ofArc" gradientUnits="userSpaceOnUse" x1="0" y1="50.0" x2="0" y2="570.0"><stop offset="0%" stop-color="#F6D479"/><stop offset="100%" stop-color="#D9A33B"/></linearGradient>
-              <path id="ofArcTop" d="M 105.1 149.9 A 260 260 0 0 1 514.9 149.9"/>
-              <path id="ofArcBot" d="M 105.1 470.1 A 260 260 0 0 0 514.9 470.1"/>
+              <path id="ofArcTop" d="M 90.9 138.8 A 278 278 0 0 1 529.1 138.8"/>
+              <path id="ofArcBot" d="M 90.9 481.2 A 278 278 0 0 0 529.1 481.2"/>
             </defs>
             <circle cx="310" cy="310" r="199" fill="none" stroke="#D9A33B" stroke-width="1.1" stroke-opacity=".18"/>
             <circle cx="310" cy="310" r="150" fill="none" stroke="#D9A33B" stroke-width="1.1" stroke-opacity=".42" class="aog-of-flow"/>
@@ -7777,7 +7790,7 @@ function toggleTheme() {
             <div>
               <div class="ch-spec-tag" data-i18n="ch_spec_tag">In-school &amp; outside providers</div>
               <div class="t" data-i18n="ch_spec_t">Specialists &amp; Providers</div>
-              <div class="s" data-i18n="ch_spec_s">In-school OTs, PTs, SLPs, social workers &amp; counselors &mdash; and outside or community clinicians. Open your clinical workspace: a per-client roster, session tracker, and scored screeners. Consent-first, private to this device.</div>
+              <div class="s" data-i18n="ch_spec_s">Paraprofessionals &amp; teacher aides, in-school OTs, PTs, SLPs, social workers &amp; counselors &mdash; and outside or community clinicians. Open your clinical workspace: a per-client roster, session tracker, and scored screeners. Consent-first, private to this device.</div>
             </div>
             <span class="arr">&rarr;</span>
           </a>
@@ -8739,7 +8752,7 @@ function toggleTheme() {
       function banner(role){
         if(role==='leadership') return L("Leadership view — building & district trends only, never individual scores.","Vista de liderazgo — tendencias de edificio y distrito, nunca puntajes individuales.")+
           ' <a href="AoG-District-Admin-View-Demo.html" class="drole-link">'+L("Open district rollup →","Abrir vista del distrito →")+'</a>';
-        if(role==='specialist') return L("Specialist view — for in-house OTs, PTs, SLPs (speech), social workers, counselors, and psychologists, and outside/community providers too. Individual progress and goals, plus the clinical Practitioner Edition (sessions, screeners, risk flags).","Vista de especialista — para terapeutas ocupacionales, fisioterapeutas, fonoaudiólogos, trabajadores sociales, consejeros y psicólogos del centro, y también proveedores externos/comunitarios. Progreso y metas individuales, más la Edición para Profesionales (sesiones, tamizajes, señales de riesgo).");
+        if(role==='specialist') return L("Specialist & support-staff view — for paraprofessionals and teacher aides, in-house OTs, PTs, SLPs (speech), social workers, counselors, and psychologists, and outside/community providers too. Individual progress and goals, plus the clinical Practitioner Edition (sessions, screeners, risk flags).","Vista de especialistas y personal de apoyo — para paraprofesionales y auxiliares docentes, terapeutas ocupacionales, fisioterapeutas, fonoaudiólogos, trabajadores sociales, consejeros y psicólogos del centro, y también proveedores externos/comunitarios. Progreso y metas individuales, más la Edición para Profesionales (sesiones, tamizajes, señales de riesgo).");
         if(role==='parent') return L("Family view — your family’s check-ins, conversation starters, and repair moments, private to this device.","Vista de familia — los registros, iniciadores de conversación y momentos de reparación de tu familia, privados en este dispositivo.");
         if(role==='student') return L("Student view — your own journey: how you’re doing and what helps.","Vista de estudiante — tu propio camino: cómo estás y qué te ayuda.");
         return L("Teacher view — your class, up close: trends and one clear next step per student.","Vista del docente — tu clase de cerca: tendencias y un próximo paso claro por estudiante.")+
@@ -28817,7 +28830,7 @@ window.addEventListener('load', _installToolScreenHook);
       I18N_UI.ch_grown_s = { en: 'For everyone who holds others — educators, nurses, leaders, parents, caregivers. Take it for yourself or your team. You can’t co-regulate from an empty cup.', es: 'Para quienes sostienen a otros — docentes, enfermeros, líderes, padres y cuidadores. Hazlo para ti o para tu equipo. No puedes corregular con la taza vacía.' };
       I18N_UI.ch_spec_tag = { en: 'In-school & outside providers', es: 'Proveedores del centro y externos' };
       I18N_UI.ch_spec_t = { en: 'Specialists & Providers', es: 'Especialistas y proveedores' };
-      I18N_UI.ch_spec_s = { en: 'In-school OTs, PTs, SLPs, social workers & counselors — and outside or community clinicians. Open your clinical workspace: a per-client roster, session tracker, and scored screeners. Consent-first, private to this device.', es: 'Terapeutas ocupacionales, fisioterapeutas, fonoaudiólogos, trabajadores sociales y consejeros del centro — y clínicos externos o comunitarios. Abre tu espacio clínico: lista por cliente, registro de sesiones y tamizajes puntuados. Con consentimiento primero, privado en este dispositivo.' };
+      I18N_UI.ch_spec_s = { en: 'Paraprofessionals & teacher aides, in-school OTs, PTs, SLPs, social workers & counselors — and outside or community clinicians. Open your clinical workspace: a per-client roster, session tracker, and scored screeners. Consent-first, private to this device.', es: 'Paraprofesionales y auxiliares docentes, terapeutas ocupacionales, fisioterapeutas, fonoaudiólogos, trabajadores sociales y consejeros del centro — y clínicos externos o comunitarios. Abre tu espacio clínico: lista por cliente, registro de sesiones y tamizajes puntuados. Con consentimiento primero, privado en este dispositivo.' };
       I18N_UI.wp_personal_t = { en: 'Just checking in on yourself?', es: '¿Solo quieres revisarte a ti?' };
       I18N_UI.wp_personal_s = { en: 'Take the private adult self-reflection — just for you, not your team.', es: 'Haz la autorreflexión personal para adultos — solo para ti, no para tu equipo.' };
       I18N_UI.wp_personal_btn = { en: 'Personal self-reflection →', es: 'Autorreflexión personal →' };
@@ -32334,7 +32347,7 @@ window.addEventListener('load', _installToolScreenHook);
   /* ---------- audience cards ---------- */
   var CARDS = [
     {key:'teacher', title:T('Teachers &amp; Educators','Docentes y educadores'), who:T('Run the self-reflection with a class and read the group at a glance.','Haz la autorreflexión con una clase y lee al grupo de un vistazo.'), qs:'AoG-QuickStart-Teacher.pdf', fb:'AoG-Feedback-Teacher.pdf', form:'teacher'},
-    {key:'specialist', title:T('Specialists &amp; Support Staff','Especialistas y personal de apoyo'), who:T('Counselors, psychologists, social workers, SLPs, OTs, PTs, and behavior staff working across tiers.','Consejeros, psicólogos, trabajadores sociales, fonoaudiólogos, terapeutas ocupacionales, fisioterapeutas y personal de conducta que trabajan en todos los niveles.'), qs:'AoG-QuickStart-Specialist.pdf', fb:'AoG-Feedback-Specialist.pdf', form:'specialist'},
+    {key:'specialist', title:T('Specialists &amp; Support Staff','Especialistas y personal de apoyo'), who:T('Paraprofessionals, teacher aides, counselors, psychologists, social workers, SLPs, OTs, PTs, and behavior staff working across tiers.','Paraprofesionales, auxiliares docentes, consejeros, psicólogos, trabajadores sociales, fonoaudiólogos, terapeutas ocupacionales, fisioterapeutas y personal de conducta que trabajan en todos los niveles.'), qs:'AoG-QuickStart-Specialist.pdf', fb:'AoG-Feedback-Specialist.pdf', form:'specialist'},
     {key:'outside', title:T('Outside &amp; Community Providers','Proveedores externos y comunitarios'), who:T('Private-practice therapists, outside OTs, PTs &amp; SLPs, and community clinics partnering with a family or school.','Terapeutas en consulta privada, terapeutas ocupacionales, fisioterapeutas y fonoaudiólogos externos, y clínicas comunitarias que colaboran con una familia o escuela.'), qs:'AoG-QuickStart-Outside.pdf', fb:null, form:'outside', note:T('A private, consent-first workspace for providers who aren’t employed by the school — on-device by default.','Un espacio privado que da prioridad al consentimiento, para proveedores que no son empleados de la escuela: en el dispositivo por defecto.')},
     {key:'parent', title:T('Parents &amp; Families','Familias y cuidadores'), who:T('Five quiet minutes with your child at home, with conversation starters you can print.','Cinco minutos tranquilos con tu hijo en casa, con preguntas para conversar que puedes imprimir.'), qs:'AoG-QuickStart-Parent.pdf', fb:'AoG-Feedback-Parent.pdf', form:'parent'},
     {key:'adult', title:T('Adults (self-use)','Adultos (uso personal)'), who:T('A private self-reflection for the grown-up in the room — a mirror, not a report.','Una autorreflexión privado para el adulto presente: un espejo, no un informe.'), qs:'AoG-QuickStart-Adult.pdf', fb:'AoG-Feedback-Adult.pdf', form:'adult'},
@@ -32381,7 +32394,7 @@ window.addEventListener('load', _installToolScreenHook);
       [T('Read the group','Lee al grupo'),T('Open the <b>Dashboard</b> (top bar) → Overview and Class trends. Individual scores stay private on purpose.','Abre el <b>Panel</b> (barra superior) → Resumen y Tendencias de la clase. Los puntajes individuales se mantienen privados a propósito.')],
       [T('See the tiers','Ve los niveles'),T('Go to <b>Dashboard → MTSS Report</b> (gold button). No data yet? Tap <b>Load demo data</b> to explore it instantly.','Ve a <b>Panel → Informe MTSS</b> (botón dorado). ¿Aún sin datos? Toca <b>Cargar datos de ejemplo</b> para explorarlo al instante.')]
     ], close:T('Then fill out the Teacher Feedback Form — what confused a student or broke is the most useful thing you can tell us.','Luego completa el Formulario de comentarios del docente: lo que confundió a un estudiante o falló es lo más útil que puedes contarnos.')},
-    specialist:{lede:T('A five-minute orientation for counselors, psychologists, social workers, SLPs, OTs, PTs, and behavior staff.','Una orientación de cinco minutos para consejeros, psicólogos, trabajadores sociales, fonoaudiólogos, terapeutas ocupacionales, fisioterapeutas y personal de conducta.'), steps:[
+    specialist:{lede:T('A five-minute orientation for paraprofessionals, teacher aides, counselors, psychologists, social workers, SLPs, OTs, PTs, and behavior staff.','Una orientación de cinco minutos para paraprofesionales, auxiliares docentes, consejeros, psicólogos, trabajadores sociales, fonoaudiólogos, terapeutas ocupacionales, fisioterapeutas y personal de conducta.'), steps:[
       [T('Open the site','Abre el sitio'),T('Go to architectureofgrace.org (laptop, tablet, or phone). It works offline once loaded.','Entra a architectureofgrace.org (computadora, tableta o teléfono). Funciona sin conexión una vez cargado.')],
       [T('See how it connects','Mira cómo conecta'),T('Tap <b>Explore the Framework</b> — the four pillars and how one answer becomes a next step.','Toca <b>Explora el marco</b>: los cuatro pilares y cómo una respuesta se convierte en un siguiente paso.')],
       [T('Run a self-reflection','Haz una autorreflexión'),T('Begin Self-Reflection → Student Self-Reflection → grade band → Quick or Thorough, with a student you support.','Hacer el Autorreflexión → Autorreflexión del estudiante → nivel de grado → Rápido o Completo, con un estudiante que apoyas.')],
@@ -33074,6 +33087,8 @@ window.addEventListener('load', _installToolScreenHook);
   -webkit-tap-highlight-color:transparent;
 }
 #aog-station.open{ display:block; }
+/* While the calm kiosk is open, hide the site top bar so its brand can't peek above it (iPhone) */
+html.aog-station-open .topbar{ display:none !important; }
 :root[data-theme="dark"] #aog-station{ background:var(--navy-deep,#06121F); color:var(--cream,#F4EEE2); }
 .aog-st-wrap{ max-width:920px; margin:0 auto; padding:34px 20px 60px; min-height:100%; box-sizing:border-box; }
 .aog-st-exit{
@@ -33311,6 +33326,11 @@ window.addEventListener('load', _installToolScreenHook);
     el.hidden = false;
     el.classList.add("open");
     el.classList.remove("options-open");   /* round 2 (full activity wall) starts hidden */
+    /* Re-root to <body> so position:fixed is viewport-relative even if an ancestor
+       has a transform/filter (an iOS Safari quirk that let the site bar peek above). */
+    try { if (el.parentNode !== document.body) document.body.appendChild(el); } catch(e){}
+    /* Hide the site top bar while the calm kiosk is open (belt-and-suspenders vs. peek). */
+    try { document.documentElement.classList.add("aog-station-open"); } catch(e){}
     try { document.documentElement.style.overflow = "hidden"; document.body.style.overflow = "hidden"; } catch(e){}
     el.setAttribute("tabindex","-1");
     try { el.scrollTop = 0; } catch(e){}
@@ -33338,6 +33358,7 @@ window.addEventListener('load', _installToolScreenHook);
     el.classList.remove("open");
     el.classList.remove("options-open");
     el.hidden = true;
+    try { document.documentElement.classList.remove("aog-station-open"); } catch(e){}
     try { document.documentElement.style.overflow = ""; document.body.style.overflow = ""; } catch(e){}
     /* Clear the #quiet-space hash if we left it open (no extra history noise). */
     try { if ((location.hash || "").replace(/^#/, "").toLowerCase() === "quiet-space") history.replaceState(null, "", location.pathname + location.search); } catch(e){}
