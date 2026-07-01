@@ -40749,10 +40749,15 @@ window.AOG_BUILD = "2026.06.30k · Goal Builder band helper + pilot FAQ trimmed 
   .fam-tab{ background:transparent; border:0; border-bottom:2.5px solid transparent; margin-bottom:-1px; font:inherit; font-size:14px; font-weight:700; color:var(--ink-faint,#8A92A6); padding:9px 16px; cursor:pointer; }
   .fam-tab:hover{ color:var(--navy,#0A1E33); }
   .fam-tab.active{ color:var(--navy,#0A1E33); border-bottom-color:var(--gold,#D9A33B); }
+  .fam-hub-themes{ display:flex; flex-wrap:wrap; gap:6px; margin:12px 0 14px; }
+  .fam-hub-chip{ font:inherit; font-size:12.5px; font-weight:600; color:var(--ink-soft,#5a6472); background:var(--paper,#FCF8F0); border:1px solid var(--rule,#E6DCC4); border-radius:999px; padding:5px 13px; cursor:pointer; transition:background .12s ease,border-color .12s ease,color .12s ease; }
+  .fam-hub-chip:hover{ border-color:var(--gold,#D9A33B); color:var(--navy,#0A1E33); }
+  .fam-hub-chip.active{ background:var(--navy,#0A1E33); color:#fff; border-color:var(--navy,#0A1E33); }
 </style>
 <script>
 (function(){
   window.__aogFamHub = 0;
+  window.__aogFamHubTheme = window.__aogFamHubTheme || "mix";
   var DOMS = { A:{c:"#C45A3B",en:"feelings & calming down",es:"sentimientos y calmarse"},
                B:{c:"#2E6B3A",en:"being kind to yourself",es:"ser amable contigo"},
                C:{c:"#2B4D7A",en:"friends, family & repair",es:"amigos, familia y reparación"} };
@@ -40787,20 +40792,35 @@ window.AOG_BUILD = "2026.06.30k · Goal Builder band helper + pilot FAQ trimmed 
   window.aogFamilyHubHtml=function(name,grade,records,es){
     var D=window.AOG_CS_DATA; if(!D) return "";
     var bank=D[bandForGrade(grade)]||D["35"]; if(!bank) return "";
+    var theme = window.__aogFamHubTheme || "mix";
     var low=lowestDomain(records);
     var seed=(hashStr(name)+seasonIdx(records)*7+(window.__aogFamHub||0))>>>0;
-    var order = low
-      ? (function(){ var o=["A","B","C"].filter(function(d){return d!==low;}); return [[low,0],[low,1],[o[seed%2],2]]; })()
-      : [["A",0],["B",1],["C",2]];
-    var used={};
-    var items=order.map(function(o,i){
-      var dom=o[0], arr=bank[dom]||[]; if(!arr.length) return "";
-      var k=(seed+o[1]*5+i)%arr.length, tries=0;
-      while(used[dom+"|"+k]&&tries<arr.length){ k=(k+1)%arr.length; tries++; }
+    var used={ __n:0 };
+    function pickLi(dom, parity){
+      var arr=bank[dom]||[]; if(!arr.length) return "";
+      var cand=[], x;
+      for(x=0;x<arr.length;x++){ if(parity==="even"&&x%2!==0) continue; if(parity==="odd"&&x%2!==1) continue; if(used[dom+"|"+x]) continue; cand.push(x); }
+      if(!cand.length){ for(x=0;x<arr.length;x++){ if(!used[dom+"|"+x]) cand.push(x); } }
+      if(!cand.length){ cand=[0]; }
+      used.__n++;
+      var k=cand[(seed+used.__n*5)%cand.length];
       used[dom+"|"+k]=1;
       var p=arr[k];
       return '<li style="border-left-color:'+DOMS[dom].c+'">'+ (es?p.es:p.en) +'</li>';
-    }).join("");
+    }
+    var items;
+    if(theme==="A"||theme==="B"||theme==="C"){
+      items=[pickLi(theme,"any"),pickLi(theme,"any"),pickLi(theme,"any")].join("");
+    } else if(theme==="laughs"){
+      items=[pickLi("A","even"),pickLi("B","even"),pickLi("C","even")].join("");
+    } else if(theme==="real"){
+      items=[pickLi("A","odd"),pickLi("B","odd"),pickLi("C","odd")].join("");
+    } else {
+      var ord = low ? (function(){ var o=["A","B","C"].filter(function(d){return d!==low;}); return [low,low,o[seed%2]]; })() : ["A","B","C"];
+      items=ord.map(function(dom){ return pickLi(dom,"any"); }).join("");
+    }
+    var THEMES=[{k:"mix",en:"Surprise me",es:"Sorpr\u00e9ndeme"},{k:"laughs",en:"Laughs",es:"Risas"},{k:"real",en:"Real talk",es:"En serio"},{k:"A",en:"Feelings",es:"Sentimientos"},{k:"B",en:"Kindness",es:"Amabilidad"},{k:"C",en:"Our people",es:"Nuestra gente"}];
+    var chipsHtml=THEMES.map(function(th){ return '<button type="button" class="fam-hub-chip'+(theme===th.k?" active":"")+'" onclick="aogFamilyHubTheme(\''+th.k+'\')">'+(es?th.es:th.en)+'</button>'; }).join("");
     var t=es?"Tres para la mesa esta noche":"Three for the table tonight";
     var sub;
     if(low){ var dl=es?DOMS[low].es:DOMS[low].en;
@@ -40812,6 +40832,7 @@ window.AOG_BUILD = "2026.06.30k · Goal Builder band helper + pilot FAQ trimmed 
     return '<div class="fam-hub"><div class="fam-hub-h"><span class="fam-hub-t">'+t+'</span>'+
       '<button class="fam-hub-shuffle" type="button" onclick="aogFamilyHubShuffle()">↻ '+(es?"Otras":"Shuffle")+'</button></div>'+
       '<div class="fam-hub-sub">'+sub+'</div>'+
+      '<div class="fam-hub-themes">'+chipsHtml+'</div>'+
       '<ul class="fam-hub-list">'+items+'</ul>'+
       '<div class="fam-hub-foot">'+
         '<button type="button" onclick="var el=document.getElementById(\'famCsSection\'); if(el)el.scrollIntoView({behavior:\'smooth\',block:\'start\'});">'+(es?"Ver todas por edad ↓":"See all by age ↓")+'</button>'+
@@ -40819,6 +40840,7 @@ window.AOG_BUILD = "2026.06.30k · Goal Builder band helper + pilot FAQ trimmed 
       '</div></div>';
   };
   window.aogFamilyHubShuffle=function(){ window.__aogFamHub=(window.__aogFamHub||0)+1; if(typeof renderFamily==="function") renderFamily(); };
+  window.aogFamilyHubTheme=function(th){ window.__aogFamHubTheme=th; window.__aogFamHub=(window.__aogFamHub||0)+1; if(typeof renderFamily==="function") renderFamily(); };
 
   /* Full age-banded starters, rendered INLINE on the Family page (no modal). */
   var CS_DOMS=[
