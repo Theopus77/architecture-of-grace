@@ -5573,6 +5573,8 @@ function toggleTheme() {
           #one-framework .aog-of-fig{ max-width:none; margin:0 auto; }
           #one-framework .aog-of-head{ margin-bottom:18px; padding:0 14px; }
         }
+        /* Curved-label descenders ("p" in Relationship) must clear the section edge at tablet / narrow-window widths too, not only phones (the wrapper's overflow:hidden was cropping the "p" tail) */
+        @media (max-width:820px){ #one-framework.aog-of{ overflow:visible; } }
         /* Short / landscape screens (phone turned sideways): size the star by HEIGHT so the
            whole wheel fits instead of overflowing off the bottom. */
         @media (max-height:560px){
