@@ -7,13 +7,14 @@
  * on every build — so each new deploy invalidates the old cache and returning
  * visitors always get the fresh page. No manual version bumping required.
  */
-const CACHE = 'aog-cache-2026.07.01.2024';
+const CACHE = 'aog-cache-2026.07.02.1200';
 
 // Same-origin essentials — reliable to precache at install.
 const PRECACHE = [
   './', './index.html', './aog-styles.css', './manifest.json', './og-image.png',
   './favicon.ico', './favicon-16.png', './favicon-32.png',
-  './icon-192.png', './icon-512.png', './icon-512-maskable.png', './apple-touch-icon.png'
+  './icon-192.png', './icon-512.png', './icon-512-maskable.png', './apple-touch-icon.png',
+  './AoG-Pocket-Reset-Golf.html'
 ];
 
 // Cross-origin extras that complete the offline experience (the dyslexia font).

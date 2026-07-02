@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0E2A1E">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Next Shot">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'%3E%3Crect width='180' height='180' rx='40' fill='%230E2A1E'/%3E%3Ccircle cx='90' cy='90' r='50' fill='none' stroke='%23C9A34E' stroke-width='2.5'/%3E%3Ccircle cx='90' cy='72' r='15' fill='none' stroke='%23C9A34E' stroke-width='1.6'/%3E%3Cline x1='90' y1='87' x2='90' y2='120' stroke='%23C9A34E' stroke-width='1.6'/%3E%3Cpath d='M90 90 L112 97 L90 104 Z' fill='%23C9A34E'/%3E%3C/svg%3E">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230E2A1E'/%3E%3Cline x1='16' y1='8' x2='16' y2='24' stroke='%23C9A34E' stroke-width='1.5'/%3E%3Cpath d='M16 9 L23 12 L16 15 Z' fill='%23C9A34E'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400;1,500&family=Inter:wght@300;400;500;600;700;800&family=Fraunces:ital,opsz,wght@0,9..144,300..600;1,9..144,300..500&display=swap" rel="stylesheet">
+<title>The Next Shot · for James Dean</title>
+<style>
+  :root{
+    --green-1:#0E2A1E; --green-2:#0A2016; --paper:#F7F3E7; --paper-soft:#EDE7D3;
+    --ink:#F3EEDD; --ink-soft:#C7CFC2; --ink-faint:#8DA091;
+    --gold:#C9A34E; --gold-deep:#B08A38; --fairway:#3E7A4E; --rule:rgba(201,163,78,.24); --rule-soft:rgba(201,163,78,.14);
+    --serif:'Fraunces',Georgia,'Times New Roman',serif;
+    --sans:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+    --script:'Cormorant Garamond',Georgia,serif;
+    --ease:cubic-bezier(.22,.61,.36,1);
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+  html,body{margin:0; padding:0;}
+  body{
+    font-family:var(--sans); color:var(--ink); min-height:100dvh;
+    -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;
+    background:var(--green-1);
+    background-image:radial-gradient(130% 90% at 50% -15%, #16382A 0%, var(--green-1) 55%, var(--green-2) 100%);
+    padding:max(26px,env(safe-area-inset-top)) 26px max(30px,env(safe-area-inset-bottom));
+    display:flex; flex-direction:column; align-items:center;
+  }
+  .wrap{width:100%; max-width:430px; margin:0 auto; flex:1; display:flex; flex-direction:column;}
+
+  header{text-align:center; padding:2px 0 4px;}
+  .brand{font-family:var(--sans); font-size:10px; font-weight:800; letter-spacing:.28em; text-transform:uppercase; color:var(--gold);}
+  .mark{width:38px; height:38px; margin:16px auto 8px; display:block;}
+  .wordmark{font-family:var(--serif); font-weight:400; font-size:25px; letter-spacing:.01em; color:var(--ink);}
+  .slogan{font-family:var(--script); font-style:italic; font-size:16px; color:var(--gold); margin-top:2px;}
+
+  .screen{display:none; flex:1; flex-direction:column; animation:rise .55s var(--ease);}
+  .screen.on{display:flex;}
+  .screen.center{justify-content:center;}
+  @keyframes rise{from{opacity:0; transform:translateY(10px);} to{opacity:1; transform:none;}}
+
+  .eyebrow{font-family:var(--sans); font-size:10.5px; font-weight:800; letter-spacing:.22em; text-transform:uppercase; color:var(--gold); margin:0 0 14px;}
+  h1{font-family:var(--serif); font-weight:400; font-size:32px; line-height:1.18; letter-spacing:-.01em; margin:0 0 14px;}
+  h2{font-family:var(--serif); font-weight:400; font-size:27px; line-height:1.22; letter-spacing:-.01em; margin:0 0 12px;}
+  .lede{font-family:var(--sans); font-weight:300; font-size:16px; line-height:1.55; color:var(--ink-soft); margin:0 0 28px;}
+  .lede b{color:var(--gold); font-weight:500;}
+
+  .rule{height:1px; background:var(--rule); border:0; margin:18px 0;}
+  .rule.short{width:44px; height:2px; background:var(--gold); margin:0 auto 22px; border-radius:2px;}
+
+  .btn{
+    display:flex; align-items:center; justify-content:center; gap:8px; width:100%;
+    font-family:var(--sans); font-weight:600; font-size:15px; letter-spacing:.02em; cursor:pointer;
+    border-radius:13px; padding:19px 22px; margin:9px 0; border:1px solid var(--gold);
+    background:linear-gradient(180deg,#C9A34E 0%,#B08A38 100%); color:#16261C;
+    box-shadow:0 4px 14px rgba(0,0,0,.28); transition:transform .2s var(--ease), box-shadow .2s var(--ease), filter .2s var(--ease);
+  }
+  .btn:active{transform:translateY(1px); filter:brightness(1.05); box-shadow:0 2px 8px rgba(0,0,0,.24);}
+  .btn.big{padding:22px; font-size:16px;}
+  .btn.ghost{background:transparent; color:var(--ink); border:1px solid var(--rule); box-shadow:none; font-weight:500;}
+  .btn.ghost:active{background:rgba(201,163,78,.08);}
+  .btn .arw{font-family:var(--serif); font-weight:300;}
+  .textlink{display:block; margin:14px auto 0; background:none; border:0; font-family:var(--sans); font-size:12.5px; font-weight:500; letter-spacing:.03em; color:var(--ink-faint); cursor:pointer;}
+  .textlink:active{color:var(--gold);}
+  .tip{text-align:center; font-family:var(--sans); font-weight:300; font-size:12.5px; color:var(--ink-faint); margin-top:20px; line-height:1.5;}
+
+  .chips{display:flex; flex-wrap:wrap; gap:10px; margin:2px 0 26px;}
+  .chip{
+    font-family:var(--serif); font-weight:400; font-size:16px; color:var(--ink);
+    border:1px solid var(--rule); background:rgba(255,255,255,.03); border-radius:999px; padding:12px 20px; cursor:pointer;
+    transition:border-color .2s var(--ease), background .2s var(--ease), color .2s var(--ease);
+  }
+  .chip.sel{border-color:var(--gold); background:rgba(201,163,78,.14); color:var(--gold);}
+
+  .breath-stage{flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:30px;}
+  .orb-frame{width:230px; height:230px; position:relative; display:flex; align-items:center; justify-content:center;}
+  .ring{position:absolute; border-radius:50%; border:1px solid var(--gold); left:50%; top:50%; transform:translate(-50%,-50%) scale(.7);
+        transition:transform 4s var(--ease), opacity 4s var(--ease);}
+  .ring.r1{width:230px; height:230px; opacity:.28;}
+  .ring.r2{width:168px; height:168px; opacity:.45;}
+  .ring.r3{width:110px; height:110px; opacity:.8;}
+  .orb-core{width:14px; height:14px; border-radius:50%; background:radial-gradient(circle at 40% 35%, #fff, #E6E0CC); box-shadow:0 0 14px rgba(255,255,255,.5), 0 0 0 5px rgba(201,163,78,.14);}
+  .stage-inhale .ring{transform:translate(-50%,-50%) scale(1.28); transition-duration:4s;}
+  .stage-inhale .r1{opacity:.45;} .stage-inhale .r2{opacity:.65;} .stage-inhale .r3{opacity:1;}
+  .stage-exhale .ring{transform:translate(-50%,-50%) scale(.62); transition-duration:6s;}
+  .stage-exhale .r1{opacity:.2;} .stage-exhale .r2{opacity:.35;} .stage-exhale .r3{opacity:.65;}
+  .breath-word{font-family:var(--serif); font-style:italic; font-weight:400; font-size:21px; color:var(--ink-soft); min-height:28px;}
+  .dots{display:flex; gap:9px; justify-content:center;}
+  .dot{width:6px; height:6px; border-radius:50%; background:var(--rule); transition:background .4s var(--ease);}
+  .dot.on{background:var(--gold);}
+
+  .reset{display:flex; gap:16px; align-items:flex-start; padding:18px 4px; border-bottom:1px solid var(--rule-soft);}
+  .reset:first-of-type{border-top:1px solid var(--rule-soft);}
+  .reset .idx{font-family:var(--sans); font-weight:800; font-size:11px; letter-spacing:.12em; color:var(--gold); padding-top:5px; min-width:22px;}
+  .reset .body{flex:1;}
+  .reset .rt{font-family:var(--serif); font-weight:500; font-size:17px; margin:0 0 3px; color:var(--ink);}
+  .reset .rd{font-family:var(--sans); font-weight:300; font-size:14.5px; line-height:1.5; color:var(--ink-soft); margin:0;}
+
+  .voice{padding:20px 2px;}
+  .voice + .voice{border-top:1px solid var(--rule);}
+  .voice .lbl{font-family:var(--sans); font-weight:800; font-size:10px; letter-spacing:.2em; text-transform:uppercase; margin:0 0 9px;}
+  .voice.critic .lbl{color:var(--ink-faint);}
+  .voice.coach .lbl{color:var(--gold);}
+  .voice p{margin:0; font-family:var(--serif); font-size:19px; line-height:1.4;}
+  .voice.critic p{color:var(--ink-faint); font-style:italic; font-weight:300;}
+  .voice.coach p{color:var(--ink); font-weight:400;}
+
+  .affirm{font-family:var(--script); font-style:italic; font-weight:400; font-size:29px; line-height:1.35; text-align:center; color:var(--ink); margin:8px 0 30px;}
+  .sign{font-family:var(--script); font-style:italic; font-size:16px; color:var(--gold); text-align:center; margin:2px 0 26px;}
+  footer{text-align:center; font-family:var(--sans); font-weight:400; font-size:9.5px; letter-spacing:.22em; text-transform:uppercase; color:var(--ink-faint); margin-top:20px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="brand">Architecture of Grace</div>
+  </header>
+
+  <!-- 1 · OPEN -->
+  <section class="screen center on" id="s-start">
+    <svg class="mark" viewBox="0 0 40 40" fill="none" aria-hidden="true">
+      <circle cx="20" cy="20" r="17.5" stroke="#C9A34E" stroke-width="1"/>
+      <circle cx="20" cy="13.5" r="5.5" stroke="#C9A34E" stroke-width="1.2"/>
+      <line x1="20" y1="19" x2="20" y2="30" stroke="#C9A34E" stroke-width="1.2"/>
+      <path d="M20 20 L27 22.4 L20 24.8 Z" fill="#C9A34E"/>
+    </svg>
+    <div class="wordmark" style="text-align:center;">The Next Shot</div>
+    <div class="slogan" style="text-align:center;">for James Dean</div>
+    <hr class="rule" style="margin:26px 0;">
+    <h1>The last one is already behind you.</h1>
+    <p class="lede">A bladed chip, a three-putt, a drive into the trees &mdash; it happens to everyone who ever played. <b>The walk to the next ball is yours.</b> Take it.</p>
+    <button class="btn big" onclick="go('name')">Walk it off <span class="arw">&rarr;</span></button>
+    <p class="tip">Keep it on your home screen &mdash; open it right after you log the hole.</p>
+  </section>
+
+  <!-- 2 · NAME -->
+  <section class="screen" id="s-name">
+    <div class="eyebrow">First &middot; Name the lie</div>
+    <h2>What&rsquo;s the club in your hand right now?</h2>
+    <p class="lede">Name it and it loosens its grip. Tap what&rsquo;s true &mdash; or walk on.</p>
+    <div class="chips" id="feelChips"></div>
+    <button class="btn" onclick="go('breathe')">Next <span class="arw">&rarr;</span></button>
+    <button class="btn ghost" onclick="go('breathe')">Skip</button>
+  </section>
+
+  <!-- 3 · BREATHE -->
+  <section class="screen" id="s-breathe">
+    <div class="eyebrow">Second &middot; The pre-shot breath</div>
+    <h2>Breathe down the fairway.</h2>
+    <p class="lede">Longer out than in &mdash; the same breath the best players take over a putt. Let the ball settle.</p>
+    <div class="breath-stage">
+      <div class="orb-frame" id="orb">
+        <div class="ring r1"></div><div class="ring r2"></div><div class="ring r3"></div>
+        <div class="orb-core"></div>
+      </div>
+      <div class="breath-word" id="breathWord">Address the ball&hellip;</div>
+      <div class="dots" id="breathDots"></div>
+    </div>
+    <button class="btn ghost" onclick="go('body')">Loose and ready <span class="arw">&rarr;</span></button>
+  </section>
+
+  <!-- 4 · BODY -->
+  <section class="screen" id="s-body">
+    <div class="eyebrow">Third &middot; Reset the body</div>
+    <h2>Shake the tension out.</h2>
+    <div class="resets">
+      <div class="reset"><div class="idx">01</div><div class="body"><p class="rt">Regrip</p><p class="rd">Open the hands, roll the shoulders, ease the jaw. Tension lives in the grip.</p></div></div>
+      <div class="reset"><div class="idx">02</div><div class="body"><p class="rt">Look up</p><p class="rd">Lift your eyes to the horizon. Name five things down the hole. You&rsquo;re back in the round.</p></div></div>
+      <div class="reset"><div class="idx">03</div><div class="body"><p class="rt">Walk it</p><p class="rd">Match your breath to your steps to the next ball. Arrive as a fresh player.</p></div></div>
+    </div>
+    <button class="btn" style="margin-top:20px;" onclick="go('coach')">Next <span class="arw">&rarr;</span></button>
+  </section>
+
+  <!-- 5 · COACH -->
+  <section class="screen" id="s-coach">
+    <div class="eyebrow">Fourth &middot; The caddie, not the critic</div>
+    <h2>Answer the voice in your head.</h2>
+    <p class="lede">The voice after a bad shot isn&rsquo;t your talent talking &mdash; it&rsquo;s just noise. Hear your caddie instead.</p>
+    <div class="voice critic"><p class="lbl">The critic</p><p id="criticLine">&ldquo;You always fall apart. You&rsquo;ll never break through.&rdquo;</p></div>
+    <div class="voice coach"><p class="lbl">The caddie</p><p id="coachLine">&ldquo;One bad swing isn&rsquo;t the round. Commit to this next one.&rdquo;</p></div>
+    <button class="textlink" onclick="rollCoach()">Another &#8635;</button>
+    <button class="btn" style="margin-top:16px;" onclick="go('back')">Ready to play <span class="arw">&rarr;</span></button>
+  </section>
+
+  <!-- 6 · RETURN -->
+  <section class="screen center" id="s-back">
+    <div class="eyebrow" style="text-align:center;">You cooled it &middot; that&rsquo;s the game inside the game</div>
+    <hr class="rule short">
+    <p class="affirm" id="affirmLine">Play the next shot &mdash; never the last one.</p>
+    <div class="sign">Go get it, James.</div>
+    <button class="btn big" onclick="go('start')">Step to the next tee <span class="arw">&rarr;</span></button>
+    <button class="textlink" onclick="go('start')">Back to the start</button>
+    <footer>Architecture of Grace &middot; The Next Shot</footer>
+  </section>
+</div>
+
+<script>
+  var feelings = ["Furious","Embarrassed","Tight","Rushing it","Given up","Pressing","In my head","Fine, really"];
+  var criticPairs = [
+    ["You always fall apart. You’ll never break through.","One bad swing isn’t the round. Commit to this next one."],
+    ["Everyone just saw that.","Nobody remembers your bad holes like you do. Reset and go."],
+    ["The round’s ruined. Why bother.","A round is eighteen chances. You’ve got plenty left."],
+    ["You should be better than this by now.","Every player alive hits it sideways. Better comes from staying calm, not raging."],
+    ["Throw it. Let ’em know you’re mad.","The club’s not the problem. Cool head, next shot — that’s the flex."],
+    ["You choked. You always choke.","Pressure means it matters. Breathe, pick a target, trust the swing."]
+  ];
+  var affirms = [
+    "Play the next shot — never the last one.",
+    "The scorecard forgets. Your composure doesn’t.",
+    "You’re a golfer having a moment — not a bad golfer.",
+    "Calm is a club. You just pulled it."
+  ];
+
+  var fc = document.getElementById('feelChips');
+  feelings.forEach(function(f){
+    var b=document.createElement('button'); b.className='chip'; b.type='button'; b.textContent=f;
+    b.onclick=function(){ b.classList.toggle('sel'); };
+    fc.appendChild(b);
+  });
+
+  var breathTimer=null;
+  function go(id){
+    document.querySelectorAll('.screen').forEach(function(s){s.classList.remove('on');});
+    document.getElementById('s-'+id).classList.add('on');
+    window.scrollTo(0,0);
+    if(breathTimer){clearTimeout(breathTimer); breathTimer=null;}
+    if(id==='breathe') startBreath();
+    if(id==='coach') rollCoach();
+    if(id==='back') document.getElementById('affirmLine').textContent = affirms[Math.floor(Math.random()*affirms.length)];
+  }
+
+  var rounds=4, dotsBox=document.getElementById('breathDots');
+  function startBreath(){
+    var orb=document.getElementById('orb'), word=document.getElementById('breathWord');
+    dotsBox.innerHTML=''; var dots=[];
+    for(var i=0;i<rounds;i++){var d=document.createElement('div'); d.className='dot'; dotsBox.appendChild(d); dots.push(d);}
+    var r=0;
+    function cycle(){
+      if(r>=rounds){ word.textContent='Striped it.'; orb.className='orb-frame'; return; }
+      orb.className='orb-frame stage-inhale'; word.textContent='Breathe in…';
+      breathTimer=setTimeout(function(){
+        word.textContent='Hold at the top…';
+        breathTimer=setTimeout(function(){
+          orb.className='orb-frame stage-exhale'; word.textContent='Long breath through the ball…';
+          breathTimer=setTimeout(function(){ dots[r].classList.add('on'); r++; cycle(); },6200);
+        },1000);
+      },4100);
+    }
+    word.textContent='Address the ball…'; orb.className='orb-frame';
+    breathTimer=setTimeout(cycle,1000);
+  }
+
+  function rollCoach(){
+    var p=criticPairs[Math.floor(Math.random()*criticPairs.length)];
+    document.getElementById('criticLine').textContent='“'+p[0]+'”';
+    document.getElementById('coachLine').textContent='“'+p[1]+'”';
+  }
+</script>
+</body>
+</html>
