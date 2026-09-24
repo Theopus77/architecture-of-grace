@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script>/* .30eg: begin in light. Dark only when this device chose it. The bar writes both
+keys (aog.theme, and the standalone pages' aog.interior.ws.v1.theme) and reconciles them,
+so either one is a valid memory of the choice. */
+(function(){var t="light";try{var a=localStorage.getItem("aog.theme"),b=localStorage.getItem("aog.interior.ws.v1.theme");if(a==="dark"||(a==null&&b==="dark"))t="dark";}catch(e){}document.documentElement.setAttribute("data-theme",t);})();</script>
+<title>Social Studies — Architecture of Grace</title>
+<meta name="description" content="Social Studies, K–12 — history, civics, geography and economics, one door per band. Private until YOU send it.">
+<!-- ═══ AOG ICONS + LINK PREVIEW · managed block · .30k0 ═══
+     Inserted by _work/aog_head.py — DO NOT hand-edit one page; edit the
+     script and re-run it, or the 100 pages drift apart again. The card
+     URL carries ?v= because Slack, Apple and Google cache an og image BY
+     URL for weeks: change the picture, bump IMG_V, or nothing shows up.
+     ═══════════════════════════════════════════════════════════════ -->
+<link rel="canonical" href="https://architectureofgrace.org/social">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Architecture of Grace">
+<meta property="og:locale" content="en_US">
+<meta property="og:title" content="Social Studies — Architecture of Grace">
+<meta property="og:description" content="Social Studies, K–12 — history, civics, geography and economics, one door per band. Private until YOU send it.">
+<meta property="og:url" content="https://architectureofgrace.org/social">
+<meta property="og:image" content="https://architectureofgrace.org/og-social.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Social Studies, K–12 — one door per band, from Architecture of Grace.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Social Studies — Architecture of Grace">
+<meta name="twitter:description" content="Social Studies, K–12 — history, civics, geography and economics, one door per band. Private until YOU send it.">
+<meta name="twitter:image" content="https://architectureofgrace.org/og-social.png">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#0A1E33">
+<meta name="apple-mobile-web-app-title" content="Grace">
+<meta name="application-name" content="Architecture of Grace">
+<!-- ═══ END AOG ICONS + LINK PREVIEW ═══ -->
+<!-- No external requests of any kind. Every byte this page needs is in this file
+     (aog-topbar.js below is same-origin; a 404 changes nothing but the bar). -->
+<!-- AOG-SUBJECT-HUB-V1 — built by _work/subjects/build_hub.py from hub_content_social.py. Do not hand-edit. -->
+<style>
+/* ══ the Word Foundry's tokens, one accent ══ */
+:root{
+  --bg:#FBFAF7; --card:#FFFFFF; --ink:#232B36; --sub:#5B6472; --line:#E4E1D8;
+  --acc:#7A5230; --acc-soft:#EFE3D6;
+  --good:#2E7D4F; --good-soft:#E4F0E8; --warn:#8A5A00; --warn-soft:#F6EEDC;
+  --chip:#EFECE4; --shadow:0 1px 3px rgba(35,43,54,.08);
+  --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,"Times New Roman",serif;
+  --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#191D24; --card:#20262F; --ink:#EDEAE2; --sub:#9AA3B0; --line:#333B47;
+    --acc:#D0A46B; --acc-soft:#3A2E22;
+    --good:#6FBF8B; --good-soft:#1F3327; --warn:#D9A84E; --warn-soft:#332A18;
+    --chip:#2A313C; --shadow:0 1px 3px rgba(0,0,0,.35);
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#191D24; --card:#20262F; --ink:#EDEAE2; --sub:#9AA3B0; --line:#333B47;
+  --acc:#D0A46B; --acc-soft:#3A2E22;
+  --good:#6FBF8B; --good-soft:#1F3327; --warn:#D9A84E; --warn-soft:#332A18;
+  --chip:#2A313C; --shadow:0 1px 3px rgba(0,0,0,.35);
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{background:var(--bg);color:var(--ink);font:16px/1.55 var(--sans);margin:0;padding:0 16px 64px}
+button{touch-action:manipulation}
+.wrap{max-width:880px;margin:0 auto}
+header{padding:28px 0 10px}
+.eyebrow{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.eyebrow a{color:var(--sub);font-size:.78rem;letter-spacing:.14em;text-transform:uppercase;text-decoration:none;font-weight:700}
+.eyebrow a:hover{color:var(--ink)}
+.eyebrow .sw{display:flex;gap:8px;align-items:center}
+#themeBtn,.seg button{border:1px solid var(--line);background:var(--card);color:var(--sub);border-radius:999px;padding:5px 12px;font:600 .78rem var(--sans);cursor:pointer;min-height:32px}
+.seg{display:inline-flex;gap:2px}
+.seg button.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+h1{font-family:var(--serif);font-weight:900;font-size:clamp(2rem,5vw,2.9rem);margin:10px 0 0;letter-spacing:-.01em}
+.tag{color:var(--sub);margin:6px 0 14px;max-width:60ch}
+.legend{display:flex;gap:10px;flex-wrap:wrap;align-items:center;font-size:.82rem}
+.lg{display:inline-flex;align-items:center;gap:6px;padding:3px 10px;border-radius:999px;font-weight:600}
+.lg.open{background:var(--acc-soft);color:var(--ink)}
+.lg.shop{background:var(--chip);color:var(--sub)}
+.dot{width:8px;height:8px;border-radius:50%;background:currentColor;display:inline-block}
+/* ══ the band strip — the English strip's shape (AOG-ENGLISH-STRIP-V1), five bands, one page ══ */
+.bandstrip{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:16px 0 6px}
+.bandstrip .k{font:800 .72rem var(--sans);letter-spacing:.14em;text-transform:uppercase;color:var(--sub);margin-right:4px}
+.bandstrip button{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:999px;padding:9px 16px;font:600 .9rem var(--sans);cursor:pointer;min-height:44px}
+.bandstrip button[aria-current="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.bandstrip button:hover{border-color:var(--ink)}
+.bandstrip button:focus-visible,.door:focus-visible,.gr:focus-visible,button:focus-visible,summary:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+/* ══ one band ══ */
+.band{padding-top:18px}
+.band[hidden]{display:none}
+h2{font-family:var(--serif);font-weight:700;font-size:1.35rem;margin:0 0 4px}
+.hint{color:var(--sub);font-size:.9rem;margin:0 0 10px;max-width:65ch}
+.count{color:var(--sub);font-size:.82rem;margin:0 0 16px;font-variant-numeric:tabular-nums}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px}
+.unit{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px 16px;box-shadow:var(--shadow);display:flex;flex-direction:column;gap:6px}
+.unit.open{border-left:4px solid var(--acc)}
+.unit .t{font-family:var(--serif);font-weight:700;font-size:1.05rem;line-height:1.25}
+.unit .d{font-size:.88rem;color:var(--sub);flex:1 1 auto}
+.doors{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-top:4px}
+.door{display:inline-flex;align-items:center;min-height:44px;padding:8px 14px;border:1px solid var(--line);border-radius:999px;background:var(--bg);color:var(--ink);font:600 .85rem var(--sans);text-decoration:none}
+.door:hover{border-color:var(--acc)}
+.shopchip{display:inline-flex;align-items:center;gap:6px;min-height:28px;padding:3px 10px;border-radius:999px;background:var(--chip);color:var(--sub);font:600 .78rem var(--sans)}
+.beam{border:0;background:none;color:var(--sub);font:600 .8rem var(--sans);cursor:pointer;min-height:44px;padding:8px 6px;text-decoration:underline;text-underline-offset:3px;margin-left:auto}
+.beam:hover{color:var(--ink)}
+/* ══ every day — Daily Drafts by grade ══ */
+.daily{margin-top:18px;padding:14px 16px;border:1px solid var(--line);border-radius:10px;background:var(--card);box-shadow:var(--shadow);display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.daily .dk{font-family:var(--serif);font-weight:700;font-size:1rem;margin-right:2px}
+.daily .dd{font-size:.86rem;color:var(--sub);flex:1 1 220px}
+.gr{display:inline-flex;align-items:center;justify-content:center;min-width:44px;min-height:44px;padding:0 12px;border:1px solid var(--line);border-radius:999px;background:var(--bg);color:var(--ink);font:700 .9rem var(--sans);text-decoration:none}
+.gr:hover{border-color:var(--acc)}
+/* ══ the engines ══ */
+.engines{margin-top:36px}
+.eng{border-top:1px solid var(--line);padding:12px 0;display:grid;grid-template-columns:1fr auto;gap:4px 14px;align-items:start}
+.eng:last-child{border-bottom:1px solid var(--line)}
+.eng .n{font-family:var(--serif);font-weight:700;font-size:1rem}
+.eng .d{font-size:.88rem;color:var(--sub);grid-column:1/-1;max-width:65ch}
+.eng .st{font:600 .78rem var(--sans);padding:3px 10px;border-radius:999px;white-space:nowrap}
+/* AOG-SS-ESWRAP-V1 — 2026-09-18. .eng is a grid of `1fr auto` whose status chip is
+   white-space:nowrap, and a grid item's default min-width:auto refuses to shrink below
+   min-content — so a long SPANISH chip pins the auto track and the page grows wider than
+   the phone, sliding sideways under a thumb. Measured at 390px: science-hub and
+   religions-hub were 421px in Spanish, social-studies-hub 410px; math-hub and english-hub
+   happened to fit only because their Spanish strings are shorter, which is luck, not
+   design — they carry the rule so it stays fixed when that text changes. English was
+   never affected. Below 560px the chip wraps and the card stacks; min-width:0 lets the
+   tracks shrink. Nothing changes above 560px. */
+.eng > *{min-width:0}
+@media (max-width:560px){
+  .eng{grid-template-columns:1fr}
+  .eng .st{white-space:normal;justify-self:start}
+}
+.eng.open .st{background:var(--acc-soft);color:var(--ink)}
+.eng.shop .st{background:var(--chip);color:var(--sub)}
+main[data-workshop="off"] .shop{display:none}
+/* ══ for the teacher ══ */
+.teach{background:var(--card);border:1px solid var(--line);border-radius:10px;margin-top:30px;box-shadow:var(--shadow)}
+.teach summary{cursor:pointer;padding:14px 18px;font-family:var(--serif);font-weight:700;font-size:1.05rem;list-style:none;min-height:44px}
+.teach summary::-webkit-details-marker{display:none}
+.teach summary::before{content:"+";display:inline-flex;width:22px;height:22px;border-radius:50%;background:var(--chip);color:var(--sub);font:700 .95rem var(--sans);align-items:center;justify-content:center;margin-right:10px}
+.teach[open] summary::before{content:"–"}
+.teach .inner{padding:0 18px 16px 50px;color:var(--sub);font-size:.94rem;max-width:65ch}
+.teach .inner p{margin:0 0 10px}
+.teach .inner b{color:var(--ink)}
+/* ══ the board beam (ported from /prep) ══ */
+#beam{position:fixed;inset:0;z-index:9500;background:var(--bg);color:var(--ink);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:24px;text-align:center;cursor:pointer}
+#beam .x{position:absolute;top:16px;right:20px;font-size:.85rem;color:var(--sub)}
+#beam .wk{font:800 .9rem var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--sub)}
+#beam .nm{font-family:var(--serif);font-weight:700;font-size:clamp(1.4rem,4vw,2.4rem);max-width:22ch}
+#beam .url{font:700 clamp(1.6rem,7vw,4.4rem)/1.1 var(--sans);color:var(--acc);word-break:break-all}
+#beam .hint{font-size:1rem;color:var(--sub);margin:0}
+footer{margin-top:48px;color:var(--sub);font-size:.8rem;border-top:1px solid var(--line);padding-top:14px;max-width:65ch}
+@media print{.bandstrip,.beam,.eyebrow .sw,#beam{display:none !important}.band[hidden]{display:none}}
+
+/* ══ AOG-PRINT-SAFE-V1 (2026-09-20) ═══════════════════════════════════════════
+   Jimmy, printing a novel study from his phone: "another pdf that gets parts of
+   the material cut off." These are the rules that keep paper honest on every
+   engine — a table row, a list item, a figure and a picture stay whole; a head
+   keeps the lines under it; no paragraph strands one line at a page edge; and a
+   long table repeats its head at the top of each page. Printed pages only. */
+@media print{
+  table{break-inside:auto; page-break-inside:auto}
+  thead{display:table-header-group}
+  tfoot{display:table-footer-group}
+  tr{break-inside:avoid; page-break-inside:avoid}
+  li,figure,img,svg{break-inside:avoid; page-break-inside:avoid}
+  h1,h2,h3,h4,h5{break-after:avoid; page-break-after:avoid}
+  p{orphans:3; widows:3}
+  /* AOG-PRINT-GRIDFIT-V1 — a CSS grid does not fragment, so a card in a grid row
+     was sliced at the page break instead of moving whole to the next page. On
+     paper the grid is ordinary blocks and each card keeps itself together. */
+  .grid,.cards{display:block!important}
+  .grid>*,.cards>*{break-inside:avoid; page-break-inside:avoid; margin:0 0 12px}
+}
+</style>
+</head>
+<body>
+<script src="/aog-topbar.js"></script>
+
+<div class="wrap">
+<header>
+  <div class="eyebrow">
+    <a href="/">Architecture of Grace</a>
+    <div class="sw">
+      <div class="seg" role="group" aria-label="Language"><button type="button" id="langEn" class="on">EN</button><button type="button" id="langEs">ES</button></div>
+      <button id="themeBtn" type="button" aria-label="Switch between light and dark">Dark mode</button>
+    </div>
+  </div>
+  <h1 data-en="Social Studies" data-es="Estudios Sociales">Social Studies</h1>
+  <p class="tag" data-en="Every band, one door. The new nation and the three branches are open and whole; the world, the map and the century after are named as rooms still being built." data-es="Cada banda, una puerta. La nueva nación y las tres ramas están abiertas y completas; el mundo, el mapa y el siglo siguiente se nombran como salas que aún se construyen.">Every band, one door. The new nation and the three branches are open and whole; the world, the map and the century after are named as rooms still being built.</p>
+  <div class="legend">
+    <span class="lg open"><span class="dot"></span><span data-en="Open" data-es="Abierto">Open</span></span>
+    <span class="lg shop"><span class="dot"></span><span data-en="In the workshop" data-es="En el taller">In the workshop</span></span>
+  </div>
+</header>
+<nav class="bandstrip no-print" aria-label="Social Studies by grade band" id="bandNav"><span class="k" data-en="Social Studies" data-es="Estudios Sociales">Social Studies</span><button type="button" data-band="k-2" aria-current="false">K–2</button><button type="button" data-band="3-5" aria-current="false">3–5</button><button type="button" data-band="6-8" aria-current="false">6–8</button><button type="button" data-band="9-10" aria-current="false">9–10</button><button type="button" data-band="11-12" aria-current="false">11–12</button></nav>
+<main id="content" data-workshop="on">
+<section class="band" id="k-2" aria-labelledby="h-k-2">
+  <h2 id="h-k-2" data-en="Grades K–2" data-es="Grados K–2">Grades K–2</h2>
+  <p class="hint" data-en="Every room on this band is open: me, my family, my class; rules and fair choices; maps of the room and the town; then and now; needs, wants and work; and the symbols and stories of our country — each with read-aloud cards, a hints sheet, a three-level practice quiz and a lab." data-es="Cada sala de esta banda está abierta: yo, mi familia, mi clase; reglas y decisiones justas; mapas del salón y del pueblo; antes y ahora; necesidades, deseos y trabajo; y los símbolos e historias de nuestro país — cada una con tarjetas para leer en voz alta, una hoja de pistas, un quiz de práctica de tres niveles y un laboratorio.">Every room on this band is open: me, my family, my class; rules and fair choices; maps of the room and the town; then and now; needs, wants and work; and the symbols and stories of our country — each with read-aloud cards, a hints sheet, a three-level practice quiz and a lab.</p>
+  <p class="count" data-en="6 units open · 0 in the workshop" data-es="6 unidades abiertas · 0 en el taller">6 units open · 0 in the workshop</p>
+  <div class="grid">
+  <div class="unit open"><div class="t" data-en="Me, my family, my class" data-es="Yo, mi familia, mi clase">Me, my family, my class</div><div class="d" data-en="Who I am, families of every kind, my class, alike and different, helping, jobs, my day, the room map — read-aloud cards, hints, a three-level quiz and a lab: sort home/school/both, label the room, order my day, graph family sizes." data-es="Quién soy, familias de toda clase, mi clase, parecidos y diferentes, ayudar, trabajos, mi día, el mapa del salón — tarjetas para leer en voz alta, pistas, un quiz de tres niveles y un laboratorio: separa casa/escuela/ambas, rotula el salón, ordena mi día, grafica los tamaños de las familias.">Who I am, families of every kind, my class, alike and different, helping, jobs, my day, the room map — read-aloud cards, hints, a three-level quiz and a lab: sort home/school/both, label the room, order my day, graph family sizes.</div><div class="doors"><a class="door" href="/s7" data-en="Open" data-es="Abrir">Open</a><button class="beam no-print" type="button" data-beam="/s7" data-name="Me, my family, my class" data-name-es="Yo, mi familia, mi clase" data-en="Show on the board" data-es="Mostrar en la pizarra">Show on the board</button></div></div>
+  <div class="unit open"><div class="t" data-en="Rules and fair choices" data-es="Reglas y decisiones justas">Rules and fair choices</div><div class="d" data-en="What a rule is and why, safe and learn, the same rule for everyone, who makes rules at home, school and town, laws, the helpers, what fair means, taking turns, voting, when a rule is broken — read-aloud cards, hints, a three-level quiz and a lab: sort fair/not fair, order how a class makes a rule, label the six helpers, argue why a rule is good." data-es="Qué es una regla y por qué, seguridad y aprender, la misma regla para todos, quién hace reglas en casa, escuela y pueblo, las leyes, los ayudantes, qué significa justo, tomar turnos, votar, cuando se rompe una regla — tarjetas para leer en voz alta, pistas, un quiz de tres niveles y un laboratorio: separa justo/injusto, ordena cómo una clase hace una regla, rotula a los seis ayudantes, argumenta por qué una regla es buena.">What a rule is and why, safe and learn, the same rule for everyone, who makes rules at home, school and town, laws, the helpers, what fair means, taking turns, voting, when a rule is broken — read-aloud cards, hints, a three-level quiz and a lab: sort fair/not fair, order how a class makes a rule, label the six helpers, argue why a rule is good.</div><div class="doors"><a class="door" href="/s8" data-en="Open" data-es="Abrir">Open</a><button class="beam no-print" type="button" data-beam="/s8" data-name="Rules and fair choices" data-name-es="Reglas y decisiones justas" data-en="Show on the board" data-es="Mostrar en la pizarra">Show on the board</button></div></div>
+  <div class="unit open"><div class="t" data-en="Maps: where things are" data-es="Mapas: dónde están las cosas">Maps: where things are</div><div class="d" data-en="The view from above, the title, symbols and the key, the compass rose and the four directions, near and far, maps of the room, the school, the town and the globe — read-aloud cards, hints, a three-level quiz and a lab: label a compass rose, label the school from above, order the route to the library, sort what belongs on which map." data-es="La vista desde arriba, el título, símbolos y la clave, la rosa de los vientos y las cuatro direcciones, cerca y lejos, mapas del cuarto, la escuela, el pueblo y el globo — tarjetas para leer en voz alta, pistas, un quiz de tres niveles y un laboratorio: rotula una rosa de los vientos, rotula la escuela desde arriba, ordena la ruta a la biblioteca, separa qué va en cada mapa.">The view from above, the title, symbols and the key, the compass rose and the four directions, near and far, maps of the room, the school, the town and the globe — read-aloud cards, hints, a three-level quiz and a lab: label a compass rose, label the school from above, order the route to the library, sort what belongs on which map.</div><div class="doors"><a class="door" href="/s9" data-en="Open" data-es="Abrir">Open</a><button class="beam no-print" type="button" data-beam="/s9" data-name="Maps: where things are" data-name-es="Mapas: dónde están las cosas" data-en="Show on the board" data-es="Mostrar en la pizarra">Show on the board</button></div></div>
+  <div class="unit open"><div class="t" data-en="Then and now" data-es="Antes y ahora">Then and now</div><div class="d" data-en="Long ago and today, the clues that tell us about the past, school, travel, light and water, food and fun then and now, what stayed the same, timelines, a grandparent&#x27;s story — read-aloud cards, hints, a three-level quiz and a lab: sort then/now, order a family timeline, label a classroom from a hundred years ago, tag a grandma&#x27;s story." data-es="Hace mucho y hoy, las pistas que nos hablan del pasado, la escuela, el transporte, la luz y el agua, la comida y la diversión antes y ahora, lo que siguió igual, líneas de tiempo, la historia de un abuelo — tarjetas para leer en voz alta, pistas, un quiz de tres niveles y un laboratorio: separa antes/ahora, ordena una línea de tiempo familiar, rotula un salón de hace cien años, etiqueta la historia de una abuela.">Long ago and today, the clues that tell us about the past, school, travel, light and water, food and fun then and now, what stayed the same, timelines, a grandparent&#x27;s story — read-aloud cards, hints, a three-level quiz and a lab: sort then/now, order a family timeline, label a classroom from a hundred years ago, tag a grandma&#x27;s story.</div><div class="doors"><a class="door" href="/s10" data-en="Open" data-es="Abrir">Open</a><button class="beam no-print" type="button" data-beam="/s10" data-name="Then and now" data-name-es="Antes y ahora" data-en="Show on the board" data-es="Mostrar en la pizarra">Show on the board</button></div></div>
+  <div class="unit open"><div class="t" data-en="Needs, wants and work" data-es="Necesidades, deseos y trabajo">Needs, wants and work</div><div class="d" data-en="Needs and wants, goods and services, the jobs that make and give them, why people work, earn, save, spend, trade, and choosing one thing means giving up another — read-aloud cards, hints, a three-level quiz and a lab: sort needs/wants, sort twelve jobs by good or service, order earn–save–spend for a kite, graph what a class wants to be." data-es="Necesidades y deseos, bienes y servicios, los trabajos que los hacen y los dan, por qué trabaja la gente, ganar, ahorrar, gastar, intercambiar, y elegir una cosa significa dejar otra — tarjetas para leer en voz alta, pistas, un quiz de tres niveles y un laboratorio: separa necesidades/deseos, separa doce trabajos por bien o servicio, ordena ganar–ahorrar–gastar para una cometa, grafica lo que una clase quiere ser.">Needs and wants, goods and services, the jobs that make and give them, why people work, earn, save, spend, trade, and choosing one thing means giving up another — read-aloud cards, hints, a three-level quiz and a lab: sort needs/wants, sort twelve jobs by good or service, order earn–save–spend for a kite, graph what a class wants to be.</div><div class="doors"><a class="door" href="/s11" data-en="Open" data-es="Abrir">Open</a><button class="beam no-print" type="button" data-beam="/s11" data-name="Needs, wants and work" data-name-es="Necesidades, deseos y trabajo" data-en="Show on the board" data-es="Mostrar en la pizarra">Show on the board</button></div></div>
+  <div class="unit open"><div class="t" data-en="Symbols and stories of our country" data-es="Símbolos e historias de nuestro país">Symbols and stories of our country</div><div class="d" data-en="The flag and its stars and stripes, the eagle, the Statue of Liberty, the Liberty Bell, the White House, the Pledge and the anthem, the Fourth of July and Thanksgiving, Washington, Lincoln and Dr. King, Illinois&#x27;s own symbols — read-aloud cards, hints, a three-level quiz and a lab: label the flag, order six holidays January to November, sort symbol/story, tag the Pledge for what each part means." data-es="La bandera y sus estrellas y franjas, el águila, la Estatua de la Libertad, la Campana de la Libertad, la Casa Blanca, el Juramento y el himno, el Cuatro de Julio y Acción de Gracias, Washington, Lincoln y el Dr. King, los símbolos de Illinois — tarjetas para leer en voz alta, pistas, un quiz de tres niveles y un laboratorio: rotula la bandera, ordena seis días festivos de enero a noviembre, separa símbolo/historia, etiqueta el Juramento por lo que significa cada parte.">The flag and its stars and stripes, the eagle, the Statue of Liberty, the Liberty Bell, the White House, the Pledge and the anthem, the Fourth of July and Thanksgiving, Washington, Lincoln and Dr. King, Illinois&#x27;s own symbols — read-aloud cards, hints, a three-level quiz and a lab: label the flag, order six holidays January to November, sort symbol/story, tag the Pledge for what each part means.</div><div class="doors"><a class="door" href="/s12" data-en="Open" data-es="Abrir">Open</a><button class="beam no-print" type="button" data-beam="/s12" data-name="Symbols and stories of our country" data-name-es="Símbolos e historias de nuestro país" data-en="Show on the board" data-es="Mostrar en la pizarra">Show on the board</button></div></div>
+  </div>
+  <div class="daily"><span class="dk" data-en="Every day" data-es="Cada día">Every day</span><span class="dd" data-en="Ten daily lines for this band — pick the grade." data-es="Diez líneas diarias para esta banda — elige el grado.">Ten daily lines for this band — pick the grade.</span><a class="gr" href="/drops/social-studies/K" aria-label="Daily Drafts, grade K">K</a><a class="gr" href="/drops/social-studies/1" aria-label="Daily Drafts, grade 1">1</a><a class="gr" href="/drops/social-studies/2" aria-label="Daily Drafts, grade 2">2</a></div>
+</section>
+<section class="band" id="3-5" aria-labelledby="h-3-5">
+  <h2 id="h-3-5" data-en="Grades 3–5" data-es="Grados 3–5">Grades 3–5</h2>
+  <p class="hint" data-en="Every room on this band is open: Illinois and its regions, the first peoples, explorers and a new nation, government at three levels, money and markets, and maps of the country — each with study cards, a hints sheet, a three-level practice quiz and a lab." data-es="Cada sala de esta banda está abierta: Illinois y sus regiones, los primeros pueblos, los exploradores y una nueva nación, el gobierno en tres niveles, el dinero y los mercados, y los mapas del país — cada una con tarjetas de estudio, una hoja de pistas, un quiz de práctica de tres niveles y un laboratorio.">Every room on this band is open: Illinois and its regions, the first peoples, explorers and a new nation, government at three levels, money and markets, and maps of the country — each with study cards, a hints sheet, a three-level practice quiz and a lab.</p>
+  <p class="count" data-en="6 units open · 0 in the workshop" data-es="6 unidades abiertas · 0 en el taller">6 units open · 0 in the workshop</p>
+  <div class="grid">
+  <div class="unit open"><div class="t" data-en="Communities and Illinois" data-es="Comunidades e Illinois">Communities and Illinois</div><div class="d" data-en="Our town, our county, our state — and how each is run — cards, hints, a three-level quiz and a lab: label the map of Illinois, sort town/county/state, order the state&#x27;s story, explain why Chicago grew." data-es="Nuestro pueblo, nuestro condado, nuestro estado — y cómo se dirige cada uno — tarjetas, pistas, un quiz de tres niveles y un laboratorio: rotula el mapa de Illinois, clasifica pueblo/condado/estado, ordena la historia del estado, explica por qué creció Chicago.">Our town, our county, our state — and how each is run — cards, hints, a three-level quiz and a lab: label the map of Illinois, sort town/county/state, order the state&#x27;s story, explain why Chicago grew.</div><div class="doors"><a class="door" href="/s2" data-en="Open" data-es="Abrir">Open</a><button class="beam no-print" type="button" data-beam="/s2" data-name="Communities and Illinois" data-name-es="Comunidades e Illinois" data-en="Show on the board" data-es="Mostrar en la pizarra">Show on the board</button></div></div>
+  <div class="unit open"><div class="t" data-en="The first peoples" data-es="Los primeros pueblos">The first peoples</div><div class="d" data-en="Cahokia, the Illiniwek, the Potawatomi, the Three Sisters, the French, the treaties, Native peoples today — cards, hints, a three-level quiz and a lab: label the village, order the story, sort then/now, argue from Cahokia&#x27;s evidence." data-es="Cahokia, los illiniwek, los potawatomi, las Tres Hermanas, los franceses, los tratados, los pueblos nativos hoy — tarjetas, pistas, un quiz de tres niveles y un laboratorio: rotula la aldea, ordena la historia, separa antes/ahora, argumenta con la evidencia de Cahokia.">Cahokia, the Illiniwek, the Potawatomi, the Three Sisters, the French, the treaties, Native peoples today — cards, hints, a three-level quiz and a lab: label the village, order the story, sort then/now, argue from Cahokia&#x27;s evidence.</div><div class="doors"><a class="door" href="/s3" data-en="Open" data-es="Abrir">Open</a><button class="beam no-print" type="button" data-beam="/s3" data-name="The first peoples" data-name-es="Los primeros pueblos" data-en="Show on the board" data-es="Mostrar en la pizarra">Show on the board</button></div></div>
+  <div class="unit open"><div class="t" data-en="Explorers, colonies, a new nation" data-es="Exploradores, colonias, una nueva nación">Explorers, colonies, a new nation</div><div class="d" data-en="Columbus to the Constitution — the thirteen colonies, taxes without a vote, the Revolution, the Declaration, the Bill of Rights, and who was left out — cards, hints, a three-level quiz and a lab: order 1492 to 1791, label the colonies, sort cause/effect, read the Declaration line by line." data-es="De Colón a la Constitución — las trece colonias, impuestos sin voto, la Revolución, la Declaración, la Carta de Derechos y quién quedó fuera — tarjetas, pistas, un quiz de tres niveles y un laboratorio: ordena 1492 a 1791, rotula las colonias, separa causa/efecto, lee la Declaración línea por línea.">Columbus to the Constitution — the thirteen colonies, taxes without a vote, the Revolution, the Declaration, the Bill of Rights, and who was left out — cards, hints, a three-level quiz and a lab: order 1492 to 1791, label the colonies, sort cause/effect, read the Declaration line by line.</div><div class="doors"><a class="door" href="/s4" data-en="Open" data-es="Abrir">Open</a><button class="beam no-print" type="button" data-beam="/s4" data-name="Explorers, colonies, a new nation" data-name-es="Exploradores, colonias, una nueva nación" data-en="Show on the board" data-es="Mostrar en la pizarra">Show on the board</button></div></div>
+  <div class="unit open"><div class="t" data-en="Government: local, state, national" data-es="Gobierno: local, estatal, nacional">Government: local, state, national</div><div class="d" data-en="Who decides what, and how a citizen takes part — cards, hints, a three-level quiz and a lab: sort the jobs, label the buildings, order an Illinois bill, tag the Preamble." data-es="Quién decide qué, y cómo participa un ciudadano — tarjetas, pistas, un quiz de tres niveles y un laboratorio: clasifica los trabajos, rotula los edificios, ordena un proyecto de ley de Illinois, etiqueta el Preámbulo.">Who decides what, and how a citizen takes part — cards, hints, a three-level quiz and a lab: sort the jobs, label the buildings, order an Illinois bill, tag the Preamble.</div><div class="doors"><a class="door" href="/s1" data-en="Open" data-es="Abrir">Open</a><button class="beam no-print" type="button" data-beam="/s1" data-name="Government: local, state, national" data-name-es="Gobierno: local, estatal, nacional" data-en="Show on the board" data-es="Mostrar en la pizarra">Show on the board</button></div></div>
+  <div class="unit open"><div class="t" data-en="Money, markets and choices" data-es="Dinero, mercados y decisiones">Money, markets and choices</div><div class="d" data-en="Goods and services, needs and wants, earning, spending, saving, budgets, prices, scarcity and opportunity cost — cards, hints, a three-level quiz and a lab: sort goods/services and needs/wants, graph a $20 budget, argue a choice with its opportunity cost." data-es="Bienes y servicios, necesidades y deseos, ganar, gastar, ahorrar, presupuestos, precios, escasez y costo de oportunidad — tarjetas, pistas, un quiz de tres niveles y un laboratorio: separa bienes/servicios y necesidades/deseos, grafica un presupuesto de $20, argumenta una elección con su costo de oportunidad.">Goods and services, needs and wants, earning, spending, saving, budgets, prices, scarcity and opportunity cost — cards, hints, a three-level quiz and a lab: sort goods/services and needs/wants, graph a $20 budget, argue a choice with its opportunity cost.</div><div class="doors"><a class="door" href="/s5" data-en="Open" data-es="Abrir">Open</a><button class="beam no-print" type="button" data-beam="/s5" data-name="Money, markets and choices" data-name-es="Dinero, mercados y decisiones" data-en="Show on the board" data-es="Mostrar en la pizarra">Show on the board</button></div></div>
+  <div class="unit open"><div class="t" data-en="Maps and regions of the United States" data-es="Mapas y regiones de Estados Unidos">Maps and regions of the United States</div><div class="d" data-en="Title, key, compass, scale, grid; physical vs. political; the five regions and their mountains, rivers and oceans; where Illinois fits — cards, hints, a three-level quiz and a lab: label the regions, label a map&#x27;s parts, sort physical/political, drive Chicago to Los Angeles stop by stop." data-es="Título, clave, rosa, escala, cuadrícula; físico vs. político; las cinco regiones y sus montañas, ríos y océanos; dónde encaja Illinois — tarjetas, pistas, un quiz de tres niveles y un laboratorio: rotula las regiones, rotula las partes de un mapa, separa físico/político, maneja de Chicago a Los Ángeles parada por parada.">Title, key, compass, scale, grid; physical vs. political; the five regions and their mountains, rivers and oceans; where Illinois fits — cards, hints, a three-level quiz and a lab: label the regions, label a map&#x27;s parts, sort physical/political, drive Chicago to Los Angeles stop by stop.</div><div class="doors"><a class="door" href="/s6" data-en="Open" data-es="Abrir">Open</a><button class="beam no-print" type="button" data-beam="/s6" data-name="Maps and regions of the United States" data-name-es="Mapas y regiones de Estados Unidos" data-en="Show on the board" data-es="Mostrar en la pizarra">Show on the board</button></div></div>
+  </div>
+  <div class="daily"><span class="dk" data-en="Every day" data-es="Cada día">Every day</span><span class="dd" data-en="Ten daily lines for this band — pick the grade." data-es="Diez líneas diarias para esta banda — elige el grado.">Ten daily lines for this band — pick the grade.</span><a class="gr" href="/drops/social-studies/3" aria-label="Daily Drafts, grade 3">3</a><a class="gr" href="/drops/social-studies/4" aria-label="Daily Drafts, grade 4">4</a><a class="gr" href="/drops/social-studies/5" aria-label="Daily Drafts, grade 5">5</a></div>
+</section>
+<section class="band" id="6-8" aria-labelledby="h-6-8">
+  <h2 id="h-6-8" data-en="Grades 6–8" data-es="Grados 6–8">Grades 6–8</h2>
+  <p class="hint" data-en="Every room on this band is open: the new nation and the three branches — sixteen activities, a quiz room and a test-prep unit — and now the world before 1500, the world&#x27;s regions, and Reconstruction to the present, each with cards, hints, a three-level quiz and a lab." data-es="Cada sala de esta banda está abierta: la nueva nación y las tres ramas — dieciséis actividades, una sala de quizzes y una unidad de preparación — y ahora el mundo antes de 1500, las regiones del mundo y de la Reconstrucción al presente, cada una con tarjetas, pistas, un quiz de tres niveles y un laboratorio.">Every room on this band is open: the new nation and the three branches — sixteen activities, a quiz room and a test-prep unit — and now the world before 1500, the world&#x27;s regions, and Reconstruction to the present, each with cards, hints, a three-level quiz and a lab.</p>
+  <p class="count" data-en="7 units open · 0 in the workshop" data-es="7 unidades abiertas · 0 en el taller">7 units open · 0 in the workshop</p>
+  <div class="grid">
+  <div class="unit open"><div class="t" data-en="A More Perfect Union, 1787–1865" data-es="Una unión más perfecta, 1787–1865">A More Perfect Union, 1787–1865</div><div class="d" data-en="Eight activities on the era — order the story, whose voice, the map of a growing nation, back it up — with the era at a glance." data-es="Ocho actividades sobre la era — ordena la historia, de quién es la voz, el mapa de una nación que crece, respáldalo — con la era de un vistazo.">Eight activities on the era — order the story, whose voice, the map of a growing nation, back it up — with the era at a glance.</div><div class="doors"><a class="door" href="/union" data-en="The room" data-es="La sala">The room</a><a class="door" href="/b9" data-en="Test prep" data-es="Preparación">Test prep</a><button class="beam no-print" type="button" data-beam="/union" data-name="A More Perfect Union, 1787–1865" data-name-es="Una unión más perfecta, 1787–1865" data-en="Show on the board" data-es="Mostrar en la pizarra">Show on the board</button></div></div>
+  <div class="unit open"><div class="t" data-en="The three branches" data-es="Las tres ramas">The three branches</div><div class="d" data-en="One card each: the courts, Congress, the presidency — with the era&#x27;s cases folded in." data-es="Una tarjeta para cada una: los tribunales, el Congreso, la presidencia — con los casos de la era.">One card each: the courts, Congress, the presidency — with the era&#x27;s cases folded in.</div><div class="doors"><a class="door" href="/h9" data-en="The courts" data-es="Los tribunales">The courts</a><a class="door" href="/h10" data-en="Congress" data-es="El Congreso">Congress</a><a class="door" href="/h11" data-en="The presidency" data-es="La presidencia">The presidency</a><button class="beam no-print" type="button" data-beam="/h9" data-name="The three branches" data-name-es="Las tres ramas" data-en="Show on the board" data-es="Mostrar en la pizarra">Show on the board</button></div></div>
+  <div class="unit open"><div class="t" data-en="The Constitution" data-es="La Constitución">The Constitution</div><div class="d" data-en="The blueprint, rights in writing, how a bill becomes a law, the Illinois constitution, and one page that puts it all together." data-es="El plano, los derechos por escrito, cómo un proyecto se vuelve ley, la constitución de Illinois y una página que lo reúne todo.">The blueprint, rights in writing, how a bill becomes a law, the Illinois constitution, and one page that puts it all together.</div><div class="doors"><a class="door" href="/h12" data-en="Blueprint" data-es="El plano">Blueprint</a><a class="door" href="/h13" data-en="Rights" data-es="Derechos">Rights</a><a class="door" href="/h14" data-en="The bill road" data-es="El camino de la ley">The bill road</a><a class="door" href="/h15" data-en="Illinois" data-es="Illinois">Illinois</a><a class="door" href="/h16" data-en="All together" data-es="Todo junto">All together</a><button class="beam no-print" type="button" data-beam="/h12" data-name="The Constitution" data-name-es="La Constitución" data-en="Show on the board" data-es="Mostrar en la pizarra">Show on the board</button></div></div>
+  <div class="unit open"><div class="t" data-en="The quiz room" data-es="La sala de quizzes">The quiz room</div><div class="d" data-en="Every social studies quiz on one island: word-bank papers in the format the class sits, and four charts to fill in and print." data-es="Cada quiz de estudios sociales en una sola isla: hojas con banco de palabras en el formato que usa la clase, y cuatro cuadros para completar e imprimir.">Every social studies quiz on one island: word-bank papers in the format the class sits, and four charts to fill in and print.</div><div class="doors"><a class="door" href="/quiz" data-en="Open" data-es="Abrir">Open</a><button class="beam no-print" type="button" data-beam="/quiz" data-name="The quiz room" data-name-es="La sala de quizzes" data-en="Show on the board" data-es="Mostrar en la pizarra">Show on the board</button></div></div>
+  <div class="unit open"><div class="t" data-en="The world before 1500" data-es="El mundo antes de 1500">The world before 1500</div><div class="d" data-en="Rivers, empires, trade routes, and the ideas that traveled them — cards, hints, a three-level quiz and a lab: label a river-valley city, put eight moments on one rail, sort the routes, read Hammurabi&#x27;s Code like a judge." data-es="Ríos, imperios, rutas comerciales y las ideas que viajaron por ellas — tarjetas, pistas, un quiz de tres niveles y un laboratorio: rotula una ciudad de valle fluvial, pon ocho momentos en un riel, clasifica las rutas, lee el Código de Hammurabi como juez.">Rivers, empires, trade routes, and the ideas that traveled them — cards, hints, a three-level quiz and a lab: label a river-valley city, put eight moments on one rail, sort the routes, read Hammurabi&#x27;s Code like a judge.</div><div class="doors"><a class="door" href="/s13" data-en="Open" data-es="Abrir">Open</a><button class="beam no-print" type="button" data-beam="/s13" data-name="The world before 1500" data-name-es="El mundo antes de 1500" data-en="Show on the board" data-es="Mostrar en la pizarra">Show on the board</button></div></div>
+  <div class="unit open"><div class="t" data-en="The world&#x27;s regions" data-es="Las regiones del mundo">The world&#x27;s regions</div><div class="d" data-en="Physical and human geography, continent by continent — cards, hints, a three-level quiz and a lab: sort physical from human, label a landscape, order the continents, graph the world&#x27;s people." data-es="Geografía física y humana, continente por continente — tarjetas, pistas, un quiz de tres niveles y un laboratorio: separa lo físico de lo humano, rotula un paisaje, ordena los continentes, grafica la gente del mundo.">Physical and human geography, continent by continent — cards, hints, a three-level quiz and a lab: sort physical from human, label a landscape, order the continents, graph the world&#x27;s people.</div><div class="doors"><a class="door" href="/s14" data-en="Open" data-es="Abrir">Open</a><button class="beam no-print" type="button" data-beam="/s14" data-name="The world&#x27;s regions" data-name-es="Las regiones del mundo" data-en="Show on the board" data-es="Mostrar en la pizarra">Show on the board</button></div></div>
+  <div class="unit open"><div class="t" data-en="Reconstruction to the present" data-es="De la Reconstrucción al presente">Reconstruction to the present</div><div class="d" data-en="Rebuilding, industry, the wars, the movements, and now — cards, hints, a three-level quiz and a lab: order the century, sort the amendments, read the 14th Amendment, graph the Great Migration in Chicago." data-es="La reconstrucción, la industria, las guerras, los movimientos y el ahora — tarjetas, pistas, un quiz de tres niveles y un laboratorio: ordena el siglo, clasifica las enmiendas, lee la 14.ª Enmienda, grafica la Gran Migración en Chicago.">Rebuilding, industry, the wars, the movements, and now — cards, hints, a three-level quiz and a lab: order the century, sort the amendments, read the 14th Amendment, graph the Great Migration in Chicago.</div><div class="doors"><a class="door" href="/s15" data-en="Open" data-es="Abrir">Open</a><button class="beam no-print" type="button" data-beam="/s15" data-name="Reconstruction to the present" data-name-es="De la Reconstrucción al presente" data-en="Show on the board" data-es="Mostrar en la pizarra">Show on the board</button></div></div>
+  </div>
+  <div class="daily"><span class="dk" data-en="Every day" data-es="Cada día">Every day</span><span class="dd" data-en="Ten daily lines for this band — pick the grade." data-es="Diez líneas diarias para esta banda — elige el grado.">Ten daily lines for this band — pick the grade.</span><a class="gr" href="/drops/social-studies/6" aria-label="Daily Drafts, grade 6">6</a><a class="gr" href="/drops/social-studies/7" aria-label="Daily Drafts, grade 7">7</a><a class="gr" href="/drops/social-studies/8" aria-label="Daily Drafts, grade 8">8</a></div>
+</section>
+<section class="band" id="9-10" aria-labelledby="h-9-10">
+  <h2 id="h-9-10" data-en="Grades 9–10" data-es="Grados 9–10">Grades 9–10</h2>
+  <p class="hint" data-en="World history in two halves, human geography, and civics — rights, power and participation." data-es="Historia mundial en dos mitades, geografía humana y civismo — derechos, poder y participación.">World history in two halves, human geography, and civics — rights, power and participation.</p>
+  <p class="count" data-en="4 units open · 0 in the workshop" data-es="4 unidades abiertas · 0 en el taller">4 units open · 0 in the workshop</p>
+  <div class="grid">
+  <div class="unit open"><div class="t" data-en="World history: empires and exchange" data-es="Historia mundial: imperios e intercambio">World history: empires and exchange</div><div class="d" data-en="From the first cities to the age of contact." data-es="De las primeras ciudades a la era del contacto.">From the first cities to the age of contact.</div><div class="doors"><a class="door" href="/s16" data-en="Open" data-es="Abrir">Open</a><button class="beam no-print" type="button" data-beam="/s16" data-name="World history: empires and exchange" data-name-es="Historia mundial: imperios e intercambio" data-en="Show on the board" data-es="Mostrar en la pizarra">Show on the board</button></div></div>
+  <div class="unit open"><div class="t" data-en="World history: revolutions and the modern world" data-es="Historia mundial: revoluciones y el mundo moderno">World history: revolutions and the modern world</div><div class="d" data-en="Political, industrial, and the century of world wars." data-es="Políticas, industriales y el siglo de las guerras mundiales.">Political, industrial, and the century of world wars.</div><div class="doors"><a class="door" href="/s17" data-en="Open" data-es="Abrir">Open</a><button class="beam no-print" type="button" data-beam="/s17" data-name="World history: revolutions and the modern world" data-name-es="Historia mundial: revoluciones y el mundo moderno" data-en="Show on the board" data-es="Mostrar en la pizarra">Show on the board</button></div></div>
+  <div class="unit open"><div class="t" data-en="Human geography" data-es="Geografía humana">Human geography</div><div class="d" data-en="Population, migration, culture, cities, and the maps that show them." data-es="Población, migración, cultura, ciudades y los mapas que las muestran.">Population, migration, culture, cities, and the maps that show them.</div><div class="doors"><a class="door" href="/s18" data-en="Open" data-es="Abrir">Open</a><button class="beam no-print" type="button" data-beam="/s18" data-name="Human geography" data-name-es="Geografía humana" data-en="Show on the board" data-es="Mostrar en la pizarra">Show on the board</button></div></div>
+  <div class="unit open"><div class="t" data-en="Civics: rights, power, participation" data-es="Civismo: derechos, poder, participación">Civics: rights, power, participation</div><div class="d" data-en="The Constitution in practice, the courts, elections, and a citizen&#x27;s tools." data-es="La Constitución en la práctica, los tribunales, las elecciones y las herramientas del ciudadano.">The Constitution in practice, the courts, elections, and a citizen&#x27;s tools.</div><div class="doors"><a class="door" href="/s19" data-en="Open" data-es="Abrir">Open</a><button class="beam no-print" type="button" data-beam="/s19" data-name="Civics: rights, power, participation" data-name-es="Civismo: derechos, poder, participación" data-en="Show on the board" data-es="Mostrar en la pizarra">Show on the board</button></div></div><div class="unit open"><div class="t" data-en="World Religions: the traditions in their own words" data-es="Religiones del mundo: las tradiciones con sus propias palabras">World Religions: the traditions in their own words</div><div class="d" data-en="How to read a sacred text, the Hebrew Bible, the New Testament, Judaism, Islam, Hinduism." data-es="C&oacute;mo leer un texto sagrado, la Biblia hebrea, el Nuevo Testamento, el juda&iacute;smo, el islam, el hinduismo.">How to read a sacred text, the Hebrew Bible, the New Testament, Judaism, Islam, Hinduism.</div><div class="doors"><a class="door" href="/religions#9-10" data-en="Open" data-es="Abrir">Open</a><button class="beam no-print" type="button" data-beam="/religions#9-10" data-name="World Religions: the traditions in their own words" data-name-es="Religiones del mundo: las tradiciones con sus propias palabras" data-en="Show on the board" data-es="Mostrar en la pizarra">Show on the board</button></div></div>
+  </div>
+  <div class="daily"><span class="dk" data-en="Every day" data-es="Cada día">Every day</span><span class="dd" data-en="Ten daily lines for this band — pick the grade." data-es="Diez líneas diarias para esta banda — elige el grado.">Ten daily lines for this band — pick the grade.</span><a class="gr band" href="/drops/social-studies/9-10" aria-label="Daily Drafts, grade 9-10">9–10</a></div>
+</section>
+<section class="band" id="11-12" aria-labelledby="h-11-12">
+  <h2 id="h-11-12" data-en="Grades 11–12" data-es="Grados 11–12">Grades 11–12</h2>
+  <p class="hint" data-en="United States history in three parts, government, economics, and a capstone inquiry built on primary sources." data-es="Historia de los Estados Unidos en tres partes, gobierno, economía y un proyecto final de investigación con fuentes primarias.">United States history in three parts, government, economics, and a capstone inquiry built on primary sources.</p>
+  <p class="count" data-en="6 units open · 0 in the workshop" data-es="6 unidades abiertas · 0 en el taller">6 units open · 0 in the workshop</p>
+  <div class="grid">
+  <div class="unit open"><div class="t" data-en="US history: industry to the Progressive Era" data-es="Historia de EE. UU.: de la industria a la Era Progresista">US history: industry to the Progressive Era</div><div class="d" data-en="Railroads, cities, immigration, reform." data-es="Ferrocarriles, ciudades, inmigración, reforma.">Railroads, cities, immigration, reform.</div><div class="doors"><a class="door" href="/s20" data-en="Open" data-es="Abrir">Open</a><button class="beam no-print" type="button" data-beam="/s20" data-name="US history: industry to the Progressive Era" data-name-es="Historia de EE. UU.: de la industria a la Era Progresista" data-en="Show on the board" data-es="Mostrar en la pizarra">Show on the board</button></div></div>
+  <div class="unit open"><div class="t" data-en="US history: the world wars and the Cold War" data-es="Historia de EE. UU.: las guerras mundiales y la Guerra Fría">US history: the world wars and the Cold War</div><div class="d" data-en="Depression, war, the home front, the long standoff." data-es="La Depresión, la guerra, el frente interno, el largo enfrentamiento.">Depression, war, the home front, the long standoff.</div><div class="doors"><a class="door" href="/s21" data-en="Open" data-es="Abrir">Open</a><button class="beam no-print" type="button" data-beam="/s21" data-name="US history: the world wars and the Cold War" data-name-es="Historia de EE. UU.: las guerras mundiales y la Guerra Fría" data-en="Show on the board" data-es="Mostrar en la pizarra">Show on the board</button></div></div>
+  <div class="unit open"><div class="t" data-en="US history: civil rights to today" data-es="Historia de EE. UU.: de los derechos civiles a hoy">US history: civil rights to today</div><div class="d" data-en="The movements, the courts, and the questions still open." data-es="Los movimientos, los tribunales y las preguntas aún abiertas.">The movements, the courts, and the questions still open.</div><div class="doors"><a class="door" href="/s22" data-en="Open" data-es="Abrir">Open</a><button class="beam no-print" type="button" data-beam="/s22" data-name="US history: civil rights to today" data-name-es="Historia de EE. UU.: de los derechos civiles a hoy" data-en="Show on the board" data-es="Mostrar en la pizarra">Show on the board</button></div></div>
+  <div class="unit open"><div class="t" data-en="Government" data-es="Gobierno">Government</div><div class="d" data-en="Institutions, federalism, the Bill of Rights in the courts, how policy is made." data-es="Instituciones, federalismo, la Carta de Derechos en los tribunales, cómo se hace la política pública.">Institutions, federalism, the Bill of Rights in the courts, how policy is made.</div><div class="doors"><a class="door" href="/s23" data-en="Open" data-es="Abrir">Open</a><button class="beam no-print" type="button" data-beam="/s23" data-name="Government" data-name-es="Gobierno" data-en="Show on the board" data-es="Mostrar en la pizarra">Show on the board</button></div></div>
+  <div class="unit open"><div class="t" data-en="Economics" data-es="Economía">Economics</div><div class="d" data-en="Markets, money, the Fed, trade, and personal finance." data-es="Mercados, dinero, la Reserva Federal, el comercio y las finanzas personales.">Markets, money, the Fed, trade, and personal finance.</div><div class="doors"><a class="door" href="/s24" data-en="Open" data-es="Abrir">Open</a><button class="beam no-print" type="button" data-beam="/s24" data-name="Economics" data-name-es="Economía" data-en="Show on the board" data-es="Mostrar en la pizarra">Show on the board</button></div></div>
+  <div class="unit open"><div class="t" data-en="Capstone: an inquiry from the sources" data-es="Proyecto final: una investigación desde las fuentes">Capstone: an inquiry from the sources</div><div class="d" data-en="Pose the question, read the documents, build the timeline, argue the answer." data-es="Plantea la pregunta, lee los documentos, construye la línea de tiempo, argumenta la respuesta.">Pose the question, read the documents, build the timeline, argue the answer.</div><div class="doors"><a class="door" href="/s25" data-en="Open" data-es="Abrir">Open</a><button class="beam no-print" type="button" data-beam="/s25" data-name="Capstone: an inquiry from the sources" data-name-es="Proyecto final: una investigación desde las fuentes" data-en="Show on the board" data-es="Mostrar en la pizarra">Show on the board</button></div></div><div class="unit open"><div class="t" data-en="World Religions: comparison and inquiry" data-es="Religiones del mundo: comparaci&oacute;n e indagaci&oacute;n">World Religions: comparison and inquiry</div><div class="d" data-en="Buddhism, Confucianism and Daoism, Sikhism and Jainism, and a capstone from the sources." data-es="El budismo, el confucianismo y el dao&iacute;smo, el sijismo y el jainismo, y un proyecto final desde las fuentes.">Buddhism, Confucianism and Daoism, Sikhism and Jainism, and a capstone from the sources.</div><div class="doors"><a class="door" href="/religions#11-12" data-en="Open" data-es="Abrir">Open</a><button class="beam no-print" type="button" data-beam="/religions#11-12" data-name="World Religions: comparison and inquiry" data-name-es="Religiones del mundo: comparaci&oacute;n e indagaci&oacute;n" data-en="Show on the board" data-es="Mostrar en la pizarra">Show on the board</button></div></div>
+  </div>
+  <div class="daily"><span class="dk" data-en="Every day" data-es="Cada día">Every day</span><span class="dd" data-en="Ten daily lines for this band — pick the grade." data-es="Diez líneas diarias para esta banda — elige el grado.">Ten daily lines for this band — pick the grade.</span><a class="gr band" href="/drops/social-studies/11-12" aria-label="Daily Drafts, grade 11-12">11–12</a></div>
+</section>
+<section class="engines" aria-labelledby="engh">
+<h2 id="engh" data-en="The engines" data-es="Los motores">The engines</h2>
+<p class="hint" data-en="Every activity on this door is built from one of these. The open ones already run on the site; the ones in the workshop are the three this subject still needs." data-es="Cada actividad de esta puerta se construye con uno de estos. Los abiertos ya funcionan en el sitio; los del taller son los que esta materia aún necesita.">Every activity on this door is built from one of these. The open ones already run on the site; the ones in the workshop are the three this subject still needs.</p>
+<div class="eng open"><div class="n" data-en="Study cards, hints and a practice quiz" data-es="Tarjetas de estudio, pistas y un quiz de práctica">Study cards, hints and a practice quiz</div><span class="st" data-en="Open · A More Perfect Union, test prep" data-es="Abierto · Una unión más perfecta, preparación">Open · A More Perfect Union, test prep</span><div class="d" data-en="Tap-to-reveal cards, a hints sheet, a quiz at three levels — independent and supported counted honestly." data-es="Tarjetas que tocas para revelar, una hoja de pistas, un quiz de tres niveles — independiente y apoyado contados con honestidad.">Tap-to-reveal cards, a hints sheet, a quiz at three levels — independent and supported counted honestly.</div></div>
+<div class="eng open"><div class="n" data-en="Ten daily lines" data-es="Diez líneas diarias">Ten daily lines</div><span class="st" data-en="Open · Daily Drafts, K–8" data-es="Abierto · Daily Drafts, K–8">Open · Daily Drafts, K–8</span><div class="d" data-en="A short sheet every morning, drawn until it holds, reviewed on the spot." data-es="Una hoja corta cada mañana, trazada hasta que se sostenga, revisada al instante.">A short sheet every morning, drawn until it holds, reviewed on the spot.</div></div>
+<div class="eng open"><div class="n" data-en="Walk the process" data-es="Recorre el proceso">Walk the process</div><span class="st" data-en="Open · the bill road, the courts" data-es="Abierto · el camino de la ley, los tribunales">Open · the bill road, the courts</span><div class="d" data-en="A bill&#x27;s road, a case&#x27;s path through the courts — every turn a choice, every wrong turn explained." data-es="El camino de una ley, la ruta de un caso por los tribunales — cada vuelta una decisión, cada error explicado.">A bill&#x27;s road, a case&#x27;s path through the courts — every turn a choice, every wrong turn explained.</div></div>
+<div class="eng open"><div class="n" data-en="Word-bank papers" data-es="Hojas con banco de palabras">Word-bank papers</div><span class="st" data-en="Open · the quiz room" data-es="Abierto · la sala de quizzes">Open · the quiz room</span><div class="d" data-en="Fill-in-the-blank in the format the class actually sits, every word spent exactly once." data-es="Llenar el espacio en el formato que la clase realmente usa, cada palabra usada exactamente una vez.">Fill-in-the-blank in the format the class actually sits, every word spent exactly once.</div></div>
+<div class="eng open"><div class="n" data-en="Fill the chart" data-es="Completa el cuadro">Fill the chart</div><span class="st" data-en="Open · the quiz room" data-es="Abierto · la sala de quizzes">Open · the quiz room</span><div class="d" data-en="Separation of powers, checks and balances, federalism — tap or drag each item to its column, print blank or finished." data-es="Separación de poderes, pesos y contrapesos, federalismo — toca o arrastra cada elemento a su columna, imprime en blanco o terminado.">Separation of powers, checks and balances, federalism — tap or drag each item to its column, print blank or finished.</div></div>
+<div class="eng open"><div class="n" data-en="Sort, choose, put in order" data-es="Ordenar, elegir, secuenciar">Sort, choose, put in order</div><span class="st" data-en="Open · the band worksheets" data-es="Abierto · las hojas de trabajo por banda">Open · the band worksheets</span><div class="d" data-en="Tap-or-drag blocks that check on the spot." data-es="Bloques que se tocan o arrastran y se revisan al instante.">Tap-or-drag blocks that check on the spot.</div></div>
+<div class="eng open"><div class="n" data-en="Anchor charts" data-es="Láminas de anclaje">Anchor charts</div><span class="st" data-en="Open · every Room" data-es="Abierto · cada Salón">Open · every Room</span><div class="d" data-en="A board the class fills in together and prints." data-es="Una lámina que la clase completa junta e imprime.">A board the class fills in together and prints.</div></div>
+<div class="eng open"><div class="n" data-en="Timeline builder" data-es="Constructor de líneas de tiempo">Timeline builder</div><span class="st" data-en="Open · the Lab tab on a unit page" data-es="Abierto · la pestaña Laboratorio de una unidad">Open · the Lab tab on a unit page</span><div class="d" data-en="Place events on a year rail, then say what one caused." data-es="Coloca eventos en una línea de años, luego di qué causó uno.">Place events on a year rail, then say what one caused.</div></div>
+<div class="eng open"><div class="n" data-en="Source annotator" data-es="Anotador de fuentes">Source annotator</div><span class="st" data-en="Open · the Lab tab on a unit page" data-es="Abierto · la pestaña Laboratorio de una unidad">Open · the Lab tab on a unit page</span><div class="d" data-en="A primary source with a margin: mark who is speaking, to whom, and why." data-es="Una fuente primaria con margen: marca quién habla, a quién y por qué.">A primary source with a margin: mark who is speaking, to whom, and why.</div></div>
+<div class="eng open"><div class="n" data-en="Map-label" data-es="Rotula el mapa">Map-label</div><span class="st" data-en="Open · the Lab tab on a unit page" data-es="Abierto · la pestaña Laboratorio de una unidad">Open · the Lab tab on a unit page</span><div class="d" data-en="Drag each name onto the map — a state, a river, a route — and check." data-es="Arrastra cada nombre al mapa — un estado, un río, una ruta — y revisa.">Drag each name onto the map — a state, a river, a route — and check.</div></div>
+</section>
+<details class="teach">
+  <summary data-en="For the teacher" data-es="Para el maestro">For the teacher</summary>
+  <div class="inner">
+    <p data-en="&lt;b&gt;This page is a map.&lt;/b&gt; It saves nothing about a student and sends nothing anywhere. Each door opens an activity page; a finished activity sends its one summary row to your Sheet, under the name the student typed, and nothing else leaves the device." data-es="&lt;b&gt;Esta página es un mapa.&lt;/b&gt; No guarda nada sobre un estudiante ni envía nada a ningún lado. Cada puerta abre una página de actividad; una actividad terminada envía su única fila de resumen a tu hoja, bajo el nombre que el estudiante escribió, y nada más sale del dispositivo.">&lt;b&gt;This page is a map.&lt;/b&gt; It saves nothing about a student and sends nothing anywhere. Each door opens an activity page; a finished activity sends its one summary row to your Sheet, under the name the student typed, and nothing else leaves the device.</p>
+    <p data-en="&lt;b&gt;Hand out one band.&lt;/b&gt; Add the band to the address and the page opens there: &lt;b&gt;/social#6-8&lt;/b&gt;. Every door has a short address too — &lt;b&gt;Show on the board&lt;/b&gt; prints it large enough for the back row." data-es="&lt;b&gt;Comparte una sola banda.&lt;/b&gt; Agrega la banda a la dirección y la página se abre ahí: &lt;b&gt;/social#6-8&lt;/b&gt;. Cada puerta también tiene una dirección corta — &lt;b&gt;Mostrar en la pizarra&lt;/b&gt; la muestra en grande para la última fila.">&lt;b&gt;Hand out one band.&lt;/b&gt; Add the band to the address and the page opens there: &lt;b&gt;/social#6-8&lt;/b&gt;. Every door has a short address too — &lt;b&gt;Show on the board&lt;/b&gt; prints it large enough for the back row.</p>
+    <p data-en="&lt;b&gt;In the workshop means not built yet.&lt;/b&gt; A unit with that mark has no page behind it and no link, on purpose. When one opens, it appears here with a real door." data-es="&lt;b&gt;En el taller significa que aún no está construido.&lt;/b&gt; Una unidad con esa marca no tiene página detrás ni enlace, a propósito. Cuando una se abre, aparece aquí con una puerta real.">&lt;b&gt;In the workshop means not built yet.&lt;/b&gt; A unit with that mark has no page behind it and no link, on purpose. When one opens, it appears here with a real door.</p>
+  </div>
+</details>
+</main>
+<footer>
+  <p><span data-en="This page loads no fonts, scripts, or images from the internet and works with the network off. It keeps nothing about a student and has no way to send anything. It is not a district product and carries no district endorsement." data-es="Esta página no carga fuentes, scripts ni imágenes de internet y funciona con la red apagada. No guarda nada sobre un estudiante y no tiene forma de enviar nada. No es un producto del distrito ni cuenta con su respaldo.">This page loads no fonts, scripts, or images from the internet and works with the network off. It keeps nothing about a student and has no way to send anything. It is not a district product and carries no district endorsement.</span></p>
+  <p><span data-en="Original classroom material. Units marked in the workshop are named so a teacher can see the whole map; they open here when they are built, never before." data-es="Material original para el aula. Las unidades marcadas en el taller se nombran para que un maestro vea el mapa completo; se abren aquí cuando se construyen, nunca antes.">Original classroom material. Units marked in the workshop are named so a teacher can see the whole map; they open here when they are built, never before.</span></p>
+</footer>
+</div>
+<script>
+(function(){
+"use strict";
+/* AOG-SUBJECT-HUB-V1 — the hub's own engine: band strip, EN|ES, theme, the board beam.
+   The site bar (aog-topbar.js) owns the visible switches: it CLICKS #langEn /
+   #langEs / #themeBtn below and hides them (never two doors to one place). */
+var SLUG="social", KEY="aog.hub."+SLUG+".", LEGACY="aog.interior.ws.v1.";
+var H=document.documentElement;
+function $(s){return document.querySelector(s);}
+function store(k,v){try{if(v===undefined)return localStorage.getItem(k);localStorage.setItem(k,v);}catch(e){return null;}}
+
+/* ── language: the page owns it; every [data-en] is a leaf ── */
+var lang="en";
+function T(en,es){return lang==="es"?es:en;}
+function paintLang(){
+  H.lang=lang;
+  var n=document.querySelectorAll("[data-en]");
+  for(var i=0;i<n.length;i++){
+    var el=n[i], v=(lang==="es")?el.getAttribute("data-es"):el.getAttribute("data-en");
+    if(v==null) continue;
+    if(v.indexOf("<")!==-1||v.indexOf("&lt;")!==-1) el.innerHTML=v; else el.textContent=v;
+  }
+  var bEn=$("#langEn"),bEs=$("#langEs");
+  if(bEn) bEn.classList.toggle("on",lang!=="es");
+  if(bEs) bEs.classList.toggle("on",lang==="es");
+  var pEn=$("#aogLangEn"),pEs=$("#aogLangEs");
+  if(pEn) pEn.classList.toggle("on",lang!=="es");
+  if(pEs) pEs.classList.toggle("on",lang==="es");
+  paintTheme();
+}
+function pickLang(v){return function(){ if(lang===v) return; lang=v; store("aog.lang",v); store(LEGACY+"lang",v); paintLang(); };}
+$("#langEn").addEventListener("click",pickLang("en"));
+$("#langEs").addEventListener("click",pickLang("es"));
+(function(){ var s=store("aog.lang")||store(LEGACY+"lang"); if(s==="es"||s==="en") lang=s; })();
+
+/* ── theme: same two keys the bar reconciles ── */
+function paintTheme(){ var b=$("#themeBtn"); if(!b) return; var d=H.getAttribute("data-theme")==="dark"; b.textContent=d?T("Light mode","Modo claro"):T("Dark mode","Modo oscuro"); }
+$("#themeBtn").addEventListener("click",function(){
+  var d=H.getAttribute("data-theme")==="dark"?"light":"dark";
+  H.setAttribute("data-theme",d); store("aog.theme",d); store(LEGACY+"theme",d); paintTheme();
+});
+
+/* ── the band strip: ?band=6-8 or #6-8 on the link, last choice remembered on the device ── */
+var BANDS=["k-2","3-5","6-8","9-10","11-12"];
+/* AOG-BAND-HASH-CASE-V1: the hubs do not agree on the case of the first band — five say "k-2"
+   and two say "K-2" — so an exact indexOf sent /spanish#k-2 to the default instead of
+   to K-2, silently. Match without case and return the hub's OWN spelling, so #k-2 and
+   #K-2 both work everywhere and old bookmarks keep working. */
+function bandCanon(v){ v=String(v==null?"":v).toLowerCase();
+  for(var i=0;i<BANDS.length;i++){ if(String(BANDS[i]).toLowerCase()===v) return BANDS[i]; }
+  return null; }
+function bandFrom(){ var c;
+  var m=/[?&]band=([^&#]+)/.exec(location.search||""); if(m&&(c=bandCanon(m[1]))) return c;
+  var h=(location.hash||"").replace(/^#/,""); if((c=bandCanon(h))) return c;
+  var s=store(KEY+"band"); if(s&&(c=bandCanon(s))) return c;
+  return "6-8";
+}
+function showBand(id,push){
+  var secs=document.querySelectorAll(".band");
+  for(var i=0;i<secs.length;i++) secs[i].hidden=(secs[i].id!==id);
+  var btns=document.querySelectorAll("#bandNav button");
+  for(var j=0;j<btns.length;j++) btns[j].setAttribute("aria-current",String(btns[j].getAttribute("data-band")===id));
+  store(KEY+"band",id);
+  if(push){ try{ history.replaceState(null,"","#"+id); }catch(e){} }
+}
+$("#bandNav").addEventListener("click",function(e){ var b=e.target.closest("[data-band]"); if(!b) return; showBand(b.getAttribute("data-band"),true); });
+window.addEventListener("hashchange",function(){ var h=(location.hash||"").replace(/^#/,""); if(BANDS.indexOf(h)>-1) showBand(h,false); });
+showBand(bandFrom(),false);
+
+/* ── the board beam (ported from /prep): the short address, big enough for the back row ── */
+document.addEventListener("click",function(e){
+  var btn=e.target.closest("[data-beam]"); if(!btn) return;
+  var host=location.hostname||"architectureofgrace.org";
+  if(host==="localhost"||host==="127.0.0.1"||!host) host="architectureofgrace.org";
+  var url=host.replace(/^www\./,"")+btn.getAttribute("data-beam");
+  var nm=(lang==="es"&&btn.getAttribute("data-name-es"))?btn.getAttribute("data-name-es"):btn.getAttribute("data-name");
+  var el=document.createElement("div"); el.id="beam"; el.setAttribute("role","dialog"); el.setAttribute("aria-label",url);
+  el.innerHTML='<div class="x">'+T("Tap anywhere to close","Toca para cerrar")+'</div><div class="wk"></div><div class="nm"></div><div class="url"></div><p class="hint">'+T("Type it in the address bar.","Escríbelo en la barra de direcciones.")+'</p>';
+  el.querySelector(".wk").textContent=T("Social Studies","Estudios Sociales");
+  el.querySelector(".nm").textContent=nm||""; el.querySelector(".url").textContent=url;
+  el.addEventListener("click",function(){ el.remove(); });
+  document.addEventListener("keydown",function esc(ev){ if(ev.key==="Escape"){ el.remove(); document.removeEventListener("keydown",esc); } });
+  document.body.appendChild(el); el.setAttribute("tabindex","-1"); el.focus();
+});
+
+paintLang();
+})();
+</script>
+</body>
+</html>
