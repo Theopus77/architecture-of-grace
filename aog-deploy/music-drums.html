@@ -291,6 +291,17 @@ body{overflow-x:clip; overscroll-behavior:none}
 body *{overscroll-behavior:contain}
 input:not([type=range]):not([type=file]):not([type=checkbox]):not([type=radio]),select,textarea{font-size:max(16px,1em)}
 @media (hover:none){ *,*::before,*::after{transition:none!important;animation:none!important;scroll-behavior:auto!important} html{scroll-behavior:auto} }
+
+/* AOG-MUSIC-TOUCH-V1 (2026-09-25) — Jimmy: "For the turntables, sometimes it takes
+   a few taps. And the copy or paste pops up when I am clicking." A held or dragged
+   finger read as "select this text", so iOS raised its copy/paste callout and ate
+   the tap. Nothing on the machine is text to select: selection and the callout are
+   off (fields and text areas keep them), every control answers the first tap with
+   no double-tap wait, and the audio engine is woken on the very first touch. */
+body{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent}
+input,textarea,[contenteditable]{-webkit-user-select:text;user-select:text;-webkit-touch-callout:default}
+button,a,label,input[type=range],.pill,.pad,.platter,canvas{touch-action:manipulation}
+.platter,canvas.wave,canvas.zoom{touch-action:none}
 </style>
 <script src="aog-handoff.js"></script>
 <script src="aog-eq.js"></script>
@@ -2093,5 +2104,8 @@ idbGet().then(function(o){
   var t; window.addEventListener("resize", function(){ clearTimeout(t); t=setTimeout(fit,150); });
 })();
 </script>
+<script>/* AOG-MUSIC-TOUCH-V1 — wake Safari's audio on the first touch, every time it sleeps */
+(function(){ function wake(){ try{ if(typeof actx!=="undefined"&&actx&&actx.state!=="running") actx.resume(); }catch(e){} }
+  ["touchstart","pointerdown","keydown"].forEach(function(t){ document.addEventListener(t, wake, {capture:true, passive:true}); }); })();</script>
 </body>
 </html>

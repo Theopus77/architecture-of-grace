@@ -35,6 +35,23 @@
   var D = document, H = D.documentElement;
   /* AOG-LEGIBLE-V1 — every page that carries this file also gets the text guard */
   try { var lg = D.createElement("script"); lg.src = "/aog-legible.js"; lg.defer = true; (D.head || H).appendChild(lg); } catch (e) {}
+  /* AOG-CALM-V1 — the stillness rules, on every page that carries this file */
+  try { if (!D.querySelector('link[href$="aog-calm.css"]')) { var cl = D.createElement("link"); cl.rel = "stylesheet"; cl.href = "/aog-calm.css"; (D.head || H).appendChild(cl); } } catch (e) {}
+  /* AOG-GLASS-ROOMS-V1 — the fourteen rooms behind the doors get the stained glass */
+  try {
+    var ROOMS = { "math-hub":"#2F63B8", "science-hub":"#2E8B57", "social-studies-hub":"#A8323E", "english-hub":"#B87A12",
+      "spanish-hub":"#B8457A", "facs-hub":"#7B4FA0", "economics-hub":"#6E7C22", "religions-hub":"#3F4AA6",
+      "room-12-curriculum":"#2E8B57", "room-18-curriculum":"#B87A12", "room-36-curriculum":"#2F63B8",
+      "room-104-curriculum":"#A8323E", "room-207-curriculum":"#7B4FA0",
+      "math":"#2F63B8", "science":"#2E8B57", "social":"#A8323E", "english":"#B87A12", "spanish":"#B8457A",
+      "facs":"#7B4FA0", "economics":"#6E7C22", "religions":"#3F4AA6",
+      "room12":"#2E8B57", "room18":"#B87A12", "room36":"#2F63B8", "room104":"#A8323E", "room207":"#7B4FA0" };
+    var slug = (location.pathname.split("/").pop() || "").replace(/\.html$/, "");
+    if (ROOMS[slug]) {
+      H.classList.add("aog-glass-rooms"); H.style.setProperty("--room", ROOMS[slug]);
+      var gl = D.createElement("link"); gl.rel = "stylesheet"; gl.href = "/aog-glass-rooms.css"; (D.head || H).appendChild(gl);
+    }
+  } catch (e) {}
   /* AOG-MINE-V1 — a private copy of what this learner sends, for their own Blueprint */
   try { var mn = D.createElement("script"); mn.src = "/aog-mine.js"; (D.head || H).appendChild(mn); } catch (e) {}
   var FONTS = "https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..700&family=Inter:wght@300;400;500;600;700;800&display=swap";

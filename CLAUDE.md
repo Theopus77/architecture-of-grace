@@ -24,6 +24,26 @@ on a white box, no dark text on navy, in light or dark theme, on any page.
 - Close every `<header>` before the page body. An unclosed header pulls the whole
   page into the navy masthead.
 
+## Calm pages for neurodivergent learners (standing order from Jimmy, 2026-09-25)
+
+"Make sure ALL PAGES have the NEURODIVERGENT principles applied to all, PAST
+PRESENT AND FUTURE." Every page, now and every page added later:
+
+- Loads `aog-calm.css` (it comes with `aog-grace.js`; a page without that file
+  must link it). It keeps the page still sideways, stops iOS zooming when a box
+  is tapped (every field is 16px or larger), turns off motion on touch screens
+  and when "reduce motion" is set, stops rubber-band scrolling, and shows a clear
+  focus ring.
+- Must pass, on a phone-size screen:
+
+      node tools/check-calm.js <the pages you changed>
+      node tools/check-calm.js            # after changing anything shared
+
+- Design for the iPhone first, then the iPad, then a computer, and check all three.
+- No endless animations, nothing that moves on its own, no surprise sounds.
+- Neuro-affirming words: describe what a learner can do and what helps; never
+  deficit labels.
+
 ## Housekeeping
 
 - Bump `const CACHE` in `aog-deploy/sw.js` whenever a page changes, so browsers
