@@ -603,6 +603,7 @@ def cards_page(r):
   {"".join('<button type="button" class="fchip funit" data-unit="u%d" aria-pressed="true" style="--uc:var(--u%d)"><span class="dot"></span>%s %d</button>' % (u["n"], u["n"], span("Unit","Unidad"), u["n"]) for u in C["units"])}
   <button type="button" class="fchip" id="hideRisk" aria-pressed="false">{span("Hide ★★ cards","Ocultar tarjetas ★★")}</button>
   <button type="button" class="fchip" id="hideUsed" aria-pressed="false">{span("Hide used","Ocultar usadas")}</button>
+  <button type="button" class="fchip deal" id="resetUsed">{span("Reset used cards","Reiniciar las usadas")}</button>
 </div>
 
 {"".join(blocks)}
@@ -672,6 +673,7 @@ document.addEventListener("click", function(ev){
 });
 document.getElementById("hideRisk").addEventListener("click", function(){ hideRisk=!hideRisk; this.setAttribute("aria-pressed", String(hideRisk)); paint(); });
 document.getElementById("hideUsed").addEventListener("click", function(){ hideUsed=!hideUsed; this.setAttribute("aria-pressed", String(hideUsed)); paint(); });
+document.getElementById("resetUsed").addEventListener("click", function(){ var k=Object.keys(d.used).length; if(!k) return; if(!confirm(T("Clear the "+k+" used ticks on this device? The cards stay; only the ticks go.","¿Borrar las "+k+" marcas de usada en este dispositivo?"))) return; d.used={}; persist(); paint(); });
 
 /* Listen: a card, read aloud */
 var speaking=null;

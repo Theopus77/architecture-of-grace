@@ -529,6 +529,7 @@ footer.foot{margin-top:40px; font-size:.86rem; color:var(--ink-faint); max-width
   <button type="button" class="fchip funit" data-unit="u1" aria-pressed="true" style="--uc:var(--u1)"><span class="dot"></span><span data-en="Unit" data-es="Unidad">Unit</span> 1</button><button type="button" class="fchip funit" data-unit="u2" aria-pressed="true" style="--uc:var(--u2)"><span class="dot"></span><span data-en="Unit" data-es="Unidad">Unit</span> 2</button><button type="button" class="fchip funit" data-unit="u3" aria-pressed="true" style="--uc:var(--u3)"><span class="dot"></span><span data-en="Unit" data-es="Unidad">Unit</span> 3</button><button type="button" class="fchip funit" data-unit="u4" aria-pressed="true" style="--uc:var(--u4)"><span class="dot"></span><span data-en="Unit" data-es="Unidad">Unit</span> 4</button>
   <button type="button" class="fchip" id="hideRisk" aria-pressed="false"><span data-en="Hide ★★ cards" data-es="Ocultar tarjetas ★★">Hide ★★ cards</span></button>
   <button type="button" class="fchip" id="hideUsed" aria-pressed="false"><span data-en="Hide used" data-es="Ocultar usadas">Hide used</span></button>
+  <button type="button" class="fchip deal" id="resetUsed"><span data-en="Reset used cards" data-es="Reiniciar las usadas">Reset used cards</span></button>
 </div>
 
 <section class="unit-spread" id="unit-1" style="--uc:var(--u1)"><div class="bandhead"><span class="bk"><span data-en="Unit" data-es="Unidad">Unit</span> 1</span><h2>The Compass Of Values</h2><p class="bd">14 <span data-en="cards" data-es="tarjetas">cards</span></p></div><div class="lessonblk" id="u1l1" data-unit="u1"><div class="sh"><span class="sn"><span data-en="Lesson 1" data-es="Lección 1">Lesson 1</span></span><h3>THE EXIT INTERVIEW</h3></div><div class="cards"><article class="card" id="c-b5-1a" data-code="B5-1A" data-risk="★" data-unit="u1">
@@ -1092,6 +1093,7 @@ document.addEventListener("click", function(ev){
 });
 document.getElementById("hideRisk").addEventListener("click", function(){ hideRisk=!hideRisk; this.setAttribute("aria-pressed", String(hideRisk)); paint(); });
 document.getElementById("hideUsed").addEventListener("click", function(){ hideUsed=!hideUsed; this.setAttribute("aria-pressed", String(hideUsed)); paint(); });
+document.getElementById("resetUsed").addEventListener("click", function(){ var k=Object.keys(d.used).length; if(!k) return; if(!confirm(T("Clear the "+k+" used ticks on this device? The cards stay; only the ticks go.","¿Borrar las "+k+" marcas de usada en este dispositivo?"))) return; d.used={}; persist(); paint(); });
 
 /* Listen: a card, read aloud */
 var speaking=null;
