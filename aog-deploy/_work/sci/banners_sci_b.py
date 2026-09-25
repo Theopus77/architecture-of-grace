@@ -93,20 +93,10 @@ def _b15():
         + _lin(p+"strata", [(0, "#221A30", None), (.5, "#2A1E36", None), (1, "#120C1C", None)])
         + _rad(p+"magma", [(0, "#FF8A40", .7), (.5, "#C04A2A", .3), (1, "#C04A2A", 0)], .5, .9, .55)
     )
-    # corona: soft tapered wisps radiating from the black disc
-    wisps = []
-    for i in range(10):
-        a = i * math.pi * 2 / 10 + .25
-        L = 130 if i % 2 else 92
-        wd = 22 if i % 2 else 14
-        ca, sa = math.cos(a), math.sin(a)
-        x0, y0 = 600 + ca * 40, 122 + sa * 40
-        xt, yt = 600 + ca * L, 122 + sa * L
-        wisps.append(f'<path d="M{x0 - sa*wd:.0f} {y0 + ca*wd:.0f} Q{x0 + ca*L*.45:.0f} {y0 + sa*L*.45:.0f} {xt:.0f} {yt:.0f} Q{x0 + ca*L*.45:.0f} {y0 + sa*L*.45:.0f} {x0 + sa*wd:.0f} {y0 - ca*wd:.0f}z"/>')
-    rows = "".join(f'<path d="M{x} 244 L{x + (x-600)//4} 290"/>' for x in range(260, 1200, 30))
+    rows = "".join(f'<path d="M{x} 244 L{x + (x-600)//4} 290"/>' for x in range(260, 1200, 38))
     g = _lcg(155)
     crowd = []
-    for x in (110, 150, 175, 230, 262, 285, 340, 372, 420, 445, 500, 720, 760, 790, 850, 890, 930, 990, 1030, 1070, 1120):
+    for x in (110, 150, 175, 240, 285, 340, 372, 445, 500, 720, 760, 850, 890, 930, 1030, 1070, 1120):
         h = 30 + next(g) % 16
         crowd.append(_person(x, 298 + next(g) % 4, h, 9 + next(g) % 3))
         if next(g) % 3 == 0:  # an arm raised, pointing at the sky
@@ -115,9 +105,9 @@ def _b15():
     crowd = "".join(crowd); crowd2 = ""
     body = f"""
 <rect width="{W}" height="{H}" fill="url(#{p}sky)"/>
-{_stars(15, 40, 150, "#EDE6FF", ".7")}
+{_stars(15, 28, 150, "#EDE6FF", ".7")}
 <circle cx="600" cy="122" r="230" fill="url(#{p}cor)"/>
-<g fill="#FFFFFF" opacity=".16">{"".join(wisps)}</g>
+<ellipse cx="600" cy="122" rx="190" ry="54" fill="#FFFFFF" opacity=".14"/><ellipse cx="600" cy="122" rx="130" ry="40" fill="#FFFFFF" opacity=".14"/><ellipse cx="600" cy="122" rx="46" ry="120" fill="#FFFFFF" opacity=".1"/><ellipse cx="600" cy="122" rx="120" ry="90" transform="rotate(-25 600 122)" fill="#FFFFFF" opacity=".08"/>
 <circle cx="600" cy="122" r="52" fill="#FFFFFF" opacity=".55"/>
 <circle cx="600" cy="122" r="43" fill="#FFFFFF" opacity=".95"/>
 <circle cx="600" cy="122" r="38" fill="#0A0716"/>
@@ -264,14 +254,14 @@ def _b18():
     )
     g = _lcg(18)
     blades = []
-    for _ in range(70):
+    for _ in range(52):
         x = next(g) % 1200
         h = 18 + next(g) % 28
         y = 262 + next(g) % 30
         sw = 10 + next(g) % 10
         blades.append(f'<path d="M{x} {y} q{sw//2} -{h//2} {sw} -{h}"/>')
     blades2 = []
-    for _ in range(42):
+    for _ in range(30):
         x = next(g) % 1200
         h = 30 + next(g) % 40
         y = 318 + next(g) % 30
@@ -462,8 +452,8 @@ def _b21():
 <rect width="{W}" height="{H}" fill="url(#{p}sky)"/>
 <path d="M-40 260 Q300 40 700 20 Q1000 10 1240 90 L1240 150 Q1000 90 700 90 Q400 110 0 320z" fill="url(#{p}mw)"/>
 <path d="M200 220 Q500 110 800 70 Q1000 60 1240 110 L1240 130 Q1000 80 800 90 Q520 130 240 250z" fill="#0A1A44" opacity=".5"/>
-{_stars(21, 100, 300, "#FFFFFF", ".85")}
-{_stars(212, 40, 120, "#BFD8FF", ".6", 400, 1200)}
+{_stars(21, 64, 300, "#FFFFFF", ".85")}
+{_stars(212, 24, 120, "#BFD8FF", ".6", 400, 1200)}
 <circle cx="240" cy="96" r="70" fill="url(#{p}gal)"/>
 <g fill="none" stroke="#E8E0FF" stroke-width="2.5" stroke-linecap="round" opacity=".7"><path d="{arms[0]}"/><path d="{arms[1]}"/></g>
 <ellipse cx="240" cy="96" rx="10" ry="6" fill="#FFF8E8"/>
