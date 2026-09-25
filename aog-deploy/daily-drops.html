@@ -2159,6 +2159,82 @@ G.geom=function(r,c){var b=B(),m=r.pick(c.modes),h='';
   else if(m==='pyth'){var tri=r.pick([[3,4,5],[6,8,10],[5,12,13],[8,15,17],[9,12,15],[7,24,25]]);
     h='Find the missing side of the right triangle.<div class="row" style="margin-top:5px;gap:14px">'+
       triFig(tri[0],tri[1],'cm','c = ?')+'<span class="inl">c = '+b.f('num',tri[2],{w:'n'})+' cm</span></div>'}
+  /* AOG-DD-STD7-V1 (2026-09-25) — the Grade 7 standards the MAP class profile
+     showed the drafts never reached. angsolve is 7.G.B.5 (name the pair, then
+     write and solve the equation), xsect is 7.G.A.3, trimake is 7.G.A.2. */
+  else if(m==='angsolve'){var kind=r.pick(['supp','comp','vert']);
+    if(kind==='vert'){var co7=r.pick([2,3,4,5]),x7=r.i(8,25),c7=r.i(1,20),k7=co7*x7+c7;
+      if(k7>=180){x7=10;k7=co7*10+c7}
+      h='Two lines cross. A pair of <b>vertical</b> angles measure <b>('+co7+'x + '+c7+')&deg;</b> and <b>'+k7+'&deg;</b>.'+
+        '<div class="row" style="margin-top:7px">'+solveSteps(b,co7+'x + '+c7,'=',k7,true,x7)+'</div>'}
+    else{var tot7=kind==='supp'?180:90,kn=kind==='supp'?r.i(25,155):r.i(12,78);
+      h='Two angles are <b>'+(kind==='supp'?'on a straight line':'together a right angle')+'</b>. One measures <b>'+kn+
+        '&deg;</b> and the other measures <b>x&deg;</b>.<div class="row" style="margin-top:7px;gap:12px">'+
+        '<span class="inl">They are '+b.mc(kind==='supp'?'supplementary':'complementary',['complementary','supplementary','vertical'])+'</span>'+
+        '<span class="inl">x + '+kn+' = '+b.f('num',tot7,{w:'n'})+'</span>'+
+        '<span class="inl">x = '+b.f('num',tot7-kn,{w:'n'})+'&deg;</span></div>'}}
+  else if(m==='xsect'){var xs=r.pick([
+      ['a cube','parallel to one face','square'],
+      ['a right rectangular prism','parallel to its base','rectangle'],
+      ['a right rectangular prism','straight down, perpendicular to its base','rectangle'],
+      ['a square pyramid','parallel to its base','square'],
+      ['a square pyramid','straight down through its top point','triangle'],
+      ['a triangular prism','parallel to its triangle base','triangle'],
+      ['a triangular prism','straight down, parallel to a rectangle face','rectangle']]);
+    h='You slice <b>'+xs[0]+'</b> '+xs[1]+'. What shape is the cut face?'+
+      '<div class="row" style="margin-top:7px">'+b.mc(xs[2],['triangle','square','rectangle','circle'])+'</div>'}
+  else if(m==='trimake'){var s1=r.i(3,8),s2=r.i(3,8),ok=r.chance(0.5);
+    /* the long side is built from the two short ones, so "yes" and "no" come up
+       equally and the student has to add to know which */
+    var lg=ok?r.i(Math.max(s1,s2)+1,s1+s2-1):s1+s2+r.i(0,4);if(ok&&lg<=Math.max(s1,s2)){lg=s1+s2-1}
+    var sd=r.shuf([s1,s2,lg]);
+    h='Can sticks of <b>'+sd[0]+' cm</b>, <b>'+sd[1]+' cm</b> and <b>'+sd[2]+' cm</b> make a triangle?'+
+      '<div class="row" style="margin-top:7px;gap:12px"><span class="inl">two shortest: '+
+      b.f('num',s1+s2,{w:'n'})+' cm together</span>'+b.mc(ok?'yes':'no',['yes','no'])+
+      '<span class="hint" style="flex-basis:auto">The two short sides must add to MORE than the long side.</span></div>'}
+  /* AOG-DD-STD8-V1 (2026-09-25) — Grade 8 standards the drafts never asked. transform is 8.G.A.1–4,
+     parallel 8.G.A.5, pdist 8.G.B.8, volcyl 8.G.C.9 (answers in terms of &pi;). */
+  else if(m==='transform'){var px=r.pick([-1,1])*r.i(1,6),py=r.pick([-1,1])*r.i(1,6),tk=r.i(0,4),nx8,ny8,tw;
+    if(tk===0){var dx=r.i(-5,5)||2,dy=r.i(-5,5)||-3;nx8=px+dx;ny8=py+dy;
+      tw='translated '+Math.abs(dx)+' '+(dx>0?'right':'left')+' and '+Math.abs(dy)+' '+(dy>0?'up':'down')}
+    else if(tk===1){nx8=px;ny8=-py;tw='reflected across the x&#8209;axis'}
+    else if(tk===2){nx8=-px;ny8=py;tw='reflected across the y&#8209;axis'}
+    else if(tk===3){nx8=-px;ny8=-py;tw='rotated 180&deg; about the origin'}
+    else{var dk=r.pick([2,3]);nx8=px*dk;ny8=py*dk;tw='dilated by a scale factor of '+dk+' from the origin'}
+    h='The point <b>('+px+', '+py+')</b> is '+tw+'.<div class="row" style="margin-top:7px;gap:10px">'+
+      '<span class="inl">New point ( '+b.f('num',nx8,{w:'n'})+' , '+b.f('num',ny8,{w:'n'})+' )</span>'+
+      '<span class="inl">The new figure is '+b.mc(tk===4?'similar':'congruent',['congruent','similar'])+'</span></div>'}
+  else if(m==='parallel'){var ag=r.i(35,145),ak=r.pick(['corr','alt','same','tri']);
+    if(ak==='tri'){var t1=r.i(30,80),t2=r.i(30,80);
+      h='A triangle has angles of <b>'+t1+'&deg;</b> and <b>'+t2+'&deg;</b>.<div class="row" style="margin-top:6px;gap:12px">'+
+        '<span class="inl">third angle '+b.f('num',180-t1-t2,{w:'n'})+'&deg;</span>'+
+        '<span class="inl">exterior angle next to it '+b.f('num',t1+t2,{w:'n'})+'&deg;</span></div>'}
+    else{var nm8={corr:'corresponding',alt:'alternate interior',same:'same-side interior'}[ak];
+      h='Two parallel lines are cut by a transversal. One angle is <b>'+ag+'&deg;</b>. What is its <b>'+nm8+'</b> angle?'+
+        '<div class="row" style="margin-top:6px"><span class="inl">'+b.f('num',ak==='same'?180-ag:ag,{w:'n'})+'&deg;</span>'+
+        '<span class="hint" style="flex-basis:auto">Corresponding and alternate interior angles are equal. Same-side interior angles add to 180&deg;.</span></div>'}}
+  else if(m==='pdist'){var tr=r.pick([[3,4,5],[6,8,10],[5,12,13],[8,6,10]]),ax=r.i(-4,3),ay=r.i(-4,3);
+    h='Find the distance between <b>('+ax+', '+ay+')</b> and <b>('+(ax+tr[0])+', '+(ay+tr[1])+')</b>.'+
+      '<div class="row" style="margin-top:6px;gap:12px"><span class="inl">across '+b.f('num',tr[0],{w:'n'})+'</span>'+
+      '<span class="inl">up '+b.f('num',tr[1],{w:'n'})+'</span><span class="inl">distance '+b.f('num',tr[2],{w:'n'})+'</span></div>'+
+      '<div class="hint">The two legs make a right triangle: a&sup2; + b&sup2; = c&sup2;.</div>'}
+  else if(m==='volcyl'){var sh=r.pick(['cylinder','cone','sphere']),vr=r.i(2,6),vh=3*r.i(1,4),vv,vd;
+    if(sh==='cylinder'){vv=vr*vr*vh;vd='radius <b>'+vr+'</b> and height <b>'+vh+'</b>'}
+    else if(sh==='cone'){vv=vr*vr*vh/3;vd='radius <b>'+vr+'</b> and height <b>'+vh+'</b>'}
+    else{vr=r.pick([3,6]);vv=4*vr*vr*vr/3;vd='radius <b>'+vr+'</b>'}
+    h='Find the volume of a <b>'+sh+'</b> with '+vd+'. Leave <b>&pi;</b> in your answer.'+
+      '<div class="row" style="margin-top:6px"><span class="inl">V = '+b.f('num',vv,{w:'n'})+'&pi; cubic units</span></div>'+
+      '<div class="hint">Cylinder &pi;r&sup2;h &middot; cone &#8531;&pi;r&sup2;h &middot; sphere &#8308;&#8260;&#8323;&pi;r&sup3;</div>'}
+  /* AOG-DD-STD6-V1 (2026-09-25) — Grade 6 standards the drafts never asked. volfrac is 6.G.A.2,
+     polycoord is 6.G.A.3. */
+  else if(m==='volfrac'){var vl=r.i(2,6),vw=r.i(2,5),vh2=r.pick([1.5,2.5,3.5,0.5]);
+    h='A box is <b>'+vl+'</b> by <b>'+vw+'</b> by <b>'+(vh2%1?Math.floor(vh2)?Math.floor(vh2)+'&frac12;':'&frac12;':vh2)+'</b> units. Find its volume.'+
+      '<div class="row" style="margin-top:6px"><span class="inl">V = l &times; w &times; h = '+b.f('dec',vl*vw*vh2,{w:'n'})+' cubic units</span>'+
+      '<span class="hint" style="flex-basis:auto">&frac12; is 0.5. A decimal answer is fine.</span></div>'}
+  else if(m==='polycoord'){var x1=-r.i(1,5),x2=r.i(1,6),y1=-r.i(1,5),y2=r.i(1,6);
+    h='A rectangle has corners at <b>('+x1+', '+y1+')</b>, <b>('+x2+', '+y1+')</b>, <b>('+x2+', '+y2+')</b> and <b>('+x1+', '+y2+')</b>.'+
+      '<div class="row" style="margin-top:6px;gap:12px"><span class="inl">width '+b.f('num',x2-x1,{w:'n'})+'</span>'+
+      '<span class="inl">height '+b.f('num',y2-y1,{w:'n'})+'</span><span class="inl">area '+b.f('num',(x2-x1)*(y2-y1),{w:'n'})+' square units</span></div>'}
   return done(b,h)};
 
 var UNITS=[['weeks','days',7],['feet','inches',12],['hours','minutes',60],['minutes','seconds',60],
@@ -2267,6 +2343,85 @@ G.data=function(r,c){var b=B(),m=r.pick(c.modes),h='';
       '<span class="inl" style="margin-left:12px">P('+win+') = '+frIn(b,wn,tot2)+'</span>'+
       '<span class="hint" style="flex-basis:auto">Write it as favorable over total.</span></div>';
     var L=b.fields.length;b.fields[L-2].t='num';b.fields[L-2].a=wn;b.fields[L-1].t='num';b.fields[L-1].a=tot2}
+  /* AOG-DD-STD7-V1 (2026-09-25) — sample is 7.SP.A.1, infer 7.SP.A.2, compare
+     7.SP.B.3–4, freq 7.SP.C.6, compound 7.SP.C.8. Probabilities are marked as the
+     two numbers written, favorable over total, the same as spin and likely. */
+  else if(m==='sample'){var tp=r.pick([['favorite lunch','the lunch line'],['favorite sport','the basketball team'],
+      ['bedtime','the chess club'],['favorite music','the band room']]);
+    var good='20 students picked at random from the whole school';
+    h='A school of 600 students wants to know their <b>'+tp[0]+'</b>. Which sample is <b>most representative</b>?'+
+      '<div class="row" style="margin-top:7px">'+b.mc(good,r.shuf([good,'20 students from '+tp[1],
+        'the first 20 students who volunteer','20 students from one 7th grade class']))+'</div>'}
+  else if(m==='infer'){var sn=r.pick([20,25,40,50]),pop=sn*r.pick([10,12,15,20]),yes=r.i(3,sn-3);
+    var it=r.pick(['walk to school','own a dog','play an instrument','like pizza best']);
+    h='In a <b>random sample</b> of <b>'+sn+'</b> students, <b>'+yes+'</b> '+it+'. The school has <b>'+pop+
+      '</b> students. About how many of them '+it+'?<div class="row" style="margin-top:6px;gap:11px">'+
+      '<span class="inl">'+fr(yes,sn)+' &times; '+pop+' = '+b.f('num',yes*pop/sn,{w:'n'})+' students</span></div>'}
+  else if(m==='compare'){var pat=[[-2,-1,0,1,2],[-3,-1,0,1,3],[-4,-2,0,2,4],[-3,-2,0,2,3]];
+    var mA=r.i(6,14),gap=r.i(3,8),A=r.shuf(r.pick(pat)).map(function(x){return mA+x}),
+      Bv=r.shuf(r.pick(pat)).map(function(x){return mA+gap+x});
+    h='Points scored in five games.<br>Team A: <b>'+A.join(', ')+'</b><br>Team B: <b>'+Bv.join(', ')+'</b>'+
+      '<div class="row" style="margin-top:7px;gap:12px"><span class="inl">mean A '+b.f('num',mA,{w:'n'})+'</span>'+
+      '<span class="inl">mean B '+b.f('num',mA+gap,{w:'n'})+'</span>'+
+      '<span class="inl">difference '+b.f('num',gap,{w:'n'})+'</span>'+
+      '<span class="inl">Higher on average: '+b.mc('Team B',['Team A','Team B'])+'</span></div>'}
+  else if(m==='freq'){if(r.chance(0.5)){var rolls=6*r.pick([10,20,30,50]),face=r.i(1,6);
+      h='You roll a number cube <b>'+rolls+'</b> times. About how many times do you <b>expect</b> to roll a <b>'+face+'</b>?'+
+        '<div class="row" style="margin-top:6px"><span class="inl">'+fr(1,6)+' &times; '+rolls+' = '+b.f('num',rolls/6,{w:'n'})+' times</span></div>'}
+    else{var sp7=r.pick([20,25,50]),hit=r.i(3,sp7-3),more=sp7*r.pick([4,6,10]);
+      h='A spinner landed on red <b>'+hit+'</b> times in <b>'+sp7+'</b> spins.<div class="row" style="margin-top:6px;gap:11px">'+
+        '<span class="inl">Experimental P(red) = '+frIn(b,hit,sp7)+'</span>'+
+        '<span class="inl">Predicted reds in '+more+' spins: '+b.f('num',hit*more/sp7,{w:'n'})+'</span>'+
+        '<span class="hint" style="flex-basis:auto">Write it as times it happened over total spins.</span></div>';
+      b.fields[0].t='num';b.fields[1].t='num'}}
+  else if(m==='compound'){var ev=r.pick([
+      ['flip a coin and roll a number cube',12,'heads and a 5',1],
+      ['flip two coins',4,'two heads',1],
+      ['roll two number cubes',36,'a sum of 7',6],
+      ['roll two number cubes',36,'doubles',6],
+      ['pick a shirt (red, blue or green) and pants (jeans or khakis)',6,'the blue shirt with jeans',1],
+      ['spin a 4-part spinner and flip a coin',8,'part 1 and tails',1]]);
+    h='You <b>'+ev[0]+'</b>. Use a list, table or tree diagram.'+
+      '<div class="row" style="margin-top:6px;gap:11px"><span class="inl">Total outcomes '+b.f('num',ev[1],{w:'n'})+'</span>'+
+      '<span class="inl">P('+ev[2]+') = '+frIn(b,ev[3],ev[1])+'</span>'+
+      '<span class="hint" style="flex-basis:auto">Write it as favorable over total.</span></div>'+workPad(2);
+    var Lc=b.fields.length;b.fields[Lc-2].t='num';b.fields[Lc-1].t='num'}
+  /* AOG-DD-STD8-V1 (2026-09-25) — Grade 8 standards the drafts never asked. scatter, fitline and
+     twoway are 8.SP.A.1–4. */
+  else if(m==='scatter'){var sc=r.pick([['hours studied','test score','positive'],['outside temperature','hot cocoa sold','negative'],
+      ['shoe size','favorite number','no'],['age of a car','its value','negative'],['height','arm span','positive'],['day of the month','rainfall','no']]);
+    h='A scatter plot compares <b>'+sc[0]+'</b> and <b>'+sc[1]+'</b>. What association would you expect?'+
+      '<div class="row" style="margin-top:7px">'+b.mc(sc[2],['positive','negative','no'])+'</div>'}
+  else if(m==='fitline'){var fs=r.pick([2,3,4,5]),fi=r.i(10,40),fh=r.i(3,9);
+    h='A line of fit for study hours <b>x</b> and quiz score <b>y</b> is <b>y = '+fs+'x + '+fi+'</b>.'+
+      '<div class="row" style="margin-top:6px;gap:12px"><span class="inl">Predicted score after '+fh+' hours '+b.f('num',fs*fh+fi,{w:'n'})+'</span>'+
+      '<span class="inl">Each extra hour adds '+b.f('num',fs,{w:'n'})+' points</span></div>'}
+  else if(m==='twoway'){var aa=r.i(5,20),ab=r.i(5,20),ba=r.i(5,20),bb=r.i(5,20);
+    h='Students were asked about pets and grade.<table class="tw" style="margin-top:6px;border-collapse:collapse;text-align:center">'+
+      '<tr><td></td><th style="padding:2px 10px">Dog</th><th style="padding:2px 10px">No dog</th><th style="padding:2px 10px">Total</th></tr>'+
+      '<tr><th style="padding:2px 10px">7th</th><td>'+aa+'</td><td>'+ab+'</td><td>'+b.f('num',aa+ab,{w:'n'})+'</td></tr>'+
+      '<tr><th style="padding:2px 10px">8th</th><td>'+ba+'</td><td>'+bb+'</td><td>'+b.f('num',ba+bb,{w:'n'})+'</td></tr></table>'+
+      '<div class="row" style="margin-top:6px"><span class="inl">Of the 7th graders, what fraction have a dog? '+frIn(b,aa,aa+ab)+'</span>'+
+      '<span class="hint" style="flex-basis:auto">Write it as dog owners over the row total.</span></div>';
+    var Lt=b.fields.length;b.fields[Lt-2].t='num';b.fields[Lt-1].t='num'}
+  /* AOG-DD-STD6-V1 (2026-09-25) — Grade 6 standards the drafts never asked. statq is 6.SP.A.1,
+     box and mad are 6.SP.B.4–5. */
+  else if(m==='statq'){var sq=r.pick([['How many pets do students in my class have?','yes'],['How tall is the school flagpole?','no'],
+      ['How many hours of sleep do 6th graders get?','yes'],['What time does school start?','no'],
+      ['How long does it take students to get to school?','yes'],['How many days are in March?','no']]);
+    h='Is this a <b>statistical question</b>? &ldquo;'+sq[0]+'&rdquo;<div class="row" style="margin-top:7px">'+b.mc(sq[1],['yes','no'])+
+      '<span class="hint" style="flex-basis:auto">A statistical question expects answers that vary.</span></div>'}
+  else if(m==='box'){var bx=[];for(var i6=0;i6<7;i6++)bx.push(r.i(2,30));bx.sort(function(a,x){return a-x});
+    h='Data (in order): <b>'+bx.join(', ')+'</b><div class="row" style="margin-top:6px;gap:10px">'+
+      '<span class="inl">min '+b.f('num',bx[0],{w:'n'})+'</span><span class="inl">Q1 '+b.f('num',bx[1],{w:'n'})+'</span>'+
+      '<span class="inl">median '+b.f('num',bx[3],{w:'n'})+'</span><span class="inl">Q3 '+b.f('num',bx[5],{w:'n'})+'</span>'+
+      '<span class="inl">max '+b.f('num',bx[6],{w:'n'})+'</span><span class="inl">IQR '+b.f('num',bx[5]-bx[1],{w:'n'})+'</span></div>'+
+      '<div class="hint">Q1 is the middle of the lower three; Q3 is the middle of the upper three.</div>'}
+  else if(m==='mad'){var mc6=r.i(5,15),off=r.pick([[-2,-1,0,1,2],[-3,-1,0,1,3],[-4,-2,0,2,4],[-3,-3,0,3,3]]),dv=r.shuf(off).map(function(x){return mc6+x});
+    var md=off.reduce(function(a,x){return a+Math.abs(x)},0)/5;
+    h='Data: <b>'+dv.join(', ')+'</b><div class="row" style="margin-top:6px;gap:12px">'+
+      '<span class="inl">mean '+b.f('num',mc6,{w:'n'})+'</span><span class="inl">mean absolute deviation '+b.f('dec',md,{w:'n'})+'</span></div>'+
+      '<div class="hint">MAD: how far each value is from the mean, then the average of those distances.</div>'}
   return done(b,h)};
 
 /* ---------- 12. decimals ---------- */
@@ -2311,6 +2466,18 @@ G.ratio=function(r,c){var b=B(),m=r.pick(c.modes),h='';
   else if(m==='scale'){var s2=r.pick([2,3,4,5]),L=r.i(3,12);
     h='A drawing uses the scale <b>1 cm = '+s2+' m</b>. A wall is <b>'+L+' cm</b> on the drawing.'+
       '<div class="row" style="margin-top:6px"><span class="inl">Real length = '+b.f('num',L*s2,{w:'n'})+' m</span></div>'}
+  /* AOG-DD-STD7-V1 (2026-09-25) — unitfrac is 7.RP.A.1 (a unit rate from two
+     fractions: the one part of that standard 'unit' never asked), scalerev is
+     7.G.A.1 (redraw a scale drawing at a different scale). */
+  else if(m==='unitfrac'){var ur=r.i(2,6),ud=r.pick([2,3,4]),sm=simp(ur,ud);
+    var cx=r.pick([['walks','miles'],['paints','square yards'],['bikes','miles'],['mows','acres']]);
+    h='Sam '+cx[0]+' <b>'+(sm[1]===1?sm[0]:fr(sm[0],sm[1]))+'</b> '+cx[1]+' in <b>'+fr(1,ud)+'</b> hour.'+
+      '<div class="row" style="margin-top:6px;gap:11px"><span class="inl">'+
+      (sm[1]===1?sm[0]:fr(sm[0],sm[1]))+' &divide; '+fr(1,ud)+' = '+b.f('num',ur,{w:'n'})+' '+cx[1]+' per hour</span></div>'}
+  else if(m==='scalerev'){var sa=r.pick([2,3]),sb=sa*2,RL=sb*r.i(2,6),RW=sb*r.i(1,4);
+    h='A room is <b>'+RL+' m</b> by <b>'+RW+' m</b>.<div class="row" style="margin-top:6px;gap:12px">'+
+      '<span class="inl">At <b>1 cm = '+sa+' m</b> the drawing is '+b.f('num',RL/sa,{w:'n'})+' cm by '+b.f('num',RW/sa,{w:'n'})+' cm</span>'+
+      '<span class="inl">Redrawn at <b>1 cm = '+sb+' m</b> it is '+b.f('num',RL/sb,{w:'n'})+' cm by '+b.f('num',RW/sb,{w:'n'})+' cm</span></div>'}
   return done(b,h)};
 
 /* ---------- 14. percent ---------- */
@@ -2362,6 +2529,36 @@ G.integers=function(r,c){var b=B(),m=r.pick(c.modes),h='';
     for(var j=0;j<4;j++){var q=r.i(2,9),d2=r.i(2,9),neg=r.chance(.6)?-1:1,neg2=r.chance(.5)?-1:1;
       out2.push('<span class="colp"><span class="oplab">'+t('Divide','Divide')+'</span><span class="inl">'+sg(neg*q*d2)+' ÷ '+sg(neg2*d2)+' = '+b.f('num',neg*neg2*q,{w:'n'})+'</span></span>')}
     h='<div class="row" style="gap:16px">'+out2.join('')+'</div>'}
+  /* AOG-DD-STD8-V1 (2026-09-25) — Grade 8 standards the drafts never asked. irrat and approx are
+     8.NS.A.1–2: sort a number as rational or irrational, then trap a root between
+     two whole numbers. */
+  else if(m==='irrat'){var nx=r.pick([['&radic;'+r.pick([2,3,5,7,10,15,20]),'irrational'],['&radic;'+r.pick([16,25,49,64,81]),'rational'],
+      ['&pi;','irrational'],['0.333&hellip; (the 3 repeats)','rational'],['&minus;'+r.i(2,9)+'/'+r.i(2,9),'rational'],['0.1010010001&hellip; (never repeats)','irrational']]);
+    h='Is <b>'+nx[0]+'</b> rational or irrational?<div class="row" style="margin-top:7px">'+b.mc(nx[1],['rational','irrational'])+'</div>'}
+  else if(m==='approx'){var lo8=r.i(2,11),nn=lo8*lo8+r.i(1,2*lo8);
+    h='Between which two whole numbers is <b>&radic;'+nn+'</b>?<div class="row" style="margin-top:7px;gap:10px">'+
+      '<span class="inl">'+b.f('num',lo8,{w:'n'})+' &lt; &radic;'+nn+' &lt; '+b.f('num',lo8+1,{w:'n'})+'</span>'+
+      '<span class="inl">closer to '+b.f('num',(nn-lo8*lo8)<((lo8+1)*(lo8+1)-nn)?lo8:lo8+1,{w:'n'})+'</span>'+
+      '<span class="hint" style="flex-basis:auto">Think of the perfect squares on either side.</span></div>'}
+  /* AOG-DD-STD6-V1 (2026-09-25) — Grade 6 standards the drafts never asked. gcf and lcm are
+     6.NS.B.4, abs is 6.NS.C.5–7, coord6 is 6.NS.C.8. */
+  else if(m==='gcf'){var gg=r.pick([2,3,4,5,6]),ga=gg*r.pick([2,3,5,7]),gb=gg*r.pick([4,9,11,13]);if(ga===gb)gb+=gg*2;
+    var G6=gcd(ga,gb);
+    h='Find the greatest common factor of <b>'+ga+'</b> and <b>'+gb+'</b>, then use it to rewrite the sum.'+
+      '<div class="row" style="margin-top:6px;gap:12px"><span class="inl">GCF '+b.f('num',G6,{w:'n'})+'</span>'+
+      '<span class="inl">'+ga+' + '+gb+' = '+b.f('num',G6,{w:'n'})+' ( '+b.f('num',ga/G6,{w:'n'})+' + '+b.f('num',gb/G6,{w:'n'})+' )</span></div>'}
+  else if(m==='lcm'){var la=r.pick([3,4,6,8,9,10]),lb=r.pick([4,5,6,12,15]);if(la===lb)lb=5;
+    var L6=la*lb/gcd(la,lb);
+    h='Hot dogs come in packs of <b>'+la+'</b> and buns in packs of <b>'+lb+'</b>. What is the fewest of each you can buy to have the same number?'+
+      '<div class="row" style="margin-top:6px"><span class="inl">least common multiple '+b.f('num',L6,{w:'n'})+'</span></div>'}
+  else if(m==='abs'){var av=r.i(2,15)*r.pick([-1,1]),bv=r.i(2,15)*r.pick([-1,1]);if(Math.abs(av)===Math.abs(bv))bv+=bv>0?1:-1;
+    h='<div class="row" style="gap:14px"><span class="inl">|'+(av<0?'&minus;'+(-av):av)+'| = '+b.f('num',Math.abs(av),{w:'n'})+'</span>'+
+      '<span class="inl">the opposite of '+(bv<0?'&minus;'+(-bv):bv)+' is '+b.f('num',-bv,{w:'n'})+'</span>'+
+      '<span class="inl">Which is farther from 0? '+b.mc(String(Math.abs(av)>Math.abs(bv)?av:bv),[String(av),String(bv)])+'</span></div>'}
+  else if(m==='coord6'){var cx6=r.pick([-1,1])*r.i(1,6),cy1=r.i(1,7),cy2=-r.i(1,7);
+    h='How far apart are <b>('+cx6+', '+cy1+')</b> and <b>('+cx6+', '+cy2+')</b>?'+
+      '<div class="row" style="margin-top:6px;gap:10px"><span class="inl">'+cy1+' + |'+cy2+'| = '+b.f('num',cy1-cy2,{w:'n'})+' units</span>'+
+      '<span class="hint" style="flex-basis:auto">Same x, so count up and down. One point is above the x&#8209;axis and one is below.</span></div>'}
   return done(b,h)};
 
 /* ---------- 16. expressions & equations ---------- */
@@ -2506,7 +2703,43 @@ G.algebra=function(r,c){var b=B(),m=r.pick(c.modes),h='';
   /* AOG-DD-SOLVESTEPS-V3 — every mode but 'write' is now laid out as its own moves.
      'write' is a modelling task — turning a sentence into an expression — and ruled
      lines are the right room for that. */
+  /* AOG-DD-STD7-V1 (2026-09-25) — rewrite is 7.EE.A.2: the same price written a
+     second way says something new ("increase by 5%" is "multiply by 1.05"). */
+  else if(m==='rewrite'){var pc=r.pick([5,10,15,20,25,30,40]),up=r.chance(0.5),mul=up?100+pc:100-pc;
+    h='A price <b>p</b> goes '+(up?'<b>up</b>':'<b>down</b>')+' by <b>'+pc+'%</b>. Rewrite it as one term.'+
+      '<div class="row" style="margin-top:7px;gap:12px"><span class="inl eqbig">p '+(up?'+':'&minus;')+' '+(pc/100)+'p</span>'+
+      '<span class="inl">= '+b.f('dec',mul/100,{w:'n'})+'p</span>'+
+      '<span class="inl">The new price is '+b.f('num',mul,{w:'n'})+'% of the old price</span></div>'}
   if(m==='write')h+=workPad(2);
+  /* AOG-DD-STD8-V1 (2026-09-25) — Grade 8 standards the drafts never asked. bothsides and nsol are
+     8.EE.C.7, system is 8.EE.C.8. */
+  else if(m==='bothsides'){var xa=r.i(-6,9),pa=r.i(4,9),qa=r.i(1,pa-1),ca=r.i(1,12),da=(pa-qa)*xa+ca;
+    h='Solve for <b>x</b>. Get the <b>x</b> terms on one side first.'+
+      '<div class="row" style="margin-top:8px"><span class="inl eqbig">'+pa+'x + '+ca+' = '+qa+'x '+(da<0?'&minus; '+(-da):'+ '+da)+'</span></div>'+
+      stepList([['subtract '+qa+'x', wkbx(3)+'x + '+ca+' = '+wkbx(3)],['subtract '+ca, wkbx(3)+'x = '+wkbx(3)]])+
+      '<div class="row eqans"><span class="inl">x = '+b.f('num',xa,{w:'n'})+'</span></div>'}
+  else if(m==='nsol'){var ka=r.i(2,6),kb=r.i(1,9),typ=r.pick(['one','none','infinitely many']),
+      rhs8=typ==='one'?(ka+1)+'x + '+kb:(typ==='none'?ka+'x + '+(kb+r.i(1,5)):ka+'x + '+kb);
+    h='How many solutions does <b>'+ka+'x + '+kb+' = '+rhs8+'</b> have?'+
+      '<div class="row" style="margin-top:7px">'+b.mc(typ,['one','none','infinitely many'])+
+      '<span class="hint" style="flex-basis:auto">Same slope and same number: infinitely many. Same slope, different number: none.</span></div>'}
+  else if(m==='system'){var sx=r.i(-3,5),sy=r.i(-3,8),m1=r.i(1,4),m2=-r.i(1,3),b1=sy-m1*sx,b2=sy-m2*sx;
+    function lin(mq,bq){return 'y = '+(mq===1?'':mq===-1?'&minus;':mq<0?'&minus;'+(-mq):mq)+'x'+(bq===0?'':bq<0?' &minus; '+(-bq):' + '+bq)}
+    h='Solve the system. Set the two right sides equal to find <b>x</b>, then find <b>y</b>.'+
+      '<div class="row" style="margin-top:7px;gap:16px"><span class="inl eqbig">'+lin(m1,b1)+'</span><span class="inl eqbig">'+lin(m2,b2)+'</span></div>'+
+      '<div class="row eqans" style="gap:12px"><span class="inl">x = '+b.f('num',sx,{w:'n'})+'</span><span class="inl">y = '+b.f('num',sy,{w:'n'})+'</span></div>'+workPad(2)}
+  /* AOG-DD-STD6-V1 (2026-09-25) — Grade 6 standards the drafts never asked. ineqw is 6.EE.B.8,
+     depvar is 6.EE.C.9. */
+  else if(m==='ineqw'){var iw=r.pick([['You must be at least','inches tall to ride','&ge;',48],['A bag can hold no more than','pounds','&le;',30],
+      ['The temperature stayed below','degrees all day','&lt;',40],['You need more than','points to win','&gt;',21]]);
+    h=iw[0]+' <b>'+iw[3]+'</b> '+iw[1]+'. Let <b>x</b> be the amount. Which inequality fits?'+
+      '<div class="row" style="margin-top:7px">'+b.mc('x '+iw[2].replace(/&(\w+);/,function(a){return {'&ge;':'≥','&le;':'≤','&lt;':'<','&gt;':'>'}[a]})+' '+iw[3],
+        ['≥','≤','<','>'].map(function(o){return 'x '+o+' '+iw[3]}))+'</div>'}
+  else if(m==='depvar'){var pay=r.pick([8,9,10,12,15]);
+    h='You earn <b>$'+pay+'</b> for every hour you work. <b>d</b> is dollars earned, <b>h</b> is hours.'+
+      '<div class="row" style="margin-top:6px;gap:12px"><span class="inl">d = '+b.f('num',pay,{w:'n'})+'h</span>'+
+      '<span class="inl">5 hours: $'+b.f('num',pay*5,{w:'n'})+'</span>'+
+      '<span class="inl">The dependent variable is '+b.mc('d',['d','h'])+'</span></div>'}
   return done(b,h)};
 
 /* ---------- 17. exponents, roots, scientific notation ---------- */
@@ -2559,6 +2792,28 @@ G.graphing=function(r,c){var b=B(),m=r.pick(c.modes),h='';
     h='Complete the table for <b>y = '+mm2+'x + '+bq2+'</b>.<div class="row" style="margin-top:7px;gap:14px">'+
       [0,1,2,3].map(function(x){return '<span class="vstack" style="align-items:center;gap:3px">'+
         '<span style="font-size:13px;color:#64748b">x = '+x+'</span>'+b.f('num',mm2*x+bq2,{w:'n'})+'</span>'}).join('')+'</div>'}
+  /* AOG-DD-STD8-V1 (2026-09-25) — Grade 8 standards the drafts never asked. isfunc is 8.F.A.1,
+     fromtwo 8.F.B.4, qual 8.F.B.5. */
+  else if(m==='isfunc'){var xs8=r.shuf([1,2,3,4,5,6]).slice(0,4),fn=r.chance(0.5);
+    if(!fn)xs8[3]=xs8[r.i(0,2)];
+    var pr=xs8.map(function(x){return '('+x+', '+r.i(0,9)+')'});
+    if(!fn){var dup=xs8[3],first=xs8.indexOf(dup);
+      var y1=+pr[first].split(', ')[1].replace(')',''),y2=(y1+r.i(1,8))%10;pr[3]='('+dup+', '+y2+')'}
+    h='Is this relation a <b>function</b>? <b>'+pr.join(', ')+'</b>'+
+      '<div class="row" style="margin-top:7px">'+b.mc(fn?'yes':'no',['yes','no'])+
+      '<span class="hint" style="flex-basis:auto">A function gives each x exactly one y.</span></div>'}
+  else if(m==='fromtwo'){var fm=r.pick([-3,-2,2,3,4,5]),fb=r.i(-5,9),fx=r.i(1,3),gx=fx+r.i(1,3);
+    h='A line goes through <b>('+fx+', '+(fm*fx+fb)+')</b> and <b>('+gx+', '+(fm*gx+fb)+')</b>.'+
+      '<div class="row" style="margin-top:6px;gap:12px"><span class="inl">slope m = '+b.f('num',fm,{w:'n'})+'</span>'+
+      '<span class="inl">y&#8209;intercept b = '+b.f('num',fb,{w:'n'})+'</span></div>'+
+      '<div class="hint">m = change in y &divide; change in x. Then put one point into y = mx + b.</div>'}
+  else if(m==='qual'){var qs=r.pick([['A candle burns down. Its height over time is','decreasing'],
+      ['A savings account gets the same deposit every week. The balance over time is','increasing'],
+      ['A car is parked for an hour. Its distance from home during that hour is','constant'],
+      ['A ball is dropped from a roof. Its height as it falls is','decreasing'],
+      ['A plant grows the same amount each day. Its height over time is','increasing'],
+      ['The price of a stamp stays the same all year. Its graph over the year is','constant']]);
+    h=qs[0]+' ____.<div class="row" style="margin-top:7px">'+b.mc(qs[1],['increasing','decreasing','constant'])+'</div>'}
   return done(b,h)};
 
 /* ---------- 19. fraction operations ---------- */
@@ -2665,6 +2920,110 @@ G.compareK=function(r,c){var b=B(),m=r.pick(c.modes),h='';
       '<span class="inl">How many more? '+b.f('num',Math.abs(g1-g2),{w:'n'})+'</span></div>'}
   else if(m==='evenodd'){var n=r.i(2,40);
     h='Is <b>'+n+'</b> even or odd?<div class="row" style="margin-top:7px">'+b.mc(n%2?'odd':'even',['even','odd'])+'</div>'}
+  return done(b,h)};
+/* ---------- AOG-DD-STDK5-V1 (2026-09-25). primary standards ----------
+   The K–5 standards the drafts never asked, found by checking every grade's ten
+   strands against the Illinois / Common Core math standards. One generator so
+   the new work sits in one place; each mode names its standard. They are wired
+   into the EXISTING strands as extra modes, so every sheet keeps its ten boxes
+   and looks like every other subject's sheet. */
+function dots(n){return '<span style="letter-spacing:3px;font-size:18px">'+new Array(n+1).join('&#9679;')+'</span>'}
+G.prim=function(r,c){var b=B(),m=r.pick(c.modes),h='';
+  /* K.OA.A.3 — take a number apart two ways */
+  if(m==='decomp'){var n=r.i(4,10),a=r.i(1,n-1),a2=r.i(1,n-1);if(a2===a)a2=n-a===a?(a>1?a-1:a+1):n-a;
+    h='<div class="row" style="gap:14px">'+dots(n)+'<span class="inl">'+n+' = '+a+' + '+b.f('num',n-a,{w:'n'})+'</span>'+
+      '<span class="inl">'+n+' = '+a2+' + '+b.f('num',n-a2,{w:'n'})+'</span></div>'}
+  /* K.OA.A.4 — what makes ten */
+  else if(m==='make10'){var k=r.i(1,9);
+    h='<div class="row" style="gap:14px">'+dots(k)+'<span class="inl">'+k+' and '+b.f('num',10-k,{w:'n'})+' make 10</span></div>'}
+  /* K.NBT.A.1 — a teen number is ten and some ones */
+  else if(m==='teen'){var o=r.i(1,9),o2=r.i(1,9);
+    h='<div class="row" style="gap:14px"><span class="inl"><b>1'+o+'</b> = 10 + '+b.f('num',o,{w:'n'})+'</span>'+
+      '<span class="inl">10 + '+o2+' = '+b.f('num',10+o2,{w:'n'})+'</span></div>'}
+  /* K.MD.A.2 — compare two things by a measurable attribute */
+  else if(m==='longer'){var pr=r.pick([['longer','a pencil','a school bus','a school bus'],['heavier','a feather','a brick','a brick'],
+      ['taller','a giraffe','a cat','a giraffe'],['shorter','a crayon','a door','a crayon'],['lighter','a leaf','a bike','a leaf']]);
+    h='Which is <b>'+pr[0]+'</b>?<div class="row" style="margin-top:7px">'+b.mc(pr[3],r.shuf([pr[1],pr[2]]))+'</div>'}
+  /* K.MD.B.3 — sort, count each group, say which has more */
+  else if(m==='sortcount'){var ci=r.i(1,6),sq=r.i(1,6);if(ci===sq)sq++;
+    var set=r.shuf(new Array(ci+1).join('&#9679;,').split(',').slice(0,ci).concat(new Array(sq+1).join('&#9632;,').split(',').slice(0,sq)));
+    h='<div class="row" style="gap:14px"><span style="font-size:18px;letter-spacing:4px">'+set.join('')+'</span>'+
+      '<span class="inl">&#9679; '+b.f('num',ci,{w:'n'})+'</span><span class="inl">&#9632; '+b.f('num',sq,{w:'n'})+'</span>'+
+      '<span class="inl">more: '+b.mc(ci>sq?'●':'■',['●','■'])+'</span></div>'}
+  /* 1.OA.B.4 / 1.OA.D.8 — the unknown in any place */
+  else if(m==='missingadd'){var mx=c.max||20,x=r.i(1,mx-2),y=r.i(1,mx-x),z=x+y,w=r.i(0,2);
+    h='Find the missing number.<div class="row" style="margin-top:7px;gap:14px"><span class="inl eqbig">'+
+      (w===0?b.f('num',x,{w:'n'})+' + '+y+' = '+z:w===1?x+' + '+b.f('num',y,{w:'n'})+' = '+z:z+' &minus; '+b.f('num',y,{w:'n'})+' = '+x)+'</span></div>'}
+  /* 1.OA.D.7 — the equal sign means "the same as" */
+  else if(m==='truefalse'){var p=r.i(2,9),q=r.i(1,9),ok=r.chance(.5),s2=r.i(1,p+q-1),t2=p+q-s2+(ok?0:r.pick([-1,1]));
+    if(t2<0)t2=p+q-s2+1;
+    h='True or false? <b class="eqbig">'+p+' + '+q+' = '+s2+' + '+t2+'</b><div class="row" style="margin-top:7px">'+
+      b.mc(p+q===s2+t2?'true':'false',['true','false'])+'</div>'}
+  /* 1.NBT.C.5 / 2.NBT.B.8 — ten (or a hundred) more and less in your head */
+  else if(m==='tenmore'){var st=c.step||10,lo=c.lo||20,hi=c.hi||89,v=r.i(lo,hi);
+    h='<div class="row" style="gap:14px"><span class="inl">'+st+' more than <b>'+v+'</b> is '+b.f('num',v+st,{w:'w'})+'</span>'+
+      '<span class="inl">'+st+' less than <b>'+v+'</b> is '+b.f('num',v-st,{w:'w'})+'</span></div>'}
+  /* 1.MD.A.1–2 — measure with same-size units, and order by length */
+  else if(m==='units'){var L=r.i(3,9);
+    h='A pencil is as long as <b>'+L+'</b> paper clips laid end to end. A crayon is <b>'+(L-2)+'</b> clips.'+
+      '<div class="row" style="margin-top:7px;gap:14px"><span class="inl">pencil '+b.f('num',L,{w:'n'})+' clips</span>'+
+      '<span class="inl">How much longer? '+b.f('num',2,{w:'n'})+' clips</span>'+
+      '<span class="inl">Longer: '+b.mc('pencil',['pencil','crayon'])+'</span></div>'}
+  /* 2.OA.C.4 / 2.G.A.2 / 3.OA.A.1 — an array as rows and columns */
+  else if(m==='array'){var rw=r.i(2,5),cl=r.i(2,5),g='';
+    for(var i=0;i<rw;i++)g+='<div style="letter-spacing:5px;line-height:1.2">'+new Array(cl+1).join('&#9679;')+'</div>';
+    h='<div class="row" style="gap:16px"><span>'+g+'</span><span class="inl">'+b.f('num',rw,{w:'n'})+' rows of '+b.f('num',cl,{w:'n'})+'</span>'+
+      '<span class="inl">'+(c.mult?cl+' &times; '+rw:new Array(rw+1).join(cl+' + ').slice(0,-3))+' = '+b.f('num',rw*cl,{w:'n'})+'</span></div>'}
+  /* 3.NBT.A.3 — one-digit times a multiple of ten */
+  else if(m==='mult10'){var d=r.i(2,9),t=r.i(2,9)*10;
+    h='<div class="row" style="gap:14px"><span class="inl">'+d+' &times; '+(t/10)+' = '+b.f('num',d*t/10,{w:'n'})+'</span>'+
+      '<span class="inl">'+d+' &times; '+t+' = '+b.f('num',d*t,{w:'w'})+'</span></div>'}
+  /* 3.OA.B.5 — the properties as strategies */
+  else if(m==='props'){var e=r.i(3,9),f=r.i(2,9),kind=r.i(0,1);
+    h=(kind?'Break apart the <b>'+(e+5)+'</b> to multiply.':'Switch the order. The product stays the same.')+
+      '<div class="row" style="margin-top:7px;gap:12px"><span class="inl eqbig">'+
+      (kind?f+' &times; '+(e+5)+' = '+f+' &times; 5 + '+f+' &times; '+b.f('num',e,{w:'n'})+' = '+b.f('num',f*(e+5),{w:'w'})
+           :e+' &times; '+f+' = '+b.f('num',f,{w:'n'})+' &times; '+b.f('num',e,{w:'n'})+' = '+b.f('num',e*f,{w:'n'}))+'</span></div>'}
+  /* 4.OA.A.1–2 — "times as many" */
+  else if(m==='timesas'){var base=r.i(3,12),mul=r.i(2,6),nm=r.pick(['Ana','Ben','Kai','Lucia','Omar']);
+    h=nm+' has <b>'+base+'</b> stickers. Sam has <b>'+mul+' times as many</b>.'+
+      '<div class="row" style="margin-top:7px;gap:12px"><span class="inl">'+base+' &times; '+mul+' = '+b.f('num',base*mul,{w:'n'})+' stickers</span></div>'}
+  /* 4.OA.B.4 — factor pairs, prime or composite */
+  else if(m==='prime'){var pn=r.pick([7,11,13,17,19,23,29,31,37,12,15,18,20,21,24,27,28,32,36]),pf=[];
+    for(var j=1;j<=pn;j++)if(pn%j===0)pf.push(j);
+    h='List all the factors of <b>'+pn+'</b>.<div class="row" style="margin-top:7px;gap:12px"><span class="inl">How many factors? '+
+      b.f('num',pf.length,{w:'n'})+'</span><span class="inl">'+pn+' is '+b.mc(pf.length===2?'prime':'composite',['prime','composite'])+'</span></div>'+workPad(1)}
+  /* 4.NF.B.4 — a whole number times a fraction */
+  else if(m==='wholefrac'){var wn=r.i(2,6),dn=r.pick([3,4,5,6,8]),nu=r.i(1,dn-1);
+    h='<div class="row" style="gap:12px"><span class="inl">'+wn+' &times; '+fr(nu,dn)+' = '+frIn(b,wn*nu,dn)+'</span>'+
+      '<span class="hint" style="flex-basis:auto">'+wn+' groups of '+nu+'/'+dn+'. Multiply the top number; the bottom stays.</span></div>'}
+  /* 4.MD.C.7 — angles add */
+  else if(m==='angadd'){var whole=r.pick([90,180,120,150]),pa=r.i(20,whole-20);
+    h='An angle of <b>'+whole+'&deg;</b> is split into two parts. One part is <b>'+pa+'&deg;</b>.'+
+      '<div class="row" style="margin-top:7px;gap:12px"><span class="inl">'+pa+' + x = '+whole+'</span><span class="inl">x = '+b.f('num',whole-pa,{w:'n'})+'&deg;</span></div>'}
+  /* 4.G.A.1–3 — lines, and lines of symmetry */
+  else if(m==='symm'){var sy=r.pick([['a square',4],['a rectangle (not a square)',2],['an equilateral triangle',3],['the letter A',1],['the letter F',0],['a regular hexagon',6]]);
+    h='How many lines of symmetry does <b>'+sy[0]+'</b> have?<div class="row" style="margin-top:7px">'+b.f('num',sy[1],{w:'n'})+'</div>'}
+  /* 5.OA.A.1–2 — order of operations with grouping */
+  else if(m==='orderops'){var a1=r.i(2,9),b1=r.i(2,9),c1=r.i(2,6),kd=r.i(0,2),ex,an;
+    if(kd===0){ex='('+a1+' + '+b1+') &times; '+c1;an=(a1+b1)*c1}else if(kd===1){ex=a1+' + '+b1+' &times; '+c1;an=a1+b1*c1}
+    else{ex=c1+' &times; ['+a1+' + ('+b1+' &minus; 1)]';an=c1*(a1+b1-1)}
+    h='Evaluate. Grouping first, then &times; and &divide;, then + and &minus;.'+
+      '<div class="row" style="margin-top:7px"><span class="inl eqbig">'+ex+' = '+b.f('num',an,{w:'w'})+'</span></div>'}
+  /* 5.NBT.A.1–2 — powers of ten move the digits */
+  else if(m==='pow10'){var dv=r.i(12,98)/10,pw=r.i(1,3),mdiv=r.chance(.5),res=mdiv?dv/Math.pow(10,pw):dv*Math.pow(10,pw);
+    h='<div class="row" style="gap:12px"><span class="inl eqbig">'+dv+' '+(mdiv?'&divide;':'&times;')+' 10<sup>'+pw+'</sup> = '+
+      b.f('dec',+res.toFixed(4),{w:'w'})+'</span><span class="hint" style="flex-basis:auto">10<sup>'+pw+'</sup> = '+Math.pow(10,pw)+
+      '. Each power of ten moves the digits one place.</span></div>'}
+  /* 5.NF.B.7 — unit fraction and whole number division */
+  else if(m==='unitdiv'){var ud=r.pick([2,3,4,5,6,8]),uw=r.i(2,6),wd=r.chance(.5);
+    h=(wd?'How many <b>1/'+ud+'</b>-cup scoops are in <b>'+uw+'</b> cups?':'<b>1/'+ud+'</b> of a pan of brownies is shared equally by <b>'+uw+'</b> friends. What part does each get?')+
+      '<div class="row" style="margin-top:7px;gap:12px"><span class="inl">'+(wd?uw+' &divide; '+fr(1,ud)+' = '+b.f('num',uw*ud,{w:'n'})
+        :fr(1,ud)+' &divide; '+uw+' = '+frIn(b,1,ud*uw))+'</span></div>'}
+  /* 5.G.B.3–4 — shapes in a family */
+  else if(m==='quadfam'){var qf=r.pick([['Every square is a rectangle.','true'],['Every rectangle is a square.','false'],
+      ['Every square is a rhombus.','true'],['Every parallelogram is a rectangle.','false'],['Every rectangle is a parallelogram.','true'],['Every trapezoid is a parallelogram.','false']]);
+    h='True or false? <b>'+qf[0]+'</b><div class="row" style="margin-top:7px">'+b.mc(qf[1],['true','false'])+'</div>'}
   return done(b,h)};
 G.shapes=function(r,c){var b=B(),m=r.pick(c.modes),h='';
   if(m==='sides'){var s=r.pick(SHAPES);
@@ -7692,16 +8051,16 @@ MATH['K']=[
  S('Counting','Contar',function(r){return G.count(r,{modes:['objects','tally'],max:12})}),
  S('Number Order','Orden numérico',function(r){return G.count(r,{modes:['missing']})}),
  S('Shapes','Figuras',function(r){return G.shapes(r,{modes:['sides','name']})}),
- S('Adding to 10','Sumar hasta 10',function(r){return G.facts(r,{ops:['+'],max:10,tri:false,cols:5})}),
+ S('Adding to 10','Sumar hasta 10',mix(function(r){return G.facts(r,{ops:['+'],max:10,tri:false,cols:5})},function(r){return G.prim(r,{modes:['decomp']})})),
  S('Taking Away','Restar',function(r){return G.facts(r,{ops:['−'],max:10,tri:false,cols:5})}),
- S('More or Less','Más o menos',function(r){return G.compareK(r,{modes:['moreless','groups']})}),
+ S('More or Less','Más o menos',mix(function(r){return G.compareK(r,{modes:['moreless','groups']})},function(r){return G.prim(r,{modes:['longer','sortcount']})})),
  S('Patterns','Patrones',function(r){return G.shapes(r,{modes:['pattern']})}),
- S('Ten Frames','Marcos de diez',function(r){return G.count(r,{modes:['frame']})}),
+ S('Ten Frames','Marcos de diez',mix(function(r){return G.count(r,{modes:['frame']})},function(r){return G.prim(r,{modes:['make10','teen']})})),
  S('Time','La hora',function(r){return G.time(r,{modes:['read'],inc:60})}),
  S('Money','Dinero',function(r){return G.money(r,{modes:['coins']})})];
 MATH['1']=[
- S('Basic Facts','Operaciones básicas',function(r){return G.facts(r,{ops:['+','−'],max:10,cols:6})}),
- S('Number Order','Orden numérico',function(r){return G.patterns(r,{modes:['beforeafter','skip'],lo:11,hi:99,steps:[2,5,10]})}),
+ S('Basic Facts','Operaciones básicas',mix(function(r){return G.facts(r,{ops:['+','−'],max:10,cols:6})},function(r){return G.prim(r,{modes:['missingadd','truefalse']})})),
+ S('Number Order','Orden numérico',mix(function(r){return G.patterns(r,{modes:['beforeafter','skip'],lo:11,hi:99,steps:[2,5,10]})},function(r){return G.prim(r,{modes:['tenmore']})})),
  S('Place Value','Valor posicional',function(r){return G.place(r,{modes:['fromwords','compare'],lo:11,hi:99})}),
  S('Time','La hora',function(r){return G.time(r,{modes:['read'],inc:30})}),
  S('Algorithms','Algoritmos',function(r){return G.algo(r,{kinds:['add1','sub1','add2','sub2'],n:4})}),
@@ -7709,95 +8068,103 @@ MATH['1']=[
  S('Story Problems','Problemas',function(r){return G.story(r,{modes:['join','sep'],lo:5,hi:20})}),
  S('Words and Symbols','Palabras y símbolos',function(r){return G.vocab(r,{bank:'k'})}),
  S('Shapes and Graphs','Figuras y gráficas',mix(function(r){return G.shapes(r,{modes:['sides','name']})},
-    function(r){return G.data(r,{modes:['bar']})})),
+    function(r){return G.data(r,{modes:['bar']})},function(r){return G.fractions(r,{modes:['shade'],dens:[2,4]})},function(r){return G.prim(r,{modes:['units']})})),
  S('Money','Dinero',function(r){return G.money(r,{modes:['coins']})})];
 MATH['2']=[
  S('Basic Facts','Operaciones básicas',function(r){return G.facts(r,{ops:['+','−'],max:20,cols:6})}),
- S('Patterns and Progressions','Patrones',function(r){return G.patterns(r,{modes:['skip','rule','beforeafter'],lo:101,hi:899,steps:[2,3,5,10]})}),
+ S('Patterns and Progressions','Patrones',mix(function(r){return G.patterns(r,{modes:['skip','rule','beforeafter'],lo:101,hi:899,steps:[2,3,5,10]})},
+    function(r){return G.compareK(r,{modes:['evenodd']})})),
  S('Fractions','Fracciones',function(r){return G.fractions(r,{modes:['shade','name'],dens:[2,3,4]})}),
  S('Time','La hora',function(r){return G.time(r,{modes:['read','dur'],inc:5})}),
  S('Algorithms','Algoritmos',function(r){return G.algo(r,{kinds:['add2','sub2','cent','add3'],n:4})}),
- S('Place Value','Valor posicional',function(r){return G.place(r,{modes:['chart','fromwords','value'],lo:101,hi:999})}),
+ S('Place Value','Valor posicional',mix(function(r){return G.place(r,{modes:['chart','fromwords','value'],lo:101,hi:999})},function(r){return G.prim(r,{modes:['tenmore'],step:100,lo:150,hi:850})})),
  S('Story Problems','Problemas',function(r){return G.story(r,{modes:['join','sep','compare'],lo:10,hi:60})}),
  S('Words and Symbols','Palabras y símbolos',function(r){return G.vocab(r,{bank:'low'})}),
  S('Geometry and Graphs','Geometría y gráficas',mix(function(r){return G.geom(r,{modes:['name','perim']})},
-    function(r){return G.data(r,{modes:['bar','dot']})})),
+    function(r){return G.data(r,{modes:['bar','dot']})},function(r){return G.prim(r,{modes:['array']})})),
  S('Money','Dinero',function(r){return G.money(r,{modes:['coins','bills']})})];
 MATH['3']=[
- S('Basic Facts','Operaciones básicas',function(r){return G.facts(r,{ops:['+','−'],max:10,cols:6})}),
+ S('Basic Facts','Operaciones básicas',mix(function(r){return G.facts(r,{ops:['+','−'],max:10,cols:6})},
+    function(r){return G.facts(r,{ops:['×','÷'],max:10,cols:6})})),
  S('Patterns and Progressions','Patrones y progresiones',function(r){return G.patterns(r,{modes:['beforeafter','skip','rule'],lo:101,hi:899})}),
- S('Fractions','Fracciones',function(r){return G.fractions(r,{modes:['shade','name','ofset'],dens:[3,4,6]})}),
+ S('Fractions','Fracciones',function(r){return G.fractions(r,{modes:['shade','name','numline','equiv','compare'],dens:[2,3,4,6,8]})}),
  S('Time','La hora',mix(function(r){return G.time(r,{modes:['elapsed','read'],inc:30})},
     function(r){return G.measure(r,{modes:['mixed'],units:[['weeks','days',7],['hours','minutes',60],['feet','inches',12]]})})),
  S('Algorithms','Algoritmos',function(r){return G.algo(r,{kinds:['add2','add3','sub2','sub3','cent','dol'],n:4})}),
- S('Number Words','Números en palabras',function(r){return G.place(r,{modes:['chart','words','fromwords'],lo:101,hi:9999})}),
- S('Story Problems','Problemas',function(r){return G.story(r,{modes:['join','sep','groups','share','remain'],lo:8,hi:60})}),
+ S('Number Words','Números en palabras',mix(function(r){return G.place(r,{modes:['chart','words','fromwords'],lo:101,hi:9999})},
+    function(r){return G.place(r,{modes:['round'],lo:101,hi:999,to:[10,100]})},function(r){return G.prim(r,{modes:['mult10']})})),
+ S('Story Problems','Problemas',function(r){return G.story(r,{modes:['groups','share','remain','twostep'],lo:8,hi:60})}),
  S('Words and Symbols','Palabras y símbolos',function(r){return G.vocab(r,{bank:'low'})}),
- S('Place Value, Graphs and Geometry','Valor posicional y geometría',mix(function(r){return G.geom(r,{modes:['grid','name']})},
-    function(r){return G.data(r,{modes:['bar']})})),
+ S('Place Value, Graphs and Geometry','Valor posicional y geometría',mix(function(r){return G.geom(r,{modes:['area','perim','name']})},
+    function(r){return G.data(r,{modes:['bar']})},function(r){return G.prim(r,{modes:['array','props'],mult:true})})),
  S('Money','Dinero',function(r){return G.money(r,{modes:['bills','coins','change']})})];
 MATH['4']=[
  S('Basic Facts','Operaciones básicas',function(r){return G.facts(r,{ops:['×','÷'],max:9,cols:6})}),
- S('Patterns and Progressions','Patrones y progresiones',function(r){return G.patterns(r,{modes:['skip','rule','func'],steps:[3,4,6,7,8,9]})}),
- S('Fractions','Fracciones',function(r){return G.fractions(r,{modes:['equiv','compare','simplify','name','ofset']})}),
+ S('Patterns and Progressions','Patrones y progresiones',mix(function(r){return G.patterns(r,{modes:['skip','rule','func'],steps:[3,4,6,7,8,9]})},function(r){return G.prim(r,{modes:['timesas','prime']})})),
+ S('Fractions','Fracciones',mix(function(r){return G.fractions(r,{modes:['equiv','compare','simplify','name','ofset']})},
+    function(r){return G.fracops(r,{modes:['same']})},function(r){return G.prim(r,{modes:['wholefrac']})})),
  S('Time','La hora',function(r){return G.time(r,{modes:['elapsed','later','dur'],inc:5})}),
  S('Algorithms','Algoritmos',function(r){return G.algo(r,{kinds:['add3','add4','sub3','sub4','mul1','div1'],n:4})}),
- S('Place Value and Number Words','Valor posicional',function(r){return G.place(r,{modes:['value','round','expand','words'],lo:1002,hi:98765,to:[10,100,1000]})}),
+ S('Place Value and Number Words','Valor posicional',mix(function(r){return G.place(r,{modes:['value','round','expand','words'],lo:1002,hi:98765,to:[10,100,1000]})},
+    function(r){return G.decimals(r,{modes:['grid','compare','fracdec']})})),
  S('Story Problems','Problemas',function(r){return G.story(r,{modes:['groups','share','twostep','remain','rate'],lo:10,hi:90})}),
  S('Words and Symbols','Palabras y símbolos',function(r){return G.vocab(r,{bank:'mid'})}),
  S('Geometry and Measurement','Geometría y medición',mix(
     function(r){return G.geom(r,{modes:['perim','area','name','angle','perimpoly']})},
-    function(r){return G.measure(r,{modes:['mixed']})})),
+    function(r){return G.measure(r,{modes:['mixed']})},function(r){return G.prim(r,{modes:['angadd','symm']})})),
  S('Data and Money','Datos y dinero',mix(function(r){return G.data(r,{modes:['bar','dot']})},
     function(r){return G.money(r,{modes:['total','change']})}))];
 MATH['5']=[
  S('Basic Facts','Operaciones básicas',function(r){return G.facts(r,{ops:['×','÷'],max:9,cols:6})}),
  S('Algorithms','Algoritmos',function(r){return G.algo(r,{kinds:['decadd','decsub','mul2','div2','temp'],n:4})}),
  S('Probability and Statistics','Probabilidad y estadística',function(r){return G.data(r,{modes:['coin','spin','likely','mmm']})}),
- S('Decimal Numbers','Números decimales',function(r){return G.decimals(r,{modes:['grid','place','round','compare','fracdec']})}),
+ S('Decimal Numbers','Números decimales',mix(function(r){return G.decimals(r,{modes:['grid','place','round','compare','fracdec']})},function(r){return G.prim(r,{modes:['pow10']})})),
  S('Fractional Forms','Formas fraccionarias',function(r){return G.fractions(r,{modes:['numline','name','improper','compare','simplify']})}),
- S('Problem Solving','Resolución de problemas',function(r){return G.story(r,{modes:['twostep','remain','frac','money'],lo:12,hi:99})}),
- S('Adding and Subtracting Fractions','Sumar y restar fracciones',function(r){return G.fracops(r,{modes:['same','unlike']})}),
- S('Vocabulary and Geometry','Vocabulario y geometría',function(r){return G.vocab(r,{bank:'up'})}),
+ S('Problem Solving','Resolución de problemas',mix(function(r){return G.story(r,{modes:['twostep','remain','frac','money'],lo:12,hi:99})},function(r){return G.prim(r,{modes:['orderops']})})),
+ S('Fraction Operations','Operaciones con fracciones',mix(function(r){return G.fracops(r,{modes:['same','unlike']})},
+    function(r){return G.fracops(r,{modes:['mult']})},function(r){return G.prim(r,{modes:['unitdiv']})})),
+ S('Vocabulary and Geometry','Vocabulario y geometría',mix(function(r){return G.vocab(r,{bank:'up'})},
+    function(r){return G.graphing(r,{modes:['plot']})},function(r){return G.prim(r,{modes:['quadfam']})})),
  S('Area, Volume, Perimeter','Área, volumen, perímetro',function(r){return G.geom(r,{modes:['perim','area','vol','perimpoly','areatri']})}),
  S('Metric Measures','Medidas métricas',function(r){return G.measure(r,{modes:['ruler','convert','best','mixed'],
     pairs:[['cm','mm',10],['m','cm',100],['km','m',1000],['kg','g',1000],['L','mL',1000]]})})];
 MATH['6']=[
  S('Number Fluency','Fluidez numérica',mix(function(r){return G.facts(r,{ops:['×','÷'],max:12,cols:6,tri:false})},
-    function(r){return G.exponents(r,{modes:['order','pow']})})),
+    function(r){return G.exponents(r,{modes:['order','pow']})},
+    function(r){return G.integers(r,{modes:['gcf','lcm','abs','coord6']})})),
  S('Algorithms','Algoritmos',function(r){return G.algo(r,{kinds:['decmul','decdiv','mul3','div2','decadd'],n:4})}),
  S('Ratios and Rates','Razones y tasas',function(r){return G.ratio(r,{modes:['write','unit','rate','scale']})}),
  S('Percent','Porcentaje',function(r){return G.percent(r,{modes:['of','convert','whatpct']})}),
  S('Fraction Operations','Operaciones con fracciones',function(r){return G.fracops(r,{modes:['mult','div','mixed']})}),
  S('Problem Solving','Resolución de problemas',function(r){return G.story(r,{modes:['pct','money','twostep','rate']})}),
- S('Expressions and Equations','Expresiones y ecuaciones',function(r){return G.algebra(r,{modes:['eval','solve1','combine','write']})}),
+ S('Expressions and Equations','Expresiones y ecuaciones',function(r){return G.algebra(r,{modes:['eval','solve1','combine','write','ineqw','depvar']})}),
  S('Vocabulary and Symbols','Vocabulario y símbolos',function(r){return G.vocab(r,{bank:'ms'})}),
- S('Geometry and Measurement','Geometría y medición',function(r){return G.geom(r,{modes:['area','areatri','vol','surf','perimpoly']})}),
- S('Data and Statistics','Datos y estadística',function(r){return G.data(r,{modes:['mmm','dot','bar']})})];
+ S('Geometry and Measurement','Geometría y medición',function(r){return G.geom(r,{modes:['area','areatri','volfrac','surf','polycoord']})}),
+ S('Data and Statistics','Datos y estadística',function(r){return G.data(r,{modes:['mmm','dot','statq','box','mad']})})];
 MATH['7']=[
  S('Integer Operations','Operaciones con enteros',function(r){return G.integers(r,{modes:['ops','divint']})}),
  S('Algorithms','Algoritmos',function(r){return G.algo(r,{kinds:['decmul','decdiv','mul3','div2'],n:4})}),
- S('Proportional Reasoning','Razonamiento proporcional',function(r){return G.ratio(r,{modes:['prop','unit','scale','rate']})}),
+ S('Proportional Reasoning','Razonamiento proporcional',function(r){return G.ratio(r,{modes:['prop','unit','unitfrac','scale','scalerev','rate']})}),
  S('Percent Applications','Aplicaciones de porcentaje',function(r){return G.percent(r,{modes:['tip','change','of','whatpct']})}),
  S('Rational Numbers','Números racionales',mix(function(r){return G.fracops(r,{modes:['mult','div','mixed']})},
     function(r){return G.decimals(r,{modes:['fracdec','compare','round']})})),
  S('Problem Solving','Resolución de problemas',function(r){return G.story(r,{modes:['pct','money','rate','twostep']})}),
- S('Expressions and Equations','Expresiones y ecuaciones',function(r){return G.algebra(r,{modes:['solve2','dist','combine','ineq']})}),
+ S('Expressions and Equations','Expresiones y ecuaciones',function(r){return G.algebra(r,{modes:['solve2','dist','combine','ineq','rewrite']})}),
  S('Vocabulary and Symbols','Vocabulario y símbolos',function(r){return G.vocab(r,{bank:'ms'})}),
- S('Geometry','Geometría',function(r){return G.geom(r,{modes:['circle','areatri','surf','angle','vol']})}),
- S('Probability and Statistics','Probabilidad y estadística',function(r){return G.data(r,{modes:['spin','likely','mmm','dot']})})];
+ S('Geometry','Geometría',function(r){return G.geom(r,{modes:['circle','areatri','surf','angsolve','vol','xsect','trimake']})}),
+ S('Probability and Statistics','Probabilidad y estadística',function(r){return G.data(r,{modes:['spin','likely','mmm','sample','infer','compare','freq','compound']})})];
 MATH['8']=[
- S('Integer and Rational Fluency','Fluidez con racionales',function(r){return G.integers(r,{modes:['ops','compare','order','real']})}),
+ S('Integer and Rational Fluency','Fluidez con racionales',function(r){return G.integers(r,{modes:['ops','compare','real','irrat','approx']})}),
  S('Exponents and Roots','Exponentes y raíces',function(r){return G.exponents(r,{modes:['pow','root','laws']})}),
  S('Scientific Notation','Notación científica',function(r){return G.exponents(r,{modes:['sci','laws','order']})}),
  S('Percent and Change','Porcentaje y cambio',function(r){return G.percent(r,{modes:['change','tip','of']})}),
  S('Rational Numbers','Números racionales',mix(function(r){return G.fracops(r,{modes:['mult','div']})},
     function(r){return G.decimals(r,{modes:['compare','fracdec']})})),
- S('Problem Solving','Resolución de problemas',function(r){return G.story(r,{modes:['pct','rate','money']})}),
- S('Linear Equations','Ecuaciones lineales',function(r){return G.algebra(r,{modes:['solve2','dist','ineq','eval']})}),
+ S('Data and Statistics','Datos y estadística',function(r){return G.data(r,{modes:['scatter','fitline','twoway']})}),
+ S('Linear Equations','Ecuaciones lineales',function(r){return G.algebra(r,{modes:['solve2','dist','bothsides','nsol','system']})}),
  S('Vocabulary and Symbols','Vocabulario y símbolos',function(r){return G.vocab(r,{bank:'ms'})}),
- S('Geometry','Geometría',function(r){return G.geom(r,{modes:['pyth','vol','surf','circle','angle']})}),
- S('Functions and Graphing','Funciones y gráficas',function(r){return G.graphing(r,{modes:['plot','slope','linear','quad','table']})})];
+ S('Geometry','Geometría',function(r){return G.geom(r,{modes:['pyth','pdist','volcyl','transform','parallel']})}),
+ S('Functions and Graphing','Funciones y gráficas',function(r){return G.graphing(r,{modes:['slope','linear','table','isfunc','fromtwo','qual']})})];
 
 var ELA={};
 function elaPrimary(bank){return [
@@ -8770,6 +9137,105 @@ G.hs=function(r,c){var b=B(),m=r.pick(c.modes),h='';
   else if(m==='prob2'){var pa=r.pick([2,3,4,5]),pb=r.pick([2,3,4,6]);
     h='Events A and B are <b>independent</b>. P(A) = 1/'+pa+' and P(B) = 1/'+pb+'.<div class="row" style="margin-top:6px"><span class="inl">P(A and B) = '+b.f('frac',1/(pa*pb),{w:'w'})+'</span></div><div class="hint">Independent means multiply.</div>'}
   return done(b,h)};
+/* ---------- AOG-DD-STDHS-V1 (2026-09-25). high-school standards ----------
+   The Illinois / Common Core high-school standards the 9-10 and 11-12 drafts
+   never asked. Wired into the existing strands as extra modes, so both sheets
+   keep their ten boxes. Each mode names its standard. */
+G.hs2=function(r,c){var b=B(),m=r.pick(c.modes),h='';
+  /* N-RN.A.1–2 — rational exponents */
+  if(m==='ratexp'){var q=r.pick([[8,3],[27,3],[16,2],[25,2],[64,3],[81,2],[32,5]]),rt=Math.round(Math.pow(q[0],1/q[1])),pw=r.i(1,q[1]===2?3:2);
+    h='Evaluate.<div class="row" style="margin-top:6px;gap:14px"><span class="inl"><b style="font-size:16px">'+q[0]+'<sup>1/'+q[1]+'</sup></b> = '+b.f('num',rt,{w:'n'})+'</span>'+
+      '<span class="inl"><b style="font-size:16px">'+q[0]+'<sup>'+pw+'/'+q[1]+'</sup></b> = '+b.f('num',Math.pow(rt,pw),{w:'w'})+'</span></div>'+
+      '<div class="hint">The bottom of the exponent is the root; the top is the power.</div>'}
+  /* A-CED.A.4 — solve a formula for one variable */
+  else if(m==='literal'){var L=r.pick([['A = lw','w','A &divide; l','l'],['d = rt','t','d &divide; r','r'],['P = 2l + 2w','l','(P &minus; 2w) &divide; 2','w'],['V = lwh','h','V &divide; (lw)','l'],['y = mx + b','x','(y &minus; b) &divide; m','m']]);
+    var wrong=r.pick(['A &times; l','d &times; r','P &minus; 2w','V &minus; lw','y &minus; bm']);
+    h='Solve <b>'+L[0]+'</b> for <b>'+L[1]+'</b>.<div class="row" style="margin-top:7px">'+b.mc(L[1]+' = '+L[2],r.shuf([L[1]+' = '+L[2],L[1]+' = '+wrong,L[1]+' = '+L[3]+' &minus; '+L[0].split(' = ')[0]]))+'</div>'}
+  /* F-IF.B.6 — average rate of change */
+  else if(m==='avgrate'){var a=r.pick([1,2]),x1=r.i(0,2),x2=x1+r.pick([2,3,4]),f=function(x){return a*x*x};
+    h='<b>f(x) = '+(a===1?'':a)+'x&sup2;</b>. Find the average rate of change from x = '+x1+' to x = '+x2+'.'+
+      '<div class="row" style="margin-top:6px;gap:12px"><span class="inl">f('+x1+') = '+b.f('num',f(x1),{w:'n'})+'</span><span class="inl">f('+x2+') = '+b.f('num',f(x2),{w:'n'})+'</span>'+
+      '<span class="inl">rate = '+b.f('num',(f(x2)-f(x1))/(x2-x1),{w:'n'})+'</span></div><div class="hint">(f(b) &minus; f(a)) &divide; (b &minus; a)</div>'}
+  /* F-BF.B.3 — shifting a graph */
+  else if(m==='fshift'){var hh=r.i(1,6),kk=r.i(1,6),sx=r.pick([1,-1]),sy=r.pick([1,-1]);
+    h='The graph of <b>y = x&sup2;</b> becomes <b>y = (x '+(sx>0?'&minus; ':'+ ')+hh+')&sup2; '+(sy>0?'+ ':'&minus; ')+kk+'</b>.'+
+      '<div class="row" style="margin-top:7px;gap:12px"><span class="inl">moves '+b.mc(sx>0?'right':'left',['left','right'])+' '+b.f('num',hh,{w:'n'})+'</span>'+
+      '<span class="inl">and '+b.mc(sy>0?'up':'down',['up','down'])+' '+b.f('num',kk,{w:'n'})+'</span>'+
+      '<span class="inl">new vertex ( '+b.f('num',sx*hh,{w:'n'})+' , '+b.f('num',sy*kk,{w:'n'})+' )</span></div>'}
+  /* F-LE.A.1 — linear or exponential */
+  else if(m==='linexp'){var st=r.i(2,6),d=r.i(2,5),lin=r.chance(.5),v=[st];for(var i=1;i<4;i++)v.push(lin?v[i-1]+d:v[i-1]*d);
+    h='x = 0, 1, 2, 3 &nbsp; y = <b>'+v.join(', ')+'</b><div class="row" style="margin-top:7px;gap:12px">'+
+      '<span class="inl">The pattern is '+b.mc(lin?'linear':'exponential',['linear','exponential'])+'</span>'+
+      '<span class="inl">next y '+b.f('num',lin?v[3]+d:v[3]*d,{w:'w'})+'</span></div><div class="hint">Linear adds the same amount; exponential multiplies by the same amount.</div>'}
+  /* S-ID.B.6 — residuals */
+  else if(m==='resid'){var sl=r.i(2,5),ic=r.i(5,20),xv=r.i(2,9),off=r.i(-6,6)||3,act=sl*xv+ic+off;
+    h='The line of fit is <b>y = '+sl+'x + '+ic+'</b>. At x = <b>'+xv+'</b> the actual value is <b>'+act+'</b>.'+
+      '<div class="row" style="margin-top:6px;gap:12px"><span class="inl">predicted '+b.f('num',sl*xv+ic,{w:'n'})+'</span>'+
+      '<span class="inl">residual '+b.f('num',off,{w:'n'})+'</span></div><div class="hint">residual = actual &minus; predicted</div>'}
+  /* G-CO.B.8 — triangle congruence criteria */
+  else if(m==='congr'){var cg=r.pick([['all three pairs of sides are equal','SSS'],['two sides and the angle between them are equal','SAS'],
+      ['two angles and the side between them are equal','ASA'],['two angles and a side not between them are equal','AAS'],['all three pairs of angles are equal','not enough'],
+      ['two sides and an angle not between them are equal','not enough']]);
+    h='Two triangles: <b>'+cg[0]+'</b>. Which shows they are congruent?<div class="row" style="margin-top:7px">'+b.mc(cg[1],['SSS','SAS','ASA','AAS','not enough'])+'</div>'}
+  /* G-C.A.2 — inscribed and central angles */
+  else if(m==='inscribed'){var arc=2*r.i(20,85);
+    h='An arc of a circle measures <b>'+arc+'&deg;</b>.<div class="row" style="margin-top:6px;gap:12px">'+
+      '<span class="inl">central angle '+b.f('num',arc,{w:'n'})+'&deg;</span><span class="inl">inscribed angle '+b.f('num',arc/2,{w:'n'})+'&deg;</span></div>'+
+      '<div class="hint">An inscribed angle is half its arc.</div>'}
+  /* G-C.B.5 — arc length and sector area in terms of pi */
+  else if(m==='arclen'){var rr=r.pick([3,6,9,12]),dg=r.pick([60,90,120,180,240]);
+    h='A circle has radius <b>'+rr+'</b>. A central angle is <b>'+dg+'&deg;</b>. Leave <b>&pi;</b> in.'+
+      '<div class="row" style="margin-top:6px;gap:12px"><span class="inl">arc length '+b.f('num',2*rr*dg/360,{w:'n'})+'&pi;</span>'+
+      '<span class="inl">sector area '+b.f('num',rr*rr*dg/360,{w:'n'})+'&pi;</span></div><div class="hint">Take '+dg+'/360 of the circumference and of the area.</div>'}
+  /* G-GPE.A.1 — equation of a circle */
+  else if(m==='circeq'){var ch=r.i(-5,5),ck=r.i(-5,5),cr=r.i(2,9);
+    var sg=function(v,l){return v===0?l:'('+l+(v>0?' &minus; '+v:' + '+(-v))+')'};
+    h='<b>'+sg(ch,'x')+'&sup2; + '+sg(ck,'y')+'&sup2; = '+cr*cr+'</b><div class="row" style="margin-top:6px;gap:12px">'+
+      '<span class="inl">center ( '+b.f('num',ch,{w:'n'})+' , '+b.f('num',ck,{w:'n'})+' )</span><span class="inl">radius '+b.f('num',cr,{w:'n'})+'</span></div>'}
+  /* A-APR.D.6 / F-IF.C.7d — a rational function's hole-free asymptotes */
+  else if(m==='ratfn'){var va=r.i(-6,6)||2,ha=r.i(1,5),kx=r.i(1,6);
+    h='<b>f(x) = '+(ha===1?'':ha)+'x / (x '+(va>0?'&minus; '+va:'+ '+(-va))+')</b><div class="row" style="margin-top:6px;gap:12px">'+
+      '<span class="inl">vertical asymptote x = '+b.f('num',va,{w:'n'})+'</span><span class="inl">horizontal asymptote y = '+b.f('num',ha,{w:'n'})+'</span></div>'+
+      '<div class="hint">Vertical: where the bottom is 0. Horizontal: ratio of the leading numbers.</div>'}
+  /* A-REI.A.2 — radical equations */
+  else if(m==='radeq'){var ad=r.i(1,9),sq=r.i(2,7),xr=sq*sq-ad;
+    h='Solve. Square both sides, then check.<div class="row" style="margin-top:6px"><span class="inl"><b style="font-size:16px">&radic;(x + '+ad+') = '+sq+'</b></span>'+
+      '<span class="inl">x = '+b.f('num',xr,{w:'n'})+'</span></div>'}
+  /* F-BF.A.1c — composition */
+  else if(m==='compose'){var a1=r.i(2,5),b1=r.i(1,6),a2=r.i(2,4),b2=r.i(-4,4),xv2=r.i(-2,4),g=a2*xv2+b2;
+    h='<b>f(x) = '+a1+'x + '+b1+'</b> and <b>g(x) = '+a2+'x '+(b2<0?'&minus; '+(-b2):'+ '+b2)+'</b>'+
+      '<div class="row" style="margin-top:6px;gap:12px"><span class="inl">g('+xv2+') = '+b.f('num',g,{w:'n'})+'</span><span class="inl">f(g('+xv2+')) = '+b.f('num',a1*g+b1,{w:'n'})+'</span></div>'}
+  /* F-BF.B.4 — inverse functions */
+  else if(m==='inverse'){var ia=r.i(2,6),ib=r.i(1,9),iy=ia*r.i(1,8)+ib;
+    h='<b>f(x) = '+ia+'x + '+ib+'</b>. Undo it: subtract, then divide.<div class="row" style="margin-top:6px;gap:12px">'+
+      '<span class="inl">f<sup>&minus;1</sup>(x) = (x &minus; '+b.f('num',ib,{w:'n'})+') &divide; '+b.f('num',ia,{w:'n'})+'</span>'+
+      '<span class="inl">f<sup>&minus;1</sup>('+iy+') = '+b.f('num',(iy-ib)/ia,{w:'n'})+'</span></div>'}
+  /* F-TF.A.1–2 — radians */
+  else if(m==='radian'){var rd=r.pick([[30,'1/6'],[45,'1/4'],[60,'1/3'],[90,'1/2'],[120,'2/3'],[135,'3/4'],[180,'1'],[270,'3/2'],[360,'2']]);
+    h='Convert <b>'+rd[0]+'&deg;</b> to radians.<div class="row" style="margin-top:6px"><span class="inl">'+b.f('frac',rd[1],{w:'n'})+' &pi;</span>'+
+      '<span class="hint" style="flex-basis:auto">Multiply by &pi;/180. Write the number in front of &pi; (a fraction is fine).</span></div>'}
+  /* F-TF.B.5 — amplitude, period, midline */
+  else if(m==='sinusoid'){var am=r.i(2,6),bq=r.pick([1,2,4]),dm=r.i(-3,5);
+    h='<b>y = '+am+' sin('+(bq===1?'':bq)+'x) '+(dm<0?'&minus; '+(-dm):'+ '+dm)+'</b><div class="row" style="margin-top:6px;gap:12px">'+
+      '<span class="inl">amplitude '+b.f('num',am,{w:'n'})+'</span><span class="inl">midline y = '+b.f('num',dm,{w:'n'})+'</span>'+
+      '<span class="inl">period '+b.f('frac',{1:'2',2:'1',4:'1/2'}[bq],{w:'n'})+'&pi;</span></div>'}
+  /* S-CP.A.4 / S-CP.B.6 — conditional probability from a two-way table */
+  else if(m==='condprob'){var aa=r.i(5,20),ab=r.i(5,20),ba=r.i(5,20),bb=r.i(5,20);
+    h='<table style="border-collapse:collapse;text-align:center"><tr><td></td><th style="padding:2px 10px">Plays sport</th><th style="padding:2px 10px">No sport</th></tr>'+
+      '<tr><th style="padding:2px 10px">Juniors</th><td>'+aa+'</td><td>'+ab+'</td></tr><tr><th style="padding:2px 10px">Seniors</th><td>'+ba+'</td><td>'+bb+'</td></tr></table>'+
+      '<div class="row" style="margin-top:6px"><span class="inl">P(plays sport | senior) = '+frIn(b,ba,ba+bb)+'</span>'+
+      '<span class="hint" style="flex-basis:auto">Given senior: only the senior row counts.</span></div>'}
+  /* S-IC.B.3 — survey, experiment or observational study */
+  else if(m==='studytype'){var sty=r.pick([['Researchers randomly assign half the students a new study app and compare test scores.','experiment'],
+      ['A reporter asks 200 random voters who they will vote for.','survey'],['Scientists record how many hours teens sleep and their grades, without changing anything.','observational study'],
+      ['A doctor gives one random group a new medicine and another group a placebo.','experiment'],['A school emails a questionnaire about lunch to every family.','survey'],
+      ['A biologist counts birds at a lake each morning for a month.','observational study']]);
+    h=sty[0]+'<div class="row" style="margin-top:7px">'+b.mc(sty[1],['survey','experiment','observational study'])+'</div>'}
+  /* S-IC.B.4 — margin of error */
+  else if(m==='moe'){var pc=r.i(40,70),me=r.pick([2,3,4,5]);
+    h='A poll says <b>'+pc+'%</b> support a new park, with a margin of error of <b>&plusmn;'+me+'%</b>.'+
+      '<div class="row" style="margin-top:6px"><span class="inl">likely true value between '+b.f('num',pc-me,{w:'n'})+'% and '+b.f('num',pc+me,{w:'n'})+'%</span></div>'}
+  return done(b,h)};
 VOCAB.hs1=[['A relation where every input has exactly one output is a ___.','function',['function','variable','inequality']],
  ['The set of all possible inputs of a function is its ___.','domain',['domain','range','slope']],
  ['The set of all possible outputs of a function is its ___.','range',['domain','range','intercept']],
@@ -8799,26 +9265,28 @@ VOCAB.hs2=[['The inverse of an exponential function is a ___.','logarithm',['log
  ['A sample in which everyone has an equal chance of being chosen is ___.','random',['random','biased','convenient']],
  ['An arrangement where order matters is a ___.','permutation',['permutation','combination','factorial']]];
 MATH['9-10']=[
- S('Linear Equations','Ecuaciones lineales',mix(function(r){return G.hs(r,{modes:['lin']})},function(r){return G.algebra(r,{modes:['ineq','dist','solve2']})})),
- S('Functions','Funciones',function(r){return G.hs(r,{modes:['fnote']})}),
- S('Slope and Lines','Pendiente y rectas',function(r){return G.graphing(r,{modes:['slope','linear','table']})}),
+ S('Linear Equations','Ecuaciones lineales',mix(function(r){return G.hs(r,{modes:['lin']})},function(r){return G.algebra(r,{modes:['ineq','dist','solve2','bothsides']})},function(r){return G.hs2(r,{modes:['literal']})})),
+ S('Functions','Funciones',mix(function(r){return G.hs(r,{modes:['fnote']})},function(r){return G.hs2(r,{modes:['avgrate','fshift','linexp']})})),
+ S('Slope and Lines','Pendiente y rectas',mix(function(r){return G.graphing(r,{modes:['slope','linear','fromtwo']})},
+    function(r){return G.data(r,{modes:['scatter','fitline']})},function(r){return G.hs2(r,{modes:['resid']})})),
  S('Systems of Equations','Sistemas de ecuaciones',function(r){return G.hs(r,{modes:['sys']})}),
  S('Polynomials and Factoring','Polinomios y factorización',function(r){return G.hs(r,{modes:['poly']})}),
  S('Quadratics','Cuadráticas',function(r){return G.hs(r,{modes:['quad']})}),
- S('Exponents and Radicals','Exponentes y radicales',mix(function(r){return G.exponents(r,{modes:['laws','sci']})},function(r){return G.hs(r,{modes:['radical']})})),
+ S('Exponents and Radicals','Exponentes y radicales',mix(function(r){return G.exponents(r,{modes:['laws','sci']})},function(r){return G.hs(r,{modes:['radical']})},function(r){return G.hs2(r,{modes:['ratexp']})})),
  S('Vocabulary and Symbols','Vocabulario y símbolos',function(r){return G.vocab(r,{bank:'hs1'})}),
- S('Angles and Triangles','Ángulos y triángulos',function(r){return G.hs(r,{modes:['angles','similar']})}),
- S('Right Triangles and the Plane','Triángulos rectángulos y el plano',function(r){return G.hs(r,{modes:['trig','coord']})})];
+ S('Angles and Triangles','Ángulos y triángulos',mix(function(r){return G.hs(r,{modes:['angles','similar']})},function(r){return G.hs2(r,{modes:['congr','inscribed','arclen']})},
+    function(r){return G.geom(r,{modes:['transform','volcyl']})})),
+ S('Right Triangles and the Plane','Triángulos rectángulos y el plano',mix(function(r){return G.hs(r,{modes:['trig','coord']})},function(r){return G.hs2(r,{modes:['circeq']})}))];
 MATH['11-12']=[
- S('Polynomial Functions','Funciones polinomiales',function(r){return G.hs(r,{modes:['polyfn','poly']})}),
+ S('Polynomial Functions','Funciones polinomiales',mix(function(r){return G.hs(r,{modes:['polyfn','poly']})},function(r){return G.hs2(r,{modes:['ratfn','radeq','compose']})})),
  S('Exponential Growth','Crecimiento exponencial',function(r){return G.hs(r,{modes:['expfn']})}),
- S('Logarithms','Logaritmos',function(r){return G.hs(r,{modes:['log']})}),
+ S('Logarithms','Logaritmos',mix(function(r){return G.hs(r,{modes:['log']})},function(r){return G.hs2(r,{modes:['inverse']})})),
  S('Sequences and Series','Sucesiones y series',function(r){return G.hs(r,{modes:['seq']})}),
  S('Complex Numbers','Números complejos',function(r){return G.hs(r,{modes:['complex']})}),
- S('Trigonometry','Trigonometría',function(r){return G.hs(r,{modes:['unitc','trig']})}),
- S('Statistics','Estadística',function(r){return G.hs(r,{modes:['zscore']})}),
+ S('Trigonometry','Trigonometría',mix(function(r){return G.hs(r,{modes:['unitc','trig']})},function(r){return G.hs2(r,{modes:['radian','sinusoid']})})),
+ S('Statistics','Estadística',mix(function(r){return G.hs(r,{modes:['zscore']})},function(r){return G.hs2(r,{modes:['studytype','moe']})})),
  S('Vocabulary and Symbols','Vocabulario y símbolos',function(r){return G.vocab(r,{bank:'hs2'})}),
- S('Counting and Probability','Conteo y probabilidad',function(r){return G.hs(r,{modes:['count','prob2']})}),
+ S('Counting and Probability','Conteo y probabilidad',mix(function(r){return G.hs(r,{modes:['count','prob2']})},function(r){return G.hs2(r,{modes:['condprob']})})),
  S('Money Math','Matemáticas del dinero',function(r){return G.hs(r,{modes:['finance']})})];
 /* ══ AOG-DD-HS-V1 · SCIENCE 9–10 and 11–12 ══ content, not code. Keys are mechanical: sci.<band>.<box>. */
 NB['sci.9-10.01']=[
