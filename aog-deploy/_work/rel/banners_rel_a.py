@@ -294,7 +294,7 @@ _d = [_lg('rlb6-sky', [(0, '#0F2444'), (0.45, '#2A4C78'), (0.8, '#C99A5E'), (1, 
 _steps = ''.join('<rect x="0" y="%d" width="1200" height="8" fill="%s"/>' % (y, c) for y, c in
                  zip(range(240, 312, 8), ['#E4D2AC', '#C9B48A', '#D8C49A', '#B8A27A', '#C9B48A', '#A89670', '#B8A27A', '#8A7650', '#9A8660']))
 _diyas = ''
-for _x, _y, _s in [(300, 344, 1), (380, 362, 1.1), (540, 378, 1.2), (620, 352, 1), (700, 370, 1.1),
+for _x, _y, _s in [(300, 344, 1), (540, 378, 1.2), (620, 352, 1), (700, 370, 1.1),
                    (770, 344, .9), (850, 364, 1), (440, 396, 1.3), (660, 400, 1.3)]:
     _diyas += ('<g transform="translate(%d %d) scale(%s)"><path d="M-10 0 q10 8 20 0 q-10 -4 -20 0z" fill="#9A7446"/>'
                '<path d="M-7 -1 q7 4 14 0" stroke="#2E5A4C" stroke-width="2" fill="none"/>'
@@ -335,14 +335,17 @@ _d = [_lg('rlb7-sky', [(0, '#0A1E33'), (0.5, '#1C3A62'), (0.85, '#C99A5E'), (1, 
       _lg('rlb7-bell', [(0, '#6A4A26'), (0.35, '#F2C273'), (1, '#5A3A1E')], 1, 0),
       _lg('rlb7-wall', [(0, '#E4D2AC'), (1, '#A08C64')]),
       _glow('rlb7-lit', '#FFF2C4', 0.85)]
-_leaves = ''
+_lv = {}
 _r = random.Random(71)
-for _k in range(60):
+for _k in range(80):
     _x = _r.randint(760, 1050); _y = _r.randint(70, 210)
     if ((_x - 905) / 150.0) ** 2 + ((_y - 140) / 75.0) ** 2 > 1:
         continue
-    _leaves += ('<path transform="translate(%d %d) rotate(%d)" d="M0 -6C-9 -14 -13 2 0 12C13 2 9 -14 0 -6zM0 12v6" fill="%s"/>'
-                % (_x, _y, _r.randint(-40, 40), _r.choice(['#2E5A4C', '#3A6A56', '#24483E', '#4A7A5E'])))
+    _c = _r.choice(['#2E5A4C', '#3A6A56', '#24483E', '#4A7A5E'])
+    _t = _r.choice(['c-9 -8 -13 8 0 18v6v-6c13 -10 9 -26 0 -18z', 'c-11 -6 -11 10 3 18l2 6l-2 -6c11 -12 5 -26 -3 -18z',
+                    'c-5 -10 -13 6 -3 18l-2 6l2 -6c15 -8 13 -24 3 -18z'])
+    _lv[_c] = _lv.get(_c, '') + 'M%d %d%s' % (_x, _y, _t)
+_leaves = ''.join('<path d="%s" fill="%s"/>' % (v, c) for c, v in sorted(_lv.items()))
 BANNERS[7] = _svg(CREDITS[7], _d, '''
 <rect width="1200" height="420" fill="url(#rlb7-sky)"/>
 ''' + _stars(701, 26, 40, 1160, 6, 120, 0.6) + '''
@@ -532,7 +535,7 @@ _win = '<g fill="none" stroke="#2A4C78" stroke-width="6"><path d="M440 236 V100 
 BANNERS[12] = _svg(CREDITS[12], _d, '''
 <rect width="1200" height="420" fill="url(#rlb12-wall)"/>
 <path d="M440 236 V100 A160 90 0 0 1 760 100 V236z" fill="url(#rlb12-sky)"/>
-''' + _stars(1201, 44, 452, 748, 40, 228, 0.8) + _stars(1202, 10, 470, 730, 50, 220, 1) + '''
+''' + _stars(1201, 30, 452, 748, 40, 228, 0.8) + _stars(1202, 10, 470, 730, 50, 220, 1) + '''
 <path d="M470 210 q120 -120 260 -150" stroke="#F7EBD0" stroke-width="18" fill="none" opacity=".06"/>
 ''' + _win + '''
 <g>''' + _spines(21, 130, 380, 120, 46) + _spines(22, 130, 380, 210, 46) + '''</g>
