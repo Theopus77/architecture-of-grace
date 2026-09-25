@@ -1,0 +1,2941 @@
+{
+ "intro": [
+  "A penny that doubles every day. A car that loses value every year. A ball that rises, hangs for an instant and falls. A garden path whose width nobody has chosen yet. Each of these is described by an expression with a power in it, and each asks a question that a straight line cannot answer. This unit is about expressions where the variable is squared, cubed or sitting in an exponent, and about the curves those expressions draw.",
+  "You begin with exponents: the rules that let you multiply and divide powers, what a zero, negative or fractional exponent means, and how repeated multiplication produces exponential growth and decay in bank accounts, populations and radioactive samples. Then you learn to add, multiply and, most importantly, factor polynomials, taking an expression apart into pieces that reveal where it equals zero. Finally you study quadratic functions, whose graphs are parabolas, and learn four ways to solve any equation with an x^2 in it.",
+  "By the end you will be able to predict a balance years ahead, factor an expression on sight, find the peak of a thrown ball, and tell from a table of data whether a pattern is linear, exponential or quadratic. These are the tools of Algebra I that every later math course, and every science that measures change, builds on."
+ ],
+ "bigQuestion": "How do we describe, take apart and predict quantities that change by multiplying or by squaring rather than by adding?",
+ "timeline": [
+  {
+   "y": "c. 1800 BCE",
+   "t": "Babylonian scribes record methods on clay tablets that solve problems equivalent to quadratic equations."
+  },
+  {
+   "y": "c. 300 BCE",
+   "t": "Euclid's Elements proves facts about squares and rectangles that are the geometry behind expanding (a + b)^2."
+  },
+  {
+   "y": "c. 250 CE",
+   "t": "Diophantus of Alexandria writes Arithmetica, using symbols for an unknown and its powers."
+  },
+  {
+   "y": "628",
+   "t": "Brahmagupta in India gives a rule for solving quadratic equations that allows negative numbers."
+  },
+  {
+   "y": "c. 820",
+   "t": "Al-Khwarizmi's book on al-jabr, the source of the word algebra, solves quadratics by completing the square."
+  },
+  {
+   "y": "1202",
+   "t": "Fibonacci's Liber Abaci brings Hindu-Arabic numerals to Europe along with the rabbit sequence."
+  },
+  {
+   "y": "1591",
+   "t": "François Viète uses letters for both unknowns and known quantities, making general formulas possible."
+  },
+  {
+   "y": "1637",
+   "t": "Descartes's La Géométrie links equations to curves and popularizes writing exponents as raised numbers."
+  },
+  {
+   "y": "1748",
+   "t": "Euler's Introductio makes the exponential function and the number e central to mathematics."
+  },
+  {
+   "y": "1798",
+   "t": "Thomas Malthus argues that population grows geometrically while food supply grows arithmetically."
+  },
+  {
+   "y": "c. 1902",
+   "t": "Rutherford and Soddy describe radioactive decay as an exponential process with a characteristic half-life."
+  },
+  {
+   "y": "1965",
+   "t": "Gordon Moore observes that the number of transistors on a chip doubles at a steady pace, an exponential trend."
+  }
+ ],
+ "wrap": {
+  "words": [
+   {
+    "w": "exponent",
+    "d": "the raised number that counts how many times a base is used as a factor; in 2^5 it is 5"
+   },
+   {
+    "w": "growth factor",
+    "d": "the number a quantity is multiplied by each period; a 5% rate gives a growth factor of 1.05"
+   },
+   {
+    "w": "half-life",
+    "d": "the time it takes for half of a decaying quantity to disappear"
+   },
+   {
+    "w": "geometric sequence",
+    "d": "a list of numbers in which each term is the previous term times the same common ratio"
+   },
+   {
+    "w": "polynomial",
+    "d": "a sum of terms, each a number times a variable raised to a whole-number power"
+   },
+   {
+    "w": "degree",
+    "d": "the highest exponent on the variable in a polynomial"
+   },
+   {
+    "w": "factoring",
+    "d": "writing an expression as a product of factors, the reverse of multiplying out"
+   },
+   {
+    "w": "zero-product property",
+    "d": "if a product of factors equals zero, then at least one of the factors is zero"
+   },
+   {
+    "w": "parabola",
+    "d": "the U-shaped graph of a quadratic function"
+   },
+   {
+    "w": "vertex",
+    "d": "the highest or lowest point of a parabola, found at x = −b/(2a) in standard form"
+   },
+   {
+    "w": "quadratic formula",
+    "d": "x = (−b ± √(b^2 − 4ac)) / (2a), which solves any equation ax^2 + bx + c = 0"
+   },
+   {
+    "w": "discriminant",
+    "d": "b^2 − 4ac; positive means two real solutions, zero means one, negative means none"
+   }
+  ],
+  "test": [
+   {
+    "q": "Simplify 4^3 × 4^2.",
+    "choices": [
+     "4^5",
+     "4^6",
+     "16^5",
+     "16^6"
+    ],
+    "a": 0,
+    "why": "Same base, so add the exponents: 3 + 2 = 5. Check: 64 × 16 = 1,024 = 4^5."
+   },
+   {
+    "q": "What is 16^(1/2)?",
+    "choices": [
+     "8",
+     "32",
+     "256",
+     "4"
+    ],
+    "a": 3,
+    "why": "The exponent 1/2 means square root, and 4 × 4 = 16. Halving 16 gives 8, which is the common error."
+   },
+   {
+    "q": "$1,200 grows 4% per year, compounded yearly. What is the balance after 2 years?",
+    "choices": [
+     "$1,297.92",
+     "$1,296.00",
+     "$1,248.00",
+     "$1,392.00"
+    ],
+    "a": 0,
+    "why": "1,200 × 1.04^2 = 1,200 × 1.0816 = $1,297.92. Simple interest would give $1,296.00."
+   },
+   {
+    "q": "A 400-gram sample has a half-life of 10 years. How much remains after 30 years?",
+    "choices": [
+     "100 g",
+     "133 g",
+     "0 g",
+     "50 g"
+    ],
+    "a": 3,
+    "why": "30 ÷ 10 = 3 half-lives: 400 → 200 → 100 → 50 grams."
+   },
+   {
+    "q": "Multiply (x + 3)(x − 8).",
+    "choices": [
+     "x^2 − 24",
+     "x^2 − 5x − 24",
+     "x^2 + 5x − 24",
+     "x^2 − 11x − 24"
+    ],
+    "a": 1,
+    "why": "x^2 − 8x + 3x − 24 = x^2 − 5x − 24. The outer and inner products combine to −5x."
+   },
+   {
+    "q": "Factor x^2 + 8x + 15.",
+    "choices": [
+     "(x + 3)(x + 5)",
+     "(x + 1)(x + 15)",
+     "(x + 8)(x + 15)",
+     "(x − 3)(x − 5)"
+    ],
+    "a": 0,
+    "why": "3 × 5 = 15 and 3 + 5 = 8, so (x + 3)(x + 5). The pair 1 and 15 adds to 16."
+   },
+   {
+    "q": "Factor 4x^2 − 9.",
+    "choices": [
+     "(4x + 3)(x − 3)",
+     "(2x − 3)^2",
+     "(4x − 9)(x + 1)",
+     "(2x + 3)(2x − 3)"
+    ],
+    "a": 3,
+    "why": "Difference of squares: (2x)^2 − 3^2 = (2x + 3)(2x − 3). The square (2x − 3)^2 would have a middle term −12x."
+   },
+   {
+    "q": "Solve (x − 4)(x + 5) = 0.",
+    "choices": [
+     "x = 4 or x = 5",
+     "x = −4 or x = 5",
+     "x = 4 or x = −5",
+     "x = −4 or x = −5"
+    ],
+    "a": 2,
+    "why": "x − 4 = 0 gives 4, and x + 5 = 0 gives −5. Each root has the opposite sign of the constant in its factor."
+   },
+   {
+    "q": "What is the vertex of y = x^2 − 6x + 2?",
+    "choices": [
+     "(3, −7)",
+     "(−3, 29)",
+     "(3, 7)",
+     "(6, 2)"
+    ],
+    "a": 0,
+    "why": "Axis: x = −(−6)/(2 × 1) = 3. Then y = 9 − 18 + 2 = −7."
+   },
+   {
+    "q": "Which parabola opens downward and has vertex (2, 5)?",
+    "choices": [
+     "y = (x − 2)^2 + 5",
+     "y = −(x + 2)^2 + 5",
+     "y = (x + 2)^2 − 5",
+     "y = −(x − 2)^2 + 5"
+    ],
+    "a": 3,
+    "why": "Vertex (2, 5) needs (x − 2)^2 + 5, and opening downward needs a negative a: y = −(x − 2)^2 + 5."
+   },
+   {
+    "q": "Solve x^2 + 2x − 15 = 0.",
+    "choices": [
+     "x = 5 or x = −3",
+     "x = −5 or x = 3",
+     "x = 15 or x = −1",
+     "x = −15 or x = 1"
+    ],
+    "a": 1,
+    "why": "Factor: (x + 5)(x − 3) = 0, since 5 × −3 = −15 and 5 + (−3) = 2. So x = −5 or x = 3."
+   },
+   {
+    "q": "For 3x^2 + 2x + 1 = 0, what is the discriminant and how many real solutions are there?",
+    "choices": [
+     "−8, no real solutions",
+     "8, two solutions",
+     "−8, one solution",
+     "16, two solutions"
+    ],
+    "a": 0,
+    "why": "2^2 − 4(3)(1) = 4 − 12 = −8. A negative discriminant means no real solution."
+   },
+   {
+    "q": "Which sequence is geometric?",
+    "choices": [
+     "4, 7, 10, 13",
+     "4, 8, 12, 16",
+     "4, 6, 9, 13",
+     "4, 12, 36, 108"
+    ],
+    "a": 3,
+    "why": "4, 12, 36, 108 multiplies by 3 each time. The first two add 3 and 4, and the third has no constant ratio or difference."
+   },
+   {
+    "q": "A ball's height is h = −16t^2 + 80t. When does it land?",
+    "choices": [
+     "80 seconds",
+     "2.5 seconds",
+     "5 seconds",
+     "100 seconds"
+    ],
+    "a": 2,
+    "why": "Set h = 0: −16t(t − 5) = 0, so t = 5 seconds. The peak is at 2.5 seconds."
+   },
+   {
+    "q": "A table gives y = 0, 1, 4, 9, 16 for x = 0 to 4. Which statement is true?",
+    "choices": [
+     "the second differences are constant, so it is quadratic",
+     "the ratios are constant, so it is exponential",
+     "the first differences are constant, so it is linear",
+     "the values are not a function of x"
+    ],
+    "a": 0,
+    "why": "First differences 1, 3, 5, 7 are not constant, but second differences 2, 2, 2 are. The rule is y = x^2."
+   }
+  ],
+  "write": {
+   "prompt": "A ball is thrown upward from a height of 5 feet at 40 feet per second, so its height is h = −16t^2 + 40t + 5. Find the ball's maximum height and the time it lands, showing every step. Then explain why you used the vertex for one part and the quadratic formula for the other.",
+   "tips": [
+    "State each answer clearly with units: feet for height, seconds for time.",
+    "Show the vertex calculation: t = −b/(2a), then substitute that t back to get the height.",
+    "For the landing, set h = 0, identify a, b and c, and write out the quadratic formula before computing.",
+    "Say why one root is rejected and check your landing time in the original equation.",
+    "Explain in a sentence what the −16, the 40 and the 5 each mean in the story."
+   ]
+  }
+ },
+ "n": 19,
+ "title": "Algebra I: Exponents, Polynomials and Quadratics",
+ "years": "Algebra",
+ "band": "9-10",
+ "chapters": [
+  {
+   "n": 43,
+   "title": "Exponents and Exponential Functions",
+   "years": "Exponentials",
+   "bigQuestion": "What happens when a quantity multiplies by the same factor again and again, and how can we predict where it ends up?",
+   "story": {
+    "title": "The Penny That Beat a Million Dollars",
+    "kicker": "Offered a choice between a fortune and a penny that doubles, most people choose wrong.",
+    "paragraphs": [
+     "Imagine a stranger makes you an offer. Option one: one million dollars in cash, right now. Option two: a single penny today, two pennies tomorrow, four the next day, and so on, doubling every day for 30 days. You keep only what you receive on day 30. Most people laugh and take the million. A penny is a penny, and 30 days is not very long.",
+     "Follow the pennies for a while and the laugh seems fair. Day 1 is $0.01. Day 5 is $0.16. Day 10 is $5.12, about the price of a sandwich. By day 15 you would receive $163.84. After two full weeks the doubling penny cannot buy a used bicycle. The million dollars looks safe.",
+     "Then the doubling starts to bite. Day 20 pays $5,242.88. Day 25 pays $167,772.16. Day 28 pays $1,342,177.28, and the million has already been passed. Day 30 pays $5,368,709.12. Nothing about the rule changed. The same instruction, multiply by 2, was followed every day. What changed is that each doubling now adds millions instead of pennies.",
+     "The amount on any day follows one formula: 0.01 × 2^(day − 1). The little raised number is the whole story. When a quantity grows by adding, it climbs like a staircase with equal steps. When it grows by multiplying, it starts flat and then rises like a wall. Populations, bank balances, spreading rumors and radioactive samples all follow the multiplying kind of rule. This chapter is about reading, writing and predicting with that rule."
+    ],
+    "think": "The million-dollar offer wins for the first 27 days. Why do you think the doubling penny still feels like a trick even after you see the numbers?"
+   },
+   "sections": [
+    {
+     "title": "Rules for Exponents",
+     "lessons": [
+      {
+       "title": "Multiplying and Dividing Powers",
+       "mainIdea": "When powers share a base, multiply them by adding the exponents and divide them by subtracting the exponents.",
+       "reading": [
+        "A *power* is a short way to write repeated multiplication. 2^5 means 2 × 2 × 2 × 2 × 2, which equals 32. The 2 is the *base*, the number being multiplied, and the 5 is the *exponent*, the count of factors. Suppose a computer file doubles in size 3 times, then doubles 4 more times. The size grows by 2^3 and then by 2^4. Written out, that is (2 × 2 × 2) × (2 × 2 × 2 × 2), which is seven 2s in a row, or 2^7 = 128.",
+        "That example shows the *product rule*: when you multiply powers with the same base, keep the base and add the exponents. 2^3 × 2^4 = 2^(3 + 4) = 2^7. Check it with numbers: 8 × 16 = 128, and 2^7 = 128. The rule works for any base, including variables: x^2 × x^5 = x^7, and 3a^4 × 5a^2 = 15a^6. Multiply the coefficients (3 × 5 = 15), then add the exponents on a (4 + 2 = 6).",
+        "Division goes the other way. 5^6 ÷ 5^2 means six 5s on top and two 5s on the bottom. Two pairs cancel, leaving four 5s: 5^4 = 625. This is the *quotient rule*: keep the base and subtract the exponents. 5^6 ÷ 5^2 = 5^(6 − 2) = 5^4. Check: 15,625 ÷ 25 = 625. With variables, y^9 ÷ y^4 = y^5.",
+        "The most common mistake is multiplying the exponents instead of adding them. 2^3 × 2^4 is not 2^12; that would be 4,096, not 128. Another mistake is adding exponents when the bases differ. 2^3 × 5^2 cannot be combined into one power. Just compute it: 8 × 25 = 200. The rules apply only when the bases match."
+       ],
+       "words": [
+        {
+         "w": "power",
+         "d": "a base raised to an exponent, like 2^5, which means 2 multiplied by itself 5 times"
+        },
+        {
+         "w": "base",
+         "d": "the number being multiplied repeatedly in a power; in 2^5 the base is 2"
+        },
+        {
+         "w": "exponent",
+         "d": "the raised number that counts how many times the base is used as a factor; in 2^5 it is 5"
+        },
+        {
+         "w": "product rule",
+         "d": "to multiply powers with the same base, keep the base and add the exponents: b^m × b^n = b^(m + n)"
+        },
+        {
+         "w": "quotient rule",
+         "d": "to divide powers with the same base, keep the base and subtract the exponents: b^m ÷ b^n = b^(m − n)"
+        }
+       ],
+       "look": {
+        "type": "think",
+        "title": "Powers of Ten",
+        "text": "Powers of ten make the rules easy to see. 10^3 = 1,000 and 10^4 = 10,000. Multiply them: 1,000 × 10,000 = 10,000,000, which has seven zeros, so it is 10^7. The product rule says 10^3 × 10^4 = 10^(3 + 4) = 10^7. The zeros simply pile up. Now try division. 10^8 is 100,000,000 (eight zeros) and 10^5 is 100,000 (five zeros).",
+        "prompt": "Use the quotient rule to simplify 10^8 ÷ 10^5. Then divide the actual numbers. Do the zeros agree with the rule?"
+       },
+       "check": [
+        {
+         "q": "Simplify 3^4 × 3^2.",
+         "choices": [
+          "3^6",
+          "3^8",
+          "9^6",
+          "9^8"
+         ],
+         "a": 0,
+         "why": "Same base, so add the exponents: 4 + 2 = 6. Check: 81 × 9 = 729 = 3^6. Multiplying the exponents or the bases is the common error."
+        },
+        {
+         "q": "Simplify x^9 ÷ x^3.",
+         "choices": [
+          "x^3",
+          "x^12",
+          "x^6",
+          "1^6"
+         ],
+         "a": 2,
+         "why": "Same base, so subtract the exponents: 9 − 3 = 6, giving x^6. Adding gives x^12 and dividing the exponents gives x^3, both wrong."
+        },
+        {
+         "q": "Which expression can NOT be rewritten as a single power using the product or quotient rule?",
+         "choices": [
+          "2^3 × 2^2",
+          "7^5 ÷ 7^4",
+          "4^2 × 3^2",
+          "y^3 × y"
+         ],
+         "a": 2,
+         "why": "4^2 × 3^2 has two different bases, so the rules do not apply. Just compute it: 16 × 9 = 144. The others share a base."
+        }
+       ]
+      },
+      {
+       "title": "Powers of Powers and the Zero Exponent",
+       "mainIdea": "Raising a power to a power multiplies the exponents, and any nonzero base raised to the zero power equals 1.",
+       "reading": [
+        "Picture a square poster whose side is 2^3 = 8 inches long. Its area is (2^3)^2 = 8 × 8 = 64 square inches. Now count the 2s: 8 × 8 is (2 × 2 × 2) × (2 × 2 × 2), six 2s, so the area is 2^6 = 64. This is the *power rule*: to raise a power to a power, multiply the exponents. (2^3)^2 = 2^(3 × 2) = 2^6. Likewise (x^4)^5 = x^20.",
+        "The rule extends to products inside parentheses. (3x^2)^3 means 3x^2 × 3x^2 × 3x^2. Cube the 3 to get 27, and multiply the exponents on x: x^(2 × 3) = x^6. So (3x^2)^3 = 27x^6. A common mistake is writing 3x^6, forgetting to cube the *coefficient*. Every factor inside the parentheses gets the outside exponent.",
+        "What does 5^0 mean? Use the quotient rule: 5^3 ÷ 5^3 = 5^(3 − 3) = 5^0. But 5^3 ÷ 5^3 = 125 ÷ 125 = 1. So 5^0 = 1. Any nonzero base raised to the *zero exponent* is 1. Another way to see it: follow the pattern 5^3 = 125, 5^2 = 25, 5^1 = 5. Each step down divides by 5, so the next step is 5 ÷ 5 = 1.",
+        "Students often guess 5^0 = 0 because zero means nothing. But the exponent counts factors, and using zero factors of 5 leaves the starting value, 1, the number that leaves multiplication unchanged. Watch the parentheses: 3x^0 = 3 × 1 = 3, but (3x)^0 = 1, because the parentheses put the 3 inside the power."
+       ],
+       "words": [
+        {
+         "w": "power rule",
+         "d": "to raise a power to a power, multiply the exponents: (b^m)^n = b^(m × n)"
+        },
+        {
+         "w": "coefficient",
+         "d": "the number multiplied in front of a variable, like the 3 in 3x^2"
+        },
+        {
+         "w": "zero exponent",
+         "d": "any nonzero base raised to the power 0 equals 1; for example 7^0 = 1"
+        }
+       ],
+       "look": {
+        "type": "think",
+        "title": "Stepping Down the Powers",
+        "text": "Write the powers of 3 in a column: 3^4 = 81, 3^3 = 27, 3^2 = 9, 3^1 = 3. Each line is the line above divided by 3: 81 ÷ 3 = 27, 27 ÷ 3 = 9, 9 ÷ 3 = 3. The pattern does not have to stop at 3^1. Keep dividing by 3 to find the next line, and the line after that.",
+        "prompt": "What does the pattern say 3^0 must equal? If you divide by 3 once more, what would 3^(−1) be?"
+       },
+       "check": [
+        {
+         "q": "Simplify (x^4)^3.",
+         "choices": [
+          "x^7",
+          "x^12",
+          "x^64",
+          "x^1"
+         ],
+         "a": 1,
+         "why": "A power of a power multiplies the exponents: 4 × 3 = 12. Adding them gives x^7, which is the product-rule mistake."
+        },
+        {
+         "q": "What is 12^0?",
+         "choices": [
+          "0",
+          "12",
+          "1",
+          "undefined"
+         ],
+         "a": 2,
+         "why": "Any nonzero base to the zero power is 1. Check with the quotient rule: 12^2 ÷ 12^2 = 144 ÷ 144 = 1."
+        },
+        {
+         "q": "Simplify (2y^3)^4.",
+         "choices": [
+          "2y^12",
+          "8y^12",
+          "16y^7",
+          "16y^12"
+         ],
+         "a": 3,
+         "why": "Both factors get the exponent 4: 2^4 = 16 and (y^3)^4 = y^12. Forgetting to raise the 2 gives 2y^12."
+        }
+       ]
+      },
+      {
+       "title": "Negative Exponents",
+       "mainIdea": "A negative exponent means divide: b^(−n) equals 1/b^n, the reciprocal of the positive power.",
+       "reading": [
+        "Continue the pattern from 2^3 = 8, 2^2 = 4, 2^1 = 2, 2^0 = 1. Each step divides by 2. The next step is 1 ÷ 2 = 1/2, then 1/4, then 1/8. So 2^(−1) = 1/2, 2^(−2) = 1/4, 2^(−3) = 1/8. A *negative exponent* does not make a number negative. It tells you to take the *reciprocal*: flip the power into a fraction. 2^(−3) = 1/2^3 = 1/8.",
+        "The quotient rule agrees. 4^2 ÷ 4^5 = 4^(2 − 5) = 4^(−3). Written out, 16 ÷ 1,024 = 1/64, and 1/4^3 = 1/64. The same idea works with variables: x^3 ÷ x^7 = x^(−4) = 1/x^4. To write an expression with only positive exponents, move each factor with a negative exponent across the fraction bar and make its exponent positive. So 5x^(−2) = 5/x^2, and 1/y^(−3) = y^3.",
+        "Scientists use negative *powers of ten* to write tiny numbers. A red blood cell is about 7 × 10^(−6) meters across. Since 10^(−6) = 1/1,000,000, that is 0.000007 meters. A common mistake is thinking 10^(−6) is a negative number. It is small, not negative: a positive number less than 1.",
+        "Two errors to watch. First, (−3)^2 = 9 but 3^(−2) = 1/9; the position of the minus sign changes everything. Second, only the factor with the negative exponent flips. In 3x^(−2), the 3 stays on top: 3/x^2, not 1/(3x^2). The exponent belongs to x alone."
+       ],
+       "words": [
+        {
+         "w": "negative exponent",
+         "d": "an exponent below zero; b^(−n) means 1 divided by b^n, so 2^(−3) = 1/8"
+        },
+        {
+         "w": "reciprocal",
+         "d": "the flip of a number; the reciprocal of 8 is 1/8 and the reciprocal of 2/3 is 3/2"
+        },
+        {
+         "w": "powers of ten",
+         "d": "10 raised to an exponent; 10^3 = 1,000 and 10^(−3) = 0.001"
+        }
+       ],
+       "look": {
+        "type": "data",
+        "title": "Powers of Ten, Up and Down",
+        "rows": [
+         [
+          "10^3",
+          1000
+         ],
+         [
+          "10^2",
+          100
+         ],
+         [
+          "10^1",
+          10
+         ],
+         [
+          "10^0",
+          1
+         ],
+         [
+          "10^(−1)",
+          0.1
+         ],
+         [
+          "10^(−2)",
+          0.01
+         ],
+         [
+          "10^(−3)",
+          0.001
+         ]
+        ],
+        "unit": "value",
+        "cite": "Computed from the definition of powers of 10",
+        "prompt": "Each row is the row above divided by 10. What is 10^(−4) as a decimal, and how many places does the decimal point move from 1?"
+       },
+       "check": [
+        {
+         "q": "What is 3^(−2)?",
+         "choices": [
+          "−9",
+          "1/9",
+          "−1/9",
+          "1/6"
+         ],
+         "a": 1,
+         "why": "A negative exponent means reciprocal: 3^(−2) = 1/3^2 = 1/9. It is positive, not −9."
+        },
+        {
+         "q": "Write 4x^(−3) using only positive exponents.",
+         "choices": [
+          "1/(4x^3)",
+          "−4x^3",
+          "4/x^3",
+          "x^3/4"
+         ],
+         "a": 2,
+         "why": "Only x has the negative exponent, so only x moves to the bottom: 4/x^3. The 4 stays on top."
+        },
+        {
+         "q": "Which number equals 10^(−3)?",
+         "choices": [
+          "0.001",
+          "−1000",
+          "−0.001",
+          "0.0001"
+         ],
+         "a": 0,
+         "why": "10^(−3) = 1/10^3 = 1/1,000 = 0.001. It is a small positive number, not a negative one."
+        }
+       ]
+      },
+      {
+       "title": "Rational Exponents and Roots",
+       "mainIdea": "An exponent of 1/n means the nth root, so 9^(1/2) = √9 = 3 and 8^(1/3) equals the cube root of 8, which is 2.",
+       "reading": [
+        "A *square root* of a number is a value that, times itself, gives the number. √49 = 7 because 7 × 7 = 49. A *cube root* uses the value three times: the cube root of 27 is 3 because 3 × 3 × 3 = 27. Roots undo powers. Now ask what 9^(1/2) could mean. By the product rule, 9^(1/2) × 9^(1/2) = 9^(1/2 + 1/2) = 9^1 = 9. So 9^(1/2) is a number that, squared, gives 9. That is the square root: 9^(1/2) = √9 = 3.",
+        "In general, b^(1/n) is the nth root of b, and b^(m/n) means take the nth root, then raise to the mth power, or the other way around; the order does not matter. Example: 8^(2/3). The cube root of 8 is 2, and 2^2 = 4, so 8^(2/3) = 4. Check by the other order: 8^2 = 64, and the cube root of 64 is 4. Same answer. Another: 16^(3/4). The fourth root of 16 is 2, since 2^4 = 16, and 2^3 = 8.",
+        "A *rational exponent* follows all the exponent rules. 4^(1/2) × 4^(3/2) = 4^(4/2) = 4^2 = 16. Check: 2 × 8 = 16. The rules also simplify a *radical*. √72 = √(36 × 2) = √36 × √2 = 6√2, because 36 is the largest *perfect square* that divides 72. Taking the root of each factor separately is the power rule applied to a product.",
+        "The most common mistake is reading 8^(1/3) as 8 ÷ 3 or as 8 × 1/3. It is the cube root: 2. Another mistake is 25^(1/2) = 12.5. Halving is not the same as taking a square root; 25^(1/2) = 5. Always ask: what number, multiplied by itself n times, gives the base?"
+       ],
+       "words": [
+        {
+         "w": "square root",
+         "d": "a number that gives the original when multiplied by itself; √36 = 6 because 6 × 6 = 36"
+        },
+        {
+         "w": "cube root",
+         "d": "a number used three times as a factor to give the original; the cube root of 64 is 4"
+        },
+        {
+         "w": "rational exponent",
+         "d": "an exponent that is a fraction; b^(m/n) means the nth root of b raised to the mth power"
+        },
+        {
+         "w": "radical",
+         "d": "an expression with a root sign, like √72 or the cube root of 20"
+        },
+        {
+         "w": "perfect square",
+         "d": "a whole number that is the square of a whole number, such as 1, 4, 9, 16, 25, 36"
+        }
+       ],
+       "look": {
+        "type": "think",
+        "title": "Two Roads to the Same Root",
+        "text": "Find 32^(3/5) two ways. Road one: the fifth root of 32 is 2, since 2^5 = 32, and then 2^3 = 8. Road two: 32^3 = 32,768, and the fifth root of 32,768 is 8, since 8^5 = 32,768. Both roads give 8, but the first road keeps the numbers small. Now try 27^(2/3).",
+        "prompt": "Find 27^(2/3) by taking the cube root first, then by squaring first. Which road is easier, and do you get the same answer?"
+       },
+       "check": [
+        {
+         "q": "What is 64^(1/3)?",
+         "choices": [
+          "21.3",
+          "8",
+          "4",
+          "32"
+         ],
+         "a": 2,
+         "why": "The exponent 1/3 means cube root. 4 × 4 × 4 = 64, so the answer is 4. Dividing by 3 or taking the square root (8) are the common errors."
+        },
+        {
+         "q": "What is 27^(2/3)?",
+         "choices": [
+          "18",
+          "6",
+          "3",
+          "9"
+         ],
+         "a": 3,
+         "why": "Cube root of 27 is 3, and 3^2 = 9. Multiplying 27 by 2/3 gives 18, which confuses the exponent with a factor."
+        },
+        {
+         "q": "Simplify √50.",
+         "choices": [
+          "25√2",
+          "5√2",
+          "5√10",
+          "2√5"
+         ],
+         "a": 1,
+         "why": "50 = 25 × 2, and 25 is a perfect square: √50 = √25 × √2 = 5√2. Check: 5√2 ≈ 7.07, and 7.07^2 ≈ 50."
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "title": "Growth and Decay",
+     "lessons": [
+      {
+       "title": "Doubling and Growth Factors",
+       "mainIdea": "Exponential growth multiplies by the same factor each step, so the value after x steps is start × factor^x.",
+       "reading": [
+        "The penny from the chapter story doubles each day. Day 1: $0.01. Day 2: $0.02. Day 3: $0.04. Day 4: $0.08. Each day you multiply by 2, not add 2. After d doublings the amount is 0.01 × 2^d. After 10 doublings, 0.01 × 2^10 = 0.01 × 1,024 = $10.24. After 20, 0.01 × 1,048,576 = $10,485.76. This is *exponential growth*: the same multiplier used again and again.",
+        "The general form is y = a × b^x. Here a is the *starting value*, the value when x = 0; b is the *growth factor*, the number you multiply by each step; and x counts the steps. A bacteria colony that starts at 500 cells and triples every hour has y = 500 × 3^x. After 4 hours: 500 × 3^4 = 500 × 81 = 40,500 cells. Check by stepping: 500, 1,500, 4,500, 13,500, 40,500.",
+        "Compare with a linear pattern. If the colony gained 500 cells per hour instead, after 4 hours it would have 500 + 4 × 500 = 2,500 cells. Adding the same amount each step is linear; multiplying by the same factor each step is exponential. In a table, linear values have a constant difference and exponential values have a constant *ratio*. The ratio of neighbors in 500, 1,500, 4,500 is 1,500 ÷ 500 = 3 and 4,500 ÷ 1,500 = 3.",
+        "A common mistake is computing 500 × 3^4 as (500 × 3)^4 = 1,500^4. The exponent applies only to the growth factor, so evaluate 3^4 first, then multiply by 500. Another mistake is swapping the roles of the two numbers in 2^10: the 2 is what you multiply by, and the 10 is how many times."
+       ],
+       "words": [
+        {
+         "w": "exponential growth",
+         "d": "growth by multiplying by the same factor greater than 1 each step, like doubling every day"
+        },
+        {
+         "w": "starting value",
+         "d": "the value when x = 0, the a in y = a × b^x"
+        },
+        {
+         "w": "growth factor",
+         "d": "the number you multiply by each step, the b in y = a × b^x; doubling has growth factor 2"
+        },
+        {
+         "w": "ratio",
+         "d": "one value divided by the one before it; exponential tables have a constant ratio"
+        }
+       ],
+       "look": {
+        "type": "data",
+        "title": "The Doubling Penny, Day by Day",
+        "rows": [
+         [
+          "Day 1",
+          0.01
+         ],
+         [
+          "Day 5",
+          0.16
+         ],
+         [
+          "Day 10",
+          5.12
+         ],
+         [
+          "Day 15",
+          163.84
+         ],
+         [
+          "Day 20",
+          5242.88
+         ],
+         [
+          "Day 25",
+          167772.16
+         ],
+         [
+          "Day 30",
+          5368709.12
+         ]
+        ],
+        "unit": "dollars",
+        "cite": "Computed from 0.01 × 2^(day − 1)",
+        "prompt": "From day 20 to day 30 there are 10 doublings, so the amount multiplies by 2^10 = 1,024. Check that 5,242.88 × 1,024 matches the last row."
+       },
+       "check": [
+        {
+         "q": "A population of 200 doubles every year. Which equation gives the population after x years?",
+         "choices": [
+          "y = 200 + 2x",
+          "y = 2 × 200^x",
+          "y = 200 × 2^x",
+          "y = 200x^2"
+         ],
+         "a": 2,
+         "why": "Start at 200 and multiply by 2 for each year: y = 200 × 2^x. Adding 2x is linear, and 200^x puts the wrong number in the base."
+        },
+        {
+         "q": "Evaluate 50 × 3^3.",
+         "choices": [
+          "1,350",
+          "3,375,000",
+          "450",
+          "150"
+         ],
+         "a": 0,
+         "why": "Do the power first: 3^3 = 27, then 50 × 27 = 1,350. Multiplying first and cubing 150 gives 3,375,000."
+        },
+        {
+         "q": "Which list of values shows exponential growth?",
+         "choices": [
+          "3, 6, 9, 12",
+          "3, 6, 12, 24",
+          "3, 5, 8, 12",
+          "3, 9, 15, 21"
+         ],
+         "a": 1,
+         "why": "3, 6, 12, 24 has a constant ratio of 2. The lists 3, 6, 9, 12 and 3, 9, 15, 21 add the same amount, so they are linear."
+        }
+       ]
+      },
+      {
+       "title": "Percent Growth and Compound Interest",
+       "mainIdea": "A rate of r per period gives the growth factor 1 + r, so 5% growth means multiply by 1.05 each period.",
+       "reading": [
+        "Suppose a savings account holds $1,000 and earns 5% *interest* each year, added to the balance. After one year the interest is 0.05 × 1,000 = $50, so the balance is $1,050. Notice that 1,000 + 0.05 × 1,000 = 1,000 × (1 + 0.05) = 1,000 × 1.05. Growing by 5% is the same as multiplying by 1.05. In the second year the 5% is figured on $1,050, so the interest is $52.50 and the balance is $1,102.50. Interest that earns interest is called *compound interest*.",
+        "The pattern is y = 1,000 × 1.05^t, where t is the number of years and 1,000 is the *principal*. After 10 years, 1.05^10 ≈ 1.629, so the balance is about $1,629. Simple interest, which pays $50 every year with no compounding, would give 1,000 + 10 × 50 = $1,500. The gap widens over time. The rule for percent growth: the growth factor is 1 + r, where r is the *rate* written as a decimal. A 3% rate gives 1.03, a 12% rate gives 1.12, and a 150% rate gives 2.5.",
+        "Some accounts compound more than once a year. The formula A = P(1 + r/n)^(nt) splits the yearly rate r among n periods per year. At 6% compounded monthly, each month multiplies by 1 + 0.06/12 = 1.005, and two years hold 24 periods. For $500: 500 × 1.005^24 ≈ 500 × 1.1272 ≈ $563.58. Yearly compounding at 6% would give 500 × 1.06^2 = 500 × 1.1236 = $561.80, a little less.",
+        "The most common mistake is using 0.05 as the growth factor. Multiplying by 0.05 shrinks $1,000 to $50; you must multiply by 1.05 to keep the original and add 5%. A second mistake is writing a 5% rate as 1.5. Move the decimal two places: 5% = 0.05, so the factor is 1.05, not 1.5."
+       ],
+       "words": [
+        {
+         "w": "interest",
+         "d": "money paid for the use of money, usually a percent of the balance each period"
+        },
+        {
+         "w": "compound interest",
+         "d": "interest computed on the balance including earlier interest, so the balance grows exponentially"
+        },
+        {
+         "w": "principal",
+         "d": "the starting amount of money deposited or borrowed"
+        },
+        {
+         "w": "rate",
+         "d": "the percent of growth per period, written as a decimal in the growth factor 1 + r"
+        }
+       ],
+       "look": {
+        "type": "data",
+        "title": "One Thousand Dollars at 5%",
+        "rows": [
+         [
+          "Year 0",
+          1000
+         ],
+         [
+          "Year 1",
+          1050
+         ],
+         [
+          "Year 2",
+          1102.5
+         ],
+         [
+          "Year 3",
+          1157.63
+         ],
+         [
+          "Year 5",
+          1276.28
+         ],
+         [
+          "Year 10",
+          1628.89
+         ]
+        ],
+        "unit": "dollars",
+        "cite": "Example account: 1,000 × 1.05^t, rounded to the cent",
+        "prompt": "Simple interest would give 1,000 + 50t. How far ahead of simple interest is the compound balance at year 5, and at year 10?"
+       },
+       "check": [
+        {
+         "q": "An investment of $2,000 grows 4% per year. Which expression gives its value after 3 years?",
+         "choices": [
+          "2,000 × 0.04^3",
+          "2,000 × 1.4^3",
+          "2,000 × 1.04^3",
+          "2,000 + 3 × 0.04"
+         ],
+         "a": 2,
+         "why": "A 4% rate means the growth factor is 1 + 0.04 = 1.04, used 3 times: 2,000 × 1.04^3. Using 0.04 or 1.4 are the classic decimal slips."
+        },
+        {
+         "q": "A city of 40,000 people grows 2% per year. About how many people will it have after 1 year?",
+         "choices": [
+          "40,800",
+          "48,000",
+          "800",
+          "42,000"
+         ],
+         "a": 0,
+         "why": "40,000 × 1.02 = 40,800. The growth alone is 800; adding 2,000 would be a 5% increase."
+        },
+        {
+         "q": "What growth factor matches a rate of 7.5% per year?",
+         "choices": [
+          "7.5",
+          "1.75",
+          "0.075",
+          "1.075"
+         ],
+         "a": 3,
+         "why": "7.5% = 0.075 as a decimal, and the factor is 1 + 0.075 = 1.075. The factor 1.75 would mean 75% growth."
+        }
+       ]
+      },
+      {
+       "title": "Decay and Half-Life",
+       "mainIdea": "Exponential decay multiplies by a factor between 0 and 1 each step, such as 0.5 for each half-life or 0.85 for a 15% loss.",
+       "reading": [
+        "A new car bought for $30,000 loses about 15% of its value each year. Losing 15% leaves 85%, so each year multiplies the value by 0.85. After 1 year: 30,000 × 0.85 = $25,500. After 2 years: 25,500 × 0.85 = $21,675. The formula is y = 30,000 × 0.85^t. This is *exponential decay*: the same fraction disappears each period. The *decay factor* is 1 − r, here 1 − 0.15 = 0.85. After 5 years, 0.85^5 ≈ 0.4437, so the car is worth about $13,311.",
+        "Radioactive materials decay with a *half-life*: the time it takes for half of the material to be gone. Iodine-131, used in some medical treatments, has a half-life of about 8 days. Start with 80 milligrams. After 8 days, 40 mg remain. After 16 days, 20 mg. After 24 days, 10 mg. The formula is y = 80 × (1/2)^(t/8), where t is in days. The exponent t/8 counts how many half-lives have passed. At t = 24, the exponent is 3 and (1/2)^3 = 1/8, so 80 × 1/8 = 10 mg.",
+        "Doctors use the same idea for medicine in the body. If a 200 mg dose of a drug has a half-life of 6 hours, then 100 mg remain after 6 hours, 50 mg after 12 hours, and 25 mg after 18 hours. To find the amount after 9 hours, the exponent is 9/6 = 1.5, and (1/2)^1.5 ≈ 0.354, so about 71 mg remain. Halving repeatedly never reaches zero; the amount just gets closer and closer to it. On a graph, the curve flattens toward the horizontal axis without touching it.",
+        "A common mistake is multiplying by 0.15 for a 15% loss. That computes the amount lost, not the amount left. Subtract from 1 first. Another mistake in half-life problems is using t itself as the exponent instead of t divided by the half-life. Twenty-four days with an 8-day half-life is 3 halvings, not 24."
+       ],
+       "words": [
+        {
+         "w": "exponential decay",
+         "d": "shrinking by multiplying by the same factor between 0 and 1 each step"
+        },
+        {
+         "w": "decay factor",
+         "d": "the number you multiply by each step when a quantity shrinks; a 15% loss has decay factor 0.85"
+        },
+        {
+         "w": "half-life",
+         "d": "the time it takes for half of a decaying quantity to disappear"
+        }
+       ],
+       "look": {
+        "type": "think",
+        "title": "The Bouncing Ball",
+        "text": "A rubber ball dropped from 250 cm rebounds to 60% of its previous height on each bounce. After bounce 1 it reaches 250 × 0.6 = 150 cm. After bounce 2, 150 × 0.6 = 90 cm. After bounce 3, 54 cm. After bounce 4, 32.4 cm. The decay factor is 0.6, so the height after n bounces is 250 × 0.6^n.",
+        "prompt": "How high does the ball reach after the 5th bounce? Will it ever reach a height of exactly 0 cm according to the formula?"
+       },
+       "check": [
+        {
+         "q": "A $600 phone loses 20% of its value each year. Which equation gives its value after t years?",
+         "choices": [
+          "y = 600 × 0.2^t",
+          "y = 600 × 0.8^t",
+          "y = 600 − 0.2t",
+          "y = 600 × 1.2^t"
+         ],
+         "a": 1,
+         "why": "Losing 20% leaves 80%, so the decay factor is 0.8: y = 600 × 0.8^t. Using 0.2 tracks the amount lost, and 1.2 would be growth."
+        },
+        {
+         "q": "A sample of 160 grams has a half-life of 5 years. How much remains after 15 years?",
+         "choices": [
+          "20 g",
+          "80 g",
+          "40 g",
+          "0 g"
+         ],
+         "a": 0,
+         "why": "15 ÷ 5 = 3 half-lives: 160 → 80 → 40 → 20 grams. Using 15 as the number of halvings, or stopping after one, gives the wrong amount."
+        },
+        {
+         "q": "What decay factor matches losing 35% each period?",
+         "choices": [
+          "0.35",
+          "1.35",
+          "0.65",
+          "−0.35"
+         ],
+         "a": 2,
+         "why": "1 − 0.35 = 0.65 is the fraction that remains. Multiplying by 0.35 gives the part lost, not the part left."
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "title": "Sequences and Models",
+     "lessons": [
+      {
+       "title": "Geometric Sequences",
+       "mainIdea": "A geometric sequence multiplies by the same common ratio each term, so the nth term is a(1) × r^(n − 1).",
+       "reading": [
+        "A gym runs a referral plan: 3 people join the first week, and each week the number of new members is 3 times the week before. Week 1: 3. Week 2: 9. Week 3: 27. Week 4: 81. The list 3, 9, 27, 81, … is a *geometric sequence*. Each *term* comes from multiplying the term before it by the same number, the *common ratio*, here 3. To find the ratio of any geometric sequence, divide any term by the one before it: 27 ÷ 9 = 3.",
+        "You can describe the sequence two ways. The *recursive rule* says how to get the next term from the current one: a(n) = 3 × a(n − 1), with a(1) = 3. The *explicit rule* lets you jump straight to any term: a(n) = 3 × 3^(n − 1). Term 6 is 3 × 3^5 = 3 × 243 = 729. Check by stepping from 81: 243, then 729. In general, a(n) = a(1) × r^(n − 1). The exponent is n − 1 because the first term has had zero multiplications.",
+        "Ratios can be fractions. The sequence 400, 100, 25, 6.25 has ratio 100 ÷ 400 = 1/4, and its explicit rule is a(n) = 400 × (1/4)^(n − 1). Ratios can be negative: 2, −6, 18, −54 has ratio −3, so the signs alternate. Compare an arithmetic sequence such as 5, 8, 11, 14, which adds 3 each time. Arithmetic sequences are linear patterns; geometric sequences are exponential patterns.",
+        "The most common mistake is using r^n instead of r^(n − 1). For 3, 9, 27, …, the formula 3 × 3^n gives 9 for the first term, which is wrong. Test your formula on n = 1 before trusting it. Another mistake is finding the ratio by subtracting: 9 − 3 = 6 is a difference, not a ratio."
+       ],
+       "words": [
+        {
+         "w": "geometric sequence",
+         "d": "a list of numbers where each term is the previous term times the same number"
+        },
+        {
+         "w": "term",
+         "d": "one number in a sequence; a(4) means the fourth term"
+        },
+        {
+         "w": "common ratio",
+         "d": "the number each term is multiplied by to get the next term in a geometric sequence"
+        },
+        {
+         "w": "recursive rule",
+         "d": "a rule that gives the next term from the term before it, plus a starting term"
+        },
+        {
+         "w": "explicit rule",
+         "d": "a formula that gives any term directly from its position n, like a(n) = 3 × 2^(n − 1)"
+        }
+       ],
+       "look": {
+        "type": "think",
+        "title": "Jumping to the Eighth Term",
+        "text": "The sequence 5, 10, 20, 40, … has first term 5 and common ratio 10 ÷ 5 = 2. Its explicit rule is a(n) = 5 × 2^(n − 1). Test it: a(1) = 5 × 2^0 = 5, and a(3) = 5 × 2^2 = 20. Both match the list. Now find the eighth term two ways: by continuing to double from 40, and by the formula with n = 8.",
+        "prompt": "What is a(8)? Which method would you rather use to find a(20), and why?"
+       },
+       "check": [
+        {
+         "q": "What is the common ratio of 6, 24, 96, 384?",
+         "choices": [
+          "18",
+          "6",
+          "4",
+          "24"
+         ],
+         "a": 2,
+         "why": "Divide neighbors: 24 ÷ 6 = 4 and 96 ÷ 24 = 4. Subtracting 24 − 6 = 18 gives a difference, not a ratio."
+        },
+        {
+         "q": "A geometric sequence has a(1) = 2 and r = 5. Which is its explicit rule?",
+         "choices": [
+          "a(n) = 2 × 5^n",
+          "a(n) = 5 × 2^(n − 1)",
+          "a(n) = 2 + 5(n − 1)",
+          "a(n) = 2 × 5^(n − 1)"
+         ],
+         "a": 3,
+         "why": "a(n) = a(1) × r^(n − 1) = 2 × 5^(n − 1). Test n = 1: 2 × 5^0 = 2, correct. The rule 2 × 5^n gives 10 for the first term."
+        },
+        {
+         "q": "Find the 5th term of 1, 3, 9, …",
+         "choices": [
+          "243",
+          "27",
+          "15",
+          "81"
+         ],
+         "a": 3,
+         "why": "a(5) = 1 × 3^4 = 81. Stepping: 1, 3, 9, 27, 81. Using 3^5 gives 243, the sixth term."
+        }
+       ]
+      },
+      {
+       "title": "Building a Model From a Table",
+       "mainIdea": "To build an exponential model from a table or story, find the starting value at x = 0 and the constant ratio between equal steps.",
+       "reading": [
+        "A biology class counts yeast cells under a microscope every hour and records: hour 0, 40 cells; hour 1, 60; hour 2, 90; hour 3, 135. Is the growth exponential? Check the ratios: 60 ÷ 40 = 1.5, 90 ÷ 60 = 1.5, 135 ÷ 90 = 1.5. The ratio is constant, so yes. The starting value is 40 and the growth factor is 1.5, so the *model* is y = 40 × 1.5^x. Predict hour 6: 40 × 1.5^6 = 40 × 11.390625 ≈ 456 cells.",
+        "Sometimes the table skips x = 0. A table shows x = 2, y = 50 and x = 3, y = 100. The ratio is 2. Work backward: at x = 1, y = 25; at x = 0, y = 12.5. So y = 12.5 × 2^x. Check: 12.5 × 2^2 = 50. If the steps in x are bigger than 1, divide carefully. Values of 10 at x = 0 and 90 at x = 2 mean the factor for two steps is 9, so the one-step factor is √9 = 3.",
+        "Stories work the same way. A video has 500 views, and views grow 20% per day. The starting value is 500, the growth factor is 1 + 0.20 = 1.2, and the model is y = 500 × 1.2^x. After 3 days: 500 × 1.2^3 = 500 × 1.728 = 864 views. To *interpret* a given model, read its parts. In y = 250 × 0.9^x, the 250 is the start, and the 0.9 means a 10% loss each step, because 1 − 0.9 = 0.10.",
+        "A common mistake is using the first value in the table as the starting value even when the table begins at x = 1. Another is checking differences instead of ratios. The yeast table has differences 20, 30, 45, which are not constant, so a line would not fit. Whenever values seem to speed up, test for a *constant ratio*."
+       ],
+       "words": [
+        {
+         "w": "model",
+         "d": "an equation that describes a real situation, like y = 40 × 1.5^x for a growing cell count"
+        },
+        {
+         "w": "interpret",
+         "d": "to explain what each number in a model means in the situation"
+        },
+        {
+         "w": "constant ratio",
+         "d": "the same quotient between every pair of neighboring values, the sign of an exponential pattern"
+        }
+       ],
+       "look": {
+        "type": "data",
+        "title": "Yeast Cells Every Hour",
+        "rows": [
+         [
+          "Hour 0",
+          40
+         ],
+         [
+          "Hour 1",
+          60
+         ],
+         [
+          "Hour 2",
+          90
+         ],
+         [
+          "Hour 3",
+          135
+         ],
+         [
+          "Hour 4",
+          202.5
+         ]
+        ],
+        "unit": "cells",
+        "cite": "Example count from the model y = 40 × 1.5^x",
+        "prompt": "Divide each value by the one before it. What do you get each time, and what does the model predict for hour 5?"
+       },
+       "check": [
+        {
+         "q": "A table shows x = 0, y = 8; x = 1, y = 24; x = 2, y = 72. Which model fits?",
+         "choices": [
+          "y = 8 × 3^x",
+          "y = 8 + 16x",
+          "y = 3 × 8^x",
+          "y = 8 × 16^x"
+         ],
+         "a": 0,
+         "why": "The start is 8 and the ratio is 24 ÷ 8 = 3, so y = 8 × 3^x. Check: 8 × 3^2 = 72. The differences 16 and 48 are not constant, so it is not linear."
+        },
+        {
+         "q": "In the model y = 900 × 0.7^x, what happens each step?",
+         "choices": [
+          "the value grows 70%",
+          "the value shrinks 30%",
+          "the value grows 30%",
+          "the value shrinks 70%"
+         ],
+         "a": 1,
+         "why": "A factor of 0.7 keeps 70%, so 1 − 0.7 = 0.3 is lost: a 30% decrease each step."
+        },
+        {
+         "q": "A table shows x = 1, y = 30 and x = 2, y = 60. What is the starting value at x = 0?",
+         "choices": [
+          "30",
+          "0",
+          "15",
+          "90"
+         ],
+         "a": 2,
+         "why": "The ratio is 2, so step back from x = 1: 30 ÷ 2 = 15. Using 30 as the start is the mistake of ignoring that the table begins at x = 1."
+        }
+       ]
+      },
+      {
+       "title": "Linear or Exponential?",
+       "mainIdea": "Linear growth adds the same amount each step and exponential growth multiplies, so exponential growth eventually outruns any linear growth.",
+       "reading": [
+        "Two job offers. Job A pays $100 the first day and adds $50 each day. Job B pays $1 the first day and doubles each day. On day 5, Job A pays 100 + 4 × 50 = $300 and Job B pays 1 × 2^4 = $16. Job A looks far better. But on day 10, Job A pays 100 + 9 × 50 = $550 and Job B pays 2^9 = $512. On day 12, Job A pays $650 and Job B pays 2^11 = $2,048. From then on, Job B wins by more every day.",
+        "This always happens. A *linear function* y = mx + b adds the same amount m each step; m is the *slope*. An *exponential function* y = a × b^x with b > 1 multiplies by b each step, so its increases themselves grow. Doubling from 512 adds 512; doubling from 2,048 adds 2,048. Eventually those jumps are larger than any fixed step, so the exponential function passes the linear one and stays ahead. On a graph, the line rises at a steady slope while the curve bends upward more and more steeply.",
+        "To decide which type fits data, compare steps of equal size. The list 5, 8, 11, 14 has a *constant difference* of 3, so it is linear: y = 3x + 5. The list 5, 10, 20, 40 has a constant ratio of 2, so it is exponential: y = 5 × 2^x. The list 5, 8, 13, 20 has neither: the differences 3, 5, 7 grow, and the ratios 1.6, 1.625, 1.54 are not constant. That list is quadratic, a shape you will meet in the last chapter of this unit.",
+        "A common mistake is judging by the first few values. Early on, a linear function with a big starting value or a steep slope can be far ahead, as Job A was for 10 days. Look at the long run. Another mistake is calling a pattern exponential because it grows fast. Fast is not the test; a constant ratio is."
+       ],
+       "words": [
+        {
+         "w": "linear function",
+         "d": "a function that adds the same amount each step; its graph is a straight line"
+        },
+        {
+         "w": "exponential function",
+         "d": "a function y = a × b^x that multiplies by the same factor each step"
+        },
+        {
+         "w": "constant difference",
+         "d": "the same amount added between every pair of neighboring values, the sign of a linear pattern"
+        },
+        {
+         "w": "slope",
+         "d": "the steady rate of change of a linear function, the m in y = mx + b"
+        }
+       ],
+       "look": {
+        "type": "think",
+        "title": "Two Paychecks, Day by Day",
+        "text": "Job A: $100 on day 1, then $50 more each day, so day n pays 100 + 50(n − 1). Job B: $1 on day 1, doubling, so day n pays 2^(n − 1). Day 8: A pays $450, B pays $128. Day 9: A pays $500, B pays $256. Day 10: A pays $550, B pays $512. Day 11: A pays $600, B pays $1,024.",
+        "prompt": "On which day does Job B first pay more than Job A? By day 15, how many times larger is Job B's daily pay than Job A's?"
+       },
+       "check": [
+        {
+         "q": "Which list of values is linear?",
+         "choices": [
+          "2, 4, 8, 16",
+          "2, 6, 18, 54",
+          "2, 5, 8, 11",
+          "2, 3, 5, 8"
+         ],
+         "a": 2,
+         "why": "2, 5, 8, 11 adds 3 each time, a constant difference. The first two lists multiply by 2 and by 3, and the last has neither pattern."
+        },
+        {
+         "q": "Plan A pays $20 per week. Plan B starts at $1 per week and triples each week. Which statement is true in the long run?",
+         "choices": [
+          "Plan A always pays more per week",
+          "Plan B eventually pays more each week and stays ahead",
+          "the two plans pay the same each week after week 3",
+          "Plan B never catches up"
+         ],
+         "a": 1,
+         "why": "Plan B pays 1, 3, 9, 27, 81, … and passes $20 at week 4 (27). Its jumps keep growing while Plan A never changes, so B stays ahead."
+        },
+        {
+         "q": "A table has values 4, 12, 36, 108 at x = 0, 1, 2, 3. Which rule fits?",
+         "choices": [
+          "y = 8x + 4",
+          "y = 12x",
+          "y = 4x^3",
+          "y = 4 × 3^x"
+         ],
+         "a": 3,
+         "why": "Each value is 3 times the one before, and the start is 4: y = 4 × 3^x. Check x = 3: 4 × 27 = 108. The differences 8, 24, 72 are not constant, so no line fits."
+        }
+       ]
+      }
+     ]
+    }
+   ],
+   "review": [
+    {
+     "q": "Simplify 2^5 × 2^3.",
+     "choices": [
+      "2^8",
+      "2^15",
+      "4^8",
+      "4^15"
+     ],
+     "a": 0,
+     "why": "Same base, so add the exponents: 5 + 3 = 8. Check: 32 × 8 = 256 = 2^8."
+    },
+    {
+     "q": "What is 81^(1/4)?",
+     "choices": [
+      "20.25",
+      "9",
+      "40.5",
+      "3"
+     ],
+     "a": 3,
+     "why": "The exponent 1/4 means fourth root, and 3 × 3 × 3 × 3 = 81, so the answer is 3. Dividing by 4 gives 20.25, and 9 is the square root."
+    },
+    {
+     "q": "A town of 5,000 people shrinks 4% per year. Which model gives its population after t years?",
+     "choices": [
+      "y = 5,000 × 0.04^t",
+      "y = 5,000 × 1.04^t",
+      "y = 5,000 − 0.04t",
+      "y = 5,000 × 0.96^t"
+     ],
+     "a": 3,
+     "why": "Losing 4% leaves 96%, so the decay factor is 1 − 0.04 = 0.96. The factor 1.04 would be growth."
+    },
+    {
+     "q": "Which number equals 5^(−2)?",
+     "choices": [
+      "1/25",
+      "−25",
+      "−1/25",
+      "1/10"
+     ],
+     "a": 0,
+     "why": "A negative exponent means reciprocal: 5^(−2) = 1/5^2 = 1/25. It is positive."
+    },
+    {
+     "q": "A geometric sequence has a(1) = 7 and common ratio 2. What is the 4th term?",
+     "choices": [
+      "112",
+      "56",
+      "28",
+      "14"
+     ],
+     "a": 1,
+     "why": "a(4) = 7 × 2^3 = 7 × 8 = 56. Stepping: 7, 14, 28, 56. Using 2^4 gives 112, the fifth term."
+    },
+    {
+     "q": "$800 is deposited at 3% per year, compounded yearly. What is the balance after 2 years?",
+     "choices": [
+      "$848.00",
+      "$824.00",
+      "$1,448.00",
+      "$848.72"
+     ],
+     "a": 3,
+     "why": "800 × 1.03^2 = 800 × 1.0609 = $848.72. Simple interest would give 800 + 2 × 24 = $848.00, slightly less."
+    },
+    {
+     "q": "Which list has a constant ratio?",
+     "choices": [
+      "1, 2, 3, 4",
+      "1, 4, 9, 16",
+      "1, 4, 16, 64",
+      "1, 3, 5, 7"
+     ],
+     "a": 2,
+     "why": "1, 4, 16, 64 multiplies by 4 each time. The others add a constant (1 or 2) or are the perfect squares, whose ratios 4, 2.25, 1.78 change."
+    },
+    {
+     "q": "Simplify (5x^3)^2.",
+     "choices": [
+      "5x^6",
+      "10x^6",
+      "25x^5",
+      "25x^6"
+     ],
+     "a": 3,
+     "why": "Square both factors: 5^2 = 25 and (x^3)^2 = x^6. Forgetting to square the 5 gives 5x^6, and adding exponents gives x^5."
+    }
+   ]
+  },
+  {
+   "n": 44,
+   "title": "Polynomials and Factoring",
+   "years": "Polynomials",
+   "bigQuestion": "How can we take an expression apart into factors, and what does the factored form let us see and solve?",
+   "story": {
+    "title": "The Garden and Its Gravel Path",
+    "kicker": "A rectangle inside a rectangle hides an equation that a whole chapter is needed to solve.",
+    "paragraphs": [
+     "A community garden on a vacant lot in Chicago has a planting bed 10 feet long and 6 feet wide. The volunteers want a gravel path of the same width all the way around it, so that wheelbarrows can reach every side. Nobody has decided how wide the path should be. Call the width x feet. The whole rectangle, bed plus path, is then 10 + 2x feet long and 6 + 2x feet wide, because the path adds x on each end.",
+     "The area of the outer rectangle is (10 + 2x)(6 + 2x). Multiplying that out takes some care: 10 × 6 = 60, 10 × 2x = 20x, 2x × 6 = 12x, and 2x × 2x = 4x^2. The total is 4x^2 + 32x + 60 square feet. The bed itself is 60 square feet, so the path alone is 4x^2 + 32x. Try x = 1: the path is 4 + 32 = 36 square feet. Try x = 2: 16 + 64 = 80 square feet.",
+     "Then the hardware store delivers exactly enough gravel to cover 80 square feet, and the question flips. Instead of choosing x and computing the area, the volunteers know the area and must find x. The equation is 4x^2 + 32x = 80. It has an x^2 in it, so the usual moves for solving equations, undoing one operation at a time, get stuck. The x appears in two places with two different powers.",
+     "The way out is to take the expression apart. 4x^2 + 32x − 80 can be written as 4(x + 10)(x − 2), a product of three factors. A product is zero only when one of its factors is zero, so x must be −10 or 2. A path cannot be −10 feet wide, so the path is 2 feet wide. This chapter builds the tools for that move: multiplying expressions out, then factoring them back into pieces, and using the pieces to solve."
+    ],
+    "think": "Why does knowing that 4(x + 10)(x − 2) equals zero tell you more than knowing that 4x^2 + 32x − 80 equals zero, even though they are the same number?"
+   },
+   "sections": [
+    {
+     "title": "Working With Polynomials",
+     "lessons": [
+      {
+       "title": "Terms, Degree and Standard Form",
+       "mainIdea": "A polynomial is a sum of terms, each a number times whole-number powers of a variable, and its degree is its highest exponent.",
+       "reading": [
+        "A rectangular garden with side lengths x + 4 and x has area x(x + 4) = x^2 + 4x. That expression is a *polynomial*: a sum of *terms*, where each term is a number times a variable raised to a whole-number power. The number in front, like the 4 in 4x, is the *coefficient*. A term with no variable, like 7, is a constant term. Expressions with a variable under a root or in a denominator, like √x or 3/x, are not polynomials.",
+        "Polynomials get names from their number of terms and their *degree*. The degree of a term is its exponent, and the degree of the polynomial is the largest degree among its terms. 5x^3 − 2x + 1 has three terms, so it is a trinomial, and its degree is 3, which is called cubic. 4x^2 is one term, a monomial, of degree 2, called quadratic. x + 6 is a binomial of degree 1, called linear. A constant like 9 has degree 0.",
+        "*Standard form* writes the terms from highest degree to lowest. 3 + 2x^2 − 7x becomes 2x^2 − 7x + 3. The first coefficient, 2, is the leading coefficient. Before writing standard form, combine like terms: 4x^2 + x − x^2 + 5x = 3x^2 + 6x. Like terms have the same variable with the same exponent. The terms 3x^2 and 6x are not like terms, so they stay separate.",
+        "A common mistake is reading the degree from the first term as written. In 5x + 2x^4 − 1 the degree is 4, not 1, because degree depends on the largest exponent anywhere. Another is combining 3x^2 + 6x into 9x^3, which mixes unlike terms. Adding coefficients works only when the variable parts match exactly."
+       ],
+       "words": [
+        {
+         "w": "polynomial",
+         "d": "a sum of terms, each a number times a variable raised to a whole-number power, like 2x^2 − 7x + 3"
+        },
+        {
+         "w": "term",
+         "d": "one piece of a polynomial separated by plus or minus signs; 2x^2 − 7x + 3 has three terms"
+        },
+        {
+         "w": "coefficient",
+         "d": "the number multiplied by the variable in a term; in −7x the coefficient is −7"
+        },
+        {
+         "w": "degree",
+         "d": "the highest exponent on the variable in a polynomial; x^3 + x has degree 3"
+        },
+        {
+         "w": "standard form",
+         "d": "a polynomial written with terms in order from highest degree to lowest"
+        }
+       ],
+       "look": {
+        "type": "think",
+        "title": "Sorting a Pile of Terms",
+        "text": "Here are four expressions: 6x^2 − x + 9, 4x^5, x^3 − 8, and 10. The first is a trinomial of degree 2. The second is a monomial of degree 5. The third is a binomial of degree 3. The last is a constant, degree 0. Now look at 8 − x^3 + 4x. Its terms are out of order, and the x^3 term has coefficient −1.",
+        "prompt": "Write 8 − x^3 + 4x in standard form. What are its degree and its leading coefficient?"
+       },
+       "check": [
+        {
+         "q": "What is the degree of 7x^2 − 4x^5 + x?",
+         "choices": [
+          "2",
+          "5",
+          "7",
+          "3"
+         ],
+         "a": 1,
+         "why": "The largest exponent is 5, on the term −4x^5. The degree is not the first exponent written or the number of terms."
+        },
+        {
+         "q": "Which expression is a trinomial?",
+         "choices": [
+          "4x^2",
+          "x^2 − 9",
+          "2x^3 + x^2 − 5",
+          "6"
+         ],
+         "a": 2,
+         "why": "2x^3 + x^2 − 5 has three terms. 4x^2 and 6 are monomials and x^2 − 9 is a binomial."
+        },
+        {
+         "q": "Simplify 5x^2 + 3x − 2x^2 + x.",
+         "choices": [
+          "3x^2 + 4x",
+          "7x^2 + 4x",
+          "3x^2 + 3x",
+          "7x^4"
+         ],
+         "a": 0,
+         "why": "Combine like terms: 5x^2 − 2x^2 = 3x^2 and 3x + x = 4x. Mixing the x^2 and x terms together gives the wrong 7x^4."
+        }
+       ]
+      },
+      {
+       "title": "Adding and Subtracting Polynomials",
+       "mainIdea": "Add polynomials by combining like terms; subtract by distributing the minus sign to every term of the second polynomial first.",
+       "reading": [
+        "A school store sells notebooks and pens. Monday's income is 3n + 2p dollars, where n is the price of a notebook and p is the price of a pen. Tuesday's income is 5n + 4p. The total is (3n + 2p) + (5n + 4p) = 8n + 6p. Adding polynomials means adding the *like terms*: 3n + 5n = 8n and 2p + 4p = 6p. With powers it works the same way: (2x^2 + 3x − 1) + (x^2 − 5x + 4) = 3x^2 − 2x + 3. Line up the like terms: 2x^2 + x^2 = 3x^2, 3x − 5x = −2x, and −1 + 4 = 3.",
+        "Subtraction needs one extra step. (4x^2 + x − 6) − (x^2 − 3x + 2) asks you to take away the whole second polynomial, every term of it. *Distribute* the minus sign: −(x^2 − 3x + 2) = −x^2 + 3x − 2. Now add: 4x^2 − x^2 = 3x^2, x + 3x = 4x, and −6 − 2 = −8. The result is 3x^2 + 4x − 8. Check with x = 1: the original is (4 + 1 − 6) − (1 − 3 + 2) = −1 − 0 = −1, and 3 + 4 − 8 = −1. It matches.",
+        "Substituting a number is a good check on any polynomial arithmetic. Degree is another check: adding two quadratics never gives a degree above 2, though it can give less, since the x^2 terms can cancel: (x^2 + 5) + (−x^2 + x) = x + 5. Polynomials are *closed* under addition and subtraction, which means the result is always another polynomial, just as adding two integers always gives an integer.",
+        "The classic mistake is subtracting only the first term: writing 4x^2 − x^2 − 3x + 2 and getting 3x^2 − 3x + 2. The minus sign must reach the −3x and the +2 and flip both of them. Write the sign change on its own line before combining anything, and then substitute a number to make sure the result matches."
+       ],
+       "words": [
+        {
+         "w": "like terms",
+         "d": "terms with the same variable raised to the same power, such as 3x^2 and −5x^2"
+        },
+        {
+         "w": "distribute",
+         "d": "to multiply every term inside parentheses by the factor outside, including a minus sign"
+        },
+        {
+         "w": "closed",
+         "d": "a set is closed under an operation when the result always stays in the set; polynomials are closed under addition"
+        }
+       ],
+       "look": {
+        "type": "think",
+        "title": "Perimeter Without Numbers",
+        "text": "A triangle has sides 2x + 1, 3x − 2 and x + 5. Its perimeter is the sum: 2x + 3x + x = 6x and 1 − 2 + 5 = 4, so the perimeter is 6x + 4. If x = 3, the sides are 7, 7 and 8, and 6(3) + 4 = 22 = 7 + 7 + 8. Now a rectangle has perimeter 10x + 6, and one of its sides is 2x + 1. Half the perimeter is the sum of one length and one width.",
+        "prompt": "What expression gives the other side of the rectangle? Check your answer with x = 2."
+       },
+       "check": [
+        {
+         "q": "Add (3x^2 + 2x) + (x^2 − 7x).",
+         "choices": [
+          "4x^2 − 5x",
+          "4x^2 + 5x",
+          "3x^4 − 5x",
+          "4x^2 − 9x"
+         ],
+         "a": 0,
+         "why": "3x^2 + x^2 = 4x^2 and 2x − 7x = −5x. Sign slips give +5x or −9x."
+        },
+        {
+         "q": "Subtract (5x − 3) − (2x − 4).",
+         "choices": [
+          "3x − 7",
+          "3x + 1",
+          "3x − 1",
+          "7x − 7"
+         ],
+         "a": 1,
+         "why": "Distribute the minus: 5x − 3 − 2x + 4 = 3x + 1. Forgetting to flip the −4 gives 3x − 7."
+        },
+        {
+         "q": "Why must the minus sign be distributed to every term when subtracting a polynomial?",
+         "choices": [
+          "because minus signs always come first",
+          "because the x^2 terms must cancel",
+          "because polynomials cannot have negative terms",
+          "because subtracting takes away the whole polynomial, not just its first term"
+         ],
+         "a": 3,
+         "why": "The parentheses mean the entire second polynomial is subtracted, so each of its terms changes sign."
+        }
+       ]
+      },
+      {
+       "title": "Multiplying With the Area Model",
+       "mainIdea": "To multiply polynomials, multiply every term of one by every term of the other; an area model organizes the products as boxes.",
+       "reading": [
+        "A rectangle is x + 3 units long and x + 2 units wide. Its area is (x + 3)(x + 2). Split the rectangle into four pieces: an x by x square, an x by 2 strip, a 3 by x strip, and a 3 by 2 corner. The pieces have areas x^2, 2x, 3x and 6, so the total is x^2 + 5x + 6. This *area model* shows why multiplying two binomials produces four products before combining. Each term of the first factor meets each term of the second.",
+        "Without the picture, use the *distributive property* twice: (x + 3)(x + 2) = x(x + 2) + 3(x + 2) = x^2 + 2x + 3x + 6 = x^2 + 5x + 6. Some students remember the four products as First, Outer, Inner, Last. Check with x = 10: 13 × 12 = 156, and 100 + 50 + 6 = 156. Multiplying by a monomial is simpler: 3x(2x^2 − 5x + 1) = 6x^3 − 15x^2 + 3x. Multiply the coefficients and add the exponents in each term.",
+        "Signs need care. (2x − 5)(x + 4) = 2x^2 + 8x − 5x − 20 = 2x^2 + 3x − 20. The middle terms have opposite signs, so they partly cancel. (x − 3)(x − 6) = x^2 − 6x − 3x + 18 = x^2 − 9x + 18; two negatives make the last term positive. The area model still works with negatives. Treat each box as a signed product.",
+        "The most common mistake is multiplying only the first terms and the last terms: (x + 3)(x + 2) = x^2 + 6. That skips the two strips, the outer and inner products, which together give 5x. Draw the four boxes until the pattern is automatic. A second mistake is adding coefficients when they should be multiplied: 2x × 4x = 8x^2, not 6x^2."
+       ],
+       "words": [
+        {
+         "w": "area model",
+         "d": "a rectangle split into boxes, one for each product of terms, used to organize multiplication"
+        },
+        {
+         "w": "distributive property",
+         "d": "a(b + c) = ab + ac; the factor outside multiplies each term inside"
+        },
+        {
+         "w": "binomial",
+         "d": "a polynomial with exactly two terms, like x + 3 or 2x − 5"
+        }
+       ],
+       "look": {
+        "type": "think",
+        "title": "Four Boxes for the Garden",
+        "text": "The chapter story's outer rectangle is (10 + 2x) by (6 + 2x). Draw a big rectangle and split each side: 10 and 2x along the top, 6 and 2x down the side. The four boxes hold 10 × 6 = 60, 10 × 2x = 20x, 2x × 6 = 12x and 2x × 2x = 4x^2. Add them: 4x^2 + 32x + 60. Now draw the boxes for a simpler product, (x + 5)(x + 1).",
+        "prompt": "What are the four box areas for (x + 5)(x + 1), and what is the total? Check with x = 2."
+       },
+       "check": [
+        {
+         "q": "Multiply (x + 4)(x + 5).",
+         "choices": [
+          "x^2 + 20",
+          "x^2 + 9x + 20",
+          "x^2 + 20x + 9",
+          "2x + 9"
+         ],
+         "a": 1,
+         "why": "Four products: x^2 + 5x + 4x + 20 = x^2 + 9x + 20. Skipping the outer and inner products gives x^2 + 20."
+        },
+        {
+         "q": "Multiply 4x(3x^2 − 2x + 7).",
+         "choices": [
+          "12x^3 − 8x^2 + 28x",
+          "12x^2 − 8x + 28",
+          "12x^3 − 8x + 28x",
+          "7x^3 + 2x^2 + 11x"
+         ],
+         "a": 0,
+         "why": "Distribute 4x to each term: 4x × 3x^2 = 12x^3, 4x × (−2x) = −8x^2, 4x × 7 = 28x. Every term gains one power of x."
+        },
+        {
+         "q": "Multiply (x − 2)(x − 7).",
+         "choices": [
+          "x^2 − 9x − 14",
+          "x^2 + 9x + 14",
+          "x^2 − 9x + 14",
+          "x^2 − 5x + 14"
+         ],
+         "a": 2,
+         "why": "x^2 − 7x − 2x + 14 = x^2 − 9x + 14. Two negatives multiply to a positive 14, and the middle terms add to −9x."
+        }
+       ]
+      },
+      {
+       "title": "Special Products",
+       "mainIdea": "Squaring a binomial gives a^2 + 2ab + b^2, and a sum times a difference gives a^2 − b^2; these identities hold for every value of the variable.",
+       "reading": [
+        "Square a binomial with the area model: (x + 5)^2 = (x + 5)(x + 5). The four boxes are x^2, 5x, 5x and 25, so (x + 5)^2 = x^2 + 10x + 25. The middle term is twice the product of the two parts. In general, (a + b)^2 = a^2 + 2ab + b^2 and (a − b)^2 = a^2 − 2ab + b^2. The result is a *perfect square trinomial*. Example: (3x − 4)^2 = 9x^2 − 24x + 16, because 2 × 3x × 4 = 24x. Check with x = 2: (6 − 4)^2 = 4, and 36 − 48 + 16 = 4.",
+        "Now multiply a sum by a difference: (x + 6)(x − 6) = x^2 − 6x + 6x − 36 = x^2 − 36. The middle terms cancel every time. This is the *difference of squares* pattern: (a + b)(a − b) = a^2 − b^2. It gives a mental-math trick: 23 × 17 = (20 + 3)(20 − 3) = 400 − 9 = 391. With variables, (2x + 7)(2x − 7) = 4x^2 − 49.",
+        "These patterns are examples of an *identity*: an equation true for every value of the variable, not just for one solution. You can test an identity by substituting several numbers, but proving it means expanding both sides and showing they match term for term. Identities reveal structure. Seeing x^2 − 36 as x squared minus 6 squared, or 4x^2 + 12x + 9 as (2x + 3) squared, is the key to factoring in the next section.",
+        "The most common mistake in all of algebra may be (x + 5)^2 = x^2 + 25. That drops the middle term 10x. Test it: x = 1 gives 36 on the left and 26 on the right, so the shortcut is false. Squaring a sum is not the same as adding the squares. Draw the four boxes if you are ever unsure."
+       ],
+       "words": [
+        {
+         "w": "perfect square trinomial",
+         "d": "a trinomial that is the square of a binomial, like x^2 + 10x + 25 = (x + 5)^2"
+        },
+        {
+         "w": "difference of squares",
+         "d": "the pattern a^2 − b^2 = (a + b)(a − b), such as x^2 − 36 = (x + 6)(x − 6)"
+        },
+        {
+         "w": "identity",
+         "d": "an equation that is true for every value of the variable, like (a + b)^2 = a^2 + 2ab + b^2"
+        }
+       ],
+       "look": {
+        "type": "think",
+        "title": "Mental Math With a Pattern",
+        "text": "Products of numbers the same distance above and below a round number are easy. 31 × 29 = (30 + 1)(30 − 1) = 900 − 1 = 899. 42 × 38 = (40 + 2)(40 − 2) = 1,600 − 4 = 1,596. The pattern (a + b)(a − b) = a^2 − b^2 does the work; no carrying needed.",
+        "prompt": "Use the pattern to compute 52 × 48 in your head. Then check it with ordinary multiplication."
+       },
+       "check": [
+        {
+         "q": "Expand (x + 7)^2.",
+         "choices": [
+          "x^2 + 49",
+          "x^2 + 14x + 49",
+          "x^2 + 7x + 49",
+          "2x + 14"
+         ],
+         "a": 1,
+         "why": "(x + 7)(x + 7) = x^2 + 7x + 7x + 49 = x^2 + 14x + 49. The middle term is 2 × 7 × x, and it cannot be dropped."
+        },
+        {
+         "q": "Multiply (3x + 2)(3x − 2).",
+         "choices": [
+          "9x^2 + 12x − 4",
+          "9x^2 − 12x + 4",
+          "3x^2 − 4",
+          "9x^2 − 4"
+         ],
+         "a": 3,
+         "why": "Sum times difference: (3x)^2 − 2^2 = 9x^2 − 4. The middle terms −6x and +6x cancel."
+        },
+        {
+         "q": "Which computation uses the difference of squares pattern?",
+         "choices": [
+          "25 × 25 = 625",
+          "21 × 19 = 400 − 1",
+          "20 × 22 = 440",
+          "30 × 30 = 900"
+         ],
+         "a": 1,
+         "why": "21 × 19 = (20 + 1)(20 − 1) = 20^2 − 1^2 = 399. The others are plain squares or an ordinary product."
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "title": "Factoring",
+     "lessons": [
+      {
+       "title": "Factoring Out the Greatest Common Factor",
+       "mainIdea": "Factoring reverses multiplying; always begin by pulling out the greatest common factor of all the terms.",
+       "reading": [
+        "Multiplying 3x(2x + 5) gives 6x^2 + 15x. *Factoring* runs that backward: start from 6x^2 + 15x and write it as a product. Ask what every term shares. The coefficients 6 and 15 share 3. The variable parts x^2 and x share x. So the *greatest common factor*, or GCF, is 3x. Divide each term by it: 6x^2 ÷ 3x = 2x and 15x ÷ 3x = 5. Write 6x^2 + 15x = 3x(2x + 5). Multiply back out to check.",
+        "Try 12x^3 − 18x^2 + 6x. The GCF of 12, 18 and 6 is 6, and the lowest power of x present is x, so the GCF is 6x. Dividing gives 2x^2 − 3x + 1, so the factored form is 6x(2x^2 − 3x + 1). Notice the 1 at the end: 6x ÷ 6x = 1, and it must stay. Without it the factored form would multiply back to 12x^3 − 18x^2, with the last term missing. That lost 1 is the most common GCF mistake.",
+        "If the leading coefficient is negative, factor out a negative GCF so the first term inside is positive: −4x^2 + 8x = −4x(x − 2). Sometimes the common factor is a whole binomial. In 5(x + 3) + x(x + 3), the two terms share (x + 3), so the expression equals (x + 3)(5 + x). That move powers factoring by grouping later in this chapter.",
+        "A second mistake is pulling out a factor that is common but not the greatest: 6x^2 + 15x = 3(2x^2 + 5x) is true but unfinished, since 2x^2 + 5x still shares an x. To *factor completely*, check that the terms in parentheses have no common factor left and that no factor can be broken down further."
+       ],
+       "words": [
+        {
+         "w": "factoring",
+         "d": "writing an expression as a product of factors; the reverse of multiplying out"
+        },
+        {
+         "w": "greatest common factor",
+         "d": "the largest expression that divides every term, like 3x for 6x^2 + 15x"
+        },
+        {
+         "w": "factor completely",
+         "d": "to keep factoring until no factor can be broken into smaller factors"
+        }
+       ],
+       "look": {
+        "type": "think",
+        "title": "The Path's Length",
+        "text": "In the chapter story the gravel path has area 4x^2 + 32x. The coefficients 4 and 32 share 4, and both terms share x, so the GCF is 4x. Dividing gives 4x^2 ÷ 4x = x and 32x ÷ 4x = 8, so 4x^2 + 32x = 4x(x + 8). Picture a strip of gravel 4x wide.",
+        "prompt": "If a strip of area 4x^2 + 32x is 4x wide, what expression gives its length? Check by multiplying the width and length."
+       },
+       "check": [
+        {
+         "q": "What is the GCF of 8x^3 + 12x^2?",
+         "choices": [
+          "4x",
+          "4x^2",
+          "2x^2",
+          "8x^2"
+         ],
+         "a": 1,
+         "why": "8 and 12 share 4, and x^3 and x^2 share x^2, so the GCF is 4x^2. Then 8x^3 + 12x^2 = 4x^2(2x + 3)."
+        },
+        {
+         "q": "Factor 10x^2 − 25x completely.",
+         "choices": [
+          "5(2x^2 − 5x)",
+          "5x(2x − 25)",
+          "5x(2x − 5)",
+          "x(10x − 25)"
+         ],
+         "a": 2,
+         "why": "The GCF is 5x: 10x^2 ÷ 5x = 2x and 25x ÷ 5x = 5. The choices with 5 or x alone are not complete."
+        },
+        {
+         "q": "Factor 7x^3 + 7x^2 + 7x.",
+         "choices": [
+          "7x(x^2 + x)",
+          "7(x^3 + x^2 + x)",
+          "7x(x^2 + x + 1)",
+          "7x^3(1 + x + x^2)"
+         ],
+         "a": 2,
+         "why": "The GCF is 7x, and 7x ÷ 7x = 1 must stay: 7x(x^2 + x + 1). Dropping the 1 loses the last term when you multiply back."
+        }
+       ]
+      },
+      {
+       "title": "Factoring x^2 + bx + c",
+       "mainIdea": "To factor x^2 + bx + c, find two numbers that multiply to c and add to b; they are the constants in (x + p)(x + q).",
+       "reading": [
+        "A rectangle has area x^2 + 7x + 12. What are its side lengths? Since (x + p)(x + q) = x^2 + (p + q)x + pq, you need two numbers that multiply to 12 and add to 7. List each *factor pair* of 12: 1 and 12 (sum 13), 2 and 6 (sum 8), 3 and 4 (sum 7). So x^2 + 7x + 12 = (x + 3)(x + 4). Check by multiplying: x^2 + 4x + 3x + 12. It matches.",
+        "Signs tell you where to look. In x^2 − 8x + 15, the product 15 is positive and the sum −8 is negative, so both numbers are negative: −3 and −5. The factors are (x − 3)(x − 5). In x^2 + 2x − 15, the product is negative, so one number is positive and one is negative; they are 5 and −3, since 5 + (−3) = 2. The factors are (x + 5)(x − 3). In x^2 − 2x − 15 the signs swap: (x − 5)(x + 3).",
+        "Not every *trinomial* factors with integers. x^2 + 3x + 5 needs two numbers with product 5 and sum 3, but the only pairs are 1 and 5 (sum 6) or −1 and −5 (sum −6). So it is a *prime polynomial* over the integers. Later you will still solve equations like x^2 + 3x + 5 = 0 with other tools. Always factor out a GCF first: 2x^2 + 14x + 24 = 2(x^2 + 7x + 12) = 2(x + 3)(x + 4).",
+        "A common mistake is finding numbers that multiply to c but forgetting the sum: (x + 2)(x + 6) multiplies to x^2 + 8x + 12, not x^2 + 7x + 12. Always multiply your answer back out. Another mistake is losing a sign: x^2 − 8x + 15 is (x − 3)(x − 5), not (x + 3)(x + 5)."
+       ],
+       "words": [
+        {
+         "w": "trinomial",
+         "d": "a polynomial with exactly three terms, like x^2 + 7x + 12"
+        },
+        {
+         "w": "factor pair",
+         "d": "two numbers that multiply to a given number; 3 and 4 are a factor pair of 12"
+        },
+        {
+         "w": "prime polynomial",
+         "d": "a polynomial that cannot be factored using integers, like x^2 + 3x + 5"
+        }
+       ],
+       "look": {
+        "type": "think",
+        "title": "Hunting Through the Pairs",
+        "text": "To factor x^2 + 11x + 24, list the factor pairs of 24 with their sums: 1 and 24 (25), 2 and 12 (14), 3 and 8 (11), 4 and 6 (10). Only one pair adds to 11. For x^2 − 10x + 24, the same pairs work with both signs negative, and you need a sum of −10.",
+        "prompt": "Factor x^2 + 11x + 24 and x^2 − 10x + 24. Multiply each answer back out to check."
+       },
+       "check": [
+        {
+         "q": "Factor x^2 + 9x + 20.",
+         "choices": [
+          "(x + 4)(x + 5)",
+          "(x + 2)(x + 10)",
+          "(x + 1)(x + 20)",
+          "(x + 9)(x + 20)"
+         ],
+         "a": 0,
+         "why": "4 × 5 = 20 and 4 + 5 = 9. The pair 2 and 10 multiplies to 20 but adds to 12."
+        },
+        {
+         "q": "Factor x^2 − x − 12.",
+         "choices": [
+          "(x − 3)(x − 4)",
+          "(x + 3)(x − 4)",
+          "(x − 3)(x + 4)",
+          "(x − 1)(x − 12)"
+         ],
+         "a": 1,
+         "why": "Need product −12 and sum −1: 3 and −4. So (x + 3)(x − 4). Check the middle: −4x + 3x = −x."
+        },
+        {
+         "q": "Which trinomial does NOT factor with integers?",
+         "choices": [
+          "x^2 + 5x + 6",
+          "x^2 + 6x + 9",
+          "x^2 + 4x + 6",
+          "x^2 − 5x + 6"
+         ],
+         "a": 2,
+         "why": "For x^2 + 4x + 6 the pairs of 6 are 1 and 6 (sum 7) and 2 and 3 (sum 5); neither adds to 4. The others factor as (x + 2)(x + 3), (x + 3)^2 and (x − 2)(x − 3)."
+        }
+       ]
+      },
+      {
+       "title": "Factoring ax^2 + bx + c",
+       "mainIdea": "When the leading coefficient is not 1, find two numbers that multiply to a × c and add to b, then split the middle term and group.",
+       "reading": [
+        "Factor 2x^2 + 7x + 3. The *leading coefficient* is 2, so guessing (2x + ?)(x + ?) is possible but slow. A reliable method: multiply a × c = 2 × 3 = 6, then find two numbers with product 6 and sum 7. They are 1 and 6. *Split the middle term*: 2x^2 + x + 6x + 3. Group in pairs: (2x^2 + x) + (6x + 3) = x(2x + 1) + 3(2x + 1). Both groups share (2x + 1), so the answer is (2x + 1)(x + 3). Multiply back: 2x^2 + 6x + x + 3. It matches.",
+        "Try 6x^2 − 11x + 4. Here a × c = 24 and the sum is −11, so both numbers are negative: −3 and −8 (product 24, sum −11). Split: 6x^2 − 3x − 8x + 4. Group: 3x(2x − 1) − 4(2x − 1). Note that −4 was factored out of the second pair, so that −8x + 4 = −4(2x − 1). Answer: (2x − 1)(3x − 4). Check the outer and inner products: 2x × (−4) + (−1)(3x) = −8x − 3x = −11x.",
+        "The order of the split does not matter. Splitting 7x as 6x + x gives (2x^2 + 6x) + (x + 3) = 2x(x + 3) + 1(x + 3) = (x + 3)(2x + 1), the same result. If the *grouping* fails to produce a shared binomial, either the two numbers are wrong or the trinomial is prime. And as always, pull out a GCF first: 4x^2 + 14x + 6 = 2(2x^2 + 7x + 3) = 2(2x + 1)(x + 3).",
+        "The most common mistake is using c instead of a × c when hunting for the pair. For 2x^2 + 7x + 3, looking for a product of 3 gives 1 and 3, which sum to 4, not 7. Another is dropping a negative when factoring the second pair: −8x + 4 = −4(2x − 1), not 4(2x − 1)."
+       ],
+       "words": [
+        {
+         "w": "leading coefficient",
+         "d": "the coefficient of the highest-degree term; in 2x^2 + 7x + 3 it is 2"
+        },
+        {
+         "w": "split the middle term",
+         "d": "to rewrite bx as the sum of two terms whose coefficients multiply to a × c"
+        },
+        {
+         "w": "grouping",
+         "d": "factoring a common factor from each pair of terms, then factoring out the shared binomial"
+        }
+       ],
+       "look": {
+        "type": "think",
+        "title": "Split, Group, Factor",
+        "text": "For 3x^2 + 10x + 8, compute a × c = 3 × 8 = 24. Pairs of 24: 1 and 24, 2 and 12, 3 and 8, 4 and 6. The pair that adds to 10 is 4 and 6. Split: 3x^2 + 4x + 6x + 8. Group the first two terms and the last two terms, factor each pair, and look for the shared binomial.",
+        "prompt": "Finish factoring 3x^2 + 10x + 8. What binomial do the two groups share, and what is the final factored form?"
+       },
+       "check": [
+        {
+         "q": "To factor 3x^2 + 11x + 6, which two numbers do you look for?",
+         "choices": [
+          "product 6, sum 11",
+          "product 18, sum 11",
+          "product 3, sum 6",
+          "product 11, sum 18"
+         ],
+         "a": 1,
+         "why": "The product must be a × c = 3 × 6 = 18 and the sum is b = 11. The pair is 2 and 9, giving (3x + 2)(x + 3)."
+        },
+        {
+         "q": "Factor 2x^2 + 5x + 2.",
+         "choices": [
+          "(2x + 2)(x + 1)",
+          "(x + 1)(x + 2)",
+          "(2x + 5)(x + 2)",
+          "(2x + 1)(x + 2)"
+         ],
+         "a": 3,
+         "why": "a × c = 4, and 1 + 4 = 5. Split: 2x^2 + x + 4x + 2 = x(2x + 1) + 2(2x + 1) = (2x + 1)(x + 2). Check: 4x + x = 5x."
+        },
+        {
+         "q": "Factor 5x^2 − 13x + 6.",
+         "choices": [
+          "(5x − 2)(x − 3)",
+          "(5x + 3)(x + 2)",
+          "(5x − 3)(x − 2)",
+          "(5x − 6)(x − 1)"
+         ],
+         "a": 2,
+         "why": "a × c = 30, and −3 + (−10) = −13. Split: 5x^2 − 3x − 10x + 6 = x(5x − 3) − 2(5x − 3) = (5x − 3)(x − 2). Check the middle: −10x − 3x = −13x."
+        }
+       ]
+      },
+      {
+       "title": "Special Factoring Patterns",
+       "mainIdea": "Recognize a^2 − b^2 as (a + b)(a − b) and a^2 ± 2ab + b^2 as (a ± b)^2 to factor in a single step.",
+       "reading": [
+        "x^2 − 49 has no middle term. Its two terms are perfect squares, x^2 and 7^2, separated by a minus sign, so it is a *difference of squares*: x^2 − 49 = (x + 7)(x − 7). Check: the middle terms −7x and +7x cancel. The pattern works with coefficients too: 9x^2 − 25 = (3x)^2 − 5^2 = (3x + 5)(3x − 5). And 50x^2 − 8 = 2(25x^2 − 4) = 2(5x + 2)(5x − 2), after pulling out the GCF.",
+        "A *sum of squares* like x^2 + 49 does not factor with real numbers. Test it: (x + 7)(x + 7) = x^2 + 14x + 49 and (x + 7)(x − 7) = x^2 − 49; neither works. Leave x^2 + 49 alone, and do not confuse it with x^2 − 49. The minus sign is what makes the pattern work.",
+        "A perfect square trinomial is the other pattern. x^2 + 12x + 36 has a *perfect square* at each end, x^2 and 6^2, and the middle term is 2 × 6 × x = 12x. So it equals (x + 6)^2. For 4x^2 − 20x + 25, the ends are (2x)^2 and 5^2, and 2 × 2x × 5 = 20x matches the middle, so it is (2x − 5)^2, with the minus sign following the middle term. If the middle does not match, use the regular trinomial method: x^2 + 10x + 36 is not a perfect square, since 2 × 6 = 12, not 10.",
+        "Recognizing these patterns saves time and reveals structure. A common mistake is writing x^2 − 49 as (x − 7)^2; multiply back to see it gives x^2 − 14x + 49. Another is stopping early: x^4 − 16 = (x^2 + 4)(x^2 − 4), and x^2 − 4 factors again to (x + 2)(x − 2), so the complete answer is (x^2 + 4)(x + 2)(x − 2)."
+       ],
+       "words": [
+        {
+         "w": "difference of squares",
+         "d": "an expression a^2 − b^2, which factors as (a + b)(a − b)"
+        },
+        {
+         "w": "sum of squares",
+         "d": "an expression a^2 + b^2, which does not factor with real numbers"
+        },
+        {
+         "w": "perfect square",
+         "d": "an expression that is something squared, like 25, x^2, 9x^2 or (x + 6)^2"
+        }
+       ],
+       "look": {
+        "type": "think",
+        "title": "Which Pattern Is It?",
+        "text": "Look at 16x^2 − 81. Both terms are squares, (4x)^2 and 9^2, with a minus sign between them, and there is no middle term. Now look at x^2 − 18x + 81. The ends are x^2 and 9^2, and 2 × 9 × x = 18x matches the middle, with a minus sign. Two different patterns, two one-step factorings.",
+        "prompt": "Factor 16x^2 − 81 and x^2 − 18x + 81. Which pattern does each one use, and how do you know?"
+       },
+       "check": [
+        {
+         "q": "Factor x^2 − 100.",
+         "choices": [
+          "(x − 10)^2",
+          "(x + 10)(x − 10)",
+          "(x + 50)(x − 50)",
+          "(x + 10)^2"
+         ],
+         "a": 1,
+         "why": "x^2 − 100 = x^2 − 10^2 = (x + 10)(x − 10). The square (x − 10)^2 would have a middle term −20x."
+        },
+        {
+         "q": "Which trinomial is a perfect square?",
+         "choices": [
+          "x^2 + 8x + 16",
+          "x^2 + 4x + 16",
+          "x^2 + 16x + 8",
+          "x^2 + 8x + 64"
+         ],
+         "a": 0,
+         "why": "x^2 + 8x + 16 has ends x^2 and 4^2 with middle 2 × 4 × x = 8x, so it is (x + 4)^2. The others fail the middle-term test."
+        },
+        {
+         "q": "Factor 25x^2 − 30x + 9.",
+         "choices": [
+          "(5x + 3)^2",
+          "(25x − 3)(x − 3)",
+          "(5x − 3)^2",
+          "(5x − 9)(5x − 1)"
+         ],
+         "a": 2,
+         "why": "Ends (5x)^2 and 3^2, middle 2 × 5x × 3 = 30x with a minus sign: (5x − 3)^2. Expand to check: 25x^2 − 15x − 15x + 9."
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "title": "Grouping and Solving",
+     "lessons": [
+      {
+       "title": "Factoring by Grouping",
+       "mainIdea": "For four-term polynomials, factor a GCF from each pair of terms; if the pairs share a binomial, factor it out.",
+       "reading": [
+        "x^3 + 3x^2 + 4x + 12 has four terms and no factor common to all four. *Group* the terms in pairs: (x^3 + 3x^2) + (4x + 12). Factor each pair: x^2(x + 3) + 4(x + 3). Now both parts share (x + 3), a *common binomial factor*. Pull it out: (x + 3)(x^2 + 4). Multiply back: x^3 + 4x + 3x^2 + 12, the original polynomial with its terms in a different order.",
+        "Grouping needs the right pairing and the right signs. In 2x^3 − 6x^2 − 5x + 15, the pairs are (2x^3 − 6x^2) + (−5x + 15). The first pair gives 2x^2(x − 3). For the second pair, factor out −5 so the binomial matches: −5(x − 3). Then the expression is (x − 3)(2x^2 − 5). If you factored out +5 instead, you would get 5(−x + 3), which does not match (x − 3), and grouping would seem to fail.",
+        "Grouping is the engine behind the ax^2 + bx + c method from earlier: splitting the middle term turns a trinomial into four terms, and then you group. It also handles two variables: xy + 2x + 3y + 6 = x(y + 2) + 3(y + 2) = (y + 2)(x + 3). When the first pairing fails, try another order. For x^3 + 2x + 5x^2 + 10, reorder to x^3 + 5x^2 + 2x + 10 = x^2(x + 5) + 2(x + 5) = (x + 5)(x^2 + 2).",
+        "Here is a *factoring plan* for any polynomial. First, factor out the GCF. Second, count terms: two terms, check for a difference of squares; three terms, try a perfect square or the trinomial methods; four terms, group. Third, check whether any factor breaks down further. Fourth, multiply back to confirm. A common mistake is stopping at x^2(x + 3) + 4(x + 3). That is a sum, not a product, until you pull out (x + 3)."
+       ],
+       "words": [
+        {
+         "w": "group",
+         "d": "to pair up terms of a polynomial so that each pair can be factored"
+        },
+        {
+         "w": "common binomial factor",
+         "d": "a two-term factor shared by both groups, like (x + 3) in x^2(x + 3) + 4(x + 3)"
+        },
+        {
+         "w": "factoring plan",
+         "d": "the order of steps: GCF first, then a pattern by number of terms, then check and multiply back"
+        }
+       ],
+       "look": {
+        "type": "think",
+        "title": "Grouping With a Negative",
+        "text": "Factor 3x^3 − 12x^2 + 2x − 8. Pair the terms: (3x^3 − 12x^2) + (2x − 8). The first pair shares 3x^2, giving 3x^2(x − 4). The second pair shares 2, giving 2(x − 4). Both pairs now show the same binomial. If the second pair had been −2x + 8, you would factor out −2 instead to keep (x − 4).",
+        "prompt": "Finish factoring 3x^3 − 12x^2 + 2x − 8. Then multiply your answer back out to confirm all four terms return."
+       },
+       "check": [
+        {
+         "q": "Factor x^3 + 5x^2 + 2x + 10.",
+         "choices": [
+          "(x + 5)(x^2 + 2)",
+          "(x + 2)(x^2 + 5)",
+          "(x^2 + 5x)(2x + 10)",
+          "(x + 5)(x + 2)"
+         ],
+         "a": 0,
+         "why": "x^2(x + 5) + 2(x + 5) = (x + 5)(x^2 + 2). Multiply back: x^3 + 2x + 5x^2 + 10."
+        },
+        {
+         "q": "After grouping you have 4x(x − 2) + 3(x − 2). What is the factored form?",
+         "choices": [
+          "4x(x − 2) + 3(x − 2) is already factored",
+          "(x − 2)(4x + 3)",
+          "(x − 2)(4x − 3)",
+          "(4x + 3)(x + 2)"
+         ],
+         "a": 1,
+         "why": "Both terms share (x − 2), so pull it out: (x − 2)(4x + 3). A sum of two products is not yet a factored form."
+        },
+        {
+         "q": "In 2x^3 − 8x^2 − 3x + 12, what should you factor out of the last pair, −3x + 12?",
+         "choices": [
+          "3",
+          "12",
+          "−12",
+          "−3"
+         ],
+         "a": 3,
+         "why": "The first pair gives 2x^2(x − 4). To match (x − 4), write −3x + 12 = −3(x − 4). Factoring out +3 gives 3(−x + 4), which does not match."
+        }
+       ]
+      },
+      {
+       "title": "The Zero-Product Property",
+       "mainIdea": "If a product equals zero, at least one factor is zero, so a factored equation splits into simple equations.",
+       "reading": [
+        "Back to the garden path. Its area is 4x^2 + 32x, and it must hold exactly 80 square feet of gravel: 4x^2 + 32x = 80. Move everything to one side: 4x^2 + 32x − 80 = 0. Factor: 4(x^2 + 8x − 20) = 4(x + 10)(x − 2) = 0. Now use the *zero-product property*: if two numbers multiply to zero, one of them must be zero. So x + 10 = 0 or x − 2 = 0, which gives x = −10 or x = 2. A width cannot be negative, so the path is 2 feet wide. Check: 4(4) + 32(2) = 16 + 64 = 80.",
+        "The property works only when one side is exactly 0. (x − 3)(x + 1) = 5 tells you nothing about the factors separately, because many pairs of numbers multiply to 5. Expand instead: x^2 − 2x − 3 = 5, then x^2 − 2x − 8 = 0, then (x − 4)(x + 2) = 0, so x = 4 or x = −2. Check x = 4: (1)(5) = 5. Check x = −2: (−5)(−1) = 5. Both work.",
+        "The solutions of a polynomial equation are also called a *root* of the equation or a *zero of a function*. They show where the graph crosses the x-axis, which is why factored form is so useful: f(x) = (x − 4)(x + 2) has zeros at 4 and −2 that you can read directly. A perfect square such as x^2 − 6x + 9 = (x − 3)^2 = 0 has one repeated root, x = 3. An equation like x^2 = 5x also yields to factoring: x^2 − 5x = 0, so x(x − 5) = 0 and x = 0 or x = 5.",
+        "In that last example, the common mistake is dividing both sides by x to get x = 5. Dividing by x throws away the solution x = 0. Never divide an equation by an expression that could be zero; factor it out instead. A second mistake is solving (x + 10)(x − 2) = 0 as x = 10 and x = −2. Each factor set to zero gives the opposite sign of its constant."
+       ],
+       "words": [
+        {
+         "w": "zero-product property",
+         "d": "if a × b = 0, then a = 0 or b = 0; it lets a factored equation split into simple equations"
+        },
+        {
+         "w": "root",
+         "d": "a solution of an equation; the roots of (x + 10)(x − 2) = 0 are −10 and 2"
+        },
+        {
+         "w": "zero of a function",
+         "d": "an input that makes the function's output 0, where its graph crosses the x-axis"
+        }
+       ],
+       "look": {
+        "type": "think",
+        "title": "When Does the Ball Land?",
+        "text": "A ball kicked straight up from the ground has height h = −16t^2 + 64t feet after t seconds. It is on the ground when h = 0: −16t^2 + 64t = 0. The GCF is −16t, so −16t(t − 4) = 0. By the zero-product property, −16t = 0 or t − 4 = 0. One solution is t = 0, the moment of the kick.",
+        "prompt": "What is the other solution, and what does it mean for the ball? Check it in the original equation."
+       },
+       "check": [
+        {
+         "q": "Solve (x + 6)(x − 1) = 0.",
+         "choices": [
+          "x = 6 or x = −1",
+          "x = −6 or x = 1",
+          "x = −6 or x = −1",
+          "x = 6 or x = 1"
+         ],
+         "a": 1,
+         "why": "Set each factor to zero: x + 6 = 0 gives x = −6, and x − 1 = 0 gives x = 1. The signs flip from what appears in the factors."
+        },
+        {
+         "q": "Solve x^2 − 7x + 10 = 0.",
+         "choices": [
+          "x = −2 or x = −5",
+          "x = 7 or x = 10",
+          "x = 2 or x = 5",
+          "x = 1 or x = 10"
+         ],
+         "a": 2,
+         "why": "Factor: (x − 2)(x − 5) = 0, since −2 × −5 = 10 and −2 + −5 = −7. So x = 2 or x = 5. Check: 4 − 14 + 10 = 0."
+        },
+        {
+         "q": "Why is dividing both sides of x^2 = 9x by x a bad idea?",
+         "choices": [
+          "because x^2 cannot be divided",
+          "because it gives x = −9",
+          "because 9x is a prime polynomial",
+          "because it loses the solution x = 0"
+         ],
+         "a": 3,
+         "why": "Factoring gives x(x − 9) = 0, so x = 0 or x = 9. Dividing by x hides the x = 0 solution."
+        }
+       ]
+      }
+     ]
+    }
+   ],
+   "review": [
+    {
+     "q": "What is the degree of 4x − x^3 + 2?",
+     "choices": [
+      "1",
+      "4",
+      "2",
+      "3"
+     ],
+     "a": 3,
+     "why": "The highest exponent is 3, on −x^3. In standard form the polynomial is −x^3 + 4x + 2."
+    },
+    {
+     "q": "Multiply (2x + 3)(x − 4).",
+     "choices": [
+      "2x^2 − 12",
+      "2x^2 + 5x − 12",
+      "2x^2 − 5x − 12",
+      "2x^2 − 11x − 12"
+     ],
+     "a": 2,
+     "why": "2x^2 − 8x + 3x − 12 = 2x^2 − 5x − 12. The outer and inner products combine to −5x."
+    },
+    {
+     "q": "Subtract (x^2 + 3x − 2) − (x^2 − x + 5).",
+     "choices": [
+      "4x − 7",
+      "2x + 3",
+      "2x^2 + 4x − 7",
+      "4x + 3"
+     ],
+     "a": 0,
+     "why": "Distribute the minus: x^2 + 3x − 2 − x^2 + x − 5 = 4x − 7. The x^2 terms cancel."
+    },
+    {
+     "q": "Factor x^2 − 5x − 14.",
+     "choices": [
+      "(x − 7)(x − 2)",
+      "(x + 7)(x − 2)",
+      "(x + 7)(x + 2)",
+      "(x − 7)(x + 2)"
+     ],
+     "a": 3,
+     "why": "Need product −14 and sum −5: −7 and 2. So (x − 7)(x + 2). Check the middle: 2x − 7x = −5x."
+    },
+    {
+     "q": "Factor 3x^2 − 12 completely.",
+     "choices": [
+      "3(x + 2)(x − 2)",
+      "3(x − 2)^2",
+      "(3x + 12)(x − 1)",
+      "3(x^2 + 4)"
+     ],
+     "a": 0,
+     "why": "GCF first: 3(x^2 − 4). Then the difference of squares: 3(x + 2)(x − 2)."
+    },
+    {
+     "q": "Solve x^2 + 4x = 21.",
+     "choices": [
+      "x = 7 or x = −3",
+      "x = 21 or x = −4",
+      "x = −7 or x = 3",
+      "x = 0 or x = −4"
+     ],
+     "a": 2,
+     "why": "Rewrite as x^2 + 4x − 21 = 0 and factor: (x + 7)(x − 3) = 0, so x = −7 or x = 3. Check: 9 + 12 = 21."
+    },
+    {
+     "q": "Which equation is an identity, true for every value of x?",
+     "choices": [
+      "(x + 4)^2 = x^2 + 16",
+      "x^2 − 16 = (x − 4)^2",
+      "x + 4 = 8",
+      "(x + 4)(x − 4) = x^2 − 16"
+     ],
+     "a": 3,
+     "why": "Expanding (x + 4)(x − 4) gives x^2 − 16 for every x. The first two are false patterns, and x + 4 = 8 is true only for x = 4."
+    },
+    {
+     "q": "Factor 2x^2 + 9x + 4.",
+     "choices": [
+      "(2x + 1)(x + 4)",
+      "(2x + 4)(x + 1)",
+      "(2x + 2)(x + 2)",
+      "(x + 1)(x + 8)"
+     ],
+     "a": 0,
+     "why": "a × c = 8, and 1 + 8 = 9. Split: 2x^2 + x + 8x + 4 = x(2x + 1) + 4(2x + 1) = (2x + 1)(x + 4). Check: 8x + x = 9x."
+    }
+   ]
+  },
+  {
+   "n": 45,
+   "title": "Quadratic Functions and Equations",
+   "years": "Quadratics",
+   "bigQuestion": "How does one equation describe the whole arc of a thrown ball, and how do we find the moments that matter along it?",
+   "story": {
+    "title": "The Arc of a Free Throw",
+    "kicker": "A basketball leaves a player's hands and its whole flight is already decided by three numbers.",
+    "paragraphs": [
+     "A player at the free-throw line releases the ball about 6 feet above the floor, sending it upward at 24 feet per second. The rim is 10 feet high. From the moment the ball leaves her hands, gravity is the only thing acting on it (ignoring the small push of the air). Its height after t seconds follows one rule: h = −16t^2 + 24t + 6. Three numbers, −16, 24 and 6, describe the entire flight.",
+     "Each number has a job. The 6 is where the ball starts. The 24 is how hard it was thrown upward. The −16 comes from gravity, which in feet and seconds pulls every thrown object down by the same amount, whether it is a basketball or a coin. The t^2 is what makes the path curve. If gravity vanished, the height would be 6 + 24t, a straight line, and the ball would climb forever.",
+     "Plug in a few times. At t = 0.5 seconds, h = −16(0.25) + 12 + 6 = −4 + 18 = 14 feet. At t = 0.75, h = −16(0.5625) + 18 + 6 = −9 + 24 = 15 feet. At t = 1, h = −16 + 24 + 6 = 14 feet. The ball rises, peaks at 15 feet three quarters of a second after release, and comes back down through 14 feet. The heights before and after the peak match in pairs. The curve is symmetric.",
+     "The shooter cares about a different question: when is the ball exactly 10 feet up, level with the rim? That means solving −16t^2 + 24t + 6 = 10. Nothing in linear algebra handles a t^2 next to a t. The equation has two answers, about 0.19 seconds on the way up and about 1.31 seconds on the way down, and the second one is the moment that matters. Finding it takes the tools of this chapter: the shape of the curve, its vertex, and formulas that solve any equation with a square in it."
+    ],
+    "think": "The ball is at 14 feet at t = 0.5 and again at t = 1. Why must a thrown ball pass every height below its peak exactly twice, and which height does it pass only once?"
+   },
+   "sections": [
+    {
+     "title": "The Shape of a Quadratic",
+     "lessons": [
+      {
+       "title": "Parabolas, Vertices and Symmetry",
+       "mainIdea": "The graph of a quadratic function is a parabola, symmetric about a vertical axis through its vertex, its highest or lowest point.",
+       "reading": [
+        "Take f(x) = x^2 − 4x + 3 and make a table: x = 0 gives 3, x = 1 gives 0, x = 2 gives −1, x = 3 gives 0, x = 4 gives 3, and x = 5 gives 8. Plot the points and connect them with a smooth curve. The U shape is a *parabola*. The lowest point, (2, −1), is the *vertex*. The vertical line x = 2 through the vertex is the *axis of symmetry*. Points the same distance on either side have equal heights: f(1) = f(3) = 0 and f(0) = f(4) = 3.",
+        "A *quadratic function* is any function of the form f(x) = ax^2 + bx + c with a not equal to 0. When a is positive, the parabola opens upward and the vertex is the minimum. When a is negative, it opens downward and the vertex is the maximum, as with a thrown ball. The size of a controls the width: y = 3x^2 is narrower than y = x^2, and y = 0.25x^2 is wider. Compare at x = 2: the outputs are 12, 4 and 1.",
+        "Intercepts anchor the graph. The y-intercept is f(0) = c, here 3. An *x-intercept* is where f(x) = 0, here x = 1 and x = 3; these are the zeros of the function. The axis of symmetry passes exactly halfway between the two x-intercepts: (1 + 3)/2 = 2. Not every parabola crosses the x-axis. y = x^2 + 1 has vertex (0, 1) and opens upward, so it never reaches y = 0 and has no x-intercepts.",
+        "Common mistakes: plotting too few points and drawing a V instead of a smooth curve, since the parabola is rounded at the vertex; and assuming the vertex always sits on the y-axis. Only parabolas whose equation has no x term, with b = 0, have their axis at x = 0."
+       ],
+       "words": [
+        {
+         "w": "parabola",
+         "d": "the U-shaped curve that is the graph of a quadratic function"
+        },
+        {
+         "w": "vertex",
+         "d": "the highest or lowest point of a parabola, where the curve turns around"
+        },
+        {
+         "w": "axis of symmetry",
+         "d": "the vertical line through the vertex; the two halves of the parabola mirror each other across it"
+        },
+        {
+         "w": "quadratic function",
+         "d": "a function of the form f(x) = ax^2 + bx + c with a not equal to 0"
+        },
+        {
+         "w": "x-intercept",
+         "d": "a point where a graph crosses the x-axis; there the function's output is 0"
+        }
+       ],
+       "look": {
+        "type": "data",
+        "title": "A Table for f(x) = x^2 − 4x + 3",
+        "rows": [
+         [
+          "x = −1",
+          8
+         ],
+         [
+          "x = 0",
+          3
+         ],
+         [
+          "x = 1",
+          0
+         ],
+         [
+          "x = 2",
+          -1
+         ],
+         [
+          "x = 3",
+          0
+         ],
+         [
+          "x = 4",
+          3
+         ],
+         [
+          "x = 5",
+          8
+         ]
+        ],
+        "unit": "f(x)",
+        "cite": "Values of f(x) = x^2 − 4x + 3 computed directly",
+        "prompt": "Which pairs of x-values give the same output? What vertical line sits halfway between each pair, and what is the lowest value in the table?"
+       },
+       "check": [
+        {
+         "q": "The x-intercepts of f(x) = x^2 − 6x + 5 are x = 1 and x = 5. Where is the axis of symmetry?",
+         "choices": [
+          "x = 4",
+          "x = 3",
+          "x = 6",
+          "x = 5"
+         ],
+         "a": 1,
+         "why": "The axis is halfway between the intercepts: (1 + 5)/2 = 3. Subtracting 5 − 1 = 4 gives the distance between them, not the midpoint."
+        },
+        {
+         "q": "Which parabola opens downward?",
+         "choices": [
+          "y = 2x^2 − 5",
+          "y = x^2 + 3x",
+          "y = −x^2 + 4x",
+          "y = 0.5x^2"
+         ],
+         "a": 2,
+         "why": "Only y = −x^2 + 4x has a negative coefficient on x^2. The sign of a decides the direction, not the other terms."
+        },
+        {
+         "q": "What is the y-intercept of y = 3x^2 − 2x − 7?",
+         "choices": [
+          "3",
+          "−2",
+          "7",
+          "−7"
+         ],
+         "a": 3,
+         "why": "Set x = 0: y = 0 − 0 − 7 = −7. The y-intercept is the constant term c, sign included."
+        }
+       ]
+      },
+      {
+       "title": "Standard Form and the Vertex Formula",
+       "mainIdea": "In y = ax^2 + bx + c the axis of symmetry is x = −b/(2a); substitute that x back in to find the vertex's y-value.",
+       "reading": [
+        "A toy rocket launched from the ground has height h = −16t^2 + 48t feet after t seconds. When is it highest? The equation is in *standard form* y = ax^2 + bx + c with a = −16, b = 48, c = 0. The *vertex formula* gives the axis of symmetry: x = −b/(2a) = −48/(2 × −16) = −48/(−32) = 1.5. The rocket is highest at t = 1.5 seconds. Its height then is h = −16(1.5)^2 + 48(1.5) = −16(2.25) + 72 = −36 + 72 = 36 feet. The vertex is (1.5, 36), a *maximum* since a is negative.",
+        "Why does −b/(2a) work? The zeros of −16t^2 + 48t = −16t(t − 3) are t = 0 and t = 3, and the axis is halfway between them: 1.5. The formula gives the same answer without factoring, even when the zeros are hard to find. Example: y = 2x^2 + 8x + 5. Axis: x = −8/(2 × 2) = −2. Vertex y: 2(4) + 8(−2) + 5 = 8 − 16 + 5 = −3. The vertex is (−2, −3), a *minimum* since a = 2 is positive.",
+        "To sketch from standard form: find the vertex, mark the y-intercept (0, c), then reflect that point across the axis. For y = 2x^2 + 8x + 5, the y-intercept (0, 5) reflects across x = −2 to (−4, 5). Three points and the direction of opening give a good sketch. The maximum or minimum value of the function is the y-coordinate of the vertex; the x-coordinate is where it happens. Keep those straight: the rocket's maximum height is 36 feet, reached at 1.5 seconds.",
+        "The most common error is a sign slip in −b/(2a). For y = x^2 − 6x + 1, b = −6, so x = −(−6)/(2 × 1) = 3, not −3. Another error is stopping at the x-coordinate and reporting it as the maximum value. Always substitute back to get y; the vertex is a point with two coordinates."
+       ],
+       "words": [
+        {
+         "w": "standard form",
+         "d": "a quadratic written as y = ax^2 + bx + c"
+        },
+        {
+         "w": "vertex formula",
+         "d": "the axis of symmetry of y = ax^2 + bx + c is x = −b/(2a); the vertex's x-coordinate"
+        },
+        {
+         "w": "maximum",
+         "d": "the greatest output of a function; for a parabola opening downward, the vertex's y-value"
+        },
+        {
+         "w": "minimum",
+         "d": "the least output of a function; for a parabola opening upward, the vertex's y-value"
+        }
+       ],
+       "look": {
+        "type": "think",
+        "title": "Find the Turning Point",
+        "text": "Take y = −x^2 + 10x − 16. Here a = −1, b = 10 and c = −16. The axis is x = −10/(2 × −1) = −10/(−2) = 5. Substitute x = 5: y = −25 + 50 − 16 = 9. Since a is negative, the parabola opens downward and (5, 9) is the top. The y-intercept (0, −16) reflects across x = 5 to the point (10, −16).",
+        "prompt": "Find the vertex of y = x^2 − 8x + 3 the same way. Is it a maximum or a minimum, and what is that value?"
+       },
+       "check": [
+        {
+         "q": "What is the axis of symmetry of y = 3x^2 − 12x + 1?",
+         "choices": [
+          "x = 2",
+          "x = −2",
+          "x = 4",
+          "x = −4"
+         ],
+         "a": 0,
+         "why": "x = −b/(2a) = −(−12)/(2 × 3) = 12/6 = 2. Forgetting the double negative gives −2."
+        },
+        {
+         "q": "What is the vertex of y = x^2 + 4x − 5?",
+         "choices": [
+          "(2, 7)",
+          "(−2, 9)",
+          "(−2, −9)",
+          "(4, −5)"
+         ],
+         "a": 2,
+         "why": "Axis: x = −4/(2 × 1) = −2. Then y = (−2)^2 + 4(−2) − 5 = 4 − 8 − 5 = −9. The vertex is (−2, −9)."
+        },
+        {
+         "q": "A ball's height is h = −16t^2 + 64t. What is its maximum height?",
+         "choices": [
+          "2 feet",
+          "64 feet",
+          "128 feet",
+          "32 feet"
+         ],
+         "a": 1,
+         "why": "Peak time: t = −64/(2 × −16) = 2 seconds. Height: −16(4) + 64(2) = −64 + 128 = 64 feet. The 2 is the time, not the height."
+        }
+       ]
+      },
+      {
+       "title": "Vertex Form",
+       "mainIdea": "Vertex form y = a(x − h)^2 + k shows the vertex (h, k) directly and describes the parabola as y = x^2 shifted and stretched.",
+       "reading": [
+        "Start with the *parent function* y = x^2, whose vertex is (0, 0). Adding a number outside the square slides the graph up: y = x^2 + 3 has vertex (0, 3). Subtracting inside the square slides it right: y = (x − 4)^2 has vertex (4, 0), because the squared part is zero when x = 4. Together, y = (x − 4)^2 + 3 has vertex (4, 3). This is *vertex form*: y = a(x − h)^2 + k, with vertex (h, k). Watch the sign: (x − 4) means h = 4, and (x + 2) means h = −2.",
+        "The number a makes a *stretch* or a flip. y = 2(x − 1)^2 − 5 has vertex (1, −5), opens upward, and is narrower than y = x^2. y = −0.5(x + 3)^2 + 2 has vertex (−3, 2), opens downward, and is wider. To graph, plot the vertex, then step sideways and use a. From (1, −5), moving 1 unit left or right raises the curve by 2 × 1^2 = 2, to (0, −3) and (2, −3). Moving 2 units raises it by 2 × 4 = 8, to (−1, 3) and (3, 3).",
+        "Converting vertex form to standard form is just expanding: y = 2(x − 1)^2 − 5 = 2(x^2 − 2x + 1) − 5 = 2x^2 − 4x + 2 − 5 = 2x^2 − 4x − 3. Check the vertex with the formula: x = 4/(2 × 2) = 1, which matches. Going the other way, from standard to vertex form, takes completing the square, which comes later in this chapter. Each form shows something different: vertex form shows the vertex, and standard form shows the y-intercept.",
+        "The most common mistake is reading (x − 4)^2 as a *shift* of 4 to the left. Ask what x makes the parentheses zero; that answer, 4, is the vertex's x. A second mistake is forgetting the a when plotting points: for y = 2(x − 1)^2 − 5, the point one unit from the vertex is 2 higher, not 1."
+       ],
+       "words": [
+        {
+         "w": "vertex form",
+         "d": "a quadratic written as y = a(x − h)^2 + k, whose vertex is (h, k)"
+        },
+        {
+         "w": "parent function",
+         "d": "the simplest function of a family, y = x^2 for quadratics; other members are shifts and stretches of it"
+        },
+        {
+         "w": "shift",
+         "d": "sliding a graph left, right, up or down without changing its shape"
+        },
+        {
+         "w": "stretch",
+         "d": "making a graph narrower or wider by multiplying its outputs by a; a negative a also flips it"
+        }
+       ],
+       "look": {
+        "type": "think",
+        "title": "Reading a Parabola From Its Equation",
+        "text": "Consider y = −(x − 2)^2 + 9. The vertex is (2, 9). The a is −1, so the parabola opens downward and (2, 9) is the top. Where does it cross the x-axis? Set y = 0: (x − 2)^2 = 9, so x − 2 = 3 or x − 2 = −3. One unit either side of the vertex, at x = 1 and x = 3, the height is 9 − 1 = 8.",
+        "prompt": "What are the two x-intercepts of y = −(x − 2)^2 + 9? What is the y-intercept? Sketch the curve from these points."
+       },
+       "check": [
+        {
+         "q": "What is the vertex of y = 3(x + 5)^2 − 2?",
+         "choices": [
+          "(5, −2)",
+          "(−5, −2)",
+          "(−5, 2)",
+          "(3, −2)"
+         ],
+         "a": 1,
+         "why": "(x + 5) is zero when x = −5, so h = −5, and k = −2. The vertex is (−5, −2)."
+        },
+        {
+         "q": "Which equation is y = x^2 shifted 3 units right and 4 units down?",
+         "choices": [
+          "y = (x + 3)^2 − 4",
+          "y = (x − 3)^2 + 4",
+          "y = (x − 4)^2 − 3",
+          "y = (x − 3)^2 − 4"
+         ],
+         "a": 3,
+         "why": "Right 3 means (x − 3) inside; down 4 means − 4 outside. So y = (x − 3)^2 − 4, with vertex (3, −4)."
+        },
+        {
+         "q": "Expand y = (x − 2)^2 + 1 into standard form.",
+         "choices": [
+          "y = x^2 + 4x + 5",
+          "y = x^2 − 4x + 5",
+          "y = x^2 − 4x + 1",
+          "y = x^2 + 5"
+         ],
+         "a": 1,
+         "why": "(x − 2)^2 = x^2 − 4x + 4, and adding 1 gives x^2 − 4x + 5. Forgetting the middle term gives x^2 + 5."
+        }
+       ]
+      },
+      {
+       "title": "Factored Form and Zeros",
+       "mainIdea": "Factored form y = a(x − p)(x − q) shows the zeros p and q, and the vertex lies halfway between them.",
+       "reading": [
+        "A rectangular pen along a river uses 40 feet of fence on three sides, with the river as the fourth side. If the two sides that meet the river are x feet, the side parallel to it is 40 − 2x, and the area is A = x(40 − 2x). This is *factored form*: A = −2x(x − 20), with zeros at x = 0 and x = 20, since a pen with no width or no length has zero area. The vertex is halfway between the zeros, at x = 10. The maximum area is A = 10(40 − 20) = 200 square feet.",
+        "In general, y = a(x − p)(x − q) has zeros p and q, because a product is zero when a factor is zero. y = 2(x − 3)(x + 1) has zeros 3 and −1. The axis is x = (3 + (−1))/2 = 1, and the vertex y is 2(1 − 3)(1 + 1) = 2(−2)(2) = −8. The vertex is (1, −8). The y-intercept comes from x = 0: 2(−3)(1) = −6. To *expand* into standard form: 2(x^2 − 2x − 3) = 2x^2 − 4x − 6, and the constant −6 matches the y-intercept.",
+        "Going from standard form to factored form is the factoring from the previous chapter. y = x^2 − 2x − 15 = (x − 5)(x + 3), so each *zero of a function* is easy to read: 5 and −3, where the graph crosses the x-axis. Three forms, three views of one parabola: standard form gives the y-intercept, vertex form gives the vertex, factored form gives the x-intercepts. Choose the form that answers the question you are asked.",
+        "Common mistakes: reading zeros with the wrong sign, so (x − 5)(x + 3) is said to have zeros −5 and 3; and worrying about the a in front. The zeros of −3(x − 1)(x − 7) are 1 and 7. The a affects the height and direction of the curve, not where it crosses the axis."
+       ],
+       "words": [
+        {
+         "w": "factored form",
+         "d": "a quadratic written as y = a(x − p)(x − q), whose zeros are p and q"
+        },
+        {
+         "w": "zero of a function",
+         "d": "an input that makes the output 0; on the graph, an x-intercept"
+        },
+        {
+         "w": "expand",
+         "d": "to multiply out a product of factors into a sum of terms"
+        }
+       ],
+       "look": {
+        "type": "think",
+        "title": "From Zeros to Vertex",
+        "text": "Take y = (x − 2)(x − 8). The zeros are 2 and 8. The axis of symmetry is halfway between them, x = (2 + 8)/2 = 5. Substituting x = 5 gives y = (5 − 2)(5 − 8) = (3)(−3) = −9, so the vertex is (5, −9). The y-intercept is (0 − 2)(0 − 8) = 16. Now try y = (x + 1)(x − 7).",
+        "prompt": "For y = (x + 1)(x − 7), find the zeros, the axis of symmetry, the vertex and the y-intercept."
+       },
+       "check": [
+        {
+         "q": "What are the zeros of y = (x + 4)(x − 9)?",
+         "choices": [
+          "4 and −9",
+          "−4 and 9",
+          "4 and 9",
+          "−4 and −9"
+         ],
+         "a": 1,
+         "why": "x + 4 = 0 gives x = −4, and x − 9 = 0 gives x = 9. Each zero has the opposite sign of the number in its factor."
+        },
+        {
+         "q": "For y = (x − 1)(x − 7), what is the x-coordinate of the vertex?",
+         "choices": [
+          "4",
+          "8",
+          "−4",
+          "3"
+         ],
+         "a": 0,
+         "why": "The zeros are 1 and 7, and the vertex is halfway: (1 + 7)/2 = 4. Adding the zeros without halving gives 8."
+        },
+        {
+         "q": "Which form of a quadratic shows the x-intercepts directly?",
+         "choices": [
+          "standard form",
+          "vertex form",
+          "factored form",
+          "slope-intercept form"
+         ],
+         "a": 2,
+         "why": "In y = a(x − p)(x − q), the zeros p and q can be read from the factors. Standard form shows the y-intercept and vertex form shows the vertex."
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "title": "Solving Quadratic Equations",
+     "lessons": [
+      {
+       "title": "Solving With Square Roots",
+       "mainIdea": "When a quadratic has no x term, isolate the squared expression and take the square root of both sides, keeping both the positive and the negative root.",
+       "reading": [
+        "A square patio has an area of 144 square feet. What is its side length? x^2 = 144, so x = √144 = 12 feet. But the equation x^2 = 144 has two solutions, 12 and −12, because (−12)^2 is also 144. We write x = ±12 and use the situation to choose: a side length is 12. This is the *square root method*: if x^2 = k with k > 0, then x = √k or x = −√k. The symbol ± means *plus or minus*.",
+        "Isolate the squared part first. 3x^2 − 27 = 0: add 27 to get 3x^2 = 27, divide by 3 to get x^2 = 9, so x = ±3. If the number is not a perfect square, simplify the *radical*: 2x^2 = 40 gives x^2 = 20, so x = ±√20 = ±2√5, about ±4.47. The method also works when a binomial is squared. (x − 5)^2 = 49: take roots, x − 5 = ±7, so x = 5 + 7 = 12 or x = 5 − 7 = −2. Check: (12 − 5)^2 = 49 and (−2 − 5)^2 = 49.",
+        "Dropped objects use this method. Ignoring air resistance, an object dropped from a height of h0 feet is at height h = h0 − 16t^2 after t seconds. From a 100-foot bridge, when does a dropped stone hit the water? 0 = 100 − 16t^2, so 16t^2 = 100, t^2 = 6.25, and t = 2.5 seconds; the negative root would be a time before the drop, so discard it. Check: 16 × 6.25 = 100.",
+        "The classic mistake is dropping the negative root when both matter. x^2 = 25 has solutions 5 and −5; leaving out −5 loses half the answer. The opposite mistake is inventing solutions: x^2 = −25 has no *real solution*, because no real number squared is negative. And never take the square root before isolating: from x^2 + 9 = 25, the expression √(x^2 + 9) is not x + 3."
+       ],
+       "words": [
+        {
+         "w": "square root method",
+         "d": "solving x^2 = k by taking the square root of both sides: x = √k or x = −√k"
+        },
+        {
+         "w": "plus or minus",
+         "d": "the symbol ±; x = ±5 means x = 5 or x = −5"
+        },
+        {
+         "w": "radical",
+         "d": "a root expression like √20, which can often be simplified, here to 2√5"
+        },
+        {
+         "w": "real solution",
+         "d": "a solution that is a real number; x^2 = −25 has none because no real number squared is negative"
+        }
+       ],
+       "look": {
+        "type": "think",
+        "title": "A Square Already Made",
+        "text": "Solve (x + 3)^2 = 16. The left side is already a perfect square, so take the square root of both sides: x + 3 = ±4. Split into two equations: x + 3 = 4 gives x = 1, and x + 3 = −4 gives x = −7. Check both: (1 + 3)^2 = 16 and (−7 + 3)^2 = (−4)^2 = 16. Now try (x − 1)^2 = 25.",
+        "prompt": "Solve (x − 1)^2 = 25 and check both answers. What would change if the equation were (x − 1)^2 = 20?"
+       },
+       "check": [
+        {
+         "q": "Solve x^2 − 49 = 0.",
+         "choices": [
+          "x = 7",
+          "x = 49",
+          "x = ±24.5",
+          "x = ±7"
+         ],
+         "a": 3,
+         "why": "x^2 = 49, so x = √49 or x = −√49: x = ±7. Both 7^2 and (−7)^2 equal 49."
+        },
+        {
+         "q": "Solve (x − 2)^2 = 36.",
+         "choices": [
+          "x = 8 or x = −4",
+          "x = 8",
+          "x = 38 or x = −34",
+          "x = 4 or x = −8"
+         ],
+         "a": 0,
+         "why": "x − 2 = ±6, so x = 2 + 6 = 8 or x = 2 − 6 = −4. Check: (8 − 2)^2 = 36 and (−4 − 2)^2 = 36."
+        },
+        {
+         "q": "Which equation has no real solution?",
+         "choices": [
+          "x^2 = 0",
+          "x^2 = 2",
+          "x^2 = −4",
+          "2x^2 = 8"
+         ],
+         "a": 2,
+         "why": "No real number squared is negative, so x^2 = −4 has no real solution. The others give 0, ±√2 and ±2."
+        }
+       ]
+      },
+      {
+       "title": "Completing the Square",
+       "mainIdea": "Add (b/2)^2 to both sides to turn x^2 + bx into a perfect square, then solve with square roots; the same move rewrites any quadratic in vertex form.",
+       "reading": [
+        "The square root method needs a perfect square on one side. Can we make one? Take x^2 + 6x = 7. In the area model, x^2 + 6x is an x by x square plus two strips of 3x, one along the right and one along the bottom. The picture is a bigger square missing its corner, a 3 by 3 piece of area 9. Adding 9 fills the corner, which is why the method is called *completing the square*: x^2 + 6x + 9 = (x + 3)^2, a *perfect square trinomial*. To keep the equation *balanced*, add 9 to both sides: (x + 3)^2 = 16.",
+        "Now finish with square roots: x + 3 = ±4, so x = 1 or x = −7. Check: 1 + 6 = 7, and 49 − 42 = 7. The number to add is always (b/2)^2: half the coefficient of x, then squared. For x^2 − 10x = 11: half of −10 is −5, and (−5)^2 = 25. So x^2 − 10x + 25 = 36, which is (x − 5)^2 = 36. Then x − 5 = ±6, so x = 11 or x = −1. Check: 121 − 110 = 11 and 1 + 10 = 11.",
+        "If the leading coefficient is not 1, divide it out first. 2x^2 + 8x − 10 = 0 becomes x^2 + 4x − 5 = 0, then x^2 + 4x = 5, add 4: (x + 2)^2 = 9, x = 1 or x = −5. The same steps convert a function to vertex form. For y = x^2 + 4x − 5, add and subtract 4 on the right: y = (x^2 + 4x + 4) − 4 − 5 = (x + 2)^2 − 9. The vertex is (−2, −9), matching the formula x = −4/2 = −2.",
+        "Two common mistakes: adding (b/2)^2 to one side only, which changes the equation; and squaring b instead of b/2, so for x^2 + 6x someone adds 36 instead of 9. Say it aloud: half of six is three, three squared is nine. When b is odd, fractions appear: for x^2 + 3x, add (3/2)^2 = 9/4. That is fine; the method still works."
+       ],
+       "words": [
+        {
+         "w": "completing the square",
+         "d": "adding (b/2)^2 to x^2 + bx so that it becomes the perfect square (x + b/2)^2"
+        },
+        {
+         "w": "perfect square trinomial",
+         "d": "a trinomial equal to a binomial squared, like x^2 + 6x + 9 = (x + 3)^2"
+        },
+        {
+         "w": "balanced",
+         "d": "an equation stays balanced when the same amount is added to both sides"
+        }
+       ],
+       "look": {
+        "type": "think",
+        "title": "Filling the Missing Corner",
+        "text": "Picture x^2 + 8x as an x by x square with two strips of 4x attached, one on the right side and one along the bottom. The shape is a larger square with an empty 4 by 4 corner. Filling the corner adds 16 and makes (x + 4)^2. So to solve x^2 + 8x = 20, add 16 to both sides and the left side becomes a perfect square.",
+        "prompt": "Finish solving x^2 + 8x = 20. What are the two solutions, and do both check in the original equation?"
+       },
+       "check": [
+        {
+         "q": "What number completes the square for x^2 + 12x?",
+         "choices": [
+          "6",
+          "144",
+          "36",
+          "24"
+         ],
+         "a": 2,
+         "why": "Half of 12 is 6, and 6^2 = 36. Then x^2 + 12x + 36 = (x + 6)^2. Squaring 12 itself gives the wrong 144."
+        },
+        {
+         "q": "Solve x^2 − 4x = 12 by completing the square.",
+         "choices": [
+          "x = 6 or x = −2",
+          "x = 4 or x = −4",
+          "x = 2 or x = −6",
+          "x = 8 or x = −4"
+         ],
+         "a": 0,
+         "why": "Add (−2)^2 = 4 to both sides: (x − 2)^2 = 16, so x − 2 = ±4 and x = 6 or x = −2. Check: 36 − 24 = 12 and 4 + 8 = 12."
+        },
+        {
+         "q": "Write y = x^2 + 10x + 7 in vertex form.",
+         "choices": [
+          "y = (x + 5)^2 + 7",
+          "y = (x + 10)^2 − 93",
+          "y = (x − 5)^2 − 18",
+          "y = (x + 5)^2 − 18"
+         ],
+         "a": 3,
+         "why": "Add and subtract 25: y = (x^2 + 10x + 25) − 25 + 7 = (x + 5)^2 − 18. The vertex is (−5, −18)."
+        }
+       ]
+      },
+      {
+       "title": "The Quadratic Formula",
+       "mainIdea": "For any equation ax^2 + bx + c = 0, x = (−b ± √(b^2 − 4ac)) / (2a); it comes from completing the square on the general equation.",
+       "reading": [
+        "Completing the square on the general equation ax^2 + bx + c = 0, once and for all values, produces the *quadratic formula*: x = (−b ± √(b^2 − 4ac)) / (2a). It solves every quadratic, whether or not it factors. Example: 2x^2 + 3x − 5 = 0, so a = 2, b = 3, c = −5. First compute the part under the root: b^2 − 4ac = 9 − 4(2)(−5) = 9 + 40 = 49. Then x = (−3 ± 7)/4. Two answers: (−3 + 7)/4 = 1 and (−3 − 7)/4 = −10/4 = −2.5. Check x = 1: 2 + 3 − 5 = 0.",
+        "The formula needs the equation in the form ax^2 + bx + c = 0, with zero on one side. To solve x^2 = 6x − 4, first rewrite it: x^2 − 6x + 4 = 0, so a = 1, b = −6, c = 4. Under the root: 36 − 16 = 20. So x = (6 ± √20)/2. Leave it in *radical form* by simplifying √20 = 2√5, so x = (6 ± 2√5)/2 = 3 ± √5. As decimals, 3 + 2.236 = 5.236 and 3 − 2.236 = 0.764. Neither is a whole number, which is why factoring would have failed.",
+        "Which method should you use? If the equation has no x term, take square roots. If it factors easily, factor. If a = 1 and b is even, completing the square is quick. Otherwise, use the formula; it always works. In the chapter story, the shot is level with the rim when −16t^2 + 24t + 6 = 10, that is, −16t^2 + 24t − 4 = 0. Divide by −4: 4t^2 − 6t + 1 = 0. Then t = (6 ± √(36 − 16))/8 = (6 ± √20)/8, about 0.19 seconds and 1.31 seconds.",
+        "Common mistakes: forgetting that −b flips the sign of b (with b = −6, −b = 6); a sign error in −4ac when c is negative (−4 × 2 × −5 = +40); and dividing only the root by 2a instead of the whole *numerator*. Write the fraction bar under everything. Substituting the answers back into the original equation catches all three."
+       ],
+       "words": [
+        {
+         "w": "quadratic formula",
+         "d": "x = (−b ± √(b^2 − 4ac)) / (2a), the solutions of ax^2 + bx + c = 0"
+        },
+        {
+         "w": "numerator",
+         "d": "the top of a fraction; in the formula it is all of −b ± √(b^2 − 4ac)"
+        },
+        {
+         "w": "radical form",
+         "d": "an exact answer written with a root sign, like 3 ± √5, instead of a rounded decimal"
+        }
+       ],
+       "look": {
+        "type": "think",
+        "title": "When Factoring Fails",
+        "text": "Try to factor x^2 + 5x + 3. You need two integers with product 3 and sum 5, and there are none: 1 + 3 = 4 and −1 + −3 = −4. So use the formula with a = 1, b = 5, c = 3. Under the root: 25 − 12 = 13, which is not a perfect square. The solutions are x = (−5 ± √13)/2. Since √13 ≈ 3.606, that is about −0.70 and −4.30.",
+        "prompt": "Check x ≈ −0.70 in the original equation. Why does a non-perfect-square number under the root tell you the equation would not factor with integers?"
+       },
+       "check": [
+        {
+         "q": "For 3x^2 − 7x + 2 = 0, what is the value of b^2 − 4ac?",
+         "choices": [
+          "73",
+          "25",
+          "−73",
+          "1"
+         ],
+         "a": 1,
+         "why": "(−7)^2 − 4(3)(2) = 49 − 24 = 25. Adding instead of subtracting gives 73."
+        },
+        {
+         "q": "Solve x^2 + 2x − 8 = 0 with the quadratic formula.",
+         "choices": [
+          "x = 2 or x = −4",
+          "x = −2 or x = 4",
+          "x = 4 or x = 2",
+          "x = 8 or x = −1"
+         ],
+         "a": 0,
+         "why": "Under the root: 4 + 32 = 36. x = (−2 ± 6)/2, giving 4/2 = 2 and −8/2 = −4. Check: 4 + 4 − 8 = 0."
+        },
+        {
+         "q": "Before using the formula on 2x^2 = 5x + 3, what must you do first?",
+         "choices": [
+          "divide both sides by x",
+          "take the square root of both sides",
+          "set a = 2, b = 5, c = 3",
+          "rewrite it as 2x^2 − 5x − 3 = 0"
+         ],
+         "a": 3,
+         "why": "The formula needs zero on one side: 2x^2 − 5x − 3 = 0, so a = 2, b = −5, c = −3. Reading b = 5 and c = 3 from the original gives wrong signs."
+        }
+       ]
+      },
+      {
+       "title": "The Discriminant",
+       "mainIdea": "The discriminant b^2 − 4ac tells how many real solutions a quadratic has: two if positive, one if zero, none if negative.",
+       "reading": [
+        "The part of the formula under the square root, b^2 − 4ac, is the *discriminant*. It decides how many real solutions there are before you solve. If it is positive, the ± gives two different real solutions. If it is zero, ± 0 gives one *repeated root*. If it is negative, there is no real square root, so there is *no real solution*. Example: x^2 − 6x + 9 = 0 has discriminant 36 − 36 = 0, one solution, x = 3, since it is (x − 3)^2. And x^2 + x + 1 = 0 has 1 − 4 = −3, no real solution.",
+        "On a graph, the discriminant counts x-intercepts. y = x^2 − 6x + 9 touches the x-axis once, at its vertex (3, 0). y = x^2 + x + 1 has its vertex at x = −1/2, where y = 1/4 − 1/2 + 1 = 3/4, above the axis and opening upward, so it never crosses. y = x^2 − 6x + 5 has discriminant 36 − 20 = 16, which is positive, and it crosses twice, at 1 and 5. A discriminant that is a perfect square, like 16, also signals that the quadratic factors with integers: (x − 1)(x − 5).",
+        "Real problems use this test. A ball thrown upward at 32 feet per second from 5 feet has height h = −16t^2 + 32t + 5. Does it ever reach 25 feet? Set h = 25: −16t^2 + 32t − 20 = 0. Discriminant: 32^2 − 4(−16)(−20) = 1,024 − 1,280 = −256, negative. So no, the ball never reaches 25 feet. Check with the vertex: t = 1, h = −16 + 32 + 5 = 21 feet at most. The discriminant answered without solving.",
+        "A common mistake is computing 4ac with the wrong sign. For a = −16 and c = −20, 4ac = +1,280, so b^2 − 4ac subtracts 1,280. Another is reporting one solution as no solution when the discriminant is zero. Zero is a fine square root; it just gives a single answer."
+       ],
+       "words": [
+        {
+         "w": "discriminant",
+         "d": "the expression b^2 − 4ac under the root in the quadratic formula; its sign tells how many real solutions there are"
+        },
+        {
+         "w": "repeated root",
+         "d": "the single solution of a quadratic whose discriminant is 0, where the parabola just touches the x-axis"
+        },
+        {
+         "w": "no real solution",
+         "d": "what happens when the discriminant is negative; the parabola never reaches the x-axis"
+        }
+       ],
+       "look": {
+        "type": "data",
+        "title": "Five Equations, Five Discriminants",
+        "rows": [
+         [
+          "x^2 − 6x + 5 = 0",
+          16
+         ],
+         [
+          "x^2 − 6x + 9 = 0",
+          0
+         ],
+         [
+          "x^2 − 6x + 13 = 0",
+          -16
+         ],
+         [
+          "2x^2 + 3x − 2 = 0",
+          25
+         ],
+         [
+          "x^2 + 4x + 7 = 0",
+          -12
+         ]
+        ],
+        "unit": "value of b^2 − 4ac",
+        "cite": "Computed as b^2 − 4ac for each equation",
+        "prompt": "How many real solutions does each equation have? Which of the five equations could be solved by factoring with integers, and how can you tell from the table?"
+       },
+       "check": [
+        {
+         "q": "What is the discriminant of 2x^2 − 4x + 5 = 0?",
+         "choices": [
+          "−24",
+          "24",
+          "56",
+          "−56"
+         ],
+         "a": 0,
+         "why": "(−4)^2 − 4(2)(5) = 16 − 40 = −24. Negative, so the equation has no real solution."
+        },
+        {
+         "q": "A quadratic equation has discriminant 0. How many real solutions does it have?",
+         "choices": [
+          "none",
+          "two",
+          "one",
+          "infinitely many"
+         ],
+         "a": 2,
+         "why": "With a zero under the root, the ± adds and subtracts 0, so both branches give the same single answer."
+        },
+        {
+         "q": "Which equation has two real solutions?",
+         "choices": [
+          "x^2 + 4 = 0",
+          "x^2 + 2x + 1 = 0",
+          "x^2 + 3x + 5 = 0",
+          "x^2 − 3x − 5 = 0"
+         ],
+         "a": 3,
+         "why": "Its discriminant is 9 + 20 = 29, positive. The others have discriminants −16, 0 and −11."
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "title": "Quadratic Models",
+     "lessons": [
+      {
+       "title": "Projectile Models",
+       "mainIdea": "A thrown object's height is h = −16t^2 + vt + h0 in feet and seconds; the vertex gives the peak and a zero gives the landing time.",
+       "reading": [
+        "When an object is thrown upward, gravity pulls it back with the same acceleration no matter its size, ignoring air resistance. In feet and seconds, its height is h = −16t^2 + vt + h0, where v is the upward *launch speed* in feet per second and h0 is the *initial height*. In meters, the −16 becomes about −4.9. A basketball released 6 feet up at 24 feet per second follows h = −16t^2 + 24t + 6, the equation from the chapter story. Any such thrown object is a *projectile*.",
+        "Three questions, three tools. When is it highest? The vertex: t = −24/(2 × −16) = 0.75 seconds, and h = −16(0.5625) + 18 + 6 = −9 + 24 = 15 feet. When does it pass a given height, like the 10-foot rim? Set h = 10 and solve −16t^2 + 24t − 4 = 0 with the formula: about 0.19 and 1.31 seconds, on the way up and on the way down. When does it land, if it misses everything? Set h = 0: t = (−24 ± √(576 + 384))/(−32). Since √960 ≈ 30.98, t ≈ 1.72 seconds; the other root is negative.",
+        "Interpret each part of the equation. The 6 is the y-intercept, the height at t = 0. The 24 sets how steeply the ball rises at first. The −16 bends the path downward, so the parabola opens downward and the vertex is a maximum. A soccer ball kicked from the ground at 40 feet per second has h = −16t^2 + 40t. It is in the air until h = 0 again: −16t(t − 2.5) = 0, so 2.5 seconds. Its peak, at t = 1.25, is −16(1.5625) + 50 = −25 + 50 = 25 feet.",
+        "Common mistakes: using +16 instead of −16, which makes the ball rise forever; and reading the vertex's t as the height. Also, this parabola is a graph of height against time, not a picture of the ball's flight across the court, even though a thrown ball's path through the air happens to be a parabola as well."
+       ],
+       "words": [
+        {
+         "w": "projectile",
+         "d": "an object thrown or launched and then moved only by gravity, like a ball in flight"
+        },
+        {
+         "w": "launch speed",
+         "d": "the upward speed at the moment of release, the v in h = −16t^2 + vt + h0"
+        },
+        {
+         "w": "initial height",
+         "d": "the height at time 0, the h0 in h = −16t^2 + vt + h0"
+        }
+       ],
+       "look": {
+        "type": "think",
+        "title": "Thrown From a Roof",
+        "text": "A ball is thrown upward at 32 feet per second from a roof 48 feet high: h = −16t^2 + 32t + 48. The peak is at t = −32/(2 × −16) = 1 second, where h = −16 + 32 + 48 = 64 feet. To find the landing time, set h = 0 and divide by −16: t^2 − 2t − 3 = 0, which factors as (t − 3)(t + 1) = 0.",
+        "prompt": "When does the ball land, and why is one of the two roots thrown away? How long does the ball spend above the roof's height of 48 feet?"
+       },
+       "check": [
+        {
+         "q": "For h = −16t^2 + 48t + 4, when does the object reach its peak?",
+         "choices": [
+          "3 seconds",
+          "1.5 seconds",
+          "48 seconds",
+          "0.75 seconds"
+         ],
+         "a": 1,
+         "why": "t = −b/(2a) = −48/(2 × −16) = 48/32 = 1.5 seconds. Using 48/16 gives 3, the landing time of the version without the +4."
+        },
+        {
+         "q": "For h = −16t^2 + 64t, when does the object return to the ground?",
+         "choices": [
+          "2 seconds",
+          "64 seconds",
+          "4 seconds",
+          "16 seconds"
+         ],
+         "a": 2,
+         "why": "Set h = 0: −16t(t − 4) = 0, so t = 0 (launch) or t = 4 seconds. The peak is at 2 seconds, halfway."
+        },
+        {
+         "q": "In h = −16t^2 + 20t + 5, what does the 5 represent?",
+         "choices": [
+          "the peak height",
+          "the launch speed",
+          "the time in the air",
+          "the starting height"
+         ],
+         "a": 3,
+         "why": "At t = 0, h = 5, so 5 is the initial height. The launch speed is 20 and the peak must be computed from the vertex."
+        }
+       ]
+      },
+      {
+       "title": "Area and Revenue Problems",
+       "mainIdea": "Many area and number problems set up a quadratic equation; write it from the situation, solve, then reject any solution that makes no sense.",
+       "reading": [
+        "A poster is 3 inches longer than it is wide, and its area is 130 square inches. First *define a variable*: let the width be w. Then the length is w + 3 and the area is w(w + 3) = 130. Expand: w^2 + 3w − 130 = 0. Factor: two numbers with product −130 and sum 3 are 13 and −10, so (w + 13)(w − 10) = 0, and w = 10 or w = −13. A width cannot be negative, so *reject a solution* that fails the story: w = 10 inches and the length is 13 inches. Check: 10 × 13 = 130.",
+        "The garden border again: a 10 by 6 bed with a path of width x has total area (10 + 2x)(6 + 2x). If the whole thing must be 140 square feet: 60 + 20x + 12x + 4x^2 = 140, so 4x^2 + 32x − 80 = 0, then x^2 + 8x − 20 = 0, then (x + 10)(x − 2) = 0, so x = 2 feet. Check: 14 × 10 = 140. Number puzzles work the same way. The product of two consecutive integers is 72 means n(n + 1) = 72, so n^2 + n − 72 = 0, (n + 9)(n − 8) = 0, and the pairs are 8 and 9 or −9 and −8. Both pairs are valid here; nothing in the puzzle forbids negatives.",
+        "*Revenue* problems produce a maximum. A theater sells 200 tickets at $10. Each $1 raise in price loses 10 buyers. With x raises, the revenue is R = (10 + x)(200 − 10x) = 2,000 + 100x − 10x^2. The vertex is at x = −100/(2 × −10) = 5. So the price is $15, the buyers number 150, and the revenue is $2,250, better than the original $2,000. The parabola opens downward, so the vertex is the maximum revenue.",
+        "The steps: define a variable, write expressions for the other quantities, write an equation from the given total or relationship, solve, and check against the story. The most common mistake is keeping a negative or impossible solution. The second is stopping when the variable is found even though the question asked for something else, such as the length rather than the width."
+       ],
+       "words": [
+        {
+         "w": "define a variable",
+         "d": "to state what a letter stands for, such as letting w be the width in inches"
+        },
+        {
+         "w": "reject a solution",
+         "d": "to throw out a solution of the equation that makes no sense in the situation, like a negative length"
+        },
+        {
+         "w": "revenue",
+         "d": "the money taken in: price per item times the number of items sold"
+        }
+       ],
+       "look": {
+        "type": "think",
+        "title": "Twice as Long as It Is Wide",
+        "text": "A rectangle is twice as long as it is wide, and its area is 98 square centimeters. Let w be the width; then the length is 2w and the area is w × 2w = 2w^2. The equation is 2w^2 = 98. Divide by 2 to get w^2 = 49, then take square roots. One root is positive and one is negative.",
+        "prompt": "What are the width and the length? Why is the negative root rejected, and what is the perimeter of the rectangle?"
+       },
+       "check": [
+        {
+         "q": "A rectangle's length is 5 more than its width, and its area is 84. Which equation fits?",
+         "choices": [
+          "w(w + 5) = 84",
+          "2w + 2(w + 5) = 84",
+          "w + (w + 5) = 84",
+          "w^2 + 5 = 84"
+         ],
+         "a": 0,
+         "why": "Area is width times length: w(w + 5) = 84. The second choice is a perimeter equation, and the others do not multiply the sides."
+        },
+        {
+         "q": "Solve w^2 + 5w − 84 = 0 for the width.",
+         "choices": [
+          "12",
+          "−12",
+          "7",
+          "84"
+         ],
+         "a": 2,
+         "why": "Factor: (w + 12)(w − 7) = 0, so w = −12 or w = 7. A width must be positive, so w = 7 and the length is 12. Check: 7 × 12 = 84."
+        },
+        {
+         "q": "Revenue is R = (8 + x)(300 − 20x). Which value of x gives the maximum revenue?",
+         "choices": [
+          "7",
+          "15",
+          "8",
+          "3.5"
+         ],
+         "a": 3,
+         "why": "Expand: R = 2,400 + 140x − 20x^2. The vertex is at x = −140/(2 × −20) = 3.5. The zeros are −8 and 15, and 3.5 is halfway between them."
+        }
+       ]
+      },
+      {
+       "title": "Linear, Exponential or Quadratic?",
+       "mainIdea": "Constant first differences mean linear, constant ratios mean exponential, and constant second differences mean quadratic.",
+       "reading": [
+        "Three tables, each starting at x = 0 with y = 1. Table A: 1, 3, 5, 7, 9. Table B: 1, 3, 9, 27, 81. Table C: 1, 3, 7, 13, 21. Table A has *first differences* 2, 2, 2, 2, so it is linear: y = 2x + 1. Table B has ratios 3, 3, 3, 3, so it is exponential: y = 3^x. Table C has first differences 2, 4, 6, 8, not constant, but its *second differences*, the differences of the differences, are 2, 2, 2. That is the *quadratic pattern*. Its rule is y = x^2 + x + 1; check x = 3: 9 + 3 + 1 = 13.",
+        "Why constant second differences? For y = ax^2 + bx + c with x stepping by 1, the second difference is always 2a. Table C has second difference 2, so a = 1. That is a fast way to find the leading coefficient. For the table 0, 3, 12, 27, 48 at x = 0 to 4, the first differences are 3, 9, 15, 21 and the second differences are 6, 6, 6, so a = 3 and the rule is y = 3x^2. Check x = 4: 3 × 16 = 48.",
+        "In the *long run*, the three types behave differently. Linear growth adds a fixed amount forever. Quadratic growth speeds up, but its increases grow only linearly. Exponential growth multiplies, so its increases grow exponentially, and it eventually outruns any quadratic, whatever the coefficients. Compare y = x^2 and y = 2^x: at x = 3, 9 versus 8; at x = 4, 16 versus 16; at x = 10, 100 versus 1,024. On a graph, the exponential curve crosses the parabola and leaves it behind.",
+        "A common mistake is calling anything curved exponential. Test with ratios: Table C has ratios 3, 2.33, 1.86, 1.62, not constant, so it is not exponential. Another mistake is stopping after the first differences. If they are not constant, take the second differences before deciding."
+       ],
+       "words": [
+        {
+         "w": "first differences",
+         "d": "the amounts between neighboring y-values in a table with equal x-steps"
+        },
+        {
+         "w": "second differences",
+         "d": "the differences between neighboring first differences; constant for a quadratic"
+        },
+        {
+         "w": "quadratic pattern",
+         "d": "a table whose second differences are constant; the constant equals 2a"
+        },
+        {
+         "w": "long run",
+         "d": "what happens to values as x keeps growing; exponential growth wins over any polynomial"
+        }
+       ],
+       "look": {
+        "type": "data",
+        "title": "A Table for y = 2x^2 + 1",
+        "rows": [
+         [
+          "x = 0",
+          1
+         ],
+         [
+          "x = 1",
+          3
+         ],
+         [
+          "x = 2",
+          9
+         ],
+         [
+          "x = 3",
+          19
+         ],
+         [
+          "x = 4",
+          33
+         ],
+         [
+          "x = 5",
+          51
+         ]
+        ],
+        "unit": "y",
+        "cite": "Values of y = 2x^2 + 1 computed directly",
+        "prompt": "Find the first differences and then the second differences. What do the second differences tell you about the coefficient of x^2?"
+       },
+       "check": [
+        {
+         "q": "A table's y-values are 4, 7, 12, 19, 28 for x = 0 to 4. What kind of function fits?",
+         "choices": [
+          "quadratic",
+          "linear",
+          "exponential",
+          "constant"
+         ],
+         "a": 0,
+         "why": "First differences 3, 5, 7, 9 are not constant, but second differences 2, 2, 2 are. The rule is y = x^2 + 2x + 4."
+        },
+        {
+         "q": "The second differences of a quadratic table with x-steps of 1 are all 8. What is a?",
+         "choices": [
+          "8",
+          "4",
+          "16",
+          "2"
+         ],
+         "a": 1,
+         "why": "The second difference equals 2a, so a = 8/2 = 4. The rule looks like y = 4x^2 + bx + c."
+        },
+        {
+         "q": "Which function grows fastest in the long run?",
+         "choices": [
+          "y = 100x",
+          "y = 10x^2",
+          "y = 1.5^x",
+          "y = x^2 + 1,000"
+         ],
+         "a": 2,
+         "why": "Any exponential function with base greater than 1 eventually outruns every linear and quadratic function, even one with big coefficients."
+        }
+       ]
+      }
+     ]
+    }
+   ],
+   "review": [
+    {
+     "q": "What is the vertex of y = 2(x − 3)^2 + 1?",
+     "choices": [
+      "(−3, 1)",
+      "(3, 1)",
+      "(3, −1)",
+      "(2, 3)"
+     ],
+     "a": 1,
+     "why": "Vertex form y = a(x − h)^2 + k has vertex (h, k); here h = 3 and k = 1."
+    },
+    {
+     "q": "What is the axis of symmetry of y = x^2 + 8x − 3?",
+     "choices": [
+      "x = 4",
+      "x = 8",
+      "x = −8",
+      "x = −4"
+     ],
+     "a": 3,
+     "why": "x = −b/(2a) = −8/(2 × 1) = −4."
+    },
+    {
+     "q": "Solve x^2 − 5x − 6 = 0.",
+     "choices": [
+      "x = 6 or x = −1",
+      "x = −6 or x = 1",
+      "x = 2 or x = 3",
+      "x = 5 or x = 6"
+     ],
+     "a": 0,
+     "why": "Factor: (x − 6)(x + 1) = 0, since −6 × 1 = −6 and −6 + 1 = −5. So x = 6 or x = −1."
+    },
+    {
+     "q": "Solve 2x^2 = 50.",
+     "choices": [
+      "x = 5",
+      "x = 25",
+      "x = ±5",
+      "x = ±25"
+     ],
+     "a": 2,
+     "why": "Divide by 2: x^2 = 25, so x = ±5. Both 5 and −5 square to 25."
+    },
+    {
+     "q": "For x^2 + 6x + 9 = 0, what is the discriminant and what does it mean?",
+     "choices": [
+      "72, two solutions",
+      "0, one solution",
+      "0, no solution",
+      "−36, no solution"
+     ],
+     "a": 1,
+     "why": "36 − 4(1)(9) = 0, so there is exactly one real solution, x = −3, since the left side is (x + 3)^2."
+    },
+    {
+     "q": "A ball's height is h = −16t^2 + 32t + 6. What is its maximum height?",
+     "choices": [
+      "1 foot",
+      "6 feet",
+      "32 feet",
+      "22 feet"
+     ],
+     "a": 3,
+     "why": "Peak at t = −32/(2 × −16) = 1 second. Height: −16 + 32 + 6 = 22 feet."
+    },
+    {
+     "q": "Which table of y-values, for x = 0 to 4, is quadratic?",
+     "choices": [
+      "2, 5, 10, 17, 26",
+      "2, 4, 8, 16, 32",
+      "2, 5, 8, 11, 14",
+      "2, 2, 2, 2, 2"
+     ],
+     "a": 0,
+     "why": "2, 5, 10, 17, 26 has first differences 3, 5, 7, 9 and second differences 2, 2, 2. The others are exponential, linear and constant."
+    },
+    {
+     "q": "Use the quadratic formula on x^2 − 4x − 1 = 0. What are the solutions?",
+     "choices": [
+      "x = −2 ± √5",
+      "x = 4 ± √20",
+      "x = 2 ± √5",
+      "x = 2 ± √3"
+     ],
+     "a": 2,
+     "why": "x = (4 ± √(16 + 4))/2 = (4 ± √20)/2 = (4 ± 2√5)/2 = 2 ± √5. Divide the whole numerator by 2, not just the root."
+    }
+   ]
+  }
+ ]
+}

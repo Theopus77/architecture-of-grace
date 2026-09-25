@@ -1,0 +1,243 @@
+{
+ "n": 28, "title": "Exponents, Roots and Scientific Notation", "years": "Number",
+ "bigQuestion": "How do we write, compare and compute with numbers that are enormous, tiny, or not fractions at all?",
+ "story": {
+  "title": "Rice on the Chessboard",
+  "kicker": "An old tale about a chessboard, a grain of rice, and a reward that grew faster than any king could pay.",
+  "paragraphs": [
+   "The story has been told for centuries, in India, Persia and Europe, with different names each time. A ruler is so pleased with the inventor of chess that he offers any reward. The inventor asks for something that sounds modest: one grain of rice on the first square of the board, two on the second, four on the third, and so on, doubling on each square through all sixty-four. The ruler laughs at such a small request and orders his servants to bring the rice.",
+   "The first row goes easily. The squares get 1, 2, 4, 8, 16, 32, 64 and 128 grains. That is 255 grains in all, less than a handful. The second row ends at 32,768 grains on the sixteenth square, about a large bag. The servants start to sweat during the third row, when the square counts pass a million. By the end of the fourth row, the thirty-second square alone calls for 2,147,483,648 grains, more than two billion, and the board is only half filled.",
+   "Each square holds 2 multiplied by itself one time fewer than the square's number. The tenth square holds 2^9, the twentieth holds 2^19, and the last square holds 2^63. Written out, 2^63 is 9,223,372,036,854,775,808 grains, about nine quintillion. The whole board holds 2^64 − 1 grains, roughly 18 quintillion. That is far more rice than the world grows in a year, or in a century. In most versions of the story, the ruler either admits he has been outwitted or the inventor does not live to collect.",
+   "Mathematicians needed a way to write such numbers without filling a page with digits. The exponent, the small raised number in 2^63, does that in a few strokes. For even bigger numbers, and for tiny ones like the width of a virus, scientists use a form built on powers of ten, called scientific notation: 9.2 × 10^18 instead of nineteen digits. This chapter is about exponents, their opposite operation (roots), the numbers that no fraction can capture, and the notation that lets a single line hold the whole chessboard."
+  ],
+  "think": "The inventor's request doubled each square. Why does doubling grow so much faster than adding the same amount each time? Compare the tenth square under each rule."
+ },
+ "sections": [
+  {"title": "Working With Exponents", "lessons": [
+   {
+    "title": "Powers and Repeated Multiplication",
+    "mainIdea": "An exponent counts how many times the base is used as a factor: 2^5 = 2 × 2 × 2 × 2 × 2 = 32.",
+    "reading": [
+     "In 2^5, the 2 is the *base* and the 5 is the *exponent*. The expression is read 'two to the fifth power' and it means multiply five 2s: 2 × 2 × 2 × 2 × 2 = 32. It does not mean 2 × 5 = 10, which is the most common mistake. Try 3^4 = 3 × 3 × 3 × 3 = 81, and 10^3 = 10 × 10 × 10 = 1,000. Any base to the first power is itself: 7^1 = 7.",
+     "Powers of ten are easy to spot: 10^n is a 1 followed by n zeros. 10^6 is 1,000,000, a million. Powers of 2 come up in computers, where memory doubles: 2^10 = 1,024, which is why a 'kilobyte' is a bit more than a thousand bytes. The chessboard squares follow 2^0, 2^1, 2^2, and so on, so the eighth square holds 2^7 = 128 grains.",
+     "Negative bases need parentheses. (−3)^2 means (−3) × (−3) = 9, but −3^2 means the opposite of 3^2, which is −9. And (−2)^3 = (−2) × (−2) × (−2) = −8, negative because there are three negative factors. Fractions can be bases too: (2/3)^2 = 2/3 × 2/3 = 4/9. Square both the top and the bottom."
+    ],
+    "words": [
+     {"w": "base", "d": "the number being multiplied repeatedly; in 5^3 the base is 5"},
+     {"w": "exponent", "d": "the small raised number that says how many times to use the base as a factor; in 5^3 it is 3"},
+     {"w": "power", "d": "a number written with an exponent, like 5^3, or its value, 125"}
+    ],
+    "look": {"type": "data", "title": "Grains on the First Squares", "rows": [["square 1 (2^0)", 1], ["square 2 (2^1)", 2], ["square 3 (2^2)", 4], ["square 4 (2^3)", 8], ["square 5 (2^4)", 16], ["square 8 (2^7)", 128], ["square 11 (2^10)", 1024], ["square 21 (2^20)", 1048576]], "unit": "grains of rice", "cite": "computed from the doubling rule in the chessboard story", "prompt": "How many grains are on square 12? On square 22? Explain how you can get each from the row just above it without multiplying from scratch."},
+    "check": [
+     {"q": "What is 3^4?", "choices": ["12", "64", "81", "7"], "a": 2, "why": "3 × 3 × 3 × 3 = 9 × 9 = 81. The mistake 3 × 4 gives 12."},
+     {"q": "What is (−2)^4?", "choices": ["−8", "−16", "8", "16"], "a": 3, "why": "(−2)(−2)(−2)(−2): four negative factors, an even number, so positive 16."},
+     {"q": "Which expression equals 10,000?", "choices": ["10^4", "10^5", "4^10", "10 × 4"], "a": 0, "why": "10^4 = 10 × 10 × 10 × 10 = 10,000, a 1 followed by four zeros."}
+    ]
+   },
+   {
+    "title": "Multiplying and Dividing Powers",
+    "mainIdea": "With the same base, multiply powers by adding exponents and divide by subtracting them: 2^3 × 2^4 = 2^7 and 2^7 ÷ 2^4 = 2^3.",
+    "reading": [
+     "Write out 2^3 × 2^4: (2 × 2 × 2) × (2 × 2 × 2 × 2). That is seven 2s multiplied together, which is 2^7. Counting factors shows the rule: to multiply powers with the same base, add the exponents. 5^2 × 5^6 = 5^8. The bases must match; 2^3 × 3^2 cannot be combined this way, so compute it as 8 × 9 = 72.",
+     "Division goes the other way. 2^7 ÷ 2^4 is seven 2s over four 2s. Four pairs cancel, leaving three 2s: 2^3 = 8. Check: 128 ÷ 16 = 8. So to divide powers with the same base, subtract the exponents. 10^9 ÷ 10^4 = 10^5. A billion divided by ten thousand is a hundred thousand, which is right.",
+     "The common error is multiplying the exponents: writing 2^3 × 2^4 = 2^12. Test it with small numbers: 8 × 16 = 128, and 2^12 = 4,096, so that cannot be right. Another error is adding bases: 2^3 × 2^4 is not 4^7. When in doubt, write the factors out and count."
+    ],
+    "words": [
+     {"w": "product rule", "d": "same base, multiply: add the exponents, a^m × a^n = a^(m+n)"},
+     {"w": "quotient rule", "d": "same base, divide: subtract the exponents, a^m ÷ a^n = a^(m−n)"}
+    ],
+    "look": {"type": "think", "title": "Count the Factors", "text": "Write out 3^2 × 3^3 as a string of 3s and count them. Then write 3^5 ÷ 3^2 as a fraction with 3s on top and bottom, cancel, and count what remains. Compute each answer as a plain number too: 9 × 27 and 243 ÷ 9. Do the exponent rules agree with the plain arithmetic?", "prompt": "State the two rules in your own words. Then explain why 3^2 × 5^3 cannot be simplified the same way."},
+    "check": [
+     {"q": "What is 4^3 × 4^2?", "choices": ["4^6", "16^5", "8^5", "4^5"], "a": 3, "why": "Same base, so add exponents: 3 + 2 = 5. 4^5 = 1,024, and 64 × 16 = 1,024."},
+     {"q": "What is 7^9 ÷ 7^3?", "choices": ["7^3", "7^6", "1^6", "7^12"], "a": 1, "why": "Same base, subtract exponents: 9 − 3 = 6, so 7^6."},
+     {"q": "Which product can be simplified by adding exponents?", "choices": ["2^3 × 5^3", "3^2 + 3^4", "6^2 × 6^7", "4^2 × 2^4"], "a": 2, "why": "Only 6^2 × 6^7 has the same base in a multiplication. It equals 6^9."}
+    ]
+   },
+   {
+    "title": "A Power of a Power",
+    "mainIdea": "Raising a power to another power multiplies the exponents: (2^3)^2 = 2^6, and a power of a product applies to every factor: (3x)^2 = 9x^2.",
+    "reading": [
+     "What is (2^3)^2? It means 2^3 times itself: 2^3 × 2^3. By the product rule that is 2^(3+3) = 2^6 = 64. Check: 2^3 = 8 and 8^2 = 64. So a power of a power multiplies the exponents: (a^m)^n = a^(m × n). For (5^2)^4, multiply 2 × 4 to get 5^8. This is the one place where multiplying exponents is correct, and it is easy to mix up with the product rule, where you add.",
+     "A power of a product spreads to each factor. (2 × 5)^3 = 2^3 × 5^3 = 8 × 125 = 1,000, and indeed 10^3 = 1,000. With a variable: (3x)^2 = 3^2 × x^2 = 9x^2, not 3x^2. Students often forget to square the 3. Similarly, (x^2 y)^3 = x^6 y^3. A fraction works the same way: (2/3)^3 = 2^3 / 3^3 = 8/27.",
+     "Keep the three rules straight by testing with 2s. Product: 2^2 × 2^3 = 4 × 8 = 32 = 2^5, exponents add. Quotient: 2^5 ÷ 2^2 = 32 ÷ 4 = 8 = 2^3, exponents subtract. Power of a power: (2^2)^3 = 4^3 = 64 = 2^6, exponents multiply. Whenever you are unsure which rule applies, write out a tiny example and count."
+    ],
+    "words": [
+     {"w": "power rule", "d": "a power of a power: multiply the exponents, (a^m)^n = a^(mn)"},
+     {"w": "power of a product", "d": "the exponent applies to every factor: (ab)^n = a^n × b^n"}
+    ],
+    "look": {"type": "think", "title": "Three Rules, One Base", "text": "Using base 10, write a plain-number check for each rule: 10^2 × 10^3, 10^5 ÷ 10^2, and (10^2)^3. Write each answer with its zeros counted out, then as a single power of 10. Finally decide: is (10^2)^3 the same as 10^2 × 10^3? Compute both.", "prompt": "Which two of the three expressions turned out equal, and which rule explains each result?"},
+    "check": [
+     {"q": "What is (3^2)^4?", "choices": ["3^8", "3^6", "9^6", "3^16"], "a": 0, "why": "Multiply the exponents: 2 × 4 = 8, so 3^8."},
+     {"q": "What is (2x)^3?", "choices": ["2x^3", "6x^3", "8x^3", "8x"], "a": 2, "why": "Cube both factors: 2^3 = 8 and x^3, giving 8x^3."},
+     {"q": "Which two expressions are equal?", "choices": ["2^3 × 2^3 and 2^9", "(2^3)^3 and 2^6", "2^6 ÷ 2^3 and 2^2", "(2^3)^2 and 2^3 × 2^3"], "a": 3, "why": "(2^3)^2 = 2^6 and 2^3 × 2^3 = 2^(3+3) = 2^6. Both are 64."}
+    ]
+   },
+   {
+    "title": "Zero and Negative Exponents",
+    "mainIdea": "Any nonzero base to the zero power is 1, and a negative exponent means a reciprocal: 2^−3 = 1/2^3 = 1/8.",
+    "reading": [
+     "Follow the pattern down. 2^3 = 8, 2^2 = 4, 2^1 = 2. Each step divides by 2. Keep going: 2^0 must be 2 ÷ 2 = 1. Then 2^−1 = 1 ÷ 2 = 1/2, 2^−2 = 1/4, 2^−3 = 1/8. So a *zero exponent* gives 1, and a *negative exponent* gives 1 over the positive power. In general a^0 = 1 for any nonzero a, and a^−n = 1/a^n.",
+     "The quotient rule says the same thing. 5^3 ÷ 5^3 is clearly 1, and by the rule it is 5^(3−3) = 5^0. So 5^0 = 1. And 5^2 ÷ 5^5 is 25/3,125 = 1/125 = 1/5^3, while the rule gives 5^(2−5) = 5^−3. So 5^−3 = 1/5^3. Negative exponents are not negative numbers: 5^−3 is a small positive fraction, 1/125.",
+     "Powers of ten with negative exponents name decimal places. 10^−1 = 0.1, 10^−2 = 0.01, 10^−3 = 0.001. A negative exponent in a denominator flips up: 1/2^−3 = 2^3 = 8. Two mistakes to avoid: thinking 4^0 = 0 (it is 1), and thinking 3^−2 = −9 (it is 1/9). Say 'negative exponent means reciprocal' each time until it sticks."
+    ],
+    "words": [
+     {"w": "zero exponent", "d": "any nonzero number to the power 0 equals 1"},
+     {"w": "negative exponent", "d": "a^−n means 1 divided by a^n, the reciprocal of the positive power"}
+    ],
+    "look": {"type": "data", "title": "Powers of Ten Going Down", "rows": [["10^3", 1000], ["10^2", 100], ["10^1", 10], ["10^0", 1], ["10^−1", 0.1], ["10^−2", 0.01], ["10^−3", 0.001]], "unit": "value", "cite": "each row is the one above divided by 10", "prompt": "What is 10^−4? Explain how the pattern forces 10^0 to be 1 rather than 0."},
+    "check": [
+     {"q": "What is 6^0?", "choices": ["0", "1", "6", "undefined"], "a": 1, "why": "Any nonzero base to the zero power is 1. Check: 6^1 ÷ 6^1 = 1 = 6^0."},
+     {"q": "What is 2^−4?", "choices": ["−8", "−16", "1/8", "1/16"], "a": 3, "why": "A negative exponent means reciprocal: 2^−4 = 1/2^4 = 1/16."},
+     {"q": "Which is equal to 0.001?", "choices": ["10^−3", "10^3", "10^−2", "−10^3"], "a": 0, "why": "10^−3 = 1/1,000 = 0.001, three decimal places."}
+    ]
+   }
+  ]},
+  {"title": "Roots and Irrational Numbers", "lessons": [
+   {
+    "title": "Square Roots and Perfect Squares",
+    "mainIdea": "The square root of a number is the number that, multiplied by itself, gives it: √49 = 7 because 7 × 7 = 49.",
+    "reading": [
+     "A square garden has an area of 49 square feet. How long is each side? You need a number that times itself gives 49. That is 7, because 7 × 7 = 49. We write √49 = 7 and call 7 the *square root* of 49. Numbers like 49 that come from squaring a whole number are *perfect squares*: 1, 4, 9, 16, 25, 36, 49, 64, 81, 100, 121, 144. Memorize these; they make roots quick.",
+     "Every positive number has two square roots, one positive and one negative, because (−7) × (−7) = 49 too. The symbol √ means the positive one. When an equation says x^2 = 49, both x = 7 and x = −7 work. A negative number has no real square root: no number times itself gives −49, since the product of two same-sign numbers is positive.",
+     "Roots of fractions take the root of top and bottom: √(9/16) = 3/4, because (3/4)^2 = 9/16. Roots of decimals: √0.25 = 0.5, since 0.5 × 0.5 = 0.25. The common error is halving instead of rooting: √16 is 4, not 8. Ask 'what number squared gives this?' rather than 'what is half of this?'"
+    ],
+    "words": [
+     {"w": "square root", "d": "a number that, multiplied by itself, gives the original; √36 = 6"},
+     {"w": "perfect square", "d": "a whole number that is the square of a whole number, like 25 or 144"}
+    ],
+    "look": {"type": "data", "title": "Perfect Squares", "rows": [["5^2", 25], ["8^2", 64], ["11^2", 121], ["12^2", 144], ["15^2", 225], ["20^2", 400], ["25^2", 625]], "unit": "value", "cite": "computed by multiplying each number by itself", "prompt": "Use the table to find √225 and √625. Then estimate √200: which two perfect squares does it fall between?"},
+    "check": [
+     {"q": "What is √81?", "choices": ["40.5", "8", "9", "18"], "a": 2, "why": "9 × 9 = 81. Halving to 40.5 is the common mistake."},
+     {"q": "Which number is a perfect square?", "choices": ["169", "150", "200", "175"], "a": 0, "why": "13 × 13 = 169. The other three are not squares of whole numbers."},
+     {"q": "If x^2 = 64, what are the solutions?", "choices": ["8 only", "32 and −32", "4 and −4", "8 and −8"], "a": 3, "why": "8 × 8 = 64 and (−8) × (−8) = 64, so x can be 8 or −8."}
+    ]
+   },
+   {
+    "title": "Cube Roots",
+    "mainIdea": "The cube root of a number is the number used three times as a factor to make it: the cube root of 64 is 4 because 4 × 4 × 4 = 64.",
+    "reading": [
+     "A cube-shaped box holds 64 cubic inches. How long is each edge? You need a number that, used three times as a factor, gives 64. Since 4 × 4 × 4 = 64, each edge is 4 inches. We write this as the *cube root* of 64, ³√64 = 4. Numbers made by cubing a whole number are *perfect cubes*: 1, 8, 27, 64, 125, 216, 343, 512, 729, 1,000.",
+     "Unlike square roots, cube roots of negative numbers exist. (−4) × (−4) × (−4) = −64, because three negative factors give a negative product. So ³√(−64) = −4. Each number has exactly one real cube root, with the same sign as the number itself. ³√(−27) = −3 and ³√27 = 3.",
+     "Keep squares and cubes apart. √64 = 8 but ³√64 = 4. √27 is not a whole number, but ³√27 = 3. If a problem gives a volume, think cube root; if it gives an area, think square root. And a number can be both: 64 = 8^2 = 4^3, and 1 = 1^2 = 1^3. When you see ³√1,000, ask: what number times itself three times gives 1,000? It is 10."
+    ],
+    "words": [
+     {"w": "cube root", "d": "a number used three times as a factor to make the original; ³√125 = 5"},
+     {"w": "perfect cube", "d": "a whole number that is the cube of a whole number, like 8, 27 or 1,000"}
+    ],
+    "look": {"type": "think", "title": "Boxes and Edges", "text": "A shipping company makes cube-shaped boxes with volumes of 27, 125, 343 and 1,000 cubic inches. Find the edge length of each box. Then a puzzle: a cube-shaped tank holds 512 gallons, and one cubic foot holds about 7.5 gallons. Round the volume to the nearest cubic foot and estimate the edge length in feet.", "prompt": "Which of the four boxes would fit inside another? Explain using the edge lengths."},
+    "check": [
+     {"q": "What is the cube root of 125?", "choices": ["25", "41.7", "11.2", "5"], "a": 3, "why": "5 × 5 × 5 = 25 × 5 = 125."},
+     {"q": "What is ³√(−8)?", "choices": ["no real answer", "−2", "2", "−4"], "a": 1, "why": "(−2) × (−2) × (−2) = 4 × (−2) = −8. Cube roots of negatives are negative."},
+     {"q": "A cube has volume 216 cubic centimeters. What is its edge length?", "choices": ["72 cm", "108 cm", "6 cm", "14.7 cm"], "a": 2, "why": "6 × 6 × 6 = 36 × 6 = 216, so each edge is 6 cm."}
+    ]
+   },
+   {
+    "title": "Irrational Numbers and Where √2 Sits",
+    "mainIdea": "A number that cannot be written as a fraction of integers, like √2 or π, is irrational, but it still has an exact spot on the number line.",
+    "reading": [
+     "Draw a square with sides of 1 unit. Its diagonal has length √2, because 1^2 + 1^2 = 2. What is √2 as a decimal? Since 1^2 = 1 and 2^2 = 4, it is between 1 and 2. Try 1.4^2 = 1.96 and 1.5^2 = 2.25, so it is between 1.4 and 1.5. Try 1.41^2 = 1.9881 and 1.42^2 = 2.0164, so between 1.41 and 1.42. The decimal is 1.41421356... and it never ends or repeats.",
+     "A number whose decimal never ends and never repeats cannot be written as a fraction of two integers. Such numbers are *irrational*. √2 is irrational; so is π, and so is the square root of any whole number that is not a perfect square, like √3, √5 and √10. Together, the rational numbers and the irrational numbers make up the *real numbers*, every point on the number line.",
+     "Even though √2 has no finite decimal, it has an exact position. Set a compass to the diagonal of a 1-by-1 square and swing it down to the number line; the mark lands at √2, a little past 1.4. To place √10 without a compass, note that 3^2 = 9 and 4^2 = 16, so √10 is between 3 and 4, and close to 3 because 10 is just past 9; 3.2^2 = 10.24, so √10 ≈ 3.16. The mistake to avoid is calling 0.333... irrational. It repeats, so it is 1/3, a rational number."
+    ],
+    "words": [
+     {"w": "irrational number", "d": "a number that cannot be written as a fraction of integers; its decimal never ends or repeats"},
+     {"w": "real numbers", "d": "all the rational and irrational numbers together; every point on the number line"}
+    ],
+    "look": {"type": "data", "title": "Closing In on √2", "rows": [["1.4 squared", 1.96], ["1.41 squared", 1.9881], ["1.414 squared", 1.999396], ["1.4142 squared", 1.99996164], ["1.5 squared", 2.25], ["1.42 squared", 2.0164]], "unit": "value", "cite": "computed by multiplying each decimal by itself", "prompt": "Which rows are below 2 and which are above? Using them, name two decimals that trap √2 between them to four decimal places."},
+    "check": [
+     {"q": "Between which two whole numbers is √50?", "choices": ["7 and 8", "6 and 7", "24 and 26", "49 and 51"], "a": 0, "why": "7^2 = 49 and 8^2 = 64, and 50 is between them, so √50 is between 7 and 8, close to 7."},
+     {"q": "Which number is irrational?", "choices": ["√36", "0.75", "√7", "0.666..."], "a": 2, "why": "7 is not a perfect square, so √7 never ends or repeats. √36 = 6, 0.75 = 3/4 and 0.666... = 2/3."},
+     {"q": "Which decimal is closest to √2?", "choices": ["1.2", "1.414", "1.5", "2.0"], "a": 1, "why": "1.414^2 ≈ 1.9994, very close to 2. The others square to 1.44, 2.25 and 4."}
+    ]
+   }
+  ]},
+  {"title": "Scientific Notation", "lessons": [
+   {
+    "title": "Writing Very Large Numbers",
+    "mainIdea": "Scientific notation writes a number as a decimal between 1 and 10 times a power of ten: 4,500,000 = 4.5 × 10^6.",
+    "reading": [
+     "The distance from Earth to the Sun is about 93,000,000 miles. Writing all those zeros invites mistakes. In *scientific notation* the number becomes 9.3 × 10^7. The first part, 9.3, is at least 1 and less than 10. The second part, 10^7, tells how many places the decimal point moved. Start at 93,000,000. Move the point left until only one nonzero digit is in front: 9.3. It moved 7 places, so the exponent is 7.",
+     "Go the other way to expand. 2.05 × 10^5: move the decimal point 5 places right, filling with zeros: 205,000. Check by reasoning: 10^5 is 100,000, and 2.05 × 100,000 = 205,000. The rice on the last chessboard square, about 9,223,000,000,000,000,000, becomes about 9.2 × 10^18. The exponent counts places moved, which is the number of digits after the first one.",
+     "Two common slips. Writing 45 × 10^5 is not proper scientific notation because 45 is not less than 10; it should be 4.5 × 10^6. And counting zeros instead of places: 93,000,000 has six zeros but the point moves seven places, because the 3 counts too. Illinois has about 12.5 million people, which is 1.25 × 10^7 people."
+    ],
+    "words": [
+     {"w": "scientific notation", "d": "a number written as a decimal from 1 up to (but not including) 10, times a power of ten"},
+     {"w": "coefficient", "d": "the decimal part in scientific notation; in 4.5 × 10^6 it is 4.5"}
+    ],
+    "look": {"type": "data", "title": "Big Numbers in Scientific Notation", "rows": [["Illinois population, about 1.25 × 10^7", 12500000], ["Earth to Moon, about 2.4 × 10^5 miles", 240000], ["Earth to Sun, about 9.3 × 10^7 miles", 93000000], ["seconds in a year, about 3.15 × 10^7", 31500000], ["grains on chess square 64, about 9.2 × 10^18", 9.2e18]], "unit": "standard form", "cite": "rounded figures; population from the U.S. Census, distances from NASA fact sheets", "prompt": "For each row, count how many places the decimal point moves between the two forms. Which rows have the same exponent, and what does that tell you about their sizes?"},
+    "check": [
+     {"q": "Write 6,800,000 in scientific notation.", "choices": ["68 × 10^5", "6.8 × 10^5", "0.68 × 10^7", "6.8 × 10^6"], "a": 3, "why": "Move the point 6 places left to get 6.8, so 6.8 × 10^6. The coefficient must be between 1 and 10."},
+     {"q": "What is 3.02 × 10^4 in standard form?", "choices": ["30,200", "3,020", "302,000", "30,020"], "a": 0, "why": "Move the point 4 places right: 3.0200 becomes 30,200."},
+     {"q": "Which number is largest?", "choices": ["8.9 × 10^5", "1.2 × 10^7", "9.9 × 10^6", "5.5 × 10^6"], "a": 1, "why": "Compare exponents first: 10^7 beats 10^6 and 10^5. So 1.2 × 10^7 = 12,000,000 is largest."}
+    ]
+   },
+   {
+    "title": "Writing Very Small Numbers",
+    "mainIdea": "A negative exponent on the 10 moves the decimal point left, so 0.00035 = 3.5 × 10^−4.",
+    "reading": [
+     "A red blood cell is about 0.000008 meters across. To write it in scientific notation, move the decimal point right until one nonzero digit sits in front: 8. It moved 6 places to the right, so the exponent is −6: 8 × 10^−6 meters. Moving right means the original number was small, and small numbers get negative exponents. Check: 10^−6 = 0.000001, and 8 × 0.000001 = 0.000008.",
+     "Expand 2.7 × 10^−3 by moving the point 3 places to the left, filling with zeros: 0.0027. A quick check: 10^−3 is one thousandth, and 2.7 thousandths is 0.0027. The exponent counts how many places, and the sign says which way: negative means the number is less than 1.",
+     "Comparing small numbers: which is smaller, 4 × 10^−5 or 9 × 10^−6? Look at exponents first. 10^−6 is one tenth of 10^−5, so 9 × 10^−6 = 0.000009 is smaller than 4 × 10^−5 = 0.00004. Students often assume the bigger coefficient wins; the exponent matters more. And do not confuse a negative exponent with a negative number: 2.7 × 10^−3 is positive."
+    ],
+    "words": [
+     {"w": "standard form", "d": "a number written out with all its digits, like 0.0027 or 205,000"},
+     {"w": "negative exponent", "d": "on a 10, it means the decimal point moves left; 10^−3 = 0.001"}
+    ],
+    "look": {"type": "data", "title": "Small Sizes in Meters", "rows": [["grain of table salt, about 3 × 10^−4", 0.0003], ["human hair width, about 7 × 10^−5", 0.00007], ["red blood cell, about 8 × 10^−6", 0.000008], ["typical bacterium, about 2 × 10^−6", 0.000002], ["flu virus, about 1 × 10^−7", 0.0000001]], "unit": "meters (approximate)", "cite": "rounded typical sizes from science reference tables", "prompt": "Put the five objects in order from largest to smallest using the exponents. About how many flu viruses would line up across one red blood cell?"},
+    "check": [
+     {"q": "Write 0.00052 in scientific notation.", "choices": ["5.2 × 10^4", "5.2 × 10^−4", "52 × 10^−5", "5.2 × 10^−3"], "a": 1, "why": "Move the point 4 places right to get 5.2. Small number, so the exponent is −4."},
+     {"q": "What is 6.1 × 10^−2 in standard form?", "choices": ["610", "0.0061", "0.00061", "0.061"], "a": 3, "why": "Move the point 2 places left: 0.061. Check: 6.1 hundredths is 0.061."},
+     {"q": "Which number is smallest?", "choices": ["3 × 10^−4", "9 × 10^−4", "2 × 10^−6", "7 × 10^−5"], "a": 2, "why": "The most negative exponent, −6, gives the smallest value: 0.000002."}
+    ]
+   },
+   {
+    "title": "Multiplying and Dividing in Scientific Notation",
+    "mainIdea": "Multiply or divide the coefficients, use the exponent rules on the powers of ten, then fix the answer so the coefficient is between 1 and 10.",
+    "reading": [
+     "Light travels about 3 × 10^5 kilometers per second. How far does it go in 5 × 10^2 seconds? Multiply coefficients: 3 × 5 = 15. Add exponents: 10^5 × 10^2 = 10^7. So 15 × 10^7. But 15 is not between 1 and 10, so rewrite: 15 = 1.5 × 10, giving 1.5 × 10^8 kilometers. Always check the coefficient at the end.",
+     "Division: (8.4 × 10^9) ÷ (2 × 10^4). Divide coefficients: 8.4 ÷ 2 = 4.2. Subtract exponents: 9 − 4 = 5. Answer: 4.2 × 10^5. If the coefficient comes out below 1, adjust the other way: (2 × 10^6) ÷ (8 × 10^2) gives 0.25 × 10^4, which becomes 2.5 × 10^3. Moving the point right one place means the exponent goes down by one.",
+     "A population problem: the United States has about 3.3 × 10^8 people, and Illinois about 1.25 × 10^7. How many times larger is the U.S.? (3.3 × 10^8) ÷ (1.25 × 10^7) = 2.64 × 10^1 = 26.4, so about 26 times. Common slips: adding exponents when dividing, and forgetting to readjust a coefficient like 15 or 0.25."
+    ],
+    "words": [
+     {"w": "adjust", "d": "rewrite an answer so the coefficient is at least 1 and less than 10, changing the exponent to match"},
+     {"w": "coefficient", "d": "the decimal part of a number in scientific notation; in 4.2 × 10^5 it is 4.2"}
+    ],
+    "look": {"type": "think", "title": "Light and Distance", "text": "Light travels about 3 × 10^5 kilometers each second. The Sun is about 1.5 × 10^8 kilometers away. Divide to find how many seconds sunlight takes to reach Earth. Then compute how far light goes in one day: there are about 8.64 × 10^4 seconds in a day, so multiply.", "prompt": "Did either answer need adjusting so the coefficient landed between 1 and 10? Convert the sunlight time into minutes."},
+    "check": [
+     {"q": "What is (2 × 10^3) × (4 × 10^5)?", "choices": ["8 × 10^15", "6 × 10^8", "8 × 10^8", "8 × 10^2"], "a": 2, "why": "2 × 4 = 8 and 10^3 × 10^5 = 10^8. So 8 × 10^8."},
+     {"q": "What is (6 × 10^7) ÷ (3 × 10^2)?", "choices": ["2 × 10^5", "2 × 10^9", "3 × 10^5", "2 × 10^3.5"], "a": 0, "why": "6 ÷ 3 = 2 and 10^7 ÷ 10^2 = 10^5. So 2 × 10^5."},
+     {"q": "What is (5 × 10^4) × (6 × 10^3) in proper scientific notation?", "choices": ["30 × 10^7", "30 × 10^12", "3 × 10^7", "3 × 10^8"], "a": 3, "why": "5 × 6 = 30 and 10^4 × 10^3 = 10^7, giving 30 × 10^7. Adjust: 30 = 3 × 10, so 3 × 10^8."}
+    ]
+   },
+   {
+    "title": "Adding, Subtracting and Comparing",
+    "mainIdea": "To add or subtract in scientific notation, make the exponents match first; to compare, look at the exponent before the coefficient.",
+    "reading": [
+     "Add 3.2 × 10^5 and 4.5 × 10^4. The exponents differ, so the powers of ten are different sizes, like adding dollars and dimes. Rewrite the smaller one to match: 4.5 × 10^4 = 0.45 × 10^5. Now add coefficients: 3.2 + 0.45 = 3.65, so the sum is 3.65 × 10^5. Check in standard form: 320,000 + 45,000 = 365,000. Yes.",
+     "Subtraction works the same: 7 × 10^6 − 2.5 × 10^5 = 7 × 10^6 − 0.25 × 10^6 = 6.75 × 10^6, which is 7,000,000 − 250,000 = 6,750,000. If the result's coefficient falls outside 1 to 10, adjust it. For example, 9.5 × 10^3 + 8 × 10^2 = 9.5 × 10^3 + 0.8 × 10^3 = 10.3 × 10^3 = 1.03 × 10^4.",
+     "To compare, the exponent comes first. 2 × 10^9 is bigger than 9 × 10^8, because 10^9 is ten times 10^8, and 2 × 10 beats 9. Only when exponents are equal do you compare coefficients: 4.1 × 10^6 < 4.3 × 10^6. To find how many times bigger one number is than another, divide. Lake Michigan holds roughly 4.9 × 10^12 cubic meters of water; a large swimming pool holds about 2.5 × 10^3 cubic meters. The lake holds about (4.9 × 10^12) ÷ (2.5 × 10^3) = 1.96 × 10^9 pools, nearly two billion."
+    ],
+    "words": [
+     {"w": "like powers", "d": "the same power of ten in two numbers, which lets their coefficients be added or subtracted"},
+     {"w": "compare", "d": "decide which of two numbers is larger; in scientific notation, check the exponent first"}
+    ],
+    "look": {"type": "think", "title": "Dollars and Dimes", "text": "Explain why 3 × 10^2 + 4 × 10^1 is not 7 × 10^3 and not 7 × 10^2. Write both numbers in standard form, add them, and write the sum back in scientific notation. Then do the same for 5 × 10^6 + 5 × 10^5.", "prompt": "What did you have to do to the exponents before the coefficients could be added? Why did the second sum not come out to 1 × 10^7?"},
+    "check": [
+     {"q": "What is 6 × 10^4 + 3 × 10^3?", "choices": ["9 × 10^7", "6.3 × 10^4", "9 × 10^4", "6.3 × 10^3"], "a": 1, "why": "3 × 10^3 = 0.3 × 10^4. Then 6 + 0.3 = 6.3, so 6.3 × 10^4 = 63,000."},
+     {"q": "Which comparison is true?", "choices": ["8 × 10^5 > 2 × 10^6", "5 × 10^3 = 5 × 10^−3", "3 × 10^4 < 3 × 10^3", "1 × 10^7 > 9 × 10^6"], "a": 3, "why": "10^7 = 10,000,000 is bigger than 9 × 10^6 = 9,000,000. Exponents come first."},
+     {"q": "About how many times larger is 6 × 10^8 than 3 × 10^5?", "choices": ["2,000", "3", "200", "2 × 10^13"], "a": 0, "why": "Divide: 6 ÷ 3 = 2 and 10^8 ÷ 10^5 = 10^3, so 2 × 10^3 = 2,000 times."}
+    ]
+   }
+  ]}
+ ],
+ "review": [
+  {"q": "What is 2^6?", "choices": ["64", "12", "36", "32"], "a": 0, "why": "2 × 2 × 2 × 2 × 2 × 2 = 64. Six factors of 2."},
+  {"q": "What is 5^7 ÷ 5^4?", "choices": ["5^11", "1^3", "5^3", "5^28"], "a": 2, "why": "Same base, subtract exponents: 7 − 4 = 3, so 5^3 = 125."},
+  {"q": "What is 3^−2?", "choices": ["−9", "1/9", "−6", "1/6"], "a": 1, "why": "A negative exponent means reciprocal: 1/3^2 = 1/9."},
+  {"q": "What is √144?", "choices": ["72", "14", "11", "12"], "a": 3, "why": "12 × 12 = 144."},
+  {"q": "What is the cube root of 27?", "choices": ["9", "5.2", "3", "13.5"], "a": 2, "why": "3 × 3 × 3 = 27."},
+  {"q": "Which number is irrational?", "choices": ["√5", "√25", "2/7", "0.125"], "a": 0, "why": "5 is not a perfect square, so √5 never ends or repeats. The others are 5, a fraction, and 1/8."},
+  {"q": "Write 0.0000094 in scientific notation.", "choices": ["9.4 × 10^6", "9.4 × 10^−6", "94 × 10^−7", "9.4 × 10^−7"], "a": 1, "why": "Move the point 6 places right to get 9.4; small number, exponent −6."},
+  {"q": "What is (4 × 10^6) × (5 × 10^3)?", "choices": ["20 × 10^9", "9 × 10^9", "2 × 10^18", "2 × 10^10"], "a": 3, "why": "4 × 5 = 20 and 10^6 × 10^3 = 10^9, giving 20 × 10^9. Adjust: 2 × 10^10."}
+ ]
+}

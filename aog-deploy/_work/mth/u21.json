@@ -1,0 +1,2285 @@
+{
+ "intro": [
+  "A surveyor on the lakefront points a small instrument at the top of a building and reads an angle. A minute later she knows the building's height without touching it. A city engineer looks at the equation of a circle on a map and knows which homes a new cell tower will reach. A farmer orders a silo and needs to know, before it arrives, how many bushels it will hold. All three are using the same handful of ideas about shape and size, and all three ideas begin with a triangle you can measure standing in for one you cannot.",
+  "This unit starts with similarity: what it means for two figures to have the same shape, and the shortcuts that prove it. From similar right triangles come three ratios called sine, cosine and tangent, the tools that turn one angle and one side into every other part of a triangle. Then the circle takes over: the angles inside it, the arcs and sectors that make up its edge and interior, a new angle unit called the radian, and the equation that places a circle on a coordinate grid. The unit ends by stacking, slicing and comparing solids to find how much space a can, a cone, a pyramid or a ball takes up.",
+  "By the end you will be able to find a flagpole's height from its shadow, solve any right triangle from two of its parts, compute the area of a pizza slice or the length of a curved running track lane, write and read the equation of a circle, and find the volume and density of real objects modeled from simple solids. Every formula is built from a picture you can draw, and every method is checked on a real example first."
+ ],
+ "bigQuestion": "How do ratios in one small triangle let us measure buildings, map circles and fill solids we can never take apart?",
+ "timeline": [
+  {
+   "y": "c. 600 BCE",
+   "t": "Thales of Miletus is credited with measuring a pyramid's height from its shadow using similar triangles"
+  },
+  {
+   "y": "c. 300 BCE",
+   "t": "Euclid's Elements sets out similar triangles, circle theorems and a proof of the Pythagorean theorem"
+  },
+  {
+   "y": "c. 250 BCE",
+   "t": "Archimedes shows a sphere holds two thirds of the cylinder that just contains it"
+  },
+  {
+   "y": "c. 150 CE",
+   "t": "Ptolemy's Almagest includes a table of chord lengths, an ancestor of trigonometric tables"
+  },
+  {
+   "y": "499 CE",
+   "t": "Aryabhata in India tabulates half-chords, the idea that became the sine"
+  },
+  {
+   "y": "1400s",
+   "t": "European scholars gather trigonometry into a subject of its own for astronomy and navigation"
+  },
+  {
+   "y": "1635",
+   "t": "Bonaventura Cavalieri publishes his method of comparing solids slice by slice"
+  },
+  {
+   "y": "1637",
+   "t": "Descartes's La Géométrie links equations to curves, making the equation of a circle possible"
+  },
+  {
+   "y": "1706",
+   "t": "William Jones first uses the symbol π for the ratio of circumference to diameter"
+  },
+  {
+   "y": "1870s",
+   "t": "The word radian enters mathematics textbooks as the natural unit of angle"
+  },
+  {
+   "y": "1990",
+   "t": "The Americans with Disabilities Act leads to ramp standards with a maximum 1 to 12 slope, about 4.8°"
+  },
+  {
+   "y": "Today",
+   "t": "Surveyors, GPS receivers and video-game engines all solve triangles millions of times a day"
+  }
+ ],
+ "wrap": {
+  "words": [
+   {
+    "w": "dilation",
+    "d": "a transformation that multiplies every distance from a center point by the same scale factor"
+   },
+   {
+    "w": "similar",
+    "d": "having the same shape: equal corresponding angles and proportional corresponding sides"
+   },
+   {
+    "w": "AA similarity",
+    "d": "two triangles are similar if two angles of one equal two angles of the other"
+   },
+   {
+    "w": "sine",
+    "d": "for an acute angle of a right triangle, opposite side divided by hypotenuse"
+   },
+   {
+    "w": "cosine",
+    "d": "for an acute angle of a right triangle, adjacent side divided by hypotenuse"
+   },
+   {
+    "w": "tangent (ratio)",
+    "d": "for an acute angle of a right triangle, opposite side divided by adjacent side"
+   },
+   {
+    "w": "angle of elevation",
+    "d": "the angle between the horizontal and a line of sight looking upward"
+   },
+   {
+    "w": "inscribed angle",
+    "d": "an angle with its vertex on a circle; it measures half its intercepted arc"
+   },
+   {
+    "w": "tangent line",
+    "d": "a line that touches a circle at exactly one point, perpendicular to the radius there"
+   },
+   {
+    "w": "radian",
+    "d": "the angle whose arc equals the radius; a full circle is 2π radians"
+   },
+   {
+    "w": "sector",
+    "d": "a wedge of a circle bounded by two radii and an arc; its area is (θ/360) × πr²"
+   },
+   {
+    "w": "Cavalieri's principle",
+    "d": "solids with equal heights and equal cross-section areas at every level have equal volumes"
+   }
+  ],
+  "test": [
+   {
+    "q": "A dilation centered at the origin has scale factor 0.5. Where does (8, −6) land?",
+    "choices": [
+     "(16, −12)",
+     "(4, −6)",
+     "(4, −3)",
+     "(8.5, −5.5)"
+    ],
+    "a": 2,
+    "why": "Multiply both coordinates by 0.5: (4, −3). Both coordinates change, not just x."
+   },
+   {
+    "q": "Two similar figures have scale factor 2. The larger figure's area is how many times the smaller's?",
+    "choices": [
+     "2",
+     "8",
+     "16",
+     "4"
+    ],
+    "a": 3,
+    "why": "Area scales by the square of the scale factor: 2² = 4."
+   },
+   {
+    "q": "One triangle has angles 30° and 80°. Another has angles 70° and 80°. Are they similar?",
+    "choices": [
+     "Yes, by AA, since the first triangle's third angle is 70°",
+     "No, because 30° is not in the second triangle",
+     "Only if a side matches",
+     "Yes, by SAS"
+    ],
+    "a": 0,
+    "why": "180 − 30 − 80 = 70°, so both triangles have angles 30°, 70° and 80°. Two shared angles is AA."
+   },
+   {
+    "q": "A right triangle has legs 9 and 12. How long is the hypotenuse?",
+    "choices": [
+     "21",
+     "15",
+     "225",
+     "8"
+    ],
+    "a": 1,
+    "why": "9² + 12² = 81 + 144 = 225, and √225 = 15. Adding the legs gives 21."
+   },
+   {
+    "q": "A 45-45-90 triangle has legs of 4. How long is the hypotenuse?",
+    "choices": [
+     "8",
+     "4√3, about 6.9",
+     "4√2, about 5.7",
+     "2√2, about 2.8"
+    ],
+    "a": 2,
+    "why": "Hypotenuse = leg × √2 = 4√2 ≈ 5.66. Check: 16 + 16 = 32 and √32 ≈ 5.66."
+   },
+   {
+    "q": "In a 5-12-13 right triangle, what is the sine of the angle across from the side of length 5?",
+    "choices": [
+     "12/13",
+     "5/12",
+     "13/5",
+     "5/13"
+    ],
+    "a": 3,
+    "why": "Sine = opposite ÷ hypotenuse = 5/13. The ratio 5/12 is the tangent."
+   },
+   {
+    "q": "A right triangle has legs 3 and 4. What is the angle across from the leg of length 3? Use tan⁻¹(0.75) ≈ 36.9°.",
+    "choices": [
+     "36.9°",
+     "53.1°",
+     "45°",
+     "41.8°"
+    ],
+    "a": 0,
+    "why": "tan θ = opposite ÷ adjacent = 3/4 = 0.75, so θ = tan⁻¹(0.75) ≈ 36.9°. The other acute angle is 53.1°."
+   },
+   {
+    "q": "From 100 m away, the angle of elevation to the top of a tower is 40°. How high is the top above eye level? Use tan 40° ≈ 0.839.",
+    "choices": [
+     "119.2 m",
+     "83.9 m",
+     "64.3 m",
+     "76.6 m"
+    ],
+    "a": 1,
+    "why": "Height is opposite and 100 m is adjacent: height = 100 × 0.839 = 83.9 m. Dividing gives 119.2, the wrong direction."
+   },
+   {
+    "q": "A 1.8 m person casts a 3 m shadow while a tree casts a 15 m shadow. How tall is the tree?",
+    "choices": [
+     "25 m",
+     "27 m",
+     "9 m",
+     "5 m"
+    ],
+    "a": 2,
+    "why": "Height ÷ shadow is 1.8/3 = 0.6 for both, so the tree is 15 × 0.6 = 9 m. Using 3/1.8 gives 25."
+   },
+   {
+    "q": "An inscribed angle measures 40°. What is the measure of its intercepted arc?",
+    "choices": [
+     "20°",
+     "40°",
+     "160°",
+     "80°"
+    ],
+    "a": 3,
+    "why": "The arc is twice the inscribed angle: 2 × 40 = 80°."
+   },
+   {
+    "q": "A circle has radius 9. A point is 15 units from the center. How long is the tangent segment from the point to the circle?",
+    "choices": [
+     "6",
+     "12",
+     "17.5",
+     "24"
+    ],
+    "a": 1,
+    "why": "Right triangle with hypotenuse 15 and leg 9: √(225 − 81) = √144 = 12."
+   },
+   {
+    "q": "A circle has radius 10. What is its circumference, to one decimal place?",
+    "choices": [
+     "31.4",
+     "314.2",
+     "62.8",
+     "125.7"
+    ],
+    "a": 2,
+    "why": "C = 2πr = 20π ≈ 62.8. The value 314.2 is the area (100π)."
+   },
+   {
+    "q": "A circle has radius 6. What is the length of a 120° arc, to one decimal place?",
+    "choices": [
+     "12.6",
+     "37.7",
+     "6.3",
+     "113.1"
+    ],
+    "a": 0,
+    "why": "120/360 = 1/3. Circumference = 12π ≈ 37.7, and 37.7 ÷ 3 ≈ 12.6. In radians, 120° = 2π/3 and 6 × 2π/3 = 4π ≈ 12.6."
+   },
+   {
+    "q": "What are the center and radius of (x − 1)² + (y + 6)² = 16?",
+    "choices": [
+     "center (−1, 6), radius 4",
+     "center (1, −6), radius 16",
+     "center (1, 6), radius 4",
+     "center (1, −6), radius 4"
+    ],
+    "a": 3,
+    "why": "Flip the signs inside: center (1, −6). The radius is √16 = 4."
+   },
+   {
+    "q": "A cone has radius 2 cm and height 9 cm. What is its volume, to one decimal place?",
+    "choices": [
+     "113.1 cm³",
+     "37.7 cm³",
+     "18.8 cm³",
+     "56.5 cm³"
+    ],
+    "a": 1,
+    "why": "V = (1/3) × π × 4 × 9 = 12π ≈ 37.7 cm³. The value 113.1 (36π) is the full cylinder."
+   }
+  ],
+  "write": {
+   "prompt": "A hiker stands 80 meters from the base of a cliff and measures the angle of elevation to the top as 38°. Her eyes are 1.6 meters above the ground. Find the height of the cliff and explain each step. Then explain a second way to find the height using only a shadow and a meter stick, and say which method you trust more and why.",
+   "tips": [
+    "State your final answer with units before you explain.",
+    "Draw the right triangle and label opposite, adjacent and hypotenuse from the angle you use.",
+    "Show which ratio you chose and why, then show the multiplication or division.",
+    "Say whether you added the eye height, and why it matters.",
+    "Check your answer a second way, or explain what would make it wrong."
+   ]
+  }
+ },
+ "n": 21,
+ "title": "Geometry: Similarity, Trigonometry and Circles",
+ "years": "Geometry",
+ "band": "9-10",
+ "chapters": [
+  {
+   "n": 49,
+   "title": "Similarity and Right-Triangle Trigonometry",
+   "years": "Geometry",
+   "bigQuestion": "How can a triangle you can measure tell you the size of one you cannot reach?",
+   "story": {
+    "title": "The Flagpole and the Mirror",
+    "kicker": "A class needs the height of a flagpole, and all they have is a tape measure, a small mirror and a little geometry.",
+    "paragraphs": [
+     "The flagpole in front of a high school on the West Side of Chicago needed a new rope, and the hardware store wanted to know how much to cut. Nobody was going to climb it. Mr. Reyes's geometry class took the job. He handed Dani a tape measure and a small flat mirror and said, \"You can find the height without leaving the ground.\"",
+     "Dani set the mirror flat on the sidewalk 10 meters from the base of the pole. Then she walked backward, away from the pole, keeping her eyes on the mirror. When she saw the top of the pole appear in the glass, she stopped. Marcus measured from the center of the mirror to the spot under her eyes: 2 meters. They also measured the height of her eyes above the ground: 1.6 meters.",
+     "Here is the trick. Light bounces off a mirror at the same angle it arrives. So the angle from the mirror up to Dani's eye equals the angle from the mirror up to the top of the pole. Both the pole and Dani stand straight up, so each makes a right angle with the ground. Two triangles share two equal angles, one at the mirror and one on the ground. That makes them the same shape, only different sizes.",
+     "Same shape means the sides come in the same ratio. Dani's eye height over her distance to the mirror must equal the pole's height over its distance to the mirror. So 1.6 ÷ 2 = 0.8, and the pole's height is 0.8 × 10 = 8 meters. The class checked it a second way: the pole's distance was 5 times Dani's, so its height was 5 × 1.6 = 8. The store cut 17 meters of rope, enough to go up, around the pulley and back down with a little to spare.",
+     "That idea, that a small triangle can stand in for a big one, is one of the oldest tools in mathematics. Surveyors use it to map land. Astronomers used it to find the distance to the Moon. This chapter builds the idea from the ground up, then turns the ratios of a right triangle into three tools called sine, cosine and tangent."
+    ],
+    "think": "Dani could also have measured the flagpole's shadow instead of using a mirror. What would she need to measure, and why would that work?"
+   },
+   "sections": [
+    {
+     "title": "Dilations and Similar Figures",
+     "lessons": [
+      {
+       "title": "Stretching From a Center",
+       "mainIdea": "A dilation multiplies every distance from a center point by the same scale factor, so shapes keep their angles but change size.",
+       "reading": [
+        "Zoom in on a photo on your phone. The picture gets bigger, but the people in it do not become fatter or taller in a strange way. Every part grows by the same amount. That is a *dilation*. A dilation has a *center* (the point that stays put) and a *scale factor*, a number that tells how much every distance from the center gets multiplied.",
+        "Try it with coordinates. Put the center at the origin (0, 0) and use scale factor 3. The point (2, 3) moves to (3 × 2, 3 × 3) = (6, 9). The point (−1, 4) moves to (−3, 12). Each new point sits on the same line through the origin as the old one, just 3 times farther out. If the scale factor is 1/2, the point (6, 9) moves to (3, 4.5), which is half as far from the center.",
+        "A scale factor greater than 1 makes an *enlargement*. A scale factor between 0 and 1 makes a *reduction*. A common mistake is to add the scale factor instead of multiplying: (2, 3) with scale factor 3 is not (5, 6). Another is to dilate only the x-coordinate. Both coordinates get multiplied.",
+        "Two things happen under any dilation. Every length in the shape is multiplied by the scale factor. Every angle stays exactly the same. A triangle with a 40° angle still has a 40° angle after you triple it. That second fact is the key to the whole chapter: dilations keep shape and change only size."
+       ],
+       "words": [
+        {
+         "w": "dilation",
+         "d": "a transformation that multiplies every distance from a center point by the same scale factor"
+        },
+        {
+         "w": "center",
+         "d": "the fixed point of a dilation; it does not move"
+        },
+        {
+         "w": "scale factor",
+         "d": "the number every length is multiplied by in a dilation; greater than 1 enlarges, between 0 and 1 shrinks"
+        },
+        {
+         "w": "enlargement",
+         "d": "a dilation with scale factor greater than 1, which makes the figure bigger"
+        }
+       ],
+       "look": {
+        "type": "think",
+        "title": "The Print Shop",
+        "text": "A print shop takes a 4 inch by 6 inch photo and enlarges it with scale factor 2.5. The new print is 2.5 × 4 = 10 inches by 2.5 × 6 = 15 inches. The corners are still right angles. The long side is still 1.5 times the short side, because 15 ÷ 10 = 1.5 and 6 ÷ 4 = 1.5.",
+        "prompt": "The shop also makes a wallet-size print with scale factor 0.5. What are its dimensions, and is the long side still 1.5 times the short side?"
+       },
+       "check": [
+        {
+         "q": "A dilation centered at the origin has scale factor 2.5. Where does the point (4, −2) land?",
+         "choices": [
+          "(6.5, 0.5)",
+          "(10, −2)",
+          "(10, −5)",
+          "(1.6, −0.8)"
+         ],
+         "a": 2,
+         "why": "Multiply both coordinates by 2.5: 2.5 × 4 = 10 and 2.5 × (−2) = −5, so the image is (10, −5)."
+        },
+        {
+         "q": "A segment 6 cm long is dilated with scale factor 1/3. How long is its image?",
+         "choices": [
+          "2 cm",
+          "18 cm",
+          "3 cm",
+          "5 cm"
+         ],
+         "a": 0,
+         "why": "Lengths are multiplied by the scale factor: 6 × 1/3 = 2 cm. Dividing by 3, not subtracting 3, is the rule."
+        },
+        {
+         "q": "Which measurement of a triangle stays the same after a dilation with scale factor 4?",
+         "choices": [
+          "the side lengths",
+          "the perimeter",
+          "the area",
+          "the angle measures"
+         ],
+         "a": 3,
+         "why": "Dilations keep every angle the same. Side lengths and perimeter are multiplied by 4, and area is multiplied by 16."
+        }
+       ]
+      },
+      {
+       "title": "What Similar Means",
+       "mainIdea": "Two figures are similar when one is a dilation (plus slides, turns or flips) of the other: equal angles and proportional sides.",
+       "reading": [
+        "A model of the Willis Tower on a shelf and the real tower on Wacker Drive have the same shape. Every angle on the model matches an angle on the tower, and every length on the model is the real length times the same tiny number. Figures like that are *similar*. Formally, two figures are similar if a dilation, possibly combined with a slide, a turn or a flip, carries one onto the other.",
+        "Check it with numbers. Triangle A has sides 3, 4 and 5. Triangle B has sides 6, 8 and 10. Pair up the *corresponding sides*, shortest with shortest and so on: 6/3 = 2, 8/4 = 2, 10/5 = 2. Every ratio is the same, so the sides are *proportional* and the scale factor from A to B is 2. Now look at triangle C with sides 6, 8 and 11. The ratios 2, 2 and 2.2 are not all equal, so C is not similar to A.",
+        "Perimeter and area scale differently. Triangle A has perimeter 12; triangle B has perimeter 24, twice as much. But the area of A is 1/2 × 3 × 4 = 6, and the area of B is 1/2 × 6 × 8 = 24, four times as much. Length is multiplied by the scale factor k. Area is multiplied by k², because area has two dimensions and each one is stretched. A common mistake is to double the area when the sides double."
+       ],
+       "words": [
+        {
+         "w": "similar",
+         "d": "having the same shape: equal corresponding angles and proportional corresponding sides"
+        },
+        {
+         "w": "corresponding sides",
+         "d": "sides that sit in matching positions in two figures, like the shortest side of each triangle"
+        },
+        {
+         "w": "proportional",
+         "d": "related by the same ratio; all pairs of corresponding sides give the same quotient"
+        }
+       ],
+       "look": {
+        "type": "data",
+        "title": "How Area Grows With the Scale Factor",
+        "rows": [
+         [
+          "scale factor 1",
+          1
+         ],
+         [
+          "scale factor 2",
+          4
+         ],
+         [
+          "scale factor 3",
+          9
+         ],
+         [
+          "scale factor 4",
+          16
+         ],
+         [
+          "scale factor 5",
+          25
+         ],
+         [
+          "scale factor 10",
+          100
+         ]
+        ],
+        "unit": "times the original area",
+        "cite": "Computed from the rule new area = k² × original area",
+        "prompt": "A blueprint is drawn at 1/20 of real size. If a room on the blueprint has area 3 square inches, what is the real area in square inches, and about how many square feet is that (144 square inches per square foot)?"
+       },
+       "check": [
+        {
+         "q": "A 4 by 6 rectangle and a 6 by 9 rectangle are similar. What is the scale factor from the small one to the large one?",
+         "choices": [
+          "2",
+          "1.5",
+          "3",
+          "1"
+         ],
+         "a": 1,
+         "why": "Compare corresponding sides: 6 ÷ 4 = 1.5 and 9 ÷ 6 = 1.5. Both ratios agree, so the scale factor is 1.5."
+        },
+        {
+         "q": "Triangle P has sides 5, 7 and 9. Triangle Q has sides 10, 14 and 20. Are the triangles similar?",
+         "choices": [
+          "Yes, with scale factor 2",
+          "Yes, because two of the sides doubled",
+          "No, because 9 × 2 = 18, not 20",
+          "It cannot be decided without the angles"
+         ],
+         "a": 2,
+         "why": "The ratios are 10/5 = 2, 14/7 = 2, but 20/9 is about 2.22. The sides are not all in the same ratio, so the triangles are not similar."
+        },
+        {
+         "q": "Two similar triangles have scale factor 3. The smaller has area 8 square units. What is the area of the larger?",
+         "choices": [
+          "24 square units",
+          "11 square units",
+          "216 square units",
+          "72 square units"
+         ],
+         "a": 3,
+         "why": "Area is multiplied by k² = 3² = 9, so 8 × 9 = 72. Multiplying by only 3 gives the perimeter rule, not the area rule."
+        }
+       ]
+      },
+      {
+       "title": "Three Shortcuts for Triangles",
+       "mainIdea": "You can prove two triangles similar with AA, SAS or SSS without checking all six parts.",
+       "reading": [
+        "Checking three angles and three side ratios every time is slow. For triangles there are shortcuts. The most useful is *AA similarity*: if two angles of one triangle equal two angles of another, the triangles are similar. Why does that work? The three angles of a triangle always add to 180°, so once two angles match, the third must match too, and the shapes are the same.",
+        "Try it. One triangle has angles 40° and 60°. Another has angles 60° and 80°. The first triangle's third angle is 180 − 40 − 60 = 80°. So the first has angles 40°, 60°, 80° and the second has 60°, 80° and 180 − 60 − 80 = 40°. Same three angles, so they are similar by AA, even though nobody told you a single side length.",
+        "Two more shortcuts use sides. *SAS similarity*: two pairs of sides are proportional and the angles between those sides are equal. A triangle with sides 4 and 6 around a 50° angle is similar to one with sides 6 and 9 around a 50° angle, because 6/4 = 1.5 and 9/6 = 1.5. *SSS similarity*: all three pairs of sides are proportional. Sides 2, 3, 4 and sides 4, 6, 8 give ratios 2, 2, 2, so those triangles are similar.",
+        "A common mistake with SAS is using an angle that is not between the two sides. The angle must be the one the two sides form. Another mistake is thinking AA needs the angles to be in the same order around the triangle. It does not; any two matching angles will do."
+       ],
+       "words": [
+        {
+         "w": "AA similarity",
+         "d": "if two angles of one triangle equal two angles of another, the triangles are similar"
+        },
+        {
+         "w": "SAS similarity",
+         "d": "if two pairs of sides are proportional and the angles between them are equal, the triangles are similar"
+        },
+        {
+         "w": "SSS similarity",
+         "d": "if all three pairs of corresponding sides are proportional, the triangles are similar"
+        }
+       ],
+       "look": {
+        "type": "think",
+        "title": "Two Ramps, One Angle",
+        "text": "A loading ramp rises at an angle of 12° from the ground. A second, shorter ramp built for the same truck also rises at 12°. Both ramps meet the ground at 12° and stand on a vertical wall, so each forms a right triangle with a 12° angle and a 90° angle. That is two matching angles.",
+        "prompt": "Which shortcut proves the two ramp triangles are similar? If the long ramp is 3 times the length of the short ramp, how do their heights compare?"
+       },
+       "check": [
+        {
+         "q": "Triangle 1 has angles 35° and 65°. Triangle 2 has angles 65° and 80°. Are they similar?",
+         "choices": [
+          "Yes, by AA; the first triangle's third angle is 80°",
+          "No, because 35° is not in triangle 2",
+          "Only if their sides are also equal",
+          "Yes, by SSS"
+         ],
+         "a": 0,
+         "why": "Triangle 1's third angle is 180 − 35 − 65 = 80°, so both triangles have angles 35°, 65° and 80°. Two matching angles are enough: AA."
+        },
+        {
+         "q": "One triangle has sides 4 and 6 with a 50° angle between them. Another has sides 6 and 9 with a 50° angle between them. Which shortcut applies?",
+         "choices": [
+          "AA, because both have a 50° angle",
+          "SSS, with scale factor 1.5",
+          "Not similar, because 50 is not a side",
+          "SAS similarity, with scale factor 1.5"
+         ],
+         "a": 3,
+         "why": "The ratios 6/4 = 1.5 and 9/6 = 1.5 match, and the included angles are both 50°. That is SAS similarity with scale factor 1.5."
+        },
+        {
+         "q": "Triangle R has sides 2, 3 and 4. Triangle S has sides 4, 6 and 8. Which statement is true?",
+         "choices": [
+          "They are similar by SSS with scale factor 2",
+          "They are not similar because 4 − 2 ≠ 6 − 3",
+          "They are similar by AA",
+          "They are congruent"
+         ],
+         "a": 0,
+         "why": "All three ratios equal 2: 4/2, 6/3 and 8/4. Proportional sides in all three pairs is SSS similarity. Subtracting sides is not the test."
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "title": "Proportions Inside a Triangle",
+     "lessons": [
+      {
+       "title": "A Line Parallel to One Side",
+       "mainIdea": "A line parallel to one side of a triangle cuts the other two sides into proportional pieces.",
+       "reading": [
+        "Picture a triangle-shaped garden bed with one straight path cutting across it, parallel to the back edge. The path splits each of the two other edges into two pieces. Those pieces come in the same ratio on both edges. This is the *side-splitter rule*: a line parallel to one side of a triangle divides the other two sides proportionally.",
+        "Here is why. Call the triangle ABC and let the parallel line meet side AB at D and side AC at E. Because DE is parallel to BC, the angle at D equals the angle at B (corresponding angles from parallel lines). Both triangles share angle A. So triangle ADE is similar to triangle ABC by AA. Similar triangles have proportional sides, and a little algebra turns that into AD/DB = AE/EC.",
+        "Use it. Suppose AD = 4, DB = 6 and AE = 6. Set up 4/6 = 6/EC. Cross-multiply: 4 × EC = 36, so EC = 9. Check with the whole sides: AB = 10 and AC = 15, and 4/10 = 0.4 while 6/15 = 0.4. The pieces match. A common mistake is to compare a piece with the wrong whole, like 4/10 = 6/9. Keep pieces with pieces or wholes with wholes.",
+        "A special case: when D and E are *midpoints* of their sides, the segment DE is a *midsegment*. It is parallel to the third side and exactly half as long. If BC is 14, then DE is 7. Builders use this when they brace a triangular roof truss halfway up."
+       ],
+       "words": [
+        {
+         "w": "side-splitter rule",
+         "d": "a line parallel to one side of a triangle divides the other two sides into proportional pieces"
+        },
+        {
+         "w": "midpoint",
+         "d": "the point exactly halfway along a segment"
+        },
+        {
+         "w": "midsegment",
+         "d": "a segment joining the midpoints of two sides of a triangle; it is parallel to the third side and half as long"
+        }
+       ],
+       "look": {
+        "type": "think",
+        "title": "The Roof Truss",
+        "text": "A triangular roof truss has a bottom beam 24 feet long. A carpenter adds a horizontal brace parallel to the bottom beam, attached one third of the way down each sloping side from the peak. The brace splits each sloping side into a top piece and a bottom piece in the ratio 1 to 2.",
+        "prompt": "The small triangle above the brace is similar to the whole truss. What is the scale factor from the whole truss to the small triangle, and how long is the brace?"
+       },
+       "check": [
+        {
+         "q": "In triangle ABC, DE is parallel to BC with D on AB and E on AC. AD = 3, DB = 9 and AE = 2. Find EC.",
+         "choices": [
+          "8",
+          "4",
+          "6",
+          "18"
+         ],
+         "a": 2,
+         "why": "Set up 3/9 = 2/EC. Cross-multiplying gives 3 × EC = 18, so EC = 6. Check: AD/AB = 3/12 = 1/4 and AE/AC = 2/8 = 1/4."
+        },
+        {
+         "q": "A midsegment of a triangle is parallel to a side of length 14. How long is the midsegment?",
+         "choices": [
+          "28",
+          "7",
+          "14",
+          "3.5"
+         ],
+         "a": 1,
+         "why": "A midsegment is half the parallel side: 14 ÷ 2 = 7. Doubling gives 28, which is the mistake of going the wrong direction."
+        },
+        {
+         "q": "Why is triangle ADE similar to triangle ABC when DE is parallel to BC?",
+         "choices": [
+          "Because DE is half of BC",
+          "Because both triangles are right triangles",
+          "Because AD equals AE",
+          "Because parallel lines make equal corresponding angles and the triangles share angle A, so AA applies"
+         ],
+         "a": 3,
+         "why": "The parallel lines give one pair of equal angles, and angle A belongs to both triangles. Two equal angles is AA similarity."
+        }
+       ]
+      },
+      {
+       "title": "The Pythagorean Theorem, Proved",
+       "mainIdea": "Dropping a perpendicular from the right angle to the hypotenuse makes three similar triangles, and their proportions prove a² + b² = c².",
+       "reading": [
+        "You have used a² + b² = c² since middle school. Similar triangles show why it is true. Start with a right triangle with legs a and b and *hypotenuse* c. From the right angle, draw the *altitude* straight down to the hypotenuse, hitting it at a right angle. The hypotenuse is now split into two pieces: d next to leg a, and e next to leg b, with d + e = c.",
+        "The altitude makes two small right triangles. Each small triangle shares an acute angle with the big one, and each has a right angle, so each is similar to the big triangle by AA. Compare the triangle containing leg a with the big triangle: a/c = d/a, which gives a² = c × d. Compare the other small triangle: b/c = e/b, so b² = c × e. Add them: a² + b² = c × d + c × e = c(d + e) = c × c = c².",
+        "Check it on a 6-8-10 triangle. Here a = 6, b = 8, c = 10. Then d = a²/c = 36/10 = 3.6 and e = b²/c = 64/10 = 6.4, and sure enough 3.6 + 6.4 = 10. The altitude itself satisfies h² = d × e = 3.6 × 6.4 = 23.04, so h = 4.8. A second route: the altitude equals ab/c = 48/10 = 4.8. Both routes agree.",
+        "The theorem also runs in reverse. If a triangle's sides satisfy a² + b² = c², it is a right triangle. Sides 5, 12, 13 work because 25 + 144 = 169. Sides 4, 5, 6 do not, since 16 + 25 = 41 and 36 ≠ 41, so that triangle has no right angle. A common mistake is adding the legs instead of their squares: 6 + 8 is not 10."
+       ],
+       "words": [
+        {
+         "w": "hypotenuse",
+         "d": "the longest side of a right triangle, across from the right angle"
+        },
+        {
+         "w": "altitude",
+         "d": "a segment from a vertex perpendicular to the opposite side (or its extension)"
+        },
+        {
+         "w": "Pythagorean theorem",
+         "d": "in a right triangle with legs a and b and hypotenuse c, a² + b² = c²"
+        }
+       ],
+       "look": {
+        "type": "think",
+        "title": "Across the Grid",
+        "text": "Chicago's streets form a grid. A delivery drone lifts off at a corner, and the drop-off point is 3 blocks east and 4 blocks north. A bike courier must ride 3 + 4 = 7 blocks along the streets. The drone flies the straight line, the hypotenuse of a right triangle with legs 3 and 4. That distance is √(9 + 16) = √25 = 5 blocks.",
+        "prompt": "A second delivery is 6 blocks east and 8 blocks north. How far does the drone fly, and how many blocks does the courier save by flying instead of riding?"
+       },
+       "check": [
+        {
+         "q": "A right triangle has legs 5 and 12. How long is the hypotenuse?",
+         "choices": [
+          "17",
+          "13",
+          "7",
+          "169"
+         ],
+         "a": 1,
+         "why": "5² + 12² = 25 + 144 = 169, and √169 = 13. Adding the legs (17) skips the squares; 169 is c², not c."
+        },
+        {
+         "q": "A right triangle has hypotenuse 15 and one leg 9. How long is the other leg?",
+         "choices": [
+          "about 17.5",
+          "6",
+          "24",
+          "12"
+         ],
+         "a": 3,
+         "why": "15² − 9² = 225 − 81 = 144, and √144 = 12. Adding 225 + 81 = 306 gives about 17.5, the mistake of treating 9 and 15 as both legs."
+        },
+        {
+         "q": "In a 6-8-10 right triangle, how long is the altitude drawn to the hypotenuse?",
+         "choices": [
+          "5",
+          "3.6",
+          "4.8",
+          "6.4"
+         ],
+         "a": 2,
+         "why": "The altitude equals (leg × leg) ÷ hypotenuse = 48 ÷ 10 = 4.8. Check: √(3.6 × 6.4) = √23.04 = 4.8. The values 3.6 and 6.4 are the pieces of the hypotenuse, not the altitude."
+        }
+       ]
+      },
+      {
+       "title": "Two Triangles Worth Memorizing",
+       "mainIdea": "In a 45-45-90 triangle the hypotenuse is leg × √2; in a 30-60-90 triangle the sides are x, x√3 and 2x.",
+       "reading": [
+        "Cut a square along its diagonal and you get two *45-45-90 triangles*. Both legs are equal. If each leg is 1, the hypotenuse is √(1 + 1) = √2, about 1.414. Since every 45-45-90 triangle is similar to this one, the rule is: hypotenuse = leg × √2. A square tile 10 inches on a side has a diagonal of 10√2, about 14.1 inches.",
+        "Cut an equilateral triangle in half from a corner to the middle of the opposite side and you get a *30-60-90 triangle*. If the equilateral triangle has sides 2, the half-triangle has hypotenuse 2 and short leg 1 (half the base). The long leg is √(4 − 1) = √3, about 1.732. The rule: short leg x, hypotenuse 2x, long leg x√3. The short leg is always across from the 30° angle.",
+        "Try one. A 30-60-90 triangle has short leg 4. The hypotenuse is 2 × 4 = 8. The long leg is 4√3, about 6.93. Check with the Pythagorean theorem: 4² + (4√3)² = 16 + 48 = 64 = 8². Now go backward: if the hypotenuse is 12, the short leg is 12 ÷ 2 = 6 and the long leg is 6√3, about 10.4.",
+        "Common mistakes: putting √3 on the hypotenuse instead of the long leg, and forgetting that the short leg is across from the smallest angle. For a 45-45-90 triangle, if you know the hypotenuse, divide by √2 to get a leg: hypotenuse 10 gives legs of 10/√2 = 5√2, about 7.07."
+       ],
+       "words": [
+        {
+         "w": "45-45-90 triangle",
+         "d": "a right triangle with two 45° angles; its legs are equal and its hypotenuse is leg × √2"
+        },
+        {
+         "w": "30-60-90 triangle",
+         "d": "a right triangle with 30° and 60° angles; sides are x (short leg), x√3 (long leg) and 2x (hypotenuse)"
+        },
+        {
+         "w": "equilateral triangle",
+         "d": "a triangle with all three sides equal and all three angles 60°"
+        }
+       ],
+       "look": {
+        "type": "data",
+        "title": "Long Leg of a 30-60-90 Triangle",
+        "rows": [
+         [
+          "short leg 1",
+          1.73
+         ],
+         [
+          "short leg 2",
+          3.46
+         ],
+         [
+          "short leg 3",
+          5.2
+         ],
+         [
+          "short leg 5",
+          8.66
+         ],
+         [
+          "short leg 10",
+          17.32
+         ]
+        ],
+        "unit": "long leg (same units)",
+        "cite": "Computed from long leg = x√3 with √3 ≈ 1.732, rounded",
+        "prompt": "Each long leg is what multiple of its short leg? What would the hypotenuse be in each row?"
+       },
+       "check": [
+        {
+         "q": "A 45-45-90 triangle has legs of 7. How long is the hypotenuse?",
+         "choices": [
+          "14",
+          "7√2, about 9.9",
+          "7√3, about 12.1",
+          "3.5√2, about 4.9"
+         ],
+         "a": 1,
+         "why": "Hypotenuse = leg × √2 = 7√2 ≈ 7 × 1.414 = 9.9. Check: 7² + 7² = 98 and √98 ≈ 9.9."
+        },
+        {
+         "q": "A 30-60-90 triangle has hypotenuse 12. How long is the long leg?",
+         "choices": [
+          "12√3, about 20.8",
+          "6",
+          "24",
+          "6√3, about 10.4"
+         ],
+         "a": 3,
+         "why": "Short leg = 12 ÷ 2 = 6, and long leg = 6√3 ≈ 10.4. Check: 6² + 10.4² ≈ 36 + 108 = 144 = 12²."
+        },
+        {
+         "q": "A 45-45-90 triangle has hypotenuse 10. How long is each leg?",
+         "choices": [
+          "5√2, about 7.1",
+          "5",
+          "10√2, about 14.1",
+          "20"
+         ],
+         "a": 0,
+         "why": "Leg = hypotenuse ÷ √2 = 10/√2 = 5√2 ≈ 7.07. Check: 7.07² + 7.07² ≈ 50 + 50 = 100 = 10²."
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "title": "The Three Ratios",
+     "lessons": [
+      {
+       "title": "Sine, Cosine and Tangent",
+       "mainIdea": "For an acute angle in a right triangle, sine, cosine and tangent are side ratios that depend only on the angle, because all such triangles are similar.",
+       "reading": [
+        "Every right triangle with a 30° angle is similar to every other one, by AA (they share 30° and 90°). Similar means proportional sides, so the ratio of any two sides is the same in all of them. That is a powerful fact. It means a ratio like (side across from 30°) ÷ (hypotenuse) is a fixed number that belongs to 30°, not to any one triangle. Ratios like this are the tools of *trigonometry*.",
+        "Pick an acute angle A in a right triangle. The side across from A is the *opposite* side. The leg next to A is the *adjacent* side. The longest side is the hypotenuse. Three ratios get names: *sine* of A = opposite ÷ hypotenuse, *cosine* of A = adjacent ÷ hypotenuse, *tangent* of A = opposite ÷ adjacent. Many students remember them with SOH-CAH-TOA.",
+        "Work through a 3-4-5 triangle. Let angle A be across from the side of length 3. Then opposite = 3, adjacent = 4, hypotenuse = 5. So sin A = 3/5 = 0.6, cos A = 4/5 = 0.8, tan A = 3/4 = 0.75. Now look at the other acute angle B, across from 4: sin B = 4/5 = 0.8, cos B = 3/5 = 0.6. The sine of one acute angle equals the cosine of the other, because A and B add to 90° and the opposite side of one is the adjacent side of the other.",
+        "A common mistake is labeling sides before choosing the angle. Which leg is opposite and which is adjacent changes when you switch angles. The hypotenuse never changes. Another mistake is writing a ratio bigger than 1 for sine or cosine; the hypotenuse is the longest side, so those two ratios are always less than 1."
+       ],
+       "words": [
+        {
+         "w": "trigonometry",
+         "d": "the study of the relationships between the angles and sides of triangles"
+        },
+        {
+         "w": "opposite",
+         "d": "the side of a right triangle across from the angle you are working with"
+        },
+        {
+         "w": "adjacent",
+         "d": "the leg of a right triangle next to the angle you are working with (not the hypotenuse)"
+        },
+        {
+         "w": "sine",
+         "d": "for an acute angle of a right triangle, opposite side divided by hypotenuse"
+        },
+        {
+         "w": "cosine",
+         "d": "for an acute angle of a right triangle, adjacent side divided by hypotenuse"
+        }
+       ],
+       "look": {
+        "type": "data",
+        "title": "Sine of Some Common Angles",
+        "rows": [
+         [
+          "0°",
+          0
+         ],
+         [
+          "30°",
+          0.5
+         ],
+         [
+          "45°",
+          0.707
+         ],
+         [
+          "60°",
+          0.866
+         ],
+         [
+          "90°",
+          1
+         ]
+        ],
+        "unit": "sine (a ratio, no units)",
+        "cite": "Standard values; 45° and 60° are rounded to three decimal places",
+        "prompt": "Why is sin 30° exactly 0.5? Think about the 30-60-90 triangle with short leg x and hypotenuse 2x. What is cos 60°, and why must it be the same number?"
+       },
+       "check": [
+        {
+         "q": "A right triangle has legs 8 and 15 and hypotenuse 17. What is the sine of the angle across from the side of length 8?",
+         "choices": [
+          "15/17",
+          "8/15",
+          "17/8",
+          "8/17"
+         ],
+         "a": 3,
+         "why": "Sine = opposite ÷ hypotenuse = 8/17. The ratio 8/15 is the tangent, and 15/17 is the cosine."
+        },
+        {
+         "q": "In the same 8-15-17 triangle, what is the cosine of the angle across from the side of length 8?",
+         "choices": [
+          "15/17",
+          "8/17",
+          "8/15",
+          "15/8"
+         ],
+         "a": 0,
+         "why": "Cosine = adjacent ÷ hypotenuse. The leg next to that angle is 15, so cos = 15/17."
+        },
+        {
+         "q": "Why is the sine of 30° the same number in every right triangle that has a 30° angle?",
+         "choices": [
+          "Because 30° is a small angle",
+          "Because all right triangles with a 30° angle are similar by AA, so their side ratios are equal",
+          "Because the hypotenuse is always 2",
+          "Because sine is always 0.5"
+         ],
+         "a": 1,
+         "why": "Any two right triangles with a 30° angle share two angles (30° and 90°), so they are similar and every ratio of corresponding sides is the same."
+        }
+       ]
+      },
+      {
+       "title": "Finding a Missing Side",
+       "mainIdea": "Choose the ratio that links the side you know, the side you want and the angle, then solve the equation.",
+       "reading": [
+        "A 20-foot ladder leans against a wall at a 70° angle with the ground. How high up the wall does it reach? Draw the right triangle. The ladder is the hypotenuse (20 ft). The height is the side opposite the 70° angle. Opposite and hypotenuse means sine: sin 70° = height ÷ 20. A calculator gives sin 70° ≈ 0.940, so height = 20 × 0.940 = 18.8 feet.",
+        "The steps are always the same. First, mark the angle you know and label the two sides involved as opposite, adjacent or hypotenuse. Second, pick the ratio that uses exactly those two sides. Third, write the equation and solve. If the unknown is on top of the fraction, multiply. If it is on the bottom, divide.",
+        "Two more examples. A roof rises at 35° and the horizontal run is 50 feet. The rise is opposite, the run is adjacent, so tangent: tan 35° ≈ 0.700, and rise = 50 × 0.700 = 35.0 feet. Now suppose a zip line drops 12 meters and makes a 40° angle with the ground. The 12 m is opposite the angle and the cable is the hypotenuse, so sin 40° = 12 ÷ cable. Then cable = 12 ÷ sin 40° = 12 ÷ 0.643 ≈ 18.7 meters.",
+        "The most common mistake is choosing the wrong ratio, usually by mislabeling opposite and adjacent. Always label from the angle you are using. The second most common is multiplying when you should divide. When the unknown is the hypotenuse under a sine or cosine, you divide the known side by the ratio, and the answer must come out bigger than the known side."
+       ],
+       "words": [
+        {
+         "w": "tangent (ratio)",
+         "d": "for an acute angle of a right triangle, opposite side divided by adjacent side"
+        },
+        {
+         "w": "solve a triangle",
+         "d": "find all the unknown sides and angles of a triangle from the parts you know"
+        },
+        {
+         "w": "rise",
+         "d": "the vertical change of a ramp, roof or line"
+        },
+        {
+         "w": "run",
+         "d": "the horizontal change of a ramp, roof or line"
+        }
+       ],
+       "look": {
+        "type": "think",
+        "title": "The Kite Over the Lakefront",
+        "text": "A kite flies over the lakefront with 50 meters of string let out. The string is straight and makes a 42° angle with the level ground. The string is the hypotenuse, and the kite's height is the side opposite the 42° angle. A calculator gives sin 42° ≈ 0.669.",
+        "prompt": "How high is the kite? Then find how far the kite is from a point directly under the flier, using cos 42° ≈ 0.743."
+       },
+       "check": [
+        {
+         "q": "A 30-foot ladder makes a 65° angle with the ground. How high up the wall does it reach? Use sin 65° ≈ 0.906.",
+         "choices": [
+          "12.7 ft",
+          "27.2 ft",
+          "33.1 ft",
+          "64.3 ft"
+         ],
+         "a": 1,
+         "why": "Height is opposite the angle and the ladder is the hypotenuse, so height = 30 × sin 65° = 30 × 0.906 = 27.2 ft. Dividing instead gives 33.1, which is impossible since it exceeds the ladder."
+        },
+        {
+         "q": "From a point 40 m from the base of a tree, the angle up to its top is 28°. How tall is the tree above eye level? Use tan 28° ≈ 0.532.",
+         "choices": [
+          "75.2 m",
+          "18.8 m",
+          "35.3 m",
+          "21.3 m"
+         ],
+         "a": 3,
+         "why": "Height is opposite, 40 m is adjacent, so tangent: height = 40 × 0.532 = 21.3 m. Dividing 40 by 0.532 gives 75.2, the wrong direction."
+        },
+        {
+         "q": "A right triangle has a 50° angle whose opposite side is 15 cm. How long is the hypotenuse? Use sin 50° ≈ 0.766.",
+         "choices": [
+          "19.6 cm",
+          "11.5 cm",
+          "23.3 cm",
+          "12.6 cm"
+         ],
+         "a": 0,
+         "why": "sin 50° = 15 ÷ hypotenuse, so hypotenuse = 15 ÷ 0.766 ≈ 19.6 cm. Multiplying gives 11.5, which is shorter than a leg and cannot be a hypotenuse."
+        }
+       ]
+      },
+      {
+       "title": "Finding a Missing Angle",
+       "mainIdea": "When you know two sides, form the ratio and use the inverse function (sin⁻¹, cos⁻¹ or tan⁻¹) to find the angle.",
+       "reading": [
+        "Sometimes the sides are easy to measure and the angle is the mystery. Building codes under the Americans with Disabilities Act say a wheelchair ramp may rise at most 1 unit for every 12 units of run. What angle is that? The rise is opposite the angle and the run is adjacent, so tan θ = 1/12 ≈ 0.0833. To go from a ratio back to the angle, use the *inverse tangent*, written tan⁻¹. A calculator gives tan⁻¹(0.0833) ≈ 4.8°. A legal ramp is gentle.",
+        "The three inverse functions undo the three ratios. If sin θ = 0.6, then θ = sin⁻¹(0.6) ≈ 36.9°. If cos θ = 0.6, then θ = cos⁻¹(0.6) ≈ 53.1°. Notice these two add to 90°, which makes sense: in a 3-4-5 triangle, the angle with sine 0.6 and the angle with cosine 0.6 are the two acute angles. Once you find one acute angle, the other is 90° minus it.",
+        "Work an example. A roof rises 6 feet over a run of 9 feet. What is the roof's angle? tan θ = 6/9 ≈ 0.667, so θ = tan⁻¹(0.667) ≈ 33.7°. Check by going forward: tan 33.7° ≈ 0.667, and 9 × 0.667 ≈ 6. The other angle of the triangle is 90 − 33.7 = 56.3°.",
+        "A common mistake is typing sin⁻¹ when you built a tangent ratio; the inverse must match the ratio you formed. Another is writing 1/sin instead of sin⁻¹; the little −1 means \"inverse function,\" not \"reciprocal.\" And keep your calculator in degree mode, or the answer will come out in a different unit you will meet in the next chapter."
+       ],
+       "words": [
+        {
+         "w": "inverse tangent",
+         "d": "written tan⁻¹; the function that takes a tangent ratio and gives back the angle"
+        },
+        {
+         "w": "inverse sine",
+         "d": "written sin⁻¹; takes a sine ratio and returns the angle"
+        },
+        {
+         "w": "degree mode",
+         "d": "a calculator setting that makes angle answers come out in degrees"
+        }
+       ],
+       "look": {
+        "type": "think",
+        "title": "Steep or Legal?",
+        "text": "A school builds a ramp to a side door that sits 30 inches above the sidewalk. The ramp runs 300 inches along the ground. Its slope ratio is 30/300 = 0.1, so tan θ = 0.1 and θ = tan⁻¹(0.1) ≈ 5.7°. The rule of thumb for an accessible ramp is 1 to 12, which is tan⁻¹(1/12) ≈ 4.8°.",
+        "prompt": "Is this ramp within the 1 to 12 rule? What is the shortest run that would make it legal for a 30 inch rise?"
+       },
+       "check": [
+        {
+         "q": "A right triangle has legs of 5 and 5. What is each acute angle?",
+         "choices": [
+          "30°",
+          "60°",
+          "45°",
+          "90°"
+         ],
+         "a": 2,
+         "why": "tan θ = 5/5 = 1, and tan⁻¹(1) = 45°. Equal legs always give two 45° angles."
+        },
+        {
+         "q": "For an acute angle θ in a right triangle, sin θ = 0.5. What is θ?",
+         "choices": [
+          "60°",
+          "45°",
+          "0.5°",
+          "30°"
+         ],
+         "a": 3,
+         "why": "sin⁻¹(0.5) = 30°, the 30-60-90 fact: the short leg is half the hypotenuse. 60° is the angle whose cosine is 0.5."
+        },
+        {
+         "q": "In a right triangle, one acute angle has cos θ = 0.6, and cos⁻¹(0.6) ≈ 53.1°. What is the other acute angle?",
+         "choices": [
+          "36.9°",
+          "53.1°",
+          "126.9°",
+          "30°"
+         ],
+         "a": 0,
+         "why": "The two acute angles of a right triangle add to 90°, so the other is 90 − 53.1 = 36.9°. Subtracting from 180 forgets the right angle."
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "title": "Measuring What You Cannot Reach",
+     "lessons": [
+      {
+       "title": "Looking Up and Looking Down",
+       "mainIdea": "The angle of elevation looks up from horizontal and the angle of depression looks down; between two points they are equal.",
+       "reading": [
+        "Stand on the lakefront and look up at the top of a skyscraper. Your line of sight tilts up from the horizontal. That tilt is the *angle of elevation*. Now imagine standing on the roof looking down at a boat. Your line of sight tilts down from horizontal. That is the *angle of depression*. Because the ground and the horizontal line from the roof are parallel, the angle of depression from the roof equals the angle of elevation from the boat. They are alternate interior angles.",
+        "Elevation example. You stand 40 meters from a building, and your eyes are 1.5 meters above the ground. The angle of elevation to the roof is 60°. The height above your eyes is opposite the angle and 40 m is adjacent, so use tangent: height = 40 × tan 60° = 40 × 1.732 = 69.3 m. Add your eye height: 69.3 + 1.5 = 70.8 m. Forgetting the eye height is the most common mistake here.",
+        "Depression example. A lighthouse keeper 100 meters above the water sees a boat at an angle of depression of 20°. The angle of elevation from the boat is also 20°. From the boat, the 100 m tower is opposite and the distance across the water is adjacent, so tan 20° = 100 ÷ distance. Then distance = 100 ÷ tan 20° = 100 ÷ 0.364 ≈ 274.7 meters.",
+        "A drawing error causes more wrong answers than arithmetic does. The angle of depression is measured from the horizontal line at the top, not from the vertical wall. If you put the 20° next to the tower instead of next to the horizontal, you will solve for the wrong side. Draw the horizontal line first, then the angle."
+       ],
+       "words": [
+        {
+         "w": "angle of elevation",
+         "d": "the angle between the horizontal and a line of sight looking upward"
+        },
+        {
+         "w": "angle of depression",
+         "d": "the angle between the horizontal and a line of sight looking downward"
+        },
+        {
+         "w": "alternate interior angles",
+         "d": "angles on opposite sides of a transversal, between two parallel lines; they are equal"
+        },
+        {
+         "w": "line of sight",
+         "d": "the straight line from an observer's eye to the object being viewed"
+        }
+       ],
+       "look": {
+        "type": "think",
+        "title": "Sizing Up the Willis Tower",
+        "text": "The roof of the Willis Tower stands about 1,450 feet above the street. Suppose you stand on the sidewalk 1,000 feet from its base and sight the roof. The tower is opposite your angle and the 1,000 feet is adjacent, so tan θ = 1450/1000 = 1.45. A calculator gives tan⁻¹(1.45) ≈ 55.4°.",
+        "prompt": "If you walked back until you were 2,000 feet away, would the angle of elevation be half as big? Compute it with tan⁻¹(0.725) ≈ 35.9° and explain."
+       },
+       "check": [
+        {
+         "q": "From a point 60 m from the base of a tower, the angle of elevation to the top is 35°. How high is the top above eye level? Use tan 35° ≈ 0.700.",
+         "choices": [
+          "85.7 m",
+          "42 m",
+          "34.4 m",
+          "49.1 m"
+         ],
+         "a": 1,
+         "why": "The height is opposite and 60 m is adjacent: height = 60 × 0.700 = 42 m. Dividing gives 85.7, and 34.4 comes from using sine by mistake."
+        },
+        {
+         "q": "From the top of an 80 m cliff, the angle of depression to a boat is 25°. How far is the boat from the base of the cliff? Use tan 25° ≈ 0.466.",
+         "choices": [
+          "37.3 m",
+          "189.3 m",
+          "88.3 m",
+          "171.7 m"
+         ],
+         "a": 3,
+         "why": "The angle of elevation from the boat is also 25°. tan 25° = 80 ÷ distance, so distance = 80 ÷ 0.466 ≈ 171.7 m. Multiplying gives 37.3, which would put the boat closer than the cliff is tall."
+        },
+        {
+         "q": "Why does the angle of depression from a tower to a car equal the angle of elevation from the car to the tower?",
+         "choices": [
+          "Because both angles are always 45°",
+          "Because the tower is vertical",
+          "Because the horizontal lines at the top and at the ground are parallel, making the two angles alternate interior angles",
+          "Because sine and cosine are equal"
+         ],
+         "a": 2,
+         "why": "The line of sight is a transversal crossing two parallel horizontal lines. Alternate interior angles on a transversal are equal."
+        }
+       ]
+      },
+      {
+       "title": "Shadows, Mirrors and Rivers",
+       "mainIdea": "Indirect measurement uses a small triangle you can measure and a similar large one you cannot.",
+       "reading": [
+        "The oldest trick in surveying is the *shadow method*. On a sunny afternoon, a 1.8-meter-tall person casts a 2.4-meter shadow. At the same moment, a nearby tree casts a 12-meter shadow. The Sun's rays are parallel, so both triangles have the same angle at the tip of the shadow, and both have a right angle at the ground. AA similarity again. Then tree height ÷ 12 = 1.8 ÷ 2.4, and the tree is 12 × 1.8 ÷ 2.4 = 12 × 0.75 = 9 meters tall. Measure both shadows at the same time; a few minutes later the Sun has moved.",
+        "The *mirror method* from the chapter story works when the Sun is not out. A mirror on the ground reflects light at the same angle it arrives, so the triangle from your eye to the mirror and the triangle from the object's top to the mirror share an angle at the mirror and a right angle at the ground. With eye height 1.6 m, 2.5 m from you to the mirror and 30 m from the mirror to a building, the building's height is 1.6 × 30 ÷ 2.5 = 19.2 m.",
+        "You can measure across a river the same way. Stand directly across from a tree on the far bank. Walk 40 m along your bank and drive in a stake. Walk 10 m farther. Then turn and walk straight away from the river until the stake lines up with the tree; say that takes 8 m. The small triangle (10 by 8) is similar to the big one (40 by the river's width). River width = 40 × 8 ÷ 10 = 32 m.",
+        "Every method rests on the same two facts: two triangles with two matching angles are similar, and similar triangles have proportional sides. The common mistake is pairing sides that do not correspond, like the person's height with the tree's shadow. Write the proportion as height over shadow for both, or small over big for both, and keep it consistent."
+       ],
+       "words": [
+        {
+         "w": "indirect measurement",
+         "d": "finding a length you cannot measure directly by using a similar triangle you can measure"
+        },
+        {
+         "w": "shadow method",
+         "d": "using the shadows of an object and a known height, cast at the same time, to find the object's height"
+        },
+        {
+         "w": "mirror method",
+         "d": "using a mirror on the ground and the equal angles of reflection to form two similar triangles"
+        }
+       ],
+       "look": {
+        "type": "think",
+        "title": "Thales and the Pyramid",
+        "text": "A story told since ancient times says the Greek thinker Thales found the height of a pyramid in Egypt by measuring its shadow. He waited until his own shadow was exactly as long as he was tall. At that moment the Sun's rays hit at 45°, so every object's shadow equaled its height. Then the pyramid's shadow, measured from the center of its base, gave its height directly.",
+        "prompt": "Why did waiting for that moment make the math easier? If Thales had measured when his 1.7 m body cast a 3.4 m shadow, what would he multiply the pyramid's shadow by?"
+       },
+       "check": [
+        {
+         "q": "A 1.5 m person casts a 2 m shadow. At the same time a pole casts a 10 m shadow. How tall is the pole?",
+         "choices": [
+          "15 m",
+          "12 m",
+          "13.3 m",
+          "7.5 m"
+         ],
+         "a": 3,
+         "why": "Height ÷ shadow is the same for both: 1.5/2 = 0.75, so the pole is 10 × 0.75 = 7.5 m. Using 2/1.5 instead gives 13.3, a flipped ratio."
+        },
+        {
+         "q": "Your eyes are 1.6 m high. You stand 2.5 m from a mirror on the ground, and the mirror is 30 m from a building whose top you see in it. How tall is the building?",
+         "choices": [
+          "48 m",
+          "19.2 m",
+          "12 m",
+          "46.9 m"
+         ],
+         "a": 1,
+         "why": "Building ÷ 30 = 1.6 ÷ 2.5 = 0.64, so the building is 30 × 0.64 = 19.2 m. Forgetting to divide by 2.5 gives 48."
+        },
+        {
+         "q": "What fact makes the mirror method produce similar triangles?",
+         "choices": [
+          "Light reflects off the mirror at the same angle it arrives, giving equal angles at the mirror",
+          "Mirrors double every length",
+          "The observer must be exactly half the height of the object",
+          "The mirror must be a perfect circle"
+         ],
+         "a": 0,
+         "why": "Equal angles at the mirror plus right angles at the ground give two matching angles, so the triangles are similar by AA."
+        }
+       ]
+      }
+     ]
+    }
+   ],
+   "review": [
+    {
+     "q": "A segment of length 2.5 is dilated with scale factor 4. How long is the image?",
+     "choices": [
+      "6.5",
+      "10",
+      "0.625",
+      "8"
+     ],
+     "a": 1,
+     "why": "Multiply the length by the scale factor: 2.5 × 4 = 10. Adding 4 gives 6.5, the wrong operation."
+    },
+    {
+     "q": "One triangle has angles 50° and 70°. Another has angles 60° and 70°. Are they similar?",
+     "choices": [
+      "No, because 50° is not 60°",
+      "Only if their sides match",
+      "Yes, by AA, since the first triangle's third angle is 60°",
+      "Yes, by SSS"
+     ],
+     "a": 2,
+     "why": "180 − 50 − 70 = 60°, so the first triangle also has a 60° angle. Two shared angles (60° and 70°) is AA."
+    },
+    {
+     "q": "In triangle ABC, DE is parallel to BC. AD = 6, DB = 4 and AE = 9. Find EC.",
+     "choices": [
+      "7",
+      "13.5",
+      "3",
+      "6"
+     ],
+     "a": 3,
+     "why": "6/4 = 9/EC, so 6 × EC = 36 and EC = 6. Check: AD/AB = 6/10 and AE/AC = 9/15, both 0.6."
+    },
+    {
+     "q": "A right triangle has legs 7 and 24. How long is the hypotenuse?",
+     "choices": [
+      "25",
+      "31",
+      "17",
+      "625"
+     ],
+     "a": 0,
+     "why": "7² + 24² = 49 + 576 = 625, and √625 = 25. Adding the legs gives 31; 625 is the square of the answer."
+    },
+    {
+     "q": "A 30-60-90 triangle has short leg 5. How long is the hypotenuse?",
+     "choices": [
+      "5√3",
+      "10",
+      "5√2",
+      "15"
+     ],
+     "a": 1,
+     "why": "In a 30-60-90 triangle the hypotenuse is twice the short leg: 2 × 5 = 10. The value 5√3 is the long leg."
+    },
+    {
+     "q": "In a 5-12-13 right triangle, what is the tangent of the angle across from the side of length 12?",
+     "choices": [
+      "5/12",
+      "12/13",
+      "12/5",
+      "5/13"
+     ],
+     "a": 2,
+     "why": "Tangent = opposite ÷ adjacent = 12/5 = 2.4. The ratio 12/13 is the sine of that angle."
+    },
+    {
+     "q": "A right triangle has a 50° angle and hypotenuse 20. How long is the leg adjacent to the 50° angle? Use cos 50° ≈ 0.643.",
+     "choices": [
+      "15.3",
+      "31.1",
+      "23.8",
+      "12.9"
+     ],
+     "a": 3,
+     "why": "Adjacent = hypotenuse × cos 50° = 20 × 0.643 ≈ 12.9. The value 15.3 is the opposite leg (20 × sin 50°)."
+    },
+    {
+     "q": "A 2 m stick casts a 3 m shadow while a building casts a 27 m shadow. How tall is the building?",
+     "choices": [
+      "18 m",
+      "40.5 m",
+      "28 m",
+      "13.5 m"
+     ],
+     "a": 0,
+     "why": "Height ÷ shadow = 2/3 for both, so the building is 27 × 2/3 = 18 m. Using 3/2 instead gives 40.5."
+    }
+   ]
+  },
+  {
+   "n": 50,
+   "title": "Circles, Area and Volume",
+   "years": "Geometry",
+   "bigQuestion": "What do the angles, arcs and equations of a circle have to do with how much a can, a cone or a ball can hold?",
+   "story": {
+    "title": "Why the Cover Is Round",
+    "kicker": "A public-works crew, a heavy iron lid and a question that turns out to be pure geometry.",
+    "paragraphs": [
+     "On a cold morning a city crew opened a manhole on a street near the river to check a sewer line. The iron cover weighed more than a hundred pounds. One worker tipped it on its edge and rolled it to the curb like a wheel. A student on the sidewalk, waiting for the bus, asked the obvious question. Why are these things always round?",
+     "The crew chief had an answer ready, because everyone asks. \"A round cover can't fall in the hole.\" Think about it. A circle is the same width in every direction. Its widest measurement across is the diameter, and any other straight cut across it, a chord, is shorter than the diameter. So no matter how you tilt a round cover, it is always too wide to drop through a slightly smaller round opening.",
+     "Now imagine a square cover 30 inches on each side. Its sides are 30 inches, but its diagonal is 30√2, about 42.4 inches. Turn the cover so its edge lines up with the hole's diagonal and it slips right through, straight down onto whoever is working below. A round cover has no diagonal to exploit. Every direction is the same.",
+     "There are other reasons. A round cover can be rolled instead of carried. It fits no matter how you set it down, so nobody has to line up corners. And a circular hole is the strongest shape against the weight of traffic overhead, because it spreads the load evenly. (Mathematicians know one other shape that stays the same width in every direction, a rounded triangle called a Reuleaux triangle, but it is far harder to cast and to roll.)",
+     "That morning conversation touches nearly every idea in this chapter: chords and diameters, the angles inside a circle, and the formulas for how much space round things take up. By the end you will be able to find the area of a pizza slice, write the equation of a circle on a map, and compute how much grain fits in a silo."
+    ],
+    "think": "Suppose a manhole cover were shaped like an equilateral triangle. Explain, using the word chord or diagonal, how it could fall through its own hole."
+   },
+   "sections": [
+    {
+     "title": "Angles in a Circle",
+     "lessons": [
+      {
+       "title": "Central Angles and Arcs",
+       "mainIdea": "A central angle has its vertex at the center, and the arc it cuts off has the same measure in degrees.",
+       "reading": [
+        "A pizza is cut into 8 equal slices. Every cut goes through the center. The point of each slice, at the center, forms a *central angle*. Since the eight angles fill the whole circle, and a full turn is 360°, each central angle is 360 ÷ 8 = 45°. The curved crust of a slice is an *arc*. We measure an arc in degrees too, and an arc's measure equals its central angle. One slice's crust is a 45° arc, and three slices together make a 135° arc.",
+        "Some vocabulary. A *radius* runs from the center to the circle. A *chord* is a segment with both ends on the circle. A *diameter* is a chord through the center; it is the longest chord and equals two radii. Two points on a circle split it into two arcs. The smaller one, less than 180°, is the *minor arc*; the larger one is the *major arc*. Their measures add to 360°. If a minor arc is 110°, the major arc is 360 − 110 = 250°.",
+        "A clock is a circle with 12 equal parts, so each hour mark is 360 ÷ 12 = 30° from the next. From 12 to 4 the minute hand turns through 4 × 30 = 120°. From 12 to 9 it turns 270°, and the minor arc between 12 and 9 is only 90°. A common mistake is to think the arc's length in inches matters here. Arc measure in degrees is about the angle at the center, not the size of the circle. A 45° arc on a tiny circle and a 45° arc on a giant one have the same degree measure."
+       ],
+       "words": [
+        {
+         "w": "central angle",
+         "d": "an angle whose vertex is the center of a circle and whose sides are radii"
+        },
+        {
+         "w": "arc",
+         "d": "a connected piece of a circle; its measure in degrees equals its central angle"
+        },
+        {
+         "w": "chord",
+         "d": "a segment whose two endpoints lie on a circle"
+        },
+        {
+         "w": "minor arc",
+         "d": "the smaller of the two arcs between two points on a circle, less than 180°"
+        }
+       ],
+       "look": {
+        "type": "data",
+        "title": "The Hour Hand's Turn",
+        "rows": [
+         [
+          "1 hour",
+          30
+         ],
+         [
+          "2 hours",
+          60
+         ],
+         [
+          "3 hours",
+          90
+         ],
+         [
+          "6 hours",
+          180
+         ],
+         [
+          "9 hours",
+          270
+         ],
+         [
+          "12 hours",
+          360
+         ]
+        ],
+        "unit": "degrees swept by the hour hand",
+        "cite": "Computed from 360° ÷ 12 hours = 30° per hour",
+        "prompt": "How many degrees does the hour hand turn in 20 minutes? How many degrees does the minute hand turn in the same 20 minutes?"
+       },
+       "check": [
+        {
+         "q": "A circle is divided into 12 equal central angles. How large is each one?",
+         "choices": [
+          "12°",
+          "30°",
+          "36°",
+          "45°"
+         ],
+         "a": 1,
+         "why": "360° ÷ 12 = 30°. Dividing by 10 instead gives 36°, and 45° is 360 ÷ 8."
+        },
+        {
+         "q": "Minor arc AB measures 110°. What is the measure of major arc AB?",
+         "choices": [
+          "70°",
+          "110°",
+          "250°",
+          "180°"
+         ],
+         "a": 2,
+         "why": "The two arcs fill the circle: 360 − 110 = 250°. Subtracting from 180 gives 70°, which is the mistake of using a half circle."
+        },
+        {
+         "q": "The minute hand of a clock moves from the 12 to the 4. Through how many degrees does it turn?",
+         "choices": [
+          "90°",
+          "40°",
+          "150°",
+          "120°"
+         ],
+         "a": 3,
+         "why": "Each hour mark is 30° apart, and 4 marks × 30° = 120°. Using 10° per mark gives 40°."
+        }
+       ]
+      },
+      {
+       "title": "Angles on the Edge",
+       "mainIdea": "An inscribed angle, with its vertex on the circle, measures half the arc it opens onto.",
+       "reading": [
+        "Move the vertex of the angle from the center out to the circle itself. Now you have an *inscribed angle*, with its vertex on the circle and its two sides as chords. The arc between the sides is the *intercepted arc*. Here is the surprising rule: an inscribed angle is half the measure of its intercepted arc. If the arc is 80°, the inscribed angle is 40°. A central angle on that same arc would be the full 80°.",
+        "Why half? Take the simplest case, where one side of the inscribed angle is a diameter. Draw a radius to the far end of the other side. That radius and the diameter's radius are equal, so they make an isosceles triangle with two equal base angles, each equal to the inscribed angle. The central angle is an exterior angle of that triangle, so it equals the sum of the two equal angles, which is twice the inscribed angle. The other cases follow by adding or subtracting this one.",
+        "Three facts follow. First, every inscribed angle that opens onto the same arc has the same measure, since they are all half of the same arc. Second, an inscribed angle whose sides pass through the ends of a diameter intercepts a 180° arc, so it measures 90°. This is often called Thales' theorem. Third, if a four-sided figure has all four corners on a circle, its opposite angles add to 180°, because together they intercept the whole 360° circle.",
+        "Work one. An inscribed angle measures 35°. Its intercepted arc is 2 × 35 = 70°. If another inscribed angle sits anywhere else on the circle and opens onto that same 70° arc, it is also 35°. The common mistake is to forget which angle is which: central angles equal the arc, inscribed angles are half of it."
+       ],
+       "words": [
+        {
+         "w": "inscribed angle",
+         "d": "an angle whose vertex is on the circle and whose sides are chords"
+        },
+        {
+         "w": "intercepted arc",
+         "d": "the arc that lies inside an inscribed angle, between its two sides"
+        },
+        {
+         "w": "isosceles triangle",
+         "d": "a triangle with two equal sides, and therefore two equal angles opposite them"
+        }
+       ],
+       "look": {
+        "type": "think",
+        "title": "Finding the Center of a Round Table",
+        "text": "A carpenter has a round tabletop and needs to drill a hole at its exact center. She lays a carpenter's square (a tool with a right angle) so its corner touches the edge of the table, and marks where its two arms cross the edge. Those two marks are the ends of a diameter, because a 90° inscribed angle always opens onto a half circle. She draws that diameter, moves the square to a new spot, and draws a second diameter.",
+        "prompt": "Where is the center of the table? Why would a 60° angle at the edge not have worked the same way?"
+       },
+       "check": [
+        {
+         "q": "An inscribed angle intercepts an arc of 140°. What is the measure of the angle?",
+         "choices": [
+          "140°",
+          "70°",
+          "280°",
+          "40°"
+         ],
+         "a": 1,
+         "why": "Inscribed angle = half the arc = 140 ÷ 2 = 70°. Doubling gives 280°, the wrong direction."
+        },
+        {
+         "q": "An inscribed angle measures 35°. What is the measure of its intercepted arc?",
+         "choices": [
+          "17.5°",
+          "35°",
+          "145°",
+          "70°"
+         ],
+         "a": 3,
+         "why": "The arc is twice the inscribed angle: 2 × 35 = 70°. Halving gives 17.5, which is backwards."
+        },
+        {
+         "q": "An angle is inscribed in a circle so that its sides pass through the two ends of a diameter. What is its measure?",
+         "choices": [
+          "90°",
+          "180°",
+          "45°",
+          "It depends on where the vertex is"
+         ],
+         "a": 0,
+         "why": "The intercepted arc is a semicircle, 180°, so the inscribed angle is half: 90°. This holds no matter where on the circle the vertex sits."
+        }
+       ]
+      },
+      {
+       "title": "Chords, Tangents and Secants",
+       "mainIdea": "A tangent meets a circle at one point and is perpendicular to the radius there; a perpendicular from the center bisects any chord.",
+       "reading": [
+        "A bicycle wheel sits on flat ground. The ground touches the tire at exactly one point. A line that touches a circle at only one point is a *tangent line*, and the touching point is the *point of tangency*. The spoke from the hub straight down to that point is a radius, and it makes a right angle with the ground. That is always true: a tangent is perpendicular to the radius drawn to the point of tangency.",
+        "That right angle lets you use the Pythagorean theorem. Suppose a point P is 10 cm from the center of a circle of radius 6 cm, and you draw the tangent from P. The radius (6), the tangent segment, and the segment from P to the center (10) form a right triangle with the right angle at the point of tangency. Tangent length = √(10² − 6²) = √(100 − 36) = √64 = 8 cm. From any outside point you can draw two tangents, and their lengths are equal.",
+        "A line that cuts through a circle at two points is a *secant*, and the piece inside is a chord. If you draw a segment from the center perpendicular to a chord, it cuts the chord exactly in half. So the center, the midpoint of the chord and one end of the chord form a right triangle. Example: a circle has radius 13 and a chord sits 5 units from the center. Half the chord is √(13² − 5²) = √(169 − 25) = √144 = 12, so the whole chord is 24.",
+        "The common mistake is to build the right triangle with the wrong sides. The radius to the point of tangency is a leg, not the hypotenuse; the segment from the outside point to the center is the hypotenuse. For chords, the distance from the center reaches the middle of the chord, so remember to double the leg you find."
+       ],
+       "words": [
+        {
+         "w": "tangent line",
+         "d": "a line that touches a circle at exactly one point"
+        },
+        {
+         "w": "point of tangency",
+         "d": "the single point where a tangent line touches a circle"
+        },
+        {
+         "w": "secant",
+         "d": "a line that crosses a circle at two points"
+        },
+        {
+         "w": "bisect",
+         "d": "to cut into two equal pieces"
+        }
+       ],
+       "look": {
+        "type": "think",
+        "title": "The Wheel on the Road",
+        "text": "A bike wheel has a radius of 34 cm. It rests on level pavement, touching at one point. A pebble on the road is 50 cm from the wheel's hub (measured straight through the air from the hub to the pebble). The hub, the touching point and the pebble form a right triangle, with the right angle at the touching point, because the pavement is tangent to the wheel.",
+        "prompt": "How far is the pebble from the point where the tire touches the road? Which side of the triangle is the hypotenuse?"
+       },
+       "check": [
+        {
+         "q": "A circle has radius 5. A point P is 13 units from the center. How long is the tangent segment from P to the circle?",
+         "choices": [
+          "8",
+          "18",
+          "13.9",
+          "12"
+         ],
+         "a": 3,
+         "why": "The tangent is a leg of a right triangle with hypotenuse 13 and other leg 5: √(169 − 25) = √144 = 12. Subtracting 13 − 5 = 8 is not the Pythagorean rule."
+        },
+        {
+         "q": "A circle has radius 10. A chord lies 6 units from the center. How long is the chord?",
+         "choices": [
+          "8",
+          "12",
+          "16",
+          "20"
+         ],
+         "a": 2,
+         "why": "Half the chord is √(10² − 6²) = √64 = 8, so the whole chord is 2 × 8 = 16. Forgetting to double gives 8."
+        },
+        {
+         "q": "Two tangent segments are drawn to a circle from the same outside point. How do their lengths compare?",
+         "choices": [
+          "They are always equal",
+          "The one on the left is longer",
+          "They add to the diameter",
+          "The longer one is √2 times the shorter"
+         ],
+         "a": 0,
+         "why": "Both tangents form right triangles with the same hypotenuse (point to center) and the same leg (the radius), so the other legs, the tangents, are equal."
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "title": "Around and Inside",
+     "lessons": [
+      {
+       "title": "Circumference and Area",
+       "mainIdea": "Circumference is π times the diameter, and cutting a circle into wedges shows why its area is π times the radius squared.",
+       "reading": [
+        "Wrap a string around a can and then measure the string against the can's width. The string is always a little more than 3 times the width, about 3.14 times. That ratio is the same for every circle, and it has a name: *π* (pi), roughly 3.14159. So the distance around a circle, its *circumference*, is C = π × d, or C = 2πr since the diameter is twice the *radius*. A circle with radius 7 cm has circumference 2 × π × 7 = 14π ≈ 44.0 cm.",
+        "Area takes a trick. Cut a circle into many thin wedges, like pizza slices, and lay them side by side, points alternating up and down. They form a shape close to a parallelogram. Its height is the radius r. Its base is half the crust, half the circumference, which is πr. The area of a parallelogram is base × height, so the area of the circle is πr × r = πr². With more, thinner wedges, the shape gets closer to a true parallelogram, and the formula becomes exact.",
+        "Try radius 7 again: area = π × 7² = 49π ≈ 153.9 square cm. Now a circle with diameter 12: first find the radius, 12 ÷ 2 = 6, then area = 36π ≈ 113.1. The most common mistake is to square the diameter instead of the radius, which gives an answer 4 times too big. The second most common is to mix up the two formulas; circumference uses r once (a length), area uses r twice (a length times a length)."
+       ],
+       "words": [
+        {
+         "w": "π (pi)",
+         "d": "the ratio of any circle's circumference to its diameter, about 3.14159"
+        },
+        {
+         "w": "circumference",
+         "d": "the distance around a circle; C = πd = 2πr"
+        },
+        {
+         "w": "radius",
+         "d": "the distance from the center of a circle to any point on it; half the diameter"
+        },
+        {
+         "w": "parallelogram",
+         "d": "a four-sided figure whose opposite sides are parallel; its area is base × height"
+        }
+       ],
+       "look": {
+        "type": "data",
+        "title": "Circumference Grows With Diameter",
+        "rows": [
+         [
+          "diameter 1",
+          3.14
+         ],
+         [
+          "diameter 2",
+          6.28
+         ],
+         [
+          "diameter 5",
+          15.71
+         ],
+         [
+          "diameter 10",
+          31.42
+         ],
+         [
+          "diameter 20",
+          62.83
+         ]
+        ],
+        "unit": "circumference (same units)",
+        "cite": "Computed from C = πd with π ≈ 3.1416, rounded to two places",
+        "prompt": "Each time the diameter doubles, what happens to the circumference? What would happen to the area when the diameter doubles?"
+       },
+       "check": [
+        {
+         "q": "A circle has radius 5 cm. What is its circumference, to one decimal place?",
+         "choices": [
+          "15.7 cm",
+          "78.5 cm",
+          "31.4 cm",
+          "62.8 cm"
+         ],
+         "a": 2,
+         "why": "C = 2πr = 2 × π × 5 = 10π ≈ 31.4 cm. The value 78.5 is the area (25π), and 15.7 uses the radius as the diameter."
+        },
+        {
+         "q": "A circle has diameter 12 m. What is its area, to one decimal place?",
+         "choices": [
+          "452.4 m²",
+          "37.7 m²",
+          "18.8 m²",
+          "113.1 m²"
+         ],
+         "a": 3,
+         "why": "Radius = 6, so area = π × 6² = 36π ≈ 113.1 m². Squaring the diameter gives 144π ≈ 452.4, four times too big."
+        },
+        {
+         "q": "Why does the area formula use the radius squared?",
+         "choices": [
+          "Because the diameter is twice the radius",
+          "Because the rearranged wedges form a near-parallelogram with base πr and height r, and πr × r = πr²",
+          "Because π is about 3",
+          "Because a circle has 360 degrees"
+         ],
+         "a": 1,
+         "why": "The wedge rearrangement has base equal to half the circumference (πr) and height equal to the radius (r). Base × height is πr²."
+        }
+       ]
+      },
+      {
+       "title": "Pieces of a Circle",
+       "mainIdea": "An arc or a sector is a fraction of the circle, θ/360, times the whole circumference or the whole area.",
+       "reading": [
+        "A slice of a circle is a *sector*, and its curved edge is an arc. If the slice's central angle is θ degrees, the slice is θ/360 of the whole circle. So *arc length* = (θ/360) × 2πr and *sector area* = (θ/360) × πr². One fraction handles both, and the fraction is the same whether the circle is a coin or a running track.",
+        "Work it. A circle has radius 9 and a sector has a 60° angle. The fraction is 60/360 = 1/6. The full circumference is 2π × 9 = 18π, so the arc length is 18π ÷ 6 = 3π ≈ 9.42. The full area is π × 81 = 81π, so the sector area is 81π ÷ 6 = 13.5π ≈ 42.4. Both answers are one sixth of the whole, which is a good way to check.",
+        "Real example: a pizza with radius 8 inches is cut into 6 equal slices. Each slice is 1/6 of the pizza. The whole pizza's area is 64π ≈ 201.1 square inches, so one slice is 201.1 ÷ 6 ≈ 33.5 square inches. The crust on one slice, its arc, is 1/6 of 16π ≈ 50.3 inches, about 8.4 inches.",
+        "Two common mistakes. One is confusing arc length (a distance, measured in inches) with arc measure (an angle, measured in degrees); a 60° arc on a big pizza is longer than a 60° arc on a small one, even though both measure 60°. The other is forgetting the fraction and reporting the whole circumference or whole area."
+       ],
+       "words": [
+        {
+         "w": "sector",
+         "d": "a wedge of a circle bounded by two radii and an arc"
+        },
+        {
+         "w": "arc length",
+         "d": "the distance along an arc; (θ/360) × 2πr for a central angle of θ degrees"
+        },
+        {
+         "w": "sector area",
+         "d": "the area of a sector; (θ/360) × πr² for a central angle of θ degrees"
+        }
+       ],
+       "look": {
+        "type": "think",
+        "title": "The Lawn Sprinkler",
+        "text": "A sprinkler in a park sits at the corner of a square lawn and sprays water 12 meters, sweeping back and forth through a 90° angle. It waters a quarter circle. The whole circle would have area π × 12² = 144π ≈ 452.4 square meters, so the sprinkler waters 452.4 ÷ 4 ≈ 113.1 square meters of grass.",
+        "prompt": "If the sprinkler were moved to the middle of one edge of the lawn and set to sweep 180°, how much area would it water with the same 12 m reach?"
+       },
+       "check": [
+        {
+         "q": "A circle has radius 6. What is the length of a 90° arc, to two decimal places?",
+         "choices": [
+          "9.42",
+          "28.27",
+          "37.70",
+          "4.71"
+         ],
+         "a": 0,
+         "why": "The fraction is 90/360 = 1/4. Circumference = 12π ≈ 37.70, and 37.70 ÷ 4 = 9.42. The value 28.27 is the sector area (9π), not the arc length."
+        },
+        {
+         "q": "A circle has radius 10. What is the area of a sector with a 72° central angle, to one decimal place?",
+         "choices": [
+          "12.6",
+          "314.2",
+          "31.4",
+          "62.8"
+         ],
+         "a": 3,
+         "why": "72/360 = 1/5. The whole area is 100π ≈ 314.2, and 314.2 ÷ 5 = 62.8. The value 12.6 is the arc length (4π)."
+        },
+        {
+         "q": "A pizza has radius 8 inches and is cut into 6 equal slices. What is the area of one slice, to one decimal place?",
+         "choices": [
+          "201.1 in²",
+          "8.4 in²",
+          "33.5 in²",
+          "16.8 in²"
+         ],
+         "a": 2,
+         "why": "Whole area = 64π ≈ 201.1 in², and 201.1 ÷ 6 ≈ 33.5 in². The value 8.4 is the arc (crust) length of one slice."
+        }
+       ]
+      },
+      {
+       "title": "A New Way to Measure Angles",
+       "mainIdea": "One radian is the angle whose arc equals the radius, so a full circle is 2π radians and arc length is simply r × θ.",
+       "reading": [
+        "Degrees are an ancient choice; 360 was handy for old calendars, not for mathematics. Here is a more natural unit. Take a circle and bend a piece of string exactly as long as the radius along the edge. The central angle that string covers is one *radian*. Because the whole circumference is 2πr, the radius fits around the circle 2π times, so a full turn is 2π radians, about 6.28. Half a turn, 180°, is π radians.",
+        "To convert, use 180° = π radians. Degrees to radians: multiply by π/180. Radians to degrees: multiply by 180/π. So 60° = 60 × π/180 = π/3 ≈ 1.047 radians, and π/2 radians = 90°. The quarter turn, 90°, is π/2; the eighth turn, 45°, is π/4; the twelfth turn, 30°, is π/6.",
+        "Radians make arc length simple. Since an angle of θ radians is θ/(2π) of a full turn, the arc is θ/(2π) × 2πr = rθ. No fraction over 360. With radius 9 and angle π/3, the arc is 9 × π/3 = 3π ≈ 9.42, matching the 60° arc from the last lesson. With radius 4 and angle 1.5 radians, the arc is 4 × 1.5 = 6 units, no π needed.",
+        "The common mistake is mixing units: putting degrees into s = rθ gives an absurd answer (60 × 9 = 540 for a circle of circumference 56.5). Convert first. Calculators have a radian mode for this; if sin 30 comes out as −0.988 instead of 0.5, the calculator is in radians."
+       ],
+       "words": [
+        {
+         "w": "radian",
+         "d": "the angle at the center of a circle that cuts off an arc equal in length to the radius; about 57.3°"
+        },
+        {
+         "w": "convert",
+         "d": "to change a measurement from one unit to another without changing its size"
+        },
+        {
+         "w": "full turn",
+         "d": "one complete rotation: 360° or 2π radians"
+        }
+       ],
+       "look": {
+        "type": "data",
+        "title": "Degrees to Radians",
+        "rows": [
+         [
+          "30°",
+          0.524
+         ],
+         [
+          "45°",
+          0.785
+         ],
+         [
+          "60°",
+          1.047
+         ],
+         [
+          "90°",
+          1.571
+         ],
+         [
+          "180°",
+          3.142
+         ],
+         [
+          "360°",
+          6.283
+         ]
+        ],
+        "unit": "radians",
+        "cite": "Computed from radians = degrees × π/180, rounded to three places",
+        "prompt": "Which row equals π/4? Which row is closest to 1 radian, and about how many degrees is 1 radian?"
+       },
+       "check": [
+        {
+         "q": "How many radians is 90°?",
+         "choices": [
+          "π",
+          "π/2",
+          "π/4",
+          "2π"
+         ],
+         "a": 1,
+         "why": "90 × π/180 = π/2. A full turn is 2π, so a quarter turn is 2π ÷ 4 = π/2."
+        },
+        {
+         "q": "How many degrees is π/6 radians?",
+         "choices": [
+          "60°",
+          "15°",
+          "30°",
+          "90°"
+         ],
+         "a": 2,
+         "why": "π radians is 180°, so π/6 is 180 ÷ 6 = 30°."
+        },
+        {
+         "q": "A circle has radius 4. What is the arc length for a central angle of 1.5 radians?",
+         "choices": [
+          "2.67",
+          "18.8",
+          "5.5",
+          "6"
+         ],
+         "a": 3,
+         "why": "In radians, arc length = rθ = 4 × 1.5 = 6. No conversion or π is needed because the angle is already in radians."
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "title": "Circles on the Coordinate Plane",
+     "lessons": [
+      {
+       "title": "The Equation of a Circle",
+       "mainIdea": "A circle with center (h, k) and radius r is the set of points satisfying (x − h)² + (y − k)² = r², which is the distance formula in disguise.",
+       "reading": [
+        "A radio station's tower sits at the origin of a map, and its signal reaches 50 miles. Which points are exactly 50 miles away? A point (x, y) is at distance √(x² + y²) from the origin, by the Pythagorean theorem. Setting that equal to 50 and squaring both sides gives x² + y² = 2500. That is the *equation of a circle* with center (0, 0) and radius 50. Every point on the circle makes the equation true, and no other point does.",
+        "Move the center to (h, k). The distance from (x, y) to (h, k) is √((x − h)² + (y − k)²). Set it equal to r and square: (x − h)² + (y − k)² = r². This is the *standard form* of a circle. For center (2, −3) and radius 5: (x − 2)² + (y − (−3))² = 25, which is (x − 2)² + (y + 3)² = 25. Watch the signs: a plus inside the parentheses means a negative coordinate.",
+        "Test a point. Is (5, 1) on that circle? Substitute: (5 − 2)² + (1 + 3)² = 3² + 4² = 9 + 16 = 25. Yes. Is (4, 0)? (4 − 2)² + (0 + 3)² = 4 + 9 = 13, which is less than 25, so (4, 0) is inside the circle. A point that gives more than 25, like (8, 0), is outside the circle.",
+        "Reading an equation backwards is just as important. From (x + 1)² + (y − 4)² = 9, the center is (−1, 4), flipping each sign, and the radius is √9 = 3, not 9. Two common mistakes: reading the center as (1, −4), and reporting r² as the radius. Always take the square root of the right side."
+       ],
+       "words": [
+        {
+         "w": "equation of a circle",
+         "d": "(x − h)² + (y − k)² = r² describes every point at distance r from the center (h, k)"
+        },
+        {
+         "w": "standard form",
+         "d": "the form of a circle's equation that shows the center and radius directly"
+        },
+        {
+         "w": "origin",
+         "d": "the point (0, 0) where the x-axis and y-axis cross"
+        }
+       ],
+       "look": {
+        "type": "think",
+        "title": "In Range or Out?",
+        "text": "A weather radar in the suburbs is at the origin of a map and can see storms up to 50 miles away, so its coverage circle is x² + y² = 2500. A storm cell is at (30, 40): 30² + 40² = 900 + 1600 = 2500, exactly on the edge. A second cell at (20, 45): 400 + 2025 = 2425, which is less than 2500, so it is inside the circle and on the radar.",
+        "prompt": "A third cell is at (35, 38). Is it inside, outside or on the coverage circle? How far is it from the radar?"
+       },
+       "check": [
+        {
+         "q": "Write the equation of the circle with center (−1, 4) and radius 3.",
+         "choices": [
+          "(x − 1)² + (y + 4)² = 9",
+          "(x + 1)² + (y − 4)² = 3",
+          "(x + 1)² + (y − 4)² = 9",
+          "(x − 1)² + (y − 4)² = 9"
+         ],
+         "a": 2,
+         "why": "Standard form is (x − h)² + (y − k)² = r². With h = −1, k = 4 and r = 3: (x + 1)² + (y − 4)² = 9. The right side is r², so 9, not 3."
+        },
+        {
+         "q": "What are the center and radius of (x − 3)² + (y + 2)² = 49?",
+         "choices": [
+          "center (−3, 2), radius 7",
+          "center (3, −2), radius 49",
+          "center (3, 2), radius 7",
+          "center (3, −2), radius 7"
+         ],
+         "a": 3,
+         "why": "Flip the signs inside: h = 3, k = −2. The radius is √49 = 7, not 49."
+        },
+        {
+         "q": "Is the point (6, 2) on the circle x² + y² = 40?",
+         "choices": [
+          "Yes, because 6² + 2² = 36 + 4 = 40",
+          "No, because 6 + 2 is not 40",
+          "No, because 40 is not a perfect square",
+          "Yes, because 6 × 2 = 12 is less than 40"
+         ],
+         "a": 0,
+         "why": "Substitute the coordinates: 36 + 4 = 40, which matches the right side, so the point lies on the circle."
+        }
+       ]
+      },
+      {
+       "title": "Finding the Center",
+       "mainIdea": "Completing the square turns an expanded circle equation back into standard form and reveals the center and radius.",
+       "reading": [
+        "Sometimes a circle's equation arrives multiplied out, like x² + y² − 6x + 4y − 12 = 0. The center and radius are hidden. To find them, rebuild the squares. Group the x terms and the y terms: (x² − 6x) + (y² + 4y) = 12. To make x² − 6x into a perfect square, take half of −6, which is −3, and square it: 9. Add 9 to both sides. For y² + 4y, half of 4 is 2, squared is 4; add 4 to both sides.",
+        "Now the left side factors: (x − 3)² + (y + 2)² = 12 + 9 + 4 = 25. The center is (3, −2) and the radius is √25 = 5. This is *completing the square*, the same move used to solve quadratics. Check it by expanding: (x − 3)² = x² − 6x + 9 and (y + 2)² = y² + 4y + 4, so the left side is x² + y² − 6x + 4y + 13, and 13 − 25 = −12 matches the original.",
+        "Another way a circle can be described: by the two ends of a *diameter*. Suppose a diameter runs from (1, 2) to (7, 10). The center is the midpoint: ((1 + 7)/2, (2 + 10)/2) = (4, 6). The radius is half the diameter's length. The diameter's length is √((7 − 1)² + (10 − 2)²) = √(36 + 64) = √100 = 10, so r = 5 and the equation is (x − 4)² + (y − 6)² = 25.",
+        "The common mistake in completing the square is adding the new numbers to only one side of the equation. Whatever you add on the left, add on the right too. Another is halving the wrong coefficient; you halve the number in front of x (or y), never the number in front of x²."
+       ],
+       "words": [
+        {
+         "w": "completing the square",
+         "d": "adding the right constant to turn x² + bx into a perfect square, (x + b/2)²"
+        },
+        {
+         "w": "diameter",
+         "d": "a chord through the center of a circle; the longest chord, equal to two radii"
+        },
+        {
+         "w": "midpoint formula",
+         "d": "the midpoint of (x₁, y₁) and (x₂, y₂) is ((x₁ + x₂)/2, (y₁ + y₂)/2)"
+        }
+       ],
+       "look": {
+        "type": "think",
+        "title": "The Fountain on the Plan",
+        "text": "An architect's drawing describes the rim of a round fountain by the equation x² + y² − 4x − 6y = 12, with units in meters. To place the pump at the center, complete the square: (x² − 4x + 4) + (y² − 6y + 9) = 12 + 4 + 9, which becomes (x − 2)² + (y − 3)² = 25.",
+        "prompt": "Where does the pump go, and how wide is the fountain from rim to rim?"
+       },
+       "check": [
+        {
+         "q": "Find the center and radius of x² + y² + 8x − 2y + 8 = 0.",
+         "choices": [
+          "center (−4, 1), radius 3",
+          "center (4, −1), radius 3",
+          "center (−4, 1), radius 9",
+          "center (−8, 2), radius 3"
+         ],
+         "a": 0,
+         "why": "Complete the square: (x + 4)² + (y − 1)² = −8 + 16 + 1 = 9. Center (−4, 1), radius √9 = 3. Halving 8 gives 4, not 8."
+        },
+        {
+         "q": "A diameter of a circle has endpoints (−2, 3) and (4, 3). What are the center and radius?",
+         "choices": [
+          "center (1, 3), radius 6",
+          "center (2, 0), radius 3",
+          "center (1, 3), radius 3",
+          "center (3, 3), radius 3"
+         ],
+         "a": 2,
+         "why": "The midpoint is ((−2 + 4)/2, (3 + 3)/2) = (1, 3). The diameter is 6 units long, so the radius is 3."
+        },
+        {
+         "q": "What number must be added to x² + 10x to make it a perfect square?",
+         "choices": [
+          "10",
+          "5",
+          "100",
+          "25"
+         ],
+         "a": 3,
+         "why": "Half of 10 is 5, and 5² = 25. Then x² + 10x + 25 = (x + 5)²."
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "title": "Filling Space",
+     "lessons": [
+      {
+       "title": "Prisms and Cylinders",
+       "mainIdea": "The volume of a prism or cylinder is the area of its base times its height, because it is a stack of identical layers.",
+       "reading": [
+        "A can of soup is a *cylinder*: two circular ends and a curved side. Think of it as a stack of thin circular coins. Each coin has area πr², and there are enough of them to reach height h. So the *volume* is V = πr²h. A soup can with radius 4 cm and height 11 cm holds π × 16 × 11 = 176π ≈ 552.9 cubic centimeters, which is about 553 milliliters.",
+        "The same stacking idea gives the volume of any *prism*, a solid with two identical parallel ends and flat sides. Volume = (area of the base) × height, or V = Bh. A rectangular box 5 cm by 4 cm by 12 cm has base area 5 × 4 = 20 and height 12, so V = 240 cubic cm. A triangular prism with a base triangle of area 15 and length 8 has volume 15 × 8 = 120.",
+        "Now tilt the stack of coins so it leans like a fallen tower. Every coin is still there, and each still has the same area, so the volume has not changed. This is *Cavalieri's principle*: if two solids have the same height and the same cross-sectional area at every level, they have the same volume. It is why a slanted cylinder has the same formula as an upright one, as long as h is the straight-up height.",
+        "Doubling the radius of a cylinder multiplies the volume by 4, because the radius is squared; doubling the height only doubles the volume. The common mistake is squaring the diameter, which makes the answer 4 times too big. Units also trip people up: length in cm gives volume in cubic cm (cm³), and 1 cm³ equals 1 milliliter."
+       ],
+       "words": [
+        {
+         "w": "cylinder",
+         "d": "a solid with two identical parallel circular ends joined by a curved side"
+        },
+        {
+         "w": "prism",
+         "d": "a solid with two identical parallel polygon ends joined by flat faces"
+        },
+        {
+         "w": "volume",
+         "d": "the amount of space a solid takes up, measured in cubic units"
+        },
+        {
+         "w": "Cavalieri's principle",
+         "d": "solids with equal heights and equal cross-section areas at every level have equal volumes"
+        }
+       ],
+       "look": {
+        "type": "data",
+        "title": "Volume of a Cylinder With Radius 5 cm",
+        "rows": [
+         [
+          "height 1 cm",
+          78.5
+         ],
+         [
+          "height 2 cm",
+          157.1
+         ],
+         [
+          "height 4 cm",
+          314.2
+         ],
+         [
+          "height 8 cm",
+          628.3
+         ],
+         [
+          "height 10 cm",
+          785.4
+         ]
+        ],
+        "unit": "cubic centimeters",
+        "cite": "Computed from V = π × 5² × h, rounded to one place",
+        "prompt": "What happens to the volume each time the height doubles? What would the volume be at height 10 cm if the radius were doubled to 10 cm?"
+       },
+       "check": [
+        {
+         "q": "A cylinder has radius 3 cm and height 10 cm. What is its volume, to one decimal place?",
+         "choices": [
+          "94.2 cm³",
+          "188.5 cm³",
+          "282.7 cm³",
+          "565.5 cm³"
+         ],
+         "a": 2,
+         "why": "V = π × 3² × 10 = 90π ≈ 282.7 cm³. The value 94.2 (30π) forgets to square the radius, and 565.5 uses the diameter squared."
+        },
+        {
+         "q": "A rectangular box measures 5 cm by 4 cm by 12 cm. What is its volume?",
+         "choices": [
+          "21 cm³",
+          "60 cm³",
+          "100 cm³",
+          "240 cm³"
+         ],
+         "a": 3,
+         "why": "Base area 5 × 4 = 20 cm², times height 12 gives 240 cm³. Adding the three dimensions gives 21, the wrong operation."
+        },
+        {
+         "q": "A cylinder's radius is doubled and its height stays the same. What happens to its volume?",
+         "choices": [
+          "It doubles",
+          "It is multiplied by 4",
+          "It is multiplied by 8",
+          "It stays the same"
+         ],
+         "a": 1,
+         "why": "V = πr²h. Replacing r with 2r gives π(2r)²h = 4πr²h, four times the original."
+        }
+       ]
+      },
+      {
+       "title": "Cones and Pyramids",
+       "mainIdea": "A cone or pyramid holds exactly one third of the cylinder or prism with the same base and height.",
+       "reading": [
+        "Fill a paper cone with water and pour it into a cylinder that has the same base and the same height. It fills one third. Do it three times and the cylinder is full. That experiment gives the rule: a *cone* has volume V = (1/3)πr²h, and a *pyramid* with base area B has V = (1/3)Bh. The one-third rule holds for every pyramid and cone, whatever the shape of the base.",
+        "Work an example. An ice cream cone has radius 3 cm and height 8 cm. The matching cylinder would hold π × 9 × 8 = 72π. The cone holds a third of that: 24π ≈ 75.4 cubic cm. A square pyramid with base 10 m by 10 m and height 12 m has base area 100, so V = (1/3) × 100 × 12 = 400 cubic meters.",
+        "Two heights matter for a cone. The *height* h goes straight from the tip down to the center of the base. The *slant height* runs along the outside from the tip to the edge of the base. They form a right triangle with the radius: r² + h² = (slant height)². A cone with radius 3 and height 4 has slant height 5. Volume uses h, never the slant height. Using the slant height by mistake makes the volume too large.",
+        "Why one third? Cavalieri's principle and a slicing argument show it. A cube can be cut into three identical square pyramids that meet at the cube's center of one face, so each pyramid is one third of the cube. Then any pyramid or cone with the same base area and height has the same cross-sections at every level, so the same one-third rule applies."
+       ],
+       "words": [
+        {
+         "w": "cone",
+         "d": "a solid with a circular base that narrows to a single point (the apex)"
+        },
+        {
+         "w": "pyramid",
+         "d": "a solid with a polygon base and triangular faces that meet at a point"
+        },
+        {
+         "w": "slant height",
+         "d": "the distance along the outside of a cone or pyramid from the apex to the edge of the base"
+        },
+        {
+         "w": "apex",
+         "d": "the single top point of a cone or pyramid"
+        }
+       ],
+       "look": {
+        "type": "think",
+        "title": "The Great Pyramid",
+        "text": "The Great Pyramid of Giza has a square base about 230 meters on each side and was originally about 146 meters tall. Its base area is about 230 × 230 = 52,900 square meters. Volume = (1/3) × 52,900 × 146 ≈ 2,574,000 cubic meters, about 2.6 million cubic meters of stone.",
+        "prompt": "A prism with the same base and height would hold three times as much. About how many cubic meters is that? Why did the builders' pyramid shape need so much less stone than a box of the same footprint and height?"
+       },
+       "check": [
+        {
+         "q": "A cone has radius 6 cm and height 10 cm. What is its volume, to one decimal place?",
+         "choices": [
+          "1131.0 cm³",
+          "377.0 cm³",
+          "125.7 cm³",
+          "188.5 cm³"
+         ],
+         "a": 1,
+         "why": "V = (1/3) × π × 36 × 10 = 120π ≈ 377.0 cm³. The value 1131.0 (360π) is the full cylinder, forgetting the one third."
+        },
+        {
+         "q": "A square pyramid has a base 9 m on a side and a height of 7 m. What is its volume?",
+         "choices": [
+          "567 m³",
+          "63 m³",
+          "189 m³",
+          "21 m³"
+         ],
+         "a": 2,
+         "why": "Base area = 81 m², so V = (1/3) × 81 × 7 = 189 m³. Skipping the one third gives 567."
+        },
+        {
+         "q": "A cone and a cylinder have the same base and the same height. How many cone-fulls of water fill the cylinder?",
+         "choices": [
+          "2",
+          "1.5",
+          "4",
+          "3"
+         ],
+         "a": 3,
+         "why": "The cone's volume is exactly one third of the cylinder's, so three cones fill it."
+        }
+       ]
+      },
+      {
+       "title": "Spheres and Cavalieri's Principle",
+       "mainIdea": "Comparing a hemisphere with a cylinder minus a cone, slice by slice, gives the sphere's volume: V = (4/3)πr³.",
+       "reading": [
+        "A *sphere* is the set of all points at distance r from a center, a ball. Its volume formula is V = (4/3)πr³. A ball with radius 3 cm holds (4/3) × π × 27 = 36π ≈ 113.1 cubic cm. A *hemisphere*, half a ball, holds half that: (2/3)πr³ = 18π ≈ 56.5 cubic cm for radius 3. Notice that r is cubed, so doubling the radius multiplies the volume by 8.",
+        "Where does 4/3 come from? Cavalieri's principle. Put a hemisphere of radius r flat side down. Next to it put a cylinder of radius r and height r, and scoop out of it a cone, point down, that has the same radius and height. Now slice both solids at some height y above the table. The hemisphere's slice is a circle with radius √(r² − y²), by the Pythagorean theorem, so its area is π(r² − y²). The cylinder's slice is a full circle of area πr² with a hole of radius y (the cone gets wider going up), area πy². The ring's area is πr² − πy².",
+        "The two slices have equal area at every height. By Cavalieri's principle, the solids have equal volume. The cylinder minus the cone is πr² × r − (1/3)πr² × r = (2/3)πr³. That is the hemisphere. Double it for the whole sphere: (4/3)πr³. Archimedes proved this more than two thousand years ago and was so proud of it that he asked for a sphere and cylinder carved on his tombstone.",
+        "Try the check at r = 2 and height y = 1. Hemisphere slice: π(4 − 1) = 3π. Ring: π × 4 − π × 1 = 3π. Equal. The common mistake with spheres is using the surface area formula 4πr² for volume; that formula gives square units, and volume must be cubic units, with r cubed."
+       ],
+       "words": [
+        {
+         "w": "sphere",
+         "d": "the set of all points in space at a fixed distance (the radius) from a center point"
+        },
+        {
+         "w": "hemisphere",
+         "d": "half a sphere, cut through the center"
+        },
+        {
+         "w": "cross-section",
+         "d": "the flat shape you get by slicing a solid with a plane"
+        }
+       ],
+       "look": {
+        "type": "think",
+        "title": "Slicing at Another Height",
+        "text": "Use a hemisphere of radius 2 and the matching cylinder-minus-cone. At height 1 the slices both have area 3π. At height 0, the bottom, the hemisphere's slice is a full circle of area 4π, and the ring is a full circle too, since the cone has no width at its point: 4π − 0 = 4π. At height 2, the top, the hemisphere shrinks to a point (area 0) and the ring vanishes because the cone's radius equals the cylinder's: 4π − 4π = 0.",
+        "prompt": "Compute both slice areas at height 1.5. Do they match? Why does matching at every height force the volumes to be equal?"
+       },
+       "check": [
+        {
+         "q": "A sphere has radius 6 cm. What is its volume, to one decimal place?",
+         "choices": [
+          "452.4 cm³",
+          "113.1 cm³",
+          "904.8 cm³",
+          "3619.1 cm³"
+         ],
+         "a": 2,
+         "why": "V = (4/3) × π × 6³ = (4/3) × π × 216 = 288π ≈ 904.8 cm³. The value 452.4 is the surface area, 4π × 36."
+        },
+        {
+         "q": "A hemisphere has radius 3 m. What is its volume, to one decimal place?",
+         "choices": [
+          "113.1 m³",
+          "84.8 m³",
+          "28.3 m³",
+          "56.5 m³"
+         ],
+         "a": 3,
+         "why": "Half a sphere: (2/3) × π × 27 = 18π ≈ 56.5 m³. The value 113.1 is the full sphere."
+        },
+        {
+         "q": "A stack of 50 identical coins is pushed so it leans to one side. How does the leaning stack's volume compare to the straight stack's?",
+         "choices": [
+          "It is the same, because every slice (each coin) still has the same area at the same height",
+          "It is smaller, because the stack is shorter",
+          "It is larger, because it spreads out",
+          "It cannot be determined"
+         ],
+         "a": 0,
+         "why": "Cavalieri's principle: equal cross-sections at every height means equal volume. The coins have not changed; only their arrangement has."
+        }
+       ]
+      },
+      {
+       "title": "Density and Modeling With Solids",
+       "mainIdea": "Density is an amount divided by the space it fills, and real objects can be modeled by combining simple solids.",
+       "reading": [
+        "Two blocks the same size can have very different weights. The difference is *density*: mass divided by volume, usually in grams per cubic centimeter. Water is the reference at 1.0 g/cm³. A metal block 10 cm by 5 cm by 4 cm has volume 200 cm³. If it has mass 540 g, its density is 540 ÷ 200 = 2.7 g/cm³, which matches aluminum. Iron is about 7.9 g/cm³, so an iron block of the same size would have mass 7.9 × 200 = 1,580 g.",
+        "Real objects are rarely a single simple solid, so *model* them as combinations. A grain silo is a cylinder with a hemisphere on top. With radius 3 m and a cylinder height of 10 m: cylinder = π × 9 × 10 = 90π, hemisphere = (2/3) × π × 27 = 18π, total = 108π ≈ 339.3 cubic meters. A pencil is a cylinder plus a cone. A capsule is a cylinder plus two hemispheres, which together make one sphere.",
+        "Density also describes how crowded a region is. *Population density* is people divided by area. Chicago has roughly 2.7 million people in about 227 square miles, so its density is about 2,700,000 ÷ 227 ≈ 11,900 people per square mile, or about 12,000. A suburb with 40,000 people in 20 square miles has density 2,000 per square mile, six times less crowded.",
+        "The common mistake is dividing in the wrong order. Density is the amount per unit of space, so mass goes on top and volume on the bottom; an answer far less than 1 for a metal is a sign the division was flipped. In modeling, watch for double-counting: a cylinder with a hemisphere on top has no lid, so do not add the cylinder's top circle to the surface area."
+       ],
+       "words": [
+        {
+         "w": "density",
+         "d": "mass divided by volume; how much matter is packed into each unit of space"
+        },
+        {
+         "w": "model",
+         "d": "to represent a real object with simple shapes whose formulas you know"
+        },
+        {
+         "w": "population density",
+         "d": "the number of people divided by the area they live in, such as people per square mile"
+        }
+       ],
+       "look": {
+        "type": "data",
+        "title": "Densities of Common Materials",
+        "rows": [
+         [
+          "ice",
+          0.92
+         ],
+         [
+          "water",
+          1.0
+         ],
+         [
+          "aluminum",
+          2.7
+         ],
+         [
+          "iron",
+          7.9
+         ],
+         [
+          "copper",
+          8.96
+         ],
+         [
+          "gold",
+          19.3
+         ]
+        ],
+        "unit": "grams per cubic centimeter",
+        "cite": "Standard reference values, rounded",
+        "prompt": "Why does ice float on water? A gold bar and an aluminum bar have the same volume; the gold bar is how many times heavier?"
+       },
+       "check": [
+        {
+         "q": "A block 10 cm by 5 cm by 4 cm has a mass of 540 g. What is its density?",
+         "choices": [
+          "0.37 g/cm³",
+          "2.7 g/cm³",
+          "108,000 g/cm³",
+          "340 g/cm³"
+         ],
+         "a": 1,
+         "why": "Volume = 10 × 5 × 4 = 200 cm³. Density = 540 ÷ 200 = 2.7 g/cm³. Dividing the other way gives 0.37."
+        },
+        {
+         "q": "A silo is a cylinder of radius 3 m and height 10 m with a hemisphere on top. What is its total volume, to one decimal place?",
+         "choices": [
+          "282.7 m³",
+          "395.8 m³",
+          "339.3 m³",
+          "56.5 m³"
+         ],
+         "a": 2,
+         "why": "Cylinder 90π plus hemisphere 18π is 108π ≈ 339.3 m³. The value 395.8 (126π) adds a whole sphere instead of half."
+        },
+        {
+         "q": "A city has 3,000,000 people living in 250 square miles. What is its population density?",
+         "choices": [
+          "120,000 people per square mile",
+          "1,200 people per square mile",
+          "0.00008 people per square mile",
+          "12,000 people per square mile"
+         ],
+         "a": 3,
+         "why": "3,000,000 ÷ 250 = 12,000 people per square mile. Dividing the other way gives 0.00008."
+        }
+       ]
+      }
+     ]
+    }
+   ],
+   "review": [
+    {
+     "q": "A circle is cut into 9 equal sectors. What is the central angle of each?",
+     "choices": [
+      "9°",
+      "40°",
+      "45°",
+      "36°"
+     ],
+     "a": 1,
+     "why": "360 ÷ 9 = 40°. The value 45° is 360 ÷ 8, and 36° is 360 ÷ 10."
+    },
+    {
+     "q": "An inscribed angle intercepts a 100° arc. What is the measure of the angle?",
+     "choices": [
+      "100°",
+      "200°",
+      "50°",
+      "25°"
+     ],
+     "a": 2,
+     "why": "An inscribed angle is half its intercepted arc: 100 ÷ 2 = 50°."
+    },
+    {
+     "q": "A circle has radius 8. A point is 17 units from the center. How long is the tangent segment from that point to the circle?",
+     "choices": [
+      "15",
+      "9",
+      "25",
+      "18.8"
+     ],
+     "a": 0,
+     "why": "Right triangle with hypotenuse 17 and leg 8: √(289 − 64) = √225 = 15."
+    },
+    {
+     "q": "A circle has radius 4. What is its area, to one decimal place?",
+     "choices": [
+      "25.1",
+      "12.6",
+      "201.1",
+      "50.3"
+     ],
+     "a": 3,
+     "why": "Area = π × 4² = 16π ≈ 50.3. The value 25.1 is the circumference (8π)."
+    },
+    {
+     "q": "A circle has radius 12. What is the length of a 30° arc, to two decimal places?",
+     "choices": [
+      "37.70",
+      "6.28",
+      "75.40",
+      "3.14"
+     ],
+     "a": 1,
+     "why": "30/360 = 1/12. Circumference = 24π ≈ 75.40, and 75.40 ÷ 12 ≈ 6.28. The value 37.70 is the sector's area (12π)."
+    },
+    {
+     "q": "What are the center and radius of (x + 2)² + (y − 5)² = 36?",
+     "choices": [
+      "center (2, −5), radius 6",
+      "center (−2, 5), radius 36",
+      "center (−2, 5), radius 6",
+      "center (2, 5), radius 6"
+     ],
+     "a": 2,
+     "why": "Flip the signs inside the parentheses to get the center (−2, 5). The radius is √36 = 6."
+    },
+    {
+     "q": "A cone has radius 3 cm and height 5 cm. What is its volume, to one decimal place?",
+     "choices": [
+      "141.4 cm³",
+      "94.2 cm³",
+      "28.3 cm³",
+      "47.1 cm³"
+     ],
+     "a": 3,
+     "why": "V = (1/3) × π × 9 × 5 = 15π ≈ 47.1 cm³. The value 141.4 is the full cylinder (45π)."
+    },
+    {
+     "q": "A sphere has radius 3 cm. What is its volume, to one decimal place?",
+     "choices": [
+      "113.1 cm³",
+      "37.7 cm³",
+      "28.3 cm³",
+      "339.3 cm³"
+     ],
+     "a": 0,
+     "why": "V = (4/3) × π × 27 = 36π ≈ 113.1 cm³. The value 37.7 (12π) is a common slip from using r instead of r³."
+    }
+   ]
+  }
+ ]
+}
