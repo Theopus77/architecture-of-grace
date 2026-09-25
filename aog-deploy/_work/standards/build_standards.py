@@ -21,32 +21,18 @@ OUT = json.load(open(os.path.join(HERE, "outlines.json"), encoding="utf-8"))
 BAND = {"k-2": "Grades K–2", "3-5": "Grades 3–5", "6-8": "Grades 6–8", "9-10": "Grades 9–10", "11-12": "Grades 11–12", "": ""}
 
 COURSES = [
-    # key, display name, subject line, hub page, unit page pattern, short slug pattern
-    ("sci",  "Science",                    "K–12 · 27 units",          "science-course.html",        "sci-u{n}.html",  "sci{n}"),
-    ("mth",  "Mathematics",                "K–12 · 27 units",          "math-course.html",           "mth-u{n}.html",  "mth{n}"),
-    ("ela",  "English Language Arts",      "K–12 · 24 units",          "english-course.html",        "ela-u{n}.html",  "ela{n}"),
-    ("ss",   "Social Studies",             "K–12 · 24 units",          "social-studies-course.html", "ssc-u{n}.html",  "ssc{n}"),
-    ("ush",  "U.S. History",               "Grades 6–8 · 10 units",    "us-history.html",            "ush-u{n}.html",  "ush{n}"),
-    ("econ", "Economics",                  "High school · 8 units",    "economics-hub.html",         "ec{n}",          "ec{n}"),
-    ("spa",  "Spanish",                    "K–12 · 20 units",          "spanish-hub.html",           "spa-u{n}.html",  "spa{n}"),
-    ("facs", "Family & Consumer Sciences", "K–12 · 20 units",          "facs-hub.html",              "fc{n}",          "fc{n}"),
+    # key, display name, subject line, hub page, unit page pattern, short slug pattern, fallback slug pattern (older room pages)
+    ("sci",  "Science",                    "K–12 · 27 units",          "science-course.html",        "sci-u{n}.html",  "sci{n}",  None),
+    ("mth",  "Mathematics",                "K–12 · 27 units",          "math-course.html",           "mth-u{n}.html",  "mth{n}",  None),
+    ("ela",  "English Language Arts",      "K–12 · 24 units",          "english-course.html",        "ela-u{n}.html",  "ela{n}",  None),
+    ("ss",   "Social Studies",             "K–12 · 24 units",          "social-studies-course.html", "ssc-u{n}.html",  "ssc{n}",  None),
+    ("ush",  "U.S. History",               "Grades 6–8 · 10 units",    "us-history.html",            "ush-u{n}.html",  "ush{n}",  None),
+    ("eco",  "Economics",                  "Grades 9–12 · 8 units",    "economics-course.html",      "eco-u{n}.html",  "eco{n}",  "ec{n}"),
+    ("rel",  "World Religions",            "Grades 9–12 · 12 units",   "religions-course.html",      "rel-u{n}.html",  "rel{n}",  "r{n}"),
+    ("spa",  "Spanish",                    "K–12 · 20 units",          "spanish-course.html",        "spa-u{n}.html",  "spa{n}",  None),
+    ("fcs",  "Family & Consumer Sciences", "K–12 · 20 units",          "facs-course.html",           "fcs-u{n}.html",  "fcs{n}",  None),
 ]
-
-# titles for the two courses that have no outline.py
-EXTRA_TITLES = {
-    "econ": {1: "Scarcity, Choice and Opportunity Cost", 2: "Supply, Demand and the Market", 3: "Prices, Controls and Market Failure",
-             4: "Competition, Firms and Market Structure", 5: "Measuring the Economy", 6: "The Business Cycle and Fiscal Policy",
-             7: "Money, Banking and the Federal Reserve", 8: "Trade, Taxes and the World Economy"},
-    "facs": {1: "Kitchen Safety and Sanitation", 2: "Knife Skills", 3: "Measuring and Reading a Recipe", 4: "Hand Sewing", 5: "The Sewing Machine",
-             6: "Fabric, Fibers and Patterns", 7: "Cooking Methods and Heat", 8: "Nutrition and Meal Planning", 9: "Food Science — What Happens When You Cook",
-             10: "Child Development and Care", 11: "Independent Living and Money", 12: "Capstone — Plan, Cost, Produce",
-             13: "Clean Hands", 14: "Hot, Cold and Sharp", 15: "Everyday Food and Sometimes Food", 16: "A Job Done to the End",
-             17: "Measure It Right", 18: "The Needle and the Button", 19: "Money and Choices", 20: "Plan It, Cook It, Clean It Up"},
-}
-EXTRA_BANDS = {"econ": lambda n: "9-10",
-               # the FACS hub's own bands: 1–4 grades 6–8, 5–8 grades 9–10, 9–12 grades 11–12, 13–16 K–2, 17–20 grades 3–5
-               "facs": lambda n: ("6-8" if n <= 4 else "9-10" if n <= 8 else "11-12" if n <= 12 else "k-2" if n <= 16 else "3-5")}
-
+HUB_FALLBACK = {"eco": "economics-hub.html", "rel": "religions-hub.html", "fcs": "facs-hub.html", "spa": "spanish-hub.html"}
 
 def exists(rel):
     return os.path.exists(os.path.join(ROOT, rel))
@@ -61,37 +47,31 @@ def load_course(key):
 
 def build():
     data = []
-    for key, name, subj, hub, upat, spat in COURSES:
+    for key, name, subj, hub, upat, spat, fpat in COURSES:
         cw = load_course(key)
-        if not cw:
-            print("  (no crosswalk yet)", key)
+        if not cw or key not in OUT:
+            print("  (no crosswalk or outline yet)", key)
             continue
         by_n = {u["n"]: u.get("standards", []) for u in cw.get("units", [])}
         units = []
-        if key in OUT:
-            src = OUT[key]["units"]
-            for u in src:
-                page = upat.format(n=u["n"])
-                units.append({"n": u["n"], "title": u["title"], "band": BAND.get(u.get("band", ""), ""),
-                              "strand": u.get("strand", "") or u.get("years", ""),
-                              "link": "/" + spat.format(n=u["n"]) if exists(page) else "",
-                              "standards": by_n.get(u["n"], [])})
-        else:
-            for n, title in EXTRA_TITLES[key].items():
-                page = upat.format(n=n)
-                units.append({"n": n, "title": title, "band": BAND[EXTRA_BANDS[key](n)], "strand": "",
-                              "link": "/" + spat.format(n=n) if exists(page + (".html" if not page.endswith(".html") else "")) or exists_glob(page) else "",
-                              "standards": by_n.get(n, [])})
+        for u in OUT[key]["units"]:
+            link = ""
+            if exists(upat.format(n=u["n"])): link = "/" + spat.format(n=u["n"])
+            elif fpat and exists_glob(fpat.format(n=u["n"])): link = "/" + fpat.format(n=u["n"])
+            units.append({"n": u["n"], "title": u["title"], "band": BAND.get(u.get("band", ""), ""),
+                          "strand": u.get("strand", "") or u.get("years", ""), "link": link,
+                          "standards": by_n.get(u["n"], [])})
+        hub_page = hub if exists(hub) else HUB_FALLBACK.get(key, hub)
         ncodes = sum(len(u["standards"]) for u in units)
-        data.append({"key": key, "name": name, "subject": subj, "hub": "/" + hub.replace(".html", ""),
-                     "hubExists": exists(hub), "framework": cw.get("framework", {}), "units": units, "codes": ncodes})
+        data.append({"key": key, "name": name, "subject": subj, "hub": "/" + hub_page.replace(".html", ""),
+                     "hubExists": exists(hub_page), "framework": cw.get("framework", {}), "units": units, "codes": ncodes})
         print("  %-5s %2d units  %3d codes  %s" % (key, len(units), ncodes, cw.get("framework", {}).get("short", "")))
     return data
 
 
 def exists_glob(prefix):
-    d = os.listdir(ROOT)
-    return any(f.startswith(prefix + "-") and f.endswith(".html") for f in d)
+    """an older room page such as ec1-scarcity-and-choice.html or r10-religion-and-the-world.html"""
+    return any(f.startswith(prefix + "-") and f.endswith(".html") for f in os.listdir(ROOT))
 
 
 def esc(s):
