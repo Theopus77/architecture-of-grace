@@ -250,12 +250,43 @@
     }
   }
 
+  /* ── 4b ── the lede, two lines ────────────────────────────────────────── */
+  var LEDE = ".deck, .tag, .tagline, .lede, .say, p.sub, :scope > p, :scope > div > p";
+  function clampLedes() {
+    if (!hero) return;
+    var els;
+    try { els = hero.querySelectorAll(LEDE); } catch (e) { els = hero.querySelectorAll(".deck, .tag, .tagline, .lede, .say, p.sub"); }
+    for (var i = 0; i < els.length; i++) {
+      var el = els[i];
+      if (el.closest("[data-aog-card]") || el.querySelector("input, button, select") || el.classList.contains("aog-clamp")) continue;
+      if ((el.textContent || "").replace(/\s+/g, " ").trim().length < 140) continue;
+      el.classList.add("aog-clamp");
+      var more = D.createElement("button");
+      more.type = "button"; more.className = "aog-more no-print";
+      more.setAttribute("aria-expanded", "false");
+      more.innerHTML = '<span data-en="More" data-es="M\u00e1s">More</span>';
+      more.addEventListener("click", (function (p, b) { return function () {
+        var open = p.classList.toggle("is-open");
+        b.classList.toggle("is-open", open);
+        b.setAttribute("aria-expanded", open ? "true" : "false");
+        var sp = b.firstChild;
+        sp.setAttribute("data-en", open ? "Less" : "More");
+        sp.setAttribute("data-es", open ? "Menos" : "M\u00e1s");
+        sp.textContent = sp.getAttribute(/^es/i.test(H.lang || "") ? "data-es" : "data-en");
+      }; })(el, more));
+      el.parentNode.insertBefore(more, el.nextSibling);
+      /* only keep the link when there is something to open */
+      (function (p, b) { setTimeout(function () { if (p.scrollHeight <= p.clientHeight + 2) { b.remove(); p.classList.remove("aog-clamp"); } }, 50); })(el, more);
+    }
+  }
+
   /* ── 5 ── mount ───────────────────────────────────────────────────────── */
   function mount() {
     hero = findHero();
     if (hero) hero.setAttribute("data-aog-hero", "1");
     H.classList.add("aog-grace");
     markCards();
+    clampLedes();
     measure();
     var again = function () { measure(); };
     if (window.MutationObserver && hero) {
@@ -264,7 +295,7 @@
           .observe(H, { attributes: true, attributeFilter: ["data-theme", "class", "data-accent"] });
       } catch (e) {}
     }
-    if (sheet) sheet.addEventListener("load", function () { setTimeout(markCards, 30); });
+    if (sheet) sheet.addEventListener("load", function () { setTimeout(markCards, 30); setTimeout(clampLedes, 60); });
     window.addEventListener("resize", again);
     window.addEventListener("load", again);
     if (sheet) sheet.addEventListener("load", function () { again(); setTimeout(again, 60); });

@@ -158,6 +158,29 @@ html.aog-grace [data-aog-hero] .hint{ color:var(--ag-cream-faint); }
 html.aog-grace [data-aog-hero] hr,
 html.aog-grace [data-aog-hero] .rule{ border-color:rgba(242,201,100,.28); }
 
+/* ── the lede, kept short ─────────────────────────────────────────────────
+   Jimmy: "Can the wording of this be reduced significantly, across ALL pages."
+   The lede shows two lines. A "More" link under it opens the rest. The text
+   itself is untouched, so the language switch and print still have all of it. */
+html.aog-grace [data-aog-hero] .aog-clamp{
+  display:-webkit-box; -webkit-box-orient:vertical; -webkit-line-clamp:2; overflow:hidden;
+  margin-bottom:6px !important;
+}
+html.aog-grace [data-aog-hero] .aog-clamp.is-open{ display:block; -webkit-line-clamp:unset; overflow:visible; }
+html.aog-grace [data-aog-hero] .aog-more{
+  display:inline-flex; align-items:center; gap:5px; margin:0 0 14px;
+  font:700 12px/1 var(--ag-sans); letter-spacing:.14em; text-transform:uppercase;
+  color:var(--ag-gold-soft); background:none; border:0; padding:4px 0; cursor:pointer;
+  border-bottom:1px solid rgba(242,201,100,.45);
+}
+html.aog-grace [data-aog-hero] .aog-more:hover{ color:#fff; border-bottom-color:var(--ag-gold-soft); }
+html.aog-grace [data-aog-hero] .aog-more::after{ content:"\25BE"; font-size:11px; }
+html.aog-grace [data-aog-hero] .aog-more.is-open::after{ content:"\25B4"; }
+@media print{
+  html.aog-grace [data-aog-hero] .aog-clamp{ display:block; -webkit-line-clamp:unset; overflow:visible; }
+  html.aog-grace [data-aog-hero] .aog-more{ display:none; }
+}
+
 /* ── buttons and pills that live in the masthead: the home page's outline pill ─ */
 html.aog-grace [data-aog-hero] .tools button,
 html.aog-grace [data-aog-hero] .tools a,
