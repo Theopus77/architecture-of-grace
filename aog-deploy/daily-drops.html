@@ -2159,6 +2159,39 @@ G.geom=function(r,c){var b=B(),m=r.pick(c.modes),h='';
   else if(m==='pyth'){var tri=r.pick([[3,4,5],[6,8,10],[5,12,13],[8,15,17],[9,12,15],[7,24,25]]);
     h='Find the missing side of the right triangle.<div class="row" style="margin-top:5px;gap:14px">'+
       triFig(tri[0],tri[1],'cm','c = ?')+'<span class="inl">c = '+b.f('num',tri[2],{w:'n'})+' cm</span></div>'}
+  /* AOG-DD-STD7-V1 (2026-09-25) — the Grade 7 standards the MAP class profile
+     showed the drafts never reached. angsolve is 7.G.B.5 (name the pair, then
+     write and solve the equation), xsect is 7.G.A.3, trimake is 7.G.A.2. */
+  else if(m==='angsolve'){var kind=r.pick(['supp','comp','vert']);
+    if(kind==='vert'){var co7=r.pick([2,3,4,5]),x7=r.i(8,25),c7=r.i(1,20),k7=co7*x7+c7;
+      if(k7>=180){x7=10;k7=co7*10+c7}
+      h='Two lines cross. A pair of <b>vertical</b> angles measure <b>('+co7+'x + '+c7+')&deg;</b> and <b>'+k7+'&deg;</b>.'+
+        '<div class="row" style="margin-top:7px">'+solveSteps(b,co7+'x + '+c7,'=',k7,true,x7)+'</div>'}
+    else{var tot7=kind==='supp'?180:90,kn=kind==='supp'?r.i(25,155):r.i(12,78);
+      h='Two angles are <b>'+(kind==='supp'?'on a straight line':'together a right angle')+'</b>. One measures <b>'+kn+
+        '&deg;</b> and the other measures <b>x&deg;</b>.<div class="row" style="margin-top:7px;gap:12px">'+
+        '<span class="inl">They are '+b.mc(kind==='supp'?'supplementary':'complementary',['complementary','supplementary','vertical'])+'</span>'+
+        '<span class="inl">x + '+kn+' = '+b.f('num',tot7,{w:'n'})+'</span>'+
+        '<span class="inl">x = '+b.f('num',tot7-kn,{w:'n'})+'&deg;</span></div>'}}
+  else if(m==='xsect'){var xs=r.pick([
+      ['a cube','parallel to one face','square'],
+      ['a right rectangular prism','parallel to its base','rectangle'],
+      ['a right rectangular prism','straight down, perpendicular to its base','rectangle'],
+      ['a square pyramid','parallel to its base','square'],
+      ['a square pyramid','straight down through its top point','triangle'],
+      ['a triangular prism','parallel to its triangle base','triangle'],
+      ['a triangular prism','straight down, parallel to a rectangle face','rectangle']]);
+    h='You slice <b>'+xs[0]+'</b> '+xs[1]+'. What shape is the cut face?'+
+      '<div class="row" style="margin-top:7px">'+b.mc(xs[2],['triangle','square','rectangle','circle'])+'</div>'}
+  else if(m==='trimake'){var s1=r.i(3,8),s2=r.i(3,8),ok=r.chance(0.5);
+    /* the long side is built from the two short ones, so "yes" and "no" come up
+       equally and the student has to add to know which */
+    var lg=ok?r.i(Math.max(s1,s2)+1,s1+s2-1):s1+s2+r.i(0,4);if(ok&&lg<=Math.max(s1,s2)){lg=s1+s2-1}
+    var sd=r.shuf([s1,s2,lg]);
+    h='Can sticks of <b>'+sd[0]+' cm</b>, <b>'+sd[1]+' cm</b> and <b>'+sd[2]+' cm</b> make a triangle?'+
+      '<div class="row" style="margin-top:7px;gap:12px"><span class="inl">two shortest: '+
+      b.f('num',s1+s2,{w:'n'})+' cm together</span>'+b.mc(ok?'yes':'no',['yes','no'])+
+      '<span class="hint" style="flex-basis:auto">The two short sides must add to MORE than the long side.</span></div>'}
   return done(b,h)};
 
 var UNITS=[['weeks','days',7],['feet','inches',12],['hours','minutes',60],['minutes','seconds',60],
@@ -2267,6 +2300,49 @@ G.data=function(r,c){var b=B(),m=r.pick(c.modes),h='';
       '<span class="inl" style="margin-left:12px">P('+win+') = '+frIn(b,wn,tot2)+'</span>'+
       '<span class="hint" style="flex-basis:auto">Write it as favorable over total.</span></div>';
     var L=b.fields.length;b.fields[L-2].t='num';b.fields[L-2].a=wn;b.fields[L-1].t='num';b.fields[L-1].a=tot2}
+  /* AOG-DD-STD7-V1 (2026-09-25) — sample is 7.SP.A.1, infer 7.SP.A.2, compare
+     7.SP.B.3–4, freq 7.SP.C.6, compound 7.SP.C.8. Probabilities are marked as the
+     two numbers written, favorable over total, the same as spin and likely. */
+  else if(m==='sample'){var tp=r.pick([['favorite lunch','the lunch line'],['favorite sport','the basketball team'],
+      ['bedtime','the chess club'],['favorite music','the band room']]);
+    var good='20 students picked at random from the whole school';
+    h='A school of 600 students wants to know their <b>'+tp[0]+'</b>. Which sample is <b>most representative</b>?'+
+      '<div class="row" style="margin-top:7px">'+b.mc(good,r.shuf([good,'20 students from '+tp[1],
+        'the first 20 students who volunteer','20 students from one 7th grade class']))+'</div>'}
+  else if(m==='infer'){var sn=r.pick([20,25,40,50]),pop=sn*r.pick([10,12,15,20]),yes=r.i(3,sn-3);
+    var it=r.pick(['walk to school','own a dog','play an instrument','like pizza best']);
+    h='In a <b>random sample</b> of <b>'+sn+'</b> students, <b>'+yes+'</b> '+it+'. The school has <b>'+pop+
+      '</b> students. About how many of them '+it+'?<div class="row" style="margin-top:6px;gap:11px">'+
+      '<span class="inl">'+fr(yes,sn)+' &times; '+pop+' = '+b.f('num',yes*pop/sn,{w:'n'})+' students</span></div>'}
+  else if(m==='compare'){var pat=[[-2,-1,0,1,2],[-3,-1,0,1,3],[-4,-2,0,2,4],[-3,-2,0,2,3]];
+    var mA=r.i(6,14),gap=r.i(3,8),A=r.shuf(r.pick(pat)).map(function(x){return mA+x}),
+      Bv=r.shuf(r.pick(pat)).map(function(x){return mA+gap+x});
+    h='Points scored in five games.<br>Team A: <b>'+A.join(', ')+'</b><br>Team B: <b>'+Bv.join(', ')+'</b>'+
+      '<div class="row" style="margin-top:7px;gap:12px"><span class="inl">mean A '+b.f('num',mA,{w:'n'})+'</span>'+
+      '<span class="inl">mean B '+b.f('num',mA+gap,{w:'n'})+'</span>'+
+      '<span class="inl">difference '+b.f('num',gap,{w:'n'})+'</span>'+
+      '<span class="inl">Higher on average: '+b.mc('Team B',['Team A','Team B'])+'</span></div>'}
+  else if(m==='freq'){if(r.chance(0.5)){var rolls=6*r.pick([10,20,30,50]),face=r.i(1,6);
+      h='You roll a number cube <b>'+rolls+'</b> times. About how many times do you <b>expect</b> to roll a <b>'+face+'</b>?'+
+        '<div class="row" style="margin-top:6px"><span class="inl">'+fr(1,6)+' &times; '+rolls+' = '+b.f('num',rolls/6,{w:'n'})+' times</span></div>'}
+    else{var sp7=r.pick([20,25,50]),hit=r.i(3,sp7-3),more=sp7*r.pick([4,6,10]);
+      h='A spinner landed on red <b>'+hit+'</b> times in <b>'+sp7+'</b> spins.<div class="row" style="margin-top:6px;gap:11px">'+
+        '<span class="inl">Experimental P(red) = '+frIn(b,hit,sp7)+'</span>'+
+        '<span class="inl">Predicted reds in '+more+' spins: '+b.f('num',hit*more/sp7,{w:'n'})+'</span>'+
+        '<span class="hint" style="flex-basis:auto">Write it as times it happened over total spins.</span></div>';
+      b.fields[0].t='num';b.fields[1].t='num'}}
+  else if(m==='compound'){var ev=r.pick([
+      ['flip a coin and roll a number cube',12,'heads and a 5',1],
+      ['flip two coins',4,'two heads',1],
+      ['roll two number cubes',36,'a sum of 7',6],
+      ['roll two number cubes',36,'doubles',6],
+      ['pick a shirt (red, blue or green) and pants (jeans or khakis)',6,'the blue shirt with jeans',1],
+      ['spin a 4-part spinner and flip a coin',8,'part 1 and tails',1]]);
+    h='You <b>'+ev[0]+'</b>. Use a list, table or tree diagram.'+
+      '<div class="row" style="margin-top:6px;gap:11px"><span class="inl">Total outcomes '+b.f('num',ev[1],{w:'n'})+'</span>'+
+      '<span class="inl">P('+ev[2]+') = '+frIn(b,ev[3],ev[1])+'</span>'+
+      '<span class="hint" style="flex-basis:auto">Write it as favorable over total.</span></div>'+workPad(2);
+    var Lc=b.fields.length;b.fields[Lc-2].t='num';b.fields[Lc-1].t='num'}
   return done(b,h)};
 
 /* ---------- 12. decimals ---------- */
@@ -2311,6 +2387,18 @@ G.ratio=function(r,c){var b=B(),m=r.pick(c.modes),h='';
   else if(m==='scale'){var s2=r.pick([2,3,4,5]),L=r.i(3,12);
     h='A drawing uses the scale <b>1 cm = '+s2+' m</b>. A wall is <b>'+L+' cm</b> on the drawing.'+
       '<div class="row" style="margin-top:6px"><span class="inl">Real length = '+b.f('num',L*s2,{w:'n'})+' m</span></div>'}
+  /* AOG-DD-STD7-V1 (2026-09-25) — unitfrac is 7.RP.A.1 (a unit rate from two
+     fractions: the one part of that standard 'unit' never asked), scalerev is
+     7.G.A.1 (redraw a scale drawing at a different scale). */
+  else if(m==='unitfrac'){var ur=r.i(2,6),ud=r.pick([2,3,4]),sm=simp(ur,ud);
+    var cx=r.pick([['walks','miles'],['paints','square yards'],['bikes','miles'],['mows','acres']]);
+    h='Sam '+cx[0]+' <b>'+(sm[1]===1?sm[0]:fr(sm[0],sm[1]))+'</b> '+cx[1]+' in <b>'+fr(1,ud)+'</b> hour.'+
+      '<div class="row" style="margin-top:6px;gap:11px"><span class="inl">'+
+      (sm[1]===1?sm[0]:fr(sm[0],sm[1]))+' &divide; '+fr(1,ud)+' = '+b.f('num',ur,{w:'n'})+' '+cx[1]+' per hour</span></div>'}
+  else if(m==='scalerev'){var sa=r.pick([2,3]),sb=sa*2,RL=sb*r.i(2,6),RW=sb*r.i(1,4);
+    h='A room is <b>'+RL+' m</b> by <b>'+RW+' m</b>.<div class="row" style="margin-top:6px;gap:12px">'+
+      '<span class="inl">At <b>1 cm = '+sa+' m</b> the drawing is '+b.f('num',RL/sa,{w:'n'})+' cm by '+b.f('num',RW/sa,{w:'n'})+' cm</span>'+
+      '<span class="inl">Redrawn at <b>1 cm = '+sb+' m</b> it is '+b.f('num',RL/sb,{w:'n'})+' cm by '+b.f('num',RW/sb,{w:'n'})+' cm</span></div>'}
   return done(b,h)};
 
 /* ---------- 14. percent ---------- */
@@ -2506,6 +2594,13 @@ G.algebra=function(r,c){var b=B(),m=r.pick(c.modes),h='';
   /* AOG-DD-SOLVESTEPS-V3 — every mode but 'write' is now laid out as its own moves.
      'write' is a modelling task — turning a sentence into an expression — and ruled
      lines are the right room for that. */
+  /* AOG-DD-STD7-V1 (2026-09-25) — rewrite is 7.EE.A.2: the same price written a
+     second way says something new ("increase by 5%" is "multiply by 1.05"). */
+  else if(m==='rewrite'){var pc=r.pick([5,10,15,20,25,30,40]),up=r.chance(0.5),mul=up?100+pc:100-pc;
+    h='A price <b>p</b> goes '+(up?'<b>up</b>':'<b>down</b>')+' by <b>'+pc+'%</b>. Rewrite it as one term.'+
+      '<div class="row" style="margin-top:7px;gap:12px"><span class="inl eqbig">p '+(up?'+':'&minus;')+' '+(pc/100)+'p</span>'+
+      '<span class="inl">= '+b.f('dec',mul/100,{w:'n'})+'p</span>'+
+      '<span class="inl">The new price is '+b.f('num',mul,{w:'n'})+'% of the old price</span></div>'}
   if(m==='write')h+=workPad(2);
   return done(b,h)};
 
@@ -7777,15 +7872,15 @@ MATH['6']=[
 MATH['7']=[
  S('Integer Operations','Operaciones con enteros',function(r){return G.integers(r,{modes:['ops','divint']})}),
  S('Algorithms','Algoritmos',function(r){return G.algo(r,{kinds:['decmul','decdiv','mul3','div2'],n:4})}),
- S('Proportional Reasoning','Razonamiento proporcional',function(r){return G.ratio(r,{modes:['prop','unit','scale','rate']})}),
+ S('Proportional Reasoning','Razonamiento proporcional',function(r){return G.ratio(r,{modes:['prop','unit','unitfrac','scale','scalerev','rate']})}),
  S('Percent Applications','Aplicaciones de porcentaje',function(r){return G.percent(r,{modes:['tip','change','of','whatpct']})}),
  S('Rational Numbers','Números racionales',mix(function(r){return G.fracops(r,{modes:['mult','div','mixed']})},
     function(r){return G.decimals(r,{modes:['fracdec','compare','round']})})),
  S('Problem Solving','Resolución de problemas',function(r){return G.story(r,{modes:['pct','money','rate','twostep']})}),
- S('Expressions and Equations','Expresiones y ecuaciones',function(r){return G.algebra(r,{modes:['solve2','dist','combine','ineq']})}),
+ S('Expressions and Equations','Expresiones y ecuaciones',function(r){return G.algebra(r,{modes:['solve2','dist','combine','ineq','rewrite']})}),
  S('Vocabulary and Symbols','Vocabulario y símbolos',function(r){return G.vocab(r,{bank:'ms'})}),
- S('Geometry','Geometría',function(r){return G.geom(r,{modes:['circle','areatri','surf','angle','vol']})}),
- S('Probability and Statistics','Probabilidad y estadística',function(r){return G.data(r,{modes:['spin','likely','mmm','dot']})})];
+ S('Geometry','Geometría',function(r){return G.geom(r,{modes:['circle','areatri','surf','angsolve','vol','xsect','trimake']})}),
+ S('Probability and Statistics','Probabilidad y estadística',function(r){return G.data(r,{modes:['spin','likely','mmm','sample','infer','compare','freq','compound']})})];
 MATH['8']=[
  S('Integer and Rational Fluency','Fluidez con racionales',function(r){return G.integers(r,{modes:['ops','compare','order','real']})}),
  S('Exponents and Roots','Exponentes y raíces',function(r){return G.exponents(r,{modes:['pow','root','laws']})}),
