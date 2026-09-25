@@ -84,6 +84,19 @@ table.sg{border-collapse:collapse;width:100%;min-width:620px;background:var(--ca
 .sg input,.sg textarea{width:100%;border:0;background:transparent;color:var(--ink);font:inherit;padding:5px 2px;resize:none}
 .sg textarea{min-height:2.6em;line-height:1.35}
 .peek{font-size:.78rem;color:var(--sub);cursor:pointer;border:0;background:none;text-decoration:underline;padding:2px 0}
+/* AOG-GUIDE-OPEN-V1 — the study guide has two faces. OPEN: every answer filled in, the
+   handout as a finished reference. CLOSED: blank rows with a peek on each, the handout
+   as practice. The switch remembers itself; a student's own typing is never overwritten,
+   because OPEN never touches the saved fields — it only shows the key instead. */
+.sgsw{display:inline-flex;gap:0;border:1px solid var(--line);border-radius:999px;background:var(--card);padding:3px;margin:0 0 14px}
+.sgsw button{border:0;background:transparent;color:var(--sub);font:700 .86rem var(--sans);padding:8px 16px;border-radius:999px;cursor:pointer;min-height:40px}
+.sgsw button.on{background:var(--ink);color:var(--bg)}
+.sgsw .lbl{align-self:center;font:600 .78rem var(--sans);letter-spacing:.08em;text-transform:uppercase;color:var(--sub);padding:0 10px 0 6px}
+.sg.open td .ans{display:block;padding:5px 2px;line-height:1.35;color:var(--ink)}
+.sg.open td .ans.w{font-weight:700}
+.sg.open td .ans.d{font-weight:600}
+.sg.open tr.h td .ans{font-weight:400}
+@media print{.sgsw{display:none!important}}
 .bankbox{position:sticky;top:0;z-index:5;background:var(--bg);border-bottom:1px solid var(--line);padding:8px 0 10px;margin-bottom:12px;max-height:28vh;overflow-y:auto;-webkit-overflow-scrolling:touch}
 .chipb.bk{font:600 .85rem var(--sans);padding:6px 11px;min-height:36px}
 .titem{display:grid;grid-template-columns:1fr;gap:4px;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 14px;margin-bottom:8px;max-width:640px}
@@ -1427,11 +1440,30 @@ document.addEventListener("click",function(e){
 /* ── MY STUDY GUIDE — the class handout's own shape: bold rows need all three, blue rows need the definition ── */
 var SG={};
 document.addEventListener("input",function(e){var k=e.target.getAttribute&&e.target.getAttribute("data-k");if(!k)return;SG[k]=e.target.value;put("guide."+U.n,JSON.stringify(SG));});
+function sgMode(){ return get("guide.mode")==="open"?"open":"closed"; }
+function sgSwitch(){ var m=sgMode();
+ return '<div class="sgsw no-print" role="group" aria-label="Study guide: open or closed"><span class="lbl">Guide</span>'
+  +'<button type="button" data-sgmode="open"'+(m==="open"?' class="on" aria-pressed="true"':' aria-pressed="false"')+'>Open — all filled in</button>'
+  +'<button type="button" data-sgmode="closed"'+(m==="closed"?' class="on" aria-pressed="true"':' aria-pressed="false"')+'>Closed — hints only</button></div>'; }
+function sgSent(t){ return String(t||"").replace(/\*/g,""); }
 function vGuide(){
  var saved={}; try{saved=JSON.parse(get("guide."+U.n)||"{}")||{};}catch(e){}
+ var open=sgMode()==="open";
  var rows="", id=0;
  U.stems.forEach(function(s){
   var k="n"+(id++);
+  if(open){
+   /* the word column shows the word the sentence actually uses; the sentence marks it *like this* */
+   var sent=sgSent(s.ex), w="";
+   var star=/\*([^*]+)\*/.exec(String(s.ex||"")); if(star) w=star[1];
+   if(!w&&s.w){ s.w.forEach(function(pair){ if(!w&&sent.toLowerCase().indexOf(String(pair[0]).toLowerCase())>-1) w=pair[0]; }); }
+   if(!w&&s.w&&s.w[0]) w=s.w[0][0];
+   if(!sent&&s.w&&s.w[0]) sent=s.w[0][0]+" — "+s.w[0][1];
+   rows+='<tr class="n"><td class="st">'+esc(s.s)+'</td><td><span class="ans d">'+esc(s.m)+'</span></td>'
+    +'<td><span class="ans w">'+esc(w)+'</span></td><td><span class="ans s">'+esc(sent)+'</span></td></tr>';
+   (s.h||[]).forEach(function(h){ rows+='<tr class="h"><td class="st">'+esc(h[0])+'</td><td><span class="ans d">'+esc(h[1])+'</span></td><td class="blk" colspan="2"></td></tr>'; });
+   return;
+  }
   rows+='<tr class="n"><td class="st">'+esc(s.s)+'</td><td><input data-k="'+k+'d" value="'+esc(saved[k+"d"]||"").replace(/"/g,"&quot;")+'" aria-label="Definition of '+esc(s.s)+'"><button class="peek no-print" type="button" data-peek="'+esc(s.m)+'">peek</button></td>'
    +'<td><input data-k="'+k+'w" value="'+esc(saved[k+"w"]||"").replace(/"/g,"&quot;")+'" aria-label="A word with '+esc(s.s)+'"></td>'
    +'<td><textarea data-k="'+k+'s" aria-label="A sentence using the word">'+esc(saved[k+"s"]||"")+'</textarea></td></tr>';
@@ -1439,12 +1471,16 @@ function vGuide(){
    rows+='<tr class="h"><td class="st">'+esc(h[0])+'</td><td><input data-k="'+hk+'d" value="'+esc(saved[hk+"d"]||"").replace(/"/g,"&quot;")+'" aria-label="Definition of '+esc(h[0])+'"><button class="peek no-print" type="button" data-peek="'+esc(h[1])+'">peek</button></td><td class="blk" colspan="2"></td></tr>'; });
  });
  SG=saved;
- return '<h2 class="no-print">My study guide</h2><p class="hint no-print">Same shape as the handout. Bold stems need a definition, a word and a sentence. Blue helper stems need only the definition. It saves as you type — on this device only. Try from memory first; <b>peek</b> is there if you are stuck.</p>'
- +'<div class="row no-print"><button class="next" type="button" id="printBtn">Print my guide</button><button class="next ghost" type="button" id="clearBtn">Clear it</button></div>'
- +'<h2 style="text-align:center;margin:6px 0 10px">Unit '+U.n+' Study Guide</h2>'
- +'<div class="tw"><table class="sg" id="sgt"><thead><tr><th>Stem</th><th>Definition</th><th>Word w/ stem</th><th>Sentence using the stem word</th></tr></thead><tbody>'+rows+'</tbody></table></div>';
+ var hint=open
+  ?'<p class="hint no-print">The whole guide, filled in: every definition, a word for each stem and a sentence using it. Read it, print it, or switch to <b>Closed</b> to fill it in yourself. Your own answers are kept.</p>'
+  :'<p class="hint no-print">Same shape as the handout. Bold stems need a definition, a word and a sentence. Blue helper stems need only the definition. It saves as you type — on this device only. Try from memory first; <b>peek</b> is there if you are stuck, or switch to <b>Open</b> to see the whole guide filled in.</p>';
+ return '<h2 class="no-print">My study guide</h2>'+sgSwitch()+hint
+ +'<div class="row no-print"><button class="next" type="button" id="printBtn">'+(open?"Print the open guide":"Print my guide")+'</button>'+(open?"":'<button class="next ghost" type="button" id="clearBtn">Clear it</button>')+'</div>'
+ +'<h2 style="text-align:center;margin:6px 0 10px">Unit '+U.n+' Study Guide'+(open?"":"")+'</h2>'
+ +'<div class="tw"><table class="sg'+(open?" open":"")+'" id="sgt"><thead><tr><th>Stem</th><th>Definition</th><th>Word w/ stem</th><th>Sentence using the stem word</th></tr></thead><tbody>'+rows+'</tbody></table></div>';
 }
 document.addEventListener("click",function(e){
+ var sw=e.target.closest("[data-sgmode]"); if(sw){put("guide.mode",sw.getAttribute("data-sgmode"));render();return;}
  var p=e.target.closest("[data-peek]"); if(p){p.textContent=p.textContent==="peek"?p.getAttribute("data-peek"):"peek";return;}
  if(e.target.id==="printBtn"){window.print();return;}
  if(e.target.id==="clearBtn"){ if(e.target.getAttribute("data-sure")){put("guide."+U.n,"{}");render();} else {e.target.setAttribute("data-sure","1");e.target.textContent="Tap again to clear everything";} }
@@ -1522,13 +1558,20 @@ function wTest(){
 }
 function wGuide(){
  var saved={}; try{saved=JSON.parse(get("vguide."+U.n)||"{}")||{};}catch(e){}
+ var open=sgMode()==="open";
  var rows="", id=0;
  U.words.forEach(function(x){ var k="n"+(id++);
+  if(open){ rows+='<tr class="n"><td class="st">'+esc(x.w)+'</td><td><span class="ans d">'+esc(x.d)+'</span></td><td><span class="ans s">'+esc(sgSent(x.ex))+'</span></td></tr>'; return; }
   rows+='<tr class="n"><td class="st">'+esc(x.w)+'</td>'
    +'<td><input data-vk="'+k+'d" value="'+esc(saved[k+"d"]||"").replace(/"/g,"&quot;")+'" aria-label="What '+esc(x.w)+' means"><button class="peek no-print" type="button" data-peek="'+esc(x.d)+'">peek</button></td>'
    +'<td><input data-vk="'+k+'s" value="'+esc(saved[k+"s"]||"").replace(/"/g,"&quot;")+'" aria-label="A sentence using '+esc(x.w)+'"></td></tr>';});
- return '<h2>My study guide</h2><p class="hint">Write the meaning in your own words and one sentence you would actually say. It saves on this device as you type. <b>Print this</b> and you have the study guide.</p>'
-  +'<table class="guide"><thead><tr><th>Word</th><th>What it means, in my words</th><th>My sentence</th></tr></thead><tbody>'+rows+'</tbody></table>';
+ var hint=open
+  ?'<p class="hint no-print">The whole guide, filled in: what each word means and a sentence that uses it. Read it, print it, or switch to <b>Closed</b> to write your own. Your own answers are kept.</p>'
+  :'<p class="hint no-print">Write the meaning in your own words and one sentence you would actually say. It saves on this device as you type. <b>Print this</b> and you have the study guide — or switch to <b>Open</b> to see it filled in.</p>';
+ return '<h2 class="no-print">My study guide</h2>'+sgSwitch()+hint
+  +'<div class="row no-print"><button class="next" type="button" id="printBtn">'+(open?"Print the open guide":"Print my guide")+'</button></div>'
+  +'<h2 style="text-align:center;margin:6px 0 10px">Unit '+U.n+' Study Guide</h2>'
+  +'<table class="guide sg'+(open?" open":"")+'"><thead><tr><th>Word</th><th>What it means'+(open?"":", in my words")+'</th><th>'+(open?"A sentence":"My sentence")+'</th></tr></thead><tbody>'+rows+'</tbody></table>';
 }
 document.addEventListener("input",function(e){var i=e.target.closest("[data-vk]");if(!i)return;
  var o={};try{o=JSON.parse(get("vguide."+U.n)||"{}")||{};}catch(x){}
