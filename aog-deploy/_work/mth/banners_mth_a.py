@@ -382,11 +382,11 @@ def _b7():
         c = boards[i % 7]
         board = f'<path d="M{cx - w * .42:.0f} {y - 2} l{w * .16:.0f} -{bh * .18:.0f} v{bh} l-{w * .16:.0f} {bh * .18:.0f}z M{cx - w * .26:.0f} {y - 2 - bh * .18:.0f} h{w * .52:.0f} v{bh} h-{w * .52:.0f}z M{cx + w * .26:.0f} {y - 2 - bh * .18:.0f} l{w * .16:.0f} {bh * .18:.0f} v{bh} l-{w * .16:.0f} -{bh * .18:.0f}z" fill="{c}" transform="translate(0 -{bh})"/>'
         if not big:
-            board += f'<g fill="#FFFFFF" opacity=".7"><rect x="{cx - w * .2:.0f}" y="{y - bh - bh * .18 + 4:.0f}" width="{w * .4:.0f}" height="{bh * .3:.0f}"/><rect x="{cx - w * .2:.0f}" y="{y - bh + 6:.0f}" width="{w * .18:.0f}" height="{bh * .28:.0f}"/><rect x="{cx + w * .02:.0f}" y="{y - bh + 6:.0f}" width="{w * .18:.0f}" height="{bh * .28:.0f}"/></g>'
+            board += f'<g fill="#FFFFFF" opacity=".7"><rect x="{cx - w * .2:.0f}" y="{y - bh - bh * .18 + 4:.0f}" width="{w * .4:.0f}" height="{bh * .3:.0f}"/><rect x="{cx - w * .2:.0f}" y="{y - bh + 6:.0f}" width="{w * .4:.0f}" height="{bh * .26:.0f}"/></g>'
         return (board + f'<path d="M{cx - w // 2} {y} h{w} l{w * .06:.0f} {h} h-{w * 1.12:.0f}z" fill="url(#{p}cloth)"/><path d="M{cx - w // 2} {y} h{w}" stroke="#B9B2A2" stroke-width="1.5"/>')
     tables = "".join(table(cx, 214, 76, i, False) for i, cx in enumerate((160, 320, 480, 640, 800, 960, 1120)))
     tables2 = "".join(table(cx, 292, 118, i + 3, True) for i, cx in enumerate((110, 340, 570, 800, 1030)))
-    people = "".join(_kid(x, 212, h, "#1E2A3A") for x, h in ((230, 44), (250, 40), (410, 46), (570, 42), (720, 48), (740, 40), (890, 46), (1050, 44)))
+    people = "".join(_kid(x, 212, h, "#1E2A3A") for x, h in ((230, 44), (250, 40), (570, 42), (720, 48), (740, 40), (1050, 44)))
     body = f'''
 <rect width="{W}" height="{H}" fill="url(#{p}wall)"/>
 <rect x="0" y="0" width="1200" height="36" fill="#1E3450"/>{lamps}
@@ -455,9 +455,9 @@ def _b9():
         + _lin(p+"panel", [(0, "#0B1220", None), (1, "#1A2438", None)])
     )
     D = "#0C1528"
-    lanes = "".join(f'<path d="M{600 + (x - 600) * .16:.0f} 214 L{x} 420" stroke="#F4EBD8" stroke-width="2.5" opacity=".85"/>' for x in range(-200, 1401, 150))
-    seats = "".join(f'<path d="M0 {y} H1200" stroke="#2A3B5E" stroke-width="2" opacity=".7"/>' for y in range(120, 205, 10))
-    segs = "".join(f'<rect x="{x}" y="{y}" width="{w}" height="{h}" rx="1.5" fill="#FF9A2E" opacity="{o}"/>' for gx in (906, 940, 990, 1024, 1064) for x, y, w, h, o in ((gx + 2, 106, 14, 3, 1), (gx + 2, 121, 14, 3, .8), (gx + 2, 136, 14, 3, 1), (gx - 1, 108, 3, 12, .9), (gx + 17, 108, 3, 12, 1), (gx - 1, 124, 3, 12, 1), (gx + 17, 124, 3, 12, .85)))
+    lanes = '<path d="' + " ".join(f"M{600 + (x - 600) * .16:.0f} 214 L{x} 420" for x in range(-200, 1401, 150)) + '" stroke="#F4EBD8" stroke-width="2.5" opacity=".85" fill="none"/>'
+    seats = '<path d="' + " ".join(f"M0 {y} H1200" for y in range(120, 205, 10)) + '" stroke="#2A3B5E" stroke-width="2" opacity=".7"/>'
+    segs = '<g fill="#FF9A2E">' + "".join(f'<rect x="{x}" y="{y}" width="{w}" height="{h}"/>' for gx in (906, 940, 990, 1024, 1064) for x, y, w, h in ((gx + 2, 106, 14, 3), (gx + 2, 121, 14, 3), (gx + 2, 136, 14, 3), (gx - 1, 108, 3, 12), (gx + 17, 108, 3, 12), (gx - 1, 124, 3, 12), (gx + 17, 124, 3, 12))) + "</g>"
     def runner(x, y, s, lead):
         return (f'<g transform="translate({x} {y}) scale({s})" fill="{D}"><circle cx="0" cy="-88" r="11"/>'
                 f'<path d="M-8 -76 q10 -6 18 2 l6 30 l-6 30 l14 30 l-8 4 l-18 -30 l-10 32 l-8 -2 l6 -36 l-6 -28 l-14 26 l-6 -4 l14 -34 l6 -20z"/>'
@@ -499,7 +499,7 @@ def _b10():
     for i, h in enumerate(heights):
         x = 440 + i * 46
         top = 236 - h
-        leaves = "".join(f'<ellipse cx="{x + (10 if k % 2 else -10)}" cy="{236 - 14 - k * 22}" rx="9" ry="5" transform="rotate({-30 if k % 2 else 30} {x + (10 if k % 2 else -10)} {236 - 14 - k * 22})"/>' for k in range(max(1, h // 22)))
+        leaves = "".join(f'<path d="M{x} {236 - 14 - k * 22} q{"" if k % 2 else "-"}14 -12 {"" if k % 2 else "-"}18 0 q-4 8 {"-" if k % 2 else ""}18 0z"/>' for k in range(max(1, h // 22)))
         poles += (f'<rect x="{x - 3}" y="{top}" width="6" height="{h}" fill="#7A5A32"/>'
                   f'<path d="M{x - 8} 236 q8 -{h * .4:.0f} -6 -{h * .6:.0f} q10 -12 6 -{h * .85:.0f}" stroke="#3E7A2A" stroke-width="2.5" fill="none"/>'
                   f'<g fill="#5FA83A">{leaves}</g>')
@@ -582,8 +582,8 @@ def _b12():
             X = (lambda t: t * 400) if left else (lambda t: 1200 - t * 400)
             sy = lambda t: yf + (yb - yf) * t
             out.append(f'<path d="M{X(0):.0f} {yf} L{X(1):.0f} {yb} v7 L{X(0):.0f} {yf + 10}z" fill="url(#{p}shelf)"/>')
-            for j in range(7):
-                t = .06 + j * .13
+            for j in range(6):
+                t = .06 + j * .15
                 sc = 1 - .48 * t
                 big = kind == "big" or (kind == "mix" and j % 2 == 0)
                 w = (38 if big else 24) * sc
@@ -591,10 +591,12 @@ def _b12():
                 col = T if (j + k) % 2 == 0 else C
                 x = X(t) - (0 if left else w)
                 y = sy(t)
-                out.append(f'<rect x="{x:.0f}" y="{y - h:.0f}" width="{w:.0f}" height="{h:.0f}" rx="1" fill="{col}"/><rect x="{x + w * .2:.0f}" y="{y - h * .75:.0f}" width="{w * .6:.0f}" height="{h * .22:.0f}" fill="#FFFFFF" opacity=".8"/>')
+                out.append(f'<rect x="{x:.0f}" y="{y - h:.0f}" width="{w:.0f}" height="{h:.0f}" fill="{col}"/>')
+                if big:
+                    out.append(f'<rect x="{x + w * .2:.0f}" y="{y - h * .75:.0f}" width="{w * .6:.0f}" height="{h * .22:.0f}" fill="#FFF" opacity=".8"/>')
         return "".join(out)
     tag = '<g transform="translate(150 232) rotate(6)"><path d="M0 0 h56 l12 14 l-12 14 h-56z" fill="#FFF7D6" stroke="#B9A24A" stroke-width="1.5"/><circle cx="58" cy="14" r="3" fill="#B9A24A"/><rect x="8" y="6" width="34" height="6" fill="#F0725A"/><rect x="8" y="16" width="24" height="5" fill="#2A2A2A" opacity=".6"/></g>'
-    star = "".join(f'{(600 + (52 if i % 2 == 0 else 34) * math.cos(math.radians(i * 15))):.1f} {(120 + (52 if i % 2 == 0 else 34) * math.sin(math.radians(i * 15))):.1f}' for i in range(24))
+    star = " ".join(f'{(600 + (52 if i % 2 == 0 else 34) * math.cos(math.radians(i * 15))):.1f} {(120 + (52 if i % 2 == 0 else 34) * math.sin(math.radians(i * 15))):.1f}' for i in range(24))
     tiles = "".join(f'<path d="M{x} 300 L{600 + (x - 600) * 3:.0f} 420" stroke="#A9B4BA" stroke-width="1.2" opacity=".7"/>' for x in range(400, 801, 40))
     body = f'''
 <rect width="{W}" height="{H}" fill="#EEF3F5"/>
@@ -626,8 +628,8 @@ def _b13():
         + _lin(p+"merc", [(0, "#E8473A", None), (1, "#A82A22", None)])
     )
     S = "#4A5866"
-    ticks = "".join(f'<path d="M{212 if i % 5 else 206} {150 + i * 8} h{8 if i % 5 else 14}"/>' for i in range(0, 21))
-    ticks_l = "".join(f'<path d="M{188 if i % 5 else 194} {150 + i * 8} h{8 if i % 5 else 14}" transform="translate(-14 0)"/>' for i in range(0, 21))
+    ticks = '<path d="' + " ".join(f"M{212 if i % 5 else 206} {150 + i * 8} h{8 if i % 5 else 14} M{174 if i % 5 else 180} {150 + i * 8} h{8 if i % 5 else 14}" for i in range(0, 21)) + '"/>'
+    ticks_l = ""
     slabs = "".join(f'<path d="{d}" fill="#EAF2F6" opacity=".85"/>' for d in ("M300 300 l90 -6 l30 12 l-70 10z", "M520 320 l110 -4 l20 14 l-100 8z", "M760 296 l80 -8 l40 10 l-60 12z", "M980 318 l90 -10 l60 12 l-80 10z", "M120 340 l100 -6 l40 14 l-110 8z"))
     cracks = '<g stroke="#8FB0C2" stroke-width="1.5" fill="none" opacity=".7"><path d="M420 290 l60 20 l90 -6 l50 18"/><path d="M700 280 l40 24 l80 -4"/><path d="M880 296 l60 14 l60 -10"/></g>'
     body = f'''
@@ -654,7 +656,7 @@ def _b13():
 <g stroke="#2E2418" stroke-width="1.5">{ticks}{ticks_l}</g><path d="M176 230 h48" stroke="#2E3A46" stroke-width="3"/>
 <rect x="196" y="150" width="8" height="160" rx="4" fill="#E2E6EA"/><rect x="196" y="262" width="8" height="48" fill="url(#{p}merc)"/><circle cx="200" cy="316" r="13" fill="url(#{p}merc)"/>
 <path d="M172 316 q28 10 56 0 v22 h-56z" fill="#F4F8FA" opacity=".8"/>
-{_dots(23, 70, 400, "#FFFFFF", ".85", 0, 1200, 0, 1.0)}
+{_dots(23, 44, 400, "#FFFFFF", ".85", 0, 1200, 0, 1.0)}
 <g fill="#FFFFFF" opacity=".5"><path d="M0 250 q40 -8 80 0 q40 -6 100 4 v6 H0z"/></g>
 '''
     return _wrap(13, body, defs)
