@@ -2225,6 +2225,16 @@ G.geom=function(r,c){var b=B(),m=r.pick(c.modes),h='';
     h='Find the volume of a <b>'+sh+'</b> with '+vd+'. Leave <b>&pi;</b> in your answer.'+
       '<div class="row" style="margin-top:6px"><span class="inl">V = '+b.f('num',vv,{w:'n'})+'&pi; cubic units</span></div>'+
       '<div class="hint">Cylinder &pi;r&sup2;h &middot; cone &#8531;&pi;r&sup2;h &middot; sphere &#8308;&#8260;&#8323;&pi;r&sup3;</div>'}
+  /* AOG-DD-STD6-V1 (2026-09-25) — Grade 6 standards the drafts never asked. volfrac is 6.G.A.2,
+     polycoord is 6.G.A.3. */
+  else if(m==='volfrac'){var vl=r.i(2,6),vw=r.i(2,5),vh2=r.pick([1.5,2.5,3.5,0.5]);
+    h='A box is <b>'+vl+'</b> by <b>'+vw+'</b> by <b>'+(vh2%1?Math.floor(vh2)?Math.floor(vh2)+'&frac12;':'&frac12;':vh2)+'</b> units. Find its volume.'+
+      '<div class="row" style="margin-top:6px"><span class="inl">V = l &times; w &times; h = '+b.f('dec',vl*vw*vh2,{w:'n'})+' cubic units</span>'+
+      '<span class="hint" style="flex-basis:auto">&frac12; is 0.5. A decimal answer is fine.</span></div>'}
+  else if(m==='polycoord'){var x1=-r.i(1,5),x2=r.i(1,6),y1=-r.i(1,5),y2=r.i(1,6);
+    h='A rectangle has corners at <b>('+x1+', '+y1+')</b>, <b>('+x2+', '+y1+')</b>, <b>('+x2+', '+y2+')</b> and <b>('+x1+', '+y2+')</b>.'+
+      '<div class="row" style="margin-top:6px;gap:12px"><span class="inl">width '+b.f('num',x2-x1,{w:'n'})+'</span>'+
+      '<span class="inl">height '+b.f('num',y2-y1,{w:'n'})+'</span><span class="inl">area '+b.f('num',(x2-x1)*(y2-y1),{w:'n'})+' square units</span></div>'}
   return done(b,h)};
 
 var UNITS=[['weeks','days',7],['feet','inches',12],['hours','minutes',60],['minutes','seconds',60],
@@ -2394,6 +2404,24 @@ G.data=function(r,c){var b=B(),m=r.pick(c.modes),h='';
       '<div class="row" style="margin-top:6px"><span class="inl">Of the 7th graders, what fraction have a dog? '+frIn(b,aa,aa+ab)+'</span>'+
       '<span class="hint" style="flex-basis:auto">Write it as dog owners over the row total.</span></div>';
     var Lt=b.fields.length;b.fields[Lt-2].t='num';b.fields[Lt-1].t='num'}
+  /* AOG-DD-STD6-V1 (2026-09-25) — Grade 6 standards the drafts never asked. statq is 6.SP.A.1,
+     box and mad are 6.SP.B.4–5. */
+  else if(m==='statq'){var sq=r.pick([['How many pets do students in my class have?','yes'],['How tall is the school flagpole?','no'],
+      ['How many hours of sleep do 6th graders get?','yes'],['What time does school start?','no'],
+      ['How long does it take students to get to school?','yes'],['How many days are in March?','no']]);
+    h='Is this a <b>statistical question</b>? &ldquo;'+sq[0]+'&rdquo;<div class="row" style="margin-top:7px">'+b.mc(sq[1],['yes','no'])+
+      '<span class="hint" style="flex-basis:auto">A statistical question expects answers that vary.</span></div>'}
+  else if(m==='box'){var bx=[];for(var i6=0;i6<7;i6++)bx.push(r.i(2,30));bx.sort(function(a,x){return a-x});
+    h='Data (in order): <b>'+bx.join(', ')+'</b><div class="row" style="margin-top:6px;gap:10px">'+
+      '<span class="inl">min '+b.f('num',bx[0],{w:'n'})+'</span><span class="inl">Q1 '+b.f('num',bx[1],{w:'n'})+'</span>'+
+      '<span class="inl">median '+b.f('num',bx[3],{w:'n'})+'</span><span class="inl">Q3 '+b.f('num',bx[5],{w:'n'})+'</span>'+
+      '<span class="inl">max '+b.f('num',bx[6],{w:'n'})+'</span><span class="inl">IQR '+b.f('num',bx[5]-bx[1],{w:'n'})+'</span></div>'+
+      '<div class="hint">Q1 is the middle of the lower three; Q3 is the middle of the upper three.</div>'}
+  else if(m==='mad'){var mc6=r.i(5,15),off=r.pick([[-2,-1,0,1,2],[-3,-1,0,1,3],[-4,-2,0,2,4],[-3,-3,0,3,3]]),dv=r.shuf(off).map(function(x){return mc6+x});
+    var md=off.reduce(function(a,x){return a+Math.abs(x)},0)/5;
+    h='Data: <b>'+dv.join(', ')+'</b><div class="row" style="margin-top:6px;gap:12px">'+
+      '<span class="inl">mean '+b.f('num',mc6,{w:'n'})+'</span><span class="inl">mean absolute deviation '+b.f('dec',md,{w:'n'})+'</span></div>'+
+      '<div class="hint">MAD: how far each value is from the mean, then the average of those distances.</div>'}
   return done(b,h)};
 
 /* ---------- 12. decimals ---------- */
@@ -2512,6 +2540,25 @@ G.integers=function(r,c){var b=B(),m=r.pick(c.modes),h='';
       '<span class="inl">'+b.f('num',lo8,{w:'n'})+' &lt; &radic;'+nn+' &lt; '+b.f('num',lo8+1,{w:'n'})+'</span>'+
       '<span class="inl">closer to '+b.f('num',(nn-lo8*lo8)<((lo8+1)*(lo8+1)-nn)?lo8:lo8+1,{w:'n'})+'</span>'+
       '<span class="hint" style="flex-basis:auto">Think of the perfect squares on either side.</span></div>'}
+  /* AOG-DD-STD6-V1 (2026-09-25) — Grade 6 standards the drafts never asked. gcf and lcm are
+     6.NS.B.4, abs is 6.NS.C.5–7, coord6 is 6.NS.C.8. */
+  else if(m==='gcf'){var gg=r.pick([2,3,4,5,6]),ga=gg*r.pick([2,3,5,7]),gb=gg*r.pick([4,9,11,13]);if(ga===gb)gb+=gg*2;
+    var G6=gcd(ga,gb);
+    h='Find the greatest common factor of <b>'+ga+'</b> and <b>'+gb+'</b>, then use it to rewrite the sum.'+
+      '<div class="row" style="margin-top:6px;gap:12px"><span class="inl">GCF '+b.f('num',G6,{w:'n'})+'</span>'+
+      '<span class="inl">'+ga+' + '+gb+' = '+b.f('num',G6,{w:'n'})+' ( '+b.f('num',ga/G6,{w:'n'})+' + '+b.f('num',gb/G6,{w:'n'})+' )</span></div>'}
+  else if(m==='lcm'){var la=r.pick([3,4,6,8,9,10]),lb=r.pick([4,5,6,12,15]);if(la===lb)lb=5;
+    var L6=la*lb/gcd(la,lb);
+    h='Hot dogs come in packs of <b>'+la+'</b> and buns in packs of <b>'+lb+'</b>. What is the fewest of each you can buy to have the same number?'+
+      '<div class="row" style="margin-top:6px"><span class="inl">least common multiple '+b.f('num',L6,{w:'n'})+'</span></div>'}
+  else if(m==='abs'){var av=r.i(2,15)*r.pick([-1,1]),bv=r.i(2,15)*r.pick([-1,1]);if(Math.abs(av)===Math.abs(bv))bv+=bv>0?1:-1;
+    h='<div class="row" style="gap:14px"><span class="inl">|'+(av<0?'&minus;'+(-av):av)+'| = '+b.f('num',Math.abs(av),{w:'n'})+'</span>'+
+      '<span class="inl">the opposite of '+(bv<0?'&minus;'+(-bv):bv)+' is '+b.f('num',-bv,{w:'n'})+'</span>'+
+      '<span class="inl">Which is farther from 0? '+b.mc(String(Math.abs(av)>Math.abs(bv)?av:bv),[String(av),String(bv)])+'</span></div>'}
+  else if(m==='coord6'){var cx6=r.pick([-1,1])*r.i(1,6),cy1=r.i(1,7),cy2=-r.i(1,7);
+    h='How far apart are <b>('+cx6+', '+cy1+')</b> and <b>('+cx6+', '+cy2+')</b>?'+
+      '<div class="row" style="margin-top:6px;gap:10px"><span class="inl">'+cy1+' + |'+cy2+'| = '+b.f('num',cy1-cy2,{w:'n'})+' units</span>'+
+      '<span class="hint" style="flex-basis:auto">Same x, so count up and down. One point is above the x&#8209;axis and one is below.</span></div>'}
   return done(b,h)};
 
 /* ---------- 16. expressions & equations ---------- */
@@ -2681,6 +2728,18 @@ G.algebra=function(r,c){var b=B(),m=r.pick(c.modes),h='';
     h='Solve the system. Set the two right sides equal to find <b>x</b>, then find <b>y</b>.'+
       '<div class="row" style="margin-top:7px;gap:16px"><span class="inl eqbig">'+lin(m1,b1)+'</span><span class="inl eqbig">'+lin(m2,b2)+'</span></div>'+
       '<div class="row eqans" style="gap:12px"><span class="inl">x = '+b.f('num',sx,{w:'n'})+'</span><span class="inl">y = '+b.f('num',sy,{w:'n'})+'</span></div>'+workPad(2)}
+  /* AOG-DD-STD6-V1 (2026-09-25) — Grade 6 standards the drafts never asked. ineqw is 6.EE.B.8,
+     depvar is 6.EE.C.9. */
+  else if(m==='ineqw'){var iw=r.pick([['You must be at least','inches tall to ride','&ge;',48],['A bag can hold no more than','pounds','&le;',30],
+      ['The temperature stayed below','degrees all day','&lt;',40],['You need more than','points to win','&gt;',21]]);
+    h=iw[0]+' <b>'+iw[3]+'</b> '+iw[1]+'. Let <b>x</b> be the amount. Which inequality fits?'+
+      '<div class="row" style="margin-top:7px">'+b.mc('x '+iw[2].replace(/&(\w+);/,function(a){return {'&ge;':'≥','&le;':'≤','&lt;':'<','&gt;':'>'}[a]})+' '+iw[3],
+        ['≥','≤','<','>'].map(function(o){return 'x '+o+' '+iw[3]}))+'</div>'}
+  else if(m==='depvar'){var pay=r.pick([8,9,10,12,15]);
+    h='You earn <b>$'+pay+'</b> for every hour you work. <b>d</b> is dollars earned, <b>h</b> is hours.'+
+      '<div class="row" style="margin-top:6px;gap:12px"><span class="inl">d = '+b.f('num',pay,{w:'n'})+'h</span>'+
+      '<span class="inl">5 hours: $'+b.f('num',pay*5,{w:'n'})+'</span>'+
+      '<span class="inl">The dependent variable is '+b.mc('d',['d','h'])+'</span></div>'}
   return done(b,h)};
 
 /* ---------- 17. exponents, roots, scientific notation ---------- */
@@ -7960,16 +8019,17 @@ MATH['5']=[
     pairs:[['cm','mm',10],['m','cm',100],['km','m',1000],['kg','g',1000],['L','mL',1000]]})})];
 MATH['6']=[
  S('Number Fluency','Fluidez numérica',mix(function(r){return G.facts(r,{ops:['×','÷'],max:12,cols:6,tri:false})},
-    function(r){return G.exponents(r,{modes:['order','pow']})})),
+    function(r){return G.exponents(r,{modes:['order','pow']})},
+    function(r){return G.integers(r,{modes:['gcf','lcm','abs','coord6']})})),
  S('Algorithms','Algoritmos',function(r){return G.algo(r,{kinds:['decmul','decdiv','mul3','div2','decadd'],n:4})}),
  S('Ratios and Rates','Razones y tasas',function(r){return G.ratio(r,{modes:['write','unit','rate','scale']})}),
  S('Percent','Porcentaje',function(r){return G.percent(r,{modes:['of','convert','whatpct']})}),
  S('Fraction Operations','Operaciones con fracciones',function(r){return G.fracops(r,{modes:['mult','div','mixed']})}),
  S('Problem Solving','Resolución de problemas',function(r){return G.story(r,{modes:['pct','money','twostep','rate']})}),
- S('Expressions and Equations','Expresiones y ecuaciones',function(r){return G.algebra(r,{modes:['eval','solve1','combine','write']})}),
+ S('Expressions and Equations','Expresiones y ecuaciones',function(r){return G.algebra(r,{modes:['eval','solve1','combine','write','ineqw','depvar']})}),
  S('Vocabulary and Symbols','Vocabulario y símbolos',function(r){return G.vocab(r,{bank:'ms'})}),
- S('Geometry and Measurement','Geometría y medición',function(r){return G.geom(r,{modes:['area','areatri','vol','surf','perimpoly']})}),
- S('Data and Statistics','Datos y estadística',function(r){return G.data(r,{modes:['mmm','dot','bar']})})];
+ S('Geometry and Measurement','Geometría y medición',function(r){return G.geom(r,{modes:['area','areatri','volfrac','surf','polycoord']})}),
+ S('Data and Statistics','Datos y estadística',function(r){return G.data(r,{modes:['mmm','dot','statq','box','mad']})})];
 MATH['7']=[
  S('Integer Operations','Operaciones con enteros',function(r){return G.integers(r,{modes:['ops','divint']})}),
  S('Algorithms','Algoritmos',function(r){return G.algo(r,{kinds:['decmul','decdiv','mul3','div2'],n:4})}),
