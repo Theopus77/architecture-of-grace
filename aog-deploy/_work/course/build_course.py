@@ -78,7 +78,7 @@ def jump_block():
     # s13 has had every course's options injected already; strip them all so
     # mark_current() adds this course's block exactly once (and the other
     # course's injector adds its own afterwards).
-    blk = re.sub(r'<option value="(?:us-history|ush-u\d+|science-course|sci-u\d+|math-course|mth-u\d+|spanish-course|spa-u\d+|social-studies-course|ssc-u\d+|english-course|ela-u\d+)\.html">[^<]*</option>\n?', "", blk)
+    blk = re.sub(r'<option value="(?:us-history|ush-u\d+|science-course|sci-u\d+|math-course|mth-u\d+|spanish-course|spa-u\d+|social-studies-course|ssc-u\d+|english-course|ela-u\d+|facs-course|fcs-u\d+|religions-course|rel-u\d+|economics-course|eco-u\d+)\.html">[^<]*</option>\n?', "", blk)
     return blk
 
 def mark_current(blk, value, text):
@@ -266,7 +266,7 @@ a{color:var(--navy-2)}
 .tl .pin{flex:0 0 200px; scroll-snap-align:start; padding:0 12px 0 0; position:relative}
 .tl .pin::before{content:""; position:absolute; left:0; top:22px; width:16px; height:16px; border-radius:50%; background:var(--field); border:4px solid var(--red); box-shadow:0 0 0 3px var(--ground)}
 .tl .pin .y{font:800 1.3rem/1 var(--cond); letter-spacing:.02em; color:var(--red); margin:0 0 14px 26px}
-.tl .pin .t{font-size:.9rem; line-height:1.4; color:var(--ink-soft); margin:0 0 0 2px; padding-top:6px; border-top:1px dashed var(--rule)}
+.tl .pin .t{font-size:.9rem; line-height:1.4; color:var(--ink-soft); margin:0 0 0 2px; padding-top:18px; border-top:1px dashed var(--rule)}
 
 /* ══ CHAPTER OPENER ══ */
 .chap{margin:36px 0 0; scroll-margin-top:70px}

@@ -3,103 +3,411 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<script>/* .30eg: begin in light. Dark only when this device chose it. Same key as the other activity pages. */
+<script>/* .30eg: begin in light. Dark only when this device chose it. Same key as every Interior page. */
 (function(){var t="light";try{if(localStorage.getItem("aog.interior.ws.v1.theme")==="dark")t="dark";}catch(e){}document.documentElement.setAttribute("data-theme",t);})();</script>
 <title>Room 207 — The Lessons · Architecture of Grace</title>
 <meta name="description" content="Every Room 207 SEL lesson, ready to teach — four units, 28 lessons, scripts, steps, worksheets and anchor-chart builds, from Book 5 · The Capstone (Grades 11–12).">
-<!-- The material is the Book 5 master's Lessons section verbatim; only the
-     presentation is designed. No external requests; nothing typed or stored. -->
+<!-- ═══ AOG ICONS + LINK PREVIEW · managed block · .30k0 ═══ -->
+<link rel="canonical" href="https://architectureofgrace.org/lessons207">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Architecture of Grace">
+<meta property="og:locale" content="en_US">
+<meta property="og:title" content="Room 207 — The Lessons · Architecture of Grace">
+<meta property="og:description" content="Every Room 207 SEL lesson, ready to teach — four units, 28 lessons, scripts, steps, worksheets and anchor-chart builds, from Book 5 · The Capstone (Grades 11–12).">
+<meta property="og:url" content="https://architectureofgrace.org/lessons207">
+<meta property="og:image" content="https://architectureofgrace.org/og-prep.png?v=1">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Room 207 — The Lessons · Architecture of Grace">
+<meta name="twitter:description" content="Every Room 207 SEL lesson, ready to teach — four units, 28 lessons, scripts, steps, worksheets and anchor-chart builds, from Book 5 · The Capstone (Grades 11–12).">
+<meta name="twitter:image" content="https://architectureofgrace.org/og-prep.png?v=1">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#0A1E33">
+<meta name="apple-mobile-web-app-title" content="Grace">
+<meta name="application-name" content="Architecture of Grace">
+<!-- ═══ END AOG ICONS + LINK PREVIEW ═══ -->
+<!-- AOG-SEL-V1 — built by _work/sel/build_sel.py. The lesson material is the original Lessons page's, byte for byte (kept in _work/sel/src); only the engine around it is designed. Do not hand-edit; edit the builder and re-run. -->
+<!-- No external requests of any kind. Every byte this page needs is in this file (aog-topbar.js is same-origin; a 404 changes nothing but the bar). -->
 <style>
+
+/* ══ TOKENS ══ the Interior set (light is the base; dark redefines tokens only)
+   plus the course's own: navy #0A1E33, a flag red for the badges, the hub's
+   brown accent, and a serif stack for the book voice. */
 :root{
-  --bg:#FBFAF7; --card:#FFFFFF; --ink:#232B36; --sub:#5B6472; --line:#E4E1D8;
-  --navy:#1B3A5F; --brass:#8A6A1F; --brass-soft:#F3ECDB;
-  --u1:#17646B; --u2:#6B4696; --u3:#A63A2B; --u4:#8A6A1F;
-  --risk:#B3261E; --risk-soft:#FBE9E7; --good:#2E7D4F; --good-soft:#E4F0E8;
-  --chip:#EFECE4; --shadow:0 1px 3px rgba(35,43,54,.08);
+  --ground:#F5F1E8; --field:#FFFFFF; --field-2:#EFEAE0; --field-3:#E7E0D2;
+  --ink:#1D2733; --ink-soft:#57626F; --ink-faint:#5F6B78;
+  --navy:#0A1E33; --navy-2:#1B3A5F; --gold:#B8893A; --gold-deep:#7A5C1F;
+  --red:#A8323A; --red-deep:#7E1F26; --acc:#7A5230; --acc-soft:#EFE3D6;
+  --rule:rgba(29,39,51,.16); --rule-soft:rgba(29,39,51,.08);
+  --lift:0 1px 0 rgba(255,255,255,.7), 0 20px 44px -30px rgba(29,39,51,.55);
+  --lift-sm:0 1px 2px rgba(29,39,51,.07), 0 8px 20px -16px rgba(29,39,51,.4);
+  --a:#4A3A8C; --a-wash:rgba(74,58,140,.07);
+  --good:#2E6B4F; --good-wash:rgba(46,107,79,.12);
+  --caution:#9A3412; --caution-wash:rgba(154,52,18,.09); --focus:#B8893A;
+  --paper:#FBF7EE; --paper-line:rgba(122,82,48,.22);
   --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,"Times New Roman",serif;
-  --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  --cond:"Avenir Next Condensed","Helvetica Neue","Arial Narrow","Roboto Condensed",Impact,sans-serif;
+  --on-navy:#F5F1E8;
 }
 @media (prefers-color-scheme: dark){
   :root:not([data-theme="light"]){
-    --bg:#191D24; --card:#20262F; --ink:#EDEAE2; --sub:#9AA3B0; --line:#333B47;
-    --navy:#8FB4DF; --brass:#D9B45C; --brass-soft:#332C18;
-    --u1:#5FB8B0; --u2:#B99AD9; --u3:#E08573; --u4:#D9B45C;
-    --risk:#F2938A; --risk-soft:#3D211E; --good:#6FBF8B; --good-soft:#1F3327;
-    --chip:#2A313C; --shadow:0 1px 3px rgba(0,0,0,.35);
+    --ground:#12161C; --field:#1A2029; --field-2:#222A34; --field-3:#2A333F;
+    --ink:#E9EEF4; --ink-soft:#A3AFBC; --ink-faint:#84909D;
+    --navy:#0A1E33; --navy-2:#9CC2E8; --gold:#D6A852; --gold-deep:#D6A852;
+    --red:#E07078; --red-deep:#B24A52; --acc:#D0A46B; --acc-soft:#3A2E22;
+    --rule:rgba(233,238,244,.18); --rule-soft:rgba(233,238,244,.09);
+    --lift:0 1px 0 rgba(233,238,244,.04), 0 24px 54px -32px rgba(0,0,0,.95);
+    --lift-sm:0 1px 2px rgba(0,0,0,.5), 0 10px 24px -18px rgba(0,0,0,.9);
+    --a:#A99BE8; --a-wash:rgba(169,155,232,.12);
+    --good:#79C79E; --good-wash:rgba(121,199,158,.16);
+    --caution:#F0A07C; --caution-wash:rgba(240,160,124,.12); --focus:#D6A852;
+    --paper:#232A33; --paper-line:rgba(214,168,82,.28);
   }
 }
 :root[data-theme="dark"]{
-  --bg:#191D24; --card:#20262F; --ink:#EDEAE2; --sub:#9AA3B0; --line:#333B47;
-  --navy:#8FB4DF; --brass:#D9B45C; --brass-soft:#332C18;
-  --u1:#5FB8B0; --u2:#B99AD9; --u3:#E08573; --u4:#D9B45C;
-  --risk:#F2938A; --risk-soft:#3D211E; --good:#6FBF8B; --good-soft:#1F3327;
-  --chip:#2A313C; --shadow:0 1px 3px rgba(0,0,0,.35);
+  --ground:#12161C; --field:#1A2029; --field-2:#222A34; --field-3:#2A333F;
+  --ink:#E9EEF4; --ink-soft:#A3AFBC; --ink-faint:#84909D;
+  --navy:#0A1E33; --navy-2:#9CC2E8; --gold:#D6A852; --gold-deep:#D6A852;
+  --red:#E07078; --red-deep:#B24A52; --acc:#D0A46B; --acc-soft:#3A2E22;
+  --rule:rgba(233,238,244,.18); --rule-soft:rgba(233,238,244,.09);
+  --lift:0 1px 0 rgba(233,238,244,.04), 0 24px 54px -32px rgba(0,0,0,.95);
+  --lift-sm:0 1px 2px rgba(0,0,0,.5), 0 10px 24px -18px rgba(0,0,0,.9);
+  --a:#A99BE8; --a-wash:rgba(169,155,232,.12);
+  --good:#79C79E; --good-wash:rgba(121,199,158,.16);
+  --caution:#F0A07C; --caution-wash:rgba(240,160,124,.12); --focus:#D6A852;
+  --paper:#232A33; --paper-line:rgba(214,168,82,.28);
 }
 *{box-sizing:border-box}
-html{-webkit-text-size-adjust:100%}
-body{background:var(--bg);color:var(--ink);font:16px/1.55 var(--sans);margin:0;padding:0 16px 72px}
-button{touch-action:manipulation}
-.wrap{max-width:860px;margin:0 auto}
+html,body{margin:0}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion: reduce){ html{scroll-behavior:auto} *,*::before,*::after{animation:none!important;transition:none!important} }
+body{background:var(--ground); color:var(--ink); font:17px/1.6 var(--sans); -webkit-text-size-adjust:100%}
+.wrap{max-width:1040px; margin:0 auto; padding:18px 16px 90px}
+h1,h2,h3,h4{line-height:1.15; margin:0 0 .3em; font-family:var(--serif)}
+p{margin:.4em 0}
+button{font:inherit; color:inherit}
+a{color:var(--navy-2)}
+:focus-visible{outline:3px solid var(--focus); outline-offset:2px}
+.vh{position:absolute!important; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap}
+.mast{display:flex; justify-content:space-between; align-items:flex-start; gap:10px; flex-wrap:wrap}
+.mast .k{font:700 .78rem/1.3 var(--sans); letter-spacing:.12em; text-transform:uppercase; color:var(--gold-deep)}
+.mast h1{font-size:2.1rem; letter-spacing:-.01em}
+.mast .row{display:flex; gap:8px}
+.chipbtn{min-height:48px; padding:8px 16px; border:1px solid var(--rule); border-radius:999px; background:var(--field); cursor:pointer; font-weight:700; font-size:.92rem}
+.deck{color:var(--ink-soft); max-width:66ch}
+.hubline{margin:.2em 0 0; font-size:.95rem}
+.hubline a{font-weight:700; text-decoration:none}
+.hubline a:hover{text-decoration:underline}
+.jump{margin:14px 0 4px}
+.jump label{display:grid; gap:6px; font-weight:700; font-size:.9rem; color:var(--ink-soft)}
+.jump select{min-height:48px; border:1px solid var(--rule); border-radius:12px; background:var(--field); padding:8px 12px; font:inherit; color:var(--ink); max-width:100%}
 
-/* ══ AOG-R36-NAV ══ */
-.r36top{position:sticky;top:0;z-index:60;display:flex;align-items:center;justify-content:space-between;gap:10px;background:var(--card);border-bottom:1px solid var(--line);margin:0 -16px;padding:9px 16px}
-.r36top .brand{display:flex;align-items:center;gap:9px;text-decoration:none;color:var(--ink);font-weight:800;font-size:.92rem;white-space:nowrap}
-.r36top .mk{display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:7px;background:var(--navy);color:#fff;font-family:var(--serif);font-weight:900}
-:root[data-theme="dark"] .r36top .mk{color:#10151c}
-@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .r36top .mk{color:#10151c}}
-.r36top .brand .nm{display:none}
-@media(min-width:640px){.r36top .brand .nm{display:inline}}
-.r36top .acts{display:flex;align-items:center;gap:7px}
-.r36top .pill{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:999px;padding:6px 13px;font:700 .82rem var(--sans);text-decoration:none;cursor:pointer}
-.r36top .pill:hover{border-color:var(--navy)}
-.r36top .pill .arr{color:var(--navy)}
-.r36wrap{position:relative}
-.r36menu{position:absolute;top:calc(100% + 8px);right:0;min-width:290px;max-width:min(92vw,340px);max-height:min(70vh,560px);overflow:auto;background:var(--card);border:1px solid var(--line);border-radius:14px;box-shadow:0 18px 44px -14px rgba(20,28,40,.45);padding:8px;z-index:70}
-.r36menu[hidden]{display:none}
-.r36menu .lab{font-size:.68rem;font-weight:800;letter-spacing:.13em;text-transform:uppercase;color:var(--sub);padding:10px 10px 4px}
-.r36menu a{display:block;padding:8px 10px;border-radius:9px;text-decoration:none;color:var(--ink)}
-.r36menu a:hover{background:var(--chip)}
-.r36menu a .t{display:block;font-weight:700;font-size:.9rem}
-.r36menu a .s{display:block;font-size:.78rem;color:var(--sub);margin-top:1px}
-.r36top .ico{display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:999px;cursor:pointer}
-.r36top .ico:hover{border-color:var(--navy)}
-.r36menu .arow{display:flex;align-items:center;justify-content:space-between;gap:14px;width:100%;background:none;border:0;border-top:1px solid var(--line);padding:10px 10px;cursor:pointer;text-align:left;font:inherit;color:var(--ink)}
-.r36menu .arow.first{border-top:0}
-.r36menu .arow .t{display:block;font-weight:700;font-size:.9rem}
-.r36menu .arow .s{display:block;font-size:.78rem;color:var(--sub);margin-top:1px}
-.r36menu .sw{flex:none;width:42px;height:24px;border-radius:999px;background:var(--line);position:relative;transition:background .15s}
-.r36menu .sw::after{content:"";position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;background:var(--card);box-shadow:0 1px 3px rgba(0,0,0,.3);transition:transform .15s}
-.r36menu .arow[aria-checked="true"] .sw{background:var(--navy)}
-.r36menu .arow[aria-checked="true"] .sw::after{transform:translateX(18px)}
-/* the site-wide accessibility settings, honored here */
-html.a11y-contrast body{color:#000}
-html.a11y-contrast a{text-decoration:underline;text-underline-offset:2px}
-html.a11y-contrast .r36top,html.a11y-contrast .box,html.a11y-contrast .xcard,html.a11y-contrast .q,html.a11y-contrast .ow{border-width:2px}
-html.a11y-contrast[data-theme="dark"] body{color:#fff}
-html.a11y-dyslexic body,html.a11y-dyslexic button,html.a11y-dyslexic input,html.a11y-dyslexic textarea,html.a11y-dyslexic h1,html.a11y-dyslexic h2,html.a11y-dyslexic h3{font-family:"OpenDyslexic","Comic Sans MS","Trebuchet MS",Verdana,sans-serif !important}
-html.a11y-dyslexic body{letter-spacing:.02em;word-spacing:.09em;line-height:1.8}
-@media print{.r36top{display:none !important}}
+/* ══ THE UNIT RAIL ══ ten numbered doors, sticky under the site bar */
+.rail{position:sticky; top:var(--aogbar-h,52px); z-index:30; margin:10px -16px 0; padding:8px 16px; background:color-mix(in srgb, var(--ground) 88%, transparent); backdrop-filter:saturate(1.2) blur(10px); -webkit-backdrop-filter:saturate(1.2) blur(10px); border-bottom:1px solid var(--rule-soft)}
+.rail .in{display:flex; gap:6px; align-items:center; overflow-x:auto; scrollbar-width:none; -ms-overflow-style:none; padding-bottom:2px}
+.rail .in::-webkit-scrollbar{display:none}
+.rail .k{flex:0 0 auto; font:700 .7rem var(--sans); letter-spacing:.14em; text-transform:uppercase; color:var(--ink-faint); margin-right:4px}
+.rail a{flex:0 0 auto; display:inline-flex; align-items:center; justify-content:center; min-width:44px; min-height:44px; padding:0 12px; border-radius:999px; border:1px solid var(--rule); background:var(--field); color:var(--ink); text-decoration:none; font:800 .95rem var(--cond); letter-spacing:.04em}
+.rail a[aria-current="page"]{background:var(--navy); border-color:var(--navy); color:var(--on-navy)}
+.rail a:hover{border-color:var(--navy-2)}
+.rail .sp{flex:1 0 8px}
+.rail .drawerbtn{flex:0 0 auto; min-height:44px; padding:0 14px; border-radius:999px; border:1px solid var(--rule); background:var(--field); font-weight:700; font-size:.88rem; cursor:pointer; display:inline-flex; gap:8px; align-items:center}
+.rail .drawerbtn svg{width:16px; height:16px}
 
-header.page{padding:22px 0 6px}
-.eyebrow{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
-.eyebrow .crumb{color:var(--sub);font-size:.78rem;letter-spacing:.14em;text-transform:uppercase;font-weight:700}
-.tools{display:flex;gap:8px}
-.tools button{border:1px solid var(--line);background:var(--card);color:var(--sub);border-radius:999px;padding:5px 12px;font:600 .78rem var(--sans);cursor:pointer}
-.tools button:hover{color:var(--ink)}
-h1{font-family:var(--serif);font-weight:900;font-size:clamp(1.9rem,5vw,2.6rem);margin:10px 0 0;letter-spacing:-.01em}
-.tag{color:var(--sub);margin:6px 0 0}
-.mats{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0 0}
-.mats a{display:inline-block;border:1px solid var(--line);background:var(--card);color:var(--navy);border-radius:999px;padding:7px 14px;font:600 .84rem var(--sans);text-decoration:none}
-.mats a:hover{border-color:var(--navy)}
-.pickbar{position:sticky;top:47px;z-index:50;display:flex;gap:8px;align-items:center;background:var(--bg);margin:16px -16px 0;padding:10px 16px;border-bottom:1px solid var(--line)}
-.pickbar select{flex:1;min-width:0;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:10px;padding:9px 10px;font:600 .9rem var(--sans)}
-.pickbar button{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:10px;padding:9px 13px;font:700 .9rem var(--sans);cursor:pointer;white-space:nowrap}
-.pickbar button:hover{border-color:var(--navy)}
-.botdoor{margin:34px 0 0;border-top:1px solid var(--line);padding-top:18px;text-align:center}
-.wstab{border:1px solid var(--line);border-left:4px solid var(--brass);background:var(--card);color:var(--ink);border-radius:10px;padding:11px 18px;font:800 .95rem var(--sans);cursor:pointer}
-.wstab:hover{border-color:var(--brass)}
-.wstab[aria-current="true"]{background:var(--chip);border-color:var(--brass)}
-@media print{.botdoor{display:none}}
+/* ══ THE BANNER ══ a drawn scene, the unit number, a huge condensed title */
+.spread{position:relative; margin:18px 0 0; border-radius:22px; overflow:hidden; background:#0A1E33; color:#F5F1E8; box-shadow:var(--lift); min-height:300px; isolation:isolate}
+.spread .scene{position:absolute; inset:0; z-index:0}
+.spread .scene svg{width:100%; height:100%; display:block}
+.spread::after{content:""; position:absolute; inset:0; z-index:1; background:linear-gradient(180deg, rgba(10,30,51,0) 30%, rgba(10,30,51,.55) 62%, rgba(10,30,51,.94) 100%); pointer-events:none}
+.spread .txt{position:relative; z-index:2; padding:clamp(120px,26vw,220px) clamp(18px,4vw,40px) clamp(20px,3vw,30px); display:grid; gap:6px}
+.spread .unum{display:inline-flex; align-items:baseline; gap:10px; font:800 .82rem var(--sans); letter-spacing:.22em; text-transform:uppercase; color:#F5F1E8}
+.spread .unum b{display:inline-flex; align-items:center; justify-content:center; min-width:44px; height:44px; padding:0 10px; border-radius:8px; background:var(--red); color:#fff; font:800 1.4rem var(--cond); letter-spacing:.02em; box-shadow:inset 0 1px 0 rgba(255,255,255,.35), 0 4px 0 #5A151B, 0 8px 16px rgba(0,0,0,.35)}
+.spread h2.ut{font:800 clamp(2.2rem,7.6vw,5.4rem)/0.95 var(--cond); letter-spacing:-.01em; margin:0; text-transform:uppercase; color:#F5F1E8; text-shadow:0 2px 0 rgba(0,0,0,.35), 0 12px 30px rgba(0,0,0,.45); max-width:14ch}
+.spread .years{font:600 clamp(1rem,2.4vw,1.35rem) var(--serif); font-style:italic; color:#EBD9A8; letter-spacing:.02em}
+.spread .credit{position:absolute; right:14px; bottom:10px; z-index:2; font:italic 500 .7rem var(--serif); color:rgba(245,241,232,.55); max-width:46%; text-align:right; line-height:1.25}
+.contents .spread .credit{display:none}
+@media(max-width:720px){.spread .credit{display:none}}
+.contents .spread{min-height:240px; border-radius:18px}
+.contents .spread .txt{padding-top:clamp(90px,18vw,150px)}
+.contents .spread h2.ut{font-size:clamp(1.9rem,6vw,4.2rem)}
+.contents .spread a.enter{position:absolute; right:clamp(14px,3vw,28px); bottom:clamp(16px,3vw,26px); z-index:3; display:inline-flex; align-items:center; gap:8px; min-height:48px; padding:0 18px; border-radius:999px; background:#F5F1E8; color:#0A1E33; text-decoration:none; font:800 .92rem var(--sans); letter-spacing:.04em; box-shadow:0 6px 18px rgba(0,0,0,.35)}
+.contents .spread a.enter:hover{background:#fff}
+
+/* ══ THE BOOK VOICE ══ */
+.intro{margin:22px 0 0; display:grid; grid-template-columns:1.4fr 1fr; gap:18px; align-items:start}
+@media(max-width:820px){.intro{grid-template-columns:1fr}}
+.intro .lead p{font-size:1.06rem; line-height:1.65}
+.intro .lead p:first-child::first-letter{font:800 3.6rem/0.85 var(--serif); float:left; margin:.1em .12em 0 0; color:var(--red)}
+.bigq{background:var(--navy); color:var(--on-navy); border-radius:16px; padding:18px 20px 20px; box-shadow:var(--lift); position:relative; overflow:hidden}
+.bigq::before{content:"?"; position:absolute; right:-10px; top:-30px; font:800 9rem/1 var(--serif); color:rgba(255,255,255,.06)}
+.bigq .k{font:700 .72rem var(--sans); letter-spacing:.18em; text-transform:uppercase; color:#EBD9A8; margin-bottom:6px}
+.bigq p{font:600 1.22rem/1.35 var(--serif); margin:0}
+.tl{margin:20px 0 0}
+.tl .k{font:700 .74rem var(--sans); letter-spacing:.16em; text-transform:uppercase; color:var(--gold-deep); margin-bottom:8px}
+.tl .track{display:flex; gap:0; overflow-x:auto; padding:10px 4px 14px; scroll-snap-type:x proximity; position:relative}
+.tl .track::before{content:""; position:absolute; left:0; right:0; top:29px; height:3px; background:linear-gradient(90deg, var(--red), var(--gold)); border-radius:3px}
+.tl .pin{flex:0 0 200px; scroll-snap-align:start; padding:0 12px 0 0; position:relative}
+.tl .pin::before{content:""; position:absolute; left:0; top:22px; width:16px; height:16px; border-radius:50%; background:var(--field); border:4px solid var(--red); box-shadow:0 0 0 3px var(--ground)}
+.tl .pin .y{font:800 1.3rem/1 var(--cond); letter-spacing:.02em; color:var(--red); margin:0 0 14px 26px}
+.tl .pin .t{font-size:.9rem; line-height:1.4; color:var(--ink-soft); margin:0 0 0 2px; padding-top:18px; border-top:1px dashed var(--rule)}
+
+/* ══ CHAPTER OPENER ══ */
+.chap{margin:36px 0 0; scroll-margin-top:70px}
+.chead{display:grid; grid-template-columns:auto 1fr; gap:16px; align-items:center; padding:18px 0 14px; border-top:3px solid var(--navy); border-bottom:1px solid var(--rule)}
+:root[data-theme="dark"] .chead{border-top-color:var(--gold)}
+.badge{display:inline-flex; align-items:center; justify-content:center; width:64px; height:64px; border-radius:14px; background:var(--red); color:#fff; font:800 2rem var(--cond); box-shadow:inset 0 1px 0 rgba(255,255,255,.35), 0 5px 0 #5A151B, 0 10px 18px rgba(0,0,0,.25); flex:0 0 auto}
+.chead .tab{display:inline-block; font:800 .7rem var(--sans); letter-spacing:.24em; text-transform:uppercase; background:var(--navy); color:var(--on-navy); padding:4px 10px; border-radius:4px 4px 0 0}
+:root[data-theme="dark"] .chead .tab{background:var(--gold); color:#12161C}
+.chead h2{font-size:clamp(1.5rem,3.6vw,2.2rem); margin:.15em 0 0}
+.chead .yrs{font:italic 600 1rem var(--serif); color:var(--ink-soft)}
+.cq{margin:12px 0 0; padding:12px 16px; border-left:4px solid var(--gold); background:var(--field-2); border-radius:0 12px 12px 0; font:600 1.05rem/1.4 var(--serif)}
+.cq .k{display:block; font:700 .7rem var(--sans); letter-spacing:.16em; text-transform:uppercase; color:var(--gold-deep); margin-bottom:4px}
+.story{margin:16px 0 0; background:var(--paper); border:1px solid var(--paper-line); border-radius:16px; padding:20px 22px 18px; box-shadow:var(--lift-sm); position:relative; background-image:repeating-linear-gradient(0deg, transparent 0 27px, rgba(122,82,48,.06) 27px 28px)}
+.story .k{font:700 .7rem var(--sans); letter-spacing:.2em; text-transform:uppercase; color:var(--red); margin-bottom:6px}
+.story h3{font-size:1.5rem; margin:0 0 .2em}
+.story .kick{font:italic 1.05rem/1.45 var(--serif); color:var(--ink-soft); margin:0 0 .8em}
+.story p.sp{font-size:1.02rem; line-height:1.68; max-width:70ch}
+.story .think{margin-top:12px; padding:10px 14px; background:var(--a-wash); border-radius:10px; font-weight:600}
+.story .think .k2{font:700 .68rem var(--sans); letter-spacing:.16em; text-transform:uppercase; color:var(--a); display:block; margin-bottom:2px}
+
+/* ══ SECTIONS AND LESSONS ══ */
+.sec{margin:26px 0 0}
+.sec .sh{display:flex; align-items:baseline; gap:12px; flex-wrap:wrap; padding-bottom:6px; border-bottom:2px solid var(--rule)}
+.sec .sh .sn{font:800 .74rem var(--sans); letter-spacing:.2em; text-transform:uppercase; color:var(--red)}
+.sec .sh h3{font-size:1.35rem; margin:0}
+.les{margin:16px 0 0; background:var(--field); border:1px solid var(--rule); border-radius:16px; box-shadow:var(--lift-sm); scroll-margin-top:70px; overflow:hidden}
+.les .lh{display:grid; grid-template-columns:auto 1fr auto; gap:12px; align-items:center; padding:12px 16px; background:var(--field-2); border-bottom:1px solid var(--rule-soft)}
+.les .ln{display:inline-flex; align-items:center; justify-content:center; min-width:52px; height:36px; padding:0 8px; border-radius:8px; background:var(--navy); color:var(--on-navy); font:800 1.05rem var(--cond); letter-spacing:.04em}
+:root[data-theme="dark"] .les .ln{background:var(--gold); color:#12161C}
+.les .lh h4{font-size:1.2rem; margin:0}
+.les .tick{width:26px; height:26px; border-radius:50%; border:2px solid var(--rule); display:inline-flex; align-items:center; justify-content:center; font-size:.8rem; color:transparent; background:var(--field)}
+.les.done .tick{background:var(--good); border-color:var(--good); color:#fff}
+.les .body{padding:14px 16px 16px; display:grid; grid-template-columns:minmax(0,1.5fr) minmax(0,1fr); gap:16px}
+@media(max-width:820px){.les .body{grid-template-columns:1fr}}
+.main-idea{padding:10px 14px; border-radius:10px; background:var(--acc-soft); border-left:4px solid var(--acc); font:600 1rem/1.4 var(--serif); color:var(--ink)}
+.main-idea .k{display:block; font:700 .66rem var(--sans); letter-spacing:.16em; text-transform:uppercase; color:var(--acc); margin-bottom:2px}
+.reading p{font-size:1.02rem; line-height:1.68; max-width:68ch}
+.kw{display:inline; padding:0 .12em; margin:0; border:0; border-bottom:2px solid var(--gold); background:linear-gradient(transparent 62%, rgba(184,137,58,.22) 62%); border-radius:2px; cursor:pointer; font:inherit; font-weight:700; color:var(--ink); line-height:inherit; position:relative}
+.kw:hover{background:linear-gradient(transparent 55%, rgba(184,137,58,.35) 55%)}
+.kwpop{position:absolute; z-index:40; left:0; top:calc(100% + 8px); min-width:240px; max-width:320px; padding:10px 12px; background:var(--navy); color:var(--on-navy); border-radius:10px; font:400 .92rem/1.45 var(--sans); box-shadow:0 12px 30px rgba(0,0,0,.35); text-align:left; white-space:normal}
+.kwpop::before{content:""; position:absolute; top:-6px; left:14px; width:12px; height:12px; background:var(--navy); transform:rotate(45deg)}
+.kwpop.right{left:auto; right:0}
+.kwpop.right::before{left:auto; right:14px}
+.words{margin-top:6px; padding:12px 14px; border:1px dashed var(--rule); border-radius:12px; background:var(--field-2)}
+.words .k{font:700 .68rem var(--sans); letter-spacing:.16em; text-transform:uppercase; color:var(--gold-deep); margin-bottom:6px}
+.words dl{margin:0; display:grid; gap:6px}
+.words dt{font-weight:800; font-family:var(--serif)}
+.words dd{margin:0 0 2px; font-size:.93rem; color:var(--ink-soft)}
+.lbtns{display:flex; gap:8px; flex-wrap:wrap; margin-top:10px}
+.lbtn{min-height:44px; padding:8px 14px; border-radius:999px; border:1px solid var(--rule); background:var(--field); cursor:pointer; font-weight:700; font-size:.88rem; display:inline-flex; align-items:center; gap:8px}
+.lbtn svg{width:16px; height:16px}
+.lbtn[aria-pressed="true"]{background:var(--navy); color:var(--on-navy); border-color:var(--navy)}
+:root[data-theme="dark"] .lbtn[aria-pressed="true"]{background:var(--gold); color:#12161C; border-color:var(--gold)}
+
+/* the look panel: a source on parchment, a bar chart, a scenario */
+.look{border-radius:14px; padding:14px 16px 16px; position:relative; overflow:hidden}
+.look .k{font:700 .66rem var(--sans); letter-spacing:.18em; text-transform:uppercase; margin-bottom:6px; display:flex; gap:8px; align-items:center}
+.look .k svg{width:16px; height:16px}
+.look h5{font:800 1.1rem/1.25 var(--serif); margin:0 0 .4em}
+.look .prompt{margin-top:10px; padding-top:8px; border-top:1px dashed var(--rule); font-weight:600; font-size:.95rem}
+.look.source{background:var(--paper); border:1px solid var(--paper-line); background-image:radial-gradient(120% 80% at 100% 0%, rgba(184,137,58,.10), transparent 60%)}
+.look.source .k{color:var(--acc)}
+.look.source blockquote{margin:0; padding:2px 0 0 16px; border-left:3px solid var(--gold); font:italic 1.05rem/1.55 var(--serif)}
+.look.source blockquote::before{content:"“"; font:800 2.4rem/0 var(--serif); color:var(--gold); vertical-align:-.35em; margin-right:2px}
+.look.source cite{display:block; margin-top:8px; font:600 .84rem var(--sans); color:var(--ink-soft); font-style:normal}
+.look.data{background:var(--field-2); border:1px solid var(--rule-soft)}
+.look.data .k{color:var(--navy-2)}
+.look.data svg.chart{width:100%; height:auto; display:block; margin-top:4px}
+.look.data .cite{font:600 .8rem var(--sans); color:var(--ink-faint); margin-top:6px}
+.look.think{background:var(--a-wash); border:1px solid rgba(74,58,140,.18)}
+.look.think .k{color:var(--a)}
+.look.think p.sc{font-size:.98rem; line-height:1.55}
+.chart text{font:600 11px var(--sans); fill:var(--ink-soft)}
+.chart .val{fill:var(--ink); font-weight:800}
+.chart rect.bar{fill:var(--navy-2)}
+:root[data-theme="dark"] .chart rect.bar{fill:var(--gold)}
+.chart line.ax{stroke:var(--rule); stroke-width:1}
+
+/* checks */
+.checks{margin-top:14px; padding:12px 14px 6px; border-top:1px solid var(--rule-soft); grid-column:1/-1}
+.checks .k{font:700 .7rem var(--sans); letter-spacing:.18em; text-transform:uppercase; color:var(--navy-2); margin-bottom:8px; display:flex; justify-content:space-between; gap:8px; align-items:center}
+.checks .score{font:800 .9rem var(--cond); letter-spacing:.06em; color:var(--good); min-width:3ch; text-align:right}
+.q{margin:0 0 12px; padding:10px 12px 12px; border-radius:12px; background:var(--field-2); border:1px solid var(--rule-soft)}
+.q .qq{font-weight:700; margin:0 0 8px; line-height:1.4}
+.q .qn{display:inline-block; min-width:1.6em; color:var(--red); font:800 1rem var(--cond)}
+.opts{display:grid; gap:6px; margin:0; padding:0; list-style:none}
+@media(min-width:820px){.q.wide .opts{grid-template-columns:1fr 1fr}}
+.opt{min-height:44px; width:100%; text-align:left; padding:9px 12px; border:1px solid var(--rule); border-radius:10px; background:var(--field); cursor:pointer; font-size:.97rem; display:flex; gap:10px; align-items:flex-start; line-height:1.35}
+.opt .l{flex:0 0 22px; height:22px; border-radius:50%; border:1.5px solid var(--rule); display:inline-flex; align-items:center; justify-content:center; font:800 .72rem var(--sans); color:var(--ink-soft); margin-top:1px}
+.opt:hover{border-color:var(--navy-2)}
+.opt[data-st="right"]{border-color:var(--good); background:var(--good-wash); font-weight:700}
+.opt[data-st="right"] .l{background:var(--good); border-color:var(--good); color:#fff}
+.opt[data-st="tried"]{opacity:.5}
+.opt[data-st="tried"] .l{background:var(--caution-wash); border-color:var(--caution); color:var(--caution)}
+.opt:disabled{cursor:default}
+.why{margin:8px 0 0; padding:8px 12px; border-radius:8px; background:var(--good-wash); color:var(--ink); font-size:.93rem; line-height:1.45}
+.why b{color:var(--good)}
+.why[hidden]{display:none}
+.say{font-size:.92rem; color:var(--caution); margin:6px 0 0; min-height:1.3em; font-weight:600}
+
+/* chapter review + unit test */
+.review{margin:24px 0 0; background:var(--field); border:1px solid var(--rule); border-radius:16px; box-shadow:var(--lift-sm); overflow:hidden}
+.review > .rh{display:flex; gap:12px; align-items:center; justify-content:space-between; padding:12px 16px; background:var(--navy); color:var(--on-navy)}
+:root[data-theme="dark"] .review > .rh{background:var(--field-3); color:var(--ink)}
+.review > .rh .k{font:800 .74rem var(--sans); letter-spacing:.2em; text-transform:uppercase}
+.review > .rh h3{font-size:1.15rem; margin:0; color:inherit}
+.review .rscore{font:800 1.4rem var(--cond); letter-spacing:.04em; min-width:5ch; text-align:right}
+.review .rbody{padding:14px 16px 8px}
+.review .rfoot{padding:8px 16px 16px; display:flex; gap:10px; flex-wrap:wrap; align-items:center}
+.btn{min-height:48px; padding:10px 20px; border-radius:12px; border:1px solid var(--rule); background:var(--field); cursor:pointer; font-weight:700}
+.btn-a{background:var(--navy); border-color:var(--navy); color:var(--on-navy)}
+:root[data-theme="dark"] .btn-a{background:var(--gold); border-color:var(--gold); color:#12161C}
+.verdict{font-weight:700; color:var(--ink-soft)}
+
+/* ══ WRAP-UP ══ */
+.wrap-up{margin:40px 0 0}
+.wrap-up .wh{display:grid; grid-template-columns:auto 1fr; gap:16px; align-items:center; padding:18px 0 14px; border-top:3px solid var(--red); border-bottom:1px solid var(--rule)}
+.wrap-up .wh .badge{background:var(--navy); box-shadow:inset 0 1px 0 rgba(255,255,255,.2), 0 5px 0 #05101C, 0 10px 18px rgba(0,0,0,.25); font-size:1.4rem}
+:root[data-theme="dark"] .wrap-up .wh .badge{background:var(--gold); color:#12161C; box-shadow:inset 0 1px 0 rgba(255,255,255,.35), 0 5px 0 #7A5C1F}
+.wrap-up .wh h2{font-size:clamp(1.5rem,3.6vw,2.1rem); margin:.1em 0 0}
+.match{margin-top:16px; background:var(--field); border:1px solid var(--rule); border-radius:16px; padding:14px 16px 16px; box-shadow:var(--lift-sm)}
+.match .mh{display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:8px}
+.match .mh h3{font-size:1.15rem; margin:0}
+.match .mscore{font:800 1.1rem var(--cond); color:var(--good)}
+.mgrid{display:grid; grid-template-columns:1fr 1fr; gap:10px}
+@media(max-width:640px){.mgrid{grid-template-columns:1fr}}
+.mcol{display:grid; gap:8px; align-content:start}
+.mcol .ck{font:700 .68rem var(--sans); letter-spacing:.16em; text-transform:uppercase; color:var(--ink-faint)}
+.mt{min-height:48px; text-align:left; padding:10px 12px; border-radius:10px; border:1.5px solid var(--rule); background:var(--field-2); cursor:pointer; font-size:.95rem; line-height:1.35}
+.mt.w{font-weight:800; font-family:var(--serif); font-size:1.02rem}
+.mt[aria-pressed="true"]{border-color:var(--navy-2); background:var(--a-wash)}
+.mt.ok{border-color:var(--good); background:var(--good-wash); opacity:.75; cursor:default}
+.mt.no{animation:shake .3s}
+@keyframes shake{25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
+.write{margin-top:16px; background:var(--paper); border:1px solid var(--paper-line); border-radius:16px; padding:16px 18px 18px; box-shadow:var(--lift-sm)}
+.write h3{font-size:1.15rem; margin:0 0 .3em}
+.write .wp{font:600 1.05rem/1.5 var(--serif)}
+.write ul{margin:.4em 0 .6em; padding-left:1.2em}
+.write li{margin:.25em 0; font-size:.95rem}
+.write textarea{width:100%; min-height:200px; padding:12px 14px; border:1px solid var(--rule); border-radius:12px; background:var(--field); color:var(--ink); font:1rem/1.6 var(--serif); resize:vertical}
+.write .wfoot{display:flex; gap:10px; align-items:center; flex-wrap:wrap; margin-top:8px}
+.write .wc{font:700 .84rem var(--sans); color:var(--ink-faint)}
+.rooms{margin-top:16px; background:var(--field); border:1px solid var(--rule); border-radius:16px; padding:14px 16px; box-shadow:var(--lift-sm)}
+.rooms h3{font-size:1.15rem; margin:0 0 .2em}
+.rooms p{color:var(--ink-soft); font-size:.95rem; margin:0 0 .6em}
+.rooms .doors{display:flex; gap:8px; flex-wrap:wrap}
+.rooms .door{display:inline-flex; align-items:center; min-height:44px; padding:8px 14px; border:1px solid var(--rule); border-radius:999px; background:var(--field-2); color:var(--ink); font:600 .88rem var(--sans); text-decoration:none}
+.rooms .door:hover{border-color:var(--acc)}
+.pager2{display:flex; justify-content:space-between; gap:10px; margin:28px 0 0; flex-wrap:wrap}
+.pager2 a{display:inline-flex; align-items:center; gap:8px; min-height:48px; padding:0 16px; border-radius:12px; border:1px solid var(--rule); background:var(--field); color:var(--ink); text-decoration:none; font-weight:700}
+.pager2 a:hover{border-color:var(--navy-2)}
+.pager2 a .s{display:block; font:700 .66rem var(--sans); letter-spacing:.16em; text-transform:uppercase; color:var(--ink-faint)}
+
+/* ══ THE CONTENTS DRAWER ══ chapters → sections → lessons, on the phone */
+.drawer{position:fixed; inset:0; z-index:60; display:none}
+.drawer[data-open="1"]{display:block}
+.drawer .scrim{position:absolute; inset:0; background:rgba(10,30,51,.5); backdrop-filter:blur(3px)}
+.drawer .sheet{position:absolute; right:0; top:0; bottom:0; width:min(420px,92vw); background:var(--field); box-shadow:-10px 0 40px rgba(0,0,0,.35); display:flex; flex-direction:column; animation:slidein .28s cubic-bezier(.2,.8,.2,1)}
+@keyframes slidein{from{transform:translateX(30px);opacity:0}}
+.drawer .dh{display:flex; justify-content:space-between; align-items:center; padding:12px 14px 10px; border-bottom:1px solid var(--rule)}
+.drawer .dh b{font:800 .8rem var(--sans); letter-spacing:.16em; text-transform:uppercase; color:var(--gold-deep)}
+.drawer .dh button{min-width:44px; min-height:44px; border-radius:999px; border:1px solid var(--rule); background:var(--field-2); cursor:pointer; font-size:1.2rem}
+.drawer nav{overflow:auto; padding:8px 8px 20px}
+.drawer nav a{display:block; padding:9px 10px; border-radius:8px; color:var(--ink); text-decoration:none; font-size:.95rem; min-height:44px; display:flex; align-items:center; gap:8px}
+.drawer nav a:hover{background:var(--field-2)}
+.drawer nav .dc{margin:8px 0 2px; padding:6px 10px; font:800 .95rem var(--serif); border-bottom:1px solid var(--rule-soft)}
+.drawer nav .dc .b{display:inline-flex; width:26px; height:26px; border-radius:6px; background:var(--red); color:#fff; align-items:center; justify-content:center; font:800 .85rem var(--cond); margin-right:8px}
+.drawer nav .ds{padding:6px 10px 2px; font:800 .66rem var(--sans); letter-spacing:.16em; text-transform:uppercase; color:var(--red)}
+.drawer nav a .n{font:800 .8rem var(--cond); color:var(--ink-faint); min-width:2.4em}
+.drawer nav a .t2{display:inline-block; width:10px; height:10px; border-radius:50%; border:1.5px solid var(--rule); margin-left:auto; flex:0 0 auto}
+.drawer nav a.done .t2{background:var(--good); border-color:var(--good)}
+
+/* ══ CONTENTS PAGE ══ */
+.contents .search{margin:16px 0 0; display:grid; gap:6px}
+.contents .search label{font-weight:700; font-size:.9rem; color:var(--ink-soft)}
+.contents .search .box{position:relative}
+.contents .search input{width:100%; min-height:52px; padding:10px 14px 10px 46px; border:1px solid var(--rule); border-radius:14px; background:var(--field); color:var(--ink); font:1.02rem var(--sans); box-shadow:var(--lift-sm)}
+.contents .search svg{position:absolute; left:16px; top:50%; transform:translateY(-50%); width:20px; height:20px; color:var(--ink-faint)}
+.contents .search .hits{font:700 .82rem var(--sans); color:var(--ink-faint); min-height:1.2em}
+.contents .stat{display:flex; gap:14px; flex-wrap:wrap; margin:10px 0 0; align-items:center}
+.contents .stat .n{font:800 1.5rem var(--cond); color:var(--red)}
+.contents .stat .l{font:700 .74rem var(--sans); letter-spacing:.12em; text-transform:uppercase; color:var(--ink-faint)}
+.contents .prog{height:8px; border-radius:6px; background:var(--field-3); overflow:hidden; flex:1 1 120px; min-width:120px}
+.contents .prog i{display:block; height:100%; width:0; background:linear-gradient(90deg, var(--red), var(--gold)); border-radius:6px; transition:width .4s}
+.unit-spread{margin:30px 0 0; scroll-margin-top:70px}
+.bandhead{margin:40px 0 -10px; padding:14px 0 10px; border-top:3px solid var(--navy); display:grid; grid-template-columns:auto 1fr; gap:4px 14px; align-items:baseline; scroll-margin-top:70px}
+:root[data-theme="dark"] .bandhead{border-top-color:var(--gold)}
+.bandhead .bk{font:800 .72rem var(--sans); letter-spacing:.22em; text-transform:uppercase; color:var(--red)}
+.bandhead h2{font:800 clamp(1.6rem,4vw,2.4rem)/1 var(--cond); text-transform:uppercase; letter-spacing:.01em; margin:0}
+.bandhead .bd{grid-column:2; margin:0; font:600 .88rem var(--sans); color:var(--ink-faint)}
+.unit-spread .body{margin-top:14px}
+.cchap{margin:18px 0 0; background:var(--field); border:1px solid var(--rule); border-radius:16px; box-shadow:var(--lift-sm); overflow:hidden}
+.cchap .ch{display:grid; grid-template-columns:auto 1fr; gap:14px; align-items:center; padding:14px 16px; background:var(--field-2); border-bottom:1px solid var(--rule-soft)}
+.cchap .ch .badge{width:52px; height:52px; font-size:1.6rem}
+.cchap .ch .tab{display:inline-block; font:800 .64rem var(--sans); letter-spacing:.22em; text-transform:uppercase; background:var(--navy); color:var(--on-navy); padding:3px 8px; border-radius:4px 4px 0 0}
+:root[data-theme="dark"] .cchap .ch .tab{background:var(--gold); color:#12161C}
+.cchap .ch h3{font-size:1.25rem; margin:.1em 0 0}
+.cchap .ch .yrs{font:italic 600 .92rem var(--serif); color:var(--ink-soft)}
+.cchap .st{padding:10px 16px 0; font:italic .95rem/1.45 var(--serif); color:var(--ink-soft)}
+.cchap .st b{font-style:normal; color:var(--red); font-family:var(--sans); font-size:.7rem; letter-spacing:.16em; text-transform:uppercase; margin-right:6px}
+.csec{padding:8px 16px 4px}
+.csec .sn{font:800 .7rem var(--sans); letter-spacing:.2em; text-transform:uppercase; color:var(--red); margin:8px 0 4px}
+.csec .sn span{color:var(--ink); font:700 .95rem var(--serif); letter-spacing:0; text-transform:none; margin-left:8px}
+.lrow{display:flex; align-items:center; gap:10px; min-height:44px; padding:5px 8px; border-radius:8px; color:var(--ink); text-decoration:none; font-size:.98rem}
+.lrow:hover{background:var(--field-2)}
+.lrow .n{font:800 .9rem var(--cond); color:var(--ink-faint); min-width:2.6em; letter-spacing:.02em}
+.lrow .tk{margin-left:auto; width:22px; height:22px; border-radius:50%; border:2px solid var(--rule); flex:0 0 auto; display:inline-flex; align-items:center; justify-content:center; color:transparent; font-size:.7rem}
+.lrow.done .tk{background:var(--good); border-color:var(--good); color:#fff}
+.lrow[hidden]{display:none}
+.csec[data-empty="1"], .cchap[data-empty="1"], .unit-spread[data-empty="1"]{display:none}
+.cwrap{padding:10px 16px 14px; display:flex; gap:8px; flex-wrap:wrap; border-top:1px dashed var(--rule-soft); margin-top:6px}
+.cwrap a{display:inline-flex; align-items:center; min-height:40px; padding:0 12px; border-radius:999px; border:1px solid var(--rule); background:var(--field-2); color:var(--ink); text-decoration:none; font:600 .84rem var(--sans)}
+.cwrap a:hover{border-color:var(--navy-2)}
+.teach{margin-top:28px; border:1.5px solid var(--gold); border-radius:14px; background:var(--field)}
+.teach summary{cursor:pointer; list-style:none; min-height:48px; display:flex; align-items:center; padding:10px 16px; font-weight:700; font-size:.92rem; color:var(--gold-deep)}
+.teach summary::-webkit-details-marker{display:none}
+.teach .inner{padding:4px 16px 16px; display:grid; gap:10px; font-size:.93rem; color:var(--ink-soft)}
+.teach .inner p{margin:0}
+footer.foot{margin-top:40px; font-size:.86rem; color:var(--ink-faint); max-width:70ch}
+
+/* ══ PRINT ══ the book, on paper */
+@media print{
+  body{background:#fff; color:#111; font-size:11.5pt}
+  .wrap{max-width:none; padding:0}
+  .rail,.jump,.mast .row,.hubline,.lbtns,.drawer,.checks,.review .rfoot,.pager2,.teach,.contents .search,.contents .stat,.spread .credit,.spread a.enter,.aogj-btn,.aogj-panel{display:none!important}
+  .spread{min-height:0; border-radius:0; box-shadow:none; background:#0A1E33!important; -webkit-print-color-adjust:exact; print-color-adjust:exact; break-inside:avoid}
+  .spread .txt{padding:40pt 20pt 16pt}
+  .chap{break-before:page}
+  .les,.story,.look,.q,.review{break-inside:avoid; box-shadow:none}
+  .les .body{grid-template-columns:1fr}
+  .kw{border-bottom:1px solid #999; background:none; font-weight:700}
+  .kwpop{display:none!important}
+  .opt{border:1px solid #999; background:#fff}
+  .why{display:block!important; border:1px dashed #999; background:#fff}
+  .why.pr{display:none!important}
+  .write textarea{min-height:320pt; border:1px solid #999}
+  a{color:inherit; text-decoration:none}
+}
+
+
+/* ══ AOG-SEL-V1 ══ the lesson's own styles, on the course tokens. The rules
+   below the aliases are the original Lessons page's content rules, verbatim
+   except that --navy (a link blue there) maps to --navy-2 here. */
+:root{ --bg:var(--ground); --card:var(--field); --line:var(--rule); --sub:var(--ink-soft); --chip:var(--field-2);
+  --brass:var(--gold-deep); --brass-soft:var(--acc-soft); --risk:var(--caution); --risk-soft:var(--caution-wash);
+  --good-soft:var(--good-wash); --shadow:var(--lift-sm);
+  --u1:#17646B; --u2:#6B4696; --u3:#A63A2B; --u4:#8A6A1F }
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){ --u1:#5FB8B0; --u2:#B99AD9; --u3:#E08573; --u4:#D9B45C } }
+:root[data-theme="dark"]{ --u1:#5FB8B0; --u2:#B99AD9; --u3:#E08573; --u4:#D9B45C }
+section.lesson h2{border-bottom:0!important}
+section.lesson[hidden]{display:none}
 .lchips{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0 2px}
 .wslink{display:inline-block;border:1.5px solid var(--brass);background:var(--brass-soft);color:var(--brass);border-radius:10px;padding:9px 14px;font:700 .88rem var(--sans);text-decoration:none}
 .wslink:hover{filter:brightness(.96)}
@@ -135,7 +443,7 @@ section.lesson h2{font-family:var(--serif);font-weight:900;font-size:clamp(1.6re
 .blab{font-size:.7rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--sub)}
 .box.risk{background:var(--risk-soft);border-color:var(--risk)} .box.risk .blab{color:var(--risk)}
 .box.chart{background:var(--brass-soft);border:1.5px dashed var(--brass)} .box.chart .blab{color:var(--brass)}
-.box.scan{border-left:4px solid var(--navy)} .box.scan .blab{color:var(--navy)}
+.box.scan{border-left:4px solid var(--navy-2)} .box.scan .blab{color:var(--navy-2)}
 .box.equity{border-left:4px solid var(--u2)} .box.equity .blab{color:var(--u2)}
 .box.exit{border-left:4px solid var(--good)} .box.exit .blab{color:var(--good)}
 .box.family{background:var(--good-soft)} .box.family .blab{color:var(--good)}
@@ -162,139 +470,192 @@ section.lesson h2{font-family:var(--serif);font-weight:900;font-size:clamp(1.6re
 .artnote{font-family:var(--serif);font-style:italic;color:var(--sub);font-size:.9rem;margin:8px 0 18px}
 ul{margin:8px 0;padding-left:22px}
 li{margin:3px 0;font-size:.94rem}
-footer{margin:48px 0 0;border-top:1px solid var(--line);padding-top:16px;color:var(--sub);font-size:.85rem;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
-footer a{color:var(--navy);font-weight:700;text-decoration:none}
+
+
+/* ══ the engine around the lesson ══ */
+.rail a[data-unit]{--uc:var(--u1)} .rail a[data-unit="u2"]{--uc:var(--u2)} .rail a[data-unit="u3"]{--uc:var(--u3)} .rail a[data-unit="u4"]{--uc:var(--u4)}
+.rail a[aria-current="page"][data-unit]{background:var(--uc); border-color:var(--uc); color:#fff}
+.rail a.ws{font:700 .84rem var(--sans); letter-spacing:.02em}
+.spread .scene[hidden]{display:none}
+.spread .unum b.ws{font-size:1.1rem}
+.lstrip{margin:14px 0 0; display:flex; gap:6px; align-items:center; overflow-x:auto; scrollbar-width:none; padding-bottom:4px}
+.lstrip::-webkit-scrollbar{display:none}
+.lstrip[hidden]{display:none}
+.lstrip .k{flex:0 0 auto; font:700 .7rem var(--sans); letter-spacing:.14em; text-transform:uppercase; color:var(--ink-faint); margin-right:4px}
+.lstrip a{flex:0 0 auto; position:relative; display:inline-flex; align-items:center; justify-content:center; gap:6px; min-width:44px; min-height:44px; padding:0 12px; border-radius:12px; border:1px solid var(--rule); background:var(--field); color:var(--ink); text-decoration:none; font:800 .92rem var(--cond); letter-spacing:.04em}
+.lstrip a[aria-current="page"]{background:var(--navy); border-color:var(--navy); color:var(--on-navy)}
+:root[data-theme="dark"] .lstrip a[aria-current="page"]{background:var(--gold); border-color:var(--gold); color:#12161C}
+.lstrip a .t2{width:9px; height:9px; border-radius:50%; border:1.5px solid var(--rule); display:inline-block}
+.lstrip a.done .t2{background:var(--good); border-color:var(--good)}
+.lstrip a.ov{font:700 .8rem var(--sans)}
+.lescard{margin:16px 0 0; background:var(--field); border:1px solid var(--rule); border-radius:16px; box-shadow:var(--lift-sm); overflow:hidden; scroll-margin-top:70px}
+.lescard .lh{display:grid; grid-template-columns:auto 1fr auto; gap:12px; align-items:center; padding:12px 16px; background:var(--field-2); border-bottom:1px solid var(--rule-soft)}
+@media(max-width:640px){.lescard .lh{grid-template-columns:auto 1fr} .lescard .lh .tools{grid-column:1/-1}}
+.lescard .ln{display:inline-flex; align-items:center; justify-content:center; min-width:52px; height:36px; padding:0 10px; border-radius:8px; background:var(--navy); color:var(--on-navy); font:800 1.05rem var(--cond); letter-spacing:.04em}
+:root[data-theme="dark"] .lescard .ln{background:var(--gold); color:#12161C}
+.lescard .lh h4{font-size:1.15rem; margin:0}
+.lescard .lh .sub{display:block; font:700 .68rem var(--sans); letter-spacing:.14em; text-transform:uppercase; color:var(--ink-faint); margin-top:2px}
+.lescard .tools{display:flex; gap:8px; flex-wrap:wrap; justify-content:flex-end}
+.lescard .body{padding:6px 18px 20px}
+.lescard .body > section.lesson{margin-top:6px}
+.lescard .lhead{display:none}   /* the unit chip and "Lesson n" line: the header row above carries them now */
+.tickbtn .tk{width:20px; height:20px; border-radius:50%; border:2px solid var(--rule); display:inline-flex; align-items:center; justify-content:center; color:transparent; font-size:.7rem}
+.tickbtn[aria-pressed="true"] .tk{background:var(--good); border-color:var(--good); color:#fff}
+.tickbtn[aria-pressed="true"]{border-color:var(--good)}
+.botdoor{margin:22px 0 0; display:flex; gap:10px; flex-wrap:wrap; justify-content:center}
+.wstab,.cardsdoor{display:inline-flex; align-items:center; min-height:48px; border:1px solid var(--rule); border-left:4px solid var(--gold); background:var(--field); color:var(--ink); border-radius:12px; padding:0 18px; font:800 .92rem var(--sans); text-decoration:none}
+.wstab:hover,.cardsdoor:hover{border-color:var(--gold)}
+.wstab[aria-current="true"]{background:var(--field-2)}
+.cardsdoor{border-left-color:var(--a)}
+.cardsdoor[hidden]{display:none}
+.drawer nav .dc .b[data-unit="u1"]{background:var(--u1)} .drawer nav .dc .b[data-unit="u2"]{background:var(--u2)} .drawer nav .dc .b[data-unit="u3"]{background:var(--u3)} .drawer nav .dc .b[data-unit="u4"]{background:var(--u4)}
+.drawer nav a[aria-current="page"]{background:var(--field-2); font-weight:700}
+.teach .mats{display:flex; gap:8px; flex-wrap:wrap}
+.teach .mats a{display:inline-flex; align-items:center; min-height:40px; padding:0 12px; border-radius:999px; border:1px solid var(--rule); background:var(--field-2); color:var(--ink); text-decoration:none; font:600 .84rem var(--sans)}
 @media print{
-  body{background:#fff;color:#111;padding:0;font-size:11.5px}
-  .pickbar,.tools,.mats,footer{display:none !important}
-  .wrap{max-width:none}
-  .step,.box,.duo-col,.kv{break-inside:avoid;box-shadow:none}
+  .lstrip,.lescard .tools,.botdoor,.teach{display:none!important}
+  .lescard{border:0; box-shadow:none} .lescard .lh{background:#fff; border-bottom:2px solid #000}
+  .step,.box,.duo-col,.kv{break-inside:avoid; box-shadow:none}
 }
+
 </style>
 </head>
 <body>
+<script src="/aog-topbar.js"></script>
 <script src="/aog-grace.js" defer></script>
-
-<!-- ══ AOG-R36-NAV — emitted from _work/r36/r36_nav.py; regenerate, never hand-edit one copy ══ -->
-<header class="r36top">
-  <a class="brand" href="/" aria-label="Architecture of Grace — home"><span class="mk" aria-hidden="true">A</span><span class="nm">Architecture of Grace</span></a>
-  <div class="acts">
-    <a class="pill" href="/" id="r36Back"><span class="arr" aria-hidden="true">&larr;</span> Back</a>
-    <a class="pill" href="/#quiet-space" title="Quiet Space — an in-the-moment reset">Quiet Space</a>
-    <div class="r36wrap">
-      <button class="pill" type="button" id="r36MenuBtn" aria-haspopup="true" aria-expanded="false" aria-controls="r36Menu">Explore</button>
-      <div class="r36menu" id="r36Menu" role="menu" aria-label="Explore Architecture of Grace" hidden>
-        <div class="lab">Room 207 · SEL 11&ndash;12</div>
-        <a role="menuitem" href="/room207"><span class="t">The Curriculum</span><span class="s">Crosswalk, marker guide, Grace in Practice.</span></a>
-        <a role="menuitem" href="/lessons207"><span class="t">The Lessons</span><span class="s">All 28 lessons, by unit — ready to teach.</span></a>
-        <a role="menuitem" href="/wb207"><span class="t">The Companion Workbook</span><span class="s">Choose-the-answer and in-your-own-words.</span></a>
-        <a role="menuitem" href="/charts207"><span class="t">Anchor Charts</span><span class="s">All four units&rsquo; boards, built live.</span></a>
-        <div class="lab">Understand</div>
-        <a role="menuitem" href="/#starthere"><span class="t">Start Here</span><span class="s">New here? Five minutes to find your door.</span></a>
-        <a role="menuitem" href="/#framework"><span class="t">Framework</span><span class="s">The four pillars, and where they came from.</span></a>
-        <a role="menuitem" href="/#curriculum"><span class="t">The Curriculum, K&ndash;12</span><span class="s">Five books and the Adult edition.</span></a>
-        <a role="menuitem" href="/#library"><span class="t">Library</span><span class="s">Every open preview, sample lesson and pack.</span></a>
-        <div class="lab">In the classroom</div>
-        <a role="menuitem" href="/#results"><span class="t">Dashboard</span><span class="s">Hand it out, read the group, find the lesson.</span></a>
-        <a role="menuitem" href="/#talk"><span class="t">Talk It Out</span><span class="s">Discussion prompts for the whole room.</span></a>
-        <a role="menuitem" href="/#tools"><span class="t">Calm &amp; Regulation Tools</span><span class="s">Quiet Space and the calming corner.</span></a>
-        <a role="menuitem" href="/turnins"><span class="t">Turn-ins</span><span class="s">Every FINISHED worksheet and result, one inbox.</span></a>
-        <div class="lab">Subjects · The Interior</div>
-        <a role="menuitem" href="/math"><span class="t">Math &middot; The Interior</span><span class="s">Fourteen practice pages, plus fall test prep.</span></a>
-        <a role="menuitem" href="/concepts"><span class="t">Math &middot; Concepts &amp; Data</span><span class="s">Fractions and data from the ground up.</span></a>
-        <a role="menuitem" href="/science"><span class="t">Science</span><span class="s">The word list, the microscope, the test prep.</span></a>
-        <a role="menuitem" href="/social"><span class="t">Social Studies</span><span class="s">1787 to 1865, and the three branches.</span></a>
-        <a role="menuitem" href="/b11"><span class="t">English &middot; Grammar</span><span class="s">Sixteen modules — cards, hints, and practice quizzes.</span></a>
-        <a role="menuitem" href="/words"><span class="t">English &middot; Word Study</span><span class="s">Stems, analogies, poetics, the coinage forge.</span></a>
-        <div class="lab">At home</div>
-        <a role="menuitem" href="/#family"><span class="t">Family</span><span class="s">Check in, talk, repair: one shared language.</span></a>
-      </div>
-    </div>
-    <div class="r36wrap">
-      <button class="ico" type="button" id="r36A11yBtn" aria-haspopup="true" aria-expanded="false" aria-controls="r36A11y" aria-label="Accessibility options" title="Accessibility options">
-        <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="4" r="1.6"/><path d="M5 8h14M9 8l1 11M15 8l-1 11M12 8v5"/></svg>
-      </button>
-      <div class="r36menu" id="r36A11y" role="menu" aria-label="Accessibility options" hidden>
-        <div class="lab">Accessibility</div>
-        <button type="button" class="arow first" role="menuitemcheckbox" aria-checked="false" id="r36HcRow">
-          <span><span class="t">High contrast</span><span class="s">Stronger text &amp; edges</span></span><span class="sw" aria-hidden="true"></span>
-        </button>
-        <button type="button" class="arow" role="menuitemcheckbox" aria-checked="false" id="r36DysRow">
-          <span><span class="t">Dyslexia-friendly font</span><span class="s">Easier letter shapes &amp; spacing</span></span><span class="sw" aria-hidden="true"></span>
-        </button>
-      </div>
-    </div>
-  </div>
-</header>
-
 <div class="wrap">
-<header class="page">
-  <div class="eyebrow">
-    <span class="crumb">Room 207 · Book 5 · The Capstone · Grades 11&ndash;12</span>
-    <div class="tools">
-      <button id="themeBtn" type="button" aria-label="Toggle dark mode">Theme</button>
-      <button type="button" onclick="window.print()">Print this lesson</button>
-    </div>
+<header class="mast">
+  <div>
+    <div class="k"><span data-en="The Interior — SEL · Room 207 ·" data-es="El Interior — SEL · Salón 207 ·">The Interior — SEL · Room 207 ·</span><span class="k" style="margin-left:6px"><span data-en="Book 5 · The Capstone · Grades 11–12" data-es="Libro 5 · Grados 11–12">Book 5 · The Capstone · Grades 11–12</span></span></div>
+    <h1 data-en="Room 207 · The Lessons" data-es="Salón 207 · Las lecciones">Room 207 · The Lessons</h1>
+    <p class="deck">All 28 SEL lessons of Room 207, ready to teach &mdash; scripts, steps, worksheets, and each lesson&rsquo;s anchor-chart build. Pick a unit, then a lesson.</p>
+    <p class="hubline no-print"><a id="hubLink" href="room-207-curriculum.html"><span data-en="← Room 207, the curriculum" data-es="← Salón 207, el currículo">← Room 207, the curriculum</span></a></p>
   </div>
-  <h1>The Lessons</h1>
-  <p class="tag">All 28 SEL lessons of Room 207, ready to teach &mdash; scripts, steps, worksheets, and each lesson&rsquo;s anchor-chart build. Pick a unit, then a lesson.</p>
-  <div class="mats">
-    <a href="room-207-curriculum.html">The curriculum</a>
-    <a href="room-207-workbook.html">The companion workbook</a>
-    <a href="AoG-Anchor-Charts-207.html">Anchor charts, built live</a>
+  <div class="row no-print">
+    <button class="chipbtn" id="langBtn" type="button">Español</button>
+    <button class="chipbtn" id="themeBtn" type="button" data-en="Dark" data-es="Oscuro">Dark</button>
   </div>
 </header>
 
-<div class="pickbar">
-  <button type="button" id="prevBtn" aria-label="Previous lesson">&larr;</button>
-  <select id="lessonSel" aria-label="Pick a unit and lesson">
-<optgroup label="Worksheets">
-<option value="worksheets">The interactive worksheets — all 5</option>
+<main id="main">
+<div class="jump no-print"><label><span data-en="Jump to another room" data-es="Ir a otro salón">Jump to another room</span><select id="roomSel"><optgroup label="SEL · The rooms">
+<option value="room-12-lessons.html">Room 12 · Grades K–2 · The Lessons</option>
+<option value="room-18-lessons.html">Room 18 · Grades 3–5 · The Lessons</option>
+<option value="room-36-lessons.html">Room 36 · Grades 6–8 · The Lessons</option>
+<option value="room-104-lessons.html">Room 104 · Grades 9–10 · The Lessons</option>
+<option value="room-207-lessons.html" selected>Room 207 · Grades 11–12 · The Lessons</option>
 </optgroup>
-<optgroup label="Unit 1 · THE COMPASS OF VALUES">
-<option value="u1">Unit 1 overview — THE COMPASS OF VALUES</option>
-<option value="u1l1">L1 · The Exit Interview</option>
-<option value="u1l2">L2 · Mapping Your Values</option>
-<option value="u1l3">L3 · Values Under Fire</option>
-<option value="u1l4">L4 · Values in the Workplace</option>
-<option value="u1l5">L5 · The Neuroscience of Moral Development</option>
-<option value="u1l6">L6 · The Moral North Star</option>
-<option value="u1l7">L7 · The Compass of Integrity · Unit Reflection</option>
-</optgroup>
-<optgroup label="Unit 2 · THE ADULT REPAIR MANUAL">
-<option value="u2">Unit 2 overview — THE ADULT REPAIR MANUAL</option>
-<option value="u2l1">L1 · The Living Amend</option>
-<option value="u2l2">L2 · Forgiving the Younger Self</option>
-<option value="u2l3">L3 · Mental Health Literacy &amp; Advocacy</option>
-<option value="u2l4">L4 · The Sustainable Soul</option>
-<option value="u2l5">L5 · The Forgiveness Fatigue</option>
-<option value="u2l6">L6 · The Inheritance of Grace</option>
-<option value="u2l7">L7 · The Final Backpack Audit</option>
-</optgroup>
-<optgroup label="Unit 3 · TRANSCENDENT FORGIVENESS">
-<option value="u3">Unit 3 overview — TRANSCENDENT FORGIVENESS</option>
-<option value="u3l1">L1 · The Leadership Prerequisite</option>
-<option value="u3l2">L2 · Releasing the Childhood Backpack</option>
-<option value="u3l3">L3 · Complex Reconciliation</option>
-<option value="u3l4">L4 · Global Empathy</option>
-<option value="u3l5">L5 · The Cost of Bitterness</option>
-<option value="u3l6">L6 · Forgiveness As Legacy</option>
-<option value="u3l7">L7 · The Graduation of the Heart</option>
-</optgroup>
-<optgroup label="Unit 4 · THE ORCHARD LEGACY">
-<option value="u4">Unit 4 overview — THE ORCHARD LEGACY</option>
-<option value="u4l1">L1 · Systemic Grace</option>
-<option value="u4l2">L2 · Radical Generosity</option>
-<option value="u4l3">L3 · COUNSELING vs. CANCELING</option>
-<option value="u4l4">L4 · Charitable Interpretation at Scale</option>
-<option value="u4l5">L5 · The Mentor Path · R&amp;r Strand Tp5 — the Final Touchpoint</option>
-<option value="u4l6">L6 · The Graduation Charter</option>
-<option value="u4l7">L7 · The Final Celebration</option>
-</optgroup>
-  </select>
-  <button type="button" id="nextBtn" aria-label="Next lesson">&rarr;</button>
-</div>
+<optgroup label="Room 207">
+<option value="room-207-curriculum.html">The curriculum</option>
+<option value="room-207-lessons.html">The Lessons</option>
+<option value="room-207-cards.html">Scenario cards</option>
+<option value="room-207-workbook.html">The companion workbook</option>
+<option value="AoG-Anchor-Charts-207.html">Anchor charts</option>
+</optgroup></select></label></div>
+<nav class="rail no-print" aria-label="Units"><div class="in"><span class="k"><span data-en="Unit" data-es="Unidad">Unit</span></span><a href="?l=u1" data-unit="u1" data-show="u1" title="THE COMPASS OF VALUES">1</a><a href="?l=u2" data-unit="u2" data-show="u2" title="THE ADULT REPAIR MANUAL">2</a><a href="?l=u3" data-unit="u3" data-show="u3" title="TRANSCENDENT FORGIVENESS">3</a><a href="?l=u4" data-unit="u4" data-show="u4" title="THE ORCHARD LEGACY">4</a><a href="?l=worksheets" class="ws" data-unit="worksheets" data-show="worksheets"><span data-en="Worksheets" data-es="Hojas de trabajo">Worksheets</span></a><span class="sp"></span><button type="button" class="drawerbtn" id="drawerBtn" aria-controls="drawer" aria-expanded="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M8 6h13M8 12h13M8 18h13"/><circle cx="3.5" cy="6" r="1.2" fill="currentColor" stroke="none"/><circle cx="3.5" cy="12" r="1.2" fill="currentColor" stroke="none"/><circle cx="3.5" cy="18" r="1.2" fill="currentColor" stroke="none"/></svg><span data-en="Contents" data-es="Contenido">Contents</span></button></div></nav>
 
+<section class="spread" aria-labelledby="ut" id="spread">
+  <div class="scene" data-scene="u1" hidden aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 420" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Drawn scene: a brass compass resting on an unrolled map under a wide night sky with one bright north star" focusable="false"><defs><linearGradient id="sb207u1-sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0E1430"/><stop offset="0.7" stop-color="#28305C"/><stop offset="1" stop-color="#5A4A70"/></linearGradient><linearGradient id="sb207u1-table" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#5A4028"/><stop offset="1" stop-color="#20140C"/></linearGradient><linearGradient id="sb207u1-map" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#EBDDB8"/><stop offset="1" stop-color="#C8B488"/></linearGradient><radialGradient id="sb207u1-brass" cx="0.4" cy="0.35" r="0.7"><stop offset="0" stop-color="#F4E0A0"/><stop offset="0.6" stop-color="#C8A050"/><stop offset="1" stop-color="#8A6A2A"/></radialGradient><radialGradient id="sb207u1-face" cx="0.5" cy="0.5" r="0.5"><stop offset="0" stop-color="#FBF6E8"/><stop offset="1" stop-color="#E4D8B8"/></radialGradient><radialGradient id="sb207u1-star" cx="0.5" cy="0.5" r="0.5"><stop offset="0" stop-color="#FFFFFF" stop-opacity="1"/><stop offset="0.3" stop-color="#FFF3C4" stop-opacity="0.7"/><stop offset="1" stop-color="#FFF3C4" stop-opacity="0"/></radialGradient></defs>
+<rect width="1200" height="420" fill="url(#sb207u1-sky)"/>
+<g fill="#FFF4DA" opacity=".75"><circle cx="1182" cy="95" r="1.0"/><circle cx="949" cy="82" r="0.7"/><circle cx="440" cy="25" r="1.2"/><circle cx="615" cy="124" r="1.1"/><circle cx="434" cy="67" r="1.2"/><circle cx="921" cy="38" r="1.3"/><circle cx="476" cy="109" r="1.4"/><circle cx="827" cy="96" r="1.5"/><circle cx="598" cy="63" r="0.6"/><circle cx="77" cy="186" r="1.1"/><circle cx="256" cy="129" r="1.4"/><circle cx="111" cy="12" r="1.3"/><circle cx="682" cy="75" r="1.0"/><circle cx="241" cy="22" r="0.7"/><circle cx="596" cy="85" r="0.6"/><circle cx="483" cy="112" r="1.5"/><circle cx="894" cy="183" r="1.4"/><circle cx="37" cy="114" r="1.5"/><circle cx="136" cy="153" r="1.2"/><circle cx="1095" cy="156" r="1.3"/><circle cx="354" cy="123" r="1.2"/><circle cx="585" cy="86" r="1.1"/><circle cx="156" cy="149" r="1.0"/><circle cx="619" cy="152" r="1.1"/><circle cx="1126" cy="103" r="1.0"/><circle cx="941" cy="146" r="1.1"/><circle cx="848" cy="9" r="0.8"/><circle cx="623" cy="156" r="0.9"/><circle cx="1050" cy="35" r="0.6"/><circle cx="977" cy="142" r="0.9"/><circle cx="708" cy="117" r="0.6"/><circle cx="403" cy="88" r="0.7"/><circle cx="398" cy="199" r="0.8"/><circle cx="101" cy="146" r="1.1"/><circle cx="776" cy="25" r="0.6"/><circle cx="487" cy="60" r="1.3"/><circle cx="946" cy="35" r="0.6"/><circle cx="361" cy="126" r="0.7"/><circle cx="412" cy="181" r="1.2"/><circle cx="587" cy="128" r="1.5"/><circle cx="902" cy="199" r="1.0"/><circle cx="701" cy="98" r="1.5"/><circle cx="800" cy="57" r="1.4"/><circle cx="1199" cy="52" r="1.3"/><circle cx="330" cy="83" r="0.8"/><circle cx="993" cy="166" r="1.5"/><circle cx="180" cy="29" r="1.4"/><circle cx="227" cy="160" r="0.9"/><circle cx="702" cy="87" r="0.6"/><circle cx="309" cy="50" r="1.3"/><circle cx="760" cy="137" r="1.0"/><circle cx="247" cy="172" r="1.3"/><circle cx="66" cy="11" r="1.0"/><circle cx="137" cy="6" r="1.1"/><circle cx="1052" cy="133" r="1.0"/><circle cx="843" cy="32" r="1.5"/><circle cx="358" cy="71" r="1.4"/><circle cx="29" cy="186" r="1.3"/><circle cx="224" cy="169" r="0.6"/><circle cx="111" cy="28" r="0.7"/><circle cx="58" cy="43" r="1.0"/><circle cx="929" cy="174" r="0.9"/><circle cx="724" cy="101" r="0.8"/><circle cx="787" cy="32" r="1.3"/><circle cx="350" cy="159" r="1.4"/><circle cx="405" cy="106" r="1.1"/><circle cx="584" cy="25" r="1.4"/><circle cx="919" cy="108" r="0.7"/><circle cx="946" cy="171" r="0.6"/><circle cx="601" cy="86" r="1.5"/><circle cx="652" cy="5" r="0.8"/><circle cx="731" cy="192" r="1.1"/><circle cx="1046" cy="23" r="0.8"/><circle cx="1165" cy="90" r="1.3"/><circle cx="576" cy="169" r="1.0"/><circle cx="1039" cy="188" r="1.1"/><circle cx="570" cy="115" r="0.6"/><circle cx="753" cy="142" r="0.9"/><circle cx="724" cy="77" r="1.4"/><circle cx="419" cy="24" r="0.7"/></g>
+<g stroke="#FFF4DA" stroke-width="1" opacity=".35" fill="none"><path d="M300 60 l40 30 l50 -20 l60 40 M900 40 l40 20 l30 -30 l40 40"/></g>
+<circle cx="600" cy="48" r="40" fill="url(#sb207u1-star)"/><path d="M600 20 l4 24 l24 4 l-24 4 l-4 24 l-4 -24 l-24 -4 l24 -4z" fill="#FFFFFF"/>
+<path d="M0 220 Q300 190 600 212 T1200 208 V260 H0z" fill="#181C3C"/>
+<path d="M0 250 Q600 240 1200 250 V420 H0z" fill="url(#sb207u1-table)"/>
+<path d="M40 268 q560 -20 1120 0 v130 H40z" fill="url(#sb207u1-map)"/><path d="M40 268 q560 -20 1120 0" stroke="#B8A470" stroke-width="3" fill="none"/>
+<path d="M40 268 q4 60 0 130 M1160 268 q-4 60 0 130" stroke="#B8A470" stroke-width="6" fill="none"/>
+<path d="M60 300 q80 -60 200 -30 t220 20" stroke="#9A8A60" stroke-width="1.5" fill="none" opacity=".6"/><path d="M100 330 q100 -40 240 -20" stroke="#9A8A60" stroke-width="1.5" fill="none" opacity=".6"/><path d="M800 290 q120 -50 280 -20" stroke="#9A8A60" stroke-width="1.5" fill="none" opacity=".6"/><path d="M860 320 q100 -30 240 -10" stroke="#9A8A60" stroke-width="1.5" fill="none" opacity=".6"/><path d="M900 260 q60 -40 160 -30" stroke="#9A8A60" stroke-width="1.5" fill="none" opacity=".6"/><circle cx="1010" cy="300" r="22" fill="none" stroke="#9A8A60" stroke-width="1.5" opacity=".7"/><path d="M1010 300 l-6 -6 l6 -30 l6 30z" fill="#9A8A60" opacity=".75" transform="rotate(0 1010 300)"/><path d="M1010 300 l-6 -6 l6 -30 l6 30z" fill="#9A8A60" opacity=".75" transform="rotate(90 1010 300)"/><path d="M1010 300 l-6 -6 l6 -30 l6 30z" fill="#9A8A60" opacity=".75" transform="rotate(180 1010 300)"/><path d="M1010 300 l-6 -6 l6 -30 l6 30z" fill="#9A8A60" opacity=".75" transform="rotate(270 1010 300)"/>
+<g stroke="#9A8A60" stroke-width="1.5" stroke-dasharray="6 6" fill="none" opacity=".6"><path d="M180 350 Q400 300 600 320 T1010 300"/></g>
+<g><ellipse cx="600" cy="236" rx="96" ry="22" fill="#000" opacity=".3"/>
+<circle cx="600" cy="160" r="86" fill="url(#sb207u1-brass)"/><circle cx="600" cy="160" r="72" fill="#3A2C14"/><circle cx="600" cy="160" r="66" fill="url(#sb207u1-face)"/>
+<circle cx="600" cy="160" r="52" fill="none" stroke="#B8A478" stroke-width="1.5"/><rect x="597" y="82" width="4" height="14" fill="#5A4A30" transform="rotate(0 600 160)"/><rect x="597" y="82" width="2" height="7" fill="#5A4A30" transform="rotate(10 600 160)"/><rect x="597" y="82" width="2" height="7" fill="#5A4A30" transform="rotate(20 600 160)"/><rect x="597" y="82" width="2" height="7" fill="#5A4A30" transform="rotate(30 600 160)"/><rect x="597" y="82" width="2" height="7" fill="#5A4A30" transform="rotate(40 600 160)"/><rect x="597" y="82" width="2" height="7" fill="#5A4A30" transform="rotate(50 600 160)"/><rect x="597" y="82" width="2" height="7" fill="#5A4A30" transform="rotate(60 600 160)"/><rect x="597" y="82" width="2" height="7" fill="#5A4A30" transform="rotate(70 600 160)"/><rect x="597" y="82" width="2" height="7" fill="#5A4A30" transform="rotate(80 600 160)"/><rect x="597" y="82" width="4" height="14" fill="#5A4A30" transform="rotate(90 600 160)"/><rect x="597" y="82" width="2" height="7" fill="#5A4A30" transform="rotate(100 600 160)"/><rect x="597" y="82" width="2" height="7" fill="#5A4A30" transform="rotate(110 600 160)"/><rect x="597" y="82" width="2" height="7" fill="#5A4A30" transform="rotate(120 600 160)"/><rect x="597" y="82" width="2" height="7" fill="#5A4A30" transform="rotate(130 600 160)"/><rect x="597" y="82" width="2" height="7" fill="#5A4A30" transform="rotate(140 600 160)"/><rect x="597" y="82" width="2" height="7" fill="#5A4A30" transform="rotate(150 600 160)"/><rect x="597" y="82" width="2" height="7" fill="#5A4A30" transform="rotate(160 600 160)"/><rect x="597" y="82" width="2" height="7" fill="#5A4A30" transform="rotate(170 600 160)"/><rect x="597" y="82" width="4" height="14" fill="#5A4A30" transform="rotate(180 600 160)"/><rect x="597" y="82" width="2" height="7" fill="#5A4A30" transform="rotate(190 600 160)"/><rect x="597" y="82" width="2" height="7" fill="#5A4A30" transform="rotate(200 600 160)"/><rect x="597" y="82" width="2" height="7" fill="#5A4A30" transform="rotate(210 600 160)"/><rect x="597" y="82" width="2" height="7" fill="#5A4A30" transform="rotate(220 600 160)"/><rect x="597" y="82" width="2" height="7" fill="#5A4A30" transform="rotate(230 600 160)"/><rect x="597" y="82" width="2" height="7" fill="#5A4A30" transform="rotate(240 600 160)"/><rect x="597" y="82" width="2" height="7" fill="#5A4A30" transform="rotate(250 600 160)"/><rect x="597" y="82" width="2" height="7" fill="#5A4A30" transform="rotate(260 600 160)"/><rect x="597" y="82" width="4" height="14" fill="#5A4A30" transform="rotate(270 600 160)"/><rect x="597" y="82" width="2" height="7" fill="#5A4A30" transform="rotate(280 600 160)"/><rect x="597" y="82" width="2" height="7" fill="#5A4A30" transform="rotate(290 600 160)"/><rect x="597" y="82" width="2" height="7" fill="#5A4A30" transform="rotate(300 600 160)"/><rect x="597" y="82" width="2" height="7" fill="#5A4A30" transform="rotate(310 600 160)"/><rect x="597" y="82" width="2" height="7" fill="#5A4A30" transform="rotate(320 600 160)"/><rect x="597" y="82" width="2" height="7" fill="#5A4A30" transform="rotate(330 600 160)"/><rect x="597" y="82" width="2" height="7" fill="#5A4A30" transform="rotate(340 600 160)"/><rect x="597" y="82" width="2" height="7" fill="#5A4A30" transform="rotate(350 600 160)"/>
+<g fill="#7A6A48"><path d="M600 108 l6 12 l-6 -4 l-6 4z M600 212 l6 -12 l-6 4 l-6 -4z M548 160 l12 6 l-4 -6 l4 -6z M652 160 l-12 6 l4 -6 l-4 -6z"/></g>
+<path d="M600 160 l-14 12 l14 -66 l14 66z" fill="#C8302E"/><path d="M600 160 l-14 -12 l14 66 l14 -66z" fill="#3A4A6A"/>
+<circle cx="600" cy="160" r="6" fill="#C8A050"/><circle cx="600" cy="160" r="2.5" fill="#3A2C14"/>
+<path d="M600 74 v-10 q0 -12 12 -12 q12 0 12 12 v6" stroke="#C8A050" stroke-width="6" fill="none" stroke-linecap="round"/></g>
+<g stroke="#5A4A30" stroke-width="3" stroke-linecap="round"><path d="M300 260 l-30 60"/><path d="M270 320 l6 -4"/></g>
+<path d="M0 372 Q600 366 1200 372 V420 H0z" fill="#0A0806" opacity=".55"/>
+</svg></div><div class="scene" data-scene="u2" hidden aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 420" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Drawn scene: a workbench lamp shining on a mended bowl with gold seams, with tools hung neatly on the wall behind" focusable="false"><defs><linearGradient id="sb207u2-wall" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3A3430"/><stop offset="1" stop-color="#221E1C"/></linearGradient><linearGradient id="sb207u2-bench" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8A6A44"/><stop offset="1" stop-color="#3A2A18"/></linearGradient><radialGradient id="sb207u2-lamp" cx="0.5" cy="0.5" r="0.5"><stop offset="0" stop-color="#FFE7A8" stop-opacity="0.95"/><stop offset="0.5" stop-color="#FFD98A" stop-opacity="0.35"/><stop offset="1" stop-color="#FFD98A" stop-opacity="0"/></radialGradient><radialGradient id="sb207u2-bowl" cx="0.5" cy="0.2" r="0.8"><stop offset="0" stop-color="#8CA8C0"/><stop offset="1" stop-color="#4A607A"/></radialGradient></defs>
+<rect width="1200" height="420" fill="url(#sb207u2-wall)"/>
+<rect x="740" y="50" width="420" height="170" rx="4" fill="#5A4A38"/><circle cx="760" cy="70" r="3" fill="#1A1614"/><circle cx="760" cy="110" r="3" fill="#1A1614"/><circle cx="760" cy="150" r="3" fill="#1A1614"/><circle cx="760" cy="190" r="3" fill="#1A1614"/><circle cx="800" cy="70" r="3" fill="#1A1614"/><circle cx="800" cy="110" r="3" fill="#1A1614"/><circle cx="800" cy="150" r="3" fill="#1A1614"/><circle cx="800" cy="190" r="3" fill="#1A1614"/><circle cx="840" cy="70" r="3" fill="#1A1614"/><circle cx="840" cy="110" r="3" fill="#1A1614"/><circle cx="840" cy="150" r="3" fill="#1A1614"/><circle cx="840" cy="190" r="3" fill="#1A1614"/><circle cx="880" cy="70" r="3" fill="#1A1614"/><circle cx="880" cy="110" r="3" fill="#1A1614"/><circle cx="880" cy="150" r="3" fill="#1A1614"/><circle cx="880" cy="190" r="3" fill="#1A1614"/><circle cx="920" cy="70" r="3" fill="#1A1614"/><circle cx="920" cy="110" r="3" fill="#1A1614"/><circle cx="920" cy="150" r="3" fill="#1A1614"/><circle cx="920" cy="190" r="3" fill="#1A1614"/><circle cx="960" cy="70" r="3" fill="#1A1614"/><circle cx="960" cy="110" r="3" fill="#1A1614"/><circle cx="960" cy="150" r="3" fill="#1A1614"/><circle cx="960" cy="190" r="3" fill="#1A1614"/><circle cx="1000" cy="70" r="3" fill="#1A1614"/><circle cx="1000" cy="110" r="3" fill="#1A1614"/><circle cx="1000" cy="150" r="3" fill="#1A1614"/><circle cx="1000" cy="190" r="3" fill="#1A1614"/><circle cx="1040" cy="70" r="3" fill="#1A1614"/><circle cx="1040" cy="110" r="3" fill="#1A1614"/><circle cx="1040" cy="150" r="3" fill="#1A1614"/><circle cx="1040" cy="190" r="3" fill="#1A1614"/><circle cx="1080" cy="70" r="3" fill="#1A1614"/><circle cx="1080" cy="110" r="3" fill="#1A1614"/><circle cx="1080" cy="150" r="3" fill="#1A1614"/><circle cx="1080" cy="190" r="3" fill="#1A1614"/><circle cx="1120" cy="70" r="3" fill="#1A1614"/><circle cx="1120" cy="110" r="3" fill="#1A1614"/><circle cx="1120" cy="150" r="3" fill="#1A1614"/><circle cx="1120" cy="190" r="3" fill="#1A1614"/>
+<g stroke="#D8D0C0" stroke-width="5" stroke-linecap="round" fill="none">
+<path d="M790 80 v90"/><path d="M780 80 h20 l-4 -14 h-12z" fill="#2A2A2A"/>
+<path d="M860 78 v96 M846 84 h28 M846 84 v-10 h28 v10" stroke-width="4"/>
+<path d="M930 76 v100"/><path d="M918 76 h24 v14 h-24z" fill="#B85A34"/>
+<path d="M1000 84 q-16 -16 -32 0 v70 h32z" fill="#7A5A3A" stroke-width="3"/><path d="M984 154 v30"/>
+<path d="M1070 78 v100 M1058 78 h24" stroke-width="4"/><path d="M1064 178 h12 l-6 10z" fill="#D8D0C0"/>
+</g>
+<g><rect x="360" y="70" width="60" height="56" rx="4" fill="#8A7A5A"/><rect x="366" y="76" width="48" height="44" fill="#3A5A44"/><path d="M372 90 h36 M372 100 h28 M372 110 h20" stroke="#D8E0D0" stroke-width="2" opacity=".6"/></g>
+<g><rect x="200" y="0" width="8" height="150" fill="#2A2624"/><path d="M110 150 q94 -60 188 0z" fill="#2A2624"/><path d="M110 150 h188" stroke="#4A4240" stroke-width="3"/><ellipse cx="204" cy="152" rx="40" ry="8" fill="#FFE7A8" opacity=".9"/></g>
+<ellipse cx="420" cy="280" rx="420" ry="220" fill="url(#sb207u2-lamp)"/>
+<path d="M0 276 Q600 268 1200 276 V420 H0z" fill="url(#sb207u2-bench)"/>
+<path d="M0 276 Q600 268 1200 276 v10 Q600 278 0 286z" fill="#B8925A" opacity=".8"/>
+<g><ellipse cx="480" cy="290" rx="120" ry="18" fill="#000" opacity=".3"/>
+<path d="M370 196 q0 84 110 84 q110 0 110 -84z" fill="url(#sb207u2-bowl)"/><ellipse cx="480" cy="196" rx="110" ry="22" fill="#6A88A8"/><ellipse cx="480" cy="196" rx="94" ry="14" fill="#3E5470"/>
+<g stroke="#F2C24A" stroke-width="4" fill="none" stroke-linecap="round"><path d="M410 208 q20 30 8 62"/><path d="M418 240 q30 6 44 34"/><path d="M548 210 q-14 26 -4 58"/><path d="M500 218 q10 22 -2 58"/></g>
+<g stroke="#FFE7A8" stroke-width="1.5" fill="none" opacity=".8"><path d="M410 208 q20 30 8 62"/><path d="M548 210 q-14 26 -4 58"/></g></g>
+<g><rect x="700" y="252" width="150" height="26" rx="3" fill="#B85A34"/><path d="M700 252 h150 v26 h-150z" fill="none" stroke="#7A3A24" stroke-width="2"/><rect x="716" y="258" width="60" height="14" rx="2" fill="#F2E4C0"/></g>
+<g><path d="M120 278 q40 -44 88 -8" stroke="#C8A050" stroke-width="4" fill="none" stroke-linecap="round"/><path d="M120 278 l-4 -4 l10 -8" stroke="#8A6A2A" stroke-width="3" fill="none"/></g>
+<g fill="#D8D0C0" opacity=".9"><circle cx="640" cy="262" r="4"/><circle cx="660" cy="270" r="4"/><circle cx="624" cy="272" r="3"/></g>
+<g><rect x="900" y="230" width="34" height="48" rx="4" fill="#3B6AB8"/><rect x="908" y="222" width="18" height="10" fill="#2A4A8A"/></g>
+<path d="M0 372 Q600 366 1200 372 V420 H0z" fill="#0E0A08" opacity=".55"/>
+</svg></div><div class="scene" data-scene="u3" hidden aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 420" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Drawn scene: a lighthouse on a headland at first light, its beam reaching across a calm sea" focusable="false"><defs><linearGradient id="sb207u3-sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3A4A7A"/><stop offset="0.5" stop-color="#B88AA0"/><stop offset="0.85" stop-color="#F2B88A"/><stop offset="1" stop-color="#FBE0B0"/></linearGradient><linearGradient id="sb207u3-sea" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#6A8AB0"/><stop offset="1" stop-color="#1E2E4A"/></linearGradient><linearGradient id="sb207u3-rock" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#6A6A6A"/><stop offset="1" stop-color="#2E2E30"/></linearGradient><linearGradient id="sb207u3-tower" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#F6F0E4"/><stop offset="0.5" stop-color="#FFFFFF"/><stop offset="1" stop-color="#C8C0B0"/></linearGradient><linearGradient id="sb207u3-beam" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#FFE7A8" stop-opacity="0.55"/><stop offset="1" stop-color="#FFE7A8" stop-opacity="0"/></linearGradient><radialGradient id="sb207u3-sun" cx="0.5" cy="0.5" r="0.5"><stop offset="0" stop-color="#FFF3C4" stop-opacity="0.9"/><stop offset="1" stop-color="#FFF3C4" stop-opacity="0"/></radialGradient></defs>
+<rect width="1200" height="420" fill="url(#sb207u3-sky)"/>
+<g fill="#FFF4DA" opacity=".45"><circle cx="226" cy="33" r="1.4"/><circle cx="689" cy="68" r="0.9"/><circle cx="248" cy="71" r="1.4"/><circle cx="135" cy="24" r="1.5"/><circle cx="422" cy="7" r="0.8"/><circle cx="601" cy="36" r="0.9"/><circle cx="312" cy="31" r="1.0"/><circle cx="259" cy="52" r="1.5"/><circle cx="98" cy="35" r="1.4"/><circle cx="461" cy="68" r="0.7"/><circle cx="564" cy="41" r="1.0"/><circle cx="663" cy="18" r="1.5"/><circle cx="346" cy="67" r="1.2"/><circle cx="465" cy="48" r="1.3"/><circle cx="344" cy="41" r="1.4"/><circle cx="695" cy="40" r="1.3"/><circle cx="70" cy="31" r="1.0"/><circle cx="229" cy="14" r="0.7"/><circle cx="100" cy="31" r="0.6"/><circle cx="599" cy="0" r="0.9"/></g>
+<circle cx="1000" cy="250" r="160" fill="url(#sb207u3-sun)"/><circle cx="1000" cy="250" r="30" fill="#FFE7A8"/>
+<g fill="#C8A0A8" opacity=".5"><ellipse cx="300" cy="170" rx="160" ry="14"/><ellipse cx="1000" cy="150" rx="120" ry="10"/><ellipse cx="640" cy="200" rx="100" ry="8"/></g>
+<path d="M140 120 q7 -7 13 0 q6 -7 13 0" stroke="#4A3A50" stroke-width="2" fill="none"/><path d="M180 100 q7 -7 13 0 q6 -7 13 0" stroke="#4A3A50" stroke-width="2" fill="none"/><path d="M210 130 q7 -7 13 0 q6 -7 13 0" stroke="#4A3A50" stroke-width="2" fill="none"/>
+<path d="M600 92 L0 20 V170 Z" fill="url(#sb207u3-beam)" transform="translate(0 0)"/>
+<path d="M600 92 L1200 30 V150 Z" fill="url(#sb207u3-beam)" opacity=".45"/>
+<path d="M0 262 Q600 254 1200 262 V420 H0z" fill="url(#sb207u3-sea)"/>
+<path d="M980 262 q-2 60 20 120" stroke="#FFE7A8" stroke-width="8" opacity=".25" fill="none"/>
+<path d="M60 320 q20 -5 40 0 t40 0" stroke="#A8C0D8" stroke-width="1.5" fill="none" opacity=".45"/><path d="M200 336 q20 -5 40 0 t40 0" stroke="#A8C0D8" stroke-width="1.5" fill="none" opacity=".45"/><path d="M340 326 q20 -5 40 0 t40 0" stroke="#A8C0D8" stroke-width="1.5" fill="none" opacity=".45"/><path d="M900 330 q20 -5 40 0 t40 0" stroke="#A8C0D8" stroke-width="1.5" fill="none" opacity=".45"/><path d="M1040 346 q20 -5 40 0 t40 0" stroke="#A8C0D8" stroke-width="1.5" fill="none" opacity=".45"/><path d="M760 342 q20 -5 40 0 t40 0" stroke="#A8C0D8" stroke-width="1.5" fill="none" opacity=".45"/><path d="M160 356 q20 -5 40 0 t40 0" stroke="#A8C0D8" stroke-width="1.5" fill="none" opacity=".45"/><path d="M1100 320 q20 -5 40 0 t40 0" stroke="#A8C0D8" stroke-width="1.5" fill="none" opacity=".45"/>
+<path d="M380 300 q40 -60 120 -50 q40 -30 100 -18 q60 -20 120 20 q50 6 60 48z" fill="url(#sb207u3-rock)"/>
+<g><path d="M552 250 l10 -160 h76 l10 160z" fill="url(#sb207u3-tower)"/><rect x="556" y="130" width="88" height="18" fill="#C8302E"/><rect x="562" y="190" width="76" height="18" fill="#C8302E"/>
+<rect x="548" y="246" width="104" height="12" fill="#3A3A40"/>
+<rect x="556" y="80" width="88" height="10" fill="#3A3A40"/><rect x="566" y="60" width="68" height="22" fill="#FFE7A8"/><path d="M566 60 h68 M566 71 h68" stroke="#3A3A40" stroke-width="2"/><path d="M570 60 v22 M586 60 v22 M602 60 v22 M618 60 v22 M630 60 v22" stroke="#3A3A40" stroke-width="2"/>
+<path d="M560 60 l40 -22 l40 22z" fill="#C8302E"/><rect x="598" y="26" width="4" height="14" fill="#3A3A40"/>
+<circle cx="600" cy="72" r="14" fill="#FFF8D8"/>
+<rect x="592" y="200" width="16" height="30" rx="8" fill="#3A3A40"/><rect x="594" y="150" width="12" height="16" rx="6" fill="#3A3A40"/><rect x="594" y="108" width="12" height="16" rx="6" fill="#3A3A40"/></g>
+<g><rect x="690" y="222" width="70" height="40" fill="#F6F0E4"/><path d="M684 222 l41 -22 l41 22z" fill="#C8302E"/><rect x="716" y="236" width="12" height="14" fill="#FFE7A8"/></g>
+<g fill="#4A4A4C"><path d="M390 300 l-10 -10 l24 -8 l16 10z M700 296 l10 -14 l30 6 l4 12z"/></g>
+<path d="M0 372 Q600 366 1200 372 V420 H0z" fill="#0A1020" opacity=".55"/>
+</svg></div><div class="scene" data-scene="u4" hidden aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 420" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Drawn scene: a garden path leading between rows of fruit trees toward a low hill in late golden light" focusable="false"><defs><linearGradient id="sb207u4-sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8AB0D8"/><stop offset="0.6" stop-color="#F2CFA0"/><stop offset="1" stop-color="#F8E4B8"/></linearGradient><linearGradient id="sb207u4-hill" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#A8B87A"/><stop offset="1" stop-color="#6E8A4A"/></linearGradient><linearGradient id="sb207u4-grass" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8AA850"/><stop offset="1" stop-color="#3E5A28"/></linearGradient><linearGradient id="sb207u4-path" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#D8C49A"/><stop offset="1" stop-color="#8A7448"/></linearGradient><radialGradient id="sb207u4-sun" cx="0.5" cy="0.5" r="0.5"><stop offset="0" stop-color="#FFF3C4" stop-opacity="0.8"/><stop offset="1" stop-color="#FFF3C4" stop-opacity="0"/></radialGradient></defs>
+<rect width="1200" height="420" fill="url(#sb207u4-sky)"/>
+<circle cx="600" cy="150" r="170" fill="url(#sb207u4-sun)"/>
+<g fill="#FFF" opacity=".55"><ellipse cx="200" cy="70" rx="110" ry="24"/><ellipse cx="260" cy="60" rx="70" ry="28"/><ellipse cx="960" cy="90" rx="130" ry="22"/></g>
+<path d="M0 214 Q200 150 420 196 T780 178 T1200 196 V240 H0z" fill="url(#sb207u4-hill)"/>
+<path d="M0 226 Q600 208 1200 226 V420 H0z" fill="url(#sb207u4-grass)"/>
+<path d="M520 420 L590 220 L610 220 L680 420z" fill="url(#sb207u4-path)"/>
+<path d="M200 420 L600 220" stroke="#9A8A5A" stroke-width="1" opacity=".35"/><path d="M360 420 L600 220" stroke="#9A8A5A" stroke-width="1" opacity=".35"/><path d="M840 420 L600 220" stroke="#9A8A5A" stroke-width="1" opacity=".35"/><path d="M1000 420 L600 220" stroke="#9A8A5A" stroke-width="1" opacity=".35"/>
+<g stroke="#C8B48A" stroke-width="1.5" fill="none" opacity=".5"><path d="M540 380 q60 -8 120 0"/><path d="M556 330 q44 -6 88 0"/><path d="M572 290 q28 -4 56 0"/></g>
+<rect x="564" y="194" width="3" height="20" fill="#5A4028"/><circle cx="565" cy="189" r="12" fill="#7AA84A"/><circle cx="559" cy="185" r="7" fill="#9AC060"/><circle cx="572" cy="186" r="6" fill="#9AC060"/><rect x="539" y="194" width="3" height="20" fill="#5A4028"/><circle cx="541" cy="189" r="12" fill="#7AA84A"/><circle cx="535" cy="185" r="7" fill="#9AC060"/><circle cx="547" cy="186" r="6" fill="#9AC060"/><rect x="515" y="194" width="3" height="20" fill="#5A4028"/><circle cx="516" cy="189" r="12" fill="#7AA84A"/><circle cx="510" cy="185" r="7" fill="#9AC060"/><circle cx="523" cy="186" r="6" fill="#9AC060"/><rect x="490" y="194" width="3" height="20" fill="#5A4028"/><circle cx="491" cy="189" r="12" fill="#7AA84A"/><circle cx="485" cy="185" r="7" fill="#9AC060"/><circle cx="498" cy="186" r="6" fill="#9AC060"/><rect x="465" y="194" width="3" height="20" fill="#5A4028"/><circle cx="467" cy="189" r="12" fill="#7AA84A"/><circle cx="460" cy="185" r="7" fill="#9AC060"/><circle cx="473" cy="186" r="6" fill="#9AC060"/><rect x="441" y="194" width="3" height="20" fill="#5A4028"/><circle cx="442" cy="189" r="12" fill="#7AA84A"/><circle cx="436" cy="185" r="7" fill="#9AC060"/><circle cx="449" cy="186" r="6" fill="#9AC060"/><rect x="633" y="194" width="3" height="20" fill="#5A4028"/><circle cx="635" cy="189" r="12" fill="#7AA84A"/><circle cx="628" cy="185" r="7" fill="#9AC060"/><circle cx="641" cy="186" r="6" fill="#9AC060"/><rect x="658" y="194" width="3" height="20" fill="#5A4028"/><circle cx="659" cy="189" r="12" fill="#7AA84A"/><circle cx="653" cy="185" r="7" fill="#9AC060"/><circle cx="666" cy="186" r="6" fill="#9AC060"/><rect x="683" y="194" width="3" height="20" fill="#5A4028"/><circle cx="684" cy="189" r="12" fill="#7AA84A"/><circle cx="678" cy="185" r="7" fill="#9AC060"/><circle cx="691" cy="186" r="6" fill="#9AC060"/><rect x="707" y="194" width="3" height="20" fill="#5A4028"/><circle cx="709" cy="189" r="12" fill="#7AA84A"/><circle cx="703" cy="185" r="7" fill="#9AC060"/><circle cx="715" cy="186" r="6" fill="#9AC060"/><rect x="732" y="194" width="3" height="20" fill="#5A4028"/><circle cx="733" cy="189" r="12" fill="#7AA84A"/><circle cx="727" cy="185" r="7" fill="#9AC060"/><circle cx="740" cy="186" r="6" fill="#9AC060"/><rect x="757" y="194" width="3" height="20" fill="#5A4028"/><circle cx="758" cy="189" r="12" fill="#7AA84A"/><circle cx="752" cy="185" r="7" fill="#9AC060"/><circle cx="765" cy="186" r="6" fill="#9AC060"/><rect x="537" y="200" width="4" height="32" fill="#5A4028"/><circle cx="539" cy="192" r="20" fill="#6A9A40"/><circle cx="529" cy="185" r="12" fill="#8AB050"/><circle cx="550" cy="187" r="10" fill="#8AB050"/><rect x="482" y="200" width="4" height="32" fill="#5A4028"/><circle cx="484" cy="192" r="20" fill="#6A9A40"/><circle cx="474" cy="185" r="12" fill="#8AB050"/><circle cx="495" cy="187" r="10" fill="#8AB050"/><rect x="427" y="200" width="4" height="32" fill="#5A4028"/><circle cx="430" cy="192" r="20" fill="#6A9A40"/><circle cx="420" cy="185" r="12" fill="#8AB050"/><circle cx="440" cy="187" r="10" fill="#8AB050"/><rect x="373" y="200" width="4" height="32" fill="#5A4028"/><circle cx="375" cy="192" r="20" fill="#6A9A40"/><circle cx="365" cy="185" r="12" fill="#8AB050"/><circle cx="386" cy="187" r="10" fill="#8AB050"/><rect x="318" y="200" width="4" height="32" fill="#5A4028"/><circle cx="320" cy="192" r="20" fill="#6A9A40"/><circle cx="310" cy="185" r="12" fill="#8AB050"/><circle cx="331" cy="187" r="10" fill="#8AB050"/><rect x="659" y="200" width="4" height="32" fill="#5A4028"/><circle cx="661" cy="192" r="20" fill="#6A9A40"/><circle cx="651" cy="185" r="12" fill="#8AB050"/><circle cx="672" cy="187" r="10" fill="#8AB050"/><rect x="714" y="200" width="4" height="32" fill="#5A4028"/><circle cx="716" cy="192" r="20" fill="#6A9A40"/><circle cx="706" cy="185" r="12" fill="#8AB050"/><circle cx="727" cy="187" r="10" fill="#8AB050"/><rect x="768" y="200" width="4" height="32" fill="#5A4028"/><circle cx="770" cy="192" r="20" fill="#6A9A40"/><circle cx="761" cy="185" r="12" fill="#8AB050"/><circle cx="781" cy="187" r="10" fill="#8AB050"/><rect x="823" y="200" width="4" height="32" fill="#5A4028"/><circle cx="825" cy="192" r="20" fill="#6A9A40"/><circle cx="815" cy="185" r="12" fill="#8AB050"/><circle cx="836" cy="187" r="10" fill="#8AB050"/><rect x="877" y="200" width="4" height="32" fill="#5A4028"/><circle cx="880" cy="192" r="20" fill="#6A9A40"/><circle cx="870" cy="185" r="12" fill="#8AB050"/><circle cx="890" cy="187" r="10" fill="#8AB050"/><rect x="509" y="213" width="7" height="49" fill="#5A4028"/><circle cx="512" cy="199" r="31" fill="#5A8A38"/><circle cx="497" cy="189" r="18" fill="#7AA048"/><circle cx="529" cy="192" r="15" fill="#7AA048"/><circle cx="501" cy="192" r="3.1" fill="#E4573D"/><circle cx="522" cy="203" r="3.1" fill="#E4573D"/><circle cx="512" cy="184" r="3.1" fill="#E4573D"/><circle cx="529" cy="189" r="3.1" fill="#E4573D"/><circle cx="495" cy="206" r="3.1" fill="#E4573D"/><rect x="404" y="213" width="7" height="49" fill="#5A4028"/><circle cx="408" cy="199" r="31" fill="#5A8A38"/><circle cx="392" cy="189" r="18" fill="#7AA048"/><circle cx="425" cy="192" r="15" fill="#7AA048"/><circle cx="397" cy="192" r="3.1" fill="#E4573D"/><circle cx="418" cy="203" r="3.1" fill="#E4573D"/><circle cx="408" cy="184" r="3.1" fill="#E4573D"/><circle cx="425" cy="189" r="3.1" fill="#E4573D"/><circle cx="391" cy="206" r="3.1" fill="#E4573D"/><rect x="300" y="213" width="7" height="49" fill="#5A4028"/><circle cx="303" cy="199" r="31" fill="#5A8A38"/><circle cx="288" cy="189" r="18" fill="#7AA048"/><circle cx="320" cy="192" r="15" fill="#7AA048"/><circle cx="292" cy="192" r="3.1" fill="#E4573D"/><circle cx="313" cy="203" r="3.1" fill="#E4573D"/><circle cx="303" cy="184" r="3.1" fill="#E4573D"/><circle cx="320" cy="189" r="3.1" fill="#E4573D"/><circle cx="286" cy="206" r="3.1" fill="#E4573D"/><rect x="195" y="213" width="7" height="49" fill="#5A4028"/><circle cx="199" cy="199" r="31" fill="#5A8A38"/><circle cx="183" cy="189" r="18" fill="#7AA048"/><circle cx="216" cy="192" r="15" fill="#7AA048"/><circle cx="188" cy="192" r="3.1" fill="#E4573D"/><circle cx="209" cy="203" r="3.1" fill="#E4573D"/><circle cx="199" cy="184" r="3.1" fill="#E4573D"/><circle cx="216" cy="189" r="3.1" fill="#E4573D"/><circle cx="182" cy="206" r="3.1" fill="#E4573D"/><rect x="684" y="213" width="7" height="49" fill="#5A4028"/><circle cx="688" cy="199" r="31" fill="#5A8A38"/><circle cx="672" cy="189" r="18" fill="#7AA048"/><circle cx="705" cy="192" r="15" fill="#7AA048"/><circle cx="677" cy="192" r="3.1" fill="#E4573D"/><circle cx="698" cy="203" r="3.1" fill="#E4573D"/><circle cx="688" cy="184" r="3.1" fill="#E4573D"/><circle cx="705" cy="189" r="3.1" fill="#E4573D"/><circle cx="671" cy="206" r="3.1" fill="#E4573D"/><rect x="789" y="213" width="7" height="49" fill="#5A4028"/><circle cx="792" cy="199" r="31" fill="#5A8A38"/><circle cx="777" cy="189" r="18" fill="#7AA048"/><circle cx="809" cy="192" r="15" fill="#7AA048"/><circle cx="781" cy="192" r="3.1" fill="#E4573D"/><circle cx="802" cy="203" r="3.1" fill="#E4573D"/><circle cx="792" cy="184" r="3.1" fill="#E4573D"/><circle cx="809" cy="189" r="3.1" fill="#E4573D"/><circle cx="775" cy="206" r="3.1" fill="#E4573D"/><rect x="893" y="213" width="7" height="49" fill="#5A4028"/><circle cx="897" cy="199" r="31" fill="#5A8A38"/><circle cx="881" cy="189" r="18" fill="#7AA048"/><circle cx="914" cy="192" r="15" fill="#7AA048"/><circle cx="886" cy="192" r="3.1" fill="#E4573D"/><circle cx="907" cy="203" r="3.1" fill="#E4573D"/><circle cx="897" cy="184" r="3.1" fill="#E4573D"/><circle cx="914" cy="189" r="3.1" fill="#E4573D"/><circle cx="880" cy="206" r="3.1" fill="#E4573D"/><rect x="998" y="213" width="7" height="49" fill="#5A4028"/><circle cx="1001" cy="199" r="31" fill="#5A8A38"/><circle cx="986" cy="189" r="18" fill="#7AA048"/><circle cx="1018" cy="192" r="15" fill="#7AA048"/><circle cx="990" cy="192" r="3.1" fill="#E4573D"/><circle cx="1011" cy="203" r="3.1" fill="#E4573D"/><circle cx="1001" cy="184" r="3.1" fill="#E4573D"/><circle cx="1018" cy="189" r="3.1" fill="#E4573D"/><circle cx="984" cy="206" r="3.1" fill="#E4573D"/><rect x="481" y="230" width="10" height="70" fill="#5A4028"/><circle cx="486" cy="210" r="44" fill="#4E7A34"/><circle cx="464" cy="196" r="26" fill="#6A9040"/><circle cx="510" cy="200" r="22" fill="#6A9040"/><circle cx="470" cy="200" r="4.5" fill="#E4573D"/><circle cx="500" cy="216" r="4.5" fill="#E4573D"/><circle cx="486" cy="188" r="4.5" fill="#E4573D"/><circle cx="510" cy="196" r="4.5" fill="#E4573D"/><circle cx="462" cy="220" r="4.5" fill="#E4573D"/><rect x="276" y="230" width="10" height="70" fill="#5A4028"/><circle cx="281" cy="210" r="44" fill="#4E7A34"/><circle cx="259" cy="196" r="26" fill="#6A9040"/><circle cx="305" cy="200" r="22" fill="#6A9040"/><circle cx="265" cy="200" r="4.5" fill="#E4573D"/><circle cx="295" cy="216" r="4.5" fill="#E4573D"/><circle cx="281" cy="188" r="4.5" fill="#E4573D"/><circle cx="305" cy="196" r="4.5" fill="#E4573D"/><circle cx="257" cy="220" r="4.5" fill="#E4573D"/><rect x="72" y="230" width="10" height="70" fill="#5A4028"/><circle cx="77" cy="210" r="44" fill="#4E7A34"/><circle cx="55" cy="196" r="26" fill="#6A9040"/><circle cx="101" cy="200" r="22" fill="#6A9040"/><circle cx="61" cy="200" r="4.5" fill="#E4573D"/><circle cx="91" cy="216" r="4.5" fill="#E4573D"/><circle cx="77" cy="188" r="4.5" fill="#E4573D"/><circle cx="101" cy="196" r="4.5" fill="#E4573D"/><circle cx="53" cy="220" r="4.5" fill="#E4573D"/><rect x="709" y="230" width="10" height="70" fill="#5A4028"/><circle cx="714" cy="210" r="44" fill="#4E7A34"/><circle cx="692" cy="196" r="26" fill="#6A9040"/><circle cx="738" cy="200" r="22" fill="#6A9040"/><circle cx="698" cy="200" r="4.5" fill="#E4573D"/><circle cx="728" cy="216" r="4.5" fill="#E4573D"/><circle cx="714" cy="188" r="4.5" fill="#E4573D"/><circle cx="738" cy="196" r="4.5" fill="#E4573D"/><circle cx="690" cy="220" r="4.5" fill="#E4573D"/><rect x="914" y="230" width="10" height="70" fill="#5A4028"/><circle cx="919" cy="210" r="44" fill="#4E7A34"/><circle cx="897" cy="196" r="26" fill="#6A9040"/><circle cx="943" cy="200" r="22" fill="#6A9040"/><circle cx="903" cy="200" r="4.5" fill="#E4573D"/><circle cx="933" cy="216" r="4.5" fill="#E4573D"/><circle cx="919" cy="188" r="4.5" fill="#E4573D"/><circle cx="943" cy="196" r="4.5" fill="#E4573D"/><circle cx="895" cy="220" r="4.5" fill="#E4573D"/><rect x="1118" y="230" width="10" height="70" fill="#5A4028"/><circle cx="1123" cy="210" r="44" fill="#4E7A34"/><circle cx="1101" cy="196" r="26" fill="#6A9040"/><circle cx="1147" cy="200" r="22" fill="#6A9040"/><circle cx="1107" cy="200" r="4.5" fill="#E4573D"/><circle cx="1137" cy="216" r="4.5" fill="#E4573D"/><circle cx="1123" cy="188" r="4.5" fill="#E4573D"/><circle cx="1147" cy="196" r="4.5" fill="#E4573D"/><circle cx="1099" cy="220" r="4.5" fill="#E4573D"/>
+<g><rect x="1010" y="272" width="120" height="10" rx="2" fill="#8A5A34"/><rect x="1010" y="256" width="120" height="8" rx="2" fill="#8A5A34"/><path d="M1020 282 v30 M1120 282 v30 M1020 256 v-20 M1120 256 v-20" stroke="#4A3018" stroke-width="6"/></g>
+<g><path d="M80 300 h50 l-6 -30 h-38z" fill="#B8783E"/><ellipse cx="105" cy="270" rx="25" ry="6" fill="#8A5A2E"/><g fill="#E4573D"><circle cx="96" cy="264" r="7"/><circle cx="112" cy="262" r="7"/><circle cx="104" cy="254" r="7"/></g></g>
+<g fill="#F4B63A"><circle cx="220" cy="330" r="3"/><circle cx="240" cy="322" r="3"/><circle cx="900" cy="334" r="3"/><circle cx="960" cy="326" r="3"/><circle cx="1180" cy="320" r="3"/></g>
+<path d="M0 372 Q600 366 1200 372 V420 H0z" fill="#101A08" opacity=".5"/>
+</svg></div>
+  <div class="credit" id="credit"></div>
+  <div class="txt">
+    <div class="unum"><b id="unum">1</b><span id="ukind"><span data-en="Unit" data-es="Unidad">Unit</span></span></div>
+    <h2 class="ut" id="ut"></h2>
+    <div class="years"><span data-en="Room 207 · Grades 11–12 · High school" data-es="Salón 207 · Grados 11–12">Room 207 · Grades 11–12 · High school</span></div>
+  </div>
+</section>
+
+<nav class="lstrip no-print" data-strip="u1" hidden aria-label="Lessons"><span class="k"><span data-en="Lesson" data-es="Lección">Lesson</span></span><a href="?l=u1" class="ov" data-show="u1"><span data-en="Overview" data-es="Resumen">Overview</span></a><a href="?l=u1l1" data-show="u1l1" data-lid="u1l1" title="L1 · The Exit Interview">L1<span class="t2"></span></a><a href="?l=u1l2" data-show="u1l2" data-lid="u1l2" title="L2 · Mapping Your Values">L2<span class="t2"></span></a><a href="?l=u1l3" data-show="u1l3" data-lid="u1l3" title="L3 · Values Under Fire">L3<span class="t2"></span></a><a href="?l=u1l4" data-show="u1l4" data-lid="u1l4" title="L4 · Values in the Workplace">L4<span class="t2"></span></a><a href="?l=u1l5" data-show="u1l5" data-lid="u1l5" title="L5 · The Neuroscience of Moral Development">L5<span class="t2"></span></a><a href="?l=u1l6" data-show="u1l6" data-lid="u1l6" title="L6 · The Moral North Star">L6<span class="t2"></span></a><a href="?l=u1l7" data-show="u1l7" data-lid="u1l7" title="L7 · The Compass of Integrity · Unit Reflection">L7<span class="t2"></span></a></nav><nav class="lstrip no-print" data-strip="u2" hidden aria-label="Lessons"><span class="k"><span data-en="Lesson" data-es="Lección">Lesson</span></span><a href="?l=u2" class="ov" data-show="u2"><span data-en="Overview" data-es="Resumen">Overview</span></a><a href="?l=u2l1" data-show="u2l1" data-lid="u2l1" title="L1 · The Living Amend">L1<span class="t2"></span></a><a href="?l=u2l2" data-show="u2l2" data-lid="u2l2" title="L2 · Forgiving the Younger Self">L2<span class="t2"></span></a><a href="?l=u2l3" data-show="u2l3" data-lid="u2l3" title="L3 · Mental Health Literacy &amp; Advocacy">L3<span class="t2"></span></a><a href="?l=u2l4" data-show="u2l4" data-lid="u2l4" title="L4 · The Sustainable Soul">L4<span class="t2"></span></a><a href="?l=u2l5" data-show="u2l5" data-lid="u2l5" title="L5 · The Forgiveness Fatigue">L5<span class="t2"></span></a><a href="?l=u2l6" data-show="u2l6" data-lid="u2l6" title="L6 · The Inheritance of Grace">L6<span class="t2"></span></a><a href="?l=u2l7" data-show="u2l7" data-lid="u2l7" title="L7 · The Final Backpack Audit">L7<span class="t2"></span></a></nav><nav class="lstrip no-print" data-strip="u3" hidden aria-label="Lessons"><span class="k"><span data-en="Lesson" data-es="Lección">Lesson</span></span><a href="?l=u3" class="ov" data-show="u3"><span data-en="Overview" data-es="Resumen">Overview</span></a><a href="?l=u3l1" data-show="u3l1" data-lid="u3l1" title="L1 · The Leadership Prerequisite">L1<span class="t2"></span></a><a href="?l=u3l2" data-show="u3l2" data-lid="u3l2" title="L2 · Releasing the Childhood Backpack">L2<span class="t2"></span></a><a href="?l=u3l3" data-show="u3l3" data-lid="u3l3" title="L3 · Complex Reconciliation">L3<span class="t2"></span></a><a href="?l=u3l4" data-show="u3l4" data-lid="u3l4" title="L4 · Global Empathy">L4<span class="t2"></span></a><a href="?l=u3l5" data-show="u3l5" data-lid="u3l5" title="L5 · The Cost of Bitterness">L5<span class="t2"></span></a><a href="?l=u3l6" data-show="u3l6" data-lid="u3l6" title="L6 · Forgiveness As Legacy">L6<span class="t2"></span></a><a href="?l=u3l7" data-show="u3l7" data-lid="u3l7" title="L7 · The Graduation of the Heart">L7<span class="t2"></span></a></nav><nav class="lstrip no-print" data-strip="u4" hidden aria-label="Lessons"><span class="k"><span data-en="Lesson" data-es="Lección">Lesson</span></span><a href="?l=u4" class="ov" data-show="u4"><span data-en="Overview" data-es="Resumen">Overview</span></a><a href="?l=u4l1" data-show="u4l1" data-lid="u4l1" title="L1 · Systemic Grace">L1<span class="t2"></span></a><a href="?l=u4l2" data-show="u4l2" data-lid="u4l2" title="L2 · Radical Generosity">L2<span class="t2"></span></a><a href="?l=u4l3" data-show="u4l3" data-lid="u4l3" title="L3 · COUNSELING vs. CANCELING">L3<span class="t2"></span></a><a href="?l=u4l4" data-show="u4l4" data-lid="u4l4" title="L4 · Charitable Interpretation at Scale">L4<span class="t2"></span></a><a href="?l=u4l5" data-show="u4l5" data-lid="u4l5" title="L5 · The Mentor Path · R&amp;r Strand Tp5 — the Final Touchpoint">L5<span class="t2"></span></a><a href="?l=u4l6" data-show="u4l6" data-lid="u4l6" title="L6 · The Graduation Charter">L6<span class="t2"></span></a><a href="?l=u4l7" data-show="u4l7" data-lid="u4l7" title="L7 · The Final Celebration">L7<span class="t2"></span></a></nav>
+
+<article class="lescard" id="lescard">
+  <div class="lh">
+    <span class="ln" id="lnum">1.1</span>
+    <div><h4 id="ltitle"></h4><span class="sub" id="lsub"></span></div>
+    <div class="tools no-print">
+      <button type="button" class="lbtn tickbtn" id="tickBtn" aria-pressed="false"><span class="tk">✓</span><span><span data-en="Taught" data-es="Enseñada">Taught</span></span></button>
+      <button type="button" class="lbtn listen" id="listenBtn" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H2v6h4l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M18.5 5.5a9 9 0 0 1 0 13"/></svg><span><span data-en="Listen" data-es="Escuchar">Listen</span></span></button>
+      <button type="button" class="lbtn" id="printBtn"><span data-en="Print this lesson" data-es="Imprimir esta lección">Print this lesson</span></button>
+    </div>
+  </div>
+  <div class="body">
 <section class="lesson u1" id="worksheets" hidden>
 <div class="lhead"><span class="lchip">WORKSHEETS</span><span class="lkind">The interactive 5</span></div>
 <h2>The Worksheets</h2>
@@ -1289,150 +1650,140 @@ Three values that have been tested by real social pressure and held.
 <div class="seclab">REFERENCE</div>
 </section>
 
-<!-- .30gf: the worksheets door lives at the BOTTOM of the page — Jimmy:
-     "I was talking about bringing this to the bottom of the page, not the top." -->
+  </div>
+</article>
+
+<!-- .30gf / .30gp: the doors stay at the BOTTOM of the page (Jimmy: "I was talking about bringing this to the bottom of the page, not the top."). The chart door builds the lesson's anchor chart; the cards door opens the lesson's scenario cards. -->
 <div class="botdoor no-print">
-  <a id="wsTab" class="wstab" href="?l=worksheets" data-mode="tab" aria-current="false">The Worksheets — the interactive 5 &uarr;</a>
+  <a id="wsTab" class="wstab" href="?l=worksheets" data-mode="tab" aria-current="false">The Worksheets \u2014 the interactive 5 \u2191</a>
+  <a id="cardsDoor" class="cardsdoor" href="room-207-cards.html" hidden><span data-en="This lesson’s scenario cards — the deck →" data-es="Las tarjetas de escenario de esta lección →">This lesson’s scenario cards — the deck →</span></a>
 </div>
 
-<footer>
-  <a href="room-207-curriculum.html">&larr; The Room 207 curriculum</a>
-  <span>The framework is portable. They are taking it with them.</span>
-</footer>
+<nav class="pager2 no-print" aria-label="Lessons"><a href="#" id="prevA"><span>‹</span><span><span class="s"><span data-en="Previous" data-es="Anterior">Previous</span></span><span id="prevT"></span></span></a><a href="#" id="nextA"><span><span class="s"><span data-en="Next" data-es="Siguiente">Next</span></span><span id="nextT"></span></span><span>›</span></a></nav>
+
+<details class="teach no-print"><summary><span data-en="For the teacher" data-es="Para el docente">For the teacher</span></summary><div class="inner">
+  <p><span data-en="Every lesson is here word for word as the Book 5 master prints it. Pick a unit on the rail, then a lesson; the tick marks a lesson taught and stays on this device only. Nothing typed here leaves the room." data-es="Cada lección está aquí palabra por palabra como la imprime el libro 5. Elige una unidad y luego una lección; la marca señala una lección enseñada y se guarda solo en este dispositivo.">Every lesson is here word for word as the Book 5 master prints it. Pick a unit on the rail, then a lesson; the tick marks a lesson taught and stays on this device only. Nothing typed here leaves the room.</span></p>
+  <div class="mats"><a href="room-207-curriculum.html">The curriculum</a><a href="room-207-workbook.html">The companion workbook</a><a href="AoG-Anchor-Charts-207.html">Anchor charts, built live</a><a href="room-207-cards.html"><span data-en="Scenario cards" data-es="Tarjetas de escenario">Scenario cards</span></a></div>
+</div></details>
+
+<footer class="foot"><span data-en="Architecture of Grace · Room 207 · Book 5 · The Capstone · Grades 11–12 · the banners are drawn scenes, not photographs." data-es="Architecture of Grace · Salón 207 · Libro 5 · Grados 11–12 · los banners son escenas dibujadas, no fotografías.">Architecture of Grace · Room 207 · Book 5 · The Capstone · Grades 11–12 · the banners are drawn scenes, not photographs.</span></footer>
+</main>
+</div>
+
+<div class="drawer" id="drawer" data-open="0" role="dialog" aria-modal="true" aria-label="Contents">
+  <div class="scrim" data-close></div>
+  <div class="sheet"><div class="dh"><b><span data-en="Room 207 · contents" data-es="Salón 207 · contenido">Room 207 · contents</span></b><button type="button" data-close aria-label="Close">✕</button></div><nav><a href="?l=worksheets" data-show="worksheets"><span class="n">✎</span><span data-en="The interactive worksheets" data-es="Las hojas de trabajo interactivas">The interactive worksheets</span></a><div class="dc"><span class="b" data-unit="u1">1</span>THE COMPASS OF VALUES</div><a href="?l=u1" data-show="u1"><span class="n">—</span><span data-en="Unit overview" data-es="Resumen de la unidad">Unit overview</span></a><a href="?l=u1l1" data-show="u1l1" data-lid="u1l1"><span class="n">1.1</span>The Exit Interview<span class="t2"></span></a><a href="?l=u1l2" data-show="u1l2" data-lid="u1l2"><span class="n">1.2</span>Mapping Your Values<span class="t2"></span></a><a href="?l=u1l3" data-show="u1l3" data-lid="u1l3"><span class="n">1.3</span>Values Under Fire<span class="t2"></span></a><a href="?l=u1l4" data-show="u1l4" data-lid="u1l4"><span class="n">1.4</span>Values in the Workplace<span class="t2"></span></a><a href="?l=u1l5" data-show="u1l5" data-lid="u1l5"><span class="n">1.5</span>The Neuroscience of Moral Development<span class="t2"></span></a><a href="?l=u1l6" data-show="u1l6" data-lid="u1l6"><span class="n">1.6</span>The Moral North Star<span class="t2"></span></a><a href="?l=u1l7" data-show="u1l7" data-lid="u1l7"><span class="n">1.7</span>The Compass of Integrity · Unit Reflection<span class="t2"></span></a><div class="dc"><span class="b" data-unit="u2">2</span>THE ADULT REPAIR MANUAL</div><a href="?l=u2" data-show="u2"><span class="n">—</span><span data-en="Unit overview" data-es="Resumen de la unidad">Unit overview</span></a><a href="?l=u2l1" data-show="u2l1" data-lid="u2l1"><span class="n">2.1</span>The Living Amend<span class="t2"></span></a><a href="?l=u2l2" data-show="u2l2" data-lid="u2l2"><span class="n">2.2</span>Forgiving the Younger Self<span class="t2"></span></a><a href="?l=u2l3" data-show="u2l3" data-lid="u2l3"><span class="n">2.3</span>Mental Health Literacy & Advocacy<span class="t2"></span></a><a href="?l=u2l4" data-show="u2l4" data-lid="u2l4"><span class="n">2.4</span>The Sustainable Soul<span class="t2"></span></a><a href="?l=u2l5" data-show="u2l5" data-lid="u2l5"><span class="n">2.5</span>The Forgiveness Fatigue<span class="t2"></span></a><a href="?l=u2l6" data-show="u2l6" data-lid="u2l6"><span class="n">2.6</span>The Inheritance of Grace<span class="t2"></span></a><a href="?l=u2l7" data-show="u2l7" data-lid="u2l7"><span class="n">2.7</span>The Final Backpack Audit<span class="t2"></span></a><div class="dc"><span class="b" data-unit="u3">3</span>TRANSCENDENT FORGIVENESS</div><a href="?l=u3" data-show="u3"><span class="n">—</span><span data-en="Unit overview" data-es="Resumen de la unidad">Unit overview</span></a><a href="?l=u3l1" data-show="u3l1" data-lid="u3l1"><span class="n">3.1</span>The Leadership Prerequisite<span class="t2"></span></a><a href="?l=u3l2" data-show="u3l2" data-lid="u3l2"><span class="n">3.2</span>Releasing the Childhood Backpack<span class="t2"></span></a><a href="?l=u3l3" data-show="u3l3" data-lid="u3l3"><span class="n">3.3</span>Complex Reconciliation<span class="t2"></span></a><a href="?l=u3l4" data-show="u3l4" data-lid="u3l4"><span class="n">3.4</span>Global Empathy<span class="t2"></span></a><a href="?l=u3l5" data-show="u3l5" data-lid="u3l5"><span class="n">3.5</span>The Cost of Bitterness<span class="t2"></span></a><a href="?l=u3l6" data-show="u3l6" data-lid="u3l6"><span class="n">3.6</span>Forgiveness As Legacy<span class="t2"></span></a><a href="?l=u3l7" data-show="u3l7" data-lid="u3l7"><span class="n">3.7</span>The Graduation of the Heart<span class="t2"></span></a><div class="dc"><span class="b" data-unit="u4">4</span>THE ORCHARD LEGACY</div><a href="?l=u4" data-show="u4"><span class="n">—</span><span data-en="Unit overview" data-es="Resumen de la unidad">Unit overview</span></a><a href="?l=u4l1" data-show="u4l1" data-lid="u4l1"><span class="n">4.1</span>Systemic Grace<span class="t2"></span></a><a href="?l=u4l2" data-show="u4l2" data-lid="u4l2"><span class="n">4.2</span>Radical Generosity<span class="t2"></span></a><a href="?l=u4l3" data-show="u4l3" data-lid="u4l3"><span class="n">4.3</span>COUNSELING vs. CANCELING<span class="t2"></span></a><a href="?l=u4l4" data-show="u4l4" data-lid="u4l4"><span class="n">4.4</span>Charitable Interpretation at Scale<span class="t2"></span></a><a href="?l=u4l5" data-show="u4l5" data-lid="u4l5"><span class="n">4.5</span>The Mentor Path · R&r Strand Tp5 — the Final Touchpoint<span class="t2"></span></a><a href="?l=u4l6" data-show="u4l6" data-lid="u4l6"><span class="n">4.6</span>The Graduation Charter<span class="t2"></span></a><a href="?l=u4l7" data-show="u4l7" data-lid="u4l7"><span class="n">4.7</span>The Final Celebration<span class="t2"></span></a></nav></div>
 </div>
 
 <script>
-/* AOG-R36-NAV behavior — back pill + the Explore menu. */
+
 (function(){
-  var back = document.getElementById("r36Back");
-  back.addEventListener("click", function(e){
-    var sameOrigin = false;
-    try{ sameOrigin = document.referrer.indexOf(location.origin) === 0; }catch(err){}
-    if(history.length > 1 && sameOrigin){ e.preventDefault(); history.back(); }
+"use strict";
+/* AOG-SEL-V1 — the wiring for one room's Lessons page. Every lesson was set at
+   build time, verbatim; this only chooses which one shows and remembers ticks. */
+var KEY="aog.interior.ws.v1.sel207", ORDER=["worksheets", "u1", "u1l1", "u1l2", "u1l3", "u1l4", "u1l5", "u1l6", "u1l7", "u2", "u2l1", "u2l2", "u2l3", "u2l4", "u2l5", "u2l6", "u2l7", "u3", "u3l1", "u3l2", "u3l3", "u3l4", "u3l5", "u3l6", "u3l7", "u4", "u4l1", "u4l2", "u4l3", "u4l4", "u4l5", "u4l6", "u4l7"], L={"worksheets": {"unit": "worksheets", "title": "The interactive worksheets — all 5", "num": ""}, "u1": {"unit": "u1", "title": "Unit 1 overview — THE COMPASS OF VALUES", "num": ""}, "u1l1": {"unit": "u1", "title": "The Exit Interview", "num": "1.1"}, "u1l2": {"unit": "u1", "title": "Mapping Your Values", "num": "1.2"}, "u1l3": {"unit": "u1", "title": "Values Under Fire", "num": "1.3"}, "u1l4": {"unit": "u1", "title": "Values in the Workplace", "num": "1.4"}, "u1l5": {"unit": "u1", "title": "The Neuroscience of Moral Development", "num": "1.5"}, "u1l6": {"unit": "u1", "title": "The Moral North Star", "num": "1.6"}, "u1l7": {"unit": "u1", "title": "The Compass of Integrity · Unit Reflection", "num": "1.7"}, "u2": {"unit": "u2", "title": "Unit 2 overview — THE ADULT REPAIR MANUAL", "num": ""}, "u2l1": {"unit": "u2", "title": "The Living Amend", "num": "2.1"}, "u2l2": {"unit": "u2", "title": "Forgiving the Younger Self", "num": "2.2"}, "u2l3": {"unit": "u2", "title": "Mental Health Literacy & Advocacy", "num": "2.3"}, "u2l4": {"unit": "u2", "title": "The Sustainable Soul", "num": "2.4"}, "u2l5": {"unit": "u2", "title": "The Forgiveness Fatigue", "num": "2.5"}, "u2l6": {"unit": "u2", "title": "The Inheritance of Grace", "num": "2.6"}, "u2l7": {"unit": "u2", "title": "The Final Backpack Audit", "num": "2.7"}, "u3": {"unit": "u3", "title": "Unit 3 overview — TRANSCENDENT FORGIVENESS", "num": ""}, "u3l1": {"unit": "u3", "title": "The Leadership Prerequisite", "num": "3.1"}, "u3l2": {"unit": "u3", "title": "Releasing the Childhood Backpack", "num": "3.2"}, "u3l3": {"unit": "u3", "title": "Complex Reconciliation", "num": "3.3"}, "u3l4": {"unit": "u3", "title": "Global Empathy", "num": "3.4"}, "u3l5": {"unit": "u3", "title": "The Cost of Bitterness", "num": "3.5"}, "u3l6": {"unit": "u3", "title": "Forgiveness As Legacy", "num": "3.6"}, "u3l7": {"unit": "u3", "title": "The Graduation of the Heart", "num": "3.7"}, "u4": {"unit": "u4", "title": "Unit 4 overview — THE ORCHARD LEGACY", "num": ""}, "u4l1": {"unit": "u4", "title": "Systemic Grace", "num": "4.1"}, "u4l2": {"unit": "u4", "title": "Radical Generosity", "num": "4.2"}, "u4l3": {"unit": "u4", "title": "COUNSELING vs. CANCELING", "num": "4.3"}, "u4l4": {"unit": "u4", "title": "Charitable Interpretation at Scale", "num": "4.4"}, "u4l5": {"unit": "u4", "title": "The Mentor Path · R&r Strand Tp5 — the Final Touchpoint", "num": "4.5"}, "u4l6": {"unit": "u4", "title": "The Graduation Charter", "num": "4.6"}, "u4l7": {"unit": "u4", "title": "The Final Celebration", "num": "4.7"}}, UNITS={"u1": "THE COMPASS OF VALUES", "u2": "THE ADULT REPAIR MANUAL", "u3": "TRANSCENDENT FORGIVENESS", "u4": "THE ORCHARD LEGACY"}, CHARTDOOR={"u1l1": "threshold", "u1l2": "values", "u1l3": "gap", "u1l4": "institutions", "u1l5": "window", "u1l6": "northstar", "u1l7": "wall1", "u2l1": "amend", "u2l2": "younger", "u2l3": "continuum", "u2l4": "soul", "u2l5": "fatigue", "u2l6": "inherit", "u2l7": "wall2", "u3l1": "prereq", "u3l2": "childpack", "u3l3": "between", "u3l4": "global", "u3l5": "bitter", "u3l6": "forglegacy", "u3l7": "wall3", "u4l1": "systemic", "u4l2": "radical", "u4l3": "counsel", "u4l4": "scale", "u4l5": "mentor", "u4l6": "charter", "u4l7": "wall4"}, CREDITS={"u1": "Drawn scene: a brass compass resting on an unrolled map under a wide night sky with one bright north star", "u2": "Drawn scene: a workbench lamp shining on a mended bowl with gold seams, with tools hung neatly on the wall behind", "u3": "Drawn scene: a lighthouse on a headland at first light, its beam reaching across a calm sea", "u4": "Drawn scene: a garden path leading between rows of fruit trees toward a low hill in late golden light"};
+function load(){ try{ return JSON.parse(localStorage.getItem(KEY)||"{}")||{}; }catch(e){ return {}; } }
+var d=load(); d.done=d.done||{};
+function persist(){ try{ localStorage.setItem(KEY, JSON.stringify(d)); }catch(e){} }
+var lang="en";
+function T(en,es){ return lang==="es"?es:en; }
+function paintLang(){
+  document.documentElement.setAttribute("lang", lang);
+  Array.prototype.forEach.call(document.querySelectorAll("[data-en]"), function(el){
+    var v=el.getAttribute(lang==="es"?"data-es":"data-en"); if(v==null) return;
+    if(v.indexOf("<b>")>-1) el.innerHTML=v; else el.textContent=v;
   });
-  var btn = document.getElementById("r36MenuBtn"), menu = document.getElementById("r36Menu");
-  function open(on){ menu.hidden = !on; btn.setAttribute("aria-expanded", String(on)); }
-  btn.addEventListener("click", function(e){ e.stopPropagation(); open(menu.hidden); });
-  document.addEventListener("click", function(e){ if(!menu.hidden && !menu.contains(e.target) && e.target !== btn) open(false); });
-  document.addEventListener("keydown", function(e){ if(e.key === "Escape") open(false); });
-
-  /* accessibility — the SAME keys and classes the rest of the site uses, so
-     a setting made on a hub follows the student here and back */
-  var H = document.documentElement;
-  function lsGet(k){ try{ return localStorage.getItem(k); }catch(e){ return null; } }
-  function lsSet(k,v){ try{ localStorage.setItem(k,v); }catch(e){} }
-  var A11Y = [
-    {key:"aog.a11y.contrast", cls:"a11y-contrast", row:"r36HcRow"},
-    {key:"aog.a11y.dyslexic", cls:"a11y-dyslexic", row:"r36DysRow"}
-  ];
-  var abtn = document.getElementById("r36A11yBtn"), amenu = document.getElementById("r36A11y");
-  function aopen(on){ amenu.hidden = !on; abtn.setAttribute("aria-expanded", String(on)); }
-  abtn.addEventListener("click", function(e){ e.stopPropagation(); aopen(amenu.hidden); });
-  document.addEventListener("click", function(e){ if(!amenu.hidden && !amenu.contains(e.target) && e.target !== abtn) aopen(false); });
-  A11Y.forEach(function(a){
-    var row = document.getElementById(a.row);
-    function paint(on){ H.classList.toggle(a.cls, on); row.setAttribute("aria-checked", String(on)); }
-    paint(lsGet(a.key) === "1");
-    row.addEventListener("click", function(){
-      var on = !H.classList.contains(a.cls);
-      lsSet(a.key, on ? "1" : "0"); paint(on);
-    });
-  });
-})();
-</script>
-
-<style>
-/* ══ AOG-PRINTBRAND-V1 — the mark on every printed sheet ══ */
-.aog-printbrand,.aog-printwm{display:none}
-@media print{
-  .aog-printbrand{display:block;position:fixed;bottom:2px;left:0;right:0;text-align:center;
-    font:700 9px/1.4 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
-    color:#1B3A5F;letter-spacing:.08em;z-index:99}
-  .aog-printbrand .mk{display:inline-block;width:12px;height:12px;line-height:12px;border-radius:3px;
-    background:#1B3A5F;color:#fff;font-family:Georgia,serif;font-weight:900;font-size:9px;
-    text-align:center;margin-right:4px;vertical-align:-2px;
-    -webkit-print-color-adjust:exact;print-color-adjust:exact}
-  .aog-printwm{display:block;position:fixed;top:0;left:0;right:0;bottom:0;pointer-events:none;
-    overflow:hidden;z-index:98}
-  .aog-printwm span{position:absolute;left:-25%;right:-25%;text-align:center;white-space:nowrap;
-    font:900 44px/1 Georgia,serif;letter-spacing:.2em;color:rgba(27,58,95,.06);
-    transform:rotate(-28deg);-webkit-print-color-adjust:exact;print-color-adjust:exact}
-  .aog-printwm span:nth-child(1){top:22%}
-  .aog-printwm span:nth-child(2){top:52%}
-  .aog-printwm span:nth-child(3){top:82%}
+  var lb=document.getElementById("langBtn"); if(lb) lb.textContent=(lang==="es")?"English":"Español";
+  paintHead(cur);
 }
-
-/* ══ AOG-PRINT-SAFE-V1 (2026-09-20) ═══════════════════════════════════════════
-   Jimmy, printing a novel study from his phone: "another pdf that gets parts of
-   the material cut off." These are the rules that keep paper honest on every
-   engine — a table row, a list item, a figure and a picture stay whole; a head
-   keeps the lines under it; no paragraph strands one line at a page edge; and a
-   long table repeats its head at the top of each page. Printed pages only. */
-@media print{
-  table{break-inside:auto; page-break-inside:auto}
-  thead{display:table-header-group}
-  tfoot{display:table-footer-group}
-  tr{break-inside:avoid; page-break-inside:avoid}
-  li,figure,img,svg{break-inside:avoid; page-break-inside:avoid}
-  h1,h2,h3,h4,h5{break-after:avoid; page-break-after:avoid}
-  p{orphans:3; widows:3}
-}
-</style>
-<div class="aog-printwm" aria-hidden="true"><span>ARCHITECTURE OF GRACE</span><span>ARCHITECTURE OF GRACE</span><span>ARCHITECTURE OF GRACE</span></div>
-<div class="aog-printbrand" aria-hidden="true"><span class="mk">A</span>ARCHITECTURE OF GRACE &middot; architectureofgrace.org</div>
-
-<script>
-(function(){
-  var KEY="aog.interior.ws.v1.theme";
-  document.getElementById("themeBtn").addEventListener("click",function(){
-    var cur=document.documentElement.getAttribute("data-theme")==="dark"?"light":"dark";
-    document.documentElement.setAttribute("data-theme",cur);
-    try{localStorage.setItem(KEY,cur);}catch(e){}
-  });
-  var ORDER=["worksheets", "u1", "u1l1", "u1l2", "u1l3", "u1l4", "u1l5", "u1l6", "u1l7", "u2", "u2l1", "u2l2", "u2l3", "u2l4", "u2l5", "u2l6", "u2l7", "u3", "u3l1", "u3l2", "u3l3", "u3l4", "u3l5", "u3l6", "u3l7", "u4", "u4l1", "u4l2", "u4l3", "u4l4", "u4l5", "u4l6", "u4l7"];
-  var sel=document.getElementById("lessonSel");
-  function show(id, push){
-    if(ORDER.indexOf(id)<0) id=ORDER[0];
-    ORDER.forEach(function(x){ document.getElementById(x).hidden = (x!==id); });
-    sel.value=id;
-    try{
-      var q=new URLSearchParams(location.search); q.set("l",id);
-      (push?history.pushState:history.replaceState).call(history,null,"","?"+q.toString());
-    }catch(e){}
-    window.scrollTo(0,0);
+document.getElementById("langBtn").addEventListener("click", function(){ lang=(lang==="es")?"en":"es"; paintLang(); });
+document.getElementById("themeBtn").addEventListener("click", function(){
+  var t=document.documentElement.getAttribute("data-theme")==="dark"?"light":"dark";
+  document.documentElement.setAttribute("data-theme", t);
+  try{ localStorage.setItem("aog.interior.ws.v1.theme", t); }catch(e){}
+});
+var cur=ORDER[0];
+function unitOf(id){ return L[id].unit; }
+function sec(id){ return document.getElementById(id); }
+function paintHead(id){
+  var u=unitOf(id), ln=document.getElementById("lnum"), lt=document.getElementById("ltitle"), ls=document.getElementById("lsub");
+  var un=document.getElementById("unum"), uk=document.getElementById("ukind"), ut=document.getElementById("ut"), cr=document.getElementById("credit");
+  Array.prototype.forEach.call(document.querySelectorAll(".spread .scene"), function(s){ s.hidden = s.getAttribute("data-scene")!==(u==="worksheets"?"u1":u); });
+  if(u==="worksheets"){
+    un.textContent="✎"; un.className="ws"; uk.textContent=T("Room 207","Salón 207"); ut.textContent=T("The Worksheets","Las hojas de trabajo"); cr.textContent=CREDITS.u1||"";
+    ln.textContent="✎"; lt.textContent=T("The interactive worksheets","Las hojas de trabajo interactivas"); ls.textContent="";
+  } else {
+    un.textContent=u.slice(1); un.className=""; uk.textContent=T("Unit","Unidad"); ut.textContent=UNITS[u]; cr.textContent=CREDITS[u]||"";
+    if(L[id].num){ ln.textContent=L[id].num; lt.textContent=L[id].title; ls.textContent=T("Unit "+u.slice(1)+" · Lesson "+id.split("l")[1], "Unidad "+u.slice(1)+" · Lección "+id.split("l")[1]); }
+    else { ln.textContent=u.slice(1); lt.textContent=UNITS[u]; ls.textContent=T("Unit overview","Resumen de la unidad"); }
   }
-  sel.addEventListener("change",function(){ show(sel.value,true); });
-  /* .30gp — the bottom door builds the CHART (Jimmy: the two bottom links
-     went to the same worksheet). On a lesson it links that lesson's
-     interactive anchor chart; the in-lesson card above already links the
-     worksheet. On overview/worksheets screens it opens the Worksheets tab. */
-  var CHARTDOOR={"u1l1": "threshold", "u1l2": "values", "u1l3": "gap", "u1l4": "institutions", "u1l5": "window", "u1l6": "northstar", "u1l7": "wall1", "u2l1": "amend", "u2l2": "younger", "u2l3": "continuum", "u2l4": "soul", "u2l5": "fatigue", "u2l6": "inherit", "u2l7": "wall2", "u3l1": "prereq", "u3l2": "childpack", "u3l3": "between", "u3l4": "global", "u3l5": "bitter", "u3l6": "forglegacy", "u3l7": "wall3", "u4l1": "systemic", "u4l2": "radical", "u4l3": "counsel", "u4l4": "scale", "u4l5": "mentor", "u4l6": "charter", "u4l7": "wall4"};
-  var wsTab=document.getElementById("wsTab");
-  wsTab.addEventListener("click",function(e){
-    if(wsTab.getAttribute("data-mode")==="tab"){ e.preventDefault(); show("worksheets",true); }
-  });
-  var _mark=show;
-  show=function(id,push){
-    _mark(id,push);
-    wsTab.setAttribute("aria-current", String(id==="worksheets"));
-    var c=CHARTDOOR[id];
-    if(c){ wsTab.setAttribute("data-mode","direct"); wsTab.setAttribute("href","AoG-Anchor-Charts-207.html#"+c);
-           wsTab.textContent="Build this lesson\u2019s anchor chart \u2014 the live board \u2192"; }
-    else { wsTab.setAttribute("data-mode","tab"); wsTab.setAttribute("href","?l=worksheets");
-           wsTab.innerHTML="The Worksheets \u2014 the interactive 5 \u2191"; }
-  };
-  document.getElementById("prevBtn").addEventListener("click",function(){
-    show(ORDER[(ORDER.indexOf(sel.value)-1+ORDER.length)%ORDER.length],true);
-  });
-  document.getElementById("nextBtn").addEventListener("click",function(){
-    show(ORDER[(ORDER.indexOf(sel.value)+1)%ORDER.length],true);
-  });
-  window.addEventListener("popstate",function(){
-    var q=new URLSearchParams(location.search); show(q.get("l")||ORDER[0],false);
-  });
-  var q=new URLSearchParams(location.search);
-  show(q.get("l")||"u1",false);
+  var tb=document.getElementById("tickBtn"); tb.hidden=!L[id].num; tb.setAttribute("aria-pressed", String(!!d.done[id]));
+  var i=ORDER.indexOf(id), p=ORDER[(i-1+ORDER.length)%ORDER.length], nx=ORDER[(i+1)%ORDER.length];
+  document.getElementById("prevT").textContent=L[p].num?("L"+p.split("l")[1]+" · "+L[p].title):(L[p].unit==="worksheets"?T("Worksheets","Hojas de trabajo"):T("Unit "+p.slice(1)+" overview","Resumen de la unidad "+p.slice(1)));
+  document.getElementById("nextT").textContent=L[nx].num?("L"+nx.split("l")[1]+" · "+L[nx].title):(L[nx].unit==="worksheets"?T("Worksheets","Hojas de trabajo"):T("Unit "+nx.slice(1)+" overview","Resumen de la unidad "+nx.slice(1)));
+  document.getElementById("prevA").setAttribute("href","?l="+p); document.getElementById("nextA").setAttribute("href","?l="+nx);
+}
+function paintTicks(){
+  Array.prototype.forEach.call(document.querySelectorAll("[data-lid]"), function(a){ a.classList.toggle("done", !!d.done[a.getAttribute("data-lid")]); });
+}
+function show(id, push){
+  if(ORDER.indexOf(id)<0) id=ORDER[0];
+  cur=id; var u=unitOf(id);
+  ORDER.forEach(function(x){ sec(x).hidden=(x!==id); });
+  Array.prototype.forEach.call(document.querySelectorAll(".rail a[data-unit]"), function(a){ if(a.getAttribute("data-unit")===u) a.setAttribute("aria-current","page"); else a.removeAttribute("aria-current"); });
+  Array.prototype.forEach.call(document.querySelectorAll(".lstrip"), function(s){ s.hidden=(s.getAttribute("data-strip")!==u); });
+  Array.prototype.forEach.call(document.querySelectorAll("[data-show]"), function(a){ if(a.getAttribute("data-show")===id) a.setAttribute("aria-current","page"); else a.removeAttribute("aria-current"); });
+  paintHead(id);
+  /* .30gp — the bottom door builds the CHART on a lesson, opens the Worksheets screen elsewhere */
+  var wsTab=document.getElementById("wsTab"), c=CHARTDOOR[id];
+  wsTab.setAttribute("aria-current", String(id==="worksheets"));
+  if(c){ wsTab.setAttribute("data-mode","direct"); wsTab.setAttribute("href","AoG-Anchor-Charts-207.html#"+c); wsTab.textContent="Build this lesson\\u2019s anchor chart \\u2014 the live board \\u2192"; }
+  else { wsTab.setAttribute("data-mode","tab"); wsTab.setAttribute("href","?l=worksheets"); wsTab.innerHTML="The Worksheets \\u2014 the interactive 5 \\u2191"; }
+  var cd=document.getElementById("cardsDoor"); var hasCards=!!sec(id).querySelector(".box.cards");
+  cd.hidden=!hasCards; cd.setAttribute("href","room-207-cards.html#"+id);
+  try{ var q=new URLSearchParams(location.search); q.set("l",id); (push?history.pushState:history.replaceState).call(history,null,"","?"+q.toString()); }catch(e){}
+  stopSpeak();
+  if(push){ var top=document.getElementById("spread").getBoundingClientRect().top+window.pageYOffset-60; window.scrollTo({top:Math.max(0,top),behavior:"smooth"}); }
+}
+document.addEventListener("click", function(ev){
+  var a=ev.target.closest("a[data-show]"); if(!a) return;
+  ev.preventDefault(); show(a.getAttribute("data-show"), true); closeDrawer();
+});
+document.getElementById("wsTab").addEventListener("click", function(e){ var w=e.currentTarget; if(w.getAttribute("data-mode")==="tab"){ e.preventDefault(); show("worksheets",true); } });
+document.getElementById("prevA").addEventListener("click", function(e){ e.preventDefault(); show(ORDER[(ORDER.indexOf(cur)-1+ORDER.length)%ORDER.length], true); });
+document.getElementById("nextA").addEventListener("click", function(e){ e.preventDefault(); show(ORDER[(ORDER.indexOf(cur)+1)%ORDER.length], true); });
+document.getElementById("tickBtn").addEventListener("click", function(){ if(d.done[cur]) delete d.done[cur]; else d.done[cur]=1; persist(); paintTicks(); paintHead(cur); });
+document.getElementById("printBtn").addEventListener("click", function(){ window.print(); });
+window.addEventListener("popstate", function(){ var q=new URLSearchParams(location.search); show(q.get("l")||ORDER[1], false); });
+
+/* ── Listen: the lesson, read aloud (speechSynthesis; quiet if absent) ── */
+var speaking=false, lb=document.getElementById("listenBtn");
+function stopSpeak(){ try{ window.speechSynthesis && window.speechSynthesis.cancel(); }catch(e){} speaking=false; lb.setAttribute("aria-pressed","false"); }
+if(!("speechSynthesis" in window)) lb.hidden=true;
+lb.addEventListener("click", function(){
+  if(speaking){ stopSpeak(); return; }
+  var s=sec(cur), parts=[];
+  Array.prototype.forEach.call(s.querySelectorAll("h2,h3,h4,p,li,.step,.blab,.openq,.kvr,td"), function(el){ var t=(el.innerText||el.textContent||"").replace(/\s+/g," ").trim(); if(t) parts.push(t); });
+  var u=new SpeechSynthesisUtterance(parts.join(". ")); u.lang="en-US"; u.rate=.95;
+  u.onend=function(){ speaking=false; lb.setAttribute("aria-pressed","false"); };
+  speaking=true; lb.setAttribute("aria-pressed","true"); window.speechSynthesis.speak(u);
+});
+
+/* ── the contents drawer ── */
+var drawer=document.getElementById("drawer"), dBtn=document.getElementById("drawerBtn"), lastFocus=null;
+function openDrawer(){ lastFocus=document.activeElement; drawer.setAttribute("data-open","1"); dBtn.setAttribute("aria-expanded","true"); document.body.style.overflow="hidden"; var f=drawer.querySelector('nav a[aria-current="page"]')||drawer.querySelector("nav a"); if(f) f.focus(); }
+function closeDrawer(){ if(drawer.getAttribute("data-open")!=="1") return; drawer.setAttribute("data-open","0"); dBtn.setAttribute("aria-expanded","false"); document.body.style.overflow=""; if(lastFocus) lastFocus.focus(); }
+dBtn.addEventListener("click", function(){ drawer.getAttribute("data-open")==="1"?closeDrawer():openDrawer(); });
+drawer.addEventListener("click", function(ev){ if(ev.target.closest("[data-close]")) closeDrawer(); });
+document.addEventListener("keydown", function(ev){ if(ev.key==="Escape") closeDrawer(); });
+
+/* the room jump */
+var rs=document.getElementById("roomSel"); if(rs){ rs.addEventListener("change", function(){ if(rs.value) location.href=rs.value; }); }
+
+paintTicks();
+var q=new URLSearchParams(location.search); show(q.get("l")||"u1", false);
 })();
+
 </script>
 </body>
 </html>

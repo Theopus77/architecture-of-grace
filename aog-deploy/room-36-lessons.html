@@ -3,16 +3,11 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<script>/* .30eg: begin in light. Dark only when this device chose it. Same key as the other activity pages. */
+<script>/* .30eg: begin in light. Dark only when this device chose it. Same key as every Interior page. */
 (function(){var t="light";try{if(localStorage.getItem("aog.interior.ws.v1.theme")==="dark")t="dark";}catch(e){}document.documentElement.setAttribute("data-theme",t);})();</script>
 <title>Room 36 — The Lessons · Architecture of Grace</title>
 <meta name="description" content="Every Room 36 SEL lesson, ready to teach — four units, 28 lessons, scripts, steps, worksheets and anchor-chart builds, from Book 3 · The Interior (Grades 6–8).">
-<!-- ═══ AOG ICONS + LINK PREVIEW · managed block · .30k0 ═══
-     Inserted by _work/aog_head.py — DO NOT hand-edit one page; edit the
-     script and re-run it, or the 100 pages drift apart again. The card
-     URL carries ?v= because Slack, Apple and Google cache an og image BY
-     URL for weeks: change the picture, bump IMG_V, or nothing shows up.
-     ═══════════════════════════════════════════════════════════════ -->
+<!-- ═══ AOG ICONS + LINK PREVIEW · managed block · .30k0 ═══ -->
 <link rel="canonical" href="https://architectureofgrace.org/lessons36">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Architecture of Grace">
@@ -37,99 +32,382 @@
 <meta name="apple-mobile-web-app-title" content="Grace">
 <meta name="application-name" content="Architecture of Grace">
 <!-- ═══ END AOG ICONS + LINK PREVIEW ═══ -->
-<!-- The material is the Book 3 master's Lessons section verbatim; only the
-     presentation is designed. No external requests; nothing typed or stored. -->
+<!-- AOG-SEL-V1 — built by _work/sel/build_sel.py. The lesson material is the original Lessons page's, byte for byte (kept in _work/sel/src); only the engine around it is designed. Do not hand-edit; edit the builder and re-run. -->
+<!-- No external requests of any kind. Every byte this page needs is in this file (aog-topbar.js is same-origin; a 404 changes nothing but the bar). -->
 <style>
+
+/* ══ TOKENS ══ the Interior set (light is the base; dark redefines tokens only)
+   plus the course's own: navy #0A1E33, a flag red for the badges, the hub's
+   brown accent, and a serif stack for the book voice. */
 :root{
-  --bg:#FBFAF7; --card:#FFFFFF; --ink:#232B36; --sub:#5B6472; --line:#E4E1D8;
-  --navy:#1B3A5F; --brass:#8A6A1F; --brass-soft:#F3ECDB;
-  --u1:#17646B; --u2:#6B4696; --u3:#A63A2B; --u4:#8A6A1F;
-  --risk:#B3261E; --risk-soft:#FBE9E7; --good:#2E7D4F; --good-soft:#E4F0E8;
-  --chip:#EFECE4; --shadow:0 1px 3px rgba(35,43,54,.08);
+  --ground:#F5F1E8; --field:#FFFFFF; --field-2:#EFEAE0; --field-3:#E7E0D2;
+  --ink:#1D2733; --ink-soft:#57626F; --ink-faint:#5F6B78;
+  --navy:#0A1E33; --navy-2:#1B3A5F; --gold:#B8893A; --gold-deep:#7A5C1F;
+  --red:#A8323A; --red-deep:#7E1F26; --acc:#7A5230; --acc-soft:#EFE3D6;
+  --rule:rgba(29,39,51,.16); --rule-soft:rgba(29,39,51,.08);
+  --lift:0 1px 0 rgba(255,255,255,.7), 0 20px 44px -30px rgba(29,39,51,.55);
+  --lift-sm:0 1px 2px rgba(29,39,51,.07), 0 8px 20px -16px rgba(29,39,51,.4);
+  --a:#4A3A8C; --a-wash:rgba(74,58,140,.07);
+  --good:#2E6B4F; --good-wash:rgba(46,107,79,.12);
+  --caution:#9A3412; --caution-wash:rgba(154,52,18,.09); --focus:#B8893A;
+  --paper:#FBF7EE; --paper-line:rgba(122,82,48,.22);
   --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,"Times New Roman",serif;
-  --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  --cond:"Avenir Next Condensed","Helvetica Neue","Arial Narrow","Roboto Condensed",Impact,sans-serif;
+  --on-navy:#F5F1E8;
 }
 @media (prefers-color-scheme: dark){
   :root:not([data-theme="light"]){
-    --bg:#191D24; --card:#20262F; --ink:#EDEAE2; --sub:#9AA3B0; --line:#333B47;
-    --navy:#8FB4DF; --brass:#D9B45C; --brass-soft:#332C18;
-    --u1:#5FB8B0; --u2:#B99AD9; --u3:#E08573; --u4:#D9B45C;
-    --risk:#F2938A; --risk-soft:#3D211E; --good:#6FBF8B; --good-soft:#1F3327;
-    --chip:#2A313C; --shadow:0 1px 3px rgba(0,0,0,.35);
+    --ground:#12161C; --field:#1A2029; --field-2:#222A34; --field-3:#2A333F;
+    --ink:#E9EEF4; --ink-soft:#A3AFBC; --ink-faint:#84909D;
+    --navy:#0A1E33; --navy-2:#9CC2E8; --gold:#D6A852; --gold-deep:#D6A852;
+    --red:#E07078; --red-deep:#B24A52; --acc:#D0A46B; --acc-soft:#3A2E22;
+    --rule:rgba(233,238,244,.18); --rule-soft:rgba(233,238,244,.09);
+    --lift:0 1px 0 rgba(233,238,244,.04), 0 24px 54px -32px rgba(0,0,0,.95);
+    --lift-sm:0 1px 2px rgba(0,0,0,.5), 0 10px 24px -18px rgba(0,0,0,.9);
+    --a:#A99BE8; --a-wash:rgba(169,155,232,.12);
+    --good:#79C79E; --good-wash:rgba(121,199,158,.16);
+    --caution:#F0A07C; --caution-wash:rgba(240,160,124,.12); --focus:#D6A852;
+    --paper:#232A33; --paper-line:rgba(214,168,82,.28);
   }
 }
 :root[data-theme="dark"]{
-  --bg:#191D24; --card:#20262F; --ink:#EDEAE2; --sub:#9AA3B0; --line:#333B47;
-  --navy:#8FB4DF; --brass:#D9B45C; --brass-soft:#332C18;
-  --u1:#5FB8B0; --u2:#B99AD9; --u3:#E08573; --u4:#D9B45C;
-  --risk:#F2938A; --risk-soft:#3D211E; --good:#6FBF8B; --good-soft:#1F3327;
-  --chip:#2A313C; --shadow:0 1px 3px rgba(0,0,0,.35);
+  --ground:#12161C; --field:#1A2029; --field-2:#222A34; --field-3:#2A333F;
+  --ink:#E9EEF4; --ink-soft:#A3AFBC; --ink-faint:#84909D;
+  --navy:#0A1E33; --navy-2:#9CC2E8; --gold:#D6A852; --gold-deep:#D6A852;
+  --red:#E07078; --red-deep:#B24A52; --acc:#D0A46B; --acc-soft:#3A2E22;
+  --rule:rgba(233,238,244,.18); --rule-soft:rgba(233,238,244,.09);
+  --lift:0 1px 0 rgba(233,238,244,.04), 0 24px 54px -32px rgba(0,0,0,.95);
+  --lift-sm:0 1px 2px rgba(0,0,0,.5), 0 10px 24px -18px rgba(0,0,0,.9);
+  --a:#A99BE8; --a-wash:rgba(169,155,232,.12);
+  --good:#79C79E; --good-wash:rgba(121,199,158,.16);
+  --caution:#F0A07C; --caution-wash:rgba(240,160,124,.12); --focus:#D6A852;
+  --paper:#232A33; --paper-line:rgba(214,168,82,.28);
 }
 *{box-sizing:border-box}
-html{-webkit-text-size-adjust:100%}
-body{background:var(--bg);color:var(--ink);font:16px/1.55 var(--sans);margin:0;padding:0 16px 72px}
-button{touch-action:manipulation}
-.wrap{max-width:860px;margin:0 auto}
+html,body{margin:0}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion: reduce){ html{scroll-behavior:auto} *,*::before,*::after{animation:none!important;transition:none!important} }
+body{background:var(--ground); color:var(--ink); font:17px/1.6 var(--sans); -webkit-text-size-adjust:100%}
+.wrap{max-width:1040px; margin:0 auto; padding:18px 16px 90px}
+h1,h2,h3,h4{line-height:1.15; margin:0 0 .3em; font-family:var(--serif)}
+p{margin:.4em 0}
+button{font:inherit; color:inherit}
+a{color:var(--navy-2)}
+:focus-visible{outline:3px solid var(--focus); outline-offset:2px}
+.vh{position:absolute!important; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap}
+.mast{display:flex; justify-content:space-between; align-items:flex-start; gap:10px; flex-wrap:wrap}
+.mast .k{font:700 .78rem/1.3 var(--sans); letter-spacing:.12em; text-transform:uppercase; color:var(--gold-deep)}
+.mast h1{font-size:2.1rem; letter-spacing:-.01em}
+.mast .row{display:flex; gap:8px}
+.chipbtn{min-height:48px; padding:8px 16px; border:1px solid var(--rule); border-radius:999px; background:var(--field); cursor:pointer; font-weight:700; font-size:.92rem}
+.deck{color:var(--ink-soft); max-width:66ch}
+.hubline{margin:.2em 0 0; font-size:.95rem}
+.hubline a{font-weight:700; text-decoration:none}
+.hubline a:hover{text-decoration:underline}
+.jump{margin:14px 0 4px}
+.jump label{display:grid; gap:6px; font-weight:700; font-size:.9rem; color:var(--ink-soft)}
+.jump select{min-height:48px; border:1px solid var(--rule); border-radius:12px; background:var(--field); padding:8px 12px; font:inherit; color:var(--ink); max-width:100%}
 
-/* ══ AOG-R36-NAV ══ */
-.r36top{position:sticky;top:0;z-index:60;display:flex;align-items:center;justify-content:space-between;gap:10px;background:var(--card);border-bottom:1px solid var(--line);margin:0 -16px;padding:9px 16px}
-.r36top .brand{display:flex;align-items:center;gap:9px;text-decoration:none;color:var(--ink);font-weight:800;font-size:.92rem;white-space:nowrap}
-.r36top .mk{display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:7px;background:var(--navy);color:#fff;font-family:var(--serif);font-weight:900}
-:root[data-theme="dark"] .r36top .mk{color:#10151c}
-@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .r36top .mk{color:#10151c}}
-.r36top .brand .nm{display:none}
-@media(min-width:640px){.r36top .brand .nm{display:inline}}
-.r36top .acts{display:flex;align-items:center;gap:7px}
-.r36top .pill{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:999px;padding:6px 13px;font:700 .82rem var(--sans);text-decoration:none;cursor:pointer}
-.r36top .pill:hover{border-color:var(--navy)}
-.r36top .pill .arr{color:var(--navy)}
-.r36wrap{position:relative}
-.r36menu{position:absolute;top:calc(100% + 8px);right:0;min-width:290px;max-width:min(92vw,340px);max-height:min(70vh,560px);overflow:auto;background:var(--card);border:1px solid var(--line);border-radius:14px;box-shadow:0 18px 44px -14px rgba(20,28,40,.45);padding:8px;z-index:70}
-.r36menu[hidden]{display:none}
-.r36menu .lab{font-size:.68rem;font-weight:800;letter-spacing:.13em;text-transform:uppercase;color:var(--sub);padding:10px 10px 4px}
-.r36menu a{display:block;padding:8px 10px;border-radius:9px;text-decoration:none;color:var(--ink)}
-.r36menu a:hover{background:var(--chip)}
-.r36menu a .t{display:block;font-weight:700;font-size:.9rem}
-.r36menu a .s{display:block;font-size:.78rem;color:var(--sub);margin-top:1px}
-.r36top .ico{display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:999px;cursor:pointer}
-.r36top .ico:hover{border-color:var(--navy)}
-.r36menu .arow{display:flex;align-items:center;justify-content:space-between;gap:14px;width:100%;background:none;border:0;border-top:1px solid var(--line);padding:10px 10px;cursor:pointer;text-align:left;font:inherit;color:var(--ink)}
-.r36menu .arow.first{border-top:0}
-.r36menu .arow .t{display:block;font-weight:700;font-size:.9rem}
-.r36menu .arow .s{display:block;font-size:.78rem;color:var(--sub);margin-top:1px}
-.r36menu .sw{flex:none;width:42px;height:24px;border-radius:999px;background:var(--line);position:relative;transition:background .15s}
-.r36menu .sw::after{content:"";position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;background:var(--card);box-shadow:0 1px 3px rgba(0,0,0,.3);transition:transform .15s}
-.r36menu .arow[aria-checked="true"] .sw{background:var(--navy)}
-.r36menu .arow[aria-checked="true"] .sw::after{transform:translateX(18px)}
-/* the site-wide accessibility settings, honored here */
-html.a11y-contrast body{color:#000}
-html.a11y-contrast a{text-decoration:underline;text-underline-offset:2px}
-html.a11y-contrast .r36top,html.a11y-contrast .box,html.a11y-contrast .xcard,html.a11y-contrast .q,html.a11y-contrast .ow{border-width:2px}
-html.a11y-contrast[data-theme="dark"] body{color:#fff}
-html.a11y-dyslexic body,html.a11y-dyslexic button,html.a11y-dyslexic input,html.a11y-dyslexic textarea,html.a11y-dyslexic h1,html.a11y-dyslexic h2,html.a11y-dyslexic h3{font-family:"OpenDyslexic","Comic Sans MS","Trebuchet MS",Verdana,sans-serif !important}
-html.a11y-dyslexic body{letter-spacing:.02em;word-spacing:.09em;line-height:1.8}
-@media print{.r36top{display:none !important}}
+/* ══ THE UNIT RAIL ══ ten numbered doors, sticky under the site bar */
+.rail{position:sticky; top:var(--aogbar-h,52px); z-index:30; margin:10px -16px 0; padding:8px 16px; background:color-mix(in srgb, var(--ground) 88%, transparent); backdrop-filter:saturate(1.2) blur(10px); -webkit-backdrop-filter:saturate(1.2) blur(10px); border-bottom:1px solid var(--rule-soft)}
+.rail .in{display:flex; gap:6px; align-items:center; overflow-x:auto; scrollbar-width:none; -ms-overflow-style:none; padding-bottom:2px}
+.rail .in::-webkit-scrollbar{display:none}
+.rail .k{flex:0 0 auto; font:700 .7rem var(--sans); letter-spacing:.14em; text-transform:uppercase; color:var(--ink-faint); margin-right:4px}
+.rail a{flex:0 0 auto; display:inline-flex; align-items:center; justify-content:center; min-width:44px; min-height:44px; padding:0 12px; border-radius:999px; border:1px solid var(--rule); background:var(--field); color:var(--ink); text-decoration:none; font:800 .95rem var(--cond); letter-spacing:.04em}
+.rail a[aria-current="page"]{background:var(--navy); border-color:var(--navy); color:var(--on-navy)}
+.rail a:hover{border-color:var(--navy-2)}
+.rail .sp{flex:1 0 8px}
+.rail .drawerbtn{flex:0 0 auto; min-height:44px; padding:0 14px; border-radius:999px; border:1px solid var(--rule); background:var(--field); font-weight:700; font-size:.88rem; cursor:pointer; display:inline-flex; gap:8px; align-items:center}
+.rail .drawerbtn svg{width:16px; height:16px}
 
-header.page{padding:22px 0 6px}
-.eyebrow{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
-.eyebrow .crumb{color:var(--sub);font-size:.78rem;letter-spacing:.14em;text-transform:uppercase;font-weight:700}
-.tools{display:flex;gap:8px}
-.tools button{border:1px solid var(--line);background:var(--card);color:var(--sub);border-radius:999px;padding:5px 12px;font:600 .78rem var(--sans);cursor:pointer}
-.tools button:hover{color:var(--ink)}
-h1{font-family:var(--serif);font-weight:900;font-size:clamp(1.9rem,5vw,2.6rem);margin:10px 0 0;letter-spacing:-.01em}
-.tag{color:var(--sub);margin:6px 0 0}
-.mats{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0 0}
-.mats a{display:inline-block;border:1px solid var(--line);background:var(--card);color:var(--navy);border-radius:999px;padding:7px 14px;font:600 .84rem var(--sans);text-decoration:none}
-.mats a:hover{border-color:var(--navy)}
-.pickbar{position:sticky;top:47px;z-index:50;display:flex;gap:8px;align-items:center;background:var(--bg);margin:16px -16px 0;padding:10px 16px;border-bottom:1px solid var(--line)}
-.pickbar select{flex:1;min-width:0;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:10px;padding:9px 10px;font:600 .9rem var(--sans)}
-.pickbar button{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:10px;padding:9px 13px;font:700 .9rem var(--sans);cursor:pointer;white-space:nowrap}
-.pickbar button:hover{border-color:var(--navy)}
-.botdoor{margin:34px 0 0;border-top:1px solid var(--line);padding-top:18px;text-align:center}
-.wstab{border:1px solid var(--line);border-left:4px solid var(--brass);background:var(--card);color:var(--ink);border-radius:10px;padding:11px 18px;font:800 .95rem var(--sans);cursor:pointer}
-.wstab:hover{border-color:var(--brass)}
-.wstab[aria-current="true"]{background:var(--chip);border-color:var(--brass)}
-@media print{.botdoor{display:none}}
+/* ══ THE BANNER ══ a drawn scene, the unit number, a huge condensed title */
+.spread{position:relative; margin:18px 0 0; border-radius:22px; overflow:hidden; background:#0A1E33; color:#F5F1E8; box-shadow:var(--lift); min-height:300px; isolation:isolate}
+.spread .scene{position:absolute; inset:0; z-index:0}
+.spread .scene svg{width:100%; height:100%; display:block}
+.spread::after{content:""; position:absolute; inset:0; z-index:1; background:linear-gradient(180deg, rgba(10,30,51,0) 30%, rgba(10,30,51,.55) 62%, rgba(10,30,51,.94) 100%); pointer-events:none}
+.spread .txt{position:relative; z-index:2; padding:clamp(120px,26vw,220px) clamp(18px,4vw,40px) clamp(20px,3vw,30px); display:grid; gap:6px}
+.spread .unum{display:inline-flex; align-items:baseline; gap:10px; font:800 .82rem var(--sans); letter-spacing:.22em; text-transform:uppercase; color:#F5F1E8}
+.spread .unum b{display:inline-flex; align-items:center; justify-content:center; min-width:44px; height:44px; padding:0 10px; border-radius:8px; background:var(--red); color:#fff; font:800 1.4rem var(--cond); letter-spacing:.02em; box-shadow:inset 0 1px 0 rgba(255,255,255,.35), 0 4px 0 #5A151B, 0 8px 16px rgba(0,0,0,.35)}
+.spread h2.ut{font:800 clamp(2.2rem,7.6vw,5.4rem)/0.95 var(--cond); letter-spacing:-.01em; margin:0; text-transform:uppercase; color:#F5F1E8; text-shadow:0 2px 0 rgba(0,0,0,.35), 0 12px 30px rgba(0,0,0,.45); max-width:14ch}
+.spread .years{font:600 clamp(1rem,2.4vw,1.35rem) var(--serif); font-style:italic; color:#EBD9A8; letter-spacing:.02em}
+.spread .credit{position:absolute; right:14px; bottom:10px; z-index:2; font:italic 500 .7rem var(--serif); color:rgba(245,241,232,.55); max-width:46%; text-align:right; line-height:1.25}
+.contents .spread .credit{display:none}
+@media(max-width:720px){.spread .credit{display:none}}
+.contents .spread{min-height:240px; border-radius:18px}
+.contents .spread .txt{padding-top:clamp(90px,18vw,150px)}
+.contents .spread h2.ut{font-size:clamp(1.9rem,6vw,4.2rem)}
+.contents .spread a.enter{position:absolute; right:clamp(14px,3vw,28px); bottom:clamp(16px,3vw,26px); z-index:3; display:inline-flex; align-items:center; gap:8px; min-height:48px; padding:0 18px; border-radius:999px; background:#F5F1E8; color:#0A1E33; text-decoration:none; font:800 .92rem var(--sans); letter-spacing:.04em; box-shadow:0 6px 18px rgba(0,0,0,.35)}
+.contents .spread a.enter:hover{background:#fff}
+
+/* ══ THE BOOK VOICE ══ */
+.intro{margin:22px 0 0; display:grid; grid-template-columns:1.4fr 1fr; gap:18px; align-items:start}
+@media(max-width:820px){.intro{grid-template-columns:1fr}}
+.intro .lead p{font-size:1.06rem; line-height:1.65}
+.intro .lead p:first-child::first-letter{font:800 3.6rem/0.85 var(--serif); float:left; margin:.1em .12em 0 0; color:var(--red)}
+.bigq{background:var(--navy); color:var(--on-navy); border-radius:16px; padding:18px 20px 20px; box-shadow:var(--lift); position:relative; overflow:hidden}
+.bigq::before{content:"?"; position:absolute; right:-10px; top:-30px; font:800 9rem/1 var(--serif); color:rgba(255,255,255,.06)}
+.bigq .k{font:700 .72rem var(--sans); letter-spacing:.18em; text-transform:uppercase; color:#EBD9A8; margin-bottom:6px}
+.bigq p{font:600 1.22rem/1.35 var(--serif); margin:0}
+.tl{margin:20px 0 0}
+.tl .k{font:700 .74rem var(--sans); letter-spacing:.16em; text-transform:uppercase; color:var(--gold-deep); margin-bottom:8px}
+.tl .track{display:flex; gap:0; overflow-x:auto; padding:10px 4px 14px; scroll-snap-type:x proximity; position:relative}
+.tl .track::before{content:""; position:absolute; left:0; right:0; top:29px; height:3px; background:linear-gradient(90deg, var(--red), var(--gold)); border-radius:3px}
+.tl .pin{flex:0 0 200px; scroll-snap-align:start; padding:0 12px 0 0; position:relative}
+.tl .pin::before{content:""; position:absolute; left:0; top:22px; width:16px; height:16px; border-radius:50%; background:var(--field); border:4px solid var(--red); box-shadow:0 0 0 3px var(--ground)}
+.tl .pin .y{font:800 1.3rem/1 var(--cond); letter-spacing:.02em; color:var(--red); margin:0 0 14px 26px}
+.tl .pin .t{font-size:.9rem; line-height:1.4; color:var(--ink-soft); margin:0 0 0 2px; padding-top:18px; border-top:1px dashed var(--rule)}
+
+/* ══ CHAPTER OPENER ══ */
+.chap{margin:36px 0 0; scroll-margin-top:70px}
+.chead{display:grid; grid-template-columns:auto 1fr; gap:16px; align-items:center; padding:18px 0 14px; border-top:3px solid var(--navy); border-bottom:1px solid var(--rule)}
+:root[data-theme="dark"] .chead{border-top-color:var(--gold)}
+.badge{display:inline-flex; align-items:center; justify-content:center; width:64px; height:64px; border-radius:14px; background:var(--red); color:#fff; font:800 2rem var(--cond); box-shadow:inset 0 1px 0 rgba(255,255,255,.35), 0 5px 0 #5A151B, 0 10px 18px rgba(0,0,0,.25); flex:0 0 auto}
+.chead .tab{display:inline-block; font:800 .7rem var(--sans); letter-spacing:.24em; text-transform:uppercase; background:var(--navy); color:var(--on-navy); padding:4px 10px; border-radius:4px 4px 0 0}
+:root[data-theme="dark"] .chead .tab{background:var(--gold); color:#12161C}
+.chead h2{font-size:clamp(1.5rem,3.6vw,2.2rem); margin:.15em 0 0}
+.chead .yrs{font:italic 600 1rem var(--serif); color:var(--ink-soft)}
+.cq{margin:12px 0 0; padding:12px 16px; border-left:4px solid var(--gold); background:var(--field-2); border-radius:0 12px 12px 0; font:600 1.05rem/1.4 var(--serif)}
+.cq .k{display:block; font:700 .7rem var(--sans); letter-spacing:.16em; text-transform:uppercase; color:var(--gold-deep); margin-bottom:4px}
+.story{margin:16px 0 0; background:var(--paper); border:1px solid var(--paper-line); border-radius:16px; padding:20px 22px 18px; box-shadow:var(--lift-sm); position:relative; background-image:repeating-linear-gradient(0deg, transparent 0 27px, rgba(122,82,48,.06) 27px 28px)}
+.story .k{font:700 .7rem var(--sans); letter-spacing:.2em; text-transform:uppercase; color:var(--red); margin-bottom:6px}
+.story h3{font-size:1.5rem; margin:0 0 .2em}
+.story .kick{font:italic 1.05rem/1.45 var(--serif); color:var(--ink-soft); margin:0 0 .8em}
+.story p.sp{font-size:1.02rem; line-height:1.68; max-width:70ch}
+.story .think{margin-top:12px; padding:10px 14px; background:var(--a-wash); border-radius:10px; font-weight:600}
+.story .think .k2{font:700 .68rem var(--sans); letter-spacing:.16em; text-transform:uppercase; color:var(--a); display:block; margin-bottom:2px}
+
+/* ══ SECTIONS AND LESSONS ══ */
+.sec{margin:26px 0 0}
+.sec .sh{display:flex; align-items:baseline; gap:12px; flex-wrap:wrap; padding-bottom:6px; border-bottom:2px solid var(--rule)}
+.sec .sh .sn{font:800 .74rem var(--sans); letter-spacing:.2em; text-transform:uppercase; color:var(--red)}
+.sec .sh h3{font-size:1.35rem; margin:0}
+.les{margin:16px 0 0; background:var(--field); border:1px solid var(--rule); border-radius:16px; box-shadow:var(--lift-sm); scroll-margin-top:70px; overflow:hidden}
+.les .lh{display:grid; grid-template-columns:auto 1fr auto; gap:12px; align-items:center; padding:12px 16px; background:var(--field-2); border-bottom:1px solid var(--rule-soft)}
+.les .ln{display:inline-flex; align-items:center; justify-content:center; min-width:52px; height:36px; padding:0 8px; border-radius:8px; background:var(--navy); color:var(--on-navy); font:800 1.05rem var(--cond); letter-spacing:.04em}
+:root[data-theme="dark"] .les .ln{background:var(--gold); color:#12161C}
+.les .lh h4{font-size:1.2rem; margin:0}
+.les .tick{width:26px; height:26px; border-radius:50%; border:2px solid var(--rule); display:inline-flex; align-items:center; justify-content:center; font-size:.8rem; color:transparent; background:var(--field)}
+.les.done .tick{background:var(--good); border-color:var(--good); color:#fff}
+.les .body{padding:14px 16px 16px; display:grid; grid-template-columns:minmax(0,1.5fr) minmax(0,1fr); gap:16px}
+@media(max-width:820px){.les .body{grid-template-columns:1fr}}
+.main-idea{padding:10px 14px; border-radius:10px; background:var(--acc-soft); border-left:4px solid var(--acc); font:600 1rem/1.4 var(--serif); color:var(--ink)}
+.main-idea .k{display:block; font:700 .66rem var(--sans); letter-spacing:.16em; text-transform:uppercase; color:var(--acc); margin-bottom:2px}
+.reading p{font-size:1.02rem; line-height:1.68; max-width:68ch}
+.kw{display:inline; padding:0 .12em; margin:0; border:0; border-bottom:2px solid var(--gold); background:linear-gradient(transparent 62%, rgba(184,137,58,.22) 62%); border-radius:2px; cursor:pointer; font:inherit; font-weight:700; color:var(--ink); line-height:inherit; position:relative}
+.kw:hover{background:linear-gradient(transparent 55%, rgba(184,137,58,.35) 55%)}
+.kwpop{position:absolute; z-index:40; left:0; top:calc(100% + 8px); min-width:240px; max-width:320px; padding:10px 12px; background:var(--navy); color:var(--on-navy); border-radius:10px; font:400 .92rem/1.45 var(--sans); box-shadow:0 12px 30px rgba(0,0,0,.35); text-align:left; white-space:normal}
+.kwpop::before{content:""; position:absolute; top:-6px; left:14px; width:12px; height:12px; background:var(--navy); transform:rotate(45deg)}
+.kwpop.right{left:auto; right:0}
+.kwpop.right::before{left:auto; right:14px}
+.words{margin-top:6px; padding:12px 14px; border:1px dashed var(--rule); border-radius:12px; background:var(--field-2)}
+.words .k{font:700 .68rem var(--sans); letter-spacing:.16em; text-transform:uppercase; color:var(--gold-deep); margin-bottom:6px}
+.words dl{margin:0; display:grid; gap:6px}
+.words dt{font-weight:800; font-family:var(--serif)}
+.words dd{margin:0 0 2px; font-size:.93rem; color:var(--ink-soft)}
+.lbtns{display:flex; gap:8px; flex-wrap:wrap; margin-top:10px}
+.lbtn{min-height:44px; padding:8px 14px; border-radius:999px; border:1px solid var(--rule); background:var(--field); cursor:pointer; font-weight:700; font-size:.88rem; display:inline-flex; align-items:center; gap:8px}
+.lbtn svg{width:16px; height:16px}
+.lbtn[aria-pressed="true"]{background:var(--navy); color:var(--on-navy); border-color:var(--navy)}
+:root[data-theme="dark"] .lbtn[aria-pressed="true"]{background:var(--gold); color:#12161C; border-color:var(--gold)}
+
+/* the look panel: a source on parchment, a bar chart, a scenario */
+.look{border-radius:14px; padding:14px 16px 16px; position:relative; overflow:hidden}
+.look .k{font:700 .66rem var(--sans); letter-spacing:.18em; text-transform:uppercase; margin-bottom:6px; display:flex; gap:8px; align-items:center}
+.look .k svg{width:16px; height:16px}
+.look h5{font:800 1.1rem/1.25 var(--serif); margin:0 0 .4em}
+.look .prompt{margin-top:10px; padding-top:8px; border-top:1px dashed var(--rule); font-weight:600; font-size:.95rem}
+.look.source{background:var(--paper); border:1px solid var(--paper-line); background-image:radial-gradient(120% 80% at 100% 0%, rgba(184,137,58,.10), transparent 60%)}
+.look.source .k{color:var(--acc)}
+.look.source blockquote{margin:0; padding:2px 0 0 16px; border-left:3px solid var(--gold); font:italic 1.05rem/1.55 var(--serif)}
+.look.source blockquote::before{content:"“"; font:800 2.4rem/0 var(--serif); color:var(--gold); vertical-align:-.35em; margin-right:2px}
+.look.source cite{display:block; margin-top:8px; font:600 .84rem var(--sans); color:var(--ink-soft); font-style:normal}
+.look.data{background:var(--field-2); border:1px solid var(--rule-soft)}
+.look.data .k{color:var(--navy-2)}
+.look.data svg.chart{width:100%; height:auto; display:block; margin-top:4px}
+.look.data .cite{font:600 .8rem var(--sans); color:var(--ink-faint); margin-top:6px}
+.look.think{background:var(--a-wash); border:1px solid rgba(74,58,140,.18)}
+.look.think .k{color:var(--a)}
+.look.think p.sc{font-size:.98rem; line-height:1.55}
+.chart text{font:600 11px var(--sans); fill:var(--ink-soft)}
+.chart .val{fill:var(--ink); font-weight:800}
+.chart rect.bar{fill:var(--navy-2)}
+:root[data-theme="dark"] .chart rect.bar{fill:var(--gold)}
+.chart line.ax{stroke:var(--rule); stroke-width:1}
+
+/* checks */
+.checks{margin-top:14px; padding:12px 14px 6px; border-top:1px solid var(--rule-soft); grid-column:1/-1}
+.checks .k{font:700 .7rem var(--sans); letter-spacing:.18em; text-transform:uppercase; color:var(--navy-2); margin-bottom:8px; display:flex; justify-content:space-between; gap:8px; align-items:center}
+.checks .score{font:800 .9rem var(--cond); letter-spacing:.06em; color:var(--good); min-width:3ch; text-align:right}
+.q{margin:0 0 12px; padding:10px 12px 12px; border-radius:12px; background:var(--field-2); border:1px solid var(--rule-soft)}
+.q .qq{font-weight:700; margin:0 0 8px; line-height:1.4}
+.q .qn{display:inline-block; min-width:1.6em; color:var(--red); font:800 1rem var(--cond)}
+.opts{display:grid; gap:6px; margin:0; padding:0; list-style:none}
+@media(min-width:820px){.q.wide .opts{grid-template-columns:1fr 1fr}}
+.opt{min-height:44px; width:100%; text-align:left; padding:9px 12px; border:1px solid var(--rule); border-radius:10px; background:var(--field); cursor:pointer; font-size:.97rem; display:flex; gap:10px; align-items:flex-start; line-height:1.35}
+.opt .l{flex:0 0 22px; height:22px; border-radius:50%; border:1.5px solid var(--rule); display:inline-flex; align-items:center; justify-content:center; font:800 .72rem var(--sans); color:var(--ink-soft); margin-top:1px}
+.opt:hover{border-color:var(--navy-2)}
+.opt[data-st="right"]{border-color:var(--good); background:var(--good-wash); font-weight:700}
+.opt[data-st="right"] .l{background:var(--good); border-color:var(--good); color:#fff}
+.opt[data-st="tried"]{opacity:.5}
+.opt[data-st="tried"] .l{background:var(--caution-wash); border-color:var(--caution); color:var(--caution)}
+.opt:disabled{cursor:default}
+.why{margin:8px 0 0; padding:8px 12px; border-radius:8px; background:var(--good-wash); color:var(--ink); font-size:.93rem; line-height:1.45}
+.why b{color:var(--good)}
+.why[hidden]{display:none}
+.say{font-size:.92rem; color:var(--caution); margin:6px 0 0; min-height:1.3em; font-weight:600}
+
+/* chapter review + unit test */
+.review{margin:24px 0 0; background:var(--field); border:1px solid var(--rule); border-radius:16px; box-shadow:var(--lift-sm); overflow:hidden}
+.review > .rh{display:flex; gap:12px; align-items:center; justify-content:space-between; padding:12px 16px; background:var(--navy); color:var(--on-navy)}
+:root[data-theme="dark"] .review > .rh{background:var(--field-3); color:var(--ink)}
+.review > .rh .k{font:800 .74rem var(--sans); letter-spacing:.2em; text-transform:uppercase}
+.review > .rh h3{font-size:1.15rem; margin:0; color:inherit}
+.review .rscore{font:800 1.4rem var(--cond); letter-spacing:.04em; min-width:5ch; text-align:right}
+.review .rbody{padding:14px 16px 8px}
+.review .rfoot{padding:8px 16px 16px; display:flex; gap:10px; flex-wrap:wrap; align-items:center}
+.btn{min-height:48px; padding:10px 20px; border-radius:12px; border:1px solid var(--rule); background:var(--field); cursor:pointer; font-weight:700}
+.btn-a{background:var(--navy); border-color:var(--navy); color:var(--on-navy)}
+:root[data-theme="dark"] .btn-a{background:var(--gold); border-color:var(--gold); color:#12161C}
+.verdict{font-weight:700; color:var(--ink-soft)}
+
+/* ══ WRAP-UP ══ */
+.wrap-up{margin:40px 0 0}
+.wrap-up .wh{display:grid; grid-template-columns:auto 1fr; gap:16px; align-items:center; padding:18px 0 14px; border-top:3px solid var(--red); border-bottom:1px solid var(--rule)}
+.wrap-up .wh .badge{background:var(--navy); box-shadow:inset 0 1px 0 rgba(255,255,255,.2), 0 5px 0 #05101C, 0 10px 18px rgba(0,0,0,.25); font-size:1.4rem}
+:root[data-theme="dark"] .wrap-up .wh .badge{background:var(--gold); color:#12161C; box-shadow:inset 0 1px 0 rgba(255,255,255,.35), 0 5px 0 #7A5C1F}
+.wrap-up .wh h2{font-size:clamp(1.5rem,3.6vw,2.1rem); margin:.1em 0 0}
+.match{margin-top:16px; background:var(--field); border:1px solid var(--rule); border-radius:16px; padding:14px 16px 16px; box-shadow:var(--lift-sm)}
+.match .mh{display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:8px}
+.match .mh h3{font-size:1.15rem; margin:0}
+.match .mscore{font:800 1.1rem var(--cond); color:var(--good)}
+.mgrid{display:grid; grid-template-columns:1fr 1fr; gap:10px}
+@media(max-width:640px){.mgrid{grid-template-columns:1fr}}
+.mcol{display:grid; gap:8px; align-content:start}
+.mcol .ck{font:700 .68rem var(--sans); letter-spacing:.16em; text-transform:uppercase; color:var(--ink-faint)}
+.mt{min-height:48px; text-align:left; padding:10px 12px; border-radius:10px; border:1.5px solid var(--rule); background:var(--field-2); cursor:pointer; font-size:.95rem; line-height:1.35}
+.mt.w{font-weight:800; font-family:var(--serif); font-size:1.02rem}
+.mt[aria-pressed="true"]{border-color:var(--navy-2); background:var(--a-wash)}
+.mt.ok{border-color:var(--good); background:var(--good-wash); opacity:.75; cursor:default}
+.mt.no{animation:shake .3s}
+@keyframes shake{25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
+.write{margin-top:16px; background:var(--paper); border:1px solid var(--paper-line); border-radius:16px; padding:16px 18px 18px; box-shadow:var(--lift-sm)}
+.write h3{font-size:1.15rem; margin:0 0 .3em}
+.write .wp{font:600 1.05rem/1.5 var(--serif)}
+.write ul{margin:.4em 0 .6em; padding-left:1.2em}
+.write li{margin:.25em 0; font-size:.95rem}
+.write textarea{width:100%; min-height:200px; padding:12px 14px; border:1px solid var(--rule); border-radius:12px; background:var(--field); color:var(--ink); font:1rem/1.6 var(--serif); resize:vertical}
+.write .wfoot{display:flex; gap:10px; align-items:center; flex-wrap:wrap; margin-top:8px}
+.write .wc{font:700 .84rem var(--sans); color:var(--ink-faint)}
+.rooms{margin-top:16px; background:var(--field); border:1px solid var(--rule); border-radius:16px; padding:14px 16px; box-shadow:var(--lift-sm)}
+.rooms h3{font-size:1.15rem; margin:0 0 .2em}
+.rooms p{color:var(--ink-soft); font-size:.95rem; margin:0 0 .6em}
+.rooms .doors{display:flex; gap:8px; flex-wrap:wrap}
+.rooms .door{display:inline-flex; align-items:center; min-height:44px; padding:8px 14px; border:1px solid var(--rule); border-radius:999px; background:var(--field-2); color:var(--ink); font:600 .88rem var(--sans); text-decoration:none}
+.rooms .door:hover{border-color:var(--acc)}
+.pager2{display:flex; justify-content:space-between; gap:10px; margin:28px 0 0; flex-wrap:wrap}
+.pager2 a{display:inline-flex; align-items:center; gap:8px; min-height:48px; padding:0 16px; border-radius:12px; border:1px solid var(--rule); background:var(--field); color:var(--ink); text-decoration:none; font-weight:700}
+.pager2 a:hover{border-color:var(--navy-2)}
+.pager2 a .s{display:block; font:700 .66rem var(--sans); letter-spacing:.16em; text-transform:uppercase; color:var(--ink-faint)}
+
+/* ══ THE CONTENTS DRAWER ══ chapters → sections → lessons, on the phone */
+.drawer{position:fixed; inset:0; z-index:60; display:none}
+.drawer[data-open="1"]{display:block}
+.drawer .scrim{position:absolute; inset:0; background:rgba(10,30,51,.5); backdrop-filter:blur(3px)}
+.drawer .sheet{position:absolute; right:0; top:0; bottom:0; width:min(420px,92vw); background:var(--field); box-shadow:-10px 0 40px rgba(0,0,0,.35); display:flex; flex-direction:column; animation:slidein .28s cubic-bezier(.2,.8,.2,1)}
+@keyframes slidein{from{transform:translateX(30px);opacity:0}}
+.drawer .dh{display:flex; justify-content:space-between; align-items:center; padding:12px 14px 10px; border-bottom:1px solid var(--rule)}
+.drawer .dh b{font:800 .8rem var(--sans); letter-spacing:.16em; text-transform:uppercase; color:var(--gold-deep)}
+.drawer .dh button{min-width:44px; min-height:44px; border-radius:999px; border:1px solid var(--rule); background:var(--field-2); cursor:pointer; font-size:1.2rem}
+.drawer nav{overflow:auto; padding:8px 8px 20px}
+.drawer nav a{display:block; padding:9px 10px; border-radius:8px; color:var(--ink); text-decoration:none; font-size:.95rem; min-height:44px; display:flex; align-items:center; gap:8px}
+.drawer nav a:hover{background:var(--field-2)}
+.drawer nav .dc{margin:8px 0 2px; padding:6px 10px; font:800 .95rem var(--serif); border-bottom:1px solid var(--rule-soft)}
+.drawer nav .dc .b{display:inline-flex; width:26px; height:26px; border-radius:6px; background:var(--red); color:#fff; align-items:center; justify-content:center; font:800 .85rem var(--cond); margin-right:8px}
+.drawer nav .ds{padding:6px 10px 2px; font:800 .66rem var(--sans); letter-spacing:.16em; text-transform:uppercase; color:var(--red)}
+.drawer nav a .n{font:800 .8rem var(--cond); color:var(--ink-faint); min-width:2.4em}
+.drawer nav a .t2{display:inline-block; width:10px; height:10px; border-radius:50%; border:1.5px solid var(--rule); margin-left:auto; flex:0 0 auto}
+.drawer nav a.done .t2{background:var(--good); border-color:var(--good)}
+
+/* ══ CONTENTS PAGE ══ */
+.contents .search{margin:16px 0 0; display:grid; gap:6px}
+.contents .search label{font-weight:700; font-size:.9rem; color:var(--ink-soft)}
+.contents .search .box{position:relative}
+.contents .search input{width:100%; min-height:52px; padding:10px 14px 10px 46px; border:1px solid var(--rule); border-radius:14px; background:var(--field); color:var(--ink); font:1.02rem var(--sans); box-shadow:var(--lift-sm)}
+.contents .search svg{position:absolute; left:16px; top:50%; transform:translateY(-50%); width:20px; height:20px; color:var(--ink-faint)}
+.contents .search .hits{font:700 .82rem var(--sans); color:var(--ink-faint); min-height:1.2em}
+.contents .stat{display:flex; gap:14px; flex-wrap:wrap; margin:10px 0 0; align-items:center}
+.contents .stat .n{font:800 1.5rem var(--cond); color:var(--red)}
+.contents .stat .l{font:700 .74rem var(--sans); letter-spacing:.12em; text-transform:uppercase; color:var(--ink-faint)}
+.contents .prog{height:8px; border-radius:6px; background:var(--field-3); overflow:hidden; flex:1 1 120px; min-width:120px}
+.contents .prog i{display:block; height:100%; width:0; background:linear-gradient(90deg, var(--red), var(--gold)); border-radius:6px; transition:width .4s}
+.unit-spread{margin:30px 0 0; scroll-margin-top:70px}
+.bandhead{margin:40px 0 -10px; padding:14px 0 10px; border-top:3px solid var(--navy); display:grid; grid-template-columns:auto 1fr; gap:4px 14px; align-items:baseline; scroll-margin-top:70px}
+:root[data-theme="dark"] .bandhead{border-top-color:var(--gold)}
+.bandhead .bk{font:800 .72rem var(--sans); letter-spacing:.22em; text-transform:uppercase; color:var(--red)}
+.bandhead h2{font:800 clamp(1.6rem,4vw,2.4rem)/1 var(--cond); text-transform:uppercase; letter-spacing:.01em; margin:0}
+.bandhead .bd{grid-column:2; margin:0; font:600 .88rem var(--sans); color:var(--ink-faint)}
+.unit-spread .body{margin-top:14px}
+.cchap{margin:18px 0 0; background:var(--field); border:1px solid var(--rule); border-radius:16px; box-shadow:var(--lift-sm); overflow:hidden}
+.cchap .ch{display:grid; grid-template-columns:auto 1fr; gap:14px; align-items:center; padding:14px 16px; background:var(--field-2); border-bottom:1px solid var(--rule-soft)}
+.cchap .ch .badge{width:52px; height:52px; font-size:1.6rem}
+.cchap .ch .tab{display:inline-block; font:800 .64rem var(--sans); letter-spacing:.22em; text-transform:uppercase; background:var(--navy); color:var(--on-navy); padding:3px 8px; border-radius:4px 4px 0 0}
+:root[data-theme="dark"] .cchap .ch .tab{background:var(--gold); color:#12161C}
+.cchap .ch h3{font-size:1.25rem; margin:.1em 0 0}
+.cchap .ch .yrs{font:italic 600 .92rem var(--serif); color:var(--ink-soft)}
+.cchap .st{padding:10px 16px 0; font:italic .95rem/1.45 var(--serif); color:var(--ink-soft)}
+.cchap .st b{font-style:normal; color:var(--red); font-family:var(--sans); font-size:.7rem; letter-spacing:.16em; text-transform:uppercase; margin-right:6px}
+.csec{padding:8px 16px 4px}
+.csec .sn{font:800 .7rem var(--sans); letter-spacing:.2em; text-transform:uppercase; color:var(--red); margin:8px 0 4px}
+.csec .sn span{color:var(--ink); font:700 .95rem var(--serif); letter-spacing:0; text-transform:none; margin-left:8px}
+.lrow{display:flex; align-items:center; gap:10px; min-height:44px; padding:5px 8px; border-radius:8px; color:var(--ink); text-decoration:none; font-size:.98rem}
+.lrow:hover{background:var(--field-2)}
+.lrow .n{font:800 .9rem var(--cond); color:var(--ink-faint); min-width:2.6em; letter-spacing:.02em}
+.lrow .tk{margin-left:auto; width:22px; height:22px; border-radius:50%; border:2px solid var(--rule); flex:0 0 auto; display:inline-flex; align-items:center; justify-content:center; color:transparent; font-size:.7rem}
+.lrow.done .tk{background:var(--good); border-color:var(--good); color:#fff}
+.lrow[hidden]{display:none}
+.csec[data-empty="1"], .cchap[data-empty="1"], .unit-spread[data-empty="1"]{display:none}
+.cwrap{padding:10px 16px 14px; display:flex; gap:8px; flex-wrap:wrap; border-top:1px dashed var(--rule-soft); margin-top:6px}
+.cwrap a{display:inline-flex; align-items:center; min-height:40px; padding:0 12px; border-radius:999px; border:1px solid var(--rule); background:var(--field-2); color:var(--ink); text-decoration:none; font:600 .84rem var(--sans)}
+.cwrap a:hover{border-color:var(--navy-2)}
+.teach{margin-top:28px; border:1.5px solid var(--gold); border-radius:14px; background:var(--field)}
+.teach summary{cursor:pointer; list-style:none; min-height:48px; display:flex; align-items:center; padding:10px 16px; font-weight:700; font-size:.92rem; color:var(--gold-deep)}
+.teach summary::-webkit-details-marker{display:none}
+.teach .inner{padding:4px 16px 16px; display:grid; gap:10px; font-size:.93rem; color:var(--ink-soft)}
+.teach .inner p{margin:0}
+footer.foot{margin-top:40px; font-size:.86rem; color:var(--ink-faint); max-width:70ch}
+
+/* ══ PRINT ══ the book, on paper */
+@media print{
+  body{background:#fff; color:#111; font-size:11.5pt}
+  .wrap{max-width:none; padding:0}
+  .rail,.jump,.mast .row,.hubline,.lbtns,.drawer,.checks,.review .rfoot,.pager2,.teach,.contents .search,.contents .stat,.spread .credit,.spread a.enter,.aogj-btn,.aogj-panel{display:none!important}
+  .spread{min-height:0; border-radius:0; box-shadow:none; background:#0A1E33!important; -webkit-print-color-adjust:exact; print-color-adjust:exact; break-inside:avoid}
+  .spread .txt{padding:40pt 20pt 16pt}
+  .chap{break-before:page}
+  .les,.story,.look,.q,.review{break-inside:avoid; box-shadow:none}
+  .les .body{grid-template-columns:1fr}
+  .kw{border-bottom:1px solid #999; background:none; font-weight:700}
+  .kwpop{display:none!important}
+  .opt{border:1px solid #999; background:#fff}
+  .why{display:block!important; border:1px dashed #999; background:#fff}
+  .why.pr{display:none!important}
+  .write textarea{min-height:320pt; border:1px solid #999}
+  a{color:inherit; text-decoration:none}
+}
+
+
+/* ══ AOG-SEL-V1 ══ the lesson's own styles, on the course tokens. The rules
+   below the aliases are the original Lessons page's content rules, verbatim
+   except that --navy (a link blue there) maps to --navy-2 here. */
+:root{ --bg:var(--ground); --card:var(--field); --line:var(--rule); --sub:var(--ink-soft); --chip:var(--field-2);
+  --brass:var(--gold-deep); --brass-soft:var(--acc-soft); --risk:var(--caution); --risk-soft:var(--caution-wash);
+  --good-soft:var(--good-wash); --shadow:var(--lift-sm);
+  --u1:#17646B; --u2:#6B4696; --u3:#A63A2B; --u4:#8A6A1F }
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){ --u1:#5FB8B0; --u2:#B99AD9; --u3:#E08573; --u4:#D9B45C } }
+:root[data-theme="dark"]{ --u1:#5FB8B0; --u2:#B99AD9; --u3:#E08573; --u4:#D9B45C }
+section.lesson h2{border-bottom:0!important}
+section.lesson[hidden]{display:none}
 .lchips{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0 2px}
 .wslink{display:inline-block;border:1.5px solid var(--brass);background:var(--brass-soft);color:var(--brass);border-radius:10px;padding:9px 14px;font:700 .88rem var(--sans);text-decoration:none}
 .wslink:hover{filter:brightness(.96)}
@@ -165,7 +443,7 @@ section.lesson h2{font-family:var(--serif);font-weight:900;font-size:clamp(1.6re
 .blab{font-size:.7rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--sub)}
 .box.risk{background:var(--risk-soft);border-color:var(--risk)} .box.risk .blab{color:var(--risk)}
 .box.chart{background:var(--brass-soft);border:1.5px dashed var(--brass)} .box.chart .blab{color:var(--brass)}
-.box.scan{border-left:4px solid var(--navy)} .box.scan .blab{color:var(--navy)}
+.box.scan{border-left:4px solid var(--navy-2)} .box.scan .blab{color:var(--navy-2)}
 .box.equity{border-left:4px solid var(--u2)} .box.equity .blab{color:var(--u2)}
 .box.exit{border-left:4px solid var(--good)} .box.exit .blab{color:var(--good)}
 .box.family{background:var(--good-soft)} .box.family .blab{color:var(--good)}
@@ -192,140 +470,196 @@ section.lesson h2{font-family:var(--serif);font-weight:900;font-size:clamp(1.6re
 .artnote{font-family:var(--serif);font-style:italic;color:var(--sub);font-size:.9rem;margin:8px 0 18px}
 ul{margin:8px 0;padding-left:22px}
 li{margin:3px 0;font-size:.94rem}
-footer{margin:48px 0 0;border-top:1px solid var(--line);padding-top:16px;color:var(--sub);font-size:.85rem;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
-footer a{color:var(--navy);font-weight:700;text-decoration:none}
+
+
+/* ══ the engine around the lesson ══ */
+.rail a[data-unit]{--uc:var(--u1)} .rail a[data-unit="u2"]{--uc:var(--u2)} .rail a[data-unit="u3"]{--uc:var(--u3)} .rail a[data-unit="u4"]{--uc:var(--u4)}
+.rail a[aria-current="page"][data-unit]{background:var(--uc); border-color:var(--uc); color:#fff}
+.rail a.ws{font:700 .84rem var(--sans); letter-spacing:.02em}
+.spread .scene[hidden]{display:none}
+.spread .unum b.ws{font-size:1.1rem}
+.lstrip{margin:14px 0 0; display:flex; gap:6px; align-items:center; overflow-x:auto; scrollbar-width:none; padding-bottom:4px}
+.lstrip::-webkit-scrollbar{display:none}
+.lstrip[hidden]{display:none}
+.lstrip .k{flex:0 0 auto; font:700 .7rem var(--sans); letter-spacing:.14em; text-transform:uppercase; color:var(--ink-faint); margin-right:4px}
+.lstrip a{flex:0 0 auto; position:relative; display:inline-flex; align-items:center; justify-content:center; gap:6px; min-width:44px; min-height:44px; padding:0 12px; border-radius:12px; border:1px solid var(--rule); background:var(--field); color:var(--ink); text-decoration:none; font:800 .92rem var(--cond); letter-spacing:.04em}
+.lstrip a[aria-current="page"]{background:var(--navy); border-color:var(--navy); color:var(--on-navy)}
+:root[data-theme="dark"] .lstrip a[aria-current="page"]{background:var(--gold); border-color:var(--gold); color:#12161C}
+.lstrip a .t2{width:9px; height:9px; border-radius:50%; border:1.5px solid var(--rule); display:inline-block}
+.lstrip a.done .t2{background:var(--good); border-color:var(--good)}
+.lstrip a.ov{font:700 .8rem var(--sans)}
+.lescard{margin:16px 0 0; background:var(--field); border:1px solid var(--rule); border-radius:16px; box-shadow:var(--lift-sm); overflow:hidden; scroll-margin-top:70px}
+.lescard .lh{display:grid; grid-template-columns:auto 1fr auto; gap:12px; align-items:center; padding:12px 16px; background:var(--field-2); border-bottom:1px solid var(--rule-soft)}
+@media(max-width:640px){.lescard .lh{grid-template-columns:auto 1fr} .lescard .lh .tools{grid-column:1/-1}}
+.lescard .ln{display:inline-flex; align-items:center; justify-content:center; min-width:52px; height:36px; padding:0 10px; border-radius:8px; background:var(--navy); color:var(--on-navy); font:800 1.05rem var(--cond); letter-spacing:.04em}
+:root[data-theme="dark"] .lescard .ln{background:var(--gold); color:#12161C}
+.lescard .lh h4{font-size:1.15rem; margin:0}
+.lescard .lh .sub{display:block; font:700 .68rem var(--sans); letter-spacing:.14em; text-transform:uppercase; color:var(--ink-faint); margin-top:2px}
+.lescard .tools{display:flex; gap:8px; flex-wrap:wrap; justify-content:flex-end}
+.lescard .body{padding:6px 18px 20px}
+.lescard .body > section.lesson{margin-top:6px}
+.lescard .lhead{display:none}   /* the unit chip and "Lesson n" line: the header row above carries them now */
+.tickbtn .tk{width:20px; height:20px; border-radius:50%; border:2px solid var(--rule); display:inline-flex; align-items:center; justify-content:center; color:transparent; font-size:.7rem}
+.tickbtn[aria-pressed="true"] .tk{background:var(--good); border-color:var(--good); color:#fff}
+.tickbtn[aria-pressed="true"]{border-color:var(--good)}
+.botdoor{margin:22px 0 0; display:flex; gap:10px; flex-wrap:wrap; justify-content:center}
+.wstab,.cardsdoor{display:inline-flex; align-items:center; min-height:48px; border:1px solid var(--rule); border-left:4px solid var(--gold); background:var(--field); color:var(--ink); border-radius:12px; padding:0 18px; font:800 .92rem var(--sans); text-decoration:none}
+.wstab:hover,.cardsdoor:hover{border-color:var(--gold)}
+.wstab[aria-current="true"]{background:var(--field-2)}
+.cardsdoor{border-left-color:var(--a)}
+.cardsdoor[hidden]{display:none}
+.drawer nav .dc .b[data-unit="u1"]{background:var(--u1)} .drawer nav .dc .b[data-unit="u2"]{background:var(--u2)} .drawer nav .dc .b[data-unit="u3"]{background:var(--u3)} .drawer nav .dc .b[data-unit="u4"]{background:var(--u4)}
+.drawer nav a[aria-current="page"]{background:var(--field-2); font-weight:700}
+.teach .mats{display:flex; gap:8px; flex-wrap:wrap}
+.teach .mats a{display:inline-flex; align-items:center; min-height:40px; padding:0 12px; border-radius:999px; border:1px solid var(--rule); background:var(--field-2); color:var(--ink); text-decoration:none; font:600 .84rem var(--sans)}
 @media print{
-  body{background:#fff;color:#111;padding:0;font-size:11.5px}
-  .pickbar,.tools,.mats,footer{display:none !important}
-  .wrap{max-width:none}
-  .step,.box,.duo-col,.kv{break-inside:avoid;box-shadow:none}
+  .lstrip,.lescard .tools,.botdoor,.teach{display:none!important}
+  .lescard{border:0; box-shadow:none} .lescard .lh{background:#fff; border-bottom:2px solid #000}
+  .step,.box,.duo-col,.kv{break-inside:avoid; box-shadow:none}
 }
+
 </style>
 </head>
 <body>
 <script src="/aog-topbar.js"></script>
 <script src="/aog-grace.js" defer></script>
-
-
-<!-- ══ AOG-R36-NAV — emitted from _work/r36/r36_nav.py; regenerate, never hand-edit one copy ══ -->
-<header class="r36top">
-  <a class="brand" href="/" aria-label="Architecture of Grace — home"><span class="mk" aria-hidden="true">A</span><span class="nm">Architecture of Grace</span></a>
-  <div class="acts">
-    <a class="pill" href="/" id="r36Back"><span class="arr" aria-hidden="true">&larr;</span> Back</a>
-    <a class="pill" href="/#quiet-space" title="Quiet Space — an in-the-moment reset">Quiet Space</a>
-    <div class="r36wrap">
-      <button class="pill" type="button" id="r36MenuBtn" aria-haspopup="true" aria-expanded="false" aria-controls="r36Menu">Explore</button>
-      <div class="r36menu" id="r36Menu" role="menu" aria-label="Explore Architecture of Grace" hidden>
-        <div class="lab">Room 36 · SEL 6&ndash;8</div>
-        <a role="menuitem" href="/room36"><span class="t">The Curriculum</span><span class="s">Crosswalk, marker guide, Grace in Practice.</span></a>
-        <a role="menuitem" href="/lessons36"><span class="t">The Lessons</span><span class="s">All 28 lessons, by unit — ready to teach.</span></a>
-        <a role="menuitem" href="/wb36"><span class="t">The Companion Workbook</span><span class="s">Choose-the-answer and in-your-own-words.</span></a>
-        <a role="menuitem" href="/charts36"><span class="t">Anchor Charts</span><span class="s">All four units&rsquo; boards, built live.</span></a>
-        <div class="lab">Understand</div>
-        <a role="menuitem" href="/#framework"><span class="t">Framework</span><span class="s">The four pillars, and where they came from.</span></a>
-        <a role="menuitem" href="/#curriculum"><span class="t">The Curriculum, K&ndash;12</span><span class="s">Five books and the Adult edition.</span></a>
-        <a role="menuitem" href="/#library"><span class="t">Library</span><span class="s">Every open preview, sample lesson and pack.</span></a>
-        <div class="lab">In the classroom</div>
-        <a role="menuitem" href="/#results"><span class="t">Dashboard</span><span class="s">Hand it out, read the group, find the lesson.</span></a>
-        <a role="menuitem" href="/#talk"><span class="t">Talk It Out</span><span class="s">Discussion prompts for the whole room.</span></a>
-        <a role="menuitem" href="/#tools"><span class="t">Calm &amp; Regulation Tools</span><span class="s">Quiet Space and the calming corner.</span></a>
-        <a role="menuitem" href="/turnins"><span class="t">Turn-ins</span><span class="s">Every FINISHED worksheet and result, one inbox.</span></a>
-        <div class="lab">Subjects · The Interior</div>
-        <a role="menuitem" href="/math"><span class="t">Math &middot; The Interior</span><span class="s">Fourteen practice pages, plus fall test prep.</span></a>
-        <a role="menuitem" href="/concepts"><span class="t">Math &middot; Concepts &amp; Data</span><span class="s">Fractions and data from the ground up.</span></a>
-        <a role="menuitem" href="/science"><span class="t">Science</span><span class="s">The word list, the microscope, the test prep.</span></a>
-        <a role="menuitem" href="/social"><span class="t">Social Studies</span><span class="s">1787 to 1865, and the three branches.</span></a>
-        <a role="menuitem" href="/b11"><span class="t">English &middot; Grammar</span><span class="s">Sixteen modules — cards, hints, and practice quizzes.</span></a>
-        <a role="menuitem" href="/words"><span class="t">English &middot; Word Study</span><span class="s">Stems, analogies, poetics, the coinage forge.</span></a>
-        <div class="lab">At home</div>
-        <a role="menuitem" href="/#family"><span class="t">Family</span><span class="s">Check in, talk, repair: one shared language.</span></a>
-      </div>
-    </div>
-    <div class="r36wrap">
-      <button class="ico" type="button" id="r36A11yBtn" aria-haspopup="true" aria-expanded="false" aria-controls="r36A11y" aria-label="Accessibility options" title="Accessibility options">
-        <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="4" r="1.6"/><path d="M5 8h14M9 8l1 11M15 8l-1 11M12 8v5"/></svg>
-      </button>
-      <div class="r36menu" id="r36A11y" role="menu" aria-label="Accessibility options" hidden>
-        <div class="lab">Accessibility</div>
-        <button type="button" class="arow first" role="menuitemcheckbox" aria-checked="false" id="r36HcRow">
-          <span><span class="t">High contrast</span><span class="s">Stronger text &amp; edges</span></span><span class="sw" aria-hidden="true"></span>
-        </button>
-        <button type="button" class="arow" role="menuitemcheckbox" aria-checked="false" id="r36DysRow">
-          <span><span class="t">Dyslexia-friendly font</span><span class="s">Easier letter shapes &amp; spacing</span></span><span class="sw" aria-hidden="true"></span>
-        </button>
-      </div>
-    </div>
-  </div>
-</header>
-
 <div class="wrap">
-<header class="page">
-  <div class="eyebrow">
-    <span class="crumb">Room 36 · Book 3 · The Interior · Grades 6&ndash;8</span>
-    <div class="tools">
-      <button id="themeBtn" type="button" aria-label="Toggle dark mode">Theme</button>
-      <button type="button" onclick="window.print()">Print this lesson</button>
-    </div>
+<header class="mast">
+  <div>
+    <div class="k"><span data-en="The Interior — SEL · Room 36 ·" data-es="El Interior — SEL · Salón 36 ·">The Interior — SEL · Room 36 ·</span><span class="k" style="margin-left:6px"><span data-en="Book 3 · The Interior · Grades 6–8" data-es="Libro 3 · Grados 6–8">Book 3 · The Interior · Grades 6–8</span></span></div>
+    <h1 data-en="Room 36 · The Lessons" data-es="Salón 36 · Las lecciones">Room 36 · The Lessons</h1>
+    <p class="deck">All 28 SEL lessons of Room 36, ready to teach &mdash; scripts, steps, worksheets, and each lesson&rsquo;s anchor-chart build. Pick a unit, then a lesson.</p>
+    <p class="hubline no-print"><a id="hubLink" href="room-36-curriculum.html"><span data-en="← Room 36, the curriculum" data-es="← Salón 36, el currículo">← Room 36, the curriculum</span></a></p>
   </div>
-  <h1>The Lessons</h1>
-  <p class="tag">All 28 SEL lessons of Room 36, ready to teach &mdash; scripts, steps, worksheets, and each lesson&rsquo;s anchor-chart build. Pick a unit, then a lesson.</p>
-  <div class="mats">
-    <a href="room-36-curriculum.html">The curriculum</a>
-    <a href="room-36-workbook.html">The companion workbook</a>
-    <a href="AoG-Anchor-Charts.html">Anchor charts, built live</a>
+  <div class="row no-print">
+    <button class="chipbtn" id="langBtn" type="button">Español</button>
+    <button class="chipbtn" id="themeBtn" type="button" data-en="Dark" data-es="Oscuro">Dark</button>
   </div>
 </header>
 
-<div class="pickbar">
-  <button type="button" id="prevBtn" aria-label="Previous lesson">&larr;</button>
-  <select id="lessonSel" aria-label="Pick a unit and lesson">
-<optgroup label="Worksheets">
-<option value="worksheets">The interactive worksheets — all six</option>
+<main id="main">
+<div class="jump no-print"><label><span data-en="Jump to another room" data-es="Ir a otro salón">Jump to another room</span><select id="roomSel"><optgroup label="SEL · The rooms">
+<option value="room-12-lessons.html">Room 12 · Grades K–2 · The Lessons</option>
+<option value="room-18-lessons.html">Room 18 · Grades 3–5 · The Lessons</option>
+<option value="room-36-lessons.html" selected>Room 36 · Grades 6–8 · The Lessons</option>
+<option value="room-104-lessons.html">Room 104 · Grades 9–10 · The Lessons</option>
+<option value="room-207-lessons.html">Room 207 · Grades 11–12 · The Lessons</option>
 </optgroup>
-<optgroup label="Unit 1 · Identity &amp; The Weight of Perception">
-<option value="u1">Unit 1 overview — Identity &amp; The Weight of Perception</option>
-<option value="u1l1">L1 · The Mask vs. The Mirror</option>
-<option value="u1l2">L2 · The Anatomy of a Mistake</option>
-<option value="u1l3">L3 · The Digital Backpack</option>
-<option value="u1l4">L4 · Peer Pressure &amp; The Volume of Integrity</option>
-<option value="u1l5">L5 · Owning Your Narrative</option>
-<option value="u1l6">L6 · The Agency of Choice</option>
-<option value="u1l7">L7 · Unit 1 Wrap-Up &amp; Bridge to Unit 2</option>
-</optgroup>
-<optgroup label="Unit 2 · Self-Compassion &amp; The Internal Critic">
-<option value="u2">Unit 2 overview — Self-Compassion &amp; The Internal Critic</option>
-<option value="u2l1">L1 · The Internal Critic</option>
-<option value="u2l2">L2 · Highlight Reels &amp; The Comparison Trap</option>
-<option value="u2l3">L3 · Perfectionism — The Critic in Disguise</option>
-<option value="u2l4">L4 · Accountability Without Self-Punishment</option>
-<option value="u2l5">L5 · The Friend Test</option>
-<option value="u2l6">L6 · Rewriting the Script</option>
-<option value="u2l7">L7 · Unit 2 Reflection &amp; Bridge to Unit 3</option>
-</optgroup>
-<optgroup label="Unit 3 · Empathy &amp; Forgiving Others">
-<option value="u3">Unit 3 overview — Empathy &amp; Forgiving Others</option>
-<option value="u3l1">L1 · Impact vs. Intent</option>
-<option value="u3l2">L2 · Three Sides of Every Story</option>
-<option value="u3l3">L3 · Forgiveness vs. Reconciliation</option>
-<option value="u3l4">L4 · The Digital Echo</option>
-<option value="u3l5">L5 · The Rumor &amp; Narrative Hijack</option>
-<option value="u3l6">L6 · The Agency of Release — Letter of Release</option>
-<option value="u3l7">L7 · Limits from Self-Respect + Unit 3 Wrap-Up &amp; Bridge to Unit 4</option>
-</optgroup>
-<optgroup label="Unit 4 · Grace &amp; Generosity">
-<option value="u4">Unit 4 overview — Grace &amp; Generosity</option>
-<option value="u4l1">L1 · What Is Grace?</option>
-<option value="u4l2">L2 · What Does Mercy Look Like?</option>
-<option value="u4l3">L3 · Giving the Benefit of the Doubt</option>
-<option value="u4l4">L4 · Small Acts, Big Difference — The Grace Challenge</option>
-<option value="u4l5">L5 · Grace With Hard People</option>
-<option value="u4l6">L6 · Grace Audit — Final Project</option>
-<option value="u4l7">L7 · Community Charter &amp; Year-End Celebration</option>
-</optgroup>
-  </select>
-  <button type="button" id="nextBtn" aria-label="Next lesson">&rarr;</button>
-</div>
+<optgroup label="Room 36">
+<option value="room-36-curriculum.html">The curriculum</option>
+<option value="room-36-lessons.html">The Lessons</option>
+<option value="room-36-cards.html">Scenario cards</option>
+<option value="room-36-workbook.html">The companion workbook</option>
+<option value="AoG-Anchor-Charts.html">Anchor charts</option>
+</optgroup></select></label></div>
+<nav class="rail no-print" aria-label="Units"><div class="in"><span class="k"><span data-en="Unit" data-es="Unidad">Unit</span></span><a href="?l=u1" data-unit="u1" data-show="u1" title="Identity &amp; The Weight of Perception">1</a><a href="?l=u2" data-unit="u2" data-show="u2" title="Self-Compassion &amp; The Internal Critic">2</a><a href="?l=u3" data-unit="u3" data-show="u3" title="Empathy &amp; Forgiving Others">3</a><a href="?l=u4" data-unit="u4" data-show="u4" title="Grace &amp; Generosity">4</a><a href="?l=worksheets" class="ws" data-unit="worksheets" data-show="worksheets"><span data-en="Worksheets" data-es="Hojas de trabajo">Worksheets</span></a><span class="sp"></span><button type="button" class="drawerbtn" id="drawerBtn" aria-controls="drawer" aria-expanded="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M8 6h13M8 12h13M8 18h13"/><circle cx="3.5" cy="6" r="1.2" fill="currentColor" stroke="none"/><circle cx="3.5" cy="12" r="1.2" fill="currentColor" stroke="none"/><circle cx="3.5" cy="18" r="1.2" fill="currentColor" stroke="none"/></svg><span data-en="Contents" data-es="Contenido">Contents</span></button></div></nav>
 
+<section class="spread" aria-labelledby="ut" id="spread">
+  <div class="scene" data-scene="u1" hidden aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 420" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Drawn scene: a quiet dresser at dusk with an oval mirror reflecting the evening sky and a plain mask resting beside it" focusable="false"><defs><linearGradient id="sb36u1-wall" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3A3050"/><stop offset="1" stop-color="#221C34"/></linearGradient><linearGradient id="sb36u1-sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4A4A8A"/><stop offset="0.6" stop-color="#A06A8A"/><stop offset="1" stop-color="#F0A070"/></linearGradient><linearGradient id="sb36u1-glass" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#5A5A9A"/><stop offset="0.6" stop-color="#B07A98"/><stop offset="1" stop-color="#E8A880"/></linearGradient><linearGradient id="sb36u1-wood" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8A5A3A"/><stop offset="1" stop-color="#4A2E1C"/></linearGradient><radialGradient id="sb36u1-glow" cx="0.5" cy="0.5" r="0.5"><stop offset="0" stop-color="#FFE8A0" stop-opacity="0.7"/><stop offset="1" stop-color="#FFE8A0" stop-opacity="0"/></radialGradient></defs>
+<rect width="1200" height="420" fill="url(#sb36u1-wall)"/>
+<rect x="60" y="30" width="300" height="190" fill="#1A1428"/><rect x="72" y="42" width="276" height="166" fill="url(#sb36u1-sky)"/>
+<g fill="#FFF4DA" opacity=".6"><circle cx="296" cy="13" r="1.4"/><circle cx="251" cy="0" r="0.7"/><circle cx="302" cy="47" r="1.2"/><circle cx="197" cy="10" r="1.3"/><circle cx="300" cy="65" r="1.2"/><circle cx="327" cy="20" r="1.1"/><circle cx="266" cy="67" r="0.8"/><circle cx="181" cy="14" r="1.3"/><circle cx="160" cy="53" r="1.2"/><circle cx="247" cy="40" r="1.5"/><circle cx="286" cy="39" r="1.2"/><circle cx="233" cy="18" r="1.5"/><circle cx="288" cy="9" r="1.2"/><circle cx="111" cy="44" r="0.9"/><circle cx="194" cy="75" r="0.8"/><circle cx="129" cy="38" r="0.7"/><circle cx="176" cy="61" r="1.0"/><circle cx="335" cy="64" r="1.5"/></g>
+<path d="M210 42 v166 M72 124 h276" stroke="#1A1428" stroke-width="6"/>
+<g fill="#2A2040"><path d="M72 208 v-40 l30 -10 l20 14 l40 -20 l60 30 l40 -14 l40 20 l46 -10 v30z"/></g>
+<path d="M0 250 H1200 V420 H0z" fill="url(#sb36u1-wood)"/><path d="M0 262 q200 4 400 0" stroke="#3A2A20" stroke-width="1" fill="none" opacity=".4"/><path d="M400 262 q200 4 400 0" stroke="#3A2A20" stroke-width="1" fill="none" opacity=".4"/><path d="M800 262 q200 4 400 0" stroke="#3A2A20" stroke-width="1" fill="none" opacity=".4"/>
+<path d="M0 250 h1200 v10 H0z" fill="#A87040" opacity=".6"/>
+<g><ellipse cx="600" cy="80" rx="96" ry="120" fill="#C8A878"/><ellipse cx="600" cy="80" rx="84" ry="108" fill="url(#sb36u1-glass)"/>
+<ellipse cx="600" cy="80" rx="84" ry="108" fill="url(#sb36u1-glow)" opacity=".5"/>
+<path d="M540 40 q20 -40 50 -30" stroke="#FFF" stroke-width="6" fill="none" opacity=".35" stroke-linecap="round"/>
+<path d="M520 120 q80 -30 160 0 v50 q-80 -20 -160 0z" fill="#2A2040" opacity=".55"/>
+<g fill="#FFF4DA" opacity=".5"><circle cx="652" cy="21" r="0.8"/><circle cx="595" cy="40" r="1.5"/><circle cx="630" cy="39" r="0.8"/><circle cx="589" cy="58" r="0.9"/><circle cx="544" cy="49" r="1.0"/><circle cx="567" cy="8" r="1.1"/><circle cx="594" cy="19" r="1.2"/><circle cx="609" cy="26" r="0.9"/></g>
+<circle cx="640" cy="60" r="8" fill="#FFF6D8" opacity=".9"/>
+<path d="M520 90 q-30 30 -26 60 M680 90 q30 30 26 60" stroke="#C8A878" stroke-width="10" fill="none" stroke-linecap="round"/><path d="M494 146 l6 104 M706 146 l-6 104" stroke="#C8A878" stroke-width="10" stroke-linecap="round"/><rect x="480" y="240" width="240" height="12" rx="4" fill="#A8885A"/></g>
+<g><path d="M820 130 q-52 0 -52 60 q0 40 26 60 q26 12 52 0 q26 -20 26 -60 q0 -60 -52 -60z" fill="#E8DCC8"/>
+<path d="M790 176 q12 -10 26 0 q-12 8 -26 0z M824 176 q12 -10 26 0 q-12 8 -26 0z" fill="#3A3050"/>
+<path d="M768 170 l-40 -6 M872 170 l40 -6" stroke="#8A6A4A" stroke-width="2"/></g>
+<g><rect x="960" y="190" width="14" height="60" fill="#8A6A4A"/><rect x="940" y="170" width="54" height="30" rx="6" fill="#F8E8B8"/><rect x="954" y="186" width="26" height="8" fill="#E8C898"/>
+<circle cx="967" cy="176" r="40" fill="url(#sb36u1-glow)"/></g>
+<g><rect x="1040" y="220" width="90" height="30" rx="2" fill="#6A3A48"/><rect x="1050" y="200" width="70" height="24" rx="2" fill="#3A5A6A"/></g>
+<path d="M0 370 H1200 V420 H0z" fill="#0A0814" opacity=".55"/>
+</svg></div><div class="scene" data-scene="u2" hidden aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 420" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Drawn scene: an empty classroom window at dusk with a desk lamp, a notebook and a pencil, the city lights beyond" focusable="false"><defs><linearGradient id="sb36u2-wall" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4A4258"/><stop offset="1" stop-color="#2C2638"/></linearGradient><linearGradient id="sb36u2-sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2A3A78"/><stop offset="0.5" stop-color="#7A5A8A"/><stop offset="0.85" stop-color="#E88A6A"/><stop offset="1" stop-color="#F8C890"/></linearGradient><linearGradient id="sb36u2-desk" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8A6A48"/><stop offset="1" stop-color="#4A3424"/></linearGradient><radialGradient id="sb36u2-lamp" cx="0.5" cy="0.5" r="0.5"><stop offset="0" stop-color="#FFE8A0" stop-opacity="0.8"/><stop offset="1" stop-color="#FFE8A0" stop-opacity="0"/></radialGradient></defs>
+<rect width="1200" height="420" fill="url(#sb36u2-wall)"/>
+<g><rect x="150" y="40" width="240" height="180" fill="#1A1628"/><rect x="160" y="50" width="220" height="160" fill="url(#sb36u2-sky)"/></g>
+<g><rect x="730" y="40" width="240" height="180" fill="#1A1628"/><rect x="740" y="50" width="220" height="160" fill="url(#sb36u2-sky)"/></g>
+<g fill="#FFF4DA" opacity=".6"><circle cx="238" cy="39" r="1.2"/><circle cx="245" cy="26" r="0.7"/><circle cx="220" cy="33" r="0.8"/><circle cx="191" cy="20" r="1.5"/><circle cx="370" cy="3" r="0.6"/><circle cx="361" cy="30" r="0.7"/><circle cx="188" cy="5" r="1.0"/><circle cx="207" cy="16" r="0.7"/><circle cx="198" cy="15" r="0.8"/><circle cx="205" cy="2" r="0.9"/></g><g fill="#FFF4DA" opacity=".6"><circle cx="749" cy="18" r="0.7"/><circle cx="872" cy="33" r="0.6"/><circle cx="883" cy="12" r="1.1"/><circle cx="866" cy="19" r="0.6"/><circle cx="873" cy="38" r="0.9"/><circle cx="748" cy="29" r="1.4"/><circle cx="879" cy="8" r="1.3"/><circle cx="782" cy="23" r="0.6"/><circle cx="929" cy="34" r="1.1"/><circle cx="924" cy="9" r="0.8"/></g>
+<path d="M160 200 H380 M740 200 H960" stroke="#1A1628" stroke-width="0"/>
+<rect x="180" y="140" width="30" height="60" fill="#2A2448"/><rect x="216" y="120" width="40" height="80" fill="#2A2448"/><rect x="262" y="150" width="24" height="50" fill="#2A2448"/><rect x="292" y="110" width="36" height="90" fill="#2A2448"/><rect x="334" y="130" width="30" height="70" fill="#2A2448"/><rect x="760" y="132" width="36" height="68" fill="#2A2448"/><rect x="802" y="116" width="30" height="84" fill="#2A2448"/><rect x="838" y="146" width="40" height="54" fill="#2A2448"/><rect x="884" y="124" width="26" height="76" fill="#2A2448"/><rect x="916" y="138" width="34" height="62" fill="#2A2448"/><rect x="190" y="150" width="5" height="6" fill="#FFD98A" opacity=".85"/><rect x="226" y="130" width="5" height="6" fill="#FFD98A" opacity=".85"/><rect x="236" y="146" width="5" height="6" fill="#FFD98A" opacity=".85"/><rect x="300" y="122" width="5" height="6" fill="#FFD98A" opacity=".85"/><rect x="310" y="138" width="5" height="6" fill="#FFD98A" opacity=".85"/><rect x="342" y="142" width="5" height="6" fill="#FFD98A" opacity=".85"/><rect x="770" y="142" width="5" height="6" fill="#FFD98A" opacity=".85"/><rect x="810" y="126" width="5" height="6" fill="#FFD98A" opacity=".85"/><rect x="850" y="156" width="5" height="6" fill="#FFD98A" opacity=".85"/><rect x="890" y="134" width="5" height="6" fill="#FFD98A" opacity=".85"/><rect x="926" y="148" width="5" height="6" fill="#FFD98A" opacity=".85"/><rect x="900" y="150" width="5" height="6" fill="#FFD98A" opacity=".85"/>
+<path d="M160 200 h220 v10 h-220z M740 200 h220 v10 h-220z" fill="#2A2448"/>
+<path d="M270 50 v160 M160 130 h220 M850 50 v160 M740 130 h220" stroke="#1A1628" stroke-width="6"/>
+<rect x="140" y="220" width="260" height="10" fill="#6A5A48"/><rect x="720" y="220" width="260" height="10" fill="#6A5A48"/>
+<rect x="420" y="60" width="290" height="140" rx="4" fill="#2E4A3E"/><rect x="428" y="68" width="274" height="124" fill="#38584A"/>
+<g stroke="#C8D8C8" stroke-width="2" opacity=".35" fill="none"><path d="M460 100 q40 -10 80 0"/><path d="M460 130 q60 8 120 -4"/><path d="M620 100 h50 M620 126 h40"/></g>
+<rect x="440" y="196" width="250" height="6" fill="#B8A888"/>
+<path d="M0 270 H1200 V420 H0z" fill="url(#sb36u2-desk)"/><path d="M0 270 h1200 v8 H0z" fill="#A88860" opacity=".6"/>
+<g><rect x="1020" y="150" width="14" height="120" fill="#4A4A58"/><path d="M1027 150 q-30 -50 -99 -20" stroke="#4A4A58" stroke-width="12" fill="none" stroke-linecap="round"/>
+<path d="M888 140 h80 l24 40 h-128z" fill="#5A5A6A"/><path d="M866 180 h126" stroke="#3A3A48" stroke-width="4"/><circle cx="928" cy="200" r="80" fill="url(#sb36u2-lamp)"/><rect x="1000" y="262" width="54" height="12" rx="4" fill="#4A4A58"/></g>
+<g><path d="M560 270 l-40 -60 h190 l40 60z" fill="#F6EEDC"/><path d="M552 270 l-40 -60" stroke="#3B6AB8" stroke-width="4"/>
+<path d="M540 220 h150 M552 236 h150 M564 252 h150" stroke="#B8C8E0" stroke-width="2" opacity=".7"/>
+<path d="M560 230 q30 -6 60 0" stroke="#4A4A58" stroke-width="2" fill="none"/></g>
+<g transform="rotate(-18 820 258)"><rect x="760" y="252" width="120" height="12" rx="2" fill="#F4C84A"/><path d="M880 252 l18 6 l-18 6z" fill="#E8C898"/><path d="M898 258 l-6 -2 v4z" fill="#3A2A20"/><rect x="760" y="252" width="16" height="12" rx="2" fill="#F05A7A"/></g>
+<g><path d="M300 270 v-40 h60 v40z" fill="#3B6AB8"/><path d="M300 236 h60" stroke="#2A4A8A" stroke-width="4"/><path d="M360 240 v-6 h12 v12 h-12z" fill="#3B6AB8"/></g>
+<path d="M0 370 H1200 V420 H0z" fill="#0A0814" opacity=".55"/>
+</svg></div><div class="scene" data-scene="u3" hidden aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 420" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Drawn scene: two chairs facing each other by a tall window at twilight with a small lamp between them" focusable="false"><defs><linearGradient id="sb36u3-wall" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4A3A48"/><stop offset="1" stop-color="#2A2030"/></linearGradient><linearGradient id="sb36u3-sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2E3A80"/><stop offset="0.55" stop-color="#8A5A88"/><stop offset="1" stop-color="#F0A878"/></linearGradient><linearGradient id="sb36u3-floor" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8A6A50"/><stop offset="1" stop-color="#3A2A20"/></linearGradient><radialGradient id="sb36u3-lamp" cx="0.5" cy="0.5" r="0.5"><stop offset="0" stop-color="#FFE8A0" stop-opacity="0.85"/><stop offset="1" stop-color="#FFE8A0" stop-opacity="0"/></radialGradient><radialGradient id="sb36u3-pool" cx="0.5" cy="0.5" r="0.5"><stop offset="0" stop-color="#FFE8A0" stop-opacity="0.35"/><stop offset="1" stop-color="#FFE8A0" stop-opacity="0"/></radialGradient></defs>
+<rect width="1200" height="420" fill="url(#sb36u3-wall)"/>
+<rect x="380" y="20" width="440" height="230" rx="10" fill="#1A1424"/><rect x="396" y="36" width="408" height="200" fill="url(#sb36u3-sky)"/>
+<g fill="#FFF4DA" opacity=".65"><circle cx="642" cy="21" r="0.8"/><circle cx="761" cy="78" r="0.9"/><circle cx="524" cy="61" r="1.0"/><circle cx="587" cy="82" r="1.1"/><circle cx="646" cy="51" r="0.8"/><circle cx="781" cy="14" r="0.7"/><circle cx="560" cy="3" r="0.6"/><circle cx="447" cy="34" r="1.1"/><circle cx="522" cy="29" r="0.6"/><circle cx="433" cy="76" r="0.9"/><circle cx="548" cy="35" r="0.6"/><circle cx="739" cy="66" r="0.9"/><circle cx="414" cy="67" r="1.4"/><circle cx="677" cy="82" r="1.3"/><circle cx="552" cy="59" r="0.6"/><circle cx="647" cy="34" r="1.3"/><circle cx="466" cy="3" r="1.0"/><circle cx="585" cy="32" r="0.7"/><circle cx="444" cy="27" r="1.0"/><circle cx="507" cy="12" r="1.1"/><circle cx="710" cy="57" r="0.6"/><circle cx="653" cy="14" r="1.5"/><circle cx="640" cy="47" r="1.4"/><circle cx="447" cy="28" r="1.1"/></g>
+<circle cx="700" cy="90" r="22" fill="#FFF6D8" opacity=".9"/><circle cx="710" cy="84" r="18" fill="#7A5A88" opacity=".9"/>
+<path d="M400 200 q60 -40 120 -20 q60 -30 120 0 q80 -30 160 10 v30 H400z" fill="#2A2048"/>
+<path d="M600 36 v200 M396 136 h408" stroke="#1A1424" stroke-width="7"/>
+<rect x="360" y="236" width="480" height="14" rx="3" fill="#6A5A48"/>
+<path d="M0 280 H1200 V420 H0z" fill="url(#sb36u3-floor)"/><path d="M0 280 l-30 140" stroke="#2A1A10" stroke-width="1.5" opacity=".5"/><path d="M80 280 l-30 140" stroke="#2A1A10" stroke-width="1.5" opacity=".5"/><path d="M160 280 l-30 140" stroke="#2A1A10" stroke-width="1.5" opacity=".5"/><path d="M240 280 l-30 140" stroke="#2A1A10" stroke-width="1.5" opacity=".5"/><path d="M320 280 l-30 140" stroke="#2A1A10" stroke-width="1.5" opacity=".5"/><path d="M400 280 l-30 140" stroke="#2A1A10" stroke-width="1.5" opacity=".5"/><path d="M480 280 l-30 140" stroke="#2A1A10" stroke-width="1.5" opacity=".5"/><path d="M560 280 l-30 140" stroke="#2A1A10" stroke-width="1.5" opacity=".5"/><path d="M640 280 l-30 140" stroke="#2A1A10" stroke-width="1.5" opacity=".5"/><path d="M720 280 l-30 140" stroke="#2A1A10" stroke-width="1.5" opacity=".5"/><path d="M800 280 l-30 140" stroke="#2A1A10" stroke-width="1.5" opacity=".5"/><path d="M880 280 l-30 140" stroke="#2A1A10" stroke-width="1.5" opacity=".5"/><path d="M960 280 l-30 140" stroke="#2A1A10" stroke-width="1.5" opacity=".5"/><path d="M1040 280 l-30 140" stroke="#2A1A10" stroke-width="1.5" opacity=".5"/><path d="M1120 280 l-30 140" stroke="#2A1A10" stroke-width="1.5" opacity=".5"/><path d="M1200 280 l-30 140" stroke="#2A1A10" stroke-width="1.5" opacity=".5"/><path d="M1280 280 l-30 140" stroke="#2A1A10" stroke-width="1.5" opacity=".5"/>
+<ellipse cx="600" cy="300" rx="260" ry="60" fill="url(#sb36u3-pool)"/>
+<ellipse cx="600" cy="296" rx="200" ry="50" fill="#6A3A48" opacity=".8"/><ellipse cx="600" cy="296" rx="170" ry="40" fill="none" stroke="#A86A78" stroke-width="3" opacity=".6"/>
+<g><rect x="592" y="200" width="16" height="70" fill="#3A2A20"/><ellipse cx="600" cy="270" rx="34" ry="8" fill="#3A2A20"/>
+<path d="M566 200 h68 l10 -50 h-88z" fill="#F8E8B8"/><circle cx="600" cy="176" r="70" fill="url(#sb36u3-lamp)"/></g>
+<g fill="#B08258"><rect x="430" y="161" width="11" height="75" rx="4"/><rect x="430" y="236" width="55" height="12" rx="4"/><rect x="434" y="248" width="8" height="50"/><rect x="474" y="248" width="8" height="50"/><rect x="430" y="161" width="11" height="22" rx="4" fill="#FFF" opacity=".18"/></g><g fill="#B08258"><rect x="759" y="161" width="11" height="75" rx="4"/><rect x="715" y="236" width="55" height="12" rx="4"/><rect x="719" y="248" width="8" height="50"/><rect x="759" y="248" width="8" height="50"/><rect x="759" y="161" width="11" height="22" rx="4" fill="#FFF" opacity=".18"/></g>
+<g fill="#C85A6A"><rect x="446" y="234" width="40" height="12" rx="3"/><rect x="714" y="234" width="40" height="12" rx="3"/></g>
+<g><path d="M120 280 v-70 q0 -20 20 -20 h80 q20 0 20 20 v70z" fill="#3A4A5A"/><path d="M120 214 h120" stroke="#2A3A48" stroke-width="3"/>
+<circle cx="180" cy="176" r="6" fill="#C8A878"/></g>
+<g><rect x="1010" y="180" width="110" height="100" fill="#3A4A5A"/><path d="M1020 200 h90 M1020 224 h90 M1020 248 h90" stroke="#2A3A48" stroke-width="12"/>
+<path d="M1024 194 h20 v12 h-20z M1052 194 h24 v12 h-24z M1084 194 h18 v12 h-18z M1030 218 h30 v12 h-30z M1070 218 h30 v12 h-30z" fill="#8A6A78"/></g>
+<path d="M0 370 H1200 V420 H0z" fill="#0A0810" opacity=".55"/>
+</svg></div><div class="scene" data-scene="u4" hidden aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 420" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Drawn scene: a lantern-lit path through a night garden leading to an open gate under the stars" focusable="false"><defs><linearGradient id="sb36u4-sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0E1436"/><stop offset="0.6" stop-color="#2A3A78"/><stop offset="1" stop-color="#5A5A98"/></linearGradient><linearGradient id="sb36u4-hedge" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2E5A3A"/><stop offset="1" stop-color="#142A1C"/></linearGradient><linearGradient id="sb36u4-path" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8A7A60"/><stop offset="1" stop-color="#3A3020"/></linearGradient><linearGradient id="sb36u4-ground" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#22402A"/><stop offset="1" stop-color="#0E1C14"/></linearGradient><radialGradient id="sb36u4-glow" cx="0.5" cy="0.5" r="0.5"><stop offset="0" stop-color="#FFE8A0" stop-opacity="0.8"/><stop offset="1" stop-color="#FFE8A0" stop-opacity="0"/></radialGradient><radialGradient id="sb36u4-gate" cx="0.5" cy="0.5" r="0.5"><stop offset="0" stop-color="#FFF0B8" stop-opacity="0.9"/><stop offset="1" stop-color="#FFF0B8" stop-opacity="0"/></radialGradient></defs>
+<rect width="1200" height="420" fill="url(#sb36u4-sky)"/>
+<g fill="#FFF4DA" opacity=".8"><circle cx="326" cy="63" r="1.4"/><circle cx="989" cy="18" r="0.9"/><circle cx="48" cy="161" r="1.4"/><circle cx="1135" cy="4" r="1.5"/><circle cx="122" cy="107" r="0.8"/><circle cx="801" cy="6" r="0.9"/><circle cx="1012" cy="21" r="1.0"/><circle cx="259" cy="72" r="1.5"/><circle cx="1198" cy="15" r="1.4"/><circle cx="261" cy="178" r="0.7"/><circle cx="264" cy="81" r="1.0"/><circle cx="1063" cy="68" r="1.5"/><circle cx="946" cy="67" r="1.2"/><circle cx="665" cy="198" r="1.3"/><circle cx="44" cy="181" r="1.4"/><circle cx="795" cy="80" r="1.3"/><circle cx="870" cy="71" r="1.0"/><circle cx="829" cy="154" r="0.7"/><circle cx="400" cy="161" r="0.6"/><circle cx="399" cy="140" r="0.9"/><circle cx="1194" cy="123" r="1.4"/><circle cx="785" cy="142" r="0.9"/><circle cx="228" cy="77" r="1.4"/><circle cx="179" cy="8" r="1.5"/><circle cx="302" cy="119" r="1.4"/><circle cx="581" cy="186" r="1.5"/><circle cx="392" cy="25" r="1.4"/><circle cx="935" cy="20" r="0.9"/><circle cx="178" cy="123" r="1.0"/><circle cx="601" cy="38" r="0.9"/><circle cx="1148" cy="69" r="0.6"/><circle cx="203" cy="152" r="0.7"/><circle cx="182" cy="63" r="1.4"/><circle cx="1053" cy="154" r="0.9"/><circle cx="848" cy="169" r="1.0"/><circle cx="239" cy="100" r="1.5"/><circle cx="1082" cy="83" r="0.6"/><circle cx="113" cy="70" r="0.7"/><circle cx="1092" cy="149" r="0.8"/><circle cx="387" cy="112" r="1.3"/><circle cx="558" cy="15" r="1.2"/><circle cx="181" cy="58" r="0.7"/><circle cx="712" cy="65" r="1.0"/><circle cx="919" cy="76" r="0.7"/><circle cx="882" cy="179" r="1.0"/><circle cx="617" cy="78" r="1.3"/><circle cx="924" cy="197" r="0.6"/><circle cx="859" cy="176" r="1.3"/><circle cx="118" cy="71" r="0.8"/><circle cx="957" cy="154" r="0.9"/><circle cx="1136" cy="97" r="0.6"/><circle cx="927" cy="68" r="1.5"/><circle cx="106" cy="107" r="1.4"/><circle cx="177" cy="118" r="1.5"/><circle cx="116" cy="165" r="1.4"/><circle cx="899" cy="48" r="1.5"/><circle cx="254" cy="135" r="0.8"/><circle cx="1189" cy="178" r="0.7"/><circle cx="24" cy="65" r="0.8"/><circle cx="823" cy="124" r="1.1"/></g>
+<circle cx="1000" cy="70" r="26" fill="#FFF6D8" opacity=".95"/><circle cx="1012" cy="62" r="22" fill="#2A3A78" opacity=".95"/>
+<path d="M0 230 Q200 190 400 220 T800 214 T1200 224 V300 H0z" fill="#182A40"/>
+<path d="M0 240 H1200 V420 H0z" fill="url(#sb36u4-ground)"/>
+<path d="M0 250 h430 v-70 h-430z M770 250 h430 v-70 h-430z" fill="url(#sb36u4-hedge)"/>
+<path d="M0 180 q60 -20 100 0 q50 -18 100 0 q60 -20 120 0 q50 -14 110 0 M770 180 q60 -20 100 0 q50 -18 100 0 q60 -20 120 0 q50 -14 110 0" stroke="#2E5A3A" stroke-width="16" fill="none" stroke-linecap="round"/>
+<g><rect x="430" y="90" width="30" height="160" fill="#2A2A30"/><rect x="740" y="90" width="30" height="160" fill="#2A2A30"/>
+<path d="M430 90 q15 -30 30 0 M740 90 q15 -30 30 0" fill="#2A2A30"/>
+<ellipse cx="600" cy="170" rx="150" ry="120" fill="url(#sb36u4-gate)"/>
+<path d="M460 250 V120 q0 -10 10 -10 h10 v140z" fill="#1A1A20"/><path d="M740 250 V120 q0 -10 -10 -10 h-10 v140z" fill="#1A1A20"/>
+<g stroke="#1A1A20" stroke-width="4"><path d="M480 130 l40 -20 v140 l-40 0z" fill="#26262E" opacity=".9"/><path d="M720 130 l-40 -20 v140 l40 0z" fill="#26262E" opacity=".9"/></g>
+<path d="M480 150 h40 M480 190 h40 M680 150 h40 M680 190 h40" stroke="#5A5A68" stroke-width="3"/></g>
+<path d="M560 250 q-60 60 -200 170 h480 q-140 -110 -200 -170z" fill="url(#sb36u4-path)"/>
+<path d="M600 250 v170" stroke="#C8B890" stroke-width="2" opacity=".2"/>
+<ellipse cx="60" cy="260" rx="60" ry="42" fill="#1E3A28"/><ellipse cx="150" cy="270" rx="50" ry="35" fill="#264832"/><ellipse cx="1140" cy="260" rx="60" ry="42" fill="#1E3A28"/><ellipse cx="1050" cy="270" rx="50" ry="35" fill="#264832"/><ellipse cx="300" cy="276" rx="40" ry="28" fill="#1E3A28"/><ellipse cx="900" cy="276" rx="40" ry="28" fill="#1E3A28"/><circle cx="40" cy="240" r="4" fill="#E8B8D8" opacity=".9"/><circle cx="90" cy="226" r="4" fill="#F8E8B8" opacity=".9"/><circle cx="130" cy="250" r="4" fill="#E8B8D8" opacity=".9"/><circle cx="1160" cy="236" r="4" fill="#E8B8D8" opacity=".9"/><circle cx="1110" cy="224" r="4" fill="#F8E8B8" opacity=".9"/><circle cx="1070" cy="250" r="4" fill="#E8B8D8" opacity=".9"/><circle cx="300" cy="260" r="4" fill="#F8E8B8" opacity=".9"/><circle cx="900" cy="262" r="4" fill="#F8E8B8" opacity=".9"/><circle cx="380" cy="180" r="2.5" fill="#FFF0A0" opacity=".85"/><circle cx="420" cy="150" r="2.5" fill="#FFF0A0" opacity=".85"/><circle cx="820" cy="170" r="2.5" fill="#FFF0A0" opacity=".85"/><circle cx="860" cy="200" r="2.5" fill="#FFF0A0" opacity=".85"/><circle cx="500" cy="120" r="2.5" fill="#FFF0A0" opacity=".85"/><circle cx="720" cy="110" r="2.5" fill="#FFF0A0" opacity=".85"/><circle cx="250" cy="200" r="2.5" fill="#FFF0A0" opacity=".85"/><circle cx="960" cy="190" r="2.5" fill="#FFF0A0" opacity=".85"/>
+<rect x="347" y="220" width="6" height="70" fill="#1A1A20"/><path d="M338 220 h24 l-3 -28 h-18z" fill="#1A1A20"/><rect x="343" y="196" width="14" height="20" fill="#FFE27A"/><path d="M340 190 l10 -8 l10 8z" fill="#1A1A20"/><circle cx="350" cy="206" r="34" fill="url(#sb36u4-glow)"/><rect x="847" y="220" width="6" height="70" fill="#1A1A20"/><path d="M838 220 h24 l-3 -28 h-18z" fill="#1A1A20"/><rect x="843" y="196" width="14" height="20" fill="#FFE27A"/><path d="M840 190 l10 -8 l10 8z" fill="#1A1A20"/><circle cx="850" cy="206" r="34" fill="url(#sb36u4-glow)"/><rect x="468" y="213" width="4" height="49" fill="#1A1A20"/><path d="M462 213 h17 l-2 -20 h-13z" fill="#1A1A20"/><rect x="465" y="196" width="10" height="14" fill="#FFE27A"/><path d="M463 192 l7 -6 l7 6z" fill="#1A1A20"/><circle cx="470" cy="203" r="24" fill="url(#sb36u4-glow)"/><rect x="728" y="213" width="4" height="49" fill="#1A1A20"/><path d="M722 213 h17 l-2 -20 h-13z" fill="#1A1A20"/><rect x="725" y="196" width="10" height="14" fill="#FFE27A"/><path d="M723 192 l7 -6 l7 6z" fill="#1A1A20"/><circle cx="730" cy="203" r="24" fill="url(#sb36u4-glow)"/>
+<path d="M0 370 H1200 V420 H0z" fill="#04060E" opacity=".55"/>
+</svg></div>
+  <div class="credit" id="credit"></div>
+  <div class="txt">
+    <div class="unum"><b id="unum">1</b><span id="ukind"><span data-en="Unit" data-es="Unidad">Unit</span></span></div>
+    <h2 class="ut" id="ut"></h2>
+    <div class="years"><span data-en="Room 36 · Grades 6–8 · Middle school" data-es="Salón 36 · Grados 6–8">Room 36 · Grades 6–8 · Middle school</span></div>
+  </div>
+</section>
+
+<nav class="lstrip no-print" data-strip="u1" hidden aria-label="Lessons"><span class="k"><span data-en="Lesson" data-es="Lección">Lesson</span></span><a href="?l=u1" class="ov" data-show="u1"><span data-en="Overview" data-es="Resumen">Overview</span></a><a href="?l=u1l1" data-show="u1l1" data-lid="u1l1" title="L1 · The Mask vs. The Mirror">L1<span class="t2"></span></a><a href="?l=u1l2" data-show="u1l2" data-lid="u1l2" title="L2 · The Anatomy of a Mistake">L2<span class="t2"></span></a><a href="?l=u1l3" data-show="u1l3" data-lid="u1l3" title="L3 · The Digital Backpack">L3<span class="t2"></span></a><a href="?l=u1l4" data-show="u1l4" data-lid="u1l4" title="L4 · Peer Pressure &amp; The Volume of Integrity">L4<span class="t2"></span></a><a href="?l=u1l5" data-show="u1l5" data-lid="u1l5" title="L5 · Owning Your Narrative">L5<span class="t2"></span></a><a href="?l=u1l6" data-show="u1l6" data-lid="u1l6" title="L6 · The Agency of Choice">L6<span class="t2"></span></a><a href="?l=u1l7" data-show="u1l7" data-lid="u1l7" title="L7 · Unit 1 Wrap-Up &amp; Bridge to Unit 2">L7<span class="t2"></span></a></nav><nav class="lstrip no-print" data-strip="u2" hidden aria-label="Lessons"><span class="k"><span data-en="Lesson" data-es="Lección">Lesson</span></span><a href="?l=u2" class="ov" data-show="u2"><span data-en="Overview" data-es="Resumen">Overview</span></a><a href="?l=u2l1" data-show="u2l1" data-lid="u2l1" title="L1 · The Internal Critic">L1<span class="t2"></span></a><a href="?l=u2l2" data-show="u2l2" data-lid="u2l2" title="L2 · Highlight Reels &amp; The Comparison Trap">L2<span class="t2"></span></a><a href="?l=u2l3" data-show="u2l3" data-lid="u2l3" title="L3 · Perfectionism — The Critic in Disguise">L3<span class="t2"></span></a><a href="?l=u2l4" data-show="u2l4" data-lid="u2l4" title="L4 · Accountability Without Self-Punishment">L4<span class="t2"></span></a><a href="?l=u2l5" data-show="u2l5" data-lid="u2l5" title="L5 · The Friend Test">L5<span class="t2"></span></a><a href="?l=u2l6" data-show="u2l6" data-lid="u2l6" title="L6 · Rewriting the Script">L6<span class="t2"></span></a><a href="?l=u2l7" data-show="u2l7" data-lid="u2l7" title="L7 · Unit 2 Reflection &amp; Bridge to Unit 3">L7<span class="t2"></span></a></nav><nav class="lstrip no-print" data-strip="u3" hidden aria-label="Lessons"><span class="k"><span data-en="Lesson" data-es="Lección">Lesson</span></span><a href="?l=u3" class="ov" data-show="u3"><span data-en="Overview" data-es="Resumen">Overview</span></a><a href="?l=u3l1" data-show="u3l1" data-lid="u3l1" title="L1 · Impact vs. Intent">L1<span class="t2"></span></a><a href="?l=u3l2" data-show="u3l2" data-lid="u3l2" title="L2 · Three Sides of Every Story">L2<span class="t2"></span></a><a href="?l=u3l3" data-show="u3l3" data-lid="u3l3" title="L3 · Forgiveness vs. Reconciliation">L3<span class="t2"></span></a><a href="?l=u3l4" data-show="u3l4" data-lid="u3l4" title="L4 · The Digital Echo">L4<span class="t2"></span></a><a href="?l=u3l5" data-show="u3l5" data-lid="u3l5" title="L5 · The Rumor &amp; Narrative Hijack">L5<span class="t2"></span></a><a href="?l=u3l6" data-show="u3l6" data-lid="u3l6" title="L6 · The Agency of Release — Letter of Release">L6<span class="t2"></span></a><a href="?l=u3l7" data-show="u3l7" data-lid="u3l7" title="L7 · Limits from Self-Respect + Unit 3 Wrap-Up &amp; Bridge to Unit 4">L7<span class="t2"></span></a></nav><nav class="lstrip no-print" data-strip="u4" hidden aria-label="Lessons"><span class="k"><span data-en="Lesson" data-es="Lección">Lesson</span></span><a href="?l=u4" class="ov" data-show="u4"><span data-en="Overview" data-es="Resumen">Overview</span></a><a href="?l=u4l1" data-show="u4l1" data-lid="u4l1" title="L1 · What Is Grace?">L1<span class="t2"></span></a><a href="?l=u4l2" data-show="u4l2" data-lid="u4l2" title="L2 · What Does Mercy Look Like?">L2<span class="t2"></span></a><a href="?l=u4l3" data-show="u4l3" data-lid="u4l3" title="L3 · Giving the Benefit of the Doubt">L3<span class="t2"></span></a><a href="?l=u4l4" data-show="u4l4" data-lid="u4l4" title="L4 · Small Acts, Big Difference — The Grace Challenge">L4<span class="t2"></span></a><a href="?l=u4l5" data-show="u4l5" data-lid="u4l5" title="L5 · Grace With Hard People">L5<span class="t2"></span></a><a href="?l=u4l6" data-show="u4l6" data-lid="u4l6" title="L6 · Grace Audit — Final Project">L6<span class="t2"></span></a><a href="?l=u4l7" data-show="u4l7" data-lid="u4l7" title="L7 · Community Charter &amp; Year-End Celebration">L7<span class="t2"></span></a></nav>
+
+<article class="lescard" id="lescard">
+  <div class="lh">
+    <span class="ln" id="lnum">1.1</span>
+    <div><h4 id="ltitle"></h4><span class="sub" id="lsub"></span></div>
+    <div class="tools no-print">
+      <button type="button" class="lbtn tickbtn" id="tickBtn" aria-pressed="false"><span class="tk">✓</span><span><span data-en="Taught" data-es="Enseñada">Taught</span></span></button>
+      <button type="button" class="lbtn listen" id="listenBtn" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H2v6h4l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M18.5 5.5a9 9 0 0 1 0 13"/></svg><span><span data-en="Listen" data-es="Escuchar">Listen</span></span></button>
+      <button type="button" class="lbtn" id="printBtn"><span data-en="Print this lesson" data-es="Imprimir esta lección">Print this lesson</span></button>
+    </div>
+  </div>
+  <div class="body">
 <section class="lesson u1" id="worksheets" hidden>
 <div class="lhead"><span class="lchip">WORKSHEETS</span><span class="lkind">The interactive seven</span></div>
 <h2>The Worksheets</h2>
@@ -1589,150 +1923,140 @@ or <b>Print it blank</b> (a clean paper worksheet). Each also appears inside its
 <div class="artnote">REFERENCE</div>
 </section>
 
-<!-- .30gf: the worksheets door lives at the BOTTOM of the page — Jimmy:
-     "I was talking about bringing this to the bottom of the page, not the top." -->
+  </div>
+</article>
+
+<!-- .30gf / .30gp: the doors stay at the BOTTOM of the page (Jimmy: "I was talking about bringing this to the bottom of the page, not the top."). The chart door builds the lesson's anchor chart; the cards door opens the lesson's scenario cards. -->
 <div class="botdoor no-print">
-  <a id="wsTab" class="wstab" href="?l=worksheets" data-mode="tab" aria-current="false">The Worksheets — the interactive six &uarr;</a>
+  <a id="wsTab" class="wstab" href="?l=worksheets" data-mode="tab" aria-current="false">The Worksheets \u2014 the interactive six \u2191</a>
+  <a id="cardsDoor" class="cardsdoor" href="room-36-cards.html" hidden><span data-en="This lesson’s scenario cards — the deck →" data-es="Las tarjetas de escenario de esta lección →">This lesson’s scenario cards — the deck →</span></a>
 </div>
 
-<footer>
-  <a href="room-36-curriculum.html">&larr; The Room 36 curriculum</a>
-  <span>The framework is portable. They are taking it with them.</span>
-</footer>
+<nav class="pager2 no-print" aria-label="Lessons"><a href="#" id="prevA"><span>‹</span><span><span class="s"><span data-en="Previous" data-es="Anterior">Previous</span></span><span id="prevT"></span></span></a><a href="#" id="nextA"><span><span class="s"><span data-en="Next" data-es="Siguiente">Next</span></span><span id="nextT"></span></span><span>›</span></a></nav>
+
+<details class="teach no-print"><summary><span data-en="For the teacher" data-es="Para el docente">For the teacher</span></summary><div class="inner">
+  <p><span data-en="Every lesson is here word for word as the Book 3 master prints it. Pick a unit on the rail, then a lesson; the tick marks a lesson taught and stays on this device only. Nothing typed here leaves the room." data-es="Cada lección está aquí palabra por palabra como la imprime el libro 3. Elige una unidad y luego una lección; la marca señala una lección enseñada y se guarda solo en este dispositivo.">Every lesson is here word for word as the Book 3 master prints it. Pick a unit on the rail, then a lesson; the tick marks a lesson taught and stays on this device only. Nothing typed here leaves the room.</span></p>
+  <div class="mats"><a href="room-36-curriculum.html">The curriculum</a><a href="room-36-workbook.html">The companion workbook</a><a href="AoG-Anchor-Charts.html">Anchor charts, built live</a><a href="room-36-cards.html"><span data-en="Scenario cards" data-es="Tarjetas de escenario">Scenario cards</span></a></div>
+</div></details>
+
+<footer class="foot"><span data-en="Architecture of Grace · Room 36 · Book 3 · The Interior · Grades 6–8 · the banners are drawn scenes, not photographs." data-es="Architecture of Grace · Salón 36 · Libro 3 · Grados 6–8 · los banners son escenas dibujadas, no fotografías.">Architecture of Grace · Room 36 · Book 3 · The Interior · Grades 6–8 · the banners are drawn scenes, not photographs.</span></footer>
+</main>
+</div>
+
+<div class="drawer" id="drawer" data-open="0" role="dialog" aria-modal="true" aria-label="Contents">
+  <div class="scrim" data-close></div>
+  <div class="sheet"><div class="dh"><b><span data-en="Room 36 · contents" data-es="Salón 36 · contenido">Room 36 · contents</span></b><button type="button" data-close aria-label="Close">✕</button></div><nav><a href="?l=worksheets" data-show="worksheets"><span class="n">✎</span><span data-en="The interactive worksheets" data-es="Las hojas de trabajo interactivas">The interactive worksheets</span></a><div class="dc"><span class="b" data-unit="u1">1</span>Identity &amp; The Weight of Perception</div><a href="?l=u1" data-show="u1"><span class="n">—</span><span data-en="Unit overview" data-es="Resumen de la unidad">Unit overview</span></a><a href="?l=u1l1" data-show="u1l1" data-lid="u1l1"><span class="n">1.1</span>The Mask vs. The Mirror<span class="t2"></span></a><a href="?l=u1l2" data-show="u1l2" data-lid="u1l2"><span class="n">1.2</span>The Anatomy of a Mistake<span class="t2"></span></a><a href="?l=u1l3" data-show="u1l3" data-lid="u1l3"><span class="n">1.3</span>The Digital Backpack<span class="t2"></span></a><a href="?l=u1l4" data-show="u1l4" data-lid="u1l4"><span class="n">1.4</span>Peer Pressure & The Volume of Integrity<span class="t2"></span></a><a href="?l=u1l5" data-show="u1l5" data-lid="u1l5"><span class="n">1.5</span>Owning Your Narrative<span class="t2"></span></a><a href="?l=u1l6" data-show="u1l6" data-lid="u1l6"><span class="n">1.6</span>The Agency of Choice<span class="t2"></span></a><a href="?l=u1l7" data-show="u1l7" data-lid="u1l7"><span class="n">1.7</span>Unit 1 Wrap-Up & Bridge to Unit 2<span class="t2"></span></a><div class="dc"><span class="b" data-unit="u2">2</span>Self-Compassion &amp; The Internal Critic</div><a href="?l=u2" data-show="u2"><span class="n">—</span><span data-en="Unit overview" data-es="Resumen de la unidad">Unit overview</span></a><a href="?l=u2l1" data-show="u2l1" data-lid="u2l1"><span class="n">2.1</span>The Internal Critic<span class="t2"></span></a><a href="?l=u2l2" data-show="u2l2" data-lid="u2l2"><span class="n">2.2</span>Highlight Reels & The Comparison Trap<span class="t2"></span></a><a href="?l=u2l3" data-show="u2l3" data-lid="u2l3"><span class="n">2.3</span>Perfectionism — The Critic in Disguise<span class="t2"></span></a><a href="?l=u2l4" data-show="u2l4" data-lid="u2l4"><span class="n">2.4</span>Accountability Without Self-Punishment<span class="t2"></span></a><a href="?l=u2l5" data-show="u2l5" data-lid="u2l5"><span class="n">2.5</span>The Friend Test<span class="t2"></span></a><a href="?l=u2l6" data-show="u2l6" data-lid="u2l6"><span class="n">2.6</span>Rewriting the Script<span class="t2"></span></a><a href="?l=u2l7" data-show="u2l7" data-lid="u2l7"><span class="n">2.7</span>Unit 2 Reflection & Bridge to Unit 3<span class="t2"></span></a><div class="dc"><span class="b" data-unit="u3">3</span>Empathy &amp; Forgiving Others</div><a href="?l=u3" data-show="u3"><span class="n">—</span><span data-en="Unit overview" data-es="Resumen de la unidad">Unit overview</span></a><a href="?l=u3l1" data-show="u3l1" data-lid="u3l1"><span class="n">3.1</span>Impact vs. Intent<span class="t2"></span></a><a href="?l=u3l2" data-show="u3l2" data-lid="u3l2"><span class="n">3.2</span>Three Sides of Every Story<span class="t2"></span></a><a href="?l=u3l3" data-show="u3l3" data-lid="u3l3"><span class="n">3.3</span>Forgiveness vs. Reconciliation<span class="t2"></span></a><a href="?l=u3l4" data-show="u3l4" data-lid="u3l4"><span class="n">3.4</span>The Digital Echo<span class="t2"></span></a><a href="?l=u3l5" data-show="u3l5" data-lid="u3l5"><span class="n">3.5</span>The Rumor & Narrative Hijack<span class="t2"></span></a><a href="?l=u3l6" data-show="u3l6" data-lid="u3l6"><span class="n">3.6</span>The Agency of Release — Letter of Release<span class="t2"></span></a><a href="?l=u3l7" data-show="u3l7" data-lid="u3l7"><span class="n">3.7</span>Limits from Self-Respect + Unit 3 Wrap-Up & Bridge to Unit 4<span class="t2"></span></a><div class="dc"><span class="b" data-unit="u4">4</span>Grace &amp; Generosity</div><a href="?l=u4" data-show="u4"><span class="n">—</span><span data-en="Unit overview" data-es="Resumen de la unidad">Unit overview</span></a><a href="?l=u4l1" data-show="u4l1" data-lid="u4l1"><span class="n">4.1</span>What Is Grace?<span class="t2"></span></a><a href="?l=u4l2" data-show="u4l2" data-lid="u4l2"><span class="n">4.2</span>What Does Mercy Look Like?<span class="t2"></span></a><a href="?l=u4l3" data-show="u4l3" data-lid="u4l3"><span class="n">4.3</span>Giving the Benefit of the Doubt<span class="t2"></span></a><a href="?l=u4l4" data-show="u4l4" data-lid="u4l4"><span class="n">4.4</span>Small Acts, Big Difference — The Grace Challenge<span class="t2"></span></a><a href="?l=u4l5" data-show="u4l5" data-lid="u4l5"><span class="n">4.5</span>Grace With Hard People<span class="t2"></span></a><a href="?l=u4l6" data-show="u4l6" data-lid="u4l6"><span class="n">4.6</span>Grace Audit — Final Project<span class="t2"></span></a><a href="?l=u4l7" data-show="u4l7" data-lid="u4l7"><span class="n">4.7</span>Community Charter & Year-End Celebration<span class="t2"></span></a></nav></div>
 </div>
 
 <script>
-/* AOG-R36-NAV behavior — back pill + the Explore menu. */
+
 (function(){
-  var back = document.getElementById("r36Back");
-  back.addEventListener("click", function(e){
-    var sameOrigin = false;
-    try{ sameOrigin = document.referrer.indexOf(location.origin) === 0; }catch(err){}
-    if(history.length > 1 && sameOrigin){ e.preventDefault(); history.back(); }
+"use strict";
+/* AOG-SEL-V1 — the wiring for one room's Lessons page. Every lesson was set at
+   build time, verbatim; this only chooses which one shows and remembers ticks. */
+var KEY="aog.interior.ws.v1.sel36", ORDER=["worksheets", "u1", "u1l1", "u1l2", "u1l3", "u1l4", "u1l5", "u1l6", "u1l7", "u2", "u2l1", "u2l2", "u2l3", "u2l4", "u2l5", "u2l6", "u2l7", "u3", "u3l1", "u3l2", "u3l3", "u3l4", "u3l5", "u3l6", "u3l7", "u4", "u4l1", "u4l2", "u4l3", "u4l4", "u4l5", "u4l6", "u4l7"], L={"worksheets": {"unit": "worksheets", "title": "The interactive worksheets — all six", "num": ""}, "u1": {"unit": "u1", "title": "Unit 1 overview — Identity & The Weight of Perception", "num": ""}, "u1l1": {"unit": "u1", "title": "The Mask vs. The Mirror", "num": "1.1"}, "u1l2": {"unit": "u1", "title": "The Anatomy of a Mistake", "num": "1.2"}, "u1l3": {"unit": "u1", "title": "The Digital Backpack", "num": "1.3"}, "u1l4": {"unit": "u1", "title": "Peer Pressure & The Volume of Integrity", "num": "1.4"}, "u1l5": {"unit": "u1", "title": "Owning Your Narrative", "num": "1.5"}, "u1l6": {"unit": "u1", "title": "The Agency of Choice", "num": "1.6"}, "u1l7": {"unit": "u1", "title": "Unit 1 Wrap-Up & Bridge to Unit 2", "num": "1.7"}, "u2": {"unit": "u2", "title": "Unit 2 overview — Self-Compassion & The Internal Critic", "num": ""}, "u2l1": {"unit": "u2", "title": "The Internal Critic", "num": "2.1"}, "u2l2": {"unit": "u2", "title": "Highlight Reels & The Comparison Trap", "num": "2.2"}, "u2l3": {"unit": "u2", "title": "Perfectionism — The Critic in Disguise", "num": "2.3"}, "u2l4": {"unit": "u2", "title": "Accountability Without Self-Punishment", "num": "2.4"}, "u2l5": {"unit": "u2", "title": "The Friend Test", "num": "2.5"}, "u2l6": {"unit": "u2", "title": "Rewriting the Script", "num": "2.6"}, "u2l7": {"unit": "u2", "title": "Unit 2 Reflection & Bridge to Unit 3", "num": "2.7"}, "u3": {"unit": "u3", "title": "Unit 3 overview — Empathy & Forgiving Others", "num": ""}, "u3l1": {"unit": "u3", "title": "Impact vs. Intent", "num": "3.1"}, "u3l2": {"unit": "u3", "title": "Three Sides of Every Story", "num": "3.2"}, "u3l3": {"unit": "u3", "title": "Forgiveness vs. Reconciliation", "num": "3.3"}, "u3l4": {"unit": "u3", "title": "The Digital Echo", "num": "3.4"}, "u3l5": {"unit": "u3", "title": "The Rumor & Narrative Hijack", "num": "3.5"}, "u3l6": {"unit": "u3", "title": "The Agency of Release — Letter of Release", "num": "3.6"}, "u3l7": {"unit": "u3", "title": "Limits from Self-Respect + Unit 3 Wrap-Up & Bridge to Unit 4", "num": "3.7"}, "u4": {"unit": "u4", "title": "Unit 4 overview — Grace & Generosity", "num": ""}, "u4l1": {"unit": "u4", "title": "What Is Grace?", "num": "4.1"}, "u4l2": {"unit": "u4", "title": "What Does Mercy Look Like?", "num": "4.2"}, "u4l3": {"unit": "u4", "title": "Giving the Benefit of the Doubt", "num": "4.3"}, "u4l4": {"unit": "u4", "title": "Small Acts, Big Difference — The Grace Challenge", "num": "4.4"}, "u4l5": {"unit": "u4", "title": "Grace With Hard People", "num": "4.5"}, "u4l6": {"unit": "u4", "title": "Grace Audit — Final Project", "num": "4.6"}, "u4l7": {"unit": "u4", "title": "Community Charter & Year-End Celebration", "num": "4.7"}}, UNITS={"u1": "Identity & The Weight of Perception", "u2": "Self-Compassion & The Internal Critic", "u3": "Empathy & Forgiving Others", "u4": "Grace & Generosity"}, CHARTDOOR={"u1l1": "mask", "u1l2": "shame", "u1l3": "backpack", "u1l4": "signal", "u1l5": "label", "u1l6": "agency", "u1l7": "wall1", "u2l1": "critic", "u2l2": "reels", "u2l3": "spectrum", "u2l4": "account", "u2l5": "friend", "u2l6": "crisis", "u2l7": "wall2", "u3l1": "impact", "u3l2": "threesides", "u3l3": "forgrec", "u3l4": "flame", "u3l5": "rumor", "u3l6": "release", "u3l7": "limits", "u4l1": "grace", "u4l2": "mercy", "u4l3": "step0", "u4l4": "micro", "u4l5": "diffunsafe", "u4l6": "gracegap", "u4l7": "charter"}, CREDITS={"u1": "Drawn scene: a quiet dresser at dusk with an oval mirror reflecting the evening sky and a plain mask resting beside it", "u2": "Drawn scene: an empty classroom window at dusk with a desk lamp, a notebook and a pencil, the city lights beyond", "u3": "Drawn scene: two chairs facing each other by a tall window at twilight with a small lamp between them", "u4": "Drawn scene: a lantern-lit path through a night garden leading to an open gate under the stars"};
+function load(){ try{ return JSON.parse(localStorage.getItem(KEY)||"{}")||{}; }catch(e){ return {}; } }
+var d=load(); d.done=d.done||{};
+function persist(){ try{ localStorage.setItem(KEY, JSON.stringify(d)); }catch(e){} }
+var lang="en";
+function T(en,es){ return lang==="es"?es:en; }
+function paintLang(){
+  document.documentElement.setAttribute("lang", lang);
+  Array.prototype.forEach.call(document.querySelectorAll("[data-en]"), function(el){
+    var v=el.getAttribute(lang==="es"?"data-es":"data-en"); if(v==null) return;
+    if(v.indexOf("<b>")>-1) el.innerHTML=v; else el.textContent=v;
   });
-  var btn = document.getElementById("r36MenuBtn"), menu = document.getElementById("r36Menu");
-  function open(on){ menu.hidden = !on; btn.setAttribute("aria-expanded", String(on)); }
-  btn.addEventListener("click", function(e){ e.stopPropagation(); open(menu.hidden); });
-  document.addEventListener("click", function(e){ if(!menu.hidden && !menu.contains(e.target) && e.target !== btn) open(false); });
-  document.addEventListener("keydown", function(e){ if(e.key === "Escape") open(false); });
-
-  /* accessibility — the SAME keys and classes the rest of the site uses, so
-     a setting made on a hub follows the student here and back */
-  var H = document.documentElement;
-  function lsGet(k){ try{ return localStorage.getItem(k); }catch(e){ return null; } }
-  function lsSet(k,v){ try{ localStorage.setItem(k,v); }catch(e){} }
-  var A11Y = [
-    {key:"aog.a11y.contrast", cls:"a11y-contrast", row:"r36HcRow"},
-    {key:"aog.a11y.dyslexic", cls:"a11y-dyslexic", row:"r36DysRow"}
-  ];
-  var abtn = document.getElementById("r36A11yBtn"), amenu = document.getElementById("r36A11y");
-  function aopen(on){ amenu.hidden = !on; abtn.setAttribute("aria-expanded", String(on)); }
-  abtn.addEventListener("click", function(e){ e.stopPropagation(); aopen(amenu.hidden); });
-  document.addEventListener("click", function(e){ if(!amenu.hidden && !amenu.contains(e.target) && e.target !== abtn) aopen(false); });
-  A11Y.forEach(function(a){
-    var row = document.getElementById(a.row);
-    function paint(on){ H.classList.toggle(a.cls, on); row.setAttribute("aria-checked", String(on)); }
-    paint(lsGet(a.key) === "1");
-    row.addEventListener("click", function(){
-      var on = !H.classList.contains(a.cls);
-      lsSet(a.key, on ? "1" : "0"); paint(on);
-    });
-  });
-})();
-</script>
-
-<style>
-/* ══ AOG-PRINTBRAND-V1 — the mark on every printed sheet ══ */
-.aog-printbrand,.aog-printwm{display:none}
-@media print{
-  .aog-printbrand{display:block;position:fixed;bottom:2px;left:0;right:0;text-align:center;
-    font:700 9px/1.4 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
-    color:#1B3A5F;letter-spacing:.08em;z-index:99}
-  .aog-printbrand .mk{display:inline-block;width:12px;height:12px;line-height:12px;border-radius:3px;
-    background:#1B3A5F;color:#fff;font-family:Georgia,serif;font-weight:900;font-size:9px;
-    text-align:center;margin-right:4px;vertical-align:-2px;
-    -webkit-print-color-adjust:exact;print-color-adjust:exact}
-  .aog-printwm{display:block;position:fixed;top:0;left:0;right:0;bottom:0;pointer-events:none;
-    overflow:hidden;z-index:98}
-  .aog-printwm span{position:absolute;left:-25%;right:-25%;text-align:center;white-space:nowrap;
-    font:900 44px/1 Georgia,serif;letter-spacing:.2em;color:rgba(27,58,95,.06);
-    transform:rotate(-28deg);-webkit-print-color-adjust:exact;print-color-adjust:exact}
-  .aog-printwm span:nth-child(1){top:22%}
-  .aog-printwm span:nth-child(2){top:52%}
-  .aog-printwm span:nth-child(3){top:82%}
+  var lb=document.getElementById("langBtn"); if(lb) lb.textContent=(lang==="es")?"English":"Español";
+  paintHead(cur);
 }
-
-/* ══ AOG-PRINT-SAFE-V1 (2026-09-20) ═══════════════════════════════════════════
-   Jimmy, printing a novel study from his phone: "another pdf that gets parts of
-   the material cut off." These are the rules that keep paper honest on every
-   engine — a table row, a list item, a figure and a picture stay whole; a head
-   keeps the lines under it; no paragraph strands one line at a page edge; and a
-   long table repeats its head at the top of each page. Printed pages only. */
-@media print{
-  table{break-inside:auto; page-break-inside:auto}
-  thead{display:table-header-group}
-  tfoot{display:table-footer-group}
-  tr{break-inside:avoid; page-break-inside:avoid}
-  li,figure,img,svg{break-inside:avoid; page-break-inside:avoid}
-  h1,h2,h3,h4,h5{break-after:avoid; page-break-after:avoid}
-  p{orphans:3; widows:3}
-}
-</style>
-<div class="aog-printwm" aria-hidden="true"><span>ARCHITECTURE OF GRACE</span><span>ARCHITECTURE OF GRACE</span><span>ARCHITECTURE OF GRACE</span></div>
-<div class="aog-printbrand" aria-hidden="true"><span class="mk">A</span>ARCHITECTURE OF GRACE &middot; architectureofgrace.org</div>
-
-<script>
-(function(){
-  var KEY="aog.interior.ws.v1.theme";
-  document.getElementById("themeBtn").addEventListener("click",function(){
-    var cur=document.documentElement.getAttribute("data-theme")==="dark"?"light":"dark";
-    document.documentElement.setAttribute("data-theme",cur);
-    try{localStorage.setItem(KEY,cur);}catch(e){}
-  });
-  var ORDER=["worksheets", "u1", "u1l1", "u1l2", "u1l3", "u1l4", "u1l5", "u1l6", "u1l7", "u2", "u2l1", "u2l2", "u2l3", "u2l4", "u2l5", "u2l6", "u2l7", "u3", "u3l1", "u3l2", "u3l3", "u3l4", "u3l5", "u3l6", "u3l7", "u4", "u4l1", "u4l2", "u4l3", "u4l4", "u4l5", "u4l6", "u4l7"];
-  var sel=document.getElementById("lessonSel");
-  function show(id, push){
-    if(ORDER.indexOf(id)<0) id=ORDER[0];
-    ORDER.forEach(function(x){ document.getElementById(x).hidden = (x!==id); });
-    sel.value=id;
-    try{
-      var q=new URLSearchParams(location.search); q.set("l",id);
-      (push?history.pushState:history.replaceState).call(history,null,"","?"+q.toString());
-    }catch(e){}
-    window.scrollTo(0,0);
+document.getElementById("langBtn").addEventListener("click", function(){ lang=(lang==="es")?"en":"es"; paintLang(); });
+document.getElementById("themeBtn").addEventListener("click", function(){
+  var t=document.documentElement.getAttribute("data-theme")==="dark"?"light":"dark";
+  document.documentElement.setAttribute("data-theme", t);
+  try{ localStorage.setItem("aog.interior.ws.v1.theme", t); }catch(e){}
+});
+var cur=ORDER[0];
+function unitOf(id){ return L[id].unit; }
+function sec(id){ return document.getElementById(id); }
+function paintHead(id){
+  var u=unitOf(id), ln=document.getElementById("lnum"), lt=document.getElementById("ltitle"), ls=document.getElementById("lsub");
+  var un=document.getElementById("unum"), uk=document.getElementById("ukind"), ut=document.getElementById("ut"), cr=document.getElementById("credit");
+  Array.prototype.forEach.call(document.querySelectorAll(".spread .scene"), function(s){ s.hidden = s.getAttribute("data-scene")!==(u==="worksheets"?"u1":u); });
+  if(u==="worksheets"){
+    un.textContent="✎"; un.className="ws"; uk.textContent=T("Room 36","Salón 36"); ut.textContent=T("The Worksheets","Las hojas de trabajo"); cr.textContent=CREDITS.u1||"";
+    ln.textContent="✎"; lt.textContent=T("The interactive worksheets","Las hojas de trabajo interactivas"); ls.textContent="";
+  } else {
+    un.textContent=u.slice(1); un.className=""; uk.textContent=T("Unit","Unidad"); ut.textContent=UNITS[u]; cr.textContent=CREDITS[u]||"";
+    if(L[id].num){ ln.textContent=L[id].num; lt.textContent=L[id].title; ls.textContent=T("Unit "+u.slice(1)+" · Lesson "+id.split("l")[1], "Unidad "+u.slice(1)+" · Lección "+id.split("l")[1]); }
+    else { ln.textContent=u.slice(1); lt.textContent=UNITS[u]; ls.textContent=T("Unit overview","Resumen de la unidad"); }
   }
-  sel.addEventListener("change",function(){ show(sel.value,true); });
-  /* .30gp — the bottom door builds the CHART (Jimmy: the two bottom links
-     went to the same worksheet). On a lesson it links that lesson's
-     interactive anchor chart; the in-lesson card above already links the
-     worksheet. On overview/worksheets screens it opens the Worksheets tab. */
-  var CHARTDOOR={"u1l1": "mask", "u1l2": "shame", "u1l3": "backpack", "u1l4": "signal", "u1l5": "label", "u1l6": "agency", "u1l7": "wall1", "u2l1": "critic", "u2l2": "reels", "u2l3": "spectrum", "u2l4": "account", "u2l5": "friend", "u2l6": "crisis", "u2l7": "wall2", "u3l1": "impact", "u3l2": "threesides", "u3l3": "forgrec", "u3l4": "flame", "u3l5": "rumor", "u3l6": "release", "u3l7": "limits", "u4l1": "grace", "u4l2": "mercy", "u4l3": "step0", "u4l4": "micro", "u4l5": "diffunsafe", "u4l6": "gracegap", "u4l7": "charter"};
-  var wsTab=document.getElementById("wsTab");
-  wsTab.addEventListener("click",function(e){
-    if(wsTab.getAttribute("data-mode")==="tab"){ e.preventDefault(); show("worksheets",true); }
-  });
-  var _mark=show;
-  show=function(id,push){
-    _mark(id,push);
-    wsTab.setAttribute("aria-current", String(id==="worksheets"));
-    var c=CHARTDOOR[id];
-    if(c){ wsTab.setAttribute("data-mode","direct"); wsTab.setAttribute("href","AoG-Anchor-Charts.html#"+c);
-           wsTab.textContent="Build this lesson\u2019s anchor chart \u2014 the live board \u2192"; }
-    else { wsTab.setAttribute("data-mode","tab"); wsTab.setAttribute("href","?l=worksheets");
-           wsTab.innerHTML="The Worksheets \u2014 the interactive six \u2191"; }
-  };
-  document.getElementById("prevBtn").addEventListener("click",function(){
-    show(ORDER[(ORDER.indexOf(sel.value)-1+ORDER.length)%ORDER.length],true);
-  });
-  document.getElementById("nextBtn").addEventListener("click",function(){
-    show(ORDER[(ORDER.indexOf(sel.value)+1)%ORDER.length],true);
-  });
-  window.addEventListener("popstate",function(){
-    var q=new URLSearchParams(location.search); show(q.get("l")||ORDER[0],false);
-  });
-  var q=new URLSearchParams(location.search);
-  show(q.get("l")||"u1",false);
+  var tb=document.getElementById("tickBtn"); tb.hidden=!L[id].num; tb.setAttribute("aria-pressed", String(!!d.done[id]));
+  var i=ORDER.indexOf(id), p=ORDER[(i-1+ORDER.length)%ORDER.length], nx=ORDER[(i+1)%ORDER.length];
+  document.getElementById("prevT").textContent=L[p].num?("L"+p.split("l")[1]+" · "+L[p].title):(L[p].unit==="worksheets"?T("Worksheets","Hojas de trabajo"):T("Unit "+p.slice(1)+" overview","Resumen de la unidad "+p.slice(1)));
+  document.getElementById("nextT").textContent=L[nx].num?("L"+nx.split("l")[1]+" · "+L[nx].title):(L[nx].unit==="worksheets"?T("Worksheets","Hojas de trabajo"):T("Unit "+nx.slice(1)+" overview","Resumen de la unidad "+nx.slice(1)));
+  document.getElementById("prevA").setAttribute("href","?l="+p); document.getElementById("nextA").setAttribute("href","?l="+nx);
+}
+function paintTicks(){
+  Array.prototype.forEach.call(document.querySelectorAll("[data-lid]"), function(a){ a.classList.toggle("done", !!d.done[a.getAttribute("data-lid")]); });
+}
+function show(id, push){
+  if(ORDER.indexOf(id)<0) id=ORDER[0];
+  cur=id; var u=unitOf(id);
+  ORDER.forEach(function(x){ sec(x).hidden=(x!==id); });
+  Array.prototype.forEach.call(document.querySelectorAll(".rail a[data-unit]"), function(a){ if(a.getAttribute("data-unit")===u) a.setAttribute("aria-current","page"); else a.removeAttribute("aria-current"); });
+  Array.prototype.forEach.call(document.querySelectorAll(".lstrip"), function(s){ s.hidden=(s.getAttribute("data-strip")!==u); });
+  Array.prototype.forEach.call(document.querySelectorAll("[data-show]"), function(a){ if(a.getAttribute("data-show")===id) a.setAttribute("aria-current","page"); else a.removeAttribute("aria-current"); });
+  paintHead(id);
+  /* .30gp — the bottom door builds the CHART on a lesson, opens the Worksheets screen elsewhere */
+  var wsTab=document.getElementById("wsTab"), c=CHARTDOOR[id];
+  wsTab.setAttribute("aria-current", String(id==="worksheets"));
+  if(c){ wsTab.setAttribute("data-mode","direct"); wsTab.setAttribute("href","AoG-Anchor-Charts.html#"+c); wsTab.textContent="Build this lesson\\u2019s anchor chart \\u2014 the live board \\u2192"; }
+  else { wsTab.setAttribute("data-mode","tab"); wsTab.setAttribute("href","?l=worksheets"); wsTab.innerHTML="The Worksheets \\u2014 the interactive six \\u2191"; }
+  var cd=document.getElementById("cardsDoor"); var hasCards=!!sec(id).querySelector(".box.cards");
+  cd.hidden=!hasCards; cd.setAttribute("href","room-36-cards.html#"+id);
+  try{ var q=new URLSearchParams(location.search); q.set("l",id); (push?history.pushState:history.replaceState).call(history,null,"","?"+q.toString()); }catch(e){}
+  stopSpeak();
+  if(push){ var top=document.getElementById("spread").getBoundingClientRect().top+window.pageYOffset-60; window.scrollTo({top:Math.max(0,top),behavior:"smooth"}); }
+}
+document.addEventListener("click", function(ev){
+  var a=ev.target.closest("a[data-show]"); if(!a) return;
+  ev.preventDefault(); show(a.getAttribute("data-show"), true); closeDrawer();
+});
+document.getElementById("wsTab").addEventListener("click", function(e){ var w=e.currentTarget; if(w.getAttribute("data-mode")==="tab"){ e.preventDefault(); show("worksheets",true); } });
+document.getElementById("prevA").addEventListener("click", function(e){ e.preventDefault(); show(ORDER[(ORDER.indexOf(cur)-1+ORDER.length)%ORDER.length], true); });
+document.getElementById("nextA").addEventListener("click", function(e){ e.preventDefault(); show(ORDER[(ORDER.indexOf(cur)+1)%ORDER.length], true); });
+document.getElementById("tickBtn").addEventListener("click", function(){ if(d.done[cur]) delete d.done[cur]; else d.done[cur]=1; persist(); paintTicks(); paintHead(cur); });
+document.getElementById("printBtn").addEventListener("click", function(){ window.print(); });
+window.addEventListener("popstate", function(){ var q=new URLSearchParams(location.search); show(q.get("l")||ORDER[1], false); });
+
+/* ── Listen: the lesson, read aloud (speechSynthesis; quiet if absent) ── */
+var speaking=false, lb=document.getElementById("listenBtn");
+function stopSpeak(){ try{ window.speechSynthesis && window.speechSynthesis.cancel(); }catch(e){} speaking=false; lb.setAttribute("aria-pressed","false"); }
+if(!("speechSynthesis" in window)) lb.hidden=true;
+lb.addEventListener("click", function(){
+  if(speaking){ stopSpeak(); return; }
+  var s=sec(cur), parts=[];
+  Array.prototype.forEach.call(s.querySelectorAll("h2,h3,h4,p,li,.step,.blab,.openq,.kvr,td"), function(el){ var t=(el.innerText||el.textContent||"").replace(/\s+/g," ").trim(); if(t) parts.push(t); });
+  var u=new SpeechSynthesisUtterance(parts.join(". ")); u.lang="en-US"; u.rate=.95;
+  u.onend=function(){ speaking=false; lb.setAttribute("aria-pressed","false"); };
+  speaking=true; lb.setAttribute("aria-pressed","true"); window.speechSynthesis.speak(u);
+});
+
+/* ── the contents drawer ── */
+var drawer=document.getElementById("drawer"), dBtn=document.getElementById("drawerBtn"), lastFocus=null;
+function openDrawer(){ lastFocus=document.activeElement; drawer.setAttribute("data-open","1"); dBtn.setAttribute("aria-expanded","true"); document.body.style.overflow="hidden"; var f=drawer.querySelector('nav a[aria-current="page"]')||drawer.querySelector("nav a"); if(f) f.focus(); }
+function closeDrawer(){ if(drawer.getAttribute("data-open")!=="1") return; drawer.setAttribute("data-open","0"); dBtn.setAttribute("aria-expanded","false"); document.body.style.overflow=""; if(lastFocus) lastFocus.focus(); }
+dBtn.addEventListener("click", function(){ drawer.getAttribute("data-open")==="1"?closeDrawer():openDrawer(); });
+drawer.addEventListener("click", function(ev){ if(ev.target.closest("[data-close]")) closeDrawer(); });
+document.addEventListener("keydown", function(ev){ if(ev.key==="Escape") closeDrawer(); });
+
+/* the room jump */
+var rs=document.getElementById("roomSel"); if(rs){ rs.addEventListener("change", function(){ if(rs.value) location.href=rs.value; }); }
+
+paintTicks();
+var q=new URLSearchParams(location.search); show(q.get("l")||"u1", false);
 })();
+
 </script>
 </body>
 </html>
