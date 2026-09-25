@@ -1,0 +1,984 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script>/* .30eg: begin in light. Dark only when this device chose it - the stored choice, never the OS setting, decides. Same key as every Interior page. */
+(function(){var t="light";try{if(localStorage.getItem("aog.interior.ws.v1.theme")==="dark")t="dark";}catch(e){}document.documentElement.setAttribute("data-theme",t);})();</script>
+<title>Social Studies, K–12 — Architecture of Grace</title>
+<meta name="description" content="A free K–12 social studies course following the Illinois Learning Standards for Social Science: 24 units across five grade bands, 8 chapters, 64 numbered lessons with readings, key words, sources and data, checks, chapter reviews and unit tests. Original text, built for students with IEPs and English learners.">
+<!-- ═══ AOG ICONS + LINK PREVIEW · managed block · .30k0 ═══ -->
+<link rel="canonical" href="https://architectureofgrace.org/social-studies-course">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Architecture of Grace">
+<meta property="og:locale" content="en_US">
+<meta property="og:title" content="Social Studies, K–12 — Architecture of Grace">
+<meta property="og:description" content="A free K–12 social studies course following the Illinois Learning Standards for Social Science: 24 units across five grade bands, 8 chapters, 64 numbered lessons with readings, key words, sources and data, checks, chapter reviews and unit tests. Original text, built for students with IEPs and English learners.">
+<meta property="og:url" content="https://architectureofgrace.org/social-studies-course">
+<meta property="og:image" content="https://architectureofgrace.org/og-prep.png?v=1">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="A link card for the K–12 social studies course at Architecture of Grace.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Social Studies, K–12 — Architecture of Grace">
+<meta name="twitter:description" content="A free K–12 social studies course following the Illinois Learning Standards for Social Science: 24 units across five grade bands, 8 chapters, 64 numbered lessons with readings, key words, sources and data, checks, chapter reviews and unit tests. Original text, built for students with IEPs and English learners.">
+<meta name="twitter:image" content="https://architectureofgrace.org/og-prep.png?v=1">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#0A1E33">
+<meta name="apple-mobile-web-app-title" content="Grace">
+<meta name="application-name" content="Architecture of Grace">
+<!-- ═══ END AOG ICONS + LINK PREVIEW ═══ -->
+<!-- AOG-COURSE-V1 — built by _work/ss/build_ss.py from _work/ss/u*.json. Do not hand-edit; edit the JSON or the builder and re-run. -->
+<!-- No external requests of any kind. Every byte this page needs is in this file (aog-topbar.js and aog-jump.js are same-origin; a 404 changes nothing but the bar and the menu). -->
+<style>
+
+/* ══ TOKENS ══ the Interior set (light is the base; dark redefines tokens only)
+   plus the course's own: navy #0A1E33, a flag red for the badges, the hub's
+   brown accent, and a serif stack for the book voice. */
+:root{
+  --ground:#F5F1E8; --field:#FFFFFF; --field-2:#EFEAE0; --field-3:#E7E0D2;
+  --ink:#1D2733; --ink-soft:#57626F; --ink-faint:#5F6B78;
+  --navy:#0A1E33; --navy-2:#1B3A5F; --gold:#B8893A; --gold-deep:#7A5C1F;
+  --red:#A8323A; --red-deep:#7E1F26; --acc:#7A5230; --acc-soft:#EFE3D6;
+  --rule:rgba(29,39,51,.16); --rule-soft:rgba(29,39,51,.08);
+  --lift:0 1px 0 rgba(255,255,255,.7), 0 20px 44px -30px rgba(29,39,51,.55);
+  --lift-sm:0 1px 2px rgba(29,39,51,.07), 0 8px 20px -16px rgba(29,39,51,.4);
+  --a:#4A3A8C; --a-wash:rgba(74,58,140,.07);
+  --good:#2E6B4F; --good-wash:rgba(46,107,79,.12);
+  --caution:#9A3412; --caution-wash:rgba(154,52,18,.09); --focus:#B8893A;
+  --paper:#FBF7EE; --paper-line:rgba(122,82,48,.22);
+  --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,"Times New Roman",serif;
+  --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  --cond:"Avenir Next Condensed","Helvetica Neue","Arial Narrow","Roboto Condensed",Impact,sans-serif;
+  --on-navy:#F5F1E8;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --ground:#12161C; --field:#1A2029; --field-2:#222A34; --field-3:#2A333F;
+    --ink:#E9EEF4; --ink-soft:#A3AFBC; --ink-faint:#84909D;
+    --navy:#0A1E33; --navy-2:#9CC2E8; --gold:#D6A852; --gold-deep:#D6A852;
+    --red:#E07078; --red-deep:#B24A52; --acc:#D0A46B; --acc-soft:#3A2E22;
+    --rule:rgba(233,238,244,.18); --rule-soft:rgba(233,238,244,.09);
+    --lift:0 1px 0 rgba(233,238,244,.04), 0 24px 54px -32px rgba(0,0,0,.95);
+    --lift-sm:0 1px 2px rgba(0,0,0,.5), 0 10px 24px -18px rgba(0,0,0,.9);
+    --a:#A99BE8; --a-wash:rgba(169,155,232,.12);
+    --good:#79C79E; --good-wash:rgba(121,199,158,.16);
+    --caution:#F0A07C; --caution-wash:rgba(240,160,124,.12); --focus:#D6A852;
+    --paper:#232A33; --paper-line:rgba(214,168,82,.28);
+  }
+}
+:root[data-theme="dark"]{
+  --ground:#12161C; --field:#1A2029; --field-2:#222A34; --field-3:#2A333F;
+  --ink:#E9EEF4; --ink-soft:#A3AFBC; --ink-faint:#84909D;
+  --navy:#0A1E33; --navy-2:#9CC2E8; --gold:#D6A852; --gold-deep:#D6A852;
+  --red:#E07078; --red-deep:#B24A52; --acc:#D0A46B; --acc-soft:#3A2E22;
+  --rule:rgba(233,238,244,.18); --rule-soft:rgba(233,238,244,.09);
+  --lift:0 1px 0 rgba(233,238,244,.04), 0 24px 54px -32px rgba(0,0,0,.95);
+  --lift-sm:0 1px 2px rgba(0,0,0,.5), 0 10px 24px -18px rgba(0,0,0,.9);
+  --a:#A99BE8; --a-wash:rgba(169,155,232,.12);
+  --good:#79C79E; --good-wash:rgba(121,199,158,.16);
+  --caution:#F0A07C; --caution-wash:rgba(240,160,124,.12); --focus:#D6A852;
+  --paper:#232A33; --paper-line:rgba(214,168,82,.28);
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion: reduce){ html{scroll-behavior:auto} *,*::before,*::after{animation:none!important;transition:none!important} }
+body{background:var(--ground); color:var(--ink); font:17px/1.6 var(--sans); -webkit-text-size-adjust:100%}
+.wrap{max-width:1040px; margin:0 auto; padding:18px 16px 90px}
+h1,h2,h3,h4{line-height:1.15; margin:0 0 .3em; font-family:var(--serif)}
+p{margin:.4em 0}
+button{font:inherit; color:inherit}
+a{color:var(--navy-2)}
+:focus-visible{outline:3px solid var(--focus); outline-offset:2px}
+.vh{position:absolute!important; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap}
+.mast{display:flex; justify-content:space-between; align-items:flex-start; gap:10px; flex-wrap:wrap}
+.mast .k{font:700 .78rem/1.3 var(--sans); letter-spacing:.12em; text-transform:uppercase; color:var(--gold-deep)}
+.mast h1{font-size:2.1rem; letter-spacing:-.01em}
+.mast .row{display:flex; gap:8px}
+.chipbtn{min-height:48px; padding:8px 16px; border:1px solid var(--rule); border-radius:999px; background:var(--field); cursor:pointer; font-weight:700; font-size:.92rem}
+.deck{color:var(--ink-soft); max-width:66ch}
+.hubline{margin:.2em 0 0; font-size:.95rem}
+.hubline a{font-weight:700; text-decoration:none}
+.hubline a:hover{text-decoration:underline}
+.jump{margin:14px 0 4px}
+.jump label{display:grid; gap:6px; font-weight:700; font-size:.9rem; color:var(--ink-soft)}
+.jump select{min-height:48px; border:1px solid var(--rule); border-radius:12px; background:var(--field); padding:8px 12px; font:inherit; color:var(--ink); max-width:100%}
+
+/* ══ THE UNIT RAIL ══ ten numbered doors, sticky under the site bar */
+.rail{position:sticky; top:var(--aogbar-h,52px); z-index:30; margin:10px -16px 0; padding:8px 16px; background:color-mix(in srgb, var(--ground) 88%, transparent); backdrop-filter:saturate(1.2) blur(10px); -webkit-backdrop-filter:saturate(1.2) blur(10px); border-bottom:1px solid var(--rule-soft)}
+.rail .in{display:flex; gap:6px; align-items:center; overflow-x:auto; scrollbar-width:none; -ms-overflow-style:none; padding-bottom:2px}
+.rail .in::-webkit-scrollbar{display:none}
+.rail .k{flex:0 0 auto; font:700 .7rem var(--sans); letter-spacing:.14em; text-transform:uppercase; color:var(--ink-faint); margin-right:4px}
+.rail a{flex:0 0 auto; display:inline-flex; align-items:center; justify-content:center; min-width:44px; min-height:44px; padding:0 12px; border-radius:999px; border:1px solid var(--rule); background:var(--field); color:var(--ink); text-decoration:none; font:800 .95rem var(--cond); letter-spacing:.04em}
+.rail a[aria-current="page"]{background:var(--navy); border-color:var(--navy); color:var(--on-navy)}
+.rail a:hover{border-color:var(--navy-2)}
+.rail .sp{flex:1 0 8px}
+.rail .drawerbtn{flex:0 0 auto; min-height:44px; padding:0 14px; border-radius:999px; border:1px solid var(--rule); background:var(--field); font-weight:700; font-size:.88rem; cursor:pointer; display:inline-flex; gap:8px; align-items:center}
+.rail .drawerbtn svg{width:16px; height:16px}
+
+/* ══ THE BANNER ══ a drawn scene, the unit number, a huge condensed title */
+.spread{position:relative; margin:18px 0 0; border-radius:22px; overflow:hidden; background:#0A1E33; color:#F5F1E8; box-shadow:var(--lift); min-height:300px; isolation:isolate}
+.spread .scene{position:absolute; inset:0; z-index:0}
+.spread .scene svg{width:100%; height:100%; display:block}
+.spread::after{content:""; position:absolute; inset:0; z-index:1; background:linear-gradient(180deg, rgba(10,30,51,0) 30%, rgba(10,30,51,.55) 62%, rgba(10,30,51,.94) 100%); pointer-events:none}
+.spread .txt{position:relative; z-index:2; padding:clamp(120px,26vw,220px) clamp(18px,4vw,40px) clamp(20px,3vw,30px); display:grid; gap:6px}
+.spread .unum{display:inline-flex; align-items:baseline; gap:10px; font:800 .82rem var(--sans); letter-spacing:.22em; text-transform:uppercase; color:#F5F1E8}
+.spread .unum b{display:inline-flex; align-items:center; justify-content:center; min-width:44px; height:44px; padding:0 10px; border-radius:8px; background:var(--red); color:#fff; font:800 1.4rem var(--cond); letter-spacing:.02em; box-shadow:inset 0 1px 0 rgba(255,255,255,.35), 0 4px 0 #5A151B, 0 8px 16px rgba(0,0,0,.35)}
+.spread h2.ut{font:800 clamp(2.2rem,7.6vw,5.4rem)/0.95 var(--cond); letter-spacing:-.01em; margin:0; text-transform:uppercase; color:#F5F1E8; text-shadow:0 2px 0 rgba(0,0,0,.35), 0 12px 30px rgba(0,0,0,.45); max-width:14ch}
+.spread .years{font:600 clamp(1rem,2.4vw,1.35rem) var(--serif); font-style:italic; color:#EBD9A8; letter-spacing:.02em}
+.spread .credit{position:absolute; right:14px; bottom:10px; z-index:2; font:italic 500 .7rem var(--serif); color:rgba(245,241,232,.55); max-width:46%; text-align:right; line-height:1.25}
+.contents .spread .credit{display:none}
+@media(max-width:720px){.spread .credit{display:none}}
+.contents .spread{min-height:240px; border-radius:18px}
+.contents .spread .txt{padding-top:clamp(90px,18vw,150px)}
+.contents .spread h2.ut{font-size:clamp(1.9rem,6vw,4.2rem)}
+.contents .spread a.enter{position:absolute; right:clamp(14px,3vw,28px); bottom:clamp(16px,3vw,26px); z-index:3; display:inline-flex; align-items:center; gap:8px; min-height:48px; padding:0 18px; border-radius:999px; background:#F5F1E8; color:#0A1E33; text-decoration:none; font:800 .92rem var(--sans); letter-spacing:.04em; box-shadow:0 6px 18px rgba(0,0,0,.35)}
+.contents .spread a.enter:hover{background:#fff}
+
+/* ══ THE BOOK VOICE ══ */
+.intro{margin:22px 0 0; display:grid; grid-template-columns:1.4fr 1fr; gap:18px; align-items:start}
+@media(max-width:820px){.intro{grid-template-columns:1fr}}
+.intro .lead p{font-size:1.06rem; line-height:1.65}
+.intro .lead p:first-child::first-letter{font:800 3.6rem/0.85 var(--serif); float:left; margin:.1em .12em 0 0; color:var(--red)}
+.bigq{background:var(--navy); color:var(--on-navy); border-radius:16px; padding:18px 20px 20px; box-shadow:var(--lift); position:relative; overflow:hidden}
+.bigq::before{content:"?"; position:absolute; right:-10px; top:-30px; font:800 9rem/1 var(--serif); color:rgba(255,255,255,.06)}
+.bigq .k{font:700 .72rem var(--sans); letter-spacing:.18em; text-transform:uppercase; color:#EBD9A8; margin-bottom:6px}
+.bigq p{font:600 1.22rem/1.35 var(--serif); margin:0}
+.tl{margin:20px 0 0}
+.tl .k{font:700 .74rem var(--sans); letter-spacing:.16em; text-transform:uppercase; color:var(--gold-deep); margin-bottom:8px}
+.tl .track{display:flex; gap:0; overflow-x:auto; padding:10px 4px 14px; scroll-snap-type:x proximity; position:relative}
+.tl .track::before{content:""; position:absolute; left:0; right:0; top:29px; height:3px; background:linear-gradient(90deg, var(--red), var(--gold)); border-radius:3px}
+.tl .pin{flex:0 0 200px; scroll-snap-align:start; padding:0 12px 0 0; position:relative}
+.tl .pin::before{content:""; position:absolute; left:0; top:22px; width:16px; height:16px; border-radius:50%; background:var(--field); border:4px solid var(--red); box-shadow:0 0 0 3px var(--ground)}
+.tl .pin .y{font:800 1.3rem/1 var(--cond); letter-spacing:.02em; color:var(--red); margin:0 0 14px 26px}
+.tl .pin .t{font-size:.9rem; line-height:1.4; color:var(--ink-soft); margin:0 0 0 2px; padding-top:6px; border-top:1px dashed var(--rule)}
+
+/* ══ CHAPTER OPENER ══ */
+.chap{margin:36px 0 0; scroll-margin-top:70px}
+.chead{display:grid; grid-template-columns:auto 1fr; gap:16px; align-items:center; padding:18px 0 14px; border-top:3px solid var(--navy); border-bottom:1px solid var(--rule)}
+:root[data-theme="dark"] .chead{border-top-color:var(--gold)}
+.badge{display:inline-flex; align-items:center; justify-content:center; width:64px; height:64px; border-radius:14px; background:var(--red); color:#fff; font:800 2rem var(--cond); box-shadow:inset 0 1px 0 rgba(255,255,255,.35), 0 5px 0 #5A151B, 0 10px 18px rgba(0,0,0,.25); flex:0 0 auto}
+.chead .tab{display:inline-block; font:800 .7rem var(--sans); letter-spacing:.24em; text-transform:uppercase; background:var(--navy); color:var(--on-navy); padding:4px 10px; border-radius:4px 4px 0 0}
+:root[data-theme="dark"] .chead .tab{background:var(--gold); color:#12161C}
+.chead h2{font-size:clamp(1.5rem,3.6vw,2.2rem); margin:.15em 0 0}
+.chead .yrs{font:italic 600 1rem var(--serif); color:var(--ink-soft)}
+.cq{margin:12px 0 0; padding:12px 16px; border-left:4px solid var(--gold); background:var(--field-2); border-radius:0 12px 12px 0; font:600 1.05rem/1.4 var(--serif)}
+.cq .k{display:block; font:700 .7rem var(--sans); letter-spacing:.16em; text-transform:uppercase; color:var(--gold-deep); margin-bottom:4px}
+.story{margin:16px 0 0; background:var(--paper); border:1px solid var(--paper-line); border-radius:16px; padding:20px 22px 18px; box-shadow:var(--lift-sm); position:relative; background-image:repeating-linear-gradient(0deg, transparent 0 27px, rgba(122,82,48,.06) 27px 28px)}
+.story .k{font:700 .7rem var(--sans); letter-spacing:.2em; text-transform:uppercase; color:var(--red); margin-bottom:6px}
+.story h3{font-size:1.5rem; margin:0 0 .2em}
+.story .kick{font:italic 1.05rem/1.45 var(--serif); color:var(--ink-soft); margin:0 0 .8em}
+.story p.sp{font-size:1.02rem; line-height:1.68; max-width:70ch}
+.story .think{margin-top:12px; padding:10px 14px; background:var(--a-wash); border-radius:10px; font-weight:600}
+.story .think .k2{font:700 .68rem var(--sans); letter-spacing:.16em; text-transform:uppercase; color:var(--a); display:block; margin-bottom:2px}
+
+/* ══ SECTIONS AND LESSONS ══ */
+.sec{margin:26px 0 0}
+.sec .sh{display:flex; align-items:baseline; gap:12px; flex-wrap:wrap; padding-bottom:6px; border-bottom:2px solid var(--rule)}
+.sec .sh .sn{font:800 .74rem var(--sans); letter-spacing:.2em; text-transform:uppercase; color:var(--red)}
+.sec .sh h3{font-size:1.35rem; margin:0}
+.les{margin:16px 0 0; background:var(--field); border:1px solid var(--rule); border-radius:16px; box-shadow:var(--lift-sm); scroll-margin-top:70px; overflow:hidden}
+.les .lh{display:grid; grid-template-columns:auto 1fr auto; gap:12px; align-items:center; padding:12px 16px; background:var(--field-2); border-bottom:1px solid var(--rule-soft)}
+.les .ln{display:inline-flex; align-items:center; justify-content:center; min-width:52px; height:36px; padding:0 8px; border-radius:8px; background:var(--navy); color:var(--on-navy); font:800 1.05rem var(--cond); letter-spacing:.04em}
+:root[data-theme="dark"] .les .ln{background:var(--gold); color:#12161C}
+.les .lh h4{font-size:1.2rem; margin:0}
+.les .tick{width:26px; height:26px; border-radius:50%; border:2px solid var(--rule); display:inline-flex; align-items:center; justify-content:center; font-size:.8rem; color:transparent; background:var(--field)}
+.les.done .tick{background:var(--good); border-color:var(--good); color:#fff}
+.les .body{padding:14px 16px 16px; display:grid; grid-template-columns:minmax(0,1.5fr) minmax(0,1fr); gap:16px}
+@media(max-width:820px){.les .body{grid-template-columns:1fr}}
+.main-idea{padding:10px 14px; border-radius:10px; background:var(--acc-soft); border-left:4px solid var(--acc); font:600 1rem/1.4 var(--serif); color:var(--ink)}
+.main-idea .k{display:block; font:700 .66rem var(--sans); letter-spacing:.16em; text-transform:uppercase; color:var(--acc); margin-bottom:2px}
+.reading p{font-size:1.02rem; line-height:1.68; max-width:68ch}
+.kw{display:inline; padding:0 .12em; margin:0; border:0; border-bottom:2px solid var(--gold); background:linear-gradient(transparent 62%, rgba(184,137,58,.22) 62%); border-radius:2px; cursor:pointer; font:inherit; font-weight:700; color:var(--ink); line-height:inherit; position:relative}
+.kw:hover{background:linear-gradient(transparent 55%, rgba(184,137,58,.35) 55%)}
+.kwpop{position:absolute; z-index:40; left:0; top:calc(100% + 8px); min-width:240px; max-width:320px; padding:10px 12px; background:var(--navy); color:var(--on-navy); border-radius:10px; font:400 .92rem/1.45 var(--sans); box-shadow:0 12px 30px rgba(0,0,0,.35); text-align:left; white-space:normal}
+.kwpop::before{content:""; position:absolute; top:-6px; left:14px; width:12px; height:12px; background:var(--navy); transform:rotate(45deg)}
+.kwpop.right{left:auto; right:0}
+.kwpop.right::before{left:auto; right:14px}
+.words{margin-top:6px; padding:12px 14px; border:1px dashed var(--rule); border-radius:12px; background:var(--field-2)}
+.words .k{font:700 .68rem var(--sans); letter-spacing:.16em; text-transform:uppercase; color:var(--gold-deep); margin-bottom:6px}
+.words dl{margin:0; display:grid; gap:6px}
+.words dt{font-weight:800; font-family:var(--serif)}
+.words dd{margin:0 0 2px; font-size:.93rem; color:var(--ink-soft)}
+.lbtns{display:flex; gap:8px; flex-wrap:wrap; margin-top:10px}
+.lbtn{min-height:44px; padding:8px 14px; border-radius:999px; border:1px solid var(--rule); background:var(--field); cursor:pointer; font-weight:700; font-size:.88rem; display:inline-flex; align-items:center; gap:8px}
+.lbtn svg{width:16px; height:16px}
+.lbtn[aria-pressed="true"]{background:var(--navy); color:var(--on-navy); border-color:var(--navy)}
+:root[data-theme="dark"] .lbtn[aria-pressed="true"]{background:var(--gold); color:#12161C; border-color:var(--gold)}
+
+/* the look panel: a source on parchment, a bar chart, a scenario */
+.look{border-radius:14px; padding:14px 16px 16px; position:relative; overflow:hidden}
+.look .k{font:700 .66rem var(--sans); letter-spacing:.18em; text-transform:uppercase; margin-bottom:6px; display:flex; gap:8px; align-items:center}
+.look .k svg{width:16px; height:16px}
+.look h5{font:800 1.1rem/1.25 var(--serif); margin:0 0 .4em}
+.look .prompt{margin-top:10px; padding-top:8px; border-top:1px dashed var(--rule); font-weight:600; font-size:.95rem}
+.look.source{background:var(--paper); border:1px solid var(--paper-line); background-image:radial-gradient(120% 80% at 100% 0%, rgba(184,137,58,.10), transparent 60%)}
+.look.source .k{color:var(--acc)}
+.look.source blockquote{margin:0; padding:2px 0 0 16px; border-left:3px solid var(--gold); font:italic 1.05rem/1.55 var(--serif)}
+.look.source blockquote::before{content:"“"; font:800 2.4rem/0 var(--serif); color:var(--gold); vertical-align:-.35em; margin-right:2px}
+.look.source cite{display:block; margin-top:8px; font:600 .84rem var(--sans); color:var(--ink-soft); font-style:normal}
+.look.data{background:var(--field-2); border:1px solid var(--rule-soft)}
+.look.data .k{color:var(--navy-2)}
+.look.data svg.chart{width:100%; height:auto; display:block; margin-top:4px}
+.look.data .cite{font:600 .8rem var(--sans); color:var(--ink-faint); margin-top:6px}
+.look.think{background:var(--a-wash); border:1px solid rgba(74,58,140,.18)}
+.look.think .k{color:var(--a)}
+.look.think p.sc{font-size:.98rem; line-height:1.55}
+.chart text{font:600 11px var(--sans); fill:var(--ink-soft)}
+.chart .val{fill:var(--ink); font-weight:800}
+.chart rect.bar{fill:var(--navy-2)}
+:root[data-theme="dark"] .chart rect.bar{fill:var(--gold)}
+.chart line.ax{stroke:var(--rule); stroke-width:1}
+
+/* checks */
+.checks{margin-top:14px; padding:12px 14px 6px; border-top:1px solid var(--rule-soft); grid-column:1/-1}
+.checks .k{font:700 .7rem var(--sans); letter-spacing:.18em; text-transform:uppercase; color:var(--navy-2); margin-bottom:8px; display:flex; justify-content:space-between; gap:8px; align-items:center}
+.checks .score{font:800 .9rem var(--cond); letter-spacing:.06em; color:var(--good); min-width:3ch; text-align:right}
+.q{margin:0 0 12px; padding:10px 12px 12px; border-radius:12px; background:var(--field-2); border:1px solid var(--rule-soft)}
+.q .qq{font-weight:700; margin:0 0 8px; line-height:1.4}
+.q .qn{display:inline-block; min-width:1.6em; color:var(--red); font:800 1rem var(--cond)}
+.opts{display:grid; gap:6px; margin:0; padding:0; list-style:none}
+@media(min-width:820px){.q.wide .opts{grid-template-columns:1fr 1fr}}
+.opt{min-height:44px; width:100%; text-align:left; padding:9px 12px; border:1px solid var(--rule); border-radius:10px; background:var(--field); cursor:pointer; font-size:.97rem; display:flex; gap:10px; align-items:flex-start; line-height:1.35}
+.opt .l{flex:0 0 22px; height:22px; border-radius:50%; border:1.5px solid var(--rule); display:inline-flex; align-items:center; justify-content:center; font:800 .72rem var(--sans); color:var(--ink-soft); margin-top:1px}
+.opt:hover{border-color:var(--navy-2)}
+.opt[data-st="right"]{border-color:var(--good); background:var(--good-wash); font-weight:700}
+.opt[data-st="right"] .l{background:var(--good); border-color:var(--good); color:#fff}
+.opt[data-st="tried"]{opacity:.5}
+.opt[data-st="tried"] .l{background:var(--caution-wash); border-color:var(--caution); color:var(--caution)}
+.opt:disabled{cursor:default}
+.why{margin:8px 0 0; padding:8px 12px; border-radius:8px; background:var(--good-wash); color:var(--ink); font-size:.93rem; line-height:1.45}
+.why b{color:var(--good)}
+.why[hidden]{display:none}
+.say{font-size:.92rem; color:var(--caution); margin:6px 0 0; min-height:1.3em; font-weight:600}
+
+/* chapter review + unit test */
+.review{margin:24px 0 0; background:var(--field); border:1px solid var(--rule); border-radius:16px; box-shadow:var(--lift-sm); overflow:hidden}
+.review > .rh{display:flex; gap:12px; align-items:center; justify-content:space-between; padding:12px 16px; background:var(--navy); color:var(--on-navy)}
+:root[data-theme="dark"] .review > .rh{background:var(--field-3); color:var(--ink)}
+.review > .rh .k{font:800 .74rem var(--sans); letter-spacing:.2em; text-transform:uppercase}
+.review > .rh h3{font-size:1.15rem; margin:0; color:inherit}
+.review .rscore{font:800 1.4rem var(--cond); letter-spacing:.04em; min-width:5ch; text-align:right}
+.review .rbody{padding:14px 16px 8px}
+.review .rfoot{padding:8px 16px 16px; display:flex; gap:10px; flex-wrap:wrap; align-items:center}
+.btn{min-height:48px; padding:10px 20px; border-radius:12px; border:1px solid var(--rule); background:var(--field); cursor:pointer; font-weight:700}
+.btn-a{background:var(--navy); border-color:var(--navy); color:var(--on-navy)}
+:root[data-theme="dark"] .btn-a{background:var(--gold); border-color:var(--gold); color:#12161C}
+.verdict{font-weight:700; color:var(--ink-soft)}
+
+/* ══ WRAP-UP ══ */
+.wrap-up{margin:40px 0 0}
+.wrap-up .wh{display:grid; grid-template-columns:auto 1fr; gap:16px; align-items:center; padding:18px 0 14px; border-top:3px solid var(--red); border-bottom:1px solid var(--rule)}
+.wrap-up .wh .badge{background:var(--navy); box-shadow:inset 0 1px 0 rgba(255,255,255,.2), 0 5px 0 #05101C, 0 10px 18px rgba(0,0,0,.25); font-size:1.4rem}
+:root[data-theme="dark"] .wrap-up .wh .badge{background:var(--gold); color:#12161C; box-shadow:inset 0 1px 0 rgba(255,255,255,.35), 0 5px 0 #7A5C1F}
+.wrap-up .wh h2{font-size:clamp(1.5rem,3.6vw,2.1rem); margin:.1em 0 0}
+.match{margin-top:16px; background:var(--field); border:1px solid var(--rule); border-radius:16px; padding:14px 16px 16px; box-shadow:var(--lift-sm)}
+.match .mh{display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:8px}
+.match .mh h3{font-size:1.15rem; margin:0}
+.match .mscore{font:800 1.1rem var(--cond); color:var(--good)}
+.mgrid{display:grid; grid-template-columns:1fr 1fr; gap:10px}
+@media(max-width:640px){.mgrid{grid-template-columns:1fr}}
+.mcol{display:grid; gap:8px; align-content:start}
+.mcol .ck{font:700 .68rem var(--sans); letter-spacing:.16em; text-transform:uppercase; color:var(--ink-faint)}
+.mt{min-height:48px; text-align:left; padding:10px 12px; border-radius:10px; border:1.5px solid var(--rule); background:var(--field-2); cursor:pointer; font-size:.95rem; line-height:1.35}
+.mt.w{font-weight:800; font-family:var(--serif); font-size:1.02rem}
+.mt[aria-pressed="true"]{border-color:var(--navy-2); background:var(--a-wash)}
+.mt.ok{border-color:var(--good); background:var(--good-wash); opacity:.75; cursor:default}
+.mt.no{animation:shake .3s}
+@keyframes shake{25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
+.write{margin-top:16px; background:var(--paper); border:1px solid var(--paper-line); border-radius:16px; padding:16px 18px 18px; box-shadow:var(--lift-sm)}
+.write h3{font-size:1.15rem; margin:0 0 .3em}
+.write .wp{font:600 1.05rem/1.5 var(--serif)}
+.write ul{margin:.4em 0 .6em; padding-left:1.2em}
+.write li{margin:.25em 0; font-size:.95rem}
+.write textarea{width:100%; min-height:200px; padding:12px 14px; border:1px solid var(--rule); border-radius:12px; background:var(--field); color:var(--ink); font:1rem/1.6 var(--serif); resize:vertical}
+.write .wfoot{display:flex; gap:10px; align-items:center; flex-wrap:wrap; margin-top:8px}
+.write .wc{font:700 .84rem var(--sans); color:var(--ink-faint)}
+.rooms{margin-top:16px; background:var(--field); border:1px solid var(--rule); border-radius:16px; padding:14px 16px; box-shadow:var(--lift-sm)}
+.rooms h3{font-size:1.15rem; margin:0 0 .2em}
+.rooms p{color:var(--ink-soft); font-size:.95rem; margin:0 0 .6em}
+.rooms .doors{display:flex; gap:8px; flex-wrap:wrap}
+.rooms .door{display:inline-flex; align-items:center; min-height:44px; padding:8px 14px; border:1px solid var(--rule); border-radius:999px; background:var(--field-2); color:var(--ink); font:600 .88rem var(--sans); text-decoration:none}
+.rooms .door:hover{border-color:var(--acc)}
+.pager2{display:flex; justify-content:space-between; gap:10px; margin:28px 0 0; flex-wrap:wrap}
+.pager2 a{display:inline-flex; align-items:center; gap:8px; min-height:48px; padding:0 16px; border-radius:12px; border:1px solid var(--rule); background:var(--field); color:var(--ink); text-decoration:none; font-weight:700}
+.pager2 a:hover{border-color:var(--navy-2)}
+.pager2 a .s{display:block; font:700 .66rem var(--sans); letter-spacing:.16em; text-transform:uppercase; color:var(--ink-faint)}
+
+/* ══ THE CONTENTS DRAWER ══ chapters → sections → lessons, on the phone */
+.drawer{position:fixed; inset:0; z-index:60; display:none}
+.drawer[data-open="1"]{display:block}
+.drawer .scrim{position:absolute; inset:0; background:rgba(10,30,51,.5); backdrop-filter:blur(3px)}
+.drawer .sheet{position:absolute; right:0; top:0; bottom:0; width:min(420px,92vw); background:var(--field); box-shadow:-10px 0 40px rgba(0,0,0,.35); display:flex; flex-direction:column; animation:slidein .28s cubic-bezier(.2,.8,.2,1)}
+@keyframes slidein{from{transform:translateX(30px);opacity:0}}
+.drawer .dh{display:flex; justify-content:space-between; align-items:center; padding:12px 14px 10px; border-bottom:1px solid var(--rule)}
+.drawer .dh b{font:800 .8rem var(--sans); letter-spacing:.16em; text-transform:uppercase; color:var(--gold-deep)}
+.drawer .dh button{min-width:44px; min-height:44px; border-radius:999px; border:1px solid var(--rule); background:var(--field-2); cursor:pointer; font-size:1.2rem}
+.drawer nav{overflow:auto; padding:8px 8px 20px}
+.drawer nav a{display:block; padding:9px 10px; border-radius:8px; color:var(--ink); text-decoration:none; font-size:.95rem; min-height:44px; display:flex; align-items:center; gap:8px}
+.drawer nav a:hover{background:var(--field-2)}
+.drawer nav .dc{margin:8px 0 2px; padding:6px 10px; font:800 .95rem var(--serif); border-bottom:1px solid var(--rule-soft)}
+.drawer nav .dc .b{display:inline-flex; width:26px; height:26px; border-radius:6px; background:var(--red); color:#fff; align-items:center; justify-content:center; font:800 .85rem var(--cond); margin-right:8px}
+.drawer nav .ds{padding:6px 10px 2px; font:800 .66rem var(--sans); letter-spacing:.16em; text-transform:uppercase; color:var(--red)}
+.drawer nav a .n{font:800 .8rem var(--cond); color:var(--ink-faint); min-width:2.4em}
+.drawer nav a .t2{display:inline-block; width:10px; height:10px; border-radius:50%; border:1.5px solid var(--rule); margin-left:auto; flex:0 0 auto}
+.drawer nav a.done .t2{background:var(--good); border-color:var(--good)}
+
+/* ══ CONTENTS PAGE ══ */
+.contents .search{margin:16px 0 0; display:grid; gap:6px}
+.contents .search label{font-weight:700; font-size:.9rem; color:var(--ink-soft)}
+.contents .search .box{position:relative}
+.contents .search input{width:100%; min-height:52px; padding:10px 14px 10px 46px; border:1px solid var(--rule); border-radius:14px; background:var(--field); color:var(--ink); font:1.02rem var(--sans); box-shadow:var(--lift-sm)}
+.contents .search svg{position:absolute; left:16px; top:50%; transform:translateY(-50%); width:20px; height:20px; color:var(--ink-faint)}
+.contents .search .hits{font:700 .82rem var(--sans); color:var(--ink-faint); min-height:1.2em}
+.contents .stat{display:flex; gap:14px; flex-wrap:wrap; margin:10px 0 0; align-items:center}
+.contents .stat .n{font:800 1.5rem var(--cond); color:var(--red)}
+.contents .stat .l{font:700 .74rem var(--sans); letter-spacing:.12em; text-transform:uppercase; color:var(--ink-faint)}
+.contents .prog{height:8px; border-radius:6px; background:var(--field-3); overflow:hidden; flex:1 1 120px; min-width:120px}
+.contents .prog i{display:block; height:100%; width:0; background:linear-gradient(90deg, var(--red), var(--gold)); border-radius:6px; transition:width .4s}
+.unit-spread{margin:30px 0 0; scroll-margin-top:70px}
+.bandhead{margin:40px 0 -10px; padding:14px 0 10px; border-top:3px solid var(--navy); display:grid; grid-template-columns:auto 1fr; gap:4px 14px; align-items:baseline; scroll-margin-top:70px}
+:root[data-theme="dark"] .bandhead{border-top-color:var(--gold)}
+.bandhead .bk{font:800 .72rem var(--sans); letter-spacing:.22em; text-transform:uppercase; color:var(--red)}
+.bandhead h2{font:800 clamp(1.6rem,4vw,2.4rem)/1 var(--cond); text-transform:uppercase; letter-spacing:.01em; margin:0}
+.bandhead .bd{grid-column:2; margin:0; font:600 .88rem var(--sans); color:var(--ink-faint)}
+.unit-spread .body{margin-top:14px}
+.cchap{margin:18px 0 0; background:var(--field); border:1px solid var(--rule); border-radius:16px; box-shadow:var(--lift-sm); overflow:hidden}
+.cchap .ch{display:grid; grid-template-columns:auto 1fr; gap:14px; align-items:center; padding:14px 16px; background:var(--field-2); border-bottom:1px solid var(--rule-soft)}
+.cchap .ch .badge{width:52px; height:52px; font-size:1.6rem}
+.cchap .ch .tab{display:inline-block; font:800 .64rem var(--sans); letter-spacing:.22em; text-transform:uppercase; background:var(--navy); color:var(--on-navy); padding:3px 8px; border-radius:4px 4px 0 0}
+:root[data-theme="dark"] .cchap .ch .tab{background:var(--gold); color:#12161C}
+.cchap .ch h3{font-size:1.25rem; margin:.1em 0 0}
+.cchap .ch .yrs{font:italic 600 .92rem var(--serif); color:var(--ink-soft)}
+.cchap .st{padding:10px 16px 0; font:italic .95rem/1.45 var(--serif); color:var(--ink-soft)}
+.cchap .st b{font-style:normal; color:var(--red); font-family:var(--sans); font-size:.7rem; letter-spacing:.16em; text-transform:uppercase; margin-right:6px}
+.csec{padding:8px 16px 4px}
+.csec .sn{font:800 .7rem var(--sans); letter-spacing:.2em; text-transform:uppercase; color:var(--red); margin:8px 0 4px}
+.csec .sn span{color:var(--ink); font:700 .95rem var(--serif); letter-spacing:0; text-transform:none; margin-left:8px}
+.lrow{display:flex; align-items:center; gap:10px; min-height:44px; padding:5px 8px; border-radius:8px; color:var(--ink); text-decoration:none; font-size:.98rem}
+.lrow:hover{background:var(--field-2)}
+.lrow .n{font:800 .9rem var(--cond); color:var(--ink-faint); min-width:2.6em; letter-spacing:.02em}
+.lrow .tk{margin-left:auto; width:22px; height:22px; border-radius:50%; border:2px solid var(--rule); flex:0 0 auto; display:inline-flex; align-items:center; justify-content:center; color:transparent; font-size:.7rem}
+.lrow.done .tk{background:var(--good); border-color:var(--good); color:#fff}
+.lrow[hidden]{display:none}
+.csec[data-empty="1"], .cchap[data-empty="1"], .unit-spread[data-empty="1"]{display:none}
+.cwrap{padding:10px 16px 14px; display:flex; gap:8px; flex-wrap:wrap; border-top:1px dashed var(--rule-soft); margin-top:6px}
+.cwrap a{display:inline-flex; align-items:center; min-height:40px; padding:0 12px; border-radius:999px; border:1px solid var(--rule); background:var(--field-2); color:var(--ink); text-decoration:none; font:600 .84rem var(--sans)}
+.cwrap a:hover{border-color:var(--navy-2)}
+.teach{margin-top:28px; border:1.5px solid var(--gold); border-radius:14px; background:var(--field)}
+.teach summary{cursor:pointer; list-style:none; min-height:48px; display:flex; align-items:center; padding:10px 16px; font-weight:700; font-size:.92rem; color:var(--gold-deep)}
+.teach summary::-webkit-details-marker{display:none}
+.teach .inner{padding:4px 16px 16px; display:grid; gap:10px; font-size:.93rem; color:var(--ink-soft)}
+.teach .inner p{margin:0}
+footer.foot{margin-top:40px; font-size:.86rem; color:var(--ink-faint); max-width:70ch}
+
+/* ══ PRINT ══ the book, on paper */
+@media print{
+  body{background:#fff; color:#111; font-size:11.5pt}
+  .wrap{max-width:none; padding:0}
+  .rail,.jump,.mast .row,.hubline,.lbtns,.drawer,.checks,.review .rfoot,.pager2,.teach,.contents .search,.contents .stat,.spread .credit,.spread a.enter,.aogj-btn,.aogj-panel{display:none!important}
+  .spread{min-height:0; border-radius:0; box-shadow:none; background:#0A1E33!important; -webkit-print-color-adjust:exact; print-color-adjust:exact; break-inside:avoid}
+  .spread .txt{padding:40pt 20pt 16pt}
+  .chap{break-before:page}
+  .les,.story,.look,.q,.review{break-inside:avoid; box-shadow:none}
+  .les .body{grid-template-columns:1fr}
+  .kw{border-bottom:1px solid #999; background:none; font-weight:700}
+  .kwpop{display:none!important}
+  .opt{border:1px solid #999; background:#fff}
+  .why{display:block!important; border:1px dashed #999; background:#fff}
+  .why.pr{display:none!important}
+  .write textarea{min-height:320pt; border:1px solid #999}
+  a{color:inherit; text-decoration:none}
+}
+
+
+</style>
+</head>
+<body>
+<script src="/aog-topbar.js"></script>
+<script src="/aog-grace.js" defer></script>
+<div class="wrap contents">
+<header class="mast">
+  <div>
+    <div class="k"><span data-en="The Interior — Social Studies · Every band" data-es="El Interior — Estudios Sociales · Cada banda">The Interior — Social Studies · Every band</span></div>
+    <h1 data-en="Social Studies" data-es="Estudios Sociales">Social Studies</h1>
+    <p class="deck"><span data-en="The whole course on one page, band by band: every unit with its chapters, sections and numbered lessons. Tap a lesson to open it. A tick means you got all three checks right. U.S. History for grades 6–8 is its own course, linked from its band." data-es="Todo el curso en una página, banda por banda: cada unidad con sus capítulos, secciones y lecciones numeradas. Toca una lección para abrirla. Una marca significa que acertaste las tres comprobaciones. Historia de EE. UU. para grados 6–8 es su propio curso, enlazado desde su banda.">The whole course on one page, band by band: every unit with its chapters, sections and numbered lessons. Tap a lesson to open it. A tick means you got all three checks right. U.S. History for grades 6–8 is its own course, linked from its band.</span></p>
+    <p class="hubline no-print"><a id="hubLink" href="social-studies-hub.html"><span data-en="← Social Studies, every band" data-es="← Estudios Sociales, cada banda">← Social Studies, every band</span></a></p>
+  </div>
+  <div class="row no-print">
+    <button class="chipbtn" id="langBtn" type="button">Español</button>
+    <button class="chipbtn" id="themeBtn" type="button" data-en="Dark" data-es="Oscuro">Dark</button>
+  </div>
+</header>
+
+<main id="main">
+<div class="jump no-print"><label><span data-en="Jump to another unit" data-es="Ir a otra unidad">Jump to another unit</span>
+<select id="jumpSel">
+<optgroup label="Social Studies · Grades K–2">
+<option value="" selected>Social Studies · Course contents</option>
+<option value="ssc-u1.html">&nbsp;&nbsp;&nbsp;&nbsp;Unit 1 · Me, My Family, My School</option>
+<option value="ssc-u2.html">&nbsp;&nbsp;&nbsp;&nbsp;Unit 2 · Our Community</option>
+<option value="ssc-u3.html">&nbsp;&nbsp;&nbsp;&nbsp;Unit 3 · Maps and Places</option>
+<option value="ssc-u4.html">&nbsp;&nbsp;&nbsp;&nbsp;Unit 4 · Then and Now, and Our Country</option>
+<option value="s7-me-family-class.html">Me, My Family, My Class</option>
+<option value="s8-rules-fair-choices.html">Rules and Fair Choices</option>
+<option value="s9-maps-where-things-are.html">Maps: Where Things Are</option>
+<option value="s10-then-and-now.html">Then and Now</option>
+<option value="s11-needs-wants-work.html">Needs, Wants and Work</option>
+<option value="s12-symbols-stories.html">Symbols and Stories of Our Country</option>
+</optgroup>
+<optgroup label="Social Studies · Grades 3–5">
+<option value="" selected>Social Studies · Course contents</option>
+<option value="ssc-u5.html">&nbsp;&nbsp;&nbsp;&nbsp;Unit 5 · Illinois: Land and People</option>
+<option value="ssc-u6.html">&nbsp;&nbsp;&nbsp;&nbsp;Unit 6 · The First Peoples of North America</option>
+<option value="ssc-u7.html">&nbsp;&nbsp;&nbsp;&nbsp;Unit 7 · Colonies to a New Nation</option>
+<option value="ssc-u8.html">&nbsp;&nbsp;&nbsp;&nbsp;Unit 8 · Government: Local, State, National</option>
+<option value="ssc-u9.html">&nbsp;&nbsp;&nbsp;&nbsp;Unit 9 · Money, Markets and Regions</option>
+<option value="s1-government.html">Government: Local, State, National</option>
+<option value="s2-communities-illinois.html">Communities and Illinois</option>
+<option value="s3-first-peoples.html">The First Peoples</option>
+<option value="s4-explorers-colonies-nation.html">Explorers, Colonies, a New Nation</option>
+<option value="s5-money-markets-choices.html">Money, Markets and Choices</option>
+<option value="s6-maps-us-regions.html">Maps and Regions of the United States</option>
+</optgroup>
+<optgroup label="Social Studies · Grades 6–8">
+<option value="" selected>Social Studies · Course contents</option>
+<option value="ssc-u10.html">&nbsp;&nbsp;&nbsp;&nbsp;Unit 10 · The First Civilizations</option>
+<option value="ssc-u11.html">&nbsp;&nbsp;&nbsp;&nbsp;Unit 11 · Classical Worlds</option>
+<option value="ssc-u12.html">&nbsp;&nbsp;&nbsp;&nbsp;Unit 12 · Faiths, Empires and Exchange</option>
+<option value="ssc-u13.html">&nbsp;&nbsp;&nbsp;&nbsp;Unit 13 · Geography of the World</option>
+<option value="ssc-u14.html">&nbsp;&nbsp;&nbsp;&nbsp;Unit 14 · Citizens of Illinois</option>
+<option value="b9-new-nation.html">A More Perfect Union</option>
+<option value="b9-new-nation.html?mod=founding">&nbsp;&nbsp;&nbsp;&nbsp;The Founding · 1776–1791</option>
+<option value="b9-new-nation.html?mod=branches">&nbsp;&nbsp;&nbsp;&nbsp;Civics · The Three Branches</option>
+<option value="b9-new-nation.html?mod=growth">&nbsp;&nbsp;&nbsp;&nbsp;Growth &amp; Economy</option>
+<option value="b9-new-nation.html?mod=war">&nbsp;&nbsp;&nbsp;&nbsp;The Road to War &amp; Freedom</option>
+<option value="s13-world-before-1500.html">The World Before 1500</option>
+<option value="s14-world-regions.html">The World’s Regions</option>
+<option value="s15-reconstruction-to-present.html">Reconstruction to the Present</option>
+</optgroup>
+<optgroup label="Social Studies · Grades 9–10">
+<option value="" selected>Social Studies · Course contents</option>
+<option value="ssc-u15.html">&nbsp;&nbsp;&nbsp;&nbsp;Unit 15 · World History: Empires and Exchange</option>
+<option value="ssc-u16.html">&nbsp;&nbsp;&nbsp;&nbsp;Unit 16 · Revolutions and the Modern World</option>
+<option value="ssc-u17.html">&nbsp;&nbsp;&nbsp;&nbsp;Unit 17 · The Twentieth-Century World</option>
+<option value="ssc-u18.html">&nbsp;&nbsp;&nbsp;&nbsp;Unit 18 · Human Geography</option>
+<option value="ssc-u19.html">&nbsp;&nbsp;&nbsp;&nbsp;Unit 19 · Civics: Rights, Power and Participation</option>
+<option value="s16-empires-and-exchange.html">Empires and Exchange</option>
+<option value="s17-revolutions-modern-world.html">Revolutions and the Modern World</option>
+<option value="s18-human-geography.html">Human Geography</option>
+<option value="s19-civics-rights-power.html">Civics: Rights, Power and Participation</option>
+</optgroup>
+<optgroup label="Social Studies · Grades 11–12">
+<option value="" selected>Social Studies · Course contents</option>
+<option value="ssc-u20.html">&nbsp;&nbsp;&nbsp;&nbsp;Unit 20 · U.S. History: Industry to the Progressive Era</option>
+<option value="ssc-u21.html">&nbsp;&nbsp;&nbsp;&nbsp;Unit 21 · U.S. History: World Wars and the Cold War</option>
+<option value="ssc-u22.html">&nbsp;&nbsp;&nbsp;&nbsp;Unit 22 · U.S. History: Civil Rights to Today</option>
+<option value="ssc-u23.html">&nbsp;&nbsp;&nbsp;&nbsp;Unit 23 · Government and Economics</option>
+<option value="ssc-u24.html">&nbsp;&nbsp;&nbsp;&nbsp;Unit 24 · Capstone: Inquiry from the Sources</option>
+<option value="s20-industry-progressive-era.html">Industry to the Progressive Era</option>
+<option value="s21-world-wars-cold-war.html">The World Wars and the Cold War</option>
+<option value="s22-civil-rights-to-today.html">Civil Rights to Today</option>
+<option value="s23-government.html">Government</option>
+<option value="s24-economics.html">Economics</option>
+<option value="s25-capstone-inquiry.html">Capstone: An Inquiry from the Sources</option>
+</optgroup>
+<optgroup label="Jump to a subject">
+<option value="math-hub.html">All of Math — every band</option>
+<option value="science-hub.html">All of Science — every band</option>
+<option value="social-studies-hub.html">All of Social Studies — every band</option>
+<option value="economics-hub.html">All of Economics — every band</option>
+<option value="english-hub.html">All of English — every band</option>
+<option value="spanish-hub.html">All of Spanish — every band</option>
+<option value="facs-hub.html">All of Family &amp; Consumer Sciences — every band</option>
+<option value="religions-hub.html">All of World Religions — every band</option>
+</optgroup>
+<optgroup label="Math · Grades K–2">
+<option value="m15-counting-how-many.html">Counting and how many</option>
+<option value="m16-add-subtract-within-20.html">Adding and subtracting within 20</option>
+<option value="m17-tens-ones-hundreds.html">Tens and ones, then hundreds</option>
+<option value="m18-add-subtract-within-1000.html">Adding and subtracting within 1,000</option>
+<option value="m19-length-time-money.html">Length, time and money</option>
+<option value="m20-shapes-equal-shares.html">Shapes and equal shares</option>
+</optgroup>
+<optgroup label="Math · Grades 3–5">
+<option value="m21-multiplication-division-meaning.html">Multiplication and division: what they mean</option>
+<option value="m22-multi-digit-multiplication.html">Multi-digit multiplication</option>
+<option value="m23-fractions-add-subtract-multiply.html">Fractions: add, subtract, multiply</option>
+<option value="m24-decimals.html">Decimals</option>
+<option value="m25-measurement-area-perimeter-volume.html">Measurement: area, perimeter, volume</option>
+<option value="m26-geometry-coordinate-plane.html">Geometry and the coordinate plane</option>
+</optgroup>
+<optgroup label="Math · Grades 6–8">
+<option value="interior-math.html">The 7th-grade year, month by month</option>
+<option value="concepts-and-data.html">Number Concepts &amp; Data</option>
+<option value="b10-interior-math.html">The Fall Skills</option>
+<option value="b10-interior-math.html?mod=sept">&nbsp;&nbsp;&nbsp;&nbsp;September · Integers</option>
+<option value="b10-interior-math.html?mod=oct">&nbsp;&nbsp;&nbsp;&nbsp;October · Multiply, Divide &amp; Properties</option>
+<option value="b10-interior-math.html?mod=nov">&nbsp;&nbsp;&nbsp;&nbsp;November · Expressions</option>
+<option value="b10-interior-math.html?mod=dec">&nbsp;&nbsp;&nbsp;&nbsp;December · Equations</option>
+<option value="b12-sixth-grade-review.html">6th Grade Review — Quiz</option>
+<option value="b12-sixth-grade-review.html?mod=round">&nbsp;&nbsp;&nbsp;&nbsp;Rounding &amp; Order of Operations</option>
+<option value="b12-sixth-grade-review.html?mod=dec">&nbsp;&nbsp;&nbsp;&nbsp;Decimals</option>
+<option value="b12-sixth-grade-review.html?mod=gcf">&nbsp;&nbsp;&nbsp;&nbsp;GCF, LCM &amp; Fraction Names</option>
+<option value="b12-sixth-grade-review.html?mod=frac">&nbsp;&nbsp;&nbsp;&nbsp;Fraction Operations</option>
+<option value="b12-sixth-grade-review.html?mod=coord">&nbsp;&nbsp;&nbsp;&nbsp;The Coordinate Plane</option>
+<option value="b13-sixth-grade-practice.html">6th Grade Review — In Class &amp; HW</option>
+<option value="b13-sixth-grade-practice.html?mod=round">&nbsp;&nbsp;&nbsp;&nbsp;Rounding &amp; Order of Operations</option>
+<option value="b13-sixth-grade-practice.html?mod=dec">&nbsp;&nbsp;&nbsp;&nbsp;Decimals</option>
+<option value="b13-sixth-grade-practice.html?mod=gcf">&nbsp;&nbsp;&nbsp;&nbsp;GCF, LCM &amp; Fraction Names</option>
+<option value="b13-sixth-grade-practice.html?mod=frac">&nbsp;&nbsp;&nbsp;&nbsp;Fraction Operations</option>
+<option value="b13-sixth-grade-practice.html?mod=coord">&nbsp;&nbsp;&nbsp;&nbsp;The Coordinate Plane</option>
+<option value="m27-ratios-rates.html">Ratios, rates and unit rates</option>
+<option value="m28-proportional-percent.html">Proportional relationships and percent</option>
+<option value="m29-inequalities.html">Inequalities</option>
+<option value="m30-area-surface-volume.html">Area, surface area and volume</option>
+<option value="m31-angles-triangles-scale.html">Angles, triangles and scale drawings</option>
+<option value="m32-probability-sampling.html">Probability and sampling</option>
+<option value="m33-exponents-roots-scinot.html">Exponents, roots and scientific notation</option>
+<option value="m34-equations-systems.html">Linear equations and systems</option>
+<option value="m35-functions-slope.html">Functions and slope</option>
+<option value="m36-transformations.html">Transformations, congruence and similarity</option>
+<option value="m37-pythagorean-theorem.html">The Pythagorean theorem</option>
+</optgroup>
+<optgroup label="Math · Grades 9–10">
+<option value="m38-alg1-linear-equations-inequalities.html">Algebra I: linear equations and inequalities</option>
+<option value="m39-alg1-functions-linear-models.html">Algebra I: functions and linear models</option>
+<option value="m40-alg1-systems.html">Algebra I: systems</option>
+<option value="m41-alg1-exponents-polynomials-factoring.html">Algebra I: exponents, polynomials, factoring</option>
+<option value="m42-alg1-quadratics.html">Algebra I: quadratics</option>
+<option value="m43-geo-proof-congruence-triangles.html">Geometry: proof, congruence and triangles</option>
+<option value="m44-geo-similarity-trig.html">Geometry: similarity and right-triangle trigonometry</option>
+<option value="m45-geo-circles-area-volume.html">Geometry: circles, area and volume</option>
+</optgroup>
+<optgroup label="Math · Grades 11–12">
+<option value="m46-alg2-polynomial-rational.html">Algebra II: polynomial and rational functions</option>
+<option value="m47-alg2-exponential-logarithmic.html">Algebra II: exponential and logarithmic functions</option>
+<option value="m48-trigonometric-functions.html">Trigonometric functions</option>
+<option value="m49-sequences-series.html">Sequences and series</option>
+<option value="m50-statistics-sample-to-claim.html">Statistics: from a sample to a claim</option>
+<option value="m51-financial-math.html">Financial math</option>
+<option value="m52-capstone-model-it.html">Capstone: model it</option>
+</optgroup>
+<optgroup label="Science · Grades K–2">
+<option value="b26-pushes-pulls.html">Pushes and Pulls</option>
+<option value="b27-sun-moon-sky.html">Sun, Moon and Sky</option>
+<option value="b28-living-things-need.html">What Living Things Need</option>
+<option value="b29-weather-seasons.html">Weather and Seasons</option>
+<option value="b30-light-sound.html">Light and Sound</option>
+<option value="b31-materials-change.html">Materials and How They Change</option>
+</optgroup>
+<optgroup label="Science · Grades 3–5">
+<option value="b18-forces-motion.html">Forces and Motion</option>
+<option value="b19-life-cycles-traits.html">Life Cycles and Traits</option>
+<option value="b20-weather-climate.html">Weather and Climate</option>
+<option value="b21-energy.html">Energy</option>
+<option value="b22-changing-surface.html">Earth’s Changing Surface</option>
+<option value="b23-matter-properties.html">Matter: Properties and Changes</option>
+<option value="b24-ecosystems.html">Ecosystems and Food Webs</option>
+<option value="b25-earth-in-space.html">Earth in Space</option>
+</optgroup>
+<optgroup label="Science · Grades 6–8">
+<option value="b1-living-things.html">Science 1 · Living Things in the Biosphere</option>
+<option value="b2-cell-system.html">Science 2 · The Cell System</option>
+<option value="b3-body-systems.html">Science 3 · Human Body Systems</option>
+<option value="b4-reproduction.html">Science 4 · Reproduction and Growth</option>
+<option value="b5-ecosystems.html">Science 5 · Ecosystems</option>
+<option value="b6-populations.html">Science 6 · Populations and Communities</option>
+<option value="b7-heredity.html">Science 7 · Genes and Heredity</option>
+<option value="b8-natural-selection.html">Science 8 · Natural Selection</option>
+<option value="b14-matter.html">Matter and Its Interactions</option>
+<option value="b15-forces-energy-waves.html">Forces, Energy and Waves</option>
+<option value="b16-earth-systems.html">Earth’s Systems</option>
+<option value="b17-space-systems.html">Space Systems</option>
+</optgroup>
+<optgroup label="Science · Grades 9–10">
+<option value="b32-cells-energy.html">Biology: Cells and Energy</option>
+<option value="b33-genetics-evolution.html">Biology: Genetics and Evolution</option>
+<option value="b34-ecosystems-human-impact.html">Biology: Ecosystems and Human Impact</option>
+<option value="b35-matter-reactions.html">Physical Science: Matter and Reactions</option>
+<option value="b36-forces-energy-waves-hs.html">Physical Science: Forces, Energy, Waves</option>
+<option value="b37-earth-space-hs.html">Earth and Space</option>
+</optgroup>
+<optgroup label="Science · Grades 11–12">
+<option value="b38-chem-atoms-bonding.html">Chemistry: Atoms, Bonding, Reactions</option>
+<option value="b39-chem-stoich-solutions.html">Chemistry: Stoichiometry and Solutions</option>
+<option value="b40-physics-motion-forces.html">Physics: Motion and Forces</option>
+<option value="b41-physics-energy-waves-electricity.html">Physics: Energy, Waves, Electricity</option>
+<option value="b42-environmental-science.html">Environmental Science</option>
+<option value="b43-capstone-evidence.html">Capstone: Argue From Evidence</option>
+</optgroup>
+<optgroup label="Economics · Grades 9–10">
+<option value="ec1-scarcity-and-choice.html">Scarcity, Choice and Opportunity Cost</option>
+<option value="ec2-supply-and-demand.html">Supply, Demand and the Market</option>
+<option value="ec3-prices-and-market-failure.html">Prices, Controls and Market Failure</option>
+<option value="ec4-competition-and-firms.html">Competition, Firms and Market Structure</option>
+</optgroup>
+<optgroup label="Economics · Grades 11–12">
+<option value="ec5-measuring-the-economy.html">Measuring the Economy</option>
+<option value="ec6-business-cycle-and-fiscal.html">The Business Cycle and Fiscal Policy</option>
+<option value="ec7-money-banking-and-the-fed.html">Money, Banking and the Federal Reserve</option>
+<option value="ec8-trade-taxes-and-the-world.html">Trade, Taxes and the World Economy</option>
+</optgroup>
+<optgroup label="English · Grades K–2">
+<option value="e1-sounds-and-letters.html">Sounds and Letters</option>
+<option value="e2-sight-words.html">Words You Know by Sight</option>
+<option value="e3-a-whole-thought.html">A Sentence Is a Whole Thought</option>
+<option value="e4-who-where-what.html">Who, Where, What Happens</option>
+<option value="e5-beginning-middle-end.html">Beginning, Middle, End</option>
+<option value="e6-true-books-story-books.html">True Books and Story Books</option>
+</optgroup>
+<optgroup label="English · Grades 3–5">
+<option value="e7-word-parts.html">Word Parts: Prefixes, Suffixes, Roots</option>
+<option value="e8-context-clues.html">Context Clues</option>
+<option value="e9-main-idea.html">Main Idea and Details</option>
+<option value="e10-story-elements.html">Story Elements and Theme</option>
+<option value="e11-text-structure.html">How a Text Is Built</option>
+<option value="e12-the-paragraph.html">The Paragraph: a Claim and Reasons</option>
+</optgroup>
+<optgroup label="English · Grades 6–8">
+<option value="n1-the-outsiders.html">The Outsiders (novel study)</option>
+<option value="b11-grammar.html">Grammar · 16 Modules</option>
+</optgroup>
+<optgroup label="English · Grades 9–10">
+<option value="e13-clues-and-word-parts.html">Context Clues and Word Parts</option>
+<option value="e14-figurative-language.html">Figurative Language</option>
+<option value="e15-tone-and-voice.html">Tone and Voice</option>
+<option value="e16-rhetoric.html">Rhetoric: How a Writer Persuades</option>
+<option value="e17-punctuation-meaning.html">Punctuation That Changes the Meaning</option>
+<option value="e18-clauses-parallel-usage.html">Clauses, Parallel Structure and Usage</option>
+</optgroup>
+<optgroup label="English · Grades 11–12">
+<option value="e19-literary-devices.html">Literary Devices</option>
+<option value="e20-diction-and-syntax.html">Diction and Syntax</option>
+<option value="e21-reasoning-and-fallacies.html">Reasoning and Fallacies</option>
+<option value="e22-advanced-punctuation.html">Advanced Punctuation</option>
+<option value="e23-concision-and-style.html">Concision and Style</option>
+<option value="e24-capstone.html">Capstone — Research, Cite, Defend</option>
+</optgroup>
+<optgroup label="Spanish · Grades K–2">
+<option value="sp13-five-vowels.html">Five Vowels That Never Change</option>
+<option value="sp14-colors-numbers.html">Colors and Counting to Twenty</option>
+<option value="sp15-el-and-la.html">El and La — Naming What Is Here</option>
+<option value="sp16-one-and-many.html">One and Many, Big and Little</option>
+</optgroup>
+<optgroup label="Spanish · Grades 3–5">
+<option value="sp17-whole-thought.html">A Whole Thought in Spanish</option>
+<option value="sp18-soy-estoy.html">Soy and Estoy — Who I Am, How I Am</option>
+<option value="sp19-who-where-when.html">Who, Where, When, Why</option>
+<option value="sp20-first-then-last.html">First, Then, Last — Telling a Day</option>
+</optgroup>
+<optgroup label="Spanish · Grades 6–8">
+<option value="sp1-greetings.html">Greetings and Introductions</option>
+<option value="sp2-numbers-time.html">Numbers, Time and Dates</option>
+<option value="sp3-classroom-nouns.html">The Classroom — Nouns and Articles</option>
+<option value="sp4-ser-estar.html">Ser, Estar and Describing People</option>
+</optgroup>
+<optgroup label="Spanish · Grades 9–10">
+<option value="sp5-present-tense.html">The Present Tense</option>
+<option value="sp6-tener-gustar.html">Tener, Gustar and Stem Changes</option>
+<option value="sp7-preterite.html">The Preterite</option>
+<option value="sp8-imperfect.html">The Imperfect and Telling a Story</option>
+</optgroup>
+<optgroup label="Spanish · Grades 11–12">
+<option value="sp9-pronouns-commands.html">Pronouns, Reflexives and Commands</option>
+<option value="sp10-subjunctive.html">The Subjunctive</option>
+<option value="sp11-world-register.html">The Spanish-Speaking World and Register</option>
+<option value="sp12-capstone.html">Capstone — Present and Defend</option>
+</optgroup>
+<optgroup label="Family &amp; Consumer Sciences · Grades K–2">
+<option value="fc13-clean-hands.html">Clean Hands</option>
+<option value="fc14-hot-cold-sharp.html">Hot, Cold and Sharp</option>
+<option value="fc15-everyday-sometimes.html">Everyday Food and Sometimes Food</option>
+<option value="fc16-job-to-the-end.html">A Job Done to the End</option>
+</optgroup>
+<optgroup label="Family &amp; Consumer Sciences · Grades 3–5">
+<option value="fc17-measure-it-right.html">Measure It Right</option>
+<option value="fc18-needle-and-button.html">The Needle and the Button</option>
+<option value="fc19-money-and-choices.html">Money and Choices</option>
+<option value="fc20-plan-cook-clean.html">Plan It, Cook It, Clean It Up</option>
+</optgroup>
+<optgroup label="Family &amp; Consumer Sciences · Grades 6–8">
+<option value="fc1-kitchen-safety.html">Kitchen Safety and Sanitation</option>
+<option value="fc2-knife-skills.html">Knife Skills</option>
+<option value="fc3-measuring-recipes.html">Measuring and Reading a Recipe</option>
+<option value="fc4-hand-sewing.html">Hand Sewing</option>
+</optgroup>
+<optgroup label="Family &amp; Consumer Sciences · Grades 9–10">
+<option value="fc5-sewing-machine.html">The Sewing Machine</option>
+<option value="fc6-fabric-patterns.html">Fabric, Fibers and Patterns</option>
+<option value="fc7-cooking-methods.html">Cooking Methods and Heat</option>
+<option value="fc8-nutrition.html">Nutrition and Meal Planning</option>
+</optgroup>
+<optgroup label="Family &amp; Consumer Sciences · Grades 11–12">
+<option value="fc9-food-science.html">Food Science</option>
+<option value="fc10-child-development.html">Child Development and Care</option>
+<option value="fc11-independent-living.html">Independent Living and Money</option>
+<option value="fc12-capstone.html">Capstone — Plan, Cost, Produce</option>
+</optgroup>
+<optgroup label="World Religions · Grades 9–10">
+<option value="r1-reading-sacred-texts.html">How to Read a Sacred Text</option>
+<option value="r2-hebrew-bible.html">The Hebrew Bible</option>
+<option value="r3-new-testament.html">The New Testament</option>
+<option value="r4-judaism.html">Judaism</option>
+<option value="r5-islam.html">Islam</option>
+<option value="r6-hinduism.html">Hinduism</option>
+</optgroup>
+<optgroup label="World Religions · Grades 11–12">
+<option value="r7-buddhism.html">Buddhism</option>
+<option value="r8-confucianism-daoism.html">Confucianism and Daoism</option>
+<option value="r9-sikhism-jainism-africa-americas.html">Sikhism, Jainism, Africa and the Americas</option>
+<option value="r10-religion-and-the-world.html">Religion and the World</option>
+<option value="r11-one-question-many-lenses.html">One Question, Many Lenses</option>
+<option value="r12-capstone.html">Capstone</option>
+</optgroup></select></label></div>
+<nav class="rail no-print" aria-label="Units"><div class="in"><span class="k"><span data-en="Band" data-es="Banda">Band</span></span><a href="#band-k-2" title="Grades K–2">K–2</a><a href="#band-3-5" title="Grades 3–5">3–5</a><a href="#band-6-8" title="Grades 6–8">6–8</a><a href="#band-9-10" title="Grades 9–10">9–10</a><a href="#band-11-12" title="Grades 11–12">11–12</a></div></nav>
+
+<div class="stat no-print">
+  <span><span class="n">4</span> <span class="l"><span data-en="units" data-es="unidades">units</span></span></span>
+  <span><span class="n">8</span> <span class="l"><span data-en="chapters" data-es="capítulos">chapters</span></span></span>
+  <span><span class="n">64</span> <span class="l"><span data-en="lessons" data-es="lecciones">lessons</span></span></span>
+  <span class="prog" aria-hidden="true"><i id="progBar"></i></span>
+  <span><span class="n" id="progN">0</span> <span class="l"><span data-en="done" data-es="hechas">done</span></span></span>
+</div>
+
+<div class="search no-print">
+  <label for="lsearch"><span data-en="Find a lesson" data-es="Busca una lección">Find a lesson</span></label>
+  <div class="box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input id="lsearch" type="search" autocomplete="off" placeholder="Try “Cahokia”, “Constitution” or “tariff”"></div>
+  <div class="hits" id="hits" aria-live="polite"></div>
+</div>
+
+<section class="bandhead" id="band-k-2"><span class="bk"><span data-en="Band" data-es="Banda">Band</span></span><h2><span data-en="Grades K–2" data-es="Grados K–2">Grades K–2</span></h2><p class="bd"><span data-en="4 units · 8 chapters · 64 lessons" data-es="4 unidades · 8 capítulos · 64 lecciones">4 units · 8 chapters · 64 lessons</span></p></section><section class="unit-spread" id="u1" data-unit="1">
+<div class="spread" aria-labelledby="ut1">
+  <div class="scene" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 420" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Drawn scene: a family of four generations around a dinner table under a hanging lamp, with a school building and its flag seen through the window" focusable="false"><defs><linearGradient id="ssb1-wall" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0F2444"/><stop offset="0.7" stop-color="#1C3A62"/><stop offset="1" stop-color="#2A4C78"/></linearGradient><radialGradient id="ssb1-lamp" cx="0.5" cy="0.5" r="0.5"><stop offset="0" stop-color="#FFF2C4" stop-opacity="0.95"/><stop offset="0.4" stop-color="#F2C273" stop-opacity="0.45"/><stop offset="1" stop-color="#F2C273" stop-opacity="0"/></radialGradient><linearGradient id="ssb1-sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0A1E33"/><stop offset="0.6" stop-color="#2D4F80"/><stop offset="1" stop-color="#F2C273"/></linearGradient><linearGradient id="ssb1-table" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#C9A26A"/><stop offset="0.1" stop-color="#9A7446"/><stop offset="1" stop-color="#3A2A18"/></linearGradient><linearGradient id="ssb1-cloth" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F7EBD0"/><stop offset="1" stop-color="#E4D2AC"/></linearGradient></defs>
+<rect width="1200" height="420" fill="url(#ssb1-wall)"/>
+<rect x="848" y="60" width="200" height="150" fill="url(#ssb1-sky)"/>
+<g fill="#F7EBD0" opacity=".7"><circle cx="916" cy="81" r="0.8"/><circle cx="883" cy="70" r="1.5"/><circle cx="990" cy="69" r="0.8"/><circle cx="901" cy="28" r="0.9"/><circle cx="856" cy="19" r="1.0"/><circle cx="903" cy="68" r="1.1"/><circle cx="1026" cy="49" r="1.2"/><circle cx="1017" cy="86" r="0.9"/><circle cx="924" cy="9" r="1.4"/><circle cx="987" cy="18" r="0.7"/><circle cx="870" cy="15" r="1.0"/><circle cx="877" cy="6" r="0.9"/><circle cx="864" cy="29" r="1.4"/><circle cx="943" cy="58" r="0.9"/><circle cx="906" cy="33" r="0.8"/><circle cx="993" cy="50" r="0.7"/><circle cx="996" cy="61" r="1.0"/><circle cx="1027" cy="32" r="1.5"/></g>
+<path d="M860 210 v-70 h34 v-24 l16 -14 l16 14 v24 h60 v70z" fill="#142B4C"/><rect x="880" y="128" width="14" height="16" fill="#F6D98C" opacity=".85"/><rect x="880" y="154" width="14" height="16" fill="#F6D98C" opacity=".85"/><rect x="906" y="128" width="14" height="16" fill="#F6D98C" opacity=".85"/><rect x="906" y="154" width="14" height="16" fill="#F6D98C" opacity=".85"/><rect x="932" y="128" width="14" height="16" fill="#F6D98C" opacity=".85"/><rect x="932" y="154" width="14" height="16" fill="#F6D98C" opacity=".85"/><rect x="958" y="128" width="14" height="16" fill="#F6D98C" opacity=".85"/><rect x="958" y="154" width="14" height="16" fill="#F6D98C" opacity=".85"/><rect x="984" y="128" width="14" height="16" fill="#F6D98C" opacity=".85"/><rect x="984" y="154" width="14" height="16" fill="#F6D98C" opacity=".85"/>
+<path d="M910 116 v-40" stroke="#F7EBD0" stroke-width="2"/><path d="M911 76 h22 l-6 6 l6 6 h-22z" fill="#E4573D"/>
+<circle cx="932" cy="100" r="6" fill="#F6D98C"/><rect x="936" y="148" width="18" height="30" fill="#5A3A1E"/>
+<g fill="#2A4C78"><rect x="840" y="52" width="216" height="8"/><rect x="840" y="52" width="8" height="166"/><rect x="1048" y="52" width="8" height="166"/><rect x="840" y="210" width="216" height="10"/><rect x="944" y="60" width="6" height="150"/><rect x="848" y="134" width="200" height="5"/></g>
+<path d="M560 0 v70" stroke="#3A2A18" stroke-width="3"/><path d="M500 110 l60 -40 l60 40z" fill="#E4B860"/><path d="M500 110 h120 l6 6 h-132z" fill="#C9A26A"/>
+<ellipse cx="560" cy="120" rx="240" ry="150" fill="url(#ssb1-lamp)"/>
+<g fill="#F7EBD0" opacity=".5"><rect x="80" y="70" width="90" height="70" rx="3"/><rect x="190" y="90" width="60" height="50" rx="3"/></g><g fill="#C9A26A"><rect x="90" y="80" width="70" height="50"/><rect x="198" y="98" width="44" height="34"/></g>
+<path d="M120 300 v-60 h20 v60z M100 240 h60 v-8 h-60z" fill="#1C3A62"/>
+<path d="M0 300 H1200 V420 H0z" fill="url(#ssb1-table)"/><path d="M0 250 Q600 236 1200 250 V310 H0z" fill="url(#ssb1-cloth)"/>
+<ellipse cx="360" cy="262" rx="26" ry="8" fill="#F7EBD0" stroke="#C9A26A" stroke-width="2"/><ellipse cx="360" cy="262" rx="16" ry="4.5" fill="#E8C98A"/><ellipse cx="470" cy="258" rx="26" ry="8" fill="#F7EBD0" stroke="#C9A26A" stroke-width="2"/><ellipse cx="470" cy="258" rx="16" ry="4.5" fill="#E8C98A"/><ellipse cx="600" cy="258" rx="26" ry="8" fill="#F7EBD0" stroke="#C9A26A" stroke-width="2"/><ellipse cx="600" cy="258" rx="16" ry="4.5" fill="#E8C98A"/><ellipse cx="730" cy="262" rx="26" ry="8" fill="#F7EBD0" stroke="#C9A26A" stroke-width="2"/><ellipse cx="730" cy="262" rx="16" ry="4.5" fill="#E8C98A"/>
+<path d="M540 240 q-20 -30 0 -60 q20 30 0 60z" fill="#E4573D"/><path d="M536 186 h8 v-6 h-8z" fill="#F6D98C"/><rect x="530" y="240" width="20" height="8" rx="2" fill="#9A7446"/>
+<g fill="#F7EBD0"><path d="M660 244 h60 l-4 -34 q-26 -8 -52 0z"/></g><path d="M664 214 q26 -8 52 0" stroke="#C9A26A" stroke-width="2" fill="none"/>
+<g fill="#E4B860"><rect x="420" y="228" width="12" height="20" rx="3"/><rect x="640" y="230" width="12" height="18" rx="3"/></g>
+<g transform="translate(360 210) scale(1.05)" fill="#0A1E33"><circle cx="0" cy="-18" r="14"/><path d="M-30 30 q0 -30 30 -30 q30 0 30 30z"/><path d="M-14 -34 q14 -14 28 0 v6 q-14 -8 -28 0z" fill="#3A2A18"/></g><g transform="translate(470 200) scale(1.15)" fill="#0A1E33"><circle cx="0" cy="-18" r="14"/><path d="M-30 30 q0 -30 30 -30 q30 0 30 30z"/><path d="M-14 -34 q14 -14 28 0 v6 q-14 -8 -28 0z" fill="#F7EBD0"/></g><g transform="translate(600 196) scale(1.2)" fill="#0A1E33"><circle cx="0" cy="-18" r="14"/><path d="M-30 30 q0 -30 30 -30 q30 0 30 30z"/><path d="M-14 -34 q14 -14 28 0 v6 q-14 -8 -28 0z" fill="#F7EBD0"/></g><g transform="translate(730 212) scale(0.8)" fill="#0A1E33"><circle cx="0" cy="-18" r="14"/><path d="M-30 30 q0 -30 30 -30 q30 0 30 30z"/><path d="M-14 -34 q14 -14 28 0 v6 q-14 -8 -28 0z" fill="#3A2A18"/></g>
+<g fill="#F7EBD0" opacity=".9"><circle cx="600" cy="150" r="3"/><circle cx="470" cy="154" r="3"/></g>
+<path d="M600 208 q40 -20 60 -40" stroke="#0A1E33" stroke-width="6" stroke-linecap="round" fill="none"/>
+<path d="M0 372 H1200 V420 H0z" fill="#1E140A" opacity=".5"/>
+</svg></div>
+  <div class="credit">Drawn scene: a family of four generations around a dinner table under a hanging lamp, with a school building and its flag seen through the window</div>
+  <div class="txt"><div class="unum"><b>1</b><span data-en="Unit" data-es="Unidad">Unit</span></div><h2 class="ut" id="ut1">Me, My Family, My School</h2><div class="years">Civics and History</div></div>
+  <a class="enter" href="ssc-u1.html"><span data-en="Open the unit" data-es="Abrir la unidad">Open the unit</span> →</a>
+</div>
+<div class="body">
+  <article class="cchap">
+  <div class="ch"><span class="badge" aria-hidden="true">1</span><div><span class="tab"><span data-en="Chapter" data-es="Capítulo">Chapter</span></span><h3><a href="ssc-u1.html#ch1" style="color:inherit;text-decoration:none">Who I Am and Who I Live With</a></h3><div class="yrs">Identity and Family</div></div></div>
+  <p class="st"><b><span data-en="The story" data-es="La historia">The story</span></b>Grandpa Tells It Again — Four generations sit at one table. Grandpa has a story. Everyone has heard it before.</p>
+  <div class="csec"><div class="sn"><span data-en="Section" data-es="Sección">Section</span> 1<span>All About Me</span></div><a class="lrow" href="ssc-u1.html#l1-1" data-lid="aog.interior.ws.v1.ss1:l1-1" data-s="my name and my birthday every person has a name and a birthday. they are part of who you are."><span class="n">1.1</span><span class="t">My Name and My Birthday</span><span class="tk" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5L20 7"/></svg></span></a><a class="lrow" href="ssc-u1.html#l1-2" data-lid="aog.interior.ws.v1.ss1:l1-2" data-s="things i like and can do what you like and what you can do are part of who you are."><span class="n">1.2</span><span class="t">Things I Like and Can Do</span><span class="tk" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5L20 7"/></svg></span></a></div><div class="csec"><div class="sn"><span data-en="Section" data-es="Sección">Section</span> 2<span>My Family</span></div><a class="lrow" href="ssc-u1.html#l1-3" data-lid="aog.interior.ws.v1.ss1:l1-3" data-s="families come in many shapes a family is the people who love you and take care of you. families are not all the same size."><span class="n">1.3</span><span class="t">Families Come in Many Shapes</span><span class="tk" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5L20 7"/></svg></span></a><a class="lrow" href="ssc-u1.html#l1-4" data-lid="aog.interior.ws.v1.ss1:l1-4" data-s="we help each other people in a family have jobs, and they help each other."><span class="n">1.4</span><span class="t">We Help Each Other</span><span class="tk" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5L20 7"/></svg></span></a></div><div class="csec"><div class="sn"><span data-en="Section" data-es="Sección">Section</span> 3<span>Traditions and Stories</span></div><a class="lrow" href="ssc-u1.html#l1-5" data-lid="aog.interior.ws.v1.ss1:l1-5" data-s="things we do every year a tradition is something a family does again and again."><span class="n">1.5</span><span class="t">Things We Do Every Year</span><span class="tk" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5L20 7"/></svg></span></a><a class="lrow" href="ssc-u1.html#l1-6" data-lid="aog.interior.ws.v1.ss1:l1-6" data-s="grandpa&#x27;s story from long ago family stories tell us what life was like long ago."><span class="n">1.6</span><span class="t">Grandpa&#x27;s Story From Long Ago</span><span class="tk" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5L20 7"/></svg></span></a></div><div class="csec"><div class="sn"><span data-en="Section" data-es="Sección">Section</span> 4<span>Me and My Classmates</span></div><a class="lrow" href="ssc-u1.html#l1-7" data-lid="aog.interior.ws.v1.ss1:l1-7" data-s="same and different classmates are the same in some ways and different in others, and that is good."><span class="n">1.7</span><span class="t">Same and Different</span><span class="tk" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5L20 7"/></svg></span></a><a class="lrow" href="ssc-u1.html#l1-8" data-lid="aog.interior.ws.v1.ss1:l1-8" data-s="my class is a group your class is a group of many different people who belong together."><span class="n">1.8</span><span class="t">My Class Is a Group</span><span class="tk" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5L20 7"/></svg></span></a></div>
+  <div class="cwrap"><a href="ssc-u1.html#rev1"><span data-en="Chapter review · 6 questions" data-es="Repaso del capítulo · 6 preguntas">Chapter review · 6 questions</span></a></div>
+</article><article class="cchap">
+  <div class="ch"><span class="badge" aria-hidden="true">2</span><div><span class="tab"><span data-en="Chapter" data-es="Capítulo">Chapter</span></span><h3><a href="ssc-u1.html#ch2" style="color:inherit;text-decoration:none">Rules at School and at Home</a></h3><div class="yrs">Civics</div></div></div>
+  <p class="st"><b><span data-en="The story" data-es="La historia">The story</span></b>Three Rules for Room Twelve — It is the first day of school. The class has no rules yet. So they make their own.</p>
+  <div class="csec"><div class="sn"><span data-en="Section" data-es="Sección">Section</span> 1<span>Why We Have Rules</span></div><a class="lrow" href="ssc-u1.html#l2-1" data-lid="aog.interior.ws.v1.ss1:l2-1" data-s="rules keep us safe many rules keep people from getting hurt."><span class="n">2.1</span><span class="t">Rules Keep Us Safe</span><span class="tk" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5L20 7"/></svg></span></a><a class="lrow" href="ssc-u1.html#l2-2" data-lid="aog.interior.ws.v1.ss1:l2-2" data-s="rules are fair rules make things fair so everyone gets a turn."><span class="n">2.2</span><span class="t">Rules Are Fair</span><span class="tk" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5L20 7"/></svg></span></a></div><div class="csec"><div class="sn"><span data-en="Section" data-es="Sección">Section</span> 2<span>Rules in Different Places</span></div><a class="lrow" href="ssc-u1.html#l2-3" data-lid="aog.interior.ws.v1.ss1:l2-3" data-s="rules at home homes have rules too, and grown-ups make most of them."><span class="n">2.3</span><span class="t">Rules at Home</span><span class="tk" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5L20 7"/></svg></span></a><a class="lrow" href="ssc-u1.html#l2-4" data-lid="aog.interior.ws.v1.ss1:l2-4" data-s="on the bus and at the pool different places have different rules because they have different dangers."><span class="n">2.4</span><span class="t">On the Bus and at the Pool</span><span class="tk" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5L20 7"/></svg></span></a></div><div class="csec"><div class="sn"><span data-en="Section" data-es="Sección">Section</span> 3<span>Making Rules and Fixing Mistakes</span></div><a class="lrow" href="ssc-u1.html#l2-5" data-lid="aog.interior.ws.v1.ss1:l2-5" data-s="our class makes rules a class can make its own rules by sharing ideas and voting."><span class="n">2.5</span><span class="t">Our Class Makes Rules</span><span class="tk" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5L20 7"/></svg></span></a><a class="lrow" href="ssc-u1.html#l2-6" data-lid="aog.interior.ws.v1.ss1:l2-6" data-s="when a rule is broken when you break a rule, you can make it right."><span class="n">2.6</span><span class="t">When a Rule Is Broken</span><span class="tk" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5L20 7"/></svg></span></a></div><div class="csec"><div class="sn"><span data-en="Section" data-es="Sección">Section</span> 4<span>Good Classmates and Leaders</span></div><a class="lrow" href="ssc-u1.html#l2-7" data-lid="aog.interior.ws.v1.ss1:l2-7" data-s="turns, ears and the truth a good classmate takes turns, listens and tells the truth."><span class="n">2.7</span><span class="t">Turns, Ears and the Truth</span><span class="tk" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5L20 7"/></svg></span></a><a class="lrow" href="ssc-u1.html#l2-8" data-lid="aog.interior.ws.v1.ss1:l2-8" data-s="leaders who help a teacher, a principal and a crossing guard are leaders who help keep school working."><span class="n">2.8</span><span class="t">Leaders Who Help</span><span class="tk" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5L20 7"/></svg></span></a></div>
+  <div class="cwrap"><a href="ssc-u1.html#rev2"><span data-en="Chapter review · 6 questions" data-es="Repaso del capítulo · 6 preguntas">Chapter review · 6 questions</span></a></div>
+</article>
+  <div class="cwrap" style="border:0;padding-left:0;padding-right:0"><a href="ssc-u1.html#match"><span data-en="Eight-word match" data-es="Ocho palabras">Eight-word match</span></a><a href="ssc-u1.html#test"><span data-en="Unit test · 10 questions" data-es="Examen · 10 preguntas">Unit test · 10 questions</span></a><a href="ssc-u1.html#write"><span data-en="Write it" data-es="Escríbelo">Write it</span></a></div>
+</div>
+</section><section class="unit-spread" id="u2" data-unit="2">
+<div class="spread" aria-labelledby="ut2">
+  <div class="scene" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 420" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Drawn scene: a neighborhood street at dusk with row houses, a streetlamp, a fire truck, a mail carrier and a lemonade stand with a pitcher and cups" focusable="false"><defs><linearGradient id="ssb2-sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0A1E33"/><stop offset="0.5" stop-color="#2D4F80"/><stop offset="0.85" stop-color="#E4B860"/><stop offset="1" stop-color="#F2C273"/></linearGradient><linearGradient id="ssb2-road" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3A3E48"/><stop offset="1" stop-color="#1A1C24"/></linearGradient><linearGradient id="ssb2-walk" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#D6C7A2"/><stop offset="1" stop-color="#A89670"/></linearGradient><radialGradient id="ssb2-lamp" cx="0.5" cy="0.5" r="0.5"><stop offset="0" stop-color="#FFF2C4" stop-opacity="1"/><stop offset="0.3" stop-color="#F6D98C" stop-opacity="0.5"/><stop offset="1" stop-color="#F6D98C" stop-opacity="0"/></radialGradient></defs>
+<rect width="1200" height="420" fill="url(#ssb2-sky)"/>
+<g fill="#F7EBD0" opacity=".6"><circle cx="10" cy="45" r="1.0"/><circle cx="865" cy="28" r="1.1"/><circle cx="420" cy="49" r="0.6"/><circle cx="131" cy="106" r="0.9"/><circle cx="750" cy="23" r="0.8"/><circle cx="421" cy="58" r="0.9"/><circle cx="1064" cy="109" r="0.6"/><circle cx="71" cy="80" r="1.1"/><circle cx="1122" cy="99" r="1.4"/><circle cx="889" cy="50" r="0.7"/><circle cx="380" cy="105" r="1.2"/><circle cx="939" cy="82" r="1.3"/><circle cx="726" cy="37" r="1.0"/><circle cx="253" cy="54" r="1.1"/><circle cx="736" cy="83" r="1.2"/><circle cx="143" cy="46" r="1.3"/><circle cx="874" cy="49" r="1.2"/><circle cx="321" cy="46" r="0.9"/><circle cx="756" cy="73" r="1.4"/><circle cx="739" cy="48" r="0.7"/><circle cx="430" cy="79" r="1.2"/><circle cx="869" cy="88" r="1.3"/><circle cx="216" cy="75" r="0.6"/><circle cx="311" cy="90" r="0.9"/><circle cx="898" cy="37" r="1.0"/><circle cx="841" cy="8" r="1.5"/><circle cx="892" cy="39" r="1.2"/><circle cx="283" cy="50" r="1.3"/><circle cx="6" cy="61" r="1.2"/><circle cx="605" cy="38" r="1.1"/></g>
+<g fill="#2D4F80" opacity=".5"><ellipse cx="300" cy="90" rx="160" ry="8"/><ellipse cx="900" cy="70" rx="180" ry="9"/></g>
+<g><path d="M0 250 v-125 l65 -39 l65 39 v125z" fill="#142B4C"/><rect x="18" y="141" width="16" height="20" fill="#F6D98C" opacity=".8"/><rect x="52" y="141" width="16" height="20" fill="#F6D98C" opacity=".8"/><rect x="86" y="141" width="16" height="20" fill="#F6D98C" opacity=".8"/><rect x="55" y="216" width="20" height="34" fill="#F2C273" opacity=".6"/><path d="M140 250 v-81 l82 -53 l82 53 v81z" fill="#142B4C"/><rect x="158" y="185" width="16" height="20" fill="#F6D98C" opacity=".8"/><rect x="192" y="185" width="16" height="20" fill="#F6D98C" opacity=".8"/><rect x="226" y="185" width="16" height="20" fill="#F6D98C" opacity=".8"/><rect x="260" y="185" width="16" height="20" fill="#F6D98C" opacity=".8"/><rect x="212" y="216" width="20" height="34" fill="#F2C273" opacity=".6"/><path d="M314 250 v-129 l61 -35 l61 35 v129z" fill="#142B4C"/><rect x="332" y="137" width="16" height="20" fill="#F6D98C" opacity=".8"/><rect x="366" y="137" width="16" height="20" fill="#F6D98C" opacity=".8"/><rect x="400" y="137" width="16" height="20" fill="#F6D98C" opacity=".8"/><rect x="365" y="216" width="20" height="34" fill="#F2C273" opacity=".6"/><path d="M446 250 v-123 l78 -41 l78 41 v123z" fill="#1E3A5F"/><rect x="464" y="143" width="16" height="20" fill="#F6D98C" opacity=".8"/><rect x="498" y="143" width="16" height="20" fill="#F6D98C" opacity=".8"/><rect x="532" y="143" width="16" height="20" fill="#F6D98C" opacity=".8"/><rect x="566" y="143" width="16" height="20" fill="#F6D98C" opacity=".8"/><rect x="514" y="216" width="20" height="34" fill="#F2C273" opacity=".6"/><path d="M612 250 v-117 l59 -47 l59 47 v117z" fill="#1E3A5F"/><rect x="630" y="149" width="16" height="20" fill="#F6D98C" opacity=".8"/><rect x="664" y="149" width="16" height="20" fill="#F6D98C" opacity=".8"/><rect x="698" y="149" width="16" height="20" fill="#F6D98C" opacity=".8"/><rect x="661" y="216" width="20" height="34" fill="#F2C273" opacity=".6"/><path d="M740 250 v-97 l56 -37 l56 37 v97z" fill="#142B4C"/><rect x="758" y="169" width="16" height="20" fill="#F6D98C" opacity=".8"/><rect x="792" y="169" width="16" height="20" fill="#F6D98C" opacity=".8"/><rect x="826" y="169" width="16" height="20" fill="#F6D98C" opacity=".8"/><rect x="786" y="216" width="20" height="34" fill="#F2C273" opacity=".6"/><path d="M862 250 v-87 l59 -47 l59 47 v87z" fill="#1E3A5F"/><rect x="880" y="179" width="16" height="20" fill="#F6D98C" opacity=".8"/><rect x="914" y="179" width="16" height="20" fill="#F6D98C" opacity=".8"/><rect x="948" y="179" width="16" height="20" fill="#F6D98C" opacity=".8"/><rect x="911" y="216" width="20" height="34" fill="#F2C273" opacity=".6"/><path d="M990 250 v-85 l78 -49 l78 49 v85z" fill="#1E3A5F"/><rect x="1008" y="181" width="16" height="20" fill="#F6D98C" opacity=".8"/><rect x="1042" y="181" width="16" height="20" fill="#F6D98C" opacity=".8"/><rect x="1076" y="181" width="16" height="20" fill="#F6D98C" opacity=".8"/><rect x="1110" y="181" width="16" height="20" fill="#F6D98C" opacity=".8"/><rect x="1058" y="216" width="20" height="34" fill="#F2C273" opacity=".6"/><path d="M1156 250 v-83 l81 -51 l81 51 v83z" fill="#0F2444"/><rect x="1174" y="183" width="16" height="20" fill="#F6D98C" opacity=".8"/><rect x="1208" y="183" width="16" height="20" fill="#F6D98C" opacity=".8"/><rect x="1242" y="183" width="16" height="20" fill="#F6D98C" opacity=".8"/><rect x="1276" y="183" width="16" height="20" fill="#F6D98C" opacity=".8"/><rect x="1227" y="216" width="20" height="34" fill="#F2C273" opacity=".6"/></g>
+<path d="M0 250 H1200 V292 H0z" fill="url(#ssb2-walk)"/>
+<circle cx="420" cy="120" r="80" fill="url(#ssb2-lamp)"/><path d="M420 292 v-170" stroke="#1A1C24" stroke-width="6"/><path d="M406 122 h28 l-4 -18 h-20z" fill="#1A1C24"/><circle cx="420" cy="112" r="8" fill="#FFF2C4"/>
+<g fill="#C8402F"><path d="M120 292 v-70 h150 q10 0 10 10 v60z"/><path d="M270 232 h60 l20 30 v30 h-80z"/></g><g fill="#F6D98C"><rect x="286" y="240" width="30" height="20"/><rect x="140" y="236" width="40" height="20" opacity=".5"/></g>
+<path d="M130 224 h60 v-10 h-60z" fill="#F7EBD0"/><g stroke="#F7EBD0" stroke-width="3" fill="none"><path d="M140 226 v-30 h110 v30"/></g>
+<g fill="#1A1C24"><circle cx="160" cy="292" r="14"/><circle cx="310" cy="292" r="14"/></g><g fill="#A89670"><circle cx="160" cy="292" r="6"/><circle cx="310" cy="292" r="6"/></g>
+<g fill="#0A1E33"><circle cx="520" cy="196" r="12"/><path d="M508 210 q12 -6 24 0 l6 40 l-10 44 h-8 l-2 -34 l-8 34 h-8 l4 -44z"/><path d="M528 214 l30 12 l-2 8 l-30 -10z"/><path d="M552 228 h18 v22 h-18z"/><path d="M506 190 h28 v6 h-28z"/></g>
+<g fill="#E4573D"><rect x="640" y="262" width="14" height="30" rx="3"/><rect x="636" y="260" width="22" height="6" rx="2"/><circle cx="647" cy="256" r="6"/><rect x="632" y="270" width="30" height="6" rx="3"/></g>
+<g fill="#0A1E33"><circle cx="720" cy="192" r="12"/><path d="M708 206 q12 -6 24 0 l4 40 l-8 46 h-8 l-2 -36 l-8 36 h-8 l6 -46z"/><path d="M700 186 q20 -14 40 0 h-40z"/><path d="M700 186 h40 v4 h-40z"/><path d="M698 220 l-20 -6 v10z"/></g>
+<g fill="#E4B860"><path d="M1040 292 v-60 h150 v60z"/></g><path d="M1034 234 h162 v-8 h-162z" fill="#F7EBD0"/><path d="M1040 232 v-30 h6 v30z M1184 232 v-30 h6 v30z" fill="#9A7446"/><path d="M1030 202 h170 l-6 -14 h-158z" fill="#E4573D"/><path d="M1034 202 h162 v4 h-162z" fill="#F7EBD0"/>
+<g stroke="#F7EBD0" stroke-width="2" fill="none"><path d="M1060 254 v24 M1080 254 v24 M1100 254 v24 M1120 254 v24 M1140 254 v24 M1160 254 v24"/></g>
+<path d="M1046 226 h20 v-30 h-20z" fill="#F7EBD0" opacity=".8"/><path d="M1048 210 h16 v14 h-16z" fill="#F2C273"/><path d="M1066 200 q10 4 4 12" stroke="#F7EBD0" stroke-width="2" fill="none"/>
+<rect x="1080" y="216" width="10" height="12" fill="#F7EBD0"/><rect x="1096" y="216" width="10" height="12" fill="#F7EBD0"/><rect x="1112" y="216" width="10" height="12" fill="#F7EBD0"/>
+<g fill="#0A1E33"><circle cx="1150" cy="180" r="11"/><path d="M1140 192 q10 -6 20 0 l4 34 h-28z"/></g>
+<path d="M0 292 H1200 V420 H0z" fill="url(#ssb2-road)"/><path d="M0 292 h1200 v4 H0z" fill="#5A5E68"/>
+<g fill="#F6D98C" opacity=".6"><rect x="40" y="356" width="60" height="6"/><rect x="180" y="356" width="60" height="6"/><rect x="320" y="356" width="60" height="6"/><rect x="460" y="356" width="60" height="6"/><rect x="600" y="356" width="60" height="6"/><rect x="740" y="356" width="60" height="6"/><rect x="880" y="356" width="60" height="6"/><rect x="1020" y="356" width="60" height="6"/><rect x="1160" y="356" width="40" height="6"/></g>
+</svg></div>
+  <div class="credit">Drawn scene: a neighborhood street at dusk with row houses, a streetlamp, a fire truck, a mail carrier and a lemonade stand with a pitcher and cups</div>
+  <div class="txt"><div class="unum"><b>2</b><span data-en="Unit" data-es="Unidad">Unit</span></div><h2 class="ut" id="ut2">Our Community</h2><div class="years">Civics and Economics</div></div>
+  <a class="enter" href="ssc-u2.html"><span data-en="Open the unit" data-es="Abrir la unidad">Open the unit</span> →</a>
+</div>
+<div class="body">
+  <article class="cchap">
+  <div class="ch"><span class="badge" aria-hidden="true">3</span><div><span class="tab"><span data-en="Chapter" data-es="Capítulo">Chapter</span></span><h3><a href="ssc-u2.html#ch3" style="color:inherit;text-decoration:none">Neighbors, Helpers and Jobs</a></h3><div class="yrs">Community</div></div></div>
+  <p class="st"><b><span data-en="The story" data-es="La historia">The story</span></b>The Day We Fixed the Swing — One swing hangs by a single chain. A whole block shows up to fix it.</p>
+  <div class="csec"><div class="sn"><span data-en="Section" data-es="Sección">Section</span> 1<span>What a Community Is</span></div><a class="lrow" href="ssc-u2.html#l3-1" data-lid="aog.interior.ws.v1.ss2:l3-1" data-s="people near each other a community is the people who live and work near each other."><span class="n">3.1</span><span class="t">People Near Each Other</span><span class="tk" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5L20 7"/></svg></span></a><a class="lrow" href="ssc-u2.html#l3-2" data-lid="aog.interior.ws.v1.ss2:l3-2" data-s="city, town and country communities can be big cities, small towns or the open country."><span class="n">3.2</span><span class="t">City, Town and Country</span><span class="tk" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5L20 7"/></svg></span></a></div><div class="csec"><div class="sn"><span data-en="Section" data-es="Sección">Section</span> 2<span>Helpers All Around</span></div><a class="lrow" href="ssc-u2.html#l3-3" data-lid="aog.interior.ws.v1.ss2:l3-3" data-s="helpers who keep us safe firefighters and nurses have jobs that keep people safe and well."><span class="n">3.3</span><span class="t">Helpers Who Keep Us Safe</span><span class="tk" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5L20 7"/></svg></span></a><a class="lrow" href="ssc-u2.html#l3-4" data-lid="aog.interior.ws.v1.ss2:l3-4" data-s="helpers who bring and carry mail carriers and bus drivers bring things and people where they need to go."><span class="n">3.4</span><span class="t">Helpers Who Bring and Carry</span><span class="tk" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5L20 7"/></svg></span></a><a class="lrow" href="ssc-u2.html#l3-5" data-lid="aog.interior.ws.v1.ss2:l3-5" data-s="every job matters a librarian and a farmer help too, and every job in a community matters."><span class="n">3.5</span><span class="t">Every Job Matters</span><span class="tk" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5L20 7"/></svg></span></a></div><div class="csec"><div class="sn"><span data-en="Section" data-es="Sección">Section</span> 3<span>Places and Problems</span></div><a class="lrow" href="ssc-u2.html#l3-6" data-lid="aog.interior.ws.v1.ss2:l3-6" data-s="places we share a community has places that everyone can use, like a park or a library."><span class="n">3.6</span><span class="t">Places We Share</span><span class="tk" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5L20 7"/></svg></span></a><a class="lrow" href="ssc-u2.html#l3-7" data-lid="aog.interior.ws.v1.ss2:l3-7" data-s="fixing a problem together people in a community can solve a problem by each doing a small part."><span class="n">3.7</span><span class="t">Fixing a Problem Together</span><span class="tk" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5L20 7"/></svg></span></a></div>
+  <div class="cwrap"><a href="ssc-u2.html#rev3"><span data-en="Chapter review · 6 questions" data-es="Repaso del capítulo · 6 preguntas">Chapter review · 6 questions</span></a></div>
+</article><article class="cchap">
+  <div class="ch"><span class="badge" aria-hidden="true">4</span><div><span class="tab"><span data-en="Chapter" data-es="Capítulo">Chapter</span></span><h3><a href="ssc-u2.html#ch4" style="color:inherit;text-decoration:none">Needs, Wants and Money</a></h3><div class="yrs">Economics</div></div></div>
+  <p class="st"><b><span data-en="The story" data-es="La historia">The story</span></b>Leo&#x27;s Lemonade Stand — Leo wants a bike. He has one jar, a pitcher of lemonade and a hot Saturday.</p>
+  <div class="csec"><div class="sn"><span data-en="Section" data-es="Sección">Section</span> 1<span>Needs and Wants</span></div><a class="lrow" href="ssc-u2.html#l4-1" data-lid="aog.interior.ws.v1.ss2:l4-1" data-s="things we must have a need is something you must have to live, like food, water, shelter and clothes."><span class="n">4.1</span><span class="t">Things We Must Have</span><span class="tk" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5L20 7"/></svg></span></a><a class="lrow" href="ssc-u2.html#l4-2" data-lid="aog.interior.ws.v1.ss2:l4-2" data-s="things we would like a want is something you would like to have but can live without."><span class="n">4.2</span><span class="t">Things We Would Like</span><span class="tk" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5L20 7"/></svg></span></a></div><div class="csec"><div class="sn"><span data-en="Section" data-es="Sección">Section</span> 2<span>Work and Money</span></div><a class="lrow" href="ssc-u2.html#l4-3" data-lid="aog.interior.ws.v1.ss2:l4-3" data-s="working to earn people work at jobs to earn money."><span class="n">4.3</span><span class="t">Working to Earn</span><span class="tk" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5L20 7"/></svg></span></a><a class="lrow" href="ssc-u2.html#l4-4" data-lid="aog.interior.ws.v1.ss2:l4-4" data-s="goods and services money buys goods, which are things, and services, which is work someone does for you."><span class="n">4.4</span><span class="t">Goods and Services</span><span class="tk" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5L20 7"/></svg></span></a></div><div class="csec"><div class="sn"><span data-en="Section" data-es="Sección">Section</span> 3<span>Making Choices</span></div><a class="lrow" href="ssc-u2.html#l4-5" data-lid="aog.interior.ws.v1.ss2:l4-5" data-s="you cannot buy it all money runs out, so you must choose what to buy."><span class="n">4.5</span><span class="t">You Cannot Buy It All</span><span class="tk" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5L20 7"/></svg></span></a><a class="lrow" href="ssc-u2.html#l4-6" data-lid="aog.interior.ws.v1.ss2:l4-6" data-s="saving up saving means keeping money now so you can buy something bigger later."><span class="n">4.6</span><span class="t">Saving Up</span><span class="tk" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5L20 7"/></svg></span></a><a class="lrow" href="ssc-u2.html#l4-7" data-lid="aog.interior.ws.v1.ss2:l4-7" data-s="trading and sharing people can trade or share to get things without using money."><span class="n">4.7</span><span class="t">Trading and Sharing</span><span class="tk" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5L20 7"/></svg></span></a></div><div class="csec"><div class="sn"><span data-en="Section" data-es="Sección">Section</span> 4<span>Where Food Comes From</span></div><a class="lrow" href="ssc-u2.html#l4-8" data-lid="aog.interior.ws.v1.ss2:l4-8" data-s="farm to store to table food starts on a farm, travels to a store, and ends up on your table."><span class="n">4.8</span><span class="t">Farm to Store to Table</span><span class="tk" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5L20 7"/></svg></span></a><a class="lrow" href="ssc-u2.html#l4-9" data-lid="aog.interior.ws.v1.ss2:l4-9" data-s="food is work too growing food is a job, and the food we buy pays the people who grew it."><span class="n">4.9</span><span class="t">Food Is Work Too</span><span class="tk" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5L20 7"/></svg></span></a></div>
+  <div class="cwrap"><a href="ssc-u2.html#rev4"><span data-en="Chapter review · 6 questions" data-es="Repaso del capítulo · 6 preguntas">Chapter review · 6 questions</span></a></div>
+</article>
+  <div class="cwrap" style="border:0;padding-left:0;padding-right:0"><a href="ssc-u2.html#match"><span data-en="Eight-word match" data-es="Ocho palabras">Eight-word match</span></a><a href="ssc-u2.html#test"><span data-en="Unit test · 10 questions" data-es="Examen · 10 preguntas">Unit test · 10 questions</span></a><a href="ssc-u2.html#write"><span data-en="Write it" data-es="Escríbelo">Write it</span></a></div>
+</div>
+</section><section class="unit-spread" id="u3" data-unit="3">
+<div class="spread" aria-labelledby="ut3">
+  <div class="scene" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 420" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Drawn scene: a classroom desk with a hand-drawn map, a compass rose and a pencil, a globe on its stand and a chalkboard behind" focusable="false"><defs><linearGradient id="ssb3-wall" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F4E9D2"/><stop offset="1" stop-color="#E4D2AC"/></linearGradient><linearGradient id="ssb3-board" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1E3A5F"/><stop offset="1" stop-color="#142B4C"/></linearGradient><linearGradient id="ssb3-desk" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#C9A26A"/><stop offset="0.08" stop-color="#A87A3A"/><stop offset="1" stop-color="#4A2C1C"/></linearGradient><radialGradient id="ssb3-globe" cx="0.38" cy="0.35" r="0.7"><stop offset="0" stop-color="#7FB4E6" stop-opacity="1"/><stop offset="0.7" stop-color="#3F7FC0" stop-opacity="1"/><stop offset="1" stop-color="#1E3A5F" stop-opacity="1"/></radialGradient><linearGradient id="ssb3-paper" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FBF3E0"/><stop offset="1" stop-color="#EDDDB4"/></linearGradient></defs>
+<rect width="1200" height="420" fill="url(#ssb3-wall)"/>
+<rect x="60" y="30" width="600" height="120" fill="url(#ssb3-board)"/><rect x="52" y="22" width="616" height="8" fill="#9A7446"/><rect x="52" y="150" width="616" height="10" fill="#9A7446"/>
+<g stroke="#F7EBD0" stroke-width="3" fill="none" opacity=".85"><path d="M100 60 q30 -20 60 0 t60 0 t60 0"/><path d="M100 100 h80 M200 100 h50 M270 100 h110"/><path d="M480 50 l20 60 l20 -60"/><circle cx="580" cy="80" r="24"/><path d="M560 80 h40 M580 56 v48"/></g>
+<rect x="700" y="40" width="440" height="110" fill="#E4B860" opacity=".35"/>
+<path d="M0 232 H1200 V420 H0z" fill="url(#ssb3-desk)"/><path d="M0 232 h1200 v6 H0z" fill="#E4B860"/>
+<g transform="rotate(-4 420 230)"><rect x="180" y="150" width="480" height="150" rx="4" fill="url(#ssb3-paper)"/><rect x="180" y="150" width="480" height="150" rx="4" fill="none" stroke="#C9A26A" stroke-width="2"/>
+<g stroke="#C9A26A" stroke-width="1" opacity=".5"><path d="M240 150 V296"/><path d="M284 150 V296"/><path d="M328 150 V296"/><path d="M372 150 V296"/><path d="M416 150 V296"/><path d="M460 150 V296"/><path d="M504 150 V296"/><path d="M548 150 V296"/><path d="M592 150 V296"/><path d="M180 160 H660"/><path d="M180 192 H660"/><path d="M180 224 H660"/><path d="M180 256 H660"/><path d="M180 288 H660"/></g>
+<g fill="#7FB4E6" opacity=".7"><path d="M200 220 q60 -30 120 -10 q40 20 100 0 q40 -14 80 10 v70 H200z"/></g>
+<path d="M240 200 q30 -20 50 4" stroke="#3F7FC0" stroke-width="4" fill="none"/>
+<g fill="#E4573D"><rect x="300" y="176" width="24" height="18"/><path d="M296 176 l16 -12 l16 12z"/></g>
+<g fill="#5E8752"><circle cx="420" cy="180" r="14"/><circle cx="440" cy="188" r="10"/></g><rect x="428" y="192" width="5" height="12" fill="#5A3E2A"/>
+<g fill="#F2C273"><rect x="500" y="172" width="40" height="30"/><path d="M496 172 l24 -14 l24 14z"/></g><rect x="516" y="186" width="10" height="16" fill="#9A7446"/>
+<path d="M330 186 q60 40 190 22" stroke="#E4573D" stroke-width="2.5" stroke-dasharray="6 5" fill="none"/>
+<g transform="translate(600 200)"><circle r="26" fill="none" stroke="#3A2A18" stroke-width="2"/><path d="M0 -30 l6 24 l-6 -6 l-6 6z" fill="#E4573D"/><path d="M0 30 l6 -24 l-6 6 l-6 -6z M30 0 l-24 6 l6 -6 l-6 -6z M-30 0 l24 6 l-6 -6 l-6 -6z" fill="#3A2A18"/></g>
+</g>
+<g transform="translate(720 290) rotate(-18)"><rect x="-90" y="-7" width="180" height="14" rx="2" fill="#F2C273"/><path d="M90 -7 l24 7 l-24 7z" fill="#EDDDB4"/><path d="M110 -1 l4 1 l-4 1z" fill="#3A2A18"/><rect x="-90" y="-7" width="16" height="14" fill="#E4573D"/><rect x="-74" y="-7" width="6" height="14" fill="#A8B0B8"/></g>
+<g fill="#3A2A18"><path d="M840 232 h120 l-8 -12 h-104z"/><rect x="893" y="150" width="14" height="70"/></g>
+<path d="M900 30 A120 120 0 0 1 1010 190" stroke="#3A2A18" stroke-width="10" fill="none" stroke-linecap="round"/>
+<circle cx="900" cy="150" r="88" fill="url(#ssb3-globe)"/>
+<g fill="#5E8752" opacity=".9"><path d="M850 110 q30 -20 60 -10 q10 20 -10 30 q-30 10 -40 40 q-20 -20 -10 -60z"/><path d="M930 150 q30 -10 40 10 q-10 30 -30 40 q-16 -20 -10 -50z"/><path d="M900 76 q20 -6 34 8 q-14 6 -34 -8z"/></g>
+<g fill="none" stroke="#F7EBD0" stroke-width="1" opacity=".55"><ellipse cx="900" cy="150" rx="88" ry="88" transform="translate(0 -0)"/><ellipse cx="900" cy="150" rx="76" ry="76" transform="translate(0 -44)"/><ellipse cx="900" cy="150" rx="76" ry="76" transform="translate(0 44)"/><ellipse cx="900" cy="150" rx="44" ry="44" transform="translate(0 -76)"/><ellipse cx="900" cy="150" rx="44" ry="44" transform="translate(0 76)"/><ellipse cx="900" cy="150" rx="20" ry="88"/><ellipse cx="900" cy="150" rx="50" ry="88"/><ellipse cx="900" cy="150" rx="80" ry="88"/></g>
+<circle cx="900" cy="150" r="88" fill="none" stroke="#1E3A5F" stroke-width="3"/><circle cx="870" cy="112" r="20" fill="#FFFFFF" opacity=".18"/>
+<g fill="#F7EBD0" opacity=".5"><rect x="1040" y="196" width="120" height="36" rx="3"/></g><g fill="#E4573D"><rect x="1050" y="204" width="30" height="20" rx="2"/></g><g fill="#3F7FC0"><rect x="1090" y="204" width="30" height="20" rx="2"/></g>
+<path d="M0 372 H1200 V420 H0z" fill="#1E140A" opacity=".5"/>
+</svg></div>
+  <div class="credit">Drawn scene: a classroom desk with a hand-drawn map, a compass rose and a pencil, a globe on its stand and a chalkboard behind</div>
+  <div class="txt"><div class="unum"><b>3</b><span data-en="Unit" data-es="Unidad">Unit</span></div><h2 class="ut" id="ut3">Maps and Places</h2><div class="years">Geography</div></div>
+  <a class="enter" href="ssc-u3.html"><span data-en="Open the unit" data-es="Abrir la unidad">Open the unit</span> →</a>
+</div>
+<div class="body">
+  <article class="cchap">
+  <div class="ch"><span class="badge" aria-hidden="true">5</span><div><span class="tab"><span data-en="Chapter" data-es="Capítulo">Chapter</span></span><h3><a href="ssc-u3.html#ch5" style="color:inherit;text-decoration:none">Where Things Are</a></h3><div class="yrs">Maps</div></div></div>
+  <p class="st"><b><span data-en="The story" data-es="La historia">The story</span></b>The Treasure Map — The class hid a treasure. Now they must draw a map so a friend can find it.</p>
+  <div class="csec"><div class="sn"><span data-en="Section" data-es="Sección">Section</span> 1<span>A Picture From Above</span></div><a class="lrow" href="ssc-u3.html#l5-1" data-lid="aog.interior.ws.v1.ss3:l5-1" data-s="looking down on a room a map is a drawing of a place as seen from above."><span class="n">5.1</span><span class="t">Looking Down on a Room</span><span class="tk" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5L20 7"/></svg></span></a><a class="lrow" href="ssc-u3.html#l5-2" data-lid="aog.interior.ws.v1.ss3:l5-2" data-s="the map key a map key tells what each symbol on a map means."><span class="n">5.2</span><span class="t">The Map Key</span><span class="tk" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5L20 7"/></svg></span></a><a class="lrow" href="ssc-u3.html#l5-3" data-lid="aog.interior.ws.v1.ss3:l5-3" data-s="bigger and bigger maps a map can show a room, a school or a whole neighborhood."><span class="n">5.3</span><span class="t">Bigger and Bigger Maps</span><span class="tk" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5L20 7"/></svg></span></a></div><div class="csec"><div class="sn"><span data-en="Section" data-es="Sección">Section</span> 2<span>Which Way?</span></div><a class="lrow" href="ssc-u3.html#l5-4" data-lid="aog.interior.ws.v1.ss3:l5-4" data-s="near, far, left and right words like near, far, left and right tell where a thing is."><span class="n">5.4</span><span class="t">Near, Far, Left and Right</span><span class="tk" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5L20 7"/></svg></span></a><a class="lrow" href="ssc-u3.html#l5-5" data-lid="aog.interior.ws.v1.ss3:l5-5" data-s="north, south, east and west north, south, east and west are the four main directions on a map."><span class="n">5.5</span><span class="t">North, South, East and West</span><span class="tk" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5L20 7"/></svg></span></a></div><div class="csec"><div class="sn"><span data-en="Section" data-es="Sección">Section</span> 3<span>Our Big World</span></div><a class="lrow" href="ssc-u3.html#l5-6" data-lid="aog.interior.ws.v1.ss3:l5-6" data-s="the globe is a model of earth a globe is a round model of earth that shows land and water."><span class="n">5.6</span><span class="t">The Globe Is a Model of Earth</span><span class="tk" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5L20 7"/></svg></span></a><a class="lrow" href="ssc-u3.html#l5-7" data-lid="aog.interior.ws.v1.ss3:l5-7" data-s="finding our home we live in chicago, in the state of illinois, in the united states."><span class="n">5.7</span><span class="t">Finding Our Home</span><span class="tk" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5L20 7"/></svg></span></a><a class="lrow" href="ssc-u3.html#l5-8" data-lid="aog.interior.ws.v1.ss3:l5-8" data-s="a route to school a route is the path you take to get from one place to another."><span class="n">5.8</span><span class="t">A Route to School</span><span class="tk" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5L20 7"/></svg></span></a></div>
+  <div class="cwrap"><a href="ssc-u3.html#rev5"><span data-en="Chapter review · 6 questions" data-es="Repaso del capítulo · 6 preguntas">Chapter review · 6 questions</span></a></div>
+</article><article class="cchap">
+  <div class="ch"><span class="badge" aria-hidden="true">6</span><div><span class="tab"><span data-en="Chapter" data-es="Capítulo">Chapter</span></span><h3><a href="ssc-u3.html#ch6" style="color:inherit;text-decoration:none">Land, Water and Weather Where We Live</a></h3><div class="yrs">Places</div></div></div>
+  <p class="st"><b><span data-en="The story" data-es="La historia">The story</span></b>Out the Car Window — Grandpa&#x27;s farm is far from Chicago. Watch what changes on the long drive south.</p>
+  <div class="csec"><div class="sn"><span data-en="Section" data-es="Sección">Section</span> 1<span>Land and Water</span></div><a class="lrow" href="ssc-u3.html#l6-1" data-lid="aog.interior.ws.v1.ss3:l6-1" data-s="hills and plains land can be high and bumpy, like a hill, or low and flat, like a plain."><span class="n">6.1</span><span class="t">Hills and Plains</span><span class="tk" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5L20 7"/></svg></span></a><a class="lrow" href="ssc-u3.html#l6-2" data-lid="aog.interior.ws.v1.ss3:l6-2" data-s="rivers, lakes and the ocean water on earth comes in rivers, lakes and the huge, salty ocean."><span class="n">6.2</span><span class="t">Rivers, Lakes and the Ocean</span><span class="tk" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5L20 7"/></svg></span></a><a class="lrow" href="ssc-u3.html#l6-3" data-lid="aog.interior.ws.v1.ss3:l6-3" data-s="flat illinois most of illinois is flat prairie land, and much of it is now farmland."><span class="n">6.3</span><span class="t">Flat Illinois</span><span class="tk" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5L20 7"/></svg></span></a></div><div class="csec"><div class="sn"><span data-en="Section" data-es="Sección">Section</span> 2<span>Weather and Seasons</span></div><a class="lrow" href="ssc-u3.html#l6-4" data-lid="aog.interior.ws.v1.ss3:l6-4" data-s="four seasons in illinois illinois has four seasons, and the weather changes with each one."><span class="n">6.4</span><span class="t">Four Seasons in Illinois</span><span class="tk" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5L20 7"/></svg></span></a><a class="lrow" href="ssc-u3.html#l6-5" data-lid="aog.interior.ws.v1.ss3:l6-5" data-s="what weather makes us do the weather shapes what people wear and what they do."><span class="n">6.5</span><span class="t">What Weather Makes Us Do</span><span class="tk" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5L20 7"/></svg></span></a></div><div class="csec"><div class="sn"><span data-en="Section" data-es="Sección">Section</span> 3<span>People and Places</span></div><a class="lrow" href="ssc-u3.html#l6-6" data-lid="aog.interior.ws.v1.ss3:l6-6" data-s="people change places people change the land by building roads, planting crops and digging ponds."><span class="n">6.6</span><span class="t">People Change Places</span><span class="tk" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5L20 7"/></svg></span></a><a class="lrow" href="ssc-u3.html#l6-7" data-lid="aog.interior.ws.v1.ss3:l6-7" data-s="places shape people the land and water of a place shape the jobs and lives of the people there."><span class="n">6.7</span><span class="t">Places Shape People</span><span class="tk" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5L20 7"/></svg></span></a><a class="lrow" href="ssc-u3.html#l6-8" data-lid="aog.interior.ws.v1.ss3:l6-8" data-s="taking care of a place people can keep a place healthy by picking up litter, saving water and planting trees."><span class="n">6.8</span><span class="t">Taking Care of a Place</span><span class="tk" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5L20 7"/></svg></span></a></div>
+  <div class="cwrap"><a href="ssc-u3.html#rev6"><span data-en="Chapter review · 6 questions" data-es="Repaso del capítulo · 6 preguntas">Chapter review · 6 questions</span></a></div>
+</article>
+  <div class="cwrap" style="border:0;padding-left:0;padding-right:0"><a href="ssc-u3.html#match"><span data-en="Eight-word match" data-es="Ocho palabras">Eight-word match</span></a><a href="ssc-u3.html#test"><span data-en="Unit test · 10 questions" data-es="Examen · 10 preguntas">Unit test · 10 questions</span></a><a href="ssc-u3.html#write"><span data-en="Write it" data-es="Escríbelo">Write it</span></a></div>
+</div>
+</section><section class="unit-spread" id="u4" data-unit="4">
+<div class="spread" aria-labelledby="ut4">
+  <div class="scene" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 420" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Drawn scene: a waving flag with stars and stripes, a class ballot box with a slip going in, and old sepia photographs spread on a table" focusable="false"><defs><linearGradient id="ssb4-wall" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0A1E33"/><stop offset="0.6" stop-color="#1E3A5F"/><stop offset="1" stop-color="#2D4F80"/></linearGradient><linearGradient id="ssb4-table" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#E4D2AC"/><stop offset="0.1" stop-color="#C9A26A"/><stop offset="1" stop-color="#5A3A1E"/></linearGradient><linearGradient id="ssb4-box" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3F7FC0"/><stop offset="1" stop-color="#1E3A5F"/></linearGradient><linearGradient id="ssb4-photo" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F7EBD0"/><stop offset="1" stop-color="#D8C29A"/></linearGradient><radialGradient id="ssb4-glow" cx="0.5" cy="0.5" r="0.5"><stop offset="0" stop-color="#F6D98C" stop-opacity="0.5"/><stop offset="1" stop-color="#F6D98C" stop-opacity="0"/></radialGradient></defs>
+<rect width="1200" height="420" fill="url(#ssb4-wall)"/>
+<ellipse cx="620" cy="140" rx="300" ry="160" fill="url(#ssb4-glow)"/>
+<path d="M60 60 q80 -14 160 0 t160 0 t160 0 v18 q-80 -14 -160 0 t-160 0 t-160 0z" fill="#C8402F"/><path d="M60 78 q80 14 160 0 t160 0 t160 0 v18 q-80 14 -160 0 t-160 0 t-160 0z" fill="#F7EBD0"/><path d="M60 96 q80 -14 160 0 t160 0 t160 0 v18 q-80 -14 -160 0 t-160 0 t-160 0z" fill="#C8402F"/><path d="M60 114 q80 14 160 0 t160 0 t160 0 v18 q-80 14 -160 0 t-160 0 t-160 0z" fill="#F7EBD0"/><path d="M60 132 q80 -14 160 0 t160 0 t160 0 v18 q-80 -14 -160 0 t-160 0 t-160 0z" fill="#C8402F"/><path d="M60 150 q80 14 160 0 t160 0 t160 0 v18 q-80 14 -160 0 t-160 0 t-160 0z" fill="#F7EBD0"/><path d="M60 168 q80 -14 160 0 t160 0 t160 0 v18 q-80 -14 -160 0 t-160 0 t-160 0z" fill="#C8402F"/><path d="M60 186 q80 14 160 0 t160 0 t160 0 v18 q-80 14 -160 0 t-160 0 t-160 0z" fill="#F7EBD0"/><path d="M60 204 q80 -14 160 0 t160 0 t160 0 v18 q-80 -14 -160 0 t-160 0 t-160 0z" fill="#C8402F"/><path d="M60 222 q80 14 160 0 t160 0 t160 0 v18 q-80 14 -160 0 t-160 0 t-160 0z" fill="#F7EBD0"/>
+<path d="M60 60 q80 -14 160 0 v92 q-80 14 -160 0z" fill="#1E3A5F"/><circle cx="76" cy="72" r="4" fill="#F7EBD0"/><circle cx="96" cy="72" r="4" fill="#F7EBD0"/><circle cx="116" cy="72" r="4" fill="#F7EBD0"/><circle cx="136" cy="72" r="4" fill="#F7EBD0"/><circle cx="156" cy="72" r="4" fill="#F7EBD0"/><circle cx="176" cy="72" r="4" fill="#F7EBD0"/><circle cx="196" cy="72" r="4" fill="#F7EBD0"/><circle cx="216" cy="72" r="4" fill="#F7EBD0"/><circle cx="236" cy="72" r="4" fill="#F7EBD0"/><circle cx="76" cy="88" r="4" fill="#F7EBD0"/><circle cx="96" cy="88" r="4" fill="#F7EBD0"/><circle cx="116" cy="88" r="4" fill="#F7EBD0"/><circle cx="136" cy="88" r="4" fill="#F7EBD0"/><circle cx="156" cy="88" r="4" fill="#F7EBD0"/><circle cx="176" cy="88" r="4" fill="#F7EBD0"/><circle cx="196" cy="88" r="4" fill="#F7EBD0"/><circle cx="216" cy="88" r="4" fill="#F7EBD0"/><circle cx="236" cy="88" r="4" fill="#F7EBD0"/><circle cx="76" cy="104" r="4" fill="#F7EBD0"/><circle cx="96" cy="104" r="4" fill="#F7EBD0"/><circle cx="116" cy="104" r="4" fill="#F7EBD0"/><circle cx="136" cy="104" r="4" fill="#F7EBD0"/><circle cx="156" cy="104" r="4" fill="#F7EBD0"/><circle cx="176" cy="104" r="4" fill="#F7EBD0"/><circle cx="196" cy="104" r="4" fill="#F7EBD0"/><circle cx="216" cy="104" r="4" fill="#F7EBD0"/><circle cx="236" cy="104" r="4" fill="#F7EBD0"/><circle cx="76" cy="120" r="4" fill="#F7EBD0"/><circle cx="96" cy="120" r="4" fill="#F7EBD0"/><circle cx="116" cy="120" r="4" fill="#F7EBD0"/><circle cx="136" cy="120" r="4" fill="#F7EBD0"/><circle cx="156" cy="120" r="4" fill="#F7EBD0"/><circle cx="176" cy="120" r="4" fill="#F7EBD0"/><circle cx="196" cy="120" r="4" fill="#F7EBD0"/><circle cx="216" cy="120" r="4" fill="#F7EBD0"/><circle cx="236" cy="120" r="4" fill="#F7EBD0"/><circle cx="76" cy="136" r="4" fill="#F7EBD0"/><circle cx="96" cy="136" r="4" fill="#F7EBD0"/><circle cx="116" cy="136" r="4" fill="#F7EBD0"/><circle cx="136" cy="136" r="4" fill="#F7EBD0"/><circle cx="156" cy="136" r="4" fill="#F7EBD0"/><circle cx="176" cy="136" r="4" fill="#F7EBD0"/><circle cx="196" cy="136" r="4" fill="#F7EBD0"/><circle cx="216" cy="136" r="4" fill="#F7EBD0"/><circle cx="236" cy="136" r="4" fill="#F7EBD0"/><circle cx="76" cy="152" r="4" fill="#F7EBD0"/><circle cx="96" cy="152" r="4" fill="#F7EBD0"/><circle cx="116" cy="152" r="4" fill="#F7EBD0"/><circle cx="136" cy="152" r="4" fill="#F7EBD0"/><circle cx="156" cy="152" r="4" fill="#F7EBD0"/><circle cx="176" cy="152" r="4" fill="#F7EBD0"/><circle cx="196" cy="152" r="4" fill="#F7EBD0"/><circle cx="216" cy="152" r="4" fill="#F7EBD0"/><circle cx="236" cy="152" r="4" fill="#F7EBD0"/>
+<rect x="52" y="20" width="8" height="280" fill="#C9A26A"/><circle cx="56" cy="18" r="8" fill="#F2C273"/>
+<path d="M0 260 H1200 V420 H0z" fill="url(#ssb4-table)"/>
+<path d="M520 262 v-110 h200 v110z" fill="url(#ssb4-box)"/><path d="M510 152 h220 l-10 -16 h-200z" fill="#3F7FC0"/><path d="M510 152 h220 v6 h-220z" fill="#7FB4E6"/>
+<rect x="580" y="140" width="80" height="6" fill="#0A1E33"/>
+<g transform="translate(620 120) rotate(-20)"><rect x="-30" y="-40" width="60" height="70" fill="#F7EBD0"/><rect x="-20" y="-28" width="12" height="12" fill="none" stroke="#1E3A5F" stroke-width="2"/><path d="M-19 -22 l4 5 l8 -10" stroke="#C8402F" stroke-width="2.5" fill="none"/><rect x="-4" y="-26" width="28" height="4" fill="#1E3A5F" opacity=".5"/><rect x="-20" y="-6" width="12" height="12" fill="none" stroke="#1E3A5F" stroke-width="2"/><rect x="-4" y="-4" width="28" height="4" fill="#1E3A5F" opacity=".5"/><rect x="-20" y="14" width="40" height="4" fill="#1E3A5F" opacity=".3"/></g>
+<g fill="#F7EBD0" opacity=".7"><path d="M540 180 h30 v40 h-30z"/><path d="M560 200 l10 -10 l10 10z"/></g>
+<g fill="#F2C273"><path d="M610 200 l6 -14 l6 14 l-14 -9 h16z"/></g>
+<g transform="translate(900 200) rotate(8)"><rect x="-62" y="-46" width="124" height="92" fill="url(#ssb4-photo)"/><rect x="-52" y="-36" width="104" height="72" fill="#7A5A3A" opacity=".8"/><path d="M-40 30 v-20 h20 v-14 l14 -12 l14 12 v14 h20 v20z" fill="#E4D2AC" opacity=".8"/><circle cx="-12" cy="-2" r="4" fill="#E4D2AC"/></g><g transform="translate(1040 170) rotate(-10)"><rect x="-62" y="-46" width="124" height="92" fill="url(#ssb4-photo)"/><rect x="-52" y="-36" width="104" height="72" fill="#7A5A3A" opacity=".8"/><g fill="#E4D2AC" opacity=".8"><circle cx="-14" cy="-10" r="10"/><path d="M-30 30 q0 -26 16 -26 q16 0 16 26z"/><circle cx="18" cy="-4" r="8"/><path d="M4 30 q0 -22 14 -22 q14 0 14 22z"/></g></g><g transform="translate(980 250) rotate(3)"><rect x="-62" y="-46" width="124" height="92" fill="url(#ssb4-photo)"/><rect x="-52" y="-36" width="104" height="72" fill="#7A5A3A" opacity=".8"/><g fill="#E4D2AC" opacity=".8"><path d="M-40 20 h60 v-16 h-30 l-6 -10 h-24z"/><circle cx="-26" cy="26" r="7"/><circle cx="8" cy="26" r="7"/></g></g>
+<g fill="#0A1E33"><circle cx="360" cy="230" r="14"/><path d="M340 262 q0 -22 20 -22 q20 0 20 22z"/></g><path d="M366 236 l12 -4 l-2 -4z" fill="#F2C273"/>
+<path d="M0 372 H1200 V420 H0z" fill="#1E140A" opacity=".5"/>
+</svg></div>
+  <div class="credit">Drawn scene: a waving flag with stars and stripes, a class ballot box with a slip going in, and old sepia photographs spread on a table</div>
+  <div class="txt"><div class="unum"><b>4</b><span data-en="Unit" data-es="Unidad">Unit</span></div><h2 class="ut" id="ut4">Then and Now, and Our Country</h2><div class="years">History and Civics</div></div>
+  <a class="enter" href="ssc-u4.html"><span data-en="Open the unit" data-es="Abrir la unidad">Open the unit</span> →</a>
+</div>
+<div class="body">
+  <article class="cchap">
+  <div class="ch"><span class="badge" aria-hidden="true">7</span><div><span class="tab"><span data-en="Chapter" data-es="Capítulo">Chapter</span></span><h3><a href="ssc-u4.html#ch7" style="color:inherit;text-decoration:none">Long Ago and Today</a></h3><div class="yrs">History</div></div></div>
+  <p class="st"><b><span data-en="The story" data-es="La historia">The story</span></b>Grandma&#x27;s Shoebox — A box under the bed holds a phone with a dial, an old ticket and a photo of a girl.</p>
+  <div class="csec"><div class="sn"><span data-en="Section" data-es="Sección">Section</span> 1<span>Past, Present, Future</span></div><a class="lrow" href="ssc-u4.html#l7-1" data-lid="aog.interior.ws.v1.ss4:l7-1" data-s="yesterday, today, tomorrow the past is before now, the present is now, and the future is after now."><span class="n">7.1</span><span class="t">Yesterday, Today, Tomorrow</span><span class="tk" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5L20 7"/></svg></span></a><a class="lrow" href="ssc-u4.html#l7-2" data-lid="aog.interior.ws.v1.ss4:l7-2" data-s="old things are clues old photos and objects are clues that tell us about the past."><span class="n">7.2</span><span class="t">Old Things Are Clues</span><span class="tk" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5L20 7"/></svg></span></a></div><div class="csec"><div class="sn"><span data-en="Section" data-es="Sección">Section</span> 2<span>Things That Changed</span></div><a class="lrow" href="ssc-u4.html#l7-3" data-lid="aog.interior.ws.v1.ss4:l7-3" data-s="getting from here to there how people travel has changed a lot over time."><span class="n">7.3</span><span class="t">Getting From Here to There</span><span class="tk" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5L20 7"/></svg></span></a><a class="lrow" href="ssc-u4.html#l7-4" data-lid="aog.interior.ws.v1.ss4:l7-4" data-s="cooking and talking cooking and talking to far-away people changed as new tools were made."><span class="n">7.4</span><span class="t">Cooking and Talking</span><span class="tk" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5L20 7"/></svg></span></a><a class="lrow" href="ssc-u4.html#l7-5" data-lid="aog.interior.ws.v1.ss4:l7-5" data-s="school long ago schools long ago had one room, one teacher and no computers."><span class="n">7.5</span><span class="t">School Long Ago</span><span class="tk" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5L20 7"/></svg></span></a><a class="lrow" href="ssc-u4.html#l7-6" data-lid="aog.interior.ws.v1.ss4:l7-6" data-s="a town in one hundred years a town can change a lot in one hundred years, and old maps and photos show how."><span class="n">7.6</span><span class="t">A Town in One Hundred Years</span><span class="tk" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5L20 7"/></svg></span></a></div><div class="csec"><div class="sn"><span data-en="Section" data-es="Sección">Section</span> 3<span>Things That Stayed the Same</span></div><a class="lrow" href="ssc-u4.html#l7-7" data-lid="aog.interior.ws.v1.ss4:l7-7" data-s="families, play and food some things stay the same over time, like families, play and eating together."><span class="n">7.7</span><span class="t">Families, Play and Food</span><span class="tk" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5L20 7"/></svg></span></a><a class="lrow" href="ssc-u4.html#l7-8" data-lid="aog.interior.ws.v1.ss4:l7-8" data-s="a timeline of my life a timeline puts events in order from first to last."><span class="n">7.8</span><span class="t">A Timeline of My Life</span><span class="tk" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5L20 7"/></svg></span></a></div>
+  <div class="cwrap"><a href="ssc-u4.html#rev7"><span data-en="Chapter review · 6 questions" data-es="Repaso del capítulo · 6 preguntas">Chapter review · 6 questions</span></a></div>
+</article><article class="cchap">
+  <div class="ch"><span class="badge" aria-hidden="true">8</span><div><span class="tab"><span data-en="Chapter" data-es="Capítulo">Chapter</span></span><h3><a href="ssc-u4.html#ch8" style="color:inherit;text-decoration:none">Symbols, Holidays and Being a Citizen</a></h3><div class="yrs">Civics</div></div></div>
+  <p class="st"><b><span data-en="The story" data-es="La historia">The story</span></b>The Class Pet Gets a Name — A new hamster needs a name. Twenty-two kids have ideas. How will they choose?</p>
+  <div class="csec"><div class="sn"><span data-en="Section" data-es="Sección">Section</span> 1<span>Our Flag and Our Pledge</span></div><a class="lrow" href="ssc-u4.html#l8-1" data-lid="aog.interior.ws.v1.ss4:l8-1" data-s="stars and stripes the flag has fifty stars for fifty states and thirteen stripes for the first thirteen states."><span class="n">8.1</span><span class="t">Stars and Stripes</span><span class="tk" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5L20 7"/></svg></span></a><a class="lrow" href="ssc-u4.html#l8-2" data-lid="aog.interior.ws.v1.ss4:l8-2" data-s="the pledge is a promise the pledge of allegiance is a promise to be loyal to our country."><span class="n">8.2</span><span class="t">The Pledge Is a Promise</span><span class="tk" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5L20 7"/></svg></span></a></div><div class="csec"><div class="sn"><span data-en="Section" data-es="Sección">Section</span> 2<span>Symbols of Our Country</span></div><a class="lrow" href="ssc-u4.html#l8-3" data-lid="aog.interior.ws.v1.ss4:l8-3" data-s="the bald eagle the bald eagle is a symbol of our country because it is strong and free."><span class="n">8.3</span><span class="t">The Bald Eagle</span><span class="tk" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5L20 7"/></svg></span></a><a class="lrow" href="ssc-u4.html#l8-4" data-lid="aog.interior.ws.v1.ss4:l8-4" data-s="a bell and a statue the liberty bell and the statue of liberty are symbols of freedom."><span class="n">8.4</span><span class="t">A Bell and a Statue</span><span class="tk" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5L20 7"/></svg></span></a></div><div class="csec"><div class="sn"><span data-en="Section" data-es="Sección">Section</span> 3<span>Holidays We Share</span></div><a class="lrow" href="ssc-u4.html#l8-5" data-lid="aog.interior.ws.v1.ss4:l8-5" data-s="days for great leaders some holidays remember people, like martin luther king jr. and our presidents."><span class="n">8.5</span><span class="t">Days for Great Leaders</span><span class="tk" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5L20 7"/></svg></span></a><a class="lrow" href="ssc-u4.html#l8-6" data-lid="aog.interior.ws.v1.ss4:l8-6" data-s="days for our country independence day is our country&#x27;s birthday, and veterans day thanks people who served."><span class="n">8.6</span><span class="t">Days for Our Country</span><span class="tk" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5L20 7"/></svg></span></a></div><div class="csec"><div class="sn"><span data-en="Section" data-es="Sección">Section</span> 4<span>Being a Good Citizen</span></div><a class="lrow" href="ssc-u4.html#l8-7" data-lid="aog.interior.ws.v1.ss4:l8-7" data-s="people who made a difference lincoln, tubman, chavez and addams each helped other people and made things fairer."><span class="n">8.7</span><span class="t">People Who Made a Difference</span><span class="tk" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5L20 7"/></svg></span></a><a class="lrow" href="ssc-u4.html#l8-8" data-lid="aog.interior.ws.v1.ss4:l8-8" data-s="vote, help, speak up a good citizen votes, helps others and speaks up when something is wrong."><span class="n">8.8</span><span class="t">Vote, Help, Speak Up</span><span class="tk" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5L20 7"/></svg></span></a></div>
+  <div class="cwrap"><a href="ssc-u4.html#rev8"><span data-en="Chapter review · 6 questions" data-es="Repaso del capítulo · 6 preguntas">Chapter review · 6 questions</span></a></div>
+</article>
+  <div class="cwrap" style="border:0;padding-left:0;padding-right:0"><a href="ssc-u4.html#match"><span data-en="Eight-word match" data-es="Ocho palabras">Eight-word match</span></a><a href="ssc-u4.html#test"><span data-en="Unit test · 10 questions" data-es="Examen · 10 preguntas">Unit test · 10 questions</span></a><a href="ssc-u4.html#write"><span data-en="Write it" data-es="Escríbelo">Write it</span></a></div>
+</div>
+</section>
+
+<details class="teach no-print"><summary><span data-en="For the teacher" data-es="Para el docente">For the teacher</span></summary><div class="inner">
+  <p><span data-en="The course follows the Illinois Learning Standards for Social Science, band by band — units, chapters, sections, numbered lessons — in original text written at each band’s reading level. Every lesson has a main idea, a reading with key words you can tap, a source, a data table or a scenario to think through, and three checks. U.S. History for grades 6–8 is its own course and is linked from this band." data-es="El curso sigue los estándares de aprendizaje de Illinois para ciencias sociales, banda por banda — unidades, capítulos, secciones, lecciones numeradas — en texto original al nivel de lectura de cada banda. Cada lección tiene una idea principal, una lectura con palabras clave, una fuente, una tabla de datos o un escenario, y tres comprobaciones. Historia de EE. UU. para grados 6–8 es su propio curso y está enlazado desde esta banda.">The course follows the Illinois Learning Standards for Social Science, band by band — units, chapters, sections, numbered lessons — in original text written at each band’s reading level. Every lesson has a main idea, a reading with key words you can tap, a source, a data table or a scenario to think through, and three checks. U.S. History for grades 6–8 is its own course and is linked from this band.</span></p>
+  <p><span data-en="Progress ticks live on this device only. Print any unit page for a paper copy." data-es="Las marcas de progreso viven solo en este dispositivo. Imprime cualquier unidad para tener una copia en papel.">Progress ticks live on this device only. Print any unit page for a paper copy.</span></p>
+</div></details>
+
+<footer class="foot"><span data-en="Architecture of Grace · Social Studies, K–12 · original text following the Illinois Learning Standards for Social Science · the banner is a drawn scene, not a photograph." data-es="Architecture of Grace · Estudios Sociales, K–12 · texto original que sigue los estándares de aprendizaje de Illinois para ciencias sociales · el banner es una escena dibujada, no una fotografía.">Architecture of Grace · Social Studies, K–12 · original text following the Illinois Learning Standards for Social Science · the banner is a drawn scene, not a photograph.</span></footer>
+</main>
+</div>
+<script>
+
+(function(){
+"use strict";
+var lang = "en";
+function paintLang(){
+  document.documentElement.setAttribute("lang", lang);
+  Array.prototype.forEach.call(document.querySelectorAll("[data-en]"), function(el){
+    var v = el.getAttribute(lang==="es" ? "data-es" : "data-en"); if(v==null) return;
+    if(v.indexOf("<b>")>-1) el.innerHTML = v; else el.textContent = v;
+  });
+  var lb = document.getElementById("langBtn"); if(lb) lb.textContent = (lang==="es") ? "English" : "Español";
+  paintHits();
+}
+document.getElementById("langBtn").addEventListener("click", function(){ lang = (lang==="es") ? "en" : "es"; paintLang(); });
+document.getElementById("themeBtn").addEventListener("click", function(){
+  var cur = document.documentElement.getAttribute("data-theme")==="dark" ? "light" : "dark";
+  document.documentElement.setAttribute("data-theme", cur);
+  try{ localStorage.setItem("aog.interior.ws.v1.theme", cur); }catch(e){}
+});
+/* progress ticks: read every unit's record */
+var rows = document.querySelectorAll(".lrow"), done = 0, KEYS = [[1, "aog.interior.ws.v1.ss1"], [2, "aog.interior.ws.v1.ss2"], [3, "aog.interior.ws.v1.ss3"], [4, "aog.interior.ws.v1.ss4"]];
+KEYS.forEach(function(pair){
+  var key = pair[1], rec = {}; try{ rec = JSON.parse(localStorage.getItem(key)||"{}")||{}; }catch(e){}
+  var les = rec.les||{};
+  for(var k in les){ var a = document.querySelector('.lrow[data-lid="'+key+':'+k+'"]'); if(a){ a.classList.add("done"); done++; } }
+});
+document.getElementById("progN").textContent = done;
+document.getElementById("progBar").style.width = (rows.length ? Math.round(100*done/rows.length) : 0) + "%";
+/* the lesson search */
+var inp = document.getElementById("lsearch"), hits = document.getElementById("hits"), cur = "";
+function norm(s){ return s.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g,""); }
+function paintHits(){
+  if(!cur){ hits.textContent = ""; return; }
+  var n = document.querySelectorAll(".lrow:not([hidden])").length;
+  hits.textContent = n + (lang==="es" ? " lecciones" : " lessons") + (lang==="es" ? " para “" : " for “") + cur + "”";
+}
+function filter(){
+  cur = inp.value.trim(); var q = norm(cur);
+  Array.prototype.forEach.call(rows, function(a){ a.hidden = !!q && norm(a.getAttribute("data-s")).indexOf(q) < 0; });
+  Array.prototype.forEach.call(document.querySelectorAll(".csec"), function(s){ s.setAttribute("data-empty", s.querySelector(".lrow:not([hidden])") ? "0" : "1"); });
+  Array.prototype.forEach.call(document.querySelectorAll(".cchap"), function(c){ c.setAttribute("data-empty", c.querySelector(".lrow:not([hidden])") ? "0" : "1"); });
+  Array.prototype.forEach.call(document.querySelectorAll(".unit-spread"), function(u){ u.setAttribute("data-empty", (q && !u.querySelector(".lrow:not([hidden])")) ? "1" : "0"); });
+  paintHits();
+}
+inp.addEventListener("input", filter);
+var jumpSel = document.getElementById("jumpSel");
+if(jumpSel){ jumpSel.addEventListener("change", function(){ if(jumpSel.value) location.href = jumpSel.value; }); }
+})();
+
+</script>
+<script src="/aog-jump.js" defer></script>
+</body>
+</html>
