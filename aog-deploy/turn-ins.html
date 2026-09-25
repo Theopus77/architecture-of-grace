@@ -414,7 +414,7 @@ html.a11y-dyslexic body{letter-spacing:.02em;word-spacing:.09em;line-height:1.8}
   <h1>The Inbox</h1>
   <p class="tag">Everything pulled from your Sheet, in one place &mdash; check-ins, what the team saw,
   exit slips, home check-ins, self-reflections, My Voice pages, and every FINISHED worksheet, workbook and practice
-  page. Grouped by student, readable the way they built it, printable, ready to lift into IEP evidence.</p>
+  page. Grouped by student, readable the way they built it, printable, ready to lay as bricks toward a goal (IEP evidence).</p>
   <div class="pullrow no-print">
     <button class="btn-pull" type="button" id="pullBtn">Refresh everything from your Sheet</button>
     <span class="pst" id="pullSt"></span>
@@ -1303,7 +1303,7 @@ html.a11y-dyslexic body{letter-spacing:.02em;word-spacing:.09em;line-height:1.8}
       + "</summary>"
       + '<div class="body">'+body
       + '<div class="acts no-print"><button type="button" data-a="print">Print this one</button>'
-      + '<button type="button" data-a="iep">Copy for IEP evidence</button>'
+      + '<button type="button" data-a="iep" title="Copies this result as IEP evidence">Copy this brick</button>'
       + '<button type="button" class="del" data-a="del">Remove</button>'
       + '<span class="pst" aria-live="polite"></span></div></div>';
     d.querySelector('[data-a="print"]').addEventListener("click",function(){
@@ -1334,7 +1334,7 @@ html.a11y-dyslexic body{letter-spacing:.02em;word-spacing:.09em;line-height:1.8}
       var L=[]; try{ L=it.evidence(it)||[]; }catch(e){ L=[]; }
       L.push("(" + it.kindLab + " via architectureofgrace.org — evidence, adult-verified on paste)");
       var t=L.join("\n"), st=d.querySelector(".acts .pst");
-      function ok(){ st.textContent="Copied — paste it into the IEP evidence note on the dashboard."; }
+      function ok(){ st.textContent="Copied — lay it on the build: paste it into the IEP evidence note on the dashboard."; }
       function no(){ st.textContent="Couldn't copy — select the text above and copy it by hand."; }
       if(navigator.clipboard && navigator.clipboard.writeText){ navigator.clipboard.writeText(t).then(ok,no); }
       else{ try{ var ta=document.createElement("textarea"); ta.value=t; document.body.appendChild(ta); ta.select(); document.execCommand("copy"); document.body.removeChild(ta); ok(); }catch(e){ no(); } }
