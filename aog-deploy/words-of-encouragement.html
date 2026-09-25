@@ -1,0 +1,652 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Words of Encouragement — Architecture of Grace</title>
+<meta name="description" content="A quiet space of comfort and encouragement for anyone carrying grief — for families, students, and teachers. Free, private, bilingual.">
+<!-- ═══ AOG ICONS + LINK PREVIEW · managed block · .30k0 ═══
+     Inserted by _work/aog_head.py — DO NOT hand-edit one page; edit the
+     script and re-run it, or the 100 pages drift apart again. The card
+     URL carries ?v= because Slack, Apple and Google cache an og image BY
+     URL for weeks: change the picture, bump IMG_V, or nothing shows up.
+     ═══════════════════════════════════════════════════════════════ -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Architecture of Grace">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://architectureofgrace.org/og-image.png?v=1">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Architecture of Grace — K–12 academics and the language of grace, built for the students the standard lesson wasn't written for.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Words of Encouragement — Architecture of Grace">
+<meta name="twitter:description" content="A quiet space of comfort and encouragement for anyone carrying grief — for families, students, and teachers. Free, private, bilingual.">
+<meta name="twitter:image" content="https://architectureofgrace.org/og-image.png?v=1">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#0A1E33">
+<meta name="apple-mobile-web-app-title" content="Grace">
+<meta name="application-name" content="Architecture of Grace">
+<!-- ═══ END AOG ICONS + LINK PREVIEW ═══ -->
+<meta property="og:title" content="Words of Encouragement — Architecture of Grace">
+<meta property="og:description" content="A quiet space of comfort for anyone carrying grief. You are not alone.">
+<style>
+  :root{
+    --navy:#1B3A5F; --navy-soft:#46506E; --gold:#B8893A; --gold-light:#E7C77B;
+    --cream:#FBF3DF; --ink:#2C3A47; --green:#2E6B3A; --card:#ffffff; --line:#E7D9B6;
+  }
+  /* Accent themes — same values + keys as the main app (data-accent / aog.accent) */
+  :root[data-accent="teal"]{   --gold:#2BA199; --gold-light:#6FD3C8; }
+  :root[data-accent="violet"]{ --gold:#7C5CD6; --gold-light:#A98BF0; }
+  :root[data-accent="rose"]{   --gold:#D65C7E; --gold-light:#F08BA6; }
+  :root[data-accent="sky"]{    --gold:#2E7CD6; --gold-light:#6FB0F0; }
+  :root[data-accent="green"]{  --gold:#4F9E3A; --gold-light:#86D36F; }
+
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    font-family:Georgia,"Times New Roman",serif; color:var(--ink);
+    background:
+      radial-gradient(at 8% -5%, rgba(184,137,58,.10) 0, transparent 40%),
+      radial-gradient(at 96% 8%, rgba(27,58,95,.08) 0, transparent 42%),
+      var(--cream);
+    background-attachment:fixed; line-height:1.6;
+  }
+
+  /* ===== Shared site toolbar ===== */
+  .aognav{position:sticky; top:0; z-index:60; display:flex; align-items:center; justify-content:space-between; gap:14px; flex-wrap:wrap; row-gap:10px; background:#FDFCF7; border-bottom:1px solid #E4DAC5; padding:18px 28px; box-shadow:0 2px 10px rgba(10,30,51,.06);}
+  .aognav .nbrand{display:flex; align-items:center; gap:12px; text-decoration:none;}
+  .aognav .nbrand .mk{width:36px; height:36px; border-radius:6px; background:#0A1E33; color:#F2C964; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:18px; box-shadow:0 1px 4px rgba(10,30,51,.18);}
+  .aognav .nbrand .bn{font-family:"Fraunces","Cormorant Garamond",Georgia,serif; font-weight:600; font-size:17px; color:#0A1E33; line-height:1.1;}
+  .aognav .nbrand .bs{display:block; font-family:Arial,Helvetica,sans-serif; font-size:10.5px; font-weight:400; color:#8A92A6; letter-spacing:.05em; margin-top:2px;}
+  .aognav .nactions{display:flex; align-items:center; gap:8px; flex-wrap:nowrap;}
+  .aognav .pill{display:inline-flex; align-items:center; gap:6px; font-family:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; font-size:13px; font-weight:800; text-decoration:none; border-radius:999px; white-space:nowrap; cursor:pointer; border:1px solid transparent; line-height:1;}
+  .aognav .pill .pic{flex:none;}
+  .aognav .pill.rn .pic, .aognav .pill.ci .pic{color:#F2C964;}
+  .aognav .pill.rn{background:var(--gold); color:#0A1E33; border-color:#0A1E33; padding:6px 14px; margin-right:14px; flex:none;}
+  .aognav .pill.ci{background:#0A1E33; color:#F4EEE2; border-color:#0A1E33; padding:7px 16px; flex:none;}
+  .aognav .pill.ex{background:#F1DFA8; color:#0A1E33; border-color:var(--gold); font-weight:700; padding:6px 13px;}
+  .aognav .pill:hover{filter:brightness(.97);}
+  .aognav .pill.back{background:transparent; color:#0A1E33; border:none; outline:none; -webkit-appearance:none; appearance:none; font-weight:700; padding:0; margin-right:16px; cursor:pointer; flex:none;}
+  .aognav .pill.back:focus{outline:none;}
+  .aognav .pill.back:focus-visible{outline:2px solid var(--gold); outline-offset:3px; border-radius:6px;}
+  .aognav .pill.back:hover{color:var(--gold);}
+  .aognav .pill.back .arr{color:var(--gold); font-weight:700;}
+  .aognav .exwrap{position:relative; margin-right:14px; flex:none;}
+  .aognav .exmenu{position:absolute; top:calc(100% + 8px); right:0; min-width:232px; background:#FCF8F0; border:1px solid #E4DAC5; border-radius:14px; box-shadow:0 18px 40px -16px rgba(10,30,51,.4); padding:7px; z-index:80;}
+  .aognav .exmenu[hidden]{display:none;}
+  .aognav .exmenu a{display:flex; align-items:center; gap:11px; padding:10px 12px; border-radius:10px; text-decoration:none; color:#0A1E33; font-family:Arial,Helvetica,sans-serif; font-size:14.5px; font-weight:600; white-space:nowrap;}
+  .aognav .exmenu a svg{width:18px; height:18px; color:var(--gold); flex:none;}
+  .aognav .exmenu a:hover{background:rgba(184,137,58,.14);}
+  .aognav .exchev{transition:transform .15s ease;}
+  .aognav .pill.ex[aria-expanded="true"] .exchev{transform:rotate(180deg);}
+  .aognav .nutil{display:flex; align-items:center; gap:8px; position:relative;}
+  .aognav .uic{width:34px; height:34px; border:1px solid #E4DAC5; border-radius:9px; display:inline-grid; place-items:center; color:#46506E; text-decoration:none; flex:none; background:#fff; cursor:pointer;}
+  .aognav .uic:hover{background:rgba(184,137,58,.12);}
+  .aognav .uic.active{border-color:var(--gold); color:var(--gold);}
+  .aognav .uic svg{width:18px; height:18px;}
+  .aognav .lang{flex:none; display:inline-flex; background:#F4EEE2; border:1px solid #E4DAC5; border-radius:999px; padding:3px;}
+  .aognav .lang .on, .aognav .lang a{background:transparent; padding:5px 12px; border-radius:999px; font-family:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; font-size:12px; font-weight:600; text-decoration:none; color:#46506E; cursor:pointer;}
+  .aognav .lang .on{background:#0A1E33; color:#fff; box-shadow:0 1px 2px rgba(10,30,51,.18);}
+  @media (max-width:640px){ .aognav{ flex-wrap:wrap; gap:8px; justify-content:center; } .aognav .nbrand{ width:100%; justify-content:center; } .aognav .nactions{ flex-wrap:wrap; justify-content:center; } }
+  @media print{ .aognav{display:none !important;} }
+
+  /* ===== Toolbar popover menus (Accessibility / Personalize) ===== */
+  .aog-pop{position:absolute; top:calc(100% + 10px); right:0; min-width:300px; max-width:330px; background:#FCF8F0; border:1px solid #E4DAC5; border-radius:16px; box-shadow:0 22px 50px -18px rgba(10,30,51,.45); padding:14px 16px; z-index:300; font-family:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;}
+  .aog-pop[hidden]{display:none;}
+  .aog-pop h4{margin:0 0 2px; font-size:12px; font-weight:800; letter-spacing:.14em; text-transform:uppercase; color:#8A92A6;}
+  .aog-pop .sub{font-size:12px; color:#8A92A6; margin:0 0 4px;}
+  .aog-row{display:flex; align-items:center; justify-content:space-between; gap:18px; width:100%; background:none; border:0; border-top:1px solid #EFE6D2; padding:12px 2px; cursor:pointer; text-align:left; font-family:inherit;}
+  .aog-row.first{border-top:0;}
+  .aog-row .t b{display:block; font-size:15px; font-weight:700; color:#0A1E33;}
+  .aog-row .t span{display:block; font-size:12.5px; color:#46506E; margin-top:2px;}
+  .aog-sw{flex:none; width:46px; height:27px; border-radius:999px; background:#D9CDB4; position:relative; transition:background .18s;}
+  .aog-sw::after{content:""; position:absolute; top:3px; left:3px; width:21px; height:21px; border-radius:50%; background:#fff; box-shadow:0 1px 3px rgba(0,0,0,.28); transition:transform .18s;}
+  .aog-row[aria-checked="true"] .aog-sw{background:var(--gold);}
+  .aog-row[aria-checked="true"] .aog-sw::after{transform:translateX(19px);}
+  .aog-lab{font-size:13.5px; font-weight:700; color:#0A1E33; margin:12px 0 4px; border-top:1px solid #EFE6D2; padding-top:12px;}
+  .aog-lab.first{border-top:0; padding-top:4px;}
+  .aog-seg{display:flex; gap:6px; margin-top:4px;}
+  .aog-seg button{flex:1; padding:9px 0; border:1.5px solid #E4DAC5; background:#fff; border-radius:10px; font-family:inherit; font-size:13px; font-weight:700; color:#46506E; cursor:pointer;}
+  .aog-seg button[aria-pressed="true"]{background:#0A1E33; border-color:#0A1E33; color:#fff;}
+  .aog-swatches{display:flex; gap:10px; margin-top:8px;}
+  .aog-swatch{width:30px; height:30px; border-radius:50%; border:2px solid transparent; cursor:pointer; padding:0; outline-offset:2px; position:relative;}
+  .aog-swatch[aria-pressed="true"]{border-color:#0A1E33;}
+  .aog-swatch[aria-pressed="true"]::after{content:"✓"; position:absolute; inset:0; display:grid; place-items:center; color:#fff; font-size:14px; font-weight:800; text-shadow:0 1px 2px rgba(0,0,0,.4);}
+  .aog-voicewrap{display:flex; align-items:center; gap:8px; margin-top:6px;}
+  .aog-voicewrap select{flex:1; font-family:inherit; font-size:12.5px; padding:7px 8px; border:1.5px solid #E4DAC5; border-radius:9px; background:#fff; color:#0A1E33;}
+  .aog-voicewrap button{flex:none; width:34px; height:34px; border:1.5px solid #E4DAC5; border-radius:9px; background:#fff; cursor:pointer; font-size:15px;}
+
+  /* accessibility states */
+  html.aog-contrast body{color:#000;}
+  html.aog-contrast a:not(.pill):not(.uic):not(.nbrand){text-decoration:underline; text-underline-offset:2px;}
+  html.aog-contrast .encore,html.aog-contrast .truth,html.aog-contrast .who .card2,html.aog-contrast .note,html.aog-contrast .res a,html.aog-contrast .crisis{border-width:2px;}
+  html.aog-dys body,html.aog-dys h1,html.aog-dys h2,html.aog-dys h3,html.aog-dys p,html.aog-dys .encore p,html.aog-dys li,html.aog-dys .pill{font-family:"OpenDyslexic","Comic Sans MS","Trebuchet MS",Verdana,sans-serif !important;}
+  html.aog-dys body{letter-spacing:.02em; word-spacing:.09em; line-height:1.9;}
+  html.aog-text-l body{font-size:118%;}
+  html.aog-text-s body{font-size:90%;}
+
+  /* ===== Page content ===== */
+  .wrap{max-width:760px; margin:0 auto; padding:30px 22px 64px;}
+  header.hero{text-align:center; margin-bottom:8px;}
+  h1{font-size:38px; color:var(--navy); margin:6px 0 6px; letter-spacing:-.5px; line-height:1.12;}
+  .tagline{font-style:italic; font-size:17px; color:var(--navy-soft); margin:0 auto; max-width:34em;}
+  .rule{height:2px; background:var(--gold); border:0; margin:26px auto; width:64px; border-radius:2px;}
+  .intro{font-size:18px; color:var(--ink); text-align:center; max-width:36em; margin:0 auto 8px;}
+  .encore{background:var(--card); border:1.5px solid var(--line); border-left:6px solid var(--gold);
+    border-radius:16px; padding:34px 30px; margin:34px 0 18px; box-shadow:0 10px 30px rgba(27,58,95,.06);
+    text-align:center; min-height:150px; display:flex; flex-direction:column; justify-content:center; cursor:pointer;}
+  .encore p{font-size:24px; line-height:1.45; color:var(--navy); margin:0; font-style:italic; transition:opacity .5s ease;}
+  .encore .from{font-family:Arial,Helvetica,sans-serif; font-style:normal; font-size:11px; letter-spacing:.12em;
+    text-transform:uppercase; color:var(--gold); margin-top:16px;}
+  .speakhint{font-family:Arial,Helvetica,sans-serif; font-style:normal; font-size:11px; color:#9aa3ae; margin-top:6px; display:none;}
+  body.aog-read .speakhint{display:block;}
+  .againwrap{text-align:center; margin-bottom:46px;}
+  .again{font-family:Arial,Helvetica,sans-serif; font-size:14px; font-weight:700; letter-spacing:.02em;
+    color:#fff; background:var(--navy); border:0; border-radius:999px; padding:12px 26px; cursor:pointer;
+    box-shadow:0 4px 14px rgba(27,58,95,.18); transition:transform .15s ease, background .2s ease;}
+  .again:hover{background:#16314f; transform:translateY(-1px);}
+  .again:focus-visible{outline:3px solid var(--gold); outline-offset:2px;}
+  section{margin:42px 0;}
+  h2{font-size:25px; color:var(--navy); margin:0 0 6px; letter-spacing:-.2px;}
+  .lead{font-size:16px; color:var(--navy-soft); margin:0 0 18px;}
+  .truths{display:grid; gap:14px;}
+  .truth{background:#fff; border:1.5px solid var(--line); border-radius:12px; padding:16px 18px;}
+  .truth b{color:var(--navy); display:block; font-size:17px; margin-bottom:3px;}
+  .truth span{font-size:15px; color:var(--navy-soft);}
+  .who{display:grid; grid-template-columns:1fr 1fr 1fr; gap:14px;}
+  .who .card2{background:#fff; border:1.5px solid var(--line); border-top:5px solid var(--green); border-radius:12px; padding:15px 16px;}
+  .who h3{font-family:Arial,Helvetica,sans-serif; font-size:11px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--green); margin:0 0 7px;}
+  .who p{font-size:14.5px; line-height:1.5; color:var(--ink); margin:0;}
+  /* picture answers (emoji cues) — hidden unless enabled */
+  .pic-emoji{display:none; margin-right:.4em; font-style:normal;}
+  body.aog-pics .pic-emoji{display:inline;}
+  .note{background:#fff; border:1.5px solid var(--line); border-radius:14px; padding:22px 22px 18px;}
+  .note p.sub{font-size:14px; color:var(--navy-soft); margin:0 0 12px;}
+  .note textarea{width:100%; min-height:120px; resize:vertical; font-family:Georgia,serif; font-size:16px; color:var(--ink);
+    border:1.5px solid var(--line); border-radius:10px; padding:13px 14px; background:#FFFDF6;}
+  .note textarea:focus-visible{outline:3px solid var(--gold); outline-offset:1px; border-color:var(--gold);}
+  .noterow{display:flex; align-items:center; gap:12px; margin-top:12px; flex-wrap:wrap;}
+  .savebtn{font-family:Arial,Helvetica,sans-serif; font-size:13px; font-weight:700; color:#fff; background:var(--green);
+    border:0; border-radius:999px; padding:10px 20px; cursor:pointer;}
+  .savebtn:focus-visible{outline:3px solid var(--gold); outline-offset:2px;}
+  .privacy{font-family:Arial,Helvetica,sans-serif; font-size:12px; color:#7d8893; display:flex; align-items:center; gap:6px;}
+  .saved{font-family:Arial,Helvetica,sans-serif; font-size:12.5px; color:var(--green); font-weight:700; opacity:0; transition:opacity .3s;}
+  .saved.show{opacity:1;}
+  .res{display:grid; gap:10px;}
+  .res a{display:block; text-decoration:none; background:#fff; border:1.5px solid var(--line); border-left:5px solid var(--navy);
+    border-radius:11px; padding:14px 16px; color:var(--ink); transition:border-color .2s, box-shadow .2s;}
+  .res a:hover{border-left-color:var(--gold); box-shadow:0 5px 16px rgba(27,58,95,.08);}
+  .res a:focus-visible{outline:3px solid var(--gold); outline-offset:2px;}
+  .res .rname{font-size:17px; font-weight:700; color:var(--navy);}
+  .res .rdesc{font-size:14px; color:var(--navy-soft); margin-top:2px;}
+  .crisis{background:#fff6f4; border:1.5px solid #e8c9bf; border-left:5px solid #b4452f; border-radius:12px; padding:16px 18px; margin-top:14px;}
+  .crisis b{color:#9a3a27;}
+  .crisis span{color:#6e4a40; font-size:15px;}
+  footer{margin-top:50px; padding-top:22px; border-top:1px solid var(--line); text-align:center;}
+  footer .disc{font-size:13.5px; color:var(--navy-soft); max-width:40em; margin:0 auto 12px; line-height:1.55;}
+  footer .sig{font-family:Arial,Helvetica,sans-serif; font-size:12px; color:#8a96a3;}
+  footer .sig a{color:var(--navy); text-decoration:none; font-weight:700;}
+  @media (max-width:560px){ h1{font-size:30px;} .encore p{font-size:20px;} .who{grid-template-columns:1fr;} }
+  @media (prefers-reduced-motion:reduce){ *{transition:none !important;} }
+
+  /* ===== Dark mode ===== */
+  html.aog-dark body{background:#0E1A26 !important; color:#E6ECF3;}
+  html.aog-dark .aognav{background:#101A24 !important; border-bottom-color:#2B3B4B !important;}
+  html.aog-dark .aognav .nbrand .bn{color:#F1F5FA;}
+  html.aog-dark .aognav .nbrand .bs{color:#9FB0C2;}
+  html.aog-dark .aognav .pill.back{color:#F1F5FA;}
+  html.aog-dark .aognav .pill.ci{background:#1C3350; border-color:#1C3350; color:#F1F5FA;}
+  html.aog-dark .aognav .pill.ex{background:#2A2415; color:#F1E9D2;}
+  html.aog-dark .aognav .uic{background:#16242F; border-color:#34465A; color:#C3CEDC;}
+  html.aog-dark .aognav .exmenu{background:#16242F; border-color:#34465A;}
+  html.aog-dark .aognav .exmenu a{color:#E6ECF3;}
+  html.aog-dark .aognav .exmenu a:hover{background:rgba(226,182,90,.16);}
+  html.aog-dark .aognav .lang{background:#16242F; border-color:#34465A;}
+  html.aog-dark .aognav .lang a{color:#C3CEDC;}
+  html.aog-dark .aog-pop{background:#16242F; border-color:#34465A;}
+  html.aog-dark .aog-pop h4,html.aog-dark .aog-pop .sub{color:#9FB0C2;}
+  html.aog-dark .aog-row{border-color:#2C3E4F;}
+  html.aog-dark .aog-row .t b,html.aog-dark .aog-lab{color:#F1F5FA;}
+  html.aog-dark .aog-row .t span{color:#A9B6C6;}
+  html.aog-dark .aog-seg button{background:#1B2A38; border-color:#34465A; color:#C3CEDC;}
+  html.aog-dark .aog-seg button[aria-pressed="true"]{background:var(--gold); border-color:var(--gold); color:#0E1A26;}
+  html.aog-dark .aog-voicewrap select,html.aog-dark .aog-voicewrap button{background:#1B2A38; border-color:#34465A; color:#E6ECF3;}
+  html.aog-dark h1, html.aog-dark h2, html.aog-dark .encore p, html.aog-dark .res .rname{color:#C3D6EF;}
+  html.aog-dark .tagline, html.aog-dark .intro, html.aog-dark .lead, html.aog-dark .who p,
+  html.aog-dark .res .rdesc, html.aog-dark footer .disc, html.aog-dark .note p.sub{color:#A9B6C6;}
+  html.aog-dark .encore, html.aog-dark .truth, html.aog-dark .who .card2,
+  html.aog-dark .note, html.aog-dark .res a{background:#16242F; border-color:#2C3E4F;}
+  html.aog-dark .res a{border-left-color:#C3D6EF;}
+  html.aog-dark .truth b{color:#F1F5FA;}
+  html.aog-dark .truth span{color:#A9B6C6;}
+  html.aog-dark .note textarea{background:#13202B; color:#E6ECF3; border-color:#34465A;}
+  html.aog-dark .crisis{background:#2A1A16; border-color:#6E4A40;}
+  html.aog-dark .crisis b{color:#F3B0A2;}
+  html.aog-dark .crisis span{color:#E8C9BF;}
+  html.aog-dark footer{border-top-color:#2C3E4F;}
+
+/* ══ AOG-PRINT-SAFE-V1 (2026-09-20) ═══════════════════════════════════════════
+   Jimmy, printing a novel study from his phone: "another pdf that gets parts of
+   the material cut off." These are the rules that keep paper honest on every
+   engine — a table row, a list item, a figure and a picture stay whole; a head
+   keeps the lines under it; no paragraph strands one line at a page edge; and a
+   long table repeats its head at the top of each page. Printed pages only. */
+@media print{
+  table{break-inside:auto; page-break-inside:auto}
+  thead{display:table-header-group}
+  tfoot{display:table-footer-group}
+  tr{break-inside:avoid; page-break-inside:avoid}
+  li,figure,img,svg{break-inside:avoid; page-break-inside:avoid}
+  h1,h2,h3,h4,h5{break-after:avoid; page-break-after:avoid}
+  p{orphans:3; widows:3}
+}
+</style>
+</head>
+<body>
+<script src="/aog-topbar.js"></script>
+
+
+<nav class="aognav" aria-label="Site navigation">
+  <a class="nbrand" href="index.html"><span class="mk">A</span><span><span class="bn">Architecture of Grace</span><span class="bs">A guide for growth, not a diagnosis</span></span></a>
+  <div class="nactions">
+    <button class="pill back" type="button" onclick="aognavBack()"><span class="arr">&#8592;</span> <span data-en="Back" data-es="Atrás">Back</span></button>
+    <a class="pill rn" href="index.html#right-now"><svg class="pic" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-4.35-9-8a5 5 0 0 1 9-3 5 5 0 0 1 9 3c-2 3.65-9 8-9 8z"/></svg> <span data-en="Right Now" data-es="Ahora mismo">Right Now</span></a>
+    <a class="pill ci" href="index.html#checkin"><svg class="pic" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg> <span data-en="Check-In" data-es="Chequeo">Check-In</span></a>
+    <div class="exwrap">
+      <button class="pill ex" id="aognavEx" type="button" aria-haspopup="true" aria-expanded="false" onclick="aognavToggle(event)"><svg class="pic" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18"/></svg> <span data-en="Explore" data-es="Explorar">Explore</span> <svg class="exchev" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button>
+      <div class="exmenu" id="aognavMenu" role="menu" hidden>
+        <a role="menuitem" href="index.html#start-here"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/><circle cx="4" cy="12" r="1.4" fill="currentColor" stroke="none"/></svg> <span data-en="Start Here" data-es="Empieza aquí">Start Here</span></a>
+        <a role="menuitem" href="index.html#library"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg> <span data-en="Library" data-es="Biblioteca">Library</span></a>
+        <a role="menuitem" href="index.html#tools"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2a5 5 0 0 1 5 5c0 2.76-2.24 5-5 5S7 9.76 7 7a5 5 0 0 1 5-5z"/><path d="M3 21v-1a7 7 0 0 1 7-7h4a7 7 0 0 1 7 7v1"/></svg> <span data-en="Calm &amp; Regulation Tools" data-es="Herramientas de calma y regulación">Calm &amp; Regulation Tools</span></a>
+        <a role="menuitem" href="index.html#grace-ecosystem"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="2.5"/><circle cx="5" cy="6" r="2"/><circle cx="19" cy="6" r="2"/><circle cx="5" cy="18" r="2"/><circle cx="19" cy="18" r="2"/><path d="M10.2 10.6 6.4 7.4M13.8 10.6l3.8-3.2M10.2 13.4 6.4 16.6M13.8 13.4l3.8 3.2"/></svg> <span data-en="Ecosystem" data-es="Ecosistema">Ecosystem</span></a>
+        <a role="menuitem" href="index.html#framework"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21h18"/><path d="M4 21V9l8-5 8 5v12"/><path d="M9 21v-6h6v6"/></svg> <span data-en="Framework" data-es="Marco">Framework</span></a>
+        <a role="menuitem" href="index.html#dashboard"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 13h8V3H3zM13 21h8V3h-8zM3 21h8v-6H3z"/></svg> <span data-en="Dashboard" data-es="Panel">Dashboard</span></a>
+      </div>
+    </div>
+    <div class="nutil">
+      <button class="uic" id="aogA11yBtn" type="button" title="Accessibility options" aria-label="Accessibility options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="4" r="1.6"/><path d="M5 8h14M9 8l1 11M15 8l-1 11M12 8v5"/></svg></button>
+      <button class="uic" id="aogPzBtn" type="button" title="Personalize" aria-label="Personalize"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="4" y1="7" x2="20" y2="7"/><circle cx="9" cy="7" r="2.3"/><line x1="4" y1="17" x2="20" y2="17"/><circle cx="15" cy="17" r="2.3"/></svg></button>
+      <button class="uic" id="aogDarkBtn" type="button" title="Display &amp; dark mode" aria-label="Display options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg></button>
+      <span class="lang"><span class="on" id="langEn">EN</span><a href="#" id="langEs" title="Español">ES</a></span>
+    </div>
+  </div>
+</nav>
+<script>
+  function aognavBack(){ if(window.history.length>1){window.history.back();} else {window.location.href='index.html'; } }
+  function aognavToggle(e){ if(e)e.preventDefault(); var b=document.getElementById('aognavEx'),m=document.getElementById('aognavMenu'); if(!b||!m)return; if(m.hasAttribute('hidden')){ m.removeAttribute('hidden'); b.setAttribute('aria-expanded','true'); } else { m.setAttribute('hidden',''); b.setAttribute('aria-expanded','false'); } }
+  document.addEventListener('click', function(ev){ var m=document.getElementById('aognavMenu'); if(!m||m.hasAttribute('hidden'))return; if(ev.target.closest && (ev.target.closest('#aognavMenu')||ev.target.closest('#aognavEx')))return; m.setAttribute('hidden',''); var b=document.getElementById('aognavEx'); if(b)b.setAttribute('aria-expanded','false'); });
+</script>
+
+<div class="wrap">
+
+  <header class="hero">
+    <h1 data-en="Words of Encouragement" data-es="Palabras de aliento">Words of Encouragement</h1>
+    <p class="tagline" data-en="A quiet place to rest when your heart is heavy. However you came here, you are welcome — and you are not alone."
+       data-es="Un lugar tranquilo para descansar cuando el corazón pesa. Sea como sea que llegaste aquí, eres bienvenido — y no estás solo.">A quiet place to rest when your heart is heavy. However you came here, you are welcome — and you are not alone.</p>
+  </header>
+
+  <hr class="rule">
+
+  <p class="intro" data-en="When we lose someone — especially someone young — there are no perfect words. But sometimes a few gentle ones can sit with us for a moment. Here are a few. Take what helps; leave the rest."
+     data-es="Cuando perdemos a alguien — especialmente a alguien joven — no hay palabras perfectas. Pero a veces unas pocas palabras suaves pueden acompañarnos un momento. Aquí hay algunas. Toma lo que te ayude; deja el resto.">When we lose someone — especially someone young — there are no perfect words. But sometimes a few gentle ones can sit with us for a moment. Here are a few. Take what helps; leave the rest.</p>
+
+  <div class="encore" id="encore" aria-live="polite" title="Click to hear" onclick="speakCurrent()">
+    <p id="encore-text">…</p>
+    <div class="from"><span class="pic-emoji">💛</span><span data-en="A word for today" data-es="Una palabra para hoy">A word for today</span></div>
+    <div class="speakhint" data-en="🔊 Click the card to hear it" data-es="🔊 Haz clic en la tarjeta para escucharla">🔊 Click the card to hear it</div>
+  </div>
+  <div class="againwrap">
+    <button class="again" onclick="nextMessage()" data-en="Show me another" data-es="Muéstrame otra">Show me another</button>
+  </div>
+
+  <section>
+    <h2 data-en="A few things that are true about grief" data-es="Algunas verdades sobre el duelo">A few things that are true about grief</h2>
+    <div class="truths" id="truths"></div>
+  </section>
+
+  <section>
+    <h2 data-en="If you're holding someone through this" data-es="Si estás acompañando a alguien en esto">If you're holding someone through this</h2>
+    <p class="lead" data-en="Grief looks different at every age. A gentle starting point:" data-es="El duelo se ve diferente en cada edad. Un punto de partida suave:">Grief looks different at every age. A gentle starting point:</p>
+    <div class="who">
+      <div class="card2">
+        <h3><span class="pic-emoji">👪</span><span data-en="For parents" data-es="Para padres">For parents</span></h3>
+        <p data-en="Use plain, honest words — &ldquo;died,&rdquo; not &ldquo;lost&rdquo; or &ldquo;asleep.&rdquo; Reassure them it wasn&rsquo;t their fault. Keep routines steady, and let them see you grieve too."
+           data-es="Usa palabras claras y honestas — &ldquo;murió,&rdquo; no &ldquo;se perdió&rdquo; o &ldquo;está dormido.&rdquo; Recuérdales que no fue su culpa. Mantén las rutinas, y deja que te vean en duelo a ti también.">Use plain, honest words — &ldquo;died,&rdquo; not &ldquo;lost&rdquo; or &ldquo;asleep.&rdquo; Reassure them it wasn&rsquo;t their fault. Keep routines steady, and let them see you grieve too.</p>
+      </div>
+      <div class="card2">
+        <h3><span class="pic-emoji">🏫</span><span data-en="For teachers" data-es="Para maestros">For teachers</span></h3>
+        <p data-en="You don&rsquo;t need the perfect lesson. Offer a calm, predictable room and a quiet place to step away. Don&rsquo;t force anyone to talk; just let them know you&rsquo;re there."
+           data-es="No necesitas la lección perfecta. Ofrece un salón tranquilo y predecible y un lugar para apartarse. No obligues a nadie a hablar; solo que sepan que estás ahí.">You don&rsquo;t need the perfect lesson. Offer a calm, predictable room and a quiet place to step away. Don&rsquo;t force anyone to talk; just let them know you&rsquo;re there.</p>
+      </div>
+      <div class="card2">
+        <h3><span class="pic-emoji">🌱</span><span data-en="For young people" data-es="Para jóvenes">For young people</span></h3>
+        <p data-en="Whatever you&rsquo;re feeling is okay — sad, angry, numb, or even fine for a while. There&rsquo;s no wrong way to miss someone. Reach for one person you trust."
+           data-es="Lo que sea que sientas está bien — tristeza, enojo, vacío, o incluso estar bien por un rato. No hay una forma incorrecta de extrañar a alguien. Busca a una persona en quien confíes.">Whatever you&rsquo;re feeling is okay — sad, angry, numb, or even fine for a while. There&rsquo;s no wrong way to miss someone. Reach for one person you trust.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2 data-en="Write something of your own" data-es="Escribe algo tuyo">Write something of your own</h2>
+    <div class="note">
+      <p class="sub" data-en="If it helps, write a few words — to the person you&rsquo;re missing, or to yourself. This stays only on your device. Nothing is sent anywhere, and no one else can see it."
+         data-es="Si te ayuda, escribe unas palabras — a la persona que extrañas, o a ti mismo. Esto se queda solo en tu dispositivo. Nada se envía a ningún lado, y nadie más puede verlo.">If it helps, write a few words — to the person you&rsquo;re missing, or to yourself. This stays only on your device. Nothing is sent anywhere, and no one else can see it.</p>
+      <textarea id="privnote" aria-label="Your private words"></textarea>
+      <div class="noterow">
+        <button class="savebtn" onclick="saveNote()" data-en="Keep on this device" data-es="Guardar en este dispositivo">Keep on this device</button>
+        <span class="saved" id="savedmsg" data-en="Saved on your device" data-es="Guardado en tu dispositivo">Saved on your device</span>
+        <span class="privacy" aria-hidden="true">🔒 <span data-en="Private — never leaves this device" data-es="Privado — nunca sale de este dispositivo">Private — never leaves this device</span></span>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2 data-en="Where to find more support" data-es="Dónde encontrar más apoyo">Where to find more support</h2>
+    <p class="lead" data-en="Free, trusted places that specialize in helping grieving children, families, and schools." data-es="Lugares gratuitos y confiables que se especializan en ayudar a niños, familias y escuelas en duelo.">Free, trusted places that specialize in helping grieving children, families, and schools.</p>
+    <div class="res">
+      <a href="https://grievingstudents.org" target="_blank" rel="noopener">
+        <div class="rname">Coalition to Support Grieving Students</div>
+        <div class="rdesc" data-en="Free, practical resources made for schools and teachers." data-es="Recursos gratuitos y prácticos hechos para escuelas y maestros.">Free, practical resources made for schools and teachers.</div>
+      </a>
+      <a href="https://www.dougy.org" target="_blank" rel="noopener">
+        <div class="rname">The Dougy Center</div>
+        <div class="rdesc" data-en="The national center for grieving children &amp; families, with guides for parents and educators." data-es="El centro nacional para niños y familias en duelo, con guías para padres y educadores.">The national center for grieving children & families, with guides for parents and educators.</div>
+      </a>
+      <a href="https://childrengrieve.org" target="_blank" rel="noopener">
+        <div class="rname">National Alliance for Children's Grief</div>
+        <div class="rdesc" data-en="Find local children&rsquo;s grief support near you." data-es="Encuentra apoyo local para el duelo infantil cerca de ti.">Find local children&rsquo;s grief support near you.</div>
+      </a>
+      <a href="https://sesamestreetincommunities.org/topics/grief/" target="_blank" rel="noopener">
+        <div class="rname">Sesame Street in Communities — Grief</div>
+        <div class="rdesc" data-en="Gentle, bilingual resources for the youngest children." data-es="Recursos suaves y bilingües para los niños más pequeños.">Gentle, bilingual resources for the youngest children.</div>
+      </a>
+    </div>
+    <div class="crisis">
+      <b data-en="If you or a child is in crisis right now:" data-es="Si tú o un niño están en crisis ahora mismo:">If you or a child is in crisis right now:</b>
+      <span data-en=" Call or text 988 (the Suicide &amp; Crisis Lifeline) any time, day or night. You don&rsquo;t have to carry it alone."
+            data-es=" Llama o envía un mensaje al 988 (Línea de Crisis y Suicidio) a cualquier hora, de día o de noche. No tienes que cargarlo solo."> Call or text 988 (the Suicide &amp; Crisis Lifeline) any time, day or night. You don&rsquo;t have to carry it alone.</span>
+    </div>
+  </section>
+
+  <footer>
+    <p class="disc" data-en="This page is a place of comfort, not clinical or medical care. Architecture of Grace is a guide for growth, not a diagnosis. If grief is making it hard for a child or adult to get through their days, please reach out to one of the resources above or a trusted professional."
+       data-es="Esta página es un lugar de consuelo, no atención clínica o médica. Architecture of Grace es una guía para crecer, no un diagnóstico. Si el duelo dificulta que un niño o adulto sobrelleve sus días, por favor acude a uno de los recursos de arriba o a un profesional de confianza.">This page is a place of comfort, not clinical or medical care. Architecture of Grace is a guide for growth, not a diagnosis. If grief is making it hard for a child or adult to get through their days, please reach out to one of the resources above or a trusted professional.</p>
+    <p class="sig"><a href="https://architectureofgrace.org">architectureofgrace.org</a> &nbsp;·&nbsp; <span data-en="Made with care." data-es="Hecho con cariño.">Made with care.</span></p>
+  </footer>
+
+</div>
+
+<script>
+(function(){
+  "use strict";
+  var H = document.documentElement, B = document.body;
+  function lg(k,d){ try{ var v=localStorage.getItem(k); return v===null?d:v; }catch(e){ return d; } }
+  function ls(k,v){ try{ localStorage.setItem(k,v); }catch(e){} }
+
+  /* ---------------- content data ---------------- */
+  var MESSAGES = {
+    adult: [
+      {en:"Grief is love with nowhere to go. The ache is a measure of how much they mattered.", es:"El duelo es amor que no tiene a dónde ir. El dolor es la medida de cuánto importaron."},
+      {en:"You don't have to be strong right now. You just have to be here.", es:"No tienes que ser fuerte ahora mismo. Solo tienes que estar aquí."},
+      {en:"There is no timeline for this. Take all the time you need.", es:"No hay un calendario para esto. Tómate todo el tiempo que necesites."},
+      {en:"It's okay to laugh. It's okay to cry. Both can be true in the same hour.", es:"Está bien reír. Está bien llorar. Las dos cosas pueden ser ciertas en la misma hora."},
+      {en:"You cannot do grief wrong. However it comes, that is your way through it.", es:"No se puede vivir el duelo de forma incorrecta. Como llegue, esa es tu manera de atravesarlo."},
+      {en:"A life is not measured by its length, but by the love it carried.", es:"Una vida no se mide por su largo, sino por el amor que llevó."},
+      {en:"Some days, getting through the day is enough. Let that be enough.", es:"Algunos días, sobrellevar el día es suficiente. Deja que eso sea suficiente."},
+      {en:"You are allowed to set the heaviness down for a moment, and pick it back up later.", es:"Tienes permiso de soltar el peso por un momento, y volver a cargarlo después."},
+      {en:"Reach for one person today. You were never meant to carry this alone.", es:"Busca a una persona hoy. Nunca debiste cargar esto solo."},
+      {en:"The people we love become a part of us. They go where we go.", es:"Las personas que amamos se vuelven parte de nosotros. Van a donde vamos."},
+      {en:"Be gentle with yourself. You are carrying something heavy with a tender heart.", es:"Sé amable contigo mismo. Estás cargando algo pesado con un corazón tierno."},
+      {en:"Healing isn't forgetting. It's learning to carry them with you.", es:"Sanar no es olvidar. Es aprender a llevarlos contigo."}
+    ],
+    teen: [
+      {en:"You don't need the right words. You just have to feel what you feel.", es:"No necesitas las palabras correctas. Solo siente lo que sientes."},
+      {en:"Grief is weird and uneven. That doesn't mean you're doing it wrong.", es:"El duelo es raro y desparejo. Eso no significa que lo estés haciendo mal."},
+      {en:"It's okay if you're not okay. You don't have to perform being fine.", es:"Está bien no estar bien. No tienes que fingir que estás bien."},
+      {en:"Laughing doesn't betray them. Neither does living.", es:"Reír no los traiciona. Vivir tampoco."},
+      {en:"Text one person. You don't have to carry this by yourself.", es:"Escríbele a una persona. No tienes que cargar esto tú solo."},
+      {en:"However you're grieving is allowed — loud, quiet, angry, or numb.", es:"Como sea que estés en duelo está permitido — fuerte, callado, enojado o vacío."},
+      {en:"It wasn't your fault. Replaying it won't make that less true.", es:"No fue tu culpa. Repetirlo en tu mente no lo hace menos cierto."},
+      {en:"Some days you just get through. That counts.", es:"Algunos días solo sobrevives. Eso cuenta."},
+      {en:"Your feelings make sense, even the ones that surprise you.", es:"Tus sentimientos tienen sentido, incluso los que te sorprenden."},
+      {en:"You're allowed to still have good days. It's not forgetting.", es:"Tienes permiso de tener días buenos. No es olvidar."}
+    ],
+    child: [
+      {en:"Whatever you feel today is okay.", es:"Lo que sientas hoy está bien."},
+      {en:"It's okay to miss them. Missing means you love them.", es:"Está bien extrañarlos. Extrañar significa que los quieres."},
+      {en:"It was not your fault. Not even a little.", es:"No fue tu culpa. Ni un poquito."},
+      {en:"You can cry. You can play. Both are okay.", es:"Puedes llorar. Puedes jugar. Las dos cosas están bien."},
+      {en:"A grown-up who loves you is here to help.", es:"Un adulto que te quiere está aquí para ayudarte."},
+      {en:"Your feelings are not too big to share.", es:"Tus sentimientos no son demasiado grandes para compartir."},
+      {en:"Take a slow breath. You are safe right now.", es:"Respira despacio. Estás a salvo ahora."},
+      {en:"Love doesn't go away, even when someone does.", es:"El amor no se va, aunque alguien se vaya."},
+      {en:"You are not alone. People love you.", es:"No estás solo. Hay personas que te quieren."},
+      {en:"It's okay to ask for a hug.", es:"Está bien pedir un abrazo."}
+    ]
+  };
+  var TRUTHS = [
+    {emo:"🌊", en:["Grief comes in waves.","It can be calm one moment and crash over you the next. That's normal — you're not going backward."],
+     es:["El duelo llega en olas.","Puede estar en calma un momento y arrasarte al siguiente. Es normal — no estás retrocediendo."]},
+    {emo:"💛", en:["It was not your fault.","Nothing you did or didn't do caused this. Guilt is part of grief, but it isn't the truth."],
+     es:["No fue tu culpa.","Nada que hiciste o dejaste de hacer causó esto. La culpa es parte del duelo, pero no es la verdad."]},
+    {emo:"🤍", en:["There's no right way to grieve.","Crying, anger, numbness, even laughter — all of it belongs. Yours doesn't have to look like anyone else's."],
+     es:["No hay una forma correcta de hacer el duelo.","Llanto, enojo, vacío, incluso risa — todo cabe. El tuyo no tiene que verse como el de nadie más."]},
+    {emo:"🤝", en:["You don't have to do it alone.","Letting one person in — a friend, a counselor, a helpline — doesn't make the love any less. It just shares the weight."],
+     es:["No tienes que hacerlo solo.","Dejar entrar a una persona — un amigo, un consejero, una línea de ayuda — no hace el amor menor. Solo comparte el peso."]}
+  ];
+
+  /* ---------------- state ---------------- */
+  var lang = (lg("aogLang","en")==="es")?"es":"en";
+  var AUDS = ["child","teen","adult"];
+  function getAud(){ var v=lg("aog.grace.audience",""); if(AUDS.indexOf(v)>=0) return v; var t=lg("aog.tank.audience",""); if(AUDS.indexOf(t)>=0) return t; return "adult"; }
+  var aud = getAud();
+  var order=[], idx=0;
+  function shuffle(n){ var a=[],i; for(i=0;i<n;i++)a.push(i); for(i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1)),t=a[i];a[i]=a[j];a[j]=t;} return a; }
+  function reorder(){ order=shuffle(MESSAGES[aud].length); idx=0; }
+
+  /* ---------------- rendering ---------------- */
+  function curMsg(){ return MESSAGES[aud][order[idx]][lang]; }
+  function renderMessage(speak){
+    var el=document.getElementById("encore-text");
+    el.style.opacity=0;
+    setTimeout(function(){ el.textContent="“"+curMsg()+"”"; el.style.opacity=1; if(speak&&readOn) speak1(curMsg()); }, 180);
+  }
+  function nextMessage(){ idx=(idx+1)%order.length; renderMessage(true); }
+  window.nextMessage=nextMessage;
+  function speakCurrent(){ speak1(curMsg()); }
+  window.speakCurrent=speakCurrent;
+
+  function renderTruths(){
+    var box=document.getElementById("truths"); box.innerHTML="";
+    TRUTHS.forEach(function(t){
+      var d=document.createElement("div"); d.className="truth";
+      var b=document.createElement("b"); b.innerHTML='<span class="pic-emoji">'+t.emo+'</span>';
+      b.appendChild(document.createTextNode(t[lang][0]));
+      var s=document.createElement("span"); s.textContent=t[lang][1];
+      d.appendChild(b); d.appendChild(s); box.appendChild(d);
+    });
+  }
+  function applyStaticLang(){
+    document.querySelectorAll("[data-en]").forEach(function(n){
+      var v=n.getAttribute("data-"+lang); if(v!==null) n.innerHTML=v;
+    });
+  }
+  function renderContent(){ applyStaticLang(); renderTruths(); document.getElementById("encore-text").textContent="“"+curMsg()+"”"; }
+
+  /* ---------------- language ---------------- */
+  function setLang(l){
+    lang=(l==="es")?"es":"en"; ls("aogLang",lang); H.setAttribute("lang",lang);
+    document.getElementById("langEn").classList.toggle("on",lang==="en");
+    var es=document.getElementById("langEs"); es.classList.toggle("on",lang==="es");
+    renderContent();
+  }
+  document.getElementById("langEn").addEventListener("click",function(){ setLang("en"); });
+  document.getElementById("langEs").addEventListener("click",function(e){ e.preventDefault(); setLang("es"); });
+
+  /* ---------------- read-aloud (speechSynthesis) ---------------- */
+  var K_READ="aog.a11y.readaloud", K_VOICE="aog.a11y.voice";
+  var readOn = lg(K_READ,"0")==="1";
+  var voices=[], chosenVoice=lg(K_VOICE,"");
+  function loadVoices(){ try{ voices=window.speechSynthesis?window.speechSynthesis.getVoices():[]; }catch(e){ voices=[]; } fillVoiceSel(); }
+  function speak1(text){
+    if(!readOn) return;
+    try{
+      if(!window.speechSynthesis) return;
+      window.speechSynthesis.cancel();
+      var u=new SpeechSynthesisUtterance(String(text).replace(/[“”]/g,""));
+      u.lang = lang==="es" ? "es-ES" : "en-US";
+      u.rate=.95; u.pitch=1;
+      if(chosenVoice){ var v=voices.filter(function(x){return x.name===chosenVoice;})[0]; if(v)u.voice=v; }
+      else { var pref=voices.filter(function(x){return (x.lang||"").toLowerCase().indexOf(lang)===0;})[0]; if(pref)u.voice=pref; }
+      window.speechSynthesis.speak(u);
+    }catch(e){}
+  }
+  function fillVoiceSel(){
+    var sel=document.getElementById("aogVoiceSel"); if(!sel) return;
+    var cur=chosenVoice; sel.innerHTML="";
+    var auto=document.createElement("option"); auto.value=""; auto.textContent=(lang==="es"?"Automática (recomendada)":"Auto (recommended)"); sel.appendChild(auto);
+    voices.filter(function(v){return (v.lang||"").toLowerCase().slice(0,2)===lang;}).forEach(function(v){
+      var o=document.createElement("option"); o.value=v.name; o.textContent=v.name.replace(/\(.*\)/,"").trim(); if(v.name===cur)o.selected=true; sel.appendChild(o);
+    });
+  }
+  if(window.speechSynthesis){ loadVoices(); window.speechSynthesis.onvoiceschanged=loadVoices; }
+
+  /* ---------------- picture answers ---------------- */
+  var K_PICS="aog.a11y.pictures"; var picsOn = lg(K_PICS,"0")==="1";
+  function applyPics(){ B.classList.toggle("aog-pics",picsOn); }
+
+  /* ---------------- accent ---------------- */
+  var K_ACCENT="aog.accent"; var ACCENTS=["gold","teal","violet","rose","sky","green"];
+  var ACCENT_HEX={gold:"#B8893A",teal:"#2BA199",violet:"#7C5CD6",rose:"#D65C7E",sky:"#2E7CD6",green:"#4F9E3A"};
+  var ACCENT_LABEL={gold:["Gold","Dorado"],teal:["Teal","Verde azulado"],violet:["Violet","Violeta"],rose:["Rose","Rosa"],sky:["Sky","Cielo"],green:["Green","Verde"]};
+  function getAccent(){ var a=lg(K_ACCENT,"gold"); return ACCENTS.indexOf(a)>=0?a:"gold"; }
+  function applyAccent(){ var a=getAccent(); if(a&&a!=="gold") H.setAttribute("data-accent",a); else H.removeAttribute("data-accent"); }
+
+  /* ---------------- other prefs (contrast / dys / textsize / dark) ---------------- */
+  var contrastOn=lg("aogA11yContrast","0")==="1", dysOn=lg("aogA11yDys","0")==="1";
+  var textSize=lg("aogTextSize","m"), darkOn=lg("aogTheme","light")==="dark";
+  function applyContrast(){ H.classList.toggle("aog-contrast",contrastOn); }
+  function applyDys(){ H.classList.toggle("aog-dys",dysOn); }
+  function applyText(){ H.classList.remove("aog-text-s","aog-text-l"); if(textSize==="s")H.classList.add("aog-text-s"); if(textSize==="l")H.classList.add("aog-text-l"); }
+  function applyDark(){ H.classList.toggle("aog-dark",darkOn); document.getElementById("aogDarkBtn").classList.toggle("active",darkOn); }
+
+  /* ---------------- menu plumbing ---------------- */
+  var openPop=null;
+  function closeOpen(){ if(openPop){ openPop.menu.setAttribute("hidden",""); openPop.btn.classList.remove("active"); openPop.btn.setAttribute("aria-expanded","false"); openPop=null; } }
+  document.addEventListener("click",function(ev){ if(openPop && !openPop.btn.parentNode.contains(ev.target)) closeOpen(); });
+  document.addEventListener("keydown",function(ev){ if(ev.key==="Escape") closeOpen(); });
+  function attachMenu(btn,menu){
+    var wrap=btn.parentNode; menu.setAttribute("hidden","");
+    btn.setAttribute("aria-haspopup","true"); btn.setAttribute("aria-expanded","false");
+    wrap.appendChild(menu);
+    btn.addEventListener("click",function(e){ e.preventDefault(); e.stopPropagation();
+      var isOpen=!menu.hasAttribute("hidden"); closeOpen();
+      if(!isOpen){ menu.removeAttribute("hidden"); btn.classList.add("active"); btn.setAttribute("aria-expanded","true"); openPop={menu:menu,btn:btn}; }
+    });
+  }
+  function elm(tag,cls,html){ var e=document.createElement(tag); if(cls)e.className=cls; if(html!=null)e.innerHTML=html; return e; }
+  function toggleRow(labEn,labEs,subEn,subEs,isOn,onTog){
+    var row=elm("button","aog-row",'<span class="t"><b data-en="'+labEn+'" data-es="'+labEs+'">'+labEn+'</b><span data-en="'+subEn+'" data-es="'+subEs+'">'+subEn+'</span></span><span class="aog-sw" aria-hidden="true"></span>');
+    row.type="button"; row.setAttribute("role","menuitemcheckbox"); row.setAttribute("aria-checked",isOn?"true":"false");
+    row.addEventListener("click",function(){ var now=row.getAttribute("aria-checked")!=="true"; row.setAttribute("aria-checked",now?"true":"false"); onTog(now); });
+    return row;
+  }
+
+  /* ----- Accessibility menu ----- */
+  (function(){
+    var btn=document.getElementById("aogA11yBtn");
+    var m=elm("div","aog-pop"); m.setAttribute("role","menu");
+    m.appendChild(elm("h4",null,'<span data-en="Accessibility" data-es="Accesibilidad">Accessibility</span>'));
+    var r1=toggleRow("High contrast","Alto contraste","Stronger text &amp; edges","Texto y bordes más marcados",contrastOn,function(on){contrastOn=on;applyContrast();ls("aogA11yContrast",on?"1":"0");}); r1.classList.add("first");
+    var r2=toggleRow("Dyslexia-friendly font","Fuente para dislexia","Easier letter shapes &amp; spacing","Letras y espaciado más fáciles",dysOn,function(on){dysOn=on;applyDys();ls("aogA11yDys",on?"1":"0");});
+    var r3=toggleRow("Read aloud","Leer en voz alta","Hear the words spoken","Escucha las palabras",readOn,function(on){ readOn=on; ls(K_READ,on?"1":"0"); B.classList.toggle("aog-read",on); if(on) speak1(curMsg()); else if(window.speechSynthesis) window.speechSynthesis.cancel(); });
+    var r4=toggleRow("Picture answers","Respuestas con imágenes","Show gentle emoji cues","Muestra pistas con emojis",picsOn,function(on){ picsOn=on; applyPics(); ls(K_PICS,on?"1":"0"); });
+    m.appendChild(r1); m.appendChild(r2); m.appendChild(r3); m.appendChild(r4);
+    // voice picker
+    var vlab=elm("div","aog-lab",'<span data-en="Read-aloud voice" data-es="Voz para leer">Read-aloud voice</span>');
+    m.appendChild(vlab);
+    var vw=elm("div","aog-voicewrap");
+    var sel=elm("select"); sel.id="aogVoiceSel"; sel.setAttribute("aria-label","Read-aloud voice");
+    sel.addEventListener("change",function(){ chosenVoice=sel.value; ls(K_VOICE,chosenVoice); });
+    var test=elm("button",null,"🔊"); test.type="button"; test.title="Test voice";
+    test.addEventListener("click",function(){ var was=readOn; readOn=true; speak1(curMsg()); readOn=was; });
+    vw.appendChild(sel); vw.appendChild(test); m.appendChild(vw);
+    attachMenu(btn,m);
+    fillVoiceSel();
+  })();
+
+  /* ----- Personalize menu ----- */
+  (function(){
+    var btn=document.getElementById("aogPzBtn");
+    var m=elm("div","aog-pop"); m.setAttribute("role","menu");
+    m.appendChild(elm("h4",null,'<span data-en="Personalize" data-es="Personaliza">Personalize</span>'));
+    m.appendChild(elm("p","sub",'<span data-en="Saved on this device only." data-es="Guardado solo en este dispositivo.">Saved on this device only.</span>'));
+    // Word of grace audience
+    m.appendChild(elm("div","aog-lab first",'<span data-en="A word for today" data-es="Una palabra para hoy">A word for today</span>'));
+    var segA=elm("div","aog-seg");
+    [["child","Child","Niño"],["teen","Teen","Adolescente"],["adult","Adult","Adulto"]].forEach(function(o){
+      var b=elm("button",null,'<span data-en="'+o[1]+'" data-es="'+o[2]+'">'+o[1]+'</span>'); b.type="button";
+      b.setAttribute("aria-pressed", aud===o[0]?"true":"false");
+      b.addEventListener("click",function(){ aud=o[0]; ls("aog.grace.audience",aud); reorder();
+        segA.querySelectorAll("button").forEach(function(x){x.setAttribute("aria-pressed","false");}); b.setAttribute("aria-pressed","true");
+        renderMessage(true);
+      });
+      segA.appendChild(b);
+    });
+    m.appendChild(segA);
+    // Accent color
+    m.appendChild(elm("div","aog-lab",'<span data-en="Accent color" data-es="Color de acento">Accent color</span>'));
+    var sw=elm("div","aog-swatches");
+    ACCENTS.forEach(function(a){
+      var b=elm("button","aog-swatch"); b.type="button"; b.style.background=ACCENT_HEX[a];
+      b.setAttribute("aria-label",(lang==="es"?ACCENT_LABEL[a][1]:ACCENT_LABEL[a][0]));
+      b.setAttribute("aria-pressed", getAccent()===a?"true":"false");
+      b.addEventListener("click",function(){ ls(K_ACCENT,a); applyAccent();
+        sw.querySelectorAll(".aog-swatch").forEach(function(x){x.setAttribute("aria-pressed","false");}); b.setAttribute("aria-pressed","true");
+      });
+      sw.appendChild(b);
+    });
+    m.appendChild(sw);
+    // Text size
+    m.appendChild(elm("div","aog-lab",'<span data-en="Text size" data-es="Tamaño del texto">Text size</span>'));
+    var segT=elm("div","aog-seg");
+    [["s","Small","Pequeño"],["m","Medium","Mediano"],["l","Large","Grande"]].forEach(function(o){
+      var b=elm("button",null,'<span data-en="'+o[1]+'" data-es="'+o[2]+'">'+o[1]+'</span>'); b.type="button";
+      b.setAttribute("aria-pressed", textSize===o[0]?"true":"false");
+      b.addEventListener("click",function(){ textSize=o[0]; applyText(); ls("aogTextSize",textSize);
+        segT.querySelectorAll("button").forEach(function(x){x.setAttribute("aria-pressed","false");}); b.setAttribute("aria-pressed","true");
+      });
+      segT.appendChild(b);
+    });
+    m.appendChild(segT);
+    attachMenu(btn,m);
+  })();
+
+  /* ----- Display (dark mode) ----- */
+  document.getElementById("aogDarkBtn").addEventListener("click",function(e){ e.preventDefault(); darkOn=!darkOn; applyDark(); ls("aogTheme",darkOn?"dark":"light"); });
+
+  /* ---------------- private note ---------------- */
+  var NOTE_KEY="aog.woe.note";
+  window.saveNote=function(){
+    try{ localStorage.setItem(NOTE_KEY,document.getElementById("privnote").value);
+      var mm=document.getElementById("savedmsg"); mm.classList.add("show"); setTimeout(function(){mm.classList.remove("show");},2200);
+    }catch(e){ alert(lang==="es"?"No se pudo guardar en este navegador.":"Could not save in this browser."); }
+  };
+
+  /* ---------------- init ---------------- */
+  applyAccent(); applyContrast(); applyDys(); applyText(); applyDark(); applyPics();
+  B.classList.toggle("aog-read",readOn);
+  H.setAttribute("lang",lang);
+  document.getElementById("langEn").classList.toggle("on",lang==="en");
+  document.getElementById("langEs").classList.toggle("on",lang==="es");
+  reorder();
+  renderContent();
+  try{ var sn=localStorage.getItem(NOTE_KEY); if(sn) document.getElementById("privnote").value=sn; }catch(e){}
+})();
+</script>
+</body>
+</html>

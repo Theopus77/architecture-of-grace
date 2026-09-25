@@ -1,0 +1,1018 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="aog-sync-config.js"></script><!-- same-origin and optional; a 404 changes nothing -->
+<script>/* .30eg: begin in light. Dark only when this device chose it — with no stored
+choice the dark palette would ride the OS setting (prefers-color-scheme), and a
+dark-set Chromebook would open the page dark. Same key as the other activity pages. */
+(function(){var t="light";try{if(localStorage.getItem("aog.interior.ws.v1.theme")==="dark")t="dark";}catch(e){}document.documentElement.setAttribute("data-theme",t);})();</script>
+<title>Room 18 — The Companion Workbook · Architecture of Grace</title>
+<meta name="description" content="The Room 18 companion workbook — multiple choice and in-your-own-words practice for the four units of Book 2 · The Framework (Grades 3–5). Printable, with a teacher answer key.">
+<!-- Original student material written for this page, drawn from the Room 18
+     curriculum's own concepts and vocabulary. Nothing typed here is saved or
+     sent — no storage, no network. No external requests of any kind. -->
+<style>
+:root{
+  --bg:#FBFAF7; --card:#FFFFFF; --ink:#232B36; --sub:#5B6472; --line:#E4E1D8;
+  --navy:#1B3A5F; --brass:#8A6A1F; --brass-soft:#F3ECDB;
+  --u1:#17646B; --u2:#6B4696; --u3:#A63A2B; --u4:#8A6A1F;
+  --good:#2E7D4F; --good-soft:#E4F0E8; --bad:#B3261E; --bad-soft:#FBE9E7;
+  --chip:#EFECE4; --shadow:0 1px 3px rgba(35,43,54,.08);
+  --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,"Times New Roman",serif;
+  --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#191D24; --card:#20262F; --ink:#EDEAE2; --sub:#9AA3B0; --line:#333B47;
+    --navy:#8FB4DF; --brass:#D9B45C; --brass-soft:#332C18;
+    --u1:#5FB8B0; --u2:#B99AD9; --u3:#E08573; --u4:#D9B45C;
+    --good:#6FBF8B; --good-soft:#1F3327; --bad:#F2938A; --bad-soft:#3D211E;
+    --chip:#2A313C; --shadow:0 1px 3px rgba(0,0,0,.35);
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#191D24; --card:#20262F; --ink:#EDEAE2; --sub:#9AA3B0; --line:#333B47;
+  --navy:#8FB4DF; --brass:#D9B45C; --brass-soft:#332C18;
+  --u1:#5FB8B0; --u2:#B99AD9; --u3:#E08573; --u4:#D9B45C;
+  --good:#6FBF8B; --good-soft:#1F3327; --bad:#F2938A; --bad-soft:#3D211E;
+  --chip:#2A313C; --shadow:0 1px 3px rgba(0,0,0,.35);
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{background:var(--bg);color:var(--ink);font:16px/1.55 var(--sans);margin:0;padding:0 16px 72px}
+button{touch-action:manipulation}
+.wrap{max-width:1060px;margin:0 auto}
+.layout{display:grid;grid-template-columns:225px minmax(0,1fr);gap:26px;align-items:start;margin-top:10px}
+.rail{position:sticky;top:59px;display:flex;flex-direction:column;gap:7px;padding:6px 0}
+.ritem{text-align:left;border:1px solid var(--line);background:var(--card);border-radius:11px;padding:10px 12px;cursor:pointer;border-left:4px solid var(--uc);box-shadow:var(--shadow)}
+.ritem .rl{display:block;font:800 .68rem var(--sans);letter-spacing:.11em;text-transform:uppercase;color:var(--uc)}
+.ritem .rn{display:block;font:700 .92rem var(--sans);color:var(--ink);margin-top:1px}
+.ritem .rc{display:block;font:600 .74rem var(--sans);color:var(--sub);margin-top:2px}
+.ritem:hover{border-color:var(--uc)}
+.ritem[aria-current="true"]{background:var(--chip);border-color:var(--uc);border-width:1px 1px 1px 4px}
+@media(max-width:840px){
+  .layout{display:block}
+  .rail{position:sticky;top:47px;z-index:40;flex-direction:row;overflow-x:auto;background:var(--bg);margin:0 -16px;padding:10px 16px;border-bottom:1px solid var(--line);-webkit-overflow-scrolling:touch}
+  .ritem{flex:0 0 auto}
+  .ritem .rc{display:none}
+}
+header{padding:26px 0 8px}
+.eyebrow{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.eyebrow a{color:var(--sub);font-size:.78rem;letter-spacing:.14em;text-transform:uppercase;text-decoration:none;font-weight:700}
+.eyebrow a:hover{color:var(--ink)}
+.tools{display:flex;gap:8px;flex-wrap:wrap}
+.tools button{border:1px solid var(--line);background:var(--card);color:var(--sub);border-radius:999px;padding:5px 12px;font:600 .78rem var(--sans);cursor:pointer}
+.tools button:hover{color:var(--ink)}
+h1{font-family:var(--serif);font-weight:900;font-size:clamp(2rem,5.5vw,2.8rem);margin:12px 0 0;letter-spacing:-.01em}
+.tag{color:var(--sub);margin:6px 0 0}
+.tag b{color:var(--ink)}
+.nameline{display:flex;gap:18px;flex-wrap:wrap;margin:18px 0 0;font-size:.92rem;color:var(--sub)}
+.nameline span{flex:1;min-width:180px;border-bottom:1.5px solid var(--line);padding:0 4px 3px}
+.howto{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--navy);border-radius:12px;box-shadow:var(--shadow);padding:14px 18px;margin:18px 0 0;font-size:.93rem}
+.howto b{color:var(--navy)}
+.privnote{margin:14px 0 0;background:var(--good-soft);border-left:4px solid var(--good);border-radius:10px;padding:11px 14px;font-size:.88rem}
+.mats{display:flex;gap:8px;flex-wrap:wrap;margin:16px 0 0}
+.mats a{display:inline-block;border:1px solid var(--line);background:var(--card);color:var(--navy);border-radius:999px;padding:7px 14px;font:600 .84rem var(--sans);text-decoration:none}
+.mats a:hover{border-color:var(--navy)}
+section.unit{margin:6px 0 0}
+.uhead{border-bottom:3px solid var(--uc);padding-bottom:6px}
+.unit h2{font-family:var(--serif);font-weight:900;font-size:clamp(1.4rem,4vw,1.85rem);margin:0;color:var(--uc)}
+.urecap{color:var(--sub);max-width:70ch;margin:10px 0 4px;font-size:.94rem}
+.parth{font-size:.78rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--sub);margin:22px 0 12px;border-top:1px solid var(--line);padding-top:14px}
+.q{background:var(--card);border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow);padding:14px 16px;margin:0 0 12px}
+.qt{font-weight:700;margin:0 0 10px}
+.qn{display:inline-block;min-width:24px;text-align:center;background:var(--uc);color:var(--bg);border-radius:7px;font:800 .82rem var(--sans);padding:2px 5px;margin-right:4px}
+.opts{display:grid;gap:7px}
+.opt{text-align:left;border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:9px;padding:9px 12px;font:500 .92rem/1.45 var(--sans);cursor:pointer}
+.opt:hover{border-color:var(--sub)}
+.opt .ol{font-weight:800;color:var(--sub);margin-right:4px}
+.q.done .opt{cursor:default;opacity:.7}
+.q.done .opt[data-ok="1"]{background:var(--good-soft);border-color:var(--good);opacity:1}
+.q.done .opt.picked[data-ok="0"]{background:var(--bad-soft);border-color:var(--bad);opacity:1}
+.why{margin:10px 0 0;padding:10px 12px;border-radius:9px;background:var(--chip);font-size:.9rem}
+.why b{color:var(--good)}
+.tally{margin:4px 0 0;color:var(--sub);font-size:.88rem}
+.tally b{color:var(--ink)}
+.ow{background:var(--card);border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow);padding:14px 16px;margin:0 0 12px}
+.owt{font-weight:600;margin:0 0 10px;font-size:.95rem}
+.privchip{display:inline-block;background:var(--good-soft);color:var(--good);border-radius:999px;padding:2px 10px;font:700 .72rem var(--sans);letter-spacing:.06em;text-transform:uppercase;white-space:nowrap}
+.ow textarea{width:100%;border:1px solid var(--line);border-radius:9px;background:var(--bg);color:var(--ink);font:500 .95rem/1.5 var(--sans);padding:10px 12px;resize:vertical}
+.ow textarea:focus{outline:2px solid var(--navy)}
+.plines{display:none}
+.keyblock{display:none}
+.keybanner{display:none}
+footer{margin:48px 0 0;border-top:1px solid var(--line);padding-top:16px;color:var(--sub);font-size:.85rem;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+footer a{color:var(--navy);font-weight:700;text-decoration:none}
+@media print{
+  body{background:#fff;color:#111;padding:0;font-size:11.5px}
+  .tools,.mats,.privnote,.tally,.rail{display:none!important}
+  /* the rail shows one unit on screen; paper always gets the whole packet */
+  section.unit[hidden]{display:block!important}
+  .wrap{max-width:none}
+  header{padding-top:0}
+  section.unit{break-before:page;margin-top:0}
+  .q,.ow{break-inside:avoid;box-shadow:none}
+  .opt{background:#fff}
+  .opt:hover{border-color:var(--line)}
+  .why{display:none!important}
+  .ow textarea{display:none}
+  .plines{display:block;margin-top:4px}
+  .plines span{display:block;height:26px;border-bottom:1px solid #999}
+  /* student edition (default): hide the key. Key edition: ONLY the key. */
+  body:not(.printkey) .keyblock{display:none}
+  body.printkey .keyblock{display:block}
+  body.printkey .keybanner{display:block;border:2px solid #111;border-radius:8px;padding:8px 12px;font-weight:700;margin:12px 0 0}
+  body.printkey .q,body.printkey .ow,body.printkey .parth,body.printkey .urecap,
+  body.printkey .howto,body.printkey .nameline{display:none}
+  body.printkey .keyblock .parth{display:block;border:0;padding-top:0}
+  .key li{margin:0 0 7px}
+}
+
+/* ══ AOG-R36-NAV ══ */
+.r36top{position:sticky;top:0;z-index:60;display:flex;align-items:center;justify-content:space-between;gap:10px;background:var(--card);border-bottom:1px solid var(--line);margin:0 -16px;padding:9px 16px}
+.r36top .brand{display:flex;align-items:center;gap:9px;text-decoration:none;color:var(--ink);font-weight:800;font-size:.92rem;white-space:nowrap}
+.r36top .mk{display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:7px;background:var(--navy);color:#fff;font-family:var(--serif);font-weight:900}
+:root[data-theme="dark"] .r36top .mk{color:#10151c}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .r36top .mk{color:#10151c}}
+.r36top .brand .nm{display:none}
+@media(min-width:640px){.r36top .brand .nm{display:inline}}
+.r36top .acts{display:flex;align-items:center;gap:7px}
+.r36top .pill{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:999px;padding:6px 13px;font:700 .82rem var(--sans);text-decoration:none;cursor:pointer}
+.r36top .pill:hover{border-color:var(--navy)}
+.r36top .pill .arr{color:var(--navy)}
+.r36wrap{position:relative}
+.r36menu{position:absolute;top:calc(100% + 8px);right:0;min-width:290px;max-width:min(92vw,340px);max-height:min(70vh,560px);overflow:auto;background:var(--card);border:1px solid var(--line);border-radius:14px;box-shadow:0 18px 44px -14px rgba(20,28,40,.45);padding:8px;z-index:70}
+.r36menu[hidden]{display:none}
+.r36menu .lab{font-size:.68rem;font-weight:800;letter-spacing:.13em;text-transform:uppercase;color:var(--sub);padding:10px 10px 4px}
+.r36menu a{display:block;padding:8px 10px;border-radius:9px;text-decoration:none;color:var(--ink)}
+.r36menu a:hover{background:var(--chip)}
+.r36menu a .t{display:block;font-weight:700;font-size:.9rem}
+.r36menu a .s{display:block;font-size:.78rem;color:var(--sub);margin-top:1px}
+.r36top .ico{display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:999px;cursor:pointer}
+.r36top .ico:hover{border-color:var(--navy)}
+.r36menu .arow{display:flex;align-items:center;justify-content:space-between;gap:14px;width:100%;background:none;border:0;border-top:1px solid var(--line);padding:10px 10px;cursor:pointer;text-align:left;font:inherit;color:var(--ink)}
+.r36menu .arow.first{border-top:0}
+.r36menu .arow .t{display:block;font-weight:700;font-size:.9rem}
+.r36menu .arow .s{display:block;font-size:.78rem;color:var(--sub);margin-top:1px}
+.r36menu .sw{flex:none;width:42px;height:24px;border-radius:999px;background:var(--line);position:relative;transition:background .15s}
+.r36menu .sw::after{content:"";position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;background:var(--card);box-shadow:0 1px 3px rgba(0,0,0,.3);transition:transform .15s}
+.r36menu .arow[aria-checked="true"] .sw{background:var(--navy)}
+.r36menu .arow[aria-checked="true"] .sw::after{transform:translateX(18px)}
+/* the site-wide accessibility settings, honored here */
+html.a11y-contrast body{color:#000}
+html.a11y-contrast a{text-decoration:underline;text-underline-offset:2px}
+html.a11y-contrast .r36top,html.a11y-contrast .box,html.a11y-contrast .xcard,html.a11y-contrast .q,html.a11y-contrast .ow{border-width:2px}
+html.a11y-contrast[data-theme="dark"] body{color:#fff}
+html.a11y-dyslexic body,html.a11y-dyslexic button,html.a11y-dyslexic input,html.a11y-dyslexic textarea,html.a11y-dyslexic h1,html.a11y-dyslexic h2,html.a11y-dyslexic h3{font-family:"OpenDyslexic","Comic Sans MS","Trebuchet MS",Verdana,sans-serif !important}
+html.a11y-dyslexic body{letter-spacing:.02em;word-spacing:.09em;line-height:1.8}
+@media print{.r36top{display:none !important}}
+
+</style>
+</head>
+<body>
+
+<!-- ══ AOG-R36-NAV — emitted from _work/r36/r36_nav.py; regenerate, never hand-edit one copy ══ -->
+<header class="r36top">
+  <a class="brand" href="/" aria-label="Architecture of Grace — home"><span class="mk" aria-hidden="true">A</span><span class="nm">Architecture of Grace</span></a>
+  <div class="acts">
+    <a class="pill" href="/" id="r36Back"><span class="arr" aria-hidden="true">&larr;</span> Back</a>
+    <a class="pill" href="/#quiet-space" title="Quiet Space — an in-the-moment reset">Quiet Space</a>
+    <div class="r36wrap">
+      <button class="pill" type="button" id="r36MenuBtn" aria-haspopup="true" aria-expanded="false" aria-controls="r36Menu">Explore</button>
+      <div class="r36menu" id="r36Menu" role="menu" aria-label="Explore Architecture of Grace" hidden>
+        <div class="lab">Room 18 · SEL 3&ndash;5</div>
+        <a role="menuitem" href="/room18"><span class="t">The Curriculum</span><span class="s">Crosswalk, marker guide, Grace in Practice.</span></a>
+        <a role="menuitem" href="/lessons18"><span class="t">The Lessons</span><span class="s">All 28 lessons, by unit — ready to teach.</span></a>
+        <a role="menuitem" href="/wb18"><span class="t">The Companion Workbook</span><span class="s">Choose-the-answer and in-your-own-words.</span></a>
+        <a role="menuitem" href="/charts18"><span class="t">Anchor Charts</span><span class="s">All four units&rsquo; boards, built live.</span></a>
+        <div class="lab">Understand</div>
+        <a role="menuitem" href="/#starthere"><span class="t">Start Here</span><span class="s">New here? Five minutes to find your door.</span></a>
+        <a role="menuitem" href="/#framework"><span class="t">Framework</span><span class="s">The four pillars, and where they came from.</span></a>
+        <a role="menuitem" href="/#curriculum"><span class="t">The Curriculum, K&ndash;12</span><span class="s">Five books and the Adult edition.</span></a>
+        <a role="menuitem" href="/#library"><span class="t">Library</span><span class="s">Every open preview, sample lesson and pack.</span></a>
+        <div class="lab">In the classroom</div>
+        <a role="menuitem" href="/#results"><span class="t">Dashboard</span><span class="s">Hand it out, read the group, find the lesson.</span></a>
+        <a role="menuitem" href="/#talk"><span class="t">Talk It Out</span><span class="s">Discussion prompts for the whole room.</span></a>
+        <a role="menuitem" href="/#tools"><span class="t">Calm &amp; Regulation Tools</span><span class="s">Quiet Space and the calming corner.</span></a>
+        <a role="menuitem" href="/turnins"><span class="t">Turn-ins</span><span class="s">Every FINISHED worksheet and result, one inbox.</span></a>
+        <div class="lab">Subjects · The Interior</div>
+        <a role="menuitem" href="/math"><span class="t">Math &middot; The Interior</span><span class="s">Fourteen practice pages, plus fall test prep.</span></a>
+        <a role="menuitem" href="/concepts"><span class="t">Math &middot; Concepts &amp; Data</span><span class="s">Fractions and data from the ground up.</span></a>
+        <a role="menuitem" href="/science"><span class="t">Science</span><span class="s">The word list, the microscope, the test prep.</span></a>
+        <a role="menuitem" href="/social"><span class="t">Social Studies</span><span class="s">1787 to 1865, and the three branches.</span></a>
+        <a role="menuitem" href="/b11"><span class="t">English &middot; Grammar</span><span class="s">Sixteen modules — cards, hints, and practice quizzes.</span></a>
+        <a role="menuitem" href="/words"><span class="t">English &middot; Word Study</span><span class="s">Stems, analogies, poetics, the coinage forge.</span></a>
+        <div class="lab">At home</div>
+        <a role="menuitem" href="/#family"><span class="t">Family</span><span class="s">Check in, talk, repair: one shared language.</span></a>
+      </div>
+    </div>
+    <div class="r36wrap">
+      <button class="ico" type="button" id="r36A11yBtn" aria-haspopup="true" aria-expanded="false" aria-controls="r36A11y" aria-label="Accessibility options" title="Accessibility options">
+        <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="4" r="1.6"/><path d="M5 8h14M9 8l1 11M15 8l-1 11M12 8v5"/></svg>
+      </button>
+      <div class="r36menu" id="r36A11y" role="menu" aria-label="Accessibility options" hidden>
+        <div class="lab">Accessibility</div>
+        <button type="button" class="arow first" role="menuitemcheckbox" aria-checked="false" id="r36HcRow">
+          <span><span class="t">High contrast</span><span class="s">Stronger text &amp; edges</span></span><span class="sw" aria-hidden="true"></span>
+        </button>
+        <button type="button" class="arow" role="menuitemcheckbox" aria-checked="false" id="r36DysRow">
+          <span><span class="t">Dyslexia-friendly font</span><span class="s">Easier letter shapes &amp; spacing</span></span><span class="sw" aria-hidden="true"></span>
+        </button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<noscript><style>section.unit[hidden]{display:block} .rail{display:none}</style></noscript>
+<div class="wrap">
+<header>
+  <div class="eyebrow">
+    <a href="room-18-curriculum.html">Room 18 · Book 2 · The Framework</a>
+    <div class="tools">
+      <button id="themeBtn" type="button" aria-label="Toggle dark mode">Theme</button>
+      <button type="button" id="printWb">Print workbook</button>
+      <button type="button" id="printKey">Print answer key</button>
+    </div>
+  </div>
+  <h1>The Companion Workbook</h1>
+  <p class="tag"><b>Room 18 · The Year of the Inner Critic</b> · Grades 3–5 · goes with the novel and the four units</p>
+  <div class="keybanner">Teacher answer key — for the educator&rsquo;s desk, not for distribution.</div>
+  <div class="nameline"><span>Name</span><span>Class</span><span>Date</span></div>
+  <div class="howto"><b>How to use this workbook.</b> Work one unit at a time, after the unit&rsquo;s
+  lessons. <b>Part A</b> is choose-the-answer — tap an answer on screen and the workbook tells you why;
+  on paper, circle the letter. <b>Part B</b> is in-your-own-words — there is no answer key for Part B,
+  because those answers are yours. When you&rsquo;re done, tap <b>FINISHED</b> at the bottom — your
+  workbook goes to the adult who shared this page, and you&rsquo;ll see a preview of what you built.</div>
+  <div class="mats">
+    <a href="room-18-curriculum.html">The Room 18 curriculum</a>
+    <a href="room-18-lessons.html">The Lessons — all 28, ready to teach</a>
+    <a href="files/AoG-Book2-Room18-DIGITAL.pdf" target="_blank" rel="noopener">Novel · the whole book (PDF)</a>
+  </div>
+</header>
+<div class="layout">
+<nav class="rail" id="rail" aria-label="Workbook units">
+<button type="button" class="ritem" data-u="u1" style="--uc:var(--u1)">
+  <span class="rl">Unit 1</span><span class="rn">Knowing &amp; Accepting Yourself</span>
+  <span class="rc">8 questions · 4 prompts</span>
+</button>
+<button type="button" class="ritem" data-u="u2" style="--uc:var(--u2)">
+  <span class="rl">Unit 2</span><span class="rn">Self-Compassion &amp; Self-Forgiveness</span>
+  <span class="rc">8 questions · 4 prompts</span>
+</button>
+<button type="button" class="ritem" data-u="u3" style="--uc:var(--u3)">
+  <span class="rl">Unit 3</span><span class="rn">Empathy &amp; Forgiving Others</span>
+  <span class="rc">8 questions · 4 prompts</span>
+</button>
+<button type="button" class="ritem" data-u="u4" style="--uc:var(--u4)">
+  <span class="rl">Unit 4</span><span class="rn">Grace &amp; Generosity</span>
+  <span class="rc">8 questions · 4 prompts</span>
+</button>
+<button type="button" class="ritem" data-u="u5" style="--uc:var(--brass)">
+  <span class="rl">Year-End</span><span class="rn">Integration</span>
+  <span class="rc">5 questions · 2 prompts</span>
+</button>
+</nav>
+<div class="stage">
+<section class="unit u1" id="u1" style="--uc:var(--u1)" hidden>
+  <div class="uhead"><h2>Unit 1 · Knowing &amp; Accepting Yourself</h2></div>
+  <p class="urecap">The Identity Web. Emotions Are Messengers. Mistake vs. Flaw. Inner Critic vs. Inner Coach. Guilt vs. Shame. This unit practiced building an honest map of who you are — and learning that you are more than your worst moment.</p>
+  <h3 class="parth">Part A · Choose the answer</h3>
+  <div class="q" id="u1-q1">
+  <div class="qt"><span class="qn">1</span> The Identity Web has five branches. Which one is NOT a branch?</div>
+  <div class="opts"><button type="button" class="opt" data-ok="0"><span class="ol">A</span> Things I Love</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">B</span> Things I’m Good At</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">C</span> Things I’m Still Figuring Out</button>
+<button type="button" class="opt" data-ok="1"><span class="ol">D</span> Things I’m Bad At</button></div>
+  <div class="why" hidden><b>D.</b> The five branches are Things I Love · Good At · Matter to Me · People Don’t Know · Still Figuring Out. There is no “bad at” branch — the web is a map of who you are, not a list of what you can’t do.</div>
+</div><div class="q" id="u1-q2">
+  <div class="qt"><span class="qn">2</span> “Emotions are ______.”</div>
+  <div class="opts"><button type="button" class="opt" data-ok="1"><span class="ol">A</span> messengers</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">B</span> problems</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">C</span> weaknesses</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">D</span> mistakes</button></div>
+  <div class="why" hidden><b>A.</b> Every emotion is a messenger carrying information. Fear says something feels unsafe. Sadness says something I care about was lost. When you feel an emotion, ask: “What is this feeling trying to tell me?”</div>
+</div><div class="q" id="u1-q3">
+  <div class="qt"><span class="qn">3</span> On the Emotions Are Messengers chart, ANGER means —</div>
+  <div class="opts"><button type="button" class="opt" data-ok="1"><span class="ol">A</span> a boundary was crossed</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">B</span> something I care about was lost</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">C</span> I care about belonging</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">D</span> I need connection</button></div>
+  <div class="why" hidden><b>A.</b> Anger = a boundary was crossed. Sadness = something I care about was lost. Embarrassment = I care about belonging. Loneliness = I need connection. Emotions are not problems. They are data.</div>
+</div><div class="q" id="u1-q4">
+  <div class="qt"><span class="qn">4</span> “I got the answer wrong” is a ______. “I am stupid” is a ______.</div>
+  <div class="opts"><button type="button" class="opt" data-ok="1"><span class="ol">A</span> mistake — flaw statement</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">B</span> flaw statement — mistake</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">C</span> mistake — mistake</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">D</span> flaw statement — flaw statement</button></div>
+  <div class="why" hidden><b>A.</b> A mistake is something you DID. A flaw is something you ARE. The Inner Critic’s trick is turning mistakes into flaw statements. Catching that trick is the whole lesson.</div>
+</div><div class="q" id="u1-q5">
+  <div class="qt"><span class="qn">5</span> The Inner Coach asks three questions. Which one is on the list?</div>
+  <div class="opts"><button type="button" class="opt" data-ok="1"><span class="ol">A</span> “What is one next step?”</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">B</span> “Why are you always like this?”</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">C</span> “Who saw you mess up?”</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">D</span> “What will everyone think?”</button></div>
+  <div class="why" hidden><b>A.</b> WHAT happened? WHAT can I learn? WHAT is one next step? The Coach is not softer than the Critic — it is honest AND kind. It points toward repair and growth, not hiding.</div>
+</div><div class="q" id="u1-q6">
+  <div class="qt"><span class="qn">6</span> Guilt says ______. Shame says ______.</div>
+  <div class="opts"><button type="button" class="opt" data-ok="1"><span class="ol">A</span> “I did something wrong” — “I AM bad”</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">B</span> “I AM bad” — “I did something wrong”</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">C</span> “I AM bad” — “I AM bad”</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">D</span> “It’s fine” — “It’s fine”</button></div>
+  <div class="why" hidden><b>A.</b> Guilt is about what you DID and points toward repair: fix it, do better, try again. Shame is about who you ARE and points toward hiding. When the Critic speaks, ask: “Is this attacking my behavior or my identity?”</div>
+</div><div class="q" id="u1-q7">
+  <div class="qt"><span class="qn">7</span> Kenji told a secret. That night he thinks: “I don’t deserve to have friends.” Which column is that in?</div>
+  <div class="opts"><button type="button" class="opt" data-ok="1"><span class="ol">A</span> Shame — it attacks who he IS</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">B</span> Guilt — it is about what he DID</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">C</span> Neither — it is just a fact</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">D</span> Both — they are the same thing</button></div>
+  <div class="why" hidden><b>A.</b> “I told a secret and I need to make it right” is guilt — useful, and it points toward repair. “I don’t deserve friends” is shame — it points toward hiding. Kenji can keep the guilt and put the shame down.</div>
+</div><div class="q" id="u1-q8">
+  <div class="qt"><span class="qn">8</span> “I am more than my ______.”</div>
+  <div class="opts"><button type="button" class="opt" data-ok="1"><span class="ol">A</span> worst moment</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">B</span> best grade</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">C</span> report card</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">D</span> best friend</button></div>
+  <div class="why" hidden><b>A.</b> One bad moment feels louder than all the others. The longer story includes everything else — the times you tried, the times you came back, the people you helped. Tariq is not “the kid who falls.”</div>
+</div>
+  <div class="tally" data-total="8">Checked: <b class="tn">0</b> / 8 · Right on the first try: <b class="tr">0</b></div>
+  <h3 class="parth">Part B · In your own words</h3>
+  <div class="ow">
+  <div class="owt"><span class="qn">1</span> Draw or write your own Identity Web — one thing for each branch: Things I Love · Good At · Matter to Me · People Don’t Know · Still Figuring Out.</div>
+  <textarea rows="4" placeholder="Type here — tap FINISHED at the bottom to hand this to your teacher." aria-label="Your answer"></textarea>
+  <div class="plines"><span></span><span></span><span></span><span></span><span></span></div>
+</div><div class="ow">
+  <div class="owt"><span class="qn">2</span> Pick one emotion you felt this week. What was it trying to tell you? Use the Emotions Are Messengers chart if it helps.</div>
+  <textarea rows="3" placeholder="Type here — tap FINISHED at the bottom to hand this to your teacher." aria-label="Your answer"></textarea>
+  <div class="plines"><span></span><span></span><span></span></div>
+</div><div class="ow">
+  <div class="owt"><span class="qn">3</span> Write one thing your Inner Critic says to you. Under it, write what your Inner Coach would say about the same moment — honest AND kind.</div>
+  <textarea rows="3" placeholder="Type here — tap FINISHED at the bottom to hand this to your teacher." aria-label="Your answer"></textarea>
+  <div class="plines"><span></span><span></span><span></span><span></span></div>
+</div><div class="ow">
+  <div class="owt"><span class="qn">4</span> Finish the sentences: “One moment that doesn’t define me is ___. The bigger truth about me is ___.” Then write two pieces of evidence the Critic leaves out.</div>
+  <textarea rows="3" placeholder="Type here — tap FINISHED at the bottom to hand this to your teacher." aria-label="Your answer"></textarea>
+  <div class="plines"><span></span><span></span><span></span><span></span></div>
+</div>
+  <div class="keyblock"><h3 class="parth">Answer key · Unit 1 · Knowing &amp; Accepting Yourself</h3><ol class="key"><li><b>D</b> — The five branches are Things I Love · Good At · Matter to Me · People Don’t Know · Still Figuring Out. There is no “bad at” branch — the web is a map of who you are, not a list of what you can’t do.</li>
+<li><b>A</b> — Every emotion is a messenger carrying information. Fear says something feels unsafe. Sadness says something I care about was lost. When you feel an emotion, ask: “What is this feeling trying to tell me?”</li>
+<li><b>A</b> — Anger = a boundary was crossed. Sadness = something I care about was lost. Embarrassment = I care about belonging. Loneliness = I need connection. Emotions are not problems. They are data.</li>
+<li><b>A</b> — A mistake is something you DID. A flaw is something you ARE. The Inner Critic’s trick is turning mistakes into flaw statements. Catching that trick is the whole lesson.</li>
+<li><b>A</b> — WHAT happened? WHAT can I learn? WHAT is one next step? The Coach is not softer than the Critic — it is honest AND kind. It points toward repair and growth, not hiding.</li>
+<li><b>A</b> — Guilt is about what you DID and points toward repair: fix it, do better, try again. Shame is about who you ARE and points toward hiding. When the Critic speaks, ask: “Is this attacking my behavior or my identity?”</li>
+<li><b>A</b> — “I told a secret and I need to make it right” is guilt — useful, and it points toward repair. “I don’t deserve friends” is shame — it points toward hiding. Kenji can keep the guilt and put the shame down.</li>
+<li><b>A</b> — One bad moment feels louder than all the others. The longer story includes everything else — the times you tried, the times you came back, the people you helped. Tariq is not “the kid who falls.”</li></ol></div>
+</section><section class="unit u2" id="u2" style="--uc:var(--u2)" hidden>
+  <div class="uhead"><h2>Unit 2 · Self-Compassion &amp; Self-Forgiveness</h2></div>
+  <p class="urecap">The Heavy Backpack and the four myths. The Three-Part Accountability Map. The Friend Test. The Stone Practice. The support web. This unit practiced owning a mistake without punishing yourself for it — and putting the weight down.</p>
+  <h3 class="parth">Part A · Choose the answer</h3>
+  <div class="q" id="u2-q1">
+  <div class="qt"><span class="qn">1</span> In the Heavy Backpack lesson, forgiveness is —</div>
+  <div class="opts"><button type="button" class="opt" data-ok="1"><span class="ol">A</span> a decision, not a feeling</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">B</span> a feeling you have to wait for</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">C</span> saying what happened was okay</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">D</span> forgetting it ever happened</button></div>
+  <div class="why" hidden><b>A.</b> Myth 4, busted: you do not have to feel ready before you start. Forgiveness is a decision, not a feeling. That is why you can begin even when it still hurts.</div>
+</div><div class="q" id="u2-q2">
+  <div class="qt"><span class="qn">2</span> Forgiveness is “not for the person who hurt us. For ______.”</div>
+  <div class="opts"><button type="button" class="opt" data-ok="1"><span class="ol">A</span> us</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">B</span> them</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">C</span> the teacher</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">D</span> nobody</button></div>
+  <div class="why" hidden><b>A.</b> Forgiveness is releasing resentment or self-blame — not to excuse behavior, but to free YOURSELF from carrying the weight of it. Each book comes out of the backpack. The load gets lighter.</div>
+</div><div class="q" id="u2-q3">
+  <div class="qt"><span class="qn">3</span> “Accountability is guilt in action. Self-punishment is ______ in action.”</div>
+  <div class="opts"><button type="button" class="opt" data-ok="1"><span class="ol">A</span> shame</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">B</span> kindness</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">C</span> courage</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">D</span> anger</button></div>
+  <div class="why" hidden><b>A.</b> Accountability = own it + understand the impact + repair = DONE. Self-punishment = using the mistake as evidence + replaying it = STUCK. The person drowning in self-punishment is often the LEAST accountable.</div>
+</div><div class="q" id="u2-q4">
+  <div class="qt"><span class="qn">4</span> The Three-Part Accountability Map asks: What exactly happened? What was the impact? And —</div>
+  <div class="opts"><button type="button" class="opt" data-ok="1"><span class="ol">A</span> What repair is possible?</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">B</span> Who else is to blame?</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">C</span> How bad a person am I?</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">D</span> How long should I feel terrible?</button></div>
+  <div class="why" hidden><b>A.</b> Step 1: what EXACTLY happened — honest, not dramatized. Step 2: the actual IMPACT. Step 3: what REPAIR is possible. When the map is complete, the self-punishment can stop. Isabella can stop apologizing for the gnome.</div>
+</div><div class="q" id="u2-q5">
+  <div class="qt"><span class="qn">5</span> The Friend Test: “Would you say that to your best friend?” Most people discover —</div>
+  <div class="opts"><button type="button" class="opt" data-ok="1"><span class="ol">A</span> they are much kinder to a friend than to themselves</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">B</span> they are meaner to a friend than to themselves</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">C</span> friends never make mistakes</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">D</span> it doesn’t matter what you say</button></div>
+  <div class="why" hidden><b>A.</b> Zara would tell a friend, “You are so brave for trying.” She would never say it to herself. Self-compassion has three parts: self-kindness, common humanity (everyone struggles), and mindfulness (notice it without dramatizing or hiding).</div>
+</div><div class="q" id="u2-q6">
+  <div class="qt"><span class="qn">6</span> Self-compassion is NOT —</div>
+  <div class="opts"><button type="button" class="opt" data-ok="1"><span class="ol">A</span> a free pass, or pretending it was fine</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">B</span> honest</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">C</span> kind</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">D</span> something everyone can practice</button></div>
+  <div class="why" hidden><b>A.</b> Liam’s mom said, “You’re amazing no matter what,” and he felt worse. Empty cheerleading is not compassion. Self-compassion is honest AND kind — it names what happened and still speaks with care.</div>
+</div><div class="q" id="u2-q7">
+  <div class="qt"><span class="qn">7</span> The Stone Practice teaches that letting go is —</div>
+  <div class="opts"><button type="button" class="opt" data-ok="1"><span class="ol">A</span> a practice you return to — you may put it down many times</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">B</span> a switch that flips once</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">C</span> the same as forgetting</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">D</span> only for small things</button></div>
+  <div class="why" hidden><b>A.</b> Some things you put down dozens of times before they stay down. Connor’s stone keeps coming back — that is not failure. That is what the practice looks like. You put it down again.</div>
+</div><div class="q" id="u2-q8">
+  <div class="qt"><span class="qn">8</span> When self-forgiveness feels impossible, asking for help is —</div>
+  <div class="opts"><button type="button" class="opt" data-ok="1"><span class="ol">A</span> wisdom, not weakness</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">B</span> giving up</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">C</span> only for grown-ups</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">D</span> cheating</button></div>
+  <div class="why" hidden><b>A.</b> Some things are too big to carry alone. The one sentence to start: “I have been really hard on myself about something and I cannot seem to let it go. Can I talk to you?” Asking for support is the bravest thing in this curriculum.</div>
+</div>
+  <div class="tally" data-total="8">Checked: <b class="tn">0</b> / 8 · Right on the first try: <b class="tr">0</b></div>
+  <h3 class="parth">Part B · In your own words</h3>
+  <div class="ow">
+  <div class="owt"><span class="qn">1</span> “Before, I thought forgiveness meant ___. Now I think it means ___.” Which of the four myths did you used to believe?</div>
+  <textarea rows="3" placeholder="Type here — tap FINISHED at the bottom to hand this to your teacher." aria-label="Your answer"></textarea>
+  <div class="plines"><span></span><span></span><span></span></div>
+</div><div class="ow">
+  <div class="owt"><span class="qn">2</span> Take a mistake you have been hard on yourself about and fill in the Three-Part Map: What exactly happened? What was the impact? What repair is possible?</div>
+  <textarea rows="4" placeholder="Type here — tap FINISHED at the bottom to hand this to your teacher." aria-label="Your answer"></textarea>
+  <div class="plines"><span></span><span></span><span></span><span></span><span></span></div>
+</div><div class="ow">
+  <div class="owt"><span class="qn">3</span> The Friend Test. Write what you would say to your best friend after they made a mistake. Then write it again — to yourself.</div>
+  <textarea rows="3" placeholder="Type here — tap FINISHED at the bottom to hand this to your teacher." aria-label="Your answer"></textarea>
+  <div class="plines"><span></span><span></span><span></span><span></span></div>
+</div><div class="ow">
+  <div class="owt"><span class="qn">4</span> Name one person on your support web. Write the one sentence you could say to them if something felt too big to carry alone.</div>
+  <textarea rows="3" placeholder="Type here — tap FINISHED at the bottom to hand this to your teacher." aria-label="Your answer"></textarea>
+  <div class="plines"><span></span><span></span><span></span></div>
+</div>
+  <div class="keyblock"><h3 class="parth">Answer key · Unit 2 · Self-Compassion &amp; Self-Forgiveness</h3><ol class="key"><li><b>A</b> — Myth 4, busted: you do not have to feel ready before you start. Forgiveness is a decision, not a feeling. That is why you can begin even when it still hurts.</li>
+<li><b>A</b> — Forgiveness is releasing resentment or self-blame — not to excuse behavior, but to free YOURSELF from carrying the weight of it. Each book comes out of the backpack. The load gets lighter.</li>
+<li><b>A</b> — Accountability = own it + understand the impact + repair = DONE. Self-punishment = using the mistake as evidence + replaying it = STUCK. The person drowning in self-punishment is often the LEAST accountable.</li>
+<li><b>A</b> — Step 1: what EXACTLY happened — honest, not dramatized. Step 2: the actual IMPACT. Step 3: what REPAIR is possible. When the map is complete, the self-punishment can stop. Isabella can stop apologizing for the gnome.</li>
+<li><b>A</b> — Zara would tell a friend, “You are so brave for trying.” She would never say it to herself. Self-compassion has three parts: self-kindness, common humanity (everyone struggles), and mindfulness (notice it without dramatizing or hiding).</li>
+<li><b>A</b> — Liam’s mom said, “You’re amazing no matter what,” and he felt worse. Empty cheerleading is not compassion. Self-compassion is honest AND kind — it names what happened and still speaks with care.</li>
+<li><b>A</b> — Some things you put down dozens of times before they stay down. Connor’s stone keeps coming back — that is not failure. That is what the practice looks like. You put it down again.</li>
+<li><b>A</b> — Some things are too big to carry alone. The one sentence to start: “I have been really hard on myself about something and I cannot seem to let it go. Can I talk to you?” Asking for support is the bravest thing in this curriculum.</li></ol></div>
+</section><section class="unit u3" id="u3" style="--uc:var(--u3)" hidden>
+  <div class="uhead"><h2>Unit 3 · Empathy &amp; Forgiving Others</h2></div>
+  <p class="urecap">Your hurt is real. Intent vs. impact. Forgiveness vs. trust — two separate decisions. The Forgiveness Path. The Three-Panel Story. Say It Straight. I Choose. This unit practiced dealing with hurt from other people without letting it change who you are.</p>
+  <h3 class="parth">Part A · Choose the answer</h3>
+  <div class="q" id="u3-q1">
+  <div class="qt"><span class="qn">1</span> Before Unit 3 says anything about forgiving, the first lesson says —</div>
+  <div class="opts"><button type="button" class="opt" data-ok="1"><span class="ol">A</span> your hurt is real and it matters</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">B</span> you should get over it quickly</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">C</span> it probably wasn’t on purpose, so ignore it</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">D</span> forgive first and feel later</button></div>
+  <div class="why" hidden><b>A.</b> Priya’s mom said, “Just ignore it.” What Priya needed first was for the hurt to be real. That is the whole first lesson — nothing more, not yet.</div>
+</div><div class="q" id="u3-q2">
+  <div class="qt"><span class="qn">2</span> Intent is ______. Impact is ______.</div>
+  <div class="opts"><button type="button" class="opt" data-ok="1"><span class="ol">A</span> what the person meant — what actually happened to you</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">B</span> what happened to you — what the person meant</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">C</span> both what they meant</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">D</span> both how you feel</button></div>
+  <div class="why" hidden><b>A.</b> If someone bumps into you by accident, their intent was not to hurt you — but you still fell. The hurt is real even when it wasn’t meant. Understanding why someone hurt you is an explanation, never an excuse.</div>
+</div><div class="q" id="u3-q3">
+  <div class="qt"><span class="qn">3</span> Forgiveness is ______. Trust is ______.</div>
+  <div class="opts"><button type="button" class="opt" data-ok="1"><span class="ol">A</span> for your own peace, and needs nothing from the other person — earned through changed behavior over time</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">B</span> earned over time — for your own peace</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">C</span> both required</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">D</span> both the same thing</button></div>
+  <div class="why" hidden><b>A.</b> Two separate decisions. Forgiveness is internal and can happen alone, in your own heart. Trust is relational and must be rebuilt through demonstrated change. You can forgive someone and still choose not to be close to them.</div>
+</div><div class="q" id="u3-q4">
+  <div class="qt"><span class="qn">4</span> “Forgiveness is never required when ______.”</div>
+  <div class="opts"><button type="button" class="opt" data-ok="1"><span class="ol">A</span> someone is still harming you</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">B</span> the hurt is small</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">C</span> it was an accident</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">D</span> the person is a friend</button></div>
+  <div class="why" hidden><b>A.</b> The safety statement comes first: your safety is more important than any lesson. If someone is still hurting you, the priority is safety and adult support — not forgiveness.</div>
+</div><div class="q" id="u3-q5">
+  <div class="qt"><span class="qn">5</span> Leila says: “I can try to forgive Jordan. But I’m not going to tell her secrets anymore.” Leila is —</div>
+  <div class="opts"><button type="button" class="opt" data-ok="1"><span class="ol">A</span> right — forgiveness and trust are separate decisions</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">B</span> wrong — if she forgives, she must trust again</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">C</span> wrong — she should forget it happened</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">D</span> not really forgiving</button></div>
+  <div class="why" hidden><b>A.</b> Trust is never obligatory — and never owed. Leila can put down the resentment and still keep herself protected. The boundary statement: “I am choosing not to carry resentment. I am also not in a place to be close to this person right now, and that is okay.”</div>
+</div><div class="q" id="u3-q6">
+  <div class="qt"><span class="qn">6</span> On the Forgiveness Path, moving backward —</div>
+  <div class="opts"><button type="button" class="opt" data-ok="1"><span class="ol">A</span> is not failure — it is the practice</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">B</span> means you never really forgave</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">C</span> means you are not a forgiving person</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">D</span> is against the rules</button></div>
+  <div class="why" hidden><b>A.</b> Mia’s anger came back three months later, as real as day one. The path is a squiggle, not a straight line: Still hurting · Beginning to understand · Some days are better · Choosing to put it down today · The hurt is getting smaller · I am okay. You put it down again.</div>
+</div><div class="q" id="u3-q7">
+  <div class="qt"><span class="qn">7</span> In the Three-Panel Story, Panel 1 is what happened. Panel 2 is the story I told myself. Panel 3 is —</div>
+  <div class="opts"><button type="button" class="opt" data-ok="1"><span class="ol">A</span> the story I am CHOOSING</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">B</span> what the other person thinks</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">C</span> pretending it never happened</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">D</span> the ending the teacher picks</button></div>
+  <div class="why" hidden><b>A.</b> You did not choose what happened to you. You get to choose what it means. Panel 1 stays true and stays private. Panel 3 is you being the author of your own story.</div>
+</div><div class="q" id="u3-q8">
+  <div class="qt"><span class="qn">8</span> Which “I Choose” statement is valid?</div>
+  <div class="opts"><button type="button" class="opt" data-ok="0"><span class="ol">A</span> “I choose to forgive.”</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">B</span> “I choose to keep working at it.”</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">C</span> “I choose not to forgive yet.”</button>
+<button type="button" class="opt" data-ok="1"><span class="ol">D</span> All three — every conscious choice is valid</button></div>
+  <div class="why" hidden><b>D.</b> Jasmine wrote: “I choose not to forgive yet. Because I am still hurting. And that is where I am on the path.” One of the most honest answers in the room. The only requirement is that the choice is yours and you know you are making it.</div>
+</div>
+  <div class="tally" data-total="8">Checked: <b class="tn">0</b> / 8 · Right on the first try: <b class="tr">0</b></div>
+  <h3 class="parth">Part B · In your own words</h3>
+  <div class="ow">
+  <div class="owt"><span class="qn">1</span> Where are you on the Forgiveness Path for something specific — station 1, 2, 3, 4, 5, or 6? Then write your I Choose statement: “I choose to ___. Because ___.”</div>
+  <textarea rows="3" placeholder="Type here — tap FINISHED at the bottom to hand this to your teacher." aria-label="Your answer"></textarea>
+  <div class="plines"><span></span><span></span><span></span><span></span></div>
+</div><div class="ow">
+  <div class="owt"><span class="qn">2</span> Two columns. Left: what forgiveness needs from the other person. Right: what trust needs. Then write a boundary statement in your own words.</div>
+  <textarea rows="4" placeholder="Type here — tap FINISHED at the bottom to hand this to your teacher." aria-label="Your answer"></textarea>
+  <div class="plines"><span></span><span></span><span></span><span></span><span></span></div>
+</div><div class="ow">
+  <div class="owt"><span class="qn">3</span> Panels 2 and 3 only (Panel 1 stays private): the story you told yourself about a hurt, and the story you are CHOOSING instead.</div>
+  <textarea rows="3" placeholder="Type here — tap FINISHED at the bottom to hand this to your teacher." aria-label="Your answer"></textarea>
+  <div class="plines"><span></span><span></span><span></span><span></span></div>
+</div><div class="ow">
+  <div class="owt"><span class="qn">4</span> Say It Straight, for a real or made-up moment: “When ___ happened, I felt ___. What I need going forward is ___.”</div>
+  <textarea rows="3" placeholder="Type here — tap FINISHED at the bottom to hand this to your teacher." aria-label="Your answer"></textarea>
+  <div class="plines"><span></span><span></span><span></span></div>
+</div>
+  <div class="keyblock"><h3 class="parth">Answer key · Unit 3 · Empathy &amp; Forgiving Others</h3><ol class="key"><li><b>A</b> — Priya’s mom said, “Just ignore it.” What Priya needed first was for the hurt to be real. That is the whole first lesson — nothing more, not yet.</li>
+<li><b>A</b> — If someone bumps into you by accident, their intent was not to hurt you — but you still fell. The hurt is real even when it wasn’t meant. Understanding why someone hurt you is an explanation, never an excuse.</li>
+<li><b>A</b> — Two separate decisions. Forgiveness is internal and can happen alone, in your own heart. Trust is relational and must be rebuilt through demonstrated change. You can forgive someone and still choose not to be close to them.</li>
+<li><b>A</b> — The safety statement comes first: your safety is more important than any lesson. If someone is still hurting you, the priority is safety and adult support — not forgiveness.</li>
+<li><b>A</b> — Trust is never obligatory — and never owed. Leila can put down the resentment and still keep herself protected. The boundary statement: “I am choosing not to carry resentment. I am also not in a place to be close to this person right now, and that is okay.”</li>
+<li><b>A</b> — Mia’s anger came back three months later, as real as day one. The path is a squiggle, not a straight line: Still hurting · Beginning to understand · Some days are better · Choosing to put it down today · The hurt is getting smaller · I am okay. You put it down again.</li>
+<li><b>A</b> — You did not choose what happened to you. You get to choose what it means. Panel 1 stays true and stays private. Panel 3 is you being the author of your own story.</li>
+<li><b>D</b> — Jasmine wrote: “I choose not to forgive yet. Because I am still hurting. And that is where I am on the path.” One of the most honest answers in the room. The only requirement is that the choice is yours and you know you are making it.</li></ol></div>
+</section><section class="unit u4" id="u4" style="--uc:var(--u4)" hidden>
+  <div class="uhead"><h2>Unit 4 · Grace &amp; Generosity</h2></div>
+  <p class="urecap">Grace vs. doormat. Mercy. The limit formula. The Pause Practice. The grace gap and the five-day micro-action. Difficult vs. unsafe. This unit practiced choosing generosity on purpose — from strength, never from fear.</p>
+  <h3 class="parth">Part A · Choose the answer</h3>
+  <div class="q" id="u4-q1">
+  <div class="qt"><span class="qn">1</span> Grace is —</div>
+  <div class="opts"><button type="button" class="opt" data-ok="1"><span class="ol">A</span> giving something generous to someone who has not necessarily earned it</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">B</span> being nice so people will like you</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">C</span> letting people treat you badly</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">D</span> a reward for good behavior</button></div>
+  <div class="why" hidden><b>A.</b> A choice, not a requirement. A strength, not a weakness. Mateo had done nothing to earn a seat — and on day twenty-two Ryn moved her tray anyway. That is grace.</div>
+</div><div class="q" id="u4-q2">
+  <div class="qt"><span class="qn">2</span> Grace vs. doormat. A doormat —</div>
+  <div class="opts"><button type="button" class="opt" data-ok="1"><span class="ol">A</span> has no choice</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">B</span> gives from strength</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">C</span> can say no when needed</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">D</span> decides what to give</button></div>
+  <div class="why" hidden><b>A.</b> A person extending grace has full choice and chooses generosity on purpose. If someone keeps hurting you and you keep doing nothing, that is not grace — that is a boundary problem. Devon playing worse on purpose is doormat, not grace.</div>
+</div><div class="q" id="u4-q3">
+  <div class="qt"><span class="qn">3</span> Mercy is —</div>
+  <div class="opts"><button type="button" class="opt" data-ok="1"><span class="ol">A</span> choosing not to give the full consequence someone might deserve</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">B</span> pretending nothing happened</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">C</span> covering for someone over and over</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">D</span> a sign of weakness</button></div>
+  <div class="why" hidden><b>A.</b> Mercy requires power — only a strong person can choose not to use their strength. Imani covered for Zach once and said, “Just don’t leave me with it again.” Mercy, with a limit attached.</div>
+</div><div class="q" id="u4-q4">
+  <div class="qt"><span class="qn">4</span> The most important words in the limit formula are —</div>
+  <div class="opts"><button type="button" class="opt" data-ok="1"><span class="ol">A</span> “I will”</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">B</span> “you must”</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">C</span> “you always”</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">D</span> “I’m sorry”</button></div>
+  <div class="why" hidden><b>A.</b> When ___, I feel ___ because ___. Going forward, I WILL ___. The limit is what YOU will do — not what you demand from the other person. It works whether or not they agree, change, or even hear it.</div>
+</div><div class="q" id="u4-q5">
+  <div class="qt"><span class="qn">5</span> A limit from strength passes three tests. Which is one of them?</div>
+  <div class="opts"><button type="button" class="opt" data-ok="1"><span class="ol">A</span> “Can I hold this even if they don’t change?”</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">B</span> “Will this make them feel as bad as I do?”</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">C</span> “Did I say it loud enough?”</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">D</span> “Will everyone take my side?”</button></div>
+  <div class="why" hidden><b>A.</b> Test 1: self-respect or retaliation? Test 2: does it focus on what I will do? Test 3: can I hold it even if they don’t change? A limit from fear collapses when the other person pushes back. A limit from strength doesn’t need them to.</div>
+</div><div class="q" id="u4-q6">
+  <div class="qt"><span class="qn">6</span> The Pause Practice: NOTICE the assumption, PAUSE, ASK what else could explain it — and then —</div>
+  <div class="opts"><button type="button" class="opt" data-ok="1"><span class="ol">A</span> CHOOSE the kindest explanation that fits what you know</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">B</span> decide they did it on purpose</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">C</span> ask everyone what they think</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">D</span> stop talking to them</button></div>
+  <div class="why" hidden><b>A.</b> Charitable interpretation is not naive — it is a deliberate choice when there are several possible explanations. Imani’s first thought was “She’s mad at me.” Then she remembered: Maya had a math test that morning.</div>
+</div><div class="q" id="u4-q7">
+  <div class="qt"><span class="qn">7</span> A grace gap is —</div>
+  <div class="opts"><button type="button" class="opt" data-ok="1"><span class="ol">A</span> a place where grace is missing — and one small act could make a difference</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">B</span> the break between two lessons</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">C</span> a mistake you made</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">D</span> someone who owes you a favor</button></div>
+  <div class="why" hidden><b>A.</b> Be specific: the new student who sits alone, the kid who never gets called on, the lunch monitor whose name nobody knows. Then: “Every day for five days, I will ___.” Small, sustainable, specific.</div>
+</div><div class="q" id="u4-q8">
+  <div class="qt"><span class="qn">8</span> Grace applies to a DIFFICULT person. For an UNSAFE person, what applies instead?</div>
+  <div class="opts"><button type="button" class="opt" data-ok="1"><span class="ol">A</span> distance and adult support</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">B</span> even more grace</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">C</span> ignoring it</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">D</span> getting even</button></div>
+  <div class="why" hidden><b>A.</b> Difficult = hard to be around, sometimes unkind, can be handled with care. Unsafe = repeatedly causes harm. With difficult people: limit your exposure, not your kindness. With unsafe people: adults and limits — never the doormat.</div>
+</div>
+  <div class="tally" data-total="8">Checked: <b class="tn">0</b> / 8 · Right on the first try: <b class="tr">0</b></div>
+  <h3 class="parth">Part B · In your own words</h3>
+  <div class="ow">
+  <div class="owt"><span class="qn">1</span> Describe a time you gave something you did not have to give — patience, a second chance, a seat at your table. What made it grace and not doormat?</div>
+  <textarea rows="3" placeholder="Type here — tap FINISHED at the bottom to hand this to your teacher." aria-label="Your answer"></textarea>
+  <div class="plines"><span></span><span></span><span></span><span></span></div>
+</div><div class="ow">
+  <div class="owt"><span class="qn">2</span> Write a limit formula for a situation that keeps happening: “When ___, I feel ___ because ___. Going forward, I will ___.” Then run the three tests.</div>
+  <textarea rows="4" placeholder="Type here — tap FINISHED at the bottom to hand this to your teacher." aria-label="Your answer"></textarea>
+  <div class="plines"><span></span><span></span><span></span><span></span><span></span></div>
+</div><div class="ow">
+  <div class="owt"><span class="qn">3</span> The Pause Practice: a time you assumed the worst about someone and were wrong. What kinder explanation was there all along?</div>
+  <textarea rows="3" placeholder="Type here — tap FINISHED at the bottom to hand this to your teacher." aria-label="Your answer"></textarea>
+  <div class="plines"><span></span><span></span><span></span><span></span></div>
+</div><div class="ow">
+  <div class="owt"><span class="qn">4</span> Your grace gap: “My grace gap is ___. Every day for five days, I will ___.” After the five days: what changed — in them, and in you?</div>
+  <textarea rows="3" placeholder="Type here — tap FINISHED at the bottom to hand this to your teacher." aria-label="Your answer"></textarea>
+  <div class="plines"><span></span><span></span><span></span><span></span></div>
+</div>
+  <div class="keyblock"><h3 class="parth">Answer key · Unit 4 · Grace &amp; Generosity</h3><ol class="key"><li><b>A</b> — A choice, not a requirement. A strength, not a weakness. Mateo had done nothing to earn a seat — and on day twenty-two Ryn moved her tray anyway. That is grace.</li>
+<li><b>A</b> — A person extending grace has full choice and chooses generosity on purpose. If someone keeps hurting you and you keep doing nothing, that is not grace — that is a boundary problem. Devon playing worse on purpose is doormat, not grace.</li>
+<li><b>A</b> — Mercy requires power — only a strong person can choose not to use their strength. Imani covered for Zach once and said, “Just don’t leave me with it again.” Mercy, with a limit attached.</li>
+<li><b>A</b> — When ___, I feel ___ because ___. Going forward, I WILL ___. The limit is what YOU will do — not what you demand from the other person. It works whether or not they agree, change, or even hear it.</li>
+<li><b>A</b> — Test 1: self-respect or retaliation? Test 2: does it focus on what I will do? Test 3: can I hold it even if they don’t change? A limit from fear collapses when the other person pushes back. A limit from strength doesn’t need them to.</li>
+<li><b>A</b> — Charitable interpretation is not naive — it is a deliberate choice when there are several possible explanations. Imani’s first thought was “She’s mad at me.” Then she remembered: Maya had a math test that morning.</li>
+<li><b>A</b> — Be specific: the new student who sits alone, the kid who never gets called on, the lunch monitor whose name nobody knows. Then: “Every day for five days, I will ___.” Small, sustainable, specific.</li>
+<li><b>A</b> — Difficult = hard to be around, sometimes unkind, can be handled with care. Unsafe = repeatedly causes harm. With difficult people: limit your exposure, not your kindness. With unsafe people: adults and limits — never the doormat.</li></ol></div>
+</section><section class="unit u5" id="u5" style="--uc:var(--brass)" hidden>
+  <div class="uhead"><h2>Year-End · Integration</h2></div>
+  <p class="urecap">Regulate. Reflect. Repair — in that order. The four-tool card. The four pillars — IDENTITY · SELF-COMPASSION · FORGIVENESS · GRACE — and the community charter: Room 18 built this. The Critic does not get the last word.</p>
+  <h3 class="parth">Part A · Choose the answer</h3>
+  <div class="q" id="u5-q1">
+  <div class="qt"><span class="qn">1</span> The Regulation &amp; Repair rule, in order:</div>
+  <div class="opts"><button type="button" class="opt" data-ok="1"><span class="ol">A</span> Regulate. Reflect. Repair.</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">B</span> Repair. Then regulate.</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">C</span> Reflect. Repair. Regulate.</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">D</span> Repair. Repair. Repair.</button></div>
+  <div class="why" hidden><b>A.</b> You cannot do hard emotional work — repair, accountability, forgiveness — from outside your Window of Tolerance. An apology delivered while flooded sounds defensive. Regulate first. Then do the work. Every time.</div>
+</div><div class="q" id="u5-q2">
+  <div class="qt"><span class="qn">2</span> The four tools on your year-end card: a regulation strategy, your recovery arc, a repair step, and —</div>
+  <div class="opts"><button type="button" class="opt" data-ok="1"><span class="ol">A</span> your limit formula</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">B</span> your report card</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">C</span> your Identity Web</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">D</span> your grace gap</button></div>
+  <div class="why" hidden><b>A.</b> My Toolkit (WS-R1). My Recovery Map (WS-R2). My Repair Plan (WS-R3). My Limit Statement (WS-R4). Four tools, in your own handwriting — the framework you carry out the door.</div>
+</div><div class="q" id="u5-q3">
+  <div class="qt"><span class="qn">3</span> The Repair Protocol has five steps. The one most often skipped is —</div>
+  <div class="opts"><button type="button" class="opt" data-ok="1"><span class="ol">A</span> Step 5 — re-entry agreed</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">B</span> Step 1 — both people regulate first</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">C</span> Step 2 — one person speaks</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">D</span> Step 3 — impact acknowledged</button></div>
+  <div class="why" hidden><b>A.</b> Repair does not automatically mean the friendship goes back to how it was. Re-entry is not assumed — it is agreed. Jordan apologized; Sam is still guarded; that Step 5 conversation has not happened yet.</div>
+</div><div class="q" id="u5-q4">
+  <div class="qt"><span class="qn">4</span> The four pillars on the Room 18 charter are —</div>
+  <div class="opts"><button type="button" class="opt" data-ok="1"><span class="ol">A</span> Identity · Self-Compassion · Forgiveness · Grace</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">B</span> Reading · Writing · Math · Science</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">C</span> Critic · Coach · Guilt · Shame</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">D</span> Grace · Mercy · Limits · Doormat</button></div>
+  <div class="why" hidden><b>A.</b> One chart, four pillars, and under each one the class wrote what it learned in its own words. “We had a Mistake Wall. We had stones. We learned what real apology sounds like. We learned the Critic does not get the last word.” Room 18 built this.</div>
+</div><div class="q" id="u5-q5">
+  <div class="qt"><span class="qn">5</span> The last line of the year: “You are the ______ of your own grace.”</div>
+  <div class="opts"><button type="button" class="opt" data-ok="1"><span class="ol">A</span> architects</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">B</span> students</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">C</span> judges</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">D</span> owners</button></div>
+  <div class="why" hidden><b>A.</b> The work continues. You know how now. The room we built does not get torn down — it gets added onto.</div>
+</div>
+  <div class="tally" data-total="5">Checked: <b class="tn">0</b> / 5 · Right on the first try: <b class="tr">0</b></div>
+  <h3 class="parth">Part B · In your own words</h3>
+  <div class="ow">
+  <div class="owt"><span class="qn">1</span> Your four-tool card, in your own words: my most reliable regulation strategy · the hardest phase of my recovery arc · the repair step I do best · my limit formula.</div>
+  <textarea rows="4" placeholder="Type here — tap FINISHED at the bottom to hand this to your teacher." aria-label="Your answer"></textarea>
+  <div class="plines"><span></span><span></span><span></span><span></span><span></span></div>
+</div><div class="ow">
+  <div class="owt"><span class="qn">2</span> A short letter to your September self. What do you understand about yourself now that you didn’t then? Which tool will you tell them to use first — and when will they need it?</div>
+  <textarea rows="5" placeholder="Type here — tap FINISHED at the bottom to hand this to your teacher." aria-label="Your answer"></textarea>
+  <div class="plines"><span></span><span></span><span></span><span></span><span></span><span></span></div>
+</div>
+  <div class="keyblock"><h3 class="parth">Answer key · Year-End · Integration</h3><ol class="key"><li><b>A</b> — You cannot do hard emotional work — repair, accountability, forgiveness — from outside your Window of Tolerance. An apology delivered while flooded sounds defensive. Regulate first. Then do the work. Every time.</li>
+<li><b>A</b> — My Toolkit (WS-R1). My Recovery Map (WS-R2). My Repair Plan (WS-R3). My Limit Statement (WS-R4). Four tools, in your own handwriting — the framework you carry out the door.</li>
+<li><b>A</b> — Repair does not automatically mean the friendship goes back to how it was. Re-entry is not assumed — it is agreed. Jordan apologized; Sam is still guarded; that Step 5 conversation has not happened yet.</li>
+<li><b>A</b> — One chart, four pillars, and under each one the class wrote what it learned in its own words. “We had a Mistake Wall. We had stones. We learned what real apology sounds like. We learned the Critic does not get the last word.” Room 18 built this.</li>
+<li><b>A</b> — The work continues. You know how now. The room we built does not get torn down — it gets added onto.</li></ol></div>
+</section>
+</div>
+</div>
+<footer>
+  <a href="room-18-curriculum.html">← The Room 18 curriculum</a>
+  <span>The room we built does not get torn down. It gets added onto.</span>
+</footer>
+</div>
+<script>
+(function(){
+  var KEY="aog.interior.ws.v1.theme";
+  document.getElementById("themeBtn").addEventListener("click",function(){
+    var cur=document.documentElement.getAttribute("data-theme")==="dark"?"light":"dark";
+    document.documentElement.setAttribute("data-theme",cur);
+    try{localStorage.setItem(KEY,cur);}catch(e){}
+  });
+  document.getElementById("printWb").addEventListener("click",function(){
+    document.body.classList.remove("printkey"); window.print();
+  });
+  document.getElementById("printKey").addEventListener("click",function(){
+    document.body.classList.add("printkey"); window.print();
+  });
+  if(window.matchMedia){window.matchMedia("print").addEventListener("change",function(m){
+    if(!m.matches) document.body.classList.remove("printkey");
+  });}
+  /* the rail — one unit on stage at a time, the anchor-charts structure */
+  var ORDER = ["u1","u2","u3","u4","u5"];
+  var items = document.querySelectorAll(".ritem");
+  function show(id, push){
+    if(ORDER.indexOf(id) < 0) id = ORDER[0];
+    ORDER.forEach(function(u){ document.getElementById(u).hidden = (u !== id); });
+    items.forEach(function(b){ b.setAttribute("aria-current", String(b.getAttribute("data-u") === id)); });
+    try{
+      var q = new URLSearchParams(location.search); q.set("u", id);
+      (push ? history.pushState : history.replaceState).call(history, null, "", "?" + q.toString());
+    }catch(e){}
+    if(push) window.scrollTo(0, 0);
+  }
+  items.forEach(function(b){ b.addEventListener("click", function(){ show(b.getAttribute("data-u"), true); }); });
+  window.addEventListener("popstate", function(){
+    var q = new URLSearchParams(location.search); show(q.get("u") || ORDER[0], false);
+  });
+  var q0 = new URLSearchParams(location.search);
+  show(q0.get("u") || ORDER[0], false);
+
+  document.querySelectorAll(".q").forEach(function(q){
+    var first=true;
+    q.querySelectorAll(".opt").forEach(function(o){
+      o.addEventListener("click",function(){
+        if(q.classList.contains("done")) return;
+        o.classList.add("picked");
+        q.classList.add("done");
+        q.querySelector(".why").hidden=false;
+        var sec=q.closest("section"), t=sec.querySelector(".tally");
+        var tn=t.querySelector(".tn"), tr=t.querySelector(".tr");
+        tn.textContent=(+tn.textContent)+1;
+        if(o.getAttribute("data-ok")==="1" && first) tr.textContent=(+tr.textContent)+1;
+      });
+    });
+  });
+})();
+</script>
+
+<style>
+#wbFin{margin:26px 0 8px;border:2px solid var(--good);border-radius:16px;background:var(--good-soft);padding:18px 20px}
+#wbFin h2{font-family:var(--serif);font-weight:900;font-size:1.25rem;margin:0;color:var(--ink)}
+#wbFin p{font-size:.88rem;color:var(--sub);margin:6px 0 12px;max-width:60ch}
+#wbFin .row{display:flex;flex-wrap:wrap;gap:9px;align-items:center}
+#wbFin input{border:1.5px solid var(--line);border-radius:10px;background:var(--card);color:var(--ink);padding:10px 12px;font:inherit;min-width:220px}
+#wbFin .btn-fin{border:2px solid var(--good);background:var(--good);color:#fff;border-radius:10px;padding:11px 20px;font:800 1rem var(--sans);letter-spacing:.06em;cursor:pointer}
+#wbFin .st{font-size:.84rem;color:var(--sub)}
+#wbPrev{position:fixed;top:0;left:0;right:0;bottom:0;z-index:400;background:var(--bg);overflow:auto;-webkit-overflow-scrolling:touch}
+#wbPrev[hidden]{display:none}
+body.wbprev{overflow:hidden}
+#wbPrev .pv-bar{position:sticky;top:0;z-index:10;display:flex;flex-wrap:wrap;gap:9px;align-items:center;background:var(--good);color:#fff;padding:12px 18px}
+#wbPrev .pv-bar .t{font-weight:800;font-size:1rem;flex:1;min-width:200px}
+#wbPrev .pv-bar .pst{font-size:.82rem;opacity:.95}
+#wbPrev .pv-bar button{border:1.5px solid #fff;background:transparent;color:#fff;border-radius:9px;padding:8px 14px;font:700 .85rem var(--sans);cursor:pointer}
+#wbPrev .pv-bar button.solid{background:#fff;color:var(--good)}
+#wbPrev .pv-body{max-width:860px;margin:0 auto;padding:20px 16px 60px}
+#wbPrev .pv-lead{font-size:.86rem;color:var(--sub);margin:4px 0 16px}
+#wbPrev .pv-text{white-space:pre-wrap;border:1.5px solid var(--line);border-radius:10px;background:var(--card);padding:10px 12px;min-height:2.2em;font:inherit}
+#wbPrev .pv-text.empty{color:var(--sub);font-style:italic}
+#wbPrev section.unit{display:block !important;margin:0 0 34px}
+@media print{
+  #wbFin{display:none !important}
+  body:not(.wbprev) #wbPrev{display:none !important}
+  body.wbprev .wrap{display:none !important}
+  body.wbprev #wbPrev{position:static !important;overflow:visible !important;background:#fff}
+  body.wbprev #wbPrev .pv-bar button{display:none}
+  body.wbprev #wbPrev .pv-bar{background:#fff;color:#111;border-bottom:2px solid #111}
+}
+</style>
+<script>
+/* ══ AOG-WB-FINISHED-V1 — one press: the workbook goes to the adult who
+   shared the page, and the student lands on a preview of what they built. */
+(function(){
+  var DEST_RE = /^https:\/\/script\.google\.com\/[^\s]*\/exec$/;
+  function destDecode(raw){
+    try{
+      var t = String(raw).replace(/-/g,"+").replace(/_/g,"/");
+      while(t.length % 4) t += "=";
+      var o = JSON.parse(atob(t));
+      if(o && typeof o.u==="string" && DEST_RE.test(o.u))
+        return { url:o.u, key:(typeof o.k==="string" ? o.k : "") };
+    }catch(e){}
+    return null;
+  }
+  var DEST = null;
+  try{
+    var dm = /[?&]dest=([^&]+)/.exec(location.search || "");
+    if(dm) DEST = destDecode(decodeURIComponent(dm[1]));
+  }catch(e){}
+  if(!DEST){
+    try{
+      var cfg = window.AOG_SYNC_DEFAULTS;
+      if(cfg && !cfg.destinations && typeof cfg.url==="string" && DEST_RE.test(cfg.url)
+         && Object.prototype.toString.call(cfg.schools)==="[object Array]" && cfg.schools.length)
+        DEST = { url:cfg.url, key:(typeof cfg.key==="string" ? cfg.key : "") };
+    }catch(e){}
+  }
+  if(!DEST) return;
+
+  var whoKey = "aog.interior.ws.v1.who";
+  function getWho(){ try{ return String(localStorage.getItem(whoKey)||""); }catch(e){ return ""; } }
+  function setWho(v){ try{ localStorage.setItem(whoKey, v); }catch(e){} }
+  function today(){ var d=new Date(); return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0"); }
+  function gather(){
+    var units = {}, prompts = [];
+    [].slice.call(document.querySelectorAll("section.unit")).forEach(function(sec){
+      var id = sec.id, tal = sec.querySelector(".tally");
+      units[id] = {
+        checked: tal ? tal.querySelector(".tn").textContent : "",
+        firstTry: tal ? tal.querySelector(".tr").textContent : ""
+      };
+      [].slice.call(sec.querySelectorAll(".ow")).forEach(function(ow, i){
+        var ta = ow.querySelector("textarea");
+        if(ta && ta.value.trim() !== "")
+          prompts.push({ unit:id, n:i+1,
+                         prompt: ow.querySelector(".owt").textContent.replace(/\s+/g," ").trim().slice(0,120),
+                         answer: ta.value });
+      });
+    });
+    return { units:units, prompts:prompts };
+  }
+
+  var card = document.createElement("section");
+  card.id = "wbFin"; card.className = "no-print";
+  card.innerHTML =
+    '<h2>Finished?</h2>' +
+    '<p>Tap FINISHED and your workbook \u2014 your checked answers and everything you wrote \u2014 goes straight to the adult who shared this page. You\u2019ll see a preview of what you built.</p>' +
+    '<div class="row">' +
+    '<input type="text" id="wbWho" autocomplete="off" maxlength="60" placeholder="Your code or first name — the same one you check in with" aria-label="Your code or first name">' +
+    '<button class="btn-fin" type="button" id="wbSendBtn">FINISHED</button>' +
+    '<span class="st" id="wbSt" aria-live="polite"></span></div>';
+  var foot = document.querySelector(".wrap footer");
+  if(foot) foot.parentNode.insertBefore(card, foot); else document.querySelector(".wrap").appendChild(card);
+
+  var prev = document.createElement("div");
+  prev.id = "wbPrev"; prev.hidden = true;
+  prev.setAttribute("role","dialog"); prev.setAttribute("aria-label","Preview of your workbook");
+  document.body.appendChild(prev);
+
+  function buildPreview(who, statusText){
+    prev.innerHTML = "";
+    var bar = document.createElement("div"); bar.className = "pv-bar";
+    var t = document.createElement("span"); t.className = "t";
+    t.textContent = "\u2713 FINISHED \u2014 " + who + " \u00b7 The Companion Workbook";
+    var pst = document.createElement("span"); pst.className = "pst"; pst.id = "wbPvSt"; pst.textContent = statusText;
+    var pr = document.createElement("button"); pr.type="button"; pr.className="solid"; pr.textContent = "Print my copy";
+    pr.addEventListener("click", function(){ window.print(); });
+    var bk = document.createElement("button"); bk.type="button"; bk.textContent = "Back to my workbook";
+    bk.addEventListener("click", function(){ prev.hidden = true; document.body.classList.remove("wbprev"); });
+    bar.appendChild(t); bar.appendChild(pst); bar.appendChild(pr); bar.appendChild(bk);
+    prev.appendChild(bar);
+    var body = document.createElement("div"); body.className = "pv-body";
+    var lead = document.createElement("p"); lead.className = "pv-lead";
+    lead.textContent = "This is what you built \u2014 exactly what your teacher receives.";
+    body.appendChild(lead);
+    [].slice.call(document.querySelectorAll("section.unit")).forEach(function(sec){
+      var clone = sec.cloneNode(true);
+      clone.hidden = false; clone.removeAttribute("id");
+      [].slice.call(clone.querySelectorAll("textarea")).forEach(function(ta){
+        var d = document.createElement("div");
+        var srcTa = null;
+        d.className = "pv-text empty"; d.textContent = "\u2014 left blank \u2014";
+        ta.parentNode.replaceChild(d, ta);
+      });
+      body.appendChild(clone);
+    });
+    /* fill the cloned answer boxes from the live textareas, in order */
+    var live = [].slice.call(document.querySelectorAll(".wrap section.unit .ow textarea"));
+    var slots = [].slice.call(body.querySelectorAll(".ow .pv-text"));
+    live.forEach(function(ta, i){
+      if(slots[i] && ta.value.trim() !== ""){
+        slots[i].className = "pv-text"; slots[i].textContent = ta.value;
+      }
+    });
+    prev.appendChild(body);
+  }
+  function setPvStatus(txt){ var n = document.getElementById("wbPvSt"); if(n) n.textContent = txt; }
+
+  var inp = document.getElementById("wbWho"), btn = document.getElementById("wbSendBtn"), st = document.getElementById("wbSt");
+  inp.value = getWho();
+  /* .30he — autosend, the free-writing translation: &who= boots into a
+     BLANK saved name only, and Enter in the name field sends. */
+  try {
+    var wm = /[?&]who=([^&]+)/.exec(location.search || "");
+    if (wm && !inp.value.trim()) {
+      inp.value = decodeURIComponent(wm[1]).slice(0, 60);
+      if (inp.value.trim()) setWho(inp.value.trim());
+    }
+  } catch (e) {}
+  inp.addEventListener("keydown", function (e) {
+    if (e.key === "Enter") { e.preventDefault(); btn.click(); }
+  });
+  var busy = false;
+  btn.addEventListener("click", function(){
+    if(busy) return;
+    var who = inp.value.trim();
+    if(!who){ st.textContent = "Add your code or first name — the same one you check in with — so this lands with your other work."; inp.focus(); return; }
+    setWho(who);
+    var payload = {
+      action:"checkin", checkinType:"practice", _backendAuth:DEST.key,
+      studentId:who, timestamp:new Date().toISOString(), date:today(),
+      activityId:"wb18", activityName:"Room 18 \u2014 The Companion Workbook",
+      skill:"Room 18 \u2014 The Companion Workbook",
+      setNo:"", itemsTotal:"", independent:"", supported:"", hintsUsed:"", confidence:"",
+      source:"link",
+      extra:JSON.stringify({series:"sel-workbook", build:"wb finished v1", finished:true, responses:gather()})
+    };
+    var body = JSON.stringify(payload);
+    busy = true;
+    buildPreview(who, "Sending to your teacher\u2026");
+    prev.hidden = false; document.body.classList.add("wbprev"); prev.scrollTop = 0;
+    function done(){ busy=false; setPvStatus("Turned in \u2713"); st.textContent="Turned in \u2713"; btn.textContent="FINISHED \u2713"; }
+    function fail(){ busy=false; setPvStatus("That didn\u2019t go through \u2014 check the internet, then tap FINISHED again."); }
+    fetch(DEST.url, {method:"POST", mode:"cors", redirect:"follow",
+        headers:{"Content-Type":"text/plain;charset=utf-8"}, body:body})
+      .then(function(res){ return res.json(); })
+      .then(function(j){ if(j && j.ok) done(); else fail(); })
+      .catch(function(){
+        fetch(DEST.url, {method:"POST", mode:"no-cors", redirect:"follow",
+            headers:{"Content-Type":"text/plain;charset=utf-8"}, body:body})
+          .then(done).catch(fail);
+      });
+  });
+})();
+</script>
+
+
+<script>
+/* AOG-R36-NAV behavior — back pill + the Explore menu. */
+(function(){
+  var back = document.getElementById("r36Back");
+  back.addEventListener("click", function(e){
+    var sameOrigin = false;
+    try{ sameOrigin = document.referrer.indexOf(location.origin) === 0; }catch(err){}
+    if(history.length > 1 && sameOrigin){ e.preventDefault(); history.back(); }
+  });
+  var btn = document.getElementById("r36MenuBtn"), menu = document.getElementById("r36Menu");
+  function open(on){ menu.hidden = !on; btn.setAttribute("aria-expanded", String(on)); }
+  btn.addEventListener("click", function(e){ e.stopPropagation(); open(menu.hidden); });
+  document.addEventListener("click", function(e){ if(!menu.hidden && !menu.contains(e.target) && e.target !== btn) open(false); });
+  document.addEventListener("keydown", function(e){ if(e.key === "Escape") open(false); });
+
+  /* accessibility — the SAME keys and classes the rest of the site uses, so
+     a setting made on a hub follows the student here and back */
+  var H = document.documentElement;
+  function lsGet(k){ try{ return localStorage.getItem(k); }catch(e){ return null; } }
+  function lsSet(k,v){ try{ localStorage.setItem(k,v); }catch(e){} }
+  var A11Y = [
+    {key:"aog.a11y.contrast", cls:"a11y-contrast", row:"r36HcRow"},
+    {key:"aog.a11y.dyslexic", cls:"a11y-dyslexic", row:"r36DysRow"}
+  ];
+  var abtn = document.getElementById("r36A11yBtn"), amenu = document.getElementById("r36A11y");
+  function aopen(on){ amenu.hidden = !on; abtn.setAttribute("aria-expanded", String(on)); }
+  abtn.addEventListener("click", function(e){ e.stopPropagation(); aopen(amenu.hidden); });
+  document.addEventListener("click", function(e){ if(!amenu.hidden && !amenu.contains(e.target) && e.target !== abtn) aopen(false); });
+  A11Y.forEach(function(a){
+    var row = document.getElementById(a.row);
+    function paint(on){ H.classList.toggle(a.cls, on); row.setAttribute("aria-checked", String(on)); }
+    paint(lsGet(a.key) === "1");
+    row.addEventListener("click", function(){
+      var on = !H.classList.contains(a.cls);
+      lsSet(a.key, on ? "1" : "0"); paint(on);
+    });
+  });
+})();
+</script>
+
+<style>
+/* ══ AOG-PRINTBRAND-V1 — the mark on every printed sheet ══ */
+.aog-printbrand,.aog-printwm{display:none}
+@media print{
+  .aog-printbrand{display:block;position:fixed;bottom:2px;left:0;right:0;text-align:center;
+    font:700 9px/1.4 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    color:#1B3A5F;letter-spacing:.08em;z-index:99}
+  .aog-printbrand .mk{display:inline-block;width:12px;height:12px;line-height:12px;border-radius:3px;
+    background:#1B3A5F;color:#fff;font-family:Georgia,serif;font-weight:900;font-size:9px;
+    text-align:center;margin-right:4px;vertical-align:-2px;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .aog-printwm{display:block;position:fixed;top:0;left:0;right:0;bottom:0;pointer-events:none;
+    overflow:hidden;z-index:98}
+  .aog-printwm span{position:absolute;left:-25%;right:-25%;text-align:center;white-space:nowrap;
+    font:900 44px/1 Georgia,serif;letter-spacing:.2em;color:rgba(27,58,95,.06);
+    transform:rotate(-28deg);-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .aog-printwm span:nth-child(1){top:22%}
+  .aog-printwm span:nth-child(2){top:52%}
+  .aog-printwm span:nth-child(3){top:82%}
+}
+
+/* ══ AOG-PRINT-SAFE-V1 (2026-09-20) ═══════════════════════════════════════════
+   Jimmy, printing a novel study from his phone: "another pdf that gets parts of
+   the material cut off." These are the rules that keep paper honest on every
+   engine — a table row, a list item, a figure and a picture stay whole; a head
+   keeps the lines under it; no paragraph strands one line at a page edge; and a
+   long table repeats its head at the top of each page. Printed pages only. */
+@media print{
+  table{break-inside:auto; page-break-inside:auto}
+  thead{display:table-header-group}
+  tfoot{display:table-footer-group}
+  tr{break-inside:avoid; page-break-inside:avoid}
+  li,figure,img,svg{break-inside:avoid; page-break-inside:avoid}
+  h1,h2,h3,h4,h5{break-after:avoid; page-break-after:avoid}
+  p{orphans:3; widows:3}
+}
+</style>
+<div class="aog-printwm" aria-hidden="true"><span>ARCHITECTURE OF GRACE</span><span>ARCHITECTURE OF GRACE</span><span>ARCHITECTURE OF GRACE</span></div>
+<div class="aog-printbrand" aria-hidden="true"><span class="mk">A</span>ARCHITECTURE OF GRACE &middot; architectureofgrace.org</div>
+
+</body>
+</html>

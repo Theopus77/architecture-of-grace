@@ -1,0 +1,1729 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Quiz Room — Architecture of Grace</title>
+<meta name="description" content="Every social studies quiz in one place — the judicial branch word-bank paper, the bill road and impeachment, the whole Constitution review, and the four charts. Scored, timed, and recorded nowhere.">
+<!-- ═══ AOG ICONS + LINK PREVIEW · managed block · .30k0 ═══
+     Inserted by _work/aog_head.py — DO NOT hand-edit one page; edit the
+     script and re-run it, or the 100 pages drift apart again. The card
+     URL carries ?v= because Slack, Apple and Google cache an og image BY
+     URL for weeks: change the picture, bump IMG_V, or nothing shows up.
+     ═══════════════════════════════════════════════════════════════ -->
+<link rel="canonical" href="https://architectureofgrace.org/quiz">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Architecture of Grace">
+<meta property="og:locale" content="en_US">
+<meta property="og:title" content="The Quiz Room — Architecture of Grace">
+<meta property="og:description" content="Every social studies quiz in one place — the judicial branch word-bank paper, the bill road and impeachment, the whole Constitution review, and the four charts. Scored, timed, and recorded nowhere.">
+<meta property="og:url" content="https://architectureofgrace.org/quiz">
+<meta property="og:image" content="https://architectureofgrace.org/og-image.png?v=1">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Architecture of Grace — K–12 academics and the language of grace, built for the students the standard lesson wasn't written for.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="The Quiz Room — Architecture of Grace">
+<meta name="twitter:description" content="Every social studies quiz in one place — the judicial branch word-bank paper, the bill road and impeachment, the whole Constitution review, and the four charts. Scored, timed, and recorded nowhere.">
+<meta name="twitter:image" content="https://architectureofgrace.org/og-image.png?v=1">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#0A1E33">
+<meta name="apple-mobile-web-app-title" content="Grace">
+<meta name="application-name" content="Architecture of Grace">
+<!-- ═══ END AOG ICONS + LINK PREVIEW ═══ -->
+<meta name="robots" content="noindex">
+<!-- No external requests of any kind. Every byte this page needs is in this file,
+     the site bar included: it is inlined rather than shared so this line stays true. -->
+<style>
+/* ══ TOKENS — same set as the math activities. Light is the base;
+   dark redefines tokens only, never components. ══ */
+:root{
+  --ground:#F5F1E8;
+  --field:#FFFFFF;
+  --field-2:#EFEAE0;
+  --ink:#1D2733;
+  --ink-soft:#57626F;
+  --ink-faint:#5F6B78;
+  --navy:#1B3A5F;
+  --gold:#B8893A;
+  --gold-deep:#7A5C1F;
+  --rule:rgba(29,39,51,.16);
+  --rule-soft:rgba(29,39,51,.08);
+  --lift:0 1px 0 rgba(255,255,255,.7), 0 20px 44px -30px rgba(29,39,51,.55);
+  --lift-sm:0 1px 2px rgba(29,39,51,.07), 0 8px 20px -16px rgba(29,39,51,.4);
+  --a:#4A3A8C;
+  --a-wash:rgba(74,58,140,.07);
+  --lock:#2E6B4F;
+  --lock-wash:rgba(46,107,79,.09);
+  --caution:#9A3412;
+  --focus:#B8893A;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --ground:#12161C; --field:#1A2029; --field-2:#222A34;
+    --ink:#E9EEF4; --ink-soft:#A3AFBC; --ink-faint:#84909D;
+    --navy:#9CC2E8; --gold:#D6A852; --gold-deep:#D6A852;
+    --rule:rgba(233,238,244,.18); --rule-soft:rgba(233,238,244,.09);
+    --lift:0 1px 0 rgba(233,238,244,.04), 0 24px 54px -32px rgba(0,0,0,.95);
+    --lift-sm:0 1px 2px rgba(0,0,0,.5), 0 10px 24px -18px rgba(0,0,0,.9);
+    --a:#A99BE8; --a-wash:rgba(169,155,232,.12);
+    --lock:#79C79E; --lock-wash:rgba(121,199,158,.12);
+    --caution:#F0A07C;
+    --focus:#D6A852;
+  }
+}
+:root[data-theme="dark"]{
+  --ground:#12161C; --field:#1A2029; --field-2:#222A34;
+  --ink:#E9EEF4; --ink-soft:#A3AFBC; --ink-faint:#84909D;
+  --navy:#9CC2E8; --gold:#D6A852; --gold-deep:#D6A852;
+  --rule:rgba(233,238,244,.18); --rule-soft:rgba(233,238,244,.09);
+  --lift:0 1px 0 rgba(233,238,244,.04), 0 24px 54px -32px rgba(0,0,0,.95);
+  --lift-sm:0 1px 2px rgba(0,0,0,.5), 0 10px 24px -18px rgba(0,0,0,.9);
+  --a:#A99BE8; --a-wash:rgba(169,155,232,.12);
+  --lock:#79C79E; --lock-wash:rgba(121,199,158,.12);
+  --caution:#F0A07C;
+  --focus:#D6A852;
+}
+
+*{box-sizing:border-box;}
+html{-webkit-text-size-adjust:100%;}
+body{
+  margin:0; background:var(--ground); color:var(--ink);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  font-size:16px; line-height:1.55;
+}
+h1,h2,h3{margin:0; text-wrap:balance; font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,"Times New Roman",serif; font-weight:600;}
+p{margin:0;}
+button{font:inherit; color:inherit; cursor:pointer;}
+a{color:inherit;}
+:focus-visible{outline:3px solid var(--focus); outline-offset:2px; border-radius:6px;}
+.wrap{max-width:920px; margin:0 auto; padding:0 20px;}
+
+/* ══ MASTHEAD ══ */
+.mast{padding:34px 20px 8px;}
+.mast .row{display:flex; align-items:center; gap:12px; margin-bottom:18px;}
+.mark{
+  width:44px; height:44px; border-radius:12px; background:var(--navy); color:#fff;
+  display:flex; align-items:center; justify-content:center;
+  font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+  font-size:24px; font-weight:700; flex:none;
+}
+:root[data-theme="dark"] .mark{color:#12161C;}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]) .mark{color:#12161C;} }
+.mast .name{font-weight:700; letter-spacing:.01em;}
+.mast .sub{color:var(--ink-soft); font-size:14px;}
+.mast h1{font-size:clamp(30px,6vw,44px); line-height:1.12; margin-bottom:10px;}
+.deck{color:var(--ink-soft); font-size:17px; max-width:60ch;}
+
+.acts{display:flex; flex-wrap:wrap; gap:10px; margin-top:18px;}
+.btn{
+  appearance:none; border:1.5px solid var(--rule); background:var(--field);
+  border-radius:12px; padding:11px 16px; font-weight:600; font-size:15px;
+  box-shadow:var(--lift-sm); min-height:48px;
+}
+.btn:hover{border-color:var(--ink-faint);}
+
+/* ══ STRANDS ══ */
+.strand{margin-top:34px;}
+.strand-head{display:flex; align-items:baseline; gap:12px; flex-wrap:wrap; margin-bottom:6px;}
+.strand-head .k{
+  font-size:12.5px; font-weight:700; letter-spacing:.09em; text-transform:uppercase;
+  color:var(--gold-deep);
+}
+.strand-head h2{font-size:clamp(22px,4vw,28px);}
+.strand>.say{color:var(--ink-soft); max-width:62ch; margin-bottom:16px;}
+
+.cards{display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:14px;}
+.card{
+  display:block; text-decoration:none; background:var(--field);
+  border:1.5px solid var(--rule-soft); border-radius:16px; padding:16px 16px 14px;
+  box-shadow:var(--lift-sm); position:relative; min-height:48px;
+}
+.card:hover{border-color:var(--gold); box-shadow:var(--lift);}
+.card .num{
+  font-size:12.5px; font-weight:700; letter-spacing:.08em; text-transform:uppercase;
+  color:var(--ink-faint); display:block; margin-bottom:4px;
+}
+.card h3{font-size:19px; margin-bottom:6px;}
+.card .what{color:var(--ink-soft); font-size:14.5px; line-height:1.5;}
+.card .go{
+  display:inline-block; margin-top:10px; font-size:14px; font-weight:700; color:var(--a);
+}
+
+/* ══ VOCAB ══ */
+.vocab{
+  margin-top:34px; background:var(--field-2); border:1.5px solid var(--rule-soft);
+  border-radius:16px; padding:18px;
+}
+.vocab h2{font-size:20px; margin-bottom:4px;}
+.vocab .say{color:var(--ink-soft); font-size:14.5px; margin-bottom:12px; max-width:62ch;}
+.vocab .cols{display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:14px;}
+.vocab .col .k{
+  font-size:12.5px; font-weight:700; letter-spacing:.08em; text-transform:uppercase;
+  color:var(--gold-deep); display:block; margin-bottom:6px;
+}
+.vocab ul{margin:0; padding:0; list-style:none; columns:2; column-gap:18px;}
+.vocab li{
+  font-size:14.5px; padding:3px 0; break-inside:avoid; color:var(--ink);
+}
+
+/* ══ TEACHER ══ */
+.teach{
+  margin-top:34px; border:1.5px dashed var(--rule); border-radius:16px;
+  background:var(--field);
+}
+.teach summary{
+  cursor:pointer; padding:16px 18px; font-weight:700; font-size:15.5px;
+  list-style:none; min-height:48px; display:flex; align-items:center; gap:8px;
+}
+.teach summary::-webkit-details-marker{display:none;}
+.teach summary::before{content:"▸"; color:var(--gold-deep); transition:transform .15s;}
+.teach[open] summary::before{transform:rotate(90deg);}
+.teach .inner{padding:0 18px 18px; display:grid; gap:12px;}
+.teach p{color:var(--ink-soft); font-size:14.5px; max-width:70ch;}
+.teach p b{color:var(--ink);}
+.teach .step{
+  display:grid; grid-template-columns:auto 1fr; gap:10px; align-items:start;
+}
+.teach .step .n{
+  width:26px; height:26px; border-radius:50%; background:var(--a-wash); color:var(--a);
+  font-weight:700; font-size:13.5px; display:flex; align-items:center; justify-content:center;
+  flex:none; margin-top:1px;
+}
+
+.next{
+  margin-top:24px; border:1.5px solid var(--rule-soft); border-radius:16px;
+  background:var(--field); padding:16px 18px;
+}
+.next .k{
+  font-size:12.5px; font-weight:700; letter-spacing:.09em; text-transform:uppercase;
+  color:var(--ink-faint);
+}
+.next p{color:var(--ink-soft); font-size:14.5px; max-width:66ch; margin-top:4px;}
+
+/* ══ FOOT ══ */
+.foot{margin:40px auto 30px; color:var(--ink-faint); font-size:13.5px;}
+.foot p{max-width:75ch; margin-bottom:6px;}
+.foot b{color:var(--ink-soft);}
+
+/* ══ SITE BAR ═══════════════════════════════════════════════════════════
+   A port of the app's own .topbar (index.html): same shape, same controls,
+   same behavior. Written out here rather than shared, because this page
+   loads nothing from the network -- see the head comment for why that
+   promise is worth the duplication.
+
+   ⚠⚠ TWO FILES. Emitted by _work/p_hubbar.py into interior-math.html AND
+   concepts-and-data.html. Change the script and re-run it. Hand-editing
+   one copy is how the two hubs start disagreeing.
+
+   ── ACCENT ── the home page lets a teacher pick one of six accents; it
+   lands in localStorage "aog.accent" and is applied as <html data-accent>.
+   These are the same six palettes as aog-styles.css, restated here because
+   we cannot load that file. THIS is what actually makes /math and the home
+   page the same color -- before it, the hub was violet-and-gold no matter
+   what the rest of the site was wearing. Keep in sync with aog-styles.css.
+*/
+:root{ --acc:#D9A33B; --acc-soft:#F2C964; --acc-pale:#F1DFA8; --acc-deep:#7E5B18;
+       --acc-wash:rgba(126,91,24,.08); --acc-wash-d:rgba(242,201,100,.14); }
+:root[data-accent="teal"]{ --acc:#2BA199; --acc-soft:#6FD3C8; --acc-pale:#C9EDE8; --acc-deep:#15716B;
+       --acc-wash:rgba(21,113,107,.08); --acc-wash-d:rgba(111,211,200,.14); }
+:root[data-accent="violet"]{ --acc:#7C5CD6; --acc-soft:#A98BF0; --acc-pale:#DDD2F7; --acc-deep:#523C9E;
+       --acc-wash:rgba(82,60,158,.08); --acc-wash-d:rgba(169,139,240,.14); }
+:root[data-accent="rose"]{ --acc:#D65C7E; --acc-soft:#F08BA6; --acc-pale:#F7D2DD; --acc-deep:#9E3C5A;
+       --acc-wash:rgba(158,60,90,.08); --acc-wash-d:rgba(240,139,166,.14); }
+:root[data-accent="sky"]{ --acc:#2E7CD6; --acc-soft:#6FB0F0; --acc-pale:#CFE3F7; --acc-deep:#1C5499;
+       --acc-wash:rgba(28,84,153,.08); --acc-wash-d:rgba(111,176,240,.14); }
+:root[data-accent="green"]{ --acc:#4F9E3A; --acc-soft:#86D36F; --acc-pale:#D2EDC9; --acc-deep:#356B25;
+       --acc-wash:rgba(53,107,37,.08); --acc-wash-d:rgba(134,211,111,.14); }
+
+/* Re-point the page's own accent tokens at the chosen palette.
+   ⚠ ORDER AND SPECIFICITY. These sit at the very end of the stylesheet on
+   purpose. :root[data-theme="dark"] (0,2,0) beats a bare :root (0,1,0), so
+   the dark values declared earlier in this file would win unless the dark
+   remap is restated HERE, after them, at the same specificity. */
+:root{ --a:var(--acc-deep); --a-wash:var(--acc-wash); --gold:var(--acc); --gold-deep:var(--acc-deep); --focus:var(--acc); }
+:root[data-theme="dark"]{ --a:var(--acc-soft); --a-wash:var(--acc-wash-d); --gold:var(--acc-soft); --gold-deep:var(--acc-soft); --focus:var(--acc-soft); }
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){ --a:var(--acc-soft); --a-wash:var(--acc-wash-d); --gold:var(--acc-soft); --gold-deep:var(--acc-soft); --focus:var(--acc-soft); } }
+
+/* ⚠⚠ THE SITE BAR'S CSS LIVES IN aog-topbar.js — NOT HERE.
+   This page used to carry its own copy of the .aogtop-* rules, written back
+   when the bar was hand-pasted into every page and its Explore menu was one
+   narrow column. The bar is injected now, and its Explore menu is a
+   THREE-COLUMN mega-menu (.aogtop-ex / .aogtop-col, 3 × 262px ≈ 800px).
+
+   The stale local copy declared
+       .aogtop-menu{min-width:312px; max-width:min(372px, calc(100vw - 20px));}
+   and MAX-WIDTH IS A PROPERTY THE INJECTED SHEET NEVER SETS, so no source
+   order and no specificity could beat it: the 800px mega-menu was squeezed
+   into a 372px box and columns 2 and 3 were sliced off by the panel's own
+   overflow. Two more class names meant different things in the two sheets —
+   local .aogtop-sub was a FOLD CONTAINER (indent + left border) where the bar
+   uses it for a row SUBTITLE, and local .aogtop-fold was display:flex where
+   the bar needs display:block.
+
+   All of it is deleted. NEVER RE-ADD .aogtop-* RULES TO A PAGE STYLESHEET —
+   edit _work/topbar/aog-topbar-css.txt and re-run the builder. The
+   :root.a11y-* rules below stay: those color the PAGE, not the bar. */
+
+
+/* ── ACCESSIBILITY ── the same two settings as the home page, sharing its
+   storage keys, so a student who turns one on there still has it here.
+   Read-aloud and picture answers are check-in controls; they have nothing
+   to act on in a reading page, so those two rows are not offered. */
+:root.a11y-contrast{ --ink:#000; --ink-soft:#1c2230; --ink-faint:#3a4254; --rule:rgba(0,0,0,.55); --rule-soft:rgba(0,0,0,.32); }
+:root.a11y-contrast[data-theme="dark"]{ --ink:#fff; --ink-soft:#e8edf5; --ink-faint:#c4ccd9; --rule:rgba(255,255,255,.72); --rule-soft:rgba(255,255,255,.42); }
+:root.a11y-contrast .card,:root.a11y-contrast .mcard,:root.a11y-contrast .btn,
+:root.a11y-contrast .aogtop-ico,:root.a11y-contrast .aogtop-sw{border:1px solid var(--ink) !important;}
+:root.a11y-dyslexic{ --dysf:"OpenDyslexic","Comic Sans MS","Trebuchet MS",Verdana,sans-serif; }
+:root.a11y-dyslexic body,:root.a11y-dyslexic h1,:root.a11y-dyslexic h2,:root.a11y-dyslexic h3,
+:root.a11y-dyslexic h4,:root.a11y-dyslexic .aogtop-nm,:root.a11y-dyslexic .mast .name{
+  font-family:var(--dysf) !important;
+}
+:root.a11y-dyslexic body{letter-spacing:.012em; word-spacing:.05em; line-height:1.7;}
+
+
+</style>
+<script>
+/* AOG-HUB-BOOT — accent, theme and accessibility applied BEFORE first
+   paint, so the bar never flashes the wrong color on the way in. Inline
+   and tiny for exactly that reason. Same storage keys as index.html. */
+(function(){
+  var d = document.documentElement;
+  try{
+    var A = {gold:1,teal:1,violet:1,rose:1,sky:1,green:1};
+    var a = localStorage.getItem("aog.accent");
+    if(a && a !== "gold" && A[a]) d.setAttribute("data-accent", a);
+  }catch(e){}
+  try{
+    var t = localStorage.getItem("aog.theme") || localStorage.getItem("aog.interior.ws.v1.theme");
+    d.setAttribute("data-theme", t === "dark" ? "dark" : "light"); /* .30eg: light unless this device chose dark - the OS setting no longer decides */
+  }catch(e){}
+  try{
+    if(localStorage.getItem("aog.a11y.contrast") === "1") d.classList.add("a11y-contrast");
+    if(localStorage.getItem("aog.a11y.dyslexic") === "1") d.classList.add("a11y-dyslexic");
+  }catch(e){}
+})();
+</script>
+
+<style>
+/* ══ THE VOCABULARY HUB — its own few rules; everything else is the
+   Concepts & Data hub's stylesheet, sliced in above. ══ */
+.vcards{display:grid; gap:16px; grid-template-columns:repeat(auto-fit,minmax(17rem,1fr)); margin-top:16px;}
+.vcard{display:flex; flex-direction:column; gap:8px;}
+.vcard .card{flex:1 1 auto;}
+.beambtn{
+  border:1.5px solid var(--rule); background:var(--field); border-radius:10px;
+  padding:10px 13px; min-height:48px; font-size:13px; font-weight:700; color:var(--ink-soft);
+}
+.beambtn:hover{border-color:var(--a); color:var(--ink);}
+.wordtable{width:100%; border-collapse:collapse; margin-top:14px;}
+.wordtable td{border-bottom:1px solid var(--rule-soft); padding:9px 10px 9px 0; vertical-align:baseline;}
+.wordtable .w{
+  font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+  font-size:17px; font-weight:700; color:var(--a); white-space:nowrap;
+}
+.wordtable .p{font-size:12px; font-style:italic; color:var(--ink-soft); white-space:nowrap;}
+.wordtable .d{font-size:14.5px; color:var(--ink-soft); line-height:1.5;}
+@media (max-width:620px){
+  .wordtable td{display:block; border-bottom:0; padding:1px 0;}
+  .wordtable tr{display:block; border-bottom:1px solid var(--rule-soft); padding:9px 0;}
+}
+.loader{margin-top:16px;}
+.loader label{display:block; font-size:12.5px; font-weight:700; color:var(--ink-soft); margin-top:12px;}
+.loader input[type=text],.loader textarea{
+  display:block; width:100%; margin-top:5px; font:inherit; background:var(--field); color:var(--ink);
+  border:1.5px solid var(--rule); border-radius:11px; padding:11px 12px; min-height:48px;
+}
+.loader textarea{min-height:11rem; font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; font-size:13.5px; line-height:1.6;}
+.loader .row{display:flex; flex-wrap:wrap; gap:9px; margin-top:12px;}
+.loader .row .btn,.loader .row button{min-height:48px;}
+.fmt{
+  margin-top:10px; border:1.5px dashed var(--rule); border-radius:11px; padding:11px 13px;
+  background:var(--field-2); font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  font-size:12.5px; line-height:1.7; color:var(--ink-soft); overflow-x:auto;
+}
+.state{margin-top:14px; border:2px solid var(--rule); border-radius:14px; padding:13px 15px; background:var(--field);}
+.state .k{font-size:10.5px; font-weight:800; letter-spacing:.14em; text-transform:uppercase; color:var(--ink-soft);}
+.state .hl{display:block; margin-top:4px; font-size:16px; font-weight:700; color:var(--ink);}
+.state ul{margin:10px 0 0; padding:0; list-style:none; display:grid; gap:7px;}
+.state li{display:grid; grid-template-columns:1.6em 1fr; gap:8px; font-size:14px; color:var(--ink-soft); align-items:baseline;}
+.state li .yn{font-weight:800; text-align:center;}
+.state li.yes .yn{color:var(--lock);}
+.state li.no .yn{color:var(--caution);}
+@media print{ .loader,.beambtn,.aogtop,.state{display:none !important;} }
+</style>
+
+<style>
+#beam{
+  position:fixed; inset:0; z-index:1200; background:var(--field); color:var(--ink);
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  gap:clamp(14px,3vh,34px); padding:5vh 4vw; text-align:center; cursor:pointer;
+}
+#beam .wk{font-size:clamp(13px,1.6vw,22px); font-weight:800; letter-spacing:.2em; text-transform:uppercase; color:var(--ink-soft);}
+#beam .nm{font-family:Georgia,serif; font-size:clamp(28px,5vw,72px); line-height:1.05; font-weight:700;}
+#beam .url{
+  font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  font-size:clamp(19px,5.4vw,104px); font-weight:700; line-height:1.1;
+  letter-spacing:-.02em; color:var(--a); white-space:nowrap; max-width:100%;
+}
+#beam .hint{font-size:clamp(13px,1.5vw,20px); color:var(--ink-soft);}
+#beam .x{position:absolute; top:18px; right:20px; font-size:15px; font-weight:700; color:var(--ink-soft);}
+
+/* ══ THE QUIZ ROOM — AOG-QUIZROOM-V1 ══ */
+.qr-intro{border:2px solid var(--lock); border-radius:16px; background:var(--lock-wash);
+  padding:15px 17px 17px; margin:0 0 6px; max-width:74ch;}
+.qr-intro .k{font-size:11px; font-weight:800; letter-spacing:.12em; text-transform:uppercase; color:var(--lock);}
+.qr-intro h2{font-size:19px; margin:4px 0 0;}
+.qr-intro p{margin:8px 0 0; font-size:14.5px; line-height:1.6; color:var(--ink);}
+.qr-intro .back{display:flex; flex-wrap:wrap; gap:8px; margin-top:12px;}
+.qr-chip{display:inline-flex; align-items:center; gap:6px; min-height:44px; padding:8px 14px;
+  border:1.5px solid var(--rule); border-radius:11px; background:var(--field);
+  font-size:14px; font-weight:700; color:var(--ink); text-decoration:none;}
+.qr-chip:hover{border-color:var(--gold-deep); background:var(--a-wash);}
+.qr-chip .ar{color:var(--gold-deep); font-weight:900;}
+.qr-quiz,.qr-charts{margin:26px 0 0;}
+.qr-sechead{display:flex; align-items:baseline; gap:11px; flex-wrap:wrap; margin-bottom:2px;}
+.qr-sechead .n{font-size:11px; font-weight:800; letter-spacing:.14em; text-transform:uppercase; color:var(--gold-deep);}
+.qr-sechead h2{font-size:22px; margin:0;}
+.qr-sechead .from{font-size:13px; color:var(--ink-soft);}
+.qr-sechead .from a{color:var(--ink-soft);}
+.qr-foot{margin-top:30px;}
+@media print{
+  /* the only printable thing in this room is a chart */
+  .qr-intro,.qr-quiz,.qr-sechead{display:none !important;}
+}
+</style>
+<style id="aog-nozoom">
+/* ═══ AOG-NOZOOM-V1 · 2026-09-18 ═══════════════════════════════════════════
+   iOS Safari zooms the WHOLE page when a text field under 16px takes focus,
+   and does not zoom back out. From then on the layout is wider than the
+   window and pans freely left and right on any touch. Jimmy, on an iPhone:
+   "how the screen moves easily left or right. It makes me nausea."
+   index.html had 69 such fields at 390px and gets this same rule from
+   aog-styles.css; this page links its own styles, so it carries its own copy.
+   ⚠ NOT maximum-scale=1 / user-scalable=no — that takes pinch-zoom away from
+     anyone who needs to magnify, and iOS has ignored it since iOS 10.
+   ⚠ Touch only. A mouse has no zoom behavior and keeps the tighter density.
+   ⚠ !important is load-bearing: some fields set their size in a style=""
+     attribute (the font: shorthand counts), and an author !important is what
+     outranks those. If you remove it, re-measure rather than assume.
+   ══════════════════════════════════════════════════════════════════════════ */
+@media (hover: none) and (pointer: coarse) {
+  input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="color"]):not([type="file"]):not([type="submit"]):not([type="button"]):not([type="image"]),
+  select,
+  textarea { font-size: 16px !important; }
+}
+</style>
+</head>
+<body>
+<script src="/aog-topbar.js"></script>
+
+
+<header class="mast wrap qr-mast">
+  <div class="row">
+    <div class="mark" aria-hidden="true">A</div>
+    <div>
+      <div class="name">Architecture of Grace</div>
+      <div class="sub" data-en="Social Studies · A More Perfect Union" data-es="Estudios Sociales · Una Unión Más Perfecta">Social Studies · A More Perfect Union</div>
+    </div>
+  </div>
+  <h1 data-en="The Quiz Room" data-es="La Sala de Exámenes">The Quiz Room</h1>
+  <p class="deck" data-en="Every social studies quiz in one place — three fill-in-the-blank papers with word banks — the judicial branch, the bill road and impeachment, and the whole Constitution review — plus the four charts. This room keeps score. Nothing else on the site does, and nothing here is saved, sent, or seen by anyone." data-es="Todos los exámenes de estudios sociales en un solo lugar — tres papeles de llenar espacios con bancos de palabras — la rama judicial, el camino del proyecto de ley y el juicio político, y el repaso completo de la Constitución — más los cuatro organizadores. Esta sala lleva puntaje. Nada más en el sitio lo hace, y aquí nada se guarda, se envía ni lo ve nadie.">Every social studies quiz in one place — three fill-in-the-blank papers with word banks — the judicial branch, the bill road and impeachment, and the whole Constitution review — plus the four charts. This room keeps score. Nothing else on the site does, and nothing here is saved, sent, or seen by anyone.</p>
+</header>
+
+<main class="wrap">
+
+  <section class="qr-intro">
+    <span class="k" data-en="Before you start" data-es="Antes de empezar">Before you start</span>
+    <h2 data-en="This room is not the lesson. It is the rehearsal." data-es="Esta sala no es la lección. Es el ensayo.">This room is not the lesson. It is the rehearsal.</h2>
+    <p data-en="On the activity pages there are hints on every question, nothing is ever called wrong, and a miss teaches you what that answer WOULD have been right for. That is where the learning happens, and it is where to go when something is still shaky. In here there are no hints and nothing is marked until you press the button — you find out how you did at the end, because that is what a quiz is. There is no clock: a rehearsal is for thinking, not for hurrying. Get it wrong in this room, on purpose, as many times as you like. That is what a rehearsal is for." data-es="En las páginas de actividades hay pistas en cada pregunta, nada se llama nunca incorrecto, y un fallo te enseña para qué SÍ habría servido esa respuesta. Ahí es donde se aprende, y ahí hay que ir cuando algo todavía no se sostiene. Aquí no hay pistas y nada se marca hasta que presiones el botón — sabes cómo te fue al final, porque eso es un examen. No hay reloj: un ensayo es para pensar, no para apurarse. Equivócate en esta sala, a propósito, todas las veces que quieras. Para eso sirve un ensayo.">On the activity pages there are hints on every question, nothing is ever called wrong, and a miss teaches you what that answer WOULD have been right for. That is where the learning happens, and it is where to go when something is still shaky. In here there are no hints and nothing is marked until you press the button — you find out how you did at the end, because that is what a quiz is. There is no clock: a rehearsal is for thinking, not for hurrying. Get it wrong in this room, on purpose, as many times as you like. That is what a rehearsal is for.</p>
+    <p data-en="&lt;b&gt;Nothing in this room is recorded.&lt;/b&gt; No score is saved on this computer, none is sent to your teacher, and closing the tab forgets all of it. Your teacher sees your work from the activity pages, never a number from here." data-es="&lt;b&gt;Nada en esta sala se registra.&lt;/b&gt; Ningún puntaje se guarda en esta computadora, ninguno se envía a tu maestro, y cerrar la pestaña lo olvida todo. Tu maestro ve tu trabajo de las páginas de actividades, nunca un número de aquí."><b>Nothing in this room is recorded.</b> No score is saved on this computer, none is sent to your teacher, and closing the tab forgets all of it. Your teacher sees your work from the activity pages, never a number from here.</p>
+    <div class="back">
+      <a class="qr-chip" href="social-studies.html"><span class="ar">←</span><span data-en="All the activities" data-es="Todas las actividades">All the activities</span></a>
+      <a class="qr-chip" href="h9-the-third-branch.html"><span data-en="Practice: The Third Branch" data-es="Practicar: La tercera rama">Practice: The Third Branch</span><span class="ar">→</span></a>
+      <a class="qr-chip" href="h14-how-a-bill-becomes-a-law.html"><span data-en="Practice: How a Bill Becomes a Law" data-es="Practicar: Cómo un proyecto se vuelve ley">Practice: How a Bill Becomes a Law</span><span class="ar">→</span></a>
+      <a class="qr-chip" href="h16-put-it-all-together.html"><span data-en="Practice: Put It All Together" data-es="Practicar: Júntalo Todo">Practice: Put It All Together</span><span class="ar">→</span></a>
+    </div>
+  </section>
+  <section class="qr-quiz" id="judicial">
+    <div class="qr-sechead"><span class="n">01</span><h2 data-en="The Judicial Branch Quiz" data-es="Examen de la rama judicial">The Judicial Branch Quiz</h2><span class="from" data-en="from &lt;a href=&quot;h9-the-third-branch.html&quot;&gt;The Third Branch&lt;/a&gt;" data-es="de &lt;a href=&quot;h9-the-third-branch.html&quot;&gt;La tercera rama&lt;/a&gt;">from <a href="h9-the-third-branch.html">The Third Branch</a></span></div>
+
+  <div class="wqx no-print" id="wqx_jud" hidden>
+    <div class="wq-head">
+      <span class="k" data-en="Fill in the blanks — the class's own paper" data-es="Llena los espacios — el propio papel de la clase">Fill in the blanks — the class's own paper</span>
+      <h3 data-en="Judicial Branch Quiz" data-es="Examen de la rama judicial">Judicial Branch Quiz</h3>
+      <p class="wq-say" data-en="The same fifteen questions, in the same order, served by the same two word banks — the quiz as you will actually sit it. Tap a word, then tap the blank it belongs in, or drag it if you have a mouse; tap a filled blank to send its word back. Every word is used exactly once, which is a real clue on the paper too. Nothing is checked until you press the button." data-es="Las mismas quince preguntas, en el mismo orden, con los mismos dos bancos de palabras — el examen tal como lo vas a hacer. Toca una palabra y luego el espacio al que pertenece, o arrástrala si tienes ratón; toca un espacio lleno para devolver su palabra. Cada palabra se usa exactamente una vez, lo cual también es una pista real en el papel. Nada se revisa hasta que presiones el botón.">The same fifteen questions, in the same order, served by the same two word banks — the quiz as you will actually sit it. Tap a word, then tap the blank it belongs in, or drag it if you have a mouse; tap a filled blank to send its word back. Every word is used exactly once, which is a real clue on the paper too. Nothing is checked until you press the button.</p>
+    </div>
+    <div id="wqBody_jud"></div>
+    <p class="wq-say2" id="wqSay_jud" aria-live="polite"></p>
+    <div class="wq-acts">
+      <button class="btn btn-accent" type="button" id="wqCheck_jud" data-en="Check my quiz" data-es="Revisar mi examen">Check my quiz</button>
+      <button class="btn" type="button" id="wqClear_jud" data-en="Clear it and start over" data-es="Vaciarlo y empezar de nuevo">Clear it and start over</button>
+    </div>
+  </div>
+<style>
+/* ══ THE WORD-BANK QUIZ — AOG-H-WORDQUIZ-V1 ══ tokens only ══ */
+.wqx{border:1.5px solid var(--rule-soft); border-radius:16px; background:var(--field);
+  box-shadow:var(--lift-sm); padding:16px 16px 18px; margin:12px 0 4px; scroll-margin-top:58px;}
+.wq-head .k{font-size:11px; font-weight:800; letter-spacing:.12em; text-transform:uppercase; color:var(--gold-deep);}
+.wq-head h3{font-size:20px; margin:3px 0 0;}
+.wq-say{margin:7px 0 0; font-size:14px; line-height:1.55; color:var(--ink-soft); max-width:70ch;}
+.wq-sec{margin-top:14px; border:1.5px solid var(--rule); border-radius:14px; padding:12px 13px 14px; background:var(--field-2);}
+.wq-bank{display:flex; flex-wrap:wrap; gap:7px; padding:9px; border:1.5px dashed var(--rule);
+  border-radius:11px; background:var(--field); min-height:56px;}
+.wq-bank.armed{border-color:var(--gold-deep); border-style:solid;}
+.wq-w{min-height:44px; border:1.5px solid var(--rule); border-radius:10px; background:var(--field-2);
+  padding:8px 13px; font-size:14.5px; font-weight:600; color:var(--ink); cursor:pointer; font-family:inherit;}
+.wq-w:hover{border-color:var(--gold-deep); background:var(--a-wash);}
+.wq-w.sel{border-color:var(--gold-deep); border-width:2.5px; background:var(--gold);}
+.wq-w.spent{opacity:.32; cursor:default; text-decoration:line-through;}
+.wq-list{margin:11px 0 0; padding-left:1.6em;}
+.wq-list li{font-size:15px; line-height:1.75; color:var(--ink); padding:5px 0;
+  font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;}
+.wq-b{display:inline-block; min-width:9.5rem; min-height:38px; vertical-align:middle;
+  border:none; border-bottom:2px solid var(--ink-soft); border-radius:4px 4px 0 0;
+  background:var(--field); padding:4px 9px; margin:0 3px; font-size:14.5px; font-weight:700;
+  color:var(--ink); cursor:pointer; font-family:inherit; text-align:center;}
+.wq-b:hover{border-bottom-color:var(--gold-deep); background:var(--a-wash);}
+.wq-b.empty{color:var(--ink-faint); font-weight:400;}
+.wq-b.right{border-bottom-color:var(--lock); background:var(--lock-wash); color:var(--lock); cursor:default;}
+.wq-b.wrong{border-bottom-color:var(--gold-deep); background:var(--a-wash); cursor:default;}
+.wq-fix{display:block; font-size:13px; font-style:italic; color:var(--gold-deep); margin-top:2px;
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;}
+.wq-acts{display:flex; gap:9px; margin-top:13px; flex-wrap:wrap;}
+.wq-score{display:flex; align-items:baseline; gap:12px; flex-wrap:wrap; margin-top:13px;}
+.wq-score .big{font-size:38px; font-weight:900; letter-spacing:-.02em; color:var(--ink);
+  font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif; font-variant-numeric:tabular-nums;}
+.wq-score .of{font-size:15px; color:var(--ink-soft);}
+.wq-line{margin:9px 0 0; font-size:14.5px; line-height:1.55; color:var(--ink); max-width:66ch;}
+.wq-say2{margin-top:11px; font-size:14px; line-height:1.55; color:var(--ink); max-width:66ch;}
+.wq-say2:empty{display:none;}
+.wq-say2 b{color:var(--gold-deep);}
+@media (max-width:640px){ .wq-b{min-width:7rem; display:inline-block;} .wq-list li{line-height:2.1;} }
+@media (prefers-reduced-motion: reduce){ .wq-w,.wq-b{transition:none !important;} }
+@media print{ .wqx{display:none !important;} }
+</style>
+<script>
+/* ══ THE WORD-BANK QUIZ — AOG-H-WORDQUIZ-V1 ══════════════════════════════
+   The class's own quiz paper, made live. Records nothing, persists nothing,
+   counts toward nothing — the probe row below is untouched. */
+(function(){
+  "use strict";
+  var box = document.getElementById("wqx_jud");
+  if(!box) return;
+  function ES(){ return document.documentElement.lang === "es"; }
+  function T(a){ return ES() ? a[1] : a[0]; }
+  function esc(v){
+    return String(v==null?"":v).replace(/[&<>"']/g, function(c){
+      return ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"})[c];
+    });
+  }
+
+  var SECTIONS = [
+ {from:1,
+  bank:["life","3","justices","Supreme Court","district","appeal","circuit","Chief Justice","appellate"],
+  items:[
+   {q:"Which article discusses the judicial branch? ____",
+    qEs:"¿Qué artículo trata sobre la rama judicial? ____", a:["3"]},
+   {q:"What is the main body of the judicial branch? ____",
+    qEs:"¿Cuál es el cuerpo principal de la rama judicial? ____", a:["Supreme Court"]},
+   {q:"What is the title of the judges who sit on the Supreme Court called? ____",
+    qEs:"¿Cómo se llama el título de los jueces de la Corte Suprema? ____", a:["justices"]},
+   {q:"Who is the head of the Supreme Court? ____",
+    qEs:"¿Quién es la cabeza de la Corte Suprema? ____", a:["Chief Justice"]},
+   {q:"What term is defined as the review of the decision of a lower court? ____",
+    qEs:"¿Qué término se define como la revisión de la decisión de una corte inferior? ____", a:["appeal"]},
+   {q:"How long is the term for a judge on the Supreme Court? ____",
+    qEs:"¿Cuánto dura el mandato de un juez de la Corte Suprema? ____", a:["life"]},
+   {q:"What is the lowest federal court which hears cases about criminal and civil law? ____",
+    qEs:"¿Cuál es la corte federal más baja que oye casos de derecho penal y civil? ____", a:["district"]},
+   {q:"What are the names of the federal courts which review decisions to cases? ____ and ____",
+    qEs:"¿Cómo se llaman las cortes federales que revisan las decisiones de los casos? ____ y ____",
+    a:["circuit","appellate"]}]},
+ {from:9,
+  bank:["nine","Marbury","majority","cases with ambassadors","judicial review","president","final","Madison"],
+  items:[
+   {q:"In order to pass a decision, what type of vote is needed in the Supreme Court? ____",
+    qEs:"Para aprobar una decisión, ¿qué tipo de voto se necesita en la Corte Suprema? ____", a:["majority"]},
+   {q:"What is the Supreme Court's power to decide if laws are Constitutional? ____",
+    qEs:"¿Cuál es el poder de la Corte Suprema de decidir si las leyes son constitucionales? ____",
+    a:["judicial review"]},
+   {q:"What court case provided the Supreme Court with the power to decide if laws are constitutional? ____ v. ____",
+    qEs:"¿Qué caso le dio a la Corte Suprema el poder de decidir si las leyes son constitucionales? ____ contra ____",
+    a:["Marbury","Madison"]},
+   {q:"Who appoints judges to the Supreme Court? ____",
+    qEs:"¿Quién nombra a los jueces de la Corte Suprema? ____", a:["president"]},
+   {q:"What are all Supreme Court decisions, meaning they cannot be appealed? ____",
+    qEs:"¿Cómo son todas las decisiones de la Corte Suprema, es decir que no se pueden apelar? ____",
+    a:["final"]},
+   {q:"Only two types of cases begin in the Supreme Court; one is disputes between states. What is the other? ____",
+    qEs:"Solo dos tipos de casos empiezan en la Corte Suprema; uno es disputas entre estados. ¿Cuál es el otro? ____",
+    a:["cases with ambassadors"]},
+   {q:"How many judges are on the Supreme Court? ____",
+    qEs:"¿Cuántos jueces hay en la Corte Suprema? ____", a:["nine"]}]}
+];
+
+  /* fill[secIndex][itemIndex][blankIndex] = the bank word placed there */
+  var fill = [], sel = null, checked = false;
+  function reset(){
+    fill = SECTIONS.map(function(s){ return s.items.map(function(it){ return it.a.map(function(){ return null; }); }); });
+    sel = null; checked = false;
+  }
+  reset();
+
+  function spent(si, word){
+    var used = 0;
+    fill[si].forEach(function(row){ row.forEach(function(w){ if(w===word) used++; }); });
+    return used > 0;
+  }
+  function blanksLeft(){
+    var n = 0;
+    fill.forEach(function(sec){ sec.forEach(function(row){ row.forEach(function(w){ if(w==null) n++; }); }); });
+    return n;
+  }
+  function totalItems(){
+    var n = 0; SECTIONS.forEach(function(s){ n += s.items.length; }); return n;
+  }
+
+  var body = document.getElementById("wqBody_jud"),
+      sayEl = document.getElementById("wqSay_jud");
+
+  function paint(){
+    var h = "";
+    SECTIONS.forEach(function(sec, si){
+      h += '<div class="wq-sec"><div class="wq-bank' + ((sel && sel.si===si) ? " armed" : "") + '" data-bank="'+si+'">';
+      sec.bank.forEach(function(w, wi){
+        var isSpent = spent(si, w);
+        h += '<button type="button" class="wq-w'
+           + (isSpent ? " spent" : "")
+           + ((sel && sel.si===si && sel.wi===wi) ? " sel" : "") + '"'
+           + (isSpent || checked ? " disabled" : "")
+           + ' data-w="'+si+'|'+wi+'"'
+           + (isSpent || checked ? "" : ' draggable="true"')
+           + '>' + esc(w) + '</button>';
+      });
+      h += '</div><ol class="wq-list" start="' + sec.from + '">';
+      sec.items.forEach(function(it, ii){
+        var parts = T([it.q, it.qEs]).split("____");
+        var line = "";
+        for(var k=0;k<parts.length;k++){
+          line += esc(parts[k]);
+          if(k < parts.length-1){
+            var w = fill[si][ii][k];
+            var cls = "wq-b" + (w==null ? " empty" : "");
+            if(checked) cls += (w && w.toLowerCase()===it.a[k].toLowerCase()) ? " right" : " wrong";
+            line += '<button type="button" class="'+cls+'" data-b="'+si+'|'+ii+'|'+k+'"'
+                 + (checked ? " disabled" : "") + '>' + esc(w==null ? "      " : w) + '</button>';
+          }
+        }
+        if(checked){
+          var miss = it.a.some(function(ans, k){
+            var w = fill[si][ii][k];
+            return !w || w.toLowerCase() !== ans.toLowerCase();
+          });
+          if(miss) line += '<span class="wq-fix">' + esc(T(["The answer: ","La respuesta: "]) + it.a.join(T([" and ", " y "]))) + '</span>';
+        }
+        h += "<li>" + line + "</li>";
+      });
+      h += "</ol></div>";
+    });
+    body.innerHTML = h;
+
+    body.onclick = function(e){
+      var t = e.target.closest ? e.target.closest("[data-w],[data-b]") : null;
+      if(!t || t.disabled || checked) return;
+      if(t.hasAttribute("data-w")){
+        var p = t.getAttribute("data-w").split("|");
+        var si = +p[0], wi = +p[1];
+        sel = (sel && sel.si===si && sel.wi===wi) ? null : {si:si, wi:wi};
+        paint();
+      } else {
+        var q = t.getAttribute("data-b").split("|");
+        drop(+q[0], +q[1], +q[2]);
+      }
+    };
+    Array.prototype.forEach.call(body.querySelectorAll("[data-w]"), function(el){
+      el.addEventListener("dragstart", function(ev){
+        var p = el.getAttribute("data-w").split("|");
+        sel = {si:+p[0], wi:+p[1]};
+        ev.dataTransfer.setData("text/plain", el.getAttribute("data-w"));
+        ev.dataTransfer.effectAllowed = "move";
+      });
+    });
+    Array.prototype.forEach.call(body.querySelectorAll("[data-b]"), function(el){
+      el.addEventListener("dragover", function(ev){ ev.preventDefault(); });
+      el.addEventListener("drop", function(ev){
+        ev.preventDefault();
+        var q = el.getAttribute("data-b").split("|");
+        drop(+q[0], +q[1], +q[2]);
+      });
+    });
+  }
+
+  function drop(si, ii, bi){
+    if(checked) return;
+    var here = fill[si][ii][bi];
+    /* tapping a filled blank sends its word back to the bank */
+    if(here != null && !sel){
+      fill[si][ii][bi] = null;
+      sayEl.innerHTML = esc(T(["Back in the bank — every word is used exactly once, so a word you take back is one you can spend somewhere else.",
+                               "De vuelta al banco — cada palabra se usa exactamente una vez, así que una que devuelves puedes gastarla en otro lugar."]));
+      paint(); return;
+    }
+    if(!sel){
+      sayEl.innerHTML = esc(T(["Pick a word from the bank first, then tap the blank it belongs in.",
+                               "Elige primero una palabra del banco, y luego toca el espacio al que pertenece."]));
+      return;
+    }
+    if(sel.si !== si){
+      sayEl.innerHTML = esc(T(["That word belongs to the other bank — each bank serves only its own questions, exactly like the paper.",
+                               "Esa palabra es del otro banco — cada banco sirve solo a sus preguntas, igual que en el papel."]));
+      return;
+    }
+    var word = SECTIONS[si].bank[sel.wi];
+    if(here != null) fill[si][ii][bi] = null;
+    fill[si][ii][bi] = word;
+    sel = null;
+    sayEl.innerHTML = blanksLeft()
+      ? esc(T(["Placed. ", "Colocada. "]) + blanksLeft() + T([" blank" + (blanksLeft()===1?"":"s") + " left. Nothing is checked until you press the button.",
+                                                              " espacio" + (blanksLeft()===1?"":"s") + " por llenar. Nada se revisa hasta que presiones el botón."]))
+      : '<b>' + esc(T(["Every blank is filled. Read it through once, then check it.",
+                       "Todos los espacios están llenos. Léelo una vez y luego revísalo."])) + '</b>';
+    paint();
+  }
+
+  document.getElementById("wqCheck_jud").addEventListener("click", function(){
+    var left = blanksLeft();
+    if(left && !window.confirm(T(["There " + (left===1?"is":"are") + " still " + left + " blank" + (left===1?"":"s") + " empty. Check it anyway?",
+                                  "Todavía " + (left===1?"queda":"quedan") + " " + left + " espacio" + (left===1?"":"s") + " vacío" + (left===1?"":"s") + ". ¿Revisar de todos modos?"]))) return;
+    checked = true;
+    var got = 0, n = totalItems();
+    SECTIONS.forEach(function(sec, si){
+      sec.items.forEach(function(it, ii){
+        var all = it.a.every(function(ans, k){
+          var w = fill[si][ii][k];
+          return w && w.toLowerCase() === ans.toLowerCase();
+        });
+        if(all) got++;
+      });
+    });
+    var line;
+    if(got === n) line = T(["Every one. Clear it and do it again from memory — that is the last thing left to practice.",
+                            "Todas. Vacíalo y hazlo otra vez de memoria — es lo último que queda por practicar."]);
+    else if(got >= n-2) line = T(["Nearly all of it. The few marked below are the only ones standing between you and the whole thing.",
+                                  "Casi todo. Las pocas marcadas abajo son lo único entre tú y el total."]);
+    else if(got >= n/2) line = T(["Solid ground under about half. Each miss below shows the word that belonged there — read those, clear it, and run it again.",
+                                  "Terreno firme bajo casi la mitad. Cada fallo de abajo muestra la palabra que iba ahí — léelas, vacíalo y hazlo otra vez."]);
+    else line = T(["This is exactly what a rehearsal is for, and finding it out today instead of on the day is the whole point. Nothing here is recorded. Work the questions above with the hints on — that is what they are for — then clear this and run it again.",
+                   "Para esto sirve un ensayo, y averiguarlo hoy en vez del día del examen es todo el punto. Aquí nada se registra. Trabaja las preguntas de arriba con las pistas encendidas — para eso están — y luego vacía esto y hazlo de nuevo."]);
+    sayEl.innerHTML = '<span class="wq-score"><span class="big">'+got+'</span><span class="of">'
+      + esc(T(["out of ","de "]) + n) + '</span></span>'
+      + '<span class="wq-line" style="display:block">' + esc(line) + '</span>'
+      + '<span class="wq-line" style="display:block;color:var(--ink-soft);font-size:13.5px">'
+      + esc(T(["This number was not saved and was not sent anywhere. It exists on this screen and nowhere else.",
+               "Este número no se guardó ni se envió a ningún lado. Existe en esta pantalla y en ningún otro lugar."])) + '</span>';
+    paint();
+  });
+
+  document.getElementById("wqClear_jud").addEventListener("click", function(){
+    reset();
+    sayEl.innerHTML = esc(T(["Cleared. Every word is back in its bank.","Vaciado. Cada palabra volvió a su banco."]));
+    paint();
+  });
+
+  box.hidden = false;
+  paint();
+  try{
+    new MutationObserver(function(){ paint(); })
+      .observe(document.documentElement, { attributes:true, attributeFilter:["lang"] });
+  }catch(e){}
+})();
+</script>
+
+  </section>
+  <section class="qr-quiz" id="bill">
+    <div class="qr-sechead"><span class="n">02</span><h2 data-en="How a Bill Becomes a Law — and impeachment" data-es="Cómo un proyecto se vuelve ley — y el juicio político">How a Bill Becomes a Law — and impeachment</h2><span class="from" data-en="from &lt;a href=&quot;h14-how-a-bill-becomes-a-law.html&quot;&gt;How a Bill Becomes a Law&lt;/a&gt;" data-es="de &lt;a href=&quot;h14-how-a-bill-becomes-a-law.html&quot;&gt;Cómo un proyecto se vuelve ley&lt;/a&gt;">from <a href="h14-how-a-bill-becomes-a-law.html">How a Bill Becomes a Law</a></span></div>
+
+  <div class="wqx no-print" id="wqx_bill" hidden>
+    <div class="wq-head">
+      <span class="k" data-en="Fill in the blanks — the same shape as the judicial paper" data-es="Llena los espacios — con la misma forma que el papel judicial">Fill in the blanks — the same shape as the judicial paper</span>
+      <h3 data-en="The road and impeachment" data-es="El camino y el juicio político">The road and impeachment</h3>
+      <p class="wq-say" data-en="Sixteen questions with two word banks — the road a bill walks, then impeachment beside it. Tap a word, then tap the blank it belongs in, or drag it if you have a mouse; tap a filled blank to send its word back. Every word is used exactly once. Nothing is checked until you press the button, and there is no clock." data-es="Dieciséis preguntas con dos bancos de palabras — el camino que recorre un proyecto, y a su lado el juicio político. Toca una palabra y luego el espacio al que pertenece, o arrástrala si tienes ratón; toca un espacio lleno para devolver su palabra. Cada palabra se usa exactamente una vez. Nada se revisa hasta que presiones el botón, y no hay reloj.">Sixteen questions with two word banks — the road a bill walks, then impeachment beside it. Tap a word, then tap the blank it belongs in, or drag it if you have a mouse; tap a filled blank to send its word back. Every word is used exactly once. Nothing is checked until you press the button, and there is no clock.</p>
+    </div>
+    <div id="wqBody_bill"></div>
+    <p class="wq-say2" id="wqSay_bill" aria-live="polite"></p>
+    <div class="wq-acts">
+      <button class="btn btn-accent" type="button" id="wqCheck_bill" data-en="Check my quiz" data-es="Revisar mi examen">Check my quiz</button>
+      <button class="btn" type="button" id="wqClear_bill" data-en="Clear it and start over" data-es="Vaciarlo y empezar de nuevo">Clear it and start over</button>
+    </div>
+  </div>
+<style></style>
+<script>
+/* ══ THE WORD-BANK QUIZ — AOG-H-WORDQUIZ-V1 ══════════════════════════════
+   The class's own quiz paper, made live. Records nothing, persists nothing,
+   counts toward nothing — the probe row below is untouched. */
+(function(){
+  "use strict";
+  var box = document.getElementById("wqx_bill");
+  if(!box) return;
+  function ES(){ return document.documentElement.lang === "es"; }
+  function T(a){ return ES() ? a[1] : a[0]; }
+  function esc(v){
+    return String(v==null?"":v).replace(/[&<>"']/g, function(c){
+      return ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"})[c];
+    });
+  }
+
+  var SECTIONS = [
+ {from:1,
+  bank:["bill","majority","law","veto","Congress","override","two-thirds","House of Representatives","Senate"],
+  items:[
+   {q:"A proposed law, before it has passed, is called a ____.",
+    qEs:"Una ley propuesta, antes de aprobarse, se llama ____.", a:["bill"]},
+   {q:"To pass a house of Congress, a bill needs a ____ — one more than half.",
+    qEs:"Para pasar una cámara del Congreso, un proyecto necesita una ____ — uno más de la mitad.", a:["majority"]},
+   {q:"If the president signs a bill, it immediately becomes a ____.",
+    qEs:"Si el presidente firma un proyecto, inmediatamente se vuelve ____.", a:["law"]},
+   {q:"If the president rejects a bill, that rejection is called a ____.",
+    qEs:"Si el presidente rechaza un proyecto, ese rechazo se llama ____.", a:["veto"]},
+   {q:"A rejected bill goes back to ____.",
+    qEs:"Un proyecto rechazado regresa a ____.", a:["Congress"]},
+   {q:"To cancel the president's rejection, Congress can ____ the veto.",
+    qEs:"Para cancelar el rechazo del presidente, el Congreso puede ____ el veto (anular).", a:["override"]},
+   {q:"Canceling a veto takes ____ of both houses.",
+    qEs:"Cancelar un veto requiere ____ de ambas cámaras.", a:["two-thirds"]},
+   {q:"In an impeachment, the chamber that brings the charges is the ____, and the chamber that tries the case is the ____.",
+    qEs:"En un juicio político, la cámara que presenta los cargos es la ____, y la que juzga el caso es el ____.",
+    a:["House of Representatives","Senate"]}]},
+ {from:9,
+  bank:["impeach","charges","majority","two-thirds","Chief Justice","removal from office","acquitted","treason"],
+  items:[
+   {q:"To ____ means to bring charges against a government official.",
+    qEs:"____ significa presentar cargos contra un funcionario del gobierno.", a:["impeach"]},
+   {q:"Being impeached is only the ____ — it is not the punishment.",
+    qEs:"Ser sometido a juicio político es solo los ____ — no es el castigo.", a:["charges"]},
+   {q:"The House brings those charges by a simple ____.",
+    qEs:"La Cámara presenta esos cargos por ____ simple.", a:["majority"]},
+   {q:"To convict at the trial, the Senate needs a ____ vote.",
+    qEs:"Para condenar en el juicio, el Senado necesita un voto de ____.", a:["two-thirds"]},
+   {q:"When the president is the one on trial, the ____ presides.",
+    qEs:"Cuando el juzgado es el presidente, preside el ____.", a:["Chief Justice"]},
+   {q:"If the verdict is guilty, the only penalty is ____.",
+    qEs:"Si el veredicto es culpable, la única pena es la ____.", a:["removal from office"]},
+   {q:"An official the Senate does not convict is ____ and stays in office.",
+    qEs:"Un funcionario al que el Senado no condena es ____ y se queda en el cargo.", a:["acquitted"]},
+   {q:"The Constitution names the grounds: ____, bribery, or other high crimes and misdemeanors.",
+    qEs:"La Constitución nombra las causales: ____, soborno u otros delitos graves.", a:["treason"]}]}
+];
+
+  /* fill[secIndex][itemIndex][blankIndex] = the bank word placed there */
+  var fill = [], sel = null, checked = false;
+  function reset(){
+    fill = SECTIONS.map(function(s){ return s.items.map(function(it){ return it.a.map(function(){ return null; }); }); });
+    sel = null; checked = false;
+  }
+  reset();
+
+  function spent(si, word){
+    var used = 0;
+    fill[si].forEach(function(row){ row.forEach(function(w){ if(w===word) used++; }); });
+    return used > 0;
+  }
+  function blanksLeft(){
+    var n = 0;
+    fill.forEach(function(sec){ sec.forEach(function(row){ row.forEach(function(w){ if(w==null) n++; }); }); });
+    return n;
+  }
+  function totalItems(){
+    var n = 0; SECTIONS.forEach(function(s){ n += s.items.length; }); return n;
+  }
+
+  var body = document.getElementById("wqBody_bill"),
+      sayEl = document.getElementById("wqSay_bill");
+
+  function paint(){
+    var h = "";
+    SECTIONS.forEach(function(sec, si){
+      h += '<div class="wq-sec"><div class="wq-bank' + ((sel && sel.si===si) ? " armed" : "") + '" data-bank="'+si+'">';
+      sec.bank.forEach(function(w, wi){
+        var isSpent = spent(si, w);
+        h += '<button type="button" class="wq-w'
+           + (isSpent ? " spent" : "")
+           + ((sel && sel.si===si && sel.wi===wi) ? " sel" : "") + '"'
+           + (isSpent || checked ? " disabled" : "")
+           + ' data-w="'+si+'|'+wi+'"'
+           + (isSpent || checked ? "" : ' draggable="true"')
+           + '>' + esc(w) + '</button>';
+      });
+      h += '</div><ol class="wq-list" start="' + sec.from + '">';
+      sec.items.forEach(function(it, ii){
+        var parts = T([it.q, it.qEs]).split("____");
+        var line = "";
+        for(var k=0;k<parts.length;k++){
+          line += esc(parts[k]);
+          if(k < parts.length-1){
+            var w = fill[si][ii][k];
+            var cls = "wq-b" + (w==null ? " empty" : "");
+            if(checked) cls += (w && w.toLowerCase()===it.a[k].toLowerCase()) ? " right" : " wrong";
+            line += '<button type="button" class="'+cls+'" data-b="'+si+'|'+ii+'|'+k+'"'
+                 + (checked ? " disabled" : "") + '>' + esc(w==null ? "      " : w) + '</button>';
+          }
+        }
+        if(checked){
+          var miss = it.a.some(function(ans, k){
+            var w = fill[si][ii][k];
+            return !w || w.toLowerCase() !== ans.toLowerCase();
+          });
+          if(miss) line += '<span class="wq-fix">' + esc(T(["The answer: ","La respuesta: "]) + it.a.join(T([" and ", " y "]))) + '</span>';
+        }
+        h += "<li>" + line + "</li>";
+      });
+      h += "</ol></div>";
+    });
+    body.innerHTML = h;
+
+    body.onclick = function(e){
+      var t = e.target.closest ? e.target.closest("[data-w],[data-b]") : null;
+      if(!t || t.disabled || checked) return;
+      if(t.hasAttribute("data-w")){
+        var p = t.getAttribute("data-w").split("|");
+        var si = +p[0], wi = +p[1];
+        sel = (sel && sel.si===si && sel.wi===wi) ? null : {si:si, wi:wi};
+        paint();
+      } else {
+        var q = t.getAttribute("data-b").split("|");
+        drop(+q[0], +q[1], +q[2]);
+      }
+    };
+    Array.prototype.forEach.call(body.querySelectorAll("[data-w]"), function(el){
+      el.addEventListener("dragstart", function(ev){
+        var p = el.getAttribute("data-w").split("|");
+        sel = {si:+p[0], wi:+p[1]};
+        ev.dataTransfer.setData("text/plain", el.getAttribute("data-w"));
+        ev.dataTransfer.effectAllowed = "move";
+      });
+    });
+    Array.prototype.forEach.call(body.querySelectorAll("[data-b]"), function(el){
+      el.addEventListener("dragover", function(ev){ ev.preventDefault(); });
+      el.addEventListener("drop", function(ev){
+        ev.preventDefault();
+        var q = el.getAttribute("data-b").split("|");
+        drop(+q[0], +q[1], +q[2]);
+      });
+    });
+  }
+
+  function drop(si, ii, bi){
+    if(checked) return;
+    var here = fill[si][ii][bi];
+    /* tapping a filled blank sends its word back to the bank */
+    if(here != null && !sel){
+      fill[si][ii][bi] = null;
+      sayEl.innerHTML = esc(T(["Back in the bank — every word is used exactly once, so a word you take back is one you can spend somewhere else.",
+                               "De vuelta al banco — cada palabra se usa exactamente una vez, así que una que devuelves puedes gastarla en otro lugar."]));
+      paint(); return;
+    }
+    if(!sel){
+      sayEl.innerHTML = esc(T(["Pick a word from the bank first, then tap the blank it belongs in.",
+                               "Elige primero una palabra del banco, y luego toca el espacio al que pertenece."]));
+      return;
+    }
+    if(sel.si !== si){
+      sayEl.innerHTML = esc(T(["That word belongs to the other bank — each bank serves only its own questions, exactly like the paper.",
+                               "Esa palabra es del otro banco — cada banco sirve solo a sus preguntas, igual que en el papel."]));
+      return;
+    }
+    var word = SECTIONS[si].bank[sel.wi];
+    if(here != null) fill[si][ii][bi] = null;
+    fill[si][ii][bi] = word;
+    sel = null;
+    sayEl.innerHTML = blanksLeft()
+      ? esc(T(["Placed. ", "Colocada. "]) + blanksLeft() + T([" blank" + (blanksLeft()===1?"":"s") + " left. Nothing is checked until you press the button.",
+                                                              " espacio" + (blanksLeft()===1?"":"s") + " por llenar. Nada se revisa hasta que presiones el botón."]))
+      : '<b>' + esc(T(["Every blank is filled. Read it through once, then check it.",
+                       "Todos los espacios están llenos. Léelo una vez y luego revísalo."])) + '</b>';
+    paint();
+  }
+
+  document.getElementById("wqCheck_bill").addEventListener("click", function(){
+    var left = blanksLeft();
+    if(left && !window.confirm(T(["There " + (left===1?"is":"are") + " still " + left + " blank" + (left===1?"":"s") + " empty. Check it anyway?",
+                                  "Todavía " + (left===1?"queda":"quedan") + " " + left + " espacio" + (left===1?"":"s") + " vacío" + (left===1?"":"s") + ". ¿Revisar de todos modos?"]))) return;
+    checked = true;
+    var got = 0, n = totalItems();
+    SECTIONS.forEach(function(sec, si){
+      sec.items.forEach(function(it, ii){
+        var all = it.a.every(function(ans, k){
+          var w = fill[si][ii][k];
+          return w && w.toLowerCase() === ans.toLowerCase();
+        });
+        if(all) got++;
+      });
+    });
+    var line;
+    if(got === n) line = T(["Every one. Clear it and do it again from memory — that is the last thing left to practice.",
+                            "Todas. Vacíalo y hazlo otra vez de memoria — es lo último que queda por practicar."]);
+    else if(got >= n-2) line = T(["Nearly all of it. The few marked below are the only ones standing between you and the whole thing.",
+                                  "Casi todo. Las pocas marcadas abajo son lo único entre tú y el total."]);
+    else if(got >= n/2) line = T(["Solid ground under about half. Each miss below shows the word that belonged there — read those, clear it, and run it again.",
+                                  "Terreno firme bajo casi la mitad. Cada fallo de abajo muestra la palabra que iba ahí — léelas, vacíalo y hazlo otra vez."]);
+    else line = T(["This is exactly what a rehearsal is for, and finding it out today instead of on the day is the whole point. Nothing here is recorded. Work the questions above with the hints on — that is what they are for — then clear this and run it again.",
+                   "Para esto sirve un ensayo, y averiguarlo hoy en vez del día del examen es todo el punto. Aquí nada se registra. Trabaja las preguntas de arriba con las pistas encendidas — para eso están — y luego vacía esto y hazlo de nuevo."]);
+    sayEl.innerHTML = '<span class="wq-score"><span class="big">'+got+'</span><span class="of">'
+      + esc(T(["out of ","de "]) + n) + '</span></span>'
+      + '<span class="wq-line" style="display:block">' + esc(line) + '</span>'
+      + '<span class="wq-line" style="display:block;color:var(--ink-soft);font-size:13.5px">'
+      + esc(T(["This number was not saved and was not sent anywhere. It exists on this screen and nowhere else.",
+               "Este número no se guardó ni se envió a ningún lado. Existe en esta pantalla y en ningún otro lugar."])) + '</span>';
+    paint();
+  });
+
+  document.getElementById("wqClear_bill").addEventListener("click", function(){
+    reset();
+    sayEl.innerHTML = esc(T(["Cleared. Every word is back in its bank.","Vaciado. Cada palabra volvió a su banco."]));
+    paint();
+  });
+
+  box.hidden = false;
+  paint();
+  try{
+    new MutationObserver(function(){ paint(); })
+      .observe(document.documentElement, { attributes:true, attributeFilter:["lang"] });
+  }catch(e){}
+})();
+</script>
+
+  </section>
+  <section class="qr-quiz" id="review">
+    <div class="qr-sechead"><span class="n">03</span><h2 data-en="The whole Constitution review" data-es="El repaso completo de la Constitución">The whole Constitution review</h2><span class="from" data-en="from &lt;a href=&quot;h16-put-it-all-together.html&quot;&gt;Put It All Together&lt;/a&gt;" data-es="de &lt;a href=&quot;h16-put-it-all-together.html&quot;&gt;Júntalo Todo&lt;/a&gt;">from <a href="h16-put-it-all-together.html">Put It All Together</a></span></div>
+
+  <div class="wqx no-print" id="wqx_rev" hidden>
+    <div class="wq-head">
+      <span class="k" data-en="Fill in the blanks — three banks, the sheet in order" data-es="Llena los espacios — tres bancos, la hoja en orden">Fill in the blanks — three banks, the sheet in order</span>
+      <h3 data-en="Everything on the review sheet" data-es="Todo lo de la hoja de repaso">Everything on the review sheet</h3>
+      <p class="wq-say" data-en="Twenty-four blanks across three word banks, in the order your review sheet asks them: the plan and its parts, then Congress and the presidency, then the courts and the amendments. Every word is used exactly once, so a bank with one word left answers itself — that is a real clue on paper too. No clock, and nothing is checked until you press the button." data-es="Veinticuatro espacios en tres bancos de palabras, en el orden en que los pide tu hoja de repaso: el plan y sus partes, luego el Congreso y la presidencia, y después las cortes y las enmiendas. Cada palabra se usa exactamente una vez, así que un banco con una sola palabra se contesta solo — también es una pista real en el papel. Sin reloj, y nada se revisa hasta que presiones el botón.">Twenty-four blanks across three word banks, in the order your review sheet asks them: the plan and its parts, then Congress and the presidency, then the courts and the amendments. Every word is used exactly once, so a bank with one word left answers itself — that is a real clue on paper too. No clock, and nothing is checked until you press the button.</p>
+    </div>
+    <div id="wqBody_rev"></div>
+    <p class="wq-say2" id="wqSay_rev" aria-live="polite"></p>
+    <div class="wq-acts">
+      <button class="btn btn-accent" type="button" id="wqCheck_rev" data-en="Check my quiz" data-es="Revisar mi examen">Check my quiz</button>
+      <button class="btn" type="button" id="wqClear_rev" data-en="Clear it and start over" data-es="Vaciarlo y empezar de nuevo">Clear it and start over</button>
+    </div>
+  </div>
+<style></style>
+<script>
+/* ══ THE WORD-BANK QUIZ — AOG-H-WORDQUIZ-V1 ══════════════════════════════
+   The class's own quiz paper, made live. Records nothing, persists nothing,
+   counts toward nothing — the probe row below is untouched. */
+(function(){
+  "use strict";
+  var box = document.getElementById("wqx_rev");
+  if(!box) return;
+  function ES(){ return document.documentElement.lang === "es"; }
+  function T(a){ return ES() ? a[1] : a[0]; }
+  function esc(v){
+    return String(v==null?"":v).replace(/[&<>"']/g, function(c){
+      return ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"})[c];
+    });
+  }
+
+  var SECTIONS = [
+ {from:1,
+  bank:["Preamble","federalism","separation of powers","Articles of Confederation","republic","Virginia Plan","Great Compromise","three-fourths"],
+  items:[
+   {q:"The introduction and list of goals at the front of the Constitution is the ____.",
+    qEs:"La introducción y lista de metas al frente de la Constitución es el ____.", a:["Preamble"]},
+   {q:"Power divided between the federal government and the states is called ____.",
+    qEs:"El poder dividido entre el gobierno federal y los estados se llama ____.", a:["federalism"]},
+   {q:"Power divided among three branches, each with its own powers, is called ____.",
+    qEs:"El poder dividido entre tres ramas, cada una con sus poderes, se llama ____.", a:["separation of powers"]},
+   {q:"The first plan of government, which failed because the central government was too weak, was the ____.",
+    qEs:"El primer plan de gobierno, que falló porque el gobierno central era muy débil, fueron los ____.",
+    a:["Articles of Confederation"]},
+   {q:"The Constitution established a federal ____ — the people rule through elected representatives.",
+    qEs:"La Constitución estableció una ____ federal — el pueblo gobierna por medio de representantes electos.",
+    a:["republic"]},
+   {q:"The plan calling for two houses with BOTH decided by population was the ____.",
+    qEs:"El plan que pedía dos cámaras AMBAS decididas por población fue el ____.", a:["Virginia Plan"]},
+   {q:"The deal that made one house by population and one house two per state was the ____.",
+    qEs:"El acuerdo que hizo una cámara por población y otra con dos por estado fue el ____.", a:["Great Compromise"]},
+   {q:"To add an amendment, ____ of the states must ratify it.",
+    qEs:"Para añadir una enmienda, ____ de los estados deben ratificarla.", a:["three-fourths"]}]},
+ {from:9,
+  bank:["435","100","census","Cabinet","538","270","four","thirty-five"],
+  items:[
+   {q:"Representatives in the House: ____.",
+    qEs:"Representantes en la Cámara: ____.", a:["435"]},
+   {q:"Senators in the Senate: ____.",
+    qEs:"Senadores en el Senado: ____.", a:["100"]},
+   {q:"Taken every ten years to decide how many representatives each state gets: the ____.",
+    qEs:"Se hace cada diez años para decidir cuántos representantes tiene cada estado: el ____.", a:["census"]},
+   {q:"The leaders of the executive departments who advise the president are the ____.",
+    qEs:"Los líderes de los departamentos ejecutivos que asesoran al presidente son el ____.", a:["Cabinet"]},
+   {q:"Total electoral votes cast in a presidential election: ____.",
+    qEs:"Total de votos electorales en una elección presidencial: ____.", a:["538"]},
+   {q:"Electoral votes needed to win: ____.",
+    qEs:"Votos electorales necesarios para ganar: ____.", a:["270"]},
+   {q:"Length of one presidential term, in years: ____.",
+    qEs:"Duración de un mandato presidencial, en años: ____.", a:["four"]},
+   {q:"Minimum age to serve as president: ____.",
+    qEs:"Edad mínima para ser presidente: ____.", a:["thirty-five"]}]},
+ {from:17,
+  bank:["nine","life","judicial review","district","Marbury","Eighth","Nineteenth","Fifth"],
+  items:[
+   {q:"Justices who sit on the Supreme Court: ____.",
+    qEs:"Jueces que integran la Corte Suprema: ____.", a:["nine"]},
+   {q:"A Supreme Court justice serves a term of ____.",
+    qEs:"Un juez de la Corte Suprema sirve un mandato de por ____.", a:["life"]},
+   {q:"The Supreme Court's power to decide whether a law is constitutional is called ____.",
+    qEs:"El poder de la Corte Suprema de decidir si una ley es constitucional se llama ____.", a:["judicial review"]},
+   {q:"The lowest federal court, which hears criminal and civil cases, is the ____ court.",
+    qEs:"La corte federal más baja, que oye casos penales y civiles, es la corte de ____.", a:["district"]},
+   {q:"The case that gave the Court that power was ____ v. Madison.",
+    qEs:"El caso que le dio ese poder a la Corte fue ____ contra Madison.", a:["Marbury"]},
+   {q:"The amendment protecting people from cruel and unusual punishment is the ____.",
+    qEs:"La enmienda que protege de castigos crueles e inusuales es la ____.", a:["Eighth"]},
+   {q:"The amendment guaranteeing due process — the same fair rules in every case — is the ____.",
+    qEs:"La enmienda que garantiza el debido proceso — las mismas reglas justas en cada caso — es la ____.", a:["Fifth"]},
+   {q:"The amendment giving women the right to vote is the ____.",
+    qEs:"La enmienda que dio a las mujeres el derecho al voto es la ____.", a:["Nineteenth"]}]}
+];
+
+  /* fill[secIndex][itemIndex][blankIndex] = the bank word placed there */
+  var fill = [], sel = null, checked = false;
+  function reset(){
+    fill = SECTIONS.map(function(s){ return s.items.map(function(it){ return it.a.map(function(){ return null; }); }); });
+    sel = null; checked = false;
+  }
+  reset();
+
+  function spent(si, word){
+    var used = 0;
+    fill[si].forEach(function(row){ row.forEach(function(w){ if(w===word) used++; }); });
+    return used > 0;
+  }
+  function blanksLeft(){
+    var n = 0;
+    fill.forEach(function(sec){ sec.forEach(function(row){ row.forEach(function(w){ if(w==null) n++; }); }); });
+    return n;
+  }
+  function totalItems(){
+    var n = 0; SECTIONS.forEach(function(s){ n += s.items.length; }); return n;
+  }
+
+  var body = document.getElementById("wqBody_rev"),
+      sayEl = document.getElementById("wqSay_rev");
+
+  function paint(){
+    var h = "";
+    SECTIONS.forEach(function(sec, si){
+      h += '<div class="wq-sec"><div class="wq-bank' + ((sel && sel.si===si) ? " armed" : "") + '" data-bank="'+si+'">';
+      sec.bank.forEach(function(w, wi){
+        var isSpent = spent(si, w);
+        h += '<button type="button" class="wq-w'
+           + (isSpent ? " spent" : "")
+           + ((sel && sel.si===si && sel.wi===wi) ? " sel" : "") + '"'
+           + (isSpent || checked ? " disabled" : "")
+           + ' data-w="'+si+'|'+wi+'"'
+           + (isSpent || checked ? "" : ' draggable="true"')
+           + '>' + esc(w) + '</button>';
+      });
+      h += '</div><ol class="wq-list" start="' + sec.from + '">';
+      sec.items.forEach(function(it, ii){
+        var parts = T([it.q, it.qEs]).split("____");
+        var line = "";
+        for(var k=0;k<parts.length;k++){
+          line += esc(parts[k]);
+          if(k < parts.length-1){
+            var w = fill[si][ii][k];
+            var cls = "wq-b" + (w==null ? " empty" : "");
+            if(checked) cls += (w && w.toLowerCase()===it.a[k].toLowerCase()) ? " right" : " wrong";
+            line += '<button type="button" class="'+cls+'" data-b="'+si+'|'+ii+'|'+k+'"'
+                 + (checked ? " disabled" : "") + '>' + esc(w==null ? "      " : w) + '</button>';
+          }
+        }
+        if(checked){
+          var miss = it.a.some(function(ans, k){
+            var w = fill[si][ii][k];
+            return !w || w.toLowerCase() !== ans.toLowerCase();
+          });
+          if(miss) line += '<span class="wq-fix">' + esc(T(["The answer: ","La respuesta: "]) + it.a.join(T([" and ", " y "]))) + '</span>';
+        }
+        h += "<li>" + line + "</li>";
+      });
+      h += "</ol></div>";
+    });
+    body.innerHTML = h;
+
+    body.onclick = function(e){
+      var t = e.target.closest ? e.target.closest("[data-w],[data-b]") : null;
+      if(!t || t.disabled || checked) return;
+      if(t.hasAttribute("data-w")){
+        var p = t.getAttribute("data-w").split("|");
+        var si = +p[0], wi = +p[1];
+        sel = (sel && sel.si===si && sel.wi===wi) ? null : {si:si, wi:wi};
+        paint();
+      } else {
+        var q = t.getAttribute("data-b").split("|");
+        drop(+q[0], +q[1], +q[2]);
+      }
+    };
+    Array.prototype.forEach.call(body.querySelectorAll("[data-w]"), function(el){
+      el.addEventListener("dragstart", function(ev){
+        var p = el.getAttribute("data-w").split("|");
+        sel = {si:+p[0], wi:+p[1]};
+        ev.dataTransfer.setData("text/plain", el.getAttribute("data-w"));
+        ev.dataTransfer.effectAllowed = "move";
+      });
+    });
+    Array.prototype.forEach.call(body.querySelectorAll("[data-b]"), function(el){
+      el.addEventListener("dragover", function(ev){ ev.preventDefault(); });
+      el.addEventListener("drop", function(ev){
+        ev.preventDefault();
+        var q = el.getAttribute("data-b").split("|");
+        drop(+q[0], +q[1], +q[2]);
+      });
+    });
+  }
+
+  function drop(si, ii, bi){
+    if(checked) return;
+    var here = fill[si][ii][bi];
+    /* tapping a filled blank sends its word back to the bank */
+    if(here != null && !sel){
+      fill[si][ii][bi] = null;
+      sayEl.innerHTML = esc(T(["Back in the bank — every word is used exactly once, so a word you take back is one you can spend somewhere else.",
+                               "De vuelta al banco — cada palabra se usa exactamente una vez, así que una que devuelves puedes gastarla en otro lugar."]));
+      paint(); return;
+    }
+    if(!sel){
+      sayEl.innerHTML = esc(T(["Pick a word from the bank first, then tap the blank it belongs in.",
+                               "Elige primero una palabra del banco, y luego toca el espacio al que pertenece."]));
+      return;
+    }
+    if(sel.si !== si){
+      sayEl.innerHTML = esc(T(["That word belongs to the other bank — each bank serves only its own questions, exactly like the paper.",
+                               "Esa palabra es del otro banco — cada banco sirve solo a sus preguntas, igual que en el papel."]));
+      return;
+    }
+    var word = SECTIONS[si].bank[sel.wi];
+    if(here != null) fill[si][ii][bi] = null;
+    fill[si][ii][bi] = word;
+    sel = null;
+    sayEl.innerHTML = blanksLeft()
+      ? esc(T(["Placed. ", "Colocada. "]) + blanksLeft() + T([" blank" + (blanksLeft()===1?"":"s") + " left. Nothing is checked until you press the button.",
+                                                              " espacio" + (blanksLeft()===1?"":"s") + " por llenar. Nada se revisa hasta que presiones el botón."]))
+      : '<b>' + esc(T(["Every blank is filled. Read it through once, then check it.",
+                       "Todos los espacios están llenos. Léelo una vez y luego revísalo."])) + '</b>';
+    paint();
+  }
+
+  document.getElementById("wqCheck_rev").addEventListener("click", function(){
+    var left = blanksLeft();
+    if(left && !window.confirm(T(["There " + (left===1?"is":"are") + " still " + left + " blank" + (left===1?"":"s") + " empty. Check it anyway?",
+                                  "Todavía " + (left===1?"queda":"quedan") + " " + left + " espacio" + (left===1?"":"s") + " vacío" + (left===1?"":"s") + ". ¿Revisar de todos modos?"]))) return;
+    checked = true;
+    var got = 0, n = totalItems();
+    SECTIONS.forEach(function(sec, si){
+      sec.items.forEach(function(it, ii){
+        var all = it.a.every(function(ans, k){
+          var w = fill[si][ii][k];
+          return w && w.toLowerCase() === ans.toLowerCase();
+        });
+        if(all) got++;
+      });
+    });
+    var line;
+    if(got === n) line = T(["Every one. Clear it and do it again from memory — that is the last thing left to practice.",
+                            "Todas. Vacíalo y hazlo otra vez de memoria — es lo último que queda por practicar."]);
+    else if(got >= n-2) line = T(["Nearly all of it. The few marked below are the only ones standing between you and the whole thing.",
+                                  "Casi todo. Las pocas marcadas abajo son lo único entre tú y el total."]);
+    else if(got >= n/2) line = T(["Solid ground under about half. Each miss below shows the word that belonged there — read those, clear it, and run it again.",
+                                  "Terreno firme bajo casi la mitad. Cada fallo de abajo muestra la palabra que iba ahí — léelas, vacíalo y hazlo otra vez."]);
+    else line = T(["This is exactly what a rehearsal is for, and finding it out today instead of on the day is the whole point. Nothing here is recorded. Work the questions above with the hints on — that is what they are for — then clear this and run it again.",
+                   "Para esto sirve un ensayo, y averiguarlo hoy en vez del día del examen es todo el punto. Aquí nada se registra. Trabaja las preguntas de arriba con las pistas encendidas — para eso están — y luego vacía esto y hazlo de nuevo."]);
+    sayEl.innerHTML = '<span class="wq-score"><span class="big">'+got+'</span><span class="of">'
+      + esc(T(["out of ","de "]) + n) + '</span></span>'
+      + '<span class="wq-line" style="display:block">' + esc(line) + '</span>'
+      + '<span class="wq-line" style="display:block;color:var(--ink-soft);font-size:13.5px">'
+      + esc(T(["This number was not saved and was not sent anywhere. It exists on this screen and nowhere else.",
+               "Este número no se guardó ni se envió a ningún lado. Existe en esta pantalla y en ningún otro lugar."])) + '</span>';
+    paint();
+  });
+
+  document.getElementById("wqClear_rev").addEventListener("click", function(){
+    reset();
+    sayEl.innerHTML = esc(T(["Cleared. Every word is back in its bank.","Vaciado. Cada palabra volvió a su banco."]));
+    paint();
+  });
+
+  box.hidden = false;
+  paint();
+  try{
+    new MutationObserver(function(){ paint(); })
+      .observe(document.documentElement, { attributes:true, attributeFilter:["lang"] });
+  }catch(e){}
+})();
+</script>
+
+  </section>
+  <section class="qr-charts" id="charts">
+    <div class="qr-sechead"><span class="n">04</span><h2 data-en="The four charts" data-es="Los cuatro organizadores">The four charts</h2><span class="from" data-en="from &lt;a href=&quot;h16-put-it-all-together.html&quot;&gt;Put It All Together&lt;/a&gt;" data-es="de &lt;a href=&quot;h16-put-it-all-together.html&quot;&gt;Júntalo Todo&lt;/a&gt;">from <a href="h16-put-it-all-together.html">Put It All Together</a></span></div>
+  <div class="hcx" id="hcx" hidden>
+    <div class="hc-head">
+      <span class="k" data-en="Fill them in — and print them, blank or finished" data-es="Llénalos — e imprímelos, en blanco o terminados">Fill them in — and print them, blank or finished</span>
+      <h3 data-en="Separation of powers, checks, federalism, amendments" data-es="Separación de poderes, contrapesos, federalismo, enmiendas">Separation of powers, checks, federalism, amendments</h3>
+      <p class="hc-say" data-en="The same charts your teacher hands out, except these ones talk back. Tap a card, then tap the column it belongs in — or drag it, if you have a mouse. Put one in the wrong column and nothing is lost: it tells you which column it really lives in, and why that one pulled you. Press Print this chart only for a clean sheet — blank for a class set, or finished, whichever state it is in." data-es="Los mismos organizadores que reparte tu maestro, solo que estos responden. Toca una tarjeta y luego la columna a la que pertenece — o arrástrala, si tienes ratón. Si la pones en la columna equivocada no se pierde nada: te dice en qué columna vive de verdad, y por qué esa otra te jaló. Presiona Imprimir solo este organizador para una hoja limpia — en blanco para un juego de clase, o terminada, según su estado.">The same charts your teacher hands out, except these ones talk back. Tap a card, then tap the column it belongs in — or drag it, if you have a mouse. Put one in the wrong column and nothing is lost: it tells you which column it really lives in, and why that one pulled you. Press Print this chart only for a clean sheet — blank for a class set, or finished, whichever state it is in.</p>
+    </div>
+
+    <div class="hc-tabs no-print" id="hcTabs" role="tablist"></div>
+
+    <div class="hc-sheet">
+      <div class="hc-title"><span class="ct" id="hcTitle"></span><span class="cn" id="hcCount"></span></div>
+      <p class="hc-note" id="hcNote"></p>
+      <div class="hc-bins" id="hcBins"></div>
+      <div class="hc-trayhead"><span class="k" id="hcTrayK"></span></div>
+      <div class="hc-tray" id="hcTray"></div>
+      <p class="hc-say2" id="hcSay" aria-live="polite"></p>
+    </div>
+
+    <div class="hc-acts no-print">
+      <button class="btn" type="button" id="hcClear" data-en="Clear this chart" data-es="Vaciar este organizador">Clear this chart</button>
+      <button class="btn" type="button" id="hcPrint" data-en="Print this chart only" data-es="Imprimir solo este organizador">Print this chart only</button>
+    </div>
+  </div>
+
+<style>
+/* ══ THE CHART STUDIO — AOG-H16-CHARTS-V1 ══ tokens only ══
+   ⚠ PRINTS ON PURPOSE. Everything here lives in the page's own flow, so the
+   shared AOG-PRINTMARK-V2 layer hangs its mark inside these blocks with
+   nothing to hand-add. Nothing is position:fixed. Nothing clips. */
+.hcx{border:1.5px solid var(--rule-soft); border-radius:16px; background:var(--field);
+  box-shadow:var(--lift-sm); padding:16px 16px 18px; margin:14px 0 4px; scroll-margin-top:58px;}
+.hc-head .k{font-size:11px; font-weight:800; letter-spacing:.12em; text-transform:uppercase; color:var(--gold-deep);}
+.hc-head h3{font-size:20px; margin:3px 0 0;}
+.hc-say{margin:7px 0 0; font-size:14px; line-height:1.55; color:var(--ink-soft); max-width:70ch;}
+.hc-tabs{display:flex; flex-wrap:wrap; gap:8px; margin-top:12px;}
+.hc-tab{min-height:44px; border:1.5px solid var(--rule); border-radius:11px; background:var(--field-2);
+  padding:8px 13px; font-size:14px; font-weight:700; color:var(--ink); cursor:pointer; font-family:inherit;}
+.hc-tab:hover{border-color:var(--gold-deep); background:var(--a-wash);}
+.hc-tab[aria-selected="true"]{background:var(--gold); border-color:var(--gold-deep); color:var(--ink);}
+.hc-sheet{margin-top:13px; border:1.5px solid var(--rule); border-radius:14px; padding:13px 13px 15px; background:var(--field-2);}
+.hc-title{display:flex; align-items:baseline; gap:10px; flex-wrap:wrap;}
+.hc-title .ct{font-size:17px; font-weight:800; letter-spacing:.02em;
+  font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;}
+.hc-title .cn{font-size:12px; font-weight:800; letter-spacing:.08em; text-transform:uppercase; color:var(--gold-deep);}
+.hc-note{margin:5px 0 0; font-size:13.5px; line-height:1.5; color:var(--ink-soft); max-width:68ch;}
+.hc-bins{display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-top:12px;}
+.hc-bins.five{grid-template-columns:repeat(5,1fr);}
+.hc-bin{border:1.5px solid var(--rule); border-radius:12px; background:var(--field); padding:9px 9px 11px;
+  min-height:120px; display:flex; flex-direction:column;}
+.hc-bin.armed{border-color:var(--gold-deep); background:var(--a-wash);}
+.hc-bin.over{border-color:var(--gold-deep); border-style:dashed; background:var(--a-wash);}
+.hc-bin .bl{font-size:12.5px; font-weight:800; letter-spacing:.04em; color:var(--ink);
+  border-bottom:1.5px solid var(--rule); padding-bottom:6px; margin-bottom:7px; line-height:1.3;}
+.hc-bin .in{display:flex; flex-direction:column; gap:6px;}
+.hc-chip{display:block; width:100%; text-align:left; min-height:48px; border:1.5px solid var(--rule);
+  border-radius:10px; background:var(--field); padding:9px 11px; font-size:14px; line-height:1.35;
+  color:var(--ink); cursor:pointer; font-family:inherit;}
+.hc-chip:hover{border-color:var(--gold-deep); background:var(--a-wash);}
+.hc-chip.sel{border-color:var(--gold-deep); border-width:2.5px; background:var(--gold);}
+.hc-chip.placed{cursor:default; border-color:var(--lock); background:var(--lock-wash); font-size:13.5px; min-height:0;}
+.hc-chip.placed .tick{color:var(--lock); font-weight:900; margin-right:5px;}
+.hc-chip.miss{border-color:var(--gold-deep); border-style:dashed;}
+.hc-trayhead{margin-top:12px;}
+.hc-trayhead .k{font-size:11px; font-weight:800; letter-spacing:.12em; text-transform:uppercase; color:var(--gold-deep);}
+.hc-tray{display:grid; grid-template-columns:repeat(auto-fill,minmax(210px,1fr)); gap:7px; margin-top:6px;}
+.hc-tray:empty::after{content:attr(data-done); font-size:13.5px; color:var(--ink-soft);}
+.hc-say2{margin-top:11px; font-size:14px; line-height:1.55; color:var(--ink); max-width:66ch;}
+.hc-say2:empty{display:none;}
+.hc-say2 b{color:var(--gold-deep);}
+.hc-say2 .good{color:var(--lock); font-weight:700;}
+.hc-acts{display:flex; gap:9px; margin-top:12px; flex-wrap:wrap;}
+
+@media (max-width:640px){
+  .hc-bins,.hc-bins.five{grid-template-columns:1fr;}
+  .hc-bin{min-height:0;}
+}
+@media (prefers-reduced-motion: reduce){ .hc-chip,.hr-o,.hc-tab{transition:none !important;} }
+
+/* ══ PRINT ══ the studio is a worksheet; the rehearsal never is ══
+   ⚠ PAPER IS NOT A TOUCH TARGET: every finger-sized rule above gets its
+   print counterpart here, and nothing is allowed to clip — a chip that
+   outgrows its column wraps and prints ugly, never wrong. */
+@media print{
+  /* ⚠ THE STUDIO PRINTS ON ITS OWN SHEET, NEVER STAPLED TO THE WORKSHEET.
+     A host that straddles a page break carries the shared mark only on the
+     page its center falls on — so a studio left in the ordinary print pushed
+     the paperlist onto a second sheet and that sheet came out BARE. Print the
+     worksheet (one marked page, exactly like h14 and h15) or press Print this
+     chart only (one marked page of chart). Both roads print marked paper;
+     stapling them together did not. */
+  .hcx{display:none !important;}
+  html.aog-chartonly .hcx{display:block !important;
+    border:1.5px solid #999; box-shadow:none; padding:10px 10px 12px; break-inside:auto;}
+  html.aog-chartonly .hcx .hc-say{display:none;}
+  html.aog-chartonly .hc-sheet{background:none; padding:8px 8px 10px;}
+  html.aog-chartonly .hc-bins{display:grid !important; grid-template-columns:repeat(3,1fr) !important; gap:7px;}
+  html.aog-chartonly .hc-bins.five{grid-template-columns:repeat(5,1fr) !important;}
+  html.aog-chartonly .hc-bin{min-height:150px; break-inside:avoid; overflow:visible;}
+  html.aog-chartonly .hc-chip{min-height:0 !important; font-size:10.5pt !important; padding:5px 7px; overflow:visible;}
+  html.aog-chartonly .hc-chip.sel{background:none; border-width:1.5px;}
+  html.aog-chartonly .hc-tray{grid-template-columns:repeat(3,1fr); gap:5px;}
+  html.aog-chartonly .hc-say2{display:none;}
+  html.aog-chartonly .hc-title .cn{color:#555;}
+}
+@media print{
+  /* Print this chart only — everything else on the page stands down */
+  /* every surface that is NOT the chart stands down for one print. A selector
+     the host page does not have is simply inert, which is what lets one rule
+     serve both an activity page and the quiz room. */
+  html.aog-chartonly .mast,html.aog-chartonly .foot,html.aog-chartonly .sheet-head,
+  html.aog-chartonly .stage,html.aog-chartonly .paperlist,html.aog-chartonly .conf,
+  html.aog-chartonly .close-card,html.aog-chartonly .teach,html.aog-chartonly .demo,
+  html.aog-chartonly .sheet-foot,html.aog-chartonly .hrx,html.aog-chartonly .wqx,
+  html.aog-chartonly .wmbar,html.aog-chartonly .qr-mast,html.aog-chartonly .qr-intro,
+  html.aog-chartonly .qr-quiz,html.aog-chartonly .qr-foot{display:none !important;}
+  html.aog-chartonly .hcx{border:none; padding:0; margin:0;}
+}
+
+/* ══ AOG-PRINT-SAFE-V1 (2026-09-20) ═══════════════════════════════════════════
+   Jimmy, printing a novel study from his phone: "another pdf that gets parts of
+   the material cut off." These are the rules that keep paper honest on every
+   engine — a table row, a list item, a figure and a picture stay whole; a head
+   keeps the lines under it; no paragraph strands one line at a page edge; and a
+   long table repeats its head at the top of each page. Printed pages only. */
+@media print{
+  table{break-inside:auto; page-break-inside:auto}
+  thead{display:table-header-group}
+  tfoot{display:table-footer-group}
+  tr{break-inside:avoid; page-break-inside:avoid}
+  li,figure,img,svg{break-inside:avoid; page-break-inside:avoid}
+  h1,h2,h3,h4,h5{break-after:avoid; page-break-after:avoid}
+  p{orphans:3; widows:3}
+  /* AOG-PRINT-GRIDFIT-V1 — a CSS grid does not fragment, so a card in a grid row
+     was sliced at the page break instead of moving whole to the next page. On
+     paper the grid is ordinary blocks and each card keeps itself together. */
+  .grid,.cards{display:block!important}
+  .grid>*,.cards>*{break-inside:avoid; page-break-inside:avoid; margin:0 0 12px}
+}
+</style>
+<script>
+/* ══ THE CHART STUDIO — AOG-H16-CHARTS-V1 ═════════════════════════════════
+   The four blank handouts, made live. Exploration only: records nothing,
+   persists nothing, counts toward nothing. Every placement teaches — a
+   right one says why it belongs, a wrong one names the column it really
+   lives in and the trap that pulled it. Never the word "wrong". */
+(function(){
+  "use strict";
+  var box = document.getElementById("hcx");
+  if(!box) return;
+  function ES(){ return document.documentElement.lang === "es"; }
+  function TT(a){ return ES() ? a[1] : a[0]; }
+  function esc(v){
+    return String(v==null?"":v).replace(/[&<>"']/g, function(c){
+      return ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"})[c];
+    });
+  }
+
+  var CHARTS = [
+   {id:"sep", t:["Separation of Powers","Separación de poderes"],
+    note:["Ten of these twelve are the matching section on your review sheet, word for word. Make the laws, carry out the laws, interpret the laws — three jobs, and no set of hands holding two of them.",
+          "Diez de estas doce son la sección de emparejar de tu hoja de repaso, palabra por palabra. Hacer las leyes, ejecutarlas, interpretarlas — tres trabajos, y ningún par de manos con dos."],
+    bins:[{id:"L",l:["Legislative Branch","Rama legislativa"]},
+          {id:"E",l:["Executive Branch","Rama ejecutiva"]},
+          {id:"J",l:["Judicial Branch","Rama judicial"]}],
+    chips:[
+     {b:"L",t:["Makes laws","Hace las leyes"],s:["Writing the law is the one job nobody outside the legislature may do.","Escribir la ley es el único trabajo que nadie fuera de la legislatura puede hacer."]},
+     {b:"L",t:["Collects taxes","Cobra impuestos"],s:["Only Congress may reach into the country's pocket — the power of the purse.","Solo el Congreso puede meter la mano en el bolsillo del país — el poder de la bolsa."]},
+     {b:"L",t:["Declares war","Declara la guerra"],s:["The president COMMANDS the army; only Congress may declare the war it fights. The split is deliberate.","El presidente MANDA al ejército; solo el Congreso puede declarar la guerra que pelea. La división es deliberada."]},
+     {b:"L",t:["Controls government spending","Controla el gasto del gobierno"],s:["Every dollar the government spends was voted by Congress first.","Cada dólar que el gobierno gasta lo votó primero el Congreso."]},
+     {b:"E",t:["Enforces and carries out laws","Hace cumplir y ejecuta las leyes"],s:["Congress writes them; this branch is what makes them real on a Tuesday morning.","El Congreso las escribe; esta rama es la que las vuelve reales un martes por la mañana."]},
+     {b:"E",t:["Directs foreign policy","Dirige la política exterior"],s:["The president speaks for the country abroad — with the Senate standing behind, ratifying the treaties.","El presidente habla por el país en el exterior — con el Senado detrás, ratificando los tratados."]},
+     {b:"E",t:["Makes treaties","Hace tratados"],s:["This one pulls hard toward the legislature because the Senate must RATIFY a treaty. Negotiating and signing it is the executive half.","Esta jala fuerte hacia la legislatura porque el Senado debe RATIFICAR un tratado. Negociarlo y firmarlo es la mitad ejecutiva."]},
+     {b:"E",t:["Issues pardons","Concede indultos"],s:["One of the very few powers in the whole plan with no check standing on it at all.","Uno de los poquísimos poderes de todo el plan sin ningún contrapeso encima."]},
+     {b:"J",t:["Interprets laws","Interpreta las leyes"],s:["Deciding what the words actually mean when a real case turns on them.","Decidir qué significan de verdad las palabras cuando un caso real depende de ellas."]},
+     {b:"J",t:["Determines if laws are constitutional","Determina si las leyes son constitucionales"],s:["Judicial review — the power the Court claimed for itself in Marbury v. Madison.","La revisión judicial — el poder que la Corte reclamó para sí en Marbury contra Madison."]},
+     {b:"J",t:["Settles disputes between states","Resuelve disputas entre estados"],s:["One of only two kinds of case that BEGIN at the Supreme Court instead of arriving on appeal.","Uno de los dos únicos tipos de caso que EMPIEZAN en la Corte Suprema en vez de llegar por apelación."]},
+     {b:"J",t:["Protects rights","Protege los derechos"],s:["When a right is denied, a court is where a person goes — the branch with no army and no money is the one you appeal to.","Cuando se niega un derecho, una corte es a donde va una persona — la rama sin ejército ni dinero es a la que apelas."]}]},
+
+   {id:"chk", t:["Checks & Balances","Pesos y contrapesos"],
+    note:["Separation of powers builds the walls; these are the windows in them. Read each card as a sentence and ask who is being HELD, not who is doing the holding — the column is named for the branch getting checked.",
+          "La separación de poderes construye los muros; estos son las ventanas. Lee cada tarjeta como oración y pregunta a quién SUJETAN, no quién sujeta — la columna lleva el nombre de la rama vigilada."],
+    bins:[{id:"C",l:["Checks on Congress","Contrapesos al Congreso"]},
+          {id:"P",l:["Checks on the President","Contrapesos al Presidente"]},
+          {id:"S",l:["Checks on the Supreme Court","Contrapesos a la Corte Suprema"]}],
+    chips:[
+     {b:"C",t:["The president vetoes a bill","El presidente veta un proyecto"],s:["The desk answering the two houses — the most famous check in the plan.","El escritorio respondiendo a las dos cámaras — el contrapeso más famoso del plan."]},
+     {b:"C",t:["The Court strikes down a law as unconstitutional","La Corte anula una ley por inconstitucional"],s:["Judicial review reaching back at the branch that wrote the law.","La revisión judicial alcanzando a la rama que escribió la ley."]},
+     {b:"C",t:["The president commands the armed forces Congress pays for","El presidente manda a las fuerzas armadas que el Congreso paga"],s:["Congress declares and funds; the president leads. Neither one can make a war alone.","El Congreso declara y financia; el presidente dirige. Ninguno puede hacer una guerra solo."]},
+     {b:"C",t:["The president can call Congress into special session","El presidente puede convocar al Congreso a sesión especial"],s:["The executive can pull the legislature back to work — the answer to a Congress that goes home.","El ejecutivo puede traer de vuelta a la legislatura — la respuesta a un Congreso que se va a casa."]},
+     {b:"P",t:["Congress can override a veto with two-thirds of both houses","El Congreso puede anular un veto con dos tercios de ambas cámaras"],s:["The gate in the veto wall. It costs more than passing the bill did, which is exactly why it works.","La puerta en el muro del veto. Cuesta más que aprobar el proyecto, que es justo por qué funciona."]},
+     {b:"P",t:["The Senate must approve the president's appointments","El Senado debe aprobar los nombramientos del presidente"],s:["A president cannot quietly build a government of friends — a hundred senators vote on each one.","Un presidente no puede armar en silencio un gobierno de amigos — cien senadores votan por cada uno."]},
+     {b:"P",t:["The Senate must ratify the president's treaties","El Senado debe ratificar los tratados del presidente"],s:["The president negotiates with the world; the Senate decides whether the promise binds the country.","El presidente negocia con el mundo; el Senado decide si la promesa obliga al país."]},
+     {b:"P",t:["Congress can impeach the president and remove them from office","El Congreso puede acusar al presidente y destituirlo"],s:["The House charges, the Senate tries, two-thirds convicts, and the only penalty is the office itself.","La Cámara acusa, el Senado juzga, dos tercios condenan, y la única pena es el cargo mismo."]},
+     {b:"S",t:["The president appoints the justices","El presidente nombra a los jueces"],s:["The Court cannot pick its own members — the branch it will judge chooses them.","La Corte no puede escoger a sus miembros — la rama que juzgará los escoge."]},
+     {b:"S",t:["The Senate must confirm a justice before they may sit","El Senado debe confirmar a un juez antes de que pueda sentarse"],s:["Two branches must agree before anyone gets a seat for life.","Dos ramas deben coincidir antes de que alguien obtenga un asiento vitalicio."]},
+     {b:"S",t:["Congress can impeach and remove a judge","El Congreso puede acusar y destituir a un juez"],s:["Life tenure is not immunity. It is protection from politics, not a pass on misconduct.","El cargo vitalicio no es inmunidad. Es protección contra la política, no un pase para la mala conducta."]},
+     {b:"S",t:["Congress and the states can amend the Constitution to answer a ruling","El Congreso y los estados pueden enmendar la Constitución para responder a un fallo"],s:["The last word is not the Court's. If the country disagrees deeply enough, it can change the words the Court is reading.","La última palabra no es de la Corte. Si el país está en desacuerdo lo bastante hondo, puede cambiar las palabras que la Corte lee."]}]},
+
+   {id:"fed", t:["Federalism","Federalismo"],
+    note:["Federal, shared, state — the up-and-down split, not the sideways one. The 10th Amendment settles every argument: a power the Constitution never handed Washington stays with the states.",
+          "Federal, compartido, estatal — la división vertical, no la horizontal. La Enmienda 10 zanja toda discusión: un poder que la Constitución nunca entregó a Washington se queda con los estados."],
+    bins:[{id:"F",l:["Federal Powers","Poderes federales"]},
+          {id:"B",l:["Shared (Concurrent)","Compartidos (concurrentes)"]},
+          {id:"T",l:["State Powers","Poderes estatales"]}],
+    chips:[
+     {b:"F",t:["Print and coin money","Imprimir y acuñar moneda"],s:["One currency or fifty — the Articles of Confederation tried fifty, and it nearly ended the country.","Una moneda o cincuenta — los Artículos de la Confederación probaron cincuenta, y casi acaban con el país."]},
+     {b:"F",t:["Declare war","Declarar la guerra"],s:["A country speaks with one voice on war. No state may declare one.","Un país habla con una sola voz sobre la guerra. Ningún estado puede declararla."]},
+     {b:"F",t:["Make copyright and patent laws","Hacer leyes de derechos de autor y patentes"],s:["An invention protected in one state and copied freely in the next protects nobody. It is on the review sheet by name.","Un invento protegido en un estado y copiado libremente en el vecino no protege a nadie. Está en la hoja de repaso por su nombre."]},
+     {b:"F",t:["Establish post offices","Establecer oficinas de correo"],s:["Written straight into Article I — mail has to cross state lines to be mail at all.","Escrito directo en el Artículo I — el correo tiene que cruzar fronteras estatales para ser correo."]},
+     {b:"B",t:["Raise taxes","Cobrar impuestos"],s:["Both do it, which is why your paycheck is cut twice. It is on the review sheet's matching section.","Los dos lo hacen, por eso a tu cheque le cortan dos veces. Está en la sección de emparejar de la hoja."]},
+     {b:"B",t:["Borrow money","Pedir dinero prestado"],s:["Governments at both levels borrow — and both have to pay it back.","Los gobiernos de ambos niveles piden prestado — y los dos tienen que devolverlo."]},
+     {b:"B",t:["Charter banks","Autorizar bancos"],s:["Both charter them, and the fight over whether the federal government MAY was one of the first great constitutional arguments.","Ambos los autorizan, y la pelea sobre si el gobierno federal PODÍA fue una de las primeras grandes discusiones constitucionales."]},
+     {b:"B",t:["Administer criminal justice","Administrar la justicia penal"],s:["Two court systems, two sets of crimes, both running at once — federal and state.","Dos sistemas de cortes, dos conjuntos de delitos, funcionando a la vez — federal y estatal."]},
+     {b:"T",t:["Establish and maintain schools","Establecer y mantener escuelas"],s:["Never handed to Washington, so the 10th Amendment leaves it here. That is why your school year looks different one state over.","Nunca se entregó a Washington, así que la Enmienda 10 lo deja aquí. Por eso tu año escolar se ve distinto un estado más allá."]},
+     {b:"T",t:["Make marriage and divorce laws","Hacer leyes de matrimonio y divorcio"],s:["A state power — and Article IV is what makes the other 49 recognize the certificate.","Un poder estatal — y el Artículo IV es lo que hace que los otros 49 reconozcan el acta."]},
+     {b:"T",t:["Conduct elections","Conducir las elecciones"],s:["Even the presidential election is run fifty separate times, by fifty states, under fifty sets of rules.","Incluso la elección presidencial se hace cincuenta veces por separado, por cincuenta estados, con cincuenta reglamentos."]},
+     {b:"T",t:["Establish local governments","Establecer gobiernos locales"],s:["Your town, your county and your school board all exist because a STATE created them.","Tu pueblo, tu condado y tu junta escolar existen porque un ESTADO los creó."]}]},
+
+   {id:"amd", t:["The amendments on your sheet","Las enmiendas de tu hoja"],
+    note:["Five numbers, and the review sheet asks for every one of them. Put each promise under the number that made it.",
+          "Cinco números, y la hoja de repaso los pide todos. Pon cada promesa bajo el número que la hizo."],
+    bins:[{id:"a2",l:["Amendment 2","Enmienda 2"]},{id:"a5",l:["Amendment 5","Enmienda 5"]},
+          {id:"a8",l:["Amendment 8","Enmienda 8"]},{id:"a19",l:["Amendment 19","Enmienda 19"]},
+          {id:"a21",l:["Amendment 21","Enmienda 21"]}],
+    chips:[
+     {b:"a2",t:["A well-regulated militia — the National Guard's ancestor","Una milicia bien regulada — el antepasado de la Guardia Nacional"],s:["The review sheet asks it exactly that way: the right of states to a well-regulated militia.","La hoja lo pregunta justo así: el derecho de los estados a una milicia bien regulada."]},
+     {b:"a5",t:["Due process — the same fair rules in every case","Debido proceso — las mismas reglas justas en cada caso"],s:["The government must follow the same rules whoever you are. The sheet gives you the definition and asks for the name.","El gobierno debe seguir las mismas reglas seas quien seas. La hoja te da la definición y pide el nombre."]},
+     {b:"a5",t:["You cannot be forced to testify against yourself","No pueden obligarte a declarar contra ti mismo"],s:["The same amendment — this is where 'I plead the Fifth' comes from.","La misma enmienda — de aquí viene «me acojo a la Quinta»."]},
+     {b:"a8",t:["No cruel and unusual punishment","Sin castigos crueles e inusuales"],s:["A limit on the punishment at the END, after a fair trial has already happened.","Un límite al castigo del FINAL, después de que ya hubo un juicio justo."]},
+     {b:"a8",t:["No excessive bail or fines","Sin fianzas ni multas excesivas"],s:["Same amendment, same idea: a penalty may not be used to crush somebody.","Misma enmienda, misma idea: una pena no puede usarse para aplastar a alguien."]},
+     {b:"a19",t:["Women's right to vote","El derecho de las mujeres al voto"],s:["1920, after a fight that began at Seneca Falls in 1848 — seventy-two years.","1920, tras una lucha que empezó en Seneca Falls en 1848 — setenta y dos años."]},
+     {b:"a21",t:["Repealed another amendment and ended Prohibition","Derogó otra enmienda y terminó la Prohibición"],s:["The only amendment that exists to CANCEL another — it repealed the 18th, and it is the only one ratified by state conventions.","La única enmienda que existe para CANCELAR otra — derogó la 18ª, y es la única ratificada por convenciones estatales."]}]}
+  ];
+
+  var cur = 0, placed = {};          /* placed[chartId][chipIndex] = true */
+  CHARTS.forEach(function(c){ placed[c.id] = {}; });
+  var sel = -1;
+
+  var tabsEl=document.getElementById("hcTabs"), binsEl=document.getElementById("hcBins"),
+      trayEl=document.getElementById("hcTray"), sayEl=document.getElementById("hcSay"),
+      titleEl=document.getElementById("hcTitle"), countEl=document.getElementById("hcCount"),
+      noteEl=document.getElementById("hcNote"), trayK=document.getElementById("hcTrayK");
+
+  function C(){ return CHARTS[cur]; }
+  function binLabel(id){
+    var b = C().bins.filter(function(x){ return x.id===id; })[0];
+    return b ? TT(b.l) : "";
+  }
+  function nPlaced(){ return Object.keys(placed[C().id]).length; }
+
+  function paintTabs(){
+    tabsEl.innerHTML = "";
+    CHARTS.forEach(function(c, k){
+      var b = document.createElement("button");
+      b.type="button"; b.className="hc-tab"; b.setAttribute("role","tab");
+      b.setAttribute("aria-selected", String(k===cur));
+      b.textContent = TT(c.t);
+      b.addEventListener("click", function(){ cur=k; sel=-1; sayEl.innerHTML=""; paint(); });
+      tabsEl.appendChild(b);
+    });
+  }
+
+  function paint(){
+    var c = C();
+    titleEl.textContent = TT(c.t);
+    noteEl.textContent = TT(c.note);
+    countEl.textContent = ES() ? (nPlaced()+" de "+c.chips.length+" colocadas")
+                               : (nPlaced()+" of "+c.chips.length+" placed");
+    trayK.textContent = ES() ? "Todavía por colocar" : "Still to place";
+
+    binsEl.className = "hc-bins" + (c.bins.length===5 ? " five" : "");
+    binsEl.innerHTML = "";
+    c.bins.forEach(function(bin){
+      var d = document.createElement("div");
+      d.className = "hc-bin" + (sel>-1 ? " armed" : "");
+      d.setAttribute("data-bin", bin.id);
+      var inner = '<div class="bl">'+esc(TT(bin.l))+'</div><div class="in">';
+      c.chips.forEach(function(ch, k){
+        if(placed[c.id][k] && ch.b===bin.id){
+          inner += '<span class="hc-chip placed"><span class="tick" aria-hidden="true">✓</span>'+esc(TT(ch.t))+'</span>';
+        }
+      });
+      inner += '</div>';
+      d.innerHTML = inner;
+      d.addEventListener("click", function(){ if(sel>-1) place(sel, bin.id); });
+      d.addEventListener("dragover", function(e){ e.preventDefault(); d.classList.add("over"); });
+      d.addEventListener("dragleave", function(){ d.classList.remove("over"); });
+      d.addEventListener("drop", function(e){
+        e.preventDefault(); d.classList.remove("over");
+        var k = parseInt(e.dataTransfer.getData("text/plain"), 10);
+        if(!isNaN(k)) place(k, bin.id);
+      });
+      binsEl.appendChild(d);
+    });
+
+    trayEl.innerHTML = "";
+    trayEl.setAttribute("data-done", ES() ? "Todo colocado — el organizador está completo."
+                                          : "All placed — the chart is complete.");
+    c.chips.forEach(function(ch, k){
+      if(placed[c.id][k]) return;
+      var b = document.createElement("button");
+      b.type="button";
+      b.className = "hc-chip" + (sel===k ? " sel" : "");
+      b.setAttribute("data-k", String(k));
+      b.setAttribute("draggable","true");
+      b.textContent = TT(ch.t);
+      b.addEventListener("click", function(){ sel = (sel===k) ? -1 : k; paint(); });
+      b.addEventListener("dragstart", function(e){
+        e.dataTransfer.setData("text/plain", String(k));
+        e.dataTransfer.effectAllowed = "move";
+        sel = k;
+      });
+      trayEl.appendChild(b);
+    });
+  }
+
+  function place(k, binId){
+    var c = C(), ch = c.chips[k];
+    if(!ch || placed[c.id][k]) return;
+    if(ch.b === binId){
+      placed[c.id][k] = true;
+      sel = -1;
+      sayEl.innerHTML = '<span class="good">'+esc(ES()?"Sí.":"Yes.")+'</span> <b>'+esc(TT(ch.t))+'</b> — '+esc(TT(ch.s));
+      if(nPlaced() === c.chips.length){
+        sayEl.innerHTML += ' <b>' + esc(ES() ? "Organizador completo. Imprímelo, o vacíalo y hazlo de memoria."
+                                             : "Chart complete. Print it, or clear it and do it again from memory.") + '</b>';
+      }
+    } else {
+      /* never the word wrong — name the column it really lives in */
+      sayEl.innerHTML = '<b>'+esc(TT(ch.t))+'</b> — '
+        + esc(ES() ? "esa vive bajo " : "that one lives under ")
+        + '<b>'+esc(binLabel(ch.b))+'</b>. ' + esc(TT(ch.s));
+    }
+    paint();
+  }
+
+  document.getElementById("hcClear").addEventListener("click", function(){
+    placed[C().id] = {}; sel = -1;
+    sayEl.innerHTML = esc(ES() ? "Vacío. Ahora hazlo de memoria." : "Cleared. Now do it from memory.");
+    paint();
+  });
+
+  /* Print this chart only — the rest of the page stands down for one print.
+     Synchronous, never behind a timer (iOS blocks a deferred print). */
+  var pBtn = document.getElementById("hcPrint");
+  pBtn.addEventListener("click", function(){
+    var h = document.documentElement;
+    h.classList.add("aog-chartonly");
+    var off = function(){ h.classList.remove("aog-chartonly"); };
+    if(window.onafterprint !== undefined) window.addEventListener("afterprint", off, {once:true});
+    window.print();
+    setTimeout(off, 1200);
+  });
+
+  box.hidden = false;
+  paintTabs(); paint();
+  try{
+    new MutationObserver(function(){ paintTabs(); paint(); })
+      .observe(document.documentElement, { attributes:true, attributeFilter:["lang"] });
+  }catch(e){}
+})();
+</script>
+
+  </section>
+
+</main>
+
+<footer class="foot wrap qr-foot">
+  <p><b>Architecture of Grace · Social Studies — A More Perfect Union.</b> <span data-en="The Quiz Room." data-es="La Sala de Exámenes.">The Quiz Room.</span></p>
+  <p data-en="This page loads no fonts, scripts, or images from the internet and sends nothing out — it works with the network off. No score from this room is stored on this computer or sent anywhere. It is not a district product and carries no district endorsement." data-es="Esta página no carga fuentes, scripts ni imágenes de internet y no envía nada — funciona con la red apagada. Ningún puntaje de esta sala se guarda en esta computadora ni se envía a ningún lado. No es un producto del distrito ni cuenta con su respaldo.">This page loads no fonts, scripts, or images from the internet and sends nothing out — it works with the network off. No score from this room is stored on this computer or sent anywhere. It is not a district product and carries no district endorsement.</p>
+</footer>
+<script>
+(function(){
+  "use strict";
+  var KEY = "aog.interior.ws.v1.";
+  var lang = "en";
+
+  function T(en, es){ return lang==="es" ? es : en; }
+
+  function paintLang(){
+    document.documentElement.lang = lang;
+    var nodes = document.querySelectorAll("[data-en]");
+    Array.prototype.forEach.call(nodes, function(n){
+      var v = (lang==="es") ? n.getAttribute("data-es") : n.getAttribute("data-en");
+      if(v==null) return;
+      if(v.indexOf("&lt;")!==-1 || v.indexOf("<")!==-1){ n.innerHTML = v; } else { n.textContent = v; }
+    });
+    var pEn = document.getElementById("aogLangEn"), pEs = document.getElementById("aogLangEs");
+    if(pEn) pEn.classList.toggle("on", lang!=="es");
+    if(pEs) pEs.classList.toggle("on", lang==="es");
+    paintTheme();
+  }
+
+  /* ══ THEME — same storage the activities use, so the room matches ══ */
+  var tBtn = document.getElementById("aogThemeBtn");
+  function prefersDark(){ return window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches; }
+  function currentIsDark(){
+    var s = document.documentElement.getAttribute("data-theme");
+    return s ? s==="dark" : prefersDark();
+  }
+  function paintTheme(){
+    /* ⚠ LABEL ONLY. The button holds two <svg>s (sun/moon) that CSS
+       shows and hides by data-theme; writing .textContent here would
+       delete them and leave an empty square. */
+    var lab = currentIsDark() ? T("Switch to light","Cambiar a claro")
+                              : T("Switch to dark","Cambiar a oscuro");
+    if(tBtn){ tBtn.setAttribute("aria-label", lab); tBtn.setAttribute("title", lab); }
+  }
+  /* ⚠⚠ SHARED WITH THE REST OF THE SITE. This used to live under this
+     page's own KEY, so switching to dark here and walking home put you
+     back in light. index.html stores it at "aog.theme"; so do we. The
+     old key is read once and carried over, so nobody loses a setting. */
+  var THEME_KEY = "aog.theme";
+  try{
+    var stored = localStorage.getItem(THEME_KEY);
+    if(!stored){
+      var oldT = localStorage.getItem(KEY+"theme");
+      if(oldT){ stored = oldT; localStorage.setItem(THEME_KEY, oldT); }
+    }
+    if(stored) document.documentElement.setAttribute("data-theme", stored);
+  }catch(e){}
+  if(window.matchMedia){
+    var mq = window.matchMedia("(prefers-color-scheme: dark)");
+    if(mq.addEventListener) mq.addEventListener("change", paintTheme);
+    else if(mq.addListener) mq.addListener(paintTheme);
+  }
+  if(tBtn) tBtn.addEventListener("click", function(){
+    var next = currentIsDark() ? "light" : "dark";
+    document.documentElement.setAttribute("data-theme", next);
+    try{ localStorage.setItem(THEME_KEY, next); }catch(e){}
+    paintTheme();
+  });
+
+  try{ var sl = localStorage.getItem(KEY+"lang"); if(sl==="es"||sl==="en") lang = sl; }catch(e){}
+  /* EN|ES is a two-button segmented control now, not one toggle: the
+     student can see which language they are in without having to read
+     the button that would change it. */
+  function pickLang(v){
+    return function(){
+      if(lang === v) return;
+      lang = v;
+      try{ localStorage.setItem(KEY+"lang", lang); }catch(e){}
+      paintLang();
+    };
+  }
+  var bEn = document.getElementById("aogLangEn"), bEs = document.getElementById("aogLangEs");
+  if(bEn) bEn.addEventListener("click", pickLang("en"));
+  if(bEs) bEs.addEventListener("click", pickLang("es"));
+
+  paintLang();
+})();
+</script>
+</body>
+</html>

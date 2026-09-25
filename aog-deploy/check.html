@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Connection check — Architecture of Grace</title>
+<meta name="description" content="A one-screen check that this device can reach the Sheet — run it before a class period, not during one.">
+<!-- ═══ AOG ICONS + LINK PREVIEW · managed block · .30k0 ═══
+     Inserted by _work/aog_head.py — DO NOT hand-edit one page; edit the
+     script and re-run it, or the 100 pages drift apart again. The card
+     URL carries ?v= because Slack, Apple and Google cache an og image BY
+     URL for weeks: change the picture, bump IMG_V, or nothing shows up.
+     ═══════════════════════════════════════════════════════════════ -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Architecture of Grace">
+<meta property="og:locale" content="en_US">
+<meta property="og:title" content="Connection check — Architecture of Grace">
+<meta property="og:description" content="A one-screen check that this device can reach the Sheet — run it before a class period, not during one.">
+<meta property="og:image" content="https://architectureofgrace.org/og-image.png?v=1">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Architecture of Grace — K–12 academics and the language of grace, built for the students the standard lesson wasn't written for.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Connection check — Architecture of Grace">
+<meta name="twitter:description" content="A one-screen check that this device can reach the Sheet — run it before a class period, not during one.">
+<meta name="twitter:image" content="https://architectureofgrace.org/og-image.png?v=1">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#0A1E33">
+<meta name="apple-mobile-web-app-title" content="Grace">
+<meta name="application-name" content="Architecture of Grace">
+<!-- ═══ END AOG ICONS + LINK PREVIEW ═══ -->
+<meta name="robots" content="noindex">
+<style>
+  :root{ --paper:#FCF8F0; --ink:#0A1E33; --soft:#46506E; --faint:#8A92A6;
+         --rule:#E4DAC5; --ok:#2E6B3A; --bad:#B3242B; --gold:#D9A33B; }
+  /* .30eg: dark palette removed - every page begins light, and this one has no toggle. */
+  *{ box-sizing:border-box; }
+  body{ margin:0; background:var(--paper); color:var(--ink); padding:22px 18px 60px;
+        font:16px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif; }
+  .wrap{ max-width:34rem; margin:0 auto; }
+  h1{ font-size:21px; margin:0 0 4px; letter-spacing:-.01em; }
+  .sub{ color:var(--soft); margin:0 0 22px; font-size:14.5px; }
+  .row{ display:flex; gap:12px; padding:13px 0; border-top:1px solid var(--rule); align-items:flex-start; }
+  .row:last-of-type{ border-bottom:1px solid var(--rule); }
+  .k{ flex:0 0 8.2rem; color:var(--soft); font-size:13.5px; padding-top:1px; }
+  .v{ flex:1 1 auto; font-weight:600; word-break:break-word; font-size:14.5px; }
+  .v small{ display:block; font-weight:400; color:var(--faint); font-size:12.5px; margin-top:3px; }
+  .ok{ color:var(--ok); } .bad{ color:var(--bad); }
+  .verdict{ margin:22px 0 0; padding:16px 18px; border-radius:12px; border:1px solid var(--rule);
+            background:rgba(217,163,59,.10); font-size:15px; line-height:1.6; }
+  .verdict b{ display:block; margin-bottom:5px; }
+  button{ font:inherit; font-weight:700; background:var(--ink); color:var(--paper); border:0;
+          border-radius:10px; padding:13px 20px; margin:20px 8px 0 0; cursor:pointer; }
+  button.ghost{ background:transparent; color:var(--soft); border:1px solid var(--rule); }
+  .note{ color:var(--faint); font-size:12.5px; margin-top:22px; line-height:1.6; }
+  a{ color:inherit; }
+</style>
+<style id="aog-nozoom">
+/* ═══ AOG-NOZOOM-V1 · 2026-09-18 ═══════════════════════════════════════════
+   iOS Safari zooms the WHOLE page when a text field under 16px takes focus,
+   and does not zoom back out. From then on the layout is wider than the
+   window and pans freely left and right on any touch. Jimmy, on an iPhone:
+   "how the screen moves easily left or right. It makes me nausea."
+   index.html had 69 such fields at 390px and gets this same rule from
+   aog-styles.css; this page links its own styles, so it carries its own copy.
+   ⚠ NOT maximum-scale=1 / user-scalable=no — that takes pinch-zoom away from
+     anyone who needs to magnify, and iOS has ignored it since iOS 10.
+   ⚠ Touch only. A mouse has no zoom behavior and keeps the tighter density.
+   ⚠ !important is load-bearing: some fields set their size in a style=""
+     attribute (the font: shorthand counts), and an author !important is what
+     outranks those. If you remove it, re-measure rather than assume.
+   ══════════════════════════════════════════════════════════════════════════ */
+@media (hover: none) and (pointer: coarse) {
+  input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="color"]):not([type="file"]):not([type="submit"]):not([type="button"]):not([type="image"]),
+  select,
+  textarea { font-size: 16px !important; }
+}
+</style>
+</head>
+<body>
+<script src="/aog-topbar.js"></script>
+
+<div class="wrap">
+  <h1>Connection check</h1>
+  <p class="sub">This page asks your device to download the site and reports exactly what came back. Nothing is sent anywhere &mdash; it all happens on this device.</p>
+  <div id="rows"></div>
+  <div class="verdict" id="verdict"><b>Running&hellip;</b>Give it a few seconds.</div>
+  <button type="button" id="again">Run it again</button>
+  <button type="button" class="ghost" id="nuke">Clear this site&rsquo;s offline copy</button>
+  <p class="note">If you are showing this to someone, a screenshot of this whole page is all they need.</p>
+</div>
+
+<script>
+(function(){
+  var rows = document.getElementById('rows');
+  function add(k, v, cls, sub){
+    var d = document.createElement('div'); d.className = 'row';
+    d.innerHTML = '<div class="k"></div><div class="v"></div>';
+    d.children[0].textContent = k;
+    d.children[1].textContent = v;
+    if (cls) d.children[1].className = 'v ' + cls;
+    if (sub){ var s = document.createElement('small'); s.textContent = sub; d.children[1].appendChild(s); }
+    rows.appendChild(d); return d;
+  }
+  function kb(n){ return n == null ? '?' : (n/1024).toFixed(0) + ' KB'; }
+
+  function grab(url){
+    var t0 = Date.now();
+    // cache:'reload' goes past the service worker and past Safari's own cache,
+    // so this measures the network, not what was stored earlier.
+    return fetch(url + (url.indexOf('?') > -1 ? '&' : '?') + 'cc=' + t0, { cache:'reload' })
+      .then(function(r){
+        return r.text().then(function(body){
+          return { ok:r.ok, status:r.status, ms:Date.now()-t0,
+                   declared: parseInt(r.headers.get('content-length')||'', 10),
+                   bytes: new TextEncoder().encode(body).length,
+                   tail: body.slice(-12), first: body.slice(0,60) };
+        });
+      })
+      .catch(function(e){ return { error: (e && e.message) || String(e), ms: Date.now()-t0 }; });
+  }
+
+  function run(){
+    rows.innerHTML = '';
+    document.getElementById('verdict').innerHTML = '<b>Running&hellip;</b>Give it a few seconds.';
+
+    var c = navigator.connection || {};
+    add('Device', navigator.userAgent.slice(0, 90));
+    add('Network', (c.effectiveType || 'unknown') + (c.saveData ? '  ·  Low Data Mode ON' : ''),
+        c.saveData ? 'bad' : '', c.saveData ? 'Low Data Mode makes Safari abandon large downloads. Turn it off and run this again.' : '');
+    add('Online', navigator.onLine ? 'yes' : 'no', navigator.onLine ? 'ok' : 'bad');
+
+    var sw = add('Offline copy', 'checking…');
+    if (navigator.serviceWorker && navigator.serviceWorker.getRegistrations){
+      navigator.serviceWorker.getRegistrations().then(function(rs){
+        (window.caches ? caches.keys() : Promise.resolve([])).then(function(names){
+          sw.children[1].textContent = rs.length + ' worker' + (rs.length === 1 ? '' : 's')
+            + ', ' + names.length + ' cache' + (names.length === 1 ? '' : 's');
+          var s = document.createElement('small'); s.textContent = names.join(', ') || 'none stored';
+          sw.children[1].appendChild(s);
+        });
+      });
+    } else { sw.children[1].textContent = 'not supported here'; }
+
+    Promise.all([grab('index.html'), grab('aog-styles.css'), grab('talk-it-out.html')])
+      .then(function(res){
+        var page = res[0], css = res[1], small = res[2];
+        var verdicts = [];
+
+        function report(name, r, expectMin){
+          if (r.error){ add(name, 'FAILED', 'bad', r.error); verdicts.push(name + ' could not be downloaded at all'); return 'fail'; }
+          var short = !isNaN(r.declared) && r.declared > 0 && r.bytes < r.declared;
+          var txt = kb(r.bytes) + (isNaN(r.declared) ? '' : ' of ' + kb(r.declared)) + '  ·  ' + r.ms + ' ms';
+          if (!r.ok){ add(name, 'HTTP ' + r.status, 'bad', txt); verdicts.push(name + ' returned an error'); return 'fail'; }
+          if (short){ add(name, 'CUT SHORT', 'bad', txt + '  —  stopped ' + kb(r.declared - r.bytes) + ' early');
+            verdicts.push(name + ' stopped downloading partway'); return 'short'; }
+          if (expectMin && r.bytes < expectMin){ add(name, 'TOO SMALL', 'bad', txt);
+            verdicts.push(name + ' came back smaller than it should be'); return 'short'; }
+          add(name, 'complete', 'ok', txt);
+          return 'ok';
+        }
+
+        var a = report('The site (3.6 MB)', page, 3000000);
+        var b = report('The stylesheet', css, 300000);
+        var d = report('A small page (66 KB)', small, 50000);
+
+        if (a === 'ok') add('Ends properly', page.tail.indexOf('</html>') > -1 ? 'yes' : 'NO', page.tail.indexOf('</html>') > -1 ? 'ok' : 'bad');
+
+        var v = document.getElementById('verdict'), msg;
+        if (a === 'ok' && b === 'ok' && d === 'ok'){
+          msg = '<b>Everything downloaded completely.</b>The connection is fine and the files are whole. If the site still will not show, the problem is on the display side, not the download — which is worth knowing.';
+        } else if (d === 'ok' && a !== 'ok'){
+          msg = '<b>Small files arrive; the big one does not.</b>This device can reach the site, but something gives up partway through the 3.6 MB page — Low Data Mode, a content blocker, a VPN or Private Relay, or a filtered network. Try a different network before anything else.';
+        } else if (d !== 'ok' && a !== 'ok'){
+          msg = '<b>Nothing downloads properly here.</b>Even the small file failed, so this is the network or something on this device intercepting it — not the website. Try cellular instead of Wi-Fi, or the other way round.';
+        } else {
+          msg = '<b>Mixed results.</b>' + verdicts.join('; ') + '.';
+        }
+        v.innerHTML = msg;
+      });
+  }
+
+  document.getElementById('again').addEventListener('click', run);
+  document.getElementById('nuke').addEventListener('click', function(){
+    var jobs = [];
+    if (window.caches && caches.keys) jobs.push(caches.keys().then(function(n){
+      return Promise.all(n.map(function(x){ return caches.delete(x); })); }));
+    if (navigator.serviceWorker && navigator.serviceWorker.getRegistrations)
+      jobs.push(navigator.serviceWorker.getRegistrations().then(function(rs){
+        return Promise.all(rs.map(function(r){ return r.unregister(); })); }));
+    Promise.all(jobs).then(function(){ alert('Offline copy cleared. Now reopen architectureofgrace.org'); run(); },
+                           function(){ alert('Could not clear it from here.'); });
+  });
+  run();
+})();
+</script>
+</body>
+</html>

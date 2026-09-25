@@ -1,0 +1,1424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script>/* .30eg: begin in light. Dark only when this device chose it - Jimmy, 2026-09-02: 'I just passed out a science worksheet through the link and it showed up on my students computer, but it was in dark mode!' With no stored choice the dark palette rode the OS setting (prefers-color-scheme), so a dark-set Chromebook opened every worksheet dark. Setting data-theme before first paint defeats every :not([data-theme="light"]) guard below; the existing toggle still reads and stores the same key. */
+(function(){var t="light";try{if(localStorage.getItem("aog.interior.ws.v1.theme")==="dark")t="dark";}catch(e){}document.documentElement.setAttribute("data-theme",t);})();</script>
+<title>The Interior Worksheets — Teacher View</title>
+<meta name="description" content="The seven student worksheets from Architecture of Grace, Book 3 — The Interior (Grades 6–8). The teacher's copy of all seven, in one place.">
+<!-- ═══ AOG ICONS + LINK PREVIEW · managed block · .30k0 ═══
+     Inserted by _work/aog_head.py — DO NOT hand-edit one page; edit the
+     script and re-run it, or the 100 pages drift apart again. The card
+     URL carries ?v= because Slack, Apple and Google cache an og image BY
+     URL for weeks: change the picture, bump IMG_V, or nothing shows up.
+     ═══════════════════════════════════════════════════════════════ -->
+<link rel="canonical" href="https://architectureofgrace.org/worksheets">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Architecture of Grace">
+<meta property="og:locale" content="en_US">
+<meta property="og:title" content="The Interior Worksheets — Teacher View">
+<meta property="og:description" content="The seven student worksheets from Architecture of Grace, Book 3 — The Interior (Grades 6–8). The teacher's copy of all seven, in one place.">
+<meta property="og:url" content="https://architectureofgrace.org/worksheets">
+<meta property="og:image" content="https://architectureofgrace.org/og-worksheets.png?v=1">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="The Interior Worksheets — identity, values, agency and the internal critic.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="The Interior Worksheets — Teacher View">
+<meta name="twitter:description" content="The seven student worksheets from Architecture of Grace, Book 3 — The Interior (Grades 6–8). The teacher's copy of all seven, in one place.">
+<meta name="twitter:image" content="https://architectureofgrace.org/og-worksheets.png?v=1">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#0A1E33">
+<meta name="apple-mobile-web-app-title" content="Grace">
+<meta name="application-name" content="Architecture of Grace">
+<!-- ═══ END AOG ICONS + LINK PREVIEW ═══ -->
+<!-- No external requests of any kind. Every byte this page needs is in this file. -->
+<style>
+/* ══ TOKENS ══════════════════════════════════════════════════════════
+   Light is the base. Dark redefines tokens only — never components.   */
+:root{
+  --ground:#F5F1E8;         /* chart paper */
+  --field:#FFFFFF;          /* the writing surface */
+  --field-2:#EFEAE0;
+  --ink:#1D2733;
+  --ink-soft:#57626F;
+  --ink-faint:#5F6B78;
+  --navy:#1B3A5F;
+  --gold:#B8893A;
+  --gold-deep:#7A5C1F;
+  --rule:rgba(29,39,51,.16);
+  --rule-soft:rgba(29,39,51,.08);
+  --lift:0 1px 0 rgba(255,255,255,.7), 0 20px 44px -30px rgba(29,39,51,.55);
+  --lift-sm:0 1px 2px rgba(29,39,51,.07), 0 8px 20px -16px rgba(29,39,51,.4);
+  --a:#1C5499;              /* per-sheet accent, overridden below */
+  --a-wash:rgba(28,84,153,.07);
+  --lock:#2E6B4F;
+  --lock-wash:rgba(46,107,79,.09);
+  --caution:#9A3412;
+  --focus:#B8893A;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --ground:#12161C; --field:#1A2029; --field-2:#222A34;
+    --ink:#E9EEF4; --ink-soft:#A3AFBC; --ink-faint:#84909D;
+    --navy:#9CC2E8; --gold:#D6A852; --gold-deep:#D6A852;
+    --rule:rgba(233,238,244,.18); --rule-soft:rgba(233,238,244,.09);
+    --lift:0 1px 0 rgba(233,238,244,.04), 0 24px 54px -32px rgba(0,0,0,.95);
+    --lift-sm:0 1px 2px rgba(0,0,0,.5), 0 10px 24px -18px rgba(0,0,0,.9);
+    --a:#7FB0E8; --a-wash:rgba(127,176,232,.11);
+    --lock:#79C79E; --lock-wash:rgba(121,199,158,.12);
+    --caution:#F0A07C;
+    --focus:#D6A852;
+  }
+}
+:root[data-theme="dark"]{
+  --ground:#12161C; --field:#1A2029; --field-2:#222A34;
+  --ink:#E9EEF4; --ink-soft:#A3AFBC; --ink-faint:#84909D;
+  --navy:#9CC2E8; --gold:#D6A852; --gold-deep:#D6A852;
+  --rule:rgba(233,238,244,.18); --rule-soft:rgba(233,238,244,.09);
+  --lift:0 1px 0 rgba(233,238,244,.04), 0 24px 54px -32px rgba(0,0,0,.95);
+  --lift-sm:0 1px 2px rgba(0,0,0,.5), 0 10px 24px -18px rgba(0,0,0,.9);
+  --a:#7FB0E8; --a-wash:rgba(127,176,232,.11);
+  --lock:#79C79E; --lock-wash:rgba(121,199,158,.12);
+  --caution:#F0A07C;
+  --focus:#D6A852;
+}
+
+/* per-sheet accents — light base, dark overrides */
+.s-ia  {--a:#1C5499; --a-wash:rgba(28,84,153,.07);}
+.s-vup {--a:#155E75; --a-wash:rgba(21,94,117,.07);}
+.s-cam {--a:#2A4E8C; --a-wash:rgba(42,78,140,.07);}
+.s-fut {--a:#7A5C1F; --a-wash:rgba(122,92,31,.09);}
+.s-ps  {--a:#356B25; --a-wash:rgba(53,107,37,.08);}
+.s-rts {--a:#2E6B4F; --a-wash:rgba(46,107,79,.08);}
+.s-icp {--a:#6B4696; --a-wash:rgba(107,70,150,.08);}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]) .s-ia  {--a:#7FB0E8; --a-wash:rgba(127,176,232,.11);}
+  :root:not([data-theme="light"]) .s-vup {--a:#6FC3D9; --a-wash:rgba(111,195,217,.11);}
+  :root:not([data-theme="light"]) .s-cam {--a:#93AEEA; --a-wash:rgba(147,174,234,.11);}
+  :root:not([data-theme="light"]) .s-fut {--a:#D6A852; --a-wash:rgba(214,168,82,.12);}
+  :root:not([data-theme="light"]) .s-ps  {--a:#8CC97A; --a-wash:rgba(140,201,122,.12);}
+  :root:not([data-theme="light"]) .s-rts {--a:#79C79E; --a-wash:rgba(121,199,158,.12);}
+  :root:not([data-theme="light"]) .s-icp {--a:#B99AD9; --a-wash:rgba(185,154,217,.13);}
+}
+:root[data-theme="dark"] .s-ia  {--a:#7FB0E8; --a-wash:rgba(127,176,232,.11);}
+:root[data-theme="dark"] .s-vup {--a:#6FC3D9; --a-wash:rgba(111,195,217,.11);}
+:root[data-theme="dark"] .s-cam {--a:#93AEEA; --a-wash:rgba(147,174,234,.11);}
+:root[data-theme="dark"] .s-fut {--a:#D6A852; --a-wash:rgba(214,168,82,.12);}
+:root[data-theme="dark"] .s-ps  {--a:#8CC97A; --a-wash:rgba(140,201,122,.12);}
+:root[data-theme="dark"] .s-rts {--a:#79C79E; --a-wash:rgba(121,199,158,.12);}
+:root[data-theme="dark"] .s-icp {--a:#B99AD9; --a-wash:rgba(185,154,217,.13);}
+
+/* ══ BASE ══ */
+*{box-sizing:border-box;}
+html{-webkit-text-size-adjust:100%;}
+body{
+  margin:0; background:var(--ground); color:var(--ink);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  font-size:16px; line-height:1.55;
+}
+h1,h2,h3{margin:0; text-wrap:balance; font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,"Times New Roman",serif; font-weight:600;}
+p{margin:0;}
+button{font:inherit; color:inherit; cursor:pointer;}
+:focus-visible{outline:3px solid var(--focus); outline-offset:2px; border-radius:4px;}
+.wrap{max-width:64rem; margin:0 auto; padding:0 20px;}
+  /* longhand on purpose: `padding:X 0 Y` would reset .wrap's 20px sides and
+     put the masthead, the lock card and the sheet flush against a phone screen. */
+.eyebrow{
+  font-size:11px; font-weight:700; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--ink-faint);
+}
+
+/* ══ MASTHEAD ══ */
+.mast{padding-top:26px; padding-bottom:4px;}
+.mast .row{display:flex; align-items:center; gap:13px;}
+.mark{
+  width:44px; height:44px; border-radius:12px; flex:none;
+  background:var(--navy); color:#E7C77B; display:grid; place-items:center;
+  font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif; font-size:25px; font-weight:700; line-height:1;
+}
+:root[data-theme="dark"] .mark{background:#1B3A5F;}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .mark{background:#1B3A5F;}}
+.mast .name{font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif; font-size:18px; font-weight:700; color:var(--navy); line-height:1.15;}
+.mast .sub{font-size:11.5px; color:var(--ink-faint); letter-spacing:.05em; text-transform:uppercase; font-weight:600;}
+.mast h1{font-size:clamp(30px,5.4vw,44px); line-height:1.04; letter-spacing:-.02em; margin:20px 0 6px;
+  font-weight:700;}
+.mast .deck{font-size:16.5px; color:var(--ink-soft); max-width:38rem;}
+body.solo .mast h1{font-size:clamp(19px,2.6vw,27px); margin:16px 0 4px; letter-spacing:-.01em;}
+body.solo .mast{padding-bottom:0;}
+body.solo .sheets{padding-top:18px;}
+
+/* ══ THE LOCK — the thesis of this page ══ */
+.lock{
+  margin:22px 0 6px; border:2px solid var(--lock); border-radius:18px;
+  background:var(--lock-wash); padding:18px 20px; box-shadow:var(--lift-sm);
+}
+.lock-top{display:flex; align-items:flex-start; gap:14px;}
+.lock-ico{
+  width:38px; height:38px; flex:none; border-radius:11px; border:2px solid var(--lock);
+  display:grid; place-items:center; color:var(--lock);
+}
+.lock-ico svg{width:20px; height:20px;}
+.lock h2{font-size:20px; line-height:1.2; color:var(--ink); font-weight:700;}
+.lock p{font-size:14.5px; color:var(--ink-soft); margin-top:4px; max-width:46rem;}
+.lock-more{
+  margin-top:12px; border-top:1px solid var(--rule-soft); padding-top:12px;
+}
+.lock-more summary{
+  font-size:12.5px; font-weight:700; letter-spacing:.05em; text-transform:uppercase;
+  color:var(--lock); cursor:pointer; list-style:none; display:inline-flex; align-items:center; gap:7px;
+}
+.lock-more summary::-webkit-details-marker{display:none;}
+.lock-more summary::after{content:"＋"; font-size:14px; opacity:.75;}
+.lock-more[open] summary::after{content:"−";}
+.lock-more .body{font-size:14px; color:var(--ink-soft); margin-top:10px; display:grid; gap:9px; max-width:46rem;}
+.lock-more .body b{color:var(--ink);}
+.lock-acts{display:flex; flex-wrap:wrap; gap:9px; margin-top:14px;}
+
+/* ══ BUTTONS ══ */
+.btn{
+  border:1.5px solid var(--rule); background:var(--field); border-radius:10px;
+  padding:8px 14px; font-size:13.5px; font-weight:600; color:var(--ink);
+  display:inline-flex; align-items:center; gap:7px; transition:transform .12s ease, border-color .12s ease, background .12s ease;
+}
+.btn:hover{border-color:var(--a); transform:translateY(-1px);}
+.btn:active{transform:translateY(0);}
+.btn-accent{background:var(--a); border-color:var(--a); color:#fff;}
+:root[data-theme="dark"] .btn-accent{color:#12161C;}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .btn-accent{color:#12161C;}}
+.btn-danger{border-color:var(--caution); color:var(--caution);}
+.btn-danger:hover{border-color:var(--caution); background:var(--caution); color:var(--field);}
+.btn-lock{border-color:var(--lock); color:var(--lock);}
+
+/* ══ SHEET RAIL ══ */
+.rail-shell .wrap{max-width:78rem;}
+.rail-shell{position:sticky; top:0; z-index:20; background:var(--ground); padding-top:14px;
+  border-bottom:1px solid var(--rule-soft); margin-top:22px;}
+.rail{display:flex; gap:8px; overflow-x:auto; padding-bottom:12px; scrollbar-width:thin;}
+.tab{
+  flex:none; text-align:left; min-width:158px; max-width:200px;
+  border:1.5px solid var(--rule); border-radius:13px; background:var(--field);
+  padding:10px 12px 11px; position:relative; overflow:hidden;
+  transition:border-color .14s ease, transform .14s ease;
+}
+.tab::before{content:""; position:absolute; inset:0 auto 0 0; width:4px; background:var(--a); opacity:.55;}
+.tab:hover{transform:translateY(-2px); border-color:var(--a);}
+.tab .k{font-size:10px; font-weight:800; letter-spacing:.11em; text-transform:uppercase; color:var(--a); display:block;}
+.tab .t{font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif; font-size:15px; font-weight:600; line-height:1.2; display:block; margin-top:3px;}
+.tab[aria-selected="true"]{border-color:var(--a); background:var(--a-wash); box-shadow:var(--lift-sm);}
+.tab[aria-selected="true"]::before{opacity:1; width:5px;}
+.tab .pill{display:inline-block; margin-top:6px; font-size:9.5px; font-weight:800; letter-spacing:.1em;
+  text-transform:uppercase; border:1px solid var(--a); color:var(--a); border-radius:99px; padding:1px 7px;}
+
+/* ══ SHEET ══ */
+.sheets{padding-top:26px; padding-bottom:70px;}
+.sheet{
+  background:var(--field); border:1.5px solid var(--rule); border-radius:20px;
+  box-shadow:var(--lift); padding:clamp(20px,4vw,38px); max-width:52rem; margin:0 auto 26px;
+}
+.js-on .sheet{display:none; margin-bottom:0;}
+.js-on .sheet.is-active{display:block; animation:rise .34s cubic-bezier(.2,.7,.3,1) both;}
+@keyframes rise{from{opacity:0; transform:translateY(10px);} to{opacity:1; transform:none;}}
+@media (prefers-reduced-motion: reduce){
+  .js-on .sheet.is-active{animation:none;}
+  .btn:hover,.tab:hover{transform:none;}
+  *{scroll-behavior:auto !important;}
+}
+.sheet-head{border-bottom:2px solid var(--a); padding-bottom:14px;}
+.sheet-head .k{font-size:11px; font-weight:800; letter-spacing:.14em; text-transform:uppercase; color:var(--a);}
+.sheet-head h2{font-size:clamp(26px,4.4vw,38px); line-height:1.06; letter-spacing:-.018em; margin:6px 0 7px;
+}
+.sheet-head .say{font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif; font-style:italic; font-size:17px; color:var(--ink-soft); line-height:1.4;}
+
+.priv{
+  margin:18px 0 4px; border:1.5px solid var(--lock); border-left-width:5px; border-radius:11px;
+  background:var(--lock-wash); padding:11px 14px;
+}
+.priv .k{font-size:10.5px; font-weight:800; letter-spacing:.15em; text-transform:uppercase; color:var(--lock);}
+.priv .v{font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif; font-style:italic; font-size:14.5px; color:var(--ink-soft); margin-top:2px;}
+
+.blk{margin-top:26px;}
+.blk > .lab{
+  font-size:11.5px; font-weight:800; letter-spacing:.13em; text-transform:uppercase; color:var(--a);
+  display:block; margin-bottom:3px;
+}
+.blk > .hint{font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif; font-style:italic; font-size:14.5px; color:var(--ink-faint); margin-bottom:9px; line-height:1.4;}
+
+/* writing fields */
+.fld{
+  width:100%; display:block; border:0; border-bottom:2px solid var(--rule);
+  background:transparent; color:var(--ink); font:inherit; font-size:16.5px; line-height:1.85;
+  padding:6px 2px 5px; resize:none; overflow:hidden; min-height:2.1em;
+  transition:border-color .14s ease;
+}
+.fld::placeholder{color:var(--ink-faint); opacity:.55; font-style:italic;}
+.fld:focus{outline:none; border-bottom-color:var(--a);}
+.fld:focus-visible{outline:none;}
+.pen{position:relative;}
+.pen::after{
+  content:""; position:absolute; left:0; right:0; bottom:-2px; height:2px; background:var(--a);
+  transform:scaleX(0); transform-origin:left; transition:transform .22s cubic-bezier(.2,.7,.3,1);
+}
+.pen:focus-within::after{transform:scaleX(1);}
+.blank-lines{display:none;}
+.pcopy{display:none;}
+.blank-lines i{display:block; height:26px; border-bottom:1.5px solid var(--rule); margin-top:2px;}
+
+.two{display:grid; grid-template-columns:1fr 1fr; gap:16px;}
+@media (max-width:640px){.two{grid-template-columns:1fr;}}
+.pane{border:1.5px solid var(--rule); border-radius:13px; padding:13px 14px 15px; background:var(--field);}
+.pane.hi{border-color:var(--a); background:var(--a-wash);}
+.pane .lab{font-size:11px; font-weight:800; letter-spacing:.12em; text-transform:uppercase; color:var(--a); display:block;}
+.pane .hint{font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif; font-style:italic; font-size:13.5px; color:var(--ink-faint); margin:3px 0 8px; line-height:1.4;}
+
+/* ══ TABLE (Values Under Pressure) ══ */
+.tbl-scroll{overflow-x:auto; border:1.5px solid var(--rule); border-radius:13px;}
+table.grid{border-collapse:collapse; width:100%; min-width:660px;}
+table.grid th{
+  text-align:left; font-size:10.5px; font-weight:800; letter-spacing:.11em; text-transform:uppercase;
+  color:var(--a); background:var(--a-wash); padding:10px 11px; border-bottom:1.5px solid var(--rule);
+  vertical-align:bottom;
+}
+table.grid td{padding:0; border-bottom:1px solid var(--rule-soft); border-right:1px solid var(--rule-soft); vertical-align:top;}
+table.grid td:last-child{border-right:0;}
+table.grid tr:last-child td{border-bottom:0;}
+table.grid .cell{
+  width:100%; border:0; background:transparent; color:var(--ink); font:inherit; font-size:15px; line-height:1.6;
+  padding:10px 11px; resize:none; overflow:hidden; min-height:3.4em;
+}
+table.grid .cell:focus{outline:none; background:var(--a-wash);}
+
+/* ══ RINGS (Choice-Agency Map) ══ */
+.ring{border:2px solid var(--rule); border-radius:26px; padding:14px 15px 16px;}
+.ring.r1{border-color:var(--ink-faint);}
+.ring.r2{border-color:var(--a); opacity:1; margin-top:14px;}
+.ring.r3{border-color:var(--a); border-width:3px; background:var(--a-wash); margin-top:14px;}
+.ring .rk{font-size:11px; font-weight:800; letter-spacing:.12em; text-transform:uppercase; color:var(--ink-soft);}
+.ring.r2 .rk,.ring.r3 .rk{color:var(--a);}
+.ring .rh{font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif; font-style:italic; font-size:13.5px; color:var(--ink-faint); margin:2px 0 10px;}
+.chips{display:flex; flex-wrap:wrap; gap:7px; margin-bottom:10px;}
+.chips:empty{display:none;}
+.chip{
+  display:inline-flex; align-items:center; gap:8px; border:1.5px solid var(--rule); border-radius:99px;
+  padding:5px 6px 5px 13px; font-size:14px; background:var(--field); animation:pop .26s cubic-bezier(.2,.8,.3,1) both;
+}
+.ring.r3 .chip{border-color:var(--a); font-weight:600;}
+@keyframes pop{from{opacity:0; transform:scale(.9);} to{opacity:1; transform:none;}}
+@media (prefers-reduced-motion: reduce){.chip{animation:none;}}
+.chip button{
+  border:0; background:transparent; color:var(--ink-faint); font-size:16px; line-height:1;
+  padding:2px 5px; border-radius:99px;
+}
+.chip button:hover{color:var(--caution);}
+.ring-add{display:flex; gap:8px;}
+.ring-add input{
+  flex:1; min-width:0; border:1.5px solid var(--rule); border-radius:9px; background:transparent;
+  color:var(--ink); font:inherit; font-size:15px; padding:8px 11px;
+}
+.ring-add input:focus{outline:none; border-color:var(--a);}
+.ring-add input::placeholder{color:var(--ink-faint); opacity:.6;}
+
+/* ══ SPECTRUM (Perfectionism) ══ */
+.spec{margin-top:6px;}
+.spec-ends{display:flex; justify-content:space-between; gap:12px; font-size:11px; font-weight:800;
+  letter-spacing:.11em; text-transform:uppercase;}
+.spec-ends .l{color:var(--a);}
+.spec-ends .r{color:var(--caution); text-align:right;}
+.spec-track{
+  display:none; position:relative; height:14px; margin:12px 0 4px;
+  border:2px solid var(--ink-soft); border-radius:99px;
+}
+.spec-track .tick{position:absolute; top:-6px; bottom:-6px; width:2px; background:var(--rule); left:50%;}
+.spec-row{display:grid; grid-template-columns:1fr; gap:4px; margin-top:16px;}
+.spec-row .rl{font-size:12px; font-weight:700; color:var(--ink-soft); display:flex; justify-content:space-between; gap:10px;}
+.spec-row .rl b{color:var(--a); font-variant-numeric:tabular-nums;}
+input[type=range].slider{
+  -webkit-appearance:none; appearance:none; width:100%; height:26px; background:transparent; margin:0;
+}
+input[type=range].slider::-webkit-slider-runnable-track{height:6px; border-radius:99px; background:var(--field-2);}
+input[type=range].slider::-moz-range-track{height:6px; border-radius:99px; background:var(--field-2);}
+input[type=range].slider::-webkit-slider-thumb{
+  -webkit-appearance:none; width:24px; height:24px; margin-top:-9px; border-radius:50%;
+  background:var(--a); border:3px solid var(--field); box-shadow:var(--lift-sm); cursor:grab;
+}
+input[type=range].slider::-moz-range-thumb{
+  width:24px; height:24px; border-radius:50%; background:var(--a); border:3px solid var(--field);
+  box-shadow:var(--lift-sm); cursor:grab;
+}
+.spec-print{display:none;}
+
+/* ══ NUMBERED STEPS (Rewriting the Script) ══ */
+.step{display:grid; grid-template-columns:46px 1fr; gap:15px; margin-top:22px; align-items:start;}
+.step .n{
+  width:46px; height:46px; border-radius:13px; border:2px solid var(--a); color:var(--a);
+  display:grid; place-items:center; font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif; font-size:22px; font-weight:700;
+}
+.step .lab{font-size:12px; font-weight:800; letter-spacing:.12em; text-transform:uppercase; color:var(--a); display:block;}
+.step .hint{font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif; font-style:italic; font-size:14.5px; color:var(--ink-faint);
+  margin:2px 0 8px; line-height:1.4;}
+@media (max-width:520px){.step{grid-template-columns:36px 1fr; gap:11px;} .step .n{width:36px; height:36px; font-size:17px;}}
+
+/* ══ TACTIC CARDS (Internal Critic) ══ */
+.tacs{display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin:4px 0 15px;}
+.tac{border:1.5px solid var(--rule); border-left:4px solid var(--a); border-radius:13px;
+     padding:11px 13px 12px; background:var(--field);}
+.tac .tk{font-size:10.5px; font-weight:800; letter-spacing:.12em; text-transform:uppercase; color:var(--a); display:block;}
+.tac .tq{font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif; font-style:italic;
+     font-size:13.5px; color:var(--ink-soft); line-height:1.4; margin-top:6px;}
+.tac .td{font-size:12.5px; color:var(--ink-faint); line-height:1.4; margin-top:7px;}
+@media (max-width:720px){ .tacs{grid-template-columns:1fr;} }
+
+/* ══ SUPPORT BOX ══ */
+.support{
+  margin-top:28px; border:2px solid var(--caution); border-radius:14px; padding:15px 17px;
+}
+.support .k{font-size:11px; font-weight:800; letter-spacing:.14em; text-transform:uppercase; color:var(--caution);}
+.support ul{margin:9px 0 0; padding-left:19px; display:grid; gap:6px;}
+.support li{font-size:15px;}
+.support li b{font-weight:700;}
+.support .cslr{display:grid; gap:8px; margin-top:11px; grid-template-columns:1fr 1fr;}
+@media (max-width:520px){.support .cslr{grid-template-columns:1fr;}}
+.support .cslr input{
+  border:0; border-bottom:2px solid var(--rule); background:transparent; color:var(--ink);
+  font:inherit; font-size:15px; padding:5px 2px;
+}
+.support .cslr input:focus{outline:none; border-bottom-color:var(--caution);}
+.support .tnote{font-size:11.5px; color:var(--ink-faint); margin-top:8px; font-style:italic;}
+
+/* ══ PAPER CARD (Future Self) ══ */
+.paper{
+  border:2px dashed var(--a); border-radius:16px; padding:20px 20px 22px; margin-top:20px;
+  background:var(--a-wash);
+}
+.paper .k{font-size:11px; font-weight:800; letter-spacing:.14em; text-transform:uppercase; color:var(--a);}
+.paper h3{font-size:22px; margin:6px 0 8px; line-height:1.2;}
+.paper p{font-size:15px; color:var(--ink-soft); max-width:40rem;}
+.paper p + p{margin-top:9px;}
+.starters{display:grid; gap:8px; margin-top:14px;}
+.starters div{
+  border-left:3px solid var(--a); padding:2px 0 2px 12px;
+  font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif; font-style:italic; font-size:16px; color:var(--ink);
+}
+
+/* ══ FAMILY NOTE ══ */
+.fam{margin-top:30px; border-top:1.5px solid var(--rule); padding-top:14px;}
+.fam .k{font-size:10.5px; font-weight:800; letter-spacing:.14em; text-transform:uppercase; color:var(--gold-deep);}
+.fam p{font-size:14px; color:var(--ink-soft); margin-top:5px; max-width:44rem;}
+
+/* ══ SHEET FOOTER ══ */
+.sheet-foot{
+  margin-top:30px; border-top:1.5px solid var(--rule); padding-top:15px;
+  display:flex; flex-wrap:wrap; align-items:center; gap:9px;
+}
+.saved{
+  margin-left:auto; font-size:12px; font-weight:600; color:var(--lock);
+  display:inline-flex; align-items:center; gap:6px; opacity:0; transition:opacity .3s ease;
+}
+.saved.on{opacity:1;}
+.saved .dot{width:7px; height:7px; border-radius:50%; background:var(--lock); flex:none;}
+@media (max-width:520px){.saved{margin-left:0; width:100%;}}
+
+
+.share{margin:22px 0 4px; border:1.5px solid var(--rule); border-radius:16px; background:var(--field);
+  padding:16px 18px 18px; box-shadow:var(--lift-sm);}
+.share h2{font-size:17px; font-weight:700; line-height:1.25;}
+.share > p{font-size:13.5px; color:var(--ink-soft); margin-top:4px; max-width:46rem;}
+.share ol{list-style:none; margin:14px 0 0; padding:0; display:grid; gap:7px;}
+.share li{display:flex; align-items:center; gap:11px; flex-wrap:wrap;
+  border:1.5px solid var(--rule); border-radius:11px; padding:8px 11px;}
+.share .wk{font-size:10px; font-weight:800; letter-spacing:.11em; text-transform:uppercase;
+  color:var(--ink-faint); flex:none; width:6.6rem;}
+.share .nm{font-family:Georgia,serif; font-size:15px; font-weight:600; flex:1 1 12rem; min-width:0;}
+.share code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; font-size:13.5px;
+  background:var(--field-2); border-radius:6px; padding:3px 8px; color:var(--ink);}
+.share .cp{border:1.5px solid var(--rule); background:transparent; border-radius:9px;
+  padding:5px 11px; font-size:12.5px; font-weight:600;}
+.share .cp:hover{border-color:var(--a);}
+.share .bm{border-color:var(--a); color:var(--a);}
+#beam{
+  position:fixed; inset:0; z-index:900; background:var(--field); color:var(--ink);
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  gap:clamp(14px,3vh,34px); padding:5vh 4vw; text-align:center; cursor:pointer;
+}
+#beam .wk{font-size:clamp(13px,1.6vw,22px); font-weight:800; letter-spacing:.2em; text-transform:uppercase; color:var(--ink-faint);}
+#beam .nm{font-family:Georgia,serif; font-size:clamp(28px,5vw,72px); line-height:1.05; font-weight:700;}
+#beam .url{
+  font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  font-size:clamp(19px,5.4vw,104px); font-weight:700; line-height:1.1;
+  letter-spacing:-.02em; color:var(--a); white-space:nowrap; max-width:100%;
+}
+#beam .hint{font-size:clamp(13px,1.5vw,20px); color:var(--ink-faint);}
+#beam .x{position:absolute; top:18px; right:20px; font-size:15px; font-weight:700; color:var(--ink-faint);}
+
+/* ══ PAGE FOOT ══ */
+.foot{border-top:1px solid var(--rule-soft); padding-top:22px; padding-bottom:46px; color:var(--ink-faint); font-size:12.5px;}
+.foot p{max-width:46rem;}
+.foot p + p{margin-top:7px;}
+.foot b{color:var(--ink-soft);}
+.foot .foot-home a{color:inherit; text-decoration:underline; text-underline-offset:2px;}
+
+/* ══ PRINT ══════════════════════════════════════════════════════════ */
+@media print{
+  @page{size:Letter; margin:14mm;}
+  body{background:#fff; color:#000; font-size:11pt;}
+  .mast,.lock,.rail-shell,.foot,.sheet-foot,.no-print{display:none !important;}
+  .sheets{padding:0;}
+  .wrap{max-width:none; padding:0;}
+  .sheet{
+    display:none !important; box-shadow:none; border:0; border-radius:0; padding:0;
+    max-width:none; margin:0; background:#fff;
+  }
+  .sheet.is-active{display:block !important;}
+  body:not(.js-on) .sheet{display:block !important; page-break-after:always;}
+  .sheet-head{border-bottom:2px solid #000;}
+  .sheet-head h2{font-size:24pt;}
+  .sheet-head .k,.blk > .lab,.pane .lab,.step .lab,table.grid th,
+  .ring .rk,.ring.r2 .rk,.ring.r3 .rk,.fam .k,.spec-ends .l,.spec-ends .r,
+  .paper .k,.step .n,.tac .tk{color:#000;}
+  .pen::after{display:none;}
+  .spec-row{display:none;}
+  body.print-blank .spec-ends{margin-bottom:6px;}
+  /* one worksheet = one sheet of paper */
+  body{font-size:10.5pt; line-height:1.4;}
+  .sheet-head{padding-bottom:9px;}
+  .sheet-head h2{font-size:21pt;}
+  .sheet-head .say{font-size:11.5pt;}
+  .priv{margin:11px 0 0; padding:7px 11px;}
+  .blk{margin-top:14px;}
+  .blk > .hint,.pane .hint,.step .hint,.ring .rh{font-size:9.5pt; margin-bottom:5px;}
+  .fld{font-size:11pt; line-height:1.6; min-height:1.6em;}
+  .pane{padding:9px 11px 10px;}
+  .ring{padding:10px 11px 11px; border-radius:18px;}
+  .ring.r2,.ring.r3{margin-top:10px;}
+  .chip{padding:2px 10px; font-size:10pt;}
+  .step{margin-top:14px; grid-template-columns:34px 1fr; gap:11px; break-inside:avoid; page-break-inside:avoid;}
+  .step .n{width:34px; height:34px; font-size:15pt;}
+  .tacs{grid-template-columns:repeat(3,1fr); gap:7px; margin:3px 0 9px; page-break-inside:avoid;}
+  .tac{padding:6px 8px 7px; border-radius:9px; border-left-width:3px;}
+  .tac .tk{font-size:8pt;}
+  .tac .tq{font-size:8.5pt; line-height:1.3; margin-top:3px;}
+  .tac .td{font-size:8pt; line-height:1.3; margin-top:3px;}
+  .support{margin-top:14px; padding:10px 12px;}
+  .support li{font-size:10.5pt;}
+  .support .cslr{margin-top:7px;}
+  .fam{margin-top:16px; padding-top:9px;}
+  .fam p{font-size:9.5pt;}
+  table.grid .cell{font-size:10.5pt; padding:7px 9px; min-height:2.6em;}
+  /* the ★★ lesson's crisis box must never orphan onto a second page */
+  body.print-blank .s-rts .blank-lines i{height:21px;}
+  body.print-blank .s-rts .step{margin-top:11px;}
+  body.print-blank .s-rts .priv{margin-top:9px;}
+  /* the Internal Critic Profile carries three reference cards AND the crisis box */
+  body.print-blank .s-icp .blank-lines i{height:21px;}
+  .s-icp .blk{margin-top:12px;}
+  .s-icp .fam{margin-top:12px;}
+  .s-icp .support{margin-top:12px;}
+  /* the whole letter must land on one sheet of paper */
+  .s-fut .blank-lines i{height:24px;}
+  .s-fut .paper{padding:12px 16px 14px; margin-top:14px;}
+  .s-fut .paper h3{font-size:15pt; margin:4px 0 6px;}
+  .s-fut .blk{margin-top:16px;}
+  .s-fut .fam{margin-top:16px;}
+  .priv{border-color:#000; background:#fff;}
+  .priv .k{color:#000;}
+  .pane,.ring,.tbl-scroll,.chip,.support,.paper,.step .n,.tac{border-color:#000 !important; background:#fff !important;}
+  .fld,.fld:focus,table.grid .cell,table.grid .cell:focus{border-bottom-color:#000 !important; color:#000; background:transparent !important;}
+  /* textareas keep JS-computed screen heights, which pad the page and can clip long
+     answers — print a plain text copy instead. */
+  textarea{display:none !important;}
+  .pcopy{
+    display:block; white-space:pre-wrap; overflow-wrap:break-word; color:#000;
+    font-size:11pt; line-height:1.55; padding:1px 2px 3px; min-height:2.2em;
+    border-bottom:1.5px solid #000;
+  }
+  table.grid .pcopy{border-bottom:0; min-height:2.6em; font-size:10.5pt; padding:7px 9px;}
+  .tbl-scroll{overflow:visible;}
+  table.grid{min-width:0; width:100%; table-layout:fixed;}
+  body.print-blank .pcopy{display:none !important;}
+  .step,.blk,.ring.r2,.ring.r3{page-break-inside:avoid;}
+  .support{page-break-inside:avoid;}
+  /* blank-print: ruled lines are real elements, never a background gradient */
+  body.print-blank .fld,body.print-blank .ring-add,body.print-blank .chips,
+  body.print-blank .slider,body.print-blank table.grid .cell{display:none !important;}
+  body.print-blank .blank-lines{display:block;}
+  .blank-lines i{border-bottom-color:#000;}
+  body.print-blank table.grid td{height:64px;}
+  body.print-blank .chips-blank{display:block;}
+  .slider{display:none !important;}
+  .spec-track{display:none;}
+  body.print-blank .spec-print{display:none !important;}
+  body.print-blank .spec-track{display:block;}
+  body.print-blank .spec-row .rl b{visibility:hidden;}
+  .spec-print{display:block; position:relative; height:56px; margin-top:10px;}
+  .spec-print .bar{position:absolute; left:0; right:0; top:14px; height:0; border-top:2px solid #000;}
+  .spec-print .m{position:absolute; top:0; transform:translateX(-50%); text-align:center; font-size:8pt;}
+  .spec-print .m::before{
+    content:""; display:block; margin:0 auto 2px; width:0; height:0;
+    border-left:6px solid transparent; border-right:6px solid transparent; border-bottom:9px solid #000;
+  }
+  .spec-track{border-color:#000;}
+}
+</style>
+</head>
+<body>
+<script src="/aog-topbar.js"></script>
+
+<script>document.body.className="js-on";</script>
+
+<header class="mast wrap">
+  <div class="row">
+    <div class="mark" aria-hidden="true">A</div>
+    <div>
+      <div class="name">Architecture of Grace</div>
+      <div class="sub">Book 3 · The Interior · Grades 6–8</div>
+    </div>
+  </div>
+  <h1>The Interior Worksheets</h1>
+  <p class="deck">All seven worksheets from Units 1 and 2, in one place, for you. Students get one link at a time — the links are below.</p>
+
+  <section class="share no-print" aria-labelledby="share-h">
+    <h2 id="share-h">Give students one link — the one you are teaching.</h2>
+    <p>Each link opens that worksheet and nothing else. The other six are not in the page, so nobody wanders into Rewriting the Script in September. This page is the only one that shows all seven — keep it in a bookmark, don’t hand it out.</p>
+    <ol><li><span class="wk">Unit 1 · L1</span><span class="nm">Identity Audit</span><code>architectureofgrace.org/w1</code><button class="bm cp" type="button" data-beam="1" data-copy="https://architectureofgrace.org/w1">Show on the board</button></li><li><span class="wk">Unit 1 · L4</span><span class="nm">Values Under Pressure</span><code>architectureofgrace.org/w2</code><button class="bm cp" type="button" data-beam="1" data-copy="https://architectureofgrace.org/w2">Show on the board</button></li><li><span class="wk">Unit 1 · L6</span><span class="nm">The Choice-Agency Map</span><code>architectureofgrace.org/w3</code><button class="bm cp" type="button" data-beam="1" data-copy="https://architectureofgrace.org/w3">Show on the board</button></li><li><span class="wk">Unit 1 · L7</span><span class="nm">A Letter to My Future Self</span><code>architectureofgrace.org/w4</code><button class="bm cp" type="button" data-beam="1" data-copy="https://architectureofgrace.org/w4">Show on the board</button></li><li><span class="wk">Unit 2 · L1</span><span class="nm">Internal Critic Profile</span><code>architectureofgrace.org/w7</code><button class="bm cp" type="button" data-beam="1" data-copy="https://architectureofgrace.org/w7">Show on the board</button></li><li><span class="wk">Unit 2 · L3</span><span class="nm">The Perfectionism Spectrum</span><code>architectureofgrace.org/w5</code><button class="bm cp" type="button" data-beam="1" data-copy="https://architectureofgrace.org/w5">Show on the board</button></li><li><span class="wk">Unit 2 · L6</span><span class="nm">Rewriting the Script</span><code>architectureofgrace.org/w6</code><button class="bm cp" type="button" data-beam="1" data-copy="https://architectureofgrace.org/w6">Show on the board</button></li></ol>
+  </section>
+</header>
+
+<div class="rail-shell no-print">
+  <div class="wrap">
+    <div class="rail" role="tablist" aria-label="Choose a worksheet">
+      <button class="tab s-ia"  role="tab" aria-selected="true"  aria-controls="sh-ia"  id="tb-ia"  data-sheet="ia"><span class="k">Unit 1 · Lesson 1</span><span class="t">Identity Audit</span></button>
+      <button class="tab s-vup" role="tab" aria-selected="false" aria-controls="sh-vup" id="tb-vup" data-sheet="vup"><span class="k">Unit 1 · Lesson 4</span><span class="t">Values Under Pressure</span></button>
+      <button class="tab s-cam" role="tab" aria-selected="false" aria-controls="sh-cam" id="tb-cam" data-sheet="cam"><span class="k">Unit 1 · Lesson 6</span><span class="t">The Choice-Agency Map</span></button>
+      <button class="tab s-fut" role="tab" aria-selected="false" aria-controls="sh-fut" id="tb-fut" data-sheet="fut"><span class="k">Unit 1 · Lesson 7</span><span class="t">A Letter to My Future Self</span><span class="pill">On paper</span></button>
+      <button class="tab s-icp" role="tab" aria-selected="false" aria-controls="sh-icp" id="tb-icp" data-sheet="icp"><span class="k">Unit 2 · Lesson 1</span><span class="t">Internal Critic Profile</span></button>
+      <button class="tab s-ps"  role="tab" aria-selected="false" aria-controls="sh-ps"  id="tb-ps"  data-sheet="ps"><span class="k">Unit 2 · Lesson 3</span><span class="t">The Perfectionism Spectrum</span></button>
+      <button class="tab s-rts" role="tab" aria-selected="false" aria-controls="sh-rts" id="tb-rts" data-sheet="rts"><span class="k">Unit 2 · Lesson 6</span><span class="t">Rewriting the Script</span></button>
+    </div>
+  </div>
+</div>
+
+<main class="sheets wrap">
+
+<!-- ═══ U1 · L1 · IDENTITY AUDIT ═══ -->
+<section class="sheet s-ia is-active" id="sh-ia" role="tabpanel" aria-labelledby="tb-ia" data-id="ia">
+  <div class="sheet-head">
+    <span class="k">Unit 1 · Lesson 1 · Worksheet</span>
+    <h2>Identity Audit</h2>
+    <p class="say">Who am I when I'm performing — and who am I when I'm not?</p>
+  </div>
+
+  <div class="blk">
+    <div class="two">
+      <div class="pane">
+        <label class="lab" for="fld-ia-perform">When I am performing</label>
+        <p class="hint">What do I show? What do I hide? What do I emphasize?</p>
+        <div class="pen"><textarea class="fld" id="fld-ia-perform" data-f="perform" rows="6" placeholder="Write as much or as little as you want."></textarea></div>
+        <div class="blank-lines" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+      </div>
+      <div class="pane hi">
+        <label class="lab" for="fld-ia-notperform">When I am NOT performing</label>
+        <p class="hint">What do I actually think, feel, value, and struggle with?</p>
+        <div class="pen"><textarea class="fld" id="fld-ia-notperform" data-f="notperform" rows="6" placeholder="No one is checking this."></textarea></div>
+        <div class="blank-lines" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="blk">
+    <label class="lab" for="fld-ia-gap">Noticing the gap</label>
+    <p class="hint">Without judging yourself — where is the gap between these two columns biggest?</p>
+    <div class="pen"><textarea class="fld" id="fld-ia-gap" data-f="gap" rows="3"></textarea></div>
+    <div class="blank-lines" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+  </div>
+
+  <div class="fam">
+    <div class="k">For the family</div>
+    <p>Today we began our identity unit by examining the gap between the persona students perform socially and who they actually are. You can open this at home by modeling vulnerability — share a moment when you felt like you were "performing" rather than being real.</p>
+  </div>
+
+  <div class="sheet-foot no-print">
+    <button class="btn btn-accent" type="button" data-print="filled">Print my copy</button>
+    <button class="btn" type="button" data-print="blank">Print it blank</button>
+    <button class="btn btn-danger" type="button" data-erase>Erase this sheet</button>
+    <span class="saved" data-saved><span class="dot"></span><span data-savedtext>Saved on this computer</span></span>
+  </div>
+</section>
+
+<!-- ═══ U1 · L4 · VALUES UNDER PRESSURE ═══ -->
+<section class="sheet s-vup" id="sh-vup" role="tabpanel" aria-labelledby="tb-vup" data-id="vup">
+  <div class="sheet-head">
+    <span class="k">Unit 1 · Lesson 4 · Worksheet</span>
+    <h2>Values Under Pressure</h2>
+    <p class="say">What I stand for when the volume of the noise gets loud.</p>
+  </div>
+
+  <div class="blk">
+    <label class="lab" for="fld-vup-value">One value I will not trade — even when it costs me</label>
+    <div class="pen"><textarea class="fld" id="fld-vup-value" data-f="value" rows="2"></textarea></div>
+    <div class="blank-lines" aria-hidden="true"><i></i><i></i></div>
+  </div>
+
+  <div class="blk">
+    <span class="lab">Four columns</span>
+    <p class="hint">Fill in as many rows as you need. Rows you leave empty are fine.</p>
+    <div class="tbl-scroll">
+      <table class="grid" data-table="vup">
+        <thead>
+          <tr>
+            <th scope="col">The pressure I feel</th>
+            <th scope="col">The integrity response</th>
+            <th scope="col">What it costs</th>
+            <th scope="col">What it gives</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+    <div class="sheet-foot no-print" style="margin-top:10px;border-top:0;padding-top:0;">
+      <button class="btn" type="button" data-addrow="vup">+ Add a row</button>
+    </div>
+  </div>
+
+  <div class="blk">
+    <label class="lab" for="fld-vup-person">My one person — someone who might share my position before a hard moment</label>
+    <p class="hint">You don't have to announce it. Just know they're there.</p>
+    <div class="pen"><textarea class="fld" id="fld-vup-person" data-f="person" rows="2"></textarea></div>
+    <div class="blank-lines" aria-hidden="true"><i></i><i></i></div>
+  </div>
+
+  <div class="fam">
+    <div class="k">For the family</div>
+    <p>Today students studied how peer pressure works — and what to do about it. At home, you can open this conversation by sharing a time you faced peer pressure. What did you do? What do you wish you had done?</p>
+  </div>
+
+  <div class="sheet-foot no-print">
+    <button class="btn btn-accent" type="button" data-print="filled">Print my copy</button>
+    <button class="btn" type="button" data-print="blank">Print it blank</button>
+    <button class="btn btn-danger" type="button" data-erase>Erase this sheet</button>
+    <span class="saved" data-saved><span class="dot"></span><span data-savedtext>Saved on this computer</span></span>
+  </div>
+</section>
+
+<!-- ═══ U1 · L6 · THE CHOICE-AGENCY MAP ═══ -->
+<section class="sheet s-cam" id="sh-cam" role="tabpanel" aria-labelledby="tb-cam" data-id="cam">
+  <div class="sheet-head">
+    <span class="k">Unit 1 · Lesson 6 · Worksheet</span>
+    <h2>The Choice-Agency Map</h2>
+    <p class="say">Some things I cannot control. My response is always mine.</p>
+  </div>
+
+  <div class="blk">
+    <p class="hint no-print">Type something and press Enter. It drops into that ring. The rings sit inside each other on purpose — the closer to the middle, the more of it is yours.</p>
+    <div class="ring r1">
+      <div class="rk">Outer ring — Outside my control</div>
+      <div class="rh">Things I cannot change, fix, or escape right now.</div>
+      <div class="chips" data-chips="outer"></div>
+      <div class="chips-blank blank-lines" aria-hidden="true"><i></i><i></i></div>
+      <div class="ring-add no-print">
+        <label class="visually-hidden" for="add-outer" style="position:absolute;left:-9999px;">Add to the outer ring</label>
+        <input id="add-outer" type="text" data-ringadd="outer" placeholder="Add one, then press Enter" autocomplete="off">
+      </div>
+
+      <div class="ring r2">
+        <div class="rk">Middle ring — I can influence</div>
+        <div class="rh">Things I can affect, but not fully control.</div>
+        <div class="chips" data-chips="middle"></div>
+        <div class="chips-blank blank-lines" aria-hidden="true"><i></i><i></i></div>
+        <div class="ring-add no-print">
+          <label for="add-middle" style="position:absolute;left:-9999px;">Add to the middle ring</label>
+          <input id="add-middle" type="text" data-ringadd="middle" placeholder="Add one, then press Enter" autocomplete="off">
+        </div>
+
+        <div class="ring r3">
+          <div class="rk">Inner circle — I fully choose</div>
+          <div class="rh">Starting with my own response — this is where my power lives.</div>
+          <div class="chips" data-chips="inner"></div>
+          <div class="chips-blank blank-lines" aria-hidden="true"><i></i><i></i></div>
+          <div class="ring-add no-print">
+            <label for="add-inner" style="position:absolute;left:-9999px;">Add to the inner circle</label>
+            <input id="add-inner" type="text" data-ringadd="inner" placeholder="Add one, then press Enter" autocomplete="off">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="blk">
+    <label class="lab" for="fld-cam-situation">One situation in my life that feels entirely in the OUTER ring</label>
+    <div class="pen"><textarea class="fld" id="fld-cam-situation" data-f="situation" rows="2"></textarea></div>
+    <div class="blank-lines" aria-hidden="true"><i></i><i></i></div>
+  </div>
+
+  <div class="blk">
+    <label class="lab" for="fld-cam-response">Where does my RESPONSE to it live?</label>
+    <div class="pen"><textarea class="fld" id="fld-cam-response" data-f="response" rows="2"></textarea></div>
+    <div class="blank-lines" aria-hidden="true"><i></i><i></i></div>
+  </div>
+
+  <div class="fam">
+    <div class="k">For the family</div>
+    <p>Today students learned about the space between what happens and how we respond — and that space is where our agency lives. At home, you can use the language: "You can't control that. What can you control?"</p>
+  </div>
+
+  <div class="sheet-foot no-print">
+    <button class="btn btn-accent" type="button" data-print="filled">Print my copy</button>
+    <button class="btn" type="button" data-print="blank">Print it blank</button>
+    <button class="btn btn-danger" type="button" data-erase>Erase this sheet</button>
+    <span class="saved" data-saved><span class="dot"></span><span data-savedtext>Saved on this computer</span></span>
+  </div>
+</section>
+
+<!-- ═══ U1 · L7 · A LETTER TO MY FUTURE SELF — PAPER ═══ -->
+<section class="sheet s-fut" id="sh-fut" role="tabpanel" aria-labelledby="tb-fut" data-id="fut">
+  <div class="sheet-head">
+    <span class="k">Unit 1 · Lesson 7 · Worksheet</span>
+    <h2>A Letter to My Future Self</h2>
+    <p class="say">To the version of me on the last day of this school year.</p>
+  </div>
+
+  <div class="paper">
+    <div class="k">This one stays on paper</div>
+    <h3>You write it by hand, fold it, and seal it in an envelope.</h3>
+    <p class="no-print">Every other sheet in here can be typed. Not this one. The letter gets sealed today and handed back to you in June, and the sealing is the part that makes it work — an envelope you cannot open is a promise a text box cannot make.</p>
+    <p class="no-print">Print the letter below, write it in your own handwriting, and seal it. Your teacher keeps the sealed envelopes and does not open them.</p>
+    <div class="starters">
+      <div>Right now I am learning that…</div>
+      <div>One thing I want you to remember is…</div>
+      <div>I hope that by June…</div>
+    </div>
+  </div>
+
+  <div class="blk">
+    <span class="lab">Dear future me,</span>
+    <p class="hint">Fourteen lines, a signature, and a date — printed the way the lesson uses it.</p>
+    <div class="blank-lines lines-shown" style="display:block" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+    <p class="hint" style="margin-top:14px;">From, ______________________________  Date: ______________</p>
+  </div>
+
+  <div class="fam">
+    <div class="k">For the family</div>
+    <p>Your child wrote a letter to their future self today. It will be returned at year-end. Ask them: "What is the most important thing you know about yourself now that you didn't know in September?"</p>
+  </div>
+
+  <div class="sheet-foot no-print">
+    <button class="btn btn-accent" type="button" data-print="filled">Print the letter</button>
+    <span class="saved" data-saved><span class="dot"></span><span data-savedtext>Nothing is stored for this sheet — it lives in an envelope</span></span>
+  </div>
+</section>
+
+<!-- ═══ U2 · L1 · INTERNAL CRITIC PROFILE ═══ -->
+<section class="sheet s-icp" id="sh-icp" role="tabpanel" aria-labelledby="tb-icp" data-id="icp">
+  <div class="sheet-head">
+    <span class="k">Unit 2 · Lesson 1 · Worksheet</span>
+    <h2>Internal Critic Profile</h2>
+    <p class="say">The critic is not the truth about you. It is a voice with three tricks — and it uses the same three on every human brain.</p>
+  </div>
+
+  <div class="blk">
+    <span class="lab">What mine actually says</span>
+    <p class="hint">Not the category — the actual sentence. Write it the way you hear it.</p>
+    <div class="two">
+      <div class="pane">
+        <label class="lab" for="fld-icp-crit1">When I make a mistake</label>
+        <p class="hint">It says…</p>
+        <div class="pen"><textarea class="fld" id="fld-icp-crit1" data-f="crit1" rows="3" placeholder="Write as much or as little as you want."></textarea></div>
+        <div class="blank-lines" aria-hidden="true"><i></i><i></i><i></i></div>
+      </div>
+      <div class="pane">
+        <label class="lab" for="fld-icp-crit2">When I compare myself to someone else</label>
+        <p class="hint">It says…</p>
+        <div class="pen"><textarea class="fld" id="fld-icp-crit2" data-f="crit2" rows="3" placeholder="No one is checking this."></textarea></div>
+        <div class="blank-lines" aria-hidden="true"><i></i><i></i><i></i></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="blk">
+    <label class="lab" for="fld-icp-tactic">The three tricks — and the one mine uses most</label>
+    <p class="hint">Knowing the critic's moves gives you a fighting chance against it.</p>
+    <div class="tacs">
+      <div class="tac">
+        <span class="tk">Catastrophizing</span>
+        <p class="tq">“Everything is ruined. This is the worst thing that has ever happened.”</p>
+        <p class="td">Turns one bad moment into a permanent condition.</p>
+      </div>
+      <div class="tac">
+        <span class="tk">Globalizing</span>
+        <p class="tq">“I always fail. I never get it right. I am just bad at this.”</p>
+        <p class="td">Turns one thing into every thing — always, never, everyone.</p>
+      </div>
+      <div class="tac">
+        <span class="tk">Personalizing</span>
+        <p class="tq">“Everything that went wrong is my fault.”</p>
+        <p class="td">Hands you the blame for what was never yours to carry.</p>
+      </div>
+    </div>
+    <div class="pen"><textarea class="fld" id="fld-icp-tactic" data-f="tactic" rows="2" placeholder="Mine uses ___ most. I hear it when…"></textarea></div>
+    <div class="blank-lines" aria-hidden="true"><i></i><i></i></div>
+  </div>
+
+  <div class="blk">
+    <label class="lab" for="fld-icp-witness">The Compassionate Witness answers back</label>
+    <p class="hint">Honest AND fair AND kind, without punishment — not a cheerleader, not the critic in disguise. What would that voice say about the same moment? It does not have to feel true yet. Just write it.</p>
+    <div class="pen"><textarea class="fld" id="fld-icp-witness" data-f="witness" rows="4"></textarea></div>
+    <div class="blank-lines" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+  </div>
+
+  <div class="blk">
+    <label class="lab" for="fld-icp-origin">Optional · where the voice came from</label>
+    <p class="hint">Someone specific? An experience? You never have to answer this one.</p>
+    <div class="pen"><textarea class="fld" id="fld-icp-origin" data-f="origin" rows="2"></textarea></div>
+    <div class="blank-lines" aria-hidden="true"><i></i><i></i></div>
+  </div>
+
+  <div class="support">
+    <div class="k">If you need support — right now or later</div>
+    <ul>
+      <li><b>988 Suicide &amp; Crisis Lifeline</b> — call or text <b>988</b></li>
+      <li><b>Crisis Text Line</b> — text <b>HOME</b> to <b>741741</b></li>
+    </ul>
+    <div class="cslr">
+      <input type="text" data-f="cslrName" placeholder="Your school counselor — name" aria-label="School counselor name" autocomplete="off">
+      <input type="text" data-f="cslrContact" placeholder="Contact" aria-label="School counselor contact" autocomplete="off">
+    </div>
+    <p class="tnote no-print">Teacher: fill these two in once. They save on this computer only, alongside everything else.</p>
+  </div>
+
+  <div class="sheet-foot no-print">
+    <button class="btn btn-accent" type="button" data-print="filled">Print my copy</button>
+    <button class="btn" type="button" data-print="blank">Print it blank</button>
+    <button class="btn btn-danger" type="button" data-erase>Erase this sheet</button>
+    <span class="saved" data-saved><span class="dot"></span><span data-savedtext>Saved on this computer</span></span>
+  </div>
+</section>
+
+<!-- ═══ U2 · L3 · THE PERFECTIONISM SPECTRUM ═══ -->
+<section class="sheet s-ps" id="sh-ps" role="tabpanel" aria-labelledby="tb-ps" data-id="ps">
+  <div class="sheet-head">
+    <span class="k">Unit 2 · Lesson 3 · Worksheet</span>
+    <h2>The Perfectionism Spectrum</h2>
+    <p class="say">Healthy striving and toxic perfectionism are not the same thing.</p>
+  </div>
+
+  <div class="blk">
+    <div class="two">
+      <div class="pane hi">
+        <span class="lab">Healthy striving</span>
+        <p class="hint">I aim high, and I'm still okay when I fall short.</p>
+      </div>
+      <div class="pane">
+        <span class="lab">Toxic perfectionism</span>
+        <p class="hint">Anything less than perfect feels like proof I'm not enough.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="blk spec">
+    <span class="lab">Mark where you sit</span>
+    <p class="hint">Move each marker along the line. Two marks: one for school, one for a different area of your life. There is no right place to be.</p>
+    <div class="spec-ends"><span class="l">Healthy striving</span><span class="r">Toxic perfectionism</span></div>
+    <div class="spec-track" aria-hidden="true"><span class="tick"></span></div>
+    <div class="spec-row">
+      <label class="rl" for="sp-school">In school</label>
+      <input class="slider" type="range" id="sp-school" min="0" max="100" value="50" data-f="spSchool" data-slider="school">
+    </div>
+    <div class="spec-row">
+      <label class="rl" for="sp-life">Another part of my life</label>
+      <input class="slider" type="range" id="sp-life" min="0" max="100" value="50" data-f="spLife" data-slider="life">
+    </div>
+    <div class="spec-print" aria-hidden="true">
+      <span class="bar"></span>
+      <span class="m" data-mark="school" style="left:50%">In school</span>
+      <span class="m" data-mark="life" style="left:50%; top:26px;">Another part of my life</span>
+    </div>
+  </div>
+
+  <div class="blk">
+    <label class="lab" for="fld-ps-why">Where I sit — and why</label>
+    <p class="hint">In school I marked here because… In another area of life I marked here because…</p>
+    <div class="pen"><textarea class="fld" id="fld-ps-why" data-f="why" rows="4"></textarea></div>
+    <div class="blank-lines" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
+  </div>
+
+  <div class="blk">
+    <label class="lab" for="fld-ps-move">One way I want to move toward healthy striving</label>
+    <div class="pen"><textarea class="fld" id="fld-ps-move" data-f="move" rows="2"></textarea></div>
+    <div class="blank-lines" aria-hidden="true"><i></i><i></i></div>
+  </div>
+
+  <div class="fam">
+    <div class="k">For the family</div>
+    <p>Today students located themselves on the spectrum between healthy striving and toxic perfectionism. At home, you can ask: "Is there a place you hold yourself to a standard no one could actually meet?"</p>
+  </div>
+
+  <div class="sheet-foot no-print">
+    <button class="btn btn-accent" type="button" data-print="filled">Print my copy</button>
+    <button class="btn" type="button" data-print="blank">Print it blank</button>
+    <button class="btn btn-danger" type="button" data-erase>Erase this sheet</button>
+    <span class="saved" data-saved><span class="dot"></span><span data-savedtext>Saved on this computer</span></span>
+  </div>
+</section>
+
+<!-- ═══ U2 · L6 · REWRITING THE SCRIPT ═══ -->
+<section class="sheet s-rts" id="sh-rts" role="tabpanel" aria-labelledby="tb-rts" data-id="rts">
+  <div class="sheet-head">
+    <span class="k">Unit 2 · Lesson 6 · Worksheet</span>
+    <h2>Rewriting the Script</h2>
+    <p class="say">A script is a story we treat as true without ever examining it.</p>
+  </div>
+
+  <div class="step">
+    <div class="n" aria-hidden="true">1</div>
+    <div>
+      <label class="lab" for="fld-rts-s1">The script I carry</label>
+      <p class="hint">A sentence I sometimes believe about myself is…</p>
+      <div class="pen"><textarea class="fld" id="fld-rts-s1" data-f="s1" rows="2"></textarea></div>
+      <div class="blank-lines" aria-hidden="true"><i></i><i></i><i></i></div>
+    </div>
+  </div>
+  <div class="step">
+    <div class="n" aria-hidden="true">2</div>
+    <div>
+      <label class="lab" for="fld-rts-s2">Where it was written</label>
+      <p class="hint">This script may have first come from… (a person, a moment, an experience)</p>
+      <div class="pen"><textarea class="fld" id="fld-rts-s2" data-f="s2" rows="2"></textarea></div>
+      <div class="blank-lines" aria-hidden="true"><i></i><i></i><i></i></div>
+    </div>
+  </div>
+  <div class="step">
+    <div class="n" aria-hidden="true">3</div>
+    <div>
+      <label class="lab" for="fld-rts-s3">Is it the whole truth?</label>
+      <p class="hint">Evidence that this script is NOT the full story of who I am…</p>
+      <div class="pen"><textarea class="fld" id="fld-rts-s3" data-f="s3" rows="3"></textarea></div>
+      <div class="blank-lines" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+    </div>
+  </div>
+  <div class="step">
+    <div class="n" aria-hidden="true">4</div>
+    <div>
+      <label class="lab" for="fld-rts-s4">The Compassionate Witness</label>
+      <p class="hint">What would someone who saw the whole of me — with kindness — say about this script?</p>
+      <div class="pen"><textarea class="fld" id="fld-rts-s4" data-f="s4" rows="3"></textarea></div>
+      <div class="blank-lines" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+    </div>
+  </div>
+  <div class="step">
+    <div class="n" aria-hidden="true">5</div>
+    <div>
+      <label class="lab" for="fld-rts-s5">Rewriting the script</label>
+      <p class="hint">An alternative script, in one sentence. It does not have to feel true yet.</p>
+      <div class="pen"><textarea class="fld" id="fld-rts-s5" data-f="s5" rows="2"></textarea></div>
+      <div class="blank-lines" aria-hidden="true"><i></i><i></i><i></i></div>
+    </div>
+  </div>
+
+  <div class="support">
+    <div class="k">If you need support — right now or later</div>
+    <ul>
+      <li><b>988 Suicide &amp; Crisis Lifeline</b> — call or text <b>988</b></li>
+      <li><b>Crisis Text Line</b> — text <b>HOME</b> to <b>741741</b></li>
+    </ul>
+    <div class="cslr">
+      <input type="text" data-f="cslrName" placeholder="Your school counselor — name" aria-label="School counselor name" autocomplete="off">
+      <input type="text" data-f="cslrContact" placeholder="Contact" aria-label="School counselor contact" autocomplete="off">
+    </div>
+    <p class="tnote no-print">Teacher: fill these two in once. They save on this computer only, alongside everything else.</p>
+  </div>
+
+  <div class="sheet-foot no-print">
+    <button class="btn btn-accent" type="button" data-print="filled">Print my copy</button>
+    <button class="btn" type="button" data-print="blank">Print it blank</button>
+    <button class="btn btn-danger" type="button" data-erase>Erase this sheet</button>
+    <span class="saved" data-saved><span class="dot"></span><span data-savedtext>Saved on this computer</span></span>
+  </div>
+</section>
+
+
+  <div class="lock-acts no-print" aria-label="Page controls">
+    <button class="btn btn-lock" type="button" id="eraseAll">Erase everything on this computer</button>
+    <button class="btn" type="button" id="themeBtn" aria-live="polite">Switch to dark</button>
+  </div>
+</main>
+
+<footer class="foot wrap no-print">
+  <p><b>Architecture of Grace · Book 3, The Interior (Grades 6–8).</b> These seven worksheets are the student-facing pages of Units 1 and 2. Everything else in the lesson is the teacher's.</p>
+  <p>This page loads no fonts, scripts, or images from the internet and sends nothing out — it works with the network off. Your writing is stored in this browser only. It is not a district product and carries no district endorsement.</p>
+  <p class="foot-home"><a href="/" rel="noopener">Architecture of Grace</a></p>
+</footer>
+
+<script>
+(function(){
+  "use strict";
+  var KEY = "aog.interior.ws.v1.";
+  var hasLS = (function(){ try{ var k="__t"; localStorage.setItem(k,"1"); localStorage.removeItem(k); return true; }catch(e){ return false; } })();
+
+  /* ── storage ─────────────────────────────────────────── */
+  function load(id){
+    if(!hasLS) return {};
+    try{ return JSON.parse(localStorage.getItem(KEY+id) || "{}") || {}; }catch(e){ return {}; }
+  }
+  function save(id, data){
+    if(!hasLS) return false;
+    try{ localStorage.setItem(KEY+id, JSON.stringify(data)); return true; }catch(e){ return false; }
+  }
+  function wipe(id){ if(hasLS){ try{ localStorage.removeItem(KEY+id); }catch(e){} } }
+
+  var sheets = Array.prototype.slice.call(document.querySelectorAll(".sheet"));
+  var tabs   = Array.prototype.slice.call(document.querySelectorAll(".tab"));
+  var state  = {};
+
+  /* ── helpers ─────────────────────────────────────────── */
+  function grow(el){ el.style.height = "auto"; el.style.height = (el.scrollHeight + 2) + "px"; }
+  function esc(s){ return String(s).replace(/[&<>"']/g, function(c){
+    return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]; }); }
+
+  var savedTimers = {};
+  function flagSaved(sheet, ok){
+    var pill = sheet.querySelector("[data-saved]");
+    if(!pill) return;
+    var txt = pill.querySelector("[data-savedtext]");
+    if(txt && sheet.dataset.id !== "fut"){
+      txt.textContent = ok ? ("Saved on this computer · " +
+        new Date().toLocaleTimeString([], {hour:"numeric", minute:"2-digit"}))
+        : "This computer will not let the page save. Print your copy before you leave.";
+    }
+    pill.classList.add("on");
+    clearTimeout(savedTimers[sheet.dataset.id]);
+    savedTimers[sheet.dataset.id] = setTimeout(function(){ if(ok) pill.classList.remove("on"); }, 4000);
+  }
+
+  /* ── per-sheet wiring ────────────────────────────────── */
+  sheets.forEach(function(sheet){
+    var id = sheet.dataset.id;
+    state[id] = load(id);
+    var d = state[id];
+
+    function persist(){ flagSaved(sheet, save(id, state[id])); }
+    var t = null;
+    function persistSoon(){ clearTimeout(t); t = setTimeout(persist, 500); }
+
+    /* text fields + sliders + inputs */
+    sheet.querySelectorAll("[data-f]").forEach(function(el){
+      var f = el.dataset.f;
+      if(typeof d[f] !== "undefined" && d[f] !== null) el.value = d[f];
+      if(el.tagName === "TEXTAREA") grow(el);
+      el.addEventListener("input", function(){
+        state[id][f] = el.value;
+        if(el.tagName === "TEXTAREA") grow(el);
+        if(el.dataset.slider) paintSlider(el);
+        persistSoon();
+      });
+      if(el.dataset.slider) paintSlider(el);
+    });
+
+    function paintSlider(el){
+      var which = el.dataset.slider;
+      var out = sheet.querySelector('[data-out="' + which + '"]');
+      if(out) out.textContent = el.value;
+      var mark = sheet.querySelector('[data-mark="' + which + '"]');
+      if(mark) mark.style.left = el.value + "%";
+    }
+
+    /* table rows (Values Under Pressure) */
+    var table = sheet.querySelector("[data-table]");
+    if(table){
+      var tbody = table.querySelector("tbody");
+      var cols = 4;
+      function addRow(values){
+        var tr = document.createElement("tr");
+        for(var c = 0; c < cols; c++){
+          var td = document.createElement("td");
+          var ta = document.createElement("textarea");
+          ta.className = "cell"; ta.rows = 2;
+          ta.setAttribute("aria-label", table.querySelectorAll("th")[c].textContent + ", row " + (tbody.children.length + 1));
+          ta.value = (values && values[c]) || "";
+          ta.addEventListener("input", function(){ grow(this); collect(); });
+          td.appendChild(ta); tr.appendChild(td);
+        }
+        tbody.appendChild(tr);
+        Array.prototype.forEach.call(tr.querySelectorAll("textarea"), grow);
+      }
+      function collect(){
+        var rows = [];
+        Array.prototype.forEach.call(tbody.children, function(tr){
+          rows.push(Array.prototype.map.call(tr.querySelectorAll("textarea"), function(x){ return x.value; }));
+        });
+        state[id].rows = rows;
+        persistSoon();
+      }
+      var saved = d.rows && d.rows.length ? d.rows : [[],[],[],[]];
+      saved.forEach(function(r){ addRow(r); });
+      var addBtn = sheet.querySelector("[data-addrow]");
+      if(addBtn) addBtn.addEventListener("click", function(){
+        addRow(null); collect();
+        var last = tbody.lastElementChild.querySelector("textarea"); if(last) last.focus();
+      });
+    }
+
+    /* rings (Choice-Agency Map) */
+    var ringInputs = sheet.querySelectorAll("[data-ringadd]");
+    if(ringInputs.length){
+      d.rings = d.rings || {outer:[], middle:[], inner:[]};
+      state[id].rings = d.rings;
+      function drawRing(name){
+        var box = sheet.querySelector('[data-chips="' + name + '"]');
+        if(!box) return;
+        box.innerHTML = "";
+        (state[id].rings[name] || []).forEach(function(text, i){
+          var chip = document.createElement("span");
+          chip.className = "chip";
+          chip.innerHTML = '<span></span><button type="button" class="no-print" aria-label="Remove ' + esc(text) + '">&times;</button>';
+          chip.firstChild.textContent = text;
+          chip.querySelector("button").addEventListener("click", function(){
+            state[id].rings[name].splice(i, 1); drawRing(name); persist();
+          });
+          box.appendChild(chip);
+        });
+      }
+      ["outer","middle","inner"].forEach(drawRing);
+      Array.prototype.forEach.call(ringInputs, function(inp){
+        inp.addEventListener("keydown", function(e){
+          if(e.key !== "Enter") return;
+          e.preventDefault();
+          var v = inp.value.trim();
+          if(!v) return;
+          var name = inp.dataset.ringadd;
+          state[id].rings[name] = state[id].rings[name] || [];
+          state[id].rings[name].push(v);
+          inp.value = "";
+          drawRing(name);
+          persist();
+        });
+      });
+      sheet._redrawRings = function(){ ["outer","middle","inner"].forEach(drawRing); };
+    }
+
+    /* erase this sheet */
+    var eraseBtn = sheet.querySelector("[data-erase]");
+    if(eraseBtn) eraseBtn.addEventListener("click", function(){
+      if(!window.confirm("Erase everything you typed on this sheet? This cannot be undone.")) return;
+      wipe(id);
+      state[id] = {};
+      sheet.querySelectorAll("[data-f]").forEach(function(el){
+        if(el.type === "range"){ el.value = 50; el.dispatchEvent(new Event("input")); }
+        else { el.value = ""; if(el.tagName === "TEXTAREA") grow(el); }
+      });
+      sheet.querySelectorAll("table.grid tbody textarea").forEach(function(el){ el.value = ""; grow(el); });
+      if(sheet._redrawRings){ state[id].rings = {outer:[], middle:[], inner:[]}; sheet._redrawRings(); }
+      var pill = sheet.querySelector("[data-saved]");
+      var txt = pill && pill.querySelector("[data-savedtext]");
+      if(txt) txt.textContent = "Erased. Nothing from this sheet is left on this computer.";
+      if(pill){ pill.classList.add("on"); clearTimeout(savedTimers[id]);
+        savedTimers[id] = setTimeout(function(){ pill.classList.remove("on"); }, 5000); }
+    });
+
+    /* print — synchronous, never behind a timer (iOS blocks deferred print) */
+    sheet.querySelectorAll("[data-print]").forEach(function(btn){
+      btn.addEventListener("click", function(){
+        var blank = btn.dataset.print === "blank";
+        if(blank) document.body.classList.add("print-blank");
+        else syncPrintCopies();
+        window.print();
+        setTimeout(function(){ document.body.classList.remove("print-blank"); }, 250);
+      });
+    });
+  });
+
+  /* ── print copies ────────────────────────────────────
+     A textarea prints at its JS-set screen height and clips anything taller.
+     Mirror each one into a plain element that print uses instead. */
+  function syncPrintCopies(){
+    document.querySelectorAll("textarea").forEach(function(ta){
+      var host = ta.parentNode;
+      var copy = host.querySelector(":scope > .pcopy");
+      if(!copy){
+        copy = document.createElement("div");
+        copy.className = "pcopy";
+        copy.setAttribute("aria-hidden", "true");
+        host.appendChild(copy);
+      }
+      copy.textContent = ta.value;
+    });
+  }
+  if(window.addEventListener) window.addEventListener("beforeprint", syncPrintCopies);
+  if(window.matchMedia){
+    var pmq = window.matchMedia("print");
+    if(pmq.addEventListener) pmq.addEventListener("change", function(e){ if(e.matches) syncPrintCopies(); });
+  }
+  syncPrintCopies();
+
+  /* ── tabs ────────────────────────────────────────────── */
+  function show(idWanted){
+    sheets.forEach(function(s){ s.classList.toggle("is-active", s.dataset.id === idWanted); });
+    tabs.forEach(function(tb){ tb.setAttribute("aria-selected", String(tb.dataset.sheet === idWanted)); });
+    var active = document.querySelector('.sheet[data-id="' + idWanted + '"]');
+    if(active) active.querySelectorAll("textarea").forEach(grow);
+  }
+  tabs.forEach(function(tb, i){
+    tb.addEventListener("click", function(){ show(tb.dataset.sheet); });
+    tb.addEventListener("keydown", function(e){
+      var n = null;
+      if(e.key === "ArrowRight") n = tabs[(i + 1) % tabs.length];
+      if(e.key === "ArrowLeft")  n = tabs[(i - 1 + tabs.length) % tabs.length];
+      if(!n) return;
+      e.preventDefault(); n.focus(); show(n.dataset.sheet);
+    });
+  });
+
+  /* ── erase everything ────────────────────────────────── */
+  var allBtn = document.getElementById("eraseAll");
+  if(allBtn) allBtn.addEventListener("click", function(){
+    if(!window.confirm("Erase every worksheet on this computer? This cannot be undone.")) return;
+    /* Each worksheet is its own page now, so clearing only the sheets present
+       here would leave the other six behind. Sweep the whole prefix. */
+    if(hasLS){
+      try{
+        var dead = [];
+        for(var i = 0; i < localStorage.length; i++){
+          var k = localStorage.key(i);
+          if(k && k.indexOf(KEY) === 0 && k !== KEY + "theme") dead.push(k);
+        }
+        dead.forEach(function(k){ localStorage.removeItem(k); });
+      }catch(e){}
+    }
+    sheets.forEach(function(s){
+      wipe(s.dataset.id);
+      var b = s.querySelector("[data-erase]");
+      state[s.dataset.id] = {};
+      s.querySelectorAll("[data-f]").forEach(function(el){
+        if(el.type === "range"){ el.value = 50; el.dispatchEvent(new Event("input")); }
+        else { el.value = ""; if(el.tagName === "TEXTAREA") grow(el); }
+      });
+      s.querySelectorAll("table.grid tbody textarea").forEach(function(el){ el.value = ""; grow(el); });
+      if(s._redrawRings){ state[s.dataset.id].rings = {outer:[], middle:[], inner:[]}; s._redrawRings(); }
+    });
+    allBtn.textContent = "Erased — nothing is left on this computer";
+    setTimeout(function(){ allBtn.textContent = "Erase everything on this computer"; }, 5000);
+  });
+
+  /* ── theme toggle ────────────────────────────────────── */
+  var tBtn = document.getElementById("themeBtn");
+  function prefersDark(){
+    return window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+  }
+  function currentIsDark(){
+    var s = document.documentElement.getAttribute("data-theme");
+    return s ? s === "dark" : prefersDark();
+  }
+  function paintThemeBtn(){
+    if(tBtn) tBtn.textContent = currentIsDark() ? "Switch to light" : "Switch to dark";
+  }
+  try{
+    var stored = localStorage.getItem(KEY + "theme");
+    if(stored) document.documentElement.setAttribute("data-theme", stored);
+  }catch(e){}
+  paintThemeBtn();
+  if(window.matchMedia){
+    var mq = window.matchMedia("(prefers-color-scheme: dark)");
+    if(mq.addEventListener) mq.addEventListener("change", paintThemeBtn);
+    else if(mq.addListener) mq.addListener(paintThemeBtn);
+  }
+  if(tBtn) tBtn.addEventListener("click", function(){
+    var next = currentIsDark() ? "light" : "dark";
+    document.documentElement.setAttribute("data-theme", next);
+    try{ localStorage.setItem(KEY + "theme", next); }catch(e){}
+    paintThemeBtn();
+  });
+
+  /* ── no-storage honesty ──────────────────────────────── */
+  if(!hasLS){
+    sheets.forEach(function(s){
+      var txt = s.querySelector("[data-savedtext]");
+      if(txt && s.dataset.id !== "fut"){
+        txt.textContent = "This computer will not let the page save. Print your copy before you leave.";
+        var pill = s.querySelector("[data-saved]");
+        if(pill) pill.classList.add("on");
+      }
+    });
+  }
+})();
+</script>
+
+<script>
+(function(){
+  document.querySelectorAll(".share .cp").forEach(function(b){
+    var url = b.dataset.copy;
+    var row = b.closest("li");
+    var name = row ? (row.querySelector(".nm") || {}).textContent : "";
+    var wk   = row ? (row.querySelector(".wk") || {}).textContent : "";
+    b.addEventListener("click", function(){
+      /* Put the link on the board, big enough to read from the back row, and
+         copy it at the same time so it can also go in Classroom. */
+      if(navigator.clipboard && navigator.clipboard.writeText){
+        navigator.clipboard.writeText(url).catch(function(){});
+      }
+      var beam = document.createElement("div");
+      beam.id = "beam";
+      beam.setAttribute("role", "dialog");
+      beam.setAttribute("aria-label", "Worksheet link for the board");
+      var short = url.replace(/^https?:\/\//, "");
+      beam.innerHTML =
+        '<span class="x">Click anywhere, or press Esc, to close</span>' +
+        '<span class="wk"></span><span class="nm"></span>' +
+        '<span class="url"></span>' +
+        '<span class="hint">Type this into Chrome. Nothing to sign in to. Link copied, too.</span>';
+      beam.querySelector(".wk").textContent = wk;
+      beam.querySelector(".nm").textContent = name;
+      beam.querySelector(".url").textContent = short;
+      function close(){ beam.remove(); document.removeEventListener("keydown", esc); }
+      function esc(e){ if(e.key === "Escape") close(); }
+      beam.addEventListener("click", close);
+      document.addEventListener("keydown", esc);
+      document.body.appendChild(beam);
+    });
+  });
+})();
+</script>
+
+<style>
+/* ══ AOG-PRINTBRAND-V1 — the mark on every printed sheet ══ */
+.aog-printbrand,.aog-printwm{display:none}
+@media print{
+  .aog-printbrand{display:block;position:fixed;bottom:2px;left:0;right:0;text-align:center;
+    font:700 9px/1.4 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    color:#1B3A5F;letter-spacing:.08em;z-index:99}
+  .aog-printbrand .mk{display:inline-block;width:12px;height:12px;line-height:12px;border-radius:3px;
+    background:#1B3A5F;color:#fff;font-family:Georgia,serif;font-weight:900;font-size:9px;
+    text-align:center;margin-right:4px;vertical-align:-2px;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .aog-printwm{display:block;position:fixed;top:0;left:0;right:0;bottom:0;pointer-events:none;
+    overflow:hidden;z-index:98}
+  .aog-printwm span{position:absolute;left:-25%;right:-25%;text-align:center;white-space:nowrap;
+    font:900 44px/1 Georgia,serif;letter-spacing:.2em;color:rgba(27,58,95,.06);
+    transform:rotate(-28deg);-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .aog-printwm span:nth-child(1){top:22%}
+  .aog-printwm span:nth-child(2){top:52%}
+  .aog-printwm span:nth-child(3){top:82%}
+}
+
+/* ══ AOG-PRINT-SAFE-V1 (2026-09-20) ═══════════════════════════════════════════
+   Jimmy, printing a novel study from his phone: "another pdf that gets parts of
+   the material cut off." These are the rules that keep paper honest on every
+   engine — a table row, a list item, a figure and a picture stay whole; a head
+   keeps the lines under it; no paragraph strands one line at a page edge; and a
+   long table repeats its head at the top of each page. Printed pages only. */
+@media print{
+  table{break-inside:auto; page-break-inside:auto}
+  thead{display:table-header-group}
+  tfoot{display:table-footer-group}
+  tr{break-inside:avoid; page-break-inside:avoid}
+  li,figure,img,svg{break-inside:avoid; page-break-inside:avoid}
+  h1,h2,h3,h4,h5{break-after:avoid; page-break-after:avoid}
+  p{orphans:3; widows:3}
+}
+</style>
+<div class="aog-printwm" aria-hidden="true"><span>ARCHITECTURE OF GRACE</span><span>ARCHITECTURE OF GRACE</span><span>ARCHITECTURE OF GRACE</span></div>
+<div class="aog-printbrand" aria-hidden="true"><span class="mk">A</span>ARCHITECTURE OF GRACE &middot; architectureofgrace.org</div>
+</body>
+</html>

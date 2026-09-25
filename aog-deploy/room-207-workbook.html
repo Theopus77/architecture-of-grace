@@ -1,0 +1,1018 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="aog-sync-config.js"></script><!-- same-origin and optional; a 404 changes nothing -->
+<script>/* .30eg: begin in light. Dark only when this device chose it — with no stored
+choice the dark palette would ride the OS setting (prefers-color-scheme), and a
+dark-set Chromebook would open the page dark. Same key as the other activity pages. */
+(function(){var t="light";try{if(localStorage.getItem("aog.interior.ws.v1.theme")==="dark")t="dark";}catch(e){}document.documentElement.setAttribute("data-theme",t);})();</script>
+<title>Room 207 — The Companion Workbook · Architecture of Grace</title>
+<meta name="description" content="The Room 207 companion workbook — multiple choice and in-your-own-words practice for the four units of Book 5 · The Capstone (Grades 11–12). Printable, with a teacher answer key.">
+<!-- Original student material written for this page, drawn from the Room 207
+     curriculum's own concepts and vocabulary. Nothing typed here is saved or
+     sent — no storage, no network. No external requests of any kind. -->
+<style>
+:root{
+  --bg:#FBFAF7; --card:#FFFFFF; --ink:#232B36; --sub:#5B6472; --line:#E4E1D8;
+  --navy:#1B3A5F; --brass:#8A6A1F; --brass-soft:#F3ECDB;
+  --u1:#17646B; --u2:#6B4696; --u3:#A63A2B; --u4:#8A6A1F;
+  --good:#2E7D4F; --good-soft:#E4F0E8; --bad:#B3261E; --bad-soft:#FBE9E7;
+  --chip:#EFECE4; --shadow:0 1px 3px rgba(35,43,54,.08);
+  --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,"Times New Roman",serif;
+  --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#191D24; --card:#20262F; --ink:#EDEAE2; --sub:#9AA3B0; --line:#333B47;
+    --navy:#8FB4DF; --brass:#D9B45C; --brass-soft:#332C18;
+    --u1:#5FB8B0; --u2:#B99AD9; --u3:#E08573; --u4:#D9B45C;
+    --good:#6FBF8B; --good-soft:#1F3327; --bad:#F2938A; --bad-soft:#3D211E;
+    --chip:#2A313C; --shadow:0 1px 3px rgba(0,0,0,.35);
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#191D24; --card:#20262F; --ink:#EDEAE2; --sub:#9AA3B0; --line:#333B47;
+  --navy:#8FB4DF; --brass:#D9B45C; --brass-soft:#332C18;
+  --u1:#5FB8B0; --u2:#B99AD9; --u3:#E08573; --u4:#D9B45C;
+  --good:#6FBF8B; --good-soft:#1F3327; --bad:#F2938A; --bad-soft:#3D211E;
+  --chip:#2A313C; --shadow:0 1px 3px rgba(0,0,0,.35);
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{background:var(--bg);color:var(--ink);font:16px/1.55 var(--sans);margin:0;padding:0 16px 72px}
+button{touch-action:manipulation}
+.wrap{max-width:1060px;margin:0 auto}
+.layout{display:grid;grid-template-columns:225px minmax(0,1fr);gap:26px;align-items:start;margin-top:10px}
+.rail{position:sticky;top:59px;display:flex;flex-direction:column;gap:7px;padding:6px 0}
+.ritem{text-align:left;border:1px solid var(--line);background:var(--card);border-radius:11px;padding:10px 12px;cursor:pointer;border-left:4px solid var(--uc);box-shadow:var(--shadow)}
+.ritem .rl{display:block;font:800 .68rem var(--sans);letter-spacing:.11em;text-transform:uppercase;color:var(--uc)}
+.ritem .rn{display:block;font:700 .92rem var(--sans);color:var(--ink);margin-top:1px}
+.ritem .rc{display:block;font:600 .74rem var(--sans);color:var(--sub);margin-top:2px}
+.ritem:hover{border-color:var(--uc)}
+.ritem[aria-current="true"]{background:var(--chip);border-color:var(--uc);border-width:1px 1px 1px 4px}
+@media(max-width:840px){
+  .layout{display:block}
+  .rail{position:sticky;top:47px;z-index:40;flex-direction:row;overflow-x:auto;background:var(--bg);margin:0 -16px;padding:10px 16px;border-bottom:1px solid var(--line);-webkit-overflow-scrolling:touch}
+  .ritem{flex:0 0 auto}
+  .ritem .rc{display:none}
+}
+header{padding:26px 0 8px}
+.eyebrow{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.eyebrow a{color:var(--sub);font-size:.78rem;letter-spacing:.14em;text-transform:uppercase;text-decoration:none;font-weight:700}
+.eyebrow a:hover{color:var(--ink)}
+.tools{display:flex;gap:8px;flex-wrap:wrap}
+.tools button{border:1px solid var(--line);background:var(--card);color:var(--sub);border-radius:999px;padding:5px 12px;font:600 .78rem var(--sans);cursor:pointer}
+.tools button:hover{color:var(--ink)}
+h1{font-family:var(--serif);font-weight:900;font-size:clamp(2rem,5.5vw,2.8rem);margin:12px 0 0;letter-spacing:-.01em}
+.tag{color:var(--sub);margin:6px 0 0}
+.tag b{color:var(--ink)}
+.nameline{display:flex;gap:18px;flex-wrap:wrap;margin:18px 0 0;font-size:.92rem;color:var(--sub)}
+.nameline span{flex:1;min-width:180px;border-bottom:1.5px solid var(--line);padding:0 4px 3px}
+.howto{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--navy);border-radius:12px;box-shadow:var(--shadow);padding:14px 18px;margin:18px 0 0;font-size:.93rem}
+.howto b{color:var(--navy)}
+.privnote{margin:14px 0 0;background:var(--good-soft);border-left:4px solid var(--good);border-radius:10px;padding:11px 14px;font-size:.88rem}
+.mats{display:flex;gap:8px;flex-wrap:wrap;margin:16px 0 0}
+.mats a{display:inline-block;border:1px solid var(--line);background:var(--card);color:var(--navy);border-radius:999px;padding:7px 14px;font:600 .84rem var(--sans);text-decoration:none}
+.mats a:hover{border-color:var(--navy)}
+section.unit{margin:6px 0 0}
+.uhead{border-bottom:3px solid var(--uc);padding-bottom:6px}
+.unit h2{font-family:var(--serif);font-weight:900;font-size:clamp(1.4rem,4vw,1.85rem);margin:0;color:var(--uc)}
+.urecap{color:var(--sub);max-width:70ch;margin:10px 0 4px;font-size:.94rem}
+.parth{font-size:.78rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--sub);margin:22px 0 12px;border-top:1px solid var(--line);padding-top:14px}
+.q{background:var(--card);border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow);padding:14px 16px;margin:0 0 12px}
+.qt{font-weight:700;margin:0 0 10px}
+.qn{display:inline-block;min-width:24px;text-align:center;background:var(--uc);color:var(--bg);border-radius:7px;font:800 .82rem var(--sans);padding:2px 5px;margin-right:4px}
+.opts{display:grid;gap:7px}
+.opt{text-align:left;border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:9px;padding:9px 12px;font:500 .92rem/1.45 var(--sans);cursor:pointer}
+.opt:hover{border-color:var(--sub)}
+.opt .ol{font-weight:800;color:var(--sub);margin-right:4px}
+.q.done .opt{cursor:default;opacity:.7}
+.q.done .opt[data-ok="1"]{background:var(--good-soft);border-color:var(--good);opacity:1}
+.q.done .opt.picked[data-ok="0"]{background:var(--bad-soft);border-color:var(--bad);opacity:1}
+.why{margin:10px 0 0;padding:10px 12px;border-radius:9px;background:var(--chip);font-size:.9rem}
+.why b{color:var(--good)}
+.tally{margin:4px 0 0;color:var(--sub);font-size:.88rem}
+.tally b{color:var(--ink)}
+.ow{background:var(--card);border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow);padding:14px 16px;margin:0 0 12px}
+.owt{font-weight:600;margin:0 0 10px;font-size:.95rem}
+.privchip{display:inline-block;background:var(--good-soft);color:var(--good);border-radius:999px;padding:2px 10px;font:700 .72rem var(--sans);letter-spacing:.06em;text-transform:uppercase;white-space:nowrap}
+.ow textarea{width:100%;border:1px solid var(--line);border-radius:9px;background:var(--bg);color:var(--ink);font:500 .95rem/1.5 var(--sans);padding:10px 12px;resize:vertical}
+.ow textarea:focus{outline:2px solid var(--navy)}
+.plines{display:none}
+.keyblock{display:none}
+.keybanner{display:none}
+footer{margin:48px 0 0;border-top:1px solid var(--line);padding-top:16px;color:var(--sub);font-size:.85rem;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+footer a{color:var(--navy);font-weight:700;text-decoration:none}
+@media print{
+  body{background:#fff;color:#111;padding:0;font-size:11.5px}
+  .tools,.mats,.privnote,.tally,.rail{display:none!important}
+  /* the rail shows one unit on screen; paper always gets the whole packet */
+  section.unit[hidden]{display:block!important}
+  .wrap{max-width:none}
+  header{padding-top:0}
+  section.unit{break-before:page;margin-top:0}
+  .q,.ow{break-inside:avoid;box-shadow:none}
+  .opt{background:#fff}
+  .opt:hover{border-color:var(--line)}
+  .why{display:none!important}
+  .ow textarea{display:none}
+  .plines{display:block;margin-top:4px}
+  .plines span{display:block;height:26px;border-bottom:1px solid #999}
+  /* student edition (default): hide the key. Key edition: ONLY the key. */
+  body:not(.printkey) .keyblock{display:none}
+  body.printkey .keyblock{display:block}
+  body.printkey .keybanner{display:block;border:2px solid #111;border-radius:8px;padding:8px 12px;font-weight:700;margin:12px 0 0}
+  body.printkey .q,body.printkey .ow,body.printkey .parth,body.printkey .urecap,
+  body.printkey .howto,body.printkey .nameline{display:none}
+  body.printkey .keyblock .parth{display:block;border:0;padding-top:0}
+  .key li{margin:0 0 7px}
+}
+
+/* ══ AOG-R36-NAV ══ */
+.r36top{position:sticky;top:0;z-index:60;display:flex;align-items:center;justify-content:space-between;gap:10px;background:var(--card);border-bottom:1px solid var(--line);margin:0 -16px;padding:9px 16px}
+.r36top .brand{display:flex;align-items:center;gap:9px;text-decoration:none;color:var(--ink);font-weight:800;font-size:.92rem;white-space:nowrap}
+.r36top .mk{display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:7px;background:var(--navy);color:#fff;font-family:var(--serif);font-weight:900}
+:root[data-theme="dark"] .r36top .mk{color:#10151c}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .r36top .mk{color:#10151c}}
+.r36top .brand .nm{display:none}
+@media(min-width:640px){.r36top .brand .nm{display:inline}}
+.r36top .acts{display:flex;align-items:center;gap:7px}
+.r36top .pill{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:999px;padding:6px 13px;font:700 .82rem var(--sans);text-decoration:none;cursor:pointer}
+.r36top .pill:hover{border-color:var(--navy)}
+.r36top .pill .arr{color:var(--navy)}
+.r36wrap{position:relative}
+.r36menu{position:absolute;top:calc(100% + 8px);right:0;min-width:290px;max-width:min(92vw,340px);max-height:min(70vh,560px);overflow:auto;background:var(--card);border:1px solid var(--line);border-radius:14px;box-shadow:0 18px 44px -14px rgba(20,28,40,.45);padding:8px;z-index:70}
+.r36menu[hidden]{display:none}
+.r36menu .lab{font-size:.68rem;font-weight:800;letter-spacing:.13em;text-transform:uppercase;color:var(--sub);padding:10px 10px 4px}
+.r36menu a{display:block;padding:8px 10px;border-radius:9px;text-decoration:none;color:var(--ink)}
+.r36menu a:hover{background:var(--chip)}
+.r36menu a .t{display:block;font-weight:700;font-size:.9rem}
+.r36menu a .s{display:block;font-size:.78rem;color:var(--sub);margin-top:1px}
+.r36top .ico{display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:999px;cursor:pointer}
+.r36top .ico:hover{border-color:var(--navy)}
+.r36menu .arow{display:flex;align-items:center;justify-content:space-between;gap:14px;width:100%;background:none;border:0;border-top:1px solid var(--line);padding:10px 10px;cursor:pointer;text-align:left;font:inherit;color:var(--ink)}
+.r36menu .arow.first{border-top:0}
+.r36menu .arow .t{display:block;font-weight:700;font-size:.9rem}
+.r36menu .arow .s{display:block;font-size:.78rem;color:var(--sub);margin-top:1px}
+.r36menu .sw{flex:none;width:42px;height:24px;border-radius:999px;background:var(--line);position:relative;transition:background .15s}
+.r36menu .sw::after{content:"";position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;background:var(--card);box-shadow:0 1px 3px rgba(0,0,0,.3);transition:transform .15s}
+.r36menu .arow[aria-checked="true"] .sw{background:var(--navy)}
+.r36menu .arow[aria-checked="true"] .sw::after{transform:translateX(18px)}
+/* the site-wide accessibility settings, honored here */
+html.a11y-contrast body{color:#000}
+html.a11y-contrast a{text-decoration:underline;text-underline-offset:2px}
+html.a11y-contrast .r36top,html.a11y-contrast .box,html.a11y-contrast .xcard,html.a11y-contrast .q,html.a11y-contrast .ow{border-width:2px}
+html.a11y-contrast[data-theme="dark"] body{color:#fff}
+html.a11y-dyslexic body,html.a11y-dyslexic button,html.a11y-dyslexic input,html.a11y-dyslexic textarea,html.a11y-dyslexic h1,html.a11y-dyslexic h2,html.a11y-dyslexic h3{font-family:"OpenDyslexic","Comic Sans MS","Trebuchet MS",Verdana,sans-serif !important}
+html.a11y-dyslexic body{letter-spacing:.02em;word-spacing:.09em;line-height:1.8}
+@media print{.r36top{display:none !important}}
+
+</style>
+</head>
+<body>
+
+<!-- ══ AOG-R36-NAV — emitted from _work/r36/r36_nav.py; regenerate, never hand-edit one copy ══ -->
+<header class="r36top">
+  <a class="brand" href="/" aria-label="Architecture of Grace — home"><span class="mk" aria-hidden="true">A</span><span class="nm">Architecture of Grace</span></a>
+  <div class="acts">
+    <a class="pill" href="/" id="r36Back"><span class="arr" aria-hidden="true">&larr;</span> Back</a>
+    <a class="pill" href="/#quiet-space" title="Quiet Space — an in-the-moment reset">Quiet Space</a>
+    <div class="r36wrap">
+      <button class="pill" type="button" id="r36MenuBtn" aria-haspopup="true" aria-expanded="false" aria-controls="r36Menu">Explore</button>
+      <div class="r36menu" id="r36Menu" role="menu" aria-label="Explore Architecture of Grace" hidden>
+        <div class="lab">Room 207 · SEL 11&ndash;12</div>
+        <a role="menuitem" href="/room207"><span class="t">The Curriculum</span><span class="s">Crosswalk, marker guide, Grace in Practice.</span></a>
+        <a role="menuitem" href="/lessons207"><span class="t">The Lessons</span><span class="s">All 28 lessons, by unit — ready to teach.</span></a>
+        <a role="menuitem" href="/wb207"><span class="t">The Companion Workbook</span><span class="s">Choose-the-answer and in-your-own-words.</span></a>
+        <a role="menuitem" href="/charts207"><span class="t">Anchor Charts</span><span class="s">All four units&rsquo; boards, built live.</span></a>
+        <div class="lab">Understand</div>
+        <a role="menuitem" href="/#starthere"><span class="t">Start Here</span><span class="s">New here? Five minutes to find your door.</span></a>
+        <a role="menuitem" href="/#framework"><span class="t">Framework</span><span class="s">The four pillars, and where they came from.</span></a>
+        <a role="menuitem" href="/#curriculum"><span class="t">The Curriculum, K&ndash;12</span><span class="s">Five books and the Adult edition.</span></a>
+        <a role="menuitem" href="/#library"><span class="t">Library</span><span class="s">Every open preview, sample lesson and pack.</span></a>
+        <div class="lab">In the classroom</div>
+        <a role="menuitem" href="/#results"><span class="t">Dashboard</span><span class="s">Hand it out, read the group, find the lesson.</span></a>
+        <a role="menuitem" href="/#talk"><span class="t">Talk It Out</span><span class="s">Discussion prompts for the whole room.</span></a>
+        <a role="menuitem" href="/#tools"><span class="t">Calm &amp; Regulation Tools</span><span class="s">Quiet Space and the calming corner.</span></a>
+        <a role="menuitem" href="/turnins"><span class="t">Turn-ins</span><span class="s">Every FINISHED worksheet and result, one inbox.</span></a>
+        <div class="lab">Subjects · The Interior</div>
+        <a role="menuitem" href="/math"><span class="t">Math &middot; The Interior</span><span class="s">Fourteen practice pages, plus fall test prep.</span></a>
+        <a role="menuitem" href="/concepts"><span class="t">Math &middot; Concepts &amp; Data</span><span class="s">Fractions and data from the ground up.</span></a>
+        <a role="menuitem" href="/science"><span class="t">Science</span><span class="s">The word list, the microscope, the test prep.</span></a>
+        <a role="menuitem" href="/social"><span class="t">Social Studies</span><span class="s">1787 to 1865, and the three branches.</span></a>
+        <a role="menuitem" href="/b11"><span class="t">English &middot; Grammar</span><span class="s">Sixteen modules — cards, hints, and practice quizzes.</span></a>
+        <a role="menuitem" href="/words"><span class="t">English &middot; Word Study</span><span class="s">Stems, analogies, poetics, the coinage forge.</span></a>
+        <div class="lab">At home</div>
+        <a role="menuitem" href="/#family"><span class="t">Family</span><span class="s">Check in, talk, repair: one shared language.</span></a>
+      </div>
+    </div>
+    <div class="r36wrap">
+      <button class="ico" type="button" id="r36A11yBtn" aria-haspopup="true" aria-expanded="false" aria-controls="r36A11y" aria-label="Accessibility options" title="Accessibility options">
+        <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="4" r="1.6"/><path d="M5 8h14M9 8l1 11M15 8l-1 11M12 8v5"/></svg>
+      </button>
+      <div class="r36menu" id="r36A11y" role="menu" aria-label="Accessibility options" hidden>
+        <div class="lab">Accessibility</div>
+        <button type="button" class="arow first" role="menuitemcheckbox" aria-checked="false" id="r36HcRow">
+          <span><span class="t">High contrast</span><span class="s">Stronger text &amp; edges</span></span><span class="sw" aria-hidden="true"></span>
+        </button>
+        <button type="button" class="arow" role="menuitemcheckbox" aria-checked="false" id="r36DysRow">
+          <span><span class="t">Dyslexia-friendly font</span><span class="s">Easier letter shapes &amp; spacing</span></span><span class="sw" aria-hidden="true"></span>
+        </button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<noscript><style>section.unit[hidden]{display:block} .rail{display:none}</style></noscript>
+<div class="wrap">
+<header>
+  <div class="eyebrow">
+    <a href="room-207-curriculum.html">Room 207 · Book 5 · The Capstone</a>
+    <div class="tools">
+      <button id="themeBtn" type="button" aria-label="Toggle dark mode">Theme</button>
+      <button type="button" id="printWb">Print workbook</button>
+      <button type="button" id="printKey">Print answer key</button>
+    </div>
+  </div>
+  <h1>The Companion Workbook</h1>
+  <p class="tag"><b>Room 207 · The Year We Walked Out</b> · Grades 11–12 · goes with the novel and the four units</p>
+  <div class="keybanner">Teacher answer key — for the educator&rsquo;s desk, not for distribution.</div>
+  <div class="nameline"><span>Name</span><span>Class</span><span>Date</span></div>
+  <div class="howto"><b>How to use this workbook.</b> Work one unit at a time, after the unit&rsquo;s
+  lessons. <b>Part A</b> is choose-the-answer — tap an answer on screen and the workbook tells you why;
+  on paper, circle the letter. <b>Part B</b> is in-your-own-words — there is no answer key for Part B,
+  because those answers are yours. When you&rsquo;re done, tap <b>FINISHED</b> at the bottom — your
+  workbook goes to the adult who shared this page, and you&rsquo;ll see a preview of what you built.</div>
+  <div class="mats">
+    <a href="room-207-curriculum.html">The Room 207 curriculum</a>
+    <a href="room-207-lessons.html">The Lessons — all 28, ready to teach</a>
+    <a href="files/AoG-Book5-Room207-DIGITAL.pdf" target="_blank" rel="noopener">Novel · the whole book (PDF)</a>
+  </div>
+</header>
+<div class="layout">
+<nav class="rail" id="rail" aria-label="Workbook units">
+<button type="button" class="ritem" data-u="u1" style="--uc:var(--u1)">
+  <span class="rl">Unit 1</span><span class="rn">The Compass of Values</span>
+  <span class="rc">8 questions · 4 prompts</span>
+</button>
+<button type="button" class="ritem" data-u="u2" style="--uc:var(--u2)">
+  <span class="rl">Unit 2</span><span class="rn">The Adult Repair Manual</span>
+  <span class="rc">8 questions · 4 prompts</span>
+</button>
+<button type="button" class="ritem" data-u="u3" style="--uc:var(--u3)">
+  <span class="rl">Unit 3</span><span class="rn">Transcendent Forgiveness</span>
+  <span class="rc">8 questions · 4 prompts</span>
+</button>
+<button type="button" class="ritem" data-u="u4" style="--uc:var(--u4)">
+  <span class="rl">Unit 4</span><span class="rn">The Orchard Legacy</span>
+  <span class="rc">8 questions · 4 prompts</span>
+</button>
+<button type="button" class="ritem" data-u="u5" style="--uc:var(--brass)">
+  <span class="rl">Year-End</span><span class="rn">Integration</span>
+  <span class="rc">5 questions · 2 prompts</span>
+</button>
+</nav>
+<div class="stage">
+<section class="unit u1" id="u1" style="--uc:var(--u1)" hidden>
+  <div class="uhead"><h2>Unit 1 · The Compass of Values</h2></div>
+  <p class="urecap">The threshold — leaving and arriving. The Exit Interview. Examined vs. absorbed values. The values-behavior gap. Institutional vs. operational values. The developmental window. The Moral North Star. This unit practiced building a values map that is honest rather than aspirational — and finding the one principle that holds when the rest are under pressure.</p>
+  <h3 class="parth">Part A · Choose the answer</h3>
+  <div class="q" id="u1-q1">
+  <div class="qt"><span class="qn">1</span> The threshold is —</div>
+  <div class="opts"><button type="button" class="opt" data-ok="1"><span class="ol">A</span> the space between who you have been and who you are becoming — you are standing in it this year</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">B</span> the door of the classroom</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">C</span> a test you have to pass to graduate</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">D</span> the moment you leave for good</button></div>
+  <div class="why" hidden><b>A.</b> The threshold is liminal space: leaving the identity context in which you built yourself, arriving somewhere that has not met you yet. The Exit Interview is how you take honest inventory before you cross.</div>
+</div><div class="q" id="u1-q2">
+  <div class="qt"><span class="qn">2</span> Absorbed values are —</div>
+  <div class="opts"><button type="button" class="opt" data-ok="1"><span class="ol">A</span> values you hold because you were raised to hold them — never tested, not yet genuinely yours</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">B</span> always wrong</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">C</span> the same as examined values</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">D</span> values other people have absorbed from you</button></div>
+  <div class="why" hidden><b>A.</b> Absorbed values arrived before you had a choice about them. Not necessarily wrong — but not yet yours. Examined values have been held up to the light, tested, and claimed. The values map should be honest, not aspirational.</div>
+</div><div class="q" id="u1-q3">
+  <div class="qt"><span class="qn">3</span> The values-behavior gap is —</div>
+  <div class="opts"><button type="button" class="opt" data-ok="1"><span class="ol">A</span> the distance between what you say you value and what your behavior reveals when the cost is real</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">B</span> proof you are a hypocrite</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">C</span> something only some people have</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">D</span> the same as a lie</button></div>
+  <div class="why" hidden><b>A.</b> Everyone has one. Stated values appear on the map; actual values show up when the situation is real and the cost is immediate. The question is not whether you have a gap — it is whether you will look at it honestly.</div>
+</div><div class="q" id="u1-q4">
+  <div class="qt"><span class="qn">4</span> Institutional values are what an organization publicly claims. Operational values are —</div>
+  <div class="opts"><button type="button" class="opt" data-ok="1"><span class="ol">A</span> what the same institution actually rewards, promotes, and models</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">B</span> the rules in the handbook</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">C</span> the values of the people who work there</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">D</span> always identical to the institutional values</button></div>
+  <div class="why" hidden><b>A.</b> Often they match. Sometimes they do not. Values fit is the alignment between your examined values and an institution’s operational values — the ones that will actually shape your days there.</div>
+</div><div class="q" id="u1-q5">
+  <div class="qt"><span class="qn">5</span> The prefrontal cortex — complex moral reasoning, long-term consequence, impulse regulation — reaches full maturity at about —</div>
+  <div class="opts"><button type="button" class="opt" data-ok="1"><span class="ol">A</span> 25</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">B</span> 16</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">C</span> 18</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">D</span> 21</button></div>
+  <div class="why" hidden><b>A.</b> At 16–18 it is still developing: capable of post-conventional reasoning, but under construction. That is not an excuse; it is the developmental window. Character is built by what you practice while it is still being built.</div>
+</div><div class="q" id="u1-q6">
+  <div class="qt"><span class="qn">6</span> The Moral North Star is —</div>
+  <div class="opts"><button type="button" class="opt" data-ok="1"><span class="ol">A</span> the guiding principle that remains when everything else is uncertain — the one that makes the other values coherent</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">B</span> a rule imposed from outside</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">C</span> an inherited belief you have not examined</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">D</span> whichever value is easiest to keep</button></div>
+  <div class="why" hidden><b>A.</b> Not a rule. Not an unexamined inheritance. The North Star sits at the top of the hierarchy and holds when every other value is under pressure — and it costs something to hold in the environments you are entering.</div>
+</div><div class="q" id="u1-q7">
+  <div class="qt"><span class="qn">7</span> The Compass of Integrity integrates —</div>
+  <div class="opts"><button type="button" class="opt" data-ok="1"><span class="ol">A</span> the values map, the Moral North Star, the values-behavior gap, and an identity continuity plan</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">B</span> your transcript and résumé</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">C</span> the rules of your future workplace</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">D</span> a list of everyone you disagree with</button></div>
+  <div class="why" hidden><b>A.</b> Unit 1 ends with one navigational document you carry across the threshold: what you value, what holds when tested, where your gap is, and how you stay yourself when the context changes.</div>
+</div><div class="q" id="u1-q8">
+  <div class="qt"><span class="qn">8</span> The Exit Interview asks three things. Which one is on the list?</div>
+  <div class="opts"><button type="button" class="opt" data-ok="1"><span class="ol">A</span> what you have performed, what you have actually built, and what you are carrying forward</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">B</span> what grades you earned</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">C</span> who you were most popular with</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">D</span> what you would do differently in middle school</button></div>
+  <div class="why" hidden><b>A.</b> Who have you been? What was performance, and what was actually built — qualities and capacities, not accomplishments? What identity are you not taking with you? The first line of who you are arriving as is written here.</div>
+</div>
+  <div class="tally" data-total="8">Checked: <b class="tn">0</b> / 8 · Right on the first try: <b class="tr">0</b></div>
+  <h3 class="parth">Part B · In your own words</h3>
+  <div class="ow">
+  <div class="owt"><span class="qn">1</span> The Exit Interview, in three parts: who you have been in high school (what was performed, what was actually built), what you are not taking with you, and the first line of who you are arriving as.</div>
+  <textarea rows="6" placeholder="Type here — tap FINISHED at the bottom to hand this to your teacher." aria-label="Your answer"></textarea>
+  <div class="plines"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
+</div><div class="ow">
+  <div class="owt"><span class="qn">2</span> Pick one value on your map. Is it examined or absorbed? Write how you know — and if it is absorbed, what examining it would require.</div>
+  <textarea rows="4" placeholder="Type here — tap FINISHED at the bottom to hand this to your teacher." aria-label="Your answer"></textarea>
+  <div class="plines"><span></span><span></span><span></span><span></span><span></span></div>
+</div><div class="ow">
+  <div class="owt"><span class="qn">3</span> Name one moment your stated values and your actual choice diverged. Not to condemn it — to read it. What did the gap reveal about what you actually value under pressure?</div>
+  <textarea rows="5" placeholder="Type here — tap FINISHED at the bottom to hand this to your teacher." aria-label="Your answer"></textarea>
+  <div class="plines"><span></span><span></span><span></span><span></span><span></span><span></span></div>
+</div><div class="ow">
+  <div class="owt"><span class="qn">4</span> Your Moral North Star: the principle, why it is genuinely yours, and what it will cost to hold in the environment you are entering next.</div>
+  <textarea rows="5" placeholder="Type here — tap FINISHED at the bottom to hand this to your teacher." aria-label="Your answer"></textarea>
+  <div class="plines"><span></span><span></span><span></span><span></span><span></span><span></span></div>
+</div>
+  <div class="keyblock"><h3 class="parth">Answer key · Unit 1 · The Compass of Values</h3><ol class="key"><li><b>A</b> — The threshold is liminal space: leaving the identity context in which you built yourself, arriving somewhere that has not met you yet. The Exit Interview is how you take honest inventory before you cross.</li>
+<li><b>A</b> — Absorbed values arrived before you had a choice about them. Not necessarily wrong — but not yet yours. Examined values have been held up to the light, tested, and claimed. The values map should be honest, not aspirational.</li>
+<li><b>A</b> — Everyone has one. Stated values appear on the map; actual values show up when the situation is real and the cost is immediate. The question is not whether you have a gap — it is whether you will look at it honestly.</li>
+<li><b>A</b> — Often they match. Sometimes they do not. Values fit is the alignment between your examined values and an institution’s operational values — the ones that will actually shape your days there.</li>
+<li><b>A</b> — At 16–18 it is still developing: capable of post-conventional reasoning, but under construction. That is not an excuse; it is the developmental window. Character is built by what you practice while it is still being built.</li>
+<li><b>A</b> — Not a rule. Not an unexamined inheritance. The North Star sits at the top of the hierarchy and holds when every other value is under pressure — and it costs something to hold in the environments you are entering.</li>
+<li><b>A</b> — Unit 1 ends with one navigational document you carry across the threshold: what you value, what holds when tested, where your gap is, and how you stay yourself when the context changes.</li>
+<li><b>A</b> — Who have you been? What was performance, and what was actually built — qualities and capacities, not accomplishments? What identity are you not taking with you? The first line of who you are arriving as is written here.</li></ol></div>
+</section><section class="unit u2" id="u2" style="--uc:var(--u2)" hidden>
+  <div class="uhead"><h2>Unit 2 · The Adult Repair Manual</h2></div>
+  <p class="urecap">Apology vs. living amend. Forgiving the younger self — grief, not resentment. The mental health continuum and the clinical threshold. The Sustainable Soul. Forgiveness fatigue. The inheritance of grace. The Final Backpack Audit. This unit practiced the adult forms of accountability, self-forgiveness, and asking for help.</p>
+  <h3 class="parth">Part A · Choose the answer</h3>
+  <div class="q" id="u2-q1">
+  <div class="qt"><span class="qn">1</span> An apology addresses the incident. A living amend addresses —</div>
+  <div class="opts"><button type="button" class="opt" data-ok="1"><span class="ol">A</span> the pattern — sustained behavioral change over time</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">B</span> the same incident, more sincerely</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">C</span> other people’s feelings</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">D</span> nothing — it is a private thought</button></div>
+  <div class="why" hidden><b>A.</b> Apology: a statement of remorse, available in one conversation, does not address the pattern. Living amend: sustained change that addresses the pattern. When the honest response is a pattern change, another apology is not accountability.</div>
+</div><div class="q" id="u2-q2">
+  <div class="qt"><span class="qn">2</span> The younger self is —</div>
+  <div class="opts"><button type="button" class="opt" data-ok="1"><span class="ol">A</span> a prior version of the same person — less equipped, less informed, more afraid</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">B</span> a different person you no longer have to think about</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">C</span> someone who deserves your resentment</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">D</span> the only version of you that was real</button></div>
+  <div class="why" hidden><b>A.</b> Not a different person. The same person, earlier, operating with less information and fewer resources. Self-resentment accumulates toward that version; forgiving the younger self releases it without pretending the harm did not happen.</div>
+</div><div class="q" id="u2-q3">
+  <div class="qt"><span class="qn">3</span> “I wish things had been different” is grief. “Someone has to pay for this” is —</div>
+  <div class="opts"><button type="button" class="opt" data-ok="1"><span class="ol">A</span> resentment</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">B</span> also grief</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">C</span> acceptance</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">D</span> accountability</button></div>
+  <div class="why" hidden><b>A.</b> GRIEF: I wish things had been different. RESENTMENT: someone must pay. Grief can be carried and metabolized. Resentment calcifies. Forgiving the younger self usually means turning resentment back into grief.</div>
+</div><div class="q" id="u2-q4">
+  <div class="qt"><span class="qn">4</span> On the mental health continuum, the clinical threshold is where —</div>
+  <div class="opts"><button type="button" class="opt" data-ok="1"><span class="ol">A</span> duration, interference, and intensity exceed what self-management tools can address — professional support is the right response</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">B</span> you feel sad for a day</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">C</span> a friend says you should get help</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">D</span> only other people are</button></div>
+  <div class="why" hidden><b>A.</b> Sadness, anxiety, stress, and grief are normal variation — the Pause, the Witness, the Recovery Protocol address them. When duration + interference + intensity cross the threshold, asking for professional help is literacy, not weakness.</div>
+</div><div class="q" id="u2-q5">
+  <div class="qt"><span class="qn">5</span> Short-term restoration restores capacity for next week. The Sustainable Soul asks about —</div>
+  <div class="opts"><button type="button" class="opt" data-ok="1"><span class="ol">A</span> long-arc sustainability — practices that restore capacity across years</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">B</span> a single good weekend</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">C</span> how to avoid ever being tired</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">D</span> which self-care is trending</button></div>
+  <div class="why" hidden><b>A.</b> Book 4’s Restoration Test covers the next day. Book 5 asks what restores you across a decade — the portable self-care arc you can carry into any city, job, or relationship.</div>
+</div><div class="q" id="u2-q6">
+  <div class="qt"><span class="qn">6</span> Forgiveness fatigue is —</div>
+  <div class="opts"><button type="button" class="opt" data-ok="1"><span class="ol">A</span> real exhaustion from returning to forgiveness territory repeatedly — not evidence the prior work failed</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">B</span> proof that forgiveness does not work</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">C</span> resistance to forgiving</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">D</span> a sign to stop forever</button></div>
+  <div class="why" hidden><b>A.</b> Expected at the Capstone threshold. Real and valid. It is not resistance — resistance says “I will not”; fatigue says “I am tired.” The reframe: the prior work is honored, and this is deeper material, not the same material again.</div>
+</div><div class="q" id="u2-q7">
+  <div class="qt"><span class="qn">7</span> Unnamed grace is —</div>
+  <div class="opts"><button type="button" class="opt" data-ok="1"><span class="ol">A</span> the grace you received from people who did not know they were giving it, or whose names you never knew</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">B</span> grace you refused</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">C</span> grace you gave anonymously</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">D</span> a debt you owe</button></div>
+  <div class="why" hidden><b>A.</b> Named grace: the teacher who stayed, the friend who did not leave. Unnamed grace: the systems, strangers, and generations that held you without your knowing. The inheritance of grace is both — and grace is transmitted between generations the same way harm is.</div>
+</div><div class="q" id="u2-q8">
+  <div class="qt"><span class="qn">8</span> The Final Backpack Audit applies the whole of Unit 2 to each stone. That means —</div>
+  <div class="opts"><button type="button" class="opt" data-ok="1"><span class="ol">A</span> the Compassionate Witness to the stones you placed, forgiveness to the younger self who placed them, and a decision about what crosses the threshold with you</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">B</span> throwing away everything</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">C</span> keeping everything because it is yours</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">D</span> letting someone else decide</button></div>
+  <div class="why" hidden><b>A.</b> It is comprehensive — everything you have been carrying into adulthood — and it is deliberate. Some stones are put down. Some are carried forward on purpose. None are carried by accident.</div>
+</div>
+  <div class="tally" data-total="8">Checked: <b class="tn">0</b> / 8 · Right on the first try: <b class="tr">0</b></div>
+  <h3 class="parth">Part B · In your own words</h3>
+  <div class="ow">
+  <div class="owt"><span class="qn">1</span> One relationship or pattern where a living amend is the honest response. What the repeated apology has been — and what sustained change would look like over six months.</div>
+  <textarea rows="5" placeholder="Type here — tap FINISHED at the bottom to hand this to your teacher." aria-label="Your answer"></textarea>
+  <div class="plines"><span></span><span></span><span></span><span></span><span></span><span></span></div>
+</div><div class="ow">
+  <div class="owt"><span class="qn">2</span> Write to the younger self who placed a stone you still carry. Turn any resentment into grief: what you wish had been different, and what that version of you did not have.</div>
+  <textarea rows="5" placeholder="Type here — tap FINISHED at the bottom to hand this to your teacher." aria-label="Your answer"></textarea>
+  <div class="plines"><span></span><span></span><span></span><span></span><span></span><span></span></div>
+</div><div class="ow">
+  <div class="owt"><span class="qn">3</span> Design your portable self-care arc: one short-term practice (next week) and one long-arc practice (next decade) — and the depletion pattern each one answers.</div>
+  <textarea rows="4" placeholder="Type here — tap FINISHED at the bottom to hand this to your teacher." aria-label="Your answer"></textarea>
+  <div class="plines"><span></span><span></span><span></span><span></span><span></span></div>
+</div><div class="ow">
+  <div class="owt"><span class="qn">4</span> The inheritance of grace: one named grace and one unnamed grace you have received. Then — what you are positioned to pay forward, and to whom.</div>
+  <textarea rows="5" placeholder="Type here — tap FINISHED at the bottom to hand this to your teacher." aria-label="Your answer"></textarea>
+  <div class="plines"><span></span><span></span><span></span><span></span><span></span><span></span></div>
+</div>
+  <div class="keyblock"><h3 class="parth">Answer key · Unit 2 · The Adult Repair Manual</h3><ol class="key"><li><b>A</b> — Apology: a statement of remorse, available in one conversation, does not address the pattern. Living amend: sustained change that addresses the pattern. When the honest response is a pattern change, another apology is not accountability.</li>
+<li><b>A</b> — Not a different person. The same person, earlier, operating with less information and fewer resources. Self-resentment accumulates toward that version; forgiving the younger self releases it without pretending the harm did not happen.</li>
+<li><b>A</b> — GRIEF: I wish things had been different. RESENTMENT: someone must pay. Grief can be carried and metabolized. Resentment calcifies. Forgiving the younger self usually means turning resentment back into grief.</li>
+<li><b>A</b> — Sadness, anxiety, stress, and grief are normal variation — the Pause, the Witness, the Recovery Protocol address them. When duration + interference + intensity cross the threshold, asking for professional help is literacy, not weakness.</li>
+<li><b>A</b> — Book 4’s Restoration Test covers the next day. Book 5 asks what restores you across a decade — the portable self-care arc you can carry into any city, job, or relationship.</li>
+<li><b>A</b> — Expected at the Capstone threshold. Real and valid. It is not resistance — resistance says “I will not”; fatigue says “I am tired.” The reframe: the prior work is honored, and this is deeper material, not the same material again.</li>
+<li><b>A</b> — Named grace: the teacher who stayed, the friend who did not leave. Unnamed grace: the systems, strangers, and generations that held you without your knowing. The inheritance of grace is both — and grace is transmitted between generations the same way harm is.</li>
+<li><b>A</b> — It is comprehensive — everything you have been carrying into adulthood — and it is deliberate. Some stones are put down. Some are carried forward on purpose. None are carried by accident.</li></ol></div>
+</section><section class="unit u3" id="u3" style="--uc:var(--u3)" hidden>
+  <div class="uhead"><h2>Unit 3 · Transcendent Forgiveness</h2></div>
+  <p class="urecap">The leadership prerequisite. The childhood backpack — placed, not chosen. Complex reconciliation and the space between. Global empathy. The cost of bitterness. Forgiveness as legacy. The Graduation of the Heart. This unit practiced forgiveness beyond what is fair — available only to someone regulated, self-compassionate, and anchored.</p>
+  <h3 class="parth">Part A · Choose the answer</h3>
+  <div class="q" id="u3-q1">
+  <div class="qt"><span class="qn">1</span> Conventional forgiveness releases resentment when the harm has stopped and the other person has acknowledged it. Transcendent forgiveness —</div>
+  <div class="opts"><button type="button" class="opt" data-ok="1"><span class="ol">A</span> goes beyond what is fair — and is only available to someone regulated, self-compassionate, and anchored</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">B</span> is required of everyone</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">C</span> is the same as conventional forgiveness</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">D</span> means letting the harm continue</button></div>
+  <div class="why" hidden><b>A.</b> That is the leadership prerequisite: transcendent forgiveness is available, never required, and it needs prior work — regulation, self-compassion, and a Moral North Star — or it is performance.</div>
+</div><div class="q" id="u3-q2">
+  <div class="qt"><span class="qn">2</span> The childhood backpack holds —</div>
+  <div class="opts"><button type="button" class="opt" data-ok="1"><span class="ol">A</span> weight placed in you by circumstances you did not choose — different from the stones you placed yourself</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">B</span> your own bad choices</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">C</span> nothing — childhood does not count</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">D</span> only good memories</button></div>
+  <div class="why" hidden><b>A.</b> Book 4’s backpack was about your choices. This one is about what was placed in you before you could evaluate it. Releasing it is not blaming; it is separating what was placed from what you chose to carry.</div>
+</div><div class="q" id="u3-q3">
+  <div class="qt"><span class="qn">3</span> The space between is —</div>
+  <div class="opts"><button type="button" class="opt" data-ok="1"><span class="ol">A</span> the territory where forgiveness is genuine but reconciliation is complicated, contested, or inappropriate</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">B</span> the time before you decide</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">C</span> a failure to finish forgiving</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">D</span> the same as cutting someone off</button></div>
+  <div class="why" hidden><b>A.</b> Most adult relationships involving significant harm live here. Forgiveness without contact is real forgiveness. Conditional reconciliation with appropriate limits is real reconciliation. The space between is not indecision — it is the honest place.</div>
+</div><div class="q" id="u3-q4">
+  <div class="qt"><span class="qn">4</span> Global empathy is —</div>
+  <div class="opts"><button type="button" class="opt" data-ok="1"><span class="ol">A</span> contextual empathy at scale — understanding systemic and historical harm without excusing it</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">B</span> agreeing with every side</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">C</span> excusing harm because history is complicated</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">D</span> only for people who study politics</button></div>
+  <div class="why" hidden><b>A.</b> The same framework as personal contextual empathy, applied to systems and history. Understanding why does not remove structural accountability. Justice and forgiveness are related, not opposed.</div>
+</div><div class="q" id="u3-q5">
+  <div class="qt"><span class="qn">5</span> Bitterness is —</div>
+  <div class="opts"><button type="button" class="opt" data-ok="1"><span class="ol">A</span> resentment that has calcified into a permanent posture — no longer a response to a current threat</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">B</span> the same as legitimate anger</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">C</span> the same as grief</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">D</span> ongoing advocacy</button></div>
+  <div class="why" hidden><b>A.</b> Legitimate anger responds to a current harm. Grief mourns a loss. Advocacy works to change something. Bitterness is resentment that stopped responding to anything and became a posture — and it has documented psychological, physical, and relational costs.</div>
+</div><div class="q" id="u3-q6">
+  <div class="qt"><span class="qn">6</span> Forgiveness as legacy means —</div>
+  <div class="opts"><button type="button" class="opt" data-ok="1"><span class="ol">A</span> what forgiveness plants in the relational soil, what it makes possible for the people who witness it, and what it costs the one who extends it</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">B</span> forgiving because someone is watching</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">C</span> a list of people you forgave</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">D</span> forgiveness that is free</button></div>
+  <div class="why" hidden><b>A.</b> It gives the forgiver freedom from the ongoing cost of resentment and the capacity to be present. It gives witnesses a model. And it costs something real — legacy is never free.</div>
+</div><div class="q" id="u3-q7">
+  <div class="qt"><span class="qn">7</span> The Graduation of the Heart is —</div>
+  <div class="opts"><button type="button" class="opt" data-ok="1"><span class="ol">A</span> enacting — genuinely, not performatively — the transcendent forgiveness Unit 3 prepared for</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">B</span> the graduation ceremony</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">C</span> a written test</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">D</span> forgiving everyone on a list</button></div>
+  <div class="why" hidden><b>A.</b> The whole unit is preparation. The last lesson is the crossing: from the weight of what was done to you toward the freedom of what you choose. Every permanent chart from Books 4 and 5 is on the wall for it.</div>
+</div><div class="q" id="u3-q8">
+  <div class="qt"><span class="qn">8</span> Which of these is NOT bitterness?</div>
+  <div class="opts"><button type="button" class="opt" data-ok="1"><span class="ol">A</span> legitimate anger at a harm that is still happening</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">B</span> a grudge held for years about something that ended</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">C</span> resentment toward a person who is no longer in your life</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">D</span> a permanent posture of contempt toward a system</button></div>
+  <div class="why" hidden><b>A.</b> Anger at a current harm is appropriate and useful. The others have calcified past the point of responding to anything. The honest assessment is: what am I holding that is no longer protecting me?</div>
+</div>
+  <div class="tally" data-total="8">Checked: <b class="tn">0</b> / 8 · Right on the first try: <b class="tr">0</b></div>
+  <h3 class="parth">Part B · In your own words</h3>
+  <div class="ow">
+  <div class="owt"><span class="qn">1</span> The leadership prerequisite, applied to you: which of the three — regulation, self-compassion, Moral North Star — is most in place, and which most needs work before transcendent forgiveness is available to you?</div>
+  <textarea rows="4" placeholder="Type here — tap FINISHED at the bottom to hand this to your teacher." aria-label="Your answer"></textarea>
+  <div class="plines"><span></span><span></span><span></span><span></span><span></span></div>
+</div><div class="ow">
+  <div class="owt"><span class="qn">2</span> Draw or describe the childhood backpack: one weight that was placed, not chosen. Then separate it from a stone you placed yourself. What does releasing the first one require?</div>
+  <textarea rows="5" placeholder="Type here — tap FINISHED at the bottom to hand this to your teacher." aria-label="Your answer"></textarea>
+  <div class="plines"><span></span><span></span><span></span><span></span><span></span><span></span></div>
+</div><div class="ow">
+  <div class="owt"><span class="qn">3</span> One relationship that lives in the space between. What forgiveness has been extended, what reconciliation is complicated by, and what appropriate limits look like.</div>
+  <textarea rows="5" placeholder="Type here — tap FINISHED at the bottom to hand this to your teacher." aria-label="Your answer"></textarea>
+  <div class="plines"><span></span><span></span><span></span><span></span><span></span><span></span></div>
+</div><div class="ow">
+  <div class="owt"><span class="qn">4</span> Forgiveness Legacy Statement: what forgiving this would plant, who would witness it, and what it would cost you to extend it.</div>
+  <textarea rows="5" placeholder="Type here — tap FINISHED at the bottom to hand this to your teacher." aria-label="Your answer"></textarea>
+  <div class="plines"><span></span><span></span><span></span><span></span><span></span><span></span></div>
+</div>
+  <div class="keyblock"><h3 class="parth">Answer key · Unit 3 · Transcendent Forgiveness</h3><ol class="key"><li><b>A</b> — That is the leadership prerequisite: transcendent forgiveness is available, never required, and it needs prior work — regulation, self-compassion, and a Moral North Star — or it is performance.</li>
+<li><b>A</b> — Book 4’s backpack was about your choices. This one is about what was placed in you before you could evaluate it. Releasing it is not blaming; it is separating what was placed from what you chose to carry.</li>
+<li><b>A</b> — Most adult relationships involving significant harm live here. Forgiveness without contact is real forgiveness. Conditional reconciliation with appropriate limits is real reconciliation. The space between is not indecision — it is the honest place.</li>
+<li><b>A</b> — The same framework as personal contextual empathy, applied to systems and history. Understanding why does not remove structural accountability. Justice and forgiveness are related, not opposed.</li>
+<li><b>A</b> — Legitimate anger responds to a current harm. Grief mourns a loss. Advocacy works to change something. Bitterness is resentment that stopped responding to anything and became a posture — and it has documented psychological, physical, and relational costs.</li>
+<li><b>A</b> — It gives the forgiver freedom from the ongoing cost of resentment and the capacity to be present. It gives witnesses a model. And it costs something real — legacy is never free.</li>
+<li><b>A</b> — The whole unit is preparation. The last lesson is the crossing: from the weight of what was done to you toward the freedom of what you choose. Every permanent chart from Books 4 and 5 is on the wall for it.</li>
+<li><b>A</b> — Anger at a current harm is appropriate and useful. The others have calcified past the point of responding to anything. The honest assessment is: what am I holding that is no longer protecting me?</li></ol></div>
+</section><section class="unit u4" id="u4" style="--uc:var(--u4)" hidden>
+  <div class="uhead"><h2>Unit 4 · The Orchard Legacy</h2></div>
+  <p class="urecap">Systemic grace. Radical generosity. Counseling vs. canceling. Charitable interpretation at scale. The Mentor Path. The Graduation Charter. This unit practiced grace at the scale of institutions and generations — and asked what you are planting.</p>
+  <h3 class="parth">Part A · Choose the answer</h3>
+  <div class="q" id="u4-q1">
+  <div class="qt"><span class="qn">1</span> Systemic grace is —</div>
+  <div class="opts"><button type="button" class="opt" data-ok="1"><span class="ol">A</span> grace built into the structures, policies, and practices of institutions — where repair is designed in</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">B</span> one person being kind</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">C</span> a culture where goodwill is the default</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">D</span> letting institutions off the hook</button></div>
+  <div class="why" hidden><b>A.</b> Personal grace: goodwill to one person. Community grace: goodwill as a culture’s default. Systemic grace: repair and second chances designed into the structure itself. Reform adjusts a system; transformation changes what it is for.</div>
+</div><div class="q" id="u4-q2">
+  <div class="qt"><span class="qn">2</span> Transactional giving expects return. Performative charity is about the giver’s image. Radical generosity —</div>
+  <div class="opts"><button type="button" class="opt" data-ok="1"><span class="ol">A</span> costs something real, expects nothing back, and is anchored in your specific capacities and community</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">B</span> is giving until you have nothing</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">C</span> is any donation</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">D</span> is generosity that gets noticed</button></div>
+  <div class="why" hidden><b>A.</b> The gift that costs something. The Radical Generosity Project is not a fundraiser — it is a legacy contribution built from what you specifically can do, for a community you specifically belong to.</div>
+</div><div class="q" id="u4-q3">
+  <div class="qt"><span class="qn">3</span> Counseling — the adult register of calling in — is —</div>
+  <div class="opts"><button type="button" class="opt" data-ok="1"><span class="ol">A</span> direct, private, restorative — designed to change behavior and keep the relationship</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">B</span> public and punitive</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">C</span> social removal</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">D</span> ignoring the harm</button></div>
+  <div class="why" hidden><b>A.</b> Counseling is for a reachable person and a specific harm, where private repair is available and safe. Canceling is public, punitive, exclusionary removal. Proportionality and pattern-vs-incident decide which is honest.</div>
+</div><div class="q" id="u4-q4">
+  <div class="qt"><span class="qn">4</span> Charitable interpretation at scale means —</div>
+  <div class="opts"><button type="button" class="opt" data-ok="1"><span class="ol">A</span> extending the generous reading to communities, institutions, and public figures — with epistemic humility, not willful blindness</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">B</span> trusting every institution</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">C</span> never criticizing anyone in public</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">D</span> assuming the worst about groups you do not belong to</button></div>
+  <div class="why" hidden><b>A.</b> Same framework as Book 4, larger targets. Motivated reasoning and willful blindness are the failure modes on both sides. Social trust depends on people willing to read generously AND accurately.</div>
+</div><div class="q" id="u4-q5">
+  <div class="qt"><span class="qn">5</span> The gift of attention is —</div>
+  <div class="opts"><button type="button" class="opt" data-ok="1"><span class="ol">A</span> the most consequential thing a mentor gives — sustained, deliberate attention to who someone is becoming</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">B</span> advice</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">C</span> correction</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">D</span> a letter of recommendation</button></div>
+  <div class="why" hidden><b>A.</b> Not advice, not instruction, not correction. The person who stayed. The person who named something in you before you saw it. The Mentor Path asks who gave you that — and who you will now give it to.</div>
+</div><div class="q" id="u4-q6">
+  <div class="qt"><span class="qn">6</span> The Graduation Charter is —</div>
+  <div class="opts"><button type="button" class="opt" data-ok="1"><span class="ol">A</span> the co-created statement of who this class has become, what it stands for, and what it carries into the world — signed individually</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">B</span> a diploma</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">C</span> the school’s mission statement</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">D</span> a list of rules for next year</button></div>
+  <div class="why" hidden><b>A.</b> Collective commitment, public act, witnessed. Each person signs it as their own. It is the class’s answer to the year’s question: what did we build, and what are we taking with us?</div>
+</div><div class="q" id="u4-q7">
+  <div class="qt"><span class="qn">7</span> Reform vs. transformation: reform —</div>
+  <div class="opts"><button type="button" class="opt" data-ok="1"><span class="ol">A</span> adjusts how a system works; transformation changes what the system is for</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">B</span> is always better</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">C</span> is always worse</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">D</span> is the same as transformation</button></div>
+  <div class="why" hidden><b>A.</b> Systemic grace can be either. The question is whether the structure needs its practices corrected or its purpose re-examined. Both are legitimate work. Naming which one you are doing is the honest start.</div>
+</div><div class="q" id="u4-q8">
+  <div class="qt"><span class="qn">8</span> The Mentor Path is the final Regulation &amp; Repair touchpoint because —</div>
+  <div class="opts"><button type="button" class="opt" data-ok="1"><span class="ol">A</span> mentorship is radical generosity — attention given to someone else’s regulation and repair</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">B</span> mentors are required for graduation</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">C</span> it is the easiest lesson</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">D</span> it replaces the other tools</button></div>
+  <div class="why" hidden><b>A.</b> The strand ends where the year ends: with the tools turned outward. You received the gift of attention. You are now positioned to give it — deliberately, to someone specific.</div>
+</div>
+  <div class="tally" data-total="8">Checked: <b class="tn">0</b> / 8 · Right on the first try: <b class="tr">0</b></div>
+  <h3 class="parth">Part B · In your own words</h3>
+  <div class="ow">
+  <div class="owt"><span class="qn">1</span> One system you belong to — school, team, workplace, faith community, family. Where is grace designed in, and where is it absent? Name one specific systemic change you could advocate for.</div>
+  <textarea rows="5" placeholder="Type here — tap FINISHED at the bottom to hand this to your teacher." aria-label="Your answer"></textarea>
+  <div class="plines"><span></span><span></span><span></span><span></span><span></span><span></span></div>
+</div><div class="ow">
+  <div class="owt"><span class="qn">2</span> Your Radical Generosity Project: the capacity you specifically have, the community you specifically belong to, what the gift will cost you, and why it is not transactional or performative.</div>
+  <textarea rows="5" placeholder="Type here — tap FINISHED at the bottom to hand this to your teacher." aria-label="Your answer"></textarea>
+  <div class="plines"><span></span><span></span><span></span><span></span><span></span><span></span></div>
+</div><div class="ow">
+  <div class="owt"><span class="qn">3</span> A public situation you have watched go to canceling. Apply the adult register: was counseling available? Was the harm a pattern or an incident? What would proportionality have looked like?</div>
+  <textarea rows="5" placeholder="Type here — tap FINISHED at the bottom to hand this to your teacher." aria-label="Your answer"></textarea>
+  <div class="plines"><span></span><span></span><span></span><span></span><span></span><span></span></div>
+</div><div class="ow">
+  <div class="owt"><span class="qn">4</span> Your Mentor Path: who gave you the gift of attention, what it changed, and who you will intentionally give it to next — and how.</div>
+  <textarea rows="5" placeholder="Type here — tap FINISHED at the bottom to hand this to your teacher." aria-label="Your answer"></textarea>
+  <div class="plines"><span></span><span></span><span></span><span></span><span></span><span></span></div>
+</div>
+  <div class="keyblock"><h3 class="parth">Answer key · Unit 4 · The Orchard Legacy</h3><ol class="key"><li><b>A</b> — Personal grace: goodwill to one person. Community grace: goodwill as a culture’s default. Systemic grace: repair and second chances designed into the structure itself. Reform adjusts a system; transformation changes what it is for.</li>
+<li><b>A</b> — The gift that costs something. The Radical Generosity Project is not a fundraiser — it is a legacy contribution built from what you specifically can do, for a community you specifically belong to.</li>
+<li><b>A</b> — Counseling is for a reachable person and a specific harm, where private repair is available and safe. Canceling is public, punitive, exclusionary removal. Proportionality and pattern-vs-incident decide which is honest.</li>
+<li><b>A</b> — Same framework as Book 4, larger targets. Motivated reasoning and willful blindness are the failure modes on both sides. Social trust depends on people willing to read generously AND accurately.</li>
+<li><b>A</b> — Not advice, not instruction, not correction. The person who stayed. The person who named something in you before you saw it. The Mentor Path asks who gave you that — and who you will now give it to.</li>
+<li><b>A</b> — Collective commitment, public act, witnessed. Each person signs it as their own. It is the class’s answer to the year’s question: what did we build, and what are we taking with us?</li>
+<li><b>A</b> — Systemic grace can be either. The question is whether the structure needs its practices corrected or its purpose re-examined. Both are legitimate work. Naming which one you are doing is the honest start.</li>
+<li><b>A</b> — The strand ends where the year ends: with the tools turned outward. You received the gift of attention. You are now positioned to give it — deliberately, to someone specific.</li></ol></div>
+</section><section class="unit u5" id="u5" style="--uc:var(--brass)" hidden>
+  <div class="uhead"><h2>Year-End · Integration</h2></div>
+  <p class="urecap">Every permanent chart from Books 4 and 5 on one wall. The Compass of Integrity in one hand, the Graduation Charter signed with the other. Room 207 learned: the room inside you is portable. It comes with you.</p>
+  <h3 class="parth">Part A · Choose the answer</h3>
+  <div class="q" id="u5-q1">
+  <div class="qt"><span class="qn">1</span> Which permanent charts from Book 4 are on the wall for the Graduation of the Heart?</div>
+  <div class="opts"><button type="button" class="opt" data-ok="1"><span class="ol">A</span> the performance tax · the integrity anchor · the Internal Coach · forgiveness (internal act) · reconciliation (relational act)</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">B</span> only the Book 5 charts</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">C</span> none — Book 4 is finished</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">D</span> whichever ones survived the year</button></div>
+  <div class="why" hidden><b>A.</b> The K–12 arc ends with every permanent chart visible at once — Book 4’s five and Book 5’s own: the Moral North Star and Forgiveness as Legacy. It is one spine.</div>
+</div><div class="q" id="u5-q2">
+  <div class="qt"><span class="qn">2</span> The two Book 5 charts marked PERMANENT are —</div>
+  <div class="opts"><button type="button" class="opt" data-ok="1"><span class="ol">A</span> the Moral North Star and Forgiveness as Legacy</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">B</span> the Exit Interview and the Graduation Charter</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">C</span> the mental health continuum and the Sustainable Soul</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">D</span> systemic grace and radical generosity</button></div>
+  <div class="why" hidden><b>A.</b> One tells you what holds when everything is under pressure. The other tells you what forgiveness plants and what it costs. Those are the two you carry out.</div>
+</div><div class="q" id="u5-q3">
+  <div class="qt"><span class="qn">3</span> “The room inside you is portable” means —</div>
+  <div class="opts"><button type="button" class="opt" data-ok="1"><span class="ol">A</span> what was built here — the regulation, the Witness, the North Star — leaves with you and works anywhere</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">B</span> you can take the furniture</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">C</span> you should stay in touch with the class</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">D</span> nothing changes after graduation</button></div>
+  <div class="why" hidden><b>A.</b> Room 207 is the last room. The point of five books was never the room. It was the interior architecture — and interior architecture comes with you.</div>
+</div><div class="q" id="u5-q4">
+  <div class="qt"><span class="qn">4</span> The final witness ritual is —</div>
+  <div class="opts"><button type="button" class="opt" data-ok="1"><span class="ol">A</span> each person witnessed by the class — received, not evaluated — before departing</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">B</span> a performance review</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">C</span> a vote</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">D</span> a test of what you remember</button></div>
+  <div class="why" hidden><b>A.</b> Bearing witness, from Book 4, is the last thing the class does for each other: full presence, no agenda to fix. You are received as the person you have become.</div>
+</div><div class="q" id="u5-q5">
+  <div class="qt"><span class="qn">5</span> The examined life, in this curriculum, means —</div>
+  <div class="opts"><button type="button" class="opt" data-ok="1"><span class="ol">A</span> values held up to the light and claimed, a gap looked at honestly, and a North Star that costs something to hold</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">B</span> a life with no mistakes</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">C</span> thinking about yourself all the time</button>
+<button type="button" class="opt" data-ok="0"><span class="ol">D</span> a life other people approve of</button></div>
+  <div class="why" hidden><b>A.</b> Not perfection. Not self-absorption. Examination: knowing what you value, where your behavior diverges from it, and what principle you are unwilling to trade — and paying its price on purpose.</div>
+</div>
+  <div class="tally" data-total="5">Checked: <b class="tn">0</b> / 5 · Right on the first try: <b class="tr">0</b></div>
+  <h3 class="parth">Part B · In your own words</h3>
+  <div class="ow">
+  <div class="owt"><span class="qn">1</span> Your line for the Graduation Charter — what this class stands for, in one sentence you would sign your name under.</div>
+  <textarea rows="3" placeholder="Type here — tap FINISHED at the bottom to hand this to your teacher." aria-label="Your answer"></textarea>
+  <div class="plines"><span></span><span></span><span></span></div>
+</div><div class="ow">
+  <div class="owt"><span class="qn">2</span> A letter to yourself at 25: which permanent chart you want on the wall of wherever you live then, and the sentence from Room 207 you are carrying out the door.</div>
+  <textarea rows="6" placeholder="Type here — tap FINISHED at the bottom to hand this to your teacher." aria-label="Your answer"></textarea>
+  <div class="plines"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
+</div>
+  <div class="keyblock"><h3 class="parth">Answer key · Year-End · Integration</h3><ol class="key"><li><b>A</b> — The K–12 arc ends with every permanent chart visible at once — Book 4’s five and Book 5’s own: the Moral North Star and Forgiveness as Legacy. It is one spine.</li>
+<li><b>A</b> — One tells you what holds when everything is under pressure. The other tells you what forgiveness plants and what it costs. Those are the two you carry out.</li>
+<li><b>A</b> — Room 207 is the last room. The point of five books was never the room. It was the interior architecture — and interior architecture comes with you.</li>
+<li><b>A</b> — Bearing witness, from Book 4, is the last thing the class does for each other: full presence, no agenda to fix. You are received as the person you have become.</li>
+<li><b>A</b> — Not perfection. Not self-absorption. Examination: knowing what you value, where your behavior diverges from it, and what principle you are unwilling to trade — and paying its price on purpose.</li></ol></div>
+</section>
+</div>
+</div>
+<footer>
+  <a href="room-207-curriculum.html">← The Room 207 curriculum</a>
+  <span>The room inside you is portable. It comes with you.</span>
+</footer>
+</div>
+<script>
+(function(){
+  var KEY="aog.interior.ws.v1.theme";
+  document.getElementById("themeBtn").addEventListener("click",function(){
+    var cur=document.documentElement.getAttribute("data-theme")==="dark"?"light":"dark";
+    document.documentElement.setAttribute("data-theme",cur);
+    try{localStorage.setItem(KEY,cur);}catch(e){}
+  });
+  document.getElementById("printWb").addEventListener("click",function(){
+    document.body.classList.remove("printkey"); window.print();
+  });
+  document.getElementById("printKey").addEventListener("click",function(){
+    document.body.classList.add("printkey"); window.print();
+  });
+  if(window.matchMedia){window.matchMedia("print").addEventListener("change",function(m){
+    if(!m.matches) document.body.classList.remove("printkey");
+  });}
+  /* the rail — one unit on stage at a time, the anchor-charts structure */
+  var ORDER = ["u1","u2","u3","u4","u5"];
+  var items = document.querySelectorAll(".ritem");
+  function show(id, push){
+    if(ORDER.indexOf(id) < 0) id = ORDER[0];
+    ORDER.forEach(function(u){ document.getElementById(u).hidden = (u !== id); });
+    items.forEach(function(b){ b.setAttribute("aria-current", String(b.getAttribute("data-u") === id)); });
+    try{
+      var q = new URLSearchParams(location.search); q.set("u", id);
+      (push ? history.pushState : history.replaceState).call(history, null, "", "?" + q.toString());
+    }catch(e){}
+    if(push) window.scrollTo(0, 0);
+  }
+  items.forEach(function(b){ b.addEventListener("click", function(){ show(b.getAttribute("data-u"), true); }); });
+  window.addEventListener("popstate", function(){
+    var q = new URLSearchParams(location.search); show(q.get("u") || ORDER[0], false);
+  });
+  var q0 = new URLSearchParams(location.search);
+  show(q0.get("u") || ORDER[0], false);
+
+  document.querySelectorAll(".q").forEach(function(q){
+    var first=true;
+    q.querySelectorAll(".opt").forEach(function(o){
+      o.addEventListener("click",function(){
+        if(q.classList.contains("done")) return;
+        o.classList.add("picked");
+        q.classList.add("done");
+        q.querySelector(".why").hidden=false;
+        var sec=q.closest("section"), t=sec.querySelector(".tally");
+        var tn=t.querySelector(".tn"), tr=t.querySelector(".tr");
+        tn.textContent=(+tn.textContent)+1;
+        if(o.getAttribute("data-ok")==="1" && first) tr.textContent=(+tr.textContent)+1;
+      });
+    });
+  });
+})();
+</script>
+
+<style>
+#wbFin{margin:26px 0 8px;border:2px solid var(--good);border-radius:16px;background:var(--good-soft);padding:18px 20px}
+#wbFin h2{font-family:var(--serif);font-weight:900;font-size:1.25rem;margin:0;color:var(--ink)}
+#wbFin p{font-size:.88rem;color:var(--sub);margin:6px 0 12px;max-width:60ch}
+#wbFin .row{display:flex;flex-wrap:wrap;gap:9px;align-items:center}
+#wbFin input{border:1.5px solid var(--line);border-radius:10px;background:var(--card);color:var(--ink);padding:10px 12px;font:inherit;min-width:220px}
+#wbFin .btn-fin{border:2px solid var(--good);background:var(--good);color:#fff;border-radius:10px;padding:11px 20px;font:800 1rem var(--sans);letter-spacing:.06em;cursor:pointer}
+#wbFin .st{font-size:.84rem;color:var(--sub)}
+#wbPrev{position:fixed;top:0;left:0;right:0;bottom:0;z-index:400;background:var(--bg);overflow:auto;-webkit-overflow-scrolling:touch}
+#wbPrev[hidden]{display:none}
+body.wbprev{overflow:hidden}
+#wbPrev .pv-bar{position:sticky;top:0;z-index:10;display:flex;flex-wrap:wrap;gap:9px;align-items:center;background:var(--good);color:#fff;padding:12px 18px}
+#wbPrev .pv-bar .t{font-weight:800;font-size:1rem;flex:1;min-width:200px}
+#wbPrev .pv-bar .pst{font-size:.82rem;opacity:.95}
+#wbPrev .pv-bar button{border:1.5px solid #fff;background:transparent;color:#fff;border-radius:9px;padding:8px 14px;font:700 .85rem var(--sans);cursor:pointer}
+#wbPrev .pv-bar button.solid{background:#fff;color:var(--good)}
+#wbPrev .pv-body{max-width:860px;margin:0 auto;padding:20px 16px 60px}
+#wbPrev .pv-lead{font-size:.86rem;color:var(--sub);margin:4px 0 16px}
+#wbPrev .pv-text{white-space:pre-wrap;border:1.5px solid var(--line);border-radius:10px;background:var(--card);padding:10px 12px;min-height:2.2em;font:inherit}
+#wbPrev .pv-text.empty{color:var(--sub);font-style:italic}
+#wbPrev section.unit{display:block !important;margin:0 0 34px}
+@media print{
+  #wbFin{display:none !important}
+  body:not(.wbprev) #wbPrev{display:none !important}
+  body.wbprev .wrap{display:none !important}
+  body.wbprev #wbPrev{position:static !important;overflow:visible !important;background:#fff}
+  body.wbprev #wbPrev .pv-bar button{display:none}
+  body.wbprev #wbPrev .pv-bar{background:#fff;color:#111;border-bottom:2px solid #111}
+}
+</style>
+<script>
+/* ══ AOG-WB-FINISHED-V1 — one press: the workbook goes to the adult who
+   shared the page, and the student lands on a preview of what they built. */
+(function(){
+  var DEST_RE = /^https:\/\/script\.google\.com\/[^\s]*\/exec$/;
+  function destDecode(raw){
+    try{
+      var t = String(raw).replace(/-/g,"+").replace(/_/g,"/");
+      while(t.length % 4) t += "=";
+      var o = JSON.parse(atob(t));
+      if(o && typeof o.u==="string" && DEST_RE.test(o.u))
+        return { url:o.u, key:(typeof o.k==="string" ? o.k : "") };
+    }catch(e){}
+    return null;
+  }
+  var DEST = null;
+  try{
+    var dm = /[?&]dest=([^&]+)/.exec(location.search || "");
+    if(dm) DEST = destDecode(decodeURIComponent(dm[1]));
+  }catch(e){}
+  if(!DEST){
+    try{
+      var cfg = window.AOG_SYNC_DEFAULTS;
+      if(cfg && !cfg.destinations && typeof cfg.url==="string" && DEST_RE.test(cfg.url)
+         && Object.prototype.toString.call(cfg.schools)==="[object Array]" && cfg.schools.length)
+        DEST = { url:cfg.url, key:(typeof cfg.key==="string" ? cfg.key : "") };
+    }catch(e){}
+  }
+  if(!DEST) return;
+
+  var whoKey = "aog.interior.ws.v1.who";
+  function getWho(){ try{ return String(localStorage.getItem(whoKey)||""); }catch(e){ return ""; } }
+  function setWho(v){ try{ localStorage.setItem(whoKey, v); }catch(e){} }
+  function today(){ var d=new Date(); return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0"); }
+  function gather(){
+    var units = {}, prompts = [];
+    [].slice.call(document.querySelectorAll("section.unit")).forEach(function(sec){
+      var id = sec.id, tal = sec.querySelector(".tally");
+      units[id] = {
+        checked: tal ? tal.querySelector(".tn").textContent : "",
+        firstTry: tal ? tal.querySelector(".tr").textContent : ""
+      };
+      [].slice.call(sec.querySelectorAll(".ow")).forEach(function(ow, i){
+        var ta = ow.querySelector("textarea");
+        if(ta && ta.value.trim() !== "")
+          prompts.push({ unit:id, n:i+1,
+                         prompt: ow.querySelector(".owt").textContent.replace(/\s+/g," ").trim().slice(0,120),
+                         answer: ta.value });
+      });
+    });
+    return { units:units, prompts:prompts };
+  }
+
+  var card = document.createElement("section");
+  card.id = "wbFin"; card.className = "no-print";
+  card.innerHTML =
+    '<h2>Finished?</h2>' +
+    '<p>Tap FINISHED and your workbook \u2014 your checked answers and everything you wrote \u2014 goes straight to the adult who shared this page. You\u2019ll see a preview of what you built.</p>' +
+    '<div class="row">' +
+    '<input type="text" id="wbWho" autocomplete="off" maxlength="60" placeholder="Your code or first name — the same one you check in with" aria-label="Your code or first name">' +
+    '<button class="btn-fin" type="button" id="wbSendBtn">FINISHED</button>' +
+    '<span class="st" id="wbSt" aria-live="polite"></span></div>';
+  var foot = document.querySelector(".wrap footer");
+  if(foot) foot.parentNode.insertBefore(card, foot); else document.querySelector(".wrap").appendChild(card);
+
+  var prev = document.createElement("div");
+  prev.id = "wbPrev"; prev.hidden = true;
+  prev.setAttribute("role","dialog"); prev.setAttribute("aria-label","Preview of your workbook");
+  document.body.appendChild(prev);
+
+  function buildPreview(who, statusText){
+    prev.innerHTML = "";
+    var bar = document.createElement("div"); bar.className = "pv-bar";
+    var t = document.createElement("span"); t.className = "t";
+    t.textContent = "\u2713 FINISHED \u2014 " + who + " \u00b7 The Companion Workbook";
+    var pst = document.createElement("span"); pst.className = "pst"; pst.id = "wbPvSt"; pst.textContent = statusText;
+    var pr = document.createElement("button"); pr.type="button"; pr.className="solid"; pr.textContent = "Print my copy";
+    pr.addEventListener("click", function(){ window.print(); });
+    var bk = document.createElement("button"); bk.type="button"; bk.textContent = "Back to my workbook";
+    bk.addEventListener("click", function(){ prev.hidden = true; document.body.classList.remove("wbprev"); });
+    bar.appendChild(t); bar.appendChild(pst); bar.appendChild(pr); bar.appendChild(bk);
+    prev.appendChild(bar);
+    var body = document.createElement("div"); body.className = "pv-body";
+    var lead = document.createElement("p"); lead.className = "pv-lead";
+    lead.textContent = "This is what you built \u2014 exactly what your teacher receives.";
+    body.appendChild(lead);
+    [].slice.call(document.querySelectorAll("section.unit")).forEach(function(sec){
+      var clone = sec.cloneNode(true);
+      clone.hidden = false; clone.removeAttribute("id");
+      [].slice.call(clone.querySelectorAll("textarea")).forEach(function(ta){
+        var d = document.createElement("div");
+        var srcTa = null;
+        d.className = "pv-text empty"; d.textContent = "\u2014 left blank \u2014";
+        ta.parentNode.replaceChild(d, ta);
+      });
+      body.appendChild(clone);
+    });
+    /* fill the cloned answer boxes from the live textareas, in order */
+    var live = [].slice.call(document.querySelectorAll(".wrap section.unit .ow textarea"));
+    var slots = [].slice.call(body.querySelectorAll(".ow .pv-text"));
+    live.forEach(function(ta, i){
+      if(slots[i] && ta.value.trim() !== ""){
+        slots[i].className = "pv-text"; slots[i].textContent = ta.value;
+      }
+    });
+    prev.appendChild(body);
+  }
+  function setPvStatus(txt){ var n = document.getElementById("wbPvSt"); if(n) n.textContent = txt; }
+
+  var inp = document.getElementById("wbWho"), btn = document.getElementById("wbSendBtn"), st = document.getElementById("wbSt");
+  inp.value = getWho();
+  /* .30he — autosend, the free-writing translation: &who= boots into a
+     BLANK saved name only, and Enter in the name field sends. */
+  try {
+    var wm = /[?&]who=([^&]+)/.exec(location.search || "");
+    if (wm && !inp.value.trim()) {
+      inp.value = decodeURIComponent(wm[1]).slice(0, 60);
+      if (inp.value.trim()) setWho(inp.value.trim());
+    }
+  } catch (e) {}
+  inp.addEventListener("keydown", function (e) {
+    if (e.key === "Enter") { e.preventDefault(); btn.click(); }
+  });
+  var busy = false;
+  btn.addEventListener("click", function(){
+    if(busy) return;
+    var who = inp.value.trim();
+    if(!who){ st.textContent = "Add your code or first name — the same one you check in with — so this lands with your other work."; inp.focus(); return; }
+    setWho(who);
+    var payload = {
+      action:"checkin", checkinType:"practice", _backendAuth:DEST.key,
+      studentId:who, timestamp:new Date().toISOString(), date:today(),
+      activityId:"wb207", activityName:"Room 207 \u2014 The Companion Workbook",
+      skill:"Room 207 \u2014 The Companion Workbook",
+      setNo:"", itemsTotal:"", independent:"", supported:"", hintsUsed:"", confidence:"",
+      source:"link",
+      extra:JSON.stringify({series:"sel-workbook", build:"wb finished v1", finished:true, responses:gather()})
+    };
+    var body = JSON.stringify(payload);
+    busy = true;
+    buildPreview(who, "Sending to your teacher\u2026");
+    prev.hidden = false; document.body.classList.add("wbprev"); prev.scrollTop = 0;
+    function done(){ busy=false; setPvStatus("Turned in \u2713"); st.textContent="Turned in \u2713"; btn.textContent="FINISHED \u2713"; }
+    function fail(){ busy=false; setPvStatus("That didn\u2019t go through \u2014 check the internet, then tap FINISHED again."); }
+    fetch(DEST.url, {method:"POST", mode:"cors", redirect:"follow",
+        headers:{"Content-Type":"text/plain;charset=utf-8"}, body:body})
+      .then(function(res){ return res.json(); })
+      .then(function(j){ if(j && j.ok) done(); else fail(); })
+      .catch(function(){
+        fetch(DEST.url, {method:"POST", mode:"no-cors", redirect:"follow",
+            headers:{"Content-Type":"text/plain;charset=utf-8"}, body:body})
+          .then(done).catch(fail);
+      });
+  });
+})();
+</script>
+
+
+<script>
+/* AOG-R36-NAV behavior — back pill + the Explore menu. */
+(function(){
+  var back = document.getElementById("r36Back");
+  back.addEventListener("click", function(e){
+    var sameOrigin = false;
+    try{ sameOrigin = document.referrer.indexOf(location.origin) === 0; }catch(err){}
+    if(history.length > 1 && sameOrigin){ e.preventDefault(); history.back(); }
+  });
+  var btn = document.getElementById("r36MenuBtn"), menu = document.getElementById("r36Menu");
+  function open(on){ menu.hidden = !on; btn.setAttribute("aria-expanded", String(on)); }
+  btn.addEventListener("click", function(e){ e.stopPropagation(); open(menu.hidden); });
+  document.addEventListener("click", function(e){ if(!menu.hidden && !menu.contains(e.target) && e.target !== btn) open(false); });
+  document.addEventListener("keydown", function(e){ if(e.key === "Escape") open(false); });
+
+  /* accessibility — the SAME keys and classes the rest of the site uses, so
+     a setting made on a hub follows the student here and back */
+  var H = document.documentElement;
+  function lsGet(k){ try{ return localStorage.getItem(k); }catch(e){ return null; } }
+  function lsSet(k,v){ try{ localStorage.setItem(k,v); }catch(e){} }
+  var A11Y = [
+    {key:"aog.a11y.contrast", cls:"a11y-contrast", row:"r36HcRow"},
+    {key:"aog.a11y.dyslexic", cls:"a11y-dyslexic", row:"r36DysRow"}
+  ];
+  var abtn = document.getElementById("r36A11yBtn"), amenu = document.getElementById("r36A11y");
+  function aopen(on){ amenu.hidden = !on; abtn.setAttribute("aria-expanded", String(on)); }
+  abtn.addEventListener("click", function(e){ e.stopPropagation(); aopen(amenu.hidden); });
+  document.addEventListener("click", function(e){ if(!amenu.hidden && !amenu.contains(e.target) && e.target !== abtn) aopen(false); });
+  A11Y.forEach(function(a){
+    var row = document.getElementById(a.row);
+    function paint(on){ H.classList.toggle(a.cls, on); row.setAttribute("aria-checked", String(on)); }
+    paint(lsGet(a.key) === "1");
+    row.addEventListener("click", function(){
+      var on = !H.classList.contains(a.cls);
+      lsSet(a.key, on ? "1" : "0"); paint(on);
+    });
+  });
+})();
+</script>
+
+<style>
+/* ══ AOG-PRINTBRAND-V1 — the mark on every printed sheet ══ */
+.aog-printbrand,.aog-printwm{display:none}
+@media print{
+  .aog-printbrand{display:block;position:fixed;bottom:2px;left:0;right:0;text-align:center;
+    font:700 9px/1.4 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    color:#1B3A5F;letter-spacing:.08em;z-index:99}
+  .aog-printbrand .mk{display:inline-block;width:12px;height:12px;line-height:12px;border-radius:3px;
+    background:#1B3A5F;color:#fff;font-family:Georgia,serif;font-weight:900;font-size:9px;
+    text-align:center;margin-right:4px;vertical-align:-2px;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .aog-printwm{display:block;position:fixed;top:0;left:0;right:0;bottom:0;pointer-events:none;
+    overflow:hidden;z-index:98}
+  .aog-printwm span{position:absolute;left:-25%;right:-25%;text-align:center;white-space:nowrap;
+    font:900 44px/1 Georgia,serif;letter-spacing:.2em;color:rgba(27,58,95,.06);
+    transform:rotate(-28deg);-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .aog-printwm span:nth-child(1){top:22%}
+  .aog-printwm span:nth-child(2){top:52%}
+  .aog-printwm span:nth-child(3){top:82%}
+}
+
+/* ══ AOG-PRINT-SAFE-V1 (2026-09-20) ═══════════════════════════════════════════
+   Jimmy, printing a novel study from his phone: "another pdf that gets parts of
+   the material cut off." These are the rules that keep paper honest on every
+   engine — a table row, a list item, a figure and a picture stay whole; a head
+   keeps the lines under it; no paragraph strands one line at a page edge; and a
+   long table repeats its head at the top of each page. Printed pages only. */
+@media print{
+  table{break-inside:auto; page-break-inside:auto}
+  thead{display:table-header-group}
+  tfoot{display:table-footer-group}
+  tr{break-inside:avoid; page-break-inside:avoid}
+  li,figure,img,svg{break-inside:avoid; page-break-inside:avoid}
+  h1,h2,h3,h4,h5{break-after:avoid; page-break-after:avoid}
+  p{orphans:3; widows:3}
+}
+</style>
+<div class="aog-printwm" aria-hidden="true"><span>ARCHITECTURE OF GRACE</span><span>ARCHITECTURE OF GRACE</span><span>ARCHITECTURE OF GRACE</span></div>
+<div class="aog-printbrand" aria-hidden="true"><span class="mk">A</span>ARCHITECTURE OF GRACE &middot; architectureofgrace.org</div>
+
+</body>
+</html>

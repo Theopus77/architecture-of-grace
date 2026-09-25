@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>The Balance — Architecture of Grace</title>
+<meta name="description" content="A 200 g school balance. Level it, tare the boat, read to the hundredth. It will not name the object, and it will not invent a digit.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#f4f0e6; --card:#fffcf7; --ink:#1a232c; --muted:#5c6670; --line:#ddd8cc;
+  --steel:#2f5c6b; --steel-fg:#f4f8f9; --steel-soft:#e3eef2;
+  --good:#2c7a4e; --good-soft:#e3f0e8; --bad:#9c3a2e; --bad-fg:#fdf6f4; --bad-soft:#f6e5e2;
+  --chip:#efebe3; --shadow:0 1px 3px rgb(26 35 44 / .08);
+  --sans:"Source Sans 3", ui-sans-serif, system-ui, sans-serif;
+  --display:"Fraunces", Georgia, serif;
+}
+.dark, [data-theme="dark"] {
+  --bg:#14181e; --card:#1c232c; --ink:#edeae2; --muted:#9aa3b0; --line:#333b47;
+  --steel:#7fb4c7; --steel-fg:#14181e; --steel-soft:#1d2f36;
+  --good:#6fbf8b; --good-soft:#1f3327; --bad:#e08573; --bad-fg:#14181e; --bad-soft:#3a2622;
+  --chip:#2a313c;
+}
+* { box-sizing:border-box; }
+html { -webkit-text-size-adjust:100%; }
+body { margin:0; background:var(--bg); color:var(--ink); font:400 16px/1.55 var(--sans); overflow-x:hidden; }
+h1,h2,h3 { font-family:var(--display); font-weight:600; letter-spacing:-.02em; text-wrap:balance; }
+h1 { font-size:clamp(1.5rem,4vw,2.3rem); margin:.2rem 0 .4rem; }
+a { color:inherit; }
+button { font:inherit; cursor:pointer; }
+button, a { touch-action:manipulation; }
+.wrap { max-width:1080px; margin:0 auto; padding:max(1.1rem, env(safe-area-inset-top)) max(1rem, env(safe-area-inset-right)) max(3rem, env(safe-area-inset-bottom)) max(1rem, env(safe-area-inset-left)); }
+header { display:flex; justify-content:space-between; align-items:center; gap:.75rem; margin-bottom:.8rem; }
+.brand { font-size:.75rem; font-weight:700; letter-spacing:.14em; text-transform:uppercase; color:var(--muted); text-decoration:none; min-height:44px; display:inline-flex; align-items:center; }
+.tools { display:flex; gap:.5rem; }
+.pill, .btn { min-height:44px; border-radius:999px; border:1px solid var(--line); background:var(--card); color:var(--ink); padding:0 .9rem; font-weight:600; font-size:.9rem; display:inline-flex; align-items:center; justify-content:center; }
+.btn-steel { background:var(--steel); color:var(--steel-fg); border-color:transparent; }
+.nav { display:flex; gap:4px; overflow-x:auto; border-bottom:2px solid var(--line); margin-bottom:1rem; }
+.nav a { min-height:44px; display:inline-flex; align-items:center; padding:0 .8rem; text-decoration:none; color:var(--muted); font-weight:600; border-bottom:2px solid transparent; margin-bottom:-2px; }
+.nav a.on { color:var(--ink); border-color:var(--steel); }
+.kicker { font-size:.75rem; font-weight:700; letter-spacing:.12em; text-transform:uppercase; color:var(--steel); }
+.muted, .note-line { color:var(--muted); }
+.lead { max-width:62ch; color:var(--muted); }
+.card { background:var(--card); border:1px solid var(--line); border-radius:12px; box-shadow:var(--shadow); }
+.tiny { font-size:.75rem; font-weight:700; letter-spacing:.12em; text-transform:uppercase; color:var(--steel); }
+.ok { color:var(--good); }
+.lab-grid { display:grid; gap:1.1rem; margin-top:.6rem; align-items:start; }
+.face { background:#1a232c; border-radius:16px; padding:.85rem .9rem 1rem; }
+.win-wrap { position:relative; margin:0 auto; width:100%; max-width:560px; aspect-ratio:5/4; }
+.win-wrap canvas { width:100%; height:100%; display:block; border-radius:10px; }
+.readout { display:flex; justify-content:space-between; gap:.5rem; color:#d5dde2; font-size:.9rem; margin-top:.45rem; font-variant-numeric:tabular-nums; }
+.phone-bar, .desk-bar { display:flex; flex-direction:column; }
+.desk-bar { display:none; }
+.board, .phone-bar { padding:.8rem .9rem; }
+.row { display:flex; justify-content:space-between; align-items:center; gap:.4rem; padding:.28rem 0; border-bottom:1px solid var(--line); }
+.row > span:last-child { display:flex; flex-wrap:wrap; gap:.35rem; justify-content:flex-end; }
+.board .btn, .phone-bar .btn, .do .btn { min-height:40px; padding:0 .7rem; font-size:.85rem; }
+.knobs { margin-top:.75rem; }
+label.knob span { display:flex; justify-content:space-between; font-size:.72rem; font-weight:700; letter-spacing:.12em; text-transform:uppercase; color:#9aa3b0; }
+.scope-knob { -webkit-appearance:none; appearance:none; width:100%; height:40px; background:transparent; margin:0; }
+.scope-knob::-webkit-slider-runnable-track { height:8px; border-radius:999px; background:#2a313c; }
+.scope-knob::-webkit-slider-thumb { -webkit-appearance:none; width:26px; height:26px; margin-top:-9px; border-radius:99px; background:#7fb4c7; border:2px solid #1a232c; }
+.stair { list-style:none; margin:.4rem 0 0; padding:0; display:flex; flex-direction:column; gap:.4rem; }
+.stair > li { border:1px solid var(--line); border-radius:10px; padding:.5rem .7rem; }
+.stair > li.now { border-color:var(--steel); background:var(--steel-soft); }
+.stair > li.later { opacity:.62; }
+.stair > li.done { display:flex; align-items:baseline; gap:.55rem; padding:.38rem .7rem; }
+.stair > li.done h3 { margin:0; font-size:.95rem; }
+.stair .mk { margin:0; font-size:.68rem; font-weight:700; letter-spacing:.12em; text-transform:uppercase; color:var(--steel); }
+.stair h3 { margin:.05rem 0 .15rem; font-size:1.02rem; }
+.stair ol { list-style:none; margin:.2rem 0 0; padding:0; }
+.stair li.step { display:flex; gap:.45rem; padding:.14rem 0; font-size:.88rem; }
+.do { display:flex; flex-wrap:wrap; gap:.35rem; margin-top:.5rem; }
+.practical-box { margin-top:1rem; padding:1rem 1.05rem; }
+.lab-stack { display:flex; flex-direction:column; }
+@media (max-width:767px){
+  .lab-stack .lab-grid { order:1; }
+  .lab-stack .phone-bar { order:2; margin-top:.7rem; }
+  .lab-stack .practical-box { order:3; }
+}
+@media (min-width:768px){
+  .phone-bar { display:none !important; }
+  .desk-bar { display:flex; }
+  .lab-grid { grid-template-columns:minmax(0,1fr) minmax(300px,390px); }
+  .face-stick { position:sticky; top:12px; }
+  .board .btn { min-height:36px; }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <a class="brand" href="/" id="brand">The Balance</a>
+    <div class="tools">
+      <button type="button" class="pill" id="langBtn">ES</button>
+      <button type="button" class="pill" id="themeBtn">Dark</button>
+    </div>
+  </header>
+  <nav class="nav" id="nav"></nav>
+  <main id="view"></main>
+  <p class="muted" id="foot" style="margin-top:2rem;font-size:.9rem"></p>
+</div>
+<script>
+const CAP = 200, READ = 0.01;
+const MASS = { none:0, quarter:5.67, clip:0.80, boat:2.14, salt:2.97, brass:20, black:20, standard:100, rock:240 };
+const KEY = "scope.balance.v1", THEME_KEY = "aog.interior.ws.v1.theme";
+const STR = {
+  app:{en:"The Balance",es:"La balanza"},
+  home:{en:"Bench",es:"Mesa"}, lab:{en:"The window",es:"La ventana"},
+  eyebrow:{en:"200 g, to the hundredth",es:"200 g, al centésimo"},
+  tag:{en:"One pan, a window of digits, and a ceiling. The last digit is a hundredth of a gram. The balance will not name what you put there.",es:"Un platillo, una ventana de cifras, y un techo. La última cifra es un centésimo de gramo. La balanza no nombra lo que pones."},
+  priv:{en:"Everything stays on this computer.",es:"Todo se queda en esta computadora."},
+  foot:{en:"This page loads no student data. Your practice is saved in this browser only.",es:"Esta página no envía datos del estudiante. Tu práctica se guarda solo en este navegador."},
+  open:{en:"Read the window",es:"Lee la ventana"},
+  other:{en:"The microscope and the telescope are the other instruments.",es:"El microscopio y el telescopio son los otros instrumentos."},
+  dark:{en:"Dark",es:"Oscuro"}, light:{en:"Light",es:"Claro"},
+  power:{en:"Power",es:"Poder"}, on:{en:"On",es:"Encendida"}, off:{en:"Off",es:"Apagada"},
+  shield:{en:"Draft shield",es:"Parabrisas"}, closed:{en:"Closed",es:"Cerrado"}, openSh:{en:"Open",es:"Abierto"},
+  zero:{en:"Zero",es:"Cero"},
+  thing:{en:"On the pan",es:"En el platillo"},
+  level:{en:"Level",es:"Nivel"},
+  empty:{en:"Empty",es:"Vacío"}, quarter:{en:"Quarter",es:"Moneda de 25¢"}, clip:{en:"Clip",es:"Clip"},
+  boat:{en:"Boat",es:"Navecilla"}, scoop:{en:"Scoop",es:"Cucharada"},
+  brass:{en:"Brass",es:"Latón"}, black:{en:"Black",es:"Negro"},
+  standard:{en:"100 g",es:"100 g"}, rock:{en:"Rock",es:"Piedra"},
+  readBtn:{en:"Read it",es:"Leer"},
+  practical:{en:"Bench practical",es:"Práctica de mesa"},
+  hint:{en:"Six missions. Each one opens the next. The last one is the ceiling: a mass is not a name, and past 200 g the window stops.",es:"Seis misiones. Cada una abre la siguiente. La última es el techo: una masa no es un nombre, y pasados 200 g la ventana se detiene."},
+  done:{en:"Six missions done. You wrote the hundredth. You did not invent the next digit, and the balance never said the name.",es:"Seis misiones hechas. Escribiste el centésimo. No inventaste la cifra siguiente, y la balanza nunca dijo el nombre."},
+  levelHint:{en:"The bubble is the round window on the balance. Center it. A tilt is a lie of a few hundredths.",es:"La burbuja es la ventanita redonda. Centra. Una inclinación es una mentira de unos centésimos."}
+};
+const STAIR = [
+  {en:"Make the balance work",es:"Haz funcionar la balanza",
+    blurb_en:"Power. Level the bubble. Close the shield. Zero the empty pan.",
+    blurb_es:"Poder. Nivela la burbuja. Cierra el parabrisas. Pon en cero el platillo vacío.",
+    steps:["power","level","shield","zero"]},
+  {en:"See more",es:"Ver más",
+    blurb_en:"A quarter, then a clip. The clip is where the hundredth is the whole story.",
+    blurb_es:"Una moneda, luego un clip. En el clip el centésimo es toda la historia.",
+    steps:["quarter","clip"]},
+  {en:"Change what you see",es:"Cambia lo que ves",
+    blurb_en:"Tare the boat. Then the scoop. The window should be the salt, not the boat.",
+    blurb_es:"Tara la navecilla. Luego la cucharada. La ventana debe ser la sal, no la navecilla.",
+    steps:["tareboat","scoop"]},
+  {en:"Measure",es:"Medir",
+    blurb_en:"Shield closed. The clip. Read it only when the last digit holds.",
+    blurb_es:"Parabrisas cerrado. El clip. Léelo solo cuando la última cifra se queda.",
+    steps:["read"]},
+  {en:"What can't this balance see?",es:"¿Qué no puede ver esta balanza?",
+    blurb_en:"Brass, then black. Both are 20.00 g. The window does not say which.",
+    blurb_es:"Latón, luego negro. Los dos son 20.00 g. La ventana no dice cuál.",
+    steps:["names"]},
+  {en:"The research bench",es:"El banco de investigación",
+    blurb_en:"The 100 g weight, shield closed. Then a rock past the capacity. The window stops.",
+    blurb_es:"La pesa de 100 g, parabrisas cerrado. Luego una piedra más allá de la capacidad. La ventana se detiene.",
+    steps:["standard","overload"]}
+];
+const STEP = {
+  power:{en:"Turn it on",es:"Enciéndela"},
+  level:{en:"Center the bubble",es:"Centra la burbuja"},
+  shield:{en:"Close the draft shield",es:"Cierra el parabrisas"},
+  zero:{en:"Zero the empty pan",es:"Pon en cero el platillo vacío"},
+  quarter:{en:"Weigh the quarter",es:"Pesa la moneda"},
+  clip:{en:"Weigh the clip",es:"Pesa el clip"},
+  tareboat:{en:"Tare the boat",es:"Tara la navecilla"},
+  scoop:{en:"Add the scoop and read the salt",es:"Agrega la cucharada y lee la sal"},
+  read:{en:"Read the clip to the hundredth",es:"Lee el clip al centésimo"},
+  names:{en:"Weigh the brass, then the black",es:"Pesa el latón y luego el negro"},
+  standard:{en:"Weigh the 100 g standard",es:"Pesa el patrón de 100 g"},
+  overload:{en:"Put the rock on",es:"Pon la piedra"}
+};
+const S = {
+  page:"home", lang:"en", theme:"light", missions:{},
+  lab:{power:false,level:68,shield:false,tare:0,obj:"none",didRead:false,sawBrass:false,sawBlack:false}
+};
+try {
+  const raw = JSON.parse(localStorage.getItem(KEY)||"null");
+  if (raw) Object.assign(S, {lang:raw.lang||"en", missions:raw.missions||{}});
+  if (localStorage.getItem(THEME_KEY)==="dark") S.theme="dark";
+} catch(e){}
+function persist(){ try { localStorage.setItem(KEY, JSON.stringify({lang:S.lang,missions:S.missions})); localStorage.setItem(THEME_KEY,S.theme);} catch(e){} }
+function t(k){ const x=STR[k]; return x ? (S.lang==="es"?x.es:x.en) : k; }
+function btn(on,act,lab){ return `<button class="btn${on?" btn-steel":""}" data-act="${act}">${lab}</button>`; }
+function stairNow(){
+  for (let i=0;i<STAIR.length;i++) if (!STAIR[i].steps.every(id=>S.missions[id])) return i;
+  return STAIR.length;
+}
+function levelOK(L){ return Math.abs(L.level-50)<=3; }
+function massOf(id){ return MASS[id]||0; }
+function hunt(L, now){ return L.shield ? 0 : Math.sin(now/150)*0.018 + Math.sin(now/57)*0.012; }
+function rawGrams(L, now){
+  return massOf(L.obj) - L.tare + (L.level-50)*0.004 + hunt(L, now);
+}
+function windowOf(L, now){
+  if (!L.power) return {kind:"off"};
+  if (massOf(L.obj) > CAP) return {kind:"over"};
+  const g = rawGrams(L, now);
+  return {kind:"g", g, show:Math.round(g/READ)*READ, steady:L.shield && levelOK(L)};
+}
+function near(g, want){ return Math.abs(g-want) < 0.025; }
+
+function fieldNote(now){
+  const L=S.lab, es=S.lang==="es", w=windowOf(L, now||performance.now());
+  if (!L.power) return es?"Apagada. La ventana no miente. Está vacía.":"Off. The window is not lying. It is empty.";
+  if (w.kind==="over") return es?"Más de 200 g. La ventana se detiene. No inventa 240.":"Past 200 g. The window stops. It does not invent 240.";
+  if (!levelOK(L)) return es?"La burbuja no está al centro. Unos centésimos de esa inclinación ya están en la cifra.":"The bubble is off center. A few hundredths of that tilt are already in the number.";
+  if (!L.shield && L.obj!=="none") return es?"El parabrisas está abierto. La última cifra camina. No la copies todavía.":"The shield is open. The last digit is walking. Do not copy it yet.";
+  if (L.obj==="none") return es?"Platillo vacío. Cero es una decisión. Tócala.":"Empty pan. Zero is a decision. Press it.";
+  if (L.obj==="quarter") return es?"5.67 g. Una moneda de 25¢ de Estados Unidos. La balanza no escribió «moneda».":"5.67 g. A United States quarter. The balance did not write “quarter.”";
+  if (L.obj==="clip" && L.didRead) return es?"0.80 g. Puedes escribir el centésimo. No hay un tercer decimal en esta ventana.":"0.80 g. You may write the hundredth. There is no third decimal in this window.";
+  if (L.obj==="clip") return es?"0.80 g, cuando se queda quieta. El siguiente dígito no está.":"0.80 g, once it holds. The next digit is not there.";
+  if (L.obj==="boat" && Math.abs(L.tare-2.14)<0.02) return es?"La navecilla ya no cuenta. Agrega la cucharada.":"The boat no longer counts. Add the scoop.";
+  if (L.obj==="boat") return es?"2.14 g de navecilla. Si no la taras, la sal heredará ese número.":"2.14 g of boat. If you do not tare it, the salt inherits that number.";
+  if (L.obj==="salt" && Math.abs(L.tare-2.14)>0.02) return es?"Eso es la navecilla y la sal juntas. Tara la navecilla primero. La sal era lo que querías.":"That is the boat and the salt together. Tare the boat first. The salt was what you wanted.";
+  if (L.obj==="salt") return es?"0.83 g. Eso es la cucharada. La navecilla sigue en el platillo. Ya no está en la ventana.":"0.83 g. That is the scoop. The boat is still on the pan. It is no longer in the window.";
+  if (L.obj==="brass" || L.obj==="black") return es?"20.00 g. El otro también es 20.00 g. El mismo número. No es el mismo objeto. La balanza no lo nombra.":"20.00 g. The other one is also 20.00 g. Same number. Not the same object. The balance does not name it.";
+  if (L.obj==="standard") return L.shield
+    ? (es?"100.00 g. Esta pesa es como la balanza aprende la verdad. Un viento mayor que un centésimo y la lección se acaba.":"100.00 g. This weight is how the balance learns the truth. A draft larger than a hundredth and the lesson is over.")
+    : (es?"La misma pesa. El parabrisas abierto. Ya no es 100.00. El cuarto está en el número.":"The same weight. The shield is open. It is no longer 100.00. The room is in the number.");
+  return "";
+}
+
+function thingsFor(step){
+  const list=[["none","empty"]];
+  if (step>=1) list.push(["quarter","quarter"],["clip","clip"]);
+  if (step>=2) list.push(["boat","boat"],["salt","scoop"]);
+  if (step>=4) list.push(["brass","brass"],["black","black"]);
+  if (step>=5) list.push(["standard","standard"],["rock","rock"]);
+  return list;
+}
+function instrumentHTML(){
+  const L=S.lab, step=stairNow();
+  return `
+    <div class="row"><span class="tiny">${t("power")}</span><span>${btn(L.power,"pow1",t("on"))}${btn(!L.power,"pow0",t("off"))}</span></div>
+    <div class="row"><span class="tiny">${t("shield")}</span><span>${btn(L.shield,"sh1",t("closed"))}${btn(!L.shield,"sh0",t("openSh"))}</span></div>
+    <div class="row"><span class="tiny">${t("zero")}</span><span>${btn(false,"tare",t("zero"))}</span></div>
+    <div class="row"><span class="tiny">${t("thing")}</span><span>${thingsFor(step).map(([id,k])=>btn(L.obj===id,"ob-"+id,t(k))).join("")}</span></div>
+    <p class="note-line">${fieldNote()}</p>`;
+}
+function missionActs(i){
+  const L=S.lab;
+  if (i===0) return btn(L.power,"pow1",t("on"))+btn(L.shield,"sh1",t("closed"))+btn(false,"tare",t("zero"))+`<p class="note-line">${t("levelHint")}</p>`;
+  if (i===1) return btn(L.obj==="quarter","ob-quarter",t("quarter"))+btn(L.obj==="clip","ob-clip",t("clip"))+btn(L.shield,"sh1",t("closed"));
+  if (i===2) return btn(L.obj==="boat","ob-boat",t("boat"))+btn(false,"tare",t("zero"))+btn(L.obj==="salt","ob-salt",t("scoop"));
+  if (i===3) return btn(L.obj==="clip","ob-clip",t("clip"))+btn(L.shield,"sh1",t("closed"))+btn(L.didRead,"read",t("readBtn"))+`<p class="note-line">${S.lang==="es"?"0.80 g. No escribas 0.804.":"0.80 g. Do not write 0.804."}</p>`;
+  if (i===4) return btn(L.obj==="brass","ob-brass",t("brass"))+btn(L.obj==="black","ob-black",t("black"));
+  if (i===5) return btn(L.obj==="standard","ob-standard",t("standard"))+btn(L.shield,"sh1",t("closed"))+btn(L.obj==="rock","ob-rock",t("rock"));
+  return "";
+}
+function practicalCard(){
+  const step=stairNow(), done=step>=STAIR.length;
+  return `<div class="card practical-box">
+    <p class="tiny">${t("practical")}</p>
+    <p class="note-line">${t("hint")}</p>
+    <ol class="stair">${STAIR.map((m,i)=>{
+      const state=i<step?"done":i===step?"now":"later";
+      const title=S.lang==="es"?m.es:m.en;
+      if (state!=="now") return `<li class="${state}"><p class="mk">${S.lang==="es"?"Misión":"Mission"} ${i+1}${state==="done"?" · ✓":""}</p><h3>${title}</h3></li>`;
+      const steps=`<ol>${m.steps.map(id=>`<li class="step"><span style="width:1.05rem;color:var(--good)">${S.missions[id]?"✓":""}</span><span style="${S.missions[id]?"text-decoration:line-through;color:var(--muted)":""}">${S.lang==="es"?STEP[id].es:STEP[id].en}</span></li>`).join("")}</ol>`;
+      return `<li class="now"><p class="mk">${S.lang==="es"?"Misión":"Mission"} ${i+1}</p><h3>${title}</h3><p class="note-line" style="margin:0">${S.lang==="es"?m.blurb_es:m.blurb_en}</p>${steps}<div class="do">${missionActs(i)}</div></li>`;
+    }).join("")}</ol>
+    ${done?`<p class="ok">${t("done")}</p>`:""}
+  </div>`;
+}
+function pageHome(){
+  const done=STAIR.reduce((n,m)=>n+m.steps.filter(id=>S.missions[id]).length,0);
+  const total=STAIR.reduce((n,m)=>n+m.steps.length,0);
+  return `<p class="kicker">${t("eyebrow")}</p><h1>${t("app")}</h1>
+    <p class="lead">${t("tag")}</p>
+    <p class="muted">${t("priv")}</p>
+    <p class="muted" style="font-variant-numeric:tabular-nums">${done} / ${total}</p>
+    <p style="margin-top:1rem"><a class="btn btn-steel" href="#lab">${t("open")}</a></p>
+    <div class="card" style="padding:1rem 1.1rem;margin-top:1.2rem">
+      <p class="tiny">200.00 g</p>
+      <p>${S.lang==="es"?"Capacidad 200 g. Lectura 0.01 g. La burbuja miente por centésimos. El parabrisas abierto mete el cuarto en la última cifra. Dos objetos distintos pueden ser el mismo número.":"Capacity 200 g. Readability 0.01 g. A tilted bubble lies by hundredths. An open shield puts the room in the last digit. Two different objects can be the same number."}</p>
+      <p class="muted"><a href="/">${t("other")}</a></p>
+    </div>`;
+}
+function pageLab(){
+  const L=S.lab;
+  const lv=levelOK(L)?(S.lang==="es"?"nivel":"level"):(L.level>50?(S.lang==="es"?"alta":"high"):(S.lang==="es"?"baja":"low"));
+  return `<div class="lab-stack"><div class="lab-grid"><div class="face-stick">
+      <div class="face">
+        <div class="win-wrap"><canvas id="facecanvas"></canvas></div>
+        <div class="readout"><span>${L.power?"0.01 g":"—"}</span><span>${L.shield?(S.lang==="es"?"quieta":"still"):(S.lang==="es"?"camina":"walking")}</span></div>
+        <div class="knobs"><label class="knob"><span>${t("level")}<b>${lv}</b></span><input class="scope-knob" type="range" min="0" max="100" value="${L.level}" data-knob="level"></label></div>
+      </div>
+    </div>
+    <div class="desk-bar"><div class="card board">${instrumentHTML()}</div></div>
+    </div>
+    <div class="card phone-bar">${instrumentHTML()}</div>
+    ${practicalCard()}</div>`;
+}
+
+function drawThing(ctx, id, x, y, s){
+  ctx.save(); ctx.translate(x,y);
+  if (id==="quarter"){
+    ctx.fillStyle="#c4b49a"; ctx.beginPath(); ctx.ellipse(0,0,s*.42,s*.16,0,0,6.3); ctx.fill();
+    ctx.strokeStyle="#8a7d66"; ctx.lineWidth=2; ctx.beginPath(); ctx.ellipse(0,-s*.08,s*.28,s*.1,0,0,6.3); ctx.stroke();
+  } else if (id==="clip"){
+    ctx.strokeStyle="#c5ccd2"; ctx.lineWidth=3;
+    ctx.beginPath(); ctx.ellipse(0,-s*.05,s*.22,s*.12,0.4,0,6.3); ctx.stroke();
+    ctx.beginPath(); ctx.ellipse(s*.04,s*.02,s*.16,s*.08,-0.5,0,6.3); ctx.stroke();
+  } else if (id==="boat" || id==="salt"){
+    ctx.fillStyle="#d7dde2"; ctx.beginPath(); ctx.moveTo(-s*.4,s*.05); ctx.lineTo(-s*.28,-s*.12); ctx.lineTo(s*.28,-s*.12); ctx.lineTo(s*.4,s*.05); ctx.closePath(); ctx.fill();
+    if (id==="salt"){
+      ctx.fillStyle="#f4f0e6";
+      for (let i=0;i<16;i++){ const a=i*1.7; ctx.fillRect(Math.sin(a)*s*.16, -s*.04+Math.cos(a*1.3)*s*.05, 3, 3); }
+    }
+  } else if (id==="brass" || id==="black"){
+    ctx.fillStyle=id==="brass"?"#b08a3e":"#2a3138";
+    ctx.fillRect(-s*.28,-s*.16,s*.56,s*.28);
+    ctx.fillStyle=id==="brass"?"#d4b56a":"#4a5560";
+    ctx.fillRect(-s*.28,-s*.2,s*.56,s*.08);
+  } else if (id==="standard"){
+    ctx.fillStyle="#9aa3ad"; ctx.beginPath(); ctx.ellipse(0,s*.06,s*.26,s*.08,0,0,6.3); ctx.fill();
+    ctx.fillRect(-s*.26,-s*.16,s*.52,s*.24);
+    ctx.fillStyle="#c5ccd2"; ctx.font="700 14px ui-sans-serif,system-ui"; ctx.textAlign="center"; ctx.fillText("100",0,-s*.02);
+  } else if (id==="rock"){
+    ctx.fillStyle="#5c5348";
+    ctx.beginPath(); ctx.moveTo(-s*.4,s*.08); ctx.lineTo(-s*.2,-s*.2); ctx.lineTo(s*.1,-s*.16); ctx.lineTo(s*.42,s*.02); ctx.lineTo(s*.2,s*.14); ctx.closePath(); ctx.fill();
+  }
+  ctx.restore();
+}
+function drawFace(now){
+  const canvas=document.getElementById("facecanvas"); if(!canvas) return;
+  const wrap=canvas.parentElement;
+  const dpr=Math.min(devicePixelRatio||1,2);
+  const w=Math.round(wrap.clientWidth*dpr), h=Math.round(wrap.clientHeight*dpr);
+  if (canvas.width!==w){ canvas.width=w; canvas.height=h; }
+  const ctx=canvas.getContext("2d"), L=S.lab;
+  ctx.clearRect(0,0,w,h);
+  ctx.fillStyle="#243038"; ctx.fillRect(0,0,w,h);
+  const body=ctx.createLinearGradient(0,0,0,h);
+  body.addColorStop(0,"#3a4650"); body.addColorStop(1,"#2a333b");
+  ctx.fillStyle=body; roundRect(ctx, w*.06, h*.08, w*.88, h*.84, 18); ctx.fill();
+  ctx.fillStyle="#101418"; roundRect(ctx, w*.12, h*.14, w*.76, h*.28, 8); ctx.fill();
+  const win=windowOf(L, now);
+  ctx.fillStyle=L.power?"#b6f2c4":"#1c2420";
+  ctx.font=`600 ${Math.round(h*.16)}px ui-monospace, ui-monospace, monospace`;
+  ctx.textAlign="right"; ctx.textBaseline="middle";
+  let text="        ";
+  if (win.kind==="off") text="";
+  else if (win.kind==="over") text="------";
+  else {
+    const n=win.show;
+    const sign=n<0?"-":"";
+    text=sign+Math.abs(n).toFixed(2);
+  }
+  ctx.fillText(text, w*.78, h*.28);
+  ctx.font=`600 ${Math.round(h*.06)}px ui-sans-serif,system-ui`;
+  ctx.textAlign="left";
+  if (L.power && win.kind==="g") ctx.fillText("g", w*.80, h*.30);
+  const bx=w*.78, by=h*.50, br=Math.min(w,h)*.055;
+  ctx.fillStyle="#0e1418"; ctx.beginPath(); ctx.arc(bx,by,br,0,6.3); ctx.fill();
+  ctx.strokeStyle="#6a7580"; ctx.lineWidth=2; ctx.stroke();
+  const tilt=(L.level-50)/50;
+  ctx.fillStyle=levelOK(L)?"#7dcea0":"#e0c36a";
+  ctx.beginPath(); ctx.arc(bx+tilt*br*.55, by, br*.38, 0, 6.3); ctx.fill();
+  ctx.strokeStyle="rgba(255,255,255,.35)"; ctx.beginPath(); ctx.arc(bx,by,br*.55,0,6.3); ctx.stroke();
+  const panY=h*.72;
+  ctx.strokeStyle="#8b97a1"; ctx.lineWidth=Math.max(3,w*.008);
+  ctx.beginPath(); ctx.moveTo(w*.22,panY); ctx.lineTo(w*.62,panY); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(w*.42,panY); ctx.lineTo(w*.42,h*.84); ctx.moveTo(w*.30,h*.84); ctx.lineTo(w*.54,h*.84); ctx.stroke();
+  if (L.obj!=="none") drawThing(ctx, L.obj, w*.42, panY-h*.08, Math.min(w,h)*.45);
+  if (L.shield){
+    ctx.fillStyle="rgba(180,210,220,.16)";
+    ctx.strokeStyle="rgba(220,235,240,.45)"; ctx.lineWidth=2;
+    roundRect(ctx, w*.18, h*.48, w*.48, h*.28, 8); ctx.fill(); ctx.stroke();
+  } else {
+    ctx.strokeStyle="rgba(220,235,240,.35)"; ctx.lineWidth=2;
+    ctx.beginPath(); ctx.moveTo(w*.18,h*.50); ctx.lineTo(w*.12,h*.40); ctx.lineTo(w*.12,h*.62); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(w*.66,h*.50); ctx.lineTo(w*.74,h*.40); ctx.lineTo(w*.74,h*.62); ctx.stroke();
+  }
+}
+function roundRect(ctx,x,y,w,h,r){
+  ctx.beginPath();
+  ctx.moveTo(x+r,y); ctx.arcTo(x+w,y,x+w,y+h,r); ctx.arcTo(x+w,y+h,x,y+h,r);
+  ctx.arcTo(x,y+h,x,y,r); ctx.arcTo(x,y,x+w,y,r); ctx.closePath();
+}
+
+let faceRaf=0;
+function startFace(){
+  const loop=now=>{ drawFace(now); faceRaf=requestAnimationFrame(loop); };
+  cancelAnimationFrame(faceRaf); faceRaf=requestAnimationFrame(loop);
+}
+function tick(){
+  const L=S.lab, w=windowOf(L, performance.now());
+  const steady=w.kind==="g" && w.steady && L.power;
+  if (L.power) S.missions.power=true;
+  if (levelOK(L)) S.missions.level=true;
+  if (L.shield) S.missions.shield=true;
+  if (L.obj==="none" && L.tare===0 && steady && near(w.show,0)) S.missions.zero=true;
+  if (L.obj==="quarter" && L.tare===0 && steady && near(w.show,5.67)) S.missions.quarter=true;
+  if (L.obj==="clip" && L.tare===0 && steady && near(w.show,0.80)) S.missions.clip=true;
+  if ((L.obj==="boat"||L.obj==="salt") && Math.abs(L.tare-2.14)<0.02) S.missions.tareboat=true;
+  if (L.obj==="salt" && Math.abs(L.tare-2.14)<0.02 && steady && near(w.show,0.83)) S.missions.scoop=true;
+  if (L.didRead && L.obj==="clip" && L.tare===0 && steady && near(w.show,0.80)) S.missions.read=true;
+  if (L.obj==="brass" && L.tare===0 && steady && near(w.show,20)) L.sawBrass=true;
+  if (L.obj==="black" && L.tare===0 && steady && near(w.show,20)) L.sawBlack=true;
+  if (L.sawBrass && L.sawBlack) S.missions.names=true;
+  if (L.obj==="standard" && L.tare===0 && steady && near(w.show,100)) S.missions.standard=true;
+  if (L.obj==="rock" && L.power && windowOf(L,0).kind==="over") S.missions.overload=true;
+  persist();
+}
+function paint(){
+  cancelAnimationFrame(faceRaf);
+  const h=(location.hash||"#home").replace("#","");
+  S.page=h==="lab"?"lab":"home";
+  document.documentElement.lang=S.lang;
+  document.documentElement.setAttribute("data-theme", S.theme);
+  document.documentElement.classList.toggle("dark", S.theme==="dark");
+  document.getElementById("brand").textContent=t("app");
+  document.getElementById("langBtn").textContent=S.lang==="es"?"EN":"ES";
+  document.getElementById("themeBtn").textContent=S.theme==="dark"?t("light"):t("dark");
+  document.getElementById("foot").textContent=t("foot");
+  document.getElementById("nav").innerHTML=[["home","home"],["lab","lab"]].map(([id,k])=>`<a href="#${id}" class="${S.page===id?"on":""}">${t(k)}</a>`).join("");
+  const view=document.getElementById("view");
+  view.innerHTML=S.page==="lab"?pageLab():pageHome();
+  if (S.page!=="lab") return;
+  startFace(); tick();
+  view.querySelectorAll("[data-act]").forEach(b=>b.onclick=()=>{
+    const a=b.getAttribute("data-act"), L=S.lab, step=stairNow();
+    const locked=(a==="ob-quarter"||a==="ob-clip")&&step<1
+      || (a==="ob-boat"||a==="ob-salt")&&step<2
+      || a==="read"&&step<3
+      || (a==="ob-brass"||a==="ob-black")&&step<4
+      || (a==="ob-standard"||a==="ob-rock")&&step<5;
+    if (locked) return;
+    if (a==="pow1") L.power=true;
+    if (a==="pow0") L.power=false;
+    if (a==="sh1") L.shield=true;
+    if (a==="sh0") L.shield=false;
+    if (a==="tare") L.tare=massOf(L.obj);
+    if (a==="read"){
+      const w=windowOf(L, performance.now());
+      if (L.obj==="clip" && w.kind==="g" && w.steady && L.tare===0 && near(w.show,0.80)) L.didRead=true;
+    }
+    if (a.startsWith("ob-")){ L.obj=a.slice(3); if (L.obj!=="clip") L.didRead=false; }
+    tick(); paint();
+  });
+  view.querySelectorAll("[data-knob]").forEach(inp=>{
+    inp.oninput=()=>{
+      S.lab.level=+inp.value; tick();
+      const b=inp.closest("label").querySelector("b");
+      if (b) b.textContent=levelOK(S.lab)?(S.lang==="es"?"nivel":"level"):(S.lab.level>50?(S.lang==="es"?"alta":"high"):(S.lang==="es"?"baja":"low"));
+    };
+    inp.onchange=()=>{ if (stairNow()!==S.lastStair) paint(); };
+  });
+  S.lastStair=stairNow();
+}
+document.getElementById("langBtn").onclick=()=>{ S.lang=S.lang==="en"?"es":"en"; persist(); paint(); };
+document.getElementById("themeBtn").onclick=()=>{ S.theme=S.theme==="dark"?"light":"dark"; persist(); paint(); };
+window.addEventListener("hashchange", paint);
+paint();
+</script>
+</body>
+</html>

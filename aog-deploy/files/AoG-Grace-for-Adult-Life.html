@@ -1,0 +1,334 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Fraunces:ital,opsz,wght@0,9..144,400..900;1,9..144,400..700&display=swap" rel="stylesheet">
+<title>Grace for Adult Life · Architecture of Grace</title>
+<style>
+  @page { size: Letter; margin: 0; }
+  :root{
+    --ink:#2C3A47; --navy:#1B3A5F; --slate:#46506E; --faint:#8a96a3;
+    --gold:#B8893A; --gold-dk:#9a6f24; --gold-lt:#E7D9B6; --cream:#FBF3DF;
+    --identity:#1C5499; --compassion:#356B25; --forgive:#9a6f24; --grace:#523C9E;
+  }
+  *{box-sizing:border-box;} html,body{margin:0;padding:0;}
+  body{font-family:Georgia,"Times New Roman",serif; color:var(--ink); background:#FCF8F0;
+    -webkit-print-color-adjust:exact; print-color-adjust:exact;}
+  .page{width:8.5in; min-height:11in; margin:0 auto 18px; padding:0.55in 0.6in 0.5in;
+    background:radial-gradient(at 12% 0%, rgba(184,137,58,.07) 0, transparent 42%),
+      radial-gradient(at 92% 100%, rgba(27,58,95,.06) 0, transparent 45%), var(--cream);
+    box-shadow:0 1px 6px rgba(0,0,0,.12);}
+  .brandrow{display:flex; align-items:center; gap:12px;}
+  .mark{width:46px; height:46px; border-radius:11px; background:var(--navy); color:#E7C77B;
+    display:flex; align-items:center; justify-content:center; font-size:27px; font-weight:700;}
+  .brand{font-size:19px; font-weight:700; color:var(--navy); letter-spacing:.2px;}
+  .brand small{display:block; font-family:Arial,Helvetica,sans-serif; font-size:10px; font-weight:400; color:#5A6B7B; letter-spacing:.04em; margin-top:2px;}
+  h1{font-size:33px; color:var(--navy); margin:18px 0 4px; letter-spacing:-.4px;}
+  h2{font-family:Arial,Helvetica,sans-serif; font-size:12px; font-weight:700; letter-spacing:.14em; text-transform:uppercase; color:var(--gold-dk); margin:20px 0 9px;}
+  .tagline{font-style:italic; font-size:15px; color:var(--slate); margin:0 0 4px; max-width:6.7in;}
+  .rule{height:2px; background:var(--gold); border:0; margin:12px 0 14px;}
+  p.body{font-size:13.5px; line-height:1.6; color:var(--slate); margin:0 0 10px; max-width:6.9in;}
+  .grid2{display:grid; grid-template-columns:1fr 1fr; gap:13px;}
+  .aud{background:#fff; border:1.5px solid var(--gold-lt); border-top:5px solid var(--gold); border-radius:12px; padding:12px 14px;}
+  .aud.t-id{border-top-color:var(--identity);} .aud.t-sc{border-top-color:var(--compassion);}
+  .aud.t-fg{border-top-color:var(--forgive);} .aud.t-gr{border-top-color:var(--grace);}
+  .aud .name{font-size:16.5px; color:var(--navy); font-weight:700; margin:0 0 6px;}
+  .aud .lab{font-family:Arial,sans-serif; font-size:8.5px; font-weight:700; letter-spacing:.09em; text-transform:uppercase; color:var(--gold-dk); display:block; margin:7px 0 2px;}
+  .aud .tx{font-size:11.5px; line-height:1.48; color:var(--ink); margin:0;}
+  .aud .tx b{color:var(--navy);}
+  .aud .cases{margin:1px 0 0; padding-left:15px;} .aud .cases li{font-size:11.5px; line-height:1.45; color:var(--ink); margin-bottom:2px;}
+  .why{font-size:12px; line-height:1.5; color:var(--slate); margin:0 0 2px; font-style:italic;}
+  .callout{background:#fff; border:1.5px solid var(--gold-lt); border-left:5px solid var(--gold); border-radius:12px; padding:13px 16px; margin:10px 0;}
+  .callout b{color:var(--navy);} .callout p{font-size:12.5px;line-height:1.55;color:var(--slate);margin:0;}
+  .foot{margin-top:16px; display:flex; justify-content:space-between; align-items:baseline; font-family:Arial,sans-serif; font-size:10.5px; color:var(--faint); border-top:1px solid var(--gold-lt); padding-top:8px;}
+  .foot b{color:var(--navy);} .stick{font-style:italic; font-family:Georgia,serif; font-size:12px; color:var(--gold-dk);}
+  table.exp{width:100%; border-collapse:collapse; font-size:12px;}
+  table.exp th{font-family:Arial,sans-serif; font-size:9.5px; font-weight:700; letter-spacing:.07em; text-transform:uppercase; color:#fff; background:var(--navy); text-align:left; padding:7px 9px;}
+  table.exp td{border-bottom:1px solid var(--gold-lt); padding:8px 9px; line-height:1.45; vertical-align:top;}
+  table.exp tr:nth-child(even) td{background:rgba(184,137,58,.05);}
+  @media print{ body{background:#fff;} .page{box-shadow:none; margin:0 auto;} }
+
+  /* ===== site nav (screen only; hidden in print) ===== */
+  .aognav{position:sticky; top:0; z-index:60; display:flex; align-items:center; justify-content:space-between; gap:14px; flex-wrap:wrap; row-gap:10px; background:#FDFCF7; border-bottom:1px solid #E4DAC5; padding:18px 28px; box-shadow:0 2px 10px rgba(10,30,51,.06);}
+  .aognav .nbrand{display:flex; align-items:center; gap:12px; text-decoration:none;}
+  .aognav .nbrand .mk{width:36px; height:36px; border-radius:6px; background:#0A1E33; color:#F2C964; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:18px; box-shadow:0 1px 4px rgba(10,30,51,.18);}
+  .aognav .nbrand .bn{font-family:"Fraunces","Cormorant Garamond",Georgia,serif; font-weight:600; font-size:17px; color:#0A1E33; line-height:1.1;}
+  .aognav .nbrand .bs{display:block; font-family:Arial,Helvetica,sans-serif; font-size:10.5px; font-weight:400; color:#8A92A6; letter-spacing:.05em; margin-top:2px;}
+  .aognav .nactions{display:flex; align-items:center; gap:8px; flex-wrap:nowrap;}
+  .aognav .pill{display:inline-flex; align-items:center; gap:6px; font-family:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; font-size:13px; font-weight:800; text-decoration:none; border-radius:999px; white-space:nowrap; cursor:pointer; border:1px solid transparent; line-height:1;}
+  .aognav .pill .pic{flex:none;}
+  .aognav .pill.rn .pic, .aognav .pill.ci .pic{color:#F2C964;}
+  .aognav .pill.rn{background:#D9A33B; color:#0A1E33; border-color:#0A1E33; padding:6px 14px; margin-right:14px; flex:none;}
+  .aognav .pill.ci{background:#0A1E33; color:#F4EEE2; border-color:#0A1E33; padding:7px 16px; flex:none;}
+  .aognav .pill.ex{background:#F1DFA8; color:#0A1E33; border-color:#D9A33B; font-weight:700; padding:6px 13px;}
+  .aognav .pill:hover{filter:brightness(.97);}
+  .aognav .pill.back{background:transparent; color:#0A1E33; border:none; outline:none; -webkit-appearance:none; appearance:none; font-weight:700; padding:0; margin-right:16px; cursor:pointer; flex:none;}
+  .aognav .pill.back:focus{outline:none;}
+  .aognav .pill.back:focus-visible{outline:2px solid #D9A33B; outline-offset:3px; border-radius:6px;}
+  .aognav .pill.back:hover{color:#D9A33B;}
+  .aognav .pill.back .arr{color:#D9A33B; font-weight:700;}
+  .aognav .exwrap{position:relative; margin-right:14px; flex:none;}
+  .aognav .exmenu{position:absolute; top:calc(100% + 8px); right:0; min-width:232px; background:#FCF8F0; border:1px solid #E4DAC5; border-radius:14px; box-shadow:0 18px 40px -16px rgba(10,30,51,.4); padding:7px; z-index:80;}
+  .aognav .exmenu[hidden]{display:none;}
+  .aognav .exmenu a{display:flex; align-items:center; gap:11px; padding:10px 12px; border-radius:10px; text-decoration:none; color:#0A1E33; font-family:Arial,Helvetica,sans-serif; font-size:14.5px; font-weight:600; white-space:nowrap;}
+  .aognav .exmenu a svg{width:18px; height:18px; color:#D9A33B; flex:none;}
+  .aognav .exmenu a:hover{background:rgba(184,137,58,.14);}
+  .aognav .exchev{transition:transform .15s ease;}
+  .aognav .pill.ex[aria-expanded="true"] .exchev{transform:rotate(180deg);}
+  .aognav .nutil{display:flex; align-items:center; gap:8px;}
+  .aognav .uic{width:34px; height:34px; border:1px solid #E4DAC5; border-radius:9px; display:inline-grid; place-items:center; color:#46506E; text-decoration:none; flex:none;}
+  .aognav .lang{flex:none;}
+  .aognav .uic:hover{background:rgba(184,137,58,.12);}
+  .aognav .uic svg{width:18px; height:18px;}
+  .aognav .lang{display:inline-flex; background:#F4EEE2; border:1px solid #E4DAC5; border-radius:999px; padding:3px;}
+  .aognav .lang .on, .aognav .lang a{background:transparent; padding:5px 12px; border-radius:999px; font-family:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; font-size:12px; font-weight:600; text-decoration:none; color:#46506E;}
+  .aognav .lang .on{background:#0A1E33; color:#fff; box-shadow:0 1px 2px rgba(10,30,51,.18);}
+  @media (max-width:600px){ .aognav{ flex-wrap:wrap; gap:8px; justify-content:center; } .aognav .nbrand{ width:100%; text-align:center; } .aognav .nactions{ flex-wrap:wrap; justify-content:center; } }
+  @media print{ .aognav{display:none !important;} }
+</style>
+<style id="aog-print-page-responsive">
+/* ⚠ SCREEN ONLY — @media print must keep the 8.5in sheet exactly as it was.
+   .page is width:8.5in because these are printable handouts. On a phone that
+   fixed 816px sheet overflowed the viewport by 426px at 390, and the four-up
+   grids and the four-column tables overflowed again once the sheet was fluid.
+   This lets the sheet, its grids and its tables reflow on screen, and leaves
+   the printed sheet untouched. */
+@media screen and (max-width:880px){
+  .page{width:auto !important;max-width:100% !important;min-height:0 !important;
+        padding:22px 18px !important;margin:0 auto !important;box-shadow:none !important;}
+  .brandrow{flex-wrap:wrap;}
+  .pillars,.path,.loop{grid-template-columns:1fr 1fr !important;}
+  .grid2,.grid{grid-template-columns:1fr !important;}
+  img,svg{max-width:100%;height:auto;}
+  table{display:block;width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch;}
+}
+@media screen and (max-width:520px){
+  .pillars,.path,.loop{grid-template-columns:1fr !important;}
+}
+</style>
+</head>
+<body>
+
+<nav class="aognav" aria-label="Site navigation">
+  <a class="nbrand" href="../index.html"><span class="mk">A</span><span><span class="bn">Architecture of Grace</span></span></a>
+  <div class="nactions">
+    <button class="pill back" type="button" onclick="aognavBack()"><span class="arr">&#8592;</span> <span data-i18n="nav.back">Back</span></button>
+  <a class="pill rn" href="../index.html#right-now"><svg class="pic" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-4.35-9-8a5 5 0 0 1 9-3 5 5 0 0 1 9 3c-2 3.65-9 8-9 8z"/></svg> <span data-i18n="nav.rn">Right Now</span></a>
+  <a class="pill ci" href="../index.html#checkin"><svg class="pic" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg> <span data-i18n="nav.ci">Check-In</span></a>
+  <div class="exwrap">
+    <button class="pill ex" id="aognavEx" type="button" aria-haspopup="true" aria-expanded="false" onclick="aognavToggle(event)"><svg class="pic" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18"/></svg> <span data-i18n="nav.explore">Explore</span> <svg class="exchev" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button>
+    <div class="exmenu" id="aognavMenu" role="menu" hidden>
+      <a role="menuitem" href="../index.html#library"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg> <span data-i18n="nav.library">Library</span></a>
+      <a role="menuitem" href="../index.html#tools"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2a5 5 0 0 1 5 5c0 2.76-2.24 5-5 5S7 9.76 7 7a5 5 0 0 1 5-5z"/><path d="M3 21v-1a7 7 0 0 1 7-7h4a7 7 0 0 1 7 7v1"/></svg> <span data-i18n="nav.tools">Calm &amp; Regulation Tools</span></a>
+      <a role="menuitem" href="/#grace-ecosystem"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="2.5"/><circle cx="5" cy="6" r="2"/><circle cx="19" cy="6" r="2"/><circle cx="5" cy="18" r="2"/><circle cx="19" cy="18" r="2"/><path d="M10.2 10.6 6.4 7.4M13.8 10.6l3.8-3.2M10.2 13.4 6.4 16.6M13.8 13.4l3.8 3.2"/></svg> <span data-i18n="nav.eco">Ecosystem</span></a>
+      <a role="menuitem" href="../index.html#framework"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21h18"/><path d="M4 21V9l8-5 8 5v12"/><path d="M9 21v-6h6v6"/></svg> <span data-i18n="nav.framework">Framework</span></a>
+      <a role="menuitem" href="../index.html#dashboard"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 13h8V3H3zM13 21h8V3h-8zM3 21h8v-6H3z"/></svg> <span data-i18n="nav.dashboard">Dashboard</span></a>
+    </div>
+  </div>
+  <div class="nutil">
+    <a class="uic" href="../index.html" title="Accessibility options (in the app)" aria-label="Accessibility options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="4" r="1.6"/><path d="M5 8h14M9 8l1 11M15 8l-1 11M12 8v5"/></svg></a>
+    <a class="uic" href="../index.html" title="Personalize" aria-label="Personalize"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="4" y1="7" x2="20" y2="7"/><circle cx="9" cy="7" r="2.3"/><line x1="4" y1="17" x2="20" y2="17"/><circle cx="15" cy="17" r="2.3"/></svg></a>
+    <a class="uic" href="../index.html" title="Display &amp; dark mode (in the app)" aria-label="Display options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg></a>
+    <span class="lang"><span class="on">EN</span><a href="../index.html" title="Espanol (in the app)">ES</a></span>
+  </div>
+  </div>
+</nav>
+<script>
+  function aognavBack(){ if(window.history.length>1){window.history.back();} else {window.location.href='../index.html'; } }
+  function aognavToggle(e){ if(e)e.preventDefault(); var b=document.getElementById('aognavEx'),m=document.getElementById('aognavMenu'); if(!b||!m)return; if(m.hasAttribute('hidden')){ m.removeAttribute('hidden'); b.setAttribute('aria-expanded','true'); } else { m.setAttribute('hidden',''); b.setAttribute('aria-expanded','false'); } }
+  document.addEventListener('click', function(ev){ var m=document.getElementById('aognavMenu'); if(!m||m.hasAttribute('hidden'))return; if(ev.target.closest && (ev.target.closest('#aognavMenu')||ev.target.closest('#aognavEx')))return; m.setAttribute('hidden',''); var b=document.getElementById('aognavEx'); if(b)b.setAttribute('aria-expanded','false'); });
+  document.addEventListener('keydown', function(ev){ if(ev.key==='Escape'){ var m=document.getElementById('aognavMenu'); if(m)m.setAttribute('hidden',''); var b=document.getElementById('aognavEx'); if(b)b.setAttribute('aria-expanded','false'); } });
+</script>
+
+
+<!-- PAGE 1 -->
+<div class="page">
+  <div class="brandrow">
+    <a class="mark" href="../index.html" title="Architecture of Grace" style="text-decoration:none;">A</a>
+    <div class="brand">Architecture of Grace</div>
+  </div>
+  <h1>Grace for Adult Life</h1>
+  <p class="tagline">The four pillars don't graduate. They apply anywhere two people are in relationship.</p>
+  <hr class="rule">
+  <p class="body">Identity, Self-Compassion, Forgiveness, and Grace are not school skills — they are <b>relationship skills</b>, and relationships don't stop at adulthood. This is the framework extended into the places grown-ups actually live: teams, partnerships, friendships, the work of caregiving, the organizations and communities we belong to, and the quiet project of our own growth. Each audience below includes <b>why the framework applies, example use cases, suggested tools,</b> and <b>where it could expand next.</b></p>
+
+  <div class="grid2">
+    <div class="aud t-id">
+      <div class="name">Workplace Teams</div>
+      <p class="why">Why it applies: teams run on trust, repair, and how people talk to themselves after a mistake — the four pillars by another name.</p>
+      <span class="lab">Example use cases</span>
+      <ul class="cases">
+        <li>Open meetings with a two-minute check-in (Identity/wellness).</li>
+        <li>Run a "Repair Round" after a project conflict (Forgiveness).</li>
+        <li>Replace blame post-mortems with "benefit of the doubt" (Grace).</li>
+      </ul>
+      <span class="lab">Suggested tools &amp; activities</span>
+      <p class="tx">Grace Conversation Cards for standups; the shared vocabulary as team norms; a "tank check" before crunch weeks.</p>
+      <span class="lab">Future expansion</span>
+      <p class="tx">A workplace "Team Grace Charter" and manager toolkit.</p>
+    </div>
+
+    <div class="aud t-gr">
+      <div class="name">Leadership Development</div>
+      <p class="why">Why it applies: leadership is grace under pressure — regulating yourself first, then meeting people with understanding before judgment.</p>
+      <span class="lab">Example use cases</span>
+      <ul class="cases">
+        <li>"Connection before correction" as a feedback default.</li>
+        <li>Leaders model repair openly to make it safe (Forgiveness).</li>
+        <li>Identity work: leading from values, not just role.</li>
+      </ul>
+      <span class="lab">Suggested tools &amp; activities</span>
+      <p class="tx">Leadership reflection cards; a 360 framed around the four pillars; a "your calm is the intervention" practice.</p>
+      <span class="lab">Future expansion</span>
+      <p class="tx">A "Leadership Through Grace" cohort program.</p>
+    </div>
+  </div>
+
+  <div class="grid2" style="margin-top:13px;">
+    <div class="aud t-sc">
+      <div class="name">Couples &amp; Partners</div>
+      <p class="why">Why it applies: every lasting partnership lives or dies on repair, self-compassion, and giving each other the benefit of the doubt.</p>
+      <span class="lab">Example use cases</span>
+      <ul class="cases">
+        <li>A weekly check-in using the four-pillar prompts.</li>
+        <li>The four-step redo as a fair-fight repair tool.</li>
+        <li>Trading "grace received" before hard conversations.</li>
+      </ul>
+      <span class="lab">Suggested tools &amp; activities</span>
+      <p class="tx">A couples reflection journal; date-night conversation cards; a shared "one breath, one kind question" rule.</p>
+      <span class="lab">Future expansion</span>
+      <p class="tx">A "Grace in Marriage / Partnership" pathway.</p>
+    </div>
+
+    <div class="aud t-id">
+      <div class="name">Friendships</div>
+      <p class="why">Why it applies: adult friendships fade from small unrepaired ruptures and unspoken assumptions — exactly what these pillars address.</p>
+      <span class="lab">Example use cases</span>
+      <ul class="cases">
+        <li>Naming a friendship rupture and offering a redo.</li>
+        <li>Giving the benefit of the doubt to a quiet friend.</li>
+        <li>"Catch them being" — telling a friend what you admire.</li>
+      </ul>
+      <span class="lab">Suggested tools &amp; activities</span>
+      <p class="tx">Conversation cards for deeper hangouts; a "set it down" practice for old grudges.</p>
+      <span class="lab">Future expansion</span>
+      <p class="tx">Friendship reflection prompts for group chats.</p>
+    </div>
+  </div>
+
+  <div class="foot">
+    <span>architectureofgrace.org</span>
+    <span class="stick">The pillars don't graduate.</span>
+  </div>
+</div>
+
+<!-- PAGE 2 -->
+<div class="page">
+  <div class="grid2" style="margin-top:4px;">
+    <div class="aud t-sc">
+      <div class="name">Caregivers</div>
+      <p class="why">Why it applies: caregiving for an aging parent, a sick partner, or a child with high needs runs straight into compassion fatigue and guilt — self-compassion is survival, not luxury.</p>
+      <span class="lab">Example use cases</span>
+      <ul class="cases">
+        <li>Daily "tank check" and a permission to refill.</li>
+        <li>Forgiving yourself for the limits of one human.</li>
+        <li>Repair with family members sharing the load.</li>
+      </ul>
+      <span class="lab">Suggested tools &amp; activities</span>
+      <p class="tx">A caregiver reflection journal; the "friend standard" for guilt; "grace received" gratitude notes.</p>
+      <span class="lab">Future expansion</span>
+      <p class="tx">A "Grace for Caregivers" support-circle guide.</p>
+    </div>
+
+    <div class="aud t-gr">
+      <div class="name">Community Organizations</div>
+      <p class="why">Why it applies: nonprofits, volunteer groups, and boards burn out and fracture over the same things — unrepaired conflict and assumed bad intent.</p>
+      <span class="lab">Example use cases</span>
+      <ul class="cases">
+        <li>Volunteer onboarding in the shared vocabulary.</li>
+        <li>Board conflict handled with the Repair Round.</li>
+        <li>Recognition rituals built on "catch them being."</li>
+      </ul>
+      <span class="lab">Suggested tools &amp; activities</span>
+      <p class="tx">A group culture charter; meeting-opener check-ins; benefit-of-the-doubt norms.</p>
+      <span class="lab">Future expansion</span>
+      <p class="tx">A licensable "Grace Culture" kit for organizations.</p>
+    </div>
+  </div>
+
+  <div class="grid2" style="margin-top:13px;">
+    <div class="aud t-fg">
+      <div class="name">Faith &amp; Values Communities</div>
+      <p class="why">Why it applies: communities built around shared values are natural homes for identity, forgiveness, and grace — practiced together, across generations.</p>
+      <span class="lab">Example use cases</span>
+      <ul class="cases">
+        <li>Small-group reflection on the four pillars.</li>
+        <li>Repair practices for community conflict.</li>
+        <li>Multi-generational conversations on grace.</li>
+      </ul>
+      <span class="lab">Suggested tools &amp; activities</span>
+      <p class="tx">Discussion guides adaptable to any tradition; multi-generational reflection cards; service-project debriefs.</p>
+      <span class="lab">Future expansion</span>
+      <p class="tx">Optional values-aligned companion editions.</p>
+    </div>
+
+    <div class="aud t-id">
+      <div class="name">Individual Personal Growth</div>
+      <p class="why">Why it applies: the whole framework works on a single person — how you see yourself, treat yourself, repair, and extend grace inward and out.</p>
+      <span class="lab">Example use cases</span>
+      <ul class="cases">
+        <li>A four-week solo journey, one pillar per week.</li>
+        <li>Daily flip-the-critic and evening reflection.</li>
+        <li>A personal "one line" identity statement.</li>
+      </ul>
+      <span class="lab">Suggested tools &amp; activities</span>
+      <p class="tx">A personal reflection journal; the Relationship Growth Map; daily Grace Challenges.</p>
+      <span class="lab">Future expansion</span>
+      <p class="tx">A guided "Personal Grace Pathway" app or workbook.</p>
+    </div>
+  </div>
+
+  <div class="callout">
+    <p><b>The throughline.</b> Across all eight audiences, the move is the same: build identity on character, treat yourself like a friend, repair instead of rupture, and lead with grace. One framework, one vocabulary — scaling from a single person to a whole organization.</p>
+  </div>
+
+  <div class="foot">
+    <span>Grace for Adult Life &nbsp;·&nbsp; Audiences</span>
+    <span class="stick">One framework, every relationship.</span>
+  </div>
+</div>
+
+<!-- PAGE 3 -->
+<div class="page">
+  <h2 style="margin-top:4px;">Where Adult Grace Can Expand</h2>
+  <p class="body">Each audience is a doorway into a larger product line. The same four pillars, repackaged for the setting — which means new reach without a new framework.</p>
+  <table class="exp">
+    <thead><tr><th style="width:24%">Audience</th><th style="width:38%">Near-term offering</th><th style="width:38%">Future expansion</th></tr></thead>
+    <tbody>
+      <tr><td><b>Workplace teams</b></td><td>Conversation cards + team norms one-pager</td><td>Manager toolkit, Team Grace Charter, onboarding module</td></tr>
+      <tr><td><b>Leadership</b></td><td>Leadership reflection cards</td><td>"Leadership Through Grace" cohort + 360 instrument</td></tr>
+      <tr><td><b>Couples</b></td><td>Couples journal + date-night cards</td><td>Partnership pathway; counselor companion guide</td></tr>
+      <tr><td><b>Friendships</b></td><td>Deeper-conversation prompt deck</td><td>Group reflection prompts; friendship "redo" guide</td></tr>
+      <tr><td><b>Caregivers</b></td><td>Caregiver reflection journal</td><td>Support-circle facilitator guide; respite check-ins</td></tr>
+      <tr><td><b>Community orgs</b></td><td>Group culture charter + check-ins</td><td>Licensable "Grace Culture" kit; volunteer training</td></tr>
+      <tr><td><b>Faith &amp; values</b></td><td>Adaptable small-group discussion guides</td><td>Multi-generational curriculum; companion editions</td></tr>
+      <tr><td><b>Individuals</b></td><td>Personal journal + Growth Map</td><td>Guided Personal Grace Pathway (app/workbook)</td></tr>
+    </tbody>
+  </table>
+
+  <div class="callout" style="margin-top:16px;">
+    <p><b>Strategic payoff.</b> This is how Architecture of Grace stops being "a student SEL program" and becomes a <b>relationship-development framework for the whole lifespan.</b> A child meets the pillars in third grade; their teacher meets them in PD; their parents meet them at home; and the same adults meet them again at work, in marriage, in caregiving, and in their own growth. The framework follows a person across every season — and that continuity is the moat.</p>
+  </div>
+
+  <div class="foot">
+    <span>architectureofgrace.org</span>
+    <span class="stick">From third grade to the rest of life.</span>
+  </div>
+</div>
+
+<script src="../aog-nav.js"></script>
+</body>
+</html>

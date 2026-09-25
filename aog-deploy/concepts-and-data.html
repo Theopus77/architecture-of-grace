@@ -1,0 +1,1149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Number Concepts &amp; Data — Architecture of Grace</title>
+<meta name="description" content="Number Concepts &amp; Data — the math activities, all in one place. Private, never collected.">
+<!-- ═══ AOG ICONS + LINK PREVIEW · managed block · .30k0 ═══
+     Inserted by _work/aog_head.py — DO NOT hand-edit one page; edit the
+     script and re-run it, or the 100 pages drift apart again. The card
+     URL carries ?v= because Slack, Apple and Google cache an og image BY
+     URL for weeks: change the picture, bump IMG_V, or nothing shows up.
+     ═══════════════════════════════════════════════════════════════ -->
+<link rel="canonical" href="https://architectureofgrace.org/concepts">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Architecture of Grace">
+<meta property="og:locale" content="en_US">
+<meta property="og:title" content="Number Concepts &amp; Data — Architecture of Grace">
+<meta property="og:description" content="Number Concepts &amp; Data — the math activities, all in one place. Private, never collected.">
+<meta property="og:url" content="https://architectureofgrace.org/concepts">
+<meta property="og:image" content="https://architectureofgrace.org/og-concepts.png?v=1">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Number Concepts & Data — thirteen activities from Architecture of Grace.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Number Concepts &amp; Data — Architecture of Grace">
+<meta name="twitter:description" content="Number Concepts &amp; Data — the math activities, all in one place. Private, never collected.">
+<meta name="twitter:image" content="https://architectureofgrace.org/og-concepts.png?v=1">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#0A1E33">
+<meta name="apple-mobile-web-app-title" content="Grace">
+<meta name="application-name" content="Architecture of Grace">
+<!-- ═══ END AOG ICONS + LINK PREVIEW ═══ -->
+<meta name="robots" content="noindex">
+<!-- No external requests of any kind. Every byte this page needs is in this file,
+     the site bar included: it is inlined rather than shared so this line stays true. -->
+<style>
+/* ══ TOKENS — same set as the math activities. Light is the base;
+   dark redefines tokens only, never components. ══ */
+:root{
+  --ground:#F5F1E8;
+  --field:#FFFFFF;
+  --field-2:#EFEAE0;
+  --ink:#1D2733;
+  --ink-soft:#57626F;
+  --ink-faint:#5F6B78;
+  --navy:#1B3A5F;
+  --gold:#B8893A;
+  --gold-deep:#7A5C1F;
+  --rule:rgba(29,39,51,.16);
+  --rule-soft:rgba(29,39,51,.08);
+  --lift:0 1px 0 rgba(255,255,255,.7), 0 20px 44px -30px rgba(29,39,51,.55);
+  --lift-sm:0 1px 2px rgba(29,39,51,.07), 0 8px 20px -16px rgba(29,39,51,.4);
+  --a:#4A3A8C;
+  --a-wash:rgba(74,58,140,.07);
+  --lock:#2E6B4F;
+  --lock-wash:rgba(46,107,79,.09);
+  --caution:#9A3412;
+  --focus:#B8893A;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --ground:#12161C; --field:#1A2029; --field-2:#222A34;
+    --ink:#E9EEF4; --ink-soft:#A3AFBC; --ink-faint:#84909D;
+    --navy:#9CC2E8; --gold:#D6A852; --gold-deep:#D6A852;
+    --rule:rgba(233,238,244,.18); --rule-soft:rgba(233,238,244,.09);
+    --lift:0 1px 0 rgba(233,238,244,.04), 0 24px 54px -32px rgba(0,0,0,.95);
+    --lift-sm:0 1px 2px rgba(0,0,0,.5), 0 10px 24px -18px rgba(0,0,0,.9);
+    --a:#A99BE8; --a-wash:rgba(169,155,232,.12);
+    --lock:#79C79E; --lock-wash:rgba(121,199,158,.12);
+    --caution:#F0A07C;
+    --focus:#D6A852;
+  }
+}
+:root[data-theme="dark"]{
+  --ground:#12161C; --field:#1A2029; --field-2:#222A34;
+  --ink:#E9EEF4; --ink-soft:#A3AFBC; --ink-faint:#84909D;
+  --navy:#9CC2E8; --gold:#D6A852; --gold-deep:#D6A852;
+  --rule:rgba(233,238,244,.18); --rule-soft:rgba(233,238,244,.09);
+  --lift:0 1px 0 rgba(233,238,244,.04), 0 24px 54px -32px rgba(0,0,0,.95);
+  --lift-sm:0 1px 2px rgba(0,0,0,.5), 0 10px 24px -18px rgba(0,0,0,.9);
+  --a:#A99BE8; --a-wash:rgba(169,155,232,.12);
+  --lock:#79C79E; --lock-wash:rgba(121,199,158,.12);
+  --caution:#F0A07C;
+  --focus:#D6A852;
+}
+
+*{box-sizing:border-box;}
+html{-webkit-text-size-adjust:100%;}
+body{
+  margin:0; background:var(--ground); color:var(--ink);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  font-size:16px; line-height:1.55;
+}
+h1,h2,h3{margin:0; text-wrap:balance; font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,"Times New Roman",serif; font-weight:600;}
+p{margin:0;}
+button{font:inherit; color:inherit; cursor:pointer;}
+a{color:inherit;}
+:focus-visible{outline:3px solid var(--focus); outline-offset:2px; border-radius:6px;}
+.wrap{max-width:920px; margin:0 auto; padding:0 20px;}
+
+/* ══ MASTHEAD ══ */
+.mast{padding:34px 20px 8px;}
+.mast .row{display:flex; align-items:center; gap:12px; margin-bottom:18px;}
+.mark{
+  width:44px; height:44px; border-radius:12px; background:var(--navy); color:#fff;
+  display:flex; align-items:center; justify-content:center;
+  font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+  font-size:24px; font-weight:700; flex:none;
+}
+:root[data-theme="dark"] .mark{color:#12161C;}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]) .mark{color:#12161C;} }
+.mast .name{font-weight:700; letter-spacing:.01em;}
+.mast .sub{color:var(--ink-soft); font-size:14px;}
+.mast h1{font-size:clamp(30px,6vw,44px); line-height:1.12; margin-bottom:10px;}
+.deck{color:var(--ink-soft); font-size:17px; max-width:60ch;}
+
+.acts{display:flex; flex-wrap:wrap; gap:10px; margin-top:18px;}
+.btn{
+  appearance:none; border:1.5px solid var(--rule); background:var(--field);
+  border-radius:12px; padding:11px 16px; font-weight:600; font-size:15px;
+  box-shadow:var(--lift-sm); min-height:48px;
+}
+.btn:hover{border-color:var(--ink-faint);}
+
+/* ══ PROJECTOR ══ (.30fg, ported from /math) "Show on the board" fills the screen with one address */
+.cwrap{display:flex; flex-direction:column;}
+.cwrap .card{flex:1 1 auto;}
+.mfoot{display:flex; flex-wrap:wrap; align-items:center; gap:8px; margin-top:9px;}
+.mfoot .btn{font-size:12.5px; padding:6px 11px; min-height:36px; box-shadow:none;}
+#beam{
+  position:fixed; inset:0; z-index:900; background:var(--field); color:var(--ink);
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  gap:clamp(14px,3vh,34px); padding:5vh 4vw; text-align:center; cursor:pointer;
+}
+#beam .wk{font-size:clamp(13px,1.6vw,22px); font-weight:800; letter-spacing:.2em; text-transform:uppercase; color:var(--ink-faint);}
+#beam .nm{font-family:Georgia,serif; font-size:clamp(28px,5vw,72px); line-height:1.05; font-weight:700;}
+#beam .url{
+  font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  font-size:clamp(19px,5.4vw,104px); font-weight:700; line-height:1.1;
+  letter-spacing:-.02em; color:var(--a); white-space:nowrap; max-width:100%;
+}
+#beam .hint{font-size:clamp(13px,1.5vw,20px); color:var(--ink-faint);}
+#beam .x{position:absolute; top:18px; right:20px; font-size:15px; font-weight:700; color:var(--ink-faint);}
+@media print{ #beam,.mfoot{display:none !important;} }
+
+/* ══ STRANDS ══ */
+.strand{margin-top:34px;}
+.strand-head{display:flex; align-items:baseline; gap:12px; flex-wrap:wrap; margin-bottom:6px;}
+.strand-head .k{
+  font-size:12.5px; font-weight:700; letter-spacing:.09em; text-transform:uppercase;
+  color:var(--gold-deep);
+}
+.strand-head h2{font-size:clamp(22px,4vw,28px);}
+.strand>.say{color:var(--ink-soft); max-width:62ch; margin-bottom:16px;}
+
+.cards{display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:14px;}
+.card{
+  display:block; text-decoration:none; background:var(--field);
+  border:1.5px solid var(--rule-soft); border-radius:16px; padding:16px 16px 14px;
+  box-shadow:var(--lift-sm); position:relative; min-height:48px;
+}
+.card:hover{border-color:var(--gold); box-shadow:var(--lift);}
+.card .num{
+  font-size:12.5px; font-weight:700; letter-spacing:.08em; text-transform:uppercase;
+  color:var(--ink-faint); display:block; margin-bottom:4px;
+}
+.card h3{font-size:19px; margin-bottom:6px;}
+.card .what{color:var(--ink-soft); font-size:14.5px; line-height:1.5;}
+.card .go{
+  display:inline-block; margin-top:10px; font-size:14px; font-weight:700; color:var(--a);
+}
+
+/* ══ VOCAB ══ */
+.vocab{
+  margin-top:34px; background:var(--field-2); border:1.5px solid var(--rule-soft);
+  border-radius:16px; padding:18px;
+}
+.vocab h2{font-size:20px; margin-bottom:4px;}
+.vocab .say{color:var(--ink-soft); font-size:14.5px; margin-bottom:12px; max-width:62ch;}
+.vocab .cols{display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:14px;}
+.vocab .col .k{
+  font-size:12.5px; font-weight:700; letter-spacing:.08em; text-transform:uppercase;
+  color:var(--gold-deep); display:block; margin-bottom:6px;
+}
+.vocab ul{margin:0; padding:0; list-style:none; columns:2; column-gap:18px;}
+.vocab li{
+  font-size:14.5px; padding:3px 0; break-inside:avoid; color:var(--ink);
+}
+
+/* ══ TEACHER ══ */
+.teach{
+  margin-top:34px; border:1.5px dashed var(--rule); border-radius:16px;
+  background:var(--field);
+}
+.teach summary{
+  cursor:pointer; padding:16px 18px; font-weight:700; font-size:15.5px;
+  list-style:none; min-height:48px; display:flex; align-items:center; gap:8px;
+}
+.teach summary::-webkit-details-marker{display:none;}
+.teach summary::before{content:"▸"; color:var(--gold-deep); transition:transform .15s;}
+.teach[open] summary::before{transform:rotate(90deg);}
+.teach .inner{padding:0 18px 18px; display:grid; gap:12px;}
+.teach p{color:var(--ink-soft); font-size:14.5px; max-width:70ch;}
+.teach p b{color:var(--ink);}
+.teach .step{
+  display:grid; grid-template-columns:auto 1fr; gap:10px; align-items:start;
+}
+.teach .step .n{
+  width:26px; height:26px; border-radius:50%; background:var(--a-wash); color:var(--a);
+  font-weight:700; font-size:13.5px; display:flex; align-items:center; justify-content:center;
+  flex:none; margin-top:1px;
+}
+
+.next{
+  margin-top:24px; border:1.5px solid var(--rule-soft); border-radius:16px;
+  background:var(--field); padding:16px 18px;
+}
+.next .k{
+  font-size:12.5px; font-weight:700; letter-spacing:.09em; text-transform:uppercase;
+  color:var(--ink-faint);
+}
+.next p{color:var(--ink-soft); font-size:14.5px; max-width:66ch; margin-top:4px;}
+
+/* ══ FOOT ══ */
+.foot{margin:40px auto 30px; color:var(--ink-faint); font-size:13.5px;}
+.foot p{max-width:75ch; margin-bottom:6px;}
+.foot b{color:var(--ink-soft);}
+
+/* ══ SITE BAR ═══════════════════════════════════════════════════════════
+   A port of the app's own .topbar (index.html): same shape, same controls,
+   same behavior. Written out here rather than shared, because this page
+   loads nothing from the network -- see the head comment for why that
+   promise is worth the duplication.
+
+   ⚠⚠ TWO FILES. Emitted by _work/p_hubbar.py into interior-math.html AND
+   concepts-and-data.html. Change the script and re-run it. Hand-editing
+   one copy is how the two hubs start disagreeing.
+
+   ── ACCENT ── the home page lets a teacher pick one of six accents; it
+   lands in localStorage "aog.accent" and is applied as <html data-accent>.
+   These are the same six palettes as aog-styles.css, restated here because
+   we cannot load that file. THIS is what actually makes /math and the home
+   page the same color -- before it, the hub was violet-and-gold no matter
+   what the rest of the site was wearing. Keep in sync with aog-styles.css.
+*/
+:root{ --acc:#D9A33B; --acc-soft:#F2C964; --acc-pale:#F1DFA8; --acc-deep:#7E5B18;
+       --acc-wash:rgba(126,91,24,.08); --acc-wash-d:rgba(242,201,100,.14); }
+:root[data-accent="teal"]{ --acc:#2BA199; --acc-soft:#6FD3C8; --acc-pale:#C9EDE8; --acc-deep:#15716B;
+       --acc-wash:rgba(21,113,107,.08); --acc-wash-d:rgba(111,211,200,.14); }
+:root[data-accent="violet"]{ --acc:#7C5CD6; --acc-soft:#A98BF0; --acc-pale:#DDD2F7; --acc-deep:#523C9E;
+       --acc-wash:rgba(82,60,158,.08); --acc-wash-d:rgba(169,139,240,.14); }
+:root[data-accent="rose"]{ --acc:#D65C7E; --acc-soft:#F08BA6; --acc-pale:#F7D2DD; --acc-deep:#9E3C5A;
+       --acc-wash:rgba(158,60,90,.08); --acc-wash-d:rgba(240,139,166,.14); }
+:root[data-accent="sky"]{ --acc:#2E7CD6; --acc-soft:#6FB0F0; --acc-pale:#CFE3F7; --acc-deep:#1C5499;
+       --acc-wash:rgba(28,84,153,.08); --acc-wash-d:rgba(111,176,240,.14); }
+:root[data-accent="green"]{ --acc:#4F9E3A; --acc-soft:#86D36F; --acc-pale:#D2EDC9; --acc-deep:#356B25;
+       --acc-wash:rgba(53,107,37,.08); --acc-wash-d:rgba(134,211,111,.14); }
+
+/* Re-point the page's own accent tokens at the chosen palette.
+   ⚠ ORDER AND SPECIFICITY. These sit at the very end of the stylesheet on
+   purpose. :root[data-theme="dark"] (0,2,0) beats a bare :root (0,1,0), so
+   the dark values declared earlier in this file would win unless the dark
+   remap is restated HERE, after them, at the same specificity. */
+:root{ --a:var(--acc-deep); --a-wash:var(--acc-wash); --gold:var(--acc); --gold-deep:var(--acc-deep); --focus:var(--acc); }
+:root[data-theme="dark"]{ --a:var(--acc-soft); --a-wash:var(--acc-wash-d); --gold:var(--acc-soft); --gold-deep:var(--acc-soft); --focus:var(--acc-soft); }
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){ --a:var(--acc-soft); --a-wash:var(--acc-wash-d); --gold:var(--acc-soft); --gold-deep:var(--acc-soft); --focus:var(--acc-soft); } }
+
+/* ⚠⚠ THE SITE BAR'S CSS LIVES IN aog-topbar.js — NOT HERE.
+   This page used to carry its own copy of the .aogtop-* rules, written back
+   when the bar was hand-pasted into every page and its Explore menu was one
+   narrow column. The bar is injected now, and its Explore menu is a
+   THREE-COLUMN mega-menu (.aogtop-ex / .aogtop-col, 3 × 262px ≈ 800px).
+
+   The stale local copy declared
+       .aogtop-menu{min-width:312px; max-width:min(372px, calc(100vw - 20px));}
+   and MAX-WIDTH IS A PROPERTY THE INJECTED SHEET NEVER SETS, so no source
+   order and no specificity could beat it: the 800px mega-menu was squeezed
+   into a 372px box and columns 2 and 3 were sliced off by the panel's own
+   overflow. Two more class names meant different things in the two sheets —
+   local .aogtop-sub was a FOLD CONTAINER (indent + left border) where the bar
+   uses it for a row SUBTITLE, and local .aogtop-fold was display:flex where
+   the bar needs display:block.
+
+   All of it is deleted. NEVER RE-ADD .aogtop-* RULES TO A PAGE STYLESHEET —
+   edit _work/topbar/aog-topbar-css.txt and re-run the builder. The
+   :root.a11y-* rules below stay: those color the PAGE, not the bar. */
+
+
+/* ── ACCESSIBILITY ── the same two settings as the home page, sharing its
+   storage keys, so a student who turns one on there still has it here.
+   Read-aloud and picture answers are check-in controls; they have nothing
+   to act on in a reading page, so those two rows are not offered. */
+:root.a11y-contrast{ --ink:#000; --ink-soft:#1c2230; --ink-faint:#3a4254; --rule:rgba(0,0,0,.55); --rule-soft:rgba(0,0,0,.32); }
+:root.a11y-contrast[data-theme="dark"]{ --ink:#fff; --ink-soft:#e8edf5; --ink-faint:#c4ccd9; --rule:rgba(255,255,255,.72); --rule-soft:rgba(255,255,255,.42); }
+:root.a11y-contrast .card,:root.a11y-contrast .mcard,:root.a11y-contrast .btn,
+:root.a11y-contrast .aogtop-ico,:root.a11y-contrast .aogtop-sw{border:1px solid var(--ink) !important;}
+:root.a11y-dyslexic{ --dysf:"OpenDyslexic","Comic Sans MS","Trebuchet MS",Verdana,sans-serif; }
+:root.a11y-dyslexic body,:root.a11y-dyslexic h1,:root.a11y-dyslexic h2,:root.a11y-dyslexic h3,
+:root.a11y-dyslexic h4,:root.a11y-dyslexic .aogtop-nm,:root.a11y-dyslexic .mast .name{
+  font-family:var(--dysf) !important;
+}
+:root.a11y-dyslexic body{letter-spacing:.012em; word-spacing:.05em; line-height:1.7;}
+
+
+</style>
+<script>
+/* AOG-HUB-BOOT — accent, theme and accessibility applied BEFORE first
+   paint, so the bar never flashes the wrong color on the way in. Inline
+   and tiny for exactly that reason. Same storage keys as index.html. */
+(function(){
+  var d = document.documentElement;
+  try{
+    var A = {gold:1,teal:1,violet:1,rose:1,sky:1,green:1};
+    var a = localStorage.getItem("aog.accent");
+    if(a && a !== "gold" && A[a]) d.setAttribute("data-accent", a);
+  }catch(e){}
+  try{
+    var t = localStorage.getItem("aog.theme") || localStorage.getItem("aog.interior.ws.v1.theme");
+    d.setAttribute("data-theme", t === "dark" ? "dark" : "light"); /* .30eg: light unless this device chose dark - the OS setting no longer decides */
+  }catch(e){}
+  try{
+    if(localStorage.getItem("aog.a11y.contrast") === "1") d.classList.add("a11y-contrast");
+    if(localStorage.getItem("aog.a11y.dyslexic") === "1") d.classList.add("a11y-dyslexic");
+  }catch(e){}
+})();
+</script>
+<style id="aog-nozoom">
+/* ═══ AOG-NOZOOM-V1 · 2026-09-18 ═══════════════════════════════════════════
+   iOS Safari zooms the WHOLE page when a text field under 16px takes focus,
+   and does not zoom back out. From then on the layout is wider than the
+   window and pans freely left and right on any touch. Jimmy, on an iPhone:
+   "how the screen moves easily left or right. It makes me nausea."
+   index.html had 69 such fields at 390px and gets this same rule from
+   aog-styles.css; this page links its own styles, so it carries its own copy.
+   ⚠ NOT maximum-scale=1 / user-scalable=no — that takes pinch-zoom away from
+     anyone who needs to magnify, and iOS has ignored it since iOS 10.
+   ⚠ Touch only. A mouse has no zoom behavior and keeps the tighter density.
+   ⚠ !important is load-bearing: some fields set their size in a style=""
+     attribute (the font: shorthand counts), and an author !important is what
+     outranks those. If you remove it, re-measure rather than assume.
+   ══════════════════════════════════════════════════════════════════════════ */
+@media (hover: none) and (pointer: coarse) {
+  input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="color"]):not([type="file"]):not([type="submit"]):not([type="button"]):not([type="image"]),
+  select,
+  textarea { font-size: 16px !important; }
+}
+</style>
+</head>
+<body>
+<script src="/aog-topbar.js"></script>
+
+<header class="mast wrap">
+  <div class="row">
+    <div class="mark" aria-hidden="true">A</div>
+    <div>
+      <div class="name">Architecture of Grace</div>
+      <div class="sub" data-en="Mathematics · Number Concepts &amp; Data" data-es="Matemáticas · Conceptos numéricos y datos">Mathematics · Number Concepts &amp; Data</div>
+    </div>
+  </div>
+  <h1 data-en="Number Concepts &amp; Data" data-es="Conceptos Numéricos y Datos">Number Concepts &amp; Data</h1>
+  <p class="deck" data-en="Thirteen activities. Every one works on this screen or on paper — both count. Nothing you do leaves this computer unless you tap Send." data-es="Trece actividades. Cada una funciona en esta pantalla o en papel — las dos cuentan. Nada de lo que haces sale de esta computadora a menos que toques Enviar.">Thirteen activities. Every one works on this screen or on paper — both count. Nothing you do leaves this computer unless you tap Send.</p>
+  <p class="no-print" style="margin:12px 0 0;font-size:14px;font-weight:700;"><a href="/math" style="color:var(--a);" data-en="← Math, every band" data-es="← Matemáticas, cada banda">← Math, every band</a></p>
+</header>
+
+<main class="wrap">
+
+<style>
+/* ══ THE JUMP MENU — the b-series .30fe pattern, brought to the hub ══ */
+.jump{margin:0 0 16px;}
+.jump label span{font-weight:700;font-size:.9rem;}
+.jump select{display:block;margin-top:6px;min-height:48px;font:inherit;font-size:16px;padding:8px 12px;
+  border:1.5px solid var(--rule);border-radius:12px;background:var(--field);color:var(--ink);
+  max-width:440px;width:100%;}
+@media print{.jump{display:none;}}
+</style>
+<!-- AOG-JUMP-V2 — the same site-wide unit menu every other page carries. This page keeps its own activity picker below: that select is how you reach the lessons it collects, and it is not a unit jump. -->
+<div class="jump no-print"><label for="unitSel"><span data-en="Jump to another unit" data-es="Ir a otra unidad">Jump to another unit</span></label>
+<select id="unitSel">
+<optgroup label="Math · Grades K–2">
+<option value="m15-counting-how-many.html">Counting and how many</option>
+<option value="m16-add-subtract-within-20.html">Adding and subtracting within 20</option>
+<option value="m17-tens-ones-hundreds.html">Tens and ones, then hundreds</option>
+<option value="m18-add-subtract-within-1000.html">Adding and subtracting within 1,000</option>
+<option value="m19-length-time-money.html">Length, time and money</option>
+<option value="m20-shapes-equal-shares.html">Shapes and equal shares</option>
+</optgroup>
+<optgroup label="Math · Grades 3–5">
+<option value="m21-multiplication-division-meaning.html">Multiplication and division: what they mean</option>
+<option value="m22-multi-digit-multiplication.html">Multi-digit multiplication</option>
+<option value="m23-fractions-add-subtract-multiply.html">Fractions: add, subtract, multiply</option>
+<option value="m24-decimals.html">Decimals</option>
+<option value="m25-measurement-area-perimeter-volume.html">Measurement: area, perimeter, volume</option>
+<option value="m26-geometry-coordinate-plane.html">Geometry and the coordinate plane</option>
+</optgroup>
+<optgroup label="Math · Grades 6–8">
+<option value="interior-math.html">The 7th-grade year, month by month</option>
+<option value="" selected>Math 6–8 · Number Concepts &amp; Data</option>
+<option value="b10-interior-math.html">The Fall Skills</option>
+<option value="b10-interior-math.html?mod=sept">&nbsp;&nbsp;&nbsp;&nbsp;September · Integers</option>
+<option value="b10-interior-math.html?mod=oct">&nbsp;&nbsp;&nbsp;&nbsp;October · Multiply, Divide &amp; Properties</option>
+<option value="b10-interior-math.html?mod=nov">&nbsp;&nbsp;&nbsp;&nbsp;November · Expressions</option>
+<option value="b10-interior-math.html?mod=dec">&nbsp;&nbsp;&nbsp;&nbsp;December · Equations</option>
+<option value="b12-sixth-grade-review.html">6th Grade Review — Quiz</option>
+<option value="b12-sixth-grade-review.html?mod=round">&nbsp;&nbsp;&nbsp;&nbsp;Rounding &amp; Order of Operations</option>
+<option value="b12-sixth-grade-review.html?mod=dec">&nbsp;&nbsp;&nbsp;&nbsp;Decimals</option>
+<option value="b12-sixth-grade-review.html?mod=gcf">&nbsp;&nbsp;&nbsp;&nbsp;GCF, LCM &amp; Fraction Names</option>
+<option value="b12-sixth-grade-review.html?mod=frac">&nbsp;&nbsp;&nbsp;&nbsp;Fraction Operations</option>
+<option value="b12-sixth-grade-review.html?mod=coord">&nbsp;&nbsp;&nbsp;&nbsp;The Coordinate Plane</option>
+<option value="b13-sixth-grade-practice.html">6th Grade Review — In Class &amp; HW</option>
+<option value="b13-sixth-grade-practice.html?mod=round">&nbsp;&nbsp;&nbsp;&nbsp;Rounding &amp; Order of Operations</option>
+<option value="b13-sixth-grade-practice.html?mod=dec">&nbsp;&nbsp;&nbsp;&nbsp;Decimals</option>
+<option value="b13-sixth-grade-practice.html?mod=gcf">&nbsp;&nbsp;&nbsp;&nbsp;GCF, LCM &amp; Fraction Names</option>
+<option value="b13-sixth-grade-practice.html?mod=frac">&nbsp;&nbsp;&nbsp;&nbsp;Fraction Operations</option>
+<option value="b13-sixth-grade-practice.html?mod=coord">&nbsp;&nbsp;&nbsp;&nbsp;The Coordinate Plane</option>
+<option value="m27-ratios-rates.html">Ratios, rates and unit rates</option>
+<option value="m28-proportional-percent.html">Proportional relationships and percent</option>
+<option value="m29-inequalities.html">Inequalities</option>
+<option value="m30-area-surface-volume.html">Area, surface area and volume</option>
+<option value="m31-angles-triangles-scale.html">Angles, triangles and scale drawings</option>
+<option value="m32-probability-sampling.html">Probability and sampling</option>
+<option value="m33-exponents-roots-scinot.html">Exponents, roots and scientific notation</option>
+<option value="m34-equations-systems.html">Linear equations and systems</option>
+<option value="m35-functions-slope.html">Functions and slope</option>
+<option value="m36-transformations.html">Transformations, congruence and similarity</option>
+<option value="m37-pythagorean-theorem.html">The Pythagorean theorem</option>
+</optgroup>
+<optgroup label="Math · Grades 9–10">
+<option value="m38-alg1-linear-equations-inequalities.html">Algebra I: linear equations and inequalities</option>
+<option value="m39-alg1-functions-linear-models.html">Algebra I: functions and linear models</option>
+<option value="m40-alg1-systems.html">Algebra I: systems</option>
+<option value="m41-alg1-exponents-polynomials-factoring.html">Algebra I: exponents, polynomials, factoring</option>
+<option value="m42-alg1-quadratics.html">Algebra I: quadratics</option>
+<option value="m43-geo-proof-congruence-triangles.html">Geometry: proof, congruence and triangles</option>
+<option value="m44-geo-similarity-trig.html">Geometry: similarity and right-triangle trigonometry</option>
+<option value="m45-geo-circles-area-volume.html">Geometry: circles, area and volume</option>
+</optgroup>
+<optgroup label="Math · Grades 11–12">
+<option value="m46-alg2-polynomial-rational.html">Algebra II: polynomial and rational functions</option>
+<option value="m47-alg2-exponential-logarithmic.html">Algebra II: exponential and logarithmic functions</option>
+<option value="m48-trigonometric-functions.html">Trigonometric functions</option>
+<option value="m49-sequences-series.html">Sequences and series</option>
+<option value="m50-statistics-sample-to-claim.html">Statistics: from a sample to a claim</option>
+<option value="m51-financial-math.html">Financial math</option>
+<option value="m52-capstone-model-it.html">Capstone: model it</option>
+</optgroup>
+<optgroup label="Jump to a subject">
+<option value="math-hub.html">All of Math — every band</option>
+<option value="science-hub.html">All of Science — every band</option>
+<option value="social-studies-hub.html">All of Social Studies — every band</option>
+<option value="economics-hub.html">All of Economics — every band</option>
+<option value="english-hub.html">All of English — every band</option>
+<option value="spanish-hub.html">All of Spanish — every band</option>
+<option value="facs-hub.html">All of Family &amp; Consumer Sciences — every band</option>
+<option value="religions-hub.html">All of World Religions — every band</option>
+</optgroup>
+<optgroup label="Science · Grades K–2">
+<option value="b26-pushes-pulls.html">Pushes and Pulls</option>
+<option value="b27-sun-moon-sky.html">Sun, Moon and Sky</option>
+<option value="b28-living-things-need.html">What Living Things Need</option>
+<option value="b29-weather-seasons.html">Weather and Seasons</option>
+<option value="b30-light-sound.html">Light and Sound</option>
+<option value="b31-materials-change.html">Materials and How They Change</option>
+</optgroup>
+<optgroup label="Science · Grades 3–5">
+<option value="b18-forces-motion.html">Forces and Motion</option>
+<option value="b19-life-cycles-traits.html">Life Cycles and Traits</option>
+<option value="b20-weather-climate.html">Weather and Climate</option>
+<option value="b21-energy.html">Energy</option>
+<option value="b22-changing-surface.html">Earth’s Changing Surface</option>
+<option value="b23-matter-properties.html">Matter: Properties and Changes</option>
+<option value="b24-ecosystems.html">Ecosystems and Food Webs</option>
+<option value="b25-earth-in-space.html">Earth in Space</option>
+</optgroup>
+<optgroup label="Science · Grades 6–8">
+<option value="b1-living-things.html">Science 1 · Living Things in the Biosphere</option>
+<option value="b2-cell-system.html">Science 2 · The Cell System</option>
+<option value="b3-body-systems.html">Science 3 · Human Body Systems</option>
+<option value="b4-reproduction.html">Science 4 · Reproduction and Growth</option>
+<option value="b5-ecosystems.html">Science 5 · Ecosystems</option>
+<option value="b6-populations.html">Science 6 · Populations and Communities</option>
+<option value="b7-heredity.html">Science 7 · Genes and Heredity</option>
+<option value="b8-natural-selection.html">Science 8 · Natural Selection</option>
+<option value="b14-matter.html">Matter and Its Interactions</option>
+<option value="b15-forces-energy-waves.html">Forces, Energy and Waves</option>
+<option value="b16-earth-systems.html">Earth’s Systems</option>
+<option value="b17-space-systems.html">Space Systems</option>
+</optgroup>
+<optgroup label="Science · Grades 9–10">
+<option value="b32-cells-energy.html">Biology: Cells and Energy</option>
+<option value="b33-genetics-evolution.html">Biology: Genetics and Evolution</option>
+<option value="b34-ecosystems-human-impact.html">Biology: Ecosystems and Human Impact</option>
+<option value="b35-matter-reactions.html">Physical Science: Matter and Reactions</option>
+<option value="b36-forces-energy-waves-hs.html">Physical Science: Forces, Energy, Waves</option>
+<option value="b37-earth-space-hs.html">Earth and Space</option>
+</optgroup>
+<optgroup label="Science · Grades 11–12">
+<option value="b38-chem-atoms-bonding.html">Chemistry: Atoms, Bonding, Reactions</option>
+<option value="b39-chem-stoich-solutions.html">Chemistry: Stoichiometry and Solutions</option>
+<option value="b40-physics-motion-forces.html">Physics: Motion and Forces</option>
+<option value="b41-physics-energy-waves-electricity.html">Physics: Energy, Waves, Electricity</option>
+<option value="b42-environmental-science.html">Environmental Science</option>
+<option value="b43-capstone-evidence.html">Capstone: Argue From Evidence</option>
+</optgroup>
+<optgroup label="Social Studies · Grades K–2">
+<option value="s7-me-family-class.html">Me, My Family, My Class</option>
+<option value="s8-rules-fair-choices.html">Rules and Fair Choices</option>
+<option value="s9-maps-where-things-are.html">Maps: Where Things Are</option>
+<option value="s10-then-and-now.html">Then and Now</option>
+<option value="s11-needs-wants-work.html">Needs, Wants and Work</option>
+<option value="s12-symbols-stories.html">Symbols and Stories of Our Country</option>
+</optgroup>
+<optgroup label="Social Studies · Grades 3–5">
+<option value="s1-government.html">Government: Local, State, National</option>
+<option value="s2-communities-illinois.html">Communities and Illinois</option>
+<option value="s3-first-peoples.html">The First Peoples</option>
+<option value="s4-explorers-colonies-nation.html">Explorers, Colonies, a New Nation</option>
+<option value="s5-money-markets-choices.html">Money, Markets and Choices</option>
+<option value="s6-maps-us-regions.html">Maps and Regions of the United States</option>
+</optgroup>
+<optgroup label="Social Studies · Grades 6–8">
+<option value="b9-new-nation.html">A More Perfect Union</option>
+<option value="b9-new-nation.html?mod=founding">&nbsp;&nbsp;&nbsp;&nbsp;The Founding · 1776–1791</option>
+<option value="b9-new-nation.html?mod=branches">&nbsp;&nbsp;&nbsp;&nbsp;Civics · The Three Branches</option>
+<option value="b9-new-nation.html?mod=growth">&nbsp;&nbsp;&nbsp;&nbsp;Growth &amp; Economy</option>
+<option value="b9-new-nation.html?mod=war">&nbsp;&nbsp;&nbsp;&nbsp;The Road to War &amp; Freedom</option>
+<option value="s13-world-before-1500.html">The World Before 1500</option>
+<option value="s14-world-regions.html">The World’s Regions</option>
+<option value="s15-reconstruction-to-present.html">Reconstruction to the Present</option>
+</optgroup>
+<optgroup label="Social Studies · Grades 9–10">
+<option value="s16-empires-and-exchange.html">Empires and Exchange</option>
+<option value="s17-revolutions-modern-world.html">Revolutions and the Modern World</option>
+<option value="s18-human-geography.html">Human Geography</option>
+<option value="s19-civics-rights-power.html">Civics: Rights, Power and Participation</option>
+</optgroup>
+<optgroup label="Social Studies · Grades 11–12">
+<option value="s20-industry-progressive-era.html">Industry to the Progressive Era</option>
+<option value="s21-world-wars-cold-war.html">The World Wars and the Cold War</option>
+<option value="s22-civil-rights-to-today.html">Civil Rights to Today</option>
+<option value="s23-government.html">Government</option>
+<option value="s24-economics.html">Economics</option>
+<option value="s25-capstone-inquiry.html">Capstone: An Inquiry from the Sources</option>
+</optgroup>
+<optgroup label="Economics · Grades 9–10">
+<option value="ec1-scarcity-and-choice.html">Scarcity, Choice and Opportunity Cost</option>
+<option value="ec2-supply-and-demand.html">Supply, Demand and the Market</option>
+<option value="ec3-prices-and-market-failure.html">Prices, Controls and Market Failure</option>
+<option value="ec4-competition-and-firms.html">Competition, Firms and Market Structure</option>
+</optgroup>
+<optgroup label="Economics · Grades 11–12">
+<option value="ec5-measuring-the-economy.html">Measuring the Economy</option>
+<option value="ec6-business-cycle-and-fiscal.html">The Business Cycle and Fiscal Policy</option>
+<option value="ec7-money-banking-and-the-fed.html">Money, Banking and the Federal Reserve</option>
+<option value="ec8-trade-taxes-and-the-world.html">Trade, Taxes and the World Economy</option>
+</optgroup>
+<optgroup label="English · Grades K–2">
+<option value="e1-sounds-and-letters.html">Sounds and Letters</option>
+<option value="e2-sight-words.html">Words You Know by Sight</option>
+<option value="e3-a-whole-thought.html">A Sentence Is a Whole Thought</option>
+<option value="e4-who-where-what.html">Who, Where, What Happens</option>
+<option value="e5-beginning-middle-end.html">Beginning, Middle, End</option>
+<option value="e6-true-books-story-books.html">True Books and Story Books</option>
+</optgroup>
+<optgroup label="English · Grades 3–5">
+<option value="e7-word-parts.html">Word Parts: Prefixes, Suffixes, Roots</option>
+<option value="e8-context-clues.html">Context Clues</option>
+<option value="e9-main-idea.html">Main Idea and Details</option>
+<option value="e10-story-elements.html">Story Elements and Theme</option>
+<option value="e11-text-structure.html">How a Text Is Built</option>
+<option value="e12-the-paragraph.html">The Paragraph: a Claim and Reasons</option>
+</optgroup>
+<optgroup label="English · Grades 6–8">
+<option value="n1-the-outsiders.html">The Outsiders (novel study)</option>
+<option value="b11-grammar.html">Grammar · 16 Modules</option>
+</optgroup>
+<optgroup label="English · Grades 9–10">
+<option value="e13-clues-and-word-parts.html">Context Clues and Word Parts</option>
+<option value="e14-figurative-language.html">Figurative Language</option>
+<option value="e15-tone-and-voice.html">Tone and Voice</option>
+<option value="e16-rhetoric.html">Rhetoric: How a Writer Persuades</option>
+<option value="e17-punctuation-meaning.html">Punctuation That Changes the Meaning</option>
+<option value="e18-clauses-parallel-usage.html">Clauses, Parallel Structure and Usage</option>
+</optgroup>
+<optgroup label="English · Grades 11–12">
+<option value="e19-literary-devices.html">Literary Devices</option>
+<option value="e20-diction-and-syntax.html">Diction and Syntax</option>
+<option value="e21-reasoning-and-fallacies.html">Reasoning and Fallacies</option>
+<option value="e22-advanced-punctuation.html">Advanced Punctuation</option>
+<option value="e23-concision-and-style.html">Concision and Style</option>
+<option value="e24-capstone.html">Capstone — Research, Cite, Defend</option>
+</optgroup>
+<optgroup label="Spanish · Grades K–2">
+<option value="sp13-five-vowels.html">Five Vowels That Never Change</option>
+<option value="sp14-colors-numbers.html">Colors and Counting to Twenty</option>
+<option value="sp15-el-and-la.html">El and La — Naming What Is Here</option>
+<option value="sp16-one-and-many.html">One and Many, Big and Little</option>
+</optgroup>
+<optgroup label="Spanish · Grades 3–5">
+<option value="sp17-whole-thought.html">A Whole Thought in Spanish</option>
+<option value="sp18-soy-estoy.html">Soy and Estoy — Who I Am, How I Am</option>
+<option value="sp19-who-where-when.html">Who, Where, When, Why</option>
+<option value="sp20-first-then-last.html">First, Then, Last — Telling a Day</option>
+</optgroup>
+<optgroup label="Spanish · Grades 6–8">
+<option value="sp1-greetings.html">Greetings and Introductions</option>
+<option value="sp2-numbers-time.html">Numbers, Time and Dates</option>
+<option value="sp3-classroom-nouns.html">The Classroom — Nouns and Articles</option>
+<option value="sp4-ser-estar.html">Ser, Estar and Describing People</option>
+</optgroup>
+<optgroup label="Spanish · Grades 9–10">
+<option value="sp5-present-tense.html">The Present Tense</option>
+<option value="sp6-tener-gustar.html">Tener, Gustar and Stem Changes</option>
+<option value="sp7-preterite.html">The Preterite</option>
+<option value="sp8-imperfect.html">The Imperfect and Telling a Story</option>
+</optgroup>
+<optgroup label="Spanish · Grades 11–12">
+<option value="sp9-pronouns-commands.html">Pronouns, Reflexives and Commands</option>
+<option value="sp10-subjunctive.html">The Subjunctive</option>
+<option value="sp11-world-register.html">The Spanish-Speaking World and Register</option>
+<option value="sp12-capstone.html">Capstone — Present and Defend</option>
+</optgroup>
+<optgroup label="Family &amp; Consumer Sciences · Grades K–2">
+<option value="fc13-clean-hands.html">Clean Hands</option>
+<option value="fc14-hot-cold-sharp.html">Hot, Cold and Sharp</option>
+<option value="fc15-everyday-sometimes.html">Everyday Food and Sometimes Food</option>
+<option value="fc16-job-to-the-end.html">A Job Done to the End</option>
+</optgroup>
+<optgroup label="Family &amp; Consumer Sciences · Grades 3–5">
+<option value="fc17-measure-it-right.html">Measure It Right</option>
+<option value="fc18-needle-and-button.html">The Needle and the Button</option>
+<option value="fc19-money-and-choices.html">Money and Choices</option>
+<option value="fc20-plan-cook-clean.html">Plan It, Cook It, Clean It Up</option>
+</optgroup>
+<optgroup label="Family &amp; Consumer Sciences · Grades 6–8">
+<option value="fc1-kitchen-safety.html">Kitchen Safety and Sanitation</option>
+<option value="fc2-knife-skills.html">Knife Skills</option>
+<option value="fc3-measuring-recipes.html">Measuring and Reading a Recipe</option>
+<option value="fc4-hand-sewing.html">Hand Sewing</option>
+</optgroup>
+<optgroup label="Family &amp; Consumer Sciences · Grades 9–10">
+<option value="fc5-sewing-machine.html">The Sewing Machine</option>
+<option value="fc6-fabric-patterns.html">Fabric, Fibers and Patterns</option>
+<option value="fc7-cooking-methods.html">Cooking Methods and Heat</option>
+<option value="fc8-nutrition.html">Nutrition and Meal Planning</option>
+</optgroup>
+<optgroup label="Family &amp; Consumer Sciences · Grades 11–12">
+<option value="fc9-food-science.html">Food Science</option>
+<option value="fc10-child-development.html">Child Development and Care</option>
+<option value="fc11-independent-living.html">Independent Living and Money</option>
+<option value="fc12-capstone.html">Capstone — Plan, Cost, Produce</option>
+</optgroup>
+<optgroup label="World Religions · Grades 9–10">
+<option value="r1-reading-sacred-texts.html">How to Read a Sacred Text</option>
+<option value="r2-hebrew-bible.html">The Hebrew Bible</option>
+<option value="r3-new-testament.html">The New Testament</option>
+<option value="r4-judaism.html">Judaism</option>
+<option value="r5-islam.html">Islam</option>
+<option value="r6-hinduism.html">Hinduism</option>
+</optgroup>
+<optgroup label="World Religions · Grades 11–12">
+<option value="r7-buddhism.html">Buddhism</option>
+<option value="r8-confucianism-daoism.html">Confucianism and Daoism</option>
+<option value="r9-sikhism-jainism-africa-americas.html">Sikhism, Jainism, Africa and the Americas</option>
+<option value="r10-religion-and-the-world.html">Religion and the World</option>
+<option value="r11-one-question-many-lenses.html">One Question, Many Lenses</option>
+<option value="r12-capstone.html">Capstone</option>
+</optgroup></select></div>
+<script>
+(function(){ var s = document.getElementById("unitSel");
+  if(s) s.addEventListener("change", function(){ if(s.value) location.href = s.value; });
+})();
+</script>
+<!-- /AOG-JUMP-V2 -->
+<div class="jump no-print"><label for="jumpSel"><span data-en="Jump to an activity" data-es="Ir a una actividad">Jump to an activity</span></label>
+<select id="jumpSel">
+<option value="" selected data-en="Choose an activity…" data-es="Elige una actividad…">Choose an activity…</option>
+<optgroup label="What a fraction is">
+<option value="c1-cut-it-fair.html" data-en="Activity 1 · Cut It Fair" data-es="Actividad 1 · Córtalo justo">Activity 1 · Cut It Fair</option>
+<option value="c2-top-and-bottom.html" data-en="Activity 2 · Top and Bottom" data-es="Actividad 2 · Arriba y abajo">Activity 2 · Top and Bottom</option>
+<option value="c3-more-than-a-whole.html" data-en="Activity 3 · More Than a Whole?" data-es="Actividad 3 · ¿Más que un entero?">Activity 3 · More Than a Whole?</option>
+<option value="c4-close-to-what.html" data-en="Activity 4 · Close To What?" data-es="Actividad 4 · ¿Cerca de qué?">Activity 4 · Close To What?</option>
+<option value="c5-which-is-bigger.html" data-en="Activity 5 · Which Is Bigger?" data-es="Actividad 5 · ¿Cuál es más grande?">Activity 5 · Which Is Bigger?</option>
+<option value="c6-same-amount-new-name.html" data-en="Activity 6 · Same Amount, New Name" data-es="Actividad 6 · La misma cantidad, otro nombre">Activity 6 · Same Amount, New Name</option>
+</optgroup>
+<optgroup label="Numbers that tell a story">
+<option value="c7-make-it-even.html" data-en="Activity 7 · Make It Even" data-es="Actividad 7 · Empareja las torres">Activity 7 · Make It Even</option>
+<option value="c8-the-middle-number.html" data-en="Activity 8 · The Middle Number" data-es="Actividad 8 · El número del medio">Activity 8 · The Middle Number</option>
+<option value="c9-the-odd-one-out.html" data-en="Activity 9 · The Odd One Out" data-es="Actividad 9 · El que no encaja">Activity 9 · The Odd One Out</option>
+<option value="c10-stems-and-leaves.html" data-en="Activity 10 · Stems and Leaves" data-es="Actividad 10 · Tallos y hojas">Activity 10 · Stems and Leaves</option>
+<option value="c11-x-marks-the-number.html" data-en="Activity 11 · X Marks the Number" data-es="Actividad 11 · La X marca el número">Activity 11 · X Marks the Number</option>
+</optgroup>
+<optgroup label="The operations that carry everything">
+<option value="c12-bring-it-down.html" data-en="Activity 12 · Bring It Down" data-es="Actividad 12 · Bájalo">Activity 12 · Bring It Down</option>
+<option value="c13-trade-a-ten.html" data-en="Activity 13 · Trade a Ten" data-es="Actividad 13 · Cambia una decena">Activity 13 · Trade a Ten</option>
+</optgroup>
+</select></div>
+<script>
+(function(){ var s = document.getElementById("jumpSel");
+  if(s) s.addEventListener("change", function(){ if(s.value) location.href = s.value; });
+})();
+</script>
+
+  <section class="strand" aria-labelledby="s1h">
+    <div class="strand-head">
+      <span class="k" data-en="Strand 1 · Fractions" data-es="Línea 1 · Fracciones">Strand 1 · Fractions</span>
+      <h2 id="s1h" data-en="What a fraction is" data-es="Qué es una fracción">What a fraction is</h2>
+    </div>
+    <p class="say" data-en="Before we ever add fractions, we learn what one IS. Cut things fairly, name the parts, and see where fractions live on the number line." data-es="Antes de sumar fracciones, aprendemos qué ES una. Corta las cosas de forma justa, nombra las partes y mira dónde viven las fracciones en la recta numérica.">Before we ever add fractions, we learn what one IS. Cut things fairly, name the parts, and see where fractions live on the number line.</p>
+    <div class="cards">
+      <div class="cwrap">
+      <a class="card" href="c1-cut-it-fair.html">
+        <h3 data-en="Cut It Fair" data-es="Córtalo justo">Cut It Fair</h3>
+        <p class="what" data-en="Cut a whole into equal parts. Fair shares are where every fraction begins." data-es="Corta un entero en partes iguales. Las partes justas son donde empieza toda fracción.">Cut a whole into equal parts. Fair shares are where every fraction begins.</p>
+        <span class="go" data-en="Open →" data-es="Abrir →">Open →</span>
+      </a>
+        <div class="mfoot no-print"><button class="btn" type="button" data-beam="c1" data-wk="Activity 1" data-wk-es="Actividad 1" data-name="Cut It Fair" data-name-es="Córtalo justo" data-en="Show on the board" data-es="Mostrar en la pizarra">Show on the board</button></div>
+      </div>
+      <div class="cwrap">
+      <a class="card" href="c2-top-and-bottom.html">
+        <h3 data-en="Top and Bottom" data-es="Arriba y abajo">Top and Bottom</h3>
+        <p class="what" data-en="The bottom counts the parts. The top says how many you mean. Numerator and denominator, plainly." data-es="El de abajo cuenta las partes. El de arriba dice cuántas tomas. Numerador y denominador, sin misterio.">The bottom counts the parts. The top says how many you mean. Numerator and denominator, plainly.</p>
+        <span class="go" data-en="Open →" data-es="Abrir →">Open →</span>
+      </a>
+        <div class="mfoot no-print"><button class="btn" type="button" data-beam="c2" data-wk="Activity 2" data-wk-es="Actividad 2" data-name="Top and Bottom" data-name-es="Arriba y abajo" data-en="Show on the board" data-es="Mostrar en la pizarra">Show on the board</button></div>
+      </div>
+      <div class="cwrap">
+      <a class="card" href="c3-more-than-a-whole.html">
+        <h3 data-en="More Than a Whole?" data-es="¿Más que un entero?">More Than a Whole?</h3>
+        <p class="what" data-en="Some fractions are smaller than 1. Some are exactly 1. Some spill over. Tell them apart." data-es="Algunas fracciones son menores que 1. Algunas son exactamente 1. Algunas se desbordan. Distínguelas.">Some fractions are smaller than 1. Some are exactly 1. Some spill over. Tell them apart.</p>
+        <span class="go" data-en="Open →" data-es="Abrir →">Open →</span>
+      </a>
+        <div class="mfoot no-print"><button class="btn" type="button" data-beam="c3" data-wk="Activity 3" data-wk-es="Actividad 3" data-name="More Than a Whole?" data-name-es="¿Más que un entero?" data-en="Show on the board" data-es="Mostrar en la pizarra">Show on the board</button></div>
+      </div>
+      <div class="cwrap">
+      <a class="card" href="c4-close-to-what.html">
+        <h3 data-en="Close To What?" data-es="¿Cerca de qué?">Close To What?</h3>
+        <p class="what" data-en="Every fraction lives near 0, near one-half, or near 1. Learn to feel which one." data-es="Toda fracción vive cerca del 0, cerca de un medio o cerca del 1. Aprende a sentir cuál.">Every fraction lives near 0, near one-half, or near 1. Learn to feel which one.</p>
+        <span class="go" data-en="Open →" data-es="Abrir →">Open →</span>
+      </a>
+        <div class="mfoot no-print"><button class="btn" type="button" data-beam="c4" data-wk="Activity 4" data-wk-es="Actividad 4" data-name="Close To What?" data-name-es="¿Cerca de qué?" data-en="Show on the board" data-es="Mostrar en la pizarra">Show on the board</button></div>
+      </div>
+      <div class="cwrap">
+      <a class="card" href="c5-which-is-bigger.html">
+        <h3 data-en="Which Is Bigger?" data-es="¿Cuál es más grande?">Which Is Bigger?</h3>
+        <p class="what" data-en="Compare fractions with circles and bars. The pictures decide — and sometimes they tie." data-es="Compara fracciones con círculos y barras. Los dibujos deciden — y a veces empatan.">Compare fractions with circles and bars. The pictures decide — and sometimes they tie.</p>
+        <span class="go" data-en="Open →" data-es="Abrir →">Open →</span>
+      </a>
+        <div class="mfoot no-print"><button class="btn" type="button" data-beam="c5" data-wk="Activity 5" data-wk-es="Actividad 5" data-name="Which Is Bigger?" data-name-es="¿Cuál es más grande?" data-en="Show on the board" data-es="Mostrar en la pizarra">Show on the board</button></div>
+      </div>
+      <div class="cwrap">
+      <a class="card" href="c6-same-amount-new-name.html">
+        <h3 data-en="Same Amount, New Name" data-es="La misma cantidad, otro nombre">Same Amount, New Name</h3>
+        <p class="what" data-en="One-half and two-fourths are the same amount wearing different names. Line the bars up and see it." data-es="Un medio y dos cuartos son la misma cantidad con nombres distintos. Alinea las barras y míralo.">One-half and two-fourths are the same amount wearing different names. Line the bars up and see it.</p>
+        <span class="go" data-en="Open →" data-es="Abrir →">Open →</span>
+      </a>
+        <div class="mfoot no-print"><button class="btn" type="button" data-beam="c6" data-wk="Activity 6" data-wk-es="Actividad 6" data-name="Same Amount, New Name" data-name-es="La misma cantidad, otro nombre" data-en="Show on the board" data-es="Mostrar en la pizarra">Show on the board</button></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="strand" aria-labelledby="s2h">
+    <div class="strand-head">
+      <span class="k" data-en="Strand 2 · Data" data-es="Línea 2 · Datos">Strand 2 · Data</span>
+      <h2 id="s2h" data-en="Numbers that tell a story" data-es="Números que cuentan una historia">Numbers that tell a story</h2>
+    </div>
+    <p class="say" data-en="A pile of numbers is just a pile until you organize it. Level it, order it, plot it — and it starts talking." data-es="Un montón de números es solo un montón hasta que lo organizas. Empareja, ordena, grafica — y empieza a hablar.">A pile of numbers is just a pile until you organize it. Level it, order it, plot it — and it starts talking.</p>
+    <div class="cards">
+      <div class="cwrap">
+      <a class="card" href="c7-make-it-even.html">
+        <h3 data-en="Make It Even" data-es="Empareja las torres">Make It Even</h3>
+        <p class="what" data-en="Move blocks between towers until they match. The even height is the mean — no formula needed yet." data-es="Mueve bloques entre torres hasta que queden iguales. La altura pareja es la media — todavía sin fórmula.">Move blocks between towers until they match. The even height is the mean — no formula needed yet.</p>
+        <span class="go" data-en="Open →" data-es="Abrir →">Open →</span>
+      </a>
+        <div class="mfoot no-print"><button class="btn" type="button" data-beam="c7" data-wk="Activity 7" data-wk-es="Actividad 7" data-name="Make It Even" data-name-es="Empareja las torres" data-en="Show on the board" data-es="Mostrar en la pizarra">Show on the board</button></div>
+      </div>
+      <div class="cwrap">
+      <a class="card" href="c8-the-middle-number.html">
+        <h3 data-en="The Middle Number" data-es="El número del medio">The Middle Number</h3>
+        <p class="what" data-en="Line the numbers up smallest to largest. The middle one is the median; the stretch is the range." data-es="Forma los números de menor a mayor. El del medio es la mediana; el estirón es el rango.">Line the numbers up smallest to largest. The middle one is the median; the stretch is the range.</p>
+        <span class="go" data-en="Open →" data-es="Abrir →">Open →</span>
+      </a>
+        <div class="mfoot no-print"><button class="btn" type="button" data-beam="c8" data-wk="Activity 8" data-wk-es="Actividad 8" data-name="The Middle Number" data-name-es="El número del medio" data-en="Show on the board" data-es="Mostrar en la pizarra">Show on the board</button></div>
+      </div>
+      <div class="cwrap">
+      <a class="card" href="c9-the-odd-one-out.html">
+        <h3 data-en="The Odd One Out" data-es="El que no encaja">The Odd One Out</h3>
+        <p class="what" data-en="One number sits far from the rest — and it drags the mean. Find it, and see what it does." data-es="Un número queda lejos del resto — y arrastra la media. Encuéntralo y mira lo que hace.">One number sits far from the rest — and it drags the mean. Find it, and see what it does.</p>
+        <span class="go" data-en="Open →" data-es="Abrir →">Open →</span>
+      </a>
+        <div class="mfoot no-print"><button class="btn" type="button" data-beam="c9" data-wk="Activity 9" data-wk-es="Actividad 9" data-name="The Odd One Out" data-name-es="El que no encaja" data-en="Show on the board" data-es="Mostrar en la pizarra">Show on the board</button></div>
+      </div>
+      <div class="cwrap">
+      <a class="card" href="c10-stems-and-leaves.html">
+        <h3 data-en="Stems and Leaves" data-es="Tallos y hojas">Stems and Leaves</h3>
+        <p class="what" data-en="Sort two-digit numbers into stems and leaves, and a picture of the whole class appears." data-es="Ordena números de dos cifras en tallos y hojas, y aparece un retrato de todo el grupo.">Sort two-digit numbers into stems and leaves, and a picture of the whole class appears.</p>
+        <span class="go" data-en="Open →" data-es="Abrir →">Open →</span>
+      </a>
+        <div class="mfoot no-print"><button class="btn" type="button" data-beam="c10" data-wk="Activity 10" data-wk-es="Actividad 10" data-name="Stems and Leaves" data-name-es="Tallos y hojas" data-en="Show on the board" data-es="Mostrar en la pizarra">Show on the board</button></div>
+      </div>
+      <div class="cwrap">
+      <a class="card" href="c11-x-marks-the-number.html">
+        <h3 data-en="X Marks the Number" data-es="La X marca el número">X Marks the Number</h3>
+        <p class="what" data-en="Stack an X for every answer and a line plot grows. Then let it answer your questions." data-es="Apila una X por cada respuesta y crece un diagrama de puntos. Luego deja que responda tus preguntas.">Stack an X for every answer and a line plot grows. Then let it answer your questions.</p>
+        <span class="go" data-en="Open →" data-es="Abrir →">Open →</span>
+      </a>
+        <div class="mfoot no-print"><button class="btn" type="button" data-beam="c11" data-wk="Activity 11" data-wk-es="Actividad 11" data-name="X Marks the Number" data-name-es="La X marca el número" data-en="Show on the board" data-es="Mostrar en la pizarra">Show on the board</button></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="strand" aria-labelledby="s3h">
+    <div class="strand-head">
+      <span class="k" data-en="Strand 3 · Whole Numbers" data-es="Línea 3 · Números enteros">Strand 3 · Whole Numbers</span>
+      <h2 id="s3h" data-en="The operations that carry everything" data-es="Las operaciones que lo cargan todo">The operations that carry everything</h2>
+    </div>
+    <p class="say" data-en="Two rituals worth owning for life: take-away with trading, and long division. Both are walked one column at a time, with every move written — no number is too big for them." data-es="Dos rituales que valen para toda la vida: la resta con cambios y la división larga. Los dos se caminan una columna a la vez, con cada paso escrito — ningún número es demasiado grande para ellos.">Two rituals worth owning for life: take-away with trading, and long division. Both are walked one column at a time, with every move written — no number is too big for them.</p>
+    <div class="cards">
+      <div class="cwrap">
+      <a class="card" href="c12-bring-it-down.html">
+        <h3 data-en="Bring It Down" data-es="Bájalo">Bring It Down</h3>
+        <p class="what" data-en="Long division as four small moves — divide, multiply, subtract, bring down — from one-digit divisors up to two digits into five-digit numbers." data-es="La división larga como cuatro pasos pequeños — divide, multiplica, resta, baja — desde divisores de un dígito hasta dos dígitos entre números de cinco cifras.">Long division as four small moves — divide, multiply, subtract, bring down — from one-digit divisors up to two digits into five-digit numbers.</p>
+        <span class="go" data-en="Open →" data-es="Abrir →">Open →</span>
+      </a>
+        <div class="mfoot no-print"><button class="btn" type="button" data-beam="c12" data-wk="Activity 12" data-wk-es="Actividad 12" data-name="Bring It Down" data-name-es="Bájalo" data-en="Show on the board" data-es="Mostrar en la pizarra">Show on the board</button></div>
+      </div>
+      <div class="cwrap">
+      <a class="card" href="c13-trade-a-ten.html">
+        <h3 data-en="Trade a Ten" data-es="Cambia una decena">Trade a Ten</h3>
+        <p class="what" data-en="Column subtraction with regrouping — take what you can, trade when you can&rsquo;t, zeros included, up to five-digit numbers." data-es="Resta en columnas con reagrupación — quita lo que puedas, cambia cuando no puedas, con ceros incluidos, hasta números de cinco cifras.">Column subtraction with regrouping — take what you can, trade when you can&rsquo;t, zeros included, up to five-digit numbers.</p>
+        <span class="go" data-en="Open →" data-es="Abrir →">Open →</span>
+      </a>
+        <div class="mfoot no-print"><button class="btn" type="button" data-beam="c13" data-wk="Activity 13" data-wk-es="Actividad 13" data-name="Trade a Ten" data-name-es="Cambia una decena" data-en="Show on the board" data-es="Mostrar en la pizarra">Show on the board</button></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="vocab" aria-labelledby="vh">
+    <h2 id="vh" data-en="The words we're learning" data-es="Las palabras que estamos aprendiendo">The words we're learning</h2>
+    <p class="say" data-en="Every word below is taught inside an activity — never as a list to memorize. This is just so you can see them all in one place." data-es="Cada palabra de abajo se enseña dentro de una actividad — nunca como lista para memorizar. Esto es solo para verlas todas en un lugar.">Every word below is taught inside an activity — never as a list to memorize. This is just so you can see them all in one place.</p>
+    <div class="cols">
+      <div class="col">
+        <span class="k" data-en="Fractions" data-es="Fracciones">Fractions</span>
+        <ul>
+          <li data-en="fair shares" data-es="partes justas">fair shares</li>
+          <li data-en="fractional parts" data-es="partes fraccionarias">fractional parts</li>
+          <li data-en="numerator" data-es="numerador">numerator</li>
+          <li data-en="denominator" data-es="denominador">denominator</li>
+          <li data-en="benchmark" data-es="punto de referencia">benchmark</li>
+          <li data-en="fraction bars" data-es="barras de fracciones">fraction bars</li>
+          <li data-en="equivalent fractions" data-es="fracciones equivalentes">equivalent fractions</li>
+          <li data-en="infinite" data-es="infinito">infinite</li>
+        </ul>
+      </div>
+      <div class="col">
+        <span class="k" data-en="Data" data-es="Datos">Data</span>
+        <ul>
+          <li data-en="average / mean" data-es="promedio / media">average / mean</li>
+          <li data-en="median" data-es="mediana">median</li>
+          <li data-en="range" data-es="rango">range</li>
+          <li data-en="minimum" data-es="mínimo">minimum</li>
+          <li data-en="maximum" data-es="máximo">maximum</li>
+          <li data-en="outlier" data-es="valor atípico">outlier</li>
+          <li data-en="stem-and-leaf plot" data-es="diagrama de tallo y hojas">stem-and-leaf plot</li>
+          <li data-en="stem · leaf" data-es="tallo · hoja">stem · leaf</li>
+          <li data-en="line plot" data-es="diagrama de puntos">line plot</li>
+        </ul>
+      </div>
+      <div class="col">
+        <span class="k" data-en="Whole numbers" data-es="Números enteros">Whole numbers</span>
+        <ul>
+          <li data-en="dividend · divisor" data-es="dividendo · divisor">dividend · divisor</li>
+          <li data-en="quotient" data-es="cociente">quotient</li>
+          <li data-en="remainder" data-es="residuo">remainder</li>
+          <li data-en="regroup / trade" data-es="reagrupar / cambiar">regroup / trade</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <details class="teach">
+    <summary data-en="For the teacher" data-es="Para el maestro">For the teacher</summary>
+    <div class="inner">
+      <p data-en="&lt;b&gt;The order is the pedagogy.&lt;/b&gt; Activities 1–6 build the concept of a fraction before any operation on one; 7–11 build statistics from organizing data, not from formulas. Run them in order the first time; after that, any activity works as a warm-up or a re-probe." data-es="&lt;b&gt;El orden es la pedagogía.&lt;/b&gt; Las actividades 1–6 construyen el concepto de fracción antes de operar con una; las 7–11 construyen la estadística organizando datos, no con fórmulas. Córrelas en orden la primera vez; después, cualquiera sirve de calentamiento o re-sondeo.">&lt;b&gt;The order is the pedagogy.&lt;/b&gt; Activities 1–6 build the concept of a fraction before any operation on one; 7–11 build statistics from organizing data, not from formulas. Run them in order the first time; after that, any activity works as a warm-up or a re-probe.</p>
+      <p data-en="&lt;b&gt;Every activity holds three sets&lt;/b&gt; — the same skills with different numbers — so the same student can be probed three weeks running without being measured on memory. The teacher panel at the bottom of each page builds the probe row (independent · supported · hints · confidence) for you." data-es="&lt;b&gt;Cada actividad tiene tres grupos&lt;/b&gt; — las mismas destrezas con otros números — para sondear al mismo estudiante tres semanas seguidas sin medir su memoria. El panel del maestro al final de cada página te arma la fila de sondeo (independiente · con apoyo · pistas · confianza).">&lt;b&gt;Every activity holds three sets&lt;/b&gt; — the same skills with different numbers — so the same student can be probed three weeks running without being measured on memory. The teacher panel at the bottom of each page builds the probe row (independent · supported · hints · confidence) for you.</p>
+      <div class="step"><span class="n">1</span><p data-en="&lt;b&gt;Send a link, get a row back.&lt;/b&gt; Share any activity's address with a student (or show it on the board). When the page can reach your Sheet, a Send button appears after a finished set — one tap posts one row to the &lt;b&gt;Practice&lt;/b&gt; tab of your Google Sheet: activity, set, independent, supported, hints, confidence, and the first name the student types. Nothing else ever travels." data-es="&lt;b&gt;Envía un enlace, recibe una fila.&lt;/b&gt; Comparte la dirección de cualquier actividad con un estudiante (o muéstrala en la pizarra). Cuando la página alcanza tu hoja, aparece un botón Enviar al terminar un grupo — un toque publica una fila en la pestaña &lt;b&gt;Practice&lt;/b&gt; de tu hoja de Google: actividad, grupo, independiente, con apoyo, pistas, confianza y el nombre que el estudiante escribe. Nada más viaja jamás.">&lt;b&gt;Send a link, get a row back.&lt;/b&gt; Share any activity's address with a student (or show it on the board). When the page can reach your Sheet, a Send button appears after a finished set — one tap posts one row to the &lt;b&gt;Practice&lt;/b&gt; tab of your Google Sheet: activity, set, independent, supported, hints, confidence, and the first name the student types. Nothing else ever travels.</p></div>
+      <div class="step"><span class="n">2</span><p data-en="&lt;b&gt;A bare link stays private.&lt;/b&gt; On a device with no path to your Sheet, the Send button never appears and the page is exactly what it says: nothing leaves the computer. The lock section on every page tells the student the truth for the mode it is in." data-es="&lt;b&gt;Un enlace sin destino queda privado.&lt;/b&gt; En un dispositivo sin camino a tu hoja, el botón Enviar nunca aparece y la página es exactamente lo que dice: nada sale de la computadora. La sección del candado en cada página le dice al estudiante la verdad del modo en que está.">&lt;b&gt;A bare link stays private.&lt;/b&gt; On a device with no path to your Sheet, the Send button never appears and the page is exactly what it says: nothing leaves the computer. The lock section on every page tells the student the truth for the mode it is in.</p></div>
+      <p data-en="&lt;b&gt;Every activity in this series — and every Social Studies activity — opens three doors.&lt;/b&gt; A student who wants to see one first taps &lt;b&gt;Show me one first&lt;/b&gt; and the page walks a worked example at their pace — watching is instruction, never a trial. The eight problems are the middle door. And after the close card, &lt;b&gt;One more, if you want it&lt;/b&gt; offers a single honest stretch — optional every time, and declining is named as a strong move too. The probe row records all three (demo watched · 8-count · stretch), so one page serves your lowest and your highest learner without either being singled out. (The Interior Math and Science Vocabulary pages open the first two doors — the worked example and the set — not yet the stretch.)" data-es="&lt;b&gt;Cada actividad de esta serie — y cada actividad de Estudios Sociales — abre tres puertas.&lt;/b&gt; El estudiante que quiere ver uno primero toca &lt;b&gt;Muéstrame uno primero&lt;/b&gt; y la página camina un ejemplo a su ritmo — mirar es enseñanza, nunca un intento. Los ocho problemas son la puerta del medio. Y tras la tarjeta de cierre, &lt;b&gt;Uno más, si quieres&lt;/b&gt; ofrece un solo reto honesto — opcional siempre, y decir que no también se nombra como una decisión fuerte. La fila de sondeo registra las tres (ejemplo visto · los ocho · reto), así que una misma página sirve a tu estudiante más bajo y al más alto sin señalar a ninguno. (Las páginas de Matemáticas del Interior y Vocabulario de Ciencias abren las dos primeras puertas — el ejemplo resuelto y el grupo — todavía no el reto.)">&lt;b&gt;Every activity in this series — and every Social Studies activity — opens three doors.&lt;/b&gt; A student who wants to see one first taps &lt;b&gt;Show me one first&lt;/b&gt; and the page walks a worked example at their pace — watching is instruction, never a trial. The eight problems are the middle door. And after the close card, &lt;b&gt;One more, if you want it&lt;/b&gt; offers a single honest stretch — optional every time, and declining is named as a strong move too. The probe row records all three (demo watched · 8-count · stretch), so one page serves your lowest and your highest learner without either being singled out. (The Interior Math and Science Vocabulary pages open the first two doors — the worked example and the set — not yet the stretch.)</p>
+      <p data-en="&lt;b&gt;Confidence is never a score.&lt;/b&gt; The 1–5 at the end of each activity is the student's own read of themselves. It goes in the row so you can watch it move — it is never averaged with anything." data-es="&lt;b&gt;La confianza nunca es una calificación.&lt;/b&gt; El 1–5 al final de cada actividad es la lectura que el estudiante hace de sí mismo. Va en la fila para que veas cómo se mueve — nunca se promedia con nada.">&lt;b&gt;Confidence is never a score.&lt;/b&gt; The 1–5 at the end of each activity is the student's own read of themselves. It goes in the row so you can watch it move — it is never averaged with anything.</p>
+    </div>
+  </details>
+
+  <div class="next">
+    <span class="k" data-en="Coming next" data-es="Lo que sigue">Coming next</span>
+    <p data-en="The next unit continues this series: adding and subtracting fractions, and converting units of measurement — built the same way, numbered from Activity 12." data-es="La siguiente unidad continúa esta serie: sumar y restar fracciones, y convertir unidades de medida — construida igual, numerada desde la Actividad 12.">The next unit continues this series: adding and subtracting fractions, and converting units of measurement — built the same way, numbered from Activity 12.</p>
+  </div>
+
+<section class="vocab" id="standards" aria-labelledby="stdh">
+  <h2 id="stdh" data-en="Standards alignment" data-es="Alineaci&oacute;n con los est&aacute;ndares">Standards alignment</h2>
+  <p class="say" data-en="This series serves a small self-contained class, so the anchors span grade levels on purpose &mdash; each code names the concept&rsquo;s home in the Common Core, not a grade-level claim about the students working on it." data-es="Esta serie sirve a una clase peque&ntilde;a auto-contenida, as&iacute; que las anclas cruzan niveles de grado a prop&oacute;sito &mdash; cada c&oacute;digo nombra el hogar del concepto en Common Core, no una afirmaci&oacute;n sobre el grado de los estudiantes.">This series serves a small self-contained class, so the anchors span grade levels on purpose &mdash; each code names the concept&rsquo;s home in the Common Core, not a grade-level claim about the students working on it.</p>
+  <div style="overflow-x:auto"><table class="wordtable"><tbody>
+    <tr><td class="w">c1</td><td class="d">Cut It Fair &mdash; CCSS 3.G.A.2 &middot; 3.NF.A.1</td></tr>
+    <tr><td class="w">c2</td><td class="d">Top and Bottom &mdash; CCSS 3.NF.A.1</td></tr>
+    <tr><td class="w">c3</td><td class="d">More Than a Whole? &mdash; CCSS 4.NF.B.3c</td></tr>
+    <tr><td class="w">c4</td><td class="d">Close To What? &mdash; CCSS 4.NF.A.2 (benchmarks)</td></tr>
+    <tr><td class="w">c5</td><td class="d">Which Is Bigger? &mdash; CCSS 4.NF.A.2</td></tr>
+    <tr><td class="w">c6</td><td class="d">Same Amount, New Name &mdash; CCSS 4.NF.A.1</td></tr>
+    <tr><td class="w">c7</td><td class="d">Make It Even &mdash; CCSS 6.SP.B.5c (mean)</td></tr>
+    <tr><td class="w">c8</td><td class="d">The Middle Number &mdash; CCSS 6.SP.B.5c (median)</td></tr>
+    <tr><td class="w">c9</td><td class="d">The Odd One Out &mdash; CCSS 6.SP.B.5c (mode &amp; outliers)</td></tr>
+    <tr><td class="w">c10</td><td class="d">Stems and Leaves &mdash; CCSS 6.SP.B.4</td></tr>
+    <tr><td class="w">c11</td><td class="d">X Marks the Number &mdash; CCSS 6.EE.B.5</td></tr>
+    <tr><td class="w">c12</td><td class="d">Bring It Down &mdash; CCSS 6.NS.B.2 (builds from 4.NBT.B.6)</td></tr>
+    <tr><td class="w">c13</td><td class="d">Trade a Ten &mdash; CCSS 3.NBT.A.2 (regrouping)</td></tr>
+  </tbody></table></div>
+</section>
+
+</main>
+
+<footer class="foot wrap">
+  <p><b>Architecture of Grace · Mathematics — Number Concepts &amp; Data.</b></p>
+  <p data-en="This page loads no fonts, scripts, or images from the internet and sends nothing out — it works with the network off. It is not a district product and carries no district endorsement." data-es="Esta página no carga fuentes, scripts ni imágenes de internet y no envía nada — funciona con la red apagada. No es un producto del distrito ni cuenta con su respaldo.">This page loads no fonts, scripts, or images from the internet and sends nothing out — it works with the network off. It is not a district product and carries no district endorsement.</p>
+</footer>
+
+<script>
+(function(){
+  "use strict";
+  var KEY = "aog.interior.ws.v1.";
+  var lang = "en";
+
+  function T(en, es){ return lang==="es" ? es : en; }
+
+  function paintLang(){
+    document.documentElement.lang = lang;
+    var nodes = document.querySelectorAll("[data-en]");
+    Array.prototype.forEach.call(nodes, function(n){
+      var v = (lang==="es") ? n.getAttribute("data-es") : n.getAttribute("data-en");
+      if(v==null) return;
+      if(v.indexOf("&lt;")!==-1 || v.indexOf("<")!==-1){ n.innerHTML = v; } else { n.textContent = v; }
+    });
+    var pEn = document.getElementById("aogLangEn"), pEs = document.getElementById("aogLangEs");
+    if(pEn) pEn.classList.toggle("on", lang!=="es");
+    if(pEs) pEs.classList.toggle("on", lang==="es");
+    paintTheme();
+  }
+
+  /* ══ THEME — same storage the activities use, so the room matches ══ */
+  var tBtn = document.getElementById("aogThemeBtn");
+  function prefersDark(){ return window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches; }
+  function currentIsDark(){
+    var s = document.documentElement.getAttribute("data-theme");
+    return s ? s==="dark" : prefersDark();
+  }
+  function paintTheme(){
+    /* ⚠ LABEL ONLY. The button holds two <svg>s (sun/moon) that CSS
+       shows and hides by data-theme; writing .textContent here would
+       delete them and leave an empty square. */
+    var lab = currentIsDark() ? T("Switch to light","Cambiar a claro")
+                              : T("Switch to dark","Cambiar a oscuro");
+    if(tBtn){ tBtn.setAttribute("aria-label", lab); tBtn.setAttribute("title", lab); }
+  }
+  /* ⚠⚠ SHARED WITH THE REST OF THE SITE. This used to live under this
+     page's own KEY, so switching to dark here and walking home put you
+     back in light. index.html stores it at "aog.theme"; so do we. The
+     old key is read once and carried over, so nobody loses a setting. */
+  var THEME_KEY = "aog.theme";
+  try{
+    var stored = localStorage.getItem(THEME_KEY);
+    if(!stored){
+      var oldT = localStorage.getItem(KEY+"theme");
+      if(oldT){ stored = oldT; localStorage.setItem(THEME_KEY, oldT); }
+    }
+    if(stored) document.documentElement.setAttribute("data-theme", stored);
+  }catch(e){}
+  if(window.matchMedia){
+    var mq = window.matchMedia("(prefers-color-scheme: dark)");
+    if(mq.addEventListener) mq.addEventListener("change", paintTheme);
+    else if(mq.addListener) mq.addListener(paintTheme);
+  }
+  if(tBtn) tBtn.addEventListener("click", function(){
+    var next = currentIsDark() ? "light" : "dark";
+    document.documentElement.setAttribute("data-theme", next);
+    try{ localStorage.setItem(THEME_KEY, next); }catch(e){}
+    paintTheme();
+  });
+
+  try{ var sl = localStorage.getItem(KEY+"lang"); if(sl==="es"||sl==="en") lang = sl; }catch(e){}
+  /* EN|ES is a two-button segmented control now, not one toggle: the
+     student can see which language they are in without having to read
+     the button that would change it. */
+  function pickLang(v){
+    return function(){
+      if(lang === v) return;
+      lang = v;
+      try{ localStorage.setItem(KEY+"lang", lang); }catch(e){}
+      paintLang();
+    };
+  }
+  var bEn = document.getElementById("aogLangEn"), bEs = document.getElementById("aogLangEs");
+  if(bEn) bEn.addEventListener("click", pickLang("en"));
+  if(bEs) bEs.addEventListener("click", pickLang("es"));
+
+  /* ══ PROJECTOR ══ (.30fg) one beam for every door on this hub — ported from /math */
+  Array.prototype.forEach.call(document.querySelectorAll("[data-beam]"), function(btn){
+    btn.addEventListener("click", function(){
+      var host = location.hostname || "architectureofgrace.org";
+      var slug = btn.getAttribute("data-beam");
+      if(host==="localhost"||host==="127.0.0.1"||!host) host = "architectureofgrace.org";
+      var url = host.replace(/^www\./,"") + "/" + slug;
+      var es = (lang==="es");
+      var nm = (es && btn.getAttribute("data-name-es")) ? btn.getAttribute("data-name-es") : btn.getAttribute("data-name");
+      var wk = (es && btn.getAttribute("data-wk-es")) ? btn.getAttribute("data-wk-es") : btn.getAttribute("data-wk");
+      var el = document.createElement("div");
+      el.id = "beam";
+      el.setAttribute("role","dialog"); el.setAttribute("aria-label", url);
+      el.innerHTML = '<div class="x">'+T("Tap anywhere to close","Toca para cerrar")+'</div>'
+        + '<div class="wk"></div><div class="nm"></div><div class="url"></div>'
+        + '<div class="hint">'+T("Type it in the address bar.","Escríbelo en la barra de direcciones.")+'</div>';
+      el.querySelector(".wk").textContent = wk || "";
+      el.querySelector(".nm").textContent = nm || "";
+      el.querySelector(".url").textContent = url;
+      el.addEventListener("click", function(){ el.remove(); });
+      document.addEventListener("keydown", function esc(e){
+        if(e.key==="Escape"){ el.remove(); document.removeEventListener("keydown", esc); }
+      });
+      document.body.appendChild(el);
+      el.setAttribute("tabindex","-1"); el.focus();
+    });
+  });
+
+  paintLang();
+})();
+</script>
+
+
+<style>
+/* ══ AOG-SUBJECT-RAIL — emitted from _work/r36/subject_rail.py ══ */
+#aogSubRail{--srl-card:#FFFFFF;--srl-ink:#232B36;--srl-sub:#5B6472;--srl-line:#E4E1D8;--srl-chip:#EFECE4;--srl-bg:#FBFAF7;
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+:root[data-theme="dark"] #aogSubRail{--srl-card:#20262F;--srl-ink:#EDEAE2;--srl-sub:#9AA3B0;--srl-line:#333B47;--srl-chip:#2A313C;--srl-bg:#191D24}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) #aogSubRail{--srl-card:#20262F;--srl-ink:#EDEAE2;--srl-sub:#9AA3B0;--srl-line:#333B47;--srl-chip:#2A313C;--srl-bg:#191D24}}
+#aogSubRail .sr-h{font-size:.66rem;font-weight:800;letter-spacing:.13em;text-transform:uppercase;color:var(--srl-sub);margin:0 0 7px;white-space:nowrap}
+#aogSubRail .sr-i{display:block;text-align:left;border:1px solid var(--srl-line);background:var(--srl-card);color:var(--srl-ink);
+  border-left:4px solid var(--a, #1B3A5F);border-radius:10px;padding:8px 11px;cursor:pointer;font:600 .8rem/1.35 inherit;width:100%}
+#aogSubRail .sr-i:hover{border-color:var(--a, #1B3A5F)}
+#aogSubRail .sr-i[aria-current="true"]{background:var(--srl-chip);font-weight:800}
+@media(min-width:1400px){
+  #aogSubRail{position:fixed;left:16px;top:96px;width:196px;z-index:20;display:flex;flex-direction:column;gap:6px;overflow:auto;
+    max-height:calc(100vh - 140px)}
+}
+@media(max-width:1399.98px){
+  #aogSubRail.sr-anchors{position:sticky;z-index:900;display:flex;gap:7px;overflow-x:auto;-webkit-overflow-scrolling:touch;
+    background:var(--srl-bg);padding:9px 14px;border-bottom:1px solid var(--srl-line);margin:0}
+  #aogSubRail.sr-anchors .sr-h{display:none}
+  #aogSubRail.sr-anchors .sr-i{flex:0 0 auto;width:auto;white-space:nowrap}
+  #aogSubRail.sr-tabs{display:none}
+}
+@media print{#aogSubRail{display:none !important}}
+
+/* ══ AOG-PRINT-SAFE-V1 (2026-09-20) ═══════════════════════════════════════════
+   Jimmy, printing a novel study from his phone: "another pdf that gets parts of
+   the material cut off." These are the rules that keep paper honest on every
+   engine — a table row, a list item, a figure and a picture stay whole; a head
+   keeps the lines under it; no paragraph strands one line at a page edge; and a
+   long table repeats its head at the top of each page. Printed pages only. */
+@media print{
+  table{break-inside:auto; page-break-inside:auto}
+  thead{display:table-header-group}
+  tfoot{display:table-footer-group}
+  tr{break-inside:avoid; page-break-inside:avoid}
+  li,figure,img,svg{break-inside:avoid; page-break-inside:avoid}
+  h1,h2,h3,h4,h5{break-after:avoid; page-break-after:avoid}
+  p{orphans:3; widows:3}
+  /* AOG-PRINT-GRIDFIT-V1 — a CSS grid does not fragment, so a card in a grid row
+     was sliced at the page break instead of moving whole to the next page. On
+     paper the grid is ordinary blocks and each card keeps itself together. */
+  .grid,.cards{display:block!important}
+  .grid>*,.cards>*{break-inside:avoid; page-break-inside:avoid; margin:0 0 12px}
+}
+</style>
+<nav id="aogSubRail" class="sr-anchors" aria-label="On this page" hidden>
+<div class="sr-h">On this page</div>
+<button type="button" class="sr-i"><span data-en="What a fraction is" data-es="Qué es una fracción">What a fraction is</span></button>
+<button type="button" class="sr-i"><span data-en="Numbers that tell a story" data-es="Números que cuentan una historia">Numbers that tell a story</span></button>
+<button type="button" class="sr-i"><span data-en="The operations that carry everything" data-es="Las operaciones que lo cargan todo">The operations that carry everything</span></button>
+<button type="button" class="sr-i"><span data-en="The words we're learning" data-es="Las palabras que estamos aprendiendo">The words we're learning</span></button>
+</nav>
+<script>
+
+(function(){
+  var CFG = {"mode": "anchors", "mount": "header.aogtop", "sel": ["#s1h", "#s2h", "#s3h", "#vh"]};
+  var nav = document.getElementById("aogSubRail");
+  if(!nav) return;
+  var items = [].slice.call(nav.querySelectorAll(".sr-i"));
+  function mark(i){ items.forEach(function(b,j){ b.setAttribute("aria-current", String(i===j)); }); }
+
+  if(CFG.mode === "anchors"){
+    /* relocate into the flow so the sticky strip works, sized off the live bar */
+    var bar = document.querySelector(CFG.mount);
+    if(bar){ bar.insertAdjacentElement("afterend", nav); }
+    function setTop(){
+      var h = bar ? bar.offsetHeight : 0;
+      nav.style.top = (window.matchMedia("(min-width:1400px)").matches ? h + 24 : h) + "px";
+    }
+    setTop(); window.addEventListener("resize", setTop);
+    var targets = CFG.sel.map(function(s){ return document.querySelector(s); });
+    items.forEach(function(b,i){
+      b.addEventListener("click", function(){
+        var t = targets[i]; if(!t) return;
+        var y = t.getBoundingClientRect().top + window.pageYOffset - (bar ? bar.offsetHeight : 0) - 58;
+        window.scrollTo({top: y, behavior: "smooth"});
+        mark(i);
+      });
+    });
+    var tick = false;
+    function spy(){
+      tick = false;
+      var line = (bar ? bar.offsetHeight : 0) + 120, cur = 0;
+      targets.forEach(function(t,i){ if(t && t.getBoundingClientRect().top <= line) cur = i; });
+      mark(cur);
+    }
+    window.addEventListener("scroll", function(){ if(!tick){ tick = true; requestAnimationFrame(spy); } });
+    spy();
+  } else {
+    /* tabs mode — click the page's own controls, mirror their state */
+    items.forEach(function(b,i){
+      b.addEventListener("click", function(){
+        var t = document.querySelector(CFG.sel[i]);
+        if(t){ t.click(); mark(i); }
+      });
+    });
+    document.addEventListener("click", function(e){
+      CFG.sel.forEach(function(s,i){
+        var t = e.target && e.target.closest ? e.target.closest(s) : null;
+        if(t) mark(i);
+      });
+    });
+    mark(0);
+  }
+})();
+
+document.getElementById('aogSubRail').hidden=false;
+</script>
+</body>
+</html>

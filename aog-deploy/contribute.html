@@ -1,0 +1,484 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Team evidence · Architecture of Grace</title>
+<meta name="description" content="A colleague answers about one student, for one window, and can read nothing back. Team evidence, without opening a record.">
+<!-- ═══ AOG ICONS + LINK PREVIEW · managed block · .30k0 ═══
+     Inserted by _work/aog_head.py — DO NOT hand-edit one page; edit the
+     script and re-run it, or the 100 pages drift apart again. The card
+     URL carries ?v= because Slack, Apple and Google cache an og image BY
+     URL for weeks: change the picture, bump IMG_V, or nothing shows up.
+     ═══════════════════════════════════════════════════════════════ -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Architecture of Grace">
+<meta property="og:locale" content="en_US">
+<meta property="og:title" content="Team evidence · Architecture of Grace">
+<meta property="og:description" content="A colleague answers about one student, for one window, and can read nothing back. Team evidence, without opening a record.">
+<meta property="og:image" content="https://architectureofgrace.org/og-contribute.png?v=1">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Team evidence — a colleague answers about one student, for one window.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Team evidence · Architecture of Grace">
+<meta name="twitter:description" content="A colleague answers about one student, for one window, and can read nothing back. Team evidence, without opening a record.">
+<meta name="twitter:image" content="https://architectureofgrace.org/og-contribute.png?v=1">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="manifest" href="/manifest.json">
+<meta name="apple-mobile-web-app-title" content="Grace">
+<meta name="application-name" content="Architecture of Grace">
+<!-- ═══ END AOG ICONS + LINK PREVIEW ═══ -->
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#0A1E33">
+<!-- ═══════════════════════════════════════════════════════════════════════
+     THE CONTRIBUTOR DOOR  ·  IEP TEAM BUILD stage 2  ·  build .30hy
+
+     One page, one job: a colleague answers about ONE student for ONE
+     reporting window, signs it with their own name, and sends. That is all
+     that happens here.
+
+     ⚠ WRITE-ONLY BY LINK, AND THAT IS ENFORCED BY WHAT IS ABSENT.
+     There is no history, no chart, no other person's answer, no goal text,
+     no diagnosis, no student name — nothing to read back. The link carries a
+     student CODE, an opaque goal id and a plain-language focus phrase the
+     case manager typed. A code in a link is a WRITE credential, never a read
+     one. [[aog-student-links]]
+
+     ⚠ ITS OWN TAB, ITS OWN ACTION, ITS OWN COLUMNS. Needs SCRIPT_VERSION 12.
+     An earlier draft rode checkinType:"support" so no re-paste was needed;
+     Jimmy called it, and he was right — the Sheet has to describe the data.
+     ⚠ A 200 IS NOT A YES: the reply is parsed and only {ok:true} shows the
+     thank-you. On an older script the colleague is told, not thanked.
+
+     ⚠ A CONTRIBUTION IS NOT A MEASUREMENT. The two count boxes are the only
+     thing on this page that can ever reach a chart, and even they cannot do
+     it alone — the case manager accepts each one by hand, and the point is
+     stamped src:"team_contrib" forever. The page says so out loud, because a
+     colleague deserves to know which box is different.
+
+     ⚠ ROLES ARE ADDITIVE ONLY. teacher / special_educator / social_worker /
+     admin / other_staff / para already exist and are reused verbatim; slp /
+     ot / pt / psych are NEW VALUES, never renames. The legacy
+     related_service stays valid for every row already written.
+     ══════════════════════════════════════════════════════════════════════ -->
+<style>
+:root{
+  --navy:#0A1E33; --navy-soft:#13314F; --gold:#D9A33B; --gold-deep:#7E5B18;
+  --cream:#F4EEE2; --paper:#FCF8F0; --card:#FFFFFF;
+  --ink:#0A1E33; --ink-soft:#46506E; --ink-faint:#5C667E;
+  --rule:#E4DAC5; --rule-soft:#EFEADB; --field:#FFFFFF;
+  --green:#2E6B3A; --green-bg:#E8F0E7; --red:#8B2A2A; --red-bg:#F3DFDC;
+  --serif:"Cormorant Garamond",Georgia,serif;
+  --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --paper:#101A24; --card:#182634; --field:#0F1A24;
+    --ink:#ECE5D6; --ink-soft:#BAC2D0; --ink-faint:#9AA5B6;
+    --rule:#2B3B4B; --rule-soft:#223140; --navy-soft:#C8D6E6;
+    --gold:#E7B85E; --gold-deep:#E7B85E;
+    --green:#82D08E; --green-bg:#15301B; --red:#EC9B93; --red-bg:#3A1E1C;
+  }
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.55;-webkit-text-size-adjust:100%}
+.top{background:var(--navy);color:#F4EEE2;padding:14px 18px;display:flex;align-items:center;gap:11px}
+.mk{width:28px;height:28px;border-radius:7px;background:var(--gold);color:#0A1E33;font-family:var(--serif);font-size:19px;font-weight:700;display:grid;place-items:center;flex:none;line-height:1}
+.top .nm{font-family:var(--serif);font-size:17px}
+.wrap{max-width:660px;margin:0 auto;padding:22px 18px 90px}
+h1{font-family:var(--serif);font-size:29px;font-weight:600;margin:6px 0 6px;line-height:1.15}
+.lede{font-size:14.5px;color:var(--ink-soft);margin:0 0 18px}
+.ctx{background:var(--card);border:1px solid var(--rule);border-left:3px solid var(--gold);border-radius:0 12px 12px 0;padding:13px 16px;margin:0 0 22px}
+.ctx dl{margin:0;display:grid;grid-template-columns:auto 1fr;gap:3px 14px;font-size:13.5px}
+.ctx dt{color:var(--ink-faint);font-size:10.5px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;padding-top:3px}
+.ctx dd{margin:0;font-weight:600}
+fieldset{border:0;margin:0 0 20px;padding:0}
+label.q{display:block;font-size:14px;font-weight:700;margin:0 0 3px}
+.hint{font-size:12.5px;color:var(--ink-faint);margin:0 0 7px}
+.req{color:var(--gold-deep);font-weight:800;font-size:11px;letter-spacing:.06em;text-transform:uppercase;margin-left:6px}
+input[type=text],input[type=number],select,textarea{width:100%;font:inherit;font-size:15px;color:var(--ink);background:var(--field);border:1.5px solid var(--rule);border-radius:10px;padding:10px 12px}
+textarea{min-height:74px;resize:vertical}
+input:focus,select:focus,textarea:focus{outline:2px solid var(--gold);outline-offset:1px;border-color:var(--gold)}
+.chips{display:flex;flex-wrap:wrap;gap:7px;margin:2px 0 0}
+.chip{font:inherit;font-size:13px;font-weight:600;color:var(--ink);background:var(--card);border:1.5px solid var(--rule);border-radius:999px;padding:7px 14px;cursor:pointer}
+.chip[aria-pressed=true]{background:var(--navy);color:#F4EEE2;border-color:var(--navy)}
+@media (prefers-color-scheme: dark){ .chip[aria-pressed=true]{background:var(--gold);color:#0A1E33;border-color:var(--gold)} }
+.count{background:var(--card);border:1px solid var(--rule);border-radius:12px;padding:14px 16px}
+.count .pair{display:flex;gap:12px;align-items:flex-end;flex-wrap:wrap}
+.count .pair > div{flex:1 1 130px}
+.count .sm{font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-faint);display:block;margin:0 0 3px}
+.flag{font-size:12.5px;color:var(--ink-soft);background:var(--paper);border-radius:8px;padding:9px 11px;margin:11px 0 0;border:1px dashed var(--rule)}
+/* ⚠ NOT position:sticky. It was, and on this form it sat ON TOP of the
+   Supports heading — a sticky bar over a long form covers the very field
+   under it. Found by LOOKING at the render; every contrast number was
+   green and the page was still wrong. */
+.send{background:var(--paper);border-top:1px solid var(--rule);padding:18px 0;margin-top:26px}
+.btn{font:inherit;font-size:16px;font-weight:800;letter-spacing:.03em;color:#fff;background:var(--navy);border:0;border-radius:12px;padding:14px 26px;cursor:pointer;width:100%}
+@media (prefers-color-scheme: dark){ .btn{background:var(--gold);color:#0A1E33} }
+.btn[disabled]{opacity:.55;cursor:default}
+.msg{font-size:13.5px;margin:10px 0 0;padding:10px 12px;border-radius:9px;display:none}
+.msg.on{display:block}
+.msg.bad{background:var(--red-bg);color:var(--red);border:1px solid var(--red)}
+.msg.good{background:var(--green-bg);color:var(--green);border:1px solid var(--green)}
+.foot{font-size:12px;color:var(--ink-faint);margin:28px 0 0;line-height:1.6}
+.done{display:none;text-align:center;padding:48px 10px}
+.done.on{display:block}
+.done h2{font-family:var(--serif);font-size:30px;font-weight:600;margin:0 0 10px}
+.done p{color:var(--ink-soft);font-size:14.5px;max-width:44ch;margin:0 auto 8px}
+.tick{width:56px;height:56px;border-radius:50%;background:var(--green-bg);color:var(--green);display:grid;place-items:center;margin:0 auto 18px;font-size:28px;border:2px solid var(--green)}
+.hide{display:none !important}
+</style>
+<!-- ⚠ BEFORE the inline script, which reads AOG_SYNC_DEFAULTS at run time.
+     Loaded last it is simply absent and every link without ?dest= dies silently. -->
+<script src="aog-sync-config.js"></script>
+</head>
+<body>
+<script src="/aog-topbar.js"></script>
+
+<div class="top"><div class="mk">A</div><div class="nm">Architecture of Grace</div></div>
+
+<div class="wrap">
+  <div id="form">
+    <h1 id="hTitle">Team evidence</h1>
+    <p class="lede" id="hLede">You have been asked to share what you see. Everything except your role and your name is optional — one sentence is worth sending.</p>
+
+    <div class="ctx"><dl id="ctxList"></dl></div>
+
+    <fieldset>
+      <label class="q" for="fRole">Your role<span class="req" id="rq1">required</span></label>
+      <p class="hint" id="hRole">So the team can tell whose account this is.</p>
+      <select id="fRole">
+        <option value="">Choose…</option>
+        <option value="teacher">General education teacher</option>
+        <option value="special_educator">Special education teacher</option>
+        <option value="slp">Speech-language pathologist</option>
+        <option value="social_worker">Social worker / counselor</option>
+        <option value="psych">School psychologist</option>
+        <option value="ot">Occupational therapist</option>
+        <option value="pt">Physical therapist</option>
+        <option value="para">Paraprofessional</option>
+        <option value="admin">Administrator</option>
+        <option value="other_staff">Other staff</option>
+      </select>
+    </fieldset>
+
+    <fieldset>
+      <label class="q" for="fWho">Your name or initials<span class="req" id="rq2">required</span></label>
+      <p class="hint" id="hWho">An observation is only usable at a meeting if it says who saw it.</p>
+      <input type="text" id="fWho" autocomplete="name" maxlength="60">
+    </fieldset>
+
+    <fieldset>
+      <label class="q" for="fEvidence">What you have seen</label>
+      <p class="hint" id="hEv">In your own words. What happens, how often, what it looks like.</p>
+      <textarea id="fEvidence" maxlength="1500"></textarea>
+    </fieldset>
+
+    <fieldset>
+      <label class="q" for="fPerf">How they are doing right now</label>
+      <p class="hint" id="hPerf">Where the skill stands in your setting today.</p>
+      <textarea id="fPerf" maxlength="1000"></textarea>
+    </fieldset>
+
+    <fieldset>
+      <div class="count">
+        <label class="q" for="fOpps" id="lCount">If you counted, put the numbers here</label>
+        <p class="hint" id="hCount">Only fill these in if you actually kept a count. Leave them blank otherwise — blank is a perfectly good answer.</p>
+        <div class="pair">
+          <div><span class="sm" id="lOpps">Opportunities</span><input type="number" id="fOpps" min="0" max="999" inputmode="numeric"></div>
+          <div><span class="sm" id="lSucc">Of those, successful</span><input type="number" id="fSucc" min="0" max="999" inputmode="numeric"></div>
+        </div>
+        <p class="flag" id="fCountNote"><b>These two boxes are different from everything else on this page.</b> They are the only answers that can become a data point on the student's progress chart — and only if the case manager reviews them and accepts them by hand. Everything else you write stays as context beside the chart, never inside it.</p>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <label class="q" for="fStrengths">Strengths</label>
+      <p class="hint" id="hStr">What is working. What you would want said out loud at the meeting.</p>
+      <textarea id="fStrengths" maxlength="1000"></textarea>
+    </fieldset>
+
+    <fieldset>
+      <label class="q" for="fConcerns">Concerns</label>
+      <p class="hint" id="hCon">What worries you, or what you would want the team to look at.</p>
+      <textarea id="fConcerns" maxlength="1000"></textarea>
+    </fieldset>
+
+    <fieldset>
+      <label class="q" id="lSup">Supports you use</label>
+      <p class="hint" id="hSup">Tap any that apply.</p>
+      <div class="chips" id="supChips"></div>
+    </fieldset>
+
+    <fieldset>
+      <label class="q" id="lResp">How they respond to those supports</label>
+      <div class="chips" id="respChips"></div>
+    </fieldset>
+
+    <fieldset>
+      <label class="q" for="fRec">What you would suggest next</label>
+      <p class="hint" id="hRec">A suggestion for the team to consider. The team still decides.</p>
+      <textarea id="fRec" maxlength="1000"></textarea>
+    </fieldset>
+
+    <fieldset>
+      <label class="q" for="fNote">Anything else</label>
+      <textarea id="fNote" maxlength="1000"></textarea>
+      <p class="hint" style="margin-top:8px"><label><input type="checkbox" id="fFollow" style="width:auto;margin-right:7px"><span id="lFollow">I would like the case manager to get back to me.</span></label></p>
+    </fieldset>
+
+    <div class="send">
+      <button type="button" class="btn" id="btnSend">Send to the case manager</button>
+      <div class="msg" id="msg"></div>
+    </div>
+
+    <p class="foot" id="footTxt"></p>
+  </div>
+
+  <div class="done" id="done">
+    <div class="tick">✓</div>
+    <h2 id="dTitle">Sent. Thank you.</h2>
+    <p id="dBody">Your name is on it, and the case manager will see it beside everything else the team has sent.</p>
+    <p id="dBody2">You can close this page. Nothing about this student is stored on your device.</p>
+  </div>
+</div>
+
+<script>
+/* ══ THE CONTRIBUTOR DOOR ═══════════════════════════════════════════════════
+   Destination resolution is copied verbatim from AOG-WS-SENDBLOCK-V2, down to
+   the regex: a `dest` that is not a script.google.com /exec URL is refused
+   outright, and with no destination the page says so rather than pretending.
+   ═════════════════════════════════════════════════════════════════════════ */
+(function () {
+  "use strict";
+
+  var q = {};
+  try {
+    (location.search || "").replace(/^\?/, "").split("&").forEach(function (kv) {
+      if (!kv) return; var i = kv.indexOf("=");
+      var k = i < 0 ? kv : kv.slice(0, i), v = i < 0 ? "" : kv.slice(i + 1);
+      try { q[decodeURIComponent(k)] = decodeURIComponent(v.replace(/\+/g, " ")); } catch (e) {}
+    });
+  } catch (e) {}
+
+  var ES = String(q.lang || "").slice(0, 2).toLowerCase() === "es";
+  function T(en, es) { return ES ? es : en; }
+  if (ES) { try { document.documentElement.lang = "es"; } catch (e) {} }
+
+  /* ── the destination, and nothing else, decides whether this page works */
+  var DEST_RE = /^https:\/\/script\.google\.com\/[^\s]*\/exec$/;
+  function destDecode(raw) {
+    try {
+      var t = String(raw).replace(/-/g, "+").replace(/_/g, "/");
+      while (t.length % 4) t += "=";
+      var o = JSON.parse(atob(t));
+      if (o && typeof o.u === "string" && DEST_RE.test(o.u))
+        return { url: o.u, key: (typeof o.k === "string" ? o.k : "") };
+    } catch (e) {}
+    return null;
+  }
+  var DEST = q.dest ? destDecode(q.dest) : null;
+  if (!DEST) {
+    try {
+      var cfg = window.AOG_SYNC_DEFAULTS;
+      if (cfg && !cfg.destinations && typeof cfg.url === "string" && DEST_RE.test(cfg.url)
+          && Object.prototype.toString.call(cfg.schools) === "[object Array]" && cfg.schools.length)
+        DEST = { url: cfg.url, key: (typeof cfg.key === "string" ? cfg.key : "") };
+    } catch (e) {}
+  }
+
+  var el = function (id) { return document.getElementById(id); };
+  function esc(s) { return String(s == null ? "" : s).replace(/[&<>"]/g, function (c) { return ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]; }); }
+
+  /* ── the context strip. Everything shown here came off the link, and the
+     link carries a CODE, an opaque goal id and a plain-language focus phrase.
+     ⚠ IT NEVER CARRIES THE GOAL TEXT, A NAME, OR A DISABILITY. */
+  var SID = String(q.sid || "").trim();
+  var rows = [];
+  if (SID)      rows.push([T("Student", "Estudiante"), SID]);
+  if (q.focus)  rows.push([T("Focus", "Enfoque"), q.focus]);
+  if (q.from || q.to) rows.push([T("Period", "Período"), (q.from || "") + (q.from && q.to ? " → " : "") + (q.to || "")]);
+  el("ctxList").innerHTML = rows.map(function (r) {
+    return "<dt>" + esc(r[0]) + "</dt><dd>" + esc(r[1]) + "</dd>";
+  }).join("") || ("<dd>" + esc(T("Your case manager will know which student this is.", "Tu coordinador sabrá de qué estudiante se trata.")) + "</dd>");
+
+  if (q.role) { try { el("fRole").value = q.role; } catch (e) {} }
+
+  /* ── the support bank. The SAME wording the class-evidence form uses, so the
+     tallies combine instead of sitting in two vocabularies. */
+  var SUPPORTS = [
+    ["verbal",   "Verbal prompt",      "Indicación verbal"],
+    ["visual",   "Visual cue",         "Apoyo visual"],
+    ["model",    "Modeling",           "Modelado"],
+    ["checkin",  "Check-in",           "Consulta breve"],
+    ["chunk",    "Chunked task",       "Tarea dividida"],
+    ["extra",    "Extra time",         "Tiempo adicional"],
+    ["seat",     "Seating / setting",  "Ubicación"],
+    ["break",    "Movement or break",  "Descanso o movimiento"],
+    ["peer",     "Peer support",       "Apoyo de compañeros"],
+    ["adult",    "Adult nearby",       "Adulto cerca"]
+  ];
+  var RESP = [
+    ["well",    "Responds well",              "Responde bien"],
+    ["some",    "Helps some of the time",     "Ayuda a veces"],
+    ["little",  "Little change so far",       "Poco cambio"],
+    ["depends", "Depends on the day",         "Depende del día"]
+  ];
+  function chips(host, list, multi) {
+    el(host).innerHTML = list.map(function (r) {
+      return '<button type="button" class="chip" aria-pressed="false" data-v="' + esc(r[0]) + '">' + esc(T(r[1], r[2])) + "</button>";
+    }).join("");
+    el(host).addEventListener("click", function (ev) {
+      var b = ev.target.closest ? ev.target.closest(".chip") : null;
+      if (!b) return;
+      var on = b.getAttribute("aria-pressed") === "true";
+      if (!multi) [].slice.call(el(host).querySelectorAll(".chip")).forEach(function (x) { x.setAttribute("aria-pressed", "false"); });
+      b.setAttribute("aria-pressed", on ? "false" : "true");
+    });
+  }
+  chips("supChips", SUPPORTS, true);
+  chips("respChips", RESP, false);
+  function picked(host) {
+    return [].slice.call(el(host).querySelectorAll('.chip[aria-pressed="true"]')).map(function (b) { return b.getAttribute("data-v"); });
+  }
+
+  if (ES) {
+    el("hTitle").textContent = "Evidencia del equipo";
+    el("hLede").textContent  = "Te han pedido compartir lo que observas. Todo excepto tu rol y tu nombre es opcional — una sola frase vale la pena.";
+    el("rq1").textContent = el("rq2").textContent = "obligatorio";
+    el("btnSend").textContent = "Enviar al coordinador";
+    el("dTitle").textContent = "Enviado. Gracias.";
+    el("dBody").textContent  = "Lleva tu nombre, y el coordinador lo verá junto a todo lo demás que el equipo ha enviado.";
+    el("dBody2").textContent = "Puedes cerrar esta página. No se guarda nada sobre este estudiante en tu dispositivo.";
+  }
+  el("footTxt").innerHTML = esc(T(
+    "This page shows you nothing about this student and keeps nothing on your device. What you send goes to your school's own spreadsheet, and the case manager decides what to do with it.",
+    "Esta página no te muestra nada sobre el estudiante ni guarda nada en tu dispositivo."));
+
+  if (!DEST) {
+    el("btnSend").disabled = true;
+    el("msg").className = "msg bad on";
+    el("msg").textContent = T("This link is missing its destination, so nothing can be sent. Ask the case manager to send the link again from their dashboard.",
+                              "A este enlace le falta su destino. Pide al coordinador que lo envíe de nuevo.");
+  }
+
+  function todayISO() { var d = new Date(); return d.getFullYear() + "-" + ("0" + (d.getMonth() + 1)).slice(-2) + "-" + ("0" + d.getDate()).slice(-2); }
+  function numOrNull(id) { var v = el(id).value; if (String(v).trim() === "") return null; var n = Number(v); return isFinite(n) ? n : null; }
+
+  var sending = false;
+  el("btnSend").addEventListener("click", function () {
+    if (sending || !DEST) return;
+    var role = el("fRole").value, who = el("fWho").value.trim();
+    function bad(m, focusId) {
+      el("msg").className = "msg bad on"; el("msg").textContent = m;
+      try { el(focusId).focus(); } catch (e) {}
+    }
+    if (!role) return bad(T("Choose your role first.", "Elige tu rol primero."), "fRole");
+    if (!who)  return bad(T("Add your name or initials — an observation is only usable if it says who saw it.",
+                            "Agrega tu nombre o iniciales."), "fWho");
+    var opps = numOrNull("fOpps"), succ = numOrNull("fSucc");
+    if ((opps === null) !== (succ === null))
+      return bad(T("The two count boxes go together — fill both in, or leave both blank.",
+                   "Las dos casillas de conteo van juntas."), opps === null ? "fOpps" : "fSucc");
+    if (opps !== null && (succ > opps || opps <= 0 || succ < 0))
+      return bad(T("Successes cannot be more than opportunities.", "Los logros no pueden superar las ocasiones."), "fSucc");
+
+    var date = todayISO();
+    /* ⚠ ITS OWN ACTION AND ITS OWN TAB, at Jimmy's call. An earlier draft rode
+       this on checkinType:"support" with every field packed into `extra` so no
+       re-paste was needed. It worked and it was wrong: the Sheet's columns did
+       not describe the data, a human opening the tab saw a JSON blob, and the
+       row had to be diverted on the way back so the check-in scorer would not
+       read it as 0 of 3 domains it never had. A different question deserves a
+       different tab. Needs SCRIPT_VERSION 12. */
+    var payload = {
+      action: "teamEvidence",
+      _backendAuth: DEST.key,
+      timestamp: new Date().toISOString(),
+      date: date,
+      slipType: "teamEvidence",
+      askId: q.ask || "",
+      term: q.term || "",
+      districtId: q.districtId || "",
+      schoolId: q.schoolId || "",
+      classId: q.classId || "",
+      grade: q.grade || "",
+      period: q.period || "",
+      studentId: SID,
+      respondentRole: role,
+      respondentId: who,
+      goalId: q.g || "",
+      area: q.area || "",
+      focus: q.focus || "",
+      periodFrom: q.from || "",
+      periodTo: q.to || "",
+      evidence: el("fEvidence").value.trim(),
+      perf: el("fPerf").value.trim(),
+      /* ⚠ null, never 0, when they did not count. "0 of 0" is not the same
+         answer as "they did not count", and the sheet keeps the difference. */
+      opps: opps,
+      succ: succ,
+      strengths: el("fStrengths").value.trim(),
+      concerns: el("fConcerns").value.trim(),
+      supports: picked("supChips").join("|"),
+      response: (picked("respChips")[0] || ""),
+      recommend: el("fRec").value.trim(),
+      note: el("fNote").value.trim(),
+      followUp: !!el("fFollow").checked,
+      source: "link",
+      extra: ""
+    };
+
+    sending = true;
+    el("btnSend").disabled = true;
+    el("btnSend").textContent = T("Sending…", "Enviando…");
+    el("msg").className = "msg on";
+    el("msg").textContent = "";
+
+    fetch(DEST.url, {
+      method: "POST", mode: "cors", redirect: "follow",
+      headers: { "Content-Type": "text/plain;charset=utf-8" },
+      body: JSON.stringify(payload)
+    }).then(function (r) { return r.text(); }).then(function (txt) {
+      /* ⚠ A 200 IS NOT A YES. Apps Script answers 200 with {ok:false} for an
+         action it does not know, and since v11 an unknown action is rejected
+         outright — so a school still on the old script would have shown this
+         colleague a thank-you and dropped their answer on the floor. Read the
+         reply. [[aog-send-lied]] */
+      var ok = false, err = "";
+      try { var j = JSON.parse(txt); ok = !!(j && j.ok); err = (j && j.error) ? String(j.error) : ""; }
+      catch (e) { ok = false; err = "unreadable reply"; }
+      if (!ok) {
+        sending = false;
+        el("btnSend").disabled = false;
+        el("btnSend").textContent = T("Send to the case manager", "Enviar al coordinador");
+        el("msg").className = "msg bad on";
+        el("msg").textContent = T("The school's sheet would not accept this: ", "La hoja no lo aceptó: ")
+          + (err || T("no reason given", "sin motivo"))
+          + T(". Your answers are still here. Tell the case manager — their sheet may need updating.",
+              ". Tus respuestas siguen aquí. Avisa al coordinador.");
+        return;
+      }
+      el("form").className = "hide";
+      el("done").className = "done on";
+      try { window.scrollTo(0, 0); } catch (e) {}
+    }).catch(function () {
+      /* ⚠ NEVER AN AUTOMATIC RETRY, and never a green tick on a failure.
+         The send button lied once in this product's history and it is not
+         going to lie here. [[aog-send-lied]] */
+      sending = false;
+      el("btnSend").disabled = false;
+      el("btnSend").textContent = T("Send to the case manager", "Enviar al coordinador");
+      el("msg").className = "msg bad on";
+      el("msg").textContent = T("That did not send — the network refused it. Your answers are still on the screen. Try once more, or tell the case manager.",
+                                "No se envió. Tus respuestas siguen en pantalla. Intenta otra vez.");
+    });
+  });
+})();
+</script>
+</body>
+</html>

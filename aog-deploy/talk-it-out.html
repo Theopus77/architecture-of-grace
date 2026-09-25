@@ -1,0 +1,1269 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Talk It Out — Architecture of Grace</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script>/* .30eg: this page begins in light mode, always - it has no theme toggle, so the OS dark setting was the only thing that could flip it, and it did on student machines. */document.documentElement.setAttribute("data-theme","light");</script>
+<meta name="description" content="An endless supply of discussion prompts for a 6-8 Advisory class. Four decks, a push-the-why layer, a think timer, and a who's-up cycler. Part of Architecture of Grace.">
+<!-- ═══ AOG ICONS + LINK PREVIEW · managed block · .30k0 ═══
+     Inserted by _work/aog_head.py — DO NOT hand-edit one page; edit the
+     script and re-run it, or the 100 pages drift apart again. The card
+     URL carries ?v= because Slack, Apple and Google cache an og image BY
+     URL for weeks: change the picture, bump IMG_V, or nothing shows up.
+     ═══════════════════════════════════════════════════════════════ -->
+<meta property="og:site_name" content="Architecture of Grace">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://architectureofgrace.org/og-image.png?v=1">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Architecture of Grace — K–12 academics and the language of grace, built for the students the standard lesson wasn't written for.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Talk It Out — Architecture of Grace">
+<meta name="twitter:description" content="An endless supply of discussion prompts for a 6-8 Advisory class. Four decks, a push-the-why layer, a think timer, and a who's-up cycler. Part of Architecture of Grace.">
+<meta name="twitter:image" content="https://architectureofgrace.org/og-image.png?v=1">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png">
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#0A1E33">
+<meta name="apple-mobile-web-app-title" content="Grace">
+<meta name="application-name" content="Architecture of Grace">
+<!-- ═══ END AOG ICONS + LINK PREVIEW ═══ -->
+<!-- .30k0: was a speech-balloon EMOJI as a data: URI, so the tab of the Talk It Out
+     window wore an emoji while every other tab wore the mark. Same file, same origin. -->
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<meta property="og:title" content="Talk It Out — Architecture of Grace">
+<meta property="og:description" content="An endless supply of discussion prompts for junior high Advisory.">
+<meta property="og:type" content="website">
+</head>
+<body>
+<script src="/aog-topbar.js"></script>
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Archivo:wght@400;500;600;700&display=swap');
+
+/* ---------- tokens: light is primary, because a projector in a lit
+   classroom throws a bright ground far better than a dark one ---------- */
+:root{
+  --paper:#FAF9F5;
+  --card:#FFFFFF;
+  --ink:#1C1B18;
+  --ink-soft:#5C5C51;
+  --ink-faint:#737367;
+  --olive:#5A6247;
+  --olive-soft:#E6E7DD;
+  --line:#DDDDD1;
+  --red:#B3242B;
+  --red-soft:#F6E7E6;
+  --shadow:0 1px 2px rgba(28,27,24,.05), 0 12px 32px -12px rgba(28,27,24,.18);
+  --focus:#5A6247;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#191B17; --card:#22251F; --ink:#F2F0E8; --ink-soft:#B6B8A9;
+    --ink-faint:#83867A; --olive:#A8B092; --olive-soft:#2C3128; --line:#343930;
+    --red:#E4737A; --red-soft:#38221F;
+    --shadow:0 1px 2px rgba(0,0,0,.3), 0 12px 32px -12px rgba(0,0,0,.5);
+    --focus:#A8B092;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#191B17; --card:#22251F; --ink:#F2F0E8; --ink-soft:#B6B8A9;
+  --ink-faint:#83867A; --olive:#A8B092; --olive-soft:#2C3128; --line:#343930;
+  --red:#E4737A; --red-soft:#38221F;
+  --shadow:0 1px 2px rgba(0,0,0,.3), 0 12px 32px -12px rgba(0,0,0,.5);
+  --focus:#A8B092;
+}
+
+*{box-sizing:border-box;}
+body{
+  margin:0; background:var(--paper); color:var(--ink);
+  font-family:'Archivo', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  -webkit-font-smoothing:antialiased;
+  min-height:100vh; min-height:100dvh;
+}
+.wrap{ display:flex; flex-direction:column; min-height:100vh; min-height:100dvh; }
+button{ font-family:inherit; cursor:pointer; }
+:focus-visible{ outline:2.5px solid var(--focus); outline-offset:3px; border-radius:4px; }
+
+/* ------------------------------- top bar ------------------------------- */
+.bar{
+  display:flex; align-items:center; gap:14px; flex-wrap:wrap;
+  padding:14px 22px; border-bottom:1px solid var(--line);
+  background:var(--card);
+}
+/* The way back to the site. It used to float at bottom-left, where it covered
+   the "Next question" button; it belongs in the bar, in flow, where nothing
+   can sit under it. Under 720px it keeps the chevron and drops the words —
+   inside the site it is the only way out, so it never hides completely. */
+.aog-home{
+  display:inline-flex; align-items:center; gap:7px; flex:0 0 auto;
+  font-size:12.5px; font-weight:600; color:var(--ink-faint); text-decoration:none;
+  border:1px solid transparent; background:transparent; border-radius:999px;
+  padding:6px 4px; margin-right:-6px; white-space:nowrap;
+}
+.aog-home:hover{ color:var(--ink); }
+.aog-home svg{ width:14px; height:14px; flex:0 0 auto; }
+/* The label costs ~160px in a bar that has only ~49px to spare at 1280, and a
+   second row there would cost the projector 46px of prompt. So the way back is
+   a bare chevron beside the wordmark until the bar has real room for words. */
+.aog-home span{ display:none; }
+@media (min-width:1560px){
+  .aog-home span{ display:inline; }
+  .aog-home{ border-color:var(--line); padding:6px 12px 6px 9px; margin-right:0; }
+  .aog-home:hover{ border-color:var(--olive); }
+}
+@media print{ .aog-home{ display:none; } }
+.brand{ display:flex; align-items:baseline; gap:9px; margin-right:2px; }
+.brand-n{ font-family:'Fraunces',Georgia,serif; font-weight:700; font-size:19px; letter-spacing:-.015em; }
+.brand-s{ font-size:11px; text-transform:uppercase; letter-spacing:.11em; color:var(--ink-faint); font-weight:600; }
+.decks{ display:flex; gap:6px; flex-wrap:wrap; }
+.deck{
+  border:1px solid var(--line); background:transparent; color:var(--ink-soft);
+  padding:7px 13px; border-radius:999px; font-size:13.5px; font-weight:600;
+  transition:background .15s ease, color .15s ease, border-color .15s ease;
+}
+.deck:hover{ color:var(--ink); border-color:var(--olive); }
+.deck[aria-pressed="true"]{ background:var(--olive); border-color:var(--olive); color:var(--card); }
+.spacer{ flex:1 1 auto; }
+.count{
+  border:0; background:none; text-align:right; font-family:inherit; padding:0;
+  font-size:12.5px; color:var(--ink-faint); font-variant-numeric:tabular-nums;
+  white-space:nowrap;
+}
+.count b{ color:var(--ink-soft); font-weight:600; }
+.count:hover{ color:var(--olive); }
+.iconbtn{
+  border:1px solid var(--line); background:transparent; color:var(--ink-soft);
+  width:34px; height:34px; border-radius:9px; display:grid; place-items:center;
+  transition:color .15s ease, border-color .15s ease;
+}
+.iconbtn:hover{ color:var(--ink); border-color:var(--olive); }
+.iconbtn svg{ width:17px; height:17px; }
+
+/* ------------------------------- stage --------------------------------- */
+.stage{
+  flex:1 1 auto; display:flex; flex-direction:column; align-items:center;
+  justify-content:center; gap:26px; padding:40px 30px; text-align:center;
+}
+.kicker{
+  font-size:12px; font-weight:700; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--olive);
+}
+.q{
+  font-family:'Fraunces',Georgia,'Times New Roman',serif;
+  font-weight:600; font-size:clamp(30px, 5.4vw, 78px); line-height:1.1;
+  letter-spacing:-.02em; text-wrap:balance; max-width:19ch; margin:0;
+}
+.q.long{ font-size:clamp(24px, 3.6vw, 50px); max-width:26ch; }
+.opts{ display:flex; flex-direction:column; gap:9px; align-items:center; margin:0; padding:0; list-style:none; }
+.opts li{
+  font-family:'Fraunces',Georgia,serif; font-size:clamp(19px,2.4vw,32px); font-weight:400;
+  color:var(--ink); display:flex; align-items:center; gap:12px;
+}
+.opts li::before{
+  content:attr(data-n); font-family:'Archivo',sans-serif; font-size:12px; font-weight:700;
+  color:var(--olive); background:var(--olive-soft); width:24px; height:24px;
+  border-radius:50%; display:grid; place-items:center; flex:0 0 auto;
+}
+/* the deal: the card turns over, once, and settles */
+.dealt{ animation:deal .42s cubic-bezier(.22,.9,.3,1) both; }
+@keyframes deal{
+  from{ opacity:0; transform:translateY(16px) rotate(-.7deg) scale(.985); }
+  to  { opacity:1; transform:none; }
+}
+@media (prefers-reduced-motion: reduce){ .dealt{ animation:none; } }
+
+.why{
+  max-width:44ch; border-top:2px solid var(--red); padding-top:15px;
+  color:var(--ink-soft); font-size:clamp(15px,1.6vw,21px); line-height:1.45;
+  font-weight:500;
+}
+.why[hidden]{ display:none; }
+.why .lab{
+  display:block; font-size:11px; font-weight:700; letter-spacing:.14em;
+  text-transform:uppercase; color:var(--red); margin-bottom:6px;
+}
+.pass{ font-size:12.5px; color:var(--ink-faint); }
+
+/* --------------------------- who's up ---------------------------------- */
+.upnow{
+  display:flex; align-items:center; gap:12px; flex-wrap:wrap; justify-content:center;
+  background:var(--olive-soft); border-radius:14px; padding:12px 18px;
+}
+.upnow[hidden]{ display:none; }
+.upnow .lab{ font-size:11px; font-weight:700; letter-spacing:.12em; text-transform:uppercase; color:var(--olive); }
+.upnow .who{ font-family:'Fraunces',Georgia,serif; font-size:clamp(20px,2.6vw,34px); font-weight:600; }
+.upnow .rest{ font-size:12.5px; color:var(--ink-soft); font-variant-numeric:tabular-nums; }
+
+/* ------------------------------ console -------------------------------- */
+.console{
+  border-top:1px solid var(--line); background:var(--card);
+  padding:13px 22px; display:flex; align-items:center; gap:10px; flex-wrap:wrap;
+}
+.btn{
+  border:1px solid var(--line); background:transparent; color:var(--ink);
+  padding:10px 16px; border-radius:10px; font-size:14px; font-weight:600;
+  display:inline-flex; align-items:center; gap:8px;
+  transition:border-color .15s ease, background .15s ease, color .15s ease;
+}
+.btn:hover{ border-color:var(--olive); }
+.btn svg{ width:16px; height:16px; }
+.btn kbd{
+  font-family:inherit; font-size:10.5px; font-weight:700; color:var(--ink-faint);
+  border:1px solid var(--line); border-radius:4px; padding:1px 5px; letter-spacing:.03em;
+}
+.btn-primary{
+  background:var(--ink); border-color:var(--ink); color:var(--paper); padding:11px 22px; font-size:15px;
+}
+.btn-primary:hover{ background:var(--olive); border-color:var(--olive); }
+.btn-primary kbd{ color:var(--paper); border-color:rgba(255,255,255,.35); }
+.btn-red[aria-pressed="true"]{ background:var(--red-soft); border-color:var(--red); color:var(--red); }
+.timer{
+  font-variant-numeric:tabular-nums; font-weight:700; font-size:15px;
+  min-width:46px; text-align:center;
+}
+.timer.hot{ color:var(--red); }
+.sel{
+  border:1px solid var(--line); background:transparent; color:var(--ink);
+  padding:9px 11px; border-radius:10px; font-size:13.5px; font-weight:600;
+  font-family:inherit;
+}
+
+/* ------------------------------ sheets --------------------------------- */
+.sheet{
+  position:fixed; inset:0; background:rgba(28,27,24,.42);
+  display:flex; align-items:center; justify-content:center; padding:20px; z-index:40;
+}
+.sheet[hidden]{ display:none; }
+.sheet-in{
+  background:var(--card); border-radius:16px; box-shadow:var(--shadow);
+  width:min(560px,100%); max-height:86vh; overflow:auto; padding:24px;
+}
+.sheet h2{ font-family:'Fraunces',Georgia,serif; font-size:22px; margin:0 0 4px; font-weight:600; }
+.sheet p.sub{ margin:0 0 18px; color:var(--ink-soft); font-size:14px; line-height:1.5; }
+.field{ display:block; margin-bottom:16px; }
+.field span{ display:block; font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:.09em; color:var(--ink-faint); margin-bottom:6px; }
+.field input, .field textarea{
+  width:100%; border:1px solid var(--line); border-radius:10px; padding:10px 12px;
+  font-family:inherit; font-size:14px; background:var(--paper); color:var(--ink);
+}
+.field textarea{ min-height:120px; resize:vertical; line-height:1.5; }
+.sheet-foot{ display:flex; gap:9px; justify-content:flex-end; margin-top:4px; }
+.classrow{ display:flex; gap:8px; align-items:center; margin-bottom:9px; }
+.classrow .nm{ flex:1 1 auto; font-weight:600; font-size:14px; }
+.classrow .ct{ font-size:12.5px; color:var(--ink-faint); font-variant-numeric:tabular-nums; }
+.linkbtn{ background:none; border:0; color:var(--olive); font-size:13px; font-weight:600; text-decoration:underline; padding:2px; }
+
+/* ------------------------------ printing ------------------------------- */
+.printsheet{ display:none; }
+@media print{
+  .bar, .console, .stage, .sheet{ display:none !important; }
+  .printsheet{ display:block; padding:0; }
+  body{ background:#fff; color:#000; }
+  .pr-h{ font-family:'Fraunces',Georgia,serif; font-size:26px; margin:0 0 4px; }
+  .pr-s{ font-size:12px; color:#555; margin:0 0 26px; }
+  .pr-item{ page-break-inside:avoid; margin:0 0 30px; padding-bottom:18px; border-bottom:1px solid #ddd; }
+  .pr-day{ font-size:10px; text-transform:uppercase; letter-spacing:.14em; color:#666; font-weight:700; margin-bottom:6px; }
+  .pr-q{ font-family:'Fraunces',Georgia,serif; font-size:19px; line-height:1.3; margin:0 0 8px; }
+  .pr-w{ font-size:13px; color:#333; }
+  .pr-o{ font-size:15px; margin:4px 0 0 16px; }
+}
+
+/* Between 720 and 1000 the bar sits within ~19px of an extra row, so the
+   chevron alone would tip the deck chips onto a second line. Tightening the gap
+   and dropping the decorative "ADVISORY" — which the bar already drops at 720 —
+   buys back far more than the chevron costs. */
+@media (max-width:1000px){ .bar{ gap:10px; } .brand-s{ display:none; } }
+@media (max-width:720px){
+  .bar{ padding:11px 14px; gap:10px; }
+  .console{ padding:11px 14px; }
+  .stage{ padding:28px 18px; gap:20px; }
+  .brand-s{ display:none; }
+  .aog-home{ padding:3px 4px; }
+}
+
+/* ══ AOG-PRINT-SAFE-V1 (2026-09-20) ═══════════════════════════════════════════
+   Jimmy, printing a novel study from his phone: "another pdf that gets parts of
+   the material cut off." These are the rules that keep paper honest on every
+   engine — a table row, a list item, a figure and a picture stay whole; a head
+   keeps the lines under it; no paragraph strands one line at a page edge; and a
+   long table repeats its head at the top of each page. Printed pages only. */
+@media print{
+  table{break-inside:auto; page-break-inside:auto}
+  thead{display:table-header-group}
+  tfoot{display:table-footer-group}
+  tr{break-inside:avoid; page-break-inside:avoid}
+  li,figure,img,svg{break-inside:avoid; page-break-inside:avoid}
+  h1,h2,h3,h4,h5{break-after:avoid; page-break-after:avoid}
+  p{orphans:3; widows:3}
+}
+</style>
+
+<div class="wrap">
+
+  <header class="bar">
+    <a class="aog-home" href="./index.html" title="Back to Architecture of Grace">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m14 6-6 6 6 6"/></svg>
+      <span>Architecture of Grace</span>
+    </a>
+    <div class="brand">
+      <span class="brand-n">Talk It Out</span>
+      <span class="brand-s">Advisory</span>
+    </div>
+    <div class="decks" id="decks" role="group" aria-label="Which deck"></div>
+    <span class="spacer"></span>
+    <button class="count" id="count" type="button" title="Start this deck over"></button>
+    <button class="iconbtn" id="btnRoster" title="Classes and names" aria-label="Classes and names">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3"/><path d="M3 20c0-3.3 2.7-5 6-5s6 1.7 6 5"/><circle cx="17.5" cy="9" r="2.3"/><path d="M16 15.2c3 .2 5 1.9 5 4.8"/></svg>
+    </button>
+    <button class="iconbtn" id="btnFull" title="Full screen (F)" aria-label="Full screen">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 9V4h5"/><path d="M21 9V4h-5"/><path d="M3 15v5h5"/><path d="M21 15v5h-5"/></svg>
+    </button>
+  </header>
+
+  <main class="stage">
+    <div class="kicker" id="kicker"></div>
+    <h1 class="q" id="q"></h1>
+    <ul class="opts" id="opts" hidden></ul>
+    <div class="why" id="why" hidden></div>
+    <div class="upnow" id="upnow" hidden>
+      <span class="lab">Who's up</span>
+      <span class="who" id="whoName"></span>
+      <span class="rest" id="whoRest"></span>
+    </div>
+    <div class="pass">Passing is always allowed. &ldquo;Pass&rdquo; and we come back to you.</div>
+  </main>
+
+  <footer class="console">
+    <button class="btn btn-primary" id="btnNext">Next question <kbd>space</kbd></button>
+    <button class="btn" id="btnWhy">Push the why <kbd>W</kbd></button>
+    <button class="btn" id="btnWho">Who&rsquo;s up <kbd>R</kbd></button>
+    <span class="spacer"></span>
+    <select class="sel" id="selClass" aria-label="Class"></select>
+    <select class="sel" id="selTime" aria-label="Think time">
+      <option value="0">No timer</option>
+      <option value="30">30 sec</option>
+      <option value="60" selected>1 min</option>
+      <option value="120">2 min</option>
+    </select>
+    <button class="btn btn-red" id="btnTimer" aria-pressed="false" title="Start or pause the timer" aria-label="Start or pause the timer">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2.5"/><path d="M9 2h6"/></svg>
+      <span class="timer" id="timerTx">1:00</span>
+    </button>
+    <button class="btn" id="btnPrint">Print five</button>
+    <button class="btn" id="btnBack" title="Previous (left arrow)" aria-label="Previous question">&larr;</button>
+  </footer>
+</div>
+
+<!-- classes & names -->
+<div class="sheet" id="sheetRoster" hidden>
+  <div class="sheet-in" role="dialog" aria-modal="true" aria-labelledby="rosterH">
+    <h2 id="rosterH">Classes</h2>
+    <p class="sub">Pick a class to edit it. &ldquo;Who&rsquo;s up&rdquo; draws from the class you have selected and never draws the same person twice until everyone has gone. Numbers work fine &mdash; names work better. Set the count once you know it.</p>
+    <div id="classList"></div>
+    <button class="linkbtn" id="classAdd" type="button" style="margin:2px 0 18px;">+ Add a class</button>
+    <label class="field">
+      <span>Class name</span>
+      <input id="rosterName" type="text" maxlength="40" placeholder="6th period &middot; Advisory">
+    </label>
+    <label class="field">
+      <span>Names &mdash; one per line, or leave blank to use numbers</span>
+      <textarea id="rosterText" placeholder="Ava&#10;Marcus&#10;Priya&#10;&hellip;"></textarea>
+    </label>
+    <label class="field">
+      <span>How many students (used when there are no names)</span>
+      <input id="rosterCount" type="number" min="1" max="60" step="1">
+    </label>
+    <div class="sheet-foot">
+      <button class="btn" id="rosterRemove" style="margin-right:auto; color:var(--red); border-color:var(--red);">Remove this class</button>
+      <button class="btn" id="rosterCancel">Cancel</button>
+      <button class="btn btn-primary" id="rosterSave">Save class</button>
+    </div>
+  </div>
+</div>
+
+<div class="printsheet" id="printsheet"></div>
+
+<script>
+/* =====================================================================
+   TALK IT OUT — the prompt bank
+   Written for a whole class of 6th–8th graders, 10 to 30 of them, in a
+   28-minute Advisory. Every prompt is answerable by a kid who had a bad
+   morning and by a kid who reads three grade levels ahead.
+
+   The rule that shaped every line: nobody should have to disclose
+   something private to answer in front of the room. No family finances,
+   no bodies, no dating, no religion, no immigration status, no
+   diagnoses, no "tell us about a time you were hurt." Where a topic is
+   worth reaching, it is reached in the third person or the
+   hypothetical — "what makes someone trustworthy" instead of "tell us
+   who betrayed you."
+   ===================================================================== */
+
+const BANK = {
+
+  /* ---------------------------------------------------------------
+     WARM-UP — low stakes, everyone can answer, nobody is exposed.
+     This is what gets a silent seventh grader talking in week one.
+     --------------------------------------------------------------- */
+  warmup: [
+    "What's a small thing that instantly improves your day?",
+    "What is something everyone else seems to love that you just don't get?",
+    "If our class had a theme song, what should it be?",
+    "What's the best snack in the vending machine, and what's the worst?",
+    "What's a skill you could teach the whole class in five minutes?",
+    "What's something you're weirdly good at that has never been useful?",
+    "If you could add one class to the schedule, what would it be?",
+    "What's the most useless fact you know?",
+    "What's a rule at school that makes total sense once you think about it?",
+    "What's something you believed as a little kid that you were dead wrong about?",
+    "What's the best day of the week, and don't say Friday?",
+    "If you had to eat one meal for a month, what would you pick?",
+    "What's a movie or show everyone should watch at least once?",
+    "What's your go-to move when you're bored in a waiting room?",
+    "What's something small that adults do that drives you up the wall?",
+    "What's a song that instantly puts you in a good mood?",
+    "If you could instantly master one instrument, which one?",
+    "What's the best gift you've ever gotten — and what made it good?",
+    "What's an app you'd delete forever if you could?",
+    "What's the best place in this school building, and why that one?",
+    "If you could rename our school mascot, what would you call it?",
+    "What's something you want to be really good at by the time you're 20?",
+    "What's a job you'd be great at that didn't exist when your parents were kids?",
+    "What's the strangest thing you've ever eaten?",
+    "What's a trend you're glad is over?",
+    "If you got one hour of free time right now, what would you actually do?",
+    "What's a book, game, or show you'd defend in an argument?",
+    "What's the best advice you've ever gotten from someone your own age?",
+    "What's something you're looking forward to this month?",
+    "What's a smell that takes you straight back to being little?",
+    "If you could be excellent at one sport overnight, which?",
+    "What's a word you love the sound of?",
+    "What's something that seems hard but is actually easy once you learn it?",
+    "What's a place you'd want to visit that isn't a famous vacation spot?",
+    "What's the best thing about being the age you are right now?",
+    "What's something you'd want invented in your lifetime?",
+    "If our class won $500 to spend together, what should we do with it?",
+    "What's a compliment you've gotten that stuck with you?",
+    "What animal would you actually want as a pet if size and safety weren't issues?",
+    "What's a chore you secretly don't mind?",
+    "What's the most overrated candy?",
+    "If you had to give a five-minute presentation right now with no prep, what topic?",
+    "What's something you've changed your mind about in the last year?",
+    "What's a small talent you have that nobody in this room knows about?",
+    "What's a video game or sport that's harder than people think?",
+    "What's your ideal weather, and what would you do in it?",
+    "What's something you own that you'd never sell?",
+    "If you could freeze one age and stay there for five years, which age?",
+    "What's a fictional character you'd want on your side in an argument?",
+    "What's a family tradition — any family, not necessarily yours — that sounds great?",
+    "What's a hobby you'd pick up if time and money weren't a problem?",
+    "What's the best thing you've learned from the internet?",
+    "What sound could you not live without?",
+    "If you had a two-hour flight and no wifi, how would you spend it?",
+    "What's a store or restaurant you wish this town had?",
+    "What's something that's way better in person than on a screen?",
+    "What's the best nickname you've ever heard — not necessarily yours?",
+    "What's a color that just feels like you?"
+  ],
+
+  /* ---------------------------------------------------------------
+     REAL TALK — the three Architecture of Grace domains, rewritten
+     for a room instead of a one-on-one. Feelings & regulation,
+     self & growth, friendship & repair.
+     --------------------------------------------------------------- */
+  realtalk: [
+    /* A — feelings and regulation */
+    "What's something that stresses out kids our age that adults tend to underestimate?",
+    "When someone says 'I'm fine' and clearly isn't, what's usually going on?",
+    "What actually helps a person calm down, and what only looks like it helps?",
+    "Where do people feel stress in their body first — and does it show?",
+    "What's the difference between being angry and being hurt?",
+    "Why is it so much easier to be annoyed than to say you're disappointed?",
+    "What's a feeling that's hard to put a name to?",
+    "When your brain won't stop replaying something, what makes it stop?",
+    "Is there a good kind of nervous? What separates it from the bad kind?",
+    "What does someone need from you when they're overwhelmed — space, a joke, or a listener?",
+    "Why do small things set people off on days when big things wouldn't?",
+    "What's the most useless advice people give about stress?",
+    "What's the difference between venting and dumping?",
+    "How can you tell the difference between tired and done?",
+    "Is it possible to be in a bad mood for no reason? What do you do with that?",
+    "What helps a person get through the last twenty minutes of a hard day?",
+    "Why do people apologize for crying?",
+    "What's something that helps you focus that other people would find strange?",
+    "When is it smart to walk away from a conversation, and when is that just avoiding it?",
+    "What does a person look like when they're holding it together on purpose?",
+
+    /* B — self and growth */
+    "What's something a person can be good at that no report card measures?",
+    "Why is it easier to be kind to a friend than to yourself?",
+    "What's the difference between being confident and pretending to be?",
+    "What does 'you can't do it yet' actually change?",
+    "Whose opinion do people our age give too much power to?",
+    "Is comparing yourself to someone ever useful, or is it always a trap?",
+    "What's the cost of always being the person who has it together?",
+    "What would people try if they weren't worried about looking dumb?",
+    "How long should a mistake stick to you?",
+    "What's the difference between high standards and being impossible to please?",
+    "Is talent real, or is it just practice with a head start?",
+    "What's something people quit too early?",
+    "What makes an apology to yourself sound fake?",
+    "Why do people hide the things they're working on until they're good at them?",
+    "What's the bravest ordinary thing a person our age can do?",
+    "Is it worse to fail at something you tried hard at, or to never try?",
+    "What does it mean to be 'good at school' — and is that the same as being smart?",
+    "What advice would you give a sixth grader on their first day here?",
+    "What's a strength that gets mistaken for a weakness?",
+    "What do you want to be true about you in five years?",
+
+    /* C — friendship and repair */
+    "What actually makes someone trustworthy?",
+    "What's the difference between a friend and someone you just always sit with?",
+    "What does a real apology include that a fake one doesn't?",
+    "Why is 'sorry you feel that way' so annoying?",
+    "When a friendship changes, does someone have to be at fault?",
+    "How do you know when to talk something out and when to let it go?",
+    "What makes it safe to admit you were wrong?",
+    "Why do people go along with a group when they know better?",
+    "What's the difference between joking and taking a shot at someone?",
+    "What should a bystander do when it's not their business but it's clearly wrong?",
+    "How can you tell someone is actually listening to you?",
+    "What breaks trust faster — a lie, or being talked about?",
+    "Is loyalty always a good thing?",
+    "How do you give someone a second chance without being a pushover?",
+    "What does it take to be the person someone comes to with bad news?",
+    "Why do people find it so hard to say 'that hurt my feelings'?",
+    "When is it okay to tell an adult something a friend told you?",
+    "What makes a group welcoming to someone new, in ways people can actually see?",
+    "What's something small a person can do that makes someone's day better?",
+    "Who in a school building gets thanked the least for what they do?"
+  ],
+
+  /* ---------------------------------------------------------------
+     WHAT WOULD YOU DO — short dilemmas with a real fork in them.
+     Kept to situations a 12-to-14-year-old has actually seen.
+     --------------------------------------------------------------- */
+  dilemma: [
+    "You find $40 in the hallway. No name, no wallet. What do you do?",
+    "Your friend asks you to say you were together when you weren't. What do you say?",
+    "You see someone copying your test. If you say nothing you both might get in trouble. What now?",
+    "A group chat starts roasting someone who isn't in it. What do you do?",
+    "Your teammate is being blamed for a mistake that was actually yours. Do you speak up?",
+    "You're picked for a team and told to cut one person. How do you decide?",
+    "A friend tells you a secret that's making them miserable and asks you not to tell anyone. What do you do?",
+    "You get a grade you know is higher than what you earned. Do you say anything?",
+    "Someone new sits at your lunch table without asking. What happens next?",
+    "Your friend keeps making jokes about another kid and says it's harmless. What do you do?",
+    "You promised to help someone and then something better came up. What do you do?",
+    "A teacher gives the whole class a consequence for something one person did. How should the class handle it?",
+    "You're in a group project and one person does nothing. Do you cover for them or report it?",
+    "You accidentally break something at a friend's house and nobody sees. What do you do?",
+    "You find out a friend lied to you about something small. Is it worth bringing up?",
+    "Someone asks you to keep a secret that you think could get them hurt. What now?",
+    "You're the only one who thinks the group is making a bad call. What do you do?",
+    "A kid you don't like is being treated badly. Do you step in?",
+    "You get invited to something and your best friend didn't. Do you go?",
+    "Someone gives you credit for an idea that was actually your classmate's. What do you say?",
+    "Your parent asks how school is going and the honest answer is 'not great.' What do you tell them?",
+    "A friend keeps borrowing money and never pays it back. How do you bring it up?",
+    "You see a younger student getting picked on by someone in your grade. What's your move?",
+    "The teacher steps out and the class starts getting out of hand. What do you do?",
+    "You could win by taking advantage of a rule nobody thought to write down. Do you?",
+    "Your friend is spreading something about someone that you know isn't true. What do you do?",
+    "You're offered a spot on a team by cutting in line ahead of someone who waited longer. Do you take it?",
+    "A friend asks you to rate how they did on something and honestly it wasn't good. What do you say?",
+    "You made plans with two people for the same time. How do you fix it?",
+    "You're asked to apologize for something you don't think you did wrong. What do you do?",
+    "Someone confesses to you that they cheated. Nobody suspects. What now?",
+    "You could get out of a consequence by staying quiet while someone else takes it. Do you?",
+    "You have one extra ticket to something great and three friends who want it. How do you choose?",
+    "Your friend group decides to leave someone out and asks you to go along with it. What do you do?",
+    "A younger sibling asks you to lie for them. Does it depend on what it is?",
+    "You find someone's phone unlocked on the bus. What do you do?",
+    "You worked hard on something and someone says it's bad. How do you respond?",
+    "You're told a rumor about a friend. Do you tell them, or leave it alone?",
+    "You could skip a hard thing today and nobody would know. What decides it?",
+    "A classmate asks for your homework 'just to check theirs.' What do you say?",
+    "You're put in charge of the group and two people won't listen. What do you try first?",
+    "You witness two friends arguing and both ask you to take their side. What do you do?",
+    "Somebody says something that stings and then says 'I'm kidding.' What's your move?",
+    "You're offered a shortcut that's not against the rules but doesn't feel right. Do you take it?",
+    "A friend has stopped talking to you and you don't know why. What do you do first?"
+  ],
+
+  /* ---------------------------------------------------------------
+     BIG QUESTIONS — thought experiments. These are the ones where an
+     eighth grader will surprise you.
+     --------------------------------------------------------------- */
+  big: [
+    "Is it ever okay to lie?",
+    "Is it better to be respected or to be liked?",
+    "Can a person be brave and afraid at the same time?",
+    "If nobody ever found out, would it still be wrong?",
+    "Does everyone deserve a second chance?",
+    "Is fair the same as equal?",
+    "Would you want to know the exact day you'd die?",
+    "Is it possible to be completely honest and completely kind at once?",
+    "Do people change, or do they just get better at hiding who they are?",
+    "Is it worse to be forgotten or to be misunderstood?",
+    "If you could erase one memory, should you?",
+    "Does a promise still count if keeping it would hurt someone?",
+    "Is luck real, or is it just other people's advantages you can't see?",
+    "Should a person be judged by what they meant or what they did?",
+    "Is it possible to be good at something you don't enjoy?",
+    "Would the world be better if everyone always told the truth?",
+    "Is there a difference between being smart and being wise?",
+    "Can you be friends with someone you disagree with about something big?",
+    "If a machine could do your job better than you, should it?",
+    "Is it wrong to be happy when someone you don't like fails?",
+    "Do rules make people better, or just more careful?",
+    "Would you rather be the best on a losing team or average on a winning one?",
+    "Is forgiveness for the other person or for yourself?",
+    "Should you always follow your gut?",
+    "Is a group responsible for what one member does?",
+    "Can something be popular and still be wrong?",
+    "If you could feel someone else's pain for one day, would you want to?",
+    "Is it better to have a few close friends or a lot of ordinary ones?",
+    "Does winning matter if the game wasn't fair?",
+    "Is there such a thing as a harmless lie?",
+    "Would you take a pill that made you permanently content but never excited?",
+    "Do people owe anything to strangers?",
+    "Is it possible to be too honest?",
+    "Should you keep a promise you made before you knew all the facts?",
+    "Is it braver to speak up or to hold your tongue?",
+    "If everyone in a group agrees, is that a good sign or a warning?",
+    "Can a person be responsible for something they didn't mean to cause?",
+    "Is being consistent more important than being right?",
+    "Would you want a friend who always told you the truth, no matter what?",
+    "Is it possible to earn trust back completely?",
+    "Should the person who benefits most be the one who does the most?",
+    "Is doing the right thing for the wrong reason still doing the right thing?",
+    "Is it selfish to take care of yourself first?",
+    "Does knowing why someone did something change whether it was okay?",
+    "If you could give one rule to the whole world, what would it be?"
+  ]
+};
+
+/* ---------------------------------------------------------------
+   GENERATIVE SETS — these are what make the supply unbounded.
+   Options are grouped so that any pairing inside a group still
+   makes sense; random pairing across groups produces nonsense, so
+   the engine never does it.
+   --------------------------------------------------------------- */
+
+const WYR = [
+  { theme: "superpowers", opts: ["fly", "be invisible", "read minds", "teleport anywhere", "talk to animals", "stop time for ten minutes a day", "heal any injury", "never need sleep"] },
+  { theme: "school", opts: ["no homework ever", "a four-day week", "get to pick every teacher", "school starts at 10am", "no tests, only projects", "an extra hour of lunch", "every class outside", "pick your own classes entirely"] },
+  { theme: "time", opts: ["know your future", "be able to redo one day", "pause time whenever you want", "live the same great week forever", "skip ahead five years", "remember every day perfectly", "age one year for every ten", "always know exactly what time it is without a clock"] },
+  { theme: "money and fame", opts: ["be rich and unknown", "be famous and broke", "have a job you love for average pay", "have a boring job for triple pay", "never worry about money but never travel", "travel constantly but always be a little broke", "be respected by strangers", "be adored by ten people"] },
+  { theme: "everyday annoyances", opts: ["always be ten minutes early", "always be ten minutes late", "never find matching socks", "always have a song stuck in your head", "have slow wifi forever", "have your phone at 3% forever", "never be able to whisper", "always have to sit in the front row"] },
+  { theme: "skills", opts: ["be fluent in every language", "play every instrument", "be an incredible athlete", "be an incredible artist", "be able to fix anything", "be an amazing cook", "be able to memorize anything instantly", "be great at speaking in front of crowds"] },
+  { theme: "living somewhere", opts: ["live in a city that never sleeps", "live somewhere with no neighbors for a mile", "live on a boat", "live in the mountains", "live somewhere it's summer all year", "live somewhere it snows all winter", "live in the same place your whole life", "move every two years"] },
+  { theme: "how people see you", opts: ["be underestimated", "be overestimated", "be known for being funny", "be known for being kind", "be known for being the smartest", "be known for being the hardest worker", "be everyone's first pick", "be one person's best friend"] },
+  { theme: "hard choices", opts: ["always say exactly what you think", "never be able to lie", "always know when someone is lying to you", "always be believed", "never be embarrassed again", "never be bored again", "always win arguments", "always be told the truth about yourself"] },
+  { theme: "animals and adventure", opts: ["ride a dragon once", "swim with whales", "spend a night in a museum alone", "explore a cave nobody has been in", "go to space for a day", "go to the bottom of the ocean", "have a pet that lives as long as you do", "understand what your pet is thinking"] },
+  { theme: "food", opts: ["never eat dessert again", "only eat dessert", "give up cheese", "give up bread", "eat the same breakfast forever", "never eat the same meal twice", "have every meal cooked for you", "be an amazing cook yourself"] },
+  { theme: "communication", opts: ["only be able to text", "only be able to talk in person", "have every conversation recorded", "never be able to reread anything you sent", "always know what someone means", "always be understood exactly", "be able to talk to anyone in the world", "have one hour a week with someone you miss"] }
+];
+
+const RANK = [
+  { prompt: "Rank these from most to least important in a friend", set: ["honesty", "loyalty", "being funny", "showing up when it matters", "keeping secrets", "telling you when you're wrong", "being easy to be around"] },
+  { prompt: "Rank these school stresses from worst to most manageable", set: ["a big test", "presenting in front of the class", "group projects", "getting called on when you don't know", "a hard conversation with a teacher", "running late", "forgetting something at home"] },
+  { prompt: "Rank these apologies from most to least real", set: ["\"my bad\"", "\"I'm sorry you feel that way\"", "\"I was wrong and here's what I'll do differently\"", "a gift with no words", "\"I'm sorry but you started it\"", "saying nothing and just being nicer", "\"I'm sorry\" said fast so it's over"] },
+  { prompt: "Rank these from hardest to easiest to admit", set: ["you were wrong", "you're scared", "you need help", "you don't understand", "you lied", "you're jealous", "you were hurt"] },
+  { prompt: "Rank these ways to spend a free Saturday", set: ["with friends, no plan", "alone doing your own thing", "on a trip somewhere new", "helping with something that matters", "getting really good at a hobby", "sleeping in and doing nothing", "with family"] },
+  { prompt: "Rank these qualities in a teacher", set: ["explains things clearly", "is fair", "is funny", "believes you can do it", "gives good feedback", "is calm when things go wrong", "notices when something's off"] },
+  { prompt: "Rank these from most to least brave", set: ["speaking up when everyone disagrees", "admitting you were wrong", "trying something you'll probably be bad at", "asking for help", "telling someone they hurt you", "standing up for a stranger", "saying no to a friend"] },
+  { prompt: "Rank these from most to least annoying", set: ["someone talking over you", "someone on their phone while you talk", "someone always one-upping your story", "someone who is never on time", "someone who never admits fault", "someone who complains constantly", "someone who says \"just kidding\" after being mean"] },
+  { prompt: "Rank these as reasons people do the right thing", set: ["they'd feel guilty otherwise", "someone is watching", "it's the rule", "they'd want it done for them", "it's who they want to be", "someone taught them to", "it's just easier in the end"] },
+  { prompt: "Rank these from most to least fair", set: ["everyone gets the same", "everyone gets what they need", "whoever worked hardest gets most", "whoever's best gets most", "whoever needs it most gets most", "everyone takes turns", "it's decided by chance"] },
+  { prompt: "Rank these skills by how useful they'll be at 25", set: ["managing money", "speaking in front of people", "cooking", "handling conflict", "writing clearly", "fixing things", "knowing when to ask for help"] },
+  { prompt: "Rank these from most to least true about middle school", set: ["it goes faster than you think", "everyone is more nervous than they look", "the friend group will change", "grades matter less than habits", "adults remember more than you think", "you'll be embarrassed about something and nobody else will remember", "it gets easier"] },
+  { prompt: "Rank these ways to handle being wrong", set: ["admit it right away", "quietly fix it", "explain why you thought that", "wait and bring it up later", "apologize and move on", "argue until you're sure", "joke about it"] },
+  { prompt: "Rank these from most to least worth your time", set: ["getting better at something hard", "helping someone", "resting", "making something", "being with people you like", "learning something new for fun", "finishing something you started"] }
+];
+
+const HOTTAKE = [
+  "Homework should be optional.",
+  "Group projects are more trouble than they're worth.",
+  "Phones should be allowed in class.",
+  "Everyone should have to play a sport or join something.",
+  "Grades do more harm than good.",
+  "Middle school should start later in the morning.",
+  "Being on time matters more than being talented.",
+  "You should never stay friends with someone who lies to you.",
+  "It's fine to quit something you're not enjoying.",
+  "Winners should be the ones who work hardest, not the ones who are best.",
+  "Everyone should have to speak in front of the class every year.",
+  "The best way to learn something is to teach it.",
+  "Uniforms would make school better.",
+  "A person's word should be worth more than a contract.",
+  "You should tell a friend when they have something in their teeth, always.",
+  "It's better to be early than good.",
+  "Kids should get a say in school rules.",
+  "Losing teaches more than winning.",
+  "It's okay to be mad at someone and still be their friend.",
+  "Reading a book is better than watching the movie, every time.",
+  "Everyone should learn to cook before they graduate.",
+  "The internet has made people less patient.",
+  "Talent is overrated.",
+  "You should always finish what you start.",
+  "It's better to ask for forgiveness than permission.",
+  "Being funny gets you further than being smart.",
+  "Everyone should have to work a job where people are rude to them.",
+  "Sports get too much attention at school.",
+  "There should be a class on how to handle money.",
+  "Video games are as much a skill as any sport.",
+  "It's worse to be boring than to be mean.",
+  "You should keep your promises even when it costs you.",
+  "Kindness is a skill, not a personality trait.",
+  "Being bored is good for you.",
+  "You learn more from people you disagree with.",
+  "Everyone should have to sit somewhere new once a month.",
+  "The best leader is the one who talks least.",
+  "It's okay to change your mind in the middle of an argument.",
+  "Adults apologize to kids too rarely.",
+  "You should be able to redo any test.",
+  "Being nice and being kind are different things.",
+  "You can tell a lot about someone by how they treat people who can't help them.",
+  "Second chances should have a limit.",
+  "Practice matters more than passion.",
+  "You should never let someone else decide what you're good at.",
+  "Trying and failing is better than not trying.",
+  "Everyone in a group project should get the same grade.",
+  "It's fine to have a friend you only see at school.",
+  "The hardest classes teach you the most.",
+  "You should say the awkward thing out loud."
+];
+
+const FINISH = [
+  "The best thing about this school is ___",
+  "Something I wish adults understood is ___",
+  "A person can always count on me for ___",
+  "The hardest part of a school day is ___",
+  "If I ran this school for a day I'd change ___",
+  "Something I'm getting better at is ___",
+  "A good friend is someone who ___",
+  "The worst advice I ever got was ___",
+  "I feel most like myself when ___",
+  "Something worth being late for is ___",
+  "I'd like to be remembered for ___",
+  "The thing I'd tell my sixth grade self is ___",
+  "A rule I'd never break is ___",
+  "Something that makes a room feel welcoming is ___",
+  "I know I can trust someone when ___",
+  "The best way to say sorry is ___",
+  "Something small that makes my day is ___",
+  "I do my best work when ___",
+  "The bravest thing a person can do is ___",
+  "I lose track of time when ___",
+  "A group works best when ___",
+  "The thing I want to get better at this year is ___",
+  "What makes a joke go too far is ___",
+  "I feel respected when someone ___",
+  "The most underrated thing about being 13 is ___",
+  "If I could give everyone in this room one thing, it'd be ___",
+  "The best question anyone has ever asked me is ___",
+  "You can tell someone is listening when ___",
+  "A day is a success if ___",
+  "The person I'd want on my team is someone who ___",
+  "Something I've changed my mind about is ___",
+  "Something I'd defend in an argument is ___",
+  "I'd rather be told the truth about ___",
+  "The best part of finishing something hard is ___",
+  "A thing I do that helps me focus is ___",
+  "Something that always makes me laugh is ___",
+  "The most useful thing I learned this year is ___",
+  "I'd want a teammate who ___",
+  "The kindest thing someone has done for me is ___",
+  "What I want to be true about me in ten years is ___"
+];
+
+const THISORTHAT = [
+  ["Text", "call"], ["Morning", "night"], ["Beach", "mountains"], ["Sweet", "salty"],
+  ["Books", "movies"], ["Big party", "small group"], ["Plan everything", "wing it"],
+  ["Summer", "winter"], ["Cats", "dogs"], ["Sit in front", "sit in back"],
+  ["Work alone", "work with a group"], ["Be early", "be exactly on time"],
+  ["Speak up", "listen first"], ["Take the risk", "play it safe"],
+  ["Be the leader", "be the one who makes it work"],
+  ["Study a little every day", "cram the night before"],
+  ["Know the ending first", "be surprised"], ["Be funny", "be interesting"],
+  ["Give advice", "get advice"], ["Try something new", "get better at something you know"],
+  ["A long trip once", "short trips often"], ["Be praised in public", "be thanked in private"],
+  ["Loud music", "silence"], ["Handwrite", "type"], ["Same lunch every day", "different every day"],
+  ["Finish fast", "finish well"], ["Ask a question", "look it up"],
+  ["Compete", "collaborate"], ["Be the new kid", "be the one who welcomes them"],
+  ["Win by a lot", "win by one point"], ["Be told the truth immediately", "be told gently later"],
+  ["Have a big goal", "have a good routine"], ["Say what you think", "keep the peace"],
+  ["Be busy", "be bored"], ["Take the lead on a project", "take the hardest part of it"],
+  ["Get the credit", "get the result"], ["Do it yourself", "teach someone else to"],
+  ["Change one big thing", "change ten small things"], ["Be respected", "be understood"],
+  ["Spend it", "save it"]
+];
+
+/* ---------------------------------------------------------------
+   THE WHY LAYER — Jimmy's move, formalized. Any of these works
+   after any prompt above, which is what makes the supply endless
+   rather than merely large.
+   --------------------------------------------------------------- */
+const WHYS = [
+  "Why? Give us the actual reason, not the first one.",
+  "What would have to change for you to answer the other way?",
+  "Who would disagree with you — and what's their best argument?",
+  "What's the strongest case against your own answer?",
+  "Would you have said the same thing two years ago?",
+  "Does your answer change if nobody ever finds out?",
+  "Does your answer change if it's a stranger instead of a friend?",
+  "What would you tell a sixth grader to do here?",
+  "What's the cost of your answer? Something always costs something.",
+  "Is that what you'd do, or what you think you should do?",
+  "What would the other person say happened?",
+  "Would you want everyone to do what you just said?",
+  "What's the smallest version of your answer that still works?",
+  "Who does your answer protect, and who does it leave out?",
+  "What would make you change your mind?",
+  "Is this a rule you'd keep on a bad day?",
+  "What's the part of this you're not sure about?",
+  "If you had ten more seconds, would your answer be different?",
+  "What would someone who knows you well predict you'd say?",
+  "Is there a version of this where everybody's a little right?",
+  "What are you assuming that might not be true?",
+  "What happens the second time this comes up?",
+  "Would you say this to the person's face?",
+  "What did somebody teach you that got you to that answer?"
+];
+
+
+/* =====================================================================
+   THE ENGINE
+   Curated prompts plus generated ones, times a why-push. Every deck
+   deals without repeating until it is exhausted, then reshuffles.
+   ===================================================================== */
+(function(){
+  "use strict";
+
+  var LS = {
+    get:function(k,d){ try{ var v=localStorage.getItem('aog.talk.'+k); return v===null?d:JSON.parse(v); }catch(e){ return d; } },
+    set:function(k,v){ try{ localStorage.setItem('aog.talk.'+k, JSON.stringify(v)); }catch(e){} }
+  };
+
+  /* ---------- build every prompt the decks can deal ---------- */
+  function pairs(list){ var out=[]; for(var i=0;i<list.length;i++) for(var j=i+1;j<list.length;j++) out.push([list[i],list[j]]); return out; }
+  function triples(list){
+    var out=[];
+    for(var i=0;i<list.length;i++) for(var j=i+1;j<list.length;j++) for(var k=j+1;k<list.length;k++) out.push([list[i],list[j],list[k]]);
+    return out;
+  }
+  function cap(s){ return s.charAt(0).toUpperCase()+s.slice(1); }
+
+  /* A deck is a set of weighted groups, not one flat list. Without this the
+     combinatorial generators would swamp the hand-written prompts — 336
+     would-you-rathers against 59 real questions means a warm-up deck that is
+     71% would-you-rather. Weights keep the hand-written ones coming. */
+  function grp(w, kind, items){ return { w:w, kind:kind, items:items, seen:[] }; }
+
+  var DECKS = {
+    warmup: [
+      grp(4, "Question",            BANK.warmup.slice()),
+      grp(2, "Would you rather",    []),
+      grp(1, "This or that",        THISORTHAT.map(function(p){ return { q:p[0]+" or "+p[1]+"?" }; })),
+      grp(2, "Finish the sentence", FINISH.map(function(t){ return { q:t }; }))
+    ],
+    realtalk: [
+      grp(4, "Real talk", BANK.realtalk.slice()),
+      grp(2, "Rank them", [])
+    ],
+    dilemma: [
+      grp(1, "What would you do", BANK.dilemma.slice())
+    ],
+    big: [
+      grp(3, "Big question",              BANK.big.slice()),
+      grp(2, "Hot take — agree or argue", HOTTAKE.map(function(t){ return { q:t }; }))
+    ]
+  };
+  /* normalize the plain-string groups */
+  ["warmup","realtalk","dilemma","big"].forEach(function(d){
+    DECKS[d].forEach(function(g){
+      g.items = g.items.map(function(it){ return typeof it === "string" ? { q:it } : it; });
+    });
+  });
+
+  WYR.forEach(function(g){
+    pairs(g.opts).forEach(function(p){
+      DECKS.warmup[1].items.push({ q:"Would you rather "+p[0]+", or "+p[1]+"?" });
+    });
+  });
+  RANK.forEach(function(g){
+    triples(g.set).forEach(function(t){
+      DECKS.realtalk[1].items.push({ q:g.prompt.replace(/^Rank these/,"Rank these three"), opts:t.map(cap) });
+    });
+  });
+
+  var DECK_META = [
+    { id:"mix",      label:"Mix" },
+    { id:"warmup",   label:"Warm-up" },
+    { id:"realtalk", label:"Real talk" },
+    { id:"dilemma",  label:"What would you do" },
+    { id:"big",      label:"Big questions" }
+  ];
+  function groupsFor(id){
+    if(id==="mix") return DECKS.warmup.concat(DECKS.realtalk, DECKS.dilemma, DECKS.big);
+    return DECKS[id] || DECKS.warmup;
+  }
+  function deckSize(id){
+    return groupsFor(id).reduce(function(n,g){ return n + g.items.length; }, 0);
+  }
+  var TOTAL = deckSize("mix");
+
+  /* ---------- state ---------- */
+  var state = {
+    deck: LS.get('deck','mix'),
+    /* Jimmy's actual schedule. The Wednesday Advisory count is a placeholder —
+       he does not know it yet, and the panel says so. */
+    classes: LS.get('classes', [
+      { name:"Advisory · Period 0 (Wed)", count:25, names:[] },
+      { name:"10th period · Resource",    count:10, names:[] },
+      { name:"3/4 period · TRANSMATH",    count:4,  names:[] },
+      { name:"8th grade",                 count:15, names:[] }
+    ]),
+    classIx: LS.get('classIx',0),
+    dealt: LS.get('dealt',0),
+    drawn: LS.get('drawn',{}),      /* class index -> array of drawn positions */
+    history: [],
+    hpos: -1
+  };
+  if(!DECK_META.some(function(d){ return d.id===state.deck; })) state.deck='mix';
+
+  var el = {};
+  ["decks","count","kicker","q","opts","why","upnow","whoName","whoRest","btnNext","btnWhy",
+   "btnWho","btnBack","btnPrint","btnTimer","timerTx","selClass","selTime","btnFull","btnRoster",
+   "sheetRoster","classList","rosterText","rosterCount","rosterName","rosterSave","rosterCancel","rosterRemove","classAdd","printsheet"
+  ].forEach(function(id){ el[id]=document.getElementById(id); });
+
+  /* ---------- dealing ---------- */
+  /* Seen-sets live on the groups themselves and are mirrored to storage, so a
+     deck deals every prompt once before any of them comes round again. */
+  var savedSeen = LS.get('seen', {});
+  ["warmup","realtalk","dilemma","big"].forEach(function(d){
+    DECKS[d].forEach(function(g,i){
+      var key = d+':'+i, v = savedSeen[key];
+      if(Array.isArray(v)) g.seen = v.filter(function(n){ return n < g.items.length; });
+    });
+  });
+  function persistSeen(){
+    var out = {};
+    ["warmup","realtalk","dilemma","big"].forEach(function(d){
+      DECKS[d].forEach(function(g,i){ out[d+':'+i] = g.seen; });
+    });
+    LS.set('seen', out);
+  }
+  function seenCount(){
+    return groupsFor(state.deck).reduce(function(n,g){ return n + g.seen.length; }, 0);
+  }
+
+  /* Weight first, exhaustion second. If the weighted pick lands on a group that
+     has dealt everything it has, that group starts over — rather than dropping
+     out of the draw. Otherwise the small hand-written groups drain in the first
+     week of the year and the rest of the term is nothing but generated
+     would-you-rathers. */
+  function deal(){
+    var groups = groupsFor(state.deck);
+    var total = groups.reduce(function(n,g){ return n + g.w; }, 0);
+    var r = Math.random() * total, g = groups[groups.length-1];
+    for(var i=0;i<groups.length;i++){ r -= groups[i].w; if(r <= 0){ g = groups[i]; break; } }
+    if(g.seen.length >= g.items.length) g.seen = [];
+
+    var ix, guard = 0;
+    do { ix = Math.floor(Math.random() * g.items.length); guard++; }
+    while(g.seen.indexOf(ix) >= 0 && guard < 3000);
+    if(g.seen.indexOf(ix) >= 0){
+      for(var j=0;j<g.items.length;j++){ if(g.seen.indexOf(j) < 0){ ix = j; break; } }
+    }
+    g.seen.push(ix);
+    state.dealt = (state.dealt||0) + 1;
+    LS.set('dealt', state.dealt);
+    persistSeen();
+
+    var it = g.items[ix];
+    return { card:{ kind:g.kind, q:it.q, opts:it.opts }, why:WHYS[Math.floor(Math.random()*WHYS.length)] };
+  }
+
+  function show(round, animate){
+    el.kicker.textContent = round.card.kind;
+    el.q.textContent = round.card.q;
+    el.q.classList.toggle('long', round.card.q.length > 64 || !!round.card.opts);
+    if(round.card.opts){
+      el.opts.hidden = false;
+      el.opts.innerHTML = round.card.opts.map(function(o,i){
+        return '<li data-n="'+(i+1)+'"></li>';
+      }).join('');
+      Array.prototype.forEach.call(el.opts.children, function(li,i){ li.appendChild(document.createTextNode(round.card.opts[i])); });
+    } else {
+      el.opts.hidden = true; el.opts.innerHTML = '';
+    }
+    el.why.hidden = true;
+    if(animate !== false){
+      el.q.classList.remove('dealt'); void el.q.offsetWidth; el.q.classList.add('dealt');
+      if(!el.opts.hidden){ el.opts.classList.remove('dealt'); void el.opts.offsetWidth; el.opts.classList.add('dealt'); }
+    }
+    paintCount();
+  }
+
+  function next(){
+    var round = deal();
+    state.history = state.history.slice(0, state.hpos+1);
+    state.history.push(round);
+    if(state.history.length > 60) state.history.shift();
+    state.hpos = state.history.length-1;
+    show(round, true);
+    stopTimer();
+  }
+  function back(){
+    if(state.hpos <= 0) return;
+    state.hpos--;
+    show(state.history[state.hpos], true);
+  }
+  function pushWhy(){
+    var round = state.history[state.hpos]; if(!round) return;
+    if(!el.why.hidden){
+      var w; var guard=0;
+      do { w = WHYS[Math.floor(Math.random()*WHYS.length)]; guard++; } while(w===round.why && guard<40);
+      round.why = w;
+    }
+    el.why.innerHTML = '<span class="lab">Now push</span>';
+    el.why.appendChild(document.createTextNode(round.why));
+    el.why.hidden = false;
+  }
+
+  function paintCount(){
+    var rounds = deckSize(state.deck) * WHYS.length;
+    el.count.innerHTML = '<b>'+rounds.toLocaleString()+'</b> ways to ask in this deck &middot; you&rsquo;ve used '+
+      (state.dealt||0).toLocaleString();
+  }
+
+  /* ---------- decks ---------- */
+  function paintDecks(){
+    el.decks.innerHTML = DECK_META.map(function(d){
+      return '<button class="deck" type="button" data-deck="'+d.id+'" aria-pressed="'+(d.id===state.deck)+'"></button>';
+    }).join('');
+    Array.prototype.forEach.call(el.decks.children, function(b,i){
+      b.appendChild(document.createTextNode(DECK_META[i].label));
+      b.addEventListener('click', function(){
+        state.deck = DECK_META[i].id; LS.set('deck', state.deck);
+        paintDecks(); next();
+      });
+    });
+  }
+
+  /* ---------- who's up ---------- */
+  function roster(ix){
+    var c = state.classes[ix]; if(!c) return [];
+    if(c.names && c.names.length) return c.names.slice();
+    var out=[]; for(var i=1;i<=(c.count||10);i++) out.push('#'+i);
+    return out;
+  }
+  function drawnFor(ix){ if(!state.drawn[ix]) state.drawn[ix]=[]; return state.drawn[ix]; }
+  function whoUp(){
+    var names = roster(state.classIx);
+    if(!names.length) return;
+    var drawn = drawnFor(state.classIx);
+    if(drawn.length >= names.length) drawn.length = 0;
+    var pick, guard=0;
+    do { pick = Math.floor(Math.random()*names.length); guard++; }
+    while(drawn.indexOf(pick)>=0 && guard<800);
+    drawn.push(pick);
+    LS.set('drawn', state.drawn);
+    el.whoName.textContent = names[pick];
+    var left = names.length - drawn.length;
+    el.whoRest.textContent = left ? left+' still to go' : 'everyone has gone — resetting';
+    el.upnow.hidden = false;
+  }
+  function paintClasses(){
+    el.selClass.innerHTML = state.classes.map(function(c,i){
+      return '<option value="'+i+'"'+(i===state.classIx?' selected':'')+'></option>';
+    }).join('');
+    Array.prototype.forEach.call(el.selClass.children, function(o,i){
+      var c = state.classes[i];
+      o.appendChild(document.createTextNode(c.name+' · '+(c.names && c.names.length ? c.names.length : c.count)));
+    });
+  }
+
+  /* ---------- timer ---------- */
+  var tick=null, left=0;
+  function fmt(s){ var m=Math.floor(s/60), r=s%60; return m+':'+(r<10?'0':'')+r; }
+  function stopTimer(){
+    if(tick){ clearInterval(tick); tick=null; }
+    el.btnTimer.setAttribute('aria-pressed','false');
+    el.timerTx.classList.remove('hot');
+    var d = parseInt(el.selTime.value,10)||0;
+    el.timerTx.textContent = d ? fmt(d) : '––';
+  }
+  function toggleTimer(){
+    var d = parseInt(el.selTime.value,10)||0;
+    if(!d) return;
+    if(tick){ stopTimer(); return; }
+    left = d;
+    el.timerTx.textContent = fmt(left);
+    el.btnTimer.setAttribute('aria-pressed','true');
+    tick = setInterval(function(){
+      left--;
+      el.timerTx.textContent = fmt(Math.max(0,left));
+      el.timerTx.classList.toggle('hot', left<=10);
+      if(left<=0){ clearInterval(tick); tick=null; el.btnTimer.setAttribute('aria-pressed','false'); }
+    }, 1000);
+  }
+
+  /* ---------- roster sheet ---------- */
+  var editing = 0;
+  function openRoster(){
+    editing = Math.min(state.classIx, state.classes.length-1);
+    renderClassList();
+    fillEdit();
+    el.sheetRoster.hidden = false;
+  }
+  function renderClassList(){
+    el.classList.textContent = '';
+    state.classes.forEach(function(c,i){
+      var row = document.createElement('div'); row.className = 'classrow';
+      var nm = document.createElement('span'); nm.className='nm'; nm.textContent = c.name;
+      var ct = document.createElement('span'); ct.className='ct';
+      ct.textContent = (c.names && c.names.length) ? c.names.length+' names' : c.count+' students';
+      var b = document.createElement('button'); b.type='button'; b.className='linkbtn';
+      b.textContent = (i===editing) ? 'editing' : 'edit';
+      if(i===editing) b.disabled = true;
+      b.addEventListener('click', function(){ commitEdit(); editing = i; renderClassList(); fillEdit(); });
+      row.appendChild(nm); row.appendChild(ct); row.appendChild(b);
+      el.classList.appendChild(row);
+    });
+  }
+  function fillEdit(){
+    var c = state.classes[editing]; if(!c) return;
+    el.rosterName.value = c.name;
+    el.rosterText.value = (c.names||[]).join('\n');
+    el.rosterCount.value = c.count || 10;
+    el.rosterRemove.disabled = state.classes.length <= 1;
+  }
+  /* pull whatever is in the fields into the class being edited */
+  function commitEdit(){
+    var c = state.classes[editing]; if(!c) return;
+    var nm = el.rosterName.value.trim();
+    if(nm) c.name = nm;
+    c.names = el.rosterText.value.split('\n').map(function(t){ return t.trim(); }).filter(Boolean);
+    c.count = Math.max(1, Math.min(60, parseInt(el.rosterCount.value,10)||10));
+    state.drawn[editing] = [];
+  }
+  function saveRoster(){
+    commitEdit();
+    LS.set('classes', state.classes); LS.set('drawn', state.drawn);
+    state.classIx = Math.min(state.classIx, state.classes.length-1);
+    LS.set('classIx', state.classIx);
+    paintClasses(); el.sheetRoster.hidden = true; el.upnow.hidden = true;
+  }
+  function addClass(){
+    commitEdit();
+    state.classes.push({ name:'New class', count:12, names:[] });
+    editing = state.classes.length - 1;
+    renderClassList(); fillEdit();
+    el.rosterName.focus(); el.rosterName.select();
+  }
+  function removeClass(){
+    if(state.classes.length <= 1) return;
+    state.classes.splice(editing, 1);
+    state.drawn = {};
+    editing = Math.max(0, editing - 1);
+    state.classIx = Math.min(state.classIx, state.classes.length - 1);
+    LS.set('classes', state.classes); LS.set('drawn', state.drawn); LS.set('classIx', state.classIx);
+    renderClassList(); fillEdit(); paintClasses(); el.upnow.hidden = true;
+  }
+
+  /* ---------- print five ---------- */
+  function printFive(){
+    var days = ["Monday","Tuesday","Wednesday","Thursday","Friday"];
+    var label = DECK_META.filter(function(d){ return d.id===state.deck; })[0].label;
+
+    el.printsheet.textContent = '';
+    var h = document.createElement('h1'); h.className='pr-h'; h.textContent='Talk It Out \u2014 five for the week';
+    var sub = document.createElement('p'); sub.className='pr-s';
+    sub.textContent = label + ' deck. Ask the question, take answers, then push the why.';
+    el.printsheet.appendChild(h); el.printsheet.appendChild(sub);
+
+    for(var i=0;i<5;i++){
+      var r = deal();
+      var item = document.createElement('div'); item.className='pr-item';
+      var day = document.createElement('div'); day.className='pr-day';
+      day.textContent = days[i] + ' \u00b7 ' + r.card.kind;
+      var q = document.createElement('p'); q.className='pr-q'; q.textContent = r.card.q;
+      item.appendChild(day); item.appendChild(q);
+      if(r.card.opts){
+        var o = document.createElement('div'); o.className='pr-o';
+        o.textContent = r.card.opts.join('   \u2022   ');
+        item.appendChild(o);
+      }
+      var w = document.createElement('div'); w.className='pr-w';
+      w.textContent = 'Push: ' + r.why;
+      item.appendChild(w);
+      el.printsheet.appendChild(item);
+    }
+    paintCount();
+    window.print();
+  }
+
+  /* ---------- wiring ---------- */
+  el.btnNext.addEventListener('click', next);
+  el.btnBack.addEventListener('click', back);
+  el.btnWhy.addEventListener('click', pushWhy);
+  el.btnWho.addEventListener('click', whoUp);
+  el.btnTimer.addEventListener('click', toggleTimer);
+  el.selTime.addEventListener('change', stopTimer);
+  el.btnPrint.addEventListener('click', printFive);
+  el.selClass.addEventListener('change', function(){
+    state.classIx = parseInt(el.selClass.value,10)||0;
+    LS.set('classIx', state.classIx); el.upnow.hidden = true;
+  });
+  el.count.addEventListener('click', function(){
+    groupsFor(state.deck).forEach(function(g){ g.seen = []; });
+    state.dealt = 0; LS.set('dealt', 0); persistSeen();
+    next();
+  });
+  el.btnRoster.addEventListener('click', openRoster);
+  el.rosterCancel.addEventListener('click', function(){ el.sheetRoster.hidden = true; });
+  el.rosterSave.addEventListener('click', saveRoster);
+  el.classAdd.addEventListener('click', addClass);
+  el.rosterRemove.addEventListener('click', removeClass);
+  el.sheetRoster.addEventListener('click', function(e){ if(e.target===el.sheetRoster) el.sheetRoster.hidden = true; });
+  el.btnFull.addEventListener('click', function(){
+    try{
+      if(document.fullscreenElement) document.exitFullscreen();
+      else document.documentElement.requestFullscreen();
+    }catch(e){}
+  });
+
+  document.addEventListener('keydown', function(e){
+    var t = e.target;
+    if(t && t.matches && t.matches('input,textarea,select')) return;
+    if(!el.sheetRoster.hidden){ if(e.key==='Escape') el.sheetRoster.hidden=true; return; }
+    var k = e.key.toLowerCase();
+    if(e.key===' ' || e.key==='ArrowRight'){ e.preventDefault(); next(); }
+    else if(e.key==='ArrowLeft'){ e.preventDefault(); back(); }
+    else if(k==='w'){ pushWhy(); }
+    else if(k==='r'){ whoUp(); }
+    else if(k==='t'){ toggleTimer(); }
+    else if(k==='p'){ e.preventDefault(); printFive(); }
+    else if(k==='f'){ el.btnFull.click(); }
+  });
+
+  /* ---------- go ---------- */
+  paintDecks();
+  paintClasses();
+  stopTimer();
+  next();
+  window.__talk = { decks:DECKS, total:TOTAL, deal:deal, state:state, whys:WHYS.length, size:deckSize };
+})();
+</script>
+
+
+</body>
+</html>

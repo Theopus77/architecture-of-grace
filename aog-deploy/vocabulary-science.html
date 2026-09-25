@@ -1,0 +1,921 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Science — Architecture of Grace</title>
+<meta name="description" content="Science — one unit's word list five ways, the microscope parts-and-functions review, and test prep for the eight units. Private, never collected.">
+<!-- ═══ AOG ICONS + LINK PREVIEW · managed block · .30k0 ═══
+     Inserted by _work/aog_head.py — DO NOT hand-edit one page; edit the
+     script and re-run it, or the 100 pages drift apart again. The card
+     URL carries ?v= because Slack, Apple and Google cache an og image BY
+     URL for weeks: change the picture, bump IMG_V, or nothing shows up.
+     ═══════════════════════════════════════════════════════════════ -->
+<link rel="canonical" href="https://architectureofgrace.org/vocab">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Architecture of Grace">
+<meta property="og:locale" content="en_US">
+<meta property="og:title" content="Science — Architecture of Grace">
+<meta property="og:description" content="Science — one unit's word list five ways, the microscope parts-and-functions review, and test prep for the eight units. Private, never collected.">
+<meta property="og:url" content="https://architectureofgrace.org/vocab">
+<meta property="og:image" content="https://architectureofgrace.org/og-science.png?v=1">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Science — vocabulary, the microscope, and the exam-prep units, from Architecture of Grace.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Science — Architecture of Grace">
+<meta name="twitter:description" content="Science — one unit's word list five ways, the microscope parts-and-functions review, and test prep for the eight units. Private, never collected.">
+<meta name="twitter:image" content="https://architectureofgrace.org/og-science.png?v=1">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#0A1E33">
+<meta name="apple-mobile-web-app-title" content="Grace">
+<meta name="application-name" content="Architecture of Grace">
+<!-- ═══ END AOG ICONS + LINK PREVIEW ═══ -->
+<meta name="robots" content="noindex">
+<!-- No external requests of any kind. Every byte this page needs is in this file,
+     the site bar included: it is inlined rather than shared so this line stays true. -->
+<style>
+/* ══ TOKENS — same set as the math activities. Light is the base;
+   dark redefines tokens only, never components. ══ */
+:root{
+  --ground:#F5F1E8;
+  --field:#FFFFFF;
+  --field-2:#EFEAE0;
+  --ink:#1D2733;
+  --ink-soft:#57626F;
+  --ink-faint:#5F6B78;
+  --navy:#1B3A5F;
+  --gold:#B8893A;
+  --gold-deep:#7A5C1F;
+  --rule:rgba(29,39,51,.16);
+  --rule-soft:rgba(29,39,51,.08);
+  --lift:0 1px 0 rgba(255,255,255,.7), 0 20px 44px -30px rgba(29,39,51,.55);
+  --lift-sm:0 1px 2px rgba(29,39,51,.07), 0 8px 20px -16px rgba(29,39,51,.4);
+  --a:#4A3A8C;
+  --a-wash:rgba(74,58,140,.07);
+  --lock:#2E6B4F;
+  --lock-wash:rgba(46,107,79,.09);
+  --caution:#9A3412;
+  --focus:#B8893A;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --ground:#12161C; --field:#1A2029; --field-2:#222A34;
+    --ink:#E9EEF4; --ink-soft:#A3AFBC; --ink-faint:#84909D;
+    --navy:#9CC2E8; --gold:#D6A852; --gold-deep:#D6A852;
+    --rule:rgba(233,238,244,.18); --rule-soft:rgba(233,238,244,.09);
+    --lift:0 1px 0 rgba(233,238,244,.04), 0 24px 54px -32px rgba(0,0,0,.95);
+    --lift-sm:0 1px 2px rgba(0,0,0,.5), 0 10px 24px -18px rgba(0,0,0,.9);
+    --a:#A99BE8; --a-wash:rgba(169,155,232,.12);
+    --lock:#79C79E; --lock-wash:rgba(121,199,158,.12);
+    --caution:#F0A07C;
+    --focus:#D6A852;
+  }
+}
+:root[data-theme="dark"]{
+  --ground:#12161C; --field:#1A2029; --field-2:#222A34;
+  --ink:#E9EEF4; --ink-soft:#A3AFBC; --ink-faint:#84909D;
+  --navy:#9CC2E8; --gold:#D6A852; --gold-deep:#D6A852;
+  --rule:rgba(233,238,244,.18); --rule-soft:rgba(233,238,244,.09);
+  --lift:0 1px 0 rgba(233,238,244,.04), 0 24px 54px -32px rgba(0,0,0,.95);
+  --lift-sm:0 1px 2px rgba(0,0,0,.5), 0 10px 24px -18px rgba(0,0,0,.9);
+  --a:#A99BE8; --a-wash:rgba(169,155,232,.12);
+  --lock:#79C79E; --lock-wash:rgba(121,199,158,.12);
+  --caution:#F0A07C;
+  --focus:#D6A852;
+}
+
+*{box-sizing:border-box;}
+html{-webkit-text-size-adjust:100%;}
+body{
+  margin:0; background:var(--ground); color:var(--ink);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  font-size:16px; line-height:1.55;
+}
+h1,h2,h3{margin:0; text-wrap:balance; font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,"Times New Roman",serif; font-weight:600;}
+p{margin:0;}
+button{font:inherit; color:inherit; cursor:pointer;}
+a{color:inherit;}
+:focus-visible{outline:3px solid var(--focus); outline-offset:2px; border-radius:6px;}
+.wrap{max-width:920px; margin:0 auto; padding:0 20px;}
+
+/* ══ MASTHEAD ══ */
+.mast{padding:34px 20px 8px;}
+.mast .row{display:flex; align-items:center; gap:12px; margin-bottom:18px;}
+.mark{
+  width:44px; height:44px; border-radius:12px; background:var(--navy); color:#fff;
+  display:flex; align-items:center; justify-content:center;
+  font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+  font-size:24px; font-weight:700; flex:none;
+}
+:root[data-theme="dark"] .mark{color:#12161C;}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]) .mark{color:#12161C;} }
+.mast .name{font-weight:700; letter-spacing:.01em;}
+.mast .sub{color:var(--ink-soft); font-size:14px;}
+.mast h1{font-size:clamp(30px,6vw,44px); line-height:1.12; margin-bottom:10px;}
+.deck{color:var(--ink-soft); font-size:17px; max-width:60ch;}
+
+.acts{display:flex; flex-wrap:wrap; gap:10px; margin-top:18px;}
+.btn{
+  appearance:none; border:1.5px solid var(--rule); background:var(--field);
+  border-radius:12px; padding:11px 16px; font-weight:600; font-size:15px;
+  box-shadow:var(--lift-sm); min-height:48px;
+}
+.btn:hover{border-color:var(--ink-faint);}
+
+/* ══ STRANDS ══ */
+.strand{margin-top:34px;}
+.strand-head{display:flex; align-items:baseline; gap:12px; flex-wrap:wrap; margin-bottom:6px;}
+.strand-head .k{
+  font-size:12.5px; font-weight:700; letter-spacing:.09em; text-transform:uppercase;
+  color:var(--gold-deep);
+}
+.strand-head h2{font-size:clamp(22px,4vw,28px);}
+.strand>.say{color:var(--ink-soft); max-width:62ch; margin-bottom:16px;}
+
+.cards{display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:14px;}
+.card{
+  display:block; text-decoration:none; background:var(--field);
+  border:1.5px solid var(--rule-soft); border-radius:16px; padding:16px 16px 14px;
+  box-shadow:var(--lift-sm); position:relative; min-height:48px;
+}
+.card:hover{border-color:var(--gold); box-shadow:var(--lift);}
+.card .num{
+  font-size:12.5px; font-weight:700; letter-spacing:.08em; text-transform:uppercase;
+  color:var(--ink-faint); display:block; margin-bottom:4px;
+}
+.card h3{font-size:19px; margin-bottom:6px;}
+.card .what{color:var(--ink-soft); font-size:14.5px; line-height:1.5;}
+.card .go{
+  display:inline-block; margin-top:10px; font-size:14px; font-weight:700; color:var(--a);
+}
+
+/* ══ VOCAB ══ */
+.vocab{
+  margin-top:34px; background:var(--field-2); border:1.5px solid var(--rule-soft);
+  border-radius:16px; padding:18px;
+}
+.vocab h2{font-size:20px; margin-bottom:4px;}
+.vocab .say{color:var(--ink-soft); font-size:14.5px; margin-bottom:12px; max-width:62ch;}
+.vocab .cols{display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:14px;}
+.vocab .col .k{
+  font-size:12.5px; font-weight:700; letter-spacing:.08em; text-transform:uppercase;
+  color:var(--gold-deep); display:block; margin-bottom:6px;
+}
+.vocab ul{margin:0; padding:0; list-style:none; columns:2; column-gap:18px;}
+.vocab li{
+  font-size:14.5px; padding:3px 0; break-inside:avoid; color:var(--ink);
+}
+
+/* ══ TEACHER ══ */
+.teach{
+  margin-top:34px; border:1.5px dashed var(--rule); border-radius:16px;
+  background:var(--field);
+}
+.teach summary{
+  cursor:pointer; padding:16px 18px; font-weight:700; font-size:15.5px;
+  list-style:none; min-height:48px; display:flex; align-items:center; gap:8px;
+}
+.teach summary::-webkit-details-marker{display:none;}
+.teach summary::before{content:"▸"; color:var(--gold-deep); transition:transform .15s;}
+.teach[open] summary::before{transform:rotate(90deg);}
+.teach .inner{padding:0 18px 18px; display:grid; gap:12px;}
+.teach p{color:var(--ink-soft); font-size:14.5px; max-width:70ch;}
+.teach p b{color:var(--ink);}
+.teach .step{
+  display:grid; grid-template-columns:auto 1fr; gap:10px; align-items:start;
+}
+.teach .step .n{
+  width:26px; height:26px; border-radius:50%; background:var(--a-wash); color:var(--a);
+  font-weight:700; font-size:13.5px; display:flex; align-items:center; justify-content:center;
+  flex:none; margin-top:1px;
+}
+
+.next{
+  margin-top:24px; border:1.5px solid var(--rule-soft); border-radius:16px;
+  background:var(--field); padding:16px 18px;
+}
+.next .k{
+  font-size:12.5px; font-weight:700; letter-spacing:.09em; text-transform:uppercase;
+  color:var(--ink-faint);
+}
+.next p{color:var(--ink-soft); font-size:14.5px; max-width:66ch; margin-top:4px;}
+
+/* ══ FOOT ══ */
+.foot{margin:40px auto 30px; color:var(--ink-faint); font-size:13.5px;}
+.foot p{max-width:75ch; margin-bottom:6px;}
+.foot b{color:var(--ink-soft);}
+
+/* ══ SITE BAR ═══════════════════════════════════════════════════════════
+   A port of the app's own .topbar (index.html): same shape, same controls,
+   same behavior. Written out here rather than shared, because this page
+   loads nothing from the network -- see the head comment for why that
+   promise is worth the duplication.
+
+   ⚠⚠ TWO FILES. Emitted by _work/p_hubbar.py into interior-math.html AND
+   concepts-and-data.html. Change the script and re-run it. Hand-editing
+   one copy is how the two hubs start disagreeing.
+
+   ── ACCENT ── the home page lets a teacher pick one of six accents; it
+   lands in localStorage "aog.accent" and is applied as <html data-accent>.
+   These are the same six palettes as aog-styles.css, restated here because
+   we cannot load that file. THIS is what actually makes /math and the home
+   page the same color -- before it, the hub was violet-and-gold no matter
+   what the rest of the site was wearing. Keep in sync with aog-styles.css.
+*/
+:root{ --acc:#D9A33B; --acc-soft:#F2C964; --acc-pale:#F1DFA8; --acc-deep:#7E5B18;
+       --acc-wash:rgba(126,91,24,.08); --acc-wash-d:rgba(242,201,100,.14); }
+:root[data-accent="teal"]{ --acc:#2BA199; --acc-soft:#6FD3C8; --acc-pale:#C9EDE8; --acc-deep:#15716B;
+       --acc-wash:rgba(21,113,107,.08); --acc-wash-d:rgba(111,211,200,.14); }
+:root[data-accent="violet"]{ --acc:#7C5CD6; --acc-soft:#A98BF0; --acc-pale:#DDD2F7; --acc-deep:#523C9E;
+       --acc-wash:rgba(82,60,158,.08); --acc-wash-d:rgba(169,139,240,.14); }
+:root[data-accent="rose"]{ --acc:#D65C7E; --acc-soft:#F08BA6; --acc-pale:#F7D2DD; --acc-deep:#9E3C5A;
+       --acc-wash:rgba(158,60,90,.08); --acc-wash-d:rgba(240,139,166,.14); }
+:root[data-accent="sky"]{ --acc:#2E7CD6; --acc-soft:#6FB0F0; --acc-pale:#CFE3F7; --acc-deep:#1C5499;
+       --acc-wash:rgba(28,84,153,.08); --acc-wash-d:rgba(111,176,240,.14); }
+:root[data-accent="green"]{ --acc:#4F9E3A; --acc-soft:#86D36F; --acc-pale:#D2EDC9; --acc-deep:#356B25;
+       --acc-wash:rgba(53,107,37,.08); --acc-wash-d:rgba(134,211,111,.14); }
+
+/* Re-point the page's own accent tokens at the chosen palette.
+   ⚠ ORDER AND SPECIFICITY. These sit at the very end of the stylesheet on
+   purpose. :root[data-theme="dark"] (0,2,0) beats a bare :root (0,1,0), so
+   the dark values declared earlier in this file would win unless the dark
+   remap is restated HERE, after them, at the same specificity. */
+:root{ --a:var(--acc-deep); --a-wash:var(--acc-wash); --gold:var(--acc); --gold-deep:var(--acc-deep); --focus:var(--acc); }
+:root[data-theme="dark"]{ --a:var(--acc-soft); --a-wash:var(--acc-wash-d); --gold:var(--acc-soft); --gold-deep:var(--acc-soft); --focus:var(--acc-soft); }
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){ --a:var(--acc-soft); --a-wash:var(--acc-wash-d); --gold:var(--acc-soft); --gold-deep:var(--acc-soft); --focus:var(--acc-soft); } }
+
+/* ⚠⚠ THE SITE BAR'S CSS LIVES IN aog-topbar.js — NOT HERE.
+   This page used to carry its own copy of the .aogtop-* rules, written back
+   when the bar was hand-pasted into every page and its Explore menu was one
+   narrow column. The bar is injected now, and its Explore menu is a
+   THREE-COLUMN mega-menu (.aogtop-ex / .aogtop-col, 3 × 262px ≈ 800px).
+
+   The stale local copy declared
+       .aogtop-menu{min-width:312px; max-width:min(372px, calc(100vw - 20px));}
+   and MAX-WIDTH IS A PROPERTY THE INJECTED SHEET NEVER SETS, so no source
+   order and no specificity could beat it: the 800px mega-menu was squeezed
+   into a 372px box and columns 2 and 3 were sliced off by the panel's own
+   overflow. Two more class names meant different things in the two sheets —
+   local .aogtop-sub was a FOLD CONTAINER (indent + left border) where the bar
+   uses it for a row SUBTITLE, and local .aogtop-fold was display:flex where
+   the bar needs display:block.
+
+   All of it is deleted. NEVER RE-ADD .aogtop-* RULES TO A PAGE STYLESHEET —
+   edit _work/topbar/aog-topbar-css.txt and re-run the builder. The
+   :root.a11y-* rules below stay: those color the PAGE, not the bar. */
+
+
+/* ── ACCESSIBILITY ── the same two settings as the home page, sharing its
+   storage keys, so a student who turns one on there still has it here.
+   Read-aloud and picture answers are check-in controls; they have nothing
+   to act on in a reading page, so those two rows are not offered. */
+:root.a11y-contrast{ --ink:#000; --ink-soft:#1c2230; --ink-faint:#3a4254; --rule:rgba(0,0,0,.55); --rule-soft:rgba(0,0,0,.32); }
+:root.a11y-contrast[data-theme="dark"]{ --ink:#fff; --ink-soft:#e8edf5; --ink-faint:#c4ccd9; --rule:rgba(255,255,255,.72); --rule-soft:rgba(255,255,255,.42); }
+:root.a11y-contrast .card,:root.a11y-contrast .mcard,:root.a11y-contrast .btn,
+:root.a11y-contrast .aogtop-ico,:root.a11y-contrast .aogtop-sw{border:1px solid var(--ink) !important;}
+:root.a11y-dyslexic{ --dysf:"OpenDyslexic","Comic Sans MS","Trebuchet MS",Verdana,sans-serif; }
+:root.a11y-dyslexic body,:root.a11y-dyslexic h1,:root.a11y-dyslexic h2,:root.a11y-dyslexic h3,
+:root.a11y-dyslexic h4,:root.a11y-dyslexic .aogtop-nm,:root.a11y-dyslexic .mast .name{
+  font-family:var(--dysf) !important;
+}
+:root.a11y-dyslexic body{letter-spacing:.012em; word-spacing:.05em; line-height:1.7;}
+
+
+</style>
+<script>
+/* AOG-HUB-BOOT — accent, theme and accessibility applied BEFORE first
+   paint, so the bar never flashes the wrong color on the way in. Inline
+   and tiny for exactly that reason. Same storage keys as index.html. */
+(function(){
+  var d = document.documentElement;
+  try{
+    var A = {gold:1,teal:1,violet:1,rose:1,sky:1,green:1};
+    var a = localStorage.getItem("aog.accent");
+    if(a && a !== "gold" && A[a]) d.setAttribute("data-accent", a);
+  }catch(e){}
+  try{
+    var t = localStorage.getItem("aog.theme") || localStorage.getItem("aog.interior.ws.v1.theme");
+    d.setAttribute("data-theme", t === "dark" ? "dark" : "light"); /* .30eg: light unless this device chose dark - the OS setting no longer decides */
+  }catch(e){}
+  try{
+    if(localStorage.getItem("aog.a11y.contrast") === "1") d.classList.add("a11y-contrast");
+    if(localStorage.getItem("aog.a11y.dyslexic") === "1") d.classList.add("a11y-dyslexic");
+  }catch(e){}
+})();
+</script>
+
+<style>
+/* ══ THE VOCABULARY HUB — its own few rules; everything else is the
+   Concepts & Data hub's stylesheet, sliced in above. ══ */
+.vcards{display:grid; gap:16px; grid-template-columns:repeat(auto-fit,minmax(17rem,1fr)); margin-top:16px;}
+.vcard{display:flex; flex-direction:column; gap:8px;}
+.vcard .card{flex:1 1 auto;}
+.jump{margin:0 0 16px;}
+.jump label span{font-weight:700;font-size:.9rem;}
+.jump select{display:block;margin-top:6px;min-height:48px;font:inherit;font-size:16px;padding:8px 12px;max-width:420px;width:100%;border:1.5px solid var(--rule);border-radius:10px;background:var(--card);color:var(--ink);}
+@media print{.jump{display:none;}}
+.beambtn{
+  border:1.5px solid var(--rule); background:var(--field); border-radius:10px;
+  padding:10px 13px; min-height:48px; font-size:13px; font-weight:700; color:var(--ink-soft);
+}
+.beambtn:hover{border-color:var(--a); color:var(--ink);}
+.wordtable{width:100%; border-collapse:collapse; margin-top:14px;}
+.wordtable td{border-bottom:1px solid var(--rule-soft); padding:9px 10px 9px 0; vertical-align:baseline;}
+.wordtable .w{
+  font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+  font-size:17px; font-weight:700; color:var(--a); white-space:nowrap;
+}
+.wordtable .p{font-size:12px; font-style:italic; color:var(--ink-soft); white-space:nowrap;}
+.wordtable .d{font-size:14.5px; color:var(--ink-soft); line-height:1.5;}
+@media (max-width:620px){
+  .wordtable td{display:block; border-bottom:0; padding:1px 0;}
+  .wordtable tr{display:block; border-bottom:1px solid var(--rule-soft); padding:9px 0;}
+}
+.loader{margin-top:16px;}
+.loader label{display:block; font-size:12.5px; font-weight:700; color:var(--ink-soft); margin-top:12px;}
+.loader input[type=text],.loader textarea{
+  display:block; width:100%; margin-top:5px; font:inherit; background:var(--field); color:var(--ink);
+  border:1.5px solid var(--rule); border-radius:11px; padding:11px 12px; min-height:48px;
+}
+.loader textarea{min-height:11rem; font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; font-size:13.5px; line-height:1.6;}
+.loader .row{display:flex; flex-wrap:wrap; gap:9px; margin-top:12px;}
+.loader .row .btn,.loader .row button{min-height:48px;}
+.fmt{
+  margin-top:10px; border:1.5px dashed var(--rule); border-radius:11px; padding:11px 13px;
+  background:var(--field-2); font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  font-size:12.5px; line-height:1.7; color:var(--ink-soft); overflow-x:auto;
+}
+.state{margin-top:14px; border:2px solid var(--rule); border-radius:14px; padding:13px 15px; background:var(--field);}
+.state .k{font-size:10.5px; font-weight:800; letter-spacing:.14em; text-transform:uppercase; color:var(--ink-soft);}
+.state .hl{display:block; margin-top:4px; font-size:16px; font-weight:700; color:var(--ink);}
+.state ul{margin:10px 0 0; padding:0; list-style:none; display:grid; gap:7px;}
+.state li{display:grid; grid-template-columns:1.6em 1fr; gap:8px; font-size:14px; color:var(--ink-soft); align-items:baseline;}
+.state li .yn{font-weight:800; text-align:center;}
+.state li.yes .yn{color:var(--lock);}
+.state li.no .yn{color:var(--caution);}
+@media print{ .loader,.beambtn,.aogtop,.state{display:none !important;} }
+</style>
+
+<style>
+#beam{
+  position:fixed; inset:0; z-index:1200; background:var(--field); color:var(--ink);
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  gap:clamp(14px,3vh,34px); padding:5vh 4vw; text-align:center; cursor:pointer;
+}
+#beam .wk{font-size:clamp(13px,1.6vw,22px); font-weight:800; letter-spacing:.2em; text-transform:uppercase; color:var(--ink-soft);}
+#beam .nm{font-family:Georgia,serif; font-size:clamp(28px,5vw,72px); line-height:1.05; font-weight:700;}
+#beam .url{
+  font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  font-size:clamp(19px,5.4vw,104px); font-weight:700; line-height:1.1;
+  letter-spacing:-.02em; color:var(--a); white-space:nowrap; max-width:100%;
+}
+#beam .hint{font-size:clamp(13px,1.5vw,20px); color:var(--ink-soft);}
+#beam .x{position:absolute; top:18px; right:20px; font-size:15px; font-weight:700; color:var(--ink-soft);}
+</style>
+<style id="aog-nozoom">
+/* ═══ AOG-NOZOOM-V1 · 2026-09-18 ═══════════════════════════════════════════
+   iOS Safari zooms the WHOLE page when a text field under 16px takes focus,
+   and does not zoom back out. From then on the layout is wider than the
+   window and pans freely left and right on any touch. Jimmy, on an iPhone:
+   "how the screen moves easily left or right. It makes me nausea."
+   index.html had 69 such fields at 390px and gets this same rule from
+   aog-styles.css; this page links its own styles, so it carries its own copy.
+   ⚠ NOT maximum-scale=1 / user-scalable=no — that takes pinch-zoom away from
+     anyone who needs to magnify, and iOS has ignored it since iOS 10.
+   ⚠ Touch only. A mouse has no zoom behavior and keeps the tighter density.
+   ⚠ !important is load-bearing: some fields set their size in a style=""
+     attribute (the font: shorthand counts), and an author !important is what
+     outranks those. If you remove it, re-measure rather than assume.
+   ══════════════════════════════════════════════════════════════════════════ */
+@media (hover: none) and (pointer: coarse) {
+  input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="color"]):not([type="file"]):not([type="submit"]):not([type="button"]):not([type="image"]),
+  select,
+  textarea { font-size: 16px !important; }
+}
+</style>
+</head>
+<body>
+<script src="/aog-topbar.js"></script>
+
+
+<header class="mast wrap">
+  <div class="row">
+    <div class="mark" aria-hidden="true">A</div>
+    <div>
+      <div class="name">Architecture of Grace</div>
+      <div class="sub" data-en="Science · Vocabulary" data-es="Ciencias · Vocabulario">Science · Vocabulary</div>
+    </div>
+  </div>
+  <h1 data-en="Science" data-es="Ciencias">Science</h1>
+  <p class="deck" data-en="One page for all of it — the unit&#x27;s word list five ways, the microscope itself, and test prep for the eight units. Every activity works on this screen or on paper — both count. Nothing a student does leaves their computer unless they tap Send." data-es="Una página para todo — la lista de palabras de la unidad de cinco formas, el microscopio mismo y la preparación para los ocho temas. Cada actividad funciona en esta pantalla o en papel — las dos cuentan. Nada de lo que hace un estudiante sale de su computadora a menos que toque Enviar.">One page for all of it — the unit&#x27;s word list five ways, the microscope itself, and test prep for the eight units. Every activity works on this screen or on paper — both count. Nothing a student does leaves their computer unless they tap Send.</p>
+</header>
+
+<main class="wrap">
+
+  <section class="strand" aria-labelledby="mh">
+    <div class="strand-head">
+      <span class="k" data-en="The instrument" data-es="El instrumento">The instrument</span>
+      <h2 id="mh" data-en="The microscope — every part, every job" data-es="El microscopio — cada parte, cada trabajo">The microscope — every part, every job</h2>
+    </div>
+    <p class="say" data-en="The words name the world; the microscope is how the class looks at it. Thirteen parts on one machine — meet each one, then prove it two ways: find the part, and name the job. The printed page is the same review with a pencil, key included." data-es="Las palabras nombran el mundo; el microscopio es cómo la clase lo mira. Trece partes en una máquina — conoce cada una y luego demuéstralo de dos formas: encuentra la parte y nombra el trabajo. La página impresa es el mismo repaso con lápiz, con clave incluida.">The words name the world; the microscope is how the class looks at it. Thirteen parts on one machine — meet each one, then prove it two ways: find the part, and name the job. The printed page is the same review with a pencil, key included.</p>
+    <div class="vcards">
+      <div class="vcard">
+        <a class="card" href="science-microscope.html">
+          <span class="num" data-en="Review" data-es="Repaso">Review</span>
+          <h3 data-en="The Microscope — Parts &amp; Functions" data-es="El microscopio — partes y funciones">The Microscope — Parts &amp; Functions</h3>
+          <p class="what" data-en="Tap the machine and it answers: what the part does, why it matters, and the classic mistake. Then two review modes, the path of light, the magnification math, and a printable worksheet with its key." data-es="Toca la máquina y responde: qué hace la parte, por qué importa y el error clásico. Luego dos modos de repaso, el camino de la luz, la matemática del aumento y una hoja imprimible con su clave.">Tap the machine and it answers: what the part does, why it matters, and the classic mistake. Then two review modes, the path of light, the magnification math, and a printable worksheet with its key.</p>
+          <span class="go" data-en="Open →" data-es="Abrir →">Open →</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="strand" aria-labelledby="th">
+    <div class="strand-head">
+      <span class="k" data-en="Before a test" data-es="Antes de un examen">Before a test</span>
+      <h2 id="th" data-en="The eight units, one door each" data-es="Los ocho temas, una puerta por tema">The eight units, one door each</h2>
+    </div>
+    <p class="say" data-en="Study cards, hints that teach instead of telling, and a practice quiz for every unit — from living things to natural selection." data-es="Tarjetas de estudio, pistas que enseñan en vez de decir, y una prueba de práctica por cada tema — de los seres vivos a la selección natural.">Study cards, hints that teach instead of telling, and a practice quiz for every unit — from living things to natural selection.</p>
+    <div class="vcards">
+      <div class="vcard">
+        <a class="card" href="exam-prep.html#science">
+          <span class="num" data-en="Test prep" data-es="Preparación">Test prep</span>
+          <h3 data-en="Science — Topics 1&ndash;8" data-es="Ciencias — Temas 1&ndash;8">Science — Topics 1&ndash;8</h3>
+          <p class="what" data-en="Every unit has its own page and its own quiz, and the jump menu moves between them without coming back here." data-es="Cada tema tiene su propia página y su propia prueba, y el menú de salto se mueve entre ellos sin volver aquí.">Every unit has its own page and its own quiz, and the jump menu moves between them without coming back here.</p>
+          <span class="go" data-en="Open →" data-es="Abrir →">Open →</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="vocab" aria-labelledby="wh">
+    <h2 id="wh" data-en="The fifteen words" data-es="Las quince palabras">The fifteen words</h2>
+    <p class="say" data-en="Straight from the unit&#x27;s own student page, word for word. Every one of them is taught inside an activity — this is only so you can see them all in one place, and so the list prints." data-es="Directo de la hoja del estudiante de la unidad, palabra por palabra. Cada una se enseña dentro de una actividad — esto es solo para verlas todas juntas, y para que la lista se pueda imprimir.">Straight from the unit&#x27;s own student page, word for word. Every one of them is taught inside an activity — this is only so you can see them all in one place, and so the list prints.</p>
+    <table class="wordtable">
+      <tbody>
+          <tr><td class="w" data-en="essential" data-es="esencial">essential</td><td class="p" data-en="adj." data-es="adj.">adj.</td><td class="d" data-en="If something is essential, it is absolutely necessary." data-es="Si algo es esencial, es absolutamente necesario.">If something is essential, it is absolutely necessary.</td></tr>
+          <tr><td class="w" data-en="photosynthesis" data-es="fotosíntesis">photosynthesis</td><td class="p" data-en="n." data-es="s.">n.</td><td class="d" data-en="Photosynthesis is the process by which a green plant uses the sun&#x27;s energy to make food for the plant." data-es="La fotosíntesis es el proceso por el cual una planta verde usa la energía del sol para fabricar su alimento.">Photosynthesis is the process by which a green plant uses the sun&#x27;s energy to make food for the plant.</td></tr>
+          <tr><td class="w" data-en="resources" data-es="recursos">resources</td><td class="p" data-en="n." data-es="s.">n.</td><td class="d" data-en="Resources are things that are available and ready to be used to meet needs." data-es="Los recursos son cosas disponibles y listas para usarse para cubrir necesidades.">Resources are things that are available and ready to be used to meet needs.</td></tr>
+          <tr><td class="w" data-en="synthesis" data-es="síntesis">synthesis</td><td class="p" data-en="n." data-es="s.">n.</td><td class="d" data-en="Synthesis is the result of putting things together." data-es="La síntesis es el resultado de unir cosas.">Synthesis is the result of putting things together.</td></tr>
+          <tr><td class="w" data-en="uniquely" data-es="de manera única">uniquely</td><td class="p" data-en="adv." data-es="adv.">adv.</td><td class="d" data-en="Uniquely means unlike other things or the only one of its kind." data-es="De manera única significa distinto a todo lo demás, o el único de su clase.">Uniquely means unlike other things or the only one of its kind.</td></tr>
+          <tr><td class="w" data-en="chlorophyll" data-es="clorofila">chlorophyll</td><td class="p" data-en="n." data-es="s.">n.</td><td class="d" data-en="Chlorophyll is the green substance found in almost all plants." data-es="La clorofila es la sustancia verde que se encuentra en casi todas las plantas.">Chlorophyll is the green substance found in almost all plants.</td></tr>
+          <tr><td class="w" data-en="chloroplasts" data-es="cloroplastos">chloroplasts</td><td class="p" data-en="n." data-es="s.">n.</td><td class="d" data-en="Chloroplasts are the parts of a plant&#x27;s cells in which photosynthesis takes place." data-es="Los cloroplastos son las partes de las células de una planta donde ocurre la fotosíntesis.">Chloroplasts are the parts of a plant&#x27;s cells in which photosynthesis takes place.</td></tr>
+          <tr><td class="w" data-en="glucose" data-es="glucosa">glucose</td><td class="p" data-en="n." data-es="s.">n.</td><td class="d" data-en="Glucose is a simple sugar." data-es="La glucosa es un azúcar simple.">Glucose is a simple sugar.</td></tr>
+          <tr><td class="w" data-en="integral" data-es="integral">integral</td><td class="p" data-en="adj." data-es="adj.">adj.</td><td class="d" data-en="If a thing is integral, that thing is necessary for something to be whole or for something to do its job." data-es="Si algo es integral, es necesario para que otra cosa esté completa o pueda hacer su trabajo.">If a thing is integral, that thing is necessary for something to be whole or for something to do its job.</td></tr>
+          <tr><td class="w" data-en="chemistry" data-es="química">chemistry</td><td class="p" data-en="n." data-es="s.">n.</td><td class="d" data-en="Chemistry is the science that deals with how things are made up and how they change when they interact with other things." data-es="La química es la ciencia que estudia de qué están hechas las cosas y cómo cambian al interactuar con otras.">Chemistry is the science that deals with how things are made up and how they change when they interact with other things.</td></tr>
+          <tr><td class="w" data-en="chemical" data-es="químico">chemical</td><td class="p" data-en="adj." data-es="adj.">adj.</td><td class="d" data-en="The word chemical describes something related to the makeup of substances; it has to do with chemistry." data-es="La palabra químico describe algo relacionado con la composición de las sustancias; tiene que ver con la química.">The word chemical describes something related to the makeup of substances; it has to do with chemistry.</td></tr>
+          <tr><td class="w" data-en="molecule" data-es="molécula">molecule</td><td class="p" data-en="n." data-es="s.">n.</td><td class="d" data-en="A molecule is a very small amount of matter, formed by combining two or more atoms." data-es="Una molécula es una cantidad muy pequeña de materia, formada al combinar dos o más átomos.">A molecule is a very small amount of matter, formed by combining two or more atoms.</td></tr>
+          <tr><td class="w" data-en="carbon dioxide" data-es="dióxido de carbono">carbon dioxide</td><td class="p" data-en="n." data-es="s.">n.</td><td class="d" data-en="Carbon dioxide (CO2) is a colorless, odorless gas that occurs naturally." data-es="El dióxido de carbono (CO2) es un gas incoloro e inodoro que ocurre de forma natural.">Carbon dioxide (CO2) is a colorless, odorless gas that occurs naturally.</td></tr>
+          <tr><td class="w" data-en="microbes" data-es="microbios">microbes</td><td class="p" data-en="n." data-es="s.">n.</td><td class="d" data-en="Microbes are very tiny living organisms." data-es="Los microbios son organismos vivos muy pequeños.">Microbes are very tiny living organisms.</td></tr>
+          <tr><td class="w" data-en="opposite" data-es="opuesto">opposite</td><td class="p" data-en="n." data-es="s.">n.</td><td class="d" data-en="The opposite is something that is completely different from another thing, as up is to down." data-es="El opuesto es algo completamente distinto de otra cosa, como arriba es de abajo.">The opposite is something that is completely different from another thing, as up is to down.</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section class="strand" aria-labelledby="lh">
+    <div class="strand-head">
+      <span class="k" data-en="Any teacher, any unit" data-es="Cualquier maestro, cualquier unidad">Any teacher, any unit</span>
+      <h2 id="lh" data-en="Run these on your own word list" data-es="Usa estas con tu propia lista">Run these on your own word list</h2>
+    </div>
+    <p class="say" data-en="Paste your list below and the activities that can honestly run it will pick it up on this computer. Nothing is uploaded and nothing is shared — it is stored in this browser, next to the student work, and the same Erase everything button removes it." data-es="Pega tu lista abajo y las actividades que puedan usarla honestamente la tomarán en esta computadora. No se sube ni se comparte nada — se guarda en este navegador, junto al trabajo del estudiante, y el mismo botón de Borrar todo la elimina.">Paste your list below and the activities that can honestly run it will pick it up on this computer. Nothing is uploaded and nothing is shared — it is stored in this browser, next to the student work, and the same Erase everything button removes it.</p>
+    <div class="loader">
+      <label for="listName" data-en="What is this list called?" data-es="¿Cómo se llama esta lista?">What is this list called?</label>
+      <input type="text" id="listName" maxlength="60" autocomplete="off" placeholder="Cells and how science talks">
+      <label for="listText" data-en="One word per line" data-es="Una palabra por línea">One word per line</label>
+      <div class="fmt">word | part of speech | what it means | a sentence with the word as ___ | group</div>
+      <p class="say" data-en="The last two are optional. What you give decides which activities can run: the meaning is enough for Match the Meaning; a sentence adds Say It in a Sentence; a group adds Which One Doesn&#x27;t Belong. Build the Word and Picture It stay on this unit&#x27;s words, because they need each word&#x27;s own pieces and its own picture — and they will say so on screen rather than run half of themselves." data-es="Los dos últimos son opcionales. Lo que des decide qué actividades pueden funcionar: el significado basta para Une el significado; una oración añade Dilo en una oración; un grupo añade Cuál no encaja. Construye la palabra y Dibújalo se quedan con las palabras de esta unidad, porque necesitan las piezas de cada palabra y su propio dibujo — y lo dirán en pantalla en vez de funcionar a medias.">The last two are optional. What you give decides which activities can run: the meaning is enough for Match the Meaning; a sentence adds Say It in a Sentence; a group adds Which One Doesn&#x27;t Belong. Build the Word and Picture It stay on this unit&#x27;s words, because they need each word&#x27;s own pieces and its own picture — and they will say so on screen rather than run half of themselves.</p>
+      <textarea id="listText" spellcheck="false" aria-describedby="lh"></textarea>
+      <div class="row">
+        <button class="btn btn-accent" type="button" id="loadBtn" data-en="Use this list on this computer" data-es="Usar esta lista en esta computadora">Use this list on this computer</button>
+        <button class="btn" type="button" id="egBtn" data-en="Show me an example" data-es="Muéstrame un ejemplo">Show me an example</button>
+        <button class="btn btn-danger" type="button" id="clearBtn" data-en="Go back to this unit's words" data-es="Volver a las palabras de esta unidad">Go back to this unit's words</button>
+      </div>
+      <div class="state" id="state" aria-live="polite"><span class="k"></span><span class="hl"></span><ul></ul></div>
+    </div>
+  </section>
+
+  <section class="strand" aria-labelledby="s1h">
+    <div class="strand-head">
+      <span class="k" data-en="The word list" data-es="La lista de palabras">The word list</span>
+      <h2 id="s1h" data-en="Five ways into the same fifteen words" data-es="Cinco caminos a las mismas quince palabras">Five ways into the same fifteen words</h2>
+    </div>
+    <!-- .30ga: the five activity cards became this dropdown at the bottom of
+         the page, by request. ⚠ It deliberately does NOT navigate on change,
+         unlike the hub jump menus: the board button acts on the same choice,
+         and a menu that leaves the page on change can never be beamed. -->
+    <div class="jump no-print"><label for="vJumpSel"><span data-en="Choose an activity — the same fifteen words, five different jobs" data-es="Elige una actividad — las mismas quince palabras, cinco trabajos distintos">Choose an activity — the same fifteen words, five different jobs</span></label>
+    <select id="vJumpSel">
+      <option value="v1-match-the-meaning.html" data-beamid="v1" data-name="Match the Meaning" data-nombre="Une el significado" data-en="Activity 1 · Match the Meaning" data-es="Actividad 1 · Une el significado" selected>Activity 1 · Match the Meaning</option>
+      <option value="v2-build-the-word.html" data-beamid="v2" data-name="Build the Word" data-nombre="Construye la palabra" data-en="Activity 2 · Build the Word" data-es="Actividad 2 · Construye la palabra">Activity 2 · Build the Word</option>
+      <option value="v3-say-it-in-a-sentence.html" data-beamid="v3" data-name="Say It in a Sentence" data-nombre="Dilo en una oración" data-en="Activity 3 · Say It in a Sentence" data-es="Actividad 3 · Dilo en una oración">Activity 3 · Say It in a Sentence</option>
+      <option value="v4-picture-it.html" data-beamid="v4" data-name="Picture It" data-nombre="Dibújalo" data-en="Activity 4 · Picture It" data-es="Actividad 4 · Dibújalo">Activity 4 · Picture It</option>
+      <option value="v5-which-one-doesnt-belong.html" data-beamid="v5" data-name="Which One Doesn&#x27;t Belong" data-nombre="Cuál no encaja" data-en="Activity 5 · Which One Doesn&#x27;t Belong" data-es="Actividad 5 · Cuál no encaja">Activity 5 · Which One Doesn&#x27;t Belong</option>
+    </select>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:10px">
+      <button class="btn btn-accent" type="button" id="vJumpGo" data-en="Open →" data-es="Abrir →">Open →</button>
+      <button class="beambtn" type="button" id="vJumpBeam" data-beam="v1" data-name="Match the Meaning" data-nombre="Une el significado" data-en="Show on the board" data-es="Mostrar en la pizarra" style="margin-top:0">Show on the board</button>
+    </div>
+    </div>
+  </section>
+
+  <details class="teach">
+    <summary data-en="For the teacher" data-es="Para el maestro">For the teacher</summary>
+    <div class="inner">
+      <p data-en="&lt;b&gt;Eight items, three sets, on every activity.&lt;/b&gt; Items 1–5 are the unit's science words and 6–8 are the words science borrows from everywhere — the same split in every set, so the band grid on the printed record stays true when you switch a student to Set 2 mid-week." data-es="&lt;b&gt;Ocho ítems, tres grupos, en cada actividad.&lt;/b&gt; Los ítems 1–5 son las palabras de ciencias de la unidad y los 6–8 las que la ciencia toma prestadas — la misma división en cada grupo, para que la tabla del registro impreso siga siendo cierta si cambias a un estudiante al Grupo 2 a media semana.">&lt;b&gt;Eight items, three sets, on every activity.&lt;/b&gt; Items 1–5 are the unit's science words and 6–8 are the words science borrows from everywhere — the same split in every set, so the band grid on the printed record stays true when you switch a student to Set 2 mid-week.</p>
+      <p data-en="&lt;b&gt;Independent, supported, hints, confidence.&lt;/b&gt; The teacher panel at the bottom of each activity builds that row for you, and Print this record turns it into a one-page probe sheet with the item-by-item map. A hint is never a penalty — it is the thing that tells you what to teach next." data-es="&lt;b&gt;Independiente, con apoyo, pistas, confianza.&lt;/b&gt; El panel del maestro al final de cada actividad te arma esa fila, e Imprimir este registro la convierte en una hoja de sondeo de una página con el mapa ítem por ítem. Una pista nunca es un castigo — es lo que te dice qué enseñar después.">&lt;b&gt;Independent, supported, hints, confidence.&lt;/b&gt; The teacher panel at the bottom of each activity builds that row for you, and Print this record turns it into a one-page probe sheet with the item-by-item map. A hint is never a penalty — it is the thing that tells you what to teach next.</p>
+      <div class="step"><span class="n">1</span><p data-en="&lt;b&gt;Send a link, get a row back.&lt;/b&gt; Share an activity's address with a student, or put it on the board with the button under each card. When the page can reach your Sheet, a Send button appears after a finished set — one tap posts one row to the &lt;b&gt;Practice&lt;/b&gt; tab: activity, set, independent, supported, hints, confidence, and the first name the student types. Nothing else ever travels." data-es="&lt;b&gt;Envía un enlace, recibe una fila.&lt;/b&gt; Comparte la dirección de una actividad con un estudiante, o ponla en la pizarra con el botón de cada tarjeta. Cuando la página alcanza tu hoja, aparece un botón Enviar al terminar un grupo — un toque publica una fila en la pestaña &lt;b&gt;Practice&lt;/b&gt;: actividad, grupo, independiente, con apoyo, pistas, confianza y el nombre que escribe el estudiante. Nada más viaja jamás.">&lt;b&gt;Send a link, get a row back.&lt;/b&gt; Share an activity's address with a student, or put it on the board with the button under each card. When the page can reach your Sheet, a Send button appears after a finished set — one tap posts one row to the &lt;b&gt;Practice&lt;/b&gt; tab: activity, set, independent, supported, hints, confidence, and the first name the student types. Nothing else ever travels.</p></div>
+      <div class="step"><span class="n">2</span><p data-en="&lt;b&gt;A bare link stays private.&lt;/b&gt; On a device with no path to your Sheet the Send button never appears, and the lock section on every page tells the student the truth for the mode it is in — including that it has no way to send anything at all." data-es="&lt;b&gt;Un enlace sin destino queda privado.&lt;/b&gt; En un dispositivo sin camino a tu hoja el botón Enviar nunca aparece, y la sección del candado de cada página le dice al estudiante la verdad del modo en que está — incluido que no tiene forma de enviar nada.">&lt;b&gt;A bare link stays private.&lt;/b&gt; On a device with no path to your Sheet the Send button never appears, and the lock section on every page tells the student the truth for the mode it is in — including that it has no way to send anything at all.</p></div>
+      <div class="step"><span class="n">3</span><p data-en="&lt;b&gt;Your own list is a per-computer thing.&lt;/b&gt; It is stored in this browser, so a student's device will still show this unit's fifteen words unless the list is loaded there too. That is on purpose: a word list is a small thing, and it is not worth building an account to move it." data-es="&lt;b&gt;Tu propia lista vive en cada computadora.&lt;/b&gt; Se guarda en este navegador, así que el dispositivo de un estudiante seguirá mostrando las quince palabras de esta unidad a menos que la lista se cargue también ahí. Es a propósito: una lista de palabras es algo pequeño, y no vale la pena crear cuentas para moverla.">&lt;b&gt;Your own list is a per-computer thing.&lt;/b&gt; It is stored in this browser, so a student's device will still show this unit's fifteen words unless the list is loaded there too. That is on purpose: a word list is a small thing, and it is not worth building an account to move it.</p></div>
+    </div>
+  </details>
+
+</main>
+
+<footer class="foot wrap">
+  <p><b>Architecture of Grace · Science — Vocabulary.</b></p>
+  <p data-en="This page loads no fonts, scripts, or images from the internet and sends nothing out — it works with the network off. It is not a district product and carries no district endorsement." data-es="Esta página no carga fuentes, scripts ni imágenes de internet y no envía nada — funciona con la red apagada. No es un producto del distrito ni cuenta con su respaldo.">This page loads no fonts, scripts, or images from the internet and sends nothing out — it works with the network off. It is not a district product and carries no district endorsement.</p>
+</footer>
+
+
+<script>
+/* ══ THE WORD LIST LOADER ════════════════════════════════════════════════
+   Writes ONE key -- aog.interior.ws.v1.wordlist -- which every v-page reads
+   at boot. It is inside the same KEY namespace as the student work, so the
+   activities' "Erase everything on this computer" sweeps it too, and that
+   button's sentence stays true.
+
+   ⚠ THE READINESS TABLE IS COMPUTED FROM THE PARSE, NOT PROMISED. Each row
+   answers "can this activity honestly run this list", using the SAME test
+   the activity itself uses -- and the two activities that never can say so
+   plainly instead of being quietly left out. */
+(function(){
+  "use strict";
+  var KEY = "aog.interior.ws.v1.", LK = KEY + "wordlist";
+  var $ = function(s){ return document.getElementById(s); };
+  var ta = $("listText"), nm = $("listName"), box = $("state");
+  if(!ta || !box) return;
+  var esLang = function(){ return document.documentElement.lang === "es"; };
+  function T(en, es){ return esLang() ? es : en; }
+
+  var EG = [
+   "cell | n. | A cell is the smallest working part of a living thing. | Every living thing is built out of one ___ or many. | Parts of living things",
+   "nucleus | n. | The nucleus is the part of a cell that holds its instructions. | The ___ keeps the instructions the cell works from. | Parts of living things",
+   "membrane | n. | A membrane is a thin layer that holds something in and lets some things through. | A ___ decides what gets into the cell. | Parts of living things",
+   "organism | n. | An organism is a single living thing. | A whale and a bacterium are each one ___ . | Parts of living things",
+   "observe | v. | To observe is to watch something closely on purpose. | Scientists ___ before they explain. | Words any subject can use",
+   "evidence | n. | Evidence is what you point to when you say why you think something. | A claim with no ___ is only an opinion. | Words any subject can use",
+   "predict | v. | To predict is to say what you think will happen before it does. | Use the pattern to ___ the next result. | Words any subject can use"
+  ].join("\n");
+
+  function parse(txt){
+    var rows = [], bad = [];
+    String(txt||"").split(/\r?\n/).forEach(function(line, n){
+      var t = line.trim();
+      if(!t) return;
+      var f = t.split("|").map(function(x){ return x.trim(); });
+      if(f.length < 3 || !f[0] || !f[2]){ bad.push(n+1); return; }
+      rows.push({ w:f[0].slice(0,60), pos:f[1].slice(0,20), def:f[2].slice(0,400),
+                  sent:(f[3]||"").slice(0,300), grp:(f[4]||"").slice(0,60) });
+    });
+    return { rows:rows, bad:bad };
+  }
+  /* the same two tests the activities run, so the answer here cannot differ
+     from what a student sees when they open the page */
+  function canSent(rows){ return rows.length >= 5 && rows.every(function(r){ return r.sent && r.sent.indexOf("___") > -1; }); }
+  function canGrp(rows){
+    if(rows.length < 5) return false;
+    var g = {}, big = 0, k;
+    rows.forEach(function(r){ if(r.grp) g[r.grp] = (g[r.grp]||0) + 1; });
+    for(k in g){ if(g[k] >= 3) big++; }
+    return big >= 2;
+  }
+
+  function saved(){
+    try{ var o = JSON.parse(localStorage.getItem(LK)||"null");
+      return (o && o.rows && o.rows.length) ? o : null; }catch(e){ return null; }
+  }
+
+  function paint(){
+    var o = saved();
+    var k = box.querySelector(".k"), hl = box.querySelector(".hl"), ul = box.querySelector("ul");
+    var rows = o ? o.rows : null;
+    if(!rows){
+      k.textContent = T("Right now","Ahora mismo");
+      hl.textContent = T("The activities are using this unit's fifteen words.",
+                         "Las actividades usan las quince palabras de esta unidad.");
+      ul.innerHTML = "";
+      return;
+    }
+    k.textContent = T("Loaded on this computer","Cargada en esta computadora");
+    hl.textContent = (o.name ? o.name + " — " : "")
+      + rows.length + " " + T("words","palabras");
+    var can = [
+      [true, T("Match the Meaning","Une el significado"),
+             T("every word has a meaning","cada palabra tiene un significado")],
+      [false, T("Build the Word","Construye la palabra"),
+              T("needs each word's own pieces — stays on this unit's words",
+                "necesita las piezas de cada palabra — se queda con las de esta unidad")],
+      [canSent(rows), T("Say It in a Sentence","Dilo en una oración"),
+             canSent(rows) ? T("every word has a sentence with ___ in it","cada palabra tiene una oración con ___")
+                           : T("at least one word has no sentence with ___ in it","a alguna palabra le falta una oración con ___")],
+      [false, T("Picture It","Dibújalo"),
+              T("needs this unit's own picture — stays on this unit's words",
+                "necesita el dibujo de esta unidad — se queda con las de esta unidad")],
+      [canGrp(rows), T("Which One Doesn't Belong","Cuál no encaja"),
+             canGrp(rows) ? T("at least two groups have three words in them","al menos dos grupos tienen tres palabras")
+                          : T("needs at least two groups with three words each","necesita al menos dos grupos con tres palabras cada uno")]
+    ];
+    ul.innerHTML = can.map(function(c){
+      return '<li class="' + (c[0] ? "yes" : "no") + '"><span class="yn" aria-hidden="true">'
+        + (c[0] ? "✓" : "—") + '</span><span><b>' + c[1] + '</b> — ' + c[2] + '</span></li>';
+    }).join("");
+  }
+
+  $("loadBtn").addEventListener("click", function(){
+    var p = parse(ta.value);
+    if(!p.rows.length){
+      window.alert(T("Nothing to load yet. Each line needs at least: word | part of speech | what it means",
+                     "Todavía no hay nada que cargar. Cada línea necesita al menos: palabra | tipo de palabra | qué significa"));
+      return;
+    }
+    if(p.rows.length < 5){
+      window.alert(T("A list needs at least five words for these activities to have anything to choose between. This one has " + p.rows.length + ".",
+                     "Una lista necesita al menos cinco palabras para que estas actividades tengan entre qué elegir. Esta tiene " + p.rows.length + "."));
+      return;
+    }
+    try{
+      localStorage.setItem(LK, JSON.stringify({ name:(nm.value||"").trim().slice(0,60),
+                                                rows:p.rows, at:new Date().toISOString() }));
+    }catch(e){
+      window.alert(T("This computer will not let the page save. The list was not loaded.",
+                     "Esta computadora no deja que la página guarde. La lista no se cargó."));
+      return;
+    }
+    if(p.bad.length){
+      window.alert(T(p.rows.length + " words loaded. These lines were skipped because they had no meaning after the second |: " + p.bad.join(", "),
+                     p.rows.length + " palabras cargadas. Estas líneas se omitieron porque no tenían significado después del segundo |: " + p.bad.join(", ")));
+    }
+    paint();
+  });
+
+  $("clearBtn").addEventListener("click", function(){
+    if(!window.confirm(T("Go back to this unit's fifteen words? Your pasted list is removed from this computer.",
+                         "¿Volver a las quince palabras de esta unidad? Tu lista pegada se quita de esta computadora."))) return;
+    try{ localStorage.removeItem(LK); }catch(e){}
+    paint();
+  });
+
+  $("egBtn").addEventListener("click", function(){
+    ta.value = EG;
+    if(!nm.value) nm.value = T("Example — cells and how science talks","Ejemplo — las células y cómo habla la ciencia");
+    ta.focus();
+  });
+
+  /* the board beam, same as the activity pages' own */
+  Array.prototype.forEach.call(document.querySelectorAll("[data-beam]"), function(b){
+    b.addEventListener("click", function(){
+      var host = location.hostname || "architectureofgrace.org";
+      var url = (host==="localhost"||host==="127.0.0.1"||!host)
+              ? (location.origin + "/" + b.getAttribute("data-beam"))
+              : host.replace(/^www\./,"") + "/" + b.getAttribute("data-beam");
+      var el = document.createElement("div");
+      el.id = "beam";
+      el.innerHTML = '<div class="x">'+T("Tap anywhere to close","Toca para cerrar")+'</div>'
+        + '<div class="wk">'+T("Science · Vocabulary","Ciencias · Vocabulario")+'</div>'
+        + '<div class="nm"></div><div class="url"></div>'
+        + '<div class="hint">'+T("Type it in the address bar.","Escríbelo en la barra de direcciones.")+'</div>';
+      el.querySelector(".nm").textContent = b.getAttribute(esLang() ? "data-nombre" : "data-name");
+      el.querySelector(".url").textContent = url;
+      el.addEventListener("click", function(){ el.remove(); });
+      document.addEventListener("keydown", function esc(e){
+        if(e.key==="Escape"){ el.remove(); document.removeEventListener("keydown", esc); }
+      });
+      document.body.appendChild(el);
+      el.setAttribute("tabindex","-1"); el.focus();
+    });
+  });
+
+  /* the language switch repaints [data-en]; this box is built from JS, so
+     repaint it on the same signal rather than inventing a second clock */
+  try{
+    new MutationObserver(paint).observe(document.documentElement,
+      { attributes:true, attributeFilter:["lang"] });
+  }catch(e){}
+  paint();
+})();
+</script>
+
+<script>
+(function(){
+  "use strict";
+  var KEY = "aog.interior.ws.v1.";
+  var lang = "en";
+
+  function T(en, es){ return lang==="es" ? es : en; }
+
+  function paintLang(){
+    document.documentElement.lang = lang;
+    var nodes = document.querySelectorAll("[data-en]");
+    Array.prototype.forEach.call(nodes, function(n){
+      var v = (lang==="es") ? n.getAttribute("data-es") : n.getAttribute("data-en");
+      if(v==null) return;
+      if(v.indexOf("&lt;")!==-1 || v.indexOf("<")!==-1){ n.innerHTML = v; } else { n.textContent = v; }
+    });
+    var pEn = document.getElementById("aogLangEn"), pEs = document.getElementById("aogLangEs");
+    if(pEn) pEn.classList.toggle("on", lang!=="es");
+    if(pEs) pEs.classList.toggle("on", lang==="es");
+    paintTheme();
+  }
+
+  /* ══ THEME — same storage the activities use, so the room matches ══ */
+  var tBtn = document.getElementById("aogThemeBtn");
+  function prefersDark(){ return window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches; }
+  function currentIsDark(){
+    var s = document.documentElement.getAttribute("data-theme");
+    return s ? s==="dark" : prefersDark();
+  }
+  function paintTheme(){
+    /* ⚠ LABEL ONLY. The button holds two <svg>s (sun/moon) that CSS
+       shows and hides by data-theme; writing .textContent here would
+       delete them and leave an empty square. */
+    var lab = currentIsDark() ? T("Switch to light","Cambiar a claro")
+                              : T("Switch to dark","Cambiar a oscuro");
+    if(tBtn){ tBtn.setAttribute("aria-label", lab); tBtn.setAttribute("title", lab); }
+  }
+  /* ⚠⚠ SHARED WITH THE REST OF THE SITE. This used to live under this
+     page's own KEY, so switching to dark here and walking home put you
+     back in light. index.html stores it at "aog.theme"; so do we. The
+     old key is read once and carried over, so nobody loses a setting. */
+  var THEME_KEY = "aog.theme";
+  try{
+    var stored = localStorage.getItem(THEME_KEY);
+    if(!stored){
+      var oldT = localStorage.getItem(KEY+"theme");
+      if(oldT){ stored = oldT; localStorage.setItem(THEME_KEY, oldT); }
+    }
+    if(stored) document.documentElement.setAttribute("data-theme", stored);
+  }catch(e){}
+  if(window.matchMedia){
+    var mq = window.matchMedia("(prefers-color-scheme: dark)");
+    if(mq.addEventListener) mq.addEventListener("change", paintTheme);
+    else if(mq.addListener) mq.addListener(paintTheme);
+  }
+  if(tBtn) tBtn.addEventListener("click", function(){
+    var next = currentIsDark() ? "light" : "dark";
+    document.documentElement.setAttribute("data-theme", next);
+    try{ localStorage.setItem(THEME_KEY, next); }catch(e){}
+    paintTheme();
+  });
+
+  try{ var sl = localStorage.getItem(KEY+"lang"); if(sl==="es"||sl==="en") lang = sl; }catch(e){}
+  /* EN|ES is a two-button segmented control now, not one toggle: the
+     student can see which language they are in without having to read
+     the button that would change it. */
+  function pickLang(v){
+    return function(){
+      if(lang === v) return;
+      lang = v;
+      try{ localStorage.setItem(KEY+"lang", lang); }catch(e){}
+      paintLang();
+    };
+  }
+  var bEn = document.getElementById("aogLangEn"), bEs = document.getElementById("aogLangEs");
+  if(bEn) bEn.addEventListener("click", pickLang("en"));
+  if(bEs) bEs.addEventListener("click", pickLang("es"));
+
+  paintLang();
+})();
+</script>
+
+
+<style>
+/* ══ AOG-SUBJECT-RAIL — emitted from _work/r36/subject_rail.py ══ */
+#aogSubRail{--srl-card:#FFFFFF;--srl-ink:#232B36;--srl-sub:#5B6472;--srl-line:#E4E1D8;--srl-chip:#EFECE4;--srl-bg:#FBFAF7;
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+:root[data-theme="dark"] #aogSubRail{--srl-card:#20262F;--srl-ink:#EDEAE2;--srl-sub:#9AA3B0;--srl-line:#333B47;--srl-chip:#2A313C;--srl-bg:#191D24}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) #aogSubRail{--srl-card:#20262F;--srl-ink:#EDEAE2;--srl-sub:#9AA3B0;--srl-line:#333B47;--srl-chip:#2A313C;--srl-bg:#191D24}}
+#aogSubRail .sr-h{font-size:.66rem;font-weight:800;letter-spacing:.13em;text-transform:uppercase;color:var(--srl-sub);margin:0 0 7px;white-space:nowrap}
+#aogSubRail .sr-i{display:block;text-align:left;border:1px solid var(--srl-line);background:var(--srl-card);color:var(--srl-ink);
+  border-left:4px solid var(--a, #1B3A5F);border-radius:10px;padding:8px 11px;cursor:pointer;font:600 .8rem/1.35 inherit;width:100%}
+#aogSubRail .sr-i:hover{border-color:var(--a, #1B3A5F)}
+#aogSubRail .sr-i[aria-current="true"]{background:var(--srl-chip);font-weight:800}
+@media(min-width:1400px){
+  #aogSubRail{position:fixed;left:16px;top:96px;width:196px;z-index:20;display:flex;flex-direction:column;gap:6px;overflow:auto;
+    max-height:calc(100vh - 140px)}
+}
+@media(max-width:1399.98px){
+  #aogSubRail.sr-anchors{position:sticky;z-index:900;display:flex;gap:7px;overflow-x:auto;-webkit-overflow-scrolling:touch;
+    background:var(--srl-bg);padding:9px 14px;border-bottom:1px solid var(--srl-line);margin:0}
+  #aogSubRail.sr-anchors .sr-h{display:none}
+  #aogSubRail.sr-anchors .sr-i{flex:0 0 auto;width:auto;white-space:nowrap}
+  #aogSubRail.sr-tabs{display:none}
+}
+@media print{#aogSubRail{display:none !important}}
+
+/* ══ AOG-PRINT-SAFE-V1 (2026-09-20) ═══════════════════════════════════════════
+   Jimmy, printing a novel study from his phone: "another pdf that gets parts of
+   the material cut off." These are the rules that keep paper honest on every
+   engine — a table row, a list item, a figure and a picture stay whole; a head
+   keeps the lines under it; no paragraph strands one line at a page edge; and a
+   long table repeats its head at the top of each page. Printed pages only. */
+@media print{
+  table{break-inside:auto; page-break-inside:auto}
+  thead{display:table-header-group}
+  tfoot{display:table-footer-group}
+  tr{break-inside:avoid; page-break-inside:avoid}
+  li,figure,img,svg{break-inside:avoid; page-break-inside:avoid}
+  h1,h2,h3,h4,h5{break-after:avoid; page-break-after:avoid}
+  p{orphans:3; widows:3}
+  /* AOG-PRINT-GRIDFIT-V1 — a CSS grid does not fragment, so a card in a grid row
+     was sliced at the page break instead of moving whole to the next page. On
+     paper the grid is ordinary blocks and each card keeps itself together. */
+  .grid,.cards{display:block!important}
+  .grid>*,.cards>*{break-inside:avoid; page-break-inside:avoid; margin:0 0 12px}
+}
+</style>
+<nav id="aogSubRail" class="sr-anchors" aria-label="On this page" hidden>
+<div class="sr-h">On this page</div>
+<button type="button" class="sr-i"><span data-en="The microscope — every part, every job" data-es="El microscopio — cada parte, cada trabajo">The microscope — every part, every job</span></button>
+<button type="button" class="sr-i"><span data-en="The eight units, one door each" data-es="Los ocho temas, una puerta por tema">The eight units, one door each</span></button>
+<button type="button" class="sr-i"><span data-en="The fifteen words" data-es="Las quince palabras">The fifteen words</span></button>
+<button type="button" class="sr-i"><span data-en="Run these on your own word list" data-es="Usa estas con tu propia lista">Run these on your own word list</span></button>
+<button type="button" class="sr-i"><span data-en="Five ways into the same fifteen words" data-es="Cinco caminos a las mismas quince palabras">Five ways into the same fifteen words</span></button>
+</nav>
+<script>
+
+(function(){
+  var CFG = {"mode": "anchors", "mount": "header.aogtop", "sel": ["#mh", "#th", "#wh", "#lh", "#s1h"]};
+  var nav = document.getElementById("aogSubRail");
+  if(!nav) return;
+  var items = [].slice.call(nav.querySelectorAll(".sr-i"));
+  function mark(i){ items.forEach(function(b,j){ b.setAttribute("aria-current", String(i===j)); }); }
+
+  if(CFG.mode === "anchors"){
+    /* relocate into the flow so the sticky strip works, sized off the live bar */
+    var bar = document.querySelector(CFG.mount);
+    if(bar){ bar.insertAdjacentElement("afterend", nav); }
+    function setTop(){
+      var h = bar ? bar.offsetHeight : 0;
+      nav.style.top = (window.matchMedia("(min-width:1400px)").matches ? h + 24 : h) + "px";
+    }
+    setTop(); window.addEventListener("resize", setTop);
+    var targets = CFG.sel.map(function(s){ return document.querySelector(s); });
+    items.forEach(function(b,i){
+      b.addEventListener("click", function(){
+        var t = targets[i]; if(!t) return;
+        var y = t.getBoundingClientRect().top + window.pageYOffset - (bar ? bar.offsetHeight : 0) - 58;
+        window.scrollTo({top: y, behavior: "smooth"});
+        mark(i);
+      });
+    });
+    var tick = false;
+    function spy(){
+      tick = false;
+      var line = (bar ? bar.offsetHeight : 0) + 120, cur = 0;
+      targets.forEach(function(t,i){ if(t && t.getBoundingClientRect().top <= line) cur = i; });
+      mark(cur);
+    }
+    window.addEventListener("scroll", function(){ if(!tick){ tick = true; requestAnimationFrame(spy); } });
+    spy();
+  } else {
+    /* tabs mode — click the page's own controls, mirror their state */
+    items.forEach(function(b,i){
+      b.addEventListener("click", function(){
+        var t = document.querySelector(CFG.sel[i]);
+        if(t){ t.click(); mark(i); }
+      });
+    });
+    document.addEventListener("click", function(e){
+      CFG.sel.forEach(function(s,i){
+        var t = e.target && e.target.closest ? e.target.closest(s) : null;
+        if(t) mark(i);
+      });
+    });
+    mark(0);
+  }
+})();
+
+document.getElementById('aogSubRail').hidden=false;
+</script>
+<script>
+/* .30ga: the bottom dropdown — Open navigates, the board button follows the
+   choice. The beam listener reads data-beam at CLICK time, so swapping the
+   attributes here is enough; nothing is rebound. */
+(function(){
+  var s=document.getElementById("vJumpSel"),g=document.getElementById("vJumpGo"),b=document.getElementById("vJumpBeam");
+  if(!s||!g||!b) return;
+  function sync(){ var o=s.options[s.selectedIndex]; if(!o) return;
+    b.setAttribute("data-beam", o.getAttribute("data-beamid"));
+    b.setAttribute("data-name", o.getAttribute("data-name"));
+    b.setAttribute("data-nombre", o.getAttribute("data-nombre")); }
+  s.addEventListener("change", sync); sync();
+  g.addEventListener("click", function(){ location.href = s.value; });
+})();
+</script>
+</body>
+</html>

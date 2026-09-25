@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<script>
+(function(){var t="light";try{if(localStorage.getItem("aog.interior.ws.v1.theme")==="dark")t="dark";}catch(e){}document.documentElement.setAttribute("data-theme",t);if(t==="dark")document.documentElement.classList.add("dark");/* AOG-GUIDE-EMBED-V1 - when this page is opened inside the panel on its machine page, it drops its own header; the panel carries the link out to the printable page. */if(location.search.indexOf("embed")>=0)document.documentElement.classList.add("embed");})();
+</script>
+<title>The Drum Bench &mdash; Picture Guide</title>
+<meta name="description" content="The drum bench in pictures. Almost no reading. Print it and keep it next to the machine.">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#0A1E33">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<!-- AOG-DRUMPIC-V1 (2026-09-23) - Jimmy: "make both guides for people who don't enjoy
+     reading. Less words, more pictures." Student-facing, junior high, prints on letter.
+     Every figure is one block that cannot split across a page break. Fills are
+     print-color-adjust:exact so the filled steps stay filled on a school printer,
+     and every row is named as well as colored so it still reads in black and white. -->
+<style>
+:root {
+  --bg:#f4f0e6; --card:#fffcf7; --ink:#1a232c; --muted:#5c6670; --line:#ddd8cc;
+  --steel:#2f5c6b; --steel-soft:#e3eef2; --chip:#efebe3;
+  --play:#c45c26; --lamp:#d9a84e;
+  --shadow:0 1px 3px rgb(26 35 44 / .08);
+  --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  --display:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,"Times New Roman",serif;
+}
+.dark, [data-theme="dark"] {
+  --bg:#14181e; --card:#1c232c; --ink:#edeae2; --muted:#9aa3b0; --line:#333b47;
+  --steel:#7fb4c7; --steel-soft:#1d2f36; --chip:#2a313c; --play:#e07a45;
+  --shadow:0 1px 3px rgb(0 0 0 / .35);
+}
+* { box-sizing:border-box; }
+html { -webkit-text-size-adjust:100%; }
+body { margin:0; background:var(--bg); color:var(--ink); font:400 17px/1.5 var(--sans); overflow-x:hidden; }
+.wrap { max-width:960px; margin:0 auto; padding: max(1.25rem, env(safe-area-inset-top)) max(1rem, env(safe-area-inset-right)) 4rem max(1rem, env(safe-area-inset-left)); }
+header { display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; gap:.75rem; margin-bottom:1.2rem; }
+.brand { font-size:.72rem; font-weight:800; letter-spacing:.14em; text-transform:uppercase; color:var(--muted); text-decoration:none; }
+.tools { display:flex; gap:.5rem; flex-wrap:wrap; }
+.btn { min-height:44px; border-radius:999px; border:1px solid var(--line); background:var(--card); color:var(--ink);
+  padding:0 1rem; font-weight:700; font-size:.9rem; display:inline-flex; align-items:center; gap:.4rem; text-decoration:none; cursor:pointer; }
+.btn.go { background:var(--steel); color:#f4f8f9; border-color:var(--steel); }
+h1 { font-family:var(--display); font-size:clamp(1.7rem,5vw,2.6rem); margin:0 0 .15rem; letter-spacing:-.02em; }
+.lede { color:var(--muted); margin:0 0 1.6rem; font-size:1.02rem; }
+
+section { margin:0 0 2.2rem; }
+h2 { font-family:var(--display); font-size:1.35rem; margin:0 0 .15rem; letter-spacing:-.01em;
+  break-after:avoid; page-break-after:avoid; }
+h2 .n { display:inline-flex; align-items:center; justify-content:center; width:1.85rem; height:1.85rem; margin-right:.5rem;
+  border-radius:50%; background:var(--steel); color:#f4f8f9; font:800 .95rem/1 var(--sans); vertical-align:.1em;
+  -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+.sub { color:var(--muted); margin:.1rem 0 .9rem 2.35rem; font-size:.95rem; break-after:avoid; page-break-after:avoid; }
+
+.figwrap { overflow-x:auto; break-inside:avoid; page-break-inside:avoid; }
+svg.panel, svg.dial { display:block; width:100%; min-width:620px; height:auto; }
+
+/* the real panel, then a close-up of each control */
+.whole { margin:0 0 1.1rem; break-inside:avoid; page-break-inside:avoid; text-align:center; }
+.whole img { display:block; width:100%; max-width:430px; height:auto; margin:0 auto; border-radius:10px; border:1px solid var(--line); }
+.whole figcaption { color:var(--muted); font-size:.85rem; margin-top:.45rem; }
+.parts { display:grid; grid-template-columns:repeat(6,1fr); gap:.85rem; align-items:start; }
+.part { grid-column:span 2; background:var(--card); border:1px solid var(--line); border-radius:12px;
+  padding:.7rem .75rem .85rem; break-inside:avoid; page-break-inside:avoid; }
+.part.half { grid-column:span 3; }
+.part.wide { grid-column:1 / -1; }
+.part img { display:block; max-width:100%; height:auto; border-radius:6px; }
+.part b { display:block; margin-top:.55rem; font-size:1rem; }
+.part span { display:block; color:var(--muted); font-size:.87rem; line-height:1.35; }
+@media (max-width:700px){
+  .parts { grid-template-columns:1fr; }
+  .part, .part.half, .part.wide { grid-column:1 / -1; }
+}
+
+/* four picture steps */
+.steps { display:grid; grid-template-columns:repeat(4,1fr); gap:.8rem; align-items:start; }
+@media (max-width:700px){ .steps { grid-template-columns:repeat(2,1fr); } }
+.step { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:.8rem .7rem 1rem; text-align:center;
+  break-inside:avoid; page-break-inside:avoid; }
+.step svg, .step img { display:block; width:100%; height:auto; margin:0 auto .5rem; max-width:150px; border-radius:6px; }
+.step img { max-width:100%; }
+.states { margin:0; background:var(--card); border:1px solid var(--line); border-radius:12px; padding:.9rem 1rem 1rem;
+  break-inside:avoid; page-break-inside:avoid; }
+.states img { display:block; width:100%; max-width:420px; height:auto; border-radius:6px; }
+.states figcaption { display:grid; grid-template-columns:repeat(4,1fr); gap:.4rem; max-width:420px; margin-top:.45rem; }
+.states figcaption span { text-align:center; color:var(--muted); font-size:.82rem; line-height:1.25; }
+.states figcaption b { display:block; color:var(--ink); font-size:.92rem; }
+.step b { display:block; font-size:1rem; }
+.step span { display:block; color:var(--muted); font-size:.85rem; line-height:1.35; }
+.step .num { display:inline-flex; align-items:center; justify-content:center; width:1.6rem; height:1.6rem; border-radius:50%;
+  background:var(--ink); color:var(--bg); font:800 .85rem/1 var(--sans); margin-bottom:.4rem;
+  -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+
+/* the 16 boxes */
+.gridwrap { overflow-x:auto; }
+.g { display:grid; grid-template-columns:78px repeat(16, minmax(20px,1fr)); gap:3px; align-items:center; margin-bottom:3px; min-width:440px; }
+.gl { font-size:.78rem; font-weight:700; color:var(--muted); text-align:right; padding-right:.35rem; white-space:nowrap; }
+.gn { font-size:.72rem; font-weight:700; color:var(--muted); text-align:center; }
+.gn.st { color:var(--ink); font-size:.85rem; }
+.gs { height:26px; border:1.5px solid var(--line); border-radius:5px; background:transparent; }
+.gs.st { border-color:var(--muted); }
+.gs.on { background:var(--c); border-color:rgb(0 0 0 / .35);
+  -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+
+.recipe { margin:0 0 1.1rem; padding:.85rem .9rem 1rem; background:var(--card); border:1px solid var(--line); border-radius:12px;
+  break-inside:avoid; page-break-inside:avoid; }
+.recipe figcaption { margin:0 0 .6rem; }
+.recipe figcaption b { font-size:1.05rem; }
+.recipe figcaption span { display:block; color:var(--muted); font-size:.88rem; }
+.recipe figcaption span.bpm { display:inline-block; width:auto; color:var(--muted); }
+.bpm { display:inline-block; margin-left:.5rem; padding:.05rem .5rem; border-radius:999px; background:var(--chip); color:var(--muted);
+  font-size:.72rem; font-weight:800; letter-spacing:.06em; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+
+/* banks + sounds */
+.two { display:grid; grid-template-columns:1fr 1fr; gap:1rem; align-items:start; }
+@media (max-width:700px){ .two { grid-template-columns:1fr; } }
+.bank { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:.85rem .95rem;
+  break-inside:avoid; page-break-inside:avoid; display:flex; gap:.8rem; align-items:flex-start; }
+.bank .letter { flex:0 0 auto; width:2.6rem; height:2.6rem; border-radius:10px; display:flex; align-items:center; justify-content:center;
+  font:800 1.3rem/1 var(--sans); background:var(--steel); color:#f4f8f9; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+.bank.empty .letter { background:transparent; color:var(--muted); border:2px dashed var(--muted); }
+.bank b { display:block; }
+.bank span { color:var(--muted); font-size:.9rem; }
+
+.sounds { list-style:none; margin:0; padding:0; display:grid; grid-template-columns:repeat(4,1fr); gap:.5rem .8rem; }
+.padn { display:inline-flex; align-items:center; justify-content:center; width:1.5rem; height:1.5rem; border-radius:5px;
+  background:#2b2620; color:#f0ebe0; font:800 .8rem/1 var(--sans); flex:0 0 auto;
+  -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+@media (max-width:700px){ .sounds { grid-template-columns:repeat(2,1fr); } }
+.sounds li { display:flex; align-items:center; gap:.5rem; font-weight:600; font-size:.95rem; }
+.dot { width:1.15rem; height:1.15rem; border-radius:6px; background:var(--c); border:1px solid rgb(0 0 0 / .3);
+  -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+
+/* stuck */
+.fix { list-style:none; margin:0; padding:0; display:grid; gap:.55rem; }
+.fix li { display:grid; grid-template-columns:auto 1fr; gap:.7rem; align-items:start; background:var(--card); border:1px solid var(--line);
+  border-radius:10px; padding:.6rem .8rem; break-inside:avoid; page-break-inside:avoid; }
+.fix svg { width:34px; height:34px; flex:0 0 auto; }
+.fix b { display:block; font-size:.97rem; }
+.fix span { color:var(--muted); font-size:.9rem; }
+
+footer { margin-top:2rem; padding-top:1rem; border-top:1px solid var(--line); color:var(--muted); font-size:.85rem; }
+
+/* shown inside the panel on the machine page */
+.embed header { display:none !important; }
+.embed .wrap { padding-top:.4rem; padding-bottom:1.2rem; }
+.embed h1 { font-size:clamp(1.4rem,4vw,2rem); }
+
+@media print {
+  @page { size: letter; margin: 0.5in; }
+  body { background:#fff; font-size:11.5pt; }
+  .wrap { max-width:none; padding:0; }
+  .tools, .noprint { display:none !important; }
+  svg.panel, svg.dial { min-width:0; }
+  .figwrap, .gridwrap { overflow:visible; }
+  .g { min-width:0; }
+  section { margin-bottom:1.1rem; }
+  h1 { font-size:20pt; }
+  h2 { font-size:13pt; }
+  .whole img { max-width:330px; border:1px solid #bbb; }
+  .part { padding:.5rem .55rem .6rem; }
+  .part b { font-size:10.5pt; }
+  .part span { font-size:9.5pt; }
+  .recipe, .step, .bank, .fix li { box-shadow:none; }
+  a { text-decoration:none; color:inherit; }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <a class="brand" href="/">Architecture of Grace</a>
+  <div class="tools">
+    <a class="btn" href="/drums">&larr; The drum bench</a>
+    <button class="btn go" type="button" onclick="window.print()">Print this</button>
+  </div>
+</header>
+
+<h1>The Drum Bench, in pictures</h1>
+<p class="lede">Almost no reading. Tape it to the wall next to the machine.</p>
+
+<section>
+  <h2><span class="n">1</span>What everything is</h2>
+  <figure class="whole"><img src="/panel-drums.png" alt="The whole drum bench screen."><figcaption>The whole machine. Every piece of it is below, close up.</figcaption></figure>
+  <div class="parts">
+    <div class="part half">
+      <img src="/pd-screen.png" alt="The green screen.">
+      <b>The screen</b><span>Which bank, the tempo, the swing, and whether it is running.</span>
+    </div>
+    <div class="part half">
+      <img src="/pd-run.png" alt="The RUN button.">
+      <b>RUN</b><span>Starts it. Press it again to stop.</span>
+    </div>
+    <div class="part half">
+      <img src="/pd-swing.png" alt="The SWING button.">
+      <b>SWING</b><span>Straight, or lazy. Six steps.</span>
+    </div>
+    <div class="part half">
+      <img src="/pd-decks.png" alt="The TO THE DECKS button.">
+      <b>TO THE DECKS</b><span>Sends your beat over to the turntables.</span>
+    </div>
+    <div class="part wide">
+      <img src="/pd-select.png" alt="SELECT A B C D.">
+      <b>SELECT</b><span>Four sets of sounds. A and B are full. C and D are empty and yours.</span>
+    </div>
+    <div class="part wide">
+      <img src="/pd-pads.png" alt="The eight sliders above the eight pads.">
+      <b>The sliders and the eight pads</b><span>Slider = how loud that sound is. Pad = tap it to hear it. One row of eight, numbered 1 to 8.</span>
+    </div>
+    <div class="part wide">
+      <img src="/pd-grid.png" alt="The step grid with kick, snare and hat rows.">
+      <b>The grid</b><span>Sixteen boxes for each sound. Lit = it plays. The big numbers are the beats you count.</span>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2><span class="n">2</span>Your first beat</h2>
+  <p class="sub">Four moves. That is the whole thing.</p>
+  <div class="steps">
+    <div class="step">
+      <span class="num">1</span>
+      <img src="/pd-run.png" alt="The RUN button.">
+      <b>Press RUN</b>
+      <span>A light starts walking across the grid.</span>
+    </div>
+    <div class="step">
+      <span class="num">2</span>
+      <img src="/pd-kickrow.png" alt="The KICK row of the grid with two boxes lit.">
+      <b>Light up the KICK row</b>
+      <span>Click the boxes under the big numbers.</span>
+    </div>
+    <div class="step">
+      <span class="num">3</span>
+      <img src="/pd-pad2.png" alt="The snare pad.">
+      <b>Now the snare</b>
+      <span>Tap the pad to hear it. Then light up beats 2 and 4.</span>
+    </div>
+    <div class="step">
+      <span class="num">4</span>
+      <img src="/pd-tempo.png" alt="The Tempo slider under the machine.">
+      <b>Drag TEMPO</b>
+      <span>It is under the machine. Until it feels right in your chest.</span>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2><span class="n">3</span>One box, four taps</h2>
+  <p class="sub">Keep clicking the same box. It goes round.</p>
+  <figure class="states">
+    <img src="/pd-states.png" alt="Four grid boxes: off, on, louder, and a green quieter one.">
+    <figcaption>
+      <span><b>off</b>silence</span>
+      <span><b>on</b>normal hit</span>
+      <span><b>louder</b>accent</span>
+      <span><b>green</b>quieter</span>
+    </figcaption>
+  </figure>
+  <p class="sub" style="margin-left:0">So to clear a box you keep tapping until it goes dark again.</p>
+</section>
+
+<section>
+  <h2><span class="n">4</span>The sixteen boxes</h2>
+  <p class="sub">One bar of music, chopped into sixteen. The big numbers are the beats you count out loud.</p>
+  <div class="gridwrap">
+    <div class="g">
+      <div class="gl"></div>
+      <div class="gn st">1</div><div class="gn">&nbsp;</div><div class="gn">&amp;</div><div class="gn">&nbsp;</div>
+      <div class="gn st">2</div><div class="gn">&nbsp;</div><div class="gn">&amp;</div><div class="gn">&nbsp;</div>
+      <div class="gn st">3</div><div class="gn">&nbsp;</div><div class="gn">&amp;</div><div class="gn">&nbsp;</div>
+      <div class="gn st">4</div><div class="gn">&nbsp;</div><div class="gn">&amp;</div><div class="gn">&nbsp;</div>
+    </div>
+    <div class="g">
+      <div class="gl">Kick</div>
+      <div class="gs on st" style="--c:#e8b45c"></div><div class="gs"></div><div class="gs"></div><div class="gs"></div>
+      <div class="gs st"></div><div class="gs"></div><div class="gs"></div><div class="gs"></div>
+      <div class="gs on st" style="--c:#e8b45c"></div><div class="gs"></div><div class="gs"></div><div class="gs"></div>
+      <div class="gs st"></div><div class="gs"></div><div class="gs"></div><div class="gs"></div>
+    </div>
+  </div>
+  <p class="sub" style="margin-left:0">Filled box = the sound plays. Empty box = silence. That is all a beat is.</p>
+</section>
+
+<section>
+  <h2><span class="n">5</span>Five beats to copy</h2>
+  <p class="sub">Light up the same boxes and press RUN. Or press the preset with the same name.</p>
+<figure class="recipe">
+  <figcaption><b>Four on the floor</b><span>Every beat gets a kick. The one everybody dances to.</span></figcaption>
+  <div class="gridwrap">
+<div class="g">
+<div class="gl"></div>
+<div class="gn st">1</div>
+<div class="gn">&nbsp;</div>
+<div class="gn">&amp;</div>
+<div class="gn">&nbsp;</div>
+<div class="gn st">2</div>
+<div class="gn">&nbsp;</div>
+<div class="gn">&amp;</div>
+<div class="gn">&nbsp;</div>
+<div class="gn st">3</div>
+<div class="gn">&nbsp;</div>
+<div class="gn">&amp;</div>
+<div class="gn">&nbsp;</div>
+<div class="gn st">4</div>
+<div class="gn">&nbsp;</div>
+<div class="gn">&amp;</div>
+<div class="gn">&nbsp;</div>
+</div>
+<div class="g">
+<div class="gl">KICK</div>
+<div class="gs on st" style="--c:#e8b45c"></div>
+<div class="gs"></div>
+<div class="gs"></div>
+<div class="gs"></div>
+<div class="gs on st" style="--c:#e8b45c"></div>
+<div class="gs"></div>
+<div class="gs"></div>
+<div class="gs"></div>
+<div class="gs on st" style="--c:#e8b45c"></div>
+<div class="gs"></div>
+<div class="gs"></div>
+<div class="gs"></div>
+<div class="gs on st" style="--c:#e8b45c"></div>
+<div class="gs"></div>
+<div class="gs"></div>
+<div class="gs"></div>
+</div>
+<div class="g">
+<div class="gl">SNARE</div>
+<div class="gs st"></div>
+<div class="gs"></div>
+<div class="gs"></div>
+<div class="gs"></div>
+<div class="gs on st" style="--c:#e8b45c"></div>
+<div class="gs"></div>
+<div class="gs"></div>
+<div class="gs"></div>
+<div class="gs st"></div>
+<div class="gs"></div>
+<div class="gs"></div>
+<div class="gs"></div>
+<div class="gs on st" style="--c:#e8b45c"></div>
+<div class="gs"></div>
+<div class="gs"></div>
+<div class="gs"></div>
+</div>
+<div class="g">
+<div class="gl">HAT C</div>
+<div class="gs on st" style="--c:#e8b45c"></div>
+<div class="gs"></div>
+<div class="gs on" style="--c:#e8b45c"></div>
+<div class="gs"></div>
+<div class="gs on st" style="--c:#e8b45c"></div>
+<div class="gs"></div>
+<div class="gs on" style="--c:#e8b45c"></div>
+<div class="gs"></div>
+<div class="gs on st" style="--c:#e8b45c"></div>
+<div class="gs"></div>
+<div class="gs on" style="--c:#e8b45c"></div>
+<div class="gs"></div>
+<div class="gs on st" style="--c:#e8b45c"></div>
+<div class="gs"></div>
+<div class="gs on" style="--c:#e8b45c"></div>
+<div class="gs"></div>
+</div>
+  </div>
+</figure>
+<figure class="recipe">
+  <figcaption><b>Backbeat</b><span>Snare on 2 and 4. Most songs on the radio.</span></figcaption>
+  <div class="gridwrap">
+<div class="g">
+<div class="gl"></div>
+<div class="gn st">1</div>
+<div class="gn">&nbsp;</div>
+<div class="gn">&amp;</div>
+<div class="gn">&nbsp;</div>
+<div class="gn st">2</div>
+<div class="gn">&nbsp;</div>
+<div class="gn">&amp;</div>
+<div class="gn">&nbsp;</div>
+<div class="gn st">3</div>
+<div class="gn">&nbsp;</div>
+<div class="gn">&amp;</div>
+<div class="gn">&nbsp;</div>
+<div class="gn st">4</div>
+<div class="gn">&nbsp;</div>
+<div class="gn">&amp;</div>
+<div class="gn">&nbsp;</div>
+</div>
+<div class="g">
+<div class="gl">KICK</div>
+<div class="gs on st" style="--c:#e8b45c"></div>
+<div class="gs"></div>
+<div class="gs"></div>
+<div class="gs"></div>
+<div class="gs st"></div>
+<div class="gs"></div>
+<div class="gs on" style="--c:#e8b45c"></div>
+<div class="gs"></div>
+<div class="gs on st" style="--c:#e8b45c"></div>
+<div class="gs"></div>
+<div class="gs"></div>
+<div class="gs"></div>
+<div class="gs st"></div>
+<div class="gs"></div>
+<div class="gs"></div>
+<div class="gs"></div>
+</div>
+<div class="g">
+<div class="gl">SNARE</div>
+<div class="gs st"></div>
+<div class="gs"></div>
+<div class="gs"></div>
+<div class="gs"></div>
+<div class="gs on st" style="--c:#e8b45c"></div>
+<div class="gs"></div>
+<div class="gs"></div>
+<div class="gs"></div>
+<div class="gs st"></div>
+<div class="gs"></div>
+<div class="gs"></div>
+<div class="gs"></div>
+<div class="gs on st" style="--c:#e8b45c"></div>
+<div class="gs"></div>
+<div class="gs"></div>
+<div class="gs"></div>
+</div>
+<div class="g">
+<div class="gl">HAT C</div>
+<div class="gs on st" style="--c:#e8b45c"></div>
+<div class="gs on" style="--c:#e8b45c"></div>
+<div class="gs on" style="--c:#e8b45c"></div>
+<div class="gs on" style="--c:#e8b45c"></div>
+<div class="gs on st" style="--c:#e8b45c"></div>
+<div class="gs on" style="--c:#e8b45c"></div>
+<div class="gs on" style="--c:#e8b45c"></div>
+<div class="gs on" style="--c:#e8b45c"></div>
+<div class="gs on st" style="--c:#e8b45c"></div>
+<div class="gs on" style="--c:#e8b45c"></div>
+<div class="gs on" style="--c:#e8b45c"></div>
+<div class="gs on" style="--c:#e8b45c"></div>
+<div class="gs on st" style="--c:#e8b45c"></div>
+<div class="gs on" style="--c:#e8b45c"></div>
+<div class="gs on" style="--c:#e8b45c"></div>
+<div class="gs on" style="--c:#e8b45c"></div>
+</div>
+  </div>
+</figure>
+<figure class="recipe">
+  <figcaption><b>Train</b> <span class="bpm">100 BPM</span><span>Snare between the kicks. It runs.</span></figcaption>
+  <div class="gridwrap">
+<div class="g">
+<div class="gl"></div>
+<div class="gn st">1</div>
+<div class="gn">&nbsp;</div>
+<div class="gn">&amp;</div>
+<div class="gn">&nbsp;</div>
+<div class="gn st">2</div>
+<div class="gn">&nbsp;</div>
+<div class="gn">&amp;</div>
+<div class="gn">&nbsp;</div>
+<div class="gn st">3</div>
+<div class="gn">&nbsp;</div>
+<div class="gn">&amp;</div>
+<div class="gn">&nbsp;</div>
+<div class="gn st">4</div>
+<div class="gn">&nbsp;</div>
+<div class="gn">&amp;</div>
+<div class="gn">&nbsp;</div>
+</div>
+<div class="g">
+<div class="gl">KICK</div>
+<div class="gs on st" style="--c:#e8b45c"></div>
+<div class="gs"></div>
+<div class="gs"></div>
+<div class="gs"></div>
+<div class="gs on st" style="--c:#e8b45c"></div>
+<div class="gs"></div>
+<div class="gs"></div>
+<div class="gs"></div>
+<div class="gs on st" style="--c:#e8b45c"></div>
+<div class="gs"></div>
+<div class="gs"></div>
+<div class="gs"></div>
+<div class="gs on st" style="--c:#e8b45c"></div>
+<div class="gs"></div>
+<div class="gs"></div>
+<div class="gs"></div>
+</div>
+<div class="g">
+<div class="gl">SNARE</div>
+<div class="gs st"></div>
+<div class="gs"></div>
+<div class="gs on" style="--c:#e8b45c"></div>
+<div class="gs"></div>
+<div class="gs st"></div>
+<div class="gs"></div>
+<div class="gs on" style="--c:#e8b45c"></div>
+<div class="gs"></div>
+<div class="gs st"></div>
+<div class="gs"></div>
+<div class="gs on" style="--c:#e8b45c"></div>
+<div class="gs"></div>
+<div class="gs st"></div>
+<div class="gs"></div>
+<div class="gs on" style="--c:#e8b45c"></div>
+<div class="gs"></div>
+</div>
+  </div>
+</figure>
+<figure class="recipe">
+  <figcaption><b>School clave</b><span>Same shape twice, uneven. Count it out loud.</span></figcaption>
+  <div class="gridwrap">
+<div class="g">
+<div class="gl"></div>
+<div class="gn st">1</div>
+<div class="gn">&nbsp;</div>
+<div class="gn">&amp;</div>
+<div class="gn">&nbsp;</div>
+<div class="gn st">2</div>
+<div class="gn">&nbsp;</div>
+<div class="gn">&amp;</div>
+<div class="gn">&nbsp;</div>
+<div class="gn st">3</div>
+<div class="gn">&nbsp;</div>
+<div class="gn">&amp;</div>
+<div class="gn">&nbsp;</div>
+<div class="gn st">4</div>
+<div class="gn">&nbsp;</div>
+<div class="gn">&amp;</div>
+<div class="gn">&nbsp;</div>
+</div>
+<div class="g">
+<div class="gl">KICK</div>
+<div class="gs on st" style="--c:#e8b45c"></div>
+<div class="gs"></div>
+<div class="gs"></div>
+<div class="gs on" style="--c:#e8b45c"></div>
+<div class="gs st"></div>
+<div class="gs"></div>
+<div class="gs on" style="--c:#e8b45c"></div>
+<div class="gs"></div>
+<div class="gs st"></div>
+<div class="gs"></div>
+<div class="gs on" style="--c:#e8b45c"></div>
+<div class="gs"></div>
+<div class="gs st"></div>
+<div class="gs on" style="--c:#e8b45c"></div>
+<div class="gs"></div>
+<div class="gs"></div>
+</div>
+<div class="g">
+<div class="gl">RIM</div>
+<div class="gs on st" style="--c:#e8b45c"></div>
+<div class="gs"></div>
+<div class="gs"></div>
+<div class="gs on" style="--c:#e8b45c"></div>
+<div class="gs st"></div>
+<div class="gs"></div>
+<div class="gs on" style="--c:#e8b45c"></div>
+<div class="gs"></div>
+<div class="gs st"></div>
+<div class="gs"></div>
+<div class="gs on" style="--c:#e8b45c"></div>
+<div class="gs"></div>
+<div class="gs st"></div>
+<div class="gs on" style="--c:#e8b45c"></div>
+<div class="gs"></div>
+<div class="gs"></div>
+</div>
+<div class="g">
+<div class="gl">HAT C</div>
+<div class="gs st"></div>
+<div class="gs"></div>
+<div class="gs on" style="--c:#e8b45c"></div>
+<div class="gs"></div>
+<div class="gs st"></div>
+<div class="gs on" style="--c:#e8b45c"></div>
+<div class="gs"></div>
+<div class="gs"></div>
+<div class="gs on st" style="--c:#e8b45c"></div>
+<div class="gs"></div>
+<div class="gs"></div>
+<div class="gs on" style="--c:#e8b45c"></div>
+<div class="gs st"></div>
+<div class="gs"></div>
+<div class="gs on" style="--c:#e8b45c"></div>
+<div class="gs"></div>
+</div>
+  </div>
+</figure>
+<figure class="recipe">
+  <figcaption><b>Heartbeat</b> <span class="bpm">72 BPM</span><span>Two kicks, then wait. Slow it right down.</span></figcaption>
+  <div class="gridwrap">
+<div class="g">
+<div class="gl"></div>
+<div class="gn st">1</div>
+<div class="gn">&nbsp;</div>
+<div class="gn">&amp;</div>
+<div class="gn">&nbsp;</div>
+<div class="gn st">2</div>
+<div class="gn">&nbsp;</div>
+<div class="gn">&amp;</div>
+<div class="gn">&nbsp;</div>
+<div class="gn st">3</div>
+<div class="gn">&nbsp;</div>
+<div class="gn">&amp;</div>
+<div class="gn">&nbsp;</div>
+<div class="gn st">4</div>
+<div class="gn">&nbsp;</div>
+<div class="gn">&amp;</div>
+<div class="gn">&nbsp;</div>
+</div>
+<div class="g">
+<div class="gl">KICK</div>
+<div class="gs on st" style="--c:#e8b45c"></div>
+<div class="gs"></div>
+<div class="gs on" style="--c:#e8b45c"></div>
+<div class="gs"></div>
+<div class="gs st"></div>
+<div class="gs"></div>
+<div class="gs"></div>
+<div class="gs"></div>
+<div class="gs on st" style="--c:#e8b45c"></div>
+<div class="gs"></div>
+<div class="gs on" style="--c:#e8b45c"></div>
+<div class="gs"></div>
+<div class="gs st"></div>
+<div class="gs"></div>
+<div class="gs"></div>
+<div class="gs"></div>
+</div>
+  </div>
+</figure>
+</section>
+
+<section>
+  <h2><span class="n">6</span>Swing</h2>
+  <p class="sub">The SWING button up top. Slides the in-between notes late. Straight on the left, lazy on the right. Six steps &mdash; the real machine had six.</p>
+  <div class="figwrap">
+  <svg class="dial" viewBox="0 0 900 190" role="img" aria-label="Six swing steps from straight at 50 percent to lazy at 71 percent.">
+    <g>
+      <line x1="60" y1="120" x2="840" y2="120" stroke="currentColor" stroke-width="2" opacity=".3"/>
+      <circle cx="60" cy="120" r="13" fill="#2f5c6b" stroke="#00000055" stroke-width="1.5"/>
+      <text x="60" y="166" text-anchor="middle" fill="currentColor" style="font:800 16px sans-serif">50%</text>
+      <circle cx="216" cy="120" r="15" fill="#8a8478" stroke="#00000055" stroke-width="1.5"/>
+      <text x="216" y="166" text-anchor="middle" fill="currentColor" style="font:800 16px sans-serif">54%</text>
+      <circle cx="372" cy="120" r="17" fill="#8a8478" stroke="#00000055" stroke-width="1.5"/>
+      <text x="372" y="166" text-anchor="middle" fill="currentColor" style="font:800 16px sans-serif">58%</text>
+      <circle cx="528" cy="120" r="19" fill="#8a8478" stroke="#00000055" stroke-width="1.5"/>
+      <text x="528" y="166" text-anchor="middle" fill="currentColor" style="font:800 16px sans-serif">63%</text>
+      <circle cx="684" cy="120" r="21" fill="#8a8478" stroke="#00000055" stroke-width="1.5"/>
+      <text x="684" y="166" text-anchor="middle" fill="currentColor" style="font:800 16px sans-serif">67%</text>
+      <circle cx="840" cy="120" r="23" fill="#c45c26" stroke="#00000055" stroke-width="1.5"/>
+      <text x="840" y="166" text-anchor="middle" fill="currentColor" style="font:800 16px sans-serif">71%</text>
+      <text x="60" y="70" text-anchor="middle" fill="currentColor" style="font:700 18px sans-serif">straight</text>
+      <text x="840" y="70" text-anchor="middle" fill="currentColor" style="font:700 18px sans-serif">lazy</text>
+      <text x="450" y="70" text-anchor="middle" fill="currentColor" opacity=".7" style="font:400 15px sans-serif">head nod lives around here</text>
+      <path d="M450 80 L450 104" stroke="currentColor" stroke-width="2" opacity=".5"/>
+    </g>
+  </svg>
+  </div>
+</section>
+
+<section>
+  <h2><span class="n">7</span>The four banks</h2>
+  <p class="sub">Same eight pads, different sounds behind them.</p>
+  <div class="two">
+    <div class="bank"><div class="letter">A</div><div><b>The kit</b><span>The kit that is already in there. Start here.</span></div></div>
+    <div class="bank"><div class="letter">B</div><div><b>The same kit, tuned</b><span>Deeper kick, brighter hats.</span></div></div>
+    <div class="bank empty"><div class="letter">C</div><div><b>Empty &mdash; yours</b><span>Tap a pad, pick a sound file.</span></div></div>
+    <div class="bank empty"><div class="letter">D</div><div><b>Empty &mdash; yours</b><span>Tap a pad, pick a sound file.</span></div></div>
+  </div>
+</section>
+
+<section>
+  <h2><span class="n">8</span>The eight sounds</h2>
+  <p class="sub">One row of eight, left to right. The number is printed on the pad.</p>
+  <ul class="sounds">
+<li><span class="padn">1</span>Kick</li>
+<li><span class="padn">2</span>Snare</li>
+<li><span class="padn">3</span>Hat C</li>
+<li><span class="padn">4</span>Hat O</li>
+<li><span class="padn">5</span>Clap</li>
+<li><span class="padn">6</span>Tom</li>
+<li><span class="padn">7</span>Rim</li>
+<li><span class="padn">8</span>Bell</li>
+  </ul>
+</section>
+
+<section>
+  <h2><span class="n">9</span>Nothing is happening</h2>
+  <ul class="fix">
+    <li>
+      <svg viewBox="0 0 40 40" aria-hidden="true"><rect x="6" y="10" width="28" height="20" rx="5" fill="#2c7a4e"/><polygon points="17,17 17,27 26,22" fill="#fff"/></svg>
+      <div><b>No sound at all</b><span>RUN is not pressed. Press it once.</span></div>
+    </li>
+    <li>
+      <svg viewBox="0 0 40 40" aria-hidden="true"><rect x="16" y="6" width="8" height="28" rx="4" fill="#9aa3b0"/><rect x="11" y="26" width="18" height="8" rx="3" fill="#1a232c"/></svg>
+      <div><b>One pad is silent</b><span>Its slider is at the bottom. Push it up.</span></div>
+    </li>
+    <li>
+      <svg viewBox="0 0 40 40" aria-hidden="true"><rect x="5" y="9" width="30" height="22" rx="5" fill="none" stroke="#9aa3b0" stroke-width="2.5" stroke-dasharray="4 4"/><text x="20" y="26" text-anchor="middle" style="font:800 14px sans-serif" fill="#9aa3b0">C</text></svg>
+      <div><b>Whole bank is silent</b><span>SELECT is on C or D. Those start empty. Press A.</span></div>
+    </li>
+    <li>
+      <svg viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="13" fill="none" stroke="#c45c26" stroke-width="3"/><path d="M20 20 L20 11" stroke="#c45c26" stroke-width="3" stroke-linecap="round"/><path d="M20 20 L27 24" stroke="#c45c26" stroke-width="3" stroke-linecap="round"/></svg>
+      <div><b>It sounds like a mess</b><span>Too fast. Drag TEMPO down and take one sound back out.</span></div>
+    </li>
+    <li>
+      <svg viewBox="0 0 40 40" aria-hidden="true"><path d="M8 20 L32 20" stroke="#9c3a2e" stroke-width="4" stroke-linecap="round"/><circle cx="20" cy="20" r="14" fill="none" stroke="#9c3a2e" stroke-width="2.5"/></svg>
+      <div><b>I want a box gone</b><span>Keep tapping it. On, louder, green, then off.</span></div>
+    </li>
+  </ul>
+</section>
+
+<footer>
+  The Drum Bench &#183; Architecture of Grace &#183; your beat stays on this computer
+</footer>
+
+</div>
+</body>
+</html>

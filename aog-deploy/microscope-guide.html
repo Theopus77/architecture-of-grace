@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<script>
+(function(){var t="light";try{if(localStorage.getItem("aog.interior.ws.v1.theme")==="dark")t="dark";}catch(e){}document.documentElement.setAttribute("data-theme",t);if(t==="dark")document.documentElement.classList.add("dark");/* AOG-GUIDE-EMBED-V1 - inside the panel on its machine page the guide drops its own header. */if(location.search.indexOf("embed")>=0)document.documentElement.classList.add("embed");})();
+</script>
+<title>The Microscope &mdash; Picture Guide</title>
+<meta name="description" content="The microscope lab in pictures, mission by mission. Almost no reading. Print it and keep it at the bench.">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#0A1E33">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<!-- AOG-MICPIC-V1 (2026-09-23) - Jimmy: "Can the Microscope missions and the TELESCOPE Missions get their own walk throughs like the TURN tables and sp-1200 just recieved? Embedded as something they could be printed out?" Every picture here is the real page, driven into the state the mission asks for and captured - nothing is drawn. Six sections follow the six missions in the order the bench opens them. -->
+<style>
+:root {
+  --bg:#f4f0e6; --card:#fffcf7; --ink:#1a232c; --muted:#5c6670; --line:#ddd8cc;
+  --steel:#2f5c6b; --steel-soft:#e3eef2; --chip:#efebe3;
+  --play:#c45c26; --lamp:#d9a84e; --good:#2c7a4e;
+  --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  --display:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,"Times New Roman",serif;
+}
+.dark, [data-theme="dark"] {
+  --bg:#14181e; --card:#1c232c; --ink:#edeae2; --muted:#9aa3b0; --line:#333b47;
+  --steel:#7fb4c7; --steel-soft:#1d2f36; --chip:#2a313c; --play:#e07a45; --good:#6fbf8b;
+}
+* { box-sizing:border-box; }
+html { -webkit-text-size-adjust:100%; }
+body { margin:0; background:var(--bg); color:var(--ink); font:400 17px/1.5 var(--sans); overflow-x:hidden; }
+.wrap { max-width:960px; margin:0 auto; padding: max(1.25rem, env(safe-area-inset-top)) max(1rem, env(safe-area-inset-right)) 4rem max(1rem, env(safe-area-inset-left)); }
+header { display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; gap:.75rem; margin-bottom:1.2rem; }
+.brand { font-size:.72rem; font-weight:800; letter-spacing:.14em; text-transform:uppercase; color:var(--muted); text-decoration:none; }
+.tools { display:flex; gap:.5rem; flex-wrap:wrap; }
+.btn { min-height:44px; border-radius:999px; border:1px solid var(--line); background:var(--card); color:var(--ink);
+  padding:0 1rem; font-weight:700; font-size:.9rem; display:inline-flex; align-items:center; gap:.4rem; text-decoration:none; cursor:pointer; }
+.btn.go { background:var(--steel); color:#f4f8f9; border-color:var(--steel); }
+h1 { font-family:var(--display); font-size:clamp(1.7rem,5vw,2.6rem); margin:0 0 .15rem; letter-spacing:-.02em; }
+.lede { color:var(--muted); margin:0 0 1.6rem; font-size:1.02rem; }
+
+section { margin:0 0 2.2rem; }
+h2 { font-family:var(--display); font-size:1.35rem; margin:0 0 .15rem; letter-spacing:-.01em;
+  break-after:avoid; page-break-after:avoid; }
+h2 .n { display:inline-flex; align-items:center; justify-content:center; width:1.85rem; height:1.85rem; margin-right:.5rem;
+  border-radius:50%; background:var(--steel); color:#f4f8f9; font:800 .95rem/1 var(--sans); vertical-align:.1em;
+  -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+.sub { color:var(--muted); margin:.1rem 0 .9rem 2.35rem; font-size:.95rem; break-after:avoid; page-break-after:avoid; }
+
+.figwrap { overflow-x:auto; break-inside:avoid; page-break-inside:avoid; }
+svg.wide { display:block; width:100%; min-width:620px; height:auto; }
+
+/* the real panel, then a close-up of each control */
+.whole { margin:0 0 1.1rem; break-inside:avoid; page-break-inside:avoid; text-align:center; }
+.whole img { display:block; width:100%; max-width:430px; height:auto; margin:0 auto; border-radius:10px; border:1px solid var(--line); }
+.whole figcaption { color:var(--muted); font-size:.85rem; margin-top:.45rem; }
+.parts { display:grid; grid-template-columns:repeat(6,1fr); gap:.85rem; align-items:start; }
+.part { grid-column:span 2; background:var(--card); border:1px solid var(--line); border-radius:12px;
+  padding:.7rem .75rem .85rem; break-inside:avoid; page-break-inside:avoid; }
+.part.half { grid-column:span 3; }
+.part.wide { grid-column:1 / -1; }
+.part img { display:block; max-width:100%; height:auto; border-radius:6px; }
+.part b { display:block; margin-top:.55rem; font-size:1rem; }
+.part span { display:block; color:var(--muted); font-size:.87rem; line-height:1.35; }
+@media (max-width:700px){
+  .parts { grid-template-columns:1fr; }
+  .part, .part.half, .part.wide { grid-column:1 / -1; }
+}
+
+.steps { display:grid; grid-template-columns:repeat(3,1fr); gap:.8rem; align-items:start; }
+.steps.four { grid-template-columns:repeat(4,1fr); }
+@media (max-width:700px){ .steps, .steps.four { grid-template-columns:repeat(2,1fr); } }
+.step { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:.8rem .7rem 1rem; text-align:center;
+  break-inside:avoid; page-break-inside:avoid; }
+.step svg { display:block; width:100%; height:auto; margin:0 auto .5rem; max-width:160px; }
+.step b { display:block; font-size:1rem; }
+.step span { display:block; color:var(--muted); font-size:.85rem; line-height:1.35; }
+.step .num { display:inline-flex; align-items:center; justify-content:center; width:1.6rem; height:1.6rem; border-radius:50%;
+  background:var(--ink); color:var(--bg); font:800 .85rem/1 var(--sans); margin-bottom:.4rem;
+  -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+
+/* scratches */
+.scr { display:grid; grid-template-columns:repeat(2,1fr); gap:.9rem; align-items:start; }
+@media (max-width:700px){ .scr { grid-template-columns:1fr; } }
+.card { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:.85rem .9rem 1rem;
+  break-inside:avoid; page-break-inside:avoid; }
+.card svg { display:block; width:100%; height:auto; }
+.card h3 { font-family:var(--display); font-size:1.12rem; margin:.5rem 0 .1rem; }
+.card p { margin:0; color:var(--muted); font-size:.9rem; }
+.hard { display:inline-block; margin-left:.45rem; font:800 .68rem/1 var(--sans); letter-spacing:.08em; text-transform:uppercase;
+  color:var(--muted); background:var(--chip); border-radius:999px; padding:.25rem .5rem; vertical-align:.12em;
+  -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+
+.onplatter { position:relative; width:100%; max-width:240px; margin:0 auto; }
+.onplatter img { display:block; width:100%; height:auto; border-radius:8px; }
+.onplatter svg { position:absolute; inset:0; width:100%; height:100%; }
+.faderstrip { margin-top:.6rem; }
+.faderstrip b { display:block; font-size:.7rem; font-weight:800; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); }
+.faderstrip img { display:block; width:100%; height:auto; margin:.25rem 0 .2rem; border-radius:4px; }
+.faderstrip span { display:block; color:var(--muted); font-size:.82rem; }
+.bpmpair { display:grid; gap:.35rem; }
+.bpmpair img { display:block; width:100%; height:auto; border-radius:5px; }
+.tagbad, .taggood { font:800 .72rem/1 var(--sans); letter-spacing:.1em; color:#9c3a2e; margin-bottom:.15rem; }
+.taggood { color:#2c7a4e; }
+.fix img { width:auto; max-width:120px; height:auto; border-radius:5px; flex:0 0 auto; align-self:center; }
+.fix { list-style:none; margin:0; padding:0; display:grid; gap:.55rem; }
+.fix li { display:grid; grid-template-columns:auto 1fr; gap:.7rem; align-items:start; background:var(--card); border:1px solid var(--line);
+  border-radius:10px; padding:.6rem .8rem; break-inside:avoid; page-break-inside:avoid; }
+.fix svg { width:34px; height:34px; flex:0 0 auto; }
+.step img { display:block; max-width:100%; height:auto; margin:0 auto .5rem; border-radius:6px; }
+.fix b { display:block; font-size:.97rem; }
+.fix span { color:var(--muted); font-size:.9rem; }
+
+.two { display:grid; grid-template-columns:1fr 1fr; gap:1rem; align-items:start; }
+@media (max-width:700px){ .two { grid-template-columns:1fr; } }
+
+footer { margin-top:2rem; padding-top:1rem; border-top:1px solid var(--line); color:var(--muted); font-size:.85rem; }
+
+/* shown inside the panel on the machine page */
+.embed header { display:none !important; }
+.embed .wrap { padding-top:.4rem; padding-bottom:1.2rem; }
+.embed h1 { font-size:clamp(1.4rem,4vw,2rem); }
+
+@media print {
+  @page { size: letter; margin: 0.5in; }
+  body { background:#fff; font-size:11.5pt; }
+  .wrap { max-width:none; padding:0; }
+  .tools, .noprint { display:none !important; }
+  svg.wide { min-width:0; }
+  .figwrap { overflow:visible; }
+  section { margin-bottom:1.1rem; }
+  h1 { font-size:20pt; }
+  h2 { font-size:13pt; }
+  .whole img { max-width:330px; border:1px solid #bbb; }
+  .part { padding:.5rem .55rem .6rem; }
+  .part b { font-size:10.5pt; }
+  .part span { font-size:9.5pt; }
+  a { text-decoration:none; color:inherit; }
+}
+
+/* AOG-MICPIC-V1 / AOG-TELPIC-V1 - before/after pairs and the one rule per mission */
+.pair { display:grid; grid-template-columns:repeat(2,1fr); gap:.8rem; align-items:start; }
+.pair.three { grid-template-columns:repeat(3,1fr); }
+@media (max-width:700px){ .pair, .pair.three { grid-template-columns:1fr 1fr; } }
+.shot { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:.6rem .6rem .75rem; text-align:center;
+  break-inside:avoid; page-break-inside:avoid; }
+.shot img { display:block; width:100%; height:auto; border-radius:8px; }
+.shot b { display:block; margin-top:.45rem; font-size:.98rem; }
+.shot span { display:block; color:var(--muted); font-size:.85rem; line-height:1.35; }
+.shot.bad { border-color:#c98b80; }
+.shot.good { border-color:#8fbf9f; }
+.rule { display:flex; gap:.7rem; align-items:flex-start; margin:.9rem 0 0; padding:.7rem .9rem; border-radius:10px;
+  background:#f6e5e2; color:#6e2a20; border:1px solid #e3b9b0; font-size:.95rem; break-inside:avoid; page-break-inside:avoid;
+  -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+.rule b { color:#9c3a2e; }
+[data-theme="dark"] .rule, .dark .rule { background:#3a2622; color:#f0d4cc; border-color:#6a3a30; }
+.gets { margin:.8rem 0 0; font-size:.95rem; color:var(--muted); }
+.gets b { color:var(--ink); }
+.ctl { display:grid; grid-template-columns:repeat(2,1fr); gap:.6rem; margin:.8rem 0 0; }
+@media (max-width:700px){ .ctl { grid-template-columns:1fr; } }
+.ctl .part { grid-column:auto; }
+.fix2 { display:flex; gap:.3rem; } .fix2 img { max-width:90px !important; }
+.mission-k { display:inline-block; margin-left:.5rem; font:800 .66rem/1 var(--sans); letter-spacing:.14em; text-transform:uppercase; color:var(--steel); background:var(--steel-soft); border-radius:999px; padding:.3rem .55rem; vertical-align:.2em; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+.part span strong, .shot span strong, .step span strong, .fix span strong, .gets strong { font-weight:800; color:var(--ink); }
+.part img { max-width:min(100%,380px); }
+.steps.four { grid-template-columns:repeat(2,1fr); }
+.steps.four .step img { max-width:100%; }
+@media print {
+  .shot { padding:.35rem .35rem .45rem; }
+  .shot b { font-size:10pt; } .shot span { font-size:9pt; }
+  .rule { font-size:9.5pt; padding:.45rem .6rem; }
+  .pair.three .shot img, .pair .shot img { max-height:2.45in; width:auto; max-width:100%; margin:0 auto; }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <a class="brand" href="/">Architecture of Grace</a>
+  <div class="tools">
+    <a class="btn" href="/microscope#lab">&larr; The microscope</a>
+    <button class="btn go" type="button" onclick="window.print()">Print this</button>
+  </div>
+</header>
+
+<h1>The Microscope, in pictures</h1>
+<p class="lede">Six missions. Each one opens the next. Every picture below is the real microscope.</p>
+<section>
+  <h2><span class="n">i</span>What everything is</h2>
+  <p class="sub">The eyepiece is on the left. Every control is in the panel on the right, and the knobs are under the eyepiece.</p>
+  <figure class="whole" style="max-width:none"><img src="/mg-panel.jpg" alt="The whole microscope lab: the eyepiece view, the knobs, and the control panel." style="max-width:640px"><figcaption>The whole bench. The circle is what you see through the eyepiece.</figcaption></figure><div class="parts"><div class="part half"><img src="/mg-slide.png" alt="The Slide buttons."><b>Slide</b><span>What is under the lens. Start with the letter e.</span></div><div class="part half"><img src="/mg-lamp.png" alt="The Lamp buttons."><b>Lamp</b><span>No light, no picture.</span></div><div class="part half"><img src="/mg-clips.png" alt="The Stage clips buttons."><b>Stage clips</b><span>Seated holds the slide still.</span></div><div class="part half"><img src="/mg-obj.png" alt="The Objective buttons."><b>Objective</b><span>How big. 4&times; is the smallest and the safest.</span></div><div class="part half"><img src="/mg-coarse.png" alt="The Coarse knob."><b>Coarse</b><span>Big focus moves. <strong>Only on 4&times; and 10&times;.</strong></span></div><div class="part half"><img src="/mg-fine.png" alt="The Fine knob."><b>Fine</b><span>Small focus moves. The only knob on 40&times; and 100&times;.</span></div><div class="part half"><img src="/mg-dia.png" alt="The Diaphragm knob."><b>Diaphragm</b><span>More or less light. Fixes a washed-out picture.</span></div><div class="part half"><img src="/mg-twist.png" alt="The Eyepiece knob."><b>Eyepiece</b><span>Turns the eyepiece. Finds dust on the glass.</span></div><div class="part half"><img src="/mg-wd.png" alt="The Working distance bar."><b>Working distance</b><span>How far the lens is from the glass. Red means too close.</span></div><div class="part half"><img src="/mg-missions.png" alt="The Missions buttons, Locked and Open."><b>Missions (teacher)</b><span><strong>Locked</strong> opens one control at a time. Lock it before a student sits down.</span></div></div>
+</section>
+<section>
+  <h2><span class="n">1</span>Make the microscope work <span class="mission-k">Mission</span></h2>
+  <p class="sub">Light, then the clips, then 4&times;, then the coarse knob.</p>
+  <div class="steps four"><div class="step"><span class="num">1</span><img src="/mg-lamp.png" alt="Lamp On."><b>Lamp: On</b><span>Press <strong>On</strong>.</span></div><div class="step"><span class="num">2</span><img src="/mg-clips.png" alt="Stage clips Seated."><b>Clips: Seated</b><span>Press <strong>Seated</strong>.</span></div><div class="step"><span class="num">3</span><img src="/mg-obj.png" alt="Objective 4x."><b>4&times;</b><span>Start on the smallest.</span></div><div class="step"><span class="num">4</span><img src="/mg-coarse.png" alt="The Coarse knob."><b>Coarse</b><span>Slide it until the corner says <strong>In focus</strong>.</span></div></div><div class="pair three" style="margin-top:.9rem"><div class="shot bad"><img src="/mg-dark.jpg" alt="A black circle."><b>Lamp off</b><span>Black. Turn the lamp on.</span></div><div class="shot bad"><img src="/mg-e-blur.jpg" alt="A blurry letter e."><b>Out of focus</b><span>Keep sliding Coarse.</span></div><div class="shot good"><img src="/mg-e-sharp.jpg" alt="A sharp letter e, upside down."><b>In focus</b><span>Done.</span></div></div><p class="gets"><b>The e is upside down and backwards.</b> That is the lenses. It is not a mistake.</p>
+</section>
+<section>
+  <h2><span class="n">2</span>See more <span class="mission-k">Mission</span></h2>
+  <p class="sub">10&times;, then 40&times;. On 40&times; use the <b>fine</b> knob only.</p>
+  <div class="pair three"><div class="shot "><img src="/mg-e-10.jpg" alt="The e at 10x."><b>10&times;</b><span>Bigger. Still use Coarse here.</span></div><div class="shot bad"><img src="/mg-e-40blur.jpg" alt="The e at 40x, blurry."><b>40&times;, blurry</b><span>Now use <strong>Fine</strong>.</span></div><div class="shot good"><img src="/mg-e-40.jpg" alt="The e at 40x, sharp: paper fibers."><b>40&times;, sharp</b><span>You are inside the ink. Those are paper fibers.</span></div></div><div class="two" style="margin-top:.9rem"><div class="shot bad"><p class="tagbad">DON'T</p><img src="/mg-crack.jpg" alt="A cracked slide."><b>Coarse on 40&times; = crack</b><span>The lens hit the glass. Press <strong>New slide</strong> and start again on 4&times;.</span></div><div class="part wide"><img src="/mg-fine.png" alt="The Fine knob."><b>On 40&times; and 100&times;: Fine only</b><span>Small moves. The picture is sharp only in a very thin zone.</span></div></div>
+</section>
+<section>
+  <h2><span class="n">3</span>Change what you see <span class="mission-k">Mission</span></h2>
+  <p class="sub">Stain the onion. Then darkfield a live pond drop &mdash; with no stain.</p>
+  <div class="ctl"><div class="part "><img src="/mg-slide.png" alt="Slide buttons."><b>Slide: Onion</b><span>Then 40&times; and Fine.</span></div><div class="part "><img src="/mg-stain.png" alt="Stain buttons with Iodine chosen."><b>Stain: Iodine</b><span>The stain buttons appear once a slide can take one.</span></div></div><div class="pair" style="margin-top:.9rem"><div class="shot "><img src="/mg-onion.jpg" alt="Pale unstained onion cells."><b>No stain</b><span>A ghost. You can barely see the cells.</span></div><div class="shot good"><img src="/mg-iodine.jpg" alt="Onion cells stained with iodine; brown nuclei."><b>Iodine</b><span>The walls go dark and every nucleus turns brown.</span></div></div><div class="ctl" style="margin-top:.9rem"><div class="part wide"><img src="/mg-illum.png" alt="Illumination buttons."><b>Illumination: Darkfield</b><span>Load <strong>Pond</strong> first. Stain: None.</span></div></div><div class="pair" style="margin-top:.9rem"><div class="shot "><img src="/mg-pond-bright.jpg" alt="Pond water in brightfield."><b>Brightfield</b><span>Pale and hard to see.</span></div><div class="shot good"><img src="/mg-pond-dark.jpg" alt="Pond water in darkfield: organisms glow on black."><b>Darkfield</b><span>The field goes black. Living things glow.</span></div></div><p class="gets"><b>Why no stain on the pond?</b> A stain kills what it colors. Darkfield lets you see them alive.</p>
+</section>
+<section>
+  <h2><span class="n">4</span>Measure <span class="mission-k">Mission</span></h2>
+  <p class="sub">Scale in. Then Measure, and tap two points on a cell at 40&times;.</p>
+  <div class="ctl"><div class="part wide"><img src="/mg-scalerow.png" alt="Eyepiece scale buttons."><b>Eyepiece scale: In, then Measure</b><span>The ruler lives in the eyepiece, so it stays still when the slide moves.</span></div></div><div class="pair" style="margin-top:.9rem"><div class="shot "><img src="/mg-scale.jpg" alt="The ruler across onion cells."><b>Scale in</b><span>At 40&times;, 1 unit = 2.5 &micro;m.</span></div><div class="shot good"><img src="/mg-measure.jpg" alt="Two taps with the length shown."><b>Two taps</b><span>Tap one end of a cell, then the other. Read the number.</span></div></div>
+</section>
+<section>
+  <h2><span class="n">5</span>What can&rsquo;t this microscope see? <span class="mission-k">Mission</span></h2>
+  <p class="sub">Load <b>Virus?</b>, go to 100&times;, and put the oil on.</p>
+  <div class="ctl"><div class="part "><img src="/mg-obj.png" alt="Objective buttons."><b>100&times;</b><span>Fine knob only.</span></div><div class="part "><img src="/mg-oil.png" alt="Immersion oil buttons."><b>Immersion oil: On the 100&times;</b><span>This row appears on 100&times;.</span></div></div><div class="pair" style="margin-top:.9rem"><div class="shot bad"><img src="/mg-virus-dry.jpg" alt="Dim, soft view at 100x without oil."><b>No oil</b><span>Dim and soft. That is physics, not a broken lens.</span></div><div class="shot good"><img src="/mg-virus-oil.jpg" alt="Brighter view with oil: the host cells."><b>Oil on</b><span>The cells a virus lives in. No virus.</span></div></div><p class="gets"><b>The honest ceiling.</b> A virus is about 0.10 &micro;m. Light cannot draw anything that small. 1,000&times; with oil is as far as this microscope goes.</p>
+</section>
+<section>
+  <h2><span class="n">6</span>The research bench <span class="mission-k">Mission</span></h2>
+  <p class="sub">Open <b>Research bench</b> at the bottom of the panel. Slit, then polarized light, then the prism.</p>
+  <figure class="whole"><img src="/mg-research.png" alt="The Research bench panel open."><figcaption>Tap <b>Research bench</b> to open it.</figcaption></figure><div class="pair three"><div class="shot "><img src="/mg-slit.jpg" alt="Slit light from one side."><b>Slit</b><span>Light from one side. Edges on the bright side catch it.</span></div><div class="shot "><img src="/mg-polar.jpg" alt="Onion under polarized light."><b>Polarized (onion)</b><span>The field goes gray. The cell walls still show.</span></div><div class="shot good"><img src="/mg-prism.jpg" alt="Violet prism light on Virus? with 438 nm and 0.18 micrometers."><b>Prism on Virus?</b><span>Read the number: about 0.18 &micro;m. Still bigger than 0.10.</span></div></div><p class="gets">The prism changes the lamp&rsquo;s color. It does not find the virus.</p>
+</section>
+<section>
+  <h2><span class="n">?</span>Something looks wrong</h2>
+  
+  <ul class="fix"><li><img src="/mg-dark.jpg" alt=""><div><b>The circle is black</b><span>Lamp: On. Then check the lamp before you blame the focus.</span></div></li><li><img src="/mg-e-blur.jpg" alt=""><div><b>It is blurry</b><span>4&times; or 10&times;: Coarse. 40&times; or 100&times;: Fine only.</span></div></li><li><img src="/mg-crack.jpg" alt=""><div><b>Cracked glass</b><span>Coarse on high power did it. Press <strong>New slide</strong>, start again on 4&times;.</span></div></li><li><img src="/mg-dia-open.jpg" alt=""><div><b>Too bright and washed out</b><span>Turn the <strong>Diaphragm</strong> down.</span></div></li><li><img src="/mg-dia-shut.jpg" alt=""><div><b>Too dark around the edge</b><span>Turn the <strong>Diaphragm</strong> up.</span></div></li><li><div class="fix2"><img src="/mg-dust-a.jpg" alt=""><img src="/mg-dust-b.jpg" alt=""></div><div><b>A speck that will not move when you drag</b><span>Turn the <strong>Eyepiece</strong> knob. If the speck turns with it (compare the two pictures), it is dust on the eyepiece, not on the slide.</span></div></li><li><img src="/mg-virus-dry.jpg" alt=""><div><b>Dim and soft on 100&times;</b><span>Put the oil on.</span></div></li><li><img src="/mg-clips.png" alt=""><div><b>The slide keeps sliding</b><span>Stage clips: <strong>Seated</strong>.</span></div></li></ul>
+</section>
+
+<footer>
+  The Microscope &#183; Architecture of Grace &#183; every picture is the real lab
+</footer>
+
+</div>
+</body>
+</html>

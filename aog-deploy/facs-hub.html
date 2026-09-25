@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script>/* .30eg: begin in light. Dark only when this device chose it. The bar writes both
+keys (aog.theme, and the standalone pages' aog.interior.ws.v1.theme) and reconciles them,
+so either one is a valid memory of the choice. */
+(function(){var t="light";try{var a=localStorage.getItem("aog.theme"),b=localStorage.getItem("aog.interior.ws.v1.theme");if(a==="dark"||(a==null&&b==="dark"))t="dark";}catch(e){}document.documentElement.setAttribute("data-theme",t);})();</script>
+<title>Family and Consumer Sciences — Architecture of Grace</title>
+<meta name="description" content="FACS, grades 6–12 — kitchen safety, knife skills, measuring, hand sewing, the sewing machine, fabric and patterns, cooking methods, nutrition, food science, child development, independent living and a capstone. Study cards, a three-level quiz and four workshop activities on every unit.">
+<!-- ═══ AOG ICONS + LINK PREVIEW · managed block · .30k0 ═══
+     Inserted by _work/aog_head.py — DO NOT hand-edit one page; edit the
+     script and re-run it, or the 100 pages drift apart again. The card
+     URL carries ?v= because Slack, Apple and Google cache an og image BY
+     URL for weeks: change the picture, bump IMG_V, or nothing shows up.
+     ═══════════════════════════════════════════════════════════════ -->
+<link rel="canonical" href="https://architectureofgrace.org/facs">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Architecture of Grace">
+<meta property="og:locale" content="en_US">
+<meta property="og:title" content="Family and Consumer Sciences — Architecture of Grace">
+<meta property="og:description" content="FACS, grades 6–12 — kitchen safety, knife skills, measuring, hand sewing, the sewing machine, fabric and patterns, cooking methods, nutrition, food science, child development, independent living and a capstone. Study cards, a three-level quiz and four workshop activities on every unit.">
+<meta property="og:url" content="https://architectureofgrace.org/facs">
+<meta property="og:image" content="https://architectureofgrace.org/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Family and Consumer Sciences, grades 6–12 — twelve units with study cards, a three-level quiz and four hands-on workshop activities, from Architecture of Grace.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Family and Consumer Sciences — Architecture of Grace">
+<meta name="twitter:description" content="FACS, grades 6–12 — kitchen safety, knife skills, measuring, hand sewing, the sewing machine, fabric and patterns, cooking methods, nutrition, food science, child development, independent living and a capstone. Study cards, a three-level quiz and four workshop activities on every unit.">
+<meta name="twitter:image" content="https://architectureofgrace.org/og-image.png">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#0A1E33">
+<meta name="apple-mobile-web-app-title" content="Grace">
+<meta name="application-name" content="Architecture of Grace">
+<!-- ═══ END AOG ICONS + LINK PREVIEW ═══ -->
+<!-- No external requests of any kind. Every byte this page needs is in this file
+     (aog-topbar.js below is same-origin; a 404 changes nothing but the bar). -->
+<!-- AOG-SUBJECT-HUB-V1 — built by _work/subjects/build_hub.py from hub_content_religions.py. Do not hand-edit. -->
+<style>
+/* ══ the Word Foundry's tokens, one accent ══ */
+:root{
+  --bg:#FBFAF7; --card:#FFFFFF; --ink:#232B36; --sub:#5B6472; --line:#E4E1D8;
+  --acc:#6B3F8C; --acc-soft:#E9E1F0;
+  --good:#2E7D4F; --good-soft:#E4F0E8; --warn:#8A5A00; --warn-soft:#F6EEDC;
+  --chip:#EFECE4; --shadow:0 1px 3px rgba(35,43,54,.08);
+  --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,"Times New Roman",serif;
+  --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#191D24; --card:#20262F; --ink:#EDEAE2; --sub:#9AA3B0; --line:#333B47;
+    --acc:#B995D6; --acc-soft:#2E2340;
+    --good:#6FBF8B; --good-soft:#1F3327; --warn:#D9A84E; --warn-soft:#332A18;
+    --chip:#2A313C; --shadow:0 1px 3px rgba(0,0,0,.35);
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#191D24; --card:#20262F; --ink:#EDEAE2; --sub:#9AA3B0; --line:#333B47;
+  --acc:#B995D6; --acc-soft:#2E2340;
+  --good:#6FBF8B; --good-soft:#1F3327; --warn:#D9A84E; --warn-soft:#332A18;
+  --chip:#2A313C; --shadow:0 1px 3px rgba(0,0,0,.35);
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{background:var(--bg);color:var(--ink);font:16px/1.55 var(--sans);margin:0;padding:0 16px 64px}
+button{touch-action:manipulation}
+.wrap{max-width:880px;margin:0 auto}
+header{padding:28px 0 10px}
+.eyebrow{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.eyebrow a{color:var(--sub);font-size:.78rem;letter-spacing:.14em;text-transform:uppercase;text-decoration:none;font-weight:700}
+.eyebrow a:hover{color:var(--ink)}
+.eyebrow .sw{display:flex;gap:8px;align-items:center}
+#themeBtn,.seg button{border:1px solid var(--line);background:var(--card);color:var(--sub);border-radius:999px;padding:5px 12px;font:600 .78rem var(--sans);cursor:pointer;min-height:32px}
+.seg{display:inline-flex;gap:2px}
+.seg button.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+h1{font-family:var(--serif);font-weight:900;font-size:clamp(2rem,5vw,2.9rem);margin:10px 0 0;letter-spacing:-.01em}
+.tag{color:var(--sub);margin:6px 0 14px;max-width:60ch}
+.legend{display:flex;gap:10px;flex-wrap:wrap;align-items:center;font-size:.82rem}
+.lg{display:inline-flex;align-items:center;gap:6px;padding:3px 10px;border-radius:999px;font-weight:600}
+.lg.open{background:var(--acc-soft);color:var(--ink)}
+.lg.shop{background:var(--chip);color:var(--sub)}
+.dot{width:8px;height:8px;border-radius:50%;background:currentColor;display:inline-block}
+/* ══ the band strip — the English strip's shape (AOG-ENGLISH-STRIP-V1), five bands, one page ══ */
+.bandstrip{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:16px 0 6px}
+.bandstrip .k{font:800 .72rem var(--sans);letter-spacing:.14em;text-transform:uppercase;color:var(--sub);margin-right:4px}
+.bandstrip button{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:999px;padding:9px 16px;font:600 .9rem var(--sans);cursor:pointer;min-height:44px}
+.bandstrip button[aria-current="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.bandstrip button:hover{border-color:var(--ink)}
+.bandstrip button:focus-visible,.door:focus-visible,.gr:focus-visible,button:focus-visible,summary:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+/* ══ one band ══ */
+.band{padding-top:18px}
+.band[hidden]{display:none}
+h2{font-family:var(--serif);font-weight:700;font-size:1.35rem;margin:0 0 4px}
+.hint{color:var(--sub);font-size:.9rem;margin:0 0 10px;max-width:65ch}
+.count{color:var(--sub);font-size:.82rem;margin:0 0 16px;font-variant-numeric:tabular-nums}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px}
+.unit{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px 16px;box-shadow:var(--shadow);display:flex;flex-direction:column;gap:6px}
+.unit.open{border-left:4px solid var(--acc)}
+.unit .t{font-family:var(--serif);font-weight:700;font-size:1.05rem;line-height:1.25}
+.unit .d{font-size:.88rem;color:var(--sub);flex:1 1 auto}
+.doors{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-top:4px}
+.door{display:inline-flex;align-items:center;min-height:44px;padding:8px 14px;border:1px solid var(--line);border-radius:999px;background:var(--bg);color:var(--ink);font:600 .85rem var(--sans);text-decoration:none}
+.door:hover{border-color:var(--acc)}
+.shopchip{display:inline-flex;align-items:center;gap:6px;min-height:28px;padding:3px 10px;border-radius:999px;background:var(--chip);color:var(--sub);font:600 .78rem var(--sans)}
+.beam{border:0;background:none;color:var(--sub);font:600 .8rem var(--sans);cursor:pointer;min-height:44px;padding:8px 6px;text-decoration:underline;text-underline-offset:3px;margin-left:auto}
+.beam:hover{color:var(--ink)}
+/* ══ every day — Daily Drafts by grade ══ */
+.daily{margin-top:18px;padding:14px 16px;border:1px solid var(--line);border-radius:10px;background:var(--card);box-shadow:var(--shadow);display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.daily .dk{font-family:var(--serif);font-weight:700;font-size:1rem;margin-right:2px}
+.daily .dd{font-size:.86rem;color:var(--sub);flex:1 1 220px}
+.gr{display:inline-flex;align-items:center;justify-content:center;min-width:44px;min-height:44px;padding:0 12px;border:1px solid var(--line);border-radius:999px;background:var(--bg);color:var(--ink);font:700 .9rem var(--sans);text-decoration:none}
+.gr:hover{border-color:var(--acc)}
+/* ══ the engines ══ */
+.engines{margin-top:36px}
+.eng{border-top:1px solid var(--line);padding:12px 0;display:grid;grid-template-columns:1fr auto;gap:4px 14px;align-items:start}
+.eng:last-child{border-bottom:1px solid var(--line)}
+.eng .n{font-family:var(--serif);font-weight:700;font-size:1rem}
+.eng .d{font-size:.88rem;color:var(--sub);grid-column:1/-1;max-width:65ch}
+.eng .st{font:600 .78rem var(--sans);padding:3px 10px;border-radius:999px;white-space:nowrap}
+/* AOG-SS-ESWRAP-V1 — 2026-09-18. .eng is a grid of `1fr auto` whose status chip is
+   white-space:nowrap, and a grid item's default min-width:auto refuses to shrink below
+   min-content — so a long SPANISH chip pins the auto track and the page grows wider than
+   the phone, sliding sideways under a thumb. Measured at 390px: science-hub and
+   religions-hub were 421px in Spanish, social-studies-hub 410px; math-hub and english-hub
+   happened to fit only because their Spanish strings are shorter, which is luck, not
+   design — they carry the rule so it stays fixed when that text changes. English was
+   never affected. Below 560px the chip wraps and the card stacks; min-width:0 lets the
+   tracks shrink. Nothing changes above 560px. */
+.eng > *{min-width:0}
+@media (max-width:560px){
+  .eng{grid-template-columns:1fr}
+  .eng .st{white-space:normal;justify-self:start}
+}
+.eng.open .st{background:var(--acc-soft);color:var(--ink)}
+.eng.shop .st{background:var(--chip);color:var(--sub)}
+main[data-workshop="off"] .shop{display:none}
+/* ══ for the teacher ══ */
+.teach{background:var(--card);border:1px solid var(--line);border-radius:10px;margin-top:30px;box-shadow:var(--shadow)}
+.teach summary{cursor:pointer;padding:14px 18px;font-family:var(--serif);font-weight:700;font-size:1.05rem;list-style:none;min-height:44px}
+.teach summary::-webkit-details-marker{display:none}
+.teach summary::before{content:"+";display:inline-flex;width:22px;height:22px;border-radius:50%;background:var(--chip);color:var(--sub);font:700 .95rem var(--sans);align-items:center;justify-content:center;margin-right:10px}
+.teach[open] summary::before{content:"–"}
+.teach .inner{padding:0 18px 16px 50px;color:var(--sub);font-size:.94rem;max-width:65ch}
+.teach .inner p{margin:0 0 10px}
+.teach .inner b{color:var(--ink)}
+/* ══ the board beam (ported from /prep) ══ */
+#beam{position:fixed;inset:0;z-index:9500;background:var(--bg);color:var(--ink);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:24px;text-align:center;cursor:pointer}
+#beam .x{position:absolute;top:16px;right:20px;font-size:.85rem;color:var(--sub)}
+#beam .wk{font:800 .9rem var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--sub)}
+#beam .nm{font-family:var(--serif);font-weight:700;font-size:clamp(1.4rem,4vw,2.4rem);max-width:22ch}
+#beam .url{font:700 clamp(1.6rem,7vw,4.4rem)/1.1 var(--sans);color:var(--acc);word-break:break-all}
+#beam .hint{font-size:1rem;color:var(--sub);margin:0}
+footer{margin-top:48px;color:var(--sub);font-size:.8rem;border-top:1px solid var(--line);padding-top:14px;max-width:65ch}
+@media print{.bandstrip,.beam,.eyebrow .sw,#beam{display:none !important}.band[hidden]{display:none}}
+
+/* ══ AOG-PRINT-SAFE-V1 (2026-09-20) ═══════════════════════════════════════════
+   Jimmy, printing a novel study from his phone: "another pdf that gets parts of
+   the material cut off." These are the rules that keep paper honest on every
+   engine — a table row, a list item, a figure and a picture stay whole; a head
+   keeps the lines under it; no paragraph strands one line at a page edge; and a
+   long table repeats its head at the top of each page. Printed pages only. */
+@media print{
+  table{break-inside:auto; page-break-inside:auto}
+  thead{display:table-header-group}
+  tfoot{display:table-footer-group}
+  tr{break-inside:avoid; page-break-inside:avoid}
+  li,figure,img,svg{break-inside:avoid; page-break-inside:avoid}
+  h1,h2,h3,h4,h5{break-after:avoid; page-break-after:avoid}
+  p{orphans:3; widows:3}
+  /* AOG-PRINT-GRIDFIT-V1 — a CSS grid does not fragment, so a card in a grid row
+     was sliced at the page break instead of moving whole to the next page. On
+     paper the grid is ordinary blocks and each card keeps itself together. */
+  .grid,.cards{display:block!important}
+  .grid>*,.cards>*{break-inside:avoid; page-break-inside:avoid; margin:0 0 12px}
+}
+</style>
+</head>
+<body>
+<script src="/aog-topbar.js"></script>
+
+<div class="wrap">
+<header>
+  <div class="eyebrow">
+    <a href="/">Architecture of Grace</a>
+    <div class="sw">
+      <div class="seg" role="group" aria-label="Language"><button type="button" id="langEn" class="on">EN</button><button type="button" id="langEs">ES</button></div>
+      <button id="themeBtn" type="button" aria-label="Switch between light and dark">Dark mode</button>
+    </div>
+  </div>
+  <h1 data-en="Family and Consumer Sciences" data-es="Ciencias de la Familia y del Consumidor">Family and Consumer Sciences</h1>
+  <p class="tag" data-en="The skills a person uses for the rest of their life — a knife held right, a seam that holds, a meal costed and cooked, a budget that balances, a child kept safe. Kindergarten through Grade 12, bilingual, and built to be used standing up." data-es="Las destrezas que se usan toda la vida — sostener bien un cuchillo, una costura que aguanta, una comida costeada y cocinada, un presupuesto que cuadra, un niño a salvo. De kínder a 12.º grado, bilingüe, y hecho para usarse de pie.">The skills a person uses for the rest of their life — a knife held right, a seam that holds, a meal costed and cooked, a budget that balances, a child kept safe. Kindergarten through Grade 12, bilingual, and built to be used standing up.</p>
+  <div class="legend">
+    <span class="lg open"><span class="dot"></span><span data-en="Open" data-es="Abierto">Open</span></span>
+    <span class="lg shop"><span class="dot"></span><span data-en="In the workshop" data-es="En el taller">In the workshop</span></span>
+  </div>
+</header>
+<nav class="bandstrip no-print" aria-label="Family and Consumer Sciences by grade band" id="bandNav"><span class="k" data-en="Family and Consumer Sciences" data-es="Ciencias de la Familia y del Consumidor">Family and Consumer Sciences</span><button type="button" data-band="K-2" aria-current="false">K–2</button><button type="button" data-band="3-5" aria-current="false">3–5</button><button type="button" data-band="6-8" aria-current="false">6–8</button><button type="button" data-band="9-10" aria-current="false">9–10</button><button type="button" data-band="11-12" aria-current="false">11–12</button></nav>
+<main id="content" data-workshop="on">
+<section class="band" id="K-2" aria-labelledby="h-K-2">
+  <h2 id="h-K-2" data-en="Grades K–2 — the body and the room" data-es="Grados K–2 — el cuerpo y el cuarto">Grades K–2 — the body and the room</h2>
+  <p class="hint" data-en="Before anybody cooks anything, four things have to be true: hands get washed properly, a kitchen has three kinds of danger and each one has a move, food is everyday or sometimes rather than good or bad, and a job is not finished until the room looks like nobody was here." data-es="Antes de que alguien cocine algo, cuatro cosas tienen que ser ciertas: las manos se lavan bien, una cocina tiene tres clases de peligro y cada una tiene su movimiento, la comida es de todos los días o de a veces y no buena o mala, y un trabajo no termina hasta que el cuarto se ve como si nadie hubiera estado.">Before anybody cooks anything, four things have to be true: hands get washed properly, a kitchen has three kinds of danger and each one has a move, food is everyday or sometimes rather than good or bad, and a job is not finished until the room looks like nobody was here.</p>
+  <p class="count" data-en="4 units open · 0 in the workshop" data-es="4 unidades abiertas · 0 en el taller">4 units open · 0 in the workshop</p>
+  <div class="grid">
+  <div class="unit open"><div class="t" data-en="Clean Hands" data-es="Manos limpias">Clean Hands</div><div class="d" data-en="Germs are too small to see, so your eyes cannot tell you when your hands are clean — which is why the rule is twenty seconds. The five steps, the spots everybody misses, and why sanitizer is the spare and not the swap." data-es="Los gérmenes son demasiado pequeños para verse, así que tus ojos no pueden decirte cuándo están limpias tus manos — por eso la regla son veinte segundos. Los cinco pasos, los lugares que todos se saltan, y por qué el gel es el repuesto y no el reemplazo.">Germs are too small to see, so your eyes cannot tell you when your hands are clean — which is why the rule is twenty seconds. The five steps, the spots everybody misses, and why sanitizer is the spare and not the swap.</div><div class="doors"><a class="door" href="/fc13" data-en="Open" data-es="Abrir">Open</a><button class="beam no-print" type="button" data-beam="/fc13" data-name="Clean Hands" data-name-es="Manos limpias" data-en="Show on the board" data-es="Mostrar en la pizarra">Show on the board</button></div></div>
+  <div class="unit open"><div class="t" data-en="Hot, Cold and Sharp" data-es="Caliente, frío y filoso">Hot, Cold and Sharp</div><div class="d" data-en="Three kinds of danger and a move for each. Hot has no color, so you ask before you touch. Sharp things travel point-down and are never caught when they fall. And a blunt knife cuts more people than a sharp one." data-es="Tres clases de peligro y un movimiento para cada una. Lo caliente no tiene color, así que preguntas antes de tocar. Lo filoso viaja con la punta abajo y nunca se atrapa al caer. Y un cuchillo sin filo corta a más gente que uno filoso.">Three kinds of danger and a move for each. Hot has no color, so you ask before you touch. Sharp things travel point-down and are never caught when they fall. And a blunt knife cuts more people than a sharp one.</div><div class="doors"><a class="door" href="/fc14" data-en="Open" data-es="Abrir">Open</a><button class="beam no-print" type="button" data-beam="/fc14" data-name="Hot, Cold and Sharp" data-name-es="Caliente, frío y filoso" data-en="Show on the board" data-es="Mostrar en la pizarra">Show on the board</button></div></div>
+  <div class="unit open"><div class="t" data-en="Everyday Food and Sometimes Food" data-es="Comida de todos los días y de a veces">Everyday Food and Sometimes Food</div><div class="d" data-en="The parts of a plate, a range of colors, and water. No food is called bad — everyday and sometimes describe how often a food turns up, and your stomach knows you are full before your plate does." data-es="Las partes de un plato, varios colores, y agua. Ninguna comida se llama mala — de todos los días y de a veces describen qué tan seguido aparece, y tu estómago sabe que estás lleno antes que tu plato.">The parts of a plate, a range of colors, and water. No food is called bad — everyday and sometimes describe how often a food turns up, and your stomach knows you are full before your plate does.</div><div class="doors"><a class="door" href="/fc15" data-en="Open" data-es="Abrir">Open</a><button class="beam no-print" type="button" data-beam="/fc15" data-name="Everyday Food and Sometimes Food" data-name-es="Comida de todos los días y de a veces" data-en="Show on the board" data-es="Mostrar en la pizarra">Show on the board</button></div></div>
+  <div class="unit open"><div class="t" data-en="A Job Done to the End" data-es="Un trabajo hecho hasta el final">A Job Done to the End</div><div class="d" data-en="Get it out, do it, put it back. The third part is the one people drop, and dropping it hands the job to somebody else. The test is whether the room looks like nobody was here." data-es="Sácalo, hazlo, guárdalo. La tercera parte es la que se cae, y que se caiga le pasa el trabajo a alguien más. La prueba es si el cuarto se ve como si nadie hubiera estado.">Get it out, do it, put it back. The third part is the one people drop, and dropping it hands the job to somebody else. The test is whether the room looks like nobody was here.</div><div class="doors"><a class="door" href="/fc16" data-en="Open" data-es="Abrir">Open</a><button class="beam no-print" type="button" data-beam="/fc16" data-name="A Job Done to the End" data-name-es="Un trabajo hecho hasta el final" data-en="Show on the board" data-es="Mostrar en la pizarra">Show on the board</button></div></div>
+  </div>
+</section>
+<section class="band" id="3-5" aria-labelledby="h-3-5">
+  <h2 id="h-3-5" data-en="Grades 3–5 — the hands" data-es="Grados 3–5 — las manos">Grades 3–5 — the hands</h2>
+  <p class="hint" data-en="Two hand skills, one decision, and one whole task from plan to clean-up. Measuring that comes out the same every time, a button that stays on, a price compared honestly, and a meal run end to end in one kitchen." data-es="Dos destrezas de manos, una decisión, y una tarea entera del plan a la limpieza. Medir de modo que salga igual siempre, un botón que se queda puesto, un precio comparado con honestidad, y una comida sacada de principio a fin en una cocina.">Two hand skills, one decision, and one whole task from plan to clean-up. Measuring that comes out the same every time, a button that stays on, a price compared honestly, and a meal run end to end in one kitchen.</p>
+  <p class="count" data-en="4 units open · 0 in the workshop" data-es="4 unidades abiertas · 0 en el taller">4 units open · 0 in the workshop</p>
+  <div class="grid">
+  <div class="unit open"><div class="t" data-en="Measure It Right" data-es="Medir bien">Measure It Right</div><div class="d" data-en="A cup measures space, not weight — and every other rule falls out of that. Two kinds of cup and why each is shaped as it is, spooning instead of scooping, levelling, and reading a recipe to the end first." data-es="Una taza mide espacio, no peso — y todas las demás reglas salen de ahí. Dos tipos de taza y por qué cada una tiene su forma, cucharear en vez de meter la taza, rasar, y leer la receta hasta el final primero.">A cup measures space, not weight — and every other rule falls out of that. Two kinds of cup and why each is shaped as it is, spooning instead of scooping, levelling, and reading a recipe to the end first.</div><div class="doors"><a class="door" href="/fc17" data-en="Open" data-es="Abrir">Open</a><button class="beam no-print" type="button" data-beam="/fc17" data-name="Measure It Right" data-name-es="Medir bien" data-en="Show on the board" data-es="Mostrar en la pizarra">Show on the board</button></div></div>
+  <div class="unit open"><div class="t" data-en="The Needle and the Button" data-es="La aguja y el botón">The Needle and the Button</div><div class="d" data-en="A stitch is a decision about where the thread goes next. Running against back stitch, chosen by what the seam has to survive — and the thread stem under a button that stops it pulling itself off." data-es="Una puntada es una decisión sobre a dónde va el hilo. Recta contra atrás, elegida por lo que tiene que aguantar la costura — y el tallo de hilo bajo un botón que evita que se arranque solo.">A stitch is a decision about where the thread goes next. Running against back stitch, chosen by what the seam has to survive — and the thread stem under a button that stops it pulling itself off.</div><div class="doors"><a class="door" href="/fc18" data-en="Open" data-es="Abrir">Open</a><button class="beam no-print" type="button" data-beam="/fc18" data-name="The Needle and the Button" data-name-es="La aguja y el botón" data-en="Show on the board" data-es="Mostrar en la pizarra">Show on the board</button></div></div>
+  <div class="unit open"><div class="t" data-en="Money and Choices" data-es="El dinero y las decisiones">Money and Choices</div><div class="d" data-en="A price is half an answer; the price per unit is the whole one, and it is already printed small on the shelf. Plus the part usually left out: what that rule quietly assumes, and why it is for comparing and not for judging." data-es="Un precio es media respuesta; el precio por unidad es la completa, y ya está impreso chiquito en el estante. Más la parte que suele omitirse: qué supone esa regla sin decirlo, y por qué es para comparar y no para juzgar.">A price is half an answer; the price per unit is the whole one, and it is already printed small on the shelf. Plus the part usually left out: what that rule quietly assumes, and why it is for comparing and not for judging.</div><div class="doors"><a class="door" href="/fc19" data-en="Open" data-es="Abrir">Open</a><button class="beam no-print" type="button" data-beam="/fc19" data-name="Money and Choices" data-name-es="El dinero y las decisiones" data-en="Show on the board" data-es="Mostrar en la pizarra">Show on the board</button></div></div>
+  <div class="unit open"><div class="t" data-en="Plan It, Cook It, Clean It Up" data-es="Planéalo, cocínalo, recógelo">Plan It, Cook It, Clean It Up</div><div class="d" data-en="Most of cooking happens before and after the cooking. Cupboard before list, work backwards from dinner, start what waits — and do the clearing up while the food cooks, because waiting time is working time." data-es="Casi todo de cocinar pasa antes y después de cocinar. Alacena antes que lista, trabaja hacia atrás desde la cena, empieza lo que espera — y recoge mientras la comida se cocina, porque el tiempo de espera es tiempo de trabajo.">Most of cooking happens before and after the cooking. Cupboard before list, work backwards from dinner, start what waits — and do the clearing up while the food cooks, because waiting time is working time.</div><div class="doors"><a class="door" href="/fc20" data-en="Open" data-es="Abrir">Open</a><button class="beam no-print" type="button" data-beam="/fc20" data-name="Plan It, Cook It, Clean It Up" data-name-es="Planéalo, cocínalo, recógelo" data-en="Show on the board" data-es="Mostrar en la pizarra">Show on the board</button></div></div>
+  </div>
+</section>
+<section class="band" id="6-8" aria-labelledby="h-6-8">
+  <h2 id="h-6-8" data-en="Grades 6–8 — hands, tools and safety first" data-es="Grados 6–8 — manos, herramientas y seguridad primero">Grades 6–8 — hands, tools and safety first</h2>
+  <p class="hint" data-en="Nobody cooks or sews until the room is safe and the tool is held right. These four units are the ones a student repeats every year after." data-es="Nadie cocina ni cose hasta que el salón sea seguro y la herramienta se sostenga bien. Estas cuatro unidades son las que el estudiante repite cada año después.">Nobody cooks or sews until the room is safe and the tool is held right. These four units are the ones a student repeats every year after.</p>
+  <p class="count" data-en="4 units open · 0 in the workshop" data-es="4 unidades abiertas · 0 en el taller">4 units open · 0 in the workshop</p>
+  <div class="grid">
+  <div class="unit open"><div class="t" data-en="Kitchen Safety and Sanitation" data-es="Seguridad e higiene en la cocina">Kitchen Safety and Sanitation</div><div class="d" data-en="Clean, separate, cook, chill. The danger zone, the safe internal temperatures, cross-contamination, a grease fire, and the two-hour rule." data-es="Limpiar, separar, cocinar, enfriar. La zona de peligro, las temperaturas internas seguras, la contaminación cruzada, un fuego de grasa y la regla de las dos horas.">Clean, separate, cook, chill. The danger zone, the safe internal temperatures, cross-contamination, a grease fire, and the two-hour rule.</div><div class="doors"><a class="door" href="/fc1" data-en="Open" data-es="Abrir">Open</a><button class="beam no-print" type="button" data-beam="/fc1" data-name="Kitchen Safety and Sanitation" data-name-es="Seguridad e higiene en la cocina" data-en="Show on the board" data-es="Mostrar en la pizarra">Show on the board</button></div></div>
+  <div class="unit open"><div class="t" data-en="Knife Skills" data-es="El manejo del cuchillo">Knife Skills</div><div class="d" data-en="The parts of a chef's knife, the pinch grip and the claw, the rocking cut, and the classic cuts by name and by size — labeled and practiced." data-es="Las partes de un cuchillo de chef, el agarre de pinza y la garra, el corte mecedor, y los cortes clásicos por nombre y tamaño — rotulados y practicados.">The parts of a chef's knife, the pinch grip and the claw, the rocking cut, and the classic cuts by name and by size — labeled and practiced.</div><div class="doors"><a class="door" href="/fc2" data-en="Open" data-es="Abrir">Open</a><button class="beam no-print" type="button" data-beam="/fc2" data-name="Knife Skills" data-name-es="El manejo del cuchillo" data-en="Show on the board" data-es="Mostrar en la pizarra">Show on the board</button></div></div>
+  <div class="unit open"><div class="t" data-en="Measuring and Reading a Recipe" data-es="Medir y leer una receta">Measuring and Reading a Recipe</div><div class="d" data-en="Dry cups against the liquid cup, spoon and level, the equivalents chart, scaling a recipe up and down, and mise en place." data-es="Tazas secas frente a la taza de líquidos, cuchara y nivelar, la tabla de equivalencias, ajustar una receta, y la mise en place.">Dry cups against the liquid cup, spoon and level, the equivalents chart, scaling a recipe up and down, and mise en place.</div><div class="doors"><a class="door" href="/fc3" data-en="Open" data-es="Abrir">Open</a><button class="beam no-print" type="button" data-beam="/fc3" data-name="Measuring and Reading a Recipe" data-name-es="Medir y leer una receta" data-en="Show on the board" data-es="Mostrar en la pizarra">Show on the board</button></div></div>
+  <div class="unit open"><div class="t" data-en="Hand Sewing" data-es="La costura a mano">Hand Sewing</div><div class="d" data-en="The kit, the knot, and seven stitches — running, basting, back, whip, slip, blanket, overcast. Sew a button on and mend a split seam." data-es="El equipo, el nudo y siete puntadas — corrida, hilvanada, atrás, festón, invisible, de manta y sobrehilado. Cose un botón y arregla una costura abierta.">The kit, the knot, and seven stitches — running, basting, back, whip, slip, blanket, overcast. Sew a button on and mend a split seam.</div><div class="doors"><a class="door" href="/fc4" data-en="Open" data-es="Abrir">Open</a><button class="beam no-print" type="button" data-beam="/fc4" data-name="Hand Sewing" data-name-es="La costura a mano" data-en="Show on the board" data-es="Mostrar en la pizarra">Show on the board</button></div></div>
+  </div>
+  
+</section>
+<section class="band" id="9-10" aria-labelledby="h-9-10">
+  <h2 id="h-9-10" data-en="Grades 9–10 — the machine, the fabric, the stove" data-es="Grados 9–10 — la máquina, la tela, la estufa">Grades 9–10 — the machine, the fabric, the stove</h2>
+  <p class="hint" data-en="From a cold sewing machine to a straight backstitched seam, from a bolt of fabric to a piece cut on grain, and from a cold pan to a browned one." data-es="De una máquina fría a una costura recta y rematada, de un rollo de tela a una pieza cortada al hilo, y de una sartén fría a una dorada.">From a cold sewing machine to a straight backstitched seam, from a bolt of fabric to a piece cut on grain, and from a cold pan to a browned one.</p>
+  <p class="count" data-en="4 units open · 0 in the workshop" data-es="4 unidades abiertas · 0 en el taller">4 units open · 0 in the workshop</p>
+  <div class="grid">
+  <div class="unit open"><div class="t" data-en="The Sewing Machine" data-es="La máquina de coser">The Sewing Machine</div><div class="d" data-en="Every part named, the top thread path in order, how a lockstitch forms, the 5/8 in guide, pivoting a corner, and what the loops underneath mean." data-es="Cada parte nombrada, el recorrido del hilo superior en orden, cómo se forma la puntada, la guía de 5/8 pulg., girar una esquina, y qué significan los bucles de abajo.">Every part named, the top thread path in order, how a lockstitch forms, the 5/8 in guide, pivoting a corner, and what the loops underneath mean.</div><div class="doors"><a class="door" href="/fc5" data-en="Open" data-es="Abrir">Open</a><button class="beam no-print" type="button" data-beam="/fc5" data-name="The Sewing Machine" data-name-es="La máquina de coser" data-en="Show on the board" data-es="Mostrar en la pizarra">Show on the board</button></div></div>
+  <div class="unit open"><div class="t" data-en="Fabric, Fibers and Patterns" data-es="Telas, fibras y patrones">Fabric, Fibers and Patterns</div><div class="d" data-en="Natural and manufactured fibers, woven against knit, selvage and grain and bias, the care label, and a layout cut on grain." data-es="Fibras naturales y manufacturadas, tejido plano frente a punto, orillo, hilo y sesgo, la etiqueta de cuidado, y un trazado cortado al hilo.">Natural and manufactured fibers, woven against knit, selvage and grain and bias, the care label, and a layout cut on grain.</div><div class="doors"><a class="door" href="/fc6" data-en="Open" data-es="Abrir">Open</a><button class="beam no-print" type="button" data-beam="/fc6" data-name="Fabric, Fibers and Patterns" data-name-es="Telas, fibras y patrones" data-en="Show on the board" data-es="Mostrar en la pizarra">Show on the board</button></div></div>
+  <div class="unit open"><div class="t" data-en="Cooking Methods and Heat" data-es="Métodos de cocción y el calor">Cooking Methods and Heat</div><div class="d" data-en="Conduction, convection and radiation; dry heat against moist heat; why a crowded pan steams instead of browning; braising a tough cut." data-es="Conducción, convección y radiación; calor seco frente a calor húmedo; por qué una sartén llena cuece al vapor en vez de dorar; brasear un corte duro.">Conduction, convection and radiation; dry heat against moist heat; why a crowded pan steams instead of browning; braising a tough cut.</div><div class="doors"><a class="door" href="/fc7" data-en="Open" data-es="Abrir">Open</a><button class="beam no-print" type="button" data-beam="/fc7" data-name="Cooking Methods and Heat" data-name-es="Métodos de cocción y el calor" data-en="Show on the board" data-es="Mostrar en la pizarra">Show on the board</button></div></div>
+  <div class="unit open"><div class="t" data-en="Nutrition and Meal Planning" data-es="Nutrición y planificación de comidas">Nutrition and Meal Planning</div><div class="d" data-en="The six nutrients, the five MyPlate groups, reading a Nutrition Facts label line by line, unit price, and a week of meals on a budget." data-es="Los seis nutrientes, los cinco grupos de MyPlate, leer una etiqueta nutricional línea por línea, el precio unitario, y una semana de comidas con presupuesto.">The six nutrients, the five MyPlate groups, reading a Nutrition Facts label line by line, unit price, and a week of meals on a budget.</div><div class="doors"><a class="door" href="/fc8" data-en="Open" data-es="Abrir">Open</a><button class="beam no-print" type="button" data-beam="/fc8" data-name="Nutrition and Meal Planning" data-name-es="Nutrición y planificación de comidas" data-en="Show on the board" data-es="Mostrar en la pizarra">Show on the board</button></div></div>
+  </div>
+  
+</section>
+<section class="band" id="11-12" aria-labelledby="h-11-12">
+  <h2 id="h-11-12" data-en="Grades 11–12 — the why, and the life after" data-es="Grados 11–12 — el porqué, y la vida después">Grades 11–12 — the why, and the life after</h2>
+  <p class="hint" data-en="The science under the cooking, the development of a child, the money of a first apartment, and a capstone the student plans, costs and produces." data-es="La ciencia detrás de la cocina, el desarrollo de un niño, el dinero de un primer apartamento, y un proyecto final que el estudiante planea, costea y produce.">The science under the cooking, the development of a child, the money of a first apartment, and a capstone the student plans, costs and produces.</p>
+  <p class="count" data-en="4 units open · 0 in the workshop" data-es="4 unidades abiertas · 0 en el taller">4 units open · 0 in the workshop</p>
+  <div class="grid">
+  <div class="unit open"><div class="t" data-en="Food Science — What Happens When You Cook" data-es="Ciencia de los alimentos — qué pasa al cocinar">Food Science — What Happens When You Cook</div><div class="d" data-en="Why an egg sets, why muffins go tough, what makes a sauce thicken and an emulsion hold, and how to run a controlled kitchen experiment." data-es="Por qué cuaja un huevo, por qué los panquecitos salen duros, qué espesa una salsa y sostiene una emulsión, y cómo hacer un experimento controlado.">Why an egg sets, why muffins go tough, what makes a sauce thicken and an emulsion hold, and how to run a controlled kitchen experiment.</div><div class="doors"><a class="door" href="/fc9" data-en="Open" data-es="Abrir">Open</a><button class="beam no-print" type="button" data-beam="/fc9" data-name="Food Science — What Happens When You Cook" data-name-es="Ciencia de los alimentos — qué pasa al cocinar" data-en="Show on the board" data-es="Mostrar en la pizarra">Show on the board</button></div></div>
+  <div class="unit open"><div class="t" data-en="Child Development and Care" data-es="El desarrollo infantil y el cuidado de los niños">Child Development and Care</div><div class="d" data-en="The four domains, milestones as ranges and never deadlines, play as the work of childhood, guidance instead of punishment, and babysitting basics." data-es="Los cuatro dominios, los hitos como rangos y nunca como plazos, el juego como el trabajo de la infancia, la guía en vez del castigo, y cuidar niños.">The four domains, milestones as ranges and never deadlines, play as the work of childhood, guidance instead of punishment, and babysitting basics.</div><div class="doors"><a class="door" href="/fc10" data-en="Open" data-es="Abrir">Open</a><button class="beam no-print" type="button" data-beam="/fc10" data-name="Child Development and Care" data-name-es="El desarrollo infantil y el cuidado de los niños" data-en="Show on the board" data-es="Mostrar en la pizarra">Show on the board</button></div></div>
+  <div class="unit open"><div class="t" data-en="Independent Living and Money" data-es="Vivir por tu cuenta y el dinero">Independent Living and Money</div><div class="d" data-en="Gross against net pay, a budget built from take-home, credit and compounding, a lease and a deposit, unit pricing, and how to spot a scam." data-es="Pago bruto frente a neto, un presupuesto desde lo que queda, el crédito y el interés compuesto, un contrato y un depósito, el precio unitario y cómo detectar una estafa.">Gross against net pay, a budget built from take-home, credit and compounding, a lease and a deposit, unit pricing, and how to spot a scam.</div><div class="doors"><a class="door" href="/fc11" data-en="Open" data-es="Abrir">Open</a><button class="beam no-print" type="button" data-beam="/fc11" data-name="Independent Living and Money" data-name-es="Vivir por tu cuenta y el dinero" data-en="Show on the board" data-es="Mostrar en la pizarra">Show on the board</button></div></div>
+  <div class="unit open"><div class="t" data-en="Capstone — Plan, Cost, Produce" data-es="Proyecto final — planear, costear, producir">Capstone — Plan, Cost, Produce</div><div class="d" data-en="A meal or a sewn piece, from a written spec and a cost sheet to a timeline, the making, a real evaluation and a presentation." data-es="Una comida o una pieza cosida, de una especificación escrita y una hoja de costos a un cronograma, la producción, una evaluación real y una presentación.">A meal or a sewn piece, from a written spec and a cost sheet to a timeline, the making, a real evaluation and a presentation.</div><div class="doors"><a class="door" href="/fc12" data-en="Open" data-es="Abrir">Open</a><button class="beam no-print" type="button" data-beam="/fc12" data-name="Capstone — Plan, Cost, Produce" data-name-es="Proyecto final — planear, costear, producir" data-en="Show on the board" data-es="Mostrar en la pizarra">Show on the board</button></div></div>
+  </div>
+  
+</section>
+<section class="engines" aria-labelledby="engh">
+<h2 id="engh" data-en="The engines" data-es="Los motores">The engines</h2>
+<p class="hint" data-en="Every activity on this door is built from one of these six. All six already run — each unit page carries the study cards and the quiz, and its Workshop tab carries four of the rest." data-es="Cada actividad de esta puerta se construye con uno de estos seis. Los seis ya funcionan — cada página de unidad lleva las tarjetas y el quiz, y su pestaña Taller lleva cuatro de los demás.">Every activity on this door is built from one of these six. All six already run — each unit page carries the study cards and the quiz, and its Workshop tab carries four of the rest.</p>
+<div class="eng open"><div class="n" data-en="Study cards, hints and a practice quiz" data-es="Tarjetas de estudio, pistas y un quiz de práctica">Study cards, hints and a practice quiz</div><span class="st" data-en="Open · every unit page" data-es="Abierto · cada página de unidad">Open · every unit page</span><div class="d" data-en="Twenty-four cards at three levels, a hints sheet with the charts a lab needs, and a quiz that names the mistake behind every wrong answer." data-es="Veinticuatro tarjetas en tres niveles, una hoja de pistas con las tablas que el taller necesita, y un quiz que nombra el error detrás de cada respuesta incorrecta.">Twenty-four cards at three levels, a hints sheet with the charts a lab needs, and a quiz that names the mistake behind every wrong answer.</div></div>
+<div class="eng open"><div class="n" data-en="Label the diagram" data-es="Rotula el diagrama">Label the diagram</div><span class="st" data-en="Open · the Workshop tab" data-es="Abierto · la pestaña Taller">Open · the Workshop tab</span><div class="d" data-en="Drag the name onto the part: a chef's knife, a sewing machine, a needle and seam, a folded fabric layout, a thermometer, a pan on a burner." data-es="Arrastra el nombre a la parte: un cuchillo de chef, una máquina de coser, una aguja y su costura, un trazado de tela doblada, un termómetro, una sartén.">Drag the name onto the part: a chef's knife, a sewing machine, a needle and seam, a folded fabric layout, a thermometer, a pan on a burner.</div></div>
+<div class="eng open"><div class="n" data-en="Put it in order" data-es="Ponlo en orden">Put it in order</div><span class="st" data-en="Open · the Workshop tab" data-es="Abierto · la pestaña Taller">Open · the Workshop tab</span><div class="d" data-en="Threading a machine, dicing an onion, sewing on a button, braising a cut, or a timeline that puts everything hot on the table at once." data-es="Enhebrar una máquina, picar una cebolla, coser un botón, brasear un corte, o un cronograma que pone todo caliente en la mesa a la vez.">Threading a machine, dicing an onion, sewing on a button, braising a cut, or a timeline that puts everything hot on the table at once.</div></div>
+<div class="eng open"><div class="n" data-en="Sort into bins" data-es="Clasifica en cajas">Sort into bins</div><span class="st" data-en="Open · the Workshop tab" data-es="Abierto · la pestaña Taller">Open · the Workshop tab</span><div class="d" data-en="Safe or unsafe. Dry heat or moist. Which stitch for which job. Which cut is this. Top thread, bobbin or needle. Fixed or variable." data-es="Seguro o inseguro. Calor seco o húmedo. Qué puntada para qué trabajo. Qué corte es este. Hilo superior, bobina o aguja. Fijo o variable.">Safe or unsafe. Dry heat or moist. Which stitch for which job. Which cut is this. Top thread, bobbin or needle. Fixed or variable.</div></div>
+<div class="eng open"><div class="n" data-en="Table to graph" data-es="De la tabla a la gráfica">Table to graph</div><span class="st" data-en="Open · the Workshop tab" data-es="Abierto · la pestaña Taller">Open · the Workshop tab</span><div class="d" data-en="Drag the bars to the numbers: cost per serving, sugar per drink, a budget against take-home pay, six muffin batches that rose differently." data-es="Arrastra las barras a los números: costo por porción, azúcar por bebida, un presupuesto frente al sueldo neto, seis tandas de panquecitos.">Drag the bars to the numbers: cost per serving, sugar per drink, a budget against take-home pay, six muffin batches that rose differently.</div></div>
+<div class="eng open"><div class="n" data-en="Claim, evidence, reasoning" data-es="Afirmación, evidencia, razonamiento">Claim, evidence, reasoning</div><span class="st" data-en="Open · the Workshop tab" data-es="Abierto · la pestaña Taller">Open · the Workshop tab</span><div class="d" data-en="Write the argument out: can this chicken be served, what caused the loops, why are the muffins tough, which apartment costs less over a year." data-es="Escribe el argumento: ¿se puede servir este pollo?, ¿qué causó los bucles?, ¿por qué están duros los panquecitos?, ¿qué apartamento cuesta menos al año?">Write the argument out: can this chicken be served, what caused the loops, why are the muffins tough, which apartment costs less over a year.</div></div>
+</section>
+<details class="teach">
+  <summary data-en="For the teacher" data-es="Para el maestro">For the teacher</summary>
+  <div class="inner">
+    <p data-en="&lt;b&gt;This page is a map.&lt;/b&gt; It saves nothing about a student and sends nothing anywhere. Each door opens a unit page; a finished activity sends its one summary row to your Sheet, under the name the student typed, and nothing else ever leaves the device." data-es="&lt;b&gt;Esta página es un mapa.&lt;/b&gt; No guarda nada del estudiante ni envía nada a ninguna parte. Cada puerta abre una página de unidad; una actividad terminada envía una sola fila de resumen a tu hoja, bajo el nombre que el estudiante escribió, y nada más sale del dispositivo.">&lt;b&gt;This page is a map.&lt;/b&gt; It saves nothing about a student and sends nothing anywhere. Each door opens a unit page; a finished activity sends its one summary row to your Sheet, under the name the student typed, and nothing else ever leaves the device.</p>
+    <p data-en="&lt;b&gt;Hand out one band.&lt;/b&gt; Add the band to the address and the page opens there: &lt;b&gt;/facs#6-8&lt;/b&gt;. Every unit has a short address too — &lt;b&gt;Show on the board&lt;/b&gt; prints it large enough for the back row." data-es="&lt;b&gt;Reparte una sola banda.&lt;/b&gt; Agrega la banda a la dirección y la página abre ahí: &lt;b&gt;/facs#6-8&lt;/b&gt;. Cada unidad tiene también una dirección corta — &lt;b&gt;Mostrar en la pizarra&lt;/b&gt; la imprime lo bastante grande para la última fila.">&lt;b&gt;Hand out one band.&lt;/b&gt; Add the band to the address and the page opens there: &lt;b&gt;/facs#6-8&lt;/b&gt;. Every unit has a short address too — &lt;b&gt;Show on the board&lt;/b&gt; prints it large enough for the back row.</p>
+    <p data-en="&lt;b&gt;The page is not the lab.&lt;/b&gt; Every unit teaches the procedure and checks it on the screen; the knife, the machine and the stove still need your supervision, your school's rules and your own demonstration. Nothing here is medical, nutritional or financial advice." data-es="&lt;b&gt;La página no es el taller.&lt;/b&gt; Cada unidad enseña el procedimiento y lo revisa en pantalla; el cuchillo, la máquina y la estufa siguen necesitando tu supervisión, las reglas de la escuela y tu propia demostración. Nada aquí es consejo médico, nutricional ni financiero.">&lt;b&gt;The page is not the lab.&lt;/b&gt; Every unit teaches the procedure and checks it on the screen; the knife, the machine and the stove still need your supervision, your school's rules and your own demonstration. Nothing here is medical, nutritional or financial advice.</p>
+  </div>
+</details>
+</main>
+<footer>
+  <p><span data-en="This page loads no fonts, scripts, or images from the internet and works with the network off. It keeps nothing about a student and has no way to send anything. It is not a district product and carries no district endorsement." data-es="Esta página no carga fuentes, scripts ni imágenes de internet y funciona con la red apagada. No guarda nada sobre un estudiante y no tiene forma de enviar nada. No es un producto del distrito ni cuenta con su respaldo.">This page loads no fonts, scripts, or images from the internet and works with the network off. It keeps nothing about a student and has no way to send anything. It is not a district product and carries no district endorsement.</span></p>
+  <p><span data-en="Original classroom material. Units marked in the workshop are named so a teacher can see the whole map; they open here when they are built, never before." data-es="Material original para el aula. Las unidades marcadas en el taller se nombran para que un maestro vea el mapa completo; se abren aquí cuando se construyen, nunca antes.">Original classroom material. Units marked in the workshop are named so a teacher can see the whole map; they open here when they are built, never before.</span></p>
+</footer>
+</div>
+<script>
+(function(){
+"use strict";
+/* AOG-SUBJECT-HUB-V1 — the hub's own engine: band strip, EN|ES, theme, the board beam.
+   The site bar (aog-topbar.js) owns the visible switches: it CLICKS #langEn /
+   #langEs / #themeBtn below and hides them (never two doors to one place). */
+var SLUG="facs", KEY="aog.hub."+SLUG+".", LEGACY="aog.interior.ws.v1.";
+var H=document.documentElement;
+function $(s){return document.querySelector(s);}
+function store(k,v){try{if(v===undefined)return localStorage.getItem(k);localStorage.setItem(k,v);}catch(e){return null;}}
+
+/* ── language: the page owns it; every [data-en] is a leaf ── */
+var lang="en";
+function T(en,es){return lang==="es"?es:en;}
+function paintLang(){
+  H.lang=lang;
+  var n=document.querySelectorAll("[data-en]");
+  for(var i=0;i<n.length;i++){
+    var el=n[i], v=(lang==="es")?el.getAttribute("data-es"):el.getAttribute("data-en");
+    if(v==null) continue;
+    if(v.indexOf("<")!==-1||v.indexOf("&lt;")!==-1) el.innerHTML=v; else el.textContent=v;
+  }
+  var bEn=$("#langEn"),bEs=$("#langEs");
+  if(bEn) bEn.classList.toggle("on",lang!=="es");
+  if(bEs) bEs.classList.toggle("on",lang==="es");
+  var pEn=$("#aogLangEn"),pEs=$("#aogLangEs");
+  if(pEn) pEn.classList.toggle("on",lang!=="es");
+  if(pEs) pEs.classList.toggle("on",lang==="es");
+  paintTheme();
+}
+function pickLang(v){return function(){ if(lang===v) return; lang=v; store("aog.lang",v); store(LEGACY+"lang",v); paintLang(); };}
+$("#langEn").addEventListener("click",pickLang("en"));
+$("#langEs").addEventListener("click",pickLang("es"));
+(function(){ var s=store("aog.lang")||store(LEGACY+"lang"); if(s==="es"||s==="en") lang=s; })();
+
+/* ── theme: same two keys the bar reconciles ── */
+function paintTheme(){ var b=$("#themeBtn"); if(!b) return; var d=H.getAttribute("data-theme")==="dark"; b.textContent=d?T("Light mode","Modo claro"):T("Dark mode","Modo oscuro"); }
+$("#themeBtn").addEventListener("click",function(){
+  var d=H.getAttribute("data-theme")==="dark"?"light":"dark";
+  H.setAttribute("data-theme",d); store("aog.theme",d); store(LEGACY+"theme",d); paintTheme();
+});
+
+/* ── the band strip: ?band=6-8 or #6-8 on the link, last choice remembered on the device ── */
+var BANDS=["K-2","3-5","6-8","9-10","11-12"];
+/* AOG-BAND-HASH-CASE-V1: the hubs do not agree on the case of the first band — five say "k-2"
+   and two say "K-2" — so an exact indexOf sent /spanish#k-2 to the default instead of
+   to K-2, silently. Match without case and return the hub's OWN spelling, so #k-2 and
+   #K-2 both work everywhere and old bookmarks keep working. */
+function bandCanon(v){ v=String(v==null?"":v).toLowerCase();
+  for(var i=0;i<BANDS.length;i++){ if(String(BANDS[i]).toLowerCase()===v) return BANDS[i]; }
+  return null; }
+function bandFrom(){ var c;
+  var m=/[?&]band=([^&#]+)/.exec(location.search||""); if(m&&(c=bandCanon(m[1]))) return c;
+  var h=(location.hash||"").replace(/^#/,""); if((c=bandCanon(h))) return c;
+  var s=store(KEY+"band"); if(s&&(c=bandCanon(s))) return c;
+  return "6-8";
+}
+function showBand(id,push){
+  var secs=document.querySelectorAll(".band");
+  for(var i=0;i<secs.length;i++) secs[i].hidden=(secs[i].id!==id);
+  var btns=document.querySelectorAll("#bandNav button");
+  for(var j=0;j<btns.length;j++) btns[j].setAttribute("aria-current",String(btns[j].getAttribute("data-band")===id));
+  store(KEY+"band",id);
+  if(push){ try{ history.replaceState(null,"","#"+id); }catch(e){} }
+}
+$("#bandNav").addEventListener("click",function(e){ var b=e.target.closest("[data-band]"); if(!b) return; showBand(b.getAttribute("data-band"),true); });
+window.addEventListener("hashchange",function(){ var h=(location.hash||"").replace(/^#/,""); if(BANDS.indexOf(h)>-1) showBand(h,false); });
+showBand(bandFrom(),false);
+
+/* ── the board beam (ported from /prep): the short address, big enough for the back row ── */
+document.addEventListener("click",function(e){
+  var btn=e.target.closest("[data-beam]"); if(!btn) return;
+  var host=location.hostname||"architectureofgrace.org";
+  if(host==="localhost"||host==="127.0.0.1"||!host) host="architectureofgrace.org";
+  var url=host.replace(/^www\./,"")+btn.getAttribute("data-beam");
+  var nm=(lang==="es"&&btn.getAttribute("data-name-es"))?btn.getAttribute("data-name-es"):btn.getAttribute("data-name");
+  var el=document.createElement("div"); el.id="beam"; el.setAttribute("role","dialog"); el.setAttribute("aria-label",url);
+  el.innerHTML='<div class="x">'+T("Tap anywhere to close","Toca para cerrar")+'</div><div class="wk"></div><div class="nm"></div><div class="url"></div><p class="hint">'+T("Type it in the address bar.","Escríbelo en la barra de direcciones.")+'</p>';
+  el.querySelector(".wk").textContent=T("Family and Consumer Sciences","Ciencias de la Familia y del Consumidor");
+  el.querySelector(".nm").textContent=nm||""; el.querySelector(".url").textContent=url;
+  el.addEventListener("click",function(){ el.remove(); });
+  document.addEventListener("keydown",function esc(ev){ if(ev.key==="Escape"){ el.remove(); document.removeEventListener("keydown",esc); } });
+  document.body.appendChild(el); el.setAttribute("tabindex","-1"); el.focus();
+});
+
+paintLang();
+})();
+</script>
+</body>
+</html>

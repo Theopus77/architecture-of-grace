@@ -1,0 +1,1516 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script>/* .30eg: begin in light. Same key as the other activity pages. */
+(function(){var t="light";try{if(localStorage.getItem("aog.interior.ws.v1.theme")==="dark")t="dark";}catch(e){}document.documentElement.setAttribute("data-theme",t);})();</script>
+<title>The Inbox — Architecture of Grace</title>
+<meta name="description" content="Everything pulled from your Sheet in one place — check-ins, team check-ins, exit slips, home check-ins, self-reflections and every FINISHED worksheet, readable and printable.">
+<!-- ═══ AOG ICONS + LINK PREVIEW · managed block · .30k0 ═══
+     Inserted by _work/aog_head.py — DO NOT hand-edit one page; edit the
+     script and re-run it, or the 100 pages drift apart again. The card
+     URL carries ?v= because Slack, Apple and Google cache an og image BY
+     URL for weeks: change the picture, bump IMG_V, or nothing shows up.
+     ═══════════════════════════════════════════════════════════════ -->
+<link rel="canonical" href="https://architectureofgrace.org/turnins">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Architecture of Grace">
+<meta property="og:locale" content="en_US">
+<meta property="og:title" content="The Inbox — Architecture of Grace">
+<meta property="og:description" content="Everything pulled from your Sheet in one place — check-ins, team check-ins, exit slips, home check-ins, self-reflections and every FINISHED worksheet, readable and printable.">
+<meta property="og:url" content="https://architectureofgrace.org/turnins">
+<meta property="og:image" content="https://architectureofgrace.org/og-inbox.png?v=1">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="The Inbox — every check-in, exit slip and finished worksheet in one place.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="The Inbox — Architecture of Grace">
+<meta name="twitter:description" content="Everything pulled from your Sheet in one place — check-ins, team check-ins, exit slips, home check-ins, self-reflections and every FINISHED worksheet, readable and printable.">
+<meta name="twitter:image" content="https://architectureofgrace.org/og-inbox.png?v=1">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#0A1E33">
+<meta name="apple-mobile-web-app-title" content="Grace">
+<meta name="application-name" content="Architecture of Grace">
+<!-- ═══ END AOG ICONS + LINK PREVIEW ═══ -->
+<meta name="robots" content="noindex">
+<!-- ══ THE INBOX · build .30hi ══════════════════════════════════════════
+     Jimmy: "I want a place where ALL MATERIAL that is pulled is in one
+     place. The daily log place does a mediocre job at doing that. It
+     confuses me A LOT."
+
+     ⚠ THIS PAGE READS SIX STORES, NOT ONE. Until .30hi it read only
+     aog.practice.remote, which is why it looked like a worksheet inbox
+     while five other kinds of pulled material sat on five other tabs.
+
+       aog.practice.remote      flat array           turn-ins
+       aog.checkin.remote       flat array           check-ins, split by
+                                                     respondentRole into the
+                                                     student's own and the
+                                                     team's
+       aog.exit.v1              {logs:{CODE:{date:[rec]}}}   exit slips
+       aog.home.checkin.v1      {obs:{CODE:[rec]}}   home check-ins
+       aogScreener.v2.results   flat array           self-reflections
+
+     ⚠ TWO SHAPE TRAPS, both of which render a blank page if ignored:
+     a row in aog.daily.v1 carries NEITHER studentId NOR date — both live
+     in the bucket keys; and bucket-key CASE is uppercase in aog.exit.v1
+     and aog.home.checkin.v1 but as-typed elsewhere, so the compare is
+     normalized and the stored key is never rewritten.
+
+     ⚠ NO TOMBSTONE FILTER, ON PURPOSE. Every remove path on the dashboard
+     PRUNES its store, so a read-only page cannot resurrect a deleted row —
+     and a tombstone key format guessed wrong would hide live rows instead.
+
+     ⚠ THIS PAGE STILL ONLY READS. Deletes stay on the dashboard, where the
+     undo and the tombstones live. -->
+<style>
+:root{
+  --bg:#FBFAF7; --card:#FFFFFF; --ink:#232B36; --sub:#5B6472; --line:#E4E1D8;
+  --navy:#1B3A5F; --brass:#8A6A1F; --brass-soft:#F3ECDB; --good:#2E7D4F; --good-soft:#E4F0E8;
+  --u1:#17646B; --u2:#6B4696; --u3:#A63A2B; --u4:#8A6A1F;
+  --chip:#EFECE4; --shadow:0 1px 3px rgba(35,43,54,.08);
+  --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,"Times New Roman",serif;
+  --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#191D24; --card:#20262F; --ink:#EDEAE2; --sub:#9AA3B0; --line:#333B47;
+    --navy:#8FB4DF; --brass:#D9B45C; --brass-soft:#332C18; --good:#6FBF8B; --good-soft:#1F3327;
+    --u1:#5FB8B0; --u2:#B99AD9; --u3:#E08573; --u4:#D9B45C;
+    --chip:#2A313C; --shadow:0 1px 3px rgba(0,0,0,.35);
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#191D24; --card:#20262F; --ink:#EDEAE2; --sub:#9AA3B0; --line:#333B47;
+  --navy:#8FB4DF; --brass:#D9B45C; --brass-soft:#332C18; --good:#6FBF8B; --good-soft:#1F3327;
+  --u1:#5FB8B0; --u2:#B99AD9; --u3:#E08573; --u4:#D9B45C;
+  --chip:#2A313C; --shadow:0 1px 3px rgba(0,0,0,.35);
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{background:var(--bg);color:var(--ink);font:16px/1.55 var(--sans);margin:0;padding:0 16px 72px}
+button{touch-action:manipulation}
+.wrap{max-width:900px;margin:0 auto}
+header.page{padding:22px 0 6px}
+.eyebrow{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.crumb{color:var(--sub);font-size:.78rem;letter-spacing:.14em;text-transform:uppercase;font-weight:700}
+.tools{display:flex;gap:8px;flex-wrap:wrap}
+.tools button{border:1px solid var(--line);background:var(--card);color:var(--sub);border-radius:999px;padding:5px 12px;font:600 .78rem var(--sans);cursor:pointer}
+.tools button:hover{color:var(--ink)}
+h1{font-family:var(--serif);font-weight:900;font-size:clamp(1.9rem,5vw,2.6rem);margin:10px 0 0;letter-spacing:-.01em}
+.tag{color:var(--sub);margin:6px 0 0;max-width:70ch}
+.pullrow{display:flex;gap:9px;align-items:center;flex-wrap:wrap;margin:16px 0 0}
+.pullrow .btn-pull{border:2px solid var(--navy);background:var(--navy);color:#fff;border-radius:10px;padding:9px 16px;font:800 .9rem var(--sans);cursor:pointer}
+:root[data-theme="dark"] .pullrow .btn-pull{color:#10151c}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .pullrow .btn-pull{color:#10151c}}
+.pullrow .pst{font-size:.84rem;color:var(--sub)}
+.filters{display:flex;gap:8px;flex-wrap:wrap;margin:18px 0 0}
+.fchip{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:999px;padding:7px 14px;font:600 .84rem var(--sans);cursor:pointer}
+.fchip.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.viewrow{display:flex;gap:8px;margin:10px 0 0}
+.note{margin:16px 0 0;background:var(--card);border:1px solid var(--line);border-left:4px solid var(--navy);border-radius:12px;padding:12px 16px;font-size:.88rem;color:var(--sub)}
+.note b{color:var(--ink)}
+.stuh{font-family:var(--serif);font-weight:900;font-size:1.35rem;margin:30px 0 8px;border-bottom:3px solid var(--navy);padding-bottom:6px;display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+.stuh .n{color:var(--sub);font:700 .78rem var(--sans);letter-spacing:.08em}
+.ti{background:var(--card);border:1px solid var(--line);border-left:5px solid var(--sub);border-radius:12px;box-shadow:var(--shadow);margin:0 0 12px;overflow:hidden}
+.ti.s-sel{border-left-color:var(--u2)} .ti.s-math{border-left-color:var(--navy)}
+.ti.s-sci{border-left-color:var(--u1)} .ti.s-soc{border-left-color:var(--u3)}
+.ti.s-eng{border-left-color:var(--u4)}
+.s-spa{border-left-color:#2BA199}
+.s-wri{border-left-color:#C45C26}
+.s-facs{border-left-color:#8A6116}
+.s-rel{border-left-color:#6B4C9A}
+.s-eco{border-left-color:#2E6B4F}
+.s-fdy{border-left-color:#3D4A55}
+.ti summary{list-style:none;cursor:pointer;padding:12px 15px;display:flex;gap:10px;align-items:baseline;flex-wrap:wrap}
+.ti summary::-webkit-details-marker{display:none}
+.ti .subj{font:800 .68rem var(--sans);letter-spacing:.1em;text-transform:uppercase;color:var(--sub);white-space:nowrap}
+.ti .act{font-weight:800;flex:1;min-width:180px}
+.ti .who{font-weight:700;color:var(--navy)}
+.ti .dt{color:var(--sub);font-size:.82rem;white-space:nowrap}
+.ti .sum{width:100%;color:var(--sub);font-size:.84rem}
+.ti .body{border-top:1px dashed var(--line);padding:12px 15px 15px}
+.ti .acts{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0 0}
+.ti .acts button{border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:9px;padding:7px 12px;font:700 .8rem var(--sans);cursor:pointer}
+.ti .acts button:hover{border-color:var(--navy)}
+/* ══ .30hj — Remove ══ */
+.ti .acts button.del{border-color:var(--u3);color:var(--u3)}
+.ti .acts button.del:hover{background:var(--u3);color:var(--card);border-color:var(--u3)}
+.ti .acts button.del.arm{background:var(--u3);color:var(--card);font-weight:800}
+.stuh-del{margin-left:auto;border:1px solid var(--line);background:var(--card);color:var(--sub);
+  border-radius:999px;padding:4px 12px;font:700 .74rem var(--sans);cursor:pointer}
+.stuh-del:hover{border-color:var(--u3);color:var(--u3)}
+.stuh-del.arm{background:var(--u3);color:var(--card);border-color:var(--u3)}
+.undobar{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin:18px 0 4px;
+  background:var(--brass-soft);border:1px solid var(--brass);border-radius:12px;
+  padding:11px 15px;font-size:.88rem}
+.undobar button{border:2px solid var(--navy);background:var(--navy);color:var(--card);
+  border-radius:9px;padding:6px 15px;font:800 .84rem var(--sans);cursor:pointer}
+/* ══ .30hi — the six kinds, and provenance ══ */
+.ti.k-ci{border-left-color:var(--good)} .ti.k-team{border-left-color:var(--navy)}
+.ti.k-exit{border-left-color:var(--u3)} .ti.k-home{border-left-color:var(--u2)}
+.ti.k-refl{border-left-color:var(--u1)} .ti.k-voice{border-left-color:var(--brass)}
+.ti .prov{font:700 .64rem var(--sans);letter-spacing:.09em;text-transform:uppercase;
+  color:var(--good);background:var(--good-soft);border-radius:999px;padding:2px 8px;white-space:nowrap}
+.fchip.zero{opacity:.42}
+.fchip.zero.on{opacity:1}
+#filters[hidden]{display:none}
+.qa{margin:10px 0 0}
+.qa .ql{font-size:.72rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--sub)}
+.qa .av{white-space:pre-wrap;border:1px solid var(--line);border-radius:9px;background:var(--bg);padding:9px 11px;margin-top:3px;font-size:.93rem}
+.qa .av.empty{color:var(--sub);font-style:italic}
+.kv2{display:flex;gap:14px;flex-wrap:wrap;margin:8px 0 0;font-size:.86rem;color:var(--sub)}
+.kv2 b{color:var(--ink)}
+.empty-state{margin:34px 0;padding:26px;border:1.5px dashed var(--line);border-radius:14px;text-align:center;color:var(--sub)}
+footer{margin:48px 0 0;border-top:1px solid var(--line);padding-top:16px;color:var(--sub);font-size:.85rem;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+footer a{color:var(--navy);font-weight:700;text-decoration:none}
+
+/* ══ AOG-R36-NAV ══ */
+.r36top{position:sticky;top:0;z-index:60;display:flex;align-items:center;justify-content:space-between;gap:10px;background:var(--card);border-bottom:1px solid var(--line);margin:0 -16px;padding:9px 16px}
+.r36top .brand{display:flex;align-items:center;gap:9px;text-decoration:none;color:var(--ink);font-weight:800;font-size:.92rem;white-space:nowrap}
+.r36top .mk{display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:7px;background:var(--navy);color:#fff;font-family:var(--serif);font-weight:900}
+:root[data-theme="dark"] .r36top .mk{color:#10151c}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .r36top .mk{color:#10151c}}
+.r36top .brand .nm{display:none}
+@media(min-width:640px){.r36top .brand .nm{display:inline}}
+.r36top .acts{display:flex;align-items:center;gap:7px}
+.r36top .pill{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:999px;padding:6px 13px;font:700 .82rem var(--sans);text-decoration:none;cursor:pointer}
+.r36top .pill:hover{border-color:var(--navy)}
+.r36top .pill .arr{color:var(--navy)}
+.r36wrap{position:relative}
+.r36menu{position:absolute;top:calc(100% + 8px);right:0;min-width:290px;max-width:min(92vw,340px);max-height:min(70vh,560px);overflow:auto;background:var(--card);border:1px solid var(--line);border-radius:14px;box-shadow:0 18px 44px -14px rgba(20,28,40,.45);padding:8px;z-index:70}
+.r36menu[hidden]{display:none}
+.r36menu .lab{font-size:.68rem;font-weight:800;letter-spacing:.13em;text-transform:uppercase;color:var(--sub);padding:10px 10px 4px}
+.r36menu a{display:block;padding:8px 10px;border-radius:9px;text-decoration:none;color:var(--ink)}
+.r36menu a:hover{background:var(--chip)}
+.r36menu a .t{display:block;font-weight:700;font-size:.9rem}
+.r36menu a .s{display:block;font-size:.78rem;color:var(--sub);margin-top:1px}
+.r36top .ico{display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:999px;cursor:pointer}
+.r36top .ico:hover{border-color:var(--navy)}
+.r36menu .arow{display:flex;align-items:center;justify-content:space-between;gap:14px;width:100%;background:none;border:0;border-top:1px solid var(--line);padding:10px 10px;cursor:pointer;text-align:left;font:inherit;color:var(--ink)}
+.r36menu .arow.first{border-top:0}
+.r36menu .arow .t{display:block;font-weight:700;font-size:.9rem}
+.r36menu .arow .s{display:block;font-size:.78rem;color:var(--sub);margin-top:1px}
+.r36menu .sw{flex:none;width:42px;height:24px;border-radius:999px;background:var(--line);position:relative;transition:background .15s}
+.r36menu .sw::after{content:"";position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;background:var(--card);box-shadow:0 1px 3px rgba(0,0,0,.3);transition:transform .15s}
+.r36menu .arow[aria-checked="true"] .sw{background:var(--navy)}
+.r36menu .arow[aria-checked="true"] .sw::after{transform:translateX(18px)}
+/* the site-wide accessibility settings, honored here */
+html.a11y-contrast body{color:#000}
+html.a11y-contrast a{text-decoration:underline;text-underline-offset:2px}
+html.a11y-contrast .r36top,html.a11y-contrast .box,html.a11y-contrast .xcard,html.a11y-contrast .q,html.a11y-contrast .ow{border-width:2px}
+html.a11y-contrast[data-theme="dark"] body{color:#fff}
+html.a11y-dyslexic body,html.a11y-dyslexic button,html.a11y-dyslexic input,html.a11y-dyslexic textarea,html.a11y-dyslexic h1,html.a11y-dyslexic h2,html.a11y-dyslexic h3{font-family:"OpenDyslexic","Comic Sans MS","Trebuchet MS",Verdana,sans-serif !important}
+html.a11y-dyslexic body{letter-spacing:.02em;word-spacing:.09em;line-height:1.8}
+@media print{.r36top{display:none !important}}
+
+@media print{
+  body{background:#fff;color:#111;padding:0;font-size:11.5px}
+  .tools,.pullrow,.filters,#kinds,.viewrow,.note,.ti .acts,.stuh-del,.undobar,footer{display:none !important}
+  .wrap{max-width:none}
+  .ti{break-inside:avoid;box-shadow:none}
+  .ti .body{display:block !important}
+  details.ti:not([open]) .body{display:block !important}
+  body.pone .ti{display:none}
+  body.pone .ti.ponly{display:block}
+  body.pone .stuh,body.pone header.page h1,body.pone .tag{display:none}
+}
+</style>
+<script src="aog-sync-config.js"></script>
+<!-- ══ DASHBOARD-CODE GATE (2026-09-09) ═══════════════════════════════════
+     This page shows the same student records the dashboard does, and it used
+     to open to anyone who typed its address on this computer. It now asks for
+     the SAME code the dashboard asks for — same record (aog.dash.lock.v1),
+     same salted SHA-256, same 30-minute session unlock, so unlocking either
+     one unlocks the other for that session.
+     ⚠ TWO COPIES: turn-ins.html and student-evidence.html each carry this
+     block. Change one, change the other.
+     ⚠ HONEST LIMIT: this is the same deterrent the dashboard has, not real
+     security — the records live unencrypted in this browser either way, and
+     anyone who can open devtools can read them. It stops a person who picks
+     up the laptop, not a determined one.
+     ══════════════════════════════════════════════════════════════════════ -->
+<script id="aog-dash-gate">
+(function () {
+  var LOCK = "aog.dash.lock.v1", OPEN = "aog.dash.unlock", IDLE_MS = 30 * 60 * 1000;
+  function lget(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
+  function rec() { try { return JSON.parse(lget(LOCK) || "") || null; } catch (e) { return null; } }
+  var R = rec();
+  if (!R || !R.hash) return;                    /* no code set on this device — day one is not blocked */
+  function unlocked() {
+    try { var t = parseInt(sessionStorage.getItem(OPEN) || "0", 10);
+          return !!t && (Date.now() - t) < IDLE_MS; } catch (e) { return false; }
+  }
+  if (unlocked()) return;
+
+  /* Hide before first paint, so the records never flash on screen. */
+  var hide = document.createElement("style");
+  hide.id = "aogGateHide";
+  hide.textContent = "body > *{display:none !important;} body{background:#0A1E33 !important;}" +
+    "#aogGateBox{display:block !important;position:fixed;inset:0;z-index:99999;background:#0A1E33;" +
+    "font-family:Inter,-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;" +
+    "display:grid;place-items:center;padding:24px;}" +
+    "#aogGateBox .c{max-width:340px;width:100%;text-align:center;color:#E9EEF4;}" +
+    "#aogGateBox h1{font-family:Fraunces,Georgia,serif;font-size:20px;font-weight:600;margin:0 0 6px;}" +
+    "#aogGateBox p{font-size:13.5px;line-height:1.6;color:#AFC0D2;margin:0 0 18px;}" +
+    "#aogGateBox input{width:100%;box-sizing:border-box;font:inherit;font-size:19px;letter-spacing:.3em;" +
+    "text-align:center;padding:13px;border-radius:10px;border:1px solid rgba(233,238,244,.3);" +
+    "background:#12253A;color:#fff;}" +
+    "#aogGateBox button{margin-top:12px;width:100%;font:inherit;font-weight:700;font-size:15px;" +
+    "padding:12px;border:0;border-radius:10px;background:#D9A33B;color:#0A1E33;cursor:pointer;}" +
+    "#aogGateBox .e{min-height:18px;margin-top:10px;font-size:12.5px;color:#F0A6A6;}" +
+    "#aogGateBox .f{margin:16px 0 0;font-size:12px;line-height:1.6;color:#8FA3B8;}" +
+    "#aogGateBox .f a{color:#F2C964;}";
+  (document.head || document.documentElement).appendChild(hide);
+
+  /* ⚠⚠ THE RECORD SAYS WHICH ALGORITHM MADE IT, AND THAT IS THE ONE TO USE.
+     A code set while the page was in an insecure context is stored with the
+     weak fallback; hashing the SAME code with SHA-256 here would never match,
+     and the person would be told "that code did not match" while typing the
+     right code. So both are computed and either may match its own record. */
+  function weakHash(msg) {
+    var h = 5381;
+    for (var i = 0; i < msg.length; i++) { h = ((h << 5) + h + msg.charCodeAt(i)) | 0; }
+    return String(h >>> 0);
+  }
+  async function matches(salt, code, want) {
+    var msg = salt + "" + code;
+    if (weakHash(msg) === want) return true;
+    try {
+      if (window.crypto && window.crypto.subtle) {
+        var buf = await window.crypto.subtle.digest("SHA-256", new TextEncoder().encode(msg));
+        var hex = Array.from(new Uint8Array(buf)).map(function (b) {
+          return b.toString(16).padStart(2, "0"); }).join("");
+        if (hex === want) return true;
+      }
+    } catch (e) {}
+    return false;
+  }
+
+  function mount() {
+    if (document.getElementById("aogGateBox")) return;
+    var box = document.createElement("div");
+    box.id = "aogGateBox";
+    box.innerHTML = '<div class="c"><h1>Architecture of Grace</h1>' +
+      '<p>This page shows student records. Enter your dashboard code to continue.</p>' +
+      '<input id="aogGateIn" type="password" inputmode="numeric" autocomplete="off" ' +
+      'aria-label="Dashboard code" maxlength="12">' +
+      '<button type="button" id="aogGateGo">Unlock</button>' +
+      '<div class="e" id="aogGateErr" role="alert"></div>' +
+      /* ⚠ A GATE WITH NO RECOVERY DOOR IS A TRAP. The dashboard's own lock
+         screen offers "Forgotten it? Clear this device and start again"; this
+         page had nothing, so a forgotten code on a second device was a wall
+         with no next step. The destructive path stays in ONE place — this
+         only points at it. */
+      '<p class="f">Forgotten it? There is no way to read the code back. ' +
+      'Open the <a href="/#dashboard">dashboard</a> and use ' +
+      '<b>&ldquo;Clear this device and start again&rdquo;</b> \u2014 that clears what is ' +
+      'stored on THIS device only; your Google Sheet is untouched, and ' +
+      '<b>Refresh</b> brings the rows back.</p></div>';
+    document.body.appendChild(box);
+    var input = box.querySelector("#aogGateIn");
+    var err = box.querySelector("#aogGateErr");
+    async function go() {
+      if (await matches(R.salt, (input.value || "").trim(), R.hash)) {
+        try { sessionStorage.setItem(OPEN, String(Date.now())); } catch (e) {}
+        var s = document.getElementById("aogGateHide"); if (s) s.remove();
+        box.remove();
+        try { window.dispatchEvent(new Event("resize")); } catch (e) {}
+        return;
+      }
+      err.textContent = "That code did not match.";
+      input.value = ""; input.focus();
+    }
+    box.querySelector("#aogGateGo").addEventListener("click", go);
+    input.addEventListener("keydown", function (e) { if (e.key === "Enter") go(); });
+    setTimeout(function () { try { input.focus(); } catch (e) {} }, 60);
+  }
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", mount);
+  else mount();
+})();
+</script>
+
+</head>
+<body>
+<script src="/aog-topbar.js"></script>
+
+
+<!-- ══ AOG-R36-NAV — emitted from _work/r36/r36_nav.py; regenerate, never hand-edit one copy ══ -->
+<header class="r36top">
+  <a class="brand" href="/" aria-label="Architecture of Grace — home"><span class="mk" aria-hidden="true">A</span><span class="nm">Architecture of Grace</span></a>
+  <div class="acts">
+    <a class="pill" href="/" id="r36Back"><span class="arr" aria-hidden="true">&larr;</span> Back</a>
+    <a class="pill" href="/#quiet-space" title="Quiet Space — an in-the-moment reset">Quiet Space</a>
+    <div class="r36wrap">
+      <button class="pill" type="button" id="r36MenuBtn" aria-haspopup="true" aria-expanded="false" aria-controls="r36Menu">Explore</button>
+      <div class="r36menu" id="r36Menu" role="menu" aria-label="Explore Architecture of Grace" hidden>
+        <div class="lab">Room 36 · SEL 6&ndash;8</div>
+        <a role="menuitem" href="/room36"><span class="t">The Curriculum</span><span class="s">Crosswalk, marker guide, Grace in Practice.</span></a>
+        <a role="menuitem" href="/lessons36"><span class="t">The Lessons</span><span class="s">All 28 lessons, by unit — ready to teach.</span></a>
+        <a role="menuitem" href="/wb36"><span class="t">The Companion Workbook</span><span class="s">Choose-the-answer and in-your-own-words.</span></a>
+        <a role="menuitem" href="/charts36"><span class="t">Anchor Charts</span><span class="s">All four units&rsquo; boards, built live.</span></a>
+        <div class="lab">Understand</div>
+        <a role="menuitem" href="/#framework"><span class="t">Framework</span><span class="s">The four pillars, and where they came from.</span></a>
+        <a role="menuitem" href="/#curriculum"><span class="t">The Curriculum, K&ndash;12</span><span class="s">Five books and the Adult edition.</span></a>
+        <a role="menuitem" href="/#library"><span class="t">Library</span><span class="s">Every open preview, sample lesson and pack.</span></a>
+        <div class="lab">In the classroom</div>
+        <a role="menuitem" href="/#results"><span class="t">Dashboard</span><span class="s">Hand it out, read the group, find the lesson.</span></a>
+        <a role="menuitem" href="/#talk"><span class="t">Talk It Out</span><span class="s">Discussion prompts for the whole room.</span></a>
+        <a role="menuitem" href="/#tools"><span class="t">Calm &amp; Regulation Tools</span><span class="s">Quiet Space and the calming corner.</span></a>
+        <a role="menuitem" href="/turnins"><span class="t">Turn-ins</span><span class="s">Every FINISHED worksheet and result, one inbox.</span></a>
+        <div class="lab">Subjects · The Interior</div>
+        <a role="menuitem" href="/math"><span class="t">Math &middot; The Interior</span><span class="s">Fourteen practice pages, plus fall test prep.</span></a>
+        <a role="menuitem" href="/concepts"><span class="t">Math &middot; Concepts &amp; Data</span><span class="s">Fractions and data from the ground up.</span></a>
+        <a role="menuitem" href="/science"><span class="t">Science</span><span class="s">The word list, the microscope, the test prep.</span></a>
+        <a role="menuitem" href="/social"><span class="t">Social Studies</span><span class="s">1787 to 1865, and the three branches.</span></a>
+        <a role="menuitem" href="/b11"><span class="t">English &middot; Grammar</span><span class="s">Sixteen modules — cards, hints, and practice quizzes.</span></a>
+        <a role="menuitem" href="/words"><span class="t">English &middot; Word Study</span><span class="s">Stems, analogies, poetics, the coinage forge.</span></a>
+        <div class="lab">At home</div>
+        <a role="menuitem" href="/#family"><span class="t">Family</span><span class="s">Check in, talk, repair: one shared language.</span></a>
+      </div>
+    </div>
+    <div class="r36wrap">
+      <button class="ico" type="button" id="r36A11yBtn" aria-haspopup="true" aria-expanded="false" aria-controls="r36A11y" aria-label="Accessibility options" title="Accessibility options">
+        <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="4" r="1.6"/><path d="M5 8h14M9 8l1 11M15 8l-1 11M12 8v5"/></svg>
+      </button>
+      <div class="r36menu" id="r36A11y" role="menu" aria-label="Accessibility options" hidden>
+        <div class="lab">Accessibility</div>
+        <button type="button" class="arow first" role="menuitemcheckbox" aria-checked="false" id="r36HcRow">
+          <span><span class="t">High contrast</span><span class="s">Stronger text &amp; edges</span></span><span class="sw" aria-hidden="true"></span>
+        </button>
+        <button type="button" class="arow" role="menuitemcheckbox" aria-checked="false" id="r36DysRow">
+          <span><span class="t">Dyslexia-friendly font</span><span class="s">Easier letter shapes &amp; spacing</span></span><span class="sw" aria-hidden="true"></span>
+        </button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+<header class="page">
+  <div class="eyebrow">
+    <span class="crumb">For the teacher &middot; every subject</span>
+    <div class="tools">
+      <button id="themeBtn" type="button" aria-label="Toggle dark mode">Theme</button>
+      <button type="button" onclick="window.print()">Print all shown</button>
+    </div>
+  </div>
+  <h1>The Inbox</h1>
+  <p class="tag">Everything pulled from your Sheet, in one place &mdash; check-ins, what the team saw,
+  exit slips, home check-ins, self-reflections, My Voice pages, and every FINISHED worksheet, workbook and practice
+  page. Grouped by student, readable the way they built it, printable, ready to lift into IEP evidence.</p>
+  <div class="pullrow no-print">
+    <button class="btn-pull" type="button" id="pullBtn">Refresh everything from your Sheet</button>
+    <span class="pst" id="pullSt"></span>
+  </div>
+  <div class="filters" id="kinds" role="group" aria-label="Filter by kind"></div>
+  <div class="filters" id="filters" role="group" aria-label="Filter by subject"></div>
+  <div class="viewrow no-print">
+    <button class="fchip on" id="viewStu" type="button">By student</button>
+    <button class="fchip" id="viewNew" type="button">Newest first</button>
+    <button class="fchip" id="viewSheet" type="button" aria-pressed="false">From the Sheet only</button>
+  </div>
+  <p class="note"><b>Where this comes from.</b> Seven stores on this computer, filled by the Refresh
+  button above and by the dashboard&rsquo;s own pulls &mdash; this page and the dashboard read the same
+  copy, so they can never disagree. <b>Remove</b> takes a row off this
+  computer <i>and</i> tombstones it, so a later Refresh cannot bring it back &mdash; that is what
+  makes a tester stay gone. It never touches the Google Sheet itself.</p>
+<div id="inbox"></div>
+<footer>
+  <a href="/#results">&larr; The dashboard</a>
+  <span>The framework is portable. They are taking it with them.</span>
+</footer>
+</div>
+
+<script>
+/* AOG-R36-NAV behavior — back pill + the Explore menu. */
+(function(){
+  var back = document.getElementById("r36Back");
+  back.addEventListener("click", function(e){
+    var sameOrigin = false;
+    try{ sameOrigin = document.referrer.indexOf(location.origin) === 0; }catch(err){}
+    if(history.length > 1 && sameOrigin){ e.preventDefault(); history.back(); }
+  });
+  var btn = document.getElementById("r36MenuBtn"), menu = document.getElementById("r36Menu");
+  function open(on){ menu.hidden = !on; btn.setAttribute("aria-expanded", String(on)); }
+  btn.addEventListener("click", function(e){ e.stopPropagation(); open(menu.hidden); });
+  document.addEventListener("click", function(e){ if(!menu.hidden && !menu.contains(e.target) && e.target !== btn) open(false); });
+  document.addEventListener("keydown", function(e){ if(e.key === "Escape") open(false); });
+
+  /* accessibility — the SAME keys and classes the rest of the site uses, so
+     a setting made on a hub follows the student here and back */
+  var H = document.documentElement;
+  function lsGet(k){ try{ return localStorage.getItem(k); }catch(e){ return null; } }
+  function lsSet(k,v){ try{ localStorage.setItem(k,v); }catch(e){} }
+  var A11Y = [
+    {key:"aog.a11y.contrast", cls:"a11y-contrast", row:"r36HcRow"},
+    {key:"aog.a11y.dyslexic", cls:"a11y-dyslexic", row:"r36DysRow"}
+  ];
+  var abtn = document.getElementById("r36A11yBtn"), amenu = document.getElementById("r36A11y");
+  function aopen(on){ amenu.hidden = !on; abtn.setAttribute("aria-expanded", String(on)); }
+  abtn.addEventListener("click", function(e){ e.stopPropagation(); aopen(amenu.hidden); });
+  document.addEventListener("click", function(e){ if(!amenu.hidden && !amenu.contains(e.target) && e.target !== abtn) aopen(false); });
+  A11Y.forEach(function(a){
+    var row = document.getElementById(a.row);
+    function paint(on){ H.classList.toggle(a.cls, on); row.setAttribute("aria-checked", String(on)); }
+    paint(lsGet(a.key) === "1");
+    row.addEventListener("click", function(){
+      var on = !H.classList.contains(a.cls);
+      lsSet(a.key, on ? "1" : "0"); paint(on);
+    });
+  });
+})();
+</script>
+
+<style>
+/* ══ AOG-PRINTBRAND-V1 — the mark on every printed sheet ══ */
+.aog-printbrand,.aog-printwm{display:none}
+@media print{
+  .aog-printbrand{display:block;position:fixed;bottom:2px;left:0;right:0;text-align:center;
+    font:700 9px/1.4 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    color:#1B3A5F;letter-spacing:.08em;z-index:99}
+  .aog-printbrand .mk{display:inline-block;width:12px;height:12px;line-height:12px;border-radius:3px;
+    background:#1B3A5F;color:#fff;font-family:Georgia,serif;font-weight:900;font-size:9px;
+    text-align:center;margin-right:4px;vertical-align:-2px;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .aog-printwm{display:block;position:fixed;top:0;left:0;right:0;bottom:0;pointer-events:none;
+    overflow:hidden;z-index:98}
+  .aog-printwm span{position:absolute;left:-25%;right:-25%;text-align:center;white-space:nowrap;
+    font:900 44px/1 Georgia,serif;letter-spacing:.2em;color:rgba(27,58,95,.06);
+    transform:rotate(-28deg);-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .aog-printwm span:nth-child(1){top:22%}
+  .aog-printwm span:nth-child(2){top:52%}
+  .aog-printwm span:nth-child(3){top:82%}
+}
+
+/* ══ AOG-PRINT-SAFE-V1 (2026-09-20) ═══════════════════════════════════════════
+   Jimmy, printing a novel study from his phone: "another pdf that gets parts of
+   the material cut off." These are the rules that keep paper honest on every
+   engine — a table row, a list item, a figure and a picture stay whole; a head
+   keeps the lines under it; no paragraph strands one line at a page edge; and a
+   long table repeats its head at the top of each page. Printed pages only. */
+@media print{
+  table{break-inside:auto; page-break-inside:auto}
+  thead{display:table-header-group}
+  tfoot{display:table-footer-group}
+  tr{break-inside:avoid; page-break-inside:avoid}
+  li,figure,img,svg{break-inside:avoid; page-break-inside:avoid}
+  h1,h2,h3,h4,h5{break-after:avoid; page-break-after:avoid}
+  p{orphans:3; widows:3}
+}
+</style>
+<div class="aog-printwm" aria-hidden="true"><span>ARCHITECTURE OF GRACE</span><span>ARCHITECTURE OF GRACE</span><span>ARCHITECTURE OF GRACE</span></div>
+<div class="aog-printbrand" aria-hidden="true"><span class="mk">A</span>ARCHITECTURE OF GRACE &middot; architectureofgrace.org</div>
+
+<script>
+(function(){
+  var KEY="aog.interior.ws.v1.theme";
+  document.getElementById("themeBtn").addEventListener("click",function(){
+    var cur=document.documentElement.getAttribute("data-theme")==="dark"?"light":"dark";
+    document.documentElement.setAttribute("data-theme",cur);
+    try{localStorage.setItem(KEY,cur);}catch(e){}
+  });
+
+  /* ══════════════════════════════════════════════════════════════════════
+     THE INBOX ENGINE · .30hi
+     Six stores in, one normalized item out. Every reader returns items of
+     the SAME shape so the card, the print and the IEP copy never branch on
+     which store a row came from:
+
+       { kind, kindLab, cls, subj, student, ts, title, sum, sheet, rows }
+
+     `sheet` is provenance and it is a MEASURED field, never a guess: a row
+     is marked "from the Sheet" only where the store actually records it
+     (aog.practice.remote and aog.checkin.remote are pull mirrors and are
+     true by construction; an exit slip carries rec.pulled). Where a store
+     keeps no per-row provenance — home check-ins — the chip is left OFF
+     rather than inferred, because a chip that lies is worse than no chip.
+     ══════════════════════════════════════════════════════════════════════ */
+  function lsGet(k){ try{ return localStorage.getItem(k); }catch(e){ return null; } }
+  function lsSet(k,v){ try{ localStorage.setItem(k,v); }catch(e){} }
+  function J(k,d){ try{ var v=JSON.parse(lsGet(k)||"null"); return (v==null)?d:v; }catch(e){ return d; } }
+  function arrOf(k){ var a=J(k,[]); return Array.isArray(a)?a:[]; }
+  function esc(t){ var d=document.createElement("div"); d.textContent=String(t==null?"":t); return d.innerHTML; }
+  function human(k){ return String(k).replace(/[-_]+/g," ").replace(/^./,function(c){return c.toUpperCase();}); }
+  function nz(v){ return v!=null && String(v).trim()!==""; }
+  function xparse(r){ try{ return (typeof r.extra==="string") ? (JSON.parse(r.extra||"{}")||{}) : (r.extra||{}); }catch(e){ return {}; } }
+  function when(t){
+    var d=new Date(t);
+    if(isNaN(d)) return String(t||"");
+    return d.toLocaleDateString()+" · "+d.toLocaleTimeString([], {hour:"numeric",minute:"2-digit"});
+  }
+  /* A field the student actually answered, rendered as a labeled block. */
+  function qa(lab,val,cls){
+    if(!nz(val)) return "";
+    return '<div class="qa"><div class="ql">'+esc(lab)+'</div><div class="av'+(cls?" "+cls:"")+'">'+esc(val)+"</div></div>";
+  }
+  function bits(list){ return list.filter(nz).join(" · "); }
+
+  /* ── the subject classifier, unchanged: it belongs to turn-ins only ── */
+  function subjectOf(r){
+    var s=""; try{ s=String((xparse(r)||{}).series||""); }catch(e){}
+    var id=String(r.activityId||"");
+    if(/^sel-/.test(s) || /^w[1-6]$/.test(id) || id==="wb36") return ["SEL · Room 36","s-sel"];
+    if(s==="word-study" || id==="b11" || /^wf/.test(id)) return ["English","s-eng"];
+    if(s==="science" || /^v\d/.test(id) || id==="sci-scope" || /^b[1-8]$/.test(id)) return ["Science","s-sci"];
+    if(/^h\d+/.test(id) || id==="b9") return ["Social Studies","s-soc"];
+    if(/^[mc]\d+/.test(id) || id==="b10" || id==="b12" || id==="b13") return ["Math","s-math"];
+    /* ⚠ THE SUBJECT LIST HAS TO MATCH daily-drops.html's SUBJ keys.
+       A new subject there is a line here and a chip in SUBJECTS, or it
+       silently goes back to Other. */
+    var dd=/^dd-(math|ela|write|science|social-studies|spanish|facs|religion|economics|foundry)-/.exec(id);
+    if(dd) return ({ math:["Math","s-math"], ela:["Language Arts","s-eng"],
+                     write:["Writing","s-wri"], science:["Science","s-sci"],
+                     "social-studies":["Social Studies","s-soc"],
+                     spanish:["Spanish","s-spa"], facs:["FACS","s-facs"],
+                     religion:["Religions","s-rel"], economics:["Economics","s-eco"],
+                     foundry:["Foundry","s-fdy"] })[dd[1]];
+    if(s==="daily-drops") return ["Daily Drafts","s-oth"];
+    return ["Other","s-oth"];
+  }
+
+  /* ═══════════ READER 1 · TURN-INS — aog.practice.remote ═══════════ */
+  function readTurnins(){
+    return arrOf("aog.practice.remote").map(function(r){
+      var sj=subjectOf(r), x=xparse(r);
+      var sm=[];
+      if(nz(r.itemsTotal)) sm.push((nz(r.independent)?r.independent:"?")+" of "+r.itemsTotal+" with no hint");
+      if(nz(r.setNo)) sm.push("set "+r.setNo);
+      if(nz(r.hintsUsed)) sm.push(r.hintsUsed+" hints");
+      if(nz(r.confidence)) sm.push("confidence "+r.confidence+"/5");
+      if(x.finished) sm.push("FINISHED");
+      return { kind:"turnin", kindLab:"Turn-in", cls:sj[1], subj:sj[0],
+               student:r.studentId, ts:r.timestamp||r.date||"",
+               title:r.activityName||r.activityId||"Practice",
+               sum:sm.join(" · "), sheet:true, raw:r,
+               detail:turninDetail, evidence:turninEvidence };
+    });
+  }
+  function turninDetail(it){
+    var r=it.raw, x=xparse(r), out="", resp=x.responses;
+    if(resp && resp.prompts){                        /* the workbook */
+      var u=resp.units||{}, parts=[];
+      Object.keys(u).forEach(function(k){ parts.push("<b>"+esc(k.toUpperCase())+"</b> "+esc(u[k].checked||0)+" checked · "+esc(u[k].firstTry||0)+" right first try"); });
+      if(parts.length) out+='<div class="kv2">'+parts.join(" &nbsp; ")+"</div>";
+      (resp.prompts||[]).forEach(function(p){
+        out+='<div class="qa"><div class="ql">'+esc((p.unit||"").toUpperCase()+" · prompt "+(p.n||""))+" — "+esc(p.prompt||"")+'</div><div class="av">'+esc(p.answer||"")+"</div></div>";
+      });
+    } else if(resp && typeof resp==="object"){        /* a worksheet */
+      Object.keys(resp).forEach(function(sheet){
+        var f=resp[sheet];
+        if(!f || typeof f!=="object") return;
+        Object.keys(f).forEach(function(k){
+          var v=f[k];
+          if(typeof v==="string") out+=qa(human(k),v);
+          else if(v!=null) out+=qa(human(k), JSON.stringify(v,null,1));
+        });
+      });
+    }
+    if(!out && x.tally) out+=qa("Result detail", JSON.stringify(x.tally,null,1));
+    if(!out) out='<div class="qa"><div class="av empty">Counts only — this activity sends a score line, not written answers.</div></div>';
+    out+=qa("Note", r.note);
+    return out;
+  }
+  function turninEvidence(it){
+    var r=it.raw, x=xparse(r), L=[];
+    L.push((r.date||"")+" — "+(r.studentId||"")+" — "+(r.activityName||r.activityId||"practice"));
+    if(it.sum) L.push(it.sum);
+    var resp=x.responses;
+    if(resp && resp.prompts) (resp.prompts||[]).forEach(function(p){ if(p.answer) L.push((p.prompt||"")+" → "+p.answer); });
+    else if(resp && typeof resp==="object")
+      Object.keys(resp).forEach(function(sh){ var f=resp[sh]; if(f&&typeof f==="object") Object.keys(f).forEach(function(k){ if(typeof f[k]==="string"&&f[k].trim()) L.push(human(k)+" → "+f[k]); }); });
+    return L;
+  }
+
+  /* ═══════════ READER 2+3 · CHECK-INS — aog.checkin.remote ═══════════
+     One store, two kinds. respondentRole decides which: a student's own
+     morning and an adult's observation of that morning are not the same
+     record and must never be read as one. This is the same split the
+     dashboard makes when it routes a pull — student rows are kept out of
+     aog.daily.v1 precisely so periodStats() cannot score them 0%. */
+  function readCheckins(){
+    return arrOf("aog.checkin.remote").filter(function(r){
+      return r && String(r.checkinType||"")!=="practice" && !isVoiceRow(r);
+    }).map(function(r){
+      var role=String(r.respondentRole||"").toLowerCase();
+      var isStu = role==="student";
+      var x=xparse(r), sm=[];
+      if(isStu){
+        if(nz(r.arrival)) sm.push("arrived "+r.arrival);
+        if(nz(r.readiness)) sm.push("ready "+r.readiness);
+      }else{
+        var got=0,tot=3;
+        if(r.regulated) got++; if(r.usedStrategy) got++; if(r.connected) got++;
+        if(Object.prototype.hasOwnProperty.call(x,"engaged")){ tot=4; if(x.engaged) got++; }
+        sm.push(got+" of "+tot);
+        if(nz(r.respondentId)) sm.push(r.respondentId);
+      }
+      if(nz(r.period)) sm.push(r.period);
+      if(r.followUp) sm.push("FOLLOW-UP");
+      return { kind: isStu?"checkin":"team",
+               kindLab: isStu?"Student check-in":"Team check-in",
+               cls: isStu?"k-ci":"k-team", subj:"",
+               student:r.studentId, ts:r.timestamp||r.date||"",
+               title: isStu?"Morning check-in":("Observed by "+(r.respondentId||"a colleague")),
+               sum:bits(sm), sheet:true, raw:r, stu:isStu,
+               detail:ciDetail, evidence:ciEvidence };
+    });
+  }
+  function ciDetail(it){
+    var r=it.raw, x=xparse(r), out="";
+    if(it.stu){
+      out+=qa("How the day arrived", r.arrival);
+      out+=qa("Words for it", r.feelingWords);
+      out+=qa("What they need", r.need);
+      out+=qa("Who they feel connected to", r.connection);
+      out+=qa("What is hard", r.challenge);
+      out+=qa("What that is costing", r.challengeImpact);
+      out+=qa("Ready to learn", r.readiness);
+      out+=qa("Where", r.contextTag);
+      out+=qa("Wants to tell an adult", r.tellAdult);
+      out+=qa("What they will do", r.agency);
+    }else{
+      var yn=function(v){ return v?"Yes":"No"; };
+      out+='<div class="kv2">'
+         + "<span><b>Regulated</b> "+yn(r.regulated)+"</span>"
+         + "<span><b>Used a strategy</b> "+yn(r.usedStrategy)+"</span>"
+         + "<span><b>Connected</b> "+yn(r.connected)+"</span>"
+         + (Object.prototype.hasOwnProperty.call(x,"engaged")?"<span><b>Engaged</b> "+yn(x.engaged)+"</span>":"")
+         + "</div>";
+      if(x.obs && x.obs.length) out+=qa("What they saw", x.obs.join(" · "));
+      if(x.flags && x.flags.length) out+=qa("Flagged", x.flags.join(" · "));
+      out+=qa("Role", r.respondentRole);
+    }
+    out+=qa("Note", r.note);
+    if(!out) out='<div class="qa"><div class="av empty">This check-in carries no written answer.</div></div>';
+    return out;
+  }
+  function ciEvidence(it){
+    var r=it.raw, L=[];
+    L.push((r.date||"")+" — "+(r.studentId||"")+" — "+it.kindLab+(nz(r.period)?(" · "+r.period):""));
+    if(it.sum) L.push(it.sum);
+    ["arrival","feelingWords","need","connection","challenge","challengeImpact","readiness","tellAdult","agency","note"]
+      .forEach(function(k){ if(nz(r[k])) L.push(human(k)+" → "+r[k]); });
+    return L;
+  }
+
+  /* ═══════════ READER 4 · EXIT SLIPS — aog.exit.v1 ═══════════
+     { logs: { CODE: { "YYYY-MM-DD": [ rec ] } } } — a plain array per day,
+     NO periods wrapper. rec.pulled is the only honest provenance flag in
+     the product, set by mergeRemoteSlips and nowhere else. */
+  function readExit(){
+    var st=J("aog.exit.v1",{}) || {}, logs=(st && st.logs) || {}, out=[];
+    Object.keys(logs).forEach(function(code){
+      var days=logs[code]||{};
+      Object.keys(days).forEach(function(d){
+        var list=days[d]; if(!Array.isArray(list)) return;
+        list.forEach(function(r){
+          if(!r) return;
+          out.push({ kind:"exit", kindLab:"Exit slip", cls:"k-exit", subj:"",
+            student:r.studentId||code, ts:r.timestamp||d||"",
+            title:"End of the day"+(nz(r.dayWord)?(" — “"+r.dayWord+"”"):""),
+            sum:bits([nz(r.period)?r.period:"", r.submitTime, r.followUp?"FOLLOW-UP":""]),
+            sheet:r.pulled===true, raw:r, day:d, bucket:code, detail:exDetail, evidence:exEvidence });
+        });
+      });
+    });
+    return out;
+  }
+  function exDetail(it){
+    var r=it.raw, out="";
+    out+=qa("A word for the day", r.dayWord);
+    out+=qa("Best class", bits([r.favClass, r.favWhy]));
+    out+=qa("Hardest class", bits([r.hardClass, r.hardWhy]));
+    out+=qa("A good moment", r.goodMoment);
+    out+=qa("A rough moment", r.roughMoment);
+    out+=qa("What they did about it", r.response);
+    out+=qa("In their own words", r.written);
+    out+=qa("Closing", r.closing);
+    if(!out) out='<div class="qa"><div class="av empty">This slip was submitted with nothing written on it.</div></div>';
+    return out;
+  }
+  function exEvidence(it){
+    var r=it.raw, L=[];
+    L.push((r.date||it.day||"")+" — "+(r.studentId||it.student||"")+" — exit slip");
+    if(it.sum) L.push(it.sum);
+    ["dayWord","favClass","favWhy","hardClass","hardWhy","goodMoment","roughMoment","response","written","closing"]
+      .forEach(function(k){ if(nz(r[k])) L.push(human(k)+" → "+r[k]); });
+    return L;
+  }
+
+  /* ═══════════ READER 5 · HOME CHECK-INS — aog.home.checkin.v1 ═══════════
+     { obs: { CODE: [ rec ] } } — flat per code, NO date level.
+     ⚠ NO per-row provenance exists in this store. The pull records only
+     store-level {pulled:{at,n}}, so `sheet` stays false rather than being
+     inferred from respondentRole. */
+  function readHomeCi(){
+    var st=J("aog.home.checkin.v1",{}) || {}, obs=(st && st.obs) || {}, out=[];
+    Object.keys(obs).forEach(function(code){
+      var list=obs[code]; if(!Array.isArray(list)) return;
+      list.forEach(function(r){
+        if(!r) return;
+        var who=String(r.respondentRole||"")==="family" ? "Family" : "Student";
+        out.push({ kind:"homeci", kindLab:"Home check-in", cls:"k-home", subj:"",
+          student:r.studentId||code, ts:r.timestamp||r.date||"",
+          title:"The rest of the day — "+who,
+          sum:bits([r.submitTime, r.followUp?"FOLLOW-UP":""]),
+          sheet:false, raw:r, bucket:code, detail:hcDetail, evidence:hcEvidence });
+      });
+    });
+    return out;
+  }
+  function hcDetail(it){
+    var r=it.raw, out="";
+    out+='<div class="kv2">'
+       + (nz(r.morning)?"<span><b>Morning</b> "+esc(r.morning)+"</span>":"")
+       + (nz(r.afternoon)?"<span><b>Afternoon</b> "+esc(r.afternoon)+"</span>":"")
+       + (nz(r.evening)?"<span><b>Evening</b> "+esc(r.evening)+"</span>":"")
+       + "</div>";
+    out+=qa("What helped", nz(r.helped)?String(r.helped).split(" | ").join(" · "):"");
+    out+=qa("Note", r.note);
+    out+=qa("Answered by", r.respondentRole);
+    return out;
+  }
+  function hcEvidence(it){
+    var r=it.raw, L=[];
+    L.push((r.date||"")+" — "+(r.studentId||it.student||"")+" — home check-in ("+(r.respondentRole||"")+")");
+    ["morning","afternoon","evening","helped","note"].forEach(function(k){ if(nz(r[k])) L.push(human(k)+" → "+r[k]); });
+    return L;
+  }
+
+  /* ═══════════ READER 6 · SELF-REFLECTIONS — aogScreener.v2.results ═══════════
+     ⚠ THE ONE STORE WHOSE PULLED ROWS THIS PAGE CANNOT SEE. The reflection
+     pull fills REMOTE_RECORDS, an IN-MEMORY array on the dashboard that is
+     never written to localStorage — so a standalone page reads the local
+     rows only. Said out loud in the empty state rather than quietly. */
+  function readReflect(){
+    return arrOf("aogScreener.v2.results").map(function(r){
+      var adult = !!(r && (r.population==="adult" || String(r.grade)==="Adult"));
+      var sm=[];
+      if(nz(r.tier)) sm.push("tier "+r.tier);
+      if(nz(r.window)) sm.push(r.window);
+      if(nz(r.grade)) sm.push("grade "+r.grade);
+      if(r.context==="home") sm.push("at home");
+      if(r.unsafeFlag || r.trustedAdultFlag) sm.push("⚑ FOLLOW-UP FLAGGED");
+      return { kind:"reflect", kindLab: adult?"Adult reflection":"Self-reflection",
+        cls:"k-refl", subj:"", student:r.studentId, ts:r.timestamp||"",
+        title:"The eighteen questions", sum:bits(sm), sheet:r.synced===true, raw:r,
+        detail:rfDetail, evidence:rfEvidence };
+    });
+  }
+  function rfDetail(it){
+    var r=it.raw, out="";
+    var d=[];
+    if(nz(r.domainA)) d.push("<span><b>A · Regulation</b> "+esc(r.domainA)+"</span>");
+    if(nz(r.domainB)) d.push("<span><b>B · Self-Compassion</b> "+esc(r.domainB)+"</span>");
+    if(nz(r.domainC)) d.push("<span><b>C · Social &amp; Repair</b> "+esc(r.domainC)+"</span>");
+    if(d.length) out+='<div class="kv2">'+d.join("")+"</div>";
+    (Array.isArray(r.reflections)?r.reflections:[]).forEach(function(t,i){
+      out+=qa("In their own words "+(i+1), t);
+    });
+    out+=qa("A word to close on", r.closingWord);
+    if(r.unsafeFlag || r.trustedAdultFlag)
+      out+=qa("Flagged", "This reflection raised a follow-up flag. Open the full report on the dashboard — Student view — before acting on it.");
+    out+='<div class="qa"><div class="av empty">The full eighteen-item report, focus areas and conversation starters live on the dashboard under Student view.</div></div>';
+    return out;
+  }
+  function rfEvidence(it){
+    var r=it.raw, L=[];
+    L.push(String(r.timestamp||"").slice(0,10)+" — "+(r.studentId||"")+" — self-reflection");
+    if(it.sum) L.push(it.sum);
+    (Array.isArray(r.reflections)?r.reflections:[]).forEach(function(t){ if(nz(t)) L.push("In their own words → "+t); });
+    if(nz(r.closingWord)) L.push("A word to close on → "+r.closingWord);
+    return L;
+  }
+
+
+  /* ═══════════ READER · MY VOICE — aog.thisisme.v1 ═══════════
+     One page per student. Kept lines only: a line marked private is counted
+     and never quoted. A pull used to drop these rows on the floor — they
+     came back inside pullCheckins and the check-in reader refused them,
+     and this page never opened aog.thisisme.v1. */
+  function isVoiceRow(r){
+    if(!r) return false;
+    if(String(r.checkinType||"")==="thisisme" || String(r.slipType||"")==="thisisme") return true;
+    var px=xparse(r);
+    return !!(px && (px.tim===1 || px.tim==="1") && Array.isArray(px.lines));
+  }
+  function fileVoice(r){
+    var px=xparse(r);
+    if(!px || !Array.isArray(px.lines)) return false;
+    var sid=String(r.studentId||"").trim().toUpperCase();
+    if(!sid) return false;
+    var gone=arrOf("aog.thisisme.removed.v1");
+    for(var gi=0; gi<gone.length; gi++) if(String(gone[gi]).trim().toUpperCase()===sid) return false;
+    var st=J("aog.thisisme.v1",{students:{}}) || {students:{}};
+    if(!st.students) st.students={};
+    var key=sid;
+    Object.keys(st.students).forEach(function(k){
+      if(String(k).trim().toUpperCase()===sid) key=k;
+    });
+    var cur=st.students[key]||{};
+    var ts=String(r.timestamp||"");
+    if(cur.sentTs && ts && ts<=String(cur.sentTs)) return true;
+    st.students[key]={
+      soma: px.soma || cur.soma || "",
+      somaAt: ts,
+      no: cur.no || {},
+      sentTs: ts,
+      sentFrom: px.home ? "home" : "link",
+      fam: px.home ? ts : (cur.fam || ""),
+      entries: px.lines.map(function(l,i){
+        return { id:"sent_"+ts+"_"+i, ts:ts, day:l.day||String(r.date||"").slice(0,10),
+          sy:r.year||"", sec:l.sec||"", pillar:l.pillar||"", text:String(l.text||""),
+          st:"kept", src:l.src||{kind:"sent"} };
+      })
+    };
+    lsSet("aog.thisisme.v1", JSON.stringify(st));
+    return true;
+  }
+  function readVoice(){
+    arrOf("aog.checkin.remote").forEach(function(r){ if(isVoiceRow(r)) fileVoice(r); });
+    var st=J("aog.thisisme.v1",{students:{}}) || {}, students=(st&&st.students)||{}, out=[];
+    Object.keys(students).forEach(function(code){
+      var rec=students[code];
+      if(!rec) return;
+      var kept=0, priv=0;
+      (rec.entries||[]).forEach(function(e){
+        if(!e) return;
+        if(e.st==="private") priv++;
+        else if(nz(e.text)) kept++;
+      });
+      var sm=[kept+(kept===1?" line kept":" lines kept")];
+      if(priv) sm.push(priv+" kept private");
+      if(rec.sentFrom==="home") sm.push("made at home");
+      else if(rec.sentTs) sm.push("sent");
+      out.push({ kind:"voice", kindLab:"My Voice", cls:"k-voice", subj:"",
+        student:code, ts:rec.sentTs||rec.somaAt||"",
+        title:"This Is My Voice",
+        sum:bits(sm), sheet:!!rec.sentTs, raw:rec, bucket:code,
+        detail:voiceDetail, evidence:voiceEvidence });
+    });
+    return out;
+  }
+  function voiceDetail(it){
+    var rec=it.raw, out="";
+    if(nz(rec.soma)) out+=qa("In one line", rec.soma);
+    var priv=0, n=0;
+    (rec.entries||[]).forEach(function(e){
+      if(!e) return;
+      if(e.st==="private"){ priv++; return; }
+      if(!nz(e.text)) return;
+      n++;
+      var lab=nz(e.pillar)?e.pillar:(nz(e.sec)?e.sec:("Line "+n));
+      out+=qa(lab, e.text);
+    });
+    if(priv) out+=qa("Private", priv+(priv===1?" line stays on their device. It is not quoted here.":" lines stay on their device. They are not quoted here."));
+    if(rec.sentFrom==="home") out+=qa("Where it was made", "At home. It also lists on the family page.");
+    if(!out) out='<div class="qa"><div class="av empty">This page came back with no kept lines.</div></div>';
+    return out;
+  }
+  function voiceEvidence(it){
+    var rec=it.raw, L=[];
+    L.push((rec.sentTs||rec.somaAt||"")+" — "+it.student+" — My Voice");
+    if(nz(rec.soma)) L.push("In one line → "+rec.soma);
+    (rec.entries||[]).forEach(function(e){
+      if(!e || e.st==="private" || !nz(e.text)) return;
+      L.push((nz(e.pillar)?e.pillar:"Line")+" → "+e.text);
+    });
+    return L;
+  }
+
+  /* ═══════════ every reader, one list ═══════════ */
+  var READERS=[readTurnins, readCheckins, readExit, readHomeCi, readReflect, readVoice];
+  function allItems(){
+    var out=[];
+    READERS.forEach(function(fn){
+      try{ out=out.concat(fn()||[]); }catch(e){ /* one bad store never blanks the page */ }
+    });
+    return out.filter(function(it){ return it && nz(it.student); });
+  }
+
+  /* ═══════════ the filters ═══════════ */
+  var KINDS=[["all","Everything"],["turnin","Turn-ins"],["checkin","Student check-ins"],
+             ["voice","My Voice"],
+             ["team","Team check-ins"],["exit","Exit slips"],["homeci","Home check-ins"],
+             ["reflect","Self-reflections"]];
+  /* 2026-09-09, Jimmy: "THE SEL ROOM 26 can be hidden. I don't know why that is up."
+     The chip is dropped from the row; rows that classify as SEL still appear
+     under All (their label is unchanged), they just have no chip of their own.
+     To bring it back, put "SEL · Room 36" back in this list. */
+  var SUBJECTS=["All","Math","Language Arts","Writing","Science","Social Studies","Spanish","FACS","Religions","Economics","Foundry","English","Other"];
+  var curK="all", curF="All", curView="stu", sheetOnly=false;
+
+  var kwrap=document.getElementById("kinds"), fwrap=document.getElementById("filters");
+  function countsBy(items){
+    var c={all:items.length};
+    items.forEach(function(it){ c[it.kind]=(c[it.kind]||0)+1; });
+    return c;
+  }
+  function buildKinds(){
+    var c=countsBy(allItems().filter(function(it){ return !sheetOnly || it.sheet; }));
+    kwrap.innerHTML="";
+    KINDS.forEach(function(k){
+      var n=c[k[0]]||0;
+      var b=document.createElement("button");
+      b.type="button"; b.className="fchip"+(k[0]===curK?" on":"");
+      b.textContent=k[1]+(n?("  "+n):"");
+      if(!n && k[0]!=="all") b.classList.add("zero");
+      b.addEventListener("click",function(){ curK=k[0]; paint(); });
+      kwrap.appendChild(b);
+    });
+    /* the subject row only means anything for turn-ins */
+    fwrap.hidden = (curK!=="turnin" && curK!=="all");
+  }
+  SUBJECTS.forEach(function(sj){
+    var b=document.createElement("button"); b.type="button"; b.className="fchip"+(sj==="All"?" on":"");
+    b.textContent=sj;
+    b.addEventListener("click",function(){ curF=sj;
+      [].slice.call(fwrap.children).forEach(function(x){ x.classList.toggle("on",x===b); }); paint(); });
+    fwrap.appendChild(b);
+  });
+  document.getElementById("viewStu").addEventListener("click",function(){ curView="stu"; vsync(); paint(); });
+  document.getElementById("viewNew").addEventListener("click",function(){ curView="new"; vsync(); paint(); });
+  document.getElementById("viewSheet").addEventListener("click",function(){ sheetOnly=!sheetOnly; vsync(); paint(); });
+  function vsync(){
+    document.getElementById("viewStu").classList.toggle("on",curView==="stu");
+    document.getElementById("viewNew").classList.toggle("on",curView==="new");
+    var sb=document.getElementById("viewSheet");
+    sb.classList.toggle("on",sheetOnly); sb.setAttribute("aria-pressed",String(sheetOnly));
+  }
+
+  /* ══════════════════════════════════════════════════════════════════════
+     REMOVE · .30hj
+     Jimmy, looking at a student picker full of test codes: "HOw do I delete
+     some of these testers? I thought I did"
+
+     ⚠⚠ HE HAD. THE REMOVAL WAS REAL AND THE PULL UNDID IT. Whole-student
+     removal (Set up ▸ Export) deleted the rows but wrote NO TOMBSTONE, so
+     the very next "Pull check-ins from the sheet" — 72 rows tonight — put
+     every one of them back. A delete that a refresh can undo is not a
+     delete, it is a hide.
+
+     So removal here is TWO writes, never one:
+       1 · prune the row from its own store, so the screen is honest now;
+       2 · append its key to that store's TOMBSTONE list, so the merge on
+           the next pull refuses it forever.
+     Undo lifts both.
+
+     ⚠⚠ EVERY STORE HAS A DIFFERENT KEY FORMAT AND THEY ARE NOT
+     INTERCHANGEABLE. These four are copied from the dashboard's own
+     removal engines, which live in index.html and cannot be imported into
+     a separate page:
+       practice   CODE|activityId|date(10)|setNo   -> aog.practice.removed.v1
+       check-in   CODE|timestamp                   -> aog.checkin.removed.v1
+       exit slip  CODE|timestamp                   -> aog.exit.removed.v1
+       home ci    CODE|timestamp|respondentRole    -> aog.homeci.removed.v1
+     ⚠ A SECOND COPY OF A KEY FORMAT IS EXACTLY THE DRIFT THIS PRODUCT KEEPS
+     PAYING FOR, so t141 is a CROSS-FILE DRIFT TEST: it asserts each format
+     here still matches the one in index.html. If someone changes one, a
+     suite says so.
+
+     ⚠ A CHECK-IN LIVES IN THREE PLACES — the pulled mirror
+     (aog.checkin.remote), and, split by respondentRole, aog.daily.v1 or
+     aog.checkin.student.v1. All three are pruned or the Daily Log keeps
+     showing what this page says is gone.
+
+     ⚠ SELF-REFLECTIONS HAVE NO TOMBSTONE LIST IN THE PRODUCT. The row is
+     pruned and that is all; the card says so rather than implying a
+     permanence that does not exist.
+
+     ⚠ NOTHING HERE TOUCHES THE GOOGLE SHEET. Said plainly on the screen.
+     ══════════════════════════════════════════════════════════════════════ */
+  function CODE(x){ return String(x==null?"":x).trim().toUpperCase(); }
+  function goneAdd(key, keys){
+    var g=arrOf(key); var have={}; g.forEach(function(k){ have[String(k)]=1; });
+    keys.forEach(function(k){ if(k && !have[k]){ have[k]=1; g.push(k); } });
+    lsSet(key, JSON.stringify(g.length>4000 ? g.slice(g.length-4000) : g));
+  }
+  function goneLift(key, keys){
+    var kill={}; keys.forEach(function(k){ kill[String(k)]=1; });
+    lsSet(key, JSON.stringify(arrOf(key).filter(function(k){ return !kill[String(k)]; })));
+  }
+  /* the four key builders — kept verbatim-comparable to index.html */
+  function kPractice(r){
+    return [CODE(r.studentId), String(r.activityId||""),
+            String(r.date||r.timestamp||"").slice(0,10),
+            String(r.setNo==null?"":r.setNo)].join("|");
+  }
+  function kCheckin(sid,r){
+    var ts=String((r&&r.timestamp)||"");
+    var a=CODE(sid)+"|"+ts, b=CODE(r&&r.studentId)+"|"+ts;
+    return a===b?[a]:[a,b];
+  }
+  function kExit(sid,r){ return CODE(sid)+"|"+String((r&&r.timestamp)||""); }
+  function kHomeCi(sid,r){
+    return CODE(sid)+"|"+String((r&&r.timestamp)||"")+"|"+String((r&&r.respondentRole)||"");
+  }
+
+  var UNDO = null;   /* {n, acts:[{fn}], said} — one level, like the dashboard's */
+
+  function removeItems(items){
+    var acts=[], n=0;
+
+    /* ── turn-ins ── */
+    var tw={}, tk=[];
+    items.filter(function(it){ return it.kind==="turnin"; }).forEach(function(it){
+      var k=kPractice(it.raw); tw[k]=1; tk.push(k);
+    });
+    if(tk.length){
+      var all=arrOf("aog.practice.remote"), took=[], keep=[];
+      all.forEach(function(r){ if(tw[kPractice(r)]) took.push(r); else keep.push(r); });
+      if(took.length){
+        lsSet("aog.practice.remote", JSON.stringify(keep));
+        goneAdd("aog.practice.removed.v1", tk); n+=took.length;
+        acts.push(function(){
+          var back=arrOf("aog.practice.remote").concat(took);
+          lsSet("aog.practice.remote", JSON.stringify(back));
+          goneLift("aog.practice.removed.v1", tk);
+        });
+      }
+    }
+
+    /* ── check-ins: the mirror AND both real stores ── */
+    var cw={}, ck=[];
+    items.filter(function(it){ return it.kind==="checkin"||it.kind==="team"; }).forEach(function(it){
+      kCheckin(it.raw.studentId, it.raw).forEach(function(k){ cw[k]=1; ck.push(k); });
+    });
+    if(ck.length){
+      var mirror=arrOf("aog.checkin.remote"), mTook=[], mKeep=[];
+      mirror.forEach(function(r){
+        if(kCheckin(r.studentId,r).some(function(k){ return cw[k]; })) mTook.push(r); else mKeep.push(r);
+      });
+      lsSet("aog.checkin.remote", JSON.stringify(mKeep));
+      n += mTook.length;
+      var deepTook=[];
+      [["aog.daily.v1","periods"],["aog.checkin.student.v1",null]].forEach(function(pair){
+        var key=pair[0], wrap=pair[1];
+        var st=J(key,{logs:{}}) || {logs:{}}; if(!st.logs) return;
+        Object.keys(st.logs).forEach(function(sid){
+          var byDate=st.logs[sid]||{};
+          Object.keys(byDate).forEach(function(d){
+            var list = wrap ? ((byDate[d]||{})[wrap]||[]) : (byDate[d]||[]);
+            var keep=[];
+            list.forEach(function(r,i){
+              if(kCheckin(sid,r).some(function(k){ return cw[k]; }))
+                deepTook.push({key:key, wrap:wrap, sid:sid, d:d, row:r});
+              else keep.push(r);
+            });
+            if(keep.length){ if(wrap) byDate[d][wrap]=keep; else byDate[d]=keep; }
+            else delete byDate[d];
+          });
+          if(!Object.keys(byDate).length) delete st.logs[sid];
+        });
+        lsSet(key, JSON.stringify(st));
+      });
+      goneAdd("aog.checkin.removed.v1", ck);
+      acts.push(function(){
+        lsSet("aog.checkin.remote", JSON.stringify(arrOf("aog.checkin.remote").concat(mTook)));
+        deepTook.forEach(function(t){
+          var st=J(t.key,{logs:{}}) || {logs:{}}; if(!st.logs) st.logs={};
+          if(!st.logs[t.sid]) st.logs[t.sid]={};
+          if(t.wrap){
+            if(!st.logs[t.sid][t.d]) st.logs[t.sid][t.d]={};
+            if(!st.logs[t.sid][t.d][t.wrap]) st.logs[t.sid][t.d][t.wrap]=[];
+            st.logs[t.sid][t.d][t.wrap].push(t.row);
+          }else{
+            if(!st.logs[t.sid][t.d]) st.logs[t.sid][t.d]=[];
+            st.logs[t.sid][t.d].push(t.row);
+          }
+          lsSet(t.key, JSON.stringify(st));
+        });
+        goneLift("aog.checkin.removed.v1", ck);
+      });
+    }
+
+    /* ── exit slips ── */
+    var xk=[], xTook=[];
+    items.filter(function(it){ return it.kind==="exit"; }).forEach(function(it){
+      var st=J("aog.exit.v1",{logs:{}}) || {logs:{}};
+      var b=it.bucket, d=it.day, list=((st.logs||{})[b]||{})[d];
+      if(!Array.isArray(list)) return;
+      var ts=String(it.raw.timestamp||""), keep=[];
+      list.forEach(function(r){
+        if(String(r.timestamp||"")===ts){ xTook.push({b:b,d:d,row:r}); }
+        else keep.push(r);
+      });
+      if(keep.length) st.logs[b][d]=keep; else delete st.logs[b][d];
+      if(!Object.keys(st.logs[b]||{}).length) delete st.logs[b];
+      lsSet("aog.exit.v1", JSON.stringify(st));
+      xk.push(kExit(b, it.raw));
+    });
+    if(xTook.length){
+      goneAdd("aog.exit.removed.v1", xk); n+=xTook.length;
+      acts.push(function(){
+        var st=J("aog.exit.v1",{logs:{}}) || {logs:{}}; if(!st.logs) st.logs={};
+        xTook.forEach(function(t){
+          if(!st.logs[t.b]) st.logs[t.b]={};
+          if(!st.logs[t.b][t.d]) st.logs[t.b][t.d]=[];
+          st.logs[t.b][t.d].push(t.row);
+        });
+        lsSet("aog.exit.v1", JSON.stringify(st));
+        goneLift("aog.exit.removed.v1", xk);
+      });
+    }
+
+    /* ── home check-ins ── */
+    var hk=[], hTook=[];
+    items.filter(function(it){ return it.kind==="homeci"; }).forEach(function(it){
+      var st=J("aog.home.checkin.v1",{}) || {}; if(!st.obs) return;
+      var b=it.bucket, list=st.obs[b];
+      if(!Array.isArray(list)) return;
+      var ts=String(it.raw.timestamp||""), role=String(it.raw.respondentRole||""), keep=[];
+      list.forEach(function(r){
+        if(String(r.timestamp||"")===ts && String(r.respondentRole||"")===role) hTook.push({b:b,row:r});
+        else keep.push(r);
+      });
+      if(keep.length) st.obs[b]=keep; else delete st.obs[b];
+      lsSet("aog.home.checkin.v1", JSON.stringify(st));
+      hk.push(kHomeCi(b, it.raw));
+    });
+    if(hTook.length){
+      goneAdd("aog.homeci.removed.v1", hk); n+=hTook.length;
+      acts.push(function(){
+        var st=J("aog.home.checkin.v1",{}) || {}; if(!st.obs) st.obs={};
+        hTook.forEach(function(t){ if(!st.obs[t.b]) st.obs[t.b]=[]; st.obs[t.b].push(t.row); });
+        lsSet("aog.home.checkin.v1", JSON.stringify(st));
+        goneLift("aog.homeci.removed.v1", hk);
+      });
+    }
+
+
+    /* ── My Voice: the whole page, same tombstone the dashboard uses ── */
+    var vTook=[], vMarks={};
+    items.filter(function(it){ return it.kind==="voice"; }).forEach(function(it){
+      var st=J("aog.thisisme.v1",{students:{}}) || {students:{}};
+      if(!st.students) return;
+      var b=it.bucket, rec=st.students[b];
+      if(!rec) return;
+      vTook.push({code:b, rec:rec});
+      delete st.students[b];
+      vMarks[CODE(b)]=1;
+      lsSet("aog.thisisme.v1", JSON.stringify(st));
+    });
+    if(vTook.length){
+      goneAdd("aog.thisisme.removed.v1", Object.keys(vMarks));
+      n+=vTook.length;
+      acts.push(function(){
+        var st=J("aog.thisisme.v1",{students:{}}) || {students:{}};
+        if(!st.students) st.students={};
+        vTook.forEach(function(row){ if(!st.students[row.code]) st.students[row.code]=row.rec; });
+        lsSet("aog.thisisme.v1", JSON.stringify(st));
+        goneLift("aog.thisisme.removed.v1", Object.keys(vMarks));
+      });
+    }
+
+    /* ── self-reflections: prune only, and the card says so ── */
+    var rTook=[], rWant={};
+    items.filter(function(it){ return it.kind==="reflect"; }).forEach(function(it){
+      rWant[CODE(it.raw.studentId)+"|"+String(it.raw.timestamp||"")]=1;
+    });
+    if(Object.keys(rWant).length){
+      var rs=arrOf("aogScreener.v2.results"), rKeep=[];
+      rs.forEach(function(r){
+        if(rWant[CODE(r.studentId)+"|"+String(r.timestamp||"")]) rTook.push(r); else rKeep.push(r);
+      });
+      if(rTook.length){
+        lsSet("aogScreener.v2.results", JSON.stringify(rKeep)); n+=rTook.length;
+        acts.push(function(){
+          lsSet("aogScreener.v2.results", JSON.stringify(arrOf("aogScreener.v2.results").concat(rTook)));
+        });
+      }
+    }
+
+    if(n){ UNDO={ n:n, acts:acts }; }
+    paint();
+    return n;
+  }
+  function undoRemoval(){
+    if(!UNDO) return;
+    UNDO.acts.forEach(function(fn){ try{ fn(); }catch(e){} });
+    UNDO=null; paint();
+  }
+
+  /* ═══════════ the card ═══════════ */
+  function card(it){
+    var d=document.createElement("details"); d.className="ti "+(it.cls||"");
+    var body="";
+    try{ body=it.detail(it)||""; }catch(e){ body='<div class="qa"><div class="av empty">This row could not be read.</div></div>'; }
+    d.innerHTML='<summary><span class="subj">'+esc(it.subj||it.kindLab)+'</span>'
+      + '<span class="act">'+esc(it.title||"")+'</span>'
+      + '<span class="who">'+esc(it.student||"")+'</span>'
+      + '<span class="dt">'+esc(when(it.ts))+"</span>"
+      + (it.sheet?'<span class="prov">from the Sheet</span>':"")
+      + (it.sum?'<span class="sum">'+esc(it.sum)+"</span>":"")
+      + "</summary>"
+      + '<div class="body">'+body
+      + '<div class="acts no-print"><button type="button" data-a="print">Print this one</button>'
+      + '<button type="button" data-a="iep">Copy for IEP evidence</button>'
+      + '<button type="button" class="del" data-a="del">Remove</button>'
+      + '<span class="pst" aria-live="polite"></span></div></div>';
+    d.querySelector('[data-a="print"]').addEventListener("click",function(){
+      /* ══ AOG-INBOX-PRINTONE-V2 (2026-09-19) — WHY "PRINT THIS ONE" PRINTED
+         EVERYTHING. The single-item CSS went on, window.print() was called,
+         and a 300ms TIMER took the CSS back off again. On a desktop that is
+         survivable: window.print() blocks until the dialog closes, so the
+         timer only runs afterwards. ON AN IPAD IT DOES NOT BLOCK — the share
+         sheet opens asynchronously, print() returns at once, and 300ms later
+         the page is back to showing every item WHILE THE PREVIEW IS STILL
+         BEING BUILT. Jimmy printed one draft and got all twenty-two.
+         There is no timer now. The page stays in single-item mode until the
+         print is actually over, which we learn from whichever of these the
+         browser gives us — iOS Safari has historically fired none of the
+         print events, so `focus` (the user coming back to the page) is the
+         one that always lands. */
+      d.setAttribute("open",""); d.classList.add("ponly"); document.body.classList.add("pone");
+      var EV=["afterprint","focus","pointerdown","visibilitychange"], done=false;
+      function restore(){
+        if(done) return; done=true;
+        EV.forEach(function(e){ window.removeEventListener(e,restore,true); });
+        d.classList.remove("ponly"); document.body.classList.remove("pone");
+      }
+      EV.forEach(function(e){ window.addEventListener(e,restore,true); });
+      window.print();
+    });
+    d.querySelector('[data-a="iep"]').addEventListener("click",function(){
+      var L=[]; try{ L=it.evidence(it)||[]; }catch(e){ L=[]; }
+      L.push("(" + it.kindLab + " via architectureofgrace.org — evidence, adult-verified on paste)");
+      var t=L.join("\n"), st=d.querySelector(".acts .pst");
+      function ok(){ st.textContent="Copied — paste it into the IEP evidence note on the dashboard."; }
+      function no(){ st.textContent="Couldn't copy — select the text above and copy it by hand."; }
+      if(navigator.clipboard && navigator.clipboard.writeText){ navigator.clipboard.writeText(t).then(ok,no); }
+      else{ try{ var ta=document.createElement("textarea"); ta.value=t; document.body.appendChild(ta); ta.select(); document.execCommand("copy"); document.body.removeChild(ta); ok(); }catch(e){ no(); } }
+    });
+    /* ⚠ TWO PRESSES, like every other Remove in this product. A one-tap
+       delete beside a Print button is how a teacher loses a row they meant
+       to keep. */
+    var db=d.querySelector('[data-a="del"]'), armed=false, armT=0;
+    db.addEventListener("click",function(){
+      if(armed){
+        clearTimeout(armT);
+        removeItems([it]);
+        return;
+      }
+      armed=true; db.textContent="Press again to remove"; db.classList.add("arm");
+      armT=setTimeout(function(){ armed=false; db.textContent="Remove"; db.classList.remove("arm"); },6000);
+    });
+    return d;
+  }
+
+  /* ⚠ THE UNDO BAR RENDERS BEFORE THE EMPTY CHECK, because removing the
+     last row is exactly when a person most needs the way back. */
+  function undoBar(){
+    if(!UNDO) return null;
+    var d=document.createElement("div"); d.className="undobar no-print";
+    d.innerHTML='<span>Removed '+UNDO.n+(UNDO.n===1?" item":" items")
+      +'. They will not come back on the next Refresh.</span>'
+      +'<button type="button" id="undoBtn">Undo</button>';
+    d.querySelector("#undoBtn").addEventListener("click",undoRemoval);
+    return d;
+  }
+
+  function paint(){
+    buildKinds();
+    var box=document.getElementById("inbox"); box.innerHTML="";
+    var ub=undoBar(); if(ub) box.appendChild(ub);
+    var all=allItems().filter(function(it){
+      if(sheetOnly && !it.sheet) return false;
+      if(curK!=="all" && it.kind!==curK) return false;
+      if(it.kind==="turnin" && curF!=="All" && it.subj!==curF) return false;
+      return true;
+    });
+    all.sort(function(a,b){ return String(b.ts||"").localeCompare(String(a.ts||"")); });
+    if(!all.length){ box.appendChild(emptyState()); return; }
+    if(curView==="new"){ all.forEach(function(it){ box.appendChild(card(it)); }); return; }
+    var by={}, shown={};
+    all.forEach(function(it){
+      /* ⚠ AOG-INBOX-ONEWHO-V1 — this folded case but not RUNS OF SPACES, so
+         "Jimmy Ramsden" and "Jimmy  Ramsden" were two headings on the same
+         printout with the same name. Same fault as the growth chart and the
+         practice table; same two-line fix, so all three agree on who is one
+         student. Nothing else folds — two children with the same name still
+         merge, and that is the honest limit of a name as an identifier. */
+      var k=String(it.student||"—").replace(/\s+/g," ").trim().toLowerCase();
+      (by[k]=by[k]||[]).push(it); shown[k]=it.student;
+    });
+    Object.keys(by).sort().forEach(function(k){
+      var list=by[k];
+      var h=document.createElement("div"); h.className="stuh";
+      h.innerHTML="<span>"+esc(shown[k]||"—")+'</span>'
+        +'<span class="n">'+list.length+(list.length===1?" item":" items")+"</span>"
+        +'<button type="button" class="stuh-del no-print">Remove all '+list.length+"</button>";
+      /* ⚠ THIS REMOVES WHAT IS ON SCREEN FOR THIS STUDENT, which under a
+         filter is not everything they have. The confirm says the number so
+         nobody reads "all" as more than it is. */
+      var b=h.querySelector(".stuh-del"), armed=false, t=0;
+      b.addEventListener("click",function(){
+        if(armed){ clearTimeout(t); removeItems(list); return; }
+        armed=true; b.textContent="Press again — removes "+list.length; b.classList.add("arm");
+        t=setTimeout(function(){ armed=false; b.textContent="Remove all "+list.length; b.classList.remove("arm"); },6000);
+      });
+      box.appendChild(h);
+      list.forEach(function(it){ box.appendChild(card(it)); });
+    });
+  }
+
+  function emptyState(){
+    var at=lsGet("aog.practice.remote.at");
+    var d=document.createElement("div"); d.className="empty-state";
+    var what = (curK==="all") ? "Nothing on this device yet"
+             : ("No "+(function(){ for(var i=0;i<KINDS.length;i++) if(KINDS[i][0]===curK) return KINDS[i][1].toLowerCase(); return "items"; })()+" on this device yet");
+    var extra = sheetOnly ? "<br><b>From the Sheet only</b> is on — turn it off to see rows written on this computer." : "";
+    if(curK==="reflect") extra += "<br>⚠ Self-reflections pulled from the Sheet are held in the dashboard's memory and are not saved to this device, so only reflections taken <i>on this computer</i> appear here. Open <b>Student view</b> on the dashboard to read pulled ones.";
+    d.innerHTML = what + ".<br>Tap <b>Refresh everything from your Sheet</b> above"
+      + (at?"":" — or connect this computer first: Dashboard ▸ Set up ▸ Connect your Sheet, ADMIN_PULL_KEY in the passcode box")
+      + "." + extra;
+    return d;
+  }
+
+  /* ═══════════ REFRESH — all five pull actions, in order ═══════════
+     ⚠ FIVE ACTIONS, NOT ONE. pullCheckins alone is what made this page a
+     worksheet inbox. Each is attempted independently and a failure in one
+     never stops the rest — an older Apps Script answers 200 with nothing
+     useful for the newer verbs, and half an inbox beats none.
+     ⚠ 'pull' (the reflection read) is DELIBERATELY NOT CALLED: it returns
+     rows this page has nowhere to persist, and calling a read whose result
+     is dropped would be a lie in the status line. */
+  var DEST_RE=/^https:\/\/script\.google\.com\/[^\s]*\/exec$/;
+  function destination(){
+    try{
+      var dm=/[?&]dest=([^&]+)/.exec(location.search||"");
+      if(dm){
+        var t=decodeURIComponent(dm[1]).replace(/-/g,"+").replace(/_/g,"/");
+        while(t.length%4) t+="=";
+        var o=JSON.parse(atob(t));
+        if(o && typeof o.u==="string" && DEST_RE.test(o.u)) return o.u;
+      }
+    }catch(e){}
+    try{
+      var cfg=window.AOG_SYNC_DEFAULTS;
+      if(cfg && !cfg.destinations && typeof cfg.url==="string" && DEST_RE.test(cfg.url)) return cfg.url;
+    }catch(e){}
+    return "";
+  }
+  function post(url,body){
+    return fetch(url,{method:"POST",headers:{"Content-Type":"text/plain;charset=utf-8"},
+      body:JSON.stringify(body)}).then(function(r){ return r.json(); });
+  }
+  var pullBtn=document.getElementById("pullBtn"), pullSt=document.getElementById("pullSt");
+  function stampSt(){
+    var at=lsGet("aog.practice.remote.at");
+    var n=allItems().length;
+    pullSt.textContent = (at ? ("Last refreshed "+new Date(at).toLocaleString()+" · ") : "")
+      + n + (n===1?" item":" items") + " on this device";
+  }
+  pullBtn.addEventListener("click",function(){
+    var url=destination();
+    var key=(lsGet("aog.sync.key")||"").trim();
+    if(!url){ pullSt.textContent="No Sheet is configured for this site copy."; return; }
+    if(!key){ pullSt.textContent="This computer isn't connected for reading yet — Dashboard ▸ Set up ▸ Connect your Sheet, ADMIN_PULL_KEY in the passcode box."; return; }
+    pullBtn.disabled=true; pullSt.textContent="Refreshing…";
+    var got=[], failed=[];
+
+    function doCheckins(){
+      return post(url,{action:"pullCheckins",passcode:key}).then(function(out){
+        if(!out || out.error || !("checkins" in out)) { failed.push("check-ins"); return; }
+        var all=out.checkins||[], rows=[], stray=[];
+        var voice=[];
+        all.forEach(function(r){
+          if(String((r&&r.checkinType)||"")==="practice") stray.push(r);
+          else if(isVoiceRow(r)) voice.push(r);
+          else rows.push(r);
+        });
+        var voiced=0;
+        voice.forEach(function(r){ if(fileVoice(r)) voiced++; });
+        if(voice.length) got.push(voiced+" My Voice");
+        var practice=(out.practice||[]).concat(stray);
+        lsSet("aog.checkin.remote", JSON.stringify(rows));
+        lsSet("aog.practice.remote", JSON.stringify(practice));
+        lsSet("aog.practice.remote.at", new Date().toISOString());
+        got.push(rows.length+" check-ins"); got.push(practice.length+" turn-ins");
+      }).catch(function(){ failed.push("check-ins"); });
+    }
+    /* ⚠ Exit slips and home check-ins MERGE, they do not replace: their
+       stores also hold rows written on this computer, and overwriting the
+       store with the Sheet's answer would delete them. Merge on the same
+       key the dashboard uses — code + timestamp — and never rewrite an
+       existing bucket key's case. */
+    function doExit(){
+      return post(url,{action:"pullExitSlips",passcode:key}).then(function(out){
+        if(!out || out.error || !("exitSlips" in out)) { failed.push("exit slips"); return; }
+        var st=J("aog.exit.v1",{logs:{}}) || {logs:{}};
+        if(!st.logs) st.logs={};
+        var seen={};
+        Object.keys(st.logs).forEach(function(sid){
+          Object.keys(st.logs[sid]||{}).forEach(function(d){
+            (st.logs[sid][d]||[]).forEach(function(r){
+              seen[String(sid).trim().toUpperCase()+"|"+String(r.timestamp||"")]=1;
+            });
+          });
+        });
+        var added=0;
+        (out.exitSlips||[]).forEach(function(r){
+          var sid=String((r&&r.studentId)||"").trim().toUpperCase();
+          if(!sid || sid==="SELFTEST") return;
+          var k=sid+"|"+String(r.timestamp||"");
+          if(seen[k]) return;
+          var d=String(r.date||"").slice(0,10) || String(r.timestamp||"").slice(0,10);
+          if(!d) return;
+          if(!st.logs[sid]) st.logs[sid]={};
+          if(!st.logs[sid][d]) st.logs[sid][d]=[];
+          r.pulled=true;
+          st.logs[sid][d].push(r); seen[k]=1; added++;
+        });
+        lsSet("aog.exit.v1", JSON.stringify(st));
+        got.push(added+" new exit slips");
+      }).catch(function(){ failed.push("exit slips"); });
+    }
+    function doHomeCi(){
+      return post(url,{action:"pullHomeCheckins",passcode:key}).then(function(out){
+        var rows = out && (out.homeCheckins || out.homeci || out.rows);
+        if(!out || out.error || !Array.isArray(rows)) { failed.push("home check-ins"); return; }
+        var st=J("aog.home.checkin.v1",{}) || {};
+        if(!st.obs) st.obs={}; if(!st.pulled) st.pulled={};
+        var seen={};
+        Object.keys(st.obs).forEach(function(c){
+          (st.obs[c]||[]).forEach(function(r){
+            seen[String(c).trim().toUpperCase()+"|"+String(r.timestamp||"")+"|"+String(r.respondentRole||"")]=1;
+          });
+        });
+        var added=0;
+        rows.forEach(function(r){
+          var sid=String((r&&r.studentId)||"").trim().toUpperCase();
+          if(!sid) return;
+          var k=sid+"|"+String(r.timestamp||"")+"|"+String(r.respondentRole||"");
+          if(seen[k]) return;
+          if(!st.obs[sid]) st.obs[sid]=[];
+          st.obs[sid].push(r); seen[k]=1; added++;
+        });
+        st.pulled.at=new Date().toISOString(); st.pulled.n=rows.length;
+        lsSet("aog.home.checkin.v1", JSON.stringify(st));
+        got.push(added+" new home check-ins");
+      }).catch(function(){ failed.push("home check-ins"); });
+    }
+
+    doCheckins().then(doExit).then(doHomeCi).then(function(){
+      pullBtn.disabled=false;
+      var msg = got.length ? ("Refreshed — "+got.join(" · ")) : "Nothing came back.";
+      if(failed.length) msg += " · " + failed.join(" and ") + " need a newer Apps Script (paste it and redeploy as a NEW version).";
+      pullSt.textContent=msg;
+      paint();
+    }).catch(function(){
+      pullBtn.disabled=false;
+      pullSt.textContent="Couldn't reach the Sheet — check the internet and try again.";
+    });
+  });
+
+  vsync(); stampSt(); paint();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Logic Model &middot; Architecture of Grace</title>
+<meta name="description" content="How the curriculum is supposed to work, link by link, with the research behind each one - and a plain statement of what a logic model does not prove.">
+<link rel="canonical" href="https://architectureofgrace.org/logic-model">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Architecture of Grace">
+<meta property="og:locale" content="en_US">
+<meta property="og:locale:alternate" content="es_US">
+<meta property="og:title" content="The Logic Model &middot; Architecture of Grace">
+<meta property="og:description" content="How the curriculum is supposed to work, link by link, with the research behind each one.">
+<meta property="og:url" content="https://architectureofgrace.org/logic-model">
+<meta property="og:image" content="https://architectureofgrace.org/og-schools.png?v=1">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Architecture of Grace for schools and districts - policy, terms, data agreement, accessibility.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="The Logic Model &middot; Architecture of Grace">
+<meta name="twitter:description" content="How the curriculum is supposed to work, link by link, with the research behind each one.">
+<meta name="twitter:image" content="https://architectureofgrace.org/og-schools.png?v=1">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#0A1E33">
+<meta name="apple-mobile-web-app-title" content="Grace">
+<meta name="application-name" content="Architecture of Grace">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,500;0,600;1,500&amp;family=Source+Sans+3:wght@400;600;700&amp;family=IBM+Plex+Mono:wght@500&amp;display=swap">
+<style>
+:root{
+  --ground:#FBF6EC; --card:#FFFDF8; --ink:#182F4C; --ink-soft:#4A5B72;
+  --navy:#14304F; --gold:#C9962E; --gold-deep:#825E10;
+  --wash:#F4E8CC; --rule:#E4D9C3;
+}
+*{box-sizing:border-box}
+body{margin:0; background:var(--ground); color:var(--ink);
+  font-family:"Source Sans 3",-apple-system,"Segoe UI",Helvetica,Arial,sans-serif;
+  font-size:17px; line-height:1.55; -webkit-text-size-adjust:100%}
+.wrap{max-width:58rem; margin:0 auto; padding:30px 20px 70px}
+code,.mono{font-family:"IBM Plex Mono",ui-monospace,Menlo,monospace; font-size:.86em;
+  background:var(--wash); border-radius:5px; padding:1px 6px 2px; white-space:nowrap}
+.mast{padding:8px 0 22px; border-bottom:2px solid var(--gold); margin-bottom:6px}
+.eyebrow{font-size:12px; font-weight:700; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--gold-deep); margin:0 0 6px}
+h1{font-family:"Lora",Georgia,serif; font-weight:600; font-size:clamp(29px,6.5vw,38px);
+  line-height:1.12; margin:0 0 10px; color:var(--navy); text-wrap:balance}
+h1 em{font-style:italic; color:var(--gold-deep)}
+.dek{margin:0 0 10px; color:var(--ink-soft); max-width:40em}
+.meta{margin:0; font-size:14px; color:var(--ink-soft)}
+h2{font-family:"Lora",Georgia,serif; font-weight:600; font-size:22px;
+  margin:36px 0 12px; color:var(--navy); text-wrap:balance}
+h3{font-family:"Lora",Georgia,serif; font-weight:600; font-size:18px;
+  margin:20px 0 8px; color:var(--navy)}
+.card{background:var(--card); border:1.5px solid var(--rule); border-radius:14px;
+  padding:16px 18px; margin:0 0 12px}
+.card p{margin:0 0 10px; font-size:16px}
+.card p:last-child{margin-bottom:0}
+.card b{color:var(--navy)}
+.card ul,.card ol{margin:0; padding-left:20px}
+.card li{margin-bottom:8px}
+.card li:last-child{margin-bottom:0}
+.note{border-left:3px solid var(--gold); background:var(--wash); border-radius:0 9px 9px 0;
+  padding:9px 12px; font-size:15px; margin:10px 0}
+.note b:first-child{color:var(--gold-deep)}
+.flag{font-family:"IBM Plex Mono",ui-monospace,monospace; font-size:12px; font-weight:500;
+  white-space:nowrap; border-radius:6px; padding:1px 7px 2px}
+.flag.hh{background:var(--navy); color:#fff}
+.flag.el{background:var(--wash); color:var(--gold-deep); border:1px solid var(--gold)}
+.tblwrap{overflow-x:auto; margin:12px 0}
+table.tbl{border-collapse:collapse; width:100%; font-size:14.5px; background:var(--card);
+  border:1.5px solid var(--rule); border-radius:10px; overflow:hidden}
+.tbl th{background:var(--wash); color:var(--navy); text-align:left; font-size:12.5px;
+  letter-spacing:.06em; text-transform:uppercase; padding:8px 10px;
+  border-bottom:1.5px solid var(--rule)}
+.tbl td{padding:9px 10px; border-bottom:1px solid var(--rule); vertical-align:top; color:var(--ink)}
+.tbl tr:last-child td{border-bottom:0}
+.tbl td .sub{display:block; font-size:13px; color:var(--ink-soft); margin-top:2px}
+.tbl .lesson{font-family:"IBM Plex Mono",ui-monospace,monospace; font-size:12.5px;
+  color:var(--navy); white-space:nowrap}
+.tbl .cd{font-family:"IBM Plex Mono",ui-monospace,monospace; font-size:12.5px;
+  color:var(--gold-deep); white-space:nowrap}
+.tbl .none{color:var(--ink-soft); font-style:italic}
+.bandhead{display:flex; flex-wrap:wrap; gap:6px 14px; align-items:baseline;
+  margin:30px 0 2px; padding-top:8px; border-top:1.5px solid var(--rule)}
+.bandhead h2{margin:0}
+.bandhead .bmeta{font-size:14px; color:var(--ink-soft)}
+.legend{display:flex; flex-wrap:wrap; gap:8px 16px; font-size:14px;
+  color:var(--ink-soft); margin:8px 0 0}
+.idx{column-width:22rem; column-gap:26px}
+.idx .row{break-inside:avoid; margin:0 0 7px; font-size:14.5px}
+footer{margin-top:40px; padding-top:14px; border-top:1.5px solid var(--rule);
+  font-size:13.5px; color:var(--ink-soft); line-height:1.6}
+footer a{color:var(--gold-deep)}
+@media (max-width:560px){ .tbl{font-size:13.5px} }
+@media print{
+  body{background:#fff; font-size:11.5px; line-height:1.4}
+  .wrap{max-width:none; padding:0}
+  h1{font-size:23px} h2{font-size:16px; margin:14px 0 7px}
+  .card{padding:10px 13px; margin-bottom:8px; background:#fff}
+  .card p,.card li{font-size:11.5px}
+  .tbl{font-size:10px} .tbl th{font-size:9.5px}
+  .tblwrap{overflow:visible}
+  .note{font-size:10.5px; padding:7px 10px}
+  .card,.note,.tblwrap{break-inside:avoid; page-break-inside:avoid}
+  h1,h2,h3{break-after:avoid; page-break-after:avoid}
+  @page{margin:11mm 12mm}
+}
+
+.flow{display:grid; gap:10px; margin:12px 0}
+.flow .step{background:var(--card); border:1.5px solid var(--rule); border-radius:14px; padding:14px 17px}
+.flow .step .k{font-family:"Lora",Georgia,serif; font-size:13px; font-weight:600; color:var(--gold-deep);
+  letter-spacing:.09em; text-transform:uppercase; display:block; margin-bottom:6px}
+.flow .step h3{margin:0 0 7px; font-size:18px}
+.flow .step ul{margin:0; padding-left:20px}
+.flow .step li{margin-bottom:6px; font-size:15.5px}
+.flow .step li:last-child{margin-bottom:0}
+.flow .arr{text-align:center; color:var(--gold-deep); font-size:20px; line-height:1; margin:-2px 0}
+@media (min-width:900px){ .flow{grid-template-columns:1fr} }
+.cite{font-size:14px; color:var(--ink-soft)}
+
+/* ══ AOG-PRINT-SAFE-V1 (2026-09-20) ═══════════════════════════════════════════
+   Jimmy, printing a novel study from his phone: "another pdf that gets parts of
+   the material cut off." These are the rules that keep paper honest on every
+   engine — a table row, a list item, a figure and a picture stay whole; a head
+   keeps the lines under it; no paragraph strands one line at a page edge; and a
+   long table repeats its head at the top of each page. Printed pages only. */
+@media print{
+  table{break-inside:auto; page-break-inside:auto}
+  thead{display:table-header-group}
+  tfoot{display:table-footer-group}
+  tr{break-inside:avoid; page-break-inside:avoid}
+  li,figure,img,svg{break-inside:avoid; page-break-inside:avoid}
+  h1,h2,h3,h4,h5{break-after:avoid; page-break-after:avoid}
+  p{orphans:3; widows:3}
+}
+</style>
+</head>
+<body>
+<script src="/aog-topbar.js"></script>
+
+<div class="wrap">
+
+  <header class="mast">
+    <p class="eyebrow" data-en="Architecture of Grace · For review committees" data-es="Architecture of Grace · Para comités de revisión">Architecture of Grace &middot; For review committees</p>
+    <h1 data-en="The &lt;em&gt;logic model&lt;/em&gt;" data-es="El &lt;em&gt;modelo lógico&lt;/em&gt;">The <em>logic model</em></h1>
+    <p class="dek" data-en="How this curriculum is supposed to work — link by link, with the published research behind each link, and a plain statement of what a logic model does and does not prove." data-es="Cómo se supone que funciona este currículo — eslabón por eslabón, con la investigación publicada detrás de cada uno, y una declaración clara de lo que un modelo lógico prueba y lo que no.">How this curriculum is supposed to work &mdash; link by link, with the published research behind each link, and a plain statement of what a logic model does and does not prove.</p>
+    <p class="meta" data-en="&lt;b&gt;Who this is for.&lt;/b&gt; Curriculum directors, grant writers, and anyone who has to put an evidence level on an adoption form. &lt;b&gt;Last reviewed:&lt;/b&gt; September 20, 2026." data-es="&lt;b&gt;Para quién es.&lt;/b&gt; Directores de currículo, redactores de subvenciones y cualquiera que deba indicar un nivel de evidencia en un formulario de adopción. &lt;b&gt;Última revisión:&lt;/b&gt; 20 de septiembre de 2026."><b>Who this is for.</b> Curriculum directors, grant writers, and anyone who has to put an evidence level on an adoption form. <b>Last reviewed:</b> September 20, 2026.</p>
+  </header>
+
+  <h2 data-en="Why this page exists" data-es="Por qué existe esta página">Why this page exists</h2>
+  <div class="card">
+    <p data-en="Districts are often required to state an evidence level for anything they adopt. Under the Every Student Succeeds Act there are four, and the first three all require a completed study: a randomized trial, a quasi-experimental design, or a correlational study with controls. &lt;b&gt;No efficacy study of this curriculum has been conducted&lt;/b&gt; — &lt;a href=&quot;/roadmap&quot;&gt;Evidence &amp; Roadmap&lt;/a&gt; says so at length and commits to not implying otherwise." data-es="A menudo los distritos deben indicar un nivel de evidencia para todo lo que adoptan. Bajo la ley Every Student Succeeds Act hay cuatro, y los tres primeros exigen un estudio terminado: un ensayo aleatorizado, un diseño cuasiexperimental o un estudio correlacional con controles. &lt;b&gt;No se ha realizado ningún estudio de eficacia de este currículo&lt;/b&gt; — &lt;a href=&quot;/roadmap&quot;&gt;Evidencia y Hoja de Ruta&lt;/a&gt; lo dice con detalle y se compromete a no insinuar lo contrario.">Districts are often required to state an evidence level for anything they adopt. Under the Every Student Succeeds Act there are four, and the first three all require a completed study: a randomized trial, a quasi-experimental design, or a correlational study with controls. <b>No efficacy study of this curriculum has been conducted</b> &mdash; <a href="/roadmap">Evidence &amp; Roadmap</a> says so at length and commits to not implying otherwise.</p>
+    <p data-en="The fourth level, &lt;b&gt;“demonstrates a rationale,”&lt;/b&gt; asks for something different in kind: a well-specified logic model informed by research, plus an effort already underway to examine the intervention’s effects. It is the level that explicitly does &lt;em&gt;not&lt;/em&gt; assert a demonstrated outcome. This page is that logic model, written so a reviewer can judge it rather than take it on trust." data-es="El cuarto nivel, &lt;b&gt;«demuestra un fundamento»&lt;/b&gt;, pide algo distinto en su naturaleza: un modelo lógico bien especificado y fundamentado en investigación, más un esfuerzo ya en marcha para examinar los efectos de la intervención. Es el nivel que explícitamente &lt;em&gt;no&lt;/em&gt; afirma un resultado demostrado. Esta página es ese modelo lógico, escrito para que un revisor pueda juzgarlo en vez de aceptarlo por confianza.">The fourth level, <b>&ldquo;demonstrates a rationale,&rdquo;</b> asks for something different in kind: a well-specified logic model informed by research, plus an effort already underway to examine the intervention&rsquo;s effects. It is the level that explicitly does <em>not</em> assert a demonstrated outcome. This page is that logic model, written so a reviewer can judge it rather than take it on trust.</p>
+  </div>
+  <div class="note" data-en="&lt;b&gt;The claim being made, exactly.&lt;/b&gt; This page sets out a rationale that &lt;em&gt;meets the criteria described&lt;/em&gt; for the fourth ESSA evidence level. It does &lt;b&gt;not&lt;/b&gt; assert that Architecture of Grace &lt;em&gt;is&lt;/em&gt; a Tier IV intervention. That determination belongs to your district or your state education agency, not to the person who wrote the curriculum. If anyone representing this program tells you otherwise, they are wrong, and &lt;a href=&quot;/roadmap&quot;&gt;the no-overclaim commitment&lt;/a&gt; is the page to hold them to." data-es="&lt;b&gt;La afirmación que se hace, exactamente.&lt;/b&gt; Esta página expone un fundamento que &lt;em&gt;cumple los criterios descritos&lt;/em&gt; para el cuarto nivel de evidencia de ESSA. &lt;b&gt;No&lt;/b&gt; afirma que Architecture of Grace &lt;em&gt;sea&lt;/em&gt; una intervención de Nivel IV. Esa determinación corresponde a su distrito o a su agencia estatal de educación, no a la persona que escribió el currículo. Si alguien que representa a este programa le dice lo contrario, se equivoca, y &lt;a href=&quot;/roadmap&quot;&gt;el compromiso de no exagerar&lt;/a&gt; es la página con la que exigirlo."><b>The claim being made, exactly.</b> This page sets out a rationale that <em>meets the criteria described</em> for the fourth ESSA evidence level. It does <b>not</b> assert that Architecture of Grace <em>is</em> a Tier&nbsp;IV intervention. That determination belongs to your district or your state education agency, not to the person who wrote the curriculum. If anyone representing this program tells you otherwise, they are wrong, and <a href="/roadmap">the no-overclaim commitment</a> is the page to hold them to.</div>
+
+  <h2 data-en="Where this sits among the four levels" data-es="Dónde se sitúa entre los cuatro niveles">Where this sits among the four levels</h2>
+  <div class="tblwrap">
+  <table class="tbl">
+    <thead><tr><th data-en="Level" data-es="Nivel">Level</th><th data-en="What it requires" data-es="Qué exige">What it requires</th><th data-en="Status here" data-es="Estado aquí">Status here</th></tr></thead>
+    <tbody>
+      <tr><td data-en="&lt;b&gt;Strong&lt;/b&gt;" data-es="&lt;b&gt;Fuerte&lt;/b&gt;"><b>Strong</b></td><td data-en="At least one well-designed, well-implemented experimental study" data-es="Al menos un estudio experimental bien diseñado y bien ejecutado">At least one well-designed, well-implemented experimental study</td><td data-en="&lt;i&gt;Not met — no study exists&lt;/i&gt;" data-es="&lt;i&gt;No cumplido — no existe tal estudio&lt;/i&gt;"><i>Not met &mdash; no study exists</i></td></tr>
+      <tr><td data-en="&lt;b&gt;Moderate&lt;/b&gt;" data-es="&lt;b&gt;Moderado&lt;/b&gt;"><b>Moderate</b></td><td data-en="At least one well-designed, well-implemented quasi-experimental study" data-es="Al menos un estudio cuasiexperimental bien diseñado y bien ejecutado">At least one well-designed, well-implemented quasi-experimental study</td><td data-en="&lt;i&gt;Not met — no study exists&lt;/i&gt;" data-es="&lt;i&gt;No cumplido — no existe tal estudio&lt;/i&gt;"><i>Not met &mdash; no study exists</i></td></tr>
+      <tr><td data-en="&lt;b&gt;Promising&lt;/b&gt;" data-es="&lt;b&gt;Prometedor&lt;/b&gt;"><b>Promising</b></td><td data-en="At least one well-designed correlational study with statistical controls for selection bias" data-es="Al menos un estudio correlacional bien diseñado con controles estadísticos del sesgo de selección">At least one well-designed correlational study with statistical controls for selection bias</td><td data-en="&lt;i&gt;Not met — no study exists&lt;/i&gt;" data-es="&lt;i&gt;No cumplido — no existe tal estudio&lt;/i&gt;"><i>Not met &mdash; no study exists</i></td></tr>
+      <tr><td data-en="&lt;b&gt;Demonstrates a rationale&lt;/b&gt;" data-es="&lt;b&gt;Demuestra un fundamento&lt;/b&gt;"><b>Demonstrates a rationale</b></td><td data-en="A well-specified logic model informed by research or an evaluation, &lt;b&gt;and&lt;/b&gt; an effort underway to examine the intervention’s effects" data-es="Un modelo lógico bien especificado y fundamentado en investigación o en una evaluación, &lt;b&gt;y&lt;/b&gt; un esfuerzo en marcha para examinar los efectos de la intervención">A well-specified logic model informed by research or an evaluation, <b>and</b> an effort underway to examine the intervention&rsquo;s effects</td><td data-en="&lt;b&gt;Both conditions addressed below.&lt;/b&gt; The model is this page; the effort is Stage 1 of the &lt;a href=&quot;/roadmap&quot;&gt;validation roadmap&lt;/a&gt;" data-es="&lt;b&gt;Ambas condiciones se abordan abajo.&lt;/b&gt; El modelo es esta página; el esfuerzo es la Etapa 1 de la &lt;a href=&quot;/roadmap&quot;&gt;hoja de ruta de validación&lt;/a&gt;"><b>Both conditions addressed below.</b> The model is this page; the effort is Stage&nbsp;1 of the <a href="/roadmap">validation roadmap</a></td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p class="cite" data-en="Level names and requirements are paraphrased from the ESSA definition of evidence-based activities. Read the statute and your state’s own guidance rather than this table before you rely on it." data-es="Los nombres y requisitos de los niveles están parafraseados de la definición de actividades basadas en evidencia de ESSA. Lea la ley y la guía de su propio estado, y no esta tabla, antes de basarse en ella.">Level names and requirements are paraphrased from the ESSA definition of evidence-based activities. Read the statute and your state&rsquo;s own guidance rather than this table before you rely on it.</p>
+
+  <h2 data-en="The model" data-es="El modelo">The model</h2>
+  <div class="flow">
+    <div class="step">
+      <span class="k" data-en="Inputs · what a school puts in" data-es="Insumos · lo que aporta la escuela">Inputs &middot; what a school puts in</span>
+      <h3 data-en="What the program requires to run" data-es="Lo que el programa necesita para funcionar">What the program requires to run</h3>
+      <ul>
+      <li data-en="A classroom teacher, and the curriculum book for that grade band with its companion novel." data-es="Un maestro de aula y el libro del currículo de esa banda de grados con su novela complementaria.">A classroom teacher, and the curriculum book for that grade band with its companion novel.</li>
+      <li data-en="A school counselor available for the flagged lessons — roughly 60 committed hours a year in a one-counselor K–8 building, costed openly on &lt;a href=&quot;/counselor&quot;&gt;Counselor Capacity&lt;/a&gt;." data-es="Un consejero escolar disponible para las lecciones marcadas — unas 60 horas comprometidas al año en un edificio K–8 con un solo consejero, calculadas abiertamente en &lt;a href=&quot;/counselor&quot;&gt;Capacidad del Consejero&lt;/a&gt;.">A school counselor available for the flagged lessons &mdash; roughly 60 committed hours a year in a one-counselor K&ndash;8 building, costed openly on <a href="/counselor">Counselor Capacity</a>.</li>
+      <li data-en="Scheduled instructional time: 20–25 minutes in K–2, rising to 40–50 in the upper bands, with 60–75 for flagged lessons." data-es="Tiempo de instrucción programado: 20–25 minutos en K–2, hasta 40–50 en las bandas superiores, y 60–75 en las lecciones marcadas.">Scheduled instructional time: 20&ndash;25 minutes in K&ndash;2, rising to 40&ndash;50 in the upper bands, with 60&ndash;75 for flagged lessons.</li>
+      <li data-en="Crisis resources posted and current; the counselor’s name and same-day contact known to the teacher." data-es="Recursos de crisis publicados y vigentes; el maestro conoce el nombre del consejero y cómo contactarlo el mismo día.">Crisis resources posted and current; the counselor&rsquo;s name and same-day contact known to the teacher.</li>
+      <li data-en="The school’s own psychologist or counselor reviewing the most sensitive units and confirming clinical readiness in writing before delivery." data-es="El psicólogo o consejero de la propia escuela revisa las unidades más sensibles y confirma por escrito la preparación clínica antes de impartirlas.">The school&rsquo;s own psychologist or counselor reviewing the most sensitive units and confirming clinical readiness in writing before delivery.</li>
+      <li data-en="No license, account, subscription or purchase. The materials are open." data-es="Sin licencia, sin cuenta, sin suscripción y sin compra. Los materiales son abiertos.">No license, account, subscription or purchase. The materials are open.</li>
+      </ul>
+      </div>
+    <div class="arr" aria-hidden="true">&darr;</div>
+    <div class="step">
+      <span class="k" data-en="Activities · what actually happens" data-es="Actividades · lo que realmente ocurre">Activities &middot; what actually happens</span>
+      <h3 data-en="What teachers and students do" data-es="Lo que hacen maestros y estudiantes">What teachers and students do</h3>
+      <ul>
+      <li data-en="&lt;b&gt;A lesson read against a chapter.&lt;/b&gt; Each lesson sits against a scene in the companion novel, so the concept arrives as something that happened to a character before it is asked of the student." data-es="&lt;b&gt;Una lección leída junto a un capítulo.&lt;/b&gt; Cada lección se apoya en una escena de la novela complementaria, de modo que el concepto llega como algo que le pasó a un personaje antes de pedírselo al estudiante."><b>A lesson read against a chapter.</b> Each lesson sits against a scene in the companion novel, so the concept arrives as something that happened to a character before it is asked of the student.</li>
+      <li data-en="&lt;b&gt;Four strands, taught in sequence and revisited:&lt;/b&gt; identity, self-compassion, forgiveness, grace — mapped to standards lesson by lesson on &lt;a href=&quot;/standards&quot;&gt;Standards &amp; Alignment&lt;/a&gt;." data-es="&lt;b&gt;Cuatro hilos, enseñados en secuencia y retomados:&lt;/b&gt; identidad, autocompasión, perdón y gracia — alineados con los estándares lección por lección en &lt;a href=&quot;/standards&quot;&gt;Estándares y Alineación&lt;/a&gt;."><b>Four strands, taught in sequence and revisited:</b> identity, self-compassion, forgiveness, grace &mdash; mapped to standards lesson by lesson on <a href="/standards">Standards &amp; Alignment</a>.</li>
+      <li data-en="&lt;b&gt;Named practice in the moment of failure&lt;/b&gt; — mistake-and-repair routines, the distinction between what I did and what I am, and a shared vocabulary the adults use too." data-es="&lt;b&gt;Práctica con nombre en el momento del fracaso&lt;/b&gt; — rutinas de error y reparación, la distinción entre lo que hice y lo que soy, y un vocabulario compartido que los adultos también usan."><b>Named practice in the moment of failure</b> &mdash; mistake-and-repair routines, the distinction between what I did and what I am, and a shared vocabulary the adults use too.</li>
+      <li data-en="&lt;b&gt;Regulation tools available continuously&lt;/b&gt;, not only during the lesson." data-es="&lt;b&gt;Herramientas de regulación disponibles de forma continua&lt;/b&gt;, no sólo durante la lección."><b>Regulation tools available continuously</b>, not only during the lesson.</li>
+      <li data-en="&lt;b&gt;Family letters sent home in English and Spanish together&lt;/b&gt;, so the same words are available outside the room." data-es="&lt;b&gt;Cartas para la familia enviadas en inglés y español juntas&lt;/b&gt;, para que las mismas palabras estén disponibles fuera del aula."><b>Family letters sent home in English and Spanish together</b>, so the same words are available outside the room.</li>
+      <li data-en="&lt;b&gt;Disclosure protocols in every lesson&lt;/b&gt;, with counselor-in-room requirements on the highest-sensitivity ones." data-es="&lt;b&gt;Protocolos de revelación en cada lección&lt;/b&gt;, con el requisito de consejero en el aula en las de mayor sensibilidad."><b>Disclosure protocols in every lesson</b>, with counselor-in-room requirements on the highest-sensitivity ones.</li>
+      </ul>
+      </div>
+    <div class="arr" aria-hidden="true">&darr;</div>
+    <div class="step">
+      <span class="k" data-en="Outputs · what can be counted" data-es="Productos · lo que se puede contar">Outputs &middot; what can be counted</span>
+      <h3 data-en="What a pilot school can actually observe" data-es="Lo que una escuela piloto puede observar realmente">What a pilot school can actually observe</h3>
+      <ul>
+      <li data-en="Lessons delivered, deferred, or shortened — and under what staffing. Deferral records are data, not embarrassment." data-es="Lecciones impartidas, aplazadas o acortadas — y con qué personal. Los registros de aplazamiento son datos, no motivo de vergüenza.">Lessons delivered, deferred, or shortened &mdash; and under what staffing. Deferral records are data, not embarrassment.</li>
+      <li data-en="Counselor hours actually spent against the hours the calendar asked for." data-es="Horas de consejero realmente dedicadas frente a las horas que pedía el calendario.">Counselor hours actually spent against the hours the calendar asked for.</li>
+      <li data-en="Family letters sent; both languages or neither." data-es="Cartas para la familia enviadas; en ambos idiomas o en ninguno.">Family letters sent; both languages or neither.</li>
+      <li data-en="Student self-reflection responses, held in the school’s own spreadsheet." data-es="Respuestas de autorreflexión de los estudiantes, guardadas en la propia hoja de cálculo de la escuela.">Student self-reflection responses, held in the school&rsquo;s own spreadsheet.</li>
+      <li data-en="Disclosures surfaced and handled under protocol — the safety architecture working as designed is an output, not a failure." data-es="Revelaciones que salen a la luz y se atienden bajo protocolo — que la arquitectura de seguridad funcione como fue diseñada es un producto, no un fallo.">Disclosures surfaced and handled under protocol &mdash; the safety architecture working as designed is an output, not a failure.</li>
+      <li data-en="Teacher and family accounts of what held up in a real room and what did not." data-es="Testimonios de maestros y familias sobre qué funcionó en un aula real y qué no.">Teacher and family accounts of what held up in a real room and what did not.</li>
+      </ul>
+      </div>
+    <div class="arr" aria-hidden="true">&darr;</div>
+    <div class="step">
+      <span class="k" data-en="Short-term outcomes · within a year" data-es="Resultados a corto plazo · dentro de un año">Short-term outcomes &middot; within a year</span>
+      <h3 data-en="What the model predicts first" data-es="Lo que el modelo predice primero">What the model predicts first</h3>
+      <ul>
+      <li data-en="Students can &lt;b&gt;name&lt;/b&gt; an emotion, a mistake, and a repair, using words shared with their teacher and with home." data-es="Los estudiantes pueden &lt;b&gt;nombrar&lt;/b&gt; una emoción, un error y una reparación, con palabras compartidas con su maestro y con su casa.">Students can <b>name</b> an emotion, a mistake, and a repair, using words shared with their teacher and with home.</li>
+      <li data-en="Students distinguish &lt;i&gt;I did something bad&lt;/i&gt; from &lt;i&gt;I am bad&lt;/i&gt; when asked." data-es="Los estudiantes distinguen &lt;i&gt;hice algo malo&lt;/i&gt; de &lt;i&gt;soy malo&lt;/i&gt; cuando se les pregunta.">Students distinguish <i>I did something bad</i> from <i>I am bad</i> when asked.</li>
+      <li data-en="Students describe self-compassion as something other than self-esteem or excuse-making." data-es="Los estudiantes describen la autocompasión como algo distinto de la autoestima o de poner excusas.">Students describe self-compassion as something other than self-esteem or excuse-making.</li>
+      <li data-en="Students can say what forgiveness is &lt;b&gt;not&lt;/b&gt; — not reconciliation, not condoning, not forgetting — and that it is never required where harm is ongoing." data-es="Los estudiantes pueden decir lo que el perdón &lt;b&gt;no&lt;/b&gt; es — no es reconciliación, no es justificar, no es olvidar — y que nunca se exige cuando el daño continúa.">Students can say what forgiveness is <b>not</b> &mdash; not reconciliation, not condoning, not forgetting &mdash; and that it is never required where harm is ongoing.</li>
+      <li data-en="Adults in the building use the same vocabulary outside the lesson." data-es="Los adultos del edificio usan el mismo vocabulario fuera de la lección.">Adults in the building use the same vocabulary outside the lesson.</li>
+      </ul>
+      </div>
+    <div class="arr" aria-hidden="true">&darr;</div>
+    <div class="step">
+      <span class="k" data-en="Medium-term outcomes · the hypothesis" data-es="Resultados a medio plazo · la hipótesis">Medium-term outcomes &middot; the hypothesis</span>
+      <h3 data-en="What the model predicts if the short-term outcomes hold" data-es="Lo que el modelo predice si se sostienen los resultados a corto plazo">What the model predicts if the short-term outcomes hold</h3>
+      <ul>
+      <li data-en="Students respond to failure with repair attempts rather than concealment more often than before." data-es="Los estudiantes responden al fracaso con intentos de reparación en vez de ocultarlo, con más frecuencia que antes.">Students respond to failure with repair attempts rather than concealment more often than before.</li>
+      <li data-en="Conflicts reach a repair conversation more often, and reach escalation less often." data-es="Los conflictos llegan más a menudo a una conversación de reparación y menos a menudo a la escalada.">Conflicts reach a repair conversation more often, and reach escalation less often.</li>
+      <li data-en="Students report knowing at least one adult in the building they would tell." data-es="Los estudiantes dicen conocer al menos a un adulto del edificio a quien le contarían algo.">Students report knowing at least one adult in the building they would tell.</li>
+      <li data-en="Disclosures reach a counselor earlier." data-es="Las revelaciones llegan antes a un consejero.">Disclosures reach a counselor earlier.</li>
+      </ul>
+      <p class="cite" style="margin:9px 0 0" data-en="&lt;b&gt;These are predictions, not findings.&lt;/b&gt; Nothing on this list has been measured in a school using this curriculum. They are written down here so that a study can later show them to be wrong." data-es="&lt;b&gt;Esto son predicciones, no hallazgos.&lt;/b&gt; Nada de esta lista se ha medido en una escuela que use este currículo. Se escriben aquí para que un estudio pueda después demostrar que son falsas."><b>These are predictions, not findings.</b> Nothing on this list has been measured in a school using this curriculum. They are written down here so that a study can later show them to be wrong.</p>
+      </div>
+  </div>
+
+  <h2 data-en="Why each link, and the research behind it" data-es="Por qué cada eslabón, y la investigación que lo sostiene">Why each link, and the research behind it</h2>
+  <div class="card">
+    <p data-en="A logic model is only as good as its arrows. Each row below names the assumption, the published work it rests on, and — the part most logic models leave out — what would have to be true for the arrow to fail." data-es="Un modelo lógico vale lo que valen sus flechas. Cada fila nombra el supuesto, el trabajo publicado en que se apoya y — la parte que la mayoría de los modelos lógicos omite — qué tendría que ocurrir para que la flecha fallara.">A logic model is only as good as its arrows. Each row below names the assumption, the published work it rests on, and &mdash; the part most logic models leave out &mdash; what would have to be true for the arrow to fail.</p>
+  </div>
+  <div class="tblwrap">
+  <table class="tbl">
+    <thead><tr><th data-en="The link" data-es="El eslabón">The link</th><th data-en="The research it rests on" data-es="La investigación en que se apoya">The research it rests on</th><th data-en="How it could fail" data-es="Cómo podría fallar">How it could fail</th></tr></thead>
+    <tbody>
+      <tr><td data-en="&lt;b&gt;Teaching self-compassion explicitly&lt;/b&gt; → students treat their own failure with less harshness" data-es="&lt;b&gt;Enseñar autocompasión de forma explícita&lt;/b&gt; → los estudiantes tratan su propio fracaso con menos dureza"><b>Teaching self-compassion explicitly</b> &rarr; students treat their own failure with less harshness</td><td data-en="Neff’s three-element model — self-kindness, common humanity, mindfulness — and the Mindful Self-Compassion work with Germer. The curriculum uses that structure directly and distinguishes it from self-esteem throughout.&lt;span class=&quot;sub&quot;&gt;Neff (2003a, 2003b, 2011); Neff &amp; Germer.&lt;/span&gt;" data-es="El modelo de tres elementos de Neff — amabilidad hacia uno mismo, humanidad compartida, atención plena — y el trabajo de Mindful Self-Compassion con Germer. El currículo usa esa estructura directamente y la distingue de la autoestima en todo momento.&lt;span class=&quot;sub&quot;&gt;Neff (2003a, 2003b, 2011); Neff y Germer.&lt;/span&gt;">Neff&rsquo;s three-element model &mdash; self-kindness, common humanity, mindfulness &mdash; and the Mindful Self-Compassion work with Germer. The curriculum uses that structure directly and distinguishes it from self-esteem throughout.<span class="sub">Neff (2003a, 2003b, 2011); Neff &amp; Germer.</span></td><td data-en="Neff’s findings are evidence &lt;i&gt;about self-compassion&lt;/i&gt;. They are not evidence that this curriculum teaches it, or that a child taught it in a classroom acquires what the studies measured in adults." data-es="Los hallazgos de Neff son evidencia &lt;i&gt;sobre la autocompasión&lt;/i&gt;. No son evidencia de que este currículo la enseñe, ni de que un niño al que se le enseña en un aula adquiera lo que los estudios midieron en adultos.">Neff&rsquo;s findings are evidence <i>about self-compassion</i>. They are not evidence that this curriculum teaches it, or that a child taught it in a classroom acquires what the studies measured in adults.</td></tr>
+      <tr><td data-en="&lt;b&gt;Separating shame from guilt&lt;/b&gt; → students attempt repair instead of hiding" data-es="&lt;b&gt;Separar la vergüenza de la culpa&lt;/b&gt; → los estudiantes intentan reparar en vez de esconderse"><b>Separating shame from guilt</b> &rarr; students attempt repair instead of hiding</td><td data-en="The distinction between “I am bad” and “I did something bad,” and the finding that shame tends to produce concealment and withdrawal where guilt tends to produce reparative action. This grounds the mistake-and-repair strand from K–2 upward.&lt;span class=&quot;sub&quot;&gt;Brown; Tangney and colleagues.&lt;/span&gt;" data-es="La distinción entre «soy malo» y «hice algo malo», y el hallazgo de que la vergüenza tiende a producir ocultamiento y retraimiento mientras que la culpa tiende a producir acción reparadora. Esto fundamenta el hilo de error y reparación desde K–2 en adelante.&lt;span class=&quot;sub&quot;&gt;Brown; Tangney y colegas.&lt;/span&gt;">The distinction between &ldquo;I am bad&rdquo; and &ldquo;I did something bad,&rdquo; and the finding that shame tends to produce concealment and withdrawal where guilt tends to produce reparative action. This grounds the mistake-and-repair strand from K&ndash;2 upward.<span class="sub">Brown; Tangney and colleagues.</span></td><td data-en="The research describes a distinction between emotional states. Whether an eight-year-old who can &lt;i&gt;articulate&lt;/i&gt; the distinction then &lt;i&gt;acts&lt;/i&gt; on it is the untested step — and it is the step the whole strand depends on." data-es="La investigación describe una distinción entre estados emocionales. Que un niño de ocho años capaz de &lt;i&gt;enunciar&lt;/i&gt; la distinción luego &lt;i&gt;actúe&lt;/i&gt; conforme a ella es el paso no comprobado — y es el paso del que depende todo el hilo.">The research describes a distinction between emotional states. Whether an eight-year-old who can <i>articulate</i> the distinction then <i>acts</i> on it is the untested step &mdash; and it is the step the whole strand depends on.</td></tr>
+      <tr><td data-en="&lt;b&gt;Teaching forgiveness as a skill with boundaries&lt;/b&gt; → students hold a workable definition rather than a coerced one" data-es="&lt;b&gt;Enseñar el perdón como una destreza con límites&lt;/b&gt; → los estudiantes sostienen una definición viable y no una impuesta"><b>Teaching forgiveness as a skill with boundaries</b> &rarr; students hold a workable definition rather than a coerced one</td><td data-en="Forgiveness-therapy research defining what forgiveness is not — not reconciliation, not condoning, not forgetting — plus a staged process model. The curriculum’s most repeated safety line, &lt;i&gt;forgiveness is never required in situations involving ongoing harm&lt;/i&gt;, comes straight out of these boundaries.&lt;span class=&quot;sub&quot;&gt;Enright &amp; Fitzgibbons; Worthington (REACH).&lt;/span&gt;" data-es="La investigación sobre terapia del perdón que define lo que el perdón no es — no es reconciliación, no es justificar, no es olvidar — más un modelo de proceso por etapas. La frase de seguridad más repetida del currículo, &lt;i&gt;el perdón nunca se exige en situaciones de daño continuo&lt;/i&gt;, sale directamente de estos límites.&lt;span class=&quot;sub&quot;&gt;Enright y Fitzgibbons; Worthington (REACH).&lt;/span&gt;">Forgiveness-therapy research defining what forgiveness is not &mdash; not reconciliation, not condoning, not forgetting &mdash; plus a staged process model. The curriculum&rsquo;s most repeated safety line, <i>forgiveness is never required in situations involving ongoing harm</i>, comes straight out of these boundaries.<span class="sub">Enright &amp; Fitzgibbons; Worthington (REACH).</span></td><td data-en="This literature is largely clinical and largely adult. Its translation into a whole-class lesson for children is the curriculum’s own construction, and it is the place where a badly delivered lesson could do harm rather than nothing." data-es="Esta literatura es en gran medida clínica y en gran medida adulta. Su traslado a una lección de grupo para niños es una construcción propia del currículo, y es el punto donde una lección mal impartida podría hacer daño en lugar de no hacer nada.">This literature is largely clinical and largely adult. Its translation into a whole-class lesson for children is the curriculum&rsquo;s own construction, and it is the place where a badly delivered lesson could do harm rather than nothing.</td></tr>
+      <tr><td data-en="&lt;b&gt;The novel as spine&lt;/b&gt; → the concept is available before it is demanded" data-es="&lt;b&gt;La novela como columna vertebral&lt;/b&gt; → el concepto está disponible antes de exigirlo"><b>The novel as spine</b> &rarr; the concept is available before it is demanded</td><td data-en="This is the curriculum’s own design claim and the one with the least external support behind it. It is stated here as an assumption rather than dressed as a finding.&lt;span class=&quot;sub&quot;&gt;No published study is cited for this link.&lt;/span&gt;" data-es="Esta es la afirmación de diseño propia del currículo y la que menos respaldo externo tiene. Se expone aquí como un supuesto y no disfrazada de hallazgo.&lt;span class=&quot;sub&quot;&gt;No se cita ningún estudio publicado para este eslabón.&lt;/span&gt;">This is the curriculum&rsquo;s own design claim and the one with the least external support behind it. It is stated here as an assumption rather than dressed as a finding.<span class="sub">No published study is cited for this link.</span></td><td data-en="It may simply add reading load. A study could find the lessons work as well without the novel, which would be a useful result and would change the product." data-es="Puede que simplemente añada carga de lectura. Un estudio podría encontrar que las lecciones funcionan igual sin la novela, lo que sería un resultado útil y cambiaría el producto.">It may simply add reading load. A study could find the lessons work as well without the novel, which would be a useful result and would change the product.</td></tr>
+      <tr><td data-en="&lt;b&gt;Disclosure protocols and counselor-in-room requirements&lt;/b&gt; → surfacing is safe rather than hazardous" data-es="&lt;b&gt;Protocolos de revelación y consejero en el aula&lt;/b&gt; → que algo salga a la luz es seguro y no peligroso"><b>Disclosure protocols and counselor-in-room requirements</b> &rarr; surfacing is safe rather than hazardous</td><td data-en="Built to trauma-informed practice guidelines, with the AFSP Safe Messaging Guidelines applied by name to every highest-risk lesson. The 6–8 teacher brief states that the most sensitive chapter is statistically the most likely point of disclosure — and that this is the chapter doing its job.&lt;span class=&quot;sub&quot;&gt;AFSP Safe Messaging Guidelines; trauma-informed practice guidance.&lt;/span&gt;" data-es="Construido según guías de práctica informada por el trauma, con las AFSP Safe Messaging Guidelines aplicadas por su nombre a cada lección de mayor riesgo. La guía del maestro de 6–8 indica que el capítulo más sensible es estadísticamente el punto más probable de revelación — y que ahí el capítulo está haciendo su trabajo.&lt;span class=&quot;sub&quot;&gt;AFSP Safe Messaging Guidelines; orientación de práctica informada por el trauma.&lt;/span&gt;">Built to trauma-informed practice guidelines, with the AFSP Safe Messaging Guidelines applied by name to every highest-risk lesson. The 6&ndash;8 teacher brief states that the most sensitive chapter is statistically the most likely point of disclosure &mdash; and that this is the chapter doing its job.<span class="sub">AFSP Safe Messaging Guidelines; trauma-informed practice guidance.</span></td><td data-en="The protocol is only as good as the staffing behind it. A building that cannot put a counselor in the room and runs the lesson anyway has not implemented this model — it has implemented something more dangerous than doing nothing." data-es="El protocolo vale lo que vale el personal que lo sostiene. Un edificio que no puede poner un consejero en el aula y aun así imparte la lección no ha implementado este modelo — ha implementado algo más peligroso que no hacer nada.">The protocol is only as good as the staffing behind it. A building that cannot put a counselor in the room and runs the lesson anyway has not implemented this model &mdash; it has implemented something more dangerous than doing nothing.</td></tr>
+      <tr><td data-en="&lt;b&gt;Shared language across classroom and home&lt;/b&gt; → the framework survives outside the lesson" data-es="&lt;b&gt;Lenguaje compartido entre el aula y la casa&lt;/b&gt; → el marco sobrevive fuera de la lección"><b>Shared language across classroom and home</b> &rarr; the framework survives outside the lesson</td><td data-en="The bilingual family letters and the common vocabulary are the mechanism. The design intent is stated on the site as influencing the hours outside the forty-minute lesson.&lt;span class=&quot;sub&quot;&gt;Design assumption; no study cited.&lt;/span&gt;" data-es="Las cartas bilingües para la familia y el vocabulario común son el mecanismo. La intención de diseño se declara en el sitio como influir en las horas fuera de la lección de cuarenta minutos.&lt;span class=&quot;sub&quot;&gt;Supuesto de diseño; no se cita ningún estudio.&lt;/span&gt;">The bilingual family letters and the common vocabulary are the mechanism. The design intent is stated on the site as influencing the hours outside the forty-minute lesson.<span class="sub">Design assumption; no study cited.</span></td><td data-en="Letters can go home and be unread. Nothing in the model yet measures whether the language actually crosses the threshold." data-es="Las cartas pueden llegar a casa y no leerse. Nada en el modelo mide todavía si el lenguaje cruza realmente el umbral.">Letters can go home and be unread. Nothing in the model yet measures whether the language actually crosses the threshold.</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <h2 data-en="The effort underway to examine effects" data-es="El esfuerzo en marcha para examinar los efectos">The effort underway to examine effects</h2>
+  <div class="card">
+    <p data-en="The fourth evidence level asks for a logic model &lt;b&gt;and&lt;/b&gt; an ongoing effort to study the intervention. That effort is Stage 1 of the validation roadmap, and the reason the whole curriculum is published open is to make it possible without a cost or a procurement cycle." data-es="El cuarto nivel de evidencia pide un modelo lógico &lt;b&gt;y&lt;/b&gt; un esfuerzo continuo para estudiar la intervención. Ese esfuerzo es la Etapa 1 de la hoja de ruta de validación, y la razón por la que todo el currículo se publica abierto es hacerlo posible sin coste ni ciclo de adquisición.">The fourth evidence level asks for a logic model <b>and</b> an ongoing effort to study the intervention. That effort is Stage&nbsp;1 of the validation roadmap, and the reason the whole curriculum is published open is to make it possible without a cost or a procurement cycle.</p>
+    <ul>
+    <li data-en="&lt;b&gt;Stage 1 — pilot classrooms.&lt;/b&gt; Fidelity logs (what was delivered, deferred, and under what staffing), item-level instrument data under the district’s own data governance and in the district’s own spreadsheet, and teacher and family feedback." data-es="&lt;b&gt;Etapa 1 — aulas piloto.&lt;/b&gt; Registros de fidelidad (qué se impartió, qué se aplazó y con qué personal), datos del instrumento a nivel de ítem bajo la propia gobernanza de datos del distrito y en la propia hoja de cálculo del distrito, y comentarios de maestros y familias."><b>Stage 1 &mdash; pilot classrooms.</b> Fidelity logs (what was delivered, deferred, and under what staffing), item-level instrument data under the district&rsquo;s own data governance and in the district&rsquo;s own spreadsheet, and teacher and family feedback.</li>
+    <li data-en="&lt;b&gt;Stage 2 — external psychometric review&lt;/b&gt; of the self-reflection instrument, by reviewers with no stake in the result. Findings published whichever way they point, and the instrument revised or retired accordingly." data-es="&lt;b&gt;Etapa 2 — revisión psicométrica externa&lt;/b&gt; del instrumento de autorreflexión, por revisores sin interés en el resultado. Los hallazgos se publicarán apunten a donde apunten, y el instrumento se revisará o se retirará en consecuencia."><b>Stage 2 &mdash; external psychometric review</b> of the self-reflection instrument, by reviewers with no stake in the result. Findings published whichever way they point, and the instrument revised or retired accordingly.</li>
+    <li data-en="&lt;b&gt;Stage 3 — outcome evaluation&lt;/b&gt;, only after the instrument survives Stage 2. A validated measure is a precondition for a study, not a product of one." data-es="&lt;b&gt;Etapa 3 — evaluación de resultados&lt;/b&gt;, sólo después de que el instrumento supere la Etapa 2. Una medida validada es una condición previa de un estudio, no un producto de él."><b>Stage 3 &mdash; outcome evaluation</b>, only after the instrument survives Stage&nbsp;2. A validated measure is a precondition for a study, not a product of one.</li>
+    </ul>
+    <p data-en="&lt;b&gt;No pilot sites, review partners or timelines are named&lt;/b&gt;, here or on the roadmap, because naming them before agreements exist would be the same overclaim in a different suit. If your district would consider being one, that is the conversation worth having." data-es="&lt;b&gt;No se nombran escuelas piloto, socios revisores ni plazos&lt;/b&gt;, ni aquí ni en la hoja de ruta, porque nombrarlos antes de que existan acuerdos sería la misma exageración con otro traje. Si su distrito consideraría serlo, esa es la conversación que vale la pena tener."><b>No pilot sites, review partners or timelines are named</b>, here or on the roadmap, because naming them before agreements exist would be the same overclaim in a different suit. If your district would consider being one, that is the conversation worth having.</p>
+  </div>
+  <h2 data-en="What this page does not do" data-es="Lo que esta página no hace">What this page does not do</h2>
+  <div class="card">
+    <ul>
+    <li data-en="&lt;b&gt;It is not evidence of effectiveness.&lt;/b&gt; A logic model is a statement of how something is supposed to work. It can be entirely coherent and entirely wrong." data-es="&lt;b&gt;No es evidencia de eficacia.&lt;/b&gt; Un modelo lógico es una declaración de cómo se supone que algo funciona. Puede ser del todo coherente y del todo equivocado."><b>It is not evidence of effectiveness.</b> A logic model is a statement of how something is supposed to work. It can be entirely coherent and entirely wrong.</li>
+    <li data-en="&lt;b&gt;It does not assign an evidence tier.&lt;/b&gt; That is your district’s determination or your state’s." data-es="&lt;b&gt;No asigna un nivel de evidencia.&lt;/b&gt; Esa determinación es de su distrito o de su estado."><b>It does not assign an evidence tier.</b> That is your district&rsquo;s determination or your state&rsquo;s.</li>
+    <li data-en="&lt;b&gt;The self-reflection instrument is not validated.&lt;/b&gt; No independent psychometrician has evaluated it. Every score it produces is a flag for a conversation — never a diagnosis, never a screening result in the clinical sense, never a basis for a placement or eligibility decision." data-es="&lt;b&gt;El instrumento de autorreflexión no está validado.&lt;/b&gt; Ningún psicometrista independiente lo ha evaluado. Cada puntaje que produce es una señal para una conversación — nunca un diagnóstico, nunca un resultado de tamizaje en sentido clínico, nunca una base para una decisión de ubicación o elegibilidad."><b>The self-reflection instrument is not validated.</b> No independent psychometrician has evaluated it. Every score it produces is a flag for a conversation &mdash; never a diagnosis, never a screening result in the clinical sense, never a basis for a placement or eligibility decision.</li>
+    <li data-en="&lt;b&gt;It has not been externally reviewed.&lt;/b&gt; Nobody outside this program has checked the arrows above." data-es="&lt;b&gt;No ha sido revisada externamente.&lt;/b&gt; Nadie ajeno a este programa ha comprobado las flechas de arriba."><b>It has not been externally reviewed.</b> Nobody outside this program has checked the arrows above.</li>
+    <li data-en="&lt;b&gt;It is falsifiable on purpose.&lt;/b&gt; The medium-term outcomes are written as predictions, and the “how it could fail” column is there so a reviewer can find the weak link faster than a sales conversation would let them." data-es="&lt;b&gt;Es falsable a propósito.&lt;/b&gt; Los resultados a medio plazo están escritos como predicciones, y la columna «cómo podría fallar» está ahí para que un revisor encuentre el eslabón débil más rápido de lo que se lo permitiría una conversación de venta."><b>It is falsifiable on purpose.</b> The medium-term outcomes are written as predictions, and the &ldquo;how it could fail&rdquo; column is there so a reviewer can find the weak link faster than a sales conversation would let them.</li>
+    </ul>
+  </div>
+  <div class="note" data-en="&lt;b&gt;Found something that gets ahead of the evidence?&lt;/b&gt; This site commits to not using “evidence-based”, “proven” or “validated” before the evidence exists — not in marketing, not in a grant application, not in a sales conversation. A line on this page that overstates is a defect. Report it and it will be corrected." data-es="¿Encontró algo que se adelanta a la evidencia?&lt;/b&gt; Este sitio se compromete a no usar «basado en evidencia», «probado» ni «validado» antes de que la evidencia exista — ni en marketing, ni en una solicitud de subvención, ni en una conversación de venta. Una línea de esta página que exagere es un defecto. Repórtelo y se corregirá."><b>Found something that gets ahead of the evidence?</b> This site commits to not using &ldquo;evidence-based&rdquo;, &ldquo;proven&rdquo; or &ldquo;validated&rdquo; before the evidence exists &mdash; not in marketing, not in a grant application, not in a sales conversation. A line on this page that overstates is a defect. Report it and it will be corrected.</div>
+
+  <footer>
+    <p data-en="This page is the program’s own account of its rationale. It is not an independent review, and it will be updated as each roadmap stage actually completes — with dates." data-es="Esta página es el relato del propio programa sobre su fundamento. No es una revisión independiente, y se actualizará a medida que cada etapa de la hoja de ruta se complete realmente — con fechas.">This page is the program&rsquo;s own account of its rationale. It is not an independent review, and it will be updated as each roadmap stage actually completes &mdash; with dates.</p>
+    <p><a href="/roadmap">Evidence &amp; Roadmap</a> &middot;
+      <a href="/standards">Standards &amp; Alignment</a> &middot;
+      <a href="/counselor">Counselor Capacity</a> &middot;
+      <a href="/schools">For Schools</a> &middot;
+      <a href="/accessibility">Accessibility</a> &middot;
+      <a href="/">Home</a></p>
+  </footer>
+
+</div>
+</body>
+</html>

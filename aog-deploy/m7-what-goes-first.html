@@ -1,0 +1,3314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script>/* .30eg: begin in light. Dark only when this device chose it - Jimmy, 2026-09-02: 'I just passed out a science worksheet through the link and it showed up on my students computer, but it was in dark mode!' With no stored choice the dark palette rode the OS setting (prefers-color-scheme), so a dark-set Chromebook opened every worksheet dark. Setting data-theme before first paint defeats every :not([data-theme="light"]) guard below; the existing toggle still reads and stores the same key. */
+(function(){var t="light";try{if(localStorage.getItem("aog.interior.ws.v1.theme")==="dark")t="dark";}catch(e){}document.documentElement.setAttribute("data-theme",t);})();</script>
+<title>What Goes First — Architecture of Grace</title>
+<meta name="description" content="What Goes First — order of operations, one step at a time. Your work stays on this computer unless you choose to send it.">
+<!-- ═══ AOG ICONS + LINK PREVIEW · managed block · .30k0 ═══
+     Inserted by _work/aog_head.py — DO NOT hand-edit one page; edit the
+     script and re-run it, or the 100 pages drift apart again. The card
+     URL carries ?v= because Slack, Apple and Google cache an og image BY
+     URL for weeks: change the picture, bump IMG_V, or nothing shows up.
+     ═══════════════════════════════════════════════════════════════ -->
+<link rel="canonical" href="https://architectureofgrace.org/m7">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Architecture of Grace">
+<meta property="og:locale" content="en_US">
+<meta property="og:title" content="What Goes First — Architecture of Grace">
+<meta property="og:description" content="What Goes First — order of operations, one step at a time. Your work stays on this computer unless you choose to send it.">
+<meta property="og:url" content="https://architectureofgrace.org/m7">
+<meta property="og:image" content="https://architectureofgrace.org/og-math.png?v=1">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Mathematics · The Interior — fourteen activities from Architecture of Grace.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="What Goes First — Architecture of Grace">
+<meta name="twitter:description" content="What Goes First — order of operations, one step at a time. Your work stays on this computer unless you choose to send it.">
+<meta name="twitter:image" content="https://architectureofgrace.org/og-math.png?v=1">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#0A1E33">
+<meta name="apple-mobile-web-app-title" content="Grace">
+<meta name="application-name" content="Architecture of Grace">
+<!-- ═══ END AOG ICONS + LINK PREVIEW ═══ -->
+<meta name="robots" content="noindex">
+<!-- No external requests of any kind. Every byte this page needs is in this file. -->
+<style>
+/* ══ TOKENS ══════════════════════════════════════════════════════════
+   Light is the base. Dark redefines tokens only — never components.
+   Same token set as the Interior worksheets; one new accent for math.  */
+:root{
+  --ground:#F5F1E8;
+  --field:#FFFFFF;
+  --field-2:#EFEAE0;
+  --ink:#1D2733;
+  --ink-soft:#57626F;
+  --ink-faint:#5F6B78;
+  --navy:#1B3A5F;
+  --gold:#B8893A;
+  --gold-deep:#7A5C1F;
+  --rule:rgba(29,39,51,.16);
+  --rule-soft:rgba(29,39,51,.08);
+  --lift:0 1px 0 rgba(255,255,255,.7), 0 20px 44px -30px rgba(29,39,51,.55);
+  --lift-sm:0 1px 2px rgba(29,39,51,.07), 0 8px 20px -16px rgba(29,39,51,.4);
+  --a:#4A3A8C;
+  --a-wash:rgba(74,58,140,.07);
+  --lock:#2E6B4F;
+  --lock-wash:rgba(46,107,79,.09);
+  --caution:#9A3412;
+  --focus:#B8893A;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --ground:#12161C; --field:#1A2029; --field-2:#222A34;
+    --ink:#E9EEF4; --ink-soft:#A3AFBC; --ink-faint:#84909D;
+    --navy:#9CC2E8; --gold:#D6A852; --gold-deep:#D6A852;
+    --rule:rgba(233,238,244,.18); --rule-soft:rgba(233,238,244,.09);
+    --lift:0 1px 0 rgba(233,238,244,.04), 0 24px 54px -32px rgba(0,0,0,.95);
+    --lift-sm:0 1px 2px rgba(0,0,0,.5), 0 10px 24px -18px rgba(0,0,0,.9);
+    --a:#A99BE8; --a-wash:rgba(169,155,232,.12);
+    --lock:#79C79E; --lock-wash:rgba(121,199,158,.12);
+    --caution:#F0A07C;
+    --focus:#D6A852;
+  }
+}
+:root[data-theme="dark"]{
+  --ground:#12161C; --field:#1A2029; --field-2:#222A34;
+  --ink:#E9EEF4; --ink-soft:#A3AFBC; --ink-faint:#84909D;
+  --navy:#9CC2E8; --gold:#D6A852; --gold-deep:#D6A852;
+  --rule:rgba(233,238,244,.18); --rule-soft:rgba(233,238,244,.09);
+  --lift:0 1px 0 rgba(233,238,244,.04), 0 24px 54px -32px rgba(0,0,0,.95);
+  --lift-sm:0 1px 2px rgba(0,0,0,.5), 0 10px 24px -18px rgba(0,0,0,.9);
+  --a:#A99BE8; --a-wash:rgba(169,155,232,.12);
+  --lock:#79C79E; --lock-wash:rgba(121,199,158,.12);
+  --caution:#F0A07C;
+  --focus:#D6A852;
+}
+
+/* ══ BASE ══ */
+*{box-sizing:border-box;}
+html{-webkit-text-size-adjust:100%;}
+body{
+  margin:0; background:var(--ground); color:var(--ink);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  font-size:16px; line-height:1.55;
+}
+h1,h2,h3,.mast-h1{margin:0; text-wrap:balance; font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,"Times New Roman",serif; font-weight:600;}
+p{margin:0;}
+button{font:inherit; color:inherit; cursor:pointer;}
+:focus-visible{outline:3px solid var(--focus); outline-offset:2px; border-radius:4px;}
+.wrap{max-width:64rem; margin:0 auto; padding:0 20px;}
+[hidden]{display:none !important;}
+.sr{position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; border:0;}
+
+/* ══ MASTHEAD ══ */
+.mast{padding-top:26px; padding-bottom:4px;}   /* not `padding:26px 0` — that kills .wrap's 20px sides on a phone */
+.mast .row{display:flex; align-items:center; gap:13px;}
+.mark{
+  width:44px; height:44px; border-radius:12px; flex:none;
+  background:var(--navy); color:#E7C77B; display:grid; place-items:center;
+  font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif; font-size:25px; font-weight:700; line-height:1;
+}
+:root[data-theme="dark"] .mark{background:#1B3A5F;}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .mark{background:#1B3A5F;}}
+.mast .name{font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif; font-size:18px; font-weight:700; color:var(--navy); line-height:1.15;}
+.mast .sub{font-size:11.5px; color:var(--ink-faint); letter-spacing:.05em; text-transform:uppercase; font-weight:600;}
+.mast h1,.mast .mast-h1{font-size:clamp(19px,2.6vw,27px); line-height:1.04; letter-spacing:-.01em; margin:16px 0 4px; font-weight:700;}
+.mast .deck{font-size:16.5px; color:var(--ink-soft); max-width:38rem;}
+
+/* ══ THE LOCK ══ */
+/* AOG-LOCK-SLIM-V1 -- it used to be a bordered card with a 38px padlock, a
+   20px headline and a 46rem paragraph, sitting between the masthead and the
+   activity: a student scrolled PAST a privacy notice to reach the math.
+   Jimmy, 2026-09-01: "let us get rid of the nothing leaves this computer
+   nonsense. It is too big."
+   Nothing was deleted. The claim is now the summary line itself and every
+   word of the old paragraph is the first thing inside "How do I know that's
+   true?".
+   ⚠ #lock-h AND THE INTRO PARAGRAPH KEEP THEIR IDS. The send block rewrites
+   both BY ID when a page is opened from a link carrying dest=, and it also
+   rewrites #lockP1. Renaming any of them silently un-honests the lock.
+   ⚠ data-en/data-es moved OFF <summary> onto .lock-ask, because paintLang()
+   sets textContent on every [data-en] and would wipe the h2 out of it. */
+.lock{
+  margin:14px 0 6px; padding:2px 0;
+  border-top:1px solid var(--rule-soft); border-bottom:1px solid var(--rule-soft);
+  display:flex; flex-wrap:wrap; align-items:flex-start; gap:2px 20px;
+}
+.lock h2{font-size:14.5px; line-height:1.35; color:var(--ink); font-weight:700;}
+.lock p{font-size:14px; color:var(--ink-soft); max-width:46rem;}
+.lock-ask{
+  font-size:11.5px; font-weight:700; letter-spacing:.05em; text-transform:uppercase;
+  color:var(--lock); white-space:nowrap;
+}
+.lock-more{margin-top:0; border-top:0; padding-top:0; flex:1 1 300px; min-width:0;}
+/* opened, the four paragraphs take the whole row instead of a 46%-wide
+   column with the button row parked in the white space beside them */
+.lock-more[open]{flex-basis:100%;}
+.lock-more summary{
+  cursor:pointer; list-style:none; min-height:40px;
+  display:flex; flex-wrap:wrap; align-items:center; gap:3px 10px;
+}
+.lock-more summary::-webkit-details-marker{display:none;}
+.lock-more summary::after{content:"＋"; font-size:14px; opacity:.75; color:var(--lock);}
+.lock-more[open] summary::after{content:"−";}
+.lock-more .body{font-size:14px; color:var(--ink-soft); margin-top:11px; display:grid; gap:9px; max-width:46rem;}
+.lock-more .body b{color:var(--ink);}
+.lock-acts{display:flex; flex-wrap:wrap; gap:9px; margin-top:0; padding-top:3px;}
+
+/* ══ BUTTONS ══ */
+.btn{
+  border:1.5px solid var(--rule); background:var(--field); border-radius:10px;
+  padding:8px 14px; font-size:13.5px; font-weight:600; color:var(--ink);
+  display:inline-flex; align-items:center; gap:7px;
+  transition:transform .12s ease, border-color .12s ease, background .12s ease;
+}
+.btn:hover{border-color:var(--a); transform:translateY(-1px);}
+.btn:active{transform:translateY(0);}
+.btn-accent{background:var(--a); border-color:var(--a); color:#fff;}
+:root[data-theme="dark"] .btn-accent{color:#12161C;}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .btn-accent{color:#12161C;}}
+.btn-danger{border-color:var(--caution); color:var(--caution);}
+.btn-danger:hover{border-color:var(--caution); background:var(--caution); color:var(--field);}
+.btn-lock{border-color:var(--lock); color:var(--lock);}
+/* .30fg: the erase control is a quiet text link, not the loudest button above the first problem */
+#eraseAll.btn-lock{order:9; border:0; background:transparent; box-shadow:none; padding:8px 2px;
+  text-decoration:underline; text-underline-offset:3px; font-weight:600; color:var(--lock);}
+#eraseAll.btn-lock:hover{transform:none; color:var(--ink);}
+
+/* ══ SHEET ══ */
+.sheets{padding-top:20px; padding-bottom:70px;}   /* longhand: shorthand would reset .wrap's sides */
+.sheet{
+  background:var(--field); border:1.5px solid var(--rule); border-radius:20px;
+  box-shadow:var(--lift); padding:clamp(20px,4vw,38px); max-width:52rem; margin:0 auto 26px;
+}
+.sheet-head{border-bottom:2px solid var(--a); padding-bottom:14px;}
+.sheet-head .k{font-size:11px; font-weight:800; letter-spacing:.14em; text-transform:uppercase; color:var(--a);}
+.sheet-head h1,.sheet-head h2{font-size:clamp(26px,4.4vw,38px); line-height:1.06; letter-spacing:-.018em; margin:6px 0 7px;}
+.sheet-head .say{font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif; font-style:italic; font-size:17px; color:var(--ink-soft); line-height:1.4;}
+
+.priv{
+  margin:18px 0 4px; border:1.5px solid var(--lock); border-left-width:5px; border-radius:11px;
+  background:var(--lock-wash); padding:11px 14px;
+}
+.priv .k{font-size:10.5px; font-weight:800; letter-spacing:.15em; text-transform:uppercase; color:var(--lock);}
+.priv .v{font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif; font-style:italic; font-size:14.5px; color:var(--ink-soft); margin-top:2px;}
+
+/* ══ WHERE AM I ══
+   Location, never a score. "Problem 3 of 10" answers §11's "where am I?"
+   A filled track would answer "how am I ranked?" — which this page never does. */
+.where{
+  display:flex; align-items:baseline; gap:12px; flex-wrap:wrap;
+  margin-top:24px; padding-bottom:10px; border-bottom:1.5px solid var(--rule-soft);
+}
+.where .n{font-size:12px; font-weight:800; letter-spacing:.13em; text-transform:uppercase; color:var(--a);}
+.where .goal{font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif; font-style:italic; font-size:14.5px; color:var(--ink-faint);}
+
+/* ══ THE ASK ══ */
+.ask{
+  margin-top:22px; border:2px solid var(--rule); border-radius:18px;
+  background:var(--a-wash); padding:clamp(18px,3.5vw,26px) clamp(14px,3vw,24px);
+}
+.ask-q{
+  text-align:center; font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+  font-size:clamp(19px,3.4vw,25px); line-height:1.25; color:var(--ink-soft);
+}
+.ask-q b{
+  display:block; margin-top:6px; font-size:clamp(34px,9vw,58px); line-height:1.05;
+  color:var(--a); font-weight:700; font-variant-numeric:tabular-nums; letter-spacing:.01em;
+}
+
+/* ══ THE NUMBER LINE ══
+   A native range input IS the control: keyboard, touch, mouse and screen reader
+   all get the same path, and `step` does the snapping. Everything drawn around
+   it is decoration positioned in the same coordinate space.
+   Ticks are real elements with a border — never a background gradient. */
+.nl{position:relative; margin:clamp(26px,5vw,38px) 6px clamp(8px,2vw,14px);}
+.nl-stage{position:relative; height:96px;}
+.nl-axis{
+  position:absolute; left:0; right:0; top:46px; height:0;
+  border-top:2.5px solid var(--ink-soft);
+}
+.nl-axis::before,.nl-axis::after{
+  content:""; position:absolute; top:-5px; width:0; height:0;
+  border-top:5px solid transparent; border-bottom:5px solid transparent;
+}
+.nl-axis::before{left:-9px; border-right:9px solid var(--ink-soft);}
+.nl-axis::after{right:-9px; border-left:9px solid var(--ink-soft);}
+.nl-tick{
+  /* minor ticks must be countable from the back row, not just visible */
+  position:absolute; top:40px; width:0; height:13px;
+  border-left:1.5px solid var(--ink-faint); transform:translateX(-50%);
+}
+.nl-tick.maj{top:34px; height:25px; border-left-color:var(--ink-soft); border-left-width:2px;}
+.nl-tick.zero{border-left-color:var(--ink); border-left-width:2.5px;}
+.nl-lab{
+  position:absolute; top:64px; transform:translateX(-50%);
+  font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+  font-size:14px; color:var(--ink-soft); font-variant-numeric:tabular-nums; white-space:nowrap;
+}
+.nl-lab.zero{color:var(--ink); font-weight:700;}
+
+/* the marker the student is moving — a pin dropped onto the axis */
+.nl-pin{
+  position:absolute; top:0; transform:translateX(-50%);
+  display:flex; flex-direction:column; align-items:center; pointer-events:none;
+}
+.nl-pin .val{
+  font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+  font-size:17px; font-weight:700; color:var(--a); font-variant-numeric:tabular-nums;
+  background:var(--field); border:2px solid var(--a); border-radius:9px;
+  padding:2px 9px; white-space:nowrap;
+}
+.nl-pin .stem{width:2.5px; height:16px; background:var(--a);}
+.nl-pin .head{
+  width:0; height:0; border-left:8px solid transparent; border-right:8px solid transparent;
+  border-top:11px solid var(--a);
+}
+@media (prefers-reduced-motion: no-preference){
+  .nl-pin{transition:left .16s cubic-bezier(.2,.8,.3,1);}
+  .nl.placed .nl-pin{transition:left .3s cubic-bezier(.2,.8,.3,1);}
+}
+.nl.right .nl-pin .val{color:var(--lock); border-color:var(--lock);}
+.nl.right .nl-pin .stem{background:var(--lock);}
+.nl.right .nl-pin .head{border-top-color:var(--lock);}
+
+/* the answer's own pin, shown under the axis only after a placement is checked */
+.nl-true{
+  position:absolute; top:60px; transform:translateX(-50%); display:none;
+  flex-direction:column; align-items:center; pointer-events:none;
+}
+.nl.showtrue .nl-true{display:flex;}
+.nl-true .head{
+  width:0; height:0; border-left:8px solid transparent; border-right:8px solid transparent;
+  border-bottom:11px solid var(--lock);
+}
+.nl-true .stem{width:2.5px; height:14px; background:var(--lock);}
+.nl-true .val{
+  font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+  font-size:15px; font-weight:700; color:var(--lock); font-variant-numeric:tabular-nums;
+  background:var(--field); border:2px solid var(--lock); border-radius:9px; padding:1px 8px; white-space:nowrap;
+}
+
+/* the control itself, sitting exactly on the axis */
+input[type=range].nl-input{
+  -webkit-appearance:none; appearance:none;
+  position:absolute; left:0; right:0; top:32px; width:100%; height:42px;
+  background:transparent; margin:0; cursor:grab;
+}
+input[type=range].nl-input:active{cursor:grabbing;}
+input[type=range].nl-input::-webkit-slider-runnable-track{height:42px; background:transparent;}
+input[type=range].nl-input::-moz-range-track{height:42px; background:transparent;}
+input[type=range].nl-input::-webkit-slider-thumb{
+  -webkit-appearance:none; width:42px; height:42px; border-radius:50%;
+  background:transparent; border:0; cursor:grab;
+}
+input[type=range].nl-input::-moz-range-thumb{
+  width:42px; height:42px; border-radius:50%; background:transparent; border:0; cursor:grab;
+}
+input[type=range].nl-input:focus-visible{outline:3px solid var(--focus); outline-offset:4px; border-radius:10px;}
+
+.nl-help{
+  text-align:center; font-size:12.5px; color:var(--ink-faint); margin-top:4px;
+  font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif; font-style:italic;
+}
+.nl-say{
+  margin-top:16px; text-align:center; font-size:15.5px; color:var(--ink-soft);
+  min-height:3em; max-width:34rem; margin-left:auto; margin-right:auto; line-height:1.5;
+}
+.nl-say b{color:var(--ink); font-weight:700;}
+.nl-say .good{color:var(--lock); font-weight:700;}
+.nl-acts{display:flex; flex-wrap:wrap; gap:9px; margin-top:6px; justify-content:center;}
+
+/* ══ HINT LADDER ══ */
+.ladder{margin-top:22px; border:1.5px solid var(--rule); border-radius:16px; overflow:hidden;}
+.ladder-head{
+  display:flex; align-items:center; justify-content:space-between; gap:12px;
+  padding:12px 15px; background:var(--field-2); flex-wrap:wrap;
+}
+.ladder-head .k{font-size:11px; font-weight:800; letter-spacing:.13em; text-transform:uppercase; color:var(--ink-soft);}
+.rungs{display:grid;}
+.rung{
+  padding:14px 16px; border-top:1.5px solid var(--rule-soft);
+  display:grid; grid-template-columns:34px 1fr; gap:13px; align-items:start;
+  animation:rise .3s cubic-bezier(.2,.7,.3,1) both;
+}
+@keyframes rise{from{opacity:0; transform:translateY(7px);} to{opacity:1; transform:none;}}
+@media (prefers-reduced-motion: reduce){.rung{animation:none;} .nl-pin{transition:none;}}
+.rung .n{
+  width:34px; height:34px; border-radius:10px; border:2px solid var(--a); color:var(--a);
+  display:grid; place-items:center;
+  font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif; font-size:16px; font-weight:700;
+}
+.rung .k{font-size:10.5px; font-weight:800; letter-spacing:.13em; text-transform:uppercase; color:var(--a); display:block;}
+.rung .t{font-size:15.5px; color:var(--ink); margin-top:3px; line-height:1.5;}
+.rung .t b{font-weight:700;}
+.worked{
+  margin-top:9px; border:1.5px dashed var(--a); border-radius:11px; padding:11px 13px;
+  background:var(--a-wash);
+  font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+  font-size:16px; line-height:1.85; font-variant-numeric:tabular-nums;
+}
+.worked div + div{color:var(--ink-soft);}
+.worked .fin{color:var(--lock); font-weight:700;}
+
+/* the miniature line drawn inside hint 3 */
+.mini{margin-top:12px; position:relative; height:52px;}
+.mini .ax{position:absolute; left:8px; right:8px; top:22px; height:0; border-top:2px solid var(--ink-soft);}
+.mini i{position:absolute; top:16px; width:0; height:13px; border-left:2px solid var(--ink-soft); transform:translateX(-50%);}
+.mini span:not(.ax){
+  position:absolute; top:32px; transform:translateX(-50%);
+  font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif; font-size:13px;
+  color:var(--ink-soft); font-variant-numeric:tabular-nums; white-space:nowrap;
+}
+.mini b{
+  position:absolute; top:0; transform:translateX(-50%);
+  font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif; font-size:13px;
+  color:var(--a); font-weight:700; white-space:nowrap;
+}
+
+/* ══ CONFIDENCE ══ */
+.conf{margin-top:26px; border:2px solid var(--rule); border-radius:16px; padding:16px 18px 18px;}
+.conf .lab{font-size:11.5px; font-weight:800; letter-spacing:.13em; text-transform:uppercase; color:var(--a); display:block;}
+.conf .hint{font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif; font-style:italic; font-size:14.5px; color:var(--ink-faint); margin:2px 0 12px;}
+.conf-row{display:grid; grid-template-columns:repeat(5,1fr); gap:8px;}
+.conf-b{
+  border:2px solid var(--rule); border-radius:12px; background:var(--field);
+  padding:12px 6px 11px; text-align:center; transition:border-color .13s ease, background .13s ease, transform .13s ease;
+}
+.conf-b .v{display:block; font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif; font-size:21px; font-weight:700; color:var(--a);}
+.conf-b .w{display:block; font-size:11px; color:var(--ink-soft); line-height:1.25; margin-top:3px;}
+.conf-b:hover{border-color:var(--a); transform:translateY(-2px);}
+.conf-b[aria-pressed="true"]{border-color:var(--a); background:var(--a-wash);}
+@media (prefers-reduced-motion: reduce){.conf-b:hover{transform:none;}}
+@media (max-width:560px){
+  .conf-row{grid-template-columns:repeat(5,1fr); gap:5px;}
+  .conf-b{padding:9px 2px;}
+  .conf-b .w{font-size:9.5px;}
+}
+
+/* ══ CLOSE ══ */
+.close-card{
+  margin-top:26px; border:2px dashed var(--lock); border-radius:16px; padding:20px;
+  background:var(--lock-wash);
+}
+.close-card .k{font-size:11px; font-weight:800; letter-spacing:.14em; text-transform:uppercase; color:var(--lock);}
+.close-card h3{font-size:22px; margin:6px 0 8px; line-height:1.2;}
+.close-card p{font-size:15px; color:var(--ink-soft); max-width:40rem;}
+
+/* ══ WATCH ONE FIRST ══
+   An "I do" before the "you do". Watching a model is not a hint and is
+   not recorded — a student who needs to see one worked before touching
+   problem 1 should not pay for that in the probe row. */
+.demo{margin:18px 0 0; border:1.5px solid var(--a); border-radius:14px; background:var(--field);}
+.demo > summary{
+  padding:13px 16px; cursor:pointer; list-style:none;
+  font-size:12px; font-weight:800; letter-spacing:.12em; text-transform:uppercase; color:var(--a);
+  display:flex; align-items:center; gap:8px;
+}
+.demo > summary::-webkit-details-marker{display:none;}
+.demo > summary::after{content:"＋"; margin-left:auto; font-size:14px;}
+.demo[open] > summary::after{content:"−";}
+.demo .inner{padding:0 16px 16px; border-top:1.5px solid var(--rule-soft);}
+.demo p.note{font-size:13.5px; color:var(--ink-soft); margin-top:11px; max-width:42rem;}
+.demo .worked{
+  margin-top:11px; border:1.5px dashed var(--a); border-radius:11px; padding:11px 13px;
+  background:var(--a-wash); max-width:26rem;
+  font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+  font-size:16px; line-height:1.85; font-variant-numeric:tabular-nums;
+}
+.demo .worked div + div{color:var(--ink-soft);}
+.demo .worked .fin{color:var(--lock); font-weight:700;}
+
+/* ══ TEACHER PANEL ══ */
+.teach{margin-top:26px; border:1.5px solid var(--gold); border-radius:14px; background:var(--field);}
+.teach > summary{
+  padding:13px 16px; cursor:pointer; list-style:none;
+  font-size:12px; font-weight:800; letter-spacing:.12em; text-transform:uppercase; color:var(--gold-deep);
+  display:flex; align-items:center; gap:8px;
+}
+.teach > summary::-webkit-details-marker{display:none;}
+.teach > summary::after{content:"＋"; margin-left:auto; font-size:14px;}
+.teach[open] > summary::after{content:"−";}
+.teach .inner{padding:0 16px 16px; border-top:1.5px solid var(--rule-soft);}
+.teach p.note{font-size:13.5px; color:var(--ink-soft); margin-top:11px; max-width:42rem;}
+.probe{
+  margin-top:12px; border:1.5px solid var(--rule); border-radius:11px; overflow:hidden;
+}
+.probe dl{margin:0; display:grid; grid-template-columns:auto 1fr;}
+.probe dt{
+  padding:8px 13px; font-size:10.5px; font-weight:800; letter-spacing:.11em; text-transform:uppercase;
+  color:var(--ink-soft); background:var(--field-2); border-bottom:1px solid var(--rule-soft); white-space:nowrap;
+}
+.probe dd{
+  margin:0; padding:8px 13px; font-size:15px; font-variant-numeric:tabular-nums;
+  border-bottom:1px solid var(--rule-soft);
+}
+.probe dl > :nth-last-child(-n+2){border-bottom:0;}
+.probe dd b{color:var(--a); font-weight:700;}
+
+/* ══ SHEET FOOTER ══ */
+.sheet-foot{
+  margin-top:30px; border-top:1.5px solid var(--rule); padding-top:15px;
+  display:flex; flex-wrap:wrap; align-items:center; gap:9px;
+}
+.saved{
+  margin-left:auto; font-size:12px; font-weight:600; color:var(--lock);
+  display:inline-flex; align-items:center; gap:6px; opacity:0; transition:opacity .3s ease;
+}
+.saved.on{opacity:1;}
+.saved .dot{width:7px; height:7px; border-radius:50%; background:var(--lock); flex:none;}
+@media (max-width:520px){.saved{margin-left:0; width:100%;}}
+
+/* ══ PROJECTOR ══ */
+#beam{
+  position:fixed; inset:0; z-index:900; background:var(--field); color:var(--ink);
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  gap:clamp(14px,3vh,34px); padding:5vh 4vw; text-align:center; cursor:pointer;
+}
+#beam .wk{font-size:clamp(13px,1.6vw,22px); font-weight:800; letter-spacing:.2em; text-transform:uppercase; color:var(--ink-faint);}
+#beam .nm{font-family:Georgia,serif; font-size:clamp(28px,5vw,72px); line-height:1.05; font-weight:700;}
+#beam .url{
+  font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  font-size:clamp(19px,5.4vw,104px); font-weight:700; line-height:1.1;
+  letter-spacing:-.02em; color:var(--a); white-space:nowrap; max-width:100%;
+}
+#beam .hint{font-size:clamp(13px,1.5vw,20px); color:var(--ink-faint);}
+#beam .x{position:absolute; top:18px; right:20px; font-size:15px; font-weight:700; color:var(--ink-faint);}
+
+/* ══ PAGE FOOT ══ */
+.foot{border-top:1px solid var(--rule-soft); padding-top:22px; padding-bottom:46px; color:var(--ink-faint); font-size:12.5px;}
+.foot p{max-width:46rem;}
+.foot p + p{margin-top:7px;}
+.foot b{color:var(--ink-soft);}
+
+/* ══ FAIL OPEN ══
+   With JS off, the interactive stage is meaningless and the paper list is the page. */
+.paperlist{margin-top:24px;}
+.paperlist ol{margin:0; padding:0; list-style:none; display:grid; gap:0;}
+.paperlist li{
+  display:grid; grid-template-columns:2.4em 1fr; gap:12px; align-items:baseline;
+  padding:13px 2px; border-bottom:1.5px solid var(--rule-soft);
+}
+.paperlist .q{
+  font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+  font-size:11px; font-weight:800; letter-spacing:.1em; color:var(--ink-faint);
+  text-transform:uppercase; font-variant-numeric:tabular-nums;
+}
+.paperlist .e{
+  font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+  font-size:20px; font-variant-numeric:tabular-nums;
+}
+.paperlist .e i{color:var(--a); font-style:italic;}
+.paperlist .work{display:block; margin-top:7px; height:0; border-bottom:1.5px solid var(--rule);}
+.js-on .paperlist{display:none;}
+.js-on .paperlist.forprint{display:block;}
+.paperlist.forprint{display:none;}
+
+
+/* ══ THE PRINTED / JS-OFF LINES ══ */
+.paperlist li{display:grid; grid-template-columns:2.2em 1fr; gap:11px; align-items:start;
+  padding:9px 2px 4px; border-bottom:1.5px solid var(--rule-soft);}
+.paperlist .e{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  font-size:15px; color:var(--ink-soft);}
+.paperlist .e b{font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+  font-size:19px; color:var(--ink); font-variant-numeric:tabular-nums;}
+.pline{position:relative; display:block; height:44px; margin-top:6px;}
+.pline .ax{position:absolute; left:4px; right:4px; top:18px; height:0; border-top:2px solid var(--ink-soft);}
+.pline i{position:absolute; top:13px; width:0; height:11px; border-left:1.5px solid var(--ink-faint); transform:translateX(-50%);}
+.pline i.maj{top:10px; height:17px; border-left-color:var(--ink-soft); border-left-width:2px;}
+.pline span:not(.ax){position:absolute; top:28px; transform:translateX(-50%);
+  font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif; font-size:12px;
+  color:var(--ink-faint); font-variant-numeric:tabular-nums; white-space:nowrap;}
+
+/* ══ THE WALK ═══════════════════════════════════════════════════════
+   The jump drawn above the axis IS the lesson. Big Ideas calls this
+   "Walk the Line" (pgs 203–204) — start on the first number, the second
+   number tells you how far and which way. The arrow is what the student
+   is actually being asked to reason about, so it is drawn live while
+   they drag, not only after they commit. */
+.nl-start{
+  position:absolute; top:40px; transform:translateX(-50%);
+  display:flex; flex-direction:column; align-items:center; pointer-events:none;
+}
+.nl-start .dot{
+  width:16px; height:16px; border-radius:50%;
+  border:3px solid var(--ink-soft); background:var(--field);
+}
+.nl-start .lab{display:none;}   /* it collided with the axis labels; the readout says it in words */
+
+.jump{position:absolute; height:26px; pointer-events:none;}
+.jump .bar{
+  position:absolute; left:0; right:0; bottom:0; height:0;
+  border-top:2.5px solid var(--a);
+}
+/* dashed guides from each end of the walk down to the axis, so the arrow is
+   visibly anchored to two numbers rather than floating above them */
+.jump .up{position:absolute; top:100%; width:0; height:42px;
+  border-left:1.5px dashed var(--a); opacity:.5;}
+.jump .up.a{left:0;}
+.jump .up.b{right:0;}
+.jump .tip{
+  position:absolute; bottom:-6px; width:0; height:0;
+  border-top:6px solid transparent; border-bottom:6px solid transparent;
+}
+.jump.right .tip{right:-1px; border-left:10px solid var(--a);}
+.jump.left  .tip{left:-1px;  border-right:10px solid var(--a);}
+.jump .cap{
+  position:absolute; left:50%; bottom:14px; transform:translateX(-50%);
+  font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+  font-size:13.5px; font-weight:700; color:var(--a); white-space:nowrap;
+  background:var(--field); border-radius:6px; padding:0 6px;
+}
+.jump.none{display:none;}
+.nl.right .jump .bar{border-top-color:var(--lock);}
+.nl.right .jump .up{border-left-color:var(--lock);}
+.nl.right .jump .cap{color:var(--lock);}
+.nl.right .jump.right .tip{border-left-color:var(--lock);}
+.nl.right .jump.left  .tip{border-right-color:var(--lock);}
+@media (prefers-reduced-motion: no-preference){
+  .jump{transition:left .16s cubic-bezier(.2,.8,.3,1), width .16s cubic-bezier(.2,.8,.3,1);}
+}
+@media (prefers-reduced-motion: reduce){ .jump{transition:none;} }
+
+/* Three bands, none of them overlapping: the WALK above (14–40), the
+   student's marker between it and the axis (55–82), the line at 82.
+   The pin carries no value box here — the readout under the line already
+   says the number, and two copies of it collided with the arrow. */
+.nl-stage{height:132px;}
+.nl-axis{top:82px;}
+.nl-tick{top:76px;}
+.nl-tick.maj{top:70px;}
+.nl-lab{top:100px;}
+.nl-start{top:74px;}
+.nl-pin{top:55px;}
+.nl-pin .val{display:none;}
+.nl-pin .stem{height:16px;}
+input[type=range].nl-input{top:66px;}
+.jump{top:14px;}
+
+/* the readout under the line: how far, and which way */
+.walked{
+  text-align:center; margin-top:2px;
+  font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+  font-size:16px; color:var(--ink-soft);
+}
+.walked b{color:var(--a); font-weight:700;}
+.walked.zero{color:var(--ink-faint); font-style:italic;}
+
+/* the direction rule, shown in hint 2 and on the closing card */
+.ruleset{display:grid; gap:7px; margin-top:10px;}
+.ruleset div{
+  display:grid; grid-template-columns:auto 1fr; gap:11px; align-items:baseline;
+  border-left:3px solid var(--a); padding:2px 0 2px 11px;
+  font-size:14.5px; color:var(--ink-soft);
+}
+.ruleset b{
+  font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+  font-size:16px; color:var(--ink); white-space:nowrap; font-variant-numeric:tabular-nums;
+}
+
+/* ══ printed / JS-off: the expression, then a line to draw the walk on ══ */
+.paperlist .ex{
+  font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+  font-size:20px; color:var(--ink); font-variant-numeric:tabular-nums;
+}
+.paperlist .ex u{text-decoration:none; border-bottom:1.5px solid var(--rule); padding:0 1.6em;}
+
+/* ══ THE EXPRESSION AS IT COLLAPSES ══════════════════════════════════
+   This page never asks for a final answer. It asks, over and over, which
+   operation happens NEXT — which is the whole skill, and the only place
+   the mistake actually lives. The expression rewrites in front of them
+   and the trail of what they did stays on screen. */
+.expr{
+  text-align:center; margin:clamp(18px,4vw,28px) 0 4px;
+  font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+  font-size:clamp(28px,7.4vw,48px); line-height:1.15; font-weight:600;
+  font-variant-numeric:tabular-nums; letter-spacing:.01em; color:var(--ink);
+  overflow-x:auto; padding:2px 4px;
+}
+.expr .sol{color:var(--lock);}
+@media (prefers-reduced-motion: no-preference){
+  .expr{transition:color .2s ease;}
+  .expr.beat{animation:beat .3s cubic-bezier(.2,.8,.3,1);}
+}
+@keyframes beat{ from{transform:scale(.97); opacity:.55;} to{transform:none; opacity:1;} }
+
+/* the steps already taken, oldest first, grayed */
+.trail{
+  margin:10px auto 0; max-width:34rem; display:grid; gap:3px;
+  font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+  font-size:15px; font-variant-numeric:tabular-nums; color:var(--ink-faint);
+  text-align:center;
+}
+.trail div{opacity:.75;}
+.trail div .did{color:var(--a); font-weight:700;}
+.trail:empty{display:none;}
+
+/* ══ THE MOVES ═══════════════════════════════════════════════════════
+   Every button is a piece of arithmetic that is TRUE. Only one of them is
+   allowed to happen next, and a wrong pick is refused with the reason —
+   unlike the balance in m3, doing these out of order really does produce
+   a wrong answer, so the page cannot let it through. */
+.moves{display:grid; grid-template-columns:repeat(auto-fit,minmax(132px,1fr)); gap:11px; margin-top:6px;}
+.move-b{
+  border:2px solid var(--rule); border-radius:14px; background:var(--field);
+  padding:16px 8px; min-height:66px;
+  font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+  font-size:clamp(19px,4vw,24px); font-weight:600; font-variant-numeric:tabular-nums;
+  transition:transform .13s ease, border-color .13s ease, background .13s ease;
+  touch-action:manipulation;
+}
+.move-b:hover{border-color:var(--a); background:var(--a-wash); transform:translateY(-2px);}
+.move-b:active{transform:translateY(0) scale(.97);}
+.move-b[disabled]{opacity:.4; cursor:default; transform:none;}
+.move-b.refused{border-color:var(--caution); background:var(--field);}
+@media (prefers-reduced-motion: reduce){ .move-b:hover{transform:none;} .expr.beat{animation:none;} }
+
+.moves-lab{
+  font-size:11.5px; font-weight:800; letter-spacing:.13em; text-transform:uppercase;
+  color:var(--a); display:block; margin-top:20px;
+}
+.moves-hint{
+  font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif; font-style:italic;
+  font-size:14.5px; color:var(--ink-faint); margin:2px 0 10px; line-height:1.4;
+}
+
+/* ══ THE ORDER, SHOWN — hint rung 2 and the closing card ══════════════ */
+.order{display:grid; gap:6px; margin-top:11px;}
+.order div{
+  display:grid; grid-template-columns:26px 1fr; gap:11px; align-items:baseline;
+  border-left:3px solid var(--a); padding:3px 0 3px 11px; font-size:14.5px; color:var(--ink-soft);
+}
+.order .n{
+  font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+  font-size:16px; font-weight:700; color:var(--a);
+}
+.order b{color:var(--ink); font-weight:700;}
+.order .lr{color:var(--caution); font-weight:700;}
+
+/* ══ printed / JS-off ══ */
+.paperlist .ex{
+  font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+  font-size:21px; color:var(--ink); font-variant-numeric:tabular-nums;
+}
+.paperlist .ex u{text-decoration:none; border-bottom:1.5px solid var(--rule); padding:0 2.2em;}
+.paperlist .steps{
+  display:grid; gap:0; margin-top:7px; max-width:24rem;
+}
+.paperlist .steps i{
+  display:block; height:0; border-bottom:1.5px solid var(--rule); margin-top:19px;
+}
+
+/* ══ PRINT ══════════════════════════════════════════════════════════ */
+@media print{
+  @page{size:Letter; margin:14mm;}
+  body{background:#fff; color:#000; font-size:11pt; line-height:1.4;}
+  .mast,.lock,.foot,.sheet-foot,.no-print,.teach,#beam,.nl-say,.ladder{display:none !important;}
+  .sheets{padding:0;}
+  .wrap{max-width:none; padding:0;}
+  .sheet{
+    box-shadow:none; border:0; border-radius:0; padding:0;
+    max-width:none; margin:0; background:#fff;
+  }
+  .sheet-head{border-bottom:2px solid #000; padding-bottom:9px;}
+  .sheet-head h1,.sheet-head h2{font-size:21pt;}
+  .sheet-head .say{font-size:11.5pt;}
+  .sheet-head .k,.where .n,.paperlist .q,.conf .lab,.close-card .k,.rung .k{color:#000 !important;}
+  .priv{margin:11px 0 0; padding:7px 11px; border-color:#000; background:#fff;}
+  .priv .k{color:#000;}
+  .where{margin-top:14px;}
+  .where .goal{color:#000;}
+  /* the live control means nothing on paper — the printed lines are the worksheet */
+  .ask{display:none !important;}
+  .js-on .paperlist,.paperlist{display:block !important; margin-top:10px;}
+  .paperlist li{
+    padding:0 0 5px; page-break-inside:avoid; border-bottom:0;
+    display:grid; grid-template-columns:2.2em 1fr; gap:10px; align-items:start;
+  }
+  .paperlist .q{color:#000; padding-top:2px;}
+  .paperlist .e{font-size:10pt; color:#000;}
+  .paperlist .ex{color:#000 !important; font-size:13pt;}
+  .paperlist .ex u{border-bottom:1.25pt solid #000 !important; padding:0 2.6em;}
+  .paperlist .steps i{border-bottom:1pt solid #000 !important; margin-top:15px;}
+  .expr,.trail,.moves,.moves-lab,.moves-hint{display:none !important;}
+  /* the answer blank was --rule at 16% opacity — invisible on a photocopy */
+  .paperlist .ex{color:#000 !important; font-size:13pt;}
+  .paperlist .ex u{border-bottom:1.25pt solid #000 !important; padding:0 2.2em;}
+  .paperlist .e b{font-size:12pt;}
+  /* the printed number line: real elements with borders, never a gradient */
+  .pline{position:relative; height:33px; margin-top:3px;}
+  .pline .ax{position:absolute; left:4px; right:4px; top:13px; height:0; border-top:1.5pt solid #000;}
+  .pline i{position:absolute; top:9px; width:0; height:9px; border-left:1pt solid #000; transform:translateX(-50%);}
+  .pline i.maj{top:6px; height:15px; border-left-width:1.5pt;}
+  .pline span:not(.ax){
+    position:absolute; top:22px; transform:translateX(-50%);
+    font-size:7.5pt; font-variant-numeric:tabular-nums; white-space:nowrap;
+    color:#000;   /* gray labels vanish on a photocopy */
+  }
+  .conf{margin-top:12px; padding:9px 11px; border-color:#000 !important; page-break-inside:avoid;}
+  .conf .hint{font-size:9pt;}
+  .conf-b{border-color:#000 !important; background:#fff !important; padding:6px 3px;}
+  .conf-b .v{color:#000; font-size:13pt;}
+  .conf-b .w{font-size:7pt;}
+  .conf-b[aria-pressed="true"]{border-width:3px !important;}
+  .close-card{margin-top:12px; padding:10px 12px; border-color:#000 !important; background:#fff !important; page-break-inside:avoid;}
+  .close-card h3{font-size:14pt;}
+  .close-card p{font-size:9.5pt;}
+}
+
+/* ══ SEND BLOCK (AOG-M-SENDBLOCK-V1) ═════════════════════════════════
+   Only ever rendered when a destination resolved; with no destination
+   this page keeps its original "nothing can leave" copy, untouched.  */
+.sendbox{
+  margin-top:18px; border:2px solid var(--lock); border-radius:14px;
+  background:var(--lock-wash); padding:14px 16px 16px;
+}
+.sendbox .sk{font-size:10.5px; font-weight:800; letter-spacing:.14em; text-transform:uppercase; color:var(--lock); display:block;}
+.sendbox p.snote{font-size:13.5px; color:var(--ink-soft); margin-top:6px; max-width:42rem;}
+.sendbox label{display:block; font-size:12.5px; font-weight:700; color:var(--ink-soft); margin-top:11px;}
+.sendbox input{
+  display:block; width:100%; max-width:22rem; margin-top:5px;
+  border:1.5px solid var(--rule); border-radius:10px; padding:11px 12px; min-height:48px;
+  font:inherit; background:var(--field); color:var(--ink);
+}
+.sendbox input:focus-visible{outline:3px solid var(--focus); outline-offset:2px;}
+.sendbox .srow{display:flex; flex-wrap:wrap; gap:9px; margin-top:11px; align-items:center;}
+.sendbox .srow .btn{min-height:48px;}
+.sendbox .sst{font-size:13.5px; margin-top:9px; min-height:1.4em; color:var(--ink-soft);}
+.sendbox .sst.ok{color:var(--lock); font-weight:700;}
+/* AOG-SEND-BLIND-AMBER-V1 (2026-09-20) — a blind send is not a confirmed one.
+   When the destination is unreachable the CORS post fails, the no-cors retry
+   resolves whatever the server said (a dead Apps Script deployment answers 404
+   just as happily), and this line used to go GREEN. Amber says what it is:
+   sent, unconfirmed. */
+.sendbox .sst.warn{color:var(--caution); font-weight:700;}
+.sendbox .sst.bad{color:var(--caution); font-weight:700;}
+@media print{ .sendbox{display:none !important;} }
+/* ══ WORKING MODE ═══════════════════════════════════════════════════════
+   Jimmy, at 75% zoom: "I like how everything is in one screen, i don't
+   like the scrolling after every question."
+
+   He was right about the cause without naming it. The problem card is not
+   big -- it is ~570px. What pushes it under the fold is ~680px of
+   read-once material above it (masthead + lock card, the sheet's own
+   heading and say-line, the privacy card, Watch one first) that is worth
+   reading exactly once and then sits there for the rest of the set.
+
+   So: the page reads normally top-to-bottom until the student's FIRST
+   touch inside the stage. From that moment the preamble folds, a compact
+   strip takes the masthead's place, and the problem card sits at the top
+   of the screen. Nothing is deleted and nothing is unreachable -- the
+   strip carries a Show-the-intro button that puts it all back.
+
+   ⚠ IT IS A CLASS ON <html>, NOT INLINE STYLE. Every one of these pages
+   rebuilds .stage from JS on every problem; anything written onto an
+   element's style attribute is gone the next time the stage renders.
+   ⚠ EVERYTHING HERE IS no-print BY EFFECT: the print rules below restore
+   the full document, because a printed page has no fold to be above. */
+
+.wmbar{ display:none; }
+:root.wm .wmbar{
+  display:flex; align-items:center; gap:10px;
+  position:sticky; top:0; z-index:900;
+  padding:7px 20px; background:var(--bar-bg,var(--field));
+  border-bottom:1px solid var(--rule);
+}
+:root.wm .wmbar .wm-mk{
+  width:26px; height:26px; border-radius:6px; flex:none; display:grid; place-items:center;
+  background:var(--navy); color:#E7C77B;
+  font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+  font-size:15px; font-weight:700; line-height:1;
+}
+:root.wm .wmbar .wm-nm{
+  margin:0; text-wrap:initial;
+  font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+  font-size:15px; font-weight:700; color:var(--ink); line-height:1.15;
+  white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+}
+:root.wm .wmbar .wm-sp{ flex:1 1 auto; }
+:root.wm .wmbar .wm-btn{
+  border:1.5px solid var(--rule); background:transparent; border-radius:999px;
+  padding:5px 13px; font-size:12.5px; font-weight:700; color:var(--ink-soft);
+  white-space:nowrap; flex:none;
+}
+:root.wm .wmbar .wm-btn:hover{ border-color:var(--a); color:var(--ink); }
+@media (max-width:560px){ :root.wm .wmbar .wm-btn{ min-height:36px; } }
+
+/* what folds away */
+:root.wm .mast,
+:root.wm .sheet-head,
+:root.wm .priv,
+:root.wm .sheet > details.demo{ display:none; }
+
+/* the sheet loses the padding that was making room for what is now gone */
+:root.wm .sheet{ padding-top:10px; }
+:root.wm main.sheets{ padding-top:0; }
+
+/* ⚠ print restores the whole document. The fold is a screen affordance;
+   on paper there is nothing to be below. */
+@media print{
+  .wmbar{ display:none !important; }
+  :root.wm .mast,
+  :root.wm .sheet-head,
+  :root.wm .priv{ display:revert !important; }
+}
+
+/* ══ THE PROBE RECORD (AOG-M-PROBEPRINT-V1) ═══════════════════════════
+   A one-page evidence sheet built from what happened on this screen.
+   It exists ONLY on paper: display:none on screen in both themes, so it
+   adds no color to either one and cannot drift out of contrast.
+   ⚠ No flex and no vh anywhere in here. A print cover page built out of
+   display:flex + min-height:92vh fragmented across a page break in the
+   user's Chrome and printed a blank first sheet; tables and blocks do
+   not do that. Everything that must not be split says so explicitly. */
+#aogRecSheet{display:none;}
+@media print{
+  body.aog-rec .mast,
+  body.aog-rec .sheets,
+  body.aog-rec .foot{display:none !important;}
+  body.aog-rec #aogRecSheet{display:block !important;}
+  #aogRecSheet{
+    color:#000; background:#fff; font-size:10.5pt; line-height:1.4;
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  }
+  #aogRecSheet .rs-top{border-bottom:2pt solid #000; padding-bottom:7px;}
+  #aogRecSheet .rs-k{font-size:8pt; font-weight:800; letter-spacing:.14em; text-transform:uppercase;}
+  #aogRecSheet .rs-k .rs-r{float:right; letter-spacing:.1em;}
+  #aogRecSheet h1{
+    font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+    font-size:20pt; line-height:1.1; margin:5px 0 0; font-weight:700;
+  }
+  #aogRecSheet .rs-skill{font-size:11pt; margin:2px 0 0;}
+  #aogRecSheet .rs-fields{width:100%; border-collapse:collapse; margin-top:11px;}
+  #aogRecSheet .rs-fields td{
+    font-size:9pt; padding:0 10px 3px 0; vertical-align:bottom; white-space:nowrap;
+  }
+  #aogRecSheet .rs-fields .lb{
+    display:block; font-size:7.5pt; font-weight:800; letter-spacing:.1em; text-transform:uppercase;
+  }
+  #aogRecSheet .rs-fields .rule{
+    display:block; border-bottom:1pt solid #000; min-width:8em; height:15px;
+  }
+  #aogRecSheet .rs-fields .val{display:block; font-size:11pt; font-weight:700; height:15px;}
+  #aogRecSheet .rs-box{
+    border:1.5pt solid #000; border-radius:0; margin-top:12px; padding:9px 11px;
+    page-break-inside:avoid; break-inside:avoid;
+  }
+  #aogRecSheet .rs-h{
+    font-size:8pt; font-weight:800; letter-spacing:.13em; text-transform:uppercase;
+    margin:0 0 6px;
+  }
+  #aogRecSheet .rs-nums{width:100%; border-collapse:collapse; table-layout:fixed;}
+  #aogRecSheet .rs-nums td{text-align:center; padding:2px 4px; vertical-align:top;}
+  #aogRecSheet .rs-nums .big{font-size:25pt; font-weight:800; line-height:1; font-variant-numeric:tabular-nums;}
+  #aogRecSheet .rs-nums .of{font-size:9.5pt; margin-top:1px;}
+  #aogRecSheet .rs-nums .cap{
+    font-size:7.5pt; font-weight:800; letter-spacing:.09em; text-transform:uppercase; margin-top:3px;
+  }
+  #aogRecSheet .rs-map{width:100%; border-collapse:collapse; margin-top:2px;}
+  #aogRecSheet .rs-map td{padding:4px 7px 13px 0; vertical-align:middle; border-bottom:.5pt solid #000;}
+  #aogRecSheet .rs-map tr:last-child td{border-bottom:0;}
+  #aogRecSheet .rs-map .bn{font-size:9.5pt; font-weight:700; width:36%;}
+  #aogRecSheet .rs-map .bs{font-size:9pt; text-align:right; white-space:nowrap; width:22%;}
+  #aogRecSheet .rs-dot{
+    display:inline-block; width:15px; height:15px; border:1.25pt solid #000; border-radius:50%;
+    margin-right:4px; position:relative; vertical-align:middle;
+  }
+  /* ⚠ solid, half and empty are told apart by FILL, never by color —
+     a gray dot and a black dot are the same dot on a school photocopier */
+  #aogRecSheet .rs-dot.ind{background:#000;}
+  #aogRecSheet .rs-dot.sup::after{
+    content:""; position:absolute; left:0; top:0; bottom:0; width:50%; background:#000;
+    border-top-left-radius:15px; border-bottom-left-radius:15px;
+  }
+  #aogRecSheet .rs-dot .rs-num{
+    position:absolute; left:0; right:0; top:16px; font-size:6.5pt; text-align:center; font-weight:700;
+  }
+  #aogRecSheet .rs-legend{font-size:8.5pt; margin:9px 0 0;}
+  #aogRecSheet .rs-legend .rs-dot{width:11px; height:11px; margin:0 3px 0 0;}
+  #aogRecSheet .rs-legend .rs-dot.sup::after{border-radius:11px 0 0 11px;}
+  #aogRecSheet ul.rs-says{margin:0; padding-left:15px;}
+  #aogRecSheet ul.rs-says li{font-size:9.5pt; margin-bottom:3px;}
+  #aogRecSheet .rs-over{width:100%; border-collapse:collapse; table-layout:fixed; margin-top:3px;}
+  #aogRecSheet .rs-over td{
+    border:1pt solid #000; padding:5px 7px; vertical-align:top; font-size:9pt;
+  }
+  #aogRecSheet .rs-over .st{font-size:7.5pt; font-weight:800; letter-spacing:.1em; text-transform:uppercase;}
+  #aogRecSheet .rs-over .dt{font-size:9pt; border-bottom:.5pt solid #000; height:14px; margin-top:3px;}
+  #aogRecSheet .rs-over .sc{font-size:14pt; font-weight:800; margin-top:4px; height:19px; font-variant-numeric:tabular-nums;}
+  #aogRecSheet .rs-sign{width:100%; border-collapse:collapse; margin-top:13px;}
+  #aogRecSheet .rs-sign td{padding:0 10px 0 0; vertical-align:bottom; font-size:8pt;}
+  #aogRecSheet .rs-sign .lb{
+    display:block; font-size:7.5pt; font-weight:800; letter-spacing:.1em; text-transform:uppercase;
+  }
+  #aogRecSheet .rs-sign .rule{display:block; border-bottom:1pt solid #000; height:17px;}
+  #aogRecSheet .rs-fields td:first-child .rule{min-width:13em;}
+  #aogRecSheet .rs-lines div{border-bottom:1pt solid #000; height:20px;}
+  #aogRecSheet .rs-prov{font-size:8pt; margin:11px 0 0; line-height:1.35;}
+}
+</style>
+<style id="demoStrCss">
+/* ══ THREE DOORS + DEEPER ENGINE (ENHANCE-SPEC-three-doors-m, 2026-09-05) —
+   additive. Door 1: #demoCard — one scripted walkthrough (5 + 3 × 2, from no
+   set) paced by Next. Door 3: #strCard — one stretch expression per set,
+   walked by the page's own engine, shown WITH the close card. Screen-only by
+   design: print rules below, so the paperlist does not change. */
+.demoCard{margin-top:18px; border:2px dashed var(--a); border-radius:16px; background:var(--a-wash); padding:14px 16px 16px;}
+.demoLead{display:flex; flex-wrap:wrap; align-items:center; gap:9px;}
+.demoFrame{font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif; font-style:italic; font-size:13.5px; color:var(--ink-soft); margin-top:7px;}
+.demoStage{margin-top:12px;}
+.demoNarr{font-size:15.5px; color:var(--ink); line-height:1.5; max-width:34rem; min-height:3em;}
+.demoExpr{margin-top:10px; font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif; font-size:clamp(24px,5.6vw,36px); line-height:1.2; font-weight:600; font-variant-numeric:tabular-nums; color:var(--ink);}
+.demoExpr .demoHi{color:var(--a); border-bottom:3px solid var(--a);}
+.demoExpr .demoSol{color:var(--lock);}
+.demoTrail{margin-top:6px; font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif; font-size:15px; color:var(--ink-faint); font-variant-numeric:tabular-nums; display:grid; gap:2px;}
+.demoActs{display:flex; flex-wrap:wrap; gap:9px; margin-top:12px;}
+#demoAgain{min-height:40px; padding:6px 12px; font-size:12.5px;}
+
+/* Mandate 2 (the deeper engine): each operation that COULD happen next is a
+   real button inside the expression itself — tap it and it happens there,
+   the line collapsing step by step. The #moves row that used to duplicate
+   them below is kept in the markup and simply renders empty. */
+.expr button.expr-op{
+  font:inherit; font-weight:600; color:var(--a); background:var(--a-wash);
+  border:2px solid var(--rule); border-radius:12px;
+  padding:0 .16em; margin:0; line-height:1.2; vertical-align:baseline;
+  cursor:pointer; touch-action:manipulation;
+  transition:border-color .13s ease, background .13s ease, transform .13s ease;
+}
+.expr button.expr-op:hover,.expr button.expr-op:focus-visible{border-color:var(--a); transform:translateY(-2px);}
+.expr button.expr-op:active{transform:none;}
+.expr button.expr-op.refused{border-color:var(--caution); color:var(--caution); background:transparent;}
+.expr button.expr-pow{padding:0 .3em;}
+/* on a phone the clamp bottoms out at 28px type; pad the taps up toward 44px */
+@media (max-width:560px){
+  .expr button.expr-op{padding:3px .26em;}
+  .expr button.expr-pow{padding:3px .34em;}
+}
+.expr .expr-nb{color:var(--a);}
+@media (prefers-reduced-motion: reduce){.expr button.expr-op:hover{transform:none;}}
+.moves:empty{display:none;}
+
+.strCard{margin-top:18px; border:2px solid var(--gold); border-radius:16px; background:var(--field); padding:18px;}
+.strK{font-size:11px; font-weight:800; letter-spacing:.14em; text-transform:uppercase; color:var(--gold-deep);}
+.strFrame{font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif; font-style:italic; font-size:13.5px; color:var(--ink-soft); margin-top:4px; max-width:40rem;}
+.strQ{text-align:center; font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif; font-size:clamp(16px,3vw,19px); line-height:1.4; color:var(--ink-soft); margin-top:14px;}
+.strExpr{margin:14px 0 2px;}   /* rides .expr for everything else */
+.strFb{margin-top:12px; text-align:center; font-size:15px; color:var(--ink-soft); min-height:1.5em; max-width:36rem; margin-left:auto; margin-right:auto; line-height:1.5;}
+.strFb .good{color:var(--lock); font-weight:700;}
+
+/* .30fp standing repair: rapid-tap controls must not double-tap-zoom on iOS */
+button{touch-action:manipulation;}
+
+/* the pre-doors static walkthrough (details.demo) is superseded by #demoCard
+   (Door 1, paced + recorded). Markup kept, retired by CSS — the same pattern
+   as the c-series send-layer retirement. */
+.sheet > details.demo{display:none !important;}
+
+@media print{.demoCard,.strCard{display:none !important;}}
+
+/* ══ AOG-PRINT-SAFE-V1 (2026-09-20) ═══════════════════════════════════════════
+   Jimmy, printing a novel study from his phone: "another pdf that gets parts of
+   the material cut off." These are the rules that keep paper honest on every
+   engine — a table row, a list item, a figure and a picture stay whole; a head
+   keeps the lines under it; no paragraph strands one line at a page edge; and a
+   long table repeats its head at the top of each page. Printed pages only. */
+@media print{
+  table{break-inside:auto; page-break-inside:auto}
+  thead{display:table-header-group}
+  tfoot{display:table-footer-group}
+  tr{break-inside:avoid; page-break-inside:avoid}
+  li,figure,img,svg{break-inside:avoid; page-break-inside:avoid}
+  h1,h2,h3,h4,h5{break-after:avoid; page-break-after:avoid}
+  p{orphans:3; widows:3}
+}
+</style>
+</head>
+<body>
+<script src="/aog-topbar.js"></script>
+
+<script>document.body.className="js-on";</script>
+
+<div class="wmbar no-print" id="wmBar">
+  <span class="wm-mk" aria-hidden="true">A</span>
+  <h1 class="wm-nm" id="wmName"></h1>
+  <span class="wm-sp"></span>
+  <button class="wm-btn" type="button" id="wmOut"
+          data-en="Show the intro" data-es="Mostrar la introducción">Show the intro</button>
+</div>
+
+<header class="mast wrap">
+  <div class="row">
+    <div class="mark" aria-hidden="true">A</div>
+    <div>
+      <div class="name">Architecture of Grace</div>
+      <div class="sub" data-en="Mathematics · The Interior · Grades 6–8" data-es="Matemáticas · El Interior · Grados 6–8">Mathematics · The Interior · Grades 6–8</div>
+    </div>
+  </div>
+  <p class="mast-h1" data-en="The Interior Mathematics" data-es="Matemáticas del Interior">The Interior Mathematics</p>
+  <p class="deck" data-en="Activity 7 · What Goes First. Work it here, or print it and use a pencil — both count." data-es="Actividad 7 · Qué va primero. Resuélvelo aquí, o imprímelo y usa lápiz — los dos cuentan.">Activity 7 · What Goes First. Work it here, or print it and use a pencil — both count.</p>
+
+  <section class="lock" aria-labelledby="lock-h">
+    <details class="lock-more">
+      <summary>
+        <h2 id="lock-h" data-en="Saved on this computer only." data-es="Se guarda solo en esta computadora.">Saved on this computer only.</h2>
+        <span class="lock-ask" data-en="How do I know that's true?" data-es="¿Cómo sé que eso es cierto?">How do I know that's true?</span>
+      </summary>
+      <div class="body">
+        <p id="lockIntro" data-en="There is no send button, no upload, no account, no sign-in. Your work is saved on this one computer so you can come back to it — and you can erase it whenever you want." data-es="No hay botón de enviar, ni subida, ni cuenta, ni inicio de sesión. Tu trabajo se guarda solo en esta computadora — y puedes borrarlo cuando quieras.">There is no send button, no upload, no account, no sign-in. Your work is saved on this one computer so you can come back to it — and you can erase it whenever you want.</p>
+        <p id="lockP1" data-en="&lt;b&gt;This page has no way to send anything.&lt;/b&gt; It saves your work in this browser's own storage on this machine. It loads nothing from the internet and sends nothing out, so there is no copy anywhere else — not with your teacher, not with the school, not with anyone." data-es="&lt;b&gt;Esta página no tiene forma de enviar nada.&lt;/b&gt; Guarda tu trabajo en el almacenamiento del navegador de esta máquina. No carga nada de internet ni envía nada, así que no hay copia en ningún otro lugar — ni con tu maestro, ni con la escuela, ni con nadie."><b>This page has no way to send anything.</b> It saves your work in this browser's own storage on this machine. It loads nothing from the internet and sends nothing out, so there is no copy anywhere else — not with your teacher, not with the school, not with anyone.</p>
+        <p data-en="&lt;b&gt;This one is different from the Wednesday worksheets.&lt;/b&gt; Those are your own thinking and nobody reads them. This is math, and math is meant to be looked at together — your teacher may stand next to you and read this screen, and may write down how it went. Nothing travels on its own; a person has to be standing here." data-es="&lt;b&gt;Esta es distinta de las hojas de los miércoles.&lt;/b&gt; Aquellas son tu propio pensamiento y nadie las lee. Esto son matemáticas, y las matemáticas se miran juntos — tu maestro puede pararse a tu lado, leer esta pantalla y anotar cómo te fue. Nada viaja solo; alguien tiene que estar aquí."><b>This one is different from the Wednesday worksheets.</b> Those are your own thinking and nobody reads them. This is math, and math is meant to be looked at together — your teacher may stand next to you and read this screen, and may write down how it went. Nothing travels on its own; a person has to be standing here.</p>
+        <p data-en="&lt;b&gt;Asking for a hint is not cheating.&lt;/b&gt; The hints are part of the lesson. Using them tells your teacher what to teach next, which is exactly what they are for." data-es="&lt;b&gt;Pedir una pista no es hacer trampa.&lt;/b&gt; Las pistas son parte de la lección. Usarlas le dice a tu maestro qué enseñar después, que es justo para lo que sirven."><b>Asking for a hint is not cheating.</b> The hints are part of the lesson. Using them tells your teacher what to teach next, which is exactly what they are for.</p>
+        <p data-en="&lt;b&gt;If you share this computer, erase before you go.&lt;/b&gt; Anyone who uses this same browser profile could open the page and see your work. That is what the erase buttons are for, and using them is completely normal." data-es="&lt;b&gt;Si compartes esta computadora, borra antes de irte.&lt;/b&gt; Cualquiera que use este mismo perfil del navegador podría abrir la página y ver tu trabajo. Para eso están los botones de borrar, y usarlos es completamente normal."><b>If you share this computer, erase before you go.</b> Anyone who uses this same browser profile could open the page and see your work. That is what the erase buttons are for, and using them is completely normal.</p>
+      </div>
+    </details>
+    <div class="lock-acts no-print">
+      <button class="btn btn-lock" type="button" id="eraseAll" data-en="Erase everything on this computer" data-es="Borrar todo en esta computadora">Erase everything on this computer</button>
+      <button class="btn" type="button" id="themeBtn" aria-live="polite">Switch to dark</button>
+      <button class="btn" type="button" id="langBtn" aria-live="polite">Español</button>
+    </div>
+  </section>
+</header>
+
+<main class="sheets wrap">
+<section class="sheet" id="sh-m7" data-id="m7">
+
+  <div class="sheet-head">
+    <span class="k" data-en="Mathematics · Activity 7" data-es="Matemáticas · Actividad 7">Mathematics · Activity 7</span>
+    <h1 data-en="What Goes First" data-es="Qué va primero">What Goes First</h1>
+    <p class="say" data-en="The order is not a tidy convention. It is the only reason one expression means one thing, and this page never asks you for the answer — only for what is allowed to happen next." data-es="El orden no es una convención bonita. Es la única razón por la que una expresión significa una sola cosa, y esta página nunca te pide la respuesta — solo qué puede pasar después.">The order is not a tidy convention. It is the only reason one expression means one thing, and this page never asks you for the answer — only for what is allowed to happen next.</p>
+  </div>
+
+
+  <details class="demo no-print">
+    <summary data-en="Show me one first" data-es="Muéstrame uno primero">Show me one first</summary>
+    <div class="inner">
+      <p class="note" data-en="This one is nobody's problem — it is only here to show the moves before you touch yours. Watching it costs nothing and is written down nowhere." data-es="Este no es el problema de nadie — está aquí solo para mostrar los movimientos antes de que toques el tuyo. Mirarlo no cuesta nada y no se anota en ningún lado.">This one is nobody's problem — it is only here to show the moves before you touch yours. Watching it costs nothing and is written down nowhere.</p>
+      <div class="worked">
+        <div>5 + 3 × 2</div>
+        <div data-en="Multiplication goes before addition — the × moves first." data-es="La multiplicación va antes que la suma — el × se mueve primero.">Multiplication goes before addition — the × moves first.</div>
+        <div data-en="3 × 2 = 6." data-es="3 × 2 = 6.">3 × 2 = 6.</div>
+        <div class="fin" data-en="Then 5 + 6 = 11." data-es="Luego 5 + 6 = 11.">Then 5 + 6 = 11.</div>
+      </div>
+      <p class="note" data-en="Now problem 1 is yours. The hint button is there the whole time, and using it is part of the lesson." data-es="Ahora el problema 1 es tuyo. El botón de pistas está ahí todo el tiempo, y usarlo es parte de la lección.">Now problem 1 is yours. The hint button is there the whole time, and using it is part of the lesson.</p>
+    </div>
+  </details>
+
+  <!-- ══ THE STAGE — replaced entirely with JS off by the printed lines below ══ -->
+  <div class="stage no-print" id="stage" hidden>
+
+    <!-- Door 1 — the gentle door (ENHANCE-SPEC-three-doors-m): one scripted
+         demo, 5 + 3 × 2 collapsing step by step. Watching is instruction,
+         not a trial. -->
+    <div class="demoCard" id="demoCard">
+      <div class="demoLead">
+        <button class="btn btn-accent" type="button" id="demoBtn" data-en="Show me one first" data-es="Muéstrame uno primero">Show me one first</button>
+        <button class="btn" type="button" id="demoSkip" data-en="No thanks — I'll start" data-es="No gracias — voy a empezar">No thanks — I'll start</button>
+      </div>
+      <p class="demoFrame" data-en="Watching one first is a strong way to start." data-es="Ver uno primero es una buena forma de empezar.">Watching one first is a strong way to start.</p>
+      <div class="demoStage" id="demoStage" hidden>
+        <p class="demoNarr" id="demoNarr" aria-live="polite"></p>
+        <div class="demoExpr" id="demoExpr" aria-hidden="true"></div>
+        <div class="demoTrail" id="demoTrail" aria-hidden="true"></div>
+        <div class="demoActs">
+          <button class="btn btn-accent" type="button" id="demoNext" data-en="Next" data-es="Siguiente">Next</button>
+          <button class="btn" type="button" id="demoDone" hidden data-en="I'm ready to try" data-es="Estoy listo para intentar">I'm ready to try</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="where">
+      <span class="n" id="whereN">Problem 1 of 10</span>
+      <span class="goal" data-en="One step at a time." data-es="Un paso a la vez.">One step at a time.</span>
+    </div>
+
+    <div class="ask">
+      <p class="ask-q" id="askQ"></p>
+
+      <span class="moves-lab" data-en="Tap the operation that goes first" data-es="Toca la operación que va primero">Tap the operation that goes first</span>
+      <p class="moves-hint" data-en="Every boxed piece is true arithmetic, and tapping it makes it happen — right in the expression. Only one is allowed to go yet." data-es="Cada pieza en su caja es una cuenta cierta, y al tocarla sucede — en la expresión misma. Solo una puede hacerse todavía.">Every boxed piece is true arithmetic, and tapping it makes it happen — right in the expression. Only one is allowed to go yet.</p>
+      <p class="expr" id="expr" aria-live="polite"></p>
+      <div class="trail" id="trail" aria-live="polite"></div>
+      <div class="moves" id="moves" role="group" aria-label="Operations you could do next"></div>
+
+      <p class="nl-say" id="say" aria-live="polite"></p>
+      <div class="nl-acts">
+        <button class="btn" type="button" id="undoBtn" data-en="Back one step" data-es="Un paso atrás">Back one step</button>
+        <button class="btn btn-accent" type="button" id="nextBtn" hidden data-en="Next problem" data-es="Siguiente problema">Next problem</button>
+        <button class="btn" type="button" id="showBtn" hidden data-en="Show me the whole order" data-es="Muéstrame todo el orden">Show me the whole order</button>
+      </div>
+    </div>
+
+    <div class="ladder" id="ladder">
+      <div class="ladder-head">
+        <span class="k" data-en="Need help?" data-es="¿Necesitas ayuda?">Need help?</span>
+        <button class="btn" type="button" id="demoAgain" hidden data-en="Watch one again" data-es="Ver uno otra vez">Watch one again</button>
+        <button class="btn" type="button" id="hintBtn" data-en="Show me a hint" data-es="Muéstrame una pista">Show me a hint</button>
+      </div>
+      <div class="rungs" id="rungs"></div>
+    </div>
+
+  </div>
+
+  <!-- ══ FAIL OPEN — this is the whole worksheet with JS off, and the printed page ══ -->
+  <div class="paperlist" id="paperlist">
+    <ol id="paperOl">
+      <li><span class="q">1</span><span class="e"><span class="ex">4 + 3 × 2 = <u></u></span><span class="steps"><i></i><i></i></span></span></li>
+      <li><span class="q">2</span><span class="e"><span class="ex">20 − 12 ÷ 4 = <u></u></span><span class="steps"><i></i><i></i></span></span></li>
+      <li><span class="q">3</span><span class="e"><span class="ex">(5 + 3) × 2 − 1 = <u></u></span><span class="steps"><i></i><i></i></span></span></li>
+      <li><span class="q">4</span><span class="e"><span class="ex">2 + 3^2 = <u></u></span><span class="steps"><i></i><i></i></span></span></li>
+      <li><span class="q">5</span><span class="e"><span class="ex">18 ÷ 3 × 2 = <u></u></span><span class="steps"><i></i><i></i></span></span></li>
+      <li><span class="q">6</span><span class="e"><span class="ex">10 − 4 + 3 = <u></u></span><span class="steps"><i></i><i></i></span></span></li>
+      <li><span class="q">7</span><span class="e"><span class="ex">5 × (9 − 6) + 1 = <u></u></span><span class="steps"><i></i><i></i></span></span></li>
+      <li><span class="q">8</span><span class="e"><span class="ex">(4 + 2)^2 ÷ 4 = <u></u></span><span class="steps"><i></i><i></i></span></span></li>
+      <li><span class="q">9</span><span class="e"><span class="ex">24 ÷ (8 − 2) + 5 = <u></u></span><span class="steps"><i></i><i></i></span></span></li>
+      <li><span class="q">10</span><span class="e"><span class="ex">3 + 2 × 5 − 4 = <u></u></span><span class="steps"><i></i><i></i></span></span></li>
+    </ol>
+  </div>
+
+  <div class="conf" id="conf">
+    <span class="lab" data-en="How confident are you with these?" data-es="¿Qué tan seguro te sientes con esto?">How confident are you with these?</span>
+    <p class="hint" data-en="There is no right answer here. It only tells your teacher where to start next time." data-es="Aquí no hay respuesta correcta. Solo le dice a tu maestro por dónde empezar la próxima vez.">There is no right answer here. It only tells your teacher where to start next time.</p>
+    <div class="conf-row" role="group" aria-label="Confidence, 1 to 5">
+      <button class="conf-b" type="button" data-conf="1" aria-pressed="false"><span class="v">1</span><span class="w" data-en="Not yet" data-es="Todavía no">Not yet</span></button>
+      <button class="conf-b" type="button" data-conf="2" aria-pressed="false"><span class="v">2</span><span class="w" data-en="A little" data-es="Un poco">A little</span></button>
+      <button class="conf-b" type="button" data-conf="3" aria-pressed="false"><span class="v">3</span><span class="w" data-en="Okay" data-es="Más o menos">Okay</span></button>
+      <button class="conf-b" type="button" data-conf="4" aria-pressed="false"><span class="v">4</span><span class="w" data-en="Confident" data-es="Seguro">Confident</span></button>
+      <button class="conf-b" type="button" data-conf="5" aria-pressed="false"><span class="v">5</span><span class="w" data-en="Very confident" data-es="Muy seguro">Very confident</span></button>
+    </div>
+  </div>
+
+  <div class="close-card" id="closeCard" hidden>
+    <span class="k" data-en="Done" data-es="Terminado">Done</span>
+    <h3 data-en="You worked all ten." data-es="Resolviste las diez.">You worked all ten.</h3>
+    <p data-en="Two of those had nothing but a × and a ÷ side by side, or a − and a +. Same rank, so left to right — and going the other way gives an answer that is not close." data-es="Dos de ellas solo tenían un × y un ÷ juntos, o un − y un +. Del mismo nivel, así que de izquierda a derecha — e ir al revés da una respuesta que ni se acerca.">Two of those had nothing but a × and a ÷ side by side, or a − and a +. Same rank, so left to right — and going the other way gives an answer that is not close.</p>
+    <div id="closeOrder"></div>
+  </div>
+
+  <!-- Door 3 — the stretch (ENHANCE-SPEC-three-doors-m): one harder expression
+       per set, walked by the same tap-the-operation engine. Screen-only;
+       never in the paperlist. -->
+  <div class="strCard no-print" id="strCard" hidden>
+    <span class="strK" data-en="One more, if you want it" data-es="Uno más, si quieres">One more, if you want it</span>
+    <p class="strFrame" data-en="The stretch is a choice. Taking it — or leaving it for another day — are both strong moves." data-es="El reto es una elección. Tomarlo — o dejarlo para otro día — son dos decisiones fuertes.">The stretch is a choice. Taking it — or leaving it for another day — are both strong moves.</p>
+    <p class="strQ" id="strQ"></p>
+    <p class="expr strExpr" id="strExpr" aria-live="polite"></p>
+    <div class="trail" id="strTrail" aria-live="polite"></div>
+    <p class="strFb" id="strFb" aria-live="polite"></p>
+  </div>
+
+  <details class="teach no-print" id="teach">
+    <summary data-en="For the teacher — this device only" data-es="Para el maestro — solo este dispositivo">For the teacher — this device only</summary>
+    <div class="inner">
+      <p class="note" data-en="One probe row, built from what happened on this screen. Nothing is sent anywhere — copy it into the Goal Builder yourself, or print this page. Independent means walked with no hints; supported means walked after a hint. Both are real evidence and neither is a grade." data-es="Una fila de sondeo, hecha con lo que pasó en esta pantalla. No se envía a ningún lado — cópiala tú mismo al Goal Builder, o imprime esta página. Independiente significa caminado sin pistas; apoyado significa caminado después de una pista. Las dos son evidencia real y ninguna es una calificación.">One probe row, built from what happened on this screen. Nothing is sent anywhere — copy it into the Goal Builder yourself, or print this page. Independent means walked with no hints; supported means walked after a hint. Both are real evidence and neither is a grade.</p>
+      <div class="probe">
+        <dl>
+          <dt data-en="Date" data-es="Fecha">Date</dt><dd id="pvDate">—</dd>
+          <dt data-en="Skill" data-es="Destreza">Skill</dt><dd data-en="Order of operations" data-es="Orden de las operaciones">Order of operations</dd>
+          <dt data-en="Measure" data-es="Medida">Measure</dt><dd>Trials (x of y)</dd>
+          <dt data-en="Independent" data-es="Independiente">Independent</dt><dd id="pvInd"><b>0</b> of 10</dd>
+          <dt data-en="Supported" data-es="Con apoyo">Supported</dt><dd id="pvSup"><b>0</b> of 10</dd>
+          <dt data-en="Hints used" data-es="Pistas usadas">Hints used</dt><dd id="pvHint">0</dd>
+          <dt data-en="Out of order" data-es="Fuera de orden">Out of order</dt><dd id="pvSplit">—</dd>
+          <dt data-en="Confidence" data-es="Confianza">Confidence</dt><dd id="pvConf">—</dd>
+          <dt data-en="Watched the demo" data-es="Vio el ejemplo">Watched the demo</dt><dd id="demoPv">—</dd>
+          <dt data-en="Stretch" data-es="Reto">Stretch</dt><dd id="strPv">—</dd>
+        </dl>
+      </div>
+      <div class="nl-acts" style="justify-content:flex-start">
+        <button class="btn" type="button" id="copyProbe" data-en="Copy this row" data-es="Copiar esta fila">Copy this row</button>
+        <button class="btn" type="button" id="boardBtn" data-en="Show the link on the board" data-es="Mostrar el enlace en la pizarra">Show the link on the board</button>
+      </div>
+      <p class="note" data-en="Every set has two left-to-right traps — 18 ÷ 3 × 2 and 10 − 4 + 3 — where working right to left gives 3 for both, and 3 is nowhere near either answer. The row below counts out-of-order attempts, which is the number that actually says whether the rule is known. Set 2 and Set 3 are the same skills with different numbers." data-es="Cada grupo tiene dos trampas de izquierda a derecha — 18 ÷ 3 × 2 y 10 − 4 + 3 — donde trabajar al revés da 3 en las dos, y 3 no se acerca a ninguna respuesta. La fila de abajo cuenta los intentos fuera de orden, que es el número que de verdad dice si se sabe la regla. El Grupo 2 y el Grupo 3 son las mismas destrezas con otros números.">Every set has two left-to-right traps — 18 ÷ 3 × 2 and 10 − 4 + 3 — where working right to left gives 3 for both, and 3 is nowhere near either answer. The row below counts out-of-order attempts, which is the number that actually says whether the rule is known. Set 2 and Set 3 are the same skills with different numbers.</p>
+      <div class="nl-acts" style="justify-content:flex-start">
+        <button class="btn" type="button" data-set="1">Set 1</button>
+        <button class="btn" type="button" data-set="2">Set 2</button>
+        <button class="btn" type="button" data-set="3">Set 3</button>
+      </div>
+    </div>
+  </details>
+
+  <div class="sheet-foot no-print">
+    <button class="btn btn-accent" type="button" data-print data-en="Print the problems" data-es="Imprimir los problemas">Print the problems</button>
+    <button class="btn btn-danger" type="button" data-erase data-en="Erase this activity" data-es="Borrar esta actividad">Erase this activity</button>
+    <span class="saved" data-saved><span class="dot"></span><span data-savedtext>Saved on this computer</span></span>
+  </div>
+
+</section>
+</main>
+
+<footer class="foot wrap no-print">
+  <p><b>Architecture of Grace · Mathematics, The Interior (Grades 6–8).</b> Activity 7 — What Goes First.</p>
+  <p id="footNet" data-en="This page loads no fonts, scripts, or images from the internet and sends nothing out — it works with the network off. Your work is stored in this browser only. It is not a district product and carries no district endorsement." data-es="Esta página no carga fuentes, scripts ni imágenes de internet y no envía nada — funciona con la red apagada. Tu trabajo se guarda solo en este navegador. No es un producto del distrito ni cuenta con su respaldo.">This page loads no fonts, scripts, or images from the internet and sends nothing out — it works with the network off. Your work is stored in this browser only. It is not a district product and carries no district endorsement.</p>
+</footer>
+<!-- Optional same-origin site config: defines window.AOG_SYNC_DEFAULTS when
+     deployed. If this 404s, or the page is opened from file://, nothing breaks
+     and the page silently stays offline-only. -->
+<script src="aog-sync-config.js"></script>
+<script>
+
+(function(){
+  "use strict";
+
+  var KEY = "aog.interior.ws.v1.";
+  var ID  = "m7";
+  var hasLS = (function(){ try{ var k="__t"; localStorage.setItem(k,"1"); localStorage.removeItem(k); return true; }catch(e){ return false; } })();
+  function load(){ if(!hasLS) return {}; try{ return JSON.parse(localStorage.getItem(KEY+ID)||"{}")||{}; }catch(e){ return {}; } }
+  function save(o){ if(!hasLS) return false; try{ localStorage.setItem(KEY+ID, JSON.stringify(o)); return true; }catch(e){ return false; } }
+
+/* ══ THE ENGINE — order of operations over a flat token list ══════════
+   Tokens: numbers, "+ − × ÷ ^", "(" and ")".
+   The page never asks for a final answer. It asks, over and over, which
+   operation happens NEXT — which is the actual skill, and the only place
+   the mistake lives.                                                     */
+
+var PREC = {"^":3, "*":2, "/":2, "+":1, "-":1};
+
+function isNum(t){ return typeof t === "number"; }
+
+/* every operator whose two neighbors are already plain numbers */
+function reducible(tk){
+  var out = [];
+  for(var i=1;i<tk.length-1;i++){
+    if(PREC[tk[i]] && isNum(tk[i-1]) && isNum(tk[i+1])) out.push(i);
+  }
+  return out;
+}
+
+/* the depth of every token, so "innermost parentheses" is answerable */
+function depths(tk){
+  var d = [], lvl = 0;
+  for(var i=0;i<tk.length;i++){
+    if(tk[i] === "("){ lvl++; d.push(lvl); }
+    else if(tk[i] === ")"){ d.push(lvl); lvl--; }
+    else d.push(lvl);
+  }
+  return d;
+}
+
+/* THE one operation that is allowed next:
+   deepest parentheses → highest precedence → leftmost                    */
+function legalNext(tk){
+  var cand = reducible(tk);
+  if(!cand.length) return -1;
+  var d = depths(tk);
+  var maxD = -1;
+  cand.forEach(function(i){ if(d[i] > maxD) maxD = d[i]; });
+  cand = cand.filter(function(i){ return d[i] === maxD; });
+  var maxP = -1;
+  cand.forEach(function(i){ if(PREC[tk[i]] > maxP) maxP = PREC[tk[i]]; });
+  cand = cand.filter(function(i){ return PREC[tk[i]] === maxP; });
+  return cand[0];                       /* leftmost of the winners */
+}
+
+function doOp(a, o, b){
+  if(o === "+") return a + b;
+  if(o === "-") return a - b;
+  if(o === "*") return a * b;
+  if(o === "/") return a / b;
+  return Math.pow(a, b);
+}
+
+/* apply the operator at index i and tidy up any parentheses that are now
+   wrapped around a single number */
+function applyAt(tk, i){
+  var v = doOp(tk[i-1], tk[i], tk[i+1]);
+  var out = tk.slice(0, i-1).concat([v], tk.slice(i+2));
+  for(var k=0;k<out.length;k++){
+    if(out[k] === "(" && isNum(out[k+1]) && out[k+2] === ")"){
+      out = out.slice(0,k).concat([out[k+1]], out.slice(k+3));
+      k = -1;                            /* a collapse can expose another */
+    }
+  }
+  return out;
+}
+
+function done(tk){ return tk.length === 1 && isNum(tk[0]); }
+
+/* how an operator reads on screen */
+var SIGN = {"+":"+","-":"−","*":"×","/":"÷","^":"^"};
+function showNum(v){ return v < 0 ? "−" + Math.abs(v) : String(v); }
+function render_(tk){
+  var s = "";
+  for(var i=0;i<tk.length;i++){
+    var t = tk[i];
+    if(t === "(") s += "(";
+    else if(t === ")") s += ")";
+    else if(isNum(t)) s += showNum(t);
+    else s += (t === "^" ? "" : " ") + SIGN[t] + (t === "^" ? "" : " ");
+  }
+  return s.replace(/\(\s+/g,"(").replace(/\s+\)/g,")");
+}
+/* the label on a move button: "8 − 6", "3 × 2", "3^2" */
+function moveLabel(tk, i){
+  return (tk[i] === "^")
+    ? showNum(tk[i-1]) + "^" + showNum(tk[i+1])
+    : showNum(tk[i-1]) + " " + SIGN[tk[i]] + " " + showNum(tk[i+1]);
+}
+/* why a reducible-but-not-next move has to wait */
+function whyNot(tk, i){
+  var d = depths(tk), leg = legalNext(tk);
+  if(d[leg] > d[i]) return "paren";
+  if(PREC[tk[leg]] > PREC[tk[i]]) return (tk[leg] === "^") ? "power" : "muldiv";
+  return "left";
+}
+
+  /* ══ THE ITEMS ═══════════════════════════════════════════════════════
+     Flat token lists. Every set has: two "×÷ before +−" items, one with
+     parentheses AND a competing move outside them, one exponent, and the
+     two left-to-right traps — 18 ÷ 3 × 2 and 10 − 4 + 3 — which are the
+     only reason this activity exists. A student who works right to left
+     gets 3 for both, and 3 is nowhere near either answer.
+     Verified: every item and every intermediate value is a whole number,
+     every item offers a real choice at least once, and each trap really
+     does give a different answer the wrong way round.
+     Set 1 is also in the HTML above so the page works with JS off.        */
+  var SETS = {
+    1:[[4,'+',3,'*',2], [20,'-',12,'/',4], ['(',5,'+',3,')','*',2,'-',1], [2,'+',3,'^',2],
+       [18,'/',3,'*',2], [10,'-',4,'+',3], [5,'*','(',9,'-',6,')','+',1],
+       ['(',4,'+',2,')','^',2,'/',4], [24,'/','(',8,'-',2,')','+',5], [3,'+',2,'*',5,'-',4]],
+    2:[[6,'+',2,'*',5], [30,'-',18,'/',3], ['(',7,'+',2,')','*',3,'-',4], [5,'+',4,'^',2],
+       [24,'/',4,'*',3], [12,'-',5,'+',6], [4,'*','(',10,'-',7,')','+',2],
+       ['(',3,'+',3,')','^',2,'/',9], [36,'/','(',9,'-',3,')','+',4], [2,'+',3,'*',6,'-',5]],
+    3:[[9,'+',4,'*',3], [40,'-',24,'/',6], ['(',6,'+',4,')','*',5,'-',8], [7,'+',2,'^',3],
+       [36,'/',6,'*',2], [15,'-',9,'+',7], [6,'*','(',8,'-',5,')','+',3],
+       ['(',2,'+',3,')','^',2,'/',5], [48,'/','(',10,'-',4,')','+',6], [5,'+',4,'*',3,'-',7]]
+  };
+  function finalOf(tk){
+    var t = tk.slice(), guard = 0;
+    while(!done(t) && guard++ < 20) t = applyAt(t, legalNext(t));
+    return t[0];
+  }
+
+  /* ══ LANGUAGE ════════════════════════════════════════════════════════ */
+  var lang = "en";
+  function T(en, es){ return lang==="es" ? es : en; }
+  function paintLang(){
+    document.documentElement.setAttribute("lang", lang);
+    Array.prototype.forEach.call(document.querySelectorAll("[data-en]"), function(el){
+      var v = el.getAttribute(lang==="es" ? "data-es" : "data-en");
+      if(v==null) return;
+      if(v.indexOf("<b>")>-1) el.innerHTML = v; else el.textContent = v;
+    });
+    var lb = document.getElementById("langBtn");
+    if(lb) lb.textContent = (lang==="es") ? "English" : "Español";
+    paintTheme(); render();
+  }
+
+  /* ══ STATE ═══════════════════════════════════════════════════════════ */
+  var d = load();
+  var setNo = d.set || 1;
+  var items = SETS[setNo];
+  var work = d.work || {};
+  var i = 0, allDone = false, keepSay = false;
+  var live = null, trail = [];
+
+  var $ = function(s){ return document.getElementById(s); };
+  var stage=$("stage"), askQ=$("askQ"), exprEl=$("expr"), trailEl=$("trail"),
+      movesEl=$("moves"), say=$("say"), rungs=$("rungs"), whereN=$("whereN"),
+      hintBtn=$("hintBtn"), undoBtn=$("undoBtn"), nextBtn=$("nextBtn"),
+      showBtn=$("showBtn"), closeCard=$("closeCard");
+
+  stage.hidden = false;
+
+  function rec(k){
+    if(!work[k]) work[k] = {done:false, hints:0, refused:0, indep:false, shown:false};
+    return work[k];
+  }
+  function firstUnsolved(){
+    for(var k=0;k<items.length;k++){ if(!rec(k).done) return k; }
+    return items.length;
+  }
+  function reduced(){ return window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches; }
+  function resetLive(){ live = items[i].slice(); trail = []; }
+
+  /* ══ THE EXPRESSION, TAPPABLE — Mandate 2 (ENHANCE-SPEC-three-doors-m) ═
+     The move used to be chosen from a row of labeled buttons BELOW the
+     expression — a duplicate of the thing being reasoned about. Now every
+     operator whose neighbors are plain numbers is a real button INSIDE the
+     expression itself: tap it and that arithmetic happens right there, the
+     line collapsing step by step. Same candidates, same legality test, same
+     refusals, same trail — only the surface deepened. Hovering or focusing
+     an operator lights its two numbers, so the tap names a whole piece of
+     arithmetic, not a symbol. */
+  function paintExpr(el, tk, tap){
+    el.textContent = "";
+    var cand = tap ? reducible(tk) : [];
+    var tokEl = [];
+    for(var x=0;x<tk.length;x++){
+      var t = tk[x], nd;
+      if(isNum(t)){
+        nd = document.createElement("span");
+        nd.className = "expr-tk"; nd.textContent = showNum(t);
+        el.appendChild(nd); tokEl.push(nd); continue;
+      }
+      if(t==="(" || t===")"){
+        el.appendChild(document.createTextNode(t)); tokEl.push(null); continue;
+      }
+      var pow = (t==="^");
+      if(cand.indexOf(x) > -1){
+        nd = document.createElement("button");
+        nd.type = "button"; nd.className = "expr-op" + (pow ? " expr-pow" : "");
+        nd.textContent = SIGN[t];
+        nd.setAttribute("aria-label", T("Do ","Hacer ") + moveLabel(tk, x) + T(" next"," después"));
+        (function(ix, bb){
+          bb.addEventListener("click", function(){ tap(ix, bb); });
+          function mark(on){
+            var a = tokEl[ix-1], c = tokEl[ix+1];
+            if(a) a.classList.toggle("expr-nb", on);
+            if(c) c.classList.toggle("expr-nb", on);
+          }
+          bb.addEventListener("mouseenter", function(){ mark(true); });
+          bb.addEventListener("mouseleave", function(){ mark(false); });
+          bb.addEventListener("focus", function(){ mark(true); });
+          bb.addEventListener("blur", function(){ mark(false); });
+        })(x, nd);
+        if(!pow) el.appendChild(document.createTextNode(" "));
+        el.appendChild(nd);
+        if(!pow) el.appendChild(document.createTextNode(" "));
+        tokEl.push(nd);
+      } else {
+        el.appendChild(document.createTextNode(pow ? SIGN[t] : " " + SIGN[t] + " "));
+        tokEl.push(null);
+      }
+    }
+  }
+
+  /* ══ RENDER ══════════════════════════════════════════════════════════ */
+  function render(){
+    if(allDone){ paintFinished(); return; }
+    if(!live) resetLive();
+    var r = rec(i), finished = done(live);
+
+    whereN.textContent = T("Problem "+(i+1)+" of "+items.length,
+                           "Problema "+(i+1)+" de "+items.length);
+    askQ.innerHTML = T("What happens next?","¿Qué pasa después?")
+      + "<b>" + render_(items[i]) + "</b>";
+
+    if(finished){
+      exprEl.innerHTML = '<span class="sol">= ' + showNum(live[0]) + '</span>';
+    } else {
+      paintExpr(exprEl, live, function(idx, btn){ tryMove(idx, btn); });
+    }
+
+    trailEl.innerHTML = trail.map(function(t){
+      return '<div><span class="did">' + t.did + '</span> &nbsp;→&nbsp; ' + t.now + '</div>';
+    }).join("");
+
+    drawMoves(r, finished);
+    undoBtn.disabled = (trail.length === 0) || finished;
+    undoBtn.hidden = finished;
+    nextBtn.hidden = !finished;
+    showBtn.hidden = !(!finished && r.hints >= 4 && r.refused >= 3);
+
+    if(finished && !r.done){
+      r.done = true; r.indep = (r.hints === 0 && r.refused === 0 && !r.shown);
+      persist();
+    }
+
+    if(!keepSay){
+      say.innerHTML = finished
+        ? '<span class="good">'+T("All the way down to one number.","Hasta llegar a un solo número.")+"</span>"
+        : T("Which one is allowed to go first?","¿Cuál puede ir primero?");
+    }
+    keepSay = false;
+
+    drawRungs();
+    paintProbe();
+  }
+
+  function beat(){
+    if(reduced()) return;
+    exprEl.classList.remove("beat");
+    void exprEl.offsetWidth;
+    exprEl.classList.add("beat");
+  }
+
+  function drawMoves(r, finished){
+    /* Mandate 2 (2026-09-05): the moves are tapped IN the expression now —
+       see paintExpr above. The row is kept (id, class, and every call site
+       untouched) and simply renders empty; .moves:empty removes its
+       footprint on screen. */
+    movesEl.innerHTML = "";
+  }
+
+  /* ══ TRYING A MOVE ═══════════════════════════════════════════════════
+     Refused, not applied. m3 lets every move through because both sides
+     stay balanced whatever you do; here doing them out of order really
+     does produce a wrong answer, so the page has to hold the line — and
+     say which rule is holding it. */
+  function tryMove(idx, btn){
+    var r = rec(i), legal = legalNext(live);
+    keepSay = true;
+    if(idx === legal){
+      var label = moveLabel(live, idx);
+      var val = doOp(live[idx-1], live[idx], live[idx+1]);
+      live = applyAt(live, idx);
+      trail.push({did: label + " = " + showNum(val), now: done(live) ? showNum(live[0]) : render_(live)});
+      say.innerHTML = '<span class="good">'+T("Yes — that one was next.","Sí — ese iba primero.")+"</span>";
+      beat();
+      persist(); render();
+      /* the tapped button was just re-rendered away; a keyboard user's focus
+         fell to <body>. Hand it to the next operation, or to Next when the
+         line is down to one number. preventScroll: the beat already moves. */
+      try{
+        if(document.activeElement === document.body || document.activeElement === null){
+          var nf = exprEl.querySelector(".expr-op") || (!nextBtn.hidden ? nextBtn : null);
+          if(nf) nf.focus({preventScroll:true});
+        }
+      }catch(eF){}
+      return;
+    }
+    r.refused++;
+    var why = whyNot(live, idx);
+    var msg = {
+      paren:  T("Parentheses first. Whatever is inside the brackets has to be finished before anything touches it.",
+                "Primero los paréntesis. Lo que está dentro tiene que terminarse antes de que nada lo toque."),
+      power:  T("Powers come before that. Work out the exponent first.",
+                "Las potencias van antes que eso. Resuelve primero el exponente."),
+      muldiv: T("Multiplying and dividing come before adding and subtracting.",
+                "Multiplicar y dividir van antes que sumar y restar."),
+      left:   T("Same rank, so it is simply left to right — and there is one further left than this.",
+                "Del mismo nivel, así que es de izquierda a derecha — y hay uno más a la izquierda que este.")
+    }[why];
+    say.innerHTML = "<b>"+T("That is true, but not yet.","Eso es cierto, pero todavía no.")+"</b> " + msg;
+    if(btn){
+      btn.classList.add("refused");
+      setTimeout(function(){ btn.classList.remove("refused"); }, 900);
+    }
+    showBtn.hidden = !(r.hints >= 4 && r.refused >= 3);
+    persist(); paintProbe();
+  }
+
+  undoBtn.addEventListener("click", function(){
+    if(!trail.length) return;
+    trail.pop();
+    live = items[i].slice();
+    trail.forEach(function(){ live = applyAt(live, legalNext(live)); });
+    keepSay = true;
+    say.innerHTML = T("Back one step.","Un paso atrás.");
+    render();
+  });
+
+  showBtn.addEventListener("click", function(){
+    var r = rec(i);
+    r.shown = true; r.indep = false;
+    while(!done(live)){
+      var idx = legalNext(live);
+      var label = moveLabel(live, idx);
+      var val = doOp(live[idx-1], live[idx], live[idx+1]);
+      live = applyAt(live, idx);
+      trail.push({did: label + " = " + showNum(val), now: done(live) ? showNum(live[0]) : render_(live)});
+    }
+    keepSay = true;
+    say.innerHTML = "<b>"+T("Here is the whole order.","Aquí está todo el orden.")+"</b> "
+      + T("Read the steps above from the top.","Lee los pasos de arriba desde el principio.");
+    persist(); render();
+  });
+
+  nextBtn.addEventListener("click", function(){
+    var nx = i+1;
+    while(nx<items.length && rec(nx).done) nx++;
+    if(nx>=items.length && firstUnsolved()>=items.length){ allDone=true; render(); return; }
+    if(nx>=items.length) nx = firstUnsolved();
+    i = nx; live = null; render();
+    stage.scrollIntoView({block:"start", behavior: reduced() ? "auto" : "smooth"});
+  });
+
+  /* ══ THE HINT LADDER — §9 ════════════════════════════════════════════ */
+  function orderHtml(){
+    return '<div class="order">'
+      + '<div><span class="n">1</span><span><b>'+T("Parentheses","Paréntesis")+'</b> — '+T("finish what is inside first.","termina primero lo de adentro.")+'</span></div>'
+      + '<div><span class="n">2</span><span><b>'+T("Powers","Potencias")+'</b> — '+T("then the exponents.","luego los exponentes.")+'</span></div>'
+      + '<div><span class="n">3</span><span><b>'+T("× and ÷","× y ÷")+'</b> — '+T("together, ","juntos, ")+'<span class="lr">'+T("left to right","de izquierda a derecha")+'</span>.</span></div>'
+      + '<div><span class="n">4</span><span><b>'+T("+ and −","+ y −")+'</b> — '+T("together, ","juntos, ")+'<span class="lr">'+T("left to right","de izquierda a derecha")+'</span>.</span></div>'
+      + '</div>';
+  }
+
+  function rungAt(k){
+    var legal = legalNext(live), why = "";
+    if(k===0) return {
+      k:T("Cue","Pista"),
+      html:"<b>"+T("Look for brackets first, then powers.","Busca primero los paréntesis, luego las potencias.")+"</b> "
+        + T("If there are none of either, you are choosing between × ÷ and + −.",
+            "Si no hay ninguno de los dos, estás eligiendo entre × ÷ y + −.")
+    };
+    if(k===1) return {
+      k:T("Strategy","Estrategia"),
+      html:T("Four ranks, and the last two are the ones people get wrong:",
+             "Cuatro niveles, y los dos últimos son los que la gente falla:"),
+      order:true
+    };
+    if(k===2) return {
+      k:T("Picture it","Imagínalo"),
+      html:T("<b>× and ÷ are the same rank.</b> So are + and −. When two of the same rank are sitting next to each other, the one on the <b>left</b> goes first — always, even if the other one looks easier.",
+             "<b>× y ÷ son del mismo nivel.</b> + y − también. Cuando hay dos del mismo nivel juntos, va primero el de la <b>izquierda</b> — siempre, aunque el otro parezca más fácil.")
+    };
+    return {
+      k:T("Worked example","Ejemplo resuelto"),
+      html:T("A different one, every step.","Otra distinta, paso a paso."),
+      worked: exampleFor()
+    };
+  }
+
+  /* the worked example is a DIFFERENT expression of the same shape, walked
+     by the same engine — so it can never disagree with the page's own rules */
+  function exampleFor(){
+    var it = items[i];
+    var hasParen = it.indexOf("(") > -1, hasPow = it.indexOf("^") > -1;
+    var ex;
+    if(hasParen)   ex = [2,'*','(',7,'-',4,')','+',5];
+    else if(hasPow) ex = [1,'+',5,'^',2];
+    else            ex = [20,'-',8,'/',2,'+',1];
+    /* never hand back the expression they are looking at */
+    if(render_(ex) === render_(it)) ex = [6,'+',4,'*',2,'-',3];
+    var out = [render_(ex)], t = ex.slice(), guard = 0;
+    while(!done(t) && guard++ < 12){
+      var idx = legalNext(t);
+      var lab = moveLabel(t, idx), v = doOp(t[idx-1], t[idx], t[idx+1]);
+      t = applyAt(t, idx);
+      out.push(lab + " = " + showNum(v) + "   →   " + (done(t) ? showNum(t[0]) : render_(t)));
+    }
+    return out;
+  }
+
+  function drawRungs(){
+    var r = rec(i);
+    rungs.innerHTML = "";
+    for(var k=0;k<r.hints;k++){
+      var t = rungAt(k);
+      var div = document.createElement("div");
+      div.className = "rung";
+      var body = '<div><span class="k">'+t.k+'</span><div class="t">'+t.html+'</div>';
+      if(t.order) body += orderHtml();
+      if(t.worked){
+        body += '<div class="worked">';
+        t.worked.forEach(function(l, ix){
+          body += '<div'+(ix===t.worked.length-1 ? ' class="fin"' : '')+'>'+l+'</div>';
+        });
+        body += '</div>';
+      }
+      body += '</div>';
+      div.innerHTML = '<span class="n">'+(k+1)+'</span>'+body;
+      rungs.appendChild(div);
+    }
+    hintBtn.disabled = (r.hints>=4) || done(live);
+    hintBtn.textContent = (r.hints===0)
+      ? T("Show me a hint","Muéstrame una pista")
+      : (r.hints>=4 ? T("That is every hint","Esas son todas las pistas") : T("I need more","Necesito más"));
+  }
+
+  hintBtn.addEventListener("click", function(){
+    var r = rec(i);
+    if(r.hints>=4) return;
+    r.hints++;
+    persist(); drawRungs(); paintProbe();
+    showBtn.hidden = !(!done(live) && r.hints >= 4 && r.refused >= 3);
+    var last = rungs.lastElementChild;
+    if(last){ last.setAttribute("tabindex","-1"); last.focus(); }
+  });
+
+  /* ══ CONFIDENCE ══════════════════════════════════════════════════════ */
+  Array.prototype.forEach.call(document.querySelectorAll("[data-conf]"), function(b){
+    b.addEventListener("click", function(){
+      var v = b.dataset.conf;
+      d.conf = (d.conf===v) ? null : v;
+      Array.prototype.forEach.call(document.querySelectorAll("[data-conf]"), function(o){
+        o.setAttribute("aria-pressed", String(o.dataset.conf===d.conf));
+      });
+      persist(); paintProbe();
+    });
+  });
+
+  /* ══ FINISHED ════════════════════════════════════════════════════════ */
+  function paintFinished(){
+    closeCard.hidden = false;
+    whereN.textContent = T("All ten worked","Las diez resueltas");
+    askQ.innerHTML = T("Four ranks, and left to right inside the last two.",
+                       "Cuatro niveles, y de izquierda a derecha dentro de los dos últimos.");
+    exprEl.innerHTML = ""; trailEl.innerHTML = ""; movesEl.innerHTML = "";
+    undoBtn.hidden = true; nextBtn.hidden = true; showBtn.hidden = true;
+    hintBtn.disabled = true; rungs.innerHTML = "";
+    $("closeOrder").innerHTML = orderHtml();
+    say.textContent = T("The order is not a suggestion — it is what makes one expression mean one thing.",
+                        "El orden no es una sugerencia — es lo que hace que una expresión signifique una sola cosa.");
+    paintProbe();
+    if(!wroteDone){ wroteDone = true; persistNow(); }
+  }
+
+  /* ══ THE TEACHER'S ROW ═══════════════════════════════════════════════ */
+  function tally(){
+    var ind=0, sup=0, hints=0, ref=0;
+    for(var k=0;k<items.length;k++){
+      var r = rec(k);
+      hints += (r.hints||0); ref += (r.refused||0);
+      if(r.done){ if(r.indep) ind++; else sup++; }
+    }
+    /* demo/stretch ride the tally so the frozen send block's extra JSON
+       (extra.tally) carries them without a byte of it changing — every
+       consumer of tally() reads its fields by name, so extras are inert. */
+    return {ind:ind, sup:sup, hints:hints, ref:ref, n:items.length,
+            demo:!!work.demo, stretch:(work.stretch||"")};
+  }
+  function today(){
+    var dt = new Date();
+    return dt.getFullYear()+"-"+String(dt.getMonth()+1).padStart(2,"0")+"-"+String(dt.getDate()).padStart(2,"0");
+  }
+  function paintProbe(){
+    var t = tally();
+    $("pvDate").textContent = today();
+    $("pvInd").innerHTML = "<b>"+t.ind+"</b> of "+t.n;
+    $("pvSup").innerHTML = "<b>"+t.sup+"</b> of "+t.n;
+    $("pvHint").textContent = t.hints;
+    $("pvSplit").innerHTML = "<b>"+t.ref+"</b> " + T("out-of-order attempts","intentos fuera de orden");
+    $("pvConf").textContent = d.conf ? (d.conf+" / 5") : "—";
+  }
+  $("copyProbe").addEventListener("click", function(){
+    var t = tally(), btn = this, ok = false;
+    var row = [ today(), "Order of operations", "trials",
+      t.ind+" of "+t.n+" independent", t.sup+" of "+t.n+" supported",
+      t.hints+" hints", t.ref+" out-of-order attempts",
+      d.conf ? ("confidence "+d.conf+"/5") : "confidence not given",
+      (work.demo ? "watched the demo" : "no demo"),
+      ("stretch " + (work.stretch==="solved" ? "solved" : (work.stretch==="tried" ? "tried" : "—"))),
+      "set "+setNo ].join("\t");
+    try{
+      var ta = document.createElement("textarea");
+      ta.value = row; ta.setAttribute("readonly","");
+      ta.style.position="fixed"; ta.style.opacity="0";
+      document.body.appendChild(ta); ta.select();
+      ok = document.execCommand("copy");
+      document.body.removeChild(ta);
+    }catch(e){ ok = false; }
+    btn.textContent = ok ? T("Copied","Copiado") : T("Select it and copy by hand","Selecciónala y cópiala a mano");
+    setTimeout(function(){ btn.textContent = T("Copy this row","Copiar esta fila"); }, 2600);
+  });
+
+  /* ══ SETS ════════════════════════════════════════════════════════════ */
+  Array.prototype.forEach.call(document.querySelectorAll("[data-set]"), function(b){
+    b.addEventListener("click", function(){
+      var s = b.dataset.set;
+      if(s===String(setNo)) return;
+      if(!window.confirm(T("Switch to Set "+s+"? The work on this set is cleared.",
+                           "¿Cambiar al Grupo "+s+"? Se borra el trabajo de este grupo."))) return;
+      setNo = +s; items = SETS[setNo];
+      work = {}; d.work = work; d.set = setNo; d.conf = null;
+      Array.prototype.forEach.call(document.querySelectorAll("[data-conf]"), function(o){
+        o.setAttribute("aria-pressed","false");
+      });
+      allDone = false; wroteDone = false; closeCard.hidden = true; i = 0; live = null;
+      /* fresh-eyes 2026-09-05: a page opened already-finished carries
+         html.aog-reopened (AOG-M-AGAIN-V1), which hides the never-drawn
+         stage. Switching sets HERE redraws the stage without a reload, so
+         the class must come off or the new set renders into display:none. */
+      try{ document.documentElement.classList.remove("aog-reopened"); }catch(e){}
+      persist(); paintPaperList(); render();
+    });
+  });
+
+  function paintPaperList(){
+    var ol = $("paperOl");
+    if(!ol) return;
+    ol.innerHTML = "";
+    items.forEach(function(it, ix){
+      var li = document.createElement("li");
+      li.innerHTML = '<span class="q">'+(ix+1)+'</span><span class="e">'
+        + '<span class="ex">'+render_(it)+' = <u></u></span>'
+        + '<span class="steps"><i></i><i></i></span></span>';
+      ol.appendChild(li);
+    });
+  }
+  /* ══ PERSIST ═════════════════════════════════════════════════════════ */
+  var saveTimer=null, savedTimer=null, wroteDone=false;
+  /* ⚠ persist() DEBOUNCES 400ms, and the moment a set is finished is the exact
+     moment the record matters most -- it is also the moment a student is most
+     likely to close the tab or hit reload. A driven run proved the last item
+     and the whole log row can be lost that way. The finish writes SYNCHRONOUSLY.
+     (.30fg: ported from the v/h series -- see SERIES-SPEC-science-vocabulary.md) */
+  function persistNow(){
+    d.work = work; d.set = setNo;
+    clearTimeout(saveTimer);
+    flagSaved(save(d));
+  }
+  function persist(){
+    d.work = work; d.set = setNo;
+    clearTimeout(saveTimer);
+    saveTimer = setTimeout(function(){ flagSaved(save(d)); }, 400);
+  }
+  function flagSaved(ok){
+    var pill = document.querySelector("[data-saved]");
+    if(!pill) return;
+    var txt = pill.querySelector("[data-savedtext]");
+    if(txt) txt.textContent = ok
+      ? T("Saved on this computer · ","Guardado en esta computadora · ")
+        + new Date().toLocaleTimeString([], {hour:"numeric", minute:"2-digit"})
+      : T("This computer will not let the page save. Print your copy before you leave.",
+          "Esta computadora no deja que la página guarde. Imprime tu copia antes de irte.");
+    pill.classList.add("on");
+    clearTimeout(savedTimer);
+    savedTimer = setTimeout(function(){ if(ok) pill.classList.remove("on"); }, 4000);
+  }
+
+  /* ══ ERASE ═══════════════════════════════════════════════════════════ */
+  function resetAll(){
+    work = {}; d = {set:setNo}; i = 0; allDone = false; wroteDone = false; live = null;
+    closeCard.hidden = true;     Array.prototype.forEach.call(document.querySelectorAll("[data-conf]"), function(o){
+      o.setAttribute("aria-pressed","false");
+    });
+    render();
+  }
+  document.querySelector("[data-erase]").addEventListener("click", function(){
+    if(!window.confirm(T("Erase your work on this activity? This cannot be undone.",
+                         "¿Borrar tu trabajo en esta actividad? No se puede deshacer."))) return;
+    if(hasLS){ try{ localStorage.removeItem(KEY+ID); }catch(e){} }
+    resetAll();
+    var pill = document.querySelector("[data-saved]");
+    var txt = pill && pill.querySelector("[data-savedtext]");
+    if(txt) txt.textContent = T("Erased. Nothing from this activity is left on this computer.",
+                                "Borrado. No queda nada de esta actividad en esta computadora.");
+    if(pill){ pill.classList.add("on"); clearTimeout(savedTimer);
+      savedTimer = setTimeout(function(){ pill.classList.remove("on"); }, 5000); }
+  });
+
+  var allBtn = $("eraseAll");
+  allBtn.addEventListener("click", function(){
+    if(!window.confirm(T("Erase every worksheet on this computer? This cannot be undone.",
+                         "¿Borrar todas las hojas en esta computadora? No se puede deshacer."))) return;
+    if(hasLS){
+      try{
+        var dead = [];
+        for(var k=0;k<localStorage.length;k++){
+          var key = localStorage.key(k);
+          if(key && key.indexOf(KEY)===0 && key!==KEY+"theme" && key!==KEY+"lang") dead.push(key);
+        }
+        dead.forEach(function(key){ localStorage.removeItem(key); });
+      }catch(e){}
+    }
+    resetAll();
+    allBtn.textContent = T("Erased — nothing is left on this computer",
+                           "Borrado — no queda nada en esta computadora");
+    setTimeout(paintLang, 5000);
+  });
+
+  /* ══ PRINT — synchronous, never behind a timer (iOS blocks deferred print) ══ */
+  Array.prototype.forEach.call(document.querySelectorAll("[data-print]"), function(btn){
+    btn.addEventListener("click", function(){ window.print(); });
+  });
+
+  /* ══ PROJECTOR ═══════════════════════════════════════════════════════ */
+  $("boardBtn").addEventListener("click", function(){
+    var host = location.hostname || "architectureofgrace.org";
+    var url = (host==="localhost"||host==="127.0.0.1"||!host)
+            ? location.href : host.replace(/^www\./,"")+"/m7";
+    var el = document.createElement("div");
+    el.id = "beam";
+    el.innerHTML = '<div class="x">'+T("Tap anywhere to close","Toca para cerrar")+'</div>'
+      + '<div class="wk">'+T("Mathematics · Activity 7","Matemáticas · Actividad 7")+'</div>'
+      + '<div class="nm">'+T("What Goes First","Qué va primero")+'</div>'
+      + '<div class="url"></div>'
+      + '<div class="hint">'+T("Type it in the address bar.","Escríbelo en la barra de direcciones.")+'</div>';
+    el.querySelector(".url").textContent = url;
+    el.addEventListener("click", function(){ el.remove(); });
+    document.addEventListener("keydown", function esc(e){
+      if(e.key==="Escape"){ el.remove(); document.removeEventListener("keydown", esc); }
+    });
+    document.body.appendChild(el);
+    el.setAttribute("tabindex","-1"); el.focus();
+  });
+
+  /* ══ THEME ═══════════════════════════════════════════════════════════ */
+  var tBtn = $("themeBtn");
+  function prefersDark(){ return window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches; }
+  function currentIsDark(){
+    var s = document.documentElement.getAttribute("data-theme");
+    return s ? s==="dark" : prefersDark();
+  }
+  function paintTheme(){
+    if(tBtn) tBtn.textContent = currentIsDark()
+      ? T("Switch to light","Cambiar a claro") : T("Switch to dark","Cambiar a oscuro");
+  }
+  try{
+    var stored = localStorage.getItem(KEY+"theme");
+    if(stored) document.documentElement.setAttribute("data-theme", stored);
+  }catch(e){}
+  if(window.matchMedia){
+    var mq = window.matchMedia("(prefers-color-scheme: dark)");
+    if(mq.addEventListener) mq.addEventListener("change", paintTheme);
+    else if(mq.addListener) mq.addListener(paintTheme);
+  }
+  if(tBtn) tBtn.addEventListener("click", function(){
+    var next = currentIsDark() ? "light" : "dark";
+    document.documentElement.setAttribute("data-theme", next);
+    try{ localStorage.setItem(KEY+"theme", next); }catch(e){}
+    paintTheme();
+  });
+
+  var lBtn = $("langBtn");
+  try{ var sl = localStorage.getItem(KEY+"lang"); if(sl==="es"||sl==="en") lang = sl; }catch(e){}
+  if(lBtn) lBtn.addEventListener("click", function(){
+    lang = (lang==="es") ? "en" : "es";
+    try{ localStorage.setItem(KEY+"lang", lang); }catch(e){}
+    paintLang();
+  });
+
+  /* ══ BOOT ════════════════════════════════════════════════════════════ */
+  if(d.conf){
+    Array.prototype.forEach.call(document.querySelectorAll("[data-conf]"), function(o){
+      o.setAttribute("aria-pressed", String(o.dataset.conf===d.conf));
+    });
+  }
+  i = firstUnsolved();
+  if(i>=items.length){ allDone = true; i = 0; }
+  live = null;
+  paintPaperList();
+  paintLang();
+
+  /* ══ THE RESULTS CHANNEL — AOG-M-SENDBLOCK-V1 ════════════════════════
+     These activity pages were offline-only by design. A teacher hands out a link
+     with ?dest= on it (or deploys aog-sync-config.js), and ONLY then does
+     a Send button exist — and only then does the lock copy change, because
+     "this page has no way to send anything" would otherwise be a lie.
+     Resolution ladder, simplified from index.html: the link wins, the site
+     config is second, and the URL SHAPE is validated or the value refused. */
+  (function(){
+    var DEST_RE = /^https:\/\/script\.google\.com\/[^\s]*\/exec$/;
+    function destDecode(raw){
+      try{
+        var t = String(raw).replace(/-/g,"+").replace(/_/g,"/");
+        while(t.length % 4) t += "=";
+        var o = JSON.parse(atob(t));
+        if(o && typeof o.u==="string" && DEST_RE.test(o.u))
+          return { url:o.u, key:(typeof o.k==="string" ? o.k : "") };
+      }catch(e){}
+      return null;
+    }
+    var DEST = null;
+    try{
+      var dm = /[?&]dest=([^&]+)/.exec(location.search || "");
+      if(dm) DEST = destDecode(decodeURIComponent(dm[1]));
+    }catch(e){}
+    if(!DEST){
+      try{
+        var cfg = window.AOG_SYNC_DEFAULTS;
+        if(cfg && !cfg.destinations && typeof cfg.url==="string" && DEST_RE.test(cfg.url)
+           && Object.prototype.toString.call(cfg.schools)==="[object Array]" && cfg.schools.length)
+          DEST = { url:cfg.url, key:(typeof cfg.key==="string" ? cfg.key : "") };
+      }catch(e){}
+    }
+    /* no destination → nothing is added to this page at all */
+    if(!DEST) return;
+
+    var NAME_EN = "What Goes First";
+    var SKILL_EN = "Order of operations";
+    /* ⚠ ONE BLOCK, TWO SERIES. Derived from ID so the c-series does not file
+       its rows under the 6-8 math strand -- and so there is still only one
+       copy of this block to fix when the next fault turns up in it. */
+    /* ⚠ A BOOLEAN CANNOT HOLD THREE SERIES. It was CSER = ID starts with
+       "c"; a science-vocabulary page would have filed its rows under the 6-8
+       math strand. One table, open to the next series, and the m and c
+       values are preserved byte for byte. */
+    var S0     = String(ID).charAt(0);
+    var SERIES = ({m:"interior-math", c:"concepts-data", v:"science-vocabulary"})[S0] || "interior-math";
+    var BUILD  = ({m:"m-series send v1", c:"c-series send v2", v:"v-series send v1"})[S0] || "m-series send v1";
+    var whoKey = KEY + "who";
+    function getWho(){ try{ return String(localStorage.getItem(whoKey)||""); }catch(e){ return ""; } }
+    function setWho(v){ try{ localStorage.setItem(whoKey, v); }catch(e){} }
+    /* .30hd — a teacher link may carry the name/code (&who=) so even a
+       fresh device's first finish is automatic */
+    try{
+      var wq = /[?&]who=([^&]+)/.exec(location.search || "");
+      if(wq && !getWho().trim()) setWho(decodeURIComponent(wq[1]).slice(0,40));
+    }catch(e){}
+    var sendBusy = false, sendErr = false, uis = [];
+
+    /* Every module in this series shows #closeCard when the set is finished,
+       and that is the ONLY completion signal all of them share: m9 scores in
+       ways-produced and has no ind/sup at all, so arithmetic on tally() would
+       silently never fire there. Watch the card, not the numbers. */
+    function finished(){
+      var cc = document.getElementById("closeCard");
+      return !!cc && !cc.hidden;
+    }
+    /* ── .30hd: AUTOSEND ON ALL ASSIGNMENTS — Jimmy's explicit override,
+       2026-09-05. A finished set with a known name sends its one row
+       itself: the same row the tap posted, once per set (d.sentAt), and
+       a send ERROR stops auto for the set — manual retry only, so a dead
+       network never doubles rows. No name = no row: the first finish on
+       a fresh device still asks once, and links may carry &who=. */
+    function maybeAuto(){
+      if(sendBusy || sendErr || d.sentAt) return;
+      var who = getWho().trim().slice(0,40);
+      if(who) doSend(who);
+    }
+    function doSend(who){
+      var t = tally();
+      var payload = {
+        action:"checkin", checkinType:"practice", _backendAuth:DEST.key,
+        studentId:who, timestamp:new Date().toISOString(), date:today(),
+        activityId:ID, activityName:NAME_EN, skill:SKILL_EN,
+        setNo:setNo, itemsTotal:(typeof t.n === "number" ? t.n : ""),
+        independent:(typeof t.ind === "number" ? t.ind : ""),
+        supported:(typeof t.sup === "number" ? t.sup : ""),
+        hintsUsed:(typeof t.hints === "number" ? t.hints : ""),
+        confidence:d.conf ? +d.conf : "",
+        source:"link",
+        /* a module that measures in its own currency (m9 counts ways produced)
+           keeps that currency here rather than being flattened to blanks */
+        extra:(function(){
+        /* AOG-M-SENDITEMS-V1 — the probe map rides in the column that
+           already exists, so nothing server-side moves. */
+        var x = ({series:SERIES, lang:lang,
+                              build:BUILD, tally:t});
+        try{ var p = window.AOG_PROBE_DATA && window.AOG_PROBE_DATA(); if(p) x.probe = p; }catch(eP){}
+        return JSON.stringify(x);
+      })()
+      };
+      var body = JSON.stringify(payload);
+      sendBusy = true; sendErr = false; paintSendM();
+      fetch(DEST.url, {method:"POST", mode:"cors", redirect:"follow",
+          headers:{"Content-Type":"text/plain;charset=utf-8"}, body:body})
+        .then(function(res){ return res.json(); })
+        .then(function(j){
+          sendBusy = false;
+          if(j && j.ok){ d.sentAt = new Date().toISOString(); d.sentHow = "ok"; persist(); }
+          else { sendErr = true; }
+          paintSendM();
+        })
+        .catch(function(){
+          /* the cors read threw — ONE blind send and an honest label, never an
+             automatic retry: nothing de-dups server-side, and a retry doubles a row */
+          fetch(DEST.url, {method:"POST", mode:"no-cors", redirect:"follow",
+              headers:{"Content-Type":"text/plain;charset=utf-8"}, body:body})
+            .then(function(){
+              sendBusy = false;
+              d.sentAt = new Date().toISOString(); d.sentHow = "blind";
+              persist(); paintSendM();
+            })
+            .catch(function(){ sendBusy = false; sendErr = true; paintSendM(); });
+        });
+    }
+    function buildUI(kind, mount){
+      var box = document.createElement("div");
+      box.className = "sendbox no-print";
+      box.innerHTML =
+        '<span class="sk" data-en="Send it to your teacher" data-es="Env&iacute;aselo a tu maestro">Send it to your teacher</span>'
+        + '<p class="snote" data-en="One summary row — how many you got, hints, confidence, and your name. Once your name is here, every set you finish sends its row to your teacher on its own." data-es="Una sola fila de resumen — cu&aacute;ntas lograste, pistas, confianza y tu nombre. Con tu nombre escrito, cada grupo que termines env&iacute;a su fila a tu maestro por s&iacute; solo.">One summary row — how many you got, hints, confidence, and your name. Once your name is here, every set you finish sends its row to your teacher on its own.</p>'
+        + '<label><span data-en="Your first name, or the code your teacher gave you" data-es="Tu nombre, o el c&oacute;digo que te dio tu maestro">Your first name, or the code your teacher gave you</span>'
+        + '<input type="text" maxlength="40" autocomplete="off"></label>'
+        + '<div class="srow"><button class="btn btn-accent" type="button">Send</button></div>'
+        + '<p class="sst" aria-live="polite"></p>';
+      mount(box);
+      var ui = { kind:kind, box:box, input:box.querySelector("input"),
+                 go:box.querySelector("button"), st:box.querySelector(".sst") };
+      ui.input.value = getWho();
+      ui.input.addEventListener("input", function(){
+        var v = ui.input.value.slice(0,40);
+        setWho(v);
+        uis.forEach(function(o){ if(o!==ui && o.input.value!==v) o.input.value = v; });
+      });
+      ui.input.addEventListener("keydown", function(e){
+        if(e.key === "Enter"){ e.preventDefault(); ui.go.click(); }
+      });
+      ui.go.addEventListener("click", function(){
+        if(sendBusy) return;
+        if(ui.kind==="student" && d.sentAt) return;
+        var who = ui.input.value.trim().slice(0,40);
+        if(!who){
+          ui.st.className = "sst bad";
+          ui.st.textContent = T("Type your name or code first.","Escribe primero tu nombre o código.");
+          ui.input.focus();
+          return;
+        }
+        setWho(who);
+        doSend(who);
+      });
+      uis.push(ui);
+    }
+    function paintSendM(){
+      if(!uis.length) return;
+      var done = finished();
+      if(done) maybeAuto();
+      uis.forEach(function(ui){
+        if(ui.kind==="student") ui.box.hidden = !done;
+        if(document.activeElement !== ui.input){
+          var w = getWho();
+          if(w && ui.input.value !== w) ui.input.value = w;
+        }
+        /* AOG-M-SENDFOOT-V1 — a second tap is a visible choice, never a silent
+           duplicate: once a row has gone, the button says so. */
+        ui.go.textContent = (ui.kind==="teacher")
+          ? (d.sentAt ? T("Send again","Enviar otra vez") : T("Send this row","Enviar esta fila"))
+          : (d.sentAt ? T("Send again","Enviar otra vez") : T("Send to my teacher","Enviar a mi maestro"));
+        ui.go.disabled = sendBusy || (ui.kind==="student" && !!d.sentAt);
+        var cls = "sst", txt = "";
+        if(sendBusy){ txt = T("Sending…","Enviando…"); }
+        else if(sendErr){
+          cls = "sst bad";
+          txt = T("Couldn't send. Your work is still saved on this computer.",
+                  "No se pudo enviar. Tu trabajo sigue guardado en esta computadora.");
+        } else if(d.sentAt){
+          cls = (d.sentHow==="blind") ? "sst warn" : "sst ok";
+          txt = (d.sentHow==="blind")
+            ? T("Sent — but this browser can't confirm it arrived. Your teacher can check the Sheet.",
+                "Enviado — pero este navegador no puede confirmar que llegó. Tu maestro puede revisar la hoja.")
+            : T("Sent — your teacher has it.","Enviado — tu maestro ya lo tiene.");
+        }
+        ui.st.className = cls; ui.st.textContent = txt;
+      });
+    }
+
+    /* the honest lock: every sentence that would become false is swapped */
+    var lh = document.getElementById("lock-h");
+    if(lh){
+      lh.setAttribute("data-en","Your practice stays here — a finished set sends one summary row to your teacher.");
+      lh.setAttribute("data-es","Tu práctica se queda aquí — un grupo terminado envía una fila de resumen a tu maestro.");
+    }
+    var li = document.getElementById("lockIntro");
+    if(li){
+      li.setAttribute("data-en","There is no account and no sign-in, and your work is saved on this one computer. This page sends exactly one thing — a finished set's summary row to your teacher — and you can erase everything whenever you want.");
+      li.setAttribute("data-es","No hay cuenta ni inicio de sesión, y tu trabajo se guarda solo en esta computadora. Esta página envía exactamente una cosa — la fila de resumen de un grupo terminado a tu maestro — y puedes borrar todo cuando quieras.");
+    }
+    var lp1 = document.getElementById("lockP1");
+    if(lp1){
+      lp1.setAttribute("data-en","<b>This page can send exactly one thing.</b> When a practice set is finished, its summary row — how many you got, how many hints, your confidence, and your name — goes to your teacher's sheet on its own; the first time, you type your name once. It never sends your taps or the work itself, and the rest of the page still works with the internet off.");
+      lp1.setAttribute("data-es","<b>Esta página puede enviar exactamente una cosa.</b> Cuando un grupo de práctica termina, su fila de resumen — cuántas lograste, cuántas pistas, tu confianza y tu nombre — va a la hoja de tu maestro por sí sola; la primera vez escribes tu nombre una sola vez. Nunca envía tus toques ni el trabajo mismo, y el resto de la página sigue funcionando sin internet.");
+    }
+    var fn = document.getElementById("footNet");
+    if(fn){
+      fn.setAttribute("data-en","This page loads no fonts, scripts, or images from the internet and works with the network off. Your work is stored in this browser only, and the only thing it sends is one summary row per finished set — straight to your teacher. It is not a district product and carries no district endorsement.");
+      fn.setAttribute("data-es","Esta página no carga fuentes, scripts ni imágenes de internet y funciona con la red apagada. Tu trabajo se guarda solo en este navegador, y lo único que envía es una fila de resumen por cada grupo terminado — directo a tu maestro. No es un producto del distrito ni cuenta con su respaldo.");
+    }
+
+    /* AOG-M-SENDFOOT-V1 — ONE send control, and it lives at the BOTTOM OF THE
+       PAGE, outside the For-the-teacher drawer. There used to be two here (and
+       on six c-pages, three or four on one page), and the one inside the
+       drawer was addressed to the student. Mounted before .sheet-foot so it
+       sits directly above Print the problems / Erase this activity. */
+    (function(){
+      var foot = document.querySelector(".sheet-foot");
+      var host = foot && foot.parentNode;
+      if(!host){ host = document.querySelector("section.sheet") || document.body; foot = null; }
+      buildUI("one", function(box){
+        if(foot) host.insertBefore(box, foot); else host.appendChild(box);
+      });
+    })();
+
+    /* the page repaints the probe on every state change and the whole page
+       on a language switch — ride both rather than inventing a third clock */
+    paintProbe = (function(orig){
+      return function(){ var r = orig.apply(this, arguments); try{ paintSendM(); }catch(e){} return r; };
+    })(paintProbe);
+    paintLang = (function(orig){
+      return function(){ var r = orig.apply(this, arguments); try{ paintSendM(); }catch(e){} return r; };
+    })(paintLang);
+
+    /* the close card can be revealed by a path that does not repaint the
+       probe, so watch the attribute itself as well */
+    try{
+      var ccEl = document.getElementById("closeCard");
+      if(ccEl && window.MutationObserver){
+        new MutationObserver(function(){ try{ paintSendM(); }catch(e){} })
+          .observe(ccEl, {attributes:true, attributeFilter:["hidden"]});
+      }
+    }catch(e){}
+
+    paintLang();
+    paintSendM();
+  })();
+
+  /* ══ THE PROBE RECORD — AOG-M-PROBEPRINT-V1 ══════════════════════════
+     Printing this page has always given you the WORKSHEET — ten blank
+     lines and a pencil. There was no way to print what actually HAPPENED
+     on the screen, so a teacher who ran a probe had to copy seven numbers
+     into something else by hand before the class turned over.
+
+     This adds a second print: a one-page record of the probe. It reads
+     only what the page already knows, it invents no measurement, and it
+     is the same block on every activity in the series — the item map is
+     built from rec(k), never from a per-page item shape, because the
+     collection is called items here, problems on m1/m14 and targets on
+     m9. typeof on an undeclared var is the only safe way to ask.
+
+     The sub-skill grouping is the one thing that IS per activity, so it
+     lives in one table keyed by ID, and it is REFUSED unless its indexes
+     cover 1..n exactly. A band table that has drifted out of step with a
+     set prints nothing rather than a lie. m7 and m9 have no entry on
+     purpose: m7's two traps sit inside a mixed set, and m9 has no items
+     to be right about.                                                 */
+  (function(){
+    var LOGMAX = 24;
+
+    /* the collection has three names across the series */
+    function itemArr(){
+      try{ if(typeof items    !== "undefined" && items)    return items;    }catch(e){}
+      try{ if(typeof problems !== "undefined" && problems) return problems; }catch(e){}
+      try{ if(typeof targets  !== "undefined" && targets)  return targets;  }catch(e){}
+      return null;
+    }
+    function esc(v){
+      return String(v==null?"":v).replace(/[&<>"']/g, function(c){
+        return ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"})[c];
+      });
+    }
+    function el(s){ return document.querySelector(s); }
+    function txtOf(s){ var n = el(s); return n ? String(n.textContent||"").trim() : ""; }
+
+    var BANDS = {
+      m1:[{en:"Adding",es:"Sumar",at:[1,2]},
+          {en:"Subtracting",es:"Restar",at:[3,4]},
+          {en:"Multiplying",es:"Multiplicar",at:[5,6]},
+          {en:"Dividing",es:"Dividir",at:[7,8]},
+          {en:"Negative answers",es:"Respuestas negativas",at:[9,10]}],
+      m2:[{en:"Integers",es:"Enteros",at:[1,2,3,4]},
+          {en:"Tenths",es:"Décimas",at:[5,6]},
+          {en:"Halves",es:"Medios",at:[7,8]},
+          {en:"Opposites",es:"Opuestos",at:[9,10]}],
+      m3:[{en:"Adding",es:"Sumar",at:[1,2,3,4,5]},
+          {en:"Subtracting",es:"Restar",at:[6,7,8,9,10]}],
+      m4:[{en:"Reading |n|",es:"Leer |n|",at:[1,2,3,4,5,7,10]},
+          {en:"Backwards — which number is this far from zero",
+           es:"Al revés — qué número está a esta distancia del cero",at:[6,8,9]}],
+      m5:[{en:"Multiplying",es:"Multiplicar",at:[1,2,3,4,5]},
+          {en:"Dividing",es:"Dividir",at:[6,7,8,9,10]}],
+      m6:[{en:"Distributing",es:"Distribuir",at:[1,2,3,4,5]},
+          {en:"Factoring",es:"Factorizar",at:[6,7,8,9,10]}],
+      m8:[{en:"Combining like terms",es:"Combinar términos semejantes",at:[1,2,3]},
+          {en:"Adding two brackets",es:"Sumar dos paréntesis",at:[4,5,6]},
+          {en:"Subtracting one bracket from another",
+           es:"Restar un paréntesis de otro",at:[7,8,9,10]}],
+      m10:[{en:"Tenths",es:"Décimas",at:[1,2,3,4,5,6]},
+           {en:"Halves",es:"Medios",at:[7,8]},
+           {en:"Quarters",es:"Cuartos",at:[9,10]}],
+      m11:[{en:"Decimals that stop",es:"Decimales que terminan",at:[1,2,4,6,8,10]},
+           {en:"Decimals that repeat",es:"Decimales periódicos",at:[3,5,7,9]}],
+      m12:[{en:"Order — commutative",es:"Orden — conmutativa",at:[1,6,10]},
+           {en:"Grouping — associative",es:"Agrupación — asociativa",at:[2,7]},
+           {en:"Spread — distributive",es:"Reparto — distributiva",at:[4,9]},
+           {en:"Special numbers",es:"Números especiales",at:[3,5,8]}],
+      m13:[{en:"Expressions",es:"Expresiones",at:[1,2,3,4,5,6,7]},
+           {en:"Equations",es:"Ecuaciones",at:[8,9,10]}],
+      m14:[{en:"ax + b = c",es:"ax + b = c",at:[1,2,3,4,5,6]},
+           {en:"Written as a fraction",es:"Escritas como fracción",at:[7,8]},
+           {en:"Negative coefficient",es:"Coeficiente negativo",at:[9]},
+           {en:"The answer is negative",es:"La respuesta es negativa",at:[10]}],
+      /* ── the c-series: EIGHT items, not ten ──────────────────────────
+         c1 and c6 have no entry ON PURPOSE -- see the header of
+         _work/patch-bands.py and aog_c_series in project memory. */
+      c2:[{en:"Some of the parts shaded",es:"Algunas partes sombreadas",at:[1,2,3,4,6,8]},
+          {en:"None shaded, or every part shaded",es:"Ninguna sombreada, o todas",at:[5,7]}],
+      c3:[{en:"Less than one whole",es:"Menos de un entero",at:[1,3,6]},
+          {en:"Exactly one whole",es:"Exactamente un entero",at:[4,7]},
+          {en:"More than one whole",es:"Más de un entero",at:[2,5,8]}],
+      c4:[{en:"Name the benchmark",es:"Nombrar el punto de referencia",at:[1,2,3,4]},
+          {en:"Name it, then place it on the line",es:"Nombrarlo y luego ubicarlo en la recta",at:[5,6,7,8]}],
+      c5:[{en:"Same bottom number",es:"Mismo denominador",at:[1,2,5]},
+          {en:"Same top number",es:"Mismo numerador",at:[4,6]},
+          {en:"Equal, drawn differently",es:"Iguales, dibujadas distinto",at:[3,7]},
+          {en:"Against one half",es:"Contra un medio",at:[8]}],
+      c7:[{en:"Levelling the towers",es:"Emparejar las torres",at:[1,2,3,4,5,6]},
+          {en:"The shortcut — add, then divide",es:"El atajo — sumar y luego dividir",at:[7,8]}],
+      c8:[{en:"Five cards",es:"Cinco tarjetas",at:[1,2,3,4,5]},
+          {en:"Seven cards",es:"Siete tarjetas",at:[6,7,8]}],
+      c9:[{en:"There is an odd one",es:"Hay uno que no encaja",at:[1,2,3,5,6,7]},
+          {en:"There is none — saying so is the skill",es:"No hay ninguno — decirlo es la destreza",at:[4,8]}],
+      c10:[{en:"Building the plot",es:"Construir la gráfica",at:[1,5]},
+           {en:"The biggest score",es:"El puntaje mayor",at:[2,6]},
+           {en:"Counting a decade",es:"Contar una decena",at:[3,7]},
+           {en:"The middle score",es:"El puntaje del medio",at:[4,8]}],
+      c11:[{en:"Building the plot",es:"Construir el diagrama",at:[1,5]},
+           {en:"The most common answer",es:"La respuesta más común",at:[2,6]},
+           {en:"How many answered",es:"Cuántos respondieron",at:[3,7]},
+           {en:"The spread",es:"La amplitud",at:[4,8]}]
+    };
+    /* a band table is used only if it covers 1..n exactly, once each */
+    function bandsFor(n){
+      /* a page whose items are not this unit's own -- a teacher loaded their
+         own word list -- says so, and the grid is withheld rather than
+         printing a band name that describes somebody else's words */
+      try{ if(window.AOG_BANDS_OFF) return null; }catch(e){}
+      var B = BANDS[ID];
+      if(!B || !n) return null;
+      var seen = {}, count = 0, ok = true;
+      B.forEach(function(b){
+        b.at.forEach(function(x){
+          if(x<1 || x>n || seen[x]) ok = false;
+          seen[x] = 1; count++;
+        });
+      });
+      return (ok && count === n) ? B : null;
+    }
+
+    /* ── what happened, item by item ──────────────────────────────────
+       13 of the 14 record {done, indep}; m9 records ways produced and has
+       no notion of an item being right, so it returns null and the sheet
+       prints its counts without a map rather than inventing one.        */
+    function state(k){
+      var r = null;
+      try{ r = rec(k); }catch(e){ return null; }
+      if(!r || typeof r.done !== "boolean") return null;
+      return r.done ? (r.indep ? "ind" : "sup") : "none";
+    }
+    function stateList(n){
+      var out = [], any = false;
+      for(var k=0;k<n;k++){ var s = state(k); if(s) any = true; out.push(s); }
+      return any ? out : null;
+    }
+
+    /* ── the log: kept INSIDE d, so "Erase this activity" takes it too ──
+       A separate localStorage key would have survived that button and
+       made its sentence ("nothing from this activity is left on this
+       computer") false. One key, one erase, one true sentence.
+       Upserted on date+set so a re-do on the same day corrects the row
+       instead of adding a second one.                                   */
+    function logRows(){
+      return (Object.prototype.toString.call(d.log)==="[object Array]") ? d.log : [];
+    }
+    function logUpsert(){
+      var t = tally();
+      if(typeof t.ind !== "number" || typeof t.n !== "number") return;
+      if(Object.prototype.toString.call(d.log) !== "[object Array]") d.log = [];
+      var day = today(), key = day + "|" + setNo, L = d.log;
+      var runNo = (typeof d.run === "number" && d.run > 0) ? d.run : 1;
+      var row = {k:key, date:day, set:setNo, ind:t.ind, sup:(t.sup||0),
+                 hints:(t.hints||0), n:t.n, conf:(d.conf ? +d.conf : null),
+                 run:runNo};
+      var hit = -1;
+      for(var j=0;j<L.length;j++){ if(L[j] && L[j].k===key){ hit = j; break; } }
+      if(hit>-1){
+        /* THE FIRST FINISHED RUN OF A DAY IS THE RECORD. A row banked under
+           an earlier run number is never overwritten by a later one, so
+           "Go again" (AOG-M-AGAIN-V1) is practice and cannot quietly erase
+           a real probe. A row with no run number predates that block and
+           still upserts, so nothing already on a computer is stranded. */
+        if(typeof L[hit].run === "number" && L[hit].run !== runNo) return false;
+        if(JSON.stringify(L[hit]) === JSON.stringify(row)) return false;
+        L[hit] = row;
+      } else L.push(row);
+      if(L.length > LOGMAX) d.log = L.slice(-LOGMAX);
+      return true;
+    }
+    function finished(){
+      var cc = document.getElementById("closeCard");
+      return !!cc && !cc.hidden;
+    }
+
+    /* ── the sheet ────────────────────────────────────────────────────── */
+    function nOf(t){ return (typeof t.n === "number") ? t.n : 0; }
+    function rule(v){
+      return v ? '<span class="val">'+esc(v)+'</span>' : '<span class="rule"></span>';
+    }
+    function field(lb, v){
+      return '<td><span class="lb">'+esc(lb)+'</span>'+rule(v)+'</td>';
+    }
+    function dots(list, at){
+      return at.map(function(x){
+        var s = list[x-1] || "none";
+        return '<span class="rs-dot '+(s==="ind"?"ind":(s==="sup"?"sup":""))+'">'
+             + '<span class="rs-num">'+x+'</span></span>';
+      }).join("");
+    }
+    function saysList(t, list, B){
+      var out = [], n = nOf(t), ind = t.ind, sup = t.sup;
+      /* ⚠ m9 has no independent and no supported — it counts what was produced.
+         Printing the x-of-y sentence on ITS sheet was a line this build would
+         have made false the moment it shipped, which is the exact fault shape
+         this project keeps paying for. Ask the tally, never the page. */
+      if(typeof ind === "number"){
+        out.push(T("Independent means it was solved with no hint; supported means it was solved after one. Both are real evidence and neither is a grade.",
+                   "Independiente significa resuelto sin pista; con apoyo significa resuelto después de una. Las dos son evidencia real y ninguna es una calificación."));
+      } else {
+        out.push(T("This one is not x of ten. It counts what the student produced, and a count of what someone made is real evidence — there is nothing here to be wrong about.",
+                   "Esta no es x de diez. Cuenta lo que el estudiante produjo, y un conteo de lo que alguien hizo es evidencia real — aquí no hay nada en qué equivocarse."));
+      }
+      if(!finished()){
+        out.push(T("This set was not finished — read the counts as a partial probe.",
+                   "Este grupo no se terminó — lee los conteos como un sondeo parcial."));
+      }
+      if(typeof ind === "number" && n){
+        if(ind === n && !t.hints){
+          out.push(T("All " + n + " with no hints. The next honest probe is a harder set, not this one again.",
+                     "Las " + n + " sin pistas. El siguiente sondeo honesto es un grupo más difícil, no este otra vez."));
+        } else if(typeof sup === "number" && sup > ind){
+          out.push(T("More of this was solved with a hint than without one. The skill is emerging, not established.",
+                     "Se resolvió más con pista que sin ella. La destreza está emergiendo, no establecida."));
+        }
+      }
+      /* the weakest band, named only when one band is strictly weakest */
+      if(B && list && n){
+        /* AOG-M-UNREACHED-V1 — ⚠ A BAND NOBODY REACHED IS NOT A BAND THAT CAME
+           APART. On a partial probe every unreached band scores 0 and wins
+           this comparison outright, so the sheet printed the not-finished
+           sentence and then named the skill the student never saw as where
+           the teaching should go. Only fully attempted bands are compared,
+           and a comparison needs at least two of them. */
+        var rate = B.filter(function(b){
+          return b.at.every(function(x){ return list[x-1] && list[x-1] !== "none"; });
+        }).map(function(b){
+          var got = 0;
+          b.at.forEach(function(x){ if(list[x-1]==="ind") got++; });
+          return {b:b, got:got, tot:b.at.length, r:got/b.at.length};
+        });
+        var lo = (rate.length > 1) ? rate.slice().sort(function(a,c){ return a.r - c.r; })[0] : null;
+        var tie = lo ? rate.filter(function(x){ return x.r === lo.r; }).length : 0;
+        if(lo && tie === 1 && lo.r < 1){
+          out.push(T(lo.b.en + " is where it came apart: " + lo.got + " of " + lo.tot + " without a hint.",
+                     lo.b.es + " es donde se rompió: " + lo.got + " de " + lo.tot + " sin pista."));
+        }
+      }
+      if(d.conf && typeof ind === "number" && n){
+        var c5 = (+d.conf) / 5, got = ind / n;
+        if(c5 - got >= 0.35){
+          out.push(T("Confidence is well above the result — worth one sentence with the student before the next probe.",
+                     "La confianza está muy por encima del resultado — vale una frase con el estudiante antes del próximo sondeo."));
+        } else if(got - c5 >= 0.35){
+          out.push(T("The result is well above the confidence — the student did better than they think they did, and should be told so.",
+                     "El resultado está muy por encima de la confianza — al estudiante le fue mejor de lo que cree, y hay que decírselo."));
+        }
+      }
+      out.push(T("One probe on one day. Read it next to what the person standing there saw.",
+                 "Un sondeo de un día. Léelo junto a lo que vio la persona que estaba ahí."));
+      return out;
+    }
+    function isEsName(b){ return lang==="es" ? b.es : b.en; }
+
+    function sheetHtml(){
+      var t = tally(), n = nOf(t);
+      var list = n ? stateList(n) : null;
+      var B = list ? bandsFor(n) : null;
+      var name = txtOf(".sheet-head h1, .sheet-head h2") || ID;
+      var kick = txtOf(".sheet-head .k");
+      var skill = "", meas = "";
+      var dl = el("details.teach .probe dl");
+      if(dl){
+        var kids = dl.children;
+        for(var q=0;q<kids.length;q++){
+          if(kids[q].tagName !== "DT") continue;
+          var lb = kids[q].getAttribute("data-en") || "";
+          var dd = kids[q].nextElementSibling;
+          if(!dd) continue;
+          if(lb === "Skill")   skill = String(dd.textContent||"").trim();
+          if(lb === "Measure") meas  = String(dd.textContent||"").trim();
+        }
+      }
+
+      var h =
+        '<div class="rs-top">'
+        + '<div class="rs-k">'
+        /* AOG-M-STRANDLINE-V1 — ⚠ THIS LINE SAID "Mathematics, The Interior"
+           ON ALL THIRTY PAGES, so a Science Vocabulary probe sheet and a
+           Number Concepts & Data probe sheet both claimed to be 6-8 math
+           on the piece of paper that goes into a folder. Derived from ID,
+           the same way the send block derives its series; the three names
+           are the HUBS' OWN h1 text, so a rename there is a rename here. */
+        + esc(T("Architecture of Grace · " + ({m:"The Interior Mathematics", c:"Number Concepts & Data", v:"Science Vocabulary"}[String(ID).charAt(0)] || "The Interior Mathematics"),
+                "Architecture of Grace · " + ({m:"Matemáticas del Interior", c:"Conceptos Numéricos y Datos", v:"Vocabulario de Ciencias"}[String(ID).charAt(0)] || "Matemáticas del Interior")))
+        +   '<span class="rs-r">' + esc(T("Progress probe","Sondeo de progreso")) + '</span></div>'
+        + '<h1>' + esc(name) + '</h1>'
+        + (skill ? '<p class="rs-skill">' + esc(skill) + '</p>' : "")
+        + '</div>'
+        + '<table class="rs-fields"><tr>'
+        +   field(T("Student","Estudiante"), "")
+        +   field(T("Date","Fecha"), today())
+        +   field(T("Set","Grupo"), String(setNo))
+        +   field(T("Class / period","Clase / período"), "")
+        +   field(T("Measure","Medida"), meas)
+        + '</tr></table>';
+
+      /* the numbers */
+      var cells = [];
+      if(typeof t.ind === "number"){
+        cells.push({big:t.ind, of:T("of ","de ")+n, cap:T("Independent","Independiente")});
+        cells.push({big:(t.sup||0), of:T("of ","de ")+n, cap:T("Supported","Con apoyo")});
+      } else if(typeof t.ways === "number"){
+        cells.push({big:t.ways, of:"", cap:T("Expressions built","Expresiones construidas")});
+        cells.push({big:(t.both||0), of:T("of ","de ")+n, cap:T("From both sides","Desde ambos lados")});
+      }
+      cells.push({big:(t.hints||0), of:"", cap:T("Hints used","Pistas usadas")});
+      cells.push({big:(d.conf ? d.conf : "—"), of:(d.conf ? T("of 5","de 5") : ""),
+                  cap:T("Confidence","Confianza")});
+      h += '<div class="rs-box"><p class="rs-h">' + esc(T("What happened","Lo que pasó")) + '</p>'
+         + '<table class="rs-nums"><tr>'
+         + cells.map(function(c){
+             return '<td><div class="big">'+esc(c.big)+'</div>'
+                  + (c.of ? '<div class="of">'+esc(c.of)+'</div>' : '<div class="of">&nbsp;</div>')
+                  + '<div class="cap">'+esc(c.cap)+'</div></td>';
+           }).join("")
+         + '</tr></table></div>';
+
+      /* item by item */
+      if(list){
+        var rowsHtml;
+        if(B){
+          rowsHtml = B.map(function(b){
+            var got = 0;
+            b.at.forEach(function(x){ if(list[x-1]==="ind") got++; });
+            return '<tr><td class="bn">' + esc(isEsName(b)) + '</td>'
+                 + '<td>' + dots(list, b.at) + '</td>'
+                 + '<td class="bs">' + got + ' ' + esc(T("of","de")) + ' ' + b.at.length + '</td></tr>';
+          }).join("");
+        } else {
+          var all = [];
+          for(var z=1;z<=n;z++) all.push(z);
+          var gotAll = 0;
+          list.forEach(function(s){ if(s==="ind") gotAll++; });
+          rowsHtml = '<tr><td class="bn">' + esc(T("All " + n + " items","Los " + n + " ítems"))
+                   + '</td><td>' + dots(list, all) + '</td>'
+                   + '<td class="bs">' + gotAll + ' ' + esc(T("of","de")) + ' ' + n + '</td></tr>';
+        }
+        h += '<div class="rs-box"><p class="rs-h">' + esc(T("Item by item","Ítem por ítem")) + '</p>'
+           + '<table class="rs-map">' + rowsHtml + '</table>'
+           + '<p class="rs-legend">'
+           +   '<span class="rs-dot ind"></span>' + esc(T("no hint","sin pista")) + '&nbsp;&nbsp;&nbsp;'
+           +   '<span class="rs-dot sup"></span>' + esc(T("after a hint","después de una pista")) + '&nbsp;&nbsp;&nbsp;'
+           +   '<span class="rs-dot"></span>' + esc(T("not reached","no alcanzado"))
+           + '</p></div>';
+      }
+
+      /* what this says */
+      h += '<div class="rs-box"><p class="rs-h">' + esc(T("What this says","Lo que dice esto")) + '</p>'
+         + '<ul class="rs-says">'
+         + saysList(t, list, B).map(function(s){ return '<li>'+esc(s)+'</li>'; }).join("")
+         + '</ul></div>';
+
+      /* over time — this device's own log, and blanks for the sets not run */
+      var L = logRows(), byset = {};
+      L.forEach(function(r){ if(r && r.set) byset[r.set] = r; });
+      var haveSets = [1,2,3].some(function(s){ return !!byset[s]; });
+      if(haveSets || typeof t.ind === "number"){
+        h += '<div class="rs-box"><p class="rs-h">'
+           +   esc(T("Over time — the same skills, three sets of numbers",
+                     "A lo largo del tiempo — las mismas destrezas, tres grupos de números"))
+           + '</p><table class="rs-over"><tr>'
+           + [1,2,3].map(function(s){
+               var r = byset[s];
+               return '<td><div class="st">' + esc(T("Set ","Grupo ")) + s + '</div>'
+                    + '<div class="dt">' + (r ? esc(r.date) : "") + '</div>'
+                    + '<div class="sc">' + (r ? esc(r.ind + " / " + r.n) : "") + '</div></td>';
+             }).join("")
+           + '</tr></table><p class="rs-legend">'
+           + esc(T("Filled in from this computer only. A blank box is a set this device has not seen finished — write it in.",
+                   "Rellenado solo desde esta computadora. Una casilla vacía es un grupo que este equipo no ha visto terminar — escríbelo a mano."))
+           + '</p></div>';
+      }
+
+      h += '<table class="rs-sign"><tr>'
+        +   '<td style="width:34%"><span class="lb">' + esc(T("Recorded by","Registrado por")) + '</span><span class="rule"></span></td>'
+        +   '<td><span class="lb">' + esc(T("What to teach next","Qué enseñar después")) + '</span><span class="rule"></span></td>'
+        + '</tr></table>'
+        + '<div class="rs-lines"><div></div><div></div></div>'
+        + '<p class="rs-prov">'
+        +   esc(T("Built on this device from what happened on this screen on " + today()
+                  + ". It is a probe, not a test score. It is not a district product and carries no district endorsement.",
+                  "Hecho en este dispositivo con lo que pasó en esta pantalla el " + today()
+                  + ". Es un sondeo, no una calificación. No es un producto del distrito ni cuenta con su respaldo."))
+        + '</p>';
+      return h;
+    }
+
+    /* ── printing ─────────────────────────────────────────────────────
+       window.print() is called SYNCHRONOUSLY inside the click. Putting it
+       behind a timer is what broke printing on iOS across this whole site,
+       and the grep for that mistake is kept at zero on purpose.          */
+    function unrec(){ document.body.classList.remove("aog-rec"); }
+    /* ══ AOG-M-SENDITEMS-V1 — THE ITEM MAP CAN LEAVE THIS DEVICE ═══════
+       Until now the send block posted a SUMMARY ROW and nothing else, so the
+       ITEM BY ITEM grid on the printed record existed only in this browser's
+       own storage and the teacher's dashboard could not draw it. It rides in
+       the EXISTING free-form `extra` column: no new Sheet column, no Apps
+       Script version bump, ~500 characters.
+       ⚠ It sends BOTH band labels, en and es, because the dashboard picks its
+       language from dashLang and this page picks from lang - they are not the
+       same variable and one of them is not present over there.
+       ⚠ m9 has no notion of an item being right; stateList returns null and
+       this returns items:null rather than inventing a grid. */
+    window.AOG_PROBE_DATA = function(){
+      try{
+        var t = tally(), n = nOf(t);
+        var list = n ? stateList(n) : null;
+        var B = list ? bandsFor(n) : null;
+        /* the Measure line, read the way sheetHtml reads it. Kept local and
+           six lines long rather than refactored out of sheetHtml: an anchored
+           edit INSIDE sheetHtml would have to land identically on thirty
+           separately-sliced files, and c9/c11 already prove they drift. */
+        var meas = "";
+        try{
+          var dl = document.querySelector("details.teach .probe dl");
+          if(dl){
+            var kids = dl.children;
+            for(var q=0;q<kids.length;q++){
+              if(kids[q].tagName !== "DT") continue;
+              if((kids[q].getAttribute("data-en") || "") !== "Measure") continue;
+              var dd = kids[q].nextElementSibling;
+              if(dd) meas = String(dd.textContent || "").trim();
+            }
+          }
+        }catch(eM){}
+        return {
+          v:1, n:n, meas:meas, items:list,
+          bands: B ? B.map(function(b){ return {en:b.en, es:b.es, at:b.at}; }) : null,
+          ways: (typeof t.ways === "number") ? t.ways : null,
+          both: (typeof t.both === "number") ? t.both : null,
+          fin: finished(),
+          log: logRows().map(function(r){ return {set:r.set, date:r.date, ind:r.ind, n:r.n}; })
+        };
+      }catch(e){ return null; }
+    };
+
+    function printRecord(){
+      var host = document.getElementById("aogRecSheet");
+      if(!host){
+        host = document.createElement("div");
+        host.id = "aogRecSheet";
+        document.body.appendChild(host);
+      }
+      host.innerHTML = sheetHtml();
+      document.body.classList.add("aog-rec");
+      window.print();
+    }
+    window.addEventListener("afterprint", unrec);
+    try{
+      var mq = window.matchMedia && window.matchMedia("print");
+      if(mq){
+        var onmq = function(e){ if(!e.matches) unrec(); };
+        if(mq.addEventListener) mq.addEventListener("change", onmq);
+        else if(mq.addListener) mq.addListener(onmq);
+      }
+    }catch(e){}
+
+    /* ── the button, next to Copy this row on every activity ─────────── */
+    var cp = document.getElementById("copyProbe");
+    if(cp && cp.parentNode){
+      var b = document.createElement("button");
+      b.type = "button"; b.className = "btn btn-accent"; b.id = "printRecord";
+      b.setAttribute("data-en","Print this record");
+      b.setAttribute("data-es","Imprimir este registro");
+      b.textContent = T("Print this record","Imprimir este registro");
+      cp.parentNode.insertBefore(b, cp.nextSibling);
+      b.addEventListener("click", printRecord);
+    }
+
+    /* ── the sentence this build would otherwise have left false ───────
+       The teacher note has said "Nothing is sent anywhere — copy it into
+       the Goal Builder yourself, or print this page" since before the send
+       block existed. On a page opened from a link with a destination on
+       it, a Send button now sits eight lines below that sentence, so the
+       sentence is already untrue today; and "print this page" now has two
+       meanings. Both halves are replaced, and ONLY that clause — the rest
+       of the note is per-activity wording (placed / solved / walked) and
+       is left exactly as each page wrote it. A page that does not carry
+       the clause (m9 words its note differently) is left alone.          */
+    (function(){
+      var CLAUSE_EN = "Nothing is sent anywhere — copy it into the Goal Builder yourself, or print this page.";
+      var CLAUSE_ES = "No se envía a ningún lado — cópiala tú mismo al Goal Builder, o imprime esta página.";
+      var sendable = !!document.querySelector("details.teach .sendbox");
+      var NEW_EN = sendable
+        ? "Print the record, copy the row into the Goal Builder, or send the summary row to your Sheet — nothing is sent until you tap the button."
+        : "Nothing is sent anywhere — print the record, or copy the row into the Goal Builder yourself.";
+      var NEW_ES = sendable
+        ? "Imprime el registro, copia la fila al Goal Builder, o envía la fila de resumen a tu hoja — no se envía nada hasta que toques el botón."
+        : "No se envía a ningún lado — imprime el registro, o copia la fila tú mismo al Goal Builder.";
+      var notes = document.querySelectorAll("details.teach .inner p.note");
+      Array.prototype.forEach.call(notes, function(p){
+        var en = p.getAttribute("data-en") || "", es = p.getAttribute("data-es") || "";
+        if(en.indexOf(CLAUSE_EN) === -1) return;
+        p.setAttribute("data-en", en.split(CLAUSE_EN).join(NEW_EN));
+        if(es.indexOf(CLAUSE_ES) > -1) p.setAttribute("data-es", es.split(CLAUSE_ES).join(NEW_ES));
+      });
+    })();
+
+    /* ── ride the existing clocks, never invent a third ────────────────
+       paintProbe runs on every state change and paintLang on a language
+       switch; the send block wraps both the same way and composes with
+       this one because each wrapper calls the value it captured.        */
+    paintProbe = (function(orig){
+      return function(){
+        var r = orig.apply(this, arguments);
+        try{ if(finished() && logUpsert()) persist(); }catch(e){}
+        return r;
+      };
+    })(paintProbe);
+    paintLang = (function(orig){
+      return function(){
+        var r = orig.apply(this, arguments);
+        try{
+          var pb = document.getElementById("printRecord");
+          if(pb) pb.textContent = T("Print this record","Imprimir este registro");
+        }catch(e){}
+        return r;
+      };
+    })(paintLang);
+
+    /* the close card can be revealed by a path that does not repaint the
+       probe — watch the attribute itself as well */
+    try{
+      var ccEl = document.getElementById("closeCard");
+      if(ccEl && window.MutationObserver){
+        new MutationObserver(function(){
+          try{ if(finished() && logUpsert()) persist(); }catch(e){}
+        }).observe(ccEl, {attributes:true, attributeFilter:["hidden"]});
+      }
+    }catch(e){}
+
+    if(finished() && logUpsert()) persist();
+    paintLang();
+  })();
+
+  /* ══ THE WAY OUT — AOG-M-AGAIN-V1 ════════════════════════════════════
+     A set was finished on this computer at some earlier sitting. Today
+     the page is opened again and render() goes straight to
+     paintFinished(), which does input.disabled = true and never calls the
+     page's draw. What is on screen is a dead, half-drawn instrument: no
+     ticks, no min/max on the control, a pin parked at 0%. It does not
+     read as FINISHED. It reads as BROKEN — and it was shown to a child
+     that way on 2026-09-01.
+
+     The only exits were Set 2 / Set 3, inside a <details> labeled "For
+     the teacher — this device only", and a red "Erase this activity"
+     behind a "this cannot be undone" confirm. Neither is findable in
+     five seconds with a student watching. So: two plain buttons on the
+     DONE card, no dialog on either, and the never-drawn stage hidden
+     instead of displayed broken.
+
+     ⚠ THIS BLOCK IS IDENTICAL ON ALL FOURTEEN ACTIVITIES, so it may name
+     ONLY the interface all fourteen share: work · d · setNo · persist ·
+     T · paintLang · KEY · ID · #closeCard · [data-set]. It must never
+     name render, allDone, i, SETS, or any per-page draw function — those
+     do NOT share names across the series (see the item-collection note in
+     the probe-record block above). Both buttons therefore write the state
+     and RELOAD, which is also the only way to guarantee the stage comes
+     back drawn from scratch rather than repaired in place.
+
+     ⚠ persist() DEBOUNCES 400 ms. A reload immediately after it loses the
+     write. The write here is synchronous, on purpose.                   */
+  (function(){
+    var cc = document.getElementById("closeCard");
+    if(!cc) return;
+
+    /* Opened already finished => the stage was never drawn. Hide it with a
+       class on <html> rather than the hidden property, because paintLang()
+       repaints and would put a broken stage straight back. A student who
+       finishes IN SESSION keeps their correctly drawn last problem. */
+    if(!cc.hidden){
+      try{
+        var st = document.createElement("style");
+        st.textContent = "html.aog-reopened #stage{display:none !important;}";
+        document.head.appendChild(st);
+        document.documentElement.classList.add("aog-reopened");
+      }catch(e){}
+    }
+
+    function setList(){
+      var out = [];
+      Array.prototype.forEach.call(document.querySelectorAll("[data-set]"), function(b){
+        var v = +b.getAttribute("data-set");
+        if(v && out.indexOf(v) === -1) out.push(v);
+      });
+      return out.sort(function(a,b){ return a-b; });
+    }
+    function nextSet(){
+      var all = setList();
+      if(!all.length) return null;
+      var at = all.indexOf(+setNo);
+      return all[(at < 0 ? 0 : at + 1) % all.length];
+    }
+
+    function restart(toSet){
+      work = {};
+      d.work = work;
+      d.conf = null;
+      /* A NEW ATTEMPT. logUpsert refuses to overwrite a row banked under an
+         earlier run number, so the first finished run of a day is the
+         record and going again is practice. */
+      d.run = (typeof d.run === "number" ? d.run : 1) + 1;
+      if(toSet) setNo = toSet;
+      d.set = setNo;
+      try{
+        if(typeof KEY === "string" && typeof ID === "string"){
+          localStorage.setItem(KEY + ID, JSON.stringify(d));
+        }
+      }catch(e){}
+      location.reload();
+    }
+
+    var acts = document.createElement("div");
+    acts.className = "again-acts no-print";
+    acts.style.cssText = "display:flex; flex-wrap:wrap; gap:10px; margin-top:16px;";
+
+    var goBtn = document.createElement("button");
+    goBtn.type = "button"; goBtn.className = "btn btn-accent"; goBtn.id = "againBtn";
+
+    var setBtn = document.createElement("button");
+    setBtn.type = "button"; setBtn.className = "btn"; setBtn.id = "againSetBtn";
+
+    /* no color of its own — .close-card p already carries a vetted
+       ink-soft on lock-wash in both themes */
+    var note = document.createElement("p");
+    note.className = "again-note no-print";
+    note.id = "againNote";
+    note.style.cssText = "margin-top:12px; font-size:13px;";
+
+    acts.appendChild(goBtn);
+    if(nextSet()) acts.appendChild(setBtn);
+    cc.appendChild(acts);
+    cc.appendChild(note);
+
+    goBtn.addEventListener("click", function(){ restart(null); });
+    setBtn.addEventListener("click", function(){ var n = nextSet(); if(n) restart(n); });
+
+    function paintAgain(){
+      goBtn.textContent = T("Go again", "Otra vez");
+      var n = nextSet();
+      if(n) setBtn.textContent = T("Try set " + n, "Probar el grupo " + n);
+      note.textContent = T(
+        "Your first finished run today is the one kept as the record. Going again is practice and does not change it.",
+        "Tu primera ronda terminada de hoy es la que se guarda como registro. Volver a intentarlo es práctica y no la cambia.");
+    }
+    paintAgain();
+
+    paintLang = (function(orig){
+      return function(){
+        var r = orig.apply(this, arguments);
+        try{ paintAgain(); }catch(e){}
+        return r;
+      };
+    })(paintLang);
+  })();
+
+
+  /* ══ THE WAY BACK — AOG-M-WAYBACK-V1 ═════════════════════════════════
+     Jimmy, on the live site, one minute after the drag: "There is no back
+     page." Then: "Or back button i should say."
+
+     He was right, and it was true of ALL THIRTY activity pages, not just
+     the new ones — every one of them had ZERO outbound anchors. A page
+     reached by a typed short link or a scanned QR has no history to go
+     back to either, so the browser's own button is dead. It was a room
+     with the door bricked up, and it had been that way since m1.
+
+     ⚠ THE HREF IS THE HUB'S FILENAME, NOT ITS SHORT LINK. /vocab, /math
+     and /concepts only exist because _redirects rewrites them, and these
+     pages are also opened from a folder on disk and from localhost, where
+     nothing rewrites anything. A sibling filename resolves in all three.
+
+     ⚠ IT IS BUILT TWICE ON PURPOSE. Working mode hides .mast — and the
+     lock row lives inside it — the moment a student touches the stage, so
+     a single control in .lock-acts would vanish exactly when someone is
+     most likely to want out. The second copy rides the wmbar.
+
+     ⚠ Both carry data-en/data-es, so paintLang() translates them on its
+     own pass and this block needs no wrapper of its own.              */
+  (function(){
+    var HUB = ({m:"interior-math.html", c:"concepts-and-data.html",
+                v:"vocabulary-science.html"})[String(ID).charAt(0)];
+    if(!HUB) return;
+    var EN = "← All activities", ES = "← Todas las actividades";
+
+    function link(cls){
+      var a = document.createElement("a");
+      a.className = cls;
+      a.href = HUB;
+      a.setAttribute("data-en", EN);
+      a.setAttribute("data-es", ES);
+      /* ⚠ READ THE DOCUMENT, NOT A VARIABLE. `lang` is NOT part of the
+         interface all thirty pages share (see AOG-M-AGAIN-V1's list), and
+         a page in Spanish would have shown an English label until the next
+         toggle. paintLang() stamps <html lang>, and that is everywhere. */
+      a.textContent = (document.documentElement.lang === "es") ? ES : EN;
+      return a;
+    }
+
+    var acts = document.querySelector(".lock-acts");
+    if(acts) acts.insertBefore(link("btn no-print"), acts.firstChild);
+
+    var bar = document.getElementById("wmBar"), out = document.getElementById("wmOut");
+    if(bar){
+      var b = link("wm-btn");
+      if(out) bar.insertBefore(b, out); else bar.appendChild(b);
+    }
+
+    /* ⚠ .30ei: THE THIRD COPY — a floating chip. Jimmy, from his phone:
+       'when you are working with the math or science cards you are stuck
+       with no back space.' The first copy lives in .mast and scrolls away;
+       the second rides the wmbar, which exists only AFTER the student's
+       first touch inside the stage. A reader who only scrolls, or a
+       paper-mode class working down the printed list, has neither. This
+       chip appears once the masthead's own link has scrolled off the top,
+       and yields to the wmbar the moment working mode owns the screen.
+       data-en/data-es ride it, so paintLang() translates it like the
+       other two. z-index 880: UNDER the wmbar (900) and under any sheet
+       or modal, over the page. */
+    var chip = link("aog-back-chip no-print");
+    chip.hidden = true;
+    /* AOG-BACKCHIP-RETIRED-V1 (2026-09-20) — Jimmy: remove the floating back chip. On a phone it
+       sat on top of the last line of the activity — the feedback line under the lab. The link at
+       the top of the page and the top bar are still the way out. Retired, NOT deleted: the chip is
+       still built and still carries its two translations; it is simply never put on the page.
+       Restore it by uncommenting the one line below. */
+    /* document.body.appendChild(chip); */
+    var chipCss = document.createElement("style");
+    chipCss.textContent =
+      ".aog-back-chip{position:fixed;left:12px;bottom:12px;z-index:880;" +
+      "background:var(--field,#fff);color:var(--ink,#1d2733);border:1.5px solid var(--rule,#C9C0AE);" +
+      "border-radius:999px;padding:9px 15px;font-size:13px;font-weight:700;text-decoration:none;" +
+      "box-shadow:0 6px 18px -6px rgba(10,30,51,.35);}" +
+      ".aog-back-chip:hover{border-color:var(--a,#4B4F9E);}" +
+      "@media print{.aog-back-chip{display:none!important;}}";
+    document.head.appendChild(chipCss);
+    var mastLink = acts ? acts.firstChild : null;
+    function chipPaint(){
+      var wm = document.documentElement.classList.contains("wm");
+      var past;
+      try{
+        var r = mastLink && mastLink.getBoundingClientRect ? mastLink.getBoundingClientRect() : null;
+        /* width 0 means the mast is display:none (working mode hid it);
+           the wm test above already covers that path, so fall to scrollY. */
+        past = r && r.width > 0 ? (r.bottom < 0) : (window.scrollY > 300);
+      }catch(e){ past = window.scrollY > 300; }
+      chip.hidden = wm || !past;
+    }
+    chipPaint();
+    window.addEventListener("scroll", chipPaint, {passive:true});
+    /* working mode flips on between scrolls; watch the class, don't poll. */
+    try{ new MutationObserver(chipPaint).observe(document.documentElement,
+      {attributes:true, attributeFilter:["class"]}); }catch(e){}
+  })();
+
+  /* ══ THREE DOORS — ENHANCE-SPEC-three-doors-m (2026-09-05) ═══════════
+     Door 1 (#demoCard): one scripted walkthrough — 5 + 3 × 2, from no set,
+     collapsing step by step with the operator that moves marked. Paced by
+     Next, no timers; watching counts toward nothing and records
+     work.demo = true at the last step. Up from the moment a set starts
+     until the first answered item, then folds to "Watch one again" in the
+     ladder head.
+     Door 2: the 10-problem path above — untouched.
+     Door 3 (#strCard): one stretch expression per set, walked by the SAME
+     tap-the-operation engine, shown only WITH the close card. No hint
+     ladder; two wrong taps show the whole remaining order warmly and
+     record work.stretch = "tried"; collapsing it to one number records
+     "solved". work.strTries persists across reload; a set switch clears
+     work, so all of it resets with the rest of the set state. Stretch
+     taps never touch the main refused/hints counts — the probe row's
+     semantics are unchanged. Rides the existing paintProbe/paintLang
+     clocks, never a third. */
+  (function(){
+    var demoCard=$("demoCard"), demoBtn=$("demoBtn"), demoSkip=$("demoSkip"),
+        demoStageEl=$("demoStage"), demoNarr=$("demoNarr"), demoExprEl=$("demoExpr"),
+        demoTrailEl=$("demoTrail"), demoNext=$("demoNext"), demoDoneB=$("demoDone"),
+        demoAgain=$("demoAgain"),
+        strCard=$("strCard"), strExprEl=$("strExpr"), strTrailEl=$("strTrail"),
+        strQ=$("strQ"), strFb=$("strFb");
+    if(!demoCard || !strCard) return;
+
+    /* ── Door 1 — the scripted demo. 5 + 3 × 2 is in no set, on purpose. ── */
+    var demoStep=-1, demoOpenNow=false, demoDismissed=false;
+    function demoSteps(){
+      return [
+        {h:"5 + 3 × 2", tr:[],
+         t:T("This one is nobody's problem: 5 + 3 × 2. Two pieces of arithmetic are sitting right there — 5 + 3 and 3 × 2 — and both are true.",
+             "Este no es el problema de nadie: 5 + 3 × 2. Hay dos cuentas a la vista — 5 + 3 y 3 × 2 — y las dos son ciertas.")},
+        {h:'5 + 3 <span class="demoHi">×</span> 2', tr:[],
+         t:T("Only one is allowed to go first. Multiplying outranks adding, so the × moves — not the + on the left.",
+             "Solo una puede ir primero. Multiplicar va antes que sumar, así que se mueve el × — no el + de la izquierda.")},
+        {h:"5 + 6", tr:["3 × 2 = 6"],
+         t:T("Tap the operation and it happens right in the expression: 3 × 2 becomes 6, and the line collapses to 5 + 6.",
+             "Tocas la operación y sucede en la expresión misma: 3 × 2 se vuelve 6, y la línea se encoge a 5 + 6.")},
+        {h:'<span class="demoSol">= 11</span>', tr:["3 × 2 = 6","5 + 6 = 11"],
+         t:T("One move left: 5 + 6 = 11 — down to one number. The other order — 5 + 3 first — ends at 16, a different answer. The order is what makes one expression mean one thing.",
+             "Queda un movimiento: 5 + 6 = 11 — hasta un solo número. El otro orden — 5 + 3 primero — termina en 16, otra respuesta. El orden es lo que hace que una expresión signifique una sola cosa.")}
+      ];
+    }
+    function demoAnswered(){
+      for(var k=0;k<items.length;k++){ if(work[k] && work[k].done) return true; }
+      return false;
+    }
+    function demoDraw(){
+      if(demoStep<0) return;
+      var st=demoSteps()[demoStep];
+      demoNarr.textContent=st.t;
+      demoExprEl.innerHTML=st.h;
+      demoTrailEl.innerHTML=st.tr.map(function(l){ return "<div>"+l+"</div>"; }).join("");
+      var last=(demoStep>=demoSteps().length-1);
+      demoNext.hidden=last; demoDoneB.hidden=!last;
+      /* watching is instruction, not a trial — it counts toward nothing */
+      if(last && !work.demo){ work.demo=true; persist(); demoStrRows(); }
+    }
+    function demoPaint(){
+      var folded=demoDismissed || demoAnswered() || allDone;
+      demoCard.hidden=folded && !demoOpenNow;
+      if(demoAgain) demoAgain.hidden=!demoCard.hidden;
+    }
+    function demoOpen(){
+      demoOpenNow=true; demoDismissed=false; demoStep=0;
+      demoBtn.hidden=true; if(demoSkip) demoSkip.hidden=true;
+      demoStageEl.hidden=false;
+      demoDraw(); demoPaint();
+      try{ demoNext.focus(); }catch(e){}
+    }
+    demoBtn.addEventListener("click", demoOpen);
+    if(demoAgain) demoAgain.addEventListener("click", demoOpen);
+    if(demoSkip) demoSkip.addEventListener("click", function(){
+      demoDismissed=true; demoOpenNow=false; demoStageEl.hidden=true; demoPaint();
+    });
+    demoNext.addEventListener("click", function(){
+      if(demoStep<demoSteps().length-1){ demoStep++; demoDraw(); }
+    });
+    demoDoneB.addEventListener("click", function(){
+      demoOpenNow=false; demoStageEl.hidden=true;
+      demoBtn.hidden=false; if(demoSkip) demoSkip.hidden=false;
+      demoNarr.textContent="";
+      demoPaint();
+    });
+
+    /* ── Door 3 — the stretch: one honest step past the set's numbers.
+       Answers verified by the page's own engine (see strFresh/strWalkOut,
+       which use legalNext/applyAt — the same walk the reveal prints):
+       s1: 2 × 3^2 − (4 + 2) = 12 — the brackets beat the power;
+       s2: (10 − 2^3) × 5 = 10 — the power still goes first INSIDE them;
+       s3: 24 − 12 ÷ 3 ÷ 2 + 1 = 23 — same rank chained, left to right. */
+    var STR={
+      1:[2,'*',3,'^',2,'-','(',4,'+',2,')'],
+      2:['(',10,'-',2,'^',3,')','*',5],
+      3:[24,'-',12,'/',3,'/',2,'+',1]
+    };
+    var strLive=null, strTrail=[], strSetAt=0;
+    function strFresh(){
+      strLive=(STR[+setNo]||STR[1]).slice(); strTrail=[]; strSetAt=+setNo;
+    }
+    function strWalkOut(){
+      /* the warm reveal finishes the walk from wherever it stands */
+      var guard=0;
+      while(!done(strLive) && guard++<20){
+        var idx=legalNext(strLive);
+        var lab=moveLabel(strLive,idx), v=doOp(strLive[idx-1],strLive[idx],strLive[idx+1]);
+        strLive=applyAt(strLive,idx);
+        strTrail.push(lab+" = "+showNum(v));
+      }
+    }
+    function strMissMsg(){
+      return "<b>"+T("Not that one — something outranks it.","Esa no — algo le gana.")+"</b> "
+        +T("Look at the whole line once more. One more wrong tap and the page will show the order.",
+           "Mira toda la línea una vez más. Un toque equivocado más y la página mostrará el orden.");
+    }
+    function strPaint(){
+      strCard.hidden = closeCard.hidden;
+      if(strCard.hidden) return;
+      if(strSetAt!==+setNo || !strLive) strFresh();
+      var st=work.stretch||"";
+      strQ.textContent=T("More layers than the ten had. Tap the operation that goes first, every time, all the way down to one number.",
+                         "Más capas que las diez. Toca la operación que va primero, cada vez, hasta llegar a un solo número.");
+      if(st==="solved"||st==="tried"){
+        if(!done(strLive)) strWalkOut();
+        strExprEl.innerHTML='<span class="sol">= '+showNum(strLive[0])+'</span>';
+      } else {
+        paintExpr(strExprEl, strLive, strTap);
+      }
+      strTrailEl.innerHTML=strTrail.map(function(l){
+        return '<div><span class="did">'+l+'</span></div>';
+      }).join("");
+      if(st==="solved"){
+        strFb.innerHTML='<span class="good">'+T("Yes — every move in its right turn, all the way down.",
+                                                "Sí — cada movimiento en su turno, hasta el final.")+'</span>';
+      } else if(st==="tried"){
+        strFb.innerHTML="<b>"+T("Here is the whole order — and taking the stretch at all is the strong move.",
+                                "Aquí está todo el orden — y tomar el reto ya es una decisión fuerte.")+"</b>";
+      } else if((work.strTries|0)===1){
+        strFb.innerHTML=strMissMsg();
+      } else {
+        strFb.textContent="";
+      }
+    }
+    function strTap(idx, btn){
+      var st=work.stretch||"";
+      if(st==="solved"||st==="tried") return;
+      if(idx===legalNext(strLive)){
+        var lab=moveLabel(strLive,idx), v=doOp(strLive[idx-1],strLive[idx],strLive[idx+1]);
+        strLive=applyAt(strLive,idx);
+        strTrail.push(lab+" = "+showNum(v));
+        if(done(strLive)) work.stretch="solved";
+        persist(); strPaint(); demoStrRows();
+        return;
+      }
+      /* a stretch miss is its own count — never the probe row's refused */
+      work.strTries=(work.strTries|0)+1;
+      if((work.strTries|0)>=2){
+        work.stretch="tried";
+        persist(); strPaint(); demoStrRows();
+        return;
+      }
+      if(btn){
+        btn.classList.add("refused");
+        setTimeout(function(){ btn.classList.remove("refused"); }, 900);
+      }
+      strFb.innerHTML=strMissMsg();
+      persist(); demoStrRows();
+    }
+
+    /* ── the two probe rows ── */
+    function demoStrRows(){
+      var pd=$("demoPv"), ps=$("strPv");
+      if(pd) pd.textContent = work.demo ? T("Yes","Sí") : "—";
+      if(ps) ps.textContent = work.stretch==="solved" ? T("Solved","Resuelto")
+                            : (work.stretch==="tried" ? T("Tried","Intentado") : "—");
+    }
+
+    /* ride the page's own clocks, the way every other layer does.
+       A set switch must bring the demo card back even after a dismissal —
+       "visible from the moment a set starts" — so the wrapper watches setNo. */
+    var demoLastSet=+setNo;
+    paintProbe=(function(orig){
+      return function(){ var r=orig.apply(this,arguments);
+        try{
+          if(+setNo!==demoLastSet){ demoLastSet=+setNo; demoDismissed=false; }
+          demoPaint(); strPaint(); demoStrRows();
+        }catch(e){} return r; };
+    })(paintProbe);
+    paintLang=(function(orig){
+      return function(){ var r=orig.apply(this,arguments);
+        try{ demoDraw(); demoPaint(); strPaint(); demoStrRows(); }catch(e){} return r; };
+    })(paintLang);
+
+    demoPaint(); strPaint(); demoStrRows();
+  })();
+
+  if(!hasLS) flagSaved(false);
+})();
+</script>
+
+<script>
+/* ══ WORKING MODE ══ the page folds its read-once preamble the moment the
+   student starts working, so each problem lands on one screen.
+
+   ⚠ ENGAGED BY THE STUDENT'S FIRST TOUCH INSIDE #stage, not on load. The
+   intro is worth reading once; it is only in the way afterwards. A tap, a
+   key, or a drag on the number line all count.
+   ⚠ THE FLAG IS PER ACTIVITY AND PERSISTS, so a reload mid-set does not
+   drop them back above the fold and make them scroll again -- which is the
+   exact complaint this answers. "Show the intro" clears it. */
+(function(){
+  "use strict";
+  var KEY_WM = (typeof KEY === "string" ? KEY : "aog.mod.") + "workmode";
+  var root = document.documentElement;
+  var bar  = document.getElementById("wmBar");
+  var out  = document.getElementById("wmOut");
+  var nm   = document.getElementById("wmName");
+  var stage = document.getElementById("stage");
+  if(!bar || !stage) return;
+
+  function title(){
+    var h = document.querySelector(".sheet-head h1, .sheet-head h2");
+    return h ? (h.textContent || "").trim() : "";
+  }
+  function paintName(){ if(nm) nm.textContent = title(); }
+
+  function on(persist){
+    if(root.classList.contains("wm")) return;
+    root.classList.add("wm");
+    paintName();
+    if(persist !== false){ try{ localStorage.setItem(KEY_WM, "1"); }catch(e){} }
+    keepStageInView(true);
+  }
+  function off(){
+    root.classList.remove("wm");
+    try{ localStorage.removeItem(KEY_WM); }catch(e){}
+    try{ window.scrollTo({top:0, behavior:"auto"}); }catch(e){ window.scrollTo(0,0); }
+  }
+
+  /* ⚠ ONLY scrolls when the top of the stage has actually drifted off the
+     top of the screen. A problem type taller than the viewport must still
+     be scrollable by the student; yanking them to the top mid-drag would
+     be worse than the scrolling we are removing. */
+  function keepStageInView(force){
+    try{
+      var r = stage.getBoundingClientRect();
+      var top = (bar && root.classList.contains("wm")) ? bar.getBoundingClientRect().height : 0;
+      if(force || r.top < top - 1){
+        var y = r.top + window.pageYOffset - top - 6;
+        window.scrollTo({ top: Math.max(0, y), behavior: "auto" });
+      }
+    }catch(e){}
+  }
+
+  ["pointerdown","keydown"].forEach(function(ev){
+    stage.addEventListener(ev, function(){ on(); }, true);
+  });
+  if(out) out.addEventListener("click", off);
+
+  try{ if(localStorage.getItem(KEY_WM) === "1") on(false); }catch(e){}
+
+  /* the stage is rebuilt from scratch for every problem — follow it */
+  try{
+    new MutationObserver(function(){
+      if(root.classList.contains("wm")){ paintName(); keepStageInView(false); }
+    }).observe(stage, { childList:true, subtree:true });
+  }catch(e){}
+
+  /* the language switch repaints every [data-en]; the bar's own name is
+     not one of those, so repaint it here too */
+  try{
+    new MutationObserver(paintName).observe(document.documentElement,
+      { attributes:true, attributeFilter:["lang"] });
+  }catch(e){}
+  paintName();
+})();
+</script>
+
+
+<script>
+/* == FIT THE SCREEN == AOG-WM-FIT-V1 (.30ek) ==============================
+   Working mode put the card at the top of the screen; this makes it end on
+   the screen too. If the stage is taller than the room under the strip, it
+   zooms down just enough to fit - the same move a teacher makes at 75%
+   browser zoom - floored at 0.7 so text never becomes unreadable. Screen
+   only, working mode only, print untouched. The value rides :root as a
+   custom property because the stage is rebuilt from JS on every problem. */
+(function(){
+  "use strict";
+  var root = document.documentElement;
+  var stage = document.getElementById("stage");
+  var bar = document.getElementById("wmBar");
+  if(!stage) return;
+
+  var css = document.createElement("style");
+  css.textContent =
+    ":root.wm #stage{zoom:var(--aogwmz,1);}" +
+    "@media print{#stage{zoom:1 !important;}}";
+  document.head.appendChild(css);
+
+  function fit(){
+    if(!root.classList.contains("wm")){ root.style.removeProperty("--aogwmz"); return; }
+    /* measure at zoom 1, always - never measure our own shrink */
+    root.style.setProperty("--aogwmz","1");
+    var need = 0, top = 0;
+    try{
+      need = stage.getBoundingClientRect().height;
+      if(bar) top = bar.getBoundingClientRect().height;
+    }catch(e){ return; }
+    if(!need) return;
+    /* 14px: the stage's own breathing room under the strip */
+    var avail = (window.innerHeight || 0) - top - 14;
+    if(avail <= 0) return;
+    var z = avail / need;
+    if(z < 1) root.style.setProperty("--aogwmz", String(Math.max(0.7, Math.floor(z * 100) / 100)));
+  }
+  var t = 0;
+  function ask(){ if(t) clearTimeout(t); t = setTimeout(function(){ t = 0; fit(); }, 60); }
+
+  /* every problem rebuilds the stage; every EN/ES flip changes the text
+     lengths; wm can flip on and off; and phones rotate */
+  try{ new MutationObserver(ask).observe(stage, {childList:true, subtree:true}); }catch(e){}
+  try{ new MutationObserver(ask).observe(root, {attributes:true, attributeFilter:["class","lang"]}); }catch(e){}
+  window.addEventListener("resize", ask);
+  window.addEventListener("orientationchange", ask);
+  ask();
+})();
+</script>
+
+</body>
+</html>

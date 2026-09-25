@@ -1,0 +1,1364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<script>
+(function(){var t="light";try{if(localStorage.getItem("aog.interior.ws.v1.theme")==="dark")t="dark";}catch(e){}document.documentElement.setAttribute("data-theme",t);if(t==="dark")document.documentElement.classList.add("dark");})();
+</script>
+<title>The Turntables — Architecture of Grace</title>
+<meta name="description" content="Two platters with weight. Load a song from this computer, scratch it, mix it, and record the take as a .wav. The song never leaves.">
+<link rel="canonical" href="https://architectureofgrace.org/decks">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#0A1E33">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<!-- AOG-DECKS-V1 (2026-09-22) — Jimmy: turntables a student can load a song onto, scratch, and mix.
+     Local file only. Nothing is uploaded. We do not ship songs. Classroom volume. -->
+<style>
+:root {
+  --bg:#f4f0e6; --card:#fffcf7; --ink:#1a232c; --muted:#5c6670; --line:#ddd8cc;
+  --steel:#2f5c6b; --steel-fg:#f4f8f9; --chip:#efebe3; --lamp:#d9a84e;
+  --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  --display:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+}
+.dark,[data-theme="dark"] {
+  --bg:#14181e; --card:#1c232c; --ink:#edeae2; --muted:#9aa3b0; --line:#333b47;
+  --steel:#7fb4c7; --steel-fg:#14181e; --chip:#2a313c;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 16px/1.55 var(--sans)}
+h1{font-family:var(--display);font-weight:600;letter-spacing:-.02em;font-size:clamp(1.5rem,4vw,2.3rem);margin:.2rem 0 .4rem}
+.wrap{max-width:1100px;margin:0 auto;padding:max(1.1rem,env(safe-area-inset-top)) 1rem 4rem}
+header{display:flex;justify-content:space-between;align-items:center;gap:.75rem;margin-bottom:.6rem}
+.brand{font-size:.75rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);text-decoration:none}
+.tools{display:flex;gap:.5rem}
+.pill{min-height:44px;border-radius:999px;border:1px solid var(--line);background:var(--card);color:var(--ink);padding:0 .9rem;font-weight:600;display:inline-flex;align-items:center}
+button,label.file{font:inherit;cursor:pointer;touch-action:none}
+.kicker{font-size:.75rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--steel)}
+.lead{max-width:66ch;color:var(--muted)}
+.decks{display:grid;gap:1rem;margin-top:1rem}
+@media(min-width:800px){.decks{grid-template-columns:1fr 1fr}}
+.deck{
+  background:radial-gradient(140% 90% at 50% -10%,#4a545f,#171c22 70%);
+  border-radius:20px;padding:14px;color:#efe8dc;border:1px solid #0c0f13;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.18),0 16px 36px rgba(0,0,0,.35);
+}
+.deck h2{margin:.1rem 0 .4rem;font-size:1rem;letter-spacing:.16em;text-transform:uppercase;font-weight:700}
+.wave{width:100%;height:64px;background:#06110c;border-radius:8px;display:block}
+.platter-wrap{display:flex;justify-content:center;margin:.7rem 0}
+.platter{
+  width:min(240px,52vw);aspect-ratio:1;border-radius:50%;position:relative;
+  background:radial-gradient(circle at 50% 50%, #2a241c 62%, #c4a574 63%, #c4a574 66%, #1a140e 67%);
+  box-shadow:0 12px 28px rgba(0,0,0,.5);
+  cursor:grab;touch-action:none;
+}
+.platter:active{cursor:grabbing}
+.vinyl{
+  position:absolute;inset:7%;border-radius:50%;
+  background:repeating-radial-gradient(circle at 50% 50%, #161616 0 1px, #0c0c0c 2px 4px);
+  transform:rotate(var(--rot,0deg));
+}
+.label{
+  position:absolute;inset:27%;border-radius:50%;
+  background:conic-gradient(#e7d3a1, #8a6230, #f3e6c8, #6e4a22, #e7d3a1);
+  box-shadow:inset 0 0 0 6px rgba(0,0,0,.35);
+}
+.hole{position:absolute;left:50%;top:50%;width:12px;height:12px;margin:-6px;border-radius:50%;background:#0b0d10;z-index:2}
+.arm{
+  position:absolute;right:8%;top:10%;width:8px;height:46%;border-radius:8px;
+  background:linear-gradient(#d9d3c6,#6e675c);transform-origin:50% 0;transform:rotate(18deg);
+  pointer-events:none;z-index:3;
+}
+.arm::after{content:"";position:absolute;left:-3px;bottom:-6px;width:14px;height:10px;border-radius:2px;background:#c4452a}
+.meter{height:8px;border-radius:99px;background:#0b0e12;margin-top:.45rem;overflow:hidden}
+.meter i{display:block;height:100%;width:0;background:linear-gradient(90deg,#6fbf8b,#d9a84e,#c4452a)}
+.time{font-variant-numeric:tabular-nums;color:#f4e2b0;font-weight:700;margin-left:auto}
+.row{display:flex;flex-wrap:wrap;gap:.45rem;align-items:center;margin-top:.45rem}
+.ghost,.go{
+  min-height:44px;border-radius:999px;padding:0 .9rem;font-weight:700;white-space:nowrap;
+}
+.ghost{background:rgba(0,0,0,.28);color:#efe8dc;border:1px solid rgba(255,255,255,.16)}
+.go{background:#c4452a;color:#fff8f3;border:0}
+label.file{min-height:44px;border-radius:999px;padding:0 .9rem;display:inline-flex;align-items:center;background:#efe8dc;color:#1a140e;font-weight:700}
+label.file input{display:none}
+.song{font-size:.85rem;color:#c9bfae;min-height:1.3em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.knob{display:block;margin-top:.35rem;font-size:.72rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#c9bfae}
+.knob input{width:100%;height:36px}
+.xfade{margin-top:1rem;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:.9rem 1rem}
+.xfade span{display:flex;justify-content:space-between;font-size:.75rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+#xf{display:block;width:100%;margin:.55rem 0 0;height:36px;accent-color:var(--steel)}
+footer{margin-top:2rem;color:var(--muted);font-size:.9rem}
+footer a{color:inherit}
+@media print{.no-print{display:none!important}}
+.deck.dragover{ outline:2px dashed currentColor; outline-offset:4px; }
+.drophint{ font-size:12px; opacity:.72; margin:2px 0 0; color:#c9bfae; }
+/* AOG-VINYL-ENGINE-V1 — the close-up groove, the strobe ring, the 33/45 pair */
+.zoom{width:100%;height:36px;background:#0a1410;border-radius:8px;display:block;margin-top:.3rem}
+.strobe{position:absolute;inset:2%;border-radius:50%;pointer-events:none;
+  background:repeating-conic-gradient(from 0deg,#f0dfae 0deg 2.2deg,transparent 2.2deg 9deg);
+  -webkit-mask:radial-gradient(circle at 50% 50%, transparent 0 51%, #000 52% 58%, transparent 59%);
+  mask:radial-gradient(circle at 50% 50%, transparent 0 51%, #000 52% 58%, transparent 59%);opacity:.8}
+.deck.spinning .platter{box-shadow:0 12px 28px rgba(0,0,0,.5),0 0 0 2px rgba(244,226,176,.18)}
+.rpm{display:inline-flex;gap:.25rem}
+.rpmb{min-height:44px;padding:0 .7rem}
+.rpmb.on{background:#efe8dc;color:#1a140e;border-color:#efe8dc}
+.knob .readout{color:#f4e2b0;font-variant-numeric:tabular-nums;margin-left:.35rem}
+.tiny{min-height:26px;border-radius:999px;padding:0 .55rem;margin-left:.4rem;font-size:.66rem;font-weight:800;
+  letter-spacing:.1em;background:rgba(0,0,0,.3);color:#c9bfae;border:1px solid rgba(255,255,255,.18)}
+.tiny.on{background:#f4e2b0;color:#1a140e;border-color:#f4e2b0}
+.row.tr{gap:.35rem}
+.grp{display:inline-flex;gap:.25rem}
+.ghost.sm{min-height:38px;padding:0 .7rem;font-size:.85rem}
+.ghost.sm.on{background:#f4a3b0;color:#2a0c08;border-color:#f4a3b0}
+.bpm{margin-left:auto;font-variant-numeric:tabular-nums;font-size:.8rem;font-weight:700;color:#f4e2b0}
+.xrow{display:flex;gap:.5rem;flex-wrap:wrap;margin-top:.6rem;align-items:center}
+.pill.rec{border-color:#c4452a;color:#c4452a;font-weight:700}
+.pill.rec.on{background:#c4452a;color:#fff8f3;border-color:#c4452a;animation:recpulse 1.1s ease-in-out infinite}
+@keyframes recpulse{50%{opacity:.62}}
+@media (prefers-reduced-motion:reduce){.pill.rec.on{animation:none}}
+.rectime{font-variant-numeric:tabular-nums;font-weight:700;color:var(--muted)}
+.rechint{font-size:.8rem;color:var(--muted);margin:.5rem 0 0}
+.takes{display:grid;gap:.5rem;margin-top:.6rem}
+.eqwrap{position:relative;margin-top:.7rem}
+.eqcurve{display:block;width:100%;height:110px;background:#06110c;border-radius:10px}
+.eqcap{position:absolute;right:10px;bottom:7px;font-size:.66rem;letter-spacing:.1em;text-transform:uppercase;color:rgba(198,247,176,.6)}
+.bench{margin-top:.6rem}
+.bench .take.empty{color:var(--muted)}
+.take{display:flex;flex-wrap:wrap;gap:.5rem;align-items:center;background:var(--chip);border:1px solid var(--line);border-radius:12px;padding:.5rem .7rem}
+.take .tlen{font-variant-numeric:tabular-nums;color:var(--muted);font-size:.85rem}
+.take audio{height:34px;max-width:min(320px,52vw)}
+.take .ghost{background:var(--card);color:var(--ink);border:1px solid var(--line);min-height:40px;border-radius:999px;padding:0 .8rem;display:inline-flex;align-items:center;text-decoration:none;font-weight:700;font-size:.85rem}
+
+/* AOG-PGPANEL-V1 (2026-09-23) - Jimmy: "Can these be embedded into their respective
+   pages with a hyperlink to open and view them?" A bar under the machine; click it and
+   the picture guide unfolds in place, in an iframe of the guide's own file, so there is
+   one copy of the guide and not two. Never prints with the machine page. */
+.pg{margin:1.1rem 0 0;border:1px solid var(--line);border-radius:14px;background:var(--card);overflow:hidden}
+.pg>summary{list-style:none;cursor:pointer;padding:.8rem 1rem;display:flex;align-items:center;gap:.7rem;
+  font-weight:700;font-size:.98rem;min-height:44px}
+.pg>summary::-webkit-details-marker{display:none}
+.pg>summary::marker{content:""}
+.pg .chev{flex:0 0 auto;transition:transform .15s ease;color:var(--muted);font-size:.9rem}
+.pg[open] .chev{transform:rotate(90deg)}
+.pg .pgsub{font-weight:400;color:var(--muted);font-size:.86rem;margin-left:auto;text-align:right}
+.pg .pgbody{border-top:1px solid var(--line)}
+.pg iframe{display:block;width:100%;border:0;min-height:60vh;background:var(--bg)}
+.pg .pgfoot{padding:.65rem 1rem;border-top:1px solid var(--line);font-size:.88rem;color:var(--muted)}
+.pg .pgfoot a{color:inherit;font-weight:700}
+@media print{ .pg{display:none !important} }
+
+/* AOG-MUSIC-STILL-V1 (2026-09-23) - the same stillness rules as Daily Drafts (AOG-DD-STILL-V1).
+   Jimmy: "make sure that the Sampler and turn table follow the same protocols about off page
+   scrolling (it is making me nausea at the moment)". */
+html{overflow-x:clip; overscroll-behavior:none}
+body{overflow-x:clip; overscroll-behavior:none}
+body *{overscroll-behavior:contain}
+input:not([type=range]):not([type=file]):not([type=checkbox]):not([type=radio]),select,textarea{font-size:max(16px,1em)}
+@media (hover:none){ *,*::before,*::after{transition:none!important;animation:none!important;scroll-behavior:auto!important} html{scroll-behavior:auto} }
+</style>
+</head>
+<body>
+<script>
+(function(){
+  function add(src){
+    var s=document.createElement("script");
+    s.src=src;
+    s.onerror=function(){ if(src.indexOf("netlify.app")<0) add("https://architectureofgrace.netlify.app/aog-topbar.js"); };
+    document.head.appendChild(s);
+  }
+  add(new URL("aog-topbar.js", document.baseURI).href);
+})();
+</script>
+<div class="wrap">
+  <header class="no-print">
+    <a class="brand" href="music-drums.html" id="brand">The Turntables</a>
+    <div class="tools">
+      <a class="pill" href="/decks-guide" style="text-decoration:none">Picture guide</a>
+      <button type="button" class="pill" id="langBtn">ES</button>
+      <button type="button" class="pill" id="themeBtn">Dark</button>
+    </div>
+  </header>
+  <p class="kicker" id="eyebrow"></p>
+  <h1 id="title"></h1>
+  <p class="lead" id="tag"></p>
+  <div class="decks" id="decks"></div>
+  <div class="xfade no-print">
+    <span><b id="labA">A</b><b id="xfLabel"></b><b id="labB">B</b></span>
+    <input id="xf" type="range" min="0" max="1" step="0.01" value="0.5">
+    <div class="xrow">
+      <button type="button" class="pill" id="curveBtn"></button>
+      <button type="button" class="pill" id="noiseBtn"></button>
+      <button type="button" class="pill" id="touchBtn"></button>
+      <button type="button" class="pill rec" id="recBtn"></button>
+      <span class="rectime" id="recTime">0:00</span>
+    </div>
+    <div class="eqwrap"><canvas id="eqCurve" class="eqcurve" aria-hidden="true"></canvas>
+      <span class="eqcap" id="eqCap"></span></div>
+    <p class="rechint" id="recHint"></p>
+    <div id="bench" class="bench"></div>
+    <div id="takes" class="takes"></div>
+  </div>
+  <details class="pg no-print" id="pgPanel">
+    <summary><span class="chev">&#9656;</span>Picture guide<span class="pgsub">Almost no reading &#183; prints on 6 pages</span></summary>
+    <div class="pgbody">
+      <iframe id="pgFrame" data-src="/decks-guide?embed=1" title="The Turntables, in pictures" loading="lazy"></iframe>
+    </div>
+    <p class="pgfoot">To print it, <a href="/decks-guide">open the picture guide on its own page</a>.</p>
+  </details>
+  <footer class="no-print" id="foot"></footer>
+</div>
+<script src="aog-handoff.js"></script>
+<script src="aog-eq.js"></script>
+<script src="aog-vinyl-worklet.js"></script>
+<script>
+/* AOG-DECKS-V2 · AOG-VINYL-ENGINE-V1 (2026-09-22) — two decks with weight.
+   The platter is dragged by ANGLE, not by sideways pixels, and the hand sets a
+   velocity the playhead integrates sample by sample in aog-vinyl-worklet.js.
+   A song is a file the student picks; it is decoded here and never sent. */
+const STR = {
+  app:{en:"The Turntables",es:"Los tocadiscos"},
+  eyebrow:{en:"Load a song from this computer. Then move the platter.",es:"Carga una canción de esta computadora. Luego mueve el plato."},
+  tag:{en:"Two decks with weight. Grab a platter and it follows your hand — forward, back, fast, slow — and the record goes quiet the moment you hold it still, the way vinyl does. Let go and the motor pulls it back up to speed. The crossfader mixes them, and Record keeps the take as a .wav you can save or drop back onto a platter. We do not provide songs, and a song never leaves this computer.",es:"Dos platos con peso. Agarra un plato y sigue tu mano — adelante, atrás, rápido, lento — y el disco se calla en cuanto lo detienes, como el vinilo de verdad. Suéltalo y el motor lo devuelve a su velocidad. El crossfader los mezcla, y Grabar guarda la toma como un .wav que puedes conservar o volver a poner en un plato. No damos canciones, y una canción nunca sale de esta computadora."},
+  load:{en:"Load a song",es:"Cargar una canción"},
+  none:{en:"No song yet.",es:"Aún no hay canción."},
+  play:{en:"Start",es:"Arrancar"},
+  stop:{en:"Stop",es:"Parar"},
+  cue:{en:"Return to cue",es:"Volver al cue"},
+  setCue:{en:"Set cue",es:"Marcar cue"},
+  speed:{en:"Pitch",es:"Tono"},
+  vol:{en:"Volume",es:"Volumen"},
+  bass:{en:"Bass",es:"Graves"},
+  treble:{en:"Treble",es:"Agudos"},
+  nudge:{en:"Nudge",es:"Empuje"},
+  mix:{en:"Crossfader",es:"Crossfader"},
+  curve:{en:"Fader",es:"Fader"},
+  smooth:{en:"Blend",es:"Mezcla"},
+  sharp:{en:"Cut",es:"Corte"},
+  rpm:{en:"Speed",es:"Velocidad"},
+  noiseOn:{en:"Vinyl noise: on",es:"Ruido de vinilo: sí"},
+  noiseOff:{en:"Vinyl noise: off",es:"Ruido de vinilo: no"},
+  drag:{en:"Drag the record to scratch.",es:"Arrastra el disco para rayar."},
+  foot:{en:"The Turntables · Architecture of Grace · your song stays here",es:"Los tocadiscos · Architecture of Grace · tu canción se queda aquí"},
+  loading:{en:"Loading %s …",es:"Cargando %s …"},
+  nope:{en:"This browser could not read %s. An MP3, M4A, WAV or AAC file works.",es:"Este navegador no pudo leer %s. Un archivo MP3, M4A, WAV o AAC sí funciona."},
+  drop:{en:"You can also drag a song onto a deck.",es:"También puedes arrastrar una canción a un plato."},
+  eqLow:{en:"Low",es:"Graves"},
+  eqMid:{en:"Mid",es:"Medios"},
+  eqHigh:{en:"High",es:"Agudos"},
+  killL:{en:"KILL LOW",es:"CORTA GRAVES"},
+  killM:{en:"KILL MID",es:"CORTA MEDIOS"},
+  killH:{en:"KILL HIGH",es:"CORTA AGUDOS"},
+  flat:{en:"FLAT",es:"PLANO"},
+  eqTitle:{en:"The curve you are actually hearing",es:"La curva que estás oyendo"},
+  eject:{en:"⏏ Take it off",es:"⏏ Quitar"},
+  key:{en:"KEY",es:"TONO"},
+  slip:{en:"SLIP",es:"SLIP"},
+  rev:{en:"REV",es:"REV"},
+  tap:{en:"TAP",es:"TAP"},
+  echo:{en:"Echo",es:"Eco"},
+  cueHold:{en:"CUE",es:"CUE"},
+  hot:{en:"Hot cue",es:"Cue rápido"},
+  loop:{en:"Loop",es:"Bucle"},
+  sync:{en:"SYNC",es:"SYNC"},
+  filter:{en:"Filter",es:"Filtro"},
+  bpmWait:{en:"listening…",es:"escuchando…"},
+  noBeat:{en:"no steady beat",es:"sin pulso claro"},
+  bench:{en:"From the drum bench",es:"Del banco de ritmo"},
+  benchNone:{en:"Bounce a pattern from the drum bench and it lands here.",es:"Rebota un patrón del banco de ritmo y aparece aquí."},
+  benchGo:{en:"Open the drum bench",es:"Abrir el banco de ritmo"},
+  touch:{en:"Platter",es:"Plato"},
+  touchFine:{en:"fine",es:"fino"},
+  touchNormal:{en:"normal",es:"normal"},
+  touchVinyl:{en:"1:1 vinyl",es:"vinilo 1:1"},
+  wide:{en:"WIDE",es:"AMPLIO"},
+  rec:{en:"● Record",es:"● Grabar"},
+  recStop:{en:"■ Stop recording",es:"■ Parar grabación"},
+  recHint:{en:"Records the two decks — never a microphone. The take stays on this computer.",es:"Graba los dos platos — nunca un micrófono. La toma se queda en esta computadora."},
+  takes:{en:"Takes",es:"Tomas"},
+  take:{en:"Take",es:"Toma"},
+  save:{en:"Save as .wav",es:"Guardar como .wav"},
+  toA:{en:"Onto deck A",es:"Al plato A"},
+  toB:{en:"Onto deck B",es:"Al plato B"},
+  full:{en:"Ten minutes is the limit — recording stopped.",es:"Diez minutos es el límite — grabación detenida."},
+  drums:{en:"Drum bench",es:"Banco de ritmo"},
+  sci:{en:"Science door",es:"Puerta de ciencias"},
+  dark:{en:"Dark",es:"Oscuro"}, light:{en:"Light",es:"Claro"}
+};
+const S = { lang: localStorage.getItem("aog.lang")==="es"?"es":"en", theme: document.documentElement.getAttribute("data-theme")||"light" };
+function t(k){ return STR[k][S.lang]; }
+
+/* a 33⅓ record turns 200° in one second of music. That number is the whole
+   bridge between a hand on the platter and a place in the song. */
+const DEG_PER_SEC = 200;
+
+let actx, master, comp, workletReady = null, eqScope = null;
+const decks = [makeDeck("A"), makeDeck("B")];
+let curve = "smooth", noiseOn = true;
+/* AOG-DECKS-TOUCH-V1 (2026-09-23) — Jimmy: "when you're scratching it seems to
+   be going a bit too fast, so when you try to slow it down to make the vocals
+   sound interesting it is too fast."
+   A real 12-inch record is 30 cm across; this platter is about 6 cm on a laptop.
+   At 1:1 a centimeter of hand is five times the record it would be under your
+   palm, so the smallest movement is a big move in the music. The touch ratio is
+   the jog-wheel gearing: FINE means you turn further to move the same amount of
+   song, which is what makes a slow, steady pull — the one that stretches a
+   vocal — possible with a mouse. 1:1 is still there for true vinyl behavior. */
+const TOUCH = { fine:0.35, normal:0.6, vinyl:1 };
+let touch = (localStorage.getItem("aog.decks.touch") || "fine");
+if(!TOUCH[touch]) touch = "fine";
+/* the tape: what the decks are doing, caught on its way to the speakers */
+const TAPE = { node:null, sink:null, on:false, chunks:[], frames:0, t0:0, takes:[], n:0, timer:null };
+const TAPE_MAX_SEC = 600;
+
+function ctx(){
+  if(!actx){
+    const AC = window.AudioContext||window.webkitAudioContext;
+    actx = new AC({ latencyHint:"interactive" });
+    /* AOG-DECKS-LOUDNESS-V1 — the same treatment the drum bench got: a normal
+       level with a real limiter behind it, so two loud songs at once still
+       cannot clip. The last 6% is deliberately left alone. */
+    master = actx.createGain(); master.gain.value = 0.94;
+    comp = actx.createDynamicsCompressor();
+    comp.threshold.value = -12; comp.ratio.value = 2.5; comp.knee.value = 10;
+    const makeup = actx.createGain(); makeup.gain.value = 1.6;
+    const limiter = actx.createDynamicsCompressor();
+    limiter.threshold.value = -3; limiter.knee.value = 0; limiter.ratio.value = 20;
+    limiter.attack.value = 0.002; limiter.release.value = 0.09;
+    comp.connect(makeup); makeup.connect(limiter); limiter.connect(master);
+    master.connect(actx.destination);
+    if(actx.audioWorklet){
+      workletReady = actx.audioWorklet
+        .addModule(new URL("aog-vinyl-worklet.js", document.baseURI).href)
+        .catch((err)=>{ workletReady = null; try{ console.warn("vinyl worklet unavailable — falling back", err); }catch(e){} });
+    }
+    eqScope = actx.createAnalyser(); eqScope.fftSize = 2048; eqScope.smoothingTimeConstant = 0.72;
+    master.connect(eqScope);
+    buildTape();   /* ⚠ AFTER workletReady exists, or the tape quietly falls back */
+  }
+  if(actx.state==="suspended") actx.resume();
+  return actx;
+}
+function makeDeck(id){
+  return { id, buf:null, peaks:null, name:"", note:"", pos:0, cue:0, rate:0, motor:false,
+           pitch:1, rpm:1, vol:1, node:null, core:null, gain:null, low:null, high:null,
+           rot:0, level:0, held:false, wide:false, pending:[],
+           bpm:0, beat0:0, bands:null, cues:[null,null,null], loopBars:0, loopOn:false,
+           loopA:0, loopB:0, filt:null, cueHeld:false,
+           keyOn:true, slipOn:true, syncLock:false, taps:[], echo:null, echoSend:null, trackKey:"" };
+}
+function send(d, m){
+  if(d.node && d.node.port) d.node.port.postMessage(m, m.L ? [m.L.buffer, m.R.buffer] : []);
+  else if(d.core) d.core.msg(m);
+  else d.pending.push(m);
+}
+async function ensureNode(d){
+  ctx();
+  if(d.node || d.core) return;
+  if(workletReady){
+    try{
+      await workletReady;
+      const n = new AudioWorkletNode(actx, "aog-vinyl", { numberOfInputs:0, outputChannelCount:[2] });
+      n.port.onmessage = (e)=>{
+        const m = e.data; if(m.t!=="st") return;
+        d.pos = m.pos; d.level = m.level; d.rate = m.rate;
+        if(d.motor && m.ended) d.motor = false;
+      };
+      d.node = n;
+    }catch(e){ d.node = null; }
+  }
+  if(!d.node){
+    /* no AudioWorklet (old Safari): the same core, on the old processor */
+    d.core = new self.AOGVinylCore(actx.sampleRate);
+    const n = actx.createScriptProcessor(512, 0, 2);
+    n.onaudioprocess = (e)=>{
+      const o = e.outputBuffer;
+      d.core.process(o.getChannelData(0), o.getChannelData(1), o.length);
+      d.pos = d.core.pos; d.level = d.core.level;
+      d.rate = d.core.rate / (d.core.srRatio||1);
+      if(d.motor && d.core.ended) d.motor = false;
+    };
+    d.node = n;
+  }
+  d.gain = actx.createGain(); d.gain.gain.value = d.vol;
+  /* AOG-DECKS-EQ-V1 (2026-09-23) — a mixer's three bands, in series, each with a
+     kill, exactly where a DJ mixer puts them: after the record, before the
+     fader, so a kill is a kill whatever the crossfader is doing. */
+  d.eq = AOGEq.dj(actx);
+  d.low = actx.createBiquadFilter(); d.low.type="lowshelf"; d.low.frequency.value=180;   /* kept: the old bass/treble API */
+  d.high = actx.createBiquadFilter(); d.high.type="highshelf"; d.high.frequency.value=5200;
+  /* one knob, two filters: left of center it closes down to a rumble, right of
+     center it opens up to a whisper. Center is out of the way entirely. */
+  d.filt = actx.createBiquadFilter(); d.filt.type="lowpass"; d.filt.frequency.value=20000; d.filt.Q.value=0.8;
+  d.node.connect(d.eq.input); d.eq.output.connect(d.filt); d.filt.connect(d.gain); d.gain.connect(comp);
+  /* AOG-DECKS-APEX-V1 — an echo that knows the tempo: a dotted eighth of the
+     track's own bar, feeding back on itself, sent from after the fader so it
+     rings on after you cut the deck out. */
+  d.echoSend = actx.createGain(); d.echoSend.gain.value = 0;
+  d.echo = actx.createDelay(2.0); d.echo.delayTime.value = 0.35;
+  const fb = actx.createGain(); fb.gain.value = 0.42;
+  const damp = actx.createBiquadFilter(); damp.type = "lowpass"; damp.frequency.value = 3600;
+  d.gain.connect(d.echoSend); d.echoSend.connect(d.echo);
+  d.echo.connect(damp); damp.connect(fb); fb.connect(d.echo);
+  damp.connect(comp);
+  send(d, { t:"noise", v: noiseOn ? 0.5 : 0 });
+  send(d, { t:"key", on:d.keyOn });
+  send(d, { t:"slip", on:d.slipOn });
+  const q = d.pending; d.pending = [];
+  q.forEach(m=>send(d, m));
+  setMix();
+}
+async function loadFile(d, file){
+  d.note = t("loading").replace("%s", file.name); paintDeck(d);
+  try{
+    ctx(); await ensureNode(d);
+    const arr = await file.arrayBuffer();
+    const buf = await new Promise(function(ok, no){
+      const r = actx.decodeAudioData(arr.slice(0), ok, no);
+      if(r && r.then) r.then(ok, no);
+    });
+    d.buf = buf; d.name = file.name; d.note = ""; d.pos = 0; d.cue = 0; d.motor = false;
+    d.peaks = peaksOf(buf);
+    d.bpm = -1; d.bands = null; d.cues = [null,null,null];
+    d.loopOn = false; d.loopBars = 0; send(d, { t:"loop", on:false, a:0, b:0 });
+    d.trackKey = (file.name||"?") + "·" + (file.size||0) + "·" + Math.round(buf.duration*100);
+    const known = marksLoad(d);
+    setTimeout(()=>{
+      try{ analyse(d); }catch(e){ d.bpm = 0; }
+      if(known){ d.bpm = known.bpm; d.beat0 = known.beat0; d.cues = known.cues || [null,null,null]; }
+      else marksSave(d);
+      paintDeck(d); drawWave(d); drawZoom(d);
+    }, 30);
+    const L = Float32Array.from(buf.getChannelData(0));
+    const R = Float32Array.from(buf.numberOfChannels>1 ? buf.getChannelData(1) : buf.getChannelData(0));
+    send(d, { t:"buf", L:L, R:R, sr:buf.sampleRate });
+    drawWave(d); drawZoom(d); paintDeck(d);
+  }catch(e){
+    d.note = t("nope").replace("%s", file.name); paintDeck(d);
+    setTimeout(()=>{ if(d.note){ d.note=""; paintDeck(d); } }, 9000);
+  }
+}
+/* ══ AOG-DECKS-PRO-V1 (2026-09-23) — WHAT THE DECK KNOWS ABOUT THE RECORD ═════
+   One pass over the song, once, at load. It gives three things no turntable can
+   give you and every DJ wants: the shape of the music split into bass, middle
+   and top (so the waveform shows you where the drums are instead of a green
+   blob), the tempo, and where beat one sits. Everything after this — the grid,
+   the beat loops, SYNC — is arithmetic on those three. ══════════════════════ */
+function peaksOf(buf){
+  const W = 1200, a = buf.getChannelData(0), step = Math.max(1, Math.floor(a.length/W)), out = new Float32Array(W);
+  for(let x=0;x<W;x++){
+    let m=0; const o=x*step, e=Math.min(a.length, o+step);
+    for(let i=o;i<e;i+=4){ const v=a[i]<0?-a[i]:a[i]; if(v>m) m=v; }
+    out[x]=m;
+  }
+  return out;
+}
+function analyse(d){
+  const buf = d.buf; if(!buf) return;
+  const a = buf.getChannelData(0), sr = buf.sampleRate, n = a.length;
+  const W = 1200, step = n/W;
+  const lo = new Float32Array(W), mid = new Float32Array(W), hi = new Float32Array(W);
+  const kLo = 1 - Math.exp(-2*Math.PI*180/sr), kHi = 1 - Math.exp(-2*Math.PI*3200/sr);
+  const hop = Math.max(1, Math.round(sr/400)), frames = Math.floor(n/hop);
+  const env = new Float32Array(frames);
+  let f1 = 0, f2 = 0, acc = 0, cnt = 0, fi = 0;
+  for(let i=0;i<n;i++){
+    const x = a[i];
+    f1 += kLo*(x - f1);            /* bass */
+    f2 += kHi*(x - f2);            /* bass + middle */
+    const c = (i/step)|0;
+    const al = f1<0?-f1:f1, am = Math.abs(f2-f1), ah = Math.abs(x-f2);
+    if(c<W){
+      if(al>lo[c]) lo[c]=al;
+      if(am>mid[c]) mid[c]=am;
+      if(ah>hi[c]) hi[c]=ah;
+    }
+    acc += x*x; cnt++;
+    if(cnt===hop){ if(fi<frames) env[fi++] = Math.sqrt(acc/hop); acc = 0; cnt = 0; }
+  }
+  d.bands = { lo:lo, mid:mid, hi:hi };
+  /* the beat is where the sound GROWS: rising energy, lined up with itself */
+  const on = new Float32Array(frames);
+  for(let i=1;i<frames;i++){ const dv = env[i]-env[i-1]; on[i] = dv>0?dv:0; }
+  const fps = sr/hop;
+  let best = 0, bestBpm = 0;
+  for(let bpm=72; bpm<=176; bpm+=0.25){
+    const lag = Math.round(60/bpm*fps);
+    if(lag < 2 || lag*3 >= frames) continue;
+    let sum = 0;
+    for(let i=0; i+lag<frames; i++) sum += on[i]*on[i+lag];
+    sum /= (frames - lag);
+    if(sum > best){ best = sum; bestBpm = bpm; }
+  }
+  if(!bestBpm || frames < 200){ d.bpm = 0; d.beat0 = 0; return; }
+  /* the coarse pass lands within a quarter of a beat per minute; this one walks
+     around that answer in fiftieths, because a tempo that is 0.6% out drifts a
+     tenth of a second across sixteen bars and the grid stops looking honest. */
+  let fine = bestBpm, fineBest = best;
+  for(let bpm=bestBpm-2; bpm<=bestBpm+2; bpm+=0.02){
+    const lagf = 60/bpm*fps, l0 = Math.floor(lagf), fr = lagf - l0;
+    if(l0 < 2 || l0*3 >= frames) continue;
+    let sum = 0;
+    for(let i=0; i+l0+1<frames; i++) sum += on[i]*(on[i+l0]*(1-fr) + on[i+l0+1]*fr);
+    sum /= (frames - l0);
+    if(sum > fineBest){ fineBest = sum; fine = bpm; }
+  }
+  bestBpm = fine;
+  const period = 60/bestBpm*fps;
+  let bo = 0, bs = -1;
+  for(let off=0; off<period; off+=1){
+    let sum = 0;
+    for(let k=0; off + k*period < frames; k++) sum += on[Math.round(off + k*period)] || 0;
+    if(sum > bs){ bs = sum; bo = off; }
+  }
+  d.bpm = Math.round(bestBpm*100)/100;
+  d.beat0 = bo/fps;
+}
+async function buildTape(){
+  if(TAPE.node || !actx) return;
+  const keep = (L,R)=>{ TAPE.chunks.push([L,R]); TAPE.frames += L.length; };
+  if(workletReady){
+    try{
+      await workletReady;
+      const n = new AudioWorkletNode(actx, "aog-tape", { numberOfInputs:1, numberOfOutputs:1, outputChannelCount:[2] });
+      n.port.onmessage = (e)=>{ if(e.data && e.data.t==="chunk") keep(e.data.L, e.data.R); };
+      TAPE.node = n;
+    }catch(e){ TAPE.node = null; }
+  }
+  if(!TAPE.node){
+    const n = actx.createScriptProcessor(4096, 2, 2);
+    n.onaudioprocess = (e)=>{
+      if(!TAPE.on) return;
+      keep(Float32Array.from(e.inputBuffer.getChannelData(0)),
+           Float32Array.from(e.inputBuffer.getChannelData(1) || e.inputBuffer.getChannelData(0)));
+    };
+    TAPE.node = n;
+  }
+  /* it hangs off the master and ends in silence: a node only runs if it is
+     connected to the destination, and we are not playing the mix twice. */
+  TAPE.sink = actx.createGain(); TAPE.sink.gain.value = 0;
+  master.connect(TAPE.node); TAPE.node.connect(TAPE.sink); TAPE.sink.connect(actx.destination);
+}
+function armTape(on){
+  if(!TAPE.node) return;
+  TAPE.on = on;
+  if(TAPE.node.port) TAPE.node.port.postMessage({ t:"arm", on:on });
+}
+async function recToggle(){
+  ctx(); await buildTape();
+  if(!TAPE.on){
+    TAPE.chunks = []; TAPE.frames = 0; TAPE.t0 = performance.now();
+    armTape(true);
+    TAPE.timer = setInterval(()=>{
+      const sec = (performance.now()-TAPE.t0)/1000;
+      const el = document.getElementById("recTime"); if(el) el.textContent = clock(sec);
+      if(sec >= TAPE_MAX_SEC){ recToggle(); const h=document.getElementById("recHint"); if(h) h.textContent = t("full"); }
+    }, 200);
+  } else {
+    armTape(false);
+    clearInterval(TAPE.timer); TAPE.timer = null;
+    setTimeout(()=>{ finishTake(); }, 120);   /* let the last chunk arrive */
+  }
+  paintTape();
+}
+function finishTake(){
+  if(!TAPE.frames){ paintTape(); return; }
+  const n = TAPE.frames, L = new Float32Array(n), R = new Float32Array(n);
+  let o = 0;
+  TAPE.chunks.forEach(c=>{ L.set(c[0], o); R.set(c[1], o); o += c[0].length; });
+  TAPE.chunks = []; TAPE.frames = 0;
+  const wav = wavBlob(L, R, actx.sampleRate);
+  TAPE.takes.unshift({ n: ++TAPE.n, sec: n/actx.sampleRate, url: URL.createObjectURL(wav), blob: wav });
+  while(TAPE.takes.length > 6){ const old = TAPE.takes.pop(); URL.revokeObjectURL(old.url); }
+  paintTape();
+}
+/* a 16-bit stereo WAV: it opens in anything, on any machine, with no codec to
+   argue about — which matters when a student mails it to themselves. */
+function wavBlob(L, R, sr){
+  const n = L.length, bytes = 44 + n*4, ab = new ArrayBuffer(bytes), v = new DataView(ab);
+  const str = (o,s)=>{ for(let i=0;i<s.length;i++) v.setUint8(o+i, s.charCodeAt(i)); };
+  str(0,"RIFF"); v.setUint32(4, bytes-8, true); str(8,"WAVEfmt ");
+  v.setUint32(16, 16, true); v.setUint16(20, 1, true); v.setUint16(22, 2, true);
+  v.setUint32(24, sr, true); v.setUint32(28, sr*4, true); v.setUint16(32, 4, true); v.setUint16(34, 16, true);
+  str(36,"data"); v.setUint32(40, n*4, true);
+  let o = 44;
+  for(let i=0;i<n;i++){
+    let l = L[i], r = R[i];
+    l = l>1?1:l<-1?-1:l; r = r>1?1:r<-1?-1:r;
+    v.setInt16(o, l*32767, true); v.setInt16(o+2, r*32767, true); o += 4;
+  }
+  return new Blob([ab], { type:"audio/wav" });
+}
+function paintTape(){
+  const btn = document.getElementById("recBtn");
+  if(btn){ btn.textContent = TAPE.on ? t("recStop") : t("rec"); btn.classList.toggle("on", TAPE.on); }
+  const tm = document.getElementById("recTime"); if(tm && !TAPE.on) tm.textContent = "0:00";
+  const box = document.getElementById("takes");
+  if(!box) return;
+  box.innerHTML = TAPE.takes.map(k=>`
+    <div class="take" data-take="${k.n}">
+      <b>${t("take")} ${k.n}</b> <span class="tlen">${clock(k.sec)}</span>
+      <audio controls preload="none" src="${k.url}"></audio>
+      <a class="ghost" href="${k.url}" download="turntables-take-${k.n}.wav">${t("save")}</a>
+      <button type="button" class="ghost" data-totake="${k.n}" data-deck="A">${t("toA")}</button>
+      <button type="button" class="ghost" data-totake="${k.n}" data-deck="B">${t("toB")}</button>
+    </div>`).join("");
+  box.querySelectorAll("[data-totake]").forEach(b=>{
+    b.onclick = ()=>{
+      const k = TAPE.takes.find(x=>x.n === +b.getAttribute("data-totake")); if(!k) return;
+      const d = decks.find(x=>x.id === b.getAttribute("data-deck"));
+      loadFile(d, new File([k.blob], "take-"+k.n+".wav", { type:"audio/wav" }));
+    };
+  });
+}
+/* ══ AOG-DECKS-FROM-BENCH-V1 (2026-09-23) ════════════════════════════════════
+   The drum bench bounces its pattern onto a shelf both benches can reach
+   (aog-handoff.js); here it is a beat you drop on a platter. So: your own beat
+   on deck B, a song on deck A, scratch over it, and Record keeps the lot. */
+let benchTake = null;
+async function checkBench(){
+  try{ benchTake = await AOGHandoff.get("drumbench"); }catch(e){ benchTake = null; }
+  paintBench();
+}
+function paintBench(){
+  const box = document.getElementById("bench");
+  if(!box) return;
+  if(!benchTake || !benchTake.wav){
+    box.innerHTML = `<div class="take empty"><b>${t("bench")}</b> <span class="tlen">${t("benchNone")}</span>
+      <a class="ghost" href="music-drums.html">${t("benchGo")}</a></div>`;
+    return;
+  }
+  box.innerHTML = `<div class="take">
+      <b>${t("bench")}</b> <span class="tlen">${benchTake.name||""}</span>
+      <button type="button" class="ghost" data-bench="A">${t("toA")}</button>
+      <button type="button" class="ghost" data-bench="B">${t("toB")}</button>
+      <a class="ghost" href="music-drums.html">${t("benchGo")}</a>
+    </div>`;
+  box.querySelectorAll("[data-bench]").forEach(b=>{
+    b.onclick = ()=>{
+      const d = decks.find(x=>x.id===b.getAttribute("data-bench"));
+      loadFile(d, new File([benchTake.wav], "drum-bench.wav", { type:"audio/wav" }));
+    };
+  });
+}
+/* what a deck remembers about a record it has seen before: the tempo it worked
+   out, where beat one is, and the marks you left on it. Kept by name and size,
+   so the same file dropped tomorrow is ready the moment it loads. */
+const MARKS = "aog.decks.marks.v1";
+function marksAll(){
+  try{ return JSON.parse(localStorage.getItem(MARKS) || "{}"); }catch(e){ return {}; }
+}
+function marksSave(d){
+  if(!d.trackKey) return;
+  try{
+    const all = marksAll();
+    all[d.trackKey] = { bpm:d.bpm, beat0:d.beat0, cues:d.cues, at:Date.now() };
+    const keys = Object.keys(all);
+    if(keys.length > 40){
+      keys.sort((a,b)=>(all[a].at||0)-(all[b].at||0)).slice(0, keys.length-40).forEach(k=>delete all[k]);
+    }
+    localStorage.setItem(MARKS, JSON.stringify(all));
+  }catch(e){}
+}
+function marksLoad(d){
+  if(!d.trackKey) return null;
+  const m = marksAll()[d.trackKey];
+  return (m && m.bpm > 0) ? m : null;
+}
+function pitchText(d){
+  const pct = (d.pitch-1)*100;
+  return (pct>=0?"+":"") + pct.toFixed(pct>9||pct<-9?0:1) + "%";
+}
+function touchLabel(){
+  return t("touch")+": "+(touch==="fine"?t("touchFine"):touch==="normal"?t("touchNormal"):t("touchVinyl"));
+}
+function setMix(){
+  const x = +document.getElementById("xf").value;
+  let a = Math.cos(x*Math.PI/2), b = Math.sin(x*Math.PI/2);
+  if(curve==="sharp"){ a = Math.pow(a, 0.16); b = Math.pow(b, 0.16); }   /* a cut fader opens at once */
+  if(decks[0].gain) decks[0].gain.gain.value = decks[0].vol * a;
+  if(decks[1].gain) decks[1].gain.gain.value = decks[1].vol * b;
+}
+function drawWave(d){
+  const cv = document.getElementById("wave"+d.id);
+  if(!cv) return;
+  const w = cv.width = (cv.clientWidth*2)||600, h = cv.height = 128;
+  const g = cv.getContext("2d");
+  g.fillStyle = "#06110c"; g.fillRect(0,0,w,h);
+  if(!d.buf || !d.peaks) return;
+  /* bass, middle and top in three colors: you can SEE the kick line up */
+  const B = d.bands;
+  for(let x=0;x<w;x++){
+    const i = Math.floor(x/w*(B?B.lo.length:d.peaks.length));
+    if(B){
+      const bars = [[B.hi[i]*2.2,"#7fc7f5"],[B.mid[i]*1.5,"#c6f7b0"],[B.lo[i],"#f0a35e"]];
+      for(let k=0;k<bars.length;k++){
+        const m = Math.min(1, bars[k][0]); if(m<=0.002) continue;
+        g.strokeStyle = bars[k][1]; g.beginPath();
+        g.moveTo(x+.5, h/2 - m*h*0.5); g.lineTo(x+.5, h/2 + m*h*0.5); g.stroke();
+      }
+    } else {
+      const m = d.peaks[i]||0;
+      g.strokeStyle = "#c6f7b0"; g.beginPath();
+      g.moveTo(x+.5, h/2 - m*h*0.5); g.lineTo(x+.5, h/2 + m*h*0.5); g.stroke();
+    }
+  }
+  const sr = d.buf.sampleRate, dur = d.buf.length;
+  if(d.bpm > 0){                              /* a bar line every four beats */
+    const barSec = 4*60/d.bpm;
+    g.strokeStyle = "rgba(244,226,176,.28)"; g.beginPath();
+    for(let tsec=d.beat0; tsec<d.buf.duration; tsec+=barSec){
+      const x = (tsec*sr/dur)*w; g.moveTo(x, 0); g.lineTo(x, h*0.14); g.moveTo(x, h*0.86); g.lineTo(x, h);
+    }
+    g.stroke();
+  }
+  if(d.loopOn && d.loopB > d.loopA){          /* the loop, lit */
+    const x1 = (d.loopA/dur)*w, x2 = (d.loopB/dur)*w;
+    g.fillStyle = "rgba(127,199,245,.16)"; g.fillRect(x1, 0, Math.max(2,x2-x1), h);
+  }
+  d.cues.forEach((c,i)=>{                      /* hot cues */
+    if(c==null) return;
+    const x = (c/dur)*w;
+    g.fillStyle = "#f4a3b0"; g.fillRect(x-1, 0, 3, h*0.2);
+    g.font = "bold 16px sans-serif"; g.fillText(String(i+1), x+4, h*0.2);
+  });
+  const px = (d.pos / dur) * w;
+  g.strokeStyle = "#fff"; g.lineWidth = 2; g.beginPath(); g.moveTo(px,0); g.lineTo(px,h); g.stroke(); g.lineWidth = 1;
+}
+/* the close-up: a second and a half of groove either side of the needle, which
+   is where you actually watch a scratch happen */
+function drawZoom(d){
+  const cv = document.getElementById("zoom"+d.id);
+  if(!cv) return;
+  const w = cv.width = (cv.clientWidth*2)||600, h = cv.height = 72;
+  const g = cv.getContext("2d");
+  g.fillStyle = "#0a1410"; g.fillRect(0,0,w,h);
+  if(!d.buf) return;
+  const a = d.buf.getChannelData(0), sr = d.buf.sampleRate;
+  const span = sr * 1.2, start = d.pos - span/2, per = span/w;
+  g.strokeStyle = "#7fd6a3"; g.beginPath();
+  for(let x=0;x<w;x++){
+    const o = Math.floor(start + x*per);
+    let m = 0;
+    for(let i=0;i<per;i+=3){ const j=o+i|0; if(j>=0&&j<a.length){ const v=a[j]<0?-a[j]:a[j]; if(v>m)m=v; } }
+    g.moveTo(x+.5, h/2 - m*h*0.48); g.lineTo(x+.5, h/2 + m*h*0.48);
+  }
+  g.stroke();
+  if(d.bpm > 0){                       /* every beat, with the downbeat brighter */
+    const beat = 60/d.bpm*sr;
+    const first = Math.ceil((start - d.beat0*sr)/beat);
+    for(let k=first; ; k++){
+      const posB = d.beat0*sr + k*beat;
+      const x = (posB - start)/per;
+      if(x > w) break;
+      if(x < 0) continue;
+      g.strokeStyle = (k%4===0) ? "rgba(244,226,176,.55)" : "rgba(244,226,176,.22)";
+      g.beginPath(); g.moveTo(x, 0); g.lineTo(x, h); g.stroke();
+    }
+  }
+  if(d.loopOn && d.loopB > d.loopA){
+    const x1 = (d.loopA - start)/per, x2 = (d.loopB - start)/per;
+    g.fillStyle = "rgba(127,199,245,.18)"; g.fillRect(x1, 0, Math.max(2, x2-x1), h);
+  }
+  g.strokeStyle = "#c4452a"; g.lineWidth = 2;
+  g.beginPath(); g.moveTo(w/2,0); g.lineTo(w/2,h); g.stroke(); g.lineWidth = 1;
+}
+function clock(sec){
+  if(!isFinite(sec)||sec<0) sec=0;
+  const m=Math.floor(sec/60), s=Math.floor(sec%60);
+  return m+":"+(s<10?"0":"")+s;
+}
+function paintDeck(d){
+  const el = document.getElementById("deck"+d.id);
+  if(!el) return;
+  const vinyl = el.querySelector(".vinyl");
+  if(vinyl) vinyl.style.setProperty("--rot", d.rot.toFixed(1)+"deg");
+  const arm = el.querySelector(".arm");
+  if(arm && d.buf) arm.style.transform = "rotate("+(16 + 13*Math.min(1, d.pos/d.buf.length)).toFixed(2)+"deg)";
+  const song = el.querySelector(".song");
+  if(song) song.textContent = d.note || d.name || t("none");
+  const btn = el.querySelector(".go");
+  if(btn) btn.textContent = d.motor ? t("stop") : t("play");
+  const time = el.querySelector(".time");
+  if(time) time.textContent = d.buf ? (clock(d.pos/d.buf.sampleRate)+" / "+clock(d.buf.duration)) : "0:00";
+  const bar = el.querySelector(".meter i");
+  if(bar) bar.style.width = Math.min(100, d.level*140)+"%";
+  el.classList.toggle("spinning", Math.abs(d.rate) > 0.02);
+  const bp = el.querySelector("[data-bpm]");
+  if(bp) bp.textContent = d.bpm > 0 ? (d.bpm*d.pitch*d.rpm).toFixed(1)+" BPM"
+                        : d.bpm === -1 ? t("bpmWait") : (d.buf ? t("noBeat") : "");
+  el.querySelectorAll("[data-hot]").forEach(b=>{
+    b.classList.toggle("on", d.cues[+b.getAttribute("data-i")] != null);
+  });
+  el.querySelectorAll("[data-loop]").forEach(b=>{
+    b.classList.toggle("on", d.loopOn && d.loopBars === +b.getAttribute("data-bars"));
+  });
+}
+/* SYNC holds: every quarter second the locked deck is nudged a whisker in pitch
+   until its beat sits on the other deck's beat, then it is left alone. This is
+   what stops two records drifting apart after four bars. */
+let lastLock = 0;
+function syncTick(){
+  const now = performance.now();
+  if(now - lastLock < 250) return;
+  lastLock = now;
+  decks.forEach(d=>{
+    const o = decks.find(x=>x.id!==d.id);
+    if(!d.syncLock || !d.buf || !o.buf || d.bpm<=0 || o.bpm<=0) return;
+    if(!d.motor || !o.motor || d.held || o.held) return;
+    const want = (o.bpm*o.pitch*o.rpm) / (d.bpm*d.rpm);
+    let ratio = want; while(ratio>1.5) ratio/=2; while(ratio<0.6) ratio*=2;
+    const beat = 60/d.bpm*d.buf.sampleRate;
+    const beatO = 60/o.bpm*o.buf.sampleRate;
+    const phase = ((d.pos - d.beat0*d.buf.sampleRate)/beat) % 1;
+    const phaseO = ((o.pos - o.beat0*o.buf.sampleRate)/beatO) % 1;
+    let err = phase - phaseO;                 /* in beats, -0.5 … 0.5 */
+    if(err > 0.5) err -= 1; if(err < -0.5) err += 1;
+    const corrected = ratio * (1 - err*0.06); /* a whisper of pitch, never a jump */
+    const lo = d.wide?0.5:0.92, hi = d.wide?1.5:1.08;
+    const v = Math.max(lo, Math.min(hi, corrected));
+    if(Math.abs(v - d.pitch) > 0.0005){
+      d.pitch = v; send(d, { t:"pitch", v:v });
+      const inp = document.querySelector('[data-speed="'+d.id+'"]'); if(inp) inp.value = String(v);
+      const po = document.querySelector('[data-pitchout="'+d.id+'"]'); if(po) po.textContent = pitchText(d);
+    }
+  });
+}
+function drawEq(){
+  const cv = document.getElementById("eqCurve");
+  if(!cv || !AOGEq) return;
+  const curves = [];
+  decks.forEach((d,i)=>{ if(d.eq) curves.push({ filters: d.eq.filters.concat(d.filt?[d.filt]:[]),
+    color: i===0 ? "#f0c26e" : "#7fc7f5", label: "DECK "+d.id, labelY: 12+i*12 }); });
+  AOGEq.draw(cv, { curves: curves, analyser: eqScope, sampleRate: actx ? actx.sampleRate : 44100, range: 26 });
+}
+function loop(){
+  syncTick();
+  drawEq();
+  decks.forEach(d=>{
+    if(d.buf){
+      d.rot = (d.pos / d.buf.sampleRate) * DEG_PER_SEC;
+      /* a held hand that stops moving is a hand holding the record still */
+      if(d.held && performance.now() - d.lastMove > 55){ d.handRate *= 0.45; send(d, { t:"hand", on:true, rate:d.handRate }); d.lastMove = performance.now(); }
+    }
+    paintDeck(d);
+    if(d.buf && (d.motor || Math.abs(d.rate) > 0.01 || d.held)){ drawWave(d); drawZoom(d); }
+  });
+  requestAnimationFrame(loop);
+}
+function shell(){
+  document.getElementById("decks").innerHTML = decks.map(d=>`
+    <section class="deck" id="deck${d.id}">
+      <h2>Deck ${d.id}</h2>
+      <p class="song">${d.note||d.name||t("none")}</p>
+      <canvas class="wave" id="wave${d.id}" height="64"></canvas>
+      <canvas class="zoom" id="zoom${d.id}" height="36"></canvas>
+      <div class="platter-wrap">
+        <div class="platter" data-deck="${d.id}" role="slider" aria-label="${t("drag")}" tabindex="0">
+          <div class="vinyl" style="--rot:${d.rot}deg">
+            <div class="strobe"></div>
+            <div class="label"></div>
+          </div>
+          <div class="hole"></div>
+          <div class="arm"></div>
+        </div>
+      </div>
+      <div class="meter" aria-hidden="true"><i></i></div>
+      <div class="row">
+        <label class="file">${t("load")}<input type="file" data-load="${d.id}" accept="audio/*,video/mp4,.mp3,.m4a,.m4b,.aac,.wav,.wave,.aif,.aiff,.aifc,.ogg,.oga,.opus,.flac,.caf,.mp4,.webm,.3gp,.amr,.wma,.mid,.midi"></label>
+        <button type="button" class="ghost" data-eject="${d.id}">${t("eject")}</button>
+        <button type="button" class="go" data-play="${d.id}">${t("play")}</button>
+        <button type="button" class="ghost" data-cue="${d.id}">${t("cueHold")}</button>
+        <button type="button" class="ghost" data-setcue="${d.id}">${t("setCue")}</button>
+        <span class="time">0:00</span>
+      </div>
+      <div class="row tr">
+        <span class="grp" role="group" aria-label="${t("hot")}">
+          ${[0,1,2].map(i=>`<button type="button" class="ghost sm" data-hot="${d.id}" data-i="${i}">${i+1}</button>`).join("")}
+        </span>
+        <span class="grp" role="group" aria-label="${t("loop")}">
+          ${[1,2,4].map(n=>`<button type="button" class="ghost sm" data-loop="${d.id}" data-bars="${n}">${n}${S.lang==="es"?"c":"b"}</button>`).join("")}
+        </span>
+        <button type="button" class="ghost sm" data-sync="${d.id}">${t("sync")}</button>
+        <span class="bpm" data-bpm="${d.id}"></span>
+      </div>
+      <div class="row tr">
+        <button type="button" class="ghost sm${d.keyOn?" on":""}" data-key="${d.id}">${t("key")}</button>
+        <button type="button" class="ghost sm${d.slipOn?" on":""}" data-slip="${d.id}">${t("slip")}</button>
+        <button type="button" class="ghost sm" data-rev="${d.id}">${t("rev")}</button>
+        <button type="button" class="ghost sm" data-tap="${d.id}">${t("tap")}</button>
+        <button type="button" class="ghost sm" data-half="${d.id}">½×</button>
+        <button type="button" class="ghost sm" data-double="${d.id}">2×</button>
+      </div>
+      <p class="drophint">${t("drop")}</p>
+      <div class="row">
+        <button type="button" class="ghost" data-nudge="${d.id}" data-dir="-1">− ${t("nudge")}</button>
+        <button type="button" class="ghost" data-nudge="${d.id}" data-dir="1">+ ${t("nudge")}</button>
+        <span class="rpm" role="group" aria-label="${t("rpm")}">
+          <button type="button" class="ghost rpmb on" data-rpm="${d.id}" data-v="1">33⅓</button>
+          <button type="button" class="ghost rpmb" data-rpm="${d.id}" data-v="1.35">45</button>
+        </span>
+      </div>
+      <label class="knob">${t("speed")}
+        <b class="readout" data-pitchout="${d.id}">${pitchText(d)}</b>
+        <button type="button" class="tiny${d.wide?" on":""}" data-wide="${d.id}">${t("wide")}</button>
+        <input type="range" min="${d.wide?0.5:0.92}" max="${d.wide?1.5:1.08}" step="${d.wide?0.01:0.005}" value="${d.pitch}" data-speed="${d.id}"></label>
+      <label class="knob">${t("filter")} <input type="range" min="-1" max="1" step="0.01" value="0" data-filter="${d.id}"></label>
+      <label class="knob">${t("echo")} <input type="range" min="0" max="1" step="0.01" value="0" data-echo="${d.id}"></label>
+      <label class="knob">${t("eqHigh")} <input type="range" min="-26" max="26" step="0.5" value="0" data-eq="${d.id}" data-band="high"></label>
+      <label class="knob">${t("eqMid")} <input type="range" min="-26" max="26" step="0.5" value="0" data-eq="${d.id}" data-band="mid"></label>
+      <label class="knob">${t("eqLow")} <input type="range" min="-26" max="26" step="0.5" value="0" data-eq="${d.id}" data-band="low"></label>
+      <div class="row tr">
+        <button type="button" class="ghost sm" data-kill="${d.id}" data-band="low">${t("killL")}</button>
+        <button type="button" class="ghost sm" data-kill="${d.id}" data-band="mid">${t("killM")}</button>
+        <button type="button" class="ghost sm" data-kill="${d.id}" data-band="high">${t("killH")}</button>
+        <button type="button" class="ghost sm" data-flat="${d.id}">${t("flat")}</button>
+      </div>
+      <label class="knob">${t("vol")} <input type="range" min="0" max="1" step="0.01" value="${d.vol}" data-vol="${d.id}"></label>
+    </section>`).join("");
+  bind();
+  decks.forEach(d=>{ drawWave(d); drawZoom(d); });
+}
+function bind(){
+  document.querySelectorAll("[data-load]").forEach(inp=>{
+    inp.onchange = async ()=>{
+      const file = inp.files && inp.files[0]; if(!file) return;
+      await loadFile(decks.find(x=>x.id===inp.getAttribute("data-load")), file);
+      inp.value = "";
+    };
+  });
+  document.querySelectorAll(".deck").forEach(sec=>{
+    const d = decks.find(x=>("deck"+x.id)===sec.id); if(!d) return;
+    const over = ev=>{ ev.preventDefault(); sec.classList.add("dragover"); };
+    sec.addEventListener("dragover", over);
+    sec.addEventListener("dragenter", over);
+    sec.addEventListener("dragleave", ()=>sec.classList.remove("dragover"));
+    sec.addEventListener("drop", ev=>{
+      ev.preventDefault(); sec.classList.remove("dragover");
+      const f = ev.dataTransfer && ev.dataTransfer.files && ev.dataTransfer.files[0];
+      if(f) loadFile(d, f);
+    });
+  });
+  /* AOG-DECKS-EJECT-V1 (2026-09-23) — Jimmy: "how do you get rid of a track?"
+     You could not: a deck only ever had another record put on top of it. The
+     platter empties now — the engine drops the audio, and the marks, the loop
+     and the tempo go with it. */
+  document.querySelectorAll("[data-eject]").forEach(btn=>{
+    btn.onclick = ()=>{
+      const d = decks.find(x=>x.id===btn.getAttribute("data-eject"));
+      if(!d) return;
+      d.motor = false; d.loopOn = false; d.loopBars = 0; d.syncLock = false; d.held = false;
+      send(d, { t:"motor", on:false });
+      send(d, { t:"loop", on:false, a:0, b:0 });
+      send(d, { t:"rev", on:false });
+      send(d, { t:"clear" });
+      d.buf = null; d.peaks = null; d.bands = null; d.name = ""; d.note = "";
+      d.pos = 0; d.cue = 0; d.rate = 0; d.level = 0; d.rot = 0; d.bpm = 0; d.beat0 = 0;
+      d.cues = [null,null,null]; d.trackKey = ""; d.taps = [];
+      const sb = document.querySelector('[data-sync="'+d.id+'"]'); if(sb) sb.classList.remove("on");
+      drawWave(d); drawZoom(d); paintDeck(d);
+    };
+  });
+  document.querySelectorAll("[data-play]").forEach(btn=>{
+    btn.onclick = async ()=>{
+      const d = decks.find(x=>x.id===btn.getAttribute("data-play"));
+      if(!d.buf) return;
+      ctx(); await ensureNode(d);
+      d.motor = !d.motor;
+      send(d, { t:"motor", on:d.motor });
+      paintDeck(d);
+    };
+  });
+  /* CUE the way a deck does it: hold to hear it from the mark, let go and the
+     record is back at the mark, stopped, ready to go again. */
+  document.querySelectorAll("[data-cue]").forEach(btn=>{
+    const deck = ()=>decks.find(x=>x.id===btn.getAttribute("data-cue"));
+    btn.onpointerdown = async (e)=>{
+      const d = deck(); if(!d || !d.buf) return;
+      e.preventDefault(); try{ btn.setPointerCapture(e.pointerId); }catch(err){}
+      ctx(); await ensureNode(d);
+      d.cueHeld = true;
+      d.pos = d.cue||0; send(d, { t:"seek", v:d.pos });
+      d.motor = true; send(d, { t:"motor", on:true });
+      paintDeck(d);
+    };
+    const release = ()=>{
+      const d = deck(); if(!d || !d.cueHeld) return;
+      d.cueHeld = false;
+      d.motor = false; send(d, { t:"motor", on:false });
+      d.pos = d.cue||0; send(d, { t:"seek", v:d.pos });
+      drawWave(d); drawZoom(d); paintDeck(d);
+    };
+    btn.onpointerup = release; btn.onpointercancel = release; btn.onpointerleave = release;
+  });
+  /* three hot cues a deck: empty one takes the spot you are on, a full one
+     jumps there, and a long press (or alt-click) clears it. */
+  document.querySelectorAll("[data-hot]").forEach(btn=>{
+    const d = ()=>decks.find(x=>x.id===btn.getAttribute("data-hot"));
+    const i = +btn.getAttribute("data-i");
+    let held = null;
+    btn.onpointerdown = ()=>{ held = setTimeout(()=>{ const k=d(); if(k){ k.cues[i]=null; paintDeck(k); drawWave(k); } held=null; }, 700); };
+    const stop = ()=>{ if(held){ clearTimeout(held); held=null; } };
+    btn.onpointerup = stop; btn.onpointerleave = stop; btn.onpointercancel = stop;
+    btn.onclick = async (e)=>{
+      const k = d(); if(!k || !k.buf) return;
+      if(e.altKey){ k.cues[i]=null; paintDeck(k); drawWave(k); return; }
+      ctx(); await ensureNode(k);
+      if(k.cues[i]==null){ k.cues[i] = k.pos; }
+      else { k.pos = k.cues[i]; send(k, { t:"seek", v:k.pos }); }
+      marksSave(k);
+      paintDeck(k); drawWave(k); drawZoom(k);
+    };
+  });
+  /* a beat loop is bars of the tempo we measured, snapped to the nearest beat */
+  document.querySelectorAll("[data-loop]").forEach(btn=>{
+    btn.onclick = async ()=>{
+      const d = decks.find(x=>x.id===btn.getAttribute("data-loop"));
+      const bars = +btn.getAttribute("data-bars");
+      if(!d.buf) return;
+      ctx(); await ensureNode(d);
+      if(d.loopOn && d.loopBars === bars){
+        d.loopOn = false; d.loopBars = 0; send(d, { t:"loop", on:false, a:0, b:0 });
+      } else if(d.bpm > 0){
+        const sr = d.buf.sampleRate, beat = 60/d.bpm*sr;
+        const k = Math.round((d.pos - d.beat0*sr)/beat);
+        const a = Math.max(0, d.beat0*sr + k*beat);
+        const b = Math.min(d.buf.length-3, a + bars*4*beat);
+        d.loopA = a; d.loopB = b; d.loopBars = bars; d.loopOn = true;
+        send(d, { t:"loop", on:true, a:a, b:b });
+      }
+      paintDeck(d); drawWave(d); drawZoom(d);
+    };
+  });
+  /* SYNC: take the other deck's tempo, then land on its nearest beat */
+  document.querySelectorAll("[data-sync]").forEach(btn=>{
+    btn.onclick = async ()=>{
+      const d = decks.find(x=>x.id===btn.getAttribute("data-sync"));
+      if(d.syncLock){ d.syncLock = false; btn.classList.remove("on"); return; }
+      d.syncLock = true; btn.classList.add("on");
+      const o = decks.find(x=>x.id!==d.id);
+      if(!d.buf || !o.buf || d.bpm<=0 || o.bpm<=0) return;
+      ctx(); await ensureNode(d);
+      let want = (o.bpm*o.pitch*o.rpm) / (d.bpm*d.rpm);
+      while(want > 1.5) want /= 2; while(want < 0.6) want *= 2;   /* half and double time count */
+      if(want < 0.92 || want > 1.08){ d.wide = true; }
+      d.pitch = Math.max(d.wide?0.5:0.92, Math.min(d.wide?1.5:1.08, want));
+      send(d, { t:"pitch", v:d.pitch });
+      const inp = document.querySelector('[data-speed="'+d.id+'"]');
+      if(inp){ if(d.wide){ inp.min="0.5"; inp.max="1.5"; inp.step="0.01"; } inp.value=String(d.pitch); }
+      const wb = document.querySelector('[data-wide="'+d.id+'"]'); if(wb) wb.classList.toggle("on", d.wide);
+      const po = document.querySelector('[data-pitchout="'+d.id+'"]'); if(po) po.textContent = pitchText(d);
+      /* phase: put this deck on the beat the other one is on */
+      const sr = d.buf.sampleRate, beat = 60/d.bpm*sr;
+      const k = Math.round((d.pos - d.beat0*sr)/beat);
+      d.pos = Math.max(0, Math.min(d.buf.length-3, d.beat0*sr + k*beat));
+      send(d, { t:"seek", v:d.pos });
+      paintDeck(d); drawWave(d); drawZoom(d);
+    };
+  });
+  /* KEY — the pitch fader stops moving the voice. It steps aside for a hand on
+     the platter, because a scratch is meant to change pitch. */
+  document.querySelectorAll("[data-key]").forEach(btn=>{
+    btn.onclick = async ()=>{
+      const d = decks.find(x=>x.id===btn.getAttribute("data-key"));
+      d.keyOn = !d.keyOn; ctx(); await ensureNode(d);
+      send(d, { t:"key", on:d.keyOn }); btn.classList.toggle("on", d.keyOn);
+    };
+  });
+  /* SLIP — the record keeps turning under the scratch. Let go, and you are
+     where the track would have been if you had never touched it. */
+  document.querySelectorAll("[data-slip]").forEach(btn=>{
+    btn.onclick = async ()=>{
+      const d = decks.find(x=>x.id===btn.getAttribute("data-slip"));
+      d.slipOn = !d.slipOn; ctx(); await ensureNode(d);
+      send(d, { t:"slip", on:d.slipOn }); btn.classList.toggle("on", d.slipOn);
+    };
+  });
+  /* REV — backwards while you hold it; with SLIP on, letting go puts you back
+     on the beat, which is the whole trick. */
+  document.querySelectorAll("[data-rev]").forEach(btn=>{
+    const deck = ()=>decks.find(x=>x.id===btn.getAttribute("data-rev"));
+    btn.onpointerdown = async (e)=>{
+      const d = deck(); if(!d || !d.buf) return;
+      e.preventDefault(); try{ btn.setPointerCapture(e.pointerId); }catch(err){}
+      ctx(); await ensureNode(d);
+      send(d, { t:"rev", on:true }); btn.classList.add("on");
+    };
+    const off = ()=>{ const d = deck(); if(!d) return; send(d, { t:"rev", on:false }); btn.classList.remove("on"); };
+    btn.onpointerup = off; btn.onpointercancel = off; btn.onpointerleave = off;
+  });
+  /* TAP — four taps and the deck takes your tempo instead of its own guess */
+  document.querySelectorAll("[data-tap]").forEach(btn=>{
+    btn.onclick = ()=>{
+      const d = decks.find(x=>x.id===btn.getAttribute("data-tap"));
+      const now = performance.now();
+      if(d.taps.length && now - d.taps[d.taps.length-1] > 2200) d.taps = [];
+      d.taps.push(now);
+      if(d.taps.length > 5) d.taps.shift();
+      if(d.taps.length >= 3){
+        const span = (d.taps[d.taps.length-1] - d.taps[0]) / (d.taps.length-1);
+        const bpm = 60000/span;
+        if(bpm > 60 && bpm < 200){
+          d.bpm = Math.round(bpm*100)/100;
+          d.beat0 = Math.max(0, d.pos/(d.buf?d.buf.sampleRate:44100)) % (60/d.bpm);
+          marksSave(d); paintDeck(d); drawWave(d); drawZoom(d);
+        }
+      }
+    };
+  });
+  document.querySelectorAll("[data-half],[data-double]").forEach(btn=>{
+    const half = btn.hasAttribute("data-half");
+    btn.onclick = ()=>{
+      const d = decks.find(x=>x.id===btn.getAttribute(half?"data-half":"data-double"));
+      if(!d.bpm || d.bpm<=0) return;
+      const b = half ? d.bpm/2 : d.bpm*2;
+      if(b < 50 || b > 220) return;
+      d.bpm = Math.round(b*100)/100; marksSave(d);
+      paintDeck(d); drawWave(d); drawZoom(d);
+    };
+  });
+  document.querySelectorAll("[data-echo]").forEach(inp=>{
+    inp.oninput = ()=>{
+      const d = decks.find(x=>x.id===inp.getAttribute("data-echo"));
+      if(!d.echoSend) return;
+      d.echoSend.gain.value = +inp.value * 0.8;
+      if(d.echo && d.bpm > 0) d.echo.delayTime.value = Math.min(1.8, (60/d.bpm)*0.75);   /* a dotted eighth */
+    };
+  });
+  document.querySelectorAll("[data-filter]").forEach(inp=>{
+    inp.oninput = ()=>{
+      const d = decks.find(x=>x.id===inp.getAttribute("data-filter"));
+      const v = +inp.value; if(!d.filt) return;
+      if(v < -0.02){ d.filt.type="lowpass"; d.filt.frequency.value = 20000*Math.pow(0.008, -v); }
+      else if(v > 0.02){ d.filt.type="highpass"; d.filt.frequency.value = 20*Math.pow(180, v); }
+      else { d.filt.type="lowpass"; d.filt.frequency.value = 20000; }
+    };
+  });
+  /* the needle goes where you point it: click or drag either waveform */
+  document.querySelectorAll(".wave, .zoom").forEach(cv=>{
+    const id = cv.id.replace(/^(wave|zoom)/, "");
+    const zoomed = cv.id.indexOf("zoom") === 0;
+    let dragging = false;
+    const place = (e)=>{
+      const d = decks.find(x=>x.id===id); if(!d || !d.buf) return;
+      const r = cv.getBoundingClientRect(), f = Math.max(0, Math.min(1, (e.clientX-r.left)/r.width));
+      d.pos = zoomed ? Math.max(0, Math.min(d.buf.length-3, d.pos + (f-0.5)*d.buf.sampleRate*1.2))
+                     : f*(d.buf.length-3);
+      send(d, { t:"seek", v:d.pos });
+      drawWave(d); drawZoom(d); paintDeck(d);
+    };
+    cv.onpointerdown = async (e)=>{
+      const d = decks.find(x=>x.id===id); if(!d || !d.buf) return;
+      ctx(); await ensureNode(d);
+      dragging = true; try{ cv.setPointerCapture(e.pointerId); }catch(err){} place(e);
+    };
+    cv.onpointermove = (e)=>{ if(dragging) place(e); };
+    const up = ()=>{ dragging = false; };
+    cv.onpointerup = up; cv.onpointercancel = up;
+    cv.style.cursor = "text";
+  });
+  document.querySelectorAll("[data-setcue]").forEach(btn=>{
+    btn.onclick = ()=>{ const d = decks.find(x=>x.id===btn.getAttribute("data-setcue")); if(d.buf) d.cue = d.pos; };
+  });
+  document.querySelectorAll("[data-nudge]").forEach(btn=>{
+    const deck = ()=>decks.find(x=>x.id===btn.getAttribute("data-nudge"));
+    const dir = btn.getAttribute("data-dir")==="1" ? 1.04 : 0.96;
+    const down = ()=>{ const d=deck(); if(!d) return; send(d, { t:"pitch", v:d.pitch*dir }); };
+    const up = ()=>{ const d=deck(); if(!d) return; send(d, { t:"pitch", v:d.pitch }); };
+    btn.onpointerdown = down; btn.onpointerup = up; btn.onpointerleave = up; btn.onpointercancel = up;
+  });
+  document.querySelectorAll("[data-rpm]").forEach(btn=>{
+    btn.onclick = ()=>{
+      const d = decks.find(x=>x.id===btn.getAttribute("data-rpm"));
+      d.rpm = +btn.getAttribute("data-v");
+      send(d, { t:"rpm", v:d.rpm });
+      btn.parentNode.querySelectorAll(".rpmb").forEach(b=>b.classList.toggle("on", b===btn));
+    };
+  });
+  document.querySelectorAll("[data-eq]").forEach(inp=>{
+    inp.oninput = async ()=>{
+      const d = decks.find(x=>x.id===inp.getAttribute("data-eq"));
+      ctx(); await ensureNode(d);
+      d.eq.set(inp.getAttribute("data-band"), +inp.value);
+    };
+  });
+  document.querySelectorAll("[data-kill]").forEach(btn=>{
+    btn.onclick = async ()=>{
+      const d = decks.find(x=>x.id===btn.getAttribute("data-kill"));
+      ctx(); await ensureNode(d);
+      const on = d.eq.kill(btn.getAttribute("data-band"), !d.eq.killed(btn.getAttribute("data-band")));
+      btn.classList.toggle("on", on);
+    };
+  });
+  document.querySelectorAll("[data-flat]").forEach(btn=>{
+    btn.onclick = async ()=>{
+      const d = decks.find(x=>x.id===btn.getAttribute("data-flat"));
+      ctx(); await ensureNode(d);
+      d.eq.flat();
+      document.querySelectorAll('[data-eq="'+d.id+'"]').forEach(i=>{ i.value="0"; });
+      document.querySelectorAll('[data-kill="'+d.id+'"]').forEach(b=>b.classList.remove("on"));
+      const f=document.querySelector('[data-filter="'+d.id+'"]');
+      if(f){ f.value="0"; f.dispatchEvent(new Event("input")); }
+    };
+  });
+  document.querySelectorAll("[data-speed]").forEach(inp=>{
+    inp.oninput = ()=>{
+      const d=decks.find(x=>x.id===inp.getAttribute("data-speed"));
+      d.pitch=+inp.value; send(d, { t:"pitch", v:d.pitch });
+      const o=document.querySelector('[data-pitchout="'+d.id+'"]'); if(o) o.textContent = pitchText(d);
+    };
+  });
+  /* WIDE opens the pitch fader from a DJ's ±8% to half speed / one and a half,
+     which is where a voice actually changes character. */
+  document.querySelectorAll("[data-wide]").forEach(btn=>{
+    btn.onclick = ()=>{
+      const d = decks.find(x=>x.id===btn.getAttribute("data-wide"));
+      d.wide = !d.wide;
+      const inp = document.querySelector('[data-speed="'+d.id+'"]');
+      if(d.wide){ inp.min="0.5"; inp.max="1.5"; inp.step="0.01"; }
+      else { inp.min="0.92"; inp.max="1.08"; inp.step="0.005"; d.pitch = Math.max(0.92, Math.min(1.08, d.pitch)); send(d, { t:"pitch", v:d.pitch }); }
+      inp.value = String(d.pitch);
+      btn.classList.toggle("on", d.wide);
+      const o=document.querySelector('[data-pitchout="'+d.id+'"]'); if(o) o.textContent = pitchText(d);
+    };
+  });
+  document.querySelectorAll("[data-vol]").forEach(inp=>{
+    inp.oninput = ()=>{ decks.find(x=>x.id===inp.getAttribute("data-vol")).vol = +inp.value; setMix(); };
+  });
+
+  /* ── the hand on the record ──────────────────────────────────────────────
+     Angle, not pixels. Where your finger is on the circle is where the groove
+     is, so a half turn is 0.9 seconds of music whichever way you go, and how
+     FAST you turn is the speed the needle reads at. */
+  document.querySelectorAll(".platter").forEach(p=>{
+    const d = ()=> decks.find(x=>x.id===p.getAttribute("data-deck"));
+    let lastAng = 0, lastT = 0, spun = 0, trail = [];
+    function angleOf(e){
+      const r = p.getBoundingClientRect();
+      return Math.atan2(e.clientY - (r.top + r.height/2), e.clientX - (r.left + r.width/2)) * 180/Math.PI;
+    }
+    p.onpointerdown = async (e)=>{
+      const deck = d(); if(!deck || !deck.buf) return;
+      e.preventDefault();
+      try{ p.setPointerCapture(e.pointerId); }catch(err){}
+      ctx(); await ensureNode(deck);
+      lastAng = angleOf(e); lastT = performance.now();
+      spun = 0; trail = [{ t:lastT, a:0 }];
+      deck.held = true; deck.lastMove = lastT;
+      deck.handRate = deck.rate;                    /* you catch it at the speed it is turning */
+      send(deck, { t:"hand", on:true, rate:deck.handRate });
+    };
+    p.onpointermove = (e)=>{
+      const deck = d(); if(!deck || !deck.held) return;
+      /* every pointer sample the browser collected since the last frame, not just
+         the last one — a fast flick is 6 or 8 of these, and dropping them is what
+         made quick scratches read as one long smear. */
+      const pts = (e.getCoalescedEvents && e.getCoalescedEvents().length) ? e.getCoalescedEvents() : [e];
+      for(let i=0;i<pts.length;i++){
+        const ev = pts[i];
+        const now = (ev.timeStamp && ev.timeStamp > 0) ? ev.timeStamp : performance.now();
+        let a = angleOf(ev), da = a - lastAng;
+        while(da > 180) da -= 360; while(da < -180) da += 360;   /* the short way round */
+        lastAng = a; lastT = now; spun += da;
+        trail.push({ t:now, a:spun });
+      }
+      /* the speed is measured over the last ~70 ms of hand, not over the last
+         single event. Event to event, a slow steady pull is mostly jitter — and
+         jitter is what made a held-back vocal warble instead of drag. */
+      const now = performance.now();
+      while(trail.length > 2 && now - trail[0].t > 70) trail.shift();
+      const first = trail[0], last = trail[trail.length-1];
+      const dt = Math.max(0.012, (last.t - first.t)/1000);
+      const inst = ((last.a - first.a)/dt) / DEG_PER_SEC * TOUCH[touch];
+      /* slow moves are smoothed harder than fast ones: steadiness where you want
+         to hear words, immediacy where you want a cut. */
+      const k = Math.abs(inst) < 0.6 ? 0.45 : 0.8;
+      deck.handRate = deck.handRate*(1-k) + inst*k;
+      if(deck.handRate > 16) deck.handRate = 16;
+      if(deck.handRate < -16) deck.handRate = -16;
+      deck.lastMove = now;
+      send(deck, { t:"hand", on:true, rate:deck.handRate });
+    };
+    const up = ()=>{
+      const deck = d(); if(!deck || !deck.held) return;
+      deck.held = false;
+      send(deck, { t:"hand", on:false, rate:0 });               /* let go: the throw carries, the motor takes over */
+    };
+    p.onpointerup = up; p.onpointercancel = up; p.onlostpointercapture = up;
+    /* the same deck from a keyboard: space starts and stops it, the arrows walk
+       the needle a tenth of a second at a time. */
+    p.onkeydown = async (e)=>{
+      const deck = d(); if(!deck || !deck.buf) return;
+      if(e.key === " " || e.key === "Enter"){
+        e.preventDefault(); ctx(); await ensureNode(deck);
+        deck.motor = !deck.motor; send(deck, { t:"motor", on:deck.motor }); paintDeck(deck);
+      } else if(e.key === "ArrowLeft" || e.key === "ArrowRight"){
+        e.preventDefault(); ctx(); await ensureNode(deck);
+        const step = deck.buf.sampleRate * 0.1 * (e.key === "ArrowRight" ? 1 : -1);
+        deck.pos = Math.max(0, Math.min(deck.buf.length - 3, deck.pos + step));
+        send(deck, { t:"seek", v:deck.pos });
+        drawWave(deck); drawZoom(deck); paintDeck(deck);
+      }
+    };
+  });
+}
+function paintChrome(){
+  document.getElementById("brand").textContent = t("app");
+  document.getElementById("title").textContent = t("app");
+  document.getElementById("eyebrow").textContent = t("eyebrow");
+  document.getElementById("tag").textContent = t("tag");
+  document.getElementById("xfLabel").textContent = t("mix");
+  document.getElementById("curveBtn").textContent = t("curve")+": "+(curve==="sharp"?t("sharp"):t("smooth"));
+  document.getElementById("noiseBtn").textContent = noiseOn ? t("noiseOn") : t("noiseOff");
+  document.getElementById("touchBtn").textContent = touchLabel();
+  const cap = document.getElementById("eqCap"); if(cap) cap.textContent = t("eqTitle");
+  paintBench();
+  document.getElementById("recHint").textContent = t("recHint");
+  paintTape();
+  document.getElementById("langBtn").textContent = S.lang==="es"?"EN":"ES";
+  document.getElementById("themeBtn").textContent = S.theme==="dark"?t("light"):t("dark");
+  document.getElementById("foot").innerHTML = `<p>${t("foot")}</p><p><a href="music-drums.html">${t("drums")}</a> · <a href="/science">${t("sci")}</a></p>`;
+  document.documentElement.setAttribute("data-theme", S.theme);
+  document.documentElement.classList.toggle("dark", S.theme==="dark");
+}
+document.getElementById("xf").oninput = setMix;
+document.getElementById("recBtn").onclick = recToggle;
+document.getElementById("touchBtn").onclick = ()=>{
+  touch = touch==="fine" ? "normal" : touch==="normal" ? "vinyl" : "fine";
+  try{ localStorage.setItem("aog.decks.touch", touch); }catch(e){}
+  paintChrome();
+};
+document.getElementById("curveBtn").onclick = ()=>{ curve = curve==="smooth"?"sharp":"smooth"; setMix(); paintChrome(); };
+document.getElementById("noiseBtn").onclick = ()=>{
+  noiseOn = !noiseOn;
+  decks.forEach(d=>send(d, { t:"noise", v: noiseOn?0.5:0 }));
+  paintChrome();
+};
+document.getElementById("langBtn").onclick = ()=>{ S.lang = S.lang==="en"?"es":"en"; try{localStorage.setItem("aog.lang", S.lang);}catch(e){} paintChrome(); shell(); };
+document.getElementById("themeBtn").onclick = ()=>{ S.theme = S.theme==="dark"?"light":"dark"; try{localStorage.setItem("aog.interior.ws.v1.theme", S.theme);}catch(e){} paintChrome(); };
+document.addEventListener("visibilitychange", ()=>{
+  if(document.hidden) decks.forEach(d=>{ if(d.motor){ d.motor=false; send(d,{t:"motor",on:false}); } });
+});
+paintChrome(); shell(); requestAnimationFrame(loop);
+checkBench();
+try{ AOGHandoff.listen(function(key){ if(key==="drumbench") checkBench(); }); }catch(e){}
+window.addEventListener("focus", checkBench);
+</script>
+<script>
+/* AOG-PGPANEL-V1 - the guide loads only when the bar is opened, and the frame is
+   grown to its content so the panel scrolls with the page instead of inside itself. */
+(function(){
+  var d=document.getElementById("pgPanel"); if(!d) return;
+  var f=document.getElementById("pgFrame"); if(!f) return;
+  function fit(){
+    try{ var b=f.contentDocument&&f.contentDocument.body;
+         if(b){ var h=b.scrollHeight; if(h>240) f.style.height=(h+28)+"px"; } }catch(e){}
+  }
+  d.addEventListener("toggle", function(){
+    if(d.open && !f.getAttribute("src")) f.setAttribute("src", f.getAttribute("data-src"));
+  });
+  f.addEventListener("load", function(){ fit(); setTimeout(fit,250); setTimeout(fit,1200); });
+  var t; window.addEventListener("resize", function(){ clearTimeout(t); t=setTimeout(fit,150); });
+})();
+</script>
+</body>
+</html>

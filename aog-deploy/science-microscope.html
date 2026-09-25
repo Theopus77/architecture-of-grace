@@ -1,0 +1,2882 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<script>
+(function(){var t="light";try{if(localStorage.getItem("aog.interior.ws.v1.theme")==="dark")t="dark";}catch(e){}document.documentElement.setAttribute("data-theme",t);if(t==="dark")document.documentElement.classList.add("dark");})();
+</script>
+<title>The Microscope Lab — Architecture of Grace</title>
+<!-- AOG-SCOPE-UNIVERSAL-V2 Risley prism, slit-ultra, Abbe limit on the bezel. No virus spikes. No cure. -->
+<meta name="description" content="A brass universal with a working eyepiece: darkfield, stain, an ocular micrometer, 100× oil — and the bench rules.">
+<link rel="canonical" href="https://architectureofgrace.org/microscope">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Architecture of Grace">
+<meta property="og:locale" content="en_US">
+<meta property="og:title" content="The Microscope Lab — Architecture of Grace">
+<meta property="og:description" content="Twelve parts, a working eyepiece, stains, darkfield, and a measuring scale. Meet the machine — then look through it.">
+<meta property="og:url" content="https://architectureofgrace.org/microscope">
+<meta property="og:image" content="https://architectureofgrace.org/og-science.png?v=1">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#2F5C6B">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Source+Sans+3:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#f4f0e6; --card:#fffcf7; --ink:#1a232c; --muted:#5c6670; --line:#ddd8cc;
+  --steel:#2f5c6b; --steel-fg:#f4f8f9; --steel-soft:#e3eef2;
+  --good:#2c7a4e; --good-fg:#f3faf5; --good-soft:#e3f0e8;
+  --warn:#8a5a00; --warn-soft:#f4ead6; --bad:#9c3a2e; --bad-fg:#fdf6f4; --bad-soft:#f6e5e2;
+  --chip:#efebe3; --lamp:#d9a84e; --metal:#3d4a55; --brass:#8a6116;
+  --shadow:0 1px 3px rgb(26 35 44 / .08);
+  --sans:"Source Sans 3", ui-sans-serif, system-ui, sans-serif;
+  --display:"Fraunces", "Iowan Old Style", Palatino, Georgia, serif;
+}
+.dark, [data-theme="dark"] {
+  --bg:#14181e; --card:#1c232c; --ink:#edeae2; --muted:#9aa3b0; --line:#333b47;
+  --steel:#7fb4c7; --steel-fg:#14181e; --steel-soft:#1d2f36;
+  --good:#6fbf8b; --good-fg:#14181e; --good-soft:#1f3327;
+  --warn:#d9a84e; --warn-soft:#332a18; --bad:#e08573; --bad-fg:#14181e; --bad-soft:#3a2622;
+  --chip:#2a313c; --metal:#9aa3b0; --brass:#c4a056;
+  --shadow:0 1px 3px rgb(0 0 0 / .35);
+}
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust:100%; }
+body { margin:0; background:var(--bg); color:var(--ink); font:400 16px/1.55 var(--sans); overflow-x:hidden; }
+h1,h2,h3 { font-family:var(--display); font-weight:600; letter-spacing:-.02em; text-wrap:balance; }
+h1 { font-size:clamp(1.5rem,4vw,2.4rem); margin:.2rem 0 .4rem; }
+p { text-wrap:pretty; }
+a { color:inherit; }
+button, a, [role=button] { touch-action:manipulation; -webkit-tap-highlight-color: color-mix(in oklab, var(--steel) 22%, transparent); }
+button { font:inherit; cursor:pointer; }
+.wrap { max-width:1080px; margin:0 auto; padding: max(1.25rem, env(safe-area-inset-top)) max(1rem, env(safe-area-inset-right)) max(4rem, env(safe-area-inset-bottom)) max(1rem, env(safe-area-inset-left)); }
+body:has(.aogtop) header .tools { display:none; }
+header { display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; gap:.75rem; margin-bottom:1rem; }
+.brand { font-size:.75rem; font-weight:700; letter-spacing:.14em; text-transform:uppercase; color:var(--muted); text-decoration:none; min-height:44px; display:inline-flex; align-items:center; }
+.tools { display:flex; gap:.5rem; }
+.pill, .btn {
+  min-height:44px; border-radius:999px; border:1px solid var(--line); background:var(--card); color:var(--ink);
+  padding:0 .9rem; font-weight:600; font-size:.9rem; display:inline-flex; align-items:center; justify-content:center; gap:.4rem;
+}
+.btn-steel { background:var(--steel); color:var(--steel-fg); border-color:transparent; }
+.btn-good { background:var(--good); color:var(--good-fg); border-color:transparent; }
+.btn-bad { background:var(--bad); color:var(--bad-fg); border-color:transparent; }
+.btn[disabled] { opacity:.5; cursor:default; }
+.nav { display:flex; gap:4px; overflow-x:auto; border-bottom:2px solid var(--line); margin-bottom:1.25rem; -webkit-overflow-scrolling:touch; scrollbar-width:none; }
+.nav::-webkit-scrollbar { display:none; }
+.nav a { flex:0 0 auto; min-height:44px; display:inline-flex; align-items:center; padding:0 .75rem; text-decoration:none; color:var(--muted); font-weight:600; font-size:.9rem; border-bottom:2px solid transparent; margin-bottom:-2px; }
+.nav a.on { color:var(--ink); border-color:var(--steel); }
+.short { display:none; }
+@media (max-width:767px){ .full{display:none;} .short{display:inline;} }
+.muted { color:var(--muted); }
+.lead { max-width:66ch; color:var(--muted); }
+.card { background:var(--card); border:1px solid var(--line); border-radius:12px; box-shadow:var(--shadow); }
+.grid-home { display:grid; gap:1.5rem; margin-top:1.5rem; }
+.cards { display:grid; gap:.75rem; }
+.act { display:block; padding:1.1rem 1.2rem; text-decoration:none; }
+.act:hover { border-color:var(--steel); }
+.kicker { font-size:.75rem; font-weight:700; letter-spacing:.12em; text-transform:uppercase; color:var(--steel); }
+.badge { display:inline-flex; align-items:center; background:var(--steel-soft); color:var(--steel); border-radius:999px; padding:.15rem .5rem; font-size:.75rem; font-weight:700; letter-spacing:0; text-transform:none; white-space:nowrap; margin-left:.4rem; }
+.stats { display:flex; flex-wrap:wrap; gap:.5rem 1rem; font-size:.8rem; color:var(--muted); font-variant-numeric:tabular-nums; margin:.8rem 0; }
+.split { display:grid; gap:1.25rem; margin-top:1.25rem; }
+@media (min-width:768px){
+  .grid-home { grid-template-columns: minmax(0,340px) minmax(0,1fr); }
+  .split { grid-template-columns: minmax(240px,400px) minmax(0,1fr); }
+  .lab-grid { grid-template-columns: minmax(0,1fr) minmax(280px,360px); }
+  .sticky { position:sticky; top:.75rem; }
+}
+.scope { width:100%; height:auto; display:block; }
+.scope-part { cursor:pointer; touch-action:manipulation; }
+.scope-part .hit { fill:transparent; stroke:transparent; stroke-width:18; pointer-events:all; }
+.scope-part.sel .shape { stroke:var(--steel)!important; stroke-width:3!important; }
+.scope-part.glow .shape { stroke:var(--lamp)!important; stroke-width:5!important; filter:drop-shadow(0 0 8px var(--lamp)); }
+.scope-part.right .shape { stroke:var(--good)!important; stroke-width:3.5!important; }
+.scope-part.wrong .shape { stroke:var(--bad)!important; stroke-width:3.5!important; }
+.scope.lit .scope-part:not(.glow) .shape { opacity:.35; }
+.scope-beam { fill:none; stroke:var(--lamp); stroke-width:5; stroke-linecap:round; opacity:.9; pointer-events:none; filter:drop-shadow(0 0 6px var(--lamp)); }
+.chips { display:flex; flex-wrap:wrap; gap:.4rem; margin-bottom:1rem; }
+.chip { min-height:44px; border-radius:999px; border:1px solid var(--line); background:var(--chip); padding:0 .75rem; font-weight:600; font-size:.85rem; }
+.chip.on { background:var(--steel); color:var(--steel-fg); border-color:transparent; }
+.why { margin-top:.8rem; padding-top:.8rem; border-top:1px solid var(--line); }
+.lab-grid { display:grid; gap:1.25rem; margin-top:1rem; align-items:start; }
+.eye-box { background:color-mix(in oklab, var(--ink) 95%, black); border-radius:16px; padding:.75rem; border:1px solid var(--line); }
+.eye-wrap { position:relative; margin:0 auto; width:100%; max-width:min(520px,48dvh); aspect-ratio:1; touch-action:none; user-select:none; -webkit-user-select:none; -webkit-touch-callout:none; }
+.eye-wrap canvas { width:100%; height:100%; border-radius:50%; display:block; }
+.phone-bar { display:flex; flex-direction:column; gap:.45rem; padding:.75rem .9rem; margin-top:1rem; }
+.phone-bar .row, .desk-bar .row, .board .row { display:flex; justify-content:space-between; align-items:center; gap:.4rem; }
+.phone-bar .row > span:last-child, .desk-bar .row > span:last-child, .board .row > span:last-child, .btns { display:flex; flex-wrap:wrap; gap:.35rem; justify-content:flex-end; }
+.desk-bar { display:none; flex-direction:column; gap:.75rem; }
+.board { padding:.85rem 1rem; }
+.more-light { border-top:1px solid var(--line); margin-top:.35rem; }
+.more-light summary {
+  min-height:44px; display:flex; align-items:center; gap:.5rem; cursor:pointer;
+  font-weight:700; font-size:.92rem; list-style:none;
+}
+.more-light summary::-webkit-details-marker { display:none; }
+.more-light summary::after { content:"▾"; margin-left:auto; color:var(--muted); font-weight:600; }
+.more-light:not([open]) summary::after { content:"▸"; }
+.board .row { padding:.2rem 0; border-bottom:1px solid var(--line); }
+.board .row:last-child { border-bottom:0; }
+.board .tiny { min-width:5.6rem; }
+.note-line { font-size:.8rem; color:var(--muted); margin:.45rem 0 0; }
+.lab-stack { display:flex; flex-direction:column; }
+@media (max-width:767px){
+  .lab-stack .lab-grid { order:1; }
+  .lab-stack .phone-bar { order:2; margin-top:.75rem; }
+  .lab-stack .phone-follow { order:3; }
+  .lab-stack .practical-box { order:4; }
+}
+.practical-box { margin-top:1.25rem; }
+.stair { list-style:none; margin:.45rem 0 0; padding:0; display:flex; flex-direction:column; gap:.4rem; }
+.stair > li { border:1px solid var(--line); border-radius:10px; padding:.5rem .7rem; }
+.stair > li.now { border-color:var(--steel); background:var(--steel-soft); }
+.stair > li.later { opacity:.62; }
+.stair > li.done { display:flex; align-items:baseline; gap:.55rem; padding:.4rem .7rem; }
+.stair > li.done h3 { margin:0; font-size:.95rem; }
+.stair .do { display:flex; flex-wrap:wrap; gap:.35rem; margin-top:.55rem; }
+.stair .mk { margin:0; font-size:.68rem; font-weight:700; letter-spacing:.12em; text-transform:uppercase; color:var(--steel); }
+.stair h3 { margin:.05rem 0 .15rem; font-size:1.02rem; }
+.stair ol { list-style:none; margin:.25rem 0 0; padding:0; }
+.stair li.step { display:flex; gap:.45rem; align-items:flex-start; padding:.16rem 0; font-size:.88rem; }
+.research-note { margin-top:.75rem; padding-top:.7rem; border-top:1px solid var(--line); }
+.practical-grid { display:grid; gap:.15rem .9rem; padding-left:0; list-style:none; margin:.5rem 0 0; }
+@media (min-width:768px){
+  .phone-bar{display:none !important;} .desk-bar{display:flex;} .phone-follow{display:none;}
+  .lab-grid { grid-template-columns: minmax(0,1fr) minmax(300px, 380px); }
+  .eye-stick { position:sticky; top:56px; }
+  .practical-grid { grid-template-columns: 1fr 1fr; }
+  .lab-lead { display:none; }
+  .lab-page > h1 { font-size:1.45rem; margin:.05rem 0 .2rem; }
+  .board .btn { min-height:36px; padding:0 .58rem; font-size:.8rem; }
+  .board .row { padding:.12rem 0; }
+  .board { padding:.65rem .85rem; }
+}
+@media (min-width:640px){ .knobs { grid-template-columns:1fr 1fr; } }
+.knobs { display:grid; gap:.75rem; margin-top:1rem; }
+@media (min-width:640px){ .knobs { grid-template-columns:1fr 1fr; } }
+label.knob { display:block; }
+label.knob span { display:flex; justify-content:space-between; font-size:.75rem; font-weight:700; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); }
+.scope-knob { -webkit-appearance:none; appearance:none; width:100%; height:44px; background:transparent; margin:0; }
+.scope-knob::-webkit-slider-runnable-track { height:8px; border-radius:999px; background:var(--chip); }
+.scope-knob::-moz-range-track { height:8px; border-radius:999px; background:var(--chip); }
+.scope-knob::-webkit-slider-thumb { -webkit-appearance:none; width:28px; height:28px; margin-top:-10px; border-radius:999px; background:var(--steel); border:2px solid var(--card); }
+.scope-knob::-moz-range-thumb { width:28px; height:28px; border-radius:999px; background:var(--steel); border:2px solid var(--card); }
+.wd { height:8px; background:var(--chip); border-radius:999px; overflow:hidden; }
+.wd > i { display:block; height:100%; border-radius:999px; }
+.opts { display:grid; gap:.5rem; margin-top:1rem; }
+.opt { min-height:48px; text-align:left; padding:.75rem 1rem; border-radius:8px; border:1px solid var(--line); background:var(--card); font-weight:600; }
+.opt.right { background:var(--good-soft); border-color:var(--good); }
+.opt.wrong { background:var(--bad-soft); border-color:var(--bad); }
+.opt.mark { background:var(--good-soft); }
+.side { padding:1rem 1.15rem; }
+.tiny { font-size:.75rem; font-weight:700; letter-spacing:.12em; text-transform:uppercase; color:var(--steel); }
+footer { margin-top:3rem; max-width:70ch; font-size:.9rem; color:var(--muted); }
+.order-prompt { order:1; }
+.order-scope { order:2; }
+@media (min-width:768px){ .order-prompt,.order-scope { order:unset; } }
+.plets text { font:800 12px var(--sans); fill:var(--ink); }
+.plets circle { fill:var(--card); stroke:var(--muted); stroke-width:1.2; }
+.plets line { stroke:var(--ink); stroke-width:1.1; }
+.plets circle.dot { fill:var(--ink); stroke:none; }
+.paper { padding:1.5rem; }
+@media print {
+  .no-print { display:none !important; }
+  body { background:#fff; color:#111; }
+  .paper { break-inside:auto; }
+  .psheet + .psheet { break-before:page; }
+}
+.home-scope { max-height:min(42dvh,420px); }
+@media (min-width:768px){ .home-scope { max-height:70vh; } }
+.ok { color:var(--good); }
+.no { color:var(--bad); }
+.hide { display:none !important; }
+
+.swatch { width:.7rem; height:.7rem; border-radius:99px; display:inline-block; border:1px solid rgb(26 35 44 / .25); flex:0 0 auto; }
+.eye-hud {
+  position:absolute; left:50%; bottom:9%; transform:translateX(-50%);
+  color:#f4efe4; font:700 12px/1.25 var(--sans); letter-spacing:.02em;
+  text-shadow:0 1px 3px #000; font-variant-numeric:tabular-nums;
+  pointer-events:none; white-space:nowrap; text-align:center;
+}
+.eye-hud b { font-weight:700; color:#f2d48a; }
+.filter-btn { gap:.4rem; }
+.lab-extra { display:grid; gap:.75rem; margin-top:.75rem; }
+@media (min-width:640px){ .lab-extra { grid-template-columns:1fr 1fr; } }
+.eye-wrap.measuring { cursor:crosshair; }
+.royal-plate { font:700 8px var(--sans); letter-spacing:.28em; fill:#c4a056; opacity:.9; }
+.oil-warn { background:var(--warn-soft); border:1px solid color-mix(in oklab, var(--warn) 40%, var(--line)); }
+
+
+/* AOG-SCIPIC-PANEL-V1 (2026-09-23) - Jimmy: "Can the Microscope missions and the TELESCOPE
+   Missions get their own walk throughs like the TURN tables and sp-1200 just recieved?
+   Embedded as something they could be printed out?" Same panel as AOG-PGPANEL-V1 on the
+   decks: the guide is an iframe of its own file, loaded on first open, never printed here. */
+.pg{margin:1.4rem 0 0;border:1px solid var(--line);border-radius:14px;background:var(--card);overflow:hidden}
+.pg>summary{list-style:none;cursor:pointer;padding:.8rem 1rem;display:flex;align-items:center;gap:.7rem;
+  font-weight:700;font-size:.98rem;min-height:44px}
+.pg>summary::-webkit-details-marker{display:none}
+.pg>summary::marker{content:""}
+.pg .chev{flex:0 0 auto;transition:transform .15s ease;color:var(--muted);font-size:.9rem}
+.pg[open] .chev{transform:rotate(90deg)}
+.pg .pgsub{font-weight:400;color:var(--muted);font-size:.86rem;margin-left:auto;text-align:right}
+.pg .pgbody{border-top:1px solid var(--line)}
+.pg iframe{display:block;width:100%;border:0;min-height:60vh;background:var(--bg)}
+.pg .pgfoot{padding:.65rem 1rem;border-top:1px solid var(--line);font-size:.88rem;color:var(--muted);margin:0}
+.pg .pgfoot a{color:inherit;font-weight:700}
+@media print{ .pg{display:none !important} }
+</style>
+</head>
+<body>
+<script>
+(function(){
+  function add(src){
+    var s=document.createElement("script");
+    s.src=src;
+    s.onerror=function(){ if(src.indexOf("netlify.app")<0) add("https://architectureofgrace.netlify.app/aog-topbar.js"); };
+    document.head.appendChild(s);
+  }
+  add(new URL("aog-topbar.js", document.baseURI).href);
+})();
+</script>
+<div class="wrap">
+  <header class="no-print">
+    <a class="brand" href="/" id="brand">The Microscope Lab</a>
+    <div class="tools">
+      <a class="pill" href="/microscope-guide" style="text-decoration:none">Picture guide</a>
+      <button type="button" class="pill" id="langBtn">ES</button>
+      <button type="button" class="pill" id="themeBtn">Dark</button>
+    </div>
+  </header>
+  <nav class="nav no-print" id="nav" aria-label="Activity"></nav>
+  <main id="view"></main>
+  <!-- AOG-SCIPIC-PANEL-V1 -->
+  <details class="pg no-print" id="pgPanel">
+    <summary><span class="chev">&#9656;</span>Picture guide<span class="pgsub">Every mission in pictures &#183; prints on 9 pages</span></summary>
+    <div class="pgbody">
+      <iframe id="pgFrame" data-src="/microscope-guide?embed=1" title="The Microscope, in pictures" loading="lazy"></iframe>
+    </div>
+    <p class="pgfoot">To print it, <a href="/microscope-guide">open the picture guide on its own page</a>.</p>
+  </details>
+  <footer class="no-print" id="foot"></footer>
+</div>
+<script>
+
+/* ════ data ════ */
+const PARTS = [
+  ["eyepiece","Eyepiece (ocular lens)","Ocular","The lens you look through. It magnifies the image the objective already made — usually 10×.","El lente por el que miras. Aumenta la imagen que el objetivo ya formó — normalmente 10×.","It is the second of the two lenses — its power multiplies the objective's.","Es el segundo de los dos lentes — su aumento multiplica el del objetivo.","Its 10× is easy to forget in the magnification math.","Es fácil olvidar su 10× en la matemática del aumento."],
+  ["tube","Body tube","Tubo","The tunnel that holds the eyepiece the right distance above the objective.","El túnel que sostiene el ocular a la distancia correcta sobre el objetivo.","The two lenses only work together at one exact spacing — the tube is that spacing, built in metal.","Los dos lentes solo funcionan juntos a una distancia exacta — el tubo es esa distancia, hecha de metal.","It does no magnifying itself — it only holds the geometry.","No aumenta nada por sí mismo — solo sostiene la geometría."],
+  ["nosepiece","Revolving nosepiece","Revólver","The rotating disk the objectives hang from. Turn it until the next lens clicks into place.","El disco giratorio del que cuelgan los objetivos. Gíralo hasta que el siguiente lente haga clic.","The click matters — between clicks, no lens is over the hole and you see nothing.","El clic importa — entre clics, ningún lente queda sobre el agujero y no ves nada.","Turn the nosepiece, never push the objective sideways.","Gira el revólver; nunca empujes el objetivo de lado."],
+  ["objectives","Objective lenses","Objetivos","The lenses closest to the slide — 4×, 10×, 40×, and a 100× oil immersion. They make the first image.","Los lentes más cercanos a la lámina — 4×, 10×, 40× y un 100× de inmersión en aceite. Forman la primera imagen.","Total magnification is eyepiece × objective: 10× over 40× is 400×; over 100× oil is 1,000×.","El aumento total es ocular × objetivo: 10× sobre 40× es 400×; sobre 100× con aceite es 1,000×.","Always start with the shortest, lowest-power one — it is the easiest to focus and the safest. Oil only on the 100×.","Empieza siempre con el más corto y de menor aumento — es el más fácil de enfocar y el más seguro. Aceite solo en el 100×."],
+  ["arm","Arm","Brazo","The curved backbone connecting the tube to the base. One of your two carrying handles.","La columna curva que conecta el tubo con la base. Una de tus dos agarraderas.","Everything optical hangs off it — a bent arm is a broken microscope.","Todo lo óptico cuelga de él — un brazo doblado es un microscopio roto.","Carry with one hand on the arm AND one under the base — never by the arm alone.","Carga con una mano en el brazo Y otra bajo la base — nunca solo del brazo."],
+  ["stage","Stage","Platina","The flat platform the slide sits on, with a hole in the middle for light to pass through.","La plataforma plana donde va la lámina, con un agujero en el centro para que pase la luz.","The hole is the whole idea: the specimen must sit exactly where the light comes up.","El agujero es la idea completa: la muestra debe quedar justo donde sube la luz.","Center the specimen over the hole before you magnify — 400× of the wrong spot is nothing.","Centra la muestra sobre el agujero antes de aumentar — 400× del lugar equivocado no es nada."],
+  ["clips","Stage clips","Pinzas","The two spring clips that hold the slide still on the stage.","Las dos pinzas de resorte que mantienen quieta la lámina sobre la platina.","At 400×, a nudge of a millimeter throws the specimen completely out of view.","A 400×, un empujón de un milímetro saca la muestra completamente de la vista.","If your specimen keeps drifting, the clips are not doing their job — reseat the slide.","Si tu muestra se mueve sola, las pinzas no están haciendo su trabajo — acomoda la lámina."],
+  ["diaphragm","Diaphragm","Diafragma","The adjustable disk under the stage that controls how much light comes up through the hole.","El disco ajustable bajo la platina que controla cuánta luz sube por el agujero.","Detail lives in contrast. Too much light washes the image out; too little buries it.","El detalle vive en el contraste. Demasiada luz lava la imagen; muy poca la entierra.","A too-bright, ghostly image is a diaphragm problem, not a focus problem.","Una imagen fantasmal y demasiado brillante es problema del diafragma, no del enfoque."],
+  ["light","Light source","Fuente de luz","The lamp (or mirror) in the base that sends light up through the diaphragm and the specimen.","La lámpara (o espejo) en la base que envía luz hacia arriba por el diafragma y la muestra.","A light microscope sees by light shining THROUGH the specimen — that is why thin slices work best.","Un microscopio óptico ve con luz que atraviesa la muestra — por eso las láminas delgadas funcionan mejor.","No image at all? Check the light before you blame the focus.","¿No hay imagen? Revisa la luz antes de culpar al enfoque."],
+  ["coarse","Coarse adjustment knob","Tornillo macrométrico","The big knob. It moves the stage (or tube) a long way fast, for first focus on low power.","El tornillo grande. Mueve la platina (o el tubo) mucho y rápido, para el primer enfoque en bajo aumento.","Big moves find the image; it is the fast half of a two-speed system.","Los movimientos grandes encuentran la imagen; es la mitad rápida de un sistema de dos velocidades.","On high power it can drive the objective into the slide — crack. Low power only.","En alto aumento puede estrellar el objetivo contra la lámina — crac. Solo en bajo aumento."],
+  ["fine","Fine adjustment knob","Tornillo micrométrico","The small knob. It moves the focus a tiny, precise amount — the sharpening tool.","El tornillo pequeño. Mueve el enfoque una cantidad diminuta y precisa — la herramienta de afinar.","On high power the focus zone is paper-thin; only tiny moves can stay inside it.","En alto aumento la zona de enfoque es finísima; solo movimientos diminutos se quedan dentro.","Blurry at 400×? Fine knob. The coarse knob is how slides get cracked.","¿Borroso a 400×? Micrométrico. El macrométrico es como se rompen las láminas."],
+  ["base","Base","Base","The heavy foot the whole instrument stands on. Your second carrying handle.","El pie pesado sobre el que se para todo el instrumento. Tu segunda agarradera.","The weight is on purpose — a steady image starts with a machine that cannot tip.","El peso es a propósito — una imagen estable empieza con una máquina que no se vuelca.","One hand under the base whenever the microscope moves. No exceptions.","Una mano bajo la base siempre que el microscopio se mueva. Sin excepciones."]
+].map(r => ({p:r[0],en:r[1],es:r[2],what_en:r[3],what_es:r[4],why_en:r[5],why_es:r[6],oops_en:r[7],oops_es:r[8]}));
+const LETTERS = "ABCDEFGHIJKL";
+const LIGHT_PATH = ["light","diaphragm","stage","objectives","tube","eyepiece"];
+const LIGHT_COPY = {
+  en:["The lamp sends one beam straight up.","The diaphragm trims the beam to the right brightness.","The beam passes through the hole in the stage — and through the specimen on the slide.","The objective lens catches what came through and makes the first magnified image.","The body tube carries that image up at the exact right distance.","The eyepiece magnifies it once more — and delivers it to your eye."],
+  es:["La lámpara envía un rayo hacia arriba.","El diafragma ajusta el rayo al brillo correcto.","El rayo pasa por el agujero de la platina — y a través de la muestra en la lámina.","El objetivo captura lo que pasó y forma la primera imagen aumentada.","El tubo lleva esa imagen hacia arriba a la distancia exacta.","El ocular la aumenta una vez más — y la entrega a tu ojo."]
+};
+const BEAM_XY = {light:[215,470],diaphragm:[215,380],stage:[215,345],objectives:[215,265],tube:[215,165],eyepiece:[215,90]};
+const PAPER_POS = {eyepiece:[404,76],tube:[34,170],nosepiece:[34,226],objectives:[34,266],arm:[404,254],stage:[34,352],clips:[34,310],diaphragm:[34,392],light:[34,462],coarse:[404,338],fine:[404,414],base:[34,528]};
+const PAPER_TO = {eyepiece:[237,90],tube:[194,166],nosepiece:[178,222],objectives:[170,258],arm:[334,250],stage:[97,348],clips:[138,320],diaphragm:[178,380],light:[197,466],coarse:[365,352],fine:[335,411],base:[98,526]};
+const STR = {
+  app:{en:"The Microscope Lab",es:"El laboratorio del microscopio"},
+  eyebrow:{en:"Parts, functions, a brass universal",es:"Partes, funciones, un universal de bronce"},
+  tag:{en:"Twelve parts, a research eyepiece, and every one has a job. Meet the machine — then look through it. Stain, darkfield, measure, oil the 100×, and keep the high-power lens off the glass.",es:"Doce partes, un ocular de investigación, y cada una tiene un trabajo. Conoce la máquina — y luego mira por ella. Tiñe, campo oscuro, mide, aceita el 100× y no estrelles el lente de alto aumento."},
+  priv:{en:"Everything stays on this computer.",es:"Todo se queda en esta computadora."},
+  dark:{en:"Dark",es:"Oscuro"}, light:{en:"Light",es:"Claro"},
+  home:{en:"Bench",es:"Mesa"}, meet:{en:"Meet the machine",es:"Conoce la máquina"}, lab:{en:"Look through it",es:"Mira por él"},
+  find:{en:"Find the part",es:"Encuentra la parte"}, job:{en:"Name the job",es:"Nombra el trabajo"}, print:{en:"Print it",es:"Imprimir"},
+  meetNav:{en:"Meet",es:"Máquina"}, labNav:{en:"Lab",es:"Ocular"}, findNav:{en:"Find",es:"Parte"}, jobNav:{en:"Job",es:"Trabajo"}, printNav:{en:"Print",es:"Imprimir"},
+  meetHint:{en:"Tap any part of the machine, or walk the path of light. A mark appears on each one you have met.",es:"Toca cualquier parte de la máquina, o camina la luz. Aparece una marca en cada una que ya conociste."},
+  tapPart:{en:"Tap a part",es:"Toca una parte"}, startAnywhere:{en:"Start anywhere",es:"Empieza donde quieras"},
+  tapBody:{en:"On the machine or in the list — every part opens the same card: what it does, why it matters, and the classic mistake.",es:"En la máquina o en la lista — cada parte abre la misma tarjeta: qué hace, por qué importa y el error clásico."},
+  part:{en:"Part",es:"Parte"}, why:{en:"Why it matters",es:"Por qué importa"}, oops:{en:"The classic mistake",es:"El error clásico"},
+  prev:{en:"Previous",es:"Anterior"}, next:{en:"Next part",es:"Siguiente parte"},
+  lightPath:{en:"The path of light",es:"El camino de la luz"},
+  lightIntro:{en:"One beam travels the whole machine. Walk it — every stop is a part with a job.",es:"Un rayo recorre toda la máquina. Camínalo — cada parada es una parte con un trabajo."},
+  walkLight:{en:"Walk the light",es:"Camina la luz"}, pauseWalk:{en:"Pause",es:"Pausa"}, nextStop:{en:"Next stop",es:"Siguiente parada"}, resetWalk:{en:"Reset",es:"Reiniciar"},
+  lightDone:{en:"That whole trip happens in a straight line, every time you look.",es:"Todo ese viaje ocurre en línea recta, cada vez que miras."},
+  allMet:{en:"You have met every part. Look through the tube, or prove it two ways.",es:"Ya conociste cada parte. Mira por el tubo, o demuéstralo de dos formas."},
+  labLead:{en:"A working eyepiece on a brass universal. Darkfield so living things glow. Stain what is hiding. Measure what you find. Oil the 100×.",es:"Un ocular de verdad en un universal de bronce. Campo oscuro para que lo vivo brille. Tiñe lo que se esconde. Mide lo que encuentras. Aceita el 100×."},
+  lamp:{en:"Lamp",es:"Lámpara"}, on:{en:"On",es:"Encendida"}, off:{en:"Off",es:"Apagada"},
+  clips:{en:"Stage clips",es:"Pinzas"}, seated:{en:"Seated",es:"Sujeta"}, loose:{en:"Loose",es:"Suelta"},
+  specimen:{en:"Slide",es:"Lámina"}, objective:{en:"Objective",es:"Objetivo"},
+  coarse:{en:"Coarse",es:"Macrométrico"}, fine:{en:"Fine",es:"Micrométrico"}, diaphragm:{en:"Diaphragm",es:"Diafragma"},
+  twist:{en:"Eyepiece",es:"Ocular"},
+  mag:{en:"Total magnification",es:"Aumento total"}, working:{en:"Working distance",es:"Distancia de trabajo"},
+  focusOut:{en:"Out of focus",es:"Fuera de foco"}, focusNear:{en:"Almost",es:"Casi"}, focusIn:{en:"In focus",es:"En foco"},
+  darkField:{en:"The lamp is off. Check the light before you blame the focus.",es:"La lámpara está apagada. Revisa la luz antes de culpar al enfoque."},
+  cracked:{en:"Crack. The coarse knob drove the 40× lens into the slide. Fine knob only on high power.",es:"Crac. El macrométrico estrelló el lente de 40× contra la lámina. En alto aumento, solo el micrométrico."},
+  newSlide:{en:"New slide",es:"Nueva lámina"}, practical:{en:"Bench practical",es:"Práctica de mesa"},
+  teach:{en:"Missions",es:"Misiones"},
+  teachLock:{en:"Locked",es:"Cerradas"},
+  teachOpen:{en:"Open",es:"Abiertas"},
+  teachLocked:{en:"Locked. Each mission opens the next control.",es:"Cerradas. Cada misión abre el control siguiente."},
+  teachOpenNote:{en:"Open. Every control is on the bench. Lock this before a student sits down.",es:"Abiertas. Todos los controles están en la mesa. Ciérralas antes de que se siente un estudiante."},
+  practicalHint:{en:"Six missions. Each one opens the next. The last is the research bench — the slit, polarized light, the prism. The ceiling does not move.",es:"Seis misiones. Cada una abre la siguiente. La última es el banco de investigación — la rendija, la luz polarizada, el prisma. El techo no se mueve."},
+  practicalDone:{en:"Six missions done. You read the number. Violet did not find the virus.",es:"Seis misiones hechas. Leíste el número. El violeta no encontró el virus."},
+  researchK:{en:"Research bench",es:"Banco de investigación"},
+  researchBody:{en:"Risley, polarized light, the slit, lamp color. Open it above. Shorter light splits a slightly smaller gap. It still cannot draw a virus.",es:"Risley, luz polarizada, la rendija, color de lámpara. Ábrelo arriba. La luz más corta separa un hueco un poco menor. Sigue sin poder dibujar un virus."},
+  researchDone:{en:"You read the number. Violet did not find the virus.",es:"Leíste el número. El violeta no encontró el virus."},
+  dragHint:{en:"Drag the field to move the stage.",es:"Arrastra el campo para mover la platina."},
+  findHint:{en:"Two tries. First try counts as independent — after two, the part shows itself and the review moves on.",es:"Dos intentos. El primero cuenta como independiente — tras dos, la parte se muestra sola y el repaso sigue."},
+  tapThis:{en:"Tap this part on the machine:",es:"Toca esta parte en la máquina:"},
+  whichJob:{en:"Which part does this job? Tap it on the machine.",es:"¿Qué parte hace este trabajo? Tócala en la máquina."},
+  firstTry:{en:"Right on the first try",es:"Bien a la primera"}, thatsIt:{en:"That's it.",es:"Eso es."},
+  notThat:{en:"Not that one — one more try.",es:"Esa no — un intento más."},
+  glowing:{en:"It lives here — glowing now. On we go.",es:"Vive aquí — ahora brilla. Seguimos."},
+  findDone:{en:"Find the part — done",es:"Encuentra la parte — terminado"}, firstTryWord:{en:"first-try",es:"a la primera"},
+  findAgainCopy:{en:"First-try means you knew where it lives. The ones that took longer are listed — meet them again before the next run.",es:"A la primera significa que sabías dónde vive. Las que tardaron más están en la lista — conócelas otra vez antes de la próxima ronda."},
+  runAgain:{en:"Run it again",es:"Otra ronda"}, toJob:{en:"Next: Name the job",es:"Sigue: Nombra el trabajo"},
+  toFind:{en:"Back to: Find the part",es:"Vuelve a: Encuentra la parte"}, toLab:{en:"Look through it",es:"Mira por él"},
+  jobHint:{en:"Twelve questions — parts, jobs, the magnification math, and the things that go wrong at the bench.",es:"Doce preguntas — partes, trabajos, la matemática del aumento y las cosas que salen mal en la mesa."},
+  whatDoes:{en:"What does the",es:"Qué hace"}, do:{en:"do?",es:"?"}, whichPart:{en:"Which part does this job?",es:"¿Qué parte hace este trabajo?"},
+  yes:{en:"Yes.",es:"Sí."}, greenOne:{en:"The marked one is the answer — worth one more look.",es:"La marcada es la respuesta — vale una mirada más."},
+  rightSoFar:{en:"Right so far",es:"Bien hasta ahora"}, jobDone:{en:"Name the job — done",es:"Nombra el trabajo — terminado"},
+  jobAgainCopy:{en:"Every question you missed points at one part. Meet it again — the card says why it matters.",es:"Cada pregunta fallada apunta a una parte. Conócela otra vez — la tarjeta dice por qué importa."},
+  printHint:{en:"The printed page is the same review with a pencil: the machine with lettered parts, blank lines to name each one and write its job, and an answer key on its own sheet.",es:"La página impresa es el mismo repaso con lápiz: la máquina con partes marcadas con letras, líneas en blanco para nombrar cada una y escribir su trabajo, y una clave de respuestas en su propia hoja."},
+  printBtn:{en:"Print the worksheet + key",es:"Imprimir la hoja + clave"},
+  printNote:{en:"Two sheets: worksheet first, key second — hand out page one, keep page two.",es:"Dos hojas: primero la hoja de trabajo, luego la clave — reparte la primera, guarda la segunda."},
+  paperSub:{en:"Name each lettered part, then write its job in your own words. Name: ______________  Date: ______________",es:"Nombra cada parte con letra y escribe su trabajo con tus palabras. Nombre: ______________  Fecha: ______________"},
+  keyHead:{en:"Answer key — for the teacher",es:"Clave de respuestas — para el maestro"}, keyPart:{en:"Part",es:"Parte"}, keyWhat:{en:"What it does",es:"Qué hace"},
+  carry:{en:"How it is carried",es:"Cómo se carga"},
+  carryBody:{en:"One hand on the arm, one hand under the base. Always both, always upright — the eyepiece slides out of a tilted tube.",es:"Una mano en el brazo y una bajo la base. Siempre las dos, siempre vertical — el ocular se desliza de un tubo inclinado."},
+  magTile:{en:"The magnification math",es:"La matemática del aumento"}, magFormula:{en:"eyepiece × objective = total",es:"ocular × objetivo = total"},
+  magBody:{en:"A 10× eyepiece over a 40× objective is 400×. Over the 100× oil lens it is 1,000× — the honest ceiling of a light microscope.",es:"Un ocular de 10× sobre un objetivo de 40× es 400×. Sobre el lente de aceite de 100× es 1,000× — el techo honesto de un microscopio de luz."},
+  focusRule:{en:"The first rule of focus",es:"La primera regla del enfoque"},
+  focusBody:{en:"Start on the lowest-power objective, focus with the coarse knob, and switch up. On high power, the fine knob only — the coarse knob can drive the lens into the slide.",es:"Empieza con el objetivo de menor aumento, enfoca con el tornillo macrométrico y sube. En alto aumento, solo el micrométrico — el macrométrico puede estrellar el lente contra la lámina."},
+  foot:{en:"This page loads no student data to a server. Your practice is saved in this browser only.",es:"Esta página no envía datos del estudiante a ningún servidor. Tu práctica se guarda solo en este navegador."},
+  newBadge:{en:"New",es:"Nuevo"}, partsMet:{en:"parts met",es:"partes conocidas"}, slidesCracked:{en:"slides cracked",es:"láminas rotas"}, stations:{en:"stations",es:"estaciones"},
+  openLab:{en:"Open the eyepiece",es:"Abre el ocular"}, openMeet:{en:"Meet the twelve",es:"Conoce las doce"}, openFind:{en:"Tap the machine",es:"Toca la máquina"}, openJob:{en:"Twelve questions",es:"Doce preguntas"},
+  best:{en:"Best",es:"Mejor"},
+  cardMeet:{en:"Every part, its job, why it matters, and the classic mistake.",es:"Cada parte, su trabajo, por qué importa y el error clásico."},
+  cardLab:{en:"A live field of view on a brass universal. Darkfield, stain, measure, oil the 100× — and do not crack the slide.",es:"Un campo de visión de verdad en un universal de bronce. Campo oscuro, tinción, medir, aceitar el 100× — y no rompas la lámina."},
+  cardFind:{en:"A name or a job appears. Two tries to tap where it lives on the machine.",es:"Aparece un nombre o un trabajo. Dos intentos para tocar dónde vive en la máquina."},
+  cardJob:{en:"Parts, jobs, the 400× math, and the things that go wrong at the bench.",es:"Partes, trabajos, la matemática del 400× y las cosas que salen mal en la mesa."},
+  tapMachine:{en:"Tap any part of the machine.",es:"Toca cualquier parte de la máquina."},
+  illum:{en:"Illumination",es:"Iluminación"},
+  brightfield:{en:"Brightfield",es:"Campo claro"},
+  darkfield:{en:"Darkfield",es:"Campo oscuro"},
+  polarized:{en:"Polarized",es:"Polarizado"},
+  slitUltra:{en:"Slit",es:"Rendija"},
+  stain:{en:"Stain",es:"Tinción"},
+  unstained:{en:"Unstained",es:"Sin tinción"},
+  iodine:{en:"Iodine",es:"Yodo"},
+  methylene:{en:"Methylene blue",es:"Azul de metileno"},
+  wright:{en:"Wright's",es:"Wright"},
+  safranin:{en:"Safranin",es:"Safranina"},
+  beam:{en:"Lamp color",es:"Color de lámpara"},
+  moreLight:{en:"Light, stain, scale",es:"Luz, tinción, escala"},
+  dfBlock:{en:" Darkfield is off at 100×. A school oil lens is too wide for a darkfield stop — that cone would enter the lens and the field would go bright.",es:" Campo oscuro apagado en el 100×. El objetivo de aceite de la escuela es demasiado abierto para el tope de campo oscuro — ese cono entraría al lente y el campo se pondría claro."},
+  daylight:{en:"Daylight",es:"Luz de día"},
+  blueF:{en:"Blue",es:"Azul"},
+  greenF:{en:"Green",es:"Verde"},
+  amberF:{en:"Amber",es:"Ámbar"},
+  violetF:{en:"Violet",es:"Violeta"},
+  ocular:{en:"Eyepiece scale",es:"Escala del ocular"},
+  scaleOn:{en:"In",es:"Puesta"},
+  scaleOff:{en:"Out",es:"Fuera"},
+  measure:{en:"Measure",es:"Medir"},
+  measuring:{en:"Measuring",es:"Midiendo"},
+  tapMeasure:{en:"Tap two points on the field.",es:"Toca dos puntos en el campo."},
+  unitCal:{en:"1 unit",es:"1 unidad"},
+  darkHint:{en:"The field goes black. Living edges scatter the lamp and glow — no stain, so they stay alive.",es:"El campo se pone negro. Los bordes vivos dispersan la lámpara y brillan — sin tinción, así que siguen vivos."},
+  slitHint:{en:"Light from one side, falling off across the field. Edges on the bright side catch it. Same lamp, same limit.",es:"Luz de un solo lado, que se apaga a lo ancho del campo. Los bordes del lado claro la atrapan. La misma lámpara, el mismo límite."},
+  polarHint:{en:"Crossed polars darken the field. Plant cell walls light up in color because they are birefringent.",es:"Los polares cruzados oscurecen el campo. Las paredes vegetales se encienden en color porque son birrefringentes."},
+  stainHint:{en:"A stain dyes what it binds — and it kills what it colors. Unstained onion is a ghost. Iodine makes the nucleus appear.",es:"Una tinción colorea lo que ata — y mata lo que colorea. La cebolla sin tinción es un fantasma. El yodo hace aparecer el núcleo."},
+  scaleHint:{en:"The ruler lives in the eyepiece, so it stays put while the slide moves. Line a cell up with it, or tap two points to measure.",es:"La regla vive en el ocular, así que no se mueve con la lámina. Alinea una célula, o toca dos puntos para medir."},
+  unstainedNote:{en:"Wet mount. Almost nothing to see until you stain — that is the point.",es:"Montaje en fresco. Casi no se ve nada hasta teñir — esa es la idea."},
+  iodineNote:{en:"Lugol's is on. Cytoplasm goes amber, the nucleus a deeper brown, the nucleolus darkest. The vacuole stays the pale middle.",es:"El Lugol está puesto. El citoplasma se pone ámbar, el núcleo más marrón, el nucléolo lo más oscuro. La vacuola sigue siendo el centro pálido."},
+  methyleneNote:{en:"Methylene blue is on. Nuclei go deep blue. On the bacteria smear the rods and chains take the blue. It also kills whatever was swimming.",es:"El azul de metileno está puesto. Los núcleos se ponen azul profundo. En el frotis, los bastones y las cadenas toman el azul. También mata lo que estaba nadando."},
+  wrightNote:{en:"Wright's is on. Red cells go salmon with a pale center. White-cell nuclei go purple. Platelets are the tiny purple clusters.",es:"La tinción de Wright está puesta. Los glóbulos rojos se ponen salmón con el centro pálido. Los núcleos blancos se ponen morados. Las plaquetas son los racimos morados diminutos."},
+  safraninNote:{en:"Safranin is on. Walls and nuclei go red. On the bacteria smear the rods go pink-red.",es:"La safranina está puesta. Paredes y núcleos se ponen rojos. En el frotis los bastones se ponen rojo rosado."},
+  noStainNote:{en:"Ink is already a stain. Nothing to add.",es:"La tinta ya es una tinción. Nada que añadir."},
+  hairStainNote:{en:"Hair is already pigmented. The brown is melanin in the cortex — not a stain you add.",es:"El cabello ya está pigmentado. El marrón es melanina en la corteza — no una tinción que añadas."},
+  killedNote:{en:"The stain stopped the motion. That is the trade: you can see structure, or you can watch it live.",es:"La tinción detuvo el movimiento. Ese es el trato: ves la estructura, o la ves viva."},
+  illumTile:{en:"Darkfield and color",es:"Campo oscuro y color"},
+  illumBody:{en:"Brightfield is the school default. Darkfield blacks the field so living edges glow. Slit-ultra throws a narrow oblique beam — edges light from one side. Polarized light makes plant walls birefringent. The Risley prism picks one wavelength. It colors the lamp. It does not give a germ its own name.",es:"El campo claro es el default de la escuela. El campo oscuro pone el campo en negro para que los bordes vivos brillen. La rendija ultra lanza un haz oblicuo y angosto — los bordes se encienden de un lado. La luz polarizada hace birrefringentes las paredes vegetales. El prisma de Risley elige una longitud de onda. Colorea la lámpara. No le pone nombre a un germen."},
+  scaleTile:{en:"The eyepiece micrometer",es:"El micrómetro del ocular"},
+  scaleBody:{en:"A 100-unit scale sits in the eyepiece. At 40× (400× total) each unit is 2.5 µm. Line the specimen up, or tap two points. The stage micrometer slide is how that scale is calibrated.",es:"Una escala de 100 unidades vive en el ocular. A 40× (400× total) cada unidad es 2.5 µm. Alinea la muestra, o toca dos puntos. La lámina micrómetro de platina es cómo se calibra esa escala."},
+  stainTile:{en:"Stain versus live",es:"Tinción contra vivo"},
+  stainBody:{en:"Unstained onion is a ghost. Iodine makes nuclei appear. Methylene blue does the same for cheek cells — and kills a pond drop. Darkfield is how you keep them alive and still see them.",es:"La cebolla sin tinción es un fantasma. El yodo hace aparecer los núcleos. El azul de metileno hace lo mismo con las células de la mejilla — y mata una gota de estanque. El campo oscuro es cómo las dejas vivas y aún las ves."},
+  polarizer:{en:"Polarizer",es:"Polarizador"},
+  crossed:{en:"Crossed",es:"Cruzados"},
+  oil:{en:"Immersion oil",es:"Aceite de inmersión"},
+  oilOn:{en:"On the 100×",es:"En el 100×"},
+  oilOff:{en:"Wipe off",es:"Sin aceite"},
+  oilNeed:{en:"100× is built to look through a drop of oil. Without it the image stays dim and soft — that is physics, not a broken lens.",es:"El 100× está hecho para mirar a través de una gota de aceite. Sin él la imagen se queda tenue y blanda — eso es física, no un lente roto."},
+  royalCard:{en:"The brass universal",es:"El universal de bronce"},
+  royalBody:{en:"Quartz-bright brass, a Risley prism, darkfield, a slit of oblique light, polarized light, oil, and a micrometer. Turn the prism and the limit moves — violet splits a slightly smaller gap than red. It never reaches a virus. 1,000× with oil is still the ceiling. The color you see is the lamp, not a germ announcing its name.",es:"Bronce claro como cuarzo, un prisma de Risley, campo oscuro, una rendija de luz oblicua, luz polarizada, aceite y un micrómetro. Gira el prisma y el límite se mueve — el violeta separa un hueco un poco menor que el rojo. Nunca alcanza un virus. 1,000× con aceite sigue siendo el techo. El color que ves es la lámpara, no un germen diciendo su nombre."},
+  researchLook:{en:"Live darkfield",es:"Campo oscuro en vivo"},
+  seatPrism:{en:"Seat the prism",es:"Monta el prisma"},
+  risley:{en:"Risley prism",es:"Prisma de Risley"},
+  prismIn:{en:"In the beam",es:"En el haz"},
+  prismOut:{en:"Out",es:"Fuera"},
+  prismNote:{en:"Two wedges, turned against each other, pass one slice of the lamp. Shorter light, slightly finer limit. The whole field takes that color. A microbe does not glow its own.",es:"Dos cuñas, giradas una contra la otra, dejan pasar una rebanada de la lámpara. Luz más corta, límite un poco más fino. Todo el campo toma ese color. Un microbio no brilla el suyo."},
+  oilStation:{en:"Oil the 100× and sharpen a cheek cell",es:"Aceita el 100× y afina una célula de mejilla"},
+  oilHint:{en:"Click 100×, seat the oil, then the fine knob only. Coarse will crack the slide.",es:"Pasa a 100×, pon el aceite y luego solo el micrométrico. El macrométrico romperá la lámina."}
+};
+const SPECIMENS = [
+  {id:"e",en:"Letter e",es:"Letra e",
+    note_en:"Newsprint, upside down. That flip is the lenses.",
+    note_es:"Papel de periódico, al revés. Ese giro son los lentes.",
+    note4_en:"The whole e fits, upside down and backwards. Faint words sit in the paper around it. The flip is the machine.",
+    note4_es:"Cabe la e entera, al revés y de espaldas. Palabras tenues en el papel alrededor. El giro es la máquina.",
+    note10_en:"The stroke is no longer smooth. Ink feathers into the paper, and the grain of the sheet shows beside the black.",
+    note10_es:"El trazo ya no es liso. La tinta se abre en el papel, y la fibra de la hoja se ve junto al negro.",
+    note40_en:"You are inside the ink. Fibers cross the black. The letter has come apart into pigment sitting in cellulose.",
+    note40_es:"Estás dentro de la tinta. Fibras cruzan el negro. La letra se deshizo en pigmento sobre celulosa.",
+    note100_en:"A few soaked fibers. There is no finer letter hiding here. Oil sharpens the threads. It does not redraw the type.",
+    note100_es:"Unas fibras empapadas. No hay una letra más fina escondida. El aceite afina los hilos. No redibuja el tipo."},
+  {id:"onion",en:"Onion epidermis",es:"Epidermis de cebolla",
+    note_en:"One layer of bricks, peeled off a scale.",
+    note_es:"Una capa de ladrillos, pelada de una escama.",
+    note4_en:"A pale sheet. Each brick is one cell. You are looking through a single layer.",
+    note4_es:"Una lámina pálida. Cada ladrillo es una célula. Miras a través de una sola capa.",
+    note10_en:"Dark walls, and a thin pale line where two walls meet — the middle lamella. The clear middle of each brick is the vacuole.",
+    note10_es:"Paredes oscuras, y una línea pálida donde se juntan dos — la lámina media. El centro claro de cada ladrillo es la vacuola.",
+    note40_en:"The nucleus is shoved against a wall, not floating in the middle. The speck inside it is the nucleolus. Strands cross the clear vacuole.",
+    note40_es:"El núcleo está pegado a una pared, no flotando en el centro. El puntito adentro es el nucléolo. Hebras cruzan la vacuola clara.",
+    note100_en:"One nucleus fills much of the hole. The wall reads as a double line. The vacuole is still the empty middle — empty on purpose.",
+    note100_es:"Un núcleo llena buena parte del agujero. La pared se lee como una línea doble. La vacuola sigue siendo el centro vacío — vacío a propósito."},
+  {id:"pond",en:"Pond water",es:"Agua de estanque",
+    note_en:"A detained drop. What swims is alive. What only jitters is silt.",
+    note_es:"Una gota detenida. Lo que nada está vivo. Lo que solo tiembla es limo.",
+    note4_en:"A whole drop. Moving specks are organisms. Brown grit that only shivers is debris. Clip the slide or they leave the hole.",
+    note4_es:"La gota entera. Los puntos que se mueven son organismos. La arenilla marrón que solo tiembla es detrito. Sujeta la lámina o se salen.",
+    note10_en:"A slipper (paramecium), a green screw (spirogyra), a crawler (amoeba), a green cell with a whip (euglena). Pan to hunt. The drop is slowed so you can look.",
+    note10_es:"Una zapatilla (paramecio), un tornillo verde (espirogira), uno que se arrastra (ameba), una célula verde con un látigo (euglena). Arrastra para buscar. La gota va lenta para que mires.",
+    note40_en:"On the slipper: a haze of cilia, a clear circle that pulses (contractile vacuole), granules inside. The green screw is one chloroplast wound through the cell. Debris has no direction.",
+    note40_es:"En la zapatilla: una bruma de cilios, un círculo claro que pulsa (vacuola contráctil), gránulos adentro. El tornillo verde es un cloroplasto enrollado. El detrito no tiene dirección.",
+    note100_en:"A piece of one organism. Cilia are a moving edge, not a comb you can count tooth by tooth. Still micrometers. Not a virus.",
+    note100_es:"Un pedazo de un organismo. Los cilios son un borde que se mueve, no un peine que cuentes diente por diente. Siguen siendo micrómetros. No un virus."},
+  {id:"blood",en:"Blood smear",es:"Frotis de sangre",
+    note_en:"A pulled film. Salmon discs, a few larger white cells, specks of platelets.",
+    note_es:"Una película estirada. Discos salmón, unos glóbulos blancos más grandes, puntitos de plaquetas.",
+    note4_en:"A pink island on the glass. Thick on one side, feathered on the other. That is how a smear is pulled. Cells are not separate yet.",
+    note4_es:"Una isla rosa en el vidrio. Gruesa de un lado, plumosa del otro. Así se estira un frotis. Las células aún no se separan.",
+    note10_en:"A field of salmon discs. The pale center is the thin middle of a doughnut, not a nucleus. Stacks are rouleaux — cells piled like coins.",
+    note10_es:"Un campo de discos salmón. El centro pálido es la parte delgada de un donut, no un núcleo. Las pilas son rouleaux — células como monedas.",
+    note40_en:"Rings with a light middle — red cells, no nucleus. A larger cell with a purple lobed nucleus is a neutrophil. Tiny purple clusters are platelets. A spiky disc is a drying artifact, not a diagnosis.",
+    note40_es:"Anillos con el centro claro — glóbulos rojos, sin núcleo. Una célula mayor con núcleo morado y lobulado es un neutrófilo. Los racimos morados diminutos son plaquetas. Un disco con púas es un artefacto de secado, no un diagnóstico.",
+    note100_en:"A field of red cells — dozens in the hole, not one. Each is a ring: darker rim, pale middle, still no nucleus. A white cell in this field is mostly nucleus and granules.",
+    note100_es:"Un campo de glóbulos rojos — decenas en el agujero, no uno. Cada uno es un anillo: borde más oscuro, centro pálido, sigue sin núcleo. Un glóbulo blanco en este campo es casi todo núcleo y gránulos."},
+  {id:"cheek",en:"Cheek cells",es:"Células de la mejilla",
+    note_en:"Flat cells from inside a mouth. A nucleus, and rods that are not the cell.",
+    note_es:"Células planas del interior de la boca. Un núcleo, y bastones que no son la célula.",
+    note4_en:"Pale shapes overlapping like fried eggs. No brick wall. No green. Animal cells.",
+    note4_es:"Formas pálidas, una sobre otra, como huevo frito. Sin muro de ladrillos. Sin verde. Células animales.",
+    note10_en:"Irregular, folded, see-through. The dark spot off to one side is the nucleus, with a smaller speck — the nucleolus.",
+    note10_es:"Irregulares, plegadas, transparentes. La mancha oscura a un lado es el núcleo, con un puntito menor — el nucléolo.",
+    note40_en:"No wall — set this next to onion and the difference is the line. Short rods on the surface are bacteria that live in a mouth.",
+    note40_es:"Sin pared — ponla junto a la cebolla y la diferencia es la línea. Los bastones cortos en la superficie son bacterias de la boca.",
+    note100_en:"Chromatin looks mottled inside the nucleus. The rods show a highlight and a rounded end. They are about 1–5 µm. A virus is not in this crowd.",
+    note100_es:"La cromatina se ve moteada dentro del núcleo. Los bastones tienen un brillo y un extremo redondo. Miden unos 1–5 µm. Un virus no está en este grupo."},
+  {id:"hair",en:"Human hair",es:"Cabello humano",
+    note_en:"One shaft. Brown is melanin. The broken dark line is the medulla. The tiles are the cuticle.",
+    note_es:"Un tallo. El marrón es melanina. La línea oscura rota es la médula. Las tejas son la cutícula.",
+    note4_en:"One strand across the glass. Cut blunt at one end, splitting at the tip. The brown is already in the hair — you did not stain it.",
+    note4_es:"Un pelo sobre el vidrio. Cortado de un extremo, abierto en la punta. El marrón ya estaba en el pelo — no lo teñiste.",
+    note10_en:"A cylinder. One edge catches the lamp and goes bright. Pigment sits in the cortex, under the surface.",
+    note10_es:"Un cilindro. Un borde atrapa la lámpara y se pone brillante. El pigmento está en la corteza, bajo la superficie.",
+    note40_en:"Scales like roof tiles, free edge toward the tip. A broken canal down the middle — the medulla. Many human hairs have a broken one, or none. A pale flake nearby is skin, not hair.",
+    note40_es:"Escamas como tejas, el borde libre hacia la punta. Un canal roto en el centro — la médula. Muchos cabellos humanos la tienen rota, o no la tienen. Una escama pálida al lado es piel, no pelo.",
+    note100_en:"A few scales and the pigment grains in the cortex. If the medulla is in this stretch, it is a gap, not a stripe that runs forever.",
+    note100_es:"Unas escamas y los granos de pigmento en la corteza. Si la médula está en este tramo, es un hueco, no una raya que siga para siempre."},
+  {id:"elodea",en:"Elodea leaf",es:"Hoja de elodea",
+    note_en:"A leaf one cell thick. The green discs are chloroplasts. If they move, the cell is alive.",
+    note_es:"Una hoja de una célula de grueso. Los discos verdes son cloroplastos. Si se mueven, la célula está viva.",
+    note4_en:"A brick wall of plant cells, greener along the middle vein. The green is not paint on the cell. It is about to resolve into discs.",
+    note4_es:"Un muro de células vegetales, más verde en la vena del centro. El verde no es pintura. Está a punto de resolverse en discos.",
+    note10_en:"Boxes with sharp walls. Green discs parked on the edges. The middle is clear because the vacuole is clear.",
+    note10_es:"Cajas de pared afilada. Discos verdes pegados a los bordes. El centro es claro porque la vacuola es clara.",
+    note40_en:"Watch one box. The discs drift along the wall — cytoplasmic streaming. That motion is the cell being alive. A stain will stop it.",
+    note40_es:"Mira una caja. Los discos se desplazan por la pared — flujo citoplasmático. Ese movimiento es la célula viva. Una tinción lo detiene.",
+    note100_en:"Two or three chloroplasts, each a green disc with a lighter spot. You are not seeing the stacks inside them. That takes an electron beam.",
+    note100_es:"Dos o tres cloroplastos, cada uno un disco verde con un punto más claro. No estás viendo las pilas de adentro. Eso pide un haz de electrones."},
+  {id:"bact",en:"Bacteria smear",es:"Frotis de bacterias",
+    note_en:"A film of culture. The shapes are rods, chains, and a corkscrew — bacteria, not viruses.",
+    note_es:"Una película de cultivo. Las formas son bastones, cadenas y un sacacorchos — bacterias, no virus.",
+    note4_en:"A dried oval on the glass. No shapes yet. That is the power, not an empty slide.",
+    note4_es:"Un óvalo seco en el vidrio. Aún no hay formas. Es el aumento, no una lámina vacía.",
+    note10_en:"Clumps in the film, and a haze. A few short dashes if the focus is honest. Too small to name from here.",
+    note10_es:"Grumos en la película, y una bruma. Unos trazos cortos si el foco es honesto. Muy chicos para nombrar desde aquí.",
+    note40_en:"Rods, chains of spheres, a corkscrew. About 1–5 µm. A bright line across a rod is where it is about to split. A virus is smaller than the smallest of these.",
+    note40_es:"Bastones, cadenas de esferas, un sacacorchos. Unos 1–5 µm. Una línea clara atravesando un bastón es donde está por dividirse. Un virus es más chico que el menor de estos.",
+    note100_en:"The rods have a rounded end and a highlight. The chains are separate spheres. This is as sharp as this lamp gets, and it is still bacteria.",
+    note100_es:"Los bastones tienen un extremo redondo y un brillo. Las cadenas son esferas separadas. Así de nítido llega esta lámpara, y siguen siendo bacterias."},
+  {id:"virus",en:"Virus?",es:"¿Virus?",
+    note_en:"The cells a virus would live in. The guest is smaller than this lamp.",
+    note_es:"Las células donde viviría un virus. El huésped es más chico que esta lámpara.",
+    note4_en:"A sheet of host cells. Nothing smaller is on this glass in any way the light can draw.",
+    note4_es:"Una lámina de células hospederas. Nada más chico está en este vidrio de una forma que la luz pueda dibujar.",
+    note10_en:"Most cells are spread flat. A few have rounded up and look brighter. That rounding is damage — a cytopathic effect — not the virus.",
+    note10_es:"La mayoría está extendida. Unas se redondearon y se ven más claras. Ese redondeo es daño — un efecto citopático — no el virus.",
+    note40_en:"Grain in the cytoplasm, a nucleus, a nucleolus. No spikes. No dot you can honestly call a virion.",
+    note40_es:"Grano en el citoplasma, un núcleo, un nucléolo. Sin púas. Ningún punto que puedas llamar virión con honestidad.",
+    note100_en:"The host, as close as oil allows. Read the number on the bezel. If it says about 0.18 µm, a 0.10 µm coronavirus is still under the floor. Spikes are an electron-microscope picture.",
+    note100_es:"El hospedero, tan cerca como el aceite permite. Lee el número del bisel. Si dice unos 0.18 µm, un coronavirus de 0.10 µm sigue bajo el piso. Las púas son una foto de microscopio electrónico."},
+  {id:"scale",en:"Stage micrometer",es:"Micrómetro de platina",
+    note_en:"A 1 mm ruler, 100 ticks of 10 µm. This is how the eyepiece scale learns the truth.",
+    note_es:"Una regla de 1 mm, 100 marcas de 10 µm. Así la escala del ocular aprende la verdad.",
+    note4_en:"The whole millimeter. Drop the eyepiece scale on top of these ticks. That is calibration, not a specimen.",
+    note4_es:"El milímetro entero. Pon la escala del ocular sobre estas marcas. Eso es calibrar, no una muestra.",
+    note10_en:"Each small tick is 10 µm. Count how many eyepiece units cover ten ticks — 100 µm.",
+    note10_es:"Cada marca pequeña es 10 µm. Cuenta cuántas unidades del ocular cubren diez marcas — 100 µm.",
+    note40_en:"A short run of 10 µm ticks. At 400× one eyepiece unit is 2.5 µm, so four units should sit on one tick.",
+    note40_es:"Un tramo corto de marcas de 10 µm. A 400× una unidad del ocular es 2.5 µm, así que cuatro unidades caben en una marca.",
+    note100_en:"One or two ticks fill the hole. At 1,000× with oil each eyepiece unit is 1 µm. The ruler did not get smaller. You got closer.",
+    note100_es:"Una o dos marcas llenan el agujero. A 1,000× con aceite cada unidad del ocular es 1 µm. La regla no encogió. Tú te acercaste."}
+];
+const STAIR = [
+  {id:"m1", en:"Make the microscope work", es:"Haz funcionar el microscopio",
+    blurb_en:"Light, then the clips, then 4×, then the coarse knob.",
+    blurb_es:"Luz, luego las pinzas, luego 4×, luego el macrométrico.",
+    steps:["lamp","clips","low","coarse"]},
+  {id:"m2", en:"See more", es:"Ver más",
+    blurb_en:"10×, then 40×, then the fine knob only.",
+    blurb_es:"10×, luego 40×, luego solo el micrométrico.",
+    steps:["ten","forty","fine"]},
+  {id:"m3", en:"Change what you see", es:"Cambia lo que ves",
+    blurb_en:"Stain the onion. Then darkfield a live drop — no stain on that one.",
+    blurb_es:"Tiñe la cebolla. Luego campo oscuro en una gota viva — esa, sin tinción.",
+    steps:["stain","dark"]},
+  {id:"m4", en:"Measure", es:"Medir",
+    blurb_en:"Eyepiece scale in. Two taps on a cell at 400×.",
+    blurb_es:"Escala del ocular puesta. Dos toques en una célula a 400×.",
+    steps:["micrometer"]},
+  {id:"m5", en:"What can't this microscope see?", es:"¿Qué no puede ver este microscopio?",
+    blurb_en:"Oil the 100×. Load Virus?. The guest is smaller than the lamp.",
+    blurb_es:"Aceita el 100×. Carga ¿Virus? El huésped es más chico que la lámpara.",
+    steps:["limit"]},
+  {id:"m6", en:"The research bench", es:"El banco de investigación",
+    blurb_en:"The slit, then polarized light, then the prism. Read the number. It stays above 0.10 µm.",
+    blurb_es:"La rendija, luego la luz polarizada, luego el prisma. Lee el número. Se queda sobre 0.10 µm.",
+    steps:["slit","polar","prism"]}
+];
+const STEP = {
+  lamp:{en:"Turn on the lamp",es:"Enciende la lámpara"},
+  clips:{en:"Clip the slide",es:"Sujeta la lámina"},
+  low:{en:"Start on 4×",es:"Empieza en 4×"},
+  coarse:{en:"Coarse-focus the letter e",es:"Enfoca la letra e con el macrométrico"},
+  ten:{en:"Go to 10×",es:"Pasa a 10×"},
+  forty:{en:"Go to 40×",es:"Pasa a 40×"},
+  fine:{en:"Sharpen 40× with the fine knob",es:"Afina el 40× con el micrométrico"},
+  stain:{en:"Stain onion with iodine",es:"Tiñe la cebolla con yodo"},
+  dark:{en:"Darkfield a live pond drop",es:"Campo oscuro en una gota viva"},
+  micrometer:{en:"Measure a cell at 400×",es:"Mide una célula a 400×"},
+  limit:{en:"Oil the 100× on Virus?",es:"Aceita el 100× en ¿Virus?"},
+  slit:{en:"Open the slit",es:"Abre la rendija"},
+  polar:{en:"Polarize the onion",es:"Polariza la cebolla"},
+  prism:{en:"Seat the prism on Virus? and read the number",es:"Monta el prisma en ¿Virus? y lee el número"}
+};
+function stairNow(){
+  for(let i=0;i<STAIR.length;i++) if(!STAIR[i].steps.every(id=>S.missions[id])) return i;
+  return STAIR.length;
+}
+function missionsOpen(){ return S.teacher!=="locked"; }
+function benchStep(){ return missionsOpen() ? STAIR.length : stairNow(); }
+function researchOpen(){ return benchStep()>=STAIR.length; }
+const SCENARIOS = [
+  {q_en:"Everything is blurry at 400× (high power). Which part fixes it?",q_es:"Todo se ve borroso a 400× (alto aumento). ¿Qué parte lo arregla?",a:"fine",wrong:["coarse","diaphragm","nosepiece"]},
+  {q_en:"The image is washed out — too bright to see any detail. Which part do you adjust?",q_es:"La imagen se ve lavada — demasiado brillante para ver detalle. ¿Qué parte ajustas?",a:"diaphragm",wrong:["eyepiece","fine","clips"]},
+  {q_en:"The slide keeps drifting while you look. What is not doing its job?",q_es:"La lámina se mueve sola mientras miras. ¿Qué no está haciendo su trabajo?",a:"clips",wrong:["stage","arm","base"]},
+  {q_en:"You want to move from 10× up to 40×. What do you turn?",q_es:"Quieres pasar de 10× a 40×. ¿Qué giras?",a:"nosepiece",wrong:["coarse","tube","eyepiece"]},
+  {q_en:"A 10× eyepiece over the 40× objective. What is the total magnification?",q_es:"Un ocular de 10× sobre el objetivo de 40×. ¿Cuál es el aumento total?",opts_en:["400×","50×","40×","4×"],opts_es:["400×","50×","40×","4×"],correct:0},
+  {q_en:"Which two parts are your hands on when the microscope is carried?",q_es:"¿En qué dos partes van tus manos cuando se carga el microscopio?",opts_en:["The arm and the base","The tube and the stage","The eyepiece and the arm","The base and the stage"],opts_es:["El brazo y la base","El tubo y la platina","El ocular y el brazo","La base y la platina"],correct:0},
+  {q_en:"You just heard a crack at 400×. Which knob did you turn?",q_es:"Acabas de oír un crac a 400×. ¿Qué tornillo giraste?",a:"coarse",wrong:["fine","diaphragm","nosepiece"]},
+  {q_en:"The letter e on the slide looks upside down. Is the microscope broken?",q_es:"La letra e en la lámina se ve al revés. ¿Está roto el microscopio?",opts_en:["No — a compound microscope inverts the image","Yes — the body tube is in backwards","Yes — swap the eyepiece","Flip the slide over and it will read correctly"],opts_es:["No — un microscopio compuesto invierte la imagen","Sí — el tubo está al revés","Sí — cambia el ocular","Voltea la lámina y se leerá bien"],correct:0},
+  {q_en:"Which stain turns an onion nucleus brown and the cytoplasm amber?",q_es:"¿Qué tinción pone marrón el núcleo de la cebolla y ámbar el citoplasma?",opts_en:["Iodine (Lugol's)","Wright's","A blue filter","Darkfield"],opts_es:["Yodo (Lugol)","Wright","Un filtro azul","Campo oscuro"],correct:0},
+  {q_en:"Why does staining a pond drop stop the swimming?",q_es:"¿Por qué teñir una gota de estanque detiene el nado?",opts_en:["The stain kills as it dyes — that is the trade for seeing structure","The lamp went out","The clips came loose","You switched to 4×"],opts_es:["La tinción mata al teñir — ese es el trato para ver estructura","Se apagó la lámpara","Se soltaron las pinzas","Pasaste a 4×"],correct:0},
+  {q_en:"At 400× each eyepiece unit is 2.5 µm. A cell spans 20 units. How long is it?",q_es:"A 400× cada unidad del ocular es 2.5 µm. Una célula cubre 20 unidades. ¿Cuánto mide?",opts_en:["50 µm","20 µm","2.5 µm","400 µm"],opts_es:["50 µm","20 µm","2.5 µm","400 µm"],correct:0},
+  {q_en:"You want to watch living pond organisms glow, without staining them. Which illumination?",q_es:"Quieres ver organismos vivos del estanque brillar, sin teñirlos. ¿Qué iluminación?",opts_en:["Darkfield","Brightfield with iodine","Polarized light on letter e","Lamp off"],opts_es:["Campo oscuro","Campo claro con yodo","Luz polarizada en la letra e","Lámpara apagada"],correct:0},
+  {q_en:"10× eyepiece over the 100× oil lens. Total magnification — and can it resolve a virus?",q_es:"Ocular 10× sobre el lente de aceite 100×. Aumento total — ¿y puede resolver un virus?",opts_en:["1,000×, and no — a virus is smaller than visible light","30,000×, and yes if the lamp is violet","100×, if you skip the oil","400×, same as the 40× objective"],opts_es:["1,000×, y no — un virus es más chico que la luz visible","30,000×, y sí si la lámpara es violeta","100×, si omites el aceite","400×, igual que el objetivo de 40×"],correct:0},
+  {q_en:"The pale center of a red blood cell is which of these?",q_es:"El centro pálido de un glóbulo rojo es ¿cuál de estos?",opts_en:["The thin middle of a biconcave disc — not a nucleus","The nucleus","A platelet sitting on top","Wright's stain that did not take"],opts_es:["La parte delgada de un disco bicóncavo — no un núcleo","El núcleo","Una plaqueta encima","Tinción de Wright que no prendió"],correct:0},
+  {q_en:"The dark interrupted line down the middle of a hair is the:",q_es:"La línea oscura interrumpida en el centro de un cabello es:",opts_en:["Medulla","Cuticle","A blood vessel","The 40× objective out of focus"],opts_es:["Médula","Cutícula","Un vaso sanguíneo","El objetivo de 40× desenfocado"],correct:0},
+  {q_en:"A student asks to see a coronavirus in this eyepiece. What do you tell them?",q_es:"Un estudiante pide ver un coronavirus en este ocular. ¿Qué le dices?",opts_en:["Even at 1,000× with oil it is smaller than the light. You can see the cell it lives in, not the virus.","Switch to violet and the spikes appear","Darkfield turns viruses into paramecia","Stain with Wright's and count the capsids"],opts_es:["Incluso a 1,000× con aceite es más chico que la luz. Ves la célula donde vive, no el virus.","Cambia a violeta y aparecen las púas","El campo oscuro convierte virus en paramecios","Tiñe con Wright y cuenta las cápsides"],correct:0},
+  {q_en:"The rods and chains on the bacteria smear are about how big — and what are they not?",q_es:"Los bastones y cadenas del frotis miden más o menos — ¿y qué no son?",opts_en:["1–5 µm. Bacteria. A virus is smaller than this lens can draw.","0.1 µm, so they must be viruses","The same size as a cheek cell","Platelets"],opts_es:["1–5 µm. Bacterias. Un virus es más chico de lo que este lente puede dibujar.","0.1 µm, así que deben ser virus","El mismo tamaño que una célula de mejilla","Plaquetas"],correct:0},
+  {q_en:"You seat the Risley prism and turn the field violet. Can you see the virus now?",q_es:"Montas el prisma de Risley y el campo se pone violeta. ¿Ya ves el virus?",opts_en:["No. Shorter light splits a slightly smaller gap. Even violet with oil stays above ~0.10 µm.","Yes — violet is the virus color","Yes — each germ glows its own color and names itself","Yes — 60,000× is now on the nosepiece"],opts_es:["No. La luz más corta separa un hueco un poco menor. Incluso el violeta con aceite se queda sobre ~0.10 µm.","Sí — el violeta es el color del virus","Sí — cada germen brilla su color y se nombra","Sí — 60,000× ya está en el revólver"],correct:0}
+];
+function byP(id){return PARTS.find(x=>x.p===id)}
+function nm(p){return S.lang==="es"?p.es:p.en}
+function what(p){return S.lang==="es"?p.what_es:p.what_en}
+function why(p){return S.lang==="es"?p.why_es:p.why_en}
+function oops(p){return S.lang==="es"?p.oops_es:p.oops_en}
+function t(k){return STR[k][S.lang]}
+function shuffle(a){const b=a.slice();for(let i=b.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[b[i],b[j]]=[b[j],b[i]]}return b}
+function idealZ(o){return o===100?46.6:o===40?45.4:o===10?44:42}
+function dof(o){return o===100?0.55:o===40?1.5:o===10?4:12}
+function stageZ(c,f){return c+f*.12}
+function focusBand(c,f,o){const e=Math.abs(stageZ(c,f)-idealZ(o)),d=dof(o);return e<d*.45?"in":e<d*1.15?"near":"out"}
+function blurPx(c,f,o){return Math.min(22,(Math.abs(stageZ(c,f)-idealZ(o))/dof(o))*3.6)}
+function wouldCrack(o,nc,f){return (o>=40 && o<100 && stageZ(nc,f)>54) || (o===100 && stageZ(nc,f)>49.5)}
+function wd(c,f){return Math.max(0,Math.min(1,1-stageZ(c,f)/70))}
+/* AOG-SCOPE-OPTICS-V1 — darkfield, stains, ocular micrometer.
+   Research-bench light, classroom-honest science. The eyepiece scale is a real
+   100-unit ocular (FN 18): 25 / 10 / 2.5 µm per unit at 4× / 10× / 40×. */
+const ILLUMS=[["bright","brightfield"],["dark","darkfield"],["slit","slitUltra"],["polar","polarized"]];
+const FILTERS=[
+  {id:"day",en:"Daylight",es:"Luz de día",rgb:[255,236,200]},
+  {id:"blue",en:"Blue",es:"Azul",rgb:[150,190,255]},
+  {id:"green",en:"Green",es:"Verde",rgb:[160,230,165]},
+  {id:"amber",en:"Amber",es:"Ámbar",rgb:[255,186,70]},
+  {id:"violet",en:"Violet",es:"Violeta",rgb:[186,140,255]}
+];
+const STAINS=[
+  {id:"none",key:"unstained",color:"#e8e0cc"},
+  {id:"iodine",key:"iodine",color:"#c49624"},
+  {id:"methylene",key:"methylene",color:"#2c4caa"},
+  {id:"wright",key:"wright",color:"#c45a7a"},
+  {id:"safranin",key:"safranin",color:"#a32840"}
+];
+const STAIN_FOR={
+  e:["none"],
+  onion:["none","iodine","methylene","safranin"],
+  pond:["none","methylene"],
+  blood:["none","wright"],
+  cheek:["none","methylene","iodine"],
+  hair:["none"],
+  elodea:["none","iodine"],
+  scale:["none"],
+  bact:["none","methylene","safranin"],
+  virus:["none"]
+};
+const DEFAULT_STAIN={e:"none",onion:"none",pond:"none",blood:"wright",cheek:"none",hair:"none",elodea:"none",scale:"none",bact:"none",virus:"none"};
+function fovUm(obj){return 18000/obj}
+function unitUm(obj){return fovUm(obj)*(10/18)/100}
+function allowedStains(spec){return STAIN_FOR[spec]||["none"]}
+function stainNote(id){
+  if(id==="iodine") return t("iodineNote");
+  if(id==="methylene") return t("methyleneNote");
+  if(id==="wright") return t("wrightNote");
+  if(id==="safranin") return t("safraninNote");
+  if(S.lab.spec==="e") return t("noStainNote");
+  if(S.lab.spec==="hair") return t("hairStainNote");
+  return t("unstainedNote");
+}
+function stainKills(L){ return L.stain && L.stain!=="none" && (L.spec==="pond"||L.spec==="elodea"||L.spec==="bact"); }
+function specShort(s){
+  const en={e:"e",onion:"Onion",pond:"Pond",blood:"Blood",cheek:"Cheek",hair:"Hair",elodea:"Elodea",scale:"Scale",bact:"Bacteria",virus:"Virus?"};
+  const es={e:"e",onion:"Cebolla",pond:"Estanque",blood:"Sangre",cheek:"Mejilla",hair:"Pelo",elodea:"Elodea",scale:"Escala",bact:"Bacterias",virus:"¿Virus?"};
+  return (S.lang==="es"?es:en)[s.id]||(S.lang==="es"?s.es:s.en);
+}
+function fmtUm(u){
+  if(!isFinite(u)) return "—";
+  if(u>=1000) return (u/1000).toFixed(u>=10000?1:2)+" mm";
+  if(u>=100) return Math.round(u)+" µm";
+  if(u>=10) return u.toFixed(1)+" µm";
+  return u.toFixed(2)+" µm";
+}
+function btn(on,act,lab){return `<button class="btn${on?" btn-steel":""}" data-act="${act}">${lab}</button>`}
+function bandNm(v){ return Math.round(650 - (Math.max(0,Math.min(100,v))/100)*230); }
+function nmRGB(nm){
+  if(nm>=580){ const t=(nm-580)/70; return [255, Math.round(210-t*150), Math.round(60-t*30)]; }
+  if(nm>=510){ const t=(580-nm)/70; return [Math.round(255-t*170), Math.round(196+t*40), Math.round(40+t*50)]; }
+  if(nm>=450){ const t=(510-nm)/60; return [Math.round(90-t*50), Math.round(170-t*90), Math.round(90+t*130)]; }
+  const t=Math.max(0,(450-nm)/30);
+  return [Math.round(40+t*20), Math.round(70-t*30), Math.round(210+t*30)];
+}
+function limitUm(L){
+  const na = L.obj===100 ? (L.oil?1.25:0.85) : L.obj===40?0.65 : L.obj===10?0.25 : 0.10;
+  const nm = L.prism ? bandNm(L.band) : (L.filter==="violet"?430:L.filter==="blue"?470:L.filter==="green"?530:L.filter==="amber"?590:550);
+  return {nm, na, d:(nm/1000)/(2*na)};
+}
+function abbeSentence(){
+  const L=S.lab, x=limitUm(L);
+  const n=x.d.toFixed(2);
+  if(!L.prism) return t("prismNote");
+  return S.lang==="es"
+    ? `${x.nm} nm. Esta luz separa unos ${n} µm. Un coronavirus mide unos 0.10 µm. El prisma colorea la lámpara. No nombra al germen.`
+    : `${x.nm} nm. This light can split about ${n} µm. A coronavirus is about 0.10 µm. The prism colors the lamp. It does not name the germ.`;
+}
+
+const KEY="scope.lab.v1", THEME_KEY="aog.interior.ws.v1.theme";
+const S = {
+  page:"home", lang:"en", theme:"light", teacher:"open",
+  met:{}, findBest:0, jobBest:0, cracked:0, missions:{low:true},
+  sel:null, walk:-1, playing:false, moreOpen:false,
+  lab:{lightOn:false,clipped:false,cracked:false,obj:4,coarse:18,fine:40,dia:70,eyeTwist:22,spec:"e",panX:0,panY:0,illum:"bright",stain:"none",filter:"day",graticule:false,measure:false,polar:90,oil:false,mA:null,mB:null,prism:false,band:88,dfNote:false},
+  find:null, job:null
+};
+try {
+  const raw=JSON.parse(localStorage.getItem(KEY)||"null");
+  if(raw){ Object.assign(S,{lang:raw.lang||"en",met:raw.met||{},findBest:raw.findBest||0,jobBest:raw.jobBest||0,cracked:raw.cracked||0,missions:raw.missions||{low:true},teacher:raw.teacher==="locked"?"locked":"open"}); }
+  if(localStorage.getItem(THEME_KEY)==="dark") S.theme="dark";
+} catch(e){}
+function persist(){
+  try{ localStorage.setItem(KEY, JSON.stringify({lang:S.lang,met:S.met,findBest:S.findBest,jobBest:S.jobBest,cracked:S.cracked,missions:S.missions,teacher:S.teacher}));
+    localStorage.setItem(THEME_KEY, S.theme);
+  }catch(e){}
+}
+function setTheme(th){
+  S.theme=th; persist();
+  document.documentElement.setAttribute("data-theme", th);
+  document.documentElement.classList.toggle("dark", th==="dark");
+}
+
+/* ════ SVG ════ */
+function scopeSVG(opts){
+  const o=opts||{};
+  const mark=id => {
+    let c="scope-part";
+    if(o.sel===id) c+=" sel";
+    if(o.marks&&o.marks[id]) c+=" "+o.marks[id];
+    return c;
+  };
+  const beam = o.beam || "";
+  const labels = o.labeled ? PARTS.map((d,i)=>{
+    const xy=PAPER_POS[d.p], to=PAPER_TO[d.p], cx=xy[0], cy=xy[1]-4;
+    const dx=to[0]-cx, dy=to[1]-cy, len=Math.sqrt(dx*dx+dy*dy)||1;
+    return `<g><line x1="${cx+(dx/len)*11}" y1="${cy+(dy/len)*11}" x2="${to[0]}" y2="${to[1]}"/><circle class="dot" cx="${to[0]}" cy="${to[1]}" r="2.4"/><circle cx="${cx}" cy="${cy}" r="11"/><text x="${cx}" y="${xy[1]}" text-anchor="middle">${LETTERS[i]}</text></g>`;
+  }).join("") : "";
+  return `<svg viewBox="0 0 430 560" class="scope${o.lit?" lit":""}${o.cls?" "+o.cls:""}" role="img" aria-label="A compound light microscope">
+  <defs>
+    <linearGradient id="gst" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="var(--steel)" stop-opacity=".92"/><stop offset="100%" stop-color="var(--metal)" stop-opacity=".95"/></linearGradient>
+    <linearGradient id="gbr" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#e8c878"/><stop offset="42%" stop-color="var(--brass)"/><stop offset="100%" stop-color="#5c3a0e"/></linearGradient>
+    <linearGradient id="gbase" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#3e3220"/><stop offset="100%" stop-color="#1a1610"/></linearGradient>
+  </defs>
+  <g class="${mark("base")}" data-p="base"><rect class="hit" x="60" y="490" width="310" height="60"/><path class="shape" d="M75 540 L110 495 H320 L355 540 Q360 550 348 550 H82 Q70 550 75 540 Z" fill="url(#gbase)" stroke="var(--brass)" stroke-width="1.6"/><text class="royal-plate" x="215" y="536" text-anchor="middle">UNIVERSAL</text></g>
+  <g class="${mark("light")}" data-p="light"><circle class="hit" cx="215" cy="470" r="34"/><g class="shape"><circle cx="215" cy="470" r="22" fill="var(--warn-soft)" stroke="var(--warn)" stroke-width="2"/><circle cx="215" cy="470" r="11" fill="var(--lamp)" opacity=".85"/><g stroke="var(--warn)" stroke-width="1.6" stroke-linecap="round"><line x1="215" y1="438" x2="215" y2="426"/><line x1="194" y1="446" x2="186" y2="437"/><line x1="236" y1="446" x2="244" y2="437"/></g></g></g>
+  <g class="${mark("arm")}" data-p="arm"><path class="hit" d="M295 150 q60 60 45 190 l-40 60 h-30 l30 -55 q18 -120 -35 -170 Z"/><path class="shape" d="M285 140 q75 70 55 210 l-35 55 q-8 12 -20 4 t-4 -20 l30 -48 q16 -118 -46 -172 Z" fill="url(#gst)" stroke="var(--line)" stroke-width="1.5" opacity=".92"/></g>
+  <g class="${mark("stage")}" data-p="stage"><rect class="hit" x="80" y="330" width="230" height="36"/><path class="shape" d="M85 336 H305 l-10 24 H95 Z" fill="var(--ink)" opacity=".85" stroke="var(--line)" stroke-width="1.2"/><rect x="150" y="329" width="90" height="8" rx="2" fill="var(--steel-soft)" stroke="var(--steel)" stroke-width="1.2"/></g>
+  <g class="${mark("clips")}" data-p="clips"><rect class="hit" x="120" y="316" width="44" height="26"/><rect class="hit" x="226" y="316" width="44" height="26"/><g class="shape" fill="none" stroke="var(--brass)" stroke-width="3" stroke-linecap="round"><path d="M130 322 q14 -6 26 8"/><path d="M260 322 q-14 -6 -26 8"/></g></g>
+  <g class="${mark("diaphragm")}" data-p="diaphragm"><rect class="hit" x="165" y="348" width="100" height="50"/><g class="shape"><path d="M198 348 L232 348 L224 372 L206 372 Z" fill="url(#gbr)" stroke="var(--line)" stroke-width="1.1"/><rect x="175" y="372" width="80" height="16" rx="8" fill="var(--chip)" stroke="var(--muted)" stroke-width="1.4"/><circle cx="215" cy="380" r="5" fill="var(--bg)" stroke="var(--muted)" stroke-width="1.2"/></g></g>
+  <g transform="translate(215,404)" opacity=".95">
+    <path d="M-18 0 L14 -6 L14 5 Z" fill="#d5e6f2" stroke="#7a90a4" stroke-width="1"/>
+    <path d="M-14 8 L18 3 L18 13 Z" fill="#e7f2c8" stroke="#7a90a4" stroke-width="1"/>
+  </g>
+  <g class="${mark("coarse")}" data-p="coarse"><circle class="hit" cx="345" cy="360" r="34"/><circle class="shape" cx="345" cy="360" r="26" fill="url(#gbr)" stroke="var(--line)" stroke-width="1.5"/></g>
+  <g class="${mark("fine")}" data-p="fine"><circle class="hit" cx="328" cy="410" r="17"/><g class="shape"><rect x="294" y="405" width="26" height="9" rx="2" fill="var(--metal)" stroke="var(--line)" stroke-width="1.2"/><circle cx="328" cy="410" r="11" fill="var(--chip)" stroke="var(--brass)" stroke-width="2"/></g></g>
+  <g class="${mark("tube")}" data-p="tube"><rect class="hit" x="185" y="120" width="64" height="90"/><rect class="shape" x="193" y="122" width="46" height="88" rx="6" fill="url(#gst)" opacity=".95" stroke="var(--brass)" stroke-width="1.3"/><rect x="200" y="150" width="32" height="16" rx="3" fill="url(#gbr)" opacity=".92"/></g>
+  <g class="${mark("eyepiece")}" data-p="eyepiece"><rect class="hit" x="180" y="52" width="72" height="66"/><g class="shape"><rect x="196" y="64" width="40" height="56" rx="5" fill="url(#gbr)" stroke="var(--line)" stroke-width="1.5"/><rect x="190" y="54" width="52" height="14" rx="6" fill="var(--ink)" opacity=".85"/></g></g>
+  <g class="${mark("nosepiece")}" data-p="nosepiece"><rect class="hit" x="170" y="208" width="94" height="30"/><path class="shape" d="M175 212 H257 L247 234 H185 Z" fill="var(--ink)" opacity=".85" stroke="var(--line)" stroke-width="1.2"/></g>
+  <g class="${mark("objectives")}" data-p="objectives"><rect class="hit" x="148" y="228" width="140" height="78"/><g class="shape" stroke="var(--line)" stroke-width="1.3"><rect x="152" y="242" width="20" height="30" rx="4" fill="url(#gbr)" transform="rotate(22 162 257)"/><rect x="178" y="238" width="22" height="40" rx="4" fill="url(#gbr)" transform="rotate(10 189 258)"/><rect x="208" y="236" width="24" height="56" rx="4" fill="url(#gbr)"/><rect x="242" y="228" width="22" height="66" rx="4" fill="#6a4a14" stroke="var(--brass)" transform="rotate(-12 253 261)"/></g></g>
+  <polyline class="scope-beam" points="${beam}"/>
+  ${o.labeled?`<g class="plets">${labels}</g>`:""}
+</svg>`;
+}
+
+function bindScope(root, fn){
+  root.querySelectorAll(".scope-part").forEach(g=>{
+    g.setAttribute("tabindex","0");
+    g.setAttribute("role","button");
+    const go=()=>fn(g.getAttribute("data-p"));
+    g.addEventListener("click", go);
+    g.addEventListener("keydown", e=>{ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); go(); }});
+  });
+}
+
+/* ════ pages ════ */
+function go(page){ S.page=page; location.hash=page; paint(); }
+function hashPage(){ const h=(location.hash||"#home").replace("#",""); return ["home","meet","lab","find","job","print"].includes(h)?h:"home"; }
+
+function paintChrome(){
+  document.getElementById("brand").textContent=t("app");
+  document.getElementById("langBtn").textContent=S.lang==="es"?"EN":"ES";
+  document.getElementById("themeBtn").textContent=S.theme==="dark"?t("light"):t("dark");
+  document.getElementById("foot").textContent=t("foot");
+  document.documentElement.lang=S.lang;
+  const NAV=[["home","home","home"],["meet","meet","meetNav"],["lab","lab","labNav"],["find","find","findNav"],["job","job","jobNav"],["print","print","printNav"]];
+  document.getElementById("nav").innerHTML=NAV.map(([id,full,sh])=>`<a href="#${id}" class="${S.page===id?"on":""}"><span class="full">${t(full)}</span><span class="short">${t(sh)}</span></a>`).join("");
+}
+
+function pageHome(){
+  const met=Object.keys(S.met).length;
+  const stairN=STAIR.reduce((n,m)=>n+m.steps.length,0);
+  const done=STAIR.reduce((n,m)=>n+m.steps.filter(id=>S.missions[id]).length,0);
+  const cards=[
+    ["meet","meet",t("cardMeet"),t("openMeet"),false],
+    ["lab","lab",t("cardLab"),t("openLab"),true],
+    ["find","find",t("cardFind"),t("openFind"),false,S.findBest],
+    ["job","job",t("cardJob"),t("openJob"),false,S.jobBest]
+  ];
+  return `<h1>${t("app")}</h1>
+    <p class="kicker">${t("eyebrow")}</p>
+    <p class="lead">${t("tag")}</p>
+    <p class="muted" style="font-size:.9rem">${t("priv")}</p>
+    <p class="muted" style="font-size:.9rem"><a href="/telescope.html">${S.lang==="es"?"El telescopio es el otro ocular.":"The telescope is the other eyepiece."}</a></p>
+    <div class="stats"><span>${met}/12 ${t("partsMet")}</span><span>·</span><span>${done}/${stairN} ${t("stations")}</span><span>·</span><span>${S.cracked} ${t("slidesCracked")}</span></div>
+    <div class="grid-home">
+      <div class="card" style="padding:.75rem">${scopeSVG({cls:"home-scope"})}</div>
+      <div class="cards">${cards.map(c=>`<a class="card act" href="#${c[0]}">
+        <p class="kicker">${t(c[1])}${c[4]?`<span class="badge">${t("newBadge")}</span>`:""}</p>
+        <p style="margin:.4rem 0 .6rem">${c[2]}</p>
+        <p class="muted" style="font-size:.9rem">${c[3]}${c[5]?` · ${t("best")} ${c[5]}`:""}</p>
+      </a>`).join("")}</div>
+    </div>
+    <div style="display:grid;gap:.75rem;margin-top:1.5rem">
+      ${[["carry","carryBody"],["magTile","magBody"],["focusRule","focusBody"],["royalCard","royalBody"],["illumTile","illumBody"],["stainTile","stainBody"],["scaleTile","scaleBody"]].map(([h,b])=>`<div class="card side"><p class="tiny">${t(h)}</p><p style="margin:.4rem 0 0">${h==="magTile"?`<strong>${t("magFormula")}</strong>. `:""}${t(b)}</p></div>`).join("")}
+    </div>`;
+}
+
+function pageMeet(){
+  const d=S.sel?byP(S.sel):null;
+  const i=d?PARTS.indexOf(d): -1;
+  const marks={}; PARTS.forEach(p=>{ if(S.met[p.p]) marks[p.p]="right"; });
+  if(S.walk>=0 && S.walk<LIGHT_PATH.length) marks[LIGHT_PATH[S.walk]]="glow";
+  const beam = S.walk>=0 ? LIGHT_PATH.slice(0,S.walk+1).map(id=>BEAM_XY[id].join(",")).join(" ") : "";
+  const cap = S.walk<0 ? t("lightIntro") : S.walk>=LIGHT_PATH.length-1 && !S.playing ? t("lightDone") : `${S.walk+1} / ${LIGHT_PATH.length} — ${LIGHT_COPY[S.lang][S.walk]||""}`;
+  return `<h1>${t("meet")}</h1><p class="lead">${t("meetHint")}</p>
+    <div class="split">
+      <div class="card sticky" style="padding:.75rem">
+        <div style="padding:.25rem .5rem 1rem;border-bottom:1px solid var(--line);margin-bottom:.5rem">
+          <h2 style="margin:0;font-size:1.15rem">${t("lightPath")}</h2>
+          <p class="muted" style="min-height:3rem;margin:.4rem 0">${cap}</p>
+          <div style="display:flex;flex-wrap:wrap;gap:.4rem">
+            <button class="btn btn-steel" data-act="walk">${t("walkLight")}</button>
+            <button class="btn" data-act="pause" ${S.playing?"":"disabled"}>${t("pauseWalk")}</button>
+            <button class="btn" data-act="nextw">${t("nextStop")}</button>
+            <button class="btn" data-act="resetw">${t("resetWalk")}</button>
+          </div>
+        </div>
+        <div id="meetScope">${scopeSVG({sel:S.sel,marks,beam,lit:S.walk>=0})}</div>
+        <p class="muted" style="text-align:center;font-size:.8rem">${t("tapMachine")}</p>
+      </div>
+      <div>
+        <div class="chips">${PARTS.map(p=>`<button class="chip${S.sel===p.p?" on":""}" data-part="${p.p}">${nm(p)}</button>`).join("")}</div>
+        <div class="card side">
+          ${d?`<p class="tiny">${t("part")} ${i+1} / 12</p>
+            <h2 style="margin:.3rem 0">${nm(d)}</h2>
+            <p>${what(d)}</p>
+            <div class="why"><p class="tiny">${t("why")}</p><p>${why(d)}</p></div>
+            <div class="why"><p class="tiny">${t("oops")}</p><p>${oops(d)}</p></div>
+            <div style="display:flex;gap:.5rem;margin-top:1rem">
+              <button class="btn" data-act="prevp" ${i<=0?"disabled":""}>${t("prev")}</button>
+              <button class="btn" data-act="nextp">${t("next")}</button>
+            </div>`
+          :`<p class="tiny">${t("tapPart")}</p><h2>${t("startAnywhere")}</h2><p class="muted">${t("tapBody")}</p>`}
+          ${Object.keys(S.met).length===12?`<p class="ok" style="margin-top:1rem">${t("allMet")}</p>`:""}
+        </div>
+      </div>
+    </div>`;
+}
+
+function instrumentHTML(){
+  const L=S.lab;
+  const stains=allowedStains(L.spec);
+  const step=benchStep();
+  const research=step>=5;
+  const specs=step<2?SPECIMENS.filter(s=>s.id==="e"):SPECIMENS;
+  const objs=[4];
+  if(step>=1) objs.push(10,40);
+  if(step>=4) objs.push(100);
+  const illumBtns=ILLUMS.filter(([id])=>id==="bright"||id==="dark")
+    .map(([id,k])=>btn(L.illum===id,"illum-"+id, t(k))).join("");
+  return `
+    <div class="row"><span class="tiny">${t("teach")}</span><span>${btn(S.teacher==="locked","teach-lock",t("teachLock"))}${btn(S.teacher!=="locked","teach-open",t("teachOpen"))}</span></div>
+    <p class="note-line">${S.teacher==="locked"?t("teachLocked"):t("teachOpenNote")}</p>
+    <div class="row"><span class="tiny">${t("specimen")}</span><span>${specs.map(s=>btn(L.spec===s.id,"spec-"+s.id, specShort(s))).join("")}</span></div>
+    <div class="row"><span class="tiny">${t("lamp")}</span><span>${btn(L.lightOn,"lamp1",t("on"))}${btn(!L.lightOn,"lamp0",t("off"))}</span></div>
+    <div class="row"><span class="tiny">${t("clips")}</span><span>${btn(L.clipped,"clip1",t("seated"))}${btn(!L.clipped,"clip0",t("loose"))}</span></div>
+    <div class="row"><span class="tiny">${t("objective")}</span><span>${objs.map(o=>btn(L.obj===o,"obj"+o,o+"×")).join("")}</span></div>
+    ${L.obj===100?`<div class="row"><span class="tiny">${t("oil")}</span><span>${btn(L.oil,"oil1",t("oilOn"))}${btn(!L.oil,"oil0",t("oilOff"))}</span></div>`:""}
+    ${step>=2?`<div class="row"><span class="tiny">${t("stain")}</span><span>${STAINS.filter(s=>stains.includes(s.id)).map(s=>btn(L.stain===s.id,"stain-"+s.id,`<i class="swatch" style="background:${s.color}"></i>${s.id==="none"?(S.lang==="es"?"Nada":"None"):s.id==="methylene"?(S.lang==="es"?"Metileno":"Methylene"):t(s.key)}`)).join("")}</span></div>
+    <div class="row"><span class="tiny">${t("illum")}</span><span>${illumBtns}</span></div>`:""}
+    ${step>=3?`<div class="row"><span class="tiny">${t("ocular")}</span><span>${btn(L.graticule,"grat1",t("scaleOn"))}${btn(!L.graticule,"grat0",t("scaleOff"))}${btn(L.measure,"meas1",t("measure"))}</span></div>`:""}
+    ${research?`<details class="more-light"${S.moreOpen?" open":""}>
+      <summary>${t("researchK")}</summary>
+      <div class="row"><span class="tiny">${t("illum")}</span><span>${ILLUMS.filter(([id])=>id==="slit"||id==="polar").map(([id,k])=>btn(L.illum===id,"illum-"+id, t(k))).join("")}</span></div>
+      <div class="row"><span class="tiny">${t("risley")}</span><span>${btn(L.prism,"prism1",t("prismIn"))}${btn(!L.prism,"prism0",t("prismOut"))}</span></div>
+      ${L.prism?`<div class="row" style="display:block;border-bottom:0">${knob("band", t("risley"), L.band, false, bandNm(L.band)+" nm")}</div><p class="note-line abbe">${abbeSentence()}</p>`:""}
+      <div class="row"><span class="tiny">${t("beam")}</span><span>${FILTERS.map(f=>`<button class="btn filter-btn${L.filter===f.id?" btn-steel":""}" data-act="filter-${f.id}"><i class="swatch" style="background:rgb(${f.rgb.join(',')})"></i>${S.lang==="es"?{day:"Día",blue:"Azul",green:"Verde",amber:"Ámbar",violet:"Violeta"}[f.id]:{day:"Day",blue:"Blue",green:"Green",amber:"Amber",violet:"Violet"}[f.id]}</button>`).join("")}</span></div>
+      ${L.illum==="polar"?`<div class="row" style="display:block;border-bottom:0">${knob("polar",t("polarizer"),L.polar,false)}</div>`:""}
+      <p style="margin:.45rem 0 .2rem"><button class="btn${L.illum==="dark"&&L.spec==="pond"?" btn-steel":""}" data-act="rife">${t("researchLook")}</button> <button class="btn${L.prism?" btn-steel":""}" data-act="universal">${t("seatPrism")}</button></p>
+    </details>`:""}
+    <p class="note-line">${specNote(SPECIMENS.find(s=>s.id===L.spec))}${stainKills(L)?" "+t("killedNote"):""}</p>`;
+}
+
+function pageLab(){
+  const L=S.lab, mag=10*L.obj, band=focusBand(L.coarse,L.fine,L.obj);
+  const fl=L.cracked?t("cracked").split(".")[0]: band==="in"?t("focusIn"):band==="near"?t("focusNear"):t("focusOut");
+  const w=wd(L.coarse,L.fine);
+  const wcol=w<.22?"var(--bad)":w<.4?"var(--warn)":"var(--good)";
+  return `<div class="lab-page"><h1>${t("lab")}</h1><p class="lead lab-lead">${t("labLead")}</p>
+    <div class="lab-stack">
+    <div class="lab-grid">
+      <div class="eye-stick">
+        <div class="eye-box">
+          <div class="eye-wrap${L.measure?" measuring":""}" id="eye"><canvas id="eyecanvas"></canvas>
+          <div class="eye-hud" id="eyehud">${L.graticule?`${t("unitCal")} = ${fmtUm(unitUm(L.obj))}`:""}</div></div>
+          <div style="display:flex;justify-content:space-between;color:color-mix(in oklab,var(--steel-fg) 80%,transparent);font-size:.9rem;margin-top:.5rem;font-variant-numeric:tabular-nums">
+            <span id="magread">10× × ${L.obj}× = ${mag}×</span><span id="abberead">${L.prism?bandNm(L.band)+" nm · "+limitUm(L).d.toFixed(2)+" µm":""}</span><span id="focusread">${fl}</span>
+          </div>
+          <p style="color:color-mix(in oklab,var(--steel-fg) 60%,transparent);font-size:.75rem;margin:.25rem 0 0" id="dragread">${L.measure?t("tapMeasure"):t("dragHint")}</p>
+        </div>
+        ${L.obj===100&&!L.oil&&!L.cracked?`<div class="card side oil-warn" style="margin-top:.75rem"><p>${t("oilNeed")}</p></div>`:""}
+        ${L.cracked?`<div class="card side" style="margin-top:.75rem;background:var(--bad-soft)"><p class="no">${t("cracked")}</p><button class="btn btn-bad" data-act="newslide" style="margin-top:.6rem">${t("newSlide")}</button></div>`
+          : !L.lightOn?`<p class="muted" style="margin-top:.75rem">${t("darkField")}</p>`:""}
+        <div class="knobs">
+          ${knob("coarse",t("coarse"),L.coarse,L.cracked)}
+          ${knob("fine",t("fine"),L.fine,L.cracked)}
+          ${knob("dia",t("diaphragm"),L.dia,!L.lightOn||L.cracked)}
+          ${knob("eyeTwist",t("twist"),L.eyeTwist||0,false,Math.round((L.eyeTwist||0)/100*360)+"°")}
+          <div>
+            <p class="tiny" style="color:var(--muted)">${t("working")}</p>
+            <div class="wd"><i id="wdbar" style="width:${Math.round(w*100)}%;background:${wcol}"></i></div>
+            <p class="muted" style="font-size:.75rem" id="wdnote">${L.obj===100&&w<.35?(S.lang==="es"?"El 100× está a una fracción de milímetro del vidrio.":"100× is a fraction of a millimeter from the glass."):L.obj===40&&w<.28?(S.lang==="es"?"El 40× está muy cerca del vidrio.":"40× is very close to the glass."):(S.lang==="es"?"Más barra = más lejos del lente.":"More bar = farther from the lens.")}</p>
+          </div>
+        </div>
+      </div>
+      <div class="desk-bar">
+        <div class="card board">${instrumentHTML("d")}</div>
+      </div>
+    </div>
+    <div class="card phone-bar">${instrumentHTML("p")}</div>
+    <div class="phone-follow" style="margin-top:1rem"></div>
+    ${practicalCard()}
+    </div></div>`;
+}
+function specCard(){
+  const L=S.lab, spec=SPECIMENS.find(s=>s.id===L.spec);
+  const killed=stainKills(L);
+  const extra=L.prism?abbeSentence():L.illum==="dark"?t("darkHint"):L.illum==="slit"?t("slitHint"):L.illum==="polar"?t("polarHint"):stainNote(L.stain);
+  return `<div class="card side">
+          <p class="tiny">${t("specimen")}</p>
+          <div style="display:flex;flex-wrap:wrap;gap:.35rem;margin-top:.45rem">${SPECIMENS.map(s=>`<button class="btn${L.spec===s.id?" btn-steel":""}" data-act="spec-${s.id}">${specShort(s)}</button>`).join("")}</div>
+          <p class="note-line">${specNote(spec)}</p>
+          <p class="note-line">${extra}${killed?" "+t("killedNote"):""}</p>
+          <p style="margin-top:.7rem"><button class="btn btn-steel" data-act="rife">${t("researchLook")}</button> <button class="btn" data-act="universal">${t("seatPrism")}</button></p>
+        </div>`;
+}
+function missionActs(i){
+  const L=S.lab, es=S.lang==="es";
+  const name=id=>specShort(SPECIMENS.find(s=>s.id===id));
+  if(i===0) return btn(L.lightOn,"lamp1",t("on"))+btn(L.clipped,"clip1",t("seated"))+btn(L.obj===4,"obj4","4×");
+  if(i===1) return btn(L.obj===10,"obj10","10×")+btn(L.obj===40,"obj40","40×")+`<p class="note-line">${es?"El micrométrico está debajo del círculo.":"The fine knob is under the circle."}</p>`;
+  if(i===2) return btn(L.spec==="onion","spec-onion",name("onion"))+btn(L.stain==="iodine","stain-iodine",t("iodine"))+btn(L.spec==="pond","spec-pond",name("pond"))+btn(L.illum==="dark","illum-dark",t("darkfield"));
+  if(i===3) return btn(L.obj===40,"obj40","40×")+btn(L.graticule,"grat1",t("scaleOn"))+btn(L.measure,"meas1",t("measure"))+`<p class="note-line">${t("tapMeasure")} ${es?"No arrastres.":"Don't drag."}</p>`;
+  if(i===4) return btn(L.spec==="virus","spec-virus",name("virus"))+btn(L.obj===100,"obj100","100×")+btn(L.oil,"oil1",t("oilOn"))+`<p class="note-line">${es?"Luego el micrométrico, debajo del círculo.":"Then the fine knob, under the circle."}</p>`;
+  if(i===5) return btn(L.illum==="slit","illum-slit",t("slitUltra"))
+    +btn(L.spec==="onion","spec-onion",name("onion"))
+    +btn(L.illum==="polar","illum-polar",t("polarized"))
+    +btn(L.spec==="virus","spec-virus",name("virus"))
+    +btn(L.obj===100,"obj100","100×")
+    +btn(L.oil,"oil1",t("oilOn"))
+    +btn(L.prism,"prism1",t("prismIn"))
+    +(L.prism?`<div style="flex-basis:100%">${knob("band", t("risley"), L.band, false, bandNm(L.band)+" nm")}</div><p class="note-line abbe">${abbeSentence()}</p>`:"");
+  return "";
+}
+function practicalCard(){
+  const step=stairNow();
+  const done=step>=STAIR.length;
+  const mark=id=>S.missions[id]?"✓":"";
+  return `<div class="card side practical-box">
+          <p class="tiny">${t("practical")}</p>
+          <p class="note-line">${t("practicalHint")}</p>
+          <ol class="stair">${STAIR.map((m,i)=>{
+            const state=i<step?"done":i===step?"now":"later";
+            const title=S.lang==="es"?m.es:m.en;
+            const blurb=S.lang==="es"?m.blurb_es:m.blurb_en;
+            if(state==="done") return `<li class="done"><p class="mk">${S.lang==="es"?"Misión":"Mission"} ${i+1} · ✓</p><h3>${title}</h3></li>`;
+            if(state==="later") return `<li class="later"><p class="mk">${S.lang==="es"?"Misión":"Mission"} ${i+1}</p><h3>${title}</h3></li>`;
+            const steps=`<ol>${m.steps.map(id=>`<li class="step"><span style="width:1.05rem;height:1.05rem;border-radius:99px;border:1px solid ${S.missions[id]?"var(--good)":"var(--line)"};background:${S.missions[id]?"var(--good-soft)":"transparent"};flex:0 0 auto;text-align:center;line-height:.95rem;font-size:.75rem;color:var(--good)">${mark(id)}</span><span style="${S.missions[id]?"text-decoration:line-through;color:var(--muted)":""}">${S.lang==="es"?STEP[id].es:STEP[id].en}</span></li>`).join("")}</ol>`;
+            return `<li class="now"><p class="mk">${S.lang==="es"?"Misión":"Mission"} ${i+1}</p><h3>${title}</h3><p class="note-line" style="margin:0">${blurb}</p>${steps}<div class="do">${missionActs(i)}</div></li>`;
+          }).join("")}</ol>
+          ${done?`<p class="ok" style="margin:.65rem 0 0">${t("practicalDone")}</p>`:""}
+        </div>`;
+}
+function knob(id,label,val,dis,shown){const show=shown==null?Math.round(val):shown;return `<label class="knob"><span>${label}<b style="color:var(--ink);font-family:ui-monospace,monospace">${show}</b></span><input class="scope-knob" type="range" min="0" max="100" value="${val}" data-knob="${id}" ${dis?"disabled":""}></label>`}
+
+function ensureFind(){
+  if(S.find) return;
+  const items=shuffle(PARTS.map(p=>({p:p.p,byName:Math.random()<.55})));
+  S.find={items,at:0,right:0,missed:[],tries:0,done:false,mark:{},say:null};
+}
+function pageFind(){
+  ensureFind();
+  const F=S.find;
+  if(F.done){
+    const missed=F.missed.map(p=>nm(byP(p))).filter(Boolean);
+    return `<div class="card side" style="border-width:2px;border-color:var(--steel)">
+      <p class="tiny">${t("findDone")}</p>
+      <h1 style="font-size:2.4rem">${F.right} / ${F.items.length} ${t("firstTryWord")}</h1>
+      <p class="lead">${t("findAgainCopy")}</p>
+      ${missed.length?`<ul>${missed.map(n=>`<li>${n}</li>`).join("")}</ul>`:""}
+      <div style="display:flex;gap:.5rem;flex-wrap:wrap;margin-top:1rem">
+        <button class="btn btn-steel" data-act="findagain">${t("runAgain")}</button>
+        <a class="btn" href="#job">${t("toJob")}</a>
+      </div></div>`;
+  }
+  const item=F.items[F.at], part=byP(item.p);
+  return `<h1>${t("find")}</h1><p class="lead">${t("findHint")}</p>
+    <div class="split">
+      <div class="card order-scope sticky" style="padding:.75rem" id="findScope">${scopeSVG({marks:F.mark})}</div>
+      <div class="card side order-prompt">
+        <p class="muted" style="font-size:.75rem;letter-spacing:.08em;text-transform:uppercase">${F.at+1} / ${F.items.length}</p>
+        <h2>${item.byName?`${t("tapThis")} <span style="color:var(--steel)">${nm(part)}</span>`:`${t("whichJob")}<p style="font-family:var(--sans);font-size:1.05rem;font-weight:500">${what(part)}</p>`}</h2>
+        <p class="${F.say?F.say.ok?"ok":"no":""}" style="min-height:1.4rem">${F.say?F.say.text:""}</p>
+        <p class="muted" style="font-variant-numeric:tabular-nums">${t("firstTry")}: ${F.right}</p>
+      </div>
+    </div>`;
+}
+
+function jobBank(){
+  const fromParts=PARTS.flatMap(d=>[
+    {kind:"what",p:d.p,q:(S.lang==="es"?`¿Qué hace el ${d.es}?`:`What does the ${d.en} do?`),opts:shuffle([d,...shuffle(PARTS.filter(x=>x.p!==d.p)).slice(0,3)]).map(x=>({id:x.p,label:what(x)})),a:d.p},
+    {kind:"which",p:d.p,q:t("whichPart")+" "+what(d),opts:shuffle([d,...shuffle(PARTS.filter(x=>x.p!==d.p)).slice(0,3)]).map(x=>({id:x.p,label:nm(x)})),a:d.p}
+  ]);
+  const scen=SCENARIOS.map(s=>{
+    if(s.opts_en){ const opts=(S.lang==="es"?s.opts_es:s.opts_en).map((label,i)=>({id:"o"+i,label})); return {kind:"scen",p:null,q:S.lang==="es"?s.q_es:s.q_en,opts,a:"o"+s.correct}; }
+    const right=byP(s.a); const opts=shuffle([right,...s.wrong.map(byP)]).map(x=>({id:x.p,label:nm(x)}));
+    return {kind:"scen",p:s.a,q:S.lang==="es"?s.q_es:s.q_en,opts,a:s.a};
+  });
+  return shuffle(fromParts).slice(0,4).concat(scen);
+}
+function ensureJob(){ if(!S.job) S.job={items:jobBank(),at:0,right:0,missed:[],picked:null,done:false}; }
+function pageJob(){
+  ensureJob();
+  const J=S.job;
+  if(J.done){
+    const missed=[...new Set(J.missed)].map(p=>byP(p)).filter(Boolean);
+    return `<div class="card side" style="border-width:2px;border-color:var(--steel)">
+      <p class="tiny">${t("jobDone")}</p>
+      <h1 style="font-size:2.4rem">${J.right} / ${J.items.length}</h1>
+      <p class="lead">${t("jobAgainCopy")}</p>
+      ${missed.length?`<ul>${missed.map(p=>`<li>${nm(p)}</li>`).join("")}</ul>`:""}
+      <div style="display:flex;gap:.5rem;flex-wrap:wrap;margin-top:1rem">
+        <button class="btn btn-steel" data-act="jobagain">${t("runAgain")}</button>
+        <a class="btn" href="#find">${t("toFind")}</a>
+        <a class="btn" href="#lab">${t("toLab")}</a>
+      </div></div>`;
+  }
+  const q=J.items[J.at];
+  return `<h1>${t("job")}</h1><p class="lead">${t("jobHint")}</p>
+    <div class="card side">
+      <p class="muted" style="font-size:.75rem;letter-spacing:.08em;text-transform:uppercase">${J.at+1} / ${J.items.length}</p>
+      <h2>${q.q}</h2>
+      <div class="opts">${q.opts.map(o=>{
+        let cls="opt";
+        if(J.picked){ if(o.id===q.a) cls+=" right"; else if(o.id===J.picked) cls+=" wrong"; }
+        return `<button class="${cls}" data-opt="${o.id}">${o.label}</button>`;
+      }).join("")}</div>
+      <p class="${J.picked?(J.picked===q.a?"ok":"no"):""}" style="min-height:1.4rem;margin-top:.75rem">${J.picked? (J.picked===q.a?t("yes"):t("greenOne")) :""}</p>
+      <p class="muted">${t("rightSoFar")}: ${J.right}</p>
+    </div>`;
+}
+
+function pagePrint(){
+  const rows=PARTS.map((d,i)=>`<div style="display:grid;grid-template-columns:1.6rem 1fr;gap:.4rem;padding:.55rem 0;border-bottom:1px dashed var(--line)"><b>${LETTERS[i]}.</b><span style="border-bottom:1px solid var(--line)">&nbsp;</span></div>`).join("");
+  const key=PARTS.map((d,i)=>`<tr><td>${LETTERS[i]}</td><td>${nm(d)}</td><td>${what(d)}</td></tr>`).join("");
+  return `<h1 class="no-print">${t("print")}</h1>
+    <p class="lead no-print">${t("printHint")}</p>
+    <p class="no-print"><button class="btn btn-steel" data-act="doprint">${t("printBtn")}</button></p>
+    <p class="muted no-print" style="font-size:.9rem">${t("printNote")}</p>
+    <div class="paper card" id="paper">
+      <div class="psheet">
+        <h1>${t("app")}</h1>
+        <p>${t("paperSub")}</p>
+        ${scopeSVG({labeled:true})}
+        ${rows}
+      </div>
+      <div class="psheet">
+        <h2>${t("keyHead")}</h2>
+        <table style="width:100%;border-collapse:collapse;font-size:.9rem">
+          <thead><tr><th></th><th>${t("keyPart")}</th><th>${t("keyWhat")}</th></tr></thead>
+          <tbody>${key}</tbody>
+        </table>
+      </div>
+    </div>`;
+}
+
+/* ════ eyepiece ════ */
+/* AOG-SCOPE-SLIDE-V2 — Jimmy: wet-mount realism. Newsprint fibers, onion middle-lamella,
+   Wright discs, a human hair shaft, squamous cheek, elodea streaming, a living pond drop.
+   No photos, no tracking. Safari still blurs by shrinking a buffer (ctx.filter inside clip() is ignored). */
+let eyeRaf=0, critters=[], bacteria=[];
+const SLIDE={ready:false};
+function mulberry32(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return ((t^t>>>14)>>>0)/4294967296}}
+function cssVar(n,fb){ const v=getComputedStyle(document.documentElement).getPropertyValue(n).trim(); return v||fb; }
+if(typeof CanvasRenderingContext2D!=="undefined" && !CanvasRenderingContext2D.prototype.roundRect){
+  CanvasRenderingContext2D.prototype.roundRect=function(x,y,w,h,r){ this.beginPath(); this.rect(x,y,w,h); };
+}
+function mkCan(w,h){ const c=document.createElement("canvas"); c.width=w; c.height=h; return c; }
+function airBubble(ctx,x,y,r){
+  ctx.save();
+  const g=ctx.createRadialGradient(x-r*.28,y-r*.32,r*.08,x,y,r);
+  g.addColorStop(0,"rgba(255,255,255,.18)");
+  g.addColorStop(.55,"rgba(236,240,244,.04)");
+  g.addColorStop(.82,"rgba(40,50,60,.10)");
+  g.addColorStop(.92,"rgba(20,24,28,.38)");
+  g.addColorStop(1,"rgba(255,255,255,.12)");
+  ctx.beginPath(); ctx.arc(x,y,r,0,Math.PI*2); ctx.fillStyle=g; ctx.fill();
+  ctx.beginPath(); ctx.arc(x,y,r,0,Math.PI*2);
+  ctx.strokeStyle="rgba(30,32,36,.55)"; ctx.lineWidth=Math.max(1.1,r*.055); ctx.stroke();
+  ctx.beginPath(); ctx.arc(x,y,r*.88,0,Math.PI*2);
+  ctx.strokeStyle="rgba(255,255,255,.35)"; ctx.lineWidth=Math.max(.7,r*.03); ctx.stroke();
+  ctx.beginPath(); ctx.ellipse(x-r*.32,y-r*.34,r*.22,r*.12,-.55,0,Math.PI*2);
+  ctx.fillStyle="rgba(255,255,255,.62)"; ctx.fill();
+  ctx.restore();
+}
+function bakeGrain(){
+  const c=mkCan(96,96), ctx=c.getContext("2d"), rng=mulberry32(0x6a17);
+  const img=ctx.createImageData(96,96), d=img.data;
+  for(let i=0;i<d.length;i+=4){ const n=200+rng()*55|0; d[i]=d[i+1]=d[i+2]=n; d[i+3]=40; }
+  ctx.putImageData(img,0,0); return c;
+}
+function bakeLetterE(){
+  const W=1600,H=1140,c=mkCan(W,H),ctx=c.getContext("2d"),rng=mulberry32(0xe1e1);
+  ctx.fillStyle="#d4c7a4"; ctx.fillRect(0,0,W,H);
+  for(let i=0;i<14000;i++){
+    ctx.fillStyle=`rgba(${190+rng()*40|0},${170+rng()*30|0},${120+rng()*30|0},${.03+rng()*.07})`;
+    ctx.fillRect(rng()*W,rng()*H,1+rng()*5,.5+rng()*1.6);
+  }
+  ctx.strokeStyle="rgba(150,138,112,.28)"; ctx.lineWidth=1;
+  for(let y=28;y<H-20;y+=16){ ctx.beginPath(); ctx.moveTo(20,y+rng()*2.4); ctx.lineTo(W-20,y+rng()*2.4); ctx.stroke(); }
+  /* felted cellulose — the 40× money shot is fibers, not type */
+  for(let i=0;i<520;i++){
+    const x=rng()*W, y=rng()*H, len=40+rng()*180, a=(rng()-.5)*Math.PI, w=.6+rng()*1.8;
+    ctx.strokeStyle=`rgba(${200+rng()*40|0},${180+rng()*30|0},${140+rng()*30|0},${.18+rng()*.35})`;
+    ctx.lineWidth=w; ctx.beginPath();
+    ctx.moveTo(x,y);
+    ctx.quadraticCurveTo(x+Math.cos(a)*len*.5+rng()*18, y+Math.sin(a)*len*.5+(rng()-.5)*22, x+Math.cos(a)*len, y+Math.sin(a)*len);
+    ctx.stroke();
+  }
+  ctx.fillStyle="rgba(28,28,30,.16)";
+  ctx.font="500 20px Georgia,'Times New Roman',serif";
+  const bits=["the","and","of","a","to","in","was","for","on","with","as","that","from","his","her"];
+  for(let i=0;i<36;i++){
+    ctx.save();
+    ctx.translate(50+rng()*(W-100), 40+rng()*(H-80));
+    ctx.rotate((rng()-.5)*.03);
+    ctx.fillText(bits[i%bits.length],0,0);
+    ctx.restore();
+  }
+  const letter=mkCan(W,H), ltx=letter.getContext("2d");
+  ltx.translate(W*.52, H*.52);
+  ltx.font="700 460px Georgia,'Times New Roman','Liberation Serif',serif";
+  ltx.textAlign="center"; ltx.textBaseline="middle";
+  ltx.shadowColor="rgba(20,14,8,.65)"; ltx.shadowBlur=14;
+  ltx.fillStyle="rgba(28,18,12,.55)";
+  ltx.fillText("e", 3, 4);
+  ltx.shadowBlur=0;
+  ltx.fillStyle="#16120e";
+  ltx.fillText("e", 0, 0);
+  ltx.globalCompositeOperation="destination-out";
+  for(let i=0;i<2400;i++){
+    const x=-280+rng()*560, y=-300+rng()*600, a=rng()*Math.PI, len=16+rng()*70;
+    ltx.strokeStyle=`rgba(0,0,0,${.55+rng()*.45})`;
+    ltx.lineWidth=1.1+rng()*3.2;
+    ltx.beginPath(); ltx.moveTo(x,y); ltx.lineTo(x+Math.cos(a)*len, y+Math.sin(a)*len); ltx.stroke();
+  }
+  ltx.globalCompositeOperation="source-atop";
+  for(let i=0;i<260;i++){
+    const x=-240+rng()*480, y=-260+rng()*520, a=rng()*Math.PI, len=14+rng()*80;
+    ltx.strokeStyle=`rgba(${200+rng()*40|0},${180+rng()*30|0},${130+rng()*30|0},${.22+rng()*.4})`;
+    ltx.lineWidth=.7+rng()*1.6;
+    ltx.beginPath(); ltx.moveTo(x,y); ltx.lineTo(x+Math.cos(a)*len, y+Math.sin(a)*len); ltx.stroke();
+  }
+  ctx.drawImage(letter,0,0);
+  for(let i=0;i<220;i++){
+    const x=rng()*W, y=rng()*H, a=rng()*Math.PI, len=16+rng()*90;
+    ctx.strokeStyle=`rgba(${200+rng()*35|0},${185+rng()*25|0},${140+rng()*25|0},${.12+rng()*.22})`;
+    ctx.lineWidth=.5+rng()*1.3;
+    ctx.beginPath(); ctx.moveTo(x,y); ctx.lineTo(x+Math.cos(a)*len, y+Math.sin(a)*len); ctx.stroke();
+  }
+  for(let i=0;i<90;i++){
+    ctx.fillStyle=`rgba(20,22,24,${.04+rng()*.1})`;
+    ctx.beginPath(); ctx.arc(rng()*W,rng()*H,.4+rng()*1.3,0,Math.PI*2); ctx.fill();
+  }
+  return {c, w:680, h:485};
+}
+function bakeOnion(){
+  const W=2200,H=1680,c=mkCan(W,H),ctx=c.getContext("2d"),rng=mulberry32(0x0e10);
+  const bg=ctx.createLinearGradient(0,0,W,H);
+  bg.addColorStop(0,"#efe6c6"); bg.addColorStop(1,"#e2d2a4");
+  ctx.fillStyle=bg; ctx.fillRect(0,0,W,H);
+  for(let i=0;i<9000;i++){
+    ctx.fillStyle=`rgba(140,110,50,${.012+rng()*.03})`;
+    ctx.fillRect(rng()*W,rng()*H,1+rng()*3,1);
+  }
+  const cols=14, rows=24, cw=W/cols, ch=H/rows;
+  const pts=[];
+  for(let r=0;r<=rows;r++){
+    pts[r]=[];
+    for(let col=0;col<=cols;col++){
+      pts[r][col]={x:col*cw+(rng()-.5)*cw*.42, y:r*ch+(rng()-.5)*ch*.48};
+    }
+  }
+  ctx.lineJoin="round"; ctx.lineCap="round";
+  const cells=[];
+  for(let r=0;r<rows;r++){
+    for(let col=0;col<cols;col++){
+      const a=pts[r][col], b=pts[r][col+1], d=pts[r+1][col+1], e=pts[r+1][col];
+      cells.push({a,b,d,e, r, col});
+    }
+  }
+  cells.forEach(cell=>{
+    const {a,b,d,e}=cell;
+    ctx.beginPath(); ctx.moveTo(a.x,a.y); ctx.lineTo(b.x,b.y); ctx.lineTo(d.x,d.y); ctx.lineTo(e.x,e.y); ctx.closePath();
+    const tint=196+rng()*28|0;
+    ctx.fillStyle=`rgba(${tint},${tint-18|0},${tint-70|0},${.42+rng()*.18})`;
+    ctx.fill();
+    const mx=(a.x+b.x+d.x+e.x)/4, my=(a.y+b.y+d.y+e.y)/4;
+    ctx.beginPath(); ctx.ellipse(mx,my,cw*.28,ch*.32,0,0,Math.PI*2);
+    ctx.fillStyle=`rgba(236,226,186,${.28+rng()*.2})`; ctx.fill();
+    for(let i=0;i<26;i++){
+      ctx.fillStyle=`rgba(120,82,28,${.05+rng()*.1})`;
+      ctx.beginPath(); ctx.arc(mx+(rng()-.5)*cw*.62, my+(rng()-.5)*ch*.62, .6+rng()*1.4, 0, Math.PI*2); ctx.fill();
+    }
+  });
+  /* walls: dark pair with a pale middle lamella */
+  cells.forEach(cell=>{
+    const {a,b,d,e}=cell;
+    ctx.beginPath(); ctx.moveTo(a.x,a.y); ctx.lineTo(b.x,b.y); ctx.lineTo(d.x,d.y); ctx.lineTo(e.x,e.y); ctx.closePath();
+    ctx.strokeStyle="rgba(78,48,14,.72)"; ctx.lineWidth=4.2; ctx.stroke();
+    ctx.strokeStyle="rgba(228,206,140,.7)"; ctx.lineWidth=1.35; ctx.stroke();
+  });
+  cells.forEach(cell=>{
+    if(rng()<.14) return;
+    const {a,b,d,e}=cell;
+    const mx=(a.x+b.x+d.x+e.x)/4, my=(a.y+b.y+d.y+e.y)/4;
+    const edge=rng()*4|0;
+    const walls=[[a,b],[b,d],[d,e],[e,a]];
+    const [p,q]=walls[edge];
+    const t=.25+rng()*.5;
+    const nx=p.x+(q.x-p.x)*t, ny=p.y+(q.y-p.y)*t;
+    const vx=mx-nx, vy=my-ny, vlen=Math.hypot(vx,vy)||1;
+    const nr=7.5+rng()*5.5;
+    const cxn=nx+vx/vlen*(nr*1.15), cyn=ny+vy/vlen*(nr*1.15);
+    const g=ctx.createRadialGradient(cxn-nr*.2,cyn-nr*.2,nr*.12,cxn,cyn,nr);
+    g.addColorStop(0,"#d09248"); g.addColorStop(.45,"#9a5a22"); g.addColorStop(1,"rgba(90,42,12,.12)");
+    ctx.beginPath(); ctx.ellipse(cxn,cyn,nr,nr*.86,rng(),0,Math.PI*2); ctx.fillStyle=g; ctx.fill();
+    ctx.beginPath(); ctx.ellipse(cxn,cyn,nr,nr*.86,0,0,Math.PI*2);
+    ctx.strokeStyle="rgba(70,36,10,.28)"; ctx.lineWidth=.8; ctx.stroke();
+    if(rng()>.28){
+      ctx.beginPath(); ctx.arc(cxn+nr*.18,cyn-nr*.12,nr*.2,0,Math.PI*2);
+      ctx.fillStyle="rgba(48,22,8,.75)"; ctx.fill();
+    }
+    if(rng()>.6){
+      ctx.strokeStyle="rgba(110,72,24,.28)"; ctx.lineWidth=.9;
+      for(let s=0;s<3;s++){
+        ctx.beginPath(); ctx.moveTo(cxn,cyn);
+        ctx.quadraticCurveTo((cxn+mx)/2+(rng()-.5)*8, (cyn+my)/2, mx+(rng()-.5)*cw*.25, my+(rng()-.5)*ch*.25);
+        ctx.stroke();
+      }
+    }
+  });
+  /* peel fold */
+  ctx.strokeStyle="rgba(40,24,8,.4)"; ctx.lineWidth=6;
+  ctx.beginPath(); ctx.moveTo(W*.06,H*.2); ctx.quadraticCurveTo(W*.42,H*.52,W*.94,H*.7); ctx.stroke();
+  ctx.strokeStyle="rgba(210,180,110,.35)"; ctx.lineWidth=2;
+  ctx.beginPath(); ctx.moveTo(W*.06,H*.2); ctx.quadraticCurveTo(W*.42,H*.52,W*.94,H*.7); ctx.stroke();
+  /* torn edge */
+  ctx.fillStyle="rgba(236,228,204,.55)";
+  ctx.beginPath(); ctx.moveTo(0,0); ctx.lineTo(W*.12,0);
+  ctx.quadraticCurveTo(W*.08,H*.3, W*.04, H*.55); ctx.lineTo(0,H*.55); ctx.closePath(); ctx.fill();
+  airBubble(ctx, W*.8, H*.2, 18);
+  airBubble(ctx, W*.16, H*.82, 12);
+  return {c, w:188, h:144};
+}
+function bakeBlood(){
+  /* Wright-Giemsa monolayer: salmon biconcave discs, central pallor, a few real WBCs, platelets.
+     Pack is a short stretch of smear (~1.2 mm) so 4× shows a pink island and 40× is inside the monolayer. */
+  const W=2600,H=1600,c=mkCan(W,H),ctx=c.getContext("2d"),rng=mulberry32(0xb10e);
+  const bg=ctx.createLinearGradient(0,0,W,0);
+  bg.addColorStop(0,"#e8cfc8"); bg.addColorStop(.18,"#f3e4de"); bg.addColorStop(.55,"#f7eee8"); bg.addColorStop(1,"#f4ebe4");
+  ctx.fillStyle=bg; ctx.fillRect(0,0,W,H);
+  for(let i=0;i<9000;i++){
+    ctx.fillStyle=`rgba(${180+rng()*40|0},${140+rng()*40|0},${140+rng()*30|0},${.015+rng()*.04})`;
+    ctx.fillRect(rng()*W,rng()*H,1+rng()*2,1);
+  }
+  function rbc(x,y,r,rot,kind){
+    ctx.save(); ctx.translate(x,y); ctx.rotate(rot);
+    const rx=r*(.95+rng()*.08), ry=r*(.80+rng()*.14);
+    if(kind==="echin"){
+      ctx.beginPath();
+      const n=11+(rng()*3|0);
+      for(let i=0;i<n;i++){
+        const a=i/n*Math.PI*2, rr=r*(i%2?1.22:.78);
+        const px=Math.cos(a)*rr, py=Math.sin(a)*rr*.9;
+        if(i) ctx.lineTo(px,py); else ctx.moveTo(px,py);
+      }
+      ctx.closePath();
+      ctx.fillStyle="rgba(176,58,62,.88)"; ctx.fill();
+      ctx.restore(); return;
+    }
+    const g=ctx.createRadialGradient(-rx*.15,-ry*.2,r*.08, 0,0, Math.max(rx,ry));
+    g.addColorStop(0,`rgb(${214+rng()*20|0},${62+rng()*16|0},${64+rng()*10|0})`);
+    g.addColorStop(.42,`rgb(${168+rng()*12|0},${42+rng()*10|0},${52+rng()*8|0})`);
+    g.addColorStop(.78,`rgb(${132+rng()*10|0},${32+rng()*8|0},${42})`);
+    g.addColorStop(1,`rgb(${118},${30},${40})`);
+    ctx.beginPath(); ctx.ellipse(0,0,rx,ry,0,0,Math.PI*2); ctx.fillStyle=g; ctx.fill();
+    ctx.beginPath(); ctx.ellipse(rx*.02, ry*.02, rx*.42, ry*.36, rng()*.4, 0, Math.PI*2);
+    ctx.fillStyle=`rgba(${236+rng()*16|0},${198+rng()*20|0},${184},${.82+rng()*.14})`; ctx.fill();
+    ctx.beginPath(); ctx.ellipse(0,0,rx*.98,ry*.98,0,0,Math.PI*2);
+    ctx.strokeStyle="rgba(96,24,32,.55)"; ctx.lineWidth=1.15; ctx.stroke();
+    ctx.strokeStyle="rgba(255,228,210,.4)"; ctx.lineWidth=1;
+    ctx.beginPath(); ctx.ellipse(-rx*.08,-ry*.1,rx*.78,ry*.62,-.5, Math.PI*1.05, Math.PI*1.85); ctx.stroke();
+    ctx.restore();
+  }
+  function chromatin(px,py,rr){
+    ctx.fillStyle="rgba(28,12,48,.55)";
+    for(let i=0;i<7;i++){
+      ctx.beginPath();
+      ctx.ellipse(px+(rng()-.5)*rr*.7, py+(rng()-.5)*rr*.7, rr*(.12+rng()*.16), rr*(.1+rng()*.14), rng(), 0, Math.PI*2);
+      ctx.fill();
+    }
+  }
+  function wbcNeutrophil(x,y,s){
+    ctx.save(); ctx.translate(x,y);
+    ctx.beginPath(); ctx.ellipse(0,0,s*1.05,s*.95,rng(),0,Math.PI*2);
+    ctx.fillStyle="rgba(236,210,214,.92)"; ctx.fill();
+    ctx.strokeStyle="rgba(160,90,110,.18)"; ctx.stroke();
+    const lobes=3+(rng()>.55?1:0);
+    ctx.fillStyle="#3a1848";
+    for(let i=0;i<lobes;i++){
+      const a=i/lobes*Math.PI*2+0.4, d=s*.32;
+      ctx.beginPath(); ctx.ellipse(Math.cos(a)*d, Math.sin(a)*d, s*.28, s*.22, a, 0, Math.PI*2); ctx.fill();
+      chromatin(Math.cos(a)*d, Math.sin(a)*d, s*.28);
+    }
+    ctx.strokeStyle="rgba(50,16,60,.55)"; ctx.lineWidth=1.2;
+    ctx.beginPath();
+    for(let i=0;i<lobes;i++){
+      const a=i/lobes*Math.PI*2+0.4, d=s*.32;
+      if(i) ctx.lineTo(Math.cos(a)*d, Math.sin(a)*d); else ctx.moveTo(Math.cos(a)*d, Math.sin(a)*d);
+    }
+    ctx.stroke();
+    ctx.fillStyle="rgba(190,80,90,.35)";
+    for(let i=0;i<28;i++){ ctx.beginPath(); ctx.arc((rng()-.5)*s*1.6,(rng()-.5)*s*1.5,.6+rng()*.5,0,Math.PI*2); ctx.fill(); }
+    ctx.restore();
+  }
+  function wbcLymph(x,y,s){
+    ctx.save(); ctx.translate(x,y);
+    ctx.beginPath(); ctx.arc(0,0,s*1.05,0,Math.PI*2);
+    ctx.fillStyle="rgba(186,198,220,.9)"; ctx.fill();
+    ctx.beginPath(); ctx.arc(-s*.05,s*.02,s*.78,0,Math.PI*2);
+    ctx.fillStyle="#2a1438"; ctx.fill();
+    chromatin(-s*.05,s*.02,s*.78);
+    ctx.restore();
+  }
+  function wbcMono(x,y,s){
+    ctx.save(); ctx.translate(x,y);
+    ctx.beginPath(); ctx.ellipse(0,0,s*1.25,s*1.1,.2,0,Math.PI*2);
+    ctx.fillStyle="rgba(176,186,198,.9)"; ctx.fill();
+    ctx.beginPath(); ctx.ellipse(-s*.1,0,s*.7,s*.85,-.4,0,Math.PI*2);
+    ctx.fillStyle="#3a2048"; ctx.fill();
+    chromatin(-s*.1,0,s*.7);
+    ctx.restore();
+  }
+  function wbcEo(x,y,s){
+    ctx.save(); ctx.translate(x,y);
+    ctx.beginPath(); ctx.ellipse(0,0,s*1.1,s,0,0,Math.PI*2);
+    ctx.fillStyle="rgba(232,150,110,.55)"; ctx.fill();
+    ctx.fillStyle="rgba(210,70,36,.85)";
+    for(let i=0;i<55;i++){
+      ctx.beginPath(); ctx.ellipse((rng()-.5)*s*1.7,(rng()-.5)*s*1.5, 1.5+rng()*1.2, 1.1+rng(), rng(),0,Math.PI*2); ctx.fill();
+    }
+    ctx.fillStyle="#321848";
+    ctx.beginPath(); ctx.ellipse(-s*.32,0,s*.28,s*.22,0,0,Math.PI*2); ctx.fill();
+    ctx.beginPath(); ctx.ellipse(s*.34,s*.04,s*.26,s*.2,.3,0,Math.PI*2); ctx.fill();
+    ctx.restore();
+  }
+  const rbcR=12.4;
+  /* thick zone — overlapping + rouleaux */
+  for(let i=0;i<900;i++){
+    const x=rng()*W*.28, y=H*.08+rng()*H*.84;
+    rbc(x,y,rbcR*(.92+rng()*.18), rng()*Math.PI, "disc");
+  }
+  for(let k=0;k<28;k++){
+    const x=40+rng()*W*.24, y=H*.12+rng()*H*.76, a=rng()*Math.PI, n=4+(rng()*5|0);
+    for(let j=0;j<n;j++){
+      rbc(x+Math.cos(a)*j*rbcR*1.55, y+Math.sin(a)*j*rbcR*1.15, rbcR*(.9+rng()*.12), a, "disc");
+    }
+  }
+  /* monolayer */
+  for(let i=0;i<1100;i++){
+    const x=W*.24+rng()*W*.52, y=H*.07+rng()*H*.86;
+    rbc(x,y,rbcR*(.88+rng()*.2), rng()*Math.PI, rng()>.97?"echin":"disc");
+  }
+  /* feathered edge */
+  for(let i=0;i<240;i++){
+    const x=W*.74+rng()*W*.24, y=H*.1+rng()*H*.8;
+    rbc(x,y,rbcR*(.85+rng()*.22), rng()*Math.PI, rng()>.86?"echin":"disc");
+  }
+  /* platelets */
+  for(let i=0;i<160;i++){
+    const x=W*.2+rng()*W*.7, y=H*.1+rng()*H*.8, n=2+(rng()*6|0);
+    for(let j=0;j<n;j++){
+      ctx.fillStyle=`rgba(${90+rng()*40|0},${30+rng()*30|0},${90+rng()*40|0},${.55+rng()*.35})`;
+      ctx.beginPath(); ctx.ellipse(x+(rng()-.5)*7, y+(rng()-.5)*6, 1.4+rng()*1.6, 1.1+rng()*1.2, rng(),0,Math.PI*2); ctx.fill();
+    }
+  }
+  wbcNeutrophil(W*.42, H*.38, 22);
+  wbcNeutrophil(W*.58, H*.62, 21);
+  wbcNeutrophil(W*.33, H*.7, 20);
+  wbcLymph(W*.51, H*.28, 16);
+  wbcLymph(W*.68, H*.48, 15);
+  wbcMono(W*.47, H*.52, 26);
+  wbcEo(W*.61, H*.36, 21);
+  /* stain precipitate */
+  for(let i=0;i<70;i++){
+    ctx.fillStyle=`rgba(70,20,80,${.2+rng()*.35})`;
+    ctx.beginPath(); ctx.arc(rng()*W,rng()*H,.7+rng()*1.4,0,Math.PI*2); ctx.fill();
+  }
+  airBubble(ctx, W*.82, H*.18, 34);
+  return {c, w:96, h:59};
+}
+function bakeHair(){
+  /* Longitudinal wet-mount of a medium-brown human scalp hair.
+     ~95 µm shaft: cuticle scales, pigmented cortex, fragmented medulla, a split tip. */
+  const W=2600,H=760,c=mkCan(W,H),ctx=c.getContext("2d"),rng=mulberry32(0x11a1);
+  ctx.fillStyle="#ebe4d0"; ctx.fillRect(0,0,W,H);
+  for(let i=0;i<7000;i++){
+    ctx.fillStyle=`rgba(${150+rng()*40|0},${140+rng()*30|0},${110+rng()*30|0},${.02+rng()*.05})`;
+    ctx.fillRect(rng()*W,rng()*H,1+rng()*3,1);
+  }
+  function pt(t){
+    return {
+      x: 50 + t*(W-90),
+      y: H*.5 + Math.sin(t*Math.PI*1.28)*48 + Math.sin(t*6.8)*8
+    };
+  }
+  const steps=1100;
+  for(let i=0;i<=steps;i++){
+    const t=i/steps, p=pt(t), q=pt(Math.min(1,t+1/steps));
+    const dx=q.x-p.x, dy=q.y-p.y, len=Math.hypot(dx,dy)||1;
+    const ang=Math.atan2(dy,dx);
+    const r = 44*(1.08-t*.24)*(1+(rng()-.5)*.025);
+    const split = t>0.9;
+    const drawShaft=(ox,oy,rr,medOn)=>{
+      ctx.save(); ctx.translate(p.x+ox, p.y+oy); ctx.rotate(ang);
+      const g=ctx.createLinearGradient(0,-rr,0,rr);
+      g.addColorStop(0,"rgba(220,190,140,.12)");
+      g.addColorStop(.07,"rgba(168,112,58,.95)");
+      g.addColorStop(.2,"rgba(110,62,28,.94)");
+      g.addColorStop(.38,"rgba(88,48,22,.9)");
+      g.addColorStop(.5, medOn?"rgba(210,190,150,.22)":"rgba(78,42,18,.9)");
+      g.addColorStop(.62,"rgba(88,48,22,.9)");
+      g.addColorStop(.8,"rgba(110,62,28,.94)");
+      g.addColorStop(.93,"rgba(168,112,58,.95)");
+      g.addColorStop(1,"rgba(220,190,140,.12)");
+      ctx.fillStyle=g;
+      ctx.fillRect(-1.4,-rr,3.4,rr*2);
+      ctx.restore();
+    };
+    const medOn = t>0.06 && t<0.78 && ((t*40|0)%5!==2);
+    if(split){
+      const d= (t-0.9)/0.1 * 18;
+      drawShaft(0,-d, r*.55, false);
+      drawShaft(0, d, r*.48, false);
+    } else {
+      drawShaft(0,0,r,medOn);
+    }
+  }
+  /* melanin granules in the cortex */
+  for(let i=0;i<5200;i++){
+    const t=rng()*0.92;
+    const p=pt(t), q=pt(Math.min(1,t+0.002));
+    const dx=q.x-p.x, dy=q.y-p.y, len=Math.hypot(dx,dy)||1;
+    const nx=-dy/len, ny=dx/len;
+    const r=44*(1.08-t*.24);
+    const off=(rng()-.5)*r*1.55;
+    if(Math.abs(off)<r*.22) continue;
+    ctx.fillStyle=`rgba(${40+rng()*30|0},${18+rng()*16|0},${8+rng()*10|0},${.25+rng()*.5})`;
+    ctx.beginPath(); ctx.ellipse(p.x+nx*off, p.y+ny*off, .7+rng()*1.1, .4+rng()*.6, Math.atan2(dy,dx),0,Math.PI*2); ctx.fill();
+  }
+  /* cuticle scales — imbricate, free edge toward the tip */
+  for(let s=-1;s<=1;s+=2){
+    for(let i=0;i<320;i++){
+      const t=0.02+i/320*0.88;
+      const p=pt(t), q=pt(Math.min(1,t+0.004));
+      const dx=q.x-p.x, dy=q.y-p.y, len=Math.hypot(dx,dy)||1;
+      const nx=-dy/len, ny=dx/len, tx=dx/len, ty=dy/len;
+      const r=44*(1.08-t*.24);
+      const x=p.x+nx*s*(r-0.6), y=p.y+ny*s*(r-0.6);
+      ctx.beginPath();
+      ctx.moveTo(x-tx*9, y-ty*9);
+      ctx.quadraticCurveTo(x+nx*s*6.5, y+ny*s*6.5, x+tx*8, y+ty*8);
+      ctx.strokeStyle=`rgba(70,40,16,${.45+rng()*.3})`;
+      ctx.lineWidth=1.6; ctx.stroke();
+      ctx.strokeStyle=`rgba(230,200,150,${.2+rng()*.2})`;
+      ctx.lineWidth=.7; ctx.stroke();
+    }
+  }
+  /* bright refractive rim on one edge */
+  for(let i=0;i<steps;i+=2){
+    const t=i/steps, p=pt(t), q=pt(Math.min(1,t+1/steps));
+    const dx=q.x-p.x, dy=q.y-p.y, len=Math.hypot(dx,dy)||1;
+    const nx=-dy/len, ny=dx/len;
+    const r=44*(1.08-t*.24);
+    ctx.fillStyle="rgba(255,236,200,.28)";
+    ctx.beginPath(); ctx.arc(p.x+nx*(r-1.2), p.y+ny*(r-1.2), 1.3, 0, Math.PI*2); ctx.fill();
+  }
+  /* medulla air pockets — the canal students are told to find */
+  for(let i=0;i<22;i++){
+    const t=0.08+i/22*0.66;
+    if((i%4)===2) continue;
+    const p=pt(t), q=pt(Math.min(1,t+0.012));
+    const dx=q.x-p.x, dy=q.y-p.y, ang=Math.atan2(dy,dx);
+    ctx.save(); ctx.translate(p.x,p.y); ctx.rotate(ang);
+    ctx.fillStyle="rgba(32,20,12,.72)";
+    ctx.beginPath(); ctx.ellipse(0,0, 18+rng()*12, 5.5+rng()*2.2, 0,0,Math.PI*2); ctx.fill();
+    ctx.fillStyle="rgba(236,220,180,.4)";
+    ctx.beginPath(); ctx.ellipse(0,0, 11+rng()*8, 2.6+rng()*1.4, 0,0,Math.PI*2); ctx.fill();
+    ctx.restore();
+  }
+  /* cut root-ish end on the left: blunt chop through cortex */
+  (function(){
+    const p=pt(0.012), q=pt(0.02);
+    const dx=q.x-p.x, dy=q.y-p.y, ang=Math.atan2(dy,dx);
+    ctx.save(); ctx.translate(p.x,p.y); ctx.rotate(ang);
+    ctx.fillStyle="rgba(90,50,24,.55)";
+    ctx.beginPath(); ctx.moveTo(-2,-46); ctx.lineTo(6,-38); ctx.lineTo(6,38); ctx.lineTo(-2,46); ctx.closePath(); ctx.fill();
+    ctx.restore();
+  })();
+  /* skin flake + oil */
+  ctx.save();
+  ctx.translate(W*.22, H*.22); ctx.rotate(-.4);
+  ctx.beginPath(); ctx.ellipse(0,0,22,14,0,0,Math.PI*2);
+  ctx.fillStyle="rgba(210,190,150,.45)"; ctx.fill();
+  ctx.strokeStyle="rgba(120,90,50,.35)"; ctx.stroke();
+  ctx.restore();
+  airBubble(ctx, W*.78, H*.22, 36);
+  airBubble(ctx, W*.16, H*.78, 22);
+  return {c, w:214, h:62};
+}
+function bakeCheek(){
+  const W=2400,H=1800, packW=148, packH=111;
+  const c=mkCan(W,H),ctx=c.getContext("2d"),rng=mulberry32(0xc4ee);
+  ctx.fillStyle="#e8e2d2"; ctx.fillRect(0,0,W,H);
+  for(let i=0;i<8000;i++){
+    ctx.fillStyle=`rgba(180,175,160,${.02+rng()*.04})`;
+    ctx.fillRect(rng()*W,rng()*H,1+rng()*3,1);
+  }
+  function blob(ox,oy,rx,ry,rot){
+    const n=14+(rng()*6|0), pts=[];
+    for(let i=0;i<n;i++){
+      const a=i/n*Math.PI*2;
+      const rr=.82+Math.sin(i*1.7+ox)*.1+(rng()-.5)*.12;
+      pts.push({x:Math.cos(a)*rx*rr, y:Math.sin(a)*ry*rr});
+    }
+    ctx.save(); ctx.translate(ox,oy); ctx.rotate(rot);
+    ctx.beginPath();
+    ctx.moveTo((pts[0].x+pts[n-1].x)/2,(pts[0].y+pts[n-1].y)/2);
+    for(let i=0;i<n;i++){
+      const p=pts[i], q=pts[(i+1)%n];
+      ctx.quadraticCurveTo(p.x,p.y,(p.x+q.x)/2,(p.y+q.y)/2);
+    }
+    ctx.closePath();
+    const g=ctx.createRadialGradient(-rx*.2,-ry*.15,rx*.05,0,0,Math.max(rx,ry));
+    g.addColorStop(0,`rgba(214,206,214,${.55+rng()*.15})`);
+    g.addColorStop(.55,`rgba(186,170,176,${.38+rng()*.12})`);
+    g.addColorStop(1,"rgba(160,140,148,.08)");
+    ctx.fillStyle=g; ctx.fill();
+    ctx.strokeStyle="rgba(90,70,80,.42)"; ctx.lineWidth=2.2; ctx.stroke();
+    ctx.strokeStyle="rgba(255,250,244,.35)"; ctx.lineWidth=1;
+    ctx.beginPath(); ctx.ellipse(-rx*.1,-ry*.08,rx*.7,ry*.55,-.4,Math.PI,Math.PI*1.7); ctx.stroke();
+    ctx.strokeStyle="rgba(120,90,100,.18)"; ctx.lineWidth=1.4;
+    for(let i=0;i<4;i++){
+      ctx.beginPath();
+      ctx.moveTo((rng()-.5)*rx*.8, (rng()-.5)*ry*.7);
+      ctx.bezierCurveTo((rng()-.5)*rx*.5,(rng()-.5)*ry*.5,(rng()-.5)*rx*.4,(rng()-.5)*ry*.3,(rng()-.5)*rx*.7,(rng()-.5)*ry*.6);
+      ctx.stroke();
+    }
+    const nx=(rng()-.5)*rx*.35, ny=(rng()-.5)*ry*.3, nr=rx*(.22+rng()*.08);
+    const ng=ctx.createRadialGradient(nx-nr*.25,ny-nr*.2,nr*.08,nx,ny,nr);
+    ng.addColorStop(0,"#2a1838"); ng.addColorStop(.6,"#4a3058"); ng.addColorStop(1,"rgba(70,48,80,.2)");
+    ctx.beginPath(); ctx.ellipse(nx,ny,nr,nr*.86,rng(),0,Math.PI*2); ctx.fillStyle=ng; ctx.fill();
+    ctx.strokeStyle="rgba(20,10,28,.45)"; ctx.lineWidth=1.2; ctx.stroke();
+    ctx.fillStyle="rgba(16,8,24,.55)";
+    for(let i=0;i<11;i++){
+      ctx.beginPath(); ctx.ellipse(nx+(rng()-.5)*nr*.85, ny+(rng()-.5)*nr*.75, nr*(.08+rng()*.12), nr*(.06+rng()*.1), rng(),0,Math.PI*2); ctx.fill();
+    }
+    ctx.beginPath(); ctx.arc(nx+nr*.15, ny-nr*.08, nr*.16, 0, Math.PI*2);
+    ctx.fillStyle="rgba(80,40,30,.7)"; ctx.fill();
+    ctx.restore();
+    return {ox,oy,rx,ry};
+  }
+  const placed=[];
+  for(let i=0;i<22;i++){
+    const x=180+rng()*(W-360), y=160+rng()*(H-320);
+    const rx=70+rng()*95, ry=48+rng()*80, rot=rng()*Math.PI;
+    placed.push(blob(x,y,rx,ry,rot));
+  }
+  /* bacteria as short rods clustered on cell edges */
+  for(let i=0;i<280;i++){
+    const host=placed[rng()*placed.length|0];
+    const ang=rng()*Math.PI*2;
+    const d=host.rx*(.7+rng()*.45);
+    const x=host.ox+Math.cos(ang)*d, y=host.oy+Math.sin(ang)*d*(host.ry/host.rx);
+    ctx.save(); ctx.translate(x,y); ctx.rotate(rng()*Math.PI);
+    const len=3.2+rng()*3.4, th=.7+rng()*.45;
+    ctx.fillStyle=`rgba(36,44,28,${.45+rng()*.4})`;
+    ctx.beginPath(); ctx.ellipse(0,0,len,th,0,0,Math.PI*2); ctx.fill();
+    ctx.fillStyle="rgba(255,255,255,.18)";
+    ctx.beginPath(); ctx.ellipse(-len*.25,-th*.2,len*.28,th*.35,0,0,Math.PI*2); ctx.fill();
+    ctx.restore();
+  }
+  airBubble(ctx, 1980, 280, 48);
+  airBubble(ctx, 320, 1480, 30);
+  return {c, w:packW, h:packH};
+}
+function bakeElodea(){
+  const W=2000,H=1500, packW=156, packH=117;
+  const c=mkCan(W,H),ctx=c.getContext("2d"),rng=mulberry32(0xedea);
+  ctx.fillStyle="#d4e0c4"; ctx.fillRect(0,0,W,H);
+  for(let i=0;i<6000;i++){
+    ctx.fillStyle=`rgba(80,110,50,${.012+rng()*.03})`;
+    ctx.fillRect(rng()*W,rng()*H,1+rng()*2,1);
+  }
+  const cols=9, rows=12, cells=[];
+  const mw=W*.9, mh=H*.9, ox=W*.05, oy=H*.05, cw=mw/cols, ch=mh/rows;
+  ctx.lineJoin="round";
+  for(let r=0;r<rows;r++){
+    for(let col=0;col<cols;col++){
+      const midrib = col===4 || col===5;
+      const x=ox+col*cw+(rng()-.5)*5, y=oy+r*ch+(rng()-.5)*5;
+      const w=(midrib?cw*.72:cw)-8, h=ch-6;
+      ctx.beginPath();
+      const j=3.2;
+      ctx.moveTo(x+rng()*j, y+rng()*j);
+      ctx.lineTo(x+w-rng()*j, y+rng()*j);
+      ctx.lineTo(x+w-rng()*j, y+h-rng()*j);
+      ctx.lineTo(x+rng()*j, y+h-rng()*j);
+      ctx.closePath();
+      ctx.fillStyle=midrib?`rgba(186,214,150,.22)`:`rgba(232,236,214,.35)`;
+      ctx.fill();
+      ctx.strokeStyle="rgba(28,62,18,.82)"; ctx.lineWidth=midrib?4.2:3.1; ctx.stroke();
+      ctx.strokeStyle="rgba(210,228,170,.55)"; ctx.lineWidth=1.2; ctx.stroke();
+      const sx=(x+w/2 - W/2) * (packW/W);
+      const sy=(y+h/2 - H/2) * (packH/H);
+      cells.push({
+        x:sx, y:sy,
+        w:w*(packW/W), h:h*(packH/H),
+        n:18+(rng()*14|0), seed:rng()*1000
+      });
+      if(rng()>.7){
+        const nx=x+w*(.15+rng()*.7), ny=y+h*(.15+rng()*.7);
+        ctx.beginPath(); ctx.ellipse(nx,ny, 6, 5, 0,0,Math.PI*2);
+        ctx.fillStyle="rgba(70,90,40,.28)"; ctx.fill();
+      }
+    }
+  }
+  return {c, w:packW, h:packH, cells};
+}
+function bakePondBg(){
+  const W=1600,H=1600,c=mkCan(W,H),ctx=c.getContext("2d"),rng=mulberry32(0x90ed);
+  ctx.fillStyle="#e4dfc6"; ctx.fillRect(0,0,W,H);
+  for(let i=0;i<12000;i++){
+    ctx.fillStyle=`rgba(${90+rng()*50|0},${90+rng()*40|0},${50+rng()*30|0},${.02+rng()*.06})`;
+    ctx.fillRect(rng()*W,rng()*H,1+rng()*2,1);
+  }
+  /* silt flocs */
+  for(let i=0;i<90;i++){
+    const x=rng()*W, y=rng()*H, s=5+rng()*22;
+    ctx.fillStyle=`rgba(${90+rng()*50|0},${90+rng()*40|0},${40+rng()*30|0},${.08+rng()*.16})`;
+    ctx.beginPath(); ctx.ellipse(x,y,s,s*(.45+rng()*.55),rng(),0,Math.PI*2); ctx.fill();
+  }
+  /* plant fibers */
+  for(let i=0;i<18;i++){
+    ctx.strokeStyle=`rgba(70,90,40,${.12+rng()*.2})`; ctx.lineWidth=.8+rng()*1.6;
+    ctx.beginPath();
+    const x=rng()*W, y=rng()*H, a=rng()*Math.PI, len=40+rng()*160;
+    ctx.moveTo(x,y);
+    ctx.quadraticCurveTo(x+Math.cos(a)*len*.5+(rng()-.5)*30, y+Math.sin(a)*len*.5, x+Math.cos(a)*len, y+Math.sin(a)*len);
+    ctx.stroke();
+  }
+  /* pennate diatoms */
+  for(let i=0;i<14;i++){
+    ctx.save();
+    ctx.translate(rng()*W, rng()*H); ctx.rotate(rng()*Math.PI);
+    const s=8+rng()*16;
+    ctx.beginPath(); ctx.ellipse(0,0,s*2.1,s*.55,0,0,Math.PI*2);
+    ctx.fillStyle="rgba(190,200,170,.4)"; ctx.fill();
+    ctx.strokeStyle="rgba(70,80,50,.45)"; ctx.lineWidth=1; ctx.stroke();
+    ctx.strokeStyle="rgba(70,80,50,.28)"; ctx.lineWidth=.6;
+    for(let k=-5;k<=5;k++){ ctx.beginPath(); ctx.moveTo(k*s*.32,-s*.42); ctx.lineTo(k*s*.32,s*.42); ctx.stroke(); }
+    ctx.restore();
+  }
+  airBubble(ctx, 1180, 300, 52);
+  airBubble(ctx, 260, 1220, 34);
+  return {c, w:360, h:360};
+}
+function bakeVirus(){
+  const W=1800,H=1400,c=mkCan(W,H),ctx=c.getContext("2d"),rng=mulberry32(0x71c5);
+  ctx.fillStyle="#e7e1cd"; ctx.fillRect(0,0,W,H);
+  for(let i=0;i<5000;i++){
+    ctx.fillStyle=`rgba(130,118,86,${.015+rng()*.04})`;
+    ctx.fillRect(rng()*W,rng()*H,1,1);
+  }
+  function cell(x,y,rx,ry,cpe){
+    ctx.save(); ctx.translate(x,y); ctx.rotate(rng()*Math.PI);
+    const g=ctx.createRadialGradient(-rx*.15,-ry*.2, rx*.08, 0,0, Math.max(rx,ry));
+    if(cpe){
+      g.addColorStop(0,"rgba(255,250,236,.96)");
+      g.addColorStop(.5,"rgba(214,196,160,.72)");
+      g.addColorStop(1,"rgba(160,130,90,0)");
+    } else {
+      g.addColorStop(0,"rgba(252,246,230,.7)");
+      g.addColorStop(.62,"rgba(228,214,184,.55)");
+      g.addColorStop(1,"rgba(168,142,108,.16)");
+    }
+    ctx.fillStyle=g;
+    ctx.beginPath();
+    const k=11;
+    for(let i=0;i<=k;i++){
+      const a=i/k*Math.PI*2;
+      const j=cpe?0.06:0.14+((i*3)%5)*0.015;
+      const px=Math.cos(a)*rx*(1+Math.sin(a*2+rx)*j);
+      const py=Math.sin(a)*ry*(1+Math.cos(a*3+ry)*j*.8);
+      if(i) ctx.lineTo(px,py); else ctx.moveTo(px,py);
+    }
+    ctx.closePath();
+    ctx.fill();
+    ctx.strokeStyle=cpe?"rgba(90,60,24,.4)":"rgba(80,60,40,.28)";
+    ctx.lineWidth=cpe?1.6:1.1; ctx.stroke();
+    if(cpe){
+      ctx.beginPath(); ctx.ellipse(0,0,rx*1.08,ry*1.08,0,0,Math.PI*2);
+      ctx.strokeStyle="rgba(255,255,255,.55)"; ctx.lineWidth=3; ctx.stroke();
+    }
+    for(let i=0;i<10;i++){
+      ctx.fillStyle=`rgba(110,80,40,${.05+rng()*.08})`;
+      ctx.beginPath(); ctx.arc((rng()-.5)*rx*1.1,(rng()-.5)*ry, 1.4+rng()*2.2, 0, Math.PI*2); ctx.fill();
+    }
+    ctx.beginPath(); ctx.ellipse(rx*.06, ry*.04, rx*.3, ry*.26, rng(), 0, Math.PI*2);
+    ctx.fillStyle=cpe?"rgba(92,58,32,.62)":"rgba(132,96,58,.4)"; ctx.fill();
+    ctx.beginPath(); ctx.arc(rx*.1, ry*.02, Math.max(3,rx*.07), 0, Math.PI*2);
+    ctx.fillStyle="rgba(70,42,24,.5)"; ctx.fill();
+    ctx.restore();
+  }
+  for(let row=0;row<5;row++){
+    for(let col=0;col<6;col++){
+      const cpe=rng()>0.84;
+      const rx=cpe?42+rng()*14:78+rng()*36;
+      const ry=cpe?38+rng()*12:52+rng()*26;
+      cell(150+col*270+(rng()-.5)*50, 130+row*250+(rng()-.5)*40, rx, ry, cpe);
+    }
+  }
+  airBubble(ctx, 260, 160, 36);
+  return {c, w:168, h:130};
+}
+function bakeBactBg(){
+  const W=1400,H=1100,c=mkCan(W,H),ctx=c.getContext("2d"),rng=mulberry32(0xbac0);
+  ctx.fillStyle="#efe8d4"; ctx.fillRect(0,0,W,H);
+  ctx.save();
+  ctx.translate(W/2,H/2); ctx.rotate(-0.4);
+  ctx.beginPath(); ctx.ellipse(0,0,380,160,0,0,Math.PI*2);
+  ctx.fillStyle="rgba(60,48,28,.16)"; ctx.fill();
+  for(let i=0;i<80;i++){
+    ctx.beginPath(); ctx.ellipse((rng()-.5)*900,(rng()-.5)*340, 8+rng()*30, 4+rng()*14, rng(), 0, Math.PI*2);
+    ctx.fillStyle=`rgba(50,40,24,${.04+rng()*.08})`; ctx.fill();
+  }
+  ctx.restore();
+  for(let i=0;i<2500;i++){
+    ctx.fillStyle=`rgba(40,36,24,${.03+rng()*.06})`;
+    ctx.fillRect(rng()*W,rng()*H,1,1);
+  }
+  return {c, w:160, h:126};
+}
+function ensureSlides(){
+  if(SLIDE.ready) return;
+  SLIDE.e=bakeLetterE();
+  SLIDE.onion=bakeOnion();
+  SLIDE.blood=bakeBlood();
+  SLIDE.cheek=bakeCheek();
+  SLIDE.hair=bakeHair();
+  SLIDE.elodea=bakeElodea();
+  SLIDE.pondBg=bakePondBg();
+  SLIDE.virus=bakeVirus();
+  SLIDE.bact=bakeBactBg();
+  SLIDE.grain=bakeGrain();
+  SLIDE.dust=Array.from({length:14},(_,i)=>{
+    const rng=mulberry32(0xd05+i*17);
+    return {a:rng()*Math.PI*2, t:.12+rng()*.78, s:.7+rng()*1.5, k:rng(), fiber:i%5===0, fx:(rng()-.5)*26, fy:(rng()-.5)*18};
+  });
+  SLIDE.ready=true;
+}
+function blit(ctx, pack){
+  ctx.drawImage(pack.c, -pack.w/2, -pack.h/2, pack.w, pack.h);
+}
+function seedCritters(){
+  const rng=mulberry32(0xf0ed ^ ((Date.now()&0xffff)));
+  const o=[];
+  const put=(kind,x,y,extra)=>{
+    o.push(Object.assign({
+      kind, x, y, a:rng()*Math.PI*2, s:.9+rng()*.35,
+      v:8, z:.25+rng()*.75, seed:rng()*100, ph:rng()*6
+    }, extra||{}));
+  };
+  put("para", -95, 48, {s:1.05, v:1.3, z:.95});
+  put("para", 108, -55, {s:.78, v:1.6});
+  put("para", 18, 102, {s:.92, v:1.4});
+  put("eug", -48, -92, {v:2.4});
+  put("eug", 72, 58, {v:2.1, s:1.15});
+  put("eug", -112, -8, {v:1.8});
+  put("vort", 46, -78, {v:0, a:.15, z:.9});
+  put("roti", -62, 18, {v:1.1});
+  put("amoeba", 96, 78, {v:0.45, s:1.15});
+  put("spiro", -18, -42, {v:0, a:.2, s:.62});
+  for(let i=0;i<5;i++) put("diatom", (rng()-.5)*160, (rng()-.5)*140, {v:.4+rng()*.5, s:.7+rng()*.6});
+  for(let i=0;i<7;i++) put("det", (rng()-.5)*170, (rng()-.5)*150, {v:.15+rng()*.3, s:.6+rng()*1.4});
+  for(let i=0;i<4;i++) put("algae", (rng()-.5)*130, (rng()-.5)*120, {v:.8+rng(), s:.8+rng()*.5});
+  for(let i=0;i<90;i++) put("brown", (rng()-.5)*180, (rng()-.5)*160, {v:0, s:.4+rng()*.8, a:rng()*6});
+  return o;
+}
+function seedBacteria(){
+  const rng=mulberry32(0xbac7);
+  const o=[];
+  const clump=(n,cx,cy,kind)=>{
+    for(let i=0;i<n;i++){
+      const ang=rng()*6.28, rad=rng()*rng()*2.8;
+      o.push({
+        kind, x:cx+Math.cos(ang)*rad, y:cy+Math.sin(ang)*rad,
+        a:rng()*6.28, L:.85+rng()*.55, W:.16+rng()*.05,
+        n: kind==="coccus" ? 2+(rng()*6|0) : 1,
+        v:.35+rng()*.4, seed:rng()*100
+      });
+    }
+  };
+  clump(46, 0, 0, "rod");
+  clump(22, 1.2, 0.4, "rod");
+  clump(14, -1.5, 1.1, "coccus");
+  clump(8, 2.2, -1.4, "coccus");
+  clump(5, -2.4, -0.6, "spir");
+  return o;
+}
+function paraPath(ctx){
+  ctx.beginPath();
+  ctx.moveTo(16.5,0.4);
+  ctx.bezierCurveTo(15,-6.2, 6,-9.2, -4,-8.4);
+  ctx.bezierCurveTo(-14,-7.2, -19,-3.2, -18.2,0.6);
+  ctx.bezierCurveTo(-17.2,5.4, -8,8.6, 2,7.6);
+  ctx.bezierCurveTo(12,6.4, 17,3.2, 16.5,0.4);
+  ctx.closePath();
+}
+function drawPondLive(ctx, now, reduced){
+  const dark = S.lab.illum==="dark" || S.lab.illum==="slit";
+  const tt = reduced ? 0 : now/1000;
+  const list = critters.slice().sort((a,b)=>(a.z||0)-(b.z||0));
+  list.forEach(c=>{
+    ctx.save();
+    ctx.translate(c.x, c.y);
+    ctx.rotate(c.a||0);
+    const sc=c.s||1;
+    ctx.scale(sc, sc*(c.kind==="para"||c.kind==="eug"?0.92:1));
+    const soft = (c.z||1)<0.38;
+    ctx.globalAlpha = soft ? 0.55 : 1;
+    if(c.kind==="brown"){
+      const jx=reduced?0:Math.sin(tt*7+c.seed)*0.35;
+      const jy=reduced?0:Math.cos(tt*6.2+c.seed*1.7)*0.35;
+      ctx.beginPath(); ctx.arc(jx,jy,0.18+c.s*0.12,0,Math.PI*2);
+      ctx.fillStyle=dark?"rgba(255,236,190,.75)":"rgba(80,70,40,.35)";
+      ctx.fill();
+      ctx.restore(); return;
+    }
+    if(c.kind==="det"){
+      ctx.rotate(tt*0.15+c.seed);
+      ctx.beginPath();
+      ctx.moveTo(-3.2,-1.1); ctx.lineTo(-1.4,-2.4); ctx.lineTo(2.1,-1.6); ctx.lineTo(3.4,0.8); ctx.lineTo(0.6,2.2); ctx.lineTo(-2.8,1.4);
+      ctx.closePath();
+      ctx.fillStyle=dark?"rgba(210,190,140,.45)":"rgba(90,70,40,.28)";
+      ctx.fill();
+      ctx.restore(); return;
+    }
+    if(c.kind==="diatom"){
+      ctx.scale(1.4,1);
+      ctx.beginPath(); ctx.ellipse(0,0,4.2,1.35,0,0,Math.PI*2);
+      ctx.fillStyle=dark?"rgba(230,240,210,.35)":"rgba(210,214,190,.55)"; ctx.fill();
+      ctx.strokeStyle=dark?"rgba(255,250,220,.85)":"rgba(50,60,40,.55)"; ctx.lineWidth=.35; ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(-3.6,0); ctx.lineTo(3.6,0); ctx.stroke();
+      for(let k=-4;k<=4;k++){ ctx.beginPath(); ctx.moveTo(k*0.7,-1.05); ctx.lineTo(k*0.7,1.05); ctx.stroke(); }
+      ctx.restore(); return;
+    }
+    if(c.kind==="vort"){
+      const snap=Math.sin(tt*0.85+c.seed)>0.93;
+      const coil=snap?1.1:(5.5+Math.sin(tt*2.2+c.seed)*0.8);
+      ctx.strokeStyle=dark?"rgba(255,230,170,.8)":"rgba(70,100,70,.6)";
+      ctx.lineWidth=dark?0.7:0.45;
+      ctx.beginPath();
+      for(let i=0;i<16;i++){
+        const y=i*(coil/7), x=Math.sin(i*0.85+tt*3)* (snap?0.05:0.12)*i*0.12;
+        if(i) ctx.lineTo(x,y); else ctx.moveTo(x,y);
+      }
+      ctx.stroke();
+      ctx.beginPath(); ctx.ellipse(0,-1.6,3.4,4.2,0,0,Math.PI*2);
+      ctx.fillStyle=dark?"rgba(255,236,190,.55)":"rgba(150,170,130,.35)"; ctx.fill();
+      ctx.strokeStyle=dark?"rgba(255,248,220,.9)":"rgba(40,70,45,.55)"; ctx.lineWidth=.4; ctx.stroke();
+      ctx.beginPath(); ctx.ellipse(0.4,0.4,1.3,1.6,.4,0,Math.PI*2);
+      ctx.fillStyle=dark?"rgba(255,200,120,.45)":"rgba(80,60,40,.28)"; ctx.fill();
+      ctx.strokeStyle=dark?"rgba(255,245,210,.95)":"rgba(40,60,40,.45)"; ctx.lineWidth=.35;
+      for(let i=0;i<16;i++){
+        const ang=-Math.PI*0.15+i/16*Math.PI*1.3, wob=reduced?0:Math.sin(tt*18+i)*0.45;
+        ctx.beginPath();
+        ctx.moveTo(Math.cos(ang)*3.1, -4.6+Math.sin(ang)*2.2);
+        ctx.lineTo(Math.cos(ang)*(4.6+wob), -5.2+Math.sin(ang)*3.1);
+        ctx.stroke();
+      }
+      ctx.restore(); return;
+    }
+    if(c.kind==="spiro"){
+      ctx.strokeStyle=dark?"rgba(80,90,60,.0)":"rgba(40,80,40,.35)";
+      ctx.lineWidth=.55;
+      const cells=7;
+      for(let n=0;n<cells;n++){
+        const x=-16+n*5.1;
+        ctx.strokeStyle=dark?"rgba(220,255,180,.55)":"rgba(30,70,30,.45)";
+        ctx.strokeRect(x-2.3,-2.3,4.6,4.6);
+        ctx.strokeStyle=dark?"rgba(180,255,130,.95)":"rgba(36,110,32,.75)";
+        ctx.lineWidth=dark?0.55:0.28;
+        ctx.beginPath();
+        for(let i=0;i<=12;i++){
+          const u=i/12, px=x-2.2+u*4.4, py=Math.sin(u*Math.PI*2.2 + n*0.6)*1.15;
+          if(i) ctx.lineTo(px,py); else ctx.moveTo(px,py);
+        }
+        ctx.stroke();
+      }
+      ctx.restore(); return;
+    }
+    if(c.kind==="para"){
+      paraPath(ctx);
+      ctx.fillStyle=dark?"rgba(255,228,170,.82)":"rgba(214,202,168,.62)"; ctx.fill();
+      paraPath(ctx);
+      ctx.strokeStyle=dark?"rgba(255,248,220,.98)":"rgba(72,58,32,.72)";
+      ctx.lineWidth=dark?0.85:0.55; ctx.stroke();
+      ctx.save(); ctx.clip();
+      ctx.globalAlpha=soft?0.4:0.85;
+      for(let i=0;i<18;i++){
+        const gx=-12+ (i%6)*4.2, gy=-4+(i%3)*2.6;
+        ctx.fillStyle=dark?"rgba(255,220,150,.18)":"rgba(120,100,60,.13)";
+        ctx.beginPath(); ctx.ellipse(gx,gy,0.7,0.45,i,0,Math.PI*2); ctx.fill();
+      }
+      ctx.beginPath(); ctx.ellipse(-3.2,0.2,4.6,2.4,.35,0,Math.PI*2);
+      ctx.fillStyle=dark?"rgba(255,196,120,.55)":"rgba(110,78,48,.4)"; ctx.fill();
+      ctx.beginPath(); ctx.ellipse(-2.2,0.5,1.1,0.7,0,0,Math.PI*2);
+      ctx.fillStyle=dark?"rgba(255,230,180,.7)":"rgba(70,48,30,.45)"; ctx.fill();
+      ctx.fillStyle=dark?"rgba(255,210,140,.4)":"rgba(90,80,50,.3)";
+      [[7,2.2,1.5],[2,-2.4,1.1],[-10,2.1,1.3],[10,-1.2,0.9]].forEach(([x,y,r])=>{
+        ctx.beginPath(); ctx.arc(x,y,r,0,Math.PI*2); ctx.fill();
+      });
+      const pulse=.55+.45*Math.sin(tt*3.2+c.seed);
+      ctx.beginPath(); ctx.arc(11.5,-1.6,1.7*pulse,0,Math.PI*2);
+      ctx.fillStyle=dark?"rgba(220,240,255,.85)":"rgba(210,220,230,.7)"; ctx.fill();
+      ctx.strokeStyle=dark?"rgba(255,240,200,.35)":"rgba(80,80,70,.25)"; ctx.lineWidth=.3;
+      for(let i=0;i<5;i++){
+        const a=-0.6+i*0.35;
+        ctx.beginPath(); ctx.moveTo(11.5,-1.6); ctx.lineTo(11.5+Math.cos(a)*3.2, -1.6+Math.sin(a)*2.2); ctx.stroke();
+      }
+      ctx.restore();
+      ctx.beginPath(); ctx.moveTo(6,1.6); ctx.quadraticCurveTo(-1,5.2,-9,1.2);
+      ctx.strokeStyle=dark?"rgba(255,210,140,.55)":"rgba(60,50,30,.4)"; ctx.lineWidth=.7; ctx.stroke();
+      ctx.strokeStyle=dark?"rgba(255,250,220,.98)":"rgba(60,52,32,.62)";
+      ctx.lineWidth=dark?0.7:0.42;
+      const nC=32;
+      for(let i=0;i<nC;i++){
+        const u=i/(nC-1);
+        const wob=reduced?0:Math.sin(tt*16+i*0.7)*0.85;
+        const side=i%2?1:-1;
+        const px=-16+u*32, py=(side>0?6.6:-6.8)*(1-Math.pow((u-.5)*1.7,2));
+        const nx=side>0?0.15:-0.15, ny=side;
+        ctx.beginPath();
+        ctx.moveTo(px, py*0.92);
+        ctx.lineTo(px+nx*wob, py + ny*(1.15+wob*0.25));
+        ctx.stroke();
+      }
+      ctx.restore(); return;
+    }
+    if(c.kind==="eug"){
+      ctx.beginPath();
+      ctx.moveTo(8.2,0);
+      ctx.bezierCurveTo(6,-2.6, 1,-3.3, -4,-2.2);
+      ctx.bezierCurveTo(-8,-1.1, -9.2,0.4, -7.4,1.6);
+      ctx.bezierCurveTo(-3,3.1, 3,2.6, 8.2,0);
+      ctx.closePath();
+      ctx.fillStyle=dark?"rgba(150,255,110,.28)":"rgba(46,120,42,.55)"; ctx.fill();
+      ctx.strokeStyle=dark?"rgba(220,255,170,.9)":"rgba(24,70,24,.65)"; ctx.lineWidth=.4; ctx.stroke();
+      ctx.fillStyle=dark?"rgba(180,255,90,.8)":"rgba(30,110,36,.75)";
+      [[-2,-0.6,1.3,0.7],[1.2,0.5,1.5,0.8],[-4.5,0.4,1.1,0.55],[3.4,-0.2,1,0.5]].forEach(d=>{
+        ctx.beginPath(); ctx.ellipse(d[0],d[1],d[2],d[3],0.4,0,Math.PI*2); ctx.fill();
+      });
+      ctx.beginPath(); ctx.arc(-5.2,-0.7,0.7,0,Math.PI*2);
+      ctx.fillStyle=dark?"#ff7058":"#a02822"; ctx.fill();
+      const whip=reduced?0:Math.sin(tt*9+c.seed);
+      ctx.beginPath(); ctx.moveTo(8,0);
+      ctx.bezierCurveTo(11, whip*1.4, 14, whip*2.4, 18.5, whip*1.2);
+      ctx.strokeStyle=dark?"rgba(230,255,190,.9)":"rgba(30,60,24,.75)"; ctx.lineWidth=dark?0.55:0.35; ctx.stroke();
+      ctx.restore(); return;
+    }
+    if(c.kind==="roti"){
+      ctx.beginPath(); ctx.ellipse(0,2.2,3.2,5.4,0,0,Math.PI*2);
+      ctx.fillStyle=dark?"rgba(255,226,170,.4)":"rgba(190,165,110,.4)"; ctx.fill();
+      ctx.strokeStyle=dark?"rgba(255,240,200,.8)":"rgba(80,60,30,.45)"; ctx.lineWidth=.4; ctx.stroke();
+      ctx.beginPath(); ctx.ellipse(0,1.2,1.1,0.7,tt*6,0,Math.PI*2);
+      ctx.strokeStyle=dark?"rgba(255,200,120,.8)":"rgba(90,50,20,.55)"; ctx.stroke();
+      ctx.beginPath(); ctx.arc(0,-3.6,2.6,0,Math.PI*2);
+      ctx.fillStyle=dark?"rgba(255,236,190,.45)":"rgba(200,180,130,.4)"; ctx.fill();
+      ctx.strokeStyle=dark?"rgba(255,245,210,.9)":"rgba(70,60,30,.4)"; ctx.lineWidth=.35;
+      for(let w=0;w<2;w++){
+        const ox=w?1.5:-1.5;
+        for(let i=0;i<8;i++){
+          const a=tt*(reduced?0:14)+i*0.8+w, wob=reduced?0:0.5;
+          ctx.beginPath();
+          ctx.moveTo(ox+Math.cos(a)*1.3, -3.6+Math.sin(a)*1.3);
+          ctx.lineTo(ox+Math.cos(a)*(3.1+wob), -3.6+Math.sin(a)*(3.1+wob));
+          ctx.stroke();
+        }
+      }
+      ctx.restore(); return;
+    }
+    if(c.kind==="amoeba"){
+      ctx.beginPath();
+      const k=9;
+      for(let i=0;i<=k;i++){
+        const a=i/k*Math.PI*2;
+        const flow=reduced?0:Math.sin(tt*0.7+i+c.seed);
+        const rr=7.2+flow*2.4+Math.sin(i*1.7+c.ph)*1.6;
+        const x=Math.cos(a)*rr, y=Math.sin(a)*rr*0.72;
+        if(i) ctx.lineTo(x,y); else ctx.moveTo(x,y);
+      }
+      ctx.closePath();
+      ctx.fillStyle=dark?"rgba(255,220,160,.28)":"rgba(176,164,130,.32)"; ctx.fill();
+      ctx.strokeStyle=dark?"rgba(255,236,200,.75)":"rgba(90,70,40,.35)"; ctx.lineWidth=.4; ctx.stroke();
+      ctx.save(); ctx.clip();
+      for(let i=0;i<22;i++){
+        const gx=Math.sin(i*2.1)*4.2, gy=Math.cos(i*1.7)*3;
+        ctx.fillStyle=dark?"rgba(255,210,140,.35)":"rgba(80,60,30,.22)";
+        ctx.fillRect(gx,gy,0.45,0.45);
+      }
+      ctx.restore();
+      const lead=reduced?0:Math.sin(tt*0.7+c.seed)*2.4;
+      ctx.beginPath(); ctx.ellipse(6+lead*0.3,0,2.8,1.8,0,0,Math.PI*2);
+      ctx.fillStyle=dark?"rgba(255,240,210,.25)":"rgba(230,220,190,.28)"; ctx.fill();
+      ctx.beginPath(); ctx.arc(-1.2,0.3,1.5,0,Math.PI*2);
+      ctx.fillStyle=dark?"rgba(255,190,110,.8)":"rgba(90,60,36,.5)"; ctx.fill();
+      ctx.restore(); return;
+    }
+    if(c.kind==="algae"){
+      ctx.beginPath(); ctx.arc(0,0,2.4,0,Math.PI*2);
+      ctx.fillStyle=dark?"rgba(140,255,100,.55)":"rgba(40,120,48,.6)"; ctx.fill();
+      ctx.beginPath(); ctx.arc(-0.6,-0.4,0.7,0,Math.PI*2);
+      ctx.fillStyle=dark?"rgba(220,255,160,.7)":"rgba(160,210,60,.7)"; ctx.fill();
+      ctx.restore(); return;
+    }
+    ctx.restore();
+  });
+}
+function drawBactLive(ctx, now, reduced){
+  const stain=S.lab.stain||"none";
+  const tint = stain==="safranin" ? [150,28,48] : stain==="methylene" ? [28,42,130] : [55,62,40];
+  const a = stain==="none" ? 0.62 : 0.92;
+  bacteria.forEach(b=>{
+    ctx.save();
+    ctx.translate(b.x,b.y); ctx.rotate(b.a);
+    ctx.fillStyle=`rgba(${tint[0]},${tint[1]},${tint[2]},${a})`;
+    ctx.strokeStyle=`rgba(${tint[0]},${tint[1]},${tint[2]},${a})`;
+    if(b.kind==="coccus"){
+      const n=b.n||4;
+      for(let i=0;i<n;i++){
+        ctx.beginPath(); ctx.arc((i-(n-1)/2)*b.W*2.15, 0, b.W, 0, Math.PI*2); ctx.fill();
+      }
+    } else if(b.kind==="spir"){
+      ctx.lineWidth=b.W*1.7; ctx.lineCap="round"; ctx.beginPath();
+      for(let i=0;i<14;i++){
+        const x=i*b.L*0.28-b.L*1.6, y=Math.sin(i*0.85)*b.W*2.4;
+        if(i) ctx.lineTo(x,y); else ctx.moveTo(x,y);
+      }
+      ctx.stroke();
+    } else {
+      ctx.beginPath(); ctx.ellipse(0,0,b.L,b.W,0,0,Math.PI*2); ctx.fill();
+      ctx.lineWidth=Math.max(.04,b.W*.28);
+      ctx.strokeStyle=`rgba(${Math.max(0,tint[0]-40)},${Math.max(0,tint[1]-24)},${Math.max(0,tint[2]-24)},.9)`;
+      ctx.stroke();
+      if(((b.seed*10)|0)%3===0){
+        ctx.beginPath(); ctx.moveTo(0,-b.W*.9); ctx.lineTo(0,b.W*.9);
+        ctx.strokeStyle="rgba(255,255,255,.3)"; ctx.lineWidth=b.W*.2; ctx.stroke();
+      }
+      ctx.fillStyle=`rgba(255,255,255,${stain==="none"?0.14:0.22})`;
+      ctx.beginPath(); ctx.ellipse(-b.L*0.28,-b.W*0.2,b.L*0.22,b.W*0.3,0,0,Math.PI*2); ctx.fill();
+    }
+    ctx.restore();
+  });
+}
+function drawElodeaLive(ctx, now, reduced){
+  const pack=SLIDE.elodea; if(!pack||!pack.cells) return;
+  const tt=reduced?0:now/1000;
+  pack.cells.forEach(cell=>{
+    const n=cell.n, w=cell.w-3.4, h=cell.h-3.2;
+    const peri=2*(w+h);
+    for(let i=0;i<n;i++){
+      let t=((i/n)+tt*(.035+(cell.seed%7)*.004))%1;
+      if(t<0) t+=1;
+      const d=t*peri;
+      let x,y;
+      if(d<w){ x=cell.x-w/2+d; y=cell.y-h/2; }
+      else if(d<w+h){ x=cell.x+w/2; y=cell.y-h/2+(d-w); }
+      else if(d<w+h+w){ x=cell.x+w/2-(d-w-h); y=cell.y+h/2; }
+      else { x=cell.x-w/2; y=cell.y+h/2-(d-w-h-w); }
+      ctx.beginPath(); ctx.ellipse(x,y, 1.15, .78, t*6.2, 0, Math.PI*2);
+      ctx.fillStyle="rgba(18,108,32,.94)"; ctx.fill();
+      ctx.beginPath(); ctx.ellipse(x,y, 1.15, .78, t*6.2, 0, Math.PI*2);
+      ctx.strokeStyle="rgba(8,60,16,.45)"; ctx.lineWidth=.15; ctx.stroke();
+      ctx.beginPath(); ctx.ellipse(x-.28, y-.22, .38, .26, 0, 0, Math.PI*2);
+      ctx.fillStyle="rgba(210,236,90,.62)"; ctx.fill();
+    }
+  });
+}
+function bakeScale(){
+  const W=1600,H=520,c=mkCan(W,H),ctx=c.getContext("2d"),rng=mulberry32(0x5ca1e);
+  ctx.fillStyle="#ece6d4"; ctx.fillRect(0,0,W,H);
+  for(let i=0;i<4000;i++){
+    ctx.fillStyle=`rgba(180,170,150,${.03+rng()*.06})`;
+    ctx.fillRect(rng()*W,rng()*H,1+rng()*3,1);
+  }
+  const x0=80, x1=W-80, y=H*.52, span=x1-x0;
+  ctx.strokeStyle="rgba(20,22,26,.92)"; ctx.fillStyle="rgba(20,22,26,.92)";
+  ctx.lineWidth=8; ctx.beginPath(); ctx.moveTo(x0,y); ctx.lineTo(x1,y); ctx.stroke();
+  ctx.font="700 92px ui-sans-serif,system-ui,sans-serif"; ctx.textAlign="center"; ctx.textBaseline="bottom";
+  for(let i=0;i<=100;i++){
+    const x=x0+(i/100)*span;
+    const big=i%10===0, mid=i%5===0;
+    const h=big?120:mid?72:40;
+    ctx.lineWidth=big?7:mid?4:2.2;
+    ctx.beginPath(); ctx.moveTo(x,y-h); ctx.lineTo(x,y+h*.4); ctx.stroke();
+    if(big) ctx.fillText((i/100).toFixed(1), x, y-h-10);
+  }
+  ctx.font="700 56px ui-sans-serif,system-ui,sans-serif";
+  ctx.textAlign="left"; ctx.fillText("1.0 mm  ·  10 µm / tick", x0, H-36);
+  airBubble(ctx, 1400, 90, 36);
+  /* 1.00 mm = 85.86 spec units at this lab's FOV. Ruler is 90% of pack width. */
+  return {c, w:95.4, h:31};
+}
+function applyStain(ctx, w, h, L){
+  const s=L.stain||"none", spec=L.spec;
+  ctx.save();
+  if(s==="none"){
+    if(spec==="onion"||spec==="cheek"){
+      ctx.fillStyle="rgba(238,230,206,.78)"; ctx.fillRect(0,0,w,h);
+    } else if(spec==="blood"){
+      ctx.globalCompositeOperation="multiply";
+      ctx.fillStyle="rgba(232,214,170,.62)"; ctx.fillRect(0,0,w,h);
+      ctx.globalCompositeOperation="source-over";
+      ctx.fillStyle="rgba(236,224,190,.32)"; ctx.fillRect(0,0,w,h);
+    }
+  } else if(s==="iodine"){
+    ctx.globalCompositeOperation="multiply";
+    ctx.fillStyle="rgba(188,130,12,.28)"; ctx.fillRect(0,0,w,h);
+  } else if(s==="methylene"){
+    ctx.globalCompositeOperation="multiply";
+    ctx.fillStyle="rgba(20,48,170,.55)"; ctx.fillRect(0,0,w,h);
+    ctx.globalCompositeOperation="source-over";
+    ctx.fillStyle="rgba(30,60,180,.12)"; ctx.fillRect(0,0,w,h);
+  } else if(s==="wright"){
+    ctx.globalCompositeOperation="multiply";
+    ctx.fillStyle="rgba(210,140,160,.18)"; ctx.fillRect(0,0,w,h);
+  } else if(s==="safranin"){
+    ctx.globalCompositeOperation="multiply";
+    ctx.fillStyle="rgba(176,28,48,.5)"; ctx.fillRect(0,0,w,h);
+  }
+  ctx.restore();
+}
+function applyFilterTint(ctx, w, h, L){
+  let rgb, strong=false;
+  if(L.prism){
+    rgb=nmRGB(bandNm(L.band));
+    strong=true;
+  } else {
+    const f=FILTERS.find(x=>x.id===L.filter)||FILTERS[0];
+    if(f.id==="day") return;
+    rgb=f.rgb;
+  }
+  const glow=L.illum==="dark"||L.illum==="slit";
+  ctx.save();
+  if(glow){
+    ctx.globalCompositeOperation="screen";
+    ctx.fillStyle=`rgba(${rgb[0]},${rgb[1]},${rgb[2]},${strong?0.42:0.22})`;
+    ctx.fillRect(0,0,w,h);
+  } else {
+    ctx.globalCompositeOperation="multiply";
+    ctx.fillStyle=`rgba(${rgb[0]},${rgb[1]},${rgb[2]},${strong?0.62:0.38})`;
+    ctx.fillRect(0,0,w,h);
+    ctx.globalCompositeOperation="screen";
+    ctx.fillStyle=`rgba(${rgb[0]},${rgb[1]},${rgb[2]},${strong?0.16:0.10})`;
+    ctx.fillRect(0,0,w,h);
+  }
+  ctx.restore();
+}
+function applySlit(ctx, w, h){
+  if(!applySlit.buf) applySlit.buf=mkCan(260,260);
+  const b=applySlit.buf, bctx=b.getContext("2d"), s=b.width;
+  bctx.setTransform(1,0,0,1,0,0);
+  bctx.globalCompositeOperation="source-over";
+  bctx.globalAlpha=1;
+  bctx.clearRect(0,0,s,s);
+  bctx.drawImage(ctx.canvas,0,0,w,h,0,0,s,s);
+  bctx.globalCompositeOperation="destination-in";
+  const g=bctx.createLinearGradient(0, s*0.62, s*0.98, s*0.32);
+  g.addColorStop(0, "rgba(255,255,255,.94)");
+  g.addColorStop(.2, "rgba(255,255,255,.5)");
+  g.addColorStop(.55, "rgba(255,255,255,.14)");
+  g.addColorStop(1, "rgba(255,255,255,0)");
+  bctx.fillStyle=g;
+  bctx.fillRect(0,0,s,s);
+  bctx.globalCompositeOperation="source-over";
+  ctx.save();
+  ctx.fillStyle="#07080e";
+  ctx.fillRect(0,0,w,h);
+  ctx.drawImage(b,0,0,w,h);
+  const glow=ctx.createRadialGradient(-w*0.04, h*0.58, w*0.02, w*0.06, h*0.55, w*0.9);
+  glow.addColorStop(0, "rgba(255,214,150,.32)");
+  glow.addColorStop(.4, "rgba(255,186,100,.1)");
+  glow.addColorStop(1, "rgba(255,170,80,0)");
+  ctx.globalCompositeOperation="screen";
+  ctx.fillStyle=glow;
+  ctx.fillRect(0,0,w,h);
+  ctx.restore();
+}
+function applyDarkfield(ctx, w, h){
+  if(!applyDarkfield.buf) applyDarkfield.buf=mkCan(240,240);
+  const df=applyDarkfield.buf, dctx=df.getContext("2d"), s=df.width;
+  dctx.drawImage(ctx.canvas,0,0,w,h,0,0,s,s);
+  const src=dctx.getImageData(0,0,s,s), d=src.data;
+  const out=dctx.createImageData(s,s), o=out.data;
+  const lum=i=>0.2126*d[i]+0.7152*d[i+1]+0.0722*d[i+2];
+  for(let y=1;y<s-1;y++){
+    for(let x=1;x<s-1;x++){
+      const i=(y*s+x)*4;
+      const v=lum(i);
+      const gx=lum(i+4)-lum(i-4);
+      const gy=lum(i+s*4)-lum(i-s*4);
+      const e=Math.min(255, Math.hypot(gx,gy)*2.4);
+      const inv=Math.max(0, 205-v);
+      const g=Math.min(255, inv*2.85 + e*1.6);
+      o[i]=Math.min(255, g*1.15 + e*0.25);
+      o[i+1]=Math.min(255, g*0.92 + e*0.08);
+      o[i+2]=Math.min(255, g*0.52 + inv*0.15);
+      o[i+3]=255;
+    }
+  }
+  dctx.putImageData(out,0,0);
+  ctx.save();
+  ctx.globalCompositeOperation="source-over";
+  ctx.fillStyle="#03040a"; ctx.fillRect(0,0,w,h);
+  ctx.imageSmoothingEnabled=true;
+  ctx.drawImage(df,0,0,w,h);
+  ctx.globalCompositeOperation="screen";
+  ctx.globalAlpha=0.35;
+  ctx.drawImage(df, 1.4, 0, w, h);
+  ctx.globalAlpha=0.18;
+  ctx.drawImage(df, -1.2, 0.8, w, h);
+  ctx.restore();
+}
+function applyPolar(ctx, w, h, L){
+  const ang=(L.polar||0)/90;
+  const dark=.12+ang*.38;
+  ctx.save();
+  ctx.fillStyle=`rgba(8,10,28,${dark})`;
+  ctx.fillRect(0,0,w,h);
+  ctx.restore();
+  if(L.spec==="onion"||L.spec==="elodea"||L.spec==="scale"||L.spec==="hair"){
+    if(!applyPolar.buf) applyPolar.buf=mkCan(200,200);
+    const p=applyPolar.buf, pctx=p.getContext("2d"), s=p.width;
+    pctx.drawImage(ctx.canvas,0,0,w,h,0,0,s,s);
+    const src=pctx.getImageData(0,0,s,s), d=src.data, out=pctx.createImageData(s,s), o=out.data;
+    const lum=i=>0.2126*d[i]+0.7152*d[i+1]+0.0722*d[i+2];
+    for(let y=1;y<s-1;y++){
+      for(let x=1;x<s-1;x++){
+        const i=(y*s+x)*4;
+        const e=Math.min(255, Math.hypot(lum(i+4)-lum(i-4), lum(i+s*4)-lum(i-s*4))*3.1);
+        const t=(e/255)*ang;
+        o[i]=Math.min(255, e*(.55+Math.sin(ang*3.2)*0.45)+t*70);
+        o[i+1]=Math.min(255, e*(.25+ang*.55));
+        o[i+2]=Math.min(255, e*(.85-ang*.25)+90*t);
+        o[i+3]=Math.min(255, 40+e*1.8*ang);
+      }
+    }
+    pctx.putImageData(out,0,0);
+    ctx.save();
+    ctx.globalCompositeOperation="screen";
+    ctx.drawImage(p,0,0,w,h);
+    ctx.restore();
+  }
+}
+function applyOptics(ctx, w, h, L){
+  applyStain(ctx, w, h, L);
+  applyFilterTint(ctx, w, h, L);
+  if(L.illum==="dark"){ if(L.spec!=="pond") applyDarkfield(ctx, w, h); }
+  else if(L.illum==="slit") applySlit(ctx, w, h);
+  else if(L.illum==="polar") applyPolar(ctx, w, h, L);
+}
+function drawGraticule(ctx, cx, cy, r, L, w){
+  const dark=L.illum==="dark"||L.illum==="polar"||L.illum==="slit";
+  const span=r*(10/18);
+  const x0=cx-span, x1=cx+span;
+  const lw=Math.max(1.6, w*.0036);
+  ctx.save();
+  ctx.beginPath(); ctx.arc(cx,cy,r,0,Math.PI*2); ctx.clip();
+  const stroke=(color,width)=>{
+    ctx.strokeStyle=color; ctx.lineWidth=width;
+    ctx.beginPath(); ctx.moveTo(x0,cy); ctx.lineTo(x1,cy); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(cx, cy-span*.22); ctx.lineTo(cx, cy+span*.22); ctx.stroke();
+    for(let i=0;i<=100;i++){
+      const x=x0+(i/100)*(x1-x0);
+      const big=i%10===0, mid=i%5===0;
+      const h=span*(big?0.085:mid?0.05:0.028);
+      ctx.beginPath(); ctx.moveTo(x,cy-h); ctx.lineTo(x,cy+h); ctx.stroke();
+    }
+  };
+  if(dark){
+    stroke("rgba(255,220,140,.9)", lw);
+  } else {
+    stroke("rgba(255,255,255,.55)", lw+1.1);
+    stroke("rgba(10,12,16,.82)", lw);
+  }
+  ctx.fillStyle=dark?"rgba(255,220,140,.9)":"rgba(10,12,16,.82)";
+  ctx.font=`600 ${Math.max(9,Math.round(w*.018))}px ui-sans-serif,system-ui,sans-serif`;
+  ctx.textAlign="center"; ctx.textBaseline="top";
+  for(let i=0;i<=10;i++){
+    const x=x0+(i/10)*(x1-x0);
+    ctx.fillText(String(i*10), x, cy+span*.095);
+  }
+  ctx.restore();
+}
+function specToScreen(p, L, cx, cy, zoom){
+  return {x: cx - zoom*(p.x + L.panX), y: cy - zoom*(p.y + L.panY)};
+}
+function screenToSpec(sx, sy, L, cx, cy, zoom){
+  return {x: -(sx-cx)/zoom - L.panX, y: -(sy-cy)/zoom - L.panY};
+}
+function drawMeasure(ctx, cx, cy, r, L, w, zoom){
+  if(!L.mA) return;
+  const a=specToScreen(L.mA, L, cx, cy, zoom);
+  ctx.save();
+  ctx.beginPath(); ctx.arc(cx,cy,r,0,Math.PI*2); ctx.clip();
+  ctx.fillStyle="#f2d48a";
+  ctx.beginPath(); ctx.arc(a.x,a.y, Math.max(3,w*.006), 0, Math.PI*2); ctx.fill();
+  if(L.mB){
+    const b=specToScreen(L.mB, L, cx, cy, zoom);
+    ctx.strokeStyle="#f2d48a"; ctx.lineWidth=Math.max(1.5,w*.003);
+    ctx.beginPath(); ctx.moveTo(a.x,a.y); ctx.lineTo(b.x,b.y); ctx.stroke();
+    ctx.beginPath(); ctx.arc(b.x,b.y, Math.max(3,w*.006), 0, Math.PI*2); ctx.fill();
+    const px=Math.hypot(a.x-b.x, a.y-b.y);
+    const um=(px/(2*r))*fovUm(L.obj);
+    const units=um/unitUm(L.obj);
+    const mx=(a.x+b.x)/2, my=(a.y+b.y)/2;
+    ctx.font=`700 ${Math.max(11,Math.round(w*.024))}px ui-sans-serif,system-ui,sans-serif`;
+    ctx.textAlign="center"; ctx.textBaseline="bottom";
+    ctx.fillStyle="rgba(0,0,0,.55)";
+    ctx.fillText(fmtUm(um)+"  ·  "+units.toFixed(1)+" u", mx+1, my-8);
+    ctx.fillStyle="#f4efe4";
+    ctx.fillText(fmtUm(um)+"  ·  "+units.toFixed(1)+" u", mx, my-9);
+  }
+  ctx.restore();
+}
+function drawSpec(ctx, now, L, reduced, dt){
+  ensureSlides();
+  if(!SLIDE.scale) SLIDE.scale=bakeScale();
+  const live = !stainKills(L);
+  if(L.spec==="e"){
+    ctx.fillStyle="#d4c7a4";
+    ctx.fillRect(-1200,-900,2400,1800);
+    blit(ctx, SLIDE.e);
+  }
+  else if(L.spec==="onion") blit(ctx, SLIDE.onion);
+  else if(L.spec==="blood") blit(ctx, SLIDE.blood);
+  else if(L.spec==="cheek") blit(ctx, SLIDE.cheek);
+  else if(L.spec==="hair") blit(ctx, SLIDE.hair);
+  else if(L.spec==="scale") blit(ctx, SLIDE.scale);
+  else if(L.spec==="elodea"){ blit(ctx, SLIDE.elodea); if(live) drawElodeaLive(ctx, now, reduced); else drawElodeaLive(ctx, 0, true); }
+  else if(L.spec==="virus") blit(ctx, SLIDE.virus);
+  else if(L.spec==="bact"){
+    blit(ctx, SLIDE.bact);
+    const step=dt||0.016;
+    if(live && !reduced){
+      bacteria.forEach(b=>{
+        b.a+=Math.sin(now/500+b.seed)*0.6*step;
+        b.x+=Math.cos(b.a)*b.v*step;
+        b.y+=Math.sin(b.a)*b.v*step*0.6;
+      });
+    }
+    drawBactLive(ctx, now, reduced || !live);
+  }
+  else if(L.spec==="pond"){
+    const glow=L.illum==="dark"||L.illum==="slit";
+    if(glow){ ctx.fillStyle="#020308"; ctx.fillRect(-800,-800,1600,1600); }
+    else blit(ctx, SLIDE.pondBg);
+    if(live && !reduced){
+      const step = dt || 0.016;
+      critters.forEach(c=>{
+        if(c.kind==="vort"||c.kind==="spiro"||c.kind==="brown"||c.kind==="det"){
+          if(c.kind==="brown"){
+            c.x+=Math.sin(now/180+c.seed)*0.8*step;
+            c.y+=Math.cos(now/160+c.seed)*0.8*step;
+          }
+          return;
+        }
+        if(c.kind==="eug" && Math.random()<0.008) c.a+=(Math.random()-.5)*1.6;
+        c.a+=Math.sin(now/800+c.seed)* (c.kind==="amoeba"?0.15:0.45) *step;
+        c.x+=Math.cos(c.a)*c.v*step;
+        c.y+=Math.sin(c.a)*c.v*step*(c.kind==="para"?0.55:0.8);
+        if(c.x>140)c.x=-140; if(c.x<-140)c.x=140; if(c.y>140)c.y=-140; if(c.y<-140)c.y=140;
+      });
+    }
+    if(glow){
+      ctx.save();
+      ctx.globalCompositeOperation="lighter";
+      drawPondLive(ctx, now, reduced || !live);
+      ctx.restore();
+    } else {
+      drawPondLive(ctx, now, reduced || !live);
+    }
+  }
+}
+function specNote(spec){
+  const es=S.lang==="es", o=S.lab.obj, L=S.lab;
+  const key=o===100?"note100":o===40?"note40":o===10?"note10":"note4";
+  let line=es?(spec[key+"_es"]||spec.note40_es||spec.note_es):(spec[key+"_en"]||spec.note40_en||spec.note_en);
+  if(spec.id==="onion" && L.stain==="iodine")
+    line+=es?" El yodo está puesto: citoplasma ámbar, núcleo más marrón.":" Iodine is on: cytoplasm amber, nucleus a deeper brown.";
+  if(spec.id==="pond" && L.stain==="none" && (L.illum==="dark"||L.illum==="slit"))
+    line+=es?" El fondo está oscuro a propósito. Lo vivo se ve porque dispersa la luz.":" The background is dark on purpose. What is alive shows because it scatters the light.";
+  if(o===100 && !L.oil && spec.id!=="scale" && spec.id!=="e")
+    line+=es?" Sin aceite el 100× se queda blando.":" Without oil the 100× stays soft.";
+  if(L.dfNote) line+=t("dfBlock");
+  if(L.lightOn) line+=S.lang==="es"
+    ? " Un borde violeta es el acromático, no la muestra. El polvo que gira con el ocular está en el ocular."
+    : " A purple edge is the achromat, not the specimen. Dust that turns with the eyepiece is on the eyepiece.";
+  return line;
+}
+function achromatFringe(ctx, src, w, h, cx, cy, r, strength){
+  if(strength<0.05) return;
+  const N=150;
+  if(!achromatFringe.buf) achromatFringe.buf=document.createElement("canvas");
+  const b=achromatFringe.buf;
+  if(b.width!==N){ b.width=N; b.height=N; }
+  const g=b.getContext("2d",{willReadFrequently:true});
+  g.setTransform(1,0,0,1,0,0);
+  g.clearRect(0,0,N,N);
+  g.drawImage(src, cx-r, cy-r, r*2, r*2, 0, 0, N, N);
+  let im; try{ im=g.getImageData(0,0,N,N); }catch(e){ return; }
+  const d=im.data, out=g.createImageData(N,N), o=out.data;
+  const lum=i=>0.2126*d[i]+0.7152*d[i+1]+0.0722*d[i+2];
+  const shift=0.7+strength*2.6;
+  for(let y=2;y<N-2;y++){
+    for(let x=2;x<N-2;x++){
+      const i=(y*N+x)*4;
+      const e=Math.hypot(lum(i+4)-lum(i-4), lum(i+N*4)-lum(i-N*4));
+      if(e<26) continue;
+      const dx=x-N/2, dy=y-N/2, dist=Math.min(1, Math.hypot(dx,dy)/(N*0.46));
+      const lat=0.22+dist*dist, sft=shift*lat, len=Math.hypot(dx,dy)||1;
+      const ux=dx/len, uy=dy/len, k=Math.min(140, e*lat*0.85);
+      const stamp=(px,py,R,G,B,a)=>{
+        const vx=px|0, vy=py|0;
+        if(vx<1||vy<1||vx>=N-1||vy>=N-1) return;
+        const j=(vy*N+vx)*4;
+        o[j]=Math.min(255,o[j]+R*a); o[j+1]=Math.min(255,o[j+1]+G*a);
+        o[j+2]=Math.min(255,o[j+2]+B*a); o[j+3]=Math.min(255,o[j+3]+a*255);
+      };
+      stamp(x+ux*sft, y+uy*sft, 0.7, 0.25, 1, k/255);
+      stamp(x-ux*sft*0.55, y-uy*sft*0.55, 0.6, 0.82, 0.22, k/255*0.5);
+    }
+  }
+  g.putImageData(out,0,0);
+  ctx.save(); ctx.globalCompositeOperation="screen";
+  ctx.drawImage(b, cx-r, cy-r, r*2, r*2); ctx.restore();
+}
+function startEye(){
+  const canvas=document.getElementById("eyecanvas"), wrap=document.getElementById("eye");
+  if(!canvas||!wrap) return;
+  ensureSlides();
+  if(!critters.length) critters=seedCritters();
+  if(!bacteria.length) bacteria=seedBacteria();
+  const reduced=window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if(!startEye.off) startEye.off=document.createElement("canvas");
+  const off=startEye.off;
+  const resize=()=>{
+    const s=Math.max(120, Math.min(wrap.clientWidth||wrap.offsetWidth||320, 560));
+    const dpr=Math.min(devicePixelRatio||1, 2);
+    const px=Math.round(s*dpr);
+    if(canvas.width!==px){ canvas.width=px; canvas.height=px; }
+  };
+  resize();
+  if(!wrap._eyeBound){
+    wrap._eyeBound=true;
+    let drag=null, moved=0;
+    const loc=e=>{
+      const rect=wrap.getBoundingClientRect();
+      return {x:e.clientX-rect.left, y:e.clientY-rect.top, rw:rect.width, rh:rect.height};
+    };
+    const down=e=>{ if(e.pointerType==="touch") e.preventDefault(); wrap.setPointerCapture(e.pointerId); drag={x:e.clientX,y:e.clientY}; moved=0; };
+    const move=e=>{
+      if(!drag) return;
+      const dx=e.clientX-drag.x, dy=e.clientY-drag.y;
+      moved+=Math.abs(dx)+Math.abs(dy);
+      drag={x:e.clientX,y:e.clientY};
+      if(!(S.lab.measure && moved<10)){ S.lab.panX+=-dx*.6*.35; S.lab.panY+=-dy*.6*.35; }
+    };
+    const up=e=>{
+      if(S.lab.measure && moved<12){
+        const canvas=document.getElementById("eyecanvas");
+        const p=loc(e);
+        const w=canvas.width, h=canvas.height, cx=w/2, cy=h/2, r=Math.min(w,h)*.46;
+        const sx=p.x*(w/(p.rw||1)), sy=p.y*(h/(p.rh||1));
+        const dx=sx-cx, dy=sy-cy;
+        if(dx*dx+dy*dy <= r*r){
+          const zoom=startEye.zoom||((S.lab.obj/4)*(w/420));
+          const spec=screenToSpec(sx,sy,S.lab,cx,cy,zoom);
+          if(!S.lab.mA || (S.lab.mA && S.lab.mB)){ S.lab.mA=spec; S.lab.mB=null; }
+          else S.lab.mB=spec;
+          const before=stairNow();
+          tickMissions();
+          if(stairNow()!==before) paint();
+        }
+      }
+      drag=null;
+    };
+    wrap.addEventListener("pointerdown", down, {passive:false});
+    wrap.addEventListener("pointermove", move);
+    wrap.addEventListener("pointerup", up);
+    wrap.addEventListener("pointercancel", up);
+    wrap.addEventListener("touchmove", e=>{ if(drag) e.preventDefault(); }, {passive:false});
+  }
+  let last=performance.now();
+  const draw=now=>{
+    if(S.page!=="lab"){ cancelAnimationFrame(eyeRaf); return; }
+    resize();
+    const dt=Math.min(.1,(now-last)/1000); last=now;
+    const L=S.lab, ctx=canvas.getContext("2d"); if(!ctx){ eyeRaf=requestAnimationFrame(draw); return; }
+    const w=canvas.width,h=canvas.height,cx=w/2,cy=h/2,r=Math.min(w,h)*.46;
+    if(w<8){ eyeRaf=requestAnimationFrame(draw); return; }
+    ctx.clearRect(0,0,w,h);
+    ctx.fillStyle=cssVar("--metal","#3d4a55"); ctx.beginPath(); ctx.arc(cx,cy,r*1.1,0,Math.PI*2); ctx.fill();
+    const ring=ctx.createRadialGradient(cx,cy,r*.96,cx,cy,r*1.12);
+    ring.addColorStop(0,"#1a1610"); ring.addColorStop(.4,"#8a6116"); ring.addColorStop(.72,"#e0c070"); ring.addColorStop(1,"#2a2010");
+    ctx.fillStyle=ring; ctx.beginPath(); ctx.arc(cx,cy,r*1.08,0,Math.PI*2); ctx.fill();
+    ctx.fillStyle="#0a0c10"; ctx.beginPath(); ctx.arc(cx,cy,r*1.015,0,Math.PI*2); ctx.fill();
+    ctx.save(); ctx.beginPath(); ctx.arc(cx,cy,r,0,Math.PI*2); ctx.clip();
+    if(!L.lightOn){
+      ctx.fillStyle="#07090c"; ctx.fillRect(cx-r,cy-r,r*2,r*2);
+      ctx.fillStyle="rgba(237,234,226,.35)"; ctx.font=`${Math.round(w*.028)}px system-ui,sans-serif`;
+      ctx.textAlign="center"; ctx.textBaseline="middle"; ctx.fillText(S.lang==="es"?"lámpara apagada":"lamp off",cx,cy);
+    } else if(L.cracked){
+      const zoom=(L.obj/4)*(w/420);
+      ctx.fillStyle="#8a8680"; ctx.fillRect(cx-r,cy-r,r*2,r*2);
+      ctx.save(); ctx.globalAlpha=.28; ctx.translate(cx,cy); ctx.rotate(Math.PI); ctx.scale(zoom,zoom); ctx.translate(L.panX,L.panY);
+      drawSpec(ctx, now, L, reduced, dt); ctx.restore();
+      ctx.strokeStyle="rgba(20,20,20,.88)"; ctx.lineWidth=Math.max(1.5,w*.004);
+      [[-.62,-.72,.74,.6],[.18,-.82,-.28,.74],[-.84,.12,.88,.04],[.52,-.22,-.18,.82],[.05,-.4,.7,.55]].forEach(([ax,ay,bx,by])=>{
+        ctx.beginPath(); ctx.moveTo(cx+ax*r,cy+ay*r); ctx.lineTo(cx+bx*r,cy+by*r); ctx.stroke();
+      });
+      ctx.fillStyle="rgba(255,255,255,.18)";
+      ctx.beginPath(); ctx.moveTo(cx-.2*r,cy-.5*r); ctx.lineTo(cx-.05*r,cy-.48*r); ctx.lineTo(cx-.12*r,cy-.2*r); ctx.closePath(); ctx.fill();
+    } else {
+      if(!L.clipped){ S.lab.panX+=8*dt; S.lab.panY+=3*dt; }
+      const iris=.35+(L.dia/100)*.65, bright=.35+(L.dia/100)*.7;
+      let blur=blurPx(L.coarse,L.fine,L.obj) + (L.obj===100 && !L.oil ? 7 : 0);
+      if(L.prism) blur *= 0.84 + (bandNm(L.band)-420)/230*0.26;
+      const zoom=(L.obj/4)*(w/420);
+      if(!startEye.field) startEye.field=mkCan(64,64);
+      const field=startEye.field;
+      if(field.width!==w){ field.width=w; field.height=h; }
+      const fctx=field.getContext("2d");
+      const bg=(L.illum==="dark"||L.illum==="slit")?"#04050a":`rgba(236,228,204,${.5+bright*.38})`;
+      fctx.fillStyle=bg; fctx.fillRect(0,0,w,h);
+      fctx.save();
+      fctx.translate(w/2, h/2);
+      fctx.rotate(Math.PI); fctx.scale(zoom,zoom); fctx.translate(L.panX,L.panY);
+      drawSpec(fctx, now, L, reduced, dt);
+      fctx.restore();
+      applyOptics(fctx, w, h, L);
+      achromatFringe(fctx, field, w, h, w/2, h/2, Math.min(w,h)*.46, L.obj===4?0.28:L.obj===10?0.5:L.obj===40?0.95:1.2);
+      if(blur<0.7){
+        ctx.drawImage(field, 0, 0);
+      } else {
+        const factor=Math.max(0.06, 1/(1+blur*0.55));
+        const ow=Math.max(12, Math.round(w*factor)), oh=Math.max(12, Math.round(h*factor));
+        off.width=ow; off.height=oh;
+        const octx=off.getContext("2d");
+        octx.drawImage(field, 0, 0, ow, oh);
+        ctx.imageSmoothingEnabled=true;
+        ctx.imageSmoothingQuality="low";
+        ctx.drawImage(off, 0, 0, w, h);
+        if(blur>4){
+          ctx.fillStyle=`rgba(236,228,204,${Math.min(.35,(blur-4)/40)})`;
+          ctx.fillRect(cx-r,cy-r,r*2,r*2);
+        }
+      }
+      startEye.zoom=zoom;
+      const ar=document.getElementById("abberead");
+      if(ar) ar.textContent = L.prism ? (bandNm(L.band)+" nm · "+limitUm(L).d.toFixed(2)+" µm") : "";
+      if(L.illum!=="dark" && L.illum!=="polar" && L.illum!=="slit" && L.stain!=="methylene" && !L.prism){
+        ctx.fillStyle=`rgba(255,196,110,${.05+bright*.04})`;
+        ctx.fillRect(cx-r,cy-r,r*2,r*2);
+      }
+      if(SLIDE.grain){
+        ctx.globalAlpha=L.illum==="dark"?0.06:.12; ctx.drawImage(SLIDE.grain, cx-r, cy-r, r*2, r*2); ctx.globalAlpha=1;
+      }
+      const g=ctx.createRadialGradient(cx,cy,r*iris*.55,cx,cy,r);
+      g.addColorStop(0,"rgba(0,0,0,0)"); g.addColorStop(.7,"rgba(0,0,0,0)"); g.addColorStop(1,`rgba(0,0,0,${.58+(1-L.dia/100)*.38})`);
+      ctx.fillStyle=g; ctx.fillRect(cx-r,cy-r,r*2,r*2);
+      if(L.dia>82){ ctx.fillStyle=`rgba(255,255,240,${(L.dia-82)/80})`; ctx.fillRect(cx-r,cy-r,r*2,r*2); }
+      const twist=(L.eyeTwist||0)/100*Math.PI*2;
+      const dustDark=L.illum==="dark"||L.illum==="slit";
+      SLIDE.dust.forEach(d=>{
+        const ang=d.a+twist, rr=r*d.t;
+        const x=cx+Math.cos(ang)*rr, y=cy+Math.sin(ang)*rr;
+        const alpha=(dustDark?0.34:0.46)*(0.45+d.k);
+        const col=dustDark?`rgba(214,210,200,${alpha})`:`rgba(16,12,8,${alpha})`;
+        if(d.fiber){
+          ctx.strokeStyle=col; ctx.lineWidth=Math.max(0.7,w*.0015);
+          ctx.beginPath(); ctx.moveTo(x,y); ctx.lineTo(x+d.fx*(w/700), y+d.fy*(w/700)); ctx.stroke();
+        } else {
+          ctx.fillStyle=col; ctx.beginPath(); ctx.arc(x,y,d.s*(w/420),0,Math.PI*2); ctx.fill();
+        }
+      });
+      if(L.obj===100 && !L.oil){
+        ctx.fillStyle="rgba(8,10,18,.32)"; ctx.fillRect(cx-r,cy-r,r*2,r*2);
+      }
+      if(!L.graticule){
+        const barUm=L.obj===4?500:L.obj===10?200:L.obj===40?50:20;
+        const barPx=(barUm/fovUm(L.obj))*(2*r);
+        ctx.strokeStyle="rgba(255,255,255,.78)"; ctx.fillStyle="rgba(255,255,255,.78)";
+        ctx.lineWidth=Math.max(1.5,w*.003);
+        const bx=cx-barPx/2, by=cy+r*.78;
+        ctx.beginPath(); ctx.moveTo(bx,by-4); ctx.lineTo(bx,by+4); ctx.moveTo(bx,by); ctx.lineTo(bx+barPx,by); ctx.moveTo(bx+barPx,by-4); ctx.lineTo(bx+barPx,by+4); ctx.stroke();
+        ctx.font=`${Math.max(10,Math.round(w*.022))}px system-ui,sans-serif`;
+        ctx.textAlign="center"; ctx.textBaseline="top";
+        ctx.fillText(barUm>=200?(barUm/1000)+" mm":barUm+" µm", cx, by+6);
+      }
+      if(L.graticule) drawGraticule(ctx, cx, cy, r, L, w);
+      drawMeasure(ctx, cx, cy, r, L, w, zoom);
+    }
+    ctx.restore();
+    ctx.beginPath(); ctx.arc(cx,cy,r,0,Math.PI*2);
+    ctx.strokeStyle="rgba(255,255,255,.16)"; ctx.lineWidth=Math.max(2,w*.008); ctx.stroke();
+    ctx.beginPath(); ctx.arc(cx,cy,r*1.04,0,Math.PI*2);
+    ctx.strokeStyle="rgba(0,0,0,.35)"; ctx.lineWidth=Math.max(2,w*.01); ctx.stroke();
+    eyeRaf=requestAnimationFrame(draw);
+  };
+  cancelAnimationFrame(eyeRaf);
+  eyeRaf=requestAnimationFrame(draw);
+}
+
+function tickMissions(){
+  const L=S.lab, band=focusBand(L.coarse,L.fine,L.obj);
+  if(L.lightOn) S.missions.lamp=true;
+  if(L.clipped) S.missions.clips=true;
+  if(L.obj===4) S.missions.low=true;
+  if(L.obj===10) S.missions.ten=true;
+  if(L.obj===40) S.missions.forty=true;
+  if(L.spec==="e"&&L.obj===4&&band==="in"&&L.lightOn&&!L.cracked) S.missions.coarse=true;
+  if(L.obj===40&&band==="in"&&L.lightOn&&!L.cracked) S.missions.fine=true;
+  if(L.dia>=28&&L.dia<=72&&L.lightOn&&!L.cracked&&band!=="out") S.missions.iris=true;
+  if(L.spec==="onion"&&L.obj===40&&band==="in"&&L.lightOn&&!L.cracked && (L.stain==="iodine"||L.stain==="methylene"||L.stain==="safranin")) S.missions.onion=true;
+  if(L.spec==="onion"&&L.stain==="iodine"&&L.obj===40&&band==="in"&&L.lightOn&&!L.cracked) S.missions.stain=true;
+  if(L.illum==="dark"&&L.spec==="pond"&&L.lightOn&&!L.cracked&&L.stain==="none") S.missions.dark=true;
+  if(L.illum==="slit"&&L.lightOn&&!L.cracked) S.missions.slit=true;
+  if(L.illum==="polar"&&(L.spec==="onion"||L.spec==="elodea")&&L.lightOn&&!L.cracked) S.missions.polar=true;
+  if(L.graticule&&L.obj===40&&L.mA&&L.mB&&L.lightOn&&!L.cracked) S.missions.micrometer=true;
+  if(L.spec==="hair"&&L.obj===40&&band==="in"&&L.lightOn&&!L.cracked) S.missions.hair=true;
+  if(L.obj===100&&L.oil&&L.spec==="cheek"&&band==="in"&&L.lightOn&&!L.cracked) S.missions.oil=true;
+  if(L.spec==="bact"&&L.stain!=="none"&&L.obj>=40&&band==="in"&&L.lightOn&&!L.cracked) S.missions.bact=true;
+  if(L.spec==="virus"&&L.obj===100&&L.oil&&band==="in"&&L.lightOn&&!L.cracked) S.missions.limit=true;
+  if(L.prism&&L.spec==="virus"&&L.obj===100&&L.oil&&L.lightOn&&!L.cracked) S.missions.prism=true;
+  persist();
+}
+
+let walkTimer=0;
+function walkStep(){
+  if(!S.playing) return;
+  if(S.walk<0) S.walk=0; else S.walk++;
+  if(S.walk>=LIGHT_PATH.length){ S.playing=false; S.walk=LIGHT_PATH.length-1; }
+  else { const p=LIGHT_PATH[S.walk]; S.sel=p; S.met[p]=true; persist(); }
+  paint();
+  if(S.playing) walkTimer=setTimeout(walkStep, 2200);
+}
+
+function paint(){
+  clearTimeout(walkTimer);
+  cancelAnimationFrame(eyeRaf);
+  S.page=hashPage();
+  paintChrome();
+  const view=document.getElementById("view");
+  view.innerHTML = S.page==="meet"?pageMeet(): S.page==="lab"?pageLab(): S.page==="find"?pageFind(): S.page==="job"?pageJob(): S.page==="print"?pagePrint(): pageHome();
+  if(S.page==="meet"){
+    bindScope(document.getElementById("meetScope"), id=>{ S.sel=id; S.met[id]=true; persist(); paint(); });
+    view.querySelectorAll("[data-part]").forEach(b=>b.onclick=()=>{ S.sel=b.getAttribute("data-part"); S.met[S.sel]=true; persist(); paint(); });
+    view.querySelectorAll("[data-act]").forEach(b=>b.onclick=()=>{
+      const a=b.getAttribute("data-act");
+      if(a==="walk"){ S.playing=true; S.walk=-1; walkStep(); }
+      if(a==="pause"){ S.playing=false; }
+      if(a==="nextw"){ S.playing=false; if(S.walk<0)S.walk=0; else S.walk=Math.min(S.walk+1,LIGHT_PATH.length-1); S.sel=LIGHT_PATH[S.walk]; S.met[S.sel]=true; persist(); paint(); }
+      if(a==="resetw"){ S.playing=false; S.walk=-1; paint(); }
+      if(a==="prevp"&&S.sel){ const i=PARTS.findIndex(p=>p.p===S.sel); if(i>0){ S.sel=PARTS[i-1].p; S.met[S.sel]=true; persist(); paint(); } }
+      if(a==="nextp"){ const i=S.sel?PARTS.findIndex(p=>p.p===S.sel):-1; const n=PARTS[(i+1)%PARTS.length]; S.sel=n.p; S.met[n.p]=true; persist(); paint(); }
+    });
+    if(S.playing) walkTimer=setTimeout(walkStep, 2200);
+  }
+  if(S.page==="lab"){
+    startEye(); tickMissions();
+    view.querySelectorAll("[data-act]").forEach(b=>b.onclick=()=>{
+      const a=b.getAttribute("data-act"); const L=S.lab;
+      if(a==="teach-lock"){ S.teacher="locked"; persist(); paint(); return; }
+      if(a==="teach-open"){ S.teacher="open"; persist(); paint(); return; }
+      const step=benchStep();
+      const locked = (a==="obj10"||a==="obj40")&&step<1
+        || a==="obj100"&&step<4
+        || a==="illum-dark"&&step<2
+        || (a==="illum-slit"||a==="illum-polar"||a==="prism1"||a==="rife"||a==="universal")&&step<5
+        || a.startsWith("filter-")&&step<5
+        || a.startsWith("stain-")&&a!=="stain-none"&&step<2
+        || (a==="grat1"||a==="meas1")&&step<3
+        || a.startsWith("spec-")&&a!=="spec-e"&&step<2;
+      if(locked) return;
+      if(a==="lamp1") L.lightOn=true;
+      if(a==="lamp0") L.lightOn=false;
+      if(a==="clip1") L.clipped=true;
+      if(a==="clip0") L.clipped=false;
+      if(a==="obj4"){ L.obj=4; L.oil=false; L.dfNote=false; }
+      if(a==="obj10"){ L.obj=10; L.oil=false; L.dfNote=false; }
+      if(a==="obj40"){ L.obj=40; L.oil=false; L.dfNote=false; }
+      if(a==="obj100"){
+        L.obj=100;
+        if(L.illum==="dark"){ L.illum="bright"; L.dfNote=true; }
+      }
+      if(a==="oil1") L.oil=true; if(a==="oil0") L.oil=false;
+      if(a==="rife"){ L.lightOn=true; L.clipped=true; L.spec="pond"; L.stain="none"; L.illum="dark"; L.filter="day"; L.prism=false; L.obj=4; L.oil=false; L.dfNote=false; L.panX=0; L.panY=0; L.mA=null; L.mB=null; if(L.cracked){ L.cracked=false; L.coarse=18; L.fine=40; } }
+      if(a==="universal"){
+        L.lightOn=true; L.clipped=true; L.prism=true; L.band=92; L.illum="slit"; L.stain="none"; L.oil=false;
+        if(L.spec!=="virus" && L.spec!=="pond" && L.spec!=="bact") L.spec="pond";
+        L.obj=L.spec==="virus"?100:40;
+        if(L.obj===100) L.oil=true;
+        L.coarse=L.obj===100?42:40; L.fine=L.obj===100?38:45;
+        L.panX=0; L.panY=0;
+        if(L.cracked){ L.cracked=false; }
+      }
+      if(a==="newslide"){ L.cracked=false; L.coarse=18; L.fine=40; L.obj=4; L.panX=0; L.panY=0; L.mA=null; L.mB=null; L.oil=false; }
+      if(a.startsWith("spec-")){
+        L.spec=a.slice(5); L.panX=0; L.panY=0; L.mA=null; L.mB=null;
+        if(!allowedStains(L.spec).includes(L.stain)) L.stain=DEFAULT_STAIN[L.spec]||"none";
+        if(L.cracked){ L.cracked=false; L.coarse=18; L.fine=40; L.obj=4; }
+      }
+      if(a.startsWith("illum-")){
+        const id=a.slice(6);
+        if(id==="dark" && L.obj===100){ L.illum="bright"; L.dfNote=true; }
+        else { L.illum=id; if(id!=="dark") L.dfNote=false; }
+      }
+      if(a.startsWith("stain-")) L.stain=a.slice(6);
+      if(a==="prism1") L.prism=true;
+      if(a==="prism0") L.prism=false;
+      if(a.startsWith("filter-")){
+        L.filter=a.slice(7);
+        const jump={violet:94,blue:78,green:52,amber:22,day:8};
+        if(L.prism && jump[L.filter]!=null) L.band=jump[L.filter];
+      }
+      if(a==="grat1") L.graticule=true;
+      if(a==="grat0") L.graticule=false;
+      if(a==="meas1"){ L.measure=!L.measure; if(!L.measure){ L.mA=null; L.mB=null; } if(L.measure) L.graticule=true; }
+      tickMissions(); paint();
+    });
+    view.querySelectorAll("details.more-light").forEach(d=>{
+      d.addEventListener("toggle", ()=>{ S.moreOpen=d.open; });
+    });
+    view.querySelectorAll("[data-knob]").forEach(inp=>{
+      inp.oninput=()=>{
+        const v=+inp.value, L=S.lab, k=inp.getAttribute("data-knob");
+        if(k==="coarse"){ if(!L.cracked && wouldCrack(L.obj,v,L.fine) && v>L.coarse){ L.cracked=true; S.cracked++; persist(); paint(); return; } L.coarse=v; }
+        if(k==="fine") L.fine=v;
+        if(k==="dia") L.dia=v;
+        if(k==="polar") L.polar=v;
+        if(k==="band") L.band=v;
+        if(k==="eyeTwist") L.eyeTwist=v;
+        const lab=inp.closest("label"); if(lab){ const b=lab.querySelector("b"); if(b) b.textContent = k==="band" ? bandNm(v)+" nm" : k==="eyeTwist" ? Math.round(v/100*360)+"°" : Math.round(v); }
+        const ab=document.querySelectorAll(".abbe"); if(k==="band"||k==="polar") ab.forEach(el=>{ el.textContent=abbeSentence(); });
+        tickMissions();
+        const band=focusBand(L.coarse,L.fine,L.obj);
+        const fl=L.cracked?t("cracked").split(".")[0]: band==="in"?t("focusIn"):band==="near"?t("focusNear"):t("focusOut");
+        const magEl=document.getElementById("focusread"); if(magEl) magEl.textContent=fl;
+        const bar=document.getElementById("wdbar"); const w=wd(L.coarse,L.fine);
+        if(bar){ bar.style.width=Math.round(w*100)+"%"; bar.style.background=w<.22?"var(--bad)":w<.4?"var(--warn)":"var(--good)"; }
+      };
+      inp.onchange=()=>{ if(stairNow()!==S.lastStair) paint(); };
+    });
+    const stepNow=stairNow();
+    S.lastStair=stepNow;
+  }
+  if(S.page==="find" && S.find && !S.find.done){
+    bindScope(document.getElementById("findScope"), id=>{
+      const F=S.find, want=F.items[F.at].p;
+      if(F.say&&F.say.ok) return;
+      if(id===want){
+        const first=F.tries===0;
+        F.mark={[id]:"right"}; F.say={ok:true,text:t("thatsIt")}; S.met[id]=true;
+        if(first) F.right++;
+        persist(); paint();
+        setTimeout(()=>{ F.at++; F.tries=0; F.mark={}; F.say=null; if(F.at>=F.items.length){ F.done=true; S.findBest=Math.max(S.findBest,F.right); persist(); } paint(); }, 700);
+      } else {
+        const tries=F.tries+1;
+        if(tries>=2){ F.mark={[want]:"glow",[id]:"wrong"}; F.say={ok:false,text:t("glowing")}; F.missed.push(want); persist(); paint();
+          setTimeout(()=>{ F.at++; F.tries=0; F.mark={}; F.say=null; if(F.at>=F.items.length){ F.done=true; S.findBest=Math.max(S.findBest,F.right); persist(); } paint(); }, 1100);
+        } else { F.tries=tries; F.mark={[id]:"wrong"}; F.say={ok:false,text:t("notThat")}; paint(); }
+      }
+    });
+    view.querySelectorAll("[data-act=findagain]").forEach(b=>b.onclick=()=>{ S.find=null; paint(); });
+  }
+  if(S.page==="find" && S.find && S.find.done){
+    view.querySelectorAll("[data-act=findagain]").forEach(b=>b.onclick=()=>{ S.find=null; paint(); });
+  }
+  if(S.page==="job" && S.job && !S.job.done){
+    view.querySelectorAll("[data-opt]").forEach(b=>b.onclick=()=>{
+      const J=S.job; if(J.picked) return;
+      const id=b.getAttribute("data-opt"), q=J.items[J.at];
+      J.picked=id;
+      if(id===q.a) J.right++; else if(q.p) J.missed.push(q.p);
+      paint();
+      setTimeout(()=>{ J.at++; J.picked=null; if(J.at>=J.items.length){ J.done=true; S.jobBest=Math.max(S.jobBest,J.right); persist(); } paint(); }, 850);
+    });
+  }
+  if(S.page==="job" && S.job && S.job.done){
+    view.querySelectorAll("[data-act=jobagain]").forEach(b=>b.onclick=()=>{ S.job=null; paint(); });
+  }
+  if(S.page==="print"){
+    view.querySelectorAll("[data-act=doprint]").forEach(b=>b.onclick=()=>window.print());
+  }
+}
+
+document.getElementById("langBtn").onclick=()=>{ S.lang=S.lang==="en"?"es":"en"; persist(); paint(); };
+document.getElementById("themeBtn").onclick=()=>{ setTheme(S.theme==="dark"?"light":"dark"); paint(); };
+
+/* AOG-SCOPE-PRINTANY-V2 — Jimmy: the worksheet must print from the browser
+   menu and iPhone Share > Print, not only the in-page button. */
+window.addEventListener("beforeprint", function(){
+  try{
+    if(S.page!=="print"){ S._back=S.page; S.page="print"; paint(); }
+  }catch(e){}
+});
+window.addEventListener("afterprint", function(){
+  try{
+    if(S._back){ S.page=S._back; S._back=null; paint(); }
+  }catch(e){}
+});
+window.addEventListener("hashchange", paint);
+S.page=hashPage();
+paint();
+
+</script>
+<script>
+/* AOG-SCIPIC-PANEL-V1 - the guide loads only when the bar is opened, and the frame is
+   grown to its content so the panel scrolls with the page instead of inside itself. */
+(function(){
+  var d=document.getElementById("pgPanel"); if(!d) return;
+  var f=document.getElementById("pgFrame"); if(!f) return;
+  function fit(){
+    try{ var b=f.contentDocument&&f.contentDocument.body;
+         if(b){ var h=b.scrollHeight; if(h>240) f.style.height=(h+28)+"px"; } }catch(e){}
+  }
+  d.addEventListener("toggle", function(){
+    if(d.open && !f.getAttribute("src")) f.setAttribute("src", f.getAttribute("data-src"));
+  });
+  f.addEventListener("load", function(){ fit(); setTimeout(fit,250); setTimeout(fit,1200); });
+  var t; window.addEventListener("resize", function(){ clearTimeout(t); t=setTimeout(fit,150); });
+})();
+</script>
+</body>
+</html>

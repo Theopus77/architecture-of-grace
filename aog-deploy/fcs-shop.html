@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<script>
+(function(){var t="light";try{if(localStorage.getItem("aog.interior.ws.v1.theme")==="dark")t="dark";}catch(e){}document.documentElement.setAttribute("data-theme",t);if(t==="dark")document.documentElement.classList.add("dark");})();
+</script>
+<title>The Kitchen & the Machine — Architecture of Grace</title>
+<!-- AOG-FCS-BENCH-V2 pan in the fire, claw grip, cloth that feeds, foot-up refuse. -->
+<meta name="description" content="A real FCS bench: light the burner, run the water, lower the presser foot. Objects, not icons.">
+<link rel="canonical" href="https://architectureofgrace.org/fcs">
+<meta name="theme-color" content="#2F5C6B">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Source+Sans+3:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#f4f0e6; --card:#fffcf7; --ink:#1a232c; --muted:#5c6670; --line:#ddd8cc;
+  --steel:#2f5c6b; --steel-fg:#f4f8f9; --steel-soft:#e3eef2;
+  --good:#2c7a4e; --good-fg:#f3faf5; --good-soft:#e3f0e8;
+  --warn:#8a5a00; --warn-soft:#f4ead6; --bad:#9c3a2e; --bad-fg:#fdf6f4; --bad-soft:#f6e5e2;
+  --chip:#efebe3; --lamp:#d9a84e; --metal:#3d4a55; --brass:#8a6116;
+  --shadow:0 1px 3px rgb(26 35 44 / .08);
+  --sans:"Source Sans 3", ui-sans-serif, system-ui, sans-serif;
+  --display:"Fraunces", "Iowan Old Style", Palatino, Georgia, serif;
+}
+.dark, [data-theme="dark"] {
+  --bg:#14181e; --card:#1c232c; --ink:#edeae2; --muted:#9aa3b0; --line:#333b47;
+  --steel:#7fb4c7; --steel-fg:#14181e; --steel-soft:#1d2f36;
+  --good:#6fbf8b; --good-fg:#14181e; --good-soft:#1f3327;
+  --warn:#d9a84e; --warn-soft:#332a18; --bad:#e08573; --bad-fg:#14181e; --bad-soft:#3a2622;
+  --chip:#2a313c; --metal:#9aa3b0; --brass:#c4a056;
+  --shadow:0 1px 3px rgb(0 0 0 / .35);
+}
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust:100%; }
+body { margin:0; background:var(--bg); color:var(--ink); font:400 16px/1.55 var(--sans); overflow-x:hidden; }
+h1,h2,h3 { font-family:var(--display); font-weight:600; letter-spacing:-.02em; text-wrap:balance; }
+h1 { font-size:clamp(1.5rem,4vw,2.4rem); margin:.2rem 0 .4rem; }
+p { text-wrap:pretty; }
+button { font:inherit; cursor:pointer; }
+button, a, [role=button] { touch-action:manipulation; }
+.wrap { max-width:1120px; margin:0 auto; padding: max(1.25rem, env(safe-area-inset-top)) max(1rem, env(safe-area-inset-right)) max(4rem, env(safe-area-inset-bottom)) max(1rem, env(safe-area-inset-left)); }
+header { display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; gap:.75rem; margin-bottom:1rem; }
+.brand { font-size:.75rem; font-weight:700; letter-spacing:.14em; text-transform:uppercase; color:var(--muted); text-decoration:none; min-height:44px; display:inline-flex; align-items:center; }
+.tools { display:flex; gap:.5rem; }
+.pill, .btn {
+  min-height:44px; border-radius:999px; border:1px solid var(--line); background:var(--card); color:var(--ink);
+  padding:0 .9rem; font-weight:600; font-size:.9rem; display:inline-flex; align-items:center; justify-content:center; gap:.4rem;
+}
+.btn-steel { background:var(--steel); color:var(--steel-fg); border-color:transparent; }
+.btn-good { background:var(--good); color:var(--good-fg); border-color:transparent; }
+.nav { display:flex; gap:4px; overflow-x:auto; border-bottom:2px solid var(--line); margin-bottom:1.25rem; -webkit-overflow-scrolling:touch; scrollbar-width:none; }
+.nav::-webkit-scrollbar { display:none; }
+.nav a { flex:0 0 auto; min-height:44px; display:inline-flex; align-items:center; padding:0 .75rem; text-decoration:none; color:var(--muted); font-weight:600; font-size:.9rem; border-bottom:2px solid transparent; margin-bottom:-2px; }
+.nav a.on { color:var(--ink); border-color:var(--steel); }
+.muted { color:var(--muted); }
+.lead { max-width:66ch; color:var(--muted); }
+.card { background:var(--card); border:1px solid var(--line); border-radius:12px; box-shadow:var(--shadow); }
+.kicker { font-size:.75rem; font-weight:700; letter-spacing:.12em; text-transform:uppercase; color:var(--steel); }
+.tiny { font-size:.75rem; font-weight:700; letter-spacing:.12em; text-transform:uppercase; color:var(--steel); }
+.stage { position:relative; overflow:hidden; border-radius:14px; border:1px solid var(--line); background:#c9c2b0; }
+.stage svg { width:100%; height:auto; display:block; }
+.hit { fill:transparent; stroke:transparent; stroke-width:14; pointer-events:all; cursor:pointer; }
+.part.sel .glow-ring { stroke:var(--steel); stroke-width:3; opacity:1; }
+.glow-ring { fill:none; stroke:transparent; stroke-width:2; opacity:0; }
+.caption { padding:1rem 1.15rem; }
+.caption h2 { margin:.15rem 0 .25rem; font-size:1.45rem; }
+.job { margin:0; color:var(--muted); }
+.board { padding:.85rem 1rem; }
+.board .row { display:flex; justify-content:space-between; align-items:center; gap:.4rem; padding:.2rem 0; border-bottom:1px solid var(--line); }
+.board .row:last-child { border-bottom:0; }
+.board .row > span:last-child { display:flex; flex-wrap:wrap; gap:.35rem; justify-content:flex-end; }
+.split { display:grid; gap:1.25rem; margin-top:1.25rem; }
+@media (min-width:768px){
+  .split { grid-template-columns: minmax(0,1fr) minmax(280px,360px); align-items:start; }
+  .sticky { position:sticky; top:.75rem; }
+}
+.missions { list-style:none; margin:.5rem 0 0; padding:0; }
+.missions li { display:flex; gap:.6rem; align-items:flex-start; padding:.4rem 0; border-bottom:1px solid var(--line); font-size:.92rem; }
+.missions li:last-child { border-bottom:0; }
+.dot { width:18px; height:18px; border-radius:50%; border:2px solid var(--line); flex:0 0 auto; margin-top:.15rem; }
+.missions li.done .dot { background:var(--good); border-color:var(--good); }
+footer { margin-top:3rem; max-width:70ch; font-size:.9rem; color:var(--muted); }
+.note { font-size:.82rem; color:var(--muted); margin:.5rem 0 0; }
+.warn { margin:.55rem 0 0; padding:.55rem .7rem; border-radius:8px; background:var(--warn-soft); color:var(--warn); font-size:.88rem; font-weight:600; }
+.wd { height:8px; background:var(--chip); border-radius:999px; overflow:hidden; margin-top:.45rem; }
+.wd > i { display:block; height:100%; background:var(--steel); border-radius:999px; width:0; }
+
+/* flame */
+.fl-outer, .fl-inner { transform-box:fill-box; transform-origin:50% 100%; }
+.lit .fl-outer { animation:flick 0.16s ease-in-out infinite; }
+.lit .fl-inner { animation:flick 0.12s ease-in-out infinite reverse; }
+@keyframes flick {
+  0%,100% { transform:scaleY(1) scaleX(1); }
+  40% { transform:scaleY(1.14) scaleX(.9); }
+  70% { transform:scaleY(.92) scaleX(1.08); }
+}
+.water-stream { transform-box:fill-box; transform-origin:50% 0%; }
+.on-water .water-stream { animation:pour .35s ease-out both; }
+@keyframes pour { from { transform:scaleY(.05); opacity:.2; } to { transform:scaleY(1); opacity:.9; } }
+.ripple { opacity:0; }
+.on-water .ripple { animation:rip 1.4s ease-out infinite; }
+@keyframes rip { 0%{opacity:.5;transform:scale(.4)} 100%{opacity:0;transform:scale(1.6)} }
+.needle-bar { transform-box:fill-box; transform-origin:50% 0%; }
+.sewing .needle-bar { animation:needle .28s ease-in-out infinite; }
+@keyframes needle { 0%,100%{transform:translateY(0)} 50%{transform:translateY(11px)} }
+.handwheel { transform-box:fill-box; transform-origin:50% 50%; }
+.sewing .handwheel { animation:spin 1.1s linear infinite; }
+@keyframes spin { to { transform:rotate(360deg); } }
+.stitch { stroke-dasharray:6 5; }
+.sewing .stitch { animation:dash 1.1s linear infinite; }
+@keyframes dash { to { stroke-dashoffset:-22; } }
+.feed { transform-box:fill-box; }
+.sewing .feed { animation:feed 3.2s linear infinite; }
+@keyframes feed { to { transform:translateX(-28px); } }
+.steam path { fill:none; stroke:#f4efe4; stroke-width:2.4; stroke-linecap:round; opacity:0; transform-box:fill-box; transform-origin:50% 100%; }
+.lit .steam path { animation:steam 2.1s ease-in-out infinite; }
+.lit .steam path:nth-child(2) { animation-delay:.4s; }
+.lit .steam path:nth-child(3) { animation-delay:.9s; }
+@keyframes steam {
+  0% { opacity:0; transform:translateY(6px); }
+  30% { opacity:.7; }
+  100% { opacity:0; transform:translateY(-28px); }
+}
+.claw { opacity:.92; }
+@media (prefers-reduced-motion: reduce){
+  .fl-outer,.fl-inner,.water-stream,.needle-bar,.handwheel,.stitch,.ripple,.feed,.steam path { animation:none !important; }
+}
+.hot-glow { opacity:0; }
+.lit .hot-glow { opacity:1; }
+.oil-sheen { opacity:.35; }
+.lit .oil-sheen { animation:sheen 2.4s ease-in-out infinite; }
+@keyframes sheen { 0%,100%{opacity:.25} 50%{opacity:.55} }
+@media print {
+  .no-print { display:none !important; }
+  body { background:#fff; color:#111; }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <a class="brand" href="/science-microscope.html">Architecture of Grace</a>
+    <div class="tools no-print">
+      <button class="pill" id="langBtn" type="button">Español</button>
+      <button class="pill" id="themeBtn" type="button">Dark</button>
+    </div>
+  </header>
+  <nav class="nav no-print" id="nav">
+    <a href="#kitchen" data-room="kitchen" class="on">Kitchen</a>
+    <a href="#sew" data-room="sew">Sewing</a>
+    <a href="/science-microscope.html">Microscope</a>
+  </nav>
+  <p class="kicker" id="kicker">Family & Consumer Sciences</p>
+  <h1 id="title">Meet the kitchen</h1>
+  <p class="lead" id="lead">Tap a real object. The name comes after the shape — same rule as the microscope.</p>
+
+  <div class="split">
+    <div>
+      <div class="stage" id="stage"></div>
+      <p class="note" id="hint">Tap the sink, the flame, or the knife.</p>
+    </div>
+    <div class="sticky">
+      <div class="card caption" id="cap">
+        <p class="tiny" id="capK">The object</p>
+        <h2 id="capN">The bench</h2>
+        <p class="job" id="capJ">Tap a part. The form first.</p>
+        <p class="warn" id="capW" hidden></p>
+        <div class="wd" id="washBar" hidden><i id="washFill"></i></div>
+      </div>
+      <div class="card board" style="margin-top:.85rem" id="acts"></div>
+      <div class="card" style="padding:1rem 1.15rem;margin-top:.85rem">
+        <p class="tiny">Stations</p>
+        <ul class="missions" id="missions"></ul>
+      </div>
+    </div>
+  </div>
+  <footer>
+    <p>Built for a classroom kitchen and a sewing table — not a clip-art drawer. Fire stays in the pan. The needle goes up and down. Hands stay clear.</p>
+  </footer>
+</div>
+<script>
+(function(){
+const STR={
+  kitchen:{en:"Kitchen",es:"Cocina"},
+  sew:{en:"Sewing",es:"Costura"},
+  microscope:{en:"Microscope",es:"Microscopio"},
+  kicker:{en:"Family & Consumer Sciences",es:"Ciencias de la familia y el consumidor"},
+  titleK:{en:"Meet the kitchen",es:"Conoce la cocina"},
+  titleS:{en:"Meet the machine",es:"Conoce la máquina"},
+  leadK:{en:"Tap a real object. The name comes after the shape — same rule as the microscope.",es:"Toca un objeto de verdad. El nombre llega después de la forma — la misma regla que el microscopio."},
+  leadS:{en:"A domestic machine on a wood table. Thread path, presser foot, a needle that only moves when you say so.",es:"Una máquina doméstica sobre madera. Recorrido del hilo, prensatelas, una aguja que solo se mueve cuando tú lo dices."},
+  hintK:{en:"Tap the sink, the flame, or the knife. Then light the burner.",es:"Toca el fregadero, la llama o el cuchillo. Luego enciende el quemador."},
+  hintS:{en:"Tap the needle, the foot, the pedal. Then sew — slow is still sewing.",es:"Toca la aguja, el prensatelas, el pedal. Luego cose — lento sigue siendo coser."},
+  object:{en:"The object",es:"El objeto"},
+  benchN:{en:"The bench",es:"El banco"},
+  benchJ:{en:"Tap a part. The form first.",es:"Toca una parte. La forma primero."},
+  lampOn:{en:"Burner on",es:"Quemador encendido"},
+  lampOff:{en:"Burner off",es:"Quemador apagado"},
+  waterOn:{en:"Water on",es:"Agua abierta"},
+  waterOff:{en:"Water off",es:"Agua cerrada"},
+  sewOn:{en:"Sew",es:"Coser"},
+  sewOff:{en:"Needle still",es:"Aguja quieta"},
+  footDown:{en:"Foot down",es:"Prensatelas abajo"},
+  footUp:{en:"Foot up",es:"Prensatelas arriba"},
+  lamp:{en:"Work light",es:"Luz de trabajo"},
+  lampLit:{en:"Light on",es:"Luz encendida"},
+  lampDim:{en:"Light off",es:"Luz apagada"},
+  warnFoot:{en:"Foot is up. The machine will not sew. Lower it first — that is the rule.",es:"El prensatelas está arriba. La máquina no cose. Bájalo primero — esa es la regla."},
+  warnHot:{en:"The handle took the heat. Dry towel — not a wet hand.",es:"El mango se llevó el calor. Toalla seca — no una mano mojada."},
+  warnWet:{en:"Wet hands, then the stove: no. Dry first.",es:"Manos mojadas, luego la estufa: no. Primero seca."},
+  washNote:{en:"Twenty seconds. A whole chorus.",es:"Veinte segundos. Todo el estribillo."}
+};
+const PARTS={
+  kitchen:{
+    sink:{en:"Sink",es:"Fregadero", job_en:"Water. Spills. Hands. The wet place — wash here, not at the stove.", job_es:"Agua. Derrames. Manos. El lugar mojado — lava aquí, no en la estufa.", k:"The wet place", ks:"El lugar mojado"},
+    faucet:{en:"Faucet",es:"Grifo", job_en:"Chrome gooseneck. Water lives here until you ask.", job_es:"Cuello de cisne de cromo. El agua vive aquí hasta que pides.", k:"The tap", ks:"La llave"},
+    flame:{en:"Gas flame",es:"Llama de gas", job_en:"Blue inner cone, yellow edge. Fire stays in the pan.", job_es:"Cono interior azul, borde amarillo. El fuego se queda en el sartén.", k:"The hot place", ks:"El lugar caliente"},
+    pan:{en:"Skillet",es:"Sartén", job_en:"Cast iron. The handle is a warning — it takes the heat with it.", job_es:"Hierro fundido. El mango es un aviso — se lleva el calor.", k:"The pan", ks:"El sartén"},
+    knife:{en:"Chef's knife",es:"Cuchillo de chef", job_en:"The sharp edge cuts toward the board, never toward you.", job_es:"El filo corta hacia la tabla, nunca hacia ti.", k:"The sharp edge", ks:"El filo"},
+    board:{en:"Cutting board",es:"Tabla de cortar", job_en:"End-grain wood. The work stays here.", job_es:"Madera de testa. El trabajo se queda aquí.", k:"The board", ks:"La tabla"},
+    soap:{en:"Soap",es:"Jabón", job_en:"Wash, then cook. Not the other way.", job_es:"Lava, luego cocina. No al revés.", k:"The clean habit", ks:"El hábito limpio"},
+    grate:{en:"Grate",es:"Parrilla", job_en:"Cast iron ring. The pan sits on this, not in the flame.", job_es:"Anillo de hierro. El sartén se sienta aquí, no en la llama.", k:"The grate", ks:"La parrilla"},
+    handle:{en:"Pan handle",es:"Mango del sartén", job_en:"It takes the heat with it. Assume it is hot until a dry towel says otherwise.", job_es:"Se lleva el calor. Supón que está caliente hasta que una toalla seca diga lo contrario.", k:"The handle", ks:"El mango"}
+  },
+  sew:{
+    needle:{en:"Needle",es:"Aguja", job_en:"Up and down. Point away from the other hand. Hands stay clear.", job_es:"Arriba y abajo. La punta lejos de la otra mano. Las manos se quedan fuera.", k:"The needle bar", ks:"La barra de la aguja"},
+    foot:{en:"Presser foot",es:"Prensatelas", job_en:"It pins the cloth so the stitch is even.", job_es:"Fija la tela para que la puntada quede pareja.", k:"The foot that holds", ks:"El pie que sujeta"},
+    plate:{en:"Needle plate",es:"Placa de aguja", job_en:"The slot is where the needle goes. Feed dogs live under it.", job_es:"La ranura es por donde pasa la aguja. Los dientes viven debajo.", k:"The plate", ks:"La placa"},
+    spool:{en:"Spool",es:"Carrete", job_en:"Thread path: spool, take-up, needle. Knot it once.", job_es:"Recorrido: carrete, tirahilo, aguja. Un nudo.", k:"The thread", ks:"El hilo"},
+    fabric:{en:"Fabric",es:"Tela", job_en:"The work you are joining. Denim does not rush.", job_es:"El trabajo que estás uniendo. El mezclilla no tiene prisa.", k:"The cloth", ks:"La tela"},
+    pedal:{en:"Foot pedal",es:"Pedal", job_en:"You are the speed. Slow is still sewing.", job_es:"Tú eres la velocidad. Lento sigue siendo coser.", k:"The pedal", ks:"El pedal"},
+    wheel:{en:"Handwheel",es:"Volante", job_en:"Turn toward you to raise the needle. Never the other way while it is in cloth.", job_es:"Gira hacia ti para subir la aguja. Nunca al revés si está en la tela.", k:"The wheel", ks:"El volante"},
+    bobbin:{en:"Bobbin",es:"Bobina", job_en:"The underside thread. If the stitch looks wrong, look here first.", job_es:"El hilo de abajo. Si la puntada se ve mal, mira aquí primero.", k:"The bobbin", ks:"La bobina"}
+  }
+};
+const MISSIONS={
+  kitchen:[
+    {id:"wet",en:"Find the wet place",es:"Encuentra el lugar mojado"},
+    {id:"hot",en:"Light the burner. Watch the blue cone.",es:"Enciende el quemador. Mira el cono azul."},
+    {id:"sharp",en:"Find the sharp edge. It faces the board.",es:"Encuentra el filo. Mira hacia la tabla."},
+    {id:"clean",en:"Find the soap. Wash twenty seconds.",es:"Encuentra el jabón. Lava veinte segundos."},
+    {id:"handle",en:"Tap the pan handle after the flame. It took the heat.",es:"Toca el mango después de la llama. Se llevó el calor."}
+  ],
+  sew:[
+    {id:"need",en:"Find the needle",es:"Encuentra la aguja"},
+    {id:"foot",en:"Lower the presser foot",es:"Baja el prensatelas"},
+    {id:"sew",en:"Foot down, then Sew. Watch the cloth feed.",es:"Prensatelas abajo, luego Coser. Mira avanzar la tela."},
+    {id:"ped",en:"Find the pedal. You are the speed.",es:"Encuentra el pedal. Tú eres la velocidad."},
+    {id:"refuse",en:"Raise the foot and try Sew. The machine should refuse.",es:"Sube el prensatelas e intenta Coser. La máquina debe negarse."}
+  ]
+};
+
+const S={
+  room:"kitchen", lang:"en", sel:null,
+  burner:false, water:false, sewing:false, foot:true, light:true,
+  warn:null, washStart:0,
+  missions:{kitchen:{}, sew:{}}
+};
+try{
+  const raw=localStorage.getItem("aog.fcs.shop.v1");
+  if(raw){ const o=JSON.parse(raw); if(o&&typeof o==="object"){
+    S.room=o.room||S.room; S.lang=o.lang||S.lang; S.missions=o.missions||S.missions;
+    S.burner=!!o.burner; S.water=!!o.water; S.foot=o.foot!==false; S.light=o.light!==false;
+  } }
+}catch(e){}
+function save(){ try{ localStorage.setItem("aog.fcs.shop.v1", JSON.stringify({room:S.room,lang:S.lang,missions:S.missions,burner:S.burner,water:S.water,foot:S.foot,light:S.light})); }catch(e){} }
+function t(k){ const s=STR[k]; return s? (S.lang==="es"?s.es:s.en) : k; }
+function pt(id){ const p=PARTS[S.room][id]; if(!p) return null; return S.lang==="es"?{n:p.es,j:p.job_es,k:p.ks}:{n:p.en,j:p.job_en,k:p.k}; }
+
+function defs(){
+  return `<defs>
+    <linearGradient id="wall" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#d8d0be"/><stop offset="1" stop-color="#c4bba8"/></linearGradient>
+    <linearGradient id="wood" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#c4a06a"/><stop offset=".4" stop-color="#a07038"/><stop offset="1" stop-color="#6e4820"/></linearGradient>
+    <linearGradient id="wood2" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#8a5a28"/><stop offset=".5" stop-color="#c49654"/><stop offset="1" stop-color="#7a4a1c"/></linearGradient>
+    <linearGradient id="steel" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f2f4f6"/><stop offset=".45" stop-color="#c5ccd4"/><stop offset="1" stop-color="#8b949e"/></linearGradient>
+    <linearGradient id="chrome" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff"/><stop offset=".35" stop-color="#cfd6de"/><stop offset=".7" stop-color="#9aa4ae"/><stop offset="1" stop-color="#eceff2"/></linearGradient>
+    <linearGradient id="iron" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3a3d44"/><stop offset="1" stop-color="#16181c"/></linearGradient>
+    <linearGradient id="ironhot" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#5a3a28"/><stop offset=".6" stop-color="#2a1810"/><stop offset="1" stop-color="#120c0a"/></linearGradient>
+    <radialGradient id="flout" cx=".45" cy=".8" r=".8"><stop offset="0" stop-color="#fff3c0"/><stop offset=".35" stop-color="#f0a030"/><stop offset=".75" stop-color="#e05010"/><stop offset="1" stop-color="rgba(180,40,0,0)"/></radialGradient>
+    <linearGradient id="flin" x1=".5" y1="1" x2=".5" y2="0"><stop offset="0" stop-color="#dceeff"/><stop offset=".45" stop-color="#7ec8ff"/><stop offset="1" stop-color="#3a7ad4"/></linearGradient>
+    <radialGradient id="heat" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#ffb060"/><stop offset="1" stop-color="rgba(255,80,0,0)"/></radialGradient>
+    <linearGradient id="blade" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f4f6f8"/><stop offset=".5" stop-color="#c5ccd4"/><stop offset="1" stop-color="#7e8790"/></linearGradient>
+    <linearGradient id="handle" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3a2414"/><stop offset="1" stop-color="#1a1008"/></linearGradient>
+    <linearGradient id="denim" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4a6a92"/><stop offset="1" stop-color="#2a4060"/></linearGradient>
+    <linearGradient id="cream" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f7f1e6"/><stop offset="1" stop-color="#d9d0c0"/></linearGradient>
+    <linearGradient id="bodyblk" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3a3e46"/><stop offset="1" stop-color="#16181c"/></linearGradient>
+    <filter id="grain" x="0" y="0" width="100%" height="100%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.85 0.045" numOctaves="3" seed="4"/>
+      <feColorMatrix type="saturate" values="0"/>
+    </filter>
+    <filter id="soft" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="6"/>
+    </filter>
+    <filter id="glow" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur stdDeviation="4" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>`;
+}
+
+function kitchenSVG(){
+  const lit=S.burner, wet=S.water;
+  const cls=(lit?" lit":"")+(wet?" on-water":"");
+  let s=`<svg viewBox="0 0 920 500" class="scene${cls}" role="img" aria-label="Classroom kitchen bench">`;
+  s+=defs();
+  s+=`<rect width="920" height="500" fill="url(#wall)"/>`;
+  /* subway tile */
+  s+=`<g opacity=".95">`;
+  for(let y=36;y<236;y+=22){
+    const off=(Math.floor(y/22)%2)?20:0;
+    for(let x=-20+off;x<920;x+=40){
+      s+=`<rect x="${x}" y="${y}" width="38" height="20" rx="1.5" fill="${(x+y)%80<40?"#f4efe6":"#efe8dc"}" stroke="#c8c0b2" stroke-width=".7"/>`;
+    }
+  }
+  s+=`</g>`;
+  /* wood counter */
+  s+=`<rect x="0" y="292" width="920" height="208" fill="url(#wood)"/>`;
+  s+=`<rect x="0" y="292" width="920" height="208" filter="url(#grain)" opacity=".28"/>`;
+  s+=`<rect x="0" y="284" width="920" height="12" fill="url(#wood2)"/>`;
+  s+=`<rect x="0" y="284" width="920" height="4" fill="#5a3818" opacity=".35"/>`;
+  /* cabinet face under */
+  s+=`<rect x="0" y="430" width="920" height="70" fill="#5e3e22"/>`;
+  s+=`<rect x="30" y="442" width="200" height="48" rx="3" fill="#4a3018" stroke="#2a1a0c"/>`;
+  s+=`<rect x="250" y="442" width="200" height="48" rx="3" fill="#4a3018" stroke="#2a1a0c"/>`;
+  s+=`<circle cx="220" cy="466" r="4" fill="#c4a06a"/><circle cx="440" cy="466" r="4" fill="#c4a06a"/>`;
+
+  /* SINK */
+  s+=`<g class="part" data-k="sink">`;
+  s+=`<rect class="glow-ring" x="28" y="248" width="250" height="128" rx="14"/>`;
+  s+=`<rect x="36" y="256" width="234" height="112" rx="10" fill="url(#steel)" stroke="#6a7380" stroke-width="1.4"/>`;
+  s+=`<rect x="52" y="272" width="202" height="80" rx="8" fill="#9aa6b2"/>`;
+  s+=`<rect x="58" y="278" width="190" height="68" rx="6" fill="#7d8a96"/>`;
+  s+=`<ellipse cx="130" cy="300" rx="50" ry="14" fill="#c5d0da" opacity=".45"/>`;
+  s+=`<circle cx="153" cy="338" r="6" fill="#5a6570" stroke="#3a444c"/>`;
+  s+=`<circle cx="153" cy="338" r="2.4" fill="#2a3238"/>`;
+  if(wet){
+    s+=`<ellipse class="ripple" cx="153" cy="330" rx="36" ry="10" fill="none" stroke="#d8e8f4" stroke-width="2"/>`;
+    s+=`<ellipse class="ripple" cx="153" cy="330" rx="24" ry="7" fill="none" stroke="#eef6fb" stroke-width="1.4" style="animation-delay:.4s"/>`;
+  }
+  s+=`<rect class="hit" x="28" y="248" width="250" height="128"/>`;
+  s+=`</g>`;
+
+  /* FAUCET */
+  s+=`<g class="part" data-k="faucet">`;
+  s+=`<rect x="142" y="214" width="22" height="48" rx="4" fill="url(#chrome)" stroke="#8a949e"/>`;
+  s+=`<path d="M153 214 C153 180 210 176 210 214" fill="none" stroke="url(#chrome)" stroke-width="14" stroke-linecap="round"/>`;
+  s+=`<path d="M153 214 C153 180 210 176 210 214" fill="none" stroke="#9aa4ae" stroke-width="4"/>`;
+  s+=`<rect x="202" y="214" width="16" height="18" rx="3" fill="url(#chrome)" stroke="#8a949e"/>`;
+  s+=`<circle cx="153" cy="206" r="9" fill="url(#chrome)" stroke="#8a949e"/>`;
+  if(wet){
+    s+=`<rect class="water-stream" x="206" y="232" width="8" height="88" rx="3" fill="#9ec8e6" opacity=".82"/>`;
+    s+=`<rect class="water-stream" x="208" y="232" width="3" height="88" rx="1" fill="#e8f4fc" opacity=".55"/>`;
+  }
+  s+=`<rect class="hit" x="130" y="168" width="100" height="90"/>`;
+  s+=`</g>`;
+
+  /* SOAP */
+  s+=`<g class="part" data-k="soap">`;
+  s+=`<rect class="glow-ring" x="268" y="248" width="44" height="70" rx="8"/>`;
+  s+=`<rect x="276" y="268" width="28" height="44" rx="6" fill="#2c7a4e" stroke="#1a4a30"/>`;
+  s+=`<rect x="282" y="256" width="16" height="16" rx="3" fill="#3d9a64" stroke="#1a4a30"/>`;
+  s+=`<rect x="286" y="250" width="8" height="10" rx="2" fill="#cfe4d8"/>`;
+  s+=`<ellipse cx="290" cy="278" rx="8" ry="3" fill="#8fd0a8" opacity=".5"/>`;
+  s+=`<rect class="hit" x="268" y="248" width="44" height="70"/>`;
+  s+=`</g>`;
+
+  /* RANGE */
+  s+=`<g class="part" data-k="grate">`;
+  s+=`<rect x="330" y="228" width="360" height="168" rx="8" fill="url(#iron)" stroke="#0c0e12" stroke-width="2"/>`;
+  s+=`<rect x="342" y="238" width="336" height="118" rx="4" fill="#1c1e24"/>`;
+  /* four burners */
+  const burners=[[410,290],[510,290],[410,345],[510,345]];
+  burners.forEach((b,i)=>{
+    const [bx,by]=b;
+    s+=`<circle cx="${bx}" cy="${by}" r="32" fill="#121418" stroke="#2a2e36"/>`;
+    s+=`<circle cx="${bx}" cy="${by}" r="22" fill="none" stroke="#3a4048" stroke-width="3"/>`;
+    s+=`<path d="M${bx-26} ${by} h52 M${bx} ${by-26} v52 M${bx-18} ${by-18} l36 36 M${bx-18} ${by+18} l36 -36" stroke="#4a5058" stroke-width="2.4" fill="none"/>`;
+    if(i===0 && lit){
+      s+=`<ellipse class="hot-glow" cx="${bx}" cy="${by}" rx="40" ry="22" fill="url(#heat)" filter="url(#soft)"/>`;
+    }
+  });
+  /* knobs */
+  [[370,368],[410,368],[450,368],[490,368]].forEach((k,i)=>{
+    s+=`<circle cx="${k[0]}" cy="${k[1]}" r="9" fill="#2a2e34" stroke="#0c0e12"/>`;
+    s+=`<rect x="${k[0]-2}" y="${k[1]-8}" width="4" height="8" rx="1" fill="#d9a84e" transform="${i===0&&lit?`rotate(40 ${k[0]} ${k[1]})`:''}"/>`;
+  });
+  s+=`<rect class="hit" x="330" y="228" width="360" height="168"/>`;
+  s+=`</g>`;
+
+  /* FLAME under the pan, then the skillet, then licks in front — fire stays in the pan */
+  s+=`<g class="part" data-k="flame">`;
+  if(lit){
+    s+=`<g transform="translate(410,236)">`;
+    s+=`<ellipse class="hot-glow" cx="0" cy="52" rx="48" ry="22" fill="url(#heat)" filter="url(#soft)"/>`;
+    s+=`<path class="fl-outer" d="M0 48 C-22 44 -26 8 -12 -26 C-2 -2 4 -8 2 -42 C26 -6 30 18 14 48z" fill="url(#flout)" filter="url(#glow)"/>`;
+    s+=`<path class="fl-inner" d="M0 40 C-10 40 -11 10 -4 -8 C0 8 2 2 1 -22 C14 10 15 24 6 40z" fill="url(#flin)"/>`;
+    s+=`</g>`;
+  } else {
+    s+=`<circle cx="410" cy="290" r="10" fill="#1a1c20"/>`;
+  }
+  s+=`<rect class="hit" x="372" y="220" width="80" height="70"/>`;
+  s+=`</g>`;
+
+  s+=`<g class="part" data-k="pan">`;
+  s+=`<ellipse cx="412" cy="286" rx="62" ry="18" fill="${lit?"url(#ironhot)":"#1a1c20"}" stroke="#0a0c10" stroke-width="2.2"/>`;
+  s+=`<ellipse cx="412" cy="280" rx="52" ry="13" fill="${lit?"#4a2818":"#2a2e34"}"/>`;
+  s+=`<ellipse class="oil-sheen" cx="400" cy="278" rx="24" ry="6" fill="#d9a84e"/>`;
+  if(lit){
+    s+=`<g class="steam" transform="translate(412,252)">`;
+    s+=`<path d="M-14 0 q-6 -16 -2 -28"/><path d="M0 0 q4 -18 0 -32"/><path d="M14 0 q6 -14 2 -26"/>`;
+    s+=`</g>`;
+    s+=`<path d="M380 300 q8 10 0 14 q-10 6 4 10" fill="url(#flout)" class="fl-outer" opacity=".85"/>`;
+    s+=`<path d="M442 298 q-6 12 4 16 q8 4 -2 10" fill="url(#flout)" class="fl-outer" opacity=".8"/>`;
+  }
+  s+=`<rect class="hit" x="350" y="258" width="124" height="48"/>`;
+  s+=`</g>`;
+
+  s+=`<g class="part" data-k="handle">`;
+  s+=`<rect x="468" y="274" width="86" height="12" rx="5" fill="${lit?"#5a3020":"#2a2e34"}" stroke="#0a0c10" transform="rotate(-8 468 280)"/>`;
+  if(lit) s+=`<rect x="520" y="268" width="28" height="10" rx="3" fill="#c9784a" opacity=".55" transform="rotate(-8 520 273)"/>`;
+  s+=`<rect class="hit" x="468" y="258" width="100" height="36"/>`;
+  s+=`</g>`;
+
+  /* BOARD + KNIFE + ONION */
+  s+=`<g class="part" data-k="board">`;
+  s+=`<rect class="glow-ring" x="690" y="268" width="210" height="130" rx="10"/>`;
+  s+=`<rect x="700" y="278" width="190" height="110" rx="8" fill="url(#wood2)" stroke="#5a3818"/>`;
+  s+=`<rect x="700" y="278" width="190" height="110" rx="8" filter="url(#grain)" opacity=".35"/>`;
+  /* end-grain squares */
+  for(let y=286;y<380;y+=14){
+    for(let x=710;x<880;x+=14){
+      s+=`<rect x="${x}" y="${y}" width="12" height="12" fill="${(x+y)%28?"#c4a06a":"#8a5a28"}" opacity=".28"/>`;
+    }
+  }
+  s+=`<rect class="hit" x="690" y="268" width="210" height="130"/>`;
+  s+=`</g>`;
+
+  s+=`<g class="part" data-k="knife">`;
+  s+=`<g transform="translate(780,320) rotate(-28)">`;
+  s+=`<path d="M-70 -8 L70 -4 L76 2 L70 8 L-70 6 Z" fill="url(#blade)" stroke="#5a6270" stroke-width="1"/>`;
+  s+=`<path d="M-70 -8 L70 -4 L70 -1 L-70 0 Z" fill="#f6f8fa" opacity=".55"/>`;
+  s+=`<rect x="70" y="-9" width="18" height="16" fill="#8a929c" stroke="#4a525c"/>`;
+  s+=`<rect x="86" y="-11" width="64" height="20" rx="4" fill="url(#handle)" stroke="#120c08"/>`;
+  s+=`<circle cx="102" cy="0" r="2.4" fill="#c5ccd4"/><circle cx="118" cy="0" r="2.4" fill="#c5ccd4"/><circle cx="134" cy="0" r="2.4" fill="#c5ccd4"/>`;
+  s+=`</g>`;
+  /* onion half */
+  s+=`<g transform="translate(820,350)">`;
+  s+=`<ellipse rx="28" ry="22" fill="#f0d8a0" stroke="#c4a06a"/>`;
+  s+=`<ellipse rx="20" ry="15" fill="none" stroke="#e8c878" stroke-width="2"/>`;
+  s+=`<ellipse rx="12" ry="9" fill="none" stroke="#d4a85a" stroke-width="1.6"/>`;
+  s+=`<ellipse rx="5" ry="4" fill="#f4ead0" stroke="#c49654"/>`;
+  s+=`<path d="M0 -22 q6 -10 12 -8" fill="none" stroke="#6f9a4a" stroke-width="2"/>`;
+  s+=`</g>`;
+  s+=`<rect class="hit" x="700" y="288" width="200" height="90"/>`;
+  s+=`</g>`;
+  if(S.sel==="knife"){
+    s+=`<g class="claw" transform="translate(748,358)" pointer-events="none">`;
+    s+=`<path d="M0 8 q8 -18 4 -28" fill="none" stroke="#c9784a" stroke-width="7" stroke-linecap="round"/>`;
+    s+=`<path d="M12 10 q6 -20 0 -30" fill="none" stroke="#c9784a" stroke-width="7" stroke-linecap="round"/>`;
+    s+=`<path d="M24 8 q4 -16 -2 -26" fill="none" stroke="#c9784a" stroke-width="6.5" stroke-linecap="round"/>`;
+    s+=`<path d="M-16 4 q-2 -12 10 -8" fill="none" stroke="#8a5a2a" stroke-width="7" stroke-linecap="round"/>`;
+    s+=`<circle cx="6" cy="16" r="9" fill="#e8d2b0" stroke="#8a5a2a"/>`;
+    s+=`</g>`;
+  }
+
+  /* towel */
+  s+=`<path d="M40 292 l18 8 v90 l-18 -6 z" fill="#e8e0d0" stroke="#c4bba8"/>`;
+  s+=`<path d="M44 300 l10 4" stroke="#c9784a" stroke-width="3"/>`;
+
+  s+=`</svg>`;
+  return s;
+}
+
+function sewSVG(){
+  const sew=S.sewing, foot=S.foot, lamp=S.light;
+  const cls=(sew?" sewing":"")+(lamp?" lamp":"");
+  let s=`<svg viewBox="0 0 920 500" class="scene${cls}" role="img" aria-label="Classroom sewing machine">`;
+  s+=defs();
+  s+=`<rect width="920" height="500" fill="url(#wall)"/>`;
+  /* window light */
+  s+=`<rect x="620" y="20" width="260" height="180" rx="4" fill="#dce8f0" stroke="#b8c4ce"/>`;
+  s+=`<rect x="750" y="20" width="8" height="180" fill="#c5ccd4"/>`;
+  s+=`<rect x="620" y="104" width="260" height="8" fill="#c5ccd4"/>`;
+  /* table */
+  s+=`<rect x="0" y="310" width="920" height="190" fill="url(#wood)"/>`;
+  s+=`<rect x="0" y="310" width="920" height="190" filter="url(#grain)" opacity=".3"/>`;
+  s+=`<rect x="0" y="300" width="920" height="14" fill="url(#wood2)"/>`;
+  s+=`<rect x="40" y="430" width="22" height="70" fill="#5a3818"/><rect x="820" y="430" width="22" height="70" fill="#5a3818"/>`;
+
+  /* fabric under machine — feeds toward the needle when sewing */
+  s+=`<g class="part" data-k="fabric">`;
+  s+=`<g class="feed">`;
+  s+=`<path d="M80 318 C200 300 340 328 520 322 L700 328 C760 340 800 360 820 390 L40 390 C50 350 60 330 80 318z" fill="url(#denim)" stroke="#1a3048"/>`;
+  s+=`<path d="M100 340 C240 328 400 348 620 342" fill="none" stroke="#3a5878" stroke-width="1.2"/>`;
+  s+=`<path class="stitch" d="M200 336 C320 330 420 338 560 334" fill="none" stroke="#d9a84e" stroke-width="1.8" stroke-linecap="round"/>`;
+  if(sew) s+=`<path class="stitch" d="M210 342 C330 336 430 344 570 340" fill="none" stroke="#f4efe4" stroke-width="1.1" opacity=".7"/>`;
+  s+=`</g>`;
+  s+=`<rect class="hit" x="80" y="300" width="740" height="90"/>`;
+  s+=`</g>`;
+
+  /* MACHINE body */
+  const fy = foot? 0 : -14;
+  /* base */
+  s+=`<rect x="250" y="268" width="420" height="58" rx="6" fill="url(#cream)" stroke="#8a8274" stroke-width="1.6"/>`;
+  s+=`<rect x="258" y="276" width="404" height="14" fill="#e8e0d2"/>`;
+  /* free arm */
+  s+=`<rect x="268" y="250" width="210" height="28" rx="4" fill="url(#cream)" stroke="#8a8274"/>`;
+
+  /* column + arm */
+  s+=`<rect x="478" y="110" width="92" height="170" rx="6" fill="url(#cream)" stroke="#8a8274" stroke-width="1.6"/>`;
+  s+=`<rect x="570" y="118" width="230" height="78" rx="8" fill="url(#cream)" stroke="#8a8274" stroke-width="1.6"/>`;
+  /* black face plate */
+  s+=`<rect x="488" y="128" width="72" height="110" rx="4" fill="url(#bodyblk)"/>`;
+  s+=`<circle cx="524" cy="158" r="16" fill="#2a2e34" stroke="#d9a84e" stroke-width="2"/>`;
+  s+=`<circle cx="524" cy="158" r="4" fill="#d9a84e"/>`;
+  s+=`<text x="524" y="208" text-anchor="middle" font-size="9" fill="#c5ccd4" font-family="ui-sans-serif,system-ui">STITCH</text>`;
+
+  /* HEAD */
+  s+=`<rect x="720" y="150" width="88" height="70" rx="6" fill="url(#cream)" stroke="#8a8274" stroke-width="1.6"/>`;
+  s+=`<rect x="728" y="162" width="72" height="36" rx="3" fill="url(#bodyblk)"/>`;
+  s+=`<circle cx="764" cy="180" r="5" fill="#d9a84e"/>`;
+
+  /* HANDWHEEL */
+  s+=`<g class="part" data-k="wheel">`;
+  s+=`<g class="handwheel" transform="translate(818,158)">`;
+  s+=`<circle r="34" fill="url(#chrome)" stroke="#6a7380" stroke-width="2"/>`;
+  s+=`<circle r="22" fill="none" stroke="#8a929c" stroke-width="3"/>`;
+  s+=`<circle r="6" fill="#2a2e34"/>`;
+  s+=`<path d="M0 -22 v44 M-22 0 h44" stroke="#5a6270" stroke-width="2"/>`;
+  s+=`</g>`;
+  s+=`<circle class="hit" cx="818" cy="158" r="44"/>`;
+  s+=`</g>`;
+
+  /* SPOOL + thread path */
+  s+=`<g class="part" data-k="spool">`;
+  s+=`<rect x="612" y="88" width="8" height="30" fill="url(#chrome)"/>`;
+  s+=`<rect x="598" y="70" width="36" height="28" rx="4" fill="#9c3a2e" stroke="#5a1810"/>`;
+  s+=`<rect x="598" y="78" width="36" height="4" fill="#c45a48" opacity=".5"/>`;
+  s+=`<rect x="598" y="88" width="36" height="4" fill="#c45a48" opacity=".5"/>`;
+  s+=`<path d="M634 84 C680 70 740 90 764 168" fill="none" stroke="#9c3a2e" stroke-width="1.6"/>`;
+  s+=`<rect class="hit" x="588" y="64" width="56" height="56"/>`;
+  s+=`</g>`;
+
+  /* NEEDLE BAR + NEEDLE — in front of the head, hit box does not cover the foot */
+  s+=`<g class="part" data-k="needle">`;
+  s+=`<g class="needle-bar">`;
+  s+=`<rect x="752" y="196" width="14" height="62" rx="2" fill="url(#chrome)" stroke="#6a7380"/>`;
+  s+=`<rect x="754" y="198" width="4" height="58" fill="#f4f6f8" opacity=".55"/>`;
+  s+=`<path d="M759 256 l3.5 20 l-3.5 12 l-3.5 -12 z" fill="#dfe4ea" stroke="#4a525c" stroke-width=".9"/>`;
+  s+=`<circle cx="759" cy="262" r="1.4" fill="none" stroke="#1a232c" stroke-width=".9"/>`;
+  s+=`<path d="M759 256 v32" stroke="#9c3a2e" stroke-width="1.1"/>`;
+  s+=`</g>`;
+  s+=`<rect class="hit" x="746" y="188" width="28" height="72"/>`;
+  s+=`</g>`;
+
+  /* PRESSER FOOT */
+  s+=`<g class="part" data-k="foot" transform="translate(0,${fy})">`;
+  s+=`<rect x="738" y="214" width="8" height="50" fill="url(#chrome)" stroke="#6a7380"/>`;
+  s+=`<path d="M730 262 h32 l3 9 h-12 v5 h-14 v-5 h-12 z" fill="url(#chrome)" stroke="#5a6270"/>`;
+  s+=`<rect class="hit" x="726" y="248" width="40" height="32"/>`;
+  s+=`</g>`;
+
+  /* NEEDLE PLATE */
+  s+=`<g class="part" data-k="plate">`;
+  s+=`<rect x="700" y="268" width="120" height="36" rx="3" fill="url(#steel)" stroke="#6a7380"/>`;
+  s+=`<rect x="748" y="278" width="22" height="8" rx="1" fill="#1a232c"/>`;
+  s+=`<path d="M710 280 h26 M710 286 h20 M710 292 h16" stroke="#2f5c6b" stroke-width="1"/>`;
+  s+=`<rect class="hit" x="698" y="264" width="124" height="42"/>`;
+  s+=`</g>`;
+
+  /* BOBBIN door */
+  s+=`<g class="part" data-k="bobbin">`;
+  s+=`<circle cx="330" cy="292" r="16" fill="url(#chrome)" stroke="#6a7380"/>`;
+  s+=`<circle cx="330" cy="292" r="8" fill="none" stroke="#9c3a2e" stroke-width="3"/>`;
+  s+=`<circle cx="330" cy="292" r="3" fill="#2a2e34"/>`;
+  s+=`<rect class="hit" x="308" y="270" width="44" height="44"/>`;
+  s+=`</g>`;
+
+  /* light under arm */
+  s+=`<ellipse cx="680" cy="268" rx="${lamp?70:40}" ry="${lamp?14:8}" fill="#fff6d0" opacity="${lamp?.55:.18}"/>`;
+  if(lamp) s+=`<ellipse cx="759" cy="290" rx="36" ry="16" fill="#fff8d8" opacity=".28"/>`;
+
+  /* PEDAL */
+  s+=`<g class="part" data-k="pedal">`;
+  s+=`<path d="M140 448 L230 430 L248 456 L150 478 Z" fill="#2a2e34" stroke="#0c0e12" stroke-width="2"/>`;
+  s+=`<path d="M150 452 L228 436 L236 450 L156 468 Z" fill="#3a4048"/>`;
+  s+=`<rect x="228" y="400" width="8" height="36" fill="#4a525c"/>`;
+  s+=`<rect class="hit" x="130" y="420" width="130" height="64"/>`;
+  s+=`</g>`;
+
+  /* pincushion + scissors */
+  s+=`<ellipse cx="180" cy="340" rx="28" ry="16" fill="#9c3a2e" stroke="#5a1810"/>`;
+  s+=`<path d="M168 328 l4 -18 M180 326 l-2 -16 M192 330 l6 -14" stroke="#c5ccd4" stroke-width="1.4"/>`;
+  s+=`<g transform="translate(860,360) rotate(20)">`;
+  s+=`<path d="M0 0 l40 8 M0 8 l40 -8" stroke="#8a929c" stroke-width="2"/>`;
+  s+=`<circle cx="0" cy="0" r="6" fill="none" stroke="#8a929c" stroke-width="2"/>`;
+  s+=`<circle cx="0" cy="8" r="6" fill="none" stroke="#8a929c" stroke-width="2"/>`;
+  s+=`</g>`;
+
+  s+=`</svg>`;
+  return s;
+}
+
+function paintCap(){
+  const p=pt(S.sel);
+  document.getElementById("capK").textContent = p? p.k : t("object");
+  document.getElementById("capN").textContent = p? p.n : t("benchN");
+  document.getElementById("capJ").textContent = p? p.j : t("benchJ");
+  const w=document.getElementById("capW");
+  const bar=document.getElementById("washBar"), fill=document.getElementById("washFill");
+  let warn=S.warn;
+  if(!warn && S.room==="kitchen" && S.burner && S.water && (S.sel==="flame"||S.sel==="pan"||S.sel==="handle")) warn="warnWet";
+  if(!warn && S.room==="kitchen" && S.sel==="handle" && S.burner) warn="warnHot";
+  if(warn){ w.hidden=false; w.textContent=t(warn); } else w.hidden=true;
+  const washOn = S.room==="kitchen" && S.sel==="soap" && S.water && S.washStart;
+  if(washOn){
+    const tleft=Math.max(0, 20000-(Date.now()-S.washStart));
+    bar.hidden=false;
+    fill.style.width=((1-tleft/20000)*100)+"%";
+    if(tleft<=0){ tick("clean"); S.washStart=0; }
+  } else bar.hidden=true;
+}
+function paintActs(){
+  const el=document.getElementById("acts");
+  if(S.room==="kitchen"){
+    el.innerHTML=`<div class="row"><span class="tiny">${S.lang==="es"?"Fuego":"Fire"}</span><span>
+      <button class="btn${S.burner?" btn-steel":""}" data-act="burner">${S.burner?t("lampOn"):t("lampOff")}</button>
+      <button class="btn${S.water?" btn-steel":""}" data-act="water">${S.water?t("waterOn"):t("waterOff")}</button>
+    </span></div>`;
+  } else {
+    el.innerHTML=`<div class="row"><span class="tiny">${S.lang==="es"?"Máquina":"Machine"}</span><span>
+      <button class="btn${S.foot?" btn-steel":""}" data-act="foot">${S.foot?t("footDown"):t("footUp")}</button>
+      <button class="btn${S.sewing?" btn-steel":""}" data-act="sew">${S.sewing?t("sewOn"):t("sewOff")}</button>
+      <button class="btn${S.light?" btn-steel":""}" data-act="light">${S.light?t("lampLit"):t("lampDim")}</button>
+    </span></div>`;
+  }
+}
+function paintMissions(){
+  const list=MISSIONS[S.room];
+  const done=S.missions[S.room]||{};
+  document.getElementById("missions").innerHTML = list.map(m=>`<li class="${done[m.id]?"done":""}"><i class="dot"></i><span>${S.lang==="es"?m.es:m.en}</span></li>`).join("");
+}
+function tick(id){
+  S.missions[S.room]=S.missions[S.room]||{};
+  S.missions[S.room][id]=true;
+}
+let washRaf=0;
+function washLoop(){
+  if(S.room==="kitchen" && S.sel==="soap" && S.water && S.washStart){
+    paintCap(); paintMissions();
+    washRaf=requestAnimationFrame(washLoop);
+  }
+}
+function onSel(k){
+  S.sel=k; S.warn=null;
+  if(S.room==="kitchen"){
+    if(k==="sink"||k==="faucet") tick("wet");
+    if(k==="knife") tick("sharp");
+    if(k==="soap"){ tick("clean"); if(S.water && !S.washStart) S.washStart=Date.now(); }
+    if(k==="flame"||k==="pan") { if(S.burner) tick("hot"); }
+    if(k==="handle"){ if(S.burner){ tick("handle"); S.warn="warnHot"; } }
+  } else {
+    if(k==="needle") tick("need");
+    if(k==="foot") tick("foot");
+    if(k==="pedal") tick("ped");
+  }
+  save(); paint();
+}
+function paint(){
+  document.documentElement.lang = S.lang==="es"?"es":"en";
+  document.getElementById("langBtn").textContent = S.lang==="es"?"English":"Español";
+  document.getElementById("themeBtn").textContent = document.documentElement.getAttribute("data-theme")==="dark"?"Light":"Dark";
+  document.getElementById("kicker").textContent = t("kicker");
+  document.getElementById("title").textContent = S.room==="kitchen"?t("titleK"):t("titleS");
+  document.getElementById("lead").textContent = S.room==="kitchen"?t("leadK"):t("leadS");
+  document.getElementById("hint").textContent = S.room==="kitchen"?t("hintK"):t("hintS");
+  document.querySelectorAll("#nav a[data-room]").forEach(a=>{
+    a.classList.toggle("on", a.getAttribute("data-room")===S.room);
+    a.textContent = t(a.getAttribute("data-room"));
+  });
+  const navMic=document.querySelector('#nav a[href*="microscope"]');
+  if(navMic) navMic.textContent=t("microscope");
+  document.getElementById("stage").innerHTML = S.room==="kitchen"?kitchenSVG():sewSVG();
+  document.getElementById("stage").querySelectorAll(".part").forEach(g=>{
+    if(g.getAttribute("data-k")===S.sel) g.classList.add("sel");
+    g.addEventListener("click", ()=> onSel(g.getAttribute("data-k")));
+  });
+  paintCap(); paintActs(); paintMissions();
+  document.getElementById("acts").querySelectorAll("[data-act]").forEach(b=>{
+    b.addEventListener("click", ()=>{
+      const a=b.getAttribute("data-act");
+      if(a==="burner"){ S.burner=!S.burner; S.warn=null; if(S.burner) tick("hot"); if(S.burner && S.water) S.warn="warnWet"; }
+      if(a==="water"){ S.water=!S.water; S.warn=null; if(S.water) tick("wet"); if(S.sel==="soap" && S.water) S.washStart=Date.now(); }
+      if(a==="sew"){
+        if(!S.foot){ S.sewing=false; S.warn="warnFoot"; tick("refuse"); }
+        else { S.sewing=!S.sewing; S.warn=null; if(S.sewing){ tick("sew"); tick("foot"); } }
+      }
+      if(a==="foot"){ S.foot=!S.foot; S.warn=null; if(S.foot) tick("foot"); if(!S.foot) S.sewing=false; }
+      if(a==="light"){ S.light=!S.light; }
+      save(); paint();
+    });
+  });
+  cancelAnimationFrame(washRaf);
+  if(S.sel==="soap" && S.water && S.washStart) washLoop();
+}
+document.getElementById("langBtn").onclick=()=>{ S.lang=S.lang==="es"?"en":"es"; save(); paint(); };
+document.getElementById("themeBtn").onclick=()=>{
+  const dark=document.documentElement.getAttribute("data-theme")==="dark";
+  const next=dark?"light":"dark";
+  document.documentElement.setAttribute("data-theme",next);
+  document.documentElement.classList.toggle("dark", next==="dark");
+  try{ localStorage.setItem("aog.interior.ws.v1.theme", next); }catch(e){}
+  paint();
+};
+document.querySelectorAll("#nav a[data-room]").forEach(a=>{
+  a.addEventListener("click", e=>{ e.preventDefault(); S.room=a.getAttribute("data-room"); S.sel=null; S.warn=null; S.sewing=false; save(); paint(); });
+});
+if(location.hash==="#sew") S.room="sew";
+paint();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,334 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Fraunces:ital,opsz,wght@0,9..144,400..900;1,9..144,400..700&display=swap" rel="stylesheet">
+<title>Gracia para la Vida Adulta · Architecture of Grace</title>
+<style>
+  @page { size: Letter; margin: 0; }
+  :root{
+    --ink:#2C3A47; --navy:#1B3A5F; --slate:#46506E; --faint:#8a96a3;
+    --gold:#B8893A; --gold-dk:#9a6f24; --gold-lt:#E7D9B6; --cream:#FBF3DF;
+    --identity:#1C5499; --compassion:#356B25; --forgive:#9a6f24; --grace:#523C9E;
+  }
+  *{box-sizing:border-box;} html,body{margin:0;padding:0;}
+  body{font-family:Georgia,"Times New Roman",serif; color:var(--ink); background:#FCF8F0;
+    -webkit-print-color-adjust:exact; print-color-adjust:exact;}
+  .page{width:8.5in; min-height:11in; margin:0 auto 18px; padding:0.55in 0.6in 0.5in;
+    background:radial-gradient(at 12% 0%, rgba(184,137,58,.07) 0, transparent 42%),
+      radial-gradient(at 92% 100%, rgba(27,58,95,.06) 0, transparent 45%), var(--cream);
+    box-shadow:0 1px 6px rgba(0,0,0,.12);}
+  .brandrow{display:flex; align-items:center; gap:12px;}
+  .mark{width:46px; height:46px; border-radius:11px; background:var(--navy); color:#E7C77B;
+    display:flex; align-items:center; justify-content:center; font-size:27px; font-weight:700;}
+  .brand{font-size:19px; font-weight:700; color:var(--navy); letter-spacing:.2px;}
+  .brand small{display:block; font-family:Arial,Helvetica,sans-serif; font-size:10px; font-weight:400; color:#5A6B7B; letter-spacing:.04em; margin-top:2px;}
+  h1{font-size:33px; color:var(--navy); margin:18px 0 4px; letter-spacing:-.4px;}
+  h2{font-family:Arial,Helvetica,sans-serif; font-size:12px; font-weight:700; letter-spacing:.14em; text-transform:uppercase; color:var(--gold-dk); margin:20px 0 9px;}
+  .tagline{font-style:italic; font-size:15px; color:var(--slate); margin:0 0 4px; max-width:6.7in;}
+  .rule{height:2px; background:var(--gold); border:0; margin:12px 0 14px;}
+  p.body{font-size:13.5px; line-height:1.6; color:var(--slate); margin:0 0 10px; max-width:6.9in;}
+  .grid2{display:grid; grid-template-columns:1fr 1fr; gap:13px;}
+  .aud{background:#fff; border:1.5px solid var(--gold-lt); border-top:5px solid var(--gold); border-radius:12px; padding:12px 14px;}
+  .aud.t-id{border-top-color:var(--identity);} .aud.t-sc{border-top-color:var(--compassion);}
+  .aud.t-fg{border-top-color:var(--forgive);} .aud.t-gr{border-top-color:var(--grace);}
+  .aud .name{font-size:16.5px; color:var(--navy); font-weight:700; margin:0 0 6px;}
+  .aud .lab{font-family:Arial,sans-serif; font-size:8.5px; font-weight:700; letter-spacing:.09em; text-transform:uppercase; color:var(--gold-dk); display:block; margin:7px 0 2px;}
+  .aud .tx{font-size:11.5px; line-height:1.48; color:var(--ink); margin:0;}
+  .aud .tx b{color:var(--navy);}
+  .aud .cases{margin:1px 0 0; padding-left:15px;} .aud .cases li{font-size:11.5px; line-height:1.45; color:var(--ink); margin-bottom:2px;}
+  .why{font-size:12px; line-height:1.5; color:var(--slate); margin:0 0 2px; font-style:italic;}
+  .callout{background:#fff; border:1.5px solid var(--gold-lt); border-left:5px solid var(--gold); border-radius:12px; padding:13px 16px; margin:10px 0;}
+  .callout b{color:var(--navy);} .callout p{font-size:12.5px;line-height:1.55;color:var(--slate);margin:0;}
+  .foot{margin-top:16px; display:flex; justify-content:space-between; align-items:baseline; font-family:Arial,sans-serif; font-size:10.5px; color:var(--faint); border-top:1px solid var(--gold-lt); padding-top:8px;}
+  .foot b{color:var(--navy);} .stick{font-style:italic; font-family:Georgia,serif; font-size:12px; color:var(--gold-dk);}
+  table.exp{width:100%; border-collapse:collapse; font-size:12px;}
+  table.exp th{font-family:Arial,sans-serif; font-size:9.5px; font-weight:700; letter-spacing:.07em; text-transform:uppercase; color:#fff; background:var(--navy); text-align:left; padding:7px 9px;}
+  table.exp td{border-bottom:1px solid var(--gold-lt); padding:8px 9px; line-height:1.45; vertical-align:top;}
+  table.exp tr:nth-child(even) td{background:rgba(184,137,58,.05);}
+  @media print{ body{background:#fff;} .page{box-shadow:none; margin:0 auto;} }
+
+  /* ===== site nav (screen only; hidden in print) ===== */
+  .aognav{position:sticky; top:0; z-index:60; display:flex; align-items:center; justify-content:space-between; gap:14px; flex-wrap:wrap; row-gap:10px; background:#FDFCF7; border-bottom:1px solid #E4DAC5; padding:18px 28px; box-shadow:0 2px 10px rgba(10,30,51,.06);}
+  .aognav .nbrand{display:flex; align-items:center; gap:12px; text-decoration:none;}
+  .aognav .nbrand .mk{width:36px; height:36px; border-radius:6px; background:#0A1E33; color:#F2C964; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:18px; box-shadow:0 1px 4px rgba(10,30,51,.18);}
+  .aognav .nbrand .bn{font-family:"Fraunces","Cormorant Garamond",Georgia,serif; font-weight:600; font-size:17px; color:#0A1E33; line-height:1.1;}
+  .aognav .nbrand .bs{display:block; font-family:Arial,Helvetica,sans-serif; font-size:10.5px; font-weight:400; color:#8A92A6; letter-spacing:.05em; margin-top:2px;}
+  .aognav .nactions{display:flex; align-items:center; gap:8px; flex-wrap:nowrap;}
+  .aognav .pill{display:inline-flex; align-items:center; gap:6px; font-family:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; font-size:13px; font-weight:800; text-decoration:none; border-radius:999px; white-space:nowrap; cursor:pointer; border:1px solid transparent; line-height:1;}
+  .aognav .pill .pic{flex:none;}
+  .aognav .pill.rn .pic, .aognav .pill.ci .pic{color:#F2C964;}
+  .aognav .pill.rn{background:#D9A33B; color:#0A1E33; border-color:#0A1E33; padding:6px 14px; margin-right:14px; flex:none;}
+  .aognav .pill.ci{background:#0A1E33; color:#F4EEE2; border-color:#0A1E33; padding:7px 16px; flex:none;}
+  .aognav .pill.ex{background:#F1DFA8; color:#0A1E33; border-color:#D9A33B; font-weight:700; padding:6px 13px;}
+  .aognav .pill:hover{filter:brightness(.97);}
+  .aognav .pill.back{background:transparent; color:#0A1E33; border:none; outline:none; -webkit-appearance:none; appearance:none; font-weight:700; padding:0; margin-right:16px; cursor:pointer; flex:none;}
+  .aognav .pill.back:focus{outline:none;}
+  .aognav .pill.back:focus-visible{outline:2px solid #D9A33B; outline-offset:3px; border-radius:6px;}
+  .aognav .pill.back:hover{color:#D9A33B;}
+  .aognav .pill.back .arr{color:#D9A33B; font-weight:700;}
+  .aognav .exwrap{position:relative; margin-right:14px; flex:none;}
+  .aognav .exmenu{position:absolute; top:calc(100% + 8px); right:0; min-width:232px; background:#FCF8F0; border:1px solid #E4DAC5; border-radius:14px; box-shadow:0 18px 40px -16px rgba(10,30,51,.4); padding:7px; z-index:80;}
+  .aognav .exmenu[hidden]{display:none;}
+  .aognav .exmenu a{display:flex; align-items:center; gap:11px; padding:10px 12px; border-radius:10px; text-decoration:none; color:#0A1E33; font-family:Arial,Helvetica,sans-serif; font-size:14.5px; font-weight:600; white-space:nowrap;}
+  .aognav .exmenu a svg{width:18px; height:18px; color:#D9A33B; flex:none;}
+  .aognav .exmenu a:hover{background:rgba(184,137,58,.14);}
+  .aognav .exchev{transition:transform .15s ease;}
+  .aognav .pill.ex[aria-expanded="true"] .exchev{transform:rotate(180deg);}
+  .aognav .nutil{display:flex; align-items:center; gap:8px;}
+  .aognav .uic{width:34px; height:34px; border:1px solid #E4DAC5; border-radius:9px; display:inline-grid; place-items:center; color:#46506E; text-decoration:none; flex:none;}
+  .aognav .lang{flex:none;}
+  .aognav .uic:hover{background:rgba(184,137,58,.12);}
+  .aognav .uic svg{width:18px; height:18px;}
+  .aognav .lang{display:inline-flex; background:#F4EEE2; border:1px solid #E4DAC5; border-radius:999px; padding:3px;}
+  .aognav .lang .on, .aognav .lang a{background:transparent; padding:5px 12px; border-radius:999px; font-family:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; font-size:12px; font-weight:600; text-decoration:none; color:#46506E;}
+  .aognav .lang .on{background:#0A1E33; color:#fff; box-shadow:0 1px 2px rgba(10,30,51,.18);}
+  @media (max-width:600px){ .aognav{ flex-wrap:wrap; gap:8px; justify-content:center; } .aognav .nbrand{ width:100%; text-align:center; } .aognav .nactions{ flex-wrap:wrap; justify-content:center; } }
+  @media print{ .aognav{display:none !important;} }
+</style>
+<style id="aog-print-page-responsive">
+/* ⚠ SCREEN ONLY — @media print must keep the 8.5in sheet exactly as it was.
+   .page is width:8.5in because these are printable handouts. On a phone that
+   fixed 816px sheet overflowed the viewport by 426px at 390, and the four-up
+   grids and the four-column tables overflowed again once the sheet was fluid.
+   This lets the sheet, its grids and its tables reflow on screen, and leaves
+   the printed sheet untouched. */
+@media screen and (max-width:880px){
+  .page{width:auto !important;max-width:100% !important;min-height:0 !important;
+        padding:22px 18px !important;margin:0 auto !important;box-shadow:none !important;}
+  .brandrow{flex-wrap:wrap;}
+  .pillars,.path,.loop{grid-template-columns:1fr 1fr !important;}
+  .grid2,.grid{grid-template-columns:1fr !important;}
+  img,svg{max-width:100%;height:auto;}
+  table{display:block;width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch;}
+}
+@media screen and (max-width:520px){
+  .pillars,.path,.loop{grid-template-columns:1fr !important;}
+}
+</style>
+</head>
+<body>
+
+<nav class="aognav" aria-label="Navegación del sitio">
+  <a class="nbrand" href="../index.html"><span class="mk">A</span><span><span class="bn">Architecture of Grace</span></span></a>
+  <div class="nactions">
+    <button class="pill back" type="button" onclick="aognavBack()"><span class="arr">&#8592;</span> <span data-i18n="nav.back">Atrás</span></button>
+  <a class="pill rn" href="../index.html#right-now"><svg class="pic" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-4.35-9-8a5 5 0 0 1 9-3 5 5 0 0 1 9 3c-2 3.65-9 8-9 8z"/></svg> <span data-i18n="nav.rn">Ahora Mismo</span></a>
+  <a class="pill ci" href="../index.html#checkin"><svg class="pic" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg> <span data-i18n="nav.ci">Registro</span></a>
+  <div class="exwrap">
+    <button class="pill ex" id="aognavEx" type="button" aria-haspopup="true" aria-expanded="false" onclick="aognavToggle(event)"><svg class="pic" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18"/></svg> <span data-i18n="nav.explore">Explorar</span> <svg class="exchev" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button>
+    <div class="exmenu" id="aognavMenu" role="menu" hidden>
+      <a role="menuitem" href="../index.html#library"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg> <span data-i18n="nav.library">Biblioteca</span></a>
+      <a role="menuitem" href="../index.html#tools"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2a5 5 0 0 1 5 5c0 2.76-2.24 5-5 5S7 9.76 7 7a5 5 0 0 1 5-5z"/><path d="M3 21v-1a7 7 0 0 1 7-7h4a7 7 0 0 1 7 7v1"/></svg> <span data-i18n="nav.tools">Herramientas de Calma y Regulación</span></a>
+      <a role="menuitem" href="/#grace-ecosystem"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="2.5"/><circle cx="5" cy="6" r="2"/><circle cx="19" cy="6" r="2"/><circle cx="5" cy="18" r="2"/><circle cx="19" cy="18" r="2"/><path d="M10.2 10.6 6.4 7.4M13.8 10.6l3.8-3.2M10.2 13.4 6.4 16.6M13.8 13.4l3.8 3.2"/></svg> <span data-i18n="nav.eco">Ecosistema</span></a>
+      <a role="menuitem" href="../index.html#framework"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21h18"/><path d="M4 21V9l8-5 8 5v12"/><path d="M9 21v-6h6v6"/></svg> <span data-i18n="nav.framework">Marco</span></a>
+      <a role="menuitem" href="../index.html#dashboard"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 13h8V3H3zM13 21h8V3h-8zM3 21h8v-6H3z"/></svg> <span data-i18n="nav.dashboard">Panel</span></a>
+    </div>
+  </div>
+  <div class="nutil">
+    <a class="uic" href="../index.html" title="Opciones de accesibilidad (en la app)" aria-label="Opciones de accesibilidad"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="4" r="1.6"/><path d="M5 8h14M9 8l1 11M15 8l-1 11M12 8v5"/></svg></a>
+    <a class="uic" href="../index.html" title="Personalizar" aria-label="Personalizar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="4" y1="7" x2="20" y2="7"/><circle cx="9" cy="7" r="2.3"/><line x1="4" y1="17" x2="20" y2="17"/><circle cx="15" cy="17" r="2.3"/></svg></a>
+    <a class="uic" href="../index.html" title="Pantalla y modo oscuro (en la app)" aria-label="Opciones de pantalla"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg></a>
+    <span class="lang"><a href="AoG-Grace-for-Adult-Life.html" title="English">EN</a><span class="on">ES</span></span>
+  </div>
+  </div>
+</nav>
+<script>
+  function aognavBack(){ if(window.history.length>1){window.history.back();} else {window.location.href='../index.html'; } }
+  function aognavToggle(e){ if(e)e.preventDefault(); var b=document.getElementById('aognavEx'),m=document.getElementById('aognavMenu'); if(!b||!m)return; if(m.hasAttribute('hidden')){ m.removeAttribute('hidden'); b.setAttribute('aria-expanded','true'); } else { m.setAttribute('hidden',''); b.setAttribute('aria-expanded','false'); } }
+  document.addEventListener('click', function(ev){ var m=document.getElementById('aognavMenu'); if(!m||m.hasAttribute('hidden'))return; if(ev.target.closest && (ev.target.closest('#aognavMenu')||ev.target.closest('#aognavEx')))return; m.setAttribute('hidden',''); var b=document.getElementById('aognavEx'); if(b)b.setAttribute('aria-expanded','false'); });
+  document.addEventListener('keydown', function(ev){ if(ev.key==='Escape'){ var m=document.getElementById('aognavMenu'); if(m)m.setAttribute('hidden',''); var b=document.getElementById('aognavEx'); if(b)b.setAttribute('aria-expanded','false'); } });
+</script>
+
+
+<!-- PAGE 1 -->
+<div class="page">
+  <div class="brandrow">
+    <a class="mark" href="../index.html" title="Architecture of Grace" style="text-decoration:none;">A</a>
+    <div class="brand">Architecture of Grace</div>
+  </div>
+  <h1>Gracia para la Vida Adulta</h1>
+  <p class="tagline">Los cuatro pilares no se gradúan. Se aplican dondequiera que dos personas estén en relación.</p>
+  <hr class="rule">
+  <p class="body">La Identidad, la Autocompasión, el Perdón y la Gracia no son destrezas escolares: son <b>destrezas para las relaciones</b>, y las relaciones no terminan al llegar a la adultez. Este es el marco extendido a los lugares donde realmente vivimos los adultos: equipos, parejas, amistades, la labor del cuidado, las organizaciones y comunidades a las que pertenecemos, y el proyecto silencioso de nuestro propio crecimiento. Cada público a continuación incluye <b>por qué se aplica el marco, ejemplos de uso, herramientas sugeridas,</b> y <b>hacia dónde podría expandirse después.</b></p>
+
+  <div class="grid2">
+    <div class="aud t-id">
+      <div class="name">Equipos de Trabajo</div>
+      <p class="why">Por qué se aplica: los equipos funcionan a base de confianza, reparación y de cómo se habla cada persona a sí misma después de un error: los cuatro pilares con otro nombre.</p>
+      <span class="lab">Ejemplos de uso</span>
+      <ul class="cases">
+        <li>Abrir las reuniones con un registro de dos minutos (Identidad/bienestar).</li>
+        <li>Hacer una "Ronda de Reparación" tras un conflicto en un proyecto (Perdón).</li>
+        <li>Reemplazar las autopsias de culpas por el "beneficio de la duda" (Gracia).</li>
+      </ul>
+      <span class="lab">Herramientas y actividades sugeridas</span>
+      <p class="tx">Tarjetas de Conversación de Gracia para las reuniones diarias; el vocabulario compartido como normas del equipo; un "chequeo del tanque" antes de las semanas de alta carga.</p>
+      <span class="lab">Expansión futura</span>
+      <p class="tx">Una "Carta de Gracia del Equipo" para el trabajo y un kit de herramientas para gerentes.</p>
+    </div>
+
+    <div class="aud t-gr">
+      <div class="name">Desarrollo de Liderazgo</div>
+      <p class="why">Por qué se aplica: el liderazgo es gracia bajo presión: regularse uno mismo primero y luego recibir a las personas con comprensión antes que con juicio.</p>
+      <span class="lab">Ejemplos de uso</span>
+      <ul class="cases">
+        <li>"Conexión antes que corrección" como criterio por defecto al dar retroalimentación.</li>
+        <li>Los líderes modelan la reparación abiertamente para volverla segura (Perdón).</li>
+        <li>Trabajo de Identidad: liderar desde los valores, no solo desde el cargo.</li>
+      </ul>
+      <span class="lab">Herramientas y actividades sugeridas</span>
+      <p class="tx">Tarjetas de reflexión para líderes; una evaluación 360 estructurada en torno a los cuatro pilares; una práctica de "tu calma es la intervención".</p>
+      <span class="lab">Expansión futura</span>
+      <p class="tx">Un programa por cohortes de "Liderazgo a Través de la Gracia".</p>
+    </div>
+  </div>
+
+  <div class="grid2" style="margin-top:13px;">
+    <div class="aud t-sc">
+      <div class="name">Parejas</div>
+      <p class="why">Por qué se aplica: toda relación de pareja duradera vive o muere según la reparación, la autocompasión y el darse mutuamente el beneficio de la duda.</p>
+      <span class="lab">Ejemplos de uso</span>
+      <ul class="cases">
+        <li>Un registro semanal usando las preguntas de los cuatro pilares.</li>
+        <li>El "rehacer" de cuatro pasos como herramienta para discutir con justicia y reparar.</li>
+        <li>Intercambiar "gracia recibida" antes de las conversaciones difíciles.</li>
+      </ul>
+      <span class="lab">Herramientas y actividades sugeridas</span>
+      <p class="tx">Un diario de reflexión para parejas; tarjetas de conversación para la cita nocturna; una regla compartida de "una respiración, una pregunta amable".</p>
+      <span class="lab">Expansión futura</span>
+      <p class="tx">Un recorrido de "Gracia en el Matrimonio / la Pareja".</p>
+    </div>
+
+    <div class="aud t-id">
+      <div class="name">Amistades</div>
+      <p class="why">Por qué se aplica: las amistades adultas se desvanecen por pequeñas rupturas sin reparar y suposiciones que nunca se dicen: justo lo que abordan estos pilares.</p>
+      <span class="lab">Ejemplos de uso</span>
+      <ul class="cases">
+        <li>Nombrar una ruptura en la amistad y ofrecer un "rehacer".</li>
+        <li>Darle el beneficio de la duda a una amistad callada.</li>
+        <li>"Sorpréndelos siendo": decirle a una amistad lo que admiras de ella.</li>
+      </ul>
+      <span class="lab">Herramientas y actividades sugeridas</span>
+      <p class="tx">Tarjetas de conversación para encuentros más profundos; una práctica de "dejarlo ir" para los viejos rencores.</p>
+      <span class="lab">Expansión futura</span>
+      <p class="tx">Preguntas de reflexión sobre la amistad para los chats grupales.</p>
+    </div>
+  </div>
+
+  <div class="foot">
+    <span>architectureofgrace.org</span>
+    <span class="stick">Los pilares no se gradúan.</span>
+  </div>
+</div>
+
+<!-- PAGE 2 -->
+<div class="page">
+  <div class="grid2" style="margin-top:4px;">
+    <div class="aud t-sc">
+      <div class="name">Cuidadores</div>
+      <p class="why">Por qué se aplica: cuidar a un padre que envejece, a una pareja enferma o a un hijo con grandes necesidades choca de frente con la fatiga por compasión y la culpa: la autocompasión es supervivencia, no un lujo.</p>
+      <span class="lab">Ejemplos de uso</span>
+      <ul class="cases">
+        <li>Un "chequeo del tanque" diario y el permiso de volver a llenarlo.</li>
+        <li>Perdonarte a ti mismo por los límites de un solo ser humano.</li>
+        <li>Reparar con los familiares que comparten la carga.</li>
+      </ul>
+      <span class="lab">Herramientas y actividades sugeridas</span>
+      <p class="tx">Un diario de reflexión para cuidadores; el "estándar del amigo" frente a la culpa; notas de gratitud de "gracia recibida".</p>
+      <span class="lab">Expansión futura</span>
+      <p class="tx">Una guía de círculo de apoyo "Gracia para Cuidadores".</p>
+    </div>
+
+    <div class="aud t-gr">
+      <div class="name">Organizaciones Comunitarias</div>
+      <p class="why">Por qué se aplica: las organizaciones sin fines de lucro, los grupos de voluntarios y las juntas directivas se agotan y se fracturan por lo mismo: conflictos sin reparar y la suposición de mala intención.</p>
+      <span class="lab">Ejemplos de uso</span>
+      <ul class="cases">
+        <li>Integración de voluntarios con el vocabulario compartido.</li>
+        <li>Conflictos de la junta manejados con la Ronda de Reparación.</li>
+        <li>Rituales de reconocimiento basados en "sorpréndelos siendo".</li>
+      </ul>
+      <span class="lab">Herramientas y actividades sugeridas</span>
+      <p class="tx">Una carta de cultura grupal; registros al abrir las reuniones; normas de beneficio de la duda.</p>
+      <span class="lab">Expansión futura</span>
+      <p class="tx">Un kit licenciable de "Cultura de Gracia" para organizaciones.</p>
+    </div>
+  </div>
+
+  <div class="grid2" style="margin-top:13px;">
+    <div class="aud t-fg">
+      <div class="name">Comunidades de Fe y Valores</div>
+      <p class="why">Por qué se aplica: las comunidades construidas en torno a valores compartidos son hogares naturales para la identidad, el perdón y la gracia: practicados juntos, a través de las generaciones.</p>
+      <span class="lab">Ejemplos de uso</span>
+      <ul class="cases">
+        <li>Reflexión en grupos pequeños sobre los cuatro pilares.</li>
+        <li>Prácticas de reparación para los conflictos de la comunidad.</li>
+        <li>Conversaciones intergeneracionales sobre la gracia.</li>
+      </ul>
+      <span class="lab">Herramientas y actividades sugeridas</span>
+      <p class="tx">Guías de conversación adaptables a cualquier tradición; tarjetas de reflexión intergeneracionales; balances de proyectos de servicio.</p>
+      <span class="lab">Expansión futura</span>
+      <p class="tx">Ediciones complementarias opcionales alineadas con los valores.</p>
+    </div>
+
+    <div class="aud t-id">
+      <div class="name">Crecimiento Personal Individual</div>
+      <p class="why">Por qué se aplica: el marco completo funciona con una sola persona: cómo te ves a ti mismo, cómo te tratas, cómo reparas y cómo extiendes la gracia hacia adentro y hacia afuera.</p>
+      <span class="lab">Ejemplos de uso</span>
+      <ul class="cases">
+        <li>Un recorrido individual de cuatro semanas, un pilar por semana.</li>
+        <li>"Darle la vuelta a la voz crítica" a diario y reflexión al anochecer.</li>
+        <li>Una declaración de identidad personal en "una sola línea".</li>
+      </ul>
+      <span class="lab">Herramientas y actividades sugeridas</span>
+      <p class="tx">Un diario de reflexión personal; el Mapa de Crecimiento de las Relaciones; Retos de Gracia diarios.</p>
+      <span class="lab">Expansión futura</span>
+      <p class="tx">Una app o cuaderno guiado de "Recorrido Personal de Gracia".</p>
+    </div>
+  </div>
+
+  <div class="callout">
+    <p><b>El hilo conductor.</b> A lo largo de los ocho públicos, el movimiento es el mismo: construir la identidad sobre el carácter, tratarte a ti mismo como a un amigo, reparar en lugar de romper, y liderar con gracia. Un solo marco, un solo vocabulario, que se adapta desde una sola persona hasta toda una organización.</p>
+  </div>
+
+  <div class="foot">
+    <span>Gracia para la Vida Adulta &nbsp;·&nbsp; Públicos</span>
+    <span class="stick">Un solo marco, cada relación.</span>
+  </div>
+</div>
+
+<!-- PAGE 3 -->
+<div class="page">
+  <h2 style="margin-top:4px;">Hacia Dónde Puede Expandirse la Gracia Adulta</h2>
+  <p class="body">Cada público es una puerta de entrada a una línea de productos más amplia. Los mismos cuatro pilares, reempaquetados para cada contexto, lo cual significa un nuevo alcance sin un nuevo marco.</p>
+  <table class="exp">
+    <thead><tr><th style="width:24%">Público</th><th style="width:38%">Oferta a corto plazo</th><th style="width:38%">Expansión futura</th></tr></thead>
+    <tbody>
+      <tr><td><b>Equipos de trabajo</b></td><td>Tarjetas de conversación + hoja resumen de normas del equipo</td><td>Kit de herramientas para gerentes, Carta de Gracia del Equipo, módulo de integración</td></tr>
+      <tr><td><b>Liderazgo</b></td><td>Tarjetas de reflexión para líderes</td><td>Cohorte de "Liderazgo a Través de la Gracia" + instrumento 360</td></tr>
+      <tr><td><b>Parejas</b></td><td>Diario para parejas + tarjetas para la cita nocturna</td><td>Recorrido de pareja; guía complementaria para consejeros</td></tr>
+      <tr><td><b>Amistades</b></td><td>Mazo de preguntas para conversaciones más profundas</td><td>Preguntas de reflexión grupal; guía del "rehacer" en la amistad</td></tr>
+      <tr><td><b>Cuidadores</b></td><td>Diario de reflexión para cuidadores</td><td>Guía para facilitadores de círculos de apoyo; registros de respiro</td></tr>
+      <tr><td><b>Organizaciones comunitarias</b></td><td>Carta de cultura grupal + registros</td><td>Kit licenciable de "Cultura de Gracia"; capacitación de voluntarios</td></tr>
+      <tr><td><b>Fe y valores</b></td><td>Guías de conversación adaptables para grupos pequeños</td><td>Currículo intergeneracional; ediciones complementarias</td></tr>
+      <tr><td><b>Individuos</b></td><td>Diario personal + Mapa de Crecimiento</td><td>Recorrido Personal de Gracia guiado (app/cuaderno)</td></tr>
+    </tbody>
+  </table>
+
+  <div class="callout" style="margin-top:16px;">
+    <p><b>El beneficio estratégico.</b> Así es como Architecture of Grace deja de ser "un programa de SEL para estudiantes" y se convierte en un <b>marco de desarrollo de las relaciones para toda la vida.</b> Un niño conoce los pilares en tercer grado; su maestro los conoce en su formación profesional; sus padres los conocen en casa; y esos mismos adultos vuelven a encontrarlos en el trabajo, en el matrimonio, en el cuidado y en su propio crecimiento. El marco acompaña a una persona a lo largo de cada etapa, y esa continuidad es la ventaja competitiva.</p>
+  </div>
+
+  <div class="foot">
+    <span>architectureofgrace.org</span>
+    <span class="stick">Desde tercer grado hasta el resto de la vida.</span>
+  </div>
+</div>
+
+<script src="../aog-nav.js"></script>
+</body>
+</html>

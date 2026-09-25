@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<script>
+(function(){var t="light";try{if(localStorage.getItem("aog.interior.ws.v1.theme")==="dark")t="dark";}catch(e){}document.documentElement.setAttribute("data-theme",t);if(t==="dark")document.documentElement.classList.add("dark");/* AOG-GUIDE-EMBED-V1 - when this page is opened inside the panel on its machine page, it drops its own header; the panel carries the link out to the printable page. */if(location.search.indexOf("embed")>=0)document.documentElement.classList.add("embed");})();
+</script>
+<title>The Turntables &mdash; Picture Guide</title>
+<meta name="description" content="The turntables in pictures. Almost no reading. Print it and keep it next to the decks.">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#0A1E33">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<!-- AOG-DECKPIC-V1 (2026-09-23) - Jimmy: "make both guides for people who don't enjoy
+     reading. Less words, more pictures." Student-facing, junior high, prints on letter.
+     The scratch diagrams draw the hand motion and the crossfader state side by side,
+     because a scratch is two hands doing two different things and reading about that
+     is exactly what stops people. Fills print exact; every color is also labeled. -->
+<style>
+:root {
+  --bg:#f4f0e6; --card:#fffcf7; --ink:#1a232c; --muted:#5c6670; --line:#ddd8cc;
+  --steel:#2f5c6b; --steel-soft:#e3eef2; --chip:#efebe3;
+  --play:#c45c26; --lamp:#d9a84e; --good:#2c7a4e;
+  --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  --display:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,"Times New Roman",serif;
+}
+.dark, [data-theme="dark"] {
+  --bg:#14181e; --card:#1c232c; --ink:#edeae2; --muted:#9aa3b0; --line:#333b47;
+  --steel:#7fb4c7; --steel-soft:#1d2f36; --chip:#2a313c; --play:#e07a45; --good:#6fbf8b;
+}
+* { box-sizing:border-box; }
+html { -webkit-text-size-adjust:100%; }
+body { margin:0; background:var(--bg); color:var(--ink); font:400 17px/1.5 var(--sans); overflow-x:hidden; }
+.wrap { max-width:960px; margin:0 auto; padding: max(1.25rem, env(safe-area-inset-top)) max(1rem, env(safe-area-inset-right)) 4rem max(1rem, env(safe-area-inset-left)); }
+header { display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; gap:.75rem; margin-bottom:1.2rem; }
+.brand { font-size:.72rem; font-weight:800; letter-spacing:.14em; text-transform:uppercase; color:var(--muted); text-decoration:none; }
+.tools { display:flex; gap:.5rem; flex-wrap:wrap; }
+.btn { min-height:44px; border-radius:999px; border:1px solid var(--line); background:var(--card); color:var(--ink);
+  padding:0 1rem; font-weight:700; font-size:.9rem; display:inline-flex; align-items:center; gap:.4rem; text-decoration:none; cursor:pointer; }
+.btn.go { background:var(--steel); color:#f4f8f9; border-color:var(--steel); }
+h1 { font-family:var(--display); font-size:clamp(1.7rem,5vw,2.6rem); margin:0 0 .15rem; letter-spacing:-.02em; }
+.lede { color:var(--muted); margin:0 0 1.6rem; font-size:1.02rem; }
+
+section { margin:0 0 2.2rem; }
+h2 { font-family:var(--display); font-size:1.35rem; margin:0 0 .15rem; letter-spacing:-.01em;
+  break-after:avoid; page-break-after:avoid; }
+h2 .n { display:inline-flex; align-items:center; justify-content:center; width:1.85rem; height:1.85rem; margin-right:.5rem;
+  border-radius:50%; background:var(--steel); color:#f4f8f9; font:800 .95rem/1 var(--sans); vertical-align:.1em;
+  -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+.sub { color:var(--muted); margin:.1rem 0 .9rem 2.35rem; font-size:.95rem; break-after:avoid; page-break-after:avoid; }
+
+.figwrap { overflow-x:auto; break-inside:avoid; page-break-inside:avoid; }
+svg.wide { display:block; width:100%; min-width:620px; height:auto; }
+
+/* the real panel, then a close-up of each control */
+.whole { margin:0 0 1.1rem; break-inside:avoid; page-break-inside:avoid; text-align:center; }
+.whole img { display:block; width:100%; max-width:430px; height:auto; margin:0 auto; border-radius:10px; border:1px solid var(--line); }
+.whole figcaption { color:var(--muted); font-size:.85rem; margin-top:.45rem; }
+.parts { display:grid; grid-template-columns:repeat(6,1fr); gap:.85rem; align-items:start; }
+.part { grid-column:span 2; background:var(--card); border:1px solid var(--line); border-radius:12px;
+  padding:.7rem .75rem .85rem; break-inside:avoid; page-break-inside:avoid; }
+.part.half { grid-column:span 3; }
+.part.wide { grid-column:1 / -1; }
+.part img { display:block; max-width:100%; height:auto; border-radius:6px; }
+.part b { display:block; margin-top:.55rem; font-size:1rem; }
+.part span { display:block; color:var(--muted); font-size:.87rem; line-height:1.35; }
+@media (max-width:700px){
+  .parts { grid-template-columns:1fr; }
+  .part, .part.half, .part.wide { grid-column:1 / -1; }
+}
+
+.steps { display:grid; grid-template-columns:repeat(3,1fr); gap:.8rem; align-items:start; }
+.steps.four { grid-template-columns:repeat(4,1fr); }
+@media (max-width:700px){ .steps, .steps.four { grid-template-columns:repeat(2,1fr); } }
+.step { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:.8rem .7rem 1rem; text-align:center;
+  break-inside:avoid; page-break-inside:avoid; }
+.step svg { display:block; width:100%; height:auto; margin:0 auto .5rem; max-width:160px; }
+.step b { display:block; font-size:1rem; }
+.step span { display:block; color:var(--muted); font-size:.85rem; line-height:1.35; }
+.step .num { display:inline-flex; align-items:center; justify-content:center; width:1.6rem; height:1.6rem; border-radius:50%;
+  background:var(--ink); color:var(--bg); font:800 .85rem/1 var(--sans); margin-bottom:.4rem;
+  -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+
+/* scratches */
+.scr { display:grid; grid-template-columns:repeat(2,1fr); gap:.9rem; align-items:start; }
+@media (max-width:700px){ .scr { grid-template-columns:1fr; } }
+.card { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:.85rem .9rem 1rem;
+  break-inside:avoid; page-break-inside:avoid; }
+.card svg { display:block; width:100%; height:auto; }
+.card h3 { font-family:var(--display); font-size:1.12rem; margin:.5rem 0 .1rem; }
+.card p { margin:0; color:var(--muted); font-size:.9rem; }
+.hard { display:inline-block; margin-left:.45rem; font:800 .68rem/1 var(--sans); letter-spacing:.08em; text-transform:uppercase;
+  color:var(--muted); background:var(--chip); border-radius:999px; padding:.25rem .5rem; vertical-align:.12em;
+  -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+
+.onplatter { position:relative; width:100%; max-width:240px; margin:0 auto; }
+.onplatter img { display:block; width:100%; height:auto; border-radius:8px; }
+.onplatter svg { position:absolute; inset:0; width:100%; height:100%; }
+.faderstrip { margin-top:.6rem; }
+.faderstrip b { display:block; font-size:.7rem; font-weight:800; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); }
+.faderstrip img { display:block; width:100%; height:auto; margin:.25rem 0 .2rem; border-radius:4px; }
+.faderstrip span { display:block; color:var(--muted); font-size:.82rem; }
+.bpmpair { display:grid; gap:.35rem; }
+.bpmpair img { display:block; width:100%; height:auto; border-radius:5px; }
+.tagbad, .taggood { font:800 .72rem/1 var(--sans); letter-spacing:.1em; color:#9c3a2e; margin-bottom:.15rem; }
+.taggood { color:#2c7a4e; }
+.fix img { width:auto; max-width:120px; height:auto; border-radius:5px; flex:0 0 auto; align-self:center; }
+.fix { list-style:none; margin:0; padding:0; display:grid; gap:.55rem; }
+.fix li { display:grid; grid-template-columns:auto 1fr; gap:.7rem; align-items:start; background:var(--card); border:1px solid var(--line);
+  border-radius:10px; padding:.6rem .8rem; break-inside:avoid; page-break-inside:avoid; }
+.fix svg { width:34px; height:34px; flex:0 0 auto; }
+.step img { display:block; max-width:100%; height:auto; margin:0 auto .5rem; border-radius:6px; }
+.fix b { display:block; font-size:.97rem; }
+.fix span { color:var(--muted); font-size:.9rem; }
+
+.two { display:grid; grid-template-columns:1fr 1fr; gap:1rem; align-items:start; }
+@media (max-width:700px){ .two { grid-template-columns:1fr; } }
+
+footer { margin-top:2rem; padding-top:1rem; border-top:1px solid var(--line); color:var(--muted); font-size:.85rem; }
+
+/* shown inside the panel on the machine page */
+.embed header { display:none !important; }
+.embed .wrap { padding-top:.4rem; padding-bottom:1.2rem; }
+.embed h1 { font-size:clamp(1.4rem,4vw,2rem); }
+
+@media print {
+  @page { size: letter; margin: 0.5in; }
+  body { background:#fff; font-size:11.5pt; }
+  .wrap { max-width:none; padding:0; }
+  .tools, .noprint { display:none !important; }
+  svg.wide { min-width:0; }
+  .figwrap { overflow:visible; }
+  section { margin-bottom:1.1rem; }
+  h1 { font-size:20pt; }
+  h2 { font-size:13pt; }
+  .whole img { max-width:330px; border:1px solid #bbb; }
+  .part { padding:.5rem .55rem .6rem; }
+  .part b { font-size:10.5pt; }
+  .part span { font-size:9.5pt; }
+  a { text-decoration:none; color:inherit; }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <a class="brand" href="/">Architecture of Grace</a>
+  <div class="tools">
+    <a class="btn" href="/decks">&larr; The turntables</a>
+    <button class="btn go" type="button" onclick="window.print()">Print this</button>
+  </div>
+</header>
+
+<h1>The Turntables, in pictures</h1>
+<p class="lede">Almost no reading. Tape it to the wall next to the decks.</p>
+
+<section>
+  <h2><span class="n">1</span>What everything is</h2>
+  <figure class="whole"><img src="/panel-decks.png" alt="Both turntable decks."><figcaption>Two decks, side by side. They have exactly the same buttons.</figcaption></figure>
+  <div class="parts">
+    <div class="part wide">
+      <img src="/pt-wave.png" alt="The waveform and the close-up strip.">
+      <b>The song, drawn</b><span>Tall bumps are the drums. The thin strip under it is a close-up of where you are right now.</span>
+    </div>
+    <div class="part half">
+      <img src="/pt-platter.png" alt="The record on the platter.">
+      <b>The record</b><span>Drag it to scratch. Hold it still and it goes quiet, the way vinyl does.</span>
+    </div>
+    <div class="part half">
+      <img src="/pt-transport.png" alt="Load a song, Take it off, Start, CUE.">
+      <b>Load &middot; Start &middot; CUE</b><span>Start goes and stops. Set cue marks a spot; CUE jumps back to it.</span>
+    </div>
+    <div class="part wide">
+      <img src="/pt-sync.png" alt="Hot cues, loops, SYNC and the BPM readout.">
+      <b>SYNC, and the BPM</b><span>Matches this deck to the other one. The yellow number is how fast this song is.</span>
+    </div>
+    <div class="part wide">
+      <img src="/pt-nudge.png" alt="Nudge buttons and the 33 and 45 speeds.">
+      <b>Nudge</b><span>Slides the beat a hair forward or back, without changing the speed.</span>
+    </div>
+    <div class="part wide">
+      <img src="/pt-pitch.png" alt="The PITCH readout and slider.">
+      <b>PITCH</b><span>A little faster, a little slower. This is how you match two songs by hand.</span>
+    </div>
+    <div class="part half">
+      <img src="/pt-kill.png" alt="The KILL LOW, KILL MID, KILL HIGH and FLAT buttons.">
+      <b>KILL LOW</b><span>Takes the bass out. Press it on the song coming in, then swap.</span>
+    </div>
+    <div class="part half">
+      <img src="/pt-vol.png" alt="The volume slider.">
+      <b>VOLUME</b><span>How loud this deck is.</span>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2><span class="n">2</span>Get a song on there</h2>
+  <p class="sub">The song stays on this computer. Nothing is uploaded anywhere.</p>
+  <div class="steps">
+    <div class="step"><span class="num">1</span>
+      <img src="/pt-load.png" alt="The Load a song button.">
+      <b>Load a song</b><span>MP3, M4A or WAV, from this computer.</span></div>
+    <div class="step"><span class="num">2</span>
+      <img src="/pt-wave-live.png" alt="The waveform after a song loads.">
+      <b>It draws itself</b><span>Wait a second. The tall bumps are the drum hits.</span></div>
+    <div class="step"><span class="num">3</span>
+      <img src="/pt-start.png" alt="The red Start button.">
+      <b>Press Start</b><span>The red one. Now put a hand on the record.</span></div>
+  </div>
+</section>
+
+<section>
+  <h2><span class="n">3</span>If scratching feels too fast</h2>
+  <p class="sub">One button fixes it. It sits under the two decks. Click it to change it.</p>
+  <div class="parts">
+    <div class="part half"><img src="/pt-touch-fine.png" alt="The button reading Platter: fine.">
+      <b>Start here</b><span>Your hand moves a long way, the music moves a little. Easiest to control.</span></div>
+    <div class="part half"><img src="/pt-touch-normal.png" alt="The button reading Platter: normal.">
+      <b>When your hand is steady</b><span>The middle setting.</span></div>
+    <div class="part wide"><img src="/pt-touch-vinyl.png" alt="The button reading Platter: 1:1 vinyl.">
+      <b>Like a real record &mdash; very touchy</b><span>The screen is small and a real record is the size of a dinner plate, so at 1:1 the smallest movement is a big move in the music. This is the setting that makes people say they cannot do it.</span></div>
+  </div>
+</section>
+
+<section>
+  <h2><span class="n">4</span>Four scratches</h2>
+  <p class="sub"><b style="color:#2c7a4e">Green = push forward.</b> <b style="color:#9c3a2e">Red = pull back.</b> Two hands: one on the record, one on the crossfader under the decks.</p>
+  <div class="scr">
+    <div class="card">
+      <div class="onplatter">
+        <img src="/pt-platter-big.png" alt="The record on the platter.">
+        <svg viewBox="0 0 240 240" aria-hidden="true"><path d="M30.1 176.2 A106 106 0 0 1 54.7 36.5" fill="none" stroke="#35b96b" stroke-width="8" stroke-linecap="round"/><polygon points="65.0,28.5 49.5,29.8 60.0,43.2" fill="#35b96b"/><path d="M72.0 58.5 A78 78 0 0 0 53.9 161.3" fill="none" stroke="#e04a3c" stroke-width="8" stroke-linecap="round"/><polygon points="60.7,172.4 46.6,165.8 61.1,156.8" fill="#e04a3c"/></svg>
+      </div>
+      <div class="faderstrip">
+        <b>Crossfader</b>
+        <img src="/pt-xf-mid.png" alt="The crossfader.">
+        <span>stays in the middle the whole time</span>
+      </div>
+      <h3>Baby<span class="hard">Easy</span></h3>
+      <p>Push the record forward, then pull it back. The fader never moves. Say <b>hmm-hmm</b> while you do it.</p>
+    </div>
+    <div class="card">
+      <div class="onplatter">
+        <img src="/pt-platter-big.png" alt="The record on the platter.">
+        <svg viewBox="0 0 240 240" aria-hidden="true"><path d="M30.1 176.2 A106 106 0 0 1 54.7 36.5" fill="none" stroke="#35b96b" stroke-width="8" stroke-linecap="round"/><polygon points="65.0,28.5 49.5,29.8 60.0,43.2" fill="#35b96b"/></svg>
+      </div>
+      <div class="faderstrip">
+        <b>Crossfader</b>
+        <img src="/pt-xf-mid.png" alt="The crossfader.">
+        <span>open on the push &middot; across on the pull</span>
+      </div>
+      <h3>Forward<span class="hard">Easy</span></h3>
+      <p>Push forward with the fader open. Slide the fader across, pull back silently, slide it back. Only the push is heard.</p>
+    </div>
+    <div class="card">
+      <div class="onplatter">
+        <img src="/pt-platter-big.png" alt="The record on the platter.">
+        <svg viewBox="0 0 240 240" aria-hidden="true"><path d="M30.1 176.2 A106 106 0 0 1 18.1 90.8" fill="none" stroke="#35b96b" stroke-width="8" stroke-linecap="round"/><polygon points="21.7,78.3 9.9,88.4 26.3,93.1" fill="#35b96b"/></svg>
+      </div>
+      <div class="faderstrip">
+        <b>Crossfader</b>
+        <img src="/pt-xf-mid.png" alt="The crossfader.">
+        <span>opens and closes inside one push</span>
+      </div>
+      <h3>Chirp<span class="hard">Medium</span></h3>
+      <p>Open as you push, close before the push ends. A short bird sound.</p>
+    </div>
+    <div class="card">
+      <div class="onplatter">
+        <img src="/pt-platter-big.png" alt="The record on the platter.">
+        <svg viewBox="0 0 240 240" aria-hidden="true"><path d="M30.1 176.2 A106 106 0 0 1 54.7 36.5" fill="none" stroke="#35b96b" stroke-width="8" stroke-linecap="round"/><polygon points="65.0,28.5 49.5,29.8 60.0,43.2" fill="#35b96b"/><path d="M72.0 58.5 A78 78 0 0 0 44.3 101.1" fill="none" stroke="#e04a3c" stroke-width="8" stroke-linecap="round"/><polygon points="41.2,113.7 36.1,99.1 52.6,103.2" fill="#e04a3c"/><path d="M69.5 107.4 A52 52 0 0 0 75.9 147.6" fill="none" stroke="#e04a3c" stroke-width="8" stroke-linecap="round"/><polygon points="82.8,158.6 68.7,152.1 83.1,143.1" fill="#e04a3c"/></svg>
+      </div>
+      <div class="faderstrip">
+        <b>Crossfader</b>
+        <img src="/pt-xf-mid.png" alt="The crossfader.">
+        <span>stays in the middle</span>
+      </div>
+      <h3>Tear<span class="hard">Medium</span></h3>
+      <p>One push. Then pull back in two pieces &mdash; fast, then slow. Fader open. It tears.</p>
+    </div>
+  </div>
+  <p class="sub" style="margin-left:0">Set <b>Fader: Cut</b> (under the decks) before you try the forward scratch. On Blend the fader fades instead of cutting, and the pull-back is still heard.</p>
+</section>
+
+<section>
+  <h2><span class="n">5</span>Lining two songs up</h2>
+  <p class="sub">Two songs only sound like one when the numbers agree. Watch the yellow BPM on each deck.</p>
+  <div class="two">
+    <div class="card">
+      <div class="bpmpair">
+        <span class="tagbad">NOT LINED UP</span>
+        <img src="/pt-bpm-a.png" alt="Deck A reading 106.8 BPM.">
+        <img src="/pt-bpm-b-off.png" alt="Deck B reading 99.8 BPM.">
+      </div>
+      <h3>Wrong</h3>
+      <p>106.8 against 99.8. The beats drift apart and it sounds like two songs fighting.</p>
+    </div>
+    <div class="card">
+      <div class="bpmpair">
+        <span class="taggood">LINED UP</span>
+        <img src="/pt-bpm-a.png" alt="Deck A reading 106.8 BPM.">
+        <img src="/pt-bpm-b-on.png" alt="Deck B reading 106.7 BPM.">
+      </div>
+      <h3>Right</h3>
+      <p>106.8 against 106.7. Close enough. Now you can move the crossfader.</p>
+    </div>
+  </div>
+  <div class="steps" style="margin-top:1rem">
+    <div class="step"><span class="num">1</span>
+      <img src="/pt-pitch.png" alt="The PITCH slider.">
+      <b>Drag PITCH</b><span>On the slow deck. Watch its BPM climb toward the other one.</span></div>
+    <div class="step"><span class="num">2</span>
+      <img src="/pt-nudge.png" alt="The Nudge buttons.">
+      <b>Then Nudge</b><span>Same speed but landing late? Nudge it forward a hair.</span></div>
+    <div class="step"><span class="num">3</span>
+      <img src="/pt-sync.png" alt="The SYNC button and BPM readout.">
+      <b>Or press SYNC</b><span>Does it for you. Try by hand first &mdash; it trains your ear.</span></div>
+  </div>
+</section>
+
+<section>
+  <h2><span class="n">6</span>Swapping to the next song</h2>
+  <p class="sub">The crossfader lives under the two decks. Count 32 beats to get from one side to the other.</p>
+  <div class="parts">
+    <div class="part wide"><img src="/pt-xf-l.png" alt="The crossfader all the way left.">
+      <b>Hard left &mdash; only deck A</b><span>Deck B is silent, however loud its volume is.</span></div>
+    <div class="part wide"><img src="/pt-xf-mid.png" alt="The crossfader in the middle.">
+      <b>Middle &mdash; both decks</b><span>Where a mix happens. Also where you leave it to scratch.</span></div>
+    <div class="part wide"><img src="/pt-xf-r.png" alt="The crossfader all the way right.">
+      <b>Hard right &mdash; only deck B</b><span>The swap is finished.</span></div>
+    <div class="part wide"><img src="/pt-kill-on.png" alt="KILL LOW lit up on a deck.">
+      <b>KILL LOW, halfway across</b><span>Two kick drums at once is mud. Bring the new song in with its bass killed, then at the halfway point swap: bass out of the old one, bass into the new one.</span></div>
+  </div>
+</section>
+
+<section>
+  <h2><span class="n">7</span>Nothing is happening</h2>
+  <ul class="fix">
+    <li><img src="/pt-xf-r.png" alt="The crossfader hard right.">
+      <div><b>No sound from deck A</b><span>The crossfader is all the way over to B. Slide it back to the middle.</span></div></li>
+    <li><img src="/pt-start.png" alt="The Start button.">
+      <div><b>No sound at all</b><span>Start was never pressed. It is the red one.</span></div></li>
+    <li><img src="/pt-platter-big.png" alt="The record.">
+      <div><b>Sound, but it will not scratch</b><span>Your hand is on the gold rim. That is the motor. Touch the black record part.</span></div></li>
+    <li><img src="/pt-touch-vinyl.png" alt="The button reading Platter: 1:1 vinyl.">
+      <div><b>Way too fast to control</b><span>It is set to 1:1 vinyl. Click the button until it reads <b>Platter: fine</b>.</span></div></li>
+    <li><img src="/pt-load.png" alt="The Load a song button.">
+      <div><b>The file will not load</b><span>A song rented from a streaming app is locked. Use a file you own.</span></div></li>
+    <li><img src="/pt-kill-on.png" alt="KILL LOW lit up.">
+      <div><b>Both songs sound like mud</b><span>Two bass drums at once. Press KILL LOW on one of them.</span></div></li>
+  </ul>
+</section>
+
+<footer>
+  The Turntables &#183; Architecture of Grace &#183; your song stays on this computer
+</footer>
+
+</div>
+</body>
+</html>

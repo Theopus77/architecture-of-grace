@@ -1,0 +1,2719 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Student Evidence — Architecture of Grace</title>
+<meta name="description" content="One student's evidence, made understandable. A chronological evidence record connecting academic work, IEP performance, student voice, and context.">
+<!-- ═══ AOG ICONS + LINK PREVIEW · managed block · .30k0 ═══
+     Inserted by _work/aog_head.py — DO NOT hand-edit one page; edit the
+     script and re-run it, or the 100 pages drift apart again. The card
+     URL carries ?v= because Slack, Apple and Google cache an og image BY
+     URL for weeks: change the picture, bump IMG_V, or nothing shows up.
+     ═══════════════════════════════════════════════════════════════ -->
+<link rel="canonical" href="https://architectureofgrace.org/evidence">
+<meta property="og:locale" content="en_US">
+<meta property="og:image:alt" content="Student Evidence — one student's record, timeline and goal connections, in one page.">
+<meta name="twitter:title" content="Student Evidence — Architecture of Grace">
+<meta name="twitter:description" content="One student's evidence, made understandable. A chronological evidence record connecting academic work, IEP performance, student voice, and context.">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#0A1E33">
+<meta name="apple-mobile-web-app-title" content="Grace">
+<meta name="application-name" content="Architecture of Grace">
+<!-- ═══ END AOG ICONS + LINK PREVIEW ═══ -->
+<meta name="robots" content="noindex">
+<!-- Link previews: this page is its own front door — scrapers read this head
+     directly (no link/ shim needed), so the og card lives here. Change the
+     picture ⇒ bump ?v=, scrapers cache by image URL for weeks. -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Architecture of Grace">
+<meta property="og:title" content="Student Evidence — Architecture of Grace">
+<meta property="og:description" content="One student, understood — goals, work, voice, and context in one record. Every conclusion traceable to its evidence.">
+<meta property="og:url" content="https://architectureofgrace.org/evidence">
+<meta property="og:image" content="https://architectureofgrace.org/og-evidence.png?v=1">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://architectureofgrace.org/og-evidence.png?v=1">
+<script>
+/* Theme before first paint — .30eg: every page begins in light mode unless
+   this device chose dark. The OS setting never decides. */
+(function(){
+  var d = document.documentElement;
+  try{
+    var t = localStorage.getItem("aog.theme") || localStorage.getItem("aog.interior.ws.v1.theme");
+    d.setAttribute("data-theme", t === "dark" ? "dark" : "light");
+  }catch(e){}
+})();
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..700&display=swap" rel="stylesheet">
+<style>
+/* ══════════════════════════════════════════════════════════════════
+   STUDENT EVIDENCE ENGINE — prototype
+   One student. One week. Every conclusion traceable to its evidence.
+   Extends the Architecture of Grace visual system (aog-styles.css
+   tokens, inlined so this page is self-contained).
+   ══════════════════════════════════════════════════════════════════ */
+:root{
+  --navy:#0A1E33; --navy-deep:#06121F; --navy-soft:#13314F;
+  --gold:#D9A33B; --gold-soft:#F2C964; --gold-pale:#F1DFA8;
+  --cream:#F4EEE2; --cream-deep:#EDE6D6; --paper:#FCF8F0;
+  --ink:#0A1E33; --ink-soft:#46506E; --ink-faint:#5C667E;
+  --rule:#E4DAC5; --rule-soft:#EFEADB;
+  --field:#FFFFFF;
+  --green:#2E6B3A; --green-bg:#E8F0E7;
+  --amber:#7E5B18; --amber-bg:#F5EAC8;
+  --red:#8B2A2A;  --red-bg:#F3DFDC;
+
+  /* The four ways of understanding — each keeps its own quiet identity.
+     Muted, editorial; never traffic lights. */
+  --lens-learning:#1B5A73;  --lens-learning-wash:rgba(27,90,115,.08);
+  --lens-perform:#5A3E8E;   --lens-perform-wash:rgba(90,62,142,.08);
+  --lens-exp:#7D5A12;       --lens-exp-wash:rgba(176,118,42,.10);
+  --lens-context:#2E6B4F;   --lens-context-wash:rgba(46,107,79,.08);
+
+  --voice-ink:#7A521A;      --voice-bg:#FBF3DD;
+
+  --shadow-sm:0 1px 2px rgba(27,58,95,.06), 0 1px 3px rgba(27,58,95,.04);
+  --shadow-md:0 4px 6px -1px rgba(27,58,95,.08), 0 2px 4px -1px rgba(27,58,95,.04);
+  --shadow-lg:0 10px 25px -5px rgba(27,58,95,.12), 0 4px 10px -3px rgba(27,58,95,.06);
+  --shadow-xl:0 25px 50px -12px rgba(27,58,95,.18);
+  --radius-sm:6px; --radius:10px; --radius-lg:16px;
+  --font-serif:"Fraunces","Cormorant Garamond",Georgia,serif;
+  --font-sans:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  --ease:cubic-bezier(0.32,0.72,0,1);
+  --ease-out:cubic-bezier(0.16,1,0.3,1);
+  --focus:#D9A33B;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --navy:#9CC2E8; --navy-deep:#BAD6F2; --navy-soft:#1C2E42;
+    --cream:#182230; --cream-deep:#131C28; --paper:#0F1722;
+    --ink:#E9EEF4; --ink-soft:#A3AFBC; --ink-faint:#8793A0;
+    --rule:#2A3A4E; --rule-soft:#1E2C3D;
+    --field:#16202D;
+    --green:#7DC79C; --green-bg:#14291E;
+    --amber:#E0BE6A; --amber-bg:#2A2310;
+    --red:#E39B93;  --red-bg:#331A17;
+    --lens-learning:#6FB3CF; --lens-learning-wash:rgba(111,179,207,.10);
+    --lens-perform:#B4A0E4;  --lens-perform-wash:rgba(180,160,228,.10);
+    --lens-exp:#E0B26A;      --lens-exp-wash:rgba(224,178,106,.10);
+    --lens-context:#7DC7A3;  --lens-context-wash:rgba(125,199,163,.10);
+    --voice-ink:#E8C77E;     --voice-bg:#241D0E;
+    --shadow-sm:0 1px 2px rgba(0,0,0,.4);
+    --shadow-md:0 4px 8px -2px rgba(0,0,0,.5);
+    --shadow-lg:0 12px 28px -8px rgba(0,0,0,.7);
+    --shadow-xl:0 25px 50px -12px rgba(0,0,0,.85);
+  }
+}
+:root[data-theme="dark"]{
+  --navy:#9CC2E8; --navy-deep:#BAD6F2; --navy-soft:#1C2E42;
+  --cream:#182230; --cream-deep:#131C28; --paper:#0F1722;
+  --ink:#E9EEF4; --ink-soft:#A3AFBC; --ink-faint:#8793A0;
+  --rule:#2A3A4E; --rule-soft:#1E2C3D;
+  --field:#16202D;
+  --green:#7DC79C; --green-bg:#14291E;
+  --amber:#E0BE6A; --amber-bg:#2A2310;
+  --red:#E39B93;  --red-bg:#331A17;
+  --lens-learning:#6FB3CF; --lens-learning-wash:rgba(111,179,207,.10);
+  --lens-perform:#B4A0E4;  --lens-perform-wash:rgba(180,160,228,.10);
+  --lens-exp:#E0B26A;      --lens-exp-wash:rgba(224,178,106,.10);
+  --lens-context:#7DC7A3;  --lens-context-wash:rgba(125,199,163,.10);
+  --voice-ink:#E8C77E;     --voice-bg:#241D0E;
+  --shadow-sm:0 1px 2px rgba(0,0,0,.4);
+  --shadow-md:0 4px 8px -2px rgba(0,0,0,.5);
+  --shadow-lg:0 12px 28px -8px rgba(0,0,0,.7);
+  --shadow-xl:0 25px 50px -12px rgba(0,0,0,.85);
+}
+
+*{box-sizing:border-box;}
+html{-webkit-text-size-adjust:100%; scroll-behavior:smooth;}
+body{
+  margin:0; background:var(--paper); color:var(--ink);
+  font-family:var(--font-sans); font-size:15.5px; line-height:1.6;
+}
+body.pinned{ overflow:hidden; }
+h1,h2,h3,h4{margin:0; font-family:var(--font-serif); font-weight:600; text-wrap:balance; color:var(--ink);}
+p{margin:0;}
+button{font:inherit; color:inherit; cursor:pointer; background:none; border:none; padding:0;}
+a{color:inherit;}
+:focus-visible{outline:3px solid var(--focus); outline-offset:2px; border-radius:6px;}
+.wrap{max-width:980px; margin:0 auto; padding:0 22px;}
+
+/* ══ SITE BAR ══ */
+.evsub{display:flex; align-items:center; justify-content:flex-end; gap:12px;
+  padding:9px 22px 0; background:transparent;}
+.aogtop{
+  display:flex; align-items:center; justify-content:space-between; gap:14px;
+  padding:14px 22px; border-bottom:1px solid var(--rule);
+  background:var(--paper); position:relative; z-index:60;
+}
+.aogtop-brand{display:flex; align-items:center; gap:11px; text-decoration:none;}
+.aogtop-mk{
+  width:38px; height:38px; border-radius:10px; background:var(--navy-soft);
+  color:var(--gold-soft); display:grid; place-items:center;
+  font-family:var(--font-serif); font-size:21px; font-weight:600;
+}
+:root:not([data-theme="dark"]) .aogtop-mk{ background:var(--navy); color:var(--gold-soft); }
+.aogtop-nm{font-family:var(--font-serif); font-size:17.5px; letter-spacing:.01em;}
+.aogtop-nm .g{color:var(--gold); font-style:italic;}
+:root:not([data-theme="dark"]) .aogtop-nm .g{ color:#7D5A12; }
+.demo-pill{
+  font-size:11.5px; font-weight:600; letter-spacing:.08em; text-transform:uppercase;
+  color:var(--ink-faint); border:1px dashed var(--rule); border-radius:999px;
+  padding:5px 12px; white-space:nowrap;
+}
+
+/* ══ IDENTITY / MASTHEAD ══ */
+.mast{ padding:44px 0 0; }
+.mast-kicker{
+  font-size:12px; font-weight:700; letter-spacing:.22em; text-transform:uppercase;
+  color:var(--gold); margin-bottom:10px;
+}
+:root:not([data-theme="dark"]) .mast-kicker{ color:#7D5A12; }
+.mast h1{ font-size:clamp(34px,5.5vw,50px); line-height:1.06; letter-spacing:-.01em; }
+.mast-meta{ margin-top:12px; color:var(--ink-soft); font-size:14.5px; display:flex; flex-wrap:wrap; gap:6px 0; align-items:center;}
+.mast-meta .dot{ margin:0 9px; color:var(--ink-faint); }
+.mast-lede{
+  margin-top:20px; max-width:640px; font-family:var(--font-serif);
+  font-size:18.5px; line-height:1.55; color:var(--ink-soft); font-weight:400;
+}
+.mast-cta-row{ margin-top:26px; display:flex; gap:12px; flex-wrap:wrap; align-items:center; }
+.btn{
+  display:inline-flex; align-items:center; gap:8px;
+  background:var(--navy-soft); color:#F4EEE2; border:1.5px solid transparent;
+  padding:12px 24px; border-radius:var(--radius-sm);
+  font-family:var(--font-sans); font-size:14px; font-weight:600; letter-spacing:.03em;
+  text-decoration:none; transition:background .18s, transform .18s var(--ease), box-shadow .18s;
+}
+:root:not([data-theme="dark"]) .btn:not(.btn-cta):not(.btn-quiet){ background:var(--navy); }
+.btn:hover{ transform:translateY(-1px); box-shadow:var(--shadow-md); }
+:root:not([data-theme="dark"]) .btn:not(.btn-cta):not(.btn-quiet):hover{ background:var(--navy-deep); }
+.btn-cta{ background:var(--gold); color:#0A1E33; border-color:var(--gold); }
+.btn-cta:hover{ background:var(--gold-soft); border-color:var(--gold-soft); color:#06121F; }
+.btn-quiet{
+  background:transparent; color:var(--ink-soft); border:1.5px solid var(--rule);
+}
+.btn-quiet:hover{ color:var(--ink); border-color:var(--ink-faint); background:var(--cream); box-shadow:none; }
+
+/* ══ FOUR WAYS OF UNDERSTANDING ══ */
+.sr-only{ position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0; }
+.lenses{ margin-top:40px; display:grid; grid-template-columns:repeat(4,1fr); gap:12px; }
+.lens-card{
+  border:1px solid var(--rule); border-radius:var(--radius);
+  background:var(--field); padding:16px 16px 14px; position:relative; overflow:hidden;
+}
+.lens-card::before{ content:""; position:absolute; left:0; top:0; bottom:0; width:3px; background:var(--lc); }
+.lens-card h3{ font-family:var(--font-sans); font-size:12px; font-weight:700; letter-spacing:.14em; text-transform:uppercase; color:var(--lc); }
+.lens-card p{ margin-top:7px; font-size:13.5px; color:var(--ink-soft); line-height:1.5; }
+.lens-card .q{ font-family:var(--font-serif); font-style:italic; color:var(--ink); font-size:14.5px; }
+
+/* ══ SUBNAV ══ */
+.subnav{
+  position:sticky; top:0; z-index:50; background:var(--paper);
+  border-bottom:1px solid var(--rule); margin-top:44px;
+  display:flex; justify-content:center; gap:2px; flex-wrap:wrap; padding:8px 10px 0;
+  box-shadow:0 4px 10px -8px rgba(10,30,51,.15);
+}
+.subnav a{
+  font-size:13.5px; font-weight:600; color:var(--ink-soft); text-decoration:none;
+  padding:9px 15px 11px; border-bottom:2.5px solid transparent; border-radius:6px 6px 0 0;
+  transition:color .15s;
+}
+.subnav a:hover{ color:var(--ink); }
+.subnav a.on{ color:var(--ink); border-bottom-color:var(--gold); }
+
+section.band{ padding:52px 0 8px; scroll-margin-top:64px; }
+.band-kicker{ font-size:11.5px; font-weight:700; letter-spacing:.2em; text-transform:uppercase; color:var(--ink-faint); }
+.band h2{ font-size:clamp(25px,3.6vw,33px); margin-top:6px; letter-spacing:-.005em; }
+.band-lede{ margin-top:10px; color:var(--ink-soft); max-width:620px; font-size:15px; }
+
+/* ── collapsible sections ── */
+.band-head{ display:flex; align-items:flex-start; gap:16px; cursor:pointer; }
+.band-head .bh-main{ flex:1; min-width:0; }
+.band-toggle{
+  flex:0 0 auto; margin-top:16px; width:40px; height:40px; border-radius:50%;
+  border:1px solid var(--rule); background:var(--field); color:var(--ink-soft);
+  display:grid; place-items:center; font-size:14px;
+  transition:transform .3s var(--ease), color .15s, border-color .15s;
+}
+.band-head:hover .band-toggle{ color:var(--ink); border-color:var(--ink-faint); }
+.band.closed .band-toggle{ transform:rotate(-90deg); }
+.band-body{ display:grid; grid-template-rows:1fr; transition:grid-template-rows .4s var(--ease); }
+.band.closed .band-body{ grid-template-rows:0fr; }
+.band-body > div{ overflow:hidden; margin:0 -8px; padding:0 8px 14px; }
+.band.closed{ padding-bottom:26px; }
+
+/* ── project view — larger everything, for a screen at the front of a room ── */
+body.project .wrap, body.project .subnav{ zoom:1.28; }
+body.project .sheet, body.project .meet-inner{ zoom:1.28; }
+
+/* ══ FILTERS ══ */
+.filters{ margin-top:26px; display:flex; gap:8px; flex-wrap:wrap; align-items:center; }
+.chip{
+  font-size:13px; font-weight:600; color:var(--ink-soft);
+  border:1.5px solid var(--rule); border-radius:999px; padding:7px 15px;
+  background:var(--field); transition:all .15s;
+}
+.chip:hover{ border-color:var(--ink-faint); color:var(--ink); }
+.chip.on{ background:var(--navy-soft); color:#F4EEE2; border-color:transparent; }
+:root:not([data-theme="dark"]) .chip.on{ background:var(--navy); }
+.chip .swatch{ display:inline-block; width:8px; height:8px; border-radius:50%; margin-right:7px; vertical-align:1px; }
+
+/* ══ SCHEDULE COVERAGE ══ */
+.coverage{
+  margin-top:24px; border:1px solid var(--rule); border-radius:var(--radius);
+  background:var(--field); padding:16px 18px 14px;
+}
+.coverage .cap{ font-size:11px; font-weight:700; letter-spacing:.16em; text-transform:uppercase; color:var(--ink-faint); }
+.cov-row{ margin-top:11px; display:flex; gap:8px; flex-wrap:wrap; }
+.cov-cell{
+  display:inline-flex; align-items:center; gap:7px;
+  font-size:12.5px; font-weight:600; color:var(--ink);
+  border:1px solid var(--rule); border-radius:999px; padding:5px 13px; background:var(--paper);
+}
+.cov-cell .n{
+  font-variant-numeric:tabular-nums; font-weight:700; color:var(--green);
+  background:var(--green-bg); border-radius:999px; padding:0 7px; font-size:11.5px;
+}
+.cov-cell.blank{ border-style:dashed; color:var(--ink-faint); font-weight:500; }
+.cov-cell.blank .n{ color:var(--ink-faint); background:var(--cream-deep); }
+.cov-note{ margin-top:10px; font-size:12.5px; color:var(--ink-faint); line-height:1.6; }
+
+/* ══ TIMELINE ══ */
+.tl{ margin-top:14px; }
+.tl-day{ margin-top:34px; }
+.tl-dayhead{
+  display:flex; align-items:baseline; gap:12px; padding-bottom:10px;
+  border-bottom:2px solid var(--rule);
+}
+.tl-dayhead .dname{ font-family:var(--font-serif); font-size:21px; font-weight:600; }
+.tl-dayhead .ddate{ font-size:13px; color:var(--ink-faint); font-weight:500; letter-spacing:.04em; }
+.tl-dayhead .dnote{ margin-left:auto; font-size:12.5px; color:var(--ink-faint); font-style:italic; font-family:var(--font-serif); }
+.tl-items{ padding:6px 0 0 14px; border-left:1px solid var(--rule); margin-left:5px; }
+@media(max-width:640px){ .tl-items{ padding-left:10px; margin-left:2px; } }
+
+/* ══ EVIDENCE CARD ══ */
+.ev{
+  position:relative; margin:14px 0 0 0;
+  background:var(--field); border:1px solid var(--rule); border-radius:var(--radius);
+  box-shadow:var(--shadow-sm);
+  transition:box-shadow .2s var(--ease), border-color .2s;
+  overflow:hidden;
+}
+.ev::before{ content:""; position:absolute; left:0; top:0; bottom:0; width:3px; background:var(--lc,var(--rule)); opacity:.85; }
+.ev:hover{ box-shadow:var(--shadow-md); }
+.ev.excluded{ opacity:.55; }
+.ev.noev{ opacity:.62; }
+.ev.noev .ev-title{ font-weight:500; color:var(--ink-soft); }
+.ev.excluded .ev-title::after{ content:" — excluded from evidence"; font-family:var(--font-sans); font-size:12px; color:var(--ink-faint); font-style:italic; font-weight:500; }
+.ev-head{
+  width:100%; text-align:left; display:block; padding:15px 18px 13px 20px;
+}
+.ev-toprow{ display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
+.ev-src{
+  font-size:10.5px; font-weight:700; letter-spacing:.13em; text-transform:uppercase;
+  color:var(--lc,var(--ink-faint));
+}
+.ev-lens{ font-size:10.5px; font-weight:600; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-faint); }
+.ev-lens::before{ content:"·"; margin-right:10px; color:var(--rule); }
+.ev-goalflag{ margin-left:auto; font-size:11px; color:var(--ink-faint); display:inline-flex; align-items:center; gap:5px; white-space:nowrap; }
+.ev-goalflag svg{ width:11px; height:11px; }
+.ev-title{ margin-top:6px; font-family:var(--font-serif); font-size:17.5px; font-weight:600; line-height:1.3; }
+.ev-result{ margin-top:5px; font-size:14px; color:var(--ink-soft); line-height:1.55; }
+.ev-result .score{ font-weight:700; color:var(--ink); font-variant-numeric:tabular-nums; }
+.ev-quote{
+  margin-top:8px; font-family:var(--font-serif); font-size:16.5px; font-style:italic;
+  color:var(--voice-ink); line-height:1.5;
+}
+.ev-foot{ margin-top:10px; display:flex; align-items:center; gap:14px; flex-wrap:wrap; }
+.ev-skill{ font-size:12px; color:var(--ink-faint); }
+.ev-skill b{ font-weight:600; color:var(--ink-soft); }
+.ev-more{
+  margin-left:auto; font-size:12.5px; font-weight:600; color:var(--ink-faint);
+  display:inline-flex; align-items:center; gap:5px;
+}
+.ev-more .chev{ transition:transform .25s var(--ease); font-size:10px; }
+.ev.open .ev-more .chev{ transform:rotate(180deg); }
+.ev-head:hover .ev-more{ color:var(--ink); }
+
+.ev-body{
+  display:grid; grid-template-rows:0fr; transition:grid-template-rows .34s var(--ease);
+}
+.ev.open .ev-body{ grid-template-rows:1fr; }
+.ev-body > div{ overflow:hidden; }
+.ev-body-in{ padding:2px 20px 18px; border-top:1px dashed var(--rule); margin:0 0; padding-top:14px; }
+.ev-facts{ display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:10px 22px; }
+.ev-fact .k{ font-size:10.5px; font-weight:700; letter-spacing:.12em; text-transform:uppercase; color:var(--ink-faint); }
+.ev-fact .v{ margin-top:3px; font-size:13.5px; color:var(--ink); line-height:1.5; }
+.ev-note{ margin-top:12px; font-size:13.5px; color:var(--ink-soft); line-height:1.6; }
+.ev-note b{ color:var(--ink); font-weight:600; }
+.ev-links{ margin-top:14px; display:flex; gap:8px; flex-wrap:wrap; }
+.ev-link{
+  font-size:12.5px; font-weight:600; color:var(--ink-soft);
+  border:1px solid var(--rule); border-radius:999px; padding:5px 13px; background:var(--paper);
+  transition:all .15s; text-decoration:none; display:inline-flex; align-items:center; gap:6px;
+}
+.ev-link:hover{ border-color:var(--gold); color:var(--ink); }
+.ev-own{ margin-top:12px; display:flex; align-items:center; gap:8px; font-size:12px; color:var(--ink-faint); }
+.ev-own .own-chip{
+  font-size:11px; font-weight:600; color:var(--voice-ink); background:var(--voice-bg);
+  border-radius:999px; padding:3px 10px;
+}
+.ev-prov{ margin-top:12px; font-size:11.5px; color:var(--ink-faint); font-style:italic; }
+
+/* ══ PATTERNS ══ */
+.pat{
+  margin-top:20px; background:var(--field); border:1px solid var(--rule);
+  border-radius:var(--radius-lg); box-shadow:var(--shadow-sm); overflow:hidden;
+}
+.pat-in{ padding:24px 26px 20px; }
+.pat-kind{
+  font-size:11px; font-weight:700; letter-spacing:.18em; text-transform:uppercase;
+  color:var(--gold); display:flex; align-items:center; gap:8px;
+}
+:root:not([data-theme="dark"]) .pat-kind{ color:#7D5A12; }
+.pat-kind.k-gap{ color:var(--amber); }
+.pat-kind.k-dp{ color:var(--lens-perform); }
+.pat h3{ margin-top:9px; font-size:20.5px; line-height:1.35; font-weight:600; max-width:640px; }
+.pat-sub{ margin-top:8px; font-size:14px; color:var(--ink-soft); max-width:620px; line-height:1.6; }
+.pat-actions{ margin-top:16px; display:flex; gap:8px; flex-wrap:wrap; align-items:center; }
+.show-ev{
+  display:inline-flex; align-items:center; gap:8px;
+  font-size:12px; font-weight:700; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--ink); border:1.5px solid var(--ink); border-radius:999px; padding:8px 18px;
+  transition:all .18s;
+}
+.show-ev:hover{ background:var(--navy-soft); color:#F4EEE2; border-color:transparent; }
+:root:not([data-theme="dark"]) .show-ev:hover{ background:var(--navy); }
+.show-ev .chev{ font-size:10px; transition:transform .25s var(--ease); }
+.pat.open .show-ev .chev{ transform:rotate(180deg); }
+.pat-review{ margin-left:auto; display:flex; gap:6px; align-items:center; }
+.rv-btn{
+  font-size:12px; font-weight:600; color:var(--ink-faint);
+  border:1px solid var(--rule); border-radius:999px; padding:6px 13px; background:var(--paper);
+  transition:all .15s;
+}
+.rv-btn:hover{ color:var(--ink); border-color:var(--ink-faint); }
+.rv-btn.rv-on-accept{ color:var(--green); background:var(--green-bg); border-color:transparent; }
+.rv-btn.rv-on-dismiss{ color:var(--ink-soft); background:var(--cream-deep); border-color:transparent; }
+.pat-state{ font-size:12px; color:var(--ink-faint); font-style:italic; }
+.pat-evwrap{ display:grid; grid-template-rows:0fr; transition:grid-template-rows .34s var(--ease); }
+.pat.open .pat-evwrap{ grid-template-rows:1fr; }
+.pat-evwrap > div{ overflow:hidden; }
+.pat-evlist{ border-top:1px dashed var(--rule); padding:16px 26px 20px; background:var(--paper); }
+.pat-evlist .cap{ font-size:11px; font-weight:700; letter-spacing:.16em; text-transform:uppercase; color:var(--ink-faint); margin-bottom:10px; }
+.trace{
+  display:flex; gap:14px; align-items:baseline; padding:9px 0;
+  border-bottom:1px solid var(--rule-soft); text-align:left; width:100%;
+}
+.trace:last-child{ border-bottom:none; }
+.trace:hover .t-title{ color:var(--gold); }
+:root:not([data-theme="dark"]) .trace:hover .t-title{ color:#7D5A12; }
+.trace .t-date{ flex:0 0 74px; font-size:12px; font-weight:600; color:var(--ink-faint); font-variant-numeric:tabular-nums; }
+.trace .t-title{ font-size:14px; font-weight:600; color:var(--ink); transition:color .15s; }
+.trace .t-what{ font-size:13px; color:var(--ink-soft); }
+.trace .t-src{ margin-left:auto; flex:0 0 auto; font-size:10px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--lc,var(--ink-faint)); white-space:nowrap; }
+.trace .t-main{ flex:1; min-width:0; }
+
+/* different perspectives */
+.dp-pair{ margin-top:16px; display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+.dp-side{ border:1px solid var(--rule); border-radius:var(--radius); padding:16px 18px; background:var(--paper); position:relative; overflow:hidden;}
+.dp-side::before{ content:""; position:absolute; left:0; top:0; bottom:0; width:3px; background:var(--lc); }
+.dp-side .who{ font-size:10.5px; font-weight:700; letter-spacing:.13em; text-transform:uppercase; color:var(--lc); }
+.dp-side .what{ margin-top:8px; font-size:14.5px; line-height:1.6; color:var(--ink); }
+.dp-side .what.qv{ font-family:var(--font-serif); font-style:italic; font-size:16px; color:var(--voice-ink); }
+@media(max-width:640px){ .dp-pair{ grid-template-columns:1fr; } }
+
+/* support comparison */
+.sup-pair{ margin-top:16px; display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+@media(max-width:640px){ .sup-pair{ grid-template-columns:1fr; } }
+.sup-side{ border:1px solid var(--rule); border-radius:var(--radius); padding:18px 20px; background:var(--paper); }
+.sup-side .cap{ font-size:10.5px; font-weight:700; letter-spacing:.14em; text-transform:uppercase; color:var(--ink-faint); }
+.sup-side .big{ font-family:var(--font-serif); font-size:34px; font-weight:600; margin-top:6px; font-variant-numeric:tabular-nums; }
+.sup-side .cond{ font-size:13px; color:var(--ink-soft); margin-top:4px; line-height:1.5; }
+.sup-side.with .big{ color:var(--green); }
+.sup-side.without .big{ color:var(--ink-soft); }
+
+/* ══ GOALS ══ */
+.goal{
+  margin-top:20px; background:var(--field); border:1px solid var(--rule);
+  border-radius:var(--radius-lg); box-shadow:var(--shadow-sm); overflow:hidden;
+}
+.goal-in{ padding:24px 26px 22px; }
+.goal-area{ font-size:11px; font-weight:700; letter-spacing:.16em; text-transform:uppercase; color:var(--lens-perform); }
+.goal h3{ margin-top:7px; font-size:21px; }
+.goal-text{ margin-top:9px; font-size:14px; color:var(--ink-soft); line-height:1.65; max-width:640px; }
+.goal-week{ margin-top:14px; display:flex; align-items:center; gap:16px; flex-wrap:wrap; }
+.goal-count{ font-size:13px; color:var(--ink-soft); }
+.goal-count b{ font-weight:700; color:var(--ink); }
+.goal-gapchip{
+  font-size:12px; font-weight:600; color:var(--amber); background:var(--amber-bg);
+  border-radius:999px; padding:4px 12px;
+}
+.goal-evlist{ border-top:1px dashed var(--rule); padding:14px 26px 18px; background:var(--paper); }
+
+/* mini week dots */
+.wkdots{ display:flex; gap:5px; align-items:center; }
+.wkdots .d{ width:9px; height:9px; border-radius:50%; background:var(--rule); }
+.wkdots .d.hit{ background:var(--gold); }
+.wkdots .lbl{ font-size:11px; color:var(--ink-faint); margin-left:6px; letter-spacing:.06em; }
+
+/* ══ VOICE ══ */
+.voice-band{ background:var(--cream); border-top:1px solid var(--rule); border-bottom:1px solid var(--rule); padding-bottom:56px; }
+:root[data-theme="dark"] .voice-band{ background:var(--cream-deep); }
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]) .voice-band{ background:var(--cream-deep); } }
+.voice-grid{ margin-top:26px; display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+@media(max-width:700px){ .voice-grid{ grid-template-columns:1fr; } }
+.voice-card{
+  background:var(--field); border:1px solid var(--rule); border-radius:var(--radius);
+  padding:20px 22px 16px; box-shadow:var(--shadow-sm); display:flex; flex-direction:column; gap:10px;
+}
+.voice-card .vq{ font-family:var(--font-serif); font-size:18px; font-style:italic; line-height:1.5; color:var(--ink); flex:1; }
+.voice-card .vq::before{ content:"“"; color:var(--gold); font-size:26px; line-height:0; margin-right:2px; }
+.voice-card .vmeta{ display:flex; align-items:center; gap:10px; flex-wrap:wrap; font-size:12px; color:var(--ink-faint); }
+.voice-note{ margin-top:22px; font-size:13px; color:var(--ink-faint); max-width:560px; line-height:1.6; }
+
+/* ══ ARTIFACT VIEWER ══ */
+.overlay{
+  position:fixed; inset:0; z-index:100; display:none;
+  background:rgba(10,20,32,.55); backdrop-filter:blur(3px);
+  overflow-y:auto; -webkit-overflow-scrolling:touch;
+  padding:4vh 16px 6vh;
+}
+.overlay.up{ display:block; animation:ovIn .22s var(--ease-out); }
+@keyframes ovIn{ from{opacity:0} to{opacity:1} }
+.sheet{
+  width:100%; max-width:760px; margin:0 auto; background:var(--paper);
+  border-radius:var(--radius-lg); box-shadow:var(--shadow-xl); overflow:hidden;
+  animation:sheetIn .3s var(--ease-out);
+}
+@keyframes sheetIn{ from{ transform:translateY(14px); opacity:0 } to{ transform:none; opacity:1 } }
+.sheet-bar{
+  position:sticky; top:0; z-index:5; display:flex; align-items:center; gap:12px;
+  padding:14px 20px; background:var(--paper); border-bottom:1px solid var(--rule);
+}
+.sheet-bar .t{ font-family:var(--font-serif); font-size:17px; font-weight:600; flex:1; min-width:0; }
+.sheet-x{
+  flex:0 0 auto; width:34px; height:34px; border-radius:50%; display:grid; place-items:center;
+  border:1px solid var(--rule); color:var(--ink-soft); font-size:15px; background:var(--field);
+}
+.sheet-x:hover{ color:var(--ink); border-color:var(--ink-faint); }
+.sheet-body{ padding:20px; }
+.art-meta{ display:flex; gap:14px; flex-wrap:wrap; margin-bottom:16px; font-size:12.5px; color:var(--ink-soft); }
+.art-meta b{ color:var(--ink); font-weight:600; }
+.art-stage{
+  border:1px solid var(--rule); border-radius:var(--radius); overflow:auto;
+  background:#FDFCF7; box-shadow:inset 0 1px 4px rgba(27,58,95,.05);
+  padding:26px; color:#1D2733;
+}
+.art-note{ margin-top:14px; font-size:13.5px; color:var(--ink-soft); line-height:1.6; }
+.art-use{ margin-top:18px; padding-top:16px; border-top:1px dashed var(--rule); }
+.art-use .cap{ font-size:11px; font-weight:700; letter-spacing:.14em; text-transform:uppercase; color:var(--ink-faint); margin-bottom:9px; }
+.art-use-row{ display:flex; gap:8px; flex-wrap:wrap; }
+.use-chip{
+  font-size:13px; font-weight:600; color:var(--ink-soft);
+  border:1.5px solid var(--rule); border-radius:999px; padding:7px 16px; background:var(--field);
+  transition:all .15s;
+}
+.use-chip:hover{ border-color:var(--ink-faint); color:var(--ink); }
+.use-chip.on{ background:var(--navy-soft); color:#F4EEE2; border-color:transparent; }
+:root:not([data-theme="dark"]) .use-chip.on{ background:var(--navy); }
+.use-hint{ margin-top:10px; font-size:12.5px; color:var(--ink-faint); font-style:italic; min-height:18px; }
+
+/* paper artifacts */
+.paper-doc{ font-family:var(--font-sans); max-width:600px; margin:0 auto; }
+.paper-doc .ph{ display:flex; justify-content:space-between; gap:12px; border-bottom:2px solid #1D2733; padding-bottom:8px; margin-bottom:14px; font-size:12px; }
+.paper-doc .ph b{ font-size:14px; }
+.hand{ font-family:"Bradley Hand","Chalkboard SE","Comic Sans MS",cursive; color:#27415E; }
+.hand.err{ text-decoration:line-through; text-decoration-color:rgba(139,42,42,.7); text-decoration-thickness:2px; }
+.tmark{ font-family:"Bradley Hand","Chalkboard SE","Comic Sans MS",cursive; color:#8B2A2A; }
+.paper-prob{ margin:14px 0; font-size:13.5px; line-height:1.6; }
+.paper-prob .pn{ font-weight:700; }
+.paper-lines{ border-bottom:1px solid #B9C2CC; min-height:26px; padding:2px 4px; }
+
+/* ══ MEETING MODE ══ */
+.meet{ position:fixed; inset:0; z-index:110; display:none; background:var(--paper); overflow:hidden; flex-direction:column; }
+.meet.up{ display:flex; animation:ovIn .25s var(--ease-out); }
+.meet-bar{
+  flex:0 0 auto; display:flex; align-items:center; gap:14px; padding:14px 22px;
+  border-bottom:1px solid var(--rule); background:var(--paper);
+}
+.meet-bar .mk{ font-size:11px; font-weight:700; letter-spacing:.2em; text-transform:uppercase; color:var(--gold); }
+:root:not([data-theme="dark"]) .meet-bar .mk{ color:#7D5A12; }
+.meet-bar .mt{ font-family:var(--font-serif); font-size:17px; font-weight:600; flex:1; }
+.meet-scroll{ flex:1 1 auto; overflow-y:auto; -webkit-overflow-scrolling:touch; padding:34px 22px 80px; }
+.meet-inner{ max-width:760px; margin:0 auto; }
+.meet-sec{ margin-bottom:44px; }
+.meet-sec .mk2{ font-size:11px; font-weight:700; letter-spacing:.2em; text-transform:uppercase; color:var(--ink-faint); }
+.meet-sec h3{ font-size:24px; margin-top:6px; }
+.meet-sec .mbody{ margin-top:12px; font-size:15px; color:var(--ink-soft); line-height:1.7; max-width:680px; }
+.meet-sec .mbody b{ color:var(--ink); font-weight:600; }
+.meet-sec ul{ margin:12px 0 0; padding-left:20px; color:var(--ink-soft); font-size:15px; line-height:1.75; }
+.meet-sec li{ margin-bottom:8px; }
+.meet-sec li b{ color:var(--ink); font-weight:600; }
+.meet-quote{
+  margin-top:14px; padding:16px 20px; background:var(--voice-bg); border-radius:var(--radius);
+  font-family:var(--font-serif); font-style:italic; font-size:17.5px; color:var(--voice-ink); line-height:1.55;
+  max-width:620px;
+}
+.meet-quote .who{ display:block; margin-top:8px; font-family:var(--font-sans); font-style:normal; font-size:12px; color:var(--ink-faint); }
+.m-trace{
+  display:inline-flex; align-items:center; gap:6px; margin-left:8px; vertical-align:1px;
+  font-size:10.5px; font-weight:700; letter-spacing:.1em; text-transform:uppercase;
+  color:var(--gold); border-bottom:1px dotted var(--gold);
+}
+:root:not([data-theme="dark"]) .m-trace{ color:#7D5A12; border-color:#7D5A12; }
+.m-trace:hover{ color:var(--ink); }
+.meet-foot{
+  flex:0 0 auto; position:sticky; bottom:0; display:flex; gap:10px; align-items:center; justify-content:center;
+  padding:14px 18px calc(14px + env(safe-area-inset-bottom)); border-top:1px solid var(--rule); background:var(--paper);
+  flex-wrap:wrap;
+}
+
+/* trace popover inside meeting mode */
+.trace-pop{
+  position:fixed; z-index:130; inset:auto; display:none;
+  width:min(430px, calc(100vw - 28px));
+  background:var(--field); border:1px solid var(--rule); border-radius:var(--radius);
+  box-shadow:var(--shadow-lg); padding:14px 16px 8px;
+}
+.trace-pop.up{ display:block; animation:sheetIn .2s var(--ease-out); }
+.trace-pop .cap{ font-size:10.5px; font-weight:700; letter-spacing:.16em; text-transform:uppercase; color:var(--ink-faint); margin-bottom:6px; }
+
+/* ══ GAP callouts ══ */
+.gapbox{
+  margin-top:14px; border:1.5px dashed var(--amber); border-radius:var(--radius);
+  background:var(--amber-bg); padding:16px 20px; max-width:640px;
+}
+.gapbox .cap{ font-size:11px; font-weight:700; letter-spacing:.16em; text-transform:uppercase; color:var(--amber); }
+.gapbox p{ margin-top:7px; font-size:14px; color:var(--ink); line-height:1.6; }
+.gapbox ul{ margin:8px 0 0; padding-left:18px; font-size:13.5px; color:var(--ink-soft); line-height:1.7; }
+
+/* ══ FOOTER ══ */
+footer{ margin-top:70px; border-top:1px solid var(--rule); padding:30px 0 46px; }
+.foot-in{ display:flex; justify-content:space-between; gap:18px; flex-wrap:wrap; font-size:12.5px; color:var(--ink-faint); }
+.foot-in .fr{ text-align:right; }
+@media(max-width:640px){ .foot-in .fr{ text-align:left; } }
+
+@media(max-width:860px){ .lenses{ grid-template-columns:1fr 1fr; } }
+@media(max-width:520px){
+  .lenses{ grid-template-columns:1fr; }
+  .mast{ padding-top:30px; }
+  .ev-goalflag{ display:none; }
+}
+@media print{
+  /* Fallback only — the real print paths are the dedicated windows
+     (Student Evidence Brief, Print the full record). If someone hits
+     Cmd+P anyway, open everything and hide the chrome. */
+  .evsub,.subnav,.mast-cta-row,.filters,.band-toggle,footer{ display:none !important; }
+  .band.closed .band-body{ grid-template-rows:1fr !important; }
+  .ev-body, .pat-evwrap{ grid-template-rows:1fr !important; }
+  .ev, .pat, .goal{ break-inside:avoid; box-shadow:none; }
+}
+</style>
+<!-- ══ DASHBOARD-CODE GATE (2026-09-09) ═══════════════════════════════════
+     This page shows the same student records the dashboard does, and it used
+     to open to anyone who typed its address on this computer. It now asks for
+     the SAME code the dashboard asks for — same record (aog.dash.lock.v1),
+     same salted SHA-256, same 30-minute session unlock, so unlocking either
+     one unlocks the other for that session.
+     ⚠ TWO COPIES: turn-ins.html and student-evidence.html each carry this
+     block. Change one, change the other.
+     ⚠ HONEST LIMIT: this is the same deterrent the dashboard has, not real
+     security — the records live unencrypted in this browser either way, and
+     anyone who can open devtools can read them. It stops a person who picks
+     up the laptop, not a determined one.
+     ══════════════════════════════════════════════════════════════════════ -->
+<script id="aog-dash-gate">
+(function () {
+  var LOCK = "aog.dash.lock.v1", OPEN = "aog.dash.unlock", IDLE_MS = 30 * 60 * 1000;
+  function lget(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
+  function rec() { try { return JSON.parse(lget(LOCK) || "") || null; } catch (e) { return null; } }
+  var R = rec();
+  if (!R || !R.hash) return;                    /* no code set on this device — day one is not blocked */
+  function unlocked() {
+    try { var t = parseInt(sessionStorage.getItem(OPEN) || "0", 10);
+          return !!t && (Date.now() - t) < IDLE_MS; } catch (e) { return false; }
+  }
+  if (unlocked()) return;
+
+  /* Hide before first paint, so the records never flash on screen. */
+  var hide = document.createElement("style");
+  hide.id = "aogGateHide";
+  hide.textContent = "body > *{display:none !important;} body{background:#0A1E33 !important;}" +
+    "#aogGateBox{display:block !important;position:fixed;inset:0;z-index:99999;background:#0A1E33;" +
+    "font-family:Inter,-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;" +
+    "display:grid;place-items:center;padding:24px;}" +
+    "#aogGateBox .c{max-width:340px;width:100%;text-align:center;color:#E9EEF4;}" +
+    "#aogGateBox h1{font-family:Fraunces,Georgia,serif;font-size:20px;font-weight:600;margin:0 0 6px;}" +
+    "#aogGateBox p{font-size:13.5px;line-height:1.6;color:#AFC0D2;margin:0 0 18px;}" +
+    "#aogGateBox input{width:100%;box-sizing:border-box;font:inherit;font-size:19px;letter-spacing:.3em;" +
+    "text-align:center;padding:13px;border-radius:10px;border:1px solid rgba(233,238,244,.3);" +
+    "background:#12253A;color:#fff;}" +
+    "#aogGateBox button{margin-top:12px;width:100%;font:inherit;font-weight:700;font-size:15px;" +
+    "padding:12px;border:0;border-radius:10px;background:#D9A33B;color:#0A1E33;cursor:pointer;}" +
+    "#aogGateBox .e{min-height:18px;margin-top:10px;font-size:12.5px;color:#F0A6A6;}" +
+    "#aogGateBox .f{margin:16px 0 0;font-size:12px;line-height:1.6;color:#8FA3B8;}" +
+    "#aogGateBox .f a{color:#F2C964;}";
+  (document.head || document.documentElement).appendChild(hide);
+
+  /* ⚠⚠ THE RECORD SAYS WHICH ALGORITHM MADE IT, AND THAT IS THE ONE TO USE.
+     A code set while the page was in an insecure context is stored with the
+     weak fallback; hashing the SAME code with SHA-256 here would never match,
+     and the person would be told "that code did not match" while typing the
+     right code. So both are computed and either may match its own record. */
+  function weakHash(msg) {
+    var h = 5381;
+    for (var i = 0; i < msg.length; i++) { h = ((h << 5) + h + msg.charCodeAt(i)) | 0; }
+    return String(h >>> 0);
+  }
+  async function matches(salt, code, want) {
+    var msg = salt + "" + code;
+    if (weakHash(msg) === want) return true;
+    try {
+      if (window.crypto && window.crypto.subtle) {
+        var buf = await window.crypto.subtle.digest("SHA-256", new TextEncoder().encode(msg));
+        var hex = Array.from(new Uint8Array(buf)).map(function (b) {
+          return b.toString(16).padStart(2, "0"); }).join("");
+        if (hex === want) return true;
+      }
+    } catch (e) {}
+    return false;
+  }
+
+  function mount() {
+    if (document.getElementById("aogGateBox")) return;
+    var box = document.createElement("div");
+    box.id = "aogGateBox";
+    box.innerHTML = '<div class="c"><h1>Architecture of Grace</h1>' +
+      '<p>This page shows student records. Enter your dashboard code to continue.</p>' +
+      '<input id="aogGateIn" type="password" inputmode="numeric" autocomplete="off" ' +
+      'aria-label="Dashboard code" maxlength="12">' +
+      '<button type="button" id="aogGateGo">Unlock</button>' +
+      '<div class="e" id="aogGateErr" role="alert"></div>' +
+      /* ⚠ A GATE WITH NO RECOVERY DOOR IS A TRAP. The dashboard's own lock
+         screen offers "Forgotten it? Clear this device and start again"; this
+         page had nothing, so a forgotten code on a second device was a wall
+         with no next step. The destructive path stays in ONE place — this
+         only points at it. */
+      '<p class="f">Forgotten it? There is no way to read the code back. ' +
+      'Open the <a href="/#dashboard">dashboard</a> and use ' +
+      '<b>&ldquo;Clear this device and start again&rdquo;</b> \u2014 that clears what is ' +
+      'stored on THIS device only; your Google Sheet is untouched, and ' +
+      '<b>Refresh</b> brings the rows back.</p></div>';
+    document.body.appendChild(box);
+    var input = box.querySelector("#aogGateIn");
+    var err = box.querySelector("#aogGateErr");
+    async function go() {
+      if (await matches(R.salt, (input.value || "").trim(), R.hash)) {
+        try { sessionStorage.setItem(OPEN, String(Date.now())); } catch (e) {}
+        var s = document.getElementById("aogGateHide"); if (s) s.remove();
+        box.remove();
+        try { window.dispatchEvent(new Event("resize")); } catch (e) {}
+        return;
+      }
+      err.textContent = "That code did not match.";
+      input.value = ""; input.focus();
+    }
+    box.querySelector("#aogGateGo").addEventListener("click", go);
+    input.addEventListener("keydown", function (e) { if (e.key === "Enter") go(); });
+    setTimeout(function () { try { input.focus(); } catch (e) {} }, 60);
+  }
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", mount);
+  else mount();
+})();
+</script>
+
+<style id="aog-nozoom">
+/* ═══ AOG-NOZOOM-V1 · 2026-09-18 ═══════════════════════════════════════════
+   iOS Safari zooms the WHOLE page when a text field under 16px takes focus,
+   and does not zoom back out. From then on the layout is wider than the
+   window and pans freely left and right on any touch. Jimmy, on an iPhone:
+   "how the screen moves easily left or right. It makes me nausea."
+   index.html had 69 such fields at 390px and gets this same rule from
+   aog-styles.css; this page links its own styles, so it carries its own copy.
+   ⚠ NOT maximum-scale=1 / user-scalable=no — that takes pinch-zoom away from
+     anyone who needs to magnify, and iOS has ignored it since iOS 10.
+   ⚠ Touch only. A mouse has no zoom behavior and keeps the tighter density.
+   ⚠ !important is load-bearing: some fields set their size in a style=""
+     attribute (the font: shorthand counts), and an author !important is what
+     outranks those. If you remove it, re-measure rather than assume.
+   ══════════════════════════════════════════════════════════════════════════ */
+@media (hover: none) and (pointer: coarse) {
+  input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="color"]):not([type="file"]):not([type="submit"]):not([type="button"]):not([type="image"]),
+  select,
+  textarea { font-size: 16px !important; }
+}
+</style>
+</head>
+<body>
+<script src="/aog-topbar.js"></script>
+
+
+<!-- .30j7 — WAS A SECOND SITE BAR. The brand and the sticky shell moved to
+     the shared bar (aog-topbar.js); what is left is the one control that
+     was only ever here: the student picker, and the demo pill beside it. -->
+<header class="evsub">
+  <span style="display:flex; align-items:center; gap:10px; margin-left:auto;">
+    <select id="whoSel" hidden aria-label="Choose a student" style="font:600 13px var(--font-sans); color:var(--ink); background:var(--field); border:1px solid var(--rule); border-radius:999px; padding:6px 12px; max-width:220px;"></select>
+    <span class="demo-pill" id="modePill" title="Every record on this page is fictional, created to demonstrate the experience.">Demonstration record</span>
+  </span>
+</header>
+
+<div class="wrap">
+  <div class="mast">
+    <div class="mast-kicker">Student Evidence</div>
+    <h1 id="mastName">Marcus Bell</h1>
+    <div class="mast-meta" id="mastMeta"></div>
+    <p class="mast-lede" id="mastLede">One week of evidence, gathered from the places it already lives — his work, his goals, his own words, and the conditions around him — so his team can see one student clearly.</p>
+    <p id="aog-ev-xref" style="margin:10px 0 0; font-size:13.5px; line-height:1.55; color:var(--ink); opacity:.72;">Looking for the research base, what has <em>not</em> been proven yet, and the plan for getting there? That is <a href="/roadmap" style="color:var(--gold); text-decoration:underline; text-underline-offset:2px;">Evidence &amp; Roadmap</a>. This page is a demonstration of the student record.</p>
+    <div class="mast-cta-row">
+      <button class="btn btn-cta" id="openMeetBtn">Prepare for IEP Meeting <span aria-hidden="true">→</span></button>
+      <button class="btn btn-quiet" id="briefBtn">Student Evidence Brief</button>
+      <button class="btn btn-quiet" id="printAllBtn" title="Print every record, pattern, goal, and work sample as one document">Print the full record</button>
+      <button class="btn btn-quiet" id="cmrBtn" title="The district template: services, progress toward each goal, academic performance, classroom performance — pre-filled with what this record holds, honest blanks for the rest">Case Manager Report</button>
+      <button class="btn btn-quiet" id="projBtn" aria-pressed="false" title="Larger type and cards, for a projector or a screen at the front of a room">Project view</button>
+    </div>
+
+    <h2 class="sr-only">Four ways of understanding</h2>
+    <div class="lenses" role="group" aria-label="Four ways of understanding">
+      <div class="lens-card" style="--lc:var(--lens-learning)">
+        <h3>Learning</h3>
+        <p class="q">What is Marcus learning and producing?</p>
+        <p>Assignments, assessments, and authentic work samples.</p>
+      </div>
+      <div class="lens-card" style="--lc:var(--lens-perform)">
+        <h3>Performance</h3>
+        <p class="q">How is he performing against meaningful goals?</p>
+        <p>IEP probes, accuracy, independence, prompting.</p>
+      </div>
+      <div class="lens-card" style="--lc:var(--lens-exp)">
+        <h3>Experience</h3>
+        <p class="q">What does school feel like to him?</p>
+        <p>Check-ins, exit slips, reflections — in his own words.</p>
+      </div>
+      <div class="lens-card" style="--lc:var(--lens-context)">
+        <h3>Context</h3>
+        <p class="q">What conditions surround his performance?</p>
+        <p>Observations, supports, family input, environment.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<nav class="subnav" aria-label="Sections">
+  <a href="#week" class="on">The Week</a>
+  <a href="#patterns">What It Suggests</a>
+  <a href="#goals">Goal Connections</a>
+  <a href="#voice" id="navVoice">In His Words</a>
+</nav>
+
+<!-- ══ TIMELINE ══ -->
+<div class="wrap">
+  <section class="band" id="week">
+    <div class="band-head" data-sechead="week">
+      <div class="bh-main">
+        <div class="band-kicker">Evidence Timeline</div>
+        <h2 id="weekH2">The week of August 31</h2>
+        <p class="band-lede">Every record keeps its source. The meaning is not in any single point — it is in how the pieces sit next to each other.</p>
+      </div>
+      <button class="band-toggle" aria-expanded="true" aria-controls="week-body" data-sec="week" aria-label="Collapse or expand this section"><span class="chev">▾</span></button>
+    </div>
+    <div class="band-body" id="week-body"><div>
+      <div class="coverage" id="coverage"></div>
+      <div class="filters" id="lensFilters" role="group" aria-label="Filter by way of understanding"></div>
+      <div class="tl" id="timeline"></div>
+    </div></div>
+  </section>
+</div>
+
+<!-- ══ PATTERNS ══ -->
+<div class="wrap">
+  <section class="band" id="patterns">
+    <div class="band-head" data-sechead="patterns">
+      <div class="bh-main">
+        <div class="band-kicker">Pattern Synthesis</div>
+        <h2>What the evidence suggests</h2>
+        <p class="band-lede">These are observations, not determinations. Each one can be opened to the exact records behind it — and each one waits for an educator's judgment.</p>
+      </div>
+      <button class="band-toggle" aria-expanded="true" aria-controls="patterns-body" data-sec="patterns" aria-label="Collapse or expand this section"><span class="chev">▾</span></button>
+    </div>
+    <div class="band-body" id="patterns-body"><div>
+      <div id="patternList"></div>
+    </div></div>
+  </section>
+</div>
+
+<!-- ══ GOALS ══ -->
+<div class="wrap">
+  <section class="band" id="goals">
+<div class="band-head" data-sechead="goals">
+      <div class="bh-main">
+        <div class="band-kicker">Goal Connections</div>
+        <h2>Evidence, connected to what matters</h2>
+        <p class="band-lede">Each IEP goal shows the week's connected evidence — and is honest when the week didn't produce enough.</p>
+      </div>
+      <button class="band-toggle" aria-expanded="true" aria-controls="goals-body" data-sec="goals" aria-label="Collapse or expand this section"><span class="chev">▾</span></button>
+    </div>
+    <div class="band-body" id="goals-body"><div>
+
+    <div class="coverage" style="margin-top:24px;">
+      <div class="cap">How this record is compiled — the case manager's spine</div>
+      <p class="cov-note" style="margin-top:9px;">
+        Nothing on this page is re-typed. The <b>goal spine is compiled from the IEP document</b> the case
+        manager already holds — goals, benchmarks, and supports come from the IEP paperwork on the educator
+        device, exactly as written there. The <b>schedule</b> comes from the same place, so electives and
+        adult check-ins land against real periods. The <b>evidence</b> then attaches itself: probes, check-ins,
+        exit slips, and work samples flow in from the instruments where they were made, each keeping its source.
+        The case manager curates; the system never invents.
+      </p>
+    </div>
+      <div id="goalList"></div>
+    </div></div>
+  </section>
+</div>
+
+<!-- ══ VOICE ══ -->
+<section class="band voice-band" id="voice">
+  <div class="wrap">
+    <div class="band-head" data-sechead="voice">
+      <div class="bh-main">
+        <div class="band-kicker">Student Voice</div>
+        <h2 id="voiceH2">In Marcus's words</h2>
+        <p class="band-lede">His words stay his words — never converted into a score, and never separated from what he chose to do with them.</p>
+      </div>
+      <button class="band-toggle" aria-expanded="true" aria-controls="voice-body" data-sec="voice" aria-label="Collapse or expand this section"><span class="chev">▾</span></button>
+    </div>
+    <div class="band-body" id="voice-body"><div>
+      <div class="voice-grid" id="voiceGrid"></div>
+      <p class="voice-note" id="voiceNote">Marcus decides what happens to what he says. Anything marked <b>kept</b> he chose to keep; anything shared with the team, he chose to share. Nothing on this page rates, scores, or reinterprets his words.</p>
+    </div></div>
+  </div>
+</section>
+
+<div class="wrap">
+  <footer>
+    <div class="foot-in">
+      <div>
+        <b>Architecture of Grace</b> — a system, not a curriculum.<br>
+        Evidence exists to support understanding, never to monitor.
+      </div>
+      <div class="fr">
+        Demonstration record. Marcus Bell is a fictional student;<br>
+        every data point on this page was created for this demonstration.
+      </div>
+    </div>
+  </footer>
+</div>
+
+<!-- ══ ARTIFACT VIEWER ══ -->
+<div class="overlay" id="artOverlay" role="dialog" aria-modal="true" aria-label="Work sample viewer">
+  <div class="sheet">
+    <div class="sheet-bar">
+      <span class="t" id="artTitle"></span>
+      <button class="sheet-x" id="artClose" aria-label="Close viewer">✕</button>
+    </div>
+    <div class="sheet-body" id="artBody"></div>
+  </div>
+</div>
+
+<!-- ══ EVIDENCE DETAIL (opened from traces) ══ -->
+<div class="overlay" id="evOverlay" role="dialog" aria-modal="true" aria-label="Evidence record">
+  <div class="sheet">
+    <div class="sheet-bar">
+      <span class="t" id="evOvTitle"></span>
+      <button class="sheet-x" id="evOvClose" aria-label="Close record">✕</button>
+    </div>
+    <div class="sheet-body" id="evOvBody"></div>
+  </div>
+</div>
+
+<!-- ══ MEETING MODE ══ -->
+<div class="meet" id="meet" role="dialog" aria-modal="true" aria-label="Prepare for IEP meeting">
+  <div class="meet-bar">
+    <span class="mk">Meeting Mode</span>
+    <span class="mt" id="meetTitle">Marcus Bell — evidence for the team</span>
+    <button class="sheet-x" id="meetClose" aria-label="Close meeting mode">✕</button>
+  </div>
+  <div class="meet-scroll" id="meetScroll"><div class="meet-inner" id="meetInner"></div></div>
+  <div class="meet-foot">
+    <button class="btn btn-cta" id="briefBtn2">Create the Student Evidence Brief</button>
+    <button class="btn btn-quiet" id="meetClose2">Back to the evidence</button>
+  </div>
+</div>
+
+<div class="trace-pop" id="tracePop"></div>
+
+<script>
+"use strict";
+/* ═══════════════════════════════════════════════════════════════════
+   SEED DATA — one student, one week.
+   Single source of truth: every surface on this page (timeline, goals,
+   patterns, meeting mode, the printed brief) renders from these
+   records. A number that appears twice is the same field read twice.
+   All records are fictional demonstration data.
+   ═══════════════════════════════════════════════════════════════════ */
+
+let STUDENT = {
+  name: "Marcus Bell",
+  grade: "Grade 6",
+  week: "Week of August 31 – September 4, 2026",
+  overview: "Marcus is a sixth grader who thinks carefully, notices how things work, and does his best work when he can see what comes next. He is well liked in his small group, cares about not looking different from his classmates, and this week began using a visual sequence strip in math."
+};
+
+/* Sources keep their identity. Lens = which way of understanding. */
+const LENSES = {
+  learning: { label:"Learning",    css:"var(--lens-learning)" },
+  perform:  { label:"Performance", css:"var(--lens-perform)"  },
+  exp:      { label:"Experience",  css:"var(--lens-exp)"      },
+  context:  { label:"Context",     css:"var(--lens-context)"  }
+};
+
+let GOALS = [
+  {
+    id:"g-math", area:"Mathematics", title:"Multi-step problem solving",
+    text:"Given a multi-step word problem and access to a visual sequence strip, Marcus will complete all steps with at least 80% accuracy and no more than one verbal prompt, in 4 of 5 opportunities.",
+    days:[1,1,1,1,1] // Mon–Fri: which days produced connected evidence
+  },
+  {
+    id:"g-write", area:"Written Expression", title:"Organized written expression",
+    text:"Given a graphic organizer, Marcus will write a paragraph containing a topic sentence and at least three supporting details in logical order, in 3 of 4 writing samples.",
+    days:[0,1,0,0,0],
+    gap:{
+      note:"Only one writing sample is connected to this goal this week. One data point is not a trend.",
+      collect:["another organizer-supported writing sample","a teacher observation during drafting","Marcus's own reflection on what helps him order his ideas"]
+    }
+  },
+  {
+    id:"g-self", area:"Self-Advocacy", title:"Asking for help, or reaching for a tool",
+    text:"When stuck for more than one minute, Marcus will ask for help or use an available support tool without adult prompting, in 3 of 4 observed opportunities.",
+    days:[0,1,1,1,1]
+  }
+];
+
+/* Evidence records.
+   lens: learning | perform | exp | context
+   src:  the provenance identity — it never changes after this line.   */
+let EVIDENCE = [
+
+  /* ── Monday, August 31 ── */
+  { id:"e-mon-checkin", day:0, date:"Mon 8/31", longDate:"Monday, August 31",
+    lens:"exp", src:"Daily Check-In", title:"Morning check-in",
+    result:'Feeling: <span class="score">Okay</span>',
+    quote:"Tired. We had to run for the bus.",
+    voice:{ own:"Kept by Marcus" },
+    facts:{ "Setting":"Homeroom, 8:05 AM", "Entered by":"Marcus (student device)" },
+    prov:"Recorded through Daily Check-In. Displayed exactly as entered." },
+
+  { id:"e-mon-assess", cls:"Math", day:0, date:"Mon 8/31", longDate:"Monday, August 31",
+    lens:"learning", src:"Assessment", title:"Unit 1 check — multi-step word problems",
+    result:'<span class="score">72%</span> · 13 of 18 points',
+    skill:"Multi-step problem solving", goals:["g-math"],
+    facts:{ "Setting":"Gen-ed math, whole class", "Support in place":"None — the sequence strip had not yet been introduced", "Skill assessed":"Four-step word problems (rate, then total, then compare)" },
+    note:"<b>Where the points went:</b> steps 1–2 accurate on all five problems. Points were lost at the transition into step 3 on three of five problems — the work stops rather than goes wrong.",
+    prov:"Classroom assessment, Ms. Ferro. Score entered from the graded paper." },
+
+  { id:"e-mon-obs", cls:"Math", day:0, date:"Mon 8/31", longDate:"Monday, August 31",
+    lens:"context", src:"Teacher Observation", title:"During the Unit 1 check",
+    result:"Completed the first two steps independently and required one verbal prompt to continue. Once prompted, finished the problem without additional support.",
+    goals:["g-math"],
+    facts:{ "Observer":"Ms. Ferro (math)", "Length":"Observed across the 30-minute assessment" },
+    prov:"Teacher observation. Remains an observation — never converted to a score." },
+
+  { id:"e-mon-exit", cls:"Math", day:0, date:"Mon 8/31", longDate:"Monday, August 31",
+    lens:"exp", src:"Student Voice", title:"Math exit slip",
+    result:'Self-rating: <span class="score">“I mostly got it”</span>',
+    quote:"I got stuck when I didn't know what to do next.",
+    voice:{ own:"Kept by Marcus" }, goals:["g-math"],
+    facts:{ "Prompt":"What was hard today?", "Entered by":"Marcus (student device)" },
+    prov:"Exit slip. His words are displayed exactly as written." },
+
+  /* ── Tuesday, September 1 ── */
+  { id:"e-tue-probe", cls:"Math", day:1, date:"Tue 9/1", longDate:"Tuesday, September 1",
+    lens:"perform", src:"IEP Probe", title:"Multi-step problems — probe, with sequence strip",
+    result:'<span class="score">4 of 5 correct</span> (80%) with the visual sequence strip and one verbal prompt',
+    skill:"Multi-step problem solving", goals:["g-math"],
+    facts:{ "Condition":"Visual sequence strip on desk — first trial with it", "Prompting":"One verbal prompt at the step-3 transition, on two of five trials", "Independence":"Guided", "Administered by":"Mr. Otey (special education)" },
+    note:"<b>Pattern within the probe:</b> both prompts came at the same place — the hand-off from one step to the next, not the math inside a step.",
+    prov:"IEP progress-monitoring probe. Raw trial record retained." },
+
+  { id:"e-tue-ela", cls:"ELA", day:1, date:"Tue 9/1", longDate:"Tuesday, September 1",
+    lens:"learning", src:"Work Sample", title:"Personal narrative draft — “The Best Save”",
+    result:'Rubric: <span class="score">14 of 20</span> · topic sentence present, three details present but out of order',
+    skill:"Organizing a paragraph", goals:["g-write"], artifact:"a-ela",
+    facts:{ "Setting":"ELA block, organizer provided", "Strength":"Vivid, specific detail — the reader can see the play", "Challenge":"Sequencing: the ending arrives before the middle" },
+    prov:"Authentic classroom work. The draft itself is viewable, not just its score." },
+
+  { id:"e-tue-sci", cls:"Science", day:1, date:"Tue 9/1", longDate:"Tuesday, September 1",
+    lens:"learning", src:"Assignment", title:"States of matter — lab sheet",
+    result:'<span class="score">8 of 10</span> · labeled diagram strong; conclusion sentence left incomplete',
+    skill:"Recording observations", artifact:"a-sci",
+    facts:{ "Setting":"Science lab, partner work", "Strength":"Accurate, carefully labeled diagram", "Challenge":"The written conclusion trails off after the first clause" },
+    prov:"Classroom assignment, Mr. Idris. The lab sheet is viewable." },
+
+  { id:"e-tue-tech", day:1, date:"Tue 9/1", longDate:"Tuesday, September 1",
+    lens:"context", src:"Adult Check-In", title:"Tech — adult check-in",
+    result:"With the printed build guide open, Marcus led his partner through the circuit assembly. Engagement high; fully independent, no adult prompts.",
+    cls:"Tech", goals:["g-self"],
+    facts:{ "Class":"Tech, Mr. Boone (6th period)", "Engagement":"High — leaned in the full period", "Independence":"Independent", "Supports":"Printed build guide — a standard part of the room, on every workbench" },
+    note:"<b>Worth noticing:</b> the build guide is nobody's accommodation. It belongs to the room, so using it costs Marcus nothing socially.",
+    prov:"Class-by-class adult check-in. Recorded as an observation — never scored, never averaged." },
+
+  { id:"e-tue-techvoice", day:1, date:"Tue 9/1", longDate:"Tuesday, September 1",
+    lens:"exp", src:"Student Voice", title:"Reflection after Tech",
+    quote:"In Tech I'm the one who knows what's next.",
+    voice:{ own:"Kept by Marcus" }, goals:["g-self"], cls:"Tech",
+    facts:{ "Prompt":"Where were you at your best today?", "Entered by":"Marcus (student device)" },
+    note:"<b>Read with Monday:</b> the same student who wrote “I got stuck when I didn't know what to do next” in math. The difference between the two sentences is the room.",
+    prov:"Student reflection. Displayed exactly as written." },
+
+  { id:"e-tue-reflect", day:1, date:"Tue 9/1", longDate:"Tuesday, September 1",
+    lens:"exp", src:"Student Voice", title:"End-of-day reflection",
+    quote:"Science was good because we got to do the experiment before writing about it.",
+    voice:{ own:"Kept by Marcus" },
+    facts:{ "Prompt":"What worked for you today?", "Entered by":"Marcus (student device)" },
+    prov:"Student reflection. Displayed exactly as written." },
+
+  /* ── Wednesday, September 2 ── */
+  { id:"e-wed-support", day:2, date:"Wed 9/2", longDate:"Wednesday, September 2",
+    lens:"context", src:"Support / Accommodation", title:"Visual sequence strip introduced across math settings",
+    result:"A four-step sequence strip now travels with Marcus: one taped to his desk, one pocket copy. Adults agree to give at most one verbal prompt before pointing to the strip.",
+    goals:["g-math","g-self"],
+    facts:{ "Decided by":"Ms. Ferro and Mr. Otey, after Monday's assessment and Tuesday's probe", "Applies in":"Gen-ed math, small group, and (per family) homework" },
+    prov:"Support record. Conditions like this one ride alongside performance data so results can be read fairly." },
+
+  { id:"e-wed-mathws", cls:"Math", day:2, date:"Wed 9/2", longDate:"Wednesday, September 2",
+    lens:"learning", src:"Work Sample", title:"Problem set, p. 41 — first attempt crossed out, second attempt with the strip",
+    result:'<span class="score">4 of 5 correct</span> on the second attempt, using the numbered steps from the strip',
+    skill:"Multi-step problem solving", goals:["g-math"], artifact:"a-math",
+    facts:{ "Setting":"Gen-ed math, independent work", "What the page shows":"Problem 1 abandoned mid-way and restarted; the restart is numbered 1–4 in the margin, matching the strip" },
+    note:"<b>Worth seeing, not just scoring:</b> the crossed-out first attempt is the evidence. He noticed the stall and reached for the tool.",
+    prov:"Authentic classroom work, retained as an artifact." },
+
+  { id:"e-wed-para", cls:"Small Group", day:2, date:"Wed 9/2", longDate:"Wednesday, September 2",
+    lens:"context", src:"Team", title:"Small-group observation",
+    result:"Stayed with the task for 12 minutes. When stuck, asked a tablemate “what's next?” once — instead of stopping.",
+    goals:["g-self"],
+    facts:{ "Observer":"Ms. Delgado (paraeducator)", "Setting":"Small group, 4 students" },
+    prov:"Team observation, schedule-aware: recorded by the adult who was actually in the room." },
+
+  { id:"e-wed-pe", day:2, date:"Wed 9/2", longDate:"Wednesday, September 2",
+    lens:"context", src:"Adult Check-In", title:"P.E. — adult check-in",
+    result:"Transitions between fitness stations were hard until Coach Vann walked the rotation once. After that single demonstration, Marcus moved through all six stations with the group.",
+    cls:"P.E.",
+    facts:{ "Class":"P.E., Coach Vann (7th period)", "Engagement":"Steady after the walk-through", "What was hard":"The first transition — before the sequence was visible", "Supports":"One demonstration of the station sequence" },
+    prov:"Class-by-class adult check-in. Recorded as an observation — never scored, never averaged." },
+
+  { id:"e-wed-checkin", day:2, date:"Wed 9/2", longDate:"Wednesday, September 2",
+    lens:"exp", src:"Daily Check-In", title:"Morning check-in",
+    result:'Feeling: <span class="score">Good</span>',
+    quote:"Math wasn't as bad today.",
+    voice:{ own:"Kept by Marcus" },
+    facts:{ "Setting":"Homeroom, 8:02 AM", "Entered by":"Marcus (student device)" },
+    prov:"Recorded through Daily Check-In. Displayed exactly as entered." },
+
+  /* ── Thursday, September 3 ── */
+  { id:"e-thu-probe", cls:"Math", day:3, date:"Thu 9/3", longDate:"Thursday, September 3",
+    lens:"perform", src:"IEP Probe", title:"Multi-step problems — probe, strip not available",
+    result:'<span class="score">3 of 5 correct</span> (60%) — the strip had been left in homeroom',
+    skill:"Multi-step problem solving", goals:["g-math"],
+    facts:{ "Condition":"No sequence strip present", "What was observed":"Long pauses at step transitions; two problems set aside at step 3 and returned to after a prompt", "Administered by":"Mr. Otey (special education)" },
+    note:"<b>Read with Tuesday:</b> same skill, same administrator, different condition. The difference between the two probes is itself evidence.",
+    prov:"IEP progress-monitoring probe. Raw trial record retained." },
+
+  { id:"e-thu-ss", cls:"Social Studies", day:3, date:"Thu 9/3", longDate:"Thursday, September 3",
+    lens:"learning", src:"Assignment", title:"Mapping the Thirteen Colonies",
+    result:'Completed with a steps checklist · regions accurate · <span class="score">two labels transposed</span>',
+    skill:"Following multi-step directions",
+    facts:{ "Setting":"Social studies", "Support in place":"A numbered steps checklist printed on the task sheet", "Strength":"Worked through all six steps without adult redirection" },
+    prov:"Classroom assignment, Ms. Whitfield." },
+
+  { id:"e-thu-exit", cls:"Social Studies", day:3, date:"Thu 9/3", longDate:"Thursday, September 3",
+    lens:"exp", src:"Student Voice", title:"Social studies exit slip",
+    quote:"The list helped me know what's next.",
+    voice:{ own:"Kept by Marcus" }, goals:["g-math","g-self"],
+    facts:{ "Prompt":"What helped today?", "Entered by":"Marcus (student device)" },
+    prov:"Exit slip. His words are displayed exactly as written." },
+
+  { id:"e-thu-family", day:3, date:"Thu 9/3", longDate:"Thursday, September 3",
+    lens:"context", src:"Family", title:"Home–school connection note",
+    result:"“Homework went better this week. Thursday he got out the steps card without me saying anything.”",
+    goals:["g-self"],
+    facts:{ "From":"Marcus's mother, through the family door", "Shared":"With Marcus's knowledge" },
+    prov:"Family input. Family words, like student words, are never rescored or reinterpreted." },
+
+  /* ── Friday, September 4 ── */
+  { id:"e-fri-quiz", cls:"Math", day:4, date:"Fri 9/4", longDate:"Friday, September 4",
+    lens:"learning", src:"Assessment", title:"Weekly check — multi-step word problems",
+    result:'<span class="score">80%</span> · 4 of 5 problems · sequence strip available',
+    skill:"Multi-step problem solving", goals:["g-math"],
+    facts:{ "Setting":"Gen-ed math, whole class", "Support in place":"Sequence strip on desk", "Compared with Monday":"Same problem type as the Unit 1 check (72%)" },
+    prov:"Classroom assessment, Ms. Ferro." },
+
+  { id:"e-fri-obs", cls:"Math", day:4, date:"Fri 9/4", longDate:"Friday, September 4",
+    lens:"context", src:"Teacher Observation", title:"During the weekly check",
+    result:"Started step 3 without a prompt on two of four multi-step problems. Appeared confident and worked steadily through the quiz.",
+    goals:["g-math"],
+    facts:{ "Observer":"Ms. Ferro (math)" },
+    dp:"e-fri-voice",
+    prov:"Teacher observation. Sits beside — not above — what Marcus said about the same quiz." },
+
+  { id:"e-fri-voice", cls:"Math", day:4, date:"Fri 9/4", longDate:"Friday, September 4",
+    lens:"exp", src:"Student Voice", title:"Reflection after the weekly check",
+    quote:"I knew what to do, but I was worried I was going to get it wrong.",
+    voice:{ own:"Kept by Marcus" }, goals:["g-math"],
+    facts:{ "Prompt":"How did the quiz feel?", "Entered by":"Marcus (student device)" },
+    dp:"e-fri-obs",
+    prov:"Student reflection. Sits beside — not beneath — the teacher's observation of the same quiz." },
+
+  { id:"e-fri-facs", day:4, date:"Fri 9/4", longDate:"Friday, September 4",
+    lens:"context", src:"Adult Check-In", title:"FACS — adult check-in",
+    result:"Followed a four-step recipe card from prep to plate, start to finish, no prompts. The recipe card is how everyone cooks in this room.",
+    cls:"FACS", goals:["g-self"],
+    facts:{ "Class":"Family & Consumer Sciences, Mrs. Park (5th period)", "Engagement":"High", "Independence":"Fully independent", "Supports":"Numbered recipe card — standard for every student in the room" },
+    note:"<b>Read with Tech and social studies:</b> a numbered sequence that belongs to the room carries no stigma. Marcus used it the way everyone did.",
+    prov:"Class-by-class adult check-in. Recorded as an observation — never scored, never averaged." },
+
+  { id:"e-fri-meet", day:4, date:"Fri 9/4", longDate:"Friday, September 4",
+    lens:"exp", src:"Student Voice", title:"For my meeting",
+    quote:"I want the team to know the steps card helps. I don't want one that looks babyish.",
+    voice:{ own:"Marcus chose: share with my team" }, goals:["g-self"],
+    facts:{ "Prompt":"What do you want the adults at your meeting to know?", "Entered by":"Marcus (student device)" },
+    prov:"Student meeting voice. Shared because Marcus chose to share it." }
+];
+
+/* Marcus's actual schedule. Adult check-ins are how every class — electives
+   included — enters the record: two minutes from the adult who was actually
+   in the room. A blank never pretends: it only ever means no evidence was
+   collected. Counts, never averages. */
+let SCHEDULE = ["Math","ELA","Science","Social Studies","FACS","Tech","P.E.","Choir"];
+
+let DAYS = [
+  { name:"Monday",    date:"August 31",    note:"before the sequence strip" },
+  { name:"Tuesday",   date:"September 1",  note:"" },
+  { name:"Wednesday", date:"September 2",  note:"the strip arrives" },
+  { name:"Thursday",  date:"September 3",  note:"a day without it" },
+  { name:"Friday",    date:"September 4",  note:"" }
+];
+
+/* Patterns — synthesized observations. Each carries the ids of the records
+   behind it; a pattern with no traceable records would not be shown. */
+let PATTERNS = [
+  { id:"p-support", kind:"Converging evidence",
+    claim:"Stronger performance was observed when the visual sequence strip and at most one verbal prompt were available.",
+    sub:"Five records from three different sources point the same direction. This is an observed association — the educator decides what it means.",
+    ev:["e-mon-assess","e-tue-probe","e-wed-mathws","e-thu-probe","e-fri-quiz"],
+    support:true },
+  { id:"p-initiate", kind:"Observed pattern",
+    claim:"The difficulty appears at starting the next step — not at the math inside a step.",
+    sub:"Across the assessment, both probes, a P.E. check-in, and his own exit slip, the work stops at transitions rather than going wrong within a step — in the gym as much as in math.",
+    ev:["e-mon-obs","e-mon-exit","e-tue-probe","e-thu-probe","e-wed-pe","e-fri-obs"] },
+  { id:"p-self", kind:"Emerging pattern",
+    claim:"Early signs of reaching for help and tools without being told.",
+    sub:"Moments across the week — in small group, on paper, in Tech and FACS, and at home — where Marcus moved himself forward. Emerging, not established.",
+    ev:["e-wed-para","e-wed-mathws","e-tue-tech","e-fri-facs","e-thu-family","e-thu-exit"] },
+  { id:"p-normal", kind:"Converging evidence",
+    claim:"The rooms where numbered steps are normal for everyone are the rooms where Marcus thrives.",
+    sub:"Tech's build guide, FACS's recipe card, social studies' printed checklist — sequences that belong to the room, not to him. His own condition on his support — that it not look babyish — may already have its answer on his schedule.",
+    ev:["e-tue-tech","e-tue-techvoice","e-fri-facs","e-thu-ss","e-fri-meet"] }
+];
+
+let DIFFERENT_PERSPECTIVES = {
+  aWho:"Ms. Ferro", bWho:"Marcus",
+  title:"Two true accounts of the same quiz",
+  sub:"Friday's weekly check, seen twice. Neither account outranks the other; the space between them is something for the team to talk about.",
+  a:"e-fri-obs", b:"e-fri-voice"
+};
+
+let SUPPORT_COMPARE = {
+  withPct:"78–80%", withCond:"Sequence strip available · Tue probe 4/5 · Wed problem set 4/5 · Fri check 80%",
+  withoutPct:"60–72%", withoutCond:"No strip · Mon Unit 1 check 72% · Thu probe 3/5",
+  caveat:"An observed association across one week — not a proven cause. Marcus remains the same student in both columns; the educator remains the interpreter.",
+  ev:["e-tue-probe","e-wed-mathws","e-fri-quiz","e-mon-assess","e-thu-probe"]
+};
+
+/* ═══ ARTIFACTS — rendered work samples ═══ */
+let ARTIFACTS = {
+  "a-math": {
+    title:"Problem set, p. 41 — Wednesday, September 2",
+    meta:{ "Source":"Work Sample", "Class":"Math, Ms. Ferro", "Linked goal":"Multi-step problem solving" },
+    note:"The crossed-out first attempt on problem 1 is the most useful thing on the page: Marcus stopped mid-problem, restarted, and numbered his steps 1–4 in the margin to match the sequence strip. Second attempt: 4 of 5 correct.",
+    html:`
+      <div class="paper-doc">
+        <div class="ph"><span><b>Problem Set — p. 41</b><br>Multi-step word problems</span><span style="text-align:right">Name: <span class="hand">Marcus B.</span><br>Date: <span class="hand">9/2</span></span></div>
+        <div class="paper-prob"><span class="pn">1.</span> A ferry carries 48 cars per trip and makes 6 trips each morning. If 35 cars are left waiting, how many cars wanted to cross?
+          <div class="paper-lines"><span class="hand err">48 + 6 = 54&nbsp;&nbsp;54 + 35…</span></div>
+          <div class="paper-lines"><span class="hand">1) 48 × 6 = 288&nbsp;&nbsp;2) 288 + 35 = 323&nbsp;&nbsp;3) 323 cars ✓</span> <span class="tmark">✓ nice restart</span></div>
+        </div>
+        <div class="paper-prob"><span class="pn">2.</span> Tickets cost $7 for adults and $4 for students. A group of 3 adults and 5 students pays with $50. What is the change?
+          <div class="paper-lines"><span class="hand">1) 7×3=21&nbsp;&nbsp;2) 4×5=20&nbsp;&nbsp;3) 21+20=41&nbsp;&nbsp;4) 50−41=$9</span> <span class="tmark">✓</span></div>
+        </div>
+        <div class="paper-prob"><span class="pn">3.</span> A recipe needs 2¼ cups of flour per batch. How much flour for 4 batches, and how much is left from a 10-cup bag?
+          <div class="paper-lines"><span class="hand">1) 2¼ × 4 = 9&nbsp;&nbsp;2) 10 − 9 = 1 cup left</span> <span class="tmark">✓</span></div>
+        </div>
+        <div class="paper-prob"><span class="pn">4.</span> A bus travels 42 miles per hour for 3 hours, then 30 miles more. Total distance?
+          <div class="paper-lines"><span class="hand">1) 42 × 3 = 126&nbsp;&nbsp;2) 126 + 30 = 156 miles</span> <span class="tmark">✓</span></div>
+        </div>
+        <div class="paper-prob"><span class="pn">5.</span> Three friends split the cost of a $24 gift and $6 shipping equally. How much does each pay?
+          <div class="paper-lines"><span class="hand">1) 24 ÷ 3 = 8&nbsp;&nbsp;2) 6 ÷ 3 = 2&nbsp;&nbsp;3) 8 + 2 = $12</span> <span class="tmark">✗ — 24+6 first, then ÷3. Same answer, check the order.</span></div>
+        </div>
+        <div style="margin-top:14px; font-size:12px;"><span class="tmark" style="font-size:15px;">4/5 — the margin numbers are working. Keep the strip out. — F</span></div>
+      </div>`
+  },
+  "a-ela": {
+    title:"Personal narrative draft — “The Best Save” — Tuesday, September 1",
+    meta:{ "Source":"Work Sample", "Class":"ELA, Ms. Ramos", "Linked goal":"Organized written expression" },
+    note:"Rubric 14/20. The details are vivid and specific — the challenge is order. The draft's ending arrives before its middle; the margin arrows are Ms. Ramos's conference notes, not corrections Marcus has made yet.",
+    html:`
+      <div class="paper-doc">
+        <div class="ph"><span><b>Personal Narrative — Draft 1</b><br>Organizer: ✓ used</span><span style="text-align:right">Name: <span class="hand">Marcus B.</span><br>Date: <span class="hand">9/1</span></span></div>
+        <p style="font-size:14px; line-height:2.05;">
+          <span class="hand" style="font-size:16px;">The best save I ever made was in the last game of summer league.</span> <span class="tmark">← strong topic sentence</span><br>
+          <span class="hand" style="font-size:16px;">Everybody was yelling and my glove was stinging but we won by one point.</span> <span class="tmark">③ this is your ending — move it down</span><br>
+          <span class="hand" style="font-size:16px;">The other team's biggest kid kicked it so hard I heard it before I saw it.</span> <span class="tmark">①</span><br>
+          <span class="hand" style="font-size:16px;">I jumped left even though my brain said right, and the ball hit my glove like a truck.</span> <span class="tmark">② — great detail</span>
+        </p>
+        <div style="margin-top:16px; border-top:1px solid #B9C2CC; padding-top:10px; font-size:12px;">
+          <span class="tmark">14/20 — Every sentence earns its place. Now put them in the order it happened. Try numbering before drafting, like your math steps. — R</span>
+        </div>
+      </div>`
+  },
+  "a-sci": {
+    title:"States of matter — lab sheet — Tuesday, September 1",
+    meta:{ "Source":"Assignment", "Class":"Science, Mr. Idris", "Skill":"Recording observations" },
+    note:"8/10. The diagram is careful and accurate. The written conclusion trails off after the first clause — the same hand-off difficulty visible in math, appearing in a different subject.",
+    html:`
+      <div class="paper-doc">
+        <div class="ph"><span><b>Lab: States of Matter</b><br>Station 2 — ice to steam</span><span style="text-align:right">Name: <span class="hand">Marcus B.</span><br>Date: <span class="hand">9/1</span></span></div>
+        <svg viewBox="0 0 520 190" style="width:100%; max-width:520px; display:block; margin:8px auto;" role="img" aria-label="Labeled diagram of ice, water, and steam in three beakers">
+          <g stroke="#1D2733" stroke-width="2" fill="none">
+            <path d="M40 40 v90 a10 10 0 0 0 10 10 h80 a10 10 0 0 0 10-10 V40"/>
+            <path d="M210 40 v90 a10 10 0 0 0 10 10 h80 a10 10 0 0 0 10-10 V40"/>
+            <path d="M380 40 v90 a10 10 0 0 0 10 10 h80 a10 10 0 0 0 10-10 V40"/>
+          </g>
+          <g fill="#9CC2E8" opacity=".55"><rect x="52" y="92" width="26" height="22" rx="4" transform="rotate(-8 65 103)"/><rect x="86" y="98" width="24" height="20" rx="4" transform="rotate(11 98 108)"/></g>
+          <rect x="212" y="86" width="96" height="52" rx="6" fill="#9CC2E8" opacity=".45"/>
+          <g stroke="#7C8794" stroke-width="2" fill="none" stroke-linecap="round">
+            <path d="M400 70 q6 -12 0 -22 q-6 -10 2 -20"/><path d="M425 74 q6 -12 0 -22 q-6 -10 2 -20"/><path d="M450 70 q6 -12 0 -22 q-6 -10 2 -20"/>
+          </g>
+          <text x="90" y="170" text-anchor="middle" style="font:15px 'Bradley Hand','Chalkboard SE',cursive" fill="#27415E">solid (ice)</text>
+          <text x="260" y="170" text-anchor="middle" style="font:15px 'Bradley Hand','Chalkboard SE',cursive" fill="#27415E">liquid (water)</text>
+          <text x="430" y="170" text-anchor="middle" style="font:15px 'Bradley Hand','Chalkboard SE',cursive" fill="#27415E">gas (steam)</text>
+          <text x="90" y="30" text-anchor="middle" style="font:12px 'Bradley Hand','Chalkboard SE',cursive" fill="#27415E">molecules locked</text>
+          <text x="260" y="30" text-anchor="middle" style="font:12px 'Bradley Hand','Chalkboard SE',cursive" fill="#27415E">molecules sliding</text>
+          <text x="430" y="30" text-anchor="middle" style="font:12px 'Bradley Hand','Chalkboard SE',cursive" fill="#27415E">molecules flying!</text>
+        </svg>
+        <div class="paper-prob" style="margin-top:4px;"><span class="pn">Conclusion:</span>
+          <div class="paper-lines"><span class="hand">Heat makes the molecules move faster, and when they move faster</span></div>
+          <div class="paper-lines"></div>
+          <div class="paper-lines"></div>
+        </div>
+        <div style="margin-top:10px; font-size:12px;"><span class="tmark" style="font-size:15px;">8/10 — best diagram at your table. Finish the thought: faster molecules → which state? — I</span></div>
+      </div>`
+  }
+};
+
+/* Meeting mode — every synthesized line names its records. */
+let MEETING = [
+  { k:"Student overview", h:"Who is Marcus?",
+    body:[ { t:STUDENT.overview } ] },
+  { k:"Strengths", h:"What is going well",
+    body:[
+      { t:"<b>He notices his own stall and can recover.</b> Wednesday's problem set shows a crossed-out first attempt, then a numbered restart that matched the sequence strip.", ev:["e-wed-mathws"] },
+      { t:"<b>The details in his writing are vivid and specific</b> — the raw material is there; the work is ordering it.", ev:["e-tue-ela"] },
+      { t:"<b>His science observation and diagramming are a genuine strength</b> — 'best diagram at your table.'", ev:["e-tue-sci"] },
+      { t:"<b>He is beginning to move himself forward</b> — asking a tablemate 'what's next?', and taking out the steps card at home unprompted.", ev:["e-wed-para","e-thu-family"] },
+      { t:"<b>Electives show him at his best.</b> In Tech he led his partner through the circuit assembly; in FACS he cooked start-to-finish from the recipe card, fully independent.", ev:["e-tue-tech","e-fri-facs"] }
+    ] },
+  { k:"Student voice", h:"What Marcus wants the team to know",
+    quote:{ q:"I want the team to know the steps card helps. I don't want one that looks babyish.", who:"Marcus, Friday — shared with the team by his choice", ev:["e-fri-meet"] },
+    body:[ { t:"He also told us, in his own words, exactly where the difficulty lives:", }, ],
+    quote2:{ q:"I got stuck when I didn't know what to do next.", who:"Marcus, Monday exit slip", ev:["e-mon-exit"] } },
+  { k:"Academic evidence", h:"What recent work shows",
+    body:[
+      { t:"<b>Mathematics:</b> Monday's Unit 1 check was 72%, with points lost at step-3 transitions rather than within steps. Friday's weekly check, with the strip available, was 80%.", ev:["e-mon-assess","e-fri-quiz"] },
+      { t:"<b>Written expression:</b> one organizer-supported draft this week — rubric 14/20, strong detail, sequencing difficulty. One sample is not a trend.", ev:["e-tue-ela"] },
+      { t:"<b>Across subjects:</b> the same shape appears in science (a conclusion that trails off after its first clause) and social studies (six steps completed with a checklist, no redirection).", ev:["e-tue-sci","e-thu-ss"] }
+    ] },
+  { k:"Goal status", h:"Evidence connected to current goals",
+    body:[
+      { t:"<b>Multi-step problem solving:</b> ten connected records across all five days — two probes (4/5 with the strip; 3/5 without), two assessments (72% → 80%), one work sample, observations, and his own exit slips.", ev:["e-tue-probe","e-thu-probe","e-mon-assess","e-fri-quiz","e-wed-mathws"] },
+      { t:"<b>Organized written expression:</b> one connected sample. This goal has an evidence gap this week — see below.", ev:["e-tue-ela"] },
+      { t:"<b>Asking for help / reaching for a tool:</b> three unprompted moments observed — small group, on paper, and at home.", ev:["e-wed-para","e-wed-mathws","e-thu-family"] }
+    ] },
+  { k:"Growth", h:"What changed inside one week",
+    body:[
+      { t:"Monday, the work stopped at step 3 and waited for an adult. Friday, Marcus started step 3 himself on two of four problems. Same problem type, five days apart.", ev:["e-mon-obs","e-fri-obs"] },
+      { t:"His own words held both ends of the week: <b>“I got stuck when I didn't know what to do next”</b> (Monday, math) and <b>“In Tech I'm the one who knows what's next”</b> (Tuesday). Same student, same week — the difference is the room.", ev:["e-mon-exit","e-tue-techvoice"] },
+      { t:"One week is a short window. This is a direction worth watching, not a trend to bank on.", } ] },
+  { k:"Supports and conditions", h:"What the evidence says about conditions",
+    body:[
+      { t:"<b>Higher accuracy was observed when the visual sequence strip was available</b> (78–80% across Tuesday, Wednesday, and Friday) <b>than when it was not</b> (60–72% on Monday and Thursday). An observed association across one week — not a proven cause.", ev:["e-tue-probe","e-wed-mathws","e-fri-quiz","e-mon-assess","e-thu-probe"] },
+      { t:"In rooms where a numbered sequence is standard for every student — Tech's build guide, FACS's recipe card, the social studies checklist — Marcus used it independently and without stigma.", ev:["e-tue-tech","e-fri-facs","e-thu-ss"] },
+      { t:"Marcus's condition on the support: it helps, and it must not look babyish. Both halves matter to whether it gets used.", ev:["e-fri-meet"] } ] },
+  { k:"Different perspectives", h:"Where accounts differ",
+    body:[
+      { t:"Friday's quiz, seen twice. Ms. Ferro observed: <b>“Appeared confident and worked steadily.”</b> Marcus wrote: <b>“I knew what to do, but I was worried I was going to get it wrong.”</b> Both are true accounts. The space between them — competence arriving before confidence — is for the team to discuss, not for the system to resolve.", ev:["e-fri-obs","e-fri-voice"] } ] },
+  { k:"Evidence gaps", h:"What we don't know yet",
+    body:[
+      { t:"<b>Written expression has one data point this week.</b> Before the meeting, consider collecting another organizer-supported sample, an observation during drafting, and Marcus's own reflection on ordering ideas.", ev:["e-tue-ela"] },
+      { t:"<b>No reading evidence was connected this week, and Choir produced no adult check-in.</b> A blank never pretends: it only ever means no evidence was collected." } ] },
+  { k:"Questions for the team", h:"What deserves discussion",
+    body:[
+      { t:"1 — The strip helps and Marcus finds it babyish. Tech's build guide and FACS's recipe card suggest the answer: a sequence that belongs to the room, or to a binder every student carries. Should Marcus design his own?", ev:["e-fri-meet","e-tue-tech","e-fri-facs"] },
+      { t:"2 — The step-transition difficulty appears in math, writing, and science. Is this one goal wearing three costumes?", ev:["e-mon-assess","e-tue-ela","e-tue-sci"] },
+      { t:"3 — Confidence is trailing competence. Who is best placed to help Marcus see his own Friday evidence?", ev:["e-fri-obs","e-fri-voice"] },
+      { t:"4 — The writing goal needs more evidence before conclusions. Who collects what, by when?", ev:["e-tue-ela"] } ] }
+];
+
+/* The demonstration model, snapshotted whole. Live mode swaps every one of
+   these globals; choosing the demonstration swaps them back. */
+let DEMO = { STUDENT, GOALS, EVIDENCE, DAYS, SCHEDULE, PATTERNS,
+         DIFFERENT_PERSPECTIVES, SUPPORT_COMPARE, ARTIFACTS, MEETING };
+
+/* ═══════════════════════════════════════════════════════════════════
+   RENDERING
+   ═══════════════════════════════════════════════════════════════════ */
+const $ = s => document.querySelector(s);
+let byId = {}, goalById = {};
+function rebuildIndexes(){
+  byId = {}; EVIDENCE.forEach(e => byId[e.id] = e);
+  goalById = {}; GOALS.forEach(g => goalById[g.id] = g);
+}
+rebuildIndexes();
+
+
+
+/* light UI-state persistence — never student data, never synced */
+/* This page's OWN store — UI preferences and educator curation only.
+   It is the only key this page ever writes. Never synced, never a link rider. */
+let UI = { use:{}, pat:{}, sec:{}, mode:"", student:"" };
+try{ UI = Object.assign(UI, JSON.parse(localStorage.getItem("aog.evidence.ui.v1")||"{}")); }catch(e){}
+UI.use = UI.use||{}; UI.pat = UI.pat||{}; UI.sec = UI.sec||{};
+function saveUI(){ try{ localStorage.setItem("aog.evidence.ui.v1", JSON.stringify(UI)); }catch(e){} }
+
+function esc(s){ return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;"); }
+function gClip(t, n){
+  t = String(t==null?"":t).trim().replace(/[\s.:;,]+$/,"");
+  n = n || 120;
+  return t.length > n ? t.slice(0, n-1).replace(/\s+\S*$/,"") + "\u2026" : t;
+}
+
+/* ── masthead + dynamic chrome ── */
+function renderChrome(){
+  const n = EVIDENCE.length;
+  $("#mastName").textContent = STUDENT.name;
+  $("#mastMeta").innerHTML =
+    `<span>${esc(STUDENT.grade||"")}</span><span class="dot">·</span><span>${esc(STUDENT.week)}</span><span class="dot">·</span>`+
+    `<span>${n} evidence record${n===1?"":"s"}</span><span class="dot">·</span><span>4 ways of understanding</span>`;
+  if(STUDENT.lede) $("#mastLede").textContent = STUDENT.lede;
+  $("#weekH2").textContent = STUDENT.weekH2 || ("The week of August 31");
+  $("#voiceH2").textContent = STUDENT.voiceH2 || "In Marcus's words";
+  $("#navVoice").textContent = STUDENT.voiceNav || "In His Words";
+  $("#meetTitle").textContent = STUDENT.name + " — evidence for the team";
+  $("#voiceNote").innerHTML = STUDENT.voiceNote ||
+    `Marcus decides what happens to what he says. Anything marked <b>kept</b> he chose to keep; anything shared with the team, he chose to share. Nothing on this page rates, scores, or reinterprets his words.`;
+}
+
+/* ── evidence card ── */
+function evCardHTML(e, compact){
+  const lens = LENSES[e.lens];
+  const goals = (e.goals||[]).map(id => goalById[id].title);
+  const goalFlag = goals.length ?
+    `<span class="ev-goalflag" title="Connected to: ${esc(goals.join(" · "))}">
+       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3.4"/></svg>
+       ${goals.length===1?"1 goal":goals.length+" goals"}</span>` : "";
+  const facts = e.facts ? `<div class="ev-facts">${Object.entries(e.facts).map(([k,v])=>`<div class="ev-fact"><div class="k">${esc(k)}</div><div class="v">${v}</div></div>`).join("")}</div>` : "";
+  const note = e.note ? `<p class="ev-note">${e.note}</p>` : "";
+  const own = e.voice ? `<div class="ev-own"><span class="own-chip">${esc(e.voice.own)}</span><span>${esc(e.voice.note||"The student\u2019s words, exactly as written.")}</span></div>` : "";
+  const links = [];
+  (e.goals||[]).forEach(id => links.push(`<a class="ev-link" href="#goal-${id}" data-goto="#goal-${id}">◦ Goal: ${esc(goalById[id].title)}</a>`));
+  if(e.artifact) links.push(`<button class="ev-link" data-art="${e.artifact}">▣ View the work itself</button>`);
+  if(e.dp) links.push(`<button class="ev-link" data-goto="#patterns">◑ A different perspective exists — see the pair</button>`);
+  const prov = e.prov ? `<p class="ev-prov">${esc(e.prov)}</p>` : "";
+  return `
+  <article class="ev${e.noEv?" noev":""}" id="card-${e.id}" style="--lc:${lens.css}" data-lens="${e.lens}">
+    <button class="ev-head" aria-expanded="false" data-toggle="${e.id}">
+      <div class="ev-toprow">
+        <span class="ev-src">${esc(e.src)}</span>
+        <span class="ev-lens">${lens.label}</span>
+        ${goalFlag}
+      </div>
+      <h3 class="ev-title">${e.title}</h3>
+      ${e.result?`<p class="ev-result">${e.result}</p>`:""}
+      ${e.quote?`<p class="ev-quote">“${esc(e.quote)}”</p>`:""}
+      <div class="ev-foot">
+        ${e.skill?`<span class="ev-skill">Skill: <b>${esc(e.skill)}</b></span>`:""}
+        <span class="ev-more">Open <span class="chev">▾</span></span>
+      </div>
+    </button>
+    <div class="ev-body"><div><div class="ev-body-in">
+      ${facts}${note}
+      ${links.length?`<div class="ev-links">${links.join("")}</div>`:""}
+      ${own}${prov}
+    </div></div></div>
+  </article>`;
+}
+
+/* ── timeline ── */
+let activeLens = "all";
+function renderTimeline(){
+  const tl = $("#timeline");
+  tl.innerHTML = DAYS.map((d,i)=>{
+    const items = EVIDENCE.filter(e => e.day===i && (activeLens==="all" || e.lens===activeLens));
+    if(!items.length) return `
+      <div class="tl-day"><div class="tl-dayhead"><span class="dname">${d.name}</span><span class="ddate">${d.date}</span>${d.note?`<span class="dnote">${d.note}</span>`:""}</div>
+      <div class="tl-items"><p style="padding:16px 4px; font-size:13.5px; color:var(--ink-faint); font-style:italic;">No ${LENSES[activeLens]?LENSES[activeLens].label.toLowerCase():""} evidence recorded this day.</p></div></div>`;
+    return `
+      <div class="tl-day">
+        <div class="tl-dayhead"><span class="dname">${d.name}</span><span class="ddate">${d.date}</span>${d.note?`<span class="dnote">${d.note}</span>`:""}</div>
+        <div class="tl-items">${items.map(e=>evCardHTML(e)).join("")}</div>
+      </div>`;
+  }).join("");
+  applyExclusions();
+}
+
+/* ── schedule coverage — counts, never averages; a blank never pretends ── */
+function renderCoverage(){
+  const box = $("#coverage");
+  if(!SCHEDULE || !SCHEDULE.length){ box.innerHTML=""; box.hidden = true; return; }
+  box.hidden = false;
+  const counts = {}; SCHEDULE.forEach(c=>counts[c]=0);
+  EVIDENCE.forEach(e=>{ if(e.cls && !e.noEv && counts[e.cls]!==undefined) counts[e.cls]++; });
+  const covered = SCHEDULE.filter(c=>counts[c]>0).length;
+  const blanks = SCHEDULE.filter(c=>!counts[c]);
+  box.innerHTML = `
+    <div class="cap">${esc(STUDENT.covCap||"Marcus's week, against his actual schedule — electives included")}</div>
+    <div class="cov-row">${SCHEDULE.map(c=>
+      counts[c] ? `<span class="cov-cell">${esc(c)} <span class="n">${counts[c]}</span></span>`
+                : `<span class="cov-cell blank" title="No evidence collected — a blank never pretends">${esc(c)} <span class="n">—</span></span>`).join("")}
+    </div>
+    <p class="cov-note">Evidence arrived from <b>${covered} of ${SCHEDULE.length}</b> scheduled classes this week — counts, never averages. Adult check-ins are how electives enter the record: two minutes from the adult who was actually in the room.
+    ${blanks.length?` A blank only ever means no evidence was collected: ${blanks.map(esc).join(", ")} simply has no record yet.`:""}
+    Daily check-ins and reflections are recorded in homeroom and sit above any single class.</p>`;
+}
+
+function renderFilters(){
+  const f = $("#lensFilters");
+  const chips = [["all","All evidence",""]].concat(Object.entries(LENSES).map(([k,v])=>[k,v.label,v.css]));
+  f.innerHTML = chips.map(([k,label,css])=>
+    `<button class="chip${activeLens===k?" on":""}" data-lens="${k}">${css?`<span class="swatch" style="background:${css}"></span>`:""}${label}</button>`).join("");
+  f.querySelectorAll(".chip").forEach(c => c.addEventListener("click", ()=>{
+    activeLens = c.dataset.lens; renderFilters(); renderTimeline();
+  }));
+}
+
+/* ── trace row (used by patterns, goals, meeting popover) ── */
+function traceRowHTML(id){
+  const e = byId[id]; if(!e) return "";
+  const lens = LENSES[e.lens];
+  const what = e.quote ? `“${esc(e.quote)}”` : (e.result||"").replace(/<[^>]*>/g,"");
+  return `<button class="trace" style="--lc:${lens.css}" data-open-ev="${id}">
+    <span class="t-date">${e.date}</span>
+    <span class="t-main"><span class="t-title">${e.title}</span><br><span class="t-what">${what}</span></span>
+    <span class="t-src">${esc(e.src)}</span>
+  </button>`;
+}
+
+/* ── patterns ── */
+function patternHTML(p){
+  const st = UI.pat[p.id]||"";
+  return `
+  <div class="pat" id="pat-${p.id}">
+    <div class="pat-in">
+      <div class="pat-kind">◆ ${p.kind}</div>
+      <h3>${p.claim}</h3>
+      <p class="pat-sub">${p.sub}</p>
+      <div class="pat-actions">
+        <button class="show-ev" data-pat="${p.id}">Show me the evidence <span class="chev">▾</span></button>
+        <div class="pat-review" data-review="${p.id}">
+          ${st==="accept"?`<span class="pat-state">Accepted by educator ·</span>`:""}
+          ${st==="dismiss"?`<span class="pat-state">Set aside by educator ·</span>`:""}
+          <button class="rv-btn ${st==="accept"?"rv-on-accept":""}" data-rv="accept">${st==="accept"?"✓ Accepted":"Accept"}</button>
+          <button class="rv-btn ${st==="dismiss"?"rv-on-dismiss":""}" data-rv="dismiss">${st==="dismiss"?"Set aside":"Set aside"}</button>
+        </div>
+      </div>
+    </div>
+    <div class="pat-evwrap"><div><div class="pat-evlist">
+      <div class="cap">The records behind this observation</div>
+      ${p.ev.map(traceRowHTML).join("")}
+    </div></div></div>
+  </div>`;
+}
+
+function renderPatterns(){
+  const parts = PATTERNS.map(patternHTML);
+
+  if(DIFFERENT_PERSPECTIVES && byId[DIFFERENT_PERSPECTIVES.a] && byId[DIFFERENT_PERSPECTIVES.b]){
+    const DP = DIFFERENT_PERSPECTIVES;
+    const dpA = byId[DP.a], dpB = byId[DP.b];
+    parts.push(`
+    <div class="pat" id="pat-dp">
+      <div class="pat-in">
+        <div class="pat-kind k-dp">◑ Different perspectives</div>
+        <h3>${DP.title}</h3>
+        <p class="pat-sub">${DP.sub}</p>
+        <div class="dp-pair">
+          <div class="dp-side" style="--lc:${LENSES[dpA.lens].css}">
+            <div class="who">${esc(dpA.src)}${DP.aWho?" — "+esc(DP.aWho):""}</div>
+            <p class="what">${dpA.result}</p>
+          </div>
+          <div class="dp-side" style="--lc:${LENSES[dpB.lens].css}">
+            <div class="who">${esc(dpB.src)}${DP.bWho?" — "+esc(DP.bWho):""}</div>
+            <p class="what qv">\u201C${esc(dpB.quote)}\u201D</p>
+          </div>
+        </div>
+        <div class="pat-actions">
+          <button class="show-ev" data-pat="dp">Show me the evidence <span class="chev">▾</span></button>
+        </div>
+      </div>
+      <div class="pat-evwrap"><div><div class="pat-evlist">
+        <div class="cap">The two records, in full</div>
+        ${[DP.a, DP.b].map(traceRowHTML).join("")}
+      </div></div></div>
+    </div>`);
+  }
+
+  if(SUPPORT_COMPARE){
+    const SC = SUPPORT_COMPARE;
+    parts.push(`
+    <div class="pat" id="pat-sup">
+      <div class="pat-in">
+        <div class="pat-kind">◆ Observed association</div>
+        <h3>Performance under two observed conditions</h3>
+        <div class="sup-pair">
+          <div class="sup-side with"><div class="cap">${esc(SC.withLabel||"With the sequence strip")}</div><div class="big">${SC.withPct}</div><p class="cond">${SC.withCond}</p></div>
+          <div class="sup-side without"><div class="cap">${esc(SC.withoutLabel||"Without it")}</div><div class="big">${SC.withoutPct}</div><p class="cond">${SC.withoutCond}</p></div>
+        </div>
+        <p class="pat-sub" style="margin-top:14px;">${SC.caveat}</p>
+        <div class="pat-actions">
+          <button class="show-ev" data-pat="sup">Show me the evidence <span class="chev">▾</span></button>
+        </div>
+      </div>
+      <div class="pat-evwrap"><div><div class="pat-evlist">
+        <div class="cap">Every record in the comparison</div>
+        ${SC.ev.map(traceRowHTML).join("")}
+      </div></div></div>
+    </div>`);
+  }
+
+  GOALS.filter(g=>g.gap).forEach(g=>{
+    const evs = EVIDENCE.filter(e=>(e.goals||[]).includes(g.id));
+    parts.push(`
+    <div class="pat" id="pat-gap-${g.id}">
+      <div class="pat-in">
+        <div class="pat-kind k-gap">◇ Evidence gap</div>
+        <h3>There isn\u2019t enough evidence yet — ${esc(gClip(g.title, 90))}.</h3>
+        <div class="gapbox">
+          <div class="cap">${evs.length===1?"Only one recent record":evs.length===0?"No recent records":"Thin evidence"}</div>
+          <p>${esc(g.gap.note)}</p>
+          ${g.gap.collect&&g.gap.collect.length?`<ul>${g.gap.collect.map(c=>`<li>${esc(c)}</li>`).join("")}</ul>`:""}
+        </div>
+        ${evs.length?`<div class="pat-actions">
+          <button class="show-ev" data-pat="gap-${g.id}">Show me the evidence <span class="chev">▾</span></button>
+        </div>`:""}
+      </div>
+      ${evs.length?`<div class="pat-evwrap"><div><div class="pat-evlist">
+        <div class="cap">The connected record${evs.length===1?"":"s"}</div>
+        ${evs.map(e=>traceRowHTML(e.id)).join("")}
+      </div></div></div>`:""}
+    </div>`);
+  });
+
+  $("#patternList").innerHTML = parts.join("");
+}
+
+/* ── goals ── */
+function renderGoals(){
+  $("#goalList").innerHTML = GOALS.map(g=>{
+    const evs = EVIDENCE.filter(e => (e.goals||[]).includes(g.id));
+    const dots = (g.days && g.days.length===DAYS.length)
+      ? `<span class="wkdots">${g.days.map((d,i)=>`<span class="d${d?" hit":""}" title="${DAYS[i].name}"></span>`).join("")}<span class="lbl">M T W T F</span></span>` : "";
+    return `
+    <div class="goal" id="goal-${g.id}">
+      <div class="goal-in">
+        <div class="goal-area">${esc(g.area)} · IEP Goal <span style="color:var(--ink-faint); font-weight:500; letter-spacing:.04em; text-transform:none;">— compiled from the IEP document, as written</span></div>
+        <h3>${esc(g.title)}</h3>
+        <p class="goal-text">${esc(g.text)}</p>
+        <div class="goal-week">
+          ${dots}
+          <span class="goal-count"><b>${evs.length}</b> connected record${evs.length===1?"":"s"} this week</span>
+          ${g.gap?`<span class="goal-gapchip">◇ Evidence gap — one data point is not a trend</span>`:""}
+        </div>
+      </div>
+      <div class="goal-evlist">
+        ${evs.map(e=>traceRowHTML(e.id)).join("")}
+      </div>
+    </div>`;
+  }).join("");
+}
+
+/* ── voice ── */
+function renderVoice(){
+  const vs = EVIDENCE.filter(e=>e.quote);
+  $("#voiceGrid").innerHTML = vs.map(e=>`
+    <div class="voice-card">
+      <p class="vq">${esc(e.quote)}”</p>
+      <div class="vmeta">
+        <span>${e.longDate} · ${esc(e.src.replace("Student Voice", e.title))}</span>
+        ${e.voice?`<span class="own-chip" style="font-size:11px; font-weight:600; color:var(--voice-ink); background:var(--voice-bg); border-radius:999px; padding:3px 10px;">${esc(e.voice.own)}</span>`:""}
+      </div>
+    </div>`).join("");
+}
+
+/* ── artifact viewer ── */
+let lastFocus = null;
+function pin(on){ document.body.classList.toggle("pinned", on); }
+function openArtifact(aid){
+  const a = ARTIFACTS[aid]; if(!a) return;
+  lastFocus = document.activeElement;
+  $("#artTitle").textContent = a.title;
+  const use = UI.use[aid] || "include";
+  const hints = {
+    include:"This work sample counts as evidence: it appears in goal connections, patterns, and the Evidence Brief.",
+    context:"Kept for context: viewable here and in Meeting Mode, but not cited as evidence for conclusions.",
+    exclude:"Excluded by the educator: it stays in the record but is set aside everywhere evidence is weighed."
+  };
+  $("#artBody").innerHTML = `
+    <div class="art-meta">${Object.entries(a.meta).map(([k,v])=>`<span>${esc(k)}: <b>${esc(v)}</b></span>`).join("")}</div>
+    <div class="art-stage">${a.html}</div>
+    <p class="art-note">${a.note}</p>
+    <div class="art-use">
+      <div class="cap">How this artifact is used — the educator decides</div>
+      <div class="art-use-row" data-artuse="${aid}">
+        <button class="use-chip${use==="include"?" on":""}" data-use="include">Include in evidence</button>
+        <button class="use-chip${use==="context"?" on":""}" data-use="context">Context only</button>
+        <button class="use-chip${use==="exclude"?" on":""}" data-use="exclude">Exclude</button>
+      </div>
+      <p class="use-hint">${hints[use]}</p>
+    </div>`;
+  $("#artOverlay").classList.add("up"); pin(true);
+  $("#artClose").focus();
+  const row = $("#artBody").querySelector("[data-artuse]");
+  row.addEventListener("click", ev=>{
+    const b = ev.target.closest(".use-chip"); if(!b) return;
+    UI.use[aid] = b.dataset.use; saveUI();
+    row.querySelectorAll(".use-chip").forEach(x=>x.classList.toggle("on", x===b));
+    row.parentElement.querySelector(".use-hint").textContent = hints[b.dataset.use];
+    applyExclusions();
+  });
+}
+function closeArtifact(){ $("#artOverlay").classList.remove("up"); pin(false); if(lastFocus) lastFocus.focus(); }
+
+function applyExclusions(){
+  EVIDENCE.forEach(e=>{
+    if(!e.artifact) return;
+    const card = document.getElementById("card-"+e.id);
+    if(card) card.classList.toggle("excluded", UI.use[e.artifact]==="exclude");
+  });
+}
+
+/* ── evidence record overlay (from traces) ── */
+function openEvidence(id){
+  const e = byId[id]; if(!e) return;
+  lastFocus = document.activeElement;
+  $("#evOvTitle").textContent = e.longDate;
+  $("#evOvBody").innerHTML = evCardHTML(e);
+  const card = $("#evOvBody").querySelector(".ev");
+  card.classList.add("open");
+  card.querySelector(".ev-more").style.display="none";
+  $("#evOverlay").classList.add("up"); pin(true);
+  $("#evOvClose").focus();
+}
+function closeEvidence(){ $("#evOverlay").classList.remove("up"); if(!$("#meet").classList.contains("up")) pin(false); if(lastFocus) lastFocus.focus(); }
+
+/* ── meeting mode ── */
+function traceBtnHTML(ids){
+  return `<button class="m-trace" data-mtrace="${ids.join(",")}">Show the evidence · ${ids.length}</button>`;
+}
+function renderMeeting(){
+  $("#meetInner").innerHTML = MEETING.map(s=>`
+    <div class="meet-sec">
+      <div class="mk2">${esc(s.k)}</div>
+      <h3>${esc(s.h)}</h3>
+      ${s.quote?`<div class="meet-quote">“${esc(s.quote.q)}” ${traceBtnHTML(s.quote.ev)}<span class="who">${esc(s.quote.who)}</span></div>`:""}
+      ${s.body?`<ul style="list-style:none; padding-left:0;">${s.body.map(b=>`<li>${b.t}${b.ev?" "+traceBtnHTML(b.ev):""}</li>`).join("")}</ul>`:""}
+      ${s.quote2?`<div class="meet-quote">“${esc(s.quote2.q)}” ${traceBtnHTML(s.quote2.ev)}<span class="who">${esc(s.quote2.who)}</span></div>`:""}
+    </div>`).join("") +
+    `<div class="meet-sec" style="border-top:1px dashed var(--rule); padding-top:26px;">
+      <p style="font-size:13px; color:var(--ink-faint); max-width:620px; line-height:1.7;">
+        Every statement above is either a direct record or an observation the team can trace and overrule.
+        Nothing here diagnoses, determines eligibility, or decides mastery — those judgments belong to the people at the table.
+        ${MODE==="demo" ? "Demonstration record: Marcus Bell is fictional." : "Live record — compiled read-only from this device's stores. Signals and aimlines live in the IEP Progress panel; this page never re-derives them."}
+      </p>
+    </div>`;
+}
+function openMeet(){ lastFocus=document.activeElement; renderMeeting(); $("#meet").classList.add("up"); pin(true); $("#meetClose").focus(); $("#meetScroll").scrollTop=0; }
+function closeMeet(){ $("#meet").classList.remove("up"); hideTracePop(); pin(false); if(lastFocus) lastFocus.focus(); }
+
+/* trace popover in meeting mode */
+function hideTracePop(){ $("#tracePop").classList.remove("up"); }
+document.addEventListener("click", ev=>{
+  const mt = ev.target.closest("[data-mtrace]");
+  const pop = $("#tracePop");
+  if(mt){
+    const ids = mt.dataset.mtrace.split(",");
+    pop.innerHTML = `<div class="cap">The records behind this line</div>` + ids.map(traceRowHTML).join("");
+    pop.classList.add("up");
+    const r = mt.getBoundingClientRect();
+    const w = Math.min(430, window.innerWidth-28);
+    let x = Math.min(Math.max(14, r.left), window.innerWidth - w - 14);
+    let y = r.bottom + 10;
+    if(y + 300 > window.innerHeight) y = Math.max(14, r.top - Math.min(300, pop.offsetHeight||300) - 10);
+    pop.style.left = x+"px"; pop.style.top = y+"px";
+    ev.stopPropagation();
+    return;
+  }
+  if(!ev.target.closest("#tracePop")) hideTracePop();
+});
+
+/* ═══ THE STUDENT EVIDENCE BRIEF — dedicated print window ═══ */
+const BRIEF_CSS = `
+    @page{ margin:16mm 15mm; }
+    *{ box-sizing:border-box; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+    body{ margin:0; font-family:"Inter",-apple-system,"Segoe UI",sans-serif; color:#0A1E33; font-size:11.5px; line-height:1.55; background:#fff; }
+    h1,h2,h3{ font-family:Georgia,"Times New Roman",serif; margin:0; font-weight:600; }
+    .cover{ border-bottom:3px double #0A1E33; padding-bottom:18px; margin-bottom:22px; }
+    .kick{ font-size:10px; font-weight:700; letter-spacing:.24em; text-transform:uppercase; color:#A97A22; margin-bottom:8px; }
+    h1{ font-size:34px; letter-spacing:-.01em; }
+    .cover .meta{ margin-top:8px; color:#46506E; font-size:11.5px; }
+    .cover .brand{ float:right; text-align:right; font-family:Georgia,serif; font-size:13px; color:#0A1E33; padding-top:6px; }
+    .cover .brand .g{ font-style:italic; color:#A97A22; }
+    .cover .brand small{ display:block; font-family:"Inter",sans-serif; font-size:8.5px; letter-spacing:.14em; text-transform:uppercase; color:#5C667E; margin-top:3px; }
+    section{ margin-bottom:18px; break-inside:avoid; }
+    h2{ font-size:15px; border-bottom:1px solid #E4DAC5; padding-bottom:4px; margin-bottom:8px; }
+    h2 .n{ color:#A97A22; font-family:"Inter",sans-serif; font-size:10px; font-weight:700; letter-spacing:.18em; text-transform:uppercase; margin-right:8px; vertical-align:2px; }
+    ul{ margin:6px 0 0; padding-left:16px; }
+    li{ margin-bottom:5px; }
+    b{ font-weight:600; }
+    .q{ font-family:Georgia,serif; font-style:italic; font-size:14px; color:#7A521A; background:#FBF3DD; border-radius:6px; padding:10px 14px; margin:8px 0 4px; }
+    .q .who{ display:block; font-family:"Inter",sans-serif; font-style:normal; font-size:9px; color:#5C667E; margin-top:5px; letter-spacing:.06em; }
+    .cites{ display:inline; }
+    .cite{ display:inline-block; font-size:8.5px; font-weight:600; color:#46506E; background:#F4EEE2; border-radius:99px; padding:1px 7px; margin:0 3px 2px 0; white-space:nowrap; vertical-align:1px; }
+    .twocol{ display:flex; gap:14px; }
+    .twocol > div{ flex:1; border:1px solid #E4DAC5; border-radius:8px; padding:10px 12px; }
+    .twocol .cap{ font-size:8.5px; font-weight:700; letter-spacing:.14em; text-transform:uppercase; color:#5C667E; }
+    .twocol .big{ font-family:Georgia,serif; font-size:22px; margin-top:3px; }
+    .with .big{ color:#2E6B3A; } .without .big{ color:#46506E; }
+    .gap{ border:1.2px dashed #7E5B18; background:#F5EAC8; border-radius:8px; padding:9px 13px; margin-top:6px; }
+    .gap .cap{ font-size:8.5px; font-weight:700; letter-spacing:.14em; text-transform:uppercase; color:#7E5B18; }
+    .idx{ margin-top:24px; border-top:2px solid #0A1E33; padding-top:10px; }
+    .idx h2{ border:none; }
+    table{ width:100%; border-collapse:collapse; font-size:9.5px; margin-top:4px; }
+    th{ text-align:left; font-size:8.5px; letter-spacing:.1em; text-transform:uppercase; color:#5C667E; border-bottom:1px solid #E4DAC5; padding:3px 8px 3px 0; }
+    td{ border-bottom:1px solid #EFEADB; padding:4px 8px 4px 0; vertical-align:top; }
+    td.d{ white-space:nowrap; color:#46506E; }
+    td.s{ white-space:nowrap; font-weight:600; }
+    .foot{ margin-top:16px; font-size:8.5px; color:#5C667E; display:flex; justify-content:space-between; gap:12px; border-top:1px solid #E4DAC5; padding-top:8px; }
+  ` + "\n@media screen{ body{ padding:30px 40px 60px; max-width:960px; margin:0 auto; box-sizing:border-box; } }";
+
+/* ═══════════════════════════════════════════════════════════════════════
+   .30i4 — A DOCUMENT OPENS TO BE READ, NOT TO BE PRINTED
+
+   Jimmy: "The student evidene brief and the case manager report
+   automatically jump into PRINT mode. can this be fixed"
+
+   ⚠⚠ ALL FOUR GENERATED DOCUMENTS CARRIED `window.print()` ON LOAD. For the
+   one whose button says "Print the full record" that is the promise the
+   button made. For the other three it is not: "Student Evidence Brief" and
+   "Case Manager Report" name a DOCUMENT, and the first thing a case manager
+   wants to do with a draft that has honest blanks in it is READ it — and,
+   for the Case Manager Report, edit around them — not answer a printer
+   dialog before a single line is visible.
+
+   ⚠ THE PRINT DIALOG ALSO HID THE PAGE'S OWN FAULTS. A brief that opens
+   behind a modal is a brief nobody proofreads.
+
+   ⚠ recordPrintHTML() KEEPS ITS AUTO-PRINT ON PURPOSE — one behavior per
+   promise, and that button promises printing. If it ever stops saying
+   "Print", this comment is the reason to revisit it.
+
+   ⚠ THE BAR IS `@media print{display:none}` AND STICKY, so it never reaches
+   paper and never scrolls away from a long record. Close is here because
+   these are window.open()-ed documents: a teacher who reads and moves on
+   should not have to hunt the tab. */
+const VIEW_TOOLBAR = `
+  <style>
+    .aog-vtb{position:sticky;top:0;z-index:99;display:flex;gap:10px;align-items:center;flex-wrap:wrap;
+      padding:11px 16px;margin:0 0 20px;background:#0A1E33;color:#fff;
+      font:700 14px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;}
+    .aog-vtb button{font:inherit;border:0;border-radius:9px;padding:9px 16px;cursor:pointer;min-height:40px;}
+    .aog-vtb .p{background:#D9A33B;color:#0A1E33;}
+    .aog-vtb .c{background:transparent;color:#fff;border:1.5px solid rgba(255,255,255,.45);}
+    .aog-vtb .n{opacity:.85;font-weight:600;font-size:13px;}
+    @media print{ .aog-vtb{display:none !important;} }
+  </style>
+  <script>
+  (function(){
+    var bar = document.createElement("div");
+    bar.className = "aog-vtb";
+    bar.innerHTML = '<button type="button" class="p">Print this</button>' +
+                    '<button type="button" class="c">Close</button>' +
+                    '<span class="n">Read it first. Nothing prints until you press Print, and this bar never appears on paper.</span>';
+    document.body.insertBefore(bar, document.body.firstChild);
+    bar.querySelector(".p").addEventListener("click", function(){ window.print(); });
+    bar.querySelector(".c").addEventListener("click", function(){ window.close(); });
+  })();
+  <\/script>`;
+
+function briefHTML(){
+  const cite = ids => `<span class="cites">${ids.map(id=>{
+    const e=byId[id]; return `<span class="cite" title="${esc(e.title)}">${e.date.replace(/^\w+ /,"")} ${esc(e.src)}</span>`;
+  }).join("")}</span>`;
+  const voiceItems = EVIDENCE.filter(e=>e.quote && e.goals);
+  return `<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><title>Student Evidence Brief — ${esc(STUDENT.name)}</title>
+  <style>${BRIEF_CSS}</style></head><body>
+  <div class="cover">
+    <div class="brand">Architecture of <span class="g">Grace</span><small>Student Evidence Brief</small></div>
+    <div class="kick">Prepared for the IEP team</div>
+    <h1>Marcus Bell</h1>
+    <div class="meta">${esc(STUDENT.grade||"")} · ${esc(STUDENT.week)} · ${EVIDENCE.length} evidence records across four ways of understanding<br>
+    Evidence arrived from 7 of 8 scheduled classes, electives included. Every statement cites its records; the full index is on the last page. <b>Demonstration record — fictional student.</b></div>
+    <div style="clear:both"></div>
+  </div>
+
+  <section><h2><span class="n">01</span>Who is Marcus?</h2><p>${esc(STUDENT.overview)}</p></section>
+
+  <section><h2><span class="n">02</span>Strengths</h2><ul>
+    <li><b>He notices his own stall and can recover</b> — Wednesday's problem set shows a crossed-out attempt, then a numbered restart matching his sequence strip. ${cite(["e-wed-mathws"])}</li>
+    <li><b>Vivid, specific detail in his writing</b> — the raw material is there; the work is ordering it. ${cite(["e-tue-ela"])}</li>
+    <li><b>Careful scientific observation</b> — "best diagram at your table." ${cite(["e-tue-sci"])}</li>
+    <li><b>Beginning to move himself forward</b> — asked a tablemate "what's next?"; took out the steps card at home unprompted. ${cite(["e-wed-para","e-thu-family"])}</li>
+    <li><b>Electives show him at his best</b> — led his partner through Tech's circuit assembly; cooked start-to-finish from the FACS recipe card, fully independent. ${cite(["e-tue-tech","e-fri-facs"])}</li>
+  </ul></section>
+
+  <section><h2><span class="n">03</span>Student voice</h2>
+    <div class="q">"I want the team to know the steps card helps. I don't want one that looks babyish."<span class="who">Marcus, Friday — shared with the team by his choice · ${byId["e-fri-meet"].date}</span></div>
+    <div class="q">"I got stuck when I didn't know what to do next."<span class="who">Marcus, Monday exit slip · his own words, unedited and unscored</span></div>
+  </section>
+
+  <section><h2><span class="n">04</span>Academic evidence</h2><ul>
+    <li><b>Mathematics:</b> Unit 1 check <b>72%</b> Monday, points lost at step-3 transitions; weekly check <b>80%</b> Friday with the strip available. ${cite(["e-mon-assess","e-fri-quiz"])}</li>
+    <li><b>Written expression:</b> one organizer-supported draft — rubric <b>14/20</b>; strong detail, sequencing difficulty. ${cite(["e-tue-ela"])}</li>
+    <li><b>Across subjects:</b> the same shape appears in science (a conclusion that trails off) and social studies (six checklist steps completed without redirection). ${cite(["e-tue-sci","e-thu-ss"])}</li>
+  </ul></section>
+
+  <section><h2><span class="n">05</span>Goal status</h2><ul>
+    <li><b>Multi-step problem solving:</b> 10 connected records across all five days — probes <b>4/5 with</b> the strip and <b>3/5 without</b>; assessments <b>72% → 80%</b>. ${cite(["e-tue-probe","e-thu-probe","e-mon-assess","e-fri-quiz"])}</li>
+    <li><b>Organized written expression:</b> <b>one</b> connected sample — see Evidence gaps. ${cite(["e-tue-ela"])}</li>
+    <li><b>Asking for help / reaching for a tool:</b> three unprompted moments — small group, on paper, at home. ${cite(["e-wed-para","e-wed-mathws","e-thu-family"])}</li>
+  </ul></section>
+
+  <section><h2><span class="n">06</span>Growth, inside one week</h2>
+    <p>Monday, the work stopped at step 3 and waited for an adult ${cite(["e-mon-obs"])}. Friday, Marcus started step 3 himself on two of four problems ${cite(["e-fri-obs"])}. Same problem type, five days apart. His own words held both ends of the week: <b>"I got stuck when I didn't know what to do next"</b> (Monday, math) and <b>"In Tech I'm the one who knows what's next"</b> (Tuesday) ${cite(["e-mon-exit","e-tue-techvoice"])}. One week is a direction, not a trend.</p>
+  </section>
+
+  <section><h2><span class="n">07</span>Supports and conditions</h2>
+    <div class="twocol">
+      <div class="with"><div class="cap">With the sequence strip</div><div class="big">${SUPPORT_COMPARE.withPct}</div><p>${esc(SUPPORT_COMPARE.withCond)}</p></div>
+      <div class="without"><div class="cap">Without it</div><div class="big">${SUPPORT_COMPARE.withoutPct}</div><p>${esc(SUPPORT_COMPARE.withoutCond)}</p></div>
+    </div>
+    <p style="margin-top:6px;">${esc(SUPPORT_COMPARE.caveat)} ${cite(SUPPORT_COMPARE.ev)}</p>
+    <p style="margin-top:6px;">In rooms where a numbered sequence is standard for every student — Tech's build guide, FACS's recipe card, the social studies checklist — Marcus used it independently and without stigma. ${cite(["e-tue-tech","e-fri-facs","e-thu-ss"])}</p>
+  </section>
+
+  <section><h2><span class="n">08</span>Different perspectives</h2>
+    <p>Friday's quiz, seen twice. Ms. Ferro: <b>"Appeared confident and worked steadily."</b> Marcus: <b>"I knew what to do, but I was worried I was going to get it wrong."</b> Both are true accounts; the space between them — competence arriving before confidence — belongs on the meeting agenda. ${cite(["e-fri-obs","e-fri-voice"])}</p>
+  </section>
+
+  <section><h2><span class="n">09</span>Evidence gaps</h2>
+    <div class="gap"><div class="cap">What we don't know yet</div>
+      <p><b>Written expression has one data point this week</b> — collect another organizer-supported sample, an observation during drafting, and Marcus's own reflection before drawing conclusions. <b>No reading evidence was connected this week, and Choir produced no adult check-in</b> — a blank only ever means no evidence was collected. This brief does not pad itself.</p>
+    </div>
+  </section>
+
+  <section><h2><span class="n">10</span>Questions for the team</h2><ul>
+    <li>The strip helps, and Marcus finds it babyish. Tech's build guide and FACS's recipe card suggest the answer — a sequence that belongs to the room, or to a binder every student carries. Should Marcus design his own? ${cite(["e-fri-meet","e-tue-tech","e-fri-facs"])}</li>
+    <li>The step-transition difficulty appears in math, writing, and science. Is this one goal wearing three costumes? ${cite(["e-mon-assess","e-tue-ela","e-tue-sci"])}</li>
+    <li>Confidence is trailing competence. Who helps Marcus see his own Friday evidence? ${cite(["e-fri-obs","e-fri-voice"])}</li>
+    <li>The writing goal needs more evidence. Who collects what, by when? ${cite(["e-tue-ela"])}</li>
+  </ul></section>
+
+  <div class="idx">
+    <h2><span class="n">Index</span>Every record behind this brief</h2>
+    <table><thead><tr><th>Date</th><th>Source</th><th>Record</th><th>Result / words</th></tr></thead><tbody>
+    ${EVIDENCE.map(e=>`<tr><td class="d">${e.date}</td><td class="s">${esc(e.src)}</td><td>${e.title}</td><td>${e.quote?`"${esc(e.quote)}"`:(e.result||"").replace(/<[^>]*>/g,"")}</td></tr>`).join("")}
+    </tbody></table>
+  </div>
+
+  <div class="foot">
+    <span>Architecture of Grace — a system, not a curriculum. Evidence supports understanding; it never monitors.</span>
+    <span>Demonstration record · fictional student · generated ${new Date().toLocaleDateString("en-US",{month:"long",day:"numeric",year:"numeric"})}</span>
+  </div>
+  ${VIEW_TOOLBAR}
+  </body></html>`;
+}
+
+function openBrief(){
+  /* Print from a dedicated window, never in place. */
+  const w = window.open("", "_blank");
+  if(!w){ alert("Please allow pop-ups to create the Evidence Brief."); return; }
+  w.document.open(); w.document.write(MODE==="live" ? briefLiveHTML() : briefHTML()); w.document.close();
+}
+
+/* ═══ PRINT THE FULL RECORD — every record, pattern, goal, and work
+   sample, as one chronological document. Same dedicated-window pattern. ═══ */
+function recordPrintHTML(){
+  const srcColor = { learning:"#1B5A73", perform:"#5A3E8E", exp:"#B0762A", context:"#2E6B4F" };
+  const recHTML = e => {
+    const excluded = e.artifact && UI.use[e.artifact]==="exclude";
+    const facts = e.facts ? Object.entries(e.facts).map(([k,v])=>`<span class="f"><b>${esc(k)}:</b> ${v}</span>`).join(" · ") : "";
+    return `<div class="rec" style="border-left-color:${srcColor[e.lens]}">
+      <div class="rh"><span class="rs" style="color:${srcColor[e.lens]}">${esc(e.src)}</span><span class="rl">${LENSES[e.lens].label}</span>${excluded?`<span class="rx">Excluded from evidence by the educator — shown for completeness</span>`:""}</div>
+      <div class="rt">${e.title}</div>
+      ${e.result?`<div class="rr">${e.result}</div>`:""}
+      ${e.quote?`<div class="rq">“${esc(e.quote)}”${e.voice?` <span class="ro">${esc(e.voice.own)}</span>`:""}</div>`:""}
+      ${facts?`<div class="rf">${facts}</div>`:""}
+      ${e.note?`<div class="rn">${e.note}</div>`:""}
+    </div>`;
+  };
+  const days = DAYS.map((d,i)=>{
+    const items = EVIDENCE.filter(e=>e.day===i);
+    return `<h2>${d.name}, ${d.date}${d.note?` <em>— ${d.note}</em>`:""}</h2>${items.map(recHTML).join("")}`;
+  }).join("");
+  const cites = ids => ids.map(id=>{const e=byId[id];return `<span class="cite">${e.date.replace(/^\w+ /,"")} ${esc(e.src)}</span>`;}).join("");
+  let pats = PATTERNS.map(p=>`<div class="pat"><div class="pk">◆ ${esc(p.kind)}</div><div class="pc">${p.claim}</div><div class="ps">${p.sub}</div><div>${cites(p.ev)}</div></div>`).join("");
+  if(DIFFERENT_PERSPECTIVES && byId[DIFFERENT_PERSPECTIVES.a] && byId[DIFFERENT_PERSPECTIVES.b])
+    pats += `<div class="pat"><div class="pk">◑ Different perspectives</div><div class="pc">${DIFFERENT_PERSPECTIVES.title}</div><div class="ps">${esc(DIFFERENT_PERSPECTIVES.aWho||"")}: “${(byId[DIFFERENT_PERSPECTIVES.a].result||"")}” · ${esc(DIFFERENT_PERSPECTIVES.bWho||"")}: “${esc(byId[DIFFERENT_PERSPECTIVES.b].quote)}”</div><div>${cites([DIFFERENT_PERSPECTIVES.a,DIFFERENT_PERSPECTIVES.b])}</div></div>`;
+  if(SUPPORT_COMPARE)
+    pats += `<div class="pat"><div class="pk">◆ Observed association</div><div class="pc">With the sequence strip: ${SUPPORT_COMPARE.withPct} · Without it: ${SUPPORT_COMPARE.withoutPct}</div><div class="ps">${esc(SUPPORT_COMPARE.caveat)}</div><div>${cites(SUPPORT_COMPARE.ev)}</div></div>`;
+  if(!pats) pats = `<p class="ps">Not enough evidence in this window to note patterns — the record is honest about that.</p>`;
+  const goals = GOALS.map(g=>{
+    const evs = EVIDENCE.filter(e=>(e.goals||[]).includes(g.id));
+    return `<div class="pat"><div class="pk">${esc(g.area)} · IEP goal — compiled from the IEP document, as written</div><div class="pc">${esc(g.title)}</div><div class="ps">${esc(g.text)}</div>
+    ${g.gap?`<div class="ps"><b>Evidence gap:</b> ${esc(g.gap.note)}</div>`:""}
+    <div>${evs.map(e=>`<span class="cite">${e.date.replace(/^\w+ /,"")} ${esc(e.src)}</span>`).join("")}</div></div>`;
+  }).join("");
+  const arts = Object.entries(ARTIFACTS).filter(([id])=>UI.use[id]!=="exclude").map(([id,a])=>
+    `<div class="art"><h3>${esc(a.title)}${UI.use[id]==="context"?` <em>(context only, by the educator's decision)</em>`:""}</h3><div class="stage">${a.html}</div><p class="ps">${esc(a.note)}</p></div>`).join("");
+  return `<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><title>Student Evidence Record — ${esc(STUDENT.name)}</title>
+  <style>
+    @page{ margin:15mm 14mm; }
+    *{ box-sizing:border-box; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+    body{ margin:0; font-family:"Inter",-apple-system,"Segoe UI",sans-serif; color:#0A1E33; font-size:11px; line-height:1.55; background:#fff; }
+    @media screen{ body{ padding:30px 40px 60px; max-width:960px; margin:0 auto; } }
+    h1,h2,h3{ font-family:Georgia,"Times New Roman",serif; margin:0; font-weight:600; }
+    .cover{ border-bottom:3px double #0A1E33; padding-bottom:14px; margin-bottom:18px; }
+    .kick{ font-size:10px; font-weight:700; letter-spacing:.24em; text-transform:uppercase; color:#A97A22; margin-bottom:8px; }
+    h1{ font-size:30px; } .meta{ margin-top:6px; color:#46506E; }
+    .brand{ float:right; text-align:right; font-family:Georgia,serif; font-size:13px; padding-top:4px; }
+    .brand .g{ font-style:italic; color:#A97A22; }
+    .brand small{ display:block; font-family:"Inter",sans-serif; font-size:8.5px; letter-spacing:.14em; text-transform:uppercase; color:#5C667E; margin-top:3px; }
+    h2{ font-size:16px; border-bottom:1.5px solid #0A1E33; padding-bottom:3px; margin:20px 0 8px; break-after:avoid; }
+    h2 em{ font-family:Georgia,serif; font-weight:400; font-size:12px; color:#5C667E; }
+    .sechead{ font-size:20px; border-bottom:3px double #0A1E33; margin-top:28px; break-before:page; }
+    .rec{ border-left:2.5px solid #E4DAC5; padding:6px 0 7px 11px; margin-bottom:9px; break-inside:avoid; }
+    .rh{ display:flex; gap:10px; align-items:baseline; flex-wrap:wrap; }
+    .rs{ font-size:8.5px; font-weight:700; letter-spacing:.13em; text-transform:uppercase; }
+    .rl{ font-size:8.5px; letter-spacing:.1em; text-transform:uppercase; color:#5C667E; }
+    .rx{ font-size:8.5px; font-style:italic; color:#8B2A2A; }
+    .rt{ font-family:Georgia,serif; font-size:13.5px; font-weight:600; margin-top:2px; }
+    .rr{ color:#46506E; margin-top:2px; } .rr .score{ font-weight:700; color:#0A1E33; }
+    .rq{ font-family:Georgia,serif; font-style:italic; font-size:12.5px; color:#7A521A; margin-top:3px; }
+    .ro{ font-family:"Inter",sans-serif; font-style:normal; font-size:8.5px; color:#5C667E; background:#FBF3DD; border-radius:99px; padding:1px 7px; margin-left:5px; }
+    .rf{ font-size:9.5px; color:#46506E; margin-top:4px; } .rf b{ color:#5C667E; font-weight:600; }
+    .rn{ font-size:10px; color:#46506E; margin-top:4px; } .rn b{ color:#0A1E33; }
+    .pat{ border:1px solid #E4DAC5; border-radius:8px; padding:9px 12px; margin-bottom:8px; break-inside:avoid; }
+    .pk{ font-size:8.5px; font-weight:700; letter-spacing:.16em; text-transform:uppercase; color:#A97A22; }
+    .pc{ font-family:Georgia,serif; font-size:13.5px; font-weight:600; margin-top:2px; }
+    .ps{ font-size:10px; color:#46506E; margin-top:3px; }
+    .cite{ display:inline-block; font-size:8.5px; font-weight:600; color:#46506E; background:#F4EEE2; border-radius:99px; padding:1px 7px; margin:3px 3px 0 0; }
+    .art{ margin-bottom:14px; break-inside:avoid; } .art h3{ font-size:13px; margin-bottom:6px; } .art em{ font-weight:400; font-size:10px; color:#5C667E; }
+    .stage{ border:1px solid #E4DAC5; border-radius:8px; padding:14px; background:#FDFCF7; }
+    .paper-doc{ max-width:560px; margin:0 auto; }
+    .paper-doc .ph{ display:flex; justify-content:space-between; gap:12px; border-bottom:2px solid #1D2733; padding-bottom:6px; margin-bottom:10px; font-size:10px; }
+    .paper-doc .ph b{ font-size:12px; }
+    .hand{ font-family:"Bradley Hand","Chalkboard SE","Comic Sans MS",cursive; color:#27415E; }
+    .hand.err{ text-decoration:line-through; text-decoration-color:rgba(139,42,42,.7); text-decoration-thickness:2px; }
+    .tmark{ font-family:"Bradley Hand","Chalkboard SE","Comic Sans MS",cursive; color:#8B2A2A; }
+    .paper-prob{ margin:10px 0; font-size:11px; line-height:1.6; } .paper-prob .pn{ font-weight:700; }
+    .paper-lines{ border-bottom:1px solid #B9C2CC; min-height:20px; padding:2px 4px; }
+    .foot{ margin-top:16px; font-size:8.5px; color:#5C667E; display:flex; justify-content:space-between; gap:12px; border-top:1px solid #E4DAC5; padding-top:8px; }
+  </style></head><body>
+  <div class="cover">
+    <div class="brand">Architecture of <span class="g">Grace</span><small>Student Evidence Record</small></div>
+    <div class="kick">The complete record — every entry, every source</div>
+    <h1>${esc(STUDENT.name)}</h1>
+    <div class="meta">${esc(STUDENT.grade||"")} · ${esc(STUDENT.week)} · ${EVIDENCE.length} evidence records · every record keeps its source<br><b>${MODE==="demo"?"Demonstration record — fictional student.":"Compiled read-only from this device\u2019s stores."}</b> For the meeting-ready synthesis, print the Student Evidence Brief instead.</div>
+    <div style="clear:both"></div>
+  </div>
+  ${days}
+  <h2 class="sechead">What the evidence suggests</h2>${pats}
+  <h2 class="sechead">Goal connections</h2>${goals}
+  ${(Object.keys(ARTIFACTS).length)?`<h2 class="sechead">The work itself</h2>${arts||"<p class='ps'>Every work sample was excluded by the educator.</p>"}`:""}
+  <div class="foot">
+    <span>Architecture of Grace — a system, not a curriculum. Evidence supports understanding; it never monitors.</span>
+    <span>${MODE==="demo"?"Demonstration record":"Compiled on this device — a working evidence view; the signed IEP is the document"} · generated ${new Date().toLocaleDateString("en-US",{month:"long",day:"numeric",year:"numeric"})}</span>
+  </div>
+  <script>window.addEventListener("load",function(){ setTimeout(function(){ window.print(); },150); });<\/script>
+  </body></html>`;
+}
+function openFullPrint(){
+  const w = window.open("", "_blank");
+  if(!w){ alert("Please allow pop-ups to print the full record."); return; }
+  w.document.open(); w.document.write(recordPrintHTML()); w.document.close();
+}
+
+/* ═══ WIRING ═══ */
+function renderAll(){
+  rebuildIndexes();
+  renderChrome(); renderCoverage(); renderFilters(); renderTimeline();
+  renderPatterns(); renderGoals(); renderVoice();
+}
+
+document.addEventListener("click", ev=>{
+  const t = ev.target;
+  const tog = t.closest("[data-toggle]");
+  if(tog && !t.closest(".ev-links")){
+    const card = tog.closest(".ev");
+    const open = card.classList.toggle("open");
+    tog.setAttribute("aria-expanded", open?"true":"false");
+    return;
+  }
+  const art = t.closest("[data-art]");
+  if(art){ ev.stopPropagation(); openArtifact(art.dataset.art); return; }
+  const openEv = t.closest("[data-open-ev]");
+  if(openEv){ openEvidence(openEv.dataset.openEv); return; }
+  const pat = t.closest("[data-pat]");
+  if(pat){ pat.closest(".pat").classList.toggle("open"); return; }
+  const rv = t.closest("[data-rv]");
+  if(rv){
+    const wrap = rv.closest("[data-review]"); const pid = wrap.dataset.review;
+    UI.pat[pid] = (UI.pat[pid]===rv.dataset.rv) ? "" : rv.dataset.rv;
+    saveUI(); renderPatterns();
+    return;
+  }
+  const go = t.closest("[data-goto]");
+  if(go){ ev.preventDefault(); closeArtifact(); closeEvidence();
+    const el = document.querySelector(go.dataset.goto); if(el) el.scrollIntoView({behavior:"smooth", block:"start"});
+    return; }
+});
+
+$("#artClose").addEventListener("click", closeArtifact);
+$("#artOverlay").addEventListener("click", ev=>{ if(ev.target===$("#artOverlay")) closeArtifact(); });
+$("#evOvClose").addEventListener("click", closeEvidence);
+$("#evOverlay").addEventListener("click", ev=>{ if(ev.target===$("#evOverlay")) closeEvidence(); });
+$("#openMeetBtn").addEventListener("click", openMeet);
+$("#meetClose").addEventListener("click", closeMeet);
+$("#meetClose2").addEventListener("click", closeMeet);
+$("#briefBtn").addEventListener("click", openBrief);
+$("#briefBtn2").addEventListener("click", openBrief);
+$("#printAllBtn").addEventListener("click", openFullPrint);
+
+/* ── collapsible sections ── */
+function setSection(id, closed){
+  const sec = document.getElementById(id); if(!sec) return;
+  sec.classList.toggle("closed", closed);
+  const t = sec.querySelector(".band-toggle");
+  if(t) t.setAttribute("aria-expanded", closed ? "false" : "true");
+  UI.sec[id] = closed ? 1 : 0; saveUI();
+}
+document.querySelectorAll("[data-sechead]").forEach(h=>{
+  h.addEventListener("click", ev=>{
+    if(ev.target.closest("a")) return;
+    const id = h.dataset.sechead;
+    setSection(id, !document.getElementById(id).classList.contains("closed"));
+  });
+});
+/* .30ew — the doors start closed; a press opens them. A saved choice wins. */
+["week","patterns","goals","voice"].forEach(id=>{
+  setSection(id, UI.sec[id]===undefined ? true : !!UI.sec[id]);
+});
+/* a subnav jump to a collapsed section opens it — a link must never land on a closed door */
+document.querySelectorAll(".subnav a").forEach(a=>a.addEventListener("click", ()=> setSection(a.getAttribute("href").slice(1), false)));
+
+/* ── project view ── */
+let projecting = false;
+$("#projBtn").addEventListener("click", ()=>{
+  projecting = !projecting;
+  document.body.classList.toggle("project", projecting);
+  const b = $("#projBtn");
+  b.textContent = projecting ? "Exit project view" : "Project view";
+  b.setAttribute("aria-pressed", projecting ? "true" : "false");
+});
+document.addEventListener("keydown", ev=>{
+  if(ev.key!=="Escape") return;
+  if($("#tracePop").classList.contains("up")){ hideTracePop(); return; }
+  if($("#evOverlay").classList.contains("up")){ closeEvidence(); return; }
+  if($("#artOverlay").classList.contains("up")){ closeArtifact(); return; }
+  if($("#meet").classList.contains("up")){ closeMeet(); return; }
+});
+
+/* subnav highlight */
+const secIds = ["week","patterns","goals","voice"];
+const navLinks = Array.from(document.querySelectorAll(".subnav a"));
+const io = new IntersectionObserver(entries=>{
+  entries.forEach(en=>{
+    if(en.isIntersecting){
+      navLinks.forEach(a=>a.classList.toggle("on", a.getAttribute("href")==="#"+en.target.id));
+    }
+  });
+},{ rootMargin:"-30% 0px -60% 0px" });
+secIds.forEach(id=>{ const el=document.getElementById(id); if(el) io.observe(el); });
+
+/* ═══════════════════════════════════════════════════════════════════
+   LIVE MODE — the real record.
+   Read-only over every store below; this page's only writes go to its
+   own aog.evidence.ui.v1. No decision rules are re-derived here: signals,
+   aimlines, and on-track verdicts live in the IEP Progress panel, and
+   this page deliberately does not have a second copy of them.
+   Student words follow the product's standing rule: presence and
+   structure from exit slips and check-ins — never their typed words.
+   The student's actual words reach this page only through This Is Me
+   lines the student chose to keep.
+   ═══════════════════════════════════════════════════════════════════ */
+const LSK = {
+  iep:"aog.iep.v1", ev:"aog.evclass.v1", sched:"aog.sched.v1",
+  daily:"aog.daily.v1", exit:"aog.exit.v1", checkin:"aog.checkin.student.v1",
+  tim:"aog.thisisme.v1", screener:"aogScreener.v2.results", focus:"aog.student.focus"
+};
+function jload(k, fb){ try{ const v = JSON.parse(localStorage.getItem(k)||""); return (v===null||v===undefined)?fb:v; }catch(e){ return fb; } }
+const NORM = v => String(v==null?"":v).trim().toUpperCase();
+
+/* Display vocab, copied verbatim from the evclass module (data, not rules).
+   Completed rows usually carry frozen label snapshots (r.labs) — those win. */
+const EV_SUPPORTS = { verbal:"Verbal prompt", visual:"Visual cue", model:"Model / example",
+  chunk:"Chunking", repeat:"Repetition", time:"Extended time", adult:"Adult check-in",
+  peer:"Peer support", tech:"Technology / tool", other:"Other" };
+const EV_STATUSES = { student_absent:"Student absent", teacher_absent:"Teacher absent",
+  canceled:"Class canceled", sched_changed:"Schedule changed", na:"Not applicable", unable:"Unable to collect" };
+const AREA_LABELS = { math:"Math", reading:"Reading", writing:"Writing", social:"Social work",
+  speech:"Speech & language", ot:"Occupational therapy", pt:"Physical therapy",
+  exec:"Executive functioning", behavior:"Behavior", tr_emp:"Transition: Employment",
+  tr_edu:"Transition: Education & training", tr_ind:"Transition: Independent living", other:"Other" };
+const MEAS_LABELS = { percent:"percent", count:"count / frequency", wcpm:"words correct per minute",
+  trials:"trials (x of y)", steps:"steps completed", other:"" };
+
+function focusCode(){
+  try{
+    const o = JSON.parse(localStorage.getItem(LSK.focus)||"null");
+    if(!o || !o.code || !o.at) return "";
+    if((Date.now() - o.at) > 8*60*60*1000) return "";
+    return NORM(o.code);
+  }catch(e){ return ""; }
+}
+
+/* The roster is compiled, not stored: every store that names a student
+   contributes. Folded compare, original label kept — the Remove-door rule. */
+function liveRoster(){
+  const seen = {}, order = [];
+  const add = raw => {
+    const r = String(raw==null?"":raw).trim(), k = NORM(r);
+    if(!k || seen[k]) return; seen[k] = r || k; order.push(k);
+  };
+  const iep = jload(LSK.iep, {});
+  Object.keys(iep.goals||{}).forEach(id=>{ const g = iep.goals[id]; if(g && !g.archived) add(g.student); });
+  [LSK.ev, LSK.checkin, LSK.exit, LSK.daily].forEach(k=>{
+    Object.keys((jload(k,{})||{}).logs||{}).forEach(add);
+  });
+  Object.keys((jload(LSK.tim,{})||{}).students||{}).forEach(add);
+  (Array.isArray(jload(LSK.screener,[]))?jload(LSK.screener,[]):[]).forEach(r=>{ if(r) add(r.studentId); });
+  return order.map(k=>({key:k, label:seen[k]}))
+    .sort((a,b)=> a.label.toLowerCase() < b.label.toLowerCase() ? -1 : 1);
+}
+
+function logsFor(storeKey, sidKey){
+  const logs = (jload(storeKey,{})||{}).logs||{}, out = [];
+  Object.keys(logs).forEach(k=>{
+    if(NORM(k)!==sidKey) return;
+    const days = logs[k]||{};
+    Object.keys(days).forEach(d=>{
+      (Array.isArray(days[d])?days[d]:[]).forEach(r=>{ if(r) out.push({ date:String(d).slice(0,10), r }); });
+    });
+  });
+  return out;
+}
+
+function liveGoals(sidKey){
+  const st = jload(LSK.iep, {}), out = [];
+  Object.keys(st.goals||{}).forEach(id=>{
+    const g = st.goals[id]; if(!g || g.archived) return;
+    if(NORM(g.student)!==sidKey) return;
+    const pts = ((st.data||{})[id]||[]).slice().sort((a,b)=>String(a.date).localeCompare(String(b.date)));
+    out.push({ id, g, pts });
+  });
+  return out;
+}
+
+function fmtDay(iso){
+  const m = /^(\d{4})-(\d{2})-(\d{2})/.exec(String(iso||"")); if(!m) return { name:String(iso||""), date:"" };
+  const d = new Date(Date.UTC(+m[1], +m[2]-1, +m[3], 12));
+  return { name: d.toLocaleDateString("en-US",{weekday:"long", timeZone:"UTC"}),
+           date: d.toLocaleDateString("en-US",{month:"long", day:"numeric", timeZone:"UTC"}),
+           short: d.toLocaleDateString("en-US",{month:"short", day:"numeric", timeZone:"UTC"}),
+           dow: d.toLocaleDateString("en-US",{weekday:"short", timeZone:"UTC"}) };
+}
+function fmtPoint(g, p){
+  const v = p.value, t = p.total;
+  if((g.measure==="trials"||g.measure==="steps") && t!=null && t!=="") return v+" of "+t;
+  if(g.measure==="percent") return v+"%";
+  return String(v) + (g.unit ? " "+g.unit : "");
+}
+
+function buildLiveModel(sidKey){
+  const roster = ROSTER, who = roster.find(r=>r.key===sidKey);
+  if(!who) return null;
+  const label = who.label;
+  const goals = liveGoals(sidKey);
+  const recs = [];
+  let n = 0; const rid = () => "L"+(++n);
+
+  logsFor(LSK.ev, sidKey).forEach(x=>{
+    const r = x.r, per = (r.p===0 ? "Advisory" : "Period "+r.p);
+    const cls = String(r.course||"");
+    if(r.status && r.status!=="completed"){
+      recs.push({ id:rid(), iso:x.date, lens:"context", src:"Adult Check-In", noEv:true, cls,
+        title:(cls?cls+" · ":"")+per,
+        result:(EV_STATUSES[r.status]||r.status)+" — no evidence collected",
+        prov:"A blank never pretends: this status is the record that nothing could be collected." });
+      return;
+    }
+    const L = r.labs||{}, bits = [];
+    if(r.eng)  bits.push("Engagement: "+(L.eng||r.eng));
+    if(r.ind)  bits.push("Independence: "+(L.ind||r.ind));
+    if(r.perf) bits.push("Performance: "+(L.perf||r.perf));
+    const sups = (r.supports||[]).map(v=> v==="other" && r.supportOther ? r.supportOther : (EV_SUPPORTS[v]||v));
+    const gids = (r.goals||[]).filter(gid=>goals.some(x2=>x2.id===gid));
+    const facts = { "Class": (cls?cls+" · ":"")+per };
+    if(r.teacher) facts["Teacher"] = esc(r.teacher);
+    if(sups.length) facts["Supports observed"] = esc(sups.join(", "));
+    recs.push({ id:rid(), iso:x.date, lens:"context", src:"Adult Check-In", cls,
+      title:(cls||per)+" — adult check-in",
+      result: bits.map(esc).join(" · ") || "Recorded",
+      note: r.note ? "<b>Note:</b> “"+esc(r.note)+"”" : "",
+      facts, goals:gids, supports:sups,
+      prov:"Class-by-class adult check-in. An observation — never scored, never averaged." });
+  });
+
+  logsFor(LSK.daily, sidKey).forEach(x=>{
+    const r = x.r, nObs = (r.obs||[]).length;
+    recs.push({ id:rid(), iso:x.date, lens:"context", src:"Support Check-In",
+      title:"Team support check-in"+(r.period?" · "+esc(String(r.period)):""),
+      result:(nObs? nObs+" observation"+(nObs===1?"":"s")+" logged" : "Logged")
+        + (r.note ? " · “"+esc(r.note)+"”" : ""),
+      facts: r.respondentRole ? { "Recorded by": esc(String(r.respondentRole)) } : null,
+      prov:"The team's daily support log — labeled apart from teacher observations." });
+  });
+
+  logsFor(LSK.exit, sidKey).forEach(x=>{
+    const r = x.r, bits = [];
+    if(r.favClass)  bits.push("easiest: "+esc(String(r.favClass)));
+    if(r.hardClass) bits.push("hardest: "+esc(String(r.hardClass)));
+    recs.push({ id:rid(), iso:x.date, lens:"exp", src:"Exit Slip",
+      title:"End-of-day exit slip",
+      result: bits.length ? bits.join(" · ") : "Completed",
+      prov:"Structure only — presence, easiest, hardest. The slip's written words stay the student's." });
+  });
+
+  logsFor(LSK.checkin, sidKey).forEach(x=>{
+    const r = x.r;
+    if(r.respondentRole && r.respondentRole!=="student") return;
+    recs.push({ id:rid(), iso:x.date, lens:"exp", src:"Daily Check-In",
+      title:"Student check-in"+(r.period?" · "+esc(String(r.period)):""),
+      result: r.followUp ? "Completed — asked to talk to an adult" : "Completed",
+      prov:"Presence and structure, never the student's words — the standing rule." });
+  });
+
+  (Array.isArray(jload(LSK.screener,[]))?jload(LSK.screener,[]):[]).forEach(r=>{
+    if(!r || NORM(r.studentId)!==sidKey) return;
+    const iso = String(r.date || r.ts || r.timestamp || "").slice(0,10);
+    if(!/^\d{4}-\d{2}-\d{2}$/.test(iso)) return;
+    recs.push({ id:rid(), iso, lens:"exp", src:"Self-Reflection",
+      title:"Self-reflection completed",
+      result:"Completed",
+      prov:"The reflection's own views live on the dashboard; this record notes that it happened." });
+  });
+
+  goals.forEach(x=>{
+    x.pts.forEach(p=>{
+      const iso = String(p.date||"").slice(0,10);
+      if(!/^\d{4}-\d{2}-\d{2}$/.test(iso)) return;
+      recs.push({ id:rid(), iso, lens:"perform",
+        src: p.src==="proposed" ? "IEP Data Point · proposed" : "IEP Data Point",
+        title: esc(String(x.g.title||"IEP goal")),
+        result:'<span class="score">'+esc(fmtPoint(x.g,p))+'</span>'
+          + (p.src==="proposed" ? " · proposed — awaiting educator confirmation" : ""),
+        note: p.note ? "<b>Note:</b> "+esc(String(p.note)) : "",
+        facts: { "Area": AREA_LABELS[x.g.area]||"" },
+        goals:[x.id],
+        prov:"IEP progress monitoring. Aimlines and decision signals live in the IEP Progress panel — this page never re-derives them." });
+    });
+  });
+
+  const timStore = (jload(LSK.tim,{})||{}).students||{};
+  let timRec = null;
+  Object.keys(timStore).forEach(k=>{ if(NORM(k)===sidKey) timRec = timStore[k]; });
+  const kept = ((timRec&&timRec.entries)||[]).filter(e=>e && e.st==="kept" && String(e.text||"").trim());
+  kept.forEach(e=>{
+    const iso = String(e.day||"").slice(0,10);
+    if(!/^\d{4}-\d{2}-\d{2}$/.test(iso)) return;
+    recs.push({ id:rid(), iso, lens:"exp", src:"Student Voice · This Is Me",
+      title: e.sec==="str" ? "A strength, in the student's words" : "From the student's own page",
+      quote: String(e.text||""),
+      voice:{ own:"Kept by the student", note:"From their This Is Me page — every line passed through the student's hands." },
+      prov:"This Is Me. Lines marked private are not shown and not counted." });
+  });
+
+  if(!recs.length) return null;
+
+  /* window: the newest 15 distinct evidence days */
+  const dayset = {}; recs.forEach(r=>{ dayset[r.iso]=1; });
+  const isoDays = Object.keys(dayset).sort().reverse().slice(0,15);
+  const dayIdx = {}; isoDays.forEach((d,i)=>dayIdx[d]=i);
+  const model = {};
+  model.DAYS = isoDays.map(iso=>{ const f=fmtDay(iso); return { name:f.name, date:f.date, iso, note:"" }; });
+  model.EVIDENCE = recs.filter(r=>dayIdx[r.iso]!==undefined).map(r=>{
+    const f = fmtDay(r.iso);
+    return Object.assign({}, r, { day:dayIdx[r.iso], date:f.dow+" "+((+r.iso.slice(5,7))+"/"+(+r.iso.slice(8,10))), longDate:f.name+", "+f.date });
+  });
+
+  model.GOALS = goals.map(x=>{
+    const g = x.g, b = g.baseline||{}, t = g.target||{};
+    const connected = model.EVIDENCE.filter(e=>(e.goals||[]).includes(x.id));
+    const meas = MEAS_LABELS[g.measure]!==undefined ? MEAS_LABELS[g.measure] : String(g.measure||"");
+    return { id:x.id,
+      area:(AREA_LABELS[g.area]||"IEP")+(g.grade?" · Grade "+esc(String(g.grade)):""),
+      title:String(g.title||"IEP goal"),
+      text:"As written in the IEP Progress panel"+(meas?", measured as "+meas:"")+". Baseline "
+        +(b.value!=null?b.value:"—")+(b.date?" ("+b.date+")":"")+" → target "
+        +(t.value!=null?t.value:"—")+(t.date?" ("+t.date+")":"")+". "
+        +x.pts.length+" data point"+(x.pts.length===1?"":"s")+" on this device overall.",
+      gap: connected.length<2 ? {
+        note: connected.length===0
+          ? "No evidence in this window is connected to this goal yet."
+          : "Only one record in this window is connected to this goal. One data point is not a trend.",
+        collect:["a progress-monitoring point","an adult check-in linked to this goal","an authentic work sample"]
+      } : null };
+  });
+
+  /* schedule → coverage */
+  let sch = null; const schStore = (jload(LSK.sched,{})||{}).students||{};
+  Object.keys(schStore).forEach(k=>{ if(NORM(k)===sidKey) sch = schStore[k]; });
+  const courses = [];
+  (((sch||{}).classes)||[]).slice().sort((a,b)=>(a.p||0)-(b.p||0)).forEach(c=>{
+    const nm = String((c&&c.course)||"").trim();
+    if(nm && courses.indexOf(nm)<0) courses.push(nm);
+  });
+  model.SCHEDULE = courses;
+
+  /* structural patterns — counts and blanks, never verdicts */
+  const pats = [];
+  const supCount = {}, supEv = [];
+  model.EVIDENCE.forEach(e=>{ if(e.src==="Adult Check-In" && !e.noEv && e.supports && e.supports.length){
+    supEv.push(e.id); e.supports.forEach(sp=>{ supCount[sp]=(supCount[sp]||0)+1; }); } });
+  const supTop = Object.keys(supCount).sort((a,b)=>supCount[b]-supCount[a]).slice(0,5);
+  if(supTop.length && supEv.length>=2){
+    pats.push({ id:"lp-sup", kind:"Counts, never averages",
+      claim:"Supports adults recorded alongside the work: "+supTop.map(k=>k+" ×"+supCount[k]).join(" · "),
+      sub:"Which supports appeared in completed adult check-ins across this window — a count of observations, not a judgment about any of them.",
+      ev: supEv.slice(0,10) });
+  }
+  const srcSeen = {}, srcFirst = [];
+  model.EVIDENCE.forEach(e=>{ const k=e.src.split(" · ")[0]; if(!srcSeen[k]){ srcSeen[k]=1; srcFirst.push(e.id); } });
+  pats.push({ id:"lp-src", kind:"Converging record",
+    claim: model.EVIDENCE.length+" records from "+srcFirst.length+" distinct source"+(srcFirst.length===1?"":"s")+" in this window.",
+    sub:"Every source keeps its label and its own kind of truth. Nothing here is blended into a composite, and when accounts differ, both stand.",
+    ev: srcFirst.slice(0,8) });
+  model.PATTERNS = pats;
+  model.DIFFERENT_PERSPECTIVES = null;
+  model.SUPPORT_COMPARE = null;
+  model.ARTIFACTS = {};
+
+  const oldest = fmtDay(isoDays[isoDays.length-1]), newest = fmtDay(isoDays[0]);
+  const gradeG = goals.find(x=>x.g.grade);
+  const keptN = kept.length;
+  model.STUDENT = {
+    name: label,
+    grade: gradeG ? "Grade "+String(gradeG.g.grade) : "",
+    week: isoDays.length+" evidence day"+(isoDays.length===1?"":"s")+" between "+oldest.short+" and "+newest.short+(isoDays.length>=15?" (the 15 most recent)":""),
+    weekH2: "The most recent evidence days",
+    voiceH2: "In the student's own words",
+    voiceNav: "Student Voice",
+    lede: "This student's evidence, compiled read-only from the stores on this device — goals as written, check-ins, exit-slip structure, progress-monitoring points, and the lines the student chose to keep. Nothing re-typed, nothing invented.",
+    voiceNote: "The student decides what happens to what they say. Only This Is Me lines the student <b>kept</b> appear here — private lines are not shown and not counted. Exit slips and check-ins contribute presence and structure, never the student's typed words. Nothing on this page rates, scores, or reinterprets a student's voice.",
+    covCap: label+"'s recent evidence, against the saved schedule",
+    supportCounts: supTop.map(k=>({ k, n:supCount[k] })),
+    overview: label+" · "+model.EVIDENCE.length+" evidence records across "+isoDays.length+" day"+(isoDays.length===1?"":"s")
+      +", "+goals.length+" active IEP goal"+(goals.length===1?"":"s")
+      +(keptN?", "+keptN+" This Is Me line"+(keptN===1?"":"s")+" kept by the student":"")+"."
+  };
+
+  /* meeting mode — structural, every line traceable */
+  const M = [];
+  M.push({ k:"Student overview", h:"What this record holds", body:[
+    { t:"<b>"+esc(label)+"</b> — "+esc(model.STUDENT.week)+". "+model.EVIDENCE.length+" records, every one keeping its source." },
+    { t:"This is a working evidence view compiled on this device. The signed IEP is the document, and every judgment below belongs to the team." } ] });
+  if(keptN){
+    const q = kept[kept.length-1];
+    M.push({ k:"Student voice", h:"What the student chose to keep",
+      quote:{ q:String(q.text||""), who:"From the student's This Is Me page — kept by the student", ev:[model.EVIDENCE.filter(e=>e.src==="Student Voice · This Is Me").slice(-1)[0].id] },
+      body: keptN>1 ? [{ t:(keptN-1)+" more kept line"+(keptN===2?"":"s")+" appear in the voice section below." }] : [] });
+  }else{
+    M.push({ k:"Student voice", h:"The student's page is empty", body:[
+      { t:"No This Is Me lines have been kept yet. Consider offering the student their page before the meeting — the platform collects the evidence; <b>the child owns the voice</b>." } ] });
+  }
+  M.push({ k:"Goal status", h:"Evidence connected to current goals", body: model.GOALS.length ? model.GOALS.map(g=>{
+    const conn = model.EVIDENCE.filter(e=>(e.goals||[]).includes(g.id));
+    const ptsIn = conn.filter(e=>e.lens==="perform");
+    const last = ptsIn[ptsIn.length-1];
+    return { t:"<b>"+esc(gClip(g.title, 140))+":</b> "+conn.length+" connected record"+(conn.length===1?"":"s")+" in this window"
+      +(ptsIn.length?" ("+ptsIn.length+" progress-monitoring point"+(ptsIn.length===1?"":"s")+(last?", most recent "+last.date:"")+")":"")
+      +(g.gap?" — <b>evidence gap</b>.":"."),
+      ev: conn.slice(0,6).map(e=>e.id) };
+  }).concat([{ t:"Signals, aimlines, and the on-track decision rules live in the IEP Progress panel — this page shows the evidence and never re-derives the verdicts." }])
+    : [{ t:"No active IEP goals were found for this student on this device. Goals entered in the IEP Progress panel appear here automatically." }] });
+  const ciN = model.EVIDENCE.filter(e=>e.src==="Adult Check-In" && !e.noEv).length;
+  const xN = model.EVIDENCE.filter(e=>e.src==="Exit Slip").length;
+  const dN = model.EVIDENCE.filter(e=>e.src==="Daily Check-In").length;
+  M.push({ k:"Classroom performance", h:"What the adults in the rooms recorded", body:[
+    { t:ciN ? "<b>"+ciN+" adult check-in"+(ciN===1?"":"s")+"</b> across the schedule — engagement, independence, and performance as the adult in the room saw them, plus the supports in use." : "No adult check-ins in this window — each one is two minutes from the adult who was actually in the room.",
+      ev: model.EVIDENCE.filter(e=>e.src==="Adult Check-In"&&!e.noEv).slice(0,6).map(e=>e.id) },
+    model.STUDENT.supportCounts.length ? { t:"<b>Supports observed:</b> "+model.STUDENT.supportCounts.map(x2=>esc(x2.k)+" ×"+x2.n).join(" · ")+" — counts of observations, never a judgment." } : null
+  ].filter(Boolean) });
+  M.push({ k:"Experience", h:"What the student's structure says", body:[
+    (dN||xN)
+      ? { t:"<b>"+dN+" check-in"+(dN===1?"":"s")+"</b> and <b>"+xN+" exit slip"+(xN===1?"":"s")+"</b> in this window — presence and structure; the student's written words stay the student's.",
+          ev: model.EVIDENCE.filter(e=>e.lens==="exp"&&!e.quote).slice(0,6).map(e=>e.id) }
+      : { t:"No check-ins or exit slips in this window." } ] });
+  const gapGoals = model.GOALS.filter(g=>g.gap);
+  M.push({ k:"Evidence gaps", h:"What we don't know yet", body:(gapGoals.length?gapGoals.map(g=>(
+    { t:"<b>"+esc(gClip(g.title, 110))+":</b> "+g.gap.note })):[
+    { t:"Every active goal has at least two connected records in this window." }]).concat([
+    { t:"A blank on this page only ever means no evidence was collected — it never pretends." }]) });
+  const qs = [];
+  gapGoals.forEach(g=>qs.push({ t:"Who collects the next evidence for “"+esc(gClip(g.title, 80))+"”, and by when?" }));
+  if(!keptN) qs.push({ t:"When does the student get their This Is Me page — so their own words are at the table?" });
+  if(!ciN) qs.push({ t:"Which classes could contribute a two-minute adult check-in this week — electives included?" });
+  if(!qs.length) qs.push({ t:"What does this evidence make the team want to look at next?" });
+  M.push({ k:"Questions for the team", h:"What deserves discussion", body:qs });
+  model.MEETING = M;
+
+  return model;
+}
+
+/* ═══ THE LIVE BRIEF — same discipline, the student's real record ═══ */
+function briefLiveHTML(){
+  const cite = ids => `<span class="cites">${(ids||[]).map(id=>{
+    const e=byId[id]; if(!e) return ""; return `<span class="cite" title="${esc(e.title)}">${e.date} ${esc(e.src)}</span>`;
+  }).join("")}</span>`;
+  const pad = i => (i<9?"0":"")+(i+1);
+  const secs = MEETING.map((sec,i)=>`
+  <section><h2><span class="n">${pad(i)}</span>${esc(sec.h)}</h2>
+    ${sec.quote?`<div class="q">“${esc(sec.quote.q)}”<span class="who">${esc(sec.quote.who)}</span></div>`:""}
+    ${sec.body&&sec.body.length?`<ul>${sec.body.map(b=>`<li>${b.t}${b.ev?" "+cite(b.ev):""}</li>`).join("")}</ul>`:""}
+  </section>`).join("");
+  return `<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><title>Student Evidence Brief — ${esc(STUDENT.name)}</title>
+  <style>${BRIEF_CSS}</style></head><body>
+  <div class="cover">
+    <div class="brand">Architecture of <span class="g">Grace</span><small>Student Evidence Brief</small></div>
+    <div class="kick">Prepared for the IEP team</div>
+    <h1>${esc(STUDENT.name)}</h1>
+    <div class="meta">${esc(STUDENT.grade||"")}${STUDENT.grade?" · ":""}${esc(STUDENT.week)} · ${EVIDENCE.length} evidence records<br>
+    Compiled read-only from this device's stores. Every statement cites its records; the full index is below.
+    <b>A working evidence view — the signed IEP is the document.</b></div>
+    <div style="clear:both"></div>
+  </div>
+  ${secs}
+  <div class="idx">
+    <h2><span class="n">Index</span>Every record behind this brief</h2>
+    <table><thead><tr><th>Date</th><th>Source</th><th>Record</th><th>Result / words</th></tr></thead><tbody>
+    ${EVIDENCE.map(e=>`<tr><td class="d">${e.date}</td><td class="s">${esc(e.src)}</td><td>${e.title}</td><td>${e.quote?`"${esc(e.quote)}"`:(e.result||"").replace(/<[^>]*>/g,"")}</td></tr>`).join("")}
+    </tbody></table>
+  </div>
+  <div class="foot">
+    <span>Architecture of Grace — a system, not a curriculum. A measurement describes performance on a skill; it does not describe the student.</span>
+    <span>Compiled on this device · generated ${new Date().toLocaleDateString("en-US",{month:"long",day:"numeric",year:"numeric"})}</span>
+  </div>
+  ${VIEW_TOOLBAR}
+  </body></html>`;
+}
+
+/* ═══ THE CASE MANAGER REPORT — the district template, honestly filled ═══
+   Follows the director's Case Manager Report Template (Annual Review tab):
+   the same headings, in the same order. What this device's stores hold is
+   pre-filled and cited; what lives elsewhere (MAP/FB, ACCESS, report card,
+   eval documents) prints as labeled write-in lines. The progress judgment
+   is NEVER preselected — that call belongs to the case manager and team. */
+function cmReportHTML(){
+  const wline = lab => `<div class="wl"><span class="wlab">${lab}</span><span class="wfill"></span></div>`;
+  const goalBlocks = GOALS.length ? GOALS.map(g=>{
+    const conn = EVIDENCE.filter(e=>(e.goals||[]).includes(g.id));
+    const ptsIn = conn.filter(e=>e.lens==="perform");
+    const lastPts = ptsIn.slice(-3);
+    return `<div class="gblk">
+      <div class="gt">${esc(g.title)}</div>
+      <div class="gx">${esc(String(g.text||"").replace(/<[^>]*>/g,""))}</div>
+      <div class="gd"><b>Reference to data:</b> ${conn.length} connected record${conn.length===1?"":"s"} on this device${ptsIn.length?`; ${ptsIn.length} progress-monitoring point${ptsIn.length===1?"":"s"}${lastPts.length?` — most recent: ${lastPts.map(e=>e.date+" ("+(e.result||"").replace(/<[^>]*>/g,"").replace(/ · proposed.*$/,"")+")").join(", ")}`:""}`:""}. Charts and signals: IEP Progress panel.</div>
+      <div class="gp"><b>Progress on annual goal</b> — the team's call, never this page's: &nbsp; adequate&emsp;variable&emsp;limited&emsp;met&emsp;exceeded</div>
+    </div>`;
+  }).join("") : `<p class="ps">No active IEP goals found on this device.</p>`;
+  const supLine = (STUDENT.supportCounts&&STUDENT.supportCounts.length)
+    ? `<p class="pre"><b>Supports observed in classroom evidence this window:</b> ${STUDENT.supportCounts.map(x=>esc(x.k)+" ×"+x.n).join(" · ")} — counts of observations. List the official accommodations below so the team can consider deleting those no longer needed.</p>` : "";
+  const ci = EVIDENCE.filter(e=>e.src==="Adult Check-In" && !e.noEv);
+  const ciLines = ci.slice(-10).map(e=>`<div class="ev1">${e.date} · ${e.title} — ${(e.result||"").replace(/<[^>]*>/g,"")}</div>`).join("");
+  const areaPts = area => {
+    const gs = GOALS.filter(g=>String(g.area||"").indexOf(area)===0);
+    if(!gs.length) return "";
+    return `<p class="pre"><b>From this device's evidence:</b> ${gs.map(g=>{
+      const p2 = EVIDENCE.filter(e=>(e.goals||[]).includes(g.id) && e.lens==="perform");
+      return esc(gClip(g.title, 90))+" — "+p2.length+" point"+(p2.length===1?"":"s");
+    }).join(" · ")}</p>`;
+  };
+  return `<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><title>Case Manager Report — ${esc(STUDENT.name)}</title>
+  <style>${BRIEF_CSS}
+    .wl{ display:flex; align-items:baseline; gap:8px; margin:7px 0; }
+    .wlab{ white-space:nowrap; color:#46506E; }
+    .wfill{ flex:1; border-bottom:1px dotted #5C667E; min-height:13px; }
+    .gblk{ border:1px solid #E4DAC5; border-radius:8px; padding:10px 13px; margin-bottom:10px; break-inside:avoid; }
+    .gt{ font-family:Georgia,serif; font-size:13.5px; font-weight:600; }
+    .gx{ font-size:10px; color:#46506E; margin-top:3px; }
+    .gd{ font-size:10.5px; margin-top:6px; }
+    .gp{ font-size:10.5px; margin-top:6px; border-top:1px dashed #E4DAC5; padding-top:6px; }
+    .pre{ background:#F4EEE2; border-radius:6px; padding:7px 11px; font-size:10.5px; margin:6px 0; }
+    .ev1{ font-size:9.5px; color:#46506E; padding:2px 0; border-bottom:1px solid #EFEADB; }
+    .ps{ font-size:10px; color:#46506E; }
+  
+/* ══ AOG-PRINT-SAFE-V1 (2026-09-20) ═══════════════════════════════════════════
+   Jimmy, printing a novel study from his phone: "another pdf that gets parts of
+   the material cut off." These are the rules that keep paper honest on every
+   engine — a table row, a list item, a figure and a picture stay whole; a head
+   keeps the lines under it; no paragraph strands one line at a page edge; and a
+   long table repeats its head at the top of each page. Printed pages only. */
+@media print{
+  table{break-inside:auto; page-break-inside:auto}
+  thead{display:table-header-group}
+  tfoot{display:table-footer-group}
+  tr{break-inside:avoid; page-break-inside:avoid}
+  li,figure,img,svg{break-inside:avoid; page-break-inside:avoid}
+  h1,h2,h3,h4,h5{break-after:avoid; page-break-after:avoid}
+  p{orphans:3; widows:3}
+}
+</style></head><body>
+  <div class="cover">
+    <div class="brand">Architecture of <span class="g">Grace</span><small>Case Manager Report · working draft</small></div>
+    <div class="kick">District template — Annual Review</div>
+    <h1>${esc(STUDENT.name)}</h1>
+    <div class="meta">${esc(STUDENT.grade||"")}${STUDENT.grade?" · ":""}${esc(STUDENT.week)} · prepared ${new Date().toLocaleDateString("en-US",{month:"long",day:"numeric",year:"numeric"})}<br>
+    <b>A working draft for the case manager</b> — place in the academic section of the present levels. What this device holds is pre-filled and cited; what lives elsewhere is a labeled blank, because a blank never pretends.${MODE==="demo"?" <b>Demonstration record — fictional student.</b>":""}</div>
+    <div style="clear:both"></div>
+  </div>
+
+  <section><h2><span class="n">01</span>Purpose</h2>
+  <p>The purpose of this annual review is to review ${esc(STUDENT.name)}'s current academic and functional performance, evaluate progress toward annual IEP goals, and develop an updated IEP based on present levels of performance and ongoing educational needs.</p></section>
+
+  <section><h2><span class="n">02</span>Current special education services</h2>
+  ${wline("Specialized instruction (area, setting, minutes):")}
+  ${wline("Program used and progress in the program:")}
+  ${wline("Related services (list only):")}
+  ${supLine}
+  ${wline("Current accommodations and supports:")}
+  ${wline("")}</section>
+
+  <section><h2><span class="n">03</span>Progress toward current IEP goals</h2>
+  ${goalBlocks}</section>
+
+  <section><h2><span class="n">04</span>Academic performance</h2>
+  <p class="ps">Describe current performance relative to grade-level expectations.</p>
+  <p style="margin-top:6px;"><b>ELA</b></p>
+  ${wline("Benchmarking — MAP scores, FB scores:")}
+  ${wline("MTSS if applicable (start date, tier, intervention target):")}
+  ${wline("Strengths, areas of difficulty, supports that are effective:")}
+  ${areaPts("Reading")}${areaPts("Writing")}
+  <p style="margin-top:8px;"><b>Math</b></p>
+  ${wline("Benchmarking — MAP scores, FB scores:")}
+  ${wline("MTSS if applicable (start date, tier, intervention target):")}
+  ${wline("Strengths, areas of difficulty, supports that are effective:")}
+  ${areaPts("Math")}
+  ${wline("EL services — most recent ACCESS scores, if the student is EL:")}
+  ${wline("Other areas as determined by the team:")}</section>
+
+  <section><h2><span class="n">05</span>Classroom performance &amp; teacher input</h2>
+  <p class="ps">Use the gen-ed form and report card for: progress toward grade-level standards, classwork completed, homework completed, class participation, behavior, attendance, interactions with peers, personal responsibility.</p>
+  ${ci.length?`<p class="pre"><b>What this device's adult check-ins hold (${ci.length} in this window):</b></p>${ciLines}`:`<p class="ps">No adult check-ins in this window.</p>`}
+  ${wline("Student strengths:")}
+  ${wline("Involvement and progress in the general education curriculum:")}
+  ${wline("")}</section>
+
+  <section><h2><span class="n">06</span>Educational impact</h2>
+  ${wline("Adverse effects and educational needs, from the most recent eval/reeval:")}
+  ${wline("")}</section>
+
+  <div class="foot">
+    <span>Nothing on this page decides progress, eligibility, or mastery — the labeled choices above wait for the team. A measurement describes performance on a skill; it does not describe the student.</span>
+    <span>${MODE==="demo"?"Demonstration record":"Compiled on this device"}</span>
+  </div>
+  ${VIEW_TOOLBAR}
+  </body></html>`;
+}
+function openCMReport(){
+  const w = window.open("", "_blank");
+  if(!w){ alert("Please allow pop-ups to create the Case Manager Report."); return; }
+  w.document.open(); w.document.write(cmReportHTML()); w.document.close();
+}
+document.getElementById("cmrBtn").addEventListener("click", openCMReport);
+
+/* ═══ MODE ═══ */
+let MODE = "demo", LIVE_SID = "";
+const ROSTER = liveRoster();
+
+function renderModePill(){
+  const pill = $("#modePill"), sel = $("#whoSel");
+  if(!ROSTER.length){
+    sel.hidden = true;
+    pill.textContent = "Demonstration record";
+    pill.title = "Every record on this page is fictional. When students exist on this device, their live records appear here automatically.";
+    return;
+  }
+  sel.hidden = false;
+  sel.innerHTML = ROSTER.map(r=>`<option value="${esc(r.key)}"${MODE==="live"&&r.key===LIVE_SID?" selected":""}>${esc(r.label)}</option>`).join("")
+    + `<option value="__demo"${MODE==="demo"?" selected":""}>— Demonstration (Marcus Bell) —</option>`;
+  pill.textContent = MODE==="demo" ? "Demonstration record" : "Live · this device";
+  pill.title = MODE==="demo"
+    ? "Every record in this view is fictional, created to demonstrate the experience."
+    : "Compiled read-only from this device's stores. This page writes nothing but its own view preferences.";
+}
+
+function setMode(mode, sid){
+  if(mode==="live"){
+    const m = buildLiveModel(sid);
+    if(m){
+      ({STUDENT,GOALS,EVIDENCE,DAYS,SCHEDULE,PATTERNS,DIFFERENT_PERSPECTIVES,SUPPORT_COMPARE,ARTIFACTS,MEETING} = m);
+      MODE = "live"; LIVE_SID = sid;
+    } else mode = "demo";
+  }
+  if(mode==="demo"){
+    ({STUDENT,GOALS,EVIDENCE,DAYS,SCHEDULE,PATTERNS,DIFFERENT_PERSPECTIVES,SUPPORT_COMPARE,ARTIFACTS,MEETING} = DEMO);
+    MODE = "demo";
+  }
+  UI.mode = MODE; UI.student = LIVE_SID; saveUI();
+  renderModePill(); renderAll();
+}
+
+$("#whoSel").addEventListener("change", ev=>{
+  const v = ev.target.value;
+  if(v==="__demo") setMode("demo"); else setMode("live", v);
+});
+
+/* boot: focus student first, then saved choice, then the first name; the
+   demonstration only when this device holds no students at all. */
+(function(){
+  if(!ROSTER.length){ setMode("demo"); return; }
+  if(UI.mode==="demo"){ setMode("demo"); return; }
+  let sid = "";
+  if(UI.student && ROSTER.some(r=>r.key===UI.student)) sid = UI.student;
+  const foc = focusCode();
+  if(!sid && foc && ROSTER.some(r=>r.key===foc)) sid = foc;
+  if(!sid) sid = ROSTER[0].key;
+  setMode("live", sid);
+})();
+
+</script>
+</body>
+</html>

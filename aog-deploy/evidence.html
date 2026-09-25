@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Evidence &amp; Roadmap &middot; Architecture of Grace</title>
+<meta name="description" content="What the evidence does and does not yet show, and what is being measured next. An honest roadmap, not a claim.">
+<!-- ═══ AOG ICONS + LINK PREVIEW · managed block · .30k0 ═══
+     Inserted by _work/aog_head.py — DO NOT hand-edit one page; edit the
+     script and re-run it, or the 100 pages drift apart again. The card
+     URL carries ?v= because Slack, Apple and Google cache an og image BY
+     URL for weeks: change the picture, bump IMG_V, or nothing shows up.
+     ═══════════════════════════════════════════════════════════════ -->
+<link rel="canonical" href="https://architectureofgrace.org/roadmap">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Architecture of Grace">
+<meta property="og:locale" content="en_US">
+<meta property="og:title" content="Evidence &amp; Roadmap &middot; Architecture of Grace">
+<meta property="og:description" content="What the evidence does and does not yet show, and what is being measured next. An honest roadmap, not a claim.">
+<meta property="og:url" content="https://architectureofgrace.org/roadmap">
+<meta property="og:image" content="https://architectureofgrace.org/og-schools.png?v=1">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Architecture of Grace for schools and districts — policy, terms, data agreement, accessibility.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Evidence &amp; Roadmap &middot; Architecture of Grace">
+<meta name="twitter:description" content="What the evidence does and does not yet show, and what is being measured next. An honest roadmap, not a claim.">
+<meta name="twitter:image" content="https://architectureofgrace.org/og-schools.png?v=1">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#0A1E33">
+<meta name="apple-mobile-web-app-title" content="Grace">
+<meta name="application-name" content="Architecture of Grace">
+<!-- ═══ END AOG ICONS + LINK PREVIEW ═══ -->
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,500;0,600;1,500&family=Source+Sans+3:wght@400;600;700&family=IBM+Plex+Mono:wght@500&display=swap">
+<style>
+:root{
+  --ground:#FBF6EC; --card:#FFFDF8; --ink:#182F4C; --ink-soft:#4A5B72;
+  --navy:#14304F; --gold:#C9962E; --gold-deep:#825E10;
+  --wash:#F4E8CC; --rule:#E4D9C3;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--ground); color:var(--ink);
+  font-family:"Source Sans 3",-apple-system,"Segoe UI",Helvetica,Arial,sans-serif;
+  font-size:17px; line-height:1.55; -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:46rem; margin:0 auto; padding:30px 20px 70px}
+code,.mono{font-family:"IBM Plex Mono",ui-monospace,Menlo,monospace; font-size:.86em;
+  background:var(--wash); border-radius:5px; padding:1px 6px 2px; white-space:nowrap}
+
+/* masthead */
+.mast{padding:8px 0 22px; border-bottom:2px solid var(--gold); margin-bottom:6px}
+.eyebrow{font-size:12px; font-weight:700; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--gold-deep); margin:0 0 6px}
+h1{font-family:"Lora",Georgia,serif; font-weight:600; font-size:clamp(29px,6.5vw,38px);
+  line-height:1.12; margin:0 0 10px; color:var(--navy); text-wrap:balance}
+h1 em{font-style:italic; color:var(--gold-deep)}
+.dek{margin:0 0 10px; color:var(--ink-soft); max-width:36em}
+.meta{margin:0; font-size:14px; color:var(--ink-soft)}
+h2{font-family:"Lora",Georgia,serif; font-weight:600; font-size:22px;
+  margin:36px 0 12px; color:var(--navy); text-wrap:balance}
+
+/* cards */
+.card{background:var(--card); border:1.5px solid var(--rule); border-radius:14px;
+  padding:16px 18px; margin:0 0 12px}
+.card p{margin:0 0 10px; font-size:16px}
+.card p:last-child{margin-bottom:0}
+.card b{color:var(--navy)}
+.card ul{margin:0; padding-left:20px}
+.card li{margin-bottom:8px}
+.card li:last-child{margin-bottom:0}
+.note{border-left:3px solid var(--gold); background:var(--wash); border-radius:0 9px 9px 0;
+  padding:9px 12px; font-size:15px; margin:10px 0}
+.note b:first-child{color:var(--gold-deep)}
+
+/* roadmap stages */
+.stages{display:flex; flex-direction:column; gap:14px; margin:16px 0 0}
+.stage{background:var(--card); border:1.5px solid var(--rule); border-radius:14px; padding:15px 17px}
+.stage .n{font-family:"Lora",Georgia,serif; font-size:13px; font-weight:600; color:var(--gold-deep);
+  letter-spacing:.1em; display:block; margin-bottom:1px}
+.stage h3{font-family:"Lora",Georgia,serif; font-size:19px; font-weight:600; margin:0 0 8px; color:var(--navy); line-height:1.25}
+.stage p{margin:0 0 10px; font-size:16px}
+.stage p:last-child{margin-bottom:0}
+.stage ul{margin:0 0 10px; padding-left:20px}
+.stage li{margin-bottom:6px}
+
+/* research pairs */
+.grounds dt{font-weight:700; color:var(--navy); margin-top:12px}
+.grounds dt:first-child{margin-top:0}
+.grounds dd{margin:2px 0 0 0; color:var(--ink-soft); font-size:16px}
+
+footer{margin-top:40px; padding-top:14px; border-top:1.5px solid var(--rule);
+  font-size:13.5px; color:var(--ink-soft); line-height:1.6}
+footer a{color:var(--gold-deep)}
+
+@media print{
+  body{background:#fff; font-size:12.5px; line-height:1.4}
+  .wrap{max-width:none; padding:0}
+  .dek,.card p{max-width:none}
+  h1{font-size:24px}
+  h2{font-size:17px; margin:16px 0 8px}
+  .card,.stage{padding:10px 13px; margin-bottom:8px; background:#fff}
+  .card p,.card li,.stage p,.stage li,.grounds dd{font-size:12px}
+  .note{font-size:11px; padding:7px 10px; margin:7px 0}
+  footer{font-size:10.5px; margin-top:16px}
+  .print-footer{display:block !important; margin-top:14px; padding-top:8px; border-top:1px solid #999; font-size:10.5px; color:#444}
+  .card,.stage,.note{break-inside:avoid; page-break-inside:avoid}
+  h2,h1,.stage h3{break-after:avoid; page-break-after:avoid}
+  @page{margin:12mm 14mm}
+}
+.print-footer{display:none}
+
+/* ══ AOG-PRINT-SAFE-V1 (2026-09-20) ═══════════════════════════════════════════
+   Jimmy, printing a novel study from his phone: "another pdf that gets parts of
+   the material cut off." These are the rules that keep paper honest on every
+   engine — a table row, a list item, a figure and a picture stay whole; a head
+   keeps the lines under it; no paragraph strands one line at a page edge; and a
+   long table repeats its head at the top of each page. Printed pages only. */
+@media print{
+  table{break-inside:auto; page-break-inside:auto}
+  thead{display:table-header-group}
+  tfoot{display:table-footer-group}
+  tr{break-inside:avoid; page-break-inside:avoid}
+  li,figure,img,svg{break-inside:avoid; page-break-inside:avoid}
+  h1,h2,h3,h4,h5{break-after:avoid; page-break-after:avoid}
+  p{orphans:3; widows:3}
+}
+</style>
+</head>
+<body>
+<script src="/aog-topbar.js"></script>
+
+<div class="wrap">
+
+  <header class="mast">
+    <p class="eyebrow">Architecture of Grace &middot; Program integrity</p>
+    <h1>Evidence &amp; <em>Roadmap</em></h1>
+    <p class="dek">What this program is built on, what has not been proven yet, and the specific path from one to the other — written down so a district can hold us to it.</p>
+    <p class="meta"><b>Who this is for.</b> Curriculum directors, school psychologists, review committees, and anyone deciding whether to put this in front of children.</p>
+  </header>
+
+  <h2>What is research-grounded</h2>
+  <div class="card">
+    <p>Architecture of Grace is built on a published research base, and the books cite it in full. The load-bearing foundations:</p>
+    <dl class="grounds">
+      <dt>Self-compassion — Kristin Neff</dt>
+      <dd>The three-element model (self-kindness, common humanity, mindfulness) structures the self-compassion units in every band, explicitly distinguished from self-esteem. The 6–8 book draws on Neff (2003a, 2003b, 2011) and Neff &amp; Germer's Mindful Self-Compassion work.</dd>
+      <dt>Forgiveness as a teachable skill — Enright &amp; Fitzgibbons; Worthington</dt>
+      <dd>Enright and Fitzgibbons' forgiveness-therapy research defines what forgiveness is not — reconciliation, condoning, forgetting — and that definition is the spine of every forgiveness unit. Worthington's REACH model supplies the process framing. The curriculum's most repeated safety line — forgiveness is never required in situations involving ongoing harm — comes directly out of this literature's boundaries.</dd>
+      <dt>Shame vs. guilt — Brown; Tangney and colleagues</dt>
+      <dd>The distinction between "I am bad" and "I did something bad," and why shame produces hiding rather than repair, grounds the mistake-and-repair strand from K–2 upward.</dd>
+      <dt>Trauma-informed practice and safe messaging</dt>
+      <dd>The delivery model — teacher regulation first, disclosure protocols in every lesson, counselor-in-room requirements for the highest-sensitivity lessons — was built to trauma-informed guidelines, and the AFSP Safe Messaging Guidelines are applied by name to every highest-risk lesson.</dd>
+    </dl>
+  </div>
+  <div class="note"><b>The honest line, which this site holds everywhere:</b> <i>grounded in</i> research is not the same as <i>evidence of</i> effectiveness. Neff's findings are evidence about self-compassion; they are not evidence about this curriculum. That evidence does not exist yet, and this page is the plan for getting it.</div>
+
+  <h2>What has not been done</h2>
+  <div class="card">
+    <p>Stated plainly, so no one has to go looking for it:</p>
+    <ul>
+      <li><b>No efficacy study has been conducted.</b> No cohort of students using Architecture of Grace has been compared with a cohort not using it, by anyone. Any claim that the program "works," in the outcome-study sense, would currently be unsupported — so we do not make it.</li>
+      <li><b>The self-reflection instrument has not been through external reliability or validity testing.</b> It was designed against published constructs, but no independent psychometrician has evaluated whether its items measure what they intend to measure, or measure it consistently across ages, languages, and populations.</li>
+      <li><b>Because of both facts, every score the instrument produces is a flag for a conversation — never a diagnosis</b>, never a screening result in the clinical sense, and never a basis for a placement or eligibility decision. The curriculum, not the number, is the intervention. This limitation is printed where the scores appear, not only here.</li>
+    </ul>
+  </div>
+
+  <h2>The validation roadmap</h2>
+  <div class="stages">
+    <div class="stage">
+      <span class="n">STAGE 1</span><h3>Pilot classrooms</h3>
+      <p>The entire curriculum is published open — every band K–12, the lessons, the workbooks and the materials — specifically so a school can pilot with no cost and no procurement cycle. A pilot classroom contributes three things, each already supported by the program's own tooling:</p>
+      <ul>
+        <li><b>Fidelity logs</b> — what was delivered, what was deferred, and under what staffing (see the <a href="counselor-capacity.html">flagged-lesson planning sheet</a>). Deferral records are data, not embarrassment.</li>
+        <li><b>Item-level instrument data</b> — with district permission and under the district's own data governance; the data lives in the school's own Google Sheet either way.</li>
+        <li><b>Teacher and family feedback</b> — what held up in a real room and what did not.</li>
+      </ul>
+    </div>
+    <div class="stage">
+      <span class="n">STAGE 2</span><h3>External psychometric review of the instrument</h3>
+      <p>With pilot item-level data in hand, the self-reflection instrument goes to independent psychometric review — reliability, construct validity, and performance across grade bands and demographic groups — conducted by reviewers with no stake in the result. Findings will be published here whichever way they point, and the instrument revised or retired accordingly.</p>
+    </div>
+    <div class="stage">
+      <span class="n">STAGE 3</span><h3>Outcome evaluation</h3>
+      <p>Only after the instrument survives Stage 2 does an efficacy study make sense — a validated measure is a precondition for one, not a product of one. Design and partners for that study will be named here when they actually exist, and not before.</p>
+    </div>
+  </div>
+  <div class="card" style="margin-top:12px">
+    <p><b>The commitment:</b> Architecture of Grace will not describe itself as "evidence-based," "proven," or "validated" before the evidence exists — not in marketing, not in a grant application, not in a sales conversation. If you ever find language on this site that gets ahead of this page, that is a bug; report it and it will be corrected.</p>
+    <p>No pilot sites, review partners, or timelines are announced here yet, because announcing names before agreements exist is the same overclaim in a different suit.</p>
+  </div>
+
+  <h2>Clinical review</h2>
+  <div class="card">
+    <p>The safety architecture — disclosure protocols, counselor-in-room requirements, crisis-resource posting, and the scheduling rules around breaks and substitutes — was built to published guidelines, including the AFSP Safe Messaging Guidelines, which every band applies by name to its flagged lessons — the ★ and ★★ chapters that carry the safety protocols. The books also require each adopting school's own psychologist or counselor to review the most sensitive units and confirm clinical readiness in writing before delivery.</p>
+    <p><b>External clinician review is invited.</b> If you are a school psychologist, counselor, clinical social worker, or child/adolescent clinician willing to review any part of the safety protocols or lesson content, the full materials will be provided for that purpose, and substantive critique will be acted on. Write to <span class="mono">Theopus77@yahoo.com</span> with your role and what you'd like to review.</p>
+  </div>
+
+  <h2>Continuity — the one-person question</h2>
+  <div class="card">
+    <p>Architecture of Grace is the work of one practicing educator. A district is right to ask what happens to its adoption if that one person stops — so the program is built to survive him, structurally, not just intentionally:</p>
+    <ul>
+      <li><b>The site is static files.</b> There is no server, no database, no account system. A school or district may mirror the site on its own infrastructure, and it runs identically there.</li>
+      <li><b>All student data lives in school-owned Google Sheets.</b> The sync backend is a script inside your own Google account, writing to your own Sheet. It keeps working — collecting, storing, exporting — regardless of whether this website is ever reachable again.</li>
+      <li><b>Printed books keep working.</b> The curriculum is delivered from books and printed materials; nothing in a lesson depends on the site being up.</li>
+      <li><b>The open curriculum stays open.</b> Every band, K–12. Its publication is a standing commitment, not a promotion — nothing readable today becomes paid tomorrow.</li>
+    </ul>
+    <p><b>The plain statement:</b> a district's adoption does not depend on a company's uptime, and no future change of ownership can reach into a school's Sheets, its printed books, or its mirrored copy of the site.</p>
+  </div>
+
+  <div class="print-footer">Architecture of Grace &middot; architectureofgrace.org</div>
+
+  <footer>
+    Architecture of Grace is independent work by its author. This page is the program's own account of its evidence status; it is not an independent review, and it will be updated as each roadmap stage actually completes — with dates.<br>
+    <a href="/">Home</a> &middot; <a href="/logic-model">The logic model</a> &middot; <a href="/standards">Standards &amp; alignment</a> &middot; <a href="counselor-capacity.html">Counselor Capacity &amp; the Flagged-Lesson Calendar</a>
+  </footer>
+
+</div>
+</body>
+</html>

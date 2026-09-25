@@ -1,0 +1,29 @@
+# Architecture of Grace — Netlify response headers (build .30fg)
+# Permissive on purpose: the app is one inline-script page with srcdoc
+# iframes, blob: print windows, fetch to script.google.com, Google Fonts,
+# cdnjs, jsdelivr and api.qrserver.com. https: + data: + blob: cover all of
+# those; frame-ancestors keeps the site out of other people's iframes.
+/*
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  X-Frame-Options: SAMEORIGIN
+  Permissions-Policy: camera=(), microphone=(), geolocation=()
+  Content-Security-Policy: default-src 'self' https: data: blob: 'unsafe-inline' 'unsafe-eval'; frame-ancestors 'self'; base-uri 'self'; form-action 'self' https://script.google.com;
+
+# ⚠ ADDED .4302 — sw.js IS THE ONE FILE THAT MUST NEVER COME FROM CACHE.
+# The whole update mechanism is a service worker that reads a version string out
+# of this file. A browser holding a stale sw.js keeps serving the old site after
+# a drag, and the reader has no way to tell. The HTML and the manifest follow it
+# for the same reason. Hashed assets are deliberately not listed — they are
+# content-addressed and should stay cacheable.
+/sw.js
+  Cache-Control: no-cache, no-store, must-revalidate
+
+/manifest.json
+  Cache-Control: no-cache, must-revalidate
+
+/*.html
+  Cache-Control: no-cache, must-revalidate
+
+/
+  Cache-Control: no-cache, must-revalidate

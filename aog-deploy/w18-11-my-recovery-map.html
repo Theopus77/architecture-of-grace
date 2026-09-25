@@ -1,0 +1,1225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="aog-sync-config.js"></script><!-- same-origin and optional; a 404 changes nothing -->
+<script>/* .30eg: begin in light. Dark only when this device chose it - Jimmy, 2026-09-02: 'I just passed out a science worksheet through the link and it showed up on my students computer, but it was in dark mode!' With no stored choice the dark palette rode the OS setting (prefers-color-scheme), so a dark-set Chromebook opened every worksheet dark. Setting data-theme before first paint defeats every :not([data-theme="light"]) guard below; the existing toggle still reads and stores the same key. */
+(function(){var t="light";try{if(localStorage.getItem("aog.interior.ws.v1.theme")==="dark")t="dark";}catch(e){}document.documentElement.setAttribute("data-theme",t);})();</script>
+<title>My Recovery Map — Architecture of Grace</title>
+<meta name="description" content="My Recovery Map — Unit 2 · Regulation &amp; Repair strand. Saves on this computer as you work; turn it in to your teacher when you finish.">
+<!-- ═══ AOG ICONS + LINK PREVIEW · managed block · .30k0 ═══
+     Inserted by _work/aog_head.py — DO NOT hand-edit one page; edit the
+     script and re-run it, or the 100 pages drift apart again. The card
+     URL carries ?v= because Slack, Apple and Google cache an og image BY
+     URL for weeks: change the picture, bump IMG_V, or nothing shows up.
+     ═══════════════════════════════════════════════════════════════ -->
+<link rel="canonical" href="https://architectureofgrace.org/w18-11">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Architecture of Grace">
+<meta property="og:locale" content="en_US">
+<meta property="og:title" content="My Recovery Map — Architecture of Grace">
+<meta property="og:description" content="My Recovery Map — Unit 2 · Regulation &amp; Repair strand. Saves on this computer as you work; turn it in to your teacher when you finish.">
+<meta property="og:url" content="https://architectureofgrace.org/w18-11">
+<meta property="og:image" content="https://architectureofgrace.org/og-worksheets.png?v=1">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="The Framework Worksheets — My Recovery Map.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="My Recovery Map — Architecture of Grace">
+<meta name="twitter:description" content="My Recovery Map — Unit 2 · Regulation &amp; Repair strand. Saves on this computer as you work; turn it in to your teacher when you finish.">
+<meta name="twitter:image" content="https://architectureofgrace.org/og-worksheets.png?v=1">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#0A1E33">
+<meta name="apple-mobile-web-app-title" content="Grace">
+<meta name="application-name" content="Architecture of Grace">
+<!-- ═══ END AOG ICONS + LINK PREVIEW ═══ -->
+<meta name="robots" content="noindex">
+<!-- No external requests of any kind. Every byte this page needs is in this file. -->
+<style>
+/* ══ TOKENS ══════════════════════════════════════════════════════════
+   Light is the base. Dark redefines tokens only — never components.   */
+:root{
+  --ground:#F5F1E8;         /* chart paper */
+  --field:#FFFFFF;          /* the writing surface */
+  --field-2:#EFEAE0;
+  --ink:#1D2733;
+  --ink-soft:#57626F;
+  --ink-faint:#5F6B78;
+  --navy:#1B3A5F;
+  --gold:#B8893A;
+  --gold-deep:#7A5C1F;
+  --rule:rgba(29,39,51,.16);
+  --rule-soft:rgba(29,39,51,.08);
+  --lift:0 1px 0 rgba(255,255,255,.7), 0 20px 44px -30px rgba(29,39,51,.55);
+  --lift-sm:0 1px 2px rgba(29,39,51,.07), 0 8px 20px -16px rgba(29,39,51,.4);
+  --a:#1C5499;              /* per-sheet accent, overridden below */
+  --a-wash:rgba(28,84,153,.07);
+  --lock:#2E6B4F;
+  --lock-wash:rgba(46,107,79,.09);
+  --caution:#9A3412;
+  --focus:#B8893A;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --ground:#12161C; --field:#1A2029; --field-2:#222A34;
+    --ink:#E9EEF4; --ink-soft:#A3AFBC; --ink-faint:#84909D;
+    --navy:#9CC2E8; --gold:#D6A852; --gold-deep:#D6A852;
+    --rule:rgba(233,238,244,.18); --rule-soft:rgba(233,238,244,.09);
+    --lift:0 1px 0 rgba(233,238,244,.04), 0 24px 54px -32px rgba(0,0,0,.95);
+    --lift-sm:0 1px 2px rgba(0,0,0,.5), 0 10px 24px -18px rgba(0,0,0,.9);
+    --a:#7FB0E8; --a-wash:rgba(127,176,232,.11);
+    --lock:#79C79E; --lock-wash:rgba(121,199,158,.12);
+    --caution:#F0A07C;
+    --focus:#D6A852;
+  }
+}
+:root[data-theme="dark"]{
+  --ground:#12161C; --field:#1A2029; --field-2:#222A34;
+  --ink:#E9EEF4; --ink-soft:#A3AFBC; --ink-faint:#84909D;
+  --navy:#9CC2E8; --gold:#D6A852; --gold-deep:#D6A852;
+  --rule:rgba(233,238,244,.18); --rule-soft:rgba(233,238,244,.09);
+  --lift:0 1px 0 rgba(233,238,244,.04), 0 24px 54px -32px rgba(0,0,0,.95);
+  --lift-sm:0 1px 2px rgba(0,0,0,.5), 0 10px 24px -18px rgba(0,0,0,.9);
+  --a:#7FB0E8; --a-wash:rgba(127,176,232,.11);
+  --lock:#79C79E; --lock-wash:rgba(121,199,158,.12);
+  --caution:#F0A07C;
+  --focus:#D6A852;
+}
+
+/* per-sheet accents — light base, dark overrides */
+.s-ia  {--a:#1C5499; --a-wash:rgba(28,84,153,.07);}
+.s-vup {--a:#155E75; --a-wash:rgba(21,94,117,.07);}
+.s-cam {--a:#2A4E8C; --a-wash:rgba(42,78,140,.07);}
+.s-fut {--a:#7A5C1F; --a-wash:rgba(122,92,31,.09);}
+.s-ps  {--a:#356B25; --a-wash:rgba(53,107,37,.08);}
+.s-rts {--a:#2E6B4F; --a-wash:rgba(46,107,79,.08);}
+.s-icp {--a:#6B4696; --a-wash:rgba(107,70,150,.08);}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]) .s-ia  {--a:#7FB0E8; --a-wash:rgba(127,176,232,.11);}
+  :root:not([data-theme="light"]) .s-vup {--a:#6FC3D9; --a-wash:rgba(111,195,217,.11);}
+  :root:not([data-theme="light"]) .s-cam {--a:#93AEEA; --a-wash:rgba(147,174,234,.11);}
+  :root:not([data-theme="light"]) .s-fut {--a:#D6A852; --a-wash:rgba(214,168,82,.12);}
+  :root:not([data-theme="light"]) .s-ps  {--a:#8CC97A; --a-wash:rgba(140,201,122,.12);}
+  :root:not([data-theme="light"]) .s-rts {--a:#79C79E; --a-wash:rgba(121,199,158,.12);}
+  :root:not([data-theme="light"]) .s-icp {--a:#B99AD9; --a-wash:rgba(185,154,217,.13);}
+}
+:root[data-theme="dark"] .s-ia  {--a:#7FB0E8; --a-wash:rgba(127,176,232,.11);}
+:root[data-theme="dark"] .s-vup {--a:#6FC3D9; --a-wash:rgba(111,195,217,.11);}
+:root[data-theme="dark"] .s-cam {--a:#93AEEA; --a-wash:rgba(147,174,234,.11);}
+:root[data-theme="dark"] .s-fut {--a:#D6A852; --a-wash:rgba(214,168,82,.12);}
+:root[data-theme="dark"] .s-ps  {--a:#8CC97A; --a-wash:rgba(140,201,122,.12);}
+:root[data-theme="dark"] .s-rts {--a:#79C79E; --a-wash:rgba(121,199,158,.12);}
+:root[data-theme="dark"] .s-icp {--a:#B99AD9; --a-wash:rgba(185,154,217,.13);}
+
+/* ══ BASE ══ */
+*{box-sizing:border-box;}
+html{-webkit-text-size-adjust:100%;}
+body{
+  margin:0; background:var(--ground); color:var(--ink);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  font-size:16px; line-height:1.55;
+}
+h1,h2,h3{margin:0; text-wrap:balance; font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,"Times New Roman",serif; font-weight:600;}
+p{margin:0;}
+button{font:inherit; color:inherit; cursor:pointer;}
+:focus-visible{outline:3px solid var(--focus); outline-offset:2px; border-radius:4px;}
+.wrap{max-width:64rem; margin:0 auto; padding:0 20px;}
+  /* longhand on purpose: `padding:X 0 Y` would reset .wrap's 20px sides and
+     put the masthead, the lock card and the sheet flush against a phone screen. */
+.eyebrow{
+  font-size:11px; font-weight:700; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--ink-faint);
+}
+
+/* ══ MASTHEAD ══ */
+.mast{padding-top:26px; padding-bottom:4px;}
+.mast .row{display:flex; align-items:center; gap:13px;}
+.mark{
+  width:44px; height:44px; border-radius:12px; flex:none;
+  background:var(--navy); color:#E7C77B; display:grid; place-items:center;
+  font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif; font-size:25px; font-weight:700; line-height:1;
+}
+:root[data-theme="dark"] .mark{background:#1B3A5F;}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .mark{background:#1B3A5F;}}
+.mast .name{font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif; font-size:18px; font-weight:700; color:var(--navy); line-height:1.15;}
+.mast .sub{font-size:11.5px; color:var(--ink-faint); letter-spacing:.05em; text-transform:uppercase; font-weight:600;}
+.mast h1{font-size:clamp(30px,5.4vw,44px); line-height:1.04; letter-spacing:-.02em; margin:20px 0 6px;
+  font-weight:700;}
+.mast .deck{font-size:16.5px; color:var(--ink-soft); max-width:38rem;}
+body.solo .mast h1{font-size:clamp(19px,2.6vw,27px); margin:16px 0 4px; letter-spacing:-.01em;}
+body.solo .mast{padding-bottom:0;}
+body.solo .sheets{padding-top:18px;}
+
+/* ══ THE LOCK — the thesis of this page ══ */
+.lock{
+  margin:22px 0 6px; border:2px solid var(--lock); border-radius:18px;
+  background:var(--lock-wash); padding:18px 20px; box-shadow:var(--lift-sm);
+}
+.lock-top{display:flex; align-items:flex-start; gap:14px;}
+.lock-ico{
+  width:38px; height:38px; flex:none; border-radius:11px; border:2px solid var(--lock);
+  display:grid; place-items:center; color:var(--lock);
+}
+.lock-ico svg{width:20px; height:20px;}
+.lock h2{font-size:20px; line-height:1.2; color:var(--ink); font-weight:700;}
+.lock p{font-size:14.5px; color:var(--ink-soft); margin-top:4px; max-width:46rem;}
+.lock-more{
+  margin-top:12px; border-top:1px solid var(--rule-soft); padding-top:12px;
+}
+.lock-more summary{
+  font-size:12.5px; font-weight:700; letter-spacing:.05em; text-transform:uppercase;
+  color:var(--lock); cursor:pointer; list-style:none; display:inline-flex; align-items:center; gap:7px;
+}
+.lock-more summary::-webkit-details-marker{display:none;}
+.lock-more summary::after{content:"＋"; font-size:14px; opacity:.75;}
+.lock-more[open] summary::after{content:"−";}
+.lock-more .body{font-size:14px; color:var(--ink-soft); margin-top:10px; display:grid; gap:9px; max-width:46rem;}
+.lock-more .body b{color:var(--ink);}
+.lock-acts{display:flex; flex-wrap:wrap; gap:9px; margin-top:14px;}
+
+/* ══ BUTTONS ══ */
+.btn{
+  border:1.5px solid var(--rule); background:var(--field); border-radius:10px;
+  padding:8px 14px; font-size:13.5px; font-weight:600; color:var(--ink);
+  display:inline-flex; align-items:center; gap:7px; transition:transform .12s ease, border-color .12s ease, background .12s ease;
+}
+.btn:hover{border-color:var(--a); transform:translateY(-1px);}
+.btn:active{transform:translateY(0);}
+.btn-accent{background:var(--a); border-color:var(--a); color:#fff;}
+:root[data-theme="dark"] .btn-accent{color:#12161C;}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .btn-accent{color:#12161C;}}
+.btn-danger{border-color:var(--caution); color:var(--caution);}
+.btn-danger:hover{border-color:var(--caution); background:var(--caution); color:var(--field);}
+.btn-lock{border-color:var(--lock); color:var(--lock);}
+
+/* ══ SHEET RAIL ══ */
+.rail-shell .wrap{max-width:78rem;}
+.rail-shell{position:sticky; top:0; z-index:20; background:var(--ground); padding-top:14px;
+  border-bottom:1px solid var(--rule-soft); margin-top:22px;}
+.rail{display:flex; gap:8px; overflow-x:auto; padding-bottom:12px; scrollbar-width:thin;}
+.tab{
+  flex:none; text-align:left; min-width:158px; max-width:200px;
+  border:1.5px solid var(--rule); border-radius:13px; background:var(--field);
+  padding:10px 12px 11px; position:relative; overflow:hidden;
+  transition:border-color .14s ease, transform .14s ease;
+}
+.tab::before{content:""; position:absolute; inset:0 auto 0 0; width:4px; background:var(--a); opacity:.55;}
+.tab:hover{transform:translateY(-2px); border-color:var(--a);}
+.tab .k{font-size:10px; font-weight:800; letter-spacing:.11em; text-transform:uppercase; color:var(--a); display:block;}
+.tab .t{font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif; font-size:15px; font-weight:600; line-height:1.2; display:block; margin-top:3px;}
+.tab[aria-selected="true"]{border-color:var(--a); background:var(--a-wash); box-shadow:var(--lift-sm);}
+.tab[aria-selected="true"]::before{opacity:1; width:5px;}
+.tab .pill{display:inline-block; margin-top:6px; font-size:9.5px; font-weight:800; letter-spacing:.1em;
+  text-transform:uppercase; border:1px solid var(--a); color:var(--a); border-radius:99px; padding:1px 7px;}
+
+/* ══ SHEET ══ */
+.sheets{padding-top:26px; padding-bottom:70px;}
+.sheet{
+  background:var(--field); border:1.5px solid var(--rule); border-radius:20px;
+  box-shadow:var(--lift); padding:clamp(20px,4vw,38px); max-width:52rem; margin:0 auto 26px;
+}
+.js-on .sheet{display:none; margin-bottom:0;}
+.js-on .sheet.is-active{display:block; animation:rise .34s cubic-bezier(.2,.7,.3,1) both;}
+@keyframes rise{from{opacity:0; transform:translateY(10px);} to{opacity:1; transform:none;}}
+@media (prefers-reduced-motion: reduce){
+  .js-on .sheet.is-active{animation:none;}
+  .btn:hover,.tab:hover{transform:none;}
+  *{scroll-behavior:auto !important;}
+}
+.sheet-head{border-bottom:2px solid var(--a); padding-bottom:14px;}
+.sheet-head .k{font-size:11px; font-weight:800; letter-spacing:.14em; text-transform:uppercase; color:var(--a);}
+.sheet-head h2{font-size:clamp(26px,4.4vw,38px); line-height:1.06; letter-spacing:-.018em; margin:6px 0 7px;
+}
+.sheet-head .say{font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif; font-style:italic; font-size:17px; color:var(--ink-soft); line-height:1.4;}
+
+.priv{
+  margin:18px 0 4px; border:1.5px solid var(--lock); border-left-width:5px; border-radius:11px;
+  background:var(--lock-wash); padding:11px 14px;
+}
+.priv .k{font-size:10.5px; font-weight:800; letter-spacing:.15em; text-transform:uppercase; color:var(--lock);}
+.priv .v{font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif; font-style:italic; font-size:14.5px; color:var(--ink-soft); margin-top:2px;}
+
+.blk{margin-top:26px;}
+.blk > .lab{
+  font-size:11.5px; font-weight:800; letter-spacing:.13em; text-transform:uppercase; color:var(--a);
+  display:block; margin-bottom:3px;
+}
+.blk > .hint{font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif; font-style:italic; font-size:14.5px; color:var(--ink-faint); margin-bottom:9px; line-height:1.4;}
+
+/* writing fields */
+.fld{
+  width:100%; display:block; border:0; border-bottom:2px solid var(--rule);
+  background:transparent; color:var(--ink); font:inherit; font-size:16.5px; line-height:1.85;
+  padding:6px 2px 5px; resize:none; overflow:hidden; min-height:2.1em;
+  transition:border-color .14s ease;
+}
+.fld::placeholder{color:var(--ink-faint); opacity:.55; font-style:italic;}
+.fld:focus{outline:none; border-bottom-color:var(--a);}
+.fld:focus-visible{outline:none;}
+.pen{position:relative;}
+.pen::after{
+  content:""; position:absolute; left:0; right:0; bottom:-2px; height:2px; background:var(--a);
+  transform:scaleX(0); transform-origin:left; transition:transform .22s cubic-bezier(.2,.7,.3,1);
+}
+.pen:focus-within::after{transform:scaleX(1);}
+.blank-lines{display:none;}
+.pcopy{display:none;}
+.blank-lines i{display:block; height:26px; border-bottom:1.5px solid var(--rule); margin-top:2px;}
+
+.two{display:grid; grid-template-columns:1fr 1fr; gap:16px;}
+@media (max-width:640px){.two{grid-template-columns:1fr;}}
+.pane{border:1.5px solid var(--rule); border-radius:13px; padding:13px 14px 15px; background:var(--field);}
+.pane.hi{border-color:var(--a); background:var(--a-wash);}
+.pane .lab{font-size:11px; font-weight:800; letter-spacing:.12em; text-transform:uppercase; color:var(--a); display:block;}
+.pane .hint{font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif; font-style:italic; font-size:13.5px; color:var(--ink-faint); margin:3px 0 8px; line-height:1.4;}
+
+/* ══ TABLE ══ */
+.tbl-scroll{overflow-x:auto; border:1.5px solid var(--rule); border-radius:13px;}
+table.grid{border-collapse:collapse; width:100%; min-width:660px;}
+table.grid th{
+  text-align:left; font-size:10.5px; font-weight:800; letter-spacing:.11em; text-transform:uppercase;
+  color:var(--a); background:var(--a-wash); padding:10px 11px; border-bottom:1.5px solid var(--rule);
+  vertical-align:bottom;
+}
+table.grid td{padding:0; border-bottom:1px solid var(--rule-soft); border-right:1px solid var(--rule-soft); vertical-align:top;}
+table.grid td:last-child{border-right:0;}
+table.grid tr:last-child td{border-bottom:0;}
+table.grid .cell{
+  width:100%; border:0; background:transparent; color:var(--ink); font:inherit; font-size:15px; line-height:1.6;
+  padding:10px 11px; resize:none; overflow:hidden; min-height:3.4em;
+}
+table.grid .cell:focus{outline:none; background:var(--a-wash);}
+
+/* ══ RINGS ══ */
+.ring{border:2px solid var(--rule); border-radius:26px; padding:14px 15px 16px;}
+.ring.r1{border-color:var(--ink-faint);}
+.ring.r2{border-color:var(--a); opacity:1; margin-top:14px;}
+.ring.r3{border-color:var(--a); border-width:3px; background:var(--a-wash); margin-top:14px;}
+.ring .rk{font-size:11px; font-weight:800; letter-spacing:.12em; text-transform:uppercase; color:var(--ink-soft);}
+.ring.r2 .rk,.ring.r3 .rk{color:var(--a);}
+.ring .rh{font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif; font-style:italic; font-size:13.5px; color:var(--ink-faint); margin:2px 0 10px;}
+.chips{display:flex; flex-wrap:wrap; gap:7px; margin-bottom:10px;}
+.chips:empty{display:none;}
+.chip{
+  display:inline-flex; align-items:center; gap:8px; border:1.5px solid var(--rule); border-radius:99px;
+  padding:5px 6px 5px 13px; font-size:14px; background:var(--field); animation:pop .26s cubic-bezier(.2,.8,.3,1) both;
+}
+.ring.r3 .chip{border-color:var(--a); font-weight:600;}
+@keyframes pop{from{opacity:0; transform:scale(.9);} to{opacity:1; transform:none;}}
+@media (prefers-reduced-motion: reduce){.chip{animation:none;}}
+.chip button{
+  border:0; background:transparent; color:var(--ink-faint); font-size:16px; line-height:1;
+  padding:2px 5px; border-radius:99px;
+}
+.chip button:hover{color:var(--caution);}
+.ring-add{display:flex; gap:8px;}
+.ring-add input{
+  flex:1; min-width:0; border:1.5px solid var(--rule); border-radius:9px; background:transparent;
+  color:var(--ink); font:inherit; font-size:15px; padding:8px 11px;
+}
+.ring-add input:focus{outline:none; border-color:var(--a);}
+.ring-add input::placeholder{color:var(--ink-faint); opacity:.6;}
+
+/* ══ SPECTRUM ══ */
+.spec{margin-top:6px;}
+.spec-ends{display:flex; justify-content:space-between; gap:12px; font-size:11px; font-weight:800;
+  letter-spacing:.11em; text-transform:uppercase;}
+.spec-ends .l{color:var(--a);}
+.spec-ends .r{color:var(--caution); text-align:right;}
+.spec-track{
+  display:none; position:relative; height:14px; margin:12px 0 4px;
+  border:2px solid var(--ink-soft); border-radius:99px;
+}
+.spec-track .tick{position:absolute; top:-6px; bottom:-6px; width:2px; background:var(--rule); left:50%;}
+.spec-row{display:grid; grid-template-columns:1fr; gap:4px; margin-top:16px;}
+.spec-row .rl{font-size:12px; font-weight:700; color:var(--ink-soft); display:flex; justify-content:space-between; gap:10px;}
+.spec-row .rl b{color:var(--a); font-variant-numeric:tabular-nums;}
+input[type=range].slider{
+  -webkit-appearance:none; appearance:none; width:100%; height:26px; background:transparent; margin:0;
+}
+input[type=range].slider::-webkit-slider-runnable-track{height:6px; border-radius:99px; background:var(--field-2);}
+input[type=range].slider::-moz-range-track{height:6px; border-radius:99px; background:var(--field-2);}
+input[type=range].slider::-webkit-slider-thumb{
+  -webkit-appearance:none; width:24px; height:24px; margin-top:-9px; border-radius:50%;
+  background:var(--a); border:3px solid var(--field); box-shadow:var(--lift-sm); cursor:grab;
+}
+input[type=range].slider::-moz-range-thumb{
+  width:24px; height:24px; border-radius:50%; background:var(--a); border:3px solid var(--field);
+  box-shadow:var(--lift-sm); cursor:grab;
+}
+.spec-print{display:none;}
+
+/* ══ NUMBERED STEPS ══ */
+.step{display:grid; grid-template-columns:46px 1fr; gap:15px; margin-top:22px; align-items:start;}
+.step .n{
+  width:46px; height:46px; border-radius:13px; border:2px solid var(--a); color:var(--a);
+  display:grid; place-items:center; font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif; font-size:22px; font-weight:700;
+}
+.step .lab{font-size:12px; font-weight:800; letter-spacing:.12em; text-transform:uppercase; color:var(--a); display:block;}
+.step .hint{font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif; font-style:italic; font-size:14.5px; color:var(--ink-faint);
+  margin:2px 0 8px; line-height:1.4;}
+@media (max-width:520px){.step{grid-template-columns:36px 1fr; gap:11px;} .step .n{width:36px; height:36px; font-size:17px;}}
+
+/* ══ TACTIC CARDS ══ */
+.tacs{display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin:4px 0 15px;}
+.tac{border:1.5px solid var(--rule); border-left:4px solid var(--a); border-radius:13px;
+     padding:11px 13px 12px; background:var(--field);}
+.tac .tk{font-size:10.5px; font-weight:800; letter-spacing:.12em; text-transform:uppercase; color:var(--a); display:block;}
+.tac .tq{font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif; font-style:italic;
+     font-size:13.5px; color:var(--ink-soft); line-height:1.4; margin-top:6px;}
+.tac .td{font-size:12.5px; color:var(--ink-faint); line-height:1.4; margin-top:7px;}
+@media (max-width:720px){ .tacs{grid-template-columns:1fr;} }
+
+/* ══ SUPPORT BOX ══ */
+.support{
+  margin-top:28px; border:2px solid var(--caution); border-radius:14px; padding:15px 17px;
+}
+.support .k{font-size:11px; font-weight:800; letter-spacing:.14em; text-transform:uppercase; color:var(--caution);}
+.support ul{margin:9px 0 0; padding-left:19px; display:grid; gap:6px;}
+.support li{font-size:15px;}
+.support li b{font-weight:700;}
+.support .cslr{display:grid; gap:8px; margin-top:11px; grid-template-columns:1fr 1fr;}
+@media (max-width:520px){.support .cslr{grid-template-columns:1fr;}}
+.support .cslr input{
+  border:0; border-bottom:2px solid var(--rule); background:transparent; color:var(--ink);
+  font:inherit; font-size:15px; padding:5px 2px;
+}
+.support .cslr input:focus{outline:none; border-bottom-color:var(--caution);}
+.support .tnote{font-size:11.5px; color:var(--ink-faint); margin-top:8px; font-style:italic;}
+
+/* ══ PAPER CARD ══ */
+.paper{
+  border:2px dashed var(--a); border-radius:16px; padding:20px 20px 22px; margin-top:20px;
+  background:var(--a-wash);
+}
+.paper .k{font-size:11px; font-weight:800; letter-spacing:.14em; text-transform:uppercase; color:var(--a);}
+.paper h3{font-size:22px; margin:6px 0 8px; line-height:1.2;}
+.paper p{font-size:15px; color:var(--ink-soft); max-width:40rem;}
+.paper p + p{margin-top:9px;}
+.starters{display:grid; gap:8px; margin-top:14px;}
+.starters div{
+  border-left:3px solid var(--a); padding:2px 0 2px 12px;
+  font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif; font-style:italic; font-size:16px; color:var(--ink);
+}
+
+/* ══ FAMILY NOTE ══ */
+.fam{margin-top:30px; border-top:1.5px solid var(--rule); padding-top:14px;}
+.fam .k{font-size:10.5px; font-weight:800; letter-spacing:.14em; text-transform:uppercase; color:var(--gold-deep);}
+.fam p{font-size:14px; color:var(--ink-soft); margin-top:5px; max-width:44rem;}
+
+/* ══ SHEET FOOTER ══ */
+.sheet-foot{
+  margin-top:30px; border-top:1.5px solid var(--rule); padding-top:15px;
+  display:flex; flex-wrap:wrap; align-items:center; gap:9px;
+}
+.saved{
+  margin-left:auto; font-size:12px; font-weight:600; color:var(--lock);
+  display:inline-flex; align-items:center; gap:6px; opacity:0; transition:opacity .3s ease;
+}
+.saved.on{opacity:1;}
+.saved .dot{width:7px; height:7px; border-radius:50%; background:var(--lock); flex:none;}
+@media (max-width:520px){.saved{margin-left:0; width:100%;}}
+
+
+.share{margin:22px 0 4px; border:1.5px solid var(--rule); border-radius:16px; background:var(--field);
+  padding:16px 18px 18px; box-shadow:var(--lift-sm);}
+.share h2{font-size:17px; font-weight:700; line-height:1.25;}
+.share > p{font-size:13.5px; color:var(--ink-soft); margin-top:4px; max-width:46rem;}
+.share ol{list-style:none; margin:14px 0 0; padding:0; display:grid; gap:7px;}
+.share li{display:flex; align-items:center; gap:11px; flex-wrap:wrap;
+  border:1.5px solid var(--rule); border-radius:11px; padding:8px 11px;}
+.share .wk{font-size:10px; font-weight:800; letter-spacing:.11em; text-transform:uppercase;
+  color:var(--ink-faint); flex:none; width:6.6rem;}
+.share .nm{font-family:Georgia,serif; font-size:15px; font-weight:600; flex:1 1 12rem; min-width:0;}
+.share code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; font-size:13.5px;
+  background:var(--field-2); border-radius:6px; padding:3px 8px; color:var(--ink);}
+.share .cp{border:1.5px solid var(--rule); background:transparent; border-radius:9px;
+  padding:5px 11px; font-size:12.5px; font-weight:600;}
+.share .cp:hover{border-color:var(--a);}
+.share .bm{border-color:var(--a); color:var(--a);}
+#beam{
+  position:fixed; inset:0; z-index:900; background:var(--field); color:var(--ink);
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  gap:clamp(14px,3vh,34px); padding:5vh 4vw; text-align:center; cursor:pointer;
+}
+#beam .wk{font-size:clamp(13px,1.6vw,22px); font-weight:800; letter-spacing:.2em; text-transform:uppercase; color:var(--ink-faint);}
+#beam .nm{font-family:Georgia,serif; font-size:clamp(28px,5vw,72px); line-height:1.05; font-weight:700;}
+#beam .url{
+  font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  font-size:clamp(19px,5.4vw,104px); font-weight:700; line-height:1.1;
+  letter-spacing:-.02em; color:var(--a); white-space:nowrap; max-width:100%;
+}
+#beam .hint{font-size:clamp(13px,1.5vw,20px); color:var(--ink-faint);}
+#beam .x{position:absolute; top:18px; right:20px; font-size:15px; font-weight:700; color:var(--ink-faint);}
+
+/* ══ PAGE FOOT ══ */
+.foot{border-top:1px solid var(--rule-soft); padding-top:22px; padding-bottom:46px; color:var(--ink-faint); font-size:12.5px;}
+.foot p{max-width:46rem;}
+.foot p + p{margin-top:7px;}
+.foot b{color:var(--ink-soft);}
+.foot .foot-home a{color:inherit; text-decoration:underline; text-underline-offset:2px;}
+
+/* ══ PRINT ══════════════════════════════════════════════════════════ */
+@media print{
+  @page{size:Letter; margin:14mm;}
+  body{background:#fff; color:#000; font-size:11pt;}
+  .mast,.lock,.rail-shell,.foot,.sheet-foot,.no-print{display:none !important;}
+  .sheets{padding:0;}
+  .wrap{max-width:none; padding:0;}
+  .sheet{
+    display:none !important; box-shadow:none; border:0; border-radius:0; padding:0;
+    max-width:none; margin:0; background:#fff;
+  }
+  .sheet.is-active{display:block !important;}
+  body:not(.js-on) .sheet{display:block !important; page-break-after:always;}
+  .sheet-head{border-bottom:2px solid #000;}
+  .sheet-head h2{font-size:24pt;}
+  .sheet-head .k,.blk > .lab,.pane .lab,.step .lab,table.grid th,
+  .ring .rk,.ring.r2 .rk,.ring.r3 .rk,.fam .k,.spec-ends .l,.spec-ends .r,
+  .paper .k,.step .n,.tac .tk{color:#000;}
+  .pen::after{display:none;}
+  .spec-row{display:none;}
+  body.print-blank .spec-ends{margin-bottom:6px;}
+  /* one worksheet = one sheet of paper */
+  body{font-size:10.5pt; line-height:1.4;}
+  .sheet-head{padding-bottom:9px;}
+  .sheet-head h2{font-size:21pt;}
+  .sheet-head .say{font-size:11.5pt;}
+  .priv{margin:11px 0 0; padding:7px 11px;}
+  .blk{margin-top:14px;}
+  .blk > .hint,.pane .hint,.step .hint,.ring .rh{font-size:9.5pt; margin-bottom:5px;}
+  .fld{font-size:11pt; line-height:1.6; min-height:1.6em;}
+  .pane{padding:9px 11px 10px;}
+  .ring{padding:10px 11px 11px; border-radius:18px;}
+  .ring.r2,.ring.r3{margin-top:10px;}
+  .chip{padding:2px 10px; font-size:10pt;}
+  .step{margin-top:14px; grid-template-columns:34px 1fr; gap:11px; break-inside:avoid; page-break-inside:avoid;}
+  .step .n{width:34px; height:34px; font-size:15pt;}
+  .tacs{grid-template-columns:repeat(3,1fr); gap:7px; margin:3px 0 9px; page-break-inside:avoid;}
+  .tac{padding:6px 8px 7px; border-radius:9px; border-left-width:3px;}
+  .tac .tk{font-size:8pt;}
+  .tac .tq{font-size:8.5pt; line-height:1.3; margin-top:3px;}
+  .tac .td{font-size:8pt; line-height:1.3; margin-top:3px;}
+  .support{margin-top:14px; padding:10px 12px;}
+  .support li{font-size:10.5pt;}
+  .support .cslr{margin-top:7px;}
+  .fam{margin-top:16px; padding-top:9px;}
+  .fam p{font-size:9.5pt;}
+  table.grid .cell{font-size:10.5pt; padding:7px 9px; min-height:2.6em;}
+  /* the ★★ lesson's crisis box must never orphan onto a second page */
+  body.print-blank .s-rts .blank-lines i{height:21px;}
+  body.print-blank .s-rts .step{margin-top:11px;}
+  body.print-blank .s-rts .priv{margin-top:9px;}
+  /* the Internal Critic Profile carries three reference cards AND the crisis box */
+  body.print-blank .s-icp .blank-lines i{height:21px;}
+  .s-icp .blk{margin-top:12px;}
+  .s-icp .fam{margin-top:12px;}
+  .s-icp .support{margin-top:12px;}
+  /* the whole letter must land on one sheet of paper */
+  .s-fut .blank-lines i{height:24px;}
+  .s-fut .paper{padding:12px 16px 14px; margin-top:14px;}
+  .s-fut .paper h3{font-size:15pt; margin:4px 0 6px;}
+  .s-fut .blk{margin-top:16px;}
+  .s-fut .fam{margin-top:16px;}
+  .priv{border-color:#000; background:#fff;}
+  .priv .k{color:#000;}
+  .pane,.ring,.tbl-scroll,.chip,.support,.paper,.step .n,.tac{border-color:#000 !important; background:#fff !important;}
+  .fld,.fld:focus,table.grid .cell,table.grid .cell:focus{border-bottom-color:#000 !important; color:#000; background:transparent !important;}
+  /* textareas keep JS-computed screen heights, which pad the page and can clip long
+     answers — print a plain text copy instead. */
+  textarea{display:none !important;}
+  .pcopy{
+    display:block; white-space:pre-wrap; overflow-wrap:break-word; color:#000;
+    font-size:11pt; line-height:1.55; padding:1px 2px 3px; min-height:2.2em;
+    border-bottom:1.5px solid #000;
+  }
+  table.grid .pcopy{border-bottom:0; min-height:2.6em; font-size:10.5pt; padding:7px 9px;}
+  .tbl-scroll{overflow:visible;}
+  table.grid{min-width:0; width:100%; table-layout:fixed;}
+  body.print-blank .pcopy{display:none !important;}
+  .step,.blk,.ring.r2,.ring.r3{page-break-inside:avoid;}
+  .support{page-break-inside:avoid;}
+  /* blank-print: ruled lines are real elements, never a background gradient */
+  body.print-blank .fld,body.print-blank .ring-add,body.print-blank .chips,
+  body.print-blank .slider,body.print-blank table.grid .cell{display:none !important;}
+  body.print-blank .blank-lines{display:block;}
+  .blank-lines i{border-bottom-color:#000;}
+  body.print-blank table.grid td{height:64px;}
+  body.print-blank .chips-blank{display:block;}
+  .slider{display:none !important;}
+  .spec-track{display:none;}
+  body.print-blank .spec-print{display:none !important;}
+  body.print-blank .spec-track{display:block;}
+  body.print-blank .spec-row .rl b{visibility:hidden;}
+  .spec-print{display:block; position:relative; height:56px; margin-top:10px;}
+  .spec-print .bar{position:absolute; left:0; right:0; top:14px; height:0; border-top:2px solid #000;}
+  .spec-print .m{position:absolute; top:0; transform:translateX(-50%); text-align:center; font-size:8pt;}
+  .spec-print .m::before{
+    content:""; display:block; margin:0 auto 2px; width:0; height:0;
+    border-left:6px solid transparent; border-right:6px solid transparent; border-bottom:9px solid #000;
+  }
+  .spec-track{border-color:#000;}
+}
+</style>
+<style>
+/* ══ AOG-WS-BAND — the few extra pieces the band sheets use (reference tables, sorts, steps, signature) ══ */
+.reft{width:100%;border-collapse:collapse;margin-top:8px;font-size:14px}
+.reft th{text-align:left;font-size:10.5px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--a);padding:0 0 6px}
+.reft td{padding:7px 10px 7px 0;border-top:1px solid var(--rule-soft);vertical-align:top;width:50%}
+.sortrow{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center;padding:8px 0;border-bottom:1px solid var(--rule-soft)}
+.sortrow span{flex:1;min-width:220px}
+.sel{border:1.5px solid var(--rule);border-radius:9px;background:var(--field);color:var(--ink);padding:7px 10px;font:inherit;font-size:14px}
+.sel:focus{outline:none;border-color:var(--a)}
+.stepgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:8px}
+@media(max-width:640px){.stepgrid{grid-template-columns:1fr 1fr}}
+.stepgrid .st{border:1.5px solid var(--rule);border-radius:12px;padding:11px 12px;background:var(--field)}
+.stepgrid .st b{display:block;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--a);margin-bottom:4px}
+.stepgrid .st p{margin:0;font-size:13.5px;color:var(--ink-soft);line-height:1.4}
+.signrow{display:flex;gap:24px;flex-wrap:wrap;margin-top:22px;font-size:13px;color:var(--ink-soft)}
+.signrow span{flex:1;min-width:200px;border-bottom:1.5px solid var(--rule);padding:0 4px 4px}
+@media print{.sel{border:1px solid #999;background:#fff}.sortrow{page-break-inside:avoid}}
+/* ══ AOG-WS-DRAWPAD — the K–2 drawing sheets: a finger/stylus pad whose PNG rides the same
+   hidden field as a typed answer, so it autosaves, erases and sends with FINISHED like the rest ══ */
+.padwrap{position:relative;margin-top:8px}
+.pad{display:block;width:100%;height:auto;aspect-ratio:3/2;border:1.5px solid var(--rule);border-radius:14px;background:#fff;touch-action:none;cursor:crosshair}
+.padtools{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:8px}
+.padtools button{border:1.5px solid var(--rule);background:var(--field);color:var(--ink);border-radius:999px;padding:6px 13px;font:inherit;font-size:13px;cursor:pointer}
+.padtools button[aria-pressed="true"]{border-color:var(--a);color:var(--a)}
+.padtools .sw{width:26px;height:26px;border-radius:50%;border:2px solid var(--rule);padding:0;cursor:pointer}
+.padtools .sw[aria-pressed="true"]{border-color:var(--ink);box-shadow:0 0 0 2px var(--field),0 0 0 4px var(--a)}
+.pad-blank{display:none}
+@media print{.pad{border-color:#000;page-break-inside:avoid}.padtools{display:none !important}
+  body.print-blank .pad{display:none}body.print-blank .pad-blank{display:block;width:100%;aspect-ratio:3/2;border:1.5px solid #000;border-radius:14px}}
+</style>
+</head>
+<body>
+<script src="/aog-topbar.js"></script>
+
+<script>document.body.className="js-on solo";</script>
+
+<header class="mast wrap">
+  <div class="row">
+    <div class="mark" aria-hidden="true">A</div>
+    <div>
+      <div class="name">Architecture of Grace</div>
+      <div class="sub">Book 2 · The Framework · Grades 3–5</div>
+    </div>
+  </div>
+  <h1>The Framework Worksheets</h1>
+  <p class="deck">Unit 2 · Regulation &amp; Repair strand. Type it here, or print it and use a pen — both count.</p>
+
+</header>
+
+
+<main class="sheets wrap">
+<section class="sheet is-active" id="sh-b2wsr2" role="tabpanel" data-id="b2wsr2">
+  <div class="sheet-head">
+    <span class="k">Unit 2 · Regulation &amp; Repair strand · Worksheet WS-R2</span>
+    <h2>My Recovery Map</h2>
+    <p class="say">Think of a real mistake from the last week or two — not the worst mistake of your life, but something real. Walk it through the four phases.</p>
+  </div>
+
+<div class="fam">
+<div class="k">Privacy note</div>
+<p>This worksheet belongs to you. Your teacher will not collect or read the paper copy. Keep it in your journal or folder and bring it to class all year. Keep it with WS-R1.</p>
+</div>
+<div class="blk">
+<label class="lab" for="fld-b2wsr2-p1_m">Phase 1 · Activated — the mistake</label>
+<p class="hint">1–2 sentences.</p>
+<div class="pen"><textarea class="fld" id="fld-b2wsr2-p1_m" data-f="p1_m" rows="2"></textarea></div>
+<div class="blank-lines" aria-hidden="true"><i></i><i></i><i></i></div></div>
+<div class="blk">
+<label class="lab" for="fld-b2wsr2-p1_body">What did Phase 1 feel like in your body?</label>
+<div class="pen"><textarea class="fld" id="fld-b2wsr2-p1_body" data-f="p1_body" rows="2"></textarea></div>
+<div class="blank-lines" aria-hidden="true"><i></i><i></i><i></i></div></div>
+<div class="blk">
+<label class="lab" for="fld-b2wsr2-p1_crit">What was your inner critic saying in Phase 1?</label>
+<div class="pen"><textarea class="fld" id="fld-b2wsr2-p1_crit" data-f="p1_crit" rows="2"></textarea></div>
+<div class="blank-lines" aria-hidden="true"><i></i><i></i><i></i></div></div>
+<div class="blk">
+<label class="lab" for="fld-b2wsr2-p2_tool">Phase 2 · Regulating — which strategy from your toolkit did you use, or could you have used?</label>
+<div class="pen"><textarea class="fld" id="fld-b2wsr2-p2_tool" data-f="p2_tool" rows="2"></textarea></div>
+<div class="blank-lines" aria-hidden="true"><i></i><i></i><i></i></div></div>
+<div class="blk">
+<label class="lab" for="fld-b2wsr2-p2_time">How long did Phase 2 take — or how long would it need to take?</label>
+<div class="pen"><textarea class="fld" id="fld-b2wsr2-p2_time" data-f="p2_time" rows="2"></textarea></div>
+<div class="blank-lines" aria-hidden="true"><i></i><i></i><i></i></div></div>
+<div class="blk">
+<label class="lab" for="fld-b2wsr2-p3_see">Phase 3 · Reflecting — what could you see clearly from inside your Window that you could NOT see in Phase 1?</label>
+<div class="pen"><textarea class="fld" id="fld-b2wsr2-p3_see" data-f="p3_see" rows="3"></textarea></div>
+<div class="blank-lines" aria-hidden="true"><i></i><i></i><i></i><i></i></div></div>
+<div class="blk">
+<label class="lab" for="fld-b2wsr2-p3_map">Using the Accountability Map (WS4)</label>
+<p class="hint">What exactly happened? What was the impact? What does repair require?</p>
+<div class="pen"><textarea class="fld" id="fld-b2wsr2-p3_map" data-f="p3_map" rows="3"></textarea></div>
+<div class="blank-lines" aria-hidden="true"><i></i><i></i><i></i><i></i></div></div>
+<div class="blk">
+<label class="lab" for="fld-b2wsr2-p4_done">Phase 4 · Reintegrating — what would completing Phase 4 look like for this mistake?</label>
+<div class="pen"><textarea class="fld" id="fld-b2wsr2-p4_done" data-f="p4_done" rows="3"></textarea></div>
+<div class="blank-lines" aria-hidden="true"><i></i><i></i><i></i><i></i></div></div>
+<div class="blk">
+<label class="lab" for="fld-b2wsr2-p4_next">Is there anything still incomplete in the arc? If so, what is one next step?</label>
+<div class="pen"><textarea class="fld" id="fld-b2wsr2-p4_next" data-f="p4_next" rows="2"></textarea></div>
+<div class="blank-lines" aria-hidden="true"><i></i><i></i><i></i></div></div>
+
+  <div class="sheet-foot no-print">
+    <button class="btn btn-accent" type="button" data-print="filled">Print my copy</button>
+    <button class="btn" type="button" data-print="blank">Print it blank</button>
+    <button class="btn btn-danger" type="button" data-erase>Erase this sheet</button>
+    <span class="saved" data-saved><span class="dot"></span><span data-savedtext>Saved on this computer</span></span>
+  </div>
+</section>
+
+  <div class="lock-acts no-print" aria-label="Page controls">
+    <button class="btn btn-lock" type="button" id="eraseAll">Erase everything on this computer</button>
+    <button class="btn" type="button" id="themeBtn" aria-live="polite">Switch to dark</button>
+  </div>
+</main>
+
+<footer class="foot wrap no-print">
+  <p><b>Architecture of Grace · Book 2, The Framework (Grades 3–5).</b> Unit 2 · Regulation &amp; Repair strand — My Recovery Map.</p>
+  <p>This page loads no fonts, scripts, or images from the internet and sends nothing out — it works with the network off. Your writing is stored in this browser only. It is not a district product and carries no district endorsement.</p>
+  <p class="foot-home"><a href="/" rel="noopener">Architecture of Grace</a></p>
+</footer>
+
+<script>
+(function(){
+  "use strict";
+  var KEY = "aog.interior.ws.v1.";
+  var hasLS = (function(){ try{ var k="__t"; localStorage.setItem(k,"1"); localStorage.removeItem(k); return true; }catch(e){ return false; } })();
+
+  /* ── storage ─────────────────────────────────────────── */
+  function load(id){
+    if(!hasLS) return {};
+    try{ return JSON.parse(localStorage.getItem(KEY+id) || "{}") || {}; }catch(e){ return {}; }
+  }
+  function save(id, data){
+    if(!hasLS) return false;
+    try{ localStorage.setItem(KEY+id, JSON.stringify(data)); return true; }catch(e){ return false; }
+  }
+  function wipe(id){ if(hasLS){ try{ localStorage.removeItem(KEY+id); }catch(e){} } }
+
+  var sheets = Array.prototype.slice.call(document.querySelectorAll(".sheet"));
+  var tabs   = Array.prototype.slice.call(document.querySelectorAll(".tab"));
+  var state  = {};
+
+  /* ── helpers ─────────────────────────────────────────── */
+  function grow(el){ el.style.height = "auto"; el.style.height = (el.scrollHeight + 2) + "px"; }
+  function esc(s){ return String(s).replace(/[&<>"']/g, function(c){
+    return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]; }); }
+
+  var savedTimers = {};
+  function flagSaved(sheet, ok){
+    var pill = sheet.querySelector("[data-saved]");
+    if(!pill) return;
+    var txt = pill.querySelector("[data-savedtext]");
+    if(txt && sheet.dataset.id !== "fut"){
+      txt.textContent = ok ? ("Saved on this computer · " +
+        new Date().toLocaleTimeString([], {hour:"numeric", minute:"2-digit"}))
+        : "This computer will not let the page save. Print your copy before you leave.";
+    }
+    pill.classList.add("on");
+    clearTimeout(savedTimers[sheet.dataset.id]);
+    savedTimers[sheet.dataset.id] = setTimeout(function(){ if(ok) pill.classList.remove("on"); }, 4000);
+  }
+
+  /* ── per-sheet wiring ────────────────────────────────── */
+  sheets.forEach(function(sheet){
+    var id = sheet.dataset.id;
+    state[id] = load(id);
+    var d = state[id];
+
+    function persist(){ flagSaved(sheet, save(id, state[id])); }
+    var t = null;
+    function persistSoon(){ clearTimeout(t); t = setTimeout(persist, 500); }
+
+    /* text fields + sliders + inputs */
+    sheet.querySelectorAll("[data-f]").forEach(function(el){
+      var f = el.dataset.f;
+      if(typeof d[f] !== "undefined" && d[f] !== null) el.value = d[f];
+      if(el.tagName === "TEXTAREA") grow(el);
+      el.addEventListener("input", function(){
+        state[id][f] = el.value;
+        if(el.tagName === "TEXTAREA") grow(el);
+        if(el.dataset.slider) paintSlider(el);
+        persistSoon();
+      });
+      if(el.dataset.slider) paintSlider(el);
+    });
+
+    function paintSlider(el){
+      var which = el.dataset.slider;
+      var out = sheet.querySelector('[data-out="' + which + '"]');
+      if(out) out.textContent = el.value;
+      var mark = sheet.querySelector('[data-mark="' + which + '"]');
+      if(mark) mark.style.left = el.value + "%";
+    }
+
+    /* table rows */
+    var table = sheet.querySelector("[data-table]");
+    if(table){
+      var tbody = table.querySelector("tbody");
+      var cols = 4;
+      function addRow(values){
+        var tr = document.createElement("tr");
+        for(var c = 0; c < cols; c++){
+          var td = document.createElement("td");
+          var ta = document.createElement("textarea");
+          ta.className = "cell"; ta.rows = 2;
+          ta.setAttribute("aria-label", table.querySelectorAll("th")[c].textContent + ", row " + (tbody.children.length + 1));
+          ta.value = (values && values[c]) || "";
+          ta.addEventListener("input", function(){ grow(this); collect(); });
+          td.appendChild(ta); tr.appendChild(td);
+        }
+        tbody.appendChild(tr);
+        Array.prototype.forEach.call(tr.querySelectorAll("textarea"), grow);
+      }
+      function collect(){
+        var rows = [];
+        Array.prototype.forEach.call(tbody.children, function(tr){
+          rows.push(Array.prototype.map.call(tr.querySelectorAll("textarea"), function(x){ return x.value; }));
+        });
+        state[id].rows = rows;
+        persistSoon();
+      }
+      var saved = d.rows && d.rows.length ? d.rows : [[],[],[],[]];
+      saved.forEach(function(r){ addRow(r); });
+      var addBtn = sheet.querySelector("[data-addrow]");
+      if(addBtn) addBtn.addEventListener("click", function(){
+        addRow(null); collect();
+        var last = tbody.lastElementChild.querySelector("textarea"); if(last) last.focus();
+      });
+    }
+
+    /* rings */
+    var ringInputs = sheet.querySelectorAll("[data-ringadd]");
+    if(ringInputs.length){
+      d.rings = d.rings || {outer:[], middle:[], inner:[]};
+      state[id].rings = d.rings;
+      function drawRing(name){
+        var box = sheet.querySelector('[data-chips="' + name + '"]');
+        if(!box) return;
+        box.innerHTML = "";
+        (state[id].rings[name] || []).forEach(function(text, i){
+          var chip = document.createElement("span");
+          chip.className = "chip";
+          chip.innerHTML = '<span></span><button type="button" class="no-print" aria-label="Remove ' + esc(text) + '">&times;</button>';
+          chip.firstChild.textContent = text;
+          chip.querySelector("button").addEventListener("click", function(){
+            state[id].rings[name].splice(i, 1); drawRing(name); persist();
+          });
+          box.appendChild(chip);
+        });
+      }
+      ["outer","middle","inner"].forEach(drawRing);
+      Array.prototype.forEach.call(ringInputs, function(inp){
+        inp.addEventListener("keydown", function(e){
+          if(e.key !== "Enter") return;
+          e.preventDefault();
+          var v = inp.value.trim();
+          if(!v) return;
+          var name = inp.dataset.ringadd;
+          state[id].rings[name] = state[id].rings[name] || [];
+          state[id].rings[name].push(v);
+          inp.value = "";
+          drawRing(name);
+          persist();
+        });
+      });
+      sheet._redrawRings = function(){ ["outer","middle","inner"].forEach(drawRing); };
+    }
+
+    /* erase this sheet */
+    var eraseBtn = sheet.querySelector("[data-erase]");
+    if(eraseBtn) eraseBtn.addEventListener("click", function(){
+      if(!window.confirm("Erase everything you typed on this sheet? This cannot be undone.")) return;
+      wipe(id);
+      state[id] = {};
+      sheet.querySelectorAll("[data-f]").forEach(function(el){
+        if(el.type === "range"){ el.value = 50; el.dispatchEvent(new Event("input")); }
+        else { el.value = ""; if(el.tagName === "TEXTAREA") grow(el); }
+      });
+      sheet.querySelectorAll("table.grid tbody textarea").forEach(function(el){ el.value = ""; grow(el); });
+      if(sheet._redrawRings){ state[id].rings = {outer:[], middle:[], inner:[]}; sheet._redrawRings(); }
+      var pill = sheet.querySelector("[data-saved]");
+      var txt = pill && pill.querySelector("[data-savedtext]");
+      if(txt) txt.textContent = "Erased. Nothing from this sheet is left on this computer.";
+      if(pill){ pill.classList.add("on"); clearTimeout(savedTimers[id]);
+        savedTimers[id] = setTimeout(function(){ pill.classList.remove("on"); }, 5000); }
+    });
+
+    /* print — synchronous, never behind a timer (iOS blocks deferred print) */
+    sheet.querySelectorAll("[data-print]").forEach(function(btn){
+      btn.addEventListener("click", function(){
+        var blank = btn.dataset.print === "blank";
+        if(blank) document.body.classList.add("print-blank");
+        else syncPrintCopies();
+        window.print();
+        setTimeout(function(){ document.body.classList.remove("print-blank"); }, 250);
+      });
+    });
+  });
+
+  /* ── print copies ────────────────────────────────────
+     A textarea prints at its JS-set screen height and clips anything taller.
+     Mirror each one into a plain element that print uses instead. */
+  function syncPrintCopies(){
+    document.querySelectorAll("textarea").forEach(function(ta){
+      var host = ta.parentNode;
+      var copy = host.querySelector(":scope > .pcopy");
+      if(!copy){
+        copy = document.createElement("div");
+        copy.className = "pcopy";
+        copy.setAttribute("aria-hidden", "true");
+        host.appendChild(copy);
+      }
+      copy.textContent = ta.value;
+    });
+  }
+  if(window.addEventListener) window.addEventListener("beforeprint", syncPrintCopies);
+  if(window.matchMedia){
+    var pmq = window.matchMedia("print");
+    if(pmq.addEventListener) pmq.addEventListener("change", function(e){ if(e.matches) syncPrintCopies(); });
+  }
+  syncPrintCopies();
+
+  /* ── tabs ────────────────────────────────────────────── */
+  function show(idWanted){
+    sheets.forEach(function(s){ s.classList.toggle("is-active", s.dataset.id === idWanted); });
+    tabs.forEach(function(tb){ tb.setAttribute("aria-selected", String(tb.dataset.sheet === idWanted)); });
+    var active = document.querySelector('.sheet[data-id="' + idWanted + '"]');
+    if(active) active.querySelectorAll("textarea").forEach(grow);
+  }
+  tabs.forEach(function(tb, i){
+    tb.addEventListener("click", function(){ show(tb.dataset.sheet); });
+    tb.addEventListener("keydown", function(e){
+      var n = null;
+      if(e.key === "ArrowRight") n = tabs[(i + 1) % tabs.length];
+      if(e.key === "ArrowLeft")  n = tabs[(i - 1 + tabs.length) % tabs.length];
+      if(!n) return;
+      e.preventDefault(); n.focus(); show(n.dataset.sheet);
+    });
+  });
+
+  /* ── erase everything ────────────────────────────────── */
+  var allBtn = document.getElementById("eraseAll");
+  if(allBtn) allBtn.addEventListener("click", function(){
+    if(!window.confirm("Erase every worksheet on this computer? This cannot be undone.")) return;
+    /* Each worksheet is its own page now, so clearing only the sheets present
+       here would leave the other six behind. Sweep the whole prefix. */
+    if(hasLS){
+      try{
+        var dead = [];
+        for(var i = 0; i < localStorage.length; i++){
+          var k = localStorage.key(i);
+          if(k && k.indexOf(KEY) === 0 && k !== KEY + "theme") dead.push(k);
+        }
+        dead.forEach(function(k){ localStorage.removeItem(k); });
+      }catch(e){}
+    }
+    sheets.forEach(function(s){
+      wipe(s.dataset.id);
+      var b = s.querySelector("[data-erase]");
+      state[s.dataset.id] = {};
+      s.querySelectorAll("[data-f]").forEach(function(el){
+        if(el.type === "range"){ el.value = 50; el.dispatchEvent(new Event("input")); }
+        else { el.value = ""; if(el.tagName === "TEXTAREA") grow(el); }
+      });
+      s.querySelectorAll("table.grid tbody textarea").forEach(function(el){ el.value = ""; grow(el); });
+      if(s._redrawRings){ state[s.dataset.id].rings = {outer:[], middle:[], inner:[]}; s._redrawRings(); }
+    });
+    allBtn.textContent = "Erased — nothing is left on this computer";
+    setTimeout(function(){ allBtn.textContent = "Erase everything on this computer"; }, 5000);
+  });
+
+  /* ── theme toggle ────────────────────────────────────── */
+  var tBtn = document.getElementById("themeBtn");
+  function prefersDark(){
+    return window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+  }
+  function currentIsDark(){
+    var s = document.documentElement.getAttribute("data-theme");
+    return s ? s === "dark" : prefersDark();
+  }
+  function paintThemeBtn(){
+    if(tBtn) tBtn.textContent = currentIsDark() ? "Switch to light" : "Switch to dark";
+  }
+  try{
+    var stored = localStorage.getItem(KEY + "theme");
+    if(stored) document.documentElement.setAttribute("data-theme", stored);
+  }catch(e){}
+  paintThemeBtn();
+  if(window.matchMedia){
+    var mq = window.matchMedia("(prefers-color-scheme: dark)");
+    if(mq.addEventListener) mq.addEventListener("change", paintThemeBtn);
+    else if(mq.addListener) mq.addListener(paintThemeBtn);
+  }
+  if(tBtn) tBtn.addEventListener("click", function(){
+    var next = currentIsDark() ? "light" : "dark";
+    document.documentElement.setAttribute("data-theme", next);
+    try{ localStorage.setItem(KEY + "theme", next); }catch(e){}
+    paintThemeBtn();
+  });
+
+  /* ── no-storage honesty ──────────────────────────────── */
+  if(!hasLS){
+    sheets.forEach(function(s){
+      var txt = s.querySelector("[data-savedtext]");
+      if(txt && s.dataset.id !== "fut"){
+        txt.textContent = "This computer will not let the page save. Print your copy before you leave.";
+        var pill = s.querySelector("[data-saved]");
+        if(pill) pill.classList.add("on");
+      }
+    });
+  }
+})();
+</script>
+
+
+<style>
+/* ══ AOG-WS-SENDBLOCK-V2 — FINISHED, with a preview ══ */
+#wsTurnin{margin:26px 0 8px;border:2px solid var(--lock);border-radius:18px;background:var(--lock-wash);padding:18px 20px}
+#wsTurnin h2{font-size:19px;color:var(--ink);font-weight:700;margin:0}
+#wsTurnin p{font-size:14px;color:var(--ink-soft);margin:6px 0 12px;max-width:46rem}
+#wsTurnin .row{display:flex;flex-wrap:wrap;gap:9px;align-items:center}
+#wsTurnin input{border:1.5px solid var(--rule,#ccc);border-radius:10px;background:var(--field,#fff);color:var(--ink);padding:10px 12px;font:inherit;min-width:220px}
+#wsTurnin .btn-fin{border:2px solid var(--lock);background:var(--lock);color:#fff;border-radius:10px;padding:11px 20px;font:800 16px/1 inherit;letter-spacing:.06em;cursor:pointer}
+#wsTurnin .st{font-size:13.5px;color:var(--ink-soft)}
+#wsPrev{position:fixed;top:0;left:0;right:0;bottom:0;z-index:400;background:var(--field,#FBFAF7);overflow:auto;-webkit-overflow-scrolling:touch}
+#wsPrev[hidden]{display:none}
+body.wsprev{overflow:hidden}
+#wsPrev .pv-bar{position:sticky;top:0;z-index:10;display:flex;flex-wrap:wrap;gap:9px;align-items:center;background:var(--lock);color:#fff;padding:12px 18px}
+#wsPrev .pv-bar .t{font-weight:800;font-size:16px;flex:1;min-width:200px}
+#wsPrev .pv-bar .pst{font-size:13px;opacity:.95}
+#wsPrev .pv-bar button{border:1.5px solid #fff;background:transparent;color:#fff;border-radius:9px;padding:8px 14px;font:700 14px/1 inherit;cursor:pointer}
+#wsPrev .pv-bar button.solid{background:#fff;color:var(--lock)}
+#wsPrev .pv-body{max-width:880px;margin:0 auto;padding:20px 18px 60px}
+#wsPrev .pv-lead{font-size:14px;color:var(--ink-soft);margin:4px 0 16px}
+#wsPrev .pv-text{white-space:pre-wrap;border:1.5px solid var(--rule,#ccc);border-radius:10px;background:var(--field,#fff);padding:10px 12px;min-height:2.2em;font:inherit}
+#wsPrev .pv-text.empty{color:var(--ink-soft);font-style:italic}
+@media print{#wsPrev,#wsTurnin{display:none !important}}
+</style>
+<script>
+/* ══ AOG-WS-SENDBLOCK-V2 — the FINISHED station (build .30gf) ═════════════
+   Lineage m3 → b11 → wf → scope → ws. One press: the work goes straight to
+   the teacher AND the student lands on a preview of what they built. No
+   destination resolved → this page adds nothing. Never an automatic retry. */
+(function(){
+  var CFG = {"id": "w18-11", "name": "My Recovery Map"};
+  var DEST_RE = /^https:\/\/script\.google\.com\/[^\s]*\/exec$/;
+  function destDecode(raw){
+    try{
+      var t = String(raw).replace(/-/g,"+").replace(/_/g,"/");
+      while(t.length % 4) t += "=";
+      var o = JSON.parse(atob(t));
+      if(o && typeof o.u==="string" && DEST_RE.test(o.u))
+        return { url:o.u, key:(typeof o.k==="string" ? o.k : "") };
+    }catch(e){}
+    return null;
+  }
+  var DEST = null;
+  try{
+    var dm = /[?&]dest=([^&]+)/.exec(location.search || "");
+    if(dm) DEST = destDecode(decodeURIComponent(dm[1]));
+  }catch(e){}
+  if(!DEST){
+    try{
+      var cfg = window.AOG_SYNC_DEFAULTS;
+      if(cfg && !cfg.destinations && typeof cfg.url==="string" && DEST_RE.test(cfg.url)
+         && Object.prototype.toString.call(cfg.schools)==="[object Array]" && cfg.schools.length)
+        DEST = { url:cfg.url, key:(typeof cfg.key==="string" ? cfg.key : "") };
+    }catch(e){}
+  }
+  if(!DEST) return;
+
+  var KEY = "aog.interior.ws.v1.";
+  var whoKey = KEY + "who";
+
+  /* the WF honesty rule: a destination RESOLVED, so the footer's
+     works-with-the-network-off promise must stop claiming nothing sends */
+  try {
+    [].slice.call(document.querySelectorAll("p")).some(function (fp) {
+      if (fp.textContent.indexOf("sends nothing out") < 0) return false;
+      fp.textContent = "This page loads no fonts, scripts, or images from the internet. Your writing is stored in this browser \u2014 and sent to your teacher only when you tap FINISHED. It is not a district product and carries no district endorsement.";
+      return true;
+    });
+  } catch (e) {}
+
+  function getWho(){ try{ return String(localStorage.getItem(whoKey)||""); }catch(e){ return ""; } }
+  function setWho(v){ try{ localStorage.setItem(whoKey, v); }catch(e){} }
+  function today(){ var d=new Date(); return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0"); }
+  function gather(){
+    var out = {};
+    [].slice.call(document.querySelectorAll("[data-id]")).forEach(function(el){
+      var id = el.getAttribute("data-id");
+      if(!id || out[id]) return;
+      try{
+        var raw = localStorage.getItem(KEY+id);
+        if(raw) out[id] = JSON.parse(raw);
+      }catch(e){}
+      if(!out[id]) out[id] = {};
+      [].slice.call(el.querySelectorAll("[data-f]")).forEach(function(f){
+        if(typeof f.value === "string" && f.value.trim() !== "") out[id][f.getAttribute("data-f")] = f.value;
+      });
+    });
+    return out;
+  }
+
+  /* ── the FINISHED station, at the page foot ── */
+  var main = document.querySelector("main") || document.body;
+  var card = document.createElement("section");
+  card.id = "wsTurnin"; card.className = "no-print";
+  card.innerHTML =
+    '<h2>Finished?</h2>' +
+    '<p>Tap FINISHED and your work goes straight to your teacher \u2014 and you\u2019ll see a preview of what you built. ' +
+    'It stays saved on this computer too.</p>' +
+    '<div class="row">' +
+    '<input type="text" id="wsWho" autocomplete="off" maxlength="60" placeholder="Your code or first name — the same one you check in with" aria-label="Your code or first name">' +
+    '<button class="btn-fin" type="button" id="wsSendBtn">FINISHED</button>' +
+    '<span class="st" id="wsSt" aria-live="polite"></span></div>';
+  var acts = main.querySelector(".lock-acts");
+  if(acts) main.insertBefore(card, acts); else main.appendChild(card);
+
+  /* ── the preview ── */
+  var prev = document.createElement("div");
+  prev.id = "wsPrev"; prev.hidden = true;
+  prev.setAttribute("role","dialog"); prev.setAttribute("aria-label","Preview of what you built");
+  document.body.appendChild(prev);
+
+  function buildPreview(who, statusText){
+    prev.innerHTML = "";
+    var bar = document.createElement("div"); bar.className = "pv-bar";
+    var t = document.createElement("span"); t.className = "t";
+    t.textContent = "\u2713 FINISHED \u2014 " + who + " \u00b7 " + CFG.name;
+    var pst = document.createElement("span"); pst.className = "pst"; pst.id = "wsPvSt";
+    pst.textContent = statusText;
+    var pr = document.createElement("button"); pr.type="button"; pr.className="solid"; pr.textContent = "Print my copy";
+    pr.addEventListener("click", function(){
+      var b = document.querySelector('[data-print="filled"]');
+      if(b) b.click(); else window.print();
+    });
+    var bk = document.createElement("button"); bk.type="button"; bk.textContent = "Back to my worksheet";
+    bk.addEventListener("click", function(){ prev.hidden = true; document.body.classList.remove("wsprev"); });
+    bar.appendChild(t); bar.appendChild(pst); bar.appendChild(pr); bar.appendChild(bk);
+    prev.appendChild(bar);
+
+    var body = document.createElement("div"); body.className = "pv-body";
+    var lead = document.createElement("p"); lead.className = "pv-lead";
+    lead.textContent = "This is what you built \u2014 exactly what your teacher receives.";
+    body.appendChild(lead);
+    [].slice.call(document.querySelectorAll("[data-id]")).forEach(function(sheet){
+      var clone = sheet.cloneNode(true);
+      clone.removeAttribute("id"); clone.removeAttribute("data-id");
+      clone.classList.add("is-active");
+      [].slice.call(clone.querySelectorAll(".no-print,button,[data-print],[data-saved]")).forEach(function(n){ if(n.parentNode) n.parentNode.removeChild(n); });
+      [].slice.call(clone.querySelectorAll("textarea")).forEach(function(ta){
+        var d = document.createElement("div");
+        var v = ta.value || "";
+        d.className = "pv-text" + (v.trim() ? "" : " empty");
+        d.textContent = v.trim() ? v : "\u2014 left blank \u2014";
+        ta.parentNode.replaceChild(d, ta);
+      });
+      [].slice.call(clone.querySelectorAll("input,select")).forEach(function(inp){ inp.disabled = true; });
+      body.appendChild(clone);
+    });
+    prev.appendChild(body);
+  }
+  function setPvStatus(txt){ var n = document.getElementById("wsPvSt"); if(n) n.textContent = txt; }
+
+  var inp = document.getElementById("wsWho"), btn = document.getElementById("wsSendBtn"), st = document.getElementById("wsSt");
+  inp.value = getWho();
+  /* .30he — autosend, the free-writing translation: &who= boots into a
+     BLANK saved name only, and Enter in the name field sends. */
+  try {
+    var wm = /[?&]who=([^&]+)/.exec(location.search || "");
+    if (wm && !inp.value.trim()) {
+      inp.value = decodeURIComponent(wm[1]).slice(0, 60);
+      if (inp.value.trim()) setWho(inp.value.trim());
+    }
+  } catch (e) {}
+  inp.addEventListener("keydown", function (e) {
+    if (e.key === "Enter") { e.preventDefault(); btn.click(); }
+  });
+  var busy = false;
+  btn.addEventListener("click", function(){
+    if(busy) return;
+    var who = inp.value.trim();
+    if(!who){ st.textContent = "Add your code or first name — the same one you check in with — so this lands with your other work."; inp.focus(); return; }
+    setWho(who);
+    var payload = {
+      action:"checkin", checkinType:"practice", _backendAuth:DEST.key,
+      studentId:who, timestamp:new Date().toISOString(), date:today(),
+      activityId:CFG.id, activityName:"SEL Worksheet \u2014 "+CFG.name,
+      skill:"SEL Worksheet \u2014 "+CFG.name,
+      setNo:"", itemsTotal:"", independent:"", supported:"", hintsUsed:"", confidence:"",
+      source:"link",
+      extra:JSON.stringify({series:"sel-worksheet", build:"ws send v2", worksheet:CFG.id, finished:true, responses:gather()})
+    };
+    var body = JSON.stringify(payload);
+    busy = true;
+    /* the preview opens NOW — the send reports into its status line */
+    buildPreview(who, "Sending to your teacher\u2026");
+    prev.hidden = false; document.body.classList.add("wsprev");
+    prev.scrollTop = 0;
+    function done(){ busy = false; setPvStatus("Turned in \u2713"); st.textContent = "Turned in \u2713"; btn.textContent = "FINISHED \u2713"; }
+    function fail(){ busy = false; setPvStatus("That didn\u2019t go through \u2014 check the internet, then tap FINISHED again."); }
+    fetch(DEST.url, {method:"POST", mode:"cors", redirect:"follow",
+        headers:{"Content-Type":"text/plain;charset=utf-8"}, body:body})
+      .then(function(res){ return res.json(); })
+      .then(function(j){ if(j && j.ok) done(); else fail(); })
+      .catch(function(){
+        /* cors read threw — ONE blind send, honest label, never an auto-retry */
+        fetch(DEST.url, {method:"POST", mode:"no-cors", redirect:"follow",
+            headers:{"Content-Type":"text/plain;charset=utf-8"}, body:body})
+          .then(done).catch(fail);
+      });
+  });
+})();
+</script>
+
+<style>
+/* ══ AOG-PRINTBRAND-V1 — the mark on every printed sheet ══ */
+.aog-printbrand,.aog-printwm{display:none}
+@media print{
+  .aog-printbrand{display:block;position:fixed;bottom:2px;left:0;right:0;text-align:center;
+    font:700 9px/1.4 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    color:#1B3A5F;letter-spacing:.08em;z-index:99}
+  .aog-printbrand .mk{display:inline-block;width:12px;height:12px;line-height:12px;border-radius:3px;
+    background:#1B3A5F;color:#fff;font-family:Georgia,serif;font-weight:900;font-size:9px;
+    text-align:center;margin-right:4px;vertical-align:-2px;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .aog-printwm{display:block;position:fixed;top:0;left:0;right:0;bottom:0;pointer-events:none;
+    overflow:hidden;z-index:98}
+  .aog-printwm span{position:absolute;left:-25%;right:-25%;text-align:center;white-space:nowrap;
+    font:900 44px/1 Georgia,serif;letter-spacing:.2em;color:rgba(27,58,95,.06);
+    transform:rotate(-28deg);-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .aog-printwm span:nth-child(1){top:22%}
+  .aog-printwm span:nth-child(2){top:52%}
+  .aog-printwm span:nth-child(3){top:82%}
+}
+
+/* ══ AOG-PRINT-SAFE-V1 (2026-09-20) ═══════════════════════════════════════════
+   Jimmy, printing a novel study from his phone: "another pdf that gets parts of
+   the material cut off." These are the rules that keep paper honest on every
+   engine — a table row, a list item, a figure and a picture stay whole; a head
+   keeps the lines under it; no paragraph strands one line at a page edge; and a
+   long table repeats its head at the top of each page. Printed pages only. */
+@media print{
+  table{break-inside:auto; page-break-inside:auto}
+  thead{display:table-header-group}
+  tfoot{display:table-footer-group}
+  tr{break-inside:avoid; page-break-inside:avoid}
+  li,figure,img,svg{break-inside:avoid; page-break-inside:avoid}
+  h1,h2,h3,h4,h5{break-after:avoid; page-break-after:avoid}
+  p{orphans:3; widows:3}
+}
+</style>
+<div class="aog-printwm" aria-hidden="true"><span>ARCHITECTURE OF GRACE</span><span>ARCHITECTURE OF GRACE</span><span>ARCHITECTURE OF GRACE</span></div>
+<div class="aog-printbrand" aria-hidden="true"><span class="mk">A</span>ARCHITECTURE OF GRACE &middot; architectureofgrace.org</div>
+</body>
+</html>

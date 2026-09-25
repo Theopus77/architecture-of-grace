@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Counselor Capacity &middot; Architecture of Grace</title>
+<meta name="description" content="What one counselor can actually carry, in numbers — a staffing planner for the conversation with your district.">
+<!-- ═══ AOG ICONS + LINK PREVIEW · managed block · .30k0 ═══
+     Inserted by _work/aog_head.py — DO NOT hand-edit one page; edit the
+     script and re-run it, or the 100 pages drift apart again. The card
+     URL carries ?v= because Slack, Apple and Google cache an og image BY
+     URL for weeks: change the picture, bump IMG_V, or nothing shows up.
+     ═══════════════════════════════════════════════════════════════ -->
+<link rel="canonical" href="https://architectureofgrace.org/counselor">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Architecture of Grace">
+<meta property="og:locale" content="en_US">
+<meta property="og:title" content="Counselor Capacity &middot; Architecture of Grace">
+<meta property="og:description" content="What one counselor can actually carry, in numbers — a staffing planner for the conversation with your district.">
+<meta property="og:url" content="https://architectureofgrace.org/counselor">
+<meta property="og:image" content="https://architectureofgrace.org/og-schools.png?v=1">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Architecture of Grace for schools and districts — policy, terms, data agreement, accessibility.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Counselor Capacity &middot; Architecture of Grace">
+<meta name="twitter:description" content="What one counselor can actually carry, in numbers — a staffing planner for the conversation with your district.">
+<meta name="twitter:image" content="https://architectureofgrace.org/og-schools.png?v=1">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#0A1E33">
+<meta name="apple-mobile-web-app-title" content="Grace">
+<meta name="application-name" content="Architecture of Grace">
+<!-- ═══ END AOG ICONS + LINK PREVIEW ═══ -->
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,500;0,600;1,500&family=Source+Sans+3:wght@400;600;700&family=IBM+Plex+Mono:wght@500&display=swap">
+<style>
+:root{
+  --ground:#FBF6EC; --card:#FFFDF8; --ink:#182F4C; --ink-soft:#4A5B72;
+  --navy:#14304F; --gold:#C9962E; --gold-deep:#825E10;
+  --wash:#F4E8CC; --rule:#E4D9C3;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--ground); color:var(--ink);
+  font-family:"Source Sans 3",-apple-system,"Segoe UI",Helvetica,Arial,sans-serif;
+  font-size:17px; line-height:1.55; -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:46rem; margin:0 auto; padding:30px 20px 70px}
+code,.mono{font-family:"IBM Plex Mono",ui-monospace,Menlo,monospace; font-size:.86em;
+  background:var(--wash); border-radius:5px; padding:1px 6px 2px; white-space:nowrap}
+
+/* masthead */
+.mast{padding:8px 0 22px; border-bottom:2px solid var(--gold); margin-bottom:6px}
+.eyebrow{font-size:12px; font-weight:700; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--gold-deep); margin:0 0 6px}
+h1{font-family:"Lora",Georgia,serif; font-weight:600; font-size:clamp(29px,6.5vw,38px);
+  line-height:1.12; margin:0 0 10px; color:var(--navy); text-wrap:balance}
+h1 em{font-style:italic; color:var(--gold-deep)}
+.dek{margin:0 0 10px; color:var(--ink-soft); max-width:36em}
+.meta{margin:0; font-size:14px; color:var(--ink-soft)}
+h2{font-family:"Lora",Georgia,serif; font-weight:600; font-size:22px;
+  margin:36px 0 12px; color:var(--navy); text-wrap:balance}
+h3{font-family:"Lora",Georgia,serif; font-weight:600; font-size:18px;
+  margin:20px 0 8px; color:var(--navy)}
+
+/* cards */
+.card{background:var(--card); border:1.5px solid var(--rule); border-radius:14px;
+  padding:16px 18px; margin:0 0 12px}
+.card p{margin:0 0 10px; font-size:16px}
+.card p:last-child{margin-bottom:0}
+.card b{color:var(--navy)}
+.card ul,.card ol{margin:0; padding-left:20px}
+.card li{margin-bottom:8px}
+.card li:last-child{margin-bottom:0}
+.note{border-left:3px solid var(--gold); background:var(--wash); border-radius:0 9px 9px 0;
+  padding:9px 12px; font-size:15px; margin:10px 0}
+.note b:first-child{color:var(--gold-deep)}
+
+/* flag badges */
+.flag{font-family:"IBM Plex Mono",ui-monospace,monospace; font-size:12px; font-weight:500;
+  white-space:nowrap; border-radius:6px; padding:1px 7px 2px}
+.flag.hh{background:var(--navy); color:#fff}
+.flag.el{background:var(--wash); color:var(--gold-deep); border:1px solid var(--gold)}
+
+/* tables */
+.tblwrap{overflow-x:auto; margin:12px 0}
+table.tbl{border-collapse:collapse; width:100%; font-size:14.5px; background:var(--card);
+  border:1.5px solid var(--rule); border-radius:10px; overflow:hidden}
+.tbl th{background:var(--wash); color:var(--navy); text-align:left; font-size:12.5px;
+  letter-spacing:.06em; text-transform:uppercase; padding:8px 10px; border-bottom:1.5px solid var(--rule)}
+.tbl td{padding:9px 10px; border-bottom:1px solid var(--rule); vertical-align:top; color:var(--ink)}
+.tbl tr:last-child td{border-bottom:0}
+.tbl td .sub{display:block; font-size:13px; color:var(--ink-soft); margin-top:2px}
+.tbl .lesson{font-family:"IBM Plex Mono",ui-monospace,monospace; font-size:12.5px; color:var(--navy); white-space:nowrap}
+.tbl .min{white-space:nowrap; font-weight:700; color:var(--navy)}
+
+/* deferral rules */
+.rules{display:flex; flex-direction:column; gap:12px; margin:14px 0 0}
+.rule{background:var(--card); border:1.5px solid var(--rule); border-radius:14px; padding:14px 17px}
+.rule .n{font-family:"Lora",Georgia,serif; font-size:13px; font-weight:600; color:var(--gold-deep);
+  letter-spacing:.1em; display:block; margin-bottom:2px}
+.rule h3{margin:0 0 6px; font-size:18px}
+.rule p{margin:0 0 8px; font-size:16px}
+.rule p:last-child{margin-bottom:0}
+
+/* planning sheet */
+.plan .tbl td{height:34px}
+.plan .tbl td.blank{color:var(--ink-soft)}
+.printbtn{display:inline-block; background:var(--navy); color:#fff; border:0; border-radius:9px;
+  font:700 15px "Source Sans 3",sans-serif; padding:9px 18px; cursor:pointer; margin:6px 0 2px}
+.print-footer{display:none}
+
+footer{margin-top:40px; padding-top:14px; border-top:1.5px solid var(--rule);
+  font-size:13.5px; color:var(--ink-soft); line-height:1.6}
+footer a{color:var(--gold-deep)}
+
+@media (max-width:560px){
+  .tbl{font-size:13.5px}
+}
+@media print{
+  body{background:#fff; font-size:12.5px; line-height:1.4}
+  .wrap{max-width:none; padding:0}
+  .dek,.card p{max-width:none}
+  h1{font-size:24px}
+  h2{font-size:17px; margin:16px 0 8px}
+  .card,.rule{padding:10px 13px; margin-bottom:8px; background:#fff}
+  .card p,.card li,.rule p{font-size:12px}
+  .tbl{font-size:11px}
+  .tbl th{font-size:10px}
+  .note{font-size:11px; padding:7px 10px; margin:7px 0}
+  .printbtn{display:none}
+  .plan .tbl td{height:30px}
+  .print-footer{display:block; margin-top:14px; padding-top:8px; border-top:1px solid #999;
+    font-size:10.5px; color:#444}
+  footer{font-size:10.5px; margin-top:16px}
+  .card,.rule,.note,.tblwrap{break-inside:avoid; page-break-inside:avoid}
+  h2,h1,h3{break-after:avoid; page-break-after:avoid}
+  @page{margin:12mm 14mm}
+}
+</style>
+<style id="aog-4302-narrow">
+/* ⚠ SCREEN ONLY. Two separate things dragged this page 311px sideways at 390:
+   the four-column tables, which cannot shrink below min-content, and .mono — a
+   658px one-line arithmetic formula computing to white-space:nowrap, which
+   overflow-wrap cannot touch until the white-space is reset. @media print is
+   untouched, so the printed sheet keeps both intact. */
+@media screen and (max-width:760px){
+  table{display:block;width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch;}
+  .mono{white-space:normal !important;overflow-wrap:anywhere;word-break:break-word;}
+}
+
+/* ══ AOG-PRINT-SAFE-V1 (2026-09-20) ═══════════════════════════════════════════
+   Jimmy, printing a novel study from his phone: "another pdf that gets parts of
+   the material cut off." These are the rules that keep paper honest on every
+   engine — a table row, a list item, a figure and a picture stay whole; a head
+   keeps the lines under it; no paragraph strands one line at a page edge; and a
+   long table repeats its head at the top of each page. Printed pages only. */
+@media print{
+  table{break-inside:auto; page-break-inside:auto}
+  thead{display:table-header-group}
+  tfoot{display:table-footer-group}
+  tr{break-inside:avoid; page-break-inside:avoid}
+  li,figure,img,svg{break-inside:avoid; page-break-inside:avoid}
+  h1,h2,h3,h4,h5{break-after:avoid; page-break-after:avoid}
+  p{orphans:3; widows:3}
+}
+</style>
+</head>
+<body>
+<script src="/aog-topbar.js"></script>
+
+<div class="wrap">
+
+  <header class="mast">
+    <p class="eyebrow">Architecture of Grace &middot; Implementation</p>
+    <h1>Counselor Capacity &amp; the <em>Flagged-Lesson Calendar</em></h1>
+    <p class="dek">Exactly what the curriculum asks of your school counselor, lesson by lesson and in minutes — and the sanctioned protocol for the year when your building cannot staff every date as written.</p>
+    <p class="meta"><b>Who this is for.</b> Principals, counselors, and whoever builds the master schedule. Read it together, before Unit&nbsp;1 Lesson&nbsp;1.</p>
+  </header>
+
+  <h2>Why this page exists</h2>
+  <div class="card">
+    <p>A small number of lessons in every Architecture of Grace book carry a safety flag. The books are blunt about what the flags require: for the highest-sensitivity lessons, the school counselor is <b>physically in the room for the full lesson — no exceptions, no substitutes.</b> That mandate is the program's safety spine. It exists because these specific lessons are designed to surface things — an empty support web, a student who believes they must forgive someone who is still hurting them — and surfacing without a counselor present is not a lesson, it is a hazard.</p>
+    <p>It is also the program's hardest staffing ask. Most elementary buildings have one counselor. Many share one across buildings. A mandate that says "no exceptions" in a building that cannot staff every date does not produce compliance — it produces <b>quiet non-compliance</b>: the lesson runs anyway without the counselor, or it quietly disappears from the year and nobody writes that down. Both outcomes are worse than the staffing gap itself.</p>
+    <p>So this page does two things. It puts the full counselor commitment on the table in minutes, so a principal can compute the real number before adopting. And it defines the <b>sanctioned pathway</b> for the weeks when the calendar and the counselor do not line up — deferral, with rules — so that a building never has to choose between an unstaffed high-risk lesson and pretending the lesson never existed.</p>
+  </div>
+
+  <h2>How to read the flags</h2>
+  <div class="card">
+    <p><span class="flag hh">★★ Highest risk</span>&ensp;Counselor physically on-site in the room for the full lesson. No exceptions, no substitute teachers. Crisis resources posted visibly. The books also bar scheduling these before a holiday, weekend, or break, and require a same-day counselor–teacher debrief afterward whether or not any disclosure occurred.</p>
+    <p><span class="flag el">★ Elevated / High</span>&ensp;Counselor on-site or co-facilitating for some; briefed in advance or on same-day standby for others — the tables below say which, lesson by lesson, in the books' own terms.</p>
+    <p>The commitment for a flagged lesson is usually three parts: a <b>pre-brief</b> (the teacher briefs the counselor on students to watch), the <b>lesson itself</b>, and a <b>same-day debrief</b>. The tables count all three.</p>
+  </div>
+
+  <h2>The flagged lessons, book by book</h2>
+  <div class="card">
+    <p>These tables are drawn directly from Book One (<i>The Foundation</i>, K–2) and Book Three (<i>The Interior</i>, 6–8). The 3–5 and 9–12 books follow the same pattern: a small cluster of flagged lessons concentrated in the self-forgiveness and forgiving-others units, with the same on-site rules. Where the books require a pre-brief or debrief without naming a duration, we budget <b>15 minutes</b> for each — a planning estimate, marked&nbsp;<i>est.</i></p>
+  </div>
+
+  <h3>Book One &middot; The Foundation (K–2)</h3>
+  <div class="tblwrap">
+  <table class="tbl">
+    <tr><th>Lesson</th><th>Flag</th><th>Counselor commitment</th><th>Minutes</th></tr>
+    <tr>
+      <td><span class="lesson">U2&nbsp;L4</span> Being Kind to Myself<span class="sub">Week 11 &middot; 20–25 min lesson</span></td>
+      <td><span class="flag el">★</span></td>
+      <td>Briefed before delivery (PPRA lesson; awareness — no in-room requirement).</td>
+      <td class="min">15 <span class="sub">est. brief</span></td>
+    </tr>
+    <tr>
+      <td><span class="lesson">U2&nbsp;L5</span> Letting Go — The Practice<span class="sub">Week 12 &middot; 20–25 min lesson</span></td>
+      <td><span class="flag el">★</span></td>
+      <td>Briefed before delivery (PPRA lesson; awareness — no in-room requirement).</td>
+      <td class="min">15 <span class="sub">est. brief</span></td>
+    </tr>
+    <tr>
+      <td><span class="lesson">U2&nbsp;L6</span> When It's Hard to Forgive Yourself<span class="sub">Week 13 &middot; 25–30 min lesson</span></td>
+      <td><span class="flag hh">★★</span></td>
+      <td>Pre-brief: counselor and teacher review every student's engagement so far. <b>Physically on-site the full lesson.</b> Same-day follow-up on empty Support Webs — the book calls this follow-up "the work."</td>
+      <td class="min">60 <span class="sub">15 est. + 30 + 15 est.</span></td>
+    </tr>
+    <tr>
+      <td><span class="lesson">U3&nbsp;L3</span> Forgiving Is Not the Same as Trusting<span class="sub">Week 17 &middot; 25–30 min lesson</span></td>
+      <td><span class="flag hh">★★</span></td>
+      <td><b>Physically on-site the full lesson.</b> Counselor coordinates a same-day debrief with the teacher; identifies students whose responses suggested ongoing harmful situations.</td>
+      <td class="min">60 <span class="sub">15 est. + 30 + 15 est.</span></td>
+    </tr>
+    <tr>
+      <td><span class="lesson">U3&nbsp;L5</span> My Story Is Not the Whole Me<span class="sub">Week 19 &middot; 25–30 min lesson</span></td>
+      <td><span class="flag el">★</span></td>
+      <td>Counselor <b>on-site</b>; circulates during the three-panel activity; same-day debrief on students whose self-stories were heavy. One-week advance notice.</td>
+      <td class="min">45 <span class="sub">30 + 15 est.</span></td>
+    </tr>
+    <tr>
+      <td><span class="lesson">U4&nbsp;L7</span> Community Charter &amp; Year-End Celebration<span class="sub">Week 28 &middot; 40–45 min lesson</span></td>
+      <td><span class="flag el">★</span></td>
+      <td>On standby — reachable and available same day. Not in the room.</td>
+      <td class="min">45 <span class="sub">standby block</span></td>
+    </tr>
+  </table>
+  </div>
+
+  <h3>Book Three &middot; The Interior (6–8)</h3>
+  <div class="tblwrap">
+  <table class="tbl">
+    <tr><th>Lesson</th><th>Flag</th><th>Counselor commitment</th><th>Minutes</th></tr>
+    <tr>
+      <td><span class="lesson">U2&nbsp;L6</span> Rewriting the Script<span class="sub">December Week 2 &middot; 40–45 min lesson</span></td>
+      <td><span class="flag hh">★★</span></td>
+      <td>Pre-brief on students with concerning patterns in L1–L5. <b>Physically in the room, co-facilitating, the full lesson</b> — not on-call, not in the hallway. If a student leaves, the counselor follows. Mandatory same-day debrief regardless of disclosure. Not before any break; no substitute teacher.</td>
+      <td class="min">75 <span class="sub">15 est. + 45 + 15 est.</span></td>
+    </tr>
+    <tr>
+      <td><span class="lesson">U3&nbsp;L3</span> Forgiveness vs. Reconciliation<span class="sub">February Week 1 &middot; 40–45 min lesson</span></td>
+      <td><span class="flag el">★ High</span></td>
+      <td>On-site or immediately available (within 60 seconds) for the full lesson; Scenario Card B may be used only with the counselor present. Mandatory same-day brief. No substitute; not within 24 hours of a school-wide safety incident.</td>
+      <td class="min">60 <span class="sub">45 + 15 est.</span></td>
+    </tr>
+    <tr>
+      <td><span class="lesson">U3&nbsp;L6</span> The Agency of Release — Letter of Release<span class="sub">March Week 1 &middot; 40–45 min lesson</span></td>
+      <td><span class="flag hh">★★</span></td>
+      <td><b>Physically in the room before the first student enters, for the full lesson.</b> The Letter cannot be split across sessions. Mandatory same-day debrief regardless of disclosure; counselor follows up with flagged students before L7. Not before any break; no substitute teacher.</td>
+      <td class="min">75 <span class="sub">15 est. + 45 + 15 est.</span></td>
+    </tr>
+    <tr>
+      <td><span class="lesson">U4&nbsp;L6</span> Grace Audit — Final Project<span class="sub">June Week 1 &middot; 40–45 min lesson</span></td>
+      <td><span class="flag el">★</span></td>
+      <td>On standby — reachable and available same day. Monday–Wednesday delivery preferred.</td>
+      <td class="min">45 <span class="sub">standby block</span></td>
+    </tr>
+    <tr>
+      <td><span class="lesson">U4&nbsp;L7</span> Community Charter &amp; Year-End Celebration<span class="sub">June Week 2 &middot; 40–50 min lesson</span></td>
+      <td><span class="flag el">★</span></td>
+      <td>On standby — reachable and available same day. Not the last day of the year.</td>
+      <td class="min">50 <span class="sub">standby block</span></td>
+    </tr>
+  </table>
+  </div>
+
+  <div class="note"><b>Standing coordination, both books:</b> counselor attends the pre-launch PD day; a mid-year January session; a year-end debrief after U4&nbsp;L7. In 6–8, the counselor and teacher also review Unit&nbsp;2 bridge exit tickets before Unit&nbsp;3 begins. Budget roughly 3 additional hours per delivering teacher across the year for these.</div>
+
+  <h2>The hours math</h2>
+  <div class="card">
+    <p>Per the tables above, the <b>committed</b> counselor time (pre-briefs, in-room lessons, debriefs — not counting standby blocks) is roughly:</p>
+    <ul>
+      <li><b>K–2: about 3¼ hours per classroom per year</b> (195 min), plus one 45-minute standby block.</li>
+      <li><b>6–8: about 3½ hours per class section per year</b> (210 min), plus two standby blocks. Count <i>sections</i>, not teachers — a middle-school teacher delivering to four sections generates four sets of flagged dates.</li>
+    </ul>
+    <p><b>Worked example — a one-counselor K–8 building.</b> Two classrooms per grade in K–2 (6 classrooms), the same pattern in 3–5 (6 classrooms), and two sections per grade in 6–8 (6 sections):</p>
+    <ul>
+      <li>K–2: 6 &times; 3¼ h &asymp; <b>19.5 h</b></li>
+      <li>3–5 (same pattern as K–2): 6 &times; ~3¼ h &asymp; <b>19.5 h</b></li>
+      <li>6–8: 6 &times; 3½ h &asymp; <b>21 h</b></li>
+    </ul>
+    <p>That is <b>about 60 committed hours across the year</b> — under two hours a week if it were spread evenly. <b>It is not spread evenly, and that is the actual problem.</b> Every K–2 classroom reaches U2&nbsp;L6 around Week 13; every 6–8 section reaches Rewriting the Script around December Week 2. Six sections &times; 75 minutes in one target week is a week the counselor does not have. The fix is not to waive the in-room rule — it is to <b>stagger</b>: the week numbers in the books are pacing guidance, and the counselor's confirmed slot is the anchor. Which is the deferral protocol, below.</p>
+    <p>To compute your own number: <span class="mono">(K–2 classrooms &times; 3.25 h) + (3–5 classrooms &times; 3.25 h) + (6–8 sections &times; 3.5 h)</span>, plus standby blocks and ~3 h of standing coordination per delivering teacher.</p>
+  </div>
+
+  <h2>The Sanctioned Deferral Protocol</h2>
+  <div class="card">
+    <p><b>The rule that never bends:</b> a ★★ lesson is never delivered without the counselor (or a sanctioned alternate — Rule 4) in the room. <b>The rule that does bend:</b> the date. When staffing and the calendar collide, the sanctioned response is <b>deferral — not deletion, and not unstaffed delivery.</b> A deferred lesson is the program working as designed. An unstaffed one is the program abandoned while wearing its name.</p>
+  </div>
+  <div class="rules">
+    <div class="rule">
+      <span class="n">RULE 1</span><h3>Schedule ★★ dates first</h3>
+      <p>Before anything else goes on the unit calendar, put the ★★ lessons at times the counselor has <b>confirmed</b> — in writing, on their calendar, before Unit 1 Lesson 1. Everything else in the unit schedules around those anchors. A ★★ lesson placed on an unconfirmed date is already deferred; you just don't know it yet.</p>
+    </div>
+    <div class="rule">
+      <span class="n">RULE 2</span><h3>If the counselor becomes unavailable, the lesson moves — and only the lesson</h3>
+      <p>The unit's other lessons continue on pace. The deferred ★★ lesson runs at the next counselor-confirmed slot — next week, or next month if that is what confirmation takes. A ★★ lesson delivered in February that was paced for December, with the counselor in the room, is fully in-protocol. The book's other scheduling rules travel with it: never before a break, never with a substitute teacher, never split across sessions.</p>
+    </div>
+    <div class="rule">
+      <span class="n">RULE 3</span><h3>Deferred past year-end&nbsp;= recorded as not delivered</h3>
+      <p>If the year ends before a confirmed slot arrives, the lesson is recorded as <b>not delivered</b> on the planning sheet below. That record is fidelity data, not failure — it tells your team, and the program's author, exactly where the staffing model and the safety model collided. It is the single most useful thing a stretched building can report.</p>
+    </div>
+    <div class="rule">
+      <span class="n">RULE 4</span><h3>Who may fill the counselor role</h3>
+      <p>A <b>school psychologist or school social worker</b> may stand in the counselor role for a flagged lesson — a qualified school-based mental-health professional who can run the same pre-brief, hold the same in-room role, and lead the same same-day debrief. (The books already treat the school psychologist as interchangeable with the counselor for clinical review.)</p>
+    </div>
+    <div class="rule">
+      <span class="n">RULE 5</span><h3>What may never substitute</h3>
+      <p>Three things are never a version of compliance: <b>running the lesson unstaffed</b> (no qualified adult in the counselor role); <b>splitting it across days</b> to fit a partial availability window (the 6–8 Letter of Release says this explicitly: if you cannot finish, do not start); and <b>handing it to a substitute teacher</b>. If none of Rules 1–4 can produce a compliant date, Rule 3 applies. That is the whole protocol.</p>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:12px">
+    <p><b>What fidelity means here.</b> Fidelity is not perfect delivery of every lesson on its printed week. Fidelity is an <b>honest record of what ran and what deferred</b> — every flagged lesson either delivered under its safety conditions on a known date, or recorded as deferred with a reason. A lesson deferred to March is high fidelity. A lesson recorded as not delivered is still fidelity. The only true fidelity failure is the lesson that was skipped, or run unstaffed, <b>and never written down</b> — because that is the failure no one can see, plan around, or fix.</p>
+  </div>
+
+  <h2>Flagged-Lesson Planning Sheet</h2>
+  <div class="card plan">
+    <p>One sheet per classroom or section, filled in before Unit&nbsp;1 Lesson&nbsp;1 and kept current all year. Print it, or copy the columns into whatever your building already uses.</p>
+    <button class="printbtn" onclick="window.print()">Print this page</button>
+    <p style="margin-top:10px"><b>Classroom / section:</b> ______________ &emsp; <b>Counselor:</b> ______________ &emsp; <b>Year:</b> __________</p>
+    <div class="tblwrap">
+    <table class="tbl">
+      <tr><th>Lesson (code + title)</th><th>Flag</th><th>Target date</th><th>Counselor confirmed?</th><th>Delivered / deferred to</th></tr>
+      <tr><td class="blank">&nbsp;</td><td class="blank">&nbsp;</td><td class="blank">&nbsp;</td><td class="blank">&nbsp;</td><td class="blank">&nbsp;</td></tr>
+      <tr><td class="blank">&nbsp;</td><td class="blank">&nbsp;</td><td class="blank">&nbsp;</td><td class="blank">&nbsp;</td><td class="blank">&nbsp;</td></tr>
+      <tr><td class="blank">&nbsp;</td><td class="blank">&nbsp;</td><td class="blank">&nbsp;</td><td class="blank">&nbsp;</td><td class="blank">&nbsp;</td></tr>
+      <tr><td class="blank">&nbsp;</td><td class="blank">&nbsp;</td><td class="blank">&nbsp;</td><td class="blank">&nbsp;</td><td class="blank">&nbsp;</td></tr>
+      <tr><td class="blank">&nbsp;</td><td class="blank">&nbsp;</td><td class="blank">&nbsp;</td><td class="blank">&nbsp;</td><td class="blank">&nbsp;</td></tr>
+      <tr><td class="blank">&nbsp;</td><td class="blank">&nbsp;</td><td class="blank">&nbsp;</td><td class="blank">&nbsp;</td><td class="blank">&nbsp;</td></tr>
+      <tr><td class="blank">&nbsp;</td><td class="blank">&nbsp;</td><td class="blank">&nbsp;</td><td class="blank">&nbsp;</td><td class="blank">&nbsp;</td></tr>
+      <tr><td class="blank">&nbsp;</td><td class="blank">&nbsp;</td><td class="blank">&nbsp;</td><td class="blank">&nbsp;</td><td class="blank">&nbsp;</td></tr>
+    </table>
+    </div>
+    <p style="font-size:14px; color:var(--ink-soft)">A ★★ row with an unconfirmed counselor column is a deferral waiting to happen — resolve it before the target date, not on it. A row deferred past year-end is closed with "not delivered" and the reason. Keep the completed sheet with your year-end records.</p>
+    <div class="print-footer">Architecture of Grace &middot; architectureofgrace.org</div>
+  </div>
+
+  <div class="note"><b>Questions about staffing this in your building</b> — or a staffing situation these rules don't cover — write to <span class="mono">Theopus77@yahoo.com</span>. Real constraints from real buildings are how this protocol improves.</div>
+
+  <footer>
+    Architecture of Grace is independent work by its author. The flag requirements above are quoted from Book One (<i>The Foundation</i>, K–2) and Book Three (<i>The Interior</i>, 6–8); the 3–5 and 9–12 books follow the same pattern. Where a pre-brief or debrief duration is marked <i>est.</i>, it is a planning estimate, not book text.<br>
+    <a href="/">Home</a> &middot; <a href="/logic-model">The logic model</a> &middot; <a href="/standards">Standards &amp; alignment</a> &middot; <a href="evidence.html">Evidence &amp; Roadmap</a>
+  </footer>
+
+</div>
+</body>
+</html>

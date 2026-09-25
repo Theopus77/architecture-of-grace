@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script>/* .30eg: begin in light. Dark only when this device chose it. The bar writes both
+keys (aog.theme, and the standalone pages' aog.interior.ws.v1.theme) and reconciles them,
+so either one is a valid memory of the choice. */
+(function(){var t="light";try{var a=localStorage.getItem("aog.theme"),b=localStorage.getItem("aog.interior.ws.v1.theme");if(a==="dark"||(a==null&&b==="dark"))t="dark";}catch(e){}document.documentElement.setAttribute("data-theme",t);})();</script>
+<title>English — Architecture of Grace</title>
+<meta name="description" content="English — word study, the class stem units, grammar, a novel study of The Outsiders, and daily lines K–8. Private until YOU send it.">
+<!-- ═══ AOG ICONS + LINK PREVIEW · managed block · .30k0 ═══
+     Inserted by _work/aog_head.py — DO NOT hand-edit one page; edit the
+     script and re-run it, or the 100 pages drift apart again. The card
+     URL carries ?v= because Slack, Apple and Google cache an og image BY
+     URL for weeks: change the picture, bump IMG_V, or nothing shows up.
+     ═══════════════════════════════════════════════════════════════ -->
+<link rel="canonical" href="https://architectureofgrace.org/english">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Architecture of Grace">
+<meta property="og:locale" content="en_US">
+<meta property="og:title" content="English — Architecture of Grace">
+<meta property="og:description" content="English — word study, the class stem units, grammar, a novel study of The Outsiders, and daily lines K–8. Private until YOU send it.">
+<meta property="og:url" content="https://architectureofgrace.org/english">
+<meta property="og:image" content="https://architectureofgrace.org/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="English — word study, grammar, novel study and daily lines, from Architecture of Grace.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="English — Architecture of Grace">
+<meta name="twitter:description" content="English — word study, the class stem units, grammar, a novel study of The Outsiders, and daily lines K–8. Private until YOU send it.">
+<meta name="twitter:image" content="https://architectureofgrace.org/og-image.png">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#0A1E33">
+<meta name="apple-mobile-web-app-title" content="Grace">
+<meta name="application-name" content="Architecture of Grace">
+<!-- ═══ END AOG ICONS + LINK PREVIEW ═══ -->
+<!-- No external requests of any kind. Every byte this page needs is in this file
+     (aog-topbar.js below is same-origin; a 404 changes nothing but the bar). -->
+<!-- AOG-SUBJECT-HUB-V1 — built by _work/subjects/build_hub.py from hub_content_english.py. Do not hand-edit. -->
+<style>
+/* ══ the Word Foundry's tokens, one accent ══ */
+:root{
+  --bg:#FBFAF7; --card:#FFFFFF; --ink:#232B36; --sub:#5B6472; --line:#E4E1D8;
+  --acc:#2F4A7A; --acc-soft:#DFE6F2;
+  --good:#2E7D4F; --good-soft:#E4F0E8; --warn:#8A5A00; --warn-soft:#F6EEDC;
+  --chip:#EFECE4; --shadow:0 1px 3px rgba(35,43,54,.08);
+  --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,"Times New Roman",serif;
+  --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#191D24; --card:#20262F; --ink:#EDEAE2; --sub:#9AA3B0; --line:#333B47;
+    --acc:#8FB0E6; --acc-soft:#1F2A40;
+    --good:#6FBF8B; --good-soft:#1F3327; --warn:#D9A84E; --warn-soft:#332A18;
+    --chip:#2A313C; --shadow:0 1px 3px rgba(0,0,0,.35);
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#191D24; --card:#20262F; --ink:#EDEAE2; --sub:#9AA3B0; --line:#333B47;
+  --acc:#8FB0E6; --acc-soft:#1F2A40;
+  --good:#6FBF8B; --good-soft:#1F3327; --warn:#D9A84E; --warn-soft:#332A18;
+  --chip:#2A313C; --shadow:0 1px 3px rgba(0,0,0,.35);
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{background:var(--bg);color:var(--ink);font:16px/1.55 var(--sans);margin:0;padding:0 16px 64px}
+button{touch-action:manipulation}
+.wrap{max-width:880px;margin:0 auto}
+header{padding:28px 0 10px}
+.eyebrow{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.eyebrow a{color:var(--sub);font-size:.78rem;letter-spacing:.14em;text-transform:uppercase;text-decoration:none;font-weight:700}
+.eyebrow a:hover{color:var(--ink)}
+.eyebrow .sw{display:flex;gap:8px;align-items:center}
+#themeBtn,.seg button{border:1px solid var(--line);background:var(--card);color:var(--sub);border-radius:999px;padding:5px 12px;font:600 .78rem var(--sans);cursor:pointer;min-height:32px}
+.seg{display:inline-flex;gap:2px}
+.seg button.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+h1{font-family:var(--serif);font-weight:900;font-size:clamp(2rem,5vw,2.9rem);margin:10px 0 0;letter-spacing:-.01em}
+.tag{color:var(--sub);margin:6px 0 14px;max-width:60ch}
+.legend{display:flex;gap:10px;flex-wrap:wrap;align-items:center;font-size:.82rem}
+.lg{display:inline-flex;align-items:center;gap:6px;padding:3px 10px;border-radius:999px;font-weight:600}
+.lg.open{background:var(--acc-soft);color:var(--ink)}
+.lg.shop{background:var(--chip);color:var(--sub)}
+.dot{width:8px;height:8px;border-radius:50%;background:currentColor;display:inline-block}
+/* ══ the band strip — the English strip's shape (AOG-ENGLISH-STRIP-V1), five bands, one page ══ */
+.bandstrip{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:16px 0 6px}
+.bandstrip .k{font:800 .72rem var(--sans);letter-spacing:.14em;text-transform:uppercase;color:var(--sub);margin-right:4px}
+.bandstrip button{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:999px;padding:9px 16px;font:600 .9rem var(--sans);cursor:pointer;min-height:44px}
+.bandstrip button[aria-current="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.bandstrip button:hover{border-color:var(--ink)}
+.bandstrip button:focus-visible,.door:focus-visible,.gr:focus-visible,button:focus-visible,summary:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+/* ══ one band ══ */
+.band{padding-top:18px}
+.band[hidden]{display:none}
+h2{font-family:var(--serif);font-weight:700;font-size:1.35rem;margin:0 0 4px}
+.hint{color:var(--sub);font-size:.9rem;margin:0 0 10px;max-width:65ch}
+.count{color:var(--sub);font-size:.82rem;margin:0 0 16px;font-variant-numeric:tabular-nums}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px}
+.unit{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px 16px;box-shadow:var(--shadow);display:flex;flex-direction:column;gap:6px}
+.unit.open{border-left:4px solid var(--acc)}
+.unit .t{font-family:var(--serif);font-weight:700;font-size:1.05rem;line-height:1.25}
+.unit .d{font-size:.88rem;color:var(--sub);flex:1 1 auto}
+.doors{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-top:4px}
+.door{display:inline-flex;align-items:center;min-height:44px;padding:8px 14px;border:1px solid var(--line);border-radius:999px;background:var(--bg);color:var(--ink);font:600 .85rem var(--sans);text-decoration:none}
+.door:hover{border-color:var(--acc)}
+.shopchip{display:inline-flex;align-items:center;gap:6px;min-height:28px;padding:3px 10px;border-radius:999px;background:var(--chip);color:var(--sub);font:600 .78rem var(--sans)}
+.beam{border:0;background:none;color:var(--sub);font:600 .8rem var(--sans);cursor:pointer;min-height:44px;padding:8px 6px;text-decoration:underline;text-underline-offset:3px;margin-left:auto}
+.beam:hover{color:var(--ink)}
+/* ══ every day — Daily Drafts by grade ══ */
+.daily{margin-top:18px;padding:14px 16px;border:1px solid var(--line);border-radius:10px;background:var(--card);box-shadow:var(--shadow);display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.daily .dk{font-family:var(--serif);font-weight:700;font-size:1rem;margin-right:2px}
+.daily .dd{font-size:.86rem;color:var(--sub);flex:1 1 220px}
+.gr{display:inline-flex;align-items:center;justify-content:center;min-width:44px;min-height:44px;padding:0 12px;border:1px solid var(--line);border-radius:999px;background:var(--bg);color:var(--ink);font:700 .9rem var(--sans);text-decoration:none}
+.gr:hover{border-color:var(--acc)}
+/* ══ the engines ══ */
+.engines{margin-top:36px}
+.eng{border-top:1px solid var(--line);padding:12px 0;display:grid;grid-template-columns:1fr auto;gap:4px 14px;align-items:start}
+.eng:last-child{border-bottom:1px solid var(--line)}
+.eng .n{font-family:var(--serif);font-weight:700;font-size:1rem}
+.eng .d{font-size:.88rem;color:var(--sub);grid-column:1/-1;max-width:65ch}
+.eng .st{font:600 .78rem var(--sans);padding:3px 10px;border-radius:999px;white-space:nowrap}
+/* AOG-SS-ESWRAP-V1 — 2026-09-18. .eng is a grid of `1fr auto` whose status chip is
+   white-space:nowrap, and a grid item's default min-width:auto refuses to shrink below
+   min-content — so a long SPANISH chip pins the auto track and the page grows wider than
+   the phone, sliding sideways under a thumb. Measured at 390px: science-hub and
+   religions-hub were 421px in Spanish, social-studies-hub 410px; math-hub and english-hub
+   happened to fit only because their Spanish strings are shorter, which is luck, not
+   design — they carry the rule so it stays fixed when that text changes. English was
+   never affected. Below 560px the chip wraps and the card stacks; min-width:0 lets the
+   tracks shrink. Nothing changes above 560px. */
+.eng > *{min-width:0}
+@media (max-width:560px){
+  .eng{grid-template-columns:1fr}
+  .eng .st{white-space:normal;justify-self:start}
+}
+.eng.open .st{background:var(--acc-soft);color:var(--ink)}
+.eng.shop .st{background:var(--chip);color:var(--sub)}
+main[data-workshop="off"] .shop{display:none}
+/* ══ for the teacher ══ */
+.teach{background:var(--card);border:1px solid var(--line);border-radius:10px;margin-top:30px;box-shadow:var(--shadow)}
+.teach summary{cursor:pointer;padding:14px 18px;font-family:var(--serif);font-weight:700;font-size:1.05rem;list-style:none;min-height:44px}
+.teach summary::-webkit-details-marker{display:none}
+.teach summary::before{content:"+";display:inline-flex;width:22px;height:22px;border-radius:50%;background:var(--chip);color:var(--sub);font:700 .95rem var(--sans);align-items:center;justify-content:center;margin-right:10px}
+.teach[open] summary::before{content:"–"}
+.teach .inner{padding:0 18px 16px 50px;color:var(--sub);font-size:.94rem;max-width:65ch}
+.teach .inner p{margin:0 0 10px}
+.teach .inner b{color:var(--ink)}
+/* ══ the board beam (ported from /prep) ══ */
+#beam{position:fixed;inset:0;z-index:9500;background:var(--bg);color:var(--ink);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:24px;text-align:center;cursor:pointer}
+#beam .x{position:absolute;top:16px;right:20px;font-size:.85rem;color:var(--sub)}
+#beam .wk{font:800 .9rem var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--sub)}
+#beam .nm{font-family:var(--serif);font-weight:700;font-size:clamp(1.4rem,4vw,2.4rem);max-width:22ch}
+#beam .url{font:700 clamp(1.6rem,7vw,4.4rem)/1.1 var(--sans);color:var(--acc);word-break:break-all}
+#beam .hint{font-size:1rem;color:var(--sub);margin:0}
+footer{margin-top:48px;color:var(--sub);font-size:.8rem;border-top:1px solid var(--line);padding-top:14px;max-width:65ch}
+@media print{.bandstrip,.beam,.eyebrow .sw,#beam{display:none !important}.band[hidden]{display:none}}
+
+/* ══ AOG-PRINT-SAFE-V1 (2026-09-20) ═══════════════════════════════════════════
+   Jimmy, printing a novel study from his phone: "another pdf that gets parts of
+   the material cut off." These are the rules that keep paper honest on every
+   engine — a table row, a list item, a figure and a picture stay whole; a head
+   keeps the lines under it; no paragraph strands one line at a page edge; and a
+   long table repeats its head at the top of each page. Printed pages only. */
+@media print{
+  table{break-inside:auto; page-break-inside:auto}
+  thead{display:table-header-group}
+  tfoot{display:table-footer-group}
+  tr{break-inside:avoid; page-break-inside:avoid}
+  li,figure,img,svg{break-inside:avoid; page-break-inside:avoid}
+  h1,h2,h3,h4,h5{break-after:avoid; page-break-after:avoid}
+  p{orphans:3; widows:3}
+  /* AOG-PRINT-GRIDFIT-V1 — a CSS grid does not fragment, so a card in a grid row
+     was sliced at the page break instead of moving whole to the next page. On
+     paper the grid is ordinary blocks and each card keeps itself together. */
+  .grid,.cards{display:block!important}
+  .grid>*,.cards>*{break-inside:avoid; page-break-inside:avoid; margin:0 0 12px}
+}
+</style>
+</head>
+<body>
+<script src="/aog-topbar.js"></script>
+
+<div class="wrap">
+<header>
+  <div class="eyebrow">
+    <a href="/">Architecture of Grace</a>
+    <div class="sw">
+      <div class="seg" role="group" aria-label="Language"><button type="button" id="langEn" class="on">EN</button><button type="button" id="langEs">ES</button></div>
+      <button id="themeBtn" type="button" aria-label="Switch between light and dark">Dark mode</button>
+    </div>
+  </div>
+  <h1 data-en="English" data-es="Inglés">English</h1>
+  <p class="tag" data-en="One door for words, sentences and books: the stems your class is tested on, grammar in the real test’s format, a novel room that checks itself, and ten daily lines for every grade K–12." data-es="Una puerta para palabras, oraciones y libros: las raíces que tu clase evalúa, gramática en el formato del examen real, una sala de novela que se comprueba sola, y diez líneas diarias para cada grado K–12.">One door for words, sentences and books: the stems your class is tested on, grammar in the real test’s format, a novel room that checks itself, and ten daily lines for every grade K–12.</p>
+  <div class="legend">
+    <span class="lg open"><span class="dot"></span><span data-en="Open" data-es="Abierto">Open</span></span>
+    <span class="lg shop"><span class="dot"></span><span data-en="In the workshop" data-es="En el taller">In the workshop</span></span>
+  </div>
+</header>
+<nav class="bandstrip no-print" aria-label="English by grade band" id="bandNav"><span class="k" data-en="English" data-es="Inglés">English</span><button type="button" data-band="k-2" aria-current="false">K–2</button><button type="button" data-band="3-5" aria-current="false">3–5</button><button type="button" data-band="6-8" aria-current="false">6–8</button><button type="button" data-band="9-10" aria-current="false">9–10</button><button type="button" data-band="11-12" aria-current="false">11–12</button></nav>
+<main id="content" data-workshop="on">
+<section class="band" id="k-2" aria-labelledby="h-k-2">
+  <h2 id="h-k-2" data-en="Grades K–2 — sounds, sentences, and the first stories" data-es="Grados K–2 — sonidos, oraciones y los primeros cuentos">Grades K–2 — sounds, sentences, and the first stories</h2>
+  <p class="hint" data-en="Six rooms, in the order they build on each other: the sounds inside a word, the words that break the rules, the sentence, and what a story is made of. Two daily strands run beside them." data-es="Seis salas, en el orden en que se apoyan una en otra: los sonidos dentro de una palabra, las palabras que rompen las reglas, la oración, y de qué está hecho un cuento. Dos líneas diarias corren al lado.">Six rooms, in the order they build on each other: the sounds inside a word, the words that break the rules, the sentence, and what a story is made of. Two daily strands run beside them.</p>
+  <p class="count" data-en="6 units open · 0 in the workshop" data-es="6 unidades abiertas · 0 en el taller">6 units open · 0 in the workshop</p>
+  <div class="grid">
+  <div class="unit open"><div class="t" data-en="Sounds and Letters" data-es="Sonidos y letras">Sounds and Letters</div><div class="d" data-en="A letter has a name and a sound, and they are not the same thing. Stretch a word and hear its first, middle and last sound; push three sounds together and a word comes out. The five short vowels, the three pairs that make one sound, and why no English word gets by without a vowel." data-es="Una letra tiene un nombre y un sonido, y no son lo mismo. Estira una palabra y escucha su primer sonido, el de en medio y el último; junta tres sonidos y sale una palabra. Las cinco vocales cortas, los tres pares que hacen un solo sonido, y por qué ninguna palabra en inglés se salva sin una vocal.">A letter has a name and a sound, and they are not the same thing. Stretch a word and hear its first, middle and last sound; push three sounds together and a word comes out. The five short vowels, the three pairs that make one sound, and why no English word gets by without a vowel.</div><div class="doors"><a class="door" href="/e1" data-en="Open" data-es="Abrir">Open</a><button class="beam no-print" type="button" data-beam="/e1" data-name="Sounds and Letters" data-name-es="Sonidos y letras" data-en="Show on the board" data-es="Mostrar en la pizarra">Show on the board</button></div></div>
+  <div class="unit open"><div class="t" data-en="Words You Know by Sight" data-es="Palabras que conoces de vista">Words You Know by Sight</div><div class="d" data-en="Sounding out works on most words, and then you meet said, was, of and one. The surprise is that they are not all strange: in said only the middle is odd. Find the one part that breaks a rule and the rest of the word behaves." data-es="Sonar las palabras funciona casi siempre, y luego te topas con said, was, of y one. La sorpresa es que no son del todo raras: en said solo el medio es raro. Halla la parte que rompe una regla y el resto se porta bien.">Sounding out works on most words, and then you meet said, was, of and one. The surprise is that they are not all strange: in said only the middle is odd. Find the one part that breaks a rule and the rest of the word behaves.</div><div class="doors"><a class="door" href="/e2" data-en="Open" data-es="Abrir">Open</a><button class="beam no-print" type="button" data-beam="/e2" data-name="Words You Know by Sight" data-name-es="Palabras que conoces de vista" data-en="Show on the board" data-es="Mostrar en la pizarra">Show on the board</button></div></div>
+  <div class="unit open"><div class="t" data-en="A Sentence Is a Whole Thought" data-es="Una oración es un pensamiento completo">A Sentence Is a Whole Thought</div><div class="d" data-en="A sentence is not any group of words and it is not a long one — it is a whole thought, with somebody in it and something happening. Four words can be a piece; two words can be a sentence. Count the parts, not the words." data-es="Una oración no es cualquier grupo de palabras ni uno largo — es un pensamiento completo, con alguien adentro y algo que pasa. Cuatro palabras pueden ser un pedazo; dos pueden ser una oración. Cuenta las partes, no las palabras.">A sentence is not any group of words and it is not a long one — it is a whole thought, with somebody in it and something happening. Four words can be a piece; two words can be a sentence. Count the parts, not the words.</div><div class="doors"><a class="door" href="/e3" data-en="Open" data-es="Abrir">Open</a><button class="beam no-print" type="button" data-beam="/e3" data-name="A Sentence Is a Whole Thought" data-name-es="Una oración es un pensamiento completo" data-en="Show on the board" data-es="Mostrar en la pizarra">Show on the board</button></div></div>
+  <div class="unit open"><div class="t" data-en="Who, Where, What Happens" data-es="Quién, dónde, qué pasa">Who, Where, What Happens</div><div class="d" data-en="Every story is holding three things: somebody it is about, a place and time it happens in, and the things that change. Name those three and you can retell anything — and tell a real event from a detail that is just sitting there." data-es="Cada cuento guarda tres cosas: alguien de quien trata, un lugar y un momento donde pasa, y las cosas que cambian. Nombra esas tres y puedes volver a contar cualquier cosa — y distinguir un suceso real de un detalle que solo está ahí.">Every story is holding three things: somebody it is about, a place and time it happens in, and the things that change. Name those three and you can retell anything — and tell a real event from a detail that is just sitting there.</div><div class="doors"><a class="door" href="/e4" data-en="Open" data-es="Abrir">Open</a><button class="beam no-print" type="button" data-beam="/e4" data-name="Who, Where, What Happens" data-name-es="Quién, dónde, qué pasa" data-en="Show on the board" data-es="Mostrar en la pizarra">Show on the board</button></div></div>
+  <div class="unit open"><div class="t" data-en="Beginning, Middle, End" data-es="Principio, medio y final">Beginning, Middle, End</div><div class="d" data-en="A story sets you up, then something goes wrong, then somebody does something about it. The end is not where the story stops — it is where the trouble is settled. The middle is the biggest part, and the part most retellings skip." data-es="Un cuento te prepara, luego algo sale mal, luego alguien hace algo. El final no es donde el cuento se detiene — es donde el problema se resuelve. El medio es la parte más grande, y la que casi todos los resúmenes se saltan.">A story sets you up, then something goes wrong, then somebody does something about it. The end is not where the story stops — it is where the trouble is settled. The middle is the biggest part, and the part most retellings skip.</div><div class="doors"><a class="door" href="/e5" data-en="Open" data-es="Abrir">Open</a><button class="beam no-print" type="button" data-beam="/e5" data-name="Beginning, Middle, End" data-name-es="Principio, medio y final" data-en="Show on the board" data-es="Mostrar en la pizarra">Show on the board</button></div></div>
+  <div class="unit open"><div class="t" data-en="True Books and Story Books" data-es="Libros de verdad y libros de cuentos">True Books and Story Books</div><div class="d" data-en="Some books tell a story; some tell you what is true. They are not read the same way — a story front to back, a true book opened anywhere. Headings, labels, captions and a contents page, and how to take one fact out without reading it all." data-es="Algunos libros cuentan un cuento; otros te dicen lo que es cierto. No se leen igual — un cuento de principio a fin, un libro de verdad abierto donde sea. Títulos, rótulos, pies de foto y página de contenido, y cómo sacar un dato sin leerlo todo.">Some books tell a story; some tell you what is true. They are not read the same way — a story front to back, a true book opened anywhere. Headings, labels, captions and a contents page, and how to take one fact out without reading it all.</div><div class="doors"><a class="door" href="/e6" data-en="Open" data-es="Abrir">Open</a><button class="beam no-print" type="button" data-beam="/e6" data-name="True Books and Story Books" data-name-es="Libros de verdad y libros de cuentos" data-en="Show on the board" data-es="Mostrar en la pizarra">Show on the board</button></div></div>
+  </div>
+<div class="daily"><span class="dk" data-en="Every day · language arts" data-es="Cada día · lenguaje">Every day · language arts</span><span class="dd" data-en="Ten daily lines of reading, vocabulary and conventions — pick the grade." data-es="Diez líneas diarias de lectura, vocabulario y convenciones — elige el grado.">Ten daily lines of reading, vocabulary and conventions — pick the grade.</span><a class="gr" href="/drops/ela/K" aria-label="Daily Drafts, grade K">K</a><a class="gr" href="/drops/ela/1" aria-label="Daily Drafts, grade 1">1</a><a class="gr" href="/drops/ela/2" aria-label="Daily Drafts, grade 2">2</a></div><div class="daily"><span class="dk" data-en="Every day · writing" data-es="Cada día · escritura">Every day · writing</span><span class="dd" data-en="One prompt, a plan, a draft and a rubric — pick the grade." data-es="Una consigna, un plan, un borrador y una rúbrica — elige el grado.">One prompt, a plan, a draft and a rubric — pick the grade.</span><a class="gr" href="/drops/write/K" aria-label="Daily Drafts, grade K">K</a><a class="gr" href="/drops/write/1" aria-label="Daily Drafts, grade 1">1</a><a class="gr" href="/drops/write/2" aria-label="Daily Drafts, grade 2">2</a></div>
+</section>
+<section class="band" id="3-5" aria-labelledby="h-3-5">
+  <h2 id="h-3-5" data-en="Grades 3–5 — words, meaning, and your first paragraph" data-es="Grados 3–5 — palabras, significado y tu primer párrafo">Grades 3–5 — words, meaning, and your first paragraph</h2>
+  <!-- AOG-ENGLISH-HUB-35-V1 -->
+  <p class="hint" data-en="Six rooms, in the order they build on each other: the pieces inside a word, the sentence around it, the claim a paragraph makes, the one a story never states, the frame under any text — and then one you build yourself. Two daily strands run beside them." data-es="Seis salas, en el orden en que se apoyan una en otra: las piezas dentro de una palabra, la oración que la rodea, la afirmación de un párrafo, la que un cuento nunca dice, el armazón bajo cualquier texto — y luego uno que construyes tú. Dos líneas diarias corren al lado.">Six rooms, in the order they build on each other: the pieces inside a word, the sentence around it, the claim a paragraph makes, the one a story never states, the frame under any text — and then one you build yourself. Two daily strands run beside them.</p>
+  <p class="count" data-en="6 units open · 0 in the workshop" data-es="6 unidades abiertas · 0 en el taller">6 units open · 0 in the workshop</p>
+  <div class="grid">
+  <div class="unit open"><div class="t" data-en="Word Parts" data-es="Partes de las palabras">Word Parts</div><div class="d" data-en="A long word is not one thing — it is a root with pieces bolted on. Find the root first, then read the front for a prefix and the end for a suffix. Un-, re-, dis-, pre-, and the suffixes that change a word’s job without changing what it means." data-es="Una palabra larga no es una sola cosa — es una raíz con piezas atornilladas. Halla primero la raíz, luego lee el frente por un prefijo y el final por un sufijo. Un-, re-, dis-, pre-, y los sufijos que cambian el trabajo de una palabra sin cambiar su significado.">A long word is not one thing — it is a root with pieces bolted on. Find the root first, then read the front for a prefix and the end for a suffix. Un-, re-, dis-, pre-, and the suffixes that change a word’s job without changing what it means.</div><div class="doors"><a class="door" href="/e7" data-en="Open" data-es="Abrir">Open</a><button class="beam no-print" type="button" data-beam="/e7" data-name="Word Parts" data-name-es="Partes de las palabras" data-en="Show on the board" data-es="Mostrar en la pizarra">Show on the board</button></div></div>
+  <div class="unit open"><div class="t" data-en="Context Clues" data-es="Pistas del contexto">Context Clues</div><div class="d" data-en="Writers know which words are hard, and they leave help nearby on purpose. Five kinds of clue and the signal words that announce each one — including the contrast clue you have to read backwards, and the substitute-and-check step that separates a guess from a wild guess." data-es="Quien escribe sabe qué palabras son difíciles, y deja ayuda cerca a propósito. Cinco tipos de pista y las palabras señal que anuncian cada una — incluida la de contraste que hay que leer al revés, y el paso de sustituir y comprobar que separa una idea de una adivinanza.">Writers know which words are hard, and they leave help nearby on purpose. Five kinds of clue and the signal words that announce each one — including the contrast clue you have to read backwards, and the substitute-and-check step that separates a guess from a wild guess.</div><div class="doors"><a class="door" href="/e8" data-en="Open" data-es="Abrir">Open</a><button class="beam no-print" type="button" data-beam="/e8" data-name="Context Clues" data-name-es="Pistas del contexto" data-en="Show on the board" data-es="Mostrar en la pizarra">Show on the board</button></div></div>
+  <div class="unit open"><div class="t" data-en="Main Idea and Details" data-es="Idea principal y detalles">Main Idea and Details</div><div class="d" data-en="The topic is a word or two and cannot be true or false. The main idea is what the paragraph SAYS about it, and it takes a whole sentence. Everything else holds it up. Where the main idea hides, how to build one that is never stated, and why both wrong answers are usually true." data-es="El tema es una o dos palabras y no puede ser verdadero ni falso. La idea principal es lo que el párrafo DICE sobre él, y necesita una oración entera. Todo lo demás la sostiene. Dónde se esconde, cómo construir una que nunca se dice, y por qué las dos respuestas equivocadas suelen ser verdaderas.">The topic is a word or two and cannot be true or false. The main idea is what the paragraph SAYS about it, and it takes a whole sentence. Everything else holds it up. Where the main idea hides, how to build one that is never stated, and why both wrong answers are usually true.</div><div class="doors"><a class="door" href="/e9" data-en="Open" data-es="Abrir">Open</a><button class="beam no-print" type="button" data-beam="/e9" data-name="Main Idea and Details" data-name-es="Idea principal y detalles" data-en="Show on the board" data-es="Mostrar en la pizarra">Show on the board</button></div></div>
+  <div class="unit open"><div class="t" data-en="Story Elements and Theme" data-es="Elementos del cuento y tema">Story Elements and Theme</div><div class="d" data-en="Character, setting, problem, resolution — and the theme a story never states out loud. Build it from what the character wanted, what stood in the way, and what changed. A theme is a full sentence about people in general, and there is no name in it." data-es="Personaje, ambiente, problema, resolución — y el tema que un cuento nunca dice en voz alta. Constrúyelo con lo que quería el personaje, lo que se interpuso, y qué cambió. Un tema es una oración entera sobre las personas en general, y no lleva ningún nombre.">Character, setting, problem, resolution — and the theme a story never states out loud. Build it from what the character wanted, what stood in the way, and what changed. A theme is a full sentence about people in general, and there is no name in it.</div><div class="doors"><a class="door" href="/e10" data-en="Open" data-es="Abrir">Open</a><button class="beam no-print" type="button" data-beam="/e10" data-name="Story Elements and Theme" data-name-es="Elementos del cuento y tema" data-en="Show on the board" data-es="Mostrar en la pizarra">Show on the board</button></div></div>
+  <div class="unit open"><div class="t" data-en="How a Text Is Built" data-es="Cómo se construye un texto">How a Text Is Built</div><div class="d" data-en="Nobody writes facts down in the order they thought of them. Five shapes — sequence, cause and effect, compare and contrast, problem and solution, description — the signal words that announce each, and why the same three facts arranged two ways leave a reader with two different conclusions." data-es="Nadie escribe los hechos en el orden en que se le ocurrieron. Cinco formas — secuencia, causa y efecto, comparar y contrastar, problema y solución, descripción — las palabras señal de cada una, y por qué los mismos tres hechos acomodados de dos formas dejan dos conclusiones distintas.">Nobody writes facts down in the order they thought of them. Five shapes — sequence, cause and effect, compare and contrast, problem and solution, description — the signal words that announce each, and why the same three facts arranged two ways leave a reader with two different conclusions.</div><div class="doors"><a class="door" href="/e11" data-en="Open" data-es="Abrir">Open</a><button class="beam no-print" type="button" data-beam="/e11" data-name="How a Text Is Built" data-name-es="Cómo se construye un texto" data-en="Show on the board" data-es="Mostrar en la pizarra">Show on the board</button></div></div>
+  <div class="unit open"><div class="t" data-en="The Paragraph: a Claim and Reasons" data-es="El párrafo: una afirmación y razones">The Paragraph: a Claim and Reasons</div><div class="d" data-en="Five rooms of taking writing apart; this one you build. A claim that could be wrong, reasons with something checkable under each, a shape chosen before drafting, and a close that says more than the opening. Then the hard part — cutting the sentence you liked that held nothing up." data-es="Cinco salas desarmando escritura; esta la construyes. Una afirmación que podría ser falsa, razones con algo comprobable debajo, una forma elegida antes de redactar, y un cierre que diga más que la apertura. Y luego lo difícil — cortar la oración que te gustaba y no sostenía nada.">Five rooms of taking writing apart; this one you build. A claim that could be wrong, reasons with something checkable under each, a shape chosen before drafting, and a close that says more than the opening. Then the hard part — cutting the sentence you liked that held nothing up.</div><div class="doors"><a class="door" href="/e12" data-en="Open" data-es="Abrir">Open</a><button class="beam no-print" type="button" data-beam="/e12" data-name="The Paragraph: a Claim and Reasons" data-name-es="El párrafo: una afirmación y razones" data-en="Show on the board" data-es="Mostrar en la pizarra">Show on the board</button></div></div>
+  </div>
+  <div class="daily"><span class="dk" data-en="Every day · language arts" data-es="Cada día · lenguaje">Every day · language arts</span><span class="dd" data-en="Ten daily lines of reading, vocabulary and conventions — pick the grade." data-es="Diez líneas diarias de lectura, vocabulario y convenciones — elige el grado.">Ten daily lines of reading, vocabulary and conventions — pick the grade.</span><a class="gr" href="/drops/ela/3" aria-label="Daily Drafts, grade 3">3</a><a class="gr" href="/drops/ela/4" aria-label="Daily Drafts, grade 4">4</a><a class="gr" href="/drops/ela/5" aria-label="Daily Drafts, grade 5">5</a></div><div class="daily"><span class="dk" data-en="Every day · writing" data-es="Cada día · escritura">Every day · writing</span><span class="dd" data-en="One prompt, a plan, a draft and a rubric — pick the grade." data-es="Una consigna, un plan, un borrador y una rúbrica — elige el grado.">One prompt, a plan, a draft and a rubric — pick the grade.</span><a class="gr" href="/drops/write/3" aria-label="Daily Drafts, grade 3">3</a><a class="gr" href="/drops/write/4" aria-label="Daily Drafts, grade 4">4</a><a class="gr" href="/drops/write/5" aria-label="Daily Drafts, grade 5">5</a></div>
+</section>
+<section class="band" id="6-8" aria-labelledby="h-6-8">
+  <h2 id="h-6-8" data-en="Grades 6–8 — words, grammar, and the first novel room" data-es="Grados 6–8 — palabras, gramática y la primera sala de novela">Grades 6–8 — words, grammar, and the first novel room</h2>
+  <p class="hint" data-en="Four rooms. One is a whole novel. Two are about stems — one in the class’s own unit order, one to play with. One is grammar." data-es="Cuatro salas. Una es una novela entera. Dos tratan de raíces — una en el orden de las unidades de la clase, otra para jugar. Una es gramática.">Four rooms. One is a whole novel. Two are about stems — one in the class’s own unit order, one to play with. One is grammar.</p>
+  <p class="count" data-en="4 units open · 0 in the workshop" data-es="4 unidades abiertas · 0 en el taller">4 units open · 0 in the workshop</p>
+  <div class="grid">
+  <div class="unit open"><div class="t" data-en="Novel study · The Outsiders, chapter by chapter" data-es="Estudio de novela · The Outsiders, capítulo por capítulo">Novel study · The Outsiders, chapter by chapter</div><div class="d" data-en="S. E. Hinton’s novel one chapter at a time: pick the chapter you just read and get its own study cards and a three-level quiz, with nothing from later chapters on the screen. The whole-book set and seven worksheets that check themselves — Frost’s poem line by line among them — wait at the end." data-es="La novela de S. E. Hinton un capítulo a la vez: elige el capítulo que acabas de leer y obtén sus propias tarjetas de estudio y un quiz de tres niveles, sin nada de capítulos posteriores en pantalla. El conjunto del libro completo y siete hojas de trabajo que se comprueban solas — entre ellas el poema de Frost verso por verso — esperan al final.">S. E. Hinton’s novel one chapter at a time: pick the chapter you just read and get its own study cards and a three-level quiz, with nothing from later chapters on the screen. The whole-book set and seven worksheets that check themselves — Frost’s poem line by line among them — wait at the end.</div><div class="doors"><a class="door" href="/n1" data-en="Open" data-es="Abrir">Open</a><button class="beam no-print" type="button" data-beam="/n1" data-name="Novel study · The Outsiders, chapter by chapter" data-name-es="Estudio de novela · The Outsiders, capítulo por capítulo" data-en="Show on the board" data-es="Mostrar en la pizarra">Show on the board</button></div></div>
+  <div class="unit open"><div class="t" data-en="Class Units · the stems from class" data-es="Unidades de clase · las raíces de la clase">Class Units · the stems from class</div><div class="d" data-en="The class’s own stem units, stem by stem, in the order the class studies them — Units 11 through 20: learn the cards, quiz both ways, find the stems hiding inside real words, rehearse the test from a word bank where spelling counts, and fill in a study guide shaped like the handout. It prints. This page sends nothing." data-es="Las unidades de raíces de la clase, raíz por raíz, en el orden en que la clase las estudia — Unidades 11 a 20: aprende las tarjetas, practica en ambos sentidos, encuentra las raíces escondidas en palabras reales, ensaya el examen con un banco de palabras donde la ortografía cuenta, y completa una guía de estudio con la forma de la hoja de clase. Se imprime. Esta página no envía nada.">The class’s own stem units, stem by stem, in the order the class studies them — Units 11 through 20: learn the cards, quiz both ways, find the stems hiding inside real words, rehearse the test from a word bank where spelling counts, and fill in a study guide shaped like the handout. It prints. This page sends nothing.</div><div class="doors"><a class="door" href="/units" data-en="Open" data-es="Abrir">Open</a><button class="beam no-print" type="button" data-beam="/units" data-name="Class Units · the stems from class" data-name-es="Unidades de clase · las raíces de la clase" data-en="Show on the board" data-es="Mostrar en la pizarra">Show on the board</button></div></div>
+  <div class="unit open"><div class="t" data-en="The Word Foundry" data-es="La Fundición de Palabras">The Word Foundry</div><div class="d" data-en="Stems, analogies, mystery words, poetics, four-level sentences, and the forge where a student coins a word and defends it." data-es="Raíces, analogías, palabras misteriosas, poética, oraciones en cuatro niveles, y la forja donde un estudiante acuña una palabra y la defiende.">Stems, analogies, mystery words, poetics, four-level sentences, and the forge where a student coins a word and defends it.</div><div class="doors"><a class="door" href="/words" data-en="Open" data-es="Abrir">Open</a><button class="beam no-print" type="button" data-beam="/words" data-name="The Word Foundry" data-name-es="La Fundición de Palabras" data-en="Show on the board" data-es="Mostrar en la pizarra">Show on the board</button></div></div>
+  <div class="unit open"><div class="t" data-en="Grammar" data-es="Gramática">Grammar</div><div class="d" data-en="Sixteen modules, quizzed in the real test’s format — in the Foundry’s own skin, so the two rooms feel like one." data-es="Dieciséis módulos, con pruebas en el formato del examen real — con la misma piel de la Fundición, para que las dos salas se sientan como una.">Sixteen modules, quizzed in the real test’s format — in the Foundry’s own skin, so the two rooms feel like one.</div><div class="doors"><a class="door" href="/b11" data-en="Open" data-es="Abrir">Open</a><button class="beam no-print" type="button" data-beam="/b11" data-name="Grammar" data-name-es="Gramática" data-en="Show on the board" data-es="Mostrar en la pizarra">Show on the board</button></div></div>
+  </div>
+  <div class="daily"><span class="dk" data-en="Every day · language arts" data-es="Cada día · lenguaje">Every day · language arts</span><span class="dd" data-en="Ten daily lines of reading, vocabulary and conventions — pick the grade." data-es="Diez líneas diarias de lectura, vocabulario y convenciones — elige el grado.">Ten daily lines of reading, vocabulary and conventions — pick the grade.</span><a class="gr" href="/drops/ela/6" aria-label="Daily Drafts, grade 6">6</a><a class="gr" href="/drops/ela/7" aria-label="Daily Drafts, grade 7">7</a><a class="gr" href="/drops/ela/8" aria-label="Daily Drafts, grade 8">8</a></div><div class="daily"><span class="dk" data-en="Every day · writing" data-es="Cada día · escritura">Every day · writing</span><span class="dd" data-en="One prompt, a plan, a draft and a rubric — pick the grade." data-es="Una consigna, un plan, un borrador y una rúbrica — elige el grado.">One prompt, a plan, a draft and a rubric — pick the grade.</span><a class="gr" href="/drops/write/6" aria-label="Daily Drafts, grade 6">6</a><a class="gr" href="/drops/write/7" aria-label="Daily Drafts, grade 7">7</a><a class="gr" href="/drops/write/8" aria-label="Daily Drafts, grade 8">8</a></div>
+</section>
+<section class="band" id="9-10" aria-labelledby="h-9-10">
+  <h2 id="h-9-10" data-en="Grades 9–10 — how a writer argues without arguing" data-es="Grados 9–10 — cómo se argumenta sin argumentar">Grades 9–10 — how a writer argues without arguing</h2>
+  <!-- AOG-ENGLISH-HUB-910-V1 -->
+  <p class="hint" data-en="Six rooms, in the order they build on each other: one word’s charge, one comparison’s smuggled structure, the attitude a hundred choices add up to, that attitude organized and aimed, and then the two finest scales — the marks, and the clause boundary itself." data-es="Seis salas, en el orden en que se apoyan una en otra: la carga de una palabra, la estructura que cuela una comparación, la actitud a la que suman cien decisiones, esa actitud organizada y apuntada, y luego las dos escalas más finas — las marcas, y la frontera entre cláusulas.">Six rooms, in the order they build on each other: one word’s charge, one comparison’s smuggled structure, the attitude a hundred choices add up to, that attitude organized and aimed, and then the two finest scales — the marks, and the clause boundary itself.</p>
+  <p class="count" data-en="6 units open · 0 in the workshop" data-es="6 unidades abiertas · 0 en el taller">6 units open · 0 in the workshop</p>
+  <div class="grid">
+  <div class="unit open"><div class="t" data-en="Context Clues and Word Parts" data-es="Pistas del contexto y partes de las palabras">Context Clues and Word Parts</div><div class="d" data-en="At this level the word you do not know is usually the one carrying the argument. Roots and affixes as a system that predicts whole families, the difference between what a word means and what it is doing, and the habit of naming the neutral word a writer refused." data-es="En este nivel la palabra que no conoces suele ser la que lleva el argumento. Raíces y afijos como un sistema que predice familias enteras, la diferencia entre lo que una palabra significa y lo que hace, y la costumbre de nombrar la palabra neutral que quien escribe rechazó.">At this level the word you do not know is usually the one carrying the argument. Roots and affixes as a system that predicts whole families, the difference between what a word means and what it is doing, and the habit of naming the neutral word a writer refused.</div><div class="doors"><a class="door" href="/e13" data-en="Open" data-es="Abrir">Open</a><button class="beam no-print" type="button" data-beam="/e13" data-name="Context Clues and Word Parts" data-name-es="Pistas del contexto y partes de las palabras" data-en="Show on the board" data-es="Mostrar en la pizarra">Show on the board</button></div></div>
+  <div class="unit open"><div class="t" data-en="Figurative Language" data-es="Lenguaje figurado">Figurative Language</div><div class="d" data-en="Every figure is a transfer: it carries some properties across and silently refuses to carry the rest. The eight figures you will be asked to name, and one method that works on all of them — say what crossed, say what did not, and propose the rival comparison." data-es="Toda figura es un traslado: lleva algunas propiedades y en silencio se niega a llevar el resto. Las ocho figuras que te pedirán nombrar, y un método que sirve para todas — di qué cruzó, di qué no, y propon la comparación rival.">Every figure is a transfer: it carries some properties across and silently refuses to carry the rest. The eight figures you will be asked to name, and one method that works on all of them — say what crossed, say what did not, and propose the rival comparison.</div><div class="doors"><a class="door" href="/e14" data-en="Open" data-es="Abrir">Open</a><button class="beam no-print" type="button" data-beam="/e14" data-name="Figurative Language" data-name-es="Lenguaje figurado" data-en="Show on the board" data-es="Mostrar en la pizarra">Show on the board</button></div></div>
+  <div class="unit open"><div class="t" data-en="Tone and Voice" data-es="Tono y voz">Tone and Voice</div><div class="d" data-en="Tone is never stated, so it can only be proved. Telling tone from mood and voice, the four sources it is built from — diction, figures, sentence length and what is left out — a precise tone vocabulary, and finding the line where a passage turns." data-es="El tono nunca se dice, así que solo se puede probar. Distinguir tono de ánimo y voz, las cuatro fuentes que lo construyen — dicción, figuras, largo de oración y lo omitido — un vocabulario preciso, y hallar la línea donde gira un pasaje.">Tone is never stated, so it can only be proved. Telling tone from mood and voice, the four sources it is built from — diction, figures, sentence length and what is left out — a precise tone vocabulary, and finding the line where a passage turns.</div><div class="doors"><a class="door" href="/e15" data-en="Open" data-es="Abrir">Open</a><button class="beam no-print" type="button" data-beam="/e15" data-name="Tone and Voice" data-name-es="Tono y voz" data-en="Show on the board" data-es="Mostrar en la pizarra">Show on the board</button></div></div>
+  <div class="unit open"><div class="t" data-en="Rhetoric: How a Writer Persuades" data-es="Retórica: cómo se persuade">Rhetoric: How a Writer Persuades</div><div class="d" data-en="Tone is attitude with no plan; rhetoric is attitude with one. Ethos, pathos and logos, the devices that carry them, and the three questions that come before any of it — who is the audience, what are they being asked to do, and why have they not done it already." data-es="El tono es actitud sin plan; la retórica es actitud con plan. Ethos, pathos y logos, los recursos que los llevan, y las tres preguntas que van antes de todo — quién es el público, qué se le pide hacer, y por qué no lo ha hecho ya.">Tone is attitude with no plan; rhetoric is attitude with one. Ethos, pathos and logos, the devices that carry them, and the three questions that come before any of it — who is the audience, what are they being asked to do, and why have they not done it already.</div><div class="doors"><a class="door" href="/e16" data-en="Open" data-es="Abrir">Open</a><button class="beam no-print" type="button" data-beam="/e16" data-name="Rhetoric: How a Writer Persuades" data-name-es="Retórica: cómo se persuade" data-en="Show on the board" data-es="Mostrar en la pizarra">Show on the board</button></div></div>
+  <div class="unit open"><div class="t" data-en="Punctuation That Changes the Meaning" data-es="Puntuación que cambia el sentido">Punctuation That Changes the Meaning</div><div class="d" data-en="Not a room about neatness. Two commas change how many brothers you have; a pair of quotation marks calls a word a lie without arguing. The removal test, what each mark claims, and four ways to repair a comma splice that each say something different." data-es="No es una sala sobre pulcritud. Dos comas cambian cuántos hermanos tienes; un par de comillas llama mentira a una palabra sin argumentar. La prueba de quitar, qué afirma cada marca, y cuatro formas de reparar un empalme que dicen cosas distintas.">Not a room about neatness. Two commas change how many brothers you have; a pair of quotation marks calls a word a lie without arguing. The removal test, what each mark claims, and four ways to repair a comma splice that each say something different.</div><div class="doors"><a class="door" href="/e17" data-en="Open" data-es="Abrir">Open</a><button class="beam no-print" type="button" data-beam="/e17" data-name="Punctuation That Changes the Meaning" data-name-es="Puntuación que cambia el sentido" data-en="Show on the board" data-es="Mostrar en la pizarra">Show on the board</button></div></div>
+  <div class="unit open"><div class="t" data-en="Clauses, Parallel Structure and Usage" data-es="Cláusulas, paralelismo y uso">Clauses, Parallel Structure and Usage</div><div class="d" data-en="Where a sentence is actually built. What sits in the main clause is asserted; what is tucked into a subordinate one is handed over as already agreed — so the swap test shows you what the structure was doing. Plus parallelism, danglers, agreement and the usage pairs worth owning." data-es="Donde de verdad se construye una oración. Lo que está en la cláusula principal se afirma; lo que se mete en una subordinada se entrega como ya acordado — así que la prueba del intercambio muestra qué hacía la estructura. Más paralelismo, colgantes, concordancia y los pares de uso.">Where a sentence is actually built. What sits in the main clause is asserted; what is tucked into a subordinate one is handed over as already agreed — so the swap test shows you what the structure was doing. Plus parallelism, danglers, agreement and the usage pairs worth owning.</div><div class="doors"><a class="door" href="/e18" data-en="Open" data-es="Abrir">Open</a><button class="beam no-print" type="button" data-beam="/e18" data-name="Clauses, Parallel Structure and Usage" data-name-es="Cláusulas, paralelismo y uso" data-en="Show on the board" data-es="Mostrar en la pizarra">Show on the board</button></div></div>
+  </div>
+  <div class="daily"><span class="dk" data-en="Every day · language arts" data-es="Cada día · lenguaje">Every day · language arts</span><span class="dd" data-en="Ten daily lines of reading, vocabulary and conventions — pick the grade." data-es="Diez líneas diarias de lectura, vocabulario y convenciones — elige el grado.">Ten daily lines of reading, vocabulary and conventions — pick the grade.</span><a class="gr band" href="/drops/ela/9-10" aria-label="Daily Drafts, grade 9-10">9–10</a></div><div class="daily"><span class="dk" data-en="Every day · writing" data-es="Cada día · escritura">Every day · writing</span><span class="dd" data-en="One prompt, a plan, a draft and a rubric — pick the grade." data-es="Una consigna, un plan, un borrador y una rúbrica — elige el grado.">One prompt, a plan, a draft and a rubric — pick the grade.</span><a class="gr band" href="/drops/write/9-10" aria-label="Daily Drafts, grade 9-10">9–10</a></div>
+</section>
+<section class="band" id="11-12" aria-labelledby="h-11-12">
+  <h2 id="h-11-12" data-en="Grades 11–12 — the instruments turned around" data-es="Grados 11–12 — los instrumentos dados vuelta">Grades 11–12 — the instruments turned around</h2>
+  <!-- AOG-ENGLISH-HUB-1112-V1 -->
+  <p class="hint" data-en="Six rooms that finish the argument the earlier bands started. The scale keeps growing — a suffix, a sentence, a chapter break — until the last room turns the whole course around and hands you the instruments to use on your own writing, with nobody checking." data-es="Seis salas que terminan el argumento que empezaron las bandas anteriores. La escala sigue creciendo — un sufijo, una oración, un corte de capítulo — hasta que la última sala da la vuelta al curso y te entrega los instrumentos para usarlos en lo que tú escribes, sin nadie que revise.">Six rooms that finish the argument the earlier bands started. The scale keeps growing — a suffix, a sentence, a chapter break — until the last room turns the whole course around and hands you the instruments to use on your own writing, with nobody checking.</p>
+  <p class="count" data-en="6 units open · 0 in the workshop" data-es="6 unidades abiertas · 0 en el taller">6 units open · 0 in the workshop</p>
+  <div class="grid">
+  <div class="unit open"><div class="t" data-en="Literary Devices" data-es="Recursos literarios">Literary Devices</div><div class="d" data-en="The unit of analysis grows: not a word or a sentence but the distance between two places in a text. Irony, symbol, motif, foreshadowing, allusion and structure — each one a claim made by arrangement, and each one provable only by naming both places." data-es="La unidad de análisis crece: no una palabra ni una oración sino la distancia entre dos lugares de un texto. Ironía, símbolo, motivo, presagio, alusión y estructura — cada uno una afirmación hecha por disposición, y cada uno probable solo nombrando los dos lugares.">The unit of analysis grows: not a word or a sentence but the distance between two places in a text. Irony, symbol, motif, foreshadowing, allusion and structure — each one a claim made by arrangement, and each one provable only by naming both places.</div><div class="doors"><a class="door" href="/e19" data-en="Open" data-es="Abrir">Open</a><button class="beam no-print" type="button" data-beam="/e19" data-name="Literary Devices" data-name-es="Recursos literarios" data-en="Show on the board" data-es="Mostrar en la pizarra">Show on the board</button></div></div>
+  <div class="unit open"><div class="t" data-en="Diction and Syntax" data-es="Dicción y sintaxis">Diction and Syntax</div><div class="d" data-en="Where the actor goes to disappear. The agentless passive and the nominalization delete the person who acted while leaving a perfectly grammatical sentence behind — so the repair is always the same: restore the agent and read what you get." data-es="Donde el actor va a desaparecer. La pasiva sin agente y la nominalización borran a quien actuó y dejan una oración perfectamente gramatical — así que la reparación siempre es la misma: restaura al agente y lee lo que queda.">Where the actor goes to disappear. The agentless passive and the nominalization delete the person who acted while leaving a perfectly grammatical sentence behind — so the repair is always the same: restore the agent and read what you get.</div><div class="doors"><a class="door" href="/e20" data-en="Open" data-es="Abrir">Open</a><button class="beam no-print" type="button" data-beam="/e20" data-name="Diction and Syntax" data-name-es="Dicción y sintaxis" data-en="Show on the board" data-es="Mostrar en la pizarra">Show on the board</button></div></div>
+  <div class="unit open"><div class="t" data-en="Reasoning and Fallacies" data-es="Razonamiento y falacias">Reasoning and Fallacies</div><div class="d" data-en="Premises, conclusion, and the warrant nobody writes down. Validity is not truth and soundness is not persuasiveness; the named fallacies are a vocabulary, not a verdict — and the fallacy fallacy is the trap waiting for anyone who has just learned their names." data-es="Premisas, conclusión, y la garantía que nadie escribe. La validez no es verdad y la solidez no es persuasión; las falacias con nombre son un vocabulario, no un veredicto — y la falacia de la falacia espera a quien acaba de aprender sus nombres.">Premises, conclusion, and the warrant nobody writes down. Validity is not truth and soundness is not persuasiveness; the named fallacies are a vocabulary, not a verdict — and the fallacy fallacy is the trap waiting for anyone who has just learned their names.</div><div class="doors"><a class="door" href="/e21" data-en="Open" data-es="Abrir">Open</a><button class="beam no-print" type="button" data-beam="/e21" data-name="Reasoning and Fallacies" data-name-es="Razonamiento y falacias" data-en="Show on the board" data-es="Mostrar en la pizarra">Show on the board</button></div></div>
+  <div class="unit open"><div class="t" data-en="Advanced Punctuation" data-es="Puntuación avanzada">Advanced Punctuation</div><div class="d" data-en="The punctuation of quotation, treated as what it is: an ethical matter. Ellipsis, brackets, block quotation and the semicolon — and the honest-cut test, which asks whether the writer you quoted would accept the sentence you built from their words." data-es="La puntuación de la cita, tratada como lo que es: un asunto ético. Puntos suspensivos, corchetes, cita en bloque y punto y coma — y la prueba del corte honesto, que pregunta si quien citaste aceptaría la oración que construiste con sus palabras.">The punctuation of quotation, treated as what it is: an ethical matter. Ellipsis, brackets, block quotation and the semicolon — and the honest-cut test, which asks whether the writer you quoted would accept the sentence you built from their words.</div><div class="doors"><a class="door" href="/e22" data-en="Open" data-es="Abrir">Open</a><button class="beam no-print" type="button" data-beam="/e22" data-name="Advanced Punctuation" data-name-es="Puntuación avanzada" data-en="Show on the board" data-es="Mostrar en la pizarra">Show on the board</button></div></div>
+  <div class="unit open"><div class="t" data-en="Concision and Style" data-es="Concisión y estilo">Concision and Style</div><div class="d" data-en="Concision is not brevity. The rule is that every word does work — because the quickest way to shorten a sentence is to delete a qualification, which makes it briefer and false at once. The deletion test, deadwood, buried verbs, and the hedge that carries the load." data-es="La concisión no es brevedad. La regla es que cada palabra haga trabajo — porque la forma más rápida de acortar una oración es borrar un matiz, lo que la vuelve más breve y falsa a la vez. La prueba de borrado, la madera muerta, los verbos enterrados, y el matiz que carga peso.">Concision is not brevity. The rule is that every word does work — because the quickest way to shorten a sentence is to delete a qualification, which makes it briefer and false at once. The deletion test, deadwood, buried verbs, and the hedge that carries the load.</div><div class="doors"><a class="door" href="/e23" data-en="Open" data-es="Abrir">Open</a><button class="beam no-print" type="button" data-beam="/e23" data-name="Concision and Style" data-name-es="Concisión y estilo" data-en="Show on the board" data-es="Mostrar en la pizarra">Show on the board</button></div></div>
+  <div class="unit open"><div class="t" data-en="Capstone: Research, Cite, Defend" data-es="Capstone: investigar, citar, defender">Capstone: Research, Cite, Defend</div><div class="d" data-en="The last room. Judge the source, size the claim to the evidence, quote so the author would accept your use of their words, and answer the objection you would raise against yourself. Every check is easy to skip, because skipping leaves no mark on the page." data-es="La última sala. Juzga la fuente, dimensiona la afirmación a la evidencia, cita de modo que el autor aceptaría tu uso de sus palabras, y responde a la objeción que tú mismo harías. Cada prueba es fácil de saltarse, porque saltarse una no deja marca en la página.">The last room. Judge the source, size the claim to the evidence, quote so the author would accept your use of their words, and answer the objection you would raise against yourself. Every check is easy to skip, because skipping leaves no mark on the page.</div><div class="doors"><a class="door" href="/e24" data-en="Open" data-es="Abrir">Open</a><button class="beam no-print" type="button" data-beam="/e24" data-name="Capstone: Research, Cite, Defend" data-name-es="Capstone: investigar, citar, defender" data-en="Show on the board" data-es="Mostrar en la pizarra">Show on the board</button></div></div>
+  </div>
+  <div class="daily"><span class="dk" data-en="Every day · language arts" data-es="Cada día · lenguaje">Every day · language arts</span><span class="dd" data-en="Ten daily lines of reading, vocabulary and conventions — pick the grade." data-es="Diez líneas diarias de lectura, vocabulario y convenciones — elige el grado.">Ten daily lines of reading, vocabulary and conventions — pick the grade.</span><a class="gr band" href="/drops/ela/11-12" aria-label="Daily Drafts, grade 11-12">11–12</a></div><div class="daily"><span class="dk" data-en="Every day · writing" data-es="Cada día · escritura">Every day · writing</span><span class="dd" data-en="One prompt, a plan, a draft and a rubric — pick the grade." data-es="Una consigna, un plan, un borrador y una rúbrica — elige el grado.">One prompt, a plan, a draft and a rubric — pick the grade.</span><a class="gr band" href="/drops/write/11-12" aria-label="Daily Drafts, grade 11-12">11–12</a></div>
+</section>
+<section class="engines" aria-labelledby="engh">
+<h2 id="engh" data-en="The engines" data-es="Los motores">The engines</h2>
+<p class="hint" data-en="Every room on this door is built from one of these, and all four already run on the site." data-es="Cada sala de esta puerta se construye con uno de estos, y los cuatro ya funcionan en el sitio.">Every room on this door is built from one of these, and all four already run on the site.</p>
+<div class="eng open"><div class="n" data-en="Study cards, hints and a practice quiz" data-es="Tarjetas de estudio, pistas y un quiz de práctica">Study cards, hints and a practice quiz</div><span class="st" data-en="Open · the novel room" data-es="Abierto · la sala de novela">Open · the novel room</span><div class="d" data-en="Tap-to-reveal cards, a hints sheet with the charts a student is allowed to lean on, and a quiz at three levels that tells a student what the wrong answer was thinking." data-es="Tarjetas para tocar y revelar, una hoja de pistas con las tablas en las que un estudiante puede apoyarse, y un quiz de tres niveles que le dice al estudiante qué pensaba la respuesta equivocada.">Tap-to-reveal cards, a hints sheet with the charts a student is allowed to lean on, and a quiz at three levels that tells a student what the wrong answer was thinking.</div></div>
+<div class="eng open"><div class="n" data-en="Worksheets that check themselves" data-es="Hojas de trabajo que se comprueban solas">Worksheets that check themselves</div><span class="st" data-en="Open · the Worksheets tab" data-es="Abierto · la pestaña Hojas de trabajo">Open · the Worksheets tab</span><div class="d" data-en="Sort into bins, put in order, label a plot mountain, read a poem line by line, and write a claim with evidence and a chapter number — blank on the printed packet, answers in the key." data-es="Clasifica en grupos, ordena, rotula la montaña de la trama, lee un poema verso por verso, y escribe una afirmación con evidencia y número de capítulo — en blanco en el paquete impreso, respuestas en la clave.">Sort into bins, put in order, label a plot mountain, read a poem line by line, and write a claim with evidence and a chapter number — blank on the printed packet, answers in the key.</div></div>
+<div class="eng open"><div class="n" data-en="Stem practice, both directions" data-es="Práctica de raíces, en ambos sentidos">Stem practice, both directions</div><span class="st" data-en="Open · Class Units" data-es="Abierto · Unidades de clase">Open · Class Units</span><div class="d" data-en="Stem to meaning and meaning to stem, find-the-stems inside real words, and a test rehearsal from a word bank where spelling counts." data-es="De raíz a significado y de significado a raíz, encontrar las raíces dentro de palabras reales, y un ensayo del examen con un banco de palabras donde la ortografía cuenta.">Stem to meaning and meaning to stem, find-the-stems inside real words, and a test rehearsal from a word bank where spelling counts.</div></div>
+<div class="eng open"><div class="n" data-en="Ten daily lines" data-es="Diez líneas diarias">Ten daily lines</div><span class="st" data-en="Open · the grade buttons" data-es="Abierto · los botones de grado">Open · the grade buttons</span><div class="d" data-en="Daily Drafts: a fresh sheet every day for every grade K–8 and both high-school bands, reviewed on the spot, in language arts and in writing." data-es="Daily Drafts: una hoja nueva cada día para cada grado K–8 y las dos bandas de secundaria, revisada al instante, en lenguaje y en escritura.">Daily Drafts: a fresh sheet every day for every grade K–8 and both high-school bands, reviewed on the spot, in language arts and in writing.</div></div>
+</section>
+<details class="teach">
+  <summary data-en="For the teacher" data-es="Para el maestro">For the teacher</summary>
+  <div class="inner">
+    <p data-en="&lt;b&gt;This page is a map.&lt;/b&gt; It saves nothing about a student and sends nothing anywhere. Each door opens an activity page; a finished activity sends its one summary row to your Sheet, under the name the student typed, and nothing else leaves the device." data-es="&lt;b&gt;Esta página es un mapa.&lt;/b&gt; No guarda nada sobre un estudiante ni envía nada a ningún lado. Cada puerta abre una página de actividad; una actividad terminada envía su única fila de resumen a tu hoja, bajo el nombre que el estudiante escribió, y nada más sale del dispositivo.">&lt;b&gt;This page is a map.&lt;/b&gt; It saves nothing about a student and sends nothing anywhere. Each door opens an activity page; a finished activity sends its one summary row to your Sheet, under the name the student typed, and nothing else leaves the device.</p>
+    <p data-en="&lt;b&gt;Hand out one band.&lt;/b&gt; Add the band to the address and the page opens there: &lt;b&gt;/english#6-8&lt;/b&gt;. Every door has a short address too — &lt;b&gt;Show on the board&lt;/b&gt; prints it large enough for the back row." data-es="&lt;b&gt;Comparte una sola banda.&lt;/b&gt; Agrega la banda a la dirección y la página se abre ahí: &lt;b&gt;/english#6-8&lt;/b&gt;. Cada puerta también tiene una dirección corta — &lt;b&gt;Mostrar en la pizarra&lt;/b&gt; la muestra en grande para la última fila.">&lt;b&gt;Hand out one band.&lt;/b&gt; Add the band to the address and the page opens there: &lt;b&gt;/english#6-8&lt;/b&gt;. Every door has a short address too — &lt;b&gt;Show on the board&lt;/b&gt; prints it large enough for the back row.</p>
+    <p data-en="&lt;b&gt;In the workshop means not built yet.&lt;/b&gt; A unit with that mark has no page behind it and no link, on purpose. When one opens, it appears here with a real door." data-es="&lt;b&gt;En el taller significa que aún no está construido.&lt;/b&gt; Una unidad con esa marca no tiene página detrás ni enlace, a propósito. Cuando una se abre, aparece aquí con una puerta real.">&lt;b&gt;In the workshop means not built yet.&lt;/b&gt; A unit with that mark has no page behind it and no link, on purpose. When one opens, it appears here with a real door.</p>
+    <p data-en="&lt;b&gt;One room here sends nothing at all.&lt;/b&gt; Class Units has no send channel — a student’s study guide stays on the device and on paper. The Word Foundry, Grammar and the novel room send one summary row when a set is finished, and only to a Sheet you connected." data-es="&lt;b&gt;Una sala aquí no envía nada.&lt;/b&gt; Unidades de clase no tiene canal de envío — la guía de estudio del estudiante se queda en el dispositivo y en papel. La Fundición, Gramática y la sala de novela envían una fila de resumen cuando se termina una serie, y solo a una hoja que tú conectaste.">&lt;b&gt;One room here sends nothing at all.&lt;/b&gt; Class Units has no send channel — a student’s study guide stays on the device and on paper. The Word Foundry, Grammar and the novel room send one summary row when a set is finished, and only to a Sheet you connected.</p>
+  </div>
+</details>
+</main>
+<footer>
+  <p><span data-en="This page loads no fonts, scripts, or images from the internet and works with the network off. It keeps nothing about a student and has no way to send anything. It is not a district product and carries no district endorsement." data-es="Esta página no carga fuentes, scripts ni imágenes de internet y funciona con la red apagada. No guarda nada sobre un estudiante y no tiene forma de enviar nada. No es un producto del distrito ni cuenta con su respaldo.">This page loads no fonts, scripts, or images from the internet and works with the network off. It keeps nothing about a student and has no way to send anything. It is not a district product and carries no district endorsement.</span></p>
+  <p><span data-en="Original classroom material. Units marked in the workshop are named so a teacher can see the whole map; they open here when they are built, never before." data-es="Material original para el aula. Las unidades marcadas en el taller se nombran para que un maestro vea el mapa completo; se abren aquí cuando se construyen, nunca antes.">Original classroom material. Units marked in the workshop are named so a teacher can see the whole map; they open here when they are built, never before.</span></p>
+</footer>
+</div>
+<script>
+(function(){
+"use strict";
+/* AOG-SUBJECT-HUB-V1 — the hub's own engine: band strip, EN|ES, theme, the board beam.
+   The site bar (aog-topbar.js) owns the visible switches: it CLICKS #langEn /
+   #langEs / #themeBtn below and hides them (never two doors to one place). */
+var SLUG="english", KEY="aog.hub."+SLUG+".", LEGACY="aog.interior.ws.v1.";
+var H=document.documentElement;
+function $(s){return document.querySelector(s);}
+function store(k,v){try{if(v===undefined)return localStorage.getItem(k);localStorage.setItem(k,v);}catch(e){return null;}}
+
+/* ── language: the page owns it; every [data-en] is a leaf ── */
+var lang="en";
+function T(en,es){return lang==="es"?es:en;}
+function paintLang(){
+  H.lang=lang;
+  var n=document.querySelectorAll("[data-en]");
+  for(var i=0;i<n.length;i++){
+    var el=n[i], v=(lang==="es")?el.getAttribute("data-es"):el.getAttribute("data-en");
+    if(v==null) continue;
+    if(v.indexOf("<")!==-1||v.indexOf("&lt;")!==-1) el.innerHTML=v; else el.textContent=v;
+  }
+  var bEn=$("#langEn"),bEs=$("#langEs");
+  if(bEn) bEn.classList.toggle("on",lang!=="es");
+  if(bEs) bEs.classList.toggle("on",lang==="es");
+  var pEn=$("#aogLangEn"),pEs=$("#aogLangEs");
+  if(pEn) pEn.classList.toggle("on",lang!=="es");
+  if(pEs) pEs.classList.toggle("on",lang==="es");
+  paintTheme();
+}
+function pickLang(v){return function(){ if(lang===v) return; lang=v; store("aog.lang",v); store(LEGACY+"lang",v); paintLang(); };}
+$("#langEn").addEventListener("click",pickLang("en"));
+$("#langEs").addEventListener("click",pickLang("es"));
+(function(){ var s=store("aog.lang")||store(LEGACY+"lang"); if(s==="es"||s==="en") lang=s; })();
+
+/* ── theme: same two keys the bar reconciles ── */
+function paintTheme(){ var b=$("#themeBtn"); if(!b) return; var d=H.getAttribute("data-theme")==="dark"; b.textContent=d?T("Light mode","Modo claro"):T("Dark mode","Modo oscuro"); }
+$("#themeBtn").addEventListener("click",function(){
+  var d=H.getAttribute("data-theme")==="dark"?"light":"dark";
+  H.setAttribute("data-theme",d); store("aog.theme",d); store(LEGACY+"theme",d); paintTheme();
+});
+
+/* ── the band strip: ?band=6-8 or #6-8 on the link, last choice remembered on the device ── */
+var BANDS=["k-2","3-5","6-8","9-10","11-12"];
+/* AOG-BAND-HASH-CASE-V1: the hubs do not agree on the case of the first band — five say "k-2"
+   and two say "K-2" — so an exact indexOf sent /spanish#k-2 to the default instead of
+   to K-2, silently. Match without case and return the hub's OWN spelling, so #k-2 and
+   #K-2 both work everywhere and old bookmarks keep working. */
+function bandCanon(v){ v=String(v==null?"":v).toLowerCase();
+  for(var i=0;i<BANDS.length;i++){ if(String(BANDS[i]).toLowerCase()===v) return BANDS[i]; }
+  return null; }
+function bandFrom(){ var c;
+  var m=/[?&]band=([^&#]+)/.exec(location.search||""); if(m&&(c=bandCanon(m[1]))) return c;
+  var h=(location.hash||"").replace(/^#/,""); if((c=bandCanon(h))) return c;
+  var s=store(KEY+"band"); if(s&&(c=bandCanon(s))) return c;
+  return "6-8";
+}
+function showBand(id,push){
+  var secs=document.querySelectorAll(".band");
+  for(var i=0;i<secs.length;i++) secs[i].hidden=(secs[i].id!==id);
+  var btns=document.querySelectorAll("#bandNav button");
+  for(var j=0;j<btns.length;j++) btns[j].setAttribute("aria-current",String(btns[j].getAttribute("data-band")===id));
+  store(KEY+"band",id);
+  if(push){ try{ history.replaceState(null,"","#"+id); }catch(e){} }
+}
+$("#bandNav").addEventListener("click",function(e){ var b=e.target.closest("[data-band]"); if(!b) return; showBand(b.getAttribute("data-band"),true); });
+window.addEventListener("hashchange",function(){ var h=(location.hash||"").replace(/^#/,""); if(BANDS.indexOf(h)>-1) showBand(h,false); });
+showBand(bandFrom(),false);
+
+/* ── the board beam (ported from /prep): the short address, big enough for the back row ── */
+document.addEventListener("click",function(e){
+  var btn=e.target.closest("[data-beam]"); if(!btn) return;
+  var host=location.hostname||"architectureofgrace.org";
+  if(host==="localhost"||host==="127.0.0.1"||!host) host="architectureofgrace.org";
+  var url=host.replace(/^www\./,"")+btn.getAttribute("data-beam");
+  var nm=(lang==="es"&&btn.getAttribute("data-name-es"))?btn.getAttribute("data-name-es"):btn.getAttribute("data-name");
+  var el=document.createElement("div"); el.id="beam"; el.setAttribute("role","dialog"); el.setAttribute("aria-label",url);
+  el.innerHTML='<div class="x">'+T("Tap anywhere to close","Toca para cerrar")+'</div><div class="wk"></div><div class="nm"></div><div class="url"></div><p class="hint">'+T("Type it in the address bar.","Escríbelo en la barra de direcciones.")+'</p>';
+  el.querySelector(".wk").textContent=T("English","Inglés");
+  el.querySelector(".nm").textContent=nm||""; el.querySelector(".url").textContent=url;
+  el.addEventListener("click",function(){ el.remove(); });
+  document.addEventListener("keydown",function esc(ev){ if(ev.key==="Escape"){ el.remove(); document.removeEventListener("keydown",esc); } });
+  document.body.appendChild(el); el.setAttribute("tabindex","-1"); el.focus();
+});
+
+paintLang();
+})();
+</script>
+</body>
+</html>

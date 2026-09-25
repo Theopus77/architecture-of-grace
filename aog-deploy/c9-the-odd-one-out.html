@@ -1,0 +1,2989 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script>/* .30eg: begin in light. Dark only when this device chose it - Jimmy, 2026-09-02: 'I just passed out a science worksheet through the link and it showed up on my students computer, but it was in dark mode!' With no stored choice the dark palette rode the OS setting (prefers-color-scheme), so a dark-set Chromebook opened every worksheet dark. Setting data-theme before first paint defeats every :not([data-theme="light"]) guard below; the existing toggle still reads and stores the same key. */
+(function(){var t="light";try{if(localStorage.getItem("aog.interior.ws.v1.theme")==="dark")t="dark";}catch(e){}document.documentElement.setAttribute("data-theme",t);})();</script>
+<title>The Odd One Out — Architecture of Grace</title>
+<meta name="description" content="The Odd One Out — spot the value that sits far from the rest, and see how it pulls the mean. Private, saved on this computer.">
+<!-- ═══ AOG ICONS + LINK PREVIEW · managed block · .30k0 ═══
+     Inserted by _work/aog_head.py — DO NOT hand-edit one page; edit the
+     script and re-run it, or the 100 pages drift apart again. The card
+     URL carries ?v= because Slack, Apple and Google cache an og image BY
+     URL for weeks: change the picture, bump IMG_V, or nothing shows up.
+     ═══════════════════════════════════════════════════════════════ -->
+<link rel="canonical" href="https://architectureofgrace.org/c9">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Architecture of Grace">
+<meta property="og:locale" content="en_US">
+<meta property="og:title" content="The Odd One Out — Architecture of Grace">
+<meta property="og:description" content="The Odd One Out — spot the value that sits far from the rest, and see how it pulls the mean. Private, saved on this computer.">
+<meta property="og:url" content="https://architectureofgrace.org/c9">
+<meta property="og:image" content="https://architectureofgrace.org/og-concepts.png?v=1">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Number Concepts & Data — thirteen activities from Architecture of Grace.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="The Odd One Out — Architecture of Grace">
+<meta name="twitter:description" content="The Odd One Out — spot the value that sits far from the rest, and see how it pulls the mean. Private, saved on this computer.">
+<meta name="twitter:image" content="https://architectureofgrace.org/og-concepts.png?v=1">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#0A1E33">
+<meta name="apple-mobile-web-app-title" content="Grace">
+<meta name="application-name" content="Architecture of Grace">
+<!-- ═══ END AOG ICONS + LINK PREVIEW ═══ -->
+<meta name="robots" content="noindex">
+<!-- No external requests of any kind. Every byte this page needs is in this file,
+     with one exception: an OPTIONAL same-origin aog-sync-config.js. If that file
+     is missing (or this page is opened from file://), nothing breaks and nothing
+     can be sent anywhere. -->
+<style>
+
+/* ══ TOKENS ══════════════════════════════════════════════════════════
+   Light is the base. Dark redefines tokens only — never components.
+   Same token set as the Interior worksheets; one accent for math.  */
+:root{
+  --ground:#F5F1E8;
+  --field:#FFFFFF;
+  --field-2:#EFEAE0;
+  --ink:#1D2733;
+  --ink-soft:#57626F;
+  --ink-faint:#5F6B78;
+  --navy:#1B3A5F;
+  --gold:#B8893A;
+  --gold-deep:#7A5C1F;
+  --rule:rgba(29,39,51,.16);
+  --rule-soft:rgba(29,39,51,.08);
+  --lift:0 1px 0 rgba(255,255,255,.7), 0 20px 44px -30px rgba(29,39,51,.55);
+  --lift-sm:0 1px 2px rgba(29,39,51,.07), 0 8px 20px -16px rgba(29,39,51,.4);
+  --a:#4A3A8C;
+  --a-wash:rgba(74,58,140,.07);
+  --lock:#2E6B4F;
+  --lock-wash:rgba(46,107,79,.09);
+  --caution:#9A3412;
+  --focus:#B8893A;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --ground:#12161C; --field:#1A2029; --field-2:#222A34;
+    --ink:#E9EEF4; --ink-soft:#A3AFBC; --ink-faint:#84909D;
+    --navy:#9CC2E8; --gold:#D6A852; --gold-deep:#D6A852;
+    --rule:rgba(233,238,244,.18); --rule-soft:rgba(233,238,244,.09);
+    --lift:0 1px 0 rgba(233,238,244,.04), 0 24px 54px -32px rgba(0,0,0,.95);
+    --lift-sm:0 1px 2px rgba(0,0,0,.5), 0 10px 24px -18px rgba(0,0,0,.9);
+    --a:#A99BE8; --a-wash:rgba(169,155,232,.12);
+    --lock:#79C79E; --lock-wash:rgba(121,199,158,.12);
+    --caution:#F0A07C;
+    --focus:#D6A852;
+  }
+}
+:root[data-theme="dark"]{
+  --ground:#12161C; --field:#1A2029; --field-2:#222A34;
+  --ink:#E9EEF4; --ink-soft:#A3AFBC; --ink-faint:#84909D;
+  --navy:#9CC2E8; --gold:#D6A852; --gold-deep:#D6A852;
+  --rule:rgba(233,238,244,.18); --rule-soft:rgba(233,238,244,.09);
+  --lift:0 1px 0 rgba(233,238,244,.04), 0 24px 54px -32px rgba(0,0,0,.95);
+  --lift-sm:0 1px 2px rgba(0,0,0,.5), 0 10px 24px -18px rgba(0,0,0,.9);
+  --a:#A99BE8; --a-wash:rgba(169,155,232,.12);
+  --lock:#79C79E; --lock-wash:rgba(121,199,158,.12);
+  --caution:#F0A07C;
+  --focus:#D6A852;
+}
+
+/* ══ BASE ══ */
+*{box-sizing:border-box;}
+html{-webkit-text-size-adjust:100%;}
+body{
+  margin:0; background:var(--ground); color:var(--ink);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  font-size:16px; line-height:1.55;
+}
+h1,h2,h3,.mast-h1{margin:0; text-wrap:balance; font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,"Times New Roman",serif; font-weight:600;}
+p{margin:0;}
+button{font:inherit; color:inherit; cursor:pointer;}
+:focus-visible{outline:3px solid var(--focus); outline-offset:2px; border-radius:4px;}
+.wrap{max-width:64rem; margin:0 auto; padding:0 20px;}
+[hidden]{display:none !important;}
+.sr{position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; border:0;}
+
+/* ══ MASTHEAD ══ */
+.mast{padding-top:26px; padding-bottom:4px;}   /* not `padding:26px 0` — that kills .wrap's 20px sides on a phone */
+.mast .row{display:flex; align-items:center; gap:13px;}
+.mark{
+  width:44px; height:44px; border-radius:12px; flex:none;
+  background:var(--navy); color:#E7C77B; display:grid; place-items:center;
+  font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif; font-size:25px; font-weight:700; line-height:1;
+}
+:root[data-theme="dark"] .mark{background:#1B3A5F;}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .mark{background:#1B3A5F;}}
+.mast .name{font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif; font-size:18px; font-weight:700; color:var(--navy); line-height:1.15;}
+.mast .sub{font-size:11.5px; color:var(--ink-faint); letter-spacing:.05em; text-transform:uppercase; font-weight:600;}
+.mast h1,.mast .mast-h1{font-size:clamp(19px,2.6vw,27px); line-height:1.04; letter-spacing:-.01em; margin:16px 0 4px; font-weight:700;}
+.mast .deck{font-size:16.5px; color:var(--ink-soft); max-width:38rem;}
+
+/* ══ THE LOCK ══ */
+/* AOG-LOCK-SLIM-V1 -- it used to be a bordered card with a 38px padlock, a
+   20px headline and a 46rem paragraph, sitting between the masthead and the
+   activity: a student scrolled PAST a privacy notice to reach the math.
+   Jimmy, 2026-09-01: "let us get rid of the nothing leaves this computer
+   nonsense. It is too big."
+   Nothing was deleted. The claim is now the summary line itself and every
+   word of the old paragraph is the first thing inside "How do I know that's
+   true?".
+   ⚠ #lock-h AND THE INTRO PARAGRAPH KEEP THEIR IDS. The send block rewrites
+   both BY ID when a page is opened from a link carrying dest=, and it also
+   rewrites #lockP1. Renaming any of them silently un-honests the lock.
+   ⚠ data-en/data-es moved OFF <summary> onto .lock-ask, because paintLang()
+   sets textContent on every [data-en] and would wipe the h2 out of it. */
+.lock{
+  margin:14px 0 6px; padding:2px 0;
+  border-top:1px solid var(--rule-soft); border-bottom:1px solid var(--rule-soft);
+  display:flex; flex-wrap:wrap; align-items:flex-start; gap:2px 20px;
+}
+.lock h2{font-size:14.5px; line-height:1.35; color:var(--ink); font-weight:700;}
+.lock p{font-size:14px; color:var(--ink-soft); max-width:46rem;}
+.lock-ask{
+  font-size:11.5px; font-weight:700; letter-spacing:.05em; text-transform:uppercase;
+  color:var(--lock); white-space:nowrap;
+}
+.lock-more{margin-top:0; border-top:0; padding-top:0; flex:1 1 300px; min-width:0;}
+/* opened, the four paragraphs take the whole row instead of a 46%-wide
+   column with the button row parked in the white space beside them */
+.lock-more[open]{flex-basis:100%;}
+.lock-more summary{
+  cursor:pointer; list-style:none; min-height:40px;
+  display:flex; flex-wrap:wrap; align-items:center; gap:3px 10px;
+}
+.lock-more summary::-webkit-details-marker{display:none;}
+.lock-more summary::after{content:"＋"; font-size:14px; opacity:.75; color:var(--lock);}
+.lock-more[open] summary::after{content:"−";}
+.lock-more .body{font-size:14px; color:var(--ink-soft); margin-top:11px; display:grid; gap:9px; max-width:46rem;}
+.lock-more .body b{color:var(--ink);}
+.lock-acts{display:flex; flex-wrap:wrap; gap:9px; margin-top:0; padding-top:3px;}
+
+/* ══ BUTTONS ══ */
+.btn{
+  border:1.5px solid var(--rule); background:var(--field); border-radius:10px;
+  padding:8px 14px; font-size:13.5px; font-weight:600; color:var(--ink);
+  display:inline-flex; align-items:center; gap:7px;
+  transition:transform .12s ease, border-color .12s ease, background .12s ease;
+}
+.btn:hover{border-color:var(--a); transform:translateY(-1px);}
+.btn:active{transform:translateY(0);}
+.btn-accent{background:var(--a); border-color:var(--a); color:#fff;}
+:root[data-theme="dark"] .btn-accent{color:#12161C;}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .btn-accent{color:#12161C;}}
+.btn-danger{border-color:var(--caution); color:var(--caution);}
+.btn-danger:hover{border-color:var(--caution); background:var(--caution); color:var(--field);}
+.btn-lock{border-color:var(--lock); color:var(--lock);}
+/* .30fg: the erase control is a quiet text link, not the loudest button above the first problem */
+#eraseAll.btn-lock{order:9; border:0; background:transparent; box-shadow:none; padding:8px 2px;
+  text-decoration:underline; text-underline-offset:3px; font-weight:600; color:var(--lock);}
+#eraseAll.btn-lock:hover{transform:none; color:var(--ink);}
+.btn:disabled{opacity:.55; cursor:default; transform:none;}
+
+/* ══ SHEET ══ */
+.sheets{padding-top:20px; padding-bottom:70px;}   /* longhand: shorthand would reset .wrap's sides */
+.sheet{
+  background:var(--field); border:1.5px solid var(--rule); border-radius:20px;
+  box-shadow:var(--lift); padding:clamp(20px,4vw,38px); max-width:52rem; margin:0 auto 26px;
+}
+.sheet-head{border-bottom:2px solid var(--a); padding-bottom:14px;}
+.sheet-head .k{font-size:11px; font-weight:800; letter-spacing:.14em; text-transform:uppercase; color:var(--a);}
+.sheet-head h1,.sheet-head h2{font-size:clamp(26px,4.4vw,38px); line-height:1.06; letter-spacing:-.018em; margin:6px 0 7px;}
+.sheet-head .say{font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif; font-style:italic; font-size:17px; color:var(--ink-soft); line-height:1.4;}
+
+.priv{
+  margin:18px 0 4px; border:1.5px solid var(--lock); border-left-width:5px; border-radius:11px;
+  background:var(--lock-wash); padding:11px 14px;
+}
+.priv .k{font-size:10.5px; font-weight:800; letter-spacing:.15em; text-transform:uppercase; color:var(--lock);}
+.priv .v{font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif; font-style:italic; font-size:14.5px; color:var(--ink-soft); margin-top:2px;}
+
+/* ══ WHERE AM I ══  Location, never a score. */
+.where{
+  display:flex; align-items:baseline; gap:12px; flex-wrap:wrap;
+  margin-top:24px; padding-bottom:10px; border-bottom:1.5px solid var(--rule-soft);
+}
+.where .n{font-size:12px; font-weight:800; letter-spacing:.13em; text-transform:uppercase; color:var(--a);}
+.where .goal{font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif; font-style:italic; font-size:14.5px; color:var(--ink-faint);}
+
+/* ══ THE ASK ══ */
+.ask{
+  margin-top:22px; border:2px solid var(--rule); border-radius:18px;
+  background:var(--a-wash); padding:clamp(18px,3.5vw,26px) clamp(14px,3vw,24px);
+}
+.ask-q{
+  text-align:center; font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+  font-size:clamp(18px,3vw,23px); line-height:1.3; color:var(--ink);
+}
+.ask-q b{color:var(--a); font-weight:700;}
+
+/* ══ THE DEAL CARD — one survey answer at a time ══ */
+.deal{
+  margin:16px auto 0; max-width:26rem; background:var(--field); border:2px solid var(--a);
+  border-radius:14px; padding:12px 16px 14px; text-align:center; box-shadow:var(--lift-sm);
+}
+.deal .dk{font-size:10.5px; font-weight:800; letter-spacing:.14em; text-transform:uppercase; color:var(--a);}
+.deal .dt{font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif; font-size:21px; line-height:1.3; margin-top:3px; color:var(--ink);}
+.deal .dt b{color:var(--a); font-weight:700;}
+
+/* ══ THE LINE PLOT ═══════════════════════════════════════════════════
+   Each number on the line is one big button (≥48px wide, the whole
+   column tall). X's stack inside the button, newest on top. The axis
+   is the columns' shared bottom border, so it stays continuous. */
+.plot{margin-top:20px;}
+.plot-k{
+  text-align:center; font-size:11px; font-weight:800; letter-spacing:.12em;
+  text-transform:uppercase; color:var(--ink-soft); margin-bottom:8px;
+}
+.cols{display:flex; align-items:stretch; justify-content:center; max-width:36rem; margin:0 auto;}
+.col{
+  appearance:none; -webkit-appearance:none; flex:1 1 0; min-width:48px; max-width:80px;
+  background:none; border:2px solid transparent; border-radius:12px 12px 0 0;
+  padding:6px 2px 0; margin:0; display:flex; flex-direction:column;
+  justify-content:flex-end; align-items:center; min-height:172px;
+  transition:background .12s ease, border-color .12s ease;
+}
+.col:not(:disabled):hover{background:var(--a-wash); border-color:var(--a);}
+.col:disabled{cursor:default;}
+.col .x{
+  font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+  font-weight:800; font-size:19px; line-height:1.18; color:var(--a);
+}
+@keyframes drop{from{opacity:0; transform:translateY(-9px);} to{opacity:1; transform:none;}}
+@media (prefers-reduced-motion: no-preference){.col .x.new{animation:drop .3s cubic-bezier(.2,.7,.3,1) both;}}
+.col .num{
+  width:100%; margin-top:4px; border-top:2.5px solid var(--ink-soft); padding:5px 0 8px;
+  text-align:center; font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+  font-size:16px; font-weight:700; color:var(--ink); font-variant-numeric:tabular-nums;
+}
+.col.win{background:var(--lock-wash); border-color:var(--lock);}
+.col.win .x{color:var(--lock);}
+.col.win .num{color:var(--lock);}
+
+/* ══ THE STEPPER — for "how many" and "range" answers ══ */
+.stepper{display:flex; align-items:center; justify-content:center; gap:12px; margin-top:16px;}
+.step-b{
+  width:52px; height:52px; border-radius:14px; border:2px solid var(--a);
+  background:var(--field); color:var(--a); font-size:26px; font-weight:700; line-height:1;
+  display:grid; place-items:center;
+}
+.step-b:hover{background:var(--a-wash);}
+.step-b:disabled{opacity:.45; cursor:default;}
+.step-v{
+  min-width:70px; text-align:center; font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+  font-size:36px; font-weight:700; color:var(--a); font-variant-numeric:tabular-nums;
+}
+.step-go{min-height:48px; padding:10px 20px; font-size:15px;}
+
+.plot-help{
+  text-align:center; font-size:12.5px; color:var(--ink-faint); margin-top:8px;
+  font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif; font-style:italic;
+}
+.plot-say{
+  margin-top:14px; text-align:center; font-size:15.5px; color:var(--ink-soft);
+  min-height:3em; max-width:34rem; margin-left:auto; margin-right:auto; line-height:1.5;
+}
+.plot-say b{color:var(--ink); font-weight:700;}
+.plot-say .good{color:var(--lock); font-weight:700;}
+.plot-acts{display:flex; flex-wrap:wrap; gap:9px; margin-top:6px; justify-content:center;}
+.plot-acts .btn{min-height:48px;}
+
+/* ══ HINT LADDER ══ */
+.ladder{margin-top:22px; border:1.5px solid var(--rule); border-radius:16px; overflow:hidden;}
+.ladder-head{
+  display:flex; align-items:center; justify-content:space-between; gap:12px;
+  padding:12px 15px; background:var(--field-2); flex-wrap:wrap;
+}
+.ladder-head .k{font-size:11px; font-weight:800; letter-spacing:.13em; text-transform:uppercase; color:var(--ink-soft);}
+.ladder-head .btn{min-height:48px;}
+.rungs{display:grid;}
+.rung{
+  padding:14px 16px; border-top:1.5px solid var(--rule-soft);
+  display:grid; grid-template-columns:34px 1fr; gap:13px; align-items:start;
+  animation:rise .3s cubic-bezier(.2,.7,.3,1) both;
+}
+@keyframes rise{from{opacity:0; transform:translateY(7px);} to{opacity:1; transform:none;}}
+@media (prefers-reduced-motion: reduce){.rung{animation:none;} .col .x.new{animation:none;}}
+.rung .n{
+  width:34px; height:34px; border-radius:10px; border:2px solid var(--a); color:var(--a);
+  display:grid; place-items:center;
+  font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif; font-size:16px; font-weight:700;
+}
+.rung .k{font-size:10.5px; font-weight:800; letter-spacing:.13em; text-transform:uppercase; color:var(--a); display:block;}
+.rung .t{font-size:15.5px; color:var(--ink); margin-top:3px; line-height:1.5;}
+.rung .t b{font-weight:700;}
+
+/* ══ CONFIDENCE ══ */
+.conf{margin-top:26px; border:2px solid var(--rule); border-radius:16px; padding:16px 18px 18px;}
+.conf .lab{font-size:11.5px; font-weight:800; letter-spacing:.13em; text-transform:uppercase; color:var(--a); display:block;}
+.conf .hint{font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif; font-style:italic; font-size:14.5px; color:var(--ink-faint); margin:2px 0 12px;}
+.conf-row{display:grid; grid-template-columns:repeat(5,1fr); gap:8px;}
+.conf-b{
+  border:2px solid var(--rule); border-radius:12px; background:var(--field);
+  padding:12px 6px 11px; min-height:48px; text-align:center;
+  transition:border-color .13s ease, background .13s ease, transform .13s ease;
+}
+.conf-b .v{display:block; font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif; font-size:21px; font-weight:700; color:var(--a);}
+.conf-b .w{display:block; font-size:11px; color:var(--ink-soft); line-height:1.25; margin-top:3px;}
+.conf-b:hover{border-color:var(--a); transform:translateY(-2px);}
+.conf-b[aria-pressed="true"]{border-color:var(--a); background:var(--a-wash);}
+@media (prefers-reduced-motion: reduce){.conf-b:hover{transform:none;}}
+@media (max-width:560px){
+  .conf-row{grid-template-columns:repeat(5,1fr); gap:5px;}
+  .conf-b{padding:9px 2px;}
+  .conf-b .w{font-size:9.5px;}
+}
+
+/* ══ CLOSE ══ */
+.close-card{
+  margin-top:26px; border:2px dashed var(--lock); border-radius:16px; padding:20px;
+  background:var(--lock-wash);
+}
+.close-card .k{font-size:11px; font-weight:800; letter-spacing:.14em; text-transform:uppercase; color:var(--lock);}
+.close-card h3{font-size:22px; margin:6px 0 8px; line-height:1.2;}
+.close-card p{font-size:15px; color:var(--ink-soft); max-width:40rem;}
+
+/* ══ SEND BLOCK — only ever rendered when a destination resolved ══ */
+.sendbox{
+  margin-top:16px; border:2px solid var(--lock); border-radius:14px;
+  background:var(--lock-wash); padding:14px 16px 16px;
+}
+.sendbox .k{font-size:10.5px; font-weight:800; letter-spacing:.14em; text-transform:uppercase; color:var(--lock); display:block;}
+.sendbox p.note{font-size:13.5px; color:var(--ink-soft); margin-top:6px; max-width:42rem;}
+.sendbox label{display:block; font-size:12.5px; font-weight:700; color:var(--ink-soft); margin-top:11px;}
+.sendbox input{
+  display:block; width:100%; max-width:22rem; margin-top:5px;
+  border:1.5px solid var(--rule); border-radius:10px; padding:11px 12px; min-height:48px;
+  font:inherit; background:var(--field); color:var(--ink);
+}
+.sendbox input:focus-visible{outline:3px solid var(--focus); outline-offset:2px;}
+.sendbox .row{display:flex; flex-wrap:wrap; gap:9px; margin-top:11px; align-items:center;}
+.sendbox .row .btn{min-height:48px;}
+.sendbox .st{font-size:13.5px; margin-top:9px; min-height:1.4em; color:var(--ink-soft);}
+.sendbox .st.ok{color:var(--lock); font-weight:700;}
+/* AOG-SEND-BLIND-AMBER-V1 (2026-09-20) — a blind send is not a confirmed one.
+   The no-cors retry resolves even against a dead endpoint, so this line used to
+   go green on a send that never arrived. Amber says what it is: sent, unconfirmed. */
+.sendbox .st.warn{color:var(--caution); font-weight:700;}
+.sendbox .st.bad{color:var(--caution); font-weight:700;}
+
+/* ══ TEACHER PANEL ══ */
+.teach{margin-top:26px; border:1.5px solid var(--gold); border-radius:14px; background:var(--field);}
+.teach > summary{
+  padding:13px 16px; cursor:pointer; list-style:none;
+  font-size:12px; font-weight:800; letter-spacing:.12em; text-transform:uppercase; color:var(--gold-deep);
+  display:flex; align-items:center; gap:8px;
+}
+.teach > summary::-webkit-details-marker{display:none;}
+.teach > summary::after{content:"＋"; margin-left:auto; font-size:14px;}
+.teach[open] > summary::after{content:"−";}
+.teach .inner{padding:0 16px 16px; border-top:1.5px solid var(--rule-soft);}
+.teach p.note{font-size:13.5px; color:var(--ink-soft); margin-top:11px; max-width:42rem;}
+.probe{
+  margin-top:12px; border:1.5px solid var(--rule); border-radius:11px; overflow:hidden;
+}
+.probe dl{margin:0; display:grid; grid-template-columns:auto 1fr;}
+.probe dt{
+  padding:8px 13px; font-size:10.5px; font-weight:800; letter-spacing:.11em; text-transform:uppercase;
+  color:var(--ink-soft); background:var(--field-2); border-bottom:1px solid var(--rule-soft); white-space:nowrap;
+}
+.probe dd{
+  margin:0; padding:8px 13px; font-size:15px; font-variant-numeric:tabular-nums;
+  border-bottom:1px solid var(--rule-soft);
+}
+.probe dl > :nth-last-child(-n+2){border-bottom:0;}
+.probe dd b{color:var(--a); font-weight:700;}
+
+/* ══ SHEET FOOTER ══ */
+.sheet-foot{
+  margin-top:30px; border-top:1.5px solid var(--rule); padding-top:15px;
+  display:flex; flex-wrap:wrap; align-items:center; gap:9px;
+}
+.saved{
+  margin-left:auto; font-size:12px; font-weight:600; color:var(--lock);
+  display:inline-flex; align-items:center; gap:6px; opacity:0; transition:opacity .3s ease;
+}
+.saved.on{opacity:1;}
+.saved .dot{width:7px; height:7px; border-radius:50%; background:var(--lock); flex:none;}
+@media (max-width:520px){.saved{margin-left:0; width:100%;}}
+
+/* ══ PROJECTOR ══ */
+#beam{
+  position:fixed; inset:0; z-index:900; background:var(--field); color:var(--ink);
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  gap:clamp(14px,3vh,34px); padding:5vh 4vw; text-align:center; cursor:pointer;
+}
+#beam .wk{font-size:clamp(13px,1.6vw,22px); font-weight:800; letter-spacing:.2em; text-transform:uppercase; color:var(--ink-faint);}
+#beam .nm{font-family:Georgia,serif; font-size:clamp(28px,5vw,72px); line-height:1.05; font-weight:700;}
+#beam .url{
+  font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  font-size:clamp(19px,5.4vw,104px); font-weight:700; line-height:1.1;
+  letter-spacing:-.02em; color:var(--a); white-space:nowrap; max-width:100%;
+}
+#beam .hint{font-size:clamp(13px,1.5vw,20px); color:var(--ink-faint);}
+#beam .x{position:absolute; top:18px; right:20px; font-size:15px; font-weight:700; color:var(--ink-faint);}
+
+/* ══ PAGE FOOT ══ */
+.foot{border-top:1px solid var(--rule-soft); padding-top:22px; padding-bottom:46px; color:var(--ink-faint); font-size:12.5px;}
+.foot p{max-width:46rem;}
+.foot p + p{margin-top:7px;}
+.foot b{color:var(--ink-soft);}
+
+/* ══ FAIL OPEN ══════════════════════════════════════════════════════
+   With JS off, the interactive stage is meaningless and the paper list
+   is the page: the data, an empty line-plot frame to build with a
+   pencil, and the three questions per survey. */
+.paperlist{margin-top:24px;}
+.pblock{padding:16px 2px 8px; border-bottom:1.5px solid var(--rule-soft);}
+.pblock .pk{
+  font-size:11px; font-weight:800; letter-spacing:.12em; text-transform:uppercase;
+  color:var(--a);
+}
+.pblock .pdata{
+  font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+  font-size:16.5px; margin-top:6px; line-height:1.8; font-variant-numeric:tabular-nums;
+}
+.pblock .pnote{font-size:13px; color:var(--ink-soft); margin-top:4px; font-style:italic;}
+.pplot{position:relative; height:148px; margin:12px 0 6px;}
+.pplot .ax{position:absolute; left:0; right:0; bottom:24px; height:0; border-top:2px solid var(--ink-soft);}
+.pplot b{position:absolute; top:4px; bottom:30px; width:0; border-left:1.5px dashed var(--rule); transform:translateX(-50%);}
+.pplot i{position:absolute; bottom:19px; width:0; height:11px; border-left:1.5px solid var(--ink-soft); transform:translateX(-50%);}
+.pplot .pl{
+  position:absolute; bottom:0; transform:translateX(-50%);
+  font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+  font-size:14px; font-weight:700; color:var(--ink); font-variant-numeric:tabular-nums; white-space:nowrap;
+}
+.pblock .pq{
+  font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+  font-size:16px; margin-top:8px;
+}
+.pblock .pq u{text-decoration:none; border-bottom:1.5px solid var(--rule); padding:0 2.4em;}
+.js-on .paperlist{display:none;}
+
+/* ══ PRINT ══════════════════════════════════════════════════════════ */
+@media print{
+  @page{size:Letter; margin:14mm;}
+  body{background:#fff; color:#000; font-size:11pt; line-height:1.4;}
+  .mast,.lock,.foot,.sheet-foot,.no-print,.teach,#beam,.ladder,.sendbox{display:none !important;}
+  .sheets{padding:0;}
+  .wrap{max-width:none; padding:0;}
+  .sheet{
+    box-shadow:none; border:0; border-radius:0; padding:0;
+    max-width:none; margin:0; background:#fff;
+  }
+  .sheet-head{border-bottom:2px solid #000; padding-bottom:9px;}
+  .sheet-head h1,.sheet-head h2{font-size:21pt;}
+  .sheet-head .say{font-size:11.5pt;}
+  .sheet-head .k,.where .n,.conf .lab,.close-card .k,.rung .k,.pblock .pk{color:#000 !important;}
+  .priv{margin:11px 0 0; padding:7px 11px; border-color:#000; background:#fff;}
+  .priv .k{color:#000;}
+  .where{margin-top:14px;}
+  .where .goal{color:#000;}
+  .ask{display:none !important;}
+  .js-on .paperlist,.paperlist{display:block !important; margin-top:8px;}
+  .pblock{padding:8px 0 6px; border-bottom:0; page-break-inside:avoid;}
+  .pblock .pdata{font-size:11pt; color:#000;}
+  .pblock .pnote{color:#000; font-size:9pt;}
+  /* frame lines in real black — gray and low-alpha vanish on a photocopy */
+  .pplot{height:130px;}
+  .pplot .ax{border-top:1.5pt solid #000;}
+  .pplot b{border-left:.75pt dashed #000;}
+  .pplot i{border-left:1pt solid #000;}
+  .pplot .pl{color:#000; font-size:9.5pt;}
+  .pblock .pq{font-size:11pt; color:#000; margin-top:5px;}
+  .pblock .pq u{border-bottom:1.25pt solid #000 !important;}
+  .conf{margin-top:12px; padding:9px 11px; border-color:#000 !important; page-break-inside:avoid;}
+  .conf .hint{font-size:9pt;}
+  .conf-b{border-color:#000 !important; background:#fff !important; padding:6px 3px; min-height:0;}
+  .conf-b .v{color:#000; font-size:13pt;}
+  .conf-b .w{font-size:7pt;}
+  .conf-b[aria-pressed="true"]{border-width:3px !important;}
+  .close-card{margin-top:12px; padding:10px 12px; border-color:#000 !important; background:#fff !important; page-break-inside:avoid;}
+  .close-card h3{font-size:14pt;}
+  .close-card p{font-size:9.5pt;}
+}
+
+/* ══ C9 — THE ODD ONE OUT ════════════════════════════════════════════
+   Beat one taps a column. Beat two lights the two mean columns and asks
+   which number tells the truer story — a judgment, never a score.     */
+.col .mk{
+  display:block; margin-top:3px; font-size:9.5px; font-weight:800;
+  letter-spacing:.06em; text-transform:uppercase; line-height:1.25;
+}
+.col.mw{background:var(--a-wash);} .col.mw .num{color:var(--a);} .col.mw .mk{color:var(--a);}
+.col.mo{background:var(--lock-wash);} .col.mo .num{color:var(--lock);} .col.mo .mk{color:var(--lock);}
+.col.odd .x{color:var(--caution);}
+.col.odd .num{color:var(--caution);}
+.oddrow{display:flex; justify-content:center; margin-top:14px;}
+.oddrow .btn{min-height:48px;}
+.twochoice{display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:16px;}
+@media (max-width:560px){ .twochoice{grid-template-columns:1fr;} }
+.tc{
+  min-height:72px; border:2px solid var(--rule); border-radius:14px; background:var(--field);
+  padding:12px 10px; text-align:center; font-size:14.5px; color:var(--ink-soft);
+  transition:border-color .13s ease, background .13s ease, transform .13s ease;
+}
+.tc b{
+  display:block; font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+  font-size:25px; font-weight:700; color:var(--a); font-variant-numeric:tabular-nums; margin-bottom:2px;
+}
+.tc:hover:not(:disabled){border-color:var(--a); transform:translateY(-1px);}
+.tc:disabled{cursor:default;}
+.tc[aria-pressed="true"]{border-color:var(--lock); background:var(--lock-wash);}
+.tc[aria-pressed="true"] b{color:var(--lock);}
+@media (prefers-reduced-motion: reduce){ .tc:hover:not(:disabled){transform:none;} }
+.pans2{
+  font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+  font-size:16px; margin-top:8px;
+}
+.pans2 u{text-decoration:none; border-bottom:1.5px solid var(--rule); padding:0 2.2em;}
+@media print{
+  .twochoice,.oddrow{display:none !important;}
+  .pans2{font-size:11pt; color:#000;}
+  .pans2 u{border-bottom:1.25pt solid #000 !important;}
+}
+/* ══ WORKING MODE ═══════════════════════════════════════════════════════
+   Jimmy, at 75% zoom: "I like how everything is in one screen, i don't
+   like the scrolling after every question."
+
+   He was right about the cause without naming it. The problem card is not
+   big -- it is ~570px. What pushes it under the fold is ~680px of
+   read-once material above it (masthead + lock card, the sheet's own
+   heading and say-line, the privacy card, Watch one first) that is worth
+   reading exactly once and then sits there for the rest of the set.
+
+   So: the page reads normally top-to-bottom until the student's FIRST
+   touch inside the stage. From that moment the preamble folds, a compact
+   strip takes the masthead's place, and the problem card sits at the top
+   of the screen. Nothing is deleted and nothing is unreachable -- the
+   strip carries a Show-the-intro button that puts it all back.
+
+   ⚠ IT IS A CLASS ON <html>, NOT INLINE STYLE. Every one of these pages
+   rebuilds .stage from JS on every problem; anything written onto an
+   element's style attribute is gone the next time the stage renders.
+   ⚠ EVERYTHING HERE IS no-print BY EFFECT: the print rules below restore
+   the full document, because a printed page has no fold to be above. */
+
+.wmbar{ display:none; }
+:root.wm .wmbar{
+  display:flex; align-items:center; gap:10px;
+  position:sticky; top:0; z-index:900;
+  padding:7px 20px; background:var(--bar-bg,var(--field));
+  border-bottom:1px solid var(--rule);
+}
+:root.wm .wmbar .wm-mk{
+  width:26px; height:26px; border-radius:6px; flex:none; display:grid; place-items:center;
+  background:var(--navy); color:#E7C77B;
+  font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+  font-size:15px; font-weight:700; line-height:1;
+}
+:root.wm .wmbar .wm-nm{
+  margin:0; text-wrap:initial;
+  font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+  font-size:15px; font-weight:700; color:var(--ink); line-height:1.15;
+  white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+}
+:root.wm .wmbar .wm-sp{ flex:1 1 auto; }
+:root.wm .wmbar .wm-btn{
+  border:1.5px solid var(--rule); background:transparent; border-radius:999px;
+  padding:5px 13px; font-size:12.5px; font-weight:700; color:var(--ink-soft);
+  white-space:nowrap; flex:none;
+}
+:root.wm .wmbar .wm-btn:hover{ border-color:var(--a); color:var(--ink); }
+@media (max-width:560px){ :root.wm .wmbar .wm-btn{ min-height:36px; } }
+
+/* what folds away */
+:root.wm .mast,
+:root.wm .sheet-head,
+:root.wm .priv,
+:root.wm .sheet > details.demo{ display:none; }
+
+/* the sheet loses the padding that was making room for what is now gone */
+:root.wm .sheet{ padding-top:10px; }
+:root.wm main.sheets{ padding-top:0; }
+
+/* ⚠ print restores the whole document. The fold is a screen affordance;
+   on paper there is nothing to be below. */
+@media print{
+  .wmbar{ display:none !important; }
+  :root.wm .mast,
+  :root.wm .sheet-head,
+  :root.wm .priv{ display:revert !important; }
+}
+/* ══ THE PROBE RECORD (AOG-M-PROBEPRINT-V1) ═══════════════════════════
+   A one-page evidence sheet built from what happened on this screen.
+   It exists ONLY on paper: display:none on screen in both themes, so it
+   adds no color to either one and cannot drift out of contrast.
+   ⚠ No flex and no vh anywhere in here. A print cover page built out of
+   display:flex + min-height:92vh fragmented across a page break in the
+   user's Chrome and printed a blank first sheet; tables and blocks do
+   not do that. Everything that must not be split says so explicitly. */
+#aogRecSheet{display:none;}
+@media print{
+  body.aog-rec .mast,
+  body.aog-rec .sheets,
+  body.aog-rec .foot{display:none !important;}
+  body.aog-rec #aogRecSheet{display:block !important;}
+  #aogRecSheet{
+    color:#000; background:#fff; font-size:10.5pt; line-height:1.4;
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  }
+  #aogRecSheet .rs-top{border-bottom:2pt solid #000; padding-bottom:7px;}
+  #aogRecSheet .rs-k{font-size:8pt; font-weight:800; letter-spacing:.14em; text-transform:uppercase;}
+  #aogRecSheet .rs-k .rs-r{float:right; letter-spacing:.1em;}
+  #aogRecSheet h1{
+    font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+    font-size:20pt; line-height:1.1; margin:5px 0 0; font-weight:700;
+  }
+  #aogRecSheet .rs-skill{font-size:11pt; margin:2px 0 0;}
+  #aogRecSheet .rs-fields{width:100%; border-collapse:collapse; margin-top:11px;}
+  #aogRecSheet .rs-fields td{
+    font-size:9pt; padding:0 10px 3px 0; vertical-align:bottom; white-space:nowrap;
+  }
+  #aogRecSheet .rs-fields .lb{
+    display:block; font-size:7.5pt; font-weight:800; letter-spacing:.1em; text-transform:uppercase;
+  }
+  #aogRecSheet .rs-fields .rule{
+    display:block; border-bottom:1pt solid #000; min-width:8em; height:15px;
+  }
+  #aogRecSheet .rs-fields .val{display:block; font-size:11pt; font-weight:700; height:15px;}
+  #aogRecSheet .rs-box{
+    border:1.5pt solid #000; border-radius:0; margin-top:12px; padding:9px 11px;
+    page-break-inside:avoid; break-inside:avoid;
+  }
+  #aogRecSheet .rs-h{
+    font-size:8pt; font-weight:800; letter-spacing:.13em; text-transform:uppercase;
+    margin:0 0 6px;
+  }
+  #aogRecSheet .rs-nums{width:100%; border-collapse:collapse; table-layout:fixed;}
+  #aogRecSheet .rs-nums td{text-align:center; padding:2px 4px; vertical-align:top;}
+  #aogRecSheet .rs-nums .big{font-size:25pt; font-weight:800; line-height:1; font-variant-numeric:tabular-nums;}
+  #aogRecSheet .rs-nums .of{font-size:9.5pt; margin-top:1px;}
+  #aogRecSheet .rs-nums .cap{
+    font-size:7.5pt; font-weight:800; letter-spacing:.09em; text-transform:uppercase; margin-top:3px;
+  }
+  #aogRecSheet .rs-map{width:100%; border-collapse:collapse; margin-top:2px;}
+  #aogRecSheet .rs-map td{padding:4px 7px 13px 0; vertical-align:middle; border-bottom:.5pt solid #000;}
+  #aogRecSheet .rs-map tr:last-child td{border-bottom:0;}
+  #aogRecSheet .rs-map .bn{font-size:9.5pt; font-weight:700; width:36%;}
+  #aogRecSheet .rs-map .bs{font-size:9pt; text-align:right; white-space:nowrap; width:22%;}
+  #aogRecSheet .rs-dot{
+    display:inline-block; width:15px; height:15px; border:1.25pt solid #000; border-radius:50%;
+    margin-right:4px; position:relative; vertical-align:middle;
+  }
+  /* ⚠ solid, half and empty are told apart by FILL, never by color —
+     a gray dot and a black dot are the same dot on a school photocopier */
+  #aogRecSheet .rs-dot.ind{background:#000;}
+  #aogRecSheet .rs-dot.sup::after{
+    content:""; position:absolute; left:0; top:0; bottom:0; width:50%; background:#000;
+    border-top-left-radius:15px; border-bottom-left-radius:15px;
+  }
+  #aogRecSheet .rs-dot .rs-num{
+    position:absolute; left:0; right:0; top:16px; font-size:6.5pt; text-align:center; font-weight:700;
+  }
+  #aogRecSheet .rs-legend{font-size:8.5pt; margin:9px 0 0;}
+  #aogRecSheet .rs-legend .rs-dot{width:11px; height:11px; margin:0 3px 0 0;}
+  #aogRecSheet .rs-legend .rs-dot.sup::after{border-radius:11px 0 0 11px;}
+  #aogRecSheet ul.rs-says{margin:0; padding-left:15px;}
+  #aogRecSheet ul.rs-says li{font-size:9.5pt; margin-bottom:3px;}
+  #aogRecSheet .rs-over{width:100%; border-collapse:collapse; table-layout:fixed; margin-top:3px;}
+  #aogRecSheet .rs-over td{
+    border:1pt solid #000; padding:5px 7px; vertical-align:top; font-size:9pt;
+  }
+  #aogRecSheet .rs-over .st{font-size:7.5pt; font-weight:800; letter-spacing:.1em; text-transform:uppercase;}
+  #aogRecSheet .rs-over .dt{font-size:9pt; border-bottom:.5pt solid #000; height:14px; margin-top:3px;}
+  #aogRecSheet .rs-over .sc{font-size:14pt; font-weight:800; margin-top:4px; height:19px; font-variant-numeric:tabular-nums;}
+  #aogRecSheet .rs-sign{width:100%; border-collapse:collapse; margin-top:13px;}
+  #aogRecSheet .rs-sign td{padding:0 10px 0 0; vertical-align:bottom; font-size:8pt;}
+  #aogRecSheet .rs-sign .lb{
+    display:block; font-size:7.5pt; font-weight:800; letter-spacing:.1em; text-transform:uppercase;
+  }
+  #aogRecSheet .rs-sign .rule{display:block; border-bottom:1pt solid #000; height:17px;}
+  #aogRecSheet .rs-fields td:first-child .rule{min-width:13em;}
+  #aogRecSheet .rs-lines div{border-bottom:1pt solid #000; height:20px;}
+  #aogRecSheet .rs-prov{font-size:8pt; margin:11px 0 0; line-height:1.35;}
+}
+</style>
+<style>
+/* ══ THE THREE DOORS — AOG-C-DOORS-V1 (additive; demo/str prefixes only) ══
+   Door 1: a scripted walkthrough that counts toward nothing. Door 3: one
+   stretch problem per set, shown only with the close card. Both are
+   screen-only; the paperlist and print output never change. Tokens only —
+   dark mode needs no rules of its own. */
+.demoCard{margin:0 0 18px; border:2px solid var(--rule); border-radius:16px; background:var(--field-2); padding:14px 16px 16px;}
+.demoTop{display:flex; flex-wrap:wrap; gap:9px; align-items:center;}
+.demoTop .btn{min-height:48px;}
+.demoFrame{font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif; font-style:italic; font-size:13.5px; color:var(--ink-soft); margin-top:7px;}
+.demoSay{text-align:center; font-size:15.5px; color:var(--ink); max-width:34rem; margin:4px auto 0; min-height:3em; line-height:1.5;}
+.demoSay b{color:var(--a);}
+.demoCols{max-width:24rem; margin:10px auto 0;}
+.demoCols .col{min-height:120px; min-width:40px;}
+.demoCols .col,.strCols .col{cursor:default;}
+.demoCols .col:hover,.strCols .col:hover{background:none; border-color:transparent;}
+.demoCols .col.demoCrowd,.demoCols .col.demoCrowd:hover{background:var(--a-wash);}
+.demoCols .col.mo:hover,.strCols .col.mo:hover{background:var(--lock-wash);}
+.strCols .col.mw:hover{background:var(--a-wash);}
+.demoGapX{color:var(--ink-faint);}
+.demoCols .demoGapCol .num{color:var(--ink-faint);}
+.demoActs{display:flex; justify-content:center; margin-top:10px;}
+.demoActs .btn{min-height:48px;}
+.demoAgainB{font-size:12.5px; padding:6px 11px; min-height:40px;}
+.strCard{margin-top:16px; border:2px solid var(--a); border-radius:16px; background:var(--field); padding:16px 18px 18px; box-shadow:var(--lift-sm);}
+.strKH{font-size:11px; font-weight:800; letter-spacing:.14em; text-transform:uppercase; color:var(--a); display:block;}
+.strFrame{font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif; font-style:italic; font-size:13.5px; color:var(--ink-soft); margin:3px 0 10px; max-width:40rem;}
+.strCols{max-width:32rem; margin:8px auto 0;}
+.strQ{text-align:center; font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif; font-size:18px; line-height:1.35; margin-top:12px; color:var(--ink);}
+.strQ b{color:var(--a);}
+.strActs{display:flex; flex-wrap:wrap; gap:9px; justify-content:center; margin-top:12px;}
+.strActs .btn{min-height:48px;}
+@media print{.demoCard,.strCard,.demoAgainB{display:none !important;}}
+</style>
+<style id="aog-4302-narrow">
+/* ⚠ SCREEN ONLY. .col has min-width:48px and there are enough columns that the
+   row overflowed by 45px at 360 and again at 320. The columns are a counting
+   game and must stay side by side, so they get narrower rather than wrap. */
+@media screen and (max-width:400px){ .col{min-width:34px;} }
+@media screen and (max-width:345px){ .col{min-width:28px;} }
+
+/* ══ AOG-PRINT-SAFE-V1 (2026-09-20) ═══════════════════════════════════════════
+   Jimmy, printing a novel study from his phone: "another pdf that gets parts of
+   the material cut off." These are the rules that keep paper honest on every
+   engine — a table row, a list item, a figure and a picture stay whole; a head
+   keeps the lines under it; no paragraph strands one line at a page edge; and a
+   long table repeats its head at the top of each page. Printed pages only. */
+@media print{
+  table{break-inside:auto; page-break-inside:auto}
+  thead{display:table-header-group}
+  tfoot{display:table-footer-group}
+  tr{break-inside:avoid; page-break-inside:avoid}
+  li,figure,img,svg{break-inside:avoid; page-break-inside:avoid}
+  h1,h2,h3,h4,h5{break-after:avoid; page-break-after:avoid}
+  p{orphans:3; widows:3}
+}
+</style>
+</head>
+<body>
+<script src="/aog-topbar.js"></script>
+
+<script>document.body.className="js-on";</script>
+
+<div class="wmbar no-print" id="wmBar">
+  <span class="wm-mk" aria-hidden="true">A</span>
+  <h1 class="wm-nm" id="wmName"></h1>
+  <span class="wm-sp"></span>
+  <button class="wm-btn" type="button" id="wmOut"
+          data-en="Show the intro" data-es="Mostrar la introducción">Show the intro</button>
+</div>
+
+<header class="mast wrap">
+  <div class="row">
+    <div class="mark" aria-hidden="true">A</div>
+    <div>
+      <div class="name">Architecture of Grace</div>
+      <div class="sub" data-en="Mathematics &middot; Number Concepts &amp; Data" data-es="Matem&aacute;ticas &middot; Conceptos num&eacute;ricos y datos">Mathematics &middot; Number Concepts &amp; Data</div>
+    </div>
+  </div>
+  <p class="mast-h1" data-en="The Interior Mathematics" data-es="Matem&aacute;ticas del Interior">The Interior Mathematics</p>
+  <p class="deck" data-en="Concepts &amp; Data &middot; Activity 9 — The Odd One Out. Find the number sitting far from the others, then watch what it does to the average. Work it here, or print it and use a pencil — both count." data-es="Conceptos y datos &middot; Actividad 9 — El que no encaja. Busca el n&uacute;mero que est&aacute; lejos de los dem&aacute;s, y mira lo que le hace al promedio. Trab&aacute;jalo aqu&iacute;, o impr&iacute;melo y usa l&aacute;piz — los dos cuentan.">Concepts &amp; Data &middot; Activity 9 — The Odd One Out. Find the number sitting far from the others, then watch what it does to the average. Work it here, or print it and use a pencil — both count.</p>
+
+  <section class="lock" aria-labelledby="lock-h">
+    <details class="lock-more">
+      <summary>
+        <h2 id="lock-h" data-en="Saved on this computer only." data-es="Se guarda solo en esta computadora.">Saved on this computer only.</h2>
+        <span class="lock-ask" data-en="How do I know that&#39;s true?" data-es="&iquest;C&oacute;mo s&eacute; que eso es cierto?">How do I know that&#39;s true?</span>
+      </summary>
+      <div class="body">
+        <p id="lockIntro" data-en="There is no send button, no upload, no account, no sign-in. Your work is saved on this one computer so you can come back to it — and you can erase it whenever you want." data-es="No hay bot&oacute;n de enviar, ni subida, ni cuenta, ni inicio de sesi&oacute;n. Tu trabajo se guarda solo en esta computadora — y puedes borrarlo cuando quieras.">There is no send button, no upload, no account, no sign-in. Your work is saved on this one computer so you can come back to it — and you can erase it whenever you want.</p>
+        <p id="lockP1" data-en="&lt;b&gt;This page has no way to send anything.&lt;/b&gt; It saves your work in this browser&#39;s own storage on this machine. It loads nothing from the internet and sends nothing out, so there is no copy anywhere else — not with your teacher, not with the school, not with anyone." data-es="&lt;b&gt;Esta p&aacute;gina no tiene forma de enviar nada.&lt;/b&gt; Guarda tu trabajo en el almacenamiento del navegador de esta m&aacute;quina. No carga nada de internet ni env&iacute;a nada, as&iacute; que no hay copia en ning&uacute;n otro lugar — ni con tu maestro, ni con la escuela, ni con nadie."><b>This page has no way to send anything.</b> It saves your work in this browser&#39;s own storage on this machine. It loads nothing from the internet and sends nothing out, so there is no copy anywhere else — not with your teacher, not with the school, not with anyone.</p>
+        <p data-en="&lt;b&gt;This one is different from the Wednesday worksheets.&lt;/b&gt; Those are your own thinking and nobody reads them. This is math, and math is meant to be looked at together — your teacher may stand next to you and read this screen, and may write down how it went. Nothing travels on its own; a person has to be standing here." data-es="&lt;b&gt;Esta es distinta de las hojas de los mi&eacute;rcoles.&lt;/b&gt; Aquellas son tu propio pensamiento y nadie las lee. Esto son matem&aacute;ticas, y las matem&aacute;ticas se miran juntos — tu maestro puede pararse a tu lado, leer esta pantalla y anotar c&oacute;mo te fue. Nada viaja solo; alguien tiene que estar aqu&iacute;."><b>This one is different from the Wednesday worksheets.</b> Those are your own thinking and nobody reads them. This is math, and math is meant to be looked at together — your teacher may stand next to you and read this screen, and may write down how it went. Nothing travels on its own; a person has to be standing here.</p>
+        <p data-en="&lt;b&gt;Asking for a hint is not cheating.&lt;/b&gt; The hints are part of the lesson. Using them tells your teacher what to teach next, which is exactly what they are for." data-es="&lt;b&gt;Pedir una pista no es hacer trampa.&lt;/b&gt; Las pistas son parte de la lecci&oacute;n. Usarlas le dice a tu maestro qu&eacute; ense&ntilde;ar despu&eacute;s, que es justo para lo que sirven."><b>Asking for a hint is not cheating.</b> The hints are part of the lesson. Using them tells your teacher what to teach next, which is exactly what they are for.</p>
+        <p data-en="&lt;b&gt;If you share this computer, erase before you go.&lt;/b&gt; Anyone who uses this same browser profile could open the page and see your work. That is what the erase buttons are for, and using them is completely normal." data-es="&lt;b&gt;Si compartes esta computadora, borra antes de irte.&lt;/b&gt; Cualquiera que use este mismo perfil del navegador podr&iacute;a abrir la p&aacute;gina y ver tu trabajo. Para eso est&aacute;n los botones de borrar, y usarlos es completamente normal."><b>If you share this computer, erase before you go.</b> Anyone who uses this same browser profile could open the page and see your work. That is what the erase buttons are for, and using them is completely normal.</p>
+      </div>
+    </details>
+    <div class="lock-acts no-print">
+      <button class="btn btn-lock" type="button" id="eraseAll" data-en="Erase everything on this computer" data-es="Borrar todo en esta computadora">Erase everything on this computer</button>
+      <button class="btn" type="button" id="themeBtn" aria-live="polite">Switch to dark</button>
+      <button class="btn" type="button" id="langBtn" aria-live="polite">Espa&ntilde;ol</button>
+    </div>
+  </section>
+</header>
+
+<main class="sheets wrap">
+<section class="sheet" id="sh-c9" data-id="c9">
+
+  <div class="sheet-head">
+    <span class="k" data-en="Concepts &amp; Data &middot; Activity 9" data-es="Conceptos y datos &middot; Actividad 9">Concepts &amp; Data &middot; Activity 9</span>
+    <h1 data-en="The Odd One Out" data-es="El que no encaja">The Odd One Out</h1>
+    <p class="say" data-en="Most of the numbers keep close company. Sometimes one wanders off on its own — that one has a name: an outlier. Find it, then see what it does to the average." data-es="Casi todos los n&uacute;meros se mantienen juntos. A veces uno se va solo por su lado — ese tiene nombre: un valor at&iacute;pico. Encu&eacute;ntralo, y mira lo que le hace al promedio.">Most of the numbers keep close company. Sometimes one wanders off on its own — that one has a name: an outlier. Find it, then see what it does to the average.</p>
+  </div>
+
+
+  <!-- ══ THE STAGE — replaced entirely with JS off by the paper worksheet below ══ -->
+  <div class="stage no-print" id="stage" hidden>
+
+    <!-- ══ DOOR 1 — AOG-C-DOORS-V1. One scripted walkthrough, paced by the
+         student, counting toward nothing. Folds to "Watch one again" in the
+         hint-ladder header once item 1 is answered. ══ -->
+    <div class="demoCard" id="demoCard" hidden>
+      <div class="demoTop" id="demoTop">
+        <button class="btn btn-accent" type="button" id="demoGo" data-en="Show me one first" data-es="Mu&eacute;strame uno primero">Show me one first</button>
+        <button class="btn" type="button" id="demoSkip" data-en="No thanks &mdash; I&#39;ll start" data-es="No, gracias &mdash; voy a empezar">No thanks &mdash; I&#39;ll start</button>
+      </div>
+      <p class="demoFrame" data-en="Watching one first is a strong way to start." data-es="Ver uno primero es una buena forma de empezar.">Watching one first is a strong way to start.</p>
+      <div class="demoStage" id="demoStage" hidden>
+        <p class="demoSay" id="demoSay" aria-live="polite"></p>
+        <div class="cols demoCols" id="demoCols" aria-hidden="true"></div>
+        <div class="demoActs">
+          <button class="btn btn-accent" type="button" id="demoNext">Next</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="where">
+      <span class="n" id="whereN">Problem 1 of 8</span>
+      <span class="goal" data-en="Find it, then judge it." data-es="Encu&eacute;ntralo, luego j&uacute;zgalo.">Find it, then judge it.</span>
+    </div>
+
+    <div class="ask">
+      <p class="ask-q" id="askQ"></p>
+
+      <div class="plot">
+        <p class="plot-k" id="plotK"></p>
+        <div class="cols" id="cols" role="group" aria-label="Line plot"></div>
+      </div>
+
+      <div class="oddrow no-print" id="oddRow">
+        <button class="btn" type="button" id="noneBtn" data-en="Nothing sticks out" data-es="Nada se sale de lo normal">Nothing sticks out</button>
+      </div>
+
+      <div class="twochoice" id="twoChoice" hidden role="group" aria-label="Which number tells the truer story">
+        <button class="tc" type="button" data-pick="with" aria-pressed="false"><b id="tcWithV">0</b><span id="tcWithL"></span></button>
+        <button class="tc" type="button" data-pick="without" aria-pressed="false"><b id="tcWithoutV">0</b><span id="tcWithoutL"></span></button>
+      </div>
+
+      <p class="plot-help" id="helpLine"></p>
+      <p class="plot-say" id="say" aria-live="polite"></p>
+      <div class="plot-acts">
+        <button class="btn" type="button" id="nextBtn" hidden data-en="Next problem" data-es="Siguiente problema">Next problem</button>
+        <button class="btn" type="button" id="showBtn" hidden data-en="Show me the answer" data-es="Mu&eacute;strame la respuesta">Show me the answer</button>
+      </div>
+    </div>
+
+    <div class="ladder" id="ladder">
+      <div class="ladder-head">
+        <span class="k" data-en="Need help?" data-es="&iquest;Necesitas ayuda?">Need help?</span>
+        <button class="btn" type="button" id="hintBtn" data-en="Show me a hint" data-es="Mu&eacute;strame una pista">Show me a hint</button>
+        <button class="btn demoAgainB" type="button" id="demoAgain" hidden data-en="Watch one again" data-es="Ver uno otra vez">Watch one again</button>
+      </div>
+      <div class="rungs" id="rungs"></div>
+    </div>
+
+  </div>
+
+  <!-- ══ FAIL OPEN — the whole worksheet with JS off, and the printed page.
+       paintPaperList() redraws it for the set on screen, so the two stay
+       in step by construction. ══ -->
+  <div class="paperlist" id="paperlist">
+    <!-- AOG-C-DOORS-V1 fail-open repair: static Set-1 worksheet, baked as the
+         EXACT innerHTML paintPaperList() renders for Set 1 (EN). With JS on,
+         the painter repaints this byte-identically at boot; do not hand-edit
+         it - regenerate from the painter if SETS set 1 ever changes. -->
+    <div id="paperBox"><div class="pblock"><p class="pk">1 · Minutes it takes to walk to school</p><p class="pdata">3 · 4 · 3 · 5 · 5 · 10</p><p class="pnote">Draw one X for each number, stacked on top of its place.</p><div class="pplot"><span class="ax"></span><b style="left:5.0000%"></b><i style="left:5.0000%"></i><span class="pl" style="left:5.0000%">2</span><b style="left:15.0000%"></b><i style="left:15.0000%"></i><span class="pl" style="left:15.0000%">3</span><b style="left:25.0000%"></b><i style="left:25.0000%"></i><span class="pl" style="left:25.0000%">4</span><b style="left:35.0000%"></b><i style="left:35.0000%"></i><span class="pl" style="left:35.0000%">5</span><b style="left:45.0000%"></b><i style="left:45.0000%"></i><span class="pl" style="left:45.0000%">6</span><b style="left:55.0000%"></b><i style="left:55.0000%"></i><span class="pl" style="left:55.0000%">7</span><b style="left:65.0000%"></b><i style="left:65.0000%"></i><span class="pl" style="left:65.0000%">8</span><b style="left:75.0000%"></b><i style="left:75.0000%"></i><span class="pl" style="left:75.0000%">9</span><b style="left:85.0000%"></b><i style="left:85.0000%"></i><span class="pl" style="left:85.0000%">10</span><b style="left:95.0000%"></b><i style="left:95.0000%"></i><span class="pl" style="left:95.0000%">11</span></div><p class="pq">1. Circle the odd one out — or write <i>none</i>. <u></u></p><p class="pq">2. Mean with everyone: <u></u></p><p class="pans2">3. Mean without the odd one: <u></u></p></div><div class="pblock"><p class="pk">2 · Books on the shelf</p><p class="pdata">7 · 8 · 7 · 9 · 9 · 2</p><p class="pnote">Draw one X for each number, stacked on top of its place.</p><div class="pplot"><span class="ax"></span><b style="left:5.0000%"></b><i style="left:5.0000%"></i><span class="pl" style="left:5.0000%">1</span><b style="left:15.0000%"></b><i style="left:15.0000%"></i><span class="pl" style="left:15.0000%">2</span><b style="left:25.0000%"></b><i style="left:25.0000%"></i><span class="pl" style="left:25.0000%">3</span><b style="left:35.0000%"></b><i style="left:35.0000%"></i><span class="pl" style="left:35.0000%">4</span><b style="left:45.0000%"></b><i style="left:45.0000%"></i><span class="pl" style="left:45.0000%">5</span><b style="left:55.0000%"></b><i style="left:55.0000%"></i><span class="pl" style="left:55.0000%">6</span><b style="left:65.0000%"></b><i style="left:65.0000%"></i><span class="pl" style="left:65.0000%">7</span><b style="left:75.0000%"></b><i style="left:75.0000%"></i><span class="pl" style="left:75.0000%">8</span><b style="left:85.0000%"></b><i style="left:85.0000%"></i><span class="pl" style="left:85.0000%">9</span><b style="left:95.0000%"></b><i style="left:95.0000%"></i><span class="pl" style="left:95.0000%">10</span></div><p class="pq">1. Circle the odd one out — or write <i>none</i>. <u></u></p><p class="pq">2. Mean with everyone: <u></u></p><p class="pans2">3. Mean without the odd one: <u></u></p></div><div class="pblock"><p class="pk">3 · Cousins</p><p class="pdata">2 · 3 · 2 · 4 · 3 · 4 · 10</p><p class="pnote">Draw one X for each number, stacked on top of its place.</p><div class="pplot"><span class="ax"></span><b style="left:4.5455%"></b><i style="left:4.5455%"></i><span class="pl" style="left:4.5455%">1</span><b style="left:13.6364%"></b><i style="left:13.6364%"></i><span class="pl" style="left:13.6364%">2</span><b style="left:22.7273%"></b><i style="left:22.7273%"></i><span class="pl" style="left:22.7273%">3</span><b style="left:31.8182%"></b><i style="left:31.8182%"></i><span class="pl" style="left:31.8182%">4</span><b style="left:40.9091%"></b><i style="left:40.9091%"></i><span class="pl" style="left:40.9091%">5</span><b style="left:50.0000%"></b><i style="left:50.0000%"></i><span class="pl" style="left:50.0000%">6</span><b style="left:59.0909%"></b><i style="left:59.0909%"></i><span class="pl" style="left:59.0909%">7</span><b style="left:68.1818%"></b><i style="left:68.1818%"></i><span class="pl" style="left:68.1818%">8</span><b style="left:77.2727%"></b><i style="left:77.2727%"></i><span class="pl" style="left:77.2727%">9</span><b style="left:86.3636%"></b><i style="left:86.3636%"></i><span class="pl" style="left:86.3636%">10</span><b style="left:95.4545%"></b><i style="left:95.4545%"></i><span class="pl" style="left:95.4545%">11</span></div><p class="pq">1. Circle the odd one out — or write <i>none</i>. <u></u></p><p class="pq">2. Mean with everyone: <u></u></p><p class="pans2">3. Mean without the odd one: <u></u></p></div><div class="pblock"><p class="pk">4 · Pencils in the box</p><p class="pdata">4 · 5 · 4 · 6 · 5 · 6</p><p class="pnote">Draw one X for each number, stacked on top of its place.</p><div class="pplot"><span class="ax"></span><b style="left:10.0000%"></b><i style="left:10.0000%"></i><span class="pl" style="left:10.0000%">3</span><b style="left:30.0000%"></b><i style="left:30.0000%"></i><span class="pl" style="left:30.0000%">4</span><b style="left:50.0000%"></b><i style="left:50.0000%"></i><span class="pl" style="left:50.0000%">5</span><b style="left:70.0000%"></b><i style="left:70.0000%"></i><span class="pl" style="left:70.0000%">6</span><b style="left:90.0000%"></b><i style="left:90.0000%"></i><span class="pl" style="left:90.0000%">7</span></div><p class="pq">1. Circle the odd one out — or write <i>none</i>. <u></u></p><p class="pq">2. Mean with everyone: <u></u></p><p class="pans2">3. Mean without the odd one: <u></u></p></div><div class="pblock"><p class="pk">5 · Goals this season</p><p class="pdata">6 · 7 · 6 · 8 · 7 · 8 · 0</p><p class="pnote">Draw one X for each number, stacked on top of its place.</p><div class="pplot"><span class="ax"></span><b style="left:5.0000%"></b><i style="left:5.0000%"></i><span class="pl" style="left:5.0000%">0</span><b style="left:15.0000%"></b><i style="left:15.0000%"></i><span class="pl" style="left:15.0000%">1</span><b style="left:25.0000%"></b><i style="left:25.0000%"></i><span class="pl" style="left:25.0000%">2</span><b style="left:35.0000%"></b><i style="left:35.0000%"></i><span class="pl" style="left:35.0000%">3</span><b style="left:45.0000%"></b><i style="left:45.0000%"></i><span class="pl" style="left:45.0000%">4</span><b style="left:55.0000%"></b><i style="left:55.0000%"></i><span class="pl" style="left:55.0000%">5</span><b style="left:65.0000%"></b><i style="left:65.0000%"></i><span class="pl" style="left:65.0000%">6</span><b style="left:75.0000%"></b><i style="left:75.0000%"></i><span class="pl" style="left:75.0000%">7</span><b style="left:85.0000%"></b><i style="left:85.0000%"></i><span class="pl" style="left:85.0000%">8</span><b style="left:95.0000%"></b><i style="left:95.0000%"></i><span class="pl" style="left:95.0000%">9</span></div><p class="pq">1. Circle the odd one out — or write <i>none</i>. <u></u></p><p class="pq">2. Mean with everyone: <u></u></p><p class="pans2">3. Mean without the odd one: <u></u></p></div><div class="pblock"><p class="pk">6 · Hours of sleep</p><p class="pdata">8 · 9 · 8 · 10 · 10 · 3</p><p class="pnote">Draw one X for each number, stacked on top of its place.</p><div class="pplot"><span class="ax"></span><b style="left:5.0000%"></b><i style="left:5.0000%"></i><span class="pl" style="left:5.0000%">2</span><b style="left:15.0000%"></b><i style="left:15.0000%"></i><span class="pl" style="left:15.0000%">3</span><b style="left:25.0000%"></b><i style="left:25.0000%"></i><span class="pl" style="left:25.0000%">4</span><b style="left:35.0000%"></b><i style="left:35.0000%"></i><span class="pl" style="left:35.0000%">5</span><b style="left:45.0000%"></b><i style="left:45.0000%"></i><span class="pl" style="left:45.0000%">6</span><b style="left:55.0000%"></b><i style="left:55.0000%"></i><span class="pl" style="left:55.0000%">7</span><b style="left:65.0000%"></b><i style="left:65.0000%"></i><span class="pl" style="left:65.0000%">8</span><b style="left:75.0000%"></b><i style="left:75.0000%"></i><span class="pl" style="left:75.0000%">9</span><b style="left:85.0000%"></b><i style="left:85.0000%"></i><span class="pl" style="left:85.0000%">10</span><b style="left:95.0000%"></b><i style="left:95.0000%"></i><span class="pl" style="left:95.0000%">11</span></div><p class="pq">1. Circle the odd one out — or write <i>none</i>. <u></u></p><p class="pq">2. Mean with everyone: <u></u></p><p class="pans2">3. Mean without the odd one: <u></u></p></div><div class="pblock"><p class="pk">7 · Minutes on the phone</p><p class="pdata">5 · 5 · 6 · 4 · 5 · 11</p><p class="pnote">Draw one X for each number, stacked on top of its place.</p><div class="pplot"><span class="ax"></span><b style="left:5.5556%"></b><i style="left:5.5556%"></i><span class="pl" style="left:5.5556%">4</span><b style="left:16.6667%"></b><i style="left:16.6667%"></i><span class="pl" style="left:16.6667%">5</span><b style="left:27.7778%"></b><i style="left:27.7778%"></i><span class="pl" style="left:27.7778%">6</span><b style="left:38.8889%"></b><i style="left:38.8889%"></i><span class="pl" style="left:38.8889%">7</span><b style="left:50.0000%"></b><i style="left:50.0000%"></i><span class="pl" style="left:50.0000%">8</span><b style="left:61.1111%"></b><i style="left:61.1111%"></i><span class="pl" style="left:61.1111%">9</span><b style="left:72.2222%"></b><i style="left:72.2222%"></i><span class="pl" style="left:72.2222%">10</span><b style="left:83.3333%"></b><i style="left:83.3333%"></i><span class="pl" style="left:83.3333%">11</span><b style="left:94.4444%"></b><i style="left:94.4444%"></i><span class="pl" style="left:94.4444%">12</span></div><p class="pq">1. Circle the odd one out — or write <i>none</i>. <u></u></p><p class="pq">2. Mean with everyone: <u></u></p><p class="pans2">3. Mean without the odd one: <u></u></p></div><div class="pblock"><p class="pk">8 · Steps to the door</p><p class="pdata">9 · 10 · 9 · 11 · 10 · 11</p><p class="pnote">Draw one X for each number, stacked on top of its place.</p><div class="pplot"><span class="ax"></span><b style="left:10.0000%"></b><i style="left:10.0000%"></i><span class="pl" style="left:10.0000%">8</span><b style="left:30.0000%"></b><i style="left:30.0000%"></i><span class="pl" style="left:30.0000%">9</span><b style="left:50.0000%"></b><i style="left:50.0000%"></i><span class="pl" style="left:50.0000%">10</span><b style="left:70.0000%"></b><i style="left:70.0000%"></i><span class="pl" style="left:70.0000%">11</span><b style="left:90.0000%"></b><i style="left:90.0000%"></i><span class="pl" style="left:90.0000%">12</span></div><p class="pq">1. Circle the odd one out — or write <i>none</i>. <u></u></p><p class="pq">2. Mean with everyone: <u></u></p><p class="pans2">3. Mean without the odd one: <u></u></p></div></div>
+  </div>
+
+  <div class="conf" id="conf">
+    <span class="lab" data-en="How confident are you with these?" data-es="&iquest;Qu&eacute; tan seguro te sientes con esto?">How confident are you with these?</span>
+    <p class="hint" data-en="There is no right answer here. It only tells your teacher where to start next time." data-es="Aqu&iacute; no hay respuesta correcta. Solo le dice a tu maestro por d&oacute;nde empezar la pr&oacute;xima vez.">There is no right answer here. It only tells your teacher where to start next time.</p>
+    <div class="conf-row" role="group" aria-label="Confidence, 1 to 5">
+      <button class="conf-b" type="button" data-conf="1" aria-pressed="false"><span class="v">1</span><span class="w" data-en="Not yet" data-es="Todav&iacute;a no">Not yet</span></button>
+      <button class="conf-b" type="button" data-conf="2" aria-pressed="false"><span class="v">2</span><span class="w" data-en="A little" data-es="Un poco">A little</span></button>
+      <button class="conf-b" type="button" data-conf="3" aria-pressed="false"><span class="v">3</span><span class="w" data-en="Okay" data-es="M&aacute;s o menos">Okay</span></button>
+      <button class="conf-b" type="button" data-conf="4" aria-pressed="false"><span class="v">4</span><span class="w" data-en="Confident" data-es="Seguro">Confident</span></button>
+      <button class="conf-b" type="button" data-conf="5" aria-pressed="false"><span class="v">5</span><span class="w" data-en="Very confident" data-es="Muy seguro">Very confident</span></button>
+    </div>
+  </div>
+
+  <div class="close-card" id="closeCard" hidden>
+    <span class="k" data-en="Done" data-es="Terminado">Done</span>
+    <h3 data-en="You found them — and you did not delete them." data-es="Los encontraste — y no los borraste.">You found them — and you did not delete them.</h3>
+    <p data-en="An outlier is a real number about a real thing. It pulls the mean toward itself, which is why we point at it instead of throwing it away: the group has a story, and so does the one that sits apart. Say both, and you have told the truth." data-es="Un valor at&iacute;pico es un n&uacute;mero real sobre algo real. Jala la media hacia &eacute;l, y por eso lo se&ntilde;alamos en vez de tirarlo: el grupo tiene una historia, y el que est&aacute; aparte tambi&eacute;n. Di las dos, y habr&aacute;s dicho la verdad.">An outlier is a real number about a real thing. It pulls the mean toward itself, which is why we point at it instead of throwing it away: the group has a story, and so does the one that sits apart. Say both, and you have told the truth.</p>
+  </div>
+
+  <!-- ══ DOOR 3 — AOG-C-DOORS-V1. One stretch per set, from that set's own
+       data. Appears only WITH the close card, never blocks it, never rides
+       the paperlist, never changes the 8-count. ══ -->
+  <div class="strCard no-print" id="strCard" hidden>
+    <span class="strKH" data-en="One more, if you want it" data-es="Uno m&aacute;s, si quieres">One more, if you want it</span>
+    <p class="strFrame" data-en="The stretch is a choice. Taking it &mdash; or leaving it for another day &mdash; are both strong moves." data-es="El reto es una elecci&oacute;n. Tomarlo &mdash; o dejarlo para otro d&iacute;a &mdash; son dos decisiones fuertes.">The stretch is a choice. Taking it &mdash; or leaving it for another day &mdash; are both strong moves.</p>
+    <p class="plot-k" id="strK"></p>
+    <div class="cols strCols" id="strCols" aria-hidden="true"></div>
+    <p class="strQ" id="strQ"></p>
+    <div class="strActs" id="strDirRow" hidden>
+      <button class="btn" type="button" id="strUp">Up</button>
+      <button class="btn" type="button" id="strDown">Down</button>
+    </div>
+    <div class="strActs" id="strSizeRow" hidden>
+      <button class="btn" type="button" id="strLittle">A little</button>
+      <button class="btn" type="button" id="strLot">A lot</button>
+    </div>
+    <p class="plot-say" id="strSay" aria-live="polite"></p>
+  </div>
+
+  <details class="teach no-print" id="teach">
+    <summary data-en="For the teacher — this device only" data-es="Para el maestro — solo este dispositivo">For the teacher — this device only</summary>
+    <div class="inner">
+      <p class="note" id="teachNote" data-en="One probe row, built from what happened on this screen. Copy it into the Goal Builder yourself, or print this page. Independent means found with no hints; supported means found after a hint. Both are real evidence and neither is a grade." data-es="Una fila de sondeo, hecha con lo que pas&oacute; en esta pantalla. C&oacute;piala t&uacute; mismo al Goal Builder, o imprime esta p&aacute;gina. Independiente significa encontrado sin pistas; apoyado significa encontrado despu&eacute;s de una pista. Las dos son evidencia real y ninguna es una calificaci&oacute;n.">One probe row, built from what happened on this screen. Copy it into the Goal Builder yourself, or print this page. Independent means found with no hints; supported means found after a hint. Both are real evidence and neither is a grade.</p>
+      <div class="probe">
+        <dl>
+          <dt data-en="Date" data-es="Fecha">Date</dt><dd id="pvDate">—</dd>
+          <dt data-en="Skill" data-es="Destreza">Skill</dt><dd data-en="Spot an outlier and tell how it pulls the mean" data-es="Detectar un valor at&iacute;pico y decir c&oacute;mo jala la media">Spot an outlier and tell how it pulls the mean</dd>
+          <dt data-en="Measure" data-es="Medida">Measure</dt><dd>Trials (x of y)</dd>
+          <dt data-en="Independent" data-es="Independiente">Independent</dt><dd id="pvInd"><b>0</b> of 8</dd>
+          <dt data-en="Supported" data-es="Con apoyo">Supported</dt><dd id="pvSup"><b>0</b> of 8</dd>
+          <dt data-en="Hints used" data-es="Pistas usadas">Hints used</dt><dd id="pvHint">0</dd>
+          <dt data-en="Confidence" data-es="Confianza">Confidence</dt><dd id="pvConf">—</dd>
+          <dt data-en="Watched the demo" data-es="Vio el ejemplo">Watched the demo</dt><dd id="demoPv">—</dd>
+          <dt data-en="Stretch" data-es="Reto">Stretch</dt><dd id="strPv">—</dd>
+        </dl>
+      </div>
+      <div class="plot-acts" style="justify-content:flex-start">
+        <button class="btn" type="button" id="copyProbe" data-en="Copy this row" data-es="Copiar esta fila">Copy this row</button>
+        <button class="btn" type="button" id="boardBtn" data-en="Show the link on the board" data-es="Mostrar el enlace en la pizarra">Show the link on the board</button>
+      </div>
+      <p class="note" data-en="Six of the eight hold an outlier; two do not, and on those the skill is saying so. Only the spotting is scored — the second question, which number tells the truer story, is a judgment and both answers are respected. Set 2 and Set 3 are the same eight skills with different data, so the same student can be probed three weeks running without being measured on memory." data-es="Seis de los ocho tienen un valor at&iacute;pico; dos no, y en esos la destreza es decirlo. Solo se punt&uacute;a la detecci&oacute;n — la segunda pregunta, cu&aacute;l n&uacute;mero cuenta mejor la historia, es un juicio y las dos respuestas se respetan. El Grupo 2 y el Grupo 3 son las mismas ocho destrezas con otros datos, para que un mismo estudiante pueda ser evaluado tres semanas seguidas sin medir su memoria.">Six of the eight hold an outlier; two do not, and on those the skill is saying so. Only the spotting is scored — the second question, which number tells the truer story, is a judgment and both answers are respected. Set 2 and Set 3 are the same eight skills with different data, so the same student can be probed three weeks running without being measured on memory.</p>
+      <div class="plot-acts" style="justify-content:flex-start">
+        <button class="btn" type="button" data-set="1">Set 1</button>
+        <button class="btn" type="button" data-set="2">Set 2</button>
+        <button class="btn" type="button" data-set="3">Set 3</button>
+      </div>
+    </div>
+  </details>
+
+  <div class="sheet-foot no-print">
+    <button class="btn btn-accent" type="button" data-print data-en="Print the problems" data-es="Imprimir los problemas">Print the problems</button>
+    <button class="btn btn-danger" type="button" data-erase data-en="Erase this activity" data-es="Borrar esta actividad">Erase this activity</button>
+    <span class="saved" data-saved><span class="dot"></span><span data-savedtext>Saved on this computer</span></span>
+  </div>
+
+</section>
+</main>
+
+<footer class="foot wrap no-print">
+  <p><b>Architecture of Grace &middot; Mathematics — Number Concepts &amp; Data.</b> Activity 9 — The Odd One Out.</p>
+  <p id="footNet" data-en="This page loads no fonts, scripts, or images from the internet and sends nothing out — it works with the network off. Your work is stored in this browser only. It is not a district product and carries no district endorsement." data-es="Esta p&aacute;gina no carga fuentes, scripts ni im&aacute;genes de internet y no env&iacute;a nada — funciona con la red apagada. Tu trabajo se guarda solo en este navegador. No es un producto del distrito ni cuenta con su respaldo.">This page loads no fonts, scripts, or images from the internet and sends nothing out — it works with the network off. Your work is stored in this browser only. It is not a district product and carries no district endorsement.</p>
+</footer>
+<!-- Optional same-origin site config: defines window.AOG_SYNC_DEFAULTS when deployed.
+     If this 404s, or the page is opened from file://, nothing breaks — the page
+     silently stays offline-only. -->
+<script src="aog-sync-config.js"></script>
+
+<script>
+(function(){
+  "use strict";
+
+  var KEY = "aog.interior.ws.v1.";
+  var ID  = "c9";
+  var NAME_EN = "The Odd One Out";
+  var SKILL_EN = "Spot an outlier and tell how it pulls the mean";
+  var hasLS = (function(){ try{ var k="__t"; localStorage.setItem(k,"1"); localStorage.removeItem(k); return true; }catch(e){ return false; } })();
+  function load(){ if(!hasLS) return {}; try{ return JSON.parse(localStorage.getItem(KEY+ID)||"{}")||{}; }catch(e){ return {}; } }
+  function save(o){ if(!hasLS) return false; try{ localStorage.setItem(KEY+ID, JSON.stringify(o)); return true; }catch(e){ return false; } }
+
+  /* ══ THE ITEMS ═══════════════════════════════════════════════════════
+     v = the data, odd = the value that sits apart (null when nothing
+     does — two per set, and saying so IS the skill). Every set is built
+     so that BOTH means come out whole: with the outlier and without it.
+     A remainder here would put arithmetic in the way of the idea.      */
+  var SETS = {
+    1:[
+      {en:"Minutes it takes to walk to school", es:"Minutos que tardas en caminar a la escuela",
+       lo:2, hi:11, v:[3,4,3,5,5,10], odd:10},
+      {en:"Books on the shelf", es:"Libros en el estante",
+       lo:1, hi:10, v:[7,8,7,9,9,2], odd:2},
+      {en:"Cousins", es:"Primos y primas",
+       lo:1, hi:11, v:[2,3,2,4,3,4,10], odd:10},
+      {en:"Pencils in the box", es:"L&aacute;pices en la caja",
+       lo:3, hi:7, v:[4,5,4,6,5,6], odd:null},
+      {en:"Goals this season", es:"Goles esta temporada",
+       lo:0, hi:9, v:[6,7,6,8,7,8,0], odd:0},
+      {en:"Hours of sleep", es:"Horas de sue&ntilde;o",
+       lo:2, hi:11, v:[8,9,8,10,10,3], odd:3},
+      {en:"Minutes on the phone", es:"Minutos en el tel&eacute;fono",
+       lo:4, hi:12, v:[5,5,6,4,5,11], odd:11},
+      {en:"Steps to the door", es:"Pasos hasta la puerta",
+       lo:8, hi:12, v:[9,10,9,11,10,11], odd:null}
+    ],
+    2:[
+      {en:"Cans in the bin", es:"Latas en el bote",
+       lo:0, hi:9, v:[6,7,6,8,8,1], odd:1},
+      {en:"Stickers on the folder", es:"Calcoman&iacute;as en la carpeta",
+       lo:1, hi:10, v:[2,3,2,4,4,9], odd:9},
+      {en:"Letters in a first name", es:"Letras en un nombre",
+       lo:4, hi:14, v:[5,6,5,7,6,7,13], odd:13},
+      {en:"Chairs at the table", es:"Sillas en la mesa",
+       lo:6, hi:10, v:[7,8,7,9,8,9], odd:null},
+      {en:"Pets at home", es:"Mascotas en casa",
+       lo:0, hi:10, v:[1,2,1,3,2,3,9], odd:9},
+      {en:"Songs on the playlist", es:"Canciones en la lista",
+       lo:3, hi:12, v:[9,10,9,11,11,4], odd:4},
+      {en:"Cups of water in a day", es:"Vasos de agua en un d&iacute;a",
+       lo:3, hi:12, v:[4,5,4,6,6,11], odd:11},
+      {en:"Blocks to the park", es:"Cuadras hasta el parque",
+       lo:1, hi:5, v:[2,3,2,4,3,4], odd:null}
+    ],
+    3:[
+      {en:"Apples in the basket", es:"Manzanas en la canasta",
+       lo:2, hi:11, v:[3,4,4,5,4,10], odd:10},
+      {en:"Fish in the tank", es:"Peces en la pecera",
+       lo:4, hi:13, v:[6,6,7,5,6,12], odd:12},
+      {en:"Buttons on the coat", es:"Botones en el abrigo",
+       lo:1, hi:11, v:[2,3,3,4,2,4,10], odd:10},
+      {en:"Windows in the room", es:"Ventanas en el sal&oacute;n",
+       lo:4, hi:8, v:[5,6,6,7,6,6], odd:null},
+      {en:"Laps around the gym", es:"Vueltas al gimnasio",
+       lo:0, hi:10, v:[7,8,8,9,7,9,1], odd:1},
+      {en:"Coins in the jar", es:"Monedas en el frasco",
+       lo:0, hi:9, v:[1,2,2,3,2,8], odd:8},
+      {en:"Minutes of practice", es:"Minutos de pr&aacute;ctica",
+       lo:3, hi:12, v:[9,10,10,11,10,4], odd:4},
+      {en:"Plants on the sill", es:"Plantas en la ventana",
+       lo:2, hi:6, v:[3,4,4,5,4,4], odd:null}
+    ]
+  };
+
+  function sumOf(a){ var t=0; for(var k=0;k<a.length;k++) t+=a[k]; return t; }
+  function meanWith(it){ return sumOf(it.v) / it.v.length; }
+  function meanWithout(it){
+    if(it.odd == null) return null;
+    var rest = it.v.filter(function(x){ return x !== it.odd; });
+    return sumOf(rest) / rest.length;
+  }
+  function ctxOf(it){ return T(it.en, it.es); }
+
+  /* ══ LANGUAGE ════════════════════════════════════════════════════════ */
+  var lang = "en";
+  function T(en, es){ return lang==="es" ? es : en; }
+  function paintLang(){
+    document.documentElement.setAttribute("lang", lang);
+    Array.prototype.forEach.call(document.querySelectorAll("[data-en]"), function(el){
+      var v = el.getAttribute(lang==="es" ? "data-es" : "data-en");
+      if(v==null) return;
+      if(v.indexOf("<b>")>-1) el.innerHTML = v; else el.textContent = v;
+    });
+    var lb = document.getElementById("langBtn");
+    if(lb) lb.textContent = (lang==="es") ? "English" : "Español";
+    paintTheme(); paintPaperList(); render();
+  }
+
+  /* ══ STATE ═══════════════════════════════════════════════════════════ */
+  var d = load();
+  var setNo = d.set || 1;
+  var items = SETS[setNo];
+  var work = d.work || {};
+  var i = 0, allDone = false, keepSay = false;
+
+  var $ = function(s){ return document.getElementById(s); };
+  var stage=$("stage"), askQ=$("askQ"), cols=$("cols"), plotK=$("plotK"),
+      oddRow=$("oddRow"), noneBtn=$("noneBtn"), twoChoice=$("twoChoice"),
+      tcWithV=$("tcWithV"), tcWithL=$("tcWithL"),
+      tcWithoutV=$("tcWithoutV"), tcWithoutL=$("tcWithoutL"),
+      helpLine=$("helpLine"), say=$("say"), whereN=$("whereN"),
+      rungs=$("rungs"), hintBtn=$("hintBtn"),
+      nextBtn=$("nextBtn"), showBtn=$("showBtn"), closeCard=$("closeCard");
+
+  stage.hidden = false;
+
+  /* beat "a" = spot it (this is the scored part).
+     beat "b" = which number tells the truer story (a judgment, never scored). */
+  function rec(k){
+    if(!work[k]) work[k] = {done:false, hints:0, tries:0, indep:false, shown:false,
+                            beat:"a", found:false, pick:null};
+    return work[k];
+  }
+  function firstUnsolved(){
+    for(var k=0;k<items.length;k++){ if(!rec(k).done) return k; }
+    return items.length;
+  }
+
+  /* ══ THE PLOT ════════════════════════════════════════════════════════ */
+  function drawCols(it, opts){
+    opts = opts || {};
+    var html = "";
+    for(var v = it.lo; v <= it.hi; v++){
+      var xs = "", n = 0;
+      for(var k=0;k<it.v.length;k++){ if(it.v[k]===v){ xs += '<span class="x">X</span>'; n++; } }
+      var cls = "col";
+      if(opts.markOdd && it.odd != null && v === it.odd) cls += " odd";
+      if(opts.means){
+        if(v === meanWith(it)) cls += " mw";
+        if(meanWithout(it) != null && v === meanWithout(it)) cls += " mo";
+      }
+      var mk = "";
+      if(opts.means){
+        var bits = [];
+        if(v === meanWith(it)) bits.push(T("mean with","media con"));
+        if(meanWithout(it) != null && v === meanWithout(it)) bits.push(T("mean without","media sin"));
+        if(bits.length) mk = '<span class="mk">'+bits.join(" · ")+'</span>';
+      }
+      html += '<button class="'+cls+'" type="button" data-v="'+v+'"'
+            + (opts.live ? "" : " disabled")
+            + ' aria-label="'+T(v+", "+n+(n===1?" mark":" marks"), v+", "+n+(n===1?" marca":" marcas"))+'">'
+            + xs + '<span class="num">'+v+'</span>'+mk+'</button>';
+    }
+    cols.innerHTML = html;
+  }
+
+  /* ══ RENDER ══════════════════════════════════════════════════════════ */
+  function render(){
+    if(allDone){ paintFinished(); return; }
+    var it = items[i], r = rec(i);
+
+    whereN.textContent = T("Problem "+(i+1)+" of "+items.length,
+                           "Problema "+(i+1)+" de "+items.length);
+    plotK.textContent = ctxOf(it);
+
+    if(r.beat === "a"){
+      askQ.innerHTML = T("Which number is sitting far from the others?",
+                         "&iquest;Cu&aacute;l n&uacute;mero est&aacute; lejos de los dem&aacute;s?");
+      drawCols(it, {live:true});
+      oddRow.hidden = false;
+      noneBtn.disabled = false;
+      twoChoice.hidden = true;
+      helpLine.textContent = T("Tap the odd one — or say nothing sticks out.",
+                               "Toca el que no encaja — o di que nada se sale de lo normal.");
+    } else {
+      var mw = meanWith(it), mo = meanWithout(it);
+      askQ.innerHTML = (it.odd == null)
+        ? T("Nothing wandered off. Where does the mean sit?",
+            "Nadie se fue por su lado. &iquest;D&oacute;nde queda la media?")
+        : T("Which number tells the truer story of this group?",
+            "&iquest;Cu&aacute;l n&uacute;mero cuenta mejor la historia de este grupo?");
+      drawCols(it, {live:false, means:true, markOdd:true});
+      oddRow.hidden = true;
+      twoChoice.hidden = (it.odd == null);
+      if(it.odd != null){
+        tcWithV.textContent = mw;
+        tcWithL.textContent = T("the mean with everyone","la media con todos");
+        tcWithoutV.textContent = mo;
+        tcWithoutL.textContent = T("the mean without the "+it.odd,
+                                   "la media sin el "+it.odd);
+        Array.prototype.forEach.call(twoChoice.querySelectorAll(".tc"), function(b){
+          b.setAttribute("aria-pressed", String(r.pick === b.dataset.pick));
+          b.disabled = !!r.done;
+        });
+      }
+      helpLine.textContent = (it.odd == null)
+        ? ""
+        : T("Both answers are real. Pick the one you would say out loud.",
+            "Las dos respuestas son reales. Elige la que dir&iacute;as en voz alta.");
+    }
+
+    if(!keepSay) say.innerHTML = "";
+    keepSay = false;
+    nextBtn.hidden = !r.done;
+    showBtn.hidden = !(!r.done && r.beat === "a" && r.hints >= 3 && r.tries >= 2);
+    drawRungs();
+    paintProbe();
+  }
+
+  /* ══ BEAT ONE — spot it (the scored beat) ════════════════════════════ */
+  function spotted(it, r, correct){
+    r.found = correct;
+    if(correct){
+      r.indep = (r.hints === 0) && !r.shown;
+      r.beat = "b";
+      if(it.odd == null){
+        /* nothing sticks out: there is no second question to ask */
+        r.done = true;
+        keepSay = true;
+        say.innerHTML = '<span class="good">'+T("Right — nothing sticks out.","Correcto — nada se sale de lo normal.")+'</span> '
+          + T("Every number keeps close company, so the mean, <b>"+meanWith(it)+"</b>, sits right among them.",
+              "Todos los n&uacute;meros se mantienen juntos, as&iacute; que la media, <b>"+meanWith(it)+"</b>, queda justo entre ellos.");
+      } else {
+        keepSay = true;
+        say.innerHTML = '<span class="good">'+T("That is the one.","Ese es.")+'</span> '
+          + T("<b>"+it.odd+"</b> is far from the rest. Now look at what it does to the mean.",
+              "<b>"+it.odd+"</b> est&aacute; lejos de los dem&aacute;s. Ahora mira lo que le hace a la media.");
+      }
+    }
+    persist();
+    if(r.done && firstUnsolved() >= items.length){ allDone = true; persist(); render(); return; }
+    render();
+    if(r.done && !nextBtn.hidden) nextBtn.focus();
+  }
+
+  cols.addEventListener("click", function(e){
+    var btn = e.target.closest ? e.target.closest(".col") : null;
+    if(!btn || btn.disabled) return;
+    var it = items[i], r = rec(i);
+    if(r.beat !== "a" || r.done || allDone) return;
+    var v = +btn.getAttribute("data-v");
+    var hasX = it.v.indexOf(v) > -1;
+    if(it.odd != null && v === it.odd){ spotted(it, r, true); return; }
+    r.tries++;
+    keepSay = true;
+    if(!hasX){
+      say.innerHTML = T("Nobody answered <b>"+v+"</b> — there is no X above it. Look for an X standing on its own.",
+                        "Nadie respondi&oacute; <b>"+v+"</b> — no hay ninguna X encima. Busca una X que est&eacute; sola.");
+    } else if(it.odd == null){
+      say.innerHTML = T("<b>"+v+"</b> has neighbors right beside it. Look at the whole line — is anything really far off?",
+                        "<b>"+v+"</b> tiene vecinos justo al lado. Mira toda la recta — &iquest;hay algo de verdad lejos?");
+    } else {
+      say.innerHTML = T("<b>"+v+"</b> is in the crowd — there are X's near it. The odd one has empty space around it.",
+                        "<b>"+v+"</b> est&aacute; en el grupo — hay X cerca. El que no encaja tiene espacio vac&iacute;o alrededor.");
+    }
+    persist(); render();
+  });
+
+  noneBtn.addEventListener("click", function(){
+    var it = items[i], r = rec(i);
+    if(r.beat !== "a" || r.done || allDone) return;
+    if(it.odd == null){ spotted(it, r, true); return; }
+    r.tries++;
+    keepSay = true;
+    say.innerHTML = T("Look again — one X is standing well away from the others, with a gap beside it.",
+                      "Mira otra vez — una X est&aacute; bastante lejos de las dem&aacute;s, con un hueco al lado.");
+    persist(); render();
+  });
+
+  /* ══ BEAT TWO — the judgment (both answers respected) ════════════════ */
+  twoChoice.addEventListener("click", function(e){
+    var btn = e.target.closest ? e.target.closest(".tc") : null;
+    if(!btn || btn.disabled) return;
+    var it = items[i], r = rec(i);
+    if(r.beat !== "b" || r.done || allDone) return;
+    r.pick = btn.dataset.pick;
+    r.done = true;
+    var mw = meanWith(it), mo = meanWithout(it), pulled = (mw > mo) ? "up" : "down";
+    keepSay = true;
+    say.innerHTML = (r.pick === "without")
+      ? T("A fair call. Most of the group really does live near <b>"+mo+"</b> — and you should still say the "+it.odd+" is there.",
+          "Buena decisi&oacute;n. Casi todo el grupo s&iacute; vive cerca de <b>"+mo+"</b> — y a&uacute;n as&iacute; hay que decir que el "+it.odd+" existe.")
+      : T("A fair call. <b>"+mw+"</b> counts everybody, including the "+it.odd+" — just know the "+it.odd+" pulled it "
+            + (pulled==="up" ? "up" : "down") + ".",
+          "Buena decisi&oacute;n. <b>"+mw+"</b> cuenta a todos, incluido el "+it.odd+" — solo ten en cuenta que el "+it.odd+" la jal&oacute; hacia "
+            + (pulled==="up" ? "arriba" : "abajo") + ".");
+    persist();
+    if(firstUnsolved() >= items.length){ allDone = true; persist(); render(); return; }
+    render();
+    nextBtn.focus();
+  });
+
+  nextBtn.addEventListener("click", function(){
+    var k = firstUnsolved();
+    if(k >= items.length){ allDone = true; render(); return; }
+    i = k; render();
+    var c = cols.querySelector(".col:not([disabled])");
+    if(c) c.focus(); else if(noneBtn) noneBtn.focus();
+  });
+
+  showBtn.addEventListener("click", function(){
+    var it = items[i], r = rec(i);
+    if(r.beat !== "a" || r.done) return;
+    r.shown = true;
+    keepSay = true;
+    if(it.odd == null){
+      say.innerHTML = T("Nothing sticks out here — every number has neighbors.",
+                        "Aqu&iacute; nada se sale de lo normal — todos los n&uacute;meros tienen vecinos.");
+    } else {
+      say.innerHTML = T("The odd one is <b>"+it.odd+"</b> — look at the empty space beside it.",
+                        "El que no encaja es <b>"+it.odd+"</b> — mira el espacio vac&iacute;o a su lado.");
+    }
+    spotted(it, r, true);
+  });
+
+  /* ══ THE HINT LADDER ═════════════════════════════════════════════════ */
+  function rungAt(k){
+    var it = items[i], mw = meanWith(it), mo = meanWithout(it);
+    if(rec(i).beat === "b"){
+      if(k===0) return { k:T("Cue","Pista"),
+        html:"<b>"+T("There is no wrong answer to this one.","Esta no tiene respuesta incorrecta.")+"</b> "
+          + T("Ask which number you would say out loud to describe the group.",
+              "Preg&uacute;ntate qu&eacute; n&uacute;mero dir&iacute;as en voz alta para describir al grupo.") };
+      if(k===1) return { k:T("Strategy","Estrategia"),
+        html:T("<b>"+mw+"</b> counts everybody. <b>"+mo+"</b> counts everybody except the one that wandered off.",
+               "<b>"+mw+"</b> cuenta a todos. <b>"+mo+"</b> cuenta a todos menos al que se fue por su lado.") };
+      return { k:T("Almost there","Casi listo"),
+        html:T("Look at where the X's are bunched up. Which of the two numbers is closer to that bunch?",
+               "Mira d&oacute;nde se amontonan las X. &iquest;Cu&aacute;l de los dos n&uacute;meros est&aacute; m&aacute;s cerca de ese mont&oacute;n?") };
+    }
+    if(k===0) return { k:T("Cue","Pista"),
+      html:"<b>"+T("Look for empty space.","Busca el espacio vac&iacute;o.")+"</b> "
+        + T("The odd one has a gap between it and everybody else.",
+            "El que no encaja tiene un hueco entre &eacute;l y todos los dem&aacute;s.") };
+    if(k===1) return { k:T("Strategy","Estrategia"),
+      html:T("Most of the X's crowd together in one part of the line. Anything sitting outside that crowd is the one — and sometimes there is nobody outside it.",
+             "Casi todas las X se amontonan en una parte de la recta. Lo que quede fuera de ese mont&oacute;n es el que buscas — y a veces no hay nada fuera.") };
+    return { k:T("Almost there","Casi listo"),
+      html:(it.odd == null)
+        ? T("Every X here has a neighbor. <b>Nothing sticks out</b> is the answer.",
+            "Aqu&iacute; cada X tiene un vecino. <b>Nada se sale de lo normal</b> es la respuesta.")
+        : T("The crowd sits together, and <b>"+it.odd+"</b> sits by itself.",
+            "El grupo est&aacute; junto, y <b>"+it.odd+"</b> est&aacute; solo.") };
+  }
+  function drawRungs(){
+    var r = rec(i);
+    rungs.innerHTML = "";
+    for(var k=0;k<r.hints;k++){
+      var t = rungAt(k);
+      var div = document.createElement("div");
+      div.className = "rung";
+      div.innerHTML = '<span class="n">'+(k+1)+'</span>'
+        + '<div><span class="k">'+t.k+'</span><div class="t">'+t.html+'</div></div>';
+      rungs.appendChild(div);
+    }
+    hintBtn.disabled = (r.hints>=3) || r.done || allDone;
+    hintBtn.textContent = (r.hints===0)
+      ? T("Show me a hint","Muéstrame una pista")
+      : (r.hints>=3 ? T("That is every hint","Esas son todas las pistas") : T("I need more","Necesito más"));
+  }
+  hintBtn.addEventListener("click", function(){
+    var r = rec(i);
+    if(r.hints>=3 || r.done || allDone) return;
+    r.hints++;
+    keepSay = true;
+    persist(); render();
+    var last = rungs.lastElementChild;
+    if(last){ last.setAttribute("tabindex","-1"); last.focus(); }
+  });
+
+  /* ══ CONFIDENCE ══════════════════════════════════════════════════════ */
+  Array.prototype.forEach.call(document.querySelectorAll("[data-conf]"), function(b){
+    b.addEventListener("click", function(){
+      var v = b.dataset.conf;
+      d.conf = (d.conf===v) ? null : v;
+      Array.prototype.forEach.call(document.querySelectorAll("[data-conf]"), function(o){
+        o.setAttribute("aria-pressed", String(o.dataset.conf===d.conf));
+      });
+      persist(); paintProbe();
+    });
+  });
+
+  /* ══ FINISHED ════════════════════════════════════════════════════════ */
+  function paintFinished(){
+    closeCard.hidden = false;
+    whereN.textContent = T("All eight looked at","Las ocho revisadas");
+    askQ.innerHTML = T("One number can move the average all by itself.",
+                       "Un solo n&uacute;mero puede mover el promedio &eacute;l solo.");
+    cols.innerHTML = ""; plotK.textContent = "";
+    oddRow.hidden = true; twoChoice.hidden = true;
+    helpLine.textContent = "";
+    nextBtn.hidden = true; showBtn.hidden = true;
+    hintBtn.disabled = true; rungs.innerHTML = "";
+    say.textContent = T("Point at the odd one. Do not erase it. Then say both numbers out loud.",
+                        "Señala al que no encaja. No lo borres. Luego di los dos números en voz alta.");
+    paintProbe();
+    paintSend();
+    if(!wroteDone){ wroteDone = true; persistNow(); }
+  }
+
+  /* ══ THE TEACHER'S ROW ═══════════════════════════════════════════════ */
+  function tally(){
+    var ind=0, sup=0, hints=0;
+    for(var k=0;k<items.length;k++){
+      var r = rec(k);
+      hints += (r.hints||0);
+      if(r.done){ if(r.indep) ind++; else sup++; }
+    }
+    return {ind:ind, sup:sup, hints:hints, n:items.length};
+  }
+  function today(){
+    var dt = new Date();
+    return dt.getFullYear()+"-"+String(dt.getMonth()+1).padStart(2,"0")+"-"+String(dt.getDate()).padStart(2,"0");
+  }
+  function paintProbe(){
+    var t = tally();
+    $("pvDate").textContent = today();
+    $("pvInd").innerHTML = "<b>"+t.ind+"</b> of "+t.n;
+    $("pvSup").innerHTML = "<b>"+t.sup+"</b> of "+t.n;
+    $("pvHint").textContent = t.hints;
+    $("pvConf").textContent = d.conf ? (d.conf+" / 5") : "—";
+  }
+  $("copyProbe").addEventListener("click", function(){
+    var t = tally(), btn = this, ok = false;
+    var row = [ today(), SKILL_EN, "trials",
+      t.ind+" of "+t.n+" independent", t.sup+" of "+t.n+" supported",
+      t.hints+" hints",
+      d.conf ? ("confidence "+d.conf+"/5") : "confidence not given",
+      /* AOG-C-DOORS-V1 — the demo and the stretch ride the same row */
+      t.demo ? "watched demo" : "demo not watched",
+      "stretch " + (t.stretch || "—"),
+      "set "+setNo ].join("\t");
+    try{
+      var ta = document.createElement("textarea");
+      ta.value = row; ta.setAttribute("readonly","");
+      ta.style.position="fixed"; ta.style.opacity="0";
+      document.body.appendChild(ta); ta.select();
+      ok = document.execCommand("copy");
+      document.body.removeChild(ta);
+    }catch(e){ ok = false; }
+    btn.textContent = ok ? T("Copied","Copiado") : T("Select it and copy by hand","Selecciónala y cópiala a mano");
+    setTimeout(function(){ btn.textContent = T("Copy this row","Copiar esta fila"); }, 2600);
+  });
+
+  /* ══ SETS ════════════════════════════════════════════════════════════ */
+  Array.prototype.forEach.call(document.querySelectorAll("[data-set]"), function(b){
+    b.addEventListener("click", function(){
+      var s = b.dataset.set;
+      if(s===String(setNo)) return;
+      if(!window.confirm(T("Switch to Set "+s+"? The work on this set is cleared.",
+                           "¿Cambiar al Grupo "+s+"? Se borra el trabajo de este grupo."))) return;
+      setNo = +s; items = SETS[setNo];
+      work = {}; d.work = work; d.set = setNo; d.conf = null;
+      delete d.sentAt; delete d.sentHow; sendErr = false;
+      Array.prototype.forEach.call(document.querySelectorAll("[data-conf]"), function(o){
+        o.setAttribute("aria-pressed","false");
+      });
+      allDone = false; wroteDone = false; closeCard.hidden = true; i = 0;
+      document.documentElement.classList.remove("aog-reopened"); /* AOG-M-AGAIN-V1: a set switch redraws the stage */
+      persist(); paintPaperList(); render(); paintSend();
+    });
+  });
+
+  /* ══ THE PRINTED / JS-OFF WORKSHEET — always the set on screen ═══════ */
+  function paintPaperList(){
+    var box = $("paperBox");
+    if(!box) return;
+    var html = "";
+    items.forEach(function(it, ix){
+      var span = it.hi - it.lo, marks = "";
+      for(var v = it.lo; v <= it.hi; v++){
+        var left = (((v - it.lo + 0.5) / (span + 1)) * 100).toFixed(4);
+        marks += '<b style="left:'+left+'%"></b><i style="left:'+left+'%"></i>'
+               + '<span class="pl" style="left:'+left+'%">'+v+'</span>';
+      }
+      html += '<div class="pblock">'
+        + '<p class="pk">'+(ix+1)+' &middot; '+ctxOf(it)+'</p>'
+        + '<p class="pdata">'+it.v.join(" &middot; ")+'</p>'
+        + '<p class="pnote">'+T("Draw one X for each number, stacked on top of its place.",
+                                "Dibuja una X por cada número, apiladas sobre su lugar.")+'</p>'
+        + '<div class="pplot"><span class="ax"></span>'+marks+'</div>'
+        + '<p class="pq">1. '+T("Circle the odd one out — or write <i>none</i>.",
+                                "Encierra el que no encaja — o escribe <i>ninguno</i>.")+' <u></u></p>'
+        + '<p class="pq">2. '+T("Mean with everyone:","Media con todos:")+' <u></u></p>'
+        + '<p class="pans2">3. '+T("Mean without the odd one:","Media sin el que no encaja:")+' <u></u></p>'
+        + '</div>';
+    });
+    box.innerHTML = html;
+  }
+
+  /* ══ PERSIST ═════════════════════════════════════════════════════════ */
+  var saveTimer=null, savedTimer=null, wroteDone=false;
+  /* ⚠ persist() DEBOUNCES 400ms, and the moment a set is finished is the exact
+     moment the record matters most -- it is also the moment a student is most
+     likely to close the tab or hit reload. A driven run proved the last item
+     and the whole log row can be lost that way. The finish writes SYNCHRONOUSLY.
+     (.30fg: ported from the v/h series -- see SERIES-SPEC-science-vocabulary.md) */
+  function persistNow(){
+    d.work = work; d.set = setNo;
+    clearTimeout(saveTimer);
+    flagSaved(save(d));
+  }
+  function persist(){
+    d.work = work; d.set = setNo;
+    clearTimeout(saveTimer);
+    saveTimer = setTimeout(function(){ flagSaved(save(d)); }, 400);
+  }
+  function flagSaved(ok){
+    var pill = document.querySelector("[data-saved]");
+    if(!pill) return;
+    var txt = pill.querySelector("[data-savedtext]");
+    if(txt) txt.textContent = ok
+      ? T("Saved on this computer · ","Guardado en esta computadora · ")
+        + new Date().toLocaleTimeString([], {hour:"numeric", minute:"2-digit"})
+      : T("This computer will not let the page save. Print your copy before you leave.",
+          "Esta computadora no deja que la página guarde. Imprime tu copia antes de irte.");
+    pill.classList.add("on");
+    clearTimeout(savedTimer);
+    savedTimer = setTimeout(function(){ if(ok) pill.classList.remove("on"); }, 4000);
+  }
+
+  /* ══ ERASE ═══════════════════════════════════════════════════════════ */
+  function resetAll(){
+    work = {}; d = {set:setNo}; i = 0; allDone = false; wroteDone = false; sendErr = false; sendBusy = false;
+    closeCard.hidden = true;
+    Array.prototype.forEach.call(document.querySelectorAll("[data-conf]"), function(o){
+      o.setAttribute("aria-pressed","false");
+    });
+    render(); paintSend();
+  }
+  document.querySelector("[data-erase]").addEventListener("click", function(){
+    if(!window.confirm(T("Erase your work on this activity? This cannot be undone.",
+                         "¿Borrar tu trabajo en esta actividad? No se puede deshacer."))) return;
+    if(hasLS){ try{ localStorage.removeItem(KEY+ID); }catch(e){} }
+    resetAll();
+    var pill = document.querySelector("[data-saved]");
+    var txt = pill && pill.querySelector("[data-savedtext]");
+    if(txt) txt.textContent = T("Erased. Nothing from this activity is left on this computer.",
+                                "Borrado. No queda nada de esta actividad en esta computadora.");
+    if(pill){ pill.classList.add("on"); clearTimeout(savedTimer);
+      savedTimer = setTimeout(function(){ pill.classList.remove("on"); }, 5000); }
+  });
+  var allBtn = $("eraseAll");
+  allBtn.addEventListener("click", function(){
+    if(!window.confirm(T("Erase every worksheet on this computer? This cannot be undone.",
+                         "¿Borrar todas las hojas en esta computadora? No se puede deshacer."))) return;
+    if(hasLS){
+      try{
+        var dead = [];
+        for(var k=0;k<localStorage.length;k++){
+          var key = localStorage.key(k);
+          if(key && key.indexOf(KEY)===0 && key!==KEY+"theme" && key!==KEY+"lang") dead.push(key);
+        }
+        dead.forEach(function(key){ localStorage.removeItem(key); });
+      }catch(e){}
+    }
+    resetAll();
+    allBtn.textContent = T("Erased — nothing is left on this computer",
+                           "Borrado — no queda nada en esta computadora");
+    setTimeout(paintLang, 5000);
+  });
+
+  /* ══ PRINT — synchronous, never behind a timer (iOS blocks deferred print) ══ */
+  Array.prototype.forEach.call(document.querySelectorAll("[data-print]"), function(btn){
+    btn.addEventListener("click", function(){ window.print(); });
+  });
+
+  /* ══ PROJECTOR ═══════════════════════════════════════════════════════ */
+  $("boardBtn").addEventListener("click", function(){
+    var host = location.hostname || "architectureofgrace.org";
+    var url = (host==="localhost"||host==="127.0.0.1"||!host)
+            ? location.href : host.replace(/^www\./,"")+"/c9";
+    var el = document.createElement("div");
+    el.id = "beam";
+    el.innerHTML = '<div class="x">'+T("Tap anywhere to close","Toca para cerrar")+'</div>'
+      + '<div class="wk">'+T("Concepts &amp; Data · Activity 9","Conceptos y datos · Actividad 9")+'</div>'
+      + '<div class="nm">'+T("The Odd One Out","El que no encaja")+'</div>'
+      + '<div class="url"></div>'
+      + '<div class="hint">'+T("Type it in the address bar.","Escríbelo en la barra de direcciones.")+'</div>';
+    el.querySelector(".url").textContent = url;
+    el.addEventListener("click", function(){ el.remove(); });
+    document.addEventListener("keydown", function esc(e){
+      if(e.key==="Escape"){ el.remove(); document.removeEventListener("keydown", esc); }
+    });
+    document.body.appendChild(el);
+    el.setAttribute("tabindex","-1"); el.focus();
+  });
+
+  /* ══ THEME ═══════════════════════════════════════════════════════════ */
+  var tBtn = $("themeBtn");
+  function prefersDark(){ return window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches; }
+  function currentIsDark(){
+    var st = document.documentElement.getAttribute("data-theme");
+    return st ? st==="dark" : prefersDark();
+  }
+  function paintTheme(){
+    if(tBtn) tBtn.textContent = currentIsDark()
+      ? T("Switch to light","Cambiar a claro") : T("Switch to dark","Cambiar a oscuro");
+  }
+  try{
+    var storedTheme = localStorage.getItem(KEY+"theme");
+    if(storedTheme) document.documentElement.setAttribute("data-theme", storedTheme);
+  }catch(e){}
+  if(window.matchMedia){
+    var mq = window.matchMedia("(prefers-color-scheme: dark)");
+    if(mq.addEventListener) mq.addEventListener("change", paintTheme);
+    else if(mq.addListener) mq.addListener(paintTheme);
+  }
+  if(tBtn) tBtn.addEventListener("click", function(){
+    var next = currentIsDark() ? "light" : "dark";
+    document.documentElement.setAttribute("data-theme", next);
+    try{ localStorage.setItem(KEY+"theme", next); }catch(e){}
+    paintTheme();
+  });
+
+  var lBtn = $("langBtn");
+  try{ var sl = localStorage.getItem(KEY+"lang"); if(sl==="es"||sl==="en") lang = sl; }catch(e){}
+  if(lBtn) lBtn.addEventListener("click", function(){
+    lang = (lang==="es") ? "en" : "es";
+    try{ localStorage.setItem(KEY+"lang", lang); }catch(e){}
+    paintLang();
+  });
+
+  /* ══ THE RESULTS CHANNEL ═════════════════════════════════════════════
+     1. ?dest= on the link wins — base64url of {u,k}, and the URL SHAPE is
+        validated or the whole value refused. 2. window.AOG_SYNC_DEFAULTS
+        from the optional same-origin config, schools mode only; registry
+        mode is never guessed at. 3. No destination → no send UI at all.  */
+  var DEST_RE = /^https:\/\/script\.google\.com\/[^\s]*\/exec$/;
+  function destDecode(raw){
+    try{
+      var t = String(raw).replace(/-/g,"+").replace(/_/g,"/");
+      while(t.length % 4) t += "=";
+      var o = JSON.parse(atob(t));
+      if(o && typeof o.u==="string" && DEST_RE.test(o.u))
+        return { url:o.u, key:(typeof o.k==="string" ? o.k : "") };
+    }catch(e){}
+    return null;
+  }
+  var DEST = null;
+  try{
+    var dm = /[?&]dest=([^&]+)/.exec(location.search || "");
+    if(dm) DEST = destDecode(decodeURIComponent(dm[1]));
+  }catch(e){}
+  if(!DEST){
+    try{
+      var cfg = window.AOG_SYNC_DEFAULTS;
+      if(cfg && !cfg.destinations && typeof cfg.url==="string" && DEST_RE.test(cfg.url)
+         && Object.prototype.toString.call(cfg.schools)==="[object Array]" && cfg.schools.length)
+        DEST = { url:cfg.url, key:(typeof cfg.key==="string" ? cfg.key : "") };
+    }catch(e){}
+  }
+
+  var whoKey = KEY + "who";
+  function getWho(){ try{ return String(localStorage.getItem(whoKey)||""); }catch(e){ return ""; } }
+  function setWho(v){ try{ localStorage.setItem(whoKey, v); }catch(e){} }
+  /* .30hd — a teacher link may carry the name/code (&who=) so even a
+     fresh device's first finish is automatic */
+  try{
+    var wq = /[?&]who=([^&]+)/.exec(location.search || "");
+    if(wq && !getWho().trim()) setWho(decodeURIComponent(wq[1]).slice(0,40));
+  }catch(e){}
+  var sendBusy = false, sendErr = false, sendUIs = [];
+
+  /* ── .30hd: AUTOSEND ON ALL ASSIGNMENTS — Jimmy's explicit override,
+     2026-09-05. allDone is this older builder's completion flag; one row
+     per set (d.sentAt), a send error stops auto (manual retry only). */
+  function maybeAuto(){
+    if(!allDone || sendBusy || sendErr || d.sentAt) return;
+    var who = getWho().trim().slice(0,40);
+    if(who) doSend(who);
+  }
+  function doSend(who){
+    var t = tally();
+    var payload = {
+      action:"checkin", checkinType:"practice", _backendAuth:DEST.key,
+      studentId:who, timestamp:new Date().toISOString(), date:today(),
+      activityId:ID, activityName:NAME_EN, skill:SKILL_EN,
+      setNo:setNo, itemsTotal:items.length,
+      independent:t.ind, supported:t.sup, hintsUsed:t.hints,
+      confidence:d.conf ? +d.conf : "",
+      source:"link",
+      extra:(function(){
+        /* AOG-M-SENDITEMS-V1 — the probe map rides in the column that
+           already exists, so nothing server-side moves. */
+        var x = ({series:"concepts-data", lang:lang, build:"c-series v1"});
+        /* AOG-C-DOORS-V1 — demo/stretch ride the existing extra column at
+           extra.tally.{demo,stretch} (the fleet shape, c5 precedent); no
+           new top-level payload field, no Sheet header change. */
+        try{ var tt = tally();
+             x.tally = {demo: !!tt.demo,
+                        stretch: (typeof tt.stretch === "string") ? tt.stretch : ""}; }
+        catch(eD){ x.tally = {demo:false, stretch:""}; }
+        try{ var p = window.AOG_PROBE_DATA && window.AOG_PROBE_DATA(); if(p) x.probe = p; }catch(eP){}
+        return JSON.stringify(x);
+      })()
+    };
+    var body = JSON.stringify(payload);
+    sendBusy = true; sendErr = false; paintSend();
+    fetch(DEST.url, {method:"POST", mode:"cors", redirect:"follow",
+        headers:{"Content-Type":"text/plain;charset=utf-8"}, body:body})
+      .then(function(res){ return res.json(); })
+      .then(function(j){
+        sendBusy = false;
+        if(j && j.ok){ d.sentAt = new Date().toISOString(); d.sentHow = "ok"; persist(); }
+        else { sendErr = true; }
+        paintSend();
+      })
+      .catch(function(){
+        /* the cors read threw — ONE blind send and an honest label, never an
+           automatic retry: nothing de-dups server-side and a retry doubles a row */
+        fetch(DEST.url, {method:"POST", mode:"no-cors", redirect:"follow",
+            headers:{"Content-Type":"text/plain;charset=utf-8"}, body:body})
+          .then(function(){
+            sendBusy = false;
+            d.sentAt = new Date().toISOString(); d.sentHow = "blind";
+            persist(); paintSend();
+          })
+          .catch(function(){ sendBusy = false; sendErr = true; paintSend(); });
+      });
+  }
+  function buildSendUI(kind, mount){
+    var box = document.createElement("div");
+    box.className = "sendbox no-print";
+    box.innerHTML =
+      '<span class="k" data-en="Send it to your teacher" data-es="Envíaselo a tu maestro">Send it to your teacher</span>'
+      + '<p class="note" data-en="One summary row — how many you found, hints, confidence, and your name. Once your name is here, every set you finish sends its row to your teacher on its own." data-es="Una sola fila de resumen — cuántos encontraste, pistas, confianza y tu nombre. Con tu nombre escrito, cada grupo que termines envía su fila a tu maestro por sí solo.">One summary row — how many you found, hints, confidence, and your name. Once your name is here, every set you finish sends its row to your teacher on its own.</p>'
+      + '<label><span data-en="Your first name, or the code your teacher gave you" data-es="Tu nombre, o el código que te dio tu maestro">Your first name, or the code your teacher gave you</span>'
+      + '<input type="text" maxlength="40" autocomplete="off"></label>'
+      + '<div class="row"><button class="btn btn-accent" type="button">Send to my teacher</button></div>'
+      + '<p class="st" aria-live="polite"></p>';
+    mount(box);
+    var ui = { kind:kind, box:box,
+      input:box.querySelector("input"),
+      go:box.querySelector("button.btn-accent"),
+      st:box.querySelector(".st") };
+    ui.input.value = getWho();
+    ui.input.addEventListener("input", function(){
+      var v = ui.input.value.slice(0,40);
+      setWho(v);
+      sendUIs.forEach(function(o){ if(o!==ui && o.input.value!==v) o.input.value = v; });
+    });
+    ui.input.addEventListener("keydown", function(e){
+      if(e.key === "Enter"){ e.preventDefault(); ui.go.click(); }
+    });
+    ui.go.addEventListener("click", function(){
+      if(sendBusy) return;
+      if(ui.kind==="student" && d.sentAt) return;
+      var who = ui.input.value.trim().slice(0,40);
+      if(!who){
+        ui.st.className = "st bad";
+        ui.st.textContent = T("Type your name or code first.","Escribe primero tu nombre o código.");
+        ui.input.focus();
+        return;
+      }
+      setWho(who);
+      doSend(who);
+    });
+    sendUIs.push(ui);
+    return ui;
+  }
+  function paintSend(){
+    if(!DEST || !sendUIs.length) return;
+    maybeAuto();
+    sendUIs.forEach(function(ui){
+      if(ui.kind==="student") ui.box.hidden = !allDone;
+      if(document.activeElement !== ui.input){
+        var w = getWho();
+        if(w && ui.input.value !== w) ui.input.value = w;
+      }
+      ui.go.textContent = (ui.kind==="teacher")
+        ? (d.sentAt ? T("Send again","Enviar otra vez") : T("Send this row","Enviar esta fila"))
+        /* AOG-M-SENDFOOT-V1 — a second tap is a visible choice, never a silent
+           duplicate. The newer builder got this in the first pass; this is the
+           older buildSendUI's own copy, eight spaces in instead of ten. */
+        : (d.sentAt ? T("Send again","Enviar otra vez") : T("Send to my teacher","Enviar a mi maestro"));
+      ui.go.disabled = sendBusy || (ui.kind==="student" && !!d.sentAt);
+      var cls = "st", txt = "";
+      if(sendBusy){ txt = T("Sending…","Enviando…"); }
+      else if(sendErr){
+        cls = "st bad";
+        txt = T("Couldn't send. Your work is still saved on this computer.",
+                "No se pudo enviar. Tu trabajo sigue guardado en esta computadora.");
+      } else if(d.sentAt){
+        cls = (d.sentHow==="blind") ? "st warn" : "st ok";
+        txt = (d.sentHow==="blind")
+          ? T("Sent — but this browser can't confirm it arrived. Your teacher can check the Sheet.",
+              "Enviado — pero este navegador no puede confirmar que llegó. Tu maestro puede revisar la hoja.")
+          : T("Sent — your teacher has it.","Enviado — tu maestro ya lo tiene.");
+      }
+      ui.st.className = cls; ui.st.textContent = txt;
+    });
+  }
+  if(DEST){
+    /* the honest lock — "there is no send button" would now be a lie */
+    var lh = $("lock-h");
+    if(lh){
+      lh.setAttribute("data-en","Your practice stays here — a finished set sends one summary row to your teacher.");
+      lh.setAttribute("data-es","Tu práctica se queda aquí — un grupo terminado envía una fila de resumen a tu maestro.");
+    }
+    var li = $("lockIntro");
+    if(li){
+      li.setAttribute("data-en","There is no account and no sign-in, and your work is saved on this one computer. This page sends exactly one thing — a finished set's summary row to your teacher — and you can erase everything whenever you want.");
+      li.setAttribute("data-es","No hay cuenta ni inicio de sesión, y tu trabajo se guarda solo en esta computadora. Esta página envía exactamente una cosa — la fila de resumen de un grupo terminado a tu maestro — y puedes borrar todo cuando quieras.");
+    }
+    var lp1 = $("lockP1");
+    if(lp1){
+      lp1.setAttribute("data-en","<b>This page can send exactly one thing.</b> When a practice set is finished, its summary row — how many you found, how many hints, your confidence, and your name — goes to your teacher's sheet on its own; the first time, you type your name once. It never sends your taps or the work itself, and the rest of the page still works with the internet off.");
+      lp1.setAttribute("data-es","<b>Esta página puede enviar exactamente una cosa.</b> Cuando un grupo de práctica termina, su fila de resumen — cuántos encontraste, cuántas pistas, tu confianza y tu nombre — va a la hoja de tu maestro por sí sola; la primera vez escribes tu nombre una sola vez. Nunca envía tus toques ni el trabajo mismo, y el resto de la página sigue funcionando sin internet.");
+    }
+    var fn = $("footNet");
+    if(fn){
+      fn.setAttribute("data-en","This page loads no fonts, scripts, or images from the internet and works with the network off. Your work is stored in this browser only, and the only thing it sends is one summary row per finished set — straight to your teacher. It is not a district product and carries no district endorsement.");
+      fn.setAttribute("data-es","Esta página no carga fuentes, scripts ni imágenes de internet y funciona con la red apagada. Tu trabajo se guarda solo en este navegador, y lo único que envía es una fila de resumen por cada grupo terminado — directo a tu maestro. No es un producto del distrito ni cuenta con su respaldo.");
+    }
+    var pv = $("privV");
+    if(pv){
+      pv.setAttribute("data-en","No score is kept here. The only thing that can travel is the summary row you tap Send on — no points, no streak, no ranking.");
+      pv.setAttribute("data-es","Aquí no se guarda ninguna puntuación. Lo único que puede viajar es la fila de resumen que tú envías — ni puntos, ni rachas, ni clasificación.");
+    }
+    var tn = $("teachNote");
+    if(tn){
+      tn.setAttribute("data-en","One probe row, built from what happened on this screen. Copy it into the Goal Builder yourself, print this page, or send it to your Sheet below. Independent means found with no hints; supported means found after a hint. Both are real evidence and neither is a grade.");
+      tn.setAttribute("data-es","Una fila de sondeo, hecha con lo que pasó en esta pantalla. Cópiala tú mismo al Goal Builder, imprime esta página, o envíala a tu hoja aquí abajo. Independiente significa encontrado sin pistas; apoyado significa encontrado después de una pista. Las dos son evidencia real y ninguna es una calificación.");
+    }
+    /* AOG-M-SENDFOOT-V1 — ONE send control, and it lives at the BOTTOM OF THE
+       PAGE, outside the For-the-teacher drawer. There used to be two here (and
+       on six c-pages, three or four on one page), and the one inside the
+       drawer was addressed to the student. Mounted before .sheet-foot so it
+       sits directly above Print the problems / Erase this activity. */
+    (function(){
+      var foot = document.querySelector(".sheet-foot");
+      var host = foot && foot.parentNode;
+      if(!host){ host = document.querySelector("section.sheet") || document.body; foot = null; }
+      buildSendUI("one", function(box){
+        if(foot) host.insertBefore(box, foot); else host.appendChild(box);
+      });
+    })();
+    var inner = document.querySelector("#teach .inner");
+    if(inner) /* AOG-M-SENDFOOT-V1 — the drawer copy is gone; see the foot mount. */ void 0;
+  }
+
+  /* ══ BOOT ════════════════════════════════════════════════════════════ */
+  if(d.conf){
+    Array.prototype.forEach.call(document.querySelectorAll("[data-conf]"), function(o){
+      o.setAttribute("aria-pressed", String(o.dataset.conf===d.conf));
+    });
+  }
+  i = firstUnsolved();
+  if(i>=items.length){ allDone = true; i = 0; }
+  paintPaperList();
+  paintLang();
+  paintSend();
+  /* ══ THE PROBE RECORD — AOG-M-PROBEPRINT-V1 ══════════════════════════
+     Printing this page has always given you the WORKSHEET — ten blank
+     lines and a pencil. There was no way to print what actually HAPPENED
+     on the screen, so a teacher who ran a probe had to copy seven numbers
+     into something else by hand before the class turned over.
+
+     This adds a second print: a one-page record of the probe. It reads
+     only what the page already knows, it invents no measurement, and it
+     is the same block on every activity in the series — the item map is
+     built from rec(k), never from a per-page item shape, because the
+     collection is called items here, problems on m1/m14 and targets on
+     m9. typeof on an undeclared var is the only safe way to ask.
+
+     The sub-skill grouping is the one thing that IS per activity, so it
+     lives in one table keyed by ID, and it is REFUSED unless its indexes
+     cover 1..n exactly. A band table that has drifted out of step with a
+     set prints nothing rather than a lie. m7 and m9 have no entry on
+     purpose: m7's two traps sit inside a mixed set, and m9 has no items
+     to be right about.                                                 */
+  (function(){
+    var LOGMAX = 24;
+
+    /* the collection has three names across the series */
+    function itemArr(){
+      try{ if(typeof items    !== "undefined" && items)    return items;    }catch(e){}
+      try{ if(typeof problems !== "undefined" && problems) return problems; }catch(e){}
+      try{ if(typeof targets  !== "undefined" && targets)  return targets;  }catch(e){}
+      return null;
+    }
+    function esc(v){
+      return String(v==null?"":v).replace(/[&<>"']/g, function(c){
+        return ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"})[c];
+      });
+    }
+    function el(s){ return document.querySelector(s); }
+    function txtOf(s){ var n = el(s); return n ? String(n.textContent||"").trim() : ""; }
+
+    var BANDS = {
+      m1:[{en:"Adding",es:"Sumar",at:[1,2]},
+          {en:"Subtracting",es:"Restar",at:[3,4]},
+          {en:"Multiplying",es:"Multiplicar",at:[5,6]},
+          {en:"Dividing",es:"Dividir",at:[7,8]},
+          {en:"Negative answers",es:"Respuestas negativas",at:[9,10]}],
+      m2:[{en:"Integers",es:"Enteros",at:[1,2,3,4]},
+          {en:"Tenths",es:"Décimas",at:[5,6]},
+          {en:"Halves",es:"Medios",at:[7,8]},
+          {en:"Opposites",es:"Opuestos",at:[9,10]}],
+      m3:[{en:"Adding",es:"Sumar",at:[1,2,3,4,5]},
+          {en:"Subtracting",es:"Restar",at:[6,7,8,9,10]}],
+      m4:[{en:"Reading |n|",es:"Leer |n|",at:[1,2,3,4,5,7,10]},
+          {en:"Backwards — which number is this far from zero",
+           es:"Al revés — qué número está a esta distancia del cero",at:[6,8,9]}],
+      m5:[{en:"Multiplying",es:"Multiplicar",at:[1,2,3,4,5]},
+          {en:"Dividing",es:"Dividir",at:[6,7,8,9,10]}],
+      m6:[{en:"Distributing",es:"Distribuir",at:[1,2,3,4,5]},
+          {en:"Factoring",es:"Factorizar",at:[6,7,8,9,10]}],
+      m8:[{en:"Combining like terms",es:"Combinar términos semejantes",at:[1,2,3]},
+          {en:"Adding two brackets",es:"Sumar dos paréntesis",at:[4,5,6]},
+          {en:"Subtracting one bracket from another",
+           es:"Restar un paréntesis de otro",at:[7,8,9,10]}],
+      m10:[{en:"Tenths",es:"Décimas",at:[1,2,3,4,5,6]},
+           {en:"Halves",es:"Medios",at:[7,8]},
+           {en:"Quarters",es:"Cuartos",at:[9,10]}],
+      m11:[{en:"Decimals that stop",es:"Decimales que terminan",at:[1,2,4,6,8,10]},
+           {en:"Decimals that repeat",es:"Decimales periódicos",at:[3,5,7,9]}],
+      m12:[{en:"Order — commutative",es:"Orden — conmutativa",at:[1,6,10]},
+           {en:"Grouping — associative",es:"Agrupación — asociativa",at:[2,7]},
+           {en:"Spread — distributive",es:"Reparto — distributiva",at:[4,9]},
+           {en:"Special numbers",es:"Números especiales",at:[3,5,8]}],
+      m13:[{en:"Expressions",es:"Expresiones",at:[1,2,3,4,5,6,7]},
+           {en:"Equations",es:"Ecuaciones",at:[8,9,10]}],
+      m14:[{en:"ax + b = c",es:"ax + b = c",at:[1,2,3,4,5,6]},
+           {en:"Written as a fraction",es:"Escritas como fracción",at:[7,8]},
+           {en:"Negative coefficient",es:"Coeficiente negativo",at:[9]},
+           {en:"The answer is negative",es:"La respuesta es negativa",at:[10]}],
+      /* ── the c-series: EIGHT items, not ten ──────────────────────────
+         c1 and c6 have no entry ON PURPOSE -- see the header of
+         _work/patch-bands.py and aog_c_series in project memory. */
+      c2:[{en:"Some of the parts shaded",es:"Algunas partes sombreadas",at:[1,2,3,4,6,8]},
+          {en:"None shaded, or every part shaded",es:"Ninguna sombreada, o todas",at:[5,7]}],
+      c3:[{en:"Less than one whole",es:"Menos de un entero",at:[1,3,6]},
+          {en:"Exactly one whole",es:"Exactamente un entero",at:[4,7]},
+          {en:"More than one whole",es:"Más de un entero",at:[2,5,8]}],
+      c4:[{en:"Name the benchmark",es:"Nombrar el punto de referencia",at:[1,2,3,4]},
+          {en:"Name it, then place it on the line",es:"Nombrarlo y luego ubicarlo en la recta",at:[5,6,7,8]}],
+      c5:[{en:"Same bottom number",es:"Mismo denominador",at:[1,2,5]},
+          {en:"Same top number",es:"Mismo numerador",at:[4,6]},
+          {en:"Equal, drawn differently",es:"Iguales, dibujadas distinto",at:[3,7]},
+          {en:"Against one half",es:"Contra un medio",at:[8]}],
+      c7:[{en:"Levelling the towers",es:"Emparejar las torres",at:[1,2,3,4,5,6]},
+          {en:"The shortcut — add, then divide",es:"El atajo — sumar y luego dividir",at:[7,8]}],
+      c8:[{en:"Five cards",es:"Cinco tarjetas",at:[1,2,3,4,5]},
+          {en:"Seven cards",es:"Siete tarjetas",at:[6,7,8]}],
+      c9:[{en:"There is an odd one",es:"Hay uno que no encaja",at:[1,2,3,5,6,7]},
+          {en:"There is none — saying so is the skill",es:"No hay ninguno — decirlo es la destreza",at:[4,8]}],
+      c10:[{en:"Building the plot",es:"Construir la gráfica",at:[1,5]},
+           {en:"The biggest score",es:"El puntaje mayor",at:[2,6]},
+           {en:"Counting a decade",es:"Contar una decena",at:[3,7]},
+           {en:"The middle score",es:"El puntaje del medio",at:[4,8]}],
+      c11:[{en:"Building the plot",es:"Construir el diagrama",at:[1,5]},
+           {en:"The most common answer",es:"La respuesta más común",at:[2,6]},
+           {en:"How many answered",es:"Cuántos respondieron",at:[3,7]},
+           {en:"The spread",es:"La amplitud",at:[4,8]}]
+    };
+    /* a band table is used only if it covers 1..n exactly, once each */
+    function bandsFor(n){
+      /* a page whose items are not this unit's own -- a teacher loaded their
+         own word list -- says so, and the grid is withheld rather than
+         printing a band name that describes somebody else's words */
+      try{ if(window.AOG_BANDS_OFF) return null; }catch(e){}
+      var B = BANDS[ID];
+      if(!B || !n) return null;
+      var seen = {}, count = 0, ok = true;
+      B.forEach(function(b){
+        b.at.forEach(function(x){
+          if(x<1 || x>n || seen[x]) ok = false;
+          seen[x] = 1; count++;
+        });
+      });
+      return (ok && count === n) ? B : null;
+    }
+
+    /* ── what happened, item by item ──────────────────────────────────
+       13 of the 14 record {done, indep}; m9 records ways produced and has
+       no notion of an item being right, so it returns null and the sheet
+       prints its counts without a map rather than inventing one.        */
+    function state(k){
+      var r = null;
+      try{ r = rec(k); }catch(e){ return null; }
+      if(!r || typeof r.done !== "boolean") return null;
+      return r.done ? (r.indep ? "ind" : "sup") : "none";
+    }
+    function stateList(n){
+      var out = [], any = false;
+      for(var k=0;k<n;k++){ var s = state(k); if(s) any = true; out.push(s); }
+      return any ? out : null;
+    }
+
+    /* ── the log: kept INSIDE d, so "Erase this activity" takes it too ──
+       A separate localStorage key would have survived that button and
+       made its sentence ("nothing from this activity is left on this
+       computer") false. One key, one erase, one true sentence.
+       Upserted on date+set so a re-do on the same day corrects the row
+       instead of adding a second one.                                   */
+    function logRows(){
+      return (Object.prototype.toString.call(d.log)==="[object Array]") ? d.log : [];
+    }
+    function logUpsert(){
+      var t = tally();
+      if(typeof t.ind !== "number" || typeof t.n !== "number") return;
+      if(Object.prototype.toString.call(d.log) !== "[object Array]") d.log = [];
+      var day = today(), key = day + "|" + setNo, L = d.log;
+      var runNo = (typeof d.run === "number" && d.run > 0) ? d.run : 1;
+      var row = {k:key, date:day, set:setNo, ind:t.ind, sup:(t.sup||0),
+                 hints:(t.hints||0), n:t.n, conf:(d.conf ? +d.conf : null),
+                 run:runNo};
+      var hit = -1;
+      for(var j=0;j<L.length;j++){ if(L[j] && L[j].k===key){ hit = j; break; } }
+      if(hit>-1){
+        /* THE FIRST FINISHED RUN OF A DAY IS THE RECORD. A row banked under
+           an earlier run number is never overwritten by a later one, so
+           "Go again" (AOG-M-AGAIN-V1) is practice and cannot quietly erase
+           a real probe. A row with no run number predates that block and
+           still upserts, so nothing already on a computer is stranded. */
+        if(typeof L[hit].run === "number" && L[hit].run !== runNo) return false;
+        if(JSON.stringify(L[hit]) === JSON.stringify(row)) return false;
+        L[hit] = row;
+      } else L.push(row);
+      if(L.length > LOGMAX) d.log = L.slice(-LOGMAX);
+      return true;
+    }
+    function finished(){
+      var cc = document.getElementById("closeCard");
+      return !!cc && !cc.hidden;
+    }
+
+    /* ── the sheet ────────────────────────────────────────────────────── */
+    function nOf(t){ return (typeof t.n === "number") ? t.n : 0; }
+    function rule(v){
+      return v ? '<span class="val">'+esc(v)+'</span>' : '<span class="rule"></span>';
+    }
+    function field(lb, v){
+      return '<td><span class="lb">'+esc(lb)+'</span>'+rule(v)+'</td>';
+    }
+    function dots(list, at){
+      return at.map(function(x){
+        var s = list[x-1] || "none";
+        return '<span class="rs-dot '+(s==="ind"?"ind":(s==="sup"?"sup":""))+'">'
+             + '<span class="rs-num">'+x+'</span></span>';
+      }).join("");
+    }
+    function saysList(t, list, B){
+      var out = [], n = nOf(t), ind = t.ind, sup = t.sup;
+      /* ⚠ m9 has no independent and no supported — it counts what was produced.
+         Printing the x-of-y sentence on ITS sheet was a line this build would
+         have made false the moment it shipped, which is the exact fault shape
+         this project keeps paying for. Ask the tally, never the page. */
+      if(typeof ind === "number"){
+        out.push(T("Independent means it was solved with no hint; supported means it was solved after one. Both are real evidence and neither is a grade.",
+                   "Independiente significa resuelto sin pista; con apoyo significa resuelto después de una. Las dos son evidencia real y ninguna es una calificación."));
+      } else {
+        out.push(T("This one is not x of ten. It counts what the student produced, and a count of what someone made is real evidence — there is nothing here to be wrong about.",
+                   "Esta no es x de diez. Cuenta lo que el estudiante produjo, y un conteo de lo que alguien hizo es evidencia real — aquí no hay nada en qué equivocarse."));
+      }
+      if(!finished()){
+        out.push(T("This set was not finished — read the counts as a partial probe.",
+                   "Este grupo no se terminó — lee los conteos como un sondeo parcial."));
+      }
+      if(typeof ind === "number" && n){
+        if(ind === n && !t.hints){
+          out.push(T("All " + n + " with no hints. The next honest probe is a harder set, not this one again.",
+                     "Las " + n + " sin pistas. El siguiente sondeo honesto es un grupo más difícil, no este otra vez."));
+        } else if(typeof sup === "number" && sup > ind){
+          out.push(T("More of this was solved with a hint than without one. The skill is emerging, not established.",
+                     "Se resolvió más con pista que sin ella. La destreza está emergiendo, no establecida."));
+        }
+      }
+      /* the weakest band, named only when one band is strictly weakest */
+      if(B && list && n){
+        /* AOG-M-UNREACHED-V1 — ⚠ A BAND NOBODY REACHED IS NOT A BAND THAT CAME
+           APART. On a partial probe every unreached band scores 0 and wins
+           this comparison outright, so the sheet printed the not-finished
+           sentence and then named the skill the student never saw as where
+           the teaching should go. Only fully attempted bands are compared,
+           and a comparison needs at least two of them. */
+        var rate = B.filter(function(b){
+          return b.at.every(function(x){ return list[x-1] && list[x-1] !== "none"; });
+        }).map(function(b){
+          var got = 0;
+          b.at.forEach(function(x){ if(list[x-1]==="ind") got++; });
+          return {b:b, got:got, tot:b.at.length, r:got/b.at.length};
+        });
+        var lo = (rate.length > 1) ? rate.slice().sort(function(a,c){ return a.r - c.r; })[0] : null;
+        var tie = lo ? rate.filter(function(x){ return x.r === lo.r; }).length : 0;
+        if(lo && tie === 1 && lo.r < 1){
+          out.push(T(lo.b.en + " is where it came apart: " + lo.got + " of " + lo.tot + " without a hint.",
+                     lo.b.es + " es donde se rompió: " + lo.got + " de " + lo.tot + " sin pista."));
+        }
+      }
+      if(d.conf && typeof ind === "number" && n){
+        var c5 = (+d.conf) / 5, got = ind / n;
+        if(c5 - got >= 0.35){
+          out.push(T("Confidence is well above the result — worth one sentence with the student before the next probe.",
+                     "La confianza está muy por encima del resultado — vale una frase con el estudiante antes del próximo sondeo."));
+        } else if(got - c5 >= 0.35){
+          out.push(T("The result is well above the confidence — the student did better than they think they did, and should be told so.",
+                     "El resultado está muy por encima de la confianza — al estudiante le fue mejor de lo que cree, y hay que decírselo."));
+        }
+      }
+      out.push(T("One probe on one day. Read it next to what the person standing there saw.",
+                 "Un sondeo de un día. Léelo junto a lo que vio la persona que estaba ahí."));
+      return out;
+    }
+    function isEsName(b){ return lang==="es" ? b.es : b.en; }
+
+    function sheetHtml(){
+      var t = tally(), n = nOf(t);
+      var list = n ? stateList(n) : null;
+      var B = list ? bandsFor(n) : null;
+      var name = txtOf(".sheet-head h1, .sheet-head h2") || ID;
+      var kick = txtOf(".sheet-head .k");
+      var skill = "", meas = "";
+      var dl = el("details.teach .probe dl");
+      if(dl){
+        var kids = dl.children;
+        for(var q=0;q<kids.length;q++){
+          if(kids[q].tagName !== "DT") continue;
+          var lb = kids[q].getAttribute("data-en") || "";
+          var dd = kids[q].nextElementSibling;
+          if(!dd) continue;
+          if(lb === "Skill")   skill = String(dd.textContent||"").trim();
+          if(lb === "Measure") meas  = String(dd.textContent||"").trim();
+        }
+      }
+
+      var h =
+        '<div class="rs-top">'
+        + '<div class="rs-k">'
+        /* AOG-M-STRANDLINE-V1 — ⚠ THIS LINE SAID "Mathematics, The Interior"
+           ON ALL THIRTY PAGES, so a Science Vocabulary probe sheet and a
+           Number Concepts & Data probe sheet both claimed to be 6-8 math
+           on the piece of paper that goes into a folder. Derived from ID,
+           the same way the send block derives its series; the three names
+           are the HUBS' OWN h1 text, so a rename there is a rename here. */
+        + esc(T("Architecture of Grace · " + ({m:"The Interior Mathematics", c:"Number Concepts & Data", v:"Science Vocabulary"}[String(ID).charAt(0)] || "The Interior Mathematics"),
+                "Architecture of Grace · " + ({m:"Matemáticas del Interior", c:"Conceptos Numéricos y Datos", v:"Vocabulario de Ciencias"}[String(ID).charAt(0)] || "Matemáticas del Interior")))
+        +   '<span class="rs-r">' + esc(T("Progress probe","Sondeo de progreso")) + '</span></div>'
+        + '<h1>' + esc(name) + '</h1>'
+        + (skill ? '<p class="rs-skill">' + esc(skill) + '</p>' : "")
+        + '</div>'
+        + '<table class="rs-fields"><tr>'
+        +   field(T("Student","Estudiante"), "")
+        +   field(T("Date","Fecha"), today())
+        +   field(T("Set","Grupo"), String(setNo))
+        +   field(T("Class / period","Clase / período"), "")
+        +   field(T("Measure","Medida"), meas)
+        + '</tr></table>';
+
+      /* the numbers */
+      var cells = [];
+      if(typeof t.ind === "number"){
+        cells.push({big:t.ind, of:T("of ","de ")+n, cap:T("Independent","Independiente")});
+        cells.push({big:(t.sup||0), of:T("of ","de ")+n, cap:T("Supported","Con apoyo")});
+      } else if(typeof t.ways === "number"){
+        cells.push({big:t.ways, of:"", cap:T("Expressions built","Expresiones construidas")});
+        cells.push({big:(t.both||0), of:T("of ","de ")+n, cap:T("From both sides","Desde ambos lados")});
+      }
+      cells.push({big:(t.hints||0), of:"", cap:T("Hints used","Pistas usadas")});
+      cells.push({big:(d.conf ? d.conf : "—"), of:(d.conf ? T("of 5","de 5") : ""),
+                  cap:T("Confidence","Confianza")});
+      h += '<div class="rs-box"><p class="rs-h">' + esc(T("What happened","Lo que pasó")) + '</p>'
+         + '<table class="rs-nums"><tr>'
+         + cells.map(function(c){
+             return '<td><div class="big">'+esc(c.big)+'</div>'
+                  + (c.of ? '<div class="of">'+esc(c.of)+'</div>' : '<div class="of">&nbsp;</div>')
+                  + '<div class="cap">'+esc(c.cap)+'</div></td>';
+           }).join("")
+         + '</tr></table></div>';
+
+      /* item by item */
+      if(list){
+        var rowsHtml;
+        if(B){
+          rowsHtml = B.map(function(b){
+            var got = 0;
+            b.at.forEach(function(x){ if(list[x-1]==="ind") got++; });
+            return '<tr><td class="bn">' + esc(isEsName(b)) + '</td>'
+                 + '<td>' + dots(list, b.at) + '</td>'
+                 + '<td class="bs">' + got + ' ' + esc(T("of","de")) + ' ' + b.at.length + '</td></tr>';
+          }).join("");
+        } else {
+          var all = [];
+          for(var z=1;z<=n;z++) all.push(z);
+          var gotAll = 0;
+          list.forEach(function(s){ if(s==="ind") gotAll++; });
+          rowsHtml = '<tr><td class="bn">' + esc(T("All " + n + " items","Los " + n + " ítems"))
+                   + '</td><td>' + dots(list, all) + '</td>'
+                   + '<td class="bs">' + gotAll + ' ' + esc(T("of","de")) + ' ' + n + '</td></tr>';
+        }
+        h += '<div class="rs-box"><p class="rs-h">' + esc(T("Item by item","Ítem por ítem")) + '</p>'
+           + '<table class="rs-map">' + rowsHtml + '</table>'
+           + '<p class="rs-legend">'
+           +   '<span class="rs-dot ind"></span>' + esc(T("no hint","sin pista")) + '&nbsp;&nbsp;&nbsp;'
+           +   '<span class="rs-dot sup"></span>' + esc(T("after a hint","después de una pista")) + '&nbsp;&nbsp;&nbsp;'
+           +   '<span class="rs-dot"></span>' + esc(T("not reached","no alcanzado"))
+           + '</p></div>';
+      }
+
+      /* what this says */
+      h += '<div class="rs-box"><p class="rs-h">' + esc(T("What this says","Lo que dice esto")) + '</p>'
+         + '<ul class="rs-says">'
+         + saysList(t, list, B).map(function(s){ return '<li>'+esc(s)+'</li>'; }).join("")
+         + '</ul></div>';
+
+      /* over time — this device's own log, and blanks for the sets not run */
+      var L = logRows(), byset = {};
+      L.forEach(function(r){ if(r && r.set) byset[r.set] = r; });
+      var haveSets = [1,2,3].some(function(s){ return !!byset[s]; });
+      if(haveSets || typeof t.ind === "number"){
+        h += '<div class="rs-box"><p class="rs-h">'
+           +   esc(T("Over time — the same skills, three sets of numbers",
+                     "A lo largo del tiempo — las mismas destrezas, tres grupos de números"))
+           + '</p><table class="rs-over"><tr>'
+           + [1,2,3].map(function(s){
+               var r = byset[s];
+               return '<td><div class="st">' + esc(T("Set ","Grupo ")) + s + '</div>'
+                    + '<div class="dt">' + (r ? esc(r.date) : "") + '</div>'
+                    + '<div class="sc">' + (r ? esc(r.ind + " / " + r.n) : "") + '</div></td>';
+             }).join("")
+           + '</tr></table><p class="rs-legend">'
+           + esc(T("Filled in from this computer only. A blank box is a set this device has not seen finished — write it in.",
+                   "Rellenado solo desde esta computadora. Una casilla vacía es un grupo que este equipo no ha visto terminar — escríbelo a mano."))
+           + '</p></div>';
+      }
+
+      h += '<table class="rs-sign"><tr>'
+        +   '<td style="width:34%"><span class="lb">' + esc(T("Recorded by","Registrado por")) + '</span><span class="rule"></span></td>'
+        +   '<td><span class="lb">' + esc(T("What to teach next","Qué enseñar después")) + '</span><span class="rule"></span></td>'
+        + '</tr></table>'
+        + '<div class="rs-lines"><div></div><div></div></div>'
+        + '<p class="rs-prov">'
+        +   esc(T("Built on this device from what happened on this screen on " + today()
+                  + ". It is a probe, not a test score. It is not a district product and carries no district endorsement.",
+                  "Hecho en este dispositivo con lo que pasó en esta pantalla el " + today()
+                  + ". Es un sondeo, no una calificación. No es un producto del distrito ni cuenta con su respaldo."))
+        + '</p>';
+      return h;
+    }
+
+    /* ── printing ─────────────────────────────────────────────────────
+       window.print() is called SYNCHRONOUSLY inside the click. Putting it
+       behind a timer is what broke printing on iOS across this whole site,
+       and the grep for that mistake is kept at zero on purpose.          */
+    function unrec(){ document.body.classList.remove("aog-rec"); }
+    /* ══ AOG-M-SENDITEMS-V1 — THE ITEM MAP CAN LEAVE THIS DEVICE ═══════
+       Until now the send block posted a SUMMARY ROW and nothing else, so the
+       ITEM BY ITEM grid on the printed record existed only in this browser's
+       own storage and the teacher's dashboard could not draw it. It rides in
+       the EXISTING free-form `extra` column: no new Sheet column, no Apps
+       Script version bump, ~500 characters.
+       ⚠ It sends BOTH band labels, en and es, because the dashboard picks its
+       language from dashLang and this page picks from lang - they are not the
+       same variable and one of them is not present over there.
+       ⚠ m9 has no notion of an item being right; stateList returns null and
+       this returns items:null rather than inventing a grid. */
+    window.AOG_PROBE_DATA = function(){
+      try{
+        var t = tally(), n = nOf(t);
+        var list = n ? stateList(n) : null;
+        var B = list ? bandsFor(n) : null;
+        /* the Measure line, read the way sheetHtml reads it. Kept local and
+           six lines long rather than refactored out of sheetHtml: an anchored
+           edit INSIDE sheetHtml would have to land identically on thirty
+           separately-sliced files, and c9/c11 already prove they drift. */
+        var meas = "";
+        try{
+          var dl = document.querySelector("details.teach .probe dl");
+          if(dl){
+            var kids = dl.children;
+            for(var q=0;q<kids.length;q++){
+              if(kids[q].tagName !== "DT") continue;
+              if((kids[q].getAttribute("data-en") || "") !== "Measure") continue;
+              var dd = kids[q].nextElementSibling;
+              if(dd) meas = String(dd.textContent || "").trim();
+            }
+          }
+        }catch(eM){}
+        return {
+          v:1, n:n, meas:meas, items:list,
+          bands: B ? B.map(function(b){ return {en:b.en, es:b.es, at:b.at}; }) : null,
+          ways: (typeof t.ways === "number") ? t.ways : null,
+          both: (typeof t.both === "number") ? t.both : null,
+          fin: finished(),
+          log: logRows().map(function(r){ return {set:r.set, date:r.date, ind:r.ind, n:r.n}; })
+        };
+      }catch(e){ return null; }
+    };
+
+    function printRecord(){
+      var host = document.getElementById("aogRecSheet");
+      if(!host){
+        host = document.createElement("div");
+        host.id = "aogRecSheet";
+        document.body.appendChild(host);
+      }
+      host.innerHTML = sheetHtml();
+      document.body.classList.add("aog-rec");
+      window.print();
+    }
+    window.addEventListener("afterprint", unrec);
+    try{
+      var mq = window.matchMedia && window.matchMedia("print");
+      if(mq){
+        var onmq = function(e){ if(!e.matches) unrec(); };
+        if(mq.addEventListener) mq.addEventListener("change", onmq);
+        else if(mq.addListener) mq.addListener(onmq);
+      }
+    }catch(e){}
+
+    /* ── the button, next to Copy this row on every activity ─────────── */
+    var cp = document.getElementById("copyProbe");
+    if(cp && cp.parentNode){
+      var b = document.createElement("button");
+      b.type = "button"; b.className = "btn btn-accent"; b.id = "printRecord";
+      b.setAttribute("data-en","Print this record");
+      b.setAttribute("data-es","Imprimir este registro");
+      b.textContent = T("Print this record","Imprimir este registro");
+      cp.parentNode.insertBefore(b, cp.nextSibling);
+      b.addEventListener("click", printRecord);
+    }
+
+    /* ── the sentence this build would otherwise have left false ───────
+       The teacher note has said "Nothing is sent anywhere — copy it into
+       the Goal Builder yourself, or print this page" since before the send
+       block existed. On a page opened from a link with a destination on
+       it, a Send button now sits eight lines below that sentence, so the
+       sentence is already untrue today; and "print this page" now has two
+       meanings. Both halves are replaced, and ONLY that clause — the rest
+       of the note is per-activity wording (placed / solved / walked) and
+       is left exactly as each page wrote it. A page that does not carry
+       the clause (m9 words its note differently) is left alone.          */
+    (function(){
+      var CLAUSE_EN = "Nothing is sent anywhere — copy it into the Goal Builder yourself, or print this page.";
+      var CLAUSE_ES = "No se envía a ningún lado — cópiala tú mismo al Goal Builder, o imprime esta página.";
+      var sendable = !!document.querySelector("details.teach .sendbox");
+      var NEW_EN = sendable
+        ? "Print the record, copy the row into the Goal Builder, or send the summary row to your Sheet — nothing is sent until you tap the button."
+        : "Nothing is sent anywhere — print the record, or copy the row into the Goal Builder yourself.";
+      var NEW_ES = sendable
+        ? "Imprime el registro, copia la fila al Goal Builder, o envía la fila de resumen a tu hoja — no se envía nada hasta que toques el botón."
+        : "No se envía a ningún lado — imprime el registro, o copia la fila tú mismo al Goal Builder.";
+      var notes = document.querySelectorAll("details.teach .inner p.note");
+      Array.prototype.forEach.call(notes, function(p){
+        var en = p.getAttribute("data-en") || "", es = p.getAttribute("data-es") || "";
+        if(en.indexOf(CLAUSE_EN) === -1) return;
+        p.setAttribute("data-en", en.split(CLAUSE_EN).join(NEW_EN));
+        if(es.indexOf(CLAUSE_ES) > -1) p.setAttribute("data-es", es.split(CLAUSE_ES).join(NEW_ES));
+      });
+    })();
+
+    /* ── ride the existing clocks, never invent a third ────────────────
+       paintProbe runs on every state change and paintLang on a language
+       switch; the send block wraps both the same way and composes with
+       this one because each wrapper calls the value it captured.        */
+    paintProbe = (function(orig){
+      return function(){
+        var r = orig.apply(this, arguments);
+        try{ if(finished() && logUpsert()) persist(); }catch(e){}
+        return r;
+      };
+    })(paintProbe);
+    paintLang = (function(orig){
+      return function(){
+        var r = orig.apply(this, arguments);
+        try{
+          var pb = document.getElementById("printRecord");
+          if(pb) pb.textContent = T("Print this record","Imprimir este registro");
+        }catch(e){}
+        return r;
+      };
+    })(paintLang);
+
+    /* the close card can be revealed by a path that does not repaint the
+       probe — watch the attribute itself as well */
+    try{
+      var ccEl = document.getElementById("closeCard");
+      if(ccEl && window.MutationObserver){
+        new MutationObserver(function(){
+          try{ if(finished() && logUpsert()) persist(); }catch(e){}
+        }).observe(ccEl, {attributes:true, attributeFilter:["hidden"]});
+      }
+    }catch(e){}
+
+    if(finished() && logUpsert()) persist();
+    paintLang();
+  })();
+
+  /* ══ THE WAY OUT — AOG-M-AGAIN-V1 ════════════════════════════════════
+     A set was finished on this computer at some earlier sitting. Today
+     the page is opened again and render() goes straight to
+     paintFinished(), which does input.disabled = true and never calls the
+     page's draw. What is on screen is a dead, half-drawn instrument: no
+     ticks, no min/max on the control, a pin parked at 0%. It does not
+     read as FINISHED. It reads as BROKEN — and it was shown to a child
+     that way on 2026-09-01.
+
+     The only exits were Set 2 / Set 3, inside a <details> labeled "For
+     the teacher — this device only", and a red "Erase this activity"
+     behind a "this cannot be undone" confirm. Neither is findable in
+     five seconds with a student watching. So: two plain buttons on the
+     DONE card, no dialog on either, and the never-drawn stage hidden
+     instead of displayed broken.
+
+     ⚠ THIS BLOCK IS IDENTICAL ON ALL FOURTEEN ACTIVITIES, so it may name
+     ONLY the interface all fourteen share: work · d · setNo · persist ·
+     T · paintLang · KEY · ID · #closeCard · [data-set]. It must never
+     name render, allDone, i, SETS, or any per-page draw function — those
+     do NOT share names across the series (see the item-collection note in
+     the probe-record block above). Both buttons therefore write the state
+     and RELOAD, which is also the only way to guarantee the stage comes
+     back drawn from scratch rather than repaired in place.
+
+     ⚠ persist() DEBOUNCES 400 ms. A reload immediately after it loses the
+     write. The write here is synchronous, on purpose.                   */
+  (function(){
+    var cc = document.getElementById("closeCard");
+    if(!cc) return;
+
+    /* Opened already finished => the stage was never drawn. Hide it with a
+       class on <html> rather than the hidden property, because paintLang()
+       repaints and would put a broken stage straight back. A student who
+       finishes IN SESSION keeps their correctly drawn last problem. */
+    if(!cc.hidden){
+      try{
+        var st = document.createElement("style");
+        st.textContent = "html.aog-reopened #stage{display:none !important;}";
+        document.head.appendChild(st);
+        document.documentElement.classList.add("aog-reopened");
+      }catch(e){}
+    }
+
+    function setList(){
+      var out = [];
+      Array.prototype.forEach.call(document.querySelectorAll("[data-set]"), function(b){
+        var v = +b.getAttribute("data-set");
+        if(v && out.indexOf(v) === -1) out.push(v);
+      });
+      return out.sort(function(a,b){ return a-b; });
+    }
+    function nextSet(){
+      var all = setList();
+      if(!all.length) return null;
+      var at = all.indexOf(+setNo);
+      return all[(at < 0 ? 0 : at + 1) % all.length];
+    }
+
+    function restart(toSet){
+      work = {};
+      d.work = work;
+      d.conf = null;
+      /* A NEW ATTEMPT. logUpsert refuses to overwrite a row banked under an
+         earlier run number, so the first finished run of a day is the
+         record and going again is practice. */
+      d.run = (typeof d.run === "number" ? d.run : 1) + 1;
+      if(toSet) setNo = toSet;
+      d.set = setNo;
+      try{
+        if(typeof KEY === "string" && typeof ID === "string"){
+          localStorage.setItem(KEY + ID, JSON.stringify(d));
+        }
+      }catch(e){}
+      location.reload();
+    }
+
+    var acts = document.createElement("div");
+    acts.className = "again-acts no-print";
+    acts.style.cssText = "display:flex; flex-wrap:wrap; gap:10px; margin-top:16px;";
+
+    var goBtn = document.createElement("button");
+    goBtn.type = "button"; goBtn.className = "btn btn-accent"; goBtn.id = "againBtn";
+
+    var setBtn = document.createElement("button");
+    setBtn.type = "button"; setBtn.className = "btn"; setBtn.id = "againSetBtn";
+
+    /* no color of its own — .close-card p already carries a vetted
+       ink-soft on lock-wash in both themes */
+    var note = document.createElement("p");
+    note.className = "again-note no-print";
+    note.id = "againNote";
+    note.style.cssText = "margin-top:12px; font-size:13px;";
+
+    acts.appendChild(goBtn);
+    if(nextSet()) acts.appendChild(setBtn);
+    cc.appendChild(acts);
+    cc.appendChild(note);
+
+    goBtn.addEventListener("click", function(){ restart(null); });
+    setBtn.addEventListener("click", function(){ var n = nextSet(); if(n) restart(n); });
+
+    function paintAgain(){
+      goBtn.textContent = T("Go again", "Otra vez");
+      var n = nextSet();
+      if(n) setBtn.textContent = T("Try set " + n, "Probar el grupo " + n);
+      note.textContent = T(
+        "Your first finished run today is the one kept as the record. Going again is practice and does not change it.",
+        "Tu primera ronda terminada de hoy es la que se guarda como registro. Volver a intentarlo es práctica y no la cambia.");
+    }
+    paintAgain();
+
+    paintLang = (function(orig){
+      return function(){
+        var r = orig.apply(this, arguments);
+        try{ paintAgain(); }catch(e){}
+        return r;
+      };
+    })(paintLang);
+  })();
+
+
+  /* ══ THE WAY BACK — AOG-M-WAYBACK-V1 ═════════════════════════════════
+     Jimmy, on the live site, one minute after the drag: "There is no back
+     page." Then: "Or back button i should say."
+
+     He was right, and it was true of ALL THIRTY activity pages, not just
+     the new ones — every one of them had ZERO outbound anchors. A page
+     reached by a typed short link or a scanned QR has no history to go
+     back to either, so the browser's own button is dead. It was a room
+     with the door bricked up, and it had been that way since m1.
+
+     ⚠ THE HREF IS THE HUB'S FILENAME, NOT ITS SHORT LINK. /vocab, /math
+     and /concepts only exist because _redirects rewrites them, and these
+     pages are also opened from a folder on disk and from localhost, where
+     nothing rewrites anything. A sibling filename resolves in all three.
+
+     ⚠ IT IS BUILT TWICE ON PURPOSE. Working mode hides .mast — and the
+     lock row lives inside it — the moment a student touches the stage, so
+     a single control in .lock-acts would vanish exactly when someone is
+     most likely to want out. The second copy rides the wmbar.
+
+     ⚠ Both carry data-en/data-es, so paintLang() translates them on its
+     own pass and this block needs no wrapper of its own.              */
+  (function(){
+    var HUB = ({m:"interior-math.html", c:"concepts-and-data.html",
+                v:"vocabulary-science.html"})[String(ID).charAt(0)];
+    if(!HUB) return;
+    var EN = "← All activities", ES = "← Todas las actividades";
+
+    function link(cls){
+      var a = document.createElement("a");
+      a.className = cls;
+      a.href = HUB;
+      a.setAttribute("data-en", EN);
+      a.setAttribute("data-es", ES);
+      /* ⚠ READ THE DOCUMENT, NOT A VARIABLE. `lang` is NOT part of the
+         interface all thirty pages share (see AOG-M-AGAIN-V1's list), and
+         a page in Spanish would have shown an English label until the next
+         toggle. paintLang() stamps <html lang>, and that is everywhere. */
+      a.textContent = (document.documentElement.lang === "es") ? ES : EN;
+      return a;
+    }
+
+    var acts = document.querySelector(".lock-acts");
+    if(acts) acts.insertBefore(link("btn no-print"), acts.firstChild);
+
+    var bar = document.getElementById("wmBar"), out = document.getElementById("wmOut");
+    if(bar){
+      var b = link("wm-btn");
+      if(out) bar.insertBefore(b, out); else bar.appendChild(b);
+    }
+
+    /* ⚠ .30ei: THE THIRD COPY — a floating chip. Jimmy, from his phone:
+       'when you are working with the math or science cards you are stuck
+       with no back space.' The first copy lives in .mast and scrolls away;
+       the second rides the wmbar, which exists only AFTER the student's
+       first touch inside the stage. A reader who only scrolls, or a
+       paper-mode class working down the printed list, has neither. This
+       chip appears once the masthead's own link has scrolled off the top,
+       and yields to the wmbar the moment working mode owns the screen.
+       data-en/data-es ride it, so paintLang() translates it like the
+       other two. z-index 880: UNDER the wmbar (900) and under any sheet
+       or modal, over the page. */
+    var chip = link("aog-back-chip no-print");
+    chip.hidden = true;
+    /* AOG-BACKCHIP-RETIRED-V1 (2026-09-20) — Jimmy: remove the floating back chip. On a phone it
+       sat on top of the last line of the activity — the feedback line under the lab. The link at
+       the top of the page and the top bar are still the way out. Retired, NOT deleted: the chip is
+       still built and still carries its two translations; it is simply never put on the page.
+       Restore it by uncommenting the one line below. */
+    /* document.body.appendChild(chip); */
+    var chipCss = document.createElement("style");
+    chipCss.textContent =
+      ".aog-back-chip{position:fixed;left:12px;bottom:12px;z-index:880;" +
+      "background:var(--field,#fff);color:var(--ink,#1d2733);border:1.5px solid var(--rule,#C9C0AE);" +
+      "border-radius:999px;padding:9px 15px;font-size:13px;font-weight:700;text-decoration:none;" +
+      "box-shadow:0 6px 18px -6px rgba(10,30,51,.35);}" +
+      ".aog-back-chip:hover{border-color:var(--a,#4B4F9E);}" +
+      "@media print{.aog-back-chip{display:none!important;}}";
+    document.head.appendChild(chipCss);
+    var mastLink = acts ? acts.firstChild : null;
+    function chipPaint(){
+      var wm = document.documentElement.classList.contains("wm");
+      var past;
+      try{
+        var r = mastLink && mastLink.getBoundingClientRect ? mastLink.getBoundingClientRect() : null;
+        /* width 0 means the mast is display:none (working mode hid it);
+           the wm test above already covers that path, so fall to scrollY. */
+        past = r && r.width > 0 ? (r.bottom < 0) : (window.scrollY > 300);
+      }catch(e){ past = window.scrollY > 300; }
+      chip.hidden = wm || !past;
+    }
+    chipPaint();
+    window.addEventListener("scroll", chipPaint, {passive:true});
+    /* working mode flips on between scrolls; watch the class, don't poll. */
+    try{ new MutationObserver(chipPaint).observe(document.documentElement,
+      {attributes:true, attributeFilter:["class"]}); }catch(e){}
+  })();
+
+  /* ══ THE THREE DOORS — AOG-C-DOORS-V1 ════════════════════════════════
+     Door 1: one scripted walkthrough (spot 25 among 3, 4, 4, 5), paced by
+     the student, recorded as work.demo — instruction, never a trial.
+     Door 2: the eight problems, untouched. Door 3: one stretch per set —
+     predict which way the mean moves without the outlier, then how far,
+     before the true mean is revealed; recorded as work.stretch. Additive
+     only; the paperlist and the 8-count never change. Placed AFTER the
+     probe-record and again blocks so its wrappers compose on top.       */
+  (function(){
+    var demoCard=$("demoCard"), demoTop=$("demoTop"), demoGo=$("demoGo"),
+        demoSkip=$("demoSkip"), demoStage=$("demoStage"), demoSay=$("demoSay"),
+        demoCols=$("demoCols"), demoNext=$("demoNext"), demoAgain=$("demoAgain");
+    var strCard=$("strCard"), strK=$("strK"), strCols=$("strCols"), strQ=$("strQ"),
+        strDirRow=$("strDirRow"), strSizeRow=$("strSizeRow"),
+        strUp=$("strUp"), strDown=$("strDown"),
+        strLittle=$("strLittle"), strLot=$("strLot"), strSay=$("strSay");
+    if(!demoCard || !strCard) return;
+
+    /* ── DOOR 1 — the gentle door ────────────────────────────────────── */
+    var DEMO_V = [3,4,4,5,25];
+    var demoStep = 0, demoHide = false, demoWatch = false, demoSetSeen = setNo;
+
+    function demoStepText(s){
+      if(s===1) return T("Five friends counted their marbles: 3, 4, 4, 5 — and one counted <b>25</b>.",
+                         "Cinco amigos contaron sus canicas: 3, 4, 4, 5 — y uno contó <b>25</b>.");
+      if(s===2) return T("Most of the X's keep close company, between 3 and 5.",
+                         "Casi todas las X se mantienen juntas, entre el 3 y el 5.");
+      if(s===3) return T("<b>25</b> stands alone, with a big empty gap beside it. That is the outlier — the odd one out.",
+                         "El <b>25</b> está solo, con un gran hueco al lado. Ese es el valor atípico — el que no encaja.");
+      return T("And it pulls the mean: without the 25 the mean is <b>4</b>; with it, the mean jumps past 8. Spot it first, then judge it.",
+               "Y jala la media: sin el 25 la media es <b>4</b>; con él, la media salta más allá de 8. Encuéntralo primero, y luego júzgalo.");
+    }
+    /* the module's own visual language, with the long empty middle folded
+       into a gap column — 23 real columns would not fit on any screen */
+    function demoDraw(s){
+      var html = "";
+      [3,4,5].forEach(function(v){
+        var xs = "";
+        DEMO_V.forEach(function(x){ if(x===v) xs += '<span class="x">X</span>'; });
+        var cls = "col", mk = "";
+        if(s>=2) cls += " demoCrowd";
+        if(s>=4 && v===4){ cls += " mo"; mk = '<span class="mk">'+T("mean without the 25","media sin el 25")+'</span>'; }
+        html += '<span class="'+cls+'">'+xs+'<span class="num">'+v+'</span>'+mk+'</span>';
+      });
+      html += '<span class="col demoGapCol"><span class="x demoGapX">⋯</span><span class="num">&hellip;</span></span>';
+      html += '<span class="col'+(s>=3?" odd":"")+'"><span class="x">X</span><span class="num">25</span></span>';
+      demoCols.innerHTML = html;
+    }
+    function demoPaint(){
+      if(setNo !== demoSetSeen){
+        demoSetSeen = setNo; demoHide = false; demoWatch = false; demoStep = 0;
+        strPhase = "dir";
+      }
+      var fresh = !allDone && firstUnsolved() === 0;
+      var open = demoWatch || (fresh && !demoHide);
+      demoCard.hidden = !open;
+      if(demoAgain) demoAgain.hidden = open;
+      if(!open) return;
+      demoTop.hidden = demoStep > 0;
+      demoStage.hidden = demoStep === 0;
+      if(demoStep > 0){
+        demoSay.innerHTML = demoStepText(demoStep);
+        demoDraw(demoStep);
+        demoNext.textContent = (demoStep >= 4) ? T("Done","Listo") : T("Next","Siguiente");
+      }
+    }
+    demoGo.addEventListener("click", function(){
+      demoStep = 1; demoPaint();
+      try{ demoNext.focus(); }catch(e){}
+    });
+    demoSkip.addEventListener("click", function(){
+      demoHide = true; demoWatch = false; demoStep = 0; demoPaint();
+    });
+    demoNext.addEventListener("click", function(){
+      if(demoStep >= 4){
+        if(demoWatch) demoWatch = false; else demoHide = true;
+        demoStep = 0; demoPaint();
+        return;
+      }
+      demoStep++;
+      /* watching is instruction, not a trial — it counts toward nothing */
+      if(demoStep >= 4 && !(work && work.demo)){
+        work.demo = true; persist(); paintProbe();
+      }
+      demoPaint();
+    });
+    if(demoAgain) demoAgain.addEventListener("click", function(){
+      demoWatch = true; demoStep = 1; demoPaint();
+      try{ demoNext.focus(); }catch(e){}
+    });
+
+    /* ── DOOR 3 — the stretch ────────────────────────────────────────
+       One item per set, chosen so the arithmetic is honest and whole:
+         set 1 · Goals this season   [6,7,6,8,7,8,0]   mean 6 → 7 without the 0
+         set 2 · Cups of water       [4,5,4,6,6,11]    mean 6 → 5 without the 11
+         set 3 · Laps around the gym [7,8,8,9,7,9,1]   mean 7 → 8 without the 1
+       All three move by exactly one step — the sets are BUILT for whole
+       means, and that IS the stretch insight: a far-off number, shared
+       with the whole group, moves the mean only a little. Both means are
+       computed from the set data at runtime, never typed in.            */
+    var STRIX = {1:4, 2:6, 3:4};
+    var strPhase = "dir";
+    function strIt(){
+      var ix = STRIX[setNo];
+      var it = (ix == null) ? null : items[ix];
+      return (it && it.odd != null) ? it : null;
+    }
+    function strDelta(it){ return Math.abs(meanWith(it) - meanWithout(it)); }
+    function strDraw(showMo){
+      var it = strIt(); if(!it) return;
+      var mw = meanWith(it), mo = meanWithout(it);
+      var html = "";
+      for(var v = it.lo; v <= it.hi; v++){
+        var xs = "", cls = "col", mk = "", bits = [];
+        for(var k=0;k<it.v.length;k++){ if(it.v[k]===v) xs += '<span class="x">X</span>'; }
+        if(v === it.odd) cls += " odd";
+        if(v === mw){ cls += " mw"; bits.push(T("mean with everyone","media con todos")); }
+        if(showMo && v === mo){ cls += " mo"; bits.push(T("mean without","media sin")); }
+        if(bits.length) mk = '<span class="mk">'+bits.join(" · ")+'</span>';
+        html += '<span class="'+cls+'">'+xs+'<span class="num">'+v+'</span>'+mk+'</span>';
+      }
+      strCols.innerHTML = html;
+    }
+    function strSolvedText(it){
+      var mo = meanWithout(it), up = mo > meanWith(it), dn = strDelta(it);
+      return '<span class="good">'+T("You called it.","Lo dijiste bien.")+'</span> '
+        + T("The true mean without the "+it.odd+" is <b>"+mo+"</b> — it moved "+(up?"up":"down")+" by "+(dn===1?"one step":dn+" steps")+". A far-off number, shared with the whole group, moves the mean only a little.",
+            "La media sin el "+it.odd+" es <b>"+mo+"</b> — "+(up?"subió":"bajó")+" "+(dn===1?"un paso":dn+" pasos")+". Un número lejano, repartido con todo el grupo, mueve la media solo un poco.");
+    }
+    function strTriedText(it){
+      var mo = meanWithout(it), up = mo > meanWith(it), dn = strDelta(it);
+      return T("Here is the thinking: the <b>"+it.odd+"</b> was pulling the mean "+(up?"down":"up")+", so without it the mean moves "+(up?"up":"down")+" — to <b>"+mo+"</b>, "+(dn===1?"just one step":dn+" steps")+". The pull is shared with the whole group, so even a far-off number moves the mean only a little. Trying the stretch is itself a strong move.",
+               "Así va el pensamiento: el <b>"+it.odd+"</b> jalaba la media hacia "+(up?"abajo":"arriba")+", así que sin él la media "+(up?"sube":"baja")+" — a <b>"+mo+"</b>, "+(dn===1?"solo un paso":dn+" pasos")+". El jalón se reparte con todo el grupo, y por eso un número lejano mueve la media solo un poco. Intentar el reto ya es una decisión fuerte.");
+    }
+    function strPaint(){
+      var it = strIt();
+      strCard.hidden = closeCard.hidden || !it;
+      if(strCard.hidden) return;
+      var mw = meanWith(it), mo = meanWithout(it), up = mo > mw;
+      strK.textContent = ctxOf(it);
+      strUp.textContent = "↑ " + T("Up","Sube");
+      strDown.textContent = "↓ " + T("Down","Baja");
+      strLittle.textContent = T("A little — about one step","Un poco — como un paso");
+      strLot.textContent = T("A lot — three steps or more","Mucho — tres pasos o más");
+      var st = (work && typeof work.stretch === "string") ? work.stretch : "";
+      if(st){
+        strDraw(true);
+        strDirRow.hidden = true; strSizeRow.hidden = true;
+        strQ.innerHTML = T("The mean without the "+it.odd+" is <b>"+mo+"</b>.",
+                           "La media sin el "+it.odd+" es <b>"+mo+"</b>.");
+        strSay.innerHTML = (st === "solved") ? strSolvedText(it) : strTriedText(it);
+        return;
+      }
+      strDraw(false);
+      strDirRow.hidden = (strPhase !== "dir");
+      strSizeRow.hidden = (strPhase !== "size");
+      strQ.innerHTML = (strPhase === "dir")
+        ? T("The mean with everyone is <b>"+mw+"</b>. Take the <b>"+it.odd+"</b> away — which way does the mean move?",
+            "La media con todos es <b>"+mw+"</b>. Quita el <b>"+it.odd+"</b> — ¿hacia dónde se mueve la media?")
+        : T("Good — the mean moves "+(up?"up":"down")+". By how much?",
+            "Bien — la media "+(up?"sube":"baja")+". ¿Cuánto se mueve?");
+    }
+    function strFinish(kind){
+      if(work.stretch) return;
+      work.stretch = kind;
+      persist(); paintProbe(); strPaint();
+    }
+    /* no hint ladder here: after two misses the page shows the thinking,
+       warmly, and that still records as "tried". The count lives on the
+       work store (work.strTries, fleet shape) so the two-try rule
+       survives a reload; the set switch clears it with everything else. */
+    function strMissed(nudge){
+      work.strTries = (work.strTries || 0) + 1;
+      persist();
+      if(work.strTries >= 2){ strFinish("tried"); return; }
+      strSay.innerHTML = nudge;
+    }
+    function strDirPick(saidUp){
+      var it = strIt();
+      if(!it || strPhase !== "dir" || (work && work.stretch)) return;
+      var up = meanWithout(it) > meanWith(it);
+      if(saidUp === up){
+        strPhase = "size";
+        strSay.innerHTML = T("Yes — without the "+it.odd+" the mean moves "+(up?"up":"down")+".",
+                             "Sí — sin el "+it.odd+" la media "+(up?"sube":"baja")+".");
+        strPaint();
+        try{ strLittle.focus(); }catch(e){}
+      } else {
+        strMissed(T("Look at which side of the crowd the <b>"+it.odd+"</b> sits on — it was pulling the mean toward itself.",
+                    "Mira de qué lado del grupo está el <b>"+it.odd+"</b> — estaba jalando la media hacia él."));
+      }
+    }
+    function strSizePick(band){
+      var it = strIt();
+      if(!it || strPhase !== "size" || (work && work.stretch)) return;
+      var truth = (strDelta(it) >= 3) ? "lot" : "little";
+      if(band === truth){ strFinish("solved"); }
+      else {
+        strMissed(T("The far-off number is only one voice in the group — its pull is shared.",
+                    "El número lejano es solo una voz en el grupo — su jalón se reparte."));
+      }
+    }
+    strUp.addEventListener("click", function(){ strDirPick(true); });
+    strDown.addEventListener("click", function(){ strDirPick(false); });
+    strLittle.addEventListener("click", function(){ strSizePick("little"); });
+    strLot.addEventListener("click", function(){ strSizePick("lot"); });
+
+    /* the stretch appears WITH the close card, however the card got there */
+    try{
+      if(window.MutationObserver){
+        new MutationObserver(function(){ try{ strPaint(); }catch(e){} })
+          .observe(closeCard, {attributes:true, attributeFilter:["hidden"]});
+      }
+    }catch(e){}
+
+    /* ── ride the existing clocks, never invent a new one ────────────── */
+    /* fleet convention: tally() carries demo/stretch additively, so the
+       send payload, the copy row, and the probe read the same source */
+    tally = (function(orig){
+      return function(){
+        var t = orig.apply(this, arguments);
+        try{
+          t.demo = !!(work && work.demo);
+          t.stretch = (work && typeof work.stretch === "string") ? work.stretch : "";
+        }catch(e){ t.demo = false; t.stretch = ""; }
+        return t;
+      };
+    })(tally);
+    paintProbe = (function(orig){
+      return function(){
+        var r = orig.apply(this, arguments);
+        try{
+          var dv = $("demoPv"), sv = $("strPv");
+          if(dv) dv.textContent = (work && work.demo) ? T("Yes","Sí") : "—";
+          if(sv) sv.textContent = (work && work.stretch === "solved") ? T("Solved","Resuelto")
+                               : ((work && work.stretch === "tried") ? T("Tried","Intentado") : "—");
+        }catch(e){}
+        return r;
+      };
+    })(paintProbe);
+    render = (function(orig){
+      return function(){
+        var r = orig.apply(this, arguments);
+        try{ demoPaint(); }catch(e){}
+        return r;
+      };
+    })(render);
+    paintLang = (function(orig){
+      return function(){
+        var r = orig.apply(this, arguments);
+        try{ demoPaint(); strPaint(); }catch(e){}
+        return r;
+      };
+    })(paintLang);
+
+    demoPaint(); strPaint(); paintProbe();
+  })();
+
+  if(!hasLS) flagSaved(false);
+})();
+</script>
+
+<script>
+/* ══ WORKING MODE ══ the page folds its read-once preamble the moment the
+   student starts working, so each problem lands on one screen.
+
+   ⚠ ENGAGED BY THE STUDENT'S FIRST TOUCH INSIDE #stage, not on load. The
+   intro is worth reading once; it is only in the way afterwards. A tap, a
+   key, or a drag on the number line all count.
+   ⚠ THE FLAG IS PER ACTIVITY AND PERSISTS, so a reload mid-set does not
+   drop them back above the fold and make them scroll again -- which is the
+   exact complaint this answers. "Show the intro" clears it. */
+(function(){
+  "use strict";
+  var KEY_WM = (typeof KEY === "string" ? KEY : "aog.mod.") + "workmode";
+  var root = document.documentElement;
+  var bar  = document.getElementById("wmBar");
+  var out  = document.getElementById("wmOut");
+  var nm   = document.getElementById("wmName");
+  var stage = document.getElementById("stage");
+  if(!bar || !stage) return;
+
+  function title(){
+    var h = document.querySelector(".sheet-head h1, .sheet-head h2");
+    return h ? (h.textContent || "").trim() : "";
+  }
+  function paintName(){ if(nm) nm.textContent = title(); }
+
+  function on(persist){
+    if(root.classList.contains("wm")) return;
+    root.classList.add("wm");
+    paintName();
+    if(persist !== false){ try{ localStorage.setItem(KEY_WM, "1"); }catch(e){} }
+    keepStageInView(true);
+  }
+  function off(){
+    root.classList.remove("wm");
+    try{ localStorage.removeItem(KEY_WM); }catch(e){}
+    try{ window.scrollTo({top:0, behavior:"auto"}); }catch(e){ window.scrollTo(0,0); }
+  }
+
+  /* ⚠ ONLY scrolls when the top of the stage has actually drifted off the
+     top of the screen. A problem type taller than the viewport must still
+     be scrollable by the student; yanking them to the top mid-drag would
+     be worse than the scrolling we are removing. */
+  function keepStageInView(force){
+    try{
+      var r = stage.getBoundingClientRect();
+      var top = (bar && root.classList.contains("wm")) ? bar.getBoundingClientRect().height : 0;
+      if(force || r.top < top - 1){
+        var y = r.top + window.pageYOffset - top - 6;
+        window.scrollTo({ top: Math.max(0, y), behavior: "auto" });
+      }
+    }catch(e){}
+  }
+
+  ["pointerdown","keydown"].forEach(function(ev){
+    stage.addEventListener(ev, function(){ on(); }, true);
+  });
+  if(out) out.addEventListener("click", off);
+
+  try{ if(localStorage.getItem(KEY_WM) === "1") on(false); }catch(e){}
+
+  /* the stage is rebuilt from scratch for every problem — follow it */
+  try{
+    new MutationObserver(function(){
+      if(root.classList.contains("wm")){ paintName(); keepStageInView(false); }
+    }).observe(stage, { childList:true, subtree:true });
+  }catch(e){}
+
+  /* the language switch repaints every [data-en]; the bar's own name is
+     not one of those, so repaint it here too */
+  try{
+    new MutationObserver(paintName).observe(document.documentElement,
+      { attributes:true, attributeFilter:["lang"] });
+  }catch(e){}
+  paintName();
+})();
+</script>
+
+
+<script>
+/* == FIT THE SCREEN == AOG-WM-FIT-V1 (.30ek) ==============================
+   Working mode put the card at the top of the screen; this makes it end on
+   the screen too. If the stage is taller than the room under the strip, it
+   zooms down just enough to fit - the same move a teacher makes at 75%
+   browser zoom - floored at 0.7 so text never becomes unreadable. Screen
+   only, working mode only, print untouched. The value rides :root as a
+   custom property because the stage is rebuilt from JS on every problem. */
+(function(){
+  "use strict";
+  var root = document.documentElement;
+  var stage = document.getElementById("stage");
+  var bar = document.getElementById("wmBar");
+  if(!stage) return;
+
+  var css = document.createElement("style");
+  css.textContent =
+    ":root.wm #stage{zoom:var(--aogwmz,1);}" +
+    "@media print{#stage{zoom:1 !important;}}";
+  document.head.appendChild(css);
+
+  function fit(){
+    if(!root.classList.contains("wm")){ root.style.removeProperty("--aogwmz"); return; }
+    /* measure at zoom 1, always - never measure our own shrink */
+    root.style.setProperty("--aogwmz","1");
+    var need = 0, top = 0;
+    try{
+      need = stage.getBoundingClientRect().height;
+      if(bar) top = bar.getBoundingClientRect().height;
+    }catch(e){ return; }
+    if(!need) return;
+    /* 14px: the stage's own breathing room under the strip */
+    var avail = (window.innerHeight || 0) - top - 14;
+    if(avail <= 0) return;
+    var z = avail / need;
+    if(z < 1) root.style.setProperty("--aogwmz", String(Math.max(0.7, Math.floor(z * 100) / 100)));
+  }
+  var t = 0;
+  function ask(){ if(t) clearTimeout(t); t = setTimeout(function(){ t = 0; fit(); }, 60); }
+
+  /* every problem rebuilds the stage; every EN/ES flip changes the text
+     lengths; wm can flip on and off; and phones rotate */
+  try{ new MutationObserver(ask).observe(stage, {childList:true, subtree:true}); }catch(e){}
+  try{ new MutationObserver(ask).observe(root, {attributes:true, attributeFilter:["class","lang"]}); }catch(e){}
+  window.addEventListener("resize", ask);
+  window.addEventListener("orientationchange", ask);
+  ask();
+})();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,303 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Fraunces:ital,opsz,wght@0,9..144,400..900;1,9..144,400..700&display=swap" rel="stylesheet">
+<title>El Ecosistema de Grace — Architecture of Grace</title>
+<style>
+  @page { size: Letter; margin: 0; }
+  :root{
+    --ink:#2C3A47; --navy:#1B3A5F; --slate:#46506E; --faint:#8a96a3;
+    --gold:#B8893A; --gold-dk:#9a6f24; --gold-lt:#E7D9B6; --cream:#FBF3DF; --cream-card:#fff;
+    --identity:#1C5499; --compassion:#356B25; --forgive:#9a6f24; --grace:#523C9E;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    font-family:Georgia,"Times New Roman",serif; color:var(--ink); background:#FCF8F0;
+    -webkit-print-color-adjust:exact; print-color-adjust:exact;
+  }
+  .page{
+    width:8.5in; min-height:11in; margin:0 auto 18px; padding:0.55in 0.6in 0.5in;
+    background:
+      radial-gradient(at 12% 0%, rgba(184,137,58,.07) 0, transparent 42%),
+      radial-gradient(at 92% 100%, rgba(27,58,95,.06) 0, transparent 45%),
+      var(--cream);
+    box-shadow:0 1px 6px rgba(0,0,0,.12);
+  }
+  .brandrow{display:flex; align-items:center; gap:12px;}
+  .mark{width:46px; height:46px; border-radius:11px; background:var(--navy); color:#E7C77B;
+    display:flex; align-items:center; justify-content:center; font-size:27px; font-weight:700;}
+  .brand{font-size:19px; font-weight:700; color:var(--navy); letter-spacing:.2px;}
+  .brand small{display:block; font-family:Arial,Helvetica,sans-serif; font-size:10px; font-weight:400;
+    color:#5A6B7B; letter-spacing:.04em; margin-top:2px;}
+  h1{font-size:34px; color:var(--navy); margin:18px 0 4px; letter-spacing:-.4px;}
+  h2{font-family:Arial,Helvetica,sans-serif; font-size:12px; font-weight:700; letter-spacing:.14em;
+    text-transform:uppercase; color:var(--gold-dk); margin:26px 0 10px;}
+  .tagline{font-style:italic; font-size:15.5px; color:var(--slate); margin:0 0 4px; max-width:6.6in;}
+  .rule{height:2px; background:var(--gold); border:0; margin:12px 0 14px;}
+  p.body{font-size:13.5px; line-height:1.6; color:var(--slate); margin:0 0 10px; max-width:6.9in;}
+  .lead{font-size:14.5px; line-height:1.65; color:var(--ink);}
+  .pillars{display:grid; grid-template-columns:1fr 1fr 1fr 1fr; gap:10px; margin:6px 0 4px;}
+  .pill{border-radius:11px; padding:11px 12px; color:#fff;}
+  .pill .n{font-family:Arial,sans-serif; font-size:9px; font-weight:700; letter-spacing:.12em; text-transform:uppercase; opacity:.85;}
+  .pill .t{font-size:17px; font-weight:700; margin:2px 0 4px;}
+  .pill .d{font-size:11px; line-height:1.4; opacity:.95;}
+  .p-id{background:var(--identity);} .p-sc{background:var(--compassion);}
+  .p-fg{background:var(--forgive);} .p-gr{background:var(--grace);}
+  .grid2{display:grid; grid-template-columns:1fr 1fr; gap:13px;}
+  .card{background:var(--cream-card); border:1.5px solid var(--gold-lt); border-left:5px solid var(--gold);
+    border-radius:12px; padding:13px 15px; break-inside:avoid;}
+  .grid2,.pillars{break-inside:avoid;}
+  .card h3{font-size:15.5px; color:var(--navy); margin:0 0 5px;}
+  .card .num{font-family:Arial,sans-serif; font-size:10px; font-weight:700; letter-spacing:.1em;
+    text-transform:uppercase; color:var(--gold-dk);}
+  .card p{font-size:12.5px; line-height:1.5; color:var(--slate); margin:4px 0 0;}
+  .tag{display:inline-block; font-family:Arial,sans-serif; font-size:8.5px; font-weight:700; letter-spacing:.08em;
+    text-transform:uppercase; padding:2px 7px; border-radius:20px; margin-top:7px;}
+  .t-high{background:#e7f0e7; color:#2E6B3A;} .t-med{background:#fbf0d6; color:#9a6f24;} .t-low{background:#eef0f4; color:#5A6B7B;}
+  table.road{width:100%; border-collapse:collapse; font-size:12px;}
+  table.road th{font-family:Arial,sans-serif; font-size:9.5px; font-weight:700; letter-spacing:.08em; text-transform:uppercase;
+    color:#fff; background:var(--navy); text-align:left; padding:7px 9px;}
+  table.road td{border-bottom:1px solid var(--gold-lt); padding:8px 9px; line-height:1.45; color:var(--ink); vertical-align:top;}
+  table.road tr:nth-child(even) td{background:rgba(184,137,58,.05);}
+  .phase{font-family:Arial,sans-serif; font-weight:700; font-size:11px; color:var(--navy);}
+  .foot{margin-top:18px; display:flex; justify-content:space-between; align-items:baseline;
+    font-family:Arial,sans-serif; font-size:10.5px; color:var(--faint); border-top:1px solid var(--gold-lt); padding-top:8px;}
+  .foot b{color:var(--navy);}
+  .stick{font-style:italic; font-family:Georgia,serif; font-size:12px; color:var(--gold-dk);}
+  .callout{background:#fff; border:1.5px solid var(--gold-lt); border-radius:12px; padding:13px 16px; margin:10px 0;}
+  .callout b{color:var(--navy);}
+  ul.clean{margin:4px 0 0; padding-left:18px;}
+  ul.clean li{font-size:12.5px; line-height:1.55; color:var(--slate); margin-bottom:4px;}
+  @media print{ body{background:#fff;} .page{box-shadow:none; margin:0 auto;} }
+
+  /* ===== site nav (screen only; hidden in print) ===== */
+  .aognav{position:sticky; top:0; z-index:60; display:flex; align-items:center; justify-content:space-between; gap:14px; flex-wrap:wrap; row-gap:10px; background:#FDFCF7; border-bottom:1px solid #E4DAC5; padding:18px 28px; box-shadow:0 2px 10px rgba(10,30,51,.06);}
+  .aognav .nbrand{display:flex; align-items:center; gap:12px; text-decoration:none;}
+  .aognav .nbrand .mk{width:36px; height:36px; border-radius:6px; background:#0A1E33; color:#F2C964; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:18px; box-shadow:0 1px 4px rgba(10,30,51,.18);}
+  .aognav .nbrand .bn{font-family:"Fraunces","Cormorant Garamond",Georgia,serif; font-weight:600; font-size:17px; color:#0A1E33; line-height:1.1;}
+  .aognav .nbrand .bs{display:block; font-family:Arial,Helvetica,sans-serif; font-size:10.5px; font-weight:400; color:#8A92A6; letter-spacing:.05em; margin-top:2px;}
+  .aognav .nactions{display:flex; align-items:center; gap:8px; flex-wrap:nowrap;}
+  .aognav .pill{display:inline-flex; align-items:center; gap:6px; font-family:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; font-size:13px; font-weight:800; text-decoration:none; border-radius:999px; white-space:nowrap; cursor:pointer; border:1px solid transparent; line-height:1;}
+  .aognav .pill .pic{flex:none;}
+  .aognav .pill.rn .pic, .aognav .pill.ci .pic{color:#F2C964;}
+  .aognav .pill.rn{background:#D9A33B; color:#0A1E33; border-color:#0A1E33; padding:6px 14px; margin-right:14px; flex:none;}
+  .aognav .pill.ci{background:#0A1E33; color:#F4EEE2; border-color:#0A1E33; padding:7px 16px; flex:none;}
+  .aognav .pill.ex{background:#F1DFA8; color:#0A1E33; border-color:#D9A33B; font-weight:700; padding:6px 13px;}
+  .aognav .pill:hover{filter:brightness(.97);}
+  .aognav .pill.back{background:transparent; color:#0A1E33; border:none; outline:none; -webkit-appearance:none; appearance:none; font-weight:700; padding:0; margin-right:16px; cursor:pointer; flex:none;}
+  .aognav .pill.back:focus{outline:none;}
+  .aognav .pill.back:focus-visible{outline:2px solid #D9A33B; outline-offset:3px; border-radius:6px;}
+  .aognav .pill.back:hover{color:#D9A33B;}
+  .aognav .pill.back .arr{color:#D9A33B; font-weight:700;}
+  .aognav .exwrap{position:relative; margin-right:14px; flex:none;}
+  .aognav .exmenu{position:absolute; top:calc(100% + 8px); right:0; min-width:232px; background:#FCF8F0; border:1px solid #E4DAC5; border-radius:14px; box-shadow:0 18px 40px -16px rgba(10,30,51,.4); padding:7px; z-index:80;}
+  .aognav .exmenu[hidden]{display:none;}
+  .aognav .exmenu a{display:flex; align-items:center; gap:11px; padding:10px 12px; border-radius:10px; text-decoration:none; color:#0A1E33; font-family:Arial,Helvetica,sans-serif; font-size:14.5px; font-weight:600; white-space:nowrap;}
+  .aognav .exmenu a svg{width:18px; height:18px; color:#D9A33B; flex:none;}
+  .aognav .exmenu a:hover{background:rgba(184,137,58,.14);}
+  .aognav .exchev{transition:transform .15s ease;}
+  .aognav .pill.ex[aria-expanded="true"] .exchev{transform:rotate(180deg);}
+  .aognav .nutil{display:flex; align-items:center; gap:8px;}
+  .aognav .uic{width:34px; height:34px; border:1px solid #E4DAC5; border-radius:9px; display:inline-grid; place-items:center; color:#46506E; text-decoration:none; flex:none;}
+  .aognav .lang{flex:none;}
+  .aognav .uic:hover{background:rgba(184,137,58,.12);}
+  .aognav .uic svg{width:18px; height:18px;}
+  .aognav .lang{display:inline-flex; background:#F4EEE2; border:1px solid #E4DAC5; border-radius:999px; padding:3px;}
+  .aognav .lang .on, .aognav .lang a{background:transparent; padding:5px 12px; border-radius:999px; font-family:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; font-size:12px; font-weight:600; text-decoration:none; color:#46506E;}
+  .aognav .lang .on{background:#0A1E33; color:#fff; box-shadow:0 1px 2px rgba(10,30,51,.18);}
+  @media (max-width:600px){ .aognav{ flex-wrap:wrap; gap:8px; justify-content:center; } .aognav .nbrand{ width:100%; text-align:center; } .aognav .nactions{ flex-wrap:wrap; justify-content:center; } }
+  @media print{ .aognav{display:none !important;} }
+</style>
+<style id="aog-print-page-responsive">
+/* ⚠ SCREEN ONLY — @media print must keep the 8.5in sheet exactly as it was.
+   .page is width:8.5in because these are printable handouts. On a phone that
+   fixed 816px sheet overflowed the viewport by 426px at 390, and the four-up
+   grids and the four-column tables overflowed again once the sheet was fluid.
+   This lets the sheet, its grids and its tables reflow on screen, and leaves
+   the printed sheet untouched. */
+@media screen and (max-width:880px){
+  .page{width:auto !important;max-width:100% !important;min-height:0 !important;
+        padding:22px 18px !important;margin:0 auto !important;box-shadow:none !important;}
+  .brandrow{flex-wrap:wrap;}
+  .pillars,.path,.loop{grid-template-columns:1fr 1fr !important;}
+  .grid2,.grid{grid-template-columns:1fr !important;}
+  img,svg{max-width:100%;height:auto;}
+  table{display:block;width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch;}
+}
+@media screen and (max-width:520px){
+  .pillars,.path,.loop{grid-template-columns:1fr !important;}
+}
+</style>
+</head>
+<body>
+
+<nav class="aognav" aria-label="Navegación del sitio">
+  <a class="nbrand" href="../index.html"><span class="mk">A</span><span><span class="bn">Architecture of Grace</span></span></a>
+  <div class="nactions">
+    <button class="pill back" type="button" onclick="aognavBack()"><span class="arr">&#8592;</span> <span data-i18n="nav.back">Atrás</span></button>
+  <a class="pill rn" href="../index.html#right-now"><svg class="pic" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-4.35-9-8a5 5 0 0 1 9-3 5 5 0 0 1 9 3c-2 3.65-9 8-9 8z"/></svg> <span data-i18n="nav.rn">Ahora mismo</span></a>
+  <a class="pill ci" href="../index.html#checkin"><svg class="pic" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg> <span data-i18n="nav.ci">Registro</span></a>
+  <div class="exwrap">
+    <button class="pill ex" id="aognavEx" type="button" aria-haspopup="true" aria-expanded="false" onclick="aognavToggle(event)"><svg class="pic" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18"/></svg> <span data-i18n="nav.explore">Explorar</span> <svg class="exchev" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button>
+    <div class="exmenu" id="aognavMenu" role="menu" hidden>
+      <a role="menuitem" href="../index.html#library"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg> <span data-i18n="nav.library">Biblioteca</span></a>
+      <a role="menuitem" href="../index.html#tools"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2a5 5 0 0 1 5 5c0 2.76-2.24 5-5 5S7 9.76 7 7a5 5 0 0 1 5-5z"/><path d="M3 21v-1a7 7 0 0 1 7-7h4a7 7 0 0 1 7 7v1"/></svg> <span data-i18n="nav.tools">Herramientas de calma y regulación</span></a>
+      <a role="menuitem" href="/#grace-ecosystem"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="2.5"/><circle cx="5" cy="6" r="2"/><circle cx="19" cy="6" r="2"/><circle cx="5" cy="18" r="2"/><circle cx="19" cy="18" r="2"/><path d="M10.2 10.6 6.4 7.4M13.8 10.6l3.8-3.2M10.2 13.4 6.4 16.6M13.8 13.4l3.8 3.2"/></svg> <span data-i18n="nav.eco">Ecosistema</span></a>
+      <a role="menuitem" href="../index.html#framework"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21h18"/><path d="M4 21V9l8-5 8 5v12"/><path d="M9 21v-6h6v6"/></svg> <span data-i18n="nav.framework">Marco</span></a>
+      <a role="menuitem" href="../index.html#dashboard"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 13h8V3H3zM13 21h8V3h-8zM3 21h8v-6H3z"/></svg> <span data-i18n="nav.dashboard">Panel</span></a>
+    </div>
+  </div>
+  <div class="nutil">
+    <a class="uic" href="../index.html" title="Opciones de accesibilidad (en la app)" aria-label="Opciones de accesibilidad"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="4" r="1.6"/><path d="M5 8h14M9 8l1 11M15 8l-1 11M12 8v5"/></svg></a>
+    <a class="uic" href="../index.html" title="Personalizar" aria-label="Personalizar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="4" y1="7" x2="20" y2="7"/><circle cx="9" cy="7" r="2.3"/><line x1="4" y1="17" x2="20" y2="17"/><circle cx="15" cy="17" r="2.3"/></svg></a>
+    <a class="uic" href="../index.html" title="Pantalla y modo oscuro (en la app)" aria-label="Opciones de pantalla"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg></a>
+    <span class="lang"><a href="AoG-Ecosystem-Overview.html" title="English (in the app)">EN</a><span class="on">ES</span></span>
+  </div>
+  </div>
+</nav>
+<script>
+  function aognavBack(){ if(window.history.length>1){window.history.back();} else {window.location.href='../index.html'; } }
+  function aognavToggle(e){ if(e)e.preventDefault(); var b=document.getElementById('aognavEx'),m=document.getElementById('aognavMenu'); if(!b||!m)return; if(m.hasAttribute('hidden')){ m.removeAttribute('hidden'); b.setAttribute('aria-expanded','true'); } else { m.setAttribute('hidden',''); b.setAttribute('aria-expanded','false'); } }
+  document.addEventListener('click', function(ev){ var m=document.getElementById('aognavMenu'); if(!m||m.hasAttribute('hidden'))return; if(ev.target.closest && (ev.target.closest('#aognavMenu')||ev.target.closest('#aognavEx')))return; m.setAttribute('hidden',''); var b=document.getElementById('aognavEx'); if(b)b.setAttribute('aria-expanded','false'); });
+  document.addEventListener('keydown', function(ev){ if(ev.key==='Escape'){ var m=document.getElementById('aognavMenu'); if(m)m.setAttribute('hidden',''); var b=document.getElementById('aognavEx'); if(b)b.setAttribute('aria-expanded','false'); } });
+</script>
+
+
+<!-- PAGE 1 -->
+<div class="page">
+  <div class="brandrow">
+    <a class="mark" href="../index.html" title="Architecture of Grace" style="text-decoration:none;">A</a>
+    <div class="brand">Architecture of Grace</div>
+  </div>
+
+  <div style="font-family:Arial,Helvetica,sans-serif; font-size:11px; font-weight:700; letter-spacing:.16em; text-transform:uppercase; color:#9a6f24; margin-top:16px;">Para socios y escuelas</div>
+  <h1 style="margin-top:4px;">El Ecosistema de Grace</h1>
+  <p class="tagline">Una visión estratégica para líderes y socios — cómo el marco abarca el hogar, la escuela y la vida adulta.</p>
+  <hr class="rule">
+
+  <p class="body lead">Architecture of Grace se construye sobre cuatro pilares: <b>Identidad, Autocompasión, Perdón</b> y <b>Gracia.</b> La mayoría de los programas los enseñan como lecciones de aula que se quedan en la puerta de la escuela. El Ecosistema de Grace los extiende al hogar, a través del puente entre el hogar y la escuela, y hacia las relaciones que los adultos llevan consigo por el resto de su vida — usando un único vocabulario compartido que toda la familia y la comunidad pueden hablar juntas.</p>
+
+  <div class="pillars">
+    <div class="pill p-id"><div class="n">Pilar uno</div><div class="t">Identidad</div><div class="d">Quiénes llegamos a creer que somos — moldeados por lo que los demás notan en voz alta.</div></div>
+    <div class="pill p-sc"><div class="n">Pilar dos</div><div class="t">Autocompasión</div><div class="d">Cómo nos hablamos a nosotros mismos cuando las cosas salen mal.</div></div>
+    <div class="pill p-fg"><div class="n">Pilar tres</div><div class="t">Perdón</div><div class="d">Reparar lo que se ha roto para dar lugar al crecimiento.</div></div>
+    <div class="pill p-gr"><div class="n">Pilar cuatro</div><div class="t">Gracia</div><div class="d">Recibir a las personas con comprensión antes que con juicio.</div></div>
+  </div>
+
+  <h2>Por qué esto importa — Fundamento estratégico</h2>
+  <p class="body">Las habilidades socioemocionales no perduran cuando viven solo en un aula. Un niño aprende a "darle la vuelta a la voz crítica" en una lección del martes y luego llega a un hogar que habla un idioma totalmente distinto. El Ecosistema de Grace cierra esa brecha. Está diseñado en torno a cuatro convicciones:</p>
+  <div class="grid2">
+    <div class="card"><div class="num">Convicción 01</div><h3>Las relaciones son la habilidad</h3><p>No un complemento opcional a lo académico — el cimiento sobre el que se sostiene todo lo demás. Tratamos la conexión como la competencia central, no como el calentamiento.</p></div>
+    <div class="card"><div class="num">Convicción 02</div><h3>El mismo lenguaje, en todas partes</h3><p>Cuando un padre, un docente, un consejero y un niño dicen todos "conexión antes que corrección", el concepto se convierte en cultura en lugar de una hoja de trabajo.</p></div>
+    <div class="card"><div class="num">Convicción 03</div><h3>Los adultos también crecen</h3><p>No solo entregamos a padres y educadores herramientas para los niños. Les damos un camino de desarrollo propio. No puedes dar una gracia que nunca has recibido.</p></div>
+    <div class="card"><div class="num">Convicción 04</div><h3>Cinco minutos, no un plan de estudios</h3><p>Cada práctica encaja en una vida real — de 5 a 15 minutos, en forma de conversación, sin necesidad de capacitación. Lo que se puede repetir gana a lo elaborado.</p></div>
+  </div>
+
+  <div class="callout">
+    <p class="body" style="margin:0;"><b>El cambio de enfoque.</b> Architecture of Grace no es "otro programa de SEL para estudiantes". Es un <b>marco de desarrollo de relaciones para toda la vida</b> — hogar, escuela y vida adulta — anclado en cuatro pilares que cualquiera puede practicar y un vocabulario que todos pueden compartir.</p>
+  </div>
+
+  <div class="foot">
+    <span>architectureofgrace.org</span>
+    <span class="stick">Empieza donde quieras. Habla un solo idioma.</span>
+  </div>
+</div>
+
+<!-- PAGE 2 -->
+<div class="page">
+  <h2 style="margin-top:4px;">El ecosistema de un vistazo</h2>
+  <p class="body">Seis componentes conectados. Cada uno funciona por sí solo — y cada uno refuerza a los demás.</p>
+  <div class="grid2">
+    <div class="card"><div class="num">Parte uno</div><h3>Grace en el hogar</h3><p>Un ritmo familiar semanal: invitaciones, actividades, registros y desafíos que convierten los cuatro pilares en una conversación cotidiana en la mesa de la cocina.</p></div>
+    <div class="card"><div class="num">Parte dos</div><h3>Conexión hogar–escuela</h3><p>El puente: vocabulario compartido, seguimiento de evaluaciones y monitoreo del crecimiento para que el hogar y la escuela avancen en la misma dirección.</p></div>
+    <div class="card"><div class="num">Parte tres</div><h3>Grace para padres</h3><p>Un camino de desarrollo para los adultos — identidad, autocompasión, perdón y gracia en el trabajo más difícil que existe.</p></div>
+    <div class="card"><div class="num">Parte cuatro</div><h3>Grace para educadores</h3><p>Crecimiento profesional que protege a las personas que hacen el trabajo: prevención del agotamiento, reparación, confianza del personal, liderazgo a través de la gracia.</p></div>
+    <div class="card"><div class="num">Parte cinco</div><h3>Grace para la vida adulta</h3><p>El marco más allá de la educación — equipos, parejas, amistades, cuidadores, comunidades y crecimiento personal.</p></div>
+    <div class="card"><div class="num">Parte seis</div><h3>Características distintivas</h3><p>Diez experiencias distintivas y difíciles de copiar que convierten un conjunto de recursos en un movimiento al que las personas pertenecen.</p></div>
+  </div>
+
+  <div class="foot">
+    <span>El Ecosistema de Grace &nbsp;·&nbsp; Los seis componentes</span>
+    <span class="stick">Seis partes, un solo idioma.</span>
+  </div>
+</div>
+
+<!-- PAGE 3: features -->
+<div class="page">
+  <h2 style="margin-top:4px;">Diez características distintivas</h2>
+  <p class="body">Diseñadas para ser prácticas, escalables, alineadas con la misión, memorables — y claramente diferentes del SEL tradicional.</p>
+  <div class="grid2">
+    <div class="card"><div class="num">Característica 01</div><h3>El Viaje de Grace en Familia</h3><p>Un recorrido guiado de varias semanas que un hogar transita junto, un pilar a la vez, con un recuerdo que muestra cuánto han avanzado.<span class="tag t-high">Prioridad alta · MVP</span></p></div>
+    <div class="card"><div class="num">Característica 02</div><h3>El Ciclo de Reflexión Hogar–Escuela</h3><p>Un sencillo ida y vuelta: la escuela envía una invitación al hogar, la familia reflexiona y una nota regresa al docente. Conexión, no tarea.<span class="tag t-high">Prioridad alta · MVP</span></p></div>
+    <div class="card"><div class="num">Característica 03</div><h3>Tarjetas de Conversación de Grace</h3><p>Un mazo de invitaciones codificadas por pilar para la mesa, los trayectos en auto, las aulas y las reuniones de personal — las mismas tarjetas, en cada entorno.<span class="tag t-high">Prioridad alta · MVP</span></p></div>
+    <div class="card"><div class="num">Característica 04</div><h3>Mapas de Crecimiento Relacional</h3><p>Una imagen de dónde está creciendo una persona o familia en los cuatro pilares — fortalezas, áreas de mejora y un próximo paso.<span class="tag t-med">Media · Fase 2</span></p></div>
+    <div class="card"><div class="num">Característica 05</div><h3>Herramientas de Reflexión Intergeneracional</h3><p>Invitaciones que un abuelo, un padre y un niño pueden responder lado a lado — sacando a la luz los patrones de gracia heredados de la familia.<span class="tag t-med">Media · Fase 2</span></p></div>
+    <div class="card"><div class="num">Característica 06</div><h3>Desafíos de Grace</h3><p>Retos mensuales de poco esfuerzo ("repara una cosa esta semana") que hacen lo abstracto concreto y un poco divertido.<span class="tag t-high">Prioridad alta · MVP</span></p></div>
+    <div class="card"><div class="num">Característica 07</div><h3>Panel Familiar Compartido</h3><p>Una vista ligera y opcional de las rachas, reflexiones y pilar actual de la familia — el cartel del refrigerador, mejorado.<span class="tag t-low">Menor · Fase 3</span></p></div>
+    <div class="card"><div class="num">Característica 08</div><h3>Caminos de Grace para Adultos</h3><p>Rutas autoguiadas para padres, educadores, parejas, líderes y cuidadores — el marco aplicado a una vida adulta.<span class="tag t-med">Media · Fase 2</span></p></div>
+    <div class="card"><div class="num">Característica 09</div><h3>El Vocabulario de Grace</h3><p>Un léxico compartido — "sorpréndelos siendo buenos", "darle la vuelta a la voz crítica", "el reintento", "conexión antes que corrección" — que viaja por todos los entornos.<span class="tag t-high">Prioridad alta · MVP</span></p></div>
+    <div class="card"><div class="num">Característica 10</div><h3>Rituales de Reparación</h3><p>Rutinas de cuatro pasos con nombre y repetibles para enmendar las cosas — en la mesa familiar, en el aula y en la sala de profesores.<span class="tag t-high">Prioridad alta · MVP</span></p></div>
+  </div>
+
+  <div class="foot">
+    <span>El Ecosistema de Grace &nbsp;·&nbsp; Visión general</span>
+    <span class="stick">Diferente por diseño.</span>
+  </div>
+</div>
+
+<!-- PAGE 3 -->
+<div class="page">
+  <h2 style="margin-top:4px;">Hoja de ruta de implementación</h2>
+  <p class="body">Tres fases, secuenciadas para que cada una construya el público y la prueba para la siguiente. El MVP puede lanzarse con materiales que ya produces.</p>
+  <table class="road">
+    <thead>
+      <tr><th style="width:13%">Fase</th><th style="width:30%">Qué se lanza</th><th style="width:30%">Por qué primero</th><th style="width:27%">Prueba de que funciona</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="phase">Fase 1<br>MVP</span><br><span style="font-size:10px;color:var(--faint)">Meses 0–3</span></td>
+        <td>Sistema semanal de Grace en el hogar · Tarjetas "Esta semana" · Tarjetas de Conversación de Grace · Ciclo de Reflexión Hogar–Escuela · el Vocabulario de Grace compartido · Rituales de Reparación</td>
+        <td>El menor costo, el mayor alcance. Usa tu contenido existente de los pilares y el estilo imprimible. Construye el lenguaje común del que depende todo lo demás.</td>
+        <td>Las familias completan un ciclo de 4 semanas; los docentes reportan que las invitaciones regresan del hogar; el vocabulario aparece de forma espontánea en la conversación.</td>
+      </tr>
+      <tr>
+        <td><span class="phase">Fase 2<br>Crecer</span><br><span style="font-size:10px;color:var(--faint)">Meses 3–9</span></td>
+        <td>Caminos de Grace para Adultos (padres + educadores) · Mapas de Crecimiento Relacional · Herramientas Intergeneracionales · biblioteca de Desafíos de Grace</td>
+        <td>Convierte al público de "usuarios de recursos para niños" en personas que crecen ellas mismas. Profundiza la lealtad y la recomendación de boca en boca.</td>
+        <td>Los adultos se inscriben por su cuenta en un camino; las escuelas adoptan la ruta para educadores como desarrollo profesional; participación recurrente mes tras mes.</td>
+      </tr>
+      <tr>
+        <td><span class="phase">Fase 3<br>Escalar</span><br><span style="font-size:10px;color:var(--faint)">Meses 9–18</span></td>
+        <td>Panel Familiar Compartido · Grace para la vida adulta (equipos, parejas, cuidadores, comunidad, fe) · kits de facilitación/licencia</td>
+        <td>Convierte el marco en una plataforma que otros pueden operar. Abre ingresos y alianzas más allá de las escuelas y las familias.</td>
+        <td>Las organizaciones licencian el marco; retención del panel; nuevos públicos ingresan fuera de la educación K–12.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>Clasificación de prioridades</h2>
+  <div class="grid2">
+    <div class="card" style="border-left-color:#2E6B3A;"><div class="num" style="color:#2E6B3A;">Construir primero · Alta</div><h3>El lenguaje común</h3><p>Sistema semanal de Grace en el hogar, tarjetas "Esta semana", Tarjetas de Conversación, el Vocabulario, los Rituales de Reparación y el Ciclo de Reflexión. Todo lo demás da por hecho que estos existen.</p></div>
+    <div class="card" style="border-left-color:#9a6f24;"><div class="num" style="color:#9a6f24;">Construir después · Media</div><h3>Los caminos para adultos</h3><p>Grace para padres y Grace para educadores, Mapas de Crecimiento, herramientas Intergeneracionales y la biblioteca de Desafíos. Estos profundizan la relación y diferencian con fuerza.</p></div>
+    <div class="card" style="border-left-color:#5A6B7B;"><div class="num" style="color:#5A6B7B;">Construir más adelante · Menor</div><h3>La plataforma</h3><p>Panel Familiar Compartido, la expansión completa a la vida adulta y los kits de licencia. De alto valor, pero dependen del impulso de las fases 1 y 2 y de un mayor esfuerzo de construcción.</p></div>
+    <div class="card"><div class="num">MVP vs. futuro</div><h3>Con qué lanzar</h3><p><b>MVP:</b> el sistema imprimible para el hogar, las tarjetas, el vocabulario, el ciclo de reflexión. <b>Futuro:</b> paneles, mapas de crecimiento y las capas más amplias de vida adulta y licencias.</p></div>
+  </div>
+
+  <div class="callout">
+    <p class="body" style="margin:0;"><b>Cómo usar este paquete.</b> Las páginas que siguen son los recursos de trabajo — Grace en el hogar, la Conexión Hogar–Escuela y los tres caminos para adultos. Cada uno está listo para imprimir en este mismo estilo y diseñado para usarse en 5 a 15 minutos. Empieza con Grace en el hogar; agrega el resto a medida que el lenguaje se afianza.</p>
+  </div>
+
+  <div class="foot">
+    <span>architectureofgrace.org</span>
+    <span class="stick">El hogar. La escuela. Toda la vida.</span>
+  </div>
+</div>
+
+<script src="../aog-nav.js"></script>
+</body>
+</html>

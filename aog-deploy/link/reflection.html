@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- ═══ A FRONT DOOR, NOT A PAGE ═══════════════════════════════════════════
+     Build .29ak. This file exists for one reason: a link scraper reads the
+     <head> of the URL it is given and runs no JavaScript, so every link type
+     sharing one URL could only ever show one preview card. This document
+     carries reflection's card and then hands the reader straight on to the app
+     with the whole query string intact.
+
+     ⚠ NO <meta http-equiv="refresh">. Some scrapers follow one and would end
+     up reading index.html's card instead of this one. The forward is script
+     only, with a real link underneath it for anyone without script.
+     ⚠ THE IMAGE URL CARRIES ?v=. Apple, Google, Slack and Facebook cache an
+     og image BY URL for weeks. Change the picture, bump the v, or nothing
+     you do will show up in a new message.
+     ══════════════════════════════════════════════════════════════════════ -->
+<title>The self-reflection &middot; Architecture of Grace</title>
+<meta name="description" content="Eighteen questions, two or three times a year — the one that fills the dashboard's bands. Private, and no name attached.">
+<!-- ═══ AOG ICONS + LINK PREVIEW · managed block · .30k0 ═══
+     Inserted by _work/aog_head.py — DO NOT hand-edit one page; edit the
+     script and re-run it, or the 100 pages drift apart again. The card
+     URL carries ?v= because Slack, Apple and Google cache an og image BY
+     URL for weeks: change the picture, bump IMG_V, or nothing shows up.
+     ═══════════════════════════════════════════════════════════════ -->
+<meta property="og:locale" content="en_US">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png">
+<link rel="manifest" href="/manifest.json">
+<meta name="apple-mobile-web-app-title" content="Grace">
+<meta name="application-name" content="Architecture of Grace">
+<!-- ═══ END AOG ICONS + LINK PREVIEW ═══ -->
+<link rel="canonical" href="https://architectureofgrace.org/reflection">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Architecture of Grace">
+<meta property="og:title" content="The self-reflection &middot; Architecture of Grace">
+<meta property="og:description" content="Eighteen questions, two or three times a year — the one that fills the dashboard's bands. Private, and no name attached.">
+<meta property="og:url" content="https://architectureofgrace.org/reflection">
+<meta property="og:image" content="https://architectureofgrace.org/og-reflection.png?v=1">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Architecture of Grace — the self-reflection: eighteen questions, two or three times a year.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="The self-reflection &middot; Architecture of Grace">
+<meta name="twitter:description" content="Eighteen questions, two or three times a year — the one that fills the dashboard's bands. Private, and no name attached.">
+<meta name="twitter:image" content="https://architectureofgrace.org/og-reflection.png?v=1">
+<meta name="theme-color" content="#0A1E33">
+<meta name="robots" content="noindex,follow">
+<link rel="icon" href="/favicon.ico">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<style>
+  html,body{height:100%}
+  body{margin:0;background:#0A1E33;color:#EAF0F7;display:flex;align-items:center;
+    justify-content:center;text-align:center;padding:32px;
+    font-family:Georgia,'Iowan Old Style','Times New Roman',serif}
+  .w{max-width:30rem}
+  .eyebrow{font-size:.72rem;letter-spacing:.30em;text-transform:uppercase;color:#D9A33B;
+    padding-left:.30em;margin:0 0 18px}
+  h1{font-size:1.55rem;line-height:1.25;color:#F2CB6B;margin:0 0 14px;font-weight:700}
+  p{font-size:1rem;line-height:1.6;color:#C6D2E2;margin:0 0 22px}
+  a{display:inline-block;background:#D9A33B;color:#0A1E33;text-decoration:none;
+    font-family:Helvetica,Arial,sans-serif;font-weight:700;font-size:.95rem;
+    padding:12px 22px;border-radius:999px}
+</style>
+</head>
+<body>
+  <div class="w">
+    <p class="eyebrow">Architecture of Grace</p>
+    <h1 id="lead">Opening the self-reflection&hellip;</h1>
+    <p id="hint">If nothing happens in a moment, use the button.</p>
+    <a id="go" href="/">Continue</a>
+  </div>
+<script>
+(function () {
+  /* ⚠ THE CARD CANNOT BE TRANSLATED AND THIS SCREEN CAN. A scraper fetches
+     one URL and gets one head, so og:title and og:description are English for
+     everyone — the same constraint that made these pages necessary at all.
+     The one thing a Spanish-speaking family actually reads is this screen and
+     that button, so those follow ?lang=es. */
+  try {
+    if ((new URLSearchParams(location.search).get("lang") || "").toLowerCase() === "es") {
+      document.documentElement.lang = "es";
+      var L = document.getElementById("lead"), H = document.getElementById("hint"),
+          G = document.getElementById("go");
+      if (L) L.innerHTML = "Abriendo la autorreflexión…";
+      if (H) H.textContent = "Si no pasa nada en un momento, usa el botón.";
+      if (G) G.textContent = "Continuar";
+    }
+  } catch (e) {}
+  /* ⚠ THE LINK'S OWN PARAMS WIN. The defaults below are only so that a bare
+     /reflection typed off a board still opens the right thing; a link a dashboard
+     built already carries everything, and must never be overwritten by this
+     file's idea of what the type means. */
+  var DEF = {"sync": "on"};
+  var q;
+  try { q = new URLSearchParams(location.search); } catch (e) { return; }
+  for (var k in DEF) { if (!q.has(k)) q.set(k, DEF[k]); }
+  var s = q.toString();
+  var to = "/" + (s ? "?" + s : "") + (location.hash || "");
+  var a = document.getElementById("go"); if (a) a.href = to;
+  try { location.replace(to); } catch (e) { location.href = to; }
+})();
+</script>
+</body>
+</html>

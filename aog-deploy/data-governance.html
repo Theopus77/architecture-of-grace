@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Data Governance &middot; Architecture of Grace</title>
+<meta name="description" content="Where the data lives, who can reach it, how long it is kept, and how it is deleted. The lifecycle runbook, in plain words.">
+<!-- ═══ AOG ICONS + LINK PREVIEW · managed block · .30k0 ═══
+     Inserted by _work/aog_head.py — DO NOT hand-edit one page; edit the
+     script and re-run it, or the 100 pages drift apart again. The card
+     URL carries ?v= because Slack, Apple and Google cache an og image BY
+     URL for weeks: change the picture, bump IMG_V, or nothing shows up.
+     ═══════════════════════════════════════════════════════════════ -->
+<link rel="canonical" href="https://architectureofgrace.org/governance">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Architecture of Grace">
+<meta property="og:locale" content="en_US">
+<meta property="og:title" content="Data Governance &middot; Architecture of Grace">
+<meta property="og:description" content="Where the data lives, who can reach it, how long it is kept, and how it is deleted. The lifecycle runbook, in plain words.">
+<meta property="og:url" content="https://architectureofgrace.org/governance">
+<meta property="og:image" content="https://architectureofgrace.org/og-schools.png?v=1">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Architecture of Grace for schools and districts — policy, terms, data agreement, accessibility.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Data Governance &middot; Architecture of Grace">
+<meta name="twitter:description" content="Where the data lives, who can reach it, how long it is kept, and how it is deleted. The lifecycle runbook, in plain words.">
+<meta name="twitter:image" content="https://architectureofgrace.org/og-schools.png?v=1">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#0A1E33">
+<meta name="apple-mobile-web-app-title" content="Grace">
+<meta name="application-name" content="Architecture of Grace">
+<!-- ═══ END AOG ICONS + LINK PREVIEW ═══ -->
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,500;0,600;1,500&family=Source+Sans+3:wght@400;600;700&family=IBM+Plex+Mono:wght@500&display=swap">
+<style>
+:root{
+  --ground:#FBF6EC; --card:#FFFDF8; --ink:#182F4C; --ink-soft:#4A5B72;
+  --navy:#14304F; --gold:#C9962E; --gold-deep:#825E10;
+  --wash:#F4E8CC; --rule:#E4D9C3;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--ground); color:var(--ink);
+  font-family:"Source Sans 3",-apple-system,"Segoe UI",Helvetica,Arial,sans-serif;
+  font-size:17px; line-height:1.55; -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:46rem; margin:0 auto; padding:30px 20px 70px}
+code,.mono{font-family:"IBM Plex Mono",ui-monospace,Menlo,monospace; font-size:.86em;
+  background:var(--wash); border-radius:5px; padding:1px 6px 2px; white-space:nowrap}
+a{color:var(--navy); text-decoration-color:var(--gold)}
+a:hover{color:var(--gold-deep)}
+
+/* masthead */
+.mast{padding:8px 0 22px; border-bottom:2px solid var(--gold); margin-bottom:6px}
+.eyebrow{font-size:12px; font-weight:700; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--gold-deep); margin:0 0 6px}
+h1{font-family:"Lora",Georgia,serif; font-weight:600; font-size:clamp(29px,6.5vw,38px);
+  line-height:1.12; margin:0 0 10px; color:var(--navy); text-wrap:balance}
+h1 em{font-style:italic; color:var(--gold-deep)}
+.dek{margin:0 0 10px; color:var(--ink-soft); max-width:36em}
+.meta{margin:0; font-size:14px; color:var(--ink-soft)}
+h2{font-family:"Lora",Georgia,serif; font-weight:600; font-size:22px;
+  margin:36px 0 12px; color:var(--navy); text-wrap:balance}
+
+/* cards */
+.card{background:var(--card); border:1.5px solid var(--rule); border-radius:14px;
+  padding:16px 18px; margin:0 0 12px}
+.card p{margin:0 0 10px; font-size:16px}
+.card p:last-child{margin-bottom:0}
+.card b{color:var(--navy)}
+.card ul,.card ol{margin:0 0 10px; padding-left:20px}
+.card ul:last-child,.card ol:last-child{margin-bottom:0}
+.card li{margin-bottom:8px}
+.card li:last-child{margin-bottom:0}
+.note{border-left:3px solid var(--gold); background:var(--wash); border-radius:0 9px 9px 0;
+  padding:9px 12px; font-size:15px; margin:10px 0}
+.note b:first-child{color:var(--gold-deep)}
+.path{font-weight:700; color:var(--navy); background:var(--wash); border-radius:6px; padding:1px 7px 2px}
+
+/* definition lists */
+.fix dt{font-weight:700; color:var(--navy); margin-top:12px}
+.fix dt:first-child{margin-top:0}
+.fix dd{margin:2px 0 0 0; color:var(--ink-soft); font-size:16px}
+
+footer{margin-top:40px; padding-top:14px; border-top:1.5px solid var(--rule);
+  font-size:13.5px; color:var(--ink-soft); line-height:1.6}
+footer a{white-space:nowrap}
+
+@media print{
+  body{background:#fff; font-size:12.5px; line-height:1.4}
+  .wrap{max-width:none; padding:0}
+  h1{font-size:26px}
+  h2{font-size:17px; margin:16px 0 8px}
+  .card{padding:10px 13px; margin-bottom:8px; background:#fff}
+  .card p,.card li,.fix dd{font-size:12.5px}
+  .note{font-size:12px; padding:7px 10px; margin:7px 0}
+  footer{font-size:10.5px; margin-top:16px}
+  .card,.note{break-inside:avoid; page-break-inside:avoid}
+  h2,h1{break-after:avoid; page-break-after:avoid}
+  @page{margin:12mm 14mm}
+}
+
+/* ══ AOG-PRINT-SAFE-V1 (2026-09-20) ═══════════════════════════════════════════
+   Jimmy, printing a novel study from his phone: "another pdf that gets parts of
+   the material cut off." These are the rules that keep paper honest on every
+   engine — a table row, a list item, a figure and a picture stay whole; a head
+   keeps the lines under it; no paragraph strands one line at a page edge; and a
+   long table repeats its head at the top of each page. Printed pages only. */
+@media print{
+  table{break-inside:auto; page-break-inside:auto}
+  thead{display:table-header-group}
+  tfoot{display:table-footer-group}
+  tr{break-inside:avoid; page-break-inside:avoid}
+  li,figure,img,svg{break-inside:avoid; page-break-inside:avoid}
+  h1,h2,h3,h4,h5{break-after:avoid; page-break-after:avoid}
+  p{orphans:3; widows:3}
+}
+</style>
+</head>
+<body>
+<script src="/aog-topbar.js"></script>
+
+<div class="wrap">
+
+  <header class="mast">
+    <p class="eyebrow">Architecture of Grace &middot; Data Governance</p>
+    <h1>The life of the data, <em>start to finish</em></h1>
+    <p class="dek">Where synced records live, how long to keep them, how to delete them, what happens when a teacher leaves, and who holds the keys. Written for the IT officer, the SPED director, and the records clerk — the people who will actually have to run this.</p>
+    <p class="meta"><b>The one fact everything below rests on:</b> the operator holds no student data. Records exist in exactly two places — the browser of the device that produced them, and (if your school syncs) a Google Sheet your school owns. Every procedure here is therefore a procedure <i>your school</i> performs, in <i>your school's</i> own systems. Companion documents: <a href="/privacy.html">Privacy Policy</a> &middot; <a href="/dpa.html">Data Privacy Agreement</a>.</p>
+  </header>
+
+  <h2>a &middot; Retention: defaults and recommendations</h2>
+  <div class="card">
+    <p><b>Default behavior:</b> nothing expires on its own. Rows stay in the school's Sheet until someone deletes them; device-local records stay in the browser until erased or until the browser's own site-data policies clear them.</p>
+    <p><b>Recommendations:</b></p>
+    <ul>
+      <li><b>Review at year end.</b> Put a calendar entry in June: decide, class by class, what the coming year's teachers actually need.</li>
+      <li><b>Archive or delete synced rows per your records schedule.</b> These rows are education records under your district's records-retention schedule; treat them as you treat any other student record of the same kind. If your schedule calls for archiving, export the Sheet (File &rsaquo; Download) into your records system and then delete the live rows.</li>
+      <li><b>Keep the live Sheet small.</b> A Sheet holding only the current year is easier to reason about, easier to audit, and a smaller exposure if editor access is ever misconfigured.</li>
+    </ul>
+  </div>
+
+  <h2>b &middot; Deletion procedures</h2>
+  <div class="card">
+    <dl class="fix">
+      <dt>Sheet rows (synced records)</dt>
+      <dd>The school deletes them — the rows are the school's records, in the school's Sheet, and any Sheet editor can delete them at any time: select the rows, right-click, Delete rows. For a whole-year purge, export first if your records schedule requires it, then delete the data rows (keep the header row — the script expects it). Deletion in the Sheet is subject to Google's own version history; see section g.</dd>
+      <dt>Device localStorage (the browser's own records)</dt>
+      <dd>The on-page <b>Erase</b> button clears what the app stores in that browser. A fuller sweep is the browser's site-data clear: Settings &rsaquo; Privacy &rsaquo; Clear browsing data (choose "Cookies and site data" for architectureofgrace.org). On managed devices, IT can force this — see section d.</dd>
+      <dt>What the founder can delete</dt>
+      <dd><b>Nothing — because he holds nothing.</b> There is no operator copy to request deletion of. A deletion request sent to the founder can only be answered with: delete the rows in your own Sheet, and erase the device. That is not a limitation of the deletion path; it is the deletion path.</dd>
+    </dl>
+  </div>
+
+  <h2>c &middot; Parent records requests</h2>
+  <div class="card">
+    <p><b>The request goes to the school</b> — the school is the records custodian, and the ordinary FERPA request path applies. The founder cannot fulfill a records request because he has no records.</p>
+    <p><b>How a school produces a student's rows:</b></p>
+    <ol>
+      <li>Open the Sheet and use <span class="path">Data &rsaquo; Create a filter</span> on the student-code column; filter to the student's code (from your roster mapping).</li>
+      <li>Copy the visible rows into a new Sheet or document, or print the filtered view (File &rsaquo; Print prints what the filter shows).</li>
+      <li>Check each instrument's tab — home check-ins, daily check-ins, and reflections land in separate tabs, and a complete response covers all of them.</li>
+      <li>Include the school's explanation of what the domain scores mean; a bare number is not a meaningful disclosure to a parent.</li>
+    </ol>
+    <p>Records on a classroom device (anything not synced) can be shown to the parent from the device itself, or printed with the app's own print views.</p>
+  </div>
+
+  <h2>d &middot; Shared devices</h2>
+  <div class="card">
+    <p><b>The rule for any shared device:</b> end the session with the on-page <b>Erase</b> button, so the next student does not inherit the last student's work. Build it into the routine the way you build in logging out.</p>
+    <div class="note"><b>Managed Chromebooks:</b> the cleaner answer is policy, not habit. Either run students in <b>ephemeral profiles</b> (all site data evaporates at sign-out) or use the admin console to force site-data clearing for architectureofgrace.org at session end. Either policy makes the erase automatic — the button remains as the in-lesson control.</div>
+    <p>Note the trade: a device that clears at sign-out keeps no local history, so anything the school wants longitudinally must be synced before the session ends. That is the intended division — the Sheet is the record, the device is the workspace.</p>
+  </div>
+
+  <h2>e &middot; Teacher departure runbook</h2>
+  <div class="card">
+    <p><b>The prevention is worth more than the cure:</b> the Sheet should live in an organization-owned account from day one — a role account or the district's admin account, not a personal teacher account. If it already does, a teacher's departure barely touches this system. If it does not, run this now, not at departure:</p>
+    <ol>
+      <li><b>Transfer Sheet ownership</b> to the organization account (Share &rsaquo; transfer ownership), or copy the Sheet into the organization account if transfer is not possible across account types.</li>
+      <li><b>Redeploy or re-key the Apps Script.</b> The Web App executes as its deploying user; a deployment made by the departing teacher should be replaced by one deployed from the organization account (the setup guide's steps 2&ndash;4, run once in the new account's copy).</li>
+      <li><b>Rotate the write key</b> — change <code>BACKEND_AUTH_KEY</code> in Script properties. <b>Old links stop working the moment you do</b>; that is the feature. Any link the departing teacher generated, wherever it now lives, is dead.</li>
+      <li><b>Re-issue classroom links</b> from a dashboard connected to the new deployment and new key, through your own channels.</li>
+      <li><b>Rotate the pull key</b> (<code>ADMIN_PULL_KEY</code>) as well if the departing teacher held it, and re-enter it on the staff computers that read results.</li>
+      <li><b>Record who now holds the admin pull key</b> — write the names down where the district AoG lead and IT can find them. An unrecorded key holder is the gap every later audit falls into.</li>
+    </ol>
+  </div>
+
+  <h2>f &middot; Key custody and rotation</h2>
+  <div class="card">
+    <p><b>Name a district AoG lead.</b> One named person holds the key inventory: which Sheets exist, who owns each, who holds each write key and each pull key, and when each was last rotated. Custody that belongs to "the team" belongs to no one.</p>
+    <p><b>Treat every classroom link like the key itself.</b> Classroom links carry the write key inside them — that is how a student Chromebook posts without signing in. It also means the key lands everywhere links land: <b>browser history, chat logs, email threads, and LMS link stores.</b> So:</p>
+    <ul>
+      <li>Distribute links through channels scoped to your own students, never on a public page.</li>
+      <li>Assume any link that left your controlled channels is compromised, and rotate.</li>
+      <li>Remember the blast radius is bounded: the write key can only <i>append</i> rows — it cannot read, change, or delete anything. A leaked write key means the risk of fake-looking rows, not exposed students. The pull key is the one that reads data back; it never rides in a link and should be held by the fewest possible people.</li>
+      <li>Rotate the write key on a schedule (each term is reasonable), at every staff departure, and on any suspicion. Rotation is cheap: change the Script property, re-enter it in the dashboard, regenerate links.</li>
+    </ul>
+  </div>
+
+  <h2>g &middot; Audit reality</h2>
+  <div class="card">
+    <p>Be clear-eyed about what a Google Sheet is: <b>rows are editable by anyone with editor access to the Sheet.</b> There is no append-only ledger, and a determined editor can alter or delete records without the app knowing. The honest mitigations:</p>
+    <ul>
+      <li><b>Restrict editor access</b> to the smallest set that genuinely needs it — usually the AoG lead and IT. Staff who only read results need the pull key, not Sheet editor rights; staff who only administer instruments need neither.</li>
+      <li><b>Use Sheets version history</b> (File &rsaquo; Version history) as your audit trail — it records who changed what and when, and allows restoration. It is Google's history, subject to Google's retention of it, and it is the audit mechanism this design actually has.</li>
+      <li>For records your schedule requires you to hold immutably, export to your records system on your archive cadence; the Sheet is the working store, not the vault.</li>
+    </ul>
+  </div>
+
+  <footer>
+    <p style="margin:0 0 8px"><b>Contact.</b> Governance questions your school cannot answer from this page: James Anthony Ramsden, founder — <a href="mailto:Theopus77@yahoo.com">Theopus77@yahoo.com</a>.</p>
+    <p style="margin:0">Architecture of Grace &middot; <a href="/">Home</a> &middot; <a href="/privacy.html">Privacy</a> &middot; <a href="/terms.html">Terms</a> &middot; <a href="/data-governance.html">Data Governance</a> &middot; <a href="/dpa.html">Data Privacy Agreement</a> &middot; <a href="/accessibility.html">Accessibility</a></p>
+  </footer>
+
+</div>
+</body>
+</html>

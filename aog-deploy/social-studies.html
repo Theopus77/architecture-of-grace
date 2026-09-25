@@ -1,0 +1,1218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>A More Perfect Union — Architecture of Grace</title>
+<meta name="description" content="A More Perfect Union — sixteen social studies activities: the Constitution to Appomattox, the three branches of government, and the Constitution unit through the Illinois Constitution. Private, never collected.">
+<!-- ═══ AOG ICONS + LINK PREVIEW · managed block · .30k0 ═══
+     Inserted by _work/aog_head.py — DO NOT hand-edit one page; edit the
+     script and re-run it, or the 100 pages drift apart again. The card
+     URL carries ?v= because Slack, Apple and Google cache an og image BY
+     URL for weeks: change the picture, bump IMG_V, or nothing shows up.
+     ═══════════════════════════════════════════════════════════════ -->
+<link rel="canonical" href="https://architectureofgrace.org/social">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Architecture of Grace">
+<meta property="og:locale" content="en_US">
+<meta property="og:title" content="A More Perfect Union — Architecture of Grace">
+<meta property="og:description" content="A More Perfect Union — sixteen social studies activities: the Constitution to Appomattox, the three branches of government, and the Constitution unit through the Illinois Constitution. Private, never collected.">
+<meta property="og:url" content="https://architectureofgrace.org/social">
+<meta property="og:image" content="https://architectureofgrace.org/og-social.png?v=1">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Social Studies · A More Perfect Union — sixteen activities from Architecture of Grace.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="A More Perfect Union — Architecture of Grace">
+<meta name="twitter:description" content="A More Perfect Union — sixteen social studies activities: the Constitution to Appomattox, the three branches of government, and the Constitution unit through the Illinois Constitution. Private, never collected.">
+<meta name="twitter:image" content="https://architectureofgrace.org/og-social.png?v=1">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#0A1E33">
+<meta name="apple-mobile-web-app-title" content="Grace">
+<meta name="application-name" content="Architecture of Grace">
+<!-- ═══ END AOG ICONS + LINK PREVIEW ═══ -->
+<meta name="robots" content="noindex">
+<!-- No external requests of any kind. Every byte this page needs is in this file,
+     the site bar included: it is inlined rather than shared so this line stays true. -->
+<style>
+/* ══ TOKENS — same set as the math activities. Light is the base;
+   dark redefines tokens only, never components. ══ */
+:root{
+  --ground:#F5F1E8;
+  --field:#FFFFFF;
+  --field-2:#EFEAE0;
+  --ink:#1D2733;
+  --ink-soft:#57626F;
+  --ink-faint:#5F6B78;
+  --navy:#1B3A5F;
+  --gold:#B8893A;
+  --gold-deep:#7A5C1F;
+  --rule:rgba(29,39,51,.16);
+  --rule-soft:rgba(29,39,51,.08);
+  --lift:0 1px 0 rgba(255,255,255,.7), 0 20px 44px -30px rgba(29,39,51,.55);
+  --lift-sm:0 1px 2px rgba(29,39,51,.07), 0 8px 20px -16px rgba(29,39,51,.4);
+  --a:#4A3A8C;
+  --a-wash:rgba(74,58,140,.07);
+  --lock:#2E6B4F;
+  --lock-wash:rgba(46,107,79,.09);
+  --caution:#9A3412;
+  --focus:#B8893A;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --ground:#12161C; --field:#1A2029; --field-2:#222A34;
+    --ink:#E9EEF4; --ink-soft:#A3AFBC; --ink-faint:#84909D;
+    --navy:#9CC2E8; --gold:#D6A852; --gold-deep:#D6A852;
+    --rule:rgba(233,238,244,.18); --rule-soft:rgba(233,238,244,.09);
+    --lift:0 1px 0 rgba(233,238,244,.04), 0 24px 54px -32px rgba(0,0,0,.95);
+    --lift-sm:0 1px 2px rgba(0,0,0,.5), 0 10px 24px -18px rgba(0,0,0,.9);
+    --a:#A99BE8; --a-wash:rgba(169,155,232,.12);
+    --lock:#79C79E; --lock-wash:rgba(121,199,158,.12);
+    --caution:#F0A07C;
+    --focus:#D6A852;
+  }
+}
+:root[data-theme="dark"]{
+  --ground:#12161C; --field:#1A2029; --field-2:#222A34;
+  --ink:#E9EEF4; --ink-soft:#A3AFBC; --ink-faint:#84909D;
+  --navy:#9CC2E8; --gold:#D6A852; --gold-deep:#D6A852;
+  --rule:rgba(233,238,244,.18); --rule-soft:rgba(233,238,244,.09);
+  --lift:0 1px 0 rgba(233,238,244,.04), 0 24px 54px -32px rgba(0,0,0,.95);
+  --lift-sm:0 1px 2px rgba(0,0,0,.5), 0 10px 24px -18px rgba(0,0,0,.9);
+  --a:#A99BE8; --a-wash:rgba(169,155,232,.12);
+  --lock:#79C79E; --lock-wash:rgba(121,199,158,.12);
+  --caution:#F0A07C;
+  --focus:#D6A852;
+}
+
+*{box-sizing:border-box;}
+html{-webkit-text-size-adjust:100%;}
+body{
+  margin:0; background:var(--ground); color:var(--ink);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  font-size:16px; line-height:1.55;
+}
+h1,h2,h3{margin:0; text-wrap:balance; font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,"Times New Roman",serif; font-weight:600;}
+p{margin:0;}
+button{font:inherit; color:inherit; cursor:pointer;}
+a{color:inherit;}
+:focus-visible{outline:3px solid var(--focus); outline-offset:2px; border-radius:6px;}
+.wrap{max-width:920px; margin:0 auto; padding:0 20px;}
+
+/* ══ MASTHEAD ══ */
+.mast{padding:34px 20px 8px;}
+.mast .row{display:flex; align-items:center; gap:12px; margin-bottom:18px;}
+.mark{
+  width:44px; height:44px; border-radius:12px; background:var(--navy); color:#fff;
+  display:flex; align-items:center; justify-content:center;
+  font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+  font-size:24px; font-weight:700; flex:none;
+}
+:root[data-theme="dark"] .mark{color:#12161C;}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]) .mark{color:#12161C;} }
+.mast .name{font-weight:700; letter-spacing:.01em;}
+.mast .sub{color:var(--ink-soft); font-size:14px;}
+.mast h1{font-size:clamp(30px,6vw,44px); line-height:1.12; margin-bottom:10px;}
+.deck{color:var(--ink-soft); font-size:17px; max-width:60ch;}
+
+.acts{display:flex; flex-wrap:wrap; gap:10px; margin-top:18px;}
+.btn{
+  appearance:none; border:1.5px solid var(--rule); background:var(--field);
+  border-radius:12px; padding:11px 16px; font-weight:600; font-size:15px;
+  box-shadow:var(--lift-sm); min-height:48px;
+}
+.btn:hover{border-color:var(--ink-faint);}
+
+/* ══ STRANDS ══ */
+.strand{margin-top:34px;}
+.strand-head{display:flex; align-items:baseline; gap:12px; flex-wrap:wrap; margin-bottom:6px;}
+.strand-head .k{
+  font-size:12.5px; font-weight:700; letter-spacing:.09em; text-transform:uppercase;
+  color:var(--gold-deep);
+}
+.strand-head h2{font-size:clamp(22px,4vw,28px);}
+.strand>.say{color:var(--ink-soft); max-width:62ch; margin-bottom:16px;}
+
+.cards{display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:14px;}
+.card{
+  display:block; text-decoration:none; background:var(--field);
+  border:1.5px solid var(--rule-soft); border-radius:16px; padding:16px 16px 14px;
+  box-shadow:var(--lift-sm); position:relative; min-height:48px;
+}
+.card:hover{border-color:var(--gold); box-shadow:var(--lift);}
+.card .num{
+  font-size:12.5px; font-weight:700; letter-spacing:.08em; text-transform:uppercase;
+  color:var(--ink-faint); display:block; margin-bottom:4px;
+}
+.card h3{font-size:19px; margin-bottom:6px;}
+.card .what{color:var(--ink-soft); font-size:14.5px; line-height:1.5;}
+.card .go{
+  display:inline-block; margin-top:10px; font-size:14px; font-weight:700; color:var(--a);
+}
+
+/* ══ VOCAB ══ */
+.vocab{
+  margin-top:34px; background:var(--field-2); border:1.5px solid var(--rule-soft);
+  border-radius:16px; padding:18px;
+}
+.vocab h2{font-size:20px; margin-bottom:4px;}
+.vocab .say{color:var(--ink-soft); font-size:14.5px; margin-bottom:12px; max-width:62ch;}
+.vocab .cols{display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:14px;}
+.vocab .col .k{
+  font-size:12.5px; font-weight:700; letter-spacing:.08em; text-transform:uppercase;
+  color:var(--gold-deep); display:block; margin-bottom:6px;
+}
+.vocab ul{margin:0; padding:0; list-style:none; columns:2; column-gap:18px;}
+.vocab li{
+  font-size:14.5px; padding:3px 0; break-inside:avoid; color:var(--ink);
+}
+
+/* ══ TEACHER ══ */
+.teach{
+  margin-top:34px; border:1.5px dashed var(--rule); border-radius:16px;
+  background:var(--field);
+}
+.teach summary{
+  cursor:pointer; padding:16px 18px; font-weight:700; font-size:15.5px;
+  list-style:none; min-height:48px; display:flex; align-items:center; gap:8px;
+}
+.teach summary::-webkit-details-marker{display:none;}
+.teach summary::before{content:"▸"; color:var(--gold-deep); transition:transform .15s;}
+.teach[open] summary::before{transform:rotate(90deg);}
+.teach .inner{padding:0 18px 18px; display:grid; gap:12px;}
+.teach p{color:var(--ink-soft); font-size:14.5px; max-width:70ch;}
+.teach p b{color:var(--ink);}
+.teach .step{
+  display:grid; grid-template-columns:auto 1fr; gap:10px; align-items:start;
+}
+.teach .step .n{
+  width:26px; height:26px; border-radius:50%; background:var(--a-wash); color:var(--a);
+  font-weight:700; font-size:13.5px; display:flex; align-items:center; justify-content:center;
+  flex:none; margin-top:1px;
+}
+
+.next{
+  margin-top:24px; border:1.5px solid var(--rule-soft); border-radius:16px;
+  background:var(--field); padding:16px 18px;
+}
+.next .k{
+  font-size:12.5px; font-weight:700; letter-spacing:.09em; text-transform:uppercase;
+  color:var(--ink-faint);
+}
+.next p{color:var(--ink-soft); font-size:14.5px; max-width:66ch; margin-top:4px;}
+
+/* ══ FOOT ══ */
+.foot{margin:40px auto 30px; color:var(--ink-faint); font-size:13.5px;}
+.foot p{max-width:75ch; margin-bottom:6px;}
+.foot b{color:var(--ink-soft);}
+
+/* ══ SITE BAR ═══════════════════════════════════════════════════════════
+   A port of the app's own .topbar (index.html): same shape, same controls,
+   same behavior. Written out here rather than shared, because this page
+   loads nothing from the network -- see the head comment for why that
+   promise is worth the duplication.
+
+   ⚠⚠ TWO FILES. Emitted by _work/p_hubbar.py into interior-math.html AND
+   concepts-and-data.html. Change the script and re-run it. Hand-editing
+   one copy is how the two hubs start disagreeing.
+
+   ── ACCENT ── the home page lets a teacher pick one of six accents; it
+   lands in localStorage "aog.accent" and is applied as <html data-accent>.
+   These are the same six palettes as aog-styles.css, restated here because
+   we cannot load that file. THIS is what actually makes /math and the home
+   page the same color -- before it, the hub was violet-and-gold no matter
+   what the rest of the site was wearing. Keep in sync with aog-styles.css.
+*/
+:root{ --acc:#D9A33B; --acc-soft:#F2C964; --acc-pale:#F1DFA8; --acc-deep:#7E5B18;
+       --acc-wash:rgba(126,91,24,.08); --acc-wash-d:rgba(242,201,100,.14); }
+:root[data-accent="teal"]{ --acc:#2BA199; --acc-soft:#6FD3C8; --acc-pale:#C9EDE8; --acc-deep:#15716B;
+       --acc-wash:rgba(21,113,107,.08); --acc-wash-d:rgba(111,211,200,.14); }
+:root[data-accent="violet"]{ --acc:#7C5CD6; --acc-soft:#A98BF0; --acc-pale:#DDD2F7; --acc-deep:#523C9E;
+       --acc-wash:rgba(82,60,158,.08); --acc-wash-d:rgba(169,139,240,.14); }
+:root[data-accent="rose"]{ --acc:#D65C7E; --acc-soft:#F08BA6; --acc-pale:#F7D2DD; --acc-deep:#9E3C5A;
+       --acc-wash:rgba(158,60,90,.08); --acc-wash-d:rgba(240,139,166,.14); }
+:root[data-accent="sky"]{ --acc:#2E7CD6; --acc-soft:#6FB0F0; --acc-pale:#CFE3F7; --acc-deep:#1C5499;
+       --acc-wash:rgba(28,84,153,.08); --acc-wash-d:rgba(111,176,240,.14); }
+:root[data-accent="green"]{ --acc:#4F9E3A; --acc-soft:#86D36F; --acc-pale:#D2EDC9; --acc-deep:#356B25;
+       --acc-wash:rgba(53,107,37,.08); --acc-wash-d:rgba(134,211,111,.14); }
+
+/* Re-point the page's own accent tokens at the chosen palette.
+   ⚠ ORDER AND SPECIFICITY. These sit at the very end of the stylesheet on
+   purpose. :root[data-theme="dark"] (0,2,0) beats a bare :root (0,1,0), so
+   the dark values declared earlier in this file would win unless the dark
+   remap is restated HERE, after them, at the same specificity. */
+:root{ --a:var(--acc-deep); --a-wash:var(--acc-wash); --gold:var(--acc); --gold-deep:var(--acc-deep); --focus:var(--acc); }
+:root[data-theme="dark"]{ --a:var(--acc-soft); --a-wash:var(--acc-wash-d); --gold:var(--acc-soft); --gold-deep:var(--acc-soft); --focus:var(--acc-soft); }
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){ --a:var(--acc-soft); --a-wash:var(--acc-wash-d); --gold:var(--acc-soft); --gold-deep:var(--acc-soft); --focus:var(--acc-soft); } }
+
+/* ⚠⚠ THE SITE BAR'S CSS LIVES IN aog-topbar.js — NOT HERE.
+   This page used to carry its own copy of the .aogtop-* rules, written back
+   when the bar was hand-pasted into every page and its Explore menu was one
+   narrow column. The bar is injected now, and its Explore menu is a
+   THREE-COLUMN mega-menu (.aogtop-ex / .aogtop-col, 3 × 262px ≈ 800px).
+
+   The stale local copy declared
+       .aogtop-menu{min-width:312px; max-width:min(372px, calc(100vw - 20px));}
+   and MAX-WIDTH IS A PROPERTY THE INJECTED SHEET NEVER SETS, so no source
+   order and no specificity could beat it: the 800px mega-menu was squeezed
+   into a 372px box and columns 2 and 3 were sliced off by the panel's own
+   overflow. Two more class names meant different things in the two sheets —
+   local .aogtop-sub was a FOLD CONTAINER (indent + left border) where the bar
+   uses it for a row SUBTITLE, and local .aogtop-fold was display:flex where
+   the bar needs display:block.
+
+   All of it is deleted. NEVER RE-ADD .aogtop-* RULES TO A PAGE STYLESHEET —
+   edit _work/topbar/aog-topbar-css.txt and re-run the builder. The
+   :root.a11y-* rules below stay: those color the PAGE, not the bar. */
+
+
+/* ── ACCESSIBILITY ── the same two settings as the home page, sharing its
+   storage keys, so a student who turns one on there still has it here.
+   Read-aloud and picture answers are check-in controls; they have nothing
+   to act on in a reading page, so those two rows are not offered. */
+:root.a11y-contrast{ --ink:#000; --ink-soft:#1c2230; --ink-faint:#3a4254; --rule:rgba(0,0,0,.55); --rule-soft:rgba(0,0,0,.32); }
+:root.a11y-contrast[data-theme="dark"]{ --ink:#fff; --ink-soft:#e8edf5; --ink-faint:#c4ccd9; --rule:rgba(255,255,255,.72); --rule-soft:rgba(255,255,255,.42); }
+:root.a11y-contrast .card,:root.a11y-contrast .mcard,:root.a11y-contrast .btn,
+:root.a11y-contrast .aogtop-ico,:root.a11y-contrast .aogtop-sw{border:1px solid var(--ink) !important;}
+:root.a11y-dyslexic{ --dysf:"OpenDyslexic","Comic Sans MS","Trebuchet MS",Verdana,sans-serif; }
+:root.a11y-dyslexic body,:root.a11y-dyslexic h1,:root.a11y-dyslexic h2,:root.a11y-dyslexic h3,
+:root.a11y-dyslexic h4,:root.a11y-dyslexic .aogtop-nm,:root.a11y-dyslexic .mast .name{
+  font-family:var(--dysf) !important;
+}
+:root.a11y-dyslexic body{letter-spacing:.012em; word-spacing:.05em; line-height:1.7;}
+
+
+</style>
+<script>
+/* AOG-HUB-BOOT — accent, theme and accessibility applied BEFORE first
+   paint, so the bar never flashes the wrong color on the way in. Inline
+   and tiny for exactly that reason. Same storage keys as index.html. */
+(function(){
+  var d = document.documentElement;
+  try{
+    var A = {gold:1,teal:1,violet:1,rose:1,sky:1,green:1};
+    var a = localStorage.getItem("aog.accent");
+    if(a && a !== "gold" && A[a]) d.setAttribute("data-accent", a);
+  }catch(e){}
+  try{
+    var t = localStorage.getItem("aog.theme") || localStorage.getItem("aog.interior.ws.v1.theme");
+    d.setAttribute("data-theme", t === "dark" ? "dark" : "light"); /* .30eg: light unless this device chose dark - the OS setting no longer decides */
+  }catch(e){}
+  try{
+    if(localStorage.getItem("aog.a11y.contrast") === "1") d.classList.add("a11y-contrast");
+    if(localStorage.getItem("aog.a11y.dyslexic") === "1") d.classList.add("a11y-dyslexic");
+  }catch(e){}
+})();
+</script>
+
+<style>
+/* ══ THE VOCABULARY HUB — its own few rules; everything else is the
+   Concepts & Data hub's stylesheet, sliced in above. ══ */
+.vcards{display:grid; gap:16px; grid-template-columns:repeat(auto-fit,minmax(17rem,1fr)); margin-top:16px;}
+.vcard{display:flex; flex-direction:column; gap:8px;}
+.vcard .card{flex:1 1 auto;}
+.beambtn{
+  border:1.5px solid var(--rule); background:var(--field); border-radius:10px;
+  padding:10px 13px; min-height:48px; font-size:13px; font-weight:700; color:var(--ink-soft);
+}
+.beambtn:hover{border-color:var(--a); color:var(--ink);}
+.wordtable{width:100%; border-collapse:collapse; margin-top:14px;}
+.wordtable td{border-bottom:1px solid var(--rule-soft); padding:9px 10px 9px 0; vertical-align:baseline;}
+.wordtable .w{
+  font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+  font-size:17px; font-weight:700; color:var(--a); white-space:nowrap;
+}
+.wordtable .p{font-size:12px; font-style:italic; color:var(--ink-soft); white-space:nowrap;}
+.wordtable .d{font-size:14.5px; color:var(--ink-soft); line-height:1.5;}
+@media (max-width:620px){
+  .wordtable td{display:block; border-bottom:0; padding:1px 0;}
+  .wordtable tr{display:block; border-bottom:1px solid var(--rule-soft); padding:9px 0;}
+}
+.loader{margin-top:16px;}
+.loader label{display:block; font-size:12.5px; font-weight:700; color:var(--ink-soft); margin-top:12px;}
+.loader input[type=text],.loader textarea{
+  display:block; width:100%; margin-top:5px; font:inherit; background:var(--field); color:var(--ink);
+  border:1.5px solid var(--rule); border-radius:11px; padding:11px 12px; min-height:48px;
+}
+.loader textarea{min-height:11rem; font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; font-size:13.5px; line-height:1.6;}
+.loader .row{display:flex; flex-wrap:wrap; gap:9px; margin-top:12px;}
+.loader .row .btn,.loader .row button{min-height:48px;}
+.fmt{
+  margin-top:10px; border:1.5px dashed var(--rule); border-radius:11px; padding:11px 13px;
+  background:var(--field-2); font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  font-size:12.5px; line-height:1.7; color:var(--ink-soft); overflow-x:auto;
+}
+.state{margin-top:14px; border:2px solid var(--rule); border-radius:14px; padding:13px 15px; background:var(--field);}
+.state .k{font-size:10.5px; font-weight:800; letter-spacing:.14em; text-transform:uppercase; color:var(--ink-soft);}
+.state .hl{display:block; margin-top:4px; font-size:16px; font-weight:700; color:var(--ink);}
+.state ul{margin:10px 0 0; padding:0; list-style:none; display:grid; gap:7px;}
+.state li{display:grid; grid-template-columns:1.6em 1fr; gap:8px; font-size:14px; color:var(--ink-soft); align-items:baseline;}
+.state li .yn{font-weight:800; text-align:center;}
+.state li.yes .yn{color:var(--lock);}
+.state li.no .yn{color:var(--caution);}
+@media print{ .loader,.beambtn,.aogtop,.state{display:none !important;} }
+</style>
+
+<style>
+#beam{
+  position:fixed; inset:0; z-index:1200; background:var(--field); color:var(--ink);
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  gap:clamp(14px,3vh,34px); padding:5vh 4vw; text-align:center; cursor:pointer;
+}
+#beam .wk{font-size:clamp(13px,1.6vw,22px); font-weight:800; letter-spacing:.2em; text-transform:uppercase; color:var(--ink-soft);}
+#beam .nm{font-family:Georgia,serif; font-size:clamp(28px,5vw,72px); line-height:1.05; font-weight:700;}
+#beam .url{
+  font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  font-size:clamp(19px,5.4vw,104px); font-weight:700; line-height:1.1;
+  letter-spacing:-.02em; color:var(--a); white-space:nowrap; max-width:100%;
+}
+#beam .hint{font-size:clamp(13px,1.5vw,20px); color:var(--ink-soft);}
+#beam .x{position:absolute; top:18px; right:20px; font-size:15px; font-weight:700; color:var(--ink-soft);}
+</style>
+<style id="aog-nozoom">
+/* ═══ AOG-NOZOOM-V1 · 2026-09-18 ═══════════════════════════════════════════
+   iOS Safari zooms the WHOLE page when a text field under 16px takes focus,
+   and does not zoom back out. From then on the layout is wider than the
+   window and pans freely left and right on any touch. Jimmy, on an iPhone:
+   "how the screen moves easily left or right. It makes me nausea."
+   index.html had 69 such fields at 390px and gets this same rule from
+   aog-styles.css; this page links its own styles, so it carries its own copy.
+   ⚠ NOT maximum-scale=1 / user-scalable=no — that takes pinch-zoom away from
+     anyone who needs to magnify, and iOS has ignored it since iOS 10.
+   ⚠ Touch only. A mouse has no zoom behavior and keeps the tighter density.
+   ⚠ !important is load-bearing: some fields set their size in a style=""
+     attribute (the font: shorthand counts), and an author !important is what
+     outranks those. If you remove it, re-measure rather than assume.
+   ══════════════════════════════════════════════════════════════════════════ */
+@media (hover: none) and (pointer: coarse) {
+  input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="color"]):not([type="file"]):not([type="submit"]):not([type="button"]):not([type="image"]),
+  select,
+  textarea { font-size: 16px !important; }
+}
+</style>
+</head>
+<body>
+<script src="/aog-topbar.js"></script>
+
+
+<header class="mast wrap">
+  <div class="row">
+    <div class="mark" aria-hidden="true">A</div>
+    <div>
+      <div class="name">Architecture of Grace</div>
+      <div class="sub" data-en="Social Studies · The Interior" data-es="Estudios Sociales · El Interior">Social Studies · The Interior</div>
+    </div>
+  </div>
+  <h1 data-en="A More Perfect Union" data-es="Una Unión Más Perfecta">A More Perfect Union</h1>
+  <p class="deck" data-en="Sixteen activities — eight on one era, the Constitution to Appomattox; three on the branches of government it built; and five on the Constitution unit — the document, the rights, the road a bill walks, the Illinois plan beside them, and the review that pulls the whole sheet together. History, civics, economics, and geography, and every one works on this screen or on paper. Nothing a student does leaves their computer unless they tap Send." data-es="Dieciséis actividades — ocho sobre una época, de la Constitución a Appomattox; tres sobre las ramas del gobierno que construyó; y cinco sobre la unidad de la Constitución — el documento, los derechos, el camino que recorre un proyecto de ley, el plan de Illinois a su lado, y el repaso que junta toda la hoja. Historia, civismo, economía y geografía, y cada una funciona en esta pantalla o en papel. Nada de lo que hace un estudiante sale de su computadora a menos que toque Enviar.">Sixteen activities — eight on one era, the Constitution to Appomattox; three on the branches of government it built; and five on the Constitution unit — the document, the rights, the road a bill walks, the Illinois plan beside them, and the review that pulls the whole sheet together. History, civics, economics, and geography, and every one works on this screen or on paper. Nothing a student does leaves their computer unless they tap Send.</p>
+</header>
+
+<main class="wrap">
+
+  <section class="strand" aria-labelledby="s2h">
+    <div class="strand-head">
+      <span class="k" data-en="Civics" data-es="Civismo">Civics</span>
+      <h2 id="s2h" data-en="The three branches, one card each" data-es="Las tres ramas, una tarjeta cada una">The three branches, one card each</h2>
+    </div>
+    <p class="say" data-en="Write, execute, interpret — one sentence carries the whole government, and these three practice it from all three chairs. Items 1–5 of each card are the branch itself; items 6–8 are the branches working on each other, so the other two stay warm while one is being studied. Built for quiz review, honest as evidence." data-es="Escribir, ejecutar, interpretar — una oración carga todo el gobierno, y estas tres lo practican desde las tres sillas. Los ítems 1–5 de cada tarjeta son la rama misma; los 6–8 son las ramas actuando entre sí, para que las otras dos sigan tibias mientras se estudia una. Hechas para repasar exámenes, honestas como evidencia.">Write, execute, interpret — one sentence carries the whole government, and these three practice it from all three chairs. Items 1–5 of each card are the branch itself; items 6–8 are the branches working on each other, so the other two stay warm while one is being studied. Built for quiz review, honest as evidence.</p>
+    <p class="say" data-en="The cards run 10 → 11 → 9 on purpose: that is the order the Constitution names the branches — Article I, the legislative; Article II, the executive; Article III, the judicial." data-es="Las tarjetas van 10 → 11 → 9 a propósito: es el orden en que la Constitución nombra las ramas — Artículo I, la legislativa; Artículo II, la ejecutiva; Artículo III, la judicial.">The cards run 10 → 11 → 9 on purpose: that is the order the Constitution names the branches — Article I, the legislative; Article II, the executive; Article III, the judicial.</p>
+    <div class="vcards">
+      <div class="vcard">
+        <a class="card" href="h10-the-first-branch.html">
+          <h3 data-en="The First Branch" data-es="La primera rama">The First Branch</h3>
+          <p class="what" data-en="Congress: two rooms, one pen, and the purse. The road a bill travels, the veto override, and the era&#x27;s great bargains as legislative craft." data-es="El Congreso: dos salas, una pluma y la bolsa. El camino de un proyecto, la anulación del veto, y los grandes pactos de la época como oficio legislativo.">Congress: two rooms, one pen, and the purse. The road a bill travels, the veto override, and the era&#x27;s great bargains as legislative craft.</p>
+          <span class="go" data-en="Open →" data-es="Abrir →">Open →</span>
+        </a>
+        <button class="beambtn" type="button" data-beam="h10" data-name="The First Branch" data-nombre="La primera rama"
+                data-en="Show on the board" data-es="Mostrar en la pizarra">Show on the board</button>
+      </div>
+      <div class="vcard">
+        <a class="card" href="h11-the-second-branch.html">
+          <h3 data-en="The Second Branch" data-es="La segunda rama">The Second Branch</h3>
+          <p class="what" data-en="The presidency: one office, many hats, every hat leashed. Washington&#x27;s precedents, Jefferson&#x27;s purchase, Jackson&#x27;s veto, Lincoln&#x27;s war powers." data-es="La presidencia: un cargo, muchos sombreros, cada uno con correa. Los precedentes de Washington, la compra de Jefferson, el veto de Jackson, los poderes de guerra de Lincoln.">The presidency: one office, many hats, every hat leashed. Washington&#x27;s precedents, Jefferson&#x27;s purchase, Jackson&#x27;s veto, Lincoln&#x27;s war powers.</p>
+          <span class="go" data-en="Open →" data-es="Abrir →">Open →</span>
+        </a>
+        <button class="beambtn" type="button" data-beam="h11" data-name="The Second Branch" data-nombre="La segunda rama"
+                data-en="Show on the board" data-es="Mostrar en la pizarra">Show on the board</button>
+      </div>
+      <div class="vcard">
+        <a class="card" href="h9-the-third-branch.html">
+          <h3 data-en="The Third Branch" data-es="La tercera rama">The Third Branch</h3>
+          <p class="what" data-en="The courts: no army, no purse — and the last word. Judicial review, Marbury, life terms, and the checks that bind all three branches together. Ends with the class quiz itself, word banks and all." data-es="Las cortes: sin ejército, sin bolsa — y con la última palabra. La revisión judicial, Marbury, los cargos vitalicios, y los contrapesos que atan a las tres ramas. Termina con el examen mismo de la clase, con bancos de palabras y todo.">The courts: no army, no purse — and the last word. Judicial review, Marbury, life terms, and the checks that bind all three branches together. Ends with the class quiz itself, word banks and all.</p>
+          <span class="go" data-en="Open →" data-es="Abrir →">Open →</span>
+        </a>
+        <button class="beambtn" type="button" data-beam="h9" data-name="The Third Branch" data-nombre="La tercera rama"
+                data-en="Show on the board" data-es="Mostrar en la pizarra">Show on the board</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="strand" aria-labelledby="s3h">
+    <div class="strand-head">
+      <span class="k" data-en="Civics · The Constitution unit" data-es="Civismo · La unidad de la Constitución">Civics · The Constitution unit</span>
+      <h2 id="s3h" data-en="The document, the rights, and the road" data-es="El documento, los derechos y el camino">The document, the rights, and the road</h2>
+    </div>
+    <p class="say" data-en="The unit in the order it holds together: first the plan itself, then the promises added to it, then how a law travels under it — and then the Illinois plan, the state mirror, for the second constitution test. Activities 12–14 are built along the class's own study outline — the same names, the same numbers, the same road — so practice never contradicts the test. Activity 14 opens with the class simulation, made digital: walk your own bill and take the wrong turns on purpose. Activity 16 is the review that gathers all of it — the class review sheet question by question, the four charts made live, and a fill-in-the-blank rehearsal with word banks." data-es="La unidad en el orden en que se sostiene: primero el plan mismo, luego las promesas que se le añadieron, luego cómo viaja una ley bajo él — y después el plan de Illinois, el espejo estatal, para el segundo examen de constitución. Las Actividades 12–14 están construidas siguiendo el propio esquema de estudio de la clase — los mismos nombres, los mismos números, el mismo camino — para que la práctica nunca contradiga el examen. La Actividad 14 abre con la simulación de la clase, hecha digital: camina tu propio proyecto y toma las vueltas equivocadas a propósito. La Actividad 16 es el repaso que lo reúne todo — la hoja de repaso pregunta por pregunta, los cuatro organizadores en vivo, y un ensayo de llenar espacios con bancos de palabras.">The unit in the order it holds together: first the plan itself, then the promises added to it, then how a law travels under it — and then the Illinois plan, the state mirror, for the second constitution test. Activities 12–14 are built along the class's own study outline — the same names, the same numbers, the same road — so practice never contradicts the test. Activity 14 opens with the class simulation, made digital: walk your own bill and take the wrong turns on purpose. Activity 16 is the review that gathers all of it — the class review sheet question by question, the four charts made live, and a fill-in-the-blank rehearsal with word banks.</p>
+    <div class="vcards">
+      <div class="vcard">
+        <a class="card" href="h12-the-blueprint.html">
+          <h3 data-en="The Blueprint" data-es="El plano">The Blueprint</h3>
+          <p class="what" data-en="The Constitution itself: We the People, the Preamble&#x27;s goals, the seven articles, the Convention&#x27;s bargains, and the heavy Article V door. The document, held in one hand." data-es="La propia Constitución: Nosotros el Pueblo, las metas del Preámbulo, los siete artículos, los pactos de la Convención, y la pesada puerta del Artículo V. El documento, sostenido en una mano.">The Constitution itself: We the People, the Preamble&#x27;s goals, the seven articles, the Convention&#x27;s bargains, and the heavy Article V door. The document, held in one hand.</p>
+          <span class="go" data-en="Open →" data-es="Abrir →">Open →</span>
+        </a>
+        <button class="beambtn" type="button" data-beam="h12" data-name="The Blueprint" data-nombre="El plano"
+                data-en="Show on the board" data-es="Mostrar en la pizarra">Show on the board</button>
+      </div>
+      <div class="vcard">
+        <a class="card" href="h13-rights-in-writing.html">
+          <h3 data-en="Rights in Writing" data-es="Derechos por escrito">Rights in Writing</h3>
+          <p class="what" data-en="The Bill of Rights and the amendments that widened the circle — 13, 14, 15, 19, 26. Name the right, then spot it at work in a moment from a real life." data-es="La Carta de Derechos y las enmiendas que ampliaron el círculo — 13, 14, 15, 19, 26. Nombra el derecho, y luego reconócelo trabajando en un momento de una vida real.">The Bill of Rights and the amendments that widened the circle — 13, 14, 15, 19, 26. Name the right, then spot it at work in a moment from a real life.</p>
+          <span class="go" data-en="Open →" data-es="Abrir →">Open →</span>
+        </a>
+        <button class="beambtn" type="button" data-beam="h13" data-name="Rights in Writing" data-nombre="Derechos por escrito"
+                data-en="Show on the board" data-es="Mostrar en la pizarra">Show on the board</button>
+      </div>
+      <div class="vcard">
+        <a class="card" href="h14-how-a-bill-becomes-a-law.html">
+          <h3 data-en="How a Bill Becomes a Law" data-es="Cómo un proyecto se vuelve ley">How a Bill Becomes a Law</h3>
+          <p class="what" data-en="Sponsor a bill and walk it yourself — both houses, the desk, and the veto&#x27;s three answers, wrong turns explained never shamed. Then prove the road, and rehearse it in the Quiz Room; impeachment rides along." data-es="Patrocina un proyecto y camínalo tú mismo — ambas cámaras, el escritorio, y las tres respuestas al veto, con las vueltas equivocadas explicadas, nunca avergonzadas. Luego demuestra el camino, y ensáyalo en la Sala de Exámenes; el juicio político viaja al lado.">Sponsor a bill and walk it yourself — both houses, the desk, and the veto&#x27;s three answers, wrong turns explained never shamed. Then prove the road, and rehearse it in the Quiz Room; impeachment rides along.</p>
+          <span class="go" data-en="Open →" data-es="Abrir →">Open →</span>
+        </a>
+        <button class="beambtn" type="button" data-beam="h14" data-name="How a Bill Becomes a Law" data-nombre="Cómo un proyecto se vuelve ley"
+                data-en="Show on the board" data-es="Mostrar en la pizarra">Show on the board</button>
+      </div>
+      <div class="vcard">
+        <a class="card" href="h15-the-illinois-constitution.html">
+          <h3 data-en="The Illinois Constitution" data-es="La Constitución de Illinois">The Illinois Constitution</h3>
+          <p class="what" data-en="The 1970 state plan as the mirror of the national one — same shape, five different bets: elected judges, 3/5, voters ratifying, rights first. For the second constitution test." data-es="El plan estatal de 1970 como espejo del nacional — la misma forma, cinco apuestas distintas: jueces electos, 3/5, votantes ratificando, derechos primero. Para el segundo examen de constitución.">The 1970 state plan as the mirror of the national one — same shape, five different bets: elected judges, 3/5, voters ratifying, rights first. For the second constitution test.</p>
+          <span class="go" data-en="Open →" data-es="Abrir →">Open →</span>
+        </a>
+        <button class="beambtn" type="button" data-beam="h15" data-name="The Illinois Constitution" data-nombre="La Constitución de Illinois"
+                data-en="Show on the board" data-es="Mostrar en la pizarra">Show on the board</button>
+      </div>
+      <div class="vcard">
+        <a class="card" href="h16-put-it-all-together.html">
+          <h3 data-en="Put It All Together" data-es="J&uacute;ntalo Todo">Put It All Together</h3>
+          <p class="what" data-en="The whole review sheet in one place: four charts you fill in and print, three sets of questions each carrying its number from the sheet, and a timed rehearsal that keeps score and tells nobody." data-es="Toda la hoja de repaso en un solo lugar: cuatro organizadores que llenas e imprimes, tres grupos de preguntas con su n&uacute;mero de la hoja, y un ensayo cronometrado que lleva puntaje y no se lo dice a nadie.">The whole review sheet in one place: four charts you fill in and print, three sets of questions each carrying its number from the sheet, and a timed rehearsal that keeps score and tells nobody.</p>
+          <span class="go" data-en="Open &rarr;" data-es="Abrir &rarr;">Open &rarr;</span>
+        </a>
+        <button class="beambtn" type="button" data-beam="h16" data-name="Put It All Together" data-nombre="J&uacute;ntalo Todo"
+                data-en="Show on the board" data-es="Mostrar en la pizarra">Show on the board</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="strand" aria-labelledby="qzh">
+    <div class="strand-head">
+      <span class="k" data-en="When the test comes" data-es="Cuando llega el examen">When the test comes</span>
+      <h2 id="qzh" data-en="Every quiz, in one room" data-es="Todos los ex&aacute;menes, en una sala">Every quiz, in one room</h2>
+    </div>
+    <p class="say" data-en="The activities above are the lesson &mdash; hints on every question, and nothing is ever called wrong. This is the other thing: no hints, no clock, and a score at the end. It is all in one place so nobody has to hunt for it, and nothing in it is recorded, sent, or seen by anyone." data-es="Las actividades de arriba son la lecci&oacute;n &mdash; pistas en cada pregunta, y nada se llama nunca incorrecto. Esto es lo otro: sin pistas, sin reloj, y un puntaje al final. Est&aacute; todo en un solo lugar para que nadie tenga que buscarlo, y nada de esto se registra, se env&iacute;a ni lo ve nadie.">The activities above are the lesson &mdash; hints on every question, and nothing is ever called wrong. This is the other thing: no hints, no clock, and a score at the end. It is all in one place so nobody has to hunt for it, and nothing in it is recorded, sent, or seen by anyone.</p>
+    <div class="vcards">
+      <div class="vcard">
+        <a class="card" href="social-quiz.html">
+          <h3 data-en="The Quiz Room" data-es="La Sala de Ex&aacute;menes">The Quiz Room</h3>
+          <p class="what" data-en="All four in one place: three fill-in-the-blank papers with word banks — the judicial branch, the bill road and impeachment, and the whole Constitution review — plus the four charts to fill in and print." data-es="Los cuatro en un solo lugar: tres papeles de llenar espacios con bancos de palabras — la rama judicial, el camino del proyecto de ley y el juicio pol&iacute;tico, y el repaso completo de la Constituci&oacute;n — m&aacute;s los cuatro organizadores para llenar e imprimir.">All four in one place: three fill-in-the-blank papers with word banks — the judicial branch, the bill road and impeachment, and the whole Constitution review — plus the four charts to fill in and print.</p>
+          <span class="go" data-en="Open &rarr;" data-es="Abrir &rarr;">Open &rarr;</span>
+        </a>
+      </div>
+      <div class="vcard">
+        <a class="card" href="social-quiz.html#judicial">
+          <h3 data-en="Judicial Branch Quiz" data-es="Examen de la rama judicial">Judicial Branch Quiz</h3>
+          <p class="what" data-en="The class&#x27;s own paper: fifteen questions, two word banks, every word used exactly once. Tap or drag a word into the blank it belongs in." data-es="El propio papel de la clase: quince preguntas, dos bancos de palabras, cada palabra usada exactamente una vez. Toca o arrastra una palabra al espacio al que pertenece.">The class&#x27;s own paper: fifteen questions, two word banks, every word used exactly once. Tap or drag a word into the blank it belongs in.</p>
+          <span class="go" data-en="Open &rarr;" data-es="Abrir &rarr;">Open &rarr;</span>
+        </a>
+      </div>
+      <div class="vcard">
+        <a class="card" href="social-quiz.html#bill">
+          <h3 data-en="Bill to Law &amp; impeachment" data-es="De proyecto a ley y juicio pol&iacute;tico">Bill to Law &amp; impeachment</h3>
+          <p class="what" data-en="Sixteen blanks and two word banks — the road a bill walks, then impeachment beside it. The same shape as the judicial paper." data-es="Dieciséis espacios y dos bancos de palabras — el camino que recorre un proyecto, y a su lado el juicio político. La misma forma que el papel judicial.">Sixteen blanks and two word banks — the road a bill walks, then impeachment beside it. The same shape as the judicial paper.</p>
+          <span class="go" data-en="Open &rarr;" data-es="Abrir &rarr;">Open &rarr;</span>
+        </a>
+      </div>
+      <div class="vcard">
+        <a class="card" href="social-quiz.html#review">
+          <h3 data-en="The whole Constitution review" data-es="El repaso completo de la Constituci&oacute;n">The whole Constitution review</h3>
+          <p class="what" data-en="Twenty-four blanks across three word banks, in the order your review sheet asks them. Every miss shows the word that belonged there." data-es="Quince mezcladas de toda la hoja de repaso, y cada fallo se muestra al final junto a su respuesta y su n&uacute;mero en tu hoja.">Twenty-four blanks across three word banks, in the order your review sheet asks them. Every miss shows the word that belonged there.</p>
+          <span class="go" data-en="Open &rarr;" data-es="Abrir &rarr;">Open &rarr;</span>
+        </a>
+      </div>
+      <div class="vcard">
+        <a class="card" href="social-quiz.html#charts">
+          <h3 data-en="The four charts" data-es="Los cuatro organizadores">The four charts</h3>
+          <p class="what" data-en="Separation of powers, checks and balances, federalism, the amendments. Fill them in on screen, or print a blank set for the class." data-es="Separaci&oacute;n de poderes, pesos y contrapesos, federalismo, las enmiendas. Ll&eacute;nalos en pantalla, o imprime un juego en blanco para la clase.">Separation of powers, checks and balances, federalism, the amendments. Fill them in on screen, or print a blank set for the class.</p>
+          <span class="go" data-en="Open &rarr;" data-es="Abrir &rarr;">Open &rarr;</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="strand" aria-labelledby="s1h">
+    <div class="strand-head">
+      <span class="k" data-en="The era" data-es="La época">The era</span>
+      <h2 id="s1h" data-en="Eight ways into one era" data-es="Ocho caminos a una misma época">Eight ways into one era</h2>
+    </div>
+    <p class="say" data-en="An era is not learned by being read either. It is learned by being put in order, traced cause to effect, heard from both chairs, boiled to its main ideas, spoken in its own vocabulary, found on the map, argued with evidence, and met person by person. That is what these eight do — one era, eight different jobs, each with three sets and three doors." data-es="Una época tampoco se aprende leyéndola. Se aprende poniéndola en orden, siguiéndola de causa a efecto, oyéndola desde ambas sillas, reduciéndola a sus ideas principales, hablándola en su propio vocabulario, hallándola en el mapa, discutiéndola con evidencia y conociéndola persona por persona. Eso hacen estas ocho — una época, ocho trabajos distintos, cada una con tres grupos y tres puertas.">An era is not learned by being read either. It is learned by being put in order, traced cause to effect, heard from both chairs, boiled to its main ideas, spoken in its own vocabulary, found on the map, argued with evidence, and met person by person. That is what these eight do — one era, eight different jobs, each with three sets and three doors.</p>
+    <div class="vcards">
+      <div class="vcard">
+        <a class="card" href="h1-order-the-story.html">
+          <h3 data-en="Order the Story" data-es="Ordena la historia">Order the Story</h3>
+          <p class="what" data-en="Four event cards, one order. History as one thing making the next thing possible — the years appear only after the story lands." data-es="Cuatro tarjetas de sucesos, un orden. La historia como una cosa haciendo posible la siguiente — los años aparecen solo cuando la historia aterriza.">Four event cards, one order. History as one thing making the next thing possible — the years appear only after the story lands.</p>
+          <span class="go" data-en="Open →" data-es="Abrir →">Open →</span>
+        </a>
+        <button class="beambtn" type="button" data-beam="h1" data-name="Order the Story" data-nombre="Ordena la historia"
+                data-en="Show on the board" data-es="Mostrar en la pizarra">Show on the board</button>
+      </div>
+      <div class="vcard">
+        <a class="card" href="h2-because-of-that.html">
+          <h3 data-en="Because of That" data-es="Por eso pasó">Because of That</h3>
+          <p class="what" data-en="One cause, four true effects, one that grew from it. Items 6–8 are chains: the effect turns around and causes the next thing." data-es="Una causa, cuatro efectos verdaderos, uno que nació de ella. Los ítems 6–8 son cadenas: el efecto se da la vuelta y causa lo siguiente.">One cause, four true effects, one that grew from it. Items 6–8 are chains: the effect turns around and causes the next thing.</p>
+          <span class="go" data-en="Open →" data-es="Abrir →">Open →</span>
+        </a>
+        <button class="beambtn" type="button" data-beam="h2" data-name="Because of That" data-nombre="Por eso pasó"
+                data-en="Show on the board" data-es="Mostrar en la pizarra">Show on the board</button>
+      </div>
+      <div class="vcard">
+        <a class="card" href="h3-whose-voice.html">
+          <h3 data-en="Whose Voice?" data-es="¿De quién es la voz?">Whose Voice?</h3>
+          <p class="what" data-en="A line in the manner of the time — a mill worker, a planter, a soldier of each side. Hear whose chair it comes from. Perspective, practiced." data-es="Una línea al estilo de la época — una obrera, un plantador, un soldado de cada lado. Escucha de qué silla viene. Perspectiva, practicada.">A line in the manner of the time — a mill worker, a planter, a soldier of each side. Hear whose chair it comes from. Perspective, practiced.</p>
+          <span class="go" data-en="Open →" data-es="Abrir →">Open →</span>
+        </a>
+        <button class="beambtn" type="button" data-beam="h3" data-name="Whose Voice?" data-nombre="¿De quién es la voz?"
+                data-en="Show on the board" data-es="Mostrar en la pizarra">Show on the board</button>
+      </div>
+      <div class="vcard">
+        <a class="card" href="h4-the-main-idea.html">
+          <h3 data-en="The Main Idea" data-es="La idea principal">The Main Idea</h3>
+          <p class="what" data-en="Short informational passages, four answers in four sizes: just right, too small, too big, not said. The traps are named out loud." data-es="Textos informativos cortos, cuatro respuestas en cuatro tamaños: la justa, muy chica, muy grande, no dicha. Las trampas se nombran en voz alta.">Short informational passages, four answers in four sizes: just right, too small, too big, not said. The traps are named out loud.</p>
+          <span class="go" data-en="Open →" data-es="Abrir →">Open →</span>
+        </a>
+        <button class="beambtn" type="button" data-beam="h4" data-name="The Main Idea" data-nombre="La idea principal"
+                data-en="Show on the board" data-es="Mostrar en la pizarra">Show on the board</button>
+      </div>
+      <div class="vcard">
+        <a class="card" href="h5-words-of-a-new-nation.html">
+          <h3 data-en="Words of a New Nation" data-es="Palabras de una nación nueva">Words of a New Nation</h3>
+          <p class="what" data-en="Ratify, veto, secede, emancipate. The word large on a card, four meanings below — and every wrong meaning belongs to a neighbor word." data-es="Ratificar, veto, separarse, emancipar. La palabra grande en una tarjeta, cuatro significados abajo — y cada significado incorrecto es de una palabra vecina.">Ratify, veto, secede, emancipate. The word large on a card, four meanings below — and every wrong meaning belongs to a neighbor word.</p>
+          <span class="go" data-en="Open →" data-es="Abrir →">Open →</span>
+        </a>
+        <button class="beambtn" type="button" data-beam="h5" data-name="Words of a New Nation" data-nombre="Palabras de una nación nueva"
+                data-en="Show on the board" data-es="Mostrar en la pizarra">Show on the board</button>
+      </div>
+      <div class="vcard">
+        <a class="card" href="h6-map-of-a-growing-nation.html">
+          <h3 data-en="Map of a Growing Nation" data-es="Mapa de una nación que crece">Map of a Growing Nation</h3>
+          <p class="what" data-en="One simple map, one glow at a time. Name what glows and the answer stays on the map — by the end the student has labeled the era themselves." data-es="Un mapa sencillo, un brillo a la vez. Nombra lo que brilla y la respuesta se queda en el mapa — al final el estudiante ha rotulado la época por sí mismo.">One simple map, one glow at a time. Name what glows and the answer stays on the map — by the end the student has labeled the era themselves.</p>
+          <span class="go" data-en="Open →" data-es="Abrir →">Open →</span>
+        </a>
+        <button class="beambtn" type="button" data-beam="h6" data-name="Map of a Growing Nation" data-nombre="Mapa de una nación que crece"
+                data-en="Show on the board" data-es="Mostrar en la pizarra">Show on the board</button>
+      </div>
+      <div class="vcard">
+        <a class="card" href="h7-back-it-up.html">
+          <h3 data-en="Back It Up" data-es="Respáldalo">Back It Up</h3>
+          <p class="what" data-en="A claim and four sentences: the true support, the other side&#x27;s evidence, an opinion in new clothes, a fact that never connects. Position writing, made tappable." data-es="Una afirmación y cuatro oraciones: el respaldo verdadero, la evidencia del otro lado, una opinión disfrazada, un dato que no conecta. Escribir una postura, hecho tocable.">A claim and four sentences: the true support, the other side&#x27;s evidence, an opinion in new clothes, a fact that never connects. Position writing, made tappable.</p>
+          <span class="go" data-en="Open →" data-es="Abrir →">Open →</span>
+        </a>
+        <button class="beambtn" type="button" data-beam="h7" data-name="Back It Up" data-nombre="Respáldalo"
+                data-en="Show on the board" data-es="Mostrar en la pizarra">Show on the board</button>
+      </div>
+      <div class="vcard">
+        <a class="card" href="h8-one-person-big-ripple.html">
+          <h3 data-en="One Person, Big Ripple" data-es="Una persona, gran onda">One Person, Big Ripple</h3>
+          <p class="what" data-en="Washington to Tubman to Sequoyah: read the risk each person chose, name them, then name the ripple. Positive risk-taking, straight from the record." data-es="De Washington a Tubman a Sequoyah: lee el riesgo que cada quien eligió, nómbralos, y luego nombra la onda. El riesgo positivo, directo del registro.">Washington to Tubman to Sequoyah: read the risk each person chose, name them, then name the ripple. Positive risk-taking, straight from the record.</p>
+          <span class="go" data-en="Open →" data-es="Abrir →">Open →</span>
+        </a>
+        <button class="beambtn" type="button" data-beam="h8" data-name="One Person, Big Ripple" data-nombre="Una persona, gran onda"
+                data-en="Show on the board" data-es="Mostrar en la pizarra">Show on the board</button>
+      </div>
+    </div>
+  </section>
+
+
+  <section class="vocab" aria-labelledby="wh">
+    <h2 id="wh" data-en="The era at a glance" data-es="La época de un vistazo">The era at a glance</h2>
+    <p class="say" data-en="One spine of dates — tap a year, and the map shows WHERE while the card tells the story and what it set in motion. Every event links to the activity where it is practiced. With JavaScript off, and on paper, the plain dated list below does the same honest job." data-es="Una columna de fechas — toca un año, y el mapa muestra DÓNDE mientras la tarjeta cuenta la historia y lo que puso en marcha. Cada suceso enlaza a la actividad donde se practica. Sin JavaScript, y en papel, la lista sencilla de abajo hace el mismo trabajo honesto.">One spine of dates — tap a year, and the map shows WHERE while the card tells the story and what it set in motion. Every event links to the activity where it is practiced. With JavaScript off, and on paper, the plain dated list below does the same honest job.</p>
+<style>
+/* ══ THE INTERACTIVE TIMELINE ══ tokens only; the rail is the spine ══ */
+.tlx{display:grid; gap:16px; margin-top:14px;}
+@media (min-width:761px){ .tlx{grid-template-columns:255px minmax(0,1fr); align-items:start;} }
+.tl-rail{display:flex; flex-direction:column; gap:0; position:relative; max-height:600px; overflow-y:auto;
+  overscroll-behavior:contain; padding:4px 4px 4px 0; border-radius:12px;}
+.tl-yr{display:grid; grid-template-columns:20px auto 1fr; align-items:center; gap:9px; text-align:left;
+  border:0; background:transparent; padding:10px 10px 10px 2px; min-height:48px; border-radius:10px; cursor:pointer;}
+.tl-yr .dot{width:11px; height:11px; border-radius:50%; border:2.5px solid var(--ink-faint); background:var(--field);
+  justify-self:center; position:relative; z-index:1; transition:background .15s ease, border-color .15s ease;}
+.tl-yr .y{font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif; font-weight:700;
+  font-size:16px; color:var(--ink); white-space:nowrap;}
+.tl-yr .t{font-size:12.5px; color:var(--ink-soft); overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+.tl-yr:hover{background:var(--a-wash);}
+.tl-yr.on{background:var(--a-wash);}
+.tl-yr.on .dot{background:var(--gold); border-color:var(--gold-deep);}
+.tl-yr.on .y{color:var(--a);}
+/* the spine: one line behind all the dots */
+.tl-rail::before{content:""; position:absolute; left:10px; top:16px; bottom:16px; width:2px;
+  background:var(--rule); border-radius:2px;}
+@media (max-width:760px){
+  .tl-rail{flex-direction:row; max-height:none; overflow-x:auto; overflow-y:hidden; padding:4px 2px 8px;}
+  .tl-rail::before{left:16px; right:16px; top:26px; bottom:auto; width:auto; height:2px;}
+  .tl-yr{grid-template-columns:auto; grid-template-rows:20px auto; justify-items:center; gap:4px;
+    padding:6px 11px; min-width:86px;}
+  .tl-yr .t{display:none;}
+}
+.tl-panel{border:1.5px solid var(--rule-soft); border-radius:16px; background:var(--field);
+  box-shadow:var(--lift-sm); padding:14px 16px 16px; min-height:300px;}
+.tl-map svg{display:block; width:100%; max-width:30rem; margin:0 auto; height:auto;}
+.tl-map .mz{fill:transparent; stroke:rgba(255,255,255,.9); stroke-width:1.4; stroke-linejoin:round; transition:fill .3s ease, fill-opacity .45s ease, stroke .3s ease;}
+.tl-map .mz.pre{fill:var(--ground); fill-opacity:.86; stroke:rgba(255,255,255,.55); stroke-width:1; stroke-dasharray:5 5;}
+.tl-map .mw{fill:none; stroke:#1B3A5F; stroke-width:2.4; opacity:.9; transition:opacity .35s ease, stroke .2s ease;}
+.tl-map .off{opacity:0 !important; pointer-events:none;}
+.tl-map .mdot{transform-box:fill-box; transform-origin:center; transition:transform .25s ease, fill .2s ease, stroke .2s ease, opacity .35s ease;}
+.tl-map .mdot.zon{transform:scale(1.35);}
+.tl-controls{grid-column:1 / -1; display:flex; align-items:center; gap:9px;}
+.tl-controls .btn{min-height:44px; padding:8px 14px;}
+.tl-where{font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif; font-weight:700; color:var(--ink-soft); font-size:15px;}
+.tl-map .mdot{fill:#fff; stroke:#33475E; stroke-width:1.6; transition:fill .2s ease;}
+.tl-map .mz.zon{fill:var(--gold); fill-opacity:.45; stroke:var(--gold-deep); stroke-width:2.6;}
+.tl-map .mw.zon{opacity:1; stroke:var(--gold-deep); stroke-width:3.4;}
+.tl-map .mdot.zon{fill:var(--gold); stroke:var(--gold-deep); stroke-width:2.4;}
+.tl-map .mcap{font-size:11px; font-style:italic; fill:var(--ink-soft);}
+@media (prefers-reduced-motion: reduce){ .tl-map *, .tl-yr .dot{transition:none !important;} }
+.tl-place{display:inline-block; margin-top:10px; font-size:11px; font-weight:800; letter-spacing:.12em;
+  text-transform:uppercase; color:var(--gold-deep);}
+.tl-h{font-size:20px; margin-top:3px;}
+.tl-p{margin-top:8px; font-size:14.5px; line-height:1.55; color:var(--ink); max-width:62ch;}
+.tl-r{margin-top:9px; font-size:13.5px; line-height:1.5; color:var(--ink-soft); border-left:3px solid var(--gold);
+  padding-left:10px; max-width:60ch;}
+.tl-r b{color:var(--gold-deep); font-size:10.5px; letter-spacing:.12em; text-transform:uppercase; display:block; margin-bottom:2px;}
+.tl-act{display:inline-block; margin-top:12px; font-size:13.5px; font-weight:700; color:var(--a); text-decoration:none;
+  border:1.5px solid var(--rule); border-radius:999px; padding:8px 14px; min-height:0;}
+.tl-act:hover{border-color:var(--a);}
+html.js-tl #tlPrint{display:none;}
+@media print{ .tlx{display:none !important;} html.js-tl #tlPrint{display:table !important;} }
+</style>
+    <div class="tlx no-print" id="tlx" hidden>
+      <div class="tl-controls">
+        <button class="btn" type="button" id="tlPrev" aria-label="Earlier">←</button>
+        <button class="btn btn-accent" type="button" id="tlPlay">▶</button>
+        <button class="btn" type="button" id="tlNext" aria-label="Later">→</button>
+        <span class="tl-where" id="tlWhere" aria-hidden="true"></span>
+      </div>
+      <div class="tl-rail" id="tlRail" role="tablist" aria-label="Timeline of the era"></div>
+      <div class="tl-panel" id="tlPanel">
+        <div class="tl-map" id="tlMap" aria-hidden="true"></div>
+        <div aria-live="polite">
+          <span class="tl-place" id="tlPlace"></span>
+          <h3 class="tl-h" id="tlH"></h3>
+          <p class="tl-p" id="tlF"></p>
+          <p class="tl-r" id="tlR"></p>
+          <a class="tl-act" id="tlAct" href="#"></a>
+        </div>
+      </div>
+    </div>
+    <table class="wordtable" id="tlPrint">
+      <tbody>
+          <tr><td class="w">1776</td><td class="d" data-en="The Declaration of Independence" data-es="La Declaración de Independencia">The Declaration of Independence</td></tr>
+          <tr><td class="w">1781</td><td class="d" data-en="The Articles of Confederation take effect" data-es="Entran en vigor los Artículos de la Confederación">The Articles of Confederation take effect</td></tr>
+          <tr><td class="w">1787</td><td class="d" data-en="The Constitutional Convention" data-es="La Convención Constitucional">The Constitutional Convention</td></tr>
+          <tr><td class="w">1788</td><td class="d" data-en="The Constitution is ratified" data-es="Se ratifica la Constitución">The Constitution is ratified</td></tr>
+          <tr><td class="w">1789</td><td class="d" data-en="Washington becomes the first president" data-es="Washington se convierte en el primer presidente">Washington becomes the first president</td></tr>
+          <tr><td class="w">1791</td><td class="d" data-en="The Bill of Rights" data-es="La Carta de Derechos">The Bill of Rights</td></tr>
+          <tr><td class="w">1793</td><td class="d" data-en="Whitney patents the cotton gin" data-es="Whitney patenta la desmotadora">Whitney patents the cotton gin</td></tr>
+          <tr><td class="w">1800</td><td class="d" data-en="Power changes parties peacefully" data-es="El poder cambia de partido en paz">Power changes parties peacefully</td></tr>
+          <tr><td class="w">1803</td><td class="d" data-en="The Louisiana Purchase doubles the country" data-es="La Compra de Luisiana duplica el país">The Louisiana Purchase doubles the country</td></tr>
+          <tr><td class="w">1803</td><td class="d" data-en="Marbury v. Madison — judicial review" data-es="Marbury contra Madison — la revisión judicial">Marbury v. Madison — judicial review</td></tr>
+          <tr><td class="w">1812–15</td><td class="d" data-en="The War of 1812" data-es="La Guerra de 1812">The War of 1812</td></tr>
+          <tr><td class="w">1820</td><td class="d" data-en="The Missouri Compromise" data-es="El Compromiso de Misuri">The Missouri Compromise</td></tr>
+          <tr><td class="w">1825</td><td class="d" data-en="The Erie Canal opens" data-es="Se abre el Canal de Erie">The Erie Canal opens</td></tr>
+          <tr><td class="w">1838</td><td class="d" data-en="The Trail of Tears" data-es="El Sendero de Lágrimas">The Trail of Tears</td></tr>
+          <tr><td class="w">1848</td><td class="d" data-en="The Mexican Cession · Seneca Falls · gold" data-es="La Cesión Mexicana · Seneca Falls · el oro">The Mexican Cession · Seneca Falls · gold</td></tr>
+          <tr><td class="w">1850</td><td class="d" data-en="The Compromise of 1850" data-es="El Compromiso de 1850">The Compromise of 1850</td></tr>
+          <tr><td class="w">1854</td><td class="d" data-en="The Kansas-Nebraska Act" data-es="La Ley de Kansas-Nebraska">The Kansas-Nebraska Act</td></tr>
+          <tr><td class="w">1857</td><td class="d" data-en="The Dred Scott decision" data-es="La decisión Dred Scott">The Dred Scott decision</td></tr>
+          <tr><td class="w">1860</td><td class="d" data-en="Lincoln is elected; secession begins" data-es="Lincoln es elegido; empieza la secesión">Lincoln is elected; secession begins</td></tr>
+          <tr><td class="w">1861</td><td class="d" data-en="Fort Sumter — the Civil War begins" data-es="El Fuerte Sumter — empieza la Guerra Civil">Fort Sumter — the Civil War begins</td></tr>
+          <tr><td class="w">1863</td><td class="d" data-en="Emancipation · Gettysburg" data-es="Emancipación · Gettysburg">Emancipation · Gettysburg</td></tr>
+          <tr><td class="w">1865</td><td class="d" data-en="Appomattox · the 13th Amendment" data-es="Appomattox · la 13.ª Enmienda">Appomattox · the 13th Amendment</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section class="vocab" aria-labelledby="eqh">
+    <h2 id="eqh" data-en="The essential questions" data-es="Las preguntas esenciales">The essential questions</h2>
+    <p class="say" data-en="Every activity keeps landing on the same four questions. They have no final answers — that is what makes them essential — and a student who leaves this unit still arguing about them has learned it." data-es="Cada actividad sigue aterrizando en las mismas cuatro preguntas. No tienen respuestas finales — eso las hace esenciales — y un estudiante que salga de esta unidad todavía discutiéndolas, la aprendió.">Every activity keeps landing on the same four questions. They have no final answers — that is what makes them essential — and a student who leaves this unit still arguing about them has learned it.</p>
+    <table class="wordtable">
+      <tbody>
+          <tr><td class="w">1</td><td class="d" data-en="Can a country disagree and still hold together?" data-es="¿Puede un país estar en desacuerdo y aun así mantenerse unido?">Can a country disagree and still hold together?</td></tr>
+          <tr><td class="w">2</td><td class="d" data-en="Who gets a say — and who decides who gets a say?" data-es="¿Quién tiene voz — y quién decide quién tiene voz?">Who gets a say — and who decides who gets a say?</td></tr>
+          <tr><td class="w">3</td><td class="d" data-en="Can one person change a nation?" data-es="¿Puede una persona cambiar una nación?">Can one person change a nation?</td></tr>
+          <tr><td class="w">4</td><td class="d" data-en="Does where you live change how you live?" data-es="¿El lugar donde vives cambia la forma en que vives?">Does where you live change how you live?</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+<script>
+/* ══ THE ERA, LIVE — A FLIP BOOK ═════════════════════════════════════════
+   ONE persistent map whose classes morph between years, so the country
+   visibly grows: ghost land solidifies at its date, features appear when
+   built (and the Compromise line is erased by 1854), dots swell when they
+   are the story. ▶ plays the whole era; ←/→ page it; the rail jumps;
+   #t=N deep-links a year. The static dated table stays as the JS-off and
+   printed view. */
+(function(){
+  "use strict";
+  var rail = document.getElementById("tlRail");
+  if(!rail) return;
+  var esLang = function(){ return document.documentElement.lang === "es"; };
+  function pick(o, f){ return esLang() ? o[f+"Es"] : o[f]; }
+  function esc(v){ return String(v==null?"":v).replace(/[&<>"']/g, function(c){
+    return ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"})[c]; }); }
+
+  var Z = [
+    {k:"z", d:"M571.9,98.5 L576.6,90.8 L596.8,77.1 L634.7,76.9 L649,63.1 L662,39.2 L678.6,66.2 L688.4,80 L665.6,87.7 L650.2,98.5 L643.1,106.2 L641.9,117.7 L652.5,126.2 L643.1,129.2 L630,133.8 L618.1,139.2 L605.1,144.6 L605.1,158.5 L594.4,169.2 L593.2,178.5 L584.9,186.2 L582.5,207.7 L587.3,227.7 L575.4,235.4 L557.6,247.7 L543.4,258.5 L533.9,267.7 L523.2,278.5 L516.1,296.6 L474.6,296.6 L473.4,292.3 L475.8,261.5 L491.2,221.5 L513.7,181.5 L531.5,146.2 L545.8,112.3 L544.6,103.1 Z", fr:1776},
+    {k:"z", d:"M129.9,15.4 L354.2,15.4 L353.6,36.9 L364.2,52.3 L377.3,76.9 L398.6,103.1 L402.2,135.4 L409.3,161.5 L412.9,175.4 L420,196.9 L416.4,221.5 L403.4,246.2 L401,269.2 L397.5,292.3 L409.3,309.2 L425.9,319.2 L412.9,321.5 L399.8,317.7 L389.2,314.6 L369.6,312.3 L371.4,306.2 L367.8,284.6 L367.2,253.1 L344.1,248.5 L319.2,244.6 L296.6,237.5 L296.6,207.7 L261,207.7 L261,201.5 L213.6,200 L194.6,175.4 L165.5,123.1 L160.2,104.6 L142.4,84.6 L126.9,52.3 L129.9,15.4 Z", fr:1803},
+    {k:"z", d:"M448.5,302.3 L444.9,292.3 L474,292.3 L474.6,296.6 L516.1,296.6 L517.3,303.1 L519.7,312.3 L526.8,329.2 L533.3,355.4 L532.7,372.3 L520.8,381.5 L513.1,375.4 L511.4,363.1 L502.5,340 L500.7,324.6 L487.6,312.3 L481.7,309.2 L471,312.3 L460.3,301.5 Z", fr:1819},
+    {k:"z", d:"M213.6,200 L225.4,243.1 L219.5,280 L238.5,300 L259.8,323.1 L280,311.5 L302.5,344.6 L330.4,370 L327.5,340 L339.3,332.3 L352.4,323.1 L369.6,312.3 L371.4,306.2 L367.8,284.6 L367.2,253.1 L344.1,248.5 L319.2,244.6 L296.6,237.5 L296.6,207.7 L261,207.7 L261,201.5 Z", fr:1845},
+    {k:"z", d:"M129.9,15.4 L23.7,15.4 L3.6,24.6 L3.6,24.6 L10.7,47.7 L13.1,69.2 L11.3,92.3 L7.7,123.1 L59.3,123.1 L130.5,123.1 L165.5,123.1 L160.2,104.6 L142.4,84.6 L126.9,52.3 Z", fr:1846},
+    {k:"z", d:"M7.7,123.1 L59.3,123.1 L130.5,123.1 L165.5,123.1 L194.6,175.4 L213.6,200 L225.4,243.1 L219.5,280 L199.3,287.2 L166.1,287.2 L122.2,267.7 L93.5,268.8 L91.4,261.5 L80.7,250.8 L71.2,246.2 L52.2,236.9 L36.8,207.7 L30.8,192.3 L15.4,170.8 L9.5,147.7 Z", fr:1848},
+    {k:"w", d:"M353.6,36.9 L364.2,52.3 L377.3,76.9 L398.6,103.1 L402.2,135.4 L409.3,161.5 L412.9,175.4 L420,196.9 L416.4,221.5 L403.4,246.2 L401,269.2 L397.5,292.3 L409.3,309.2 L425.9,319.2", fr:0},
+    {k:"w", d:"M546.9,108.5 L575.4,106.2 L594.4,110.8 L608.1,113.1", fr:1825},
+    {k:"w", d:"M225.4,207.7 L360.7,207.7", dash:1, fr:1820, un:1854},
+    {k:"d", x:569, y:170.8, fr:1800},
+    {k:"d", x:535.4, y:265.1, fr:1861},
+    {k:"d", x:591.3, y:154.6, fr:1776},
+    {k:"d", x:520.8, y:275.7, fr:1776},
+    {k:"w", d:"M486.4,224.6 L444.9,226.2 L409.3,226.2 L363.1,224.6", dash:1, fr:1838, un:1839},
+    {k:"d", x:571.9, y:109.1, fr:1848},
+    {k:"d", x:566.8, y:156.5, fr:1863},
+    {k:"d", x:353.1, y:169.7, fr:1854},
+    {k:"d", x:548.1, y:194.2, fr:1865},
+    {k:"d", x:414.4, y:308.5, fr:1803}
+  ];
+
+  var TL = [
+  {y:"1776",yr:1776,z:[0,11],p:"Philadelphia · the thirteen colonies",pEs:"Filadelfia · las trece colonias",t:"The Declaration of Independence",tEs:"La Declaración de Independencia",f:"Thirteen colonies declared themselves free of a king — and instantly owed the world a government of their own design.",fEs:"Trece colonias se declararon libres de un rey — y al instante le debieron al mundo un gobierno de diseño propio.",r:"Independence made the Articles necessary — and their failure made the Constitution necessary.",rEs:"La independencia hizo necesarios los Artículos — y su fracaso hizo necesaria la Constitución.",an:"Order the Story",anEs:"Ordena la historia",af:"h1-order-the-story.html"},
+  {y:"1781",yr:1781,z:[0],p:"The thirteen states",pEs:"Los trece estados",t:"The Articles of Confederation take effect",tEs:"Entran en vigor los Artículos de la Confederación",f:"The first plan made the states a loose team: no power to tax, no power to enforce, thirteen kinds of money.",fEs:"El primer plan hizo de los estados un equipo suelto: sin poder de cobrar impuestos, sin poder de hacer cumplir, trece clases de moneda.",r:"Every weakness on that list became an argument for Philadelphia, 1787.",rEs:"Cada debilidad de esa lista se volvió un argumento para Filadelfia, 1787.",an:"Because of That",anEs:"Por eso pasó",af:"h2-because-of-that.html"},
+  {y:"1787",yr:1787,z:[11],p:"Philadelphia",pEs:"Filadelfia",t:"The Constitutional Convention",tEs:"La Convención Constitucional",f:"Fifty-five delegates, a sweltering summer, windows nailed shut for secrecy — and a new plan built out of compromises.",fEs:"Cincuenta y cinco delegados, un verano sofocante, ventanas clavadas por el secreto — y un plan nuevo construido a base de compromisos.",r:"Two houses, three branches, and one long argument that still runs today.",rEs:"Dos cámaras, tres ramas y una larga discusión que sigue hasta hoy.",an:"Order the Story",anEs:"Ordena la historia",af:"h1-order-the-story.html"},
+  {y:"1788",yr:1788,z:[0],p:"Nine states say yes",pEs:"Nueve estados dicen sí",t:"The Constitution is ratified",tEs:"Se ratifica la Constitución",f:"State by state, the plan was argued through — Federalists for, Anti-Federalists demanding a bill of rights as the price of yes.",fEs:"Estado por estado se debatió el plan — federalistas a favor, antifederalistas exigiendo una carta de derechos como precio del sí.",r:"The doubters lost the vote and won the amendments: their price became the Bill of Rights.",rEs:"Los escépticos perdieron la votación y ganaron las enmiendas: su precio se volvió la Carta de Derechos.",an:"Words of a New Nation",anEs:"Palabras de una nación nueva",af:"h5-words-of-a-new-nation.html"},
+  {y:"1789",yr:1789,z:[0],p:"The new government stands up",pEs:"El nuevo gobierno se pone de pie",t:"Washington becomes the first president",tEs:"Washington se convierte en el primer presidente",f:"The first Congress met, and Washington swore the first oath — to an office that was mostly blank paper. Every choice he made became a habit.",fEs:"El primer Congreso sesionó, y Washington hizo el primer juramento — ante un cargo que era casi papel en blanco. Cada decisión suya se volvió costumbre.",r:"The cabinet, the two-term limit, the peaceful goodbye — precedents that governed for centuries.",rEs:"El gabinete, el límite de dos períodos, el adiós pacífico — precedentes que gobernaron por siglos.",an:"The Second Branch",anEs:"La segunda rama",af:"h11-the-second-branch.html"},
+  {y:"1791",yr:1791,z:[0],p:"The first ten amendments",pEs:"Las primeras diez enmiendas",t:"The Bill of Rights",tEs:"La Carta de Derechos",f:"The promise that bought ratification was kept: ten amendments guarding speech, worship, the press, fair trials, and more.",fEs:"La promesa que compró la ratificación se cumplió: diez enmiendas protegiendo la expresión, el culto, la prensa, los juicios justos y más.",r:"Disagreement built something — the argument against the Constitution became part of it.",rEs:"El desacuerdo construyó algo — el argumento contra la Constitución se volvió parte de ella.",an:"Back It Up",anEs:"Respáldalo",af:"h7-back-it-up.html"},
+  {y:"1793",yr:1793,z:[12],p:"The cotton South",pEs:"El Sur del algodón",t:"Whitney patents the cotton gin",tEs:"Whitney patenta la desmotadora",f:"One small machine cleaned cotton fifty times faster than hands could — and cotton profits exploded across the Deep South.",fEs:"Una máquina pequeña limpiaba el algodón cincuenta veces más rápido que las manos — y las ganancias explotaron por el Sur profundo.",r:"More cotton meant more fields, and more fields meant more enslaved labor: an invention deepened an injustice.",rEs:"Más algodón significó más campos, y más campos más trabajo esclavizado: un invento profundizó una injusticia.",an:"Because of That",anEs:"Por eso pasó",af:"h2-because-of-that.html"},
+  {y:"1800",yr:1800,z:[9],p:"Washington, D.C.",pEs:"Washington, D. C.",t:"Power changes parties peacefully",tEs:"El poder cambia de partido en paz",f:"Adams lost to Jefferson — his rival — and simply went home. No army in the streets, no crown passed: just a new president at dawn.",fEs:"Adams perdió ante Jefferson — su rival — y sencillamente volvió a casa. Sin ejército en las calles, sin corona: solo un nuevo presidente al amanecer.",r:"The republic survived its first real handoff, and every later one stood on this morning.",rEs:"La república sobrevivió su primer relevo real, y cada uno posterior se paró sobre esa mañana.",an:"The Second Branch",anEs:"La segunda rama",af:"h11-the-second-branch.html"},
+  {y:"1803",yr:1803,z:[1,18],p:"From the river to the Rockies",pEs:"Del río a las Rocosas",t:"The Louisiana Purchase doubles the country",tEs:"La Compra de Luisiana duplica el país",f:"France offered the whole middle of the continent for fifteen million dollars — mostly so New Orleans and the river mouth could be American.",fEs:"Francia ofreció todo el centro del continente por quince millones de dólares — sobre todo para que Nueva Orleans y la desembocadura fueran estadounidenses.",r:"The West opened — and every new acre would re-ask the question of slavery.",rEs:"El Oeste se abrió — y cada acre nuevo volvería a hacer la pregunta de la esclavitud.",an:"Map of a Growing Nation",anEs:"Mapa de una nación que crece",af:"h6-map-of-a-growing-nation.html"},
+  {y:"1803",yr:1803,z:[9],p:"The Supreme Court",pEs:"La Corte Suprema",t:"Marbury v. Madison — judicial review",tEs:"Marbury contra Madison — la revisión judicial",f:"Chief Justice Marshall struck down one small law — and in explaining why he could, claimed the Court's great power: saying what the Constitution means.",fEs:"El juez presidente Marshall anuló una ley pequeña — y al explicar por qué podía, reclamó el gran poder de la Corte: decir qué significa la Constitución.",r:"The third branch became a true equal of the other two.",rEs:"La tercera rama se volvió verdadera igual de las otras dos.",an:"The Third Branch",anEs:"La tercera rama",af:"h9-the-third-branch.html"},
+  {y:"1812–15",yr:1812,z:[9,0],p:"The capital burns; the country holds",pEs:"La capital arde; el país resiste",t:"The War of 1812",tEs:"La Guerra de 1812",f:"A second war with Britain: the capital burned, the flag held over Baltimore, and no border moved an inch.",fEs:"Una segunda guerra con Gran Bretaña: la capital ardió, la bandera resistió sobre Baltimore y ninguna frontera se movió una pulgada.",r:"What changed was the feeling: Americans came out of it a nation, with an anthem to show for it.",rEs:"Lo que cambió fue el sentimiento: los estadounidenses salieron siendo una nación, con un himno como prueba.",an:"Order the Story",anEs:"Ordena la historia",af:"h1-order-the-story.html"},
+  {y:"1820",yr:1820,z:[8],p:"A line across the Purchase",pEs:"Una línea a través de la Compra",t:"The Missouri Compromise",tEs:"El Compromiso de Misuri",f:"Missouri entered slave, Maine entered free, and a line was drawn across the map: slavery below, freedom above.",fEs:"Misuri entró esclavista, Maine libre, y se trazó una línea sobre el mapa: esclavitud abajo, libertad arriba.",r:"A pause button, not an answer — the line quieted the argument without settling it.",rEs:"Un botón de pausa, no una respuesta — la línea calmó el pleito sin resolverlo.",an:"Map of a Growing Nation",anEs:"Mapa de una nación que crece",af:"h6-map-of-a-growing-nation.html"},
+  {y:"1825",yr:1825,z:[7],p:"Lakes to the Hudson, by hand",pEs:"De los lagos al Hudson, a mano",t:"The Erie Canal opens",tEs:"Se abre el Canal de Erie",f:"Eight years of digging tied the Great Lakes to New York City. Freight prices fell about ninety percent, and the city boomed.",fEs:"Ocho años de excavación unieron los Grandes Lagos con Nueva York. Los fletes cayeron cerca de noventa por ciento, y la ciudad floreció.",r:"The West became a living: a farm only feeds a family when the crop can reach a buyer.",rEs:"El Oeste se volvió un sustento: una granja solo mantiene a una familia cuando la cosecha llega a un comprador.",an:"The Main Idea",anEs:"La idea principal",af:"h4-the-main-idea.html"},
+  {y:"1838",yr:1838,z:[13],p:"Forced west, on foot",pEs:"Forzados al oeste, a pie",t:"The Trail of Tears",tEs:"El Sendero de Lágrimas",f:"The Cherokee had farms, schools, a written language, a newspaper. Soldiers marched thousands of families west through a bitter winter; around four thousand people died.",fEs:"Los cheroquis tenían granjas, escuelas, lengua escrita, un periódico. Los soldados marcharon a miles de familias al oeste en un invierno crudo; unas cuatro mil personas murieron.",r:"A wound in the national story — the same years that widened the vote for some closed the door on others.",rEs:"Una herida en la historia nacional — los mismos años que ampliaron el voto para algunos cerraron la puerta a otros.",an:"Whose Voice?",anEs:"¿De quién es la voz?",af:"h3-whose-voice.html"},
+  {y:"1848",yr:1848,z:[5,14],p:"The Southwest — and Seneca Falls",pEs:"El Suroeste — y Seneca Falls",t:"The Mexican Cession · Seneca Falls · gold",tEs:"La Cesión Mexicana · Seneca Falls · el oro",f:"One year, three earthquakes: the war with Mexico added the Southwest, gold turned up in California, and three hundred people at Seneca Falls declared that all men AND women are created equal.",fEs:"Un año, tres terremotos: la guerra con México sumó el Suroeste, apareció oro en California, y trescientas personas en Seneca Falls declararon que todos los hombres Y las mujeres son creados iguales.",r:"The map and the meaning of equality both blew open at once.",rEs:"El mapa y el significado de la igualdad se abrieron de golpe, a la vez.",an:"One Person, Big Ripple",anEs:"Una persona, gran onda",af:"h8-one-person-big-ripple.html"},
+  {y:"1850",yr:1850,z:[5,9],p:"California in, a harsher law out",pEs:"California entra, sale una ley más dura",t:"The Compromise of 1850",tEs:"El Compromiso de 1850",f:"California entered free — and the price was a Fugitive Slave Law that forced Northerners to help capture people escaping slavery.",fEs:"California entró libre — y el precio fue una Ley de Esclavos Fugitivos que obligó a los norteños a ayudar a capturar a quienes escapaban de la esclavitud.",r:"Each side got a win and a wound, and the trust between them kept draining.",rEs:"Cada lado obtuvo una victoria y una herida, y la confianza entre ambos siguió drenándose.",an:"Back It Up",anEs:"Respáldalo",af:"h7-back-it-up.html"},
+  {y:"1854",yr:1854,z:[16,1],p:"Kansas Territory",pEs:"El territorio de Kansas",t:"The Kansas-Nebraska Act",tEs:"La Ley de Kansas-Nebraska",f:"Let the settlers vote slavery up or down, said the law — and both sides rushed people in. The territory turned violent: Bleeding Kansas.",fEs:"Que los colonos voten la esclavitud, dijo la ley — y ambos lados apresuraron gente. El territorio se volvió violento: el Kansas sangrante.",r:"Once an argument draws blood, every next argument starts from the blood.",rEs:"Cuando un pleito llega a la sangre, cada pleito siguiente empieza desde la sangre.",an:"Because of That",anEs:"Por eso pasó",af:"h2-because-of-that.html"},
+  {y:"1857",yr:1857,z:[9],p:"The Supreme Court",pEs:"La Corte Suprema",t:"The Dred Scott decision",tEs:"La decisión Dred Scott",f:"The Court ruled against Dred Scott's freedom — and went further: Black Americans were not citizens, and Congress could not ban slavery in the territories.",fEs:"La Corte falló contra la libertad de Dred Scott — y fue más lejos: los estadounidenses negros no eran ciudadanos, y el Congreso no podía prohibir la esclavitud en los territorios.",r:"Meant to settle the question, it poured fuel on it — the era's proof that the Court's power can wound.",rEs:"Pensado para zanjar la cuestión, le echó combustible — la prueba de la época de que el poder de la Corte puede herir.",an:"The Third Branch",anEs:"La tercera rama",af:"h9-the-third-branch.html"},
+  {y:"1860",yr:1860,z:[9,0],p:"An election the South refused",pEs:"Una elección que el Sur rechazó",t:"Lincoln is elected; secession begins",tEs:"Lincoln es elegido; empieza la secesión",f:"Lincoln won without a single Southern electoral vote — and seven states declared they were leaving before he even took office.",fEs:"Lincoln ganó sin un solo voto electoral del Sur — y siete estados declararon irse antes de que asumiera.",r:"An election, an exit, and a winter in which the Union came apart.",rEs:"Una elección, una salida y un invierno en que la Unión se deshizo.",an:"Order the Story",anEs:"Ordena la historia",af:"h1-order-the-story.html"},
+  {y:"1861",yr:1861,z:[10],p:"Charleston harbor",pEs:"El puerto de Charleston",t:"Fort Sumter — the Civil War begins",tEs:"El Fuerte Sumter — empieza la Guerra Civil",f:"Confederate guns fired on the harbor fort at dawn. Lincoln called for troops, and four years of war began.",fEs:"Los cañones confederados dispararon contra el fuerte al amanecer. Lincoln llamó a las tropas, y empezaron cuatro años de guerra.",r:"The argument the compromises had postponed finally arrived, at full price.",rEs:"La discusión que los compromisos habían pospuesto llegó por fin, a precio completo.",an:"Map of a Growing Nation",anEs:"Mapa de una nación que crece",af:"h6-map-of-a-growing-nation.html"},
+  {y:"1863",yr:1863,z:[15,9],p:"Gettysburg — and one signature",pEs:"Gettysburg — y una firma",t:"Emancipation · Gettysburg",tEs:"Emancipación · Gettysburg",f:"The Emancipation Proclamation aimed the war at slavery itself and opened the army to Black soldiers. At Gettysburg the tide turned — and Lincoln, in two minutes, told the country what it was all for.",fEs:"La Proclamación de Emancipación apuntó la guerra contra la esclavitud y abrió el ejército a los soldados negros. En Gettysburg cambió la marea — y Lincoln, en dos minutos, le dijo al país para qué era todo.",r:"A war for the Union became a war for freedom too.",rEs:"Una guerra por la Unión se volvió también una guerra por la libertad.",an:"One Person, Big Ripple",anEs:"Una persona, gran onda",af:"h8-one-person-big-ripple.html"},
+  {y:"1865",yr:1865,z:[17,9],p:"Appomattox Court House",pEs:"Appomattox Court House",t:"Appomattox · the 13th Amendment",tEs:"Appomattox · la 13.ª Enmienda",f:"Lee surrendered in a Virginia parlor, and Grant answered with deliberate mercy — food for the hungry army, horses kept for spring plowing. That December, the Thirteenth Amendment wrote slavery's end into the Constitution itself.",fEs:"Lee se rindió en una sala de Virginia, y Grant respondió con misericordia deliberada — comida para el ejército hambriento, caballos para arar en primavera. Ese diciembre, la Decimotercera Enmienda escribió el fin de la esclavitud en la propia Constitución.",r:"The war ended; the harder work of becoming one country again began.",rEs:"La guerra terminó; empezó el trabajo más difícil de volver a ser un solo país.",an:"Words of a New Nation",anEs:"Palabras de una nación nueva",af:"h5-words-of-a-new-nation.html"}
+];
+
+  var AOG_TERRA = '<defs><clipPath id="mclip"><rect x="0" y="0" width="700" height="400" rx="12"></rect></clipPath></defs><image href="data:image/jpeg;base64,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" x="0" y="0" width="700" height="400" preserveAspectRatio="none" clip-path="url(#mclip)"></image>';
+  var AOG_TERRA = '<defs><clipPath id="mclip"><rect x="0" y="0" width="700" height="400" rx="12"></rect></clipPath></defs><image href="data:image/jpeg;base64,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" x="0" y="0" width="700" height="400" preserveAspectRatio="none" clip-path="url(#mclip)"></image>';
+  var map = document.getElementById("tlMap");
+  (function buildSvg(){
+    var h = '<svg viewBox="0 0 700 440">';
+    h += AOG_TERRA;
+    h += '<path class="mz" data-ctx="1" d="M353.6,36.9 L354.2,15.4 L391.5,21.5 L415.3,29.2 L434.2,27.7 L476.9,53.8 L503.6,71.5 L505.4,107.7 L545.8,112.3 L531.5,146.2 L513.7,181.5 L491.2,221.5 L475.8,261.5 L473.4,292.3 L474.6,296.6 L474.6,296.6 L474,292.3 L444.9,292.3 L448.5,302.3 L437.8,303.1 L420.6,307.7 L425.9,319.2 L409.3,309.2 L397.5,292.3 L401,269.2 L403.4,246.2 L416.4,221.5 L420,196.9 L412.9,175.4 L409.3,161.5 L402.2,135.4 L398.6,103.1 L377.3,76.9 L364.2,52.3 L353.6,36.9 Z"></path>';
+    Z.forEach(function(z, zi){
+      if(z.k === "d"){
+        h += '<circle class="mdot" data-zi="' + zi + '" cx="' + z.x + '" cy="' + z.y + '" r="7"></circle>';
+      } else {
+        h += '<path class="' + (z.k==="z" ? "mz" : "mw") + '" data-zi="' + zi + '" d="' + z.d + '"'
+           + (z.dash ? ' stroke-dasharray="8 6"' : '') + '></path>';
+      }
+    });
+    h += '<text class="mcap" x="60" y="414" data-cap="1"></text>';
+    h += '<text class="mcap" x="60" y="430" data-cap="2"></text>';
+    h += '</svg>';
+    map.innerHTML = h;
+  })();
+
+  function setMap(e){
+    var yr = e.yr, pre = 0;
+    var ctx = map.querySelector('[data-ctx]');
+    ctx.classList.toggle("pre", yr < 1783);
+    if(yr < 1783) pre++;
+    Z.forEach(function(z, zi){
+      var el = map.querySelector('[data-zi="' + zi + '"]');
+      var on = e.z.indexOf(zi) > -1;
+      el.classList.toggle("zon", on);
+      if(z.k === "z"){
+        var g = !on && yr < (z.fr || 0);
+        el.classList.toggle("pre", g);
+        if(g) pre++;
+      } else {
+        var hide = !on && (yr < (z.fr || 0) || (z.un && yr >= z.un));
+        el.classList.toggle("off", hide);
+      }
+    });
+    map.querySelector('[data-cap="1"]').textContent =
+      esLang() ? "Un mapa sencillo — formas, no fronteras exactas." : "A simple map — shapes, not exact borders.";
+    map.querySelector('[data-cap="2"]').textContent = pre
+      ? (esLang() ? "La tierra tenue aún no es parte de Estados Unidos." : "Faded land is not yet part of the United States.")
+      : "";
+  }
+
+  var cur = 0;
+  function paint(){
+    var e = TL[cur];
+    setMap(e);
+    document.getElementById("tlPlace").textContent = pick(e, "p");
+    document.getElementById("tlH").textContent = e.y + " · " + pick(e, "t");
+    document.getElementById("tlF").textContent = pick(e, "f");
+    document.getElementById("tlR").innerHTML = "<b>" + esc(esLang() ? "Por eso pasó →" : "Because of that →") + "</b>" + esc(pick(e, "r"));
+    var a = document.getElementById("tlAct");
+    a.href = e.af;
+    a.textContent = (esLang() ? "Practícalo en " : "Practice it in ") + pick(e, "an") + " →";
+    document.getElementById("tlWhere").textContent = (cur+1) + " / " + TL.length;
+    Array.prototype.forEach.call(rail.children, function(b, i){
+      b.classList.toggle("on", i === cur);
+      b.setAttribute("aria-selected", String(i === cur));
+      b.setAttribute("tabindex", i === cur ? "0" : "-1");
+    });
+    var row = rail.children[cur];
+    if(row && row.scrollIntoView) row.scrollIntoView({block:"nearest", inline:"nearest"});
+    try{ history.replaceState(null, "", "#t=" + cur); }catch(eH){}
+  }
+
+  TL.forEach(function(e, i){
+    var b = document.createElement("button");
+    b.type = "button";
+    b.className = "tl-yr";
+    b.setAttribute("role", "tab");
+    b.innerHTML = '<span class="dot" aria-hidden="true"></span><span class="y">' + esc(e.y) + '</span><span class="t"></span>';
+    b.addEventListener("click", function(){ stop(); cur = i; paint(); });
+    rail.appendChild(b);
+  });
+  function paintLabels(){
+    Array.prototype.forEach.call(rail.children, function(b, i){
+      b.querySelector(".t").textContent = pick(TL[i], "t");
+      b.setAttribute("aria-label", TL[i].y + " — " + pick(TL[i], "t"));
+    });
+    paintPlay();
+  }
+  rail.addEventListener("keydown", function(ev){
+    if(ev.key !== "ArrowDown" && ev.key !== "ArrowUp" && ev.key !== "ArrowRight" && ev.key !== "ArrowLeft") return;
+    ev.preventDefault(); stop();
+    cur = (ev.key === "ArrowDown" || ev.key === "ArrowRight") ? Math.min(TL.length - 1, cur + 1) : Math.max(0, cur - 1);
+    paint();
+    rail.children[cur].focus();
+  });
+
+  /* ── the flip book ─────────────────────────────────────────────────── */
+  var playBtn = document.getElementById("tlPlay"), timer = null;
+  function paintPlay(){
+    playBtn.textContent = timer
+      ? (esLang() ? "⏸ Pausa" : "⏸ Pause")
+      : (esLang() ? "▶ Reproducir la época" : "▶ Play the era");
+    playBtn.setAttribute("aria-label", playBtn.textContent);
+  }
+  function stop(){ if(timer){ clearInterval(timer); timer = null; paintPlay(); } }
+  function play(){
+    if(timer){ stop(); return; }
+    if(cur >= TL.length - 1){ cur = 0; paint(); }
+    timer = setInterval(function(){
+      if(cur >= TL.length - 1){ stop(); return; }
+      cur++; paint();
+    }, 2600);
+    paintPlay();
+  }
+  playBtn.addEventListener("click", play);
+  document.getElementById("tlPrev").addEventListener("click", function(){ stop(); cur = Math.max(0, cur - 1); paint(); });
+  document.getElementById("tlNext").addEventListener("click", function(){ stop(); cur = Math.min(TL.length - 1, cur + 1); paint(); });
+  document.addEventListener("visibilitychange", function(){ if(document.hidden) stop(); });
+
+  var mh = /#t=(\d+)/.exec(location.hash || "");
+  if(mh){ var n = +mh[1]; if(n >= 0 && n < TL.length) cur = n; }
+
+  document.getElementById("tlx").hidden = false;
+  document.documentElement.classList.add("js-tl");
+  paintLabels();
+  paint();
+  try{
+    new MutationObserver(function(){ paintLabels(); paint(); })
+      .observe(document.documentElement, { attributes:true, attributeFilter:["lang"] });
+  }catch(e){}
+})();
+</script>
+
+
+  <details class="teach">
+    <summary data-en="For the teacher" data-es="Para el maestro">For the teacher</summary>
+    <div class="inner">
+      <p data-en="&lt;b&gt;Eight items, three sets, on every activity.&lt;/b&gt; Items 1–5 and 6–8 are two named sub-skills — the same split in every set, so the band grid on the printed record stays true when you switch a student to Set 2 mid-week. Sets 2 and 3 are the same eight jobs on different content, so the same student can be probed three weeks running without being measured on memory." data-es="&lt;b&gt;Ocho ítems, tres grupos, en cada actividad.&lt;/b&gt; Los ítems 1–5 y 6–8 son dos subdestrezas con nombre — la misma división en cada grupo, para que la tabla del registro impreso siga siendo cierta si cambias a un estudiante al Grupo 2 a media semana. Los Grupos 2 y 3 son los mismos ocho trabajos con otro contenido, para poder evaluar al mismo estudiante tres semanas seguidas sin medir su memoria.">&lt;b&gt;Eight items, three sets, on every activity.&lt;/b&gt; Items 1–5 and 6–8 are two named sub-skills — the same split in every set, so the band grid on the printed record stays true when you switch a student to Set 2 mid-week. Sets 2 and 3 are the same eight jobs on different content, so the same student can be probed three weeks running without being measured on memory.</p>
+      <p data-en="&lt;b&gt;Three doors on every page.&lt;/b&gt; Show me one first is a worked example — instruction, never a trial. The eight items are the middle door. A finished set opens One more, if you want it: a stretch with two tries and the thinking shown warmly either way, and declining it is named a strong move. One page serves the student who needs a model, the student who needs the walk, and the student who needs one more hill." data-es="&lt;b&gt;Tres puertas en cada página.&lt;/b&gt; Muéstrame uno primero es un ejemplo resuelto — enseñanza, nunca una prueba. Los ocho ítems son la puerta del medio. Un grupo terminado abre Uno más, si quieres: un reto con dos intentos y el razonamiento mostrado con calidez de cualquier modo, y rechazarlo se nombra una decisión fuerte. Una página sirve al estudiante que necesita un modelo, al que necesita el camino y al que necesita una colina más.">&lt;b&gt;Three doors on every page.&lt;/b&gt; Show me one first is a worked example — instruction, never a trial. The eight items are the middle door. A finished set opens One more, if you want it: a stretch with two tries and the thinking shown warmly either way, and declining it is named a strong move. One page serves the student who needs a model, the student who needs the walk, and the student who needs one more hill.</p>
+      <p data-en="&lt;b&gt;The three branch cards are quiz review.&lt;/b&gt; Items 1–5 of each drill the branch itself; 6–8 fold the other two branches back in, so earlier quizzes stay warm while the next one is studied. Every wrong answer&#x27;s feedback names the branch that answer really belongs to — the miss is the review." data-es="&lt;b&gt;Las tres tarjetas de ramas son repaso de examen.&lt;/b&gt; Los ítems 1–5 de cada una ejercitan la rama misma; los 6–8 reintegran las otras dos, para que los exámenes anteriores sigan tibios mientras se estudia el siguiente. La retroalimentación de cada respuesta incorrecta nombra la rama a la que esa respuesta pertenece de verdad — el error es el repaso.">&lt;b&gt;The three branch cards are quiz review.&lt;/b&gt; Items 1–5 of each drill the branch itself; 6–8 fold the other two branches back in, so earlier quizzes stay warm while the next one is studied. Every wrong answer&#x27;s feedback names the branch that answer really belongs to — the miss is the review.</p>
+      <p data-en="&lt;b&gt;Independent, supported, hints, confidence.&lt;/b&gt; The teacher panel at the bottom of each activity builds the probe row for you, and Print this record turns it into a one-page probe sheet with the item-by-item map. A hint is never a penalty — it is the thing that tells you what to teach next." data-es="&lt;b&gt;Independiente, con apoyo, pistas, confianza.&lt;/b&gt; El panel del maestro al final de cada actividad te arma la fila de sondeo, e Imprimir este registro la convierte en una hoja de una página con el mapa ítem por ítem. Una pista nunca es un castigo — es lo que te dice qué enseñar después.">&lt;b&gt;Independent, supported, hints, confidence.&lt;/b&gt; The teacher panel at the bottom of each activity builds the probe row for you, and Print this record turns it into a one-page probe sheet with the item-by-item map. A hint is never a penalty — it is the thing that tells you what to teach next.</p>
+      <div class="step"><span class="n">1</span><p data-en="&lt;b&gt;Send a link, get a row back.&lt;/b&gt; Share an activity&#x27;s address, or put it on the board with the button under each card. When the page can reach your Sheet, a Send button appears after a finished set — one tap posts one row to the &lt;b&gt;Practice&lt;/b&gt; tab: activity, set, independent, supported, hints, confidence, and the first name the student types. Whether the demo and the stretch were used rides along as information, never as a score." data-es="&lt;b&gt;Envía un enlace, recibe una fila.&lt;/b&gt; Comparte la dirección de una actividad, o ponla en la pizarra con el botón de cada tarjeta. Cuando la página alcanza tu hoja, aparece un botón Enviar al terminar un grupo — un toque publica una fila en la pestaña &lt;b&gt;Practice&lt;/b&gt;: actividad, grupo, independiente, con apoyo, pistas, confianza y el nombre que escribe el estudiante. Si se usaron el ejemplo y el reto viaja como información, nunca como calificación.">&lt;b&gt;Send a link, get a row back.&lt;/b&gt; Share an activity&#x27;s address, or put it on the board with the button under each card. When the page can reach your Sheet, a Send button appears after a finished set — one tap posts one row to the &lt;b&gt;Practice&lt;/b&gt; tab: activity, set, independent, supported, hints, confidence, and the first name the student types. Whether the demo and the stretch were used rides along as information, never as a score.</p></div>
+      <div class="step"><span class="n">2</span><p data-en="&lt;b&gt;A bare link stays private.&lt;/b&gt; On a device with no path to your Sheet the Send button never appears, and the lock section on every page tells the student the truth for the mode it is in — including that it has no way to send anything at all." data-es="&lt;b&gt;Un enlace sin destino queda privado.&lt;/b&gt; En un dispositivo sin camino a tu hoja el botón Enviar nunca aparece, y la sección del candado de cada página le dice al estudiante la verdad del modo en que está — incluido que no tiene forma de enviar nada.">&lt;b&gt;A bare link stays private.&lt;/b&gt; On a device with no path to your Sheet the Send button never appears, and the lock section on every page tells the student the truth for the mode it is in — including that it has no way to send anything at all.</p></div>
+      <div class="step"><span class="n">3</span><p data-en="&lt;b&gt;Paper is a full citizen.&lt;/b&gt; Every page prints as a real worksheet — the same eight asks with lines to write on — and the timeline above prints as the plain dated list. A student with no device and a student with one are doing the same work." data-es="&lt;b&gt;El papel es ciudadano de primera.&lt;/b&gt; Cada página se imprime como una hoja real — los mismos ocho trabajos con líneas para escribir — y la línea de tiempo de arriba se imprime como la lista sencilla de fechas. Un estudiante sin dispositivo y uno con dispositivo hacen el mismo trabajo.">&lt;b&gt;Paper is a full citizen.&lt;/b&gt; Every page prints as a real worksheet — the same eight asks with lines to write on — and the timeline above prints as the plain dated list. A student with no device and a student with one are doing the same work.</p></div>
+    </div>
+  </details>
+
+<section class="vocab" id="standards" aria-labelledby="stdh">
+  <h2 id="stdh" data-en="Standards alignment" data-es="Alineaci&oacute;n con los est&aacute;ndares">Standards alignment</h2>
+  <p class="say" data-en="Strand-level alignment to the Illinois Learning Standards for Social Science &mdash; History (SS.H), Civics (SS.CV), Geography (SS.G), Inquiry (SS.IS) &mdash; and the grades 6&ndash;8 literacy-in-history standards (RH.6&ndash;8). Lesson-level citations live with the classroom unit outline." data-es="Alineaci&oacute;n por eje con los Est&aacute;ndares de Illinois para Ciencias Sociales &mdash; Historia (SS.H), C&iacute;vica (SS.CV), Geograf&iacute;a (SS.G), Indagaci&oacute;n (SS.IS) &mdash; y los est&aacute;ndares de lectura en historia de 6&ordm;&ndash;8&ordm; (RH.6&ndash;8). Las citas por lecci&oacute;n viven con el esquema de unidad del aula.">Strand-level alignment to the Illinois Learning Standards for Social Science &mdash; History (SS.H), Civics (SS.CV), Geography (SS.G), Inquiry (SS.IS) &mdash; and the grades 6&ndash;8 literacy-in-history standards (RH.6&ndash;8). Lesson-level citations live with the classroom unit outline.</p>
+  <div style="overflow-x:auto"><table class="wordtable"><tbody>
+    <tr><td class="w">h1</td><td class="d">Order the Story &mdash; History: chronological reasoning (SS.H)</td></tr>
+    <tr><td class="w">h2</td><td class="d">Because of That &mdash; History: cause and effect (SS.H)</td></tr>
+    <tr><td class="w">h3</td><td class="d">Whose Voice? &mdash; History: perspectives &amp; sources (SS.H &middot; RH.6&ndash;8.6)</td></tr>
+    <tr><td class="w">h4</td><td class="d">The Main Idea &mdash; Literacy in history: central ideas (RH.6&ndash;8.2)</td></tr>
+    <tr><td class="w">h5</td><td class="d">Words of a New Nation &mdash; Civics: founding documents (SS.CV &middot; RH.6&ndash;8.4)</td></tr>
+    <tr><td class="w">h6</td><td class="d">Map of a Growing Nation &mdash; Geography (SS.G)</td></tr>
+    <tr><td class="w">h7</td><td class="d">Back It Up &mdash; Inquiry: claims &amp; evidence (SS.IS &middot; RH.6&ndash;8.1)</td></tr>
+    <tr><td class="w">h8</td><td class="d">One Person, Big Ripple &mdash; History: individuals &amp; change (SS.H)</td></tr>
+    <tr><td class="w">h9&ndash;h11</td><td class="d">The Third, First &amp; Second Branch &mdash; Civics: political institutions (SS.CV)</td></tr>
+    <tr><td class="w">h12</td><td class="d">The Blueprint &mdash; Civics: constitutional structure (SS.CV)</td></tr>
+    <tr><td class="w">h13</td><td class="d">Rights in Writing &mdash; Civics: rights &amp; the Bill of Rights (SS.CV)</td></tr>
+    <tr><td class="w">h14</td><td class="d">How a Bill Becomes a Law &mdash; Civics: the legislative process (SS.CV)</td></tr>
+    <tr><td class="w">h15</td><td class="d">The Illinois Constitution &mdash; Civics: state government (SS.CV)</td></tr>
+  </tbody></table></div>
+</section>
+
+</main>
+
+<footer class="foot wrap">
+  <p><b>Architecture of Grace · Social Studies — A More Perfect Union.</b></p>
+  <p data-en="This page loads no fonts, scripts, or images from the internet and sends nothing out — it works with the network off. It is not a district product and carries no district endorsement." data-es="Esta página no carga fuentes, scripts ni imágenes de internet y no envía nada — funciona con la red apagada. No es un producto del distrito ni cuenta con su respaldo.">This page loads no fonts, scripts, or images from the internet and sends nothing out — it works with the network off. It is not a district product and carries no district endorsement.</p>
+</footer>
+
+
+<script>
+/* ══ SHOW ON THE BOARD — the projector beam, same as the activity pages ══ */
+(function(){
+  "use strict";
+  var esLang = function(){ return document.documentElement.lang === "es"; };
+  function T(en, es){ return esLang() ? es : en; }
+  Array.prototype.forEach.call(document.querySelectorAll("[data-beam]"), function(b){
+    b.addEventListener("click", function(){
+      var host = location.hostname || "architectureofgrace.org";
+      var url = (host==="localhost"||host==="127.0.0.1"||!host)
+              ? (location.origin + "/" + b.getAttribute("data-beam"))
+              : host.replace(/^www\./,"") + "/" + b.getAttribute("data-beam");
+      var el = document.createElement("div");
+      el.id = "beam";
+      el.innerHTML = '<div class="x">'+T("Tap anywhere to close","Toca para cerrar")+'</div>'
+        + '<div class="wk">'+T("Social Studies · A More Perfect Union","Estudios Sociales · Una Unión Más Perfecta")+'</div>'
+        + '<div class="nm"></div><div class="url"></div>'
+        + '<div class="hint">'+T("Type it in the address bar.","Escríbelo en la barra de direcciones.")+'</div>';
+      el.querySelector(".nm").textContent = b.getAttribute(esLang() ? "data-nombre" : "data-name");
+      el.querySelector(".url").textContent = url;
+      el.addEventListener("click", function(){ el.remove(); });
+      document.addEventListener("keydown", function esc(e){
+        if(e.key==="Escape"){ el.remove(); document.removeEventListener("keydown", esc); }
+      });
+      document.body.appendChild(el);
+      el.setAttribute("tabindex","-1"); el.focus();
+    });
+  });
+})();
+</script>
+
+<script>
+(function(){
+  "use strict";
+  var KEY = "aog.interior.ws.v1.";
+  var lang = "en";
+
+  function T(en, es){ return lang==="es" ? es : en; }
+
+  function paintLang(){
+    document.documentElement.lang = lang;
+    var nodes = document.querySelectorAll("[data-en]");
+    Array.prototype.forEach.call(nodes, function(n){
+      var v = (lang==="es") ? n.getAttribute("data-es") : n.getAttribute("data-en");
+      if(v==null) return;
+      if(v.indexOf("&lt;")!==-1 || v.indexOf("<")!==-1){ n.innerHTML = v; } else { n.textContent = v; }
+    });
+    var pEn = document.getElementById("aogLangEn"), pEs = document.getElementById("aogLangEs");
+    if(pEn) pEn.classList.toggle("on", lang!=="es");
+    if(pEs) pEs.classList.toggle("on", lang==="es");
+    paintTheme();
+  }
+
+  /* ══ THEME — same storage the activities use, so the room matches ══ */
+  var tBtn = document.getElementById("aogThemeBtn");
+  function prefersDark(){ return window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches; }
+  function currentIsDark(){
+    var s = document.documentElement.getAttribute("data-theme");
+    return s ? s==="dark" : prefersDark();
+  }
+  function paintTheme(){
+    /* ⚠ LABEL ONLY. The button holds two <svg>s (sun/moon) that CSS
+       shows and hides by data-theme; writing .textContent here would
+       delete them and leave an empty square. */
+    var lab = currentIsDark() ? T("Switch to light","Cambiar a claro")
+                              : T("Switch to dark","Cambiar a oscuro");
+    if(tBtn){ tBtn.setAttribute("aria-label", lab); tBtn.setAttribute("title", lab); }
+  }
+  /* ⚠⚠ SHARED WITH THE REST OF THE SITE. This used to live under this
+     page's own KEY, so switching to dark here and walking home put you
+     back in light. index.html stores it at "aog.theme"; so do we. The
+     old key is read once and carried over, so nobody loses a setting. */
+  var THEME_KEY = "aog.theme";
+  try{
+    var stored = localStorage.getItem(THEME_KEY);
+    if(!stored){
+      var oldT = localStorage.getItem(KEY+"theme");
+      if(oldT){ stored = oldT; localStorage.setItem(THEME_KEY, oldT); }
+    }
+    if(stored) document.documentElement.setAttribute("data-theme", stored);
+  }catch(e){}
+  if(window.matchMedia){
+    var mq = window.matchMedia("(prefers-color-scheme: dark)");
+    if(mq.addEventListener) mq.addEventListener("change", paintTheme);
+    else if(mq.addListener) mq.addListener(paintTheme);
+  }
+  if(tBtn) tBtn.addEventListener("click", function(){
+    var next = currentIsDark() ? "light" : "dark";
+    document.documentElement.setAttribute("data-theme", next);
+    try{ localStorage.setItem(THEME_KEY, next); }catch(e){}
+    paintTheme();
+  });
+
+  try{ var sl = localStorage.getItem(KEY+"lang"); if(sl==="es"||sl==="en") lang = sl; }catch(e){}
+  /* EN|ES is a two-button segmented control now, not one toggle: the
+     student can see which language they are in without having to read
+     the button that would change it. */
+  function pickLang(v){
+    return function(){
+      if(lang === v) return;
+      lang = v;
+      try{ localStorage.setItem(KEY+"lang", lang); }catch(e){}
+      paintLang();
+    };
+  }
+  var bEn = document.getElementById("aogLangEn"), bEs = document.getElementById("aogLangEs");
+  if(bEn) bEn.addEventListener("click", pickLang("en"));
+  if(bEs) bEs.addEventListener("click", pickLang("es"));
+
+  paintLang();
+})();
+</script>
+
+
+<style>
+/* ══ AOG-SUBJECT-RAIL — emitted from _work/r36/subject_rail.py ══ */
+#aogSubRail{--srl-card:#FFFFFF;--srl-ink:#232B36;--srl-sub:#5B6472;--srl-line:#E4E1D8;--srl-chip:#EFECE4;--srl-bg:#FBFAF7;
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+:root[data-theme="dark"] #aogSubRail{--srl-card:#20262F;--srl-ink:#EDEAE2;--srl-sub:#9AA3B0;--srl-line:#333B47;--srl-chip:#2A313C;--srl-bg:#191D24}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) #aogSubRail{--srl-card:#20262F;--srl-ink:#EDEAE2;--srl-sub:#9AA3B0;--srl-line:#333B47;--srl-chip:#2A313C;--srl-bg:#191D24}}
+#aogSubRail .sr-h{font-size:.66rem;font-weight:800;letter-spacing:.13em;text-transform:uppercase;color:var(--srl-sub);margin:0 0 7px;white-space:nowrap}
+#aogSubRail .sr-i{display:block;text-align:left;border:1px solid var(--srl-line);background:var(--srl-card);color:var(--srl-ink);
+  border-left:4px solid var(--a, #1B3A5F);border-radius:10px;padding:8px 11px;cursor:pointer;font:600 .8rem/1.35 inherit;width:100%}
+#aogSubRail .sr-i:hover{border-color:var(--a, #1B3A5F)}
+#aogSubRail .sr-i[aria-current="true"]{background:var(--srl-chip);font-weight:800}
+@media(min-width:1400px){
+  #aogSubRail{position:fixed;left:16px;top:96px;width:196px;z-index:20;display:flex;flex-direction:column;gap:6px;overflow:auto;
+    max-height:calc(100vh - 140px)}
+}
+@media(max-width:1399.98px){
+  #aogSubRail.sr-anchors{position:sticky;z-index:900;display:flex;gap:7px;overflow-x:auto;-webkit-overflow-scrolling:touch;
+    background:var(--srl-bg);padding:9px 14px;border-bottom:1px solid var(--srl-line);margin:0}
+  #aogSubRail.sr-anchors .sr-h{display:none}
+  #aogSubRail.sr-anchors .sr-i{flex:0 0 auto;width:auto;white-space:nowrap}
+  #aogSubRail.sr-tabs{display:none}
+}
+@media print{#aogSubRail{display:none !important}}
+
+/* ══ AOG-PRINT-SAFE-V1 (2026-09-20) ═══════════════════════════════════════════
+   Jimmy, printing a novel study from his phone: "another pdf that gets parts of
+   the material cut off." These are the rules that keep paper honest on every
+   engine — a table row, a list item, a figure and a picture stay whole; a head
+   keeps the lines under it; no paragraph strands one line at a page edge; and a
+   long table repeats its head at the top of each page. Printed pages only. */
+@media print{
+  table{break-inside:auto; page-break-inside:auto}
+  thead{display:table-header-group}
+  tfoot{display:table-footer-group}
+  tr{break-inside:avoid; page-break-inside:avoid}
+  li,figure,img,svg{break-inside:avoid; page-break-inside:avoid}
+  h1,h2,h3,h4,h5{break-after:avoid; page-break-after:avoid}
+  p{orphans:3; widows:3}
+  /* AOG-PRINT-GRIDFIT-V1 — a CSS grid does not fragment, so a card in a grid row
+     was sliced at the page break instead of moving whole to the next page. On
+     paper the grid is ordinary blocks and each card keeps itself together. */
+  .grid,.cards{display:block!important}
+  .grid>*,.cards>*{break-inside:avoid; page-break-inside:avoid; margin:0 0 12px}
+}
+</style>
+<nav id="aogSubRail" class="sr-anchors" aria-label="On this page" hidden>
+<div class="sr-h">On this page</div>
+<button type="button" class="sr-i"><span data-en="The three branches, one card each" data-es="Las tres ramas, una tarjeta cada una">The three branches, one card each</span></button>
+<button type="button" class="sr-i"><span data-en="The document, the rights, and the road" data-es="El documento, los derechos y el camino">The document, the rights, and the road</span></button>
+<button type="button" class="sr-i"><span data-en="Test prep &amp; quizzes" data-es="Preparaci&oacute;n y ex&aacute;menes">Test prep &amp; quizzes</span></button>
+<button type="button" class="sr-i"><span data-en="Eight ways into one era" data-es="Ocho caminos a una misma época">Eight ways into one era</span></button>
+<button type="button" class="sr-i"><span data-en="The era at a glance" data-es="La época de un vistazo">The era at a glance</span></button>
+<button type="button" class="sr-i"><span data-en="The essential questions" data-es="Las preguntas esenciales">The essential questions</span></button>
+</nav>
+<script>
+
+(function(){
+  var CFG = {"mode": "anchors", "mount": "header.aogtop", "sel": ["#s2h", "#s3h", "#qzh", "#s1h", "#wh", "#eqh"]};
+  var nav = document.getElementById("aogSubRail");
+  if(!nav) return;
+  var items = [].slice.call(nav.querySelectorAll(".sr-i"));
+  function mark(i){ items.forEach(function(b,j){ b.setAttribute("aria-current", String(i===j)); }); }
+
+  if(CFG.mode === "anchors"){
+    /* relocate into the flow so the sticky strip works, sized off the live bar */
+    var bar = document.querySelector(CFG.mount);
+    if(bar){ bar.insertAdjacentElement("afterend", nav); }
+    function setTop(){
+      var h = bar ? bar.offsetHeight : 0;
+      nav.style.top = (window.matchMedia("(min-width:1400px)").matches ? h + 24 : h) + "px";
+    }
+    setTop(); window.addEventListener("resize", setTop);
+    var targets = CFG.sel.map(function(s){ return document.querySelector(s); });
+    items.forEach(function(b,i){
+      b.addEventListener("click", function(){
+        var t = targets[i]; if(!t) return;
+        var y = t.getBoundingClientRect().top + window.pageYOffset - (bar ? bar.offsetHeight : 0) - 58;
+        window.scrollTo({top: y, behavior: "smooth"});
+        mark(i);
+      });
+    });
+    var tick = false;
+    function spy(){
+      tick = false;
+      var line = (bar ? bar.offsetHeight : 0) + 120, cur = 0;
+      targets.forEach(function(t,i){ if(t && t.getBoundingClientRect().top <= line) cur = i; });
+      mark(cur);
+    }
+    window.addEventListener("scroll", function(){ if(!tick){ tick = true; requestAnimationFrame(spy); } });
+    spy();
+  } else {
+    /* tabs mode — click the page's own controls, mirror their state */
+    items.forEach(function(b,i){
+      b.addEventListener("click", function(){
+        var t = document.querySelector(CFG.sel[i]);
+        if(t){ t.click(); mark(i); }
+      });
+    });
+    document.addEventListener("click", function(e){
+      CFG.sel.forEach(function(s,i){
+        var t = e.target && e.target.closest ? e.target.closest(s) : null;
+        if(t) mark(i);
+      });
+    });
+    mark(0);
+  }
+})();
+
+document.getElementById('aogSubRail').hidden=false;
+</script>
+</body>
+</html>

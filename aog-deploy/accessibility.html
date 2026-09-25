@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Accessibility &middot; Architecture of Grace</title>
+<meta name="description" content="How Architecture of Grace is built to be usable — keyboard, screen reader, contrast, dyslexia-friendly type — and what is still being fixed.">
+<!-- ═══ AOG ICONS + LINK PREVIEW · managed block · .30k0 ═══
+     Inserted by _work/aog_head.py — DO NOT hand-edit one page; edit the
+     script and re-run it, or the 100 pages drift apart again. The card
+     URL carries ?v= because Slack, Apple and Google cache an og image BY
+     URL for weeks: change the picture, bump IMG_V, or nothing shows up.
+     ═══════════════════════════════════════════════════════════════ -->
+<link rel="canonical" href="https://architectureofgrace.org/accessibility">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Architecture of Grace">
+<meta property="og:locale" content="en_US">
+<meta property="og:title" content="Accessibility &middot; Architecture of Grace">
+<meta property="og:description" content="How Architecture of Grace is built to be usable — keyboard, screen reader, contrast, dyslexia-friendly type — and what is still being fixed.">
+<meta property="og:url" content="https://architectureofgrace.org/accessibility">
+<meta property="og:image" content="https://architectureofgrace.org/og-schools.png?v=1">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Architecture of Grace for schools and districts — policy, terms, data agreement, accessibility.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Accessibility &middot; Architecture of Grace">
+<meta name="twitter:description" content="How Architecture of Grace is built to be usable — keyboard, screen reader, contrast, dyslexia-friendly type — and what is still being fixed.">
+<meta name="twitter:image" content="https://architectureofgrace.org/og-schools.png?v=1">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#0A1E33">
+<meta name="apple-mobile-web-app-title" content="Grace">
+<meta name="application-name" content="Architecture of Grace">
+<!-- ═══ END AOG ICONS + LINK PREVIEW ═══ -->
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,500;0,600;1,500&family=Source+Sans+3:wght@400;600;700&family=IBM+Plex+Mono:wght@500&display=swap">
+<style>
+:root{
+  --ground:#FBF6EC; --card:#FFFDF8; --ink:#182F4C; --ink-soft:#4A5B72;
+  --navy:#14304F; --gold:#C9962E; --gold-deep:#825E10;
+  --wash:#F4E8CC; --rule:#E4D9C3;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--ground); color:var(--ink);
+  font-family:"Source Sans 3",-apple-system,"Segoe UI",Helvetica,Arial,sans-serif;
+  font-size:17px; line-height:1.55; -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:46rem; margin:0 auto; padding:30px 20px 70px}
+code,.mono{font-family:"IBM Plex Mono",ui-monospace,Menlo,monospace; font-size:.86em;
+  background:var(--wash); border-radius:5px; padding:1px 6px 2px; white-space:nowrap}
+a{color:var(--navy); text-decoration-color:var(--gold)}
+a:hover{color:var(--gold-deep)}
+
+/* masthead */
+.mast{padding:8px 0 22px; border-bottom:2px solid var(--gold); margin-bottom:6px}
+.eyebrow{font-size:12px; font-weight:700; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--gold-deep); margin:0 0 6px}
+h1{font-family:"Lora",Georgia,serif; font-weight:600; font-size:clamp(29px,6.5vw,38px);
+  line-height:1.12; margin:0 0 10px; color:var(--navy); text-wrap:balance}
+h1 em{font-style:italic; color:var(--gold-deep)}
+.dek{margin:0 0 10px; color:var(--ink-soft); max-width:36em}
+.meta{margin:0; font-size:14px; color:var(--ink-soft)}
+h2{font-family:"Lora",Georgia,serif; font-weight:600; font-size:22px;
+  margin:36px 0 12px; color:var(--navy); text-wrap:balance}
+
+/* cards */
+.card{background:var(--card); border:1.5px solid var(--rule); border-radius:14px;
+  padding:16px 18px; margin:0 0 12px}
+.card p{margin:0 0 10px; font-size:16px}
+.card p:last-child{margin-bottom:0}
+.card b{color:var(--navy)}
+.card ul{margin:0 0 10px; padding-left:20px}
+.card ul:last-child{margin-bottom:0}
+.card li{margin-bottom:8px}
+.card li:last-child{margin-bottom:0}
+.note{border-left:3px solid var(--gold); background:var(--wash); border-radius:0 9px 9px 0;
+  padding:9px 12px; font-size:15px; margin:10px 0}
+.note b:first-child{color:var(--gold-deep)}
+
+/* definition lists */
+.fix dt{font-weight:700; color:var(--navy); margin-top:12px}
+.fix dt:first-child{margin-top:0}
+.fix dd{margin:2px 0 0 0; color:var(--ink-soft); font-size:16px}
+
+footer{margin-top:40px; padding-top:14px; border-top:1.5px solid var(--rule);
+  font-size:13.5px; color:var(--ink-soft); line-height:1.6}
+footer a{white-space:nowrap}
+
+@media print{
+  body{background:#fff; font-size:12.5px; line-height:1.4}
+  .wrap{max-width:none; padding:0}
+  h1{font-size:26px}
+  h2{font-size:17px; margin:16px 0 8px}
+  .card{padding:10px 13px; margin-bottom:8px; background:#fff}
+  .card p,.card li,.fix dd{font-size:12.5px}
+  .note{font-size:12px; padding:7px 10px; margin:7px 0}
+  footer{font-size:10.5px; margin-top:16px}
+  .card,.note{break-inside:avoid; page-break-inside:avoid}
+  h2,h1{break-after:avoid; page-break-after:avoid}
+  @page{margin:12mm 14mm}
+}
+
+/* ══ AOG-PRINT-SAFE-V1 (2026-09-20) ═══════════════════════════════════════════
+   Jimmy, printing a novel study from his phone: "another pdf that gets parts of
+   the material cut off." These are the rules that keep paper honest on every
+   engine — a table row, a list item, a figure and a picture stay whole; a head
+   keeps the lines under it; no paragraph strands one line at a page edge; and a
+   long table repeats its head at the top of each page. Printed pages only. */
+@media print{
+  table{break-inside:auto; page-break-inside:auto}
+  thead{display:table-header-group}
+  tfoot{display:table-footer-group}
+  tr{break-inside:avoid; page-break-inside:avoid}
+  li,figure,img,svg{break-inside:avoid; page-break-inside:avoid}
+  h1,h2,h3,h4,h5{break-after:avoid; page-break-after:avoid}
+  p{orphans:3; widows:3}
+}
+</style>
+</head>
+<body>
+<script src="/aog-topbar.js"></script>
+
+<div class="wrap">
+
+  <header class="mast">
+    <p class="eyebrow">Architecture of Grace &middot; Accessibility</p>
+    <h1>An honest <em>accessibility statement</em></h1>
+    <p class="dek">What is true by design, what is not done yet, and how to tell me when something gets in your child's way. No conformance badge here — a straight account instead.</p>
+    <p class="meta"><b>Last reviewed:</b> September 20, 2026 &middot; Written by the founder &middot; <a href="#what-was-tested">What was tested</a></p>
+  </header>
+
+  <div class="card">
+    <p>I built this system as a classroom teacher, and many of the students I built it for learn differently — that shaped choices from the beginning. But I will not claim a standard I have not verified. <b>The site has now been tested against WCAG 2.1 Level AA, by me, with automated tools &mdash; and that is not the same as conformance.</b> Below is exactly what was tested, exactly what it found, and exactly what it cannot tell you. What I can promise is the full account and a commitment to fix what you find.</p>
+  </div>
+
+  <h2>What is true by design</h2>
+  <div class="card">
+    <ul>
+      <li><b>No logins and no time limits.</b> Nothing expires, nothing locks, and no activity races a clock. A student can take an hour on what another finishes in five minutes, and nothing on the page treats that as anything but normal.</li>
+      <li><b>No autoplay and no flashing content.</b> Nothing moves, sounds, or flashes without the student asking it to.</li>
+      <li><b>Hints are part of the lesson.</b> Hint buttons sit in the open, framed exactly this way to students: <i>asking for a hint is not cheating.</i> A student who needs the scaffold takes it without penalty or flag.</li>
+      <li><b>Print alternatives for most activities.</b> Most activities have printable versions, so a student who works better on paper — or with a reader, a scribe, or larger print made on the school copier — has a first-class path, not a workaround.</li>
+      <li><b>Layouts tolerate browser zoom and large text.</b> Pages are built to stay usable when the browser's zoom or text-size settings are turned well up.</li>
+      <li><b>Works offline.</b> Once loaded, the core tools keep working without a connection, so a spotty network doesn't strand a student mid-activity.</li>
+    </ul>
+  </div>
+
+  <h2>Known gaps, stated honestly</h2>
+  <div class="card">
+    <dl class="fix">
+      <dt>No built-in text-to-speech yet</dt>
+      <dd>The site does not yet read content aloud on its own. Until it does, the device's built-in reader works well with these pages: on Chromebooks, turn on <b>Select-to-Speak</b> (Settings &rsaquo; Accessibility) and students can hear any selected text; on iPad, turn on <b>Spoken Content</b> (Settings &rsaquo; Accessibility) for the same. If your school's devices are managed, IT can enable these for a student in the admin console.</dd>
+      <dt>Screen-reader coverage not yet audited</dt>
+      <dd>The pages are plain HTML and much of it will read sensibly, but I have not systematically tested with VoiceOver, ChromeVox, or NVDA, and I will not guess at the result. If your child uses a screen reader, I would genuinely value hearing what works and what doesn't — that report will drive the audit.</dd>
+      <dt>No independent audit</dt>
+      <dd>Everything on this page was measured by me, on my own work. An outside evaluator has not looked at it. If you are an accessibility specialist willing to review any part of this site, the materials and the test method are yours for the asking, and what you find will be published here whichever way it points.</dd>
+    </dl>
+  </div>
+
+  <h2 id="what-was-tested">What was tested, and what it found</h2>
+  <div class="card">
+    <p><b>Standard:</b> WCAG 2.1 Level A and AA. <b>Tested:</b> 20 September 2026, with
+      axe-core in Chromium at 1280&nbsp;px, plus a static pass over every page in the site.
+      <b>Tested by:</b> me. This is a self-assessment, not an independent audit.</p>
+    <p><b>Scope of the browser pass:</b> 18 pages chosen to cover every kind of page here
+      &mdash; the home page, the standards crosswalk, a room lesson page, a student
+      worksheet, a subject hub, a printable handout, the Calming Corner, the family
+      letters, a daily-drops door, the error page, and all six privacy, terms, data and
+      agreement pages.</p>
+    <p><b>Result: zero automated violations</b> on all eighteen, after the repairs below.</p>
+  </div>
+
+  <h3>What the testing actually fixed</h3>
+  <div class="card">
+    <ul>
+      <li><b>86 color-contrast failures across 8 pages.</b> Every one of them was on the
+        privacy, terms, data-agreement and school-facing pages, which carry their own copy
+        of the palette. The worst was the small gold uppercase label at the top of each
+        page: <b>2.47:1</b> where 4.5:1 is the bar. The most common was a near miss &mdash;
+        gold on the cream callout at <b>4.41:1</b>, across 65 places. Both are corrected
+        and re-measured.</li>
+      <li><b>95 pages had no heading element at all</b> &mdash; not a missing top-level
+        heading, none at all, so anyone navigating by headings got a flat wall. Every one
+        now has its own visible title as a real heading.</li>
+      <li><b>171 worksheet fields had no name a screen reader could announce.</b> A student
+        would have heard "edit text, blank" with no way to tell which question they were
+        answering. Every one is now wired to the visible question text, so the name follows
+        the problem and the language.</li>
+      <li><b>24 Calming Corner tools could not be reached by keyboard</b> &mdash; breathing,
+        grounding, safe-place, animal yoga. The tools most directly built for students with
+        disabilities were the ones a keyboard could not open. Fixed.</li>
+      <li><b>Two images had no alt text</b> in the whole site &mdash; generated QR codes on
+        the printable link sheet. They now name where the code goes.</li>
+    </ul>
+  </div>
+
+  <h3>Across all 444 pages</h3>
+  <div class="card">
+    <ul>
+      <li>Every page declares its language, and every page has a title.</li>
+      <li><b>No page blocks pinch-zoom.</b> Not one sets <span class="mono">user-scalable=no</span>.
+        Where a mobile keyboard causes zoom trouble, it is solved by making the field bigger
+        &mdash; never by taking zoom away from the students who need it.</li>
+      <li>Form fields resolve to a real visible label rather than a bolted-on attribute, so
+        they stay clickable and cannot drift out of sync with the question.</li>
+    </ul>
+  </div>
+
+  <h3 id="what-this-does-not-establish">What this does <em>not</em> establish</h3>
+  <div class="card">
+    <p>I would rather undersell this than have a district discover the gap after adopting.</p>
+    <ul>
+      <li><b>Automated testing catches a minority of accessibility problems.</b> A tool can
+        see that alt text exists; it cannot see whether the alt text is <i>right</i>. It can
+        see that a heading exists; it cannot tell you whether it describes the section. It
+        cannot tell you whether a lesson makes sense read aloud, in order, by a machine.</li>
+      <li><b>No screen reader has been tested against this site.</b> That has not changed and
+        I will not guess at the result.</li>
+      <li><b>426 of the 444 pages were not individually loaded in a browser.</b> They share
+        templates and a stylesheet with the ones that were, and the static pass covered all
+        of them &mdash; but "covered by the same template" is an argument, not a measurement.</li>
+      <li><b>This is my own work, checked by me.</b> No independent auditor has reviewed it,
+        and there is no VPAT or third-party conformance report behind it.</li>
+      <li><b>So: no conformance claim.</b> Tested, repaired, and documented is what I can
+        honestly say. If you need a conformance statement from an independent evaluator for
+        your procurement file, tell me and I will say plainly that one does not exist yet.</li>
+    </ul>
+  </div>
+
+  <div class="note"><b>For districts doing their own review.</b> Your own obligations under
+    the Department of Justice's Title&nbsp;II web rule run on your own timetable &mdash;
+    April&nbsp;2027 for entities serving 50,000 or more, April&nbsp;2028 for smaller ones.
+    This page exists so your review can start from a straight account rather than a badge.
+    If your evaluation turns up something this page missed, that is exactly the report I want.</div>
+
+  <h2>If something gets in the way</h2>
+  <div class="card">
+    <p><b>Tell me, and I will fix it.</b> If your child — or your student, or you — hits a barrier anywhere on this site, write to me and describe what happened: which page, which device, and what stood in the way. Reports go to the founder directly, not a ticket queue, and barriers reported by families of students with disabilities go to the top of the list. This page exists because a parent went looking for accessibility information and found none; I would rather hear about the next gap from you than have you discover it in silence.</p>
+  </div>
+
+  <footer>
+    <p style="margin:0 0 8px"><b>Report a barrier.</b> James Anthony Ramsden, founder — <a href="mailto:Theopus77@yahoo.com">Theopus77@yahoo.com</a>. Include the page, the device, and what got in the way.</p>
+    <p style="margin:0">Architecture of Grace &middot; <a href="/">Home</a> &middot; <a href="/privacy.html">Privacy</a> &middot; <a href="/terms.html">Terms</a> &middot; <a href="/data-governance.html">Data Governance</a> &middot; <a href="/dpa.html">Data Privacy Agreement</a> &middot; <a href="/accessibility.html">Accessibility</a></p>
+  </footer>
+
+</div>
+</body>
+</html>

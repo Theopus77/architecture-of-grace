@@ -1,0 +1,1232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>The Telescope — Architecture of Grace</title>
+<meta name="description" content="A 90 mm brass refractor with a working eyepiece. The Moon, Jupiter, a double star — and the landing sea, where the lander is smaller than the air.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#f4f0e6; --card:#fffcf7; --ink:#1a232c; --muted:#5c6670; --line:#ddd8cc;
+  --steel:#2f5c6b; --steel-fg:#f4f8f9; --steel-soft:#e3eef2;
+  --good:#2c7a4e; --good-soft:#e3f0e8; --bad:#9c3a2e; --bad-fg:#fdf6f4; --bad-soft:#f6e5e2;
+  --chip:#efebe3; --shadow:0 1px 3px rgb(26 35 44 / .08);
+  --sans:"Source Sans 3", ui-sans-serif, system-ui, sans-serif;
+  --display:"Fraunces", Georgia, serif;
+}
+.dark, [data-theme="dark"] {
+  --bg:#14181e; --card:#1c232c; --ink:#edeae2; --muted:#9aa3b0; --line:#333b47;
+  --steel:#7fb4c7; --steel-fg:#14181e; --steel-soft:#1d2f36;
+  --good:#6fbf8b; --good-soft:#1f3327; --bad:#e08573; --bad-fg:#14181e; --bad-soft:#3a2622;
+  --chip:#2a313c;
+}
+* { box-sizing:border-box; }
+html { -webkit-text-size-adjust:100%; }
+body { margin:0; background:var(--bg); color:var(--ink); font:400 16px/1.55 var(--sans); overflow-x:hidden; }
+h1,h2,h3 { font-family:var(--display); font-weight:600; letter-spacing:-.02em; text-wrap:balance; }
+h1 { font-size:clamp(1.5rem,4vw,2.3rem); margin:.2rem 0 .4rem; }
+a { color:inherit; }
+button { font:inherit; cursor:pointer; }
+button, a { touch-action:manipulation; }
+.wrap { max-width:1080px; margin:0 auto; padding:max(1.1rem, env(safe-area-inset-top)) max(1rem, env(safe-area-inset-right)) max(3rem, env(safe-area-inset-bottom)) max(1rem, env(safe-area-inset-left)); }
+body:has(.aogtop) header .tools { display:none; }
+.brand { font-size:.75rem; font-weight:700; letter-spacing:.14em; text-transform:uppercase; color:var(--muted); text-decoration:none; min-height:44px; display:inline-flex; align-items:center; }
+.tools { display:flex; gap:.5rem; }
+.pill, .btn { min-height:44px; border-radius:999px; border:1px solid var(--line); background:var(--card); color:var(--ink); padding:0 .9rem; font-weight:600; font-size:.9rem; display:inline-flex; align-items:center; justify-content:center; }
+.btn-steel { background:var(--steel); color:var(--steel-fg); border-color:transparent; }
+.btn-bad { background:var(--bad); color:var(--bad-fg); border-color:transparent; }
+.nav { display:flex; gap:4px; overflow-x:auto; border-bottom:2px solid var(--line); margin-bottom:1rem; }
+.nav a { min-height:44px; display:inline-flex; align-items:center; padding:0 .8rem; text-decoration:none; color:var(--muted); font-weight:600; border-bottom:2px solid transparent; margin-bottom:-2px; }
+.nav a.on { color:var(--ink); border-color:var(--steel); }
+.kicker { font-size:.75rem; font-weight:700; letter-spacing:.12em; text-transform:uppercase; color:var(--steel); }
+.muted, .note-line { color:var(--muted); }
+.lead { max-width:62ch; color:var(--muted); }
+.card { background:var(--card); border:1px solid var(--line); border-radius:12px; box-shadow:var(--shadow); }
+.tiny { font-size:.75rem; font-weight:700; letter-spacing:.12em; text-transform:uppercase; color:var(--steel); }
+.ok { color:var(--good); }
+.lab-grid { display:grid; gap:1.1rem; margin-top:.6rem; align-items:start; }
+.eye-box { background:color-mix(in oklab, var(--ink) 94%, black); border-radius:16px; padding:.75rem; }
+.eye-wrap { position:relative; margin:0 auto; width:100%; max-width:min(520px, 52dvh); aspect-ratio:1; touch-action:none; user-select:none; -webkit-user-select:none; }
+.eye-wrap canvas { width:100%; height:100%; border-radius:50%; display:block; }
+.eye-hud { position:absolute; left:50%; bottom:8%; transform:translateX(-50%); color:#f4efe4; font:700 12px/1.2 var(--sans); text-shadow:0 1px 3px #000; pointer-events:none; white-space:nowrap; }
+.readout { display:flex; justify-content:space-between; gap:.5rem; color:color-mix(in oklab, var(--steel-fg) 82%, transparent); font-size:.9rem; margin-top:.45rem; font-variant-numeric:tabular-nums; }
+.phone-bar, .desk-bar, .board { display:flex; flex-direction:column; gap:.15rem; }
+.desk-bar { display:none; }
+.board, .phone-bar { padding:.8rem .9rem; }
+.row { display:flex; justify-content:space-between; align-items:center; gap:.4rem; padding:.28rem 0; border-bottom:1px solid var(--line); }
+.row > span:last-child { display:flex; flex-wrap:wrap; gap:.35rem; justify-content:flex-end; }
+.board .btn, .phone-bar .btn { min-height:40px; padding:0 .7rem; font-size:.85rem; }
+.knobs { display:grid; gap:.4rem; margin-top:.8rem; }
+@media (min-width:640px){ .knobs { grid-template-columns:1fr 1fr; } }
+label.knob span { display:flex; justify-content:space-between; font-size:.72rem; font-weight:700; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); }
+.scope-knob { -webkit-appearance:none; appearance:none; width:100%; height:40px; background:transparent; margin:0; }
+.scope-knob::-webkit-slider-runnable-track { height:8px; border-radius:999px; background:var(--chip); }
+.scope-knob::-webkit-slider-thumb { -webkit-appearance:none; width:26px; height:26px; margin-top:-9px; border-radius:99px; background:var(--steel); border:2px solid var(--card); }
+.stair { list-style:none; margin:.4rem 0 0; padding:0; display:flex; flex-direction:column; gap:.4rem; }
+.stair > li { border:1px solid var(--line); border-radius:10px; padding:.5rem .7rem; }
+.stair > li.now { border-color:var(--steel); background:var(--steel-soft); }
+.stair > li.later { opacity:.62; }
+.stair > li.done { display:flex; align-items:baseline; gap:.55rem; padding:.38rem .7rem; }
+.stair > li.done h3 { margin:0; font-size:.95rem; }
+.stair .mk { margin:0; font-size:.68rem; font-weight:700; letter-spacing:.12em; text-transform:uppercase; color:var(--steel); }
+.stair h3 { margin:.05rem 0 .15rem; font-size:1.02rem; }
+.stair ol { list-style:none; margin:.2rem 0 0; padding:0; }
+.stair li.step { display:flex; gap:.45rem; padding:.14rem 0; font-size:.88rem; }
+.do { display:flex; flex-wrap:wrap; gap:.35rem; margin-top:.5rem; }
+.practical-box { margin-top:1rem; padding:1rem 1.05rem; }
+.warn { margin-top:.7rem; padding:.8rem 1rem; background:var(--bad-soft); border-radius:12px; }
+.lab-stack { display:flex; flex-direction:column; }
+@media (max-width:767px){
+  .lab-stack .lab-grid { order:1; }
+  .lab-stack .phone-bar { order:2; margin-top:.7rem; }
+  .lab-stack .practical-box { order:3; }
+}
+@media (min-width:768px){
+  .phone-bar { display:none !important; }
+  .desk-bar { display:flex; }
+  .lab-grid { grid-template-columns:minmax(0,1fr) minmax(300px,380px); }
+  .eye-stick { position:sticky; top:12px; }
+  .board .btn { min-height:36px; }
+}
+.home-grid { display:grid; gap:1rem; margin-top:1rem; }
+@media (min-width:800px){ .home-grid { grid-template-columns:280px 1fr; align-items:center; } }
+svg.scope { width:100%; height:auto; }
+
+/* AOG-SCIPIC-PANEL-V1 (2026-09-23) - Jimmy: "Can the Microscope missions and the TELESCOPE
+   Missions get their own walk throughs like the TURN tables and sp-1200 just recieved?
+   Embedded as something they could be printed out?" Same panel as AOG-PGPANEL-V1 on the
+   decks: the guide is an iframe of its own file, loaded on first open, never printed here. */
+.pg{margin:1.4rem 0 0;border:1px solid var(--line);border-radius:14px;background:var(--card);overflow:hidden}
+.pg>summary{list-style:none;cursor:pointer;padding:.8rem 1rem;display:flex;align-items:center;gap:.7rem;
+  font-weight:700;font-size:.98rem;min-height:44px}
+.pg>summary::-webkit-details-marker{display:none}
+.pg>summary::marker{content:""}
+.pg .chev{flex:0 0 auto;transition:transform .15s ease;color:var(--muted);font-size:.9rem}
+.pg[open] .chev{transform:rotate(90deg)}
+.pg .pgsub{font-weight:400;color:var(--muted);font-size:.86rem;margin-left:auto;text-align:right}
+.pg .pgbody{border-top:1px solid var(--line)}
+.pg iframe{display:block;width:100%;border:0;min-height:60vh;background:var(--bg)}
+.pg .pgfoot{padding:.65rem 1rem;border-top:1px solid var(--line);font-size:.88rem;color:var(--muted);margin:0}
+.pg .pgfoot a{color:inherit;font-weight:700}
+@media print{ .pg{display:none !important} }
+</style>
+</head>
+<body>
+<script>
+(function(){
+  function add(src){
+    var s=document.createElement("script");
+    s.src=src;
+    s.onerror=function(){ if(src.indexOf("netlify.app")<0) add("https://architectureofgrace.netlify.app/aog-topbar.js"); };
+    document.head.appendChild(s);
+  }
+  add(new URL("aog-topbar.js", document.baseURI).href);
+})();
+</script>
+<div class="wrap">
+  <header>
+    <a class="brand" href="/" id="brand">The Telescope</a>
+    <div class="tools">
+      <a class="pill" href="/telescope-guide" style="text-decoration:none">Picture guide</a>
+      <button type="button" class="pill" id="langBtn">ES</button>
+      <button type="button" class="pill" id="themeBtn">Dark</button>
+    </div>
+  </header>
+  <nav class="nav" id="nav"></nav>
+  <main id="view"></main>
+  <!-- AOG-SCIPIC-PANEL-V1 -->
+  <details class="pg no-print" id="pgPanel">
+    <summary><span class="chev">&#9656;</span>Picture guide<span class="pgsub">Every mission in pictures &#183; prints on 9 pages</span></summary>
+    <div class="pgbody">
+      <iframe id="pgFrame" data-src="/telescope-guide?embed=1" title="The Telescope, in pictures" loading="lazy"></iframe>
+    </div>
+    <p class="pgfoot">To print it, <a href="/telescope-guide">open the picture guide on its own page</a>.</p>
+  </details>
+  <p class="muted" id="foot" style="margin-top:2rem;font-size:.9rem"></p>
+</div>
+<script>
+const SCOPE = { mm:90, fl:900, dawes:116/90, seeing:1.6, useful:180, afov:50 };
+const KEY = "scope.sky.v1";
+const THEME_KEY = "aog.interior.ws.v1.theme";
+function mulberry32(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return ((t^t>>>14)>>>0)/4294967296};}
+const STR = {
+  app:{en:"The Telescope",es:"El telescopio"},
+  home:{en:"Bench",es:"Mesa"}, lab:{en:"Eyepiece",es:"Ocular"},
+  eyebrow:{en:"90 mm brass refractor",es:"Refractor de bronce de 90 mm"},
+  tag:{en:"One lens, a working eyepiece, and a ceiling. The Moon will fill this glass. The lander will not.",es:"Un lente, un ocular de verdad, y un techo. La Luna llena este vidrio. El módulo lunar, no."},
+  priv:{en:"Everything stays on this computer.",es:"Todo se queda en esta computadora."},
+  foot:{en:"This page loads no student data. Your practice is saved in this browser only.",es:"Esta página no envía datos del estudiante. Tu práctica se guarda solo en este navegador."},
+  open:{en:"Look through it",es:"Mira por él"},
+  other:{en:"The microscope is the other eyepiece.",es:"El microscopio es el otro ocular."},
+  dark:{en:"Dark",es:"Oscuro"}, light:{en:"Light",es:"Claro"},
+  cap:{en:"Lens cap",es:"Tapa"}, on:{en:"On",es:"Puesta"}, off:{en:"Off",es:"Fuera"},
+  mount:{en:"Mount",es:"Montura"}, locked:{en:"Locked",es:"Fija"}, loose:{en:"Loose",es:"Suelta"},
+  target:{en:"Target",es:"Objeto"}, eye:{en:"Eyepiece",es:"Ocular"},
+  sky:{en:"Sky",es:"Cielo"}, night:{en:"Night",es:"Noche"}, dusk:{en:"Rising",es:"Sale"}, day:{en:"Day",es:"Día"}, dawn:{en:"Setting",es:"Se pone"},
+  coarse:{en:"Coarse",es:"Macrométrico"}, fine:{en:"Fine",es:"Micrométrico"},
+  twist:{en:"Eyepiece",es:"Ocular"},
+  reticle:{en:"Reticle",es:"Retículo"}, scaleOn:{en:"In",es:"Puesto"}, scaleOff:{en:"Out",es:"Fuera"},
+  measure:{en:"Measure",es:"Medir"},
+  barlow:{en:"Barlow",es:"Barlow"}, barlowIn:{en:"2× in",es:"2× puesto"}, barlowOut:{en:"Out",es:"Fuera"},
+  focusOut:{en:"Out of focus",es:"Fuera de foco"}, focusNear:{en:"Almost",es:"Casi"}, focusIn:{en:"In focus",es:"En foco"},
+  drag:{en:"Drag the field. The sky is fixed. You are the one who moves.",es:"Arrastra el campo. El cielo está fijo. El que se mueve eres tú."},
+  tap:{en:"Tap two points. Don't drag.",es:"Toca dos puntos. No arrastres."},
+  drift:{en:"The mount is loose. The sky walks out of the field.",es:"La montura está suelta. El cielo se sale del campo."},
+  capped:{en:"The cap is on. Nothing in the sky can help you until it comes off.",es:"La tapa está puesta. Nada en el cielo te ayuda hasta que la quites."},
+  sun:{en:"No filter on the front of the tube. An unfiltered Sun burns the eye, so the cap stays. A filter that screws into the eyepiece can crack. The safe one goes on the front.",es:"No hay filtro al frente del tubo. Un Sol sin filtro quema el ojo, así que la tapa se queda. Un filtro que se enrosca en el ocular se puede romper. El seguro va al frente."},
+  filter:{en:"Solar filter",es:"Filtro solar"}, none:{en:"None",es:"Ninguno"}, front:{en:"Front",es:"Al frente"},
+  practical:{en:"Bench practical",es:"Práctica de mesa"},
+  teach:{en:"Missions",es:"Misiones"},
+  teachLock:{en:"Locked",es:"Cerradas"},
+  teachOpen:{en:"Open",es:"Abiertas"},
+  teachLocked:{en:"Locked. Each mission opens the next control.",es:"Cerradas. Cada misión abre el control siguiente."},
+  teachOpenNote:{en:"Open. Every control is on the bench. Lock this before a student sits down.",es:"Abiertas. Todos los controles están en la mesa. Ciérralas antes de que se siente un estudiante."},
+  hint:{en:"Six missions. Each one opens the next. The last one is the ceiling: larger is not finer.",es:"Seis misiones. Cada una abre la siguiente. La última es el techo: más grande no es más fino."},
+  done:{en:"Six missions done. You read 1.3″. The lander was never in this glass.",es:"Seis misiones hechas. Leíste 1.3″. El módulo lunar nunca estuvo en este vidrio."},
+  fineHint:{en:"The fine knob is under the circle. Changing the eyepiece throws the focus off.",es:"El micrométrico está debajo del círculo. Cambiar el ocular saca el foco."},
+  moon:{en:"Moon",es:"Luna"}, jupiter:{en:"Jupiter",es:"Júpiter"}, saturn:{en:"Saturn",es:"Saturno"},
+  orion:{en:"Orion",es:"Orión"}, pleiades:{en:"Pleiades",es:"Pléyades"}, albireo:{en:"Albireo",es:"Albireo"}, pair:{en:"The pair",es:"El par"},
+  sea:{en:"The sea",es:"El mar"}, sunName:{en:"Sun",es:"Sol"}
+};
+const STAIR = [
+  {en:"Make the telescope work",es:"Haz funcionar el telescopio",
+    blurb_en:"Cap off. Lock the mount. 25 mm. Coarse focus on the Moon.",
+    blurb_es:"Tapa fuera. Fija la montura. 25 mm. Enfoca la Luna con el macrométrico.",
+    steps:["cap","lock","low","coarse"]},
+  {en:"See more",es:"Ver más",
+    blurb_en:"10 mm, then the 6 mm, then the fine knob. The Moon no longer fits.",
+    blurb_es:"10 mm, luego el de 6 mm, luego el micrométrico. La Luna ya no cabe.",
+    steps:["mid","short","fine"]},
+  {en:"Change what you see",es:"Cambia lo que ves",
+    blurb_en:"Jupiter is a striped bead. Orion is a gray cloud and four stars.",
+    blurb_es:"Júpiter es una cuenta rayada. Orión es una nube gris y cuatro estrellas.",
+    steps:["jupiter","orion"]},
+  {en:"Measure",es:"Medir",
+    blurb_en:"Reticle in. Two taps. Read arcseconds, not a feeling.",
+    blurb_es:"Retículo puesto. Dos toques. Lee segundos de arco, no una impresión.",
+    steps:["measure"]},
+  {en:"What can't this telescope see?",es:"¿Qué no puede ver este telescopio?",
+    blurb_en:"The sea where they landed. 6 mm. In focus. The lander is 0.002″.",
+    blurb_es:"El mar donde alunizaron. 6 mm. En foco. El módulo mide 0.002″.",
+    steps:["ceiling"]},
+  {en:"The research bench",es:"El banco de investigación",
+    blurb_en:"Albireo splits. The 1.0″ pair does not. The Barlow makes the smear bigger.",
+    blurb_es:"Albireo se separa. El par de 1.0″ no. El Barlow agranda la mancha.",
+    steps:["albireo","barlow"]}
+];
+const STEP = {
+  cap:{en:"Take the cap off",es:"Quita la tapa"},
+  lock:{en:"Lock the mount",es:"Fija la montura"},
+  low:{en:"Start on the 25 mm",es:"Empieza con el de 25 mm"},
+  coarse:{en:"Coarse-focus the Moon",es:"Enfoca la Luna con el macrométrico"},
+  mid:{en:"Go to the 10 mm",es:"Pasa al de 10 mm"},
+  short:{en:"Go to the 6 mm",es:"Pasa al de 6 mm"},
+  fine:{en:"Sharpen the Moon with the fine knob",es:"Afina la Luna con el micrométrico"},
+  jupiter:{en:"Find Jupiter in focus",es:"Encuentra Júpiter en foco"},
+  orion:{en:"Find Orion's cloud with the 10 mm or the 6 mm",es:"Encuentra la nube de Orión con el de 10 o el de 6 mm"},
+  measure:{en:"Measure something at 90× or 150×",es:"Mide algo a 90× o 150×"},
+  ceiling:{en:"Center the landing sea at 150×",es:"Centra el mar del alunizaje a 150×"},
+  albireo:{en:"Split Albireo",es:"Separa Albireo"},
+  barlow:{en:"Barlow the 1.0″ pair and read 1.3″",es:"Pon el Barlow al par de 1.0″ y lee 1.3″"}
+};
+const S = {
+  page:"home", lang:"en", theme:"light", teacher:"open",
+  lab:{cap:true,locked:false,ep:25,barlow:false,coarse:18,fine:46,eyeTwist:22,target:"moon",sky:"night",filter:false,panX:0,panY:0,reticle:false,measure:false,mA:null,mB:null}
+};
+try {
+  const raw = JSON.parse(localStorage.getItem(KEY)||"null");
+  if (raw) Object.assign(S, {lang:raw.lang||"en", missions:raw.missions||{}, teacher:raw.teacher==="locked"?"locked":"open"});
+  if (localStorage.getItem(THEME_KEY)==="dark") S.theme="dark";
+} catch(e){}
+if (!S.missions) S.missions = {};
+function persist(){ try { localStorage.setItem(KEY, JSON.stringify({lang:S.lang,missions:S.missions,teacher:S.teacher})); localStorage.setItem(THEME_KEY,S.theme);} catch(e){} }
+function t(k){ const x=STR[k]; return x ? (S.lang==="es"?x.es:x.en) : k; }
+function missionsOpen(){ return S.teacher!=="locked"; }
+function benchStep(){ return missionsOpen() ? STAIR.length : stairNow(); }
+function magOf(L){ return (SCOPE.fl/L.ep) * (L.barlow?2:1); }
+function focusErr(L){
+  const ideal = L.ep===25?42 : L.ep===10?58 : 72;
+  return (L.coarse-ideal) + (L.fine-50)*0.12;
+}
+function focusBand(L){
+  const e=Math.abs(focusErr(L||S.lab));
+  const tol=L&&L.ep===25?12:L&&L.ep===10?6:3.2;
+  return e<tol*0.4?"in":e<tol?"near":"out";
+}
+function stairNow(){
+  for (let i=0;i<STAIR.length;i++) if (!STAIR[i].steps.every(id=>S.missions[id])) return i;
+  return STAIR.length;
+}
+function btn(on,act,lab){ return `<button class="btn${on?" btn-steel":""}" data-act="${act}">${lab}</button>`; }
+function tfovArcmin(mag){ return (SCOPE.afov/mag)*60; }
+
+let MOON=null;
+function bakeMoon(){
+  const N=1024, H=new Float32Array(N*N), alb=new Float32Array(N*N);
+  const cx=N/2, cy=N/2, R=N*0.5-2, RAD=15.5;
+  const toP=(ax,ay)=>[cx+(ax/RAD)*R, cy+(ay/RAD)*R];
+  const mares=[[-2,-6,5.2,4.2,.2],[2.2,-4.6,3.4,2.8,-.3],[6.2,.8,4.2,3.1,.15],[8.6,5.4,2.6,2.1,.4],[11.2,-.4,1.7,1.35,0],[-1.5,6.5,4.4,2.6,.5],[-6,2,2.2,1.6,-.4]];
+  function hsh(ix,iy){ let n=(ix*374761393+iy*668265263)|0; n=(n^(n>>>13))*1274126177; return ((n^(n>>>16))>>>0)/4294967296; }
+  function vnoise(x,y){
+    const x0=Math.floor(x), y0=Math.floor(y), fx=x-x0, fy=y-y0, u=fx*fx*(3-2*fx), v=fy*fy*(3-2*fy);
+    const a=hsh(x0,y0), b=hsh(x0+1,y0), c=hsh(x0,y0+1), d=hsh(x0+1,y0+1);
+    return a+(b-a)*u+(c-a)*v+(a-b-c+d)*u*v;
+  }
+  function mareW(px,py){
+    const amx=(px-cx)/R*RAD, amy=(py-cy)/R*RAD;
+    let w=0;
+    for(const [mx,my,rx,ry,rot] of mares){
+      const dx=amx-mx, dy=amy-my, c=Math.cos(-rot), s=Math.sin(-rot);
+      const lx=dx*c-dy*s, ly=dx*s+dy*c, e=(lx*lx)/(rx*rx)+(ly*ly)/(ry*ry);
+      if(e<1){
+        const shore=vnoise(px/38, py/38);
+        const edge=1-e;
+        const keep=edge>0.22 || shore>0.42 ? edge : edge*(shore/0.42);
+        w=Math.max(w, keep);
+      }
+    }
+    return w;
+  }
+  for(let y=1;y<N-1;y++) for(let x=1;x<N-1;x++){
+    const dx=x-cx, dy=y-cy; if(dx*dx+dy*dy>R*R) continue;
+    const m=mareW(x,y);
+    const n=vnoise(x/70,y/70)*.4+vnoise(x/28,y/28)*.12;
+    H[y*N+x]=(n-.5)*(m?0.45:1.35) - m*2.15;
+    alb[y*N+x]=m?0.46+0.06*(1-m):0.82+(n-.5)*.04;
+  }
+  function stamp(amx,amy,rArc){
+    const [px,py]=toP(amx,amy), Rr=rArc/RAD*R;
+    if(Rr<0.55) return;
+    const depth=Math.min(Rr*.38, 5+Rr*.2), rimH=Rr*.13, sig=Math.max(1.1, Rr*.12);
+    const x0=Math.max(1,px-Rr*1.8|0), x1=Math.min(N-2,px+Rr*1.8|0);
+    const y0=Math.max(1,py-Rr*1.8|0), y1=Math.min(N-2,py+Rr*1.8|0);
+    for(let y=y0;y<=y1;y++) for(let x=x0;x<=x1;x++){
+      const d=Math.hypot(x-px,y-py), i=y*N+x;
+      if(d<=Rr){ const u=d/Rr; H[i]-=depth*(1-u*u); }
+      H[i]+=rimH*Math.exp(-((d-Rr)*(d-Rr))/(2*sig*sig));
+      if(d>Rr && d<Rr*1.7){ H[i]+=rimH*.18*(1-(d-Rr)/(Rr*.7)); alb[i]=Math.min(.98, alb[i]+.035); }
+    }
+    if(Rr>18){
+      const pr=Rr*.14;
+      for(let y=py-pr*3|0; y<=py+pr*3; y++) for(let x=px-pr*3|0; x<=px+pr*3; x++){
+        if(x<1||y<1||x>=N-1||y>=N-1) continue;
+        const d=Math.hypot(x-px,y-py);
+        H[y*N+x]+=depth*.22*Math.exp(-(d*d)/(2*pr*pr));
+      }
+    }
+  }
+  const rng=mulberry32(0x51a0e1);
+  for(let i=0;i<380;i++){
+    const a=rng()*6.283, rr=Math.sqrt(rng())*13.1;
+    stamp(Math.cos(a)*rr, Math.sin(a)*rr, .07+Math.pow(rng(),1.7)*.85);
+  }
+  [[-4.5,.4,1.55],[-5.4,2.4,.9],[-3.3,-1.5,.7],[-1.15,-2.3,1.15],[.9,10.1,1.1],[2.3,-7,.95],[-2.3,-8.9,1.25],[6.7,1.5,.42],[5.2,-.2,.36]].forEach(p=>stamp(p[0],p[1],p[2]));
+  const [tx,ty]=toP(.9,10.1);
+  function rayFan(ox,oy,n,reach){
+    for(let k=0;k<n;k++){
+      const a=k/n*6.283+(k%2?0.07:-0.04);
+      const len=R*reach*(0.72+(k%3)*0.16);
+      const width=2.4+(k%4)*0.7;
+      for(let s=R*0.035;s<len;s+=1.15){
+        const wob=Math.sin(s*0.05+k*1.7)*1.6;
+        const px=ox+Math.cos(a)*s+Math.cos(a+1.57)*wob;
+        const py=oy+Math.sin(a)*s+Math.sin(a+1.57)*wob;
+        for(let q=-width;q<=width;q+=1.1){
+          const x=px+Math.cos(a+1.57)*q|0, y=py+Math.sin(a+1.57)*q|0;
+          if(x<2||y<2||x>=N-2||y>=N-2) continue;
+          const dx=x-cx, dy=y-cy; if(dx*dx+dy*dy>R*R) continue;
+          const fall=(1-s/len)*(1-Math.abs(q)/width);
+          alb[y*N+x]=Math.min(1, alb[y*N+x]+0.085*fall*fall);
+        }
+      }
+    }
+  }
+  rayFan(tx,ty,8,0.62);
+  const cop=toP(2.3,-7);
+  rayFan(cop[0],cop[1],6,0.28);
+  const termX=cx-R*.18, gapA=new Float32Array(N*N);
+  for(let y=1;y<N-1;y++){
+    let cover=-1e9;
+    for(let x=N-2;x>=1;x--){
+      const dx=x-cx, dy=y-cy;
+      if(dx*dx+dy*dy>R*R){ cover=-1e9; continue; }
+      const day=(x-termX)/R;
+      const elev=day<0?-1.1:0.025+day*.7;
+      cover-=elev*2.4;
+      const h=H[y*N+x];
+      gapA[y*N+x]=cover-h;
+      if(h>cover) cover=h;
+    }
+  }
+  const Lx=.88, Ly=.03, Lz=.32, Ll=Math.hypot(Lx,Ly,Lz);
+  const img=new ImageData(N,N), data=img.data;
+  for(let y=1;y<N-1;y++) for(let x=1;x<N-1;x++){
+    const dx=x-cx, dy=y-cy, rr=dx*dx+dy*dy;
+    if(rr>R*R) continue;
+    const idx=y*N+x, hx=H[idx+1]-H[idx-1], hy=H[idx+N]-H[idx-N];
+    let nx=-hx, ny=-hy, nz=4.6, nl=Math.hypot(nx,ny,nz)||1;
+    nx/=nl; ny/=nl; nz/=nl;
+    let nd=nx*(Lx/Ll)+ny*(Ly/Ll)+nz*(Lz/Ll); if(nd<0) nd=0;
+    const day=(x-termX)/R, gap=gapA[idx];
+    let light=nd;
+    if(day<-0.08) light=0.09;
+    else if(day<0.02) light=0.09+(nd-0.09)*((day+0.08)/0.1);
+    else if(gap>0.2) light=nd*Math.exp(-gap*.85)*.55;
+    const limb=Math.pow(Math.max(0,1-rr/(R*R)),.42);
+    light*=0.78+0.22*limb;
+    const a=alb[idx], mare=a<0.62, k=a*(0.1+light*1.15);
+    const o=(y*N+x)*4;
+    data[o]=Math.min(255, k*(mare?214:250));
+    data[o+1]=Math.min(255, k*(mare?202:238));
+    data[o+2]=Math.min(255, k*(mare?184:214));
+    data[o+3]=255;
+  }
+  const c=document.createElement("canvas"); c.width=c.height=N;
+  c.getContext("2d").putImageData(img,0,0);
+  return c;
+}
+function drawMoon(ctx){
+  if(!MOON) MOON=bakeMoon();
+  ctx.imageSmoothingEnabled=true; ctx.imageSmoothingQuality="high";
+  ctx.drawImage(MOON,-15.5,-15.5,31,31);
+}
+function skyNow(){
+  const L=S.lab;
+  if(L.target==="sun" && L.filter) return "day";
+  if(L.target==="moon" || L.target==="sea") return L.sky||"night";
+  return "night";
+}
+
+let EYE_NOW=0;
+function airy(ctx,x,y,mag,col){
+  const flick=mag<3.4
+    ? 0.62+0.38*Math.abs(Math.sin(EYE_NOW/130+x*2.7+y*1.9))
+    : 0.86+0.14*Math.sin(EYE_NOW/210+x*4.2+y*3.1);
+  const j=mag<4.5?0.012:0.004;
+  x+=Math.sin(EYE_NOW/180+y*6)*j;
+  y+=Math.cos(EYE_NOW/200+x*6)*j;
+  const k=Math.hypot(ctx.getTransform().a, ctx.getTransform().b)||1;
+  const corePx=Math.max(1.15, 1.2+Math.max(0, 5.4-mag)*1.25);
+  const wing=(corePx*(mag>6?2.1:3.6))/k;
+  const g=ctx.createRadialGradient(x,y,0,x,y,wing);
+  g.addColorStop(0,"#fff");
+  g.addColorStop(0.14,col);
+  g.addColorStop(0.42,`rgba(176,168,214,${(mag<4?0.28:0.1)*flick})`);
+  g.addColorStop(1,"rgba(0,0,0,0)");
+  ctx.save();
+  ctx.globalAlpha=Math.max(0.45, Math.min(1, flick));
+  ctx.fillStyle=g; ctx.beginPath(); ctx.arc(x,y,wing,0,6.3); ctx.fill();
+  if(mag<4.8){
+    ctx.strokeStyle=`rgba(214,224,255,${0.28*flick})`;
+    ctx.lineWidth=Math.max(0.4, corePx*0.35)/k;
+    ctx.beginPath(); ctx.arc(x,y,wing*0.95,0,6.3); ctx.stroke();
+  }
+  ctx.restore();
+}
+function fieldStars(seed, n, span){
+  const rng=mulberry32(seed), a=[];
+  for(let i=0;i<n;i++) a.push({x:(rng()-.5)*span, y:(rng()-.5)*span, m:6.2+rng()*3.2, c:rng()<.2?"#f0d8c4":"#e4ecff"});
+  return a;
+}
+const SKY = fieldStars(99, 140, 90);
+const ORI_FIELD = fieldStars(42, 70, 36);
+const PLE_FIELD = fieldStars(77, 60, 50);
+let JUP=null, SAT=null, ORI=null;
+function bakeJupiter(){
+  const N=900, cx=N/2, cy=N/2, SPAN=0.46;
+  const eq=42/120, pol=eq*0.935;
+  function hsh(ix,iy){ let n=(ix*374761393+iy*668265263)|0; n=(n^(n>>>13))*1274126177; return ((n^(n>>>16))>>>0)/4294967296; }
+  function vn(x,y){
+    const x0=Math.floor(x), y0=Math.floor(y), fx=x-x0, fy=y-y0, u=fx*fx*(3-2*fx), v=fy*fy*(3-2*fy);
+    const a=hsh(x0,y0), b=hsh(x0+1,y0), c=hsh(x0,y0+1), d=hsh(x0+1,y0+1);
+    return a+(b-a)*u+(c-a)*v+(a-b-c+d)*u*v;
+  }
+  const img=new ImageData(N,N), data=img.data;
+  for(let y=0;y<N;y++) for(let x=0;x<N;x++){
+    const ax=(x-cx)/(N/2)*SPAN, ay=(y-cy)/(N/2)*SPAN;
+    const e=(ax*ax)/(eq*eq)+(ay*ay)/(pol*pol);
+    const o=(y*N+x)*4;
+    if(e>=1){ data[o+3]=0; continue; }
+    const mu=Math.sqrt(1-e), lat=ay/pol;
+    const n=vn(ax*14+3, lat*8)-0.5;
+    const belt=(c,w,d)=>{
+      const wob=n*0.05+Math.sin(ax*8+c*5)*0.015;
+      const u=Math.abs(lat-c)/(w+wob);
+      return u<1 ? d*(1-u*u) : 0;
+    };
+    let dark=0;
+    dark=Math.max(dark, belt(-0.78,0.13,0.26));
+    dark=Math.max(dark, belt(-0.54,0.04,0.42));
+    dark=Math.max(dark, belt(-0.22,0.085,0.78));
+    dark=Math.max(dark, belt(0.015,0.016,0.22));
+    dark=Math.max(dark, belt(0.27,0.105,0.74));
+    dark=Math.max(dark, belt(0.58,0.038,0.38));
+    dark=Math.max(dark, belt(0.84,0.13,0.34));
+    const gx=(ax-0.10)/0.115, gy=(lat-0.30)/0.075, grs=gx*gx+gy*gy;
+    if(grs<1.7) dark*=0.22+0.6*Math.min(1, grs/1.7);
+    if(lat>0.2 && lat<0.4 && ax>0.16 && ax<0.34) dark=Math.max(dark, 0.42*(1-(ax-0.16)/0.18));
+    const fest=Math.sin(ax*18+vn(ax*4,1.2)*4);
+    if(fest>0.45 && lat>-0.16 && lat<-0.02) dark=Math.max(dark, 0.28*(fest-0.45)*1.6);
+    let r=236-dark*118, g=214-dark*128, b=176-dark*118;
+    if(grs<1){
+      const u=1-grs, core=Math.pow(u,1.6);
+      r=168+core*48; g=78+core*46; b=62+core*28;
+      r-=(1-u)*18; g-=(1-u)*10;
+    }
+    const oval=(ax+0.16)*(ax+0.16)/0.0016+(lat-0.60)*(lat-0.60)/0.0011;
+    if(oval<1){ r=228; g=216; b=196; }
+    if(Math.abs(lat)<0.09){ r+=22; g+=16; b+=6; }
+    if(Math.abs(lat)>0.7){ g+=8; r-=6; }
+    const limb=0.22+0.78*Math.pow(mu,0.55);
+    const k=limb*(0.96+n*0.06);
+    data[o]=Math.min(255,Math.max(0,r*k));
+    data[o+1]=Math.min(255,Math.max(0,g*k));
+    data[o+2]=Math.min(255,Math.max(0,b*k));
+    data[o+3]=255;
+  }
+  const c=document.createElement("canvas"); c.width=c.height=N;
+  c.getContext("2d").putImageData(img,0,0);
+  return c;
+}
+function drawJupiter(ctx, now){
+  if(!JUP) JUP=bakeJupiter();
+  ctx.imageSmoothingEnabled=true; ctx.imageSmoothingQuality="high";
+  ctx.drawImage(JUP,-0.46,-0.46,0.92,0.92);
+  [[2.2,1.77,.4,5.0],[3.5,3.55,1.7,5.3],[5.5,7.15,2.4,4.6],[9.6,16.7,.9,5.7]].forEach(([dist,p,ph,m])=>{
+    const th=(now/1000)/p+ph;
+    airy(ctx, Math.sin(th)*dist, Math.cos(th)*dist*.08, m, "#f6f1e6");
+  });
+}
+function bakeSaturn(){
+  const N=820, cx=N/2, cy=N/2, SPAN=0.58, open=0.25;
+  const pxPer=(N/2)/SPAN;
+  function hsh(ix,iy){ let n=(ix*374761393+iy*668265263)|0; n=(n^(n>>>13))*1274126177; return ((n^(n>>>16))>>>0)/4294967296; }
+  function vn(x,y){
+    const x0=Math.floor(x), y0=Math.floor(y), fx=x-x0, fy=y-y0, u=fx*fx*(3-2*fx), v=fy*fy*(3-2*fy);
+    const a=hsh(x0,y0), b=hsh(x0+1,y0), c=hsh(x0,y0+1), d=hsh(x0+1,y0+1);
+    return a+(b-a)*u+(c-a)*v+(a-b-c+d)*u*v;
+  }
+  function ringI(rho){
+    const n=vn(rho*80, 2)-0.5;
+    if(rho<0.115||rho>0.435) return 0;
+    if(rho<0.168) return 0.16+0.06*n;
+    if(rho<0.255) return 0.86+0.06*n;
+    if(rho<0.272) return 0.28+0.08*n;
+    if(rho<0.40) return (0.66-(rho-0.272)*0.55)+0.05*n;
+    return 0.14;
+  }
+  const img=new ImageData(N,N), data=img.data;
+  for(let y=0;y<N;y++) for(let x=0;x<N;x++){
+    const ax=(x-cx)/(N/2)*SPAN, ay=(y-cy)/(N/2)*SPAN;
+    const rho=Math.hypot(ax, ay/open);
+    const ge=(ax*ax)/(0.158*0.158)+(ay*ay)/(0.142*0.142);
+    const o=(y*N+x)*4;
+    const front=ay>-0.004;
+    let R=0,G=0,B=0,A=0;
+    const paintRing=()=>{
+      let I=ringI(rho);
+      if(!I) return;
+      I*=0.7+0.42*Math.min(1,Math.abs(ax)/0.38);
+      if(front && ax>0.10 && ax<0.24 && Math.abs(ay)<0.07 && rho<0.42) I*=0.32;
+      const edge=Math.min(1, Math.abs(rho-0.115)*pxPer*0.5, Math.abs(0.435-rho)*pxPer*0.5);
+      I*=Math.min(1, edge);
+      R=214*I; G=196*I; B=164*I; A=Math.min(255, 255*Math.min(1,I*1.35));
+    };
+    if(!front && !(ge<1)) paintRing();
+    if(ge<1){
+      const mu=Math.sqrt(1-ge), lat=ay/0.142;
+      let I=0.46+0.54*Math.pow(mu,0.5);
+      if(Math.abs(lat-0.04)<0.07) I*=0.9;
+      if(Math.abs(lat)>0.74) I*=0.8;
+      if(ay>0.01 && ay<0.048 && Math.abs(ax)<0.13) I*=0.48;
+      I*=0.96+0.06*vn(ax*30, lat*8);
+      R=228*I; G=206*I; B=164*I; A=255;
+    } else if(front) paintRing();
+    data[o]=Math.min(255,R); data[o+1]=Math.min(255,G); data[o+2]=Math.min(255,B); data[o+3]=A;
+  }
+  const c=document.createElement("canvas"); c.width=c.height=N;
+  c.getContext("2d").putImageData(img,0,0);
+  return c;
+}
+function drawSaturn(ctx){
+  if(!SAT) SAT=bakeSaturn();
+  ctx.save(); ctx.rotate(-0.36);
+  ctx.imageSmoothingEnabled=true; ctx.imageSmoothingQuality="high";
+  ctx.drawImage(SAT,-0.58,-0.58,1.16,1.16);
+  ctx.restore();
+  airy(ctx, 3.15, 0.5, 8.2, "#f0e2c4");
+}
+function bakeOrion(){
+  const N=680, SPAN=22;
+  function hsh(ix,iy){ let n=(ix*374761393+iy*668265263)|0; n=(n^(n>>>13))*1274126177; return ((n^(n>>>16))>>>0)/4294967296; }
+  function vn(x,y){
+    const x0=Math.floor(x), y0=Math.floor(y), fx=x-x0, fy=y-y0, u=fx*fx*(3-2*fx), v=fy*fy*(3-2*fy);
+    const a=hsh(x0,y0), b=hsh(x0+1,y0), c=hsh(x0,y0+1), d=hsh(x0+1,y0+1);
+    return a+(b-a)*u+(c-a)*v+(a-b-c+d)*u*v;
+  }
+  const img=new ImageData(N,N), data=img.data;
+  for(let y=0;y<N;y++) for(let x=0;x<N;x++){
+    const ax=(x-N/2)/(N/2)*SPAN, ay=(y-N/2)/(N/2)*SPAN;
+    const core=Math.exp(-(ax*ax+ay*ay)/7.5);
+    const wing=Math.exp(-((ax-3.2)*(ax-3.2)/26+(ay-5.5)*(ay-5.5)/16));
+    const wing2=Math.exp(-((ax+2.4)*(ax+2.4)/18+(ay+4.2)*(ay+4.2)/12));
+    const north=Math.exp(-((ax-1.2)*(ax-1.2)/10+(ay+11)*(ay+11)/8))*0.35;
+    const mouth=Math.exp(-((ax-1.6)*(ax-1.6)/2.4+(ay-0.2)*(ay-0.2)/1.15));
+    let v=core*0.9+wing*0.5+wing2*0.32+north;
+    v*=1-0.86*mouth;
+    v*=0.62+0.7*vn(ax*0.55, ay*0.55);
+    v*=0.85+0.3*vn(ax*1.6+4, ay*1.6);
+    v=Math.max(0,v);
+    const o=(y*N+x)*4;
+    data[o]=150; data[o+1]=172; data[o+2]=156; data[o+3]=Math.min(210, v*230);
+  }
+  const c=document.createElement("canvas"); c.width=c.height=N;
+  c.getContext("2d").putImageData(img,0,0);
+  return c;
+}
+function drawOrion(ctx){
+  ORI_FIELD.forEach(s=>airy(ctx,s.x,s.y,s.m,s.c));
+  if(!ORI) ORI=bakeOrion();
+  ctx.imageSmoothingEnabled=true; ctx.imageSmoothingQuality="high";
+  ctx.drawImage(ORI,-22,-22,44,44);
+  [[0.02,-0.02,5.0,"#f7f9ff"],[0.16,0.04,6.6,"#e8eeff"],[-0.07,0.12,6.9,"#e4ecff"],[0.05,-0.14,7.4,"#f4f7ff"]].forEach(s=>airy(ctx,s[0],s[1],s[2],s[3]));
+  airy(ctx, 0.4, -16, 4.5, "#dce6ff");
+  airy(ctx, 1.1, 18, 3.1, "#dbe7ff");
+}
+const PLEIADES = [
+  [0,0,2.86,"#f4f8ff"],
+  [9.2,-5.4,3.6,"#e7e8ff"],
+  [11.4,-3.6,5.05,"#f7f4ff"],
+  [-32,8,3.7,"#d5e6ff"],
+  [-7.2,-9.4,3.85,"#eef3ff"],
+  [-1.6,11.2,4.15,"#dbe7ff"],
+  [-24,-16,4.3,"#d8e4ff"],
+  [-28,-6,5.45,"#cfdcf8"]
+];
+function meropeFan(ctx){
+  const x=-1.6, y=11.2;
+  for(let i=0;i<5;i++){
+    const tt=1.2+i*2.1;
+    const px=x+Math.sin(0.5)*tt*0.3, py=y+tt, rad=3.2+i*1.5;
+    const g=ctx.createRadialGradient(px,py,rad*0.1,px,py,rad);
+    g.addColorStop(0,"rgba(176,196,214,"+(0.16-i*0.025)+")");
+    g.addColorStop(1,"rgba(0,0,0,0)");
+    ctx.fillStyle=g; ctx.beginPath(); ctx.ellipse(px,py,rad*0.7,rad,0.4,0,6.3); ctx.fill();
+  }
+}
+function drawPleiades(ctx){
+  PLE_FIELD.forEach(s=>airy(ctx,s.x,s.y,s.m,s.c));
+  meropeFan(ctx);
+  PLEIADES.forEach(function(s){ airy(ctx,s[0],s[1],s[2],s[3]); });
+}
+function drawAlbireo(ctx){
+  airy(ctx, -.28, .04, 3.1, "#ffd27a");
+  airy(ctx, .28, -.04, 5.1, "#9ecbff");
+}
+let SUN=null;
+function bakeSun(){
+  const N=1400, cx=N/2, cy=N/2, R=N*0.5-2, RAD=16;
+  const toP=(ax,ay)=>[cx+(ax/RAD)*R, cy+(ay/RAD)*R];
+  function hsh(ix,iy){ let n=(ix*374761393+iy*668265263)|0; n=(n^(n>>>13))*1274126177; return ((n^(n>>>16))>>>0)/4294967296; }
+  function vnoise(x,y){
+    const x0=Math.floor(x), y0=Math.floor(y), fx=x-x0, fy=y-y0, u=fx*fx*(3-2*fx), v=fy*fy*(3-2*fy);
+    const a=hsh(x0,y0), b=hsh(x0+1,y0), c=hsh(x0,y0+1), d=hsh(x0+1,y0+1);
+    return a+(b-a)*u+(c-a)*v+(a-b-c+d)*u*v;
+  }
+  const groups=[
+    {x:-4.6,y:1.15,ang:.42,a:1.55,b:.92, um:[{dx:-.38,dy:.08,r:.48},{dx:.18,dy:-.06,r:.3},{dx:.55,dy:.14,r:.16}]},
+    {x:6.1,y:-3.1,ang:-.55,a:1.05,b:.62, um:[{dx:-.16,dy:.04,r:.34},{dx:.32,dy:-.02,r:.16}]},
+    {x:1.4,y:6.4,ang:.2,a:.62,b:.4, um:[{dx:0,dy:0,r:.22}]},
+    {x:-8.6,y:-3.8,ang:1.05,a:.95,b:.34, um:[{dx:.08,dy:0,r:.18}]},
+    {x:10.2,y:2.4,ang:1.15,a:.7,b:.24, um:[{dx:0,dy:0,r:.12}]}
+  ];
+  const pores=[[-2.2,-5.6,.13],[3.1,-6.4,.09],[-6.4,4.2,.1],[8.1,5.2,.08],[.4,-2.8,.07],[-1.1,3.8,.08]];
+  groups.forEach(g=>{
+    const p=toP(g.x,g.y); g.px=p[0]; g.py=p[1]; g.A=g.a/RAD*R; g.B=g.b/RAD*R;
+    g.um.forEach(u=>{ const q=toP(g.x+u.dx,g.y+u.dy); u.px=q[0]; u.py=q[1]; u.pr=u.r/RAD*R; });
+  });
+  const poreP=pores.map(([x,y,r])=>{ const p=toP(x,y); return {px:p[0],py:p[1],pr:r/RAD*R}; });
+  const img=new ImageData(N,N), data=img.data;
+  for(let y=1;y<N-1;y++) for(let x=1;x<N-1;x++){
+    const dx=x-cx, dy=y-cy, rr=dx*dx+dy*dy, o=(y*N+x)*4;
+    if(rr>R*R) continue;
+    const mu=Math.sqrt(1-rr/(R*R));
+    const cells=(function(){
+      const sc=2.6, gx=x/sc, gy=y/sc, ix=Math.floor(gx), iy=Math.floor(gy);
+      let best=8;
+      for(let oy=-1;oy<=1;oy++) for(let ox=-1;ox<=1;ox++){
+        const cx0=ix+ox, cy0=iy+oy;
+        const jx=cx0+hsh(cx0,cy0), jy=cy0+hsh(cy0,cx0+19);
+        const ddx=gx-jx, ddy=gy-jy, d=ddx*ddx+ddy*ddy;
+        if(d<best) best=d;
+      }
+      return Math.sqrt(best);
+    })();
+    const grain=1+((0.42-cells)*.07+(vnoise(x/14,y/14)-.5)*.03)*Math.pow(mu,.75);
+    let I=(0.38+0.62*Math.pow(mu,.5))*grain;
+    if(mu<0.45 && vnoise(x/22,y/22)>0.66 && vnoise(x/9,y/9)>0.4) I*=1.14;
+    let kind=0, fil=1;
+    for(const g of groups){
+      const c=Math.cos(-g.ang), s=Math.sin(-g.ang);
+      const lx=((x-g.px)*c-(y-g.py)*s)/g.A, ly=((x-g.px)*s+(y-g.py)*c)/g.B;
+      const e=lx*lx+ly*ly;
+      if(e>1) continue;
+      let best=1e9, bang=0;
+      for(const u of g.um){
+        const d=Math.hypot(x-u.px,y-u.py);
+        const wob=0.82+0.22*vnoise(x/6,y/6);
+        if(d<u.pr*wob) kind=2;
+        if(d<best){ best=d; bang=Math.atan2(y-u.py,x-u.px); }
+      }
+      if(kind<2){
+        kind=1;
+        fil=0.42+0.58*(0.5+0.5*Math.sin(bang*18+e*6));
+        fil*=0.72+0.28*Math.sqrt(e);
+      }
+      break;
+    }
+    if(!kind){
+      for(const p of poreP){ if(Math.hypot(x-p.px,y-p.py)<p.pr){ kind=2; break; } }
+    }
+    let r,gc,b;
+    if(kind===2){
+      const uI=0.07+0.04*vnoise(x/4,y/4);
+      r=uI*80; gc=uI*62; b=uI*48;
+    } else if(kind===1){
+      const pI=I*(0.22+0.28*fil);
+      r=pI*210; gc=pI*150; b=pI*110;
+    } else {
+      const edge=Math.pow(1-mu,3.2);
+      r=Math.min(255,I*255*(1-edge*.04));
+      gc=Math.min(255,I*250*(1-edge*.1));
+      b=Math.min(255,I*242*(1-edge*.22));
+    }
+    data[o]=r; data[o+1]=gc; data[o+2]=b; data[o+3]=255;
+  }
+  const c=document.createElement("canvas"); c.width=c.height=N;
+  c.getContext("2d").putImageData(img,0,0);
+  return c;
+}
+function drawSun(ctx){
+  if(!SUN) SUN=bakeSun();
+  const glow=ctx.createRadialGradient(0,0,15.6,0,0,16.6);
+  glow.addColorStop(0,"rgba(255,252,245,.18)");
+  glow.addColorStop(1,"rgba(255,252,245,0)");
+  ctx.fillStyle=glow; ctx.beginPath(); ctx.arc(0,0,20,0,6.3); ctx.fill();
+  ctx.imageSmoothingEnabled=true; ctx.imageSmoothingQuality="high";
+  ctx.drawImage(SUN,-16,-16,32,32);
+}
+function drawPair(ctx){ airy(ctx, 0, 0, 5.2, "#f7f1e4"); }
+function drawStars(ctx){ SKY.forEach(s=>airy(ctx,s.x,s.y,s.m,s.c)); }
+function paintSky(ctx,w,h,sky){
+  if(!sky || sky==="night"){ ctx.fillStyle="#07080c"; ctx.fillRect(0,0,w,h); return; }
+  const g=ctx.createLinearGradient(0,0,0,h);
+  if(sky==="day"){ g.addColorStop(0,"#8eb6d6"); g.addColorStop(1,"#d5e6f2"); }
+  else if(sky==="dusk"){ g.addColorStop(0,"#1a2948"); g.addColorStop(.4,"#4c648c"); g.addColorStop(.74,"#c4846a"); g.addColorStop(1,"#f0c4a0"); }
+  else { g.addColorStop(0,"#2c384c"); g.addColorStop(.42,"#8492a6"); g.addColorStop(.74,"#e4b890"); g.addColorStop(1,"#f4d8ba"); }
+  ctx.fillStyle=g; ctx.fillRect(0,0,w,h);
+}
+
+function skyLine(){
+  const L=S.lab, s=skyNow(), es=S.lang==="es";
+  const say=(en,sp)=>es?sp:en;
+  const moon=L.target==="moon"||L.target==="sea";
+  if(L.target==="sun") return "";
+  if(s==="day" && !moon) return say(" Daylight has washed this field. That object belongs to the night. The Moon is the one that stays."," La luz del día lavó este campo. Ese objeto es de noche. La Luna es la que se queda.");
+  if(!moon || s==="night") return "";
+  if(s==="dusk") return say(" Dusk. The Moon is rising. Blue overhead, warm along the bottom of the glass. The craters did not change."," Anochecer. La Luna sale. Azul arriba, cálido abajo en el vidrio. Los cráteres no cambiaron.");
+  if(s==="day") return say(" Day. The Sun is up, and so is the Moon. The field is pale blue. You do not need the dark for this."," Día. El Sol está arriba, y la Luna también. El campo es azul pálido. No necesitas la oscuridad para esto.");
+  if(s==="dawn") return say(" The Moon is setting. The warm band is the horizon in the glass. Same seas. Same shadows."," La Luna se pone. La banda cálida es el horizonte en el vidrio. Los mismos mares. Las mismas sombras.");
+  return "";
+}
+function fieldNote(){ return noteCore()+skyLine()+glassLine(); }
+function glassLine(){
+  const L=S.lab;
+  if(L.cap || (L.target==="sun" && !L.filter)) return "";
+  return S.lang==="es"
+    ? " Un borde violeta es el acromático, no el objeto. El polvo que gira con el ocular está en el ocular. Una estrella tiembla. La Luna no viaja."
+    : " A purple edge is the achromat, not the object. Dust that turns with the eyepiece is on the eyepiece. A bright star shivers. The Moon stays put.";
+}
+function noteCore(){
+  const L=S.lab, es=S.lang==="es", m=Math.round(magOf(L));
+  if (L.target==="sun" && !L.filter) return t("sun");
+  if (L.cap) return t("capped");
+  if (!L.locked) return t("drift");
+  const band=focusBand(L);
+  const say=(en,sp)=>es?sp:en;
+  if (band==="out"){
+    if (L.target==="moon"||L.target==="sea") return say(
+      "The Moon is in the glass and soft. Craters are blobs until the coarse knob finds the disk. Then only the fine knob.",
+      "La Luna está en el vidrio y está blanda. Los cráteres son manchas hasta que el macrométrico encuentra el disco. Luego, solo el micrométrico.");
+    if (L.target==="jupiter") return say(
+      `Jupiter at ${m}×, out of focus. The soft bead is the planet. The points beside it are moons — a point stays a point when the disk does not. Bring the coarse knob up, then the fine one. Stripes and a red spot appear only in focus.`,
+      `Júpiter a ${m}×, fuera de foco. La cuenta blanda es el planeta. Los puntos al lado son lunas — un punto sigue siendo un punto cuando el disco no. Sube el macrométrico y luego el micrométrico. Las franjas y una mancha roja aparecen solo en foco.`);
+    if (L.target==="saturn") return say(
+      "Saturn, soft. The rings smear into the ball. In focus the bright ring separates from the globe.",
+      "Saturno, blando. Los anillos se funden con la bola. En foco el anillo brillante se separa del globo.");
+    if (L.target==="orion") return say(
+      "Orion's sword is in the glass and soft. The cloud and the chain of stars sharpen together. Coarse, then fine.",
+      "La espada de Orión está en el vidrio y está blanda. La nube y la cadena de estrellas se afinan juntas. Macrométrico, luego micrométrico.");
+    if (L.target==="pleiades") return say(
+      "The Pleiades, out of focus. Each star is a smear instead of a point. There is no surface to find. Only the focus.",
+      "Las Pléyades, fuera de foco. Cada estrella es una mancha en vez de un punto. No hay superficie que encontrar. Solo el foco.");
+    if (L.target==="sun") return say(
+      "The Sun is in the glass and soft. Even with the filter on, the disk has to be focused. Coarse, then fine. The spots appear when the edge is sharp.",
+      "El Sol está en el vidrio y está blando. Aunque el filtro esté puesto, el disco hay que enfocarlo. Macrométrico, luego micrométrico. Las manchas aparecen cuando el borde está nítido.");
+    return say(
+      "Out of focus. The object is in the glass. The coarse knob finds it. The fine knob finishes it.",
+      "Fuera de foco. El objeto está en el vidrio. El macrométrico lo encuentra. El micrométrico lo termina.");
+  }
+  const almost=band==="near" ? say(" Almost.", " Casi.") : "";
+  if (L.target==="moon" && L.ep===25) return say(
+    "The whole Moon, 31′ across. Dark seas, bright highlands, and a terminator on the left where the shadows start. A star diagonal flips left and right. The Moon is not broken."+almost,
+    "La Luna entera, 31′ de ancho. Mares oscuros, tierras altas brillantes, y un terminador a la izquierda donde empiezan las sombras. Un diagonal de estrella invierte izquierda y derecha. La Luna no está rota."+almost);
+  if (L.target==="moon" && m>=140) return say(
+    `The terminator at ${m}×. Long shadows fall away from the Sun. A few peaks on the night side are still lit. The floors past that line are black. The lander is not one of them.`+almost,
+    `El terminador a ${m}×. Sombras largas se alejan del Sol. Unos picos del lado de noche siguen encendidos. Los fondos más allá de esa línea están negros. El módulo no es uno de ellos.`+almost);
+  if (L.target==="moon") return say(
+    `Part of the Moon at ${m}×. It no longer fits. Along the terminator the shadows are mountains, not ink.`+almost,
+    `Una parte de la Luna a ${m}×. Ya no cabe. En el terminador las sombras son montañas, no tinta.`+almost);
+  if (L.target==="jupiter" && m>=140) return say(
+    `Jupiter at ${m}×. The disk is about 42″ across. Two brown belts, ragged, with a pale zone between them. A salmon oval sits in a bay of the southern belt — the Great Red Spot. The four points are moons, minutes away from the disk. A poster crops them out.`+almost,
+    `Júpiter a ${m}×. El disco mide unos 42″. Dos cinturones marrones, irregulares, con una zona pálida entre ellos. Un óvalo asalmonado queda en una bahía del cinturón sur — la Gran Mancha Roja. Los cuatro puntos son lunas, a minutos del disco. Un póster las recorta.`+almost);
+  if (L.target==="jupiter" && m>=80) return say(
+    `Jupiter at ${m}×. The stripes and the red spot are on the disk. The points are moons, not part of the planet.`+almost,
+    `Júpiter a ${m}×. Las franjas y la mancha roja están en el disco. Los puntos son lunas, no parte del planeta.`+almost);
+  if (L.target==="jupiter") return say(
+    "Jupiter at low power. A striped bead, and moons in the same field. The stripes are a hint. The 6 mm is where they become belts."+almost,
+    "Júpiter a bajo aumento. Una cuenta rayada, y lunas en el mismo campo. Las franjas son una pista. El de 6 mm es donde se vuelven cinturones."+almost);
+  if (L.target==="saturn") return say(
+    `Saturn at ${m}×. The globe sits inside the rings. The B ring is the bright one. The darker tone between them is Cassini — 0.7″ wide. This lens splits 1.3″, so you see a shade, not a gap. The globe throws a small shadow on the rings.`+almost,
+    `Saturno a ${m}×. El globo queda dentro de los anillos. El anillo B es el brillante. El tono más oscuro entre ellos es Cassini — 0.7″ de ancho. Este lente separa 1.3″, así que ves una sombra, no una raja. El globo proyecta una sombra pequeña sobre los anillos.`+almost);
+  if (L.target==="orion") {
+    if (m>=140) return say(
+      `Orion's sword at ${m}×. The cloud is gray-green. In its middle, four stars — the Trapezium. A 90 mm splits them. The pink in the photographs is a camera.`+almost,
+      `La espada de Orión a ${m}×. La nube es gris verdosa. En su centro, cuatro estrellas — el Trapecio. Un 90 mm las separa. El rosa de las fotos es una cámara.`+almost);
+    if (m>=80) return say(
+      `The sword at ${m}×. A gray-green cloud with a bright core. The four stars in that core are not split yet. The 6 mm is the one that separates them.`+almost,
+      `La espada a ${m}×. Una nube gris verdosa con un núcleo brillante. Las cuatro estrellas de ese núcleo aún no se separan. El de 6 mm es el que las separa.`+almost);
+    return say(
+      "The sword of Orion. A gray-green cloud and a chain of stars running through it. The belt does not fit in this glass."+almost,
+      "La espada de Orión. Una nube gris verdosa y una cadena de estrellas que la atraviesa. El cinturón no cabe en este vidrio."+almost);
+  }
+  if (L.target==="pleiades") return m<50
+    ? say("The Pleiades in one field. Alcyone is the bright one. Electra sits near the edge of the glass. The veil on Merope is a whisper. A poster would have made it a cloud."+almost,
+        "Las Pléyades en un campo. Alcyone es la brillante. Electra queda cerca del borde del vidrio. El velo de Mérope es un susurro. Un póster lo habría vuelto una nube."+almost)
+    : say(`The Pleiades at ${m}×. You left most of them outside the glass. A cluster is a low-power object. What remains are a few points and, if you are still on Merope, a faint veil.`+almost,
+        `Las Pléyades a ${m}×. Dejaste a la mayoría afuera del vidrio. Un cúmulo es un objeto de bajo aumento. Lo que queda son unos puntos y, si sigues en Mérope, un velo tenue.`+almost);
+  if (L.target==="sea") return say(
+    "The sea where they landed. A dark plain and a few small craters. The lander is about 0.002″. This lens splits 1.3″. There is nothing else to find."+almost,
+    "El mar donde alunizaron. Una llanura oscura y unos cráteres pequeños. El módulo mide unos 0.002″. Este lente separa 1.3″. No hay nada más que buscar."+almost);
+  if (L.target==="albireo") return say(
+    "Albireo. Two stars, 34″ apart. One gold, one blue. This lens can split this pair. The colors are the stars, not a filter."+almost,
+    "Albireo. Dos estrellas, a 34″. Una de oro, una azul. Este lente sí separa este par. Los colores son de las estrellas, no de un filtro."+almost);
+  if (L.target==="sun" && m>=80) return say(
+    `Inside the disk at ${m}×. The black is the umbra. The gray fringe is the penumbra. The mottling is as close as 90 mm gets to granulation — the rice grain is about 1″, and this lens splits 1.3″. The red flames are still not here.`+almost,
+    `Dentro del disco a ${m}×. Lo negro es la umbra. El fleco gris es la penumbra. El moteado es lo más cerca que un 90 mm llega a la granulación — el grano de arroz mide cerca de 1″, y este lente separa 1.3″. Las llamas rojas siguen sin estar.`+almost);
+  if (L.target==="sun") return say(
+    `The Sun at ${m}×. White, not orange. The edge is dimmer because you are looking through more of the Sun, not because it is a ball. Each group has a black center and a gray fringe. The specks with no fringe are pores. Bright patches near the edge are faculae.`+almost,
+    `El Sol a ${m}×. Blanco, no naranja. El borde es más tenue porque miras a través de más Sol, no porque sea una bola. Cada grupo tiene un centro negro y un fleco gris. Las motas sin fleco son poros. Las manchas brillantes cerca del borde son fáculas.`+almost);
+  if (L.target==="pair") return say(
+    `One smear, not two stars. The pair is 1.0″ apart. A 90 mm lens splits ${SCOPE.dawes.toFixed(1)}″. ${L.barlow?"The Barlow has you near 300×. The useful ceiling is about 180×. You are magnifying the air.":"Making it larger does not split them. Neither will the Barlow."}`+almost,
+    `Una mancha, no dos estrellas. El par está a 1.0″. Un lente de 90 mm separa ${SCOPE.dawes.toFixed(1)}″. ${L.barlow?"El Barlow te pone cerca de 300×. El techo útil es unos 180×. Estás aumentando el aire.":"Hacerlo más grande no los separa. El Barlow tampoco."}`+almost);
+  return "";
+}
+
+function targetsFor(step){
+  const list=[["moon","moon"]];
+  if (step>=2) list.push(["jupiter","jupiter"],["saturn","saturn"],["orion","orion"],["pleiades","pleiades"]);
+  if (step>=4) list.push(["sea","sea"]);
+  if (step>=5) list.push(["albireo","albireo"],["pair","pair"]);
+  list.push(["sun","sunName"]);
+  return list;
+}
+function teacherRow(){
+  const open=missionsOpen();
+  return `<div class="row"><span class="tiny">${t("teach")}</span><span>${btn(!open,"teach-lock",t("teachLock"))}${btn(open,"teach-open",t("teachOpen"))}</span></div>
+    <p class="note-line">${open?t("teachOpenNote"):t("teachLocked")}</p>`;
+}
+function instrumentHTML(){
+  const L=S.lab, step=benchStep();
+  const eps=step>=1?[25,10,6]:[25];
+  const targets=targetsFor(step);
+  return `
+    ${teacherRow()}
+    <div class="row"><span class="tiny">${t("cap")}</span><span>${btn(L.cap,"cap1",t("on"))}${btn(!L.cap,"cap0",t("off"))}</span></div>
+    <div class="row"><span class="tiny">${t("mount")}</span><span>${btn(L.locked,"lock1",t("locked"))}${btn(!L.locked,"lock0",t("loose"))}</span></div>
+    <div class="row"><span class="tiny">${t("eye")}</span><span>${eps.map(e=>btn(L.ep===e&&!L.barlow,"ep"+e,e+" mm")).join("")}</span></div>
+    <div class="row"><span class="tiny">${t("target")}</span><span>${targets.map(([id,k])=>btn(L.target===id,"tg-"+id,t(k))).join("")}</span></div>
+    ${(L.target==="moon"||L.target==="sea")?`<div class="row"><span class="tiny">${t("sky")}</span><span>${["night","dusk","day","dawn"].map(s=>btn((L.sky||"night")===s,"sky-"+s,t(s))).join("")}</span></div>`:""}
+    ${L.target==="sun"?`<div class="row"><span class="tiny">${t("filter")}</span><span>${btn(!L.filter,"filt0",t("none"))}${btn(!!L.filter,"filt1",t("front"))}</span></div>`:""}
+    ${step>=3?`<div class="row"><span class="tiny">${t("reticle")}</span><span>${btn(L.reticle,"ret1",t("scaleOn"))}${btn(!L.reticle,"ret0",t("scaleOff"))}${btn(L.measure,"meas1",t("measure"))}</span></div>`:""}
+    ${step>=5?`<div class="row"><span class="tiny">${t("barlow")}</span><span>${btn(L.barlow,"bar1",t("barlowIn"))}${btn(!L.barlow,"bar0",t("barlowOut"))}</span></div>`:""}
+    <p class="note-line fieldnote">${fieldNote()}</p>`;
+}
+function missionActs(i){
+  const L=S.lab, es=S.lang==="es";
+  if (i===0) return btn(!L.cap,"cap0",es?"Tapa fuera":"Cap off")+btn(L.locked,"lock1",t("locked"))+btn(L.ep===25,"ep25","25 mm")+btn(L.target==="moon","tg-moon",t("moon"));
+  if (i===1) return btn(L.ep===10,"ep10","10 mm")+btn(L.ep===6,"ep6","6 mm")+`<p class="note-line">${t("fineHint")}</p>`;
+  if (i===2) return btn(L.target==="jupiter","tg-jupiter",t("jupiter"))+btn(L.target==="orion","tg-orion",t("orion"))+btn(L.ep===10,"ep10","10 mm")+btn(L.ep===6,"ep6","6 mm");
+  if (i===3) return btn(L.ep===10,"ep10","10 mm")+btn(L.reticle,"ret1",t("scaleOn"))+btn(L.measure,"meas1",t("measure"))+`<p class="note-line">${t("tap")}</p>`;
+  if (i===4) return btn(L.target==="sea","tg-sea",t("sea"))+btn(L.ep===6,"ep6","6 mm");
+  if (i===5) return btn(L.target==="albireo","tg-albireo",t("albireo"))+btn(L.ep===10||L.ep===6,"ep10","10 mm")+btn(L.target==="pair","tg-pair",t("pair"))+btn(L.ep===6,"ep6","6 mm")+btn(L.barlow,"bar1",t("barlowIn"))
+    +`<p class="note-line">${S.lang==="es"?`Este lente separa ${SCOPE.dawes.toFixed(1)}″. El techo útil es unos ${SCOPE.useful}×.`:`This lens splits ${SCOPE.dawes.toFixed(1)}″. The useful ceiling is about ${SCOPE.useful}×.`}</p>`;
+  return "";
+}
+function mark(id){ return S.missions[id]?"✓":""; }
+function practicalCard(){
+  const step=stairNow(), done=step>=STAIR.length;
+  return `<div class="card practical-box">
+    <p class="tiny">${t("practical")}</p>
+    <p class="note-line">${t("hint")}</p>
+    <ol class="stair">${STAIR.map((m,i)=>{
+      const state=i<step?"done":i===step?"now":"later";
+      const title=S.lang==="es"?m.es:m.en;
+      if (state!=="now") return `<li class="${state}"><p class="mk">${S.lang==="es"?"Misión":"Mission"} ${i+1}${state==="done"?" · ✓":""}</p><h3>${title}</h3></li>`;
+      const steps=`<ol>${m.steps.map(id=>`<li class="step"><span style="width:1.05rem;color:var(--good)">${mark(id)}</span><span style="${S.missions[id]?"text-decoration:line-through;color:var(--muted)":""}">${S.lang==="es"?STEP[id].es:STEP[id].en}</span></li>`).join("")}</ol>`;
+      return `<li class="now"><p class="mk">${S.lang==="es"?"Misión":"Mission"} ${i+1}</p><h3>${title}</h3><p class="note-line" style="margin:0">${S.lang==="es"?m.blurb_es:m.blurb_en}</p>${steps}<div class="do">${missionActs(i)}</div></li>`;
+    }).join("")}</ol>
+    ${done?`<p class="ok">${t("done")}</p>`:""}
+  </div>`;
+}
+function knob(id,label,val){
+  const show=id==="eyeTwist"?Math.round(val/100*360)+"°":Math.round(val);
+  return `<label class="knob"><span>${label}<b>${show}</b></span><input class="scope-knob" type="range" min="0" max="100" value="${val}" data-knob="${id}"></label>`;
+}
+function pageHome(){
+  const done=STAIR.reduce((n,m)=>n+m.steps.filter(id=>S.missions[id]).length,0);
+  const total=STAIR.reduce((n,m)=>n+m.steps.length,0);
+  return `<p class="kicker">${t("eyebrow")}</p><h1>${t("app")}</h1>
+    <p class="lead">${t("tag")}</p>
+    <p class="muted">${t("priv")} ${done}/${total}</p>
+    <div class="home-grid">
+      <svg class="scope" viewBox="0 0 280 160" aria-hidden="true">
+        <rect width="280" height="160" fill="none"/>
+        <g fill="none" stroke="#8a6116" stroke-width="3">
+          <path d="M40 110 h70 l20-46 h80" />
+          <circle cx="214" cy="64" r="16" fill="#1a232c"/>
+          <path d="M40 110 v18 h24" stroke-width="4"/>
+        </g>
+        <rect x="78" y="58" width="92" height="14" rx="7" fill="#c4a056" stroke="#8a6116"/>
+        <circle cx="214" cy="64" r="6" fill="#d7e4ea"/>
+      </svg>
+      <div>
+        <p>${S.lang==="es"?"90 mm, 900 mm de focal. Separa 1.3″. El aumento útil se acaba cerca de 180×. El módulo lunar mide 0.002″.":"90 mm, 900 mm of focal length. It splits 1.3″. Useful power ends near 180×. The lander is 0.002″."}</p>
+        <p><a class="btn btn-steel" href="#lab">${t("open")}</a></p>
+        <p class="muted"><a href="/science-microscope.html">${t("other")}</a></p>
+      </div>
+    </div>`;
+}
+function pageLab(){
+  const L=S.lab, mag=magOf(L), band=focusBand(L);
+  const fl=band==="in"?t("focusIn"):band==="near"?t("focusNear"):t("focusOut");
+  return `<div class="lab-stack"><div class="lab-grid"><div class="eye-stick">
+      <div class="eye-box"><div class="eye-wrap" id="eye"><canvas id="eyecanvas"></canvas>
+        <div class="eye-hud">${L.reticle?`1′ = ${(60).toFixed(0)}″`:""}</div></div>
+        <div class="readout"><span>${SCOPE.fl} / ${L.ep} mm${L.barlow?" × 2":""} = ${Math.round(mag)}×</span><span>${L.cap?t("capped").split(".")[0]:fl}</span></div>
+        <p class="note-line" id="dragread" style="color:#8aa">${L.measure?t("tap"):L.locked?t("drag"):t("drift")}</p>
+      </div>
+      ${L.target==="sun" && !L.filter?`<div class="warn"><p style="margin:0">${t("sun")}</p><button class="btn" data-act="filt1" style="margin-top:.6rem">${t("front")}</button></div>`:""}
+      <div class="knobs">${knob("coarse",t("coarse"),L.coarse)}${knob("fine",t("fine"),L.fine)}${knob("eyeTwist",t("twist"),L.eyeTwist||0)}</div>
+    </div>
+    <div class="desk-bar"><div class="card board">${instrumentHTML()}</div></div>
+    </div>
+    <div class="card phone-bar">${instrumentHTML()}</div>
+    ${practicalCard()}</div>`;
+}
+
+let eyeRaf=0, skyOff=null;
+const EYE_DUST=[
+  {a:0.4,t:.22,s:1.3,k:.55},{a:1.15,t:.58,s:1.7,k:.7},{a:2.05,t:.74,s:.9,k:.4},
+  {a:2.7,t:.36,s:2.1,k:.6},{a:3.45,t:.82,s:1.15,k:.5},{a:4.2,t:.48,s:.75,k:.35},
+  {a:5.05,t:.64,s:1.45,k:.55},{a:5.7,t:.28,s:1.6,k:.42},
+  {a:0.95,t:.67,s:1,k:.5,fiber:1,fx:16,fy:-5},
+  {a:3.7,t:.51,s:.8,k:.4,fiber:1,fx:-12,fy:8},
+  {a:4.85,t:.79,s:.7,k:.38,fiber:1,fx:9,fy:11}
+];
+function drawEyeDust(ctx, cx, cy, r, w, twist){
+  const ang=(twist||0)/100*Math.PI*2;
+  ctx.save(); ctx.translate(cx,cy); ctx.rotate(ang);
+  EYE_DUST.forEach(d=>{
+    const x=Math.cos(d.a)*r*d.t, y=Math.sin(d.a)*r*d.t;
+    const alpha=0.35+d.k*0.4, sc=Math.max(.7, w/900);
+    ctx.fillStyle="rgba(28,24,18,"+alpha+")";
+    ctx.strokeStyle="rgba(214,210,200,"+(alpha*0.55)+")";
+    ctx.lineWidth=Math.max(0.8, sc);
+    if(d.fiber){
+      ctx.beginPath(); ctx.moveTo(x,y); ctx.lineTo(x+d.fx*sc, y+d.fy*sc); ctx.stroke();
+    } else {
+      ctx.beginPath(); ctx.arc(x,y,Math.max(.8,d.s*sc),0,6.3); ctx.fill(); ctx.stroke();
+    }
+  });
+  ctx.restore();
+}
+function achromatFringe(ctx, src, w, h, cx, cy, r, strength){
+  if(strength<0.05) return;
+  const N=156;
+  if(!achromatFringe.buf) achromatFringe.buf=document.createElement("canvas");
+  const b=achromatFringe.buf;
+  if(b.width!==N){ b.width=N; b.height=N; }
+  const g=b.getContext("2d",{willReadFrequently:true});
+  g.setTransform(1,0,0,1,0,0);
+  g.clearRect(0,0,N,N);
+  g.drawImage(src, cx-r, cy-r, r*2, r*2, 0, 0, N, N);
+  let im; try{ im=g.getImageData(0,0,N,N); }catch(e){ return; }
+  const d=im.data, out=g.createImageData(N,N), o=out.data;
+  const lum=i=>0.2126*d[i]+0.7152*d[i+1]+0.0722*d[i+2];
+  const shift=0.7+strength*2.8;
+  for(let y=2;y<N-2;y++){
+    for(let x=2;x<N-2;x++){
+      const i=(y*N+x)*4;
+      const e=Math.hypot(lum(i+4)-lum(i-4), lum(i+N*4)-lum(i-N*4));
+      if(e<24) continue;
+      const dx=x-N/2, dy=y-N/2, dist=Math.min(1, Math.hypot(dx,dy)/(N*0.46));
+      const lat=0.25+dist*dist*0.95, sft=shift*lat, len=Math.hypot(dx,dy)||1;
+      const ux=dx/len, uy=dy/len, k=Math.min(150, e*lat*0.9);
+      const stamp=(px,py,R,G,B,a)=>{
+        const vx=px|0, vy=py|0;
+        if(vx<1||vy<1||vx>=N-1||vy>=N-1) return;
+        const j=(vy*N+vx)*4;
+        o[j]=Math.min(255,o[j]+R*a); o[j+1]=Math.min(255,o[j+1]+G*a);
+        o[j+2]=Math.min(255,o[j+2]+B*a); o[j+3]=Math.min(255,o[j+3]+a*255);
+      };
+      stamp(x+ux*sft, y+uy*sft, 0.72, 0.28, 1, k/255);
+      stamp(x-ux*sft*0.6, y-uy*sft*0.6, 0.65, 0.85, 0.25, k/255*0.55);
+    }
+  }
+  g.putImageData(out,0,0);
+  ctx.save(); ctx.globalCompositeOperation="screen";
+  ctx.drawImage(b, cx-r, cy-r, r*2, r*2);
+  ctx.restore();
+}
+function startEye(){
+  const canvas=document.getElementById("eyecanvas"); if(!canvas) return;
+  const wrap=canvas.parentElement, ctx=canvas.getContext("2d");
+  const resize=()=>{
+    const s=Math.round(wrap.clientWidth||400), dpr=Math.min(devicePixelRatio||1,2), px=Math.round(s*dpr);
+    if (canvas.width!==px){ canvas.width=canvas.height=px; }
+  };
+  resize();
+  if (!wrap._bound){
+    wrap._bound=true;
+    let drag=null, moved=0;
+    const loc=e=>{ const r=wrap.getBoundingClientRect(); return {x:e.clientX-r.left,y:e.clientY-r.top,w:r.width,h:r.height}; };
+    wrap.addEventListener("pointerdown", e=>{ if(e.pointerType==="touch") e.preventDefault(); wrap.setPointerCapture(e.pointerId); drag={x:e.clientX,y:e.clientY}; moved=0; }, {passive:false});
+    wrap.addEventListener("pointermove", e=>{
+      if(!drag) return;
+      const dx=e.clientX-drag.x, dy=e.clientY-drag.y;
+      moved+=Math.abs(dx)+Math.abs(dy); drag={x:e.clientX,y:e.clientY};
+      if(!(S.lab.measure&&moved<10)){
+        const mag=magOf(S.lab), z=(wrap.clientWidth||400)*.92/tfovArcmin(mag);
+        S.lab.panX+=dx/z; S.lab.panY+=dy/z;
+      }
+    });
+    wrap.addEventListener("pointerup", e=>{
+      if (S.lab.measure && moved<12 && S.lab.target!=="sun" && !S.lab.cap){
+        const p=loc(e), w=canvas.width, h=canvas.height, cx=w/2, cy=h/2, r=Math.min(w,h)*.46;
+        const sx=p.x*(w/(p.w||1)), sy=p.y*(h/(p.h||1));
+        if ((sx-cx)**2+(sy-cy)**2<=r*r){
+          const mag=magOf(S.lab), z=w*.92/tfovArcmin(mag);
+          const spec={x:(sx-cx)/z - S.lab.panX, y:(sy-cy)/z - S.lab.panY};
+          if (!S.lab.mA || S.lab.mB){ S.lab.mA=spec; S.lab.mB=null; }
+          else S.lab.mB=spec;
+          const before=stairNow(); tick(); if (stairNow()!==before) paint();
+        }
+      }
+      drag=null;
+    });
+    wrap.addEventListener("touchmove", e=>{ if(drag) e.preventDefault(); }, {passive:false});
+  }
+  const draw=now=>{
+    EYE_NOW=now||0;
+    resize();
+    const w=canvas.width,h=canvas.height,cx=w/2,cy=h/2,r=Math.min(w,h)*.46;
+    const L=S.lab;
+    if (!L.locked && !L.cap && !(L.target==="sun" && !L.filter)){ L.panX+=0.012; }
+    ctx.clearRect(0,0,w,h);
+    ctx.save(); ctx.beginPath(); ctx.arc(cx,cy,r,0,6.3); ctx.clip();
+    const sky=skyNow();
+    paintSky(ctx,w,h,sky);
+    if (!L.cap && (L.target!=="sun" || L.filter)){
+      const mag=magOf(L);
+      const zoom=w*.92/tfovArcmin(mag);
+      if (!skyOff) skyOff=document.createElement("canvas");
+      if (skyOff.width!==w){ skyOff.width=w; skyOff.height=h; }
+      const sctx=skyOff.getContext("2d");
+      paintSky(sctx,w,h,sky);
+      sctx.save();
+      sctx.translate(cx,cy); sctx.scale(zoom,zoom); sctx.translate(L.panX,L.panY);
+      if (sky!=="day" && L.target!=="moon" && L.target!=="sea") drawStars(sctx);
+      if (L.target==="moon"||L.target==="sea") drawMoon(sctx);
+      else if (L.target==="jupiter") drawJupiter(sctx, now);
+      else if (L.target==="saturn") drawSaturn(sctx);
+      else if (L.target==="orion") drawOrion(sctx);
+      else if (L.target==="pleiades") drawPleiades(sctx);
+      else if (L.target==="albireo") drawAlbireo(sctx);
+      else if (L.target==="pair") drawPair(sctx);
+      else if (L.target==="sun") drawSun(sctx);
+      sctx.restore();
+      achromatFringe(sctx, skyOff, w, h, cx, cy, r, Math.min(1.25, mag/120));
+      const err=Math.abs(focusErr(L)), band=focusBand(L);
+      const blurArcsec=SCOPE.seeing+(band==="in"?0:band==="near"?err*6:Math.min(900, err*28))+(L.barlow?2:0);
+      const blurPx=blurArcsec/60*zoom;
+      EYE_NOW=now||0;
+      ctx.imageSmoothingEnabled=true; ctx.imageSmoothingQuality="high";
+      if (blurPx<1.1) ctx.drawImage(skyOff,0,0);
+      else {
+        const px=Math.min(56, Math.max(1.2, blurPx*0.22));
+        ctx.save();
+        ctx.filter="blur("+px.toFixed(2)+"px)";
+        ctx.drawImage(skyOff,0,0);
+        ctx.filter="none";
+        ctx.restore();
+      }
+      if (L.reticle){
+        const ink=sky==="day"?"rgba(18,28,38,.85)":"rgba(255,255,255,.8)";
+        ctx.strokeStyle=ink; ctx.lineWidth=1;
+        ctx.beginPath(); ctx.moveTo(cx-r*.7,cy); ctx.lineTo(cx+r*.7,cy); ctx.moveTo(cx,cy-r*.7); ctx.lineTo(cx,cy+r*.7); ctx.stroke();
+      }
+      if (L.mA){
+        const mag=magOf(L), zoom=w*.92/tfovArcmin(mag);
+        const ax=cx+(L.mA.x+L.panX)*zoom, ay=cy+(L.mA.y+L.panY)*zoom;
+        ctx.fillStyle="#f2d48a"; ctx.beginPath(); ctx.arc(ax,ay,4,0,6.3); ctx.fill();
+        if (L.mB){
+          const bx=cx+(L.mB.x+L.panX)*zoom, by=cy+(L.mB.y+L.panY)*zoom;
+          ctx.strokeStyle="#f2d48a"; ctx.beginPath(); ctx.moveTo(ax,ay); ctx.lineTo(bx,by); ctx.stroke();
+          ctx.beginPath(); ctx.arc(bx,by,4,0,6.3); ctx.fill();
+          const px=Math.hypot(ax-bx,ay-by);
+          const arcsec=(px/(2*r))*tfovArcmin(mag)*60;
+          const label=arcsec>=120?(arcsec/60).toFixed(1)+"′":Math.round(arcsec)+"″";
+          ctx.fillStyle="#f4efe4"; ctx.font="700 13px sans-serif"; ctx.textAlign="center";
+          ctx.fillText(label,(ax+bx)/2,(ay+by)/2-8);
+        }
+      }
+      const barMin = mag<50?30:mag<120?10:2;
+      const barPx=(barMin/tfovArcmin(mag))*(2*r);
+      const ink=sky==="day"?"rgba(18,28,38,.8)":"rgba(255,255,255,.8)";
+      ctx.strokeStyle=ink; ctx.lineWidth=1.5;
+      ctx.beginPath(); const y=cy+r*.78, x0=cx-barPx/2;
+      ctx.moveTo(x0,y-4); ctx.lineTo(x0,y+4); ctx.moveTo(x0,y); ctx.lineTo(x0+barPx,y); ctx.moveTo(x0+barPx,y-4); ctx.lineTo(x0+barPx,y+4); ctx.stroke();
+      ctx.fillStyle=ink; ctx.font="12px sans-serif"; ctx.textAlign="center";
+      ctx.fillText(barMin>=10?barMin+"′":(barMin*60)+"″", cx, y+16);
+      drawEyeDust(ctx, cx, cy, r, w, L.eyeTwist);
+    }
+    const vg=ctx.createRadialGradient(cx,cy,r*.72,cx,cy,r);
+    if(L.sky==="day" && sky==="day"){ vg.addColorStop(0,"rgba(0,0,0,0)"); vg.addColorStop(1,"rgba(20,40,60,.18)"); }
+    else if(L.sky==="dusk"||L.sky==="dawn"){ vg.addColorStop(0,"rgba(0,0,0,0)"); vg.addColorStop(1,"rgba(0,0,0,.28)"); }
+    else { vg.addColorStop(0,"rgba(0,0,0,0)"); vg.addColorStop(1,"rgba(0,0,0,.55)"); }
+    ctx.fillStyle=vg; ctx.fillRect(cx-r,cy-r,r*2,r*2);
+    ctx.restore();
+    ctx.beginPath(); ctx.arc(cx,cy,r,0,6.3); ctx.strokeStyle="rgba(255,255,255,.18)"; ctx.lineWidth=Math.max(2,w*.008); ctx.stroke();
+    eyeRaf=requestAnimationFrame(draw);
+  };
+  cancelAnimationFrame(eyeRaf); eyeRaf=requestAnimationFrame(draw);
+}
+function tick(){
+  const L=S.lab, band=focusBand(L);
+  if (!L.cap) S.missions.cap=true;
+  if (L.locked) S.missions.lock=true;
+  if (L.ep===25) S.missions.low=true;
+  if (L.target==="moon"&&L.ep===25&&band==="in"&&!L.cap&&L.locked) S.missions.coarse=true;
+  if (L.ep===10) S.missions.mid=true;
+  if (L.ep===6) S.missions.short=true;
+  if (L.target==="moon"&&L.ep===6&&band==="in"&&!L.cap) S.missions.fine=true;
+  if (L.target==="jupiter"&&band==="in"&&!L.cap&&L.ep!==25) S.missions.jupiter=true;
+  if (L.target==="orion"&&band==="in"&&!L.cap&&L.ep!==25) S.missions.orion=true;
+  if (L.reticle&&L.mA&&L.mB&&L.ep!==25&&!L.cap) S.missions.measure=true;
+  if (L.target==="sea"&&L.ep===6&&band==="in"&&!L.cap&&!L.barlow) S.missions.ceiling=true;
+  if (L.target==="albireo"&&band==="in"&&!L.cap&&L.ep!==25&&!L.barlow) S.missions.albireo=true;
+  if (L.barlow&&L.target==="pair"&&L.ep===6&&band==="in"&&!L.cap) S.missions.barlow=true;
+  persist();
+}
+function centerTarget(id){
+  const spots={moon:[0,0],sea:[6.4,0.8],jupiter:[0,0],saturn:[0,0],orion:[0,0],pleiades:[0,0],albireo:[0,0],pair:[0,0],sun:[0,0]};
+  const p=spots[id]||[0,0];
+  S.lab.panX=-p[0]; S.lab.panY=-p[1]; S.lab.mA=S.lab.mB=null;
+}
+function paint(){
+  cancelAnimationFrame(eyeRaf);
+  const h=(location.hash||"#home").replace("#","");
+  S.page=h==="lab"?"lab":"home";
+  document.documentElement.lang=S.lang;
+  document.documentElement.setAttribute("data-theme", S.theme);
+  document.documentElement.classList.toggle("dark", S.theme==="dark");
+  document.getElementById("brand").textContent=t("app");
+  document.getElementById("langBtn").textContent=S.lang==="es"?"EN":"ES";
+  document.getElementById("themeBtn").textContent=S.theme==="dark"?t("light"):t("dark");
+  document.getElementById("foot").textContent=t("foot");
+  document.getElementById("nav").innerHTML=[["home","home"],["lab","lab"]].map(([id,k])=>`<a href="#${id}" class="${S.page===id?"on":""}">${t(k)}</a>`).join("");
+  const view=document.getElementById("view");
+  view.innerHTML=S.page==="lab"?pageLab():pageHome();
+  if (S.page!=="lab") return;
+  startEye(); tick();
+  view.querySelectorAll("[data-act]").forEach(b=>b.onclick=()=>{
+    const a=b.getAttribute("data-act"), L=S.lab, step=benchStep();
+    if (a==="teach-lock"){ S.teacher="locked"; persist(); paint(); return; }
+    if (a==="teach-open"){ S.teacher="open"; persist(); paint(); return; }
+    const locked=(a==="ep10"||a==="ep6")&&step<1
+      || (a==="tg-jupiter"||a==="tg-saturn"||a==="tg-orion"||a==="tg-pleiades")&&step<2
+      || (a==="ret1"||a==="meas1")&&step<3
+      || a==="tg-sea"&&step<4
+      || (a==="tg-albireo"||a==="tg-pair"||a==="bar1")&&step<5;
+    if (locked) return;
+    if (a==="cap1") L.cap=true;
+    if (a==="cap0"){ if(!(L.target==="sun" && !L.filter)) L.cap=false; }
+    if (a==="filt0"){ L.filter=false; if(L.target==="sun") L.cap=true; }
+    if (a==="filt1"){ L.filter=true; L.cap=false; L.sky="day"; L.coarse=L.ep===25?42:L.ep===10?58:72; L.fine=50; }
+    if (a==="lock1") L.locked=true;
+    if (a==="lock0") L.locked=false;
+    if (a==="ep25"){ L.ep=25; L.barlow=false; }
+    if (a==="ep10"){ L.ep=10; }
+    if (a==="ep6"){ L.ep=6; }
+    if (a==="bar1") L.barlow=true;
+    if (a==="bar0") L.barlow=false;
+    if (a==="ret1") L.reticle=true;
+    if (a==="ret0") L.reticle=false;
+    if (a==="meas1"){ L.measure=!L.measure; L.reticle=L.measure||L.reticle; if(!L.measure){L.mA=L.mB=null;} }
+    if (a.startsWith("tg-")){ L.target=a.slice(3); centerTarget(L.target); if(L.target==="sun" && !L.filter) L.cap=true; }
+    if (a.startsWith("sky-")) L.sky=a.slice(4);
+    tick(); paint();
+  });
+  view.querySelectorAll("[data-knob]").forEach(inp=>{
+    inp.oninput=()=>{
+      const L=S.lab, k=inp.getAttribute("data-knob");
+      L[k]=+inp.value;
+      const lab=inp.closest("label"); const b=lab&&lab.querySelector("b"); if(b) b.textContent=k==="eyeTwist"?Math.round(L[k]/100*360)+"°":Math.round(L[k]);
+      const band=focusBand(L);
+      const fl=band==="in"?t("focusIn"):band==="near"?t("focusNear"):t("focusOut");
+      const span=document.querySelector(".readout span:last-child"); if(span && !L.cap) span.textContent=fl;
+      document.querySelectorAll(".fieldnote").forEach(el=>{ el.textContent=fieldNote(); });
+      tick();
+    };
+    inp.onchange=()=>{ if(stairNow()!==S.lastStair) paint(); };
+  });
+  S.lastStair=stairNow();
+}
+document.getElementById("langBtn").onclick=()=>{ S.lang=S.lang==="en"?"es":"en"; persist(); paint(); };
+document.getElementById("themeBtn").onclick=()=>{ S.theme=S.theme==="dark"?"light":"dark"; persist(); paint(); };
+window.addEventListener("hashchange", paint);
+paint();
+</script>
+<script>
+/* AOG-SCIPIC-PANEL-V1 - the guide loads only when the bar is opened, and the frame is
+   grown to its content so the panel scrolls with the page instead of inside itself. */
+(function(){
+  var d=document.getElementById("pgPanel"); if(!d) return;
+  var f=document.getElementById("pgFrame"); if(!f) return;
+  function fit(){
+    try{ var b=f.contentDocument&&f.contentDocument.body;
+         if(b){ var h=b.scrollHeight; if(h>240) f.style.height=(h+28)+"px"; } }catch(e){}
+  }
+  d.addEventListener("toggle", function(){
+    if(d.open && !f.getAttribute("src")) f.setAttribute("src", f.getAttribute("data-src"));
+  });
+  f.addEventListener("load", function(){ fit(); setTimeout(fit,250); setTimeout(fit,1200); });
+  var t; window.addEventListener("resize", function(){ clearTimeout(t); t=setTimeout(fit,150); });
+})();
+</script>
+</body>
+</html>
