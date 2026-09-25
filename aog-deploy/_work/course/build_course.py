@@ -75,6 +75,10 @@ def jump_block():
     # s13 marks itself as the current page; un-mark it and restore its real value.
     blk = blk.replace('<option value="" selected>Social Studies 6–8 · The World Before 1500</option>',
                       '<option value="s13-world-before-1500.html">The World Before 1500</option>')
+    # s13 has had every course's options injected already; strip them all so
+    # mark_current() adds this course's block exactly once (and the other
+    # course's injector adds its own afterwards).
+    blk = re.sub(r'<option value="(?:us-history|ush-u\d+|science-course|sci-u\d+)\.html">[^<]*</option>\n?', "", blk)
     return blk
 
 def mark_current(blk, value, text):
@@ -523,16 +527,23 @@ def span(en, es=None, cls=""):
 def bar_chart(look):
     rows = look["rows"]; vals = [float(r[1]) for r in rows]
     W, H, L, B, T = 520, 240, 44, 34, 14
-    n = len(rows); mx = max(vals) or 1
+    n = len(rows)
+    hi = max(max(vals), 0); lo = min(min(vals), 0)
+    span_v = (hi - lo) or 1
     gap = 10; bw = (W - L - 12 - gap*(n-1)) / n
+    plot_top = T + 16; plot_h = H - B - plot_top
+    zero_y = plot_top + plot_h * (hi / span_v)          # the baseline: 0, wherever it falls
     def fmt(v):
-        return ("%d" % v) if float(v).is_integer() else ("%.1f" % v).rstrip("0").rstrip(".")
+        v = float(v)
+        return ("%d" % v) if v.is_integer() else ("%.2f" % v).rstrip("0").rstrip(".")
     out = ['<svg class="chart" viewBox="0 0 %d %d" role="img" aria-label="%s">' % (W, H, E(look.get("title","")))]
-    out.append('<line class="ax" x1="%d" y1="%d" x2="%d" y2="%d"/>' % (L, H-B, W-8, H-B))
+    out.append('<line class="ax" x1="%d" y1="%.1f" x2="%d" y2="%.1f"/>' % (L, zero_y, W-8, zero_y))
     for i, (lab, v) in enumerate(zip([r[0] for r in rows], vals)):
-        x = L + i*(bw+gap); h = (H-B-T-16) * (v/mx); y = H-B-h
+        x = L + i*(bw+gap); h = plot_h * (abs(v)/span_v)
+        y = zero_y - h if v >= 0 else zero_y
         out.append('<rect class="bar" x="%.1f" y="%.1f" width="%.1f" height="%.1f" rx="3"/>' % (x, y, bw, h))
-        out.append('<text class="val" x="%.1f" y="%.1f" text-anchor="middle">%s</text>' % (x+bw/2, y-5, fmt(v)))
+        ty = (y - 5) if v >= 0 else (y + h + 12)
+        out.append('<text class="val" x="%.1f" y="%.1f" text-anchor="middle">%s</text>' % (x+bw/2, ty, fmt(v)))
         out.append('<text x="%.1f" y="%d" text-anchor="middle">%s</text>' % (x+bw/2, H-B+16, E(lab)))
     out.append('<text x="%d" y="%d" text-anchor="start" font-size="10">%s</text>' % (L, H-4, E(look.get("unit",""))))
     out.append('</svg>')
