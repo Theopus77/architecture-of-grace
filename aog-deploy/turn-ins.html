@@ -256,6 +256,12 @@ html.a11y-dyslexic body{letter-spacing:.02em;word-spacing:.09em;line-height:1.8}
 .bp-lg i.solid{background:#2F63B8} .bp-lg i.key{background:#2A3242;box-shadow:inset 0 0 0 2px #F2C964}
 .bp-say{margin-top:14px;font-size:.88rem;color:var(--sub)}
 .learner .iep-only{display:none !important}
+/* embedded in the dashboard: no site bar, no back row, no footer */
+.aog-embed .r36top,.aog-embed footer{display:none !important}
+.aog-embed body{padding-top:4px}
+/* solo: the Blueprint alone, for the dashboard's Student view */
+.bp-solo body{padding-bottom:12px}
+.bp-solo header.page,.bp-solo footer,.bp-solo .r36top,.bp-solo .aogtop,.bp-solo #aogTopbar,.bp-solo .bp-who,.bp-solo #bpMe{display:none !important}
 
 @media print{
   body.bpprint .bp-who,body.bpprint .bp-tools,body.bpprint .bp-say{display:none !important}
@@ -379,7 +385,9 @@ html.a11y-dyslexic body{letter-spacing:.02em;word-spacing:.09em;line-height:1.8}
 
 </head>
 <body>
-<script src="/aog-topbar.js"></script>
+<script>/* AOG-INBOX-EMBED-V1 — inside the dashboard the dashboard's own bar is the bar */
+if(!/[?&](embed|solo)=1/.test(location.search)) document.write('<script src="/aog-topbar.js"><\/script>');
+else document.documentElement.classList.add("aog-embed");</script>
 <script src="/aog-grace.js" defer></script>
 
 
@@ -616,7 +624,12 @@ html.a11y-dyslexic body{letter-spacing:.02em;word-spacing:.09em;line-height:1.8}
 
   /* ═══════════ READER 1 · TURN-INS — aog.practice.remote ═══════════ */
   function readTurnins(){
-    return arrOf("aog.practice.remote").map(function(r){
+    /* AOG-MINE-V1 — rows this device sent itself, beside rows pulled from the
+       Sheet; one row that is in both is shown once */
+    var remote=arrOf("aog.practice.remote"), seenR={};
+    remote.forEach(function(r){ seenR[String(r.studentId)+"|"+String(r.activityId||"")+"|"+String(r.timestamp||"").slice(0,16)]=1; });
+    var mine=arrOf("aog.practice.mine").filter(function(r){ return !seenR[String(r.studentId)+"|"+String(r.activityId||"")+"|"+String(r.timestamp||"").slice(0,16)]; });
+    return remote.concat(mine).map(function(r){
       var sj=subjectOf(r), x=xparse(r);
       var sm=[];
       if(nz(r.itemsTotal)) sm.push((nz(r.independent)?r.independent:"?")+" of "+r.itemsTotal+" with no hint");
@@ -1409,7 +1422,7 @@ html.a11y-dyslexic body{letter-spacing:.02em;word-spacing:.09em;line-height:1.8}
       return true;
     });
     all.sort(function(a,b){ return String(b.ts||"").localeCompare(String(a.ts||"")); });
-    if(!all.length){ box.appendChild(emptyState()); return; }
+    if(!all.length){ box.appendChild(SOLO?soloEmpty():emptyState()); return; }
     if(curView==="new"){ all.forEach(function(it){ box.appendChild(card(it)); }); return; }
     if(curView==="bp"){ blueprint(box, all); return; }
     var by={}, shown={};
@@ -1572,7 +1585,9 @@ html.a11y-dyslexic body{letter-spacing:.02em;word-spacing:.09em;line-height:1.8}
       +(sh.frame||"")+'</svg>';
   }
   var bpWho=null;
-  (function(){ var m=/[?&]blueprint=([^&]+)/.exec(location.search); if(m){ curView="bp"; bpWho=decodeURIComponent(m[1].replace(/\+/g," ")).replace(/\s+/g," ").trim().toLowerCase(); } })();
+  var SOLO=/[?&]solo=1/.test(location.search);
+  if(SOLO){ document.documentElement.classList.add("bp-solo"); try{ localStorage.setItem("aog.learner","1"); }catch(e){} curView="bp"; }
+  (function(){ var m=/[?&]blueprint=([^&]*)/.exec(location.search); if(m && m[1]){ curView="bp"; bpWho=decodeURIComponent(m[1].replace(/\+/g," ")).replace(/\s+/g," ").trim().toLowerCase(); } })();
   function learner(){ return lsGet("aog.learner")==="1"; }
   function bpStrength(it){
     var r=it.raw||{}, a=+r.independent, n=+r.itemsTotal;
@@ -1584,6 +1599,9 @@ html.a11y-dyslexic body{letter-spacing:.02em;word-spacing:.09em;line-height:1.8}
     var by={}, shown={};
     all.forEach(function(it){ var k=String(it.student||"—").replace(/\s+/g," ").trim().toLowerCase(); (by[k]=by[k]||[]).push(it); shown[k]=it.student; });
     var keys=Object.keys(by);
+    /* AOG-WHO-V1 — the solo Blueprint belongs to one named builder; it never
+       falls back to whoever has the most work on this device */
+    if(SOLO && (!bpWho || !by[bpWho])){ box.appendChild(soloEmpty()); return; }
     if(!bpWho || !by[bpWho]) bpWho=keys.slice().sort(function(a,b){ return by[b].length-by[a].length; })[0];
     keys.sort();
     var me=learner(), list=by[bpWho].slice().sort(function(a,b){ return String(a.ts||"").localeCompare(String(b.ts||"")); });
@@ -1620,6 +1638,12 @@ html.a11y-dyslexic body{letter-spacing:.02em;word-spacing:.09em;line-height:1.8}
     document.getElementById("bpPrint").addEventListener("click",function(){ document.body.classList.add("bpprint"); window.print(); setTimeout(function(){ document.body.classList.remove("bpprint"); },1200); });
   }
 
+  function soloEmpty(){
+    var d=document.createElement("div"); d.className="bp-card";
+    d.innerHTML='<div class="bp-ey">My Blueprint</div><h2 style="font-family:var(--serif);margin:4px 0 8px">Your window is waiting</h2>'
+      +'<p style="color:var(--sub);margin:0">Every Daily Draft, worksheet or practice page you send on this device becomes one pane of stained glass. Send your first one and the window begins.</p>';
+    return d;
+  }
   function emptyState(){
     var at=lsGet("aog.practice.remote.at");
     var d=document.createElement("div"); d.className="empty-state";
@@ -1774,5 +1798,9 @@ html.a11y-dyslexic body{letter-spacing:.02em;word-spacing:.09em;line-height:1.8}
   vsync(); stampSt(); paint();
 })();
 </script>
+<script>/* AOG-INBOX-EMBED-V1 — tell the dashboard how tall the page is, so its panel grows with it */
+(function(){ if(window.parent===window||!/[?&](embed|solo)=1/.test(location.search)) return;
+  var last=0; function post(){ var h=document.documentElement.scrollHeight; if(Math.abs(h-last)>4){ last=h; try{ parent.postMessage({aogFrameH:h, src:location.search}, location.origin); }catch(e){} } }
+  setInterval(post,600); window.addEventListener("load",post); })();</script>
 </body>
 </html>
