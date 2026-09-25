@@ -2521,3 +2521,61 @@
   else boot();
   window.addEventListener("load", function () { setTimeout(boot, 0); });
 })();
+
+/* ════════════════════════════════════════════════════════════════════════════
+   AOG-VOICE-HUMAN-V1 (2026-09-25) — THE LISTEN BUTTONS GET A HUMAN VOICE.
+   Jimmy: "the computer voice that is set is TERRIBLE AND FRIGHTENING… it sounds
+   like a robot, not a human." Every Listen button on the site (the course
+   lessons, the study cards, the daily drops, the boards) built a
+   SpeechSynthesisUtterance with a lang and NO voice, so each browser read it in
+   its default — on many Macs a flat compact voice, and if the system default
+   has been changed, a novelty voice. This wraps speechSynthesis.speak once, for
+   every page that loads this bar: an utterance that names no voice gets the
+   best one installed for its language — Apple's Siri/enhanced voices, Google's,
+   Microsoft's "Natural" — and never a novelty or compact one. A page that sets
+   u.voice itself is left alone. Nothing else about speech changes.
+   ═══════════════════════════════════════════════════════════════════════════ */
+(function () {
+  var S = window.speechSynthesis;
+  if (!S || !window.SpeechSynthesisUtterance || S._aogHuman) return;
+  S._aogHuman = true;
+  var GOOD = /natural|neural|premium|enhanced|online|siri|google|samantha|ava\b|allison|zoe|evan|tom\b|nathan|aaron|nicky|joelle|m[oó]nica|paulina|ang[eé]lica|marisol|juan\b|diego|jorge|luciana|francisca|libby|aria|jenny|guy\b|davis|sonia|ryan|elvira|dalia|alvaro|paloma/i;
+  var BAD  = /espeak|compact|novelty|albert|bad news|bahh|bells|boing|bubbles|cellos|deranged|fred\b|good news|hysterical|jester|junior|kathy|organ|ralph|superstar|trinoids|whisper|wobble|zarvox|eddy|flo\b|grandma|grandpa|reed|rocko|sandy|shelley|synth/i;
+  function score(v, lang) {
+    var vl = String(v.lang || "").toLowerCase().replace("_", "-"), want = lang.toLowerCase();
+    if (vl.slice(0, 2) !== want.slice(0, 2)) return -1;
+    var n = String(v.name || ""), s = 10;
+    if (vl === want) s += 8;
+    if (want.slice(0, 2) === "es" && /es-(us|mx|419)/.test(vl)) s += 6;   // the Spanish most of our families speak
+    if (GOOD.test(n)) s += 40;
+    if (/natural|neural|premium|enhanced/i.test(n)) s += 20;
+    if (/siri/i.test(n)) s += 15;
+    if (BAD.test(n)) s -= 100;
+    if (v.default) s += 2;
+    return s;
+  }
+  var cache = {};
+  function pick(lang) {
+    var voices = [];
+    try { voices = S.getVoices() || []; } catch (e) {}
+    if (!voices.length) return null;
+    var key = lang + ":" + voices.length;
+    if (cache[key] !== undefined) return cache[key];
+    var best = null, bs = 0;
+    for (var i = 0; i < voices.length; i++) { var sc = score(voices[i], lang); if (sc > bs) { bs = sc; best = voices[i]; } }
+    cache[key] = best;
+    return best;
+  }
+  try { S.getVoices(); S.addEventListener && S.addEventListener("voiceschanged", function () { cache = {}; }); } catch (e) {}
+  var speak = S.speak;
+  S.speak = function (u) {
+    try {
+      if (u && !u.voice) {
+        var v = pick(u.lang || document.documentElement.lang || "en-US");
+        if (v) { u.voice = v; u.lang = v.lang || u.lang; }
+        if (!u.pitch || u.pitch === 1) u.pitch = 1;
+      }
+    } catch (e) {}
+    return speak.call(S, u);
+  };
+})();
