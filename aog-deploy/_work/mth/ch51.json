@@ -1,5 +1,7 @@
 {
- "n": 51, "title": "Describing and Comparing Data", "years": "Statistics",
+ "n": 51,
+ "title": "Describing and Comparing Data",
+ "years": "Statistics",
  "bigQuestion": "How can two data sets share the same average and still tell completely different stories?",
  "story": {
   "title": "Two Pitchers, One Average",
@@ -14,272 +16,1013 @@
   "think": "If you were Coach Alvarez, which pitcher would you start against a team with a great pitcher of its own, and what number from the data supports your choice?"
  },
  "sections": [
-  {"title": "Pictures of a Data Set", "lessons": [
-   {
-    "title": "Dot Plots and Shape",
-    "mainIdea": "A dot plot stacks one dot per value on a number line, so the shape of the whole data set is visible at a glance.",
-    "reading": [
-     "A teacher asks 12 students how many siblings they have and writes down the answers: 0, 1, 1, 1, 2, 2, 2, 2, 3, 3, 4, 6. A list like this is hard to read. A *dot plot* fixes that. Draw a number line from 0 to 6. For each answer, put one dot above that number, stacking dots when a number repeats. You get 1 dot above 0, 3 dots above 1, 4 dots above 2, 2 dots above 3, 1 dot above 4, none above 5, and 1 dot above 6. The 12 dots make a picture of the whole *distribution*, which is the full set of values and how often each one occurs.",
-     "Once the dots are stacked, describe the shape. Ask three questions. Where is the tallest stack? Here it is at 2, so 2 siblings is the most common answer. Is the picture balanced? No. Most dots crowd the left side, and a thin tail stretches to the right toward the lone 6. A distribution shaped like this is *skewed right*, because the long tail points right. If the tail pointed left, it would be skewed left. A distribution with two matching halves, like a hill with the same slope on each side, is *symmetric*.",
-     "Students often mix up which way a skew points. The skew is named for the tail, not the peak. Picture a slide: the pile of dots is the platform, and the tail is the slide going down. In the sibling data, the slide goes to the right, so it is skewed right. Another common slip is forgetting a value that appears zero times. There are no students with 5 siblings, so 5 gets no dot, but 5 still stays on the number line. Leaving it out would squeeze the 6 next to the 4 and hide the gap."
-    ],
-    "words": [
-     {"w": "dot plot", "d": "a graph that puts one dot above a number line for each value in a data set, stacking repeats"},
-     {"w": "distribution", "d": "the whole set of values in a data set together with how often each value occurs"},
-     {"w": "skewed right", "d": "a shape with most values on the left and a long thin tail stretching to the right"},
-     {"w": "symmetric", "d": "a shape whose left and right halves are mirror images of each other"}
-    ],
-    "look": {"type": "think", "title": "A Dot Plot in Words", "text": "Picture a number line from 0 to 10 labeled 'goals scored this season.' Above 0 there are 5 dots. Above 1 there are 4 dots. Above 2 there are 3 dots. Above 3 there are 2 dots. Above 4, 5, 6, 7, 8 and 9 there is nothing. Above 10 there is a single dot. Fifteen players in all.", "prompt": "Describe the shape of this distribution, name the most common value, and explain what the single dot at 10 does to the picture."},
-    "check": [
-     {"q": "In the sibling dot plot, how many dots sit above the number 2?", "choices": ["2", "3", "4", "12"], "a": 2, "why": "The list 0, 1, 1, 1, 2, 2, 2, 2, 3, 3, 4, 6 contains the value 2 four times, so 4 dots stack above 2."},
-     {"q": "A dot plot has most of its dots on the left and a long thin tail reaching to the right. What is its shape?", "choices": ["Skewed left", "Skewed right", "Symmetric", "Uniform"], "a": 1, "why": "A skew is named for the direction of its tail. The tail reaches right, so the distribution is skewed right."},
-     {"q": "A dot plot of 20 quiz scores shows 5 dots above the score 8. What fraction of the scores are 8?", "choices": ["1/4", "1/5", "5/8", "8/20"], "a": 0, "why": "5 of 20 scores are 8, and 5/20 simplifies to 1/4."}
-    ]
-   },
-   {
-    "title": "Histograms and Bins",
-    "mainIdea": "A histogram groups numbers into equal-width bins and draws a bar for each bin, so it works for large data sets and messy decimals.",
-    "reading": [
-     "A dot plot works for 12 answers. It falls apart for 300 commute times measured to the minute, because almost every value is different and the dots never stack. A *histogram* solves this by grouping. Suppose 30 students report their morning commute in minutes. Split the number line into equal-width *bins*: 0 to 9 minutes, 10 to 19, 20 to 29, 30 to 39, and 40 to 49. Count how many commutes land in each bin. Say the counts are 4, 9, 10, 5 and 2. Those five counts add to 30, which is a quick check that no student was lost or counted twice.",
-     "Now draw. The horizontal axis is minutes, split at 0, 10, 20, 30, 40 and 50. Above each bin draw a bar whose height is the *frequency*, the count for that bin. The bars touch each other, with no gaps, because the bins cover the whole number line without skipping any minutes. That is the visual difference between a histogram and a bar graph of categories like favorite pizza topping, where the bars are separated because the categories are not numbers on a line.",
-     "Reading a histogram means adding bins. How many students commute less than 20 minutes? Add the first two bins: 4 + 9 = 13 students. What share commute 30 minutes or more? Add the last two bins: 5 + 2 = 7, and 7/30 is about 0.233, or 23%. The most common bin is 20 to 29 minutes with 10 students, and the shape has a slight tail to the right, since the long commutes trail off.",
-     "The width of the bins changes the picture. Bins of width 5 would show more detail but might look jagged. Bins of width 25 would smooth everything into two fat bars and hide the peak. A frequent mistake is making bins that overlap, like 0 to 10 and 10 to 20. A commute of exactly 10 minutes would then belong to both bins. Use bins like 0 to 9 and 10 to 19, or agree on a rule such as 'the left edge is included and the right edge is not.'"
-    ],
-    "words": [
-     {"w": "histogram", "d": "a graph that splits a number line into equal-width bins and draws a touching bar for the count in each bin"},
-     {"w": "bin", "d": "one interval of values on a histogram, such as 10 to 19 minutes"},
-     {"w": "frequency", "d": "how many data values fall in a bin or at a value; the height of a histogram bar"}
-    ],
-    "look": {"type": "data", "title": "Morning Commutes of 30 Students", "rows": [["0 to 9 min", 4], ["10 to 19 min", 9], ["20 to 29 min", 10], ["30 to 39 min", 5], ["40 to 49 min", 2]], "unit": "students", "cite": "Example data set defined in this lesson", "prompt": "How many students commute 20 minutes or more, and what percent of the class is that?"},
-    "check": [
-     {"q": "Using the commute histogram, how many students commute less than 20 minutes?", "choices": ["4", "9", "13", "23"], "a": 2, "why": "Less than 20 minutes means the 0 to 9 bin and the 10 to 19 bin: 4 + 9 = 13 students."},
-     {"q": "About what percent of the 30 students commute 30 minutes or more?", "choices": ["7%", "17%", "23%", "30%"], "a": 2, "why": "The last two bins hold 5 + 2 = 7 students, and 7 ÷ 30 ≈ 0.233, which is about 23%."},
-     {"q": "Why do the bars of a histogram touch each other?", "choices": ["To save space on the page", "Because the bins cover the number line with no gaps between them", "Because every bin has the same count", "Because the data are categories, not numbers"], "a": 1, "why": "The bins are intervals on one continuous number line, so each bin starts where the last one ends and the bars meet."}
-    ]
-   },
-   {
-    "title": "Box Plots and Quartiles",
-    "mainIdea": "A box plot draws five numbers, the minimum, first quartile, median, third quartile and maximum, and shows where the middle half of the data lives.",
-    "reading": [
-     "Eleven students take a test and score 62, 68, 70, 74, 75, 78, 80, 84, 88, 90 and 95, already in order. The *median* is the middle value. With 11 scores, the middle is the 6th one, which is 78. Five scores sit below it and five above. Now split each half again. The lower half is 62, 68, 70, 74, 75, and its middle is 70. That is the *first quartile*, written Q1. The upper half is 80, 84, 88, 90, 95, and its middle is 88. That is the third quartile, Q3. Together with the minimum 62 and the maximum 95, these make the *five-number summary*: 62, 70, 78, 88, 95.",
-     "A *box plot* draws exactly those five numbers above a number line. Draw a box from Q1 = 70 to Q3 = 88. Draw a line inside the box at the median, 78. From each end of the box draw a whisker, a thin line out to the minimum 62 on the left and the maximum 95 on the right. Roughly one quarter of the scores lie in each of the four pieces: below the box, in the left part of the box, in the right part, and beyond the box. The box itself holds the middle half of the class.",
-     "When the count is even, the median is the average of the two middle values. Take 3, 5, 6, 8, 10, 12, 15, 20. The two middle values are 8 and 10, so the median is (8 + 10) ÷ 2 = 9. The lower half is 3, 5, 6, 8 and Q1 is (5 + 6) ÷ 2 = 5.5. The upper half is 10, 12, 15, 20 and Q3 is (12 + 15) ÷ 2 = 13.5. A common mistake is finding the quartiles from the unsorted list. Always sort first. Another is including the median itself in both halves when the count is odd; in this course, leave the middle value out of both halves."
-    ],
-    "words": [
-     {"w": "median", "d": "the middle value of a sorted data set, or the average of the two middle values"},
-     {"w": "first quartile", "d": "the median of the lower half of a sorted data set, written Q1"},
-     {"w": "five-number summary", "d": "the minimum, first quartile, median, third quartile and maximum of a data set"},
-     {"w": "box plot", "d": "a graph that draws a box from Q1 to Q3 with a line at the median and whiskers to the minimum and maximum"}
-    ],
-    "look": {"type": "think", "title": "Build the Box", "text": "Nine runners finish a 5K with these times in minutes: 21, 23, 24, 24, 26, 28, 30, 33, 41. Find the median, then the median of the four fastest times and the median of the four slowest times. Those are Q1 and Q3.", "prompt": "Write the five-number summary and describe the box plot: where does the box start and end, and which whisker is longer?"},
-    "check": [
-     {"q": "For the test scores 62, 68, 70, 74, 75, 78, 80, 84, 88, 90, 95, what is the first quartile Q1?", "choices": ["62", "70", "74", "78"], "a": 1, "why": "The lower half is 62, 68, 70, 74, 75, and its middle value is 70, so Q1 = 70."},
-     {"q": "About what fraction of a data set lies inside the box of a box plot?", "choices": ["One quarter", "One third", "One half", "All of it"], "a": 2, "why": "The box runs from Q1 to Q3, and the middle half of the data lies between those two quartiles."},
-     {"q": "What is the median of the data set 3, 5, 6, 8, 10, 12, 15, 20?", "choices": ["8", "9", "10", "12"], "a": 1, "why": "With 8 values the two middle ones are 8 and 10, and their average is (8 + 10) ÷ 2 = 9."}
-    ]
-   }
-  ]},
-  {"title": "Measuring Center and Spread", "lessons": [
-   {
-    "title": "Mean Versus Median",
-    "mainIdea": "The mean shares the total equally and the median finds the middle; one very large value pulls the mean but barely moves the median.",
-    "reading": [
-     "Five people work at a small café in Pilsen. Four of them earn $12, $13, $13 and $14 an hour. The manager earns $48 an hour. The *mean* is the total shared equally: add the wages, 12 + 13 + 13 + 14 + 48 = 100, and divide by the 5 workers to get $20 an hour. The median is the middle wage when the list is sorted: 12, 13, 13, 14, 48, so the median is $13. If a job ad said 'our workers average $20 an hour,' it would be telling the truth and still misleading four of the five people who applied.",
-     "The mean is sensitive to every value. Raise the manager's wage from $48 to $98 and the total becomes 150, so the mean jumps to $30. The median stays $13, because the middle of the sorted list has not moved. A measure that barely changes when one extreme value changes is called *resistant*. The median is resistant. The mean is not. That is why news reports about house prices or incomes usually give the median: a few mansions or billionaires would drag the mean far above what a typical family sees.",
-     "Neither measure is wrong; they answer different questions. The mean answers 'if the total were shared equally, how much would each get?' That matters for a budget: the café's payroll is 5 × 20 = $100 an hour no matter how the wages are split. The median answers 'what does a typical member of this group look like?' For a symmetric distribution the two are close together. For a skewed distribution they pull apart, and the mean gets dragged toward the tail. A quick check on any data set: if the mean is far above the median, expect a right tail of large values."
-    ],
-    "words": [
-     {"w": "mean", "d": "the sum of all values divided by how many values there are; the average"},
-     {"w": "resistant", "d": "describes a measure that changes very little when one extreme value in the data changes"},
-     {"w": "center", "d": "a single number, such as the mean or median, that stands for a typical value in a data set"}
-    ],
-    "look": {"type": "data", "title": "Hourly Wages at the Café", "rows": [["Barista A", 12], ["Barista B", 13], ["Barista C", 13], ["Cook", 14], ["Manager", 48]], "unit": "dollars per hour", "cite": "Example data set defined in this lesson", "prompt": "Find the mean and the median. If the manager got a raise to $60, which one would change, and by how much?"},
-    "check": [
-     {"q": "What is the mean of 4, 7, 9, 12 and 18?", "choices": ["9", "10", "12.5", "14"], "a": 1, "why": "The sum is 4 + 7 + 9 + 12 + 18 = 50, and 50 ÷ 5 = 10."},
-     {"q": "What is the median of 15, 3, 8, 21, 10 and 6?", "choices": ["8", "9", "10", "10.5"], "a": 1, "why": "Sorted, the list is 3, 6, 8, 10, 15, 21. The two middle values are 8 and 10, so the median is 9."},
-     {"q": "A neighborhood has 40 homes worth about $200,000 and one worth $5,000,000. Which statement is true?", "choices": ["The mean is much higher than the median", "The median is much higher than the mean", "The mean and median are equal", "The median is resistant, so it is about $5,000,000"], "a": 0, "why": "The one huge value adds millions to the total and lifts the mean well above $200,000, while the median stays near $200,000."}
-    ]
-   },
-   {
-    "title": "Range and Interquartile Range",
-    "mainIdea": "The range measures the full stretch of the data and the interquartile range measures the stretch of the middle half, which extreme values cannot touch.",
-    "reading": [
-     "One week in June, a student records the daily high temperature outside her apartment in Chicago: 71, 75, 68, 80, 74, 73 and 90 degrees Fahrenheit. Sort them: 68, 71, 73, 74, 75, 80, 90. The *range* is the biggest value minus the smallest: 90 − 68 = 22 degrees. The range is quick and easy, but it depends entirely on the two most extreme days. That single 90-degree Saturday sets the whole range by itself.",
-     "The *interquartile range*, or IQR, ignores the extremes. Find the median first. With 7 values the middle is the 4th, 74. The lower half is 68, 71, 73, so Q1 = 71. The upper half is 75, 80, 90, so Q3 = 80. The IQR is Q3 − Q1 = 80 − 71 = 9 degrees. That is the width of the box in a box plot, the stretch of the middle half of the week. Notice that the 90 does not appear anywhere in that subtraction.",
-     "Now suppose the Saturday reading was a typo and it should have been 120, a number that would break Chicago's all-time record. The range becomes 120 − 68 = 52, more than doubling. The IQR is still 80 − 71 = 9, because Q3 is still the middle of the upper half, and 120 is still just the biggest value in that half. Like the median, the IQR is resistant. Range and IQR are both measures of *spread*: how far apart the values are. The range is honest about the extremes; the IQR is honest about the crowd in the middle."
-    ],
-    "words": [
-     {"w": "range", "d": "the maximum value minus the minimum value of a data set"},
-     {"w": "interquartile range", "d": "the third quartile minus the first quartile; the width of the middle half of the data, written IQR"},
-     {"w": "spread", "d": "how far apart the values in a data set are from each other; also called variability"}
-    ],
-    "look": {"type": "think", "title": "Two Weeks, Same Middle", "text": "Week 1 highs, sorted: 70, 72, 74, 75, 76, 78, 80. Week 2 highs, sorted: 58, 66, 74, 75, 76, 84, 92. Both weeks have a median of 75. Find the range and the IQR for each week. For each week, Q1 is the middle of the three lowest values and Q3 is the middle of the three highest.", "prompt": "Which week had the more predictable weather, and which measure of spread makes that clearest?"},
-    "check": [
-     {"q": "What is the range of 5, 9, 14, 22 and 30?", "choices": ["14", "16", "25", "30"], "a": 2, "why": "Range is maximum minus minimum: 30 − 5 = 25."},
-     {"q": "A data set has Q1 = 15 and Q3 = 27. What is its interquartile range?", "choices": ["6", "12", "21", "42"], "a": 1, "why": "IQR = Q3 − Q1 = 27 − 15 = 12."},
-     {"q": "If the largest value in a data set of 20 numbers is increased by 100, which measure stays exactly the same?", "choices": ["The range", "The mean", "The maximum", "The interquartile range"], "a": 3, "why": "The IQR uses only Q1 and Q3, the middles of each half, and the biggest value stays the biggest, so neither quartile moves."}
-    ]
-   },
-   {
-    "title": "Standard Deviation, Introduced",
-    "mainIdea": "Standard deviation measures the typical distance of the values from the mean, using every value in the data set.",
-    "reading": [
-     "The IQR uses only two numbers from the data. The *standard deviation* uses all of them. Start with five quiz scores: 6, 7, 8, 9, 10. The mean is 40 ÷ 5 = 8. Now find each score's *deviation*, its distance from the mean with a sign: 6 − 8 = −2, 7 − 8 = −1, 8 − 8 = 0, 9 − 8 = 1, and 10 − 8 = 2. The deviations always add to zero, −2 − 1 + 0 + 1 + 2 = 0, so averaging them tells you nothing. That is the reason for the next step.",
-     "Square each deviation to erase the signs: 4, 1, 0, 1, 4. Add them: 4 + 1 + 0 + 1 + 4 = 10. Divide by the number of values, 5, to get 2. That number is the *variance*. Its units are squared points, which is awkward, so take the square root: √2 ≈ 1.41. The standard deviation of these scores is about 1.41 points. Read it this way: a typical quiz score in this set sits about 1.4 points from the mean of 8.",
-     "Compare a second set with the same mean: 8, 8, 8, 8, 8. Every deviation is 0, so the variance is 0 and the standard deviation is 0. A third set, 4, 6, 8, 10, 12, has deviations −4, −2, 0, 2, 4, squares 16, 4, 0, 4, 16 that add to 40, variance 40 ÷ 5 = 8, and standard deviation √8 ≈ 2.83. Same mean, twice the spread, and the standard deviation doubles from 1.41 to 2.83. Larger standard deviation means the values wander farther from the mean.",
-     "Two warnings. First, many calculators offer two versions, one dividing by the number of values and one dividing by one less than that. The second version gives a slightly bigger answer, √(10 ÷ 4) ≈ 1.58 for the quiz scores, and is used when the data are a sample from a bigger group. In this course, divide by the number of values unless you are told otherwise. Second, do not skip the square root. A variance of 2 and a standard deviation of 1.41 are different numbers, and only the second is in the same units as the data."
-    ],
-    "words": [
-     {"w": "standard deviation", "d": "the square root of the variance; the typical distance of the values from the mean"},
-     {"w": "deviation", "d": "a value minus the mean; negative for values below the mean and positive for values above it"},
-     {"w": "variance", "d": "the average of the squared deviations from the mean"}
-    ],
-    "look": {"type": "data", "title": "Squared Deviations for 6, 7, 8, 9, 10", "rows": [["Score 6 (deviation −2)", 4], ["Score 7 (deviation −1)", 1], ["Score 8 (deviation 0)", 0], ["Score 9 (deviation 1)", 1], ["Score 10 (deviation 2)", 4]], "unit": "squared points", "cite": "Computed from the quiz scores in this lesson, mean 8", "prompt": "Add the squared deviations, divide by 5, and take the square root. Then do the same for the scores 5, 7, 8, 9, 11 and say which set is more spread out."},
-    "check": [
-     {"q": "The data set 2, 4, 6 has mean 4. What is the sum of its squared deviations?", "choices": ["0", "4", "8", "12"], "a": 2, "why": "The deviations are −2, 0 and 2. Their squares are 4, 0 and 4, which add to 8."},
-     {"q": "Which data set has a standard deviation of 0?", "choices": ["1, 2, 3, 4", "0, 0, 0, 10", "5, 5, 5, 5", "−2, −1, 1, 2"], "a": 2, "why": "When every value equals the mean, every deviation is 0, so the standard deviation is 0. Only 5, 5, 5, 5 has all values equal."},
-     {"q": "The data set 1, 5, 5, 9 has mean 5. Dividing by the number of values, what is its standard deviation?", "choices": ["4", "8", "32", "About 2.83"], "a": 3, "why": "Deviations −4, 0, 0, 4 have squares 16, 0, 0, 16 that add to 32. Variance is 32 ÷ 4 = 8, and √8 ≈ 2.83."}
-    ]
-   }
-  ]},
-  {"title": "Outliers and Comparisons", "lessons": [
-   {
-    "title": "Outliers and Their Pull",
-    "mainIdea": "An outlier is a value far outside the pattern of the rest, and it pulls the mean and range much harder than the median and IQR.",
-    "reading": [
-     "Eight friends count the text messages they sent in one hour: 12, 14, 15, 15, 16, 17, 18 and 40. Seven of the numbers are between 12 and 18. The 40 is far from the rest. A value like that is an *outlier*. Sometimes it is a mistake, like a typo. Sometimes it is real: one friend was planning a party. Either way, you need a rule for deciding when a value is far enough away to count, and you need to know what it does to your summaries.",
-     "The standard rule uses the IQR. The median of the eight values is (15 + 16) ÷ 2 = 15.5. The lower half, 12, 14, 15, 15, has median (14 + 15) ÷ 2 = 14.5, so Q1 = 14.5. The upper half, 16, 17, 18, 40, has median (17 + 18) ÷ 2 = 17.5, so Q3 = 17.5. The IQR is 17.5 − 14.5 = 3. Multiply it by 1.5 to get 4.5. Any value more than 4.5 below Q1 or more than 4.5 above Q3 is an outlier. The *fences* are 14.5 − 4.5 = 10 and 17.5 + 4.5 = 22. The 40 is above 22, so it is an outlier. The 12 is not below 10, so it is fine.",
-     "Now see the pull. With the 40, the total is 147 and the mean is 147 ÷ 8 ≈ 18.4. Without it, the total is 107 and the mean is 107 ÷ 7 ≈ 15.3. One value moved the mean by about 3 messages. The median moves from 15.5 to 15, half a message. The range collapses from 40 − 12 = 28 to 18 − 12 = 6. Without the 40, Q1 is 14 and Q3 is 17, so the IQR is still 3, unchanged. This is the whole reason the median and IQR are called resistant. The mean and range are not.",
-     "Do not just delete an outlier because it is inconvenient. First ask whether it is an error. A height of 5.9 meters is a typo for 1.59 meters; fix it. A student who really did send 40 texts belongs in the data, and the honest move is to report the summary both ways and say why. On a box plot, outliers are drawn as separate dots beyond the whiskers, and the whisker stops at the last value inside the fence, here at 18."
-    ],
-    "words": [
-     {"w": "outlier", "d": "a data value far outside the pattern of the rest; by the usual rule, more than 1.5 IQRs beyond a quartile"},
-     {"w": "fences", "d": "the cutoffs Q1 − 1.5 × IQR and Q3 + 1.5 × IQR; values past a fence are outliers"},
-     {"w": "pull", "d": "the effect an extreme value has on a summary such as the mean or range"}
-    ],
-    "look": {"type": "think", "title": "Is 20 an Outlier?", "text": "Seven students report hours of sleep last night: 3, 4, 4, 5, 5, 6, 20. Wait, 20 hours? Find the median, then Q1 from the three lowest values and Q3 from the three highest. Compute the IQR, multiply by 1.5, and build the fences.", "prompt": "Is 20 an outlier by the 1.5 × IQR rule? Is it more likely a real value or a typo, and what would you do before reporting the class mean?"},
-    "check": [
-     {"q": "A data set has Q1 = 20 and Q3 = 30. What is the upper fence for outliers?", "choices": ["35", "40", "45", "60"], "a": 2, "why": "IQR = 30 − 20 = 10, and 1.5 × 10 = 15. The upper fence is 30 + 15 = 45."},
-     {"q": "In the sorted data 3, 4, 4, 5, 5, 6, 20, which value is an outlier by the 1.5 × IQR rule?", "choices": ["3", "6", "20", "None of the values"], "a": 2, "why": "Q1 = 4, Q3 = 6, IQR = 2, so the upper fence is 6 + 3 = 9. The 20 is above 9, so it is an outlier."},
-     {"q": "When an outlier is removed from a data set, which summary usually changes the most?", "choices": ["The median", "The mean", "The interquartile range", "The first quartile"], "a": 1, "why": "The mean adds every value into its total, so one extreme value shifts it a lot; the median and quartiles depend only on position and barely move."}
-    ]
-   },
-   {
-    "title": "Comparing Two Distributions",
-    "mainIdea": "To compare two data sets fairly, compare their shape, their center and their spread, not just one number.",
-    "reading": [
-     "Back to Coach Alvarez. Dana's runs allowed in eight starts: 3, 3, 2, 4, 3, 3, 4, 2. Marcus's: 0, 1, 0, 7, 0, 8, 1, 7. Both totals are 24, so both means are 3. A one-number comparison ends there in a tie. A three-part comparison, shape, center and spread, does not. Sort Dana: 2, 2, 3, 3, 3, 3, 4, 4. Sort Marcus: 0, 0, 0, 1, 1, 7, 7, 8. Dana's dot plot is a single symmetric hill. Marcus's has two clumps with a gap in the middle, one at 0 and 1 and one at 7 and 8.",
-     "Center: Dana's median is (3 + 3) ÷ 2 = 3. Marcus's median is (1 + 1) ÷ 2 = 1. Spread: Dana's range is 4 − 2 = 2 and Marcus's is 8 − 0 = 8. For the IQR, Dana's Q1 is the middle of 2, 2, 3, 3, which is 2.5, and Q3 is the middle of 3, 3, 4, 4, which is 3.5, so the IQR is 1. Marcus's Q1 is the middle of 0, 0, 0, 1, which is 0, and Q3 is the middle of 1, 7, 7, 8, which is 7, so the IQR is 7. Dana is far more *consistent*: her spread is a fraction of his by every measure.",
-     "Write the comparison in sentences, with the numbers. 'Both pitchers allow a mean of 3 runs per start, but their distributions differ. Dana's runs are symmetric and tightly clustered, with an IQR of 1. Marcus's are split into two clumps, with a median of only 1 but an IQR of 7.' When two groups are drawn as box plots on the same number line, look for *overlap*: if one box sits entirely to the right of the other, the groups differ clearly. If the boxes overlap heavily, the difference between the groups is smaller than the *variability* inside each group.",
-     "One trap: comparing groups of different sizes by raw counts. If 40 students in one class and 20 in another take a survey, 10 'yes' answers mean 25% in the first class and 50% in the second. Compare percents, medians or means, never raw counts, when the groups are not the same size. And always use the same scale on both plots; a box plot drawn from 0 to 10 next to one drawn from 0 to 100 makes the second group look more crowded than it is."
-    ],
-    "words": [
-     {"w": "consistent", "d": "describes data with small spread; the values stay close to one another"},
-     {"w": "overlap", "d": "the part of the number line where two distributions both have values, visible when two box plots are stacked"},
-     {"w": "variability", "d": "another word for spread; how much the values in a group differ from each other"}
-    ],
-    "look": {"type": "data", "title": "Two Pitchers, Eight Starts Each", "rows": [["Dana mean", 3], ["Dana median", 3], ["Dana IQR", 1], ["Marcus mean", 3], ["Marcus median", 1], ["Marcus IQR", 7]], "unit": "runs allowed", "cite": "Computed from the game lists in the chapter story", "prompt": "Which two numbers in this table would you show a teammate who thinks the pitchers are the same, and what sentence would you say with them?"},
-    "check": [
-     {"q": "What is the median of Marcus's runs allowed: 0, 1, 0, 7, 0, 8, 1, 7?", "choices": ["0", "1", "3", "4"], "a": 1, "why": "Sorted the list is 0, 0, 0, 1, 1, 7, 7, 8. The two middle values are 1 and 1, so the median is 1."},
-     {"q": "Two classes have the same median test score of 78. Class A has an IQR of 6 and class B has an IQR of 20. Which statement is true?", "choices": ["Class B scored higher on average", "Class A's scores are more spread out", "Class B's scores are more spread out", "The classes have identical distributions"], "a": 2, "why": "A larger IQR means the middle half of the scores covers a wider stretch. Class B's IQR of 20 shows more spread, even though the centers match."},
-     {"q": "A survey gets 12 'yes' answers from a class of 24 and 12 'yes' answers from a class of 48. Which comparison is fair?", "choices": ["The classes agree equally, since both have 12 yes answers", "50% of the first class said yes but only 25% of the second", "25% of the first class said yes but 50% of the second", "The second class agrees more, since it is bigger"], "a": 1, "why": "Compare percents when the groups differ in size: 12 ÷ 24 = 50% and 12 ÷ 48 = 25%."}
-    ]
-   },
-   {
-    "title": "Choosing the Right Summary",
-    "mainIdea": "Report the mean and standard deviation for symmetric data with no outliers; report the median and IQR when the data are skewed or have outliers.",
-    "reading": [
-     "Every data set can be summarized two ways. The mean and standard deviation form one pair: both use every value, and both get pulled by extremes. The median and IQR form the other pair: both depend on position in the sorted list, and both resist extremes. Choosing between the pairs is a judgment about the shape of the data, so look at a dot plot, histogram or box plot before you pick.",
-     "Take the café wages: 12, 13, 13, 14, 48. The distribution is strongly skewed right, with the manager's 48 far out in the tail. The mean of 20 describes nobody. The median of 13 and the IQR describe the four ordinary workers well. For skewed data or data with outliers, report the median and IQR. Now take Dana's runs: 2, 2, 3, 3, 3, 3, 4, 4. Symmetric, no outliers, a tidy hill. Here the mean of 3 and the standard deviation tell the story completely, and they use all eight games instead of just positions in a list. For symmetric data without outliers, report the mean and standard deviation.",
-     "Compute Dana's standard deviation to see the pair in action. The mean is 3. Deviations are −1, −1, 0, 0, 0, 0, 1, 1. Squares: 1, 1, 0, 0, 0, 0, 1, 1, summing to 4. Divide by 8 to get 0.5, and take the square root: √0.5 ≈ 0.71. A typical Dana start is about 0.7 runs from her mean. For Marcus, deviations from 3 are −3, −3, −3, −2, −2, 4, 4, 5, squares 9, 9, 9, 4, 4, 16, 16, 25 summing to 92, variance 92 ÷ 8 = 11.5, standard deviation √11.5 ≈ 3.39. About five times Dana's. But notice Marcus's two-clump shape: no single center describes him well, so any summary should come with the picture.",
-     "The most common mistake is reporting a mean because it is familiar, without checking the shape. The second is reporting a spread measure from the wrong pair, like a median with a standard deviation. Keep the pairs together: mean with standard deviation, median with IQR. And when in doubt, report both pairs and show the plot. A reader can always ignore an extra number; a reader cannot recover the one you left out."
-    ],
-    "words": [
-     {"w": "summary statistic", "d": "one number, such as a mean or an IQR, that describes some feature of a whole data set"},
-     {"w": "shape", "d": "the overall pattern of a distribution: symmetric, skewed, one peak or two, with or without gaps"},
-     {"w": "skewed", "d": "describes a distribution with a longer tail on one side than the other"}
-    ],
-    "look": {"type": "think", "title": "Pick the Pair", "text": "Three data sets. Set A, ages at a kindergarten pickup: 5, 5, 5, 6, 6, 6, 6, 7, 38, 41, 44. Set B, heights in inches of a basketball team: 72, 73, 74, 75, 75, 76, 77, 78. Set C, minutes spent on homework: 0, 0, 0, 10, 15, 20, 30, 45, 60, 180.", "prompt": "For each set, say whether you would report mean and standard deviation or median and IQR, and name the feature of the data that decided it."},
-    "check": [
-     {"q": "A data set is strongly skewed right with two large outliers. Which pair of summaries should you report?", "choices": ["Mean and standard deviation", "Mean and range", "Median and IQR", "Median and standard deviation"], "a": 2, "why": "Skew and outliers pull the mean, standard deviation and range. The median and IQR resist them and belong together as a pair."},
-     {"q": "Dana's runs allowed, 2, 2, 3, 3, 3, 3, 4, 4, have mean 3. Dividing by 8, what is the standard deviation, to two decimals?", "choices": ["0.50", "0.71", "1.00", "4.00"], "a": 1, "why": "The squared deviations are 1, 1, 0, 0, 0, 0, 1, 1, which add to 4. Then 4 ÷ 8 = 0.5 and √0.5 ≈ 0.71."},
-     {"q": "Which pairing of center and spread is correctly matched?", "choices": ["Median with standard deviation", "Mean with IQR", "Mean with standard deviation", "Range with median"], "a": 2, "why": "The mean and standard deviation both use every value and are reported together; the median and IQR form the other matched pair."}
-    ]
-   }
-  ]},
-  {"title": "Two Questions at Once", "lessons": [
-   {
-    "title": "Two-Way Frequency Tables",
-    "mainIdea": "A two-way table counts people by two categories at once, with the cells giving joint counts and the margins giving totals for each category.",
-    "reading": [
-     "A school surveys 100 students with two questions: what grade are you in, and how do you get to school? Every student is in grade 9 or grade 10, and every student either rides the bus or walks. Two questions with two answers each make four combinations, and a *two-way table* has one cell for each. Say 35 ninth graders ride the bus and 25 walk, while 20 tenth graders ride the bus and 20 walk. Rows are grades, columns are how they travel. The four cells hold 35, 25, 20 and 20, which add to 100.",
-     "The numbers inside the four cells are *joint frequencies*: each one counts students who fit two categories at the same time, like 'grade 9 and bus.' Now add across each row and down each column. Row totals: grade 9 has 35 + 25 = 60 students, grade 10 has 20 + 20 = 40. Column totals: bus riders number 35 + 20 = 55, walkers number 25 + 20 = 45. These totals, written in the margins of the table, are the *marginal frequencies*. Each margin counts one category by itself, ignoring the other question. Both sets of margins add to the same grand total, 60 + 40 = 100 and 55 + 45 = 100, which is a built-in check on your arithmetic.",
-     "Reading a two-way table is a matter of finding the right cell. How many tenth graders walk? Go to the grade 10 row and the walk column: 20. How many students ride the bus in total? Read the bus column margin: 55. How many students are in grade 9? Read the grade 9 row margin: 60. A common mistake is answering a marginal question with a joint cell, like saying 35 ninth graders when the question asked for all ninth graders. Read the question twice: does it name one category or two?"
-    ],
-    "words": [
-     {"w": "two-way table", "d": "a table that sorts each person by two categories at once, with rows for one category and columns for the other"},
-     {"w": "joint frequency", "d": "a count in one cell of a two-way table; the number of people in two categories at the same time"},
-     {"w": "marginal frequency", "d": "a row total or column total of a two-way table; the count for one category alone"}
-    ],
-    "look": {"type": "data", "title": "Grade and Way to School, 100 Students", "rows": [["Grade 9, bus", 35], ["Grade 9, walk", 25], ["Grade 10, bus", 20], ["Grade 10, walk", 20]], "unit": "students", "cite": "Example survey defined in this lesson", "prompt": "Write the four marginal frequencies (two row totals and two column totals) and check that each pair adds to 100."},
-    "check": [
-     {"q": "In the survey table, how many tenth graders walk to school?", "choices": ["20", "25", "40", "45"], "a": 0, "why": "The grade 10 row and the walk column meet at the cell holding 20 students."},
-     {"q": "How many of the 100 students ride the bus?", "choices": ["35", "45", "55", "60"], "a": 2, "why": "Add the bus column: 35 ninth graders + 20 tenth graders = 55."},
-     {"q": "Which number in the table is a marginal frequency?", "choices": ["35, the ninth graders who ride the bus", "20, the tenth graders who walk", "60, all the ninth graders", "25, the ninth graders who walk"], "a": 2, "why": "A marginal frequency is a row or column total. The 60 is the grade 9 row total, counting one category alone."}
-    ]
-   },
-   {
-    "title": "Conditional Relative Frequencies",
-    "mainIdea": "A conditional relative frequency divides a cell by its row or column total, which lets you compare groups of different sizes and look for an association.",
-    "reading": [
-     "The survey table says 35 ninth graders and 20 tenth graders ride the bus. Does that mean ninth graders like the bus more? Not yet. There are 60 ninth graders and only 40 tenth graders, so of course the ninth grade has more of everything. To compare fairly, turn counts into fractions of the right group. A *relative frequency* is a cell count divided by some total. Divide by the grand total, 100, and you get the joint relative frequency: 35 ÷ 100 = 0.35, so 35% of all students are ninth graders who ride the bus.",
-     "The more useful move is to divide by a row or column total. That gives a *conditional relative frequency*, because you are asking a question on the condition that someone belongs to a certain group. Among ninth graders, what fraction ride the bus? Divide the cell by the row total: 35 ÷ 60 ≈ 0.583, about 58%. Among tenth graders: 20 ÷ 40 = 0.50, exactly 50%. Now the comparison is fair. Ninth graders are somewhat more likely to ride the bus than tenth graders, 58% versus 50%.",
-     "You can condition on the columns instead. Among bus riders, what fraction are in grade 9? Divide by the column total: 35 ÷ 55 ≈ 0.636, about 64%. Among walkers: 25 ÷ 45 ≈ 0.556, about 56%. Notice that 'the fraction of ninth graders who ride the bus' (58%) and 'the fraction of bus riders who are ninth graders' (64%) are different questions with different answers. The most common mistake in this whole topic is dividing by the wrong total. Say the condition out loud: 'of the ninth graders' means divide by 60; 'of the bus riders' means divide by 55.",
-     "When the conditional relative frequencies differ from group to group, the two categories have an *association*: knowing a student's grade tells you something about how they travel. If every row gave the same percents, the categories would be independent of each other. Here the gap is 58% versus 50%, a modest association. Whether a gap that size matters is a question for later courses; for now, the skill is computing the right fraction and stating clearly which group it describes."
-    ],
-    "words": [
-     {"w": "relative frequency", "d": "a count divided by a total, written as a fraction, decimal or percent"},
-     {"w": "conditional relative frequency", "d": "a cell count divided by its row total or column total; the fraction of one group that falls in a category"},
-     {"w": "association", "d": "a relationship between two categories, shown when the conditional relative frequencies differ from row to row"}
-    ],
-    "look": {"type": "think", "title": "Which Total?", "text": "A club surveys 80 members about whether they own a bike. Of 50 freshmen, 30 own a bike. Of 30 sophomores, 21 own a bike. Fill in a two-way table: freshmen with and without a bike, sophomores with and without, plus all totals.", "prompt": "What percent of freshmen own a bike? What percent of sophomores? Is there an association between grade and owning a bike, and which grade is more likely to own one?"},
-    "check": [
-     {"q": "Of the 40 tenth graders, 20 walk to school. What percent of tenth graders walk?", "choices": ["20%", "40%", "50%", "80%"], "a": 2, "why": "Condition on tenth graders, so divide by the row total: 20 ÷ 40 = 0.50 = 50%."},
-     {"q": "Of the 45 walkers, 25 are in grade 9. About what percent of walkers are ninth graders?", "choices": ["25%", "42%", "56%", "64%"], "a": 2, "why": "Condition on walkers, so divide by the column total: 25 ÷ 45 ≈ 0.556, about 56%."},
-     {"q": "What is the joint relative frequency of students who are in grade 9 and ride the bus?", "choices": ["35%", "58%", "60%", "64%"], "a": 0, "why": "A joint relative frequency divides the cell by the grand total: 35 ÷ 100 = 35%."}
-    ]
-   },
-   {
-    "title": "Reading Data Honestly",
-    "mainIdea": "Check the axis, the sample and the choice of summary before you believe a graph or a statistic, because each one can be bent to mislead.",
-    "reading": [
-     "A poster shows two bars: last year's test average, 50, and this year's, 52. The bar for 52 is twice as tall as the bar for 50. How? The vertical axis does not start at 0. It starts at 48. Measured from 48, the first bar is 2 units tall and the second is 4 units tall, so it looks like a doubling. The real change is 52 ÷ 50 = 1.04, a 4% rise. A *truncated axis*, one that cuts off the bottom, is the most common trick in graphs. Always find the number where the axis begins before you compare bar heights.",
-     "The second thing to check is who was asked. A gym hands out a survey about exercise habits to its own members and reports that 90% of people exercise three times a week. The *sample*, the group that was actually measured, is gym members, and gym members are not typical of everyone. The sample is *biased*: it leans in one direction before a single question is asked. A fair sample gives every person in the group you care about a chance to be picked. Small samples are a related problem: a 3-out-of-4 result from four people is not a 75% result for a school of 1,600.",
-     "The third check is the summary itself. A company with 40 workers earning $40,000 and one owner earning $2,000,000 can honestly say its mean salary is over $87,000: the total is 1,600,000 + 2,000,000 = 3,600,000, divided by 41 is about $87,800. The median is $40,000. Both numbers are true. Only one of them describes a typical worker. When you see an average, ask which kind, and ask what the shape of the data looks like. When you see a percent, ask what the total was. When you see a graph, find zero on the axis.",
-     "None of this makes statistics untrustworthy. It makes you a careful reader. The same tools that can mislead, axes, samples and summaries, are the tools that tell the truth when used well. A histogram with an honest axis, a sample chosen fairly and a summary that fits the shape of the data is the strongest kind of argument there is. Your job as a reader is to check that all three are in place, and your job as a writer is to make sure they are."
-    ],
-    "words": [
-     {"w": "truncated axis", "d": "a graph axis that does not start at zero, which exaggerates small differences between bars"},
-     {"w": "sample", "d": "the group of people or things that were actually measured, chosen from a larger population"},
-     {"w": "biased", "d": "describes a sample or method that leans toward one answer before the data are even collected"}
-    ],
-    "look": {"type": "think", "title": "Two Versions of One Graph", "text": "A bar graph shows monthly bus riders for two routes: Route A with 1,020 riders and Route B with 1,050 riders. Version 1 has an axis from 0 to 1,200. Version 2 has an axis from 1,000 to 1,060. In version 2, Route B's bar is 50 units tall and Route A's is 20 units tall.", "prompt": "How many times taller does Route B's bar look in version 2? What is the real ratio of riders? Which version would you use if you wanted to sell a plan that cuts Route A?"},
-    "check": [
-     {"q": "A bar graph's axis starts at 48. One bar shows 50 and another shows 52. How many times taller does the 52 bar look compared with the 50 bar?", "choices": ["1.04 times", "1.5 times", "2 times", "4 times"], "a": 2, "why": "Measured from 48, the bars are 2 units and 4 units tall, and 4 ÷ 2 = 2, even though 52 ÷ 50 is only 1.04."},
-     {"q": "A company has 40 workers earning $40,000 and one owner earning $2,000,000. Which summary better describes a typical worker's pay?", "choices": ["The mean, about $87,800", "The median, $40,000", "The range, $1,960,000", "The total, $3,600,000"], "a": 1, "why": "The median is the middle of the sorted list, which is $40,000; the mean is dragged up by the single $2,000,000 salary."},
-     {"q": "A gym surveys its own members and reports that 90% of people exercise three times a week. What is the main problem?", "choices": ["The sample is biased toward people who already exercise", "The percent was calculated wrong", "The axis of the graph is truncated", "The mean should have been the median"], "a": 0, "why": "Gym members are not typical of all people, so a sample made only of them leans toward high exercise before any question is asked."}
-    ]
-   }
-  ]}
+  {
+   "title": "Pictures of a Data Set",
+   "lessons": [
+    {
+     "title": "Dot Plots and Shape",
+     "mainIdea": "A dot plot stacks one dot per value on a number line, so the shape of the whole data set is visible at a glance.",
+     "reading": [
+      "A teacher asks 12 students how many siblings they have and writes down the answers: 0, 1, 1, 1, 2, 2, 2, 2, 3, 3, 4, 6. A list like this is hard to read. A *dot plot* fixes that. Draw a number line from 0 to 6. For each answer, put one dot above that number, stacking dots when a number repeats. You get 1 dot above 0, 3 dots above 1, 4 dots above 2, 2 dots above 3, 1 dot above 4, none above 5, and 1 dot above 6. The 12 dots make a picture of the whole *distribution*, which is the full set of values and how often each one occurs.",
+      "Once the dots are stacked, describe the shape. Ask three questions. Where is the tallest stack? Here it is at 2, so 2 siblings is the most common answer. Is the picture balanced? No. Most dots crowd the left side, and a thin tail stretches to the right toward the lone 6. A distribution shaped like this is *skewed right*, because the long tail points right. If the tail pointed left, it would be skewed left. A distribution with two matching halves, like a hill with the same slope on each side, is *symmetric*.",
+      "Students often mix up which way a skew points. The skew is named for the tail, not the peak. Picture a slide: the pile of dots is the platform, and the tail is the slide going down. In the sibling data, the slide goes to the right, so it is skewed right. Another common slip is forgetting a value that appears zero times. There are no students with 5 siblings, so 5 gets no dot, but 5 still stays on the number line. Leaving it out would squeeze the 6 next to the 4 and hide the gap."
+     ],
+     "words": [
+      {
+       "w": "dot plot",
+       "d": "a graph that puts one dot above a number line for each value in a data set, stacking repeats"
+      },
+      {
+       "w": "distribution",
+       "d": "the whole set of values in a data set together with how often each value occurs"
+      },
+      {
+       "w": "skewed right",
+       "d": "a shape with most values on the left and a long thin tail stretching to the right"
+      },
+      {
+       "w": "symmetric",
+       "d": "a shape whose left and right halves are mirror images of each other"
+      }
+     ],
+     "look": {
+      "type": "think",
+      "title": "A Dot Plot in Words",
+      "text": "Picture a number line from 0 to 10 labeled 'goals scored this season.' Above 0 there are 5 dots. Above 1 there are 4 dots. Above 2 there are 3 dots. Above 3 there are 2 dots. Above 4, 5, 6, 7, 8 and 9 there is nothing. Above 10 there is a single dot. Fifteen players in all.",
+      "prompt": "Describe the shape of this distribution, name the most common value, and explain what the single dot at 10 does to the picture."
+     },
+     "check": [
+      {
+       "q": "In the sibling dot plot, how many dots sit above the number 2?",
+       "choices": [
+        "2",
+        "3",
+        "4",
+        "12"
+       ],
+       "a": 2,
+       "why": "The list 0, 1, 1, 1, 2, 2, 2, 2, 3, 3, 4, 6 contains the value 2 four times, so 4 dots stack above 2."
+      },
+      {
+       "q": "A dot plot has most of its dots on the left and a long thin tail reaching to the right. What is its shape?",
+       "choices": [
+        "Skewed right",
+        "Skewed left",
+        "Symmetric",
+        "Uniform"
+       ],
+       "a": 0,
+       "why": "A skew is named for the direction of its tail. The tail reaches right, so the distribution is skewed right."
+      },
+      {
+       "q": "A dot plot of 20 quiz scores shows 5 dots above the score 8. What fraction of the scores are 8?",
+       "choices": [
+        "1/4",
+        "1/5",
+        "5/8",
+        "8/20"
+       ],
+       "a": 0,
+       "why": "5 of 20 scores are 8, and 5/20 simplifies to 1/4."
+      }
+     ]
+    },
+    {
+     "title": "Histograms and Bins",
+     "mainIdea": "A histogram groups numbers into equal-width bins and draws a bar for each bin, so it works for large data sets and messy decimals.",
+     "reading": [
+      "A dot plot works for 12 answers. It falls apart for 300 commute times measured to the minute, because almost every value is different and the dots never stack. A *histogram* solves this by grouping. Suppose 30 students report their morning commute in minutes. Split the number line into equal-width *bins*: 0 to 9 minutes, 10 to 19, 20 to 29, 30 to 39, and 40 to 49. Count how many commutes land in each bin. Say the counts are 4, 9, 10, 5 and 2. Those five counts add to 30, which is a quick check that no student was lost or counted twice.",
+      "Now draw. The horizontal axis is minutes, split at 0, 10, 20, 30, 40 and 50. Above each bin draw a bar whose height is the *frequency*, the count for that bin. The bars touch each other, with no gaps, because the bins cover the whole number line without skipping any minutes. That is the visual difference between a histogram and a bar graph of categories like favorite pizza topping, where the bars are separated because the categories are not numbers on a line.",
+      "Reading a histogram means adding bins. How many students commute less than 20 minutes? Add the first two bins: 4 + 9 = 13 students. What share commute 30 minutes or more? Add the last two bins: 5 + 2 = 7, and 7/30 is about 0.233, or 23%. The most common bin is 20 to 29 minutes with 10 students, and the shape has a slight tail to the right, since the long commutes trail off.",
+      "The width of the bins changes the picture. Bins of width 5 would show more detail but might look jagged. Bins of width 25 would smooth everything into two fat bars and hide the peak. A frequent mistake is making bins that overlap, like 0 to 10 and 10 to 20. A commute of exactly 10 minutes would then belong to both bins. Use bins like 0 to 9 and 10 to 19, or agree on a rule such as 'the left edge is included and the right edge is not.'"
+     ],
+     "words": [
+      {
+       "w": "histogram",
+       "d": "a graph that splits a number line into equal-width bins and draws a touching bar for the count in each bin"
+      },
+      {
+       "w": "bin",
+       "d": "one interval of values on a histogram, such as 10 to 19 minutes"
+      },
+      {
+       "w": "frequency",
+       "d": "how many data values fall in a bin or at a value; the height of a histogram bar"
+      }
+     ],
+     "look": {
+      "type": "data",
+      "title": "Morning Commutes of 30 Students",
+      "rows": [
+       [
+        "0 to 9 min",
+        4
+       ],
+       [
+        "10 to 19 min",
+        9
+       ],
+       [
+        "20 to 29 min",
+        10
+       ],
+       [
+        "30 to 39 min",
+        5
+       ],
+       [
+        "40 to 49 min",
+        2
+       ]
+      ],
+      "unit": "students",
+      "cite": "Example data set defined in this lesson",
+      "prompt": "How many students commute 20 minutes or more, and what percent of the class is that?"
+     },
+     "check": [
+      {
+       "q": "Using the commute histogram, how many students commute less than 20 minutes?",
+       "choices": [
+        "4",
+        "9",
+        "23",
+        "13"
+       ],
+       "a": 3,
+       "why": "Less than 20 minutes means the 0 to 9 bin and the 10 to 19 bin: 4 + 9 = 13 students."
+      },
+      {
+       "q": "About what percent of the 30 students commute 30 minutes or more?",
+       "choices": [
+        "7%",
+        "17%",
+        "23%",
+        "30%"
+       ],
+       "a": 2,
+       "why": "The last two bins hold 5 + 2 = 7 students, and 7 ÷ 30 ≈ 0.233, which is about 23%."
+      },
+      {
+       "q": "Why do the bars of a histogram touch each other?",
+       "choices": [
+        "To save space on the page",
+        "Because the bins cover the number line with no gaps between them",
+        "Because every bin has the same count",
+        "Because the data are categories, not numbers"
+       ],
+       "a": 1,
+       "why": "The bins are intervals on one continuous number line, so each bin starts where the last one ends and the bars meet."
+      }
+     ]
+    },
+    {
+     "title": "Box Plots and Quartiles",
+     "mainIdea": "A box plot draws five numbers, the minimum, first quartile, median, third quartile and maximum, and shows where the middle half of the data lives.",
+     "reading": [
+      "Eleven students take a test and score 62, 68, 70, 74, 75, 78, 80, 84, 88, 90 and 95, already in order. The *median* is the middle value. With 11 scores, the middle is the 6th one, which is 78. Five scores sit below it and five above. Now split each half again. The lower half is 62, 68, 70, 74, 75, and its middle is 70. That is the *first quartile*, written Q1. The upper half is 80, 84, 88, 90, 95, and its middle is 88. That is the third quartile, Q3. Together with the minimum 62 and the maximum 95, these make the *five-number summary*: 62, 70, 78, 88, 95.",
+      "A *box plot* draws exactly those five numbers above a number line. Draw a box from Q1 = 70 to Q3 = 88. Draw a line inside the box at the median, 78. From each end of the box draw a whisker, a thin line out to the minimum 62 on the left and the maximum 95 on the right. Roughly one quarter of the scores lie in each of the four pieces: below the box, in the left part of the box, in the right part, and beyond the box. The box itself holds the middle half of the class.",
+      "When the count is even, the median is the average of the two middle values. Take 3, 5, 6, 8, 10, 12, 15, 20. The two middle values are 8 and 10, so the median is (8 + 10) ÷ 2 = 9. The lower half is 3, 5, 6, 8 and Q1 is (5 + 6) ÷ 2 = 5.5. The upper half is 10, 12, 15, 20 and Q3 is (12 + 15) ÷ 2 = 13.5. A common mistake is finding the quartiles from the unsorted list. Always sort first. Another is including the median itself in both halves when the count is odd; in this course, leave the middle value out of both halves."
+     ],
+     "words": [
+      {
+       "w": "median",
+       "d": "the middle value of a sorted data set, or the average of the two middle values"
+      },
+      {
+       "w": "first quartile",
+       "d": "the median of the lower half of a sorted data set, written Q1"
+      },
+      {
+       "w": "five-number summary",
+       "d": "the minimum, first quartile, median, third quartile and maximum of a data set"
+      },
+      {
+       "w": "box plot",
+       "d": "a graph that draws a box from Q1 to Q3 with a line at the median and whiskers to the minimum and maximum"
+      }
+     ],
+     "look": {
+      "type": "think",
+      "title": "Build the Box",
+      "text": "Nine runners finish a 5K with these times in minutes: 21, 23, 24, 24, 26, 28, 30, 33, 41. Find the median, then the median of the four fastest times and the median of the four slowest times. Those are Q1 and Q3.",
+      "prompt": "Write the five-number summary and describe the box plot: where does the box start and end, and which whisker is longer?"
+     },
+     "check": [
+      {
+       "q": "For the test scores 62, 68, 70, 74, 75, 78, 80, 84, 88, 90, 95, what is the first quartile Q1?",
+       "choices": [
+        "70",
+        "62",
+        "74",
+        "78"
+       ],
+       "a": 0,
+       "why": "The lower half is 62, 68, 70, 74, 75, and its middle value is 70, so Q1 = 70."
+      },
+      {
+       "q": "About what fraction of a data set lies inside the box of a box plot?",
+       "choices": [
+        "One quarter",
+        "One third",
+        "One half",
+        "All of it"
+       ],
+       "a": 2,
+       "why": "The box runs from Q1 to Q3, and the middle half of the data lies between those two quartiles."
+      },
+      {
+       "q": "What is the median of the data set 3, 5, 6, 8, 10, 12, 15, 20?",
+       "choices": [
+        "8",
+        "9",
+        "10",
+        "12"
+       ],
+       "a": 1,
+       "why": "With 8 values the two middle ones are 8 and 10, and their average is (8 + 10) ÷ 2 = 9."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "title": "Measuring Center and Spread",
+   "lessons": [
+    {
+     "title": "Mean Versus Median",
+     "mainIdea": "The mean shares the total equally and the median finds the middle; one very large value pulls the mean but barely moves the median.",
+     "reading": [
+      "Five people work at a small café in Pilsen. Four of them earn $12, $13, $13 and $14 an hour. The manager earns $48 an hour. The *mean* is the total shared equally: add the wages, 12 + 13 + 13 + 14 + 48 = 100, and divide by the 5 workers to get $20 an hour. The median is the middle wage when the list is sorted: 12, 13, 13, 14, 48, so the median is $13. If a job ad said 'our workers average $20 an hour,' it would be telling the truth and still misleading four of the five people who applied.",
+      "The mean is sensitive to every value. Raise the manager's wage from $48 to $98 and the total becomes 150, so the mean jumps to $30. The median stays $13, because the middle of the sorted list has not moved. A measure that barely changes when one extreme value changes is called *resistant*. The median is resistant. The mean is not. That is why news reports about house prices or incomes usually give the median: a few mansions or billionaires would drag the mean far above what a typical family sees.",
+      "Neither measure is wrong; they answer different questions. The mean answers 'if the total were shared equally, how much would each get?' That matters for a budget: the café's payroll is 5 × 20 = $100 an hour no matter how the wages are split. The median answers 'what does a typical member of this group look like?' For a symmetric distribution the two are close together. For a skewed distribution they pull apart, and the mean gets dragged toward the tail. A quick check on any data set: if the mean is far above the median, expect a right tail of large values."
+     ],
+     "words": [
+      {
+       "w": "mean",
+       "d": "the sum of all values divided by how many values there are; the average"
+      },
+      {
+       "w": "resistant",
+       "d": "describes a measure that changes very little when one extreme value in the data changes"
+      },
+      {
+       "w": "center",
+       "d": "a single number, such as the mean or median, that stands for a typical value in a data set"
+      }
+     ],
+     "look": {
+      "type": "data",
+      "title": "Hourly Wages at the Café",
+      "rows": [
+       [
+        "Barista A",
+        12
+       ],
+       [
+        "Barista B",
+        13
+       ],
+       [
+        "Barista C",
+        13
+       ],
+       [
+        "Cook",
+        14
+       ],
+       [
+        "Manager",
+        48
+       ]
+      ],
+      "unit": "dollars per hour",
+      "cite": "Example data set defined in this lesson",
+      "prompt": "Find the mean and the median. If the manager got a raise to $60, which one would change, and by how much?"
+     },
+     "check": [
+      {
+       "q": "What is the mean of 4, 7, 9, 12 and 18?",
+       "choices": [
+        "10",
+        "9",
+        "12.5",
+        "14"
+       ],
+       "a": 0,
+       "why": "The sum is 4 + 7 + 9 + 12 + 18 = 50, and 50 ÷ 5 = 10."
+      },
+      {
+       "q": "What is the median of 15, 3, 8, 21, 10 and 6?",
+       "choices": [
+        "8",
+        "9",
+        "10",
+        "10.5"
+       ],
+       "a": 1,
+       "why": "Sorted, the list is 3, 6, 8, 10, 15, 21. The two middle values are 8 and 10, so the median is 9."
+      },
+      {
+       "q": "A neighborhood has 40 homes worth about $200,000 and one worth $5,000,000. Which statement is true?",
+       "choices": [
+        "The mean is much higher than the median",
+        "The median is much higher than the mean",
+        "The mean and median are equal",
+        "The median is resistant, so it is about $5,000,000"
+       ],
+       "a": 0,
+       "why": "The one huge value adds millions to the total and lifts the mean well above $200,000, while the median stays near $200,000."
+      }
+     ]
+    },
+    {
+     "title": "Range and Interquartile Range",
+     "mainIdea": "The range measures the full stretch of the data and the interquartile range measures the stretch of the middle half, which extreme values cannot touch.",
+     "reading": [
+      "One week in June, a student records the daily high temperature outside her apartment in Chicago: 71, 75, 68, 80, 74, 73 and 90 degrees Fahrenheit. Sort them: 68, 71, 73, 74, 75, 80, 90. The *range* is the biggest value minus the smallest: 90 − 68 = 22 degrees. The range is quick and easy, but it depends entirely on the two most extreme days. That single 90-degree Saturday sets the whole range by itself.",
+      "The *interquartile range*, or IQR, ignores the extremes. Find the median first. With 7 values the middle is the 4th, 74. The lower half is 68, 71, 73, so Q1 = 71. The upper half is 75, 80, 90, so Q3 = 80. The IQR is Q3 − Q1 = 80 − 71 = 9 degrees. That is the width of the box in a box plot, the stretch of the middle half of the week. Notice that the 90 does not appear anywhere in that subtraction.",
+      "Now suppose the Saturday reading was a typo and it should have been 120, a number that would break Chicago's all-time record. The range becomes 120 − 68 = 52, more than doubling. The IQR is still 80 − 71 = 9, because Q3 is still the middle of the upper half, and 120 is still just the biggest value in that half. Like the median, the IQR is resistant. Range and IQR are both measures of *spread*: how far apart the values are. The range is honest about the extremes; the IQR is honest about the crowd in the middle."
+     ],
+     "words": [
+      {
+       "w": "range",
+       "d": "the maximum value minus the minimum value of a data set"
+      },
+      {
+       "w": "interquartile range",
+       "d": "the third quartile minus the first quartile; the width of the middle half of the data, written IQR"
+      },
+      {
+       "w": "spread",
+       "d": "how far apart the values in a data set are from each other; also called variability"
+      }
+     ],
+     "look": {
+      "type": "think",
+      "title": "Two Weeks, Same Middle",
+      "text": "Week 1 highs, sorted: 70, 72, 74, 75, 76, 78, 80. Week 2 highs, sorted: 58, 66, 74, 75, 76, 84, 92. Both weeks have a median of 75. Find the range and the IQR for each week. For each week, Q1 is the middle of the three lowest values and Q3 is the middle of the three highest.",
+      "prompt": "Which week had the more predictable weather, and which measure of spread makes that clearest?"
+     },
+     "check": [
+      {
+       "q": "What is the range of 5, 9, 14, 22 and 30?",
+       "choices": [
+        "14",
+        "16",
+        "30",
+        "25"
+       ],
+       "a": 3,
+       "why": "Range is maximum minus minimum: 30 − 5 = 25."
+      },
+      {
+       "q": "A data set has Q1 = 15 and Q3 = 27. What is its interquartile range?",
+       "choices": [
+        "12",
+        "6",
+        "21",
+        "42"
+       ],
+       "a": 0,
+       "why": "IQR = Q3 − Q1 = 27 − 15 = 12."
+      },
+      {
+       "q": "If the largest value in a data set of 20 numbers is increased by 100, which measure stays exactly the same?",
+       "choices": [
+        "The range",
+        "The mean",
+        "The maximum",
+        "The interquartile range"
+       ],
+       "a": 3,
+       "why": "The IQR uses only Q1 and Q3, the middles of each half, and the biggest value stays the biggest, so neither quartile moves."
+      }
+     ]
+    },
+    {
+     "title": "Standard Deviation, Introduced",
+     "mainIdea": "Standard deviation measures the typical distance of the values from the mean, using every value in the data set.",
+     "reading": [
+      "The IQR uses only two numbers from the data. The *standard deviation* uses all of them. Start with five quiz scores: 6, 7, 8, 9, 10. The mean is 40 ÷ 5 = 8. Now find each score's *deviation*, its distance from the mean with a sign: 6 − 8 = −2, 7 − 8 = −1, 8 − 8 = 0, 9 − 8 = 1, and 10 − 8 = 2. The deviations always add to zero, −2 − 1 + 0 + 1 + 2 = 0, so averaging them tells you nothing. That is the reason for the next step.",
+      "Square each deviation to erase the signs: 4, 1, 0, 1, 4. Add them: 4 + 1 + 0 + 1 + 4 = 10. Divide by the number of values, 5, to get 2. That number is the *variance*. Its units are squared points, which is awkward, so take the square root: √2 ≈ 1.41. The standard deviation of these scores is about 1.41 points. Read it this way: a typical quiz score in this set sits about 1.4 points from the mean of 8.",
+      "Compare a second set with the same mean: 8, 8, 8, 8, 8. Every deviation is 0, so the variance is 0 and the standard deviation is 0. A third set, 4, 6, 8, 10, 12, has deviations −4, −2, 0, 2, 4, squares 16, 4, 0, 4, 16 that add to 40, variance 40 ÷ 5 = 8, and standard deviation √8 ≈ 2.83. Same mean, twice the spread, and the standard deviation doubles from 1.41 to 2.83. Larger standard deviation means the values wander farther from the mean.",
+      "Two warnings. First, many calculators offer two versions, one dividing by the number of values and one dividing by one less than that. The second version gives a slightly bigger answer, √(10 ÷ 4) ≈ 1.58 for the quiz scores, and is used when the data are a sample from a bigger group. In this course, divide by the number of values unless you are told otherwise. Second, do not skip the square root. A variance of 2 and a standard deviation of 1.41 are different numbers, and only the second is in the same units as the data."
+     ],
+     "words": [
+      {
+       "w": "standard deviation",
+       "d": "the square root of the variance; the typical distance of the values from the mean"
+      },
+      {
+       "w": "deviation",
+       "d": "a value minus the mean; negative for values below the mean and positive for values above it"
+      },
+      {
+       "w": "variance",
+       "d": "the average of the squared deviations from the mean"
+      }
+     ],
+     "look": {
+      "type": "data",
+      "title": "Squared Deviations for 6, 7, 8, 9, 10",
+      "rows": [
+       [
+        "Score 6 (deviation −2)",
+        4
+       ],
+       [
+        "Score 7 (deviation −1)",
+        1
+       ],
+       [
+        "Score 8 (deviation 0)",
+        0
+       ],
+       [
+        "Score 9 (deviation 1)",
+        1
+       ],
+       [
+        "Score 10 (deviation 2)",
+        4
+       ]
+      ],
+      "unit": "squared points",
+      "cite": "Computed from the quiz scores in this lesson, mean 8",
+      "prompt": "Add the squared deviations, divide by 5, and take the square root. Then do the same for the scores 5, 7, 8, 9, 11 and say which set is more spread out."
+     },
+     "check": [
+      {
+       "q": "The data set 2, 4, 6 has mean 4. What is the sum of its squared deviations?",
+       "choices": [
+        "0",
+        "4",
+        "8",
+        "12"
+       ],
+       "a": 2,
+       "why": "The deviations are −2, 0 and 2. Their squares are 4, 0 and 4, which add to 8."
+      },
+      {
+       "q": "Which data set has a standard deviation of 0?",
+       "choices": [
+        "1, 2, 3, 4",
+        "0, 0, 0, 10",
+        "−2, −1, 1, 2",
+        "5, 5, 5, 5"
+       ],
+       "a": 3,
+       "why": "When every value equals the mean, every deviation is 0, so the standard deviation is 0. Only 5, 5, 5, 5 has all values equal."
+      },
+      {
+       "q": "The data set 1, 5, 5, 9 has mean 5. Dividing by the number of values, what is its standard deviation?",
+       "choices": [
+        "4",
+        "8",
+        "32",
+        "About 2.83"
+       ],
+       "a": 3,
+       "why": "Deviations −4, 0, 0, 4 have squares 16, 0, 0, 16 that add to 32. Variance is 32 ÷ 4 = 8, and √8 ≈ 2.83."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "title": "Outliers and Comparisons",
+   "lessons": [
+    {
+     "title": "Outliers and Their Pull",
+     "mainIdea": "An outlier is a value far outside the pattern of the rest, and it pulls the mean and range much harder than the median and IQR.",
+     "reading": [
+      "Eight friends count the text messages they sent in one hour: 12, 14, 15, 15, 16, 17, 18 and 40. Seven of the numbers are between 12 and 18. The 40 is far from the rest. A value like that is an *outlier*. Sometimes it is a mistake, like a typo. Sometimes it is real: one friend was planning a party. Either way, you need a rule for deciding when a value is far enough away to count, and you need to know what it does to your summaries.",
+      "The standard rule uses the IQR. The median of the eight values is (15 + 16) ÷ 2 = 15.5. The lower half, 12, 14, 15, 15, has median (14 + 15) ÷ 2 = 14.5, so Q1 = 14.5. The upper half, 16, 17, 18, 40, has median (17 + 18) ÷ 2 = 17.5, so Q3 = 17.5. The IQR is 17.5 − 14.5 = 3. Multiply it by 1.5 to get 4.5. Any value more than 4.5 below Q1 or more than 4.5 above Q3 is an outlier. The *fences* are 14.5 − 4.5 = 10 and 17.5 + 4.5 = 22. The 40 is above 22, so it is an outlier. The 12 is not below 10, so it is fine.",
+      "Now see the pull. With the 40, the total is 147 and the mean is 147 ÷ 8 ≈ 18.4. Without it, the total is 107 and the mean is 107 ÷ 7 ≈ 15.3. One value moved the mean by about 3 messages. The median moves from 15.5 to 15, half a message. The range collapses from 40 − 12 = 28 to 18 − 12 = 6. Without the 40, Q1 is 14 and Q3 is 17, so the IQR is still 3, unchanged. This is the whole reason the median and IQR are called resistant. The mean and range are not.",
+      "Do not just delete an outlier because it is inconvenient. First ask whether it is an error. A height of 5.9 meters is a typo for 1.59 meters; fix it. A student who really did send 40 texts belongs in the data, and the honest move is to report the summary both ways and say why. On a box plot, outliers are drawn as separate dots beyond the whiskers, and the whisker stops at the last value inside the fence, here at 18."
+     ],
+     "words": [
+      {
+       "w": "outlier",
+       "d": "a data value far outside the pattern of the rest; by the usual rule, more than 1.5 IQRs beyond a quartile"
+      },
+      {
+       "w": "fences",
+       "d": "the cutoffs Q1 − 1.5 × IQR and Q3 + 1.5 × IQR; values past a fence are outliers"
+      },
+      {
+       "w": "pull",
+       "d": "the effect an extreme value has on a summary such as the mean or range"
+      }
+     ],
+     "look": {
+      "type": "think",
+      "title": "Is 20 an Outlier?",
+      "text": "Seven students report hours of sleep last night: 3, 4, 4, 5, 5, 6, 20. Wait, 20 hours? Find the median, then Q1 from the three lowest values and Q3 from the three highest. Compute the IQR, multiply by 1.5, and build the fences.",
+      "prompt": "Is 20 an outlier by the 1.5 × IQR rule? Is it more likely a real value or a typo, and what would you do before reporting the class mean?"
+     },
+     "check": [
+      {
+       "q": "A data set has Q1 = 20 and Q3 = 30. What is the upper fence for outliers?",
+       "choices": [
+        "35",
+        "40",
+        "45",
+        "60"
+       ],
+       "a": 2,
+       "why": "IQR = 30 − 20 = 10, and 1.5 × 10 = 15. The upper fence is 30 + 15 = 45."
+      },
+      {
+       "q": "In the sorted data 3, 4, 4, 5, 5, 6, 20, which value is an outlier by the 1.5 × IQR rule?",
+       "choices": [
+        "3",
+        "6",
+        "20",
+        "None of the values"
+       ],
+       "a": 2,
+       "why": "Q1 = 4, Q3 = 6, IQR = 2, so the upper fence is 6 + 3 = 9. The 20 is above 9, so it is an outlier."
+      },
+      {
+       "q": "When an outlier is removed from a data set, which summary usually changes the most?",
+       "choices": [
+        "The mean",
+        "The median",
+        "The interquartile range",
+        "The first quartile"
+       ],
+       "a": 0,
+       "why": "The mean adds every value into its total, so one extreme value shifts it a lot; the median and quartiles depend only on position and barely move."
+      }
+     ]
+    },
+    {
+     "title": "Comparing Two Distributions",
+     "mainIdea": "To compare two data sets fairly, compare their shape, their center and their spread, not just one number.",
+     "reading": [
+      "Back to Coach Alvarez. Dana's runs allowed in eight starts: 3, 3, 2, 4, 3, 3, 4, 2. Marcus's: 0, 1, 0, 7, 0, 8, 1, 7. Both totals are 24, so both means are 3. A one-number comparison ends there in a tie. A three-part comparison, shape, center and spread, does not. Sort Dana: 2, 2, 3, 3, 3, 3, 4, 4. Sort Marcus: 0, 0, 0, 1, 1, 7, 7, 8. Dana's dot plot is a single symmetric hill. Marcus's has two clumps with a gap in the middle, one at 0 and 1 and one at 7 and 8.",
+      "Center: Dana's median is (3 + 3) ÷ 2 = 3. Marcus's median is (1 + 1) ÷ 2 = 1. Spread: Dana's range is 4 − 2 = 2 and Marcus's is 8 − 0 = 8. For the IQR, Dana's Q1 is the middle of 2, 2, 3, 3, which is 2.5, and Q3 is the middle of 3, 3, 4, 4, which is 3.5, so the IQR is 1. Marcus's Q1 is the middle of 0, 0, 0, 1, which is 0, and Q3 is the middle of 1, 7, 7, 8, which is 7, so the IQR is 7. Dana is far more *consistent*: her spread is a fraction of his by every measure.",
+      "Write the comparison in sentences, with the numbers. 'Both pitchers allow a mean of 3 runs per start, but their distributions differ. Dana's runs are symmetric and tightly clustered, with an IQR of 1. Marcus's are split into two clumps, with a median of only 1 but an IQR of 7.' When two groups are drawn as box plots on the same number line, look for *overlap*: if one box sits entirely to the right of the other, the groups differ clearly. If the boxes overlap heavily, the difference between the groups is smaller than the *variability* inside each group.",
+      "One trap: comparing groups of different sizes by raw counts. If 40 students in one class and 20 in another take a survey, 10 'yes' answers mean 25% in the first class and 50% in the second. Compare percents, medians or means, never raw counts, when the groups are not the same size. And always use the same scale on both plots; a box plot drawn from 0 to 10 next to one drawn from 0 to 100 makes the second group look more crowded than it is."
+     ],
+     "words": [
+      {
+       "w": "consistent",
+       "d": "describes data with small spread; the values stay close to one another"
+      },
+      {
+       "w": "overlap",
+       "d": "the part of the number line where two distributions both have values, visible when two box plots are stacked"
+      },
+      {
+       "w": "variability",
+       "d": "another word for spread; how much the values in a group differ from each other"
+      }
+     ],
+     "look": {
+      "type": "data",
+      "title": "Two Pitchers, Eight Starts Each",
+      "rows": [
+       [
+        "Dana mean",
+        3
+       ],
+       [
+        "Dana median",
+        3
+       ],
+       [
+        "Dana IQR",
+        1
+       ],
+       [
+        "Marcus mean",
+        3
+       ],
+       [
+        "Marcus median",
+        1
+       ],
+       [
+        "Marcus IQR",
+        7
+       ]
+      ],
+      "unit": "runs allowed",
+      "cite": "Computed from the game lists in the chapter story",
+      "prompt": "Which two numbers in this table would you show a teammate who thinks the pitchers are the same, and what sentence would you say with them?"
+     },
+     "check": [
+      {
+       "q": "What is the median of Marcus's runs allowed: 0, 1, 0, 7, 0, 8, 1, 7?",
+       "choices": [
+        "0",
+        "1",
+        "3",
+        "4"
+       ],
+       "a": 1,
+       "why": "Sorted the list is 0, 0, 0, 1, 1, 7, 7, 8. The two middle values are 1 and 1, so the median is 1."
+      },
+      {
+       "q": "Two classes have the same median test score of 78. Class A has an IQR of 6 and class B has an IQR of 20. Which statement is true?",
+       "choices": [
+        "Class B scored higher on average",
+        "Class A's scores are more spread out",
+        "The classes have identical distributions",
+        "Class B's scores are more spread out"
+       ],
+       "a": 3,
+       "why": "A larger IQR means the middle half of the scores covers a wider stretch. Class B's IQR of 20 shows more spread, even though the centers match."
+      },
+      {
+       "q": "A survey gets 12 'yes' answers from a class of 24 and 12 'yes' answers from a class of 48. Which comparison is fair?",
+       "choices": [
+        "50% of the first class said yes but only 25% of the second",
+        "The classes agree equally, since both have 12 yes answers",
+        "25% of the first class said yes but 50% of the second",
+        "The second class agrees more, since it is bigger"
+       ],
+       "a": 0,
+       "why": "Compare percents when the groups differ in size: 12 ÷ 24 = 50% and 12 ÷ 48 = 25%."
+      }
+     ]
+    },
+    {
+     "title": "Choosing the Right Summary",
+     "mainIdea": "Report the mean and standard deviation for symmetric data with no outliers; report the median and IQR when the data are skewed or have outliers.",
+     "reading": [
+      "Every data set can be summarized two ways. The mean and standard deviation form one pair: both use every value, and both get pulled by extremes. The median and IQR form the other pair: both depend on position in the sorted list, and both resist extremes. Choosing between the pairs is a judgment about the shape of the data, so look at a dot plot, histogram or box plot before you pick.",
+      "Take the café wages: 12, 13, 13, 14, 48. The distribution is strongly skewed right, with the manager's 48 far out in the tail. The mean of 20 describes nobody. The median of 13 and the IQR describe the four ordinary workers well. For skewed data or data with outliers, report the median and IQR. Now take Dana's runs: 2, 2, 3, 3, 3, 3, 4, 4. Symmetric, no outliers, a tidy hill. Here the mean of 3 and the standard deviation tell the story completely, and they use all eight games instead of just positions in a list. For symmetric data without outliers, report the mean and standard deviation.",
+      "Compute Dana's standard deviation to see the pair in action. The mean is 3. Deviations are −1, −1, 0, 0, 0, 0, 1, 1. Squares: 1, 1, 0, 0, 0, 0, 1, 1, summing to 4. Divide by 8 to get 0.5, and take the square root: √0.5 ≈ 0.71. A typical Dana start is about 0.7 runs from her mean. For Marcus, deviations from 3 are −3, −3, −3, −2, −2, 4, 4, 5, squares 9, 9, 9, 4, 4, 16, 16, 25 summing to 92, variance 92 ÷ 8 = 11.5, standard deviation √11.5 ≈ 3.39. About five times Dana's. But notice Marcus's two-clump shape: no single center describes him well, so any summary should come with the picture.",
+      "The most common mistake is reporting a mean because it is familiar, without checking the shape. The second is reporting a spread measure from the wrong pair, like a median with a standard deviation. Keep the pairs together: mean with standard deviation, median with IQR. And when in doubt, report both pairs and show the plot. A reader can always ignore an extra number; a reader cannot recover the one you left out."
+     ],
+     "words": [
+      {
+       "w": "summary statistic",
+       "d": "one number, such as a mean or an IQR, that describes some feature of a whole data set"
+      },
+      {
+       "w": "shape",
+       "d": "the overall pattern of a distribution: symmetric, skewed, one peak or two, with or without gaps"
+      },
+      {
+       "w": "skewed",
+       "d": "describes a distribution with a longer tail on one side than the other"
+      }
+     ],
+     "look": {
+      "type": "think",
+      "title": "Pick the Pair",
+      "text": "Three data sets. Set A, ages at a kindergarten pickup: 5, 5, 5, 6, 6, 6, 6, 7, 38, 41, 44. Set B, heights in inches of a basketball team: 72, 73, 74, 75, 75, 76, 77, 78. Set C, minutes spent on homework: 0, 0, 0, 10, 15, 20, 30, 45, 60, 180.",
+      "prompt": "For each set, say whether you would report mean and standard deviation or median and IQR, and name the feature of the data that decided it."
+     },
+     "check": [
+      {
+       "q": "A data set is strongly skewed right with two large outliers. Which pair of summaries should you report?",
+       "choices": [
+        "Mean and standard deviation",
+        "Mean and range",
+        "Median and IQR",
+        "Median and standard deviation"
+       ],
+       "a": 2,
+       "why": "Skew and outliers pull the mean, standard deviation and range. The median and IQR resist them and belong together as a pair."
+      },
+      {
+       "q": "Dana's runs allowed, 2, 2, 3, 3, 3, 3, 4, 4, have mean 3. Dividing by 8, what is the standard deviation, to two decimals?",
+       "choices": [
+        "0.50",
+        "0.71",
+        "1.00",
+        "4.00"
+       ],
+       "a": 1,
+       "why": "The squared deviations are 1, 1, 0, 0, 0, 0, 1, 1, which add to 4. Then 4 ÷ 8 = 0.5 and √0.5 ≈ 0.71."
+      },
+      {
+       "q": "Which pairing of center and spread is correctly matched?",
+       "choices": [
+        "Median with standard deviation",
+        "Mean with IQR",
+        "Mean with standard deviation",
+        "Range with median"
+       ],
+       "a": 2,
+       "why": "The mean and standard deviation both use every value and are reported together; the median and IQR form the other matched pair."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "title": "Two Questions at Once",
+   "lessons": [
+    {
+     "title": "Two-Way Frequency Tables",
+     "mainIdea": "A two-way table counts people by two categories at once, with the cells giving joint counts and the margins giving totals for each category.",
+     "reading": [
+      "A school surveys 100 students with two questions: what grade are you in, and how do you get to school? Every student is in grade 9 or grade 10, and every student either rides the bus or walks. Two questions with two answers each make four combinations, and a *two-way table* has one cell for each. Say 35 ninth graders ride the bus and 25 walk, while 20 tenth graders ride the bus and 20 walk. Rows are grades, columns are how they travel. The four cells hold 35, 25, 20 and 20, which add to 100.",
+      "The numbers inside the four cells are *joint frequencies*: each one counts students who fit two categories at the same time, like 'grade 9 and bus.' Now add across each row and down each column. Row totals: grade 9 has 35 + 25 = 60 students, grade 10 has 20 + 20 = 40. Column totals: bus riders number 35 + 20 = 55, walkers number 25 + 20 = 45. These totals, written in the margins of the table, are the *marginal frequencies*. Each margin counts one category by itself, ignoring the other question. Both sets of margins add to the same grand total, 60 + 40 = 100 and 55 + 45 = 100, which is a built-in check on your arithmetic.",
+      "Reading a two-way table is a matter of finding the right cell. How many tenth graders walk? Go to the grade 10 row and the walk column: 20. How many students ride the bus in total? Read the bus column margin: 55. How many students are in grade 9? Read the grade 9 row margin: 60. A common mistake is answering a marginal question with a joint cell, like saying 35 ninth graders when the question asked for all ninth graders. Read the question twice: does it name one category or two?"
+     ],
+     "words": [
+      {
+       "w": "two-way table",
+       "d": "a table that sorts each person by two categories at once, with rows for one category and columns for the other"
+      },
+      {
+       "w": "joint frequency",
+       "d": "a count in one cell of a two-way table; the number of people in two categories at the same time"
+      },
+      {
+       "w": "marginal frequency",
+       "d": "a row total or column total of a two-way table; the count for one category alone"
+      }
+     ],
+     "look": {
+      "type": "data",
+      "title": "Grade and Way to School, 100 Students",
+      "rows": [
+       [
+        "Grade 9, bus",
+        35
+       ],
+       [
+        "Grade 9, walk",
+        25
+       ],
+       [
+        "Grade 10, bus",
+        20
+       ],
+       [
+        "Grade 10, walk",
+        20
+       ]
+      ],
+      "unit": "students",
+      "cite": "Example survey defined in this lesson",
+      "prompt": "Write the four marginal frequencies (two row totals and two column totals) and check that each pair adds to 100."
+     },
+     "check": [
+      {
+       "q": "In the survey table, how many tenth graders walk to school?",
+       "choices": [
+        "20",
+        "25",
+        "40",
+        "45"
+       ],
+       "a": 0,
+       "why": "The grade 10 row and the walk column meet at the cell holding 20 students."
+      },
+      {
+       "q": "How many of the 100 students ride the bus?",
+       "choices": [
+        "35",
+        "45",
+        "60",
+        "55"
+       ],
+       "a": 3,
+       "why": "Add the bus column: 35 ninth graders + 20 tenth graders = 55."
+      },
+      {
+       "q": "Which number in the table is a marginal frequency?",
+       "choices": [
+        "35, the ninth graders who ride the bus",
+        "20, the tenth graders who walk",
+        "60, all the ninth graders",
+        "25, the ninth graders who walk"
+       ],
+       "a": 2,
+       "why": "A marginal frequency is a row or column total. The 60 is the grade 9 row total, counting one category alone."
+      }
+     ]
+    },
+    {
+     "title": "Conditional Relative Frequencies",
+     "mainIdea": "A conditional relative frequency divides a cell by its row or column total, which lets you compare groups of different sizes and look for an association.",
+     "reading": [
+      "The survey table says 35 ninth graders and 20 tenth graders ride the bus. Does that mean ninth graders like the bus more? Not yet. There are 60 ninth graders and only 40 tenth graders, so of course the ninth grade has more of everything. To compare fairly, turn counts into fractions of the right group. A *relative frequency* is a cell count divided by some total. Divide by the grand total, 100, and you get the joint relative frequency: 35 ÷ 100 = 0.35, so 35% of all students are ninth graders who ride the bus.",
+      "The more useful move is to divide by a row or column total. That gives a *conditional relative frequency*, because you are asking a question on the condition that someone belongs to a certain group. Among ninth graders, what fraction ride the bus? Divide the cell by the row total: 35 ÷ 60 ≈ 0.583, about 58%. Among tenth graders: 20 ÷ 40 = 0.50, exactly 50%. Now the comparison is fair. Ninth graders are somewhat more likely to ride the bus than tenth graders, 58% versus 50%.",
+      "You can condition on the columns instead. Among bus riders, what fraction are in grade 9? Divide by the column total: 35 ÷ 55 ≈ 0.636, about 64%. Among walkers: 25 ÷ 45 ≈ 0.556, about 56%. Notice that 'the fraction of ninth graders who ride the bus' (58%) and 'the fraction of bus riders who are ninth graders' (64%) are different questions with different answers. The most common mistake in this whole topic is dividing by the wrong total. Say the condition out loud: 'of the ninth graders' means divide by 60; 'of the bus riders' means divide by 55.",
+      "When the conditional relative frequencies differ from group to group, the two categories have an *association*: knowing a student's grade tells you something about how they travel. If every row gave the same percents, the categories would be independent of each other. Here the gap is 58% versus 50%, a modest association. Whether a gap that size matters is a question for later courses; for now, the skill is computing the right fraction and stating clearly which group it describes."
+     ],
+     "words": [
+      {
+       "w": "relative frequency",
+       "d": "a count divided by a total, written as a fraction, decimal or percent"
+      },
+      {
+       "w": "conditional relative frequency",
+       "d": "a cell count divided by its row total or column total; the fraction of one group that falls in a category"
+      },
+      {
+       "w": "association",
+       "d": "a relationship between two categories, shown when the conditional relative frequencies differ from row to row"
+      }
+     ],
+     "look": {
+      "type": "think",
+      "title": "Which Total?",
+      "text": "A club surveys 80 members about whether they own a bike. Of 50 freshmen, 30 own a bike. Of 30 sophomores, 21 own a bike. Fill in a two-way table: freshmen with and without a bike, sophomores with and without, plus all totals.",
+      "prompt": "What percent of freshmen own a bike? What percent of sophomores? Is there an association between grade and owning a bike, and which grade is more likely to own one?"
+     },
+     "check": [
+      {
+       "q": "Of the 40 tenth graders, 20 walk to school. What percent of tenth graders walk?",
+       "choices": [
+        "20%",
+        "40%",
+        "80%",
+        "50%"
+       ],
+       "a": 3,
+       "why": "Condition on tenth graders, so divide by the row total: 20 ÷ 40 = 0.50 = 50%."
+      },
+      {
+       "q": "Of the 45 walkers, 25 are in grade 9. About what percent of walkers are ninth graders?",
+       "choices": [
+        "25%",
+        "42%",
+        "56%",
+        "64%"
+       ],
+       "a": 2,
+       "why": "Condition on walkers, so divide by the column total: 25 ÷ 45 ≈ 0.556, about 56%."
+      },
+      {
+       "q": "What is the joint relative frequency of students who are in grade 9 and ride the bus?",
+       "choices": [
+        "35%",
+        "58%",
+        "60%",
+        "64%"
+       ],
+       "a": 0,
+       "why": "A joint relative frequency divides the cell by the grand total: 35 ÷ 100 = 35%."
+      }
+     ]
+    },
+    {
+     "title": "Reading Data Honestly",
+     "mainIdea": "Check the axis, the sample and the choice of summary before you believe a graph or a statistic, because each one can be bent to mislead.",
+     "reading": [
+      "A poster shows two bars: last year's test average, 50, and this year's, 52. The bar for 52 is twice as tall as the bar for 50. How? The vertical axis does not start at 0. It starts at 48. Measured from 48, the first bar is 2 units tall and the second is 4 units tall, so it looks like a doubling. The real change is 52 ÷ 50 = 1.04, a 4% rise. A *truncated axis*, one that cuts off the bottom, is the most common trick in graphs. Always find the number where the axis begins before you compare bar heights.",
+      "The second thing to check is who was asked. A gym hands out a survey about exercise habits to its own members and reports that 90% of people exercise three times a week. The *sample*, the group that was actually measured, is gym members, and gym members are not typical of everyone. The sample is *biased*: it leans in one direction before a single question is asked. A fair sample gives every person in the group you care about a chance to be picked. Small samples are a related problem: a 3-out-of-4 result from four people is not a 75% result for a school of 1,600.",
+      "The third check is the summary itself. A company with 40 workers earning $40,000 and one owner earning $2,000,000 can honestly say its mean salary is over $87,000: the total is 1,600,000 + 2,000,000 = 3,600,000, divided by 41 is about $87,800. The median is $40,000. Both numbers are true. Only one of them describes a typical worker. When you see an average, ask which kind, and ask what the shape of the data looks like. When you see a percent, ask what the total was. When you see a graph, find zero on the axis.",
+      "None of this makes statistics untrustworthy. It makes you a careful reader. The same tools that can mislead, axes, samples and summaries, are the tools that tell the truth when used well. A histogram with an honest axis, a sample chosen fairly and a summary that fits the shape of the data is the strongest kind of argument there is. Your job as a reader is to check that all three are in place, and your job as a writer is to make sure they are."
+     ],
+     "words": [
+      {
+       "w": "truncated axis",
+       "d": "a graph axis that does not start at zero, which exaggerates small differences between bars"
+      },
+      {
+       "w": "sample",
+       "d": "the group of people or things that were actually measured, chosen from a larger population"
+      },
+      {
+       "w": "biased",
+       "d": "describes a sample or method that leans toward one answer before the data are even collected"
+      }
+     ],
+     "look": {
+      "type": "think",
+      "title": "Two Versions of One Graph",
+      "text": "A bar graph shows monthly bus riders for two routes: Route A with 1,020 riders and Route B with 1,050 riders. Version 1 has an axis from 0 to 1,200. Version 2 has an axis from 1,000 to 1,060. In version 2, Route B's bar is 50 units tall and Route A's is 20 units tall.",
+      "prompt": "How many times taller does Route B's bar look in version 2? What is the real ratio of riders? Which version would you use if you wanted to sell a plan that cuts Route A?"
+     },
+     "check": [
+      {
+       "q": "A bar graph's axis starts at 48. One bar shows 50 and another shows 52. How many times taller does the 52 bar look compared with the 50 bar?",
+       "choices": [
+        "1.04 times",
+        "1.5 times",
+        "2 times",
+        "4 times"
+       ],
+       "a": 2,
+       "why": "Measured from 48, the bars are 2 units and 4 units tall, and 4 ÷ 2 = 2, even though 52 ÷ 50 is only 1.04."
+      },
+      {
+       "q": "A company has 40 workers earning $40,000 and one owner earning $2,000,000. Which summary better describes a typical worker's pay?",
+       "choices": [
+        "The mean, about $87,800",
+        "The median, $40,000",
+        "The range, $1,960,000",
+        "The total, $3,600,000"
+       ],
+       "a": 1,
+       "why": "The median is the middle of the sorted list, which is $40,000; the mean is dragged up by the single $2,000,000 salary."
+      },
+      {
+       "q": "A gym surveys its own members and reports that 90% of people exercise three times a week. What is the main problem?",
+       "choices": [
+        "The sample is biased toward people who already exercise",
+        "The percent was calculated wrong",
+        "The axis of the graph is truncated",
+        "The mean should have been the median"
+       ],
+       "a": 0,
+       "why": "Gym members are not typical of all people, so a sample made only of them leans toward high exercise before any question is asked."
+      }
+     ]
+    }
+   ]
+  }
  ],
  "review": [
-  {"q": "A dot plot has a tall stack of dots on the right and a long thin tail stretching left. Its shape is best described as:", "choices": ["Symmetric", "Skewed right", "Skewed left", "Uniform"], "a": 2, "why": "A skew is named for its tail. The tail stretches left, so the distribution is skewed left."},
-  {"q": "A histogram of 40 test scores has bins 50 to 59, 60 to 69, 70 to 79, 80 to 89 and 90 to 99 with counts 3, 7, 14, 11 and 5. How many scores are 80 or higher?", "choices": ["11", "16", "24", "29"], "a": 1, "why": "Add the last two bins: 11 + 5 = 16 scores."},
-  {"q": "What is the median of 7, 2, 9, 4, 11, 6, 3?", "choices": ["4", "6", "7", "9"], "a": 1, "why": "Sorted: 2, 3, 4, 6, 7, 9, 11. The middle of seven values is the 4th, which is 6."},
-  {"q": "The data set 10, 12, 15, 18, 25 has mean 16. Which value has a deviation of −4?", "choices": ["10", "12", "18", "25"], "a": 1, "why": "Deviation is value minus mean: 12 − 16 = −4."},
-  {"q": "A data set has Q1 = 12 and Q3 = 20. Which value would be flagged as an outlier by the 1.5 × IQR rule?", "choices": ["1", "5", "30", "33"], "a": 3, "why": "IQR = 8 and 1.5 × 8 = 12. The fences are 12 − 12 = 0 and 20 + 12 = 32. Only 33 is past a fence."},
-  {"q": "Two runners have the same mean 5K time of 24 minutes. Runner A's times have a standard deviation of 0.5 minutes; Runner B's have 4 minutes. What can you conclude?", "choices": ["Runner A is faster on average", "Runner B is faster on average", "Runner A's times are more consistent", "Runner B's times are more consistent"], "a": 2, "why": "Their means are equal, so neither is faster on average. A smaller standard deviation means times closer to the mean, so Runner A is more consistent."},
-  {"q": "In a two-way table, 30 of 50 freshmen and 21 of 30 sophomores own a bike. What percent of sophomores own a bike?", "choices": ["21%", "30%", "60%", "70%"], "a": 3, "why": "Condition on sophomores: 21 ÷ 30 = 0.70 = 70%. The freshmen rate is 30 ÷ 50 = 60%."},
-  {"q": "A graph's vertical axis starts at 95 instead of 0, and bars of 96 and 99 are drawn. What is the effect?", "choices": ["The difference between 96 and 99 looks much larger than it is", "The difference looks smaller than it is", "The bars are drawn in the wrong order", "The graph shows the median instead of the mean"], "a": 0, "why": "From a base of 95 the bars are 1 unit and 4 units tall, so a 3% difference looks like a fourfold one. A truncated axis exaggerates."}
+  {
+   "q": "A dot plot has a tall stack of dots on the right and a long thin tail stretching left. Its shape is best described as:",
+   "choices": [
+    "Symmetric",
+    "Skewed right",
+    "Uniform",
+    "Skewed left"
+   ],
+   "a": 3,
+   "why": "A skew is named for its tail. The tail stretches left, so the distribution is skewed left."
+  },
+  {
+   "q": "A histogram of 40 test scores has bins 50 to 59, 60 to 69, 70 to 79, 80 to 89 and 90 to 99 with counts 3, 7, 14, 11 and 5. How many scores are 80 or higher?",
+   "choices": [
+    "16",
+    "11",
+    "24",
+    "29"
+   ],
+   "a": 0,
+   "why": "Add the last two bins: 11 + 5 = 16 scores."
+  },
+  {
+   "q": "What is the median of 7, 2, 9, 4, 11, 6, 3?",
+   "choices": [
+    "4",
+    "6",
+    "7",
+    "9"
+   ],
+   "a": 1,
+   "why": "Sorted: 2, 3, 4, 6, 7, 9, 11. The middle of seven values is the 4th, which is 6."
+  },
+  {
+   "q": "The data set 10, 12, 15, 18, 25 has mean 16. Which value has a deviation of −4?",
+   "choices": [
+    "12",
+    "10",
+    "18",
+    "25"
+   ],
+   "a": 0,
+   "why": "Deviation is value minus mean: 12 − 16 = −4."
+  },
+  {
+   "q": "A data set has Q1 = 12 and Q3 = 20. Which value would be flagged as an outlier by the 1.5 × IQR rule?",
+   "choices": [
+    "1",
+    "5",
+    "30",
+    "33"
+   ],
+   "a": 3,
+   "why": "IQR = 8 and 1.5 × 8 = 12. The fences are 12 − 12 = 0 and 20 + 12 = 32. Only 33 is past a fence."
+  },
+  {
+   "q": "Two runners have the same mean 5K time of 24 minutes. Runner A's times have a standard deviation of 0.5 minutes; Runner B's have 4 minutes. What can you conclude?",
+   "choices": [
+    "Runner A is faster on average",
+    "Runner B is faster on average",
+    "Runner A's times are more consistent",
+    "Runner B's times are more consistent"
+   ],
+   "a": 2,
+   "why": "Their means are equal, so neither is faster on average. A smaller standard deviation means times closer to the mean, so Runner A is more consistent."
+  },
+  {
+   "q": "In a two-way table, 30 of 50 freshmen and 21 of 30 sophomores own a bike. What percent of sophomores own a bike?",
+   "choices": [
+    "21%",
+    "30%",
+    "60%",
+    "70%"
+   ],
+   "a": 3,
+   "why": "Condition on sophomores: 21 ÷ 30 = 0.70 = 70%. The freshmen rate is 30 ÷ 50 = 60%."
+  },
+  {
+   "q": "A graph's vertical axis starts at 95 instead of 0, and bars of 96 and 99 are drawn. What is the effect?",
+   "choices": [
+    "The difference between 96 and 99 looks much larger than it is",
+    "The difference looks smaller than it is",
+    "The bars are drawn in the wrong order",
+    "The graph shows the median instead of the mean"
+   ],
+   "a": 0,
+   "why": "From a base of 95 the bars are 1 unit and 4 units tall, so a 3% difference looks like a fourfold one. A truncated axis exaggerates."
+  }
  ]
 }

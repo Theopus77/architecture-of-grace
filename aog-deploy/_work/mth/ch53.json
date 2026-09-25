@@ -15,315 +15,951 @@
   "think": "The volume table peaked somewhere between a 3-inch and a 4-inch cut. How could you narrow down the best cut without cutting a hundred sample boxes?"
  },
  "sections": [
-  {"title": "Complex Numbers", "lessons": [
-   {
-    "title": "The Number i",
-    "mainIdea": "The imaginary unit i is defined by i^2 = −1, so every square root of a negative number can be written as a real number times i.",
-    "reading": [
-     "Try to solve x^2 + 4 = 0. Subtract 4 from both sides: x^2 = −4. No real number works, because a real number squared is never negative. For centuries that was the end of the story. Then mathematicians invented a new number. The *imaginary unit*, written i, is the number whose square is −1. With it, √(−4) = √4 × √(−1) = 2i. Check: (2i)^2 = 4 × i^2 = 4 × (−1) = −4. So x = 2i and x = −2i both solve the equation.",
-     "Any square root of a negative number follows the same pattern. Pull out the −1 as i, then take the ordinary square root of what is left. √(−25) = 5i. √(−49) = 7i. √(−12) = √12 × i = 2√3 i. A number like 5i is called an *imaginary number*, while the numbers you already know, such as −3, 0.75 and π, are *real numbers*. Both kinds are needed to solve every polynomial equation.",
-     "Powers of i repeat in a cycle of four. i^1 = i, i^2 = −1, i^3 = i^2 × i = −i, and i^4 = i^2 × i^2 = (−1)(−1) = 1. After that the cycle starts over: i^5 = i, i^6 = −1. To find a large power, divide the exponent by 4 and use the remainder. For i^10, 10 = 4 × 2 + 2, so i^10 = i^2 = −1. For i^15, the remainder is 3, so i^15 = −i.",
-     "One mistake catches almost everyone. The rule √a × √b = √(ab) works only for nonnegative numbers. A student writes √(−9) × √(−4) = √36 = 6. That is wrong. Convert to i first: √(−9) = 3i and √(−4) = 2i, so the product is 3i × 2i = 6i^2 = 6 × (−1) = −6. Always rewrite negatives under a root as i before multiplying."
-    ],
-    "words": [
-     {"w": "imaginary unit", "d": "the number i, defined so that i^2 = −1"},
-     {"w": "imaginary number", "d": "a real number times i, such as 5i or −2i"},
-     {"w": "real number", "d": "any number on the number line, such as −3, 0, 1/2, √2 or π"}
-    ],
-    "look": {
-     "type": "data",
-     "title": "Even Powers of i",
-     "rows": [["i^2", -1], ["i^4", 1], ["i^6", -1], ["i^8", 1], ["i^10", -1], ["i^12", 1]],
-     "unit": "value",
-     "cite": "computed from the definition i^2 = −1",
-     "prompt": "The table shows only even powers. What are i^3, i^5 and i^7, and why do odd powers never equal 1 or −1?"
+  {
+   "title": "Complex Numbers",
+   "lessons": [
+    {
+     "title": "The Number i",
+     "mainIdea": "The imaginary unit i is defined by i^2 = −1, so every square root of a negative number can be written as a real number times i.",
+     "reading": [
+      "Try to solve x^2 + 4 = 0. Subtract 4 from both sides: x^2 = −4. No real number works, because a real number squared is never negative. For centuries that was the end of the story. Then mathematicians invented a new number. The *imaginary unit*, written i, is the number whose square is −1. With it, √(−4) = √4 × √(−1) = 2i. Check: (2i)^2 = 4 × i^2 = 4 × (−1) = −4. So x = 2i and x = −2i both solve the equation.",
+      "Any square root of a negative number follows the same pattern. Pull out the −1 as i, then take the ordinary square root of what is left. √(−25) = 5i. √(−49) = 7i. √(−12) = √12 × i = 2√3 i. A number like 5i is called an *imaginary number*, while the numbers you already know, such as −3, 0.75 and π, are *real numbers*. Both kinds are needed to solve every polynomial equation.",
+      "Powers of i repeat in a cycle of four. i^1 = i, i^2 = −1, i^3 = i^2 × i = −i, and i^4 = i^2 × i^2 = (−1)(−1) = 1. After that the cycle starts over: i^5 = i, i^6 = −1. To find a large power, divide the exponent by 4 and use the remainder. For i^10, 10 = 4 × 2 + 2, so i^10 = i^2 = −1. For i^15, the remainder is 3, so i^15 = −i.",
+      "One mistake catches almost everyone. The rule √a × √b = √(ab) works only for nonnegative numbers. A student writes √(−9) × √(−4) = √36 = 6. That is wrong. Convert to i first: √(−9) = 3i and √(−4) = 2i, so the product is 3i × 2i = 6i^2 = 6 × (−1) = −6. Always rewrite negatives under a root as i before multiplying."
+     ],
+     "words": [
+      {
+       "w": "imaginary unit",
+       "d": "the number i, defined so that i^2 = −1"
+      },
+      {
+       "w": "imaginary number",
+       "d": "a real number times i, such as 5i or −2i"
+      },
+      {
+       "w": "real number",
+       "d": "any number on the number line, such as −3, 0, 1/2, √2 or π"
+      }
+     ],
+     "look": {
+      "type": "data",
+      "title": "Even Powers of i",
+      "rows": [
+       [
+        "i^2",
+        -1
+       ],
+       [
+        "i^4",
+        1
+       ],
+       [
+        "i^6",
+        -1
+       ],
+       [
+        "i^8",
+        1
+       ],
+       [
+        "i^10",
+        -1
+       ],
+       [
+        "i^12",
+        1
+       ]
+      ],
+      "unit": "value",
+      "cite": "computed from the definition i^2 = −1",
+      "prompt": "The table shows only even powers. What are i^3, i^5 and i^7, and why do odd powers never equal 1 or −1?"
+     },
+     "check": [
+      {
+       "q": "Write √(−25) using i.",
+       "choices": [
+        "5i",
+        "−5",
+        "25i",
+        "5"
+       ],
+       "a": 0,
+       "why": "√(−25) = √25 × √(−1) = 5i. Check: (5i)^2 = 25 × (−1) = −25."
+      },
+      {
+       "q": "What is i^7?",
+       "choices": [
+        "i",
+        "−1",
+        "−i",
+        "1"
+       ],
+       "a": 2,
+       "why": "7 = 4 × 1 + 3, so i^7 = i^3 = −i. The cycle is i, −1, −i, 1."
+      },
+      {
+       "q": "Simplify √(−9) × √(−16).",
+       "choices": [
+        "12",
+        "−12",
+        "12i",
+        "−12i"
+       ],
+       "a": 1,
+       "why": "Convert first: 3i × 4i = 12 i^2 = −12. Multiplying under the root to get √144 = 12 is the common error."
+      }
+     ]
     },
-    "check": [
-     {"q": "Write √(−25) using i.", "choices": ["5i", "−5", "25i", "5"], "a": 0, "why": "√(−25) = √25 × √(−1) = 5i. Check: (5i)^2 = 25 × (−1) = −25."},
-     {"q": "What is i^7?", "choices": ["i", "−1", "−i", "1"], "a": 2, "why": "7 = 4 × 1 + 3, so i^7 = i^3 = −i. The cycle is i, −1, −i, 1."},
-     {"q": "Simplify √(−9) × √(−16).", "choices": ["12", "−12", "12i", "−12i"], "a": 1, "why": "Convert first: 3i × 4i = 12 i^2 = −12. Multiplying under the root to get √144 = 12 is the common error."}
-    ]
-   },
-   {
-    "title": "Arithmetic with Complex Numbers",
-    "mainIdea": "A complex number a + bi is added like binomials, multiplied with i^2 = −1, and divided by multiplying top and bottom by the conjugate.",
-    "reading": [
-     "A *complex number* has the form a + bi, where a is the *real part* and b is the *imaginary part*. For 3 + 2i, the real part is 3 and the imaginary part is 2. To add or subtract, combine real parts with real parts and imaginary parts with imaginary parts. (3 + 2i) + (1 − 5i) = (3 + 1) + (2 − 5)i = 4 − 3i. Subtraction works the same way: (3 + 2i) − (1 − 5i) = 2 + 7i. Watch the sign on the second imaginary part.",
-     "To multiply, distribute every term as with binomials, then replace i^2 with −1. Take (2 + 3i)(4 − i). First: 2 × 4 = 8. Outer: 2 × (−i) = −2i. Inner: 3i × 4 = 12i. Last: 3i × (−i) = −3i^2 = −3(−1) = 3. Add them: 8 − 2i + 12i + 3 = 11 + 10i. The step most students skip is the last one, turning −3i^2 into +3. Without it the real part comes out wrong.",
-     "The *conjugate* of a + bi is a − bi, the same number with the sign of the imaginary part flipped. Multiply a complex number by its conjugate and the i disappears: (3 + 2i)(3 − 2i) = 9 − 6i + 6i − 4i^2 = 9 + 4 = 13. That trick lets you divide. To compute (5 + i) ÷ (2 − i), multiply top and bottom by 2 + i. Top: (5 + i)(2 + i) = 10 + 5i + 2i + i^2 = 9 + 7i. Bottom: (2 − i)(2 + i) = 4 + 1 = 5. The answer is 9/5 + (7/5)i."
-    ],
-    "words": [
-     {"w": "complex number", "d": "a number of the form a + bi, where a and b are real numbers"},
-     {"w": "real part", "d": "the a in a + bi; for 3 + 2i the real part is 3"},
-     {"w": "imaginary part", "d": "the b in a + bi; for 3 + 2i the imaginary part is 2"},
-     {"w": "conjugate", "d": "the number a − bi paired with a + bi; their product is the real number a^2 + b^2"}
-    ],
-    "look": {
-     "type": "think",
-     "title": "Squaring 1 + i",
-     "text": "Compute (1 + i)^2 by multiplying (1 + i)(1 + i). First 1, outer i, inner i, last i^2 = −1. Add: 1 + i + i − 1 = 2i. So (1 + i)^2 = 2i, a purely imaginary number. Now use that result to go further without multiplying four factors.",
-     "prompt": "Find (1 + i)^4 by squaring 2i. Then explain why (1 + i)^8 must be a positive real number."
+    {
+     "title": "Arithmetic with Complex Numbers",
+     "mainIdea": "A complex number a + bi is added like binomials, multiplied with i^2 = −1, and divided by multiplying top and bottom by the conjugate.",
+     "reading": [
+      "A *complex number* has the form a + bi, where a is the *real part* and b is the *imaginary part*. For 3 + 2i, the real part is 3 and the imaginary part is 2. To add or subtract, combine real parts with real parts and imaginary parts with imaginary parts. (3 + 2i) + (1 − 5i) = (3 + 1) + (2 − 5)i = 4 − 3i. Subtraction works the same way: (3 + 2i) − (1 − 5i) = 2 + 7i. Watch the sign on the second imaginary part.",
+      "To multiply, distribute every term as with binomials, then replace i^2 with −1. Take (2 + 3i)(4 − i). First: 2 × 4 = 8. Outer: 2 × (−i) = −2i. Inner: 3i × 4 = 12i. Last: 3i × (−i) = −3i^2 = −3(−1) = 3. Add them: 8 − 2i + 12i + 3 = 11 + 10i. The step most students skip is the last one, turning −3i^2 into +3. Without it the real part comes out wrong.",
+      "The *conjugate* of a + bi is a − bi, the same number with the sign of the imaginary part flipped. Multiply a complex number by its conjugate and the i disappears: (3 + 2i)(3 − 2i) = 9 − 6i + 6i − 4i^2 = 9 + 4 = 13. That trick lets you divide. To compute (5 + i) ÷ (2 − i), multiply top and bottom by 2 + i. Top: (5 + i)(2 + i) = 10 + 5i + 2i + i^2 = 9 + 7i. Bottom: (2 − i)(2 + i) = 4 + 1 = 5. The answer is 9/5 + (7/5)i."
+     ],
+     "words": [
+      {
+       "w": "complex number",
+       "d": "a number of the form a + bi, where a and b are real numbers"
+      },
+      {
+       "w": "real part",
+       "d": "the a in a + bi; for 3 + 2i the real part is 3"
+      },
+      {
+       "w": "imaginary part",
+       "d": "the b in a + bi; for 3 + 2i the imaginary part is 2"
+      },
+      {
+       "w": "conjugate",
+       "d": "the number a − bi paired with a + bi; their product is the real number a^2 + b^2"
+      }
+     ],
+     "look": {
+      "type": "think",
+      "title": "Squaring 1 + i",
+      "text": "Compute (1 + i)^2 by multiplying (1 + i)(1 + i). First 1, outer i, inner i, last i^2 = −1. Add: 1 + i + i − 1 = 2i. So (1 + i)^2 = 2i, a purely imaginary number. Now use that result to go further without multiplying four factors.",
+      "prompt": "Find (1 + i)^4 by squaring 2i. Then explain why (1 + i)^8 must be a positive real number."
+     },
+     "check": [
+      {
+       "q": "Simplify (4 + 3i) − (1 − 2i).",
+       "choices": [
+        "3 + i",
+        "5 + 5i",
+        "3 + 5i",
+        "3 − 5i"
+       ],
+       "a": 2,
+       "why": "Real parts: 4 − 1 = 3. Imaginary parts: 3 − (−2) = 5. The result is 3 + 5i."
+      },
+      {
+       "q": "Multiply (2 + i)(3 + 2i).",
+       "choices": [
+        "6 + 7i",
+        "4 + 7i",
+        "8 + 7i",
+        "4 + 5i"
+       ],
+       "a": 1,
+       "why": "6 + 4i + 3i + 2i^2 = 6 + 7i − 2 = 4 + 7i. Forgetting that 2i^2 = −2 gives 6 + 7i."
+      },
+      {
+       "q": "What is (5 + 2i)(5 − 2i)?",
+       "choices": [
+        "21",
+        "25",
+        "25 − 4i",
+        "29"
+       ],
+       "a": 3,
+       "why": "25 − 10i + 10i − 4i^2 = 25 + 4 = 29. A conjugate product is always a^2 + b^2."
+      }
+     ]
     },
-    "check": [
-     {"q": "Simplify (4 + 3i) − (1 − 2i).", "choices": ["3 + i", "5 + 5i", "3 + 5i", "3 − 5i"], "a": 2, "why": "Real parts: 4 − 1 = 3. Imaginary parts: 3 − (−2) = 5. The result is 3 + 5i."},
-     {"q": "Multiply (2 + i)(3 + 2i).", "choices": ["6 + 7i", "4 + 7i", "8 + 7i", "4 + 5i"], "a": 1, "why": "6 + 4i + 3i + 2i^2 = 6 + 7i − 2 = 4 + 7i. Forgetting that 2i^2 = −2 gives 6 + 7i."},
-     {"q": "What is (5 + 2i)(5 − 2i)?", "choices": ["21", "25", "25 − 4i", "29"], "a": 3, "why": "25 − 10i + 10i − 4i^2 = 25 + 4 = 29. A conjugate product is always a^2 + b^2."}
-    ]
-   },
-   {
-    "title": "Quadratics with Complex Solutions",
-    "mainIdea": "When the discriminant b^2 − 4ac is negative, the quadratic formula gives two complex solutions that are conjugates of each other.",
-    "reading": [
-     "A ball tossed upward from a balcony has a height that follows a quadratic. Ask when it reaches a height it never gets to, and the algebra answers with complex numbers. Take x^2 − 4x + 13 = 0. The *quadratic formula* says x = (−b ± √(b^2 − 4ac)) / (2a) with a = 1, b = −4, c = 13. The *discriminant* is b^2 − 4ac = 16 − 52 = −36. It is negative, so there are no real solutions.",
-     "Keep going anyway. √(−36) = 6i, so x = (4 ± 6i) / 2 = 2 ± 3i. The two solutions are 2 + 3i and 2 − 3i, a *conjugate pair*. Check one of them: (2 + 3i)^2 = 4 + 12i + 9i^2 = −5 + 12i. Then −4(2 + 3i) = −8 − 12i. Add 13: (−5 + 12i) + (−8 − 12i) + 13 = 0. It works. Divide every term by 2a, not just the real part; writing 4 ± 6i is a frequent slip.",
-     "The discriminant tells the story before you solve. Positive means two real solutions, zero means one repeated real solution, and negative means two complex conjugate solutions. For x^2 + 9 = 0 the shortcut is faster: x^2 = −9, so x = ±3i. Either way, every quadratic with real coefficients now has exactly two solutions when you count complex ones."
-    ],
-    "words": [
-     {"w": "discriminant", "d": "the value b^2 − 4ac inside the square root of the quadratic formula"},
-     {"w": "quadratic formula", "d": "x = (−b ± √(b^2 − 4ac)) / (2a), the solution of ax^2 + bx + c = 0"},
-     {"w": "conjugate pair", "d": "two complex numbers a + bi and a − bi; complex solutions of real quadratics always come in such pairs"}
-    ],
-    "look": {
-     "type": "think",
-     "title": "Two Steps Past the Square Root",
-     "text": "Solve x^2 + 2x + 5 = 0. Here a = 1, b = 2, c = 5, so the discriminant is 4 − 20 = −16 and √(−16) = 4i. The formula gives x = (−2 ± 4i) / 2. Divide both parts by 2: x = −1 ± 2i. The solutions are −1 + 2i and −1 − 2i.",
-     "prompt": "Solve x^2 − 6x + 10 = 0 the same way. What is the discriminant, and what are the two solutions?"
+    {
+     "title": "Quadratics with Complex Solutions",
+     "mainIdea": "When the discriminant b^2 − 4ac is negative, the quadratic formula gives two complex solutions that are conjugates of each other.",
+     "reading": [
+      "A ball tossed upward from a balcony has a height that follows a quadratic. Ask when it reaches a height it never gets to, and the algebra answers with complex numbers. Take x^2 − 4x + 13 = 0. The *quadratic formula* says x = (−b ± √(b^2 − 4ac)) / (2a) with a = 1, b = −4, c = 13. The *discriminant* is b^2 − 4ac = 16 − 52 = −36. It is negative, so there are no real solutions.",
+      "Keep going anyway. √(−36) = 6i, so x = (4 ± 6i) / 2 = 2 ± 3i. The two solutions are 2 + 3i and 2 − 3i, a *conjugate pair*. Check one of them: (2 + 3i)^2 = 4 + 12i + 9i^2 = −5 + 12i. Then −4(2 + 3i) = −8 − 12i. Add 13: (−5 + 12i) + (−8 − 12i) + 13 = 0. It works. Divide every term by 2a, not just the real part; writing 4 ± 6i is a frequent slip.",
+      "The discriminant tells the story before you solve. Positive means two real solutions, zero means one repeated real solution, and negative means two complex conjugate solutions. For x^2 + 9 = 0 the shortcut is faster: x^2 = −9, so x = ±3i. Either way, every quadratic with real coefficients now has exactly two solutions when you count complex ones."
+     ],
+     "words": [
+      {
+       "w": "discriminant",
+       "d": "the value b^2 − 4ac inside the square root of the quadratic formula"
+      },
+      {
+       "w": "quadratic formula",
+       "d": "x = (−b ± √(b^2 − 4ac)) / (2a), the solution of ax^2 + bx + c = 0"
+      },
+      {
+       "w": "conjugate pair",
+       "d": "two complex numbers a + bi and a − bi; complex solutions of real quadratics always come in such pairs"
+      }
+     ],
+     "look": {
+      "type": "think",
+      "title": "Two Steps Past the Square Root",
+      "text": "Solve x^2 + 2x + 5 = 0. Here a = 1, b = 2, c = 5, so the discriminant is 4 − 20 = −16 and √(−16) = 4i. The formula gives x = (−2 ± 4i) / 2. Divide both parts by 2: x = −1 ± 2i. The solutions are −1 + 2i and −1 − 2i.",
+      "prompt": "Solve x^2 − 6x + 10 = 0 the same way. What is the discriminant, and what are the two solutions?"
+     },
+     "check": [
+      {
+       "q": "What is the discriminant of x^2 + 4x + 8 = 0?",
+       "choices": [
+        "−16",
+        "16",
+        "48",
+        "−48"
+       ],
+       "a": 0,
+       "why": "b^2 − 4ac = 16 − 32 = −16. Adding instead of subtracting gives 48."
+      },
+      {
+       "q": "Solve x^2 + 16 = 0.",
+       "choices": [
+        "x = 4 and x = −4",
+        "x = 4i only",
+        "x = 4i and x = −4i",
+        "x = 16i and x = −16i"
+       ],
+       "a": 2,
+       "why": "x^2 = −16, so x = ±√(−16) = ±4i. Both signs are solutions."
+      },
+      {
+       "q": "Solve x^2 − 2x + 10 = 0.",
+       "choices": [
+        "1 ± 3i",
+        "−1 ± 3i",
+        "2 ± 6i",
+        "1 ± 6i"
+       ],
+       "a": 0,
+       "why": "Discriminant 4 − 40 = −36, so x = (2 ± 6i) / 2 = 1 ± 3i. Forgetting to divide the 6i by 2 gives 1 ± 6i."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "title": "Dividing Polynomials",
+   "lessons": [
+    {
+     "title": "Long Division of Polynomials",
+     "mainIdea": "Polynomial long division repeats one cycle: divide the leading terms, multiply, subtract, bring down, until the remainder has smaller degree than the divisor.",
+     "reading": [
+      "Dividing 4 into 93 gives 23 with 1 left over, and 93 = 4 × 23 + 1. Polynomials divide the same way. The polynomial being divided is the *dividend*, the one you divide by is the *divisor*, the result is the *quotient*, and what is left is the *remainder*. Divide 2x^3 + 3x^2 − 5x + 4 by x + 2. Ask how many times x goes into 2x^3: the answer is 2x^2, the first term of the quotient.",
+      "Multiply 2x^2 by the divisor: 2x^2(x + 2) = 2x^3 + 4x^2. Subtract from the dividend: (2x^3 + 3x^2) − (2x^3 + 4x^2) = −x^2. Bring down the −5x to get −x^2 − 5x. Repeat: −x^2 ÷ x = −x. Multiply: −x(x + 2) = −x^2 − 2x. Subtract: −5x − (−2x) = −3x. Bring down the 4: −3x + 4. Once more: −3x ÷ x = −3, and −3(x + 2) = −3x − 6. Subtract: 4 − (−6) = 10.",
+      "The quotient is 2x^2 − x − 3 and the remainder is 10. In one line: 2x^3 + 3x^2 − 5x + 4 = (x + 2)(2x^2 − x − 3) + 10. Check by multiplying. (x + 2)(2x^2 − x − 3) = 2x^3 − x^2 − 3x + 4x^2 − 2x − 6. That simplifies to 2x^3 + 3x^2 − 5x − 6. Adding 10 gives the original polynomial. Sign errors in the subtract step cause most wrong answers. Subtract the whole line, including the minus signs.",
+      "If a power is missing, hold its place with a zero. To divide x^3 − 8 by x − 2, write the dividend as x^3 + 0x^2 + 0x − 8 so the columns line up. The cycle gives x^2, then 2x, then 4, with remainder 0. So x^3 − 8 = (x − 2)(x^2 + 2x + 4). A remainder of 0 means the divisor is a factor, an idea the next two lessons build on."
+     ],
+     "words": [
+      {
+       "w": "dividend",
+       "d": "the polynomial being divided"
+      },
+      {
+       "w": "divisor",
+       "d": "the polynomial you divide by"
+      },
+      {
+       "w": "quotient",
+       "d": "the result of a division, not counting the remainder"
+      },
+      {
+       "w": "remainder",
+       "d": "what is left after dividing; its degree is less than the divisor's degree"
+      }
+     ],
+     "look": {
+      "type": "think",
+      "title": "A Division with Nothing Left",
+      "text": "Divide x^2 + 5x + 6 by x + 2. First term: x^2 ÷ x = x. Multiply x(x + 2) = x^2 + 2x and subtract to get 3x. Bring down the 6: 3x + 6. Next term: 3x ÷ x = 3, and 3(x + 2) = 3x + 6. Subtract to get 0. Quotient x + 3, remainder 0, so x^2 + 5x + 6 = (x + 2)(x + 3).",
+      "prompt": "Divide x^2 + 7x + 10 by x + 2 with the same steps. What is the quotient, and how can you confirm it by multiplying?"
+     },
+     "check": [
+      {
+       "q": "What is the quotient when x^2 + 5x + 6 is divided by x + 3?",
+       "choices": [
+        "x + 3",
+        "x + 2",
+        "x + 6",
+        "x − 2"
+       ],
+       "a": 1,
+       "why": "x^2 + 5x + 6 = (x + 3)(x + 2), so dividing by x + 3 leaves x + 2 with remainder 0."
+      },
+      {
+       "q": "Divide x^2 + 3x + 7 by x + 1. What is the remainder?",
+       "choices": [
+        "7",
+        "4",
+        "5",
+        "0"
+       ],
+       "a": 2,
+       "why": "(x + 1)(x + 2) = x^2 + 3x + 2, and 7 − 2 = 5. So the quotient is x + 2 and the remainder is 5."
+      },
+      {
+       "q": "Why write x^3 − 8 as x^3 + 0x^2 + 0x − 8 before dividing?",
+       "choices": [
+        "Because zero is always the remainder",
+        "To raise the degree of the dividend",
+        "To make the divisor smaller",
+        "To keep like terms lined up in columns"
+       ],
+       "a": 3,
+       "why": "The placeholders keep each power in its own column, so the subtract step matches like terms."
+      }
+     ]
     },
-    "check": [
-     {"q": "What is the discriminant of x^2 + 4x + 8 = 0?", "choices": ["−16", "16", "48", "−48"], "a": 0, "why": "b^2 − 4ac = 16 − 32 = −16. Adding instead of subtracting gives 48."},
-     {"q": "Solve x^2 + 16 = 0.", "choices": ["x = 4 and x = −4", "x = 4i only", "x = 4i and x = −4i", "x = 16i and x = −16i"], "a": 2, "why": "x^2 = −16, so x = ±√(−16) = ±4i. Both signs are solutions."},
-     {"q": "Solve x^2 − 2x + 10 = 0.", "choices": ["1 ± 3i", "−1 ± 3i", "2 ± 6i", "1 ± 6i"], "a": 0, "why": "Discriminant 4 − 40 = −36, so x = (2 ± 6i) / 2 = 1 ± 3i. Forgetting to divide the 6i by 2 gives 1 ± 6i."}
-    ]
-   }
-  ]},
-  {"title": "Dividing Polynomials", "lessons": [
-   {
-    "title": "Long Division of Polynomials",
-    "mainIdea": "Polynomial long division repeats one cycle: divide the leading terms, multiply, subtract, bring down, until the remainder has smaller degree than the divisor.",
-    "reading": [
-     "Dividing 4 into 93 gives 23 with 1 left over, and 93 = 4 × 23 + 1. Polynomials divide the same way. The polynomial being divided is the *dividend*, the one you divide by is the *divisor*, the result is the *quotient*, and what is left is the *remainder*. Divide 2x^3 + 3x^2 − 5x + 4 by x + 2. Ask how many times x goes into 2x^3: the answer is 2x^2, the first term of the quotient.",
-     "Multiply 2x^2 by the divisor: 2x^2(x + 2) = 2x^3 + 4x^2. Subtract from the dividend: (2x^3 + 3x^2) − (2x^3 + 4x^2) = −x^2. Bring down the −5x to get −x^2 − 5x. Repeat: −x^2 ÷ x = −x. Multiply: −x(x + 2) = −x^2 − 2x. Subtract: −5x − (−2x) = −3x. Bring down the 4: −3x + 4. Once more: −3x ÷ x = −3, and −3(x + 2) = −3x − 6. Subtract: 4 − (−6) = 10.",
-     "The quotient is 2x^2 − x − 3 and the remainder is 10, so 2x^3 + 3x^2 − 5x + 4 = (x + 2)(2x^2 − x − 3) + 10. Check by multiplying: (x + 2)(2x^2 − x − 3) = 2x^3 − x^2 − 3x + 4x^2 − 2x − 6 = 2x^3 + 3x^2 − 5x − 6, and adding 10 gives the original. Sign errors in the subtract step cause most wrong answers, so subtract the whole line, including the minus signs.",
-     "If a power is missing, hold its place with a zero. To divide x^3 − 8 by x − 2, write the dividend as x^3 + 0x^2 + 0x − 8 so the columns line up. The cycle gives x^2, then 2x, then 4, with remainder 0. So x^3 − 8 = (x − 2)(x^2 + 2x + 4). A remainder of 0 means the divisor is a factor, an idea the next two lessons build on."
-    ],
-    "words": [
-     {"w": "dividend", "d": "the polynomial being divided"},
-     {"w": "divisor", "d": "the polynomial you divide by"},
-     {"w": "quotient", "d": "the result of a division, not counting the remainder"},
-     {"w": "remainder", "d": "what is left after dividing; its degree is less than the divisor's degree"}
-    ],
-    "look": {
-     "type": "think",
-     "title": "A Division with Nothing Left",
-     "text": "Divide x^2 + 5x + 6 by x + 2. First term: x^2 ÷ x = x. Multiply x(x + 2) = x^2 + 2x and subtract to get 3x. Bring down the 6: 3x + 6. Next term: 3x ÷ x = 3, and 3(x + 2) = 3x + 6. Subtract to get 0. Quotient x + 3, remainder 0, so x^2 + 5x + 6 = (x + 2)(x + 3).",
-     "prompt": "Divide x^2 + 7x + 10 by x + 2 with the same steps. What is the quotient, and how can you confirm it by multiplying?"
+    {
+     "title": "Synthetic Division and Remainders",
+     "mainIdea": "Synthetic division is a shortcut for dividing by x − c, and the remainder theorem says the remainder always equals p(c).",
+     "reading": [
+      "When the divisor is x − c, a shortcut called *synthetic division* uses only the coefficients. Divide p(x) = x^3 − 4x^2 + x + 6 by x − 3, so c = 3. Write the coefficients 1, −4, 1, 6 in a row. Bring down the 1. Multiply by 3 and add to the next coefficient: 1 × 3 = 3, and −4 + 3 = −1. Multiply again: −1 × 3 = −3, and 1 + (−3) = −2. Once more: −2 × 3 = −6, and 6 + (−6) = 0.",
+      "The bottom row reads 1, −1, −2, 0. The last number is the remainder, 0. The others are the quotient's coefficients, one degree lower than the dividend: x^2 − x − 2. So x^3 − 4x^2 + x + 6 = (x − 3)(x^2 − x − 2). Two cautions. Use c, not −c: dividing by x + 1 means c = −1. And add at each step, never subtract; the subtracting is built into the sign of c.",
+      "The *remainder theorem* explains the last number. When a polynomial p(x) is divided by x − c, the remainder is exactly p(c). Check with the example: p(3) = 27 − 36 + 3 + 6 = 0, matching the remainder 0. This gives a fast way to *evaluate* a polynomial, meaning to find its value at a number. For q(x) = 2x^3 − 5x + 1 at x = 2, synthetic division with coefficients 2, 0, −5, 1 gives 2, 4, 3, 7, so q(2) = 7. Direct check: 16 − 10 + 1 = 7."
+     ],
+     "words": [
+      {
+       "w": "synthetic division",
+       "d": "a coefficient-only shortcut for dividing a polynomial by x − c"
+      },
+      {
+       "w": "remainder theorem",
+       "d": "the remainder when p(x) is divided by x − c equals p(c)"
+      },
+      {
+       "w": "evaluate",
+       "d": "to find the value of a function at a specific number, such as p(3)"
+      }
+     ],
+     "look": {
+      "type": "data",
+      "title": "Values of p(x) = x^3 − 4x^2 + x + 6",
+      "rows": [
+       [
+        "x = −1",
+        0
+       ],
+       [
+        "x = 0",
+        6
+       ],
+       [
+        "x = 1",
+        4
+       ],
+       [
+        "x = 2",
+        0
+       ],
+       [
+        "x = 3",
+        0
+       ],
+       [
+        "x = 4",
+        10
+       ]
+      ],
+      "unit": "p(x)",
+      "cite": "computed from p(x) = x^3 − 4x^2 + x + 6",
+      "prompt": "By the remainder theorem, which divisors of the form x − c leave a remainder of 0? What does that suggest about the factors of p(x)?"
+     },
+     "check": [
+      {
+       "q": "What is the remainder when x^3 + 2x − 1 is divided by x − 1?",
+       "choices": [
+        "0",
+        "1",
+        "2",
+        "−2"
+       ],
+       "a": 2,
+       "why": "By the remainder theorem the remainder is p(1) = 1 + 2 − 1 = 2."
+      },
+      {
+       "q": "Use synthetic division to divide x^2 − 5x + 6 by x − 2.",
+       "choices": [
+        "x − 3, remainder 0",
+        "x + 3, remainder 0",
+        "x − 3, remainder 6",
+        "x − 2, remainder 0"
+       ],
+       "a": 0,
+       "why": "Coefficients 1, −5, 6 with c = 2 give 1, −3, 0. Quotient x − 3, remainder 0."
+      },
+      {
+       "q": "p(x) = 2x^3 − 3x^2 + 4. What is the remainder when p(x) is divided by x + 1?",
+       "choices": [
+        "3",
+        "9",
+        "−1",
+        "1"
+       ],
+       "a": 2,
+       "why": "x + 1 = x − (−1), so the remainder is p(−1) = −2 − 3 + 4 = −1. Using c = 1 instead gives 3."
+      }
+     ]
     },
-    "check": [
-     {"q": "What is the quotient when x^2 + 5x + 6 is divided by x + 3?", "choices": ["x + 3", "x + 2", "x + 6", "x − 2"], "a": 1, "why": "x^2 + 5x + 6 = (x + 3)(x + 2), so dividing by x + 3 leaves x + 2 with remainder 0."},
-     {"q": "Divide x^2 + 3x + 7 by x + 1. What is the remainder?", "choices": ["7", "4", "5", "0"], "a": 2, "why": "(x + 1)(x + 2) = x^2 + 3x + 2, and 7 − 2 = 5. So the quotient is x + 2 and the remainder is 5."},
-     {"q": "Why write x^3 − 8 as x^3 + 0x^2 + 0x − 8 before dividing?", "choices": ["Because zero is always the remainder", "To raise the degree of the dividend", "To make the divisor smaller", "To keep like terms lined up in columns"], "a": 3, "why": "The placeholders keep each power in its own column, so the subtract step matches like terms."}
-    ]
-   },
-   {
-    "title": "Synthetic Division and Remainders",
-    "mainIdea": "Synthetic division is a shortcut for dividing by x − c, and the remainder theorem says the remainder always equals p(c).",
-    "reading": [
-     "When the divisor is x − c, a shortcut called *synthetic division* uses only the coefficients. Divide p(x) = x^3 − 4x^2 + x + 6 by x − 3, so c = 3. Write the coefficients 1, −4, 1, 6 in a row. Bring down the 1. Multiply by 3 and add to the next coefficient: 1 × 3 = 3, and −4 + 3 = −1. Multiply again: −1 × 3 = −3, and 1 + (−3) = −2. Once more: −2 × 3 = −6, and 6 + (−6) = 0.",
-     "The bottom row reads 1, −1, −2, 0. The last number is the remainder, 0. The others are the quotient's coefficients, one degree lower than the dividend: x^2 − x − 2. So x^3 − 4x^2 + x + 6 = (x − 3)(x^2 − x − 2). Two cautions. Use c, not −c: dividing by x + 1 means c = −1. And add at each step, never subtract; the subtracting is built into the sign of c.",
-     "The *remainder theorem* explains the last number. When a polynomial p(x) is divided by x − c, the remainder is exactly p(c). Check with the example: p(3) = 27 − 36 + 3 + 6 = 0, matching the remainder 0. This gives a fast way to *evaluate* a polynomial, meaning to find its value at a number. For q(x) = 2x^3 − 5x + 1 at x = 2, synthetic division with coefficients 2, 0, −5, 1 gives 2, 4, 3, 7, so q(2) = 7. Direct check: 16 − 10 + 1 = 7."
-    ],
-    "words": [
-     {"w": "synthetic division", "d": "a coefficient-only shortcut for dividing a polynomial by x − c"},
-     {"w": "remainder theorem", "d": "the remainder when p(x) is divided by x − c equals p(c)"},
-     {"w": "evaluate", "d": "to find the value of a function at a specific number, such as p(3)"}
-    ],
-    "look": {
-     "type": "data",
-     "title": "Values of p(x) = x^3 − 4x^2 + x + 6",
-     "rows": [["x = −1", 0], ["x = 0", 6], ["x = 1", 4], ["x = 2", 0], ["x = 3", 0], ["x = 4", 10]],
-     "unit": "p(x)",
-     "cite": "computed from p(x) = x^3 − 4x^2 + x + 6",
-     "prompt": "By the remainder theorem, which divisors of the form x − c leave a remainder of 0? What does that suggest about the factors of p(x)?"
+    {
+     "title": "The Factor Theorem",
+     "mainIdea": "x − c is a factor of p(x) exactly when p(c) = 0, so testing a few candidate values can crack a polynomial into linear factors.",
+     "reading": [
+      "The remainder theorem has a powerful special case. If p(c) = 0, the remainder is 0, so x − c divides p(x) evenly and is a *factor*. The reverse holds too. This is the *factor theorem*: x − c is a factor of p(x) if and only if p(c) = 0. A number c with p(c) = 0 is called a *zero of the function*. Finding zeros and finding factors are the same job.",
+      "Factor p(x) = x^3 − 7x + 6. Try x = 1: p(1) = 1 − 7 + 6 = 0, so x − 1 is a factor. Synthetic division with coefficients 1, 0, −7, 6 and c = 1 gives 1, 1, −6, 0. The quotient is x^2 + x − 6, which factors as (x + 3)(x − 2). So p(x) = (x − 1)(x − 2)(x + 3), and the zeros are 1, 2 and −3. Check the last one: p(−3) = −27 + 21 + 6 = 0.",
+      "Which values should you try? For integer coefficients, any *rational root* p/q must have p dividing the constant term and q dividing the leading coefficient. For 2x^3 − 3x^2 − 3x + 2 the constant is 2 and the leading coefficient is 2, so the candidates are ±1, ±2 and ±1/2. Test x = 2: 16 − 12 − 6 + 2 = 0. Synthetic division gives 2, 1, −1, 0, so the quotient is 2x^2 + x − 1 = (2x − 1)(x + 1). The zeros are 2, 1/2 and −1.",
+      "The candidate list is only a list of suspects. Many will fail, and a polynomial can have no rational zeros at all. Test the small integers first, and stop dividing once the quotient is a quadratic you can factor or solve with the formula. A common error is testing x = 2 by plugging in x − 2; the test value is c, the number that makes the factor zero."
+     ],
+     "words": [
+      {
+       "w": "factor theorem",
+       "d": "x − c is a factor of p(x) if and only if p(c) = 0"
+      },
+      {
+       "w": "zero of a function",
+       "d": "an input c where the output is 0, so p(c) = 0"
+      },
+      {
+       "w": "rational root",
+       "d": "a zero that is a fraction p/q; for integer coefficients, p divides the constant and q divides the leading coefficient"
+      },
+      {
+       "w": "factor",
+       "d": "a polynomial that divides another with remainder 0"
+      }
+     ],
+     "look": {
+      "type": "think",
+      "title": "One Zero Unlocks the Rest",
+      "text": "Take p(x) = x^3 − 6x^2 + 11x − 6. Test x = 1: 1 − 6 + 11 − 6 = 0, so x − 1 is a factor. Synthetic division with 1, −6, 11, −6 and c = 1 gives the row 1, −5, 6, 0. The quotient is x^2 − 5x + 6.",
+      "prompt": "Factor the quotient and list all three zeros of p(x). Then check one of the new zeros by substituting it into p(x)."
+     },
+     "check": [
+      {
+       "q": "Is x − 2 a factor of x^3 − 3x^2 + 4?",
+       "choices": [
+        "Yes, because p(2) = 0",
+        "No, because p(2) = 4",
+        "Yes, because p(2) = 2",
+        "No, because the constant term is 4"
+       ],
+       "a": 0,
+       "why": "p(2) = 8 − 12 + 4 = 0, so by the factor theorem x − 2 is a factor."
+      },
+      {
+       "q": "x = −1 is a zero of p(x) = x^3 + 2x^2 − 5x − 6. What are all three zeros?",
+       "choices": [
+        "−1, 3, −2",
+        "−1, −3, 2",
+        "1, 3, −2",
+        "−1, −3, −2"
+       ],
+       "a": 1,
+       "why": "Synthetic division by c = −1 gives quotient x^2 + x − 6 = (x + 3)(x − 2). Zeros: −1, −3, 2."
+      },
+      {
+       "q": "List all possible rational roots of 3x^3 + x − 4.",
+       "choices": [
+        "±1, ±3",
+        "±1, ±2, ±4",
+        "±1, ±2, ±4, ±1/3, ±2/3, ±4/3",
+        "±3, ±4/3"
+       ],
+       "a": 2,
+       "why": "Numerators divide 4 (1, 2, 4) and denominators divide 3 (1, 3), giving all twelve candidates."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "title": "Zeros and Graphs",
+   "lessons": [
+    {
+     "title": "Counting Every Zero",
+     "mainIdea": "The fundamental theorem of algebra says a degree-n polynomial has exactly n zeros when complex zeros and repeats are counted.",
+     "reading": [
+      "A linear equation has one solution, a quadratic has two, and the pattern continues. The *fundamental theorem of algebra* states that every polynomial of *degree* n ≥ 1 has exactly n zeros, as long as you count complex zeros and count a repeated zero as many times as it repeats. Carl Friedrich Gauss gave a proof in his 1799 doctoral thesis. The theorem does not find the zeros for you, but it tells you when to stop looking.",
+      "Take p(x) = x^3 − x^2 + 4x − 4. Its degree is 3, so expect three zeros. Factor by grouping: x^2(x − 1) + 4(x − 1) = (x − 1)(x^2 + 4). The factor x − 1 gives the zero 1. The factor x^2 + 4 gives x^2 = −4, so x = 2i and x = −2i. Three zeros: 1, 2i, −2i. Only one shows up as an x-intercept on the graph, because complex zeros have no place on a real number line.",
+      "When a polynomial has real coefficients, complex zeros arrive in *conjugate pairs*. If 1 + i is a zero, so is 1 − i. That lets you rebuild a polynomial from its zeros. For zeros 2, 1 + i and 1 − i: the pair gives (x − (1 + i))(x − (1 − i)) = (x − 1)^2 − i^2 = x^2 − 2x + 1 + 1 = x^2 − 2x + 2. Multiply by (x − 2): x^3 − 2x^2 + 2x − 2x^2 + 4x − 4 = x^3 − 4x^2 + 6x − 4."
+     ],
+     "words": [
+      {
+       "w": "fundamental theorem of algebra",
+       "d": "a polynomial of degree n has exactly n zeros, counting complex zeros and repeats"
+      },
+      {
+       "w": "degree",
+       "d": "the highest power of the variable in a polynomial; the degree of x^3 − x^2 + 4x − 4 is 3"
+      },
+      {
+       "w": "conjugate pairs",
+       "d": "the rule that if a + bi is a zero of a polynomial with real coefficients, then a − bi is also a zero"
+      }
+     ],
+     "look": {
+      "type": "think",
+      "title": "Zeros You Cannot See",
+      "text": "A polynomial with real coefficients has degree 4. You know three of its zeros: 0, 3 and i. Because complex zeros come in conjugate pairs, −i must be the fourth zero. The polynomial can be written as x(x − 3)(x − i)(x + i) = x(x − 3)(x^2 + 1).",
+      "prompt": "How many x-intercepts does this graph have? Multiply out x(x − 3)(x^2 + 1) and check that its degree is 4."
+     },
+     "check": [
+      {
+       "q": "How many zeros does a degree-5 polynomial have, counting complex zeros and repeats?",
+       "choices": [
+        "5",
+        "At most 2",
+        "4",
+        "10"
+       ],
+       "a": 0,
+       "why": "The fundamental theorem of algebra says exactly n zeros for degree n, so 5."
+      },
+      {
+       "q": "A polynomial with real coefficients has 3 + 2i as a zero. Which number must also be a zero?",
+       "choices": [
+        "−3 − 2i",
+        "−3 + 2i",
+        "3 − 2i",
+        "2 − 3i"
+       ],
+       "a": 2,
+       "why": "Complex zeros of real-coefficient polynomials come in conjugate pairs, so 3 − 2i is also a zero."
+      },
+      {
+       "q": "Which polynomial has zeros 2i and −2i and leading coefficient 1?",
+       "choices": [
+        "x^2 − 4",
+        "x^2 + 4",
+        "x^2 + 4x",
+        "x^2 − 4x + 4"
+       ],
+       "a": 1,
+       "why": "(x − 2i)(x + 2i) = x^2 − 4i^2 = x^2 + 4. The polynomial x^2 − 4 has real zeros ±2."
+      }
+     ]
     },
-    "check": [
-     {"q": "What is the remainder when x^3 + 2x − 1 is divided by x − 1?", "choices": ["0", "1", "2", "−2"], "a": 2, "why": "By the remainder theorem the remainder is p(1) = 1 + 2 − 1 = 2."},
-     {"q": "Use synthetic division to divide x^2 − 5x + 6 by x − 2.", "choices": ["x − 3, remainder 0", "x + 3, remainder 0", "x − 3, remainder 6", "x − 2, remainder 0"], "a": 0, "why": "Coefficients 1, −5, 6 with c = 2 give 1, −3, 0. Quotient x − 3, remainder 0."},
-     {"q": "p(x) = 2x^3 − 3x^2 + 4. What is the remainder when p(x) is divided by x + 1?", "choices": ["3", "9", "−1", "1"], "a": 2, "why": "x + 1 = x − (−1), so the remainder is p(−1) = −2 − 3 + 4 = −1. Using c = 1 instead gives 3."}
-    ]
-   },
-   {
-    "title": "The Factor Theorem",
-    "mainIdea": "x − c is a factor of p(x) exactly when p(c) = 0, so testing a few candidate values can crack a polynomial into linear factors.",
-    "reading": [
-     "The remainder theorem has a powerful special case. If p(c) = 0, the remainder is 0, so x − c divides p(x) evenly and is a *factor*. The reverse holds too. This is the *factor theorem*: x − c is a factor of p(x) if and only if p(c) = 0. A number c with p(c) = 0 is called a *zero of the function*. Finding zeros and finding factors are the same job.",
-     "Factor p(x) = x^3 − 7x + 6. Try x = 1: p(1) = 1 − 7 + 6 = 0, so x − 1 is a factor. Synthetic division with coefficients 1, 0, −7, 6 and c = 1 gives 1, 1, −6, 0. The quotient is x^2 + x − 6, which factors as (x + 3)(x − 2). So p(x) = (x − 1)(x − 2)(x + 3), and the zeros are 1, 2 and −3. Check the last one: p(−3) = −27 + 21 + 6 = 0.",
-     "Which values should you try? For integer coefficients, any *rational root* p/q must have p dividing the constant term and q dividing the leading coefficient. For 2x^3 − 3x^2 − 3x + 2 the constant is 2 and the leading coefficient is 2, so the candidates are ±1, ±2 and ±1/2. Test x = 2: 16 − 12 − 6 + 2 = 0. Synthetic division gives 2, 1, −1, 0, so the quotient is 2x^2 + x − 1 = (2x − 1)(x + 1). The zeros are 2, 1/2 and −1.",
-     "The candidate list is only a list of suspects. Many will fail, and a polynomial can have no rational zeros at all. Test the small integers first, and stop dividing once the quotient is a quadratic you can factor or solve with the formula. A common error is testing x = 2 by plugging in x − 2; the test value is c, the number that makes the factor zero."
-    ],
-    "words": [
-     {"w": "factor theorem", "d": "x − c is a factor of p(x) if and only if p(c) = 0"},
-     {"w": "zero of a function", "d": "an input c where the output is 0, so p(c) = 0"},
-     {"w": "rational root", "d": "a zero that is a fraction p/q; for integer coefficients, p divides the constant and q divides the leading coefficient"},
-     {"w": "factor", "d": "a polynomial that divides another with remainder 0"}
-    ],
-    "look": {
-     "type": "think",
-     "title": "One Zero Unlocks the Rest",
-     "text": "Take p(x) = x^3 − 6x^2 + 11x − 6. Test x = 1: 1 − 6 + 11 − 6 = 0, so x − 1 is a factor. Synthetic division with 1, −6, 11, −6 and c = 1 gives the row 1, −5, 6, 0. The quotient is x^2 − 5x + 6.",
-     "prompt": "Factor the quotient and list all three zeros of p(x). Then check one of the new zeros by substituting it into p(x)."
+    {
+     "title": "Multiplicity and the Graph",
+     "mainIdea": "At a zero of odd multiplicity the graph crosses the x-axis; at a zero of even multiplicity it touches the axis and turns back.",
+     "reading": [
+      "Write a polynomial in factored form and its graph is almost drawn for you. Take f(x) = (x + 1)(x − 2)^2. The zeros are −1 and 2, so the graph has *x-intercepts* at those points. But the factor x − 2 appears twice. The number of times a factor repeats is the zero's *multiplicity*. Here −1 has multiplicity 1 and 2 has multiplicity 2. The degree, found by adding the multiplicities, is 1 + 2 = 3.",
+      "Multiplicity changes how the graph meets the axis. Test points on each side of x = 2. f(1) = (2)(−1)^2 = 2, which is positive. f(3) = (4)(1)^2 = 4, also positive. The graph does not change sign at 2, so it touches the axis there and bounces back up. Now test around x = −1. f(−2) = (−1)(−4)^2 = −16, negative, while f(0) = (1)(4) = 4, positive. The sign flips, so the graph crosses at −1.",
+      "The rule: odd multiplicity means the graph crosses, and even multiplicity means it touches and turns. A multiplicity of 3 crosses but flattens out at the intercept, like the graph of x^3 near the origin. The *y-intercept* is f(0), which for our example is 4. Between the intercepts the graph has *turning points*, hills and valleys; a degree-3 graph has at most 2 of them."
+     ],
+     "words": [
+      {
+       "w": "multiplicity",
+       "d": "the number of times a factor x − c appears; in (x − 2)^2 the zero 2 has multiplicity 2"
+      },
+      {
+       "w": "x-intercept",
+       "d": "a point where the graph meets the x-axis; the real zeros of the function"
+      },
+      {
+       "w": "y-intercept",
+       "d": "the point where the graph meets the y-axis, found from f(0)"
+      },
+      {
+       "w": "turning point",
+       "d": "a hill or valley on the graph where it changes from rising to falling or back"
+      }
+     ],
+     "look": {
+      "type": "data",
+      "title": "Values of f(x) = (x + 1)(x − 2)^2",
+      "rows": [
+       [
+        "x = −2",
+        -16
+       ],
+       [
+        "x = −1",
+        0
+       ],
+       [
+        "x = 0",
+        4
+       ],
+       [
+        "x = 1",
+        2
+       ],
+       [
+        "x = 2",
+        0
+       ],
+       [
+        "x = 3",
+        4
+       ]
+      ],
+      "unit": "f(x)",
+      "cite": "computed from f(x) = (x + 1)(x − 2)^2",
+      "prompt": "At which zero does the sign of f(x) change, and at which zero does it stay the same? What does that tell you about the shape of the graph at each?"
+     },
+     "check": [
+      {
+       "q": "g(x) = (x − 3)^2 (x + 5). What does the graph do at x = 3?",
+       "choices": [
+        "Crosses straight through the axis",
+        "Touches the axis and turns back",
+        "Has a vertical asymptote",
+        "Is undefined"
+       ],
+       "a": 1,
+       "why": "The zero 3 has even multiplicity 2, so the graph touches the x-axis without changing sign."
+      },
+      {
+       "q": "What is the degree of (x − 1)^3 (x + 2)^2?",
+       "choices": [
+        "2",
+        "3",
+        "5",
+        "6"
+       ],
+       "a": 2,
+       "why": "Add the multiplicities: 3 + 2 = 5. Multiplying them gives 6, which is wrong."
+      },
+      {
+       "q": "What is the y-intercept of h(x) = (x − 2)(x + 3)(x − 1)?",
+       "choices": [
+        "−6",
+        "0",
+        "5",
+        "6"
+       ],
+       "a": 3,
+       "why": "h(0) = (−2)(3)(−1) = 6. Two negatives make the product positive."
+      }
+     ]
     },
-    "check": [
-     {"q": "Is x − 2 a factor of x^3 − 3x^2 + 4?", "choices": ["Yes, because p(2) = 0", "No, because p(2) = 4", "Yes, because p(2) = 2", "No, because the constant term is 4"], "a": 0, "why": "p(2) = 8 − 12 + 4 = 0, so by the factor theorem x − 2 is a factor."},
-     {"q": "x = −1 is a zero of p(x) = x^3 + 2x^2 − 5x − 6. What are all three zeros?", "choices": ["−1, 3, −2", "−1, −3, 2", "1, 3, −2", "−1, −3, −2"], "a": 1, "why": "Synthetic division by c = −1 gives quotient x^2 + x − 6 = (x + 3)(x − 2). Zeros: −1, −3, 2."},
-     {"q": "List all possible rational roots of 3x^3 + x − 4.", "choices": ["±1, ±3", "±1, ±2, ±4", "±1, ±2, ±4, ±1/3, ±2/3, ±4/3", "±3, ±4/3"], "a": 2, "why": "Numerators divide 4 (1, 2, 4) and denominators divide 3 (1, 3), giving all twelve candidates."}
-    ]
-   }
-  ]},
-  {"title": "Zeros and Graphs", "lessons": [
-   {
-    "title": "Counting Every Zero",
-    "mainIdea": "The fundamental theorem of algebra says a degree-n polynomial has exactly n zeros when complex zeros and repeats are counted.",
-    "reading": [
-     "A linear equation has one solution, a quadratic has two, and the pattern continues. The *fundamental theorem of algebra* states that every polynomial of *degree* n ≥ 1 has exactly n zeros, as long as you count complex zeros and count a repeated zero as many times as it repeats. Carl Friedrich Gauss gave a proof in his 1799 doctoral thesis. The theorem does not find the zeros for you, but it tells you when to stop looking.",
-     "Take p(x) = x^3 − x^2 + 4x − 4. Its degree is 3, so expect three zeros. Factor by grouping: x^2(x − 1) + 4(x − 1) = (x − 1)(x^2 + 4). The factor x − 1 gives the zero 1. The factor x^2 + 4 gives x^2 = −4, so x = 2i and x = −2i. Three zeros: 1, 2i, −2i. Only one shows up as an x-intercept on the graph, because complex zeros have no place on a real number line.",
-     "When a polynomial has real coefficients, complex zeros arrive in *conjugate pairs*. If 1 + i is a zero, so is 1 − i. That lets you rebuild a polynomial from its zeros. For zeros 2, 1 + i and 1 − i: the pair gives (x − (1 + i))(x − (1 − i)) = (x − 1)^2 − i^2 = x^2 − 2x + 1 + 1 = x^2 − 2x + 2. Multiply by (x − 2): x^3 − 2x^2 + 2x − 2x^2 + 4x − 4 = x^3 − 4x^2 + 6x − 4."
-    ],
-    "words": [
-     {"w": "fundamental theorem of algebra", "d": "a polynomial of degree n has exactly n zeros, counting complex zeros and repeats"},
-     {"w": "degree", "d": "the highest power of the variable in a polynomial; the degree of x^3 − x^2 + 4x − 4 is 3"},
-     {"w": "conjugate pairs", "d": "the rule that if a + bi is a zero of a polynomial with real coefficients, then a − bi is also a zero"}
-    ],
-    "look": {
-     "type": "think",
-     "title": "Zeros You Cannot See",
-     "text": "A polynomial with real coefficients has degree 4. You know three of its zeros: 0, 3 and i. Because complex zeros come in conjugate pairs, −i must be the fourth zero. The polynomial can be written as x(x − 3)(x − i)(x + i) = x(x − 3)(x^2 + 1).",
-     "prompt": "How many x-intercepts does this graph have? Multiply out x(x − 3)(x^2 + 1) and check that its degree is 4."
+    {
+     "title": "End Behavior",
+     "mainIdea": "Far from the origin, a polynomial's graph follows its leading term: the degree and the sign of the leading coefficient decide which way each end points.",
+     "reading": [
+      "Zoom far out on the graph of f(x) = −2x^3 + 5x^2 + 100 and the bumps disappear. What remains is the shape of its *leading term*, −2x^3, the term with the highest power. At x = 100, the terms are −2,000,000, then 50,000, then 100. The leading term dwarfs the rest, and f(100) = −1,949,900. The direction of the graph's two ends, called its *end behavior*, depends only on that leading term.",
+      "Two facts decide it. The degree tells whether the ends match. Even degree means both ends go the same way, like a parabola. Odd degree means the ends go opposite ways, like a line. The sign of the *leading coefficient* tells which way. For positive leading coefficient, the right end rises. For negative, the right end falls. So −2x^3 has odd degree and a negative coefficient: the right end goes down and the left end goes up.",
+      "Practice on f(x) = 3x^4 − 7x^3 + x − 9. The leading term is 3x^4: even degree, positive coefficient, so both ends rise. Notice that the term 50x in 7x^2 − 3x^6 + 50x does not lead, even though it is written last; the leading term is −3x^6, so both ends fall. Between the ends a degree-n graph has at most n − 1 turning points, which limits how wiggly it can be."
+     ],
+     "words": [
+      {
+       "w": "leading term",
+       "d": "the term with the highest power of the variable, such as −2x^3 in −2x^3 + 5x^2 + 100"
+      },
+      {
+       "w": "leading coefficient",
+       "d": "the number in front of the leading term; −2 in −2x^3"
+      },
+      {
+       "w": "end behavior",
+       "d": "the direction the graph heads as x becomes very large or very negative"
+      }
+     ],
+     "look": {
+      "type": "think",
+      "title": "Predict Before You Plot",
+      "text": "Consider f(x) = 3x^4 − 7x^3 + x − 9. Its leading term is 3x^4, with even degree and a positive coefficient. So as x goes far right the graph rises, and as x goes far left it also rises. Both ends point up, like a wide U with possible bumps in the middle.",
+      "prompt": "Describe the end behavior of g(x) = −x^4 + 8x^2 and of h(x) = x^5 − 20x. How many turning points can each have at most?"
+     },
+     "check": [
+      {
+       "q": "Describe the end behavior of f(x) = 4x^5 − x^2 + 3.",
+       "choices": [
+        "Both ends up",
+        "Both ends down",
+        "Left up, right down",
+        "Left down, right up"
+       ],
+       "a": 3,
+       "why": "Odd degree 5 with positive coefficient 4: the right end rises and the left end falls."
+      },
+      {
+       "q": "What is the greatest number of turning points a degree-6 polynomial can have?",
+       "choices": [
+        "6",
+        "5",
+        "7",
+        "3"
+       ],
+       "a": 1,
+       "why": "A degree-n polynomial has at most n − 1 turning points, so 6 − 1 = 5."
+      },
+      {
+       "q": "Which term controls the end behavior of f(x) = 7x^2 − 3x^6 + 50x?",
+       "choices": [
+        "7x^2",
+        "50x",
+        "−3x^6",
+        "The constant term"
+       ],
+       "a": 2,
+       "why": "The leading term is the one with the highest power, −3x^6, no matter where it is written."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "title": "Polynomial Models",
+   "lessons": [
+    {
+     "title": "Building the Box Model",
+     "mainIdea": "A real situation becomes a polynomial model by writing each quantity in terms of one variable, then a table or graph shows where the model peaks.",
+     "reading": [
+      "Return to the 20-inch square sheet with a square of side x cut from each corner. Folding up the sides makes a box with height x. Each side of the base loses x from both ends, so the base is 20 − 2x by 20 − 2x. The volume is V(x) = x(20 − 2x)^2. This equation is a *model*: a function that stands in for the real situation. Multiplied out it is a *cubic function*, 4x^3 − 80x^2 + 400x.",
+      "Not every x makes sense. The cut must be positive, and two cuts cannot use up the whole 20 inches, so 0 < x < 10. That interval is the model's *domain*. Now test values. V(1) = 1 × 18^2 = 324. V(2) = 2 × 16^2 = 512. V(3) = 3 × 14^2 = 588. V(4) = 4 × 12^2 = 576. V(5) = 5 × 10^2 = 500. The volume climbs, peaks between 3 and 4, and falls.",
+      "To pin down the *maximum*, test between 3 and 4. V(3.3) = 3.3 × 13.4^2 = 3.3 × 179.56 = 592.5. V(3.5) = 3.5 × 13^2 = 591.5. The peak is near x = 3.3 inches, giving about 593 cubic inches. A graphing tool shows the same hill. Students sometimes report x = 3.3 as the answer to the question about volume; read the question again, because the height and the volume are different answers.",
+      "Rectangular sheets follow the same recipe with two base lengths. For a 16-inch by 10-inch sheet, V(x) = x(16 − 2x)(10 − 2x), and the domain is 0 < x < 5 because the short side runs out first. V(2) = 2 × 12 × 6 = 144 cubic inches. Whatever the numbers, write each dimension in terms of x, multiply, then explore the domain."
+     ],
+     "words": [
+      {
+       "w": "model",
+       "d": "a function that represents a real situation so it can be analyzed with math"
+      },
+      {
+       "w": "cubic function",
+       "d": "a polynomial function of degree 3, such as V(x) = 4x^3 − 80x^2 + 400x"
+      },
+      {
+       "w": "domain",
+       "d": "the set of input values that make sense; for the 20-inch box, 0 < x < 10"
+      },
+      {
+       "w": "maximum",
+       "d": "the largest output value; the top of the hill on a graph"
+      }
+     ],
+     "look": {
+      "type": "data",
+      "title": "Box Volume from a 20-Inch Sheet",
+      "rows": [
+       [
+        "cut 1 in",
+        324
+       ],
+       [
+        "cut 2 in",
+        512
+       ],
+       [
+        "cut 3 in",
+        588
+       ],
+       [
+        "cut 4 in",
+        576
+       ],
+       [
+        "cut 5 in",
+        500
+       ],
+       [
+        "cut 6 in",
+        384
+       ]
+      ],
+      "unit": "cubic inches",
+      "cite": "computed from V(x) = x(20 − 2x)^2",
+      "prompt": "Between which two cuts is the maximum? Why does the volume drop back toward zero as the cut approaches 10 inches?"
+     },
+     "check": [
+      {
+       "q": "A 12-inch square sheet has x-inch corners cut out. What is the volume when x = 2?",
+       "choices": [
+        "128 cubic inches",
+        "200 cubic inches",
+        "144 cubic inches",
+        "64 cubic inches"
+       ],
+       "a": 0,
+       "why": "V(2) = 2 × (12 − 4)^2 = 2 × 64 = 128 cubic inches."
+      },
+      {
+       "q": "What is the domain of the box model for a 12-inch square sheet?",
+       "choices": [
+        "0 < x < 12",
+        "0 < x < 6",
+        "x > 0",
+        "0 < x < 3"
+       ],
+       "a": 1,
+       "why": "Two cuts of x must be less than 12, so 2x < 12 and x < 6, with x positive."
+      },
+      {
+       "q": "A 16 by 10 inch sheet has 2-inch corners removed. What is the box volume?",
+       "choices": [
+        "160 cubic inches",
+        "120 cubic inches",
+        "192 cubic inches",
+        "144 cubic inches"
+       ],
+       "a": 3,
+       "why": "V = 2 × (16 − 4) × (10 − 4) = 2 × 12 × 6 = 144 cubic inches."
+      }
+     ]
     },
-    "check": [
-     {"q": "How many zeros does a degree-5 polynomial have, counting complex zeros and repeats?", "choices": ["5", "At most 2", "4", "10"], "a": 0, "why": "The fundamental theorem of algebra says exactly n zeros for degree n, so 5."},
-     {"q": "A polynomial with real coefficients has 3 + 2i as a zero. Which number must also be a zero?", "choices": ["−3 − 2i", "−3 + 2i", "3 − 2i", "2 − 3i"], "a": 2, "why": "Complex zeros of real-coefficient polynomials come in conjugate pairs, so 3 − 2i is also a zero."},
-     {"q": "Which polynomial has zeros 2i and −2i and leading coefficient 1?", "choices": ["x^2 − 4", "x^2 + 4", "x^2 + 4x", "x^2 − 4x + 4"], "a": 1, "why": "(x − 2i)(x + 2i) = x^2 − 4i^2 = x^2 + 4. The polynomial x^2 − 4 has real zeros ±2."}
-    ]
-   },
-   {
-    "title": "Multiplicity and the Graph",
-    "mainIdea": "At a zero of odd multiplicity the graph crosses the x-axis; at a zero of even multiplicity it touches the axis and turns back.",
-    "reading": [
-     "Write a polynomial in factored form and its graph is almost drawn for you. Take f(x) = (x + 1)(x − 2)^2. The zeros are −1 and 2, so the graph has *x-intercepts* at those points. But the factor x − 2 appears twice. The number of times a factor repeats is the zero's *multiplicity*. Here −1 has multiplicity 1 and 2 has multiplicity 2. The degree, found by adding the multiplicities, is 1 + 2 = 3.",
-     "Multiplicity changes how the graph meets the axis. Test points on each side of x = 2. f(1) = (2)(−1)^2 = 2, which is positive. f(3) = (4)(1)^2 = 4, also positive. The graph does not change sign at 2, so it touches the axis there and bounces back up. Now test around x = −1. f(−2) = (−1)(−4)^2 = −16, negative, while f(0) = (1)(4) = 4, positive. The sign flips, so the graph crosses at −1.",
-     "The rule: odd multiplicity means the graph crosses, and even multiplicity means it touches and turns. A multiplicity of 3 crosses but flattens out at the intercept, like the graph of x^3 near the origin. The *y-intercept* is f(0), which for our example is 4. Between the intercepts the graph has *turning points*, hills and valleys; a degree-3 graph has at most 2 of them."
-    ],
-    "words": [
-     {"w": "multiplicity", "d": "the number of times a factor x − c appears; in (x − 2)^2 the zero 2 has multiplicity 2"},
-     {"w": "x-intercept", "d": "a point where the graph meets the x-axis; the real zeros of the function"},
-     {"w": "y-intercept", "d": "the point where the graph meets the y-axis, found from f(0)"},
-     {"w": "turning point", "d": "a hill or valley on the graph where it changes from rising to falling or back"}
-    ],
-    "look": {
-     "type": "data",
-     "title": "Values of f(x) = (x + 1)(x − 2)^2",
-     "rows": [["x = −2", -16], ["x = −1", 0], ["x = 0", 4], ["x = 1", 2], ["x = 2", 0], ["x = 3", 4]],
-     "unit": "f(x)",
-     "cite": "computed from f(x) = (x + 1)(x − 2)^2",
-     "prompt": "At which zero does the sign of f(x) change, and at which zero does it stay the same? What does that tell you about the shape of the graph at each?"
-    },
-    "check": [
-     {"q": "g(x) = (x − 3)^2 (x + 5). What does the graph do at x = 3?", "choices": ["Crosses straight through the axis", "Touches the axis and turns back", "Has a vertical asymptote", "Is undefined"], "a": 1, "why": "The zero 3 has even multiplicity 2, so the graph touches the x-axis without changing sign."},
-     {"q": "What is the degree of (x − 1)^3 (x + 2)^2?", "choices": ["2", "3", "5", "6"], "a": 2, "why": "Add the multiplicities: 3 + 2 = 5. Multiplying them gives 6, which is wrong."},
-     {"q": "What is the y-intercept of h(x) = (x − 2)(x + 3)(x − 1)?", "choices": ["−6", "0", "5", "6"], "a": 3, "why": "h(0) = (−2)(3)(−1) = 6. Two negatives make the product positive."}
-    ]
-   },
-   {
-    "title": "End Behavior",
-    "mainIdea": "Far from the origin, a polynomial's graph follows its leading term: the degree and the sign of the leading coefficient decide which way each end points.",
-    "reading": [
-     "Zoom far out on the graph of f(x) = −2x^3 + 5x^2 + 100 and the bumps disappear. What remains is the shape of its *leading term*, −2x^3, the term with the highest power. At x = 100, the terms are −2,000,000, then 50,000, then 100. The leading term dwarfs the rest, and f(100) = −1,949,900. The direction of the graph's two ends, called its *end behavior*, depends only on that leading term.",
-     "Two facts decide it. The degree tells whether the ends match. Even degree means both ends go the same way, like a parabola. Odd degree means the ends go opposite ways, like a line. The sign of the *leading coefficient* tells which way. For positive leading coefficient, the right end rises. For negative, the right end falls. So −2x^3 has odd degree and a negative coefficient: the right end goes down and the left end goes up.",
-     "Practice on f(x) = 3x^4 − 7x^3 + x − 9. The leading term is 3x^4: even degree, positive coefficient, so both ends rise. Notice that the term 50x in 7x^2 − 3x^6 + 50x does not lead, even though it is written last; the leading term is −3x^6, so both ends fall. Between the ends a degree-n graph has at most n − 1 turning points, which limits how wiggly it can be."
-    ],
-    "words": [
-     {"w": "leading term", "d": "the term with the highest power of the variable, such as −2x^3 in −2x^3 + 5x^2 + 100"},
-     {"w": "leading coefficient", "d": "the number in front of the leading term; −2 in −2x^3"},
-     {"w": "end behavior", "d": "the direction the graph heads as x becomes very large or very negative"}
-    ],
-    "look": {
-     "type": "think",
-     "title": "Predict Before You Plot",
-     "text": "Consider f(x) = 3x^4 − 7x^3 + x − 9. Its leading term is 3x^4, with even degree and a positive coefficient. So as x goes far right the graph rises, and as x goes far left it also rises. Both ends point up, like a wide U with possible bumps in the middle.",
-     "prompt": "Describe the end behavior of g(x) = −x^4 + 8x^2 and of h(x) = x^5 − 20x. How many turning points can each have at most?"
-    },
-    "check": [
-     {"q": "Describe the end behavior of f(x) = 4x^5 − x^2 + 3.", "choices": ["Both ends up", "Both ends down", "Left up, right down", "Left down, right up"], "a": 3, "why": "Odd degree 5 with positive coefficient 4: the right end rises and the left end falls."},
-     {"q": "What is the greatest number of turning points a degree-6 polynomial can have?", "choices": ["6", "5", "7", "3"], "a": 1, "why": "A degree-n polynomial has at most n − 1 turning points, so 6 − 1 = 5."},
-     {"q": "Which term controls the end behavior of f(x) = 7x^2 − 3x^6 + 50x?", "choices": ["7x^2", "50x", "−3x^6", "The constant term"], "a": 2, "why": "The leading term is the one with the highest power, −3x^6, no matter where it is written."}
-    ]
-   }
-  ]},
-  {"title": "Polynomial Models", "lessons": [
-   {
-    "title": "Building the Box Model",
-    "mainIdea": "A real situation becomes a polynomial model by writing each quantity in terms of one variable, then a table or graph shows where the model peaks.",
-    "reading": [
-     "Return to the 20-inch square sheet with a square of side x cut from each corner. Folding up the sides makes a box with height x. Each side of the base loses x from both ends, so the base is 20 − 2x by 20 − 2x. The volume is V(x) = x(20 − 2x)^2. This equation is a *model*: a function that stands in for the real situation. Multiplied out it is a *cubic function*, 4x^3 − 80x^2 + 400x.",
-     "Not every x makes sense. The cut must be positive, and two cuts cannot use up the whole 20 inches, so 0 < x < 10. That interval is the model's *domain*. Now test values. V(1) = 1 × 18^2 = 324. V(2) = 2 × 16^2 = 512. V(3) = 3 × 14^2 = 588. V(4) = 4 × 12^2 = 576. V(5) = 5 × 10^2 = 500. The volume climbs, peaks between 3 and 4, and falls.",
-     "To pin down the *maximum*, test between 3 and 4. V(3.3) = 3.3 × 13.4^2 = 3.3 × 179.56 = 592.5. V(3.5) = 3.5 × 13^2 = 591.5. The peak is near x = 3.3 inches, giving about 593 cubic inches. A graphing tool shows the same hill. Students sometimes report x = 3.3 as the answer to the question about volume; read the question again, because the height and the volume are different answers.",
-     "Rectangular sheets follow the same recipe with two base lengths. For a 16-inch by 10-inch sheet, V(x) = x(16 − 2x)(10 − 2x), and the domain is 0 < x < 5 because the short side runs out first. V(2) = 2 × 12 × 6 = 144 cubic inches. Whatever the numbers, write each dimension in terms of x, multiply, then explore the domain."
-    ],
-    "words": [
-     {"w": "model", "d": "a function that represents a real situation so it can be analyzed with math"},
-     {"w": "cubic function", "d": "a polynomial function of degree 3, such as V(x) = 4x^3 − 80x^2 + 400x"},
-     {"w": "domain", "d": "the set of input values that make sense; for the 20-inch box, 0 < x < 10"},
-     {"w": "maximum", "d": "the largest output value; the top of the hill on a graph"}
-    ],
-    "look": {
-     "type": "data",
-     "title": "Box Volume from a 20-Inch Sheet",
-     "rows": [["cut 1 in", 324], ["cut 2 in", 512], ["cut 3 in", 588], ["cut 4 in", 576], ["cut 5 in", 500], ["cut 6 in", 384]],
-     "unit": "cubic inches",
-     "cite": "computed from V(x) = x(20 − 2x)^2",
-     "prompt": "Between which two cuts is the maximum? Why does the volume drop back toward zero as the cut approaches 10 inches?"
-    },
-    "check": [
-     {"q": "A 12-inch square sheet has x-inch corners cut out. What is the volume when x = 2?", "choices": ["128 cubic inches", "200 cubic inches", "144 cubic inches", "64 cubic inches"], "a": 0, "why": "V(2) = 2 × (12 − 4)^2 = 2 × 64 = 128 cubic inches."},
-     {"q": "What is the domain of the box model for a 12-inch square sheet?", "choices": ["0 < x < 12", "0 < x < 6", "x > 0", "0 < x < 3"], "a": 1, "why": "Two cuts of x must be less than 12, so 2x < 12 and x < 6, with x positive."},
-     {"q": "A 16 by 10 inch sheet has 2-inch corners removed. What is the box volume?", "choices": ["160 cubic inches", "120 cubic inches", "192 cubic inches", "144 cubic inches"], "a": 3, "why": "V = 2 × (16 − 4) × (10 − 4) = 2 × 12 × 6 = 144 cubic inches."}
-    ]
-   },
-   {
-    "title": "Systems with a Quadratic",
-    "mainIdea": "To solve a system that mixes a line with a parabola or circle, substitute one equation into the other and solve the resulting quadratic.",
-    "reading": [
-     "A drone flies along a straight path while a ball arcs through the air. Where could they meet? That is a *system of equations* with one linear and one quadratic equation. Take y = x^2 − 3 and y = 2x. Both equal y, so set them equal: x^2 − 3 = 2x. Move everything to one side: x^2 − 2x − 3 = 0. Factor: (x − 3)(x + 1) = 0, so x = 3 or x = −1.",
-     "Each x needs its y. Use the line: when x = 3, y = 6; when x = −1, y = −2. The *intersection points* are (3, 6) and (−1, −2). Check them in the parabola: 3^2 − 3 = 6 and (−1)^2 − 3 = −2. Both work. A line and a parabola can meet at two points, one point if the line just grazes the curve, or nowhere at all. If the quadratic has a negative discriminant, there are no real intersections.",
-     "A circle works the same way with *substitution*. Solve x^2 + y^2 = 25 together with y = x + 1. Replace y: x^2 + (x + 1)^2 = 25, so 2x^2 + 2x + 1 = 25. Then 2x^2 + 2x − 24 = 0, and dividing by 2 gives x^2 + x − 12 = 0 = (x + 4)(x − 3). So x = 3 with y = 4, or x = −4 with y = −3. Check: 9 + 16 = 25 and 16 + 9 = 25. Forgetting to find the y-values is the most common way to lose the answer."
-    ],
-    "words": [
-     {"w": "system of equations", "d": "two or more equations that must be true at the same time"},
-     {"w": "substitution", "d": "replacing a variable in one equation with an expression from the other"},
-     {"w": "intersection point", "d": "a point that lies on both graphs, so it satisfies both equations"}
-    ],
-    "look": {
-     "type": "think",
-     "title": "Where a Parabola Meets a Flat Line",
-     "text": "Solve y = x^2 and y = 4. Set them equal: x^2 = 4, so x = 2 or x = −2. Both points have y = 4, giving (2, 4) and (−2, 4). The horizontal line cuts the parabola twice, once on each side of the y-axis.",
-     "prompt": "Solve y = x^2 + 1 together with y = 5. Then explain what happens if the second equation is changed to y = 0."
-    },
-    "check": [
-     {"q": "Solve the system y = x^2 and y = x + 2.", "choices": ["(2, 4) and (−1, 1)", "(2, 4) only", "(1, 1) and (−2, 4)", "(2, 2) and (−1, −1)"], "a": 0, "why": "x^2 − x − 2 = (x − 2)(x + 1) = 0, so x = 2 or −1. Then y = x^2 gives 4 and 1."},
-     {"q": "How many real solutions does the system y = x^2 + 5 and y = 1 have?", "choices": ["2", "1", "0", "4"], "a": 2, "why": "x^2 + 5 = 1 means x^2 = −4, which has no real solutions. The line is below the parabola."},
-     {"q": "Solve x^2 + y^2 = 20 and y = 2x.", "choices": ["(2, 4) and (−2, −4)", "(4, 2) and (−4, −2)", "(2, 4) only", "(2, −4) and (−2, 4)"], "a": 0, "why": "x^2 + 4x^2 = 20, so x^2 = 4 and x = ±2. Then y = 2x gives 4 and −4."}
-    ]
-   }
-  ]}
+    {
+     "title": "Systems with a Quadratic",
+     "mainIdea": "To solve a system that mixes a line with a parabola or circle, substitute one equation into the other and solve the resulting quadratic.",
+     "reading": [
+      "A drone flies along a straight path while a ball arcs through the air. Where could they meet? That is a *system of equations* with one linear and one quadratic equation. Take y = x^2 − 3 and y = 2x. Both equal y, so set them equal: x^2 − 3 = 2x. Move everything to one side: x^2 − 2x − 3 = 0. Factor: (x − 3)(x + 1) = 0, so x = 3 or x = −1.",
+      "Each x needs its y. Use the line: when x = 3, y = 6; when x = −1, y = −2. The *intersection points* are (3, 6) and (−1, −2). Check them in the parabola: 3^2 − 3 = 6 and (−1)^2 − 3 = −2. Both work. A line and a parabola can meet at two points, one point if the line just grazes the curve, or nowhere at all. If the quadratic has a negative discriminant, there are no real intersections.",
+      "A circle works the same way with *substitution*. Solve x^2 + y^2 = 25 together with y = x + 1. Replace y: x^2 + (x + 1)^2 = 25, so 2x^2 + 2x + 1 = 25. Then 2x^2 + 2x − 24 = 0, and dividing by 2 gives x^2 + x − 12 = 0 = (x + 4)(x − 3). So x = 3 with y = 4, or x = −4 with y = −3. Check: 9 + 16 = 25 and 16 + 9 = 25. Forgetting to find the y-values is the most common way to lose the answer."
+     ],
+     "words": [
+      {
+       "w": "system of equations",
+       "d": "two or more equations that must be true at the same time"
+      },
+      {
+       "w": "substitution",
+       "d": "replacing a variable in one equation with an expression from the other"
+      },
+      {
+       "w": "intersection point",
+       "d": "a point that lies on both graphs, so it satisfies both equations"
+      }
+     ],
+     "look": {
+      "type": "think",
+      "title": "Where a Parabola Meets a Flat Line",
+      "text": "Solve y = x^2 and y = 4. Set them equal: x^2 = 4, so x = 2 or x = −2. Both points have y = 4, giving (2, 4) and (−2, 4). The horizontal line cuts the parabola twice, once on each side of the y-axis.",
+      "prompt": "Solve y = x^2 + 1 together with y = 5. Then explain what happens if the second equation is changed to y = 0."
+     },
+     "check": [
+      {
+       "q": "Solve the system y = x^2 and y = x + 2.",
+       "choices": [
+        "(2, 4) and (−1, 1)",
+        "(2, 4) only",
+        "(1, 1) and (−2, 4)",
+        "(2, 2) and (−1, −1)"
+       ],
+       "a": 0,
+       "why": "x^2 − x − 2 = (x − 2)(x + 1) = 0, so x = 2 or −1. Then y = x^2 gives 4 and 1."
+      },
+      {
+       "q": "How many real solutions does the system y = x^2 + 5 and y = 1 have?",
+       "choices": [
+        "2",
+        "1",
+        "0",
+        "4"
+       ],
+       "a": 2,
+       "why": "x^2 + 5 = 1 means x^2 = −4, which has no real solutions. The line is below the parabola."
+      },
+      {
+       "q": "Solve x^2 + y^2 = 20 and y = 2x.",
+       "choices": [
+        "(2, 4) and (−2, −4)",
+        "(4, 2) and (−4, −2)",
+        "(2, 4) only",
+        "(2, −4) and (−2, 4)"
+       ],
+       "a": 0,
+       "why": "x^2 + 4x^2 = 20, so x^2 = 4 and x = ±2. Then y = 2x gives 4 and −4."
+      }
+     ]
+    }
+   ]
+  }
  ],
  "review": [
-  {"q": "What is (3 − i)(3 + i)?", "choices": ["8", "9 − i", "9", "10"], "a": 3, "why": "9 + 3i − 3i − i^2 = 9 + 1 = 10. A conjugate product is a^2 + b^2."},
-  {"q": "What is the remainder when x^3 − 2x + 5 is divided by x − 2?", "choices": ["5", "1", "7", "9"], "a": 3, "why": "By the remainder theorem, p(2) = 8 − 4 + 5 = 9."},
-  {"q": "A degree-3 polynomial with real coefficients has zeros 1 and 2i. Which factored form fits?", "choices": ["(x − 1)(x − 2)", "(x − 1)(x + 4)", "(x + 1)(x^2 + 4)", "(x − 1)(x^2 + 4)"], "a": 3, "why": "The zero 2i brings −2i, and (x − 2i)(x + 2i) = x^2 + 4. The zero 1 gives the factor x − 1."},
-  {"q": "Describe the end behavior of f(x) = −x^4 + 3x.", "choices": ["Both ends down", "Both ends up", "Left down, right up", "Left up, right down"], "a": 0, "why": "Even degree 4 with negative leading coefficient −1: both ends point down."},
-  {"q": "A 30-inch square sheet has 5-inch corners cut out and the sides folded up. What is the volume?", "choices": ["1,500 cubic inches", "2,000 cubic inches", "2,500 cubic inches", "4,000 cubic inches"], "a": 1, "why": "V = 5 × (30 − 10)^2 = 5 × 400 = 2,000 cubic inches."},
-  {"q": "Solve x^2 − 6x + 13 = 0.", "choices": ["3 ± 4i", "−3 ± 2i", "3 ± 2i", "6 ± 4i"], "a": 2, "why": "Discriminant 36 − 52 = −16, so x = (6 ± 4i) / 2 = 3 ± 2i."},
-  {"q": "f(x) = (x − 4)^2 (x + 1). How does the graph meet the x-axis?", "choices": ["Crosses at x = 4 and touches at x = −1", "Crosses at both zeros", "Touches at x = 4 and crosses at x = −1", "Touches at both zeros"], "a": 2, "why": "Multiplicity 2 at x = 4 means touch and turn; multiplicity 1 at x = −1 means cross."},
-  {"q": "Solve the system y = x^2 − 1 and y = 3.", "choices": ["(2, 3) only", "(4, 3) and (−4, 3)", "(3, 2) and (3, −2)", "(2, 3) and (−2, 3)"], "a": 3, "why": "x^2 − 1 = 3 gives x^2 = 4, so x = ±2, and y = 3 for both points."}
+  {
+   "q": "What is (3 − i)(3 + i)?",
+   "choices": [
+    "8",
+    "9 − i",
+    "9",
+    "10"
+   ],
+   "a": 3,
+   "why": "9 + 3i − 3i − i^2 = 9 + 1 = 10. A conjugate product is a^2 + b^2."
+  },
+  {
+   "q": "What is the remainder when x^3 − 2x + 5 is divided by x − 2?",
+   "choices": [
+    "5",
+    "1",
+    "7",
+    "9"
+   ],
+   "a": 3,
+   "why": "By the remainder theorem, p(2) = 8 − 4 + 5 = 9."
+  },
+  {
+   "q": "A degree-3 polynomial with real coefficients has zeros 1 and 2i. Which factored form fits?",
+   "choices": [
+    "(x − 1)(x − 2)",
+    "(x − 1)(x + 4)",
+    "(x + 1)(x^2 + 4)",
+    "(x − 1)(x^2 + 4)"
+   ],
+   "a": 3,
+   "why": "The zero 2i brings −2i, and (x − 2i)(x + 2i) = x^2 + 4. The zero 1 gives the factor x − 1."
+  },
+  {
+   "q": "Describe the end behavior of f(x) = −x^4 + 3x.",
+   "choices": [
+    "Both ends down",
+    "Both ends up",
+    "Left down, right up",
+    "Left up, right down"
+   ],
+   "a": 0,
+   "why": "Even degree 4 with negative leading coefficient −1: both ends point down."
+  },
+  {
+   "q": "A 30-inch square sheet has 5-inch corners cut out and the sides folded up. What is the volume?",
+   "choices": [
+    "1,500 cubic inches",
+    "2,000 cubic inches",
+    "2,500 cubic inches",
+    "4,000 cubic inches"
+   ],
+   "a": 1,
+   "why": "V = 5 × (30 − 10)^2 = 5 × 400 = 2,000 cubic inches."
+  },
+  {
+   "q": "Solve x^2 − 6x + 13 = 0.",
+   "choices": [
+    "3 ± 4i",
+    "−3 ± 2i",
+    "3 ± 2i",
+    "6 ± 4i"
+   ],
+   "a": 2,
+   "why": "Discriminant 36 − 52 = −16, so x = (6 ± 4i) / 2 = 3 ± 2i."
+  },
+  {
+   "q": "f(x) = (x − 4)^2 (x + 1). How does the graph meet the x-axis?",
+   "choices": [
+    "Crosses at x = 4 and touches at x = −1",
+    "Crosses at both zeros",
+    "Touches at x = 4 and crosses at x = −1",
+    "Touches at both zeros"
+   ],
+   "a": 2,
+   "why": "Multiplicity 2 at x = 4 means touch and turn; multiplicity 1 at x = −1 means cross."
+  },
+  {
+   "q": "Solve the system y = x^2 − 1 and y = 3.",
+   "choices": [
+    "(2, 3) only",
+    "(4, 3) and (−4, 3)",
+    "(3, 2) and (3, −2)",
+    "(2, 3) and (−2, 3)"
+   ],
+   "a": 3,
+   "why": "x^2 − 1 = 3 gives x^2 = 4, so x = ±2, and y = 3 for both points."
+  }
  ]
 }
