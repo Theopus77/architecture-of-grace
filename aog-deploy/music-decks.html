@@ -123,6 +123,29 @@ footer a{color:inherit}
 .eqcurve{display:block;width:100%;height:110px;background:#06110c;border-radius:10px}
 .eqcap{position:absolute;right:10px;bottom:7px;font-size:.66rem;letter-spacing:.1em;text-transform:uppercase;color:rgba(198,247,176,.6)}
 .bench{margin-top:.6rem}
+/* AOG-DECKS-CRATE-V1 */
+.crate{display:grid;gap:.6rem;margin-top:.6rem}
+.crate h3{margin:.2rem 0 0;font-size:.95rem}
+.crate .take .nm{flex:1 1 8rem;text-transform:none;letter-spacing:0;color:var(--ink);font-size:.95rem;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:600}
+.crate .take.empty{color:var(--muted)}
+.crate label.ghost{cursor:pointer}
+.crate label.ghost input{display:none}
+/* AOG-DECKS-CRATE-BOX-V1 — Up next is a real crate: sleeves standing in a wooden box */
+.cbox{position:relative;display:flex;gap:.7rem;overflow-x:auto;padding:1rem .9rem 1.3rem;border-radius:10px;
+  background:linear-gradient(180deg,#8a5a32,#6b4424);border:3px solid #4a2d16;box-shadow:inset 0 -10px 0 #4a2d16, inset 0 2px 0 #a8744a;scroll-snap-type:x proximity}
+.cbox.empty{display:block;color:#f3e6d4;font-size:.9rem}
+.sleeve{flex:0 0 132px;scroll-snap-align:start;position:relative;display:flex;flex-direction:column;gap:.35rem;cursor:grab;
+  background:var(--card);border:1px solid #00000055;border-radius:6px;padding:.5rem;box-shadow:0 4px 8px #0006;transition:transform .12s}
+.sleeve:hover{transform:translateY(-6px)}
+.sleeve .art{position:relative;aspect-ratio:1;border-radius:4px;overflow:hidden;background:hsl(var(--h),45%,38%)}
+.sleeve .art::before{content:"";position:absolute;width:78%;aspect-ratio:1;top:11%;right:-22%;border-radius:50%;
+  background:radial-gradient(circle,hsl(var(--h),60%,55%) 0 16%,#111 17% 19%,#1b1b1b 20% 100%);box-shadow:0 0 0 1px #000}
+.sleeve .art b{position:absolute;left:6px;top:4px;font-size:1.2rem;color:#fff;text-shadow:0 1px 2px #000}
+.sleeve .nm{text-transform:none;letter-spacing:0;font-size:.8rem;font-weight:700;color:var(--ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sleeve .sb{display:flex;gap:.3rem}
+.sleeve .sb button{flex:1;min-height:34px;border-radius:999px;border:1px solid var(--line);background:var(--chip);color:var(--ink);font-weight:700;font-size:.8rem;cursor:pointer}
+.sleeve .sb button.x{flex:0 0 34px}
+.deck.dragover{outline:3px dashed var(--accent,#c45c26);outline-offset:4px}
 .bench .take.empty{color:var(--muted)}
 .take{display:flex;flex-wrap:wrap;gap:.5rem;align-items:center;background:var(--chip);border:1px solid var(--line);border-radius:12px;padding:.5rem .7rem}
 .take .tlen{font-variant-numeric:tabular-nums;color:var(--muted);font-size:.85rem}
@@ -196,11 +219,12 @@ input:not([type=range]):not([type=file]):not([type=checkbox]):not([type=radio]),
     <div class="eqwrap"><canvas id="eqCurve" class="eqcurve" aria-hidden="true"></canvas>
       <span class="eqcap" id="eqCap"></span></div>
     <p class="rechint" id="recHint"></p>
+    <div id="crate" class="crate"></div>
     <div id="bench" class="bench"></div>
     <div id="takes" class="takes"></div>
   </div>
   <details class="pg no-print" id="pgPanel">
-    <summary><span class="chev">&#9656;</span>Picture guide<span class="pgsub">Almost no reading &#183; prints on 6 pages</span></summary>
+    <summary><span class="chev">&#9656;</span>Picture guide<span class="pgsub">Almost no reading &#183; prints on 7 pages</span></summary>
     <div class="pgbody">
       <iframe id="pgFrame" data-src="/decks-guide?embed=1" title="The Turntables, in pictures" loading="lazy"></iframe>
     </div>
@@ -267,6 +291,14 @@ const STR = {
   bench:{en:"From the drum bench",es:"Del banco de ritmo"},
   benchNone:{en:"Bounce a pattern from the drum bench and it lands here.",es:"Rebota un patrón del banco de ritmo y aparece aquí."},
   benchGo:{en:"Open the drum bench",es:"Abrir el banco de ritmo"},
+  crateNext:{en:"Up next — the crate",es:"Lo que sigue — la caja"},
+  crateNextNone:{en:"Line up the songs you plan to spin, before you start. They stay here, even if you close the tab.",es:"Prepara las canciones que vas a tocar antes de empezar. Se quedan aquí aunque cierres la pestaña."},
+  crateAdd:{en:"Add songs",es:"Agregar canciones"},
+  crateHint:{en:"Drag a record out of the crate onto a deck, or press A or B.",es:"Arrastra un disco de la caja a un plato, o pulsa A o B."},
+  cratePrev:{en:"Previously spun",es:"Tocadas antes"},
+  cratePrevNone:{en:"Every record you put on a platter shows up here.",es:"Cada disco que pones en un plato aparece aquí."},
+  crateDrop:{en:"Remove",es:"Quitar"},
+  crateClear:{en:"Clear list",es:"Borrar lista"},
   touch:{en:"Platter",es:"Plato"},
   touchFine:{en:"fine",es:"fino"},
   touchNormal:{en:"normal",es:"normal"},
@@ -408,7 +440,7 @@ async function ensureNode(d){
   q.forEach(m=>send(d, m));
   setMix();
 }
-async function loadFile(d, file){
+async function loadFile(d, file, opts){
   d.note = t("loading").replace("%s", file.name); paintDeck(d);
   try{
     ctx(); await ensureNode(d);
@@ -422,6 +454,7 @@ async function loadFile(d, file){
     d.bpm = -1; d.bands = null; d.cues = [null,null,null];
     d.loopOn = false; d.loopBars = 0; send(d, { t:"loop", on:false, a:0, b:0 });
     d.trackKey = (file.name||"?") + "·" + (file.size||0) + "·" + Math.round(buf.duration*100);
+    if(!opts || !opts.restore) crateSpun(d, file);
     const known = marksLoad(d);
     setTimeout(()=>{
       try{ analyse(d); }catch(e){ d.bpm = 0; }
@@ -432,6 +465,7 @@ async function loadFile(d, file){
     const L = Float32Array.from(buf.getChannelData(0));
     const R = Float32Array.from(buf.numberOfChannels>1 ? buf.getChannelData(1) : buf.getChannelData(0));
     send(d, { t:"buf", L:L, R:R, sr:buf.sampleRate });
+    if(opts && opts.pos > 0 && opts.pos < buf.length-3){ d.pos = d.cue = opts.pos; send(d, { t:"seek", v:d.pos }); }
     drawWave(d); drawZoom(d); paintDeck(d);
   }catch(e){
     d.note = t("nope").replace("%s", file.name); paintDeck(d);
@@ -641,6 +675,139 @@ function paintBench(){
     };
   });
 }
+/* ══ AOG-DECKS-CRATE-V1 (2026-09-25) — THE RECORD CRATE ══════════════════════
+   Jimmy: "make it so the turntable saves what was last used (if the tab is
+   closed) … a 'Previously spun' or a crate for upcoming music so it can go
+   smoother." Three shelves, all in IndexedDB on this computer, never sent:
+   · what is on each platter, and where the needle was, so a closed tab opens
+     with the same two records on, parked where you left them;
+   · the last eight records you played, one tap to put any back on a deck;
+   · UP NEXT — songs you line up before the set, played in order. ══════════ */
+const CRATE = { db:"aog-crate", store:"crate", prev:[], next:[], max:8 };
+function crateDb(){
+  return new Promise((ok, no)=>{
+    if(!window.indexedDB){ no(new Error("no indexedDB")); return; }
+    const r = indexedDB.open(CRATE.db, 1);
+    r.onupgradeneeded = ()=>{ if(!r.result.objectStoreNames.contains(CRATE.store)) r.result.createObjectStore(CRATE.store); };
+    r.onsuccess = ()=>ok(r.result); r.onerror = ()=>no(r.error);
+  });
+}
+async function crateGet(k){
+  try{
+    const db = await crateDb();
+    return await new Promise(ok=>{
+      const q = db.transaction(CRATE.store, "readonly").objectStore(CRATE.store).get(k);
+      q.onsuccess = ()=>{ db.close(); ok(q.result || null); }; q.onerror = ()=>{ db.close(); ok(null); };
+    });
+  }catch(e){ return null; }
+}
+async function cratePut(k, v){
+  try{
+    const db = await crateDb();
+    await new Promise(ok=>{
+      const tx = db.transaction(CRATE.store, "readwrite");
+      if(v == null) tx.objectStore(CRATE.store).delete(k); else tx.objectStore(CRATE.store).put(v, k);
+      tx.oncomplete = ()=>{ db.close(); ok(); }; tx.onerror = tx.onabort = ()=>{ db.close(); ok(); };
+    });
+  }catch(e){}
+}
+const crateId = f => (f.name||"?") + "·" + (f.size||0);
+function crateFile(r){ return new File([r.blob], r.name, { type:r.blob.type||"" }); }
+function crateSpun(d, file){
+  const rec = { id:crateId(file), name:file.name, blob:file, at:Date.now() };
+  cratePut("deck-"+d.id, rec);
+  CRATE.prev = [rec].concat(CRATE.prev.filter(x=>x.id!==rec.id)).slice(0, CRATE.max);
+  cratePut("prev", CRATE.prev);
+  paintCrate();
+}
+function crateForget(d){ cratePut("deck-"+d.id, null); try{ localStorage.removeItem("aog.decks.pos."+d.id); }catch(e){} }
+function crateKeepPlace(){
+  decks.forEach(d=>{ try{ if(d.buf) localStorage.setItem("aog.decks.pos."+d.id, String(Math.round(d.pos||0))); }catch(e){} });
+}
+async function crateOpen(){
+  CRATE.prev = (await crateGet("prev")) || [];
+  CRATE.next = (await crateGet("next")) || [];
+  paintCrate();
+  /* the two records that were on when the tab closed go back on, stopped */
+  for(const d of decks){
+    const r = await crateGet("deck-"+d.id);
+    if(!r || !r.blob || d.buf) continue;
+    let pos = 0; try{ pos = +localStorage.getItem("aog.decks.pos."+d.id) || 0; }catch(e){}
+    await loadFile(d, crateFile(r), { restore:true, pos:pos });
+  }
+}
+function crateRow(r, i, list){
+  return `<div class="take">
+      <span class="nm" title="${esc(r.name)}">${list==="next"?(i+1)+". ":""}${esc(r.name)}</span>
+      <button type="button" class="ghost" data-crate="${list}" data-i="${i}" data-deck="A">${t("toA")}</button>
+      <button type="button" class="ghost" data-crate="${list}" data-i="${i}" data-deck="B">${t("toB")}</button>
+      <button type="button" class="ghost" data-cratedrop="${list}" data-i="${i}" aria-label="${t("crateDrop")}">✕</button>
+    </div>`;
+}
+function crateSleeve(r, i){
+  let h = 0; for(const c of r.name) h = (h*31 + c.charCodeAt(0)) % 360;
+  return `<div class="sleeve" draggable="true" data-sleeve="${i}" style="--h:${h}" title="${esc(r.name)}">
+      <div class="art"><b>${i+1}</b></div>
+      <span class="nm">${esc(r.name.replace(/\.[^.]+$/,""))}</span>
+      <div class="sb">
+        <button type="button" data-crate="next" data-i="${i}" data-deck="A">A</button>
+        <button type="button" data-crate="next" data-i="${i}" data-deck="B">B</button>
+        <button type="button" class="x" data-cratedrop="next" data-i="${i}" aria-label="${t("crateDrop")}">✕</button>
+      </div>
+    </div>`;
+}
+function crateTake(i, d){
+  const r = CRATE.next[i]; if(!r || !d) return;
+  CRATE.next.splice(i,1); cratePut("next", CRATE.next);
+  loadFile(d, crateFile(r)); paintCrate();
+}
+function esc(s){ return String(s).replace(/[&<>"]/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c])); }
+function paintCrate(){
+  const box = document.getElementById("crate"); if(!box) return;
+  box.innerHTML = `
+    <h3>${t("crateNext")}</h3>
+    ${CRATE.next.length ? `<div class="cbox">${CRATE.next.map(crateSleeve).join("")}</div>` : `<div class="cbox empty">${t("crateNextNone")}</div>`}
+    ${CRATE.next.length ? `<p class="rechint" style="margin:0">${t("crateHint")}</p>` : ""}
+    <div class="take" style="background:none;border:0;padding:0">
+      <label class="ghost">${t("crateAdd")}<input type="file" multiple id="crateAdd" accept="audio/*,video/mp4,.mp3,.m4a,.aac,.wav,.aif,.aiff,.ogg,.opus,.flac,.webm"></label>
+      ${CRATE.next.length?`<button type="button" class="ghost" data-crateclear="next">${t("crateClear")}</button>`:""}
+    </div>
+    <h3>${t("cratePrev")}</h3>
+    ${CRATE.prev.map((r,i)=>crateRow(r,i,"prev")).join("") || `<div class="take empty">${t("cratePrevNone")}</div>`}
+    ${CRATE.prev.length?`<div class="take" style="background:none;border:0;padding:0"><button type="button" class="ghost" data-crateclear="prev">${t("crateClear")}</button></div>`:""}`;
+  const add = document.getElementById("crateAdd");
+  add.onchange = ()=>{
+    const fs = Array.from(add.files||[]); if(!fs.length) return;
+    fs.forEach(f=>{ if(!CRATE.next.some(x=>x.id===crateId(f))) CRATE.next.push({ id:crateId(f), name:f.name, blob:f, at:Date.now() }); });
+    cratePut("next", CRATE.next); paintCrate();
+  };
+  box.querySelectorAll("[data-crate]").forEach(b=>{
+    b.onclick = ()=>{
+      const list = b.getAttribute("data-crate"), i = +b.getAttribute("data-i");
+      const r = CRATE[list][i]; if(!r) return;
+      /* a song taken from UP NEXT has been played: it leaves the queue and
+         lands in PREVIOUSLY SPUN, the way a record goes from one pile to the other */
+      if(list==="next"){ crateTake(i, decks.find(x=>x.id===b.getAttribute("data-deck"))); return; }
+      loadFile(decks.find(x=>x.id===b.getAttribute("data-deck")), crateFile(r));
+      paintCrate();
+    };
+  });
+  box.querySelectorAll("[data-sleeve]").forEach(el=>{
+    el.addEventListener("dragstart", ev=>{ ev.dataTransfer.setData("text/aog-sleeve", el.getAttribute("data-sleeve")); ev.dataTransfer.effectAllowed = "move"; });
+  });
+  box.querySelectorAll("[data-cratedrop]").forEach(b=>{
+    b.onclick = ()=>{
+      const list = b.getAttribute("data-cratedrop");
+      CRATE[list].splice(+b.getAttribute("data-i"), 1); cratePut(list, CRATE[list]); paintCrate();
+    };
+  });
+  box.querySelectorAll("[data-crateclear]").forEach(b=>{
+    b.onclick = ()=>{ const list = b.getAttribute("data-crateclear"); CRATE[list] = []; cratePut(list, []); paintCrate(); };
+  });
+}
+window.addEventListener("pagehide", crateKeepPlace);
+document.addEventListener("visibilitychange", ()=>{ if(document.hidden) crateKeepPlace(); });
+
 /* what a deck remembers about a record it has seen before: the tempo it worked
    out, where beat one is, and the marks you left on it. Kept by name and size,
    so the same file dropped tomorrow is ready the moment it loads. */
@@ -935,6 +1102,8 @@ function bind(){
     sec.addEventListener("dragleave", ()=>sec.classList.remove("dragover"));
     sec.addEventListener("drop", ev=>{
       ev.preventDefault(); sec.classList.remove("dragover");
+      const sl = ev.dataTransfer && ev.dataTransfer.getData("text/aog-sleeve");
+      if(sl !== "" && sl != null){ crateTake(+sl, d); return; }
       const f = ev.dataTransfer && ev.dataTransfer.files && ev.dataTransfer.files[0];
       if(f) loadFile(d, f);
     });
@@ -955,6 +1124,7 @@ function bind(){
       d.buf = null; d.peaks = null; d.bands = null; d.name = ""; d.note = "";
       d.pos = 0; d.cue = 0; d.rate = 0; d.level = 0; d.rot = 0; d.bpm = 0; d.beat0 = 0;
       d.cues = [null,null,null]; d.trackKey = ""; d.taps = [];
+      crateForget(d);
       const sb = document.querySelector('[data-sync="'+d.id+'"]'); if(sb) sb.classList.remove("on");
       drawWave(d); drawZoom(d); paintDeck(d);
     };
@@ -1334,13 +1504,14 @@ document.getElementById("noiseBtn").onclick = ()=>{
   decks.forEach(d=>send(d, { t:"noise", v: noiseOn?0.5:0 }));
   paintChrome();
 };
-document.getElementById("langBtn").onclick = ()=>{ S.lang = S.lang==="en"?"es":"en"; try{localStorage.setItem("aog.lang", S.lang);}catch(e){} paintChrome(); shell(); };
+document.getElementById("langBtn").onclick = ()=>{ S.lang = S.lang==="en"?"es":"en"; try{localStorage.setItem("aog.lang", S.lang);}catch(e){} paintChrome(); shell(); paintCrate(); };
 document.getElementById("themeBtn").onclick = ()=>{ S.theme = S.theme==="dark"?"light":"dark"; try{localStorage.setItem("aog.interior.ws.v1.theme", S.theme);}catch(e){} paintChrome(); };
 document.addEventListener("visibilitychange", ()=>{
   if(document.hidden) decks.forEach(d=>{ if(d.motor){ d.motor=false; send(d,{t:"motor",on:false}); } });
 });
 paintChrome(); shell(); requestAnimationFrame(loop);
 checkBench();
+crateOpen();
 try{ AOGHandoff.listen(function(key){ if(key==="drumbench") checkBench(); }); }catch(e){}
 window.addEventListener("focus", checkBench);
 </script>
