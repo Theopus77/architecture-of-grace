@@ -243,12 +243,13 @@ html.a11y-dyslexic body{letter-spacing:.02em;word-spacing:.09em;line-height:1.8}
 .bp-stats b{display:block;font:900 1.35rem var(--serif);color:var(--ink)}
 .bp-stats span{font-size:.78rem;color:var(--sub)}
 .bp-wall{display:flex;justify-content:center;padding:10px 0 0}
-.rose{width:min(100%,460px);height:auto;filter:drop-shadow(0 8px 18px rgba(0,0,0,.25))}
-.rose .pane{stroke:#1B2230;stroke-width:1.2;cursor:pointer;transition:fill-opacity .15s}
-.rose .pane:hover,.rose .pane.sel{fill-opacity:1 !important;stroke:#F2C964;stroke-width:2.5}
-.rose .pane.empty{fill:#2A3242;fill-opacity:1;cursor:default}
-.rose .pane.key{stroke:#F2C964;stroke-width:2.2}
-.rose{print-color-adjust:exact;-webkit-print-color-adjust:exact}
+.glass{width:min(100%,480px);height:auto;filter:drop-shadow(0 10px 22px rgba(0,0,0,.3))}
+.bp-styles{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:4px 0 6px}
+.glass .pane{cursor:pointer;transition:fill-opacity .15s}
+.glass .pane:hover,.glass .pane.sel{fill-opacity:1 !important;stroke:#F2C964;stroke-width:2.5}
+.glass .pane.empty{cursor:default}
+.glass .pane.key{stroke:#F2C964;stroke-width:2.2}
+.glass{print-color-adjust:exact;-webkit-print-color-adjust:exact}
 .bp-legend{display:flex;flex-wrap:wrap;gap:10px 16px;margin:12px 0 0;font-size:.8rem;color:var(--sub)}
 .bp-lg{display:inline-flex;align-items:center;gap:6px}
 .bp-lg i{width:18px;height:10px;border-radius:2px;display:inline-block}
@@ -1459,27 +1460,116 @@ html.a11y-dyslexic body{letter-spacing:.02em;word-spacing:.09em;line-height:1.8}
     "Science":"#2E9A62","Social Studies":"#B3303F","Spanish":"#CC4C86","FACS":"#8452B0","Religions":"#4146A6",
     "Economics":"#93A62E","Foundry":"#B8702E","SEL · Room 36":"#2C9CA8","Other":"#6B7A8C"};
   function bpGlass(it){ if(it.kind==="voice") return "#E58FB0"; if(it.kind!=="turnin") return "#9FC3E0"; return BP_GLASS[it.subj]||BP_GLASS.Other; }
-  function bpRose(list){
-    var R=1, cap=1; while(cap<list.length+1){ cap+=8*R; R++; } if(cap-list.length<4){ cap+=8*R; R++; }
-    var c=200, r0=22, w=(178-r0)/(R-1||1), g="", i=0;
-    function pt(r,a){ return (c+r*Math.cos(a)).toFixed(1)+" "+(c+r*Math.sin(a)).toFixed(1); }
-    function pane(k,html){ var it=list[k];
-      if(!it) return html.replace("CLS","pane empty").replace("ATTR","");
-      var st=bpStrength(it), op=st==null?0.85:(0.38+st*0.62);
-      return html.replace("CLS","pane"+((k+1)%25===0?" key":"")).replace("ATTR",' data-bpi="'+k+'" fill="'+bpGlass(it)+'" fill-opacity="'+op.toFixed(2)+'"><title>'+esc((it.title||"")+" · "+when(it.ts)+(it.sum?" · "+it.sum:""))+'</title');
-    }
-    g+=pane(i++,'<circle class="CLS" cx="'+c+'" cy="'+c+'" r="'+(r0-2)+'"ATTR></circle>');
-    for(var k=1;k<R;k++){
-      var n=8*k, a0=r0+(k-1)*w+2, a1=r0+k*w-1, gap=0.9/ (a1);
-      for(var j=0;j<n;j++){
-        var t0=-Math.PI/2+j*2*Math.PI/n+gap, t1=-Math.PI/2+(j+1)*2*Math.PI/n-gap;
-        var d="M"+pt(a0,t0)+" A"+a0+" "+a0+" 0 0 1 "+pt(a0,t1)+" L"+pt(a1,t1)+" A"+a1+" "+a1+" 0 0 0 "+pt(a1,t0)+" Z";
-        g+=pane(i++,'<path class="CLS" d="'+d+'"ATTR></path>');
+  /* ══ AOG-BLUEPRINT-GLASS-V1 (2026-09-25) — FIVE WINDOWS ═══════════════════
+     Jimmy: "the builder had an option to build a different type of stained
+     glass mosaic … realism to the ceiling of real … 3-5?" Five real forms,
+     one pane per send, filled in the order a glazier would set them. Every
+     window shares the same glass (mottled, lit from behind) and lead. */
+  var BP_STYLES=[["rose","Rose Window"],["lancet","Gothic Lancet"],["dome","Tiffany Dome"],["star","Kaleidoscope Star"],["byz","Byzantine Ceiling"]];
+  function bpStyleOf(who){ var v=lsGet("aog.bp.style."+who); for(var i=0;i<BP_STYLES.length;i++) if(BP_STYLES[i][0]===v) return v; return "rose"; }
+  function f1(x){ return x.toFixed(1); }
+  function P(x,y){ return f1(x)+" "+f1(y); }
+  function sector(cx,cy,a0,a1,t0,t1){
+    return "M"+P(cx+a0*Math.cos(t0),cy+a0*Math.sin(t0))+" A"+f1(a0)+" "+f1(a0)+" 0 0 1 "+P(cx+a0*Math.cos(t1),cy+a0*Math.sin(t1))
+      +" L"+P(cx+a1*Math.cos(t1),cy+a1*Math.sin(t1))+" A"+f1(a1)+" "+f1(a1)+" 0 0 0 "+P(cx+a1*Math.cos(t0),cy+a1*Math.sin(t0))+" Z";
+  }
+  /* each returns {w,h,panes:[d...], frame:svg, clip:d|null, bg:colour} with at least `need` panes */
+  var BP_SHAPES={
+    rose:function(need){
+      var R=2, cap=1; while(cap<need){ cap+=8*(R-1); R++; }
+      var c=200, r0=24, w=(172-r0)/(R-1), out=['M'+P(c-r0+3,c)+' a'+(r0-3)+' '+(r0-3)+' 0 1 0 '+f1(2*(r0-3))+' 0 a'+(r0-3)+' '+(r0-3)+' 0 1 0 '+f1(-2*(r0-3))+' 0'];
+      for(var k=1;k<R;k++){ var n=8*k, a0=r0+(k-1)*w, a1=r0+k*w;
+        for(var j=0;j<n;j++){ var t0=-Math.PI/2+j*2*Math.PI/n, t1=t0+2*Math.PI/n;
+          /* a pointed petal: the outer edge peaks in the middle, like cusped tracery */
+          var tm=(t0+t1)/2, pk=a1+Math.min(10,w*0.35);
+          out.push("M"+P(c+a0*Math.cos(t0),c+a0*Math.sin(t0))+" A"+f1(a0)+" "+f1(a0)+" 0 0 1 "+P(c+a0*Math.cos(t1),c+a0*Math.sin(t1))
+            +" L"+P(c+a1*Math.cos(t1),c+a1*Math.sin(t1))+" Q"+P(c+pk*Math.cos(tm),c+pk*Math.sin(tm))+" "+P(c+a1*Math.cos(t0),c+a1*Math.sin(t0))+" Z"); } }
+      return {w:400,h:400,panes:out,clip:null,
+        frame:'<circle cx="200" cy="200" r="190" fill="none" stroke="url(#bpStone)" stroke-width="18"/><circle cx="200" cy="200" r="181" fill="none" stroke="#00000055" stroke-width="2"/>'};
+    },
+    lancet:function(need){
+      var W=240, H=420, x0=80, y0=10, rad=W*0.95;
+      function inside(x,y){ if(x<x0||x>x0+W||y>y0+H) return false; var yc=y0+rad*0.62; if(y>=yc) return true;
+        return Math.hypot(x-(x0+W-rad),y-yc)<=rad && Math.hypot(x-(x0+rad),y-yc)<=rad; }
+      var s=60, pts;
+      for(;s>6;s-=2){ pts=[]; for(var gy=y0+H-s/2; gy>y0; gy-=s/2){ var odd=Math.round((y0+H-gy)/(s/2))%2; for(var gx=x0+(odd?s/2:0); gx<=x0+W; gx+=s){ if(inside(gx,gy)) pts.push([gx,gy]); } } if(pts.length>=need) break; }
+      pts.sort(function(a,b){ return b[1]-a[1]||a[0]-b[0]; });
+      var h=s/2;
+      return {w:400,h:440,panes:pts.map(function(p){ return "M"+P(p[0],p[1]-h)+" L"+P(p[0]+h,p[1])+" L"+P(p[0],p[1]+h)+" L"+P(p[0]-h,p[1])+" Z"; }),
+        clip:"M"+P(x0,y0+H)+" L"+P(x0,y0+rad*0.62)+" A"+rad+" "+rad+" 0 0 1 "+P(x0+W/2,y0)+" A"+rad+" "+rad+" 0 0 1 "+P(x0+W,y0+rad*0.62)+" L"+P(x0+W,y0+H)+" Z",
+        frame:null};
+    },
+    dome:function(need){
+      var ribs=12, R=1, cap=0; while(cap<need){ cap+=ribs*R; R++; }
+      var c=200, r0=26, w=(176-r0)/(R-1), out=['M'+P(c-r0+2,c)+' a'+(r0-2)+' '+(r0-2)+' 0 1 0 '+f1(2*(r0-2))+' 0 a'+(r0-2)+' '+(r0-2)+' 0 1 0 '+f1(-2*(r0-2))+' 0'];
+      for(var k=1;k<R;k++){ var per=k, a0=r0+(k-1)*w, a1=r0+k*w;
+        for(var j=0;j<ribs;j++) for(var q=0;q<per;q++){
+          var span=2*Math.PI/ribs, t0=-Math.PI/2+j*span+q*span/per, t1=t0+span/per, tm=(t0+t1)/2;
+          /* fish scale: a round-bottomed pane */
+          var bo=a1-Math.min(8,w*0.3);
+          out.push("M"+P(c+a0*Math.cos(t0),c+a0*Math.sin(t0))+" A"+f1(a0)+" "+f1(a0)+" 0 0 1 "+P(c+a0*Math.cos(t1),c+a0*Math.sin(t1))
+            +" L"+P(c+bo*Math.cos(t1),c+bo*Math.sin(t1))+" Q"+P(c+(a1+6)*Math.cos(tm),c+(a1+6)*Math.sin(tm))+" "+P(c+bo*Math.cos(t0),c+bo*Math.sin(t0))+" Z"); } }
+      var ribsSvg=""; for(var r=0;r<ribs;r++){ var t=-Math.PI/2+r*2*Math.PI/ribs; ribsSvg+='<line x1="'+f1(c+r0*Math.cos(t))+'" y1="'+f1(c+r0*Math.sin(t))+'" x2="'+f1(c+184*Math.cos(t))+'" y2="'+f1(c+184*Math.sin(t))+'" stroke="url(#bpBronze)" stroke-width="5" stroke-linecap="round"/>'; }
+      return {w:400,h:400,panes:out,clip:null,
+        frame:ribsSvg+'<circle cx="200" cy="200" r="186" fill="none" stroke="url(#bpBronze)" stroke-width="12"/><circle cx="200" cy="200" r="'+(r0)+'" fill="none" stroke="url(#bpBronze)" stroke-width="6"/>'};
+    },
+    star:function(need){
+      var W=12, R=1, cap=0; while(cap<need){ cap+=W*(2*R-1); R++; }
+      var c=200, L=180/(R-1), out=[];
+      for(var k=1;k<R;k++){
+        for(var j=0;j<W;j++){
+          var ta=-Math.PI/2+j*2*Math.PI/W, tb=ta+2*Math.PI/W;
+          function V(i,rr){ var r=rr*L, t=ta+(tb-ta)*(rr?i/rr:0); return [c+r*Math.cos(ta)*(1-(rr?i/rr:0))+r*Math.cos(tb)*(rr?i/rr:0), c+r*Math.sin(ta)*(1-(rr?i/rr:0))+r*Math.sin(tb)*(rr?i/rr:0)]; }
+          for(var i=0;i<k;i++){
+            var a=V(i,k-1), b=V(i,k), d=V(i+1,k);
+            out.push("M"+P(a[0],a[1])+" L"+P(b[0],b[1])+" L"+P(d[0],d[1])+" Z");
+            if(i<k-1){ var e=V(i+1,k-1); out.push("M"+P(a[0],a[1])+" L"+P(d[0],d[1])+" L"+P(e[0],e[1])+" Z"); }
+          }
+        }
       }
+      return {w:400,h:400,panes:out,clip:null,
+        frame:'<polygon points="'+(function(){ var p=[]; for(var j=0;j<W;j++){ var t=-Math.PI/2+j*2*Math.PI/W; p.push(f1(c+186*Math.cos(t))+","+f1(c+186*Math.sin(t))); } return p.join(" "); })()+'" fill="none" stroke="url(#bpBronze)" stroke-width="8" stroke-linejoin="round"/>'};
+    },
+    byz:function(need){
+      var c=200, out=[], s=Math.max(7,Math.min(22,Math.sqrt(3.14*170*170/Math.max(need*1.15,1))*0.92)), r=s*0.6, th=0;
+      while(true){
+        var x=c+r*Math.cos(th), y=c+r*Math.sin(th); if(r>182) break;
+        var rot=th*180/Math.PI+90, h=s*0.46;
+        out.push('M'+P(-h,-h)+' L'+P(h,-h)+' L'+P(h,h)+' L'+P(-h,h)+' Z" transform="translate('+f1(x)+' '+f1(y)+') rotate('+f1(rot)+')');
+        th+=s*1.02/r; r=s*0.6+s*1.05*th/(2*Math.PI);
+      }
+      return {w:400,h:400,panes:out,clip:null,byz:true,
+        frame:'<circle cx="200" cy="200" r="190" fill="none" stroke="url(#bpStone)" stroke-width="14"/>'};
     }
-    return '<svg class="rose" viewBox="0 0 400 400" role="img" aria-label="Rose window: '+list.length+' panes filled">'
-      +'<circle cx="200" cy="200" r="196" fill="#1B2230"/>'+g
-      +'<circle cx="200" cy="200" r="194" fill="none" stroke="#C9A24A" stroke-width="4"/></svg>';
+  };
+  function bpWindow(style, list){
+    var need=list.length+Math.max(6,Math.ceil(list.length*0.15));
+    var sh=BP_SHAPES[style](need), W=sh.w, H=sh.h, id="bpc"+style;
+    var defs='<defs>'
+      +'<filter id="bpGlass" x="0" y="0" width="100%" height="100%"><feTurbulence type="fractalNoise" baseFrequency="0.045" numOctaves="3" seed="7" result="n"/>'
+      +'<feColorMatrix in="n" type="matrix" values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 -0.9 0.62" result="m"/>'
+      +'<feComposite in="m" in2="SourceAlpha" operator="in" result="mm"/><feBlend in="SourceGraphic" in2="mm" mode="multiply"/></filter>'
+      +'<radialGradient id="bpLight" cx="50%" cy="38%" r="65%"><stop offset="0" stop-color="#fff" stop-opacity=".42"/><stop offset=".55" stop-color="#fff" stop-opacity=".08"/><stop offset="1" stop-color="#000" stop-opacity=".25"/></radialGradient>'
+      +'<linearGradient id="bpStone" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#D8CFBE"/><stop offset=".5" stop-color="#A89D88"/><stop offset="1" stop-color="#7C725F"/></linearGradient>'
+      +'<linearGradient id="bpBronze" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#C9A24A"/><stop offset=".5" stop-color="#8A6424"/><stop offset="1" stop-color="#5B3F14"/></linearGradient>'
+      +(sh.clip?'<clipPath id="'+id+'"><path d="'+sh.clip+'"/></clipPath>':"")
+      +'</defs>';
+    var emptyFill=sh.byz?"#D4AA48":"#3A4252", g="";
+    sh.panes.forEach(function(d,k){
+      var it=list[k], attrs;
+      if(!it) attrs=' class="pane empty" fill="'+emptyFill+'" fill-opacity="1"';
+      else { var st=bpStrength(it), op=st==null?0.86:(0.42+st*0.58);
+        attrs=' class="pane'+((k+1)%25===0?" key":"")+'" data-bpi="'+k+'" fill="'+bpGlass(it)+'" fill-opacity="'+op.toFixed(2)+'"'; }
+      var title=it?'<title>'+esc((it.title||"")+" · "+when(it.ts)+(it.sum?" · "+it.sum:""))+'</title>':"";
+      g+='<path d="'+d+'"'+attrs+'>'+title+'</path>';
+    });
+    var cp=sh.clip?' clip-path="url(#'+id+')"':"";
+    return '<svg class="glass" viewBox="0 0 '+W+' '+H+'" role="img" aria-label="'+esc(style)+' window, '+list.length+' panes filled">'+defs
+      +'<g'+cp+'>'+(sh.clip?'<rect width="'+W+'" height="'+H+'" fill="#20242C"/>':'<circle cx="200" cy="200" r="190" fill="'+(sh.byz?"#7A5A1E":"#20242C")+'"/>')
+      +'<g class="panes" filter="url(#bpGlass)" stroke="#1E1F22" stroke-width="'+(sh.byz?1.4:2.4)+'" stroke-linejoin="round">'+g+'</g>'
+      +(sh.clip?'<rect width="'+W+'" height="'+H+'" fill="url(#bpLight)" style="mix-blend-mode:screen;pointer-events:none"/>':'<circle cx="200" cy="200" r="190" fill="url(#bpLight)" style="mix-blend-mode:screen;pointer-events:none"/>')+'</g>'
+      +(sh.clip?'<path d="'+sh.clip+'" fill="none" stroke="url(#bpStone)" stroke-width="14" stroke-linejoin="round"/>':"")
+      +(sh.frame||"")+'</svg>';
   }
   var bpWho=null;
   (function(){ var m=/[?&]blueprint=([^&]+)/.exec(location.search); if(m){ curView="bp"; bpWho=decodeURIComponent(m[1].replace(/\+/g," ")).replace(/\s+/g," ").trim().toLowerCase(); } })();
@@ -1498,6 +1588,7 @@ html.a11y-dyslexic body{letter-spacing:.02em;word-spacing:.09em;line-height:1.8}
     keys.sort();
     var me=learner(), list=by[bpWho].slice().sort(function(a,b){ return String(a.ts||"").localeCompare(String(b.ts||"")); });
     var name=shown[bpWho]||"";
+    var sty=bpStyleOf(bpWho);
     /* AOG-BLUEPRINT-ENV-V1 — Jimmy: "for the teacher version they could be
        little opened envelopes". The learner lays bricks; the teacher opens mail.
        Same record, same colours: in teacher view each send is a letter opened. */
@@ -1513,11 +1604,13 @@ html.a11y-dyslexic body{letter-spacing:.02em;word-spacing:.09em;line-height:1.8}
       +'<div class="bp-top"><div><div class="bp-ey">'+(me?"My Blueprint":"Blueprint")+'</div><h2>'+esc(me?"What "+name+" is building":name+"’s Blueprint")+'</h2></div>'
       +'<div class="bp-tools no-print"><button type="button" class="fchip'+(me?" on":"")+'" id="bpMe">'+(me?"✓ ":"")+'I’m learning for me</button><button type="button" class="fchip" id="bpPrint">Print this Blueprint</button></div></div>'
       +'<div class="bp-stats"><div><b>'+list.length+'</b><span>panes of glass</span></div><div><b>'+dl.length+'</b><span>days building</span></div><div><b>'+Object.keys(subj).length+'</b><span>subjects</span></div><div><b>'+streak+'</b><span>day streak</span></div>'+(top?'<div><b>'+esc(top)+'</b><span>most glass</span></div>':"")+'</div>'
-      +'<div class="bp-wall">'+bpRose(list)+'</div>'
+      +'<div class="bp-styles no-print" role="group" aria-label="Window">'+BP_STYLES.map(function(x){ return '<button type="button" class="fchip'+(x[0]===sty?" on":"")+'" data-bpsty="'+x[0]+'">'+x[1]+'</button>'; }).join("")+'</div>'
+      +'<div class="bp-wall">'+bpWindow(sty,list)+'</div>'
       +'<div class="bp-legend">'+legend+'<span class="bp-lg"><i class="solid"></i>bright glass = done without a hint</span><span class="bp-lg"><i class="key"></i>gold-leaded = every 25th pane</span></div>'
       +'<div class="bp-say" id="bpSay">'+(list.length?"Tap a pane to see what it was.":"")+'</div>'
       +'</div>';
     box.appendChild(wrap);
+    wrap.querySelectorAll("[data-bpsty]").forEach(function(b){ b.addEventListener("click",function(){ try{ localStorage.setItem("aog.bp.style."+bpWho,b.getAttribute("data-bpsty")); }catch(e){} paint(); }); });
     wrap.querySelectorAll("[data-bpwho]").forEach(function(b){ b.addEventListener("click",function(){ bpWho=b.getAttribute("data-bpwho"); paint(); }); });
     wrap.querySelectorAll("[data-bpi]").forEach(function(b){ b.addEventListener("click",function(){
       var it=list[+b.getAttribute("data-bpi")]; wrap.querySelectorAll(".pane.sel").forEach(function(x){x.classList.remove("sel")}); b.classList.add("sel");
