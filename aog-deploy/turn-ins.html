@@ -221,6 +221,15 @@ html.a11y-dyslexic body{letter-spacing:.02em;word-spacing:.09em;line-height:1.8}
   body.pone .ti.ponly{display:block}
   body.pone .stuh,body.pone header.page h1,body.pone .tag{display:none}
 }
+.ddans{display:grid;gap:10px;margin:10px 0 8px}
+.ddbox .ql{font-size:.72rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--sub)}
+.ddbox ol{margin:4px 0 0;padding-left:1.4em;display:grid;gap:3px}
+.ddbox li{font-size:.92rem}
+.ddbox li .mk{display:inline-block;width:1.1em;font-weight:800}
+.ddbox li.ok .mk{color:var(--good)}
+.ddbox li.no .mk{color:var(--u3)}
+.ddbox li .key{color:var(--sub);font-size:.85rem;margin-left:6px}
+.ddbox li .key::before{content:"→ ";}
 </style>
 <script src="aog-sync-config.js"></script>
 <!-- ══ DASHBOARD-CODE GATE (2026-09-09) ═══════════════════════════════════
@@ -594,6 +603,40 @@ html.a11y-dyslexic body{letter-spacing:.02em;word-spacing:.09em;line-height:1.8}
                detail:turninDetail, evidence:turninEvidence };
     });
   }
+  function ddAnswers(x){
+    var h='<div class="ddans">';
+    x.answers.forEach(function(bx){
+      var row=(x.byStrand||[])[(bx.b||1)-1], sc=Array.isArray(row)&&row.length>2?(" — "+row[1]+" of "+row[2]):"";
+      h+='<div class="ddbox"><div class="ql">'+esc((bx.b?bx.b+". ":"")+(bx.s||"Box"))+esc(sc)+'</div><ol>';
+      (bx.a||[]).forEach(function(a){
+        var open=!("ok" in a), g=nz(a.g)?a.g:"(blank)";
+        h+='<li class="'+(open?"op":(a.ok?"ok":"no"))+'"><span class="mk">'+(open?"✎":(a.ok?"✓":"✗"))+'</span> '+esc(g)
+          +(a.c&&!a.ok?' <span class="key">'+(open?"model: ":"answer: ")+esc(a.c)+'</span>':"")+'</li>';
+      });
+      h+='</ol></div>';
+    });
+    return h+'</div>';
+  }
+  function ddWriting(x){
+    var h="", w=x.work||{};
+    h+=qa("What they wrote", w.text);
+    var cells=(w.plan&&w.plan.cells)||{};
+    Object.keys(cells).forEach(function(k){ h+=qa("Plan · "+human(k), cells[k]); });
+    var rub=x.rubric||{}, rk=Object.keys(rub);
+    if(rk.length) h+=qa("Rubric", rk.map(function(k){ return human(k)+" "+rub[k]+"/4"; }).join(" · ")+(nz(x.rubricTotal)?"  —  "+x.rubricTotal+" of "+x.rubricMax:""));
+    if(nz(x.words)) h+=qa("Words", String(x.words));
+    return h;
+  }
+  function anyExtra(x){
+    var SKIPK={series:1,lang:1,build:1,probe:1,subject:1,grade:1,sheet:1,v:1,kind:1};
+    var h="";
+    Object.keys(x||{}).forEach(function(k){
+      if(SKIPK[k]) return;
+      var v=x[k]; if(v==null||v==="") return;
+      h+=qa(human(k), typeof v==="object"?JSON.stringify(v,null,1):String(v));
+    });
+    return h;
+  }
   function turninDetail(it){
     var r=it.raw, x=xparse(r), out="", resp=x.responses;
     if(resp && resp.prompts){                        /* the workbook */
@@ -614,6 +657,13 @@ html.a11y-dyslexic body{letter-spacing:.02em;word-spacing:.09em;line-height:1.8}
         });
       });
     }
+    /* AOG-INBOX-DD-V1 (2026-09-25) — Jimmy: "the inbox and the DAILY DRAFT are
+       empty". They were not: a Daily Drafts row carries every strand's answers,
+       right or wrong, with the key beside a wrong one, and a writing row carries
+       the text, the plan and the rubric. Nothing here read them. */
+    if(!out && Array.isArray(x.answers) && x.answers.length) out+=ddAnswers(x);
+    if(!out && x.kind==="writing") out+=ddWriting(x);
+    if(!out) out+=anyExtra(x);
     if(!out && x.tally) out+=qa("Result detail", JSON.stringify(x.tally,null,1));
     if(!out) out='<div class="qa"><div class="av empty">Counts only — this activity sends a score line, not written answers.</div></div>';
     out+=qa("Note", r.note);
