@@ -1,0 +1,265 @@
+{
+ "n": 41, "title": "Functions and Linear Models", "years": "Functions",
+ "bigQuestion": "When a rule turns one number into another, how do you read, write and use that rule to predict?",
+ "story": {
+  "title": "Taxi Fare, Cell Data and the Meaning of f(3)",
+  "kicker": "The same input, 3, gives two different answers, and both are right, because the rules are different.",
+  "paragraphs": [
+   "Darnell steps out of Union Station in downtown Chicago and gets into a taxi. The sticker on the window lists the rates (for this story we will use round example numbers): $3 as soon as the meter starts, plus $2 for every mile. He watches the meter. At the start it reads $3.00. After one mile, $5.00. After two miles, $7.00. He realizes he can predict the next number before it appears: after three miles it will read $9.00.",
+   "In his head Darnell writes the rule the meter is following: fare = 3 + 2 × miles. If he calls the rule f and lets x be the miles, then f(x) = 2x + 3. The symbol f(3) means \"put 3 into the rule f.\" It comes out to 2(3) + 3 = 9. So f(3) = 9 says that a 3-mile ride costs $9. It is not f times 3. It is a question and its answer: what does the rule give for an input of 3?",
+   "While he rides, a text arrives about his cell plan: $20 a month plus $8 for each gigabyte of data. That is a different rule, so he gives it a different name: d(g) = 8g + 20. Now d(3) = 8(3) + 20 = 44. Same input, 3, but a different rule, so a different output, $44 for 3 gigabytes. The letter in front tells you which machine you are feeding the number into.",
+   "The taxi stops after 4 miles and the meter reads $11.00. Darnell checks: f(4) = 2(4) + 3 = 11. He tips and gets out thinking about how many things in his day work this way. Minutes on the treadmill turn into calories. Hours worked turn into pay. Weeks of saving turn into a balance. Each one is a rule with a name, an input and exactly one output. Learning to read and write those rules is what this chapter is for."
+  ],
+  "think": "Darnell's friend says f(3) = 9 means 'f times 3 is 9, so f must be 3.' What has she misunderstood, and how would you explain it using the taxi meter?"
+ },
+ "sections": [
+  {"title": "What a Function Is", "lessons": [
+   {
+    "title": "Inputs and Outputs",
+    "mainIdea": "A function is a rule that gives exactly one output for each input.",
+    "reading": [
+     "A taxi meter is a machine: you feed in a number of miles and it gives back a fare. Feed in 1 mile, get $5. Feed in 2 miles, get $7. Feed in 3 miles, get $9. No matter how many times you feed in 3 miles, the meter gives back $9, never $8 and never $10. That is the key property of a *function*: every *input* is matched with exactly one *output*. The set of miles is the input, the set of fares is the output, and the rule connecting them is the function.",
+     "Any set of matched pairs is called a *relation*, but not every relation is a function. Suppose a table listed 2 miles → $5 and also 2 miles → $7. The same input has two different outputs, so the table is not a function; the meter would be broken. On the other hand, two different inputs can share an output. A rule that charges $10 for any ride under a mile, so that 0.3 miles → $10 and 0.8 miles → $10, is still a function, because each input still has only one answer.",
+     "On a graph, the input is on the horizontal axis and the output on the vertical axis. If any vertical line crosses the graph twice, then one input has two outputs and the graph is not a function. This is the vertical line test. A straight slanted line always passes the test. A circle fails, because a vertical line through its middle hits the top and the bottom."
+    ],
+    "words": [
+     {"w": "function", "d": "a rule that assigns exactly one output to each input"},
+     {"w": "input", "d": "the number you put into a rule, such as the miles of a taxi ride"},
+     {"w": "output", "d": "the number the rule gives back, such as the fare"},
+     {"w": "relation", "d": "any set of input-output pairs, whether or not it is a function"}
+    ],
+    "look": {"type": "data", "title": "The Taxi Meter Table", "rows": [["0 miles", 3], ["1 mile", 5], ["2 miles", 7], ["3 miles", 9], ["5 miles", 13], ["10 miles", 23]], "unit": "dollars", "cite": "example taxi rates of $3 to start plus $2 per mile, used throughout this chapter", "prompt": "Every input has exactly one fare, so the table is a function. What fare would the rule give for 7 miles, and how do you know?"},
+    "check": [
+     {"q": "Which set of pairs is NOT a function?", "choices": ["(1, 5), (2, 7), (3, 9)", "(1, 10), (2, 10), (3, 10)", "(2, 5), (2, 7), (3, 9)", "(0, 3), (1, 5), (4, 11)"], "a": 2, "why": "The input 2 is matched with both 5 and 7, so one input has two outputs. Sharing an output, as in the second choice, is allowed."},
+     {"q": "Using the taxi table, what is the fare for a 3-mile ride?", "choices": ["$9", "$6", "$8", "$12"], "a": 0, "why": "The rule is $3 plus $2 per mile: 3 + 2(3) = 9. The table row for 3 miles confirms $9."},
+     {"q": "A graph passes the vertical line test when…", "choices": ["it is a straight line", "every vertical line touches it once at most", "it crosses the y-axis once", "it goes up from left to right"], "a": 1, "why": "One input with two outputs would show as a vertical line hitting the graph twice. Touching at most once means each input has one output."}
+    ]
+   },
+   {
+    "title": "Reading f(3)",
+    "mainIdea": "f(3) means the output of rule f when the input is 3; it is a question and its answer, not a product.",
+    "reading": [
+     "*Function notation* gives a rule a name. The taxi rule is f(x) = 2x + 3. Read it as \"f of x equals 2x plus 3.\" The letter f is the name, x is the *input value*, and 2x + 3 is what the rule does. To *evaluate* f(3), replace every x with 3: f(3) = 2(3) + 3 = 9. In the story, that means a 3-mile ride costs $9. The parentheses do not mean multiplication here. f(3) is not f × 3.",
+     "The notation runs backward too. If someone asks, \"How far can I ride for $15?\" you are solving f(x) = 15. Write 2x + 3 = 15, subtract 3 to get 2x = 12, and divide to get x = 6. A $15 ride is 6 miles. Notice the difference between the two questions: f(6) asks for the output when the input is 6 (answer: 15), while f(x) = 15 asks which input gives an output of 15 (answer: 6).",
+     "Be careful with expressions inside and outside the parentheses. f(x + 1) means put x + 1 into the rule: f(3 + 1) = f(4) = 2(4) + 3 = 11. But f(x) + 1 means find f(x) first and then add 1: f(3) + 1 = 9 + 1 = 10. Different rules get different names so they do not get mixed up: the cell data rule is d(g) = 8g + 20, and d(3) = 44 while f(3) = 9."
+    ],
+    "words": [
+     {"w": "function notation", "d": "writing a rule with a name and its input, like f(x) = 2x + 3"},
+     {"w": "evaluate", "d": "find the output of a function for a specific input"},
+     {"w": "input value", "d": "the number placed inside the parentheses, replacing the variable"}
+    ],
+    "look": {"type": "think", "title": "Four Questions About g", "text": "Let g(x) = 5x − 4. Then g(2) = 5(2) − 4 = 6. And g(0) = 0 − 4 = −4. And g(−1) = −5 − 4 = −9. Now solve g(x) = 21: 5x − 4 = 21, so 5x = 25 and x = 5. Three questions asked for outputs; the last asked for an input.", "prompt": "Let h(x) = 3x + 7. Find h(4), h(−2) and the value of x that makes h(x) = 25."},
+    "check": [
+     {"q": "If f(x) = 3x − 2, what is f(4)?", "choices": ["2", "12", "14", "10"], "a": 3, "why": "f(4) = 3(4) − 2 = 12 − 2 = 10. Forgetting the −2 gives 12."},
+     {"q": "For the taxi rule, what does f(3) = 9 mean?", "choices": ["Three rides cost $9 in total", "A 3-mile ride costs $9", "f is 3 and the fare is 9", "Nine miles costs $3"], "a": 1, "why": "The input 3 is the miles and the output 9 is the fare: riding 3 miles costs $9."},
+     {"q": "If h(x) = 4x + 1, for what x does h(x) = 29?", "choices": ["117", "7", "7.5", "28"], "a": 1, "why": "4x + 1 = 29, so 4x = 28 and x = 7. Check: h(7) = 28 + 1 = 29. Evaluating h(29) instead gives 117."}
+    ]
+   },
+   {
+    "title": "Domain and Range",
+    "mainIdea": "The domain is every input a function allows, and the range is every output it can produce.",
+    "reading": [
+     "The cell plan rule d(g) = 8g + 20 works fine on paper for g = 1,000, but the plan caps data at 10 gigabytes. So the inputs that actually make sense run from 0 to 10. That set of allowed inputs is the *domain*: 0 ≤ g ≤ 10. Feed the smallest and largest inputs through the rule to find the outputs: d(0) = 20 and d(10) = 8(10) + 20 = 100. Since the rule rises steadily, every cost from $20 to $100 is possible. That set of outputs is the *range*: 20 ≤ d ≤ 100.",
+     "Some functions accept only certain kinds of numbers. Movie tickets cost $12 each, so c(n) = 12n, but n must be a whole number: you cannot buy 2.5 tickets. If the website allows up to 6 tickets, the domain is {0, 1, 2, 3, 4, 5, 6} and the range is {0, 12, 24, 36, 48, 60, 72}. A domain made of separate values like this is *discrete*, and its graph is dots. The taxi domain, miles ≥ 0, is *continuous*, because a ride can be 2.37 miles, and its graph is a solid line.",
+     "Domain and range often get swapped, so anchor them to the axes: domain is the set of x-values (horizontal), range is the set of y-values (vertical). When a problem gives a context, use it. Time cannot be negative, tickets come in whole numbers, and a plan has a cap. The context shrinks the domain, and the rule then decides the range."
+    ],
+    "words": [
+     {"w": "domain", "d": "the set of all inputs a function accepts"},
+     {"w": "range", "d": "the set of all outputs a function produces"},
+     {"w": "discrete", "d": "made of separate values, like counts of tickets; graphed as dots"},
+     {"w": "continuous", "d": "including every value in an interval, like miles or minutes; graphed as a line"}
+    ],
+    "look": {"type": "think", "title": "Tickets, Up to Six", "text": "Tickets cost $12 each and the site sells at most 6 per order, so c(n) = 12n with domain {0, 1, 2, 3, 4, 5, 6}. The outputs are 0, 12, 24, 36, 48, 60 and 72 dollars. There is no order that costs $30, because 30 is not 12 times a whole number.", "prompt": "A parking lot charges $4 per hour for up to 8 hours, and charges by the whole hour. Write the function and give its domain and range."},
+    "check": [
+     {"q": "For d(g) = 8g + 20 with domain 0 ≤ g ≤ 10, what is the range?", "choices": ["0 ≤ d ≤ 10", "8 ≤ d ≤ 20", "20 ≤ d ≤ 80", "20 ≤ d ≤ 100"], "a": 3, "why": "d(0) = 20 and d(10) = 100, and the rule rises steadily, so the outputs run from 20 to 100."},
+     {"q": "Which quantity has a discrete domain?", "choices": ["Minutes on a treadmill", "Number of concert tickets bought", "Miles in a taxi", "Gallons of water in a tank"], "a": 1, "why": "Tickets come in whole numbers only, so the inputs are separate values. Minutes, miles and gallons can take any value in an interval."},
+     {"q": "What is a sensible domain for the taxi fare function f(x) = 2x + 3?", "choices": ["All numbers", "x ≥ 0", "x ≥ 3", "Whole numbers only"], "a": 1, "why": "Miles cannot be negative, but a ride can be any length such as 2.4 miles, so the domain is x ≥ 0."}
+    ]
+   }
+  ]},
+  {"title": "Linear Functions", "lessons": [
+   {
+    "title": "Slope as a Rate of Change",
+    "mainIdea": "Slope is the change in output divided by the change in input, and in a story it is a rate.",
+    "reading": [
+     "On the taxi graph, the point (1, 5) means 1 mile costs $5 and (4, 11) means 4 miles cost $11. Between them the fare rose by 11 − 5 = 6 dollars while the miles rose by 4 − 1 = 3. The *slope* is the vertical change divided by the horizontal change: 6/3 = 2. In the story that is $2 per mile, the *rate of change*. The vertical change is often called the *rise* and the horizontal change the *run*, so slope = rise/run.",
+     "The formula for two points (x1, y1) and (x2, y2) is slope = (y2 − y1)/(x2 − x1). For (2, 7) and (5, 16): (16 − 7)/(5 − 2) = 9/3 = 3. Order does not matter as long as you are consistent. Going the other way, (7 − 16)/(2 − 5) = −9/−3 = 3, the same. The mistake to avoid is mixing the orders: (16 − 7)/(2 − 5) = 9/−3 = −3, which is wrong.",
+     "Slope can be negative. A tank starts with 500 gallons and holds 400 gallons after 4 minutes: (400 − 500)/(4 − 0) = −100/4 = −25. The tank loses 25 gallons per minute. For a linear function the slope is the same between any two points, which is exactly what makes it linear. For a curve, the same calculation gives the average rate of change over that interval, which is why the formula is worth memorizing."
+    ],
+    "words": [
+     {"w": "slope", "d": "the steepness of a line: change in y divided by change in x"},
+     {"w": "rate of change", "d": "how much the output changes for each one-unit change of input"},
+     {"w": "rise", "d": "the vertical change between two points on a graph"},
+     {"w": "run", "d": "the horizontal change between two points on a graph"}
+    ],
+    "look": {"type": "data", "title": "A Draining Tank", "rows": [["0 minutes", 500], ["2 minutes", 450], ["4 minutes", 400], ["6 minutes", 350], ["10 minutes", 250]], "unit": "gallons", "cite": "table of values from the function g(t) = 500 − 25t", "prompt": "Pick any two rows and compute the slope. Then pick two different rows. Why do you get the same number each time?"},
+    "check": [
+     {"q": "What is the slope of the line through (1, 4) and (3, 10)?", "choices": ["3", "6", "2", "1/3"], "a": 0, "why": "(10 − 4)/(3 − 1) = 6/2 = 3. Forgetting to divide by the run gives 6."},
+     {"q": "A tank has 500 gallons at 0 minutes and 350 gallons at 6 minutes. What is the rate of change?", "choices": ["25 gallons per minute", "−150 gallons per minute", "−25 gallons per minute", "−6 gallons per minute"], "a": 2, "why": "(350 − 500)/(6 − 0) = −150/6 = −25. The tank loses 25 gallons each minute, so the rate is negative."},
+     {"q": "In the taxi function, the slope 2 stands for…", "choices": ["the starting fare", "the total fare", "the number of miles", "the dollars added per mile"], "a": 3, "why": "Slope is change in fare per change in miles: each extra mile adds $2. The starting fare is the y-intercept, 3."}
+    ]
+   },
+   {
+    "title": "Slope-Intercept Form",
+    "mainIdea": "In y = mx + b, m is the rate of change and b is the starting value where the line crosses the y-axis.",
+    "reading": [
+     "Every *linear function* can be written in *slope-intercept form*, y = mx + b. The number m is the slope, and b is the *y-intercept*, the output when the input is 0. In the cell plan d = 8g + 20, m = 8 means $8 per gigabyte and b = 20 means the bill is $20 before any data is used. That b is often called the *initial value* because it is where the story starts.",
+     "You can build the equation from two points. Say a bill was $28 for 1 GB and $52 for 4 GB, so the points are (1, 28) and (4, 52). Slope: (52 − 28)/(4 − 1) = 24/3 = 8. Now find b by substituting one point into y = 8x + b: 28 = 8(1) + b, so b = 20. The function is d = 8g + 20. Check with the other point: 8(4) + 20 = 52. It matches.",
+     "From a graph, read b where the line crosses the vertical axis, then count rise over run to a second clear point. The common mistake is swapping m and b: reading y = 3x + 5 as \"starts at 3, goes up 5 each time.\" Remember that the number attached to x is the one that repeats with every step, and the lone number is paid once."
+    ],
+    "words": [
+     {"w": "linear function", "d": "a function whose graph is a straight line; it has a constant rate of change"},
+     {"w": "slope-intercept form", "d": "the equation y = mx + b, where m is the slope and b the y-intercept"},
+     {"w": "y-intercept", "d": "the output when the input is 0; where the graph crosses the y-axis"},
+     {"w": "initial value", "d": "the starting amount in a story, which appears as b in y = mx + b"}
+    ],
+    "look": {"type": "think", "title": "Bikes by the Lake", "text": "A lakefront bike rental charges a flat $8 plus $6 per hour. The cost function is c(h) = 6h + 8. Three hours: c(3) = 18 + 8 = 26. The 8 is paid once (the intercept); the 6 is paid every hour (the slope).", "prompt": "A car-wash fundraiser starts with a $50 donation and earns $7 per car. Write the function, identify m and b, and find the total after 30 cars."},
+    "check": [
+     {"q": "For y = −3x + 5, what are the slope and y-intercept?", "choices": ["slope 5, intercept −3", "slope −3, intercept 5", "slope 3, intercept 5", "slope −3, intercept −5"], "a": 1, "why": "The coefficient of x is the slope, −3, and the constant term is the y-intercept, 5."},
+     {"q": "Which equation gives the line through (2, 11) and (5, 20)?", "choices": ["y = 3x + 5", "y = 9x + 11", "y = 3x + 11", "y = 5x + 1"], "a": 0, "why": "Slope is (20 − 11)/(5 − 2) = 3. Then 11 = 3(2) + b gives b = 5. Check: 3(5) + 5 = 20."},
+     {"q": "In d = 8g + 20, what does the 20 represent?", "choices": ["The cost per gigabyte", "The data cap", "The bill before any data is used", "The bill for 8 gigabytes"], "a": 2, "why": "When g = 0 the bill is 20, so 20 is the fixed monthly charge before data. The cost per gigabyte is 8."}
+    ]
+   },
+   {
+    "title": "Arithmetic Sequences as Functions",
+    "mainIdea": "An arithmetic sequence is a linear function whose inputs are the counting numbers 1, 2, 3, and so on.",
+    "reading": [
+     "A stadium's first row has 20 seats, and each row behind it has 2 more: 20, 22, 24, 26, … A list where you add the same amount each time is an *arithmetic sequence*, and the amount added, here 2, is the *common difference*. Each number in the list is a *term*. Row 1 is term 1, row 2 is term 2. To find any term, notice that row n has taken n − 1 steps of size 2 from the first row: a(n) = 20 + 2(n − 1), which simplifies to a(n) = 2n + 18. Row 15 has a(15) = 30 + 18 = 48 seats.",
+     "Look at the sequence 5, 9, 13, 17, … The common difference is 4. The *explicit rule* is a(n) = 5 + 4(n − 1) = 4n + 1. Check: a(1) = 5, a(2) = 9, a(3) = 13. Then a(10) = 41. The same sequence has a *recursive rule*: a(1) = 5 and a(n) = a(n − 1) + 4, which says \"start at 5 and keep adding 4.\" The recursive rule is easy to state but slow to use for a(100); the explicit rule gets there in one step.",
+     "The explicit rule a(n) = 4n + 1 is a linear function with slope 4 and intercept 1, but its domain is only the positive integers, so its graph is a row of dots on a line, not the line itself. The common difference is the slope. The usual error is writing a(n) = 5 + 4n, which starts at 9 instead of 5. Always test your rule on the first term before trusting it."
+    ],
+    "words": [
+     {"w": "arithmetic sequence", "d": "a list of numbers with the same amount added each time"},
+     {"w": "common difference", "d": "the fixed amount added to get from one term to the next"},
+     {"w": "term", "d": "one number in a sequence; a(3) is the third term"},
+     {"w": "explicit rule", "d": "a formula that gives any term directly from its position n"},
+     {"w": "recursive rule", "d": "a rule that gives the first term and how to get each term from the one before"}
+    ],
+    "look": {"type": "think", "title": "Find the Twentieth Term", "text": "The sequence 7, 12, 17, 22, … has common difference 5. Explicit rule: a(n) = 7 + 5(n − 1) = 5n + 2. Test: a(1) = 7, a(2) = 12. Then a(20) = 100 + 2 = 102. Counting up by 5 twenty times would give the same answer, just more slowly.", "prompt": "Write the explicit rule for 4, 11, 18, 25, … and use it to find the 30th term."},
+    "check": [
+     {"q": "What is the common difference of 3, 10, 17, 24, …?", "choices": ["3", "7", "10", "21"], "a": 1, "why": "10 − 3 = 7, 17 − 10 = 7 and 24 − 17 = 7. The same 7 is added each time."},
+     {"q": "For the sequence 5, 9, 13, 17, …, what is the 10th term?", "choices": ["45", "40", "41", "49"], "a": 2, "why": "a(n) = 4n + 1, so a(10) = 41. Using 5 + 4n by mistake gives 45."},
+     {"q": "If a(1) = 6 and a(n) = a(n − 1) − 3, what is a(4)?", "choices": ["3", "0", "−6", "−3"], "a": 3, "why": "a(2) = 3, a(3) = 0, a(4) = −3. Three steps of −3 from 6 gives 6 − 9 = −3."}
+    ]
+   }
+  ]},
+  {"title": "Reading and Building Graphs", "lessons": [
+   {
+    "title": "Key Features of a Graph",
+    "mainIdea": "Intercepts, direction and zeros tell the story of a graph in a few numbers.",
+    "reading": [
+     "A tank holds 500 gallons and drains at 25 gallons per minute, so y = 500 − 25x. Its graph crosses the vertical axis at 500: that is the *y-intercept*, the amount at time 0. It crosses the horizontal axis where y = 0. Solve 500 − 25x = 0: 25x = 500, so x = 20. That is the *x-intercept*, also called the *zero of a function*, and it means the tank is empty after 20 minutes.",
+     "The line falls from left to right, so the function is *decreasing*: every extra minute gives fewer gallons. A savings function like s(w) = 30w + 120 is *increasing*, because each week adds $30. Its y-intercept, 120, is the starting balance. Its zero would be at 30w + 120 = 0, so w = −4, but negative weeks are outside the domain, so the graph never reaches zero in the story.",
+     "A graph is also positive where it sits above the horizontal axis and negative where it sits below. For the tank, y is positive for 0 ≤ x < 20 and would be negative after that, which is impossible, so the sensible domain is 0 ≤ x ≤ 20. When you read any graph, ask four questions: where does it start (y-intercept), where does it hit zero (x-intercept), does it rise or fall (increasing or decreasing), and which inputs actually make sense (domain)."
+    ],
+    "words": [
+     {"w": "y-intercept", "d": "the point where a graph crosses the vertical axis; the output at input 0"},
+     {"w": "x-intercept", "d": "the point where a graph crosses the horizontal axis; the input that gives output 0"},
+     {"w": "zero of a function", "d": "an input value that makes the output 0; same as an x-intercept"},
+     {"w": "increasing", "d": "rising from left to right; outputs grow as inputs grow"},
+     {"w": "decreasing", "d": "falling from left to right; outputs shrink as inputs grow"}
+    ],
+    "look": {"type": "think", "title": "Reading a Savings Line", "text": "A student starts with $120 and saves $30 a week: s(w) = 30w + 120. The y-intercept 120 is the starting balance. The line rises, so it is increasing. After 10 weeks, s(10) = 300 + 120 = 420. Setting s(w) = 600 gives 30w = 480, so w = 16 weeks to reach $600.", "prompt": "Suppose instead the student starts with $500 and spends $40 a week. Write the function, find both intercepts, and say what each means."},
+    "check": [
+     {"q": "What is the x-intercept of y = 500 − 25x?", "choices": ["500", "20", "25", "−20"], "a": 1, "why": "Set y = 0: 500 − 25x = 0, so x = 20. The tank is empty after 20 minutes."},
+     {"q": "For the tank, what does the y-intercept 500 mean?", "choices": ["The tank drains for 500 minutes", "The tank loses 500 gallons per minute", "The tank holds 500 gallons at time 0", "The tank is empty at 500 gallons"], "a": 2, "why": "The y-intercept is the output when x = 0, so at the start the tank holds 500 gallons."},
+     {"q": "Which function is decreasing?", "choices": ["y = 2x + 9", "y = x − 9", "y = 9", "y = −2x + 9"], "a": 3, "why": "A negative slope means the line falls from left to right. The slope of y = −2x + 9 is −2."}
+    ]
+   },
+   {
+    "title": "Building a Model from Data",
+    "mainIdea": "When a table's outputs change by the same amount each step, a linear model fits, and you can use it to predict.",
+    "reading": [
+     "A bike rental posts these prices: 1 hour $14, 2 hours $20, 3 hours $26, 4 hours $32. Each extra hour adds 20 − 14 = 6, then 26 − 20 = 6, then 32 − 26 = 6. Constant differences mean a *linear model* fits. The slope is 6 dollars per hour. To find the intercept, step back one hour from (1, 14): 14 − 6 = 8. The model is c = 6h + 8, meaning an $8 flat fee plus $6 per hour. Check: 6(4) + 8 = 32.",
+     "A model earns its keep by making a *prediction*. For 7 hours, c = 6(7) + 8 = 50. That prediction lies just outside the table's range of 1 to 4 hours, which is called *extrapolating*. Predicting a value inside the table's range, such as 2.5 hours giving 6(2.5) + 8 = 23, is *interpolating* and is usually safer. Far extrapolation is risky: for 40 hours the model gives $248, but the shop probably switches to a daily rate long before that.",
+     "Real data rarely lines up perfectly. If the differences were 6, 7, 5 and 6, the pattern is still roughly linear and a line drawn through the middle of the points is a reasonable model. State the slope with its units, state what the intercept means, and say how far you trust the prediction. A model is a tool for the situation it came from, not a law of nature."
+    ],
+    "words": [
+     {"w": "linear model", "d": "a linear function used to describe and predict a real situation"},
+     {"w": "prediction", "d": "an output the model gives for an input you have not measured"},
+     {"w": "interpolate", "d": "predict for an input inside the range of the data you have"},
+     {"w": "extrapolate", "d": "predict for an input outside the range of the data you have"}
+    ],
+    "look": {"type": "data", "title": "Bike Rental Prices", "rows": [["1 hour", 14], ["2 hours", 20], ["3 hours", 26], ["4 hours", 32], ["5 hours", 38]], "unit": "dollars", "cite": "example price list invented for this lesson", "prompt": "Confirm the model c = 6h + 8 fits every row. Then use it to predict the cost of 8 hours and say whether that is interpolating or extrapolating."},
+    "check": [
+     {"q": "Which model fits the rental table?", "choices": ["c = 8h + 6", "c = 6h + 8", "c = 14h", "c = 6h + 14"], "a": 1, "why": "The differences are all 6, so the slope is 6. Then 14 = 6(1) + b gives b = 8."},
+     {"q": "Using c = 6h + 8, what is the cost for 7 hours?", "choices": ["$42", "$56", "$50", "$98"], "a": 2, "why": "6(7) + 8 = 42 + 8 = 50. Forgetting the flat fee gives 42."},
+     {"q": "Predicting the cost of 40 hours from this table is…", "choices": ["extrapolating, and risky because the pricing may change", "interpolating, and very reliable", "impossible with a linear model", "extrapolating, and always accurate"], "a": 0, "why": "40 hours is far outside the 1-to-5-hour data, so it is extrapolation, and a shop likely charges a different daily rate."}
+    ]
+   },
+   {
+    "title": "Piecewise and Step Functions",
+    "mainIdea": "A piecewise function uses different rules on different parts of its domain; a step function jumps between constant values.",
+    "reading": [
+     "A downtown garage charges $5 for the first hour and $3 for each additional hour or part of an hour. One hour costs $5. Two hours cost $8. Two and a half hours also cost $11, because the half hour counts as a full extra hour. The graph is flat at $5 up to 1 hour, jumps to $8, stays flat, jumps to $11, and so on. A graph made of flat pieces with jumps is a *step function*. It is still a function: every parking time has exactly one price.",
+     "More generally, a *piecewise function* has a different rule on each *interval* of its domain. Overtime pay is a classic case: a worker earns $15 an hour for the first 40 hours and $22.50 an hour after that. So p(h) = 15h when h ≤ 40, and p(h) = 600 + 22.5(h − 40) when h > 40, where 600 is the pay for the first 40 hours. For a 44-hour week, use the second rule: 600 + 22.5(4) = 600 + 90 = 690.",
+     "To evaluate a piecewise function, first find which interval the input belongs to, then apply that rule only. Let f(x) = 2x for x < 3 and f(x) = x + 3 for x ≥ 3. Then f(2) = 4 because 2 < 3, and f(5) = 8 because 5 ≥ 3. The boundary matters: f(3) uses the second rule since 3 ≥ 3, so f(3) = 6. The common mistake is applying both rules or the wrong one at the boundary."
+    ],
+    "words": [
+     {"w": "piecewise function", "d": "a function defined by different rules on different parts of its domain"},
+     {"w": "step function", "d": "a piecewise function whose pieces are all flat, so the graph looks like stairs"},
+     {"w": "interval", "d": "a stretch of inputs, such as 0 to 40 hours, where one rule applies"}
+    ],
+    "look": {"type": "think", "title": "Shipping by Weight", "text": "A shipper charges $4 for packages up to 1 pound, $7 for more than 1 pound up to 3 pounds, and $10 for more than 3 pounds up to 5 pounds. A 2.4-pound box costs $7. A 3-pound box costs $7, because 3 is included in the middle interval. A 3.1-pound box costs $10.", "prompt": "Sketch the steps of this function. Where are the jumps, and which end of each step is included?"},
+    "check": [
+     {"q": "The garage charges $5 for the first hour and $3 per additional hour or part. What does 3.5 hours cost?", "choices": ["$12.50", "$11", "$14", "$15.50"], "a": 2, "why": "After the first hour, 2.5 more hours count as 3 additional hours: 5 + 3(3) = 14."},
+     {"q": "With $15 per hour up to 40 hours and $22.50 per hour beyond, what is the pay for 44 hours?", "choices": ["$660", "$990", "$600", "$690"], "a": 3, "why": "The first 40 hours earn 600; the 4 overtime hours earn 22.5(4) = 90; the total is 690."},
+     {"q": "If f(x) = 2x for x < 3 and f(x) = x + 3 for x ≥ 3, what is f(3)?", "choices": ["6", "9", "3", "12"], "a": 0, "why": "Since 3 ≥ 3, use the second rule: f(3) = 3 + 3 = 6. The first rule would only apply to inputs below 3."}
+    ]
+   }
+  ]},
+  {"title": "Changing and Comparing Lines", "lessons": [
+   {
+    "title": "Shifting and Stretching Lines",
+    "mainIdea": "Adding to the output slides a graph up or down, adding to the input slides it sideways, and multiplying the output changes its steepness.",
+    "reading": [
+     "Start with f(x) = 2x, the taxi rate without a starting fee. Now the company adds a $3 flag fee: g(x) = f(x) + 3 = 2x + 3. Every output is 3 more than before, so the whole line slides up 3 units. This is a *vertical shift*, one kind of *transformation*. At x = 0, 1 and 2, f gives 0, 2 and 4, while g gives 3, 5 and 7. Same slope, higher line.",
+     "Adding inside the parentheses changes the input instead. h(x) = f(x − 1) = 2(x − 1) = 2x − 2. To get the output f used to give at x = 1, you now must put in x = 2. The graph slides right 1 unit, a *horizontal shift*. Notice the direction: x − 1 moves right and x + 1 moves left, the opposite of what many people first guess. Check with a point: f(1) = 2, and h(2) = 2(2) − 2 = 2, so the point moved from (1, 2) to (2, 2).",
+     "Multiplying the output makes the line steeper or flatter. k(x) = 3·f(x) = 6x has slope 6 instead of 2, a *vertical stretch*. The intercept stays at 0, but each output is tripled: at x = 2, f gives 4 and k gives 12. Fastest way to see a transformation is a small table of three inputs. If every output changed by the same amount, it was a shift; if the outputs were multiplied, it was a stretch."
+    ],
+    "words": [
+     {"w": "transformation", "d": "a change that moves or reshapes a graph in a predictable way"},
+     {"w": "vertical shift", "d": "sliding a graph up or down by adding a number to every output"},
+     {"w": "horizontal shift", "d": "sliding a graph left or right by adding a number to the input"},
+     {"w": "vertical stretch", "d": "multiplying every output by a number, which changes a line's steepness"}
+    ],
+    "look": {"type": "think", "title": "Three Rows, Three Functions", "text": "Let f(x) = x + 1. For x = 0, 1, 2: f gives 1, 2, 3. Then f(x) + 4 gives 5, 6, 7, each output up by 4. And 3·f(x) gives 3, 6, 9, each output tripled. The first change slides the line; the second tilts it.", "prompt": "Make the same three-row table for f(x) = 2x − 1, f(x) − 3 and 2·f(x). Which one has the same slope as f?"},
+    "check": [
+     {"q": "How does the graph of y = 2x + 5 compare with y = 2x?", "choices": ["Shifted right 5", "Shifted up 5", "Five times as steep", "Shifted down 5"], "a": 1, "why": "Adding 5 to every output slides the line up 5 units; the slope 2 does not change."},
+     {"q": "If f(x) = 4x − 1, what is g(x) = f(x) − 3?", "choices": ["4x − 4", "4x + 2", "4x − 3", "x − 4"], "a": 0, "why": "Subtract 3 from the whole output: 4x − 1 − 3 = 4x − 4. The slope stays 4."},
+     {"q": "Which change alters the slope of a line?", "choices": ["Adding 2 to every output", "Subtracting 2 from every output", "Multiplying every output by 3", "Replacing x with x + 2"], "a": 2, "why": "Multiplying outputs by 3 triples the rise for the same run, so the slope triples. Shifts move the line without tilting it."}
+    ]
+   },
+   {
+    "title": "Comparing Two Models",
+    "mainIdea": "To compare two linear models, find where their outputs are equal, then see which is better on each side of that point.",
+    "reading": [
+     "Two cell plans: Plan A charges $20 plus $8 per gigabyte, so A(g) = 8g + 20. Plan B charges $35 plus $5 per gigabyte, so B(g) = 5g + 35. Which is cheaper? Try 3 GB: A(3) = 44 and B(3) = 50, so A wins. Try 8 GB: A(8) = 84 and B(8) = 75, so B wins. Somewhere between 3 and 8 the plans must cost the same. That crossing is the *break-even point*.",
+     "To find it exactly, set the outputs equal: 8g + 20 = 5g + 35. Subtract 5g: 3g + 20 = 35. Subtract 20: 3g = 15. Divide: g = 5. Check: A(5) = 60 and B(5) = 60. Both plans cost $60 at 5 GB. On a graph, this is the *intersection point* (5, 60) where the two lines cross. Below 5 GB the lower-intercept plan A is cheaper; above 5 GB the lower-slope plan B is cheaper.",
+     "This is a good *comparison* habit: the plan with the smaller starting cost wins for small inputs, and the plan with the smaller rate wins for large inputs. The crossing point tells you where the advantage flips. Setting two rules equal and solving is the door into the next chapter, where two equations are solved together as a system."
+    ],
+    "words": [
+     {"w": "break-even point", "d": "the input where two models give the same output"},
+     {"w": "intersection point", "d": "the point where two graphs cross; both equations are true there"},
+     {"w": "comparison", "d": "checking two models against each other to see which is better for a given input"}
+    ],
+    "look": {"type": "think", "title": "Two Savers", "text": "Ana has $200 and saves $15 a week: 15w + 200. Ben has $80 and saves $25 a week: 25w + 80. Set them equal: 15w + 200 = 25w + 80. Subtract 15w: 200 = 10w + 80. Subtract 80: 120 = 10w, so w = 12. After 12 weeks both have 15(12) + 200 = 380 dollars. After that, Ben pulls ahead.", "prompt": "Who has more money after 6 weeks? After 20 weeks? Explain using the slopes and intercepts."},
+    "check": [
+     {"q": "At how many gigabytes do Plan A (8g + 20) and Plan B (5g + 35) cost the same?", "choices": ["3 GB", "15 GB", "5 GB", "55 GB"], "a": 2, "why": "8g + 20 = 5g + 35 gives 3g = 15, so g = 5. Both cost $60 there."},
+     {"q": "Which plan is cheaper at 2 GB?", "choices": ["Plan B, at $45", "Plan A, at $36", "They cost the same", "Plan B, at $36"], "a": 1, "why": "A(2) = 16 + 20 = 36 and B(2) = 10 + 35 = 45, so Plan A is cheaper by $9."},
+     {"q": "Ana has $200 and saves $15 a week; Ben has $80 and saves $25 a week. When are they equal?", "choices": ["After 8 weeks, at $320", "After 10 weeks, at $350", "After 15 weeks, at $425", "After 12 weeks, at $380"], "a": 3, "why": "15w + 200 = 25w + 80 gives 10w = 120, so w = 12. Then 15(12) + 200 = 380 and 25(12) + 80 = 380."}
+    ]
+   }
+  ]}
+ ],
+ "review": [
+  {"q": "If f(x) = 5x − 7, what is f(3)?", "choices": ["8", "15", "1", "−22"], "a": 0, "why": "f(3) = 5(3) − 7 = 15 − 7 = 8. Leaving off the −7 gives 15."},
+  {"q": "Which set of pairs is a function?", "choices": ["(1, 2), (1, 3), (2, 4)", "(4, 1), (4, 2), (5, 3)", "(1, 6), (2, 6), (3, 6)", "(0, 1), (0, 2), (0, 3)"], "a": 2, "why": "Each input appears once, so each has one output. Sharing the output 6 is fine. The other sets repeat an input with different outputs."},
+  {"q": "What is the slope of the line through (2, 3) and (6, 15)?", "choices": ["4", "12", "1/3", "3"], "a": 3, "why": "(15 − 3)/(6 − 2) = 12/4 = 3."},
+  {"q": "A plan costs $30 per month plus $4 per gigabyte. Which function gives the cost?", "choices": ["c(g) = 30g + 4", "c(g) = 4g + 30", "c(g) = 34g", "c(g) = 4g − 30"], "a": 1, "why": "The $30 is paid once (intercept) and $4 repeats per gigabyte (slope): c(g) = 4g + 30."},
+  {"q": "What is the 12th term of the sequence 9, 14, 19, 24, …?", "choices": ["69", "60", "64", "74"], "a": 2, "why": "Common difference 5, so a(n) = 9 + 5(n − 1) = 5n + 4. Then a(12) = 60 + 4 = 64."},
+  {"q": "What is the x-intercept of y = 4x − 12?", "choices": ["−12", "3", "4", "12"], "a": 1, "why": "Set y = 0: 4x − 12 = 0, so 4x = 12 and x = 3."},
+  {"q": "If f(x) = 3x, which function is f shifted down 2 units?", "choices": ["3x − 2", "3x + 2", "3(x − 2)", "x − 2"], "a": 0, "why": "Shifting down subtracts 2 from every output: 3x − 2."},
+  {"q": "Movie tickets cost $12 each, up to 6 per order. What is the range of c(n) = 12n?", "choices": ["All numbers from 0 to 72", "{0, 1, 2, 3, 4, 5, 6}", "All numbers from 0 to 6", "{0, 12, 24, 36, 48, 60, 72}"], "a": 3, "why": "The domain is the whole numbers 0 through 6, so the outputs are 12 times each of them: 0, 12, 24, 36, 48, 60, 72."}
+ ]
+}
