@@ -112,8 +112,9 @@ def _b15():
 <g stroke="#DCE6C8" stroke-width="2" opacity=".7">{treads}</g>
 <g fill="#3E5C42"><path d="M1090 152 q-6 -22 0 -40 q6 18 0 40z M1130 150 q-8 -26 0 -46 q8 20 0 46z M1170 152 q-5 -18 0 -32 q5 14 0 32z M1050 154 q-4 -14 0 -24 q4 10 0 24z"/></g>
 <path d="M0 302 Q200 286 420 262 T820 246 Q1000 244 1200 262 V340 H0z" fill="url(#{p}mid)"/>
-<path d="M0 320 L520 218 L790 216 V204 L520 204 L0 300z" fill="url(#{p}road)"/>
-<path d="M0 310 L520 211 H790" stroke="#FFF8E0" stroke-width="1" stroke-dasharray="10 12" fill="none" opacity=".6"/>
+<path d="M0 326 L520 224 L850 222 V218 L520 218 L0 316z" fill="#2C4230" opacity=".25"/>
+<path d="M0 320 L520 218 L850 216 V204 L520 204 L0 300z" fill="url(#{p}road)"/>
+<path d="M0 310 L520 211 H850" stroke="#FFF8E0" stroke-width="1" stroke-dasharray="10 12" fill="none" opacity=".6"/>
 <g stroke="#2C4230" stroke-width="2.5" stroke-linecap="round">{posts}</g>
 <path d="M40 296 L520 198 H790" stroke="#2C4230" stroke-width="1.2" fill="none" opacity=".55"/>
 <g transform="translate(660 210)"><g fill="none" stroke="#1C2A20" stroke-width="2.6"><circle cx="-15" cy="-9" r="9"/><circle cx="15" cy="-9" r="9"/><path d="M-15 -9 L-3 -26 L11 -26 L15 -9 M-3 -26 L5 -9 M-3 -26 L-6 -31 L-10 -31 M11 -26 L10 -32"/></g><path d="M-1 -25 q-2 -14 8 -22 q8 -4 12 3 l-2 10 l-8 -2 l-2 12z" fill="#1C2A20"/><path d="M14 -34 l-6 7 M-1 -25 l4 6 l-4 8" stroke="#1C2A20" stroke-width="3" stroke-linecap="round" fill="none"/><circle cx="19" cy="-47" r="4.5" fill="#1C2A20"/></g>
@@ -139,12 +140,12 @@ def _b16():
         + _lin(p+"haze", [(0, "#F4B876", .6), (1, "#F4B876", 0)])
     )
     # 3-4-5 rope: right angle at A, 4 units along the sand, 3 units away (foreshortened)
-    A, B, C = (360, 288), (600, 288), (360, 220)
+    A, B, C = (360, 288), (600, 288), (436, 228)
     knots = []
     for i in range(5):
         knots.append((A[0] + (B[0]-A[0]) * i / 4, A[1]))
     for i in range(1, 3):
-        knots.append((A[0], A[1] + (C[1]-A[1]) * i / 3))
+        knots.append((A[0] + (C[0]-A[0]) * i / 3, A[1] + (C[1]-A[1]) * i / 3))
     for i in range(0, 5):
         t = i / 5
         knots.append((C[0] + (B[0]-C[0]) * t, C[1] + (B[1]-C[1]) * t))
@@ -159,7 +160,6 @@ def _b16():
 <path d="M700 250 L930 104 L1170 250z" fill="url(#{p}shade)"/><path d="M930 104 L1170 250 H1000z" fill="url(#{p}lit)" opacity=".85"/>
 <path d="M0 250 L120 190 L280 250z" fill="url(#{p}shade)"/><path d="M120 190 L280 250 H190z" fill="url(#{p}lit)" opacity=".8"/>
 <path d="M180 250 L520 60 L860 250z" fill="url(#{p}shade)"/><path d="M520 60 L860 250 H592z" fill="url(#{p}lit)"/>
-<g stroke="#4A2844" stroke-width="1" opacity=".35" fill="none"><path d="M560 96 L592 250 M600 130 L700 250 M640 160 L790 250"/></g>
 <path d="M0 250 H1200 V262 H0z" fill="url(#{p}haze)"/>
 <path d="M0 250 H1200 V304 H0z" fill="url(#{p}sand)"/>
 <g fill="#E8B878" opacity=".5"><path d="M0 268 Q200 258 420 266 T840 262 T1200 268 V276 Q1000 272 840 274 T420 278 T0 280z"/></g>
@@ -247,7 +247,7 @@ def _b18():
         + f'<pattern id="{p}win" width="24" height="26" patternUnits="userSpaceOnUse"><rect x="5" y="6" width="8" height="11" fill="#E8D8A0" opacity=".45"/></pattern>'
         + f'<pattern id="{p}win2" width="30" height="24" patternUnits="userSpaceOnUse"><rect x="4" y="4" width="7" height="10" fill="#9AE8E0" opacity=".3"/><rect x="20" y="12" width="5" height="8" fill="#E8D8A0" opacity=".3"/></pattern>'
     )
-    rain = "".join(f'<path d="M{x} {y} l-4 16"/>' for x in range(14, 1200, 56) for y in (20, 96, 172, 240))
+    rain = "".join(f'<path d="M{x} {y} l-4 16"/>' for x in range(14, 1200, 72) for y in (20, 110, 200))
     body = f'''
 <rect width="{W}" height="{H}" fill="url(#{p}sky)"/>
 <g fill="#0E1820"><rect x="340" y="40" width="110" height="200"/><rect x="820" y="60" width="130" height="190"/><rect x="470" y="90" width="60" height="160"/></g>
@@ -257,7 +257,6 @@ def _b18():
 <circle cx="150" cy="222" r="120" fill="url(#{p}teal)"/><circle cx="1050" cy="236" r="110" fill="url(#{p}amber)"/>
 <g fill="none" stroke="#4FE0D8" stroke-width="3.5" stroke-linecap="round"><rect x="90" y="206" width="120" height="30" rx="15"/><path d="M110 221 h18 M140 221 h10 M160 221 h30"/></g>
 <g fill="none" stroke="#FFC060" stroke-width="3.5" stroke-linecap="round"><rect x="1000" y="222" width="100" height="28" rx="6"/><path d="M1016 236 l10 -8 l10 8 l10 -8 l10 8 M1064 230 v12"/></g>
-<g fill="#F5A030" opacity=".8"><circle cx="1060" cy="236" r="0"/></g>
 <rect x="640" y="210" width="12" height="90" fill="#0C141A"/><rect x="630" y="206" width="32" height="10" rx="2" fill="#0C141A"/>
 <g><rect x="200" y="200" width="150" height="8" fill="#22303A"/><rect x="206" y="208" width="6" height="92" fill="#22303A"/><rect x="338" y="208" width="6" height="92" fill="#22303A"/><rect x="216" y="214" width="60" height="70" fill="#F5A030" opacity=".28"/><rect x="216" y="214" width="60" height="70" fill="none" stroke="#3A4C56" stroke-width="2"/></g>
 <g fill="#0A1218">{_person(300, 300, 44, 12)}<path d="M292 258 q6 -14 16 0" fill="#0A1218"/><path d="M286 268 l-10 26" stroke="#0A1218" stroke-width="4" stroke-linecap="round"/></g>
@@ -278,10 +277,8 @@ def _b18():
 <path d="M0 300 H1200 V304 H0z" fill="#3A4C56"/>
 <path d="M120 304 h180 V420 H100z" fill="url(#{p}rt)" opacity=".7"/><path d="M1010 304 h110 V420 H990z" fill="url(#{p}ra)" opacity=".8"/><path d="M640 304 h130 V420 H620z" fill="url(#{p}ra)" opacity=".5"/>
 <path d="M240 306 h4 V420 h-8z" fill="#F5A030" opacity=".35"/>
-<path d="M0 420 L1200 312 v6 L0 420z" fill="none"/>
 <path d="M60 416 L1140 310" stroke="url(#{p}tr1)" stroke-width="4" stroke-linecap="round"/>
 <path d="M1140 416 L60 310" stroke="url(#{p}tr2)" stroke-width="4" stroke-linecap="round"/>
-<path d="M60 414 L1140 308" stroke="#4FE0D8" stroke-width="1" opacity=".35"/><path d="M1140 414 L60 308" stroke="#FFC060" stroke-width="1" opacity=".35"/>
 <circle cx="600" cy="363" r="5" fill="#FFFFFF" opacity=".85"/><circle cx="600" cy="363" r="14" fill="#FFFFFF" opacity=".15"/>
 <g fill="#F6F6F2" opacity=".35"><rect x="380" y="352" width="60" height="5"/><rect x="520" y="352" width="60" height="5"/><rect x="660" y="352" width="60" height="5"/><rect x="800" y="352" width="60" height="5"/></g>
 '''
@@ -310,9 +307,9 @@ def _b19():
 <circle cx="860" cy="0" r="120" fill="url(#{p}lamp)"/>
 <g fill="#2A2438"><path d="M420 214 q10 -30 40 -34 q20 -30 60 -20 q30 -20 60 0 q40 -10 60 24 q30 -6 44 30 H420z"/><path d="M780 214 q10 -26 40 -30 q20 -24 50 -14 q30 -16 60 6 q40 -6 70 38 H780z"/><path d="M1080 214 q14 -34 60 -28 q30 -10 60 20 V214z"/></g>
 <rect x="440" y="192" width="760" height="4" fill="#3A3448"/>
-<rect x="496" y="42" width="240" height="84" rx="4" fill="#0E1024"/><rect x="496" y="42" width="240" height="84" rx="4" fill="none" stroke="#3A3448" stroke-width="3"/>
-<rect x="514" y="60" width="72" height="30" fill="url(#{p}led)"/><rect x="646" y="60" width="72" height="30" fill="url(#{p}led)"/><rect x="592" y="98" width="48" height="16" fill="url(#{p}led)"/>
-<circle cx="616" cy="72" r="5" fill="#FF3A3A"/><rect x="606" y="126" width="6" height="66" fill="#3A3448"/><rect x="616" y="126" width="6" height="66" fill="#3A3448"/>
+<rect x="510" y="118" width="200" height="66" rx="4" fill="#0E1024"/><rect x="510" y="118" width="200" height="66" rx="4" fill="none" stroke="#3A3448" stroke-width="3"/>
+<rect x="526" y="132" width="54" height="24" fill="url(#{p}led)"/><rect x="640" y="132" width="54" height="24" fill="url(#{p}led)"/><rect x="592" y="162" width="36" height="14" fill="url(#{p}led)"/>
+<circle cx="610" cy="142" r="4" fill="#FF3A3A"/><rect x="560" y="184" width="6" height="30" fill="#3A3448"/><rect x="654" y="184" width="6" height="30" fill="#3A3448"/>
 <path d="{bleach}" fill="url(#{p}bl)"/>
 <g stroke="#4A4E68" stroke-width="2">{seats}</g>
 <g fill="#0E1024">{fans}</g>
@@ -322,8 +319,8 @@ def _b19():
 <rect x="996" y="126" width="10" height="4" fill="#E8442A"/><ellipse cx="1012" cy="128" rx="16" ry="5" fill="none" stroke="#E8442A" stroke-width="3"/>
 <g stroke="#F4F4F0" stroke-width="1.2" fill="none" opacity=".8">{net}<path d="M1000 148 h24 M1002 158 h20"/></g>
 <path d="M290 190 Q650 -76 1000 122" fill="none" stroke="#FFF4D8" stroke-width="2.4" stroke-dasharray="1 13" stroke-linecap="round" opacity=".75"/>
-<g transform="translate(720 52)"><circle r="15" fill="url(#{p}ball)"/><path d="M-15 0 h30 M0 -15 v30 M-11 -10 q11 10 22 0 M-11 10 q11 -10 22 0" stroke="#7A3010" stroke-width="1.4" fill="none"/></g>
-<g fill="#0E1024"><path d="M256 240 v-40 l-6 -14 l4 -4 l8 12 v-6 q0 -8 8 -10 l8 -14 l6 2 l-6 18 q6 4 6 12 v44z"/><path d="M262 174 l12 -30 M262 174 q-6 -6 4 -18" stroke="#0E1024" stroke-width="4" stroke-linecap="round" fill="none"/><circle cx="272" cy="158" r="7"/><path d="M270 240 l-10 -30 l6 -4 l12 34z"/></g>
+<g transform="translate(718 38)"><circle r="15" fill="url(#{p}ball)"/><path d="M-15 0 h30 M0 -15 v30 M-11 -10 q11 10 22 0 M-11 10 q11 -10 22 0" stroke="#7A3010" stroke-width="1.4" fill="none"/></g>
+<g fill="#0E1024"><path d="M258 240 l4 -44 l-8 -2 l4 -30 q2 -12 12 -12 h6 q10 0 12 12 l4 30 l-8 2 l4 44 h-10 l-6 -34 l-6 34z"/><circle cx="269" cy="140" r="8"/><path d="M262 156 l-16 -34 l8 -4 M276 156 l14 -36 l8 6" stroke="#0E1024" stroke-width="4.5" stroke-linecap="round" fill="none"/></g>
 <path d="M0 240 H1200 V420 H0z" fill="url(#{p}wood)"/>
 <g fill="none" stroke="#F8F0E0" stroke-width="2.5" opacity=".55"><path d="M0 250 H1200"/><path d="M1200 250 v0 M900 250 v100 h300" /><path d="M1200 250 Q880 300 1200 380" opacity=".8"/><path d="M0 250 v120 h180 v-120" /><path d="M0 250 Q300 300 0 380"/></g>
 <g fill="#E8442A" opacity=".3"><path d="M900 250 h300 v100 h-300z"/></g>
@@ -422,7 +419,7 @@ def _b21():
 <g fill="#1A2418">{_person(940, 306, 46, 13)}<path d="M934 262 l-14 18" stroke="#1A2418" stroke-width="4" stroke-linecap="round"/></g>
 <path d="M0 308 H1200 V420 H0z" fill="url(#{p}road)"/><path d="M0 308 H1200 V314 H0z" fill="#8A8A80"/>
 <g fill="#F4F4F0" opacity=".5"><rect x="0" y="360" width="70" height="5"/><rect x="140" y="360" width="70" height="5"/><rect x="1000" y="360" width="70" height="5"/><rect x="1140" y="360" width="60" height="5"/></g>
-<ellipse cx="380" cy="352" rx="60" ry="17" fill="#2A2A28"/><ellipse cx="380" cy="350" rx="56" ry="15" fill="#5A5A54"/><ellipse cx="380" cy="350" rx="46" ry="12" fill="#4A4A44" stroke="#6A6A62" stroke-width="1.5"/><ellipse cx="380" cy="350" rx="40" ry="10" fill="url(#{p}holes)"/><ellipse cx="380" cy="350" rx="20" ry="5" fill="#4A4A44"/>
+<ellipse cx="380" cy="332" rx="62" ry="15" fill="#1E1E1C"/><ellipse cx="380" cy="330" rx="58" ry="13" fill="#7A7A70"/><ellipse cx="380" cy="330" rx="48" ry="10.5" fill="#5A5A52" stroke="#8A8A80" stroke-width="1.5"/><ellipse cx="380" cy="330" rx="42" ry="9" fill="url(#{p}holes)"/><ellipse cx="380" cy="330" rx="20" ry="4.5" fill="#5A5A52"/>
 <g fill="#6A6A62" opacity=".4"><ellipse cx="700" cy="340" rx="200" ry="3"/></g>
 '''
     return _wrap(21, body, defs)
@@ -495,6 +492,14 @@ def _b23():
     hill = "M700 236 " + " ".join(f'L{x} {poly(x):.0f}' for x in range(700, 1081, 12)) + " L1080 236z"
     hill2 = "M700 236 " + " ".join(f'L{x} {poly(x) + 42 - 16*math.sin((x-700)/120):.0f}' for x in range(700, 1081, 12)) + " L1080 236z"
     # net: a rectangle with the corners cut out (perspective parallelogram), fold lines dashed
+    P = lambda s_, t_: f"{560 + s_ + 1.52*t_:.0f} {292 - t_:.0f}"
+    corners = [(24, 0), (156, 0), (156, 10), (180, 10), (180, 36), (156, 36), (156, 46), (24, 46), (24, 36), (0, 36), (0, 10), (24, 10)]
+    net_d = "M" + " L".join(P(*c) for c in corners) + "z"
+    folds = f"M{P(24,10)} L{P(24,36)} M{P(156,10)} L{P(156,36)} M{P(24,10)} L{P(156,10)} M{P(24,36)} L{P(156,36)}"
+    net = (f'<path d="{net_d}" fill="url(#{p}card)" stroke="#8E6E42" stroke-width="1.5" stroke-linejoin="round"/>'
+           f'<path d="{folds}" stroke="#8E6E42" stroke-width="1.2" stroke-dasharray="6 4" fill="none"/>'
+           f'<path d="M{P(0,10)} L{P(24,10)} L{P(24,0)}" fill="none" stroke="#6E5030" stroke-width="2"/>'
+           f'<path d="M{P(-30,0)} L{P(-6,0)} L{P(-6,10)} L{P(-30,10)}z M{P(186,0)} L{P(210,0)} L{P(210,10)} L{P(186,10)}z" fill="#C4A068" opacity=".9"/>')
     body = f'''
 <rect width="{W}" height="{H}" fill="url(#{p}wall)"/>
 <rect x="60" y="30" width="560" height="200" fill="url(#{p}peg)"/>
@@ -511,13 +516,15 @@ def _b23():
 <rect x="690" y="236" width="400" height="8" fill="#17304A"/>
 <path d="M0 250 H1200 V420 H0z" fill="url(#{p}bench)"/>
 <path d="M0 250 H1200 V256 H0z" fill="#C09258"/>
-<g transform="translate(560 292)"><path d="M0 0 L70 -46 L250 -46 L180 0z" fill="url(#{p}card)"/><path d="M-16 -18 L22 -46 L70 -46 L0 0z M180 0 L250 -46 L270 -34 L200 12z" fill="#C4A068" opacity="0"/><path d="M0 0 L70 -46 L250 -46 L180 0z" fill="none" stroke="#8E6E42" stroke-width="1.5" stroke-linejoin="round"/><path d="M22 -14 L86 -34 M156 -34 L218 -14 M36 -34 L166 -34 M28 -10 L162 -10" stroke="#8E6E42" stroke-width="1.2" stroke-dasharray="6 4" fill="none"/><path d="M0 0 L22 -14 L36 -34 L70 -46 M250 -46 L218 -14 L180 0" fill="none" stroke="#6E5030" stroke-width="2.5"/><path d="M36 -34 l30 -12 l-44 0z M166 -34 l40 -12 l12 0z" fill="#6E5030" opacity=".35"/></g>
+{net}
 <g transform="translate(220 296)">
-<path d="M0 0 L0 -70 L150 -70 L150 0z" fill="url(#{p}card)"/><path d="M150 0 L150 -70 L220 -108 L220 -38z" fill="url(#{p}card2)"/>
-<path d="M0 -70 L70 -108 L220 -108 L150 -70z" fill="#5A4022"/>
-<path d="M0 -70 L-40 -120 L110 -120 L150 -70z" fill="#E4C48A"/><path d="M150 -70 L180 -140 L250 -178 L220 -108z" fill="#D0AC70"/>
-<path d="M0 -70 L70 -108 L120 -170 L50 -132z" fill="#C8A462" opacity=".85"/><path d="M70 -108 L220 -108 L200 -150 L60 -150z" fill="#B48E52"/>
-<path d="M0 0 V-70 L70 -108 L220 -108 L150 -70 V0z" fill="none" stroke="#7A5A30" stroke-width="1.5" stroke-linejoin="round"/>
+<path d="M70 -108 L220 -108 L220 -160 L70 -160z" fill="#D0AC70"/>
+<path d="M0 -70 L70 -108 L220 -108 L150 -70z" fill="#4A3418"/>
+<path d="M0 -70 L70 -108 L70 -156 L0 -118z" fill="#E4C48A"/><path d="M150 -70 L220 -108 L220 -156 L150 -118z" fill="#B48E52"/>
+<path d="M0 0 V-70 H150 V0z" fill="url(#{p}card)"/><path d="M150 0 V-70 L220 -108 V-38z" fill="url(#{p}card2)"/>
+<path d="M0 -70 H150 V-112 H0z" fill="#E8CC96"/><path d="M0 -70 H150 V-66 H0z" fill="#8E6E42" opacity=".5"/>
+<path d="M0 0 V-70 V-112 H150 V-70 L220 -108 V-38 L150 0z" fill="none" stroke="#7A5A30" stroke-width="1.5" stroke-linejoin="round"/>
+<path d="M150 -70 V0 M70 -108 L70 -156 M150 -118 L220 -156 M150 -70 L150 -118" fill="none" stroke="#7A5A30" stroke-width="1.2" opacity=".7"/>
 </g>
 <g><rect x="960" y="266" width="200" height="12" fill="#E8E0C0" transform="rotate(-8 960 266)"/><g stroke="#4A4A3A" stroke-width="1">{"".join(f'<path d="M{x} {266 - (x-960)*0.14:.0f} v{4 if (x-960)%40 else 7}"/>' for x in range(970, 1160, 10))}</g></g>
 <g><rect x="860" y="278" width="80" height="14" rx="3" fill="#E8B020" transform="rotate(12 860 278)"/><path d="M938 292 l34 6 l-4 8 l-32 -4z" fill="#C8CCD0" transform="rotate(12 860 278)"/></g>
@@ -542,7 +549,7 @@ def _b24():
     )
     # the earthquake trace: quiet, then a burst that decays, wrapped on the drum
     pts = []
-    for i in range(0, 261, 2):
+    for i in range(0, 261, 3):
         x = 180 + i
         t = i / 260
         env = 0 if t < .28 else 34 * math.exp(-(t - .28) * 4.2) * min(1, (t - .28) * 30)
@@ -566,7 +573,7 @@ def _b24():
 <g stroke="#1A2028" stroke-width="8" fill="none"><rect x="780" y="30" width="320" height="206"/><path d="M940 30 V236 M780 130 H1100"/></g>
 <rect x="770" y="236" width="340" height="8" fill="#22282E"/>
 <rect x="60" y="40" width="300" height="120" rx="3" fill="#2A3038"/><rect x="60" y="40" width="300" height="120" rx="3" fill="none" stroke="#4A525A" stroke-width="2"/>
-<path d="M76 100 h268" stroke="#4A525A" stroke-width="1"/><path d="M76 100 {" ".join(f'L{x} {100 + 18*math.sin((x-76)/16)*math.exp(-abs(x-210)/70):.1f}' for x in range(80, 345, 4))}" stroke="#6ADCE0" stroke-width="1.6" fill="none"/>
+<path d="M76 100 h268" stroke="#4A525A" stroke-width="1"/><path d="M76 100 {" ".join(f'L{x} {100 + 18*math.sin((x-76)/16)*math.exp(-abs(x-210)/70):.1f}' for x in range(80, 345, 6))}" stroke="#6ADCE0" stroke-width="1.6" fill="none"/>
 <path d="M0 270 H1200 V420 H0z" fill="url(#{p}desk)"/>
 <path d="M0 270 H1200 V275 H0z" fill="#6E6E78"/>
 <rect x="150" y="248" width="400" height="22" rx="3" fill="#2A2E36"/><rect x="150" y="248" width="400" height="4" fill="#4A525A"/>
@@ -598,12 +605,12 @@ def _b25():
         + _rad(p+"lamp", [(0, "#FFF2C0", .75), (.5, "#FFF2C0", .18), (1, "#FFF2C0", 0)])
     )
     # nautilus: a logarithmic spiral, chambers as septa between consecutive whorls
-    cx, cy, a, b = 330, 190, 6.5, 0.17
+    cx, cy, a, b = 330, 184, 12, 0.17
     def sp(th):
         r = a * math.exp(b * th)
         return cx + r * math.cos(th), cy - r * math.sin(th)
     N = 4 * math.pi
-    outer = [sp(N - i * 0.12) for i in range(int(N / 0.12) + 1)]
+    outer = [sp(N - i * 0.2) for i in range(int(N / 0.2) + 1)]
     outline = "M%.1f %.1f " % outer[0] + " ".join(f'L{x:.1f} {y:.1f}' for x, y in outer[1:])
     septa = []
     th = N - 0.25
@@ -611,28 +618,29 @@ def _b25():
         x1, y1 = sp(th); x2, y2 = sp(th - 2 * math.pi)
         mx, my = (x1 + x2) / 2 + (y2 - y1) * .18, (y1 + y2) / 2 + (x1 - x2) * .18
         septa.append(f'M{x1:.1f} {y1:.1f} Q{mx:.1f} {my:.1f} {x2:.1f} {y2:.1f}')
-        th -= 0.34
+        th -= 0.4
     septa = " ".join(septa)
-    innersp = " ".join(f'{"M" if i == 0 else "L"}{x:.1f} {y:.1f}' for i, (x, y) in enumerate(sp(N - 2*math.pi - i*0.15) for i in range(int((N - 2*math.pi) / 0.15) + 1)))
+    innersp = " ".join(f'{"M" if i == 0 else "L"}{x:.1f} {y:.1f}' for i, (x, y) in enumerate(sp(N - 2*math.pi - i*0.15) for i in range(int((N - 2*math.pi) / 0.25) + 1)))
     lipx, lipy = sp(N)
     coins = []
     for k, n in enumerate((1, 2, 4, 8)):
-        x = 600 + k * 52
+        x = 590 + k * 56
         for j in range(n):
-            coins.append(f'<ellipse cx="{x}" cy="{286 - j*5.5:.1f}" rx="19" ry="6"/>')
+            coins.append(f'<ellipse cx="{x}" cy="{288 - j*6:.1f}" rx="21" ry="6.5"/>')
     # stadium from above: an oval bowl whose seating rows spiral outward
     sx, sy = 860, 132
     rows = []
-    for i in range(4 * 36):
-        t = i / 36
+    for i in range(3 * 30 + 1):
+        t = i / 30
         th = t * 2 * math.pi
-        rx, ry = 62 + 8 * t, 30 + 5 * t
+        rx, ry = 62 + 11 * t, 30 + 7 * t
         rows.append(f'{"M" if i == 0 else "L"}{sx + rx*math.cos(th):.1f} {sy + ry*math.sin(th):.1f}')
     rows = " ".join(rows)
     aisles = " ".join(f'M{sx + 64*math.cos(k*math.pi/8):.0f} {sy + 32*math.sin(k*math.pi/8):.0f} L{sx + 96*math.cos(k*math.pi/8):.0f} {sy + 52*math.sin(k*math.pi/8):.0f}' for k in range(16))
     body = f'''
 <rect width="{W}" height="{H}" fill="url(#{p}wall)"/>
 <g fill="#E0D0B0" opacity=".6"><rect x="0" y="0" width="1200" height="14"/><rect x="0" y="236" width="1200" height="6"/></g>
+<g fill="url(#{p}brass)"><rect x="40" y="96" width="220" height="7"/><rect x="40" y="170" width="220" height="7"/></g><g fill="#2A6664"><rect x="50" y="56" width="14" height="40"/><rect x="66" y="50" width="12" height="46"/><rect x="80" y="60" width="16" height="36"/><rect x="120" y="52" width="12" height="44"/><rect x="134" y="58" width="14" height="38"/><rect x="180" y="54" width="12" height="42"/><rect x="60" y="128" width="14" height="42"/><rect x="76" y="134" width="12" height="36"/><rect x="150" y="126" width="12" height="44"/><rect x="164" y="132" width="16" height="38"/><rect x="200" y="130" width="12" height="40"/></g><g fill="#B89848"><rect x="98" y="66" width="18" height="30"/><rect x="150" y="62" width="14" height="34"/><rect x="220" y="140" width="24" height="30"/><rect x="90" y="140" width="14" height="30"/></g>
 <rect x="640" y="36" width="440" height="192" rx="2" fill="url(#{p}brass)"/><rect x="648" y="44" width="424" height="176" fill="#1C3A3E"/>
 <rect x="648" y="44" width="424" height="176" fill="#245058" opacity=".5"/>
 <ellipse cx="{sx}" cy="{sy}" rx="98" ry="54" fill="#3A5A5A"/><ellipse cx="{sx}" cy="{sy}" rx="94" ry="50" fill="#5A7A72"/>
@@ -645,8 +653,8 @@ def _b25():
 <circle cx="1120" cy="180" r="110" fill="url(#{p}lamp)"/>
 <path d="M0 262 H1200 V420 H0z" fill="url(#{p}desk)"/>
 <path d="M0 262 H1200 V267 H0z" fill="#5AA8A4"/>
-<g transform="translate(0 40)"><path d="{outline} L{cx:.1f} {cy:.1f}z" fill="url(#{p}shell)" stroke="#B48E5A" stroke-width="1.6" stroke-linejoin="round"/><path d="{innersp}" fill="none" stroke="#B48E5A" stroke-width="1.6"/><path d="{septa}" fill="none" stroke="#B48E5A" stroke-width="1.2" opacity=".9"/><path d="{outline}" fill="none" stroke="#7A5A34" stroke-width="2.2"/><ellipse cx="{cx+52:.0f}" cy="{cy-56:.0f}" rx="30" ry="14" transform="rotate(-25 {cx+52:.0f} {cy-56:.0f})" fill="#FFFFFF" opacity=".35"/></g>
-<g fill="#11302E" opacity=".35"><ellipse cx="350" cy="292" rx="90" ry="9"/></g>
+<g><path d="{outline} L{cx:.1f} {cy:.1f}z" fill="url(#{p}shell)" stroke="#B48E5A" stroke-width="1.6" stroke-linejoin="round"/><path d="{innersp}" fill="none" stroke="#B48E5A" stroke-width="1.6"/><path d="{septa}" fill="none" stroke="#B48E5A" stroke-width="1.2" opacity=".9"/><path d="{outline}" fill="none" stroke="#7A5A34" stroke-width="2.2"/><ellipse cx="{cx+40:.0f}" cy="{cy-40:.0f}" rx="26" ry="10" transform="rotate(-30 {cx+40:.0f} {cy-40:.0f})" fill="#FFFFFF" opacity=".4"/></g>
+<g fill="#11302E" opacity=".35"><ellipse cx="350" cy="266" rx="110" ry="8"/></g>
 <g fill="url(#{p}coin)" stroke="#8A6A22" stroke-width=".8">{"".join(coins)}</g>
 <g fill="#11302E" opacity=".35"><ellipse cx="670" cy="292" rx="110" ry="6"/></g>
 <g><path d="M1010 262 q0 -110 100 -110 q40 0 44 40" stroke="url(#{p}brass)" stroke-width="6" fill="none" stroke-linecap="round"/><ellipse cx="1010" cy="262" rx="30" ry="8" fill="#B89848"/><path d="M1120 200 l60 0 l-14 -40 h-32z" fill="#F4E0A0"/><path d="M1120 200 l60 0 l-14 -40 h-32z" fill="none" stroke="#B89848" stroke-width="2"/></g>
@@ -664,6 +672,7 @@ def _b26():
         + _lin(p+"hill2", [(0, "#2E3A60", None), (1, "#1E2848", None)])
         + _lin(p+"bld", [(0, "#4A6A98", None), (1, "#2E4A78", None)])
         + _lin(p+"walk", [(0, "#3A3A48", None), (.4, "#22222E", None), (1, "#0E0E16", None)])
+        + _lin(p+"plaza", [(0, "#8A8AA4", None), (1, "#4E4E68", None)])
         + _rad(p+"door", [(0, "#FFE8A0", .9), (.5, "#FFC060", .3), (1, "#FFC060", 0)])
         + _lin(p+"box", [(0, "#3A6AB0", None), (1, "#1E3C70", None)])
         + f'<pattern id="{p}win" width="40" height="30" patternUnits="userSpaceOnUse"><rect x="6" y="6" width="26" height="18" fill="#FFE0A0" opacity=".55"/></pattern>'
@@ -672,10 +681,10 @@ def _b26():
     bell2 = "M0 262 " + " ".join(f'L{x} {262 - 60*math.exp(-((x-260)/240)**2) - 40*math.exp(-((x-1000)/200)**2):.0f}' for x in range(0, 1201, 20)) + " L1200 262z"
     g = _lcg(26)
     line = []
-    for i, x in enumerate(range(720, 150, -36)):
-        y = 292 + i * 0.6
-        h = 34 + next(g) % 12
-        w = 9 + next(g) % 4
+    for i, x in enumerate(range(724, 150, -38)):
+        y = 297 + i * 0.3
+        h = 44 + next(g) % 12
+        w = 11 + next(g) % 4
         line.append(_person(x + next(g) % 8 - 4, y, h, w))
         if next(g) % 4 == 0:
             line.append(f'<path d="M{x-6} {y-h*.5:.0f} q-4 -12 -14 -8" stroke="#0E0E16" stroke-width="3" fill="none"/>')
@@ -693,12 +702,13 @@ def _b26():
 <rect x="860" y="204" width="70" height="46" rx="2" fill="#F4F0E8"/><g fill="#2E4A78" opacity=".8"><rect x="868" y="212" width="54" height="6"/><rect x="868" y="224" width="40" height="6"/><rect x="868" y="236" width="48" height="6"/></g>
 <g><rect x="1130" y="120" width="3" height="142" fill="#C8CCD0"/><rect x="1133" y="122" width="36" height="22" fill="#F4F4F0"/><g fill="#C83030"><rect x="1133" y="122" width="36" height="4"/><rect x="1133" y="130" width="36" height="4"/><rect x="1133" y="138" width="36" height="4"/></g><rect x="1133" y="122" width="15" height="12" fill="#2A3A78"/></g>
 <rect x="620" y="200" width="4" height="62" fill="#1E3050"/><circle cx="622" cy="196" r="7" fill="#FFE8A0"/><circle cx="622" cy="196" r="30" fill="url(#{p}door)" opacity=".5"/>
-<path d="M0 262 H1200 V300 H0z" fill="#2A2A3A"/><path d="M0 262 H1200 V266 H0z" fill="#5A5A70"/>
+<path d="M0 262 H1200 V300 H0z" fill="url(#{p}plaza)"/><path d="M0 262 H1200 V266 H0z" fill="#A0A0B8"/>
+<g fill="#1E1E2E" opacity=".5">{"".join(f'<ellipse cx="{x}" cy="298" rx="14" ry="3"/>' for x in range(724, 150, -38))}</g>
 <g fill="#0E0E16">{"".join(line)}</g>
 <path d="M0 300 Q300 296 600 300 T1200 298 V420 H0z" fill="url(#{p}walk)"/>
 <path d="M200 312 H1000 L1020 340 H180z" fill="#2E4A78"/><path d="M200 312 H1000 L1020 340 H180z" fill="#3A5A8A" opacity=".5"/>
 <g transform="translate(720 314)"><path d="M0 0 L-6 -50 H110 L116 0z" fill="url(#{p}box)"/><path d="M-6 -50 L10 -62 H126 L110 -50z" fill="#4A80C8"/><path d="M110 -50 L126 -62 V-12 L116 0z" fill="#1E3C70"/><rect x="34" y="-59" width="50" height="3" fill="#0E0E16"/><path d="M50 -58 l8 -16 h20 l-8 16z" fill="#F4F0E8"/><circle cx="24" cy="-24" r="10" fill="#F4F0E8" opacity=".5"/></g>
-<g transform="translate(380 316) rotate(-4)"><rect x="0" y="-70" width="150" height="70" rx="3" fill="#5A3E24"/><rect x="8" y="-62" width="134" height="60" fill="#F4F0E8"/><rect x="50" y="-78" width="50" height="14" rx="3" fill="#8A8A90"/><g stroke="#2E4A78" stroke-width="1.6" opacity=".8"><path d="M20 -50 h110 M20 -40 h110 M20 -30 h110 M20 -20 h110 M20 -10 h70"/></g><g fill="#C83030"><rect x="20" y="-52" width="6" height="4"/><rect x="20" y="-32" width="6" height="4"/></g></g>
+<g transform="translate(150 318) rotate(-4)"><rect x="0" y="-70" width="150" height="70" rx="3" fill="#5A3E24"/><rect x="8" y="-62" width="134" height="60" fill="#F4F0E8"/><rect x="50" y="-78" width="50" height="14" rx="3" fill="#8A8A90"/><g stroke="#2E4A78" stroke-width="1.6" opacity=".8"><path d="M20 -50 h110 M20 -40 h110 M20 -30 h110 M20 -20 h110 M20 -10 h70"/></g><g fill="#C83030"><rect x="20" y="-52" width="6" height="4"/><rect x="20" y="-32" width="6" height="4"/></g></g>
 <g fill="#FFE8A0" opacity=".14"><ellipse cx="790" cy="330" rx="140" ry="8"/></g>
 '''
     return _wrap(26, body, defs)
