@@ -2567,3 +2567,50 @@
     return speak.call(S, u);
   };
 })();
+
+/* ══ AOG-EXPLORE-GLASS-V1 (2026-09-25) — Jimmy: "I would like to get an explore
+   tab facelift!" The Explore menu in stained glass: the panel is leaded and
+   framed in gold; every door's icon is a small pane in its own jewel colour
+   (the same colours as the Daily Drafts subjects and the Blueprint); hover
+   tints the row and edges it in that glass; the 01/02 numbers are medallions.
+   Layered on top of the menu's own rules, so nothing about how it opens,
+   folds or navigates changes. ═══════════════════════════════════════════ */
+(function () {
+  if (document.getElementById("aog-explore-glass")) return;
+  var G = { "/#dashboard":"#3F4AA6", "/#tools":"#1F8080", "/drops":"#A85A24", "/math":"#2F63B8", "/science":"#2E8B57",
+    "/social":"#A8323E", "/english":"#B87A12", "/spanish":"#B8457A", "/facs":"#7B4FA0", "/economics":"#6E7C22",
+    "/prep":"#5E6B7A", "/#talk":"#1F8080", "/#pilot":"#B87A12", "/#framework":"#3F4AA6", "/#curriculum":"#A85A24",
+    "/#family":"#B8457A", "/#schools":"#2F63B8", "/#about":"#2E8B57", "/#library":"#7B4FA0", "/#privacy":"#5E6B7A",
+    "/#words":"#B8457A", "/#voices":"#A8323E", "/#alignment":"#6E7C22" };
+  var ROOM = { "12":"#2E8B57", "18":"#B87A12", "36":"#2F63B8", "104":"#A8323E", "207":"#7B4FA0" };
+  var css = ".aogtop-menu{border:3px solid #1E1F22!important;border-radius:16px!important;"
+    + "box-shadow:0 0 0 1px rgba(242,201,100,.5),0 26px 60px -24px rgba(10,30,51,.7)!important;"
+    + "background-image:linear-gradient(180deg,rgba(242,201,100,.08),rgba(242,201,100,0) 140px)!important}"
+    + ".aogtop-menu a{--gl:#9A7424;position:relative;transition:background .14s ease, box-shadow .14s ease}"
+    + ".aogtop-menu a svg{box-sizing:content-box;width:15px!important;height:15px!important;padding:6px;margin-top:0!important;"
+    + "border-radius:8px;color:#fff!important;background-color:var(--gl);border:1.5px solid #1E1F22;"
+    + "background-image:radial-gradient(120% 90% at 30% 15%,rgba(255,255,255,.42),rgba(255,255,255,0) 60%),linear-gradient(180deg,rgba(0,0,0,0),rgba(0,0,0,.2));"
+    + "box-shadow:0 3px 8px -3px var(--gl)}"
+    + ".aogtop-menu a:hover{background:color-mix(in srgb,var(--gl) 13%,transparent)!important;box-shadow:inset 3px 0 0 var(--gl)}"
+    + ".aogtop-menu a:focus-visible{outline:2px solid var(--gl);outline-offset:1px}"
+    + ".aogtop-dnum{display:grid;place-items:center;width:32px;height:32px;border-radius:50%;font-size:14px!important;"
+    + "border:2px solid #C9A24A;color:#C9A24A!important;background:radial-gradient(circle at 35% 30%,rgba(242,201,100,.22),rgba(242,201,100,0) 70%)}"
+    + ".aogtop-blab{border-radius:10px!important}"
+    + ".aogtop-blab[aria-expanded=\"true\"]{background:rgba(242,201,100,.1)!important;box-shadow:inset 3px 0 0 #C9A24A}";
+  Object.keys(G).forEach(function (h) { css += '.aogtop-menu a[href="' + h + '"]{--gl:' + G[h] + '}'; });
+  Object.keys(ROOM).forEach(function (n) {
+    css += '.aogtop-menu a[href^="/room' + n + '"],.aogtop-menu a[href^="/lessons' + n + '"],.aogtop-menu a[href^="/wb' + n + '"],.aogtop-menu a[href^="/charts' + n + '"]{--gl:' + ROOM[n] + '}';
+  });
+  css += '.aogtop-menu a[href^="/files/AoG-Book"]{--gl:#A85A24}.aogtop-menu a[href="/worksheets"]{--gl:#2F63B8}';
+  css += '.aogtop-blab{--gl:#C9A24A;box-shadow:inset 4px 0 0 var(--gl)!important;padding-left:14px!important}'
+    + '.aogtop-blab[aria-expanded="true"]{background:color-mix(in srgb,var(--gl) 12%,transparent)!important;color:inherit!important}';
+  /* the room rows carry no link of their own, so each is tinted by its number */
+  function tagRooms() {
+    var bl = document.querySelectorAll(".aogtop-blab");
+    for (var i = 0; i < bl.length; i++) { var m = /Room\s+(\d+)/.exec(bl[i].textContent || ""); if (m && ROOM[m[1]]) bl[i].style.setProperty("--gl", ROOM[m[1]]); }
+  }
+  document.addEventListener("click", function () { setTimeout(tagRooms, 30); }, true);
+  setTimeout(tagRooms, 800);
+  var st = document.createElement("style"); st.id = "aog-explore-glass"; st.textContent = css;
+  (document.head || document.documentElement).appendChild(st);
+})();
