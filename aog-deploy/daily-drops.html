@@ -16661,6 +16661,128 @@ return T;})();
    name on the row a teacher receives all read from here, so a sixth subject is
    an entry in these three, never a search for string literals. */
 var SUBJ={math:MATH,ela:ELA,science:SCI,'social-studies':SOC,spanish:SPA,facs:FCS,religion:WRL,economics:ECO,foundry:FDY};
+/* ══ AOG-DD-STDSCI-V1 (2026-09-25) ══ STANDARDS GAPS, SCIENCE AND SOCIAL STUDIES.
+   Checked each grade's ten strands against NGSS and the Illinois Social Science
+   standards. What was missing is ADDED to an existing box here — never a new box,
+   so every sheet keeps its ten. Science: Engineering Design (K-2-ETS1, 3-5-ETS1,
+   MS-ETS1, HS-ETS1) was asked nowhere; it joins each grade's practices box.
+   Plus 1-LS3/1-LS1.A, 2-LS2, 2-ESS1, 5-ESS3. Social studies: geography and
+   economics in grade 8, economics in 9-10, Illinois history in 3-4, and the
+   Illinois-required Holocaust, Asian American and LGBTQ+ history units.
+   ⚠ CONTENT, NOT CODE — same rule as the banks above. */
+function nbAdd(k,items){NB[k]=(NB[k]||[]).concat(items)}
+var ETS_P=[
+ ['mc','Your block tower keeps falling down. What should you do first?','figure out why it falls',['give up','build it taller','paint it']],
+ ['mc','An engineer is someone who…','designs things to solve problems',['only fixes cars','studies stars','writes stories']],
+ ['mc','Two kids made paper boats. How can they tell which boat is better?','test them both in water',['guess','pick the prettier one','ask a bird']],
+ ['tf','It is okay to change your design after you test it.',true],
+ ['tf','A drawing can help you plan how to build something.',true],
+ ['voc','design','A plan for how to make something.']];
+nbAdd('sci.K.10',ETS_P); nbAdd('sci.1.10',ETS_P); nbAdd('sci.2.10',ETS_P);
+var ETS_I=[
+ ['mc','In a design problem, criteria are…','what the solution must do to succeed',['the materials you like','the final answer','a kind of test tube']],
+ ['mc','In a design problem, constraints are…','limits such as cost, time or materials',['the reasons it works','the winning design','the drawings']],
+ ['mc','Two bridge designs are tested with weights. What makes the test fair?','using the same weights and the same span for both',['testing one bridge twice','using heavier weights on one','letting the builder choose']],
+ ['mc','A test shows the weakest part of a design. The next step is to…','improve that part and test again',['start a new project','hide the result','test a different design only']],
+ ['tf','A good design can be improved by testing it more than once.',true],
+ ['voc','prototype','An early model built to test a design.']];
+nbAdd('sci.3.10',ETS_I); nbAdd('sci.4.10',ETS_I); nbAdd('sci.5.10',ETS_I);
+var ETS_M=[
+ ['mc','A team must keep an egg from breaking in a 3-meter drop using only paper and tape. "Only paper and tape" is a…','constraint',['criterion','variable','hypothesis']],
+ ['mc','"The egg must not crack" is a…','criterion',['constraint','control','conclusion']],
+ ['mc','Why do engineers combine the best parts of several designs?','to make a solution that meets more criteria',['to save paper','to finish faster','to avoid testing']],
+ ['mc','In a design test, repeating each trial several times helps…','make the results more reliable',['make the design heavier','change the criteria','skip the analysis']],
+ ['tf','A design that meets all the criteria but breaks the constraints is not an acceptable solution.',true],
+ ['voc','optimize','To improve a design so it works as well as possible within its limits.']];
+nbAdd('sci.6.10',ETS_M); nbAdd('sci.7.10',ETS_M); nbAdd('sci.8.10',ETS_M);
+var ETS_H=[
+ ['mc','A city must reduce flooding. Engineers break the problem into smaller parts because…','smaller problems are easier to solve and test',['it costs more','it avoids criteria','it removes constraints']],
+ ['mc','Choosing between two water filters, engineers weigh cost against effectiveness. This is a…','trade-off',['control','hypothesis','constant']],
+ ['mc','Why do engineers use computer models before building?','to test many designs quickly and cheaply',['to avoid all real tests','to make the design look better','to change the laws of physics']],
+ ['mc','When judging a solution to a global problem, engineers should also consider…','social, cultural and environmental impacts',['only the price','only the looks','only the speed']],
+ ['tf','A solution can meet its technical goals and still be a poor choice because of its effect on the environment.',true],
+ ['voc','trade-off','Giving up some of one quality to gain more of another.']];
+nbAdd('sci.9-10.06',ETS_H); nbAdd('sci.11-12.10',ETS_H);
+/* 1-LS3.A and 1-LS1.A: young like their parents; plants and animals inspire designs */
+nbAdd('sci.1.02',[
+ ['mc','How are baby animals like their parents?','they look a lot like them',['they look nothing like them','they are always the same size','they never grow']],
+ ['mc','A puppy is a baby…','dog',['cat','cow','duck']],
+ ['mc','Burrs that stick to fur gave people the idea for…','hook-and-loop fasteners (Velcro)',['zippers','buttons','glue']],
+ ['tf','Young plants look like the plants they came from, but not exactly the same.',true],
+ ['tf','Parent birds help their chicks by bringing them food.',true]]);
+/* 2-LS2.A: plants need water and light; animals move pollen and seeds */
+nbAdd('sci.2.02',[
+ ['mc','When a bee visits flowers, it carries…','pollen from flower to flower',['water to the roots','seeds to the sky','leaves to the hive']],
+ ['mc','Seeds stuck to a dog\'s fur get carried to…','new places to grow',['the ocean','the dog\'s food bowl','the sun']],
+ ['mc','A plant kept in a dark closet will probably…','grow poorly',['grow faster','turn into a tree','make more flowers']],
+ ['tf','Some seeds travel on the wind.',true],
+ ['voc','pollinate','To move pollen from one flower to another so seeds can form.']]);
+/* 2-ESS1.C: some Earth events are fast, some are slow */
+nbAdd('sci.2.05',[
+ ['mc','Which changes Earth\'s surface QUICKLY?','an earthquake',['a river carving a canyon','wind wearing down a rock','a glacier moving']],
+ ['mc','Which changes Earth\'s surface SLOWLY?','a river carving a canyon',['a volcano erupting','a landslide','an earthquake']],
+ ['tf','The Grand Canyon formed over millions of years.',true],
+ ['tf','A landslide can happen in just minutes.',true]]);
+/* 5-ESS3.C: communities protect Earth's resources */
+nbAdd('sci.5.05',[
+ ['mc','Which action helps protect a river?','keeping trash and chemicals out of it',['washing paint brushes in it','dumping yard waste in it','pouring oil down the drain']],
+ ['mc','Using solar panels instead of burning coal helps…','reduce air pollution',['make more trash','use more water','cause earthquakes']],
+ ['mc','Recycling aluminum cans saves…','energy and raw materials',['nothing at all','only paper','only water']],
+ ['tf','Planting trees can help reduce soil erosion.',true]]);
+
+/* SOCIAL STUDIES. SS.G and SS.EC in grade 8 (the U.S. history strands had none) */
+nbAdd('soc.8.06',[
+ ['mc','The Louisiana Purchase of 1803 roughly…','doubled the size of the United States',['added Alaska','ended the Revolution','gave Florida to Spain']],
+ ['mc','Why was control of the Mississippi River and New Orleans so important to western farmers?','they shipped their crops down the river to market',['it was the only source of drinking water','it was the national capital','it blocked Spanish invasions']],
+ ['mc','The Erie Canal (1825) connected the Great Lakes to…','the Hudson River and New York City',['the Gulf of Mexico','the Pacific Ocean','the Ohio River']],
+ ['mc','What physical feature did many settlers cross on the Oregon Trail?','the Rocky Mountains',['the Appalachians only','the Mississippi Delta','the Ozark Plateau']],
+ ['voc','Manifest Destiny','The belief that the United States should expand across North America.']]);
+nbAdd('soc.8.07',[
+ ['mc','The South\'s economy before the Civil War depended most on…','cotton grown with enslaved labor',['factories','fishing','railroads']],
+ ['mc','Many Southerners opposed high tariffs because tariffs…','raised the price of imported goods they bought',['lowered cotton prices directly','ended slavery','closed their ports']],
+ ['mc','The North\'s economy grew mainly through…','factories, trade and free wage labor',['cotton plantations','gold mining','whaling only']],
+ ['mc','The cotton gin (1793) led to…','more cotton grown and slavery spreading further',['the end of slavery','fewer plantations','less cotton']],
+ ['voc','tariff','A tax on imported goods.']]);
+/* SS.EC in 9-10 */
+nbAdd('soc.9-10.07',[
+ ['mc','When a country specializes in what it produces most efficiently and trades for the rest, it is using…','comparative advantage',['a tariff','a monopoly','inflation']],
+ ['mc','Globalization is the…','growing connection of economies and cultures around the world',['end of trade between nations','shrinking of cities','return to farming']],
+ ['mc','A country whose economy is decided mostly by supply and demand has a…','market economy',['command economy','traditional economy','barter economy']],
+ ['mc','GDP measures…','the total value of goods and services a country produces',['population','land area','the number of banks']],
+ ['tf','Trade between countries can make both sides better off.',true],
+ ['voc','scarcity','Having limited resources to meet unlimited wants.']]);
+/* Illinois history, grades 3 and 4 */
+nbAdd('soc.3.06',[
+ ['mc','What is the capital of Illinois?','Springfield',['Chicago','Peoria','Rockford']],
+ ['mc','Illinois is called the "Land of…"','Lincoln',['Lakes','Liberty','Corn']],
+ ['mc','The largest city in Illinois is…','Chicago',['Springfield','Naperville','Joliet']],
+ ['tf','Illinois borders Lake Michigan.',true]]);
+nbAdd('soc.4.07',[
+ ['mc','Illinois became a state in…','1818',['1776','1865','1901']],
+ ['mc','Before Europeans arrived, the city of Cahokia near present-day St. Louis was built by…','Mississippian people',['the French','the Romans','the British']],
+ ['mc','Which president began his law career in Springfield, Illinois?','Abraham Lincoln',['George Washington','Thomas Jefferson','John Adams']],
+ ['mc','The Great Chicago Fire happened in…','1871',['1818','1929','1776']],
+ ['tf','The Illinois and Michigan Canal helped connect the Great Lakes to the Mississippi River.',true]]);
+/* Illinois-required units: Holocaust and genocide (105 ILCS 5/27-20.3),
+   Asian American history (TEAACH Act), LGBTQ+ contributions (Inclusive Curriculum Law) */
+nbAdd('soc.9-10.06',[
+ ['mc','The Holocaust was…','the Nazi murder of six million Jews and millions of others',['a battle in the Pacific','a peace treaty','an economic depression']],
+ ['mc','The Nuremberg Trials after World War II…','tried Nazi leaders for crimes against humanity',['ended the Cold War','created the European Union','divided Korea']],
+ ['voc','genocide','The deliberate killing of a large group of people because of their nation, ethnicity, race or religion.'],
+ ['tf','The United Nations adopted a treaty against genocide in 1948.',true]]);
+nbAdd('soc.11-12.03',[
+ ['mc','Kristallnacht (1938) was…','a night of organized Nazi violence against Jews in Germany and Austria',['the end of World War II','a U.S. air raid','a treaty with Japan']],
+ ['tf','Many Japanese American soldiers served in the U.S. Army\'s 442nd Regiment while their families were held in camps.',true]]);
+nbAdd('soc.11-12.01',[
+ ['mc','The Chinese Exclusion Act of 1882…','banned most Chinese immigration to the United States',['welcomed Chinese workers','ended the transcontinental railroad','created Angel Island']],
+ ['mc','Thousands of Chinese immigrants did much of the dangerous work building the…','transcontinental railroad',['Erie Canal','Brooklyn Bridge','Panama Canal']],
+ ['tf','Angel Island in San Francisco Bay was an immigration station where many Asian immigrants were held.',true]]);
+nbAdd('soc.11-12.05',[
+ ['mc','The 1969 Stonewall uprising in New York City is seen as a turning point in the…','LGBTQ+ rights movement',['labor movement','temperance movement','space race']],
+ ['mc','Bayard Rustin, a gay civil rights leader, was the chief organizer of the…','1963 March on Washington',['Montgomery Bus Boycott','Freedom Summer','Selma march']],
+ ['mc','In Obergefell v. Hodges (2015), the Supreme Court ruled that…','same-sex couples have the right to marry',['schools may be segregated','states may ban voting','the draft is legal']],
+ ['tf','Yuri Kochiyama and Grace Lee Boggs were Asian American activists in the civil rights era.',true]]);
+
 var SUBJN={math:['Mathematics','Matem\u00e1ticas'], ela:['Language Arts','Lenguaje'],
   write:['Writing','Escritura'], science:['Science','Ciencias'],
   'social-studies':['Social Studies','Estudios Sociales'],
