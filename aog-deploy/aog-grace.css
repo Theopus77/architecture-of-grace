@@ -1,0 +1,284 @@
+/* ════════════════════════════════════════════════════════════════════════════
+   ARCHITECTURE OF GRACE — THE HOME PAGE'S HERO, ON EVERY PAGE.
+
+   Jimmy: "I want every single page on my website to match the beauty and
+   elegance of the hero page."
+
+   index.html opens on a deep navy field with a gold glow, the title set in
+   Fraunces on cream, a gold letterspaced eyebrow above it and the lede in soft
+   cream below. Every other page opened on a flat cream sheet with a black
+   Georgia title. This file is the difference. aog-grace.js finds the page's
+   own masthead (header.mast, header.page, the hub <header>, …) and stamps it
+   data-aog-hero; everything here hangs off that one attribute, so no page
+   markup had to change.
+
+   ── HOW IT STAYS SAFE ON 340 PAGES WITH 340 STYLESHEETS ──────────────────────
+   · Every rule is scoped under html.aog-grace [data-aog-hero]. Nothing here
+     reaches a card, a quiz, a worksheet field or the site bar.
+   · The band is painted by a ::before that is pulled out to the viewport
+     edges (width:--aog-vw, measured by the script — 100vw would count the
+     scrollbar and add a sideways scroll). The masthead itself never moves,
+     so the title still lines up with the column beneath it.
+   · --aog-pull is the measured gap between the bar above and the masthead;
+     the ::before reaches up by that much so the navy meets the site bar with
+     no cream sliver between.
+   · Print gets the plain masthead back: no band, ink on paper.
+   ════════════════════════════════════════════════════════════════════════════ */
+
+html.aog-grace{
+  --ag-navy:#0A1E33; --ag-navy-deep:#06121F;
+  --ag-gold:#D9A33B; --ag-gold-soft:#F2C964; --ag-gold-pale:#F1DFA8;
+  --ag-cream:#F4EEE2; --ag-cream-soft:rgba(244,238,226,.86); --ag-cream-faint:rgba(244,238,226,.62);
+  --ag-serif:"Fraunces","Cormorant Garamond",Georgia,"Times New Roman",serif;
+  --ag-sans:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  --aog-vw:100vw;
+}
+
+/* ── the band ─────────────────────────────────────────────────────────────── */
+html.aog-grace [data-aog-hero]{
+  position:relative; z-index:0; isolation:isolate;
+  color:var(--ag-cream);
+  padding-top:46px !important; padding-bottom:42px !important;
+  margin-bottom:30px;
+}
+html.aog-grace [data-aog-hero]::before{
+  content:""; position:absolute; z-index:-1;
+  top:calc(-1 * var(--aog-pull,0px)); bottom:0;
+  left:50%; width:var(--aog-vw); transform:translateX(-50%);
+  background:
+    radial-gradient(60% 120% at 88% -10%, rgba(242,201,100,.17), transparent 62%),
+    radial-gradient(125% 150% at 50% 0%, #244D75 0%, #143049 55%, #07151F 100%);
+  border-bottom:1px solid rgba(242,201,100,.28);
+  box-shadow:0 18px 40px -22px rgba(6,18,31,.55);
+  pointer-events:none;
+}
+/* a hairline of gold light along the foot of the band */
+html.aog-grace [data-aog-hero]::after{
+  content:""; position:absolute; z-index:-1; left:50%; bottom:0; height:2px;
+  width:min(var(--aog-vw), 100%); transform:translateX(-50%);
+  background:linear-gradient(90deg, transparent 0%, var(--ag-gold) 18%, var(--ag-gold-soft) 50%, var(--ag-gold) 82%, transparent 100%);
+  opacity:.9; pointer-events:none;
+}
+
+/* ── the eyebrow: gold, letterspaced, small caps — as on the home page cards ─ */
+html.aog-grace [data-aog-hero] .k,
+html.aog-grace [data-aog-hero] .kicker,
+html.aog-grace [data-aog-hero] .mast-kicker,
+html.aog-grace [data-aog-hero] .crumb,
+html.aog-grace [data-aog-hero] .eyebrow,
+html.aog-grace [data-aog-hero] .eyebrow a,
+html.aog-grace [data-aog-hero] .brand,
+html.aog-grace [data-aog-hero] div.sub,
+html.aog-grace [data-aog-hero] span.sub,
+html.aog-grace [data-aog-hero] .pnum{
+  font-family:var(--ag-sans); font-size:12px; font-weight:700; line-height:1.4;
+  letter-spacing:.3em; text-transform:uppercase; color:var(--ag-gold-soft);
+  text-decoration:none;
+}
+html.aog-grace [data-aog-hero] .eyebrow a:hover{ color:#fff; }
+html.aog-grace [data-aog-hero] .k,
+html.aog-grace [data-aog-hero] .kicker,
+html.aog-grace [data-aog-hero] .eyebrow{ margin-bottom:14px; }
+
+/* the small brand row some mastheads carry (the "A" tile and the site name) */
+html.aog-grace [data-aog-hero] .mark,
+html.aog-grace [data-aog-hero] .mk{
+  background:linear-gradient(176deg,#FBEFC9 0%,#F2CE7E 28%,#DCAB4C 58%,#B5821F 100%) !important;
+  color:var(--ag-navy) !important;
+  font-family:var(--ag-serif) !important; font-weight:600 !important;
+  box-shadow:0 8px 18px -6px rgba(0,0,0,.55), inset 0 1px 0 rgba(255,255,255,.55);
+}
+html.aog-grace [data-aog-hero] .name,
+html.aog-grace [data-aog-hero] .nm{
+  font-family:var(--ag-serif) !important; font-weight:600 !important;
+  color:var(--ag-cream) !important; letter-spacing:-.005em;
+}
+html.aog-grace [data-aog-hero] .row{ margin-bottom:22px; }
+
+/* ── the title ───────────────────────────────────────────────────────────── */
+html.aog-grace [data-aog-hero] h1,
+html.aog-grace [data-aog-hero] .mast-h1{
+  font-family:var(--ag-serif) !important;
+  font-weight:600 !important;
+  font-size:clamp(34px, 4.6vw, 60px) !important;
+  line-height:.98 !important;
+  letter-spacing:-.022em !important;
+  color:var(--ag-cream) !important;
+  margin:0 0 18px !important;
+  max-width:22ch;
+  text-wrap:pretty;
+  text-shadow:0 2px 0 rgba(6,18,31,.55), 0 14px 30px rgba(0,0,0,.28);
+}
+html.aog-grace [data-aog-hero] h1 em,
+html.aog-grace [data-aog-hero] h1 i{ font-style:italic; font-weight:400; color:#D7C9A8; }
+
+/* the word "Grace" itself carries the gold foil, where a page's title has it */
+html.aog-grace [data-aog-hero] .aog-foil{
+  background:linear-gradient(176deg,#FBEFC9 0%,#F2CE7E 28%,#DCAB4C 58%,#B5821F 100%);
+  -webkit-background-clip:text; background-clip:text;
+  -webkit-text-fill-color:transparent; color:transparent;
+  text-shadow:none;
+}
+
+/* ── the lede ────────────────────────────────────────────────────────────── */
+html.aog-grace [data-aog-hero] .deck,
+html.aog-grace [data-aog-hero] .tag,
+html.aog-grace [data-aog-hero] .tagline,
+html.aog-grace [data-aog-hero] .lede,
+html.aog-grace [data-aog-hero] .say,
+html.aog-grace [data-aog-hero] p.sub,
+html.aog-grace [data-aog-hero] > p,
+html.aog-grace [data-aog-hero] > div > p{
+  font-family:var(--ag-sans) !important;
+  font-size:clamp(16px, 1.45vw, 18.5px) !important;
+  line-height:1.55 !important;
+  color:var(--ag-cream-soft) !important;
+  max-width:62ch;
+  margin:0 0 14px;
+}
+html.aog-grace [data-aog-hero] p a{ color:var(--ag-gold-soft); text-decoration:none; border-bottom:1px solid rgba(242,201,100,.45); }
+html.aog-grace [data-aog-hero] p a:hover{ color:#fff; border-bottom-color:var(--ag-gold-soft); }
+html.aog-grace [data-aog-hero] a:not(.btn):not(.pill):not(.chip):not(.mats a):not(.tools a){
+  color:var(--ag-gold-soft); text-decoration:none; border-bottom:1px solid rgba(242,201,100,.45);
+}
+html.aog-grace [data-aog-hero] a:not(.btn):not(.pill):not(.chip):not(.mats a):not(.tools a):hover{ color:#fff; border-bottom-color:var(--ag-gold-soft); }
+html.aog-grace [data-aog-hero] summary,
+html.aog-grace [data-aog-hero] .lock summary *,
+html.aog-grace [data-aog-hero] .lock-ask,
+html.aog-grace [data-aog-hero] .meta,
+html.aog-grace [data-aog-hero] .byline{ color:var(--ag-gold-soft) !important; }
+html.aog-grace [data-aog-hero] h2,
+html.aog-grace [data-aog-hero] h3,
+html.aog-grace [data-aog-hero] summary,
+html.aog-grace [data-aog-hero] b,
+html.aog-grace [data-aog-hero] strong{ color:var(--ag-cream); }
+html.aog-grace [data-aog-hero] small,
+html.aog-grace [data-aog-hero] .note,
+html.aog-grace [data-aog-hero] .hint{ color:var(--ag-cream-faint); }
+html.aog-grace [data-aog-hero] hr,
+html.aog-grace [data-aog-hero] .rule{ border-color:rgba(242,201,100,.28); }
+
+/* ── buttons and pills that live in the masthead: the home page's outline pill ─ */
+html.aog-grace [data-aog-hero] .tools button,
+html.aog-grace [data-aog-hero] .tools a,
+html.aog-grace [data-aog-hero] .mats a,
+html.aog-grace [data-aog-hero] .btn,
+html.aog-grace [data-aog-hero] a.pill,
+html.aog-grace [data-aog-hero] .chip,
+html.aog-grace [data-aog-hero] button:not(.aogtop-adopted):not(.on):not([class*="seg"] button){
+  font-family:var(--ag-sans) !important;
+  font-size:13px !important; font-weight:700 !important; line-height:1 !important;
+  color:var(--ag-cream) !important;
+  background:rgba(255,255,255,.04) !important;
+  border:1.5px solid rgba(242,201,100,.7) !important;
+  border-radius:999px !important;
+  padding:9px 16px !important;
+  text-decoration:none !important;
+  box-shadow:none !important;
+  transition:background .15s ease, color .15s ease, border-color .15s ease, transform .15s ease;
+}
+html.aog-grace [data-aog-hero] .tools button:hover,
+html.aog-grace [data-aog-hero] .tools a:hover,
+html.aog-grace [data-aog-hero] .mats a:hover,
+html.aog-grace [data-aog-hero] .btn:hover,
+html.aog-grace [data-aog-hero] a.pill:hover,
+html.aog-grace [data-aog-hero] .chip:hover,
+html.aog-grace [data-aog-hero] button:hover{
+  background:rgba(242,201,100,.16) !important; border-color:var(--ag-gold-soft) !important;
+  transform:translateY(-1px);
+}
+html.aog-grace [data-aog-hero] .btn-accent,
+html.aog-grace [data-aog-hero] .primary,
+html.aog-grace [data-aog-hero] .btn.primary{
+  background:var(--ag-gold) !important; color:var(--ag-navy) !important; border-color:var(--ag-gold) !important;
+}
+html.aog-grace [data-aog-hero] .legend .lg,
+html.aog-grace [data-aog-hero] .lg{ color:var(--ag-cream-soft); }
+html.aog-grace [data-aog-hero] .legend .lg.open{ background:rgba(242,201,100,.18); color:var(--ag-gold-soft); }
+html.aog-grace [data-aog-hero] .legend .lg.shop{ background:rgba(255,255,255,.08); }
+
+/* the eyebrow row on the hubs also holds the language / theme switches the
+   site bar has adopted; if they are ever shown again, they are outlined too */
+html.aog-grace [data-aog-hero] .sw .seg{ border-color:rgba(242,201,100,.5); }
+html.aog-grace [data-aog-hero] .sw button{ color:var(--ag-cream); }
+
+/* the "saved on this computer" fold a few mastheads carry */
+html.aog-grace [data-aog-hero] .lock{
+  border-color:rgba(242,201,100,.22) !important; color:var(--ag-cream-soft);
+}
+html.aog-grace [data-aog-hero] .lock summary,
+html.aog-grace [data-aog-hero] .lock summary h2{ color:var(--ag-cream) !important; }
+html.aog-grace [data-aog-hero] .lock p,
+html.aog-grace [data-aog-hero] .lock li{ color:var(--ag-cream-soft) !important; }
+
+/* ── a box that paints its own light ground inside the masthead gets ink ─ */
+html.aog-grace [data-aog-hero] [data-aog-card]{ color:#0A1E33 !important; }
+html.aog-grace [data-aog-hero] [data-aog-card] *:not(a):not(button):not(input):not(select):not(textarea){ color:inherit !important; }
+html.aog-grace [data-aog-hero] [data-aog-card] a{ color:#7d5a15 !important; border-bottom-color:rgba(125,90,21,.4); }
+html.aog-grace [data-aog-hero] [data-aog-card] a:hover{ color:#0A1E33 !important; }
+html.aog-grace [data-aog-hero] [data-aog-card] button{
+  color:#0A1E33 !important; background:#fff !important; border-color:#0A1E33 !important;
+}
+html.aog-grace [data-aog-hero] [data-aog-card] .k,
+html.aog-grace [data-aog-hero] [data-aog-card] .kicker,
+html.aog-grace [data-aog-hero] [data-aog-card] .wk{ color:#7d5a15 !important; }
+
+/* ── focus ring, on the dark ground ───────────────────────────────────────── */
+html.aog-grace [data-aog-hero] :focus-visible{ outline:3px solid var(--ag-gold-soft); outline-offset:3px; }
+
+/* ── high contrast (the site bar's accessibility switch) ─────────────────── */
+html.aog-grace.a11y-contrast [data-aog-hero]{ --ag-cream:#fff; --ag-cream-soft:#fff; --ag-cream-faint:#e8edf5; --ag-gold-soft:#FFD97A; }
+html.aog-grace.a11y-contrast [data-aog-hero]::before{ background:#06121F; }
+
+/* ── the rest of the page: the home page's type, quietly ─────────────────── */
+html.aog-grace body{ font-family:var(--ag-sans); }
+html.aog-grace h2:not(.aogtop *):not(.wmbar *),
+html.aog-grace h3:not(.aogtop *):not(.wmbar *){
+  font-family:var(--ag-serif); font-weight:600; letter-spacing:-.012em;
+}
+html.aog-grace ::selection{ background:rgba(217,163,59,.32); }
+
+/* ── phones ──────────────────────────────────────────────────────────────── */
+@media (max-width:640px){
+  html.aog-grace [data-aog-hero]{ padding-top:30px !important; padding-bottom:30px !important; margin-bottom:22px; }
+  html.aog-grace [data-aog-hero] h1,
+  html.aog-grace [data-aog-hero] .mast-h1{ font-size:clamp(30px, 8.6vw, 40px) !important; }
+  html.aog-grace [data-aog-hero] .k,
+  html.aog-grace [data-aog-hero] .kicker,
+  html.aog-grace [data-aog-hero] .eyebrow,
+  html.aog-grace [data-aog-hero] .crumb,
+  html.aog-grace [data-aog-hero] div.sub{ font-size:11px; letter-spacing:.22em; }
+}
+
+/* ── reduced motion ──────────────────────────────────────────────────────── */
+@media (prefers-reduced-motion:reduce){
+  html.aog-grace [data-aog-hero] *{ transition:none !important; }
+  html.aog-grace [data-aog-hero] button:hover,
+  html.aog-grace [data-aog-hero] .mats a:hover{ transform:none; }
+}
+
+/* ── paper ───────────────────────────────────────────────────────────────── */
+@media print{
+  html.aog-grace [data-aog-hero]{ color:#000; padding-top:0 !important; padding-bottom:0 !important; margin-bottom:14px; }
+  html.aog-grace [data-aog-hero]::before,
+  html.aog-grace [data-aog-hero]::after{ display:none; }
+  html.aog-grace [data-aog-hero] h1,
+  html.aog-grace [data-aog-hero] .mast-h1{ color:#000 !important; text-shadow:none; font-size:24pt !important; }
+  html.aog-grace [data-aog-hero] .k,
+  html.aog-grace [data-aog-hero] .kicker,
+  html.aog-grace [data-aog-hero] .eyebrow,
+  html.aog-grace [data-aog-hero] .eyebrow a,
+  html.aog-grace [data-aog-hero] .crumb,
+  html.aog-grace [data-aog-hero] div.sub,
+  html.aog-grace [data-aog-hero] span.sub{ color:#555; }
+  html.aog-grace [data-aog-hero] .deck,
+  html.aog-grace [data-aog-hero] .tag,
+  html.aog-grace [data-aog-hero] .tagline,
+  html.aog-grace [data-aog-hero] .lede,
+  html.aog-grace [data-aog-hero] p.sub,
+  html.aog-grace [data-aog-hero] > p{ color:#222 !important; }
+  html.aog-grace [data-aog-hero] .name,
+  html.aog-grace [data-aog-hero] .nm{ color:#000 !important; }
+  html.aog-grace [data-aog-hero] .mark,
+  html.aog-grace [data-aog-hero] .mk{ background:#0A1E33 !important; color:#F2C964 !important; box-shadow:none; }
+}
