@@ -1,8 +1,9 @@
 # HANDOFF — building a course for another subject (2026-09-25)
 
-Three courses share one engine: U.S. History 6–8 (`_work/ush`), Science K–12
-(`_work/sci`) and Math K–12 (`_work/mth`). Jimmy's next ask: **the same facelift
-for Spanish, FACS (Family & Consumer Sciences), World Religions and Economics.**
+Four courses share one engine: U.S. History 6–8 (`_work/ush`), Science K–12
+(`_work/sci`), Math K–12 (`_work/mth`) and Spanish K–12 (`_work/spa`, done
+2026-09-25: 20 units, 40 chapters, 377 lessons). Jimmy's ask, still open:
+**the same facelift for FACS (Family & Consumer Sciences), World Religions and Economics.**
 
 Hubs already on the site: `spanish-hub.html` (/spanish), `facs-hub.html` (/facs),
 `religions-hub.html`, `economics-hub.html` (/economics). Their bands: Spanish and
@@ -11,7 +12,8 @@ FACS run K–2 … 11–12; Economics and World Religions run 9–10 and 11–12
 `.unit` cards in each hub — those become the course's LINKS (practice rooms).
 
 ## The recipe (Math took ~4 hours of wall-clock with agents; copy `_work/mth`)
-1. `mkdir _work/<id>` (ids so far: ush, sci, mth; pick e.g. `spa`, `fcs`, `rel`, `eco`).
+1. `mkdir _work/<id>` (ids so far: ush, sci, mth, spa; pick e.g. `fcs`, `rel`, `eco`).
+   Spanish is the most recent and the cleanest to copy: `_work/spa/{build,inject_spa_jump,plumb}_spa.py`.
    Copy `validate.py`, `assemble.py` from `_work/sci` unchanged. Copy
    `banners_sci.py` → `banners_<id>.py` (edit the two module names inside).
 2. Write `outline.py`: `BANDS` (only the bands the subject has), `UNITS`
@@ -48,7 +50,7 @@ FACS run K–2 … 11–12; Economics and World Religions run 9–10 and 11–12
    `_work/sci/inject_sci_jump.py`, `_work/mth/inject_mth_jump.py`) so the new pages
    carry every course; `build_course.jump_block()` strips injected course options
    from the lifted s13 menu so a rebuild never duplicates them — extend the regex
-   there with the new id (`us-history|ush-u\d+|science-course|sci-u\d+|…`).
+   there with the new id (`us-history|ush-u\d+|science-course|sci-u\d+|math-course|mth-u\d+|spanish-course|spa-u\d+|…`).
    Also add the new page pattern to `_work/jump/inject_jump.py`? No — it only
    handles the SS 6–8 group; nothing to change.
 9. `python3 _work/<id>/plumb_<id>.py` (hub bands, _redirects, sw.js, sitemap).
@@ -70,3 +72,15 @@ FACS run K–2 … 11–12; Economics and World Religions run 9–10 and 11–12
   (text only — the regexes targeted the Math groups).
 - Root-level copies of `index.html` / `social-*.html` in the repo root are stale
   duplicates from a manual upload; the site is `aog-deploy/`.
+
+## Lessons from the Spanish build (2026-09-25)
+- The hub's band ids are not always lower-case: `spanish-hub.html` uses `id="K-2"`.
+  `plumb_spa.py` maps it with `HUB_ID`; check `grep -o '<section class="band" id="[^"]*"' <hub>` first.
+- Illustrator agents: Playwright's Python package is not installed; the agents rendered
+  with the chromium binary headless (`--screenshot`) instead, which works fine.
+  Watch for f-strings like `-{x*head}` that print `--` when the value is negative
+  — check every banner with `grep -c '\-\-'` on the built page or the console.
+- A writer batch can die on the session usage limit; the validator makes it safe to
+  relaunch just the missing units ("some ch files may exist, keep what is good").
+- Headless Chromium at a 420px window ignores the viewport meta (text runs off the
+  right edge) — Math does the same; it is not a course bug.
