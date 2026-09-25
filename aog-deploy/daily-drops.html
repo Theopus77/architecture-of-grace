@@ -479,6 +479,25 @@ body.work-pencil .colp input.rg.rgs{height:30px; min-height:30px}
 body.work-pencil .colp input.rg:not(.wk):not(.rgs),body.work-pencil .ug input.rg{height:34px; min-height:34px}
 body.work-pencil .colp input.rg.wk{height:40px; min-height:40px}
 body.work-pencil .colp input.dg,body.work-pencil .ug input.fld,body.work-pencil .ug .fldw{position:relative; z-index:2}
+/* AOG-DD-WORKTIGHT-V1 (2026-09-25) — Jimmy, on a printed grade-7 draft: "The algorithms
+   take up too much space now that there are no boxes, please shrink the work area."
+   The boxes went invisible but kept the height of a typed box, so a two-step division
+   stood half a page tall. A pencil needs less: a carry or a regroup mark is small and
+   high, a work line is one line of handwriting. Lanes shrink to that, the grid gaps
+   close up, and the column problems sit closer together. Typed-box mode and review
+   printouts keep their full-size boxes. */
+body.work-pencil:not(.review) .colp input.rg.rgs{height:16px!important; min-height:16px!important}
+body.work-pencil:not(.review) .colp input.rg:not(.wk):not(.rgs),body.work-pencil:not(.review) .ug input.rg{height:20px!important; min-height:20px!important}
+body.work-pencil:not(.review) .colp input.rg.wk{height:26px!important; min-height:26px!important}
+body.work-pencil:not(.review) .divg,body.work-pencil:not(.review) .cg{row-gap:1px!important}
+body.work-pencil:not(.review) .colp{padding:4px 10px 2px 4px}
+@media print{
+  body:not(.review) .colp input.rg.rgs{height:14px!important; min-height:14px!important}
+  body:not(.review) .colp input.rg:not(.wk):not(.rgs){height:18px!important; min-height:18px!important}
+  body:not(.review) .colp input.rg.wk{height:24px!important; min-height:24px!important}
+  body:not(.review) .divg,body:not(.review) .cg{row-gap:1px!important}
+  body:not(.review) .box.tall .colp{margin:0 18px 8px 0!important}
+}
 canvas.scr{position:absolute; inset:0; z-index:1; touch-action:none; cursor:crosshair; width:100%; height:100%}
 body:not(.work-pencil) canvas.scr{display:none}
 /* on screen in pencil mode a long division keeps only the passes the quotient needs,
