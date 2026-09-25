@@ -566,9 +566,17 @@ body{--navy:#1B3A5F}
 .btn-accent{background:#0A1E33; border-color:#0A1E33; color:#F5F1E8}
 :root[data-theme="dark"] .btn-accent{background:#D6A852; border-color:#D6A852; color:#12161C}
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .btn-accent{background:#D6A852; border-color:#D6A852; color:#12161C}}
-.aogc.compact{flex:none; padding:14px 16px 0; background:var(--ground)}
+/* the board page scrolls like any other page: the site bar, then the strip, then a sticky toolbar and a sticky chart list */
+html,body{height:auto; overflow:visible}
+body{display:block}
+.bar{position:sticky; top:var(--aogbar-h,52px); z-index:30}
+.shell{display:flex; align-items:flex-start; min-height:70vh}
+.rail{position:sticky; top:calc(var(--aogbar-h,52px) + 64px); max-height:calc(100vh - var(--aogbar-h,52px) - 64px); overflow-y:auto}
+.stage{overflow:visible}
+@media (max-width:900px){ .rail{position:fixed; top:0; max-height:none; height:100vh} }
+.aogc.compact{padding:14px 16px 0; background:var(--ground)}
 .aogc.compact .cmast{padding:0; align-items:center}
-.aogc.compact .cmast h1{font-size:1.5rem; margin:0}
+.aogc.compact .cmast .ttl{font:700 1.5rem/1.15 var(--serif); margin:0; color:var(--ink)}
 .aogc.compact .cmast .cdeck{margin:.1em 0 0; font-size:.92rem}
 .aogc.compact .cjump{margin:8px 0 6px}
 .aogc.compact .cjump label{display:flex; align-items:center; gap:10px; flex-wrap:wrap}
@@ -583,14 +591,14 @@ body{--navy:#1B3A5F}
 
 
 <div class="aogc compact">
-<header class="cmast">
+<div class="cmast">
   <div>
     <div class="k"><span data-en="The Interior — SEL · Room 12 ·" data-es="El Interior — SEL · Salón 12 ·">The Interior — SEL · Room 12 ·</span><span class="k" style="margin-left:6px">Book 1 · The Foundation · Grades K–2</span></div>
-    <h1>Room 12 · Anchor Charts</h1>
+    <p class="ttl">Room 12 · Anchor Charts</p>
     <p class="cdeck"><span data-en="Every anchor chart of the room, built live with the class — skeleton first, then the reveals, then what the room said out loud. Arrow keys step through the boards; R reveals the next line." data-es="Cada cartel de anclaje del salón, construido en vivo con la clase — primero el esqueleto, luego las revelaciones, luego lo que el salón dijo en voz alta.">Every anchor chart of the room, built live with the class — skeleton first, then the reveals, then what the room said out loud. Arrow keys step through the boards; R reveals the next line.</span></p>
     <p class="hubline no-print"><a href="room-12-lessons.html"></a></p>
   </div>
-</header>
+</div>
 <div class="cjump no-print"><label><span data-en="Jump to another room" data-es="Ir a otro salón">Jump to another room</span><select id="roomSel"><optgroup label="SEL · The rooms">
 <option value="room-12-lessons.html">Room 12 · Grades K–2 · The Lessons</option>
 <option value="room-18-lessons.html">Room 18 · Grades 3–5 · The Lessons</option>

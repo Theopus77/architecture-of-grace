@@ -791,15 +791,18 @@ def chrome_html(r, kicker2, h1, deck, hub_href, hub_text, current, spread=None, 
   {'<div class="credit">' + E(CREDITS.get(key, "")) + '</div>' if CREDITS.get(key) else ''}
   <div class="txt"><div class="unum"><b>{spread["unit"]}</b>{span("Unit","Unidad")}</div><h2 class="ut">{E(spread["title"])}</h2><div class="years">{E(spread["years"])}</div></div>
 </section>'''
+    # a compact strip is a <div> with no <h1>: aog-grace.js makes a hero of the
+    # first <header> that has an <h1>, and a board page has no room for one
+    tag, ttl = ("div", "p class=\"ttl\"") if compact else ("header", "h1")
     return f'''<div class="aogc{' compact' if compact else ''}">
-<header class="cmast">
+<{tag} class="cmast">
   <div>
     <div class="k">{span("The Interior — SEL · Room %d ·" % n, "El Interior — SEL · Salón %d ·" % n)}<span class="k" style="margin-left:6px">{E(kicker2)}</span></div>
-    <h1>{E(h1)}</h1>
+    <{ttl}>{E(h1)}</{ttl.split(" ")[0]}>
     <p class="cdeck">{deck}</p>
     <p class="hubline no-print"><a href="{E(hub_href)}">{hub_text}</a></p>
   </div>
-</header>
+</{tag}>
 {room_jump2(n, current)}
 {sp}
 </div>'''
@@ -845,9 +848,17 @@ body{--navy:#1B3A5F}
 .btn-accent{background:#0A1E33; border-color:#0A1E33; color:#F5F1E8}
 :root[data-theme="dark"] .btn-accent{background:#D6A852; border-color:#D6A852; color:#12161C}
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .btn-accent{background:#D6A852; border-color:#D6A852; color:#12161C}}
-.aogc.compact{flex:none; padding:14px 16px 0; background:var(--ground)}
+/* the board page scrolls like any other page: the site bar, then the strip, then a sticky toolbar and a sticky chart list */
+html,body{height:auto; overflow:visible}
+body{display:block}
+.bar{position:sticky; top:var(--aogbar-h,52px); z-index:30}
+.shell{display:flex; align-items:flex-start; min-height:70vh}
+.rail{position:sticky; top:calc(var(--aogbar-h,52px) + 64px); max-height:calc(100vh - var(--aogbar-h,52px) - 64px); overflow-y:auto}
+.stage{overflow:visible}
+@media (max-width:900px){ .rail{position:fixed; top:0; max-height:none; height:100vh} }
+.aogc.compact{padding:14px 16px 0; background:var(--ground)}
 .aogc.compact .cmast{padding:0; align-items:center}
-.aogc.compact .cmast h1{font-size:1.5rem; margin:0}
+.aogc.compact .cmast .ttl{font:700 1.5rem/1.15 var(--serif); margin:0; color:var(--ink)}
 .aogc.compact .cmast .cdeck{margin:.1em 0 0; font-size:.92rem}
 .aogc.compact .cjump{margin:8px 0 6px}
 .aogc.compact .cjump label{display:flex; align-items:center; gap:10px; flex-wrap:wrap}
