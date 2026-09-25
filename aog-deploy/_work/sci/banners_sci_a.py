@@ -400,7 +400,7 @@ def _b9():
     p = "sb9-"
     defs = (
         _lin(p+"sky", [(0, "#3D4A5E", None), (.4, "#7E8E8A", None), (.7, "#B9BC96", None), (1, "#E8C979", None)])
-        + _lin(p+"storm", [(0, "#2C3540", None), (1, "#4E5866", None)])
+        + _lin(p+"storm", [(0, "#4E5866", None), (.5, "#3A424E", None), (1, "#262C36", None)])
         + _lin(p+"field", [(0, "#B49A56", None), (1, "#6E5E30", None)])
         + _lin(p+"fg", [(0, "#4E4426", None), (1, "#2A2414", None)])
         + _rad(p+"moon", [(0, "#F6F0DA", 1), (.3, "#E8E4CC", .7), (1, "#E8E4CC", 0)])
@@ -410,9 +410,10 @@ def _b9():
     body = f'''
 <rect width="{W}" height="{H}" fill="url(#{p}sky)"/>
 <path d="M270 70 q80 -30 210 -6 q60 12 120 40 q-90 4 -170 8 q-90 6 -160 -2 q-20 -22 0 -40z" fill="#5A6470" opacity=".85"/>
-<g fill="url(#{p}storm)"><circle cx="170" cy="150" r="44"/><circle cx="240" cy="118" r="58"/><circle cx="320" cy="98" r="60"/><circle cx="400" cy="126" r="52"/><circle cx="450" cy="166" r="34"/><rect x="126" y="140" width="352" height="60" rx="14"/></g>
-<path d="M112 192 q180 24 372 -4 q10 6 2 14 q-190 24 -376 4 q-8 -8 2 -14z" fill="#2A3038"/>
-<path d="M340 200 q40 4 80 -2 q6 8 -2 14 q-40 4 -78 0 q-6 -6 0 -12z" fill="#22282F"/>
+<path d="M126 200 v-44 q-6 -44 44 -40 q6 -52 62 -44 q16 -46 70 -30 q44 -30 84 4 q44 -12 62 32 q34 -4 40 34 v88z" fill="url(#{p}storm)"/>
+<path d="M170 116 q6 -40 50 -34 q16 -30 60 -20" stroke="#6A7480" stroke-width="3" fill="none" opacity=".5"/>
+<path d="M112 196 h378 q8 6 0 12 h-378 q-8 -6 0 -12z" fill="#22282F"/>
+<path d="M340 206 q40 6 80 0 q6 8 -2 14 q-40 4 -78 0 q-6 -6 0 -14z" fill="#1C2128"/>
 <g stroke="#4E5866" stroke-width="1.5" opacity=".7" fill="none">{rain}</g>
 <path d="M392 204 q-6 30 -2 44 q2 14 -2 22 h14 q-4 -10 0 -24 q6 -16 30 -44z" fill="#2E3540" opacity=".95"/><ellipse cx="396" cy="270" rx="30" ry="6" fill="#8A8060" opacity=".7"/>
 <g stroke="#F3E9C4" stroke-width="1.5" fill="none" opacity=".8"><path d="M250 206 l-6 16 l8 -3 l-8 20"/></g>
