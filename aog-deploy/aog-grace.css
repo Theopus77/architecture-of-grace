@@ -230,6 +230,38 @@ html.aog-grace [data-aog-hero] :focus-visible{ outline:3px solid var(--ag-gold-s
 html.aog-grace.a11y-contrast [data-aog-hero]{ --ag-cream:#fff; --ag-cream-soft:#fff; --ag-cream-faint:#e8edf5; --ag-gold-soft:#FFD97A; }
 html.aog-grace.a11y-contrast [data-aog-hero]::before{ background:#06121F; }
 
+/* ── the whole page, navy ─────────────────────────────────────────────────
+   The page's own dark theme is re-tinted to the home page's navy. Two token
+   families cover ~360 pages: --ground/--field/--rule (activities, exam prep,
+   worksheets) and --bg/--card/--line (hubs, rooms, the foundry). Values are
+   the home page's: #0A1E33 field, #13314F soft, cream ink, gold accents. */
+html.aog-grace[data-theme="dark"]{
+  --ground:#0A1E33; --bg:#0A1E33; --paper:#0A1E33;
+  --field:#13314F; --field-2:#0F2A45; --card:#13314F; --chip:#1B3A5F;
+  --rule:rgba(244,238,226,.16); --rule-soft:rgba(244,238,226,.08); --line:rgba(244,238,226,.16);
+  --ink:#F4EEE2; --ink-soft:#C8D4E2; --ink-faint:#9DB1C6; --sub:#C8D4E2; --muted:#9DB1C6;
+  --gold:#F2C964; --gold-deep:#F2C964; --brass:#F2C964; --focus:#F2C964;
+  /* pages with no dark theme of their own paint headings in --navy and boxes in --wash */
+  --navy:#9CC2E8; --wash:rgba(242,201,100,.14); --brass-soft:rgba(242,201,100,.14);
+  --shadow:0 1px 3px rgba(0,0,0,.35), 0 12px 30px -18px rgba(0,0,0,.6);
+  --lift:0 1px 0 rgba(244,238,226,.04), 0 24px 54px -32px rgba(0,0,0,.9);
+  --lift-sm:0 1px 2px rgba(0,0,0,.45), 0 10px 24px -18px rgba(0,0,0,.8);
+}
+html.aog-grace[data-theme="dark"] body{ background:#0A1E33; color:#F4EEE2; }
+html.aog-grace[data-theme="dark"] [data-aog-hero]{ margin-bottom:34px; }
+html.aog-grace[data-theme="dark"] [data-aog-hero]::before{ box-shadow:none; border-bottom-color:rgba(242,201,100,.32); }
+/* the site bar stays the home page's cream bar over the navy page */
+html.aog-grace[data-theme="dark"] .aogtop{
+  --bar-ink:#0A1E33; --bar-soft:#5A6675; --bar-faint:#8A92A6;
+  --bar-bg:#FDFCF7; --bar-panel:#FFFFFF; --bar-field:#F3EFE6;
+  --bar-rule:rgba(10,30,51,.16); --bar-rule-soft:rgba(10,30,51,.09);
+  --bar-navy:#0A1E33; --bar-wash:var(--acc-wash); --bar-a:var(--acc-deep);
+}
+html.aog-grace[data-theme="dark"] .aogtop-lang button.on{ background:#0A1E33; color:#fff; }
+html.aog-grace[data-theme="dark"] .aogtop-ico .ti-sun{ display:block; }
+html.aog-grace[data-theme="dark"] .aogtop-ico .ti-moon{ display:none; }
+html.aog-grace.a11y-contrast[data-theme="dark"]{ --ground:#000; --bg:#000; --field:#0A1E33; --card:#0A1E33; --ink:#fff; --ink-soft:#fff; --sub:#fff; }
+
 /* ── the rest of the page: the home page's type, quietly ─────────────────── */
 html.aog-grace body{ font-family:var(--ag-sans); }
 html.aog-grace h2:not(.aogtop *):not(.wmbar *),
@@ -259,6 +291,12 @@ html.aog-grace ::selection{ background:rgba(217,163,59,.32); }
 
 /* ── paper ───────────────────────────────────────────────────────────────── */
 @media print{
+  html.aog-grace[data-theme="dark"]{
+    --ground:#fff; --bg:#fff; --paper:#fff; --field:#fff; --field-2:#f3f3f3; --card:#fff; --chip:#eee;
+    --rule:#999; --rule-soft:#ccc; --line:#999; --ink:#000; --ink-soft:#333; --ink-faint:#555; --sub:#333; --muted:#555;
+    --gold:#7d5a15; --gold-deep:#7d5a15; --brass:#7d5a15; --shadow:none; --lift:none; --lift-sm:none;
+  }
+  html.aog-grace[data-theme="dark"] body{ background:#fff; color:#000; }
   html.aog-grace [data-aog-hero]{ color:#000; padding-top:0 !important; padding-bottom:0 !important; margin-bottom:14px; }
   html.aog-grace [data-aog-hero]::before,
   html.aog-grace [data-aog-hero]::after{ display:none; }

@@ -35,6 +35,22 @@
   var D = document, H = D.documentElement;
   var FONTS = "https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..700&family=Inter:wght@300;400;500;600;700;800&display=swap";
 
+  /* ── 0 ── navy, the whole page ─────────────────────────────────────────
+     Jimmy: "I wanted the whole page like this, not just the top." The home
+     page is navy from edge to edge. Every other page has a dark theme of its
+     own, so the page is put into it once and the stylesheet re-tints that
+     dark theme navy. The site bar keeps the theme toggle: a reader who
+     flips to light gets the cream sheet and is left alone after that. */
+  var NAVY_KEY = "aog.grace.navy.v1";
+  try {
+    if (!localStorage.getItem(NAVY_KEY)) {
+      localStorage.setItem("aog.theme", "dark");
+      localStorage.setItem("aog.interior.ws.v1.theme", "dark");
+      localStorage.setItem(NAVY_KEY, "1");
+      H.setAttribute("data-theme", "dark");
+    }
+  } catch (e) { if (!H.getAttribute("data-theme")) H.setAttribute("data-theme", "dark"); }
+
   /* ── 1 ── the faces and the sheet ─────────────────────────────────────── */
   function link(rel, href, extra) {
     var l = D.createElement("link");
