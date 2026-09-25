@@ -42066,13 +42066,44 @@ window.AOG_BUILD = "2026.09.30k6 · THE PAGE NOW BUDGETS ITS OWN PAYLOAD, SO A Q
      material in here as well." Under the check-in: their own stained-glass
      Blueprint (turn-ins.html?solo=1, built from what THIS device sent) and the
      doors back into their work. */
+  window.aogPickBuilder=function(n){
+    var es=false; try{ es=(typeof dashLang!=="undefined"&&dashLang==="es"); }catch(e){}
+    if(n===null){ n=window.prompt(es?"Tu nombre, exactamente como lo escribes en las actividades:":"Your name, exactly as you type it on activities:",""); if(n===null) return; n=String(n).replace(/\s+/g," ").trim().slice(0,40); if(!n) return;
+      try{ var b=JSON.parse(localStorage.getItem("aog.builders")||"[]"); if(b.indexOf(n)<0){ b.push(n); localStorage.setItem("aog.builders",JSON.stringify(b)); } }catch(e){} }
+    try{ if(n) localStorage.setItem("aog.builder",n); else localStorage.removeItem("aog.builder"); }catch(e){}
+    if(window.__aogDashRepaint) window.__aogDashRepaint(); else location.reload();
+  };
+  window.aogToggleTest=function(){
+    try{ if(localStorage.getItem("aog.testmode")==="1") localStorage.removeItem("aog.testmode"); else localStorage.setItem("aog.testmode","1"); }catch(e){}
+    try{ var bd=document.getElementById("aogTestBadge"); if(bd) bd.remove(); if(window.aogTestBadge) window.aogTestBadge(); }catch(e){}
+    if(window.__aogDashRepaint) window.__aogDashRepaint(); else location.reload();
+  };
   (function(){
     var base=window.aogTodayCard;
     window.aogTodayCard=function(es){
       var h=base.apply(this,arguments);
       var scr=document.getElementById("screen-admin"); var role=(scr&&scr.getAttribute("data-role"))||"teacher";
-      if(role!=="student") return h;
-      var nick=""; try{ nick=localStorage.getItem("aog.nickname")||""; }catch(e){}
+      /* AOG-TESTRUN-V1 — the teacher's own tries go in a test lane */
+      if(role!=="student"){
+        var tOn=false; try{ tOn=localStorage.getItem("aog.testmode")==="1"; }catch(e){}
+        return h+'<div style="margin-top:12px;display:flex;align-items:center;gap:10px;flex-wrap:wrap">'
+          +'<button type="button" onclick="aogToggleTest()" style="min-height:40px;padding:0 16px;border-radius:999px;font-weight:700;cursor:pointer;border:1.5px solid '+(tOn?'#B3303F;background:#B3303F;color:#fff':'var(--gold,#F2C964);background:transparent;color:inherit')+'">'
+          +(es?(tOn?"Pruebas: activadas":"Pruebas: desactivadas"):(tOn?"Test runs: ON":"Test runs: off"))+'</button>'
+          +'<span style="font-size:13px;opacity:.85;max-width:60ch">'+(es?"Actívalo cuando pruebes una actividad tú mismo: lo que envíes llega a la hoja como “(test)” y nunca se mezcla con un estudiante real."
+            :"Turn on when you try an activity yourself: what you send reaches the Sheet as “(test)” and never mixes with a real student.")+'</span></div>';
+      }
+      /* AOG-WHO-V1 — never guess who is building. Pick from the names this
+         device knows, or add a new one. */
+      var nick=""; try{ nick=localStorage.getItem("aog.builder")||""; }catch(e){}
+      var known={}; try{ JSON.parse(localStorage.getItem("aog.practice.mine")||"[]").forEach(function(r){ if(r&&r.studentId&&!/\(test\)$/.test(r.studentId)) known[String(r.studentId).replace(/\s+/g," ").trim()]=1; }); JSON.parse(localStorage.getItem("aog.builders")||"[]").forEach(function(n){ known[n]=1; }); }catch(e){}
+      var names=Object.keys(known).sort();
+      if(!nick || !known[nick]){
+        return h+'<div class="aog-stu-home" style="margin-top:16px"><div style="font:800 12px/1 var(--sans,system-ui);letter-spacing:.16em;text-transform:uppercase;color:var(--gold,#F2C964);margin:0 0 10px">'+(es?"¿Quién construye hoy?":"Who’s building today?")+'</div>'
+          +'<div style="display:flex;flex-wrap:wrap;gap:10px">'
+          +names.map(function(n){ return '<button type="button" onclick="aogPickBuilder(this.getAttribute(\'data-n\'))" data-n="'+n.replace(/"/g,"&quot;").replace(/</g,"&lt;")+'" style="min-height:44px;padding:0 18px;border-radius:999px;border:1.5px solid var(--gold,#F2C964);background:transparent;color:inherit;font-weight:700;cursor:pointer">'+n.replace(/</g,"&lt;")+'</button>'; }).join("")
+          +'<button type="button" onclick="aogPickBuilder(null)" style="min-height:44px;padding:0 18px;border-radius:999px;border:1.5px dashed var(--gold,#F2C964);background:transparent;color:inherit;font-weight:700;cursor:pointer">+ '+(es?"Soy nuevo":"I’m new")+'</button>'
+          +'</div></div>';
+      }
       function L(href,en,esT){ return '<a href="'+href+'" style="display:inline-flex;align-items:center;min-height:42px;padding:0 16px;border-radius:999px;border:1.5px solid var(--gold,#F2C964);font-weight:700;text-decoration:none;color:inherit">'+(es?esT:en)+'</a>'; }
       return h
         +'<div class="aog-stu-home" style="margin-top:16px">'
@@ -42080,8 +42111,9 @@ window.AOG_BUILD = "2026.09.30k6 · THE PAGE NOW BUDGETS ITS OWN PAYLOAD, SO A Q
         +'<div style="display:flex;flex-wrap:wrap;gap:10px;margin-bottom:14px">'
         +L("daily-drops.html","Daily Drafts","Borradores diarios")
         +L("/#library","Worksheets & practice","Hojas y práctica")
-        +L("turn-ins.html?solo=1","Open My Blueprint full size","Abrir Mi Plano completo")
+        +L("turn-ins.html?solo=1&blueprint="+encodeURIComponent(nick),"Open My Blueprint full size","Abrir Mi Plano completo")
         +'</div>'
+        +'<div style="font-size:13px;margin:-4px 0 10px;opacity:.85">'+(es?"Construyendo como ":"Building as ")+'<b>'+nick.replace(/</g,"&lt;")+'</b> · <a href="#" onclick="aogPickBuilder(\'\');return false" style="color:inherit">'+(es?"¿No eres tú? Cambiar":"Not you? Switch")+'</a></div>'
         +'<iframe title="'+(es?"Mi Plano":"My Blueprint")+'" src="turn-ins.html?solo=1&blueprint='+encodeURIComponent(nick)+'" style="display:block;width:100%;min-height:520px;border:0;border-radius:14px;background:transparent"></iframe>'
         +'</div>';
     };

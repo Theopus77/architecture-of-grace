@@ -1599,6 +1599,9 @@ else document.documentElement.classList.add("aog-embed");</script>
     var by={}, shown={};
     all.forEach(function(it){ var k=String(it.student||"—").replace(/\s+/g," ").trim().toLowerCase(); (by[k]=by[k]||[]).push(it); shown[k]=it.student; });
     var keys=Object.keys(by);
+    /* AOG-WHO-V1 — the solo Blueprint belongs to one named builder; it never
+       falls back to whoever has the most work on this device */
+    if(SOLO && (!bpWho || !by[bpWho])){ box.appendChild(soloEmpty()); return; }
     if(!bpWho || !by[bpWho]) bpWho=keys.slice().sort(function(a,b){ return by[b].length-by[a].length; })[0];
     keys.sort();
     var me=learner(), list=by[bpWho].slice().sort(function(a,b){ return String(a.ts||"").localeCompare(String(b.ts||"")); });

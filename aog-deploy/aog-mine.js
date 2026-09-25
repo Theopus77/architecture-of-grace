@@ -28,13 +28,37 @@
       localStorage.setItem(KEY, JSON.stringify(all));
     } catch (e) {}
   }
+  /* AOG-TESTRUN-V1 (2026-09-25) — the teacher trying an activity is not a
+     student. With Test runs on (localStorage aog.testmode = "1", set from the
+     dashboard), every send from any page goes to the Sheet under
+     "<name> (test)", so it lands in its own lane and never in a real record. */
+  function testOn() { try { return localStorage.getItem("aog.testmode") === "1"; } catch (e) { return false; } }
   var raw = window.fetch;
   window.fetch = function (url, opts) {
     try {
       var u = typeof url === "string" ? url : (url && url.url) || "";
-      if (opts && /post/i.test(opts.method || "") && /script\.google(usercontent)?\.com\//.test(u) && typeof opts.body === "string" && opts.body.charAt(0) === "{")
-        keep(JSON.parse(opts.body));
+      if (opts && /post/i.test(opts.method || "") && /script\.google(usercontent)?\.com\//.test(u) && typeof opts.body === "string" && opts.body.charAt(0) === "{") {
+        var p = JSON.parse(opts.body);
+        if (testOn() && p && p.action === "checkin" && p.studentId && !/\(test\)$/.test(String(p.studentId))) {
+          p.studentId = String(p.studentId).trim() + " (test)";
+          opts = Object.assign({}, opts, { body: JSON.stringify(p) });
+          arguments[1] = opts;
+        }
+        keep(p);
+      }
     } catch (e) {}
     return raw.apply(this, arguments);
   };
+  /* a tag on every page while it is on, so nobody forgets */
+  function badge() {
+    if (!testOn() || !document.body || document.getElementById("aogTestBadge")) return;
+    var b = document.createElement("button");
+    b.id = "aogTestBadge"; b.type = "button";
+    b.textContent = "TEST RUN · sends are marked (test) · tap to turn off";
+    b.style.cssText = "position:fixed;left:12px;bottom:12px;z-index:99998;background:#B3303F;color:#fff;border:0;border-radius:999px;padding:8px 14px;font:700 12px/1.2 system-ui,sans-serif;letter-spacing:.04em;box-shadow:0 4px 14px #0006;cursor:pointer";
+    b.onclick = function () { if (confirm("Turn Test runs off? Sends will go under the real name again.")) { try { localStorage.removeItem("aog.testmode"); } catch (e) {} b.remove(); } };
+    document.body.appendChild(b);
+  }
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", badge); else badge();
+  window.aogTestBadge = badge;
 })();
