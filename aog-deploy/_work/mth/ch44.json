@@ -1,0 +1,297 @@
+{
+ "n": 44,
+ "title": "Polynomials and Factoring",
+ "years": "Polynomials",
+ "bigQuestion": "How can we take an expression apart into factors, and what does the factored form let us see and solve?",
+ "story": {
+  "title": "The Garden and Its Gravel Path",
+  "kicker": "A rectangle inside a rectangle hides an equation that a whole chapter is needed to solve.",
+  "paragraphs": [
+   "A community garden on a vacant lot in Chicago has a planting bed 10 feet long and 6 feet wide. The volunteers want a gravel path of the same width all the way around it, so that wheelbarrows can reach every side. Nobody has decided how wide the path should be. Call the width x feet. The whole rectangle, bed plus path, is then 10 + 2x feet long and 6 + 2x feet wide, because the path adds x on each end.",
+   "The area of the outer rectangle is (10 + 2x)(6 + 2x). Multiplying that out takes some care: 10 × 6 = 60, 10 × 2x = 20x, 2x × 6 = 12x, and 2x × 2x = 4x^2. The total is 4x^2 + 32x + 60 square feet. The bed itself is 60 square feet, so the path alone is 4x^2 + 32x. Try x = 1: the path is 4 + 32 = 36 square feet. Try x = 2: 16 + 64 = 80 square feet.",
+   "Then the hardware store delivers exactly enough gravel to cover 80 square feet, and the question flips. Instead of choosing x and computing the area, the volunteers know the area and must find x. The equation is 4x^2 + 32x = 80. It has an x^2 in it, so the usual moves for solving equations, undoing one operation at a time, get stuck. The x appears in two places with two different powers.",
+   "The way out is to take the expression apart. 4x^2 + 32x − 80 can be written as 4(x + 10)(x − 2), a product of three factors. A product is zero only when one of its factors is zero, so x must be −10 or 2. A path cannot be −10 feet wide, so the path is 2 feet wide. This chapter builds the tools for that move: multiplying expressions out, then factoring them back into pieces, and using the pieces to solve."
+  ],
+  "think": "Why does knowing that 4(x + 10)(x − 2) equals zero tell you more than knowing that 4x^2 + 32x − 80 equals zero, even though they are the same number?"
+ },
+ "sections": [
+  {"title": "Working With Polynomials", "lessons": [
+   {
+    "title": "Terms, Degree and Standard Form",
+    "mainIdea": "A polynomial is a sum of terms, each a number times whole-number powers of a variable, and its degree is its highest exponent.",
+    "reading": [
+     "A rectangular garden with side lengths x + 4 and x has area x(x + 4) = x^2 + 4x. That expression is a *polynomial*: a sum of *terms*, where each term is a number times a variable raised to a whole-number power. The number in front, like the 4 in 4x, is the *coefficient*. A term with no variable, like 7, is a constant term. Expressions with a variable under a root or in a denominator, like √x or 3/x, are not polynomials.",
+     "Polynomials get names from their number of terms and their *degree*. The degree of a term is its exponent, and the degree of the polynomial is the largest degree among its terms. 5x^3 − 2x + 1 has three terms, so it is a trinomial, and its degree is 3, which is called cubic. 4x^2 is one term, a monomial, of degree 2, called quadratic. x + 6 is a binomial of degree 1, called linear. A constant like 9 has degree 0.",
+     "*Standard form* writes the terms from highest degree to lowest. 3 + 2x^2 − 7x becomes 2x^2 − 7x + 3. The first coefficient, 2, is the leading coefficient. Before writing standard form, combine like terms: 4x^2 + x − x^2 + 5x = 3x^2 + 6x. Like terms have the same variable with the same exponent. The terms 3x^2 and 6x are not like terms, so they stay separate.",
+     "A common mistake is reading the degree from the first term as written. In 5x + 2x^4 − 1 the degree is 4, not 1. Another is combining 3x^2 + 6x into 9x^3, which mixes unlike terms. Adding coefficients works only when the variable parts match exactly."
+    ],
+    "words": [
+     {"w": "polynomial", "d": "a sum of terms, each a number times a variable raised to a whole-number power, like 2x^2 − 7x + 3"},
+     {"w": "term", "d": "one piece of a polynomial separated by plus or minus signs; 2x^2 − 7x + 3 has three terms"},
+     {"w": "coefficient", "d": "the number multiplied by the variable in a term; in −7x the coefficient is −7"},
+     {"w": "degree", "d": "the highest exponent on the variable in a polynomial; x^3 + x has degree 3"},
+     {"w": "standard form", "d": "a polynomial written with terms in order from highest degree to lowest"}
+    ],
+    "look": {
+     "type": "think",
+     "title": "Sorting a Pile of Terms",
+     "text": "Here are four expressions: 6x^2 − x + 9, 4x^5, x^3 − 8, and 10. The first is a trinomial of degree 2. The second is a monomial of degree 5. The third is a binomial of degree 3. The last is a constant, degree 0. Now look at 8 − x^3 + 4x. Its terms are out of order, and the x^3 term has coefficient −1.",
+     "prompt": "Write 8 − x^3 + 4x in standard form. What are its degree and its leading coefficient?"
+    },
+    "check": [
+     {"q": "What is the degree of 7x^2 − 4x^5 + x?", "choices": ["2", "5", "7", "3"], "a": 1, "why": "The largest exponent is 5, on the term −4x^5. The degree is not the first exponent written or the number of terms."},
+     {"q": "Which expression is a trinomial?", "choices": ["4x^2", "x^2 − 9", "2x^3 + x^2 − 5", "6"], "a": 2, "why": "2x^3 + x^2 − 5 has three terms. 4x^2 and 6 are monomials and x^2 − 9 is a binomial."},
+     {"q": "Simplify 5x^2 + 3x − 2x^2 + x.", "choices": ["3x^2 + 4x", "7x^2 + 4x", "3x^2 + 3x", "7x^4"], "a": 0, "why": "Combine like terms: 5x^2 − 2x^2 = 3x^2 and 3x + x = 4x. Mixing the x^2 and x terms together gives the wrong 7x^4."}
+    ]
+   },
+   {
+    "title": "Adding and Subtracting Polynomials",
+    "mainIdea": "Add polynomials by combining like terms; subtract by distributing the minus sign to every term of the second polynomial first.",
+    "reading": [
+     "A school store sells notebooks and pens. Monday's income is 3n + 2p dollars, where n is the price of a notebook and p is the price of a pen. Tuesday's income is 5n + 4p. The total is (3n + 2p) + (5n + 4p) = 8n + 6p. Adding polynomials means adding the *like terms*: 3n + 5n = 8n and 2p + 4p = 6p. With powers it works the same way: (2x^2 + 3x − 1) + (x^2 − 5x + 4) = 3x^2 − 2x + 3. Line up the like terms: 2x^2 + x^2 = 3x^2, 3x − 5x = −2x, and −1 + 4 = 3.",
+     "Subtraction needs one extra step. (4x^2 + x − 6) − (x^2 − 3x + 2) asks you to take away the whole second polynomial, every term of it. *Distribute* the minus sign: −(x^2 − 3x + 2) = −x^2 + 3x − 2. Now add: 4x^2 − x^2 = 3x^2, x + 3x = 4x, and −6 − 2 = −8. The result is 3x^2 + 4x − 8. Check with x = 1: the original is (4 + 1 − 6) − (1 − 3 + 2) = −1 − 0 = −1, and 3 + 4 − 8 = −1. It matches.",
+     "Substituting a number is a good check on any polynomial arithmetic. Degree is another check: adding two quadratics never gives a degree above 2, though it can give less, since the x^2 terms can cancel: (x^2 + 5) + (−x^2 + x) = x + 5. Polynomials are *closed* under addition and subtraction, which means the result is always another polynomial, just as adding two integers always gives an integer.",
+     "The classic mistake is subtracting only the first term: writing 4x^2 − x^2 − 3x + 2 and getting 3x^2 − 3x + 2. The minus sign must reach the −3x and the +2 and flip both. Write the sign change on its own line before combining anything."
+    ],
+    "words": [
+     {"w": "like terms", "d": "terms with the same variable raised to the same power, such as 3x^2 and −5x^2"},
+     {"w": "distribute", "d": "to multiply every term inside parentheses by the factor outside, including a minus sign"},
+     {"w": "closed", "d": "a set is closed under an operation when the result always stays in the set; polynomials are closed under addition"}
+    ],
+    "look": {
+     "type": "think",
+     "title": "Perimeter Without Numbers",
+     "text": "A triangle has sides 2x + 1, 3x − 2 and x + 5. Its perimeter is the sum: 2x + 3x + x = 6x and 1 − 2 + 5 = 4, so the perimeter is 6x + 4. If x = 3, the sides are 7, 7 and 8, and 6(3) + 4 = 22 = 7 + 7 + 8. Now a rectangle has perimeter 10x + 6, and one of its sides is 2x + 1. Half the perimeter is the sum of one length and one width.",
+     "prompt": "What expression gives the other side of the rectangle? Check your answer with x = 2."
+    },
+    "check": [
+     {"q": "Add (3x^2 + 2x) + (x^2 − 7x).", "choices": ["4x^2 − 5x", "4x^2 + 5x", "3x^4 − 5x", "4x^2 − 9x"], "a": 0, "why": "3x^2 + x^2 = 4x^2 and 2x − 7x = −5x. Sign slips give +5x or −9x."},
+     {"q": "Subtract (5x − 3) − (2x − 4).", "choices": ["3x − 7", "3x + 1", "3x − 1", "7x − 7"], "a": 1, "why": "Distribute the minus: 5x − 3 − 2x + 4 = 3x + 1. Forgetting to flip the −4 gives 3x − 7."},
+     {"q": "Why must the minus sign be distributed to every term when subtracting a polynomial?", "choices": ["because minus signs always come first", "because the x^2 terms must cancel", "because polynomials cannot have negative terms", "because subtracting takes away the whole polynomial, not just its first term"], "a": 3, "why": "The parentheses mean the entire second polynomial is subtracted, so each of its terms changes sign."}
+    ]
+   },
+   {
+    "title": "Multiplying With the Area Model",
+    "mainIdea": "To multiply polynomials, multiply every term of one by every term of the other; an area model organizes the products as boxes.",
+    "reading": [
+     "A rectangle is x + 3 units long and x + 2 units wide. Its area is (x + 3)(x + 2). Split the rectangle into four pieces: an x by x square, an x by 2 strip, a 3 by x strip, and a 3 by 2 corner. The pieces have areas x^2, 2x, 3x and 6, so the total is x^2 + 5x + 6. This *area model* shows why multiplying two binomials produces four products before combining. Each term of the first factor meets each term of the second.",
+     "Without the picture, use the *distributive property* twice: (x + 3)(x + 2) = x(x + 2) + 3(x + 2) = x^2 + 2x + 3x + 6 = x^2 + 5x + 6. Some students remember the four products as First, Outer, Inner, Last. Check with x = 10: 13 × 12 = 156, and 100 + 50 + 6 = 156. Multiplying by a monomial is simpler: 3x(2x^2 − 5x + 1) = 6x^3 − 15x^2 + 3x. Multiply the coefficients and add the exponents in each term.",
+     "Signs need care. (2x − 5)(x + 4) = 2x^2 + 8x − 5x − 20 = 2x^2 + 3x − 20. The middle terms have opposite signs, so they partly cancel. (x − 3)(x − 6) = x^2 − 6x − 3x + 18 = x^2 − 9x + 18; two negatives make the last term positive. The area model still works with negatives. Treat each box as a signed product.",
+     "The most common mistake is multiplying only the first terms and the last terms: (x + 3)(x + 2) = x^2 + 6. That skips the two strips, the outer and inner products, which together give 5x. Draw the four boxes until the pattern is automatic. A second mistake is adding coefficients when they should be multiplied: 2x × 4x = 8x^2, not 6x^2."
+    ],
+    "words": [
+     {"w": "area model", "d": "a rectangle split into boxes, one for each product of terms, used to organize multiplication"},
+     {"w": "distributive property", "d": "a(b + c) = ab + ac; the factor outside multiplies each term inside"},
+     {"w": "binomial", "d": "a polynomial with exactly two terms, like x + 3 or 2x − 5"}
+    ],
+    "look": {
+     "type": "think",
+     "title": "Four Boxes for the Garden",
+     "text": "The chapter story's outer rectangle is (10 + 2x) by (6 + 2x). Draw a big rectangle and split each side: 10 and 2x along the top, 6 and 2x down the side. The four boxes hold 10 × 6 = 60, 10 × 2x = 20x, 2x × 6 = 12x and 2x × 2x = 4x^2. Add them: 4x^2 + 32x + 60. Now draw the boxes for a simpler product, (x + 5)(x + 1).",
+     "prompt": "What are the four box areas for (x + 5)(x + 1), and what is the total? Check with x = 2."
+    },
+    "check": [
+     {"q": "Multiply (x + 4)(x + 5).", "choices": ["x^2 + 20", "x^2 + 9x + 20", "x^2 + 20x + 9", "2x + 9"], "a": 1, "why": "Four products: x^2 + 5x + 4x + 20 = x^2 + 9x + 20. Skipping the outer and inner products gives x^2 + 20."},
+     {"q": "Multiply 4x(3x^2 − 2x + 7).", "choices": ["12x^3 − 8x^2 + 28x", "12x^2 − 8x + 28", "12x^3 − 8x + 28x", "7x^3 + 2x^2 + 11x"], "a": 0, "why": "Distribute 4x to each term: 4x × 3x^2 = 12x^3, 4x × (−2x) = −8x^2, 4x × 7 = 28x. Every term gains one power of x."},
+     {"q": "Multiply (x − 2)(x − 7).", "choices": ["x^2 − 9x − 14", "x^2 + 9x + 14", "x^2 − 9x + 14", "x^2 − 5x + 14"], "a": 2, "why": "x^2 − 7x − 2x + 14 = x^2 − 9x + 14. Two negatives multiply to a positive 14, and the middle terms add to −9x."}
+    ]
+   },
+   {
+    "title": "Special Products",
+    "mainIdea": "Squaring a binomial gives a^2 + 2ab + b^2, and a sum times a difference gives a^2 − b^2; these identities hold for every value of the variable.",
+    "reading": [
+     "Square a binomial with the area model: (x + 5)^2 = (x + 5)(x + 5). The four boxes are x^2, 5x, 5x and 25, so (x + 5)^2 = x^2 + 10x + 25. The middle term is twice the product of the two parts. In general, (a + b)^2 = a^2 + 2ab + b^2 and (a − b)^2 = a^2 − 2ab + b^2. The result is a *perfect square trinomial*. Example: (3x − 4)^2 = 9x^2 − 24x + 16, because 2 × 3x × 4 = 24x. Check with x = 2: (6 − 4)^2 = 4, and 36 − 48 + 16 = 4.",
+     "Now multiply a sum by a difference: (x + 6)(x − 6) = x^2 − 6x + 6x − 36 = x^2 − 36. The middle terms cancel every time. This is the *difference of squares* pattern: (a + b)(a − b) = a^2 − b^2. It gives a mental-math trick: 23 × 17 = (20 + 3)(20 − 3) = 400 − 9 = 391. With variables, (2x + 7)(2x − 7) = 4x^2 − 49.",
+     "These patterns are examples of an *identity*: an equation true for every value of the variable, not just for one solution. You can test an identity by substituting several numbers, but proving it means expanding both sides and showing they match term for term. Identities reveal structure. Seeing x^2 − 36 as x squared minus 6 squared, or 4x^2 + 12x + 9 as (2x + 3) squared, is the key to factoring in the next section.",
+     "The most common mistake in all of algebra may be (x + 5)^2 = x^2 + 25. That drops the middle term 10x. Test it: x = 1 gives 36 on the left and 26 on the right, so the shortcut is false. Squaring a sum is not the same as adding the squares."
+    ],
+    "words": [
+     {"w": "perfect square trinomial", "d": "a trinomial that is the square of a binomial, like x^2 + 10x + 25 = (x + 5)^2"},
+     {"w": "difference of squares", "d": "the pattern a^2 − b^2 = (a + b)(a − b), such as x^2 − 36 = (x + 6)(x − 6)"},
+     {"w": "identity", "d": "an equation that is true for every value of the variable, like (a + b)^2 = a^2 + 2ab + b^2"}
+    ],
+    "look": {
+     "type": "think",
+     "title": "Mental Math With a Pattern",
+     "text": "Products of numbers the same distance above and below a round number are easy. 31 × 29 = (30 + 1)(30 − 1) = 900 − 1 = 899. 42 × 38 = (40 + 2)(40 − 2) = 1,600 − 4 = 1,596. The pattern (a + b)(a − b) = a^2 − b^2 does the work; no carrying needed.",
+     "prompt": "Use the pattern to compute 52 × 48 in your head. Then check it with ordinary multiplication."
+    },
+    "check": [
+     {"q": "Expand (x + 7)^2.", "choices": ["x^2 + 49", "x^2 + 14x + 49", "x^2 + 7x + 49", "2x + 14"], "a": 1, "why": "(x + 7)(x + 7) = x^2 + 7x + 7x + 49 = x^2 + 14x + 49. The middle term is 2 × 7 × x, and it cannot be dropped."},
+     {"q": "Multiply (3x + 2)(3x − 2).", "choices": ["9x^2 + 12x − 4", "9x^2 − 12x + 4", "3x^2 − 4", "9x^2 − 4"], "a": 3, "why": "Sum times difference: (3x)^2 − 2^2 = 9x^2 − 4. The middle terms −6x and +6x cancel."},
+     {"q": "Which computation uses the difference of squares pattern?", "choices": ["25 × 25 = 625", "21 × 19 = 400 − 1", "20 × 22 = 440", "30 × 30 = 900"], "a": 1, "why": "21 × 19 = (20 + 1)(20 − 1) = 20^2 − 1^2 = 399. The others are plain squares or an ordinary product."}
+    ]
+   }
+  ]},
+  {"title": "Factoring", "lessons": [
+   {
+    "title": "Factoring Out the Greatest Common Factor",
+    "mainIdea": "Factoring reverses multiplying; always begin by pulling out the greatest common factor of all the terms.",
+    "reading": [
+     "Multiplying 3x(2x + 5) gives 6x^2 + 15x. *Factoring* runs that backward: start from 6x^2 + 15x and write it as a product. Ask what every term shares. The coefficients 6 and 15 share 3. The variable parts x^2 and x share x. So the *greatest common factor*, or GCF, is 3x. Divide each term by it: 6x^2 ÷ 3x = 2x and 15x ÷ 3x = 5. Write 6x^2 + 15x = 3x(2x + 5). Multiply back out to check.",
+     "Try 12x^3 − 18x^2 + 6x. The GCF of 12, 18 and 6 is 6, and the lowest power of x present is x, so the GCF is 6x. Dividing gives 2x^2 − 3x + 1, so the factored form is 6x(2x^2 − 3x + 1). Notice the 1 at the end: 6x ÷ 6x = 1, and it must stay. Without it the factored form would multiply back to 12x^3 − 18x^2, with the last term missing. That lost 1 is the most common GCF mistake.",
+     "If the leading coefficient is negative, factor out a negative GCF so the first term inside is positive: −4x^2 + 8x = −4x(x − 2). Sometimes the common factor is a whole binomial. In 5(x + 3) + x(x + 3), the two terms share (x + 3), so the expression equals (x + 3)(5 + x). That move powers factoring by grouping later in this chapter.",
+     "A second mistake is pulling out a factor that is common but not the greatest: 6x^2 + 15x = 3(2x^2 + 5x) is true but unfinished, since 2x^2 + 5x still shares an x. To *factor completely*, check that the terms in parentheses have no common factor left and that no factor can be broken down further."
+    ],
+    "words": [
+     {"w": "factoring", "d": "writing an expression as a product of factors; the reverse of multiplying out"},
+     {"w": "greatest common factor", "d": "the largest expression that divides every term, like 3x for 6x^2 + 15x"},
+     {"w": "factor completely", "d": "to keep factoring until no factor can be broken into smaller factors"}
+    ],
+    "look": {
+     "type": "think",
+     "title": "The Path's Length",
+     "text": "In the chapter story the gravel path has area 4x^2 + 32x. The coefficients 4 and 32 share 4, and both terms share x, so the GCF is 4x. Dividing gives 4x^2 ÷ 4x = x and 32x ÷ 4x = 8, so 4x^2 + 32x = 4x(x + 8). Picture a strip of gravel 4x wide.",
+     "prompt": "If a strip of area 4x^2 + 32x is 4x wide, what expression gives its length? Check by multiplying the width and length."
+    },
+    "check": [
+     {"q": "What is the GCF of 8x^3 + 12x^2?", "choices": ["4x", "4x^2", "2x^2", "8x^2"], "a": 1, "why": "8 and 12 share 4, and x^3 and x^2 share x^2, so the GCF is 4x^2. Then 8x^3 + 12x^2 = 4x^2(2x + 3)."},
+     {"q": "Factor 10x^2 − 25x completely.", "choices": ["5(2x^2 − 5x)", "5x(2x − 25)", "5x(2x − 5)", "x(10x − 25)"], "a": 2, "why": "The GCF is 5x: 10x^2 ÷ 5x = 2x and 25x ÷ 5x = 5. The choices with 5 or x alone are not complete."},
+     {"q": "Factor 7x^3 + 7x^2 + 7x.", "choices": ["7x(x^2 + x)", "7(x^3 + x^2 + x)", "7x(x^2 + x + 1)", "7x^3(1 + x + x^2)"], "a": 2, "why": "The GCF is 7x, and 7x ÷ 7x = 1 must stay: 7x(x^2 + x + 1). Dropping the 1 loses the last term when you multiply back."}
+    ]
+   },
+   {
+    "title": "Factoring x^2 + bx + c",
+    "mainIdea": "To factor x^2 + bx + c, find two numbers that multiply to c and add to b; they are the constants in (x + p)(x + q).",
+    "reading": [
+     "A rectangle has area x^2 + 7x + 12. What are its side lengths? Since (x + p)(x + q) = x^2 + (p + q)x + pq, you need two numbers that multiply to 12 and add to 7. List each *factor pair* of 12: 1 and 12 (sum 13), 2 and 6 (sum 8), 3 and 4 (sum 7). So x^2 + 7x + 12 = (x + 3)(x + 4). Check by multiplying: x^2 + 4x + 3x + 12. It matches.",
+     "Signs tell you where to look. In x^2 − 8x + 15, the product 15 is positive and the sum −8 is negative, so both numbers are negative: −3 and −5. The factors are (x − 3)(x − 5). In x^2 + 2x − 15, the product is negative, so one number is positive and one is negative; they are 5 and −3, since 5 + (−3) = 2. The factors are (x + 5)(x − 3). In x^2 − 2x − 15 the signs swap: (x − 5)(x + 3).",
+     "Not every *trinomial* factors with integers. x^2 + 3x + 5 needs two numbers with product 5 and sum 3, but the only pairs are 1 and 5 (sum 6) or −1 and −5 (sum −6). So it is a *prime polynomial* over the integers. Later you will still solve equations like x^2 + 3x + 5 = 0 with other tools. Always factor out a GCF first: 2x^2 + 14x + 24 = 2(x^2 + 7x + 12) = 2(x + 3)(x + 4).",
+     "A common mistake is finding numbers that multiply to c but forgetting the sum: (x + 2)(x + 6) multiplies to x^2 + 8x + 12, not x^2 + 7x + 12. Always multiply your answer back out. Another mistake is losing a sign: x^2 − 8x + 15 is (x − 3)(x − 5), not (x + 3)(x + 5)."
+    ],
+    "words": [
+     {"w": "trinomial", "d": "a polynomial with exactly three terms, like x^2 + 7x + 12"},
+     {"w": "factor pair", "d": "two numbers that multiply to a given number; 3 and 4 are a factor pair of 12"},
+     {"w": "prime polynomial", "d": "a polynomial that cannot be factored using integers, like x^2 + 3x + 5"}
+    ],
+    "look": {
+     "type": "think",
+     "title": "Hunting Through the Pairs",
+     "text": "To factor x^2 + 11x + 24, list the factor pairs of 24 with their sums: 1 and 24 (25), 2 and 12 (14), 3 and 8 (11), 4 and 6 (10). Only one pair adds to 11. For x^2 − 10x + 24, the same pairs work with both signs negative, and you need a sum of −10.",
+     "prompt": "Factor x^2 + 11x + 24 and x^2 − 10x + 24. Multiply each answer back out to check."
+    },
+    "check": [
+     {"q": "Factor x^2 + 9x + 20.", "choices": ["(x + 4)(x + 5)", "(x + 2)(x + 10)", "(x + 1)(x + 20)", "(x + 9)(x + 20)"], "a": 0, "why": "4 × 5 = 20 and 4 + 5 = 9. The pair 2 and 10 multiplies to 20 but adds to 12."},
+     {"q": "Factor x^2 − x − 12.", "choices": ["(x − 3)(x − 4)", "(x + 3)(x − 4)", "(x − 3)(x + 4)", "(x − 1)(x − 12)"], "a": 1, "why": "Need product −12 and sum −1: 3 and −4. So (x + 3)(x − 4). Check the middle: −4x + 3x = −x."},
+     {"q": "Which trinomial does NOT factor with integers?", "choices": ["x^2 + 5x + 6", "x^2 + 6x + 9", "x^2 + 4x + 6", "x^2 − 5x + 6"], "a": 2, "why": "For x^2 + 4x + 6 the pairs of 6 are 1 and 6 (sum 7) and 2 and 3 (sum 5); neither adds to 4. The others factor as (x + 2)(x + 3), (x + 3)^2 and (x − 2)(x − 3)."}
+    ]
+   },
+   {
+    "title": "Factoring ax^2 + bx + c",
+    "mainIdea": "When the leading coefficient is not 1, find two numbers that multiply to a × c and add to b, then split the middle term and group.",
+    "reading": [
+     "Factor 2x^2 + 7x + 3. The *leading coefficient* is 2, so guessing (2x + ?)(x + ?) is possible but slow. A reliable method: multiply a × c = 2 × 3 = 6, then find two numbers with product 6 and sum 7. They are 1 and 6. *Split the middle term*: 2x^2 + x + 6x + 3. Group in pairs: (2x^2 + x) + (6x + 3) = x(2x + 1) + 3(2x + 1). Both groups share (2x + 1), so the answer is (2x + 1)(x + 3). Multiply back: 2x^2 + 6x + x + 3. It matches.",
+     "Try 6x^2 − 11x + 4. Here a × c = 24 and the sum is −11, so both numbers are negative: −3 and −8 (product 24, sum −11). Split: 6x^2 − 3x − 8x + 4. Group: 3x(2x − 1) − 4(2x − 1). Note that −4 was factored out of the second pair, so that −8x + 4 = −4(2x − 1). Answer: (2x − 1)(3x − 4). Check the outer and inner products: 2x × (−4) + (−1)(3x) = −8x − 3x = −11x.",
+     "The order of the split does not matter. Splitting 7x as 6x + x gives (2x^2 + 6x) + (x + 3) = 2x(x + 3) + 1(x + 3) = (x + 3)(2x + 1), the same result. If the *grouping* fails to produce a shared binomial, either the two numbers are wrong or the trinomial is prime. And as always, pull out a GCF first: 4x^2 + 14x + 6 = 2(2x^2 + 7x + 3) = 2(2x + 1)(x + 3).",
+     "The most common mistake is using c instead of a × c when hunting for the pair. For 2x^2 + 7x + 3, looking for a product of 3 gives 1 and 3, which sum to 4, not 7. Another is dropping a negative when factoring the second pair: −8x + 4 = −4(2x − 1), not 4(2x − 1)."
+    ],
+    "words": [
+     {"w": "leading coefficient", "d": "the coefficient of the highest-degree term; in 2x^2 + 7x + 3 it is 2"},
+     {"w": "split the middle term", "d": "to rewrite bx as the sum of two terms whose coefficients multiply to a × c"},
+     {"w": "grouping", "d": "factoring a common factor from each pair of terms, then factoring out the shared binomial"}
+    ],
+    "look": {
+     "type": "think",
+     "title": "Split, Group, Factor",
+     "text": "For 3x^2 + 10x + 8, compute a × c = 3 × 8 = 24. Pairs of 24: 1 and 24, 2 and 12, 3 and 8, 4 and 6. The pair that adds to 10 is 4 and 6. Split: 3x^2 + 4x + 6x + 8. Group the first two terms and the last two terms, factor each pair, and look for the shared binomial.",
+     "prompt": "Finish factoring 3x^2 + 10x + 8. What binomial do the two groups share, and what is the final factored form?"
+    },
+    "check": [
+     {"q": "To factor 3x^2 + 11x + 6, which two numbers do you look for?", "choices": ["product 6, sum 11", "product 18, sum 11", "product 3, sum 6", "product 11, sum 18"], "a": 1, "why": "The product must be a × c = 3 × 6 = 18 and the sum is b = 11. The pair is 2 and 9, giving (3x + 2)(x + 3)."},
+     {"q": "Factor 2x^2 + 5x + 2.", "choices": ["(2x + 2)(x + 1)", "(x + 1)(x + 2)", "(2x + 5)(x + 2)", "(2x + 1)(x + 2)"], "a": 3, "why": "a × c = 4, and 1 + 4 = 5. Split: 2x^2 + x + 4x + 2 = x(2x + 1) + 2(2x + 1) = (2x + 1)(x + 2). Check: 4x + x = 5x."},
+     {"q": "Factor 5x^2 − 13x + 6.", "choices": ["(5x − 2)(x − 3)", "(5x + 3)(x + 2)", "(5x − 3)(x − 2)", "(5x − 6)(x − 1)"], "a": 2, "why": "a × c = 30, and −3 + (−10) = −13. Split: 5x^2 − 3x − 10x + 6 = x(5x − 3) − 2(5x − 3) = (5x − 3)(x − 2). Check the middle: −10x − 3x = −13x."}
+    ]
+   },
+   {
+    "title": "Special Factoring Patterns",
+    "mainIdea": "Recognize a^2 − b^2 as (a + b)(a − b) and a^2 ± 2ab + b^2 as (a ± b)^2 to factor in a single step.",
+    "reading": [
+     "x^2 − 49 has no middle term. Its two terms are perfect squares, x^2 and 7^2, separated by a minus sign, so it is a *difference of squares*: x^2 − 49 = (x + 7)(x − 7). Check: the middle terms −7x and +7x cancel. The pattern works with coefficients too: 9x^2 − 25 = (3x)^2 − 5^2 = (3x + 5)(3x − 5). And 50x^2 − 8 = 2(25x^2 − 4) = 2(5x + 2)(5x − 2), after pulling out the GCF.",
+     "A *sum of squares* like x^2 + 49 does not factor with real numbers. Test it: (x + 7)(x + 7) = x^2 + 14x + 49 and (x + 7)(x − 7) = x^2 − 49; neither works. Leave x^2 + 49 alone, and do not confuse it with x^2 − 49. The minus sign is what makes the pattern work.",
+     "A perfect square trinomial is the other pattern. x^2 + 12x + 36 has a *perfect square* at each end, x^2 and 6^2, and the middle term is 2 × 6 × x = 12x. So it equals (x + 6)^2. For 4x^2 − 20x + 25, the ends are (2x)^2 and 5^2, and 2 × 2x × 5 = 20x matches the middle, so it is (2x − 5)^2, with the minus sign following the middle term. If the middle does not match, use the regular trinomial method: x^2 + 10x + 36 is not a perfect square, since 2 × 6 = 12, not 10.",
+     "Recognizing these patterns saves time and reveals structure. A common mistake is writing x^2 − 49 as (x − 7)^2; multiply back to see it gives x^2 − 14x + 49. Another is stopping early: x^4 − 16 = (x^2 + 4)(x^2 − 4), and x^2 − 4 factors again to (x + 2)(x − 2), so the complete answer is (x^2 + 4)(x + 2)(x − 2)."
+    ],
+    "words": [
+     {"w": "difference of squares", "d": "an expression a^2 − b^2, which factors as (a + b)(a − b)"},
+     {"w": "sum of squares", "d": "an expression a^2 + b^2, which does not factor with real numbers"},
+     {"w": "perfect square", "d": "an expression that is something squared, like 25, x^2, 9x^2 or (x + 6)^2"}
+    ],
+    "look": {
+     "type": "think",
+     "title": "Which Pattern Is It?",
+     "text": "Look at 16x^2 − 81. Both terms are squares, (4x)^2 and 9^2, with a minus sign between them, and there is no middle term. Now look at x^2 − 18x + 81. The ends are x^2 and 9^2, and 2 × 9 × x = 18x matches the middle, with a minus sign. Two different patterns, two one-step factorings.",
+     "prompt": "Factor 16x^2 − 81 and x^2 − 18x + 81. Which pattern does each one use, and how do you know?"
+    },
+    "check": [
+     {"q": "Factor x^2 − 100.", "choices": ["(x − 10)^2", "(x + 10)(x − 10)", "(x + 50)(x − 50)", "(x + 10)^2"], "a": 1, "why": "x^2 − 100 = x^2 − 10^2 = (x + 10)(x − 10). The square (x − 10)^2 would have a middle term −20x."},
+     {"q": "Which trinomial is a perfect square?", "choices": ["x^2 + 8x + 16", "x^2 + 4x + 16", "x^2 + 16x + 8", "x^2 + 8x + 64"], "a": 0, "why": "x^2 + 8x + 16 has ends x^2 and 4^2 with middle 2 × 4 × x = 8x, so it is (x + 4)^2. The others fail the middle-term test."},
+     {"q": "Factor 25x^2 − 30x + 9.", "choices": ["(5x + 3)^2", "(25x − 3)(x − 3)", "(5x − 3)^2", "(5x − 9)(5x − 1)"], "a": 2, "why": "Ends (5x)^2 and 3^2, middle 2 × 5x × 3 = 30x with a minus sign: (5x − 3)^2. Expand to check: 25x^2 − 15x − 15x + 9."}
+    ]
+   },
+   {
+    "title": "Factoring by Grouping",
+    "mainIdea": "For four-term polynomials, factor a GCF from each pair of terms; if the pairs share a binomial, factor it out.",
+    "reading": [
+     "x^3 + 3x^2 + 4x + 12 has four terms and no factor common to all four. *Group* the terms in pairs: (x^3 + 3x^2) + (4x + 12). Factor each pair: x^2(x + 3) + 4(x + 3). Now both parts share (x + 3), a *common binomial factor*. Pull it out: (x + 3)(x^2 + 4). Multiply back: x^3 + 4x + 3x^2 + 12, the original polynomial with its terms in a different order.",
+     "Grouping needs the right pairing and the right signs. In 2x^3 − 6x^2 − 5x + 15, the pairs are (2x^3 − 6x^2) + (−5x + 15). The first pair gives 2x^2(x − 3). For the second pair, factor out −5 so the binomial matches: −5(x − 3). Then the expression is (x − 3)(2x^2 − 5). If you factored out +5 instead, you would get 5(−x + 3), which does not match (x − 3), and grouping would seem to fail.",
+     "Grouping is the engine behind the ax^2 + bx + c method from earlier: splitting the middle term turns a trinomial into four terms, and then you group. It also handles two variables: xy + 2x + 3y + 6 = x(y + 2) + 3(y + 2) = (y + 2)(x + 3). When the first pairing fails, try another order. For x^3 + 2x + 5x^2 + 10, reorder to x^3 + 5x^2 + 2x + 10 = x^2(x + 5) + 2(x + 5) = (x + 5)(x^2 + 2).",
+     "Here is a *factoring plan* for any polynomial. First, factor out the GCF. Second, count terms: two terms, check for a difference of squares; three terms, try a perfect square or the trinomial methods; four terms, group. Third, check whether any factor breaks down further. Fourth, multiply back to confirm. A common mistake is stopping at x^2(x + 3) + 4(x + 3). That is a sum, not a product, until you pull out (x + 3)."
+    ],
+    "words": [
+     {"w": "group", "d": "to pair up terms of a polynomial so that each pair can be factored"},
+     {"w": "common binomial factor", "d": "a two-term factor shared by both groups, like (x + 3) in x^2(x + 3) + 4(x + 3)"},
+     {"w": "factoring plan", "d": "the order of steps: GCF first, then a pattern by number of terms, then check and multiply back"}
+    ],
+    "look": {
+     "type": "think",
+     "title": "Grouping With a Negative",
+     "text": "Factor 3x^3 − 12x^2 + 2x − 8. Pair the terms: (3x^3 − 12x^2) + (2x − 8). The first pair shares 3x^2, giving 3x^2(x − 4). The second pair shares 2, giving 2(x − 4). Both pairs now show the same binomial. If the second pair had been −2x + 8, you would factor out −2 instead to keep (x − 4).",
+     "prompt": "Finish factoring 3x^3 − 12x^2 + 2x − 8. Then multiply your answer back out to confirm all four terms return."
+    },
+    "check": [
+     {"q": "Factor x^3 + 5x^2 + 2x + 10.", "choices": ["(x + 5)(x^2 + 2)", "(x + 2)(x^2 + 5)", "(x^2 + 5x)(2x + 10)", "(x + 5)(x + 2)"], "a": 0, "why": "x^2(x + 5) + 2(x + 5) = (x + 5)(x^2 + 2). Multiply back: x^3 + 2x + 5x^2 + 10."},
+     {"q": "After grouping you have 4x(x − 2) + 3(x − 2). What is the factored form?", "choices": ["4x(x − 2) + 3(x − 2) is already factored", "(x − 2)(4x + 3)", "(x − 2)(4x − 3)", "(4x + 3)(x + 2)"], "a": 1, "why": "Both terms share (x − 2), so pull it out: (x − 2)(4x + 3). A sum of two products is not yet a factored form."},
+     {"q": "In 2x^3 − 8x^2 − 3x + 12, what should you factor out of the last pair, −3x + 12?", "choices": ["3", "12", "−12", "−3"], "a": 3, "why": "The first pair gives 2x^2(x − 4). To match (x − 4), write −3x + 12 = −3(x − 4). Factoring out +3 gives 3(−x + 4), which does not match."}
+    ]
+   }
+  ]},
+  {"title": "Using Factors to Solve", "lessons": [
+   {
+    "title": "The Zero-Product Property",
+    "mainIdea": "If a product equals zero, at least one factor is zero, so a factored equation splits into simple equations.",
+    "reading": [
+     "Back to the garden path. Its area is 4x^2 + 32x, and it must hold exactly 80 square feet of gravel: 4x^2 + 32x = 80. Move everything to one side: 4x^2 + 32x − 80 = 0. Factor: 4(x^2 + 8x − 20) = 4(x + 10)(x − 2) = 0. Now use the *zero-product property*: if two numbers multiply to zero, one of them must be zero. So x + 10 = 0 or x − 2 = 0, which gives x = −10 or x = 2. A width cannot be negative, so the path is 2 feet wide. Check: 4(4) + 32(2) = 16 + 64 = 80.",
+     "The property works only when one side is exactly 0. (x − 3)(x + 1) = 5 tells you nothing about the factors separately, because many pairs of numbers multiply to 5. Expand instead: x^2 − 2x − 3 = 5, then x^2 − 2x − 8 = 0, then (x − 4)(x + 2) = 0, so x = 4 or x = −2. Check x = 4: (1)(5) = 5. Check x = −2: (−5)(−1) = 5. Both work.",
+     "The solutions of a polynomial equation are also called a *root* of the equation or a *zero of a function*. They show where the graph crosses the x-axis, which is why factored form is so useful: f(x) = (x − 4)(x + 2) has zeros at 4 and −2 that you can read directly. A perfect square such as x^2 − 6x + 9 = (x − 3)^2 = 0 has one repeated root, x = 3. An equation like x^2 = 5x also yields to factoring: x^2 − 5x = 0, so x(x − 5) = 0 and x = 0 or x = 5.",
+     "In that last example, the common mistake is dividing both sides by x to get x = 5. Dividing by x throws away the solution x = 0. Never divide an equation by an expression that could be zero; factor it out instead. A second mistake is solving (x + 10)(x − 2) = 0 as x = 10 and x = −2. Each factor set to zero gives the opposite sign of its constant."
+    ],
+    "words": [
+     {"w": "zero-product property", "d": "if a × b = 0, then a = 0 or b = 0; it lets a factored equation split into simple equations"},
+     {"w": "root", "d": "a solution of an equation; the roots of (x + 10)(x − 2) = 0 are −10 and 2"},
+     {"w": "zero of a function", "d": "an input that makes the function's output 0, where its graph crosses the x-axis"}
+    ],
+    "look": {
+     "type": "think",
+     "title": "When Does the Ball Land?",
+     "text": "A ball kicked straight up from the ground has height h = −16t^2 + 64t feet after t seconds. It is on the ground when h = 0: −16t^2 + 64t = 0. The GCF is −16t, so −16t(t − 4) = 0. By the zero-product property, −16t = 0 or t − 4 = 0. One solution is t = 0, the moment of the kick.",
+     "prompt": "What is the other solution, and what does it mean for the ball? Check it in the original equation."
+    },
+    "check": [
+     {"q": "Solve (x + 6)(x − 1) = 0.", "choices": ["x = 6 or x = −1", "x = −6 or x = 1", "x = −6 or x = −1", "x = 6 or x = 1"], "a": 1, "why": "Set each factor to zero: x + 6 = 0 gives x = −6, and x − 1 = 0 gives x = 1. The signs flip from what appears in the factors."},
+     {"q": "Solve x^2 − 7x + 10 = 0.", "choices": ["x = −2 or x = −5", "x = 7 or x = 10", "x = 2 or x = 5", "x = 1 or x = 10"], "a": 2, "why": "Factor: (x − 2)(x − 5) = 0, since −2 × −5 = 10 and −2 + −5 = −7. So x = 2 or x = 5. Check: 4 − 14 + 10 = 0."},
+     {"q": "Why is dividing both sides of x^2 = 9x by x a bad idea?", "choices": ["because x^2 cannot be divided", "because it gives x = −9", "because 9x is a prime polynomial", "because it loses the solution x = 0"], "a": 3, "why": "Factoring gives x(x − 9) = 0, so x = 0 or x = 9. Dividing by x hides the x = 0 solution."}
+    ]
+   }
+  ]}
+ ],
+ "review": [
+  {"q": "What is the degree of 4x − x^3 + 2?", "choices": ["1", "4", "2", "3"], "a": 3, "why": "The highest exponent is 3, on −x^3. In standard form the polynomial is −x^3 + 4x + 2."},
+  {"q": "Multiply (2x + 3)(x − 4).", "choices": ["2x^2 − 12", "2x^2 + 5x − 12", "2x^2 − 5x − 12", "2x^2 − 11x − 12"], "a": 2, "why": "2x^2 − 8x + 3x − 12 = 2x^2 − 5x − 12. The outer and inner products combine to −5x."},
+  {"q": "Subtract (x^2 + 3x − 2) − (x^2 − x + 5).", "choices": ["4x − 7", "2x + 3", "2x^2 + 4x − 7", "4x + 3"], "a": 0, "why": "Distribute the minus: x^2 + 3x − 2 − x^2 + x − 5 = 4x − 7. The x^2 terms cancel."},
+  {"q": "Factor x^2 − 5x − 14.", "choices": ["(x − 7)(x − 2)", "(x + 7)(x − 2)", "(x + 7)(x + 2)", "(x − 7)(x + 2)"], "a": 3, "why": "Need product −14 and sum −5: −7 and 2. So (x − 7)(x + 2). Check the middle: 2x − 7x = −5x."},
+  {"q": "Factor 3x^2 − 12 completely.", "choices": ["3(x + 2)(x − 2)", "3(x − 2)^2", "(3x + 12)(x − 1)", "3(x^2 + 4)"], "a": 0, "why": "GCF first: 3(x^2 − 4). Then the difference of squares: 3(x + 2)(x − 2)."},
+  {"q": "Solve x^2 + 4x = 21.", "choices": ["x = 7 or x = −3", "x = 21 or x = −4", "x = −7 or x = 3", "x = 0 or x = −4"], "a": 2, "why": "Rewrite as x^2 + 4x − 21 = 0 and factor: (x + 7)(x − 3) = 0, so x = −7 or x = 3. Check: 9 + 12 = 21."},
+  {"q": "Which equation is an identity, true for every value of x?", "choices": ["(x + 4)^2 = x^2 + 16", "x^2 − 16 = (x − 4)^2", "x + 4 = 8", "(x + 4)(x − 4) = x^2 − 16"], "a": 3, "why": "Expanding (x + 4)(x − 4) gives x^2 − 16 for every x. The first two are false patterns, and x + 4 = 8 is true only for x = 4."},
+  {"q": "Factor 2x^2 + 9x + 4.", "choices": ["(2x + 1)(x + 4)", "(2x + 4)(x + 1)", "(2x + 2)(x + 2)", "(x + 1)(x + 8)"], "a": 0, "why": "a × c = 8, and 1 + 8 = 9. Split: 2x^2 + x + 8x + 4 = x(2x + 1) + 4(2x + 1) = (2x + 1)(x + 4). Check: 8x + x = 9x."}
+ ]
+}

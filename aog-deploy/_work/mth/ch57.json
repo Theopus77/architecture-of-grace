@@ -1,0 +1,346 @@
+{
+ "n": 57,
+ "title": "Sequences and Series",
+ "years": "Sequences",
+ "bigQuestion": "How can one short rule describe a list of numbers that never ends, and how can you add up that list without adding forever?",
+ "story": {
+  "title": "The Schoolboy and the Sum",
+  "kicker": "A teacher hands out a long addition problem to buy himself a quiet hour, and one student is done before the teacher sits down.",
+  "paragraphs": [
+   "The story goes that a schoolteacher in a small German town, late in the 1700s, told his class to add every whole number from 1 to 100. He expected the sum to take most of the hour. Slates scratched, students counted on fingers, and the room went quiet. One boy wrote a single number on his slate, set it on the desk, and folded his arms. The number was 5050. The boy was Carl Friedrich Gauss, who grew up to be one of the greatest mathematicians who ever lived.",
+   "How did he do it so fast? He did not add 1 + 2 + 3 and keep going. He paired the numbers from the outside in. The first and the last make 1 + 100 = 101. The second and the second-to-last make 2 + 99 = 101. Then 3 + 98 = 101, and so on. Every pair totals 101, and 100 numbers make 50 pairs. So the sum is 50 × 101 = 5050. No long column of addition, just one multiplication.",
+   "Here is another way to see the same trick. Write the numbers 1 to 100 in a row, and under it write them again backwards, 100 down to 1. Each column adds to 101, and there are 100 columns, so both rows together total 100 × 101 = 10,100. That is twice the sum you want, so the sum is 10,100 ÷ 2 = 5050. The idea works for any count: the sum of 1 through n is n(n + 1)/2. For 1 through 20 it gives 20 × 21 ÷ 2 = 210, and ten pairs of 21 confirm it.",
+   "Whether or not the story happened exactly this way, the lesson is real. A long list of numbers can hide a short rule, and the rule can let you add the whole list in one step. This chapter is about those rules. You will name the two most common kinds of lists, write formulas for their terms and their sums, decide when an endless list still adds up to a finite number, and follow rules that build the world around you: loan balances, rabbit populations and snowflake-shaped curves that never stop growing."
+  ],
+  "think": "Use the pairing idea to add every whole number from 1 to 50. How many pairs are there, what does each pair total, and what is the sum?"
+ },
+ "sections": [
+  {
+   "title": "Lists With Rules",
+   "lessons": [
+    {
+     "title": "Terms, Positions and Rules",
+     "mainIdea": "A sequence is an ordered list of numbers, and a rule tells you how to find any term from its position or from the term before it.",
+     "reading": [
+      "A stack of one plastic chair is 30 inches tall. Each chair you add raises the stack by 3 inches. So the heights go 30, 33, 36, 39, 42 and so on. An ordered list like this is a *sequence*. Each number in it is a *term*, and the position of a term is its *index*. We write a_n (read \"a sub n\") for the term in position n. Here a_1 = 30, a_2 = 33 and a_4 = 39. The index counts chairs; the term measures inches.",
+      "There are two ways to write the rule. An *explicit rule* gives any term straight from its index: a_n = 30 + 3(n − 1). Test it on the fourth term: 30 + 3(3) = 39, which matches. It jumps straight to the tenth term too: a_10 = 30 + 3(9) = 57 inches. A *recursive rule* gives each term from the one before it: a_1 = 30, and a_n = a_(n−1) + 3. It needs a starting term, because \"add 3\" means nothing until you know where to begin.",
+      "Each kind of rule has a job. The explicit rule is fast for far-off terms; the recursive rule matches how the stack actually grows, one chair at a time. To find a_10 recursively you would add 3 nine times. A common mistake is to write the explicit rule as a_n = 30 + 3n. That gives a_1 = 33, but the first stack is 30. Always test a rule on the first term before you trust it.",
+      "Not every sequence adds a fixed amount. The list 1, 4, 9, 16, 25 has the rule a_n = n^2. The list 2, 4, 8, 16, 32 doubles each time, so a_n = 2^n. The list 5, −5, 5, −5 flips sign, so a_n = 5 × (−1)^(n+1). Check that last one: for n = 1 the exponent is 2, and (−1)^2 = 1, so a_1 = 5. For n = 2 the exponent is 3, and a_2 = −5. A rule is right only if it produces every term you were given."
+     ],
+     "words": [
+      {"w": "sequence", "d": "an ordered list of numbers, each with a position"},
+      {"w": "term", "d": "one number in a sequence; a_n is the term in position n"},
+      {"w": "index", "d": "the position number of a term, usually starting at 1"},
+      {"w": "explicit rule", "d": "a formula that gives any term directly from its index, like a_n = 30 + 3(n − 1)"},
+      {"w": "recursive rule", "d": "a rule that gives each term from the term before it, plus a starting term"}
+     ],
+     "look": {
+      "type": "think",
+      "title": "The Chair Stack",
+      "text": "One chair stands 30 inches tall. Each added chair raises the stack 3 inches: 30, 33, 36, 39, 42, 45. The explicit rule is a_n = 30 + 3(n − 1). The recursive rule is a_1 = 30, a_n = a_(n−1) + 3. Both produce the same list, but only the explicit rule lets you skip to any chair count in one step.",
+      "prompt": "Use the explicit rule to find the height of a stack of 15 chairs. Then explain how many additions the recursive rule would need to reach the same answer."
+     },
+     "check": [
+      {"q": "The sequence 5, 9, 13, 17, ... continues with the same pattern. What is its 8th term?", "choices": ["33", "37", "29", "40"], "a": 0, "why": "The rule is a_n = 5 + 4(n − 1). For n = 8 that is 5 + 4(7) = 5 + 28 = 33. Using 4(8) instead gives 37, which is the 9th term."},
+      {"q": "Which is a recursive rule for the sequence 7, 10, 13, 16, ...?", "choices": ["a_1 = 7, a_n = a_(n−1) + 3", "a_1 = 3, a_n = a_(n−1) + 7", "a_n = 7n + 3", "a_1 = 7, a_n = 3 × a_(n−1)"], "a": 0, "why": "The list starts at 7 and each term is the one before plus 3. A recursive rule must name the first term and the step from one term to the next."},
+      {"q": "A sequence has the explicit rule a_n = 2n^2 − 1. What is its third term?", "choices": ["17", "35", "7", "11"], "a": 0, "why": "Substitute n = 3: 2(3^2) − 1 = 2(9) − 1 = 18 − 1 = 17. Squaring 2n instead of n gives 36 − 1 = 35, a common slip."}
+     ]
+    },
+    {
+     "title": "Arithmetic Sequences",
+     "mainIdea": "In an arithmetic sequence each term is the one before plus a fixed common difference d, so a_n = a_1 + (n − 1)d.",
+     "reading": [
+      "A gym charges $40 to join and $25 each month. The total you have paid after 1, 2, 3, 4 months is 65, 90, 115, 140. Every term is the one before plus 25. A sequence that grows by the same amount each step is an *arithmetic sequence*, and that fixed amount is the *common difference*, written d. Here a_1 = 65 and d = 25, so the explicit rule is a_n = 65 + 25(n − 1). After 12 months: 65 + 25(11) = 65 + 275 = 340. Check another way: the $40 fee plus 12 × $25 = 40 + 300 = 340. It matches.",
+      "You can build the rule from any two terms. Suppose a_3 = 14 and a_7 = 26. From position 3 to position 7 is 4 steps, and the terms rose by 26 − 14 = 12, so d = 12 ÷ 4 = 3. Walk back two steps from a_3 to find a_1 = 14 − 2(3) = 8. The rule is a_n = 8 + 3(n − 1), which simplifies to a_n = 3n + 5. Check: a_7 = 3(7) + 5 = 26. Good.",
+      "The common difference can be negative. A cup of water at 52 degrees cools 4 degrees each hour: 52, 48, 44, 40. The rule is a_n = 52 − 4(n − 1). When does it hit 20 degrees? Set 52 − 4(n − 1) = 20, so 4(n − 1) = 32, so n − 1 = 8 and n = 9. Check: a_9 = 52 − 4(8) = 52 − 32 = 20. The most common error is writing 4n instead of 4(n − 1); that shifts every term by one position.",
+      "If you plot an arithmetic sequence with the index on the horizontal axis, the points lie on a straight line whose slope is d. That is why a_n = 3n + 5 looks like the *linear* function y = 3x + 5. The difference is that a sequence uses only whole-number positions 1, 2, 3 and so on, so the graph is a row of separate dots, not a solid line."
+     ],
+     "words": [
+      {"w": "arithmetic sequence", "d": "a sequence in which each term is the previous term plus the same number"},
+      {"w": "common difference", "d": "the fixed amount d added to get from one term to the next; it can be negative"},
+      {"w": "linear", "d": "growing by the same amount each step, so the graph is a straight line of points"}
+     ],
+     "look": {
+      "type": "data",
+      "title": "Gym Total, Month by Month",
+      "rows": [["1 month", 65], ["2 months", 90], ["3 months", 115], ["6 months", 190], ["12 months", 340]],
+      "unit": "dollars paid in total",
+      "cite": "example plan: $40 to join plus $25 per month",
+      "prompt": "What is the common difference, and what does it mean in dollars? Use the rule a_n = 65 + 25(n − 1) to find the total after 24 months."
+     },
+     "check": [
+      {"q": "An arithmetic sequence has a_1 = 12 and common difference −5. What is a_6?", "choices": ["−13", "−18", "−8", "37"], "a": 0, "why": "a_6 = 12 + (6 − 1)(−5) = 12 − 25 = −13. Using 6 steps instead of 5 gives −18; stopping at 5 terms gives −8."},
+      {"q": "In an arithmetic sequence, a_2 = 11 and a_5 = 26. What is the common difference?", "choices": ["5", "15", "3", "7.5"], "a": 0, "why": "From position 2 to position 5 is 3 steps, and the terms rose 26 − 11 = 15, so d = 15 ÷ 3 = 5."},
+      {"q": "Which sequence is arithmetic?", "choices": ["2, 5, 8, 11, 14", "3, 6, 12, 24, 48", "1, 4, 9, 16, 25", "10, 8, 5, 1, −4"], "a": 0, "why": "Only 2, 5, 8, 11, 14 has the same difference (3) between every pair of neighbors. The others multiply by 2, square the index, or have differences that change."}
+     ]
+    },
+    {
+     "title": "Geometric Sequences",
+     "mainIdea": "In a geometric sequence each term is the one before times a fixed common ratio r, so a_n = a_1 × r^(n − 1).",
+     "reading": [
+      "On Monday three people hear a rumor. Each day, every person who knows it tells two new people, so the count of new hearers goes 3, 6, 12, 24, 48. Each term is the one before times 2. A sequence that multiplies by the same number each step is a *geometric sequence*, and that number is the *common ratio*, written r. The explicit rule is a_n = a_1 × r^(n − 1), so here a_n = 3 × 2^(n − 1). On day 7: 3 × 2^6 = 3 × 64 = 192. Doubling by hand, 3, 6, 12, 24, 48, 96, 192, agrees.",
+      "The ratio can be less than 1. A ball dropped from 200 cm bounces back to 3/5 of its previous height each time: 200, 120, 72, 43.2. The fourth height is 200 × 0.6^3 = 200 × 0.216 = 43.2 cm. The terms shrink toward 0 but never reach it. A negative ratio makes the signs alternate: 5, −10, 20, −40 has r = −2.",
+      "To find r, divide any term by the one before it: 12 ÷ 6 = 2 and 6 ÷ 3 = 2. To decide whether a list is geometric, check that every such ratio is the same. The most common error is using r^n instead of r^(n − 1). For the rumor that gives 3 × 2^7 = 384 on day 7, one day too far. Another error is multiplying a_1 by n × r, as if the sequence were arithmetic.",
+      "Arithmetic sequences add; geometric sequences multiply. The difference shows in the graph. An arithmetic sequence plots as dots on a line. A geometric sequence with r greater than 1 curves upward faster and faster, the shape of an *exponential* function. With r between 0 and 1 it curves down toward the axis without touching it."
+     ],
+     "words": [
+      {"w": "geometric sequence", "d": "a sequence in which each term is the previous term times the same number"},
+      {"w": "common ratio", "d": "the fixed multiplier r from one term to the next; find it by dividing a term by the one before"},
+      {"w": "exponential", "d": "growing or shrinking by the same factor each step, so the graph curves"}
+     ],
+     "look": {
+      "type": "think",
+      "title": "Bounce Heights",
+      "text": "A ball is dropped from 200 cm and each bounce reaches 0.6 of the height before it. The heights form a geometric sequence: 200, 120, 72, 43.2, 25.92. Each term is the previous one times 0.6, and the rule is a_n = 200 × 0.6^(n − 1), where a_1 is the drop height.",
+      "prompt": "Find the height of the sixth term two ways: multiply 25.92 by 0.6, and use the explicit rule with n = 6. Do the answers agree?"
+     },
+     "check": [
+      {"q": "What is the fifth term of the geometric sequence 4, 12, 36, 108, ...?", "choices": ["324", "216", "972", "144"], "a": 0, "why": "The ratio is 3, so the fifth term is 108 × 3 = 324. By the rule, 4 × 3^4 = 4 × 81 = 324."},
+      {"q": "A sequence has the rule a_n = 500 × (1/2)^(n − 1). What is a_4?", "choices": ["62.5", "31.25", "125", "250"], "a": 0, "why": "a_4 = 500 × (1/2)^3 = 500 ÷ 8 = 62.5. Halving three times from 500 gives 250, 125, 62.5."},
+      {"q": "A car loses 15% of its value every year. Its values year by year form which kind of sequence?", "choices": ["geometric, with r = 0.85", "arithmetic, with d = −15", "geometric, with r = 0.15", "arithmetic, with d = −0.15"], "a": 0, "why": "Losing 15% leaves 85%, so each value is the previous one times 0.85. Multiplying by a fixed factor makes the sequence geometric."}
+     ]
+    }
+   ]
+  },
+  {
+   "title": "Adding the Terms",
+   "lessons": [
+    {
+     "title": "Sigma Notation",
+     "mainIdea": "Sigma notation is a compact way to write a sum: it names the formula for each term and the range of index values to add.",
+     "reading": [
+      "A reading log shows 10 pages on day 1, then 15, 20, 25 and 30 on the next four days. The total is 10 + 15 + 20 + 25 + 30 = 100. Mathematicians write a sum like this with the Greek letter Σ (sigma): Σ from k = 1 to 5 of (5k + 5). The letter k is the *index of summation*. The 1 below the sigma is where k starts, the 5 above is where it stops, and the expression after it is the formula for each term. Check the ends: k = 1 gives 5(1) + 5 = 10 and k = 5 gives 5(5) + 5 = 30.",
+      "To expand a sigma expression, substitute each index value and add. Σ from k = 1 to 4 of k^2 means 1 + 4 + 9 + 16 = 30. The lower limit is not always 1. Σ from k = 3 to 6 of (2k − 1) means 5 + 7 + 9 + 11 = 32. The number of terms is the upper limit minus the lower limit plus 1, so from 3 to 6 there are 6 − 3 + 1 = 4 terms, not 3.",
+      "The sum of the terms of a sequence is called a *series*. The sum of just the first n terms is the *partial sum*, written S_n. For the reading log, S_3 = 10 + 15 + 20 = 45. Three errors show up often: starting k at 1 when the lower limit is something else, counting the terms as upper minus lower, and multiplying the formula by the number of terms instead of adding the separate values.",
+      "One useful fact: a constant factor can be pulled out front. Σ from k = 1 to 4 of 3k is 3 + 6 + 9 + 12 = 30, and 3 × (1 + 2 + 3 + 4) = 3 × 10 = 30. Sums of separate pieces also split: Σ of (k + 2) equals Σ of k plus Σ of 2. These rules turn a messy sigma into simpler ones you already know how to add."
+     ],
+     "words": [
+      {"w": "sigma notation", "d": "a way to write a sum with Σ, an index, a starting value, an ending value and a formula for each term"},
+      {"w": "index of summation", "d": "the letter, often k, that takes each whole-number value from the lower limit to the upper limit"},
+      {"w": "series", "d": "the sum of the terms of a sequence"},
+      {"w": "partial sum", "d": "the sum of the first n terms of a sequence, written S_n"}
+     ],
+     "look": {
+      "type": "think",
+      "title": "Read the Symbol",
+      "text": "Σ from k = 2 to 5 of (3k + 1). Substitute k = 2, 3, 4, 5 to get 7, 10, 13, 16. There are 5 − 2 + 1 = 4 terms. Add them: 7 + 10 = 17, 17 + 13 = 30, 30 + 16 = 46. The sum is 46.",
+      "prompt": "Now expand and add Σ from k = 1 to 4 of (k^2 + 1). How many terms are there, and what is the sum?"
+     },
+     "check": [
+      {"q": "What is Σ from k = 1 to 4 of (2k + 3)?", "choices": ["32", "11", "44", "20"], "a": 0, "why": "The terms are 5, 7, 9, 11, and 5 + 7 + 9 + 11 = 32. Multiplying the last term by 4 gives 44, which is wrong because the terms are not all equal."},
+      {"q": "How many terms are in Σ from k = 4 to 12 of k^3?", "choices": ["9", "8", "12", "16"], "a": 0, "why": "The terms use k = 4, 5, ..., 12. That is 12 − 4 + 1 = 9 values. Subtracting without adding 1 gives 8."},
+      {"q": "Which sigma expression equals 3 + 6 + 9 + 12 + 15?", "choices": ["Σ from k = 1 to 5 of 3k", "Σ from k = 1 to 5 of (k + 3)", "Σ from k = 3 to 15 of k", "Σ from k = 1 to 15 of 3k"], "a": 0, "why": "For k = 1 through 5, 3k gives 3, 6, 9, 12, 15. The others give 4 + 5 + 6 + 7 + 8, every integer from 3 to 15, or fifteen terms."}
+     ]
+    },
+    {
+     "title": "Arithmetic Series",
+     "mainIdea": "The sum of the first n terms of an arithmetic sequence is S_n = n(a_1 + a_n)/2: the number of terms times the average of the first and last.",
+     "reading": [
+      "Gauss's pairing trick works for any arithmetic sequence. A theater has 20 seats in the front row, and each row back has 2 more seats. There are 15 rows. The last row has a_15 = 20 + 2(14) = 48 seats. Pair the first and last rows: 20 + 48 = 68. The second and second-to-last: 22 + 46 = 68. Every pair gives 68, the sum of the first and last terms. Fifteen terms make 7 pairs plus the middle term, a_8 = 20 + 2(7) = 34. So the total is 7 × 68 + 34 = 476 + 34 = 510 seats.",
+      "The formula packages this: S_n = n(a_1 + a_n)/2. For the theater, S_15 = 15 × (20 + 48)/2 = 15 × 34 = 510. Same answer. The fraction (a_1 + a_n)/2 is the average of the first and last term, and in an arithmetic sequence that is the average of all the terms. Multiply an average by a count and you get a total. If you do not know the last term, substitute a_n = a_1 + (n − 1)d to get S_n = (n/2)[2a_1 + (n − 1)d].",
+      "Try a sigma sum: Σ from k = 1 to 40 of (3k + 2). The first term is 5, the 40th is 3(40) + 2 = 122. So S_40 = 40 × (5 + 122)/2 = 40 × 63.5 = 2540. Check with the second form: (40/2)[2(5) + 39(3)] = 20 × (10 + 117) = 20 × 127 = 2540. Both routes agree.",
+      "A savings challenge: put away $5 in week 1, $10 in week 2, $15 in week 3, and so on for 52 weeks. Week 52's deposit is 5 × 52 = $260. The total is 52 × (5 + 260)/2 = 52 × 132.5 = $6,890. The most common error is multiplying the count by the last term, 52 × 260 = 13,520, which is about twice the truth. The other is forgetting to divide by 2 after adding first and last."
+     ],
+     "words": [
+      {"w": "arithmetic series", "d": "the sum of the terms of an arithmetic sequence"},
+      {"w": "average term", "d": "in an arithmetic sequence, (first term + last term)/2, which equals the mean of all the terms"},
+      {"w": "pairing", "d": "Gauss's method of adding the first and last terms, then the second and second-to-last, and so on"}
+     ],
+     "look": {
+      "type": "data",
+      "title": "Savings Challenge Totals",
+      "rows": [["1 week", 5], ["4 weeks", 50], ["10 weeks", 275], ["26 weeks", 1755], ["52 weeks", 6890]],
+      "unit": "dollars saved in total",
+      "cite": "example plan: $5 in week 1, then $5 more each week than the week before",
+      "prompt": "Confirm the 26-week total with S_n = n(a_1 + a_n)/2. Then find the total after 40 weeks."
+     },
+     "check": [
+      {"q": "What is the sum 2 + 5 + 8 + ... + 59?", "choices": ["610", "1220", "1180", "590"], "a": 0, "why": "59 = 2 + 3(n − 1) gives n = 20 terms. S_20 = 20 × (2 + 59)/2 = 20 × 30.5 = 610. Forgetting to halve gives 1220."},
+      {"q": "What is the sum of the first 30 terms of the sequence a_n = 4n − 1?", "choices": ["1830", "3660", "3570", "1770"], "a": 0, "why": "a_1 = 3 and a_30 = 119. S_30 = 30 × (3 + 119)/2 = 30 × 61 = 1830."},
+      {"q": "What is 1 + 2 + 3 + ... + 200?", "choices": ["20,100", "40,200", "10,050", "20,000"], "a": 0, "why": "The sum of 1 through n is n(n + 1)/2, so 200 × 201 ÷ 2 = 20,100. One hundred pairs of 201 give the same total."}
+     ]
+    },
+    {
+     "title": "Geometric Series",
+     "mainIdea": "The sum of the first n terms of a geometric sequence is S_n = a_1(r^n − 1)/(r − 1), which comes from subtracting the sum from r times itself.",
+     "reading": [
+      "Take S = 3 + 6 + 12 + 24 + 48. Multiply every term by the ratio 2: 2S = 6 + 12 + 24 + 48 + 96. Now subtract the first line from the second. Almost everything cancels: 2S − S = 96 − 3, so S = 93. Check by adding: 3 + 6 = 9, 9 + 12 = 21, 21 + 24 = 45, 45 + 48 = 93. The same subtraction on a general geometric series gives the formula S_n = a_1(r^n − 1)/(r − 1). For this one: 3 × (2^5 − 1)/(2 − 1) = 3 × 31 = 93.",
+      "The formula handles ratios less than 1 too, where it is often written S_n = a_1(1 − r^n)/(1 − r). Add 100 + 50 + 25 + ... for 8 terms: 100 × (1 − 0.5^8)/(1 − 0.5) = 100 × (1 − 1/256)/0.5 = 200 × 255/256 = 199.21875. Adding the eight terms by hand, 100 + 50 + 25 + 12.5 + 6.25 + 3.125 + 1.5625 + 0.78125, gives the same 199.21875. Notice how close the total is to 200 already.",
+      "An old puzzle asks for one penny on day 1, two on day 2, four on day 3, and so on for 30 days. Day 30 alone is 2^29 pennies. The total is 1 × (2^30 − 1)/(2 − 1) = 2^30 − 1 = 1,073,741,823 pennies, which is a little over $10.7 million. Doubling is slow at first and then overwhelming. The most common errors are using r^(n − 1) in the formula instead of r^n, and dropping the −1 in the numerator.",
+      "A quick sanity check: the last term of a doubling series is always one more than the sum of all the earlier terms. In 3 + 6 + 12 + 24 + 48, the earlier terms add to 45 and 48 = 45 + 3, one first term more. For the pennies, the day-30 pile of 2^29 pennies is one penny more than days 1 through 29 combined. If your sum is far from twice the last term, look for a slip."
+     ],
+     "words": [
+      {"w": "geometric series", "d": "the sum of the terms of a geometric sequence"},
+      {"w": "subtraction trick", "d": "multiplying a geometric series by r and subtracting the original so the middle terms cancel"},
+      {"w": "power", "d": "a number raised to an exponent, like 2^30, meaning 30 factors of 2 multiplied together"}
+     ],
+     "look": {
+      "type": "think",
+      "title": "Doubling Pennies",
+      "text": "One penny on day 1, doubled every day. After 10 days the total is 2^10 − 1 = 1023 pennies, or $10.23. The formula: a_1 = 1, r = 2, n = 10, so S_10 = 1 × (2^10 − 1)/(2 − 1) = 1023. Half of the total came from the last two days.",
+      "prompt": "Find the total after 20 days in pennies and in dollars. Then explain why the day-20 pile alone is almost half the total."
+     },
+     "check": [
+      {"q": "What is 2 + 6 + 18 + 54 + 162?", "choices": ["242", "162", "484", "240"], "a": 0, "why": "a_1 = 2, r = 3, n = 5: S_5 = 2 × (3^5 − 1)/(3 − 1) = 2 × 242/2 = 242. Adding directly: 2 + 6 + 18 + 54 + 162 = 242."},
+      {"q": "A geometric sequence has a_1 = 5 and r = 2. What is S_6, the sum of its first six terms?", "choices": ["315", "320", "155", "630"], "a": 0, "why": "S_6 = 5 × (2^6 − 1)/(2 − 1) = 5 × 63 = 315. The terms 5 + 10 + 20 + 40 + 80 + 160 also total 315."},
+      {"q": "What is Σ from k = 1 to 4 of 10 × (1/2)^(k − 1)?", "choices": ["18.75", "19.375", "17.5", "9.375"], "a": 0, "why": "The terms are 10, 5, 2.5, 1.25, and 10 + 5 + 2.5 + 1.25 = 18.75. Adding a fifth term (0.625) would give 19.375."}
+     ]
+    }
+   ]
+  },
+  {
+   "title": "Sums Without End",
+   "lessons": [
+    {
+     "title": "Infinite Geometric Series",
+     "mainIdea": "An infinite geometric series has a finite sum, a_1/(1 − r), exactly when the common ratio is between −1 and 1; otherwise the partial sums never settle.",
+     "reading": [
+      "Walk toward a wall, covering half the remaining distance with each step. Your first step covers 1/2 of the way, the next 1/4, then 1/8, then 1/16. The partial sums are 1/2, 3/4, 7/8, 15/16. They creep toward 1 and never pass it; the gap to the wall halves each time. An endless sum whose partial sums settle on one number is said to *converge*, and that number is its sum. Here 1/2 + 1/4 + 1/8 + ... = 1.",
+      "Why? Start from S_n = a_1(1 − r^n)/(1 − r). When r is between −1 and 1, the power r^n shrinks toward 0 as n grows; 0.5^10 is already under 0.001. Dropping that vanishing piece leaves S = a_1/(1 − r). For the walk, (1/2)/(1 − 1/2) = 1. Another example: 6 + 2 + 2/3 + ... has r = 1/3, so S = 6/(1 − 1/3) = 6/(2/3) = 9. The partial sums 6, 8, 8.67, 8.89 are closing in on 9.",
+      "When r is 1 or more, or −1 or less, the series *diverges*: 1 + 2 + 4 + 8 + ... grows without bound, and 1 − 1 + 1 − 1 + ... bounces between 1 and 0 forever. Plugging r = 2 into the formula gives 1/(1 − 2) = −1, a nonsense answer, so always check the ratio before using it. Here is the formula at work: a ball dropped from 10 m rebounds to 0.6 of each height. Its total up-and-down travel is 10 + 2 × (6 + 3.6 + 2.16 + ...) = 10 + 2 × 6/(1 − 0.6) = 10 + 2 × 15 = 40 m."
+     ],
+     "words": [
+      {"w": "infinite series", "d": "a sum with no last term, written with ... or with ∞ above the sigma"},
+      {"w": "converge", "d": "for partial sums to settle closer and closer to one number, which is called the sum"},
+      {"w": "diverge", "d": "for partial sums to grow without bound or never settle, so the series has no sum"},
+      {"w": "limit", "d": "the number the partial sums approach as the number of terms grows"}
+     ],
+     "look": {
+      "type": "think",
+      "title": "Filling the Square",
+      "text": "Picture a square with area 1. Shade half of it. Then shade half of what is left (1/4), then half of what is left (1/8), and keep going. The shaded area after n steps is 1 − (1/2)^n, always just short of the whole square, and the unshaded strip halves each time. The endless sum 1/2 + 1/4 + 1/8 + ... equals 1.",
+      "prompt": "Suppose instead you shade 1/3 first, then 1/3 of what remains each time: 1/3, 2/9, 4/27, ... What is the ratio, and what is the total shaded area? Use the formula, then explain why the picture agrees."
+     },
+     "check": [
+      {"q": "What is the sum of the infinite series 8 + 4 + 2 + 1 + ...?", "choices": ["16", "15", "8", "It has no sum"], "a": 0, "why": "a_1 = 8 and r = 1/2, so S = 8/(1 − 1/2) = 8/(1/2) = 16. The partial sums 8, 12, 14, 15, 15.5 approach 16."},
+      {"q": "Which infinite series has no finite sum?", "choices": ["1 + 1.5 + 2.25 + 3.375 + ...", "100 + 10 + 1 + 0.1 + ...", "9 − 3 + 1 − 1/3 + ...", "0.3 + 0.03 + 0.003 + ..."], "a": 0, "why": "Its ratio is 1.5, which is greater than 1, so the terms grow and the partial sums never settle. The others have ratios 0.1, −1/3 and 0.1."},
+      {"q": "What is the sum of 12 − 4 + 4/3 − 4/9 + ...?", "choices": ["9", "18", "8", "16"], "a": 0, "why": "The ratio is −1/3, so S = 12/(1 − (−1/3)) = 12/(4/3) = 9. Using 1 − 1/3 by mistake gives 18."}
+     ]
+    },
+    {
+     "title": "Repeating Decimals and Steady States",
+     "mainIdea": "A repeating decimal is an infinite geometric series in disguise, and so is a dose that builds up in the body, so the same formula gives an exact answer for both.",
+     "reading": [
+      "The decimal 0.7777... means 0.7 + 0.07 + 0.007 + ..., a geometric series with a_1 = 0.7 and r = 0.1. Its sum is 0.7/(1 − 0.1) = 0.7/0.9 = 7/9. Divide 7 by 9 and you get 0.777..., so the formula is right. When the *repeating block* has two digits, the ratio is 0.01. So 0.363636... = 0.36/(1 − 0.01) = 0.36/0.99 = 36/99 = 4/11. Check: 4 ÷ 11 = 0.3636...",
+      "A famous case: 0.9999... = 0.9/(1 − 0.1) = 0.9/0.9 = 1. That surprises people, but the partial sums 0.9, 0.99, 0.999 close in on 1 and nothing else. A decimal with a non-repeating start splits into pieces: 2.1555... = 2.1 + (0.05 + 0.005 + ...) = 2.1 + 0.05/0.9 = 2.1 + 1/18 = 21/10 + 1/18. With the common denominator 90 that is 189/90 + 5/90 = 194/90 = 97/45. Check: 97 ÷ 45 = 2.1555...",
+      "The same idea runs a medicine schedule. A patient takes 100 mg every morning, and 40% of the drug is still in the body 24 hours later. Right after the second dose the body holds 100 + 40 = 140 mg. After the third: 100 + 0.4 × 140 = 156. After the fourth: 100 + 0.4 × 156 = 162.4. In the long run the amount just after a dose settles at a *steady state*: 100 + 40 + 16 + 6.4 + ... = 100/(1 − 0.4) = 166.67 mg. The most common error is using the wrong ratio, such as 0.1 for a two-digit repeating block."
+     ],
+     "words": [
+      {"w": "repeating decimal", "d": "a decimal whose digits repeat in a block forever, like 0.3636..."},
+      {"w": "repeating block", "d": "the group of digits that repeats; a block of two digits means the ratio is 0.01"},
+      {"w": "steady state", "d": "the level a repeated process settles at, where what is added each step equals what is lost"}
+     ],
+     "look": {
+      "type": "data",
+      "title": "Daily Dose Build-Up",
+      "rows": [["Day 1", 100], ["Day 2", 140], ["Day 3", 156], ["Day 4", 162.4], ["Day 5", 164.96], ["Long run", 166.67]],
+      "unit": "mg in the body right after the dose",
+      "cite": "example schedule: 100 mg each morning, with 40% of the drug remaining after 24 hours",
+      "prompt": "Why does the amount rise by less each day? What would the long-run level be if only 20% remained after a day?"
+     },
+     "check": [
+      {"q": "Written as a fraction in lowest terms, 0.4444... equals which of these?", "choices": ["4/9", "4/10", "44/100", "4/11"], "a": 0, "why": "0.4 + 0.04 + ... has a_1 = 0.4 and r = 0.1, so the sum is 0.4/0.9 = 4/9. Check: 4 ÷ 9 = 0.444..."},
+      {"q": "Written as a fraction in lowest terms, 0.272727... equals which of these?", "choices": ["3/11", "27/100", "3/10", "2/7"], "a": 0, "why": "The block 27 has two digits, so r = 0.01: 0.27/0.99 = 27/99 = 3/11. Check: 3 ÷ 11 = 0.2727..."},
+      {"q": "A patient takes 50 mg each day and 60% remains after 24 hours. What long-run amount is in the body right after a dose?", "choices": ["125 mg", "83.33 mg", "80 mg", "200 mg"], "a": 0, "why": "The steady state is 50/(1 − 0.6) = 50/0.4 = 125 mg. Dividing by 0.6 instead of 0.4 gives 83.33, a common slip."}
+     ]
+    }
+   ]
+  },
+  {
+   "title": "Recursion in the World",
+   "lessons": [
+    {
+     "title": "Fibonacci and the Golden Ratio",
+     "mainIdea": "The Fibonacci sequence adds its two previous terms to get the next, and the ratio of neighboring terms settles toward the golden ratio, about 1.618.",
+     "reading": [
+      "In 1202 Leonardo of Pisa, known as Fibonacci, published Liber Abaci, a book that helped bring Hindu-Arabic numerals to Europe. One of its puzzles asks how rabbit pairs multiply if each grown pair produces a new pair every month and a new pair takes a month to grow up. The pair counts follow a rule with two starting terms: F_1 = 1, F_2 = 1, and F_n = F_(n−1) + F_(n−2). That gives 1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144. This is the *Fibonacci sequence*, the best-known example of a rule that looks back two steps.",
+      "Divide each term by the one before it: 8/5 = 1.6, 13/8 = 1.625, 21/13 ≈ 1.615, 34/21 ≈ 1.619, 55/34 ≈ 1.618, 89/55 ≈ 1.618. The ratios bounce above and below a fixed number and close in on it. That number is the *golden ratio*, φ = (1 + √5)/2 ≈ 1.618. It is the positive solution of x^2 = x + 1; check that 1.618^2 ≈ 2.618 ≈ 1.618 + 1. A rectangle whose long side is φ times its short side is a golden rectangle: cut off a square and the leftover piece is another golden rectangle.",
+      "Fibonacci numbers turn up when counting spirals on a pineapple or the seed head of a sunflower, which often number 8, 13, 21 or 34. The sequence is not geometric, since the ratio is only approximately constant, but it gets closer to geometric with every term. A useful shortcut: F_n is φ^n/√5 rounded to the nearest whole number. For n = 10 that is about 122.99/2.236 ≈ 55.0, and F_10 = 55. Any sequence with the same add-the-last-two rule, such as 2, 1, 3, 4, 7, 11, has ratios that approach φ too."
+     ],
+     "words": [
+      {"w": "Fibonacci sequence", "d": "1, 1, 2, 3, 5, 8, ..., where each term is the sum of the two before it"},
+      {"w": "golden ratio", "d": "the number φ = (1 + √5)/2 ≈ 1.618, the positive solution of x^2 = x + 1"},
+      {"w": "two-step recursion", "d": "a rule that uses the two previous terms, so it needs two starting values"}
+     ],
+     "look": {
+      "type": "think",
+      "title": "Rabbit Pairs by Month",
+      "text": "Month 1: one young pair. Month 2: the pair has grown, still one pair. Month 3: the grown pair has a new pair, 2 pairs. Month 4: 3 pairs. Month 5: 5 pairs. Each month's count is the last month's pairs (they all survive) plus the pairs from two months ago (they are grown and each produce a new pair). The list runs 1, 1, 2, 3, 5, 8, 13, 21.",
+      "prompt": "Extend the list to month 12. Then divide the month-12 count by the month-11 count and compare the result with 1.618."
+     },
+     "check": [
+      {"q": "In the Fibonacci sequence, what term comes after 34, 55, 89?", "choices": ["144", "143", "178", "123"], "a": 0, "why": "Each term is the sum of the two before it: 55 + 89 = 144. Doubling 89 or adding 34 + 89 uses the wrong terms."},
+      {"q": "What is 21/13, rounded to three decimal places?", "choices": ["1.615", "1.625", "1.600", "1.618"], "a": 0, "why": "21 ÷ 13 = 1.61538..., which rounds to 1.615. The neighbors 13/8 = 1.625 and 8/5 = 1.6 sit on either side of the golden ratio."},
+      {"q": "The golden ratio φ is a solution of which equation?", "choices": ["x^2 = x + 1", "x^2 = 2x", "x^2 = x − 1", "2x = x + 1"], "a": 0, "why": "φ ≈ 1.618 satisfies 1.618^2 ≈ 2.618, and 1.618 + 1 = 2.618. The other equations have solutions 0 and 2, no real solution, and 1."}
+     ]
+    },
+    {
+     "title": "Loans and Populations",
+     "mainIdea": "Many real processes are recursive: next month's balance or next year's population comes from this one by a fixed rule, and stepping the rule forward shows where it goes.",
+     "reading": [
+      "You borrow $1,000 at 1% interest per month and pay $100 each month. Each month the lender adds interest first, then subtracts your payment. The rule is B_0 = 1000 and B_n = 1.01 × B_(n−1) − 100. Step it: B_1 = 1010 − 100 = 910. B_2 = 1.01 × 910 − 100 = 919.10 − 100 = 819.10. B_3 = 1.01 × 819.10 − 100 = 827.29 − 100 = 727.29. The debt falls a little faster each month because the interest charge shrinks as the balance shrinks.",
+      "A deer herd of 500 grows 8% a year, and wildlife managers remove 30 deer each year. The rule is P_n = 1.08 × P_(n−1) − 30. Then P_1 = 540 − 30 = 510, P_2 = 550.8 − 30 = 520.8, and P_3 = 562.46 − 30 = 532.46. Is there a size where the herd holds steady? Set P = 1.08P − 30, so 0.08P = 30 and P = 375. That is the *equilibrium*. Check: 1.08 × 375 = 405, and 405 − 30 = 375. A herd of exactly 375 stays at 375. Our herd started above 375, so growth outruns the removals and it keeps rising.",
+      "Recursive rules are how spreadsheets and calculators handle these problems: fill in the rule once and drag it down the column. An explicit formula exists but is messier, so people usually step the rule. Two errors to avoid: subtracting the payment before the interest is added, which understates the charge, and applying the growth rate to the original amount every time instead of to the new total. Growth on growth is called *compounding*, and it is why the herd's yearly increase gets bigger each year."
+     ],
+     "words": [
+      {"w": "recursive model", "d": "a rule that computes each new value from the value before it, like B_n = 1.01 × B_(n−1) − 100"},
+      {"w": "balance", "d": "the amount still owed on a loan after interest and payments"},
+      {"w": "equilibrium", "d": "a value that the rule sends to itself, so the quantity holds steady there"},
+      {"w": "compounding", "d": "growth applied to a total that already includes earlier growth"}
+     ],
+     "look": {
+      "type": "data",
+      "title": "Loan Balance Month by Month",
+      "rows": [["Start", 1000], ["Month 1", 910], ["Month 2", 819.1], ["Month 3", 727.29], ["Month 4", 634.56], ["Month 5", 540.91]],
+      "unit": "dollars still owed",
+      "cite": "example loan: $1,000 at 1% per month with a $100 payment each month",
+      "prompt": "Compute the drop from each month to the next. Why does the drop grow a little every month? Use the rule to find the balance after month 6."
+     },
+     "check": [
+      {"q": "A balance follows B_n = 1.02 × B_(n−1) − 50 with B_0 = 800. What is B_1?", "choices": ["766", "765", "750", "782"], "a": 0, "why": "Add interest first: 1.02 × 800 = 816. Then subtract the payment: 816 − 50 = 766. Paying first and then adding interest gives 765."},
+      {"q": "A population follows P_n = 1.05 × P_(n−1) − 40. At what size does it hold steady?", "choices": ["800", "40", "2000", "760"], "a": 0, "why": "Set P = 1.05P − 40, so 0.05P = 40 and P = 800. Check: 1.05 × 800 = 840, and 840 − 40 = 800."},
+      {"q": "What does the rule B_n = 1.005 × B_(n−1) − 150 describe?", "choices": ["0.5% interest is added, then $150 is paid", "5% interest is added, then $150 is paid", "$150 is added, then 0.5% interest", "$150 is paid, then 0.5% interest is added"], "a": 0, "why": "Multiplying by 1.005 adds 0.5% to the previous balance. The −150 that follows is a payment taken off after the interest."}
+     ]
+    },
+    {
+     "title": "Fractals and Self-Similarity",
+     "mainIdea": "A fractal is built by repeating one rule at ever smaller scales, and geometric sequences describe how its pieces multiply and shrink.",
+     "reading": [
+      "Start with a straight segment of length 1. Replace its middle third with two sides of a small triangle that points outward. Now you have 4 segments, each 1/3 long, total length 4/3. Do the same to each of those 4 segments: 16 segments, each 1/9 long, total length 16/9. This is the Koch curve. At *stage* n it has 4^n segments, each of length (1/3)^n, so its total length is (4/3)^n. At stage 3 that is 64 segments of length 1/27, total 64/27 ≈ 2.37. The length forms a geometric sequence with ratio 4/3, greater than 1, so it grows without bound, even though the whole curve fits in a small box.",
+      "The Sierpinski triangle goes the other way. Take a shaded triangle and remove the middle triangle formed by the midpoints of its sides, leaving 3 shaded triangles, each with 1/4 of the area. Repeat on each of those. At stage n there are 3^n shaded triangles, each with (1/4)^n of the original area, so the shaded area is (3/4)^n. At stage 4 that is 81 triangles covering 81/256 ≈ 0.316 of the original. The shaded area shrinks toward 0 while the count of triangles explodes.",
+      "Shapes like these are *fractals*: the word was coined by Benoit Mandelbrot in 1975 for shapes that look similar at every scale. Zoom in on a piece of the Koch curve and you see the same crinkled shape again; that property is called *self-similarity*. Coastlines, fern leaves, river networks and the branching airways of the lungs all show it in rough form. The common error is mixing up the two sequences: the count of pieces grows (ratio 4, or 3), while the size of each piece shrinks (ratio 1/3, or 1/4). Both are geometric, but with different ratios."
+     ],
+     "words": [
+      {"w": "fractal", "d": "a shape built by repeating a rule at smaller and smaller scales"},
+      {"w": "self-similarity", "d": "the property that a small piece of a shape looks like the whole shape"},
+      {"w": "stage", "d": "one round of applying the rule; stage 0 is the starting shape"},
+      {"w": "iteration", "d": "repeating the same rule over and over, feeding each result back in"}
+     ],
+     "look": {
+      "type": "data",
+      "title": "Koch Curve Length by Stage",
+      "rows": [["Stage 0", 1], ["Stage 1", 1.333], ["Stage 2", 1.778], ["Stage 3", 2.370], ["Stage 4", 3.160], ["Stage 5", 4.214]],
+      "unit": "total length, with the starting segment as 1",
+      "cite": "computed from the rule: each stage multiplies the length by 4/3",
+      "prompt": "Each row is 4/3 of the row above it. How many stages does it take for the length to pass 10? Reason with the ratio, then check by multiplying."
+     },
+     "check": [
+      {"q": "How many segments does the Koch curve have at stage 4?", "choices": ["256", "64", "81", "16"], "a": 0, "why": "Each stage multiplies the count by 4, so stage 4 has 4^4 = 256 segments. Stage 3 has 64, and 81 is 3^4, the Sierpinski count."},
+      {"q": "What fraction of the original area is shaded in the Sierpinski triangle at stage 3?", "choices": ["27/64", "1/64", "3/4", "9/16"], "a": 0, "why": "Each stage keeps 3/4 of the shaded area, so stage 3 keeps (3/4)^3 = 27/64. Stage 2 keeps 9/16."},
+      {"q": "Why does the total length of the Koch curve grow without bound?", "choices": ["Its lengths form a geometric sequence with ratio 4/3, which is greater than 1", "Each segment gets shorter with every stage", "The ratio 1/3 is less than 1, so the sum converges", "The number of segments stays the same"], "a": 0, "why": "Each stage multiplies the length by 4/3. Multiplying by a number above 1 over and over makes the terms grow past any bound."}
+     ]
+    }
+   ]
+  }
+ ],
+ "review": [
+  {"q": "What is the 12th term of the arithmetic sequence 7, 11, 15, 19, ...?", "choices": ["51", "55", "47", "84"], "a": 0, "why": "a_12 = 7 + 4(12 − 1) = 7 + 44 = 51. Using 4 × 12 gives 55, one term too far."},
+  {"q": "What is the 6th term of the geometric sequence 2, 6, 18, ...?", "choices": ["486", "162", "1458", "12"], "a": 0, "why": "a_6 = 2 × 3^5 = 2 × 243 = 486. Tripling by hand: 2, 6, 18, 54, 162, 486."},
+  {"q": "What is Σ from k = 1 to 5 of (4k − 1)?", "choices": ["55", "19", "95", "60"], "a": 0, "why": "The terms are 3, 7, 11, 15, 19 and their sum is 55. As an arithmetic series: 5 × (3 + 19)/2 = 55."},
+  {"q": "What is the sum of the first 25 terms of the sequence 10, 13, 16, ...?", "choices": ["1150", "2300", "2050", "1075"], "a": 0, "why": "a_25 = 10 + 3(24) = 82. S_25 = 25 × (10 + 82)/2 = 25 × 46 = 1150."},
+  {"q": "What is the sum of the infinite series 20 + 5 + 1.25 + ...?", "choices": ["80/3, about 26.67", "26.25", "25", "It has no sum"], "a": 0, "why": "The ratio is 1/4, so S = 20/(1 − 1/4) = 20/(3/4) = 80/3 ≈ 26.67. The partial sums 20, 25, 26.25, 26.5625 approach it."},
+  {"q": "Which fraction equals 0.181818...?", "choices": ["2/11", "18/100", "9/50", "1/8"], "a": 0, "why": "The two-digit block 18 gives 0.18/0.99 = 18/99 = 2/11. Check: 2 ÷ 11 = 0.1818..."},
+  {"q": "A sequence is defined by a_1 = 4, a_2 = 6, and a_n = a_(n−1) + a_(n−2). What is a_5?", "choices": ["26", "16", "42", "22"], "a": 0, "why": "a_3 = 6 + 4 = 10, a_4 = 10 + 6 = 16, a_5 = 16 + 10 = 26."},
+  {"q": "A savings balance follows S_n = 1.03 × S_(n−1) + 200 with S_0 = 1000. What is S_2, rounded to the cent?", "choices": ["$1,466.90", "$1,430.00", "$1,479.08", "$1,266.90"], "a": 0, "why": "S_1 = 1.03 × 1000 + 200 = 1230. S_2 = 1.03 × 1230 + 200 = 1266.90 + 200 = 1466.90. Forgetting the second year's interest gives 1430."}
+ ]
+}
