@@ -1301,11 +1301,25 @@ function renderChart(id){
 
     root.appendChild(labeled("Added as the lesson progresses"));
     var qg = el("div","mechs");
+    /* AOG-AC-PACKTAP-V1 (2026-09-25) — Jimmy, looking at four empty dashed boxes:
+       "This seems like a area to insert but you can insert anything." They were
+       reveal-only placeholders. Now a tap on a waiting box reveals it (the same
+       stage the Reveal button sets), and every box takes the class's own words in
+       the same chip store as every other slot, so save, load, print and Reset
+       carry them unchanged. */
     c.packQualities.forEach(function(q, i){
       var on = shown(c, q);
       var card = el("div","mech" + (on ? "" : " pending"));
       card.appendChild(el("div","n", String(i+1)));
-      card.appendChild(el("div","t", on ? q.t : "…"));
+      var tx = el("div","t", on ? q.t : "Tap to reveal");
+      card.appendChild(tx);
+      if(!on){
+        card.setAttribute("role","button"); card.tabIndex = 0; card.style.cursor = "pointer";
+        var open = function(){ var st = cs(c.id); if(st.stage < q.stage){ st.stage = q.stage; save(); go(current); } };
+        card.addEventListener("click", function(e){ if(!e.target.closest("input,button")) open(); });
+        card.addEventListener("keydown", function(e){ if((e.key === "Enter" || e.key === " ") && e.target === card){ e.preventDefault(); open(); } });
+      }
+      card.appendChild(classBlock(c, {id:"bust" + (i+1), label:"Class words"}));
       qg.appendChild(card);
     });
     root.appendChild(qg);
