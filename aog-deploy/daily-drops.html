@@ -1170,7 +1170,6 @@ body.review .box .ptcell, body.review .box .ew, body.review .box textarea{pointe
   <button class="btn" id="tryBtn" type="button" data-en="Try the misses again" data-es="Reintentar las falladas">Try the misses again</button>
   <button class="btn" id="clearBtn" type="button" data-en="Clear sheet" data-es="Borrar hoja">Clear sheet</button>
   <button class="btn" id="printBtn" type="button" data-en="Print" data-es="Imprimir">Print</button>
-  <button class="btn" id="algBtn" type="button" hidden data-en="Print algorithms only" data-es="Imprimir solo los algoritmos">Print algorithms only</button>
   <button class="btn" id="packBtn" type="button" data-en="Print several…" data-es="Imprimir varios…">Print several…</button>
   <span class="resline" id="resLine"></span>
 </div>
@@ -8166,6 +8165,122 @@ MATH['8']=[
  S('Geometry','Geometría',function(r){return G.geom(r,{modes:['pyth','pdist','volcyl','transform','parallel']})}),
  S('Functions and Graphing','Funciones y gráficas',function(r){return G.graphing(r,{modes:['slope','linear','table','isfunc','fromtwo','qual']})})];
 
+/* ── AOG-DD-READ-V1 (2026-09-25) ── READING CLOSELY. Every ELA box before this
+   was a Language standard (L.1–L.5); the Reading standards — evidence, central
+   idea and theme, characters and events, structure, point of view and purpose,
+   claims and reasons — were never asked. Each entry is a short ORIGINAL passage
+   and questions on it; the last item of each question is the standard it
+   serves. One question is asked per draft, so a passage comes back with a
+   different question on another day. Bands: p = K–2, i = 3–5, m = 6–8,
+   h = 9–12. */
+var READQ={};
+READQ.p=[
+ ['Tam lost her red mitten at the park. She looked under the slide. She looked by the swings. At last her dog came running with the mitten in his mouth.',[
+   ['What did Tam lose?','her mitten',['her dog','her hat','her swing'],'RL.1'],
+   ['Who found the mitten?','her dog',['Tam','her mom','a friend'],'RL.3'],
+   ['Where does the story take place?','at the park',['at school','at home','at the store'],'RL.3']]],
+ ['Frogs start life as eggs in a pond. The eggs hatch into tadpoles. Tadpoles have tails and swim like fish. Slowly they grow legs and lose their tails. Then they are frogs.',[
+   ['What comes out of a frog egg?','a tadpole',['a frog','a fish','a bird'],'RI.1'],
+   ['What is this mostly about?','how a frog grows',['how fish swim','why ponds are wet','what frogs eat'],'RI.2'],
+   ['What happens LAST?','they become frogs',['they hatch','they swim like fish','they are eggs'],'RI.3']]],
+ ['Ben wanted to win the race. He ran fast, but he tripped. His friend Ana stopped to help him up. They crossed the line together, laughing.',[
+   ['What problem did Ben have?','he tripped',['he was late','he lost his shoe','he was sad'],'RL.3'],
+   ['How did Ana help?','she helped him up',['she won the race','she called his mom','she gave him water'],'RL.1'],
+   ['What is the lesson?','helping a friend matters more than winning',['always run fast','never race','winners are best'],'RL.2']]],
+ ['Bees fly from flower to flower. They drink sweet nectar. Yellow dust called pollen sticks to their legs. The pollen helps new flowers grow.',[
+   ['What sticks to a bee\'s legs?','pollen',['nectar','honey','water'],'RI.1'],
+   ['What does pollen help do?','grow new flowers',['make bees fly','make rain','feed birds'],'RI.3'],
+   ['What is the main topic?','bees and flowers',['birds','rain','honey jars'],'RI.2']]],
+ ['It was Max\'s first day at a new school. His hands shook as he opened the door. A girl waved and said, "Sit with us!" Max smiled for the first time all day.',[
+   ['How did Max feel at the start?','nervous',['silly','angry','sleepy'],'RL.3'],
+   ['How did Max feel at the end?','happy',['scared','bored','mad'],'RL.3'],
+   ['Which words show Max was nervous?','his hands shook',['he smiled','a girl waved','sit with us'],'RL.1']]],
+ ['Snow melts when the sun warms it. The water runs into streams. The streams flow into rivers. Some of that water ends up in the ocean.',[
+   ['What makes snow melt?','the sun',['the wind','the moon','the ocean'],'RI.1'],
+   ['Where do streams flow?','into rivers',['into the sky','into snow','into trees'],'RI.3'],
+   ['Why did the author write this?','to teach how water moves',['to tell a funny story','to sell snow','to describe a beach'],'RI.6']]]];
+READQ.i=[
+ ['Rosa had practiced her violin solo for weeks, but on the night of the concert her fingers felt like ice. When she looked out, she saw her grandfather in the front row, nodding slowly. She took a breath, closed her eyes and played the first note as if only he were listening.',[
+   ['What is Rosa\'s problem?','she is nervous about her solo',['she forgot her violin','her grandfather is late','the concert is canceled'],'RL.3'],
+   ['What helps Rosa begin?','seeing her grandfather',['closing the curtain','her teacher\'s speech','a louder song'],'RL.1'],
+   ['Which phrase shows how Rosa feels at first?','her fingers felt like ice',['nodding slowly','the front row','the first note'],'RL.1'],
+   ['What is the theme?','the support of someone you love can give you courage',['practice is a waste of time','concerts are boring','never play alone'],'RL.2']]],
+ ['Monarch butterflies cannot survive cold winters. Each fall, millions of them fly as far as 3,000 miles from Canada and the United States to forests in Mexico. There they cluster on trees to stay warm. In spring they head north again, and their great-grandchildren finish the trip.',[
+   ['Why do monarchs fly south?','they cannot survive cold winters',['they are looking for food only','they follow birds','they like long trips'],'RI.3'],
+   ['What is the main idea?','monarchs migrate a long way to survive winter',['Mexico has many trees','butterflies are orange','Canada is cold'],'RI.2'],
+   ['Which detail supports that the trip is very long?','as far as 3,000 miles',['they cluster on trees','in spring','millions of them'],'RI.8'],
+   ['How is the passage mostly organized?','in time order',['problem and solution','compare and contrast','question and answer'],'RI.5']]],
+ ['"I can do it myself," Leo said, pushing his sister\'s hand away from the model rocket. An hour later the fins were crooked and glue covered the table. Leo stared at the mess, then walked to his sister\'s room. "Could you show me how you did yours?" he asked quietly.',[
+   ['How does Leo change?','he learns to ask for help',['he gives up on rockets','he becomes angry','he stops talking to his sister'],'RL.3'],
+   ['What point of view is the story told from?','third person',['first person','second person','the rocket\'s'],'RL.6'],
+   ['Which detail shows Leo was struggling?','the fins were crooked',['he asked quietly','his sister\'s room','an hour later'],'RL.1']]],
+ ['Some people think school should start later. Studies show that teenagers\' bodies naturally fall asleep later at night. Students who start later sleep more, miss fewer days and are in fewer car accidents. A later bell would help students learn.',[
+   ['What is the author\'s opinion?','school should start later',['school should start earlier','teens sleep too much','car accidents are rare'],'RI.8'],
+   ['Which reason supports the opinion?','students who start later miss fewer days',['school buses are yellow','some people disagree','teachers like mornings'],'RI.8'],
+   ['What is the author\'s purpose?','to persuade',['to entertain','to explain how to sleep','to describe a school'],'RI.6']]],
+ ['The Great Chicago Fire of 1871 burned for two days and left about 100,000 people homeless. Because most buildings were wooden, the flames spread fast. Afterward, the city passed laws requiring brick and stone. Chicago rebuilt quickly and became famous for its tall new buildings.',[
+   ['Why did the fire spread fast?','most buildings were wooden',['it was winter','there was no river','people were asleep'],'RI.3'],
+   ['What was one effect of the fire?','new laws required brick and stone',['Chicago was abandoned','wood became cheaper','the city stopped growing'],'RI.3'],
+   ['How is the passage organized?','cause and effect',['compare and contrast','a list of steps','a story told by one person'],'RI.5']]],
+ ['The fox and the crow both wanted the last berry on the bush. The fox flattered the crow until she sang, and the berry fell into his paws. The next day the crow ate first and sang afterward.',[
+   ['What lesson did the crow learn?','do not trust flattery',['always sing loudly','share with foxes','berries are bad'],'RL.2'],
+   ['What kind of story is this?','a fable',['a biography','a news article','a poem'],'RL.5'],
+   ['How did the fox get the berry?','he flattered the crow',['he climbed the bush','he asked nicely','he found another bush'],'RL.1']]]];
+READQ.m=[
+ ['Mara had spent all summer building a birdhouse for the county fair. The morning of judging, a storm cracked its roof. Her brother told her to enter it anyway. Instead, she fixed the roof with scrap cedar, sanded it until her hands ached and wrote a new card: "Built twice."',[
+   ['Which detail best shows Mara\'s determination?','she sanded it until her hands ached',['a storm cracked its roof','her brother told her to enter it','the county fair'],'RL.1'],
+   ['What theme does the story develop?','setbacks can make work more meaningful',['storms ruin everything','brothers give bad advice','fairs are unfair'],'RL.2'],
+   ['What does the new card "Built twice" suggest about Mara?','she is proud of overcoming the damage',['she is embarrassed','she wants to quit','she blames her brother'],'RL.4'],
+   ['How does the storm move the plot forward?','it creates the conflict Mara must solve',['it ends the story','it introduces the brother','it describes the fair'],'RL.3']]],
+ ['Cities are hotter than the countryside around them, a pattern called the urban heat island. Dark roofs and pavement absorb sunlight, while fewer trees mean less shade. Some cities now paint roofs white and plant trees along streets. In one study, a neighborhood with new trees was up to 5 degrees cooler on summer afternoons.',[
+   ['What is the central idea?','cities are hotter, but changes can cool them',['trees grow better in cities','white paint is expensive','summers are getting shorter'],'RI.2'],
+   ['Which evidence best supports that trees help?','a neighborhood with new trees was up to 5 degrees cooler',['dark roofs absorb sunlight','cities are hotter than the countryside','some cities paint roofs'],'RI.1'],
+   ['How is the passage organized?','problem and solution',['time order','compare only','a personal story'],'RI.5'],
+   ['What does "absorb" most likely mean?','take in',['reflect','cool','cover'],'RI.4']]],
+ ['"You\'re not really going to wear that," Dev\'s cousin laughed, pointing at his grandfather\'s old wool cap. Dev pulled it lower over his ears. He could still smell the pipe smoke and cedar chest in it. "Yes," he said. "I am."',[
+   ['Why does Dev keep wearing the cap?','it connects him to his grandfather',['it is in style','his cousin likes it','it is new'],'RL.1'],
+   ['What can you infer about Dev\'s grandfather?','he is gone or far away and Dev misses him',['he is angry at Dev','he sells caps','he never met Dev'],'RL.1'],
+   ['How does the cousin\'s point of view differ from Dev\'s?','the cousin sees an old cap; Dev sees a memory',['they agree completely','the cousin misses the grandfather more','Dev thinks the cap is ugly'],'RL.6']]],
+ ['Some argue that cell phones should be banned in schools. Yet phones let students check facts, record assignments and reach parents in an emergency. A ban treats a tool as a toy. Schools should teach students when phones help and when they distract, instead of pretending phones do not exist.',[
+   ['What is the author\'s claim?','schools should teach responsible phone use instead of banning phones',['phones should be banned','phones are only toys','parents should keep phones'],'RI.8'],
+   ['Which reason does the author give?','phones let students reach parents in an emergency',['phones are expensive','teachers dislike phones','phones break easily'],'RI.8'],
+   ['How does the author address the other side?','by naming the ban idea and arguing against it',['by ignoring it','by agreeing with it','by telling a story'],'RI.6']]],
+ ['In 1955, fifteen-year-old Claudette Colvin refused to give up her bus seat in Montgomery, Alabama, nine months before Rosa Parks did the same. Leaders chose not to build a campaign around her case at the time. Years later, she became a plaintiff in Browder v. Gayle, the court case that ended bus segregation in the city.',[
+   ['What is the main idea?','Claudette Colvin played an early and important role in ending bus segregation',['Rosa Parks was the first to protest','buses were never segregated','Colvin was a lawyer'],'RI.2'],
+   ['What connection does the author draw?','Colvin\'s case helped lead to the ruling that ended bus segregation',['Colvin and Parks were sisters','Colvin started the boycott','the court case failed'],'RI.3'],
+   ['Why does the author mention Rosa Parks?','to show Colvin acted first',['to say Parks was wrong','to describe Parks\'s childhood','to change the subject'],'RI.6']]],
+ ['The poem\'s speaker describes the old oak "holding the sky on its shoulders" through every storm. In the last stanza, the speaker admits she has leaned on her mother the same way for years.',[
+   ['What is the oak compared to?','the speaker\'s mother',['the storm','the speaker','the sky'],'RL.4'],
+   ['What theme does the comparison suggest?','the people we rely on carry heavy loads for us',['trees are stronger than people','storms are dangerous','mothers dislike oaks'],'RL.2'],
+   ['How does the last stanza change the poem?','it reveals the oak stands for a person',['it adds a new storm','it describes a new tree','it ends with a question'],'RL.5']]]];
+READQ.h=[
+ ['In her 1851 speech, Sojourner Truth answers men who said women were too delicate for equal rights. She describes plowing, planting and bearing the lash, then repeats a single question: "And ain\'t I a woman?"',[
+   ['What is the purpose of the repeated question?','to challenge the claim that women are too delicate for equal rights',['to ask the audience for directions','to describe her farm','to praise her opponents'],'RI.6'],
+   ['What evidence does Truth offer?','her own hard physical labor and suffering',['statistics about farms','quotations from judges','a scientific study'],'RI.8'],
+   ['Which rhetorical device is central to the speech?','repetition',['understatement','flashback','hyperbole'],'RI.6']]],
+ ['The narrator returns to her childhood town expecting the lake to be as vast as she remembers. Standing on the shore, she sees it is barely a pond. She laughs, but the laugh catches in her throat.',[
+   ['What does the shrunken lake most likely represent?','how memory and childhood change with time',['pollution in the town','a drought','a real estate problem'],'RL.2'],
+   ['What does "the laugh catches in her throat" reveal?','her amusement is mixed with grief',['she is sick','she is angry at the town','she is pretending'],'RL.4'],
+   ['How does the author structure the moment?','expectation followed by a reversal',['a list of events','a debate','a series of flashbacks'],'RL.5']]],
+ ['A city council argues that a new stadium will "pay for itself" through tourism. Yet economists who have studied dozens of stadiums find that most never return their public cost; spending simply shifts from other local businesses.',[
+   ['What is the author\'s central claim?','public stadiums rarely pay for themselves',['stadiums always create tourism','economists love sports','cities should build more stadiums'],'RI.2'],
+   ['What kind of evidence supports the claim?','research across many stadiums',['a single fan\'s story','the council\'s promise','a stadium\'s ticket price'],'RI.8'],
+   ['How does the author treat the council\'s argument?','presents it and then refutes it with evidence',['ignores it','accepts it fully','mocks it without evidence'],'RI.6']]],
+ ['In the first chapter, the author describes the family\'s house in loving detail: the creaking stairs, the smell of bread, the dented kettle. In the last chapter, the house is sold, and the narrator lists only what is missing.',[
+   ['Why does the author open with such detail?','to make the later loss feel sharper',['to sell the house','to explain how to bake','to describe the neighborhood'],'RL.5'],
+   ['What theme does the contrast develop?','a home is made of the life lived in it',['old houses are dangerous','selling is always wise','kettles should be replaced'],'RL.2'],
+   ['What is the tone of the last chapter?','mournful',['celebratory','humorous','neutral'],'RL.4']]],
+ ['"We choose to go to the moon in this decade and do the other things," President Kennedy said in 1962, "not because they are easy, but because they are hard."',[
+   ['What does Kennedy emphasize about the goal?','its difficulty is what makes it worth pursuing',['it will be cheap','it will be quick','it is already done'],'RI.6'],
+   ['Which device does the quotation use?','antithesis (contrasting easy and hard)',['alliteration','a rhetorical question','an anecdote'],'RI.6'],
+   ['What was the speech mainly meant to do?','build public support for the space program',['explain rocket science','criticize NASA','end the Cold War'],'RI.8']]],
+ ['A study found that students who ate breakfast scored higher on tests. A news headline declared: "Breakfast Makes You Smarter." The study, however, only showed the two were linked; it did not test whether breakfast caused the higher scores.',[
+   ['What is the flaw in the headline?','it treats a correlation as a cause',['it misspells breakfast','it uses too many numbers','it has no verb'],'RI.8'],
+   ['What would better test the headline\'s claim?','an experiment that randomly assigns breakfast',['a longer headline','a survey of chefs','asking one student'],'RI.8'],
+   ['What is the author\'s purpose?','to show how evidence can be misread',['to sell cereal','to describe a school','to tell a story'],'RI.6']]]];
+E.read=function(r,c){var b=B(),p=r.pick(READQ[c.bank]),q=r.pick(p[1]);
+  return done(b,'<div class="q" style="flex-basis:100%;width:100%;font-size:.96em;line-height:1.5;border-left:3px solid #c9b98f;padding-left:10px">'+p[0]+'</div>'+
+    '<div class="q" style="flex-basis:100%;width:100%;margin-top:8px"><b>'+q[0]+'</b></div><div class="row" style="margin-top:6px">'+b.mc(q[1],r.shuf([q[1]].concat(q[2])))+'</div>')};
 var ELA={};
 function elaPrimary(bank){return [
  S('Letter Sounds and Rhyme','Sonidos y rimas',function(r){return E.phonics(r,{modes:['rhyme'],bank:bank})}),
@@ -8177,14 +8292,14 @@ function elaPrimary(bank){return [
  S('Sentence or Not','¿Es una oración?',function(r){return E.sentence(r,{modes:['kind','punct']})}),
  S('Naming and Action Words','Sustantivos y verbos',function(r){return E.parts(r,{})}),
  S('Pronouns','Pronombres',function(r){return E.pronoun(r,{})}),
- S('ABC Order','Orden alfabético',function(r){return E.abc(r,{})})]}
+ S('Reading and ABC Order','Lectura y orden alfabético',mix(function(r){return E.abc(r,{})},function(r){return E.read(r,{bank:'p'})}))]}
 ELA['K']=elaPrimary('k'); ELA['1']=elaPrimary('k'); ELA['2']=elaPrimary('p');
 function elaMiddle(bank,sy){return [
  S('Phonetic Word Parts','Partes fonéticas',function(r){return E.phonics(r,{modes:['family','syll','vowel'],bank:sy})}),
  S('Understanding Word Meanings','Significado en contexto',function(r){return E.meaning(r,{bank:'i'})}),
  S('Spelling by the Rules','Ortografía con reglas',function(r){return E.spelling(r,{n:3})}),
  S('Synonyms, Antonyms and Homonyms','Sinónimos, antónimos y homónimos',function(r){return E.sah(r,{modes:['syn','homo','both'],bank:bank})}),
- S('Compound Words','Palabras compuestas',function(r){return E.compound(r,{modes:['make','break']})}),
+ S('Reading Closely','Lectura atenta',function(r){return E.read(r,{bank:'i'})}),
  S('Prefixes and Suffixes','Prefijos y sufijos',function(r){return E.affix(r,{modes:['mean','build']})}),
  S('Verb Agreement and Verb Tense','Concordancia y tiempo verbal',function(r){return E.verbs(r,{n:2})}),
  S('Constructing Complete Sentences','Oraciones completas',function(r){return E.sentence(r,{modes:['kind','build','combine']})}),
@@ -8197,12 +8312,13 @@ ELA['4'][9]=S('ABC Order and Capitals','Orden alfabético y mayúsculas',
   mix(function(r){return E.abc(r,{})},function(r){return E.caps(r,{modes:['fix','punct']})}));
 ELA['5'][9]=S('Capitals and Punctuation','Mayúsculas y puntuación',function(r){return E.caps(r,{modes:['fix','punct']})});
 function elaUpper(){return [
- S('Word Parts and Roots','Raíces y partes',function(r){return E.phonics(r,{modes:['root','syll'],bank:'i'})}),
+ S('Word Parts and Roots','Raíces y partes',mix(function(r){return E.phonics(r,{modes:['root','syll'],bank:'i'})},
+    function(r){return E.affix(r,{modes:['mean','build','root']})})),
  S('Context Clues','Pistas del contexto',function(r){return E.meaning(r,{bank:'m'})}),
  S('Spelling and Conventions','Ortografía y convenciones',function(r){return E.spelling(r,{n:3})}),
  S('Word Relationships','Relaciones entre palabras',function(r){return E.sah(r,{modes:['syn','homo','both'],bank:'m'})}),
  S('Figurative Language','Lenguaje figurado',function(r){return E.fig(r,{})}),
- S('Prefixes, Suffixes and Roots','Prefijos, sufijos y raíces',function(r){return E.affix(r,{modes:['mean','build','root']})}),
+ S('Reading Closely','Lectura atenta',function(r){return E.read(r,{bank:'m'})}),
  S('Verbs and Agreement','Verbos y concordancia',function(r){return E.verbs(r,{n:2})}),
  S('Sentence Structure','Estructura de la oración',function(r){return E.sentence(r,{modes:['kind','combine','build']})}),
  S('Pronouns and Antecedents','Pronombres y antecedentes',function(r){return E.pronoun(r,{})}),
@@ -10233,7 +10349,8 @@ function elaHigh(band){var h=band==='11-12';return [
  S('Context Clues','Pistas del contexto',function(r){return E.meaning(r,{bank:h?'h2':'h1'})}),
  S('Greek and Latin Roots','Raíces griegas y latinas',function(r){return E.hsq(r,{bank:h?'root2':'root1'})}),
  S(h?'Literary Devices':'Figurative Language',h?'Recursos literarios':'Lenguaje figurado',function(r){return E.hsq(r,{bank:h?'fig2':'fig1'})}),
- S(h?'Tone, Diction and Syntax':'Tone and Connotation',h?'Tono, dicción y sintaxis':'Tono y connotación',function(r){return E.hsq(r,{bank:h?'tone2':'tone1'})}),
+ S(h?'Close Reading, Tone and Syntax':'Close Reading and Tone',h?'Lectura atenta, tono y sintaxis':'Lectura atenta y tono',mix(function(r){return E.hsq(r,{bank:h?'tone2':'tone1'})},
+    function(r){return E.read(r,{bank:'h'})})),
  S(h?'Rhetoric and Reasoning':'Argument and Rhetoric',h?'Retórica y razonamiento':'Argumento y retórica',function(r){return E.hsq(r,{bank:h?'rhet2':'rhet1'})}),
  S(h?'Advanced Punctuation':'Commas, Semicolons and Colons',h?'Puntuación avanzada':'Comas, punto y coma y dos puntos',function(r){return E.hsq(r,{bank:h?'punct2':'punct1'})}),
  S(h?'Usage and Agreement':'Commonly Confused Words',h?'Uso y concordancia':'Palabras que se confunden',function(r){return E.hsq(r,{bank:h?'usage2':'usage1'})}),
@@ -16544,6 +16661,196 @@ return T;})();
    name on the row a teacher receives all read from here, so a sixth subject is
    an entry in these three, never a search for string literals. */
 var SUBJ={math:MATH,ela:ELA,science:SCI,'social-studies':SOC,spanish:SPA,facs:FCS,religion:WRL,economics:ECO,foundry:FDY};
+/* ══ AOG-DD-STDSCI-V1 (2026-09-25) ══ STANDARDS GAPS, SCIENCE AND SOCIAL STUDIES.
+   Checked each grade's ten strands against NGSS and the Illinois Social Science
+   standards. What was missing is ADDED to an existing box here — never a new box,
+   so every sheet keeps its ten. Science: Engineering Design (K-2-ETS1, 3-5-ETS1,
+   MS-ETS1, HS-ETS1) was asked nowhere; it joins each grade's practices box.
+   Plus 1-LS3/1-LS1.A, 2-LS2, 2-ESS1, 5-ESS3. Social studies: geography and
+   economics in grade 8, economics in 9-10, Illinois history in 3-4, and the
+   Illinois-required Holocaust, Asian American and LGBTQ+ history units.
+   ⚠ CONTENT, NOT CODE — same rule as the banks above. */
+function nbAdd(k,items){NB[k]=(NB[k]||[]).concat(items)}
+var ETS_P=[
+ ['mc','Your block tower keeps falling down. What should you do first?','figure out why it falls',['give up','build it taller','paint it']],
+ ['mc','An engineer is someone who…','designs things to solve problems',['only fixes cars','studies stars','writes stories']],
+ ['mc','Two kids made paper boats. How can they tell which boat is better?','test them both in water',['guess','pick the prettier one','ask a bird']],
+ ['tf','It is okay to change your design after you test it.',true],
+ ['tf','A drawing can help you plan how to build something.',true],
+ ['voc','design','A plan for how to make something.']];
+nbAdd('sci.K.10',ETS_P); nbAdd('sci.1.10',ETS_P); nbAdd('sci.2.10',ETS_P);
+var ETS_I=[
+ ['mc','In a design problem, criteria are…','what the solution must do to succeed',['the materials you like','the final answer','a kind of test tube']],
+ ['mc','In a design problem, constraints are…','limits such as cost, time or materials',['the reasons it works','the winning design','the drawings']],
+ ['mc','Two bridge designs are tested with weights. What makes the test fair?','using the same weights and the same span for both',['testing one bridge twice','using heavier weights on one','letting the builder choose']],
+ ['mc','A test shows the weakest part of a design. The next step is to…','improve that part and test again',['start a new project','hide the result','test a different design only']],
+ ['tf','A good design can be improved by testing it more than once.',true],
+ ['voc','prototype','An early model built to test a design.']];
+nbAdd('sci.3.10',ETS_I); nbAdd('sci.4.10',ETS_I); nbAdd('sci.5.10',ETS_I);
+var ETS_M=[
+ ['mc','A team must keep an egg from breaking in a 3-meter drop using only paper and tape. "Only paper and tape" is a…','constraint',['criterion','variable','hypothesis']],
+ ['mc','"The egg must not crack" is a…','criterion',['constraint','control','conclusion']],
+ ['mc','Why do engineers combine the best parts of several designs?','to make a solution that meets more criteria',['to save paper','to finish faster','to avoid testing']],
+ ['mc','In a design test, repeating each trial several times helps…','make the results more reliable',['make the design heavier','change the criteria','skip the analysis']],
+ ['tf','A design that meets all the criteria but breaks the constraints is not an acceptable solution.',true],
+ ['voc','optimize','To improve a design so it works as well as possible within its limits.']];
+nbAdd('sci.6.10',ETS_M); nbAdd('sci.7.10',ETS_M); nbAdd('sci.8.10',ETS_M);
+var ETS_H=[
+ ['mc','A city must reduce flooding. Engineers break the problem into smaller parts because…','smaller problems are easier to solve and test',['it costs more','it avoids criteria','it removes constraints']],
+ ['mc','Choosing between two water filters, engineers weigh cost against effectiveness. This is a…','trade-off',['control','hypothesis','constant']],
+ ['mc','Why do engineers use computer models before building?','to test many designs quickly and cheaply',['to avoid all real tests','to make the design look better','to change the laws of physics']],
+ ['mc','When judging a solution to a global problem, engineers should also consider…','social, cultural and environmental impacts',['only the price','only the looks','only the speed']],
+ ['tf','A solution can meet its technical goals and still be a poor choice because of its effect on the environment.',true],
+ ['voc','trade-off','Giving up some of one quality to gain more of another.']];
+nbAdd('sci.9-10.06',ETS_H); nbAdd('sci.11-12.10',ETS_H);
+/* 1-LS3.A and 1-LS1.A: young like their parents; plants and animals inspire designs */
+nbAdd('sci.1.02',[
+ ['mc','How are baby animals like their parents?','they look a lot like them',['they look nothing like them','they are always the same size','they never grow']],
+ ['mc','A puppy is a baby…','dog',['cat','cow','duck']],
+ ['mc','Burrs that stick to fur gave people the idea for…','hook-and-loop fasteners (Velcro)',['zippers','buttons','glue']],
+ ['tf','Young plants look like the plants they came from, but not exactly the same.',true],
+ ['tf','Parent birds help their chicks by bringing them food.',true]]);
+/* 2-LS2.A: plants need water and light; animals move pollen and seeds */
+nbAdd('sci.2.02',[
+ ['mc','When a bee visits flowers, it carries…','pollen from flower to flower',['water to the roots','seeds to the sky','leaves to the hive']],
+ ['mc','Seeds stuck to a dog\'s fur get carried to…','new places to grow',['the ocean','the dog\'s food bowl','the sun']],
+ ['mc','A plant kept in a dark closet will probably…','grow poorly',['grow faster','turn into a tree','make more flowers']],
+ ['tf','Some seeds travel on the wind.',true],
+ ['voc','pollinate','To move pollen from one flower to another so seeds can form.']]);
+/* 2-ESS1.C: some Earth events are fast, some are slow */
+nbAdd('sci.2.05',[
+ ['mc','Which changes Earth\'s surface QUICKLY?','an earthquake',['a river carving a canyon','wind wearing down a rock','a glacier moving']],
+ ['mc','Which changes Earth\'s surface SLOWLY?','a river carving a canyon',['a volcano erupting','a landslide','an earthquake']],
+ ['tf','The Grand Canyon formed over millions of years.',true],
+ ['tf','A landslide can happen in just minutes.',true]]);
+/* 5-ESS3.C: communities protect Earth's resources */
+nbAdd('sci.5.05',[
+ ['mc','Which action helps protect a river?','keeping trash and chemicals out of it',['washing paint brushes in it','dumping yard waste in it','pouring oil down the drain']],
+ ['mc','Using solar panels instead of burning coal helps…','reduce air pollution',['make more trash','use more water','cause earthquakes']],
+ ['mc','Recycling aluminum cans saves…','energy and raw materials',['nothing at all','only paper','only water']],
+ ['tf','Planting trees can help reduce soil erosion.',true]]);
+
+/* SOCIAL STUDIES. SS.G and SS.EC in grade 8 (the U.S. history strands had none) */
+nbAdd('soc.8.06',[
+ ['mc','The Louisiana Purchase of 1803 roughly…','doubled the size of the United States',['added Alaska','ended the Revolution','gave Florida to Spain']],
+ ['mc','Why was control of the Mississippi River and New Orleans so important to western farmers?','they shipped their crops down the river to market',['it was the only source of drinking water','it was the national capital','it blocked Spanish invasions']],
+ ['mc','The Erie Canal (1825) connected the Great Lakes to…','the Hudson River and New York City',['the Gulf of Mexico','the Pacific Ocean','the Ohio River']],
+ ['mc','What physical feature did many settlers cross on the Oregon Trail?','the Rocky Mountains',['the Appalachians only','the Mississippi Delta','the Ozark Plateau']],
+ ['voc','Manifest Destiny','The belief that the United States should expand across North America.']]);
+nbAdd('soc.8.07',[
+ ['mc','The South\'s economy before the Civil War depended most on…','cotton grown with enslaved labor',['factories','fishing','railroads']],
+ ['mc','Many Southerners opposed high tariffs because tariffs…','raised the price of imported goods they bought',['lowered cotton prices directly','ended slavery','closed their ports']],
+ ['mc','The North\'s economy grew mainly through…','factories, trade and free wage labor',['cotton plantations','gold mining','whaling only']],
+ ['mc','The cotton gin (1793) led to…','more cotton grown and slavery spreading further',['the end of slavery','fewer plantations','less cotton']],
+ ['voc','tariff','A tax on imported goods.']]);
+/* SS.EC in 9-10 */
+nbAdd('soc.9-10.07',[
+ ['mc','When a country specializes in what it produces most efficiently and trades for the rest, it is using…','comparative advantage',['a tariff','a monopoly','inflation']],
+ ['mc','Globalization is the…','growing connection of economies and cultures around the world',['end of trade between nations','shrinking of cities','return to farming']],
+ ['mc','A country whose economy is decided mostly by supply and demand has a…','market economy',['command economy','traditional economy','barter economy']],
+ ['mc','GDP measures…','the total value of goods and services a country produces',['population','land area','the number of banks']],
+ ['tf','Trade between countries can make both sides better off.',true],
+ ['voc','scarcity','Having limited resources to meet unlimited wants.']]);
+/* Illinois history, grades 3 and 4 */
+nbAdd('soc.3.06',[
+ ['mc','What is the capital of Illinois?','Springfield',['Chicago','Peoria','Rockford']],
+ ['mc','Illinois is called the "Land of…"','Lincoln',['Lakes','Liberty','Corn']],
+ ['mc','The largest city in Illinois is…','Chicago',['Springfield','Naperville','Joliet']],
+ ['tf','Illinois borders Lake Michigan.',true]]);
+nbAdd('soc.4.07',[
+ ['mc','Illinois became a state in…','1818',['1776','1865','1901']],
+ ['mc','Before Europeans arrived, the city of Cahokia near present-day St. Louis was built by…','Mississippian people',['the French','the Romans','the British']],
+ ['mc','Which president began his law career in Springfield, Illinois?','Abraham Lincoln',['George Washington','Thomas Jefferson','John Adams']],
+ ['mc','The Great Chicago Fire happened in…','1871',['1818','1929','1776']],
+ ['tf','The Illinois and Michigan Canal helped connect the Great Lakes to the Mississippi River.',true]]);
+/* Illinois-required units: Holocaust and genocide (105 ILCS 5/27-20.3),
+   Asian American history (TEAACH Act), LGBTQ+ contributions (Inclusive Curriculum Law) */
+nbAdd('soc.9-10.06',[
+ ['mc','The Holocaust was…','the Nazi murder of six million Jews and millions of others',['a battle in the Pacific','a peace treaty','an economic depression']],
+ ['mc','The Nuremberg Trials after World War II…','tried Nazi leaders for crimes against humanity',['ended the Cold War','created the European Union','divided Korea']],
+ ['voc','genocide','The deliberate killing of a large group of people because of their nation, ethnicity, race or religion.'],
+ ['tf','The United Nations adopted a treaty against genocide in 1948.',true]]);
+nbAdd('soc.11-12.03',[
+ ['mc','Kristallnacht (1938) was…','a night of organized Nazi violence against Jews in Germany and Austria',['the end of World War II','a U.S. air raid','a treaty with Japan']],
+ ['tf','Many Japanese American soldiers served in the U.S. Army\'s 442nd Regiment while their families were held in camps.',true]]);
+nbAdd('soc.11-12.01',[
+ ['mc','The Chinese Exclusion Act of 1882…','banned most Chinese immigration to the United States',['welcomed Chinese workers','ended the transcontinental railroad','created Angel Island']],
+ ['mc','Thousands of Chinese immigrants did much of the dangerous work building the…','transcontinental railroad',['Erie Canal','Brooklyn Bridge','Panama Canal']],
+ ['tf','Angel Island in San Francisco Bay was an immigration station where many Asian immigrants were held.',true]]);
+nbAdd('soc.11-12.05',[
+ ['mc','The 1969 Stonewall uprising in New York City is seen as a turning point in the…','LGBTQ+ rights movement',['labor movement','temperance movement','space race']],
+ ['mc','Bayard Rustin, a gay civil rights leader, was the chief organizer of the…','1963 March on Washington',['Montgomery Bus Boycott','Freedom Summer','Selma march']],
+ ['mc','In Obergefell v. Hodges (2015), the Supreme Court ruled that…','same-sex couples have the right to marry',['schools may be segregated','states may ban voting','the draft is legal']],
+ ['tf','Yuri Kochiyama and Grace Lee Boggs were Asian American activists in the civil rights era.',true]]);
+
+/* ══ AOG-DD-STD3-V1 (2026-09-25) ══ SPANISH CULTURES AND FACS RELATIONSHIPS.
+   Spanish: the ACTFL Cultures and Comparisons goals (practices, products and
+   perspectives of Spanish-speaking communities, compared with the student's
+   own) were never asked. They join each grade's reading box, in that grade's
+   language rung: GL (English question, Spanish gloss) K-5, SE 6-8, Spanish only
+   9-12. FACS: national standards 1 (career, community and family), 12 (human
+   development) and 13 (interpersonal relationships) are taught in the course
+   but were never asked; they join the decide / reasoning boxes. */
+var CUL_P=[
+ ['mc',GL('<i>¡Feliz cumpleaños!</i> When do people say this?','cumpleaños = birthday'),'on a birthday',['at bedtime','at school only','on Monday']],
+ ['mc',GL('At many birthday parties in Mexico, children break a <i>piñata</i>. What is inside?','dulces = candy'),'candy and treats',['water','books','rocks']],
+ ['mc',GL('In many Spanish-speaking countries, friends greet with a <i>beso</i> on the cheek. What is a <i>beso</i>?','beso = kiss'),'a kiss',['a wave','a song','a gift']],
+ ['mc',GL('<i>Buenos días</i> is said…','días = days'),'in the morning',['at night','when leaving','at dinner']]];
+nbAdd('spa.K.09',CUL_P); nbAdd('spa.1.09',CUL_P); nbAdd('spa.2.09',CUL_P);
+var CUL_I=[
+ ['mc',GL('On <i>el Día de los Muertos</i> in Mexico, families…','muertos = the dead'),'remember loved ones who have died',['go back to school','celebrate a new year','plant crops']],
+ ['mc',GL('About how many countries have Spanish as an official language?','países = countries'),'about twenty',['two','about fifty','one hundred']],
+ ['mc',GL('In Spain, lunch (<i>la comida</i>) is often…','comida = main meal'),'the biggest meal of the day',['skipped','eaten at 10 a.m.','only fruit']],
+ ['mc',GL('Many people in Spanish-speaking countries use two last names. They usually come from…','apellidos = last names'),'the father and the mother',['two grandfathers','a town and a school','a saint and a city']],
+ ['mc',GL('<i>Las Posadas</i> is a holiday tradition in Mexico before…','Navidad = Christmas'),'Christmas',['Easter','Halloween','the Fourth of July']]];
+nbAdd('spa.3.08',CUL_I); nbAdd('spa.4.08',CUL_I); nbAdd('spa.5.08',CUL_I);
+var CUL_M=[
+ ['mc',SE('En muchos países hispanohablantes, la cena es muy tarde. ¿A qué hora cenan muchas familias en España?','In many Spanish-speaking countries dinner is late. When do many families in Spain eat dinner?'),'a las nueve o diez de la noche',['a las cinco de la tarde','al mediodía','a las siete de la mañana']],
+ ['mc',SE('¿Qué celebra una <i>quinceañera</i>?','What does a quinceañera celebrate?'),'los quince años de una joven',['el fin de la escuela','una boda','el Año Nuevo']],
+ ['mc',SE('Los Estados Unidos tienen muchos hispanohablantes. ¿Qué lugar ocupan en el mundo?','The U.S. has many Spanish speakers. How does it rank in the world?'),'entre los primeros, con más de 40 millones',['el último','no tienen ninguno','el único']],
+ ['mc',SE('En México y Centroamérica, el maíz es muy importante. ¿Qué comida se hace con maíz?','In Mexico and Central America, corn is very important. What food is made from corn?'),'las tortillas',['la paella','el pan de trigo','el arroz con leche']],
+ ['mc',SE('Usar <i>usted</i> en vez de <i>tú</i> muestra…','Using usted instead of tú shows…'),'respeto o distancia',['enojo','que eres un niño','que es de noche']]];
+nbAdd('spa.6.08',CUL_M); nbAdd('spa.7.08',CUL_M); nbAdd('spa.8.08',CUL_M);
+var CUL_H=[
+ ['mc','La siesta tradicional en España existe en parte porque…','hace mucho calor al mediodía en verano',['las tiendas nunca abren','no hay escuelas','es la ley']],
+ ['mc','El muralismo mexicano de Diego Rivera y David Alfaro Siqueiros quería…','contar la historia del pueblo en lugares públicos',['decorar casas privadas','vender cuadros pequeños','copiar el arte europeo']],
+ ['mc','El Mes de la Herencia Hispana en los Estados Unidos va del 15 de septiembre al 15 de octubre porque el 15 de septiembre…','varios países de Centroamérica celebran su independencia',['empieza el invierno','termina el año escolar','se fundó España']],
+ ['mc','El español llegó a las Américas principalmente con…','la colonización española desde 1492',['los romanos','el comercio con China','los vikingos']],
+ ['mc','Una palabra del náhuatl que el español (y el inglés) tomó es…','chocolate',['mesa','libro','casa']]];
+nbAdd('spa.9-10.08',CUL_H); nbAdd('spa.11-12.08',CUL_H);
+
+var FCS_REL_P=[
+ ['mc','Your friend is sad. What is a kind thing to do?','ask what is wrong and listen',['laugh','walk away','ignore them']],
+ ['mc','Two kids want the same toy. What is a fair idea?','take turns',['grab it','cry','hide it']],
+ ['mc','A firefighter, a nurse and a teacher all…','have jobs that help the community',['work only at night','never go to school','live at the fire station']]];
+nbAdd('fcs.K.10',FCS_REL_P); nbAdd('fcs.1.10',FCS_REL_P); nbAdd('fcs.2.10',FCS_REL_P);
+var FCS_REL_I=[
+ ['mc','An "I" statement sounds like…','"I feel upset when my things are taken."',['"You always ruin everything."','"Whatever."','"You are mean."']],
+ ['mc','A good listener…','looks at the speaker and waits their turn',['interrupts often','plays on a phone','changes the subject']],
+ ['mc','Doing your share of chores at home helps the family because…','everyone shares the work',['it makes chores longer','only adults should work','it costs money']]];
+nbAdd('fcs.3.10',FCS_REL_I); nbAdd('fcs.4.10',FCS_REL_I); nbAdd('fcs.5.10',FCS_REL_I);
+var FCS_REL_M=[
+ ['mc','In a conflict, the first step toward a solution is usually to…','calm down and listen to the other side',['win the argument','get others on your side','walk away forever']],
+ ['mc','Which is a sign of a healthy friendship?','you can disagree and still respect each other',['one person makes every choice','you are pressured to change','secrets are used as threats']],
+ ['mc','Peer pressure is…','influence from people your age to act a certain way',['pressure from teachers','a type of cooking tool','a sewing technique']],
+ ['mc','Employers often rank which skill as most important for new workers?','showing up on time and working well with others',['owning expensive tools','knowing every answer','working alone always']],
+ ['voc','compromise','An agreement where each side gives up something.']];
+nbAdd('fcs.6.10',FCS_REL_M); nbAdd('fcs.7.10',FCS_REL_M); nbAdd('fcs.8.10',FCS_REL_M);
+var FCS_REL_H=[
+ ['mc','Balancing work and family means…','managing time and responsibilities in both parts of life',['choosing only one forever','working as many hours as possible','avoiding all commitments']],
+ ['mc','Which response shows active listening?','"So you are saying the schedule feels unfair?"',['"That is not my problem."','"Anyway, about me…"','"You always complain."']],
+ ['mc','A warning sign of an unhealthy relationship is…','one partner controlling who the other can see',['sharing interests','talking through disagreements','spending time apart with friends']],
+ ['mc','A FACS career pathway that serves families directly is…','early childhood education',['petroleum engineering','astronomy','mining']],
+ ['voc','assertive','Stating your needs clearly and respectfully, without being aggressive.']];
+nbAdd('fcs.9-10.10',FCS_REL_H); nbAdd('fcs.11-12.10',FCS_REL_H);
+/* FCS 12: development across the whole life span, not only childhood */
+var FCS_DEV=[
+ ['mc','Erikson described adolescence as a time of…','building identity',['learning to walk','retirement','first words']],
+ ['mc','Development happens in which areas?','physical, intellectual, emotional and social',['physical only','school subjects only','money and work only']],
+ ['mc','A major developmental task of late adulthood is…','reflecting on life and adjusting to change',['learning to crawl','choosing a first job','potty training']],
+ ['tf','People keep developing throughout their whole lives, not just in childhood.',true]];
+nbAdd('fcs.8.08',FCS_DEV); nbAdd('fcs.11-12.07',FCS_DEV);
+
 var SUBJN={math:['Mathematics','Matem\u00e1ticas'], ela:['Language Arts','Lenguaje'],
   write:['Writing','Escritura'], science:['Science','Ciencias'],
   'social-studies':['Social Studies','Estudios Sociales'],
@@ -17676,16 +17983,8 @@ function refresh(){if(!hasGrade(ST.subj,ST.grade))ST.grade=fitGrade(ST.subj);try
      never quietly cost a teacher nine boxes. */
   $('#printBtn').addEventListener('click',function(){
     document.body.classList.remove('algonly'); window.print()});
-  $('#algBtn').addEventListener('click',function(){
-    document.body.classList.add('algonly');
-    function off(){document.body.classList.remove('algonly');
-      window.removeEventListener('afterprint',off)}
-    window.addEventListener('afterprint',off);
-    try{window.print()}catch(e){}
-    /* window.print blocks on the desktop, and iOS Safari never fires afterprint
-       (see PRINTNAME-V1) - so it comes off on both paths. */
-    setTimeout(off,1200);
-  });
+  /* AOG-DD-ALGONLY-V2 (2026-09-25) — Jimmy: "GET RID of the print algorithms only
+     tab." The button and its handler are gone; plain Print is the whole draft. */
   /* AOG-DD-PACK-V1 */
   $('#packBtn').addEventListener('click',function(){
     var bar=$('#packBar'),open=bar.hasAttribute('hidden');
