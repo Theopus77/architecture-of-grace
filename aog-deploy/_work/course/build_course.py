@@ -78,7 +78,7 @@ def jump_block():
     # s13 has had every course's options injected already; strip them all so
     # mark_current() adds this course's block exactly once (and the other
     # course's injector adds its own afterwards).
-    blk = re.sub(r'<option value="(?:us-history|ush-u\d+|science-course|sci-u\d+)\.html">[^<]*</option>\n?', "", blk)
+    blk = re.sub(r'<option value="(?:us-history|ush-u\d+|science-course|sci-u\d+|math-course|mth-u\d+|spanish-course|spa-u\d+)\.html">[^<]*</option>\n?', "", blk)
     return blk
 
 def mark_current(blk, value, text):
