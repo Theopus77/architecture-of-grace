@@ -170,6 +170,7 @@ html.a11y-dyslexic body{letter-spacing:.02em;word-spacing:.09em;line-height:1.8}
 @media print{.r36top{display:none !important}}
 
 </style>
+<script src="/aog-iep.js"></script>
 </head>
 <body>
 <script src="/aog-grace.js" defer></script>
@@ -836,7 +837,7 @@ body.wbprev{overflow:hidden}
     '<h2>Finished?</h2>' +
     '<p>Tap FINISHED and your workbook \u2014 your checked answers and everything you wrote \u2014 goes straight to the adult who shared this page. You\u2019ll see a preview of what you built.</p>' +
     '<div class="row">' +
-    '<input type="text" id="wbWho" autocomplete="off" maxlength="60" placeholder="Your code or first name — the same one you check in with" aria-label="Your code or first name">' +
+    '<input type="text" id="wbWho" autocomplete="off" maxlength="60" placeholder="Enter your name" aria-label="Your code or first name">' +
     '<button class="btn-fin" type="button" id="wbSendBtn">FINISHED</button>' +
     '<span class="st" id="wbSt" aria-live="polite"></span></div>';
   var foot = document.querySelector(".wrap footer");
@@ -915,6 +916,7 @@ body.wbprev{overflow:hidden}
       source:"link",
       extra:JSON.stringify({series:"sel-workbook", build:"wb finished v1", finished:true, responses:gather()})
     };
+    if(window.AOG_IEP){AOG_IEP.fill(payload);} /* AOG-IEP-REC-V1 */
     var body = JSON.stringify(payload);
     busy = true;
     buildPreview(who, "Sending to your teacher\u2026");

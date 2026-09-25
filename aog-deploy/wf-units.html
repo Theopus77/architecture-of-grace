@@ -125,6 +125,7 @@ footer{margin-top:44px;color:var(--sub);font-size:.8rem;border-top:1px solid var
   img,svg,figure{break-inside:avoid; page-break-inside:avoid}
 }
 </style>
+<script src="/aog-iep.js"></script>
 </head>
 <body>
 <script src="/aog-topbar.js"></script>
@@ -1668,6 +1669,7 @@ function render(){ tabOK(); nav();
       extra:{ series:"word-foundry", build:"wf send v1", unit:U.n, unitName:U.name,
               kind:vocab()?"vocab":"stems", correct:t.k, total:t.n,
               firstCheck:first, checked:first!==null, answers:t.answers } };
+    if(window.AOG_IEP){AOG_IEP.fill(body,{correct:(first!==null?first:t.k), total:t.n, byStrand:[{name:vocab()?"Vocabulary: meaning to word":"Stems: meaning", ok:(first!==null?first:t.k), n:t.n}]});} /* AOG-IEP-REC-V1 */
     busy=true; err=false; paint();
     var str=JSON.stringify(body);
     fetch(D.url,{method:"POST",mode:"cors",redirect:"follow",headers:{"Content-Type":"text/plain;charset=utf-8"},body:str})
