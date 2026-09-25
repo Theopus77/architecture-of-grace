@@ -350,6 +350,10 @@ function toggleTheme() {
      hidden #themeBtn / #langEn / #langEs) but is never shown. -->
 <style>header.topbar{display:none !important}</style>
 <script src="/aog-topbar.js"></script>
+<script src="/aog-dash-grace.js" defer></script>
+<script src="/aog-demo-plus.js" defer></script>
+<script src="/aog-standards-data.js" defer></script>
+<script src="/aog-standards.js" defer></script>
 <a href="#aog-main" class="aog-skip" id="aogSkipLink" data-en="Skip to main content" data-es="Saltar al contenido principal">Skip to main content</a>
 <script id="aog-skip-i18n">(function(){var e=document.getElementById('aogSkipLink');if(!e)return;function a(){var l=(document.documentElement.getAttribute('lang')||'en').slice(0,2)==='es'?'es':'en';e.textContent=e.getAttribute('data-'+l);}try{new MutationObserver(a).observe(document.documentElement,{attributes:true,attributeFilter:['lang']});}catch(x){}a();})();</script>
 <div id="aogEsBanner" style="display:none;align-items:center;justify-content:center;gap:14px;flex-wrap:wrap;background:#13314F;color:#F4EEE2;padding:10px 16px;font-family:Inter,system-ui,sans-serif;font-size:13.5px;border-bottom:1px solid rgba(242,201,100,.35);" role="region" aria-label="Idioma / Language">
@@ -5293,7 +5297,10 @@ window.addEventListener('load',function(){
          three calls to find its home. */
       var SKIP = { ovEmpty:1, ovOnboard:1, staffReset:1, dashRoleExtra:1,
                    aogCurriculumStrip:1, aogIepStickyBar:1, aogDistStrip:1,
-                   aogDistPanes:1, aogSheetCards:1 };
+                   aogDistPanes:1, aogSheetCards:1,
+                   /* AOG-STANDARDS-V1 — the academic standards cards + their unit table;
+                      a section, not a card, and the table opens with a heading inside it */
+                   xaAcademic:1 };
       function skipped(el){
         if (el.id && SKIP[el.id]) return true;
         var c = " " + (typeof el.className === "string" ? el.className : "") + " ";
@@ -6207,6 +6214,12 @@ window.addEventListener('load',function(){
         <div class="xa-card"><div class="xa-k">Systems</div><div class="xa-t">Restorative Practices</div><div class="xa-d" data-en="The Repair Protocol, the Recovery Arc and the relationship-centered stance mapped to restorative practice — anchored to IIRP, with Zehr&rsquo;s pillars and Indigenous origins named, and a decision guide for the administrator holding an incident this week." data-es="El Protocolo de Reparaci&oacute;n, el Arco de Recuperaci&oacute;n y la postura centrada en las relaciones alineados con la pr&aacute;ctica restaurativa — anclados en IIRP, nombrando los pilares de Zehr y los or&iacute;genes ind&iacute;genas, con una gu&iacute;a de decisiones para el administrador que atiende un incidente esta semana.">The Repair Protocol, the Recovery Arc and the relationship-centered stance mapped to restorative practice — anchored to IIRP, with Zehr&rsquo;s pillars and Indigenous origins named, and a decision guide for the administrator holding an incident this week.</div><a class="xa-link" href="files/AoG-Restorative-Practices-Crosswalk.pdf" target="_blank" rel="noopener">Open crosswalk →</a></div>
         <div class="xa-card"><div class="xa-k">Curriculum</div><div class="xa-t">The Crosswalk Matrix · Universal</div><div class="xa-d">Every load-bearing scene mapped to a lesson, an anchor chart, and a neuro-affirming adjustment — no faith framework required. <span class="xa-lock">Full set licensed</span></div><div class="xa-acts"><a class="xa-link" href="files/AoG-Crosswalk-Matrix-Preview-Secular.pdf" target="_blank" rel="noopener">Open the preview →</a><a class="xa-link xa-ghost" href="mailto:Theopus77@yahoo.com?subject=Request:%20Full%20Universal%20Crosswalk%20Matrix%20(K-12,%205%20grade%20bands)&body=Hi%20%E2%80%94%20I%27d%20like%20to%20license%20the%20full%20Universal%20Crosswalk%20Matrix%20(Master%20Framework%20%2B%20all%20five%20grade%20bands)%20for%20our%20school%2Fdistrict.">Request full set →</a></div></div>
       </div>
+
+      <!-- AOG-STANDARDS-V1 (2026-09-25) — Jimmy: "With all the curriculum being built I
+           should have all the state standards and the such for all the curriculum on this
+           page as well." Rendered by aog-standards.js from aog-standards-data.js, which
+           _work/standards/build_standards.py generates from _work/standards/*.json. -->
+      <div id="xaAcademic"></div>
 
       <div class="xa-sec" id="xaLegalSec">Legal review &amp; consent</div>
       <div class="xa-grid">
@@ -66801,7 +66814,10 @@ html.js-reveal .reveal,
            '<div class="field"><label for="prLgDdGrade">' + esc(sv === "foundry" ? T("Unit", "Unidad") : T("Grade", "Grado")) + "</label>" +
              '<select id="prLgDdGrade">' + go + "</select></div>" +
            '<div class="field"><label for="prLgDdSheet">' + esc(T("Which draft? (1–180)", "¿Cuál borrador? (1–180)")) + "</label>" +
-             '<input type="number" id="prLgDdSheet" min="1" max="180" step="1" value="' + nv + '"></div>' +
+             /* AOG-DD-DRAFT-SCROLL-V1 (2026-09-25) — Jimmy: "the which draft should have a
+                scroll function like the rest." A number box forced a teacher to delete
+                the tens digit to get past 19; a select scrolls like Subject and Grade. */
+             '<select id="prLgDdSheet">' + (function () { var o = ""; for (var i = 1; i <= 180; i++) o += '<option value="' + i + '"' + (i === +nv ? " selected" : "") + ">" + esc(T("Draft ", "Borrador ")) + i + "</option>"; return o; })() + "</select></div>" +
            '<div class="field"><label>&nbsp;</label>' +
              '<label style="display:flex;gap:9px;align-items:flex-start;font-weight:600;cursor:pointer;line-height:1.45;">' +
                '<input type="checkbox" id="prLgDdLock"' + (ddLock() ? " checked" : "") +

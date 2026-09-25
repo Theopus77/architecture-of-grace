@@ -1,0 +1,16 @@
+You are writing a standards crosswalk for one course of the Architecture of Grace site (a K–12 curriculum, Illinois school). Working directory: /home/user/architecture-of-grace/aog-deploy.
+
+INPUT: read the course's units from _work/standards/outlines.json (JSON; key named below). Each unit has n, band (k-2 / 3-5 / 6-8 / hs / hs2 or blank), title, strand, and chapters[] with title/strand/topics. Use the chapter topics to decide which standards a unit addresses.
+
+OUTPUT: write ONE file, _work/standards/<key>.json, exactly this shape:
+{
+ "course": "<key>",
+ "framework": { "name": "<full framework name>", "short": "<short label>", "note": "<one sentence on what the codes are and that alignment is by the course author, not a certification>" },
+ "units": [ { "n": 1, "standards": [ { "code": "K-PS2-1", "text": "<short paraphrase of the standard, 8–25 words>" }, ... ] }, ... ]
+}
+Rules:
+- EVERY unit in the outline gets an entry, with 2–6 standards each (the ones the chapters most directly address). Match the grade band: a k-2 unit gets K–2 codes, hs gets 9–12 codes, etc.
+- ONLY cite codes you are confident actually exist in the named framework, spelled the way the framework spells them. If unsure of an exact code, leave it out rather than guess. A wrong code is worse than none.
+- "text" is YOUR OWN short paraphrase of what the standard asks, never copied wording.
+- Valid JSON, UTF-8, no comments, no trailing commas. Do not write any other file and do not edit anything else.
+- Do not read the rest of the repository; the outline is all you need. Finish in one pass and report the unit count and code count in one line.
