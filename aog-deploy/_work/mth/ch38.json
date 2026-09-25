@@ -1,0 +1,840 @@
+{
+ "n": 38,
+ "title": "Probability and Sampling",
+ "years": "Probability",
+ "bigQuestion": "How can we make reliable claims about chance and about a whole group when we can only see part of it?",
+ "story": {
+  "title": "One Hundred Flips",
+  "kicker": "A student flips a coin 100 times, gets 56 heads, and has to decide whether the coin is cheating.",
+  "paragraphs": [
+   "Devon's little brother lost four coin flips in a row and announced that the quarter was rigged. Devon did not think so, but saying \"it's fair\" was not going to settle anything. So Devon sat at the kitchen table with the quarter and a sheet of paper and flipped it 100 times, making a tally mark for each result. The final count was 56 heads and 44 tails. His brother pointed at the paper. \"See? More heads. It's not fair.\"",
+   "Devon thought about it. A fair coin has a probability of 1/2 for heads, so in 100 flips you expect about 50 heads. But expect is not the same as guarantee. Devon looked back at the tally marks. The first 10 flips had 7 heads. The next 10 had only 4. The counts wandered up and down the whole time; 56 was just where they happened to land at flip number 100.",
+   "The next day Devon brought the question to math class, and the teacher turned it into an experiment. Twenty-five students each flipped a coin 100 times. Their head counts ranged from 41 to 59, and most sat between 45 and 55. Nobody claimed those coins were rigged. Devon's 56 was on the high side but well inside what fair coins had produced. When the class added everything up, 2,500 flips had produced 1,261 heads: a fraction of 0.5044, remarkably close to one half.",
+   "That is the heart of this chapter. Probability is a long-run number. Any short run can wander, and the wandering shrinks as the number of trials grows. The same idea explains why a random sample of 25 students can tell you something true about a whole school, and why a bigger sample tells you more. Devon's brother was not convinced, so Devon offered a deal: 1,000 more flips, and the loser does the dishes."
+  ],
+  "think": "If Devon had gotten 80 heads out of 100 flips, would you still believe the coin is fair? What would you do next to find out?"
+ },
+ "sections": [
+  {
+   "title": "What Probability Means",
+   "lessons": [
+    {
+     "title": "A Number From 0 to 1",
+     "mainIdea": "Probability is a number from 0 to 1 that tells how likely an event is: 0 means impossible, 1 means certain, and 1/2 means as likely as not.",
+     "reading": [
+      "Will it snow in Chicago in January? Very likely. Will it snow in July? Almost impossible. *Probability* turns words like \"likely\" into numbers. The probability of an *event* is a number from 0 to 1. A probability of 0 means the event cannot happen. A probability of 1 means it is certain. A probability of 1/2, or 0.5, means the event is as likely to happen as not, like a fair coin landing heads.",
+      "Probabilities can be written as fractions, decimals or percents. 1/4 = 0.25 = 25% all describe the same chance. Events near 0, like 0.05, are unlikely. Events near 1, like 0.9, are *likely*. Rolling a 7 on a regular six-sided die has probability 0, since no face shows 7. Rolling a number less than 7 has probability 1, since every face does.",
+      "A common mistake is to write a probability bigger than 1 or less than 0. If you get 7/6 or 120%, something went wrong, usually a count on top that is too large. Another mistake is to think \"unlikely\" means \"will not happen.\" An event with probability 0.1 happens about 1 time in 10 in the long run. It still happens."
+     ],
+     "words": [
+      {
+       "w": "probability",
+       "d": "a number from 0 to 1 that tells how likely an event is"
+      },
+      {
+       "w": "event",
+       "d": "something that may or may not happen, like rolling an even number"
+      },
+      {
+       "w": "likely",
+       "d": "having a probability closer to 1 than to 0"
+      }
+     ],
+     "look": {
+      "type": "think",
+      "title": "Place Them on the Line",
+      "text": "Picture a number line from 0 to 1. Place these events on it: the sun rises tomorrow; a fair coin lands tails; you roll a 6 on one die; you roll a number less than 7; a randomly chosen day of the week starts with the letter T.",
+      "prompt": "Which events sit at 0 or 1? Which two are closest together, and what are their probabilities as fractions?"
+     },
+     "check": [
+      {
+       "q": "Which probability describes an event that is unlikely but possible?",
+       "choices": [
+        "0",
+        "0.1",
+        "1",
+        "0.9"
+       ],
+       "a": 1,
+       "why": "0.1 is close to 0 but not 0, so the event can happen but usually does not. 0 is impossible; 0.9 and 1 are likely or certain."
+      },
+      {
+       "q": "A student says the probability of rain tomorrow is 1.3. What is wrong?",
+       "choices": [
+        "It should be written as a percent.",
+        "Rain cannot be given a probability.",
+        "A probability cannot be greater than 1.",
+        "Nothing; 1.3 means very likely."
+       ],
+       "a": 2,
+       "why": "Every probability is between 0 and 1. A value of 1.3 signals a counting mistake."
+      },
+      {
+       "q": "What is the probability of rolling a number less than 7 on a six-sided die?",
+       "choices": [
+        "6/7",
+        "0",
+        "1/6",
+        "1"
+       ],
+       "a": 3,
+       "why": "All six faces show a number less than 7, so 6/6 = 1. The event is certain."
+      }
+     ]
+    },
+    {
+     "title": "Theoretical Probability",
+     "mainIdea": "When all outcomes are equally likely, probability = number of favorable outcomes ÷ total number of outcomes.",
+     "reading": [
+      "A spinner has 8 equal sections; 3 are red and 5 are blue. Each section is an *outcome*, and because the sections are the same size, the outcomes are *equally likely*. The *theoretical probability* of red is the number of red sections divided by the total: 3/8 = 0.375. You do not need to spin at all. This is what should happen in the long run.",
+      "A regular die has six equally likely outcomes: 1, 2, 3, 4, 5, 6. The probability of an even number is 3/6 = 1/2, because 2, 4 and 6 are the three favorable outcomes. A bag holds 4 red and 6 blue marbles. P(red) = 4/10 = 2/5 = 0.4. P(blue) = 6/10 = 3/5 = 0.6. The two add to 1, because a marble must be red or blue. The probability that an event does not happen is 1 minus the probability that it does: P(not red) = 1 − 0.4 = 0.6.",
+      "You can predict counts too. If you roll a die 60 times, you expect a 3 about 1/6 of the time: 60 × 1/6 = 10 times. Expect, not guarantee. Common mistakes: treating outcomes as equally likely when they are not (a spinner with one big section and three small ones), and putting the wrong number on top. P(red) uses the red count on top and the total, 10, on the bottom, not the blue count."
+     ],
+     "words": [
+      {
+       "w": "outcome",
+       "d": "one possible result, like one section of a spinner"
+      },
+      {
+       "w": "theoretical probability",
+       "d": "favorable outcomes divided by total outcomes, when all outcomes are equally likely"
+      },
+      {
+       "w": "equally likely",
+       "d": "outcomes that each have the same chance of happening"
+      }
+     ],
+     "look": {
+      "type": "data",
+      "title": "Events on One Fair Die",
+      "rows": [
+       [
+        "P(rolling a 1)",
+        0.167
+       ],
+       [
+        "P(even number)",
+        0.5
+       ],
+       [
+        "P(number greater than 4)",
+        0.333
+       ],
+       [
+        "P(number less than 7)",
+        1
+       ]
+      ],
+      "unit": "probability (rounded)",
+      "cite": "Theoretical probabilities for a fair six-sided die",
+      "prompt": "Write each probability as a fraction with denominator 6. Why does P(number less than 7) equal 1?"
+     },
+     "check": [
+      {
+       "q": "What is the probability of rolling a number greater than 4 on a fair die?",
+       "choices": [
+        "1/3",
+        "1/2",
+        "2/3",
+        "1/6"
+       ],
+       "a": 0,
+       "why": "Only 5 and 6 are greater than 4: 2 favorable out of 6, and 2/6 = 1/3."
+      },
+      {
+       "q": "A bag holds 5 green, 3 yellow and 2 white marbles. What is P(not green)?",
+       "choices": [
+        "1/5",
+        "1/2",
+        "3/10",
+        "2/3"
+       ],
+       "a": 1,
+       "why": "There are 10 marbles and 5 are not green: 5/10 = 1/2. Or 1 − P(green) = 1 − 5/10 = 1/2."
+      },
+      {
+       "q": "A spinner has 4 equal sections numbered 1 to 4. In 80 spins, about how many times would you expect it to land on 2?",
+       "choices": [
+        "4",
+        "40",
+        "20",
+        "25"
+       ],
+       "a": 2,
+       "why": "P(2) = 1/4, and 80 × 1/4 = 20."
+      }
+     ]
+    },
+    {
+     "title": "Experimental Probability",
+     "mainIdea": "Experimental probability = times the event happened ÷ number of trials; with more trials it usually settles near the theoretical probability.",
+     "reading": [
+      "Devon's class spins the 3-red, 5-blue spinner 50 times and records 18 reds. The *experimental probability* of red is the number of reds divided by the number of *trials*: 18/50 = 0.36. The theoretical probability was 3/8 = 0.375. They are close but not identical. That is normal. Fifty spins are not enough to land exactly on 0.375; in fact, 0.375 × 50 = 18.75 is not even a whole number.",
+      "The more trials you run, the closer the experimental probability tends to get to the theoretical one. Ten flips of a coin might give 7 heads, an experimental probability of 0.7. A hundred flips gave 56 heads, or 0.56. Devon's class combined 2,500 flips and got 1,261 heads, which is 1,261 ÷ 2,500 = 0.5044. Each bigger set of trials sits closer to 0.5.",
+      "Experimental probability is the only choice when you cannot count equally likely outcomes. What is the chance a thumbtack lands point up? A tack is not symmetric, so you drop it 200 times and count. If it lands point up 130 times, the experimental probability is 130/200 = 0.65. Common mistakes: dividing by the number of successes instead of the number of trials, and trusting a tiny experiment. Three flips that all land heads do not mean P(heads) = 1."
+     ],
+     "words": [
+      {
+       "w": "experimental probability",
+       "d": "times an event happened divided by the number of trials"
+      },
+      {
+       "w": "trial",
+       "d": "one run of an experiment, like one spin or one flip"
+      }
+     ],
+     "look": {
+      "type": "data",
+      "title": "Heads in Devon's Flips",
+      "rows": [
+       [
+        "First 10 flips",
+        7
+       ],
+       [
+        "First 50 flips",
+        27
+       ],
+       [
+        "All 100 flips",
+        56
+       ],
+       [
+        "Whole class, 2,500 flips",
+        1261
+       ]
+      ],
+      "unit": "heads",
+      "cite": "Story data from this chapter (made-up example)",
+      "prompt": "Compute the experimental probability of heads for each row. What happens to the values as the number of flips grows?"
+     },
+     "check": [
+      {
+       "q": "A coin is flipped 40 times and lands heads 24 times. What is the experimental probability of heads?",
+       "choices": [
+        "0.5",
+        "0.4",
+        "1.67",
+        "0.6"
+       ],
+       "a": 3,
+       "why": "24 ÷ 40 = 0.6. Dividing 40 by 24 gives 1.67, which cannot be a probability."
+      },
+      {
+       "q": "A marble is drawn from a bag and put back 200 times. Red comes up 30 times. What is the experimental probability of red?",
+       "choices": [
+        "0.15",
+        "0.3",
+        "30",
+        "0.85"
+       ],
+       "a": 0,
+       "why": "30 ÷ 200 = 0.15. The count 30 is not a probability, and 0.85 is the probability of not red."
+      },
+      {
+       "q": "Which experiment gives the best estimate of a spinner's true probability of landing on green?",
+       "choices": [
+        "5 spins",
+        "500 spins",
+        "20 spins",
+        "50 spins"
+       ],
+       "a": 1,
+       "why": "More trials make the experimental probability settle closer to the true value."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "title": "Compound Events",
+   "lessons": [
+    {
+     "title": "Listing Every Outcome",
+     "mainIdea": "For a compound event, list the sample space in an organized way; then probability is favorable outcomes over total outcomes.",
+     "reading": [
+      "Flip two coins. What are the possible results? Students often say three: two heads, two tails, or one of each. But list them carefully, first coin then second: HH, HT, TH, TT. There are four outcomes, and they are equally likely. The full list is the *sample space*. \"One head and one tail\" happens in two of the four, HT and TH, so its probability is 2/4 = 1/2, not 1/3. This is why the organized list matters.",
+      "Now flip a coin and roll a die. For each of the 2 coin results there are 6 die results, so the sample space has 2 × 6 = 12 outcomes: H1, H2, H3, H4, H5, H6, T1, T2, T3, T4, T5, T6. P(heads and an even number) = 3/12 = 1/4, since H2, H4 and H6 are favorable. A quick check: the number of outcomes for a *compound event* is the product of the numbers of outcomes for each part.",
+      "A table works well for two dice. The rows are the first die (1 to 6) and the columns are the second (1 to 6), giving 6 × 6 = 36 cells. Count the cells whose sum is 7: (1,6), (2,5), (3,4), (4,3), (5,2), (6,1). That is 6, so P(sum of 7) = 6/36 = 1/6. A sum of 2 appears in only one cell, (1,1), so P(sum of 2) = 1/36. Common mistake: treating (2,5) and (5,2) as one outcome. They are different rolls."
+     ],
+     "words": [
+      {
+       "w": "sample space",
+       "d": "the organized list of every possible outcome"
+      },
+      {
+       "w": "compound event",
+       "d": "an event made of two or more parts, like a coin flip and a die roll together"
+      }
+     ],
+     "look": {
+      "type": "think",
+      "title": "Two-Dice Table",
+      "text": "Draw a 6-by-6 table. Label the rows 1 to 6 for the first die and the columns 1 to 6 for the second. Write the sum in each cell. Count how many cells show a sum of 8: (2,6), (3,5), (4,4), (5,3), (6,2).",
+      "prompt": "What is P(sum of 8)? Which sum has the most cells, and what is its probability?"
+     },
+     "check": [
+      {
+       "q": "A lunch has 3 sandwich choices and 2 drink choices. How many different lunches are possible?",
+       "choices": [
+        "5",
+        "9",
+        "6",
+        "3"
+       ],
+       "a": 2,
+       "why": "Each of the 3 sandwiches pairs with each of the 2 drinks: 3 × 2 = 6. Adding gives 5 by mistake."
+      },
+      {
+       "q": "Two fair coins are flipped. What is the probability of two heads?",
+       "choices": [
+        "1/3",
+        "1/2",
+        "3/4",
+        "1/4"
+       ],
+       "a": 3,
+       "why": "The sample space is HH, HT, TH, TT. Only HH works: 1/4. Counting three outcomes gives 1/3 by mistake."
+      },
+      {
+       "q": "Two dice are rolled. What is P(sum of 2)?",
+       "choices": [
+        "1/36",
+        "1/6",
+        "2/36",
+        "1/12"
+       ],
+       "a": 0,
+       "why": "Only (1,1) gives a sum of 2, and there are 36 equally likely cells."
+      }
+     ]
+    },
+    {
+     "title": "Tree Diagrams",
+     "mainIdea": "A tree diagram branches once for each choice; each path from start to tip is one outcome, and the number of tips is the product of the branch counts.",
+     "reading": [
+      "A cafe sells sandwiches with 2 breads (white, wheat) and 3 fillings (turkey, cheese, veggie). A *tree diagram* starts with 2 branches for bread. From each bread, draw 3 branches for filling. Count the ends: 2 × 3 = 6 sandwiches: white-turkey, white-cheese, white-veggie, wheat-turkey, wheat-cheese, wheat-veggie. Each path from the start to a tip is one outcome.",
+      "Add a third choice, 2 drinks (water, juice). From each of the 6 sandwich tips draw 2 more branches. Now there are 2 × 3 × 2 = 12 complete meals. If a customer picks each choice at random, every path is equally likely, so the probability of any one meal, such as wheat-cheese-juice, is 1/12. The probability of \"a wheat sandwich with juice\" counts 3 paths, one for each filling, so it is 3/12 = 1/4.",
+      "Tree diagrams shine when the *branches* are not the same at every step. Suppose a game: flip a coin; if heads, you roll a die; if tails, you spin a 4-section spinner. The tree has 6 tips under heads and 4 under tails, 10 total, but the tips are not equally likely, because heads and tails each get half the probability. Common mistake: multiplying counts when the choices depend on each other. Draw the tree and count paths instead of assuming."
+     ],
+     "words": [
+      {
+       "w": "tree diagram",
+       "d": "a drawing that branches once for each choice, so every path is one outcome"
+      },
+      {
+       "w": "branch",
+       "d": "one line in a tree diagram, standing for one option at that step"
+      }
+     ],
+     "look": {
+      "type": "think",
+      "title": "Draw the Tree",
+      "text": "A shirt comes in 4 colors, 3 sizes and 2 sleeve lengths. Draw a tree with 4 branches for color, then 3 for size from each color, then 2 for sleeve length from each size.",
+      "prompt": "How many tips does the tree have? If you pick one shirt at random, what is the probability it is a small, short-sleeve shirt of any color?"
+     },
+     "check": [
+      {
+       "q": "A tree diagram has 4 branches for color, then 3 for size, then 2 for sleeve length. How many outcomes are there?",
+       "choices": [
+        "9",
+        "24",
+        "12",
+        "6"
+       ],
+       "a": 1,
+       "why": "4 × 3 × 2 = 24 tips. Adding the counts gives 9 by mistake."
+      },
+      {
+       "q": "In the cafe with 2 breads, 3 fillings and 2 drinks, what is the probability of choosing wheat-cheese-juice at random?",
+       "choices": [
+        "1/7",
+        "1/6",
+        "1/12",
+        "3/12"
+       ],
+       "a": 2,
+       "why": "There are 2 × 3 × 2 = 12 equally likely meals, and only one is wheat-cheese-juice."
+      },
+      {
+       "q": "Why draw a tree diagram instead of only multiplying?",
+       "choices": [
+        "Multiplying is never allowed for compound events.",
+        "Trees always give a bigger number.",
+        "Trees are required for single events.",
+        "It shows every outcome, and it works when later choices depend on earlier ones."
+       ],
+       "a": 3,
+       "why": "Multiplying gives the count, but the tree shows which outcomes exist, even when the branches differ from step to step."
+      }
+     ]
+    },
+    {
+     "title": "Probability of Compound Events",
+     "mainIdea": "Find the probability of a compound event by counting favorable outcomes in the sample space, or by multiplying the probabilities of independent parts.",
+     "reading": [
+      "Spin a 4-section spinner (1, 2, 3, 4) and flip a coin. The sample space has 4 × 2 = 8 equally likely outcomes. What is P(3 and heads)? Only one outcome, 3H, so 1/8. What is P(even number and tails)? Two outcomes, 2T and 4T, so 2/8 = 1/4. Counting always works when outcomes are equally likely.",
+      "There is a shortcut when the parts do not affect each other, which we call *independent events*. The spinner does not change the coin. So P(3 and heads) = P(3) × P(heads) = 1/4 × 1/2 = 1/8, the same answer. For two dice, P(both show 6) = 1/6 × 1/6 = 1/36. For three coin flips, P(all heads) = 1/2 × 1/2 × 1/2 = 1/8.",
+      "\"At least one\" events are easier through the opposite, called the *complement*. P(at least one head in two flips) = 1 − P(no heads) = 1 − P(TT) = 1 − 1/4 = 3/4. Check by listing: HH, HT, TH are three of the four outcomes. Common mistakes: adding probabilities when you should multiply (1/4 + 1/2 = 3/4 for \"3 and heads\" is far too large), and multiplying when the events are not independent, like drawing two marbles without putting the first back."
+     ],
+     "words": [
+      {
+       "w": "independent events",
+       "d": "events where one result does not change the chances of the other"
+      },
+      {
+       "w": "complement",
+       "d": "the event not happening; its probability is 1 minus the event's probability"
+      }
+     ],
+     "look": {
+      "type": "think",
+      "title": "Three Flips",
+      "text": "List all outcomes of three coin flips: HHH, HHT, HTH, HTT, THH, THT, TTH, TTT. That is 8 equally likely outcomes.",
+      "prompt": "What is P(exactly two heads)? What is P(at least one tail)? Check the second one using 1 minus P(all heads)."
+     },
+     "check": [
+      {
+       "q": "Three fair coins are flipped. What is P(all three land heads)?",
+       "choices": [
+        "1/8",
+        "1/3",
+        "1/2",
+        "3/8"
+       ],
+       "a": 0,
+       "why": "1/2 × 1/2 × 1/2 = 1/8, and HHH is 1 of the 8 outcomes."
+      },
+      {
+       "q": "A spinner with 3 equal colors is spun twice. What is P(red both times)?",
+       "choices": [
+        "2/3",
+        "1/9",
+        "1/3",
+        "1/6"
+       ],
+       "a": 1,
+       "why": "The spins are independent: 1/3 × 1/3 = 1/9. Adding gives 2/3 by mistake."
+      },
+      {
+       "q": "Two fair coins are flipped. What is P(at least one head)?",
+       "choices": [
+        "1/2",
+        "1/4",
+        "3/4",
+        "1"
+       ],
+       "a": 2,
+       "why": "1 − P(TT) = 1 − 1/4 = 3/4. Listing: HH, HT, TH are 3 of 4 outcomes."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "title": "Simulations and Samples",
+   "lessons": [
+    {
+     "title": "Simulating Chance",
+     "mainIdea": "A simulation uses a random tool matched to the real probabilities, run many times, to estimate a probability that is hard to compute.",
+     "reading": [
+      "The forecast says a 30% chance of rain each day this week. What is the probability of rain on at least 2 of the 5 school days? Computing this by hand is messy. Instead, run a *simulation*. Use *random digits* 0 to 9. Let 0, 1 and 2 stand for rain; that is 3 out of 10 digits, matching 30%. Digits 3 to 9 mean no rain. Take 5 random digits for one week: 8 1 4 2 7 means rain on Tuesday and Thursday, 2 rainy days.",
+      "One week is one trial. Run 50 trials, count how many have 2 or more rainy days, and divide by 50. If 24 trials qualify, the estimate is 24/50 = 0.48. The key rule: the tool must match the real probability. For a basketball player who makes 80% of free throws, let digits 0 to 7 mean make and 8, 9 mean miss. For a 1/6 chance, roll a die and pick one face. For 1/4, use a spinner with four equal sections, or two coin flips where HH counts.",
+      "Common mistakes: matching the wrong number of digits (using 0 to 3 for 30% gives 40%), reusing the same digits every trial, and stopping after a handful of trials. A simulation is an experiment, so its answer is an experimental probability. It gets more trustworthy with more trials, but it is still an estimate."
+     ],
+     "words": [
+      {
+       "w": "simulation",
+       "d": "an experiment with a random tool that stands in for a real situation"
+      },
+      {
+       "w": "random digits",
+       "d": "digits 0 to 9 produced so that each is equally likely, used to model chance"
+      }
+     ],
+     "look": {
+      "type": "data",
+      "title": "Matching a Random Tool to a Probability",
+      "rows": [
+       [
+        "Rain 30%: digits 0–2 of 10",
+        0.3
+       ],
+       [
+        "Free throw 80%: digits 0–7 of 10",
+        0.8
+       ],
+       [
+        "One face of a die",
+        0.167
+       ],
+       [
+        "Two coins both heads",
+        0.25
+       ]
+      ],
+      "unit": "probability",
+      "cite": "Simulation setups from this lesson (die value rounded)",
+      "prompt": "Which tool would you use to simulate a 1/5 chance? Explain how the digits or faces would be assigned."
+     },
+     "check": [
+      {
+       "q": "You want to simulate a 40% chance with random digits 0–9. Which assignment works?",
+       "choices": [
+        "Digits 0–4 mean yes; 5–9 mean no.",
+        "Digits 0–3 mean yes; 4–7 mean no; skip 8 and 9.",
+        "Even digits mean yes; odd digits mean no.",
+        "Digits 0, 1, 2 and 3 mean yes; 4–9 mean no."
+       ],
+       "a": 3,
+       "why": "Four of ten digits is 4/10 = 40%. The other assignments give 5/10 or 4/8, which are both 50%."
+      },
+      {
+       "q": "A simulation of 5-day weeks runs 40 trials; 14 of them have at least 2 rainy days. What is the estimated probability?",
+       "choices": [
+        "0.35",
+        "0.14",
+        "0.4",
+        "0.65"
+       ],
+       "a": 0,
+       "why": "14 ÷ 40 = 0.35."
+      },
+      {
+       "q": "Which random tool best simulates a 1/6 chance?",
+       "choices": [
+        "one coin flip",
+        "one roll of a fair die, with one face meaning yes",
+        "a spinner with 4 equal sections",
+        "random digits 0–5 meaning yes"
+       ],
+       "a": 1,
+       "why": "A die has 6 equally likely faces, so one face has probability exactly 1/6. Digits 0–5 give 6/10."
+      }
+     ]
+    },
+    {
+     "title": "Random Samples",
+     "mainIdea": "A random sample gives every member of the population an equal chance of being chosen, so the sample is likely to look like the whole.",
+     "reading": [
+      "You want to know how many hours students at your school sleep, but the school has 800 students. Asking all 800 is a census. Asking a smaller group is taking a *sample*. The whole group you care about is the *population*. A sample only helps if it looks like the population, and the best way to get that is to choose at random: every student has the same chance of being picked.",
+      "Random does not mean careless. Put every student's name or ID number in a list, then use a random number generator, or draw numbers from a hat, to pick 50. That is a *random sample*. Compare that to asking the 50 students in the cafeteria line at 7:30 a.m., who are early risers, or asking the basketball team, who are taller than average. Those samples are *biased*: some students had a much better chance of being chosen than others, so the sample leans one way.",
+      "Random samples still vary. Two random samples of 50 students might give mean sleep of 7.1 and 7.4 hours. Larger samples vary less. The U.S. Census counts every person once every ten years; between counts, the government estimates by sampling. Common mistake: thinking a big biased sample beats a small random one. A million responses to an online poll that only night owls saw still tell you about night owls."
+     ],
+     "words": [
+      {
+       "w": "population",
+       "d": "the whole group you want to learn about"
+      },
+      {
+       "w": "sample",
+       "d": "a smaller group taken from the population"
+      },
+      {
+       "w": "random sample",
+       "d": "a sample in which every member of the population had an equal chance of being chosen"
+      },
+      {
+       "w": "biased",
+       "d": "leaning one way because some members were more likely to be chosen than others"
+      }
+     ],
+     "look": {
+      "type": "data",
+      "title": "U.S. Population by Census Count (rounded)",
+      "rows": [
+       [
+        "1790",
+        3.9
+       ],
+       [
+        "1900",
+        76
+       ],
+       [
+        "2000",
+        281
+       ],
+       [
+        "2020",
+        331
+       ]
+      ],
+      "unit": "million people",
+      "cite": "U.S. Census Bureau decennial counts, rounded",
+      "prompt": "A census counts everyone. Why might a school survey use a random sample instead of a census?"
+     },
+     "check": [
+      {
+       "q": "Which sample of a school's 800 students is a random sample?",
+       "choices": [
+        "The first 50 students through the front door.",
+        "The 50 students on sports teams.",
+        "50 students chosen by drawing ID numbers from the list of all 800.",
+        "50 students who volunteer online."
+       ],
+       "a": 2,
+       "why": "Drawing from the full list gives every student the same chance. The others favor early arrivers, athletes or volunteers."
+      },
+      {
+       "q": "A survey about lunch is given only to students who buy lunch. What is the problem?",
+       "choices": [
+        "The sample is too large.",
+        "Lunch is not a statistical topic.",
+        "Random samples cannot be about food.",
+        "Students who bring lunch had no chance to be chosen, so the sample is biased."
+       ],
+       "a": 3,
+       "why": "A random sample must give everyone in the population a chance. Leaving out lunch-bringers tilts the results."
+      },
+      {
+       "q": "Which will vary least from the true population value?",
+       "choices": [
+        "a random sample of 200",
+        "a random sample of 20",
+        "a random sample of 50",
+        "all samples vary by the same amount"
+       ],
+       "a": 0,
+       "why": "Larger random samples bounce around less, so their results sit closer to the population value."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "title": "Making Inferences",
+   "lessons": [
+    {
+     "title": "From Sample to Population",
+     "mainIdea": "Find the proportion in a random sample, then multiply by the population size to estimate the count in the whole population.",
+     "reading": [
+      "A random sample of 50 students at an 800-student school is asked their favorite lunch. 20 pick pizza. The sample *proportion* is 20/50 = 0.4, or 40%. If the sample looks like the school, about 40% of all 800 students prefer pizza: 0.4 × 800 = 320 students. This is an *inference*: a conclusion about the population drawn from the sample.",
+      "Another: a random sample of 40 students shows 12 walk to school, so 12/40 = 0.3. In a district of 1,200 students, estimate 0.3 × 1,200 = 360 walkers. The estimate is not exact. A second sample might show 10 or 14 walkers, giving 300 or 420. Report it as \"about 360,\" and remember that larger samples give tighter estimates.",
+      "The same idea works for quality checks. A factory pulls a random sample of 100 light bulbs and finds 3 that fail. The proportion is 3/100 = 0.03. In a shipment of 20,000 bulbs, expect about 0.03 × 20,000 = 600 failures. Common mistakes: multiplying the sample count by the population instead of using the proportion (20 × 800 is nonsense), and making inferences from a biased sample. A sample of the pizza line will always say pizza."
+     ],
+     "words": [
+      {
+       "w": "proportion",
+       "d": "the part divided by the whole, like 20/50 = 0.4"
+      },
+      {
+       "w": "inference",
+       "d": "a conclusion about a population based on a sample"
+      }
+     ],
+     "look": {
+      "type": "think",
+      "title": "Gumballs in the Jar",
+      "text": "A jar holds 500 gumballs in several colors. You cannot count them all, so you shake the jar and scoop out 40. In the scoop, 14 are blue. Set up the proportion 14/40 and use it to estimate the blue gumballs in the jar.",
+      "prompt": "About how many blue gumballs are in the jar? Why does shaking the jar first matter?"
+     },
+     "check": [
+      {
+       "q": "In a random sample of 50 students, 20 prefer pizza. About how many of the school's 800 students prefer pizza?",
+       "choices": [
+        "20",
+        "320",
+        "200",
+        "400"
+       ],
+       "a": 1,
+       "why": "20/50 = 0.4, and 0.4 × 800 = 320."
+      },
+      {
+       "q": "A random sample of 40 students shows 12 walk to school. In a district of 1,200 students, about how many walk?",
+       "choices": [
+        "12",
+        "300",
+        "360",
+        "480"
+       ],
+       "a": 2,
+       "why": "12/40 = 0.3, and 0.3 × 1,200 = 360."
+      },
+      {
+       "q": "A scoop of 40 gumballs from a jar of 500 has 14 blue. About how many blue gumballs are in the jar?",
+       "choices": [
+        "140",
+        "14",
+        "350",
+        "175"
+       ],
+       "a": 3,
+       "why": "14/40 = 0.35, and 0.35 × 500 = 175."
+      }
+     ]
+    },
+    {
+     "title": "Comparing Two Populations",
+     "mainIdea": "Compare random samples from two populations the way you compare two groups: look at the difference in centers relative to the spread.",
+     "reading": [
+      "Do seventh graders and eighth graders spend different amounts of time on homework? You cannot ask everyone, so take a random sample of 30 from each grade. Seventh-grade sample: mean 45 minutes, MAD 10. Eighth-grade sample: mean 65 minutes, MAD 10. The difference in means is 65 − 45 = 20 minutes, which is 20 ÷ 10 = 2 MADs. That is a large, visible separation, so you can infer that eighth graders in this school generally spend more time.",
+      "Change the numbers: seventh-grade mean 52, eighth-grade mean 55, both MAD 12. The difference is 3 minutes, or 3 ÷ 12 = 0.25 MAD. Two random samples from the same population could easily differ by that much. Do not claim a real difference. Say the samples overlap too much to tell. A *meaningful difference* is one that is large compared with the spread.",
+      "Repeating the sampling shows why. If you drew many pairs of samples of 30, the difference in sample means would bounce around by a few minutes even when the populations were identical. That bounce is *sampling variability*. A difference must be big compared to that bounce, and compared to the spread within each group, to mean something. Common mistakes: comparing two biased samples, and comparing samples of very different sizes without noticing. Sizes of 30 and 3 do not carry equal weight."
+     ],
+     "words": [
+      {
+       "w": "meaningful difference",
+       "d": "a gap between two centers that is large compared with the spread, usually 2 or more MADs"
+      },
+      {
+       "w": "sampling variability",
+       "d": "the natural bouncing around of results from one random sample to the next"
+      }
+     ],
+     "look": {
+      "type": "data",
+      "title": "Two Homework Samples (example)",
+      "rows": [
+       [
+        "7th grade mean",
+        45
+       ],
+       [
+        "7th grade MAD",
+        10
+       ],
+       [
+        "8th grade mean",
+        65
+       ],
+       [
+        "8th grade MAD",
+        10
+       ]
+      ],
+      "unit": "minutes",
+      "cite": "Made-up example from this lesson",
+      "prompt": "How many MADs apart are the sample means? What conclusion is reasonable?"
+     },
+     "check": [
+      {
+       "q": "Sample A: mean 45, MAD 10. Sample B: mean 65, MAD 10. How many MADs apart are the means?",
+       "choices": [
+        "2",
+        "20",
+        "10",
+        "0.5"
+       ],
+       "a": 0,
+       "why": "65 − 45 = 20, and 20 ÷ 10 = 2 MADs."
+      },
+      {
+       "q": "Two random samples have means of 52 and 55, each with a MAD of 12. What is the best conclusion?",
+       "choices": [
+        "Eighth graders clearly spend more time.",
+        "The difference is small compared to the spread, so no real difference is shown.",
+        "The difference is 3 MADs.",
+        "The samples must be biased."
+       ],
+       "a": 1,
+       "why": "55 − 52 = 3, and 3 ÷ 12 = 0.25 MAD, well within normal sampling variability."
+      },
+      {
+       "q": "Which change would make a difference between two sample means more convincing?",
+       "choices": [
+        "Smaller samples.",
+        "Asking only students who like homework.",
+        "Larger random samples with the same difference.",
+        "A larger MAD in each sample."
+       ],
+       "a": 2,
+       "why": "Bigger random samples bounce less, so the same gap stands out more clearly. Bias or more spread would weaken the case."
+      }
+     ]
+    }
+   ]
+  }
+ ],
+ "review": [
+  {
+   "q": "A bag has 3 red and 9 blue marbles. What is P(red)?",
+   "choices": [
+    "1/3",
+    "3/9",
+    "3/4",
+    "1/4"
+   ],
+   "a": 3,
+   "why": "There are 12 marbles in all: 3/12 = 1/4. Dividing by the blue count gives 3/9 by mistake."
+  },
+  {
+   "q": "A fair die is rolled 120 times. About how many times should it show a 5?",
+   "choices": [
+    "20",
+    "5",
+    "24",
+    "60"
+   ],
+   "a": 0,
+   "why": "120 × 1/6 = 20."
+  },
+  {
+   "q": "A coin is flipped 50 times and lands tails 22 times. What is the experimental probability of tails?",
+   "choices": [
+    "0.5",
+    "0.44",
+    "0.56",
+    "22"
+   ],
+   "a": 1,
+   "why": "22 ÷ 50 = 0.44. The theoretical value is 0.5, and 0.56 is heads."
+  },
+  {
+   "q": "How many outcomes are in the sample space when you flip a coin and roll a die?",
+   "choices": [
+    "8",
+    "6",
+    "12",
+    "36"
+   ],
+   "a": 2,
+   "why": "2 × 6 = 12 outcomes."
+  },
+  {
+   "q": "Two dice are rolled. What is P(sum of 7)?",
+   "choices": [
+    "1/36",
+    "7/36",
+    "1/12",
+    "1/6"
+   ],
+   "a": 3,
+   "why": "Six of the 36 cells give a sum of 7: 6/36 = 1/6."
+  },
+  {
+   "q": "Which sample of a school is random?",
+   "choices": [
+    "Names drawn from a hat holding every student's name.",
+    "Students who sit in the front row.",
+    "Students who answer a poll on the school website.",
+    "The first 30 students to arrive."
+   ],
+   "a": 0,
+   "why": "Only the hat gives every student the same chance of being chosen."
+  },
+  {
+   "q": "In a random sample of 60 students, 15 ride bikes to school. The school has 900 students. About how many ride bikes?",
+   "choices": [
+    "15",
+    "225",
+    "150",
+    "60"
+   ],
+   "a": 1,
+   "why": "15/60 = 0.25, and 0.25 × 900 = 225."
+  },
+  {
+   "q": "A player makes 70% of free throws. Which digit assignment simulates one shot?",
+   "choices": [
+    "Digits 0–7 mean make; 8–9 mean miss.",
+    "Digits 0–5 mean make; 6–9 mean miss.",
+    "Digits 0–6 mean make; 7–9 mean miss.",
+    "Even digits mean make; odd digits mean miss."
+   ],
+   "a": 2,
+   "why": "Digits 0 through 6 are 7 of the 10 digits, matching 70%. The others give 80%, 60% or 50%."
+  }
+ ]
+}

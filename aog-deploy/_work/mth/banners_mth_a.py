@@ -97,14 +97,13 @@ def _b1():
         + f'<pattern id="{p}grid" width="6" height="6" patternUnits="userSpaceOnUse"><rect width="6" height="6" fill="none" stroke="#3D6FA6" stroke-width=".8"/></pattern>'
     )
     wins = "".join(f'<rect x="{x}" y="128" width="64" height="52" rx="4" fill="url(#{p}win)"/>' for x in range(486, 1000, 78))
-    winlines = "".join(f'<path d="M{x + 6} 134 q28 -6 52 4" stroke="#DDF0FF" stroke-width="2" fill="none" opacity=".6"/>' for x in range(486, 1000, 78))
     frames = "".join(
-        f'<g transform="translate({x} 330)"><rect width="110" height="46" fill="none" stroke="#F6EFDD" stroke-width="3"/>'
+        f'<g transform="translate({x} 318)"><rect width="110" height="46" fill="none" stroke="#F6EFDD" stroke-width="3"/>'
         f'<path d="M22 0 v46 M44 0 v46 M66 0 v46 M88 0 v46 M0 23 h110" stroke="#F6EFDD" stroke-width="2"/></g>'
         for x in (40, 200, 360, 520, 680, 840, 1000)
     )
-    counters = "".join(f'<circle cx="{x}" cy="{y}" r="7" fill="#E1573A"/>' for x, y in ((51, 341), (73, 341), (95, 341), (117, 341), (211, 341), (233, 341), (255, 341), (277, 341), (299, 341), (211, 365)))
-    kids = "".join(_kid(x, 330, h, "#2B2540") for x, h in ((96, 62), (138, 70), (184, 58), (232, 66), (280, 60), (330, 68)))
+    counters = "".join(f'<circle cx="{x}" cy="{y}" r="7" fill="#E1573A"/>' for x, y in ((51, 329), (73, 329), (95, 329), (117, 329), (211, 329), (233, 329), (255, 329), (277, 329), (299, 329), (211, 353)))
+    kids = "".join(_kid(x, 312, h, "#2B2540") for x, h in ((96, 64), (138, 72), (184, 60), (232, 68), (280, 62), (330, 70)))
     body = f'''
 <rect width="{W}" height="{H}" fill="url(#{p}sky)"/>
 <circle cx="1030" cy="70" r="150" fill="url(#{p}sun)"/><circle cx="1030" cy="70" r="34" fill="#FFF7DA"/>
@@ -119,7 +118,7 @@ def _b1():
 <g><path d="M340 96 h660 q40 0 42 40 v104 h-702z" fill="url(#{p}bus)"/><path d="M340 96 h660 q40 0 42 40 h-702z" fill="#FFDE6E" opacity=".5"/></g>
 <path d="M370 96 h620 q10 0 12 8 h-644 q4 -8 12 -8z" fill="#3A3A3A" opacity=".55"/>
 <rect x="340" y="190" width="702" height="14" fill="#2B2540"/><rect x="340" y="222" width="702" height="6" fill="#2B2540" opacity=".7"/>
-{wins}{winlines}
+{wins}
 <rect x="720" y="134" width="40" height="40" fill="#FFFDF4"/><rect x="720" y="134" width="40" height="40" fill="url(#{p}grid)"/><rect x="720" y="134" width="40" height="40" fill="none" stroke="#3D6FA6" stroke-width="1.5"/>
 <rect x="1006" y="128" width="30" height="52" rx="4" fill="url(#{p}win)"/>
 <path d="M370 128 h84 v112 h-84z" fill="#2B2540"/><path d="M376 132 h34 v104 h-34z M416 132 h32 v104 h-32z" fill="url(#{p}win)"/><path d="M378 134 h30 v52 h-30z M418 134 h28 v52 h-28z" fill="#8CBFE8" opacity=".5"/>
@@ -132,8 +131,8 @@ def _b1():
 <path d="M0 316 H1200" stroke="#A59C88" stroke-width="2" opacity=".6"/>
 {frames}{counters}
 {kids}
-<g fill="#E1573A"><path d="M132 268 h14 v12 h-14z"/></g><g fill="#3D6FA6"><path d="M226 264 h14 v12 h-14z"/><path d="M324 260 h14 v12 h-14z"/></g>
-<path d="M360 330 l6 -34 h18 l-6 34z" fill="#2B2540"/>
+<g fill="#E1573A"><path d="M132 250 h14 v12 h-14z"/></g><g fill="#3D6FA6"><path d="M226 246 h14 v12 h-14z"/><path d="M324 242 h14 v12 h-14z"/></g>
+<path d="M360 312 l6 -34 h18 l-6 34z" fill="#2B2540"/>
 '''
     return _wrap(1, body, defs)
 
@@ -159,7 +158,7 @@ def _b2():
     ripples = "".join(f'<ellipse cx="{x}" cy="{y}" rx="{r}" ry="{r / 6}" fill="none" stroke="#FFE1A0" stroke-width="1.2" opacity="{o}"/>' for x, y, r, o in ((560, 262, 60, .45), (560, 262, 90, .25), (760, 248, 50, .4), (900, 270, 44, .4), (900, 270, 70, .2)))
     reeds_l = "".join(f'<path d="M{x} 420 q{dx} -100 {dx2} -{h}" stroke="{D}" stroke-width="{w}" fill="none" stroke-linecap="round"/><rect x="{x + dx2 - 4}" y="{420 - h - 34}" width="8" height="38" rx="4" fill="#3A2C1A"/>' for x, dx, dx2, h, w in ((40, 10, 16, 300, 4), (86, -6, -2, 250, 3), (128, 12, 20, 340, 4), (170, -4, 4, 210, 3), (1090, -12, -18, 320, 4), (1136, 8, 10, 260, 3), (1170, -6, -4, 300, 4)))
     grass = "".join(f'<path d="M{x} 420 q{d} -60 {d * 1.5:.0f} -110" stroke="{D}" stroke-width="2" fill="none"/>' for x, d in ((20, 4), (60, -8), (104, 6), (150, -10), (200, 3), (1060, -6), (1112, 8), (1150, -4), (1190, 6)))
-    pads = "".join(f'<path d="M{x} {y} m-{r} 0 a{r} {r * .42:.0f} 0 1 0 {2 * r} 0 a{r} {r * .42:.0f} 0 1 0 -{2 * r} 0z" fill="#2F6A3E"/><path d="M{x} {y} l{r * .9:.0f} -{r * .3:.0f} l-{r * .2:.0f} {r * .45:.0f}z" fill="url(#{p}water)"/>' for x, y, r in ((330, 318, 62), (240, 372, 38), (430, 378, 38)))
+    pads = "".join(f'<path d="M{x} {y} m-{r} 0 a{r} {r * .42:.0f} 0 1 0 {2 * r} 0 a{r} {r * .42:.0f} 0 1 0 -{2 * r} 0z" fill="#2F6A3E"/><path d="M{x} {y} l{r * .9:.0f} -{r * .3:.0f} l-{r * .2:.0f} {r * .45:.0f}z" fill="url(#{p}water)"/>' for x, y, r in ((330, 282, 56), (250, 326, 34), (420, 330, 34)))
     body = f'''
 <rect width="{W}" height="{H}" fill="url(#{p}sky)"/>
 <circle cx="880" cy="190" r="140" fill="url(#{p}sun)"/><circle cx="880" cy="190" r="34" fill="#FFF3C6"/>
@@ -174,8 +173,8 @@ def _b2():
 {duck(560, 262, 1)}{duck(760, 248, .8, True)}{duck(900, 270, .9)}
 <g fill="{D}"><ellipse cx="600" cy="256" rx="10" ry="4"/><ellipse cx="632" cy="254" rx="8" ry="3"/></g>
 {pads}
-<g stroke="#5F9A6A" stroke-width="3" fill="none" stroke-linecap="round"><path d="M320 340 q-40 10 -80 24"/><path d="M340 340 q40 10 90 30"/></g>
-<g fill="#F6CFE0"><path d="M330 300 l-8 -14 l10 6 l-2 -16 l8 12 l8 -12 l-2 16 l10 -6 l-8 14z"/></g><circle cx="330" cy="296" r="4" fill="#FFE27A"/>
+<g stroke="#5F9A6A" stroke-width="3" fill="none" stroke-linecap="round"><path d="M318 300 q-40 6 -70 20"/><path d="M342 300 q40 6 76 24"/></g>
+<g fill="#F6CFE0"><path d="M330 268 l-8 -14 l10 6 l-2 -16 l8 12 l8 -12 l-2 16 l10 -6 l-8 14z"/></g><circle cx="330" cy="264" r="4" fill="#FFE27A"/>
 {reeds_l}{grass}
 '''
     return _wrap(2, body, defs)
@@ -192,15 +191,18 @@ def _b3():
         + _lin(p+"jar", [(0, "#DDEFF5", .55), (.5, "#FFFFFF", .25), (1, "#B9D5DD", .6)], 0, 0, 1, 0)
         + f'<pattern id="{p}cloth" width="28" height="28" patternUnits="userSpaceOnUse"><rect width="28" height="28" fill="#FFF7D6"/><rect width="14" height="28" fill="#F5D94A"/></pattern>'
         + _lin(p+"lem", [(0, "#FFF0A0", None), (1, "#F2C43C", None)])
+        + f'<pattern id="{p}awn" width="44" height="28" patternUnits="userSpaceOnUse"><rect width="44" height="28" fill="#F5D94A"/><rect width="22" height="28" fill="#FFF7D6"/></pattern>'
     )
     def stack(x, n=10):
-        return "".join(f'<path d="M{x} {236 - i * 5} h26 l-3 -8 h-20z" fill="#F3F0E6" stroke="#C9C2B0" stroke-width="1"/>' for i in range(n))
-    stacks = "".join(stack(x) for x in (664, 700, 736, 772))
-    stacks2 = "".join(stack(x, 4) for x in (808,))
+        h = n * 5 + 6
+        lines = " ".join(f"M{x + 2} {236 - i * 5} h22" for i in range(1, n))
+        return (f'<path d="M{x} 236 v-{h} h26 v{h}z" fill="#F3F0E6"/><path d="M{x} 236 v-{h} h26 v{h}" fill="none" stroke="#C9C2B0" stroke-width="1"/>'
+                f'<path d="{lines}" stroke="#C9C2B0" stroke-width="1"/>')
+    stacks = "".join(stack(x) for x in (664, 700, 736, 772)) + stack(808, 4)
     btn_cols = ("#E1573A", "#3D6FA6", "#F2C43C", "#4E8A2E", "#F0F0F0", "#8B4A9E")
-    buttons = "".join(f'<circle cx="{892 + (i * 17) % 60}" cy="{232 - (i * 11) % 66}" r="6" fill="{btn_cols[i % 6]}"/><circle cx="{892 + (i * 17) % 60}" cy="{232 - (i * 11) % 66}" r="2" fill="#333" opacity=".5"/>' for i in range(30))
+    buttons = "".join(f'<circle cx="{892 + (i * 17) % 60}" cy="{232 - (i * 11) % 66}" r="6" fill="{btn_cols[i % 6]}"/>' for i in range(22))
     scallops = "".join(f'<path d="M{x} 128 q11 14 22 0z" fill="{"#F5D94A" if i % 2 else "#FFF7D6"}"/>' for i, x in enumerate(range(620, 1000, 22)))
-    stripes = "".join(f'<rect x="{x}" y="100" width="22" height="28" fill="{"#F5D94A" if i % 2 else "#FFF7D6"}"/>' for i, x in enumerate(range(620, 1000, 22)))
+    stripes = f'<rect x="620" y="100" width="380" height="28" fill="url(#{p}awn)"/>'
     body = f'''
 <rect width="{W}" height="{H}" fill="url(#{p}sky)"/>
 <circle cx="560" cy="60" r="28" fill="#FFF7CC" opacity=".9"/>
@@ -216,7 +218,7 @@ def _b3():
 <g fill="#5A3A22"><rect x="628" y="128" width="8" height="108"/><rect x="980" y="128" width="8" height="108"/></g>
 {stripes}{scallops}<path d="M612 96 h392 v8 h-392z" fill="#5A3A22"/>
 <rect x="640" y="236" width="340" height="60" fill="url(#{p}cloth)"/><rect x="640" y="236" width="340" height="8" fill="#5A3A22" opacity=".25"/><path d="M640 296 h340 l6 10 h-352z" fill="#5A3A22" opacity=".3"/>
-{stacks}{stacks2}
+{stacks}
 <rect x="852" y="164" width="16" height="10" fill="#F3F0E6"/>
 <path d="M880 236 v-72 q0 -10 10 -10 h60 q10 0 10 10 v72z" fill="#FFFFFF" opacity=".35"/>{buttons}<path d="M880 236 v-72 q0 -10 10 -10 h60 q10 0 10 10 v72z" fill="url(#{p}jar)"/><rect x="884" y="148" width="72" height="10" rx="3" fill="#8E887A"/><path d="M884 168 v66" stroke="#FFFFFF" stroke-width="3" opacity=".5"/>
 <g><path d="M700 172 h50 l-6 64 h-38z" fill="#FFF4B0" opacity=".85"/><path d="M700 172 h50 v6 h-50z" fill="#C9C2B0"/><path d="M750 186 q18 4 12 30" stroke="#C9C2B0" stroke-width="4" fill="none"/><circle cx="716" cy="200" r="9" fill="url(#{p}lem)"/><circle cx="736" cy="220" r="8" fill="url(#{p}lem)"/></g>
@@ -238,7 +240,6 @@ def _b4():
         + f'<pattern id="{p}check" width="24" height="24" patternUnits="userSpaceOnUse"><rect width="24" height="24" fill="#F4F1E8"/><rect width="12" height="12" fill="#D94F3A"/><rect x="12" y="12" width="12" height="12" fill="#D94F3A"/></pattern>'
     )
     ticks = "".join(f'<path d="M{760 + 76 * math.sin(math.radians(a)):.1f} {140 - 76 * math.cos(math.radians(a)):.1f} L{760 + (66 if a % 90 == 0 else 70) * math.sin(math.radians(a)):.1f} {140 - (66 if a % 90 == 0 else 70) * math.cos(math.radians(a)):.1f}"/>' for a in range(0, 360, 30))
-    mins = "".join(f'<path d="M{760 + 76 * math.sin(math.radians(a)):.1f} {140 - 76 * math.cos(math.radians(a)):.1f} L{760 + 73 * math.sin(math.radians(a)):.1f} {140 - 73 * math.cos(math.radians(a)):.1f}"/>' for a in range(0, 360, 6) if a % 30)
     ruler = "".join(f'<path d="M{x} 250 v{12 if i % 4 == 0 else 7 if i % 2 == 0 else 4}"/>' for i, x in enumerate(range(612, 1000, 12)))
     rain = "".join(f'<path d="M{x} {y} l-4 14"/>' for x, y in ((1010, 70), (1050, 100), (1090, 60), (1130, 120), (1030, 150), (1110, 170), (1070, 200), (1020, 200), (1150, 80), (1140, 210)))
     gauge = "".join(f'<path d="M1084 {y} h{8 if i % 2 == 0 else 5}"/>' for i, y in enumerate(range(180, 240, 6)))
@@ -252,7 +253,7 @@ def _b4():
 <g fill="none" stroke="#F4F1E8" stroke-width="2" opacity=".55"><path d="M110 110 h160"/><path d="M110 140 h110"/><path d="M110 170 h140"/><path d="M110 200 h80"/><circle cx="420" cy="130" r="36"/><path d="M384 130 h72 M420 94 v72"/></g>
 <rect x="60" y="256" width="500" height="10" fill="#8A6A44"/><g fill="#F4F1E8"><rect x="110" y="250" width="30" height="6" rx="2"/><rect x="150" y="250" width="22" height="6" rx="2"/></g><rect x="480" y="248" width="40" height="8" rx="2" fill="#4A3A2A"/>
 <circle cx="760" cy="140" r="90" fill="#3A3A3A"/><circle cx="760" cy="140" r="82" fill="#FAF8F0"/>
-<g stroke="#2A2A2A" stroke-width="3">{ticks}</g><g stroke="#2A2A2A" stroke-width="1">{mins}</g>
+<g stroke="#2A2A2A" stroke-width="3">{ticks}</g><circle cx="760" cy="140" r="74" fill="none" stroke="#2A2A2A" stroke-width="3" stroke-dasharray="1.2 6.55" opacity=".7"/>
 <path d="M760 140 L727 121" stroke="#2A2A2A" stroke-width="6" stroke-linecap="round"/><path d="M760 140 L790 88" stroke="#2A2A2A" stroke-width="4" stroke-linecap="round"/><path d="M760 152 L806 175" stroke="#D94F3A" stroke-width="2" stroke-linecap="round"/><circle cx="760" cy="140" r="5" fill="#2A2A2A"/>
 <rect x="600" y="240" width="400" height="26" fill="#E8C98A"/><rect x="600" y="240" width="400" height="26" fill="none" stroke="#B08A50" stroke-width="1.5"/><g stroke="#3A2A1A" stroke-width="1.5">{ruler}</g>
 <g fill="#E9E4C2" opacity=".85"><path d="M612 232 l24 -6 l4 14 l-24 6z"/><path d="M968 232 l24 -6 l4 14 l-24 6z"/></g>
@@ -263,7 +264,7 @@ def _b4():
 <rect x="1000" y="240" width="180" height="12" fill="#C9B994"/><rect x="1088" y="52" width="4" height="188" fill="#8A6A44"/><rect x="1010" y="142" width="160" height="4" fill="#8A6A44"/>
 <path d="M0 300 H1200 V420 H0z" fill="url(#{p}table)"/><rect x="0" y="296" width="1200" height="8" fill="#A67A48"/>
 <rect x="240" y="286" width="600" height="18" fill="url(#{p}check)"/><rect x="240" y="286" width="600" height="18" fill="#000" opacity=".12"/>
-<g><rect x="300" y="248" width="120" height="50" rx="4" fill="url(#{p}box)"/><path d="M300 252 l4 -40 h120 l-4 40z" fill="#6A7684"/><path d="M300 252 h120" stroke="#3A4450" stroke-width="2"/><rect x="310" y="258" width="24" height="30" rx="2" fill="#7CB35A"/><rect x="340" y="258" width="24" height="30" rx="2" fill="#7CB35A"/><rect x="372" y="258" width="40" height="14" rx="2" fill="#E0C36A"/><rect x="372" y="276" width="40" height="12" rx="2" fill="#D8D8DC"/></g>
+<g><rect x="300" y="238" width="130" height="56" rx="4" fill="url(#{p}box)"/><path d="M300 242 l6 -46 h130 l-6 46z" fill="#6A7684"/><path d="M300 242 h130" stroke="#3A4450" stroke-width="2"/><rect x="310" y="250" width="26" height="34" rx="2" fill="#7CB35A"/><rect x="342" y="250" width="26" height="34" rx="2" fill="#7CB35A"/><rect x="376" y="250" width="44" height="16" rx="2" fill="#E0C36A"/><rect x="376" y="270" width="44" height="14" rx="2" fill="#D8D8DC"/></g>
 {coins}
 <ellipse cx="704" cy="288" rx="110" ry="14" fill="#F4F1E8"/><ellipse cx="704" cy="288" rx="110" ry="14" fill="none" stroke="#C9C2B0" stroke-width="1.5"/>{cakes}
 '''
@@ -316,9 +317,9 @@ def _b5():
 {cube(1040, 262, 38, "#F0CE5A", "#B08A2A", "#E2B93B")}
 <path d="M600 284 q0 -34 40 -34 h20 q40 0 40 34 v6 h-100z" fill="#5F8FC9"/><rect x="592" y="280" width="116" height="12" rx="3" fill="#2E4F80"/>
 <path d="M560 226 h40 l-8 24 h-24z" fill="#E2B93B"/>
-<ellipse cx="300" cy="330" rx="120" ry="30" fill="#F4F1E8"/><ellipse cx="300" cy="330" rx="120" ry="30" fill="none" stroke="#C9C2B0" stroke-width="2"/><ellipse cx="300" cy="330" rx="96" ry="22" fill="none" stroke="#3F6FA8" stroke-width="1.5" opacity=".5"/>
+<g transform="translate(0 -22)"><ellipse cx="300" cy="330" rx="120" ry="30" fill="#F4F1E8"/><ellipse cx="300" cy="330" rx="120" ry="30" fill="none" stroke="#C9C2B0" stroke-width="2"/><ellipse cx="300" cy="330" rx="96" ry="22" fill="none" stroke="#3F6FA8" stroke-width="1.5" opacity=".5"/>
 <g><path d="M226 322 l72 -26 l-6 44 h-52z" fill="#E4B36E"/><path d="M228 320 l70 -26 l-2 16 l-66 24z" fill="#F1CE93"/><path d="M234 330 l60 -22" stroke="#7CB35A" stroke-width="3"/><path d="M238 336 l54 -20" stroke="#D94F3A" stroke-width="2"/></g>
-<g><path d="M310 296 l72 26 l-14 22 h-52z" fill="#E4B36E"/><path d="M312 296 l70 26 l-8 4 l-64 -22z" fill="#F1CE93"/><path d="M318 306 l58 22" stroke="#7CB35A" stroke-width="3"/><path d="M314 312 l54 20" stroke="#D94F3A" stroke-width="2"/></g>
+<g><path d="M310 296 l72 26 l-14 22 h-52z" fill="#E4B36E"/><path d="M312 296 l70 26 l-8 4 l-64 -22z" fill="#F1CE93"/><path d="M318 306 l58 22" stroke="#7CB35A" stroke-width="3"/><path d="M314 312 l54 20" stroke="#D94F3A" stroke-width="2"/></g></g>
 '''
     return _wrap(5, body, defs)
 
@@ -336,9 +337,9 @@ def _b6():
         + _rad(p+"cook", [(0, "#E6C58A", 1), (.8, "#C79A56", 1), (1, "#9C6E36", 1)], .4, .35, .7)
     )
     rows = "".join(f'<path d="M{770 + i * 30} 236 L{600 + i * 60} 300" stroke="#4E7A24" stroke-width="{1 + i * .2:.1f}" opacity=".55" fill="none"/>' for i in range(12))
-    eggs = "".join(f'<ellipse cx="{x}" cy="{y}" rx="12" ry="9" fill="#F4E9D2"/><ellipse cx="{x - 3}" cy="{y - 3}" rx="4" ry="2.5" fill="#FFFFFF" opacity=".6"/>' for x in range(226, 372, 29) for y in (242, 262))
-    cups = "".join(f'<path d="M{x} {y} h30 v10 h-30z" fill="#3A3E46"/><ellipse cx="{x + 15}" cy="{y}" rx="15" ry="6" fill="#2A2E36"/><path d="M{x + 1} {y - 2} q14 -22 28 0 z" fill="url(#{p}muf)"/><ellipse cx="{x + 15}" cy="{y - 8}" rx="15" ry="7" fill="url(#{p}muf)"/>' for y in (222, 246) for x in (612, 650, 688, 726))
-    cookies = "".join(f'<circle cx="{x}" cy="{y}" r="15" fill="url(#{p}cook)"/><g fill="#5A3420"><circle cx="{x - 5}" cy="{y - 4}" r="2"/><circle cx="{x + 5}" cy="{y + 2}" r="2"/><circle cx="{x - 1}" cy="{y + 6}" r="1.6"/></g>' for y in (216, 250) for x in (846, 884, 922, 960, 998))
+    eggs = '<g fill="#F4E9D2">' + "".join(f'<ellipse cx="{x}" cy="{y}" rx="12" ry="9"/>' for x in range(226, 372, 29) for y in (242, 262)) + "</g>"
+    cups = "".join(f'<ellipse cx="{x + 15}" cy="{y}" rx="15" ry="6" fill="#2A2E36"/><path d="M{x + 1} {y - 2} q14 -22 28 0 z" fill="url(#{p}muf)"/><ellipse cx="{x + 15}" cy="{y - 8}" rx="15" ry="7" fill="url(#{p}muf)"/>' for y in (222, 246) for x in (612, 650, 688, 726))
+    cookies = "".join(f'<circle cx="{x}" cy="{y}" r="15" fill="url(#{p}cook)"/>' for y in (216, 250) for x in (846, 884, 922, 960, 998)) + '<g fill="#5A3420">' + "".join(f'<circle cx="{x - 5}" cy="{y - 4}" r="2"/><circle cx="{x + 5}" cy="{y + 3}" r="2"/>' for y in (216, 250) for x in (846, 884, 922, 960, 998)) + "</g>"
     wires = "".join(f'<path d="M830 {y} h190" stroke="#8A8E96" stroke-width="2"/>' for y in range(212, 270, 12))
     body = f'''
 <rect width="{W}" height="{H}" fill="url(#{p}wall)"/>
@@ -379,8 +380,9 @@ def _b7():
         h = int(w * .22)
         bh = int(w * .42)
         c = boards[i % 7]
-        board = (f'<path d="M{cx - w * .42:.0f} {y - 2} l{w * .16:.0f} -{bh * .18:.0f} v{bh} l-{w * .16:.0f} {bh * .18:.0f}z M{cx - w * .26:.0f} {y - 2 - bh * .18:.0f} h{w * .52:.0f} v{bh} h-{w * .52:.0f}z M{cx + w * .26:.0f} {y - 2 - bh * .18:.0f} l{w * .16:.0f} {bh * .18:.0f} v{bh} l-{w * .16:.0f} -{bh * .18:.0f}z" fill="{c}" transform="translate(0 -{bh})"/>'
-                 f'<g fill="#FFFFFF" opacity=".7"><rect x="{cx - w * .2:.0f}" y="{y - bh - bh * .18 + 4:.0f}" width="{w * .4:.0f}" height="{bh * .3:.0f}"/><rect x="{cx - w * .2:.0f}" y="{y - bh + 6:.0f}" width="{w * .18:.0f}" height="{bh * .28:.0f}"/><rect x="{cx + w * .02:.0f}" y="{y - bh + 6:.0f}" width="{w * .18:.0f}" height="{bh * .28:.0f}"/></g>')
+        board = f'<path d="M{cx - w * .42:.0f} {y - 2} l{w * .16:.0f} -{bh * .18:.0f} v{bh} l-{w * .16:.0f} {bh * .18:.0f}z M{cx - w * .26:.0f} {y - 2 - bh * .18:.0f} h{w * .52:.0f} v{bh} h-{w * .52:.0f}z M{cx + w * .26:.0f} {y - 2 - bh * .18:.0f} l{w * .16:.0f} {bh * .18:.0f} v{bh} l-{w * .16:.0f} -{bh * .18:.0f}z" fill="{c}" transform="translate(0 -{bh})"/>'
+        if not big:
+            board += f'<g fill="#FFFFFF" opacity=".7"><rect x="{cx - w * .2:.0f}" y="{y - bh - bh * .18 + 4:.0f}" width="{w * .4:.0f}" height="{bh * .3:.0f}"/><rect x="{cx - w * .2:.0f}" y="{y - bh + 6:.0f}" width="{w * .18:.0f}" height="{bh * .28:.0f}"/><rect x="{cx + w * .02:.0f}" y="{y - bh + 6:.0f}" width="{w * .18:.0f}" height="{bh * .28:.0f}"/></g>'
         return (board + f'<path d="M{cx - w // 2} {y} h{w} l{w * .06:.0f} {h} h-{w * 1.12:.0f}z" fill="url(#{p}cloth)"/><path d="M{cx - w // 2} {y} h{w}" stroke="#B9B2A2" stroke-width="1.5"/>')
     tables = "".join(table(cx, 214, 76, i, False) for i, cx in enumerate((160, 320, 480, 640, 800, 960, 1120)))
     tables2 = "".join(table(cx, 292, 118, i + 3, True) for i, cx in enumerate((110, 340, 570, 800, 1030)))
@@ -395,7 +397,6 @@ def _b7():
 <g fill="#E88A3A"><rect x="100" y="78" width="10" height="6"/><rect x="1090" y="78" width="10" height="6"/></g>
 <path d="M0 156 H1200 V420 H0z" fill="url(#{p}floor)"/>
 <g stroke="#F4F1E8" stroke-width="2" opacity=".7" fill="none"><path d="M0 172 h1200"/><ellipse cx="600" cy="172" rx="120" ry="16"/><path d="M0 250 q600 -30 1200 0" opacity=".6"/><path d="M0 410 q600 -60 1200 0" opacity=".5"/></g>
-<g stroke="#3A2A1A" stroke-width="1.5" opacity=".18" fill="none">{"".join(f'<path d="M{x} 156 L{600 + (x - 600) * 2.4:.0f} 420"/>' for x in range(0, 1201, 80))}</g>
 <g stroke="#E2B93B" stroke-width="4" fill="none" opacity=".8"><path d="M240 156 L60 420 M960 156 L1140 420"/></g>
 <rect x="0" y="134" width="1200" height="22" fill="#2A3D56"/>
 {tables}{people}{tables2}
@@ -418,9 +419,9 @@ def _b8():
     lanes = "".join(f'<ellipse cx="640" cy="330" rx="{820 - i * 26}" ry="{164 - i * 15}" fill="none" stroke="#F4F1E8" stroke-width="2.5" opacity=".9"/>' for i in range(9))
     slices = "".join(f'<path d="M580 300 L{580 + 66 * math.cos(math.radians(a)):.1f} {300 + 66 * math.sin(math.radians(a)) * .55:.1f}" stroke="#7A3A16" stroke-width="2.5"/>' for a in range(0, 360, 45))
     pepp = "".join(f'<ellipse cx="{x}" cy="{y}" rx="7" ry="4" fill="#B7402C"/>' for x, y in ((556, 288), (600, 284), (620, 306), (560, 314), (596, 322), (632, 292), (540, 300), (580, 300)))
-    ticks = "".join(f'<path d="M{i * 10} 0 v{12 if i % 5 == 0 else 6}"/>' for i in range(1, 30))
+    ticks = "".join(f'<path d="M{i * 10} 0 v{12 if i % 5 == 0 else 6}"/>' for i in range(1, 23))
     tape = "".join(f'<path d="M{x} 262 v{7 if i % 2 else 4}"/>' for i, x in enumerate(range(792, 860, 8)))
-    planks = "".join(f'<path d="M0 {y} H1200" stroke="#5A3A20" stroke-width="2" opacity=".5"/>' for y in (300, 340, 380))
+    planks = "".join(f'<path d="M0 {y} H1200" stroke="#5A3A20" stroke-width="2" opacity=".5"/>' for y in (284, 330, 376))
     body = f'''
 <rect width="{W}" height="{H}" fill="url(#{p}sky)"/>
 <g fill="#FFFFFF" opacity=".8"><ellipse cx="220" cy="60" rx="120" ry="12"/><ellipse cx="270" cy="48" rx="50" ry="16"/><ellipse cx="900" cy="80" rx="140" ry="10"/><ellipse cx="960" cy="66" rx="60" ry="18"/></g>
@@ -431,13 +432,13 @@ def _b8():
 <ellipse cx="640" cy="330" rx="830" ry="170" fill="url(#{p}track)"/>{lanes}
 <ellipse cx="640" cy="330" rx="606" ry="46" fill="url(#{p}grass)"/>
 <path d="M-80 330 L160 190" stroke="#F4F1E8" stroke-width="2.5" opacity=".7"/>
-<path d="M0 262 H1200 V420 H0z" fill="url(#{p}wood)"/>{planks}<path d="M0 262 h1200 v5 H0z" fill="#D2A878"/>
-<g fill="#000" opacity=".12"><ellipse cx="590" cy="316" rx="110" ry="24"/><ellipse cx="840" cy="270" rx="60" ry="8"/></g>
-<ellipse cx="580" cy="300" rx="104" ry="56" fill="#F1E3C4"/><ellipse cx="580" cy="300" rx="90" ry="48" fill="url(#{p}pizza)"/><ellipse cx="580" cy="300" rx="70" ry="38" fill="#E6C86A" opacity=".8"/>{pepp}
+<path d="M0 244 H1200 V420 H0z" fill="url(#{p}wood)"/>{planks}<path d="M0 244 h1200 v5 H0z" fill="#D2A878"/>
+<g fill="#000" opacity=".12"><ellipse cx="590" cy="290" rx="110" ry="24"/><ellipse cx="850" cy="252" rx="60" ry="8"/></g>
+<g transform="translate(0 -26)"><ellipse cx="580" cy="300" rx="104" ry="56" fill="#F1E3C4"/><ellipse cx="580" cy="300" rx="90" ry="48" fill="url(#{p}pizza)"/><ellipse cx="580" cy="300" rx="70" ry="38" fill="#E6C86A" opacity=".8"/>{pepp}
 <g fill="#4E8A2E" opacity=".8"><ellipse cx="572" cy="296" rx="5" ry="3"/><ellipse cx="612" cy="310" rx="5" ry="3"/><ellipse cx="548" cy="308" rx="5" ry="3"/></g>{slices}
-<path d="M580 300 L646 300 A66 36 0 0 0 626 274z" fill="#F1E3C4" opacity=".28"/>
-<g transform="translate(880 264) rotate(-64)"><rect x="0" y="-14" width="300" height="28" rx="2" fill="#E8C98A"/><rect x="0" y="-14" width="300" height="28" rx="2" fill="none" stroke="#9A7440" stroke-width="1.5"/><g stroke="#3A2A1A" stroke-width="1.2" transform="translate(0 -14)">{ticks}</g></g>
-<g><circle cx="760" cy="248" r="26" fill="url(#{p}tape)"/><circle cx="760" cy="248" r="26" fill="none" stroke="#8A6A10" stroke-width="2"/><circle cx="760" cy="248" r="8" fill="#3A3A3A"/><rect x="784" y="258" width="76" height="12" fill="#F7EFD4"/><rect x="784" y="258" width="76" height="12" fill="none" stroke="#8A6A10" stroke-width="1"/><g stroke="#3A2A1A" stroke-width="1">{tape}</g><rect x="858" y="254" width="6" height="20" fill="#3A3A3A"/></g>
+<path d="M580 300 L646 300 A66 36 0 0 0 626 274z" fill="#F1E3C4" opacity=".28"/></g>
+<g transform="translate(870 246) rotate(-52)"><rect x="0" y="-14" width="230" height="28" rx="2" fill="#E8C98A"/><rect x="0" y="-14" width="230" height="28" rx="2" fill="none" stroke="#9A7440" stroke-width="1.5"/><g stroke="#3A2A1A" stroke-width="1.2" transform="translate(0 -14)">{ticks}</g></g>
+<g transform="translate(0 -18)"><circle cx="760" cy="248" r="26" fill="url(#{p}tape)"/><circle cx="760" cy="248" r="26" fill="none" stroke="#8A6A10" stroke-width="2"/><circle cx="760" cy="248" r="8" fill="#3A3A3A"/><rect x="784" y="258" width="76" height="12" fill="#F7EFD4"/><rect x="784" y="258" width="76" height="12" fill="none" stroke="#8A6A10" stroke-width="1"/><g stroke="#3A2A1A" stroke-width="1">{tape}</g><rect x="858" y="254" width="6" height="20" fill="#3A3A3A"/></g>
 <path d="M0 396 H1200 V420 H0z" fill="#4A2E18" opacity=".5"/>
 '''
     return _wrap(8, body, defs)
@@ -456,7 +457,7 @@ def _b9():
     D = "#0C1528"
     lanes = "".join(f'<path d="M{600 + (x - 600) * .16:.0f} 214 L{x} 420" stroke="#F4EBD8" stroke-width="2.5" opacity=".85"/>' for x in range(-200, 1401, 150))
     seats = "".join(f'<path d="M0 {y} H1200" stroke="#2A3B5E" stroke-width="2" opacity=".7"/>' for y in range(120, 205, 10))
-    segs = "".join(f'<rect x="{x}" y="{y}" width="{w}" height="{h}" rx="1.5" fill="#FF9A2E" opacity="{o}"/>' for gx in (900, 934, 980, 1014, 1060) for x, y, w, h, o in ((gx + 2, 106, 14, 3, 1), (gx + 2, 121, 14, 3, .8), (gx + 2, 136, 14, 3, 1), (gx - 1, 108, 3, 12, .9), (gx + 17, 108, 3, 12, 1), (gx - 1, 124, 3, 12, 1), (gx + 17, 124, 3, 12, .85)))
+    segs = "".join(f'<rect x="{x}" y="{y}" width="{w}" height="{h}" rx="1.5" fill="#FF9A2E" opacity="{o}"/>' for gx in (906, 940, 990, 1024, 1064) for x, y, w, h, o in ((gx + 2, 106, 14, 3, 1), (gx + 2, 121, 14, 3, .8), (gx + 2, 136, 14, 3, 1), (gx - 1, 108, 3, 12, .9), (gx + 17, 108, 3, 12, 1), (gx - 1, 124, 3, 12, 1), (gx + 17, 124, 3, 12, .85)))
     def runner(x, y, s, lead):
         return (f'<g transform="translate({x} {y}) scale({s})" fill="{D}"><circle cx="0" cy="-88" r="11"/>'
                 f'<path d="M-8 -76 q10 -6 18 2 l6 30 l-6 30 l14 30 l-8 4 l-18 -30 l-10 32 l-8 -2 l6 -36 l-6 -28 l-14 26 l-6 -4 l14 -34 l6 -20z"/>'
@@ -475,9 +476,9 @@ def _b9():
 <path d="M40 330 h1120 v12 H40z" fill="#F4EBD8"/><g fill="#0C1528">{"".join(f'<rect x="{x}" y="330" width="14" height="12"/>' for x in range(54, 1160, 28))}</g>
 <g fill="#F4EBD8" opacity=".9">{"".join(f'<rect x="{x}" y="240" width="26" height="14" rx="2"/>' for x in (440, 590, 740))}</g>
 <g fill="{D}"><rect x="20" y="220" width="10" height="130"/><rect x="1170" y="220" width="10" height="130"/></g><path d="M30 300 h1140" stroke="#F4EBD8" stroke-width="3" stroke-dasharray="20 14" opacity=".9"/>
-{runner(560, 340, 1.05, True)}{runner(700, 328, .9, False)}{runner(430, 322, .82, False)}
-<g><rect x="80" y="368" width="240" height="14" rx="3" fill="#2A3548"/><rect x="92" y="382" width="10" height="22" fill="#1B2436"/><rect x="298" y="382" width="10" height="22" fill="#1B2436"/></g>
-<g transform="translate(200 348)"><rect x="-6" y="-38" width="12" height="10" rx="2" fill="#C9CED8"/><circle cx="0" cy="0" r="28" fill="#8A93A6"/><circle cx="0" cy="0" r="22" fill="#F4EBD8"/><path d="M0 0 L0 -17" stroke="#0C1528" stroke-width="2.5"/><path d="M0 0 L11 8" stroke="#E0692C" stroke-width="2"/><circle cx="0" cy="0" r="2.5" fill="#0C1528"/><rect x="18" y="-30" width="8" height="8" rx="2" fill="#C9CED8" transform="rotate(30)"/></g>
+{runner(600, 338, 1.05, True)}{runner(740, 326, .9, False)}{runner(470, 322, .82, False)}
+<g><rect x="80" y="322" width="240" height="14" rx="3" fill="#2A3548"/><rect x="92" y="336" width="10" height="26" fill="#1B2436"/><rect x="298" y="336" width="10" height="26" fill="#1B2436"/></g>
+<g transform="translate(200 300)"><rect x="-6" y="-38" width="12" height="10" rx="2" fill="#C9CED8"/><circle cx="0" cy="0" r="28" fill="#8A93A6"/><circle cx="0" cy="0" r="22" fill="#F4EBD8"/><path d="M0 0 L0 -17" stroke="#0C1528" stroke-width="2.5"/><path d="M0 0 L11 8" stroke="#E0692C" stroke-width="2"/><circle cx="0" cy="0" r="2.5" fill="#0C1528"/><rect x="18" y="-30" width="8" height="8" rx="2" fill="#C9CED8" transform="rotate(30)"/></g>
 '''
     return _wrap(9, body, defs)
 
@@ -504,8 +505,8 @@ def _b10():
                   f'<g fill="#5FA83A">{leaves}</g>')
     posts = "".join(f'<rect x="{x}" y="{y}" width="10" height="{236 - y + 6}" fill="url(#{p}wood)"/>' for x, y in ((40, 150), (150, 152), (260, 154), (370, 156), (760, 158), (870, 160), (980, 162)))
     rails = '<g fill="#B08A56"><path d="M50 170 h100 l0 6 h-100z M160 172 h100 v6 h-100z M270 174 h100 v6 h-100z M50 208 h100 v6 h-100z M160 210 h100 v6 h-100z"/></g>'
-    seedlings = "".join(f'<path d="M{x} {y} q-6 -10 -2 -16 M{x} {y} q6 -10 2 -16" stroke="#7CC44E" stroke-width="2.5" fill="none"/>' for x in range(110, 380, 34) for y in (270, 292))
-    seedlings2 = "".join(f'<path d="M{x} {y} q-6 -10 -2 -16 M{x} {y} q6 -10 2 -16" stroke="#7CC44E" stroke-width="2.5" fill="none"/>' for x in range(520, 720, 40) for y in (300,))
+    seedlings = "".join(f'<path d="M{x} {y} q-6 -10 -2 -16 M{x} {y} q6 -10 2 -16" stroke="#7CC44E" stroke-width="2.5" fill="none"/>' for x in range(110, 380, 40) for y in (270, 292))
+    seedlings2 = "".join(f'<path d="M{x} {y} q-6 -10 -2 -16 M{x} {y} q6 -10 2 -16" stroke="#7CC44E" stroke-width="2.5" fill="none"/>' for x in range(520, 720, 50) for y in (300,))
     body = f'''
 <rect width="{W}" height="{H}" fill="url(#{p}sky)"/>
 <circle cx="120" cy="90" r="130" fill="url(#{p}sun)"/><circle cx="120" cy="90" r="30" fill="#FFF8DA"/>
@@ -519,8 +520,7 @@ def _b10():
 <path d="M80 258 h330 l16 52 h-362z" fill="url(#{p}wood)"/><path d="M92 262 h306 l10 42 h-326z" fill="url(#{p}soil)"/>{seedlings}
 <path d="M500 280 h240 l14 44 h-268z" fill="url(#{p}wood)"/><path d="M510 284 h220 l8 34 h-236z" fill="url(#{p}soil)"/>{seedlings2}
 <path d="M420 236 h300 v6 h-300z" fill="#3E2A18" opacity=".4"/>{poles}
-<g><path d="M150 232 h44 v20 h-44z" fill="#8FA33A"/><path d="M150 232 h44 l-4 -6 h-36z" fill="#A8B850"/><path d="M194 238 l30 -20 l4 4 l-30 20z" fill="#8FA33A"/><path d="M224 218 q8 -6 14 -2 l-4 4z" fill="#8FA33A"/><path d="M150 236 q-16 6 -14 14 q2 8 14 4" stroke="#8FA33A" stroke-width="4" fill="none"/></g>
-<g fill="#8A6438"><rect x="200" y="252" width="8" height="8"/></g>
+<g><path d="M300 262 h56 v-40 h-56z" fill="#8FA33A"/><path d="M300 222 h56 l-6 -8 h-44z" fill="#A8B850"/><ellipse cx="328" cy="214" rx="22" ry="5" fill="#6E7E2A"/><path d="M356 236 l40 -22 l5 5 l-41 24z" fill="#8FA33A"/><circle cx="399" cy="212" r="7" fill="#A8B850"/><path d="M300 232 q-22 4 -22 16 q0 10 22 10" stroke="#8FA33A" stroke-width="5" fill="none"/><path d="M314 214 q14 -14 28 0" stroke="#8FA33A" stroke-width="4" fill="none"/></g>
 <g><path d="M900 262 h150 l-16 46 h-124z" fill="url(#{p}barrow)"/><path d="M1050 262 q30 -14 60 -8 l-16 8 h-44z" fill="#3E7A8E"/><path d="M900 262 l-60 -14 l-2 6 l58 12z" fill="#4A3A2A"/><path d="M900 262 l-60 -14 l-2 6 l58 12z" fill="#4A3A2A" transform="translate(0 8)"/><circle cx="1040" cy="316" r="16" fill="#2A2A2A"/><circle cx="1040" cy="316" r="6" fill="#8A8A8A"/><rect x="990" y="308" width="6" height="12" fill="#2A2A2A"/><path d="M900 300 l60 4" stroke="#2A2A2A" stroke-width="3"/></g>
 <g fill="#3E2A18" opacity=".6"><ellipse cx="978" cy="262" rx="60" ry="8"/></g>
 <g fill="#000" opacity=".1"><ellipse cx="250" cy="316" rx="180" ry="8"/><ellipse cx="980" cy="326" rx="90" ry="8"/></g>
@@ -578,38 +578,32 @@ def _b12():
     T, C = "#2FA7A0", "#F0725A"
     def shelfside(left):
         out = []
-        vx = 600
-        # shelf rows: (y at front edge, y at far end)
-        for k, (yf, yb) in enumerate(((140, 170), (210, 200), (290, 232))):
-            if left:
-                out.append(f'<path d="M0 {yf} L400 {yb} l0 8 L0 {yf + 12}z" fill="url(#{p}shelf)"/>')
-            else:
-                out.append(f'<path d="M1200 {yf} L800 {yb} l0 8 L1200 {yf + 12}z" fill="url(#{p}shelf)"/>')
-            # boxes along the shelf: sizes shrink toward the back
-            for j in range(8):
-                t = j / 8
-                x = (t * 400) if left else (1200 - t * 400)
-                y = yf + (yb - yf) * t
-                sc = 1 - .5 * t
-                big = (j + k) % 3 != 2
-                w = (34 if big else 22) * sc
-                h = (52 if big else 34) * sc
+        for k, (yf, yb, kind) in enumerate(((150, 176, "big"), (222, 206, "small"), (294, 236, "mix"))):
+            X = (lambda t: t * 400) if left else (lambda t: 1200 - t * 400)
+            sy = lambda t: yf + (yb - yf) * t
+            out.append(f'<path d="M{X(0):.0f} {yf} L{X(1):.0f} {yb} v7 L{X(0):.0f} {yf + 10}z" fill="url(#{p}shelf)"/>')
+            for j in range(7):
+                t = .06 + j * .13
+                sc = 1 - .48 * t
+                big = kind == "big" or (kind == "mix" and j % 2 == 0)
+                w = (38 if big else 24) * sc
+                h = (58 if big else 34) * sc
                 col = T if (j + k) % 2 == 0 else C
-                xx = x if left else x - w
-                out.append(f'<rect x="{xx:.0f}" y="{y - h:.0f}" width="{w:.0f}" height="{h:.0f}" rx="1" fill="{col}"/><rect x="{xx + w * .15:.0f}" y="{y - h * .8:.0f}" width="{w * .7:.0f}" height="{h * .3:.0f}" fill="#FFFFFF" opacity=".75"/>')
+                x = X(t) - (0 if left else w)
+                y = sy(t)
+                out.append(f'<rect x="{x:.0f}" y="{y - h:.0f}" width="{w:.0f}" height="{h:.0f}" rx="1" fill="{col}"/><rect x="{x + w * .2:.0f}" y="{y - h * .75:.0f}" width="{w * .6:.0f}" height="{h * .22:.0f}" fill="#FFFFFF" opacity=".8"/>')
         return "".join(out)
-    tag = '<g transform="translate(300 178) rotate(6)"><path d="M0 0 h56 l12 14 l-12 14 h-56z" fill="#FFF7D6" stroke="#B9A24A" stroke-width="1.5"/><circle cx="58" cy="14" r="3" fill="#B9A24A"/><rect x="8" y="6" width="34" height="6" fill="#F0725A"/><rect x="8" y="16" width="24" height="5" fill="#2A2A2A" opacity=".6"/></g>'
+    tag = '<g transform="translate(150 232) rotate(6)"><path d="M0 0 h56 l12 14 l-12 14 h-56z" fill="#FFF7D6" stroke="#B9A24A" stroke-width="1.5"/><circle cx="58" cy="14" r="3" fill="#B9A24A"/><rect x="8" y="6" width="34" height="6" fill="#F0725A"/><rect x="8" y="16" width="24" height="5" fill="#2A2A2A" opacity=".6"/></g>'
     star = "".join(f'{(600 + (52 if i % 2 == 0 else 34) * math.cos(math.radians(i * 15))):.1f} {(120 + (52 if i % 2 == 0 else 34) * math.sin(math.radians(i * 15))):.1f}' for i in range(24))
     tiles = "".join(f'<path d="M{x} 300 L{600 + (x - 600) * 3:.0f} 420" stroke="#A9B4BA" stroke-width="1.2" opacity=".7"/>' for x in range(400, 801, 40))
     body = f'''
 <rect width="{W}" height="{H}" fill="#EEF3F5"/>
 <path d="M0 0 H1200 V300 H0z" fill="url(#{p}ceil)"/>
-<g stroke="#C6D0D6" stroke-width="1.5" opacity=".8"><path d="M0 0 L400 200 M1200 0 L800 200"/><path d="M0 40 L420 208 M1200 40 L780 208"/></g>
 <g fill="#FFFFFF"><rect x="440" y="36" width="320" height="10" rx="4"/><rect x="480" y="76" width="240" height="8" rx="4"/><rect x="510" y="108" width="180" height="6" rx="3"/></g><ellipse cx="600" cy="40" rx="260" ry="50" fill="url(#{p}lite)" opacity=".6"/>
-<path d="M400 200 H800 V300 H400z" fill="#D5DEE2"/><g fill="{T}" opacity=".6"><rect x="470" y="220" width="260" height="8"/><rect x="470" y="256" width="260" height="8"/></g><g>{"".join(f'<rect x="{x}" y="{y}" width="14" height="{h}" fill="{T if i % 2 else C}"/>' for i, (x, y, h) in enumerate([(x, y, h) for y, h in ((200, 20), (232, 24), (268, 32)) for x in range(480, 720, 22)]))}</g>
+<path d="M400 190 H800 V300 H400z" fill="#D5DEE2"/><g>{"".join(f'<rect x="{x}" y="{y}" width="26" height="30" fill="{C if (x // 30 + y // 30) % 2 else T}"/>' for y, xs in ((266, range(504, 700, 30)), (234, range(534, 670, 30)), (202, range(564, 640, 30))) for x in xs)}</g>
 <path d="M400 300 H800 V420 H400z" fill="url(#{p}floor)"/><path d="M0 300 L400 300 L400 420 H0z M800 300 H1200 V420 H800z" fill="url(#{p}floor)"/>
 {tiles}<path d="M400 300 L0 420 M800 300 L1200 420" stroke="#A9B4BA" stroke-width="1.5"/>
-<path d="M0 100 L400 180 V240 L0 300z" fill="#CFD8DD"/><path d="M1200 100 L800 180 V240 L1200 300z" fill="#CFD8DD"/>
+<path d="M0 60 L400 160 V240 L0 300z" fill="#CFD8DD"/><path d="M1200 60 L800 160 V240 L1200 300z" fill="#CFD8DD"/><path d="M0 60 L400 160 M1200 60 L800 160" stroke="#A9B4BA" stroke-width="3"/>
 {shelfside(True)}{shelfside(False)}
 <path d="M0 300 L400 240 v8 L0 316z M1200 300 L800 240 v8 L1200 316z" fill="#8A96A0"/>
 {tag}
