@@ -2921,6 +2921,110 @@ G.compareK=function(r,c){var b=B(),m=r.pick(c.modes),h='';
   else if(m==='evenodd'){var n=r.i(2,40);
     h='Is <b>'+n+'</b> even or odd?<div class="row" style="margin-top:7px">'+b.mc(n%2?'odd':'even',['even','odd'])+'</div>'}
   return done(b,h)};
+/* ---------- AOG-DD-STDK5-V1 (2026-09-25). primary standards ----------
+   The K–5 standards the drafts never asked, found by checking every grade's ten
+   strands against the Illinois / Common Core math standards. One generator so
+   the new work sits in one place; each mode names its standard. They are wired
+   into the EXISTING strands as extra modes, so every sheet keeps its ten boxes
+   and looks like every other subject's sheet. */
+function dots(n){return '<span style="letter-spacing:3px;font-size:18px">'+new Array(n+1).join('&#9679;')+'</span>'}
+G.prim=function(r,c){var b=B(),m=r.pick(c.modes),h='';
+  /* K.OA.A.3 — take a number apart two ways */
+  if(m==='decomp'){var n=r.i(4,10),a=r.i(1,n-1),a2=r.i(1,n-1);if(a2===a)a2=n-a===a?(a>1?a-1:a+1):n-a;
+    h='<div class="row" style="gap:14px">'+dots(n)+'<span class="inl">'+n+' = '+a+' + '+b.f('num',n-a,{w:'n'})+'</span>'+
+      '<span class="inl">'+n+' = '+a2+' + '+b.f('num',n-a2,{w:'n'})+'</span></div>'}
+  /* K.OA.A.4 — what makes ten */
+  else if(m==='make10'){var k=r.i(1,9);
+    h='<div class="row" style="gap:14px">'+dots(k)+'<span class="inl">'+k+' and '+b.f('num',10-k,{w:'n'})+' make 10</span></div>'}
+  /* K.NBT.A.1 — a teen number is ten and some ones */
+  else if(m==='teen'){var o=r.i(1,9),o2=r.i(1,9);
+    h='<div class="row" style="gap:14px"><span class="inl"><b>1'+o+'</b> = 10 + '+b.f('num',o,{w:'n'})+'</span>'+
+      '<span class="inl">10 + '+o2+' = '+b.f('num',10+o2,{w:'n'})+'</span></div>'}
+  /* K.MD.A.2 — compare two things by a measurable attribute */
+  else if(m==='longer'){var pr=r.pick([['longer','a pencil','a school bus','a school bus'],['heavier','a feather','a brick','a brick'],
+      ['taller','a giraffe','a cat','a giraffe'],['shorter','a crayon','a door','a crayon'],['lighter','a leaf','a bike','a leaf']]);
+    h='Which is <b>'+pr[0]+'</b>?<div class="row" style="margin-top:7px">'+b.mc(pr[3],r.shuf([pr[1],pr[2]]))+'</div>'}
+  /* K.MD.B.3 — sort, count each group, say which has more */
+  else if(m==='sortcount'){var ci=r.i(1,6),sq=r.i(1,6);if(ci===sq)sq++;
+    var set=r.shuf(new Array(ci+1).join('&#9679;,').split(',').slice(0,ci).concat(new Array(sq+1).join('&#9632;,').split(',').slice(0,sq)));
+    h='<div class="row" style="gap:14px"><span style="font-size:18px;letter-spacing:4px">'+set.join('')+'</span>'+
+      '<span class="inl">&#9679; '+b.f('num',ci,{w:'n'})+'</span><span class="inl">&#9632; '+b.f('num',sq,{w:'n'})+'</span>'+
+      '<span class="inl">more: '+b.mc(ci>sq?'●':'■',['●','■'])+'</span></div>'}
+  /* 1.OA.B.4 / 1.OA.D.8 — the unknown in any place */
+  else if(m==='missingadd'){var mx=c.max||20,x=r.i(1,mx-2),y=r.i(1,mx-x),z=x+y,w=r.i(0,2);
+    h='Find the missing number.<div class="row" style="margin-top:7px;gap:14px"><span class="inl eqbig">'+
+      (w===0?b.f('num',x,{w:'n'})+' + '+y+' = '+z:w===1?x+' + '+b.f('num',y,{w:'n'})+' = '+z:z+' &minus; '+b.f('num',y,{w:'n'})+' = '+x)+'</span></div>'}
+  /* 1.OA.D.7 — the equal sign means "the same as" */
+  else if(m==='truefalse'){var p=r.i(2,9),q=r.i(1,9),ok=r.chance(.5),s2=r.i(1,p+q-1),t2=p+q-s2+(ok?0:r.pick([-1,1]));
+    if(t2<0)t2=p+q-s2+1;
+    h='True or false? <b class="eqbig">'+p+' + '+q+' = '+s2+' + '+t2+'</b><div class="row" style="margin-top:7px">'+
+      b.mc(p+q===s2+t2?'true':'false',['true','false'])+'</div>'}
+  /* 1.NBT.C.5 / 2.NBT.B.8 — ten (or a hundred) more and less in your head */
+  else if(m==='tenmore'){var st=c.step||10,lo=c.lo||20,hi=c.hi||89,v=r.i(lo,hi);
+    h='<div class="row" style="gap:14px"><span class="inl">'+st+' more than <b>'+v+'</b> is '+b.f('num',v+st,{w:'w'})+'</span>'+
+      '<span class="inl">'+st+' less than <b>'+v+'</b> is '+b.f('num',v-st,{w:'w'})+'</span></div>'}
+  /* 1.MD.A.1–2 — measure with same-size units, and order by length */
+  else if(m==='units'){var L=r.i(3,9);
+    h='A pencil is as long as <b>'+L+'</b> paper clips laid end to end. A crayon is <b>'+(L-2)+'</b> clips.'+
+      '<div class="row" style="margin-top:7px;gap:14px"><span class="inl">pencil '+b.f('num',L,{w:'n'})+' clips</span>'+
+      '<span class="inl">How much longer? '+b.f('num',2,{w:'n'})+' clips</span>'+
+      '<span class="inl">Longer: '+b.mc('pencil',['pencil','crayon'])+'</span></div>'}
+  /* 2.OA.C.4 / 2.G.A.2 / 3.OA.A.1 — an array as rows and columns */
+  else if(m==='array'){var rw=r.i(2,5),cl=r.i(2,5),g='';
+    for(var i=0;i<rw;i++)g+='<div style="letter-spacing:5px;line-height:1.2">'+new Array(cl+1).join('&#9679;')+'</div>';
+    h='<div class="row" style="gap:16px"><span>'+g+'</span><span class="inl">'+b.f('num',rw,{w:'n'})+' rows of '+b.f('num',cl,{w:'n'})+'</span>'+
+      '<span class="inl">'+(c.mult?cl+' &times; '+rw:new Array(rw+1).join(cl+' + ').slice(0,-3))+' = '+b.f('num',rw*cl,{w:'n'})+'</span></div>'}
+  /* 3.NBT.A.3 — one-digit times a multiple of ten */
+  else if(m==='mult10'){var d=r.i(2,9),t=r.i(2,9)*10;
+    h='<div class="row" style="gap:14px"><span class="inl">'+d+' &times; '+(t/10)+' = '+b.f('num',d*t/10,{w:'n'})+'</span>'+
+      '<span class="inl">'+d+' &times; '+t+' = '+b.f('num',d*t,{w:'w'})+'</span></div>'}
+  /* 3.OA.B.5 — the properties as strategies */
+  else if(m==='props'){var e=r.i(3,9),f=r.i(2,9),kind=r.i(0,1);
+    h=(kind?'Break apart the <b>'+(e+5)+'</b> to multiply.':'Switch the order. The product stays the same.')+
+      '<div class="row" style="margin-top:7px;gap:12px"><span class="inl eqbig">'+
+      (kind?f+' &times; '+(e+5)+' = '+f+' &times; 5 + '+f+' &times; '+b.f('num',e,{w:'n'})+' = '+b.f('num',f*(e+5),{w:'w'})
+           :e+' &times; '+f+' = '+b.f('num',f,{w:'n'})+' &times; '+b.f('num',e,{w:'n'})+' = '+b.f('num',e*f,{w:'n'}))+'</span></div>'}
+  /* 4.OA.A.1–2 — "times as many" */
+  else if(m==='timesas'){var base=r.i(3,12),mul=r.i(2,6),nm=r.pick(['Ana','Ben','Kai','Lucia','Omar']);
+    h=nm+' has <b>'+base+'</b> stickers. Sam has <b>'+mul+' times as many</b>.'+
+      '<div class="row" style="margin-top:7px;gap:12px"><span class="inl">'+base+' &times; '+mul+' = '+b.f('num',base*mul,{w:'n'})+' stickers</span></div>'}
+  /* 4.OA.B.4 — factor pairs, prime or composite */
+  else if(m==='prime'){var pn=r.pick([7,11,13,17,19,23,29,31,37,12,15,18,20,21,24,27,28,32,36]),pf=[];
+    for(var j=1;j<=pn;j++)if(pn%j===0)pf.push(j);
+    h='List all the factors of <b>'+pn+'</b>.<div class="row" style="margin-top:7px;gap:12px"><span class="inl">How many factors? '+
+      b.f('num',pf.length,{w:'n'})+'</span><span class="inl">'+pn+' is '+b.mc(pf.length===2?'prime':'composite',['prime','composite'])+'</span></div>'+workPad(1)}
+  /* 4.NF.B.4 — a whole number times a fraction */
+  else if(m==='wholefrac'){var wn=r.i(2,6),dn=r.pick([3,4,5,6,8]),nu=r.i(1,dn-1);
+    h='<div class="row" style="gap:12px"><span class="inl">'+wn+' &times; '+fr(nu,dn)+' = '+frIn(b,wn*nu,dn)+'</span>'+
+      '<span class="hint" style="flex-basis:auto">'+wn+' groups of '+nu+'/'+dn+'. Multiply the top number; the bottom stays.</span></div>'}
+  /* 4.MD.C.7 — angles add */
+  else if(m==='angadd'){var whole=r.pick([90,180,120,150]),pa=r.i(20,whole-20);
+    h='An angle of <b>'+whole+'&deg;</b> is split into two parts. One part is <b>'+pa+'&deg;</b>.'+
+      '<div class="row" style="margin-top:7px;gap:12px"><span class="inl">'+pa+' + x = '+whole+'</span><span class="inl">x = '+b.f('num',whole-pa,{w:'n'})+'&deg;</span></div>'}
+  /* 4.G.A.1–3 — lines, and lines of symmetry */
+  else if(m==='symm'){var sy=r.pick([['a square',4],['a rectangle (not a square)',2],['an equilateral triangle',3],['the letter A',1],['the letter F',0],['a regular hexagon',6]]);
+    h='How many lines of symmetry does <b>'+sy[0]+'</b> have?<div class="row" style="margin-top:7px">'+b.f('num',sy[1],{w:'n'})+'</div>'}
+  /* 5.OA.A.1–2 — order of operations with grouping */
+  else if(m==='orderops'){var a1=r.i(2,9),b1=r.i(2,9),c1=r.i(2,6),kd=r.i(0,2),ex,an;
+    if(kd===0){ex='('+a1+' + '+b1+') &times; '+c1;an=(a1+b1)*c1}else if(kd===1){ex=a1+' + '+b1+' &times; '+c1;an=a1+b1*c1}
+    else{ex=c1+' &times; ['+a1+' + ('+b1+' &minus; 1)]';an=c1*(a1+b1-1)}
+    h='Evaluate. Grouping first, then &times; and &divide;, then + and &minus;.'+
+      '<div class="row" style="margin-top:7px"><span class="inl eqbig">'+ex+' = '+b.f('num',an,{w:'w'})+'</span></div>'}
+  /* 5.NBT.A.1–2 — powers of ten move the digits */
+  else if(m==='pow10'){var dv=r.i(12,98)/10,pw=r.i(1,3),mdiv=r.chance(.5),res=mdiv?dv/Math.pow(10,pw):dv*Math.pow(10,pw);
+    h='<div class="row" style="gap:12px"><span class="inl eqbig">'+dv+' '+(mdiv?'&divide;':'&times;')+' 10<sup>'+pw+'</sup> = '+
+      b.f('dec',+res.toFixed(4),{w:'w'})+'</span><span class="hint" style="flex-basis:auto">10<sup>'+pw+'</sup> = '+Math.pow(10,pw)+
+      '. Each power of ten moves the digits one place.</span></div>'}
+  /* 5.NF.B.7 — unit fraction and whole number division */
+  else if(m==='unitdiv'){var ud=r.pick([2,3,4,5,6,8]),uw=r.i(2,6),wd=r.chance(.5);
+    h=(wd?'How many <b>1/'+ud+'</b>-cup scoops are in <b>'+uw+'</b> cups?':'<b>1/'+ud+'</b> of a pan of brownies is shared equally by <b>'+uw+'</b> friends. What part does each get?')+
+      '<div class="row" style="margin-top:7px;gap:12px"><span class="inl">'+(wd?uw+' &divide; '+fr(1,ud)+' = '+b.f('num',uw*ud,{w:'n'})
+        :fr(1,ud)+' &divide; '+uw+' = '+frIn(b,1,ud*uw))+'</span></div>'}
+  /* 5.G.B.3–4 — shapes in a family */
+  else if(m==='quadfam'){var qf=r.pick([['Every square is a rectangle.','true'],['Every rectangle is a square.','false'],
+      ['Every square is a rhombus.','true'],['Every parallelogram is a rectangle.','false'],['Every rectangle is a parallelogram.','true'],['Every trapezoid is a parallelogram.','false']]);
+    h='True or false? <b>'+qf[0]+'</b><div class="row" style="margin-top:7px">'+b.mc(qf[1],['true','false'])+'</div>'}
+  return done(b,h)};
 G.shapes=function(r,c){var b=B(),m=r.pick(c.modes),h='';
   if(m==='sides'){var s=r.pick(SHAPES);
     h='Look at the shape.<div class="row" style="margin-top:5px;gap:13px">'+polyFig(s[1],'','')+
@@ -7947,16 +8051,16 @@ MATH['K']=[
  S('Counting','Contar',function(r){return G.count(r,{modes:['objects','tally'],max:12})}),
  S('Number Order','Orden numérico',function(r){return G.count(r,{modes:['missing']})}),
  S('Shapes','Figuras',function(r){return G.shapes(r,{modes:['sides','name']})}),
- S('Adding to 10','Sumar hasta 10',function(r){return G.facts(r,{ops:['+'],max:10,tri:false,cols:5})}),
+ S('Adding to 10','Sumar hasta 10',mix(function(r){return G.facts(r,{ops:['+'],max:10,tri:false,cols:5})},function(r){return G.prim(r,{modes:['decomp']})})),
  S('Taking Away','Restar',function(r){return G.facts(r,{ops:['−'],max:10,tri:false,cols:5})}),
- S('More or Less','Más o menos',function(r){return G.compareK(r,{modes:['moreless','groups']})}),
+ S('More or Less','Más o menos',mix(function(r){return G.compareK(r,{modes:['moreless','groups']})},function(r){return G.prim(r,{modes:['longer','sortcount']})})),
  S('Patterns','Patrones',function(r){return G.shapes(r,{modes:['pattern']})}),
- S('Ten Frames','Marcos de diez',function(r){return G.count(r,{modes:['frame']})}),
+ S('Ten Frames','Marcos de diez',mix(function(r){return G.count(r,{modes:['frame']})},function(r){return G.prim(r,{modes:['make10','teen']})})),
  S('Time','La hora',function(r){return G.time(r,{modes:['read'],inc:60})}),
  S('Money','Dinero',function(r){return G.money(r,{modes:['coins']})})];
 MATH['1']=[
- S('Basic Facts','Operaciones básicas',function(r){return G.facts(r,{ops:['+','−'],max:10,cols:6})}),
- S('Number Order','Orden numérico',function(r){return G.patterns(r,{modes:['beforeafter','skip'],lo:11,hi:99,steps:[2,5,10]})}),
+ S('Basic Facts','Operaciones básicas',mix(function(r){return G.facts(r,{ops:['+','−'],max:10,cols:6})},function(r){return G.prim(r,{modes:['missingadd','truefalse']})})),
+ S('Number Order','Orden numérico',mix(function(r){return G.patterns(r,{modes:['beforeafter','skip'],lo:11,hi:99,steps:[2,5,10]})},function(r){return G.prim(r,{modes:['tenmore']})})),
  S('Place Value','Valor posicional',function(r){return G.place(r,{modes:['fromwords','compare'],lo:11,hi:99})}),
  S('Time','La hora',function(r){return G.time(r,{modes:['read'],inc:30})}),
  S('Algorithms','Algoritmos',function(r){return G.algo(r,{kinds:['add1','sub1','add2','sub2'],n:4})}),
@@ -7964,56 +8068,63 @@ MATH['1']=[
  S('Story Problems','Problemas',function(r){return G.story(r,{modes:['join','sep'],lo:5,hi:20})}),
  S('Words and Symbols','Palabras y símbolos',function(r){return G.vocab(r,{bank:'k'})}),
  S('Shapes and Graphs','Figuras y gráficas',mix(function(r){return G.shapes(r,{modes:['sides','name']})},
-    function(r){return G.data(r,{modes:['bar']})})),
+    function(r){return G.data(r,{modes:['bar']})},function(r){return G.fractions(r,{modes:['shade'],dens:[2,4]})},function(r){return G.prim(r,{modes:['units']})})),
  S('Money','Dinero',function(r){return G.money(r,{modes:['coins']})})];
 MATH['2']=[
  S('Basic Facts','Operaciones básicas',function(r){return G.facts(r,{ops:['+','−'],max:20,cols:6})}),
- S('Patterns and Progressions','Patrones',function(r){return G.patterns(r,{modes:['skip','rule','beforeafter'],lo:101,hi:899,steps:[2,3,5,10]})}),
+ S('Patterns and Progressions','Patrones',mix(function(r){return G.patterns(r,{modes:['skip','rule','beforeafter'],lo:101,hi:899,steps:[2,3,5,10]})},
+    function(r){return G.compareK(r,{modes:['evenodd']})})),
  S('Fractions','Fracciones',function(r){return G.fractions(r,{modes:['shade','name'],dens:[2,3,4]})}),
  S('Time','La hora',function(r){return G.time(r,{modes:['read','dur'],inc:5})}),
  S('Algorithms','Algoritmos',function(r){return G.algo(r,{kinds:['add2','sub2','cent','add3'],n:4})}),
- S('Place Value','Valor posicional',function(r){return G.place(r,{modes:['chart','fromwords','value'],lo:101,hi:999})}),
+ S('Place Value','Valor posicional',mix(function(r){return G.place(r,{modes:['chart','fromwords','value'],lo:101,hi:999})},function(r){return G.prim(r,{modes:['tenmore'],step:100,lo:150,hi:850})})),
  S('Story Problems','Problemas',function(r){return G.story(r,{modes:['join','sep','compare'],lo:10,hi:60})}),
  S('Words and Symbols','Palabras y símbolos',function(r){return G.vocab(r,{bank:'low'})}),
  S('Geometry and Graphs','Geometría y gráficas',mix(function(r){return G.geom(r,{modes:['name','perim']})},
-    function(r){return G.data(r,{modes:['bar','dot']})})),
+    function(r){return G.data(r,{modes:['bar','dot']})},function(r){return G.prim(r,{modes:['array']})})),
  S('Money','Dinero',function(r){return G.money(r,{modes:['coins','bills']})})];
 MATH['3']=[
- S('Basic Facts','Operaciones básicas',function(r){return G.facts(r,{ops:['+','−'],max:10,cols:6})}),
+ S('Basic Facts','Operaciones básicas',mix(function(r){return G.facts(r,{ops:['+','−'],max:10,cols:6})},
+    function(r){return G.facts(r,{ops:['×','÷'],max:10,cols:6})})),
  S('Patterns and Progressions','Patrones y progresiones',function(r){return G.patterns(r,{modes:['beforeafter','skip','rule'],lo:101,hi:899})}),
- S('Fractions','Fracciones',function(r){return G.fractions(r,{modes:['shade','name','ofset'],dens:[3,4,6]})}),
+ S('Fractions','Fracciones',function(r){return G.fractions(r,{modes:['shade','name','numline','equiv','compare'],dens:[2,3,4,6,8]})}),
  S('Time','La hora',mix(function(r){return G.time(r,{modes:['elapsed','read'],inc:30})},
     function(r){return G.measure(r,{modes:['mixed'],units:[['weeks','days',7],['hours','minutes',60],['feet','inches',12]]})})),
  S('Algorithms','Algoritmos',function(r){return G.algo(r,{kinds:['add2','add3','sub2','sub3','cent','dol'],n:4})}),
- S('Number Words','Números en palabras',function(r){return G.place(r,{modes:['chart','words','fromwords'],lo:101,hi:9999})}),
- S('Story Problems','Problemas',function(r){return G.story(r,{modes:['join','sep','groups','share','remain'],lo:8,hi:60})}),
+ S('Number Words','Números en palabras',mix(function(r){return G.place(r,{modes:['chart','words','fromwords'],lo:101,hi:9999})},
+    function(r){return G.place(r,{modes:['round'],lo:101,hi:999,to:[10,100]})},function(r){return G.prim(r,{modes:['mult10']})})),
+ S('Story Problems','Problemas',function(r){return G.story(r,{modes:['groups','share','remain','twostep'],lo:8,hi:60})}),
  S('Words and Symbols','Palabras y símbolos',function(r){return G.vocab(r,{bank:'low'})}),
- S('Place Value, Graphs and Geometry','Valor posicional y geometría',mix(function(r){return G.geom(r,{modes:['grid','name']})},
-    function(r){return G.data(r,{modes:['bar']})})),
+ S('Place Value, Graphs and Geometry','Valor posicional y geometría',mix(function(r){return G.geom(r,{modes:['area','perim','name']})},
+    function(r){return G.data(r,{modes:['bar']})},function(r){return G.prim(r,{modes:['array','props'],mult:true})})),
  S('Money','Dinero',function(r){return G.money(r,{modes:['bills','coins','change']})})];
 MATH['4']=[
  S('Basic Facts','Operaciones básicas',function(r){return G.facts(r,{ops:['×','÷'],max:9,cols:6})}),
- S('Patterns and Progressions','Patrones y progresiones',function(r){return G.patterns(r,{modes:['skip','rule','func'],steps:[3,4,6,7,8,9]})}),
- S('Fractions','Fracciones',function(r){return G.fractions(r,{modes:['equiv','compare','simplify','name','ofset']})}),
+ S('Patterns and Progressions','Patrones y progresiones',mix(function(r){return G.patterns(r,{modes:['skip','rule','func'],steps:[3,4,6,7,8,9]})},function(r){return G.prim(r,{modes:['timesas','prime']})})),
+ S('Fractions','Fracciones',mix(function(r){return G.fractions(r,{modes:['equiv','compare','simplify','name','ofset']})},
+    function(r){return G.fracops(r,{modes:['same']})},function(r){return G.prim(r,{modes:['wholefrac']})})),
  S('Time','La hora',function(r){return G.time(r,{modes:['elapsed','later','dur'],inc:5})}),
  S('Algorithms','Algoritmos',function(r){return G.algo(r,{kinds:['add3','add4','sub3','sub4','mul1','div1'],n:4})}),
- S('Place Value and Number Words','Valor posicional',function(r){return G.place(r,{modes:['value','round','expand','words'],lo:1002,hi:98765,to:[10,100,1000]})}),
+ S('Place Value and Number Words','Valor posicional',mix(function(r){return G.place(r,{modes:['value','round','expand','words'],lo:1002,hi:98765,to:[10,100,1000]})},
+    function(r){return G.decimals(r,{modes:['grid','compare','fracdec']})})),
  S('Story Problems','Problemas',function(r){return G.story(r,{modes:['groups','share','twostep','remain','rate'],lo:10,hi:90})}),
  S('Words and Symbols','Palabras y símbolos',function(r){return G.vocab(r,{bank:'mid'})}),
  S('Geometry and Measurement','Geometría y medición',mix(
     function(r){return G.geom(r,{modes:['perim','area','name','angle','perimpoly']})},
-    function(r){return G.measure(r,{modes:['mixed']})})),
+    function(r){return G.measure(r,{modes:['mixed']})},function(r){return G.prim(r,{modes:['angadd','symm']})})),
  S('Data and Money','Datos y dinero',mix(function(r){return G.data(r,{modes:['bar','dot']})},
     function(r){return G.money(r,{modes:['total','change']})}))];
 MATH['5']=[
  S('Basic Facts','Operaciones básicas',function(r){return G.facts(r,{ops:['×','÷'],max:9,cols:6})}),
  S('Algorithms','Algoritmos',function(r){return G.algo(r,{kinds:['decadd','decsub','mul2','div2','temp'],n:4})}),
  S('Probability and Statistics','Probabilidad y estadística',function(r){return G.data(r,{modes:['coin','spin','likely','mmm']})}),
- S('Decimal Numbers','Números decimales',function(r){return G.decimals(r,{modes:['grid','place','round','compare','fracdec']})}),
+ S('Decimal Numbers','Números decimales',mix(function(r){return G.decimals(r,{modes:['grid','place','round','compare','fracdec']})},function(r){return G.prim(r,{modes:['pow10']})})),
  S('Fractional Forms','Formas fraccionarias',function(r){return G.fractions(r,{modes:['numline','name','improper','compare','simplify']})}),
- S('Problem Solving','Resolución de problemas',function(r){return G.story(r,{modes:['twostep','remain','frac','money'],lo:12,hi:99})}),
- S('Adding and Subtracting Fractions','Sumar y restar fracciones',function(r){return G.fracops(r,{modes:['same','unlike']})}),
- S('Vocabulary and Geometry','Vocabulario y geometría',function(r){return G.vocab(r,{bank:'up'})}),
+ S('Problem Solving','Resolución de problemas',mix(function(r){return G.story(r,{modes:['twostep','remain','frac','money'],lo:12,hi:99})},function(r){return G.prim(r,{modes:['orderops']})})),
+ S('Fraction Operations','Operaciones con fracciones',mix(function(r){return G.fracops(r,{modes:['same','unlike']})},
+    function(r){return G.fracops(r,{modes:['mult']})},function(r){return G.prim(r,{modes:['unitdiv']})})),
+ S('Vocabulary and Geometry','Vocabulario y geometría',mix(function(r){return G.vocab(r,{bank:'up'})},
+    function(r){return G.graphing(r,{modes:['plot']})},function(r){return G.prim(r,{modes:['quadfam']})})),
  S('Area, Volume, Perimeter','Área, volumen, perímetro',function(r){return G.geom(r,{modes:['perim','area','vol','perimpoly','areatri']})}),
  S('Metric Measures','Medidas métricas',function(r){return G.measure(r,{modes:['ruler','convert','best','mixed'],
     pairs:[['cm','mm',10],['m','cm',100],['km','m',1000],['kg','g',1000],['L','mL',1000]]})})];
