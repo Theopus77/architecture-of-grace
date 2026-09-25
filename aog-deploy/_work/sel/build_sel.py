@@ -180,7 +180,7 @@ CARDS_CSS = r"""
 /* the table: one card, big, for the board */
 .board{position:fixed; inset:0; z-index:70; display:none; background:rgba(10,30,51,.6); backdrop-filter:blur(4px)}
 .board[data-open="1"]{display:block}
-.board .sheet{position:absolute; inset:clamp(8px,3vh,28px) clamp(8px,4vw,60px); background:var(--field); color:var(--ink); border-radius:22px; box-shadow:0 30px 80px rgba(0,0,0,.5); display:flex; flex-direction:column; overflow:hidden; border-top:10px solid var(--uc)}
+.board .sheet{position:absolute; inset:calc(var(--aogbar-h,52px) + 14px) clamp(8px,4vw,60px) clamp(8px,3vh,28px); background:var(--field); color:var(--ink); border-radius:22px; box-shadow:0 30px 80px rgba(0,0,0,.5); display:flex; flex-direction:column; overflow:hidden; border-top:10px solid var(--uc)}
 .board .bh{display:flex; justify-content:space-between; align-items:center; gap:10px; padding:12px 18px; border-bottom:1px solid var(--rule); flex-wrap:wrap}
 .board .bh .code{display:inline-flex; align-items:center; height:32px; padding:0 12px; border-radius:6px; background:var(--uc); color:#fff; font:800 .95rem var(--cond); letter-spacing:.08em}
 .board .bh h3{font-size:1.2rem; margin:0; flex:1}
@@ -618,7 +618,7 @@ def cards_page(r):
 <div class="board" id="board" data-open="0" role="dialog" aria-modal="true" aria-label="Scenario card">
   <div class="sheet" id="boardSheet">
     <div class="bh"><span class="code" id="bCode"></span><h3 id="bTitle"></h3><button type="button" id="bListen" class="lbtn" aria-pressed="false">{ICO["speak"]}<span>{span("Listen","Escuchar")}</span></button><button type="button" id="bClose" aria-label="Close">✕</button></div>
-    <div class="bb"><div class="k">{span("The situation","La situación")}</div><p class="sit" id="bSit"></p><div class="k">{span("Discussion questions","Preguntas para conversar")}</div><ol id="bQs"></ol><p class="note" id="bNote" hidden></p></div>
+    <div class="bb"><div class="k">{span("The situation","La situación")}</div><p class="sit" id="bSit"></p><div class="k" id="bQk">{span("Discussion questions","Preguntas para conversar")}</div><ol id="bQs"></ol><p class="note" id="bNote" hidden></p></div>
     <div class="bf"><button type="button" class="btn btn-a" id="bNext">{span("Reveal the next question","Revelar la siguiente pregunta")}</button><button type="button" class="btn" id="bAll">{span("Show all","Mostrar todas")}</button><button type="button" class="btn" id="bDeal">{span("Another card from this unit","Otra tarjeta de esta unidad")}</button><button type="button" class="btn" id="bUsed">{span("Mark used","Marcar usada")}</button></div>
   </div>
 </div>
@@ -696,8 +696,9 @@ function deal(id){
   document.getElementById("bSit").textContent=c.querySelector(".sit").textContent;
   var ol=document.getElementById("bQs"); ol.innerHTML="";
   Array.prototype.forEach.call(c.querySelectorAll("ol li"), function(l){ var li=document.createElement("li"); li.textContent=l.textContent; li.hidden=true; ol.appendChild(li); });
+  var nq=c.querySelectorAll("ol li").length; document.getElementById("bQk").hidden=!nq; document.getElementById("bNext").hidden=!nq; document.getElementById("bAll").hidden=!nq;
   var note=c.querySelector(".note"), bn=document.getElementById("bNote"); if(note){ bn.textContent=note.textContent; bn.hidden=false; } else bn.hidden=true;
-  lastFocus=document.activeElement; board.setAttribute("data-open","1"); document.body.style.overflow="hidden"; document.getElementById("bNext").focus();
+  lastFocus=document.activeElement; board.setAttribute("data-open","1"); document.body.style.overflow="hidden"; (nq?document.getElementById("bNext"):document.getElementById("bClose")).focus();
 }
 function closeBoard(){ board.setAttribute("data-open","0"); document.body.style.overflow=""; stopSpeak(); if(lastFocus) lastFocus.focus(); }
 document.addEventListener("click", function(ev){ var b=ev.target.closest(".deal1"); if(b) deal(b.getAttribute("data-deal")); });
