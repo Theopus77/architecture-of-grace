@@ -1,0 +1,333 @@
+{
+ "n": 45,
+ "title": "Quadratic Functions and Equations",
+ "years": "Quadratics",
+ "bigQuestion": "How does one equation describe the whole arc of a thrown ball, and how do we find the moments that matter along it?",
+ "story": {
+  "title": "The Arc of a Free Throw",
+  "kicker": "A basketball leaves a player's hands and its whole flight is already decided by three numbers.",
+  "paragraphs": [
+   "A player at the free-throw line releases the ball about 6 feet above the floor, sending it upward at 24 feet per second. The rim is 10 feet high. From the moment the ball leaves her hands, gravity is the only thing acting on it (ignoring the small push of the air). Its height after t seconds follows one rule: h = −16t^2 + 24t + 6. Three numbers, −16, 24 and 6, describe the entire flight.",
+   "Each number has a job. The 6 is where the ball starts. The 24 is how hard it was thrown upward. The −16 comes from gravity, which in feet and seconds pulls every thrown object down by the same amount, whether it is a basketball or a coin. The t^2 is what makes the path curve. If gravity vanished, the height would be 6 + 24t, a straight line, and the ball would climb forever.",
+   "Plug in a few times. At t = 0.5 seconds, h = −16(0.25) + 12 + 6 = −4 + 18 = 14 feet. At t = 0.75, h = −16(0.5625) + 18 + 6 = −9 + 24 = 15 feet. At t = 1, h = −16 + 24 + 6 = 14 feet. The ball rises, peaks at 15 feet three quarters of a second after release, and comes back down through 14 feet. The heights before and after the peak match in pairs. The curve is symmetric.",
+   "The shooter cares about a different question: when is the ball exactly 10 feet up, level with the rim? That means solving −16t^2 + 24t + 6 = 10. Nothing in linear algebra handles a t^2 next to a t. The equation has two answers, about 0.19 seconds on the way up and about 1.31 seconds on the way down, and the second one is the moment that matters. Finding it takes the tools of this chapter: the shape of the curve, its vertex, and formulas that solve any equation with a square in it."
+  ],
+  "think": "The ball is at 14 feet at t = 0.5 and again at t = 1. Why must a thrown ball pass every height below its peak exactly twice, and which height does it pass only once?"
+ },
+ "sections": [
+  {"title": "The Shape of a Quadratic", "lessons": [
+   {
+    "title": "Parabolas, Vertices and Symmetry",
+    "mainIdea": "The graph of a quadratic function is a parabola, symmetric about a vertical axis through its vertex, its highest or lowest point.",
+    "reading": [
+     "Take f(x) = x^2 − 4x + 3 and make a table: x = 0 gives 3, x = 1 gives 0, x = 2 gives −1, x = 3 gives 0, x = 4 gives 3, and x = 5 gives 8. Plot the points and connect them with a smooth curve. The U shape is a *parabola*. The lowest point, (2, −1), is the *vertex*. The vertical line x = 2 through the vertex is the *axis of symmetry*. Points the same distance on either side have equal heights: f(1) = f(3) = 0 and f(0) = f(4) = 3.",
+     "A *quadratic function* is any function of the form f(x) = ax^2 + bx + c with a not equal to 0. When a is positive, the parabola opens upward and the vertex is the minimum. When a is negative, it opens downward and the vertex is the maximum, as with a thrown ball. The size of a controls the width: y = 3x^2 is narrower than y = x^2, and y = 0.25x^2 is wider. Compare at x = 2: the outputs are 12, 4 and 1.",
+     "Intercepts anchor the graph. The y-intercept is f(0) = c, here 3. An *x-intercept* is where f(x) = 0, here x = 1 and x = 3; these are the zeros of the function. The axis of symmetry passes exactly halfway between the two x-intercepts: (1 + 3)/2 = 2. Not every parabola crosses the x-axis. y = x^2 + 1 has vertex (0, 1) and opens upward, so it never reaches y = 0 and has no x-intercepts.",
+     "Common mistakes: plotting too few points and drawing a V instead of a smooth curve, since the parabola is rounded at the vertex; and assuming the vertex always sits on the y-axis. Only parabolas whose equation has no x term, with b = 0, have their axis at x = 0."
+    ],
+    "words": [
+     {"w": "parabola", "d": "the U-shaped curve that is the graph of a quadratic function"},
+     {"w": "vertex", "d": "the highest or lowest point of a parabola, where the curve turns around"},
+     {"w": "axis of symmetry", "d": "the vertical line through the vertex; the two halves of the parabola mirror each other across it"},
+     {"w": "quadratic function", "d": "a function of the form f(x) = ax^2 + bx + c with a not equal to 0"},
+     {"w": "x-intercept", "d": "a point where a graph crosses the x-axis; there the function's output is 0"}
+    ],
+    "look": {
+     "type": "data",
+     "title": "A Table for f(x) = x^2 − 4x + 3",
+     "rows": [["x = −1", 8], ["x = 0", 3], ["x = 1", 0], ["x = 2", -1], ["x = 3", 0], ["x = 4", 3], ["x = 5", 8]],
+     "unit": "f(x)",
+     "cite": "Values of f(x) = x^2 − 4x + 3 computed directly",
+     "prompt": "Which pairs of x-values give the same output? What vertical line sits halfway between each pair, and what is the lowest value in the table?"
+    },
+    "check": [
+     {"q": "The x-intercepts of f(x) = x^2 − 6x + 5 are x = 1 and x = 5. Where is the axis of symmetry?", "choices": ["x = 4", "x = 3", "x = 6", "x = 5"], "a": 1, "why": "The axis is halfway between the intercepts: (1 + 5)/2 = 3. Subtracting 5 − 1 = 4 gives the distance between them, not the midpoint."},
+     {"q": "Which parabola opens downward?", "choices": ["y = 2x^2 − 5", "y = x^2 + 3x", "y = −x^2 + 4x", "y = 0.5x^2"], "a": 2, "why": "Only y = −x^2 + 4x has a negative coefficient on x^2. The sign of a decides the direction, not the other terms."},
+     {"q": "What is the y-intercept of y = 3x^2 − 2x − 7?", "choices": ["3", "−2", "7", "−7"], "a": 3, "why": "Set x = 0: y = 0 − 0 − 7 = −7. The y-intercept is the constant term c, sign included."}
+    ]
+   },
+   {
+    "title": "Standard Form and the Vertex Formula",
+    "mainIdea": "In y = ax^2 + bx + c the axis of symmetry is x = −b/(2a); substitute that x back in to find the vertex's y-value.",
+    "reading": [
+     "A toy rocket launched from the ground has height h = −16t^2 + 48t feet after t seconds. When is it highest? The equation is in *standard form* y = ax^2 + bx + c with a = −16, b = 48, c = 0. The *vertex formula* gives the axis of symmetry: x = −b/(2a) = −48/(2 × −16) = −48/(−32) = 1.5. The rocket is highest at t = 1.5 seconds. Its height then is h = −16(1.5)^2 + 48(1.5) = −16(2.25) + 72 = −36 + 72 = 36 feet. The vertex is (1.5, 36), a *maximum* since a is negative.",
+     "Why does −b/(2a) work? The zeros of −16t^2 + 48t = −16t(t − 3) are t = 0 and t = 3, and the axis is halfway between them: 1.5. The formula gives the same answer without factoring, even when the zeros are hard to find. Example: y = 2x^2 + 8x + 5. Axis: x = −8/(2 × 2) = −2. Vertex y: 2(4) + 8(−2) + 5 = 8 − 16 + 5 = −3. The vertex is (−2, −3), a *minimum* since a = 2 is positive.",
+     "To sketch from standard form: find the vertex, mark the y-intercept (0, c), then reflect that point across the axis. For y = 2x^2 + 8x + 5, the y-intercept (0, 5) reflects across x = −2 to (−4, 5). Three points and the direction of opening give a good sketch. The maximum or minimum value of the function is the y-coordinate of the vertex; the x-coordinate is where it happens. Keep those straight: the rocket's maximum height is 36 feet, reached at 1.5 seconds.",
+     "The most common error is a sign slip in −b/(2a). For y = x^2 − 6x + 1, b = −6, so x = −(−6)/(2 × 1) = 3, not −3. Another error is stopping at the x-coordinate and reporting it as the maximum value. Always substitute back to get y."
+    ],
+    "words": [
+     {"w": "standard form", "d": "a quadratic written as y = ax^2 + bx + c"},
+     {"w": "vertex formula", "d": "the axis of symmetry of y = ax^2 + bx + c is x = −b/(2a); the vertex's x-coordinate"},
+     {"w": "maximum", "d": "the greatest output of a function; for a parabola opening downward, the vertex's y-value"},
+     {"w": "minimum", "d": "the least output of a function; for a parabola opening upward, the vertex's y-value"}
+    ],
+    "look": {
+     "type": "think",
+     "title": "Find the Turning Point",
+     "text": "Take y = −x^2 + 10x − 16. Here a = −1, b = 10 and c = −16. The axis is x = −10/(2 × −1) = −10/(−2) = 5. Substitute x = 5: y = −25 + 50 − 16 = 9. Since a is negative, the parabola opens downward and (5, 9) is the top. The y-intercept (0, −16) reflects across x = 5 to the point (10, −16).",
+     "prompt": "Find the vertex of y = x^2 − 8x + 3 the same way. Is it a maximum or a minimum, and what is that value?"
+    },
+    "check": [
+     {"q": "What is the axis of symmetry of y = 3x^2 − 12x + 1?", "choices": ["x = 2", "x = −2", "x = 4", "x = −4"], "a": 0, "why": "x = −b/(2a) = −(−12)/(2 × 3) = 12/6 = 2. Forgetting the double negative gives −2."},
+     {"q": "What is the vertex of y = x^2 + 4x − 5?", "choices": ["(2, 7)", "(−2, 9)", "(−2, −9)", "(4, −5)"], "a": 2, "why": "Axis: x = −4/(2 × 1) = −2. Then y = (−2)^2 + 4(−2) − 5 = 4 − 8 − 5 = −9. The vertex is (−2, −9)."},
+     {"q": "A ball's height is h = −16t^2 + 64t. What is its maximum height?", "choices": ["2 feet", "64 feet", "128 feet", "32 feet"], "a": 1, "why": "Peak time: t = −64/(2 × −16) = 2 seconds. Height: −16(4) + 64(2) = −64 + 128 = 64 feet. The 2 is the time, not the height."}
+    ]
+   },
+   {
+    "title": "Vertex Form",
+    "mainIdea": "Vertex form y = a(x − h)^2 + k shows the vertex (h, k) directly and describes the parabola as y = x^2 shifted and stretched.",
+    "reading": [
+     "Start with the *parent function* y = x^2, whose vertex is (0, 0). Adding a number outside the square slides the graph up: y = x^2 + 3 has vertex (0, 3). Subtracting inside the square slides it right: y = (x − 4)^2 has vertex (4, 0), because the squared part is zero when x = 4. Together, y = (x − 4)^2 + 3 has vertex (4, 3). This is *vertex form*: y = a(x − h)^2 + k, with vertex (h, k). Watch the sign: (x − 4) means h = 4, and (x + 2) means h = −2.",
+     "The number a makes a *stretch* or a flip. y = 2(x − 1)^2 − 5 has vertex (1, −5), opens upward, and is narrower than y = x^2. y = −0.5(x + 3)^2 + 2 has vertex (−3, 2), opens downward, and is wider. To graph, plot the vertex, then step sideways and use a. From (1, −5), moving 1 unit left or right raises the curve by 2 × 1^2 = 2, to (0, −3) and (2, −3). Moving 2 units raises it by 2 × 4 = 8, to (−1, 3) and (3, 3).",
+     "Converting vertex form to standard form is just expanding: y = 2(x − 1)^2 − 5 = 2(x^2 − 2x + 1) − 5 = 2x^2 − 4x + 2 − 5 = 2x^2 − 4x − 3. Check the vertex with the formula: x = 4/(2 × 2) = 1, which matches. Going the other way, from standard to vertex form, takes completing the square, which comes later in this chapter. Each form shows something different: vertex form shows the vertex, and standard form shows the y-intercept.",
+     "The most common mistake is reading (x − 4)^2 as a *shift* of 4 to the left. Ask what x makes the parentheses zero; that answer, 4, is the vertex's x. A second mistake is forgetting the a when plotting points: for y = 2(x − 1)^2 − 5, the point one unit from the vertex is 2 higher, not 1."
+    ],
+    "words": [
+     {"w": "vertex form", "d": "a quadratic written as y = a(x − h)^2 + k, whose vertex is (h, k)"},
+     {"w": "parent function", "d": "the simplest function of a family, y = x^2 for quadratics; other members are shifts and stretches of it"},
+     {"w": "shift", "d": "sliding a graph left, right, up or down without changing its shape"},
+     {"w": "stretch", "d": "making a graph narrower or wider by multiplying its outputs by a; a negative a also flips it"}
+    ],
+    "look": {
+     "type": "think",
+     "title": "Reading a Parabola From Its Equation",
+     "text": "Consider y = −(x − 2)^2 + 9. The vertex is (2, 9). The a is −1, so the parabola opens downward and (2, 9) is the top. Where does it cross the x-axis? Set y = 0: (x − 2)^2 = 9, so x − 2 = 3 or x − 2 = −3. One unit either side of the vertex, at x = 1 and x = 3, the height is 9 − 1 = 8.",
+     "prompt": "What are the two x-intercepts of y = −(x − 2)^2 + 9? What is the y-intercept? Sketch the curve from these points."
+    },
+    "check": [
+     {"q": "What is the vertex of y = 3(x + 5)^2 − 2?", "choices": ["(5, −2)", "(−5, −2)", "(−5, 2)", "(3, −2)"], "a": 1, "why": "(x + 5) is zero when x = −5, so h = −5, and k = −2. The vertex is (−5, −2)."},
+     {"q": "Which equation is y = x^2 shifted 3 units right and 4 units down?", "choices": ["y = (x + 3)^2 − 4", "y = (x − 3)^2 + 4", "y = (x − 4)^2 − 3", "y = (x − 3)^2 − 4"], "a": 3, "why": "Right 3 means (x − 3) inside; down 4 means − 4 outside. So y = (x − 3)^2 − 4, with vertex (3, −4)."},
+     {"q": "Expand y = (x − 2)^2 + 1 into standard form.", "choices": ["y = x^2 + 4x + 5", "y = x^2 − 4x + 5", "y = x^2 − 4x + 1", "y = x^2 + 5"], "a": 1, "why": "(x − 2)^2 = x^2 − 4x + 4, and adding 1 gives x^2 − 4x + 5. Forgetting the middle term gives x^2 + 5."}
+    ]
+   },
+   {
+    "title": "Factored Form and Zeros",
+    "mainIdea": "Factored form y = a(x − p)(x − q) shows the zeros p and q, and the vertex lies halfway between them.",
+    "reading": [
+     "A rectangular pen along a river uses 40 feet of fence on three sides, with the river as the fourth side. If the two sides that meet the river are x feet, the side parallel to it is 40 − 2x, and the area is A = x(40 − 2x). This is *factored form*: A = −2x(x − 20), with zeros at x = 0 and x = 20, since a pen with no width or no length has zero area. The vertex is halfway between the zeros, at x = 10. The maximum area is A = 10(40 − 20) = 200 square feet.",
+     "In general, y = a(x − p)(x − q) has zeros p and q, because a product is zero when a factor is zero. y = 2(x − 3)(x + 1) has zeros 3 and −1. The axis is x = (3 + (−1))/2 = 1, and the vertex y is 2(1 − 3)(1 + 1) = 2(−2)(2) = −8. The vertex is (1, −8). The y-intercept comes from x = 0: 2(−3)(1) = −6. To *expand* into standard form: 2(x^2 − 2x − 3) = 2x^2 − 4x − 6, and the constant −6 matches the y-intercept.",
+     "Going from standard form to factored form is the factoring from the previous chapter. y = x^2 − 2x − 15 = (x − 5)(x + 3), so each *zero of a function* is easy to read: 5 and −3, where the graph crosses the x-axis. Three forms, three views of one parabola: standard form gives the y-intercept, vertex form gives the vertex, factored form gives the x-intercepts. Choose the form that answers the question you are asked.",
+     "Common mistakes: reading zeros with the wrong sign, so (x − 5)(x + 3) is said to have zeros −5 and 3; and worrying about the a in front. The zeros of −3(x − 1)(x − 7) are 1 and 7. The a affects the height and direction of the curve, not where it crosses the axis."
+    ],
+    "words": [
+     {"w": "factored form", "d": "a quadratic written as y = a(x − p)(x − q), whose zeros are p and q"},
+     {"w": "zero of a function", "d": "an input that makes the output 0; on the graph, an x-intercept"},
+     {"w": "expand", "d": "to multiply out a product of factors into a sum of terms"}
+    ],
+    "look": {
+     "type": "think",
+     "title": "From Zeros to Vertex",
+     "text": "Take y = (x − 2)(x − 8). The zeros are 2 and 8. The axis of symmetry is halfway between them, x = (2 + 8)/2 = 5. Substituting x = 5 gives y = (5 − 2)(5 − 8) = (3)(−3) = −9, so the vertex is (5, −9). The y-intercept is (0 − 2)(0 − 8) = 16. Now try y = (x + 1)(x − 7).",
+     "prompt": "For y = (x + 1)(x − 7), find the zeros, the axis of symmetry, the vertex and the y-intercept."
+    },
+    "check": [
+     {"q": "What are the zeros of y = (x + 4)(x − 9)?", "choices": ["4 and −9", "−4 and 9", "4 and 9", "−4 and −9"], "a": 1, "why": "x + 4 = 0 gives x = −4, and x − 9 = 0 gives x = 9. Each zero has the opposite sign of the number in its factor."},
+     {"q": "For y = (x − 1)(x − 7), what is the x-coordinate of the vertex?", "choices": ["4", "8", "−4", "3"], "a": 0, "why": "The zeros are 1 and 7, and the vertex is halfway: (1 + 7)/2 = 4. Adding the zeros without halving gives 8."},
+     {"q": "Which form of a quadratic shows the x-intercepts directly?", "choices": ["standard form", "vertex form", "factored form", "slope-intercept form"], "a": 2, "why": "In y = a(x − p)(x − q), the zeros p and q can be read from the factors. Standard form shows the y-intercept and vertex form shows the vertex."}
+    ]
+   }
+  ]},
+  {"title": "Solving Quadratic Equations", "lessons": [
+   {
+    "title": "Solving With Square Roots",
+    "mainIdea": "When a quadratic has no x term, isolate the squared expression and take the square root of both sides, keeping both the positive and the negative root.",
+    "reading": [
+     "A square patio has an area of 144 square feet. What is its side length? x^2 = 144, so x = √144 = 12 feet. But the equation x^2 = 144 has two solutions, 12 and −12, because (−12)^2 is also 144. We write x = ±12 and use the situation to choose: a side length is 12. This is the *square root method*: if x^2 = k with k > 0, then x = √k or x = −√k. The symbol *±* means *plus or minus*.",
+     "Isolate the squared part first. 3x^2 − 27 = 0: add 27 to get 3x^2 = 27, divide by 3 to get x^2 = 9, so x = ±3. If the number is not a perfect square, simplify the *radical*: 2x^2 = 40 gives x^2 = 20, so x = ±√20 = ±2√5, about ±4.47. The method also works when a binomial is squared. (x − 5)^2 = 49: take roots, x − 5 = ±7, so x = 5 + 7 = 12 or x = 5 − 7 = −2. Check: (12 − 5)^2 = 49 and (−2 − 5)^2 = 49.",
+     "Dropped objects use this method. Ignoring air resistance, an object dropped from a height of h0 feet is at height h = h0 − 16t^2 after t seconds. From a 100-foot bridge, when does a dropped stone hit the water? 0 = 100 − 16t^2, so 16t^2 = 100, t^2 = 6.25, and t = 2.5 seconds; the negative root would be a time before the drop, so discard it. Check: 16 × 6.25 = 100.",
+     "The classic mistake is dropping the negative root when both matter. x^2 = 25 has solutions 5 and −5; leaving out −5 loses half the answer. The opposite mistake is inventing solutions: x^2 = −25 has no *real solution*, because no real number squared is negative. And never take the square root before isolating: from x^2 + 9 = 25, the expression √(x^2 + 9) is not x + 3."
+    ],
+    "words": [
+     {"w": "square root method", "d": "solving x^2 = k by taking the square root of both sides: x = √k or x = −√k"},
+     {"w": "±", "d": "read as plus or minus; x = ±5 means x = 5 or x = −5"},
+     {"w": "radical", "d": "a root expression like √20, which can often be simplified, here to 2√5"},
+     {"w": "real solution", "d": "a solution that is a real number; x^2 = −25 has none because no real number squared is negative"}
+    ],
+    "look": {
+     "type": "think",
+     "title": "A Square Already Made",
+     "text": "Solve (x + 3)^2 = 16. The left side is already a perfect square, so take the square root of both sides: x + 3 = ±4. Split into two equations: x + 3 = 4 gives x = 1, and x + 3 = −4 gives x = −7. Check both: (1 + 3)^2 = 16 and (−7 + 3)^2 = (−4)^2 = 16. Now try (x − 1)^2 = 25.",
+     "prompt": "Solve (x − 1)^2 = 25 and check both answers. What would change if the equation were (x − 1)^2 = 20?"
+    },
+    "check": [
+     {"q": "Solve x^2 − 49 = 0.", "choices": ["x = 7", "x = 49", "x = ±24.5", "x = ±7"], "a": 3, "why": "x^2 = 49, so x = √49 or x = −√49: x = ±7. Both 7^2 and (−7)^2 equal 49."},
+     {"q": "Solve (x − 2)^2 = 36.", "choices": ["x = 8 or x = −4", "x = 8", "x = 38 or x = −34", "x = 4 or x = −8"], "a": 0, "why": "x − 2 = ±6, so x = 2 + 6 = 8 or x = 2 − 6 = −4. Check: (8 − 2)^2 = 36 and (−4 − 2)^2 = 36."},
+     {"q": "Which equation has no real solution?", "choices": ["x^2 = 0", "x^2 = 2", "x^2 = −4", "2x^2 = 8"], "a": 2, "why": "No real number squared is negative, so x^2 = −4 has no real solution. The others give 0, ±√2 and ±2."}
+    ]
+   },
+   {
+    "title": "Completing the Square",
+    "mainIdea": "Add (b/2)^2 to both sides to turn x^2 + bx into a perfect square, then solve with square roots; the same move rewrites any quadratic in vertex form.",
+    "reading": [
+     "The square root method needs a perfect square on one side. Can we make one? Take x^2 + 6x = 7. In the area model, x^2 + 6x is an x by x square plus two strips of 3x, one along the right and one along the bottom. The picture is a bigger square missing its corner, a 3 by 3 piece of area 9. Adding 9 fills the corner, which is why the method is called *completing the square*: x^2 + 6x + 9 = (x + 3)^2, a *perfect square trinomial*. To keep the equation *balanced*, add 9 to both sides: (x + 3)^2 = 16.",
+     "Now finish with square roots: x + 3 = ±4, so x = 1 or x = −7. Check: 1 + 6 = 7, and 49 − 42 = 7. The number to add is always (b/2)^2: half the coefficient of x, then squared. For x^2 − 10x = 11: half of −10 is −5, and (−5)^2 = 25. So x^2 − 10x + 25 = 36, which is (x − 5)^2 = 36. Then x − 5 = ±6, so x = 11 or x = −1. Check: 121 − 110 = 11 and 1 + 10 = 11.",
+     "If the leading coefficient is not 1, divide it out first. 2x^2 + 8x − 10 = 0 becomes x^2 + 4x − 5 = 0, then x^2 + 4x = 5, add 4: (x + 2)^2 = 9, x = 1 or x = −5. The same steps convert a function to vertex form. For y = x^2 + 4x − 5, add and subtract 4 on the right: y = (x^2 + 4x + 4) − 4 − 5 = (x + 2)^2 − 9. The vertex is (−2, −9), matching the formula x = −4/2 = −2.",
+     "Two common mistakes: adding (b/2)^2 to one side only, which changes the equation; and squaring b instead of b/2, so for x^2 + 6x someone adds 36 instead of 9. Say it aloud: half of six is three, three squared is nine. When b is odd, fractions appear: for x^2 + 3x, add (3/2)^2 = 9/4. That is fine; the method still works."
+    ],
+    "words": [
+     {"w": "completing the square", "d": "adding (b/2)^2 to x^2 + bx so that it becomes the perfect square (x + b/2)^2"},
+     {"w": "perfect square trinomial", "d": "a trinomial equal to a binomial squared, like x^2 + 6x + 9 = (x + 3)^2"},
+     {"w": "balanced", "d": "an equation stays balanced when the same amount is added to both sides"}
+    ],
+    "look": {
+     "type": "think",
+     "title": "Filling the Missing Corner",
+     "text": "Picture x^2 + 8x as an x by x square with two strips of 4x attached, one on the right side and one along the bottom. The shape is a larger square with an empty 4 by 4 corner. Filling the corner adds 16 and makes (x + 4)^2. So to solve x^2 + 8x = 20, add 16 to both sides and the left side becomes a perfect square.",
+     "prompt": "Finish solving x^2 + 8x = 20. What are the two solutions, and do both check in the original equation?"
+    },
+    "check": [
+     {"q": "What number completes the square for x^2 + 12x?", "choices": ["6", "144", "36", "24"], "a": 2, "why": "Half of 12 is 6, and 6^2 = 36. Then x^2 + 12x + 36 = (x + 6)^2. Squaring 12 itself gives the wrong 144."},
+     {"q": "Solve x^2 − 4x = 12 by completing the square.", "choices": ["x = 6 or x = −2", "x = 4 or x = −4", "x = 2 or x = −6", "x = 8 or x = −4"], "a": 0, "why": "Add (−2)^2 = 4 to both sides: (x − 2)^2 = 16, so x − 2 = ±4 and x = 6 or x = −2. Check: 36 − 24 = 12 and 4 + 8 = 12."},
+     {"q": "Write y = x^2 + 10x + 7 in vertex form.", "choices": ["y = (x + 5)^2 + 7", "y = (x + 10)^2 − 93", "y = (x − 5)^2 − 18", "y = (x + 5)^2 − 18"], "a": 3, "why": "Add and subtract 25: y = (x^2 + 10x + 25) − 25 + 7 = (x + 5)^2 − 18. The vertex is (−5, −18)."}
+    ]
+   },
+   {
+    "title": "The Quadratic Formula",
+    "mainIdea": "For any equation ax^2 + bx + c = 0, x = (−b ± √(b^2 − 4ac)) / (2a); it comes from completing the square on the general equation.",
+    "reading": [
+     "Completing the square on the general equation ax^2 + bx + c = 0, once and for all values, produces the *quadratic formula*: x = (−b ± √(b^2 − 4ac)) / (2a). It solves every quadratic, whether or not it factors. Example: 2x^2 + 3x − 5 = 0, so a = 2, b = 3, c = −5. First compute the part under the root: b^2 − 4ac = 9 − 4(2)(−5) = 9 + 40 = 49. Then x = (−3 ± 7)/4. Two answers: (−3 + 7)/4 = 1 and (−3 − 7)/4 = −10/4 = −2.5. Check x = 1: 2 + 3 − 5 = 0.",
+     "The formula needs the equation in the form ax^2 + bx + c = 0, with zero on one side. To solve x^2 = 6x − 4, first rewrite it: x^2 − 6x + 4 = 0, so a = 1, b = −6, c = 4. Under the root: 36 − 16 = 20. So x = (6 ± √20)/2. Leave it in *radical form* by simplifying √20 = 2√5, so x = (6 ± 2√5)/2 = 3 ± √5. As decimals, 3 + 2.236 = 5.236 and 3 − 2.236 = 0.764. Neither is a whole number, which is why factoring would have failed.",
+     "Which method should you use? If the equation has no x term, take square roots. If it factors easily, factor. If a = 1 and b is even, completing the square is quick. Otherwise, use the formula; it always works. In the chapter story, the shot is level with the rim when −16t^2 + 24t + 6 = 10, that is, −16t^2 + 24t − 4 = 0. Divide by −4: 4t^2 − 6t + 1 = 0. Then t = (6 ± √(36 − 16))/8 = (6 ± √20)/8, about 0.19 seconds and 1.31 seconds.",
+     "Common mistakes: forgetting that −b flips the sign of b (with b = −6, −b = 6); a sign error in −4ac when c is negative (−4 × 2 × −5 = +40); and dividing only the root by 2a instead of the whole *numerator*. Write the fraction bar under everything. Substituting the answers back into the original equation catches all three."
+    ],
+    "words": [
+     {"w": "quadratic formula", "d": "x = (−b ± √(b^2 − 4ac)) / (2a), the solutions of ax^2 + bx + c = 0"},
+     {"w": "numerator", "d": "the top of a fraction; in the formula it is all of −b ± √(b^2 − 4ac)"},
+     {"w": "radical form", "d": "an exact answer written with a root sign, like 3 ± √5, instead of a rounded decimal"}
+    ],
+    "look": {
+     "type": "think",
+     "title": "When Factoring Fails",
+     "text": "Try to factor x^2 + 5x + 3. You need two integers with product 3 and sum 5, and there are none: 1 + 3 = 4 and −1 + −3 = −4. So use the formula with a = 1, b = 5, c = 3. Under the root: 25 − 12 = 13, which is not a perfect square. The solutions are x = (−5 ± √13)/2. Since √13 ≈ 3.606, that is about −0.70 and −4.30.",
+     "prompt": "Check x ≈ −0.70 in the original equation. Why does a non-perfect-square number under the root tell you the equation would not factor with integers?"
+    },
+    "check": [
+     {"q": "For 3x^2 − 7x + 2 = 0, what is the value of b^2 − 4ac?", "choices": ["73", "25", "−73", "1"], "a": 1, "why": "(−7)^2 − 4(3)(2) = 49 − 24 = 25. Adding instead of subtracting gives 73."},
+     {"q": "Solve x^2 + 2x − 8 = 0 with the quadratic formula.", "choices": ["x = 2 or x = −4", "x = −2 or x = 4", "x = 4 or x = 2", "x = 8 or x = −1"], "a": 0, "why": "Under the root: 4 + 32 = 36. x = (−2 ± 6)/2, giving 4/2 = 2 and −8/2 = −4. Check: 4 + 4 − 8 = 0."},
+     {"q": "Before using the formula on 2x^2 = 5x + 3, what must you do first?", "choices": ["divide both sides by x", "take the square root of both sides", "set a = 2, b = 5, c = 3", "rewrite it as 2x^2 − 5x − 3 = 0"], "a": 3, "why": "The formula needs zero on one side: 2x^2 − 5x − 3 = 0, so a = 2, b = −5, c = −3. Reading b = 5 and c = 3 from the original gives wrong signs."}
+    ]
+   },
+   {
+    "title": "The Discriminant",
+    "mainIdea": "The discriminant b^2 − 4ac tells how many real solutions a quadratic has: two if positive, one if zero, none if negative.",
+    "reading": [
+     "The part of the formula under the square root, b^2 − 4ac, is the *discriminant*. It decides how many real solutions there are before you solve. If it is positive, the ± gives two different real solutions. If it is zero, ± 0 gives one *repeated root*. If it is negative, there is no real square root, so there is *no real solution*. Example: x^2 − 6x + 9 = 0 has discriminant 36 − 36 = 0, one solution, x = 3, since it is (x − 3)^2. And x^2 + x + 1 = 0 has 1 − 4 = −3, no real solution.",
+     "On a graph, the discriminant counts x-intercepts. y = x^2 − 6x + 9 touches the x-axis once, at its vertex (3, 0). y = x^2 + x + 1 has its vertex at x = −1/2, where y = 1/4 − 1/2 + 1 = 3/4, above the axis and opening upward, so it never crosses. y = x^2 − 6x + 5 has discriminant 36 − 20 = 16, which is positive, and it crosses twice, at 1 and 5. A discriminant that is a perfect square, like 16, also signals that the quadratic factors with integers: (x − 1)(x − 5).",
+     "Real problems use this test. A ball thrown upward at 32 feet per second from 5 feet has height h = −16t^2 + 32t + 5. Does it ever reach 25 feet? Set h = 25: −16t^2 + 32t − 20 = 0. Discriminant: 32^2 − 4(−16)(−20) = 1,024 − 1,280 = −256, negative. So no, the ball never reaches 25 feet. Check with the vertex: t = 1, h = −16 + 32 + 5 = 21 feet at most. The discriminant answered without solving.",
+     "A common mistake is computing 4ac with the wrong sign. For a = −16 and c = −20, 4ac = +1,280, so b^2 − 4ac subtracts 1,280. Another is reporting one solution as no solution when the discriminant is zero. Zero is a fine square root; it just gives a single answer."
+    ],
+    "words": [
+     {"w": "discriminant", "d": "the expression b^2 − 4ac under the root in the quadratic formula; its sign tells how many real solutions there are"},
+     {"w": "repeated root", "d": "the single solution of a quadratic whose discriminant is 0, where the parabola just touches the x-axis"},
+     {"w": "no real solution", "d": "what happens when the discriminant is negative; the parabola never reaches the x-axis"}
+    ],
+    "look": {
+     "type": "data",
+     "title": "Five Equations, Five Discriminants",
+     "rows": [["x^2 − 6x + 5 = 0", 16], ["x^2 − 6x + 9 = 0", 0], ["x^2 − 6x + 13 = 0", -16], ["2x^2 + 3x − 2 = 0", 25], ["x^2 + 4x + 7 = 0", -12]],
+     "unit": "value of b^2 − 4ac",
+     "cite": "Computed as b^2 − 4ac for each equation",
+     "prompt": "How many real solutions does each equation have? Which of the five equations could be solved by factoring with integers, and how can you tell from the table?"
+    },
+    "check": [
+     {"q": "What is the discriminant of 2x^2 − 4x + 5 = 0?", "choices": ["−24", "24", "56", "−56"], "a": 0, "why": "(−4)^2 − 4(2)(5) = 16 − 40 = −24. Negative, so the equation has no real solution."},
+     {"q": "A quadratic equation has discriminant 0. How many real solutions does it have?", "choices": ["none", "two", "one", "infinitely many"], "a": 2, "why": "With a zero under the root, the ± adds and subtracts 0, so both branches give the same single answer."},
+     {"q": "Which equation has two real solutions?", "choices": ["x^2 + 4 = 0", "x^2 + 2x + 1 = 0", "x^2 + 3x + 5 = 0", "x^2 − 3x − 5 = 0"], "a": 3, "why": "Its discriminant is 9 + 20 = 29, positive. The others have discriminants −16, 0 and −11."}
+    ]
+   }
+  ]},
+  {"title": "Quadratic Models", "lessons": [
+   {
+    "title": "Projectile Models",
+    "mainIdea": "A thrown object's height is h = −16t^2 + vt + h0 in feet and seconds; the vertex gives the peak and a zero gives the landing time.",
+    "reading": [
+     "When an object is thrown upward, gravity pulls it back with the same acceleration no matter its size, ignoring air resistance. In feet and seconds, its height is h = −16t^2 + vt + h0, where v is the upward *launch speed* in feet per second and h0 is the *initial height*. In meters, the −16 becomes about −4.9. A basketball released 6 feet up at 24 feet per second follows h = −16t^2 + 24t + 6, the equation from the chapter story. Any such thrown object is a *projectile*.",
+     "Three questions, three tools. When is it highest? The vertex: t = −24/(2 × −16) = 0.75 seconds, and h = −16(0.5625) + 18 + 6 = −9 + 24 = 15 feet. When does it pass a given height, like the 10-foot rim? Set h = 10 and solve −16t^2 + 24t − 4 = 0 with the formula: about 0.19 and 1.31 seconds, on the way up and on the way down. When does it land, if it misses everything? Set h = 0: t = (−24 ± √(576 + 384))/(−32). Since √960 ≈ 30.98, t ≈ 1.72 seconds; the other root is negative.",
+     "Interpret each part of the equation. The 6 is the y-intercept, the height at t = 0. The 24 sets how steeply the ball rises at first. The −16 bends the path downward, so the parabola opens downward and the vertex is a maximum. A soccer ball kicked from the ground at 40 feet per second has h = −16t^2 + 40t. It is in the air until h = 0 again: −16t(t − 2.5) = 0, so 2.5 seconds. Its peak, at t = 1.25, is −16(1.5625) + 50 = −25 + 50 = 25 feet.",
+     "Common mistakes: using +16 instead of −16, which makes the ball rise forever; and reading the vertex's t as the height. Also, this parabola is a graph of height against time, not a picture of the ball's flight across the court, even though a thrown ball's path through the air happens to be a parabola as well."
+    ],
+    "words": [
+     {"w": "projectile", "d": "an object thrown or launched and then moved only by gravity, like a ball in flight"},
+     {"w": "launch speed", "d": "the upward speed at the moment of release, the v in h = −16t^2 + vt + h0"},
+     {"w": "initial height", "d": "the height at time 0, the h0 in h = −16t^2 + vt + h0"}
+    ],
+    "look": {
+     "type": "think",
+     "title": "Thrown From a Roof",
+     "text": "A ball is thrown upward at 32 feet per second from a roof 48 feet high: h = −16t^2 + 32t + 48. The peak is at t = −32/(2 × −16) = 1 second, where h = −16 + 32 + 48 = 64 feet. To find the landing time, set h = 0 and divide by −16: t^2 − 2t − 3 = 0, which factors as (t − 3)(t + 1) = 0.",
+     "prompt": "When does the ball land, and why is one of the two roots thrown away? How long does the ball spend above the roof's height of 48 feet?"
+    },
+    "check": [
+     {"q": "For h = −16t^2 + 48t + 4, when does the object reach its peak?", "choices": ["3 seconds", "1.5 seconds", "48 seconds", "0.75 seconds"], "a": 1, "why": "t = −b/(2a) = −48/(2 × −16) = 48/32 = 1.5 seconds. Using 48/16 gives 3, the landing time of the version without the +4."},
+     {"q": "For h = −16t^2 + 64t, when does the object return to the ground?", "choices": ["2 seconds", "64 seconds", "4 seconds", "16 seconds"], "a": 2, "why": "Set h = 0: −16t(t − 4) = 0, so t = 0 (launch) or t = 4 seconds. The peak is at 2 seconds, halfway."},
+     {"q": "In h = −16t^2 + 20t + 5, what does the 5 represent?", "choices": ["the peak height", "the launch speed", "the time in the air", "the starting height"], "a": 3, "why": "At t = 0, h = 5, so 5 is the initial height. The launch speed is 20 and the peak must be computed from the vertex."}
+    ]
+   },
+   {
+    "title": "Area and Revenue Problems",
+    "mainIdea": "Many area and number problems set up a quadratic equation; write it from the situation, solve, then reject any solution that makes no sense.",
+    "reading": [
+     "A poster is 3 inches longer than it is wide, and its area is 130 square inches. First *define a variable*: let the width be w. Then the length is w + 3 and the area is w(w + 3) = 130. Expand: w^2 + 3w − 130 = 0. Factor: two numbers with product −130 and sum 3 are 13 and −10, so (w + 13)(w − 10) = 0, and w = 10 or w = −13. A width cannot be negative, so *reject a solution* that fails the story: w = 10 inches and the length is 13 inches. Check: 10 × 13 = 130.",
+     "The garden border again: a 10 by 6 bed with a path of width x has total area (10 + 2x)(6 + 2x). If the whole thing must be 140 square feet: 60 + 20x + 12x + 4x^2 = 140, so 4x^2 + 32x − 80 = 0, then x^2 + 8x − 20 = 0, then (x + 10)(x − 2) = 0, so x = 2 feet. Check: 14 × 10 = 140. Number puzzles work the same way. The product of two consecutive integers is 72 means n(n + 1) = 72, so n^2 + n − 72 = 0, (n + 9)(n − 8) = 0, and the pairs are 8 and 9 or −9 and −8. Both pairs are valid here; nothing in the puzzle forbids negatives.",
+     "*Revenue* problems produce a maximum. A theater sells 200 tickets at $10. Each $1 raise in price loses 10 buyers. With x raises, the revenue is R = (10 + x)(200 − 10x) = 2,000 + 100x − 10x^2. The vertex is at x = −100/(2 × −10) = 5. So the price is $15, the buyers number 150, and the revenue is $2,250, better than the original $2,000. The parabola opens downward, so the vertex is the maximum revenue.",
+     "The steps: define a variable, write expressions for the other quantities, write an equation from the given total or relationship, solve, and check against the story. The most common mistake is keeping a negative or impossible solution. The second is stopping when the variable is found even though the question asked for something else, such as the length rather than the width."
+    ],
+    "words": [
+     {"w": "define a variable", "d": "to state what a letter stands for, such as letting w be the width in inches"},
+     {"w": "reject a solution", "d": "to throw out a solution of the equation that makes no sense in the situation, like a negative length"},
+     {"w": "revenue", "d": "the money taken in: price per item times the number of items sold"}
+    ],
+    "look": {
+     "type": "think",
+     "title": "Twice as Long as It Is Wide",
+     "text": "A rectangle is twice as long as it is wide, and its area is 98 square centimeters. Let w be the width; then the length is 2w and the area is w × 2w = 2w^2. The equation is 2w^2 = 98. Divide by 2 to get w^2 = 49, then take square roots. One root is positive and one is negative.",
+     "prompt": "What are the width and the length? Why is the negative root rejected, and what is the perimeter of the rectangle?"
+    },
+    "check": [
+     {"q": "A rectangle's length is 5 more than its width, and its area is 84. Which equation fits?", "choices": ["w(w + 5) = 84", "2w + 2(w + 5) = 84", "w + (w + 5) = 84", "w^2 + 5 = 84"], "a": 0, "why": "Area is width times length: w(w + 5) = 84. The second choice is a perimeter equation, and the others do not multiply the sides."},
+     {"q": "Solve w^2 + 5w − 84 = 0 for the width.", "choices": ["12", "−12", "7", "84"], "a": 2, "why": "Factor: (w + 12)(w − 7) = 0, so w = −12 or w = 7. A width must be positive, so w = 7 and the length is 12. Check: 7 × 12 = 84."},
+     {"q": "Revenue is R = (8 + x)(300 − 20x). Which value of x gives the maximum revenue?", "choices": ["7", "15", "8", "3.5"], "a": 3, "why": "Expand: R = 2,400 + 140x − 20x^2. The vertex is at x = −140/(2 × −20) = 3.5. The zeros are −8 and 15, and 3.5 is halfway between them."}
+    ]
+   },
+   {
+    "title": "Linear, Exponential or Quadratic?",
+    "mainIdea": "Constant first differences mean linear, constant ratios mean exponential, and constant second differences mean quadratic.",
+    "reading": [
+     "Three tables, each starting at x = 0 with y = 1. Table A: 1, 3, 5, 7, 9. Table B: 1, 3, 9, 27, 81. Table C: 1, 3, 7, 13, 21. Table A has *first differences* 2, 2, 2, 2, so it is linear: y = 2x + 1. Table B has ratios 3, 3, 3, 3, so it is exponential: y = 3^x. Table C has first differences 2, 4, 6, 8, not constant, but its *second differences*, the differences of the differences, are 2, 2, 2. That is the *quadratic pattern*. Its rule is y = x^2 + x + 1; check x = 3: 9 + 3 + 1 = 13.",
+     "Why constant second differences? For y = ax^2 + bx + c with x stepping by 1, the second difference is always 2a. Table C has second difference 2, so a = 1. That is a fast way to find the leading coefficient. For the table 0, 3, 12, 27, 48 at x = 0 to 4, the first differences are 3, 9, 15, 21 and the second differences are 6, 6, 6, so a = 3 and the rule is y = 3x^2. Check x = 4: 3 × 16 = 48.",
+     "In the *long run*, the three types behave differently. Linear growth adds a fixed amount forever. Quadratic growth speeds up, but its increases grow only linearly. Exponential growth multiplies, so its increases grow exponentially, and it eventually outruns any quadratic, whatever the coefficients. Compare y = x^2 and y = 2^x: at x = 3, 9 versus 8; at x = 4, 16 versus 16; at x = 10, 100 versus 1,024. On a graph, the exponential curve crosses the parabola and leaves it behind.",
+     "A common mistake is calling anything curved exponential. Test with ratios: Table C has ratios 3, 2.33, 1.86, 1.62, not constant, so it is not exponential. Another mistake is stopping after the first differences. If they are not constant, take the second differences before deciding."
+    ],
+    "words": [
+     {"w": "first differences", "d": "the amounts between neighboring y-values in a table with equal x-steps"},
+     {"w": "second differences", "d": "the differences between neighboring first differences; constant for a quadratic"},
+     {"w": "quadratic pattern", "d": "a table whose second differences are constant; the constant equals 2a"},
+     {"w": "long run", "d": "what happens to values as x keeps growing; exponential growth wins over any polynomial"}
+    ],
+    "look": {
+     "type": "data",
+     "title": "A Table for y = 2x^2 + 1",
+     "rows": [["x = 0", 1], ["x = 1", 3], ["x = 2", 9], ["x = 3", 19], ["x = 4", 33], ["x = 5", 51]],
+     "unit": "y",
+     "cite": "Values of y = 2x^2 + 1 computed directly",
+     "prompt": "Find the first differences and then the second differences. What do the second differences tell you about the coefficient of x^2?"
+    },
+    "check": [
+     {"q": "A table's y-values are 4, 7, 12, 19, 28 for x = 0 to 4. What kind of function fits?", "choices": ["quadratic", "linear", "exponential", "constant"], "a": 0, "why": "First differences 3, 5, 7, 9 are not constant, but second differences 2, 2, 2 are. The rule is y = x^2 + 2x + 4."},
+     {"q": "The second differences of a quadratic table with x-steps of 1 are all 8. What is a?", "choices": ["8", "4", "16", "2"], "a": 1, "why": "The second difference equals 2a, so a = 8/2 = 4. The rule looks like y = 4x^2 + bx + c."},
+     {"q": "Which function grows fastest in the long run?", "choices": ["y = 100x", "y = 10x^2", "y = 1.5^x", "y = x^2 + 1,000"], "a": 2, "why": "Any exponential function with base greater than 1 eventually outruns every linear and quadratic function, even one with big coefficients."}
+    ]
+   }
+  ]}
+ ],
+ "review": [
+  {"q": "What is the vertex of y = 2(x − 3)^2 + 1?", "choices": ["(−3, 1)", "(3, 1)", "(3, −1)", "(2, 3)"], "a": 1, "why": "Vertex form y = a(x − h)^2 + k has vertex (h, k); here h = 3 and k = 1."},
+  {"q": "What is the axis of symmetry of y = x^2 + 8x − 3?", "choices": ["x = 4", "x = 8", "x = −8", "x = −4"], "a": 3, "why": "x = −b/(2a) = −8/(2 × 1) = −4."},
+  {"q": "Solve x^2 − 5x − 6 = 0.", "choices": ["x = 6 or x = −1", "x = −6 or x = 1", "x = 2 or x = 3", "x = 5 or x = 6"], "a": 0, "why": "Factor: (x − 6)(x + 1) = 0, since −6 × 1 = −6 and −6 + 1 = −5. So x = 6 or x = −1."},
+  {"q": "Solve 2x^2 = 50.", "choices": ["x = 5", "x = 25", "x = ±5", "x = ±25"], "a": 2, "why": "Divide by 2: x^2 = 25, so x = ±5. Both 5 and −5 square to 25."},
+  {"q": "For x^2 + 6x + 9 = 0, what is the discriminant and what does it mean?", "choices": ["72, two solutions", "0, one solution", "0, no solution", "−36, no solution"], "a": 1, "why": "36 − 4(1)(9) = 0, so there is exactly one real solution, x = −3, since the left side is (x + 3)^2."},
+  {"q": "A ball's height is h = −16t^2 + 32t + 6. What is its maximum height?", "choices": ["1 foot", "6 feet", "32 feet", "22 feet"], "a": 3, "why": "Peak at t = −32/(2 × −16) = 1 second. Height: −16 + 32 + 6 = 22 feet."},
+  {"q": "Which table of y-values, for x = 0 to 4, is quadratic?", "choices": ["2, 5, 10, 17, 26", "2, 4, 8, 16, 32", "2, 5, 8, 11, 14", "2, 2, 2, 2, 2"], "a": 0, "why": "2, 5, 10, 17, 26 has first differences 3, 5, 7, 9 and second differences 2, 2, 2. The others are exponential, linear and constant."},
+  {"q": "Use the quadratic formula on x^2 − 4x − 1 = 0. What are the solutions?", "choices": ["x = −2 ± √5", "x = 4 ± √20", "x = 2 ± √5", "x = 2 ± √3"], "a": 2, "why": "x = (4 ± √(16 + 4))/2 = (4 ± √20)/2 = (4 ± 2√5)/2 = 2 ± √5. Divide the whole numerator by 2, not just the root."}
+ ]
+}
