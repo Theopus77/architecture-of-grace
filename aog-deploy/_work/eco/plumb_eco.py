@@ -61,7 +61,7 @@ def hub():
 .more-k{margin:16px 0 -6px;font:800 .72rem var(--sans);letter-spacing:.14em;text-transform:uppercase;color:var(--sub)}
 """
     s = s.replace("</style>", css + "</style>", 1)
-    p.write_text(s, encoding="utf-8"); print("hub: course blocks added to 5 bands")
+    p.write_text(s, encoding="utf-8"); print("hub: course blocks added to %d bands" % len(BANDS))
 
 def redirects():
     p = DEPLOY / "_redirects"; s = p.read_text(encoding="utf-8")
@@ -72,7 +72,7 @@ def redirects():
         if "/eco%d " % n not in s: add.append(("/eco%d" % n).ljust(28) + ("/eco-u%d.html" % n).ljust(42) + "200")
     if add:
         if not s.endswith("\n"): s += "\n"
-        s += "\n# AOG-ECO-V1 — Economics, Grades 9–12: the course contents and the 20 units\n" + "\n".join(add) + "\n"
+        s += "\n# AOG-ECO-V1 — Economics, Grades 9–12: the course contents and the 8 units\n" + "\n".join(add) + "\n"
         p.write_text(s, encoding="utf-8")
     print("redirects: %d added" % len(add))
 
@@ -82,10 +82,9 @@ def sw():
         print("sw: already precaches the course"); return
     m = re.search(r"^const CACHE = '(aog-cache-[0-9.]+)'(.*)$", s, re.M)
     old = m.group(1)
-    new = "aog-cache-2026.09.26.4407"
-    line = ("const CACHE = '%s'   // ECONOMICS, THE SAME FACE. Jimmy: the same facelift for FACS, World Religions and Economics. "
-            "/economics-course and /spa1–/spa20: a Economics course following the Illinois World Languages (ACTFL) progression — five bands, 20 units, 40 chapters, numbered lessons — built by _work/eco/build_eco.py through the shared course builder (_work/course/build_course.py). "
-            "Every Economics band on the hub leads with its part of the course; every page's Economics jump groups list the course first. The existing rooms are linked in as practice rooms.\n"
+    pre, num = old.rsplit(".", 1)
+    new = "%s.%d" % (pre, int(num) + 1)   # always one past whatever is live, never a fixed number
+    line = ("const CACHE = '%s'   // ECONOMICS AS A COURSE. /economics-course and /eco1–/eco8: a high-school Economics course following the Illinois Learning Standards for Social Science (economics) and the national economics standards — grades 9–12, 8 units, 16 chapters, numbered lessons — built by _work/eco/build_eco.py. Every band on the hub leads with its part of the course; every page's Economics jump groups list the course first. The existing rooms are linked in as practice rooms.\n"
             "// previous: const CACHE = '%s'%s" % (new, old, m.group(2)))
     s = s[:m.start()] + line + s[m.end():]
     add = "  './economics-course.html', " + ", ".join("'./eco-u%d.html'" % u["n"] for u in UNITS) + ",   // AOG-ECO-V1 — the Economics course\n"
