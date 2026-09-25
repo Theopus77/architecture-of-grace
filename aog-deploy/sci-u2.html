@@ -1,0 +1,1341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script>/* .30eg: begin in light. Dark only when this device chose it - the stored choice, never the OS setting, decides. Same key as every Interior page. */
+(function(){var t="light";try{if(localStorage.getItem("aog.interior.ws.v1.theme")==="dark")t="dark";}catch(e){}document.documentElement.setAttribute("data-theme",t);})();</script>
+<title>Unit 2 · Light, Sound and Waves — Architecture of Grace</title>
+<meta name="description" content="Science, grades k–2. Unit 2, Light, Sound and Waves (Physical Science): 2 chapters, 15 lessons with readings, key words, sources, checks, chapter reviews and a unit test.">
+<!-- ═══ AOG ICONS + LINK PREVIEW · managed block · .30k0 ═══ -->
+<link rel="canonical" href="https://architectureofgrace.org/sci2">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Architecture of Grace">
+<meta property="og:locale" content="en_US">
+<meta property="og:title" content="Unit 2 · Light, Sound and Waves — Architecture of Grace">
+<meta property="og:description" content="Science, grades k–2. Unit 2, Light, Sound and Waves (Physical Science): 2 chapters, 15 lessons with readings, key words, sources, checks, chapter reviews and a unit test.">
+<meta property="og:url" content="https://architectureofgrace.org/sci2">
+<meta property="og:image" content="https://architectureofgrace.org/og-prep.png?v=1">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="A link card for the K–12 science course at Architecture of Grace.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Unit 2 · Light, Sound and Waves — Architecture of Grace">
+<meta name="twitter:description" content="Science, grades k–2. Unit 2, Light, Sound and Waves (Physical Science): 2 chapters, 15 lessons with readings, key words, sources, checks, chapter reviews and a unit test.">
+<meta name="twitter:image" content="https://architectureofgrace.org/og-prep.png?v=1">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#0A1E33">
+<meta name="apple-mobile-web-app-title" content="Grace">
+<meta name="application-name" content="Architecture of Grace">
+<!-- ═══ END AOG ICONS + LINK PREVIEW ═══ -->
+<!-- AOG-COURSE-V1 — built by _work/sci/build_sci.py from _work/sci/u*.json. Do not hand-edit; edit the JSON or the builder and re-run. -->
+<!-- No external requests of any kind. Every byte this page needs is in this file (aog-topbar.js and aog-jump.js are same-origin; a 404 changes nothing but the bar and the menu). -->
+<style>
+
+/* ══ TOKENS ══ the Interior set (light is the base; dark redefines tokens only)
+   plus the course's own: navy #0A1E33, a flag red for the badges, the hub's
+   brown accent, and a serif stack for the book voice. */
+:root{
+  --ground:#F5F1E8; --field:#FFFFFF; --field-2:#EFEAE0; --field-3:#E7E0D2;
+  --ink:#1D2733; --ink-soft:#57626F; --ink-faint:#5F6B78;
+  --navy:#0A1E33; --navy-2:#1B3A5F; --gold:#B8893A; --gold-deep:#7A5C1F;
+  --red:#A8323A; --red-deep:#7E1F26; --acc:#7A5230; --acc-soft:#EFE3D6;
+  --rule:rgba(29,39,51,.16); --rule-soft:rgba(29,39,51,.08);
+  --lift:0 1px 0 rgba(255,255,255,.7), 0 20px 44px -30px rgba(29,39,51,.55);
+  --lift-sm:0 1px 2px rgba(29,39,51,.07), 0 8px 20px -16px rgba(29,39,51,.4);
+  --a:#4A3A8C; --a-wash:rgba(74,58,140,.07);
+  --good:#2E6B4F; --good-wash:rgba(46,107,79,.12);
+  --caution:#9A3412; --caution-wash:rgba(154,52,18,.09); --focus:#B8893A;
+  --paper:#FBF7EE; --paper-line:rgba(122,82,48,.22);
+  --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,"Times New Roman",serif;
+  --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  --cond:"Avenir Next Condensed","Helvetica Neue","Arial Narrow","Roboto Condensed",Impact,sans-serif;
+  --on-navy:#F5F1E8;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --ground:#12161C; --field:#1A2029; --field-2:#222A34; --field-3:#2A333F;
+    --ink:#E9EEF4; --ink-soft:#A3AFBC; --ink-faint:#84909D;
+    --navy:#0A1E33; --navy-2:#9CC2E8; --gold:#D6A852; --gold-deep:#D6A852;
+    --red:#E07078; --red-deep:#B24A52; --acc:#D0A46B; --acc-soft:#3A2E22;
+    --rule:rgba(233,238,244,.18); --rule-soft:rgba(233,238,244,.09);
+    --lift:0 1px 0 rgba(233,238,244,.04), 0 24px 54px -32px rgba(0,0,0,.95);
+    --lift-sm:0 1px 2px rgba(0,0,0,.5), 0 10px 24px -18px rgba(0,0,0,.9);
+    --a:#A99BE8; --a-wash:rgba(169,155,232,.12);
+    --good:#79C79E; --good-wash:rgba(121,199,158,.16);
+    --caution:#F0A07C; --caution-wash:rgba(240,160,124,.12); --focus:#D6A852;
+    --paper:#232A33; --paper-line:rgba(214,168,82,.28);
+  }
+}
+:root[data-theme="dark"]{
+  --ground:#12161C; --field:#1A2029; --field-2:#222A34; --field-3:#2A333F;
+  --ink:#E9EEF4; --ink-soft:#A3AFBC; --ink-faint:#84909D;
+  --navy:#0A1E33; --navy-2:#9CC2E8; --gold:#D6A852; --gold-deep:#D6A852;
+  --red:#E07078; --red-deep:#B24A52; --acc:#D0A46B; --acc-soft:#3A2E22;
+  --rule:rgba(233,238,244,.18); --rule-soft:rgba(233,238,244,.09);
+  --lift:0 1px 0 rgba(233,238,244,.04), 0 24px 54px -32px rgba(0,0,0,.95);
+  --lift-sm:0 1px 2px rgba(0,0,0,.5), 0 10px 24px -18px rgba(0,0,0,.9);
+  --a:#A99BE8; --a-wash:rgba(169,155,232,.12);
+  --good:#79C79E; --good-wash:rgba(121,199,158,.16);
+  --caution:#F0A07C; --caution-wash:rgba(240,160,124,.12); --focus:#D6A852;
+  --paper:#232A33; --paper-line:rgba(214,168,82,.28);
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion: reduce){ html{scroll-behavior:auto} *,*::before,*::after{animation:none!important;transition:none!important} }
+body{background:var(--ground); color:var(--ink); font:17px/1.6 var(--sans); -webkit-text-size-adjust:100%}
+.wrap{max-width:1040px; margin:0 auto; padding:18px 16px 90px}
+h1,h2,h3,h4{line-height:1.15; margin:0 0 .3em; font-family:var(--serif)}
+p{margin:.4em 0}
+button{font:inherit; color:inherit}
+a{color:var(--navy-2)}
+:focus-visible{outline:3px solid var(--focus); outline-offset:2px}
+.vh{position:absolute!important; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap}
+.mast{display:flex; justify-content:space-between; align-items:flex-start; gap:10px; flex-wrap:wrap}
+.mast .k{font:700 .78rem/1.3 var(--sans); letter-spacing:.12em; text-transform:uppercase; color:var(--gold-deep)}
+.mast h1{font-size:2.1rem; letter-spacing:-.01em}
+.mast .row{display:flex; gap:8px}
+.chipbtn{min-height:48px; padding:8px 16px; border:1px solid var(--rule); border-radius:999px; background:var(--field); cursor:pointer; font-weight:700; font-size:.92rem}
+.deck{color:var(--ink-soft); max-width:66ch}
+.hubline{margin:.2em 0 0; font-size:.95rem}
+.hubline a{font-weight:700; text-decoration:none}
+.hubline a:hover{text-decoration:underline}
+.jump{margin:14px 0 4px}
+.jump label{display:grid; gap:6px; font-weight:700; font-size:.9rem; color:var(--ink-soft)}
+.jump select{min-height:48px; border:1px solid var(--rule); border-radius:12px; background:var(--field); padding:8px 12px; font:inherit; color:var(--ink); max-width:100%}
+
+/* ══ THE UNIT RAIL ══ ten numbered doors, sticky under the site bar */
+.rail{position:sticky; top:var(--aogbar-h,52px); z-index:30; margin:10px -16px 0; padding:8px 16px; background:color-mix(in srgb, var(--ground) 88%, transparent); backdrop-filter:saturate(1.2) blur(10px); -webkit-backdrop-filter:saturate(1.2) blur(10px); border-bottom:1px solid var(--rule-soft)}
+.rail .in{display:flex; gap:6px; align-items:center; overflow-x:auto; scrollbar-width:none; -ms-overflow-style:none; padding-bottom:2px}
+.rail .in::-webkit-scrollbar{display:none}
+.rail .k{flex:0 0 auto; font:700 .7rem var(--sans); letter-spacing:.14em; text-transform:uppercase; color:var(--ink-faint); margin-right:4px}
+.rail a{flex:0 0 auto; display:inline-flex; align-items:center; justify-content:center; min-width:44px; min-height:44px; padding:0 12px; border-radius:999px; border:1px solid var(--rule); background:var(--field); color:var(--ink); text-decoration:none; font:800 .95rem var(--cond); letter-spacing:.04em}
+.rail a[aria-current="page"]{background:var(--navy); border-color:var(--navy); color:var(--on-navy)}
+.rail a:hover{border-color:var(--navy-2)}
+.rail .sp{flex:1 0 8px}
+.rail .drawerbtn{flex:0 0 auto; min-height:44px; padding:0 14px; border-radius:999px; border:1px solid var(--rule); background:var(--field); font-weight:700; font-size:.88rem; cursor:pointer; display:inline-flex; gap:8px; align-items:center}
+.rail .drawerbtn svg{width:16px; height:16px}
+
+/* ══ THE BANNER ══ a drawn scene, the unit number, a huge condensed title */
+.spread{position:relative; margin:18px 0 0; border-radius:22px; overflow:hidden; background:#0A1E33; color:#F5F1E8; box-shadow:var(--lift); min-height:300px; isolation:isolate}
+.spread .scene{position:absolute; inset:0; z-index:0}
+.spread .scene svg{width:100%; height:100%; display:block}
+.spread::after{content:""; position:absolute; inset:0; z-index:1; background:linear-gradient(180deg, rgba(10,30,51,0) 30%, rgba(10,30,51,.55) 62%, rgba(10,30,51,.94) 100%); pointer-events:none}
+.spread .txt{position:relative; z-index:2; padding:clamp(120px,26vw,220px) clamp(18px,4vw,40px) clamp(20px,3vw,30px); display:grid; gap:6px}
+.spread .unum{display:inline-flex; align-items:baseline; gap:10px; font:800 .82rem var(--sans); letter-spacing:.22em; text-transform:uppercase; color:#F5F1E8}
+.spread .unum b{display:inline-flex; align-items:center; justify-content:center; min-width:44px; height:44px; padding:0 10px; border-radius:8px; background:var(--red); color:#fff; font:800 1.4rem var(--cond); letter-spacing:.02em; box-shadow:inset 0 1px 0 rgba(255,255,255,.35), 0 4px 0 #5A151B, 0 8px 16px rgba(0,0,0,.35)}
+.spread h2.ut{font:800 clamp(2.2rem,7.6vw,5.4rem)/0.95 var(--cond); letter-spacing:-.01em; margin:0; text-transform:uppercase; color:#F5F1E8; text-shadow:0 2px 0 rgba(0,0,0,.35), 0 12px 30px rgba(0,0,0,.45); max-width:14ch}
+.spread .years{font:600 clamp(1rem,2.4vw,1.35rem) var(--serif); font-style:italic; color:#EBD9A8; letter-spacing:.02em}
+.spread .credit{position:absolute; right:14px; bottom:10px; z-index:2; font:italic 500 .7rem var(--serif); color:rgba(245,241,232,.55); max-width:46%; text-align:right; line-height:1.25}
+.contents .spread .credit{display:none}
+@media(max-width:720px){.spread .credit{display:none}}
+.contents .spread{min-height:240px; border-radius:18px}
+.contents .spread .txt{padding-top:clamp(90px,18vw,150px)}
+.contents .spread h2.ut{font-size:clamp(1.9rem,6vw,4.2rem)}
+.contents .spread a.enter{position:absolute; right:clamp(14px,3vw,28px); bottom:clamp(16px,3vw,26px); z-index:3; display:inline-flex; align-items:center; gap:8px; min-height:48px; padding:0 18px; border-radius:999px; background:#F5F1E8; color:#0A1E33; text-decoration:none; font:800 .92rem var(--sans); letter-spacing:.04em; box-shadow:0 6px 18px rgba(0,0,0,.35)}
+.contents .spread a.enter:hover{background:#fff}
+
+/* ══ THE BOOK VOICE ══ */
+.intro{margin:22px 0 0; display:grid; grid-template-columns:1.4fr 1fr; gap:18px; align-items:start}
+@media(max-width:820px){.intro{grid-template-columns:1fr}}
+.intro .lead p{font-size:1.06rem; line-height:1.65}
+.intro .lead p:first-child::first-letter{font:800 3.6rem/0.85 var(--serif); float:left; margin:.1em .12em 0 0; color:var(--red)}
+.bigq{background:var(--navy); color:var(--on-navy); border-radius:16px; padding:18px 20px 20px; box-shadow:var(--lift); position:relative; overflow:hidden}
+.bigq::before{content:"?"; position:absolute; right:-10px; top:-30px; font:800 9rem/1 var(--serif); color:rgba(255,255,255,.06)}
+.bigq .k{font:700 .72rem var(--sans); letter-spacing:.18em; text-transform:uppercase; color:#EBD9A8; margin-bottom:6px}
+.bigq p{font:600 1.22rem/1.35 var(--serif); margin:0}
+.tl{margin:20px 0 0}
+.tl .k{font:700 .74rem var(--sans); letter-spacing:.16em; text-transform:uppercase; color:var(--gold-deep); margin-bottom:8px}
+.tl .track{display:flex; gap:0; overflow-x:auto; padding:10px 4px 14px; scroll-snap-type:x proximity; position:relative}
+.tl .track::before{content:""; position:absolute; left:0; right:0; top:29px; height:3px; background:linear-gradient(90deg, var(--red), var(--gold)); border-radius:3px}
+.tl .pin{flex:0 0 200px; scroll-snap-align:start; padding:0 12px 0 0; position:relative}
+.tl .pin::before{content:""; position:absolute; left:0; top:22px; width:16px; height:16px; border-radius:50%; background:var(--field); border:4px solid var(--red); box-shadow:0 0 0 3px var(--ground)}
+.tl .pin .y{font:800 1.3rem/1 var(--cond); letter-spacing:.02em; color:var(--red); margin:0 0 14px 26px}
+.tl .pin .t{font-size:.9rem; line-height:1.4; color:var(--ink-soft); margin:0 0 0 2px; padding-top:6px; border-top:1px dashed var(--rule)}
+
+/* ══ CHAPTER OPENER ══ */
+.chap{margin:36px 0 0; scroll-margin-top:70px}
+.chead{display:grid; grid-template-columns:auto 1fr; gap:16px; align-items:center; padding:18px 0 14px; border-top:3px solid var(--navy); border-bottom:1px solid var(--rule)}
+:root[data-theme="dark"] .chead{border-top-color:var(--gold)}
+.badge{display:inline-flex; align-items:center; justify-content:center; width:64px; height:64px; border-radius:14px; background:var(--red); color:#fff; font:800 2rem var(--cond); box-shadow:inset 0 1px 0 rgba(255,255,255,.35), 0 5px 0 #5A151B, 0 10px 18px rgba(0,0,0,.25); flex:0 0 auto}
+.chead .tab{display:inline-block; font:800 .7rem var(--sans); letter-spacing:.24em; text-transform:uppercase; background:var(--navy); color:var(--on-navy); padding:4px 10px; border-radius:4px 4px 0 0}
+:root[data-theme="dark"] .chead .tab{background:var(--gold); color:#12161C}
+.chead h2{font-size:clamp(1.5rem,3.6vw,2.2rem); margin:.15em 0 0}
+.chead .yrs{font:italic 600 1rem var(--serif); color:var(--ink-soft)}
+.cq{margin:12px 0 0; padding:12px 16px; border-left:4px solid var(--gold); background:var(--field-2); border-radius:0 12px 12px 0; font:600 1.05rem/1.4 var(--serif)}
+.cq .k{display:block; font:700 .7rem var(--sans); letter-spacing:.16em; text-transform:uppercase; color:var(--gold-deep); margin-bottom:4px}
+.story{margin:16px 0 0; background:var(--paper); border:1px solid var(--paper-line); border-radius:16px; padding:20px 22px 18px; box-shadow:var(--lift-sm); position:relative; background-image:repeating-linear-gradient(0deg, transparent 0 27px, rgba(122,82,48,.06) 27px 28px)}
+.story .k{font:700 .7rem var(--sans); letter-spacing:.2em; text-transform:uppercase; color:var(--red); margin-bottom:6px}
+.story h3{font-size:1.5rem; margin:0 0 .2em}
+.story .kick{font:italic 1.05rem/1.45 var(--serif); color:var(--ink-soft); margin:0 0 .8em}
+.story p.sp{font-size:1.02rem; line-height:1.68; max-width:70ch}
+.story .think{margin-top:12px; padding:10px 14px; background:var(--a-wash); border-radius:10px; font-weight:600}
+.story .think .k2{font:700 .68rem var(--sans); letter-spacing:.16em; text-transform:uppercase; color:var(--a); display:block; margin-bottom:2px}
+
+/* ══ SECTIONS AND LESSONS ══ */
+.sec{margin:26px 0 0}
+.sec .sh{display:flex; align-items:baseline; gap:12px; flex-wrap:wrap; padding-bottom:6px; border-bottom:2px solid var(--rule)}
+.sec .sh .sn{font:800 .74rem var(--sans); letter-spacing:.2em; text-transform:uppercase; color:var(--red)}
+.sec .sh h3{font-size:1.35rem; margin:0}
+.les{margin:16px 0 0; background:var(--field); border:1px solid var(--rule); border-radius:16px; box-shadow:var(--lift-sm); scroll-margin-top:70px; overflow:hidden}
+.les .lh{display:grid; grid-template-columns:auto 1fr auto; gap:12px; align-items:center; padding:12px 16px; background:var(--field-2); border-bottom:1px solid var(--rule-soft)}
+.les .ln{display:inline-flex; align-items:center; justify-content:center; min-width:52px; height:36px; padding:0 8px; border-radius:8px; background:var(--navy); color:var(--on-navy); font:800 1.05rem var(--cond); letter-spacing:.04em}
+:root[data-theme="dark"] .les .ln{background:var(--gold); color:#12161C}
+.les .lh h4{font-size:1.2rem; margin:0}
+.les .tick{width:26px; height:26px; border-radius:50%; border:2px solid var(--rule); display:inline-flex; align-items:center; justify-content:center; font-size:.8rem; color:transparent; background:var(--field)}
+.les.done .tick{background:var(--good); border-color:var(--good); color:#fff}
+.les .body{padding:14px 16px 16px; display:grid; grid-template-columns:minmax(0,1.5fr) minmax(0,1fr); gap:16px}
+@media(max-width:820px){.les .body{grid-template-columns:1fr}}
+.main-idea{padding:10px 14px; border-radius:10px; background:var(--acc-soft); border-left:4px solid var(--acc); font:600 1rem/1.4 var(--serif); color:var(--ink)}
+.main-idea .k{display:block; font:700 .66rem var(--sans); letter-spacing:.16em; text-transform:uppercase; color:var(--acc); margin-bottom:2px}
+.reading p{font-size:1.02rem; line-height:1.68; max-width:68ch}
+.kw{display:inline; padding:0 .12em; margin:0; border:0; border-bottom:2px solid var(--gold); background:linear-gradient(transparent 62%, rgba(184,137,58,.22) 62%); border-radius:2px; cursor:pointer; font:inherit; font-weight:700; color:var(--ink); line-height:inherit; position:relative}
+.kw:hover{background:linear-gradient(transparent 55%, rgba(184,137,58,.35) 55%)}
+.kwpop{position:absolute; z-index:40; left:0; top:calc(100% + 8px); min-width:240px; max-width:320px; padding:10px 12px; background:var(--navy); color:var(--on-navy); border-radius:10px; font:400 .92rem/1.45 var(--sans); box-shadow:0 12px 30px rgba(0,0,0,.35); text-align:left; white-space:normal}
+.kwpop::before{content:""; position:absolute; top:-6px; left:14px; width:12px; height:12px; background:var(--navy); transform:rotate(45deg)}
+.kwpop.right{left:auto; right:0}
+.kwpop.right::before{left:auto; right:14px}
+.words{margin-top:6px; padding:12px 14px; border:1px dashed var(--rule); border-radius:12px; background:var(--field-2)}
+.words .k{font:700 .68rem var(--sans); letter-spacing:.16em; text-transform:uppercase; color:var(--gold-deep); margin-bottom:6px}
+.words dl{margin:0; display:grid; gap:6px}
+.words dt{font-weight:800; font-family:var(--serif)}
+.words dd{margin:0 0 2px; font-size:.93rem; color:var(--ink-soft)}
+.lbtns{display:flex; gap:8px; flex-wrap:wrap; margin-top:10px}
+.lbtn{min-height:44px; padding:8px 14px; border-radius:999px; border:1px solid var(--rule); background:var(--field); cursor:pointer; font-weight:700; font-size:.88rem; display:inline-flex; align-items:center; gap:8px}
+.lbtn svg{width:16px; height:16px}
+.lbtn[aria-pressed="true"]{background:var(--navy); color:var(--on-navy); border-color:var(--navy)}
+:root[data-theme="dark"] .lbtn[aria-pressed="true"]{background:var(--gold); color:#12161C; border-color:var(--gold)}
+
+/* the look panel: a source on parchment, a bar chart, a scenario */
+.look{border-radius:14px; padding:14px 16px 16px; position:relative; overflow:hidden}
+.look .k{font:700 .66rem var(--sans); letter-spacing:.18em; text-transform:uppercase; margin-bottom:6px; display:flex; gap:8px; align-items:center}
+.look .k svg{width:16px; height:16px}
+.look h5{font:800 1.1rem/1.25 var(--serif); margin:0 0 .4em}
+.look .prompt{margin-top:10px; padding-top:8px; border-top:1px dashed var(--rule); font-weight:600; font-size:.95rem}
+.look.source{background:var(--paper); border:1px solid var(--paper-line); background-image:radial-gradient(120% 80% at 100% 0%, rgba(184,137,58,.10), transparent 60%)}
+.look.source .k{color:var(--acc)}
+.look.source blockquote{margin:0; padding:2px 0 0 16px; border-left:3px solid var(--gold); font:italic 1.05rem/1.55 var(--serif)}
+.look.source blockquote::before{content:"“"; font:800 2.4rem/0 var(--serif); color:var(--gold); vertical-align:-.35em; margin-right:2px}
+.look.source cite{display:block; margin-top:8px; font:600 .84rem var(--sans); color:var(--ink-soft); font-style:normal}
+.look.data{background:var(--field-2); border:1px solid var(--rule-soft)}
+.look.data .k{color:var(--navy-2)}
+.look.data svg.chart{width:100%; height:auto; display:block; margin-top:4px}
+.look.data .cite{font:600 .8rem var(--sans); color:var(--ink-faint); margin-top:6px}
+.look.think{background:var(--a-wash); border:1px solid rgba(74,58,140,.18)}
+.look.think .k{color:var(--a)}
+.look.think p.sc{font-size:.98rem; line-height:1.55}
+.chart text{font:600 11px var(--sans); fill:var(--ink-soft)}
+.chart .val{fill:var(--ink); font-weight:800}
+.chart rect.bar{fill:var(--navy-2)}
+:root[data-theme="dark"] .chart rect.bar{fill:var(--gold)}
+.chart line.ax{stroke:var(--rule); stroke-width:1}
+
+/* checks */
+.checks{margin-top:14px; padding:12px 14px 6px; border-top:1px solid var(--rule-soft); grid-column:1/-1}
+.checks .k{font:700 .7rem var(--sans); letter-spacing:.18em; text-transform:uppercase; color:var(--navy-2); margin-bottom:8px; display:flex; justify-content:space-between; gap:8px; align-items:center}
+.checks .score{font:800 .9rem var(--cond); letter-spacing:.06em; color:var(--good); min-width:3ch; text-align:right}
+.q{margin:0 0 12px; padding:10px 12px 12px; border-radius:12px; background:var(--field-2); border:1px solid var(--rule-soft)}
+.q .qq{font-weight:700; margin:0 0 8px; line-height:1.4}
+.q .qn{display:inline-block; min-width:1.6em; color:var(--red); font:800 1rem var(--cond)}
+.opts{display:grid; gap:6px; margin:0; padding:0; list-style:none}
+@media(min-width:820px){.q.wide .opts{grid-template-columns:1fr 1fr}}
+.opt{min-height:44px; width:100%; text-align:left; padding:9px 12px; border:1px solid var(--rule); border-radius:10px; background:var(--field); cursor:pointer; font-size:.97rem; display:flex; gap:10px; align-items:flex-start; line-height:1.35}
+.opt .l{flex:0 0 22px; height:22px; border-radius:50%; border:1.5px solid var(--rule); display:inline-flex; align-items:center; justify-content:center; font:800 .72rem var(--sans); color:var(--ink-soft); margin-top:1px}
+.opt:hover{border-color:var(--navy-2)}
+.opt[data-st="right"]{border-color:var(--good); background:var(--good-wash); font-weight:700}
+.opt[data-st="right"] .l{background:var(--good); border-color:var(--good); color:#fff}
+.opt[data-st="tried"]{opacity:.5}
+.opt[data-st="tried"] .l{background:var(--caution-wash); border-color:var(--caution); color:var(--caution)}
+.opt:disabled{cursor:default}
+.why{margin:8px 0 0; padding:8px 12px; border-radius:8px; background:var(--good-wash); color:var(--ink); font-size:.93rem; line-height:1.45}
+.why b{color:var(--good)}
+.why[hidden]{display:none}
+.say{font-size:.92rem; color:var(--caution); margin:6px 0 0; min-height:1.3em; font-weight:600}
+
+/* chapter review + unit test */
+.review{margin:24px 0 0; background:var(--field); border:1px solid var(--rule); border-radius:16px; box-shadow:var(--lift-sm); overflow:hidden}
+.review > .rh{display:flex; gap:12px; align-items:center; justify-content:space-between; padding:12px 16px; background:var(--navy); color:var(--on-navy)}
+:root[data-theme="dark"] .review > .rh{background:var(--field-3); color:var(--ink)}
+.review > .rh .k{font:800 .74rem var(--sans); letter-spacing:.2em; text-transform:uppercase}
+.review > .rh h3{font-size:1.15rem; margin:0; color:inherit}
+.review .rscore{font:800 1.4rem var(--cond); letter-spacing:.04em; min-width:5ch; text-align:right}
+.review .rbody{padding:14px 16px 8px}
+.review .rfoot{padding:8px 16px 16px; display:flex; gap:10px; flex-wrap:wrap; align-items:center}
+.btn{min-height:48px; padding:10px 20px; border-radius:12px; border:1px solid var(--rule); background:var(--field); cursor:pointer; font-weight:700}
+.btn-a{background:var(--navy); border-color:var(--navy); color:var(--on-navy)}
+:root[data-theme="dark"] .btn-a{background:var(--gold); border-color:var(--gold); color:#12161C}
+.verdict{font-weight:700; color:var(--ink-soft)}
+
+/* ══ WRAP-UP ══ */
+.wrap-up{margin:40px 0 0}
+.wrap-up .wh{display:grid; grid-template-columns:auto 1fr; gap:16px; align-items:center; padding:18px 0 14px; border-top:3px solid var(--red); border-bottom:1px solid var(--rule)}
+.wrap-up .wh .badge{background:var(--navy); box-shadow:inset 0 1px 0 rgba(255,255,255,.2), 0 5px 0 #05101C, 0 10px 18px rgba(0,0,0,.25); font-size:1.4rem}
+:root[data-theme="dark"] .wrap-up .wh .badge{background:var(--gold); color:#12161C; box-shadow:inset 0 1px 0 rgba(255,255,255,.35), 0 5px 0 #7A5C1F}
+.wrap-up .wh h2{font-size:clamp(1.5rem,3.6vw,2.1rem); margin:.1em 0 0}
+.match{margin-top:16px; background:var(--field); border:1px solid var(--rule); border-radius:16px; padding:14px 16px 16px; box-shadow:var(--lift-sm)}
+.match .mh{display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:8px}
+.match .mh h3{font-size:1.15rem; margin:0}
+.match .mscore{font:800 1.1rem var(--cond); color:var(--good)}
+.mgrid{display:grid; grid-template-columns:1fr 1fr; gap:10px}
+@media(max-width:640px){.mgrid{grid-template-columns:1fr}}
+.mcol{display:grid; gap:8px; align-content:start}
+.mcol .ck{font:700 .68rem var(--sans); letter-spacing:.16em; text-transform:uppercase; color:var(--ink-faint)}
+.mt{min-height:48px; text-align:left; padding:10px 12px; border-radius:10px; border:1.5px solid var(--rule); background:var(--field-2); cursor:pointer; font-size:.95rem; line-height:1.35}
+.mt.w{font-weight:800; font-family:var(--serif); font-size:1.02rem}
+.mt[aria-pressed="true"]{border-color:var(--navy-2); background:var(--a-wash)}
+.mt.ok{border-color:var(--good); background:var(--good-wash); opacity:.75; cursor:default}
+.mt.no{animation:shake .3s}
+@keyframes shake{25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
+.write{margin-top:16px; background:var(--paper); border:1px solid var(--paper-line); border-radius:16px; padding:16px 18px 18px; box-shadow:var(--lift-sm)}
+.write h3{font-size:1.15rem; margin:0 0 .3em}
+.write .wp{font:600 1.05rem/1.5 var(--serif)}
+.write ul{margin:.4em 0 .6em; padding-left:1.2em}
+.write li{margin:.25em 0; font-size:.95rem}
+.write textarea{width:100%; min-height:200px; padding:12px 14px; border:1px solid var(--rule); border-radius:12px; background:var(--field); color:var(--ink); font:1rem/1.6 var(--serif); resize:vertical}
+.write .wfoot{display:flex; gap:10px; align-items:center; flex-wrap:wrap; margin-top:8px}
+.write .wc{font:700 .84rem var(--sans); color:var(--ink-faint)}
+.rooms{margin-top:16px; background:var(--field); border:1px solid var(--rule); border-radius:16px; padding:14px 16px; box-shadow:var(--lift-sm)}
+.rooms h3{font-size:1.15rem; margin:0 0 .2em}
+.rooms p{color:var(--ink-soft); font-size:.95rem; margin:0 0 .6em}
+.rooms .doors{display:flex; gap:8px; flex-wrap:wrap}
+.rooms .door{display:inline-flex; align-items:center; min-height:44px; padding:8px 14px; border:1px solid var(--rule); border-radius:999px; background:var(--field-2); color:var(--ink); font:600 .88rem var(--sans); text-decoration:none}
+.rooms .door:hover{border-color:var(--acc)}
+.pager2{display:flex; justify-content:space-between; gap:10px; margin:28px 0 0; flex-wrap:wrap}
+.pager2 a{display:inline-flex; align-items:center; gap:8px; min-height:48px; padding:0 16px; border-radius:12px; border:1px solid var(--rule); background:var(--field); color:var(--ink); text-decoration:none; font-weight:700}
+.pager2 a:hover{border-color:var(--navy-2)}
+.pager2 a .s{display:block; font:700 .66rem var(--sans); letter-spacing:.16em; text-transform:uppercase; color:var(--ink-faint)}
+
+/* ══ THE CONTENTS DRAWER ══ chapters → sections → lessons, on the phone */
+.drawer{position:fixed; inset:0; z-index:60; display:none}
+.drawer[data-open="1"]{display:block}
+.drawer .scrim{position:absolute; inset:0; background:rgba(10,30,51,.5); backdrop-filter:blur(3px)}
+.drawer .sheet{position:absolute; right:0; top:0; bottom:0; width:min(420px,92vw); background:var(--field); box-shadow:-10px 0 40px rgba(0,0,0,.35); display:flex; flex-direction:column; animation:slidein .28s cubic-bezier(.2,.8,.2,1)}
+@keyframes slidein{from{transform:translateX(30px);opacity:0}}
+.drawer .dh{display:flex; justify-content:space-between; align-items:center; padding:12px 14px 10px; border-bottom:1px solid var(--rule)}
+.drawer .dh b{font:800 .8rem var(--sans); letter-spacing:.16em; text-transform:uppercase; color:var(--gold-deep)}
+.drawer .dh button{min-width:44px; min-height:44px; border-radius:999px; border:1px solid var(--rule); background:var(--field-2); cursor:pointer; font-size:1.2rem}
+.drawer nav{overflow:auto; padding:8px 8px 20px}
+.drawer nav a{display:block; padding:9px 10px; border-radius:8px; color:var(--ink); text-decoration:none; font-size:.95rem; min-height:44px; display:flex; align-items:center; gap:8px}
+.drawer nav a:hover{background:var(--field-2)}
+.drawer nav .dc{margin:8px 0 2px; padding:6px 10px; font:800 .95rem var(--serif); border-bottom:1px solid var(--rule-soft)}
+.drawer nav .dc .b{display:inline-flex; width:26px; height:26px; border-radius:6px; background:var(--red); color:#fff; align-items:center; justify-content:center; font:800 .85rem var(--cond); margin-right:8px}
+.drawer nav .ds{padding:6px 10px 2px; font:800 .66rem var(--sans); letter-spacing:.16em; text-transform:uppercase; color:var(--red)}
+.drawer nav a .n{font:800 .8rem var(--cond); color:var(--ink-faint); min-width:2.4em}
+.drawer nav a .t2{display:inline-block; width:10px; height:10px; border-radius:50%; border:1.5px solid var(--rule); margin-left:auto; flex:0 0 auto}
+.drawer nav a.done .t2{background:var(--good); border-color:var(--good)}
+
+/* ══ CONTENTS PAGE ══ */
+.contents .search{margin:16px 0 0; display:grid; gap:6px}
+.contents .search label{font-weight:700; font-size:.9rem; color:var(--ink-soft)}
+.contents .search .box{position:relative}
+.contents .search input{width:100%; min-height:52px; padding:10px 14px 10px 46px; border:1px solid var(--rule); border-radius:14px; background:var(--field); color:var(--ink); font:1.02rem var(--sans); box-shadow:var(--lift-sm)}
+.contents .search svg{position:absolute; left:16px; top:50%; transform:translateY(-50%); width:20px; height:20px; color:var(--ink-faint)}
+.contents .search .hits{font:700 .82rem var(--sans); color:var(--ink-faint); min-height:1.2em}
+.contents .stat{display:flex; gap:14px; flex-wrap:wrap; margin:10px 0 0; align-items:center}
+.contents .stat .n{font:800 1.5rem var(--cond); color:var(--red)}
+.contents .stat .l{font:700 .74rem var(--sans); letter-spacing:.12em; text-transform:uppercase; color:var(--ink-faint)}
+.contents .prog{height:8px; border-radius:6px; background:var(--field-3); overflow:hidden; flex:1 1 120px; min-width:120px}
+.contents .prog i{display:block; height:100%; width:0; background:linear-gradient(90deg, var(--red), var(--gold)); border-radius:6px; transition:width .4s}
+.unit-spread{margin:30px 0 0; scroll-margin-top:70px}
+.bandhead{margin:40px 0 -10px; padding:14px 0 10px; border-top:3px solid var(--navy); display:grid; grid-template-columns:auto 1fr; gap:4px 14px; align-items:baseline; scroll-margin-top:70px}
+:root[data-theme="dark"] .bandhead{border-top-color:var(--gold)}
+.bandhead .bk{font:800 .72rem var(--sans); letter-spacing:.22em; text-transform:uppercase; color:var(--red)}
+.bandhead h2{font:800 clamp(1.6rem,4vw,2.4rem)/1 var(--cond); text-transform:uppercase; letter-spacing:.01em; margin:0}
+.bandhead .bd{grid-column:2; margin:0; font:600 .88rem var(--sans); color:var(--ink-faint)}
+.unit-spread .body{margin-top:14px}
+.cchap{margin:18px 0 0; background:var(--field); border:1px solid var(--rule); border-radius:16px; box-shadow:var(--lift-sm); overflow:hidden}
+.cchap .ch{display:grid; grid-template-columns:auto 1fr; gap:14px; align-items:center; padding:14px 16px; background:var(--field-2); border-bottom:1px solid var(--rule-soft)}
+.cchap .ch .badge{width:52px; height:52px; font-size:1.6rem}
+.cchap .ch .tab{display:inline-block; font:800 .64rem var(--sans); letter-spacing:.22em; text-transform:uppercase; background:var(--navy); color:var(--on-navy); padding:3px 8px; border-radius:4px 4px 0 0}
+:root[data-theme="dark"] .cchap .ch .tab{background:var(--gold); color:#12161C}
+.cchap .ch h3{font-size:1.25rem; margin:.1em 0 0}
+.cchap .ch .yrs{font:italic 600 .92rem var(--serif); color:var(--ink-soft)}
+.cchap .st{padding:10px 16px 0; font:italic .95rem/1.45 var(--serif); color:var(--ink-soft)}
+.cchap .st b{font-style:normal; color:var(--red); font-family:var(--sans); font-size:.7rem; letter-spacing:.16em; text-transform:uppercase; margin-right:6px}
+.csec{padding:8px 16px 4px}
+.csec .sn{font:800 .7rem var(--sans); letter-spacing:.2em; text-transform:uppercase; color:var(--red); margin:8px 0 4px}
+.csec .sn span{color:var(--ink); font:700 .95rem var(--serif); letter-spacing:0; text-transform:none; margin-left:8px}
+.lrow{display:flex; align-items:center; gap:10px; min-height:44px; padding:5px 8px; border-radius:8px; color:var(--ink); text-decoration:none; font-size:.98rem}
+.lrow:hover{background:var(--field-2)}
+.lrow .n{font:800 .9rem var(--cond); color:var(--ink-faint); min-width:2.6em; letter-spacing:.02em}
+.lrow .tk{margin-left:auto; width:22px; height:22px; border-radius:50%; border:2px solid var(--rule); flex:0 0 auto; display:inline-flex; align-items:center; justify-content:center; color:transparent; font-size:.7rem}
+.lrow.done .tk{background:var(--good); border-color:var(--good); color:#fff}
+.lrow[hidden]{display:none}
+.csec[data-empty="1"], .cchap[data-empty="1"], .unit-spread[data-empty="1"]{display:none}
+.cwrap{padding:10px 16px 14px; display:flex; gap:8px; flex-wrap:wrap; border-top:1px dashed var(--rule-soft); margin-top:6px}
+.cwrap a{display:inline-flex; align-items:center; min-height:40px; padding:0 12px; border-radius:999px; border:1px solid var(--rule); background:var(--field-2); color:var(--ink); text-decoration:none; font:600 .84rem var(--sans)}
+.cwrap a:hover{border-color:var(--navy-2)}
+.teach{margin-top:28px; border:1.5px solid var(--gold); border-radius:14px; background:var(--field)}
+.teach summary{cursor:pointer; list-style:none; min-height:48px; display:flex; align-items:center; padding:10px 16px; font-weight:700; font-size:.92rem; color:var(--gold-deep)}
+.teach summary::-webkit-details-marker{display:none}
+.teach .inner{padding:4px 16px 16px; display:grid; gap:10px; font-size:.93rem; color:var(--ink-soft)}
+.teach .inner p{margin:0}
+footer.foot{margin-top:40px; font-size:.86rem; color:var(--ink-faint); max-width:70ch}
+
+/* ══ PRINT ══ the book, on paper */
+@media print{
+  body{background:#fff; color:#111; font-size:11.5pt}
+  .wrap{max-width:none; padding:0}
+  .rail,.jump,.mast .row,.hubline,.lbtns,.drawer,.checks,.review .rfoot,.pager2,.teach,.contents .search,.contents .stat,.spread .credit,.spread a.enter,.aogj-btn,.aogj-panel{display:none!important}
+  .spread{min-height:0; border-radius:0; box-shadow:none; background:#0A1E33!important; -webkit-print-color-adjust:exact; print-color-adjust:exact; break-inside:avoid}
+  .spread .txt{padding:40pt 20pt 16pt}
+  .chap{break-before:page}
+  .les,.story,.look,.q,.review{break-inside:avoid; box-shadow:none}
+  .les .body{grid-template-columns:1fr}
+  .kw{border-bottom:1px solid #999; background:none; font-weight:700}
+  .kwpop{display:none!important}
+  .opt{border:1px solid #999; background:#fff}
+  .why{display:block!important; border:1px dashed #999; background:#fff}
+  .why.pr{display:none!important}
+  .write textarea{min-height:320pt; border:1px solid #999}
+  a{color:inherit; text-decoration:none}
+}
+
+
+</style>
+</head>
+<body>
+<script src="/aog-topbar.js"></script>
+<div class="wrap">
+<header class="mast">
+  <div>
+    <div class="k"><span data-en="The Interior — Science" data-es="El Interior — Ciencias">The Interior — Science</span><span class="k" style="margin-left:6px"><span data-en="Grades K–2" data-es="Grades K–2">Grades K–2</span></span></div>
+    <h1 data-en="Unit 2 · Light, Sound and Waves" data-es="Unidad 2 · Light, Sound and Waves">Unit 2 · Light, Sound and Waves</h1>
+    <p class="deck"><span data-en="A unit of the course: the story, then chapter by chapter — sections, numbered lessons, a source or the numbers to read, three checks each — a review per chapter, and the wrap-up at the end." data-es="Una unidad del curso: la historia, y luego capítulo por capítulo — secciones, lecciones numeradas, una fuente o los números, tres comprobaciones cada una — un repaso por capítulo y el cierre al final.">A unit of the course: the story, then chapter by chapter — sections, numbered lessons, a source or the numbers to read, three checks each — a review per chapter, and the wrap-up at the end.</span></p>
+    <p class="hubline no-print"><a id="hubLink" href="science-course.html"><span data-en="← Science, the whole course" data-es="← Ciencias, el curso completo">← Science, the whole course</span></a></p>
+  </div>
+  <div class="row no-print">
+    <button class="chipbtn" id="langBtn" type="button">Español</button>
+    <button class="chipbtn" id="themeBtn" type="button" data-en="Dark" data-es="Oscuro">Dark</button>
+  </div>
+</header>
+
+<main id="main">
+<div class="jump no-print"><label><span data-en="Jump to another unit" data-es="Ir a otra unidad">Jump to another unit</span>
+<select id="jumpSel">
+<optgroup label="Social Studies · Grades K–2">
+<option value="s7-me-family-class.html">Me, My Family, My Class</option>
+<option value="s8-rules-fair-choices.html">Rules and Fair Choices</option>
+<option value="s9-maps-where-things-are.html">Maps: Where Things Are</option>
+<option value="s10-then-and-now.html">Then and Now</option>
+<option value="s11-needs-wants-work.html">Needs, Wants and Work</option>
+<option value="s12-symbols-stories.html">Symbols and Stories of Our Country</option>
+</optgroup>
+<optgroup label="Social Studies · Grades 3–5">
+<option value="s1-government.html">Government: Local, State, National</option>
+<option value="s2-communities-illinois.html">Communities and Illinois</option>
+<option value="s3-first-peoples.html">The First Peoples</option>
+<option value="s4-explorers-colonies-nation.html">Explorers, Colonies, a New Nation</option>
+<option value="s5-money-markets-choices.html">Money, Markets and Choices</option>
+<option value="s6-maps-us-regions.html">Maps and Regions of the United States</option>
+</optgroup>
+<optgroup label="Social Studies · Grades 6–8">
+<option value="us-history.html">U.S. History · Course contents</option>
+<option value="ush-u1.html">&nbsp;&nbsp;&nbsp;&nbsp;Unit 1 · Early Encounters</option>
+<option value="ush-u2.html">&nbsp;&nbsp;&nbsp;&nbsp;Unit 2 · English Settlement</option>
+<option value="ush-u3.html">&nbsp;&nbsp;&nbsp;&nbsp;Unit 3 · A New Nation</option>
+<option value="ush-u4.html">&nbsp;&nbsp;&nbsp;&nbsp;Unit 4 · The Early Republic</option>
+<option value="ush-u5.html">&nbsp;&nbsp;&nbsp;&nbsp;Unit 5 · Pushing National Boundaries</option>
+<option value="ush-u6.html">&nbsp;&nbsp;&nbsp;&nbsp;Unit 6 · Civil War and Reconstruction</option>
+<option value="ush-u7.html">&nbsp;&nbsp;&nbsp;&nbsp;Unit 7 · America on the Move</option>
+<option value="ush-u8.html">&nbsp;&nbsp;&nbsp;&nbsp;Unit 8 · Twentieth-Century Crises</option>
+<option value="ush-u9.html">&nbsp;&nbsp;&nbsp;&nbsp;Unit 9 · Postwar America</option>
+<option value="ush-u10.html">&nbsp;&nbsp;&nbsp;&nbsp;Unit 10 · America in a Changing World</option>
+<option value="b9-new-nation.html">A More Perfect Union</option>
+<option value="b9-new-nation.html?mod=founding">&nbsp;&nbsp;&nbsp;&nbsp;The Founding · 1776–1791</option>
+<option value="b9-new-nation.html?mod=branches">&nbsp;&nbsp;&nbsp;&nbsp;Civics · The Three Branches</option>
+<option value="b9-new-nation.html?mod=growth">&nbsp;&nbsp;&nbsp;&nbsp;Growth &amp; Economy</option>
+<option value="b9-new-nation.html?mod=war">&nbsp;&nbsp;&nbsp;&nbsp;The Road to War &amp; Freedom</option>
+<option value="s13-world-before-1500.html">The World Before 1500</option>
+<option value="s14-world-regions.html">The World’s Regions</option>
+<option value="s15-reconstruction-to-present.html">Reconstruction to the Present</option>
+</optgroup>
+<optgroup label="Social Studies · Grades 9–10">
+<option value="s16-empires-and-exchange.html">Empires and Exchange</option>
+<option value="s17-revolutions-modern-world.html">Revolutions and the Modern World</option>
+<option value="s18-human-geography.html">Human Geography</option>
+<option value="s19-civics-rights-power.html">Civics: Rights, Power and Participation</option>
+</optgroup>
+<optgroup label="Social Studies · Grades 11–12">
+<option value="s20-industry-progressive-era.html">Industry to the Progressive Era</option>
+<option value="s21-world-wars-cold-war.html">The World Wars and the Cold War</option>
+<option value="s22-civil-rights-to-today.html">Civil Rights to Today</option>
+<option value="s23-government.html">Government</option>
+<option value="s24-economics.html">Economics</option>
+<option value="s25-capstone-inquiry.html">Capstone: An Inquiry from the Sources</option>
+</optgroup>
+<optgroup label="Jump to a subject">
+<option value="math-hub.html">All of Math — every band</option>
+<option value="science-hub.html">All of Science — every band</option>
+<option value="social-studies-hub.html">All of Social Studies — every band</option>
+<option value="economics-hub.html">All of Economics — every band</option>
+<option value="english-hub.html">All of English — every band</option>
+<option value="spanish-hub.html">All of Spanish — every band</option>
+<option value="facs-hub.html">All of Family &amp; Consumer Sciences — every band</option>
+<option value="religions-hub.html">All of World Religions — every band</option>
+</optgroup>
+<optgroup label="Math · Grades K–2">
+<option value="m15-counting-how-many.html">Counting and how many</option>
+<option value="m16-add-subtract-within-20.html">Adding and subtracting within 20</option>
+<option value="m17-tens-ones-hundreds.html">Tens and ones, then hundreds</option>
+<option value="m18-add-subtract-within-1000.html">Adding and subtracting within 1,000</option>
+<option value="m19-length-time-money.html">Length, time and money</option>
+<option value="m20-shapes-equal-shares.html">Shapes and equal shares</option>
+</optgroup>
+<optgroup label="Math · Grades 3–5">
+<option value="m21-multiplication-division-meaning.html">Multiplication and division: what they mean</option>
+<option value="m22-multi-digit-multiplication.html">Multi-digit multiplication</option>
+<option value="m23-fractions-add-subtract-multiply.html">Fractions: add, subtract, multiply</option>
+<option value="m24-decimals.html">Decimals</option>
+<option value="m25-measurement-area-perimeter-volume.html">Measurement: area, perimeter, volume</option>
+<option value="m26-geometry-coordinate-plane.html">Geometry and the coordinate plane</option>
+</optgroup>
+<optgroup label="Math · Grades 6–8">
+<option value="interior-math.html">The 7th-grade year, month by month</option>
+<option value="concepts-and-data.html">Number Concepts &amp; Data</option>
+<option value="b10-interior-math.html">The Fall Skills</option>
+<option value="b10-interior-math.html?mod=sept">&nbsp;&nbsp;&nbsp;&nbsp;September · Integers</option>
+<option value="b10-interior-math.html?mod=oct">&nbsp;&nbsp;&nbsp;&nbsp;October · Multiply, Divide &amp; Properties</option>
+<option value="b10-interior-math.html?mod=nov">&nbsp;&nbsp;&nbsp;&nbsp;November · Expressions</option>
+<option value="b10-interior-math.html?mod=dec">&nbsp;&nbsp;&nbsp;&nbsp;December · Equations</option>
+<option value="b12-sixth-grade-review.html">6th Grade Review — Quiz</option>
+<option value="b12-sixth-grade-review.html?mod=round">&nbsp;&nbsp;&nbsp;&nbsp;Rounding &amp; Order of Operations</option>
+<option value="b12-sixth-grade-review.html?mod=dec">&nbsp;&nbsp;&nbsp;&nbsp;Decimals</option>
+<option value="b12-sixth-grade-review.html?mod=gcf">&nbsp;&nbsp;&nbsp;&nbsp;GCF, LCM &amp; Fraction Names</option>
+<option value="b12-sixth-grade-review.html?mod=frac">&nbsp;&nbsp;&nbsp;&nbsp;Fraction Operations</option>
+<option value="b12-sixth-grade-review.html?mod=coord">&nbsp;&nbsp;&nbsp;&nbsp;The Coordinate Plane</option>
+<option value="b13-sixth-grade-practice.html">6th Grade Review — In Class &amp; HW</option>
+<option value="b13-sixth-grade-practice.html?mod=round">&nbsp;&nbsp;&nbsp;&nbsp;Rounding &amp; Order of Operations</option>
+<option value="b13-sixth-grade-practice.html?mod=dec">&nbsp;&nbsp;&nbsp;&nbsp;Decimals</option>
+<option value="b13-sixth-grade-practice.html?mod=gcf">&nbsp;&nbsp;&nbsp;&nbsp;GCF, LCM &amp; Fraction Names</option>
+<option value="b13-sixth-grade-practice.html?mod=frac">&nbsp;&nbsp;&nbsp;&nbsp;Fraction Operations</option>
+<option value="b13-sixth-grade-practice.html?mod=coord">&nbsp;&nbsp;&nbsp;&nbsp;The Coordinate Plane</option>
+<option value="m27-ratios-rates.html">Ratios, rates and unit rates</option>
+<option value="m28-proportional-percent.html">Proportional relationships and percent</option>
+<option value="m29-inequalities.html">Inequalities</option>
+<option value="m30-area-surface-volume.html">Area, surface area and volume</option>
+<option value="m31-angles-triangles-scale.html">Angles, triangles and scale drawings</option>
+<option value="m32-probability-sampling.html">Probability and sampling</option>
+<option value="m33-exponents-roots-scinot.html">Exponents, roots and scientific notation</option>
+<option value="m34-equations-systems.html">Linear equations and systems</option>
+<option value="m35-functions-slope.html">Functions and slope</option>
+<option value="m36-transformations.html">Transformations, congruence and similarity</option>
+<option value="m37-pythagorean-theorem.html">The Pythagorean theorem</option>
+</optgroup>
+<optgroup label="Math · Grades 9–10">
+<option value="m38-alg1-linear-equations-inequalities.html">Algebra I: linear equations and inequalities</option>
+<option value="m39-alg1-functions-linear-models.html">Algebra I: functions and linear models</option>
+<option value="m40-alg1-systems.html">Algebra I: systems</option>
+<option value="m41-alg1-exponents-polynomials-factoring.html">Algebra I: exponents, polynomials, factoring</option>
+<option value="m42-alg1-quadratics.html">Algebra I: quadratics</option>
+<option value="m43-geo-proof-congruence-triangles.html">Geometry: proof, congruence and triangles</option>
+<option value="m44-geo-similarity-trig.html">Geometry: similarity and right-triangle trigonometry</option>
+<option value="m45-geo-circles-area-volume.html">Geometry: circles, area and volume</option>
+</optgroup>
+<optgroup label="Math · Grades 11–12">
+<option value="m46-alg2-polynomial-rational.html">Algebra II: polynomial and rational functions</option>
+<option value="m47-alg2-exponential-logarithmic.html">Algebra II: exponential and logarithmic functions</option>
+<option value="m48-trigonometric-functions.html">Trigonometric functions</option>
+<option value="m49-sequences-series.html">Sequences and series</option>
+<option value="m50-statistics-sample-to-claim.html">Statistics: from a sample to a claim</option>
+<option value="m51-financial-math.html">Financial math</option>
+<option value="m52-capstone-model-it.html">Capstone: model it</option>
+</optgroup>
+<optgroup label="Science · Grades K–2">
+<option value="science-course.html">Science · Course contents</option>
+<option value="sci-u1.html">&nbsp;&nbsp;&nbsp;&nbsp;Unit 1 · Pushes, Pulls and Stuff</option>
+<option value="" selected>Science · Unit 2 · Light, Sound and Waves</option>
+<option value="sci-u3.html">&nbsp;&nbsp;&nbsp;&nbsp;Unit 3 · Living Things and Where They Live</option>
+<option value="sci-u4.html">&nbsp;&nbsp;&nbsp;&nbsp;Unit 4 · Earth, Sky and Weather</option>
+<option value="b26-pushes-pulls.html">Pushes and Pulls</option>
+<option value="b27-sun-moon-sky.html">Sun, Moon and Sky</option>
+<option value="b28-living-things-need.html">What Living Things Need</option>
+<option value="b29-weather-seasons.html">Weather and Seasons</option>
+<option value="b30-light-sound.html">Light and Sound</option>
+<option value="b31-materials-change.html">Materials and How They Change</option>
+</optgroup>
+<optgroup label="Science · Grades 3–5">
+<option value="science-course.html">Science · Course contents</option>
+<option value="sci-u5.html">&nbsp;&nbsp;&nbsp;&nbsp;Unit 5 · Forces, Motion and Energy</option>
+<option value="sci-u6.html">&nbsp;&nbsp;&nbsp;&nbsp;Unit 6 · Matter and Waves</option>
+<option value="sci-u7.html">&nbsp;&nbsp;&nbsp;&nbsp;Unit 7 · Life: Cycles, Traits and Survival</option>
+<option value="sci-u8.html">&nbsp;&nbsp;&nbsp;&nbsp;Unit 8 · Ecosystems and the Flow of Energy</option>
+<option value="sci-u9.html">&nbsp;&nbsp;&nbsp;&nbsp;Unit 9 · Earth, Weather and Space</option>
+<option value="b18-forces-motion.html">Forces and Motion</option>
+<option value="b19-life-cycles-traits.html">Life Cycles and Traits</option>
+<option value="b20-weather-climate.html">Weather and Climate</option>
+<option value="b21-energy.html">Energy</option>
+<option value="b22-changing-surface.html">Earth’s Changing Surface</option>
+<option value="b23-matter-properties.html">Matter: Properties and Changes</option>
+<option value="b24-ecosystems.html">Ecosystems and Food Webs</option>
+<option value="b25-earth-in-space.html">Earth in Space</option>
+</optgroup>
+<optgroup label="Science · Grades 6–8">
+<option value="science-course.html">Science · Course contents</option>
+<option value="sci-u10.html">&nbsp;&nbsp;&nbsp;&nbsp;Unit 10 · Matter and Its Interactions</option>
+<option value="sci-u11.html">&nbsp;&nbsp;&nbsp;&nbsp;Unit 11 · Forces, Motion and Energy</option>
+<option value="sci-u12.html">&nbsp;&nbsp;&nbsp;&nbsp;Unit 12 · Waves and Information</option>
+<option value="sci-u13.html">&nbsp;&nbsp;&nbsp;&nbsp;Unit 13 · Cells, Bodies and Reproduction</option>
+<option value="sci-u14.html">&nbsp;&nbsp;&nbsp;&nbsp;Unit 14 · Ecosystems, Heredity and Evolution</option>
+<option value="sci-u15.html">&nbsp;&nbsp;&nbsp;&nbsp;Unit 15 · Earth and Space Systems</option>
+<option value="b1-living-things.html">Science 1 · Living Things in the Biosphere</option>
+<option value="b2-cell-system.html">Science 2 · The Cell System</option>
+<option value="b3-body-systems.html">Science 3 · Human Body Systems</option>
+<option value="b4-reproduction.html">Science 4 · Reproduction and Growth</option>
+<option value="b5-ecosystems.html">Science 5 · Ecosystems</option>
+<option value="b6-populations.html">Science 6 · Populations and Communities</option>
+<option value="b7-heredity.html">Science 7 · Genes and Heredity</option>
+<option value="b8-natural-selection.html">Science 8 · Natural Selection</option>
+<option value="b14-matter.html">Matter and Its Interactions</option>
+<option value="b15-forces-energy-waves.html">Forces, Energy and Waves</option>
+<option value="b16-earth-systems.html">Earth’s Systems</option>
+<option value="b17-space-systems.html">Space Systems</option>
+</optgroup>
+<optgroup label="Science · Grades 9–10">
+<option value="science-course.html">Science · Course contents</option>
+<option value="sci-u16.html">&nbsp;&nbsp;&nbsp;&nbsp;Unit 16 · Biology: Cells and Energy</option>
+<option value="sci-u17.html">&nbsp;&nbsp;&nbsp;&nbsp;Unit 17 · Biology: Genetics and Evolution</option>
+<option value="sci-u18.html">&nbsp;&nbsp;&nbsp;&nbsp;Unit 18 · Biology: Ecosystems and Human Impact</option>
+<option value="sci-u19.html">&nbsp;&nbsp;&nbsp;&nbsp;Unit 19 · Physical Science: Matter and Reactions</option>
+<option value="sci-u20.html">&nbsp;&nbsp;&nbsp;&nbsp;Unit 20 · Physical Science: Forces, Energy and Waves</option>
+<option value="sci-u21.html">&nbsp;&nbsp;&nbsp;&nbsp;Unit 21 · Earth and Space</option>
+<option value="b32-cells-energy.html">Biology: Cells and Energy</option>
+<option value="b33-genetics-evolution.html">Biology: Genetics and Evolution</option>
+<option value="b34-ecosystems-human-impact.html">Biology: Ecosystems and Human Impact</option>
+<option value="b35-matter-reactions.html">Physical Science: Matter and Reactions</option>
+<option value="b36-forces-energy-waves-hs.html">Physical Science: Forces, Energy, Waves</option>
+<option value="b37-earth-space-hs.html">Earth and Space</option>
+</optgroup>
+<optgroup label="Science · Grades 11–12">
+<option value="science-course.html">Science · Course contents</option>
+<option value="sci-u22.html">&nbsp;&nbsp;&nbsp;&nbsp;Unit 22 · Chemistry: Atoms, Bonding and Reactions</option>
+<option value="sci-u23.html">&nbsp;&nbsp;&nbsp;&nbsp;Unit 23 · Chemistry: Stoichiometry, Solutions and Energy</option>
+<option value="sci-u24.html">&nbsp;&nbsp;&nbsp;&nbsp;Unit 24 · Physics: Motion and Forces</option>
+<option value="sci-u25.html">&nbsp;&nbsp;&nbsp;&nbsp;Unit 25 · Physics: Energy, Waves and Electricity</option>
+<option value="sci-u26.html">&nbsp;&nbsp;&nbsp;&nbsp;Unit 26 · Environmental Science</option>
+<option value="sci-u27.html">&nbsp;&nbsp;&nbsp;&nbsp;Unit 27 · Capstone: Argue From Evidence</option>
+<option value="b38-chem-atoms-bonding.html">Chemistry: Atoms, Bonding, Reactions</option>
+<option value="b39-chem-stoich-solutions.html">Chemistry: Stoichiometry and Solutions</option>
+<option value="b40-physics-motion-forces.html">Physics: Motion and Forces</option>
+<option value="b41-physics-energy-waves-electricity.html">Physics: Energy, Waves, Electricity</option>
+<option value="b42-environmental-science.html">Environmental Science</option>
+<option value="b43-capstone-evidence.html">Capstone: Argue From Evidence</option>
+</optgroup>
+<optgroup label="Economics · Grades 9–10">
+<option value="ec1-scarcity-and-choice.html">Scarcity, Choice and Opportunity Cost</option>
+<option value="ec2-supply-and-demand.html">Supply, Demand and the Market</option>
+<option value="ec3-prices-and-market-failure.html">Prices, Controls and Market Failure</option>
+<option value="ec4-competition-and-firms.html">Competition, Firms and Market Structure</option>
+</optgroup>
+<optgroup label="Economics · Grades 11–12">
+<option value="ec5-measuring-the-economy.html">Measuring the Economy</option>
+<option value="ec6-business-cycle-and-fiscal.html">The Business Cycle and Fiscal Policy</option>
+<option value="ec7-money-banking-and-the-fed.html">Money, Banking and the Federal Reserve</option>
+<option value="ec8-trade-taxes-and-the-world.html">Trade, Taxes and the World Economy</option>
+</optgroup>
+<optgroup label="English · Grades K–2">
+<option value="e1-sounds-and-letters.html">Sounds and Letters</option>
+<option value="e2-sight-words.html">Words You Know by Sight</option>
+<option value="e3-a-whole-thought.html">A Sentence Is a Whole Thought</option>
+<option value="e4-who-where-what.html">Who, Where, What Happens</option>
+<option value="e5-beginning-middle-end.html">Beginning, Middle, End</option>
+<option value="e6-true-books-story-books.html">True Books and Story Books</option>
+</optgroup>
+<optgroup label="English · Grades 3–5">
+<option value="e7-word-parts.html">Word Parts: Prefixes, Suffixes, Roots</option>
+<option value="e8-context-clues.html">Context Clues</option>
+<option value="e9-main-idea.html">Main Idea and Details</option>
+<option value="e10-story-elements.html">Story Elements and Theme</option>
+<option value="e11-text-structure.html">How a Text Is Built</option>
+<option value="e12-the-paragraph.html">The Paragraph: a Claim and Reasons</option>
+</optgroup>
+<optgroup label="English · Grades 6–8">
+<option value="n1-the-outsiders.html">The Outsiders (novel study)</option>
+<option value="b11-grammar.html">Grammar · 16 Modules</option>
+</optgroup>
+<optgroup label="English · Grades 9–10">
+<option value="e13-clues-and-word-parts.html">Context Clues and Word Parts</option>
+<option value="e14-figurative-language.html">Figurative Language</option>
+<option value="e15-tone-and-voice.html">Tone and Voice</option>
+<option value="e16-rhetoric.html">Rhetoric: How a Writer Persuades</option>
+<option value="e17-punctuation-meaning.html">Punctuation That Changes the Meaning</option>
+<option value="e18-clauses-parallel-usage.html">Clauses, Parallel Structure and Usage</option>
+</optgroup>
+<optgroup label="English · Grades 11–12">
+<option value="e19-literary-devices.html">Literary Devices</option>
+<option value="e20-diction-and-syntax.html">Diction and Syntax</option>
+<option value="e21-reasoning-and-fallacies.html">Reasoning and Fallacies</option>
+<option value="e22-advanced-punctuation.html">Advanced Punctuation</option>
+<option value="e23-concision-and-style.html">Concision and Style</option>
+<option value="e24-capstone.html">Capstone — Research, Cite, Defend</option>
+</optgroup>
+<optgroup label="Spanish · Grades K–2">
+<option value="sp13-five-vowels.html">Five Vowels That Never Change</option>
+<option value="sp14-colors-numbers.html">Colors and Counting to Twenty</option>
+<option value="sp15-el-and-la.html">El and La — Naming What Is Here</option>
+<option value="sp16-one-and-many.html">One and Many, Big and Little</option>
+</optgroup>
+<optgroup label="Spanish · Grades 3–5">
+<option value="sp17-whole-thought.html">A Whole Thought in Spanish</option>
+<option value="sp18-soy-estoy.html">Soy and Estoy — Who I Am, How I Am</option>
+<option value="sp19-who-where-when.html">Who, Where, When, Why</option>
+<option value="sp20-first-then-last.html">First, Then, Last — Telling a Day</option>
+</optgroup>
+<optgroup label="Spanish · Grades 6–8">
+<option value="sp1-greetings.html">Greetings and Introductions</option>
+<option value="sp2-numbers-time.html">Numbers, Time and Dates</option>
+<option value="sp3-classroom-nouns.html">The Classroom — Nouns and Articles</option>
+<option value="sp4-ser-estar.html">Ser, Estar and Describing People</option>
+</optgroup>
+<optgroup label="Spanish · Grades 9–10">
+<option value="sp5-present-tense.html">The Present Tense</option>
+<option value="sp6-tener-gustar.html">Tener, Gustar and Stem Changes</option>
+<option value="sp7-preterite.html">The Preterite</option>
+<option value="sp8-imperfect.html">The Imperfect and Telling a Story</option>
+</optgroup>
+<optgroup label="Spanish · Grades 11–12">
+<option value="sp9-pronouns-commands.html">Pronouns, Reflexives and Commands</option>
+<option value="sp10-subjunctive.html">The Subjunctive</option>
+<option value="sp11-world-register.html">The Spanish-Speaking World and Register</option>
+<option value="sp12-capstone.html">Capstone — Present and Defend</option>
+</optgroup>
+<optgroup label="Family &amp; Consumer Sciences · Grades K–2">
+<option value="fc13-clean-hands.html">Clean Hands</option>
+<option value="fc14-hot-cold-sharp.html">Hot, Cold and Sharp</option>
+<option value="fc15-everyday-sometimes.html">Everyday Food and Sometimes Food</option>
+<option value="fc16-job-to-the-end.html">A Job Done to the End</option>
+</optgroup>
+<optgroup label="Family &amp; Consumer Sciences · Grades 3–5">
+<option value="fc17-measure-it-right.html">Measure It Right</option>
+<option value="fc18-needle-and-button.html">The Needle and the Button</option>
+<option value="fc19-money-and-choices.html">Money and Choices</option>
+<option value="fc20-plan-cook-clean.html">Plan It, Cook It, Clean It Up</option>
+</optgroup>
+<optgroup label="Family &amp; Consumer Sciences · Grades 6–8">
+<option value="fc1-kitchen-safety.html">Kitchen Safety and Sanitation</option>
+<option value="fc2-knife-skills.html">Knife Skills</option>
+<option value="fc3-measuring-recipes.html">Measuring and Reading a Recipe</option>
+<option value="fc4-hand-sewing.html">Hand Sewing</option>
+</optgroup>
+<optgroup label="Family &amp; Consumer Sciences · Grades 9–10">
+<option value="fc5-sewing-machine.html">The Sewing Machine</option>
+<option value="fc6-fabric-patterns.html">Fabric, Fibers and Patterns</option>
+<option value="fc7-cooking-methods.html">Cooking Methods and Heat</option>
+<option value="fc8-nutrition.html">Nutrition and Meal Planning</option>
+</optgroup>
+<optgroup label="Family &amp; Consumer Sciences · Grades 11–12">
+<option value="fc9-food-science.html">Food Science</option>
+<option value="fc10-child-development.html">Child Development and Care</option>
+<option value="fc11-independent-living.html">Independent Living and Money</option>
+<option value="fc12-capstone.html">Capstone — Plan, Cost, Produce</option>
+</optgroup>
+<optgroup label="World Religions · Grades 9–10">
+<option value="r1-reading-sacred-texts.html">How to Read a Sacred Text</option>
+<option value="r2-hebrew-bible.html">The Hebrew Bible</option>
+<option value="r3-new-testament.html">The New Testament</option>
+<option value="r4-judaism.html">Judaism</option>
+<option value="r5-islam.html">Islam</option>
+<option value="r6-hinduism.html">Hinduism</option>
+</optgroup>
+<optgroup label="World Religions · Grades 11–12">
+<option value="r7-buddhism.html">Buddhism</option>
+<option value="r8-confucianism-daoism.html">Confucianism and Daoism</option>
+<option value="r9-sikhism-jainism-africa-americas.html">Sikhism, Jainism, Africa and the Americas</option>
+<option value="r10-religion-and-the-world.html">Religion and the World</option>
+<option value="r11-one-question-many-lenses.html">One Question, Many Lenses</option>
+<option value="r12-capstone.html">Capstone</option>
+</optgroup></select></label></div>
+<nav class="rail no-print" aria-label="Units"><div class="in"><span class="k"><span data-en="Unit" data-es="Unidad">Unit</span></span><a href="sci-u1.html" title="Pushes, Pulls and Stuff">1</a><a href="sci-u2.html" aria-current="page" title="Light, Sound and Waves">2</a><span class="sp"></span><button type="button" class="drawerbtn" id="drawerBtn" aria-controls="drawer" aria-expanded="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M8 6h13M8 12h13M8 18h13"/><circle cx="3.5" cy="6" r="1.2" fill="currentColor" stroke="none"/><circle cx="3.5" cy="12" r="1.2" fill="currentColor" stroke="none"/><circle cx="3.5" cy="18" r="1.2" fill="currentColor" stroke="none"/></svg><span data-en="Contents" data-es="Contenido">Contents</span></button></div></nav>
+
+<section class="spread" aria-labelledby="ut">
+  <div class="scene" aria-hidden="true"><svg viewBox="0 0 1200 420" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Unit banner" focusable="false"><defs><linearGradient id="ubf2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2b4a72"/><stop offset="1" stop-color="#0A1E33"/></linearGradient></defs><rect width="1200" height="420" fill="url(#ubf2)"/></svg></div>
+  
+  <div class="txt">
+    <div class="unum"><b>2</b><span data-en="Unit" data-es="Unidad">Unit</span></div>
+    <h2 class="ut" id="ut">Light, Sound and Waves</h2>
+    <div class="years">Physical Science</div>
+  </div>
+</section>
+
+<div class="intro">
+  <div class="lead"><p>Tap a drum. Feel the buzz under your hand. Hear the boom. Turn off the lamp. The room goes dark. Your shadow is gone. Sound and light are all around you, every day. This unit is about both of them.</p><p>You will find out what a sound really is. It is a wiggle. Something shakes, and the shake spreads to your ear. You will find out what light does. It shines from the sun or a bulb. It bounces off things and into your eyes.</p><p>By the end, you can explain a drum. Why does it stop when you touch it? You can explain a shadow. Why does it move? And you can send a secret message. Use claps, or blinks of a flashlight.</p></div>
+  <aside class="bigq"><div class="k"><span data-en="The big question" data-es="La gran pregunta">The big question</span></div><p>How do sound and light get from a drum or a lamp to you, and how can they carry a message?</p></aside>
+</div>
+
+<section class="tl" aria-label="Timeline"><div class="k"><span data-en="How we figured it out" data-es="Cómo lo descubrimos">How we figured it out</span></div><div class="track"><div class="pin"><div class="y">Wake up</div><p class="t">An alarm buzzes. Something inside it is shaking fast. That shake is the sound.</p></div><div class="pin"><div class="y">Sunrise</div><p class="t">Light comes in the window. Now you can see your room. The sun is a light source.</p></div><div class="pin"><div class="y">Breakfast</div><p class="t">A spoon clinks on a bowl. The bowl vibrates. The sound spreads through the air.</p></div><div class="pin"><div class="y">Bus stop</div><p class="t">Your shadow is long on the sidewalk. The sun is low in the sky.</p></div><div class="pin"><div class="y">Class</div><p class="t">Hand on the drum bench. Feel the buzz. Loud hits make big wiggles.</p></div><div class="pin"><div class="y">Recess</div><p class="t">A whistle blows. Everyone stops. The sound carried a message.</p></div><div class="pin"><div class="y">Noon</div><p class="t">Shadows are very short now. The sun is high overhead.</p></div><div class="pin"><div class="y">Afternoon</div><p class="t">You look through a window. Glass lets light through. The wall does not.</p></div><div class="pin"><div class="y">Dinner</div><p class="t">A ship horn sounds on the lake in the fog. The horn says: I am here.</p></div><div class="pin"><div class="y">Dusk</div><p class="t">The lighthouse beam turns on. Its light tells boats where the shore is.</p></div><div class="pin"><div class="y">Bedtime</div><p class="t">You blink a flashlight to your sister. Two blinks mean no, one means yes.</p></div><div class="pin"><div class="y">Night</div><p class="t">Lights off. The room is dark. You cannot see, but you can still hear.</p></div></div></section>
+
+
+<section class="chap" id="ch3">
+  <div class="chead"><span class="badge" aria-hidden="true">3</span>
+    <div><span class="tab"><span data-en="Chapter" data-es="Capítulo">Chapter</span></span><h2>Sound Is a Wiggle</h2><div class="yrs">Waves</div></div>
+  </div>
+  <div class="cq"><span class="k"><span data-en="Big question" data-es="Gran pregunta">Big question</span></span>What is a sound, and how does it get from a drum to your ear?</div>
+  <article class="story">
+    <div class="k"><span data-en="The story" data-es="La historia">The story</span></div>
+    <h3>Hand on the Drum</h3>
+    <p class="kick">You can feel a sound before you can name it.</p>
+    <p class="sp">Mia stands at the drum bench. The big drum is quiet. She puts her hand flat on the drum skin. It feels smooth and still. Nothing is moving. Then her teacher taps the drum once with a stick.</p><p class="sp">Boom! Mia feels a buzz under her hand. The skin shakes very fast. It tickles her palm. The buzz gets smaller and smaller. Then it stops. The sound stops at the same time. Mia looks at her hand. It is not hurt. It just felt the drum wiggle.</p><p class="sp">She tries it again. This time she hits the drum herself. She hits it soft. The buzz is small. The sound is soft. She hits it hard. The buzz is big. The sound is loud. Mia grins. The drum wiggles, and that wiggle is the sound.</p><p class="sp">Now Mia puts her hand on her own throat. She hums. Her throat buzzes too, just like the drum. She stops humming. The buzz stops. Mia has found a rule. Where there is a sound, something is wiggling.</p>
+    <div class="think"><span class="k2"><span data-en="Talk about it" data-es="Coméntalo">Talk about it</span></span>Mia felt the drum buzz and heard the sound at the same time. Why do you think the buzz and the sound stopped together?</div>
+  </article>
+  <section class="sec" id="s3-1"><div class="sh"><span class="sn"><span data-en="Section" data-es="Sección">Section</span> 1</span><h3>Things That Wiggle</h3></div>
+<article class="les" id="l3-1" data-lid="l3-1">
+  <div class="lh"><span class="ln">3.1</span><h4>The Drum Skin Shakes</h4><span class="tick" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5L20 7"/></svg></span></div>
+  <div class="body">
+    <div>
+      <div class="main-idea"><span class="k"><span data-en="Main idea" data-es="Idea principal">Main idea</span></span>A sound comes from something that shakes back and forth very fast.</div>
+      <div class="reading"><p>Tap a drum. The skin moves. It goes up and down very fast. This fast shaking is called a <button type="button" class="kw" data-def="a very fast shaking back and forth">vibration</button>. You can feel it with your hand. You can hear it with your ear.</p><p>The shaking makes the sound. When the skin stops shaking, the sound stops. No shaking means no sound. Try it. Tap the drum. Then press your hand on it. The sound dies fast.</p></div>
+      <div class="lbtns no-print">
+        <button type="button" class="lbtn listen" data-for="l3-1" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H2v6h4l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M18.5 5.5a9 9 0 0 1 0 13"/></svg><span data-en="Listen" data-es="Escuchar">Listen</span></button>
+      </div>
+    </div>
+    <div>
+      <aside class="look think"><div class="k"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-4 10.5c.7.6 1 1.5 1 2.5h6c0-1 .3-1.9 1-2.5A6 6 0 0 0 12 3z"/></svg><span data-en="Think it through" data-es="Piénsalo">Think it through</span></div><h5>Drum With a Hand on It</h5><p class="sc">Look at the drum. Tap it and it goes boom. The sound rings for a while. Now tap it again. Right away, press your hand flat on the skin. The sound stops at once. Your hand made the skin still.</p><p class="prompt">Why did the sound stop when the hand pressed the drum?</p></aside>
+      <div class="words"><div class="k"><span data-en="Words to know" data-es="Palabras clave">Words to know</span></div><dl><dt>vibration</dt><dd>a very fast shaking back and forth</dd></dl></div>
+    </div>
+    <div class="checks" data-lesson="l3-1">
+      <div class="k"><span data-en="Check yourself" data-es="Compruébalo">Check yourself</span><span class="score" data-score aria-live="polite"></span></div>
+      <div class="q" data-q="l3-1-c0" data-a="0"><p class="qq"><span class="qn">1.</span> What is a vibration?</p><ul class="opts"><li><button type="button" class="opt" data-i="0"><span class="l">A</span><span>A very fast shaking</span></button></li><li><button type="button" class="opt" data-i="1"><span class="l">B</span><span>A loud yell</span></button></li><li><button type="button" class="opt" data-i="2"><span class="l">C</span><span>A kind of drum</span></button></li></ul><p class="say" aria-live="polite"></p><div class="why" hidden><b><span data-en="Why:" data-es="Por qué:">Why:</span></b> A vibration is a fast shaking back and forth. The drum skin vibrates when you tap it.</div></div><div class="q" data-q="l3-1-c1" data-a="1"><p class="qq"><span class="qn">2.</span> You press your hand on a ringing drum. What happens?</p><ul class="opts"><li><button type="button" class="opt" data-i="0"><span class="l">A</span><span>The sound gets louder</span></button></li><li><button type="button" class="opt" data-i="1"><span class="l">B</span><span>The sound stops</span></button></li><li><button type="button" class="opt" data-i="2"><span class="l">C</span><span>The drum gets warm</span></button></li></ul><p class="say" aria-live="polite"></p><div class="why" hidden><b><span data-en="Why:" data-es="Por qué:">Why:</span></b> Your hand stops the skin from shaking. No shaking means no sound.</div></div><div class="q" data-q="l3-1-c2" data-a="2"><p class="qq"><span class="qn">3.</span> What makes the drum&#x27;s sound?</p><ul class="opts"><li><button type="button" class="opt" data-i="0"><span class="l">A</span><span>The color of the drum</span></button></li><li><button type="button" class="opt" data-i="1"><span class="l">B</span><span>The stick by itself</span></button></li><li><button type="button" class="opt" data-i="2"><span class="l">C</span><span>The skin shaking fast</span></button></li></ul><p class="say" aria-live="polite"></p><div class="why" hidden><b><span data-en="Why:" data-es="Por qué:">Why:</span></b> The shaking skin makes the sound. The stick just starts the shaking.</div></div>
+    </div>
+  </div>
+</article>
+<article class="les" id="l3-2" data-lid="l3-2">
+  <div class="lh"><span class="ln">3.2</span><h4>Rubber Bands and Throats</h4><span class="tick" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5L20 7"/></svg></span></div>
+  <div class="body">
+    <div>
+      <div class="main-idea"><span class="k"><span data-en="Main idea" data-es="Idea principal">Main idea</span></span>Many things vibrate to make sound, even your own throat.</div>
+      <div class="reading"><p>Stretch a rubber band. Pluck it. It looks blurry for a second. It is shaking too fast to see. You hear a twang. Pinch the band. It stops. The twang stops too.</p><p>Put your hand on your throat. Say your name. Feel the buzz? Two small flaps in your throat shake. They make your voice. Whisper your name. The buzz is gone. Whispers do not use the flaps.</p></div>
+      <div class="lbtns no-print">
+        <button type="button" class="lbtn listen" data-for="l3-2" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H2v6h4l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M18.5 5.5a9 9 0 0 1 0 13"/></svg><span data-en="Listen" data-es="Escuchar">Listen</span></button>
+      </div>
+    </div>
+    <div>
+      <aside class="look think"><div class="k"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-4 10.5c.7.6 1 1.5 1 2.5h6c0-1 .3-1.9 1-2.5A6 6 0 0 0 12 3z"/></svg><span data-en="Think it through" data-es="Piénsalo">Think it through</span></div><h5>Hum, Then Whisper</h5><p class="sc">Put two fingers on the front of your neck. Hum a long note. Your fingers feel a buzz. Now whisper the same note. The buzz is gone. Now talk out loud. The buzz is back.</p><p class="prompt">What do you think is shaking in your neck when you hum?</p></aside>
+      <div class="words"><div class="k"><span data-en="Words to know" data-es="Palabras clave">Words to know</span></div><dl><dt>pluck</dt><dd>to pull a string and let it go so it shakes</dd></dl></div>
+    </div>
+    <div class="checks" data-lesson="l3-2">
+      <div class="k"><span data-en="Check yourself" data-es="Compruébalo">Check yourself</span><span class="score" data-score aria-live="polite"></span></div>
+      <div class="q" data-q="l3-2-c0" data-a="0"><p class="qq"><span class="qn">1.</span> You pluck a rubber band. Why does it look blurry?</p><ul class="opts"><li><button type="button" class="opt" data-i="0"><span class="l">A</span><span>It is shaking very fast</span></button></li><li><button type="button" class="opt" data-i="1"><span class="l">B</span><span>It is wet</span></button></li><li><button type="button" class="opt" data-i="2"><span class="l">C</span><span>It is too far away</span></button></li></ul><p class="say" aria-live="polite"></p><div class="why" hidden><b><span data-en="Why:" data-es="Por qué:">Why:</span></b> The band moves back and forth so fast that your eyes see a blur.</div></div><div class="q" data-q="l3-2-c1" data-a="1"><p class="qq"><span class="qn">2.</span> When can you feel a buzz in your throat?</p><ul class="opts"><li><button type="button" class="opt" data-i="0"><span class="l">A</span><span>When you hold your breath</span></button></li><li><button type="button" class="opt" data-i="1"><span class="l">B</span><span>When you hum</span></button></li><li><button type="button" class="opt" data-i="2"><span class="l">C</span><span>When you whisper</span></button></li></ul><p class="say" aria-live="polite"></p><div class="why" hidden><b><span data-en="Why:" data-es="Por qué:">Why:</span></b> Humming makes the flaps in your throat shake. Whispers do not shake them.</div></div><div class="q" data-q="l3-2-c2" data-a="2"><p class="qq"><span class="qn">3.</span> What happens if you pinch a twanging rubber band?</p><ul class="opts"><li><button type="button" class="opt" data-i="0"><span class="l">A</span><span>It twangs louder</span></button></li><li><button type="button" class="opt" data-i="1"><span class="l">B</span><span>It changes color</span></button></li><li><button type="button" class="opt" data-i="2"><span class="l">C</span><span>The twang stops</span></button></li></ul><p class="say" aria-live="polite"></p><div class="why" hidden><b><span data-en="Why:" data-es="Por qué:">Why:</span></b> Pinching stops the shaking. When the shaking stops, the sound stops.</div></div>
+    </div>
+  </div>
+</article></section><section class="sec" id="s3-2"><div class="sh"><span class="sn"><span data-en="Section" data-es="Sección">Section</span> 2</span><h3>Loud, Soft, High, Low</h3></div>
+<article class="les" id="l3-3" data-lid="l3-3">
+  <div class="lh"><span class="ln">3.3</span><h4>Sound Moves Things</h4><span class="tick" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5L20 7"/></svg></span></div>
+  <div class="body">
+    <div>
+      <div class="main-idea"><span class="k"><span data-en="Main idea" data-es="Idea principal">Main idea</span></span>Sound can make other things vibrate too, like rice on a drum.</div>
+      <div class="reading"><p>Put a few grains of rice on a drum. Do not touch the drum. Stand near it. Clap hard, or bang a pot. Watch the rice. It jumps! Your sound made the drum skin shake.</p><p>Sound is a wiggle that spreads out. It goes through the air. It reaches the drum. The skin wiggles a tiny bit. The rice hops. Sound can move things without a touch.</p></div>
+      <div class="lbtns no-print">
+        <button type="button" class="lbtn listen" data-for="l3-3" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H2v6h4l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M18.5 5.5a9 9 0 0 1 0 13"/></svg><span data-en="Listen" data-es="Escuchar">Listen</span></button>
+      </div>
+    </div>
+    <div>
+      <aside class="look think"><div class="k"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-4 10.5c.7.6 1 1.5 1 2.5h6c0-1 .3-1.9 1-2.5A6 6 0 0 0 12 3z"/></svg><span data-en="Think it through" data-es="Piénsalo">Think it through</span></div><h5>Rice on a Drum</h5><p class="sc">Ten grains of rice sit still on the drum. A boy bangs a pot lid two steps away. The rice jumps up and lands again. He bangs it softly. The rice barely moves. He bangs it very hard. The rice hops high.</p><p class="prompt">What would happen to the rice if the boy stood far across the room and banged the lid?</p></aside>
+      <div class="words"><div class="k"><span data-en="Words to know" data-es="Palabras clave">Words to know</span></div><dl><dt>spread</dt><dd>to move out in every direction from one spot</dd></dl></div>
+    </div>
+    <div class="checks" data-lesson="l3-3">
+      <div class="k"><span data-en="Check yourself" data-es="Compruébalo">Check yourself</span><span class="score" data-score aria-live="polite"></span></div>
+      <div class="q" data-q="l3-3-c0" data-a="0"><p class="qq"><span class="qn">1.</span> Rice jumps on a drum when you clap. Why?</p><ul class="opts"><li><button type="button" class="opt" data-i="0"><span class="l">A</span><span>Your clap made the drum skin shake</span></button></li><li><button type="button" class="opt" data-i="1"><span class="l">B</span><span>The rice is alive</span></button></li><li><button type="button" class="opt" data-i="2"><span class="l">C</span><span>Wind from your hands blew it</span></button></li></ul><p class="say" aria-live="polite"></p><div class="why" hidden><b><span data-en="Why:" data-es="Por qué:">Why:</span></b> The sound of the clap spread through the air. It made the skin vibrate, so the rice hopped.</div></div><div class="q" data-q="l3-3-c1" data-a="1"><p class="qq"><span class="qn">2.</span> The boy bangs the pot very hard. What does the rice do?</p><ul class="opts"><li><button type="button" class="opt" data-i="0"><span class="l">A</span><span>It sits still</span></button></li><li><button type="button" class="opt" data-i="1"><span class="l">B</span><span>It hops higher</span></button></li><li><button type="button" class="opt" data-i="2"><span class="l">C</span><span>It turns white</span></button></li></ul><p class="say" aria-live="polite"></p><div class="why" hidden><b><span data-en="Why:" data-es="Por qué:">Why:</span></b> A bigger sound makes a bigger wiggle in the drum. The rice hops more.</div></div><div class="q" data-q="l3-3-c2" data-a="2"><p class="qq"><span class="qn">3.</span> How does the clap sound get to the drum?</p><ul class="opts"><li><button type="button" class="opt" data-i="0"><span class="l">A</span><span>Through the floor only</span></button></li><li><button type="button" class="opt" data-i="1"><span class="l">B</span><span>It does not get there</span></button></li><li><button type="button" class="opt" data-i="2"><span class="l">C</span><span>Through the air</span></button></li></ul><p class="say" aria-live="polite"></p><div class="why" hidden><b><span data-en="Why:" data-es="Por qué:">Why:</span></b> The sound spreads out through the air and reaches the drum.</div></div>
+    </div>
+  </div>
+</article>
+<article class="les" id="l3-4" data-lid="l3-4">
+  <div class="lh"><span class="ln">3.4</span><h4>Loud and Soft</h4><span class="tick" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5L20 7"/></svg></span></div>
+  <div class="body">
+    <div>
+      <div class="main-idea"><span class="k"><span data-en="Main idea" data-es="Idea principal">Main idea</span></span>A big wiggle makes a loud sound; a small wiggle makes a soft sound.</div>
+      <div class="reading"><p>Tap a drum softly. The skin moves a little. The sound is soft. Hit it hard. The skin moves a lot. The sound is <button type="button" class="kw" data-def="a sound that is big and strong, easy to hear">loud</button>. A bigger wiggle makes a louder sound.</p><p>Loud sounds can hurt your ears. Fire trucks and lawn mowers are very loud. Cover your ears near them. A whisper is very soft. You must be close to hear it.</p><p>Sounds get softer as they spread out. A friend yells from across the field. It sounds soft. The same yell up close is loud. The wiggle gets weaker the farther it goes.</p></div>
+      <div class="lbtns no-print">
+        <button type="button" class="lbtn listen" data-for="l3-4" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H2v6h4l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M18.5 5.5a9 9 0 0 1 0 13"/></svg><span data-en="Listen" data-es="Escuchar">Listen</span></button>
+      </div>
+    </div>
+    <div>
+      <aside class="look data"><div class="k"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="3" y="12" width="4" height="9" rx="1"/><rect x="10" y="6" width="4" height="15" rx="1"/><rect x="17" y="3" width="4" height="18" rx="1"/></svg><span data-en="Read the numbers" data-es="Lee los números">Read the numbers</span></div><h5>How Loud Is It?</h5><svg class="chart" viewBox="0 0 520 240" role="img" aria-label="How Loud Is It?"><line class="ax" x1="44" y1="206" x2="512" y2="206"/><rect class="bar" x="44.0" y="147.3" width="108.5" height="58.7" rx="3"/><text class="val" x="98.2" y="142.3" text-anchor="middle">30</text><text x="98.2" y="222" text-anchor="middle">Whisper</text><rect class="bar" x="162.5" y="88.7" width="108.5" height="117.3" rx="3"/><text class="val" x="216.8" y="83.7" text-anchor="middle">60</text><text x="216.8" y="222" text-anchor="middle">Talking</text><rect class="bar" x="281.0" y="69.1" width="108.5" height="136.9" rx="3"/><text class="val" x="335.2" y="64.1" text-anchor="middle">70</text><text x="335.2" y="222" text-anchor="middle">Vacuum cleaner</text><rect class="bar" x="399.5" y="30.0" width="108.5" height="176.0" rx="3"/><text class="val" x="453.8" y="25.0" text-anchor="middle">90</text><text x="453.8" y="222" text-anchor="middle">Lawn mower</text><text x="44" y="236" text-anchor="start" font-size="10">decibels (bigger number = louder)</text></svg><p class="cite">standard reference values, rounded</p><p class="prompt">Which sound on the list should you cover your ears near? Which one is the softest?</p></aside>
+      <div class="words"><div class="k"><span data-en="Words to know" data-es="Palabras clave">Words to know</span></div><dl><dt>loud</dt><dd>a sound that is big and strong, easy to hear</dd></dl></div>
+    </div>
+    <div class="checks" data-lesson="l3-4">
+      <div class="k"><span data-en="Check yourself" data-es="Compruébalo">Check yourself</span><span class="score" data-score aria-live="polite"></span></div>
+      <div class="q" data-q="l3-4-c0" data-a="0"><p class="qq"><span class="qn">1.</span> How do you make a drum louder?</p><ul class="opts"><li><button type="button" class="opt" data-i="0"><span class="l">A</span><span>Hit it harder</span></button></li><li><button type="button" class="opt" data-i="1"><span class="l">B</span><span>Hit it softer</span></button></li><li><button type="button" class="opt" data-i="2"><span class="l">C</span><span>Paint it red</span></button></li></ul><p class="say" aria-live="polite"></p><div class="why" hidden><b><span data-en="Why:" data-es="Por qué:">Why:</span></b> A harder hit makes a bigger wiggle. A bigger wiggle is a louder sound.</div></div><div class="q" data-q="l3-4-c1" data-a="1"><p class="qq"><span class="qn">2.</span> Which sound is the softest?</p><ul class="opts"><li><button type="button" class="opt" data-i="0"><span class="l">A</span><span>A lawn mower</span></button></li><li><button type="button" class="opt" data-i="1"><span class="l">B</span><span>A whisper</span></button></li><li><button type="button" class="opt" data-i="2"><span class="l">C</span><span>A fire truck</span></button></li></ul><p class="say" aria-live="polite"></p><div class="why" hidden><b><span data-en="Why:" data-es="Por qué:">Why:</span></b> A whisper is a very small wiggle. You must be close to hear it.</div></div><div class="q" data-q="l3-4-c2" data-a="2"><p class="qq"><span class="qn">3.</span> A friend yells from far away. How does it sound?</p><ul class="opts"><li><button type="button" class="opt" data-i="0"><span class="l">A</span><span>Louder than up close</span></button></li><li><button type="button" class="opt" data-i="1"><span class="l">B</span><span>Exactly the same</span></button></li><li><button type="button" class="opt" data-i="2"><span class="l">C</span><span>Softer than up close</span></button></li></ul><p class="say" aria-live="polite"></p><div class="why" hidden><b><span data-en="Why:" data-es="Por qué:">Why:</span></b> Sound gets weaker as it spreads out. Far away, the yell sounds soft.</div></div>
+    </div>
+  </div>
+</article>
+<article class="les" id="l3-5" data-lid="l3-5">
+  <div class="lh"><span class="ln">3.5</span><h4>High and Low</h4><span class="tick" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5L20 7"/></svg></span></div>
+  <div class="body">
+    <div>
+      <div class="main-idea"><span class="k"><span data-en="Main idea" data-es="Idea principal">Main idea</span></span>Fast wiggles make high sounds; slow wiggles make low sounds.</div>
+      <div class="reading"><p>A bird’s chirp is <button type="button" class="kw" data-def="a sound like a bird chirp or a whistle">high</button>. A big dog’s bark is <button type="button" class="kw" data-def="a sound like a big drum or a big dog’s bark">low</button>. High and low is not about loud and soft. A high sound can be soft. A low sound can be loud.</p><p>Stretch a rubber band tight. Pluck it. The sound is high. Let it go loose. Pluck it. The sound is low. A tight band shakes faster. Faster shaking makes a higher sound.</p><p>Big things often make low sounds. A big drum goes boom. A tiny drum goes tap. Small things wiggle faster. Try tapping a big pot and a small cup.</p></div>
+      <div class="lbtns no-print">
+        <button type="button" class="lbtn listen" data-for="l3-5" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H2v6h4l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M18.5 5.5a9 9 0 0 1 0 13"/></svg><span data-en="Listen" data-es="Escuchar">Listen</span></button>
+      </div>
+    </div>
+    <div>
+      <aside class="look think"><div class="k"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-4 10.5c.7.6 1 1.5 1 2.5h6c0-1 .3-1.9 1-2.5A6 6 0 0 0 12 3z"/></svg><span data-en="Think it through" data-es="Piénsalo">Think it through</span></div><h5>Two Glasses of Water</h5><p class="sc">Two glasses sit on a table. One is almost full of water. One has just a little water. A girl taps each one with a spoon. The full glass makes a low clink. The glass with less water makes a higher clink.</p><p class="prompt">What sound do you think an empty glass would make: higher or lower than the full one?</p></aside>
+      <div class="words"><div class="k"><span data-en="Words to know" data-es="Palabras clave">Words to know</span></div><dl><dt>high</dt><dd>a sound like a bird chirp or a whistle</dd><dt>low</dt><dd>a sound like a big drum or a big dog&#x27;s bark</dd></dl></div>
+    </div>
+    <div class="checks" data-lesson="l3-5">
+      <div class="k"><span data-en="Check yourself" data-es="Compruébalo">Check yourself</span><span class="score" data-score aria-live="polite"></span></div>
+      <div class="q" data-q="l3-5-c0" data-a="0"><p class="qq"><span class="qn">1.</span> Which sound is high?</p><ul class="opts"><li><button type="button" class="opt" data-i="0"><span class="l">A</span><span>A bird chirp</span></button></li><li><button type="button" class="opt" data-i="1"><span class="l">B</span><span>A big drum boom</span></button></li><li><button type="button" class="opt" data-i="2"><span class="l">C</span><span>A truck engine</span></button></li></ul><p class="say" aria-live="polite"></p><div class="why" hidden><b><span data-en="Why:" data-es="Por qué:">Why:</span></b> A bird chirp is a fast wiggle, so it sounds high.</div></div><div class="q" data-q="l3-5-c1" data-a="1"><p class="qq"><span class="qn">2.</span> A rubber band is stretched tight. Its sound is:</p><ul class="opts"><li><button type="button" class="opt" data-i="0"><span class="l">A</span><span>Lower</span></button></li><li><button type="button" class="opt" data-i="1"><span class="l">B</span><span>Higher</span></button></li><li><button type="button" class="opt" data-i="2"><span class="l">C</span><span>Silent</span></button></li></ul><p class="say" aria-live="polite"></p><div class="why" hidden><b><span data-en="Why:" data-es="Por qué:">Why:</span></b> A tight band shakes faster. Faster shaking makes a higher sound.</div></div><div class="q" data-q="l3-5-c2" data-a="2"><p class="qq"><span class="qn">3.</span> Is a high sound always loud?</p><ul class="opts"><li><button type="button" class="opt" data-i="0"><span class="l">A</span><span>Yes, always</span></button></li><li><button type="button" class="opt" data-i="1"><span class="l">B</span><span>Only at night</span></button></li><li><button type="button" class="opt" data-i="2"><span class="l">C</span><span>No, it can be soft</span></button></li></ul><p class="say" aria-live="polite"></p><div class="why" hidden><b><span data-en="Why:" data-es="Por qué:">Why:</span></b> High and low is about how fast the wiggle is. Loud and soft is about how big it is.</div></div>
+    </div>
+  </div>
+</article></section><section class="sec" id="s3-3"><div class="sh"><span class="sn"><span data-en="Section" data-es="Sección">Section</span> 3</span><h3>Sound Travels</h3></div>
+<article class="les" id="l3-6" data-lid="l3-6">
+  <div class="lh"><span class="ln">3.6</span><h4>Through Air, Water and Wood</h4><span class="tick" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5L20 7"/></svg></span></div>
+  <div class="body">
+    <div>
+      <div class="main-idea"><span class="k"><span data-en="Main idea" data-es="Idea principal">Main idea</span></span>Sound can travel through air, through water and through solid things.</div>
+      <div class="reading"><p>Sound needs something to move through. Air works. Water works. Wood works. Put your ear on a table. Have a friend tap the far end. You hear it clearly. The tap went through the wood.</p><p>Dip your ears under bath water. Tap the tub. You still hear it. Sound goes through water. Whales hear each other far away in the ocean this way.</p><p>Long ago, a scientist put a ringing bell in a jar. He pumped the air out. The ring got quiet. No air, no sound. Sound needs something to wiggle.</p></div>
+      <div class="lbtns no-print">
+        <button type="button" class="lbtn listen" data-for="l3-6" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H2v6h4l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M18.5 5.5a9 9 0 0 1 0 13"/></svg><span data-en="Listen" data-es="Escuchar">Listen</span></button>
+      </div>
+    </div>
+    <div>
+      <aside class="look source"><div class="k"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 7h4v6H8.5A2.5 2.5 0 0 0 6 15.5V17H4v-1.5A5.5 5.5 0 0 1 7 10.6V7zm9 0h4v6h-2.5a2.5 2.5 0 0 0-2.5 2.5V17h-2v-1.5a5.5 5.5 0 0 1 3-4.9V7z"/></svg><span data-en="From the source" data-es="De la fuente">From the source</span></div><h5>The Bell in the Jar</h5><blockquote>Around 1660, Robert Boyle hung a small watch with a bell inside a glass jar. When he pumped the air out of the jar, the bell could barely be heard. When he let the air back in, the sound came back.</blockquote><cite>Robert Boyle, air-pump experiments, about 1660 (retold) (paraphrased)</cite><p class="prompt">Why did the bell get quiet when the air was pumped out?</p></aside>
+      <div class="words"><div class="k"><span data-en="Words to know" data-es="Palabras clave">Words to know</span></div><dl><dt>travel</dt><dd>to move from one place to another</dd></dl></div>
+    </div>
+    <div class="checks" data-lesson="l3-6">
+      <div class="k"><span data-en="Check yourself" data-es="Compruébalo">Check yourself</span><span class="score" data-score aria-live="polite"></span></div>
+      <div class="q" data-q="l3-6-c0" data-a="0"><p class="qq"><span class="qn">1.</span> Your ear is on a table. A friend taps the other end. How did the sound reach you?</p><ul class="opts"><li><button type="button" class="opt" data-i="0"><span class="l">A</span><span>Through the wood</span></button></li><li><button type="button" class="opt" data-i="1"><span class="l">B</span><span>Through the ceiling</span></button></li><li><button type="button" class="opt" data-i="2"><span class="l">C</span><span>It could not reach you</span></button></li></ul><p class="say" aria-live="polite"></p><div class="why" hidden><b><span data-en="Why:" data-es="Por qué:">Why:</span></b> Sound travels through solid things like wood. The tap moved through the table.</div></div><div class="q" data-q="l3-6-c1" data-a="1"><p class="qq"><span class="qn">2.</span> Can sound travel through water?</p><ul class="opts"><li><button type="button" class="opt" data-i="0"><span class="l">A</span><span>No, never</span></button></li><li><button type="button" class="opt" data-i="1"><span class="l">B</span><span>Yes, it can</span></button></li><li><button type="button" class="opt" data-i="2"><span class="l">C</span><span>Only in a bathtub</span></button></li></ul><p class="say" aria-live="polite"></p><div class="why" hidden><b><span data-en="Why:" data-es="Por qué:">Why:</span></b> Sound goes through water. Whales hear each other far away in the ocean.</div></div><div class="q" data-q="l3-6-c2" data-a="2"><p class="qq"><span class="qn">3.</span> The air was pumped out of the jar. What happened to the bell&#x27;s ring?</p><ul class="opts"><li><button type="button" class="opt" data-i="0"><span class="l">A</span><span>It got louder</span></button></li><li><button type="button" class="opt" data-i="1"><span class="l">B</span><span>It got higher</span></button></li><li><button type="button" class="opt" data-i="2"><span class="l">C</span><span>It got very quiet</span></button></li></ul><p class="say" aria-live="polite"></p><div class="why" hidden><b><span data-en="Why:" data-es="Por qué:">Why:</span></b> With no air in the jar, there was nothing to carry the wiggle out. The ring almost vanished.</div></div>
+    </div>
+  </div>
+</article>
+<article class="les" id="l3-7" data-lid="l3-7">
+  <div class="lh"><span class="ln">3.7</span><h4>The String Telephone</h4><span class="tick" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5L20 7"/></svg></span></div>
+  <div class="body">
+    <div>
+      <div class="main-idea"><span class="k"><span data-en="Main idea" data-es="Idea principal">Main idea</span></span>A tight string can carry a voice from one cup to another.</div>
+      <div class="reading"><p>Take two paper cups and a long string. Poke a hole in each cup. Tie the string to both. Pull it tight. Talk into one cup. Your friend puts the other cup to an ear.</p><p>Your voice shakes the cup. The cup shakes the string. The string shakes the other cup. Your friend hears you! Let the string go loose. Now it does not work. The wiggle needs a tight string.</p></div>
+      <div class="lbtns no-print">
+        <button type="button" class="lbtn listen" data-for="l3-7" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H2v6h4l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M18.5 5.5a9 9 0 0 1 0 13"/></svg><span data-en="Listen" data-es="Escuchar">Listen</span></button>
+      </div>
+    </div>
+    <div>
+      <aside class="look think"><div class="k"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-4 10.5c.7.6 1 1.5 1 2.5h6c0-1 .3-1.9 1-2.5A6 6 0 0 0 12 3z"/></svg><span data-en="Think it through" data-es="Piénsalo">Think it through</span></div><h5>Tight String, Loose String</h5><p class="sc">Two kids hold cups joined by a string. They step apart until the string is tight. One whispers a secret. The other hears it and laughs. Then they step closer. The string sags. The whisper is gone.</p><p class="prompt">Why does the string telephone stop working when the string sags?</p></aside>
+      <div class="words"><div class="k"><span data-en="Words to know" data-es="Palabras clave">Words to know</span></div><dl><dt>tight</dt><dd>pulled straight with no sag or slack</dd></dl></div>
+    </div>
+    <div class="checks" data-lesson="l3-7">
+      <div class="k"><span data-en="Check yourself" data-es="Compruébalo">Check yourself</span><span class="score" data-score aria-live="polite"></span></div>
+      <div class="q" data-q="l3-7-c0" data-a="0"><p class="qq"><span class="qn">1.</span> What carries the voice between the cups?</p><ul class="opts"><li><button type="button" class="opt" data-i="0"><span class="l">A</span><span>The string</span></button></li><li><button type="button" class="opt" data-i="1"><span class="l">B</span><span>The paper label</span></button></li><li><button type="button" class="opt" data-i="2"><span class="l">C</span><span>The floor</span></button></li></ul><p class="say" aria-live="polite"></p><div class="why" hidden><b><span data-en="Why:" data-es="Por qué:">Why:</span></b> The tight string carries the wiggle from one cup to the other.</div></div><div class="q" data-q="l3-7-c1" data-a="1"><p class="qq"><span class="qn">2.</span> The string goes loose. What happens?</p><ul class="opts"><li><button type="button" class="opt" data-i="0"><span class="l">A</span><span>The voice gets louder</span></button></li><li><button type="button" class="opt" data-i="1"><span class="l">B</span><span>The telephone stops working</span></button></li><li><button type="button" class="opt" data-i="2"><span class="l">C</span><span>The cups fall apart</span></button></li></ul><p class="say" aria-live="polite"></p><div class="why" hidden><b><span data-en="Why:" data-es="Por qué:">Why:</span></b> A loose string cannot carry the wiggle. The voice does not get through.</div></div><div class="q" data-q="l3-7-c2" data-a="2"><p class="qq"><span class="qn">3.</span> What must you do to the string first?</p><ul class="opts"><li><button type="button" class="opt" data-i="0"><span class="l">A</span><span>Cut it short</span></button></li><li><button type="button" class="opt" data-i="1"><span class="l">B</span><span>Wet it</span></button></li><li><button type="button" class="opt" data-i="2"><span class="l">C</span><span>Pull it tight</span></button></li></ul><p class="say" aria-live="polite"></p><div class="why" hidden><b><span data-en="Why:" data-es="Por qué:">Why:</span></b> The string must be tight so the wiggle can travel along it.</div></div>
+    </div>
+  </div>
+</article>
+<article class="les" id="l3-8" data-lid="l3-8">
+  <div class="lh"><span class="ln">3.8</span><h4>Sending a Message</h4><span class="tick" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5L20 7"/></svg></span></div>
+  <div class="body">
+    <div>
+      <div class="main-idea"><span class="k"><span data-en="Main idea" data-es="Idea principal">Main idea</span></span>People use sounds like bells and whistles to send messages far away.</div>
+      <div class="reading"><p>A sound can carry a message. A school bell says, come in. A whistle at recess says, stop and look. A fire alarm says, get out now. You do not need words.</p><p>Long ago, church bells told a whole town the time. Ships blow horns in fog so they do not crash. Sounds can travel farther than your voice.</p><p>You can make your own sound code. One clap means yes. Two claps mean no. Try it with a friend across the room.</p></div>
+      <div class="lbtns no-print">
+        <button type="button" class="lbtn listen" data-for="l3-8" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H2v6h4l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M18.5 5.5a9 9 0 0 1 0 13"/></svg><span data-en="Listen" data-es="Escuchar">Listen</span></button>
+      </div>
+    </div>
+    <div>
+      <aside class="look think"><div class="k"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-4 10.5c.7.6 1 1.5 1 2.5h6c0-1 .3-1.9 1-2.5A6 6 0 0 0 12 3z"/></svg><span data-en="Think it through" data-es="Piénsalo">Think it through</span></div><h5>Two Claps Mean No</h5><p class="sc">A class makes a clap code. One clap means yes. Two claps mean no. Three claps mean come here. The teacher is across the gym. She claps three times. All the kids run to her.</p><p class="prompt">What could you use instead of claps to send the same code even farther?</p></aside>
+      <div class="words"><div class="k"><span data-en="Words to know" data-es="Palabras clave">Words to know</span></div><dl><dt>message</dt><dd>information sent from one person to another</dd></dl></div>
+    </div>
+    <div class="checks" data-lesson="l3-8">
+      <div class="k"><span data-en="Check yourself" data-es="Compruébalo">Check yourself</span><span class="score" data-score aria-live="polite"></span></div>
+      <div class="q" data-q="l3-8-c0" data-a="0"><p class="qq"><span class="qn">1.</span> What does a fire alarm tell you?</p><ul class="opts"><li><button type="button" class="opt" data-i="0"><span class="l">A</span><span>Get out now</span></button></li><li><button type="button" class="opt" data-i="1"><span class="l">B</span><span>Time for lunch</span></button></li><li><button type="button" class="opt" data-i="2"><span class="l">C</span><span>Sit down</span></button></li></ul><p class="say" aria-live="polite"></p><div class="why" hidden><b><span data-en="Why:" data-es="Por qué:">Why:</span></b> A fire alarm is a sound message. It means leave the building right away.</div></div><div class="q" data-q="l3-8-c1" data-a="1"><p class="qq"><span class="qn">2.</span> Why do ships blow horns in fog?</p><ul class="opts"><li><button type="button" class="opt" data-i="0"><span class="l">A</span><span>To make music</span></button></li><li><button type="button" class="opt" data-i="1"><span class="l">B</span><span>So other ships know they are there</span></button></li><li><button type="button" class="opt" data-i="2"><span class="l">C</span><span>To scare fish</span></button></li></ul><p class="say" aria-live="polite"></p><div class="why" hidden><b><span data-en="Why:" data-es="Por qué:">Why:</span></b> In fog, ships cannot see each other. The horn sound tells them where a ship is.</div></div><div class="q" data-q="l3-8-c2" data-a="2"><p class="qq"><span class="qn">3.</span> Two claps mean no. Your friend claps twice. What did they say?</p><ul class="opts"><li><button type="button" class="opt" data-i="0"><span class="l">A</span><span>Yes</span></button></li><li><button type="button" class="opt" data-i="1"><span class="l">B</span><span>Come here</span></button></li><li><button type="button" class="opt" data-i="2"><span class="l">C</span><span>No</span></button></li></ul><p class="say" aria-live="polite"></p><div class="why" hidden><b><span data-en="Why:" data-es="Por qué:">Why:</span></b> In the code, two claps mean no. Sounds can carry messages without words.</div></div>
+    </div>
+  </div>
+</article></section>
+  <section class="review" data-review="r3" id="rev3">
+    <div class="rh"><div><div class="k"><span data-en="Chapter review" data-es="Repaso del capítulo">Chapter review</span></div><h3>Sound Is a Wiggle</h3></div><div class="rscore" data-rscore aria-live="polite">0 / 6</div></div>
+    <div class="rbody"><div class="q wide" data-q="r3-0" data-a="0"><p class="qq"><span class="qn">1.</span> What is a sound?</p><ul class="opts"><li><button type="button" class="opt" data-i="0"><span class="l">A</span><span>A wiggle that spreads out</span></button></li><li><button type="button" class="opt" data-i="1"><span class="l">B</span><span>A kind of light</span></button></li><li><button type="button" class="opt" data-i="2"><span class="l">C</span><span>A smell in the air</span></button></li></ul><p class="say" aria-live="polite"></p><div class="why" hidden><b><span data-en="Why:" data-es="Por qué:">Why:</span></b> Sound comes from something shaking fast. The wiggle spreads out to your ear.</div></div><div class="q wide" data-q="r3-1" data-a="1"><p class="qq"><span class="qn">2.</span> You hum and put a hand on your throat. What do you feel?</p><ul class="opts"><li><button type="button" class="opt" data-i="0"><span class="l">A</span><span>Nothing at all</span></button></li><li><button type="button" class="opt" data-i="1"><span class="l">B</span><span>A buzz</span></button></li><li><button type="button" class="opt" data-i="2"><span class="l">C</span><span>Cold</span></button></li></ul><p class="say" aria-live="polite"></p><div class="why" hidden><b><span data-en="Why:" data-es="Por qué:">Why:</span></b> Flaps in your throat vibrate when you hum. You feel that buzz.</div></div><div class="q wide" data-q="r3-2" data-a="2"><p class="qq"><span class="qn">3.</span> Rice on a drum hops when you bang a pot. Why?</p><ul class="opts"><li><button type="button" class="opt" data-i="0"><span class="l">A</span><span>The pot touched the drum</span></button></li><li><button type="button" class="opt" data-i="1"><span class="l">B</span><span>The rice got hot</span></button></li><li><button type="button" class="opt" data-i="2"><span class="l">C</span><span>The sound made the drum skin shake</span></button></li></ul><p class="say" aria-live="polite"></p><div class="why" hidden><b><span data-en="Why:" data-es="Por qué:">Why:</span></b> The sound traveled through the air and shook the drum skin. The rice hopped.</div></div><div class="q wide" data-q="r3-3" data-a="0"><p class="qq"><span class="qn">4.</span> Which wiggle makes a loud sound?</p><ul class="opts"><li><button type="button" class="opt" data-i="0"><span class="l">A</span><span>A big wiggle</span></button></li><li><button type="button" class="opt" data-i="1"><span class="l">B</span><span>A tiny wiggle</span></button></li><li><button type="button" class="opt" data-i="2"><span class="l">C</span><span>A slow wiggle</span></button></li></ul><p class="say" aria-live="polite"></p><div class="why" hidden><b><span data-en="Why:" data-es="Por qué:">Why:</span></b> A bigger wiggle makes a louder sound. A harder hit makes a bigger wiggle.</div></div><div class="q wide" data-q="r3-4" data-a="1"><p class="qq"><span class="qn">5.</span> A tight rubber band and a loose one. Which sounds higher?</p><ul class="opts"><li><button type="button" class="opt" data-i="0"><span class="l">A</span><span>The loose one</span></button></li><li><button type="button" class="opt" data-i="1"><span class="l">B</span><span>The tight one</span></button></li><li><button type="button" class="opt" data-i="2"><span class="l">C</span><span>They sound the same</span></button></li></ul><p class="say" aria-live="polite"></p><div class="why" hidden><b><span data-en="Why:" data-es="Por qué:">Why:</span></b> The tight band shakes faster. Faster shaking makes a higher sound.</div></div><div class="q wide" data-q="r3-5" data-a="2"><p class="qq"><span class="qn">6.</span> The string telephone needs the string to be:</p><ul class="opts"><li><button type="button" class="opt" data-i="0"><span class="l">A</span><span>Wet</span></button></li><li><button type="button" class="opt" data-i="1"><span class="l">B</span><span>Red</span></button></li><li><button type="button" class="opt" data-i="2"><span class="l">C</span><span>Tight</span></button></li></ul><p class="say" aria-live="polite"></p><div class="why" hidden><b><span data-en="Why:" data-es="Por qué:">Why:</span></b> A tight string carries the wiggle from cup to cup. A loose one does not.</div></div></div>
+    <div class="rfoot"><button type="button" class="btn reset-r"><span data-en="Try again" data-es="Otra vez">Try again</span></button><span class="verdict" data-verdict></span></div>
+  </section>
+</section>
+<section class="chap" id="ch4">
+  <div class="chead"><span class="badge" aria-hidden="true">4</span>
+    <div><span class="tab"><span data-en="Chapter" data-es="Capítulo">Chapter</span></span><h2>Light and Seeing</h2><div class="yrs">Waves</div></div>
+  </div>
+  <div class="cq"><span class="k"><span data-en="Big question" data-es="Gran pregunta">Big question</span></span>Why can you see some things and not others, and where does light come from?</div>
+  <article class="story">
+    <div class="k"><span data-en="The story" data-es="La historia">The story</span></div>
+    <h3>Behind the Bedsheet</h3>
+    <p class="kick">A lamp, a sheet and two hands can make a whole show.</p>
+    <p class="sp">Leo and his sister hang a white bedsheet across the doorway. Behind it, they set a lamp on the floor. Grandma sits on the other side. The lights in the room go off. The sheet glows soft and white.</p><p class="sp">Leo puts his hands between the lamp and the sheet. On Grandma&#x27;s side, a dark dog appears! Its ears wiggle. It opens its mouth. Grandma laughs. Leo&#x27;s hands block the light. Where the light cannot go, the sheet stays dark.</p><p class="sp">His sister moves her hand close to the lamp. Her rabbit shadow grows huge. She moves it near the sheet. The rabbit shrinks and gets sharp. Then Leo turns the lamp off. Everything is black. No lamp, no shadows, no show.</p><p class="sp">Leo turns the lamp back on. He holds up a glass of water. The sheet shows a fuzzy, bright shape, not a dark one. Light goes through the glass. Leo thinks: light goes through some things and is stopped by others.</p>
+    <div class="think"><span class="k2"><span data-en="Talk about it" data-es="Coméntalo">Talk about it</span></span>The rabbit shadow got bigger when the hand moved closer to the lamp. Why do you think that happened?</div>
+  </article>
+  <section class="sec" id="s4-1"><div class="sh"><span class="sn"><span data-en="Section" data-es="Sección">Section</span> 1</span><h3>Light Lets Us See</h3></div>
+<article class="les" id="l4-1" data-lid="l4-1">
+  <div class="lh"><span class="ln">4.1</span><h4>The Dark Room</h4><span class="tick" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5L20 7"/></svg></span></div>
+  <div class="body">
+    <div>
+      <div class="main-idea"><span class="k"><span data-en="Main idea" data-es="Idea principal">Main idea</span></span>You need light to see anything; in a truly dark room you see nothing.</div>
+      <div class="reading"><p>Go into a closet. Shut the door. Wait. Can you see your hand? If no light gets in, you cannot. Your eyes need <button type="button" class="kw" data-def="what lets your eyes see; it comes from the sun, fire and bulbs">light</button> to see. No light means no seeing.</p><p>Open the door a crack. A little light comes in. Now you see shapes. Open it wide. Now you see colors too. More light lets you see more.</p></div>
+      <div class="lbtns no-print">
+        <button type="button" class="lbtn listen" data-for="l4-1" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H2v6h4l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M18.5 5.5a9 9 0 0 1 0 13"/></svg><span data-en="Listen" data-es="Escuchar">Listen</span></button>
+      </div>
+    </div>
+    <div>
+      <aside class="look think"><div class="k"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-4 10.5c.7.6 1 1.5 1 2.5h6c0-1 .3-1.9 1-2.5A6 6 0 0 0 12 3z"/></svg><span data-en="Think it through" data-es="Piénsalo">Think it through</span></div><h5>The Closet Test</h5><p class="sc">A girl goes into a closet with a red ball. She shuts the door. It is very dark. She holds the ball right in front of her face. She cannot see it at all. She opens the door a tiny bit. Now she sees a dark round shape. She opens it wide. Now the ball looks red.</p><p class="prompt">Why could she not see the red ball with the door shut?</p></aside>
+      <div class="words"><div class="k"><span data-en="Words to know" data-es="Palabras clave">Words to know</span></div><dl><dt>light</dt><dd>what lets your eyes see; it comes from the sun, fire and bulbs</dd></dl></div>
+    </div>
+    <div class="checks" data-lesson="l4-1">
+      <div class="k"><span data-en="Check yourself" data-es="Compruébalo">Check yourself</span><span class="score" data-score aria-live="polite"></span></div>
+      <div class="q" data-q="l4-1-c0" data-a="0"><p class="qq"><span class="qn">1.</span> What do your eyes need to see?</p><ul class="opts"><li><button type="button" class="opt" data-i="0"><span class="l">A</span><span>Light</span></button></li><li><button type="button" class="opt" data-i="1"><span class="l">B</span><span>Sound</span></button></li><li><button type="button" class="opt" data-i="2"><span class="l">C</span><span>Water</span></button></li></ul><p class="say" aria-live="polite"></p><div class="why" hidden><b><span data-en="Why:" data-es="Por qué:">Why:</span></b> Eyes only work when light reaches them. In a truly dark room you see nothing.</div></div><div class="q" data-q="l4-1-c1" data-a="1"><p class="qq"><span class="qn">2.</span> The closet door opens a crack. What do you see first?</p><ul class="opts"><li><button type="button" class="opt" data-i="0"><span class="l">A</span><span>Bright colors</span></button></li><li><button type="button" class="opt" data-i="1"><span class="l">B</span><span>Dark shapes</span></button></li><li><button type="button" class="opt" data-i="2"><span class="l">C</span><span>Nothing changes</span></button></li></ul><p class="say" aria-live="polite"></p><div class="why" hidden><b><span data-en="Why:" data-es="Por qué:">Why:</span></b> A little light shows shapes. You need more light to see colors well.</div></div><div class="q" data-q="l4-1-c2" data-a="2"><p class="qq"><span class="qn">3.</span> A red ball is in a totally dark room. What color does it look?</p><ul class="opts"><li><button type="button" class="opt" data-i="0"><span class="l">A</span><span>Red</span></button></li><li><button type="button" class="opt" data-i="1"><span class="l">B</span><span>Pink</span></button></li><li><button type="button" class="opt" data-i="2"><span class="l">C</span><span>You cannot see it</span></button></li></ul><p class="say" aria-live="polite"></p><div class="why" hidden><b><span data-en="Why:" data-es="Por qué:">Why:</span></b> With no light, nothing can be seen, not even a bright red ball.</div></div>
+    </div>
+  </div>
+</article>
+<article class="les" id="l4-2" data-lid="l4-2">
+  <div class="lh"><span class="ln">4.2</span><h4>Where Light Comes From</h4><span class="tick" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5L20 7"/></svg></span></div>
+  <div class="body">
+    <div>
+      <div class="main-idea"><span class="k"><span data-en="Main idea" data-es="Idea principal">Main idea</span></span>The sun, fire, and light bulbs make light; most things only bounce it.</div>
+      <div class="reading"><p>Some things make their own light. The sun does. A candle flame does. A light bulb does. Each one is a light <button type="button" class="kw" data-def="a thing that makes its own light, like the sun or a bulb">source</button>. It shines.</p><p>Most things do not shine. A book does not. Your hand does not. You see them because light from a source hits them and bounces to your eyes. The moon does not shine on its own. Sunlight bounces off it.</p><p>The sun is our biggest light source. It lights the whole day. At night we use bulbs, flashlights and fires.</p></div>
+      <div class="lbtns no-print">
+        <button type="button" class="lbtn listen" data-for="l4-2" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H2v6h4l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M18.5 5.5a9 9 0 0 1 0 13"/></svg><span data-en="Listen" data-es="Escuchar">Listen</span></button>
+      </div>
+    </div>
+    <div>
+      <aside class="look think"><div class="k"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-4 10.5c.7.6 1 1.5 1 2.5h6c0-1 .3-1.9 1-2.5A6 6 0 0 0 12 3z"/></svg><span data-en="Think it through" data-es="Piénsalo">Think it through</span></div><h5>Shines or Does Not Shine</h5><p class="sc">Sort these into two piles. Pile one: things that make their own light. Pile two: things you only see because light bounces off them. Here is the list: a candle, a rock, the sun, a mirror, a flashlight, a shoe, a firefly, the moon.</p><p class="prompt">Which pile does the moon go in? Why?</p></aside>
+      <div class="words"><div class="k"><span data-en="Words to know" data-es="Palabras clave">Words to know</span></div><dl><dt>source</dt><dd>a thing that makes its own light, like the sun or a bulb</dd></dl></div>
+    </div>
+    <div class="checks" data-lesson="l4-2">
+      <div class="k"><span data-en="Check yourself" data-es="Compruébalo">Check yourself</span><span class="score" data-score aria-live="polite"></span></div>
+      <div class="q" data-q="l4-2-c0" data-a="0"><p class="qq"><span class="qn">1.</span> Which one makes its own light?</p><ul class="opts"><li><button type="button" class="opt" data-i="0"><span class="l">A</span><span>A candle flame</span></button></li><li><button type="button" class="opt" data-i="1"><span class="l">B</span><span>A book</span></button></li><li><button type="button" class="opt" data-i="2"><span class="l">C</span><span>A rock</span></button></li></ul><p class="say" aria-live="polite"></p><div class="why" hidden><b><span data-en="Why:" data-es="Por qué:">Why:</span></b> A flame is a light source. A book and a rock only bounce light.</div></div><div class="q" data-q="l4-2-c1" data-a="1"><p class="qq"><span class="qn">2.</span> Why can you see a book?</p><ul class="opts"><li><button type="button" class="opt" data-i="0"><span class="l">A</span><span>The book glows</span></button></li><li><button type="button" class="opt" data-i="1"><span class="l">B</span><span>Light bounces off it to your eyes</span></button></li><li><button type="button" class="opt" data-i="2"><span class="l">C</span><span>Your eyes shine on it</span></button></li></ul><p class="say" aria-live="polite"></p><div class="why" hidden><b><span data-en="Why:" data-es="Por qué:">Why:</span></b> A book does not make light. Light from a source hits it and bounces into your eyes.</div></div><div class="q" data-q="l4-2-c2" data-a="2"><p class="qq"><span class="qn">3.</span> Does the moon make its own light?</p><ul class="opts"><li><button type="button" class="opt" data-i="0"><span class="l">A</span><span>Yes, it burns</span></button></li><li><button type="button" class="opt" data-i="1"><span class="l">B</span><span>Yes, but only in winter</span></button></li><li><button type="button" class="opt" data-i="2"><span class="l">C</span><span>No, sunlight bounces off it</span></button></li></ul><p class="say" aria-live="polite"></p><div class="why" hidden><b><span data-en="Why:" data-es="Por qué:">Why:</span></b> The moon is a big rock. We see it because the sun&#x27;s light bounces off it.</div></div>
+    </div>
+  </div>
+</article></section><section class="sec" id="s4-2"><div class="sh"><span class="sn"><span data-en="Section" data-es="Sección">Section</span> 2</span><h3>Through, Blocked, Shadow</h3></div>
+<article class="les" id="l4-3" data-lid="l4-3">
+  <div class="lh"><span class="ln">4.3</span><h4>Light Goes Through Glass</h4><span class="tick" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5L20 7"/></svg></span></div>
+  <div class="body">
+    <div>
+      <div class="main-idea"><span class="k"><span data-en="Main idea" data-es="Idea principal">Main idea</span></span>Some materials let light through, some let a little through, and some block it.</div>
+      <div class="reading"><p>Hold a window glass up to a lamp. You see the lamp clearly. Glass lets light through. Now hold up wax paper. You see a glow, but no clear lamp. Wax paper lets a little light through.</p><p>Now hold up a wood board. You see nothing. Wood can <button type="button" class="kw" data-def="to stop light so it cannot go through">block</button> light. Try more things: a plastic bag, a leaf, a shirt, a cup. Sort them into three groups: all, a little, none.</p></div>
+      <div class="lbtns no-print">
+        <button type="button" class="lbtn listen" data-for="l4-3" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H2v6h4l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M18.5 5.5a9 9 0 0 1 0 13"/></svg><span data-en="Listen" data-es="Escuchar">Listen</span></button>
+      </div>
+    </div>
+    <div>
+      <aside class="look think"><div class="k"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-4 10.5c.7.6 1 1.5 1 2.5h6c0-1 .3-1.9 1-2.5A6 6 0 0 0 12 3z"/></svg><span data-en="Think it through" data-es="Piénsalo">Think it through</span></div><h5>Three Cups</h5><p class="sc">Three cups sit in a row on a sunny windowsill. One is clear glass. One is frosty white plastic. One is a metal mug. Behind each cup is a toy. You can see the toy behind the glass. You see a fuzzy shape behind the white cup. You see no toy behind the mug.</p><p class="prompt">Which cup blocks the light? Which lets a little light through?</p></aside>
+      <div class="words"><div class="k"><span data-en="Words to know" data-es="Palabras clave">Words to know</span></div><dl><dt>block</dt><dd>to stop light so it cannot go through</dd></dl></div>
+    </div>
+    <div class="checks" data-lesson="l4-3">
+      <div class="k"><span data-en="Check yourself" data-es="Compruébalo">Check yourself</span><span class="score" data-score aria-live="polite"></span></div>
+      <div class="q" data-q="l4-3-c0" data-a="0"><p class="qq"><span class="qn">1.</span> Which lets light through best?</p><ul class="opts"><li><button type="button" class="opt" data-i="0"><span class="l">A</span><span>Clear glass</span></button></li><li><button type="button" class="opt" data-i="1"><span class="l">B</span><span>Wax paper</span></button></li><li><button type="button" class="opt" data-i="2"><span class="l">C</span><span>A wood board</span></button></li></ul><p class="say" aria-live="polite"></p><div class="why" hidden><b><span data-en="Why:" data-es="Por qué:">Why:</span></b> Clear glass lets almost all light through. You see the lamp clearly.</div></div><div class="q" data-q="l4-3-c1" data-a="1"><p class="qq"><span class="qn">2.</span> You hold wax paper up to a lamp. What do you see?</p><ul class="opts"><li><button type="button" class="opt" data-i="0"><span class="l">A</span><span>The lamp, sharp and clear</span></button></li><li><button type="button" class="opt" data-i="1"><span class="l">B</span><span>A glow, but no clear lamp</span></button></li><li><button type="button" class="opt" data-i="2"><span class="l">C</span><span>Total darkness</span></button></li></ul><p class="say" aria-live="polite"></p><div class="why" hidden><b><span data-en="Why:" data-es="Por qué:">Why:</span></b> Wax paper lets some light through, but it scatters it. You see a glow, not a clear shape.</div></div><div class="q" data-q="l4-3-c2" data-a="2"><p class="qq"><span class="qn">3.</span> What does a wood board do to light?</p><ul class="opts"><li><button type="button" class="opt" data-i="0"><span class="l">A</span><span>Makes it brighter</span></button></li><li><button type="button" class="opt" data-i="1"><span class="l">B</span><span>Turns it blue</span></button></li><li><button type="button" class="opt" data-i="2"><span class="l">C</span><span>Blocks it</span></button></li></ul><p class="say" aria-live="polite"></p><div class="why" hidden><b><span data-en="Why:" data-es="Por qué:">Why:</span></b> Wood blocks light. No light gets through, so you see nothing behind it.</div></div>
+    </div>
+  </div>
+</article>
+<article class="les" id="l4-4" data-lid="l4-4">
+  <div class="lh"><span class="ln">4.4</span><h4>Shadows</h4><span class="tick" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5L20 7"/></svg></span></div>
+  <div class="body">
+    <div>
+      <div class="main-idea"><span class="k"><span data-en="Main idea" data-es="Idea principal">Main idea</span></span>A shadow is the dark spot where something has blocked the light.</div>
+      <div class="reading"><p>Stand in the sun. Look down. A dark shape is on the ground. It is your <button type="button" class="kw" data-def="a dark spot made when something blocks light">shadow</button>. Your body blocks the sunlight. The ground behind you stays dark.</p><p>Shadows change. Move close to a lamp. Your shadow grows big. Move away. It shrinks. Turn off the lamp. The shadow is gone. No light means no shadow.</p><p>In the morning, the sun is low. Shadows are long. At noon, the sun is high. Shadows are short. Chalk your shadow at recess. Check it after lunch.</p></div>
+      <div class="lbtns no-print">
+        <button type="button" class="lbtn listen" data-for="l4-4" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H2v6h4l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M18.5 5.5a9 9 0 0 1 0 13"/></svg><span data-en="Listen" data-es="Escuchar">Listen</span></button>
+      </div>
+    </div>
+    <div>
+      <aside class="look think"><div class="k"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-4 10.5c.7.6 1 1.5 1 2.5h6c0-1 .3-1.9 1-2.5A6 6 0 0 0 12 3z"/></svg><span data-en="Think it through" data-es="Piénsalo">Think it through</span></div><h5>Chalk the Shadow</h5><p class="sc">At 9 in the morning, a class draws chalk around a flagpole&#x27;s shadow. It is long and points toward the school. At noon they look again. The shadow is short. It points a different way. At 3 in the afternoon, it is long again, pointing away from the school.</p><p class="prompt">Why did the flagpole&#x27;s shadow get short at noon?</p></aside>
+      <div class="words"><div class="k"><span data-en="Words to know" data-es="Palabras clave">Words to know</span></div><dl><dt>shadow</dt><dd>a dark spot made when something blocks light</dd></dl></div>
+    </div>
+    <div class="checks" data-lesson="l4-4">
+      <div class="k"><span data-en="Check yourself" data-es="Compruébalo">Check yourself</span><span class="score" data-score aria-live="polite"></span></div>
+      <div class="q" data-q="l4-4-c0" data-a="0"><p class="qq"><span class="qn">1.</span> What makes a shadow?</p><ul class="opts"><li><button type="button" class="opt" data-i="0"><span class="l">A</span><span>Something blocking light</span></button></li><li><button type="button" class="opt" data-i="1"><span class="l">B</span><span>Something making light</span></button></li><li><button type="button" class="opt" data-i="2"><span class="l">C</span><span>Something wet</span></button></li></ul><p class="say" aria-live="polite"></p><div class="why" hidden><b><span data-en="Why:" data-es="Por qué:">Why:</span></b> A shadow is the dark place where light is blocked.</div></div><div class="q" data-q="l4-4-c1" data-a="1"><p class="qq"><span class="qn">2.</span> You turn off the only lamp. What happens to your shadow?</p><ul class="opts"><li><button type="button" class="opt" data-i="0"><span class="l">A</span><span>It gets bigger</span></button></li><li><button type="button" class="opt" data-i="1"><span class="l">B</span><span>It disappears</span></button></li><li><button type="button" class="opt" data-i="2"><span class="l">C</span><span>It turns white</span></button></li></ul><p class="say" aria-live="polite"></p><div class="why" hidden><b><span data-en="Why:" data-es="Por qué:">Why:</span></b> No light means no shadow. A shadow is only a spot with light blocked.</div></div><div class="q" data-q="l4-4-c2" data-a="2"><p class="qq"><span class="qn">3.</span> When are shadows the shortest?</p><ul class="opts"><li><button type="button" class="opt" data-i="0"><span class="l">A</span><span>Early morning</span></button></li><li><button type="button" class="opt" data-i="1"><span class="l">B</span><span>Late afternoon</span></button></li><li><button type="button" class="opt" data-i="2"><span class="l">C</span><span>Around noon</span></button></li></ul><p class="say" aria-live="polite"></p><div class="why" hidden><b><span data-en="Why:" data-es="Por qué:">Why:</span></b> At noon the sun is high in the sky. A high sun makes short shadows.</div></div>
+    </div>
+  </div>
+</article></section><section class="sec" id="s4-3"><div class="sh"><span class="sn"><span data-en="Section" data-es="Sección">Section</span> 3</span><h3>Bouncing and Sending</h3></div>
+<article class="les" id="l4-5" data-lid="l4-5">
+  <div class="lh"><span class="ln">4.5</span><h4>Mirrors Bounce Light</h4><span class="tick" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5L20 7"/></svg></span></div>
+  <div class="body">
+    <div>
+      <div class="main-idea"><span class="k"><span data-en="Main idea" data-es="Idea principal">Main idea</span></span>A mirror bounces light back so you can see yourself or send a beam.</div>
+      <div class="reading"><p>A <button type="button" class="kw" data-def="a smooth shiny surface that bounces light back">mirror</button> is very smooth and shiny. Light hits it and bounces straight back. That is why you see your face in it. The light from your face bounces to your eyes.</p><p>Shine a flashlight at a mirror. Tilt the mirror. The bright spot moves on the wall. You can aim light with a mirror. Kids can bounce a sun spot onto the ceiling.</p><p>Still water can act like a mirror. Look in a puddle. You see the sky. Wind makes ripples. Now the sky looks broken up.</p></div>
+      <div class="lbtns no-print">
+        <button type="button" class="lbtn listen" data-for="l4-5" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H2v6h4l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M18.5 5.5a9 9 0 0 1 0 13"/></svg><span data-en="Listen" data-es="Escuchar">Listen</span></button>
+      </div>
+    </div>
+    <div>
+      <aside class="look think"><div class="k"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-4 10.5c.7.6 1 1.5 1 2.5h6c0-1 .3-1.9 1-2.5A6 6 0 0 0 12 3z"/></svg><span data-en="Think it through" data-es="Piénsalo">Think it through</span></div><h5>Sun Spot on the Ceiling</h5><p class="sc">Sun comes in the window. A boy holds a small mirror in the sunbeam. A bright spot appears on the ceiling. He tilts the mirror a little. The spot slides across the ceiling. He tilts it more. The spot lands on the wall.</p><p class="prompt">How could two kids with mirrors pass one sun spot from the window to the far corner?</p></aside>
+      <div class="words"><div class="k"><span data-en="Words to know" data-es="Palabras clave">Words to know</span></div><dl><dt>mirror</dt><dd>a smooth shiny surface that bounces light back</dd></dl></div>
+    </div>
+    <div class="checks" data-lesson="l4-5">
+      <div class="k"><span data-en="Check yourself" data-es="Compruébalo">Check yourself</span><span class="score" data-score aria-live="polite"></span></div>
+      <div class="q" data-q="l4-5-c0" data-a="0"><p class="qq"><span class="qn">1.</span> What does a mirror do to light?</p><ul class="opts"><li><button type="button" class="opt" data-i="0"><span class="l">A</span><span>Bounces it back</span></button></li><li><button type="button" class="opt" data-i="1"><span class="l">B</span><span>Soaks it up</span></button></li><li><button type="button" class="opt" data-i="2"><span class="l">C</span><span>Makes new light</span></button></li></ul><p class="say" aria-live="polite"></p><div class="why" hidden><b><span data-en="Why:" data-es="Por qué:">Why:</span></b> A mirror is smooth and shiny. Light bounces off it instead of going through.</div></div><div class="q" data-q="l4-5-c1" data-a="1"><p class="qq"><span class="qn">2.</span> You tilt a mirror in a sunbeam. What happens to the bright spot?</p><ul class="opts"><li><button type="button" class="opt" data-i="0"><span class="l">A</span><span>It vanishes</span></button></li><li><button type="button" class="opt" data-i="1"><span class="l">B</span><span>It moves</span></button></li><li><button type="button" class="opt" data-i="2"><span class="l">C</span><span>It gets dark</span></button></li></ul><p class="say" aria-live="polite"></p><div class="why" hidden><b><span data-en="Why:" data-es="Por qué:">Why:</span></b> Tilting the mirror changes where the light bounces. The spot moves.</div></div><div class="q" data-q="l4-5-c2" data-a="2"><p class="qq"><span class="qn">3.</span> Why does a puddle show the sky?</p><ul class="opts"><li><button type="button" class="opt" data-i="0"><span class="l">A</span><span>The puddle glows</span></button></li><li><button type="button" class="opt" data-i="1"><span class="l">B</span><span>The sky is under the puddle</span></button></li><li><button type="button" class="opt" data-i="2"><span class="l">C</span><span>Still water bounces light like a mirror</span></button></li></ul><p class="say" aria-live="polite"></p><div class="why" hidden><b><span data-en="Why:" data-es="Por qué:">Why:</span></b> Smooth, still water bounces light back like a mirror. Ripples break the picture up.</div></div>
+    </div>
+  </div>
+</article>
+<article class="les" id="l4-6" data-lid="l4-6">
+  <div class="lh"><span class="ln">4.6</span><h4>Blink a Message</h4><span class="tick" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5L20 7"/></svg></span></div>
+  <div class="body">
+    <div>
+      <div class="main-idea"><span class="k"><span data-en="Main idea" data-es="Idea principal">Main idea</span></span>Light can carry a message, like a flashlight blink or a lighthouse beam.</div>
+      <div class="reading"><p>You can talk with light. Make a code. One blink means yes. Two blinks mean no. Blink a flashlight to a friend across a dark yard. They blink back. No sound needed.</p><p>A <button type="button" class="kw" data-def="a tall tower with a bright light that warns ships">lighthouse</button> is a tall tower with a big light. Its beam turns at night. Ships see it far out on the water. The light says: land is here, stay away from the rocks. Chicago has a lighthouse at its harbor on Lake Michigan.</p><p>Traffic lights send messages too. Red says stop. Green says go. You read the light before you cross.</p></div>
+      <div class="lbtns no-print">
+        <button type="button" class="lbtn listen" data-for="l4-6" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H2v6h4l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M18.5 5.5a9 9 0 0 1 0 13"/></svg><span data-en="Listen" data-es="Escuchar">Listen</span></button>
+      </div>
+    </div>
+    <div>
+      <aside class="look think"><div class="k"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-4 10.5c.7.6 1 1.5 1 2.5h6c0-1 .3-1.9 1-2.5A6 6 0 0 0 12 3z"/></svg><span data-en="Think it through" data-es="Piénsalo">Think it through</span></div><h5>Blinks Across the Yard</h5><p class="sc">Two friends live across a dark yard. They agree: one blink means yes, two blinks mean no, three blinks mean come over. One night, a flashlight in the window blinks three times. The other friend puts on shoes and runs over.</p><p class="prompt">Why does a light code work at night but a wave of the hand does not?</p></aside>
+      <div class="words"><div class="k"><span data-en="Words to know" data-es="Palabras clave">Words to know</span></div><dl><dt>lighthouse</dt><dd>a tall tower with a bright light that warns ships</dd></dl></div>
+    </div>
+    <div class="checks" data-lesson="l4-6">
+      <div class="k"><span data-en="Check yourself" data-es="Compruébalo">Check yourself</span><span class="score" data-score aria-live="polite"></span></div>
+      <div class="q" data-q="l4-6-c0" data-a="0"><p class="qq"><span class="qn">1.</span> What does a lighthouse tell ships?</p><ul class="opts"><li><button type="button" class="opt" data-i="0"><span class="l">A</span><span>Land is here, stay away from the rocks</span></button></li><li><button type="button" class="opt" data-i="1"><span class="l">B</span><span>Time to eat</span></button></li><li><button type="button" class="opt" data-i="2"><span class="l">C</span><span>The water is cold</span></button></li></ul><p class="say" aria-live="polite"></p><div class="why" hidden><b><span data-en="Why:" data-es="Por qué:">Why:</span></b> The lighthouse beam warns ships that the shore and rocks are near.</div></div><div class="q" data-q="l4-6-c1" data-a="1"><p class="qq"><span class="qn">2.</span> Two blinks mean no. The flashlight blinks twice. The message is:</p><ul class="opts"><li><button type="button" class="opt" data-i="0"><span class="l">A</span><span>Yes</span></button></li><li><button type="button" class="opt" data-i="1"><span class="l">B</span><span>No</span></button></li><li><button type="button" class="opt" data-i="2"><span class="l">C</span><span>Come over</span></button></li></ul><p class="say" aria-live="polite"></p><div class="why" hidden><b><span data-en="Why:" data-es="Por qué:">Why:</span></b> In the code, two blinks mean no. Light can carry a message just like sound can.</div></div><div class="q" data-q="l4-6-c2" data-a="2"><p class="qq"><span class="qn">3.</span> Which light sends the message &#x27;stop&#x27;?</p><ul class="opts"><li><button type="button" class="opt" data-i="0"><span class="l">A</span><span>A green traffic light</span></button></li><li><button type="button" class="opt" data-i="1"><span class="l">B</span><span>A porch light</span></button></li><li><button type="button" class="opt" data-i="2"><span class="l">C</span><span>A red traffic light</span></button></li></ul><p class="say" aria-live="polite"></p><div class="why" hidden><b><span data-en="Why:" data-es="Por qué:">Why:</span></b> A red traffic light means stop. Green means go.</div></div>
+    </div>
+  </div>
+</article>
+<article class="les" id="l4-7" data-lid="l4-7">
+  <div class="lh"><span class="ln">4.7</span><h4>The Telescope Collects Light</h4><span class="tick" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5L20 7"/></svg></span></div>
+  <div class="body">
+    <div>
+      <div class="main-idea"><span class="k"><span data-en="Main idea" data-es="Idea principal">Main idea</span></span>A telescope gathers lots of light so we can see faint, far things like the moon.</div>
+      <div class="reading"><p>Stars are far away. Their light is faint. Your eye is small. It only catches a little light. A <button type="button" class="kw" data-def="a tool that collects light to show far-away things bigger">telescope</button> has a big lens or mirror. It catches much more light.</p><p>Look at the moon through a telescope. It looks bigger and brighter. You see bumps and holes. Those holes are craters. Long ago, Galileo did this. He was surprised the moon was not smooth.</p><p>The telescope on this site does the same job. It collects light. Then it sends it to your eye or a camera.</p></div>
+      <div class="lbtns no-print">
+        <button type="button" class="lbtn listen" data-for="l4-7" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H2v6h4l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M18.5 5.5a9 9 0 0 1 0 13"/></svg><span data-en="Listen" data-es="Escuchar">Listen</span></button>
+      </div>
+    </div>
+    <div>
+      <aside class="look source"><div class="k"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 7h4v6H8.5A2.5 2.5 0 0 0 6 15.5V17H4v-1.5A5.5 5.5 0 0 1 7 10.6V7zm9 0h4v6h-2.5a2.5 2.5 0 0 0-2.5 2.5V17h-2v-1.5a5.5 5.5 0 0 1 3-4.9V7z"/></svg><span data-en="From the source" data-es="De la fuente">From the source</span></div><h5>Galileo Looks at the Moon</h5><blockquote>In 1610, Galileo wrote that the moon, seen through his telescope, was not smooth and even as many had believed. Instead, he said, it was rough and uneven, full of hollows and bumps, like the face of the Earth with its mountains and valleys.</blockquote><cite>Galileo Galilei, Sidereus Nuncius (The Starry Messenger), 1610 (retold) (paraphrased)</cite><p class="prompt">What did the telescope let Galileo see that his eyes alone could not?</p></aside>
+      <div class="words"><div class="k"><span data-en="Words to know" data-es="Palabras clave">Words to know</span></div><dl><dt>telescope</dt><dd>a tool that collects light to show far-away things bigger</dd></dl></div>
+    </div>
+    <div class="checks" data-lesson="l4-7">
+      <div class="k"><span data-en="Check yourself" data-es="Compruébalo">Check yourself</span><span class="score" data-score aria-live="polite"></span></div>
+      <div class="q" data-q="l4-7-c0" data-a="0"><p class="qq"><span class="qn">1.</span> What does a telescope do with light?</p><ul class="opts"><li><button type="button" class="opt" data-i="0"><span class="l">A</span><span>Collects a lot of it</span></button></li><li><button type="button" class="opt" data-i="1"><span class="l">B</span><span>Blocks it</span></button></li><li><button type="button" class="opt" data-i="2"><span class="l">C</span><span>Makes its own</span></button></li></ul><p class="say" aria-live="polite"></p><div class="why" hidden><b><span data-en="Why:" data-es="Por qué:">Why:</span></b> A telescope has a big lens or mirror that gathers more light than your eye can.</div></div><div class="q" data-q="l4-7-c1" data-a="1"><p class="qq"><span class="qn">2.</span> Through a telescope, the moon looks:</p><ul class="opts"><li><button type="button" class="opt" data-i="0"><span class="l">A</span><span>Smaller and darker</span></button></li><li><button type="button" class="opt" data-i="1"><span class="l">B</span><span>Bigger and brighter</span></button></li><li><button type="button" class="opt" data-i="2"><span class="l">C</span><span>Exactly the same</span></button></li></ul><p class="say" aria-live="polite"></p><div class="why" hidden><b><span data-en="Why:" data-es="Por qué:">Why:</span></b> A telescope collects more light and makes the moon look bigger and brighter.</div></div><div class="q" data-q="l4-7-c2" data-a="2"><p class="qq"><span class="qn">3.</span> What did Galileo see on the moon?</p><ul class="opts"><li><button type="button" class="opt" data-i="0"><span class="l">A</span><span>Water and fish</span></button></li><li><button type="button" class="opt" data-i="1"><span class="l">B</span><span>A smooth ball</span></button></li><li><button type="button" class="opt" data-i="2"><span class="l">C</span><span>Bumps and holes</span></button></li></ul><p class="say" aria-live="polite"></p><div class="why" hidden><b><span data-en="Why:" data-es="Por qué:">Why:</span></b> Galileo saw the moon was rough, with bumps and hollows, not smooth.</div></div>
+    </div>
+  </div>
+</article></section>
+  <section class="review" data-review="r4" id="rev4">
+    <div class="rh"><div><div class="k"><span data-en="Chapter review" data-es="Repaso del capítulo">Chapter review</span></div><h3>Light and Seeing</h3></div><div class="rscore" data-rscore aria-live="polite">0 / 6</div></div>
+    <div class="rbody"><div class="q wide" data-q="r4-0" data-a="0"><p class="qq"><span class="qn">1.</span> What do your eyes need to see?</p><ul class="opts"><li><button type="button" class="opt" data-i="0"><span class="l">A</span><span>Light</span></button></li><li><button type="button" class="opt" data-i="1"><span class="l">B</span><span>Wind</span></button></li><li><button type="button" class="opt" data-i="2"><span class="l">C</span><span>Heat</span></button></li></ul><p class="say" aria-live="polite"></p><div class="why" hidden><b><span data-en="Why:" data-es="Por qué:">Why:</span></b> Eyes only see when light reaches them. In a dark room you see nothing.</div></div><div class="q wide" data-q="r4-1" data-a="1"><p class="qq"><span class="qn">2.</span> Which one is a light source?</p><ul class="opts"><li><button type="button" class="opt" data-i="0"><span class="l">A</span><span>A shoe</span></button></li><li><button type="button" class="opt" data-i="1"><span class="l">B</span><span>The sun</span></button></li><li><button type="button" class="opt" data-i="2"><span class="l">C</span><span>The moon</span></button></li></ul><p class="say" aria-live="polite"></p><div class="why" hidden><b><span data-en="Why:" data-es="Por qué:">Why:</span></b> The sun makes its own light. The moon and a shoe only bounce light.</div></div><div class="q wide" data-q="r4-2" data-a="2"><p class="qq"><span class="qn">3.</span> What makes a shadow?</p><ul class="opts"><li><button type="button" class="opt" data-i="0"><span class="l">A</span><span>A light source</span></button></li><li><button type="button" class="opt" data-i="1"><span class="l">B</span><span>A mirror</span></button></li><li><button type="button" class="opt" data-i="2"><span class="l">C</span><span>Something blocking light</span></button></li></ul><p class="say" aria-live="polite"></p><div class="why" hidden><b><span data-en="Why:" data-es="Por qué:">Why:</span></b> A shadow is the dark spot where light is blocked.</div></div><div class="q wide" data-q="r4-3" data-a="0"><p class="qq"><span class="qn">4.</span> Which lets a little light through?</p><ul class="opts"><li><button type="button" class="opt" data-i="0"><span class="l">A</span><span>Wax paper</span></button></li><li><button type="button" class="opt" data-i="1"><span class="l">B</span><span>A wood board</span></button></li><li><button type="button" class="opt" data-i="2"><span class="l">C</span><span>A metal mug</span></button></li></ul><p class="say" aria-live="polite"></p><div class="why" hidden><b><span data-en="Why:" data-es="Por qué:">Why:</span></b> Wax paper lets some light through as a glow. Wood and metal block it.</div></div><div class="q wide" data-q="r4-4" data-a="1"><p class="qq"><span class="qn">5.</span> You tilt a mirror in the sun. The bright spot:</p><ul class="opts"><li><button type="button" class="opt" data-i="0"><span class="l">A</span><span>Stays put</span></button></li><li><button type="button" class="opt" data-i="1"><span class="l">B</span><span>Moves</span></button></li><li><button type="button" class="opt" data-i="2"><span class="l">C</span><span>Disappears</span></button></li></ul><p class="say" aria-live="polite"></p><div class="why" hidden><b><span data-en="Why:" data-es="Por qué:">Why:</span></b> Tilting the mirror changes where the light bounces. The spot moves.</div></div><div class="q wide" data-q="r4-5" data-a="2"><p class="qq"><span class="qn">6.</span> Why does a telescope help you see the moon?</p><ul class="opts"><li><button type="button" class="opt" data-i="0"><span class="l">A</span><span>It makes the moon closer</span></button></li><li><button type="button" class="opt" data-i="1"><span class="l">B</span><span>It makes new light</span></button></li><li><button type="button" class="opt" data-i="2"><span class="l">C</span><span>It collects more light</span></button></li></ul><p class="say" aria-live="polite"></p><div class="why" hidden><b><span data-en="Why:" data-es="Por qué:">Why:</span></b> A telescope gathers lots of light so faint, far things look bigger and brighter.</div></div></div>
+    <div class="rfoot"><button type="button" class="btn reset-r"><span data-en="Try again" data-es="Otra vez">Try again</span></button><span class="verdict" data-verdict></span></div>
+  </section>
+</section>
+
+<section class="wrap-up" id="wrap">
+  <div class="wh"><span class="badge" aria-hidden="true">★</span><div><span class="tab" style="display:inline-block;font:800 .7rem var(--sans);letter-spacing:.24em;text-transform:uppercase;color:var(--red)"><span data-en="Unit wrap-up" data-es="Cierre de la unidad">Unit wrap-up</span></span><h2>Light, Sound and Waves</h2></div></div>
+
+  <section class="match" id="match">
+    <div class="mh"><h3><span data-en="Twelve words, twelve meanings" data-es="Doce palabras, doce significados">Twelve words, twelve meanings</span></h3><span class="mscore" data-mscore aria-live="polite">0 / 8</span></div>
+    <p class="deck"><span data-en="Tap a word, then tap its meaning. A right pair locks in green." data-es="Toca una palabra y luego su significado. Un par correcto se fija en verde.">Tap a word, then tap its meaning. A right pair locks in green.</span></p>
+    <div class="mgrid"><div class="mcol"><span class="ck"><span data-en="Words" data-es="Palabras">Words</span></span><button type="button" class="mt w" data-k="0">vibration</button><button type="button" class="mt w" data-k="1">loud</button><button type="button" class="mt w" data-k="2">high</button><button type="button" class="mt w" data-k="3">travel</button><button type="button" class="mt w" data-k="4">light</button><button type="button" class="mt w" data-k="5">source</button><button type="button" class="mt w" data-k="6">shadow</button><button type="button" class="mt w" data-k="7">mirror</button></div><div class="mcol"><span class="ck"><span data-en="Meanings" data-es="Significados">Meanings</span></span><button type="button" class="mt d" data-k="0">a very fast shaking back and forth</button><button type="button" class="mt d" data-k="1">a sound that is big and strong, easy to hear</button><button type="button" class="mt d" data-k="2">a sound like a bird chirp or a whistle</button><button type="button" class="mt d" data-k="3">to move from one place to another</button><button type="button" class="mt d" data-k="4">what lets your eyes see; it comes from the sun, fire and bulbs</button><button type="button" class="mt d" data-k="5">a thing that makes its own light, like the sun or a bulb</button><button type="button" class="mt d" data-k="6">a dark spot made when something blocks light</button><button type="button" class="mt d" data-k="7">a smooth shiny surface that bounces light back</button></div></div>
+    <div class="rfoot" style="padding:10px 0 0"><button type="button" class="btn" id="matchReset"><span data-en="Shuffle and restart" data-es="Barajar y reiniciar">Shuffle and restart</span></button></div>
+  </section>
+
+  <section class="review" data-review="t2" id="test">
+    <div class="rh"><div><div class="k"><span data-en="Unit test" data-es="Examen de la unidad">Unit test</span></div><h3><span data-en="Fifteen questions across the unit" data-es="Quince preguntas de toda la unidad">Fifteen questions across the unit</span></h3></div><div class="rscore" data-rscore aria-live="polite">0 / 10</div></div>
+    <div class="rbody"><div class="q wide" data-q="t2-0" data-a="0"><p class="qq"><span class="qn">1.</span> Where does a sound come from?</p><ul class="opts"><li><button type="button" class="opt" data-i="0"><span class="l">A</span><span>Something shaking fast</span></button></li><li><button type="button" class="opt" data-i="1"><span class="l">B</span><span>Something glowing</span></button></li><li><button type="button" class="opt" data-i="2"><span class="l">C</span><span>Something cold</span></button></li></ul><p class="say" aria-live="polite"></p><div class="why" hidden><b><span data-en="Why:" data-es="Por qué:">Why:</span></b> Every sound starts with a vibration, a fast shake. The shake spreads to your ear.</div></div><div class="q wide" data-q="t2-1" data-a="1"><p class="qq"><span class="qn">2.</span> You press your hand on a ringing drum. The sound:</p><ul class="opts"><li><button type="button" class="opt" data-i="0"><span class="l">A</span><span>Gets louder</span></button></li><li><button type="button" class="opt" data-i="1"><span class="l">B</span><span>Stops</span></button></li><li><button type="button" class="opt" data-i="2"><span class="l">C</span><span>Gets higher</span></button></li></ul><p class="say" aria-live="polite"></p><div class="why" hidden><b><span data-en="Why:" data-es="Por qué:">Why:</span></b> Your hand stops the skin from shaking. No shaking means no sound.</div></div><div class="q wide" data-q="t2-2" data-a="2"><p class="qq"><span class="qn">3.</span> Which sound is low?</p><ul class="opts"><li><button type="button" class="opt" data-i="0"><span class="l">A</span><span>A bird chirp</span></button></li><li><button type="button" class="opt" data-i="1"><span class="l">B</span><span>A whistle</span></button></li><li><button type="button" class="opt" data-i="2"><span class="l">C</span><span>A big drum boom</span></button></li></ul><p class="say" aria-live="polite"></p><div class="why" hidden><b><span data-en="Why:" data-es="Por qué:">Why:</span></b> A big drum shakes slowly. Slow shaking makes a low sound.</div></div><div class="q wide" data-q="t2-3" data-a="0"><p class="qq"><span class="qn">4.</span> Rice on a drum hops when you clap. What moved the rice?</p><ul class="opts"><li><button type="button" class="opt" data-i="0"><span class="l">A</span><span>The sound shaking the drum skin</span></button></li><li><button type="button" class="opt" data-i="1"><span class="l">B</span><span>Your breath</span></button></li><li><button type="button" class="opt" data-i="2"><span class="l">C</span><span>The rice jumping by itself</span></button></li></ul><p class="say" aria-live="polite"></p><div class="why" hidden><b><span data-en="Why:" data-es="Por qué:">Why:</span></b> The clap sound spread through the air and shook the drum. The rice hopped.</div></div><div class="q wide" data-q="t2-4" data-a="1"><p class="qq"><span class="qn">5.</span> Sound can travel through:</p><ul class="opts"><li><button type="button" class="opt" data-i="0"><span class="l">A</span><span>Only air</span></button></li><li><button type="button" class="opt" data-i="1"><span class="l">B</span><span>Air, water and wood</span></button></li><li><button type="button" class="opt" data-i="2"><span class="l">C</span><span>Only water</span></button></li></ul><p class="say" aria-live="polite"></p><div class="why" hidden><b><span data-en="Why:" data-es="Por qué:">Why:</span></b> Sound travels through air, through water and through solids like a table.</div></div><div class="q wide" data-q="t2-5" data-a="2"><p class="qq"><span class="qn">6.</span> What do your eyes need to see?</p><ul class="opts"><li><button type="button" class="opt" data-i="0"><span class="l">A</span><span>Sound</span></button></li><li><button type="button" class="opt" data-i="1"><span class="l">B</span><span>Warm air</span></button></li><li><button type="button" class="opt" data-i="2"><span class="l">C</span><span>Light</span></button></li></ul><p class="say" aria-live="polite"></p><div class="why" hidden><b><span data-en="Why:" data-es="Por qué:">Why:</span></b> Eyes only work when light reaches them. In a dark room you see nothing.</div></div><div class="q wide" data-q="t2-6" data-a="0"><p class="qq"><span class="qn">7.</span> Which one makes its own light?</p><ul class="opts"><li><button type="button" class="opt" data-i="0"><span class="l">A</span><span>A flashlight</span></button></li><li><button type="button" class="opt" data-i="1"><span class="l">B</span><span>A rock</span></button></li><li><button type="button" class="opt" data-i="2"><span class="l">C</span><span>A book</span></button></li></ul><p class="say" aria-live="polite"></p><div class="why" hidden><b><span data-en="Why:" data-es="Por qué:">Why:</span></b> A flashlight is a light source. Rocks and books only bounce light.</div></div><div class="q wide" data-q="t2-7" data-a="1"><p class="qq"><span class="qn">8.</span> A shadow is:</p><ul class="opts"><li><button type="button" class="opt" data-i="0"><span class="l">A</span><span>A bright spot</span></button></li><li><button type="button" class="opt" data-i="1"><span class="l">B</span><span>A dark spot where light is blocked</span></button></li><li><button type="button" class="opt" data-i="2"><span class="l">C</span><span>A kind of mirror</span></button></li></ul><p class="say" aria-live="polite"></p><div class="why" hidden><b><span data-en="Why:" data-es="Por qué:">Why:</span></b> When something blocks light, the place behind it stays dark. That is the shadow.</div></div><div class="q wide" data-q="t2-8" data-a="2"><p class="qq"><span class="qn">9.</span> What does a mirror do to light?</p><ul class="opts"><li><button type="button" class="opt" data-i="0"><span class="l">A</span><span>Blocks it</span></button></li><li><button type="button" class="opt" data-i="1"><span class="l">B</span><span>Soaks it up</span></button></li><li><button type="button" class="opt" data-i="2"><span class="l">C</span><span>Bounces it back</span></button></li></ul><p class="say" aria-live="polite"></p><div class="why" hidden><b><span data-en="Why:" data-es="Por qué:">Why:</span></b> A mirror is smooth and shiny. Light bounces off it, so you see your face.</div></div><div class="q wide" data-q="t2-9" data-a="0"><p class="qq"><span class="qn">10.</span> Which is a message sent with light?</p><ul class="opts"><li><button type="button" class="opt" data-i="0"><span class="l">A</span><span>A lighthouse beam</span></button></li><li><button type="button" class="opt" data-i="1"><span class="l">B</span><span>A school bell</span></button></li><li><button type="button" class="opt" data-i="2"><span class="l">C</span><span>A whistle</span></button></li></ul><p class="say" aria-live="polite"></p><div class="why" hidden><b><span data-en="Why:" data-es="Por qué:">Why:</span></b> A lighthouse sends its message with light. Bells and whistles use sound.</div></div></div>
+    <div class="rfoot"><button type="button" class="btn reset-r"><span data-en="Try again" data-es="Otra vez">Try again</span></button><span class="verdict" data-verdict></span></div>
+  </section>
+
+  <section class="write" id="write">
+    <h3><span data-en="Write it" data-es="Escríbelo">Write it</span></h3>
+    <p class="wp">Pick one: sound or light. Make a claim: how does it get from where it starts to you? Use two things you saw in this unit as evidence. Then tell why your evidence proves your claim.</p>
+    <ul><li>Claim: say your idea in one short sentence.</li><li>Evidence: use the drum and the rice, or the lamp and the shadow.</li><li>Reasoning: tell why your evidence shows your claim is true.</li><li>Other side: what might a friend say? Why are they wrong?</li></ul>
+    <label class="vh" for="writeBox"><span data-en="Your writing" data-es="Tu escrito">Your writing</span></label>
+    <textarea id="writeBox" data-key="write" placeholder="Start with your claim…"></textarea>
+    <div class="wfoot no-print"><span class="wc" data-wc>0 words</span><button type="button" class="btn" id="printWrite"><span data-en="Print this page" data-es="Imprimir esta página">Print this page</span></button><span class="wc"><span data-en="Saved on this device as you type." data-es="Se guarda en este dispositivo mientras escribes.">Saved on this device as you type.</span></span></div>
+  </section>
+
+  <section class="rooms"><h3><span data-en="Practice rooms" data-es="Salas de práctica">Practice rooms</span></h3><p><span data-en="Rooms already on the site that belong to this unit — cards, quizzes, a lab." data-es="Salas del sitio que pertenecen a esta unidad: tarjetas, quizzes, un laboratorio.">Rooms already on the site that belong to this unit — cards, quizzes, a lab.</span></p><div class="doors"><a class="door" href="/b30">Light and sound — cards, quiz and lab</a><a class="door" href="/drums">The drum bench</a><a class="door" href="/waves">The wave bench</a><a class="door" href="/telescope">The telescope</a></div></section>
+</section>
+
+<nav class="pager2 no-print" aria-label="Units"><a href="sci-u1.html"><span>‹</span><span><span class="s"><span data-en="Previous unit" data-es="Unidad anterior">Previous unit</span></span>Pushes, Pulls and Stuff</span></a><a href="science-course.html"><span><span class="s"><span data-en="Course" data-es="Curso">Course</span></span><span data-en="Back to contents" data-es="Volver al contenido">Back to contents</span></span><span>›</span></a></nav>
+
+<details class="teach no-print"><summary><span data-en="For the teacher" data-es="Para el docente">For the teacher</span></summary><div class="inner">
+  <p><span data-en="Every lesson keeps its own three checks; a lesson is ticked when all three are right. Chapter reviews and the unit test score on the page and remember the score on this device only. Nothing leaves the room." data-es="Cada lección tiene sus tres comprobaciones; se marca cuando las tres están bien. Los repasos y el examen puntúan en la página y recuerdan la puntuación solo en este dispositivo. Nada sale del aula.">Every lesson keeps its own three checks; a lesson is ticked when all three are right. Chapter reviews and the unit test score on the page and remember the score on this device only. Nothing leaves the room.</span></p>
+  <p><span data-en="Print this page for a paper copy of the readings, the sources, the words and the questions; the answers print as dashed boxes under each question." data-es="Imprime esta página para tener en papel las lecturas, las fuentes, las palabras y las preguntas; las respuestas se imprimen en cajas punteadas bajo cada pregunta.">Print this page for a paper copy of the readings, the sources, the words and the questions; the answers print as dashed boxes under each question.</span></p>
+  <p><span data-en="Fact-check notes for this course live in the handoff: quotes marked (paraphrased) were set that way on purpose." data-es="Las notas de verificación de este curso están en el traspaso: las citas marcadas (parafraseado) se pusieron así a propósito.">Fact-check notes for this course live in the handoff: quotes marked (paraphrased) were set that way on purpose.</span></p>
+</div></details>
+
+<footer class="foot"><span data-en="Architecture of Grace · Science, K–12 · original text following the Illinois (NGSS) storyline · the banner is a drawn scene, not a photograph." data-es="Architecture of Grace · Ciencias, K–12 · texto original que sigue la secuencia de Illinois (NGSS) · el banner es una escena dibujada, no una fotografía.">Architecture of Grace · Science, K–12 · original text following the Illinois (NGSS) storyline · the banner is a drawn scene, not a photograph.</span></footer>
+</main>
+</div>
+
+<div class="drawer" id="drawer" data-open="0" role="dialog" aria-modal="true" aria-label="Contents">
+  <div class="scrim" data-close></div>
+  <div class="sheet"><div class="dh"><b><span data-en="Unit contents" data-es="Contenido de la unidad">Unit contents</span></b><button type="button" data-close aria-label="Close">✕</button></div><nav><div class="dc"><span class="b">3</span>Sound Is a Wiggle</div><div class="ds"><span data-en="Section" data-es="Sección">Section</span> 1 · Things That Wiggle</div><a href="#l3-1" data-lid="l3-1"><span class="n">3.1</span>The Drum Skin Shakes<span class="t2"></span></a><a href="#l3-2" data-lid="l3-2"><span class="n">3.2</span>Rubber Bands and Throats<span class="t2"></span></a><div class="ds"><span data-en="Section" data-es="Sección">Section</span> 2 · Loud, Soft, High, Low</div><a href="#l3-3" data-lid="l3-3"><span class="n">3.3</span>Sound Moves Things<span class="t2"></span></a><a href="#l3-4" data-lid="l3-4"><span class="n">3.4</span>Loud and Soft<span class="t2"></span></a><a href="#l3-5" data-lid="l3-5"><span class="n">3.5</span>High and Low<span class="t2"></span></a><div class="ds"><span data-en="Section" data-es="Sección">Section</span> 3 · Sound Travels</div><a href="#l3-6" data-lid="l3-6"><span class="n">3.6</span>Through Air, Water and Wood<span class="t2"></span></a><a href="#l3-7" data-lid="l3-7"><span class="n">3.7</span>The String Telephone<span class="t2"></span></a><a href="#l3-8" data-lid="l3-8"><span class="n">3.8</span>Sending a Message<span class="t2"></span></a><a href="#rev3"><span class="n">✓</span><span data-en="Chapter review" data-es="Repaso del capítulo">Chapter review</span></a><div class="dc"><span class="b">4</span>Light and Seeing</div><div class="ds"><span data-en="Section" data-es="Sección">Section</span> 1 · Light Lets Us See</div><a href="#l4-1" data-lid="l4-1"><span class="n">4.1</span>The Dark Room<span class="t2"></span></a><a href="#l4-2" data-lid="l4-2"><span class="n">4.2</span>Where Light Comes From<span class="t2"></span></a><div class="ds"><span data-en="Section" data-es="Sección">Section</span> 2 · Through, Blocked, Shadow</div><a href="#l4-3" data-lid="l4-3"><span class="n">4.3</span>Light Goes Through Glass<span class="t2"></span></a><a href="#l4-4" data-lid="l4-4"><span class="n">4.4</span>Shadows<span class="t2"></span></a><div class="ds"><span data-en="Section" data-es="Sección">Section</span> 3 · Bouncing and Sending</div><a href="#l4-5" data-lid="l4-5"><span class="n">4.5</span>Mirrors Bounce Light<span class="t2"></span></a><a href="#l4-6" data-lid="l4-6"><span class="n">4.6</span>Blink a Message<span class="t2"></span></a><a href="#l4-7" data-lid="l4-7"><span class="n">4.7</span>The Telescope Collects Light<span class="t2"></span></a><a href="#rev4"><span class="n">✓</span><span data-en="Chapter review" data-es="Repaso del capítulo">Chapter review</span></a><a href="#wrap"><span class="n">★</span><span data-en="Unit wrap-up" data-es="Cierre de la unidad">Unit wrap-up</span></a></nav></div>
+</div>
+
+<script>
+
+(function(){
+"use strict";
+/* AOG-USH-V1 — the wiring for one unit page. Everything on the page was
+   rendered at build time; this only makes it answer back. */
+var KEY = "aog.interior.ws.v1.sci2";
+function load(){ try{ return JSON.parse(localStorage.getItem(KEY)||"{}")||{}; }catch(e){ return {}; } }
+var d = load(); d.q = d.q||{}; d.les = d.les||{}; d.write = d.write||"";
+var pT; function persist(){ if(pT) clearTimeout(pT); pT = setTimeout(function(){ try{ localStorage.setItem(KEY, JSON.stringify(d)); }catch(e){} }, 300); }
+var lang = "en";
+function T(en, es){ return lang==="es" ? es : en; }
+function paintLang(){
+  document.documentElement.setAttribute("lang", lang);
+  Array.prototype.forEach.call(document.querySelectorAll("[data-en]"), function(el){
+    var v = el.getAttribute(lang==="es" ? "data-es" : "data-en");
+    if(v==null) return;
+    if(v.indexOf("<b>")>-1) el.innerHTML = v; else el.textContent = v;
+  });
+  var lb = document.getElementById("langBtn");
+  if(lb) lb.textContent = (lang==="es") ? "English" : "Español";
+  paintScores(); paintWC();
+}
+document.getElementById("langBtn").addEventListener("click", function(){ lang = (lang==="es") ? "en" : "es"; paintLang(); });
+document.getElementById("themeBtn").addEventListener("click", function(){
+  var cur = document.documentElement.getAttribute("data-theme")==="dark" ? "light" : "dark";
+  document.documentElement.setAttribute("data-theme", cur);
+  try{ localStorage.setItem("aog.interior.ws.v1.theme", cur); }catch(e){}
+});
+
+/* ── questions: checks, reviews, the test ── */
+function qState(q){ return d.q[q.getAttribute("data-q")] || null; }
+function paintQ(q){
+  var st = qState(q), a = +q.getAttribute("data-a");
+  var opts = q.querySelectorAll(".opt");
+  Array.prototype.forEach.call(opts, function(o){
+    var i = +o.getAttribute("data-i");
+    o.removeAttribute("data-st"); o.disabled = false;
+    if(st){ if(st.tried && st.tried.indexOf(i)>-1) o.setAttribute("data-st","tried"); if(st.done){ o.disabled = true; if(i===a) o.setAttribute("data-st","right"); } }
+  });
+  q.querySelector(".why").hidden = !(st && st.done);
+  q.querySelector(".say").textContent = "";
+}
+function answer(q, i){
+  var a = +q.getAttribute("data-a"), id = q.getAttribute("data-q");
+  var st = d.q[id] || (d.q[id] = {tried:[], done:false, first:null});
+  if(st.done) return;
+  if(st.first===null) st.first = (i===a);
+  if(i===a){ st.done = true; }
+  else if(st.tried.indexOf(i)<0){ st.tried.push(i); }
+  persist(); paintQ(q);
+  if(i!==a) q.querySelector(".say").textContent = T("Not that one — read the lesson again and try another.","Esa no — vuelve a leer la lección y prueba otra.");
+  paintScores();
+}
+document.addEventListener("click", function(ev){
+  var o = ev.target.closest(".opt"); if(!o || o.disabled) return;
+  var q = o.closest(".q"); if(!q) return;
+  answer(q, +o.getAttribute("data-i"));
+});
+function paintScores(){
+  /* per lesson: 3 checks → tick */
+  Array.prototype.forEach.call(document.querySelectorAll(".checks"), function(c){
+    var qs = c.querySelectorAll(".q"), n = qs.length, k = 0;
+    Array.prototype.forEach.call(qs, function(q){ var s = qState(q); if(s && s.done) k++; });
+    var sc = c.querySelector("[data-score]"); if(sc) sc.textContent = k ? (k+" / "+n) : "";
+    var les = c.closest(".les"), lid = c.getAttribute("data-lesson");
+    var done = (k===n);
+    if(les) les.classList.toggle("done", done);
+    if(done && !d.les[lid]){ d.les[lid] = 1; persist(); }
+    var dl = document.querySelector('.drawer a[data-lid="'+lid+'"]'); if(dl) dl.classList.toggle("done", done);
+  });
+  /* reviews and the test: first-try score */
+  Array.prototype.forEach.call(document.querySelectorAll(".review"), function(r){
+    var qs = r.querySelectorAll(".q"), n = qs.length, k = 0, seen = 0;
+    Array.prototype.forEach.call(qs, function(q){ var s = qState(q); if(s){ if(s.done) seen++; if(s.first) k++; } });
+    r.querySelector("[data-rscore]").textContent = k+" / "+n;
+    var v = r.querySelector("[data-verdict]");
+    if(seen===n){
+      var pct = k/n;
+      v.textContent = pct>=.9 ? T("Strong. You own this chapter.","Fuerte. Este capítulo es tuyo.") : pct>=.7 ? T("Good — reread the ones you missed on the first try.","Bien — vuelve a leer las que fallaste al primer intento.") : T("Read the story and the main ideas again, then try again.","Vuelve a leer la historia y las ideas principales, y prueba otra vez.");
+    } else v.textContent = "";
+  });
+}
+Array.prototype.forEach.call(document.querySelectorAll(".reset-r"), function(b){
+  b.addEventListener("click", function(){
+    var r = b.closest(".review");
+    Array.prototype.forEach.call(r.querySelectorAll(".q"), function(q){ delete d.q[q.getAttribute("data-q")]; paintQ(q); });
+    persist(); paintScores();
+    r.querySelector(".rbody").scrollIntoView({behavior:"smooth", block:"start"});
+  });
+});
+Array.prototype.forEach.call(document.querySelectorAll(".q"), paintQ);
+paintScores();
+
+/* ── key words: tap the word, read the meaning ── */
+var openPop = null;
+function closePop(){ if(openPop){ openPop.remove(); openPop = null; } }
+document.addEventListener("click", function(ev){
+  var k = ev.target.closest(".kw");
+  if(!k){ if(!ev.target.closest(".kwpop")) closePop(); return; }
+  var was = openPop && openPop.parentNode===k;
+  closePop(); if(was) return;
+  var p = document.createElement("span"); p.className = "kwpop"; p.setAttribute("role","tooltip"); p.textContent = k.getAttribute("data-def");
+  k.appendChild(p); openPop = p;
+  var r = p.getBoundingClientRect(); if(r.right > window.innerWidth - 8) p.classList.add("right");
+});
+document.addEventListener("keydown", function(ev){ if(ev.key==="Escape"){ closePop(); closeDrawer(); } });
+
+/* ── Listen: the reading, read aloud (speechSynthesis; quiet if absent) ── */
+var speaking = null;
+function stopSpeak(){ try{ window.speechSynthesis && window.speechSynthesis.cancel(); }catch(e){} if(speaking){ speaking.setAttribute("aria-pressed","false"); speaking = null; } }
+Array.prototype.forEach.call(document.querySelectorAll(".listen"), function(b){
+  if(!("speechSynthesis" in window)){ b.hidden = true; return; }
+  b.addEventListener("click", function(){
+    if(speaking===b){ stopSpeak(); return; }
+    stopSpeak();
+    var les = document.getElementById(b.getAttribute("data-for"));
+    var txt = [les.querySelector("h4").textContent, les.querySelector(".main-idea").textContent].concat(
+      Array.prototype.map.call(les.querySelectorAll(".reading p"), function(p){ return p.textContent; })).join(". ");
+    var u = new SpeechSynthesisUtterance(txt); u.lang = (lang==="es") ? "es-ES" : "en-US"; u.rate = .95;
+    u.onend = function(){ if(speaking===b){ speaking.setAttribute("aria-pressed","false"); speaking = null; } };
+    speaking = b; b.setAttribute("aria-pressed","true");
+    window.speechSynthesis.speak(u);
+  });
+});
+
+/* ── the contents drawer ── */
+var drawer = document.getElementById("drawer"), dBtn = document.getElementById("drawerBtn"), lastFocus = null;
+function openDrawer(){ lastFocus = document.activeElement; drawer.setAttribute("data-open","1"); dBtn.setAttribute("aria-expanded","true"); document.body.style.overflow = "hidden"; var f = drawer.querySelector("nav a"); if(f) f.focus(); }
+function closeDrawer(){ if(drawer.getAttribute("data-open")!=="1") return; drawer.setAttribute("data-open","0"); dBtn.setAttribute("aria-expanded","false"); document.body.style.overflow = ""; if(lastFocus) lastFocus.focus(); }
+dBtn.addEventListener("click", function(){ drawer.getAttribute("data-open")==="1" ? closeDrawer() : openDrawer(); });
+drawer.addEventListener("click", function(ev){ if(ev.target.closest("[data-close]") || ev.target.closest("nav a")) closeDrawer(); });
+Array.prototype.forEach.call(drawer.querySelectorAll("nav a[data-lid]"), function(a){ if(d.les[a.getAttribute("data-lid")]) a.classList.add("done"); });
+
+/* ── the word match ── */
+(function(){
+  var box = document.getElementById("match"); if(!box) return;
+  var wcol = box.querySelector(".mcol:first-child"), dcol = box.querySelector(".mcol:last-child");
+  var pickW = null, pickD = null, got = 0, total = box.querySelectorAll(".mt.w").length;
+  function shuffle(col){
+    var items = Array.prototype.slice.call(col.querySelectorAll(".mt"));
+    for(var i=items.length-1;i>0;i--){ var j = Math.floor(Math.random()*(i+1)); var t = items[i]; items[i]=items[j]; items[j]=t; }
+    items.forEach(function(it){ it.classList.remove("ok","no"); it.setAttribute("aria-pressed","false"); it.disabled = false; col.appendChild(it); });
+  }
+  function score(){ box.querySelector("[data-mscore]").textContent = got+" / "+total; }
+  function reset(){ pickW = pickD = null; got = 0; shuffle(wcol); shuffle(dcol); score(); }
+  box.addEventListener("click", function(ev){
+    var b = ev.target.closest(".mt"); if(!b || b.classList.contains("ok")) return;
+    if(b.classList.contains("w")){ if(pickW) pickW.setAttribute("aria-pressed","false"); pickW = b; }
+    else { if(pickD) pickD.setAttribute("aria-pressed","false"); pickD = b; }
+    b.setAttribute("aria-pressed","true");
+    if(pickW && pickD){
+      if(pickW.getAttribute("data-k")===pickD.getAttribute("data-k")){
+        pickW.classList.add("ok"); pickD.classList.add("ok"); pickW.disabled = pickD.disabled = true; got++; score();
+        if(got===total){ box.querySelector("[data-mscore]").textContent = got+" / "+total+" ✓"; }
+      } else {
+        pickW.classList.add("no"); pickD.classList.add("no");
+        var a = pickW, c = pickD; setTimeout(function(){ a.classList.remove("no"); c.classList.remove("no"); }, 320);
+      }
+      pickW.setAttribute("aria-pressed","false"); pickD.setAttribute("aria-pressed","false"); pickW = pickD = null;
+    }
+  });
+  document.getElementById("matchReset").addEventListener("click", reset);
+  reset();
+})();
+
+/* ── the writing task ── */
+var wb = document.getElementById("writeBox");
+function paintWC(){ var n = (wb.value.match(/\S+/g)||[]).length; document.querySelector("[data-wc]").textContent = n + (lang==="es" ? " palabras" : " words"); }
+wb.value = d.write || ""; paintWC();
+wb.addEventListener("input", function(){ d.write = wb.value; persist(); paintWC(); });
+document.getElementById("printWrite").addEventListener("click", function(){ window.print(); });
+
+/* the jump select, as every page wires it */
+var jumpSel = document.getElementById("jumpSel");
+if(jumpSel){ jumpSel.addEventListener("change", function(){ if(jumpSel.value) location.href = jumpSel.value; }); }
+
+/* .30fg: the way out — the site bar hides #langBtn/#themeBtn itself and clicks them */
+window.addEventListener("hashchange", closePop);
+})();
+
+</script>
+<script src="/aog-jump.js" defer></script>
+</body>
+</html>
