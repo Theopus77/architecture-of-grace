@@ -347,7 +347,7 @@ def _b7():
 <g fill="#6DA646"><path d="M240 250 q-40 -6 -60 -34 q34 -10 60 34z"/><path d="M242 250 q40 -10 64 -34 q-30 -8 -64 34z"/><path d="M240 200 q-36 -4 -54 -30 q30 -6 54 30z"/><path d="M243 196 q36 -8 58 -30 q-28 -4 -58 30z"/></g>
 <g fill="#E28AAE"><circle cx="252" cy="118" r="20"/><circle cx="232" cy="130" r="14"/><circle cx="270" cy="134" r="14"/></g><g fill="#F4C5D8"><circle cx="248" cy="112" r="5"/><circle cx="260" cy="124" r="5"/><circle cx="238" cy="128" r="4"/></g>
 <path d="M296 218 q-2 6 0 12" stroke="#2A2A1A" stroke-width="2" fill="none"/><path d="M290 228 q-14 8 -8 34 q4 12 14 12 q10 0 14 -12 q6 -26 -8 -34z" fill="#8FD0A0"/><path d="M286 238 h24 M285 244 h26" stroke="#E4C060" stroke-width="1.6"/><g fill="#E4C060"><circle cx="288" cy="234" r="1.4"/><circle cx="296" cy="232" r="1.4"/><circle cx="304" cy="234" r="1.4"/></g>
-<g transform="translate(380 150) rotate(-18)"><g fill="#2A1A10"><path d="M0 -4 L-70 -50 q-14 -4 -10 8 L-8 8 L-52 34 q-8 8 2 8 L0 24z"/><path d="M0 -4 L70 -50 q14 -4 10 8 L8 8 L52 34 q8 8 -2 8 L0 24z"/></g><g fill="#F0923A"><path d="M-6 -2 L-62 -44 L-14 4z"/><path d="M-8 8 L-44 32 L-4 20z"/><path d="M6 -2 L62 -44 L14 4z"/><path d="M8 8 L44 32 L4 20z"/></g><g fill="#F7C070"><path d="M-30 -24 L-52 -40 L-40 -22z"/><path d="M30 -24 L52 -40 L40 -22z"/></g><g stroke="#2A1A10" stroke-width="2" fill="none"><path d="M-10 -2 L-46 -28 M-8 2 L-40 -8 M8 2 L40 -8 M10 -2 L46 -28 M-8 12 L-30 26 M8 12 L30 26"/></g><g fill="#FFF3D6"><circle cx="-62" cy="-40" r="2"/><circle cx="-40" cy="36" r="2"/><circle cx="62" cy="-40" r="2"/><circle cx="40" cy="36" r="2"/><circle cx="-70" cy="-28" r="1.6"/><circle cx="70" cy="-28" r="1.6"/></g><rect x="-4" y="-14" width="8" height="42" rx="4" fill="#2A1A10"/><path d="M-2 -14 q-8 -12 -16 -16 M2 -14 q8 -12 16 -16" stroke="#2A1A10" stroke-width="1.5" fill="none"/></g>
+<g transform="translate(380 140) rotate(-15)"><g stroke="#2A1A10" stroke-width="3.5" fill="#F0923A"><ellipse cx="-32" cy="-22" rx="36" ry="17" transform="rotate(-32 -32 -22)"/><ellipse cx="32" cy="-22" rx="36" ry="17" transform="rotate(32 32 -22)"/><ellipse cx="-22" cy="18" rx="24" ry="17" transform="rotate(18 -22 18)"/><ellipse cx="22" cy="18" rx="24" ry="17" transform="rotate(-18 22 18)"/></g><g stroke="#2A1A10" stroke-width="1.6" fill="none"><path d="M-4 -6 L-50 -40 M-4 -4 L-60 -22 M-4 -2 L-44 -8 M4 -6 L50 -40 M4 -4 L60 -22 M4 -2 L44 -8 M-4 8 L-36 32 M-4 10 L-44 14 M4 8 L36 32 M4 10 L44 14"/></g><g fill="#FFF3D6"><circle cx="-58" cy="-44" r="2"/><circle cx="-66" cy="-30" r="2"/><circle cx="58" cy="-44" r="2"/><circle cx="66" cy="-30" r="2"/><circle cx="-42" cy="34" r="1.8"/><circle cx="42" cy="34" r="1.8"/></g><rect x="-4" y="-16" width="8" height="44" rx="4" fill="#2A1A10"/><path d="M-2 -16 q-8 -12 -18 -16 M2 -16 q8 -12 18 -16" stroke="#2A1A10" stroke-width="1.5" fill="none"/></g>
 <g fill="none" stroke="#3F5C24" stroke-width="1.6">{grass}</g>
 <path d="M0 372 Q300 360 600 370 T1200 364 V420 H0z" fill="url(#{p}fg)"/>
 '''
@@ -409,9 +409,10 @@ def _b9():
     rain = "".join(f'<path d="M{x} 206 l-8 62"/>' for x in range(150, 360, 12))
     body = f'''
 <rect width="{W}" height="{H}" fill="url(#{p}sky)"/>
-<path d="M40 120 q60 -70 200 -60 q120 -60 260 -10 q120 10 150 50 q-140 0 -300 10 q-160 10 -310 10z" fill="#5A6470" opacity=".9"/>
-<path d="M60 130 q40 -40 120 -30 q60 -50 160 -20 q90 -20 160 20 q60 20 40 60 q-60 40 -160 34 q-140 10 -280 -4 q-60 -20 -40 -60z" fill="url(#{p}storm)"/>
-<path d="M100 196 Q260 214 470 192 L480 204 Q260 232 90 208z" fill="#2A3038"/>
+<path d="M270 70 q80 -30 210 -6 q60 12 120 40 q-90 4 -170 8 q-90 6 -160 -2 q-20 -22 0 -40z" fill="#5A6470" opacity=".85"/>
+<g fill="url(#{p}storm)"><circle cx="170" cy="150" r="44"/><circle cx="240" cy="118" r="58"/><circle cx="320" cy="98" r="60"/><circle cx="400" cy="126" r="52"/><circle cx="450" cy="166" r="34"/><rect x="126" y="140" width="352" height="60" rx="14"/></g>
+<path d="M112 192 q180 24 372 -4 q10 6 2 14 q-190 24 -376 4 q-8 -8 2 -14z" fill="#2A3038"/>
+<path d="M340 200 q40 4 80 -2 q6 8 -2 14 q-40 4 -78 0 q-6 -6 0 -12z" fill="#22282F"/>
 <g stroke="#4E5866" stroke-width="1.5" opacity=".7" fill="none">{rain}</g>
 <path d="M392 204 q-6 30 -2 44 q2 14 -2 22 h14 q-4 -10 0 -24 q6 -16 30 -44z" fill="#2E3540" opacity=".95"/><ellipse cx="396" cy="270" rx="30" ry="6" fill="#8A8060" opacity=".7"/>
 <g stroke="#F3E9C4" stroke-width="1.5" fill="none" opacity=".8"><path d="M250 206 l-6 16 l8 -3 l-8 20"/></g>
