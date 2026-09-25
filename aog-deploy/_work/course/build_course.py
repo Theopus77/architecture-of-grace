@@ -48,6 +48,47 @@ def short_link(n): return C["short"] % n
 def store_key(n): return "aog.interior.ws.v1.%s%d" % (C["id"], n)
 def band_of(u): return u.get("band")
 
+# ── AOG-IEP-REC-V1 (2026-09-25) ── standards per unit, a send box per scored
+# section, and a spiral review on every unit test. Jimmy: every item that can
+# be sent must work as IEP data, and every unit test is cumulative.
+_STD = {}
+def unit_std(n):
+    """Standard codes for unit n, read from _work/standards/<course id>.json."""
+    cid = C.get("id", "")
+    if cid not in _STD:
+        f = Path(__file__).resolve().parent.parent / "standards" / ("%s.json" % cid)
+        m = {}
+        try:
+            for x in json.load(open(f, encoding="utf-8"))["units"]:
+                m[x["n"]] = [s["code"] for s in x.get("standards", [])]
+        except Exception:
+            pass
+        _STD[cid] = m
+    return _STD[cid].get(n, [])
+
+SPIRAL_N = 5
+def spiral_items(u, all_units):
+    """Five questions from EARLIER units' tests in the same band, newest unit
+    first, round robin so every earlier unit is represented before any repeats.
+    Deterministic, so the printed test and the screen test are the same."""
+    earlier = [x for x in all_units if band_of(x) == band_of(u) and x["n"] < u["n"]]
+    earlier.sort(key=lambda x: -x["n"])
+    pools = [[(x, q) for q in x["wrap"]["test"]] for x in earlier]
+    out, k = [], 0
+    while len(out) < SPIRAL_N and any(pools):
+        pool = pools[k % len(pools)]
+        if pool:
+            pick = pool.pop((u["n"] * 7 + k * 3) % len(pool))
+            out.append(pick)
+        k += 1
+    return out
+
+def sendbox(kind):
+    return ('<div class="csend no-print" data-kind="%s" hidden><span class="ck">%s</span>'
+            '<input type="text" class="cwho" autocomplete="off" aria-label="Your name or code" placeholder="Your name or code">'
+            '<button type="button" class="btn csendb">%s</button><span class="cst" aria-live="polite"></span></div>'
+            % (kind, span("Send it to your teacher","Envíaselo a tu maestro"), span("Send to my teacher","Enviar a mi maestro")))
+
 E = lambda s: html.escape(str(s if s is not None else ""), quote=True)
 
 def kw(text, words):
@@ -376,6 +417,10 @@ a{color:var(--navy-2)}
 .review .rscore{font:800 1.4rem var(--cond); letter-spacing:.04em; min-width:5ch; text-align:right}
 .review .rbody{padding:14px 16px 8px}
 .review .rfoot{padding:8px 16px 16px; display:flex; gap:10px; flex-wrap:wrap; align-items:center}
+.csend{margin:0 16px 16px; padding:10px 12px; border:1px dashed var(--rule); border-radius:12px; display:flex; gap:10px; flex-wrap:wrap; align-items:center}
+.csend .ck{font:800 .72rem var(--sans); letter-spacing:.14em; text-transform:uppercase; color:var(--ink-faint)}
+.csend .cwho{flex:1 1 180px; min-height:40px; padding:6px 10px; border:1px solid var(--rule); border-radius:10px; font:inherit; background:var(--paper,#fff); color:inherit}
+.csend .cst{font-size:.9rem}
 .btn{min-height:48px; padding:10px 20px; border-radius:12px; border:1px solid var(--rule); background:var(--field); cursor:pointer; font-weight:700}
 .btn-a{background:var(--navy); border-color:var(--navy); color:var(--on-navy)}
 :root[data-theme="dark"] .btn-a{background:var(--gold); border-color:var(--gold); color:#12161C}
@@ -624,10 +669,11 @@ def chapter_html(u, c):
     <div class="think"><span class="k2">{span("Talk about it","Coméntalo")}</span>{E(st["think"])}</div>
   </article>
   {"".join(secs)}
-  <section class="review" data-review="r{c["n"]}" id="rev{c["n"]}">
+  <section class="review" data-review="r{c["n"]}" id="rev{c["n"]}" data-kind="chapter-review" data-std="{E("; ".join(unit_std(u["n"])))}" data-title="{E("Chapter %d review: %s" % (c["n"], c["title"]))}">
     <div class="rh"><div><div class="k">{span("Chapter review","Repaso del capítulo")}</div><h3>{E(c["title"])}</h3></div><div class="rscore" data-rscore aria-live="polite">0 / {len(c["review"])}</div></div>
     <div class="rbody">{review}</div>
     <div class="rfoot"><button type="button" class="btn reset-r">{span("Try again","Otra vez")}</button><span class="verdict" data-verdict></span></div>
+    {sendbox("chapter-review")}
   </section>
 </section>'''
 
@@ -654,6 +700,22 @@ def unit_page(u, all_units):
     wbtn = "".join('<button type="button" class="mt w" data-k="%d">%s</button>' % (i, E(x["w"])) for i, x in enumerate(words))
     dbtn = "".join('<button type="button" class="mt d" data-k="%d">%s</button>' % (i, E(x["d"])) for i, x in enumerate(words))
     test = "".join(question(q, "t%d-%d" % (n, j), j, wide=True) for j, q in enumerate(w["test"]))
+    sp = spiral_items(u, all_units)
+    spiral_html = ""
+    if sp:
+        sq = "".join(question(dict(q, q="(Unit %d) %s" % (x["n"], q["q"])), "s%d-%d" % (n, j), j, wide=True).replace('<div class="q wide"', '<div class="q wide" data-from="%d"' % x["n"], 1)
+                     for j, (x, q) in enumerate(sp))
+        sstd = []
+        for x, q in sp:
+            for c in unit_std(x["n"]):
+                if c not in sstd: sstd.append(c)
+        spiral_html = f'''
+  <section class="review" data-review="s{n}" id="spiral" data-kind="spiral" data-std="{E("; ".join(sstd))}" data-title="{E("Unit %d spiral review" % n)}">
+    <div class="rh"><div><div class="k">{span("Spiral review","Repaso en espiral")}</div><h3>{span("Five questions from earlier units","Cinco preguntas de unidades anteriores")}</h3></div><div class="rscore" data-rscore aria-live="polite">0 / {len(sp)}</div></div>
+    <div class="rbody">{sq}</div>
+    <div class="rfoot"><button type="button" class="btn reset-r">{span("Try again","Otra vez")}</button><span class="verdict" data-verdict></span></div>
+    {sendbox("spiral")}
+  </section>'''
     tips = "".join("<li>%s</li>" % E(t) for t in w["write"]["tips"])
     rooms = LINKS.get(n, [])
     rooms_html = ""
@@ -728,11 +790,13 @@ def unit_page(u, all_units):
     <div class="rfoot" style="padding:10px 0 0"><button type="button" class="btn" id="matchReset">{span("Shuffle and restart","Barajar y reiniciar")}</button></div>
   </section>
 
-  <section class="review" data-review="t{n}" id="test">
+  <section class="review" data-review="t{n}" id="test" data-kind="unit-test" data-std="{E("; ".join(unit_std(n)))}" data-title="{E("Unit %d test: %s" % (n, u["title"]))}">
     <div class="rh"><div><div class="k">{span("Unit test","Examen de la unidad")}</div><h3>{span("Fifteen questions across the unit","Quince preguntas de toda la unidad")}</h3></div><div class="rscore" data-rscore aria-live="polite">0 / {len(w["test"])}</div></div>
     <div class="rbody">{test}</div>
     <div class="rfoot"><button type="button" class="btn reset-r">{span("Try again","Otra vez")}</button><span class="verdict" data-verdict></span></div>
+    {sendbox("unit-test")}
   </section>
+{spiral_html}
 
   <section class="write" id="write">
     <h3>{span("Write it","Escríbelo")}</h3>
@@ -749,7 +813,7 @@ def unit_page(u, all_units):
 <nav class="pager2 no-print" aria-label="Units">{prev_a}{next_a}</nav>
 
 <details class="teach no-print"><summary>{span("For the teacher","Para el docente")}</summary><div class="inner">
-  <p>{span("Every lesson keeps its own three checks; a lesson is ticked when all three are right. Chapter reviews and the unit test score on the page and remember the score on this device only. Nothing leaves the room.","Cada lección tiene sus tres comprobaciones; se marca cuando las tres están bien. Los repasos y el examen puntúan en la página y recuerdan la puntuación solo en este dispositivo. Nada sale del aula.")}</p>
+  <p>{span("Every lesson keeps its own three checks; a lesson is ticked when all three are right. Chapter reviews, the unit test and its spiral review (five questions from earlier units in this band) score on the page. When the site is connected to your sheet, or the link carries ?dest=, each one also has a Send box: the first-try score, the standards, the supports used, the attempt number and the minutes go to your sheet as an IEP data point.","Cada lección tiene sus tres comprobaciones; se marca cuando las tres están bien. Los repasos, el examen de la unidad y su repaso en espiral (cinco preguntas de unidades anteriores) puntúan en la página. Si el sitio está conectado a tu hoja, o el enlace lleva ?dest=, cada uno tiene además un cuadro Enviar: la puntuación al primer intento, los estándares, los apoyos usados, el número de intento y los minutos llegan a tu hoja como dato para el IEP.")}</p>
   <p>{span("Print this page for a paper copy of the readings, the sources, the words and the questions; the answers print as dashed boxes under each question.","Imprime esta página para tener en papel las lecturas, las fuentes, las palabras y las preguntas; las respuestas se imprimen en cajas punteadas bajo cada pregunta.")}</p>
   <p>{span("Fact-check notes for this course live in the handoff: quotes marked (paraphrased) were set that way on purpose.","Las notas de verificación de este curso están en el traspaso: las citas marcadas (parafraseado) se pusieron así a propósito.")}</p>
 </div></details>
@@ -763,7 +827,10 @@ def unit_page(u, all_units):
   <div class="sheet"><div class="dh"><b>{span("Unit contents","Contenido de la unidad")}</b><button type="button" data-close aria-label="Close">✕</button></div><nav>{"".join(dn)}</nav></div>
 </div>
 
+<script src="/aog-sync-config.js"></script>
+<script src="/aog-iep.js"></script>
 <script>
+window.AOG_COURSE = {{id:{json.dumps(C.get("id",""))}, unit:{n}, title:{json.dumps(u["title"])}}};
 {JS_UNIT.replace("__KEY__", store_key(n))}
 </script>
 <script src="/aog-jump.js" defer></script>
@@ -865,6 +932,62 @@ Array.prototype.forEach.call(document.querySelectorAll(".reset-r"), function(b){
 });
 Array.prototype.forEach.call(document.querySelectorAll(".q"), paintQ);
 paintScores();
+
+/* ── AOG-IEP-REC-V1: send a scored section to the teacher ──
+   Same destination rules as every other sender on the site: a ?dest= link
+   wins, the site config (aog-sync-config.js, with a non-empty schools list)
+   is second, and with neither there is no Send box at all. */
+(function(){
+  var DEST_RE = /^https:\/\/script\.google\.com\/[^\s]*\/exec$/, DEST = null;
+  try{
+    var dm = /[?&]dest=([^&]+)/.exec(location.search||"");
+    if(dm){ var t = decodeURIComponent(dm[1]).replace(/-/g,"+").replace(/_/g,"/"); while(t.length%4) t+="=";
+      var o = JSON.parse(atob(t)); if(o && typeof o.u==="string" && DEST_RE.test(o.u)) DEST = {url:o.u, key:(typeof o.k==="string"?o.k:"")}; }
+  }catch(e){}
+  if(!DEST){ try{ var cfg = window.AOG_SYNC_DEFAULTS;
+    if(cfg && !cfg.destinations && typeof cfg.url==="string" && DEST_RE.test(cfg.url) && Object.prototype.toString.call(cfg.schools)==="[object Array]" && cfg.schools.length)
+      DEST = {url:cfg.url, key:(typeof cfg.key==="string"?cfg.key:"")}; }catch(e){} }
+  if(!DEST) return;
+  var CO = window.AOG_COURSE || {}, whoKey = KEY + "who";
+  function today(){ var x=new Date(); return x.getFullYear()+"-"+("0"+(x.getMonth()+1)).slice(-2)+"-"+("0"+x.getDate()).slice(-2); }
+  Array.prototype.forEach.call(document.querySelectorAll(".csend"), function(box){
+    var r = box.closest(".review"), inp = box.querySelector(".cwho"), btn = box.querySelector(".csendb"), st = box.querySelector(".cst");
+    box.hidden = false;
+    try{ inp.value = localStorage.getItem(whoKey) || ""; }catch(e){}
+    btn.addEventListener("click", function(){
+      var who = inp.value.trim();
+      if(!who){ st.textContent = T("Write your name or code first.","Escribe primero tu nombre o código."); inp.focus(); return; }
+      try{ localStorage.setItem(whoKey, who); }catch(e){}
+      var qs = r.querySelectorAll(".q"), n = qs.length, k = 0, seen = 0, retry = 0, answers = [], units = {};
+      Array.prototype.forEach.call(qs, function(q){
+        var s = qState(q), ok = !!(s && s.first), f = q.getAttribute("data-from");
+        if(s && s.done) seen++; if(ok) k++; if(s && s.first === false) retry++;
+        answers.push(s ? (s.first ? 1 : 0) : null);
+        if(f){ units[f] = units[f] || {name:"Unit "+f, ok:0, n:0}; units[f].n++; if(ok) units[f].ok++; }
+      });
+      if(seen < n){ st.textContent = T("Answer every question first.","Responde primero todas las preguntas."); return; }
+      var kind = r.getAttribute("data-kind"), rid = r.getAttribute("data-review");
+      var payload = {
+        action:"checkin", checkinType:"practice", _backendAuth:DEST.key,
+        studentId:who, timestamp:new Date().toISOString(), date:today(),
+        activityId:"crs-"+CO.id+"-u"+CO.unit+"-"+rid, activityName:r.getAttribute("data-title")||"", skill:CO.title||"",
+        setNo:CO.unit, itemsTotal:n, independent:k, supported:retry, hintsUsed:"", confidence:"", source:"link",
+        course:CO.id, unit:CO.unit, assessment:kind,
+        extra:JSON.stringify({series:"course", build:"course send v1", lang:lang, review:rid, firstTry:answers})
+      };
+      if(window.AOG_IEP){ AOG_IEP.fill(payload, {correct:k, total:n, standards:r.getAttribute("data-std")||"",
+        byStrand:Object.keys(units).length ? Object.keys(units).map(function(u){return units[u]}) : "",
+        supports: lang==="es" ? ["spanish"] : []}); }
+      var body = JSON.stringify(payload);
+      btn.disabled = true; st.textContent = T("Sending…","Enviando…");
+      function ok(){ btn.disabled = false; st.textContent = T("Sent. Your teacher has it.","Enviado. Tu maestro lo tiene."); }
+      function bad(){ btn.disabled = false; st.textContent = T("Could not send. Try again.","No se pudo enviar. Inténtalo otra vez."); }
+      fetch(DEST.url, {method:"POST", mode:"cors", redirect:"follow", headers:{"Content-Type":"text/plain;charset=utf-8"}, body:body})
+        .then(function(res){ return res.json(); }).then(function(j){ if(j && j.ok) ok(); else bad(); })
+        .catch(function(){ fetch(DEST.url, {method:"POST", mode:"no-cors", redirect:"follow", headers:{"Content-Type":"text/plain;charset=utf-8"}, body:body}).then(ok).catch(bad); });
+    });
+  });
+})();
 
 /* ── key words: tap the word, read the meaning ── */
 var openPop = null;
