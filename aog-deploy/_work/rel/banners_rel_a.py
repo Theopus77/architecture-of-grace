@@ -44,7 +44,7 @@ def _spines(seed, x0, x1, y, h):
     cols = ['#1C3A62', '#2A4C78', '#7A3E2E', '#8A6A3A', '#2E5A4C', '#E4D2AC', '#5A4E36']
     out, x = '', x0
     while x < x1 - 8:
-        w = r.randint(7, 14)
+        w = r.randint(12, 22)
         hh = r.randint(h - 16, h)
         out += '<rect x="%d" y="%d" width="%d" height="%d" fill="%s"/>' % (x, y - hh, w, hh, r.choice(cols))
         x += w + 1
@@ -83,12 +83,12 @@ _d = [_lg('rlb1-wall', [(0, '#0A1E33'), (0.6, '#0F2444'), (1, '#1C3A62')]),
 BANNERS[1] = _svg(CREDITS[1], _d, '''
 <rect width="1200" height="420" fill="url(#rlb1-wall)"/>
 <path d="M470 236 V120 A130 130 0 0 1 730 120 V236z" fill="url(#rlb1-sky)"/>
-''' + _stars(101, 34, 492, 708, 60, 226, 0.7) + '''
+''' + _stars(101, 24, 492, 708, 60, 226, 0.7) + '''
 <circle cx="660" cy="78" r="2" fill="#FFF2C4"/>
 <g fill="none" stroke="#2A4C78" stroke-width="8"><path d="M470 236 V120 A130 130 0 0 1 730 120 V236z"/></g>
 <g fill="#2A4C78"><rect x="597" y="-4" width="6" height="240"/><rect x="470" y="150" width="260" height="5"/><rect x="456" y="232" width="288" height="12"/></g>
-<g>''' + _spines(11, 150, 380, 110, 48) + _spines(12, 150, 380, 180, 48) + _spines(13, 150, 380, 250, 48) + '''</g>
-<g>''' + _spines(14, 820, 1050, 110, 48) + _spines(15, 820, 1050, 180, 48) + _spines(16, 820, 1050, 250, 48) + '''</g>
+<g>''' + _spines(11, 150, 380, 130, 48) + _spines(12, 150, 380, 220, 48) + '''</g>
+<g>''' + _spines(14, 820, 1050, 130, 48) + _spines(15, 820, 1050, 220, 48) + '''</g>
 <rect x="0" y="0" width="140" height="420" fill="#0A1E33" opacity=".55"/><rect x="1060" y="0" width="140" height="420" fill="#0A1E33" opacity=".55"/>
 <ellipse cx="760" cy="250" rx="420" ry="170" fill="url(#rlb1-lamp)" opacity=".85"/>
 <rect x="0" y="282" width="1200" height="138" fill="url(#rlb1-table)"/>
@@ -184,8 +184,8 @@ BANNERS[3] = _svg(CREDITS[3], _d, '''
 <path d="M0 340 q300 -20 640 -10 q300 -10 560 0 V420 H0z" fill="url(#rlb3-shore)"/>
 <path d="M680 420 q-20 -40 40 -72 q70 -30 30 -70 q-30 -24 40 -60 q30 -12 20 -30" stroke="#E4D2AC" stroke-width="10" fill="none" opacity=".35" stroke-linecap="round"/>
 <path d="M680 420 q-20 -40 40 -72 q70 -30 30 -70 q-30 -24 40 -60 q30 -12 20 -30" stroke="#E4D2AC" stroke-width="3" fill="none" opacity=".5" stroke-dasharray="6 8"/>
-<g fill="#3A2E20">''' + ''.join('<ellipse cx="%d" cy="%d" rx="%d" ry="%d"/>' % (x, y, rx, ry) for x, y, rx, ry in random.Random(31).sample([(x, y, rx, ry) for x in range(10, 1200, 46) for y in (352, 372, 396) for rx in (14,) for ry in (6,)], 50)) + '''</g>
-<g fill="#6A5A40" opacity=".6">''' + ''.join('<ellipse cx="%d" cy="%d" rx="10" ry="4"/>' % (x, y) for x, y in random.Random(32).sample([(x, y) for x in range(20, 1200, 38) for y in (348, 366, 388, 408)], 40)) + '''</g>
+<g fill="#3A2E20">''' + ''.join('<ellipse cx="%d" cy="%d" rx="%d" ry="%d"/>' % (x, y, rx, ry) for x, y, rx, ry in random.Random(31).sample([(x, y, rx, ry) for x in range(10, 1200, 46) for y in (352, 372, 396) for rx in (14,) for ry in (6,)], 26)) + '''</g>
+<g fill="#6A5A40" opacity=".6">''' + ''.join('<ellipse cx="%d" cy="%d" rx="10" ry="4"/>' % (x, y) for x, y in random.Random(32).sample([(x, y) for x in range(20, 1200, 38) for y in (348, 366, 388, 408)], 20)) + '''</g>
 <g><path d="M300 362 q80 26 200 6 l30 -34 q-120 16 -250 6z" fill="url(#rlb3-hull)"/><path d="M280 340 q130 10 250 -6" stroke="#E4D2AC" stroke-width="3" fill="none" opacity=".6"/>
 <path d="M400 344 v-104" stroke="#3A2A18" stroke-width="5"/><path d="M400 250 l-60 86" stroke="#3A2A18" stroke-width="1.5"/>
 <path d="M320 342 q30 20 60 2 q10 24 30 18" stroke="#C9B48A" stroke-width="1.5" fill="none" opacity=".6"/></g>
@@ -291,8 +291,8 @@ _d = [_lg('rlb6-sky', [(0, '#0F2444'), (0.45, '#2A4C78'), (0.8, '#C99A5E'), (1, 
 _steps = ''.join('<rect x="0" y="%d" width="1200" height="8" fill="%s"/>' % (y, c) for y, c in
                  zip(range(240, 312, 8), ['#E4D2AC', '#C9B48A', '#D8C49A', '#B8A27A', '#C9B48A', '#A89670', '#B8A27A', '#8A7650', '#9A8660']))
 _diyas = ''
-for _x, _y, _s in [(300, 344, 1), (380, 362, 1.1), (470, 340, .9), (540, 378, 1.2), (620, 352, 1), (700, 370, 1.1),
-                   (770, 344, .9), (850, 364, 1), (930, 348, .9), (440, 396, 1.3), (660, 400, 1.3), (820, 394, 1.2), (220, 372, 1)]:
+for _x, _y, _s in [(300, 344, 1), (380, 362, 1.1), (540, 378, 1.2), (620, 352, 1), (700, 370, 1.1),
+                   (770, 344, .9), (850, 364, 1), (440, 396, 1.3), (660, 400, 1.3)]:
     _diyas += ('<g transform="translate(%d %d) scale(%s)"><path d="M-10 0 q10 8 20 0 q-10 -4 -20 0z" fill="#9A7446"/>'
                '<path d="M-7 -1 q7 4 14 0" stroke="#2E5A4C" stroke-width="2" fill="none"/>'
                '<path d="M0 -2 q-4 -6 0 -12 q4 6 0 12z" fill="#F2C964"/><circle cx="0" cy="-7" r="16" fill="url(#rlb6-lamp)"/>'
@@ -302,7 +302,7 @@ BANNERS[6] = _svg(CREDITS[6], _d, '''
 ''' + _stars(601, 14, 40, 1160, 6, 70, 0.45) + '''
 <ellipse cx="600" cy="240" rx="560" ry="120" fill="url(#rlb6-dawn)" opacity=".6"/>
 <g fill="#1C3A62"><rect x="80" y="176" width="100" height="70"/><rect x="190" y="150" width="80" height="96"/><rect x="930" y="160" width="90" height="86"/><rect x="1030" y="184" width="110" height="62"/><rect x="286" y="190" width="120" height="56"/><rect x="800" y="186" width="110" height="60"/></g>
-''' + _windows(61, 90, 1140, 164, 240, 22, 0.25, '#F6D98C', 0.7) + '''
+''' + _windows(61, 90, 1140, 164, 240, 26, 0.18, '#F6D98C', 0.7) + '''
 <g><rect x="470" y="196" width="80" height="50" fill="#B8A27A"/><path d="M462 198 l48 -34 l48 34z" fill="#A08C64"/><rect x="498" y="210" width="24" height="36" fill="#3A2A18"/><path d="M500 246 v-26 q10 -10 20 0 v26z" fill="#F2C964" opacity=".6"/>
 <path d="M552 246 V196 C552 150 566 104 612 70 C658 104 672 150 672 196 V246z" fill="url(#rlb6-tower)"/>
 <g stroke="#8A7650" stroke-width="1.5" fill="none" opacity=".7"><path d="M556 226 h112 M556 206 h112 M558 186 h108 M562 166 h100 M568 146 h88 M576 126 h72 M586 106 h52 M598 88 h28"/><path d="M612 70 V246 M584 90 C570 130 566 180 568 246 M640 90 C654 130 658 180 656 246"/></g>
@@ -334,13 +334,12 @@ _d = [_lg('rlb7-sky', [(0, '#0A1E33'), (0.5, '#1C3A62'), (0.85, '#C99A5E'), (1, 
       _glow('rlb7-lit', '#FFF2C4', 0.85)]
 _leaves = ''
 _r = random.Random(71)
-for _k in range(95):
+for _k in range(60):
     _x = _r.randint(760, 1050); _y = _r.randint(70, 210)
     if ((_x - 905) / 150.0) ** 2 + ((_y - 140) / 75.0) ** 2 > 1:
         continue
-    _leaves += ('<path transform="translate(%d %d) rotate(%d)" d="M0 -6 C-9 -14 -13 2 0 12 C13 2 9 -14 0 -6z M0 12 l0 6" '
-                'fill="%s" stroke="%s" stroke-width="1"/>' % (_x, _y, _r.randint(-40, 40),
-                _r.choice(['#2E5A4C', '#3A6A56', '#24483E', '#4A7A5E']), '#24483E'))
+    _leaves += ('<path transform="translate(%d %d) rotate(%d)" d="M0 -6C-9 -14 -13 2 0 12C13 2 9 -14 0 -6zM0 12v6" fill="%s"/>'
+                % (_x, _y, _r.randint(-40, 40), _r.choice(['#2E5A4C', '#3A6A56', '#24483E', '#4A7A5E'])))
 BANNERS[7] = _svg(CREDITS[7], _d, '''
 <rect width="1200" height="420" fill="url(#rlb7-sky)"/>
 ''' + _stars(701, 40, 40, 1160, 6, 120, 0.6) + '''
@@ -362,7 +361,7 @@ BANNERS[7] = _svg(CREDITS[7], _d, '''
 <path d="M436 276 h36" stroke="#8A6A3A" stroke-width="6" stroke-linecap="round"/><path d="M450 258 v18 M466 258 v18" stroke="#3A2A18" stroke-width="1"/>
 <rect x="330" y="340" width="168" height="10" fill="#5A4E36"/><circle cx="414" cy="290" r="60" fill="url(#rlb7-lit)" opacity=".35"/></g>
 <g><path d="M890 350 q6 -60 -2 -110 q-24 -30 -60 -46 M896 250 q24 -30 70 -40 M892 230 q-6 -40 20 -80 M880 244 q-40 -10 -60 -40" stroke="#3A2A18" stroke-width="12" fill="none" stroke-linecap="round"/>
-<path d="M866 360 q20 -18 22 -120 h14 q2 102 28 120z" fill="#3A2A18"/>''' + _leaves + '''</g>
+<path d="M866 360 q20 -18 22 -120 h14 q2 102 28 120z" fill="#3A2A18"/><g stroke="#24483E" stroke-width="1">''' + _leaves + '''</g></g>
 <path d="M0 404 H1200 V420 H0z" fill="#050A14" opacity=".5"/>
 ''')
 
@@ -427,11 +426,11 @@ _temple = ('<rect x="376" y="212" width="148" height="58" fill="url(#rlb9-gold)"
            '<rect x="502" y="160" width="20" height="14" fill="url(#rlb9-gold)"/><path d="M500 162 q12 -22 24 0z" fill="url(#rlb9-dome)"/><path d="M512 146 v-6" stroke="#F2C273" stroke-width="1.5"/></g>')
 BANNERS[9] = _svg(CREDITS[9], _d, '''
 <rect width="1200" height="420" fill="url(#rlb9-sky)"/>
-''' + _stars(901, 20, 40, 600, 6, 110, 0.5) + _stars(902, 70, 600, 1160, 6, 200, 0.75) + '''
+''' + _stars(901, 20, 40, 600, 6, 110, 0.5) + _stars(902, 44, 600, 1160, 6, 200, 0.75) + '''
 <path d="M720 60 q140 30 300 120" stroke="#F7EBD0" stroke-width="30" fill="none" opacity=".05"/>
 <ellipse cx="450" cy="200" rx="200" ry="110" fill="url(#rlb9-lit)" opacity=".55"/>
 <path d="M0 270 V236 h80 v-10 h80 v10 h110 v34z M630 270 V250 h60 v20z" fill="#E4D2AC" opacity=".55"/>
-''' + _windows(91, 10, 260, 240, 262, 18, 0.5, '#F6D98C', 0.75) + '''
+''' + _windows(91, 10, 260, 240, 262, 22, 0.4, '#F6D98C', 0.75) + '''
 <rect x="0" y="270" width="640" height="150" fill="url(#rlb9-pool)"/>
 <g opacity=".35" transform="translate(0 540) scale(1 -1)">''' + _temple + '''</g>
 <g stroke="#F7EBD0" stroke-width="1" opacity=".3"><path d="M360 300 h40 M470 318 h60 M380 350 h90 M440 380 h40 M90 300 h60 M560 330 h50"/></g>
@@ -460,10 +459,10 @@ _d = [_lg('rlb10-sky', [(0, '#0A1E33'), (0.6, '#0F2444'), (0.9, '#2A4C78'), (1, 
       _glow('rlb10-lit', '#FFF2C4', 0.85)]
 BANNERS[10] = _svg(CREDITS[10], _d, '''
 <rect width="1200" height="420" fill="url(#rlb10-sky)"/>
-''' + _stars(1001, 44, 20, 1180, 6, 130, 0.6) + '''
+''' + _stars(1001, 26, 20, 1180, 6, 130, 0.6) + '''
 <circle cx="1000" cy="60" r="16" fill="#F7EBD0" opacity=".85"/>
 <g fill="#142B4C"><rect x="0" y="170" width="70" height="200"/><rect x="74" y="140" width="60" height="230"/><rect x="138" y="190" width="80" height="180"/><rect x="964" y="150" width="70" height="220"/><rect x="1038" y="180" width="72" height="190"/><rect x="1114" y="130" width="86" height="240"/></g>
-''' + _windows(1011, 6, 214, 150, 360, 14, 0.5, '#F6D98C', 0.7) + _windows(1012, 970, 1196, 140, 360, 14, 0.5, '#F6D98C', 0.7) + '''
+''' + _windows(1011, 6, 214, 150, 360, 20, 0.33, '#F6D98C', 0.7) + _windows(1012, 970, 1196, 140, 360, 20, 0.33, '#F6D98C', 0.7) + '''
 <g><rect x="226" y="220" width="120" height="150" fill="url(#rlb10-stone)"/><rect x="246" y="196" width="80" height="26" fill="#C9B48A"/><path d="M246 198 q0 -60 40 -64 q40 4 40 64z" fill="url(#rlb10-stone)"/><path d="M286 134 v-12" stroke="#C9A26A" stroke-width="2.5"/><circle cx="286" cy="120" r="3" fill="#F2C273"/>
 <rect x="352" y="150" width="14" height="220" fill="url(#rlb10-stone)"/><path d="M348 150 l11 -40 l11 40z" fill="#A08C64"/><rect x="348" y="190" width="22" height="5" fill="#C9B48A"/></g>
 <g><rect x="376" y="236" width="100" height="134" fill="#2A4C78"/><path d="M376 238 l50 -40 l50 40z" fill="#1C3A62"/><rect x="408" y="160" width="36" height="80" fill="#2A4C78"/><path d="M406 162 l20 -62 l20 62z" fill="#1C3A62"/>
@@ -476,7 +475,7 @@ BANNERS[10] = _svg(CREDITS[10], _d, '''
 <g><rect x="748" y="226" width="130" height="144" fill="#F7EBD0"/><rect x="778" y="200" width="70" height="28" fill="#E4D2AC"/><path d="M780 202 q-6 -30 16 -42 q16 -10 17 -26 q1 16 17 26 q22 12 16 42z" fill="url(#rlb10-gold)"/>
 <path d="M813 134 v-14" stroke="#F2C273" stroke-width="2"/><rect x="752" y="206" width="16" height="20" fill="#E4D2AC"/><path d="M750 208 q10 -18 20 0z" fill="url(#rlb10-gold)"/><rect x="858" y="206" width="16" height="20" fill="#E4D2AC"/><path d="M856 208 q10 -18 20 0z" fill="url(#rlb10-gold)"/>
 <path d="M796 370 v-50 q17 -20 34 0 v50z" fill="#F2C964" opacity=".8"/><path d="M766 290 v-24 q8 -10 16 0 v24z M844 290 v-24 q8 -10 16 0 v24z" fill="#F2C964" opacity=".7"/></g>
-<g fill="#1C3A62"><rect x="886" y="190" width="72" height="180"/></g>''' + _windows(1013, 892, 954, 200, 360, 14, 0.55, '#F6D98C', 0.75) + '''
+<g fill="#1C3A62"><rect x="886" y="190" width="72" height="180"/></g>''' + _windows(1013, 892, 954, 200, 360, 18, 0.45, '#F6D98C', 0.75) + '''
 ''' + _windows(1014, 236, 340, 232, 360, 16, 0.4, '#F2C964', 0.8) + _windows(1015, 382, 470, 250, 360, 16, 0.45, '#F2C964', 0.8) + _windows(1016, 502, 580, 262, 360, 16, 0.45, '#F2C964', 0.8) + '''
 <ellipse cx="600" cy="330" rx="520" ry="100" fill="url(#rlb10-lit)" opacity=".35"/>
 <rect x="0" y="370" width="1200" height="50" fill="url(#rlb10-street)"/>
@@ -503,7 +502,7 @@ for _x, _y, _s in [(560, 360, 1.3), (644, 360, 1.3), (470, 290, .8), (330, 272, 
 BANNERS[11] = _svg(CREDITS[11], _d, '''
 <rect width="1200" height="420" fill="url(#rlb11-sky)"/>
 <path d="M160 20 q440 60 900 200" stroke="#F7EBD0" stroke-width="60" fill="none" opacity=".05"/><path d="M200 30 q420 60 860 190" stroke="#F7EBD0" stroke-width="22" fill="none" opacity=".05"/>
-''' + _stars(1101, 110, 10, 1190, 6, 220, 0.7) + _stars(1102, 16, 200, 1000, 20, 180, 0.95) + '''
+''' + _stars(1101, 60, 10, 1190, 6, 220, 0.7) + _stars(1102, 16, 200, 1000, 20, 180, 0.95) + '''
 <circle cx="600" cy="54" r="2.6" fill="#FFF2C4"/>
 <path d="M0 252 q120 -40 260 -20 q120 -40 240 -10 q120 -30 240 -6 q140 -34 260 -4 q120 -10 200 10 V270 H0z" fill="#1C3A62" opacity=".8"/>
 <path d="M0 262 q300 -16 600 -8 q300 -8 600 6 V420 H0z" fill="url(#rlb11-land)"/>
@@ -531,11 +530,11 @@ _win = '<g fill="none" stroke="#2A4C78" stroke-width="6"><path d="M440 236 V100 
 BANNERS[12] = _svg(CREDITS[12], _d, '''
 <rect width="1200" height="420" fill="url(#rlb12-wall)"/>
 <path d="M440 236 V100 A160 90 0 0 1 760 100 V236z" fill="url(#rlb12-sky)"/>
-''' + _stars(1201, 70, 452, 748, 40, 228, 0.8) + _stars(1202, 10, 470, 730, 50, 220, 1) + '''
+''' + _stars(1201, 44, 452, 748, 40, 228, 0.8) + _stars(1202, 10, 470, 730, 50, 220, 1) + '''
 <path d="M470 210 q120 -120 260 -150" stroke="#F7EBD0" stroke-width="18" fill="none" opacity=".06"/>
 ''' + _win + '''
-<g>''' + _spines(21, 130, 380, 90, 46) + _spines(22, 130, 380, 160, 46) + _spines(23, 130, 380, 230, 46) + '''</g>
-<g>''' + _spines(24, 820, 1070, 90, 46) + _spines(25, 820, 1070, 160, 46) + _spines(26, 820, 1070, 230, 46) + '''</g>
+<g>''' + _spines(21, 130, 380, 120, 46) + _spines(22, 130, 380, 210, 46) + '''</g>
+<g>''' + _spines(24, 820, 1070, 120, 46) + _spines(25, 820, 1070, 210, 46) + '''</g>
 <rect x="0" y="0" width="140" height="420" fill="#0A1E33" opacity=".55"/><rect x="1060" y="0" width="140" height="420" fill="#0A1E33" opacity=".55"/>
 <ellipse cx="600" cy="270" rx="460" ry="160" fill="url(#rlb12-lamp)" opacity=".75"/>
 <rect x="0" y="276" width="1200" height="144" fill="url(#rlb12-table)"/><rect x="0" y="276" width="1200" height="4" fill="#E4B860" opacity=".5"/>
