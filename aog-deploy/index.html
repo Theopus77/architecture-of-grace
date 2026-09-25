@@ -332,6 +332,8 @@ function toggleTheme() {
 <script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "Organization", "@id": "https://architectureofgrace.org/#org", "name": "Architecture of Grace", "url": "https://architectureofgrace.org/", "logo": "https://architectureofgrace.org/icon-512.png", "email": "Theopus77@yahoo.com", "founder": {"@type": "Person", "name": "James Anthony Ramsden", "jobTitle": "Curriculum Architect & Program Developer"}, "description": "A privacy-first, bilingual (English/Spanish) K–12 framework built by a practicing special educator — academics rebuilt for the resource room, and the language of identity, self-compassion, forgiveness and grace that runs alongside them."}, {"@type": "WebSite", "@id": "https://architectureofgrace.org/#site", "url": "https://architectureofgrace.org/", "name": "Architecture of Grace", "inLanguage": ["en", "es"], "publisher": {"@id": "https://architectureofgrace.org/#org"}}]}</script>
 <!-- Built-in Sheet destination for classroom links. Optional: if this file is
      absent the app simply stays device-configured, exactly as before. -->
+<!-- AOG-CONN-KEEP-V1: keeps the Sheet connection when the browser drops it; must load before anything reads aog.sync.url -->
+<script src="aog-conn-keep.js"></script>
 <script src="aog-sync-config.js"></script>
 <style id="aog-door3-hidden">
 /* AOG-DOOR3-HIDDEN-V1 (2026-09-22) — Jimmy: hide door three (Beyond the Room) from
@@ -7361,6 +7363,11 @@ window.addEventListener('load',function(){
             <div class="small" id="aogSyncConnectedHost" style="color:var(--ink-soft); overflow:hidden; text-overflow:ellipsis; white-space:nowrap;"></div>
           </div>
           <a href="#" onclick="aogSyncEdit();return false;" style="font-size:12.5px; font-weight:700; color:var(--gold-deep,#9a6f24); text-decoration:none; white-space:nowrap;" data-dl="dl_cfg_edit">Edit connection</a>
+        </div>
+        <!-- AOG-CONN-KEEP-V1 — one link that puts this connection back on any browser -->
+        <div id="aogConnKeepRow" style="margin-top:10px; display:none; gap:10px; align-items:center; flex-wrap:wrap;">
+          <button class="btn btn-sm" type="button" onclick="aogConnCopyRestoreLink(this)" data-en="Copy restore link" data-es="Copiar enlace de restauraci&oacute;n">Copy restore link</button>
+          <span class="small" style="color:var(--ink-faint); max-width:60ch; line-height:1.5;" data-en="If the connection ever disappears (Safari clears sites you have not opened in a week, and each web address keeps its own), open this link and it comes back. It holds your passcode and write key, so keep it private, like a password." data-es="Si la conexi&oacute;n desaparece (Safari borra los sitios que no abres en una semana, y cada direcci&oacute;n guarda la suya), abre este enlace y vuelve. Contiene tu c&oacute;digo y tu clave de escritura: gu&aacute;rdalo en privado, como una contrase&ntilde;a.">If the connection ever disappears (Safari clears sites you have not opened in a week, and each web address keeps its own), open this link and it comes back. It holds your passcode and write key, so keep it private, like a password.</span>
         </div>
         <!-- ⚠ .30eh: THE PULL FOR EVERYTHING. Jimmy, pointing at the connected
              banner: "Can a pull button be attached here as well? A pull for
@@ -39178,6 +39185,7 @@ function aogSyncRenderState(connected, u) {
   } catch (ePrAll) {}
   if (connected) {
     if (b) b.style.display = "flex";
+    try { var kr = document.getElementById("aogConnKeepRow"); if (kr) kr.style.display = "flex"; } catch (eKr) {}
     if (f) f.style.display = "none";
     if (hp) hp.innerHTML = aogSyncHostLabel(u || "");
     if (card) card.style.borderColor = "var(--green,#2E6B3A)";
@@ -39185,6 +39193,7 @@ function aogSyncRenderState(connected, u) {
   } else {
     if (b) b.style.display = "none";
     if (f) f.style.display = "";
+    try { var kr2 = document.getElementById("aogConnKeepRow"); if (kr2) kr2.style.display = "none"; } catch (eKr2) {}
     if (card) card.style.borderColor = "";
   }
 }
