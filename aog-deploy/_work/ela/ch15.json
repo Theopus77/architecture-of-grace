@@ -28,9 +28,18 @@
       "How do you tell them apart? Ask, \"Could I shuffle these sentences?\" In a sequence, no. Mixing the order breaks it. In a description, mostly yes. The tornado is still a spinning column even if you read the width sentence first. Every text you read has a shape. Sequence and description are the first two."
      ],
      "words": [
-      {"w": "sequence", "d": "a text shape that tells events or steps in time order"},
-      {"w": "description", "d": "a text shape that tells what something is like, one feature at a time"},
-      {"w": "text structure", "d": "the way a text is built or organized"}
+      {
+       "w": "sequence",
+       "d": "a text shape that tells events or steps in time order"
+      },
+      {
+       "w": "description",
+       "d": "a text shape that tells what something is like, one feature at a time"
+      },
+      {
+       "w": "text structure",
+       "d": "the way a text is built or organized"
+      }
      ],
      "look": {
       "type": "source",
@@ -41,9 +50,39 @@
       "prompt": "Could you shuffle these sentences without breaking the paragraph? What shape is it?"
      },
      "check": [
-      {"q": "Which shape puts events in time order?", "choices": ["Description", "Sequence", "Compare and contrast", "Problem and solution"], "a": 1, "why": "Sequence means first, next, then. Order is the point."},
-      {"q": "\"A tornado can be thin as a rope or wider than a town.\" What kind of sentence is this?", "choices": ["A step in a sequence", "A cause", "A feature in a description", "A solution"], "a": 2, "why": "It tells what a tornado is like, one feature. That is description."},
-      {"q": "What does the shuffle test show?", "choices": ["Sequence sentences can be mixed; description cannot", "Description sentences can mostly be mixed; sequence cannot", "Both shapes can be mixed freely", "Neither shape can be mixed"], "a": 1, "why": "Mixing steps breaks a sequence. Mixing features usually leaves a description fine."}
+      {
+       "q": "Which shape puts events in time order?",
+       "choices": [
+        "Sequence",
+        "Description",
+        "Compare and contrast",
+        "Problem and solution"
+       ],
+       "a": 0,
+       "why": "Sequence means first, next, then. Order is the point."
+      },
+      {
+       "q": "\"A tornado can be thin as a rope or wider than a town.\" What kind of sentence is this?",
+       "choices": [
+        "A feature in a description",
+        "A cause",
+        "A step in a sequence",
+        "A solution"
+       ],
+       "a": 0,
+       "why": "It tells what a tornado is like, one feature. That is description."
+      },
+      {
+       "q": "What does the shuffle test show?",
+       "choices": [
+        "Sequence sentences can be mixed; description cannot",
+        "Neither shape can be mixed",
+        "Both shapes can be mixed freely",
+        "Description sentences can mostly be mixed; sequence cannot"
+       ],
+       "a": 3,
+       "why": "Mixing steps breaks a sequence. Mixing features usually leaves a description fine."
+      }
      ]
     },
     {
@@ -55,22 +94,78 @@
       "Try it on two things you know: a bus and a train. Both carry many people. Both have a driver. But a train runs on rails and a bus runs on streets. A train cannot turn to avoid traffic. When you can say both and but, you are thinking in this shape."
      ],
      "words": [
-      {"w": "compare", "d": "to show how two things are alike"},
-      {"w": "contrast", "d": "to show how two things are different"},
-      {"w": "hurricane", "d": "a huge spinning storm that forms over warm ocean water and can last for days"}
+      {
+       "w": "compare",
+       "d": "to show how two things are alike"
+      },
+      {
+       "w": "contrast",
+       "d": "to show how two things are different"
+      },
+      {
+       "w": "hurricane",
+       "d": "a huge spinning storm that forms over warm ocean water and can last for days"
+      }
      ],
      "look": {
       "type": "data",
       "title": "Tornado and Hurricane Side by Side",
-      "rows": [["Tornado, typical width in miles", 0.2], ["Hurricane, typical width in miles", 300], ["Tornado, typical length in minutes", 10], ["Hurricane, typical length in hours", 72]],
+      "rows": [
+       [
+        "Tornado, typical width in miles",
+        0.2
+       ],
+       [
+        "Hurricane, typical width in miles",
+        300
+       ],
+       [
+        "Tornado, typical length in minutes",
+        10
+       ],
+       [
+        "Hurricane, typical length in hours",
+        72
+       ]
+      ],
       "unit": "rounded typical values",
       "cite": "rounded, typical values chosen for this lesson; real storms vary a lot",
       "prompt": "Which numbers show a contrast? Name one way the two storms are alike that the table does not show."
      },
      "check": [
-      {"q": "What does contrast mean?", "choices": ["To show what is alike", "To show what is different", "To put events in order", "To give a reason"], "a": 1, "why": "Contrast is difference. Compare is sameness."},
-      {"q": "Which word signals that two things are alike?", "choices": ["However", "Unlike", "Both", "But"], "a": 2, "why": "\"Both\" says two things share something. The others signal difference."},
-      {"q": "Which sentence is a contrast between a bus and a train?", "choices": ["Both carry many people", "Both have a driver", "Both stop at stations", "A train runs on rails, but a bus runs on streets"], "a": 3, "why": "The \"but\" sentence shows a difference. The other three show sameness."}
+      {
+       "q": "What does contrast mean?",
+       "choices": [
+        "To show what is different",
+        "To show what is alike",
+        "To put events in order",
+        "To give a reason"
+       ],
+       "a": 0,
+       "why": "Contrast is difference. Compare is sameness."
+      },
+      {
+       "q": "Which word signals that two things are alike?",
+       "choices": [
+        "However",
+        "Unlike",
+        "Both",
+        "But"
+       ],
+       "a": 2,
+       "why": "\"Both\" says two things share something. The others signal difference."
+      },
+      {
+       "q": "Which sentence is a contrast between a bus and a train?",
+       "choices": [
+        "Both carry many people",
+        "Both have a driver",
+        "Both stop at stations",
+        "A train runs on rails, but a bus runs on streets"
+       ],
+       "a": 3,
+       "why": "The \"but\" sentence shows a difference. The other three show sameness."
+      }
      ]
     },
     {
@@ -82,9 +177,18 @@
       "Here is a trap. Two things happening close together does not mean one caused the other. The sirens sounded, and then the funnel touched down. The sirens did not cause the tornado. Ask, \"Did the first thing make the second thing happen?\" If not, it is a sequence, not a cause."
      ],
      "words": [
-      {"w": "cause", "d": "the reason something happens"},
-      {"w": "effect", "d": "the result; what happens because of a cause"},
-      {"w": "chain", "d": "a line of causes and effects where each effect starts the next cause"}
+      {
+       "w": "cause",
+       "d": "the reason something happens"
+      },
+      {
+       "w": "effect",
+       "d": "the result; what happens because of a cause"
+      },
+      {
+       "w": "chain",
+       "d": "a line of causes and effects where each effect starts the next cause"
+      }
      ],
      "look": {
       "type": "think",
@@ -93,9 +197,39 @@
       "prompt": "Which pair is cause and effect? Which is only a sequence? How do you know?"
      },
      "check": [
-      {"q": "In \"the warm air rose, so the storm began to spin,\" what is the effect?", "choices": ["The warm air rose", "The storm began to spin", "The cool air", "The word so"], "a": 1, "why": "The spinning is the result. The rising warm air is the cause."},
-      {"q": "What is a chain of causes?", "choices": ["Two things that happen at the same time", "One event with no reason", "A line where each effect starts the next cause", "A list of features"], "a": 2, "why": "Rising air causes spin, spin causes a funnel, the funnel causes damage. Each effect leads to the next."},
-      {"q": "The sirens sounded, then the funnel touched down. Did the sirens cause the funnel?", "choices": ["No; they just happened close in time", "Yes; sirens make wind", "Yes; the first thing always causes the second", "No; sirens come after tornadoes"], "a": 0, "why": "Close in time is not the same as cause. The sirens did not make the tornado happen."}
+      {
+       "q": "In \"the warm air rose, so the storm began to spin,\" what is the effect?",
+       "choices": [
+        "The warm air rose",
+        "The word so",
+        "The cool air",
+        "The storm began to spin"
+       ],
+       "a": 3,
+       "why": "The spinning is the result. The rising warm air is the cause."
+      },
+      {
+       "q": "What is a chain of causes?",
+       "choices": [
+        "Two things that happen at the same time",
+        "One event with no reason",
+        "A line where each effect starts the next cause",
+        "A list of features"
+       ],
+       "a": 2,
+       "why": "Rising air causes spin, spin causes a funnel, the funnel causes damage. Each effect leads to the next."
+      },
+      {
+       "q": "The sirens sounded, then the funnel touched down. Did the sirens cause the funnel?",
+       "choices": [
+        "No; they just happened close in time",
+        "Yes; sirens make wind",
+        "Yes; the first thing always causes the second",
+        "No; sirens come after tornadoes"
+       ],
+       "a": 0,
+       "why": "Close in time is not the same as cause. The sirens did not make the tornado happen."
+      }
      ]
     },
     {
@@ -107,8 +241,14 @@
       "This shape is close to cause and effect, and students mix them up. Ask, \"Is the writer telling me what went wrong and how to fix it?\" That is problem and solution. \"Is the writer telling me why something happens?\" That is cause and effect. A problem is a kind of cause, but only one that someone tries to fix."
      ],
      "words": [
-      {"w": "problem", "d": "something wrong that needs to be fixed"},
-      {"w": "solution", "d": "a way to fix a problem"}
+      {
+       "w": "problem",
+       "d": "something wrong that needs to be fixed"
+      },
+      {
+       "w": "solution",
+       "d": "a way to fix a problem"
+      }
      ],
      "look": {
       "type": "source",
@@ -119,9 +259,39 @@
       "prompt": "Name the problem and the solution. What words helped you find each?"
      },
      "check": [
-      {"q": "\"People could not hear the sirens, so the town added phone alerts.\" What shape is this?", "choices": ["Description", "Sequence", "Compare and contrast", "Problem and solution"], "a": 3, "why": "Something was wrong (no one heard), and the town fixed it (phone alerts)."},
-      {"q": "In the shelter story, what is the solution?", "choices": ["The shelter was two miles away", "A storm room inside the school", "The storm hit the town", "Kids could not reach the shelter"], "a": 1, "why": "The storm room is the fix. The far-away shelter is the problem."},
-      {"q": "How is problem and solution different from cause and effect?", "choices": ["Problem and solution has no reasons", "Cause and effect only happens in stories", "Problem and solution tells how something wrong gets fixed", "They are the same shape"], "a": 2, "why": "Cause and effect explains why. Problem and solution adds a fix."}
+      {
+       "q": "\"People could not hear the sirens, so the town added phone alerts.\" What shape is this?",
+       "choices": [
+        "Description",
+        "Sequence",
+        "Compare and contrast",
+        "Problem and solution"
+       ],
+       "a": 3,
+       "why": "Something was wrong (no one heard), and the town fixed it (phone alerts)."
+      },
+      {
+       "q": "In the shelter story, what is the solution?",
+       "choices": [
+        "The shelter was two miles away",
+        "A storm room inside the school",
+        "The storm hit the town",
+        "Kids could not reach the shelter"
+       ],
+       "a": 1,
+       "why": "The storm room is the fix. The far-away shelter is the problem."
+      },
+      {
+       "q": "How is problem and solution different from cause and effect?",
+       "choices": [
+        "Problem and solution has no reasons",
+        "Cause and effect only happens in stories",
+        "Problem and solution tells how something wrong gets fixed",
+        "They are the same shape"
+       ],
+       "a": 2,
+       "why": "Cause and effect explains why. Problem and solution adds a fix."
+      }
      ]
     }
    ]
@@ -138,21 +308,74 @@
       "Signal words are clues, not proof. A description might use \"first\" just to start a list of features. So read a little more and check. If the sentences must stay in order, it is a sequence. If they explain why, it is cause and effect. The signal word points; the sentences tell."
      ],
      "words": [
-      {"w": "signal word", "d": "a word or phrase that hints at how a text is organized, like first, but or because"},
-      {"w": "clue", "d": "a hint that helps you figure something out"}
+      {
+       "w": "signal word",
+       "d": "a word or phrase that hints at how a text is organized, like first, but or because"
+      },
+      {
+       "w": "clue",
+       "d": "a hint that helps you figure something out"
+      }
      ],
      "look": {
       "type": "data",
       "title": "Signal Words in the Two Tornado Articles",
-      "rows": [["Article 1: clock times", 9], ["Article 1: because or so", 1], ["Article 2: clock times", 0], ["Article 2: because or so", 8]],
+      "rows": [
+       [
+        "Article 1: clock times",
+        9
+       ],
+       [
+        "Article 1: because or so",
+        1
+       ],
+       [
+        "Article 2: clock times",
+        0
+       ],
+       [
+        "Article 2: because or so",
+        8
+       ]
+      ],
       "unit": "times used",
       "cite": "counted for this lesson, in two model articles written for this course",
       "prompt": "Which counts point to sequence? Which point to cause and effect? Could you tell the shape from the counts alone?"
      },
      "check": [
-      {"q": "A paragraph begins, \"Because the river flooded...\" Which shape is most likely?", "choices": ["Cause and effect", "Description", "Sequence", "Compare and contrast"], "a": 0, "why": "\"Because\" signals a cause is coming."},
-      {"q": "Which set of words signals a sequence?", "choices": ["Both, but, unlike", "First, next, finally", "Because, so, as a result", "Problem, solved"], "a": 1, "why": "First, next and finally put events in order."},
-      {"q": "Why are signal words clues and not proof?", "choices": ["They are always wrong", "Only long texts have them", "A word like first can start a list of features, not just steps", "They only appear in stories"], "a": 2, "why": "Signal words point to a shape, but you must read on to be sure."}
+      {
+       "q": "A paragraph begins, \"Because the river flooded...\" Which shape is most likely?",
+       "choices": [
+        "Cause and effect",
+        "Description",
+        "Sequence",
+        "Compare and contrast"
+       ],
+       "a": 0,
+       "why": "\"Because\" signals a cause is coming."
+      },
+      {
+       "q": "Which set of words signals a sequence?",
+       "choices": [
+        "Both, but, unlike",
+        "First, next, finally",
+        "Because, so, as a result",
+        "Problem, solved"
+       ],
+       "a": 1,
+       "why": "First, next and finally put events in order."
+      },
+      {
+       "q": "Why are signal words clues and not proof?",
+       "choices": [
+        "They are always wrong",
+        "Only long texts have them",
+        "A word like first can start a list of features, not just steps",
+        "They only appear in stories"
+       ],
+       "a": 2,
+       "why": "Signal words point to a shape, but you must read on to be sure."
+      }
      ]
     },
     {
@@ -164,9 +387,18 @@
       "Try it with the shelter paragraph. Problem box: \"Shelter two miles away; kids cannot reach it.\" Solution box: \"Storm room inside school, concrete walls.\" Two boxes, ten words. You could tell the whole story from that. Notes that match the shape are short, and they stick."
      ],
      "words": [
-      {"w": "timeline", "d": "a line with events marked on it in time order"},
-      {"w": "web", "d": "a note shape with the topic in the middle and features drawn around it"},
-      {"w": "column", "d": "a tall list; two columns side by side let you compare"}
+      {
+       "w": "timeline",
+       "d": "a line with events marked on it in time order"
+      },
+      {
+       "w": "web",
+       "d": "a note shape with the topic in the middle and features drawn around it"
+      },
+      {
+       "w": "column",
+       "d": "a tall list; two columns side by side let you compare"
+      }
      ],
      "look": {
       "type": "think",
@@ -175,9 +407,39 @@
       "prompt": "All three picked the wrong note shape. What should each student have drawn instead?"
      },
      "check": [
-      {"q": "Which note shape fits a cause-and-effect text?", "choices": ["Boxes with arrows", "A numbered list", "Two columns", "A web"], "a": 0, "why": "Arrows show one thing leading to another, which is what cause and effect does."},
-      {"q": "Beth's article compares two bridges. What should she draw?", "choices": ["A timeline", "Arrows", "A web", "Two columns"], "a": 3, "why": "Two columns put the two bridges side by side so she can compare and contrast."},
-      {"q": "Why do notes that match the shape help you remember?", "choices": ["They use more words", "They store the ideas the way the writer built them", "They take longer to make", "They are prettier"], "a": 1, "why": "When your notes copy the structure, the ideas stick in that same order."}
+      {
+       "q": "Which note shape fits a cause-and-effect text?",
+       "choices": [
+        "Boxes with arrows",
+        "A numbered list",
+        "Two columns",
+        "A web"
+       ],
+       "a": 0,
+       "why": "Arrows show one thing leading to another, which is what cause and effect does."
+      },
+      {
+       "q": "Beth's article compares two bridges. What should she draw?",
+       "choices": [
+        "A timeline",
+        "Arrows",
+        "A web",
+        "Two columns"
+       ],
+       "a": 3,
+       "why": "Two columns put the two bridges side by side so she can compare and contrast."
+      },
+      {
+       "q": "Why do notes that match the shape help you remember?",
+       "choices": [
+        "They use more words",
+        "They store the ideas the way the writer built them",
+        "They take longer to make",
+        "They are prettier"
+       ],
+       "a": 1,
+       "why": "When your notes copy the structure, the ideas stick in that same order."
+      }
      ]
     }
    ]
@@ -194,8 +456,14 @@
       "Then ask why. Why did the first writer leave out the causes? Maybe she wanted readers to feel the minutes tick. Why did the second writer skip the clock? Maybe he wanted to teach the science. Each writer chose. Seeing the choice is the deepest kind of reading."
      ],
      "words": [
-      {"w": "include", "d": "to put something in; a text includes the facts the writer chose to keep"},
-      {"w": "leave out", "d": "to not put something in; every writer leaves out some facts"}
+      {
+       "w": "include",
+       "d": "to put something in; a text includes the facts the writer chose to keep"
+      },
+      {
+       "w": "leave out",
+       "d": "to not put something in; every writer leaves out some facts"
+      }
      ],
      "look": {
       "type": "think",
@@ -204,9 +472,39 @@
       "prompt": "Which fact is in both articles? What is one thing you would know only from Article 2?"
      },
      "check": [
-      {"q": "Why read two texts on the same topic?", "choices": ["To finish faster", "Because one is always wrong", "To learn more than either one alone gives", "To find spelling mistakes"], "a": 2, "why": "Each text includes different facts. Together they give a fuller picture."},
-      {"q": "Which fact was in both tornado articles?", "choices": ["The sirens at 3:25", "The flattened barn", "Warm air from the south", "The sky turning green"], "a": 1, "why": "Only the barn appears in both lists. The others are in just one article."},
-      {"q": "What is the deepest question to ask about two texts?", "choices": ["Which one is longer?", "Which one has more pictures?", "Which one came first?", "Why did each writer choose to include what they did?"], "a": 3, "why": "Seeing the writer's choices shows you the purpose behind each text."}
+      {
+       "q": "Why read two texts on the same topic?",
+       "choices": [
+        "To finish faster",
+        "Because one is always wrong",
+        "To learn more than either one alone gives",
+        "To find spelling mistakes"
+       ],
+       "a": 2,
+       "why": "Each text includes different facts. Together they give a fuller picture."
+      },
+      {
+       "q": "Which fact was in both tornado articles?",
+       "choices": [
+        "The sirens at 3:25",
+        "The flattened barn",
+        "Warm air from the south",
+        "The sky turning green"
+       ],
+       "a": 1,
+       "why": "Only the barn appears in both lists. The others are in just one article."
+      },
+      {
+       "q": "What is the deepest question to ask about two texts?",
+       "choices": [
+        "Which one is longer?",
+        "Which one has more pictures?",
+        "Which one came first?",
+        "Why did each writer choose to include what they did?"
+       ],
+       "a": 3,
+       "why": "Seeing the writer's choices shows you the purpose behind each text."
+      }
      ]
     },
     {
@@ -218,8 +516,14 @@
       "Then count. One reason is thin. Three good reasons with a fact for each is strong. Also notice what the author does not say. The storm-room author never mentions who pays. A careful reader sees the point, checks the reasons, and notices the hole."
      ],
      "words": [
-      {"w": "point", "d": "the thing an author is trying to convince you of"},
-      {"w": "reason", "d": "a fact or idea an author gives to hold up a point"}
+      {
+       "w": "point",
+       "d": "the thing an author is trying to convince you of"
+      },
+      {
+       "w": "reason",
+       "d": "a fact or idea an author gives to hold up a point"
+      }
      ],
      "look": {
       "type": "source",
@@ -230,9 +534,39 @@
       "prompt": "What is the point? Which reason is the strongest, and which is the weakest? Why?"
      },
      "check": [
-      {"q": "Which sentence is the author's point?", "choices": ["Tornadoes hit our state every year", "Every school in Illinois should have a storm room", "A storm room costs less than a bus", "Kids cannot reach a shelter two miles away"], "a": 1, "why": "The point has \"should\" and is what the other sentences hold up."},
-      {"q": "Which reason would NOT hold up the storm-room point?", "choices": ["Storm rooms are painted gray", "Tornadoes hit every year", "Kids cannot reach the far shelter", "It costs less than a bus"], "a": 0, "why": "Paint color has nothing to do with whether schools need a storm room."},
-      {"q": "What hole does the careful reader find in the storm-room argument?", "choices": ["It never says when tornadoes happen", "It never says how big a storm room is", "It never says who pays", "It never names the school"], "a": 2, "why": "The author gives a cost but never says who would pay it."}
+      {
+       "q": "Which sentence is the author's point?",
+       "choices": [
+        "Tornadoes hit our state every year",
+        "Every school in Illinois should have a storm room",
+        "A storm room costs less than a bus",
+        "Kids cannot reach a shelter two miles away"
+       ],
+       "a": 1,
+       "why": "The point has \"should\" and is what the other sentences hold up."
+      },
+      {
+       "q": "Which reason would NOT hold up the storm-room point?",
+       "choices": [
+        "Storm rooms are painted gray",
+        "Tornadoes hit every year",
+        "Kids cannot reach the far shelter",
+        "It costs less than a bus"
+       ],
+       "a": 0,
+       "why": "Paint color has nothing to do with whether schools need a storm room."
+      },
+      {
+       "q": "What hole does the careful reader find in the storm-room argument?",
+       "choices": [
+        "It never says when tornadoes happen",
+        "It never says how big a storm room is",
+        "It never says who pays",
+        "It never names the school"
+       ],
+       "a": 2,
+       "why": "The author gives a cost but never says who would pay it."
+      }
      ]
     }
    ]
@@ -249,9 +583,18 @@
       "One real storm, the Tri-State Tornado of March 18, 1925, crossed Missouri, Illinois and Indiana and was one of the deadliest in United States history. A science text about it would explain the air and the spin. A history text would tell about the towns and the people who rebuilt. Same storm, different questions, different reading."
      ],
      "words": [
-      {"w": "history", "d": "the story of what happened to people in the past"},
-      {"w": "science text", "d": "a text that explains how something in nature works"},
-      {"w": "rebuild", "d": "to build again after something was destroyed"}
+      {
+       "w": "history",
+       "d": "the story of what happened to people in the past"
+      },
+      {
+       "w": "science text",
+       "d": "a text that explains how something in nature works"
+      },
+      {
+       "w": "rebuild",
+       "d": "to build again after something was destroyed"
+      }
      ],
      "look": {
       "type": "think",
@@ -260,9 +603,39 @@
       "prompt": "Which page is science and which is history? What question fits each one?"
      },
      "check": [
-      {"q": "What question does a science text mostly answer?", "choices": ["Who was there?", "How does this work?", "What year was it?", "Who paid for it?"], "a": 1, "why": "Science texts explain how nature works, with causes, steps and diagrams."},
-      {"q": "Which parts would you expect most in a history text?", "choices": ["Dates, names and places", "Diagrams of air", "Steps of an experiment", "Labels for parts"], "a": 0, "why": "History tells what happened to people, so it is full of dates, names and places."},
-      {"q": "The Tri-State Tornado of 1925 crossed which three states?", "choices": ["Ohio, Iowa and Kansas", "Illinois, Wisconsin and Michigan", "Missouri, Illinois and Indiana", "Texas, Oklahoma and Kansas"], "a": 2, "why": "It crossed Missouri, Illinois and Indiana, which is why it is called Tri-State."}
+      {
+       "q": "What question does a science text mostly answer?",
+       "choices": [
+        "Who was there?",
+        "How does this work?",
+        "What year was it?",
+        "Who paid for it?"
+       ],
+       "a": 1,
+       "why": "Science texts explain how nature works, with causes, steps and diagrams."
+      },
+      {
+       "q": "Which parts would you expect most in a history text?",
+       "choices": [
+        "Dates, names and places",
+        "Diagrams of air",
+        "Steps of an experiment",
+        "Labels for parts"
+       ],
+       "a": 0,
+       "why": "History tells what happened to people, so it is full of dates, names and places."
+      },
+      {
+       "q": "The Tri-State Tornado of 1925 crossed which three states?",
+       "choices": [
+        "Ohio, Iowa and Kansas",
+        "Illinois, Wisconsin and Michigan",
+        "Missouri, Illinois and Indiana",
+        "Texas, Oklahoma and Kansas"
+       ],
+       "a": 2,
+       "why": "It crossed Missouri, Illinois and Indiana, which is why it is called Tri-State."
+      }
      ]
     },
     {
@@ -274,34 +647,163 @@
       "Both tools can hide gaps. A timeline of a town might jump from 1925 to 1950. Ask what happened in between. A recipe might say \"bake\" without saying for how long. Good readers notice what a timeline or a list of steps leaves out, and they ask."
      ],
      "words": [
-      {"w": "steps", "d": "the parts of a task done one after another, usually numbered"},
-      {"w": "gap", "d": "a space or a missing part between two things"}
+      {
+       "w": "steps",
+       "d": "the parts of a task done one after another, usually numbered"
+      },
+      {
+       "w": "gap",
+       "d": "a space or a missing part between two things"
+      }
      ],
      "look": {
       "type": "data",
       "title": "Minutes Between the Marks",
-      "rows": [["Sky turns green to sirens", 15], ["Sirens to touchdown", 15], ["Touchdown to lift", 12]],
+      "rows": [
+       [
+        "Sky turns green to sirens",
+        15
+       ],
+       [
+        "Sirens to touchdown",
+        15
+       ],
+       [
+        "Touchdown to lift",
+        12
+       ]
+      ],
       "unit": "minutes",
       "cite": "counted for this lesson from the clock times in the class story",
       "prompt": "Which gap was shortest? How long was the tornado on the ground?"
      },
      "check": [
-      {"q": "On a timeline, where is the earliest event?", "choices": ["In the middle", "On the right", "On the left", "At the top right"], "a": 2, "why": "Timelines run left to right, earliest to latest."},
-      {"q": "Why should you read numbered steps in order?", "choices": ["The numbers are the hard part", "Later steps depend on earlier ones", "The last step is always first", "Order does not matter for steps"], "a": 1, "why": "Step three makes no sense if step one is not done."},
-      {"q": "A timeline jumps from 1925 to 1950. What should a good reader do?", "choices": ["Assume nothing happened", "Skip the timeline", "Read only 1950", "Ask what happened in the gap"], "a": 3, "why": "Timelines can leave things out. Noticing the gap is part of reading it."}
+      {
+       "q": "On a timeline, where is the earliest event?",
+       "choices": [
+        "In the middle",
+        "On the right",
+        "On the left",
+        "At the top right"
+       ],
+       "a": 2,
+       "why": "Timelines run left to right, earliest to latest."
+      },
+      {
+       "q": "Why should you read numbered steps in order?",
+       "choices": [
+        "The numbers are the hard part",
+        "Later steps depend on earlier ones",
+        "The last step is always first",
+        "Order does not matter for steps"
+       ],
+       "a": 1,
+       "why": "Step three makes no sense if step one is not done."
+      },
+      {
+       "q": "A timeline jumps from 1925 to 1950. What should a good reader do?",
+       "choices": [
+        "Assume nothing happened",
+        "Skip the timeline",
+        "Read only 1950",
+        "Ask what happened in the gap"
+       ],
+       "a": 3,
+       "why": "Timelines can leave things out. Noticing the gap is part of reading it."
+      }
      ]
     }
    ]
   }
  ],
  "review": [
-  {"q": "The first tornado article walked through the storm minute by minute. What is its shape?", "choices": ["Sequence", "Description", "Compare and contrast", "Problem and solution"], "a": 0, "why": "Events in time order with clock times is a sequence."},
-  {"q": "The second article explained why the storm formed. What is its shape?", "choices": ["Sequence", "Description", "Cause and effect", "Problem and solution"], "a": 2, "why": "Every sentence answered why, with one thing leading to the next."},
-  {"q": "Which shape can usually pass the shuffle test?", "choices": ["Sequence", "Cause and effect", "Steps in a recipe", "Description"], "a": 3, "why": "Features can be read in almost any order. Steps and causes cannot."},
-  {"q": "\"Unlike a bus, a train runs on rails.\" What does \"unlike\" signal?", "choices": ["A cause", "A contrast", "A step", "A solution"], "a": 1, "why": "\"Unlike\" points to a difference between two things."},
-  {"q": "What is the best note shape for compare and contrast?", "choices": ["Arrows", "A numbered list", "Two columns", "A single box"], "a": 2, "why": "Two columns put two things side by side."},
-  {"q": "A writer gives a point and one reason. Another gives the same point with three reasons and a fact for each. Which argument is stronger?", "choices": ["The one with one reason", "Both are equal", "Neither can be judged", "The one with three reasons and facts"], "a": 3, "why": "More good reasons with facts hold up the point better."},
-  {"q": "What is the trap in cause and effect?", "choices": ["Thinking two things close in time must be cause and effect", "Using the word because", "Drawing arrows", "Reading the last sentence first"], "a": 0, "why": "The sirens came before the funnel, but they did not cause it."},
-  {"q": "What happens when your notes match the text's shape?", "choices": ["They get longer", "The ideas stick better", "You do not need to read", "The teacher writes them for you"], "a": 1, "why": "Notes built like the text store the ideas the way the writer built them."}
+  {
+   "q": "The first tornado article walked through the storm minute by minute. What is its shape?",
+   "choices": [
+    "Sequence",
+    "Description",
+    "Compare and contrast",
+    "Problem and solution"
+   ],
+   "a": 0,
+   "why": "Events in time order with clock times is a sequence."
+  },
+  {
+   "q": "The second article explained why the storm formed. What is its shape?",
+   "choices": [
+    "Sequence",
+    "Description",
+    "Cause and effect",
+    "Problem and solution"
+   ],
+   "a": 2,
+   "why": "Every sentence answered why, with one thing leading to the next."
+  },
+  {
+   "q": "Which shape can usually pass the shuffle test?",
+   "choices": [
+    "Sequence",
+    "Cause and effect",
+    "Steps in a recipe",
+    "Description"
+   ],
+   "a": 3,
+   "why": "Features can be read in almost any order. Steps and causes cannot."
+  },
+  {
+   "q": "\"Unlike a bus, a train runs on rails.\" What does \"unlike\" signal?",
+   "choices": [
+    "A cause",
+    "A contrast",
+    "A step",
+    "A solution"
+   ],
+   "a": 1,
+   "why": "\"Unlike\" points to a difference between two things."
+  },
+  {
+   "q": "What is the best note shape for compare and contrast?",
+   "choices": [
+    "Arrows",
+    "A numbered list",
+    "Two columns",
+    "A single box"
+   ],
+   "a": 2,
+   "why": "Two columns put two things side by side."
+  },
+  {
+   "q": "A writer gives a point and one reason. Another gives the same point with three reasons and a fact for each. Which argument is stronger?",
+   "choices": [
+    "The one with one reason",
+    "Both are equal",
+    "Neither can be judged",
+    "The one with three reasons and facts"
+   ],
+   "a": 3,
+   "why": "More good reasons with facts hold up the point better."
+  },
+  {
+   "q": "What is the trap in cause and effect?",
+   "choices": [
+    "Thinking two things close in time must be cause and effect",
+    "Using the word because",
+    "Drawing arrows",
+    "Reading the last sentence first"
+   ],
+   "a": 0,
+   "why": "The sirens came before the funnel, but they did not cause it."
+  },
+  {
+   "q": "What happens when your notes match the text's shape?",
+   "choices": [
+    "They get longer",
+    "The ideas stick better",
+    "You do not need to read",
+    "The teacher writes them for you"
+   ],
+   "a": 1,
+   "why": "Notes built like the text store the ideas the way the writer built them."
+  }
  ]
 }
