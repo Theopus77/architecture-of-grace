@@ -68,7 +68,7 @@
     }
     for (var i = 0; i < seen.length; i++) {
       var e = seen[i], cs = getComputedStyle(e);
-      if (cs.visibility !== "visible" || +cs.opacity < 0.3) continue;
+      if (cs.visibility !== "visible" || +cs.opacity < 0.3 || parseFloat(cs.fontSize) < 2) continue;
       var fg = px(cs.color); if (!fg) continue;
       var bg = bgOf(e); if (!bg) continue;
       var shown = mix(fg, bg);

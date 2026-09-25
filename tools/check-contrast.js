@@ -53,7 +53,7 @@ function probe() {
     if (el.closest("script,style,noscript,svg,[hidden],[aria-hidden=true],.sr-only,.visually-hidden,option")) continue;
     const r = el.getBoundingClientRect(); if (r.width < 2 || r.height < 2) continue;
     const cs = getComputedStyle(el);
-    if (cs.visibility !== "visible" || +cs.opacity < 0.3) continue;
+    if (cs.visibility !== "visible" || +cs.opacity < 0.3 || parseFloat(cs.fontSize) < 2) continue;
     let op = 1; for (let n = el; n; n = n.parentElement) op *= +getComputedStyle(n).opacity;
     if (op < 0.3) continue;
     if (el.closest("button:disabled,[disabled]")) continue;
