@@ -24927,9 +24927,22 @@ window.aogAccToggle = function(btn){
       clearInterval(wrapT);
     }, 300);
     window.addEventListener("hashchange", function(){ var h=(location.hash||"").toLowerCase(); if(h!=="#alignment"&&h!=="#crosswalks"&&h!=="#align") off(); });
+    /* Back and Forward: leave solo, and bring the screen back to life */
+    function leave(){ var h=(location.hash||"").toLowerCase(); if(h==="#alignment"||h==="#crosswalks"||h==="#align") return;
+      window.__xsAt = 0; document.body.classList.remove("aog-xwalk-solo"); }
+    /* Back from the Crosswalk used to land on its own #crosswalks entry, which opened
+       it again, so Back looked dead. Back on that entry now steps once more. */
+    window.addEventListener("popstate", function(e){
+      var h=(location.hash||"").toLowerCase();
+      if ((h==="#alignment"||h==="#crosswalks"||h==="#align") && document.body.classList.contains("aog-xwalk-solo")){
+        try{ if (e && e.stopImmediatePropagation) e.stopImmediatePropagation(); }catch(x){}
+        window.__xsAt = 0; document.body.classList.remove("aog-xwalk-solo"); window.__xsBack = 1; setTimeout(function(){ window.__xsBack = 0; }, 700); history.back(); return; }
+      setTimeout(leave, 0); setTimeout(leave, 300); }, true);
+    window.addEventListener("hashchange", function(){ setTimeout(leave, 0); });
+    window.addEventListener("pageshow", function(e){ if (e.persisted){ window.__xsAt = 0; off(); } });
   })();
   (function(){
-    function routeAlign(){ var h=(location.hash||"").toLowerCase(); if(h==="#alignment"||h==="#crosswalks"||h==="#align"){ setTimeout(function(){ if(window.aogOpenAlignment) window.aogOpenAlignment(); }, 140); } }
+    function routeAlign(){ var h=(location.hash||"").toLowerCase(); if(window.__xsBack) return; if(h==="#alignment"||h==="#crosswalks"||h==="#align"){ setTimeout(function(){ if(window.aogOpenAlignment) window.aogOpenAlignment(); }, 140); } }
     window.addEventListener("hashchange", routeAlign);
     if(document.readyState!=="loading") routeAlign(); else document.addEventListener("DOMContentLoaded", routeAlign);
   })();
@@ -91863,11 +91876,11 @@ html.js-reveal .reveal,
 </style>
 <style id="aog-xwalk-solo-css">
 /* AOG-XWALK-SOLO-V1 — the Crosswalk alone: everything on the dashboard screen but the panel steps aside */
-body.aog-xwalk-solo #screen-admin #panel-align ~ *, body.aog-xwalk-solo #screen-admin .container-wide > :not(#panel-align),
-body.aog-xwalk-solo #screen-admin > :not(.container-wide){display:none!important}
+body.aog-xwalk-solo:has(#panel-align.active) #screen-admin .container-wide > :not(#panel-align),
+body.aog-xwalk-solo:has(#panel-align.active) #screen-admin > :not(.container-wide){display:none!important}
 body.aog-xwalk-solo #screen-admin #panel-align{display:block!important;padding-top:18px}
-body.aog-xwalk-solo #panel-align .xa-head.aogfold-closed{display:none!important}
-body.aog-xwalk-solo #panel-align::before{content:"Standards Crosswalk";display:block;font:600 clamp(28px,6vw,40px)/1.15 Fraunces,Georgia,serif;color:#F4EEE2;margin:6px 0 4px}
+body.aog-xwalk-solo:has(#panel-align.active) #panel-align .xa-head.aogfold-closed{display:none!important}
+body.aog-xwalk-solo:has(#panel-align.active) #panel-align::before{content:"Standards Crosswalk";display:block;font:600 clamp(28px,6vw,40px)/1.15 Fraunces,Georgia,serif;color:#F4EEE2;margin:6px 0 4px}
 </style>
 <style id="aog-xwalk-elegant">
 /* AOG-XWALK-ELEGANT-V1 (2026-09-25) — Jimmy: "Can the doors in the cross walk look
