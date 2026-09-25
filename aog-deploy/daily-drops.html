@@ -453,6 +453,51 @@ input.dg:focus{border-color:var(--gold); background:var(--field)}
 .declab{display:block; font-size:.55rem; font-weight:700; letter-spacing:.04em; line-height:1.25;
   color:var(--ink-faint); max-width:190px; margin:-2px 0 4px; text-transform:none}
 .colp{display:inline-flex; flex-direction:column; align-items:flex-start; vertical-align:top}
+/* ══ AOG-DD-WORKSPACE-V1 (2026-09-25) ══════════════════════════════════════════
+   Jimmy: "fix the Algorithms issue and how to give the students extra space to work.
+   Maybe that is it. EXTRA SPACE not boxes... My son and I have had so many issues
+   with those boxes at the 7th grade module."
+   PAPERSPACE-V1 already made every unscored box invisible on paper and kept its
+   room. This is the same rule brought to the screen. In PENCIL mode (the default)
+   the only boxes left are the ones the page scores — the answer digits and the
+   quotient — and every carry, borrow, partial-product and long-division work box
+   becomes open space of the same size, so the columns, the rule and the START
+   arrow do not move. Over each column problem sits a pencil layer: a canvas the
+   student writes on with a finger, a stylus or the mouse, exactly where the boxes
+   used to be and anywhere else around the problem. CARRY, BORROW and THEN ADD keep
+   naming the spaces. The answer boxes sit above the layer, so typing still works.
+   Nothing drawn is scored or sent; it is scratch paper. The "Work space" switch
+   above the sheet brings the typed boxes back for anyone who wants them. */
+body.work-pencil .colp,body.work-pencil .ug{position:relative}
+/* room to write around the problem, not just inside it */
+body.work-pencil .colp{padding:8px 16px 6px 8px}
+body.work-pencil .ug{padding:6px 14px 4px 6px}
+body.work-pencil .ug .scrclr{top:-10px; right:-10px}
+body.work-pencil .colp input.rg,body.work-pencil .ug input.rg{visibility:hidden; pointer-events:none}
+/* a carry is written small and high; give the lane the height of a pencil stroke */
+body.work-pencil .colp input.rg.rgs{height:30px; min-height:30px}
+body.work-pencil .colp input.rg:not(.wk):not(.rgs),body.work-pencil .ug input.rg{height:34px; min-height:34px}
+body.work-pencil .colp input.rg.wk{height:40px; min-height:40px}
+body.work-pencil .colp input.dg,body.work-pencil .ug input.fld,body.work-pencil .ug .fldw{position:relative; z-index:2}
+canvas.scr{position:absolute; inset:0; z-index:1; touch-action:none; cursor:crosshair; width:100%; height:100%}
+body:not(.work-pencil) canvas.scr{display:none}
+/* on screen in pencil mode a long division keeps only the passes the quotient needs,
+   plus one to spare — the same collapse the print rules make (DIVSPACE-V2), and for
+   the same reason: five empty lanes for a two-step division is a claim, not room */
+body.work-pencil:not(.review) .divg .xpass,body.work-pencil:not(.review) .divg .xpass input{height:0!important; min-height:0!important;
+  padding:0!important; margin:0!important; border:0!important; font-size:0!important; line-height:0!important; overflow:hidden!important; visibility:hidden!important}
+.scrclr{position:absolute; top:2px; right:2px; z-index:3; width:26px; height:26px; border-radius:50%;
+  border:1px solid var(--work-line); background:var(--field); color:var(--ink-soft); font:inherit; font-size:13px;
+  line-height:1; cursor:pointer; display:none; align-items:center; justify-content:center; padding:0}
+.colp.inked .scrclr,.ug.inked .scrclr{display:inline-flex}
+.scrclr:hover{border-color:var(--gold); color:var(--ink)}
+.workbar{display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin:0 0 12px; font-size:13px}
+.workbar .lbl{font-size:.62rem; font-weight:800; letter-spacing:.14em; text-transform:uppercase; color:var(--ink-faint); margin-right:2px}
+.workbar .wb{min-height:34px; border:1px solid var(--rule); border-radius:999px; padding:6px 14px; background:var(--field);
+  color:var(--ink); font:inherit; font-size:13px; font-weight:700; cursor:pointer}
+.workbar .wb[aria-pressed="true"]{background:var(--navy); border-color:var(--navy); color:#fff}
+.workbar .whint{color:var(--ink-faint); font-size:12px}
+@media print{.workbar,.scrclr{display:none!important}}
 .divg .opx{font-weight:800; font-size:1rem; justify-self:end; padding-right:4px; color:var(--ink-soft)}
 .divg .cell{width:34px; text-align:center; font-weight:700; font-size:1.05rem;
   font-variant-numeric:tabular-nums}
@@ -1093,6 +1138,12 @@ body.review .box .ptcell, body.review .box .ew, body.review .box textarea{pointe
   </div>
 </div>
 
+<div class="workbar no-print" id="workBar">
+  <span class="lbl" data-en="Work space" data-es="Espacio de trabajo">Work space</span>
+  <button type="button" class="wb" data-work="pencil" aria-pressed="true" data-en="&#9998; Pencil &mdash; write anywhere" data-es="&#9998; L&aacute;piz &mdash; escribe donde quieras">&#9998; Pencil &mdash; write anywhere</button>
+  <button type="button" class="wb" data-work="boxes" aria-pressed="false" data-en="Boxes to type in" data-es="Casillas para escribir">Boxes to type in</button>
+  <span class="whint" data-en="On the algorithms, type only the answer. Carry, borrow and work it out by hand in the space around the problem." data-es="En los algoritmos, escribe solo la respuesta. Lleva, pide prestado y resuelve a mano en el espacio alrededor del problema.">On the algorithms, type only the answer. Carry, borrow and work it out by hand in the space around the problem.</span>
+</div>
 <div class="sheet" id="sheet"></div>
 
 <div class="acts no-print" id="sheetActs">
@@ -17766,5 +17817,85 @@ else watch();
 })();
 </script>
 
+<script>
+/* AOG-DD-WORKSPACE-V1 — the pencil layer. See the CSS note of the same name. */
+(function(){
+  "use strict";
+  var KEY="aog.drops.work", body=document.body;
+  function mode(){ try{ return localStorage.getItem(KEY)==="boxes"?"boxes":"pencil"; }catch(e){ return "pencil"; } }
+  function apply(m){
+    body.classList.toggle("work-pencil", m==="pencil");
+    document.querySelectorAll("#workBar .wb").forEach(function(b){ b.setAttribute("aria-pressed", b.getAttribute("data-work")===m ? "true":"false"); });
+    if(m==="pencil") attachAll();
+  }
+  document.addEventListener("click", function(e){
+    var b=e.target.closest && e.target.closest("#workBar .wb"); if(!b) return;
+    var m=b.getAttribute("data-work"); try{ localStorage.setItem(KEY,m); }catch(e2){}
+    apply(m);
+  });
+  function ink(){ var v=""; try{ v=getComputedStyle(document.documentElement).getPropertyValue("--ink").trim(); }catch(e){} return v||"#1D2733"; }
+  function attach(host){
+    if(host.__scr) return;
+    var c=document.createElement("canvas"); c.className="scr"; c.setAttribute("aria-hidden","true");
+    var clr=document.createElement("button"); clr.type="button"; clr.className="scrclr"; clr.title="Clear the pencil marks on this problem"; clr.setAttribute("aria-label",clr.title); clr.innerHTML="&#8634;";
+    host.appendChild(c); host.appendChild(clr);
+    var ctx=c.getContext("2d"), dpr=Math.max(1, window.devicePixelRatio||1), drawing=false, last=null, erasing=false;
+    function size(){
+      var w=host.clientWidth, h=host.clientHeight; if(!w||!h) return;
+      if(c.width===Math.round(w*dpr) && c.height===Math.round(h*dpr)) return;
+      var keep=null; if(c.width&&c.height){ try{ keep=document.createElement("canvas"); keep.width=c.width; keep.height=c.height; keep.getContext("2d").drawImage(c,0,0); }catch(e){ keep=null; } }
+      c.width=Math.round(w*dpr); c.height=Math.round(h*dpr);
+      if(keep) ctx.drawImage(keep,0,0,keep.width,keep.height,0,0,c.width,c.height);
+    }
+    size();
+    try{ new ResizeObserver(size).observe(host); }catch(e){ window.addEventListener("resize", size); }
+    function pt(e){ var r=c.getBoundingClientRect(); return {x:(e.clientX-r.left)*dpr, y:(e.clientY-r.top)*dpr}; }
+    function stroke(a,b){
+      ctx.lineCap="round"; ctx.lineJoin="round";
+      if(erasing){ ctx.globalCompositeOperation="destination-out"; ctx.lineWidth=16*dpr; }
+      else { ctx.globalCompositeOperation="source-over"; ctx.strokeStyle=ink(); ctx.lineWidth=2.1*dpr; }
+      ctx.beginPath(); ctx.moveTo(a.x,a.y); ctx.lineTo(b.x,b.y); ctx.stroke();
+    }
+    c.addEventListener("pointerdown", function(e){
+      if(e.button!==0 && e.button!==5 && e.button!==2) return;
+      /* a stylus eraser end, or the pen's barrel button, erases */
+      erasing = (e.pointerType==="pen" && (e.buttons&32)) || e.button===5 || e.button===2;
+      drawing=true; last=pt(e); size();
+      try{ c.setPointerCapture(e.pointerId); }catch(e2){}
+      stroke(last,{x:last.x+0.01,y:last.y+0.01});
+      host.classList.add("inked");
+      e.preventDefault();
+    });
+    c.addEventListener("contextmenu", function(e){ e.preventDefault(); });
+    c.addEventListener("pointermove", function(e){
+      if(!drawing) return;
+      var evs = (e.getCoalescedEvents ? e.getCoalescedEvents() : null) || [e];
+      for(var i=0;i<evs.length;i++){ var p=pt(evs[i]); stroke(last,p); last=p; }
+      e.preventDefault();
+    });
+    function up(){ drawing=false; last=null; }
+    c.addEventListener("pointerup", up); c.addEventListener("pointercancel", up); c.addEventListener("lostpointercapture", up);
+    clr.addEventListener("click", function(){ ctx.clearRect(0,0,c.width,c.height); host.classList.remove("inked"); });
+    host.__scr=c;
+  }
+  var queued=false;
+  function attachAll(){
+    var hosts=document.querySelectorAll("#sheet .colp, #sheet .ug"), bar=document.getElementById("workBar");
+    /* the switch only shows on a sheet that has column work on it */
+    if(bar) bar.hidden=!hosts.length;
+    if(!body.classList.contains("work-pencil")) return;
+    hosts.forEach(attach);
+  }
+  function schedule(){ if(queued) return; queued=true; (window.requestAnimationFrame||setTimeout)(function(){ queued=false; attachAll(); }); }
+  function boot(){
+    apply(mode());
+    var sh=document.getElementById("sheet");
+    if(sh){ try{ new MutationObserver(schedule).observe(sh,{childList:true,subtree:true}); }catch(e){} }
+    schedule();
+  }
+  if(document.readyState==="loading") document.addEventListener("DOMContentLoaded", boot); else boot();
+  setTimeout(schedule, 800);
+})();
+</script>
 </body>
 </html>
