@@ -1119,6 +1119,29 @@ body.review .box .ptcell, body.review .box .ew, body.review .box textarea{pointe
   .org .ocell:nth-of-type(6) textarea{--gl:#1F8080}
   .org .ocell textarea{border:3px solid #1E1F22!important;border-left:12px solid var(--gl,#2F63B8)!important;border-radius:8px}
   .bonus{border:3px solid #1E1F22!important;box-shadow:0 0 0 1px rgba(242,201,100,.35)}
+  /* AOG-DD-ALGTILE-V1 — Jimmy: "Can something be done to the algorithm boxes?
+     They jump out as UGLY to me." Each column problem is a small tile of its own,
+     the same shape as its neighbours; the label sits on the tile as a caption in
+     the strand's glass; the answer cells are light and dashed, gold when in use;
+     START is a small gold arrow. Layout and the pencil space are untouched. */
+  .row.algrow{display:flex;flex-wrap:wrap;gap:14px;align-items:stretch;width:100%}
+  .algrow>.colp{flex:0 1 auto;min-width:150px;padding:12px 16px 14px;border-radius:12px;
+    background:color-mix(in srgb,var(--field-2) 70%,var(--gl,#2F63B8) 8%);
+    border:1.5px solid color-mix(in srgb,var(--gl,#2F63B8) 45%,transparent);
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.05)}
+  .algrow>.colp .oplab{display:inline-block;margin:0 0 8px;padding:3px 10px;border-radius:999px;
+    background:color-mix(in srgb,var(--gl,#2F63B8) 85%,#000 15%);color:#fff!important;letter-spacing:.12em;font-size:.6rem}
+  .algrow .rglab{opacity:.7}
+  .algrow input.dg{background:transparent;border:1.5px dashed color-mix(in srgb,var(--ink) 38%,transparent);
+    border-radius:8px;min-height:40px}
+  .algrow input.dg:focus{border:2px solid var(--gold);background:color-mix(in srgb,var(--gold) 10%,transparent)}
+  .algrow .cg .unitc.ruled{border-bottom-color:transparent}
+  .algrow .cg .unitc.ruled::after{display:none}
+  .algrow .cg .startlab{font-size:0;line-height:1;margin-top:2px}
+  .algrow .cg .startlab::before{content:"\25B2";font-size:.62rem;color:var(--gold);opacity:.85}
+  .algrow .cg .ruled{border-bottom-width:2px}
+  .algrow .colp.ok{border-color:var(--good);box-shadow:0 0 0 1px var(--good)}
+  .algrow .colp.no{border-color:var(--miss)}
 }
 </style>
 <style>/* AOG-DD-FOUNDRY — the unit a spiral box comes from */

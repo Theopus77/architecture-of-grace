@@ -19,6 +19,9 @@
   var NAVY = { r: 10, g: 30, b: 51, a: 1 };
 
   function px(s) {
+    /* color-mix() computes to color(srgb r g b / a) with 0–1 channels */
+    var cm = /color\(srgb\s+([^)]+)\)/.exec(s || "");
+    if (cm) { var w = cm[1].split(/[\s\/]+/).filter(Boolean).map(Number); return { r: w[0] * 255, g: w[1] * 255, b: w[2] * 255, a: w.length > 3 ? w[3] : 1 }; }
     var m = /rgba?\(([^)]+)\)/.exec(s || ""); if (!m) return null;
     var v = m[1].split(/[\s,\/]+/).filter(Boolean).map(Number);
     return { r: v[0], g: v[1], b: v[2], a: v.length > 3 ? v[3] : 1 };
