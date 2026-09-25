@@ -78,7 +78,7 @@ def jump_block():
     # s13 has had every course's options injected already; strip them all so
     # mark_current() adds this course's block exactly once (and the other
     # course's injector adds its own afterwards).
-    blk = re.sub(r'<option value="(?:us-history|ush-u\d+|science-course|sci-u\d+)\.html">[^<]*</option>\n?', "", blk)
+    blk = re.sub(r'<option value="(?:us-history|ush-u\d+|science-course|sci-u\d+|social-studies-course|ssc-u\d+|english-course|ela-u\d+)\.html">[^<]*</option>\n?', "", blk)
     return blk
 
 def mark_current(blk, value, text):
@@ -680,6 +680,7 @@ def unit_page(u, all_units):
     credit = CREDITS.get(n, "")
     body = f'''<body>
 <script src="/aog-topbar.js"></script>
+<script src="/aog-grace.js" defer></script>
 <div class="wrap">
 <header class="mast">
   <div>
@@ -1012,6 +1013,7 @@ def contents_page(units):
     keys = json.dumps([[u["n"], store_key(u["n"])] for u in units])
     body = f'''<body>
 <script src="/aog-topbar.js"></script>
+<script src="/aog-grace.js" defer></script>
 <div class="wrap contents">
 <header class="mast">
   <div>
@@ -1047,11 +1049,11 @@ def contents_page(units):
 {"".join(spreads)}
 
 <details class="teach no-print"><summary>{span("For the teacher","Para el docente")}</summary><div class="inner">
-  <p>{span("The course follows the arc of a standard junior-high U.S. history textbook — units, chapters, sections, numbered lessons — in original text written at a grade 6–8 reading level. Every lesson has a main idea, a three- or four-paragraph reading with key words you can tap, a source, a data table or a scenario to think through, and three checks.","El curso sigue el arco de un libro de texto estándar de historia de EE. UU. de secundaria — unidades, capítulos, secciones, lecciones numeradas — en texto original al nivel de lectura de 6.º a 8.º. Cada lección tiene una idea principal, una lectura de tres o cuatro párrafos con palabras clave, una fuente, una tabla de datos o un escenario, y tres comprobaciones.")}</p>
+  <p>{span(*C.get("teach", ("The course follows the arc of a standard junior-high U.S. history textbook — units, chapters, sections, numbered lessons — in original text written at a grade 6–8 reading level. Every lesson has a main idea, a three- or four-paragraph reading with key words you can tap, a source, a data table or a scenario to think through, and three checks.","El curso sigue el arco de un libro de texto estándar de historia de EE. UU. de secundaria — unidades, capítulos, secciones, lecciones numeradas — en texto original al nivel de lectura de 6.º a 8.º. Cada lección tiene una idea principal, una lectura de tres o cuatro párrafos con palabras clave, una fuente, una tabla de datos o un escenario, y tres comprobaciones.")))}</p>
   <p>{span("Progress ticks live on this device only. Print any unit page for a paper copy.","Las marcas de progreso viven solo en este dispositivo. Imprime cualquier unidad para tener una copia en papel.")}</p>
 </div></details>
 
-<footer class="foot">{span("Architecture of Grace · U.S. History, Grades 6–8 · original text following the arc of a standard course · banners are drawn scenes.","Architecture of Grace · Historia de EE. UU., grados 6–8 · texto original que sigue el arco de un curso estándar · los banners son escenas dibujadas.")}</footer>
+<footer class="foot">{span(*C.get("foot", ("Architecture of Grace · U.S. History, Grades 6–8 · original text following the arc of a standard course · banners are drawn scenes.","Architecture of Grace · Historia de EE. UU., grados 6–8 · texto original que sigue el arco de un curso estándar · los banners son escenas dibujadas.")))}</footer>
 </main>
 </div>
 <script>
