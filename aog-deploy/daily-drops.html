@@ -9137,6 +9137,105 @@ G.hs=function(r,c){var b=B(),m=r.pick(c.modes),h='';
   else if(m==='prob2'){var pa=r.pick([2,3,4,5]),pb=r.pick([2,3,4,6]);
     h='Events A and B are <b>independent</b>. P(A) = 1/'+pa+' and P(B) = 1/'+pb+'.<div class="row" style="margin-top:6px"><span class="inl">P(A and B) = '+b.f('frac',1/(pa*pb),{w:'w'})+'</span></div><div class="hint">Independent means multiply.</div>'}
   return done(b,h)};
+/* ---------- AOG-DD-STDHS-V1 (2026-09-25). high-school standards ----------
+   The Illinois / Common Core high-school standards the 9-10 and 11-12 drafts
+   never asked. Wired into the existing strands as extra modes, so both sheets
+   keep their ten boxes. Each mode names its standard. */
+G.hs2=function(r,c){var b=B(),m=r.pick(c.modes),h='';
+  /* N-RN.A.1–2 — rational exponents */
+  if(m==='ratexp'){var q=r.pick([[8,3],[27,3],[16,2],[25,2],[64,3],[81,2],[32,5]]),rt=Math.round(Math.pow(q[0],1/q[1])),pw=r.i(1,q[1]===2?3:2);
+    h='Evaluate.<div class="row" style="margin-top:6px;gap:14px"><span class="inl"><b style="font-size:16px">'+q[0]+'<sup>1/'+q[1]+'</sup></b> = '+b.f('num',rt,{w:'n'})+'</span>'+
+      '<span class="inl"><b style="font-size:16px">'+q[0]+'<sup>'+pw+'/'+q[1]+'</sup></b> = '+b.f('num',Math.pow(rt,pw),{w:'w'})+'</span></div>'+
+      '<div class="hint">The bottom of the exponent is the root; the top is the power.</div>'}
+  /* A-CED.A.4 — solve a formula for one variable */
+  else if(m==='literal'){var L=r.pick([['A = lw','w','A &divide; l','l'],['d = rt','t','d &divide; r','r'],['P = 2l + 2w','l','(P &minus; 2w) &divide; 2','w'],['V = lwh','h','V &divide; (lw)','l'],['y = mx + b','x','(y &minus; b) &divide; m','m']]);
+    var wrong=r.pick(['A &times; l','d &times; r','P &minus; 2w','V &minus; lw','y &minus; bm']);
+    h='Solve <b>'+L[0]+'</b> for <b>'+L[1]+'</b>.<div class="row" style="margin-top:7px">'+b.mc(L[1]+' = '+L[2],r.shuf([L[1]+' = '+L[2],L[1]+' = '+wrong,L[1]+' = '+L[3]+' &minus; '+L[0].split(' = ')[0]]))+'</div>'}
+  /* F-IF.B.6 — average rate of change */
+  else if(m==='avgrate'){var a=r.pick([1,2]),x1=r.i(0,2),x2=x1+r.pick([2,3,4]),f=function(x){return a*x*x};
+    h='<b>f(x) = '+(a===1?'':a)+'x&sup2;</b>. Find the average rate of change from x = '+x1+' to x = '+x2+'.'+
+      '<div class="row" style="margin-top:6px;gap:12px"><span class="inl">f('+x1+') = '+b.f('num',f(x1),{w:'n'})+'</span><span class="inl">f('+x2+') = '+b.f('num',f(x2),{w:'n'})+'</span>'+
+      '<span class="inl">rate = '+b.f('num',(f(x2)-f(x1))/(x2-x1),{w:'n'})+'</span></div><div class="hint">(f(b) &minus; f(a)) &divide; (b &minus; a)</div>'}
+  /* F-BF.B.3 — shifting a graph */
+  else if(m==='fshift'){var hh=r.i(1,6),kk=r.i(1,6),sx=r.pick([1,-1]),sy=r.pick([1,-1]);
+    h='The graph of <b>y = x&sup2;</b> becomes <b>y = (x '+(sx>0?'&minus; ':'+ ')+hh+')&sup2; '+(sy>0?'+ ':'&minus; ')+kk+'</b>.'+
+      '<div class="row" style="margin-top:7px;gap:12px"><span class="inl">moves '+b.mc(sx>0?'right':'left',['left','right'])+' '+b.f('num',hh,{w:'n'})+'</span>'+
+      '<span class="inl">and '+b.mc(sy>0?'up':'down',['up','down'])+' '+b.f('num',kk,{w:'n'})+'</span>'+
+      '<span class="inl">new vertex ( '+b.f('num',sx*hh,{w:'n'})+' , '+b.f('num',sy*kk,{w:'n'})+' )</span></div>'}
+  /* F-LE.A.1 — linear or exponential */
+  else if(m==='linexp'){var st=r.i(2,6),d=r.i(2,5),lin=r.chance(.5),v=[st];for(var i=1;i<4;i++)v.push(lin?v[i-1]+d:v[i-1]*d);
+    h='x = 0, 1, 2, 3 &nbsp; y = <b>'+v.join(', ')+'</b><div class="row" style="margin-top:7px;gap:12px">'+
+      '<span class="inl">The pattern is '+b.mc(lin?'linear':'exponential',['linear','exponential'])+'</span>'+
+      '<span class="inl">next y '+b.f('num',lin?v[3]+d:v[3]*d,{w:'w'})+'</span></div><div class="hint">Linear adds the same amount; exponential multiplies by the same amount.</div>'}
+  /* S-ID.B.6 — residuals */
+  else if(m==='resid'){var sl=r.i(2,5),ic=r.i(5,20),xv=r.i(2,9),off=r.i(-6,6)||3,act=sl*xv+ic+off;
+    h='The line of fit is <b>y = '+sl+'x + '+ic+'</b>. At x = <b>'+xv+'</b> the actual value is <b>'+act+'</b>.'+
+      '<div class="row" style="margin-top:6px;gap:12px"><span class="inl">predicted '+b.f('num',sl*xv+ic,{w:'n'})+'</span>'+
+      '<span class="inl">residual '+b.f('num',off,{w:'n'})+'</span></div><div class="hint">residual = actual &minus; predicted</div>'}
+  /* G-CO.B.8 — triangle congruence criteria */
+  else if(m==='congr'){var cg=r.pick([['all three pairs of sides are equal','SSS'],['two sides and the angle between them are equal','SAS'],
+      ['two angles and the side between them are equal','ASA'],['two angles and a side not between them are equal','AAS'],['all three pairs of angles are equal','not enough'],
+      ['two sides and an angle not between them are equal','not enough']]);
+    h='Two triangles: <b>'+cg[0]+'</b>. Which shows they are congruent?<div class="row" style="margin-top:7px">'+b.mc(cg[1],['SSS','SAS','ASA','AAS','not enough'])+'</div>'}
+  /* G-C.A.2 — inscribed and central angles */
+  else if(m==='inscribed'){var arc=2*r.i(20,85);
+    h='An arc of a circle measures <b>'+arc+'&deg;</b>.<div class="row" style="margin-top:6px;gap:12px">'+
+      '<span class="inl">central angle '+b.f('num',arc,{w:'n'})+'&deg;</span><span class="inl">inscribed angle '+b.f('num',arc/2,{w:'n'})+'&deg;</span></div>'+
+      '<div class="hint">An inscribed angle is half its arc.</div>'}
+  /* G-C.B.5 — arc length and sector area in terms of pi */
+  else if(m==='arclen'){var rr=r.pick([3,6,9,12]),dg=r.pick([60,90,120,180,240]);
+    h='A circle has radius <b>'+rr+'</b>. A central angle is <b>'+dg+'&deg;</b>. Leave <b>&pi;</b> in.'+
+      '<div class="row" style="margin-top:6px;gap:12px"><span class="inl">arc length '+b.f('num',2*rr*dg/360,{w:'n'})+'&pi;</span>'+
+      '<span class="inl">sector area '+b.f('num',rr*rr*dg/360,{w:'n'})+'&pi;</span></div><div class="hint">Take '+dg+'/360 of the circumference and of the area.</div>'}
+  /* G-GPE.A.1 — equation of a circle */
+  else if(m==='circeq'){var ch=r.i(-5,5),ck=r.i(-5,5),cr=r.i(2,9);
+    var sg=function(v,l){return v===0?l:'('+l+(v>0?' &minus; '+v:' + '+(-v))+')'};
+    h='<b>'+sg(ch,'x')+'&sup2; + '+sg(ck,'y')+'&sup2; = '+cr*cr+'</b><div class="row" style="margin-top:6px;gap:12px">'+
+      '<span class="inl">center ( '+b.f('num',ch,{w:'n'})+' , '+b.f('num',ck,{w:'n'})+' )</span><span class="inl">radius '+b.f('num',cr,{w:'n'})+'</span></div>'}
+  /* A-APR.D.6 / F-IF.C.7d — a rational function's hole-free asymptotes */
+  else if(m==='ratfn'){var va=r.i(-6,6)||2,ha=r.i(1,5),kx=r.i(1,6);
+    h='<b>f(x) = '+(ha===1?'':ha)+'x / (x '+(va>0?'&minus; '+va:'+ '+(-va))+')</b><div class="row" style="margin-top:6px;gap:12px">'+
+      '<span class="inl">vertical asymptote x = '+b.f('num',va,{w:'n'})+'</span><span class="inl">horizontal asymptote y = '+b.f('num',ha,{w:'n'})+'</span></div>'+
+      '<div class="hint">Vertical: where the bottom is 0. Horizontal: ratio of the leading numbers.</div>'}
+  /* A-REI.A.2 — radical equations */
+  else if(m==='radeq'){var ad=r.i(1,9),sq=r.i(2,7),xr=sq*sq-ad;
+    h='Solve. Square both sides, then check.<div class="row" style="margin-top:6px"><span class="inl"><b style="font-size:16px">&radic;(x + '+ad+') = '+sq+'</b></span>'+
+      '<span class="inl">x = '+b.f('num',xr,{w:'n'})+'</span></div>'}
+  /* F-BF.A.1c — composition */
+  else if(m==='compose'){var a1=r.i(2,5),b1=r.i(1,6),a2=r.i(2,4),b2=r.i(-4,4),xv2=r.i(-2,4),g=a2*xv2+b2;
+    h='<b>f(x) = '+a1+'x + '+b1+'</b> and <b>g(x) = '+a2+'x '+(b2<0?'&minus; '+(-b2):'+ '+b2)+'</b>'+
+      '<div class="row" style="margin-top:6px;gap:12px"><span class="inl">g('+xv2+') = '+b.f('num',g,{w:'n'})+'</span><span class="inl">f(g('+xv2+')) = '+b.f('num',a1*g+b1,{w:'n'})+'</span></div>'}
+  /* F-BF.B.4 — inverse functions */
+  else if(m==='inverse'){var ia=r.i(2,6),ib=r.i(1,9),iy=ia*r.i(1,8)+ib;
+    h='<b>f(x) = '+ia+'x + '+ib+'</b>. Undo it: subtract, then divide.<div class="row" style="margin-top:6px;gap:12px">'+
+      '<span class="inl">f<sup>&minus;1</sup>(x) = (x &minus; '+b.f('num',ib,{w:'n'})+') &divide; '+b.f('num',ia,{w:'n'})+'</span>'+
+      '<span class="inl">f<sup>&minus;1</sup>('+iy+') = '+b.f('num',(iy-ib)/ia,{w:'n'})+'</span></div>'}
+  /* F-TF.A.1–2 — radians */
+  else if(m==='radian'){var rd=r.pick([[30,'1/6'],[45,'1/4'],[60,'1/3'],[90,'1/2'],[120,'2/3'],[135,'3/4'],[180,'1'],[270,'3/2'],[360,'2']]);
+    h='Convert <b>'+rd[0]+'&deg;</b> to radians.<div class="row" style="margin-top:6px"><span class="inl">'+b.f('frac',rd[1],{w:'n'})+' &pi;</span>'+
+      '<span class="hint" style="flex-basis:auto">Multiply by &pi;/180. Write the number in front of &pi; (a fraction is fine).</span></div>'}
+  /* F-TF.B.5 — amplitude, period, midline */
+  else if(m==='sinusoid'){var am=r.i(2,6),bq=r.pick([1,2,4]),dm=r.i(-3,5);
+    h='<b>y = '+am+' sin('+(bq===1?'':bq)+'x) '+(dm<0?'&minus; '+(-dm):'+ '+dm)+'</b><div class="row" style="margin-top:6px;gap:12px">'+
+      '<span class="inl">amplitude '+b.f('num',am,{w:'n'})+'</span><span class="inl">midline y = '+b.f('num',dm,{w:'n'})+'</span>'+
+      '<span class="inl">period '+b.f('frac',{1:'2',2:'1',4:'1/2'}[bq],{w:'n'})+'&pi;</span></div>'}
+  /* S-CP.A.4 / S-CP.B.6 — conditional probability from a two-way table */
+  else if(m==='condprob'){var aa=r.i(5,20),ab=r.i(5,20),ba=r.i(5,20),bb=r.i(5,20);
+    h='<table style="border-collapse:collapse;text-align:center"><tr><td></td><th style="padding:2px 10px">Plays sport</th><th style="padding:2px 10px">No sport</th></tr>'+
+      '<tr><th style="padding:2px 10px">Juniors</th><td>'+aa+'</td><td>'+ab+'</td></tr><tr><th style="padding:2px 10px">Seniors</th><td>'+ba+'</td><td>'+bb+'</td></tr></table>'+
+      '<div class="row" style="margin-top:6px"><span class="inl">P(plays sport | senior) = '+frIn(b,ba,ba+bb)+'</span>'+
+      '<span class="hint" style="flex-basis:auto">Given senior: only the senior row counts.</span></div>'}
+  /* S-IC.B.3 — survey, experiment or observational study */
+  else if(m==='studytype'){var sty=r.pick([['Researchers randomly assign half the students a new study app and compare test scores.','experiment'],
+      ['A reporter asks 200 random voters who they will vote for.','survey'],['Scientists record how many hours teens sleep and their grades, without changing anything.','observational study'],
+      ['A doctor gives one random group a new medicine and another group a placebo.','experiment'],['A school emails a questionnaire about lunch to every family.','survey'],
+      ['A biologist counts birds at a lake each morning for a month.','observational study']]);
+    h=sty[0]+'<div class="row" style="margin-top:7px">'+b.mc(sty[1],['survey','experiment','observational study'])+'</div>'}
+  /* S-IC.B.4 — margin of error */
+  else if(m==='moe'){var pc=r.i(40,70),me=r.pick([2,3,4,5]);
+    h='A poll says <b>'+pc+'%</b> support a new park, with a margin of error of <b>&plusmn;'+me+'%</b>.'+
+      '<div class="row" style="margin-top:6px"><span class="inl">likely true value between '+b.f('num',pc-me,{w:'n'})+'% and '+b.f('num',pc+me,{w:'n'})+'%</span></div>'}
+  return done(b,h)};
 VOCAB.hs1=[['A relation where every input has exactly one output is a ___.','function',['function','variable','inequality']],
  ['The set of all possible inputs of a function is its ___.','domain',['domain','range','slope']],
  ['The set of all possible outputs of a function is its ___.','range',['domain','range','intercept']],
@@ -9166,26 +9265,28 @@ VOCAB.hs2=[['The inverse of an exponential function is a ___.','logarithm',['log
  ['A sample in which everyone has an equal chance of being chosen is ___.','random',['random','biased','convenient']],
  ['An arrangement where order matters is a ___.','permutation',['permutation','combination','factorial']]];
 MATH['9-10']=[
- S('Linear Equations','Ecuaciones lineales',mix(function(r){return G.hs(r,{modes:['lin']})},function(r){return G.algebra(r,{modes:['ineq','dist','solve2']})})),
- S('Functions','Funciones',function(r){return G.hs(r,{modes:['fnote']})}),
- S('Slope and Lines','Pendiente y rectas',function(r){return G.graphing(r,{modes:['slope','linear','table']})}),
+ S('Linear Equations','Ecuaciones lineales',mix(function(r){return G.hs(r,{modes:['lin']})},function(r){return G.algebra(r,{modes:['ineq','dist','solve2','bothsides']})},function(r){return G.hs2(r,{modes:['literal']})})),
+ S('Functions','Funciones',mix(function(r){return G.hs(r,{modes:['fnote']})},function(r){return G.hs2(r,{modes:['avgrate','fshift','linexp']})})),
+ S('Slope and Lines','Pendiente y rectas',mix(function(r){return G.graphing(r,{modes:['slope','linear','fromtwo']})},
+    function(r){return G.data(r,{modes:['scatter','fitline']})},function(r){return G.hs2(r,{modes:['resid']})})),
  S('Systems of Equations','Sistemas de ecuaciones',function(r){return G.hs(r,{modes:['sys']})}),
  S('Polynomials and Factoring','Polinomios y factorización',function(r){return G.hs(r,{modes:['poly']})}),
  S('Quadratics','Cuadráticas',function(r){return G.hs(r,{modes:['quad']})}),
- S('Exponents and Radicals','Exponentes y radicales',mix(function(r){return G.exponents(r,{modes:['laws','sci']})},function(r){return G.hs(r,{modes:['radical']})})),
+ S('Exponents and Radicals','Exponentes y radicales',mix(function(r){return G.exponents(r,{modes:['laws','sci']})},function(r){return G.hs(r,{modes:['radical']})},function(r){return G.hs2(r,{modes:['ratexp']})})),
  S('Vocabulary and Symbols','Vocabulario y símbolos',function(r){return G.vocab(r,{bank:'hs1'})}),
- S('Angles and Triangles','Ángulos y triángulos',function(r){return G.hs(r,{modes:['angles','similar']})}),
- S('Right Triangles and the Plane','Triángulos rectángulos y el plano',function(r){return G.hs(r,{modes:['trig','coord']})})];
+ S('Angles and Triangles','Ángulos y triángulos',mix(function(r){return G.hs(r,{modes:['angles','similar']})},function(r){return G.hs2(r,{modes:['congr','inscribed','arclen']})},
+    function(r){return G.geom(r,{modes:['transform','volcyl']})})),
+ S('Right Triangles and the Plane','Triángulos rectángulos y el plano',mix(function(r){return G.hs(r,{modes:['trig','coord']})},function(r){return G.hs2(r,{modes:['circeq']})}))];
 MATH['11-12']=[
- S('Polynomial Functions','Funciones polinomiales',function(r){return G.hs(r,{modes:['polyfn','poly']})}),
+ S('Polynomial Functions','Funciones polinomiales',mix(function(r){return G.hs(r,{modes:['polyfn','poly']})},function(r){return G.hs2(r,{modes:['ratfn','radeq','compose']})})),
  S('Exponential Growth','Crecimiento exponencial',function(r){return G.hs(r,{modes:['expfn']})}),
- S('Logarithms','Logaritmos',function(r){return G.hs(r,{modes:['log']})}),
+ S('Logarithms','Logaritmos',mix(function(r){return G.hs(r,{modes:['log']})},function(r){return G.hs2(r,{modes:['inverse']})})),
  S('Sequences and Series','Sucesiones y series',function(r){return G.hs(r,{modes:['seq']})}),
  S('Complex Numbers','Números complejos',function(r){return G.hs(r,{modes:['complex']})}),
- S('Trigonometry','Trigonometría',function(r){return G.hs(r,{modes:['unitc','trig']})}),
- S('Statistics','Estadística',function(r){return G.hs(r,{modes:['zscore']})}),
+ S('Trigonometry','Trigonometría',mix(function(r){return G.hs(r,{modes:['unitc','trig']})},function(r){return G.hs2(r,{modes:['radian','sinusoid']})})),
+ S('Statistics','Estadística',mix(function(r){return G.hs(r,{modes:['zscore']})},function(r){return G.hs2(r,{modes:['studytype','moe']})})),
  S('Vocabulary and Symbols','Vocabulario y símbolos',function(r){return G.vocab(r,{bank:'hs2'})}),
- S('Counting and Probability','Conteo y probabilidad',function(r){return G.hs(r,{modes:['count','prob2']})}),
+ S('Counting and Probability','Conteo y probabilidad',mix(function(r){return G.hs(r,{modes:['count','prob2']})},function(r){return G.hs2(r,{modes:['condprob']})})),
  S('Money Math','Matemáticas del dinero',function(r){return G.hs(r,{modes:['finance']})})];
 /* ══ AOG-DD-HS-V1 · SCIENCE 9–10 and 11–12 ══ content, not code. Keys are mechanical: sci.<band>.<box>. */
 NB['sci.9-10.01']=[
