@@ -335,6 +335,7 @@ function toggleTheme() {
 <!-- AOG-CONN-KEEP-V1: keeps the Sheet connection when the browser drops it; must load before anything reads aog.sync.url -->
 <script src="aog-conn-keep.js"></script>
 <script src="aog-legible.js" defer></script>
+<script src="aog-mine.js"></script>
 <script src="aog-sync-config.js"></script>
 <style id="aog-door3-hidden">
 /* AOG-DOOR3-HIDDEN-V1 (2026-09-22) — Jimmy: hide door three (Beyond the Room) from
@@ -42060,6 +42061,31 @@ window.AOG_BUILD = "2026.09.30k6 · THE PAGE NOW BUDGETS ITS OWN PAYLOAD, SO A Q
     var nick=nickGet();
     return '<div class="dash-today"><div class="dt-greet">'+greet+(nick?(", "+escT(nick)):"")+'. <button type="button" class="dt-nick" onclick="aogTodayNick()">'+(nick?(es?"editar":"edit"):(es?"+ tu nombre":"+ add your name"))+'</button></div><div class="dt-sub">'+sub+'</div>'+(act?('<button type="button" class="dt-btn" onclick="'+act+'">'+label+' →</button>'):'')+'</div>';
   };
+  /* AOG-STUDENT-HOME-V1 (2026-09-25) — Jimmy: "There is nothing on Student area
+     in the DASHBOARD. The student / individual should be able to access their
+     material in here as well." Under the check-in: their own stained-glass
+     Blueprint (turn-ins.html?solo=1, built from what THIS device sent) and the
+     doors back into their work. */
+  (function(){
+    var base=window.aogTodayCard;
+    window.aogTodayCard=function(es){
+      var h=base.apply(this,arguments);
+      var scr=document.getElementById("screen-admin"); var role=(scr&&scr.getAttribute("data-role"))||"teacher";
+      if(role!=="student") return h;
+      var nick=""; try{ nick=localStorage.getItem("aog.nickname")||""; }catch(e){}
+      function L(href,en,esT){ return '<a href="'+href+'" style="display:inline-flex;align-items:center;min-height:42px;padding:0 16px;border-radius:999px;border:1.5px solid var(--gold,#F2C964);font-weight:700;text-decoration:none;color:inherit">'+(es?esT:en)+'</a>'; }
+      return h
+        +'<div class="aog-stu-home" style="margin-top:16px">'
+        +'<div style="font:800 12px/1 var(--sans,system-ui);letter-spacing:.16em;text-transform:uppercase;color:var(--gold,#F2C964);margin:0 0 8px">'+(es?"Sigue construyendo":"Keep building")+'</div>'
+        +'<div style="display:flex;flex-wrap:wrap;gap:10px;margin-bottom:14px">'
+        +L("daily-drops.html","Daily Drafts","Borradores diarios")
+        +L("/#library","Worksheets & practice","Hojas y práctica")
+        +L("turn-ins.html?solo=1","Open My Blueprint full size","Abrir Mi Plano completo")
+        +'</div>'
+        +'<iframe title="'+(es?"Mi Plano":"My Blueprint")+'" src="turn-ins.html?solo=1&blueprint='+encodeURIComponent(nick)+'" style="display:block;width:100%;min-height:520px;border:0;border-radius:14px;background:transparent"></iframe>'
+        +'</div>';
+    };
+  })();
   /* Reusable growth hero (sparkline + domain bars) for Parent/Family views. */
   window.aogGrowthHero=function(records, es){
     var mine=(records||[]).filter(function(r){return r&&r.normComposite!=null;}).slice().sort(function(a,b){return new Date(a.timestamp)-new Date(b.timestamp);});
@@ -87066,11 +87092,39 @@ html.js-reveal .reveal,
     a.style.textDecoration = "none";
     var more = row.querySelector(".tab-more-wrap");
     if (more) row.insertBefore(a, more); else row.appendChild(a);
+    /* AOG-INBOX-EMBED-V1 (2026-09-25) — Jimmy: "Connect the inbox to this tool
+       bar so it matches everything else." The tab now opens the Inbox INSIDE the
+       dashboard, under the same bar, like Practice. The page itself is the same
+       file (turn-ins.html?embed=1), so there is still one Inbox, not two. The
+       href stays, so a long-press or new-tab still opens it on its own. */
+    a.addEventListener("click", function (e) {
+      if (e.metaKey || e.ctrlKey || e.shiftKey) return;
+      e.preventDefault();
+      var any = document.querySelector("#screen-admin .tab-panel"); if (!any) return;
+      var p = document.getElementById("panel-inboxframe");
+      if (!p) {
+        p = document.createElement("div"); p.className = "tab-panel"; p.id = "panel-inboxframe";
+        p.innerHTML = '<iframe id="aogInboxFrame" title="Inbox" src="turn-ins.html?embed=1" style="display:block;width:100%;min-height:70vh;border:0;border-radius:12px;background:transparent"></iframe>';
+        any.parentNode.appendChild(p);
+      } else {
+        try { var f = document.getElementById("aogInboxFrame"); f.contentWindow.location.reload(); } catch (eR) {}
+      }
+      document.querySelectorAll("#screen-admin .tab").forEach(function (x) { x.classList.remove("active"); });
+      document.querySelectorAll("#screen-admin .tab-panel").forEach(function (x) { x.classList.remove("active"); });
+      a.classList.add("active"); p.classList.add("active");
+    });
     /* the modes layer positions and shows it from MODES.student; nudge it so
        the first paint does not wait for a mode switch */
     try { if (window.__aogDashModes && window.__aogDashModes.apply) window.__aogDashModes.apply(false); } catch (e) {}
   }
   function boot() { css(); alias(); migrate(); practiceTab(); inboxTab(); door(); watch(); }
+  /* frames that report their height (the Inbox, My Blueprint) grow to fit */
+  window.addEventListener("message", function (e) {
+    if (e.origin !== location.origin || !e.data || !e.data.aogFrameH) return;
+    document.querySelectorAll("iframe").forEach(function (f) {
+      try { if (f.contentWindow === e.source) f.style.height = (e.data.aogFrameH + 8) + "px"; } catch (x) {}
+    });
+  });
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", function () { setTimeout(boot, 200); });
   else setTimeout(boot, 200);
 })();
