@@ -89336,7 +89336,8 @@ html.js-reveal .reveal,
       if (!c.querySelector(".gcx-bar")) {
         var bar = document.createElement("div"); bar.className = "gcx-bar";
         bar.innerHTML = '<button type="button" class="gcx-go" data-gcxprint="' + esc(w) + '">🖨️ ' + esc(T("Print all of " + w + "’s graphs", "Imprimir todas las gráficas de " + w)) + '</button>'
-          + '<button type="button" data-gcxprint="*">' + esc(T("Print every student", "Imprimir a todos los estudiantes")) + '</button>';
+          + '<button type="button" data-gcxprint="*">' + esc(T("Print every student", "Imprimir a todos los estudiantes")) + '</button>'
+          + '<a class="gcx-bp" href="turn-ins.html?blueprint=' + encodeURIComponent(w) + '" style="display:inline-flex;align-items:center;padding:0 14px;min-height:40px;border-radius:999px;border:1.5px solid var(--gold-deep,#9a6f24);font-weight:700;text-decoration:none;color:inherit">◎ ' + esc(T("Open " + w + "’s Blueprint", "Abrir el Plano de " + w)) + '</a>';
         var anchor = c.querySelector(".gc-next") || c.querySelector(".gc-who");
         if (anchor && anchor.nextSibling) c.insertBefore(bar, anchor.nextSibling); else c.appendChild(bar);
       }

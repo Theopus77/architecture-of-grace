@@ -230,6 +230,37 @@ html.a11y-dyslexic body{letter-spacing:.02em;word-spacing:.09em;line-height:1.8}
 .ddbox li.no .mk{color:var(--u3)}
 .ddbox li .key{color:var(--sub);font-size:.85rem;margin-left:6px}
 .ddbox li .key::before{content:"→ ";}
+/* AOG-BLUEPRINT-V1 */
+.bp-who{display:flex;flex-wrap:wrap;gap:8px;margin:18px 0 12px}
+.bp-who .bp-c{opacity:.7;font-size:.75rem;margin-left:3px}
+.bp-card{background:var(--card);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);padding:18px 18px 16px}
+.bp-top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap}
+.bp-ey{font:800 .72rem var(--sans);letter-spacing:.16em;text-transform:uppercase;color:var(--brass)}
+.bp-card h2{font-family:var(--serif);font-weight:900;font-size:1.6rem;margin:2px 0 0}
+.bp-tools{display:flex;gap:8px;flex-wrap:wrap}
+.bp-stats{display:flex;flex-wrap:wrap;gap:10px;margin:14px 0 16px}
+.bp-stats>div{flex:1 1 110px;background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:10px 12px}
+.bp-stats b{display:block;font:900 1.35rem var(--serif);color:var(--ink)}
+.bp-stats span{font-size:.78rem;color:var(--sub)}
+.bp-wall{display:flex;justify-content:center;padding:10px 0 0}
+.rose{width:min(100%,460px);height:auto;filter:drop-shadow(0 8px 18px rgba(0,0,0,.25))}
+.rose .pane{stroke:#1B2230;stroke-width:1.2;cursor:pointer;transition:fill-opacity .15s}
+.rose .pane:hover,.rose .pane.sel{fill-opacity:1 !important;stroke:#F2C964;stroke-width:2.5}
+.rose .pane.empty{fill:#2A3242;fill-opacity:1;cursor:default}
+.rose .pane.key{stroke:#F2C964;stroke-width:2.2}
+.rose{print-color-adjust:exact;-webkit-print-color-adjust:exact}
+.bp-legend{display:flex;flex-wrap:wrap;gap:10px 16px;margin:12px 0 0;font-size:.8rem;color:var(--sub)}
+.bp-lg{display:inline-flex;align-items:center;gap:6px}
+.bp-lg i{width:18px;height:10px;border-radius:2px;display:inline-block}
+.bp-lg i.solid{background:#2F63B8} .bp-lg i.key{background:#2A3242;box-shadow:inset 0 0 0 2px #F2C964}
+.bp-say{margin-top:14px;font-size:.88rem;color:var(--sub)}
+.learner .iep-only{display:none !important}
+
+@media print{
+  body.bpprint .bp-who,body.bpprint .bp-tools,body.bpprint .bp-say{display:none !important}
+  
+  body.bpprint .bp-card{box-shadow:none;border:0}
+}
 </style>
 <script src="aog-sync-config.js"></script>
 <!-- ══ DASHBOARD-CODE GATE (2026-09-09) ═══════════════════════════════════
@@ -424,13 +455,9 @@ html.a11y-dyslexic body{letter-spacing:.02em;word-spacing:.09em;line-height:1.8}
   <div class="viewrow no-print">
     <button class="fchip on" id="viewStu" type="button">By student</button>
     <button class="fchip" id="viewNew" type="button">Newest first</button>
+    <button class="fchip" id="viewBp" type="button">Blueprint</button>
     <button class="fchip" id="viewSheet" type="button" aria-pressed="false">From the Sheet only</button>
   </div>
-  <p class="note"><b>Where this comes from.</b> Seven stores on this computer, filled by the Refresh
-  button above and by the dashboard&rsquo;s own pulls &mdash; this page and the dashboard read the same
-  copy, so they can never disagree. <b>Remove</b> takes a row off this
-  computer <i>and</i> tombstones it, so a later Refresh cannot bring it back &mdash; that is what
-  makes a tester stay gone. It never touches the Google Sheet itself.</p>
 </header>
 <div id="inbox"></div>
 <footer>
@@ -1029,10 +1056,12 @@ html.a11y-dyslexic body{letter-spacing:.02em;word-spacing:.09em;line-height:1.8}
   });
   document.getElementById("viewStu").addEventListener("click",function(){ curView="stu"; vsync(); paint(); });
   document.getElementById("viewNew").addEventListener("click",function(){ curView="new"; vsync(); paint(); });
+  document.getElementById("viewBp").addEventListener("click",function(){ curView="bp"; vsync(); paint(); });
   document.getElementById("viewSheet").addEventListener("click",function(){ sheetOnly=!sheetOnly; vsync(); paint(); });
   function vsync(){
     document.getElementById("viewStu").classList.toggle("on",curView==="stu");
     document.getElementById("viewNew").classList.toggle("on",curView==="new");
+    document.getElementById("viewBp").classList.toggle("on",curView==="bp");
     var sb=document.getElementById("viewSheet");
     sb.classList.toggle("on",sheetOnly); sb.setAttribute("aria-pressed",String(sheetOnly));
   }
@@ -1303,7 +1332,7 @@ html.a11y-dyslexic body{letter-spacing:.02em;word-spacing:.09em;line-height:1.8}
       + "</summary>"
       + '<div class="body">'+body
       + '<div class="acts no-print"><button type="button" data-a="print">Print this one</button>'
-      + '<button type="button" data-a="iep" title="Copies this result as IEP evidence">Copy this brick</button>'
+      + '<button type="button" data-a="iep" class="iep-only" title="Copies this result as IEP evidence">Copy this brick</button>'
       + '<button type="button" class="del" data-a="del">Remove</button>'
       + '<span class="pst" aria-live="polite"></span></div></div>';
     d.querySelector('[data-a="print"]').addEventListener("click",function(){
@@ -1368,6 +1397,7 @@ html.a11y-dyslexic body{letter-spacing:.02em;word-spacing:.09em;line-height:1.8}
   }
 
   function paint(){
+    document.documentElement.classList.toggle("learner", learner());
     buildKinds();
     var box=document.getElementById("inbox"); box.innerHTML="";
     var ub=undoBar(); if(ub) box.appendChild(ub);
@@ -1380,6 +1410,7 @@ html.a11y-dyslexic body{letter-spacing:.02em;word-spacing:.09em;line-height:1.8}
     all.sort(function(a,b){ return String(b.ts||"").localeCompare(String(a.ts||"")); });
     if(!all.length){ box.appendChild(emptyState()); return; }
     if(curView==="new"){ all.forEach(function(it){ box.appendChild(card(it)); }); return; }
+    if(curView==="bp"){ blueprint(box, all); return; }
     var by={}, shown={};
     all.forEach(function(it){
       /* ⚠ AOG-INBOX-ONEWHO-V1 — this folded case but not RUNS OF SPACES, so
@@ -1409,6 +1440,91 @@ html.a11y-dyslexic body{letter-spacing:.02em;word-spacing:.09em;line-height:1.8}
       box.appendChild(h);
       list.forEach(function(it){ box.appendChild(card(it)); });
     });
+  }
+
+  /* ══ AOG-BLUEPRINT-V1 (2026-09-25) — MY BLUEPRINT ══════════════════════════
+     Jimmy: "the student page in the dashboard should be able to build a
+     beautiful mosaic for the child or the individual using these. Rockin'
+     Ramsden does not have an IEP, but has done a lot of these Daily Drafts."
+     Every activity sent is one brick. The wall rises from the bottom, oldest
+     first, in running bond. Colour is the subject; how solid a brick is, is how
+     much was done without a hint; every 25th brick is a gold keystone. Nothing
+     here needs an IEP — it is the builder's own record. ═══════════════════ */
+  /* AOG-BLUEPRINT-REAL-V1 — Jimmy: "Make them real color BRICKS only". Each
+     subject is a real brick: [hue, saturation, lightness, name]. */
+  /* AOG-BLUEPRINT-ROSE-V1 — "something that paints a nice mosaic". A rose
+     window: every send is one pane of stained glass, laid from the centre out,
+     ring by ring. Jewel glass per subject; a pane done without a hint glows. */
+  var BP_GLASS={"Math":"#2F63B8","Language Arts":"#E0A22E","English":"#E0A22E","Writing":"#D2602C",
+    "Science":"#2E9A62","Social Studies":"#B3303F","Spanish":"#CC4C86","FACS":"#8452B0","Religions":"#4146A6",
+    "Economics":"#93A62E","Foundry":"#B8702E","SEL · Room 36":"#2C9CA8","Other":"#6B7A8C"};
+  function bpGlass(it){ if(it.kind==="voice") return "#E58FB0"; if(it.kind!=="turnin") return "#9FC3E0"; return BP_GLASS[it.subj]||BP_GLASS.Other; }
+  function bpRose(list){
+    var R=1, cap=1; while(cap<list.length+1){ cap+=8*R; R++; } if(cap-list.length<4){ cap+=8*R; R++; }
+    var c=200, r0=22, w=(178-r0)/(R-1||1), g="", i=0;
+    function pt(r,a){ return (c+r*Math.cos(a)).toFixed(1)+" "+(c+r*Math.sin(a)).toFixed(1); }
+    function pane(k,html){ var it=list[k];
+      if(!it) return html.replace("CLS","pane empty").replace("ATTR","");
+      var st=bpStrength(it), op=st==null?0.85:(0.38+st*0.62);
+      return html.replace("CLS","pane"+((k+1)%25===0?" key":"")).replace("ATTR",' data-bpi="'+k+'" fill="'+bpGlass(it)+'" fill-opacity="'+op.toFixed(2)+'"><title>'+esc((it.title||"")+" · "+when(it.ts)+(it.sum?" · "+it.sum:""))+'</title');
+    }
+    g+=pane(i++,'<circle class="CLS" cx="'+c+'" cy="'+c+'" r="'+(r0-2)+'"ATTR></circle>');
+    for(var k=1;k<R;k++){
+      var n=8*k, a0=r0+(k-1)*w+2, a1=r0+k*w-1, gap=0.9/ (a1);
+      for(var j=0;j<n;j++){
+        var t0=-Math.PI/2+j*2*Math.PI/n+gap, t1=-Math.PI/2+(j+1)*2*Math.PI/n-gap;
+        var d="M"+pt(a0,t0)+" A"+a0+" "+a0+" 0 0 1 "+pt(a0,t1)+" L"+pt(a1,t1)+" A"+a1+" "+a1+" 0 0 0 "+pt(a1,t0)+" Z";
+        g+=pane(i++,'<path class="CLS" d="'+d+'"ATTR></path>');
+      }
+    }
+    return '<svg class="rose" viewBox="0 0 400 400" role="img" aria-label="Rose window: '+list.length+' panes filled">'
+      +'<circle cx="200" cy="200" r="196" fill="#1B2230"/>'+g
+      +'<circle cx="200" cy="200" r="194" fill="none" stroke="#C9A24A" stroke-width="4"/></svg>';
+  }
+  var bpWho=null;
+  (function(){ var m=/[?&]blueprint=([^&]+)/.exec(location.search); if(m){ curView="bp"; bpWho=decodeURIComponent(m[1].replace(/\+/g," ")).replace(/\s+/g," ").trim().toLowerCase(); } })();
+  function learner(){ return lsGet("aog.learner")==="1"; }
+  function bpStrength(it){
+    var r=it.raw||{}, a=+r.independent, n=+r.itemsTotal;
+    if(n>0 && a>=0) return Math.max(0,Math.min(1,a/n));
+    return null;
+  }
+  function bpDay(it){ var d=new Date(it.ts); return isNaN(d)?String(it.ts||"").slice(0,10):d.toISOString().slice(0,10); }
+  function blueprint(box, all){
+    var by={}, shown={};
+    all.forEach(function(it){ var k=String(it.student||"—").replace(/\s+/g," ").trim().toLowerCase(); (by[k]=by[k]||[]).push(it); shown[k]=it.student; });
+    var keys=Object.keys(by);
+    if(!bpWho || !by[bpWho]) bpWho=keys.slice().sort(function(a,b){ return by[b].length-by[a].length; })[0];
+    keys.sort();
+    var me=learner(), list=by[bpWho].slice().sort(function(a,b){ return String(a.ts||"").localeCompare(String(b.ts||"")); });
+    var name=shown[bpWho]||"";
+    /* AOG-BLUEPRINT-ENV-V1 — Jimmy: "for the teacher version they could be
+       little opened envelopes". The learner lays bricks; the teacher opens mail.
+       Same record, same colours: in teacher view each send is a letter opened. */
+    var wrap=document.createElement("div"); wrap.className="bp";
+    var chips='<div class="bp-who no-print">'+keys.map(function(k){ return '<button type="button" class="fchip'+(k===bpWho?" on":"")+'" data-bpwho="'+esc(k)+'">'+esc(shown[k])+' <span class="bp-c">'+by[k].length+'</span></button>'; }).join("")+'</div>';
+    var days={}, subj={}; list.forEach(function(it){ days[bpDay(it)]=1; var sj=it.kind==="turnin"?it.subj:null; if(sj) subj[sj]=(subj[sj]||0)+1; });
+    var dl=Object.keys(days).sort(), streak=0;
+    if(dl.length){ var d=new Date(dl[dl.length-1]+"T12:00:00"); while(days[d.toISOString().slice(0,10)]){ streak++; d.setDate(d.getDate()-1); } }
+    var top=Object.keys(subj).sort(function(a,b){ return subj[b]-subj[a]; })[0];
+    var legend=Object.keys(subj).sort().map(function(k){ return '<span class="bp-lg"><i style="background:'+(BP_GLASS[k]||BP_GLASS.Other)+'"></i>'+esc(k)+' '+subj[k]+'</span>'; }).join("");
+    wrap.innerHTML=chips
+      +'<div class="bp-card">'
+      +'<div class="bp-top"><div><div class="bp-ey">'+(me?"My Blueprint":"Blueprint")+'</div><h2>'+esc(me?"What "+name+" is building":name+"’s Blueprint")+'</h2></div>'
+      +'<div class="bp-tools no-print"><button type="button" class="fchip'+(me?" on":"")+'" id="bpMe">'+(me?"✓ ":"")+'I’m learning for me</button><button type="button" class="fchip" id="bpPrint">Print this Blueprint</button></div></div>'
+      +'<div class="bp-stats"><div><b>'+list.length+'</b><span>panes of glass</span></div><div><b>'+dl.length+'</b><span>days building</span></div><div><b>'+Object.keys(subj).length+'</b><span>subjects</span></div><div><b>'+streak+'</b><span>day streak</span></div>'+(top?'<div><b>'+esc(top)+'</b><span>most glass</span></div>':"")+'</div>'
+      +'<div class="bp-wall">'+bpRose(list)+'</div>'
+      +'<div class="bp-legend">'+legend+'<span class="bp-lg"><i class="solid"></i>bright glass = done without a hint</span><span class="bp-lg"><i class="key"></i>gold-leaded = every 25th pane</span></div>'
+      +'<div class="bp-say" id="bpSay">'+(list.length?"Tap a pane to see what it was.":"")+'</div>'
+      +'</div>';
+    box.appendChild(wrap);
+    wrap.querySelectorAll("[data-bpwho]").forEach(function(b){ b.addEventListener("click",function(){ bpWho=b.getAttribute("data-bpwho"); paint(); }); });
+    wrap.querySelectorAll("[data-bpi]").forEach(function(b){ b.addEventListener("click",function(){
+      var it=list[+b.getAttribute("data-bpi")]; wrap.querySelectorAll(".pane.sel").forEach(function(x){x.classList.remove("sel")}); b.classList.add("sel");
+      var say=document.getElementById("bpSay"); say.innerHTML=""; say.appendChild(card(it));
+    }); });
+    document.getElementById("bpMe").addEventListener("click",function(){ try{ localStorage.setItem("aog.learner", learner()?"0":"1"); }catch(e){} paint(); });
+    document.getElementById("bpPrint").addEventListener("click",function(){ document.body.classList.add("bpprint"); window.print(); setTimeout(function(){ document.body.classList.remove("bpprint"); },1200); });
   }
 
   function emptyState(){
