@@ -61,7 +61,7 @@ def hub():
 .more-k{margin:16px 0 -6px;font:800 .72rem var(--sans);letter-spacing:.14em;text-transform:uppercase;color:var(--sub)}
 """
     s = s.replace("</style>", css + "</style>", 1)
-    p.write_text(s, encoding="utf-8"); print("hub: course blocks added to 5 bands")
+    p.write_text(s, encoding="utf-8"); print("hub: course blocks added to %d bands" % len(BANDS))
 
 def redirects():
     p = DEPLOY / "_redirects"; s = p.read_text(encoding="utf-8")
@@ -72,7 +72,7 @@ def redirects():
         if "/rel%d " % n not in s: add.append(("/rel%d" % n).ljust(28) + ("/rel-u%d.html" % n).ljust(42) + "200")
     if add:
         if not s.endswith("\n"): s += "\n"
-        s += "\n# AOG-REL-V1 — World Religions, Grades 9–12: the course contents and the 20 units\n" + "\n".join(add) + "\n"
+        s += "\n# AOG-REL-V1 — World Religions, Grades 9–12: the course contents and the 12 units\n" + "\n".join(add) + "\n"
         p.write_text(s, encoding="utf-8")
     print("redirects: %d added" % len(add))
 
@@ -82,10 +82,9 @@ def sw():
         print("sw: already precaches the course"); return
     m = re.search(r"^const CACHE = '(aog-cache-[0-9.]+)'(.*)$", s, re.M)
     old = m.group(1)
-    new = "aog-cache-2026.09.26.4406"
-    line = ("const CACHE = '%s'   // WORLD RELIGIONS, THE SAME FACE. Jimmy: the same facelift for FACS, World Religions and Economics. "
-            "/religions-course and /spa1–/spa20: a World Religions course following the Illinois World Languages (ACTFL) progression — five bands, 20 units, 40 chapters, numbered lessons — built by _work/rel/build_rel.py through the shared course builder (_work/course/build_course.py). "
-            "Every World Religions band on the hub leads with its part of the course; every page's World Religions jump groups list the course first. The existing rooms are linked in as practice rooms.\n"
+    pre, num = old.rsplit(".", 1)
+    new = "%s.%d" % (pre, int(num) + 1)   # always one past whatever is live, never a fixed number
+    line = ("const CACHE = '%s'   // WORLD RELIGIONS AS A COURSE. /religions-course and /rel1–/rel12: a high-school World Religions course, the academic and comparative study of religion — grades 9–12, 12 units, 24 chapters, numbered lessons — built by _work/rel/build_rel.py. Every band on the hub leads with its part of the course; every page's World Religions jump groups list the course first. The existing rooms are linked in as practice rooms.\n"
             "// previous: const CACHE = '%s'%s" % (new, old, m.group(2)))
     s = s[:m.start()] + line + s[m.end():]
     add = "  './religions-course.html', " + ", ".join("'./rel-u%d.html'" % u["n"] for u in UNITS) + ",   // AOG-REL-V1 — the World Religions course\n"
