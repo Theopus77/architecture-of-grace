@@ -1080,12 +1080,6 @@
         {k:"all",en:"The version",es:"La versión",job_en:"One form of that instruction.",job_es:"Una forma de esa instrucción.",name_en:"Allele",name_es:"Alelo",c:"#2f5c6b"},
         {k:"sq",en:"The square",es:"El cuadro",job_en:"Shows the chance, not a promise.",job_es:"Muestra la chance, no una promesa.",name_en:"Punnett square",name_es:"Cuadro de Punnett",c:"#8a6116"}
       ]},
-    "b8-natural-selection": {k_en:"Meet selection",k_es:"Conoce la selección",t_en:"Tap variation, pressure, change.",t_es:"Toca variación, presión, cambio.",
-      parts:[
-        {k:"var",en:"Not all the same",es:"No todos iguales",job_en:"The raw material.",job_es:"La materia prima.",name_en:"Variation",name_es:"Variación",c:"#2f5c6b"},
-        {k:"press",en:"Something is scarce",es:"Algo escasea",job_en:"The filter.",job_es:"El filtro.",name_en:"Pressure",name_es:"Presión",c:"#9c3a2e"},
-        {k:"chg",en:"The next generation shifts",es:"La siguiente generación se corre",job_en:"That is the change.",job_es:"Eso es el cambio.",name_en:"Selection",name_es:"Selección",c:"#6f9a4a"}
-      ]},
     "b14-matter": {k_en:"Meet matter",k_es:"Conoce la materia",t_en:"Tap the piece, the state, the change.",t_es:"Toca la pieza, el estado, el cambio.",
       parts:[
         {k:"atom",en:"The smallest piece that is still that stuff",es:"La pieza más chica que sigue siendo esa cosa",job_en:"Atoms. They do not vanish.",job_es:"Átomos. No desaparecen.",name_en:"Atom",name_es:"Átomo",c:"#2f5c6b"},
@@ -1199,12 +1193,6 @@
         {k:"photo",en:"Light in, sugar out",es:"Luz entra, azúcar sale",job_en:"Photosynthesis. Plants.",job_es:"Fotosíntesis. Plantas.",name_en:"Photosynthesis",name_es:"Fotosíntesis",c:"#6f9a4a"},
         {k:"resp",en:"Sugar in, energy out",es:"Azúcar entra, energía sale",job_en:"Respiration. Every cell.",job_es:"Respiración. Toda célula.",name_en:"Cellular respiration",name_es:"Respiración celular",c:"#c9784a"},
         {k:"waste",en:"What leaves",es:"Lo que sale",job_en:"Oxygen one way, carbon dioxide the other.",job_es:"Oxígeno por un lado, dióxido por el otro.",name_en:"Gas exchange",name_es:"Intercambio de gases",c:"#2f5c6b"}
-      ]},
-    "b33-genetics-evolution": {k_en:"Meet change over time",k_es:"Conoce el cambio con el tiempo",t_en:"Tap DNA, variation, descent.",t_es:"Toca ADN, variación, descendencia.",
-      parts:[
-        {k:"dna",en:"The code",es:"El código",job_en:"Copied. Sometimes not perfectly.",job_es:"Se copia. A veces no perfecto.",name_en:"DNA",name_es:"ADN",c:"#6b3d7a"},
-        {k:"var",en:"The differences",es:"Las diferencias",job_en:"Fuel for selection.",job_es:"Combustible para la selección.",name_en:"Variation",name_es:"Variación",c:"#2f5c6b"},
-        {k:"desc",en:"Descent with change",es:"Descendencia con cambio",job_en:"Evolution is that pattern.",job_es:"Evolución es ese patrón.",name_en:"Evolution",name_es:"Evolución",c:"#6f9a4a"}
       ]},
     "b34-ecosystems-human-impact": {k_en:"Meet a human in the web",k_es:"Conoce un humano en la red",t_en:"Tap take, waste, repair.",t_es:"Toca tomar, desecho, reparar.",
       parts:[
