@@ -130,6 +130,22 @@ footer a{color:inherit}
 .crate .take.empty{color:var(--muted)}
 .crate label.ghost{cursor:pointer}
 .crate label.ghost input{display:none}
+/* AOG-DECKS-CRATE-BOX-V1 — Up next is a real crate: sleeves standing in a wooden box */
+.cbox{position:relative;display:flex;gap:.7rem;overflow-x:auto;padding:1rem .9rem 1.3rem;border-radius:10px;
+  background:linear-gradient(180deg,#8a5a32,#6b4424);border:3px solid #4a2d16;box-shadow:inset 0 -10px 0 #4a2d16, inset 0 2px 0 #a8744a;scroll-snap-type:x proximity}
+.cbox.empty{display:block;color:#f3e6d4;font-size:.9rem}
+.sleeve{flex:0 0 132px;scroll-snap-align:start;position:relative;display:flex;flex-direction:column;gap:.35rem;cursor:grab;
+  background:var(--card);border:1px solid #00000055;border-radius:6px;padding:.5rem;box-shadow:0 4px 8px #0006;transition:transform .12s}
+.sleeve:hover{transform:translateY(-6px)}
+.sleeve .art{position:relative;aspect-ratio:1;border-radius:4px;overflow:hidden;background:hsl(var(--h),45%,38%)}
+.sleeve .art::before{content:"";position:absolute;width:78%;aspect-ratio:1;top:11%;right:-22%;border-radius:50%;
+  background:radial-gradient(circle,hsl(var(--h),60%,55%) 0 16%,#111 17% 19%,#1b1b1b 20% 100%);box-shadow:0 0 0 1px #000}
+.sleeve .art b{position:absolute;left:6px;top:4px;font-size:1.2rem;color:#fff;text-shadow:0 1px 2px #000}
+.sleeve .nm{text-transform:none;letter-spacing:0;font-size:.8rem;font-weight:700;color:var(--ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sleeve .sb{display:flex;gap:.3rem}
+.sleeve .sb button{flex:1;min-height:34px;border-radius:999px;border:1px solid var(--line);background:var(--chip);color:var(--ink);font-weight:700;font-size:.8rem;cursor:pointer}
+.sleeve .sb button.x{flex:0 0 34px}
+.deck.dragover{outline:3px dashed var(--accent,#c45c26);outline-offset:4px}
 .bench .take.empty{color:var(--muted)}
 .take{display:flex;flex-wrap:wrap;gap:.5rem;align-items:center;background:var(--chip);border:1px solid var(--line);border-radius:12px;padding:.5rem .7rem}
 .take .tlen{font-variant-numeric:tabular-nums;color:var(--muted);font-size:.85rem}
@@ -275,9 +291,10 @@ const STR = {
   bench:{en:"From the drum bench",es:"Del banco de ritmo"},
   benchNone:{en:"Bounce a pattern from the drum bench and it lands here.",es:"Rebota un patrón del banco de ritmo y aparece aquí."},
   benchGo:{en:"Open the drum bench",es:"Abrir el banco de ritmo"},
-  crateNext:{en:"Up next",es:"Lo que sigue"},
+  crateNext:{en:"Up next — the crate",es:"Lo que sigue — la caja"},
   crateNextNone:{en:"Line up the songs you plan to spin, before you start. They stay here, even if you close the tab.",es:"Prepara las canciones que vas a tocar antes de empezar. Se quedan aquí aunque cierres la pestaña."},
   crateAdd:{en:"Add songs",es:"Agregar canciones"},
+  crateHint:{en:"Drag a record out of the crate onto a deck, or press A or B.",es:"Arrastra un disco de la caja a un plato, o pulsa A o B."},
   cratePrev:{en:"Previously spun",es:"Tocadas antes"},
   cratePrevNone:{en:"Every record you put on a platter shows up here.",es:"Cada disco que pones en un plato aparece aquí."},
   crateDrop:{en:"Remove",es:"Quitar"},
@@ -727,12 +744,30 @@ function crateRow(r, i, list){
       <button type="button" class="ghost" data-cratedrop="${list}" data-i="${i}" aria-label="${t("crateDrop")}">✕</button>
     </div>`;
 }
+function crateSleeve(r, i){
+  let h = 0; for(const c of r.name) h = (h*31 + c.charCodeAt(0)) % 360;
+  return `<div class="sleeve" draggable="true" data-sleeve="${i}" style="--h:${h}" title="${esc(r.name)}">
+      <div class="art"><b>${i+1}</b></div>
+      <span class="nm">${esc(r.name.replace(/\.[^.]+$/,""))}</span>
+      <div class="sb">
+        <button type="button" data-crate="next" data-i="${i}" data-deck="A">A</button>
+        <button type="button" data-crate="next" data-i="${i}" data-deck="B">B</button>
+        <button type="button" class="x" data-cratedrop="next" data-i="${i}" aria-label="${t("crateDrop")}">✕</button>
+      </div>
+    </div>`;
+}
+function crateTake(i, d){
+  const r = CRATE.next[i]; if(!r || !d) return;
+  CRATE.next.splice(i,1); cratePut("next", CRATE.next);
+  loadFile(d, crateFile(r)); paintCrate();
+}
 function esc(s){ return String(s).replace(/[&<>"]/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c])); }
 function paintCrate(){
   const box = document.getElementById("crate"); if(!box) return;
   box.innerHTML = `
     <h3>${t("crateNext")}</h3>
-    ${CRATE.next.map((r,i)=>crateRow(r,i,"next")).join("") || `<div class="take empty">${t("crateNextNone")}</div>`}
+    ${CRATE.next.length ? `<div class="cbox">${CRATE.next.map(crateSleeve).join("")}</div>` : `<div class="cbox empty">${t("crateNextNone")}</div>`}
+    ${CRATE.next.length ? `<p class="rechint" style="margin:0">${t("crateHint")}</p>` : ""}
     <div class="take" style="background:none;border:0;padding:0">
       <label class="ghost">${t("crateAdd")}<input type="file" multiple id="crateAdd" accept="audio/*,video/mp4,.mp3,.m4a,.aac,.wav,.aif,.aiff,.ogg,.opus,.flac,.webm"></label>
       ${CRATE.next.length?`<button type="button" class="ghost" data-crateclear="next">${t("crateClear")}</button>`:""}
@@ -752,10 +787,13 @@ function paintCrate(){
       const r = CRATE[list][i]; if(!r) return;
       /* a song taken from UP NEXT has been played: it leaves the queue and
          lands in PREVIOUSLY SPUN, the way a record goes from one pile to the other */
-      if(list==="next"){ CRATE.next.splice(i,1); cratePut("next", CRATE.next); }
+      if(list==="next"){ crateTake(i, decks.find(x=>x.id===b.getAttribute("data-deck"))); return; }
       loadFile(decks.find(x=>x.id===b.getAttribute("data-deck")), crateFile(r));
       paintCrate();
     };
+  });
+  box.querySelectorAll("[data-sleeve]").forEach(el=>{
+    el.addEventListener("dragstart", ev=>{ ev.dataTransfer.setData("text/aog-sleeve", el.getAttribute("data-sleeve")); ev.dataTransfer.effectAllowed = "move"; });
   });
   box.querySelectorAll("[data-cratedrop]").forEach(b=>{
     b.onclick = ()=>{
@@ -1064,6 +1102,8 @@ function bind(){
     sec.addEventListener("dragleave", ()=>sec.classList.remove("dragover"));
     sec.addEventListener("drop", ev=>{
       ev.preventDefault(); sec.classList.remove("dragover");
+      const sl = ev.dataTransfer && ev.dataTransfer.getData("text/aog-sleeve");
+      if(sl !== "" && sl != null){ crateTake(+sl, d); return; }
       const f = ev.dataTransfer && ev.dataTransfer.files && ev.dataTransfer.files[0];
       if(f) loadFile(d, f);
     });
