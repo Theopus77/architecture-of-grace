@@ -1079,6 +1079,7 @@ body.review .box .ptcell, body.review .box .ew, body.review .box textarea{pointe
 <style>/* AOG-DD-FOUNDRY — the unit a spiral box comes from */
 .q .wfu{display:inline-block;margin-right:6px;padding:1px 8px;border-radius:999px;font-size:.78em;font-weight:800;letter-spacing:.04em;border:1px solid currentColor;opacity:.8}
 @media print{.q .wfu{opacity:1}}</style>
+<script src="/aog-iep.js"></script>
 </head>
 <body>
 <script src="/aog-grace.js" defer></script>
@@ -16928,7 +16929,7 @@ function sigPrint(pack){
 
 function sigRow(){
   return '<div class="sig"><label for="nameIn">'+t('Name','Nombre')+'</label>'+
-    '<input id="nameIn" autocomplete="off" placeholder="'+t('sign your sheet','firma tu hoja')+'">'+
+    '<input id="nameIn" autocomplete="off" placeholder="'+t('Enter your name','Escribe tu nombre')+'">'+
     '<span class="signote">'+t(
       'Sign it when you are done. Use your name or the code your teacher gave you — and use the <b>same one every time</b>, or your teacher will see you as two different students.',
       'Fírmala cuando termines. Usa tu nombre o el código que te dio tu maestro — y usa <b>siempre el mismo</b>, o tu maestro te verá como dos estudiantes distintos.')+'</span></div>'}
@@ -18172,6 +18173,18 @@ function refresh(){if(!hasGrade(ST.subj,ST.grade))ST.grade=fitGrade(ST.subj);try
               attempt so the two are never confused for one another */
            finalCorrect:t.k})
     };
+    /* AOG-IEP-REC-V1 — the IEP record. Strand rows are [box, right, of];
+       they go out under each box's own strand name. First-try accuracy is
+       what an IEP goal is measured against, so that is "correct". */
+    if(window.AOG_IEP){ try{
+      var tb=(SUBJ[ST.subj]&&SUBJ[ST.subj][ST.grade])||[];
+      AOG_IEP.fill(payload, writing
+        ? {correct:wStats.scored?wStats.total:"", total:wStats.scored?RUBRIC.length*4:"",
+           byStrand:RUBRIC.map(function(r,i){var v=wStats.rubric[r.k]; if(v==null)v=wStats.rubric[i]; return r.en+" "+(v==null?"-":v)+"/4"}).join("; "),
+           supports:bankMode().on?["wordbank"]:[]}
+        : {correct:sup.any?sup.ind:t.k, total:t.n,
+           byStrand:t.rows.map(function(r){var st=tb[r[0]-1];return {name:st?st.en:("Box "+r[0]), ok:r[1], n:r[2]}})});
+    }catch(e){} }
     var body=JSON.stringify(payload);
     sendBusy=true;sendErr=false;paint();
     fetch(DEST.url,{method:"POST",mode:"cors",redirect:"follow",

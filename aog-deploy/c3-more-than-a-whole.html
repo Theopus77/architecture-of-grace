@@ -852,6 +852,7 @@ input[type=range].nl-input:focus-visible{outline:3px solid var(--focus); outline
   p{orphans:3; widows:3}
 }
 </style>
+<script src="/aog-iep.js"></script>
 </head>
 <body>
 <script src="/aog-topbar.js"></script>
@@ -1837,6 +1838,7 @@ input[type=range].nl-input:focus-visible{outline:3px solid var(--focus); outline
       source:"link",
       extra:JSON.stringify({series:"concepts-data", lang:lang, build:"c-series v1"})
     };
+    if(window.AOG_IEP){AOG_IEP.fill(payload);} /* AOG-IEP-REC-V1 */
     var body = JSON.stringify(payload);
     sendBusy = true; sendErr = false; paintSend();
     fetch(dest.url, {method:"POST", mode:"cors", redirect:"follow",
@@ -2014,6 +2016,7 @@ input[type=range].nl-input:focus-visible{outline:3px solid var(--focus); outline
         return JSON.stringify(x);
       })()
       };
+      if(window.AOG_IEP){AOG_IEP.fill(payload);} /* AOG-IEP-REC-V1 */
       var body = JSON.stringify(payload);
       sendBusy = true; sendErr = false; paintSendM();
       fetch(DEST.url, {method:"POST", mode:"cors", redirect:"follow",

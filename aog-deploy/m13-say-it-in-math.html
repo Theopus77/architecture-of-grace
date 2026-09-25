@@ -1064,6 +1064,7 @@ button{touch-action:manipulation;}   /* .30fp — rapid taps must not double-tap
   p{orphans:3; widows:3}
 }
 </style>
+<script src="/aog-iep.js"></script>
 </head>
 <body>
 <script src="/aog-topbar.js"></script>
@@ -2220,6 +2221,7 @@ button{touch-action:manipulation;}   /* .30fp — rapid taps must not double-tap
         return JSON.stringify(x);
       })()
       };
+      if(window.AOG_IEP){AOG_IEP.fill(payload);} /* AOG-IEP-REC-V1 */
       var body = JSON.stringify(payload);
       sendBusy = true; sendErr = false; paintSendM();
       fetch(DEST.url, {method:"POST", mode:"cors", redirect:"follow",
