@@ -649,6 +649,7 @@ input[type=range].slider::-moz-range-thumb{
 .aogc .teach .inner p{margin:0}
 </style>
 <!-- AOG-SEL-V1 — the header is the course chrome (built by _work/sel/build_sel.py from _work/sel/src/w207-4-bitterness-ledger.html); the sheet below is the original, byte for byte. -->
+<script src="/aog-iep.js"></script>
 </head>
 <body>
 <script src="/aog-topbar.js"></script>
@@ -1249,6 +1250,7 @@ body.wsprev{overflow:hidden}
       source:"link",
       extra:JSON.stringify({series:"sel-worksheet", build:"ws send v2", worksheet:CFG.id, finished:true, responses:gather()})
     };
+    if(window.AOG_IEP){AOG_IEP.fill(payload);} /* AOG-IEP-REC-V1 */
     var body = JSON.stringify(payload);
     busy = true;
     /* the preview opens NOW — the send reports into its status line */

@@ -203,7 +203,21 @@ var PRACTICE_COLS = [
   'note',
   'source',
   'group',
-  'extra'
+  'extra',
+  // AOG-IEP-REC-V1 (2026-09-25) — the IEP record every sender now fills.
+  // New columns are appended to the right of existing tabs automatically
+  // (see getPracticeSheetFor_), so no old row moves.
+  'correct',       // items right (first try unless the page says otherwise)
+  'total',         // items scored
+  'pctCorrect',    // computed below when the page leaves it blank
+  'standards',     // standard codes the items served, e.g. 7.RP.A.2; RL.1
+  'byStrand',      // per-skill breakdown: "Proportional Reasoning 2/3; Geometry 1/1"
+  'supports',      // accommodations used: listen; spanish; hints; wordbank; retry
+  'attempt',       // this student's attempt number on this activity, on this device
+  'minutes',       // time on task, rounded to 0.1
+  'course',        // course key for course pages (sci, mth, ela ...)
+  'unit',
+  'assessment'     // lesson-check | chapter-review | unit-test | spiral | practice
 ];
 var TEAM_SHEET_NAME = 'TeamEvidence';
 var TEAM_COLS = [
@@ -254,7 +268,17 @@ var PRACTICE_TABS = {
   'science':       'Practice · Science',
   'social':        'Practice · Social Studies',
   'sel':           'Practice · SEL',
-  'wordfoundry':   'Practice · Word Foundry'
+  'wordfoundry':   'Practice · Word Foundry',
+  // AOG-IEP-REC-V1 — the courses, one tab each
+  'course-sci':    'Course · Science',
+  'course-mth':    'Course · Math',
+  'course-ela':    'Course · English Language Arts',
+  'course-ss':     'Course · Social Studies',
+  'course-ush':    'Course · U.S. History',
+  'course-eco':    'Course · Economics',
+  'course-rel':    'Course · World Religions',
+  'course-spa':    'Course · Spanish',
+  'course-fcs':    'Course · FACS'
 };
 var PRACTICE_ROUTES = {
   m1:'math-interior',  m2:'math-interior',  m3:'math-interior',  m4:'math-interior',
@@ -287,7 +311,8 @@ var PRACTICE_PATTERNS = [
   [/^dd-write\b/i,          'drops-write'],
   [/^dd-spanish\b/i,        'drops-spanish'],
   [/^wf-u\d+/i,             'wordfoundry'],
-  [/^dd-foundry\b/i,        'wordfoundry']   // AOG-DD-FOUNDRY-V1: the Foundry's Daily Drafts land with its test rehearsals
+  [/^dd-foundry\b/i,        'wordfoundry'],  // AOG-DD-FOUNDRY-V1: the Foundry's Daily Drafts land with its test rehearsals
+  [/^crs-(sci|mth|ela|ss|ush|eco|rel|spa|fcs)-/i, function (m) { return 'course-' + m[1].toLowerCase(); }]
 ];
 
 function practiceGroup_(body) {
@@ -297,7 +322,11 @@ function practiceGroup_(body) {
   if (!id) { return ''; }
   if (PRACTICE_ROUTES[id]) { return PRACTICE_ROUTES[id]; }
   for (var i = 0; i < PRACTICE_PATTERNS.length; i++) {
-    if (PRACTICE_PATTERNS[i][0].test(id)) { return PRACTICE_PATTERNS[i][1]; }
+    var pm = PRACTICE_PATTERNS[i][0].exec(id);
+    if (pm) {
+      var tgt = PRACTICE_PATTERNS[i][1];
+      return (typeof tgt === 'function') ? tgt(pm) : tgt;
+    }
   }
   return '';
 }
@@ -547,6 +576,15 @@ function doPost(e) {
           (isFinite(pTot) && pTot > 0 && isFinite(pInd))
             ? Math.round((pInd / pTot) * 100)
             : '';
+        // AOG-IEP-REC-V1 — accuracy for the IEP record. Falls back to the
+        // older fields so a page that has not been upgraded still fills it.
+        var cTot = Number(body.total !== undefined && body.total !== '' ? body.total : body.itemsTotal);
+        var cOk  = Number(body.correct !== undefined && body.correct !== '' ? body.correct : body.independent);
+        if (body.pctCorrect === undefined || body.pctCorrect === '') {
+          body.pctCorrect = (isFinite(cTot) && cTot > 0 && isFinite(cOk)) ? Math.round((cOk / cTot) * 100) : '';
+        }
+        if (body.total === undefined || body.total === '') { body.total = isFinite(cTot) ? cTot : ''; }
+        if (body.correct === undefined || body.correct === '') { body.correct = isFinite(cOk) ? cOk : ''; }
       }
       var ciHeader = ciSheet
         .getRange(1, 1, 1, ciSheet.getLastColumn())

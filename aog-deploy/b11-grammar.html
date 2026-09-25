@@ -688,6 +688,7 @@ input.gnum:focus{outline:2px solid var(--accent, currentColor); outline-offset:1
   body.print-key #paneLab{display:none!important}
 }
 </style>
+<script src="/aog-iep.js"></script>
 </head>
 <body>
 <script src="/aog-topbar.js"></script>
@@ -3031,6 +3032,7 @@ var _labLang = paintLang; paintLang = function(){ _labLang(); labPaintAll(); };
           return JSON.stringify(x);
         })()
       };
+      if(window.AOG_IEP){AOG_IEP.fill(payload);} /* AOG-IEP-REC-V1 */
       var body = JSON.stringify(payload);
       sendBusy = true; sendErr = false; paintSendM();
       fetch(DEST.url, {method:"POST", mode:"cors", redirect:"follow",

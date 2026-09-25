@@ -170,6 +170,7 @@ html.a11y-dyslexic body{letter-spacing:.02em;word-spacing:.09em;line-height:1.8}
 @media print{.r36top{display:none !important}}
 
 </style>
+<script src="/aog-iep.js"></script>
 </head>
 <body>
 <script src="/aog-grace.js" defer></script>
@@ -915,6 +916,7 @@ body.wbprev{overflow:hidden}
       source:"link",
       extra:JSON.stringify({series:"sel-workbook", build:"wb finished v1", finished:true, responses:gather()})
     };
+    if(window.AOG_IEP){AOG_IEP.fill(payload);} /* AOG-IEP-REC-V1 */
     var body = JSON.stringify(payload);
     busy = true;
     buildPreview(who, "Sending to your teacher\u2026");
