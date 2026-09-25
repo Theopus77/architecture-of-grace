@@ -518,13 +518,14 @@ def _b23():
 <path d="M0 250 H1200 V256 H0z" fill="#C09258"/>
 {net}
 <g transform="translate(220 296)">
-<path d="M70 -108 L220 -108 L220 -160 L70 -160z" fill="#D0AC70"/>
-<path d="M0 -70 L70 -108 L220 -108 L150 -70z" fill="#4A3418"/>
-<path d="M0 -70 L70 -108 L70 -156 L0 -118z" fill="#E4C48A"/><path d="M150 -70 L220 -108 L220 -156 L150 -118z" fill="#B48E52"/>
+<path d="M70 -108 L220 -108 L220 -164 L70 -164z" fill="#D0AC70"/>
+<path d="M0 -70 L70 -108 L220 -108 L150 -70z" fill="#3E2C14"/><path d="M0 -70 L70 -108 L150 -108 L80 -70z" fill="#5A4022"/>
+<path d="M0 -70 L70 -108 L70 -158 L0 -120z" fill="#E4C48A"/>
 <path d="M0 0 V-70 H150 V0z" fill="url(#{p}card)"/><path d="M150 0 V-70 L220 -108 V-38z" fill="url(#{p}card2)"/>
-<path d="M0 -70 H150 V-112 H0z" fill="#E8CC96"/><path d="M0 -70 H150 V-66 H0z" fill="#8E6E42" opacity=".5"/>
-<path d="M0 0 V-70 V-112 H150 V-70 L220 -108 V-38 L150 0z" fill="none" stroke="#7A5A30" stroke-width="1.5" stroke-linejoin="round"/>
-<path d="M150 -70 V0 M70 -108 L70 -156 M150 -118 L220 -156 M150 -70 L150 -118" fill="none" stroke="#7A5A30" stroke-width="1.2" opacity=".7"/>
+<path d="M150 -70 L220 -108 L220 -160 L150 -122z" fill="#B48E52"/>
+<path d="M0 -70 H150 V-30 H0z" fill="#E8CC96"/><path d="M0 -34 H150 V-28 H0z" fill="#7A5A30" opacity=".45"/>
+<path d="M0 0 V-70 L70 -108 H220 V-38 L150 0z" fill="none" stroke="#7A5A30" stroke-width="1.5" stroke-linejoin="round"/>
+<path d="M150 -70 V0 M70 -108 V-158 M150 -122 L220 -160 M150 -70 V-122 M0 -70 H150" fill="none" stroke="#7A5A30" stroke-width="1.2" opacity=".7"/>
 </g>
 <g><rect x="960" y="266" width="200" height="12" fill="#E8E0C0" transform="rotate(-8 960 266)"/><g stroke="#4A4A3A" stroke-width="1">{"".join(f'<path d="M{x} {266 - (x-960)*0.14:.0f} v{4 if (x-960)%40 else 7}"/>' for x in range(970, 1160, 10))}</g></g>
 <g><rect x="860" y="278" width="80" height="14" rx="3" fill="#E8B020" transform="rotate(12 860 278)"/><path d="M938 292 l34 6 l-4 8 l-32 -4z" fill="#C8CCD0" transform="rotate(12 860 278)"/></g>
@@ -610,7 +611,7 @@ def _b25():
         r = a * math.exp(b * th)
         return cx + r * math.cos(th), cy - r * math.sin(th)
     N = 4 * math.pi
-    outer = [sp(N - i * 0.2) for i in range(int(N / 0.2) + 1)]
+    outer = [sp(N - i * 0.22) for i in range(int(N / 0.22) + 1)]
     outline = "M%.1f %.1f " % outer[0] + " ".join(f'L{x:.1f} {y:.1f}' for x, y in outer[1:])
     septa = []
     th = N - 0.25
@@ -618,9 +619,9 @@ def _b25():
         x1, y1 = sp(th); x2, y2 = sp(th - 2 * math.pi)
         mx, my = (x1 + x2) / 2 + (y2 - y1) * .18, (y1 + y2) / 2 + (x1 - x2) * .18
         septa.append(f'M{x1:.1f} {y1:.1f} Q{mx:.1f} {my:.1f} {x2:.1f} {y2:.1f}')
-        th -= 0.4
+        th -= 0.45
     septa = " ".join(septa)
-    innersp = " ".join(f'{"M" if i == 0 else "L"}{x:.1f} {y:.1f}' for i, (x, y) in enumerate(sp(N - 2*math.pi - i*0.15) for i in range(int((N - 2*math.pi) / 0.25) + 1)))
+    innersp = " ".join(f'{"M" if i == 0 else "L"}{x:.1f} {y:.1f}' for i, (x, y) in enumerate(sp(N - 2*math.pi - i*0.15) for i in range(int((N - 2*math.pi) / 0.35) + 1)))
     lipx, lipy = sp(N)
     coins = []
     for k, n in enumerate((1, 2, 4, 8)):
@@ -630,8 +631,8 @@ def _b25():
     # stadium from above: an oval bowl whose seating rows spiral outward
     sx, sy = 860, 132
     rows = []
-    for i in range(3 * 30 + 1):
-        t = i / 30
+    for i in range(3 * 24 + 1):
+        t = i / 24
         th = t * 2 * math.pi
         rx, ry = 62 + 11 * t, 30 + 7 * t
         rows.append(f'{"M" if i == 0 else "L"}{sx + rx*math.cos(th):.1f} {sy + ry*math.sin(th):.1f}')
@@ -681,13 +682,19 @@ def _b26():
     bell2 = "M0 262 " + " ".join(f'L{x} {262 - 60*math.exp(-((x-260)/240)**2) - 40*math.exp(-((x-1000)/200)**2):.0f}' for x in range(0, 1201, 20)) + " L1200 262z"
     g = _lcg(26)
     line = []
-    for i, x in enumerate(range(724, 150, -38)):
+    xs = [724, 690, 664, 620, 596, 548, 522, 500, 452, 418, 380, 356, 306, 270, 238, 190, 160]
+    for i, x in enumerate(xs):
         y = 297 + i * 0.3
-        h = 44 + next(g) % 12
-        w = 11 + next(g) % 4
-        line.append(_person(x + next(g) % 8 - 4, y, h, w))
-        if next(g) % 4 == 0:
-            line.append(f'<path d="M{x-6} {y-h*.5:.0f} q-4 -12 -14 -8" stroke="#0E0E16" stroke-width="3" fill="none"/>')
+        h = 54 + next(g) % 22
+        w = 12 + next(g) % 5
+        line.append(_person(x + next(g) % 6 - 3, y, h, w))
+        r = next(g) % 5
+        if r == 0:
+            line.append(f'<path d="M{x-w//2-2} {y-h*.42:.0f} q-6 -2 -8 -14 M{x+w//2+2} {y-h*.42:.0f} q6 -2 8 -14" stroke="#0E0E16" stroke-width="3.5" stroke-linecap="round" fill="none"/>')
+        elif r == 1:
+            line.append(f'<rect x="{x+w//2+2}" y="{y-h*.34:.0f}" width="9" height="12" rx="2"/>')
+        elif r == 2:
+            line.append(_person(x - w - 4, y, int(h*.55), 7))
     body = f'''
 <rect width="{W}" height="{H}" fill="url(#{p}sky)"/>
 <g fill="#6A4A80" opacity=".5"><ellipse cx="200" cy="50" rx="160" ry="6"/><ellipse cx="980" cy="70" rx="200" ry="7"/></g>
@@ -703,7 +710,7 @@ def _b26():
 <g><rect x="1130" y="120" width="3" height="142" fill="#C8CCD0"/><rect x="1133" y="122" width="36" height="22" fill="#F4F4F0"/><g fill="#C83030"><rect x="1133" y="122" width="36" height="4"/><rect x="1133" y="130" width="36" height="4"/><rect x="1133" y="138" width="36" height="4"/></g><rect x="1133" y="122" width="15" height="12" fill="#2A3A78"/></g>
 <rect x="620" y="200" width="4" height="62" fill="#1E3050"/><circle cx="622" cy="196" r="7" fill="#FFE8A0"/><circle cx="622" cy="196" r="30" fill="url(#{p}door)" opacity=".5"/>
 <path d="M0 262 H1200 V300 H0z" fill="url(#{p}plaza)"/><path d="M0 262 H1200 V266 H0z" fill="#A0A0B8"/>
-<g fill="#1E1E2E" opacity=".5">{"".join(f'<ellipse cx="{x}" cy="298" rx="14" ry="3"/>' for x in range(724, 150, -38))}</g>
+<g fill="#1E1E2E" opacity=".5">{"".join(f'<ellipse cx="{x}" cy="298" rx="14" ry="3"/>' for x in xs)}</g>
 <g fill="#0E0E16">{"".join(line)}</g>
 <path d="M0 300 Q300 296 600 300 T1200 298 V420 H0z" fill="url(#{p}walk)"/>
 <path d="M200 312 H1000 L1020 340 H180z" fill="#2E4A78"/><path d="M200 312 H1000 L1020 340 H180z" fill="#3A5A8A" opacity=".5"/>
