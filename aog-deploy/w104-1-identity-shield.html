@@ -596,6 +596,59 @@ input[type=range].slider::-moz-range-thumb{
 @media print{.pad{border-color:#000;page-break-inside:avoid}.padtools{display:none !important}
   body.print-blank .pad{display:none}body.print-blank .pad-blank{display:block;width:100%;aspect-ratio:3/2;border:1.5px solid #000;border-radius:14px}}
 </style>
+<style>
+
+/* ══ AOG-SEL-V1 ══ the course chrome, scoped: these tokens live on .aogc only */
+.aogc{ --navy:#0A1E33; --navy-2:#1B3A5F; --red:#A8323A; --red-deep:#7E1F26; --acc:#7A5230; --acc-soft:#EFE3D6; --on-navy:#F5F1E8; --field-3:#E7E0D2;
+  --cond:"Avenir Next Condensed","Helvetica Neue","Arial Narrow","Roboto Condensed",Impact,sans-serif; --gold-deep:#7A5C1F; --ink-faint:#5F6B78; color:var(--ink) }
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]) .aogc{ --navy-2:#9CC2E8; --red:#E07078; --acc:#D0A46B; --acc-soft:#3A2E22; --field-3:#2A333F; --gold-deep:#D6A852; --ink-faint:#84909D } }
+:root[data-theme="dark"] .aogc{ --navy-2:#9CC2E8; --red:#E07078; --acc:#D0A46B; --acc-soft:#3A2E22; --field-3:#2A333F; --gold-deep:#D6A852; --ink-faint:#84909D }
+.aogc h1,.aogc h2{font-family:var(--serif); line-height:1.15; margin:0 0 .3em}
+.aogc p{margin:.4em 0}
+.aogc a{color:var(--navy-2)}
+.aogc .cmast .k{color:var(--gold-deep)}
+.aogc .crail{margin-left:0; margin-right:0}
+.aogc .cjump select{color:var(--ink)}
+@media print{ .aogc{display:none!important} }
+.aogc .cmast{display:flex; justify-content:space-between; align-items:flex-start; gap:10px; flex-wrap:wrap}
+.aogc .cmast .k{font:700 .78rem/1.3 var(--sans); letter-spacing:.12em; text-transform:uppercase; color:var(--gold-deep)}
+.aogc .cmast h1{font-size:2.1rem; letter-spacing:-.01em}
+.aogc .cmast .row{display:flex; gap:8px}
+.aogc .chipbtn{min-height:48px; padding:8px 16px; border:1px solid var(--rule); border-radius:999px; background:var(--field); cursor:pointer; font-weight:700; font-size:.92rem}
+.aogc .cdeck{color:var(--ink-soft); max-width:66ch}
+.aogc .hubline{margin:.2em 0 0; font-size:.95rem}
+.aogc .hubline a{font-weight:700; text-decoration:none}
+.aogc .hubline a:hover{text-decoration:underline}
+.aogc .cjump{margin:14px 0 4px}
+.aogc .cjump label{display:grid; gap:6px; font-weight:700; font-size:.9rem; color:var(--ink-soft)}
+.aogc .cjump select{min-height:48px; border:1px solid var(--rule); border-radius:12px; background:var(--field); padding:8px 12px; font:inherit; color:var(--ink); max-width:100%}
+.aogc .crail{position:sticky; top:var(--aogbar-h,52px); z-index:30; margin:10px -16px 0; padding:8px 16px; background:color-mix(in srgb, var(--ground) 88%, transparent); backdrop-filter:saturate(1.2) blur(10px); -webkit-backdrop-filter:saturate(1.2) blur(10px); border-bottom:1px solid var(--rule-soft)}
+.aogc .crail .in{display:flex; gap:6px; align-items:center; overflow-x:auto; scrollbar-width:none; -ms-overflow-style:none; padding-bottom:2px}
+.aogc .crail .in::-webkit-scrollbar{display:none}
+.aogc .crail .k{flex:0 0 auto; font:700 .7rem var(--sans); letter-spacing:.14em; text-transform:uppercase; color:var(--ink-faint); margin-right:4px}
+.aogc .crail a{flex:0 0 auto; display:inline-flex; align-items:center; justify-content:center; min-width:44px; min-height:44px; padding:0 12px; border-radius:999px; border:1px solid var(--rule); background:var(--field); color:var(--ink); text-decoration:none; font:800 .95rem var(--cond); letter-spacing:.04em}
+.aogc .crail a[aria-current="page"]{background:var(--navy); border-color:var(--navy); color:var(--on-navy)}
+.aogc .crail a:hover{border-color:var(--navy-2)}
+.aogc .crail .sp{flex:1 0 8px}
+.aogc .crail .drawerbtn{flex:0 0 auto; min-height:44px; padding:0 14px; border-radius:999px; border:1px solid var(--rule); background:var(--field); font-weight:700; font-size:.88rem; cursor:pointer; display:inline-flex; gap:8px; align-items:center}
+.aogc .crail .drawerbtn svg{width:16px; height:16px}
+.aogc .spread{position:relative; margin:18px 0 0; border-radius:22px; overflow:hidden; background:#0A1E33; color:#F5F1E8; box-shadow:var(--lift); min-height:300px; isolation:isolate}
+.aogc .spread .scene{position:absolute; inset:0; z-index:0}
+.aogc .spread .scene svg{width:100%; height:100%; display:block}
+.aogc .spread::after{content:""; position:absolute; inset:0; z-index:1; background:linear-gradient(180deg, rgba(10,30,51,0) 30%, rgba(10,30,51,.55) 62%, rgba(10,30,51,.94) 100%); pointer-events:none}
+.aogc .spread .txt{position:relative; z-index:2; padding:clamp(120px,26vw,220px) clamp(18px,4vw,40px) clamp(20px,3vw,30px); display:grid; gap:6px}
+.aogc .spread .unum{display:inline-flex; align-items:baseline; gap:10px; font:800 .82rem var(--sans); letter-spacing:.22em; text-transform:uppercase; color:#F5F1E8}
+.aogc .spread .unum b{display:inline-flex; align-items:center; justify-content:center; min-width:44px; height:44px; padding:0 10px; border-radius:8px; background:var(--red); color:#fff; font:800 1.4rem var(--cond); letter-spacing:.02em; box-shadow:inset 0 1px 0 rgba(255,255,255,.35), 0 4px 0 #5A151B, 0 8px 16px rgba(0,0,0,.35)}
+.aogc .spread h2.ut{font:800 clamp(2.2rem,7.6vw,5.4rem)/0.95 var(--cond); letter-spacing:-.01em; margin:0; text-transform:uppercase; color:#F5F1E8; text-shadow:0 2px 0 rgba(0,0,0,.35), 0 12px 30px rgba(0,0,0,.45); max-width:14ch}
+.aogc .spread .years{font:600 clamp(1rem,2.4vw,1.35rem) var(--serif); font-style:italic; color:#EBD9A8; letter-spacing:.02em}
+.aogc .spread .credit{position:absolute; right:14px; bottom:10px; z-index:2; font:italic 500 .7rem var(--serif); color:rgba(245,241,232,.55); max-width:46%; text-align:right; line-height:1.25}
+.aogc .teach{margin-top:28px; border:1.5px solid var(--gold); border-radius:14px; background:var(--field)}
+.aogc .teach summary{cursor:pointer; list-style:none; min-height:48px; display:flex; align-items:center; padding:10px 16px; font-weight:700; font-size:.92rem; color:var(--gold-deep)}
+.aogc .teach summary::-webkit-details-marker{display:none}
+.aogc .teach .inner{padding:4px 16px 16px; display:grid; gap:10px; font-size:.93rem; color:var(--ink-soft)}
+.aogc .teach .inner p{margin:0}
+</style>
+<!-- AOG-SEL-V1 — the header is the course chrome (built by _work/sel/build_sel.py from _work/sel/src/w104-1-identity-shield.html); the sheet below is the original, byte for byte. -->
 </head>
 <body>
 <script src="/aog-topbar.js"></script>
@@ -603,18 +656,58 @@ input[type=range].slider::-moz-range-thumb{
 
 <script>document.body.className="js-on solo";</script>
 
-<header class="mast wrap">
-  <div class="row">
-    <div class="mark" aria-hidden="true">A</div>
-    <div>
-      <div class="name">Architecture of Grace</div>
-      <div class="sub">Book 4 · The Facade · Grades 9–10</div>
-    </div>
+<div class="wrap"><div class="aogc">
+<header class="cmast">
+  <div>
+    <div class="k"><span data-en="The Interior — SEL · Room 104 ·" data-es="El Interior — SEL · Salón 104 ·">The Interior — SEL · Room 104 ·</span><span class="k" style="margin-left:6px">Book 4 · The Facade · Grades 9–10</span></div>
+    <h1>The Facade Worksheets</h1>
+    <p class="cdeck">Unit 1 · Lesson 7. Type it here, or print it and use a pen — both count.</p>
+    <p class="hubline no-print"><a href="room-104-lessons.html?l=u1l7"><span data-en="← Room 104, the lesson this sheet belongs to" data-es="← Salón 104, la lección de esta hoja">← Room 104, the lesson this sheet belongs to</span></a></p>
   </div>
-  <h1>The Facade Worksheets</h1>
-  <p class="deck">Unit 1 · Lesson 7. Type it here, or print it and use a pen — both count.</p>
-
 </header>
+<div class="cjump no-print"><label><span data-en="Jump to another room" data-es="Ir a otro salón">Jump to another room</span><select id="roomSel"><optgroup label="SEL · The rooms">
+<option value="room-12-lessons.html">Room 12 · Grades K–2 · The Lessons</option>
+<option value="room-18-lessons.html">Room 18 · Grades 3–5 · The Lessons</option>
+<option value="room-36-lessons.html">Room 36 · Grades 6–8 · The Lessons</option>
+<option value="room-104-lessons.html">Room 104 · Grades 9–10 · The Lessons</option>
+<option value="room-207-lessons.html">Room 207 · Grades 11–12 · The Lessons</option>
+</optgroup><optgroup label="Room 104">
+<option value="" selected>This worksheet — The Identity Shield</option>
+<option value="room-104-curriculum.html">The curriculum</option>
+<option value="room-104-lessons.html">The Lessons</option>
+<option value="room-104-cards.html">Scenario cards</option>
+<option value="room-104-workbook.html">The companion workbook</option>
+<option value="AoG-Anchor-Charts-104.html">Anchor charts</option>
+</optgroup></select></label></div>
+<section class="spread" aria-label="Unit 1">
+  <div class="scene" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 420" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Drawn scene: a dressing-table mirror at dusk reflecting a lit window, with a plain half mask resting on the dresser beside it" focusable="false"><defs><linearGradient id="sb104u1-wall" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4A3D5C"/><stop offset="1" stop-color="#2C2438"/></linearGradient><linearGradient id="sb104u1-sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3A3F7A"/><stop offset="0.55" stop-color="#9A5C86"/><stop offset="1" stop-color="#F0A26A"/></linearGradient><linearGradient id="sb104u1-glass" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#9CB8D6"/><stop offset="0.5" stop-color="#C8DCE8"/><stop offset="1" stop-color="#7C98B8"/></linearGradient><linearGradient id="sb104u1-table" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8A5A3A"/><stop offset="1" stop-color="#3E2616"/></linearGradient><radialGradient id="sb104u1-lamp" cx="0.5" cy="0.5" r="0.5"><stop offset="0" stop-color="#FFE7A8" stop-opacity="0.9"/><stop offset="1" stop-color="#FFE7A8" stop-opacity="0"/></radialGradient></defs>
+<rect width="1200" height="420" fill="url(#sb104u1-wall)"/>
+<rect x="760" y="30" width="300" height="230" fill="url(#sb104u1-sky)"/>
+<g fill="#FFF4DA" opacity=".6"><circle cx="1020" cy="45" r="1.0"/><circle cx="835" cy="58" r="1.1"/><circle cx="910" cy="29" r="0.6"/><circle cx="861" cy="56" r="0.9"/><circle cx="840" cy="53" r="0.8"/><circle cx="911" cy="58" r="0.9"/><circle cx="954" cy="59" r="0.6"/><circle cx="921" cy="70" r="1.1"/><circle cx="772" cy="79" r="1.4"/><circle cx="819" cy="60" r="0.7"/><circle cx="1030" cy="85" r="1.2"/><circle cx="1029" cy="22" r="1.3"/></g>
+<g fill="#2A2650"><path d="M760 200 h60 v-40 h30 v40 h50 v-30 h40 v30 h60 v-50 h30 v50 h30 v60 h-300z"/></g>
+<g fill="#FFD98A" opacity=".8"><rect x="790" y="172" width="8" height="10"/><rect x="920" y="184" width="8" height="10"/><rect x="990" y="164" width="8" height="10"/></g>
+<g fill="none" stroke="#D9C8A8" stroke-width="8"><rect x="760" y="30" width="300" height="230"/><path d="M910 30 v230 M760 150 h300"/></g>
+<circle cx="180" cy="120" r="120" fill="url(#sb104u1-lamp)"/>
+<g><rect x="172" y="120" width="16" height="130" fill="#6A4A2A"/><path d="M120 120 l30 -60 h60 l30 60z" fill="#F2D9A8"/><path d="M120 120 h120" stroke="#C8A878" stroke-width="4"/></g>
+<g><ellipse cx="520" cy="150" rx="118" ry="140" fill="#C9A96A"/><ellipse cx="520" cy="150" rx="104" ry="126" fill="url(#sb104u1-glass)"/>
+<path d="M448 60 q60 -30 130 10" stroke="#FFFFFF" stroke-width="6" fill="none" opacity=".45" stroke-linecap="round"/>
+<path d="M600 90 q20 60 -10 130" stroke="#FFFFFF" stroke-width="3" fill="none" opacity=".35" stroke-linecap="round"/>
+<g opacity=".55"><rect x="540" y="96" width="60" height="70" fill="#F0A26A"/><rect x="540" y="96" width="60" height="70" fill="none" stroke="#D9C8A8" stroke-width="3"/><path d="M570 96 v70 M540 130 h60" stroke="#D9C8A8" stroke-width="2"/></g>
+<path d="M508 288 h24 l10 -18 h-44z" fill="#A8884A"/><ellipse cx="520" cy="290" rx="60" ry="8" fill="#A8884A"/></g>
+<path d="M0 270 Q600 262 1200 270 V420 H0z" fill="url(#sb104u1-table)"/>
+<path d="M0 270 Q600 262 1200 270 v8 Q600 270 0 278z" fill="#B8885A" opacity=".7"/>
+<g><path d="M244 250 q56 -18 112 0 q6 34 -20 46 q-36 12 -72 0 q-26 -12 -20 -46z" fill="#F4EDE0"/>
+<path d="M244 250 q56 -18 112 0 q6 34 -20 46 q-36 12 -72 0 q-26 -12 -20 -46z" fill="none" stroke="#C8B48A" stroke-width="2.5"/>
+<path d="M262 268 q12 -10 24 0 q-12 10 -24 0z M314 268 q12 -10 24 0 q-12 10 -24 0z" fill="#8A5A3A"/>
+<path d="M244 254 q-24 -8 -40 8" stroke="#B85A5A" stroke-width="2.5" fill="none"/><path d="M356 254 q24 -8 40 8" stroke="#B85A5A" stroke-width="2.5" fill="none"/></g>
+<g><path d="M680 300 h50 l4 -16 h-58z" fill="#3B6AB8"/><path d="M680 300 h50 l4 -16 h-58z" fill="none" stroke="#2A4A8A" stroke-width="2"/><rect x="640" y="286" width="44" height="14" rx="3" fill="#E4573D"/></g>
+<path d="M0 372 Q600 366 1200 372 V420 H0z" fill="#180E18" opacity=".55"/>
+</svg></div>
+  <div class="credit">Drawn scene: a dressing-table mirror at dusk reflecting a lit window, with a plain half mask resting on the dresser beside it</div>
+  <div class="txt"><div class="unum"><b>1</b><span data-en="Unit" data-es="Unidad">Unit</span></div><h2 class="ut">THE CURATED SELF</h2><div class="years">Unit 1 · Lesson 7 · Worksheet WS1 · The Identity Shield</div></div>
+</section>
+</div></div>
+<script>(function(){var rs=document.getElementById("roomSel");if(rs){rs.addEventListener("change",function(){if(rs.value)location.href=rs.value;});}})();</script>
 
 
 <main class="sheets wrap">

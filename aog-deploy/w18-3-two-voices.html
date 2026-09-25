@@ -596,6 +596,59 @@ input[type=range].slider::-moz-range-thumb{
 @media print{.pad{border-color:#000;page-break-inside:avoid}.padtools{display:none !important}
   body.print-blank .pad{display:none}body.print-blank .pad-blank{display:block;width:100%;aspect-ratio:3/2;border:1.5px solid #000;border-radius:14px}}
 </style>
+<style>
+
+/* ══ AOG-SEL-V1 ══ the course chrome, scoped: these tokens live on .aogc only */
+.aogc{ --navy:#0A1E33; --navy-2:#1B3A5F; --red:#A8323A; --red-deep:#7E1F26; --acc:#7A5230; --acc-soft:#EFE3D6; --on-navy:#F5F1E8; --field-3:#E7E0D2;
+  --cond:"Avenir Next Condensed","Helvetica Neue","Arial Narrow","Roboto Condensed",Impact,sans-serif; --gold-deep:#7A5C1F; --ink-faint:#5F6B78; color:var(--ink) }
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]) .aogc{ --navy-2:#9CC2E8; --red:#E07078; --acc:#D0A46B; --acc-soft:#3A2E22; --field-3:#2A333F; --gold-deep:#D6A852; --ink-faint:#84909D } }
+:root[data-theme="dark"] .aogc{ --navy-2:#9CC2E8; --red:#E07078; --acc:#D0A46B; --acc-soft:#3A2E22; --field-3:#2A333F; --gold-deep:#D6A852; --ink-faint:#84909D }
+.aogc h1,.aogc h2{font-family:var(--serif); line-height:1.15; margin:0 0 .3em}
+.aogc p{margin:.4em 0}
+.aogc a{color:var(--navy-2)}
+.aogc .cmast .k{color:var(--gold-deep)}
+.aogc .crail{margin-left:0; margin-right:0}
+.aogc .cjump select{color:var(--ink)}
+@media print{ .aogc{display:none!important} }
+.aogc .cmast{display:flex; justify-content:space-between; align-items:flex-start; gap:10px; flex-wrap:wrap}
+.aogc .cmast .k{font:700 .78rem/1.3 var(--sans); letter-spacing:.12em; text-transform:uppercase; color:var(--gold-deep)}
+.aogc .cmast h1{font-size:2.1rem; letter-spacing:-.01em}
+.aogc .cmast .row{display:flex; gap:8px}
+.aogc .chipbtn{min-height:48px; padding:8px 16px; border:1px solid var(--rule); border-radius:999px; background:var(--field); cursor:pointer; font-weight:700; font-size:.92rem}
+.aogc .cdeck{color:var(--ink-soft); max-width:66ch}
+.aogc .hubline{margin:.2em 0 0; font-size:.95rem}
+.aogc .hubline a{font-weight:700; text-decoration:none}
+.aogc .hubline a:hover{text-decoration:underline}
+.aogc .cjump{margin:14px 0 4px}
+.aogc .cjump label{display:grid; gap:6px; font-weight:700; font-size:.9rem; color:var(--ink-soft)}
+.aogc .cjump select{min-height:48px; border:1px solid var(--rule); border-radius:12px; background:var(--field); padding:8px 12px; font:inherit; color:var(--ink); max-width:100%}
+.aogc .crail{position:sticky; top:var(--aogbar-h,52px); z-index:30; margin:10px -16px 0; padding:8px 16px; background:color-mix(in srgb, var(--ground) 88%, transparent); backdrop-filter:saturate(1.2) blur(10px); -webkit-backdrop-filter:saturate(1.2) blur(10px); border-bottom:1px solid var(--rule-soft)}
+.aogc .crail .in{display:flex; gap:6px; align-items:center; overflow-x:auto; scrollbar-width:none; -ms-overflow-style:none; padding-bottom:2px}
+.aogc .crail .in::-webkit-scrollbar{display:none}
+.aogc .crail .k{flex:0 0 auto; font:700 .7rem var(--sans); letter-spacing:.14em; text-transform:uppercase; color:var(--ink-faint); margin-right:4px}
+.aogc .crail a{flex:0 0 auto; display:inline-flex; align-items:center; justify-content:center; min-width:44px; min-height:44px; padding:0 12px; border-radius:999px; border:1px solid var(--rule); background:var(--field); color:var(--ink); text-decoration:none; font:800 .95rem var(--cond); letter-spacing:.04em}
+.aogc .crail a[aria-current="page"]{background:var(--navy); border-color:var(--navy); color:var(--on-navy)}
+.aogc .crail a:hover{border-color:var(--navy-2)}
+.aogc .crail .sp{flex:1 0 8px}
+.aogc .crail .drawerbtn{flex:0 0 auto; min-height:44px; padding:0 14px; border-radius:999px; border:1px solid var(--rule); background:var(--field); font-weight:700; font-size:.88rem; cursor:pointer; display:inline-flex; gap:8px; align-items:center}
+.aogc .crail .drawerbtn svg{width:16px; height:16px}
+.aogc .spread{position:relative; margin:18px 0 0; border-radius:22px; overflow:hidden; background:#0A1E33; color:#F5F1E8; box-shadow:var(--lift); min-height:300px; isolation:isolate}
+.aogc .spread .scene{position:absolute; inset:0; z-index:0}
+.aogc .spread .scene svg{width:100%; height:100%; display:block}
+.aogc .spread::after{content:""; position:absolute; inset:0; z-index:1; background:linear-gradient(180deg, rgba(10,30,51,0) 30%, rgba(10,30,51,.55) 62%, rgba(10,30,51,.94) 100%); pointer-events:none}
+.aogc .spread .txt{position:relative; z-index:2; padding:clamp(120px,26vw,220px) clamp(18px,4vw,40px) clamp(20px,3vw,30px); display:grid; gap:6px}
+.aogc .spread .unum{display:inline-flex; align-items:baseline; gap:10px; font:800 .82rem var(--sans); letter-spacing:.22em; text-transform:uppercase; color:#F5F1E8}
+.aogc .spread .unum b{display:inline-flex; align-items:center; justify-content:center; min-width:44px; height:44px; padding:0 10px; border-radius:8px; background:var(--red); color:#fff; font:800 1.4rem var(--cond); letter-spacing:.02em; box-shadow:inset 0 1px 0 rgba(255,255,255,.35), 0 4px 0 #5A151B, 0 8px 16px rgba(0,0,0,.35)}
+.aogc .spread h2.ut{font:800 clamp(2.2rem,7.6vw,5.4rem)/0.95 var(--cond); letter-spacing:-.01em; margin:0; text-transform:uppercase; color:#F5F1E8; text-shadow:0 2px 0 rgba(0,0,0,.35), 0 12px 30px rgba(0,0,0,.45); max-width:14ch}
+.aogc .spread .years{font:600 clamp(1rem,2.4vw,1.35rem) var(--serif); font-style:italic; color:#EBD9A8; letter-spacing:.02em}
+.aogc .spread .credit{position:absolute; right:14px; bottom:10px; z-index:2; font:italic 500 .7rem var(--serif); color:rgba(245,241,232,.55); max-width:46%; text-align:right; line-height:1.25}
+.aogc .teach{margin-top:28px; border:1.5px solid var(--gold); border-radius:14px; background:var(--field)}
+.aogc .teach summary{cursor:pointer; list-style:none; min-height:48px; display:flex; align-items:center; padding:10px 16px; font-weight:700; font-size:.92rem; color:var(--gold-deep)}
+.aogc .teach summary::-webkit-details-marker{display:none}
+.aogc .teach .inner{padding:4px 16px 16px; display:grid; gap:10px; font-size:.93rem; color:var(--ink-soft)}
+.aogc .teach .inner p{margin:0}
+</style>
+<!-- AOG-SEL-V1 — the header is the course chrome (built by _work/sel/build_sel.py from _work/sel/src/w18-3-two-voices.html); the sheet below is the original, byte for byte. -->
 </head>
 <body>
 <script src="/aog-topbar.js"></script>
@@ -603,18 +656,57 @@ input[type=range].slider::-moz-range-thumb{
 
 <script>document.body.className="js-on solo";</script>
 
-<header class="mast wrap">
-  <div class="row">
-    <div class="mark" aria-hidden="true">A</div>
-    <div>
-      <div class="name">Architecture of Grace</div>
-      <div class="sub">Book 2 · The Framework · Grades 3–5</div>
-    </div>
+<div class="wrap"><div class="aogc">
+<header class="cmast">
+  <div>
+    <div class="k"><span data-en="The Interior — SEL · Room 18 ·" data-es="El Interior — SEL · Salón 18 ·">The Interior — SEL · Room 18 ·</span><span class="k" style="margin-left:6px">Book 2 · The Framework · Grades 3–5</span></div>
+    <h1>The Framework Worksheets</h1>
+    <p class="cdeck">Unit 1 · Lesson 4. Type it here, or print it and use a pen — both count.</p>
+    <p class="hubline no-print"><a href="room-18-lessons.html?l=u1l4"><span data-en="← Room 18, the lesson this sheet belongs to" data-es="← Salón 18, la lección de esta hoja">← Room 18, the lesson this sheet belongs to</span></a></p>
   </div>
-  <h1>The Framework Worksheets</h1>
-  <p class="deck">Unit 1 · Lesson 4. Type it here, or print it and use a pen — both count.</p>
-
 </header>
+<div class="cjump no-print"><label><span data-en="Jump to another room" data-es="Ir a otro salón">Jump to another room</span><select id="roomSel"><optgroup label="SEL · The rooms">
+<option value="room-12-lessons.html">Room 12 · Grades K–2 · The Lessons</option>
+<option value="room-18-lessons.html">Room 18 · Grades 3–5 · The Lessons</option>
+<option value="room-36-lessons.html">Room 36 · Grades 6–8 · The Lessons</option>
+<option value="room-104-lessons.html">Room 104 · Grades 9–10 · The Lessons</option>
+<option value="room-207-lessons.html">Room 207 · Grades 11–12 · The Lessons</option>
+</optgroup><optgroup label="Room 18">
+<option value="" selected>This worksheet — Two Voices — One Choice</option>
+<option value="room-18-curriculum.html">The curriculum</option>
+<option value="room-18-lessons.html">The Lessons</option>
+<option value="room-18-cards.html">Scenario cards</option>
+<option value="room-18-workbook.html">The companion workbook</option>
+<option value="AoG-Anchor-Charts-18.html">Anchor charts</option>
+</optgroup></select></label></div>
+<section class="spread" aria-label="Unit 1">
+  <div class="scene" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 420" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Drawn scene: a hilltop trail at midday with a backpack, a compass lying on a rock and a wooden signpost" focusable="false"><defs><linearGradient id="sb18u1-sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#5AA8E6"/><stop offset="1" stop-color="#DCEFF6"/></linearGradient><linearGradient id="sb18u1-far" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8AA8C8"/><stop offset="1" stop-color="#6A88A8"/></linearGradient><linearGradient id="sb18u1-mid" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7AA860"/><stop offset="1" stop-color="#4A7A40"/></linearGradient><linearGradient id="sb18u1-grass" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#A8B86A"/><stop offset="1" stop-color="#5A6A34"/></linearGradient><radialGradient id="sb18u1-face" cx="0.5" cy="0.5" r="0.5"><stop offset="0" stop-color="#FFFBEA"/><stop offset="1" stop-color="#E8D8B0"/></radialGradient></defs>
+<rect width="1200" height="420" fill="url(#sb18u1-sky)"/>
+<g fill="#FFF" opacity=".9"><ellipse cx="300" cy="70" rx="70" ry="22"/><ellipse cx="340" cy="56" rx="40" ry="24"/><ellipse cx="1000" cy="90" rx="60" ry="20"/><ellipse cx="1030" cy="76" rx="36" ry="22"/></g>
+<path d="M0 220 L140 130 L280 190 L420 100 L560 170 L700 120 L860 190 L1000 110 L1200 180 V260 H0z" fill="url(#sb18u1-far)"/>
+<path d="M0 250 Q200 200 400 236 T800 226 T1200 232 V300 H0z" fill="url(#sb18u1-mid)"/>
+<rect x="1076" y="208" width="9" height="54" fill="#6A4A2A"/><circle cx="1080" cy="190" r="36" fill="#4E8A40"/><circle cx="1060" cy="203" r="23" fill="#4E8A40"/><circle cx="1102" cy="201" r="23" fill="#4E8A40"/><circle cx="1071" cy="179" r="20" fill="#6AA452"/><rect x="86" y="218" width="8" height="48" fill="#6A4A2A"/><circle cx="90" cy="202" r="32" fill="#4E8A40"/><circle cx="72" cy="213" r="21" fill="#4E8A40"/><circle cx="109" cy="212" r="21" fill="#4E8A40"/><circle cx="82" cy="192" r="18" fill="#6AA452"/>
+<path d="M0 280 H1200 V420 H0z" fill="url(#sb18u1-grass)"/><path d="M20 300 l4 -14 l3 14 l4 -10 l2 10z" fill="#4A5A24"/><path d="M63 300 l4 -14 l3 14 l4 -10 l2 10z" fill="#4A5A24"/><path d="M106 300 l4 -14 l3 14 l4 -10 l2 10z" fill="#4A5A24"/><path d="M149 300 l4 -14 l3 14 l4 -10 l2 10z" fill="#4A5A24"/><path d="M192 300 l4 -14 l3 14 l4 -10 l2 10z" fill="#4A5A24"/><path d="M235 300 l4 -14 l3 14 l4 -10 l2 10z" fill="#4A5A24"/><path d="M278 300 l4 -14 l3 14 l4 -10 l2 10z" fill="#4A5A24"/><path d="M321 300 l4 -14 l3 14 l4 -10 l2 10z" fill="#4A5A24"/><path d="M364 300 l4 -14 l3 14 l4 -10 l2 10z" fill="#4A5A24"/><path d="M407 300 l4 -14 l3 14 l4 -10 l2 10z" fill="#4A5A24"/><path d="M450 300 l4 -14 l3 14 l4 -10 l2 10z" fill="#4A5A24"/><path d="M493 300 l4 -14 l3 14 l4 -10 l2 10z" fill="#4A5A24"/><path d="M536 300 l4 -14 l3 14 l4 -10 l2 10z" fill="#4A5A24"/><path d="M579 300 l4 -14 l3 14 l4 -10 l2 10z" fill="#4A5A24"/><path d="M622 300 l4 -14 l3 14 l4 -10 l2 10z" fill="#4A5A24"/><path d="M665 300 l4 -14 l3 14 l4 -10 l2 10z" fill="#4A5A24"/><path d="M708 300 l4 -14 l3 14 l4 -10 l2 10z" fill="#4A5A24"/><path d="M751 300 l4 -14 l3 14 l4 -10 l2 10z" fill="#4A5A24"/><path d="M794 300 l4 -14 l3 14 l4 -10 l2 10z" fill="#4A5A24"/><path d="M837 300 l4 -14 l3 14 l4 -10 l2 10z" fill="#4A5A24"/><path d="M880 300 l4 -14 l3 14 l4 -10 l2 10z" fill="#4A5A24"/><path d="M923 300 l4 -14 l3 14 l4 -10 l2 10z" fill="#4A5A24"/><path d="M966 300 l4 -14 l3 14 l4 -10 l2 10z" fill="#4A5A24"/><path d="M1009 300 l4 -14 l3 14 l4 -10 l2 10z" fill="#4A5A24"/><path d="M1052 300 l4 -14 l3 14 l4 -10 l2 10z" fill="#4A5A24"/><path d="M1095 300 l4 -14 l3 14 l4 -10 l2 10z" fill="#4A5A24"/><path d="M1138 300 l4 -14 l3 14 l4 -10 l2 10z" fill="#4A5A24"/><path d="M1181 300 l4 -14 l3 14 l4 -10 l2 10z" fill="#4A5A24"/>
+<path d="M520 280 q40 50 80 140 h60 q-40 -90 20 -140z" fill="#D8C49A" opacity=".8"/>
+<g><rect x="840" y="110" width="10" height="170" fill="#6A4A2A"/>
+<path d="M850 130 h110 l16 12 l-16 12 h-110z" fill="#C89A5A"/><path d="M840 170 h-110 l-16 12 l16 12 h110z" fill="#C89A5A"/>
+<path d="M866 142 h80 M746 182 h80" stroke="#6A4A2A" stroke-width="3" opacity=".6"/></g>
+<g><path d="M300 280 v-100 q0 -20 20 -20 h90 q20 0 20 20 v100z" fill="#2A6A9A"/>
+<path d="M320 220 h90 v60 h-90z" fill="#1E5078"/><path d="M332 236 h66 v36 h-66z" fill="#4A8ABA"/>
+<path d="M320 160 q45 -34 90 0" stroke="#1E3A50" stroke-width="8" fill="none" stroke-linecap="round"/>
+<rect x="290" y="200" width="14" height="40" rx="4" fill="#1E5078"/><rect x="426" y="200" width="14" height="40" rx="4" fill="#1E5078"/>
+<path d="M300 262 h140" stroke="#F4C84A" stroke-width="4"/></g>
+<ellipse cx="600" cy="278" rx="130" ry="30" fill="#8A8A7A"/><ellipse cx="596" cy="270" rx="118" ry="24" fill="#B0B0A0"/>
+<g><circle cx="580" cy="236" r="60" fill="#B8742A"/><circle cx="580" cy="236" r="52" fill="url(#sb18u1-face)"/><rect x="578" y="182" width="4" height="10" fill="#3A2A20" transform="rotate(0 580 236)"/><rect x="578" y="182" width="4" height="5" fill="#3A2A20" transform="rotate(30 580 236)"/><rect x="578" y="182" width="4" height="5" fill="#3A2A20" transform="rotate(60 580 236)"/><rect x="578" y="182" width="4" height="10" fill="#3A2A20" transform="rotate(90 580 236)"/><rect x="578" y="182" width="4" height="5" fill="#3A2A20" transform="rotate(120 580 236)"/><rect x="578" y="182" width="4" height="5" fill="#3A2A20" transform="rotate(150 580 236)"/><rect x="578" y="182" width="4" height="10" fill="#3A2A20" transform="rotate(180 580 236)"/><rect x="578" y="182" width="4" height="5" fill="#3A2A20" transform="rotate(210 580 236)"/><rect x="578" y="182" width="4" height="5" fill="#3A2A20" transform="rotate(240 580 236)"/><rect x="578" y="182" width="4" height="10" fill="#3A2A20" transform="rotate(270 580 236)"/><rect x="578" y="182" width="4" height="5" fill="#3A2A20" transform="rotate(300 580 236)"/><rect x="578" y="182" width="4" height="5" fill="#3A2A20" transform="rotate(330 580 236)"/>
+<path d="M580 236 l-14 10 l14 -60 l14 60z" fill="#E4573D"/><path d="M580 236 l14 -10 l-14 60 l-14 -60z" fill="#3A2A20"/>
+<circle cx="580" cy="236" r="6" fill="#F4C84A"/><path d="M580 172 v-14" stroke="#B8742A" stroke-width="10" stroke-linecap="round"/></g>
+<path d="M0 370 H1200 V420 H0z" fill="#1A2010" opacity=".5"/>
+</svg></div>
+  <div class="credit">Drawn scene: a hilltop trail at midday with a backpack, a compass lying on a rock and a wooden signpost</div>
+  <div class="txt"><div class="unum"><b>1</b><span data-en="Unit" data-es="Unidad">Unit</span></div><h2 class="ut">Knowing &amp; Accepting Yourself</h2><div class="years">Unit 1 · Lesson 4 · Worksheet WS3 · Two Voices — One Choice</div></div>
+</section>
+</div></div>
+<script>(function(){var rs=document.getElementById("roomSel");if(rs){rs.addEventListener("change",function(){if(rs.value)location.href=rs.value;});}})();</script>
 
 
 <main class="sheets wrap">

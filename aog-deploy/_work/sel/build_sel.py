@@ -247,7 +247,7 @@ def head(title, desc, path, og, ogalt, extra_css):
 </head>
 '''
 
-def room_jump(cur_n, cur_page):
+def room_jump(cur_n, cur_page):  # noqa — see room_jump2 for the one-current-option form; this keeps the same shape
     """The Jump to another room select: every room's Lessons, then this room's doors."""
     rows = []
     rows.append('<optgroup label="SEL · The rooms">')
@@ -728,3 +728,151 @@ def build():
 
 if __name__ == "__main__":
     build()
+
+# ═══════════════════════════════════════════════════════════════════ the facelift for the
+# anchor-chart boards and the interactive worksheets: their markup and scripts
+# stay verbatim; only the bespoke header goes, replaced by the course chrome
+# (scoped under .aogc so nothing of theirs is touched by the course rules).
+import glob, os
+
+def _chrome_css():
+    keep = re.compile(r'^(?::root\[data-theme="dark"\] )?(\.mast|\.chipbtn|\.deck|\.hubline|\.jump|\.rail|\.spread|\.teach)\b')
+    ren = [(".mast", ".cmast"), (".rail", ".crail"), (".jump", ".cjump"), (".deck", ".cdeck")]
+    out = []
+    for line in COURSE_CSS.split("\n"):
+        if not keep.match(line) or line.startswith("@media"): continue
+        sel, _, rest = line.partition("{")
+        parts = []
+        for s in sel.split(","):
+            s = s.strip()
+            for a, b in ren: s = re.sub(re.escape(a) + r"(?![\w-])", b, s)
+            if s.startswith(':root[data-theme="dark"] '): s = ':root[data-theme="dark"] .aogc ' + s[len(':root[data-theme="dark"] '):]
+            else: s = ".aogc " + s
+            parts.append(s)
+        out.append(", ".join(parts) + "{" + rest)
+    tokens = r"""
+/* ══ AOG-SEL-V1 ══ the course chrome, scoped: these tokens live on .aogc only */
+.aogc{ --navy:#0A1E33; --navy-2:#1B3A5F; --red:#A8323A; --red-deep:#7E1F26; --acc:#7A5230; --acc-soft:#EFE3D6; --on-navy:#F5F1E8; --field-3:#E7E0D2;
+  --cond:"Avenir Next Condensed","Helvetica Neue","Arial Narrow","Roboto Condensed",Impact,sans-serif; --gold-deep:#7A5C1F; --ink-faint:#5F6B78; color:var(--ink) }
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]) .aogc{ --navy-2:#9CC2E8; --red:#E07078; --acc:#D0A46B; --acc-soft:#3A2E22; --field-3:#2A333F; --gold-deep:#D6A852; --ink-faint:#84909D } }
+:root[data-theme="dark"] .aogc{ --navy-2:#9CC2E8; --red:#E07078; --acc:#D0A46B; --acc-soft:#3A2E22; --field-3:#2A333F; --gold-deep:#D6A852; --ink-faint:#84909D }
+.aogc h1,.aogc h2{font-family:var(--serif); line-height:1.15; margin:0 0 .3em}
+.aogc p{margin:.4em 0}
+.aogc a{color:var(--navy-2)}
+.aogc .cmast .k{color:var(--gold-deep)}
+.aogc .crail{margin-left:0; margin-right:0}
+.aogc .cjump select{color:var(--ink)}
+@media print{ .aogc{display:none!important} }
+"""
+    return tokens + "\n".join(out) + "\n"
+CHROME_CSS = _chrome_css()
+
+def room_jump2(n, current):
+    """The room jump for a worksheet or a chart board: current is the page's own label."""
+    rows = ['<optgroup label="SEL · The rooms">']
+    for r in ROOMS:
+        rows.append('<option value="room-%d-lessons.html">Room %d · Grades %s · The Lessons</option>' % (r["n"], r["n"], r["grades"]))
+    rows.append('</optgroup><optgroup label="Room %d">' % n)
+    rows.append('<option value="" selected>%s</option>' % E(current))
+    for v, t in [("room-%d-curriculum.html" % n, "The curriculum"), ("room-%d-lessons.html" % n, "The Lessons"), ("room-%d-cards.html" % n, "Scenario cards"), ("room-%d-workbook.html" % n, "The companion workbook"), (charts_page(n), "Anchor charts")]:
+        rows.append('<option value="%s">%s</option>' % (v, t))
+    rows.append('</optgroup>')
+    return '<div class="cjump no-print"><label>%s<select id="roomSel">%s</select></label></div>' % (span("Jump to another room", "Ir a otro salón"), "\n".join(rows))
+
+JS_ROOMSEL = '<script>(function(){var rs=document.getElementById("roomSel");if(rs){rs.addEventListener("change",function(){if(rs.value)location.href=rs.value;});}})();</script>'
+
+def chrome_html(r, kicker2, h1, deck, hub_href, hub_text, current, spread=None, compact=False):
+    n = r["n"]
+    sp = ""
+    if spread:
+        key = "%d-%d" % (n, spread["unit"])
+        sp = f'''<section class="spread" aria-label="Unit {spread["unit"]}">
+  <div class="scene" aria-hidden="true">{scene(key)}</div>
+  {'<div class="credit">' + E(CREDITS.get(key, "")) + '</div>' if CREDITS.get(key) else ''}
+  <div class="txt"><div class="unum"><b>{spread["unit"]}</b>{span("Unit","Unidad")}</div><h2 class="ut">{E(spread["title"])}</h2><div class="years">{E(spread["years"])}</div></div>
+</section>'''
+    return f'''<div class="aogc{' compact' if compact else ''}">
+<header class="cmast">
+  <div>
+    <div class="k">{span("The Interior — SEL · Room %d ·" % n, "El Interior — SEL · Salón %d ·" % n)}<span class="k" style="margin-left:6px">{E(kicker2)}</span></div>
+    <h1>{E(h1)}</h1>
+    <p class="cdeck">{deck}</p>
+    <p class="hubline no-print"><a href="{E(hub_href)}">{hub_text}</a></p>
+  </div>
+</header>
+{room_jump2(n, current)}
+{sp}
+</div>'''
+
+WS_ROOM = {"w12": 12, "w18": 18, "w104": 104, "w207": 207}
+def ws_room(fname):
+    m = re.match(r"w(\d+)-", fname)
+    return WS_ROOM.get("w" + m.group(1), 36)
+
+def worksheet_page(fname):
+    src = (HERE / "src" / fname).read_text(encoding="utf-8")
+    n = ws_room(fname); r = BY_N[n]
+    m = re.search(r'<header class="mast wrap">(.*?)</header>\n', src, re.S)
+    hdr = m.group(1)
+    h1 = re.search(r"<h1>(.*?)</h1>", hdr, re.S).group(1).strip()
+    deck = re.search(r'<p class="deck">(.*?)</p>', hdr, re.S).group(1).strip()
+    k = re.search(r'<span class="k">(.*?)</span>', src, re.S).group(1).strip()
+    sheet_title = re.search(r'<div class="sheet-head">.*?<h2>(.*?)</h2>', src, re.S).group(1).strip()
+    um = re.search(r"Unit (\d)", k); lm = re.search(r"Lesson (\d+)", k)
+    unit = int(um.group(1)) if um else 1
+    lid = "u%dl%s" % (unit, lm.group(1)) if lm else "u%d" % unit
+    d = parse(n); ut = unit_titles(d)
+    chrome = chrome_html(r, "Book %d · %s · Grades %s" % (r["book"], r["bookname"], r["grades"]), h1, deck,
+                         "room-%d-lessons.html?l=%s" % (n, lid), span("← Room %d, the lesson this sheet belongs to" % n, "← Salón %d, la lección de esta hoja" % n),
+                         "This worksheet — " + html.unescape(re.sub(r"<[^>]+>", "", sheet_title)),
+                         spread=dict(unit=unit, title=ut.get("u%d" % unit, ""), years=html.unescape(re.sub(r"<[^>]+>", "", k)) + " · " + html.unescape(re.sub(r"<[^>]+>", "", sheet_title))))
+    page = src[:m.start()] + '<div class="wrap">' + chrome + '</div>\n' + JS_ROOMSEL + '\n' + src[m.end():]
+    page = page.replace("</style>\n</head>", "</style>\n<style>\n" + CHROME_CSS + "</style>\n<!-- AOG-SEL-V1 — the header is the course chrome (built by _work/sel/build_sel.py from _work/sel/src/" + fname + "); the sheet below is the original, byte for byte. -->\n</head>", 1)
+    # the promise
+    head_css = re.search(r"<style>.*?</style>", src, re.S).group(0)
+    assert src[m.end():] in page and head_css in page, fname
+    (DEPLOY / fname).write_text(page, encoding="utf-8")
+    print("wrote %s · room %d · %s" % (fname, n, lid))
+
+CHARTS_CSS = r"""
+/* ══ AOG-SEL-V1 ══ the board's toolbar, in the course's pill voice; the boards themselves untouched */
+body{--navy:#1B3A5F}
+.bar{background:var(--ground); border-bottom:1px solid var(--rule-soft); box-shadow:none; padding:8px 16px}
+.bar .brand{display:none}
+.bar .aog-home,.bar .btn,.seg,.seg button{border-radius:999px; font-weight:700}
+.bar .btn,.bar .aog-home{min-height:44px; padding:6px 14px; border:1px solid var(--rule)}
+.seg{border:1px solid var(--rule)} .seg button{padding:6px 14px; min-height:42px}
+.btn-accent{background:#0A1E33; border-color:#0A1E33; color:#F5F1E8}
+:root[data-theme="dark"] .btn-accent{background:#D6A852; border-color:#D6A852; color:#12161C}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .btn-accent{background:#D6A852; border-color:#D6A852; color:#12161C}}
+.aogc.compact{flex:none; padding:14px 16px 0; background:var(--ground)}
+.aogc.compact .cmast{padding:0; align-items:center}
+.aogc.compact .cmast h1{font-size:1.5rem; margin:0}
+.aogc.compact .cmast .cdeck{margin:.1em 0 0; font-size:.92rem}
+.aogc.compact .cjump{margin:8px 0 6px}
+.aogc.compact .cjump label{display:flex; align-items:center; gap:10px; flex-wrap:wrap}
+.aogc.compact .cjump select{min-height:40px; padding:4px 10px; font-size:.9rem}
+.aogc.compact .hubline{display:none}
+"""
+
+def charts_board(n):
+    fname = charts_page(n); r = BY_N[n]
+    src = (HERE / "src" / fname).read_text(encoding="utf-8")
+    m = re.search(r'<header class="bar">', src)
+    deck = span("Every anchor chart of the room, built live with the class — skeleton first, then the reveals, then what the room said out loud. Arrow keys step through the boards; R reveals the next line.",
+                "Cada cartel de anclaje del salón, construido en vivo con la clase — primero el esqueleto, luego las revelaciones, luego lo que el salón dijo en voz alta.")
+    chrome = chrome_html(r, "Book %d · %s · Grades %s" % (r["book"], r["bookname"], r["grades"]), "Room %d · Anchor Charts" % n, deck,
+                         "room-%d-lessons.html" % n, "", "Anchor charts", compact=True)
+    page = src[:m.start()] + chrome + "\n" + JS_ROOMSEL + "\n" + src[m.start():]
+    page = page.replace("</style>\n</head>", "</style>\n<style>\n" + CHROME_CSS + CHARTS_CSS + "</style>\n<!-- AOG-SEL-V1 — the mast is the course chrome (built by _work/sel/build_sel.py from _work/sel/src/" + fname + "); the bar, the rail and every board below are the original, byte for byte. -->\n</head>", 1)
+    assert src[m.start():] in page
+    (DEPLOY / fname).write_text(page, encoding="utf-8")
+    print("wrote %s · room %d" % (fname, n))
+
+def build_facelift():
+    for r in ROOMS: charts_board(r["n"])
+    for f in sorted(os.listdir(HERE / "src")):
+        if re.match(r"w\d+-.*\.html$", f): worksheet_page(f)
+
+if __name__ == "__main__":
+    build_facelift()

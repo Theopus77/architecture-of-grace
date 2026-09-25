@@ -504,12 +504,110 @@ button{font:inherit; color:inherit; cursor:pointer;}
   p{orphans:3; widows:3}
 }
 </style>
+<style>
+
+/* ══ AOG-SEL-V1 ══ the course chrome, scoped: these tokens live on .aogc only */
+.aogc{ --navy:#0A1E33; --navy-2:#1B3A5F; --red:#A8323A; --red-deep:#7E1F26; --acc:#7A5230; --acc-soft:#EFE3D6; --on-navy:#F5F1E8; --field-3:#E7E0D2;
+  --cond:"Avenir Next Condensed","Helvetica Neue","Arial Narrow","Roboto Condensed",Impact,sans-serif; --gold-deep:#7A5C1F; --ink-faint:#5F6B78; color:var(--ink) }
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]) .aogc{ --navy-2:#9CC2E8; --red:#E07078; --acc:#D0A46B; --acc-soft:#3A2E22; --field-3:#2A333F; --gold-deep:#D6A852; --ink-faint:#84909D } }
+:root[data-theme="dark"] .aogc{ --navy-2:#9CC2E8; --red:#E07078; --acc:#D0A46B; --acc-soft:#3A2E22; --field-3:#2A333F; --gold-deep:#D6A852; --ink-faint:#84909D }
+.aogc h1,.aogc h2{font-family:var(--serif); line-height:1.15; margin:0 0 .3em}
+.aogc p{margin:.4em 0}
+.aogc a{color:var(--navy-2)}
+.aogc .cmast .k{color:var(--gold-deep)}
+.aogc .crail{margin-left:0; margin-right:0}
+.aogc .cjump select{color:var(--ink)}
+@media print{ .aogc{display:none!important} }
+.aogc .cmast{display:flex; justify-content:space-between; align-items:flex-start; gap:10px; flex-wrap:wrap}
+.aogc .cmast .k{font:700 .78rem/1.3 var(--sans); letter-spacing:.12em; text-transform:uppercase; color:var(--gold-deep)}
+.aogc .cmast h1{font-size:2.1rem; letter-spacing:-.01em}
+.aogc .cmast .row{display:flex; gap:8px}
+.aogc .chipbtn{min-height:48px; padding:8px 16px; border:1px solid var(--rule); border-radius:999px; background:var(--field); cursor:pointer; font-weight:700; font-size:.92rem}
+.aogc .cdeck{color:var(--ink-soft); max-width:66ch}
+.aogc .hubline{margin:.2em 0 0; font-size:.95rem}
+.aogc .hubline a{font-weight:700; text-decoration:none}
+.aogc .hubline a:hover{text-decoration:underline}
+.aogc .cjump{margin:14px 0 4px}
+.aogc .cjump label{display:grid; gap:6px; font-weight:700; font-size:.9rem; color:var(--ink-soft)}
+.aogc .cjump select{min-height:48px; border:1px solid var(--rule); border-radius:12px; background:var(--field); padding:8px 12px; font:inherit; color:var(--ink); max-width:100%}
+.aogc .crail{position:sticky; top:var(--aogbar-h,52px); z-index:30; margin:10px -16px 0; padding:8px 16px; background:color-mix(in srgb, var(--ground) 88%, transparent); backdrop-filter:saturate(1.2) blur(10px); -webkit-backdrop-filter:saturate(1.2) blur(10px); border-bottom:1px solid var(--rule-soft)}
+.aogc .crail .in{display:flex; gap:6px; align-items:center; overflow-x:auto; scrollbar-width:none; -ms-overflow-style:none; padding-bottom:2px}
+.aogc .crail .in::-webkit-scrollbar{display:none}
+.aogc .crail .k{flex:0 0 auto; font:700 .7rem var(--sans); letter-spacing:.14em; text-transform:uppercase; color:var(--ink-faint); margin-right:4px}
+.aogc .crail a{flex:0 0 auto; display:inline-flex; align-items:center; justify-content:center; min-width:44px; min-height:44px; padding:0 12px; border-radius:999px; border:1px solid var(--rule); background:var(--field); color:var(--ink); text-decoration:none; font:800 .95rem var(--cond); letter-spacing:.04em}
+.aogc .crail a[aria-current="page"]{background:var(--navy); border-color:var(--navy); color:var(--on-navy)}
+.aogc .crail a:hover{border-color:var(--navy-2)}
+.aogc .crail .sp{flex:1 0 8px}
+.aogc .crail .drawerbtn{flex:0 0 auto; min-height:44px; padding:0 14px; border-radius:999px; border:1px solid var(--rule); background:var(--field); font-weight:700; font-size:.88rem; cursor:pointer; display:inline-flex; gap:8px; align-items:center}
+.aogc .crail .drawerbtn svg{width:16px; height:16px}
+.aogc .spread{position:relative; margin:18px 0 0; border-radius:22px; overflow:hidden; background:#0A1E33; color:#F5F1E8; box-shadow:var(--lift); min-height:300px; isolation:isolate}
+.aogc .spread .scene{position:absolute; inset:0; z-index:0}
+.aogc .spread .scene svg{width:100%; height:100%; display:block}
+.aogc .spread::after{content:""; position:absolute; inset:0; z-index:1; background:linear-gradient(180deg, rgba(10,30,51,0) 30%, rgba(10,30,51,.55) 62%, rgba(10,30,51,.94) 100%); pointer-events:none}
+.aogc .spread .txt{position:relative; z-index:2; padding:clamp(120px,26vw,220px) clamp(18px,4vw,40px) clamp(20px,3vw,30px); display:grid; gap:6px}
+.aogc .spread .unum{display:inline-flex; align-items:baseline; gap:10px; font:800 .82rem var(--sans); letter-spacing:.22em; text-transform:uppercase; color:#F5F1E8}
+.aogc .spread .unum b{display:inline-flex; align-items:center; justify-content:center; min-width:44px; height:44px; padding:0 10px; border-radius:8px; background:var(--red); color:#fff; font:800 1.4rem var(--cond); letter-spacing:.02em; box-shadow:inset 0 1px 0 rgba(255,255,255,.35), 0 4px 0 #5A151B, 0 8px 16px rgba(0,0,0,.35)}
+.aogc .spread h2.ut{font:800 clamp(2.2rem,7.6vw,5.4rem)/0.95 var(--cond); letter-spacing:-.01em; margin:0; text-transform:uppercase; color:#F5F1E8; text-shadow:0 2px 0 rgba(0,0,0,.35), 0 12px 30px rgba(0,0,0,.45); max-width:14ch}
+.aogc .spread .years{font:600 clamp(1rem,2.4vw,1.35rem) var(--serif); font-style:italic; color:#EBD9A8; letter-spacing:.02em}
+.aogc .spread .credit{position:absolute; right:14px; bottom:10px; z-index:2; font:italic 500 .7rem var(--serif); color:rgba(245,241,232,.55); max-width:46%; text-align:right; line-height:1.25}
+.aogc .teach{margin-top:28px; border:1.5px solid var(--gold); border-radius:14px; background:var(--field)}
+.aogc .teach summary{cursor:pointer; list-style:none; min-height:48px; display:flex; align-items:center; padding:10px 16px; font-weight:700; font-size:.92rem; color:var(--gold-deep)}
+.aogc .teach summary::-webkit-details-marker{display:none}
+.aogc .teach .inner{padding:4px 16px 16px; display:grid; gap:10px; font-size:.93rem; color:var(--ink-soft)}
+.aogc .teach .inner p{margin:0}
+
+/* ══ AOG-SEL-V1 ══ the board's toolbar, in the course's pill voice; the boards themselves untouched */
+body{--navy:#1B3A5F}
+.bar{background:var(--ground); border-bottom:1px solid var(--rule-soft); box-shadow:none; padding:8px 16px}
+.bar .brand{display:none}
+.bar .aog-home,.bar .btn,.seg,.seg button{border-radius:999px; font-weight:700}
+.bar .btn,.bar .aog-home{min-height:44px; padding:6px 14px; border:1px solid var(--rule)}
+.seg{border:1px solid var(--rule)} .seg button{padding:6px 14px; min-height:42px}
+.btn-accent{background:#0A1E33; border-color:#0A1E33; color:#F5F1E8}
+:root[data-theme="dark"] .btn-accent{background:#D6A852; border-color:#D6A852; color:#12161C}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .btn-accent{background:#D6A852; border-color:#D6A852; color:#12161C}}
+.aogc.compact{flex:none; padding:14px 16px 0; background:var(--ground)}
+.aogc.compact .cmast{padding:0; align-items:center}
+.aogc.compact .cmast h1{font-size:1.5rem; margin:0}
+.aogc.compact .cmast .cdeck{margin:.1em 0 0; font-size:.92rem}
+.aogc.compact .cjump{margin:8px 0 6px}
+.aogc.compact .cjump label{display:flex; align-items:center; gap:10px; flex-wrap:wrap}
+.aogc.compact .cjump select{min-height:40px; padding:4px 10px; font-size:.9rem}
+.aogc.compact .hubline{display:none}
+</style>
+<!-- AOG-SEL-V1 — the mast is the course chrome (built by _work/sel/build_sel.py from _work/sel/src/AoG-Anchor-Charts-18.html); the bar, the rail and every board below are the original, byte for byte. -->
 </head>
 <body>
 <script src="/aog-topbar.js"></script>
 <script src="/aog-grace.js" defer></script>
 
 
+<div class="aogc compact">
+<header class="cmast">
+  <div>
+    <div class="k"><span data-en="The Interior — SEL · Room 18 ·" data-es="El Interior — SEL · Salón 18 ·">The Interior — SEL · Room 18 ·</span><span class="k" style="margin-left:6px">Book 2 · The Framework · Grades 3–5</span></div>
+    <h1>Room 18 · Anchor Charts</h1>
+    <p class="cdeck"><span data-en="Every anchor chart of the room, built live with the class — skeleton first, then the reveals, then what the room said out loud. Arrow keys step through the boards; R reveals the next line." data-es="Cada cartel de anclaje del salón, construido en vivo con la clase — primero el esqueleto, luego las revelaciones, luego lo que el salón dijo en voz alta.">Every anchor chart of the room, built live with the class — skeleton first, then the reveals, then what the room said out loud. Arrow keys step through the boards; R reveals the next line.</span></p>
+    <p class="hubline no-print"><a href="room-18-lessons.html"></a></p>
+  </div>
+</header>
+<div class="cjump no-print"><label><span data-en="Jump to another room" data-es="Ir a otro salón">Jump to another room</span><select id="roomSel"><optgroup label="SEL · The rooms">
+<option value="room-12-lessons.html">Room 12 · Grades K–2 · The Lessons</option>
+<option value="room-18-lessons.html">Room 18 · Grades 3–5 · The Lessons</option>
+<option value="room-36-lessons.html">Room 36 · Grades 6–8 · The Lessons</option>
+<option value="room-104-lessons.html">Room 104 · Grades 9–10 · The Lessons</option>
+<option value="room-207-lessons.html">Room 207 · Grades 11–12 · The Lessons</option>
+</optgroup><optgroup label="Room 18">
+<option value="" selected>Anchor charts</option>
+<option value="room-18-curriculum.html">The curriculum</option>
+<option value="room-18-lessons.html">The Lessons</option>
+<option value="room-18-cards.html">Scenario cards</option>
+<option value="room-18-workbook.html">The companion workbook</option>
+<option value="AoG-Anchor-Charts-18.html">Anchor charts</option>
+</optgroup></select></label></div>
+
+</div>
+<script>(function(){var rs=document.getElementById("roomSel");if(rs){rs.addEventListener("change",function(){if(rs.value)location.href=rs.value;});}})();</script>
 <header class="bar">
   <a id="acBackBtn" class="aog-home" href="./index.html" title="Back to Architecture of Grace">
     <span class="arw" aria-hidden="true">←</span><span>Back to the site</span>
