@@ -89326,7 +89326,7 @@ html.js-reveal .reveal,
     try {
       if (!c.querySelector(".gcx-bar")) {
         var bar = document.createElement("div"); bar.className = "gcx-bar";
-        bar.innerHTML = '<button type="button" class="gcx-go" data-gcxprint="' + esc(w) + '">🖨️ ' + esc(T("Print " + w + "’s growth", "Imprimir el crecimiento de " + w)) + '</button>'
+        bar.innerHTML = '<button type="button" class="gcx-go" data-gcxprint="' + esc(w) + '">🖨️ ' + esc(T("Print all of " + w + "’s graphs", "Imprimir todas las gráficas de " + w)) + '</button>'
           + '<button type="button" data-gcxprint="*">' + esc(T("Print every student", "Imprimir a todos los estudiantes")) + '</button>';
         var anchor = c.querySelector(".gc-next") || c.querySelector(".gc-who");
         if (anchor && anchor.nextSibling) c.insertBefore(bar, anchor.nextSibling); else c.appendChild(bar);
@@ -89337,7 +89337,8 @@ html.js-reveal .reveal,
         var box = document.createElement("div"); box.className = "gcx-act";
         var isOpen = open && open.who === w && open.id === act.id;
         box.innerHTML = (isOpen ? panelHtml(w, act)
-          : '<button type="button" data-gcxopen="' + esc(act.id) + '">' + esc(T("Add to an IEP goal", "Agregar a una meta del IEP")) + '</button>'
+          : '<button type="button" data-gcxone="' + i + '">🖨️ ' + esc(T("Print this graph", "Imprimir esta gráfica")) + '</button> '
+            + '<button type="button" data-gcxopen="' + esc(act.id) + '">' + esc(T("Add to an IEP goal", "Agregar a una meta del IEP")) + '</button>'
             + (said[w + "|" + act.id] ? '<span class="gcx-say gcx-ok" style="margin-left:10px">' + esc(said[w + "|" + act.id]) + '</span>' : ""));
         el.appendChild(box);
       });
@@ -89349,13 +89350,31 @@ html.js-reveal .reveal,
     decorate();
   }
   document.addEventListener("click", function (e) {
-    var t = e.target && e.target.closest ? e.target.closest("[data-gcxprint],[data-gcxopen],[data-gcxclose],[data-gcxadd]") : null;
+    var t = e.target && e.target.closest ? e.target.closest("[data-gcxprint],[data-gcxone],[data-gcxopen],[data-gcxclose],[data-gcxadd]") : null;
     if (!t) return;
     var c = document.getElementById("aogPracticeChart"); if (!c || !c.contains(t)) return;
     var w = who();
     if (t.hasAttribute("data-gcxprint")) {
       /* synchronous inside the click — iOS Safari */
       if (typeof window.aogPrintPracticeRecord === "function") window.aogPrintPracticeRecord(t.getAttribute("data-gcxprint"));
+      return;
+    }
+    /* AOG-GCX-PRINTONE-V1 (2026-09-25) — Jimmy: "Each graph should get its own
+       print box." One graph, on its own sheet: a clone of that activity with the
+       student's name above it, printed while everything else is hidden. */
+    if (t.hasAttribute("data-gcxone")) {
+      var one = c.querySelectorAll(".gc-act")[+t.getAttribute("data-gcxone")]; if (!one) return;
+      var sheet = document.getElementById("gcxOnePrint");
+      if (!sheet) { sheet = document.createElement("div"); sheet.id = "gcxOnePrint"; document.body.appendChild(sheet); }
+      var cl = one.cloneNode(true);
+      Array.prototype.forEach.call(cl.querySelectorAll(".gcx-act"), function (n) { n.parentNode.removeChild(n); });
+      sheet.innerHTML = '<div class="gcx1-h"><b>' + esc(w) + '</b> · ' + esc(T("Growth over time", "Crecimiento en el tiempo")) + ' · ' + esc(new Date().toLocaleDateString()) + '</div>';
+      sheet.appendChild(cl);
+      document.body.classList.add("gcx-one");
+      var done = function () { document.body.classList.remove("gcx-one"); window.removeEventListener("afterprint", done); };
+      window.addEventListener("afterprint", done);
+      window.print();
+      setTimeout(done, 1500);
       return;
     }
     if (t.hasAttribute("data-gcxopen")) { open = { who: w, id: t.getAttribute("data-gcxopen") }; redraw(); return; }
@@ -89388,6 +89407,17 @@ html.js-reveal .reveal,
   setInterval(watch, 1500);
 })();
 </script>
+<style id="aog-gcx-printone-css">
+#gcxOnePrint{display:none}
+@media print{
+  body.gcx-one > *:not(#gcxOnePrint){display:none !important}
+  body.gcx-one #gcxOnePrint{display:block !important; color:#000 !important; background:#fff !important; padding:0 4mm}
+  body.gcx-one #gcxOnePrint *{color:#000 !important; background:transparent !important; border-color:#999 !important}
+  body.gcx-one #gcxOnePrint svg text{fill:#333 !important}
+  body.gcx-one #gcxOnePrint svg{max-width:100%; height:auto}
+  body.gcx-one #gcxOnePrint .gcx1-h{font:600 14px/1.4 system-ui,sans-serif; margin:0 0 10px; padding-bottom:6px; border-bottom:2px solid #000 !important}
+}
+</style>
 <style id="aog-probesheet-css">
 /* AOG-PRINT-COUNTS-V1 — the items-inside-questions relationship, said plainly */
 .rs-cnt{margin:5px 0 0; font-size:9.2px; line-height:1.35; color:#3d4657; font-style:italic}
