@@ -231,6 +231,7 @@ a{color:var(--navy-2)}
 .spread .years{font:600 clamp(1rem,2.4vw,1.35rem) var(--serif); font-style:italic; color:#EBD9A8; letter-spacing:.02em}
 .spread .credit{position:absolute; right:14px; bottom:10px; z-index:2; font:italic 500 .7rem var(--serif); color:rgba(245,241,232,.55); max-width:46%; text-align:right; line-height:1.25}
 .contents .spread .credit{display:none}
+@media(max-width:720px){.spread .credit{display:none}}
 .contents .spread{min-height:240px; border-radius:18px}
 .contents .spread .txt{padding-top:clamp(90px,18vw,150px)}
 .contents .spread h2.ut{font-size:clamp(1.9rem,6vw,4.2rem)}
