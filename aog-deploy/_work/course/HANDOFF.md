@@ -1,9 +1,13 @@
 # HANDOFF — building a course for another subject (2026-09-25)
 
-Four courses share one engine: U.S. History 6–8 (`_work/ush`), Science K–12
-(`_work/sci`), Math K–12 (`_work/mth`) and Spanish K–12 (`_work/spa`, done
-2026-09-25: 20 units, 40 chapters, 377 lessons). Jimmy's ask, still open:
-**the same facelift for FACS (Family & Consumer Sciences), World Religions and Economics.**
+Seven courses share one engine: U.S. History 6–8 (`_work/ush`), Science K–12
+(`_work/sci`), Math K–12 (`_work/mth`), Spanish K–12 (`_work/spa`), Social Studies
+K–12 (`_work/ss`), ELA K–12 (`_work/ela`) and FACS K–12 (`_work/fcs`, done 2026-09-25:
+20 units, 40 chapters, 380 lessons). Still open, PAUSED by Jimmy: **World Religions and
+Economics** — `_work/rel` and `_work/eco` are fully scaffolded (outline, SPEC, build/inject/plumb,
+banners_*.py stub, the build_course.py regex already knows their ids); only steps 6–11 remain.
+The SEL rooms (`_work/sel`) are a different job: the same chrome around the original SEL
+Lessons, anchor-chart boards and worksheets (byte for byte), plus the Scenario Cards pages.
 
 Hubs already on the site: `spanish-hub.html` (/spanish), `facs-hub.html` (/facs),
 `religions-hub.html`, `economics-hub.html` (/economics). Their bands: Spanish and
