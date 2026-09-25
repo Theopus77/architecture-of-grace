@@ -1,0 +1,271 @@
+# English Language Arts, K–12 — the course arc. Our own wording, following the
+# Illinois Learning Standards for ELA (reading literature, reading informational
+# text, foundational skills, writing, speaking and listening, language) band by
+# band. Topics guide the writers; story = the chapter's opening narrative hook.
+# Nothing here is copied from any textbook. Every quoted text must be public
+# domain (published before 1929) or the writer's own.
+#
+# Units number 1–24 straight through the course; chapters 1–55. `band` is the
+# grade band; `strand` prints where a unit's years go; `level` sets the writing
+# rules (SPEC.md).
+
+BANDS = [
+ dict(id="k-2",   title="Grades K–2",   level="k2"),
+ dict(id="3-5",   title="Grades 3–5",   level="35"),
+ dict(id="6-8",   title="Grades 6–8",   level="68"),
+ dict(id="9-10",  title="Grades 9–10",  level="hs"),
+ dict(id="11-12", title="Grades 11–12", level="hs2"),
+]
+
+UNITS = [
+ # ══════════════════════════════ K–2 ══════════════════════════════
+ dict(n=1, band="k-2", title="Sounds and Letters", strand="Foundations", chapters=[
+  dict(n=1, title="Sounds in Words", strand="Phonological Awareness",
+       topics="Words are made of sounds; hearing the first sound, the last sound, the middle sound; rhymes and why they match; clapping syllables; blending sounds into a word (c-a-t) and taking a word apart; changing one sound to make a new word (cat, hat, bat); listening games.",
+       story="A game of I Spy where the clue is only the first sound"),
+  dict(n=2, title="Letters and the Code", strand="Phonics",
+       topics="Each letter has a name and a sound; capital and small letters; vowels and consonants; short vowels in short words; two letters that make one sound (sh, ch, th); the silent e that makes the vowel say its name; reading a word left to right; writing the letters; the alphabet in order.",
+       story="The day the class cracked the code on the word 'ship'"),
+ ]),
+ dict(n=2, band="k-2", title="Words and Sentences", strand="Foundations and Language", chapters=[
+  dict(n=3, title="Words You Know by Sight", strand="Reading Words",
+       topics="Some words come up so often you should know them on sight (the, said, was, of, you); tricky words that do not follow the rules; word families (-at, -ing, -ake); adding -s and -ed and -ing; compound words; reading smoothly and with expression; reading the same book again to get faster.",
+       story="Marcus reads a whole page without stopping, and his little sister claps"),
+  dict(n=4, title="A Sentence Is a Whole Thought", strand="Language",
+       topics="A sentence tells who and what happened; it starts with a capital and ends with a period, question mark or exclamation point; naming words (nouns) and action words (verbs); describing words; a sentence that asks and a sentence that tells; putting words in order; writing one good sentence about a picture; spaces between words.",
+       story="Three words on the board — dog, the, ran — and the class puts them in order"),
+ ]),
+ dict(n=3, band="k-2", title="Stories and True Books", strand="Reading", chapters=[
+  dict(n=5, title="Who, Where, What Happens", strand="Literature",
+       topics="Characters, setting and events; what a character wants and feels; the problem and how it gets solved; retelling a story in order; the pictures help tell the story; asking and answering who, what, where, when, why questions; comparing two stories (two versions of the same tale); the lesson a story teaches.",
+       story="A retelling of a very old tale about a tortoise and a hare, and what the class notices"),
+  dict(n=6, title="Story Books and True Books", strand="Informational Text",
+       topics="Some books are made up and some are true; a true book has a topic, facts, headings, labels, captions and pictures that show real things; finding the main topic and the details; using a table of contents; asking a question and finding the answer in a book; two books about the same animal; the author and the illustrator.",
+       story="Two books about frogs: one where the frog talks, one where it does not"),
+ ]),
+ dict(n=4, band="k-2", title="Writing and Telling", strand="Writing and Speaking", chapters=[
+  dict(n=7, title="Beginning, Middle, End", strand="Writing",
+       topics="A story has a beginning, a middle and an end; drawing first, then writing; telling something that really happened to you (a small moment); using words like first, next, then, last; adding details a reader can see; writing an opinion (my favorite season is…) with a reason; writing a true fact book page; fixing a sentence.",
+       story="The lost tooth: one small moment told three ways, each one better"),
+  dict(n=8, title="Say It, Write It, Share It", strand="Speaking and Listening",
+       topics="Listening to others and taking turns; asking a question when you do not understand; speaking loud and clear; telling a story or giving directions in order; describing a person, place or thing with details; sharing your writing and hearing feedback; words that show feelings; new words from books and where to use them.",
+       story="Author's chair: Priya reads her story to the class and answers two questions"),
+ ]),
+
+ # ══════════════════════════════ 3–5 ══════════════════════════════
+ dict(n=5, band="3-5", title="Word Power", strand="Language and Vocabulary", chapters=[
+  dict(n=9, title="Word Parts", strand="Morphology",
+       topics="Prefixes (un-, re-, pre-, dis-, mis-), suffixes (-ful, -less, -ly, -er, -tion) and roots; taking a long word apart to find its meaning; Greek and Latin roots that show up everywhere (graph, tele, port, dict, aud); spelling patterns and how word parts help spelling; making new words; a word part wall.",
+       story="Unlocking 'unbelievable' one piece at a time"),
+  dict(n=10, title="Context Clues and the Dictionary", strand="Vocabulary",
+       topics="Using the words around a word to figure it out: definitions, examples, synonyms, contrast; multiple-meaning words; shades of meaning (walk, stroll, march); using a dictionary and a glossary, guide words, parts of speech; figurative language beginners: similes and idioms; academic words that show up in every subject (compare, evidence, structure).",
+       story="A sentence about a 'gargantuan' dog and the four clues that give it away"),
+ ]),
+ dict(n=6, band="3-5", title="Reading Stories", strand="Literature", chapters=[
+  dict(n=11, title="Story Elements", strand="Literature",
+       topics="Characters (traits, motives, feelings), setting, plot (problem, events, climax, solution); how a character changes; conflict types in kid terms; dialogue and what it shows; summarizing a story in a few sentences; using evidence from the text to explain; fables, folktales and myths from many cultures and their lessons.",
+       story="A folktale about a clever rabbit, and the moment the class spots the turning point"),
+  dict(n=12, title="Theme and Point of View", strand="Literature",
+       topics="Theme is the lesson or big idea, not the topic; finding theme from what characters learn; first person and third person; how the narrator's point of view shapes what we know; comparing the same event from two characters; comparing two texts with the same theme; the author's purpose; making inferences and supporting them.",
+       story="The same fight over a bike, told by both brothers"),
+  dict(n=13, title="Poems and Plays", strand="Literature",
+       topics="Lines and stanzas, rhythm and rhyme, repetition; reading a poem aloud; imagery and sound words; poems by public-domain poets in plain reach (Emily Dickinson, Robert Louis Stevenson, Paul Laurence Dunbar, Christina Rossetti) read closely; a play's cast, dialogue, stage directions and scenes; reader's theater; comparing a poem, a story and a play about the same thing.",
+       story="A poem read once for the words and again for the drum inside it"),
+ ]),
+ dict(n=7, band="3-5", title="Reading to Learn", strand="Informational Text", chapters=[
+  dict(n=14, title="Main Idea and Details", strand="Informational Text",
+       topics="Topic vs main idea; details that support it; the main idea of a paragraph and of a whole article; summarizing without copying; text features: headings, bold words, captions, sidebars, diagrams, maps; skimming and scanning; asking questions before, during and after; explaining what a text says explicitly and what it implies.",
+       story="An article about honeybees and the one sentence that holds it together"),
+  dict(n=15, title="How a Text Is Built", strand="Text Structure",
+       topics="Text structures: sequence, description, compare and contrast, cause and effect, problem and solution; signal words for each; how structure helps you take notes; comparing two texts on the same topic; the author's point and the reasons for it; reading a science text and a history text differently; timelines and steps.",
+       story="Two articles about the same tornado: one tells what happened, one tells why"),
+  dict(n=16, title="Charts, Sources and Research", strand="Research",
+       topics="Reading a chart, a graph, a table and a map as text; where facts come from; primary and secondary sources for kids (a letter, a photo, a diary vs an encyclopedia); asking a research question; taking notes in your own words; keeping track of sources; telling a fact from an opinion; telling a reliable website from a shaky one.",
+       story="A class research question about the school's own history and the old yearbook that answers it"),
+ ]),
+ dict(n=8, band="3-5", title="Writing", strand="Writing", chapters=[
+  dict(n=17, title="The Paragraph: a Claim and Reasons", strand="Opinion Writing",
+       topics="A topic sentence that makes a claim; reasons and examples that back it; linking words (because, for example, also, therefore); a closing sentence; writing an opinion piece about a book or a school question; organizing with a plan before drafting; considering the other side; a letter to the principal as a real audience.",
+       story="Should recess be longer? A fourth grader builds the argument one reason at a time"),
+  dict(n=18, title="Stories and Explanations", strand="Narrative and Informative",
+       topics="Narrative writing: a small moment, a beginning that hooks, dialogue, sensory details, a satisfying ending; informative writing: introduce a topic, group facts, use headings and pictures, define words, conclude; a how-to; writing from research; writing about a text with evidence; pacing and transitions.",
+       story="A true story about a snow day, written first flat and then alive"),
+  dict(n=19, title="Revising and Editing", strand="The Writing Process",
+       topics="Drafting is not finishing; revising for ideas (add, cut, move, replace), editing for correctness; peer feedback that helps; strong verbs and exact nouns; sentence variety; capitals, commas in a series, quotation marks in dialogue, apostrophes; spelling strategies; typing and sharing; reading your work aloud to catch what is wrong.",
+       story="One paragraph, four drafts, taped in a row on the wall"),
+ ]),
+ dict(n=9, band="3-5", title="Grammar, Speaking and Listening", strand="Language and Speaking", chapters=[
+  dict(n=20, title="The Grammar of a Sentence", strand="Language",
+       topics="Subjects and predicates; nouns, verbs, adjectives, adverbs, pronouns, prepositions; simple, compound and complex sentences; fragments and run-ons and how to fix them; subject–verb agreement; verb tenses; commas with conjunctions; homophones (their/there/they're); when to use formal English.",
+       story="A run-on sentence that never stops, read aloud in one breath"),
+  dict(n=21, title="Conversations and Presentations", strand="Speaking and Listening",
+       topics="Rules for a good discussion: prepare, listen, build on what others said, ask questions, disagree politely; summarizing what a speaker said; giving a short talk with a clear order and details; speaking at an understandable pace; using pictures or objects to help; recording and listening to yourself; audience and purpose.",
+       story="A book-club argument about whether the ending was fair, done right"),
+ ]),
+
+ # ══════════════════════════════ 6–8 ══════════════════════════════
+ dict(n=10, band="6-8", title="The Novel", strand="Literature", chapters=[
+  dict(n=22, title="Characters and Conflict", strand="Literature",
+       topics="Direct and indirect characterization; motivation; static and dynamic characters; internal and external conflict; how dialogue reveals character; point of view (first, third limited, omniscient) and unreliable narrators; citing textual evidence for an inference; tracking a character across a whole book (with The Outsiders as the site's own novel room).",
+       story="A first chapter that begins with a boy walking out of a movie theater alone"),
+  dict(n=23, title="Plot, Setting and Theme", strand="Literature",
+       topics="Plot structure: exposition, rising action, climax, falling action, resolution; subplots; flashback and foreshadowing; setting as more than backdrop; how theme develops over a text; theme vs topic vs moral; symbols and motifs; comparing a book and its film version; writing about theme with evidence.",
+       story="Two readers argue about what a sunset in a novel really means"),
+  dict(n=24, title="Reading a Whole Book", strand="Literature",
+       topics="Reading stamina and strategy; annotating; keeping a reading journal; asking questions of a text; genres (realistic fiction, historical fiction, fantasy, mystery, memoir) and their conventions; short stories and novellas from the public domain (O. Henry, Jack London, Kate Chopin) read closely; a book talk; choosing books you can read and books that stretch you.",
+       story="A short story read twice: the second time the ending was there all along"),
+ ]),
+ dict(n=11, band="6-8", title="Nonfiction and Argument", strand="Informational Text", chapters=[
+  dict(n=25, title="Central Idea and Evidence", strand="Informational Text",
+       topics="Central idea and how details develop it; objective summary; how an author organizes and why; analyzing word choice and tone in nonfiction; comparing two authors on the same topic; primary sources as texts (letters, speeches, diaries); reading graphs and images with a text; distinguishing fact, opinion and reasoned judgment.",
+       story="Two accounts of the Chicago fire from people who stood a block apart"),
+  dict(n=26, title="Argument: Claims, Evidence, Reasoning", strand="Argument",
+       topics="Claim, evidence, reasoning; tracing and evaluating an argument; relevant vs sufficient evidence; counterclaims and rebuttal; logical fallacies for beginners (bandwagon, ad hominem, false choice); writing an argumentative essay with a clear structure; transitions and formal style; a debate with rules.",
+       story="Should the school day start later? Two students argue with evidence and one without"),
+  dict(n=27, title="Media and Sources", strand="Research",
+       topics="Evaluating sources: author, purpose, date, evidence; lateral reading; bias and perspective; how images and headlines shape meaning; paraphrase vs plagiarism; quoting and citing (MLA basics); a short research project with a question, notes, and a works cited; presenting findings with slides or a poster.",
+       story="One viral photo, three captions, and what the original source shows"),
+ ]),
+ dict(n=12, band="6-8", title="Words: Stems and Meaning", strand="Vocabulary", chapters=[
+  dict(n=28, title="Greek and Latin Stems", strand="Morphology",
+       topics="The most useful Greek and Latin stems (bio, geo, graph, log, chron, phon, spec, port, rupt, ject, dict, cred, bene, mal, anti, auto, tele, micro, poly, hydro); how a stem plus a prefix plus a suffix builds a word; word families across subjects (photosynthesis, photograph); using stems to unlock a science or social studies word; the Word Foundry and the class stem units as practice rooms.",
+       story="A biology test word cracked with a stem learned in English class"),
+  dict(n=29, title="Connotation and Figurative Language", strand="Language",
+       topics="Denotation vs connotation; word choice and tone; simile, metaphor, personification, hyperbole, allusion, idiom; analogies; how figurative language works in poems and in ads; interpreting figures of speech in context; using precise language in your own writing; a thesaurus, used wisely.",
+       story="'The classroom was a zoo' and every word that could replace 'zoo'"),
+ ]),
+ dict(n=13, band="6-8", title="Grammar and Style", strand="Language", chapters=[
+  dict(n=30, title="Sentences and Clauses", strand="Grammar",
+       topics="Phrases and clauses; independent and dependent clauses; simple, compound, complex and compound-complex sentences; sentence combining for variety; fragments and run-ons in real writing; active and passive voice; verb moods (indicative, imperative, interrogative, conditional, subjunctive) in plain terms; pronoun case and agreement; dangling modifiers.",
+       story="A paragraph of nothing but short sentences, then the same paragraph combined"),
+  dict(n=31, title="Punctuation and Usage", strand="Grammar",
+       topics="Commas: series, introductory elements, nonrestrictive clauses, coordinate adjectives; semicolons and colons; dashes and parentheses; apostrophes; quotation marks with dialogue and titles; capitalization; commonly confused words (affect/effect, its/it's, than/then); spelling patterns; using a style guide; how punctuation changes meaning.",
+       story="'Let's eat, Grandma' and the comma that saves her"),
+ ]),
+ dict(n=14, band="6-8", title="Writing Across Forms", strand="Writing", chapters=[
+  dict(n=32, title="Argument and Informative Essays", strand="Writing",
+       topics="Thesis statements; organizing an essay: introduction, body paragraphs with topic sentences, conclusion; integrating evidence and quotations; explaining evidence; formal style and objective tone; informative structures (compare and contrast, cause and effect, definition); the writing process with real revision; writing on demand under a time limit.",
+       story="A thesis rewritten five times on the board until it finally argues something"),
+  dict(n=33, title="Narrative and Poetry", strand="Writing",
+       topics="Narrative technique: dialogue, pacing, description, reflection; a strong opening and an earned ending; sensory details and precise verbs; point of view choices; writing a personal narrative and a fictional one; writing poems: line breaks, imagery, sound, forms (haiku, free verse, sonnet introduced); reading your work aloud; a class anthology.",
+       story="A memory of a kitchen, written as prose and then as a poem"),
+ ]),
+
+ # ══════════════════════════════ 9–10 ══════════════════════════════
+ dict(n=15, band="9-10", title="Literature: Close Reading", strand="Literature", chapters=[
+  dict(n=34, title="Fiction", strand="Literature",
+       topics="Close reading: what the text says, how it says it, why; complex characters and conflicting motivations; theme development and how details refine it; structure choices (order, pacing, parallel plots); point of view and cultural context; short fiction from the public domain (Chopin's 'The Story of an Hour', Poe, Hawthorne, Gilman's 'The Yellow Wallpaper', Crane) read closely; writing an analysis with evidence.",
+       story="An hour in a story where a woman learns her husband is dead, then that he is not"),
+  dict(n=35, title="Poetry", strand="Literature",
+       topics="Form and meter; sound devices; figurative language and imagery; tone and shifts; the speaker vs the poet; reading Dickinson, Whitman, Dunbar, Frost's early poems, Shakespeare's sonnets and other public-domain poets closely; paraphrase and then analysis; how a poem's structure creates meaning; writing about a poem in a paragraph.",
+       story="Two roads in a yellow wood, and the line everyone misreads"),
+  dict(n=36, title="Drama", strand="Literature",
+       topics="How a play works: acts, scenes, dialogue, soliloquy, aside, stage directions; reading Shakespeare (Romeo and Juliet, Julius Caesar, Macbeth in excerpts) with the language decoded; character through speech; dramatic irony; tragedy and its structure; performance choices and how a scene changes on its feet; comparing a scene on the page and on the stage.",
+       story="Act 3 of Julius Caesar: Brutus speaks, then Antony, and the crowd turns"),
+ ]),
+ dict(n=16, band="9-10", title="The Language of Persuasion", strand="Rhetoric", chapters=[
+  dict(n=37, title="Rhetoric: How a Writer Persuades", strand="Rhetoric",
+       topics="Ethos, pathos, logos; audience, purpose and occasion; rhetorical devices (repetition, parallelism, antithesis, rhetorical questions); analyzing public-domain speeches (Lincoln's Gettysburg Address and Second Inaugural, Douglass's 'What to the Slave Is the Fourth of July?', Sojourner Truth, Patrick Henry) and founding documents; how structure and word choice advance a purpose; writing a rhetorical analysis.",
+       story="Two hundred seventy-two words at Gettysburg, and the two-hour speech before them"),
+  dict(n=38, title="Tone and Voice", strand="Style",
+       topics="Tone vs mood; diction and how it creates tone; syntax and voice; irony, satire and understatement; formal and informal registers; analyzing tone in essays, letters and editorials; shifting tone within a text; developing your own voice in writing; reading Twain, Swift's 'A Modest Proposal' and public-domain essays.",
+       story="Swift proposes a solution to poverty that no one can take seriously, on purpose"),
+  dict(n=39, title="Argument in the World", strand="Argument",
+       topics="Evaluating arguments in editorials, ads and speeches; evidence quality; identifying assumptions; common fallacies (slippery slope, straw man, hasty generalization, false cause, appeal to authority); the rhetorical situation of social media; writing an argument that anticipates objections; civil disagreement; a structured debate.",
+       story="An ad, an editorial and a speech make the same claim three ways"),
+ ]),
+ dict(n=17, band="9-10", title="Words and Structure", strand="Vocabulary", chapters=[
+  dict(n=40, title="Context Clues and Word Parts", strand="Vocabulary",
+       topics="Advanced context strategies; roots and affixes in academic vocabulary; etymology and how words change meaning; cognates for multilingual readers; domain-specific words in science, history and math; precision: choosing the exact word; reference tools (dictionary, thesaurus, etymology dictionary) and when each helps; building a personal word list.",
+       story="A word on a chemistry quiz solved by Latin from a poem"),
+  dict(n=41, title="Figurative Language", strand="Language",
+       topics="Metaphor, extended metaphor and conceit; symbol and allegory; irony in its kinds; paradox and oxymoron; allusion (biblical, classical, historical) and how to look one up; euphemism; interpreting figures of speech in context; the effect of figurative language on meaning and tone; using it in your own analysis and writing.",
+       story="A poem that is only about a wall, until it is not"),
+ ]),
+ dict(n=18, band="9-10", title="Grammar for Writers", strand="Language", chapters=[
+  dict(n=42, title="Clauses, Parallel Structure and Usage", strand="Grammar",
+       topics="Phrase types (noun, verb, adjectival, adverbial, participial, prepositional, absolute); clause types; parallel structure and why it matters; sentence variety on purpose; subject–verb agreement in hard cases; pronoun clarity; modifiers placed right; usage conventions and when to break them; editing a real draft.",
+       story="A campaign slogan that fails because its three parts do not match"),
+  dict(n=43, title="Punctuation That Changes the Meaning", strand="Grammar",
+       topics="Semicolons, colons, dashes and how each links ideas; commas that change meaning (restrictive vs nonrestrictive); hyphens; ellipses and brackets in quotations; punctuating dialogue and quotations inside quotations; capitalization and titles; spelling in the age of autocorrect; a style guide (MLA) for citations and format.",
+       story="A will that gives everything to 'my brother, and my sister' and the comma the court argued over"),
+ ]),
+ dict(n=19, band="9-10", title="Research and Writing", strand="Writing", chapters=[
+  dict(n=44, title="The Research Process", strand="Research",
+       topics="Turning a topic into a question; search strategies; evaluating sources (authority, accuracy, currency, purpose); primary vs secondary; taking notes and keeping a source log; synthesizing sources instead of stacking them; avoiding plagiarism; MLA in-text citation and works cited; an annotated bibliography.",
+       story="Eight sources on one question, and the three that survive a hard look"),
+  dict(n=45, title="Essays That Work", strand="Writing",
+       topics="Literary analysis with a claim about how a text means; argument essays with counterclaims; informative and explanatory texts with structure and precision; narrative writing with technique; introductions that earn attention and conclusions that do more than repeat; sentence-level style; revising for clarity and concision; writing on demand; a portfolio.",
+       story="An introduction that begins with a definition, rewritten to begin with a scene"),
+ ]),
+
+ # ══════════════════════════════ 11–12 ══════════════════════════════
+ dict(n=20, band="11-12", title="Literary Devices and American Voices", strand="Literature", chapters=[
+  dict(n=46, title="Literary Devices in Depth", strand="Literature",
+       topics="Structure as meaning; unreliable narration; irony and ambiguity; motif, symbol and archetype; allusion; satire; stream of consciousness introduced; multiple interpretations of a text and how to weigh them; how an author's choices about setting and order shape meaning; comparing two texts' treatment of a theme; writing an interpretation that argues.",
+       story="A narrator who insists he is not mad, in the first sentence of a story"),
+  dict(n=47, title="American Literature, 1620–1920", strand="Literature",
+       topics="Puritan and colonial writing (Bradstreet, Edwards); the Revolution's pamphlets; Romanticism and the Transcendentalists (Emerson, Thoreau, Hawthorne, Poe, Melville, Whitman, Dickinson); slave narratives (Douglass, Jacobs); Realism and Naturalism (Twain, Crane, Chopin, London, Wharton); the Harlem Renaissance's beginnings (Dunbar, early Hughes noted only); how these voices argue with each other about what America is; all texts public domain.",
+       story="Thoreau spends a night in jail for a tax he will not pay, and writes about it"),
+ ]),
+ dict(n=21, band="11-12", title="Diction, Syntax and Style", strand="Language", chapters=[
+  dict(n=48, title="Diction and Syntax", strand="Style",
+       topics="Levels of diction; connotation at the sentence level; syntax choices: length, order, inversion, periodic and loose sentences, fragments on purpose; how syntax controls emphasis and pace; analyzing a passage's style precisely; imitating a style; register and audience; voice as a set of choices.",
+       story="One paragraph of Hemingway-length sentences beside one of Faulkner-length, described not quoted"),
+  dict(n=49, title="Concision and Style", strand="Writing",
+       topics="Cutting what does not work: redundancy, filler, nominalizations, weak verbs; clarity and precision; rhythm and sentence variety; paragraph coherence and transitions; the plain style vs the ornate; writing for readers who are busy; editing someone else's paragraph; a style checklist you will actually use.",
+       story="A 300-word paragraph cut to 120 without losing a single idea"),
+ ]),
+ dict(n=22, band="11-12", title="Reasoning and Argument", strand="Argument", chapters=[
+  dict(n=50, title="Reasoning and Fallacies", strand="Argument",
+       topics="Deductive and inductive reasoning; validity and soundness; premises and hidden assumptions; evidence types and their limits (anecdote, statistic, expert, analogy); a full catalog of fallacies with real examples; evaluating an argument's structure; the Toulmin model (claim, grounds, warrant, backing, qualifier, rebuttal); reasoning in data and graphs.",
+       story="A statistic that is true, and the conclusion drawn from it that is not"),
+  dict(n=51, title="Founding Documents as Argument", strand="Argument",
+       topics="The Declaration of Independence as a deductive argument; the Constitution's Preamble; the Federalist Papers (No. 10, No. 51); Lincoln's speeches; the Seneca Falls Declaration; Douglass; how these texts use premises, evidence, and rhetoric; how later writers argued with them; writing an argument in dialogue with a foundational text.",
+       story="Jefferson's rough draft with the lines crossed out"),
+ ]),
+ dict(n=23, band="11-12", title="Advanced Grammar and Usage", strand="Language", chapters=[
+  dict(n=52, title="Advanced Punctuation", strand="Grammar",
+       topics="The semicolon and colon at full power; dashes for interruption and emphasis; parentheses and brackets; commas in complex sentences; the serial comma debate; hyphens and compound modifiers; punctuating quotations and ellipses in scholarly writing; italics and quotation marks for titles; how professional editors decide.",
+       story="Two publishers, two comma rules, one sentence that means different things in each"),
+  dict(n=53, title="Usage in the Real World", strand="Grammar",
+       topics="Prescriptive vs descriptive views of language; usage that has changed (split infinitives, 'they' singular); register in college and work writing; email, applications, cover letters and their conventions; editing under pressure; common errors that cost credibility; resolving usage questions with references; language variety and respect.",
+       story="A cover letter with one error and the hiring manager who stopped reading"),
+ ]),
+ dict(n=24, band="11-12", title="Capstone: Research, Cite, Defend", strand="Research", chapters=[
+  dict(n=54, title="The Research Paper", strand="Research",
+       topics="A question worth a semester; a research plan; scholarly sources and databases; reading difficult sources; synthesis across sources; organizing a long argument; MLA and APA formatting; integrating quotations, paraphrases and summaries correctly; drafting in stages; revision with a reader; academic integrity.",
+       story="A question about one Chicago neighborhood that takes twelve sources to answer"),
+  dict(n=55, title="Defend It", strand="Speaking and Presenting",
+       topics="Presenting research to an audience: structure, visuals, evidence on screen, timing; anticipating questions; answering a challenge without folding; collaborative discussion at a high level; listening to evaluate; giving useful feedback; reflecting on your own growth as a reader and writer; what to carry into college and work.",
+       story="Twelve minutes at the front of the room, and the first question is the hard one"),
+ ]),
+]
+
+# Every unit → the site's existing rooms that belong beside it (practice rooms).
+LINKS = {
+ 1: [("/e1", "Sounds and letters — cards, quiz and lab")],
+ 2: [("/e2", "Words you know by sight — cards, quiz and lab"), ("/e3", "A sentence is a whole thought — cards, quiz and lab")],
+ 3: [("/e4", "Who, where, what happens — cards, quiz and lab"), ("/e6", "True books and story books — cards, quiz and lab")],
+ 4: [("/e5", "Beginning, middle, end — cards, quiz and lab")],
+ 5: [("/e7", "Word parts — cards, quiz and lab"), ("/e8", "Context clues — cards, quiz and lab")],
+ 6: [("/e10", "Story elements and theme — cards, quiz and lab")],
+ 7: [("/e9", "Main idea and details — cards, quiz and lab"), ("/e11", "How a text is built — cards, quiz and lab")],
+ 8: [("/e12", "The paragraph: a claim and reasons — cards, quiz and lab")],
+ 9: [("/e12", "The paragraph: a claim and reasons — cards, quiz and lab")],
+ 10: [("/n1", "Novel study · The Outsiders, chapter by chapter")],
+ 11: [("/n1", "Novel study · The Outsiders, chapter by chapter"), ("/b11", "Grammar")],
+ 12: [("/units", "Class Units · the stems from class"), ("/words", "The Word Foundry")],
+ 13: [("/b11", "Grammar"), ("/words", "The Word Foundry")],
+ 14: [("/n1", "Novel study · The Outsiders, chapter by chapter"), ("/b11", "Grammar")],
+ 15: [("/e14", "Figurative language — cards, quiz and lab"), ("/e15", "Tone and voice — cards, quiz and lab")],
+ 16: [("/e16", "Rhetoric: how a writer persuades — cards, quiz and lab"), ("/e15", "Tone and voice — cards, quiz and lab")],
+ 17: [("/e13", "Context clues and word parts — cards, quiz and lab"), ("/e14", "Figurative language — cards, quiz and lab"), ("/words", "The Word Foundry")],
+ 18: [("/e18", "Clauses, parallel structure and usage — cards, quiz and lab"), ("/e17", "Punctuation that changes the meaning — cards, quiz and lab")],
+ 19: [("/e16", "Rhetoric: how a writer persuades — cards, quiz and lab")],
+ 20: [("/e19", "Literary devices — cards, quiz and lab")],
+ 21: [("/e20", "Diction and syntax — cards, quiz and lab"), ("/e23", "Concision and style — cards, quiz and lab")],
+ 22: [("/e21", "Reasoning and fallacies — cards, quiz and lab")],
+ 23: [("/e22", "Advanced punctuation — cards, quiz and lab")],
+ 24: [("/e24", "Capstone: research, cite, defend — cards, quiz and lab")],
+}

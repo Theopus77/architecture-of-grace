@@ -1,0 +1,971 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script>/* .30eg: begin in light. Dark only when this device chose it - the stored choice, never the OS setting, decides. Same key as every Interior page. */
+(function(){var t="light";try{if(localStorage.getItem("aog.interior.ws.v1.theme")==="dark")t="dark";}catch(e){}document.documentElement.setAttribute("data-theme",t);})();</script>
+<title>English Language Arts, K–12 — Architecture of Grace</title>
+<meta name="description" content="A free K–12 English language arts course following the Illinois Learning Standards for ELA: 24 units across five grade bands, 8 chapters, 65 numbered lessons with readings, key words, model texts, checks, chapter reviews and unit tests. Original text, built for students with IEPs and English learners.">
+<!-- ═══ AOG ICONS + LINK PREVIEW · managed block · .30k0 ═══ -->
+<link rel="canonical" href="https://architectureofgrace.org/english-course">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Architecture of Grace">
+<meta property="og:locale" content="en_US">
+<meta property="og:title" content="English Language Arts, K–12 — Architecture of Grace">
+<meta property="og:description" content="A free K–12 English language arts course following the Illinois Learning Standards for ELA: 24 units across five grade bands, 8 chapters, 65 numbered lessons with readings, key words, model texts, checks, chapter reviews and unit tests. Original text, built for students with IEPs and English learners.">
+<meta property="og:url" content="https://architectureofgrace.org/english-course">
+<meta property="og:image" content="https://architectureofgrace.org/og-prep.png?v=1">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="A link card for the K–12 english course at Architecture of Grace.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="English Language Arts, K–12 — Architecture of Grace">
+<meta name="twitter:description" content="A free K–12 English language arts course following the Illinois Learning Standards for ELA: 24 units across five grade bands, 8 chapters, 65 numbered lessons with readings, key words, model texts, checks, chapter reviews and unit tests. Original text, built for students with IEPs and English learners.">
+<meta name="twitter:image" content="https://architectureofgrace.org/og-prep.png?v=1">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#0A1E33">
+<meta name="apple-mobile-web-app-title" content="Grace">
+<meta name="application-name" content="Architecture of Grace">
+<!-- ═══ END AOG ICONS + LINK PREVIEW ═══ -->
+<!-- AOG-COURSE-V1 — built by _work/ela/build_ela.py from _work/ela/u*.json. Do not hand-edit; edit the JSON or the builder and re-run. -->
+<!-- No external requests of any kind. Every byte this page needs is in this file (aog-topbar.js and aog-jump.js are same-origin; a 404 changes nothing but the bar and the menu). -->
+<style>
+
+/* ══ TOKENS ══ the Interior set (light is the base; dark redefines tokens only)
+   plus the course's own: navy #0A1E33, a flag red for the badges, the hub's
+   brown accent, and a serif stack for the book voice. */
+:root{
+  --ground:#F5F1E8; --field:#FFFFFF; --field-2:#EFEAE0; --field-3:#E7E0D2;
+  --ink:#1D2733; --ink-soft:#57626F; --ink-faint:#5F6B78;
+  --navy:#0A1E33; --navy-2:#1B3A5F; --gold:#B8893A; --gold-deep:#7A5C1F;
+  --red:#A8323A; --red-deep:#7E1F26; --acc:#7A5230; --acc-soft:#EFE3D6;
+  --rule:rgba(29,39,51,.16); --rule-soft:rgba(29,39,51,.08);
+  --lift:0 1px 0 rgba(255,255,255,.7), 0 20px 44px -30px rgba(29,39,51,.55);
+  --lift-sm:0 1px 2px rgba(29,39,51,.07), 0 8px 20px -16px rgba(29,39,51,.4);
+  --a:#4A3A8C; --a-wash:rgba(74,58,140,.07);
+  --good:#2E6B4F; --good-wash:rgba(46,107,79,.12);
+  --caution:#9A3412; --caution-wash:rgba(154,52,18,.09); --focus:#B8893A;
+  --paper:#FBF7EE; --paper-line:rgba(122,82,48,.22);
+  --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,"Times New Roman",serif;
+  --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  --cond:"Avenir Next Condensed","Helvetica Neue","Arial Narrow","Roboto Condensed",Impact,sans-serif;
+  --on-navy:#F5F1E8;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --ground:#12161C; --field:#1A2029; --field-2:#222A34; --field-3:#2A333F;
+    --ink:#E9EEF4; --ink-soft:#A3AFBC; --ink-faint:#84909D;
+    --navy:#0A1E33; --navy-2:#9CC2E8; --gold:#D6A852; --gold-deep:#D6A852;
+    --red:#E07078; --red-deep:#B24A52; --acc:#D0A46B; --acc-soft:#3A2E22;
+    --rule:rgba(233,238,244,.18); --rule-soft:rgba(233,238,244,.09);
+    --lift:0 1px 0 rgba(233,238,244,.04), 0 24px 54px -32px rgba(0,0,0,.95);
+    --lift-sm:0 1px 2px rgba(0,0,0,.5), 0 10px 24px -18px rgba(0,0,0,.9);
+    --a:#A99BE8; --a-wash:rgba(169,155,232,.12);
+    --good:#79C79E; --good-wash:rgba(121,199,158,.16);
+    --caution:#F0A07C; --caution-wash:rgba(240,160,124,.12); --focus:#D6A852;
+    --paper:#232A33; --paper-line:rgba(214,168,82,.28);
+  }
+}
+:root[data-theme="dark"]{
+  --ground:#12161C; --field:#1A2029; --field-2:#222A34; --field-3:#2A333F;
+  --ink:#E9EEF4; --ink-soft:#A3AFBC; --ink-faint:#84909D;
+  --navy:#0A1E33; --navy-2:#9CC2E8; --gold:#D6A852; --gold-deep:#D6A852;
+  --red:#E07078; --red-deep:#B24A52; --acc:#D0A46B; --acc-soft:#3A2E22;
+  --rule:rgba(233,238,244,.18); --rule-soft:rgba(233,238,244,.09);
+  --lift:0 1px 0 rgba(233,238,244,.04), 0 24px 54px -32px rgba(0,0,0,.95);
+  --lift-sm:0 1px 2px rgba(0,0,0,.5), 0 10px 24px -18px rgba(0,0,0,.9);
+  --a:#A99BE8; --a-wash:rgba(169,155,232,.12);
+  --good:#79C79E; --good-wash:rgba(121,199,158,.16);
+  --caution:#F0A07C; --caution-wash:rgba(240,160,124,.12); --focus:#D6A852;
+  --paper:#232A33; --paper-line:rgba(214,168,82,.28);
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion: reduce){ html{scroll-behavior:auto} *,*::before,*::after{animation:none!important;transition:none!important} }
+body{background:var(--ground); color:var(--ink); font:17px/1.6 var(--sans); -webkit-text-size-adjust:100%}
+.wrap{max-width:1040px; margin:0 auto; padding:18px 16px 90px}
+h1,h2,h3,h4{line-height:1.15; margin:0 0 .3em; font-family:var(--serif)}
+p{margin:.4em 0}
+button{font:inherit; color:inherit}
+a{color:var(--navy-2)}
+:focus-visible{outline:3px solid var(--focus); outline-offset:2px}
+.vh{position:absolute!important; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap}
+.mast{display:flex; justify-content:space-between; align-items:flex-start; gap:10px; flex-wrap:wrap}
+.mast .k{font:700 .78rem/1.3 var(--sans); letter-spacing:.12em; text-transform:uppercase; color:var(--gold-deep)}
+.mast h1{font-size:2.1rem; letter-spacing:-.01em}
+.mast .row{display:flex; gap:8px}
+.chipbtn{min-height:48px; padding:8px 16px; border:1px solid var(--rule); border-radius:999px; background:var(--field); cursor:pointer; font-weight:700; font-size:.92rem}
+.deck{color:var(--ink-soft); max-width:66ch}
+.hubline{margin:.2em 0 0; font-size:.95rem}
+.hubline a{font-weight:700; text-decoration:none}
+.hubline a:hover{text-decoration:underline}
+.jump{margin:14px 0 4px}
+.jump label{display:grid; gap:6px; font-weight:700; font-size:.9rem; color:var(--ink-soft)}
+.jump select{min-height:48px; border:1px solid var(--rule); border-radius:12px; background:var(--field); padding:8px 12px; font:inherit; color:var(--ink); max-width:100%}
+
+/* ══ THE UNIT RAIL ══ ten numbered doors, sticky under the site bar */
+.rail{position:sticky; top:var(--aogbar-h,52px); z-index:30; margin:10px -16px 0; padding:8px 16px; background:color-mix(in srgb, var(--ground) 88%, transparent); backdrop-filter:saturate(1.2) blur(10px); -webkit-backdrop-filter:saturate(1.2) blur(10px); border-bottom:1px solid var(--rule-soft)}
+.rail .in{display:flex; gap:6px; align-items:center; overflow-x:auto; scrollbar-width:none; -ms-overflow-style:none; padding-bottom:2px}
+.rail .in::-webkit-scrollbar{display:none}
+.rail .k{flex:0 0 auto; font:700 .7rem var(--sans); letter-spacing:.14em; text-transform:uppercase; color:var(--ink-faint); margin-right:4px}
+.rail a{flex:0 0 auto; display:inline-flex; align-items:center; justify-content:center; min-width:44px; min-height:44px; padding:0 12px; border-radius:999px; border:1px solid var(--rule); background:var(--field); color:var(--ink); text-decoration:none; font:800 .95rem var(--cond); letter-spacing:.04em}
+.rail a[aria-current="page"]{background:var(--navy); border-color:var(--navy); color:var(--on-navy)}
+.rail a:hover{border-color:var(--navy-2)}
+.rail .sp{flex:1 0 8px}
+.rail .drawerbtn{flex:0 0 auto; min-height:44px; padding:0 14px; border-radius:999px; border:1px solid var(--rule); background:var(--field); font-weight:700; font-size:.88rem; cursor:pointer; display:inline-flex; gap:8px; align-items:center}
+.rail .drawerbtn svg{width:16px; height:16px}
+
+/* ══ THE BANNER ══ a drawn scene, the unit number, a huge condensed title */
+.spread{position:relative; margin:18px 0 0; border-radius:22px; overflow:hidden; background:#0A1E33; color:#F5F1E8; box-shadow:var(--lift); min-height:300px; isolation:isolate}
+.spread .scene{position:absolute; inset:0; z-index:0}
+.spread .scene svg{width:100%; height:100%; display:block}
+.spread::after{content:""; position:absolute; inset:0; z-index:1; background:linear-gradient(180deg, rgba(10,30,51,0) 30%, rgba(10,30,51,.55) 62%, rgba(10,30,51,.94) 100%); pointer-events:none}
+.spread .txt{position:relative; z-index:2; padding:clamp(120px,26vw,220px) clamp(18px,4vw,40px) clamp(20px,3vw,30px); display:grid; gap:6px}
+.spread .unum{display:inline-flex; align-items:baseline; gap:10px; font:800 .82rem var(--sans); letter-spacing:.22em; text-transform:uppercase; color:#F5F1E8}
+.spread .unum b{display:inline-flex; align-items:center; justify-content:center; min-width:44px; height:44px; padding:0 10px; border-radius:8px; background:var(--red); color:#fff; font:800 1.4rem var(--cond); letter-spacing:.02em; box-shadow:inset 0 1px 0 rgba(255,255,255,.35), 0 4px 0 #5A151B, 0 8px 16px rgba(0,0,0,.35)}
+.spread h2.ut{font:800 clamp(2.2rem,7.6vw,5.4rem)/0.95 var(--cond); letter-spacing:-.01em; margin:0; text-transform:uppercase; color:#F5F1E8; text-shadow:0 2px 0 rgba(0,0,0,.35), 0 12px 30px rgba(0,0,0,.45); max-width:14ch}
+.spread .years{font:600 clamp(1rem,2.4vw,1.35rem) var(--serif); font-style:italic; color:#EBD9A8; letter-spacing:.02em}
+.spread .credit{position:absolute; right:14px; bottom:10px; z-index:2; font:italic 500 .7rem var(--serif); color:rgba(245,241,232,.55); max-width:46%; text-align:right; line-height:1.25}
+.contents .spread .credit{display:none}
+@media(max-width:720px){.spread .credit{display:none}}
+.contents .spread{min-height:240px; border-radius:18px}
+.contents .spread .txt{padding-top:clamp(90px,18vw,150px)}
+.contents .spread h2.ut{font-size:clamp(1.9rem,6vw,4.2rem)}
+.contents .spread a.enter{position:absolute; right:clamp(14px,3vw,28px); bottom:clamp(16px,3vw,26px); z-index:3; display:inline-flex; align-items:center; gap:8px; min-height:48px; padding:0 18px; border-radius:999px; background:#F5F1E8; color:#0A1E33; text-decoration:none; font:800 .92rem var(--sans); letter-spacing:.04em; box-shadow:0 6px 18px rgba(0,0,0,.35)}
+.contents .spread a.enter:hover{background:#fff}
+
+/* ══ THE BOOK VOICE ══ */
+.intro{margin:22px 0 0; display:grid; grid-template-columns:1.4fr 1fr; gap:18px; align-items:start}
+@media(max-width:820px){.intro{grid-template-columns:1fr}}
+.intro .lead p{font-size:1.06rem; line-height:1.65}
+.intro .lead p:first-child::first-letter{font:800 3.6rem/0.85 var(--serif); float:left; margin:.1em .12em 0 0; color:var(--red)}
+.bigq{background:var(--navy); color:var(--on-navy); border-radius:16px; padding:18px 20px 20px; box-shadow:var(--lift); position:relative; overflow:hidden}
+.bigq::before{content:"?"; position:absolute; right:-10px; top:-30px; font:800 9rem/1 var(--serif); color:rgba(255,255,255,.06)}
+.bigq .k{font:700 .72rem var(--sans); letter-spacing:.18em; text-transform:uppercase; color:#EBD9A8; margin-bottom:6px}
+.bigq p{font:600 1.22rem/1.35 var(--serif); margin:0}
+.tl{margin:20px 0 0}
+.tl .k{font:700 .74rem var(--sans); letter-spacing:.16em; text-transform:uppercase; color:var(--gold-deep); margin-bottom:8px}
+.tl .track{display:flex; gap:0; overflow-x:auto; padding:10px 4px 14px; scroll-snap-type:x proximity; position:relative}
+.tl .track::before{content:""; position:absolute; left:0; right:0; top:29px; height:3px; background:linear-gradient(90deg, var(--red), var(--gold)); border-radius:3px}
+.tl .pin{flex:0 0 200px; scroll-snap-align:start; padding:0 12px 0 0; position:relative}
+.tl .pin::before{content:""; position:absolute; left:0; top:22px; width:16px; height:16px; border-radius:50%; background:var(--field); border:4px solid var(--red); box-shadow:0 0 0 3px var(--ground)}
+.tl .pin .y{font:800 1.3rem/1 var(--cond); letter-spacing:.02em; color:var(--red); margin:0 0 14px 26px}
+.tl .pin .t{font-size:.9rem; line-height:1.4; color:var(--ink-soft); margin:0 0 0 2px; padding-top:6px; border-top:1px dashed var(--rule)}
+
+/* ══ CHAPTER OPENER ══ */
+.chap{margin:36px 0 0; scroll-margin-top:70px}
+.chead{display:grid; grid-template-columns:auto 1fr; gap:16px; align-items:center; padding:18px 0 14px; border-top:3px solid var(--navy); border-bottom:1px solid var(--rule)}
+:root[data-theme="dark"] .chead{border-top-color:var(--gold)}
+.badge{display:inline-flex; align-items:center; justify-content:center; width:64px; height:64px; border-radius:14px; background:var(--red); color:#fff; font:800 2rem var(--cond); box-shadow:inset 0 1px 0 rgba(255,255,255,.35), 0 5px 0 #5A151B, 0 10px 18px rgba(0,0,0,.25); flex:0 0 auto}
+.chead .tab{display:inline-block; font:800 .7rem var(--sans); letter-spacing:.24em; text-transform:uppercase; background:var(--navy); color:var(--on-navy); padding:4px 10px; border-radius:4px 4px 0 0}
+:root[data-theme="dark"] .chead .tab{background:var(--gold); color:#12161C}
+.chead h2{font-size:clamp(1.5rem,3.6vw,2.2rem); margin:.15em 0 0}
+.chead .yrs{font:italic 600 1rem var(--serif); color:var(--ink-soft)}
+.cq{margin:12px 0 0; padding:12px 16px; border-left:4px solid var(--gold); background:var(--field-2); border-radius:0 12px 12px 0; font:600 1.05rem/1.4 var(--serif)}
+.cq .k{display:block; font:700 .7rem var(--sans); letter-spacing:.16em; text-transform:uppercase; color:var(--gold-deep); margin-bottom:4px}
+.story{margin:16px 0 0; background:var(--paper); border:1px solid var(--paper-line); border-radius:16px; padding:20px 22px 18px; box-shadow:var(--lift-sm); position:relative; background-image:repeating-linear-gradient(0deg, transparent 0 27px, rgba(122,82,48,.06) 27px 28px)}
+.story .k{font:700 .7rem var(--sans); letter-spacing:.2em; text-transform:uppercase; color:var(--red); margin-bottom:6px}
+.story h3{font-size:1.5rem; margin:0 0 .2em}
+.story .kick{font:italic 1.05rem/1.45 var(--serif); color:var(--ink-soft); margin:0 0 .8em}
+.story p.sp{font-size:1.02rem; line-height:1.68; max-width:70ch}
+.story .think{margin-top:12px; padding:10px 14px; background:var(--a-wash); border-radius:10px; font-weight:600}
+.story .think .k2{font:700 .68rem var(--sans); letter-spacing:.16em; text-transform:uppercase; color:var(--a); display:block; margin-bottom:2px}
+
+/* ══ SECTIONS AND LESSONS ══ */
+.sec{margin:26px 0 0}
+.sec .sh{display:flex; align-items:baseline; gap:12px; flex-wrap:wrap; padding-bottom:6px; border-bottom:2px solid var(--rule)}
+.sec .sh .sn{font:800 .74rem var(--sans); letter-spacing:.2em; text-transform:uppercase; color:var(--red)}
+.sec .sh h3{font-size:1.35rem; margin:0}
+.les{margin:16px 0 0; background:var(--field); border:1px solid var(--rule); border-radius:16px; box-shadow:var(--lift-sm); scroll-margin-top:70px; overflow:hidden}
+.les .lh{display:grid; grid-template-columns:auto 1fr auto; gap:12px; align-items:center; padding:12px 16px; background:var(--field-2); border-bottom:1px solid var(--rule-soft)}
+.les .ln{display:inline-flex; align-items:center; justify-content:center; min-width:52px; height:36px; padding:0 8px; border-radius:8px; background:var(--navy); color:var(--on-navy); font:800 1.05rem var(--cond); letter-spacing:.04em}
+:root[data-theme="dark"] .les .ln{background:var(--gold); color:#12161C}
+.les .lh h4{font-size:1.2rem; margin:0}
+.les .tick{width:26px; height:26px; border-radius:50%; border:2px solid var(--rule); display:inline-flex; align-items:center; justify-content:center; font-size:.8rem; color:transparent; background:var(--field)}
+.les.done .tick{background:var(--good); border-color:var(--good); color:#fff}
+.les .body{padding:14px 16px 16px; display:grid; grid-template-columns:minmax(0,1.5fr) minmax(0,1fr); gap:16px}
+@media(max-width:820px){.les .body{grid-template-columns:1fr}}
+.main-idea{padding:10px 14px; border-radius:10px; background:var(--acc-soft); border-left:4px solid var(--acc); font:600 1rem/1.4 var(--serif); color:var(--ink)}
+.main-idea .k{display:block; font:700 .66rem var(--sans); letter-spacing:.16em; text-transform:uppercase; color:var(--acc); margin-bottom:2px}
+.reading p{font-size:1.02rem; line-height:1.68; max-width:68ch}
+.kw{display:inline; padding:0 .12em; margin:0; border:0; border-bottom:2px solid var(--gold); background:linear-gradient(transparent 62%, rgba(184,137,58,.22) 62%); border-radius:2px; cursor:pointer; font:inherit; font-weight:700; color:var(--ink); line-height:inherit; position:relative}
+.kw:hover{background:linear-gradient(transparent 55%, rgba(184,137,58,.35) 55%)}
+.kwpop{position:absolute; z-index:40; left:0; top:calc(100% + 8px); min-width:240px; max-width:320px; padding:10px 12px; background:var(--navy); color:var(--on-navy); border-radius:10px; font:400 .92rem/1.45 var(--sans); box-shadow:0 12px 30px rgba(0,0,0,.35); text-align:left; white-space:normal}
+.kwpop::before{content:""; position:absolute; top:-6px; left:14px; width:12px; height:12px; background:var(--navy); transform:rotate(45deg)}
+.kwpop.right{left:auto; right:0}
+.kwpop.right::before{left:auto; right:14px}
+.words{margin-top:6px; padding:12px 14px; border:1px dashed var(--rule); border-radius:12px; background:var(--field-2)}
+.words .k{font:700 .68rem var(--sans); letter-spacing:.16em; text-transform:uppercase; color:var(--gold-deep); margin-bottom:6px}
+.words dl{margin:0; display:grid; gap:6px}
+.words dt{font-weight:800; font-family:var(--serif)}
+.words dd{margin:0 0 2px; font-size:.93rem; color:var(--ink-soft)}
+.lbtns{display:flex; gap:8px; flex-wrap:wrap; margin-top:10px}
+.lbtn{min-height:44px; padding:8px 14px; border-radius:999px; border:1px solid var(--rule); background:var(--field); cursor:pointer; font-weight:700; font-size:.88rem; display:inline-flex; align-items:center; gap:8px}
+.lbtn svg{width:16px; height:16px}
+.lbtn[aria-pressed="true"]{background:var(--navy); color:var(--on-navy); border-color:var(--navy)}
+:root[data-theme="dark"] .lbtn[aria-pressed="true"]{background:var(--gold); color:#12161C; border-color:var(--gold)}
+
+/* the look panel: a source on parchment, a bar chart, a scenario */
+.look{border-radius:14px; padding:14px 16px 16px; position:relative; overflow:hidden}
+.look .k{font:700 .66rem var(--sans); letter-spacing:.18em; text-transform:uppercase; margin-bottom:6px; display:flex; gap:8px; align-items:center}
+.look .k svg{width:16px; height:16px}
+.look h5{font:800 1.1rem/1.25 var(--serif); margin:0 0 .4em}
+.look .prompt{margin-top:10px; padding-top:8px; border-top:1px dashed var(--rule); font-weight:600; font-size:.95rem}
+.look.source{background:var(--paper); border:1px solid var(--paper-line); background-image:radial-gradient(120% 80% at 100% 0%, rgba(184,137,58,.10), transparent 60%)}
+.look.source .k{color:var(--acc)}
+.look.source blockquote{margin:0; padding:2px 0 0 16px; border-left:3px solid var(--gold); font:italic 1.05rem/1.55 var(--serif)}
+.look.source blockquote::before{content:"“"; font:800 2.4rem/0 var(--serif); color:var(--gold); vertical-align:-.35em; margin-right:2px}
+.look.source cite{display:block; margin-top:8px; font:600 .84rem var(--sans); color:var(--ink-soft); font-style:normal}
+.look.data{background:var(--field-2); border:1px solid var(--rule-soft)}
+.look.data .k{color:var(--navy-2)}
+.look.data svg.chart{width:100%; height:auto; display:block; margin-top:4px}
+.look.data .cite{font:600 .8rem var(--sans); color:var(--ink-faint); margin-top:6px}
+.look.think{background:var(--a-wash); border:1px solid rgba(74,58,140,.18)}
+.look.think .k{color:var(--a)}
+.look.think p.sc{font-size:.98rem; line-height:1.55}
+.chart text{font:600 11px var(--sans); fill:var(--ink-soft)}
+.chart .val{fill:var(--ink); font-weight:800}
+.chart rect.bar{fill:var(--navy-2)}
+:root[data-theme="dark"] .chart rect.bar{fill:var(--gold)}
+.chart line.ax{stroke:var(--rule); stroke-width:1}
+
+/* checks */
+.checks{margin-top:14px; padding:12px 14px 6px; border-top:1px solid var(--rule-soft); grid-column:1/-1}
+.checks .k{font:700 .7rem var(--sans); letter-spacing:.18em; text-transform:uppercase; color:var(--navy-2); margin-bottom:8px; display:flex; justify-content:space-between; gap:8px; align-items:center}
+.checks .score{font:800 .9rem var(--cond); letter-spacing:.06em; color:var(--good); min-width:3ch; text-align:right}
+.q{margin:0 0 12px; padding:10px 12px 12px; border-radius:12px; background:var(--field-2); border:1px solid var(--rule-soft)}
+.q .qq{font-weight:700; margin:0 0 8px; line-height:1.4}
+.q .qn{display:inline-block; min-width:1.6em; color:var(--red); font:800 1rem var(--cond)}
+.opts{display:grid; gap:6px; margin:0; padding:0; list-style:none}
+@media(min-width:820px){.q.wide .opts{grid-template-columns:1fr 1fr}}
+.opt{min-height:44px; width:100%; text-align:left; padding:9px 12px; border:1px solid var(--rule); border-radius:10px; background:var(--field); cursor:pointer; font-size:.97rem; display:flex; gap:10px; align-items:flex-start; line-height:1.35}
+.opt .l{flex:0 0 22px; height:22px; border-radius:50%; border:1.5px solid var(--rule); display:inline-flex; align-items:center; justify-content:center; font:800 .72rem var(--sans); color:var(--ink-soft); margin-top:1px}
+.opt:hover{border-color:var(--navy-2)}
+.opt[data-st="right"]{border-color:var(--good); background:var(--good-wash); font-weight:700}
+.opt[data-st="right"] .l{background:var(--good); border-color:var(--good); color:#fff}
+.opt[data-st="tried"]{opacity:.5}
+.opt[data-st="tried"] .l{background:var(--caution-wash); border-color:var(--caution); color:var(--caution)}
+.opt:disabled{cursor:default}
+.why{margin:8px 0 0; padding:8px 12px; border-radius:8px; background:var(--good-wash); color:var(--ink); font-size:.93rem; line-height:1.45}
+.why b{color:var(--good)}
+.why[hidden]{display:none}
+.say{font-size:.92rem; color:var(--caution); margin:6px 0 0; min-height:1.3em; font-weight:600}
+
+/* chapter review + unit test */
+.review{margin:24px 0 0; background:var(--field); border:1px solid var(--rule); border-radius:16px; box-shadow:var(--lift-sm); overflow:hidden}
+.review > .rh{display:flex; gap:12px; align-items:center; justify-content:space-between; padding:12px 16px; background:var(--navy); color:var(--on-navy)}
+:root[data-theme="dark"] .review > .rh{background:var(--field-3); color:var(--ink)}
+.review > .rh .k{font:800 .74rem var(--sans); letter-spacing:.2em; text-transform:uppercase}
+.review > .rh h3{font-size:1.15rem; margin:0; color:inherit}
+.review .rscore{font:800 1.4rem var(--cond); letter-spacing:.04em; min-width:5ch; text-align:right}
+.review .rbody{padding:14px 16px 8px}
+.review .rfoot{padding:8px 16px 16px; display:flex; gap:10px; flex-wrap:wrap; align-items:center}
+.btn{min-height:48px; padding:10px 20px; border-radius:12px; border:1px solid var(--rule); background:var(--field); cursor:pointer; font-weight:700}
+.btn-a{background:var(--navy); border-color:var(--navy); color:var(--on-navy)}
+:root[data-theme="dark"] .btn-a{background:var(--gold); border-color:var(--gold); color:#12161C}
+.verdict{font-weight:700; color:var(--ink-soft)}
+
+/* ══ WRAP-UP ══ */
+.wrap-up{margin:40px 0 0}
+.wrap-up .wh{display:grid; grid-template-columns:auto 1fr; gap:16px; align-items:center; padding:18px 0 14px; border-top:3px solid var(--red); border-bottom:1px solid var(--rule)}
+.wrap-up .wh .badge{background:var(--navy); box-shadow:inset 0 1px 0 rgba(255,255,255,.2), 0 5px 0 #05101C, 0 10px 18px rgba(0,0,0,.25); font-size:1.4rem}
+:root[data-theme="dark"] .wrap-up .wh .badge{background:var(--gold); color:#12161C; box-shadow:inset 0 1px 0 rgba(255,255,255,.35), 0 5px 0 #7A5C1F}
+.wrap-up .wh h2{font-size:clamp(1.5rem,3.6vw,2.1rem); margin:.1em 0 0}
+.match{margin-top:16px; background:var(--field); border:1px solid var(--rule); border-radius:16px; padding:14px 16px 16px; box-shadow:var(--lift-sm)}
+.match .mh{display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:8px}
+.match .mh h3{font-size:1.15rem; margin:0}
+.match .mscore{font:800 1.1rem var(--cond); color:var(--good)}
+.mgrid{display:grid; grid-template-columns:1fr 1fr; gap:10px}
+@media(max-width:640px){.mgrid{grid-template-columns:1fr}}
+.mcol{display:grid; gap:8px; align-content:start}
+.mcol .ck{font:700 .68rem var(--sans); letter-spacing:.16em; text-transform:uppercase; color:var(--ink-faint)}
+.mt{min-height:48px; text-align:left; padding:10px 12px; border-radius:10px; border:1.5px solid var(--rule); background:var(--field-2); cursor:pointer; font-size:.95rem; line-height:1.35}
+.mt.w{font-weight:800; font-family:var(--serif); font-size:1.02rem}
+.mt[aria-pressed="true"]{border-color:var(--navy-2); background:var(--a-wash)}
+.mt.ok{border-color:var(--good); background:var(--good-wash); opacity:.75; cursor:default}
+.mt.no{animation:shake .3s}
+@keyframes shake{25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
+.write{margin-top:16px; background:var(--paper); border:1px solid var(--paper-line); border-radius:16px; padding:16px 18px 18px; box-shadow:var(--lift-sm)}
+.write h3{font-size:1.15rem; margin:0 0 .3em}
+.write .wp{font:600 1.05rem/1.5 var(--serif)}
+.write ul{margin:.4em 0 .6em; padding-left:1.2em}
+.write li{margin:.25em 0; font-size:.95rem}
+.write textarea{width:100%; min-height:200px; padding:12px 14px; border:1px solid var(--rule); border-radius:12px; background:var(--field); color:var(--ink); font:1rem/1.6 var(--serif); resize:vertical}
+.write .wfoot{display:flex; gap:10px; align-items:center; flex-wrap:wrap; margin-top:8px}
+.write .wc{font:700 .84rem var(--sans); color:var(--ink-faint)}
+.rooms{margin-top:16px; background:var(--field); border:1px solid var(--rule); border-radius:16px; padding:14px 16px; box-shadow:var(--lift-sm)}
+.rooms h3{font-size:1.15rem; margin:0 0 .2em}
+.rooms p{color:var(--ink-soft); font-size:.95rem; margin:0 0 .6em}
+.rooms .doors{display:flex; gap:8px; flex-wrap:wrap}
+.rooms .door{display:inline-flex; align-items:center; min-height:44px; padding:8px 14px; border:1px solid var(--rule); border-radius:999px; background:var(--field-2); color:var(--ink); font:600 .88rem var(--sans); text-decoration:none}
+.rooms .door:hover{border-color:var(--acc)}
+.pager2{display:flex; justify-content:space-between; gap:10px; margin:28px 0 0; flex-wrap:wrap}
+.pager2 a{display:inline-flex; align-items:center; gap:8px; min-height:48px; padding:0 16px; border-radius:12px; border:1px solid var(--rule); background:var(--field); color:var(--ink); text-decoration:none; font-weight:700}
+.pager2 a:hover{border-color:var(--navy-2)}
+.pager2 a .s{display:block; font:700 .66rem var(--sans); letter-spacing:.16em; text-transform:uppercase; color:var(--ink-faint)}
+
+/* ══ THE CONTENTS DRAWER ══ chapters → sections → lessons, on the phone */
+.drawer{position:fixed; inset:0; z-index:60; display:none}
+.drawer[data-open="1"]{display:block}
+.drawer .scrim{position:absolute; inset:0; background:rgba(10,30,51,.5); backdrop-filter:blur(3px)}
+.drawer .sheet{position:absolute; right:0; top:0; bottom:0; width:min(420px,92vw); background:var(--field); box-shadow:-10px 0 40px rgba(0,0,0,.35); display:flex; flex-direction:column; animation:slidein .28s cubic-bezier(.2,.8,.2,1)}
+@keyframes slidein{from{transform:translateX(30px);opacity:0}}
+.drawer .dh{display:flex; justify-content:space-between; align-items:center; padding:12px 14px 10px; border-bottom:1px solid var(--rule)}
+.drawer .dh b{font:800 .8rem var(--sans); letter-spacing:.16em; text-transform:uppercase; color:var(--gold-deep)}
+.drawer .dh button{min-width:44px; min-height:44px; border-radius:999px; border:1px solid var(--rule); background:var(--field-2); cursor:pointer; font-size:1.2rem}
+.drawer nav{overflow:auto; padding:8px 8px 20px}
+.drawer nav a{display:block; padding:9px 10px; border-radius:8px; color:var(--ink); text-decoration:none; font-size:.95rem; min-height:44px; display:flex; align-items:center; gap:8px}
+.drawer nav a:hover{background:var(--field-2)}
+.drawer nav .dc{margin:8px 0 2px; padding:6px 10px; font:800 .95rem var(--serif); border-bottom:1px solid var(--rule-soft)}
+.drawer nav .dc .b{display:inline-flex; width:26px; height:26px; border-radius:6px; background:var(--red); color:#fff; align-items:center; justify-content:center; font:800 .85rem var(--cond); margin-right:8px}
+.drawer nav .ds{padding:6px 10px 2px; font:800 .66rem var(--sans); letter-spacing:.16em; text-transform:uppercase; color:var(--red)}
+.drawer nav a .n{font:800 .8rem var(--cond); color:var(--ink-faint); min-width:2.4em}
+.drawer nav a .t2{display:inline-block; width:10px; height:10px; border-radius:50%; border:1.5px solid var(--rule); margin-left:auto; flex:0 0 auto}
+.drawer nav a.done .t2{background:var(--good); border-color:var(--good)}
+
+/* ══ CONTENTS PAGE ══ */
+.contents .search{margin:16px 0 0; display:grid; gap:6px}
+.contents .search label{font-weight:700; font-size:.9rem; color:var(--ink-soft)}
+.contents .search .box{position:relative}
+.contents .search input{width:100%; min-height:52px; padding:10px 14px 10px 46px; border:1px solid var(--rule); border-radius:14px; background:var(--field); color:var(--ink); font:1.02rem var(--sans); box-shadow:var(--lift-sm)}
+.contents .search svg{position:absolute; left:16px; top:50%; transform:translateY(-50%); width:20px; height:20px; color:var(--ink-faint)}
+.contents .search .hits{font:700 .82rem var(--sans); color:var(--ink-faint); min-height:1.2em}
+.contents .stat{display:flex; gap:14px; flex-wrap:wrap; margin:10px 0 0; align-items:center}
+.contents .stat .n{font:800 1.5rem var(--cond); color:var(--red)}
+.contents .stat .l{font:700 .74rem var(--sans); letter-spacing:.12em; text-transform:uppercase; color:var(--ink-faint)}
+.contents .prog{height:8px; border-radius:6px; background:var(--field-3); overflow:hidden; flex:1 1 120px; min-width:120px}
+.contents .prog i{display:block; height:100%; width:0; background:linear-gradient(90deg, var(--red), var(--gold)); border-radius:6px; transition:width .4s}
+.unit-spread{margin:30px 0 0; scroll-margin-top:70px}
+.bandhead{margin:40px 0 -10px; padding:14px 0 10px; border-top:3px solid var(--navy); display:grid; grid-template-columns:auto 1fr; gap:4px 14px; align-items:baseline; scroll-margin-top:70px}
+:root[data-theme="dark"] .bandhead{border-top-color:var(--gold)}
+.bandhead .bk{font:800 .72rem var(--sans); letter-spacing:.22em; text-transform:uppercase; color:var(--red)}
+.bandhead h2{font:800 clamp(1.6rem,4vw,2.4rem)/1 var(--cond); text-transform:uppercase; letter-spacing:.01em; margin:0}
+.bandhead .bd{grid-column:2; margin:0; font:600 .88rem var(--sans); color:var(--ink-faint)}
+.unit-spread .body{margin-top:14px}
+.cchap{margin:18px 0 0; background:var(--field); border:1px solid var(--rule); border-radius:16px; box-shadow:var(--lift-sm); overflow:hidden}
+.cchap .ch{display:grid; grid-template-columns:auto 1fr; gap:14px; align-items:center; padding:14px 16px; background:var(--field-2); border-bottom:1px solid var(--rule-soft)}
+.cchap .ch .badge{width:52px; height:52px; font-size:1.6rem}
+.cchap .ch .tab{display:inline-block; font:800 .64rem var(--sans); letter-spacing:.22em; text-transform:uppercase; background:var(--navy); color:var(--on-navy); padding:3px 8px; border-radius:4px 4px 0 0}
+:root[data-theme="dark"] .cchap .ch .tab{background:var(--gold); color:#12161C}
+.cchap .ch h3{font-size:1.25rem; margin:.1em 0 0}
+.cchap .ch .yrs{font:italic 600 .92rem var(--serif); color:var(--ink-soft)}
+.cchap .st{padding:10px 16px 0; font:italic .95rem/1.45 var(--serif); color:var(--ink-soft)}
+.cchap .st b{font-style:normal; color:var(--red); font-family:var(--sans); font-size:.7rem; letter-spacing:.16em; text-transform:uppercase; margin-right:6px}
+.csec{padding:8px 16px 4px}
+.csec .sn{font:800 .7rem var(--sans); letter-spacing:.2em; text-transform:uppercase; color:var(--red); margin:8px 0 4px}
+.csec .sn span{color:var(--ink); font:700 .95rem var(--serif); letter-spacing:0; text-transform:none; margin-left:8px}
+.lrow{display:flex; align-items:center; gap:10px; min-height:44px; padding:5px 8px; border-radius:8px; color:var(--ink); text-decoration:none; font-size:.98rem}
+.lrow:hover{background:var(--field-2)}
+.lrow .n{font:800 .9rem var(--cond); color:var(--ink-faint); min-width:2.6em; letter-spacing:.02em}
+.lrow .tk{margin-left:auto; width:22px; height:22px; border-radius:50%; border:2px solid var(--rule); flex:0 0 auto; display:inline-flex; align-items:center; justify-content:center; color:transparent; font-size:.7rem}
+.lrow.done .tk{background:var(--good); border-color:var(--good); color:#fff}
+.lrow[hidden]{display:none}
+.csec[data-empty="1"], .cchap[data-empty="1"], .unit-spread[data-empty="1"]{display:none}
+.cwrap{padding:10px 16px 14px; display:flex; gap:8px; flex-wrap:wrap; border-top:1px dashed var(--rule-soft); margin-top:6px}
+.cwrap a{display:inline-flex; align-items:center; min-height:40px; padding:0 12px; border-radius:999px; border:1px solid var(--rule); background:var(--field-2); color:var(--ink); text-decoration:none; font:600 .84rem var(--sans)}
+.cwrap a:hover{border-color:var(--navy-2)}
+.teach{margin-top:28px; border:1.5px solid var(--gold); border-radius:14px; background:var(--field)}
+.teach summary{cursor:pointer; list-style:none; min-height:48px; display:flex; align-items:center; padding:10px 16px; font-weight:700; font-size:.92rem; color:var(--gold-deep)}
+.teach summary::-webkit-details-marker{display:none}
+.teach .inner{padding:4px 16px 16px; display:grid; gap:10px; font-size:.93rem; color:var(--ink-soft)}
+.teach .inner p{margin:0}
+footer.foot{margin-top:40px; font-size:.86rem; color:var(--ink-faint); max-width:70ch}
+
+/* ══ PRINT ══ the book, on paper */
+@media print{
+  body{background:#fff; color:#111; font-size:11.5pt}
+  .wrap{max-width:none; padding:0}
+  .rail,.jump,.mast .row,.hubline,.lbtns,.drawer,.checks,.review .rfoot,.pager2,.teach,.contents .search,.contents .stat,.spread .credit,.spread a.enter,.aogj-btn,.aogj-panel{display:none!important}
+  .spread{min-height:0; border-radius:0; box-shadow:none; background:#0A1E33!important; -webkit-print-color-adjust:exact; print-color-adjust:exact; break-inside:avoid}
+  .spread .txt{padding:40pt 20pt 16pt}
+  .chap{break-before:page}
+  .les,.story,.look,.q,.review{break-inside:avoid; box-shadow:none}
+  .les .body{grid-template-columns:1fr}
+  .kw{border-bottom:1px solid #999; background:none; font-weight:700}
+  .kwpop{display:none!important}
+  .opt{border:1px solid #999; background:#fff}
+  .why{display:block!important; border:1px dashed #999; background:#fff}
+  .why.pr{display:none!important}
+  .write textarea{min-height:320pt; border:1px solid #999}
+  a{color:inherit; text-decoration:none}
+}
+
+
+</style>
+</head>
+<body>
+<script src="/aog-topbar.js"></script>
+<script src="/aog-grace.js" defer></script>
+<div class="wrap contents">
+<header class="mast">
+  <div>
+    <div class="k"><span data-en="The Interior — English · Every band" data-es="El Interior — Inglés · Cada banda">The Interior — English · Every band</span></div>
+    <h1 data-en="English" data-es="Inglés">English</h1>
+    <p class="deck"><span data-en="The whole course on one page, band by band: every unit with its chapters, sections and numbered lessons. Tap a lesson to open it. A tick means you got all three checks right." data-es="Todo el curso en una página, banda por banda: cada unidad con sus capítulos, secciones y lecciones numeradas. Toca una lección para abrirla. Una marca significa que acertaste las tres comprobaciones.">The whole course on one page, band by band: every unit with its chapters, sections and numbered lessons. Tap a lesson to open it. A tick means you got all three checks right.</span></p>
+    <p class="hubline no-print"><a id="hubLink" href="english-hub.html"><span data-en="← English, every band" data-es="← Inglés, cada banda">← English, every band</span></a></p>
+  </div>
+  <div class="row no-print">
+    <button class="chipbtn" id="langBtn" type="button">Español</button>
+    <button class="chipbtn" id="themeBtn" type="button" data-en="Dark" data-es="Oscuro">Dark</button>
+  </div>
+</header>
+
+<main id="main">
+<div class="jump no-print"><label><span data-en="Jump to another unit" data-es="Ir a otra unidad">Jump to another unit</span>
+<select id="jumpSel">
+<optgroup label="Social Studies · Grades K–2">
+<option value="s7-me-family-class.html">Me, My Family, My Class</option>
+<option value="s8-rules-fair-choices.html">Rules and Fair Choices</option>
+<option value="s9-maps-where-things-are.html">Maps: Where Things Are</option>
+<option value="s10-then-and-now.html">Then and Now</option>
+<option value="s11-needs-wants-work.html">Needs, Wants and Work</option>
+<option value="s12-symbols-stories.html">Symbols and Stories of Our Country</option>
+</optgroup>
+<optgroup label="Social Studies · Grades 3–5">
+<option value="s1-government.html">Government: Local, State, National</option>
+<option value="s2-communities-illinois.html">Communities and Illinois</option>
+<option value="s3-first-peoples.html">The First Peoples</option>
+<option value="s4-explorers-colonies-nation.html">Explorers, Colonies, a New Nation</option>
+<option value="s5-money-markets-choices.html">Money, Markets and Choices</option>
+<option value="s6-maps-us-regions.html">Maps and Regions of the United States</option>
+</optgroup>
+<optgroup label="Social Studies · Grades 6–8">
+<option value="b9-new-nation.html">A More Perfect Union</option>
+<option value="b9-new-nation.html?mod=founding">&nbsp;&nbsp;&nbsp;&nbsp;The Founding · 1776–1791</option>
+<option value="b9-new-nation.html?mod=branches">&nbsp;&nbsp;&nbsp;&nbsp;Civics · The Three Branches</option>
+<option value="b9-new-nation.html?mod=growth">&nbsp;&nbsp;&nbsp;&nbsp;Growth &amp; Economy</option>
+<option value="b9-new-nation.html?mod=war">&nbsp;&nbsp;&nbsp;&nbsp;The Road to War &amp; Freedom</option>
+<option value="s13-world-before-1500.html">The World Before 1500</option>
+<option value="s14-world-regions.html">The World’s Regions</option>
+<option value="s15-reconstruction-to-present.html">Reconstruction to the Present</option>
+</optgroup>
+<optgroup label="Social Studies · Grades 9–10">
+<option value="s16-empires-and-exchange.html">Empires and Exchange</option>
+<option value="s17-revolutions-modern-world.html">Revolutions and the Modern World</option>
+<option value="s18-human-geography.html">Human Geography</option>
+<option value="s19-civics-rights-power.html">Civics: Rights, Power and Participation</option>
+</optgroup>
+<optgroup label="Social Studies · Grades 11–12">
+<option value="s20-industry-progressive-era.html">Industry to the Progressive Era</option>
+<option value="s21-world-wars-cold-war.html">The World Wars and the Cold War</option>
+<option value="s22-civil-rights-to-today.html">Civil Rights to Today</option>
+<option value="s23-government.html">Government</option>
+<option value="s24-economics.html">Economics</option>
+<option value="s25-capstone-inquiry.html">Capstone: An Inquiry from the Sources</option>
+</optgroup>
+<optgroup label="Jump to a subject">
+<option value="math-hub.html">All of Math — every band</option>
+<option value="science-hub.html">All of Science — every band</option>
+<option value="social-studies-hub.html">All of Social Studies — every band</option>
+<option value="economics-hub.html">All of Economics — every band</option>
+<option value="english-hub.html">All of English — every band</option>
+<option value="spanish-hub.html">All of Spanish — every band</option>
+<option value="facs-hub.html">All of Family &amp; Consumer Sciences — every band</option>
+<option value="religions-hub.html">All of World Religions — every band</option>
+</optgroup>
+<optgroup label="Math · Grades K–2">
+<option value="m15-counting-how-many.html">Counting and how many</option>
+<option value="m16-add-subtract-within-20.html">Adding and subtracting within 20</option>
+<option value="m17-tens-ones-hundreds.html">Tens and ones, then hundreds</option>
+<option value="m18-add-subtract-within-1000.html">Adding and subtracting within 1,000</option>
+<option value="m19-length-time-money.html">Length, time and money</option>
+<option value="m20-shapes-equal-shares.html">Shapes and equal shares</option>
+</optgroup>
+<optgroup label="Math · Grades 3–5">
+<option value="m21-multiplication-division-meaning.html">Multiplication and division: what they mean</option>
+<option value="m22-multi-digit-multiplication.html">Multi-digit multiplication</option>
+<option value="m23-fractions-add-subtract-multiply.html">Fractions: add, subtract, multiply</option>
+<option value="m24-decimals.html">Decimals</option>
+<option value="m25-measurement-area-perimeter-volume.html">Measurement: area, perimeter, volume</option>
+<option value="m26-geometry-coordinate-plane.html">Geometry and the coordinate plane</option>
+</optgroup>
+<optgroup label="Math · Grades 6–8">
+<option value="interior-math.html">The 7th-grade year, month by month</option>
+<option value="concepts-and-data.html">Number Concepts &amp; Data</option>
+<option value="b10-interior-math.html">The Fall Skills</option>
+<option value="b10-interior-math.html?mod=sept">&nbsp;&nbsp;&nbsp;&nbsp;September · Integers</option>
+<option value="b10-interior-math.html?mod=oct">&nbsp;&nbsp;&nbsp;&nbsp;October · Multiply, Divide &amp; Properties</option>
+<option value="b10-interior-math.html?mod=nov">&nbsp;&nbsp;&nbsp;&nbsp;November · Expressions</option>
+<option value="b10-interior-math.html?mod=dec">&nbsp;&nbsp;&nbsp;&nbsp;December · Equations</option>
+<option value="b12-sixth-grade-review.html">6th Grade Review — Quiz</option>
+<option value="b12-sixth-grade-review.html?mod=round">&nbsp;&nbsp;&nbsp;&nbsp;Rounding &amp; Order of Operations</option>
+<option value="b12-sixth-grade-review.html?mod=dec">&nbsp;&nbsp;&nbsp;&nbsp;Decimals</option>
+<option value="b12-sixth-grade-review.html?mod=gcf">&nbsp;&nbsp;&nbsp;&nbsp;GCF, LCM &amp; Fraction Names</option>
+<option value="b12-sixth-grade-review.html?mod=frac">&nbsp;&nbsp;&nbsp;&nbsp;Fraction Operations</option>
+<option value="b12-sixth-grade-review.html?mod=coord">&nbsp;&nbsp;&nbsp;&nbsp;The Coordinate Plane</option>
+<option value="b13-sixth-grade-practice.html">6th Grade Review — In Class &amp; HW</option>
+<option value="b13-sixth-grade-practice.html?mod=round">&nbsp;&nbsp;&nbsp;&nbsp;Rounding &amp; Order of Operations</option>
+<option value="b13-sixth-grade-practice.html?mod=dec">&nbsp;&nbsp;&nbsp;&nbsp;Decimals</option>
+<option value="b13-sixth-grade-practice.html?mod=gcf">&nbsp;&nbsp;&nbsp;&nbsp;GCF, LCM &amp; Fraction Names</option>
+<option value="b13-sixth-grade-practice.html?mod=frac">&nbsp;&nbsp;&nbsp;&nbsp;Fraction Operations</option>
+<option value="b13-sixth-grade-practice.html?mod=coord">&nbsp;&nbsp;&nbsp;&nbsp;The Coordinate Plane</option>
+<option value="m27-ratios-rates.html">Ratios, rates and unit rates</option>
+<option value="m28-proportional-percent.html">Proportional relationships and percent</option>
+<option value="m29-inequalities.html">Inequalities</option>
+<option value="m30-area-surface-volume.html">Area, surface area and volume</option>
+<option value="m31-angles-triangles-scale.html">Angles, triangles and scale drawings</option>
+<option value="m32-probability-sampling.html">Probability and sampling</option>
+<option value="m33-exponents-roots-scinot.html">Exponents, roots and scientific notation</option>
+<option value="m34-equations-systems.html">Linear equations and systems</option>
+<option value="m35-functions-slope.html">Functions and slope</option>
+<option value="m36-transformations.html">Transformations, congruence and similarity</option>
+<option value="m37-pythagorean-theorem.html">The Pythagorean theorem</option>
+</optgroup>
+<optgroup label="Math · Grades 9–10">
+<option value="m38-alg1-linear-equations-inequalities.html">Algebra I: linear equations and inequalities</option>
+<option value="m39-alg1-functions-linear-models.html">Algebra I: functions and linear models</option>
+<option value="m40-alg1-systems.html">Algebra I: systems</option>
+<option value="m41-alg1-exponents-polynomials-factoring.html">Algebra I: exponents, polynomials, factoring</option>
+<option value="m42-alg1-quadratics.html">Algebra I: quadratics</option>
+<option value="m43-geo-proof-congruence-triangles.html">Geometry: proof, congruence and triangles</option>
+<option value="m44-geo-similarity-trig.html">Geometry: similarity and right-triangle trigonometry</option>
+<option value="m45-geo-circles-area-volume.html">Geometry: circles, area and volume</option>
+</optgroup>
+<optgroup label="Math · Grades 11–12">
+<option value="m46-alg2-polynomial-rational.html">Algebra II: polynomial and rational functions</option>
+<option value="m47-alg2-exponential-logarithmic.html">Algebra II: exponential and logarithmic functions</option>
+<option value="m48-trigonometric-functions.html">Trigonometric functions</option>
+<option value="m49-sequences-series.html">Sequences and series</option>
+<option value="m50-statistics-sample-to-claim.html">Statistics: from a sample to a claim</option>
+<option value="m51-financial-math.html">Financial math</option>
+<option value="m52-capstone-model-it.html">Capstone: model it</option>
+</optgroup>
+<optgroup label="Science · Grades K–2">
+<option value="b26-pushes-pulls.html">Pushes and Pulls</option>
+<option value="b27-sun-moon-sky.html">Sun, Moon and Sky</option>
+<option value="b28-living-things-need.html">What Living Things Need</option>
+<option value="b29-weather-seasons.html">Weather and Seasons</option>
+<option value="b30-light-sound.html">Light and Sound</option>
+<option value="b31-materials-change.html">Materials and How They Change</option>
+</optgroup>
+<optgroup label="Science · Grades 3–5">
+<option value="b18-forces-motion.html">Forces and Motion</option>
+<option value="b19-life-cycles-traits.html">Life Cycles and Traits</option>
+<option value="b20-weather-climate.html">Weather and Climate</option>
+<option value="b21-energy.html">Energy</option>
+<option value="b22-changing-surface.html">Earth’s Changing Surface</option>
+<option value="b23-matter-properties.html">Matter: Properties and Changes</option>
+<option value="b24-ecosystems.html">Ecosystems and Food Webs</option>
+<option value="b25-earth-in-space.html">Earth in Space</option>
+</optgroup>
+<optgroup label="Science · Grades 6–8">
+<option value="b1-living-things.html">Science 1 · Living Things in the Biosphere</option>
+<option value="b2-cell-system.html">Science 2 · The Cell System</option>
+<option value="b3-body-systems.html">Science 3 · Human Body Systems</option>
+<option value="b4-reproduction.html">Science 4 · Reproduction and Growth</option>
+<option value="b5-ecosystems.html">Science 5 · Ecosystems</option>
+<option value="b6-populations.html">Science 6 · Populations and Communities</option>
+<option value="b7-heredity.html">Science 7 · Genes and Heredity</option>
+<option value="b8-natural-selection.html">Science 8 · Natural Selection</option>
+<option value="b14-matter.html">Matter and Its Interactions</option>
+<option value="b15-forces-energy-waves.html">Forces, Energy and Waves</option>
+<option value="b16-earth-systems.html">Earth’s Systems</option>
+<option value="b17-space-systems.html">Space Systems</option>
+</optgroup>
+<optgroup label="Science · Grades 9–10">
+<option value="b32-cells-energy.html">Biology: Cells and Energy</option>
+<option value="b33-genetics-evolution.html">Biology: Genetics and Evolution</option>
+<option value="b34-ecosystems-human-impact.html">Biology: Ecosystems and Human Impact</option>
+<option value="b35-matter-reactions.html">Physical Science: Matter and Reactions</option>
+<option value="b36-forces-energy-waves-hs.html">Physical Science: Forces, Energy, Waves</option>
+<option value="b37-earth-space-hs.html">Earth and Space</option>
+</optgroup>
+<optgroup label="Science · Grades 11–12">
+<option value="b38-chem-atoms-bonding.html">Chemistry: Atoms, Bonding, Reactions</option>
+<option value="b39-chem-stoich-solutions.html">Chemistry: Stoichiometry and Solutions</option>
+<option value="b40-physics-motion-forces.html">Physics: Motion and Forces</option>
+<option value="b41-physics-energy-waves-electricity.html">Physics: Energy, Waves, Electricity</option>
+<option value="b42-environmental-science.html">Environmental Science</option>
+<option value="b43-capstone-evidence.html">Capstone: Argue From Evidence</option>
+</optgroup>
+<optgroup label="Economics · Grades 9–10">
+<option value="ec1-scarcity-and-choice.html">Scarcity, Choice and Opportunity Cost</option>
+<option value="ec2-supply-and-demand.html">Supply, Demand and the Market</option>
+<option value="ec3-prices-and-market-failure.html">Prices, Controls and Market Failure</option>
+<option value="ec4-competition-and-firms.html">Competition, Firms and Market Structure</option>
+</optgroup>
+<optgroup label="Economics · Grades 11–12">
+<option value="ec5-measuring-the-economy.html">Measuring the Economy</option>
+<option value="ec6-business-cycle-and-fiscal.html">The Business Cycle and Fiscal Policy</option>
+<option value="ec7-money-banking-and-the-fed.html">Money, Banking and the Federal Reserve</option>
+<option value="ec8-trade-taxes-and-the-world.html">Trade, Taxes and the World Economy</option>
+</optgroup>
+<optgroup label="English · Grades K–2">
+<option value="" selected>English · Course contents</option>
+<option value="ela-u1.html">&nbsp;&nbsp;&nbsp;&nbsp;Unit 1 · Sounds and Letters</option>
+<option value="ela-u2.html">&nbsp;&nbsp;&nbsp;&nbsp;Unit 2 · Words and Sentences</option>
+<option value="ela-u3.html">&nbsp;&nbsp;&nbsp;&nbsp;Unit 3 · Stories and True Books</option>
+<option value="ela-u4.html">&nbsp;&nbsp;&nbsp;&nbsp;Unit 4 · Writing and Telling</option>
+<option value="e1-sounds-and-letters.html">Sounds and Letters</option>
+<option value="e2-sight-words.html">Words You Know by Sight</option>
+<option value="e3-a-whole-thought.html">A Sentence Is a Whole Thought</option>
+<option value="e4-who-where-what.html">Who, Where, What Happens</option>
+<option value="e5-beginning-middle-end.html">Beginning, Middle, End</option>
+<option value="e6-true-books-story-books.html">True Books and Story Books</option>
+</optgroup>
+<optgroup label="English · Grades 3–5">
+<option value="" selected>English · Course contents</option>
+<option value="ela-u5.html">&nbsp;&nbsp;&nbsp;&nbsp;Unit 5 · Word Power</option>
+<option value="ela-u6.html">&nbsp;&nbsp;&nbsp;&nbsp;Unit 6 · Reading Stories</option>
+<option value="ela-u7.html">&nbsp;&nbsp;&nbsp;&nbsp;Unit 7 · Reading to Learn</option>
+<option value="ela-u8.html">&nbsp;&nbsp;&nbsp;&nbsp;Unit 8 · Writing</option>
+<option value="ela-u9.html">&nbsp;&nbsp;&nbsp;&nbsp;Unit 9 · Grammar, Speaking and Listening</option>
+<option value="e7-word-parts.html">Word Parts: Prefixes, Suffixes, Roots</option>
+<option value="e8-context-clues.html">Context Clues</option>
+<option value="e9-main-idea.html">Main Idea and Details</option>
+<option value="e10-story-elements.html">Story Elements and Theme</option>
+<option value="e11-text-structure.html">How a Text Is Built</option>
+<option value="e12-the-paragraph.html">The Paragraph: a Claim and Reasons</option>
+</optgroup>
+<optgroup label="English · Grades 6–8">
+<option value="" selected>English · Course contents</option>
+<option value="ela-u10.html">&nbsp;&nbsp;&nbsp;&nbsp;Unit 10 · The Novel</option>
+<option value="ela-u11.html">&nbsp;&nbsp;&nbsp;&nbsp;Unit 11 · Nonfiction and Argument</option>
+<option value="ela-u12.html">&nbsp;&nbsp;&nbsp;&nbsp;Unit 12 · Words: Stems and Meaning</option>
+<option value="ela-u13.html">&nbsp;&nbsp;&nbsp;&nbsp;Unit 13 · Grammar and Style</option>
+<option value="ela-u14.html">&nbsp;&nbsp;&nbsp;&nbsp;Unit 14 · Writing Across Forms</option>
+<option value="n1-the-outsiders.html">The Outsiders (novel study)</option>
+<option value="b11-grammar.html">Grammar · 16 Modules</option>
+</optgroup>
+<optgroup label="English · Grades 9–10">
+<option value="" selected>English · Course contents</option>
+<option value="ela-u15.html">&nbsp;&nbsp;&nbsp;&nbsp;Unit 15 · Literature: Close Reading</option>
+<option value="ela-u16.html">&nbsp;&nbsp;&nbsp;&nbsp;Unit 16 · The Language of Persuasion</option>
+<option value="ela-u17.html">&nbsp;&nbsp;&nbsp;&nbsp;Unit 17 · Words and Structure</option>
+<option value="ela-u18.html">&nbsp;&nbsp;&nbsp;&nbsp;Unit 18 · Grammar for Writers</option>
+<option value="ela-u19.html">&nbsp;&nbsp;&nbsp;&nbsp;Unit 19 · Research and Writing</option>
+<option value="e13-clues-and-word-parts.html">Context Clues and Word Parts</option>
+<option value="e14-figurative-language.html">Figurative Language</option>
+<option value="e15-tone-and-voice.html">Tone and Voice</option>
+<option value="e16-rhetoric.html">Rhetoric: How a Writer Persuades</option>
+<option value="e17-punctuation-meaning.html">Punctuation That Changes the Meaning</option>
+<option value="e18-clauses-parallel-usage.html">Clauses, Parallel Structure and Usage</option>
+</optgroup>
+<optgroup label="English · Grades 11–12">
+<option value="" selected>English · Course contents</option>
+<option value="ela-u20.html">&nbsp;&nbsp;&nbsp;&nbsp;Unit 20 · Literary Devices and American Voices</option>
+<option value="ela-u21.html">&nbsp;&nbsp;&nbsp;&nbsp;Unit 21 · Diction, Syntax and Style</option>
+<option value="ela-u22.html">&nbsp;&nbsp;&nbsp;&nbsp;Unit 22 · Reasoning and Argument</option>
+<option value="ela-u23.html">&nbsp;&nbsp;&nbsp;&nbsp;Unit 23 · Advanced Grammar and Usage</option>
+<option value="ela-u24.html">&nbsp;&nbsp;&nbsp;&nbsp;Unit 24 · Capstone: Research, Cite, Defend</option>
+<option value="e19-literary-devices.html">Literary Devices</option>
+<option value="e20-diction-and-syntax.html">Diction and Syntax</option>
+<option value="e21-reasoning-and-fallacies.html">Reasoning and Fallacies</option>
+<option value="e22-advanced-punctuation.html">Advanced Punctuation</option>
+<option value="e23-concision-and-style.html">Concision and Style</option>
+<option value="e24-capstone.html">Capstone — Research, Cite, Defend</option>
+</optgroup>
+<optgroup label="Spanish · Grades K–2">
+<option value="sp13-five-vowels.html">Five Vowels That Never Change</option>
+<option value="sp14-colors-numbers.html">Colors and Counting to Twenty</option>
+<option value="sp15-el-and-la.html">El and La — Naming What Is Here</option>
+<option value="sp16-one-and-many.html">One and Many, Big and Little</option>
+</optgroup>
+<optgroup label="Spanish · Grades 3–5">
+<option value="sp17-whole-thought.html">A Whole Thought in Spanish</option>
+<option value="sp18-soy-estoy.html">Soy and Estoy — Who I Am, How I Am</option>
+<option value="sp19-who-where-when.html">Who, Where, When, Why</option>
+<option value="sp20-first-then-last.html">First, Then, Last — Telling a Day</option>
+</optgroup>
+<optgroup label="Spanish · Grades 6–8">
+<option value="sp1-greetings.html">Greetings and Introductions</option>
+<option value="sp2-numbers-time.html">Numbers, Time and Dates</option>
+<option value="sp3-classroom-nouns.html">The Classroom — Nouns and Articles</option>
+<option value="sp4-ser-estar.html">Ser, Estar and Describing People</option>
+</optgroup>
+<optgroup label="Spanish · Grades 9–10">
+<option value="sp5-present-tense.html">The Present Tense</option>
+<option value="sp6-tener-gustar.html">Tener, Gustar and Stem Changes</option>
+<option value="sp7-preterite.html">The Preterite</option>
+<option value="sp8-imperfect.html">The Imperfect and Telling a Story</option>
+</optgroup>
+<optgroup label="Spanish · Grades 11–12">
+<option value="sp9-pronouns-commands.html">Pronouns, Reflexives and Commands</option>
+<option value="sp10-subjunctive.html">The Subjunctive</option>
+<option value="sp11-world-register.html">The Spanish-Speaking World and Register</option>
+<option value="sp12-capstone.html">Capstone — Present and Defend</option>
+</optgroup>
+<optgroup label="Family &amp; Consumer Sciences · Grades K–2">
+<option value="fc13-clean-hands.html">Clean Hands</option>
+<option value="fc14-hot-cold-sharp.html">Hot, Cold and Sharp</option>
+<option value="fc15-everyday-sometimes.html">Everyday Food and Sometimes Food</option>
+<option value="fc16-job-to-the-end.html">A Job Done to the End</option>
+</optgroup>
+<optgroup label="Family &amp; Consumer Sciences · Grades 3–5">
+<option value="fc17-measure-it-right.html">Measure It Right</option>
+<option value="fc18-needle-and-button.html">The Needle and the Button</option>
+<option value="fc19-money-and-choices.html">Money and Choices</option>
+<option value="fc20-plan-cook-clean.html">Plan It, Cook It, Clean It Up</option>
+</optgroup>
+<optgroup label="Family &amp; Consumer Sciences · Grades 6–8">
+<option value="fc1-kitchen-safety.html">Kitchen Safety and Sanitation</option>
+<option value="fc2-knife-skills.html">Knife Skills</option>
+<option value="fc3-measuring-recipes.html">Measuring and Reading a Recipe</option>
+<option value="fc4-hand-sewing.html">Hand Sewing</option>
+</optgroup>
+<optgroup label="Family &amp; Consumer Sciences · Grades 9–10">
+<option value="fc5-sewing-machine.html">The Sewing Machine</option>
+<option value="fc6-fabric-patterns.html">Fabric, Fibers and Patterns</option>
+<option value="fc7-cooking-methods.html">Cooking Methods and Heat</option>
+<option value="fc8-nutrition.html">Nutrition and Meal Planning</option>
+</optgroup>
+<optgroup label="Family &amp; Consumer Sciences · Grades 11–12">
+<option value="fc9-food-science.html">Food Science</option>
+<option value="fc10-child-development.html">Child Development and Care</option>
+<option value="fc11-independent-living.html">Independent Living and Money</option>
+<option value="fc12-capstone.html">Capstone — Plan, Cost, Produce</option>
+</optgroup>
+<optgroup label="World Religions · Grades 9–10">
+<option value="r1-reading-sacred-texts.html">How to Read a Sacred Text</option>
+<option value="r2-hebrew-bible.html">The Hebrew Bible</option>
+<option value="r3-new-testament.html">The New Testament</option>
+<option value="r4-judaism.html">Judaism</option>
+<option value="r5-islam.html">Islam</option>
+<option value="r6-hinduism.html">Hinduism</option>
+</optgroup>
+<optgroup label="World Religions · Grades 11–12">
+<option value="r7-buddhism.html">Buddhism</option>
+<option value="r8-confucianism-daoism.html">Confucianism and Daoism</option>
+<option value="r9-sikhism-jainism-africa-americas.html">Sikhism, Jainism, Africa and the Americas</option>
+<option value="r10-religion-and-the-world.html">Religion and the World</option>
+<option value="r11-one-question-many-lenses.html">One Question, Many Lenses</option>
+<option value="r12-capstone.html">Capstone</option>
+</optgroup></select></label></div>
+<nav class="rail no-print" aria-label="Units"><div class="in"><span class="k"><span data-en="Band" data-es="Banda">Band</span></span><a href="#band-k-2" title="Grades K–2">K–2</a><a href="#band-3-5" title="Grades 3–5">3–5</a><a href="#band-6-8" title="Grades 6–8">6–8</a><a href="#band-9-10" title="Grades 9–10">9–10</a><a href="#band-11-12" title="Grades 11–12">11–12</a></div></nav>
+
+<div class="stat no-print">
+  <span><span class="n">4</span> <span class="l"><span data-en="units" data-es="unidades">units</span></span></span>
+  <span><span class="n">8</span> <span class="l"><span data-en="chapters" data-es="capítulos">chapters</span></span></span>
+  <span><span class="n">65</span> <span class="l"><span data-en="lessons" data-es="lecciones">lessons</span></span></span>
+  <span class="prog" aria-hidden="true"><i id="progBar"></i></span>
+  <span><span class="n" id="progN">0</span> <span class="l"><span data-en="done" data-es="hechas">done</span></span></span>
+</div>
+
+<div class="search no-print">
+  <label for="lsearch"><span data-en="Find a lesson" data-es="Busca una lección">Find a lesson</span></label>
+  <div class="box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input id="lsearch" type="search" autocomplete="off" placeholder="Try “theme”, “comma” or “thesis”"></div>
+  <div class="hits" id="hits" aria-live="polite"></div>
+</div>
+
+<section class="bandhead" id="band-k-2"><span class="bk"><span data-en="Band" data-es="Banda">Band</span></span><h2><span data-en="Grades K–2" data-es="Grados K–2">Grades K–2</span></h2><p class="bd"><span data-en="4 units · 8 chapters · 65 lessons" data-es="4 unidades · 8 capítulos · 65 lecciones">4 units · 8 chapters · 65 lessons</span></p></section><section class="unit-spread" id="u1" data-unit="1">
+<div class="spread" aria-labelledby="ut1">
+  <div class="scene" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 420" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Drawn scene: alphabet blocks stacked on a rug beside a child reading a picture book, with sound waves rising as arcs under a warm lamp" focusable="false"><defs><linearGradient id="elb1-wall" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0A1E33"/><stop offset="0.7" stop-color="#142B4D"/><stop offset="1" stop-color="#1E3A66"/></linearGradient><radialGradient id="elb1-lamp" cx="0.5" cy="0.5" r="0.5"><stop offset="0" stop-color="#FFF1C8" stop-opacity="0.95"/><stop offset="0.4" stop-color="#F2C86A" stop-opacity="0.45"/><stop offset="1" stop-color="#F2C86A" stop-opacity="0"/></radialGradient><linearGradient id="elb1-rug" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8A3A2E"/><stop offset="1" stop-color="#5A2419"/></linearGradient><linearGradient id="elb1-floor" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4A3520"/><stop offset="1" stop-color="#20160B"/></linearGradient><linearGradient id="elb1-blk" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F6D98C"/><stop offset="1" stop-color="#D9A94A"/></linearGradient></defs>
+<rect width="1200" height="420" fill="url(#elb1-wall)"/>
+<rect x="0" y="286" width="1200" height="8" fill="#2A3E62"/>
+<path d="M0 290 H1200 V420 H0z" fill="url(#elb1-floor)"/>
+<path d="M980 292 v-160 M960 132 h40" stroke="#2A2A2A" stroke-width="5" stroke-linecap="round" fill="none"/>
+<path d="M930 132 l20 -60 h60 l20 60z" fill="#F4E9D2"/><path d="M930 132 l20 -60 h60 l20 60z" fill="#F2C86A" opacity=".5"/>
+<ellipse cx="980" cy="150" rx="260" ry="150" fill="url(#elb1-lamp)"/>
+<ellipse cx="560" cy="360" rx="500" ry="52" fill="url(#elb1-rug)"/><ellipse cx="560" cy="360" rx="440" ry="40" fill="none" stroke="#F2C86A" stroke-width="3" opacity=".45"/><ellipse cx="560" cy="360" rx="380" ry="30" fill="none" stroke="#F4E9D2" stroke-width="2" opacity=".3"/>
+<g stroke="#F2C86A" stroke-width="2" opacity=".35"><path d="M60 386 v14"/><path d="M78 386 v14"/><path d="M96 386 v14"/><path d="M114 386 v14"/><path d="M132 386 v14"/><path d="M150 386 v14"/><path d="M168 386 v14"/><path d="M186 386 v14"/><path d="M204 386 v14"/><path d="M222 386 v14"/><path d="M240 386 v14"/><path d="M258 386 v14"/><path d="M276 386 v14"/><path d="M294 386 v14"/><path d="M312 386 v14"/><path d="M330 386 v14"/><path d="M348 386 v14"/><path d="M366 386 v14"/><path d="M384 386 v14"/><path d="M402 386 v14"/><path d="M420 386 v14"/><path d="M438 386 v14"/><path d="M456 386 v14"/><path d="M474 386 v14"/><path d="M492 386 v14"/><path d="M510 386 v14"/><path d="M528 386 v14"/><path d="M546 386 v14"/><path d="M564 386 v14"/><path d="M582 386 v14"/><path d="M600 386 v14"/><path d="M618 386 v14"/><path d="M636 386 v14"/><path d="M654 386 v14"/><path d="M672 386 v14"/><path d="M690 386 v14"/><path d="M708 386 v14"/><path d="M726 386 v14"/><path d="M744 386 v14"/><path d="M762 386 v14"/><path d="M780 386 v14"/><path d="M798 386 v14"/><path d="M816 386 v14"/><path d="M834 386 v14"/><path d="M852 386 v14"/><path d="M870 386 v14"/><path d="M888 386 v14"/><path d="M906 386 v14"/><path d="M924 386 v14"/><path d="M942 386 v14"/><path d="M960 386 v14"/><path d="M978 386 v14"/><path d="M996 386 v14"/><path d="M1014 386 v14"/><path d="M1032 386 v14"/><path d="M1050 386 v14"/><path d="M1068 386 v14"/><path d="M1086 386 v14"/><path d="M1104 386 v14"/><path d="M1122 386 v14"/><path d="M1140 386 v14"/></g>
+<g transform="translate(150 250)"><rect x="0" y="0" width="60" height="60" fill="#E4573D"/><path d="M0 0 l17 -17 h60 l-17 17z" fill="#FFF3D0"/><path d="M60 0 l17 -17 v60 l-17 17z" fill="#B8842E"/><circle cx="30" cy="30" r="12" fill="#F4E9D2"/></g><g transform="translate(216 250)"><rect x="0" y="0" width="60" height="60" fill="#4F9BD8"/><path d="M0 0 l17 -17 h60 l-17 17z" fill="#FFF3D0"/><path d="M60 0 l17 -17 v60 l-17 17z" fill="#B8842E"/><circle cx="30" cy="30" r="12" fill="#F4E9D2"/></g><g transform="translate(282 250)"><rect x="0" y="0" width="60" height="60" fill="#F2C86A"/><path d="M0 0 l17 -17 h60 l-17 17z" fill="#FFF3D0"/><path d="M60 0 l17 -17 v60 l-17 17z" fill="#B8842E"/><circle cx="30" cy="30" r="12" fill="#0B1730"/></g>
+<g transform="translate(184 184)"><rect x="0" y="0" width="60" height="60" fill="#7DC15A"/><path d="M0 0 l17 -17 h60 l-17 17z" fill="#FFF3D0"/><path d="M60 0 l17 -17 v60 l-17 17z" fill="#B8842E"/><circle cx="30" cy="30" r="12" fill="#F4E9D2"/></g><g transform="translate(250 184)"><rect x="0" y="0" width="60" height="60" fill="#E4573D"/><path d="M0 0 l17 -17 h60 l-17 17z" fill="#FFF3D0"/><path d="M60 0 l17 -17 v60 l-17 17z" fill="#B8842E"/><circle cx="30" cy="30" r="12" fill="#F4E9D2"/></g>
+<g transform="translate(218 118)"><rect x="0" y="0" width="60" height="60" fill="#4F9BD8"/><path d="M0 0 l17 -17 h60 l-17 17z" fill="#FFF3D0"/><path d="M60 0 l17 -17 v60 l-17 17z" fill="#B8842E"/><circle cx="30" cy="30" r="12" fill="#F2C86A"/></g>
+<g transform="translate(420 262)"><rect x="0" y="0" width="44" height="44" fill="#F2C86A"/><path d="M0 0 l12 -12 h44 l-12 12z" fill="#FFF3D0"/><path d="M44 0 l12 -12 v44 l-12 12z" fill="#B8842E"/><circle cx="22" cy="22" r="9" fill="#0B1730"/></g><g transform="translate(360 268)"><rect x="0" y="0" width="40" height="40" fill="#7DC15A"/><path d="M0 0 l11 -11 h40 l-11 11z" fill="#FFF3D0"/><path d="M40 0 l11 -11 v40 l-11 11z" fill="#B8842E"/><circle cx="20" cy="20" r="8" fill="#F4E9D2"/></g>
+<g fill="#0B1730"><circle cx="600" cy="132" r="24"/><path d="M574 160 q26 -16 52 0 l14 60 q-10 40 -40 46 l-60 12 q-20 -6 -12 -30 l20 -40 q4 -40 26 -48z"/><path d="M560 262 q30 -30 90 -28 l40 44 h-70 q-40 4 -60 -16z"/></g>
+<path d="M566 224 q40 -22 80 -8 l4 40 q-40 -18 -84 -2z" fill="#F4E9D2"/><path d="M646 216 q36 -20 70 -6 l-2 42 q-34 -18 -68 -4z" fill="#FBEFD0"/><path d="M646 216 v52" stroke="#0B1730" stroke-width="2"/>
+<g fill="#F2C86A" opacity=".9"><circle cx="596" cy="240" r="8"/><rect x="662" y="226" width="34" height="4" rx="2"/><rect x="664" y="236" width="26" height="4" rx="2"/><rect x="666" y="246" width="30" height="4" rx="2"/></g>
+<path d="M586 214 q10 -8 20 0" stroke="#F4E9D2" stroke-width="1.5" fill="none" opacity=".6"/>
+<path d="M700 150 A40 40 0 0 1 700 250" stroke="#F2C86A" stroke-width="3" fill="none" opacity="0.90"/><path d="M726 144 A66 66 0 0 1 726 256" stroke="#F2C86A" stroke-width="3" fill="none" opacity="0.75"/><path d="M752 138 A92 92 0 0 1 752 262" stroke="#F2C86A" stroke-width="3" fill="none" opacity="0.60"/><path d="M778 132 A118 118 0 0 1 778 268" stroke="#F2C86A" stroke-width="3" fill="none" opacity="0.45"/><path d="M804 126 A144 144 0 0 1 804 274" stroke="#F2C86A" stroke-width="3" fill="none" opacity="0.30"/>
+<g fill="#F2C86A"><circle cx="830" cy="118" r="4"/><circle cx="866" cy="146" r="3"/><circle cx="848" cy="270" r="3.5"/></g>
+</svg></div>
+  <div class="credit">Drawn scene: alphabet blocks stacked on a rug beside a child reading a picture book, with sound waves rising as arcs under a warm lamp</div>
+  <div class="txt"><div class="unum"><b>1</b><span data-en="Unit" data-es="Unidad">Unit</span></div><h2 class="ut" id="ut1">Sounds and Letters</h2><div class="years">Foundations</div></div>
+  <a class="enter" href="ela-u1.html"><span data-en="Open the unit" data-es="Abrir la unidad">Open the unit</span> →</a>
+</div>
+<div class="body">
+  <article class="cchap">
+  <div class="ch"><span class="badge" aria-hidden="true">1</span><div><span class="tab"><span data-en="Chapter" data-es="Capítulo">Chapter</span></span><h3><a href="ela-u1.html#ch1" style="color:inherit;text-decoration:none">Sounds in Words</a></h3><div class="yrs">Phonological Awareness</div></div></div>
+  <p class="st"><b><span data-en="The story" data-es="La historia">The story</span></b>I Spy With My Ears — The clue is not a color. The clue is a sound.</p>
+  <div class="csec"><div class="sn"><span data-en="Section" data-es="Sección">Section</span> 1<span>Hearing Sounds</span></div><a class="lrow" href="ela-u1.html#l1-1" data-lid="aog.interior.ws.v1.ela1:l1-1" data-s="words are made of sounds every word is made of small sounds put together."><span class="n">1.1</span><span class="t">Words Are Made of Sounds</span><span class="tk" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5L20 7"/></svg></span></a><a class="lrow" href="ela-u1.html#l1-2" data-lid="aog.interior.ws.v1.ela1:l1-2" data-s="the first sound the first sound is the sound you hear at the start of a word."><span class="n">1.2</span><span class="t">The First Sound</span><span class="tk" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5L20 7"/></svg></span></a><a class="lrow" href="ela-u1.html#l1-3" data-lid="aog.interior.ws.v1.ela1:l1-3" data-s="last sound, middle sound words have a last sound and a middle sound too."><span class="n">1.3</span><span class="t">Last Sound, Middle Sound</span><span class="tk" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5L20 7"/></svg></span></a></div><div class="csec"><div class="sn"><span data-en="Section" data-es="Sección">Section</span> 2<span>Rhymes and Beats</span></div><a class="lrow" href="ela-u1.html#l1-4" data-lid="aog.interior.ws.v1.ela1:l1-4" data-s="words that rhyme words rhyme when their ends sound the same."><span class="n">1.4</span><span class="t">Words That Rhyme</span><span class="tk" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5L20 7"/></svg></span></a><a class="lrow" href="ela-u1.html#l1-5" data-lid="aog.interior.ws.v1.ela1:l1-5" data-s="clap the parts you can clap the beats in a word to count its parts."><span class="n">1.5</span><span class="t">Clap the Parts</span><span class="tk" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5L20 7"/></svg></span></a></div><div class="csec"><div class="sn"><span data-en="Section" data-es="Sección">Section</span> 3<span>Building Words</span></div><a class="lrow" href="ela-u1.html#l1-6" data-lid="aog.interior.ws.v1.ela1:l1-6" data-s="blend the sounds put sounds together in a row and they make a word."><span class="n">1.6</span><span class="t">Blend the Sounds</span><span class="tk" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5L20 7"/></svg></span></a><a class="lrow" href="ela-u1.html#l1-7" data-lid="aog.interior.ws.v1.ela1:l1-7" data-s="take a word apart you can break a word into its sounds, one at a time."><span class="n">1.7</span><span class="t">Take a Word Apart</span><span class="tk" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5L20 7"/></svg></span></a><a class="lrow" href="ela-u1.html#l1-8" data-lid="aog.interior.ws.v1.ela1:l1-8" data-s="change one sound change one sound in a word and you get a new word."><span class="n">1.8</span><span class="t">Change One Sound</span><span class="tk" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5L20 7"/></svg></span></a></div>
+  <div class="cwrap"><a href="ela-u1.html#rev1"><span data-en="Chapter review · 6 questions" data-es="Repaso del capítulo · 6 preguntas">Chapter review · 6 questions</span></a></div>
+</article><article class="cchap">
+  <div class="ch"><span class="badge" aria-hidden="true">2</span><div><span class="tab"><span data-en="Chapter" data-es="Capítulo">Chapter</span></span><h3><a href="ela-u1.html#ch2" style="color:inherit;text-decoration:none">Letters and the Code</a></h3><div class="yrs">Phonics</div></div></div>
+  <p class="st"><b><span data-en="The story" data-es="La historia">The story</span></b>Cracking the Code on Ship — Four letters. Three sounds. One class that would not give up.</p>
+  <div class="csec"><div class="sn"><span data-en="Section" data-es="Sección">Section</span> 1<span>What a Letter Is</span></div><a class="lrow" href="ela-u1.html#l2-1" data-lid="aog.interior.ws.v1.ela1:l2-1" data-s="a name and a sound every letter has a name and a sound, and the sound is what you read."><span class="n">2.1</span><span class="t">A Name and a Sound</span><span class="tk" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5L20 7"/></svg></span></a><a class="lrow" href="ela-u1.html#l2-2" data-lid="aog.interior.ws.v1.ela1:l2-2" data-s="big letters, small letters each letter comes in a capital and a small form, and both say the same sound."><span class="n">2.2</span><span class="t">Big Letters, Small Letters</span><span class="tk" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5L20 7"/></svg></span></a><a class="lrow" href="ela-u1.html#l2-3" data-lid="aog.interior.ws.v1.ela1:l2-3" data-s="vowels and consonants five letters are vowels, and every word needs at least one."><span class="n">2.3</span><span class="t">Vowels and Consonants</span><span class="tk" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5L20 7"/></svg></span></a></div><div class="csec"><div class="sn"><span data-en="Section" data-es="Sección">Section</span> 2<span>Reading Short Words</span></div><a class="lrow" href="ela-u1.html#l2-4" data-lid="aog.interior.ws.v1.ela1:l2-4" data-s="short vowels in a short word like cat, the vowel says its short sound."><span class="n">2.4</span><span class="t">Short Vowels</span><span class="tk" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5L20 7"/></svg></span></a><a class="lrow" href="ela-u1.html#l2-5" data-lid="aog.interior.ws.v1.ela1:l2-5" data-s="two letters, one sound some letter pairs, like sh, ch and th, make one new sound together."><span class="n">2.5</span><span class="t">Two Letters, One Sound</span><span class="tk" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5L20 7"/></svg></span></a><a class="lrow" href="ela-u1.html#l2-6" data-lid="aog.interior.ws.v1.ela1:l2-6" data-s="the silent e an e at the end of a word makes the vowel say its name."><span class="n">2.6</span><span class="t">The Silent e</span><span class="tk" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5L20 7"/></svg></span></a></div><div class="csec"><div class="sn"><span data-en="Section" data-es="Sección">Section</span> 3<span>Using the Code</span></div><a class="lrow" href="ela-u1.html#l2-7" data-lid="aog.interior.ws.v1.ela1:l2-7" data-s="read left to right read the letters in order from left to right, and you get the right word."><span class="n">2.7</span><span class="t">Read Left to Right</span><span class="tk" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5L20 7"/></svg></span></a><a class="lrow" href="ela-u1.html#l2-8" data-lid="aog.interior.ws.v1.ela1:l2-8" data-s="write the letters in order the alphabet has 26 letters in a set order, and you can write each one."><span class="n">2.8</span><span class="t">Write the Letters in Order</span><span class="tk" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5L20 7"/></svg></span></a></div>
+  <div class="cwrap"><a href="ela-u1.html#rev2"><span data-en="Chapter review · 6 questions" data-es="Repaso del capítulo · 6 preguntas">Chapter review · 6 questions</span></a></div>
+</article>
+  <div class="cwrap" style="border:0;padding-left:0;padding-right:0"><a href="ela-u1.html#match"><span data-en="Eight-word match" data-es="Ocho palabras">Eight-word match</span></a><a href="ela-u1.html#test"><span data-en="Unit test · 10 questions" data-es="Examen · 10 preguntas">Unit test · 10 questions</span></a><a href="ela-u1.html#write"><span data-en="Write it" data-es="Escríbelo">Write it</span></a></div>
+</div>
+</section><section class="unit-spread" id="u2" data-unit="2">
+<div class="spread" aria-labelledby="ut2">
+  <div class="scene" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 420" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Drawn scene: a word wall of blank cards, a long pencil leaning across it and a sentence strip laid on the desk below" focusable="false"><defs><linearGradient id="elb2-wall" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#142B4D"/><stop offset="1" stop-color="#0A1E33"/></linearGradient><linearGradient id="elb2-desk" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#A67C4A"/><stop offset="0.1" stop-color="#7A5630"/><stop offset="1" stop-color="#2E1E10"/></linearGradient><linearGradient id="elb2-pen" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#F2C86A"/><stop offset="0.5" stop-color="#E8A93A"/><stop offset="1" stop-color="#B8842E"/></linearGradient><linearGradient id="elb2-strip" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FBEFD0"/><stop offset="1" stop-color="#E6D6B0"/></linearGradient></defs>
+<rect width="1200" height="420" fill="url(#elb2-wall)"/>
+<rect x="60" y="30" width="700" height="210" rx="6" fill="#1E3A66" opacity=".7"/><rect x="60" y="30" width="700" height="210" rx="6" fill="none" stroke="#F2C86A" stroke-width="3" opacity=".6"/>
+<rect x="80" y="46" width="76" height="46" rx="5" fill="#F4E9D2"/><rect x="90" y="64" width="56" height="5" rx="2" fill="#0A1E33" opacity=".18"/><rect x="114" y="40" width="8" height="8" rx="4" fill="#E8A93A"/><rect x="184" y="46" width="83" height="46" rx="5" fill="#FBEFD0"/><rect x="194" y="64" width="63" height="5" rx="2" fill="#0A1E33" opacity=".18"/><rect x="222" y="40" width="8" height="8" rx="4" fill="#E8A93A"/><rect x="288" y="46" width="90" height="46" rx="5" fill="#F2C86A"/><rect x="298" y="64" width="70" height="5" rx="2" fill="#0A1E33" opacity=".18"/><rect x="329" y="40" width="8" height="8" rx="4" fill="#E8A93A"/><rect x="392" y="46" width="97" height="46" rx="5" fill="#F4E9D2"/><rect x="402" y="64" width="77" height="5" rx="2" fill="#0A1E33" opacity=".18"/><rect x="436" y="40" width="8" height="8" rx="4" fill="#E8A93A"/><rect x="496" y="46" width="82" height="46" rx="5" fill="#E6D6B0"/><rect x="506" y="64" width="62" height="5" rx="2" fill="#0A1E33" opacity=".18"/><rect x="533" y="40" width="8" height="8" rx="4" fill="#E8A93A"/><rect x="600" y="46" width="89" height="46" rx="5" fill="#F2C86A"/><rect x="610" y="64" width="69" height="5" rx="2" fill="#0A1E33" opacity=".18"/><rect x="640" y="40" width="8" height="8" rx="4" fill="#E8A93A"/><rect x="110" y="112" width="96" height="46" rx="5" fill="#FBEFD0"/><rect x="120" y="130" width="76" height="5" rx="2" fill="#0A1E33" opacity=".18"/><rect x="154" y="106" width="8" height="8" rx="4" fill="#E8A93A"/><rect x="214" y="112" width="81" height="46" rx="5" fill="#F2C86A"/><rect x="224" y="130" width="61" height="5" rx="2" fill="#0A1E33" opacity=".18"/><rect x="250" y="106" width="8" height="8" rx="4" fill="#E8A93A"/><rect x="318" y="112" width="88" height="46" rx="5" fill="#F4E9D2"/><rect x="328" y="130" width="68" height="5" rx="2" fill="#0A1E33" opacity=".18"/><rect x="358" y="106" width="8" height="8" rx="4" fill="#E8A93A"/><rect x="422" y="112" width="95" height="46" rx="5" fill="#E6D6B0"/><rect x="432" y="130" width="75" height="5" rx="2" fill="#0A1E33" opacity=".18"/><rect x="466" y="106" width="8" height="8" rx="4" fill="#E8A93A"/><rect x="526" y="112" width="80" height="46" rx="5" fill="#F2C86A"/><rect x="536" y="130" width="60" height="5" rx="2" fill="#0A1E33" opacity=".18"/><rect x="562" y="106" width="8" height="8" rx="4" fill="#E8A93A"/><rect x="630" y="112" width="87" height="46" rx="5" fill="#F4E9D2"/><rect x="640" y="130" width="67" height="5" rx="2" fill="#0A1E33" opacity=".18"/><rect x="670" y="106" width="8" height="8" rx="4" fill="#E8A93A"/><rect x="80" y="178" width="94" height="46" rx="5" fill="#F2C86A"/><rect x="90" y="196" width="74" height="5" rx="2" fill="#0A1E33" opacity=".18"/><rect x="123" y="172" width="8" height="8" rx="4" fill="#E8A93A"/><rect x="184" y="178" width="79" height="46" rx="5" fill="#F4E9D2"/><rect x="194" y="196" width="59" height="5" rx="2" fill="#0A1E33" opacity=".18"/><rect x="220" y="172" width="8" height="8" rx="4" fill="#E8A93A"/><rect x="288" y="178" width="86" height="46" rx="5" fill="#E6D6B0"/><rect x="298" y="196" width="66" height="5" rx="2" fill="#0A1E33" opacity=".18"/><rect x="327" y="172" width="8" height="8" rx="4" fill="#E8A93A"/><rect x="392" y="178" width="93" height="46" rx="5" fill="#F2C86A"/><rect x="402" y="196" width="73" height="5" rx="2" fill="#0A1E33" opacity=".18"/><rect x="434" y="172" width="8" height="8" rx="4" fill="#E8A93A"/><rect x="496" y="178" width="78" height="46" rx="5" fill="#F4E9D2"/><rect x="506" y="196" width="58" height="5" rx="2" fill="#0A1E33" opacity=".18"/><rect x="531" y="172" width="8" height="8" rx="4" fill="#E8A93A"/><rect x="600" y="178" width="85" height="46" rx="5" fill="#FBEFD0"/><rect x="610" y="196" width="65" height="5" rx="2" fill="#0A1E33" opacity=".18"/><rect x="638" y="172" width="8" height="8" rx="4" fill="#E8A93A"/>
+<path d="M0 282 H1200 V420 H0z" fill="url(#elb2-desk)"/><path d="M0 282 H1200 v6 H0z" fill="#C9975A"/>
+<g transform="translate(1120 60) rotate(28)"><rect x="-14" y="0" width="28" height="330" fill="url(#elb2-pen)"/><path d="M-14 0 h28 v-24 h-28z" fill="#E88A8A"/><rect x="-14" y="-28" width="28" height="12" fill="#B8BFC8"/><path d="M-14 330 L0 372 L14 330z" fill="#FBEFD0"/><path d="M-4 360 L0 372 L4 360z" fill="#0B1730"/><path d="M-4 0 v330" stroke="#FFFFFF" stroke-width="3" opacity=".25"/></g>
+<rect x="300" y="310" width="520" height="50" rx="6" fill="url(#elb2-strip)"/><rect x="300" y="310" width="520" height="50" rx="6" fill="none" stroke="#E8A93A" stroke-width="2"/>
+<path d="M320 348 H800" stroke="#142B4D" stroke-width="1.5" opacity=".4"/><rect x="340" y="332" width="42" height="6" rx="3" fill="#142B4D" opacity=".35"/><rect x="392" y="332" width="32" height="6" rx="3" fill="#142B4D" opacity=".35"/><rect x="444" y="332" width="42" height="6" rx="3" fill="#142B4D" opacity=".35"/><rect x="496" y="332" width="32" height="6" rx="3" fill="#142B4D" opacity=".35"/><rect x="548" y="332" width="22" height="6" rx="3" fill="#142B4D" opacity=".35"/><rect x="600" y="332" width="42" height="6" rx="3" fill="#142B4D" opacity=".35"/><rect x="652" y="332" width="22" height="6" rx="3" fill="#142B4D" opacity=".35"/><rect x="704" y="332" width="42" height="6" rx="3" fill="#142B4D" opacity=".35"/><rect x="756" y="332" width="32" height="6" rx="3" fill="#142B4D" opacity=".35"/>
+<circle cx="798" cy="335" r="4" fill="#0A1E33" opacity=".6"/>
+<rect x="860" y="300" width="80" height="14" rx="3" fill="#F4E9D2" opacity=".9"/><rect x="860" y="318" width="60" height="14" rx="3" fill="#F2C86A" opacity=".9"/>
+</svg></div>
+  <div class="credit">Drawn scene: a word wall of blank cards, a long pencil leaning across it and a sentence strip laid on the desk below</div>
+  <div class="txt"><div class="unum"><b>2</b><span data-en="Unit" data-es="Unidad">Unit</span></div><h2 class="ut" id="ut2">Words and Sentences</h2><div class="years">Foundations and Language</div></div>
+  <a class="enter" href="ela-u2.html"><span data-en="Open the unit" data-es="Abrir la unidad">Open the unit</span> →</a>
+</div>
+<div class="body">
+  <article class="cchap">
+  <div class="ch"><span class="badge" aria-hidden="true">3</span><div><span class="tab"><span data-en="Chapter" data-es="Capítulo">Chapter</span></span><h3><a href="ela-u2.html#ch3" style="color:inherit;text-decoration:none">Words You Know by Sight</a></h3><div class="yrs">Reading Words</div></div></div>
+  <p class="st"><b><span data-en="The story" data-es="La historia">The story</span></b>Marcus Reads the Whole Page — One boy, one book, one page. He reads it all the way through. Then somebody claps.</p>
+  <div class="csec"><div class="sn"><span data-en="Section" data-es="Sección">Section</span> 1<span>Words You Just Know</span></div><a class="lrow" href="ela-u2.html#l3-1" data-lid="aog.interior.ws.v1.ela2:l3-1" data-s="words that come up everywhere some words come up so often that you should know them the second you see them."><span class="n">3.1</span><span class="t">Words That Come Up Everywhere</span><span class="tk" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5L20 7"/></svg></span></a><a class="lrow" href="ela-u2.html#l3-2" data-lid="aog.interior.ws.v1.ela2:l3-2" data-s="tricky words some words do not follow the sound rules, so you learn them by heart."><span class="n">3.2</span><span class="t">Tricky Words</span><span class="tk" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5L20 7"/></svg></span></a></div><div class="csec"><div class="sn"><span data-en="Section" data-es="Sección">Section</span> 2<span>Words That Go Together</span></div><a class="lrow" href="ela-u2.html#l3-3" data-lid="aog.interior.ws.v1.ela2:l3-3" data-s="the -at family words that end the same way are a family, and one family helps you read many words."><span class="n">3.3</span><span class="t">The -at Family</span><span class="tk" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5L20 7"/></svg></span></a><a class="lrow" href="ela-u2.html#l3-4" data-lid="aog.interior.ws.v1.ela2:l3-4" data-s="adding -s, -ed and -ing a small ending on a word changes when it happened or how many there are."><span class="n">3.4</span><span class="t">Adding -s, -ed and -ing</span><span class="tk" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5L20 7"/></svg></span></a><a class="lrow" href="ela-u2.html#l3-5" data-lid="aog.interior.ws.v1.ela2:l3-5" data-s="two words make one some long words are really two small words stuck together."><span class="n">3.5</span><span class="t">Two Words Make One</span><span class="tk" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5L20 7"/></svg></span></a></div><div class="csec"><div class="sn"><span data-en="Section" data-es="Sección">Section</span> 3<span>Reading Smoothly</span></div><a class="lrow" href="ela-u2.html#l3-6" data-lid="aog.interior.ws.v1.ela2:l3-6" data-s="read like you talk good reading sounds like talking, not like a robot."><span class="n">3.6</span><span class="t">Read Like You Talk</span><span class="tk" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5L20 7"/></svg></span></a><a class="lrow" href="ela-u2.html#l3-7" data-lid="aog.interior.ws.v1.ela2:l3-7" data-s="read it again reading the same book again makes you faster each time."><span class="n">3.7</span><span class="t">Read It Again</span><span class="tk" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5L20 7"/></svg></span></a></div>
+  <div class="cwrap"><a href="ela-u2.html#rev3"><span data-en="Chapter review · 6 questions" data-es="Repaso del capítulo · 6 preguntas">Chapter review · 6 questions</span></a></div>
+</article><article class="cchap">
+  <div class="ch"><span class="badge" aria-hidden="true">4</span><div><span class="tab"><span data-en="Chapter" data-es="Capítulo">Chapter</span></span><h3><a href="ela-u2.html#ch4" style="color:inherit;text-decoration:none">A Sentence Is a Whole Thought</a></h3><div class="yrs">Language</div></div></div>
+  <p class="st"><b><span data-en="The story" data-es="La historia">The story</span></b>Dog, The, Ran — Three words sit on the board in a jumble. The class has to make them say something.</p>
+  <div class="csec"><div class="sn"><span data-en="Section" data-es="Sección">Section</span> 1<span>What a Sentence Is</span></div><a class="lrow" href="ela-u2.html#l4-1" data-lid="aog.interior.ws.v1.ela2:l4-1" data-s="who and what happened a sentence tells who or what, and what happened."><span class="n">4.1</span><span class="t">Who and What Happened</span><span class="tk" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5L20 7"/></svg></span></a><a class="lrow" href="ela-u2.html#l4-2" data-lid="aog.interior.ws.v1.ela2:l4-2" data-s="a capital and an end mark a sentence starts with a capital letter and ends with a mark."><span class="n">4.2</span><span class="t">A Capital and an End Mark</span><span class="tk" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5L20 7"/></svg></span></a></div><div class="csec"><div class="sn"><span data-en="Section" data-es="Sección">Section</span> 2<span>The Words in a Sentence</span></div><a class="lrow" href="ela-u2.html#l4-3" data-lid="aog.interior.ws.v1.ela2:l4-3" data-s="naming words a noun names a person, a place or a thing."><span class="n">4.3</span><span class="t">Naming Words</span><span class="tk" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5L20 7"/></svg></span></a><a class="lrow" href="ela-u2.html#l4-4" data-lid="aog.interior.ws.v1.ela2:l4-4" data-s="action words a verb tells what someone or something does."><span class="n">4.4</span><span class="t">Action Words</span><span class="tk" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5L20 7"/></svg></span></a><a class="lrow" href="ela-u2.html#l4-5" data-lid="aog.interior.ws.v1.ela2:l4-5" data-s="describing words a describing word tells more about a noun, like its size or color."><span class="n">4.5</span><span class="t">Describing Words</span><span class="tk" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5L20 7"/></svg></span></a></div><div class="csec"><div class="sn"><span data-en="Section" data-es="Sección">Section</span> 3<span>Building Your Own Sentence</span></div><a class="lrow" href="ela-u2.html#l4-6" data-lid="aog.interior.ws.v1.ela2:l4-6" data-s="telling and asking a telling sentence ends with a period, and an asking sentence ends with a question mark."><span class="n">4.6</span><span class="t">Telling and Asking</span><span class="tk" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5L20 7"/></svg></span></a><a class="lrow" href="ela-u2.html#l4-7" data-lid="aog.interior.ws.v1.ela2:l4-7" data-s="words in order the words in a sentence have to be in an order that makes sense."><span class="n">4.7</span><span class="t">Words in Order</span><span class="tk" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5L20 7"/></svg></span></a><a class="lrow" href="ela-u2.html#l4-8" data-lid="aog.interior.ws.v1.ela2:l4-8" data-s="one good sentence to write one good sentence, look at a picture, say who and what happened, and leave spaces."><span class="n">4.8</span><span class="t">One Good Sentence</span><span class="tk" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5L20 7"/></svg></span></a></div>
+  <div class="cwrap"><a href="ela-u2.html#rev4"><span data-en="Chapter review · 6 questions" data-es="Repaso del capítulo · 6 preguntas">Chapter review · 6 questions</span></a></div>
+</article>
+  <div class="cwrap" style="border:0;padding-left:0;padding-right:0"><a href="ela-u2.html#match"><span data-en="Eight-word match" data-es="Ocho palabras">Eight-word match</span></a><a href="ela-u2.html#test"><span data-en="Unit test · 10 questions" data-es="Examen · 10 preguntas">Unit test · 10 questions</span></a><a href="ela-u2.html#write"><span data-en="Write it" data-es="Escríbelo">Write it</span></a></div>
+</div>
+</section><section class="unit-spread" id="u3" data-unit="3">
+<div class="spread" aria-labelledby="ut3">
+  <div class="scene" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 420" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Drawn scene: two open books on a table at dusk, one showing a frog on a lily pad and the other a labeled frog diagram" focusable="false"><defs><linearGradient id="elb3-sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0A1E33"/><stop offset="0.55" stop-color="#1E3A66"/><stop offset="0.9" stop-color="#7A5A7A"/><stop offset="1" stop-color="#E8A93A"/></linearGradient><linearGradient id="elb3-table" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#6A4A2C"/><stop offset="0.08" stop-color="#4A3220"/><stop offset="1" stop-color="#1E140A"/></linearGradient><linearGradient id="elb3-page" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FBEFD0"/><stop offset="1" stop-color="#E6D6B0"/></linearGradient><linearGradient id="elb3-pond" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4F9BD8"/><stop offset="1" stop-color="#1E3A66"/></linearGradient></defs>
+<rect width="1200" height="420" fill="url(#elb3-sky)"/>
+<g fill="#E8E9F5" opacity=".75"><circle cx="200" cy="105" r="1.0"/><circle cx="999" cy="102" r="0.7"/><circle cx="1186" cy="7" r="1.4"/><circle cx="313" cy="62" r="0.9"/><circle cx="908" cy="43" r="1.2"/><circle cx="1195" cy="22" r="1.3"/><circle cx="758" cy="75" r="1.2"/><circle cx="893" cy="40" r="0.9"/><circle cx="1136" cy="127" r="1.2"/><circle cx="95" cy="114" r="1.3"/><circle cx="442" cy="43" r="0.6"/><circle cx="577" cy="120" r="1.1"/><circle cx="500" cy="127" r="1.0"/><circle cx="259" cy="80" r="0.9"/><circle cx="206" cy="19" r="0.6"/><circle cx="997" cy="84" r="0.7"/><circle cx="440" cy="19" r="1.0"/><circle cx="39" cy="26" r="0.7"/><circle cx="642" cy="149" r="0.6"/><circle cx="1161" cy="48" r="0.9"/><circle cx="716" cy="23" r="1.2"/><circle cx="411" cy="106" r="0.9"/><circle cx="246" cy="7" r="0.8"/><circle cx="1181" cy="98" r="0.7"/><circle cx="432" cy="97" r="1.4"/><circle cx="367" cy="60" r="1.1"/><circle cx="490" cy="103" r="1.4"/><circle cx="113" cy="48" r="1.5"/><circle cx="84" cy="69" r="0.6"/><circle cx="595" cy="124" r="1.5"/><circle cx="958" cy="95" r="1.2"/><circle cx="965" cy="16" r="0.9"/><circle cx="216" cy="29" r="0.8"/><circle cx="391" cy="18" r="1.1"/><circle cx="178" cy="31" r="0.8"/><circle cx="601" cy="24" r="1.1"/><circle cx="92" cy="145" r="0.6"/><circle cx="315" cy="68" r="0.9"/><circle cx="662" cy="77" r="1.0"/><circle cx="125" cy="108" r="1.5"/></g>
+<circle cx="150" cy="70" r="26" fill="#F4E9D2" opacity=".95"/><circle cx="140" cy="64" r="22" fill="url(#elb3-sky)" opacity=".85"/>
+<path d="M0 272 H1200 V420 H0z" fill="url(#elb3-table)"/><path d="M0 272 H1200 v5 H0z" fill="#8A6A40"/>
+<path d="M120 272 q-6 -30 40 -34 q100 -60 180 -20 q-30 6 -40 30 q-100 -20 -180 24z" fill="#0A1E33" opacity=".5"/>
+<g><path d="M150 110 q120 -26 220 12 v150 q-100 -30 -220 -4z" fill="url(#elb3-page)"/><path d="M370 122 q100 -38 220 -12 v158 q-120 -22 -220 4z" fill="url(#elb3-page)"/><path d="M370 122 v150" stroke="#B8A078" stroke-width="3"/><path d="M148 112 q120 -26 222 12 q100 -38 222 -12" stroke="#8A6A40" stroke-width="2" fill="none"/></g>
+<path d="M180 232 q80 -30 170 -8 q-60 22 -170 8z" fill="url(#elb3-pond)"/>
+<ellipse cx="262" cy="214" rx="36" ry="12" fill="#3E7A3A"/><path d="M262 214 l26 -10 l-4 18z" fill="url(#elb3-pond)"/>
+<g fill="#5E9A3E"><ellipse cx="256" cy="200" rx="18" ry="11"/><circle cx="270" cy="192" r="9"/><path d="M238 208 l-10 6 l6 -10z M274 206 l14 3 l-8 -8z"/></g><g fill="#F2C86A"><circle cx="274" cy="188" r="3"/><circle cx="266" cy="188" r="3"/></g>
+<g fill="none" stroke="#F2C86A" stroke-width="1.5" opacity=".7"><path d="M292 176 q8 -8 6 -18 M300 178 q12 -10 12 -24"/></g>
+<g fill="#3E7A3A" opacity=".8"><path d="M190 200 q4 -30 -2 -60 q8 30 2 60z"/><path d="M204 204 q2 -26 -4 -50 q10 26 4 50z"/></g>
+<g stroke="#0B1730" stroke-width="2.5" fill="none"><path d="M474 244 q-20 -30 -6 -54 q10 -30 40 -30 q30 0 40 30 q14 24 -6 54z"/><path d="M474 244 q-24 6 -30 20 M548 244 q24 6 30 20"/><path d="M490 184 q-14 -14 -20 -40 M532 184 q14 -14 20 -40"/><circle cx="500" cy="178" r="6"/><circle cx="522" cy="178" r="6"/><path d="M496 208 q15 10 30 0"/></g>
+<g stroke="#0B1730" stroke-width="1.5" fill="none"><path d="M500 178 L440 150 M522 178 L580 152 M540 220 L580 250 M480 220 L440 250"/></g>
+<g fill="#E8A93A"><rect x="404" y="146" width="36" height="7" rx="3"/><rect x="580" y="148" width="36" height="7" rx="3"/><rect x="580" y="246" width="36" height="7" rx="3"/><rect x="404" y="246" width="36" height="7" rx="3"/></g>
+<g><path d="M660 130 q120 -20 220 10 v148 q-100 -24 -220 -8z" fill="url(#elb3-page)"/><path d="M880 140 q100 -30 220 -8 v154 q-120 -18 -220 6z" fill="url(#elb3-page)"/><path d="M880 140 v148" stroke="#B8A078" stroke-width="3"/><path d="M658 132 q120 -20 222 8 q100 -30 222 -8" stroke="#8A6A40" stroke-width="2" fill="none"/></g>
+<g fill="#142B4D" opacity=".5"><rect x="690" y="160" width="140" height="6" rx="3"/><rect x="690" y="176" width="120" height="5" rx="2"/><rect x="690" y="190" width="130" height="5" rx="2"/><rect x="690" y="204" width="100" height="5" rx="2"/><rect x="690" y="218" width="130" height="5" rx="2"/><rect x="690" y="232" width="90" height="5" rx="2"/><rect x="690" y="246" width="120" height="5" rx="2"/></g>
+<g stroke="#0B1730" stroke-width="2.5" fill="none"><path d="M920 172 q-6 -20 12 -34 q18 -14 36 -6 q22 8 30 32 q8 24 -6 42 q-16 20 -42 14 q-22 -6 -30 -24 q-6 -14 0 -24z"/><path d="M940 210 q-20 10 -30 30 M990 208 q20 10 30 30"/><path d="M932 150 q-16 -10 -26 -28 M978 144 q16 -10 26 -28"/><circle cx="946" cy="148" r="5"/><circle cx="968" cy="146" r="5"/></g>
+<path d="M880 178 L960 150" stroke="#142B4D" stroke-width="1.5"/><circle cx="880" cy="178" r="2.5" fill="#E8A93A"/><rect x="964" y="147" width="30" height="6" rx="3" fill="#142B4D" opacity=".5"/><path d="M868 208 L960 214" stroke="#142B4D" stroke-width="1.5"/><circle cx="868" cy="208" r="2.5" fill="#E8A93A"/><rect x="964" y="211" width="30" height="6" rx="3" fill="#142B4D" opacity=".5"/><path d="M836 232 L760 250" stroke="#142B4D" stroke-width="1.5"/><circle cx="836" cy="232" r="2.5" fill="#E8A93A"/><rect x="726" y="247" width="30" height="6" rx="3" fill="#142B4D" opacity=".5"/><path d="M846 180 L760 160" stroke="#142B4D" stroke-width="1.5"/><circle cx="846" cy="180" r="2.5" fill="#E8A93A"/><rect x="726" y="157" width="30" height="6" rx="3" fill="#142B4D" opacity=".5"/>
+<rect x="1000" y="250" width="140" height="18" rx="3" fill="#F2C86A" opacity=".35"/><rect x="1000" y="250" width="140" height="18" rx="3" fill="none" stroke="#E8A93A" stroke-width="1.5"/>
+<path d="M0 372 H1200 V420 H0z" fill="#0F0A04" opacity=".5"/>
+</svg></div>
+  <div class="credit">Drawn scene: two open books on a table at dusk, one showing a frog on a lily pad and the other a labeled frog diagram</div>
+  <div class="txt"><div class="unum"><b>3</b><span data-en="Unit" data-es="Unidad">Unit</span></div><h2 class="ut" id="ut3">Stories and True Books</h2><div class="years">Reading</div></div>
+  <a class="enter" href="ela-u3.html"><span data-en="Open the unit" data-es="Abrir la unidad">Open the unit</span> →</a>
+</div>
+<div class="body">
+  <article class="cchap">
+  <div class="ch"><span class="badge" aria-hidden="true">5</span><div><span class="tab"><span data-en="Chapter" data-es="Capítulo">Chapter</span></span><h3><a href="ela-u3.html#ch5" style="color:inherit;text-decoration:none">Who, Where, What Happens</a></h3><div class="yrs">Literature</div></div></div>
+  <p class="st"><b><span data-en="The story" data-es="La historia">The story</span></b>The Slow One and the Fast One — A very old tale. A hare who is fast. A tortoise who is slow. Guess who wins.</p>
+  <div class="csec"><div class="sn"><span data-en="Section" data-es="Sección">Section</span> 1<span>The Parts of a Story</span></div><a class="lrow" href="ela-u3.html#l5-1" data-lid="aog.interior.ws.v1.ela3:l5-1" data-s="who is in the story the characters are the people or animals a story is about."><span class="n">5.1</span><span class="t">Who Is in the Story</span><span class="tk" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5L20 7"/></svg></span></a><a class="lrow" href="ela-u3.html#l5-2" data-lid="aog.interior.ws.v1.ela3:l5-2" data-s="where and when it happens the setting is where and when a story happens."><span class="n">5.2</span><span class="t">Where and When It Happens</span><span class="tk" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5L20 7"/></svg></span></a><a class="lrow" href="ela-u3.html#l5-3" data-lid="aog.interior.ws.v1.ela3:l5-3" data-s="what happens events are the things that happen in a story, one after another."><span class="n">5.3</span><span class="t">What Happens</span><span class="tk" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5L20 7"/></svg></span></a></div><div class="csec"><div class="sn"><span data-en="Section" data-es="Sección">Section</span> 2<span>Inside the Story</span></div><a class="lrow" href="ela-u3.html#l5-4" data-lid="aog.interior.ws.v1.ela3:l5-4" data-s="what a character wants every character wants something, and that want moves the story."><span class="n">5.4</span><span class="t">What a Character Wants</span><span class="tk" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5L20 7"/></svg></span></a><a class="lrow" href="ela-u3.html#l5-5" data-lid="aog.interior.ws.v1.ela3:l5-5" data-s="how a character feels words and pictures show how a character feels."><span class="n">5.5</span><span class="t">How a Character Feels</span><span class="tk" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5L20 7"/></svg></span></a><a class="lrow" href="ela-u3.html#l5-6" data-lid="aog.interior.ws.v1.ela3:l5-6" data-s="the problem and the fix most stories have a problem, and the story shows how it gets solved."><span class="n">5.6</span><span class="t">The Problem and the Fix</span><span class="tk" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5L20 7"/></svg></span></a></div><div class="csec"><div class="sn"><span data-en="Section" data-es="Sección">Section</span> 3<span>Thinking About Stories</span></div><a class="lrow" href="ela-u3.html#l5-7" data-lid="aog.interior.ws.v1.ela3:l5-7" data-s="tell it in order to retell a story, say the events in order: first, next, then, last."><span class="n">5.7</span><span class="t">Tell It in Order</span><span class="tk" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5L20 7"/></svg></span></a><a class="lrow" href="ela-u3.html#l5-8" data-lid="aog.interior.ws.v1.ela3:l5-8" data-s="ask good questions who, what, where, when and why questions help you understand a story."><span class="n">5.8</span><span class="t">Ask Good Questions</span><span class="tk" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5L20 7"/></svg></span></a><a class="lrow" href="ela-u3.html#l5-9" data-lid="aog.interior.ws.v1.ela3:l5-9" data-s="two tales, one lesson two versions of a tale can differ, but each story teaches a lesson."><span class="n">5.9</span><span class="t">Two Tales, One Lesson</span><span class="tk" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5L20 7"/></svg></span></a></div>
+  <div class="cwrap"><a href="ela-u3.html#rev5"><span data-en="Chapter review · 6 questions" data-es="Repaso del capítulo · 6 preguntas">Chapter review · 6 questions</span></a></div>
+</article><article class="cchap">
+  <div class="ch"><span class="badge" aria-hidden="true">6</span><div><span class="tab"><span data-en="Chapter" data-es="Capítulo">Chapter</span></span><h3><a href="ela-u3.html#ch6" style="color:inherit;text-decoration:none">Story Books and True Books</a></h3><div class="yrs">Informational Text</div></div></div>
+  <p class="st"><b><span data-en="The story" data-es="La historia">The story</span></b>Two Frogs on One Table — Two books about frogs. In one, the frog talks. In the other, it does not. Which one is true?</p>
+  <div class="csec"><div class="sn"><span data-en="Section" data-es="Sección">Section</span> 1<span>Made Up or True</span></div><a class="lrow" href="ela-u3.html#l6-1" data-lid="aog.interior.ws.v1.ela3:l6-1" data-s="some books are made up a story book is made up by the author, even if it feels real."><span class="n">6.1</span><span class="t">Some Books Are Made Up</span><span class="tk" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5L20 7"/></svg></span></a><a class="lrow" href="ela-u3.html#l6-2" data-lid="aog.interior.ws.v1.ela3:l6-2" data-s="some books are true a true book gives facts about real things."><span class="n">6.2</span><span class="t">Some Books Are True</span><span class="tk" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5L20 7"/></svg></span></a></div><div class="csec"><div class="sn"><span data-en="Section" data-es="Sección">Section</span> 2<span>The Parts of a True Book</span></div><a class="lrow" href="ela-u3.html#l6-3" data-lid="aog.interior.ws.v1.ela3:l6-3" data-s="headings tell you what is next a heading is a big title on a page that tells what that part is about."><span class="n">6.3</span><span class="t">Headings Tell You What Is Next</span><span class="tk" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5L20 7"/></svg></span></a><a class="lrow" href="ela-u3.html#l6-4" data-lid="aog.interior.ws.v1.ela3:l6-4" data-s="labels and captions labels name the parts of a picture, and captions tell what the picture shows."><span class="n">6.4</span><span class="t">Labels and Captions</span><span class="tk" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5L20 7"/></svg></span></a><a class="lrow" href="ela-u3.html#l6-5" data-lid="aog.interior.ws.v1.ela3:l6-5" data-s="the table of contents the table of contents lists the parts of a book and their page numbers."><span class="n">6.5</span><span class="t">The Table of Contents</span><span class="tk" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5L20 7"/></svg></span></a></div><div class="csec"><div class="sn"><span data-en="Section" data-es="Sección">Section</span> 3<span>Reading to Learn</span></div><a class="lrow" href="ela-u3.html#l6-6" data-lid="aog.interior.ws.v1.ela3:l6-6" data-s="topic and details a true book has one main topic, and the details are the facts about it."><span class="n">6.6</span><span class="t">Topic and Details</span><span class="tk" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5L20 7"/></svg></span></a><a class="lrow" href="ela-u3.html#l6-7" data-lid="aog.interior.ws.v1.ela3:l6-7" data-s="ask, then find the answer ask a question first, then use the book&#x27;s parts to find the answer."><span class="n">6.7</span><span class="t">Ask, Then Find the Answer</span><span class="tk" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5L20 7"/></svg></span></a><a class="lrow" href="ela-u3.html#l6-8" data-lid="aog.interior.ws.v1.ela3:l6-8" data-s="two books, one animal two books can be about the same animal but tell it in different ways."><span class="n">6.8</span><span class="t">Two Books, One Animal</span><span class="tk" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5L20 7"/></svg></span></a><a class="lrow" href="ela-u3.html#l6-9" data-lid="aog.interior.ws.v1.ela3:l6-9" data-s="the author and the illustrator the author writes the words, and the illustrator makes the pictures."><span class="n">6.9</span><span class="t">The Author and the Illustrator</span><span class="tk" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5L20 7"/></svg></span></a></div>
+  <div class="cwrap"><a href="ela-u3.html#rev6"><span data-en="Chapter review · 6 questions" data-es="Repaso del capítulo · 6 preguntas">Chapter review · 6 questions</span></a></div>
+</article>
+  <div class="cwrap" style="border:0;padding-left:0;padding-right:0"><a href="ela-u3.html#match"><span data-en="Eight-word match" data-es="Ocho palabras">Eight-word match</span></a><a href="ela-u3.html#test"><span data-en="Unit test · 10 questions" data-es="Examen · 10 preguntas">Unit test · 10 questions</span></a><a href="ela-u3.html#write"><span data-en="Write it" data-es="Escríbelo">Write it</span></a></div>
+</div>
+</section><section class="unit-spread" id="u4" data-unit="4">
+<div class="spread" aria-labelledby="ut4">
+  <div class="scene" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 420" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Drawn scene: an author's chair by a sunny window with a small audience seated on the rug and a drawing easel to one side" focusable="false"><defs><linearGradient id="elb4-wall" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#142B4D"/><stop offset="1" stop-color="#0A1E33"/></linearGradient><linearGradient id="elb4-win" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F6D98C"/><stop offset="0.5" stop-color="#F2C86A"/><stop offset="1" stop-color="#E8A93A"/></linearGradient><radialGradient id="elb4-glow" cx="0.5" cy="0.5" r="0.5"><stop offset="0" stop-color="#F2C86A" stop-opacity="0.45"/><stop offset="1" stop-color="#F2C86A" stop-opacity="0"/></radialGradient><linearGradient id="elb4-rug" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2C6A7A"/><stop offset="1" stop-color="#173A4A"/></linearGradient><linearGradient id="elb4-floor" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#5A4028"/><stop offset="1" stop-color="#221608"/></linearGradient><linearGradient id="elb4-chair" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8A3A2E"/><stop offset="1" stop-color="#5A2419"/></linearGradient></defs>
+<rect width="1200" height="420" fill="url(#elb4-wall)"/>
+<rect x="470" y="30" width="300" height="180" rx="4" fill="url(#elb4-win)"/><g fill="#0A1E33" opacity=".85"><rect x="616" y="30" width="8" height="180"/><rect x="470" y="116" width="300" height="8"/></g><rect x="462" y="22" width="316" height="196" rx="6" fill="none" stroke="#F4E9D2" stroke-width="6"/>
+<ellipse cx="620" cy="260" rx="380" ry="120" fill="url(#elb4-glow)"/>
+<path d="M0 272 H1200 V420 H0z" fill="url(#elb4-floor)"/>
+<ellipse cx="640" cy="330" rx="330" ry="60" fill="url(#elb4-rug)"/><ellipse cx="640" cy="330" rx="290" ry="46" fill="none" stroke="#F2C86A" stroke-width="2" opacity=".35"/>
+<g fill="url(#elb4-chair)"><rect x="160" y="110" width="110" height="20" rx="6"/><rect x="164" y="128" width="14" height="80"/><rect x="252" y="128" width="14" height="80"/><rect x="150" y="200" width="130" height="18" rx="4"/><rect x="156" y="216" width="12" height="60"/><rect x="262" y="216" width="12" height="60"/></g>
+<path d="M150 200 h130 v18 h-130z" fill="#F2C86A" opacity=".35"/>
+<g fill="#0B1730"><circle cx="216" cy="120" r="18"/><path d="M196 140 q20 -10 40 0 l6 56 h-52z"/><path d="M190 196 h52 l6 40 h-64z"/><path d="M188 236 l-8 40 h12 l10 -40z M240 236 l8 40 h-12 l-10 -40z"/></g>
+<path d="M186 158 q30 -12 60 0 l2 22 q-30 -10 -64 2z" fill="#F4E9D2"/><path d="M216 156 v24" stroke="#0B1730" stroke-width="1.5"/><g fill="#E8A93A" opacity=".7"><rect x="194" y="164" width="16" height="3"/><rect x="224" y="164" width="16" height="3"/><rect x="194" y="170" width="14" height="3"/><rect x="224" y="170" width="14" height="3"/></g>
+<g fill="none" stroke="#F2C86A" stroke-width="2.5" opacity=".7"><path d="M250 112 q14 6 18 20"/><path d="M262 100 q22 10 28 32"/><path d="M276 88 q30 14 36 46"/></g>
+<g fill="#0B1730" transform="translate(470 300) scale(1.0)"><circle cx="0" cy="-30" r="14"/><path d="M-22 4 q0 -30 22 -30 q22 0 22 30 l-8 6 h-28z"/><path d="M-30 10 q30 -14 60 0 q-30 8 -60 0z"/></g><g fill="#0B1730" transform="translate(560 286) scale(0.9)"><circle cx="0" cy="-30" r="14"/><path d="M-22 4 q0 -30 22 -30 q22 0 22 30 l-8 6 h-28z"/><path d="M-30 10 q30 -14 60 0 q-30 8 -60 0z"/></g><g fill="#0B1730" transform="translate(650 300) scale(1.0)"><circle cx="0" cy="-30" r="14"/><path d="M-22 4 q0 -30 22 -30 q22 0 22 30 l-8 6 h-28z"/><path d="M-30 10 q30 -14 60 0 q-30 8 -60 0z"/></g><g fill="#0B1730" transform="translate(740 288) scale(0.9)"><circle cx="0" cy="-30" r="14"/><path d="M-22 4 q0 -30 22 -30 q22 0 22 30 l-8 6 h-28z"/><path d="M-30 10 q30 -14 60 0 q-30 8 -60 0z"/></g><g fill="#0B1730" transform="translate(830 302) scale(1.0)"><circle cx="0" cy="-30" r="14"/><path d="M-22 4 q0 -30 22 -30 q22 0 22 30 l-8 6 h-28z"/><path d="M-30 10 q30 -14 60 0 q-30 8 -60 0z"/></g><g fill="#0B1730" transform="translate(515 330) scale(0.95)"><circle cx="0" cy="-30" r="14"/><path d="M-22 4 q0 -30 22 -30 q22 0 22 30 l-8 6 h-28z"/><path d="M-30 10 q30 -14 60 0 q-30 8 -60 0z"/></g><g fill="#0B1730" transform="translate(605 336) scale(0.95)"><circle cx="0" cy="-30" r="14"/><path d="M-22 4 q0 -30 22 -30 q22 0 22 30 l-8 6 h-28z"/><path d="M-30 10 q30 -14 60 0 q-30 8 -60 0z"/></g><g fill="#0B1730" transform="translate(695 330) scale(0.95)"><circle cx="0" cy="-30" r="14"/><path d="M-22 4 q0 -30 22 -30 q22 0 22 30 l-8 6 h-28z"/><path d="M-30 10 q30 -14 60 0 q-30 8 -60 0z"/></g><g fill="#0B1730" transform="translate(785 338) scale(0.95)"><circle cx="0" cy="-30" r="14"/><path d="M-22 4 q0 -30 22 -30 q22 0 22 30 l-8 6 h-28z"/><path d="M-30 10 q30 -14 60 0 q-30 8 -60 0z"/></g>
+<g stroke="#4A3A2A" stroke-width="7" fill="none" stroke-linecap="round"><path d="M1000 276 L1040 100 L1080 276"/><path d="M1040 100 V276"/><path d="M1008 240 H1072"/></g>
+<rect x="972" y="96" width="136" height="150" rx="3" fill="#FBEFD0"/><rect x="972" y="96" width="136" height="150" rx="3" fill="none" stroke="#D2C09A" stroke-width="2"/>
+<circle cx="1082" cy="126" r="16" fill="#F2C86A"/><g stroke="#F2C86A" stroke-width="2"><path d="M1082 104 v-6 M1082 148 v6 M1060 126 h-6 M1104 126 h6 M1066 110 l-4 -4 M1098 142 l4 4 M1098 110 l4 -4 M1066 142 l-4 4"/></g>
+<path d="M1000 226 v-46 h50 v46z" fill="#E4573D"/><path d="M994 182 l31 -30 l31 30z" fill="#142B4D"/><rect x="1018" y="204" width="14" height="22" fill="#F4E9D2"/>
+<path d="M990 236 q30 -14 60 0" stroke="#7DC15A" stroke-width="4" fill="none"/>
+<g fill="#E8A93A"><rect x="990" y="226" width="6" height="16" rx="2"/><rect x="1004" y="226" width="6" height="16" rx="2" fill="#4F9BD8"/><rect x="1018" y="226" width="6" height="16" rx="2" fill="#E4573D"/><rect x="1032" y="226" width="6" height="16" rx="2" fill="#7DC15A"/></g>
+</svg></div>
+  <div class="credit">Drawn scene: an author&#x27;s chair by a sunny window with a small audience seated on the rug and a drawing easel to one side</div>
+  <div class="txt"><div class="unum"><b>4</b><span data-en="Unit" data-es="Unidad">Unit</span></div><h2 class="ut" id="ut4">Writing and Telling</h2><div class="years">Writing and Speaking</div></div>
+  <a class="enter" href="ela-u4.html"><span data-en="Open the unit" data-es="Abrir la unidad">Open the unit</span> →</a>
+</div>
+<div class="body">
+  <article class="cchap">
+  <div class="ch"><span class="badge" aria-hidden="true">7</span><div><span class="tab"><span data-en="Chapter" data-es="Capítulo">Chapter</span></span><h3><a href="ela-u4.html#ch7" style="color:inherit;text-decoration:none">Beginning, Middle, End</a></h3><div class="yrs">Writing</div></div></div>
+  <p class="st"><b><span data-en="The story" data-es="La historia">The story</span></b>The Lost Tooth, Told Three Ways — Jamal lost a tooth. He told it three times. Each time it got better.</p>
+  <div class="csec"><div class="sn"><span data-en="Section" data-es="Sección">Section</span> 1<span>Three Parts of a Story</span></div><a class="lrow" href="ela-u4.html#l7-1" data-lid="aog.interior.ws.v1.ela4:l7-1" data-s="a beginning, a middle, an end every story has a beginning, a middle and an end."><span class="n">7.1</span><span class="t">A Beginning, a Middle, an End</span><span class="tk" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5L20 7"/></svg></span></a><a class="lrow" href="ela-u4.html#l7-2" data-lid="aog.interior.ws.v1.ela4:l7-2" data-s="draw it first drawing your story first helps you know what to write."><span class="n">7.2</span><span class="t">Draw It First</span><span class="tk" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5L20 7"/></svg></span></a></div><div class="csec"><div class="sn"><span data-en="Section" data-es="Sección">Section</span> 2<span>Tell a Small Moment</span></div><a class="lrow" href="ela-u4.html#l7-3" data-lid="aog.interior.ws.v1.ela4:l7-3" data-s="something that really happened a small moment is a short, true story about one thing that happened to you."><span class="n">7.3</span><span class="t">Something That Really Happened</span><span class="tk" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5L20 7"/></svg></span></a><a class="lrow" href="ela-u4.html#l7-4" data-lid="aog.interior.ws.v1.ela4:l7-4" data-s="first, next, then, last order words like first, next, then and last show what happened in order."><span class="n">7.4</span><span class="t">First, Next, Then, Last</span><span class="tk" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5L20 7"/></svg></span></a><a class="lrow" href="ela-u4.html#l7-5" data-lid="aog.interior.ws.v1.ela4:l7-5" data-s="details a reader can see details tell what you saw, heard and felt so a reader can see it too."><span class="n">7.5</span><span class="t">Details a Reader Can See</span><span class="tk" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5L20 7"/></svg></span></a></div><div class="csec"><div class="sn"><span data-en="Section" data-es="Sección">Section</span> 3<span>Other Things to Write</span></div><a class="lrow" href="ela-u4.html#l7-6" data-lid="aog.interior.ws.v1.ela4:l7-6" data-s="what i think and why an opinion tells what you think, and a reason tells why."><span class="n">7.6</span><span class="t">What I Think and Why</span><span class="tk" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5L20 7"/></svg></span></a><a class="lrow" href="ela-u4.html#l7-7" data-lid="aog.interior.ws.v1.ela4:l7-7" data-s="a page of true facts a fact book page teaches a reader something true about one topic."><span class="n">7.7</span><span class="t">A Page of True Facts</span><span class="tk" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5L20 7"/></svg></span></a><a class="lrow" href="ela-u4.html#l7-8" data-lid="aog.interior.ws.v1.ela4:l7-8" data-s="fixing a sentence a sentence starts with a capital letter, has a space between words and ends with a mark."><span class="n">7.8</span><span class="t">Fixing a Sentence</span><span class="tk" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5L20 7"/></svg></span></a></div>
+  <div class="cwrap"><a href="ela-u4.html#rev7"><span data-en="Chapter review · 6 questions" data-es="Repaso del capítulo · 6 preguntas">Chapter review · 6 questions</span></a></div>
+</article><article class="cchap">
+  <div class="ch"><span class="badge" aria-hidden="true">8</span><div><span class="tab"><span data-en="Chapter" data-es="Capítulo">Chapter</span></span><h3><a href="ela-u4.html#ch8" style="color:inherit;text-decoration:none">Say It, Write It, Share It</a></h3><div class="yrs">Speaking and Listening</div></div></div>
+  <p class="st"><b><span data-en="The story" data-es="La historia">The story</span></b>Priya in the Author&#x27;s Chair — Priya wrote a story. Now she has to read it out loud. Her hands shake a little.</p>
+  <div class="csec"><div class="sn"><span data-en="Section" data-es="Sección">Section</span> 1<span>Being a Good Listener</span></div><a class="lrow" href="ela-u4.html#l8-1" data-lid="aog.interior.ws.v1.ela4:l8-1" data-s="listen and take turns good talk means one person speaks while the others listen, and then you switch."><span class="n">8.1</span><span class="t">Listen and Take Turns</span><span class="tk" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5L20 7"/></svg></span></a><a class="lrow" href="ela-u4.html#l8-2" data-lid="aog.interior.ws.v1.ela4:l8-2" data-s="ask when you do not know if you do not understand, ask a question; it helps you and the speaker."><span class="n">8.2</span><span class="t">Ask When You Do Not Know</span><span class="tk" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5L20 7"/></svg></span></a></div><div class="csec"><div class="sn"><span data-en="Section" data-es="Sección">Section</span> 2<span>Speaking So People Hear</span></div><a class="lrow" href="ela-u4.html#l8-3" data-lid="aog.interior.ws.v1.ela4:l8-3" data-s="loud and clear speak loud enough to reach the back, slow enough to be understood, and look up."><span class="n">8.3</span><span class="t">Loud and Clear</span><span class="tk" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5L20 7"/></svg></span></a><a class="lrow" href="ela-u4.html#l8-4" data-lid="aog.interior.ws.v1.ela4:l8-4" data-s="tell it in order when you tell a story or give directions, say the steps in the order they happen."><span class="n">8.4</span><span class="t">Tell It in Order</span><span class="tk" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5L20 7"/></svg></span></a><a class="lrow" href="ela-u4.html#l8-5" data-lid="aog.interior.ws.v1.ela4:l8-5" data-s="describe what you see to describe a person, place or thing, tell details like size, color, sound and feel."><span class="n">8.5</span><span class="t">Describe What You See</span><span class="tk" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5L20 7"/></svg></span></a></div><div class="csec"><div class="sn"><span data-en="Section" data-es="Sección">Section</span> 3<span>Sharing Our Words</span></div><a class="lrow" href="ela-u4.html#l8-6" data-lid="aog.interior.ws.v1.ela4:l8-6" data-s="share and get feedback when you share your writing, listeners can tell you what they liked and what they wonder."><span class="n">8.6</span><span class="t">Share and Get Feedback</span><span class="tk" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5L20 7"/></svg></span></a><a class="lrow" href="ela-u4.html#l8-7" data-lid="aog.interior.ws.v1.ela4:l8-7" data-s="words that show feelings feeling words like proud, scared and excited tell a reader what is inside you."><span class="n">8.7</span><span class="t">Words That Show Feelings</span><span class="tk" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5L20 7"/></svg></span></a><a class="lrow" href="ela-u4.html#l8-8" data-lid="aog.interior.ws.v1.ela4:l8-8" data-s="new words from books books give you new words; say them, and use them when they fit."><span class="n">8.8</span><span class="t">New Words from Books</span><span class="tk" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5L20 7"/></svg></span></a></div>
+  <div class="cwrap"><a href="ela-u4.html#rev8"><span data-en="Chapter review · 6 questions" data-es="Repaso del capítulo · 6 preguntas">Chapter review · 6 questions</span></a></div>
+</article>
+  <div class="cwrap" style="border:0;padding-left:0;padding-right:0"><a href="ela-u4.html#match"><span data-en="Eight-word match" data-es="Ocho palabras">Eight-word match</span></a><a href="ela-u4.html#test"><span data-en="Unit test · 10 questions" data-es="Examen · 10 preguntas">Unit test · 10 questions</span></a><a href="ela-u4.html#write"><span data-en="Write it" data-es="Escríbelo">Write it</span></a></div>
+</div>
+</section>
+
+<details class="teach no-print"><summary><span data-en="For the teacher" data-es="Para el docente">For the teacher</span></summary><div class="inner">
+  <p><span data-en="The course follows the Illinois Learning Standards for English Language Arts, band by band — units, chapters, sections, numbered lessons — in original text written at each band’s reading level. Every lesson has a main idea, a reading with key words you can tap, a model text, a source or a scenario to think through, and three checks. Every quoted text is in the public domain." data-es="El curso sigue los estándares de aprendizaje de Illinois para lengua y literatura en inglés, banda por banda — unidades, capítulos, secciones, lecciones numeradas — en texto original al nivel de lectura de cada banda. Cada lección tiene una idea principal, una lectura con palabras clave, un texto modelo, una fuente o un escenario, y tres comprobaciones. Todo texto citado es de dominio público.">The course follows the Illinois Learning Standards for English Language Arts, band by band — units, chapters, sections, numbered lessons — in original text written at each band’s reading level. Every lesson has a main idea, a reading with key words you can tap, a model text, a source or a scenario to think through, and three checks. Every quoted text is in the public domain.</span></p>
+  <p><span data-en="Progress ticks live on this device only. Print any unit page for a paper copy." data-es="Las marcas de progreso viven solo en este dispositivo. Imprime cualquier unidad para tener una copia en papel.">Progress ticks live on this device only. Print any unit page for a paper copy.</span></p>
+</div></details>
+
+<footer class="foot"><span data-en="Architecture of Grace · English Language Arts, K–12 · original text following the Illinois Learning Standards for ELA · every quoted text is in the public domain · the banner is a drawn scene, not a photograph." data-es="Architecture of Grace · Lengua y Literatura en Inglés, K–12 · texto original que sigue los estándares de aprendizaje de Illinois para ELA · todo texto citado es de dominio público · el banner es una escena dibujada, no una fotografía.">Architecture of Grace · English Language Arts, K–12 · original text following the Illinois Learning Standards for ELA · every quoted text is in the public domain · the banner is a drawn scene, not a photograph.</span></footer>
+</main>
+</div>
+<script>
+
+(function(){
+"use strict";
+var lang = "en";
+function paintLang(){
+  document.documentElement.setAttribute("lang", lang);
+  Array.prototype.forEach.call(document.querySelectorAll("[data-en]"), function(el){
+    var v = el.getAttribute(lang==="es" ? "data-es" : "data-en"); if(v==null) return;
+    if(v.indexOf("<b>")>-1) el.innerHTML = v; else el.textContent = v;
+  });
+  var lb = document.getElementById("langBtn"); if(lb) lb.textContent = (lang==="es") ? "English" : "Español";
+  paintHits();
+}
+document.getElementById("langBtn").addEventListener("click", function(){ lang = (lang==="es") ? "en" : "es"; paintLang(); });
+document.getElementById("themeBtn").addEventListener("click", function(){
+  var cur = document.documentElement.getAttribute("data-theme")==="dark" ? "light" : "dark";
+  document.documentElement.setAttribute("data-theme", cur);
+  try{ localStorage.setItem("aog.interior.ws.v1.theme", cur); }catch(e){}
+});
+/* progress ticks: read every unit's record */
+var rows = document.querySelectorAll(".lrow"), done = 0, KEYS = [[1, "aog.interior.ws.v1.ela1"], [2, "aog.interior.ws.v1.ela2"], [3, "aog.interior.ws.v1.ela3"], [4, "aog.interior.ws.v1.ela4"]];
+KEYS.forEach(function(pair){
+  var key = pair[1], rec = {}; try{ rec = JSON.parse(localStorage.getItem(key)||"{}")||{}; }catch(e){}
+  var les = rec.les||{};
+  for(var k in les){ var a = document.querySelector('.lrow[data-lid="'+key+':'+k+'"]'); if(a){ a.classList.add("done"); done++; } }
+});
+document.getElementById("progN").textContent = done;
+document.getElementById("progBar").style.width = (rows.length ? Math.round(100*done/rows.length) : 0) + "%";
+/* the lesson search */
+var inp = document.getElementById("lsearch"), hits = document.getElementById("hits"), cur = "";
+function norm(s){ return s.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g,""); }
+function paintHits(){
+  if(!cur){ hits.textContent = ""; return; }
+  var n = document.querySelectorAll(".lrow:not([hidden])").length;
+  hits.textContent = n + (lang==="es" ? " lecciones" : " lessons") + (lang==="es" ? " para “" : " for “") + cur + "”";
+}
+function filter(){
+  cur = inp.value.trim(); var q = norm(cur);
+  Array.prototype.forEach.call(rows, function(a){ a.hidden = !!q && norm(a.getAttribute("data-s")).indexOf(q) < 0; });
+  Array.prototype.forEach.call(document.querySelectorAll(".csec"), function(s){ s.setAttribute("data-empty", s.querySelector(".lrow:not([hidden])") ? "0" : "1"); });
+  Array.prototype.forEach.call(document.querySelectorAll(".cchap"), function(c){ c.setAttribute("data-empty", c.querySelector(".lrow:not([hidden])") ? "0" : "1"); });
+  Array.prototype.forEach.call(document.querySelectorAll(".unit-spread"), function(u){ u.setAttribute("data-empty", (q && !u.querySelector(".lrow:not([hidden])")) ? "1" : "0"); });
+  paintHits();
+}
+inp.addEventListener("input", filter);
+var jumpSel = document.getElementById("jumpSel");
+if(jumpSel){ jumpSel.addEventListener("change", function(){ if(jumpSel.value) location.href = jumpSel.value; }); }
+})();
+
+</script>
+<script src="/aog-jump.js" defer></script>
+</body>
+</html>
