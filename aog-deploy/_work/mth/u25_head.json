@@ -1,0 +1,287 @@
+{
+ "intro": [
+  "A loan balance shrinks a little each month. A bouncing ball rises a little less each time. A crowd pours out of a stadium, fast at first and then in a steady stream. Each of these is a list of numbers with a rule behind it, and once you know the rule you can predict the hundredth number without writing the ninety-nine before it. This unit is about finding those rules, adding up what they produce, and judging whether the rule describes the world well enough to act on.",
+  "The first chapter is about sequences and series. You will write rules for lists that add a fixed amount and lists that multiply by a fixed factor, use sigma notation to say \"add all of these\" in one line, and find the sum of a list in a single step, the way the young Gauss added 1 to 100. You will decide when an endless list of numbers still adds up to a finite total, turn a repeating decimal into an exact fraction, and follow the Fibonacci numbers toward the golden ratio.",
+  "The second chapter turns those tools outward. You will walk the modeling cycle: ask a sharp question, list your assumptions, choose a function family that fits the situation, fit it to data with technology, and check the result against reality. You will build models from pieces, shift and stretch them to match a new situation, test how much the answer moves when an input moves, and write up what you found so that someone else can check every step."
+ ],
+ "bigQuestion": "How can a short rule describe a list that never ends, and how do we know when a rule describes the world well enough to trust?",
+ "timeline": [
+  {
+   "y": "c. 450 BCE",
+   "t": "Zeno of Elea poses puzzles about endless halving, such as Achilles who can never catch the tortoise"
+  },
+  {
+   "y": "c. 300 BCE",
+   "t": "Euclid's Elements states a rule for adding up the terms of a geometric progression"
+  },
+  {
+   "y": "c. 250 BCE",
+   "t": "Archimedes finds the area under a parabola by summing the endless series 1 + 1/4 + 1/16 + ..."
+  },
+  {
+   "y": "1202",
+   "t": "Fibonacci's Liber Abaci poses the rabbit puzzle whose answer is the sequence 1, 1, 2, 3, 5, 8, ..."
+  },
+  {
+   "y": "c. 1350",
+   "t": "Nicole Oresme shows that 1 + 1/2 + 1/3 + 1/4 + ... grows without bound, even though its terms shrink"
+  },
+  {
+   "y": "1735",
+   "t": "Leonhard Euler finds that 1 + 1/4 + 1/9 + 1/16 + ... adds up to exactly π^2/6"
+  },
+  {
+   "y": "1798",
+   "t": "Thomas Malthus argues that populations grow geometrically while food supplies grow arithmetically"
+  },
+  {
+   "y": "1805",
+   "t": "Adrien-Marie Legendre publishes the method of least squares for fitting a line to data"
+  },
+  {
+   "y": "1821",
+   "t": "Augustin-Louis Cauchy's Cours d'analyse gives the modern definition of a convergent series"
+  },
+  {
+   "y": "1838",
+   "t": "Pierre Verhulst proposes the logistic model, in which growth levels off at a carrying capacity"
+  },
+  {
+   "y": "1924",
+   "t": "Soldier Field opens on Chicago's lakefront, a crowd-flow problem waiting for a model"
+  },
+  {
+   "y": "1975",
+   "t": "Benoit Mandelbrot coins the word fractal for shapes that repeat their pattern at every scale"
+  }
+ ],
+ "wrap": {
+  "words": [
+   {
+    "w": "sequence",
+    "d": "an ordered list of numbers, each with a position called its index"
+   },
+   {
+    "w": "arithmetic sequence",
+    "d": "a sequence that adds the same common difference d each step: a_n = a_1 + (n − 1)d"
+   },
+   {
+    "w": "geometric sequence",
+    "d": "a sequence that multiplies by the same common ratio r each step: a_n = a_1 × r^(n − 1)"
+   },
+   {
+    "w": "recursive rule",
+    "d": "a rule that gives each term from the term or terms before it, plus starting values"
+   },
+   {
+    "w": "sigma notation",
+    "d": "a compact way to write a sum with Σ, an index, its start and end values, and a formula for each term"
+   },
+   {
+    "w": "series",
+    "d": "the sum of the terms of a sequence; a partial sum S_n adds the first n terms"
+   },
+   {
+    "w": "converge",
+    "d": "for the partial sums of an infinite series to settle toward one number, its sum"
+   },
+   {
+    "w": "golden ratio",
+    "d": "φ = (1 + √5)/2 ≈ 1.618, the number that ratios of neighboring Fibonacci terms approach"
+   },
+   {
+    "w": "model",
+    "d": "a simplified mathematical version of a real situation, built from assumptions to answer a question"
+   },
+   {
+    "w": "function family",
+    "d": "a group of functions with one shape, such as linear, exponential, quadratic, periodic or logistic"
+   },
+   {
+    "w": "residual",
+    "d": "actual value minus the value a fitted model predicts, for one data point"
+   },
+   {
+    "w": "piecewise function",
+    "d": "a function defined by different formulas on different intervals of its input"
+   }
+  ],
+  "test": [
+   {
+    "q": "What is the 15th term of the arithmetic sequence 9, 13, 17, 21, ...?",
+    "choices": [
+     "69",
+     "61",
+     "65",
+     "60"
+    ],
+    "a": 2,
+    "why": "a_15 = 9 + 4(15 − 1) = 9 + 56 = 65. Using 4 × 15 gives 69, one term too far."
+   },
+   {
+    "q": "A geometric sequence has a_1 = 3 and r = 4. What is a_5?",
+    "choices": [
+     "3072",
+     "192",
+     "48",
+     "768"
+    ],
+    "a": 3,
+    "why": "a_5 = 3 × 4^4 = 3 × 256 = 768. Multiplying by 4 four times from 3: 12, 48, 192, 768."
+   },
+   {
+    "q": "Which rule is recursive?",
+    "choices": [
+     "a_1 = 2, a_n = 3 × a_(n−1)",
+     "a_n = 2 × 3^(n−1)",
+     "a_n = 3n + 2",
+     "a_n = n^2 − 1"
+    ],
+    "a": 0,
+    "why": "A recursive rule gives each term from the one before it and states a starting term. The others compute any term directly from n."
+   },
+   {
+    "q": "What is Σ from k = 2 to 5 of (k^2 − 1)?",
+    "choices": [
+     "54",
+     "50",
+     "24",
+     "30"
+    ],
+    "a": 1,
+    "why": "The terms are 3, 8, 15, 24 for k = 2, 3, 4, 5, and 3 + 8 + 15 + 24 = 50. Starting at k = 1 would add 0, still 50; stopping at k = 4 gives 26."
+   },
+   {
+    "q": "What is the sum of the first 40 terms of the arithmetic sequence 6, 9, 12, ...?",
+    "choices": [
+     "5,160",
+     "4,920",
+     "2,580",
+     "2,460"
+    ],
+    "a": 2,
+    "why": "a_40 = 6 + 3(39) = 123. S_40 = 40 × (6 + 123)/2 = 40 × 64.5 = 2,580."
+   },
+   {
+    "q": "What is 1 + 3 + 9 + 27 + 81 + 243?",
+    "choices": [
+     "243",
+     "728",
+     "360",
+     "364"
+    ],
+    "a": 3,
+    "why": "a_1 = 1, r = 3, n = 6: S_6 = (3^6 − 1)/(3 − 1) = (729 − 1)/2 = 364. Adding directly gives the same 364."
+   },
+   {
+    "q": "What is the sum of the infinite series 30 + 6 + 1.2 + 0.24 + ...?",
+    "choices": [
+     "37.5",
+     "36",
+     "30",
+     "It has no sum"
+    ],
+    "a": 0,
+    "why": "The ratio is 0.2, so S = 30/(1 − 0.2) = 30/0.8 = 37.5. The partial sums 30, 36, 37.2, 37.44 approach it."
+   },
+   {
+    "q": "Which infinite geometric series converges?",
+    "choices": [
+     "1 + 2 + 4 + 8 + ...",
+     "16 + 12 + 9 + 6.75 + ...",
+     "5 + 5 + 5 + 5 + ...",
+     "2 − 4 + 8 − 16 + ..."
+    ],
+    "a": 1,
+    "why": "Its ratio is 0.75, which is between −1 and 1, so its partial sums settle at 16/(1 − 0.75) = 64. The others have ratios 2, 1 and −2."
+   },
+   {
+    "q": "Written as a fraction in lowest terms, 0.5555... equals which of these?",
+    "choices": [
+     "5/10",
+     "55/100",
+     "5/9",
+     "5/11"
+    ],
+    "a": 2,
+    "why": "0.5 + 0.05 + ... has a_1 = 0.5 and r = 0.1, so the sum is 0.5/0.9 = 5/9. Check: 5 ÷ 9 = 0.555..."
+   },
+   {
+    "q": "In the Fibonacci sequence 1, 1, 2, 3, 5, 8, 13, 21, ..., what is the 10th term?",
+    "choices": [
+     "34",
+     "89",
+     "54",
+     "55"
+    ],
+    "a": 3,
+    "why": "Continue adding: 13 + 21 = 34 (9th), 21 + 34 = 55 (10th). Doubling 21 gives 42, and 89 is the 11th term."
+   },
+   {
+    "q": "A loan follows B_n = 1.01 × B_(n−1) − 200 with B_0 = 5,000. What is B_1?",
+    "choices": [
+     "$4,850",
+     "$4,848",
+     "$4,800",
+     "$4,950"
+    ],
+    "a": 0,
+    "why": "Interest first: 1.01 × 5,000 = 5,050. Then the payment: 5,050 − 200 = 4,850. Paying first and then adding interest gives 4,848."
+   },
+   {
+    "q": "For x = 0, 1, 2, 3 a table gives y = 1, 4, 9, 16. Its first differences are 3, 5, 7. Which family fits?",
+    "choices": [
+     "linear, since the differences grow steadily",
+     "quadratic, since the second differences are constant",
+     "exponential, since the values grow",
+     "periodic, since the differences are odd"
+    ],
+    "a": 1,
+    "why": "The second differences are 2 and 2, constant, so the model is quadratic: y = (x + 1)^2. The ratios 4, 2.25, 1.78 are not constant."
+   },
+   {
+    "q": "A town of 2,000 people grows 4% a year. Which model gives the population t years from now?",
+    "choices": [
+     "P = 2000 + 80t",
+     "P = 2000 × 0.04^t",
+     "P = 2000 × 1.04^t",
+     "P = 2000 + 1.04t"
+    ],
+    "a": 2,
+    "why": "A percent per year means multiply by 1.04 each year, an exponential. Adding 80 each year would be linear and falls behind after the first year."
+   },
+   {
+    "q": "A best-fit line predicts 42 for a point whose actual value is 45. What is the residual, and what does its sign mean?",
+    "choices": [
+     "−3; the point is above the line",
+     "3; the point is below the line",
+     "87; the point is on the line",
+     "3; the point is above the line"
+    ],
+    "a": 3,
+    "why": "Residual = actual − predicted = 45 − 42 = 3. A positive residual means the actual value sits above the line's prediction."
+   },
+   {
+    "q": "A crowd model gives 610 seconds using a gate rate that is only a rough guess. What is the best way to report the result?",
+    "choices": [
+     "About 10 minutes, with a range that reflects the uncertain rate",
+     "610.0 seconds exactly",
+     "10.1667 minutes",
+     "Whatever number the calculator shows, with all its digits"
+    ],
+    "a": 0,
+    "why": "The answer can be no more precise than its inputs. A rounded value plus a range from the sensitivity test tells the reader what the model actually knows."
+   }
+  ],
+  "write": {
+   "prompt": "A friend saves $20 in the first week and adds $2 more each week than the week before ($20, $22, $24, ...). Find the total saved after 30 weeks two ways: with the arithmetic series formula and with Gauss's pairing idea. Explain which method you would teach a classmate and why. Then name one real-world assumption in this plan that could fail, and say how it would change the total.",
+   "tips": [
+    "State the answer first, then show how you got it.",
+    "Write the 30th term before you use the sum formula, and show the substitution.",
+    "For the pairing method, say how many pairs there are and what each pair adds to.",
+    "Say why the two methods must give the same number.",
+    "Check your total by adding the first few terms and comparing the size."
+   ]
+  }
+ }
+}

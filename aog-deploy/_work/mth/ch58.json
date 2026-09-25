@@ -27,10 +27,22 @@
       "The *modeling cycle* is the loop you walk around: ask a clear question, list assumptions, build the model, compute, check the result against reality, revise, and report. You rarely get it right the first time, and that is the point of the loop. A units check catches many errors early: students × (uses per student per day) × days = uses. If your formula ends in \"students × days\" with nothing per day, a factor is missing."
      ],
      "words": [
-      {"w": "model", "d": "a simplified mathematical version of a real situation, built to answer a question"},
-      {"w": "assumption", "d": "a statement you accept as true for now so that the math can begin"},
-      {"w": "variable", "d": "a quantity in a model that can take different values, named with a letter"},
-      {"w": "modeling cycle", "d": "the loop: question, assumptions, model, compute, check, revise, report"}
+      {
+       "w": "model",
+       "d": "a simplified mathematical version of a real situation, built to answer a question"
+      },
+      {
+       "w": "assumption",
+       "d": "a statement you accept as true for now so that the math can begin"
+      },
+      {
+       "w": "variable",
+       "d": "a quantity in a model that can take different values, named with a letter"
+      },
+      {
+       "w": "modeling cycle",
+       "d": "the loop: question, assumptions, model, compute, check, revise, report"
+      }
      ],
      "look": {
       "type": "think",
@@ -39,9 +51,39 @@
       "prompt": "List two assumptions in this model that could be wrong. For each one, say how the number of pizzas would change if it were wrong."
      },
      "check": [
-      {"q": "A school has 600 students, each uses a filling station 0.4 times per day, and there are 180 school days. How many uses is that per year?", "choices": ["43,200", "4,320", "432,000", "108,000"], "a": 0, "why": "600 × 0.4 = 240 uses per day, and 240 × 180 = 43,200 uses per year. Leaving out the 0.4 gives 108,000."},
-      {"q": "In the bottle model, which statement is an assumption rather than a measured fact?", "choices": ["Every student comes to school every day", "The school enrolls 600 students", "The year has 180 school days", "A bottle holds 500 mL"], "a": 0, "why": "Enrollment, the calendar and bottle size can be looked up. Perfect attendance is a simplification chosen to make the math easier, so it must be listed as an assumption."},
-      {"q": "What is the first step of the modeling cycle?", "choices": ["State a clear question with a measurable answer", "Pick the equation to use", "Compute the answer", "Draw the graph"], "a": 0, "why": "Everything else depends on the question. Without knowing exactly what is being asked, you cannot choose assumptions or judge whether the answer is any good."}
+      {
+       "q": "A school has 600 students, each uses a filling station 0.4 times per day, and there are 180 school days. How many uses is that per year?",
+       "choices": [
+        "4,320",
+        "43,200",
+        "432,000",
+        "108,000"
+       ],
+       "a": 1,
+       "why": "600 × 0.4 = 240 uses per day, and 240 × 180 = 43,200 uses per year. Leaving out the 0.4 gives 108,000."
+      },
+      {
+       "q": "In the bottle model, which statement is an assumption rather than a measured fact?",
+       "choices": [
+        "The school enrolls 600 students",
+        "The year has 180 school days",
+        "Every student comes to school every day",
+        "A bottle holds 500 mL"
+       ],
+       "a": 2,
+       "why": "Enrollment, the calendar and bottle size can be looked up. Perfect attendance is a simplification chosen to make the math easier, so it must be listed as an assumption."
+      },
+      {
+       "q": "What is the first step of the modeling cycle?",
+       "choices": [
+        "Pick the equation to use",
+        "Compute the answer",
+        "Draw the graph",
+        "State a clear question with a measurable answer"
+       ],
+       "a": 3,
+       "why": "Everything else depends on the question. Without knowing exactly what is being asked, you cannot choose assumptions or judge whether the answer is any good."
+      }
      ]
     },
     {
@@ -53,22 +95,86 @@
       "Three checks catch most bad models. Check the *boundary cases*: at t = 0 the model gives 20 + 70 = 90, correct, and for very large t it approaches 20, the room, also correct. Check against a measured point, as we did at 10 minutes. Check the direction and size of change: cooling should slow down, and it does. A model that matches one data point can still be wrong, so use several checks, not one."
      ],
      "words": [
-      {"w": "reality check", "d": "asking whether a model's output is even possible, like a temperature below the room's"},
-      {"w": "revise", "d": "change an assumption and rebuild the model, rather than adjusting the answer by hand"},
-      {"w": "boundary case", "d": "an extreme input, like time 0 or a very large time, where you know what the answer should be"}
+      {
+       "w": "reality check",
+       "d": "asking whether a model's output is even possible, like a temperature below the room's"
+      },
+      {
+       "w": "revise",
+       "d": "change an assumption and rebuild the model, rather than adjusting the answer by hand"
+      },
+      {
+       "w": "boundary case",
+       "d": "an extreme input, like time 0 or a very large time, where you know what the answer should be"
+      }
      ],
      "look": {
       "type": "data",
       "title": "Coffee Cooling, Measured",
-      "rows": [["0 min", 90], ["5 min", 62], ["10 min", 45], ["15 min", 35], ["20 min", 29], ["30 min", 23]],
+      "rows": [
+       [
+        "0 min",
+        90
+       ],
+       [
+        "5 min",
+        62
+       ],
+       [
+        "10 min",
+        45
+       ],
+       [
+        "15 min",
+        35
+       ],
+       [
+        "20 min",
+        29
+       ],
+       [
+        "30 min",
+        23
+       ]
+      ],
       "unit": "°C",
       "cite": "example measurements in a 20 °C room",
       "prompt": "The linear model 90 − 10t predicts 40 at 5 minutes and −10 at 10 minutes. Which rows show it failing? Compute 20 + 70 × 0.9^t at t = 5 and t = 20 and compare."
      },
      "check": [
-      {"q": "What does the model T(t) = 20 + 70 × 0.9^t give at t = 0?", "choices": ["90 °C", "70 °C", "20 °C", "63 °C"], "a": 0, "why": "0.9^0 = 1, so T(0) = 20 + 70 × 1 = 90 °C, the starting temperature. That is a boundary-case check the model passes."},
-      {"q": "A linear cooling model predicts −10 °C in a 20 °C room. What is the right response?", "choices": ["Change the constant-rate assumption and rebuild the model", "Keep the model and report −10 °C", "Replace the −10 with 20 and keep the model", "Throw out the measurements that disagree"], "a": 0, "why": "An impossible output means an assumption is wrong. Fix the assumption and recompute; do not patch the answer or ignore the data."},
-      {"q": "In the long run, what temperature does T(t) = 20 + 70 × 0.9^t approach?", "choices": ["20 °C", "0 °C", "90 °C", "70 °C"], "a": 0, "why": "As t grows, 0.9^t shrinks toward 0, so the 70 × 0.9^t part vanishes and T approaches 20 °C, the room temperature."}
+      {
+       "q": "What does the model T(t) = 20 + 70 × 0.9^t give at t = 0?",
+       "choices": [
+        "90 °C",
+        "70 °C",
+        "20 °C",
+        "63 °C"
+       ],
+       "a": 0,
+       "why": "0.9^0 = 1, so T(0) = 20 + 70 × 1 = 90 °C, the starting temperature. That is a boundary-case check the model passes."
+      },
+      {
+       "q": "A linear cooling model predicts −10 °C in a 20 °C room. What is the right response?",
+       "choices": [
+        "Keep the model and report −10 °C",
+        "Change the constant-rate assumption and rebuild the model",
+        "Replace the −10 with 20 and keep the model",
+        "Throw out the measurements that disagree"
+       ],
+       "a": 1,
+       "why": "An impossible output means an assumption is wrong. Fix the assumption and recompute; do not patch the answer or ignore the data."
+      },
+      {
+       "q": "In the long run, what temperature does T(t) = 20 + 70 × 0.9^t approach?",
+       "choices": [
+        "0 °C",
+        "90 °C",
+        "20 °C",
+        "70 °C"
+       ],
+       "a": 2,
+       "why": "As t grows, 0.9^t shrinks toward 0, so the 70 × 0.9^t part vanishes and T approaches 20 °C, the room temperature."
+      }
      ]
     }
    ]
@@ -83,26 +189,89 @@
       "A table with equally spaced inputs tells you its family if you look at how the outputs change. For x = 0, 1, 2, 3, 4 with y = 3, 7, 11, 15, 19, the *first differences* are 4, 4, 4, 4. Constant first differences mean a linear model, y = 4x + 3, with the difference as the slope. Check x = 4: 4(4) + 3 = 19.",
       "For x = 1, 2, 3, 4, 5 with y = 2, 5, 10, 17, 26, the first differences are 3, 5, 7, 9. Not constant. Take the differences of those: 2, 2, 2. Constant *second differences* mean a quadratic, and the second difference equals 2a, so a = 1. Here y = x^2 + 1 fits every row: 1 + 1 = 2, 4 + 1 = 5, 9 + 1 = 10, 16 + 1 = 17, 25 + 1 = 26.",
       "For x = 0, 1, 2, 3, 4 with y = 5, 10, 20, 40, 80, the first differences 5, 10, 20, 40 grow, but the ratios 10/5, 20/10, 40/20, 80/40 are all 2. A constant *ratio* means an exponential, y = 5 × 2^x. Real data are never this clean, so look for differences or ratios that are roughly constant. The common error is to see growing differences and shout \"exponential\" without checking ratios; a quadratic's differences also grow, but in a straight-line way.",
-      "One more caution: the inputs must be equally spaced for these tests to work. If x jumps 1, 2, 4, 8, the differences mean nothing. When a table has uneven spacing, either compute the change per unit of x or plot the points and look at the shape."
+      "One more caution: the inputs must be equally spaced for these tests to work. If x jumps 1, 2, 4, 8, the differences mean nothing, because each step covers a different distance. When a table has uneven spacing, either compute the change per unit of x or plot the points and look at the shape of the graph."
      ],
      "words": [
-      {"w": "first differences", "d": "the amounts by which the outputs change from one row to the next"},
-      {"w": "second differences", "d": "the differences of the first differences; constant for a quadratic"},
-      {"w": "ratio", "d": "one output divided by the previous one; constant for an exponential"},
-      {"w": "function family", "d": "a group of functions with the same shape, like linear, quadratic or exponential"}
+      {
+       "w": "first differences",
+       "d": "the amounts by which the outputs change from one row to the next"
+      },
+      {
+       "w": "second differences",
+       "d": "the differences of the first differences; constant for a quadratic"
+      },
+      {
+       "w": "ratio",
+       "d": "one output divided by the previous one; constant for an exponential"
+      },
+      {
+       "w": "function family",
+       "d": "a group of functions with the same shape, like linear, quadratic or exponential"
+      }
      ],
      "look": {
       "type": "data",
       "title": "Which Family?",
-      "rows": [["x = 0", 4], ["x = 1", 12], ["x = 2", 36], ["x = 3", 108], ["x = 4", 324]],
+      "rows": [
+       [
+        "x = 0",
+        4
+       ],
+       [
+        "x = 1",
+        12
+       ],
+       [
+        "x = 2",
+        36
+       ],
+       [
+        "x = 3",
+        108
+       ],
+       [
+        "x = 4",
+        324
+       ]
+      ],
       "unit": "y",
       "cite": "a table built from a rule you are asked to find",
       "prompt": "Find the first differences and the ratios. Which family fits, and what is the rule? Test your rule on x = 4."
      },
      "check": [
-      {"q": "For x = 0, 1, 2, 3 a table gives y = 6, 11, 16, 21. Which model fits?", "choices": ["linear, y = 5x + 6", "linear, y = 6x + 5", "quadratic, y = x^2 + 6", "exponential, y = 6 × 5^x"], "a": 0, "why": "First differences are 5, 5, 5, so the model is linear with slope 5. At x = 0, y = 6, so the intercept is 6."},
-      {"q": "For x = 0, 1, 2, 3 a table gives y = 3, 6, 12, 24. Which family fits?", "choices": ["exponential", "linear", "quadratic", "none of these fit"], "a": 0, "why": "The ratios 6/3, 12/6 and 24/12 all equal 2, so y = 3 × 2^x. The first differences 3, 6, 12 are not constant."},
-      {"q": "A table's second differences are all 6. What is the coefficient a in the quadratic y = ax^2 + bx + c?", "choices": ["3", "6", "12", "2"], "a": 0, "why": "For a quadratic with unit spacing, the second difference equals 2a. So 2a = 6 and a = 3."}
+      {
+       "q": "For x = 0, 1, 2, 3 a table gives y = 6, 11, 16, 21. Which model fits?",
+       "choices": [
+        "linear, y = 6x + 5",
+        "quadratic, y = x^2 + 6",
+        "exponential, y = 6 × 5^x",
+        "linear, y = 5x + 6"
+       ],
+       "a": 3,
+       "why": "First differences are 5, 5, 5, so the model is linear with slope 5. At x = 0, y = 6, so the intercept is 6."
+      },
+      {
+       "q": "For x = 0, 1, 2, 3 a table gives y = 3, 6, 12, 24. Which family fits?",
+       "choices": [
+        "exponential",
+        "linear",
+        "quadratic",
+        "none of these fit"
+       ],
+       "a": 0,
+       "why": "The ratios 6/3, 12/6 and 24/12 all equal 2, so y = 3 × 2^x. The first differences 3, 6, 12 are not constant."
+      },
+      {
+       "q": "A table's second differences are all 6. What is the coefficient a in the quadratic y = ax^2 + bx + c?",
+       "choices": [
+        "6",
+        "3",
+        "12",
+        "2"
+       ],
+       "a": 1,
+       "why": "For a quadratic with unit spacing, the second difference equals 2a. So 2a = 6 and a = 3."
+      }
      ]
     },
     {
@@ -114,11 +283,26 @@
       "The trap is linear versus exponential when the word \"percent\" is nearby. \"Grows by 5 a year\" is linear; \"grows by 5% a year\" is exponential. Start both at 100 and run 20 years. Linear: 100 + 5 × 20 = 200. Exponential: 100 × 1.05^20 ≈ 100 × 2.653 ≈ 265. The gap only widens with time. When a situation mentions a rate, ask whether it is an amount per unit or a percent per unit before you choose."
      ],
      "words": [
-      {"w": "linear", "d": "changes by a fixed amount per unit of input; a constant slope"},
-      {"w": "exponential", "d": "changes by a fixed percent or factor per unit of input"},
-      {"w": "quadratic", "d": "has an x^2 term; models thrown objects and areas"},
-      {"w": "periodic", "d": "repeats the same pattern over and over, like daylight through a year"},
-      {"w": "logistic", "d": "grows quickly at first, then levels off toward a ceiling"}
+      {
+       "w": "linear",
+       "d": "changes by a fixed amount per unit of input; a constant slope"
+      },
+      {
+       "w": "exponential",
+       "d": "changes by a fixed percent or factor per unit of input"
+      },
+      {
+       "w": "quadratic",
+       "d": "has an x^2 term; models thrown objects and areas"
+      },
+      {
+       "w": "periodic",
+       "d": "repeats the same pattern over and over, like daylight through a year"
+      },
+      {
+       "w": "logistic",
+       "d": "grows quickly at first, then levels off toward a ceiling"
+      }
      ],
      "look": {
       "type": "think",
@@ -127,9 +311,39 @@
       "prompt": "Match each situation to a family (linear, exponential, quadratic, periodic, logistic) and name the word or phrase that gave it away."
      },
      "check": [
-      {"q": "A culture of 500 bacteria doubles every 3 hours. How many are there after 12 hours?", "choices": ["8,000", "2,000", "4,000", "6,000"], "a": 0, "why": "12 hours holds four 3-hour doublings, so the count is 500 × 2^4 = 500 × 16 = 8,000. Doubling only twice gives 2,000."},
-      {"q": "Which situation is best modeled by a quadratic function?", "choices": ["The area of a square garden as its side length changes", "A taxi fare that charges a fixed amount per mile", "An account that earns 3% interest each year", "The height of the tide through a week"], "a": 0, "why": "Area is side × side, so A = s^2, a quadratic. The others are linear, exponential and periodic."},
-      {"q": "Which situation calls for a periodic model?", "choices": ["Outdoor temperature over several days, repeating day and night", "A savings account growing each year", "A rock falling from a cliff", "A phone plan with a fixed charge per text"], "a": 0, "why": "Temperature repeats a similar rise and fall every 24 hours, so a periodic function fits. The others are exponential, quadratic and linear."}
+      {
+       "q": "A culture of 500 bacteria doubles every 3 hours. How many are there after 12 hours?",
+       "choices": [
+        "2,000",
+        "4,000",
+        "8,000",
+        "6,000"
+       ],
+       "a": 2,
+       "why": "12 hours holds four 3-hour doublings, so the count is 500 × 2^4 = 500 × 16 = 8,000. Doubling only twice gives 2,000."
+      },
+      {
+       "q": "Which situation is best modeled by a quadratic function?",
+       "choices": [
+        "A taxi fare that charges a fixed amount per mile",
+        "An account that earns 3% interest each year",
+        "The height of the tide through a week",
+        "The area of a square garden as its side length changes"
+       ],
+       "a": 3,
+       "why": "Area is side × side, so A = s^2, a quadratic. The others are linear, exponential and periodic."
+      },
+      {
+       "q": "Which situation calls for a periodic model?",
+       "choices": [
+        "Outdoor temperature over several days, repeating day and night",
+        "A savings account growing each year",
+        "A rock falling from a cliff",
+        "A phone plan with a fixed charge per text"
+       ],
+       "a": 0,
+       "why": "Temperature repeats a similar rise and fall every 24 hours, so a periodic function fits. The others are exponential, quadratic and linear."
+      }
      ]
     },
     {
@@ -141,24 +355,90 @@
       "Technology also fits exponential and quadratic models, and reports the *correlation coefficient* r, which runs from −1 to 1. Values near 1 or −1 mean the points hug a line; values near 0 mean no linear pattern. Two cautions. First, a strong r does not prove that one thing causes the other. Second, do not *extrapolate* far beyond the data: 12 hours gives 6.5(12) + 55.9 = 133.9, more than 100 points, which is impossible. The model is only trusted where the data live."
      ],
      "words": [
-      {"w": "line of best fit", "d": "the line that comes closest, overall, to a set of data points"},
-      {"w": "regression", "d": "the method technology uses to find the best-fitting line or curve"},
-      {"w": "residual", "d": "actual value minus the value the model predicts, for one data point"},
-      {"w": "correlation coefficient", "d": "the number r between −1 and 1 that measures how tightly points follow a line"},
-      {"w": "extrapolate", "d": "use a model outside the range of the data it was built from"}
+      {
+       "w": "line of best fit",
+       "d": "the line that comes closest, overall, to a set of data points"
+      },
+      {
+       "w": "regression",
+       "d": "the method technology uses to find the best-fitting line or curve"
+      },
+      {
+       "w": "residual",
+       "d": "actual value minus the value the model predicts, for one data point"
+      },
+      {
+       "w": "correlation coefficient",
+       "d": "the number r between −1 and 1 that measures how tightly points follow a line"
+      },
+      {
+       "w": "extrapolate",
+       "d": "use a model outside the range of the data it was built from"
+      }
      ],
      "look": {
       "type": "data",
       "title": "Study Hours and Quiz Scores",
-      "rows": [["1 hour", 62], ["2 hours", 70], ["3 hours", 74], ["4 hours", 83], ["5 hours", 88]],
+      "rows": [
+       [
+        "1 hour",
+        62
+       ],
+       [
+        "2 hours",
+        70
+       ],
+       [
+        "3 hours",
+        74
+       ],
+       [
+        "4 hours",
+        83
+       ],
+       [
+        "5 hours",
+        88
+       ]
+      ],
       "unit": "score out of 100",
       "cite": "example class data; best-fit line y = 6.5x + 55.9",
       "prompt": "Use the line to predict each score, then find each residual. Are they small and mixed in sign? What does that say about the fit?"
      },
      "check": [
-      {"q": "The line y = 6.5x + 55.9 predicts a score for 2 hours. The actual score was 70. What is the residual?", "choices": ["1.1", "−1.1", "68.9", "138.9"], "a": 0, "why": "Predicted: 6.5(2) + 55.9 = 68.9. Residual = actual − predicted = 70 − 68.9 = 1.1. Subtracting the other way flips the sign."},
-      {"q": "A line's residuals are all negative in the middle of the data and positive at both ends. What should you do?", "choices": ["Try a curved family, since the data bend", "Accept the fit, since some residuals are positive", "Delete the middle points", "Make the slope steeper"], "a": 0, "why": "A pattern in the residuals means the line misses the shape of the data. Curved data call for a quadratic or exponential model."},
-      {"q": "The line y = 6.5x + 55.9 predicts 107.9 points for 8 hours of study. What does this show?", "choices": ["The model has a limit beyond the range of the data", "A student who studies 8 hours will score 107.9", "The slope of the line must be wrong", "The residuals are too large"], "a": 0, "why": "A score above 100 is impossible, so the line cannot be trusted that far from the data (1 to 5 hours). That is the danger of extrapolating."}
+      {
+       "q": "The line y = 6.5x + 55.9 predicts a score for 2 hours. The actual score was 70. What is the residual?",
+       "choices": [
+        "−1.1",
+        "1.1",
+        "68.9",
+        "138.9"
+       ],
+       "a": 1,
+       "why": "Predicted: 6.5(2) + 55.9 = 68.9. Residual = actual − predicted = 70 − 68.9 = 1.1. Subtracting the other way flips the sign."
+      },
+      {
+       "q": "A line's residuals are all negative in the middle of the data and positive at both ends. What should you do?",
+       "choices": [
+        "Accept the fit, since some residuals are positive",
+        "Delete the middle points",
+        "Try a curved family, since the data bend",
+        "Make the slope steeper"
+       ],
+       "a": 2,
+       "why": "A pattern in the residuals means the line misses the shape of the data. Curved data call for a quadratic or exponential model."
+      },
+      {
+       "q": "The line y = 6.5x + 55.9 predicts 107.9 points for 8 hours of study. What does this show?",
+       "choices": [
+        "A student who studies 8 hours will score 107.9",
+        "The slope of the line must be wrong",
+        "The residuals are too large",
+        "The model has a limit beyond the range of the data"
+       ],
+       "a": 3,
+       "why": "A score above 100 is impossible, so the line cannot be trusted that far from the data (1 to 5 hours). That is the danger of extrapolating."
+      }
      ]
     }
    ]
@@ -175,10 +455,22 @@
       "Multiplying functions builds a model too. Suppose the number of shirts you can sell at price p is q(p) = 500 − 20p; raise the price and fewer people buy. Revenue is price times quantity: R(p) = p(500 − 20p) = 500p − 20p^2, a quadratic that opens downward. Its peak is at p = 500/40 = $12.50, where R = 500(12.5) − 20(156.25) = 6250 − 3125 = $3,125. Two linear pieces combined to make a quadratic with a best price, something neither piece showed alone."
      ],
      "words": [
-      {"w": "revenue", "d": "the money taken in: price times number sold"},
-      {"w": "profit", "d": "revenue minus cost"},
-      {"w": "break-even", "d": "the number sold at which profit is exactly zero"},
-      {"w": "composition", "d": "using the output of one function as the input of another, written f(g(x))"}
+      {
+       "w": "revenue",
+       "d": "the money taken in: price times number sold"
+      },
+      {
+       "w": "profit",
+       "d": "revenue minus cost"
+      },
+      {
+       "w": "break-even",
+       "d": "the number sold at which profit is exactly zero"
+      },
+      {
+       "w": "composition",
+       "d": "using the output of one function as the input of another, written f(g(x))"
+      }
      ],
      "look": {
       "type": "think",
@@ -187,9 +479,39 @@
       "prompt": "Find the profit from 80 pizzas. Then explain what P(30) = −140 means for the stand."
      },
      "check": [
-      {"q": "Profit is P(x) = 8x − 200. What is the profit from selling 40 shirts?", "choices": ["$120", "$320", "$520", "$60"], "a": 0, "why": "P(40) = 8(40) − 200 = 320 − 200 = 120. Forgetting to subtract the $200 fixed cost gives 320."},
-      {"q": "Let f(x) = 0.8x and g(x) = x − 10. What is f(g(50))?", "choices": ["32", "30", "40", "42"], "a": 0, "why": "Work inside out: g(50) = 40, then f(40) = 0.8 × 40 = 32. Doing f first gives g(f(50)) = 40 − 10 = 30."},
-      {"q": "Revenue is R(p) = p(500 − 20p). What is the revenue at a price of $10?", "choices": ["$3,000", "$4,800", "$5,000", "$2,800"], "a": 0, "why": "At p = 10 the quantity is 500 − 200 = 300, and 10 × 300 = 3,000. Forgetting to multiply 20 by p gives 480 × 10 = 4,800."}
+      {
+       "q": "Profit is P(x) = 8x − 200. What is the profit from selling 40 shirts?",
+       "choices": [
+        "$120",
+        "$320",
+        "$520",
+        "$60"
+       ],
+       "a": 0,
+       "why": "P(40) = 8(40) − 200 = 320 − 200 = 120. Forgetting to subtract the $200 fixed cost gives 320."
+      },
+      {
+       "q": "Let f(x) = 0.8x and g(x) = x − 10. What is f(g(50))?",
+       "choices": [
+        "30",
+        "32",
+        "40",
+        "42"
+       ],
+       "a": 1,
+       "why": "Work inside out: g(50) = 40, then f(40) = 0.8 × 40 = 32. Doing f first gives g(f(50)) = 40 − 10 = 30."
+      },
+      {
+       "q": "Revenue is R(p) = p(500 − 20p). What is the revenue at a price of $10?",
+       "choices": [
+        "$4,800",
+        "$5,000",
+        "$3,000",
+        "$2,800"
+       ],
+       "a": 2,
+       "why": "At p = 10 the quantity is 500 − 200 = 300, and 10 × 300 = 3,000. Forgetting to multiply 20 by p gives 480 × 10 = 4,800."
+      }
      ]
     },
     {
@@ -201,10 +523,22 @@
       "Horizontal shifts matter most with exponentials. A town of 1,200 people in 2010 grows 3% a year. The model P(t) = 1200 × 1.03^(t − 2010) uses the year directly; the shift makes the exponent count years since 2010. For 2025: 1200 × 1.03^15 ≈ 1200 × 1.558 ≈ 1,870. Forget the shift and you compute 1.03^2025, a number with 26 digits. Always ask what value of the input makes the exponent zero, and check that the model gives the starting value there."
      ],
      "words": [
-      {"w": "parent function", "d": "the simplest function in a family, like sin(x), x^2 or 2^x"},
-      {"w": "vertical shift", "d": "adding a constant to a function, which moves its graph up or down"},
-      {"w": "horizontal shift", "d": "replacing x with x − h, which moves the graph right by h"},
-      {"w": "stretch", "d": "multiplying a function by a constant, which makes its rises and falls larger or smaller"}
+      {
+       "w": "parent function",
+       "d": "the simplest function in a family, like sin(x), x^2 or 2^x"
+      },
+      {
+       "w": "vertical shift",
+       "d": "adding a constant to a function, which moves its graph up or down"
+      },
+      {
+       "w": "horizontal shift",
+       "d": "replacing x with x − h, which moves the graph right by h"
+      },
+      {
+       "w": "stretch",
+       "d": "multiplying a function by a constant, which makes its rises and falls larger or smaller"
+      }
      ],
      "look": {
       "type": "think",
@@ -213,9 +547,39 @@
       "prompt": "What would change in the formula for a city farther north, where daylight swings from 7 hours to 17 hours? Which number moves, and to what?"
      },
      "check": [
-      {"q": "A ball follows h(t) = −16t^2 + 40t + 5. It is thrown the same way from a start 20 feet higher. Which model fits?", "choices": ["h(t) = −16t^2 + 40t + 25", "h(t) = −16t^2 + 60t + 5", "h(t) = −16(t − 20)^2 + 40t + 5", "h(t) = −36t^2 + 40t + 5"], "a": 0, "why": "A higher start adds 20 to every height, which is a vertical shift: only the constant changes, from 5 to 25."},
-      {"q": "In D(t) = 12 + 3 sin(2π(t − 80)/365), what does the 3 represent?", "choices": ["The hours the daylight swings above and below the average", "The average hours of daylight", "The number of days in a cycle", "The day of the year when daylight is longest"], "a": 0, "why": "The 3 multiplies the sine, stretching its rise and fall from 1 to 3 hours. The 12 is the average, and 365 sets the period."},
-      {"q": "Why does the model P(t) = 1200 × 1.03^(t − 2010) subtract 2010 in the exponent?", "choices": ["So the exponent counts years since 2010 and P(2010) = 1200", "To slow the growth rate to 3%", "Because the population was 2010 at the start", "So the model works only before 2010"], "a": 0, "why": "At t = 2010 the exponent is 0 and 1.03^0 = 1, so P = 1200, the starting value. The shift moves the clock's zero to 2010."}
+      {
+       "q": "A ball follows h(t) = −16t^2 + 40t + 5. It is thrown the same way from a start 20 feet higher. Which model fits?",
+       "choices": [
+        "h(t) = −16t^2 + 60t + 5",
+        "h(t) = −16(t − 20)^2 + 40t + 5",
+        "h(t) = −36t^2 + 40t + 5",
+        "h(t) = −16t^2 + 40t + 25"
+       ],
+       "a": 3,
+       "why": "A higher start adds 20 to every height, which is a vertical shift: only the constant changes, from 5 to 25."
+      },
+      {
+       "q": "In D(t) = 12 + 3 sin(2π(t − 80)/365), what does the 3 represent?",
+       "choices": [
+        "The hours the daylight swings above and below the average",
+        "The average hours of daylight",
+        "The number of days in a cycle",
+        "The day of the year when daylight is longest"
+       ],
+       "a": 0,
+       "why": "The 3 multiplies the sine, stretching its rise and fall from 1 to 3 hours. The 12 is the average, and 365 sets the period."
+      },
+      {
+       "q": "Why does the model P(t) = 1200 × 1.03^(t − 2010) subtract 2010 in the exponent?",
+       "choices": [
+        "To slow the growth rate to 3%",
+        "So the exponent counts years since 2010 and P(2010) = 1200",
+        "Because the population was 2010 at the start",
+        "So the model works only before 2010"
+       ],
+       "a": 1,
+       "why": "At t = 2010 the exponent is 0 and 1.03^0 = 1, so P = 1200, the starting value. The shift moves the clock's zero to 2010."
+      }
      ]
     },
     {
@@ -227,10 +591,22 @@
       "The Soldier Field model from the chapter opening is piecewise as well. Let F(t) be the flow in people per minute at minute t. For 0 ≤ t ≤ 2 the flow ramps: F(t) = 3000t. For t > 2 it holds: F(t) = 6000. The number of people out by minute 2 is the average flow times the time, 3000 × 2 = 6,000, and after that 6,000 leave each minute, so by minute 10 the count is 6,000 + 8 × 6,000 = 54,000. A single formula could not capture the ramp and the plateau; two pieces do."
      ],
      "words": [
-      {"w": "piecewise function", "d": "a function defined by different formulas on different intervals of the input"},
-      {"w": "threshold", "d": "the input value where one rule stops and the next begins"},
-      {"w": "step function", "d": "a piecewise function whose value is constant on each interval and jumps at the thresholds"},
-      {"w": "interval", "d": "a stretch of input values, like 10,000 < x ≤ 40,000"}
+      {
+       "w": "piecewise function",
+       "d": "a function defined by different formulas on different intervals of the input"
+      },
+      {
+       "w": "threshold",
+       "d": "the input value where one rule stops and the next begins"
+      },
+      {
+       "w": "step function",
+       "d": "a piecewise function whose value is constant on each interval and jumps at the thresholds"
+      },
+      {
+       "w": "interval",
+       "d": "a stretch of input values, like 10,000 < x ≤ 40,000"
+      }
      ],
      "look": {
       "type": "think",
@@ -239,9 +615,39 @@
       "prompt": "What does a 5.0-pound package cost? A 5.1-pound package? Why does it matter whether the threshold is written as ≤ 5 or < 5?"
      },
      "check": [
-      {"q": "The garage charges $5 for the first hour and $3 per additional hour or part of an hour. What does 4.5 hours cost?", "choices": ["$17", "$14", "$15.50", "$20"], "a": 0, "why": "After the first hour, 3.5 extra hours round up to 4 hours: 5 + 3 × 4 = 17. Using 3.5 without rounding gives 15.50."},
-      {"q": "Using the example tax schedule (0% to $10,000, 10% from $10,000 to $40,000, 20% above), what is the tax on $30,000?", "choices": ["$2,000", "$3,000", "$6,000", "$4,000"], "a": 0, "why": "Only the part above $10,000 is taxed: 0.10 × (30,000 − 10,000) = 0.10 × 20,000 = 2,000. Taxing the whole $30,000 at 10% gives 3,000."},
-      {"q": "Which situation is best modeled by a step function?", "choices": ["Parking that charges per hour or any part of an hour", "Distance traveled at a steady speed", "The area of a circle as its radius grows", "The temperature of cooling coffee"], "a": 0, "why": "The parking charge stays flat within each hour and jumps at each whole hour, the signature of a step function. The others change smoothly."}
+      {
+       "q": "The garage charges $5 for the first hour and $3 per additional hour or part of an hour. What does 4.5 hours cost?",
+       "choices": [
+        "$14",
+        "$15.50",
+        "$17",
+        "$20"
+       ],
+       "a": 2,
+       "why": "After the first hour, 3.5 extra hours round up to 4 hours: 5 + 3 × 4 = 17. Using 3.5 without rounding gives 15.50."
+      },
+      {
+       "q": "Using the example tax schedule (0% to $10,000, 10% from $10,000 to $40,000, 20% above), what is the tax on $30,000?",
+       "choices": [
+        "$3,000",
+        "$6,000",
+        "$4,000",
+        "$2,000"
+       ],
+       "a": 3,
+       "why": "Only the part above $10,000 is taxed: 0.10 × (30,000 − 10,000) = 0.10 × 20,000 = 2,000. Taxing the whole $30,000 at 10% gives 3,000."
+      },
+      {
+       "q": "Which situation is best modeled by a step function?",
+       "choices": [
+        "Parking that charges per hour or any part of an hour",
+        "Distance traveled at a steady speed",
+        "The area of a circle as its radius grows",
+        "The temperature of cooling coffee"
+       ],
+       "a": 0,
+       "why": "The parking charge stays flat within each hour and jumps at each whole hour, the signature of a step function. The others change smoothly."
+      }
      ]
     }
    ]
@@ -258,23 +664,86 @@
       "Errors spread through a calculation. A rectangle measured at 12.5 cm by 8.0 cm has an area of 100 cm^2 by the numbers. But the true sides could be as small as 12.45 and 7.95, giving 12.45 × 7.95 ≈ 98.98 cm^2, or as large as 12.55 and 8.05, giving 12.55 × 8.05 ≈ 101.03 cm^2. Reporting \"100.0000\" would claim a precision the measurements never had. Report the area as about 99 to 101 cm^2, an *interval estimate*."
      ],
      "words": [
-      {"w": "sensitivity", "d": "how much a model's answer changes when one input changes"},
-      {"w": "percent error", "d": "|predicted − actual| divided by actual, times 100"},
-      {"w": "absolute error", "d": "the plain difference between a predicted and an actual value, in the same units"},
-      {"w": "interval estimate", "d": "a range of values, like 99 to 101 cm^2, instead of a single number"}
+      {
+       "w": "sensitivity",
+       "d": "how much a model's answer changes when one input changes"
+      },
+      {
+       "w": "percent error",
+       "d": "|predicted − actual| divided by actual, times 100"
+      },
+      {
+       "w": "absolute error",
+       "d": "the plain difference between a predicted and an actual value, in the same units"
+      },
+      {
+       "w": "interval estimate",
+       "d": "a range of values, like 99 to 101 cm^2, instead of a single number"
+      }
      ],
      "look": {
       "type": "data",
       "title": "Time to Empty at Different Exit Rates",
-      "rows": [["60 per second", 16.9], ["80 per second", 12.7], ["100 per second", 10.2], ["120 per second", 8.5], ["150 per second", 6.8]],
+      "rows": [
+       [
+        "60 per second",
+        16.9
+       ],
+       [
+        "80 per second",
+        12.7
+       ],
+       [
+        "100 per second",
+        10.2
+       ],
+       [
+        "120 per second",
+        8.5
+       ],
+       [
+        "150 per second",
+        6.8
+       ]
+      ],
       "unit": "minutes for 61,000 people",
       "cite": "computed from 61,000 ÷ rate ÷ 60",
       "prompt": "Which change makes the bigger difference: dropping the rate from 100 to 80, or raising it from 100 to 120? Why is the table not symmetric?"
      },
      "check": [
-      {"q": "A model predicted 48 and the measured value was 50. What is the percent error?", "choices": ["4%", "2%", "4.2%", "40%"], "a": 0, "why": "|48 − 50| = 2, and 2 ÷ 50 × 100 = 4%. Dividing by the predicted 48 instead of the actual 50 gives about 4.2%."},
-      {"q": "If the exits pass only 50 people per second, how long does it take 61,000 people to leave?", "choices": ["About 20.3 minutes", "About 10.2 minutes", "About 12.2 minutes", "About 61 minutes"], "a": 0, "why": "61,000 ÷ 50 = 1,220 seconds, and 1,220 ÷ 60 ≈ 20.3 minutes. Halving the rate doubles the time."},
-      {"q": "A model's answer barely changes when one input is changed by 20%. What does that tell you?", "choices": ["The answer is not sensitive to that input", "The model must be wrong", "That input must be zero", "The answer is exact"], "a": 0, "why": "Low sensitivity means that input matters little to the result, so you can spend your effort checking the inputs that move the answer more."}
+      {
+       "q": "A model predicted 48 and the measured value was 50. What is the percent error?",
+       "choices": [
+        "2%",
+        "4%",
+        "4.2%",
+        "40%"
+       ],
+       "a": 1,
+       "why": "|48 − 50| = 2, and 2 ÷ 50 × 100 = 4%. Dividing by the predicted 48 instead of the actual 50 gives about 4.2%."
+      },
+      {
+       "q": "If the exits pass only 50 people per second, how long does it take 61,000 people to leave?",
+       "choices": [
+        "About 10.2 minutes",
+        "About 12.2 minutes",
+        "About 20.3 minutes",
+        "About 61 minutes"
+       ],
+       "a": 2,
+       "why": "61,000 ÷ 50 = 1,220 seconds, and 1,220 ÷ 60 ≈ 20.3 minutes. Halving the rate doubles the time."
+      },
+      {
+       "q": "A model's answer barely changes when one input is changed by 20%. What does that tell you?",
+       "choices": [
+        "The model must be wrong",
+        "That input must be zero",
+        "The answer is exact",
+        "The answer is not sensitive to that input"
+       ],
+       "a": 3,
+       "why": "Low sensitivity means that input matters little to the result, so you can spend your effort checking the inputs that move the answer more."
+      }
      ]
     },
     {
@@ -286,23 +755,90 @@
       "Other limits hide in plain sight. Models ignore randomness, so a real crowd will not empty on the same second twice. Inputs were measured once, under one set of conditions; a rainy day changes the gate rate. Assumptions can be unspoken: the Soldier Field model assumes everyone leaves at the final whistle and no gate is blocked. And precision can lie: reporting 10.1667 minutes when the rate is known only to ±20% pretends to a certainty you do not have. When a model guides a real decision, like how many gates to staff, it should be checked against a drill."
      ],
      "words": [
-      {"w": "domain of validity", "d": "the range of inputs where a model's assumptions hold and its answers can be trusted"},
-      {"w": "logistic model", "d": "growth that starts like an exponential and levels off at a ceiling"},
-      {"w": "carrying capacity", "d": "the ceiling a logistic model approaches; the most the environment can support"},
-      {"w": "extrapolation", "d": "using a model beyond the data or conditions it was built from"}
+      {
+       "w": "domain of validity",
+       "d": "the range of inputs where a model's assumptions hold and its answers can be trusted"
+      },
+      {
+       "w": "logistic model",
+       "d": "growth that starts like an exponential and levels off at a ceiling"
+      },
+      {
+       "w": "carrying capacity",
+       "d": "the ceiling a logistic model approaches; the most the environment can support"
+      },
+      {
+       "w": "extrapolation",
+       "d": "using a model beyond the data or conditions it was built from"
+      }
      ],
      "look": {
       "type": "data",
       "title": "Logistic Growth in a Dish",
-      "rows": [["Day 0", 100], ["Day 2", 308], ["Day 4", 640], ["Day 6", 877], ["Day 8", 966], ["Day 10", 991]],
+      "rows": [
+       [
+        "Day 0",
+        100
+       ],
+       [
+        "Day 2",
+        308
+       ],
+       [
+        "Day 4",
+        640
+       ],
+       [
+        "Day 6",
+        877
+       ],
+       [
+        "Day 8",
+        966
+       ],
+       [
+        "Day 10",
+        991
+       ]
+      ],
       "unit": "thousands of bacteria",
       "cite": "example model P = 1000 ÷ (1 + 9 × 0.5^t)",
       "prompt": "An exponential model matched to days 0 and 2 would predict about 27,700 thousand on day 10. Which rows show the growth slowing, and what in the situation causes it?"
      },
      "check": [
-      {"q": "What does P(t) = 1000/(1 + 9 × 0.5^t) give at t = 0?", "choices": ["100", "1000", "111", "90"], "a": 0, "why": "0.5^0 = 1, so the denominator is 1 + 9 = 10 and P = 1000/10 = 100."},
-      {"q": "A growth model built from ages 6 to 10 predicts a height of 260 cm at age 30. What went wrong?", "choices": ["The model was used outside its domain of validity", "The arithmetic was done incorrectly", "The child's data were measured wrong", "Linear models can never describe growth"], "a": 0, "why": "The linear rule fit the ages it was built from. Growth stops in the late teens, so applying the rule at age 30 extrapolates past where its assumption holds."},
-      {"q": "In the long run, what does the logistic model P(t) = 1000/(1 + 9 × 0.5^t) approach?", "choices": ["1000, the carrying capacity", "0", "It grows without bound", "9"], "a": 0, "why": "As t grows, 0.5^t shrinks toward 0, so the denominator approaches 1 and P approaches 1000/1 = 1000."}
+      {
+       "q": "What does P(t) = 1000/(1 + 9 × 0.5^t) give at t = 0?",
+       "choices": [
+        "100",
+        "1000",
+        "111",
+        "90"
+       ],
+       "a": 0,
+       "why": "0.5^0 = 1, so the denominator is 1 + 9 = 10 and P = 1000/10 = 100."
+      },
+      {
+       "q": "A growth model built from ages 6 to 10 predicts a height of 260 cm at age 30. What went wrong?",
+       "choices": [
+        "The arithmetic was done incorrectly",
+        "The model was used outside its domain of validity",
+        "The child's data were measured wrong",
+        "Linear models can never describe growth"
+       ],
+       "a": 1,
+       "why": "The linear rule fit the ages it was built from. Growth stops in the late teens, so applying the rule at age 30 extrapolates past where its assumption holds."
+      },
+      {
+       "q": "In the long run, what does the logistic model P(t) = 1000/(1 + 9 × 0.5^t) approach?",
+       "choices": [
+        "0",
+        "It grows without bound",
+        "1000, the carrying capacity",
+        "9"
+       ],
+       "a": 2,
+       "why": "As t grows, 0.5^t shrinks toward 0, so the denominator approaches 1 and P approaches 1000/1 = 1000."
+      }
      ]
     },
     {
@@ -314,10 +850,22 @@
       "The common failures are the same everywhere: hiding an assumption, reporting more digits than the data allow, leaving out the question so the number floats free, and choosing only the data that agree with you. A simple test is to hand your report to a classmate. If they can reproduce your answer from what you wrote, and can name the assumption they would attack first, the report is doing its job. That is the standard a transit planner, an engineer or a city budget analyst is held to as well."
      ],
      "words": [
-      {"w": "limitation", "d": "a stated way the model could be wrong or a condition it does not cover"},
-      {"w": "reproduce", "d": "to get the same result again by following the report's stated steps"},
-      {"w": "precision", "d": "how many digits a number carries; it should match how well the inputs are known"},
-      {"w": "range", "d": "the low and high values an answer could reasonably take"}
+      {
+       "w": "limitation",
+       "d": "a stated way the model could be wrong or a condition it does not cover"
+      },
+      {
+       "w": "reproduce",
+       "d": "to get the same result again by following the report's stated steps"
+      },
+      {
+       "w": "precision",
+       "d": "how many digits a number carries; it should match how well the inputs are known"
+      },
+      {
+       "w": "range",
+       "d": "the low and high values an answer could reasonably take"
+      }
      ],
      "look": {
       "type": "think",
@@ -326,22 +874,132 @@
       "prompt": "Which report would help the operations manager decide whether to add gates, and why? Name two things Report A leaves out."
      },
      "check": [
-      {"q": "A model gives 10.1667 minutes, but its main input is known only to about ±20%. How should the answer be reported?", "choices": ["About 10 minutes, with a range", "10.1667 minutes", "10.17 minutes", "10.2 minutes exactly"], "a": 0, "why": "Extra digits claim precision the input does not have. Round to what the data support and give the range the input uncertainty produces."},
-      {"q": "Which of these must a model report include?", "choices": ["The assumptions and where the model stops working", "Only the final number, to keep it short", "Every calculation but not the question", "More digits than the data support"], "a": 0, "why": "Readers can only judge and reproduce a result if they know the question, the assumptions and the model's limits."},
-      {"q": "What should a graph of a model and its data show?", "choices": ["Labeled axes with units, the data and the model together, and the range where the model applies", "Only the model curve, extended in both directions", "Only the data points, with no axes labels", "The model drawn far beyond the data to show trends"], "a": 0, "why": "A reader needs to see how well the model fits the data and where it can be trusted, which requires labels, both data and model, and a marked range."}
+      {
+       "q": "A model gives 10.1667 minutes, but its main input is known only to about ±20%. How should the answer be reported?",
+       "choices": [
+        "10.1667 minutes",
+        "10.17 minutes",
+        "10.2 minutes exactly",
+        "About 10 minutes, with a range"
+       ],
+       "a": 3,
+       "why": "Extra digits claim precision the input does not have. Round to what the data support and give the range the input uncertainty produces."
+      },
+      {
+       "q": "Which of these must a model report include?",
+       "choices": [
+        "The assumptions and where the model stops working",
+        "Only the final number, to keep it short",
+        "Every calculation but not the question",
+        "More digits than the data support"
+       ],
+       "a": 0,
+       "why": "Readers can only judge and reproduce a result if they know the question, the assumptions and the model's limits."
+      },
+      {
+       "q": "What should a graph of a model and its data show?",
+       "choices": [
+        "Only the model curve, extended in both directions",
+        "Labeled axes with units, the data and the model together, and the range where the model applies",
+        "Only the data points, with no axes labels",
+        "The model drawn far beyond the data to show trends"
+       ],
+       "a": 1,
+       "why": "A reader needs to see how well the model fits the data and where it can be trusted, which requires labels, both data and model, and a marked range."
+      }
      ]
     }
    ]
   }
  ],
  "review": [
-  {"q": "A model assumes 700 students each use a fountain 0.3 times a day for 180 days. How many uses per year?", "choices": ["37,800", "3,780", "126,000", "21,000"], "a": 0, "why": "700 × 0.3 = 210 uses per day, and 210 × 180 = 37,800 per year."},
-  {"q": "For x = 0, 1, 2, 3 a table gives y = 2, 8, 32, 128. Which family fits?", "choices": ["exponential, with ratio 4", "linear, with slope 6", "quadratic, with a = 3", "exponential, with ratio 6"], "a": 0, "why": "The ratios 8/2, 32/8 and 128/32 all equal 4, so y = 2 × 4^x. The differences 6, 24, 96 are not constant."},
-  {"q": "Cost is C(x) = 150 + 6x and revenue is R(x) = 10x. At what number sold does the business break even?", "choices": ["37.5, so 38 items", "15", "25", "60"], "a": 0, "why": "Set 10x = 150 + 6x, so 4x = 150 and x = 37.5. The 38th item is the first that makes the profit positive."},
-  {"q": "A line of best fit predicts 85 for a data point whose actual value is 81. What is the residual?", "choices": ["−4", "4", "81", "166"], "a": 0, "why": "Residual = actual − predicted = 81 − 85 = −4. The negative sign means the point lies below the line."},
-  {"q": "Using the chapter's example tax schedule (0% to $10,000, 10% from $10,000 to $40,000, 20% above), what is the tax on $50,000?", "choices": ["$5,000", "$10,000", "$4,000", "$8,000"], "a": 0, "why": "0.10 × 30,000 = 3,000 on the middle bracket, plus 0.20 × 10,000 = 2,000 on the part above $40,000, totals $5,000."},
-  {"q": "A model predicts 200 and the measured value is 250. What is the percent error?", "choices": ["20%", "25%", "50%", "80%"], "a": 0, "why": "|200 − 250| = 50, and 50 ÷ 250 × 100 = 20%. Dividing by the predicted 200 instead gives 25%."},
-  {"q": "The model h(t) = −16t^2 + 30t + 4 describes a thrown ball. Which model describes the same throw from a start 10 feet higher?", "choices": ["h(t) = −16t^2 + 30t + 14", "h(t) = −16t^2 + 40t + 4", "h(t) = −26t^2 + 30t + 4", "h(t) = −16(t + 10)^2 + 30t + 4"], "a": 0, "why": "A higher starting point adds 10 to every height, a vertical shift, so only the constant term changes from 4 to 14."},
-  {"q": "A logistic model P(t) = 500/(1 + 4 × 0.5^t) describes a population. What is its carrying capacity?", "choices": ["500", "100", "4", "2000"], "a": 0, "why": "As t grows, 0.5^t vanishes and the denominator approaches 1, so P approaches 500. At t = 0 the population is 500/5 = 100."}
+  {
+   "q": "A model assumes 700 students each use a fountain 0.3 times a day for 180 days. How many uses per year?",
+   "choices": [
+    "3,780",
+    "126,000",
+    "37,800",
+    "21,000"
+   ],
+   "a": 2,
+   "why": "700 × 0.3 = 210 uses per day, and 210 × 180 = 37,800 per year."
+  },
+  {
+   "q": "For x = 0, 1, 2, 3 a table gives y = 2, 8, 32, 128. Which family fits?",
+   "choices": [
+    "linear, with slope 6",
+    "quadratic, with a = 3",
+    "exponential, with ratio 6",
+    "exponential, with ratio 4"
+   ],
+   "a": 3,
+   "why": "The ratios 8/2, 32/8 and 128/32 all equal 4, so y = 2 × 4^x. The differences 6, 24, 96 are not constant."
+  },
+  {
+   "q": "Cost is C(x) = 150 + 6x and revenue is R(x) = 10x. At what number sold does the business break even?",
+   "choices": [
+    "37.5, so 38 items",
+    "15",
+    "25",
+    "60"
+   ],
+   "a": 0,
+   "why": "Set 10x = 150 + 6x, so 4x = 150 and x = 37.5. The 38th item is the first that makes the profit positive."
+  },
+  {
+   "q": "A line of best fit predicts 85 for a data point whose actual value is 81. What is the residual?",
+   "choices": [
+    "4",
+    "−4",
+    "81",
+    "166"
+   ],
+   "a": 1,
+   "why": "Residual = actual − predicted = 81 − 85 = −4. The negative sign means the point lies below the line."
+  },
+  {
+   "q": "Using the chapter's example tax schedule (0% to $10,000, 10% from $10,000 to $40,000, 20% above), what is the tax on $50,000?",
+   "choices": [
+    "$10,000",
+    "$4,000",
+    "$5,000",
+    "$8,000"
+   ],
+   "a": 2,
+   "why": "0.10 × 30,000 = 3,000 on the middle bracket, plus 0.20 × 10,000 = 2,000 on the part above $40,000, totals $5,000."
+  },
+  {
+   "q": "A model predicts 200 and the measured value is 250. What is the percent error?",
+   "choices": [
+    "25%",
+    "50%",
+    "80%",
+    "20%"
+   ],
+   "a": 3,
+   "why": "|200 − 250| = 50, and 50 ÷ 250 × 100 = 20%. Dividing by the predicted 200 instead gives 25%."
+  },
+  {
+   "q": "The model h(t) = −16t^2 + 30t + 4 describes a thrown ball. Which model describes the same throw from a start 10 feet higher?",
+   "choices": [
+    "h(t) = −16t^2 + 30t + 14",
+    "h(t) = −16t^2 + 40t + 4",
+    "h(t) = −26t^2 + 30t + 4",
+    "h(t) = −16(t + 10)^2 + 30t + 4"
+   ],
+   "a": 0,
+   "why": "A higher starting point adds 10 to every height, a vertical shift, so only the constant term changes from 4 to 14."
+  },
+  {
+   "q": "A logistic model P(t) = 500/(1 + 4 × 0.5^t) describes a population. What is its carrying capacity?",
+   "choices": [
+    "100",
+    "500",
+    "4",
+    "2000"
+   ],
+   "a": 1,
+   "why": "As t grows, 0.5^t vanishes and the denominator approaches 1, so P approaches 500. At t = 0 the population is 500/5 = 100."
+  }
  ]
 }
