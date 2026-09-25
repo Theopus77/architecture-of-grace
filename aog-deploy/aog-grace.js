@@ -35,6 +35,22 @@
   var D = document, H = D.documentElement;
   var FONTS = "https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..700&family=Inter:wght@300;400;500;600;700;800&display=swap";
 
+  /* ── 0 ── navy, the whole page ─────────────────────────────────────────
+     Jimmy: "I wanted the whole page like this, not just the top." The home
+     page is navy from edge to edge. Every other page has a dark theme of its
+     own, so the page is put into it once and the stylesheet re-tints that
+     dark theme navy. The site bar keeps the theme toggle: a reader who
+     flips to light gets the cream sheet and is left alone after that. */
+  var NAVY_KEY = "aog.grace.navy.v1";
+  try {
+    if (!localStorage.getItem(NAVY_KEY)) {
+      localStorage.setItem("aog.theme", "dark");
+      localStorage.setItem("aog.interior.ws.v1.theme", "dark");
+      localStorage.setItem(NAVY_KEY, "1");
+      H.setAttribute("data-theme", "dark");
+    }
+  } catch (e) { if (!H.getAttribute("data-theme")) H.setAttribute("data-theme", "dark"); }
+
   /* ── 1 ── the faces and the sheet ─────────────────────────────────────── */
   function link(rel, href, extra) {
     var l = D.createElement("link");
@@ -234,12 +250,43 @@
     }
   }
 
+  /* ── 4b ── the lede, two lines ────────────────────────────────────────── */
+  var LEDE = ".deck, .tag, .tagline, .lede, .say, p.sub, :scope > p, :scope > div > p";
+  function clampLedes() {
+    if (!hero) return;
+    var els;
+    try { els = hero.querySelectorAll(LEDE); } catch (e) { els = hero.querySelectorAll(".deck, .tag, .tagline, .lede, .say, p.sub"); }
+    for (var i = 0; i < els.length; i++) {
+      var el = els[i];
+      if (el.closest("[data-aog-card]") || el.querySelector("input, button, select") || el.classList.contains("aog-clamp")) continue;
+      if ((el.textContent || "").replace(/\s+/g, " ").trim().length < 140) continue;
+      el.classList.add("aog-clamp");
+      var more = D.createElement("button");
+      more.type = "button"; more.className = "aog-more no-print";
+      more.setAttribute("aria-expanded", "false");
+      more.innerHTML = '<span data-en="More" data-es="M\u00e1s">More</span>';
+      more.addEventListener("click", (function (p, b) { return function () {
+        var open = p.classList.toggle("is-open");
+        b.classList.toggle("is-open", open);
+        b.setAttribute("aria-expanded", open ? "true" : "false");
+        var sp = b.firstChild;
+        sp.setAttribute("data-en", open ? "Less" : "More");
+        sp.setAttribute("data-es", open ? "Menos" : "M\u00e1s");
+        sp.textContent = sp.getAttribute(/^es/i.test(H.lang || "") ? "data-es" : "data-en");
+      }; })(el, more));
+      el.parentNode.insertBefore(more, el.nextSibling);
+      /* only keep the link when there is something to open */
+      (function (p, b) { setTimeout(function () { if (p.scrollHeight <= p.clientHeight + 2) { b.remove(); p.classList.remove("aog-clamp"); } }, 50); })(el, more);
+    }
+  }
+
   /* ── 5 ── mount ───────────────────────────────────────────────────────── */
   function mount() {
     hero = findHero();
     if (hero) hero.setAttribute("data-aog-hero", "1");
     H.classList.add("aog-grace");
     markCards();
+    clampLedes();
     measure();
     var again = function () { measure(); };
     if (window.MutationObserver && hero) {
@@ -248,7 +295,7 @@
           .observe(H, { attributes: true, attributeFilter: ["data-theme", "class", "data-accent"] });
       } catch (e) {}
     }
-    if (sheet) sheet.addEventListener("load", function () { setTimeout(markCards, 30); });
+    if (sheet) sheet.addEventListener("load", function () { setTimeout(markCards, 30); setTimeout(clampLedes, 60); });
     window.addEventListener("resize", again);
     window.addEventListener("load", again);
     if (sheet) sheet.addEventListener("load", function () { again(); setTimeout(again, 60); });
