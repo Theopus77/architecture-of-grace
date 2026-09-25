@@ -1170,7 +1170,6 @@ body.review .box .ptcell, body.review .box .ew, body.review .box textarea{pointe
   <button class="btn" id="tryBtn" type="button" data-en="Try the misses again" data-es="Reintentar las falladas">Try the misses again</button>
   <button class="btn" id="clearBtn" type="button" data-en="Clear sheet" data-es="Borrar hoja">Clear sheet</button>
   <button class="btn" id="printBtn" type="button" data-en="Print" data-es="Imprimir">Print</button>
-  <button class="btn" id="algBtn" type="button" hidden data-en="Print algorithms only" data-es="Imprimir solo los algoritmos">Print algorithms only</button>
   <button class="btn" id="packBtn" type="button" data-en="Print several…" data-es="Imprimir varios…">Print several…</button>
   <span class="resline" id="resLine"></span>
 </div>
@@ -17676,16 +17675,8 @@ function refresh(){if(!hasGrade(ST.subj,ST.grade))ST.grade=fitGrade(ST.subj);try
      never quietly cost a teacher nine boxes. */
   $('#printBtn').addEventListener('click',function(){
     document.body.classList.remove('algonly'); window.print()});
-  $('#algBtn').addEventListener('click',function(){
-    document.body.classList.add('algonly');
-    function off(){document.body.classList.remove('algonly');
-      window.removeEventListener('afterprint',off)}
-    window.addEventListener('afterprint',off);
-    try{window.print()}catch(e){}
-    /* window.print blocks on the desktop, and iOS Safari never fires afterprint
-       (see PRINTNAME-V1) - so it comes off on both paths. */
-    setTimeout(off,1200);
-  });
+  /* AOG-DD-ALGONLY-V2 (2026-09-25) — Jimmy: "GET RID of the print algorithms only
+     tab." The button and its handler are gone; plain Print is the whole draft. */
   /* AOG-DD-PACK-V1 */
   $('#packBtn').addEventListener('click',function(){
     var bar=$('#packBar'),open=bar.hasAttribute('hidden');
