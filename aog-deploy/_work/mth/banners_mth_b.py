@@ -678,8 +678,8 @@ def _b26():
         + _lin(p+"box", [(0, "#3A6AB0", None), (1, "#1E3C70", None)])
         + f'<pattern id="{p}win" width="40" height="30" patternUnits="userSpaceOnUse"><rect x="6" y="6" width="26" height="18" fill="#FFE0A0" opacity=".55"/></pattern>'
     )
-    bell = "M0 262 " + " ".join(f'L{x} {262 - 132*math.exp(-((x-560)/170)**2):.0f}' for x in range(0, 1201, 16)) + " L1200 262z"
-    bell2 = "M0 262 " + " ".join(f'L{x} {262 - 60*math.exp(-((x-260)/240)**2) - 40*math.exp(-((x-1000)/200)**2):.0f}' for x in range(0, 1201, 20)) + " L1200 262z"
+    bell = "M0 262 " + " ".join(f'L{x} {262 - 132*math.exp(-((x-560)/170)**2):.0f}' for x in range(0, 1201, 24)) + " L1200 262z"
+    bell2 = "M0 262 " + " ".join(f'L{x} {262 - 60*math.exp(-((x-260)/240)**2) - 40*math.exp(-((x-1000)/200)**2):.0f}' for x in range(0, 1201, 40)) + " L1200 262z"
     g = _lcg(26)
     line = []
     xs = [724, 690, 664, 620, 596, 548, 522, 500, 452, 418, 380, 356, 306, 270, 238, 190, 160]

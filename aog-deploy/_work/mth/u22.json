@@ -1,0 +1,2312 @@
+{
+ "intro": [
+  "Every day you meet numbers that claim to summarize something bigger: an average test score, a poll result, a headline that says one thing is linked to another. This unit is about looking past the single number to the whole set of data behind it. You will draw dot plots, histograms and box plots, measure where data are centered and how far they spread, and decide what to do when one value sits far from the rest.",
+  "Then you will put two variables on one graph and ask whether they move together. You will draw a line through the cloud of points, read its slope in plain words, check it with residuals, and measure the strength of the pattern with the correlation coefficient. You will also learn when a curve fits better than a line and how far a prediction can safely reach.",
+  "The unit ends with the most important warning in statistics: two things rising together does not mean one causes the other. By the end you will be able to describe a data set honestly, compare two groups fairly, fit and check a model, and read a claim about data with the right mix of trust and suspicion."
+ ],
+ "bigQuestion": "How do we describe what a whole set of data says, and how far can we trust a pattern we find in it?",
+ "timeline": [
+  {
+   "y": "1662",
+   "t": "John Graunt tallies London death records into tables, an early step toward statistics as a way of reading data"
+  },
+  {
+   "y": "1790",
+   "t": "The first United States Census counts the population, a data set that repeats every ten years to this day"
+  },
+  {
+   "y": "1805",
+   "t": "Adrien-Marie Legendre publishes the method of least squares for fitting a line to observations"
+  },
+  {
+   "y": "1809",
+   "t": "Carl Friedrich Gauss publishes his own account of least squares and the bell-shaped error curve"
+  },
+  {
+   "y": "1858",
+   "t": "Florence Nightingale uses graphs of hospital deaths to argue for better sanitation in army hospitals"
+  },
+  {
+   "y": "1886",
+   "t": "Francis Galton describes regression toward the mean while studying the heights of parents and children"
+  },
+  {
+   "y": "1890s",
+   "t": "Karl Pearson develops the correlation coefficient r into the form still used today"
+  },
+  {
+   "y": "1925",
+   "t": "Ronald Fisher's Statistical Methods for Research Workers spreads modern data analysis to scientists"
+  },
+  {
+   "y": "1935",
+   "t": "Fisher's The Design of Experiments explains random assignment, the tool that separates cause from correlation"
+  },
+  {
+   "y": "1973",
+   "t": "Francis Anscombe publishes four data sets with the same line and r but wildly different scatter plots"
+  },
+  {
+   "y": "1977",
+   "t": "John Tukey's Exploratory Data Analysis popularizes the box plot and the habit of graphing data first"
+  }
+ ],
+ "wrap": {
+  "words": [
+   {
+    "w": "distribution",
+    "d": "the whole set of values in a data set and how often each one occurs"
+   },
+   {
+    "w": "histogram",
+    "d": "a graph that groups numbers into equal-width bins and draws a touching bar for each count"
+   },
+   {
+    "w": "median",
+    "d": "the middle value of a sorted data set, or the average of the two middle values"
+   },
+   {
+    "w": "interquartile range",
+    "d": "the third quartile minus the first quartile; the spread of the middle half of the data"
+   },
+   {
+    "w": "standard deviation",
+    "d": "the square root of the average squared deviation from the mean; the typical distance from the mean"
+   },
+   {
+    "w": "outlier",
+    "d": "a value far outside the pattern of the rest of the data, often more than 1.5 IQRs beyond a quartile"
+   },
+   {
+    "w": "conditional relative frequency",
+    "d": "a cell of a two-way table divided by its row or column total"
+   },
+   {
+    "w": "scatter plot",
+    "d": "a graph with one dot for each pair of measurements, one variable on each axis"
+   },
+   {
+    "w": "residual",
+    "d": "the actual value minus the value a line predicts; the vertical gap from a dot to the line"
+   },
+   {
+    "w": "correlation coefficient",
+    "d": "a number r from −1 to 1 that gives the direction and strength of a straight-line relationship"
+   },
+   {
+    "w": "lurking variable",
+    "d": "a variable left out of the graph that affects both plotted variables and creates their correlation"
+   },
+   {
+    "w": "extrapolation",
+    "d": "using a model to predict a value outside the range of the data it was built from"
+   }
+  ],
+  "test": [
+   {
+    "q": "Which set of summaries should you report for a data set that is strongly skewed with outliers?",
+    "choices": [
+     "Mean and range",
+     "Median and IQR",
+     "Mean and standard deviation",
+     "Mode and range"
+    ],
+    "a": 1,
+    "why": "The median and IQR depend on position in the sorted list, so skew and outliers barely move them; the mean, range and standard deviation get pulled."
+   },
+   {
+    "q": "What is the mean of 6, 9, 11, 14 and 20?",
+    "choices": [
+     "11",
+     "12",
+     "14",
+     "15"
+    ],
+    "a": 1,
+    "why": "The sum is 6 + 9 + 11 + 14 + 20 = 60, and 60 ÷ 5 = 12."
+   },
+   {
+    "q": "What is the median of 18, 4, 9, 13, 6, 11?",
+    "choices": [
+     "9",
+     "10",
+     "11",
+     "12"
+    ],
+    "a": 1,
+    "why": "Sorted: 4, 6, 9, 11, 13, 18. The two middle values are 9 and 11, so the median is (9 + 11) ÷ 2 = 10."
+   },
+   {
+    "q": "A sorted data set is 10, 12, 14, 16, 18, 20, 22. What is its interquartile range?",
+    "choices": [
+     "4",
+     "6",
+     "8",
+     "12"
+    ],
+    "a": 2,
+    "why": "The median is 16. Q1 is the middle of 10, 12, 14, which is 12; Q3 is the middle of 18, 20, 22, which is 20. IQR = 20 − 12 = 8."
+   },
+   {
+    "q": "The data set 3, 5, 7 has mean 5. Dividing by the number of values, what is its standard deviation?",
+    "choices": [
+     "0",
+     "About 1.63",
+     "2",
+     "About 2.83"
+    ],
+    "a": 1,
+    "why": "Deviations −2, 0, 2 have squares 4, 0, 4 that add to 8. Variance is 8 ÷ 3 ≈ 2.67, and √2.67 ≈ 1.63."
+   },
+   {
+    "q": "A histogram of 50 commute times has bins 0 to 9, 10 to 19, 20 to 29 and 30 to 39 with counts 8, 17, 15 and 10. What percent of commutes are under 20 minutes?",
+    "choices": [
+     "17%",
+     "25%",
+     "34%",
+     "50%"
+    ],
+    "a": 3,
+    "why": "Under 20 minutes means the first two bins: 8 + 17 = 25, and 25 ÷ 50 = 50%."
+   },
+   {
+    "q": "A data set has Q1 = 40 and Q3 = 60. Which value is an outlier by the 1.5 × IQR rule?",
+    "choices": [
+     "12",
+     "25",
+     "85",
+     "95"
+    ],
+    "a": 3,
+    "why": "IQR = 20 and 1.5 × 20 = 30. The fences are 40 − 30 = 10 and 60 + 30 = 90. Only 95 is past a fence."
+   },
+   {
+    "q": "In a two-way table, 24 of 60 juniors and 18 of 30 seniors have a part-time job. Which statement is true?",
+    "choices": [
+     "Juniors are more likely to have a job, 24 versus 18",
+     "Seniors are more likely to have a job, 60% versus 40%",
+     "The groups are equally likely to have a job",
+     "Juniors are more likely to have a job, 40% versus 60%"
+    ],
+    "a": 1,
+    "why": "Compare conditional relative frequencies, not counts: 24 ÷ 60 = 40% of juniors and 18 ÷ 30 = 60% of seniors."
+   },
+   {
+    "q": "A poll about a new stadium surveys only people leaving a home game. What is the main flaw?",
+    "choices": [
+     "The sample is biased toward fans",
+     "The sample is too large",
+     "The mean should have been used",
+     "The axis is truncated"
+    ],
+    "a": 0,
+    "why": "People leaving a game are far more likely to want a stadium than the general public, so the sample leans one way before any question is asked."
+   },
+   {
+    "q": "What is the slope of the line through (2, 5) and (6, 17)?",
+    "choices": [
+     "12",
+     "4",
+     "3",
+     "2"
+    ],
+    "a": 2,
+    "why": "Slope = (17 − 5) ÷ (6 − 2) = 12 ÷ 4 = 3."
+   },
+   {
+    "q": "A line predicts a taxi fare as f = 3 + 2.5m, with m in miles. What does the 3 mean?",
+    "choices": [
+     "The fare rises $3 per mile",
+     "A ride of 0 miles costs $3, the starting charge",
+     "The longest ride is 3 miles",
+     "The fare is always $3 more than the miles"
+    ],
+    "a": 1,
+    "why": "The intercept is the predicted fare when m = 0: a base charge of $3 before any distance is driven. The 2.5 is the cost per mile."
+   },
+   {
+    "q": "A line predicts 70 for a point whose actual value is 64. What is the residual?",
+    "choices": [
+     "6",
+     "−6",
+     "134",
+     "0.91"
+    ],
+    "a": 1,
+    "why": "Residual = actual − predicted = 64 − 70 = −6, so the point is 6 units below the line."
+   },
+   {
+    "q": "A residual plot shows a clear U shape. What should you conclude?",
+    "choices": [
+     "The line fits the data well",
+     "The correlation must be negative",
+     "A curved model would fit better than a line",
+     "The data have an outlier"
+    ],
+    "a": 2,
+    "why": "A U in the residuals means the line is too high in the middle and too low at the ends: the data bend, and a straight line cannot."
+   },
+   {
+    "q": "Which statement about the correlation coefficient r is true?",
+    "choices": [
+     "r = −0.9 is weaker than r = 0.5 because it is negative",
+     "r changes when you convert inches to centimeters",
+     "r = 0 proves the two variables are unrelated",
+     "r measures only straight-line relationships and can be near 0 for a perfect curve"
+    ],
+    "a": 3,
+    "why": "r has no units, its strength is its distance from 0 regardless of sign, and a U-shaped relationship can give r = 0 even though y depends exactly on x."
+   },
+   {
+    "q": "Cities with more ice cream shops have more sunburn cases. What is the best explanation?",
+    "choices": [
+     "Ice cream causes sunburn",
+     "Sunburn makes people open ice cream shops",
+     "Warm, sunny climate is a lurking variable driving both",
+     "The correlation must be a mistake"
+    ],
+    "a": 2,
+    "why": "A third variable, sunny weather, increases both ice cream demand and sun exposure. The correlation is real, but it shows no cause."
+   }
+  ],
+  "write": {
+   "prompt": "Two classes took the same test. Class A scores: 70, 72, 75, 78, 80, 82, 85. Class B scores: 55, 60, 78, 80, 82, 95, 98. Compute the median, range and IQR for each class, then write a paragraph comparing the two classes. Explain which class did better, which was more consistent, and why the mean alone would not tell the whole story.",
+   "tips": [
+    "Sort each list first, then find the median, Q1 and Q3 before computing anything else.",
+    "Show every subtraction: range is max minus min, IQR is Q3 minus Q1.",
+    "Use shape, center and spread as three separate sentences in your comparison.",
+    "Say what each number means for a student in that class, not just what the number is.",
+    "Check your work by confirming that each class has the same number of scores on each side of its median."
+   ]
+  }
+ },
+ "n": 22,
+ "title": "Statistics in Algebra I",
+ "years": "Statistics",
+ "band": "9-10",
+ "chapters": [
+  {
+   "n": 51,
+   "title": "Describing and Comparing Data",
+   "years": "Statistics",
+   "bigQuestion": "How can two data sets share the same average and still tell completely different stories?",
+   "story": {
+    "title": "Two Pitchers, One Average",
+    "kicker": "A coach on the Northwest Side of Chicago has two pitchers with the same average, and she still has to pick one for the playoff game.",
+    "paragraphs": [
+     "Coach Alvarez runs the varsity softball team at a public high school on the Northwest Side of Chicago. In late May the team qualifies for the playoffs, and she has to choose a starting pitcher for the first game. Two pitchers have each started eight games this season. Her assistant prints one number for each of them: runs allowed per start. Dana averages 3.0 runs. Marcus averages 3.0 runs. The assistant shrugs and says it is a coin flip.",
+     "Coach Alvarez does not trust one number, so she asks for the game-by-game list. Dana's eight starts read 3, 3, 2, 4, 3, 3, 4, 2. Marcus's eight starts read 0, 1, 0, 7, 0, 8, 1, 7. Both lists add up to 24 runs, so both averages are 24 ÷ 8 = 3. But the lists do not look alike at all. Dana is never brilliant and never terrible. Marcus is either untouchable or he gets hammered.",
+     "She draws each list as a row of dots on a number line. Dana's dots pile up between 2 and 4, a tight little hill. Marcus's dots sit in two clumps, one near 0 and one near 7 or 8, with nothing in between. The middle value, the median, is 3 for Dana and only 1 for Marcus. The distance from lowest to highest is 2 for Dana and 8 for Marcus. Same average, completely different seasons.",
+     "Now the choice depends on the question. In a game where the team's hitters are hot and can score plenty, Dana's steady 3 runs is probably enough to win. In a game against a great opposing pitcher, where the team might score only 1 run, Dana almost surely loses, while Marcus has a real chance to throw a shutout. The average could not tell Coach Alvarez any of this. The shape and the spread of the data could.",
+     "This chapter is about seeing a whole data set, not just its average. You will draw dot plots, histograms and box plots, measure center and spread, decide what to do about a strange value, compare two groups honestly, and read tables that sort people by two questions at once. Every tool answers the coach's question: what does the whole list say, not just its middle?"
+    ],
+    "think": "If you were Coach Alvarez, which pitcher would you start against a team with a great pitcher of its own, and what number from the data supports your choice?"
+   },
+   "sections": [
+    {
+     "title": "Pictures of a Data Set",
+     "lessons": [
+      {
+       "title": "Dot Plots and Shape",
+       "mainIdea": "A dot plot stacks one dot per value on a number line, so the shape of the whole data set is visible at a glance.",
+       "reading": [
+        "A teacher asks 12 students how many siblings they have and writes down the answers: 0, 1, 1, 1, 2, 2, 2, 2, 3, 3, 4, 6. A list like this is hard to read. A *dot plot* fixes that. Draw a number line from 0 to 6. For each answer, put one dot above that number, stacking dots when a number repeats. You get 1 dot above 0, 3 dots above 1, 4 dots above 2, 2 dots above 3, 1 dot above 4, none above 5, and 1 dot above 6. The 12 dots make a picture of the whole *distribution*, which is the full set of values and how often each one occurs.",
+        "Once the dots are stacked, describe the shape. Ask three questions. Where is the tallest stack? Here it is at 2, so 2 siblings is the most common answer. Is the picture balanced? No. Most dots crowd the left side, and a thin tail stretches to the right toward the lone 6. A distribution shaped like this is *skewed right*, because the long tail points right. If the tail pointed left, it would be skewed left. A distribution with two matching halves, like a hill with the same slope on each side, is *symmetric*.",
+        "Students often mix up which way a skew points. The skew is named for the tail, not the peak. Picture a slide: the pile of dots is the platform, and the tail is the slide going down. In the sibling data, the slide goes to the right, so it is skewed right. Another common slip is forgetting a value that appears zero times. There are no students with 5 siblings, so 5 gets no dot, but 5 still stays on the number line. Leaving it out would squeeze the 6 next to the 4 and hide the gap."
+       ],
+       "words": [
+        {
+         "w": "dot plot",
+         "d": "a graph that puts one dot above a number line for each value in a data set, stacking repeats"
+        },
+        {
+         "w": "distribution",
+         "d": "the whole set of values in a data set together with how often each value occurs"
+        },
+        {
+         "w": "skewed right",
+         "d": "a shape with most values on the left and a long thin tail stretching to the right"
+        },
+        {
+         "w": "symmetric",
+         "d": "a shape whose left and right halves are mirror images of each other"
+        }
+       ],
+       "look": {
+        "type": "think",
+        "title": "A Dot Plot in Words",
+        "text": "Picture a number line from 0 to 10 labeled 'goals scored this season.' Above 0 there are 5 dots. Above 1 there are 4 dots. Above 2 there are 3 dots. Above 3 there are 2 dots. Above 4, 5, 6, 7, 8 and 9 there is nothing. Above 10 there is a single dot. Fifteen players in all.",
+        "prompt": "Describe the shape of this distribution, name the most common value, and explain what the single dot at 10 does to the picture."
+       },
+       "check": [
+        {
+         "q": "In the sibling dot plot, how many dots sit above the number 2?",
+         "choices": [
+          "2",
+          "3",
+          "4",
+          "12"
+         ],
+         "a": 2,
+         "why": "The list 0, 1, 1, 1, 2, 2, 2, 2, 3, 3, 4, 6 contains the value 2 four times, so 4 dots stack above 2."
+        },
+        {
+         "q": "A dot plot has most of its dots on the left and a long thin tail reaching to the right. What is its shape?",
+         "choices": [
+          "Skewed left",
+          "Skewed right",
+          "Symmetric",
+          "Uniform"
+         ],
+         "a": 1,
+         "why": "A skew is named for the direction of its tail. The tail reaches right, so the distribution is skewed right."
+        },
+        {
+         "q": "A dot plot of 20 quiz scores shows 5 dots above the score 8. What fraction of the scores are 8?",
+         "choices": [
+          "1/4",
+          "1/5",
+          "5/8",
+          "8/20"
+         ],
+         "a": 0,
+         "why": "5 of 20 scores are 8, and 5/20 simplifies to 1/4."
+        }
+       ]
+      },
+      {
+       "title": "Histograms and Bins",
+       "mainIdea": "A histogram groups numbers into equal-width bins and draws a bar for each bin, so it works for large data sets and messy decimals.",
+       "reading": [
+        "A dot plot works for 12 answers. It falls apart for 300 commute times measured to the minute, because almost every value is different and the dots never stack. A *histogram* solves this by grouping. Suppose 30 students report their morning commute in minutes. Split the number line into equal-width *bins*: 0 to 9 minutes, 10 to 19, 20 to 29, 30 to 39, and 40 to 49. Count how many commutes land in each bin. Say the counts are 4, 9, 10, 5 and 2. Those five counts add to 30, which is a quick check that no student was lost or counted twice.",
+        "Now draw. The horizontal axis is minutes, split at 0, 10, 20, 30, 40 and 50. Above each bin draw a bar whose height is the *frequency*, the count for that bin. The bars touch each other, with no gaps, because the bins cover the whole number line without skipping any minutes. That is the visual difference between a histogram and a bar graph of categories like favorite pizza topping, where the bars are separated because the categories are not numbers on a line.",
+        "Reading a histogram means adding bins. How many students commute less than 20 minutes? Add the first two bins: 4 + 9 = 13 students. What share commute 30 minutes or more? Add the last two bins: 5 + 2 = 7, and 7/30 is about 0.233, or 23%. The most common bin is 20 to 29 minutes with 10 students, and the shape has a slight tail to the right, since the long commutes trail off.",
+        "The width of the bins changes the picture. Bins of width 5 would show more detail but might look jagged. Bins of width 25 would smooth everything into two fat bars and hide the peak. A frequent mistake is making bins that overlap, like 0 to 10 and 10 to 20. A commute of exactly 10 minutes would then belong to both bins. Use bins like 0 to 9 and 10 to 19, or agree on a rule such as 'the left edge is included and the right edge is not.'"
+       ],
+       "words": [
+        {
+         "w": "histogram",
+         "d": "a graph that splits a number line into equal-width bins and draws a touching bar for the count in each bin"
+        },
+        {
+         "w": "bin",
+         "d": "one interval of values on a histogram, such as 10 to 19 minutes"
+        },
+        {
+         "w": "frequency",
+         "d": "how many data values fall in a bin or at a value; the height of a histogram bar"
+        }
+       ],
+       "look": {
+        "type": "data",
+        "title": "Morning Commutes of 30 Students",
+        "rows": [
+         [
+          "0 to 9 min",
+          4
+         ],
+         [
+          "10 to 19 min",
+          9
+         ],
+         [
+          "20 to 29 min",
+          10
+         ],
+         [
+          "30 to 39 min",
+          5
+         ],
+         [
+          "40 to 49 min",
+          2
+         ]
+        ],
+        "unit": "students",
+        "cite": "Example data set defined in this lesson",
+        "prompt": "How many students commute 20 minutes or more, and what percent of the class is that?"
+       },
+       "check": [
+        {
+         "q": "Using the commute histogram, how many students commute less than 20 minutes?",
+         "choices": [
+          "4",
+          "9",
+          "13",
+          "23"
+         ],
+         "a": 2,
+         "why": "Less than 20 minutes means the 0 to 9 bin and the 10 to 19 bin: 4 + 9 = 13 students."
+        },
+        {
+         "q": "About what percent of the 30 students commute 30 minutes or more?",
+         "choices": [
+          "7%",
+          "17%",
+          "23%",
+          "30%"
+         ],
+         "a": 2,
+         "why": "The last two bins hold 5 + 2 = 7 students, and 7 ÷ 30 ≈ 0.233, which is about 23%."
+        },
+        {
+         "q": "Why do the bars of a histogram touch each other?",
+         "choices": [
+          "To save space on the page",
+          "Because the bins cover the number line with no gaps between them",
+          "Because every bin has the same count",
+          "Because the data are categories, not numbers"
+         ],
+         "a": 1,
+         "why": "The bins are intervals on one continuous number line, so each bin starts where the last one ends and the bars meet."
+        }
+       ]
+      },
+      {
+       "title": "Box Plots and Quartiles",
+       "mainIdea": "A box plot draws five numbers, the minimum, first quartile, median, third quartile and maximum, and shows where the middle half of the data lives.",
+       "reading": [
+        "Eleven students take a test and score 62, 68, 70, 74, 75, 78, 80, 84, 88, 90 and 95, already in order. The *median* is the middle value. With 11 scores, the middle is the 6th one, which is 78. Five scores sit below it and five above. Now split each half again. The lower half is 62, 68, 70, 74, 75, and its middle is 70. That is the *first quartile*, written Q1. The upper half is 80, 84, 88, 90, 95, and its middle is 88. That is the third quartile, Q3. Together with the minimum 62 and the maximum 95, these make the *five-number summary*: 62, 70, 78, 88, 95.",
+        "A *box plot* draws exactly those five numbers above a number line. Draw a box from Q1 = 70 to Q3 = 88. Draw a line inside the box at the median, 78. From each end of the box draw a whisker, a thin line out to the minimum 62 on the left and the maximum 95 on the right. Roughly one quarter of the scores lie in each of the four pieces: below the box, in the left part of the box, in the right part, and beyond the box. The box itself holds the middle half of the class.",
+        "When the count is even, the median is the average of the two middle values. Take 3, 5, 6, 8, 10, 12, 15, 20. The two middle values are 8 and 10, so the median is (8 + 10) ÷ 2 = 9. The lower half is 3, 5, 6, 8 and Q1 is (5 + 6) ÷ 2 = 5.5. The upper half is 10, 12, 15, 20 and Q3 is (12 + 15) ÷ 2 = 13.5. A common mistake is finding the quartiles from the unsorted list. Always sort first. Another is including the median itself in both halves when the count is odd; in this course, leave the middle value out of both halves."
+       ],
+       "words": [
+        {
+         "w": "median",
+         "d": "the middle value of a sorted data set, or the average of the two middle values"
+        },
+        {
+         "w": "first quartile",
+         "d": "the median of the lower half of a sorted data set, written Q1"
+        },
+        {
+         "w": "five-number summary",
+         "d": "the minimum, first quartile, median, third quartile and maximum of a data set"
+        },
+        {
+         "w": "box plot",
+         "d": "a graph that draws a box from Q1 to Q3 with a line at the median and whiskers to the minimum and maximum"
+        }
+       ],
+       "look": {
+        "type": "think",
+        "title": "Build the Box",
+        "text": "Nine runners finish a 5K with these times in minutes: 21, 23, 24, 24, 26, 28, 30, 33, 41. Find the median, then the median of the four fastest times and the median of the four slowest times. Those are Q1 and Q3.",
+        "prompt": "Write the five-number summary and describe the box plot: where does the box start and end, and which whisker is longer?"
+       },
+       "check": [
+        {
+         "q": "For the test scores 62, 68, 70, 74, 75, 78, 80, 84, 88, 90, 95, what is the first quartile Q1?",
+         "choices": [
+          "62",
+          "70",
+          "74",
+          "78"
+         ],
+         "a": 1,
+         "why": "The lower half is 62, 68, 70, 74, 75, and its middle value is 70, so Q1 = 70."
+        },
+        {
+         "q": "About what fraction of a data set lies inside the box of a box plot?",
+         "choices": [
+          "One quarter",
+          "One third",
+          "One half",
+          "All of it"
+         ],
+         "a": 2,
+         "why": "The box runs from Q1 to Q3, and the middle half of the data lies between those two quartiles."
+        },
+        {
+         "q": "What is the median of the data set 3, 5, 6, 8, 10, 12, 15, 20?",
+         "choices": [
+          "8",
+          "9",
+          "10",
+          "12"
+         ],
+         "a": 1,
+         "why": "With 8 values the two middle ones are 8 and 10, and their average is (8 + 10) ÷ 2 = 9."
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "title": "Measuring Center and Spread",
+     "lessons": [
+      {
+       "title": "Mean Versus Median",
+       "mainIdea": "The mean shares the total equally and the median finds the middle; one very large value pulls the mean but barely moves the median.",
+       "reading": [
+        "Five people work at a small café in Pilsen. Four of them earn $12, $13, $13 and $14 an hour. The manager earns $48 an hour. The *mean* is the total shared equally: add the wages, 12 + 13 + 13 + 14 + 48 = 100, and divide by the 5 workers to get $20 an hour. The median is the middle wage when the list is sorted: 12, 13, 13, 14, 48, so the median is $13. If a job ad said 'our workers average $20 an hour,' it would be telling the truth and still misleading four of the five people who applied.",
+        "The mean is sensitive to every value. Raise the manager's wage from $48 to $98 and the total becomes 150, so the mean jumps to $30. The median stays $13, because the middle of the sorted list has not moved. A measure that barely changes when one extreme value changes is called *resistant*. The median is resistant. The mean is not. That is why news reports about house prices or incomes usually give the median: a few mansions or billionaires would drag the mean far above what a typical family sees.",
+        "Neither measure is wrong; they answer different questions. The mean answers 'if the total were shared equally, how much would each get?' That matters for a budget: the café's payroll is 5 × 20 = $100 an hour no matter how the wages are split. The median answers 'what does a typical member of this group look like?' For a symmetric distribution the two are close together. For a skewed distribution they pull apart, and the mean gets dragged toward the tail. A quick check on any data set: if the mean is far above the median, expect a right tail of large values."
+       ],
+       "words": [
+        {
+         "w": "mean",
+         "d": "the sum of all values divided by how many values there are; the average"
+        },
+        {
+         "w": "resistant",
+         "d": "describes a measure that changes very little when one extreme value in the data changes"
+        },
+        {
+         "w": "center",
+         "d": "a single number, such as the mean or median, that stands for a typical value in a data set"
+        }
+       ],
+       "look": {
+        "type": "data",
+        "title": "Hourly Wages at the Café",
+        "rows": [
+         [
+          "Barista A",
+          12
+         ],
+         [
+          "Barista B",
+          13
+         ],
+         [
+          "Barista C",
+          13
+         ],
+         [
+          "Cook",
+          14
+         ],
+         [
+          "Manager",
+          48
+         ]
+        ],
+        "unit": "dollars per hour",
+        "cite": "Example data set defined in this lesson",
+        "prompt": "Find the mean and the median. If the manager got a raise to $60, which one would change, and by how much?"
+       },
+       "check": [
+        {
+         "q": "What is the mean of 4, 7, 9, 12 and 18?",
+         "choices": [
+          "9",
+          "10",
+          "12.5",
+          "14"
+         ],
+         "a": 1,
+         "why": "The sum is 4 + 7 + 9 + 12 + 18 = 50, and 50 ÷ 5 = 10."
+        },
+        {
+         "q": "What is the median of 15, 3, 8, 21, 10 and 6?",
+         "choices": [
+          "8",
+          "9",
+          "10",
+          "10.5"
+         ],
+         "a": 1,
+         "why": "Sorted, the list is 3, 6, 8, 10, 15, 21. The two middle values are 8 and 10, so the median is 9."
+        },
+        {
+         "q": "A neighborhood has 40 homes worth about $200,000 and one worth $5,000,000. Which statement is true?",
+         "choices": [
+          "The mean is much higher than the median",
+          "The median is much higher than the mean",
+          "The mean and median are equal",
+          "The median is resistant, so it is about $5,000,000"
+         ],
+         "a": 0,
+         "why": "The one huge value adds millions to the total and lifts the mean well above $200,000, while the median stays near $200,000."
+        }
+       ]
+      },
+      {
+       "title": "Range and Interquartile Range",
+       "mainIdea": "The range measures the full stretch of the data and the interquartile range measures the stretch of the middle half, which extreme values cannot touch.",
+       "reading": [
+        "One week in June, a student records the daily high temperature outside her apartment in Chicago: 71, 75, 68, 80, 74, 73 and 90 degrees Fahrenheit. Sort them: 68, 71, 73, 74, 75, 80, 90. The *range* is the biggest value minus the smallest: 90 − 68 = 22 degrees. The range is quick and easy, but it depends entirely on the two most extreme days. That single 90-degree Saturday sets the whole range by itself.",
+        "The *interquartile range*, or IQR, ignores the extremes. Find the median first. With 7 values the middle is the 4th, 74. The lower half is 68, 71, 73, so Q1 = 71. The upper half is 75, 80, 90, so Q3 = 80. The IQR is Q3 − Q1 = 80 − 71 = 9 degrees. That is the width of the box in a box plot, the stretch of the middle half of the week. Notice that the 90 does not appear anywhere in that subtraction.",
+        "Now suppose the Saturday reading was a typo and it should have been 120, a number that would break Chicago's all-time record. The range becomes 120 − 68 = 52, more than doubling. The IQR is still 80 − 71 = 9, because Q3 is still the middle of the upper half, and 120 is still just the biggest value in that half. Like the median, the IQR is resistant. Range and IQR are both measures of *spread*: how far apart the values are. The range is honest about the extremes; the IQR is honest about the crowd in the middle."
+       ],
+       "words": [
+        {
+         "w": "range",
+         "d": "the maximum value minus the minimum value of a data set"
+        },
+        {
+         "w": "interquartile range",
+         "d": "the third quartile minus the first quartile; the width of the middle half of the data, written IQR"
+        },
+        {
+         "w": "spread",
+         "d": "how far apart the values in a data set are from each other; also called variability"
+        }
+       ],
+       "look": {
+        "type": "think",
+        "title": "Two Weeks, Same Middle",
+        "text": "Week 1 highs, sorted: 70, 72, 74, 75, 76, 78, 80. Week 2 highs, sorted: 58, 66, 74, 75, 76, 84, 92. Both weeks have a median of 75. Find the range and the IQR for each week. For each week, Q1 is the middle of the three lowest values and Q3 is the middle of the three highest.",
+        "prompt": "Which week had the more predictable weather, and which measure of spread makes that clearest?"
+       },
+       "check": [
+        {
+         "q": "What is the range of 5, 9, 14, 22 and 30?",
+         "choices": [
+          "14",
+          "16",
+          "25",
+          "30"
+         ],
+         "a": 2,
+         "why": "Range is maximum minus minimum: 30 − 5 = 25."
+        },
+        {
+         "q": "A data set has Q1 = 15 and Q3 = 27. What is its interquartile range?",
+         "choices": [
+          "6",
+          "12",
+          "21",
+          "42"
+         ],
+         "a": 1,
+         "why": "IQR = Q3 − Q1 = 27 − 15 = 12."
+        },
+        {
+         "q": "If the largest value in a data set of 20 numbers is increased by 100, which measure stays exactly the same?",
+         "choices": [
+          "The range",
+          "The mean",
+          "The maximum",
+          "The interquartile range"
+         ],
+         "a": 3,
+         "why": "The IQR uses only Q1 and Q3, the middles of each half, and the biggest value stays the biggest, so neither quartile moves."
+        }
+       ]
+      },
+      {
+       "title": "Standard Deviation, Introduced",
+       "mainIdea": "Standard deviation measures the typical distance of the values from the mean, using every value in the data set.",
+       "reading": [
+        "The IQR uses only two numbers from the data. The *standard deviation* uses all of them. Start with five quiz scores: 6, 7, 8, 9, 10. The mean is 40 ÷ 5 = 8. Now find each score's *deviation*, its distance from the mean with a sign: 6 − 8 = −2, 7 − 8 = −1, 8 − 8 = 0, 9 − 8 = 1, and 10 − 8 = 2. The deviations always add to zero, −2 − 1 + 0 + 1 + 2 = 0, so averaging them tells you nothing. That is the reason for the next step.",
+        "Square each deviation to erase the signs: 4, 1, 0, 1, 4. Add them: 4 + 1 + 0 + 1 + 4 = 10. Divide by the number of values, 5, to get 2. That number is the *variance*. Its units are squared points, which is awkward, so take the square root: √2 ≈ 1.41. The standard deviation of these scores is about 1.41 points. Read it this way: a typical quiz score in this set sits about 1.4 points from the mean of 8.",
+        "Compare a second set with the same mean: 8, 8, 8, 8, 8. Every deviation is 0, so the variance is 0 and the standard deviation is 0. A third set, 4, 6, 8, 10, 12, has deviations −4, −2, 0, 2, 4, squares 16, 4, 0, 4, 16 that add to 40, variance 40 ÷ 5 = 8, and standard deviation √8 ≈ 2.83. Same mean, twice the spread, and the standard deviation doubles from 1.41 to 2.83. Larger standard deviation means the values wander farther from the mean.",
+        "Two warnings. First, many calculators offer two versions, one dividing by the number of values and one dividing by one less than that. The second version gives a slightly bigger answer, √(10 ÷ 4) ≈ 1.58 for the quiz scores, and is used when the data are a sample from a bigger group. In this course, divide by the number of values unless you are told otherwise. Second, do not skip the square root. A variance of 2 and a standard deviation of 1.41 are different numbers, and only the second is in the same units as the data."
+       ],
+       "words": [
+        {
+         "w": "standard deviation",
+         "d": "the square root of the variance; the typical distance of the values from the mean"
+        },
+        {
+         "w": "deviation",
+         "d": "a value minus the mean; negative for values below the mean and positive for values above it"
+        },
+        {
+         "w": "variance",
+         "d": "the average of the squared deviations from the mean"
+        }
+       ],
+       "look": {
+        "type": "data",
+        "title": "Squared Deviations for 6, 7, 8, 9, 10",
+        "rows": [
+         [
+          "Score 6 (deviation −2)",
+          4
+         ],
+         [
+          "Score 7 (deviation −1)",
+          1
+         ],
+         [
+          "Score 8 (deviation 0)",
+          0
+         ],
+         [
+          "Score 9 (deviation 1)",
+          1
+         ],
+         [
+          "Score 10 (deviation 2)",
+          4
+         ]
+        ],
+        "unit": "squared points",
+        "cite": "Computed from the quiz scores in this lesson, mean 8",
+        "prompt": "Add the squared deviations, divide by 5, and take the square root. Then do the same for the scores 5, 7, 8, 9, 11 and say which set is more spread out."
+       },
+       "check": [
+        {
+         "q": "The data set 2, 4, 6 has mean 4. What is the sum of its squared deviations?",
+         "choices": [
+          "0",
+          "4",
+          "8",
+          "12"
+         ],
+         "a": 2,
+         "why": "The deviations are −2, 0 and 2. Their squares are 4, 0 and 4, which add to 8."
+        },
+        {
+         "q": "Which data set has a standard deviation of 0?",
+         "choices": [
+          "1, 2, 3, 4",
+          "0, 0, 0, 10",
+          "5, 5, 5, 5",
+          "−2, −1, 1, 2"
+         ],
+         "a": 2,
+         "why": "When every value equals the mean, every deviation is 0, so the standard deviation is 0. Only 5, 5, 5, 5 has all values equal."
+        },
+        {
+         "q": "The data set 1, 5, 5, 9 has mean 5. Dividing by the number of values, what is its standard deviation?",
+         "choices": [
+          "4",
+          "8",
+          "32",
+          "About 2.83"
+         ],
+         "a": 3,
+         "why": "Deviations −4, 0, 0, 4 have squares 16, 0, 0, 16 that add to 32. Variance is 32 ÷ 4 = 8, and √8 ≈ 2.83."
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "title": "Outliers and Comparisons",
+     "lessons": [
+      {
+       "title": "Outliers and Their Pull",
+       "mainIdea": "An outlier is a value far outside the pattern of the rest, and it pulls the mean and range much harder than the median and IQR.",
+       "reading": [
+        "Eight friends count the text messages they sent in one hour: 12, 14, 15, 15, 16, 17, 18 and 40. Seven of the numbers are between 12 and 18. The 40 is far from the rest. A value like that is an *outlier*. Sometimes it is a mistake, like a typo. Sometimes it is real: one friend was planning a party. Either way, you need a rule for deciding when a value is far enough away to count, and you need to know what it does to your summaries.",
+        "The standard rule uses the IQR. The median of the eight values is (15 + 16) ÷ 2 = 15.5. The lower half, 12, 14, 15, 15, has median (14 + 15) ÷ 2 = 14.5, so Q1 = 14.5. The upper half, 16, 17, 18, 40, has median (17 + 18) ÷ 2 = 17.5, so Q3 = 17.5. The IQR is 17.5 − 14.5 = 3. Multiply it by 1.5 to get 4.5. Any value more than 4.5 below Q1 or more than 4.5 above Q3 is an outlier. The *fences* are 14.5 − 4.5 = 10 and 17.5 + 4.5 = 22. The 40 is above 22, so it is an outlier. The 12 is not below 10, so it is fine.",
+        "Now see the pull. With the 40, the total is 147 and the mean is 147 ÷ 8 ≈ 18.4. Without it, the total is 107 and the mean is 107 ÷ 7 ≈ 15.3. One value moved the mean by about 3 messages. The median moves from 15.5 to 15, half a message. The range collapses from 40 − 12 = 28 to 18 − 12 = 6. Without the 40, Q1 is 14 and Q3 is 17, so the IQR is still 3, unchanged. This is the whole reason the median and IQR are called resistant. The mean and range are not.",
+        "Do not just delete an outlier because it is inconvenient. First ask whether it is an error. A height of 5.9 meters is a typo for 1.59 meters; fix it. A student who really did send 40 texts belongs in the data, and the honest move is to report the summary both ways and say why. On a box plot, outliers are drawn as separate dots beyond the whiskers, and the whisker stops at the last value inside the fence, here at 18."
+       ],
+       "words": [
+        {
+         "w": "outlier",
+         "d": "a data value far outside the pattern of the rest; by the usual rule, more than 1.5 IQRs beyond a quartile"
+        },
+        {
+         "w": "fences",
+         "d": "the cutoffs Q1 − 1.5 × IQR and Q3 + 1.5 × IQR; values past a fence are outliers"
+        },
+        {
+         "w": "pull",
+         "d": "the effect an extreme value has on a summary such as the mean or range"
+        }
+       ],
+       "look": {
+        "type": "think",
+        "title": "Is 20 an Outlier?",
+        "text": "Seven students report hours of sleep last night: 3, 4, 4, 5, 5, 6, 20. Wait, 20 hours? Find the median, then Q1 from the three lowest values and Q3 from the three highest. Compute the IQR, multiply by 1.5, and build the fences.",
+        "prompt": "Is 20 an outlier by the 1.5 × IQR rule? Is it more likely a real value or a typo, and what would you do before reporting the class mean?"
+       },
+       "check": [
+        {
+         "q": "A data set has Q1 = 20 and Q3 = 30. What is the upper fence for outliers?",
+         "choices": [
+          "35",
+          "40",
+          "45",
+          "60"
+         ],
+         "a": 2,
+         "why": "IQR = 30 − 20 = 10, and 1.5 × 10 = 15. The upper fence is 30 + 15 = 45."
+        },
+        {
+         "q": "In the sorted data 3, 4, 4, 5, 5, 6, 20, which value is an outlier by the 1.5 × IQR rule?",
+         "choices": [
+          "3",
+          "6",
+          "20",
+          "None of the values"
+         ],
+         "a": 2,
+         "why": "Q1 = 4, Q3 = 6, IQR = 2, so the upper fence is 6 + 3 = 9. The 20 is above 9, so it is an outlier."
+        },
+        {
+         "q": "When an outlier is removed from a data set, which summary usually changes the most?",
+         "choices": [
+          "The median",
+          "The mean",
+          "The interquartile range",
+          "The first quartile"
+         ],
+         "a": 1,
+         "why": "The mean adds every value into its total, so one extreme value shifts it a lot; the median and quartiles depend only on position and barely move."
+        }
+       ]
+      },
+      {
+       "title": "Comparing Two Distributions",
+       "mainIdea": "To compare two data sets fairly, compare their shape, their center and their spread, not just one number.",
+       "reading": [
+        "Back to Coach Alvarez. Dana's runs allowed in eight starts: 3, 3, 2, 4, 3, 3, 4, 2. Marcus's: 0, 1, 0, 7, 0, 8, 1, 7. Both totals are 24, so both means are 3. A one-number comparison ends there in a tie. A three-part comparison, shape, center and spread, does not. Sort Dana: 2, 2, 3, 3, 3, 3, 4, 4. Sort Marcus: 0, 0, 0, 1, 1, 7, 7, 8. Dana's dot plot is a single symmetric hill. Marcus's has two clumps with a gap in the middle, one at 0 and 1 and one at 7 and 8.",
+        "Center: Dana's median is (3 + 3) ÷ 2 = 3. Marcus's median is (1 + 1) ÷ 2 = 1. Spread: Dana's range is 4 − 2 = 2 and Marcus's is 8 − 0 = 8. For the IQR, Dana's Q1 is the middle of 2, 2, 3, 3, which is 2.5, and Q3 is the middle of 3, 3, 4, 4, which is 3.5, so the IQR is 1. Marcus's Q1 is the middle of 0, 0, 0, 1, which is 0, and Q3 is the middle of 1, 7, 7, 8, which is 7, so the IQR is 7. Dana is far more *consistent*: her spread is a fraction of his by every measure.",
+        "Write the comparison in sentences, with the numbers. 'Both pitchers allow a mean of 3 runs per start, but their distributions differ. Dana's runs are symmetric and tightly clustered, with an IQR of 1. Marcus's are split into two clumps, with a median of only 1 but an IQR of 7.' When two groups are drawn as box plots on the same number line, look for *overlap*: if one box sits entirely to the right of the other, the groups differ clearly. If the boxes overlap heavily, the difference between the groups is smaller than the *variability* inside each group.",
+        "One trap: comparing groups of different sizes by raw counts. If 40 students in one class and 20 in another take a survey, 10 'yes' answers mean 25% in the first class and 50% in the second. Compare percents, medians or means, never raw counts, when the groups are not the same size. And always use the same scale on both plots; a box plot drawn from 0 to 10 next to one drawn from 0 to 100 makes the second group look more crowded than it is."
+       ],
+       "words": [
+        {
+         "w": "consistent",
+         "d": "describes data with small spread; the values stay close to one another"
+        },
+        {
+         "w": "overlap",
+         "d": "the part of the number line where two distributions both have values, visible when two box plots are stacked"
+        },
+        {
+         "w": "variability",
+         "d": "another word for spread; how much the values in a group differ from each other"
+        }
+       ],
+       "look": {
+        "type": "data",
+        "title": "Two Pitchers, Eight Starts Each",
+        "rows": [
+         [
+          "Dana mean",
+          3
+         ],
+         [
+          "Dana median",
+          3
+         ],
+         [
+          "Dana IQR",
+          1
+         ],
+         [
+          "Marcus mean",
+          3
+         ],
+         [
+          "Marcus median",
+          1
+         ],
+         [
+          "Marcus IQR",
+          7
+         ]
+        ],
+        "unit": "runs allowed",
+        "cite": "Computed from the game lists in the chapter story",
+        "prompt": "Which two numbers in this table would you show a teammate who thinks the pitchers are the same, and what sentence would you say with them?"
+       },
+       "check": [
+        {
+         "q": "What is the median of Marcus's runs allowed: 0, 1, 0, 7, 0, 8, 1, 7?",
+         "choices": [
+          "0",
+          "1",
+          "3",
+          "4"
+         ],
+         "a": 1,
+         "why": "Sorted the list is 0, 0, 0, 1, 1, 7, 7, 8. The two middle values are 1 and 1, so the median is 1."
+        },
+        {
+         "q": "Two classes have the same median test score of 78. Class A has an IQR of 6 and class B has an IQR of 20. Which statement is true?",
+         "choices": [
+          "Class B scored higher on average",
+          "Class A's scores are more spread out",
+          "Class B's scores are more spread out",
+          "The classes have identical distributions"
+         ],
+         "a": 2,
+         "why": "A larger IQR means the middle half of the scores covers a wider stretch. Class B's IQR of 20 shows more spread, even though the centers match."
+        },
+        {
+         "q": "A survey gets 12 'yes' answers from a class of 24 and 12 'yes' answers from a class of 48. Which comparison is fair?",
+         "choices": [
+          "The classes agree equally, since both have 12 yes answers",
+          "50% of the first class said yes but only 25% of the second",
+          "25% of the first class said yes but 50% of the second",
+          "The second class agrees more, since it is bigger"
+         ],
+         "a": 1,
+         "why": "Compare percents when the groups differ in size: 12 ÷ 24 = 50% and 12 ÷ 48 = 25%."
+        }
+       ]
+      },
+      {
+       "title": "Choosing the Right Summary",
+       "mainIdea": "Report the mean and standard deviation for symmetric data with no outliers; report the median and IQR when the data are skewed or have outliers.",
+       "reading": [
+        "Every data set can be summarized two ways. The mean and standard deviation form one pair: both use every value, and both get pulled by extremes. The median and IQR form the other pair: both depend on position in the sorted list, and both resist extremes. Choosing between the pairs is a judgment about the shape of the data, so look at a dot plot, histogram or box plot before you pick.",
+        "Take the café wages: 12, 13, 13, 14, 48. The distribution is strongly skewed right, with the manager's 48 far out in the tail. The mean of 20 describes nobody. The median of 13 and the IQR describe the four ordinary workers well. For skewed data or data with outliers, report the median and IQR. Now take Dana's runs: 2, 2, 3, 3, 3, 3, 4, 4. Symmetric, no outliers, a tidy hill. Here the mean of 3 and the standard deviation tell the story completely, and they use all eight games instead of just positions in a list. For symmetric data without outliers, report the mean and standard deviation.",
+        "Compute Dana's standard deviation to see the pair in action. The mean is 3. Deviations are −1, −1, 0, 0, 0, 0, 1, 1. Squares: 1, 1, 0, 0, 0, 0, 1, 1, summing to 4. Divide by 8 to get 0.5, and take the square root: √0.5 ≈ 0.71. A typical Dana start is about 0.7 runs from her mean. For Marcus, deviations from 3 are −3, −3, −3, −2, −2, 4, 4, 5, squares 9, 9, 9, 4, 4, 16, 16, 25 summing to 92, variance 92 ÷ 8 = 11.5, standard deviation √11.5 ≈ 3.39. About five times Dana's. But notice Marcus's two-clump shape: no single center describes him well, so any summary should come with the picture.",
+        "The most common mistake is reporting a mean because it is familiar, without checking the shape. The second is reporting a spread measure from the wrong pair, like a median with a standard deviation. Keep the pairs together: mean with standard deviation, median with IQR. And when in doubt, report both pairs and show the plot. A reader can always ignore an extra number; a reader cannot recover the one you left out."
+       ],
+       "words": [
+        {
+         "w": "summary statistic",
+         "d": "one number, such as a mean or an IQR, that describes some feature of a whole data set"
+        },
+        {
+         "w": "shape",
+         "d": "the overall pattern of a distribution: symmetric, skewed, one peak or two, with or without gaps"
+        },
+        {
+         "w": "skewed",
+         "d": "describes a distribution with a longer tail on one side than the other"
+        }
+       ],
+       "look": {
+        "type": "think",
+        "title": "Pick the Pair",
+        "text": "Three data sets. Set A, ages at a kindergarten pickup: 5, 5, 5, 6, 6, 6, 6, 7, 38, 41, 44. Set B, heights in inches of a basketball team: 72, 73, 74, 75, 75, 76, 77, 78. Set C, minutes spent on homework: 0, 0, 0, 10, 15, 20, 30, 45, 60, 180.",
+        "prompt": "For each set, say whether you would report mean and standard deviation or median and IQR, and name the feature of the data that decided it."
+       },
+       "check": [
+        {
+         "q": "A data set is strongly skewed right with two large outliers. Which pair of summaries should you report?",
+         "choices": [
+          "Mean and standard deviation",
+          "Mean and range",
+          "Median and IQR",
+          "Median and standard deviation"
+         ],
+         "a": 2,
+         "why": "Skew and outliers pull the mean, standard deviation and range. The median and IQR resist them and belong together as a pair."
+        },
+        {
+         "q": "Dana's runs allowed, 2, 2, 3, 3, 3, 3, 4, 4, have mean 3. Dividing by 8, what is the standard deviation, to two decimals?",
+         "choices": [
+          "0.50",
+          "0.71",
+          "1.00",
+          "4.00"
+         ],
+         "a": 1,
+         "why": "The squared deviations are 1, 1, 0, 0, 0, 0, 1, 1, which add to 4. Then 4 ÷ 8 = 0.5 and √0.5 ≈ 0.71."
+        },
+        {
+         "q": "Which pairing of center and spread is correctly matched?",
+         "choices": [
+          "Median with standard deviation",
+          "Mean with IQR",
+          "Mean with standard deviation",
+          "Range with median"
+         ],
+         "a": 2,
+         "why": "The mean and standard deviation both use every value and are reported together; the median and IQR form the other matched pair."
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "title": "Two Questions at Once",
+     "lessons": [
+      {
+       "title": "Two-Way Frequency Tables",
+       "mainIdea": "A two-way table counts people by two categories at once, with the cells giving joint counts and the margins giving totals for each category.",
+       "reading": [
+        "A school surveys 100 students with two questions: what grade are you in, and how do you get to school? Every student is in grade 9 or grade 10, and every student either rides the bus or walks. Two questions with two answers each make four combinations, and a *two-way table* has one cell for each. Say 35 ninth graders ride the bus and 25 walk, while 20 tenth graders ride the bus and 20 walk. Rows are grades, columns are how they travel. The four cells hold 35, 25, 20 and 20, which add to 100.",
+        "The numbers inside the four cells are *joint frequencies*: each one counts students who fit two categories at the same time, like 'grade 9 and bus.' Now add across each row and down each column. Row totals: grade 9 has 35 + 25 = 60 students, grade 10 has 20 + 20 = 40. Column totals: bus riders number 35 + 20 = 55, walkers number 25 + 20 = 45. These totals, written in the margins of the table, are the *marginal frequencies*. Each margin counts one category by itself, ignoring the other question. Both sets of margins add to the same grand total, 60 + 40 = 100 and 55 + 45 = 100, which is a built-in check on your arithmetic.",
+        "Reading a two-way table is a matter of finding the right cell. How many tenth graders walk? Go to the grade 10 row and the walk column: 20. How many students ride the bus in total? Read the bus column margin: 55. How many students are in grade 9? Read the grade 9 row margin: 60. A common mistake is answering a marginal question with a joint cell, like saying 35 ninth graders when the question asked for all ninth graders. Read the question twice: does it name one category or two?"
+       ],
+       "words": [
+        {
+         "w": "two-way table",
+         "d": "a table that sorts each person by two categories at once, with rows for one category and columns for the other"
+        },
+        {
+         "w": "joint frequency",
+         "d": "a count in one cell of a two-way table; the number of people in two categories at the same time"
+        },
+        {
+         "w": "marginal frequency",
+         "d": "a row total or column total of a two-way table; the count for one category alone"
+        }
+       ],
+       "look": {
+        "type": "data",
+        "title": "Grade and Way to School, 100 Students",
+        "rows": [
+         [
+          "Grade 9, bus",
+          35
+         ],
+         [
+          "Grade 9, walk",
+          25
+         ],
+         [
+          "Grade 10, bus",
+          20
+         ],
+         [
+          "Grade 10, walk",
+          20
+         ]
+        ],
+        "unit": "students",
+        "cite": "Example survey defined in this lesson",
+        "prompt": "Write the four marginal frequencies (two row totals and two column totals) and check that each pair adds to 100."
+       },
+       "check": [
+        {
+         "q": "In the survey table, how many tenth graders walk to school?",
+         "choices": [
+          "20",
+          "25",
+          "40",
+          "45"
+         ],
+         "a": 0,
+         "why": "The grade 10 row and the walk column meet at the cell holding 20 students."
+        },
+        {
+         "q": "How many of the 100 students ride the bus?",
+         "choices": [
+          "35",
+          "45",
+          "55",
+          "60"
+         ],
+         "a": 2,
+         "why": "Add the bus column: 35 ninth graders + 20 tenth graders = 55."
+        },
+        {
+         "q": "Which number in the table is a marginal frequency?",
+         "choices": [
+          "35, the ninth graders who ride the bus",
+          "20, the tenth graders who walk",
+          "60, all the ninth graders",
+          "25, the ninth graders who walk"
+         ],
+         "a": 2,
+         "why": "A marginal frequency is a row or column total. The 60 is the grade 9 row total, counting one category alone."
+        }
+       ]
+      },
+      {
+       "title": "Conditional Relative Frequencies",
+       "mainIdea": "A conditional relative frequency divides a cell by its row or column total, which lets you compare groups of different sizes and look for an association.",
+       "reading": [
+        "The survey table says 35 ninth graders and 20 tenth graders ride the bus. Does that mean ninth graders like the bus more? Not yet. There are 60 ninth graders and only 40 tenth graders, so of course the ninth grade has more of everything. To compare fairly, turn counts into fractions of the right group. A *relative frequency* is a cell count divided by some total. Divide by the grand total, 100, and you get the joint relative frequency: 35 ÷ 100 = 0.35, so 35% of all students are ninth graders who ride the bus.",
+        "The more useful move is to divide by a row or column total. That gives a *conditional relative frequency*, because you are asking a question on the condition that someone belongs to a certain group. Among ninth graders, what fraction ride the bus? Divide the cell by the row total: 35 ÷ 60 ≈ 0.583, about 58%. Among tenth graders: 20 ÷ 40 = 0.50, exactly 50%. Now the comparison is fair. Ninth graders are somewhat more likely to ride the bus than tenth graders, 58% versus 50%.",
+        "You can condition on the columns instead. Among bus riders, what fraction are in grade 9? Divide by the column total: 35 ÷ 55 ≈ 0.636, about 64%. Among walkers: 25 ÷ 45 ≈ 0.556, about 56%. Notice that 'the fraction of ninth graders who ride the bus' (58%) and 'the fraction of bus riders who are ninth graders' (64%) are different questions with different answers. The most common mistake in this whole topic is dividing by the wrong total. Say the condition out loud: 'of the ninth graders' means divide by 60; 'of the bus riders' means divide by 55.",
+        "When the conditional relative frequencies differ from group to group, the two categories have an *association*: knowing a student's grade tells you something about how they travel. If every row gave the same percents, the categories would be independent of each other. Here the gap is 58% versus 50%, a modest association. Whether a gap that size matters is a question for later courses; for now, the skill is computing the right fraction and stating clearly which group it describes."
+       ],
+       "words": [
+        {
+         "w": "relative frequency",
+         "d": "a count divided by a total, written as a fraction, decimal or percent"
+        },
+        {
+         "w": "conditional relative frequency",
+         "d": "a cell count divided by its row total or column total; the fraction of one group that falls in a category"
+        },
+        {
+         "w": "association",
+         "d": "a relationship between two categories, shown when the conditional relative frequencies differ from row to row"
+        }
+       ],
+       "look": {
+        "type": "think",
+        "title": "Which Total?",
+        "text": "A club surveys 80 members about whether they own a bike. Of 50 freshmen, 30 own a bike. Of 30 sophomores, 21 own a bike. Fill in a two-way table: freshmen with and without a bike, sophomores with and without, plus all totals.",
+        "prompt": "What percent of freshmen own a bike? What percent of sophomores? Is there an association between grade and owning a bike, and which grade is more likely to own one?"
+       },
+       "check": [
+        {
+         "q": "Of the 40 tenth graders, 20 walk to school. What percent of tenth graders walk?",
+         "choices": [
+          "20%",
+          "40%",
+          "50%",
+          "80%"
+         ],
+         "a": 2,
+         "why": "Condition on tenth graders, so divide by the row total: 20 ÷ 40 = 0.50 = 50%."
+        },
+        {
+         "q": "Of the 45 walkers, 25 are in grade 9. About what percent of walkers are ninth graders?",
+         "choices": [
+          "25%",
+          "42%",
+          "56%",
+          "64%"
+         ],
+         "a": 2,
+         "why": "Condition on walkers, so divide by the column total: 25 ÷ 45 ≈ 0.556, about 56%."
+        },
+        {
+         "q": "What is the joint relative frequency of students who are in grade 9 and ride the bus?",
+         "choices": [
+          "35%",
+          "58%",
+          "60%",
+          "64%"
+         ],
+         "a": 0,
+         "why": "A joint relative frequency divides the cell by the grand total: 35 ÷ 100 = 35%."
+        }
+       ]
+      },
+      {
+       "title": "Reading Data Honestly",
+       "mainIdea": "Check the axis, the sample and the choice of summary before you believe a graph or a statistic, because each one can be bent to mislead.",
+       "reading": [
+        "A poster shows two bars: last year's test average, 50, and this year's, 52. The bar for 52 is twice as tall as the bar for 50. How? The vertical axis does not start at 0. It starts at 48. Measured from 48, the first bar is 2 units tall and the second is 4 units tall, so it looks like a doubling. The real change is 52 ÷ 50 = 1.04, a 4% rise. A *truncated axis*, one that cuts off the bottom, is the most common trick in graphs. Always find the number where the axis begins before you compare bar heights.",
+        "The second thing to check is who was asked. A gym hands out a survey about exercise habits to its own members and reports that 90% of people exercise three times a week. The *sample*, the group that was actually measured, is gym members, and gym members are not typical of everyone. The sample is *biased*: it leans in one direction before a single question is asked. A fair sample gives every person in the group you care about a chance to be picked. Small samples are a related problem: a 3-out-of-4 result from four people is not a 75% result for a school of 1,600.",
+        "The third check is the summary itself. A company with 40 workers earning $40,000 and one owner earning $2,000,000 can honestly say its mean salary is over $87,000: the total is 1,600,000 + 2,000,000 = 3,600,000, divided by 41 is about $87,800. The median is $40,000. Both numbers are true. Only one of them describes a typical worker. When you see an average, ask which kind, and ask what the shape of the data looks like. When you see a percent, ask what the total was. When you see a graph, find zero on the axis.",
+        "None of this makes statistics untrustworthy. It makes you a careful reader. The same tools that can mislead, axes, samples and summaries, are the tools that tell the truth when used well. A histogram with an honest axis, a sample chosen fairly and a summary that fits the shape of the data is the strongest kind of argument there is. Your job as a reader is to check that all three are in place, and your job as a writer is to make sure they are."
+       ],
+       "words": [
+        {
+         "w": "truncated axis",
+         "d": "a graph axis that does not start at zero, which exaggerates small differences between bars"
+        },
+        {
+         "w": "sample",
+         "d": "the group of people or things that were actually measured, chosen from a larger population"
+        },
+        {
+         "w": "biased",
+         "d": "describes a sample or method that leans toward one answer before the data are even collected"
+        }
+       ],
+       "look": {
+        "type": "think",
+        "title": "Two Versions of One Graph",
+        "text": "A bar graph shows monthly bus riders for two routes: Route A with 1,020 riders and Route B with 1,050 riders. Version 1 has an axis from 0 to 1,200. Version 2 has an axis from 1,000 to 1,060. In version 2, Route B's bar is 50 units tall and Route A's is 20 units tall.",
+        "prompt": "How many times taller does Route B's bar look in version 2? What is the real ratio of riders? Which version would you use if you wanted to sell a plan that cuts Route A?"
+       },
+       "check": [
+        {
+         "q": "A bar graph's axis starts at 48. One bar shows 50 and another shows 52. How many times taller does the 52 bar look compared with the 50 bar?",
+         "choices": [
+          "1.04 times",
+          "1.5 times",
+          "2 times",
+          "4 times"
+         ],
+         "a": 2,
+         "why": "Measured from 48, the bars are 2 units and 4 units tall, and 4 ÷ 2 = 2, even though 52 ÷ 50 is only 1.04."
+        },
+        {
+         "q": "A company has 40 workers earning $40,000 and one owner earning $2,000,000. Which summary better describes a typical worker's pay?",
+         "choices": [
+          "The mean, about $87,800",
+          "The median, $40,000",
+          "The range, $1,960,000",
+          "The total, $3,600,000"
+         ],
+         "a": 1,
+         "why": "The median is the middle of the sorted list, which is $40,000; the mean is dragged up by the single $2,000,000 salary."
+        },
+        {
+         "q": "A gym surveys its own members and reports that 90% of people exercise three times a week. What is the main problem?",
+         "choices": [
+          "The sample is biased toward people who already exercise",
+          "The percent was calculated wrong",
+          "The axis of the graph is truncated",
+          "The mean should have been the median"
+         ],
+         "a": 0,
+         "why": "Gym members are not typical of all people, so a sample made only of them leans toward high exercise before any question is asked."
+        }
+       ]
+      }
+     ]
+    }
+   ],
+   "review": [
+    {
+     "q": "A dot plot has a tall stack of dots on the right and a long thin tail stretching left. Its shape is best described as:",
+     "choices": [
+      "Symmetric",
+      "Skewed right",
+      "Skewed left",
+      "Uniform"
+     ],
+     "a": 2,
+     "why": "A skew is named for its tail. The tail stretches left, so the distribution is skewed left."
+    },
+    {
+     "q": "A histogram of 40 test scores has bins 50 to 59, 60 to 69, 70 to 79, 80 to 89 and 90 to 99 with counts 3, 7, 14, 11 and 5. How many scores are 80 or higher?",
+     "choices": [
+      "11",
+      "16",
+      "24",
+      "29"
+     ],
+     "a": 1,
+     "why": "Add the last two bins: 11 + 5 = 16 scores."
+    },
+    {
+     "q": "What is the median of 7, 2, 9, 4, 11, 6, 3?",
+     "choices": [
+      "4",
+      "6",
+      "7",
+      "9"
+     ],
+     "a": 1,
+     "why": "Sorted: 2, 3, 4, 6, 7, 9, 11. The middle of seven values is the 4th, which is 6."
+    },
+    {
+     "q": "The data set 10, 12, 15, 18, 25 has mean 16. Which value has a deviation of −4?",
+     "choices": [
+      "10",
+      "12",
+      "18",
+      "25"
+     ],
+     "a": 1,
+     "why": "Deviation is value minus mean: 12 − 16 = −4."
+    },
+    {
+     "q": "A data set has Q1 = 12 and Q3 = 20. Which value would be flagged as an outlier by the 1.5 × IQR rule?",
+     "choices": [
+      "1",
+      "5",
+      "30",
+      "33"
+     ],
+     "a": 3,
+     "why": "IQR = 8 and 1.5 × 8 = 12. The fences are 12 − 12 = 0 and 20 + 12 = 32. Only 33 is past a fence."
+    },
+    {
+     "q": "Two runners have the same mean 5K time of 24 minutes. Runner A's times have a standard deviation of 0.5 minutes; Runner B's have 4 minutes. What can you conclude?",
+     "choices": [
+      "Runner A is faster on average",
+      "Runner B is faster on average",
+      "Runner A's times are more consistent",
+      "Runner B's times are more consistent"
+     ],
+     "a": 2,
+     "why": "Their means are equal, so neither is faster on average. A smaller standard deviation means times closer to the mean, so Runner A is more consistent."
+    },
+    {
+     "q": "In a two-way table, 30 of 50 freshmen and 21 of 30 sophomores own a bike. What percent of sophomores own a bike?",
+     "choices": [
+      "21%",
+      "30%",
+      "60%",
+      "70%"
+     ],
+     "a": 3,
+     "why": "Condition on sophomores: 21 ÷ 30 = 0.70 = 70%. The freshmen rate is 30 ÷ 50 = 60%."
+    },
+    {
+     "q": "A graph's vertical axis starts at 95 instead of 0, and bars of 96 and 99 are drawn. What is the effect?",
+     "choices": [
+      "The difference between 96 and 99 looks much larger than it is",
+      "The difference looks smaller than it is",
+      "The bars are drawn in the wrong order",
+      "The graph shows the median instead of the mean"
+     ],
+     "a": 0,
+     "why": "From a base of 95 the bars are 1 unit and 4 units tall, so a 3% difference looks like a fourfold one. A truncated axis exaggerates."
+    }
+   ]
+  },
+  {
+   "n": 52,
+   "title": "Lines of Fit and Correlation",
+   "years": "Statistics",
+   "bigQuestion": "When two things rise and fall together, how do we measure the pattern, and how do we know whether one is causing the other?",
+   "story": {
+    "title": "The Number That Fooled a Town",
+    "kicker": "A lakeside town council finds a striking pattern in its records and nearly passes a law based on it.",
+    "paragraphs": [
+     "Picture a small town on the shore of Lake Michigan with a public beach and a boardwalk lined with ice cream stands. Every year the town clerk records two numbers for each month: total ice cream sales on the boardwalk and the number of drownings and near-drownings reported by the lifeguards. One autumn a new council member plots the twelve months on a graph, sales on the horizontal axis and water rescues on the vertical axis, and gasps. The dots climb from lower left to upper right in a nearly straight line.",
+     "He brings the graph to the next meeting. In January, sales are close to zero and so are rescues. In July, sales are at their peak and so are rescues. He calculates the correlation coefficient, a number that measures how tightly points hug a line, and gets 0.93, about as strong as real-world data ever gets. His proposal follows: close the ice cream stands, or at least move them off the beach, and drownings will fall. Several council members nod. The pattern is right there in the data.",
+     "The lifeguard captain asks for the floor. She agrees that the graph is accurate. She asks the council to add one more column to the table: the average air temperature for each month. Then she asks two questions. When is it hot? When do people buy ice cream, and when do people swim? The answers are the same word three times: summer. Heat drives people to buy ice cream, and heat drives people into the water. Ice cream and rescues rise together because a third thing pushes both of them.",
+     "The proposal dies, and the town instead hires two more lifeguards for July and August. This story is a classic example that statistics teachers tell, and the two variables change from telling to telling, but the lesson does not. A strong correlation is real information: the two numbers really do move together, and one really can be used to predict the other. What a correlation cannot do, by itself, is say why. That is the central warning of this chapter, and it comes after you learn how to find the line, measure the fit and use it to predict.",
+     "By the end you will be able to draw a line through a cloud of points and say what its slope means, check the line with residuals, read the correlation coefficient without overreading it, recognize when a curve fits better than a line, and know how far from your data a prediction can safely reach. Each skill is a tool. The council member had the tools; he was missing the question the lifeguard asked."
+    ],
+    "think": "The council member's graph was accurate and his correlation was strong. What exactly was his mistake, and what single question would have caught it?"
+   },
+   "sections": [
+    {
+     "title": "Points and Lines",
+     "lessons": [
+      {
+       "title": "Reading a Scatter Plot",
+       "mainIdea": "A scatter plot puts one dot per pair of measurements, and its overall drift up or down shows whether the two variables move together.",
+       "reading": [
+        "Five students record how many hours they studied for a quiz and the score they got: 1 hour and 60 points, 2 hours and 65, 3 hours and 75, 4 hours and 80, 5 hours and 90. Each student gives one pair of numbers, and each pair becomes one dot. A *scatter plot* draws those dots on a grid: hours on the horizontal axis, score on the vertical axis. The student who studied 3 hours and scored 75 is the dot at (3, 75). Five students, five dots.",
+        "Which variable goes on which axis is not random. The *explanatory variable* is the one you think does the explaining or comes first, and it goes on the horizontal axis. Hours of studying come before the quiz, so hours are explanatory. The *response variable* is the outcome you want to predict, and it goes on the vertical axis. The score responds to the studying. In an experiment the explanatory variable is the one you control; in a survey it is the one you would use to predict the other.",
+        "Now look at the drift. As hours go up, scores go up: the dots climb from lower left to upper right. That is a *positive association*. If the dots fell from upper left to lower right, like hours of TV against quiz score, that would be a negative association. If the dots formed a shapeless cloud with no drift, there would be no association. Also note the form, whether the dots follow a straight line or a curve, and the strength, whether they hug the pattern tightly or scatter widely. These five dots follow a nearly straight line, tightly, going up.",
+        "A common mistake is reading a scatter plot as a time graph and connecting the dots in order. Do not connect them. Each dot is a separate student, not a step in a sequence, and the pattern is in the cloud as a whole. Another is describing a single dot as 'high' without saying which axis: the student at (5, 90) is high in hours and high in score, and both facts matter."
+       ],
+       "words": [
+        {
+         "w": "scatter plot",
+         "d": "a graph that draws one dot for each pair of measurements, one variable on each axis"
+        },
+        {
+         "w": "explanatory variable",
+         "d": "the variable placed on the horizontal axis, used to explain or predict the other"
+        },
+        {
+         "w": "response variable",
+         "d": "the variable placed on the vertical axis, the outcome being predicted"
+        },
+        {
+         "w": "positive association",
+         "d": "a pattern in which larger values of one variable go with larger values of the other"
+        }
+       ],
+       "look": {
+        "type": "data",
+        "title": "Hours Studied and Quiz Score",
+        "rows": [
+         [
+          "1 hour",
+          60
+         ],
+         [
+          "2 hours",
+          65
+         ],
+         [
+          "3 hours",
+          75
+         ],
+         [
+          "4 hours",
+          80
+         ],
+         [
+          "5 hours",
+          90
+         ]
+        ],
+        "unit": "points",
+        "cite": "Example data set defined in this lesson",
+        "prompt": "Sketch the five dots. Describe the direction, the form and the strength of the pattern in one sentence each."
+       },
+       "check": [
+        {
+         "q": "In the study-time data, which variable belongs on the horizontal axis?",
+         "choices": [
+          "Quiz score, because it is the result",
+          "Hours studied, because it is the explanatory variable",
+          "Either one, since it makes no difference",
+          "Neither; scatter plots use only one variable"
+         ],
+         "a": 1,
+         "why": "The explanatory variable, the one that comes first and is used to predict, goes on the horizontal axis. Studying comes before the score."
+        },
+        {
+         "q": "The dots in a scatter plot drift from upper left down to lower right. What does this show?",
+         "choices": [
+          "A positive association",
+          "No association",
+          "A negative association",
+          "A time series"
+         ],
+         "a": 2,
+         "why": "As the horizontal variable increases, the vertical one decreases. Larger goes with smaller, which is a negative association."
+        },
+        {
+         "q": "What does the dot at (3, 75) represent?",
+         "choices": [
+          "Three students who each scored 75",
+          "A student who studied 75 hours and scored 3",
+          "The average of all five students",
+          "A student who studied 3 hours and scored 75"
+         ],
+         "a": 3,
+         "why": "Each dot is one pair: the first number is hours on the horizontal axis, the second is the score on the vertical axis."
+        }
+       ]
+      },
+      {
+       "title": "Drawing a Line of Fit",
+       "mainIdea": "A line of fit runs through the middle of the cloud of dots, and its equation lets you predict the response from the explanatory variable.",
+       "reading": [
+        "The five study dots, (1, 60), (2, 65), (3, 75), (4, 80) and (5, 90), nearly form a line. A *line of fit* is a straight line drawn through the cloud so that the dots are balanced around it, about as many above as below and none very far away. To find an equation by hand, pick two points that seem to sit on the trend, not necessarily data points. Here the first and last dots look right. Use (1, 60) and (5, 90).",
+        "The *slope* is rise over run: (90 − 60) ÷ (5 − 1) = 30 ÷ 4 = 7.5. Each extra hour of studying goes with 7.5 more points. Now find the *y-intercept* using one point. If y = 7.5x + b and the point (1, 60) is on the line, then 60 = 7.5 × 1 + b, so b = 52.5. The line is y = 7.5x + 52.5. Check it with a point you did not use: at x = 3, y = 7.5 × 3 + 52.5 = 22.5 + 52.5 = 75, which is exactly the middle dot. At x = 4, y = 30 + 52.5 = 82.5, close to the actual 80.",
+        "A calculator or spreadsheet finds the *least-squares line*, the one line that makes the total of the squared vertical gaps as small as possible. For these data it gives y = 7.5x + 51.5, just 1 point below the hand-drawn line. Two people drawing by eye will get slightly different lines, and that is fine, as long as each line runs through the middle of the cloud. The least-squares line is the standard answer everyone can agree on, and this chapter uses it from here on.",
+        "The most common error is picking the two points badly, such as the highest dot and the lowest dot even when they are off the trend, or forcing the line through the origin. The line does not have to pass through (0, 0); it has to pass through the middle of the data. Another slip is mixing up rise and run. Slope is change in y divided by change in x, vertical over horizontal, always."
+       ],
+       "words": [
+        {
+         "w": "line of fit",
+         "d": "a straight line drawn through a scatter plot so that the dots are balanced around it"
+        },
+        {
+         "w": "slope",
+         "d": "change in y divided by change in x between two points on a line; how much y changes per one unit of x"
+        },
+        {
+         "w": "y-intercept",
+         "d": "the value of y where a line crosses the vertical axis, at x = 0"
+        },
+        {
+         "w": "least-squares line",
+         "d": "the line of fit that makes the sum of the squared vertical gaps from the dots as small as possible"
+        }
+       ],
+       "look": {
+        "type": "think",
+        "title": "Fit by Hand",
+        "text": "Four dots: (2, 10), (4, 15), (6, 22) and (8, 26). Use the points (2, 10) and (6, 22) to write a line of fit. Find the slope from those two points, then use (2, 10) to find the y-intercept.",
+        "prompt": "What is your equation, and how far is each of the other two dots, (4, 15) and (8, 26), from the value your line predicts?"
+       },
+       "check": [
+        {
+         "q": "What is the slope of the line through (2, 10) and (6, 22)?",
+         "choices": [
+          "1/3",
+          "3",
+          "4",
+          "12"
+         ],
+         "a": 1,
+         "why": "Slope is rise over run: (22 − 10) ÷ (6 − 2) = 12 ÷ 4 = 3."
+        },
+        {
+         "q": "Using the line y = 7.5x + 52.5, what score does it predict for 4 hours of studying?",
+         "choices": [
+          "60",
+          "80",
+          "82.5",
+          "90"
+         ],
+         "a": 2,
+         "why": "y = 7.5 × 4 + 52.5 = 30 + 52.5 = 82.5."
+        },
+        {
+         "q": "Which describes a good line of fit?",
+         "choices": [
+          "It passes through the origin",
+          "It connects the first dot to the last dot",
+          "It runs through the middle of the cloud with dots balanced above and below",
+          "It passes through the highest dot"
+         ],
+         "a": 2,
+         "why": "A line of fit follows the trend of the whole cloud, with roughly as many dots above as below, whether or not it hits any particular dot."
+        }
+       ]
+      },
+      {
+       "title": "Slope and Intercept in Context",
+       "mainIdea": "In a line of fit, the slope is the predicted change in the response for each one-unit increase in the explanatory variable, and the intercept is the prediction at zero.",
+       "reading": [
+        "A used-car website fits a line to the ages and prices of a certain model. With age a in years and value v in thousands of dollars, the line is v = 24 − 2.5a. Numbers in an equation are only useful once you can say them in words. The *slope* is −2.5. In context: for each additional year of age, the predicted value drops by 2.5 thousand dollars, that is, $2,500 per year. The *intercept* is 24. In context: a car of age 0, brand new, is predicted to be worth $24,000.",
+        "Use the line to *predict*. A 4-year-old car: v = 24 − 2.5 × 4 = 24 − 10 = 14, so about $14,000. A 6-year-old car: v = 24 − 15 = 9, about $9,000. Notice the word 'predicted' or 'about' in every sentence. The line describes the trend across many cars; any one car can sit above or below it because of mileage, accidents or paint color. A line of fit predicts the typical value, not the exact value.",
+        "Always attach units to slope and intercept. 'The slope is −2.5' is incomplete. 'Value drops by $2,500 per year' is a sentence a car buyer can use. The slope's units are always the response units per one explanatory unit: dollars per year, points per hour, centimeters per month. The intercept has the response's units alone.",
+        "Sometimes the intercept has no real meaning. A line predicting a child's height from age might have an intercept of 50 cm, which is sensible, but a line predicting shoe size from height might have an intercept of −20, and nobody has a negative shoe size. The intercept is just where the line crosses the axis; it only describes reality if x = 0 is a situation that actually occurs in the data. A common mistake is to explain a slope backwards, as 'years per dollar.' Read it as y per x: the response changes this much when the explanatory variable rises by one."
+       ],
+       "words": [
+        {
+         "w": "intercept",
+         "d": "the predicted value of the response when the explanatory variable is 0"
+        },
+        {
+         "w": "predict",
+         "d": "to use a line of fit to estimate the response for a given value of the explanatory variable"
+        },
+        {
+         "w": "rate of change",
+         "d": "the slope of a line read as a rate: how many response units per one explanatory unit"
+        }
+       ],
+       "look": {
+        "type": "think",
+        "title": "Say It in Words",
+        "text": "A bike-repair shop fits a line to its jobs: cost c in dollars and hours of labor h, with c = 25 + 40h. Another line predicts a laptop's battery percent p after m minutes of video: p = 100 − 0.8m.",
+        "prompt": "For each line, say the slope and intercept in a sentence with units. Then predict the cost of a 3-hour job and the battery level after 50 minutes."
+       },
+       "check": [
+        {
+         "q": "In the line v = 24 − 2.5a, what does the slope mean?",
+         "choices": [
+          "Every car is worth $24,000",
+          "The car's predicted value falls by $2,500 for each year of age",
+          "The car loses 2.5 years of use per $1,000",
+          "A new car is worth $2,500"
+         ],
+         "a": 1,
+         "why": "The slope is the change in value per one year of age, and −2.5 thousand dollars is a drop of $2,500 per year."
+        },
+        {
+         "q": "Using v = 24 − 2.5a, what is the predicted value of a 4-year-old car?",
+         "choices": [
+          "$10,000",
+          "$14,000",
+          "$21,500",
+          "$34,000"
+         ],
+         "a": 1,
+         "why": "v = 24 − 2.5 × 4 = 24 − 10 = 14, which is $14,000 since v is in thousands."
+        },
+        {
+         "q": "A line predicting a person's weight from height has an intercept of −90 kg. What is the best interpretation?",
+         "choices": [
+          "People of average height weigh −90 kg",
+          "The slope must be wrong",
+          "The intercept has no real meaning here because a height of 0 does not occur in the data",
+          "The line predicts weight loss"
+         ],
+         "a": 2,
+         "why": "The intercept is the prediction at x = 0, and no person has a height of 0, so this number is just where the line crosses the axis."
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "title": "Checking the Line",
+     "lessons": [
+      {
+       "title": "Residuals Measure the Miss",
+       "mainIdea": "A residual is the actual value minus the predicted value; positive means the dot is above the line and negative means below.",
+       "reading": [
+        "A line of fit rarely passes through every dot, so measure the misses. Use the least-squares line for the study data, y = 7.5x + 51.5. For the student at (2, 65), the line predicts y = 7.5 × 2 + 51.5 = 15 + 51.5 = 66.5. The student actually scored 65. The *residual* is actual minus predicted: 65 − 66.5 = −1.5. The dot sits 1.5 points below the line. Negative residual, dot below.",
+        "Do all five. At x = 1 the *predicted value* is 7.5 + 51.5 = 59 and the actual is 60, so the residual is 60 − 59 = 1. At x = 3 the prediction is 22.5 + 51.5 = 74 and the actual is 75, residual 1. At x = 4 the prediction is 30 + 51.5 = 81.5 and the actual is 80, residual −1.5. At x = 5 the prediction is 37.5 + 51.5 = 89 and the actual is 90, residual 1. The residuals are 1, −1.5, 1, −1.5, 1. Add them: 1 − 1.5 + 1 − 1.5 + 1 = 0. That is not a coincidence. The least-squares line always makes the residuals sum to zero; the dots above balance the dots below exactly.",
+        "Residuals are how the least-squares line earns its name. Square each residual: 1, 2.25, 1, 2.25, 1, which add to 7.5. Any other line through these dots gives a bigger total. Try the hand-drawn line y = 7.5x + 52.5 from the last lesson: its residuals are 0, −2.5, 0, −2.5, 0, and their squares add to 12.5, larger than 7.5. Smaller total means better fit, and the least-squares line is the champion by definition.",
+        "Keep the order straight: actual minus predicted, never the reverse. Students who flip it get the right size and the wrong sign, and then describe a dot as above the line when it is below. A second slip is reading the residual off the horizontal axis. A residual is a vertical distance, measured straight up or down from the dot to the line, because it is a miss in the predicted response, not in the explanatory variable."
+       ],
+       "words": [
+        {
+         "w": "residual",
+         "d": "the actual value minus the value the line predicts; the vertical gap from a dot to the line"
+        },
+        {
+         "w": "predicted value",
+         "d": "the y-value the line of fit gives for a particular x"
+        },
+        {
+         "w": "actual value",
+         "d": "the y-value that was really measured for a data point"
+        }
+       ],
+       "look": {
+        "type": "data",
+        "title": "Residuals From y = 7.5x + 51.5",
+        "rows": [
+         [
+          "x = 1, actual 60, predicted 59",
+          1
+         ],
+         [
+          "x = 2, actual 65, predicted 66.5",
+          -1.5
+         ],
+         [
+          "x = 3, actual 75, predicted 74",
+          1
+         ],
+         [
+          "x = 4, actual 80, predicted 81.5",
+          -1.5
+         ],
+         [
+          "x = 5, actual 90, predicted 89",
+          1
+         ]
+        ],
+        "unit": "points (residual)",
+        "cite": "Computed from the study-time data with its least-squares line",
+        "prompt": "Which dots are above the line and which are below? Add the five residuals and explain why the total makes sense."
+       },
+       "check": [
+        {
+         "q": "Using y = 7.5x + 51.5, what is the residual for the point (2, 65)?",
+         "choices": [
+          "−1.5",
+          "1.5",
+          "66.5",
+          "−66.5"
+         ],
+         "a": 0,
+         "why": "Predicted: 7.5 × 2 + 51.5 = 66.5. Residual = actual − predicted = 65 − 66.5 = −1.5."
+        },
+        {
+         "q": "A point has a negative residual. Where is it?",
+         "choices": [
+          "To the left of the line",
+          "Above the line",
+          "Below the line",
+          "On the line"
+         ],
+         "a": 2,
+         "why": "Residual = actual − predicted. A negative result means the actual value is less than the prediction, so the dot sits below the line."
+        },
+        {
+         "q": "A line predicts 44 for a point whose actual value is 50. What is the residual?",
+         "choices": [
+          "−6",
+          "6",
+          "94",
+          "1.14"
+         ],
+         "a": 1,
+         "why": "Residual = actual − predicted = 50 − 44 = 6. The dot is 6 units above the line."
+        }
+       ]
+      },
+      {
+       "title": "Residual Plots and Patterns",
+       "mainIdea": "A residual plot with no pattern says a line fits well; a residual plot with a curve or a fan says the line is the wrong model.",
+       "reading": [
+        "A *residual plot* draws the residuals themselves: x on the horizontal axis and each residual on the vertical axis, with a horizontal line at 0 marking the fit line. For the study data the residuals are 1, −1.5, 1, −1.5, 1. They bounce above and below zero with no trend, all within 1.5 points. That is what a good fit looks like. If a line is the right model, the leftover misses should look like random noise, small and patternless.",
+        "Now try data that grow faster and faster: (1, 2), (2, 5), (3, 10), (4, 17), (5, 26). The least-squares line is y = 6x − 6. Its predictions are 0, 6, 12, 18 and 24. The residuals are 2 − 0 = 2, 5 − 6 = −1, 10 − 12 = −2, 17 − 18 = −1, and 26 − 24 = 2. In order they read 2, −1, −2, −1, 2: positive at both ends, negative in the middle. Plotted, they form a U. The line is too high in the middle and too low at both ends, because the data bend upward and a straight line cannot bend.",
+        "A U or an upside-down U in the residual plot means a curve would fit better than a line. A fan shape, where residuals are tiny on the left and huge on the right, means the line's predictions get less reliable as x grows. Either *pattern* is a warning. The point of the residual plot is that these patterns are easy to miss on the scatter plot, where the dots may look close to the line, and impossible to miss once the line is flattened out to zero.",
+        "Do not judge a fit by the size of the residuals alone. The U-shaped residuals above are only 2 units off on data that reach 26, which sounds fine, yet the pattern says the *linear model* is wrong and will be badly wrong beyond x = 5. Small residuals with a pattern are a worse sign than larger residuals without one. Also remember that a residual plot uses the same x-values as the scatter plot; only the vertical axis changes."
+       ],
+       "words": [
+        {
+         "w": "residual plot",
+         "d": "a graph of residuals against x, with a horizontal line at zero standing for the line of fit"
+        },
+        {
+         "w": "pattern",
+         "d": "a visible shape in a residual plot, such as a U or a fan, that shows the model is missing something"
+        },
+        {
+         "w": "linear model",
+         "d": "a straight-line equation used to describe and predict a relationship"
+        }
+       ],
+       "look": {
+        "type": "data",
+        "title": "Residuals From y = 6x − 6 on Curving Data",
+        "rows": [
+         [
+          "x = 1",
+          2
+         ],
+         [
+          "x = 2",
+          -1
+         ],
+         [
+          "x = 3",
+          -2
+         ],
+         [
+          "x = 4",
+          -1
+         ],
+         [
+          "x = 5",
+          2
+         ]
+        ],
+        "unit": "residual",
+        "cite": "Computed from the points (1, 2), (2, 5), (3, 10), (4, 17), (5, 26)",
+        "prompt": "Sketch these five residuals against x. What shape do they make, and what does that shape say about using a straight line for these data?"
+       },
+       "check": [
+        {
+         "q": "A residual plot reads 2, −1, −2, −1, 2 from left to right. What does this suggest?",
+         "choices": [
+          "The line fits well",
+          "The data follow a curve, so a line is the wrong model",
+          "The residuals were computed backwards",
+          "The explanatory variable was put on the wrong axis"
+         ],
+         "a": 1,
+         "why": "Positive at both ends and negative in the middle is a U shape, which means the data bend and a straight line misses the bend."
+        },
+        {
+         "q": "A residual plot shows dots scattered randomly above and below zero with no shape. What does this tell you?",
+         "choices": [
+          "The line is a good model for the data",
+          "The data have no association",
+          "The slope is zero",
+          "A quadratic model is needed"
+         ],
+         "a": 0,
+         "why": "When the leftovers look like patternless noise, the line has captured the trend and nothing systematic is left over."
+        },
+        {
+         "q": "For the point (5, 26), the line y = 6x − 6 predicts 24. What is the residual?",
+         "choices": [
+          "−2",
+          "24",
+          "50",
+          "2"
+         ],
+         "a": 3,
+         "why": "Residual = actual − predicted = 26 − 24 = 2."
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "title": "Measuring the Relationship",
+     "lessons": [
+      {
+       "title": "The Correlation Coefficient",
+       "mainIdea": "The correlation coefficient r, between −1 and 1, gives the direction and strength of a straight-line relationship in a single number.",
+       "reading": [
+        "Words like 'strong' and 'weak' are vague. The *correlation coefficient*, written r, replaces them with a number. It is always between −1 and 1. The sign gives the *direction*: positive r means the dots drift upward, negative r means they drift downward. The size gives the *strength*: r near 1 or −1 means the dots hug a straight line tightly, and r near 0 means the dots scatter with little straight-line pattern. If every dot sits exactly on an upward line, r = 1. On a downward line, r = −1.",
+        "A calculator computes r from the data; the formula multiplies how far each x is from its mean by how far the matching y is from its mean, adds those products, and scales the total so the result lands between −1 and 1. For the study data, (1, 60) through (5, 90), r ≈ 0.99, a very strong positive correlation, which matches the picture of five dots almost on a line. Rough guides for reading r: above 0.8 in size is strong, 0.5 to 0.8 is moderate, below 0.5 is weak, though the cutoffs shift by field. A medical study may call 0.3 meaningful; a physics lab would call it noise.",
+        "Two facts make r easy to work with. First, r has no units. Change hours to minutes or points to percents and r does not move, because it measures pattern, not scale. Second, r is the same whichever variable you put on which axis, since it treats x and y symmetrically. The slope of the line of fit has neither property; it changes with the units and flips when you swap the axes.",
+        "Students often confuse the strength of r with the steepness of the line. A slope of 0.001 can have r = 1 if the dots sit exactly on that gentle line, and a steep slope of 50 can have r = 0.2 if the dots scatter widely around it. Steepness is slope. Tightness is r. Another mistake is reading r = −0.9 as weaker than r = 0.6 because it is 'negative.' Compare sizes: 0.9 is larger than 0.6, so the negative relationship is the stronger one."
+       ],
+       "words": [
+        {
+         "w": "correlation coefficient",
+         "d": "a number r between −1 and 1 measuring the direction and strength of a straight-line relationship"
+        },
+        {
+         "w": "direction",
+         "d": "whether a relationship is positive (dots drift up) or negative (dots drift down), shown by the sign of r"
+        },
+        {
+         "w": "strength",
+         "d": "how tightly the dots follow a straight line, shown by how close r is to 1 or −1"
+        }
+       ],
+       "look": {
+        "type": "data",
+        "title": "Five Scatter Plots and Their r Values",
+        "rows": [
+         [
+          "Dots exactly on a rising line",
+          1
+         ],
+         [
+          "Tight rising cloud",
+          0.9
+         ],
+         [
+          "Loose rising cloud",
+          0.4
+         ],
+         [
+          "Shapeless blob",
+          0
+         ],
+         [
+          "Tight falling cloud",
+          -0.85
+         ]
+        ],
+        "unit": "r",
+        "cite": "Illustrative values for the pictures described",
+        "prompt": "Rank the five plots from strongest to weakest straight-line relationship, ignoring direction. Which two would you call strong?"
+       },
+       "check": [
+        {
+         "q": "A data set has r = −0.92. Which description fits?",
+         "choices": [
+          "Strong positive",
+          "Weak negative",
+          "Strong negative",
+          "No relationship"
+         ],
+         "a": 2,
+         "why": "The sign is negative, so the dots drift downward, and 0.92 is close to 1 in size, so the relationship is strong."
+        },
+        {
+         "q": "Which correlation coefficient shows the strongest straight-line relationship?",
+         "choices": [
+          "r = 0.60",
+          "r = −0.95",
+          "r = 0.85",
+          "r = −0.30"
+         ],
+         "a": 1,
+         "why": "Strength depends on how close r is to 1 or −1, ignoring the sign. Of the four, −0.95 is farthest from 0."
+        },
+        {
+         "q": "Data measured in inches has r = 0.75. The same data are converted to centimeters. What is r now?",
+         "choices": [
+          "0.75",
+          "1.9",
+          "0.30",
+          "It cannot be known without the data"
+         ],
+         "a": 0,
+         "why": "r has no units and does not change when the units change. Only the slope of the line would change."
+        }
+       ]
+      },
+      {
+       "title": "What r Cannot See",
+       "mainIdea": "The correlation coefficient only measures straight-line pattern, so a curve, an outlier or a cluster can make r badly misleading.",
+       "reading": [
+        "Take five dots that sit perfectly on a U: (−2, 4), (−1, 1), (0, 0), (1, 1) and (2, 4). Every y equals x squared, so the relationship is as exact as a relationship can be. Compute r and you get exactly 0. Why? The left half of the U falls and the right half rises, and the two halves cancel in the formula. A student who looks only at r would say 'no relationship' and be completely wrong. The value r = 0 means no *straight-line* relationship, nothing more. Always look at the scatter plot before you trust r.",
+        "Now the reverse trap. The curving data from the residual lesson, (1, 2), (2, 5), (3, 10), (4, 17), (5, 26), give r ≈ 0.98. That sounds like a perfect line. But the residual plot was a clear U, and the line predicts 6 × 10 − 6 = 54 at x = 10 when the curve y = x^2 + 1 gives 101. A high r does not prove that a line is the right model; it only says the dots rise together. The residual plot catches what r misses.",
+        "A single *outlier* can also swing r. Picture nine dots forming a shapeless blob with r near 0, and then add one dot far away in the upper right. The formula counts that dot's huge distances from both means, and r can jump to 0.7 or more, from a single point. The opposite happens too: one dot far off a tight line can drag r from 0.95 down to 0.5. When r changes a lot after removing one point, report both values and say so.",
+        "Finally, r says nothing about how much y changes per unit of x. That is the slope's job. And r says nothing about why the variables move together, which is the next lesson. The correlation coefficient is one *summary* of one feature of a scatter plot. It is a good summary of that one feature. Everything else, form, outliers, clusters and cause, needs the picture and your judgment."
+       ],
+       "words": [
+        {
+         "w": "straight-line relationship",
+         "d": "a pattern in which the dots follow a line; the only kind of pattern r measures"
+        },
+        {
+         "w": "outlier",
+         "d": "a dot far from the rest of the scatter plot, which can pull the line and change r by a large amount"
+        },
+        {
+         "w": "summary",
+         "d": "one number that captures a single feature of a data set, leaving other features out"
+        }
+       ],
+       "look": {
+        "type": "think",
+        "title": "Perfect Pattern, Zero r",
+        "text": "Plot the points (−3, 9), (−2, 4), (−1, 1), (0, 0), (1, 1), (2, 4) and (3, 9). Every y is x squared. Notice that for each x with a positive value there is a matching negative x with the same y.",
+        "prompt": "Explain in words why the correlation coefficient of these seven points is 0 even though y is completely determined by x. What would you tell someone who says the variables are unrelated?"
+       },
+       "check": [
+        {
+         "q": "A scatter plot shows a clear U shape and r = 0.05. What is the right conclusion?",
+         "choices": [
+          "The variables are unrelated",
+          "The relationship is strong but not a straight line, so r cannot see it",
+          "The data were entered incorrectly",
+          "The correlation is weak, so no model will work"
+         ],
+         "a": 1,
+         "why": "r measures only straight-line pattern. The two arms of a U cancel, giving r near 0 even when y depends exactly on x."
+        },
+        {
+         "q": "The curving data (1, 2) through (5, 26) have r ≈ 0.98, yet their residual plot is a U. What does this show?",
+         "choices": [
+          "A high r proves a line is the right model",
+          "A high r does not guarantee that a line is the right model",
+          "The residual plot must be wrong",
+          "r should be negative for curving data"
+         ],
+         "a": 1,
+         "why": "The dots rise together tightly, so r is high, but the systematic U in the residuals says the pattern bends and a line will predict badly beyond the data."
+        },
+        {
+         "q": "Removing a single dot from a scatter plot changes r from 0.95 to 0.50. What should you report?",
+         "choices": [
+          "Only r = 0.95, the larger value",
+          "Only r = 0.50, since the dot was probably an error",
+          "Neither value, since the data are unusable",
+          "Both values, and identify the dot that caused the change"
+         ],
+         "a": 3,
+         "why": "One point had a large pull on r. Honest reporting gives both values and names the influential dot so readers can judge."
+        }
+       ]
+      },
+      {
+       "title": "Correlation Is Not Causation",
+       "mainIdea": "A strong correlation shows that two variables move together; it does not show that one causes the other, because a third variable may drive both.",
+       "reading": [
+        "In the chapter story, ice cream sales and water rescues had a correlation near 0.93, and a council member concluded that ice cream causes drowning. His graph was right and his conclusion was wrong. Heat, the *lurking variable*, drives both: hot days send people to the ice cream stand and into the lake. A lurking variable is one that was left out of the plot but affects both variables in it. Whenever two things rise and fall together, ask what else changes at the same time.",
+        "Here is another. Among elementary school children, shoe size and reading level are strongly correlated. Bigger feet, better readers. Does buying larger shoes improve reading? Of course not; the lurking variable is age. Older children have bigger feet and have had more years of reading lessons. The correlation is real and could even be used to predict: tell me a child's shoe size and I can guess their reading level better than chance. Prediction works. *Causation*, one thing making another happen, was never shown.",
+        "Correlation can also run backwards. Cities with more police officers tend to have more reported crime. Do officers cause crime? More likely, crime leads cities to hire officers. The direction of cause is not in the scatter plot; both variables are just numbers on axes. And sometimes a correlation is pure coincidence: with thousands of variables being tracked, some pairs will move together by chance, like the number of movies an actor makes and the price of a vegetable.",
+        "How do scientists ever show cause? With an *experiment*: they change the explanatory variable on purpose, assign subjects to groups at random so lurking variables spread evenly, and then compare the responses. A survey or a record book, where nobody controlled anything, is *observational*, and it can show correlation only. Every headline that says 'X linked to Y' is reporting a correlation. The careful reader asks: was this an experiment, or could a lurking variable explain it, or could the cause run the other way?"
+       ],
+       "words": [
+        {
+         "w": "lurking variable",
+         "d": "a variable left out of the analysis that affects both plotted variables and creates the correlation between them"
+        },
+        {
+         "w": "causation",
+         "d": "a relationship in which changing one variable directly makes the other change"
+        },
+        {
+         "w": "experiment",
+         "d": "a study in which the researcher changes the explanatory variable on purpose and assigns subjects to groups at random"
+        },
+        {
+         "w": "observational",
+         "d": "describes a study that records what happens without controlling anything; it can show correlation but not cause"
+        }
+       ],
+       "look": {
+        "type": "think",
+        "title": "Find the Third Thing",
+        "text": "Three real-sounding findings. One: in a city, monthly sunscreen sales and monthly electricity use are strongly correlated. Two: students who own more books score higher on reading tests. Three: hospitals with more patients have more patient deaths per year.",
+        "prompt": "For each finding, name a lurking variable or a reversed direction of cause that could explain the correlation without one thing causing the other."
+       },
+       "check": [
+        {
+         "q": "Ice cream sales and water rescues rise and fall together across the year. What is the most likely explanation?",
+         "choices": [
+          "Eating ice cream makes swimmers drown",
+          "Rescues make people crave ice cream",
+          "Hot weather drives both ice cream sales and swimming",
+          "The numbers were recorded wrongly"
+         ],
+         "a": 2,
+         "why": "Temperature is a lurking variable: it pushes both plotted variables up in summer and down in winter, creating the correlation."
+        },
+        {
+         "q": "Among children, shoe size and reading level are strongly correlated. What is the lurking variable?",
+         "choices": [
+          "Reading ability",
+          "Age",
+          "Shoe brand",
+          "Test difficulty"
+         ],
+         "a": 1,
+         "why": "Older children have both larger feet and more years of reading instruction, so age drives both variables."
+        },
+        {
+         "q": "Which kind of study can show that one variable causes another?",
+         "choices": [
+          "A survey with a very large sample",
+          "A scatter plot with r above 0.9",
+          "A record of past events with a clear trend",
+          "An experiment that changes one variable on purpose with random assignment"
+         ],
+         "a": 3,
+         "why": "Only an experiment controls the explanatory variable and uses random assignment to spread lurking variables evenly across groups."
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "title": "Beyond the Straight Line",
+     "lessons": [
+      {
+       "title": "When a Line Fails: Exponential Growth",
+       "mainIdea": "When each step multiplies the response by the same factor instead of adding the same amount, the data follow an exponential model, not a line.",
+       "reading": [
+        "A biology class counts bacteria in a dish every hour: 100 at hour 0, then 200, 400, 800 and 1,600. Try a line. The changes from hour to hour are +100, +200, +400 and +800. A line needs the same change every step, and these changes double. A line fit to these points would be too high at hours 1 and 3 and far too low at hour 4, and the residual plot would show a U. The line fails because the pattern is not additive. It is multiplicative.",
+        "Look at *ratios* instead of differences. 200 ÷ 100 = 2, 400 ÷ 200 = 2, 800 ÷ 400 = 2, 1,600 ÷ 800 = 2. Every hour the count multiplies by 2. A pattern with a constant ratio is *exponential*. Its model is y = a × b^x, where a is the starting value and b is the *growth factor*, the constant ratio. Here y = 100 × 2^x. Check: at x = 3, 100 × 2^3 = 100 × 8 = 800. To predict hour 6, compute 100 × 2^6 = 100 × 64 = 6,400.",
+        "Real data are never this clean, so the test is whether the ratios are roughly constant. Say a savings account shows $1,000, $1,050, $1,102, $1,158 over four years. Ratios: 1.05, 1.0495, 1.0508. Close enough to call it exponential with growth factor about 1.05, or 5% per year. The differences, 50, 52 and 56, creep upward, which is the fingerprint of exponential growth: each year's increase is a little bigger than the last because it is a percent of a bigger amount.",
+        "The test for a line is constant differences; the test for an exponential is constant ratios. Students often check only differences, see them change, and give up. Check ratios next. A second common mistake is writing the growth factor as the percent: 5% growth is a factor of 1.05, not 0.05 or 5. And a ratio less than 1, like 0.9, still gives an exponential model, one that decays, such as a medication leaving the bloodstream by 10% each hour."
+       ],
+       "words": [
+        {
+         "w": "exponential model",
+         "d": "an equation of the form y = a × b^x, where each step in x multiplies y by the same factor b"
+        },
+        {
+         "w": "growth factor",
+         "d": "the constant ratio b between one value and the next in an exponential pattern"
+        },
+        {
+         "w": "ratio",
+         "d": "one value divided by the previous one; constant ratios point to an exponential model"
+        }
+       ],
+       "look": {
+        "type": "data",
+        "title": "Bacteria Count by Hour",
+        "rows": [
+         [
+          "Hour 0",
+          100
+         ],
+         [
+          "Hour 1",
+          200
+         ],
+         [
+          "Hour 2",
+          400
+         ],
+         [
+          "Hour 3",
+          800
+         ],
+         [
+          "Hour 4",
+          1600
+         ]
+        ],
+        "unit": "bacteria",
+        "cite": "Example data set defined in this lesson",
+        "prompt": "Compute the four differences and the four ratios. Which set is constant? Write the model and use it to predict hour 7."
+       },
+       "check": [
+        {
+         "q": "A quantity starts at 5 and triples every step. What is its value after 4 steps?",
+         "choices": [
+          "60",
+          "125",
+          "405",
+          "1,215"
+         ],
+         "a": 2,
+         "why": "y = 5 × 3^4 = 5 × 81 = 405. Adding 3 four times would wrongly give 17; multiplying by 5 each time would give 3,125."
+        },
+        {
+         "q": "Which table of y-values, for x = 0, 1, 2, 3, shows an exponential pattern?",
+         "choices": [
+          "3, 6, 9, 12",
+          "3, 6, 12, 24",
+          "3, 5, 8, 12",
+          "3, 4, 9, 16"
+         ],
+         "a": 1,
+         "why": "3, 6, 12, 24 has a constant ratio of 2. The first list has constant differences (linear); the others have neither."
+        },
+        {
+         "q": "Using y = 100 × 2^x, what is the predicted count at hour 6?",
+         "choices": [
+          "600",
+          "1,200",
+          "3,200",
+          "6,400"
+         ],
+         "a": 3,
+         "why": "2^6 = 64, and 100 × 64 = 6,400."
+        }
+       ]
+      },
+      {
+       "title": "Quadratic Models and Second Differences",
+       "mainIdea": "When first differences change but second differences are constant, the data follow a quadratic model with an x-squared term.",
+       "reading": [
+        "A ball is dropped from a tall building, and a camera records how far it has fallen after each second, in feet: 0, 16, 64, 144, 256. First differences: 16, 48, 80, 112. Not constant, so not a line. Ratios: 64 ÷ 16 = 4, 144 ÷ 64 = 2.25, 256 ÷ 144 ≈ 1.78. Not constant either, so not exponential. Now take differences of the differences: 48 − 16 = 32, 80 − 48 = 32, 112 − 80 = 32. The *second differences* are constant. That is the fingerprint of a *quadratic model*, an equation with an x^2 term.",
+        "Here the model is d = 16t^2, distance in feet after t seconds. Check: at t = 3, 16 × 9 = 144. Predict t = 5: 16 × 25 = 400 feet. A simpler example: y-values 0, 5, 20, 45, 80 for x = 0 through 4 have first differences 5, 15, 25, 35 and second differences 10, 10, 10. The model is y = 5x^2. At x = 6 it predicts 5 × 36 = 180.",
+        "Quadratic patterns show up whenever something speeds up steadily or turns around: a falling object, the height of a thrown basketball on its way up and back down, the area of a square as its side grows. A calculator can fit a quadratic to messy data just as it fits a line, and the same tools apply: look at the residual plot. If a line leaves a U in the residuals and a quadratic leaves patternless noise, the quadratic is the better model.",
+        "Keep the three tests in one place. Constant first differences: linear, y = mx + b. Constant ratios: exponential, y = a × b^x. Constant second differences: quadratic, with an x^2 term. Always check the tests in that order, and only on equally spaced x-values; differences between x = 1 and x = 2 and between x = 2 and x = 5 are not comparable. A common slip is to compute second differences from the original values instead of from the first differences."
+       ],
+       "words": [
+        {
+         "w": "quadratic model",
+         "d": "an equation with an x^2 term, such as y = 5x^2, that fits data which curve up or down and turn around"
+        },
+        {
+         "w": "first differences",
+         "d": "the changes between one y-value and the next for equally spaced x-values"
+        },
+        {
+         "w": "second differences",
+         "d": "the changes between one first difference and the next; constant for a quadratic pattern"
+        }
+       ],
+       "look": {
+        "type": "data",
+        "title": "Distance Fallen by a Dropped Ball",
+        "rows": [
+         [
+          "0 seconds",
+          0
+         ],
+         [
+          "1 second",
+          16
+         ],
+         [
+          "2 seconds",
+          64
+         ],
+         [
+          "3 seconds",
+          144
+         ],
+         [
+          "4 seconds",
+          256
+         ]
+        ],
+        "unit": "feet",
+        "cite": "Idealized values from d = 16t^2, ignoring air resistance",
+        "prompt": "Compute the first and second differences. Which are constant? How far does the model predict the ball falls in 6 seconds?"
+       },
+       "check": [
+        {
+         "q": "A table of y-values for x = 0, 1, 2, 3, 4 has second differences that are all equal and not zero. What kind of model fits?",
+         "choices": [
+          "Linear",
+          "Exponential",
+          "Quadratic",
+          "No model fits"
+         ],
+         "a": 2,
+         "why": "Constant nonzero second differences are the fingerprint of a quadratic model, one with an x^2 term."
+        },
+        {
+         "q": "Using y = 5x^2, what is the predicted value at x = 6?",
+         "choices": [
+          "30",
+          "60",
+          "150",
+          "180"
+         ],
+         "a": 3,
+         "why": "6^2 = 36, and 5 × 36 = 180."
+        },
+        {
+         "q": "For x = 0, 1, 2, 3, the y-values are 3, 7, 11, 15. Which model fits?",
+         "choices": [
+          "Linear, because the first differences are all 4",
+          "Quadratic, because the second differences are 4",
+          "Exponential, because the ratios are constant",
+          "Quadratic, because the values grow"
+         ],
+         "a": 0,
+         "why": "Each step adds 4, so the first differences are constant and the pattern is a line, y = 4x + 3."
+        }
+       ]
+      },
+      {
+       "title": "How Far a Prediction Can Reach",
+       "mainIdea": "Predicting inside the range of the data is interpolation and is usually safe; predicting outside it is extrapolation and can fail badly.",
+       "reading": [
+        "The study-time line, y = 7.5x + 51.5, was built from students who studied 1 to 5 hours. Ask it about 3.5 hours: y = 7.5 × 3.5 + 51.5 = 26.25 + 51.5 = 77.75, about 78 points. That is *interpolation*, a prediction between data points you actually have. Nobody in the data studied exactly 3.5 hours, but people studied 3 and 4, and the line between them is a reasonable guess.",
+        "Now ask about 10 hours: y = 7.5 × 10 + 51.5 = 75 + 51.5 = 126.5. A score of 126.5 on a 100-point quiz is impossible. The line did nothing wrong; it kept going straight, as lines do. The mistake was asking it about a place with no data. That is *extrapolation*, predicting beyond the range that was measured. Real relationships bend, level off or stop, and the line cannot know that. Ask about 0 hours and the line says 51.5, which might be reasonable, or might not; no student in the data studied 0 hours either.",
+        "Extrapolation is not forbidden, but it needs a warning label, and the farther you go, the louder the label. Predicting 5.5 hours from data that reach 5 is a small stretch. Predicting 20 hours is a leap into the dark. Exponential models extrapolate especially badly: the bacteria model y = 100 × 2^x predicts 100 × 2^24, over 1.6 billion, after one day, and the dish would have run out of food long before. Every model has a range where it is trustworthy, and that range is roughly the range of the data that built it.",
+        "When you report a prediction, state the range of the data next to it: 'Based on students who studied 1 to 5 hours.' That one clause tells the reader whether your prediction is interpolation or extrapolation. A frequent mistake is reading a prediction off a line that has been extended on the graph to fill the page. The drawn line may extend to the edges, but the data do not, and only the data part deserves trust."
+       ],
+       "words": [
+        {
+         "w": "interpolation",
+         "d": "using a model to predict a value inside the range of the data it was built from"
+        },
+        {
+         "w": "extrapolation",
+         "d": "using a model to predict a value outside the range of the data it was built from"
+        },
+        {
+         "w": "range of the data",
+         "d": "the span from the smallest to the largest x-value that was actually measured"
+        }
+       ],
+       "look": {
+        "type": "think",
+        "title": "Trust the Line?",
+        "text": "A line fit to a child's heights between ages 2 and 10 is h = 34 + 2.5a, height in inches and age in years. It predicts 34 + 2.5 × 6 = 49 inches at age 6 and 34 + 2.5 × 30 = 109 inches at age 30.",
+        "prompt": "Which prediction is interpolation and which is extrapolation? Why is the age-30 prediction absurd, and what does that say about the model beyond the data?"
+       },
+       "check": [
+        {
+         "q": "The line y = 7.5x + 51.5 was built from 1 to 5 hours of study. Predicting a score for 10 hours gives 126.5. What is the main problem?",
+         "choices": [
+          "The slope was computed wrong",
+          "The prediction is an extrapolation far outside the data, and the line cannot know that scores stop at 100",
+          "The intercept should be 0",
+          "Ten hours is interpolation, so the answer must be right"
+         ],
+         "a": 1,
+         "why": "Ten hours is well beyond the 1-to-5-hour range of the data. The line keeps going straight, but the real relationship cannot exceed 100 points."
+        },
+        {
+         "q": "Using y = 7.5x + 51.5, what score is predicted for 2.5 hours of study?",
+         "choices": [
+          "18.75",
+          "70.25",
+          "72.5",
+          "77.75"
+         ],
+         "a": 1,
+         "why": "y = 7.5 × 2.5 + 51.5 = 18.75 + 51.5 = 70.25. Since 2.5 is between 1 and 5, this is interpolation."
+        },
+        {
+         "q": "A model was built from data with x from 20 to 60. Which prediction is interpolation?",
+         "choices": [
+          "x = 10",
+          "x = 65",
+          "x = 100",
+          "x = 45"
+         ],
+         "a": 3,
+         "why": "Only 45 lies inside the measured range from 20 to 60; the others are outside it and would be extrapolations."
+        }
+       ]
+      }
+     ]
+    }
+   ],
+   "review": [
+    {
+     "q": "A scatter plot of car weight against gas mileage drifts from upper left to lower right. Which statement is correct?",
+     "choices": [
+      "Heavier cars tend to get lower mileage: a negative association",
+      "Heavier cars tend to get higher mileage: a positive association",
+      "There is no association",
+      "Weight and mileage are the same variable"
+     ],
+     "a": 0,
+     "why": "As weight increases along the horizontal axis, mileage decreases, so the association is negative."
+    },
+    {
+     "q": "What is the slope of the line through (1, 8) and (5, 20)?",
+     "choices": [
+      "12",
+      "4",
+      "3",
+      "1/3"
+     ],
+     "a": 2,
+     "why": "Slope = (20 − 8) ÷ (5 − 1) = 12 ÷ 4 = 3."
+    },
+    {
+     "q": "A line predicts a plant's height as h = 4 + 1.5w, with w in weeks and h in cm. What does 1.5 mean?",
+     "choices": [
+      "The plant started at 1.5 cm",
+      "The plant grows about 1.5 cm per week",
+      "The plant grows 1.5 weeks per cm",
+      "The plant will be 1.5 cm tall at the end"
+     ],
+     "a": 1,
+     "why": "The slope is the change in height for each additional week: 1.5 cm per week. The intercept, 4, is the starting height."
+    },
+    {
+     "q": "A line predicts 32 for a point whose actual value is 28. What is the residual, and where is the point?",
+     "choices": [
+      "4, above the line",
+      "−4, above the line",
+      "4, below the line",
+      "−4, below the line"
+     ],
+     "a": 3,
+     "why": "Residual = actual − predicted = 28 − 32 = −4. A negative residual means the point is below the line."
+    },
+    {
+     "q": "Which correlation coefficient describes the weakest straight-line relationship?",
+     "choices": [
+      "r = 0.15",
+      "r = −0.80",
+      "r = 0.65",
+      "r = −0.99"
+     ],
+     "a": 0,
+     "why": "Strength is measured by distance from 0 regardless of sign, and 0.15 is closest to 0."
+    },
+    {
+     "q": "A study finds that towns with more churches have more crime. What is the most likely lurking variable?",
+     "choices": [
+      "Church attendance causes crime",
+      "Crime causes people to build churches",
+      "Population: bigger towns have more of both",
+      "The study used the wrong axis"
+     ],
+     "a": 2,
+     "why": "Larger towns have more churches and more crimes simply because they have more people. Population drives both counts."
+    },
+    {
+     "q": "For x = 0, 1, 2, 3, the y-values are 4, 12, 36, 108. Which model fits?",
+     "choices": [
+      "Linear, since the values increase",
+      "Quadratic, since the second differences are constant",
+      "Exponential, since each value is 3 times the last",
+      "No pattern"
+     ],
+     "a": 2,
+     "why": "12 ÷ 4 = 3, 36 ÷ 12 = 3, 108 ÷ 36 = 3. Constant ratios mean an exponential model, y = 4 × 3^x."
+    },
+    {
+     "q": "A line was fit to data with x from 5 to 25. Which prediction is an extrapolation?",
+     "choices": [
+      "x = 6",
+      "x = 15",
+      "x = 24",
+      "x = 40"
+     ],
+     "a": 3,
+     "why": "Only 40 lies outside the measured range of 5 to 25, so predicting there is extrapolation."
+    }
+   ]
+  }
+ ]
+}
