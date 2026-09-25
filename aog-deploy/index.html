@@ -334,6 +334,7 @@ function toggleTheme() {
      absent the app simply stays device-configured, exactly as before. -->
 <!-- AOG-CONN-KEEP-V1: keeps the Sheet connection when the browser drops it; must load before anything reads aog.sync.url -->
 <script src="aog-conn-keep.js"></script>
+<link rel="stylesheet" href="aog-calm.css">
 <script src="aog-legible.js" defer></script>
 <script src="aog-mine.js"></script>
 <script src="aog-sync-config.js"></script>
@@ -342,10 +343,10 @@ function toggleTheme() {
    the home page and from the Explore menu. The markup stays where it is so nothing
    that counts or walks the menu breaks — delete this block to bring the door back.
    The top bar's copy of the menu is hidden the same way in aog-topbar.js. */
-#aog-thresholds .aogdr-d3{ display:none !important; }
-#aog-thresholds .aogdr-grid{ grid-template-columns:1.38fr 1fr !important; }
-@media (max-width:900px){ #aog-thresholds .aogdr-grid{ grid-template-columns:1fr !important; } }
-.exnav-col.aogdoor3{ display:none !important; }
+/* AOG-DOOR3-TWO-V1 (2026-09-25) — Jimmy: door three is back with For families, The Framework, the Standards
+   Crosswalk and Privacy; the store and the district doors (Pilot, For Schools,
+   Curriculum, Library, Voices) stay shut. */
+#aog-thresholds .aogdr-d3 .aogdr-rooms > li:not(.aogdr-keep), #aog-thresholds .aogdr-d3 .aogdr-foot{ display:none !important; }
 </style>
 </head>
 <body>
@@ -1489,14 +1490,16 @@ function aogToggleBand(e, b){
       <!-- ---------- DOOR 3 · THE ARCHITECTURE ---------- -->
       <article class="aogdr-door aogdr-d3">
         <span class="aogdr-num" aria-hidden="true">03</span>
-        <span class="aogdr-band" data-en="K&ndash;12 &middot; Families &middot; Professional learning" data-es="K&ndash;12 &middot; Familias &middot; Formaci&oacute;n docente">K&ndash;12 &middot; Families &middot; Professional learning</span>
+        <span class="aogdr-band" data-en="K&ndash;12 &middot; Families &middot; Standards" data-es="K&ndash;12 &middot; Familias &middot; Est&aacute;ndares">K&ndash;12 &middot; Families &middot; Standards</span>
         <h2 class="aogdr-name" data-en="Beyond the Room" data-es="M&aacute;s all&aacute; del aula">Beyond the Room</h2>
         <p class="aogdr-say" data-en="One classroom is where it starts. The same framework runs K&ndash;12, into families, and into how the adults learn it &mdash; one language the whole way through." data-es="Un aula es donde empieza. El mismo marco recorre K&ndash;12, llega a las familias y a c&oacute;mo lo aprenden los adultos &mdash; un solo lenguaje de principio a fin.">One classroom is where it starts. The same framework runs K&ndash;12, into families, and into how the adults learn it &mdash; one language the whole way through.</p>
         <ul class="aogdr-rooms">
           <li class="aogdr-bhead"><button type="button" class="aogdr-blab" data-band="b-pilot" aria-expanded="false" aria-controls="aogdrBeyondPilot" onclick="aogToggleCardBand(event, this)"><span data-en="Start here &middot; the Pilot Program" data-es="Empieza aqu&iacute; &middot; el Programa piloto">Start here &middot; the Pilot Program</span><svg class="aogdr-bchev" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button></li><li class="aogdr-bfold" id="aogdrBeyondPilot" hidden><ul class="aogdr-rooms aogdr-inner"><li><a href="#pilot" onclick="if(window.aogGoPilot){aogGoPilot(event);return false;}"><span data-en="The Pilot Program &middot; overview" data-es="El Programa piloto &middot; resumen">The Pilot Program &middot; overview</span></a></li><li><a href="/pilot/AoG-Pilot-Overview.pdf"><span data-en="What a pilot actually involves" data-es="En qu&eacute; consiste realmente un piloto">What a pilot actually involves</span></a></li><li><a href="/pilot/AoG-Pilot-Outcome-Measurement-Plan.pdf"><span data-en="The outcome measurement plan" data-es="El plan de medici&oacute;n de resultados">The outcome measurement plan</span></a></li><li><a href="/pilot/AoG-StartHere-Teacher.pdf" onclick="event.preventDefault(); var es=(document.documentElement.lang||'').indexOf('es')===0; location.href='/pilot/AoG-StartHere-Teacher'+(es?'-ES':'')+'.pdf';"><span data-en="Start here &middot; for teachers" data-es="Empieza aqu&iacute; &middot; para docentes">Start here &middot; for teachers</span></a></li><li><a href="/pilot/AoG-StartHere-Parent.pdf" onclick="event.preventDefault(); var es=(document.documentElement.lang||'').indexOf('es')===0; location.href='/pilot/AoG-StartHere-Parent'+(es?'-ES':'')+'.pdf';"><span data-en="Start here &middot; for parents" data-es="Empieza aqu&iacute; &middot; para familias">Start here &middot; for parents</span></a></li><li><a href="/pilot/AoG-StartHere-Specialist.pdf" onclick="event.preventDefault(); var es=(document.documentElement.lang||'').indexOf('es')===0; location.href='/pilot/AoG-StartHere-Specialist'+(es?'-ES':'')+'.pdf';"><span data-en="Start here &middot; for specialists" data-es="Empieza aqu&iacute; &middot; para especialistas">Start here &middot; for specialists</span></a></li><li><a href="/pilot/AoG-StartHere-Leader.pdf" onclick="event.preventDefault(); var es=(document.documentElement.lang||'').indexOf('es')===0; location.href='/pilot/AoG-StartHere-Leader'+(es?'-ES':'')+'.pdf';"><span data-en="Start here &middot; for school leaders" data-es="Empieza aqu&iacute; &middot; para directivos">Start here &middot; for school leaders</span></a></li><li><a href="/pilot/AoG-StartHere-Adult.pdf" onclick="event.preventDefault(); var es=(document.documentElement.lang||'').indexOf('es')===0; location.href='/pilot/AoG-StartHere-Adult'+(es?'-ES':'')+'.pdf';"><span data-en="Start here &middot; the Adult Edition" data-es="Empieza aqu&iacute; &middot; la Edici&oacute;n para Adultos">Start here &middot; the Adult Edition</span></a></li><li><a href="/pilot/AoG-StartHere-Outside.pdf" onclick="event.preventDefault(); var es=(document.documentElement.lang||'').indexOf('es')===0; location.href='/pilot/AoG-StartHere-Outside'+(es?'-ES':'')+'.pdf';"><span data-en="Start here &middot; outside providers" data-es="Empieza aqu&iacute; &middot; proveedores externos">Start here &middot; outside providers</span></a></li></ul></li>
-          <li><a href="#framework" onclick="event.preventDefault(); if(typeof openFramework==='function'){openFramework(); try{window.scrollTo(0,0);}catch(e){}}"><span data-en="The Framework" data-es="El Marco">The Framework</span></a></li>
+          <li class="aogdr-keep"><a href="#framework" onclick="event.preventDefault(); if(typeof openFramework==='function'){openFramework(); try{window.scrollTo(0,0);}catch(e){}}"><span data-en="The Framework" data-es="El Marco">The Framework</span></a></li>
           <li><a href="#curriculum" onclick="event.preventDefault(); if(typeof aogGoCurriculum==='function'){aogGoCurriculum();}"><span data-en="The K&ndash;12 curriculum" data-es="El currículo K&ndash;12">The K&ndash;12 curriculum</span></a></li>
-          <li><a href="#family" onclick="event.preventDefault(); if(typeof openFamily==='function'){openFamily();}"><span data-en="For families" data-es="Para familias">For families</span></a></li>
+          <li class="aogdr-keep"><a href="#family" onclick="event.preventDefault(); if(typeof openFamily==='function'){openFamily();}"><span data-en="For families" data-es="Para familias">For families</span></a></li>
+          <li class="aogdr-keep"><a href="#alignment" onclick="event.preventDefault(); if(window.aogOpenAlignment){aogOpenAlignment();}"><span data-en="The Standards Crosswalk" data-es="Correspondencias con los est&aacute;ndares">The Standards Crosswalk</span></a></li>
+          <li class="aogdr-keep"><a href="#privacy" onclick="event.preventDefault(); if(typeof openPrivacy==='function'){openPrivacy();}else{location.hash='privacy';}"><span data-en="Privacy &amp; your data" data-es="Privacidad y tus datos">Privacy &amp; your data</span></a></li>
           <li class="aogdr-bhead"><button type="button" class="aogdr-blab" data-band="b-schools" aria-expanded="false" aria-controls="aogdrBeyondSchools" onclick="aogToggleCardBand(event, this)"><span data-en="For schools &amp; districts" data-es="Para escuelas y distritos">For schools &amp; districts</span><svg class="aogdr-bchev" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button></li><li class="aogdr-bfold" id="aogdrBeyondSchools" hidden><ul class="aogdr-rooms aogdr-inner"><li><a href="#schools" onclick="event.preventDefault(); if(typeof aogGoSchools==='function'){aogGoSchools();}"><span data-en="How schools adopt this" data-es="C&oacute;mo lo adoptan las escuelas">How schools adopt this</span></a></li><li><a href="/standards"><span data-en="Standards &amp; alignment" data-es="Est&aacute;ndares y alineaci&oacute;n">Standards &amp; alignment</span></a></li><li><a href="/logic-model"><span data-en="The logic model" data-es="El modelo l&oacute;gico">The logic model</span></a></li><li><a href="/roadmap"><span data-en="Evidence &amp; roadmap" data-es="Evidencia y hoja de ruta">Evidence &amp; roadmap</span></a></li><li><a href="/counselor"><span data-en="Counselor capacity" data-es="Capacidad del consejero">Counselor capacity</span></a></li><li><a href="/letters"><span data-en="Family letters" data-es="Cartas para la familia">Family letters</span></a></li><li><a href="/dpa"><span data-en="Data privacy agreement" data-es="Acuerdo de privacidad de datos">Data privacy agreement</span></a></li><li><a href="/privacy"><span data-en="Privacy policy" data-es="Pol&iacute;tica de privacidad">Privacy policy</span></a></li><li><a href="/governance"><span data-en="Data governance" data-es="Gobernanza de datos">Data governance</span></a></li><li><a href="/accessibility"><span data-en="Accessibility" data-es="Accesibilidad">Accessibility</span></a></li><li><a href="/terms"><span data-en="Terms" data-es="T&eacute;rminos">Terms</span></a></li></ul></li>
         </ul>
         <p class="aogdr-foot" data-en="Print editions, workshops and implementation support sit behind the last one." data-es="Las ediciones impresas, los talleres y el apoyo de implementaci&oacute;n est&aacute;n detr&aacute;s de la &uacute;ltima.">Print editions, workshops and implementation support sit behind the last one.</p>
@@ -1828,12 +1831,71 @@ window.addEventListener('load',function(){
             <a class="orbit-door" role="link" tabindex="0" aria-label="Specialists &amp; Support Staff — the Specialist workspace" onclick="event.preventDefault(); if(typeof openAdmin==='function'){openAdmin();} try{if(typeof aogSetDashRole==='function')aogSetDashRole('specialist');}catch(e){}"><circle class="halo" cx="450.7" cy="169.3" r="55" fill="#D9A33B" opacity=".15" pointer-events="none"/><circle cx="450.7" cy="169.3" r="43" fill="#fff" stroke="#E4DAC5" stroke-width="1.5"/><text x="450.7" y="167.3" text-anchor="middle" font-family="Fraunces,serif" font-size="13.5" font-weight="600" fill="#0A1E33" data-en="Specialists" data-es="Especialistas">Specialists</text><text x="450.7" y="181.3" text-anchor="middle" font-family="Inter,sans-serif" font-size="7" fill="#46506E" data-en="Support staff" data-es="Personal de apoyo">Support staff</text></a>
             <a class="orbit-door" role="link" tabindex="0" aria-label="Leadership — building &amp; district trends" onclick="event.preventDefault(); if(typeof openAdmin==='function'){openAdmin();} try{if(typeof aogSetDashRole==='function')aogSetDashRole('leadership');}catch(e){}"><circle class="halo" cx="509.0" cy="310.0" r="55" fill="#D9A33B" opacity=".15" pointer-events="none"/><circle cx="509.0" cy="310.0" r="43" fill="#fff" stroke="#E4DAC5" stroke-width="1.5"/><text x="509.0" y="308.0" text-anchor="middle" font-family="Fraunces,serif" font-size="13.5" font-weight="600" fill="#0A1E33" data-en="Leadership" data-es="Direcci&oacute;n">Leadership</text><text x="509.0" y="322.0" text-anchor="middle" font-family="Inter,sans-serif" font-size="7" fill="#46506E" data-en="District view" data-es="Vista de distrito">District view</text></a>
             <a class="orbit-door" role="link" tabindex="0" aria-label="Outside &amp; Community Providers — a consent-first workspace" onclick="event.preventDefault(); if(typeof openAdmin==='function'){openAdmin();} try{if(typeof aogSetDashRole==='function')aogSetDashRole('specialist');}catch(e){}"><circle class="halo" cx="450.7" cy="450.7" r="55" fill="#D9A33B" opacity=".15" pointer-events="none"/><circle cx="450.7" cy="450.7" r="43" fill="#fff" stroke="#E4DAC5" stroke-width="1.5"/><text x="450.7" y="448.7" text-anchor="middle" font-family="Fraunces,serif" font-size="13.5" font-weight="600" fill="#0A1E33" data-en="Providers" data-es="Proveedores">Providers</text><text x="450.7" y="462.7" text-anchor="middle" font-family="Inter,sans-serif" font-size="7" fill="#46506E" data-en="Outside &amp; community" data-es="Externos y comunidad">Outside &amp; community</text></a>
-            <a class="orbit-door" role="link" tabindex="0" aria-label="Families — Family Mode at home" onclick="event.preventDefault(); if(typeof openFamily==='function'){openFamily();}"><circle class="halo" cx="310.0" cy="509.0" r="55" fill="#D9A33B" opacity=".15" pointer-events="none"/><circle cx="310.0" cy="509.0" r="43" fill="#fff" stroke="#E4DAC5" stroke-width="1.5"/><text x="310.0" y="507.0" text-anchor="middle" font-family="Fraunces,serif" font-size="13.5" font-weight="600" fill="#0A1E33" data-en="Families" data-es="Familias">Families</text><text x="310.0" y="521.0" text-anchor="middle" font-family="Inter,sans-serif" font-size="7" fill="#46506E" data-en="Parents &amp; home" data-es="Padres y hogar">Parents &amp; home</text></a>
+            <a class="orbit-door" role="link" tabindex="0" aria-label="Families — Family Mode at home" onclick="event.preventDefault(); if(typeof openFamily==='function'){openFamily();}"><circle class="halo" cx="169.3" cy="169.3" r="55" fill="#D9A33B" opacity=".15" pointer-events="none"/><circle cx="169.3" cy="169.3" r="43" fill="#fff" stroke="#E4DAC5" stroke-width="1.5"/><text x="169.3" y="167.3" text-anchor="middle" font-family="Fraunces,serif" font-size="13.5" font-weight="600" fill="#0A1E33" data-en="Families" data-es="Familias">Families</text><text x="169.3" y="181.3" text-anchor="middle" font-family="Inter,sans-serif" font-size="7" fill="#46506E" data-en="Parents &amp; home" data-es="Padres y hogar">Parents &amp; home</text></a>
             <a class="orbit-door" role="link" tabindex="0" aria-label="Children — the simplified self-reflection" onclick="event.preventDefault(); if(typeof startChoose==='function'){startChoose();}else if(typeof startCheckin==='function'){startCheckin();}"><circle class="halo" cx="169.3" cy="450.7" r="55" fill="#D9A33B" opacity=".15" pointer-events="none"/><circle cx="169.3" cy="450.7" r="43" fill="#fff" stroke="#E4DAC5" stroke-width="1.5"/><text x="169.3" y="448.7" text-anchor="middle" font-family="Fraunces,serif" font-size="13.5" font-weight="600" fill="#0A1E33" data-en="Children" data-es="Ni&ntilde;os">Children</text><text x="169.3" y="462.7" text-anchor="middle" font-family="Inter,sans-serif" font-size="7" fill="#46506E" data-en="Simplified" data-es="Simplificado">Simplified</text></a>
             <a class="orbit-door" role="link" tabindex="0" aria-label="Adults — a private self-reflection" onclick="event.preventDefault(); if(typeof startChoose==='function'){startChoose();}else if(typeof startCheckin==='function'){startCheckin();}"><circle class="halo" cx="111.0" cy="310.0" r="55" fill="#D9A33B" opacity=".15" pointer-events="none"/><circle cx="111.0" cy="310.0" r="43" fill="#fff" stroke="#E4DAC5" stroke-width="1.5"/><text x="111.0" y="308.0" text-anchor="middle" font-family="Fraunces,serif" font-size="13.5" font-weight="600" fill="#0A1E33" data-en="Adults" data-es="Adultos">Adults</text><text x="111.0" y="322.0" text-anchor="middle" font-family="Inter,sans-serif" font-size="7" fill="#46506E" data-en="For grown-ups" data-es="Para adultos">For grown-ups</text></a>
             <a class="orbit-door" role="link" tabindex="0" aria-label="Faith-Based &amp; Ministry — the optional Faith Companion" onclick="event.preventDefault(); if(window.aogFaithOpen){window.aogFaithOpen();}"><circle class="halo" cx="169.3" cy="169.3" r="55" fill="#D9A33B" opacity=".15" pointer-events="none"/><circle cx="169.3" cy="169.3" r="43" fill="#fff" stroke="#E4DAC5" stroke-width="1.5"/><text x="169.3" y="167.3" text-anchor="middle" font-family="Fraunces,serif" font-size="13.5" font-weight="600" fill="#0A1E33" data-en="Faith" data-es="Fe">Faith</text><text x="169.3" y="181.3" text-anchor="middle" font-family="Inter,sans-serif" font-size="7" fill="#46506E" data-en="Optional companion" data-es="Compa&ntilde;ero opcional">Optional companion</text></a>
           </svg>
           <script>
+            /* AOG-ORBIT-REAL-V1 (2026-09-25) — Jimmy: "Make this look real — the realism
+               is key." Each roundel becomes a leaded rondel: mottled glass (noise
+               multiplied into the colour), light coming through from behind, and lead
+               cames dividing it into eight segments around a small centre ring. */
+            (function(){
+              var svg = document.querySelector('#fw-orbit-home .aog-of-fig svg'); if (!svg || svg.__real) return; svg.__real = 1;
+              var NS = 'http://www.w3.org/2000/svg';
+              function el(t, a){ var e = document.createElementNS(NS, t); for (var k in a) e.setAttribute(k, a[k]); return e; }
+              var defs = svg.querySelector('defs');
+              defs.insertAdjacentHTML('beforeend',
+                '<filter id="ofGlassF" x="-5%" y="-5%" width="110%" height="110%">'
+               +'<feTurbulence type="fractalNoise" baseFrequency="0.035" numOctaves="2" seed="11" result="n"/>'
+               +'<feColorMatrix in="n" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0.33 0.33 0.33 0 -0.35" result="shade"/>'
+               +'<feComposite in="shade" in2="SourceAlpha" operator="in" result="sh"/>'
+               +'<feMerge><feMergeNode in="SourceGraphic"/><feMergeNode in="sh"/></feMerge></filter>'
+               +'<filter id="ofGlassC" x="0" y="0" width="100%" height="100%">'
+               +'<feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="4" result="n"/>'
+               +'<feColorMatrix in="n" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0.33 0.33 0.33 0 -0.42" result="shade"/>'
+               +'<feComposite in="shade" in2="SourceAlpha" operator="in" result="sh"/>'
+               +'<feMerge><feMergeNode in="SourceGraphic"/><feMergeNode in="sh"/></feMerge></filter>'
+               +'<radialGradient id="ofLight" cx="38%" cy="32%" r="75%"><stop offset="0" stop-color="#fff" stop-opacity=".55"/><stop offset=".45" stop-color="#fff" stop-opacity=".08"/><stop offset="1" stop-color="#000" stop-opacity=".35"/></radialGradient>');
+              /* AOG-ORBIT-FLOWER-V1 — Jimmy: "I was thinking the stem was like a flower
+                 stem." The bottom point stays open and a leaded-glass stem grows down
+                 from Grace with two leaves, so the window reads as one flower. Drawn
+                 behind the doorways, over the star's lines. */
+              var firstDoor = svg.querySelector('a.orbit-door');
+              var fl = el('g', {'class':'of-flower', 'pointer-events':'none'});
+              var stemD = 'M310 400 C 302 450, 320 500, 308 552 S 300 596, 310 618';
+              fl.appendChild(el('path', {d:stemD, fill:'none', stroke:'#1B1C1F', 'stroke-width':15, 'stroke-linecap':'round'}));
+              fl.appendChild(el('path', {d:stemD, fill:'none', stroke:'#2E7D46', 'stroke-width':9, 'stroke-linecap':'round', filter:'url(#ofGlassF)'}));
+              fl.appendChild(el('path', {d:stemD, fill:'none', stroke:'rgba(255,255,255,.28)', 'stroke-width':2.5, 'stroke-linecap':'round', transform:'translate(-2 0)'}));
+              function leaf(d, vein){
+                fl.appendChild(el('path', {d:d, fill:'#3E9A5A', stroke:'#1B1C1F', 'stroke-width':3, 'stroke-linejoin':'round', filter:'url(#ofGlassF)'}));
+                fl.appendChild(el('path', {d:d, fill:'url(#ofLight)', style:'mix-blend-mode:soft-light'}));
+                fl.appendChild(el('path', {d:vein, fill:'none', stroke:'#1B1C1F', 'stroke-width':2.2, 'stroke-linecap':'round'}));
+              }
+              leaf('M309 468 C 290 440, 250 432, 222 446 C 246 470, 284 478, 309 468 Z', 'M307 467 C 280 455, 250 448, 226 447');
+              leaf('M311 528 C 330 500, 370 492, 398 506 C 374 530, 336 538, 311 528 Z', 'M313 527 C 340 515, 370 508, 394 507');
+              svg.insertBefore(fl, firstDoor);
+              /* the bottom motto moves below the stem, and the picture grows to hold it */
+              ['arcBotEn','arcBotEs'].forEach(function(id){ var t = document.getElementById(id); if (t) t.setAttribute('transform','translate(0 58)'); });
+              var vb = svg.viewBox.baseVal; if (vb && vb.y + vb.height < 684) svg.setAttribute('viewBox', vb.x + ' ' + vb.y + ' ' + vb.width + ' ' + (684 - vb.y));
+              var doors = svg.querySelectorAll('a.orbit-door');
+              for (var i = 0; i < doors.length; i++){
+                var d = doors[i], disc = d.querySelector('circle:not(.halo)'); if (!disc) continue;
+                var cx = +disc.getAttribute('cx'), cy = +disc.getAttribute('cy'), r = +disc.getAttribute('r'), center = (i === 0);
+                var firstText = d.querySelector('text');
+                var g = el('g', {'pointer-events':'none', 'class':'of-lead'});
+                g.appendChild(el('circle', {cx:cx, cy:cy, r:r-1, fill:'url(#ofLight)', style:'mix-blend-mode:soft-light'}));
+                var inner = center ? r*0.93 : r*0.36, n = center ? 24 : 8;
+                for (var k = 0; k < n; k++){
+                  var t = k * 2 * Math.PI / n + Math.PI/n;
+                  g.appendChild(el('line', {x1:cx+inner*Math.cos(t), y1:cy+inner*Math.sin(t), x2:cx+(r-1)*Math.cos(t), y2:cy+(r-1)*Math.sin(t), stroke:'#1B1C1F', 'stroke-width': center?2.2:2.4, 'stroke-linecap':'round', 'stroke-opacity':'.9'}));
+                }
+                g.appendChild(el('circle', {cx:cx, cy:cy, r:inner, fill:'none', stroke:'#1B1C1F', 'stroke-width': center?2.4:2.2, 'stroke-opacity':'.9'}));
+                d.insertBefore(g, firstText);
+                disc.setAttribute('filter', center ? 'url(#ofGlassC)' : 'url(#ofGlassF)');
+              }
+            })();
             window.aogDoorSchool = function(){
               try { if (typeof openAdmin === 'function') { openAdmin(); } } catch (e) {}
             };
@@ -91595,5 +91657,182 @@ html.js-reveal .reveal,
   document.addEventListener("click", function () { setTimeout(stamp, 260); }, false);
 })();
 </script>
+<style id="aog-glass-family-xwalk">
+/* ══ AOG-GLASS-FAMILY-XWALK-V1 (2026-09-25) — Jimmy: Family Mode "needs a face lift
+   as well and the cross walk which also deserves one". The stained-glass language
+   of Daily Drafts and the Blueprint: leaded panes, jewel glass, a gold hairline. */
+@media screen{
+  /* Family: the four doors */
+  #aogFamilyDest .fdx-door{position:relative;overflow:hidden;border:3px solid #1E1F22!important;border-radius:14px!important;
+    padding-top:26px!important;box-shadow:0 0 0 1px rgba(242,201,100,.35),0 10px 24px -16px rgba(0,0,0,.6)}
+  #aogFamilyDest .fdx-door::before{content:"";position:absolute;left:0;right:0;top:0;height:12px;background-color:var(--gl);
+    background-image:radial-gradient(120% 200% at 25% 0%,rgba(255,255,255,.45),rgba(255,255,255,0) 60%);border-bottom:2px solid #1E1F22}
+  #aogFamilyDest .fdx-door:hover{box-shadow:0 0 0 2px var(--gl),0 12px 28px -14px var(--gl)!important}
+  #aogFamilyDest .fdx-door.t-checkin{--gl:#2F63B8} #aogFamilyDest .fdx-door.t-talk{--gl:#2E8B57}
+  #aogFamilyDest .fdx-door.t-repair{--gl:#A85A24} #aogFamilyDest .fdx-door.t-grow{--gl:#7B4FA0}
+  /* Family: the quick chips */
+  #aogFamilyDest .fdx-chip:nth-child(8n+1){--gl:#2F63B8}
+  #aogFamilyDest .fdx-chip:nth-child(8n+2){--gl:#2E8B57}
+  #aogFamilyDest .fdx-chip:nth-child(8n+3){--gl:#A85A24}
+  #aogFamilyDest .fdx-chip:nth-child(8n+4){--gl:#7B4FA0}
+  #aogFamilyDest .fdx-chip:nth-child(8n+5){--gl:#A8323E}
+  #aogFamilyDest .fdx-chip:nth-child(8n+6){--gl:#B87A12}
+  #aogFamilyDest .fdx-chip:nth-child(8n+7){--gl:#1F8080}
+  #aogFamilyDest .fdx-chip:nth-child(8n+8){--gl:#B8457A}
+  #aogFamilyDest .fdx-chip{border:2px solid color-mix(in srgb,var(--gl) 70%,#1E1F22)!important;
+    background:color-mix(in srgb,var(--gl) 14%,transparent)!important;border-radius:12px!important}
+  #aogFamilyDest .fdx-chip:hover{background:color-mix(in srgb,var(--gl) 28%,transparent)!important}
+  /* Family: one small thing — a leaded card with a strip of glass */
+  #aogFamilyDest .fdx-ost{border:3px solid #1E1F22!important;border-left:0!important;border-radius:14px!important;position:relative;
+    box-shadow:0 0 0 1px rgba(242,201,100,.35)!important;padding-left:30px!important}
+  #aogFamilyDest .fdx-ost::before{content:"";position:absolute;left:0;top:0;bottom:0;width:14px;border-radius:12px 0 0 12px;border-right:2px solid #1E1F22;
+    background:linear-gradient(180deg,#2F63B8 0 20%,#B87A12 20% 40%,#2E8B57 40% 60%,#A8323E 60% 80%,#7B4FA0 80%)}
+  #screen-family .fam-chip.add{border:2px solid #C9A24A!important;border-radius:12px!important}
+  /* Crosswalk: each card a leaded pane with a jewel edge */
+  #panel-align .xa-card{border:3px solid #1E1F22!important;border-left:12px solid var(--gl,#C9A24A)!important;border-radius:14px!important;
+    box-shadow:0 0 0 1px rgba(242,201,100,.3),0 10px 24px -18px rgba(0,0,0,.6)!important}
+  #panel-align .xa-grid>.xa-card:nth-child(10n+1){--gl:#2F63B8}
+  #panel-align .xa-grid>.xa-card:nth-child(10n+2){--gl:#2E8B57}
+  #panel-align .xa-grid>.xa-card:nth-child(10n+3){--gl:#A85A24}
+  #panel-align .xa-grid>.xa-card:nth-child(10n+4){--gl:#7B4FA0}
+  #panel-align .xa-grid>.xa-card:nth-child(10n+5){--gl:#A8323E}
+  #panel-align .xa-grid>.xa-card:nth-child(10n+6){--gl:#B87A12}
+  #panel-align .xa-grid>.xa-card:nth-child(10n+7){--gl:#1F8080}
+  #panel-align .xa-grid>.xa-card:nth-child(10n+8){--gl:#B8457A}
+  #panel-align .xa-grid>.xa-card:nth-child(10n+9){--gl:#3F4AA6}
+  #panel-align .xa-grid>.xa-card:nth-child(10n+10){--gl:#6E7C22}
+  #panel-align .xa-card:hover{box-shadow:0 0 0 2px var(--gl),0 12px 28px -16px var(--gl)!important}
+  #panel-align .xa-sec{color:#C9A24A}
+  /* the heading printed twice: the fold bar already carries it */
+  #panel-align .xa-head.aogfold-host > h2, #panel-align .xa-head.aogfold-closed > .small{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+  #panel-align .xa-head.aogfold-closed{min-height:46px}
+  /* ── AOG-GLASS-FW-PV-V1 — Framework and Privacy join the glass ── */
+  /* the title's gold box was the focus ring from the screen moving focus to it */
+  .screen h1[tabindex="-1"]:focus, .screen h2[tabindex="-1"]:focus, .screen .display:focus{outline:none!important;box-shadow:none!important}
+  /* Framework: the ecosystem sized to its diagram, not to a whole screen */
+  #fw-orbit-home.aog-of{min-height:0!important;border:3px solid #1E1F22;box-shadow:0 0 0 1px rgba(242,201,100,.35),0 14px 34px -22px rgba(0,0,0,.7)}
+  /* Framework: section tabs as glass tiles */
+  #screen-framework .fw-tabs .fw-tab:nth-child(9n+1){--gl:#2F63B8}
+  #screen-framework .fw-tabs .fw-tab:nth-child(9n+2){--gl:#2E8B57}
+  #screen-framework .fw-tabs .fw-tab:nth-child(9n+3){--gl:#A85A24}
+  #screen-framework .fw-tabs .fw-tab:nth-child(9n+4){--gl:#7B4FA0}
+  #screen-framework .fw-tabs .fw-tab:nth-child(9n+5){--gl:#A8323E}
+  #screen-framework .fw-tabs .fw-tab:nth-child(9n+6){--gl:#B87A12}
+  #screen-framework .fw-tabs .fw-tab:nth-child(9n+7){--gl:#1F8080}
+  #screen-framework .fw-tabs .fw-tab:nth-child(9n+8){--gl:#B8457A}
+  #screen-framework .fw-tabs .fw-tab:nth-child(9n+9){--gl:#3F4AA6}
+  #screen-framework .fw-tabs .fw-tab{border:2px solid color-mix(in srgb,var(--gl) 70%,#1E1F22)!important;
+    background:color-mix(in srgb,var(--gl) 14%,transparent)!important;border-radius:12px!important}
+  #screen-framework .fw-tabs .fw-tab:hover{background:color-mix(in srgb,var(--gl) 28%,transparent)!important}
+  #screen-framework .fw-tabs .fw-tab[aria-selected="true"], #screen-framework .fw-tabs .fw-tab.active, #screen-framework .fw-tabs .fw-tab.on{
+    background-color:var(--gl)!important;background-image:radial-gradient(120% 90% at 30% 15%,rgba(255,255,255,.38),rgba(255,255,255,0) 60%)!important;
+    color:#fff!important;border-color:#1E1F22!important;box-shadow:0 0 0 2px var(--gl)!important}
+  /* Framework: the growth loop, five panes of glass */
+  #screen-framework .fwl-node{--gl:#7B4FA0;border:2px solid #1E1F22!important;box-shadow:0 0 0 1px rgba(242,201,100,.35),0 6px 16px -8px var(--gl)!important;
+    background:color-mix(in srgb,var(--gl) 22%,var(--card,#13314F))!important}
+  #screen-framework .fwl-stage .fwl-node:nth-of-type(1){--gl:#2F63B8}
+  #screen-framework .fwl-stage .fwl-node:nth-of-type(2){--gl:#2E8B57}
+  #screen-framework .fwl-stage .fwl-node:nth-of-type(3){--gl:#B87A12}
+  #screen-framework .fwl-stage .fwl-node:nth-of-type(4){--gl:#7B4FA0}
+  #screen-framework .fwl-stage .fwl-node:nth-of-type(5){--gl:#A8323E}
+  /* Privacy: each section a leaded pane, its icon a jewel tile */
+  #screen-privacy .pv-acc{border:3px solid #1E1F22!important;border-radius:14px!important;box-shadow:0 0 0 1px rgba(242,201,100,.3)!important;overflow:hidden}
+  #screen-privacy .pv-acc.open{box-shadow:0 0 0 2px var(--gl,#C9A24A),0 12px 28px -18px var(--gl,#C9A24A)!important}
+  #screen-privacy .pv-acc-head{box-shadow:inset 6px 0 0 var(--gl,#C9A24A)}
+  #screen-privacy .pv-acc-head .pv-ic{color:#fff!important;background-color:var(--gl,#C9A24A)!important;border-radius:10px!important;
+    background-image:radial-gradient(120% 90% at 30% 15%,rgba(255,255,255,.4),rgba(255,255,255,0) 60%)!important;border:1.5px solid #1E1F22!important}
+  #screen-privacy .pv-acc-head .pv-ic svg{color:#fff!important;stroke:#fff}
+  #screen-privacy .pv-wrap > .pv-acc:nth-of-type(1){--gl:#2F63B8}
+  #screen-privacy .pv-wrap > .pv-acc:nth-of-type(2){--gl:#2E8B57}
+  #screen-privacy .pv-wrap > .pv-acc:nth-of-type(3){--gl:#A85A24}
+  #screen-privacy .pv-wrap > .pv-acc:nth-of-type(4){--gl:#7B4FA0}
+  #screen-privacy .pv-wrap > .pv-acc:nth-of-type(5){--gl:#A8323E}
+  #screen-privacy .pv-wrap > .pv-acc:nth-of-type(6){--gl:#B87A12}
+  #screen-privacy .pv-wrap > .pv-acc:nth-of-type(7){--gl:#1F8080}
+  #screen-privacy .pv-wrap > .pv-acc:nth-of-type(8){--gl:#B8457A}
+  #screen-privacy .pv-wrap > .pv-acc:nth-of-type(9){--gl:#3F4AA6}
+  #screen-privacy .pv-stat{border:2px solid #1E1F22!important;box-shadow:inset 0 3px 0 #C9A24A}
+  /* ── AOG-GLASS-ORBIT-V1 — the ecosystem as a rose window: every doorway a
+     roundel of jewel glass with a lead rim, Grace a gold-ringed medallion ── */
+  #fw-orbit-home .aog-of-fig a.orbit-door[aria-label^="Teachers"]{--gl:#2F63B8}
+  #fw-orbit-home .aog-of-fig a.orbit-door[aria-label^="Specialists"]{--gl:#2E8B57}
+  #fw-orbit-home .aog-of-fig a.orbit-door[aria-label^="Leadership"]{--gl:#3F4AA6}
+  #fw-orbit-home .aog-of-fig a.orbit-door[aria-label^="Outside"]{--gl:#1F8080}
+  #fw-orbit-home .aog-of-fig a.orbit-door[aria-label^="Families"]{--gl:#B8457A}
+  #fw-orbit-home .aog-of-fig a.orbit-door[aria-label^="Children"]{--gl:#B87A12}
+  #fw-orbit-home .aog-of-fig a.orbit-door[aria-label^="Adults"]{--gl:#7B4FA0}
+  #fw-orbit-home .aog-of-fig a.orbit-door:not(:nth-of-type(1)) > circle:not(.halo){fill:var(--gl)!important;stroke:#1E1F22!important;stroke-width:4!important}
+  #fw-orbit-home .aog-of-fig a.orbit-door{filter:drop-shadow(0 0 1.5px rgba(242,201,100,.7)) drop-shadow(0 4px 10px rgba(0,0,0,.45))}
+  #fw-orbit-home .aog-of-fig a.orbit-door:not(:nth-of-type(1)) > circle.halo{fill:var(--gl)!important;opacity:.28!important}
+  #fw-orbit-home .aog-of-fig a.orbit-door:not(:nth-of-type(1)) > text{fill:#fff!important}
+  #fw-orbit-home .aog-of-fig a.orbit-door:not(:nth-of-type(1)) > text + text{fill:rgba(255,255,255,.86)!important}
+  #fw-orbit-home .aog-of-fig a.orbit-door:not(:nth-of-type(1)):hover,
+  #fw-orbit-home .aog-of-fig a.orbit-door:not(:nth-of-type(1)):focus-visible{filter:drop-shadow(0 0 3px #F2C964) drop-shadow(0 0 14px var(--gl))}
+  #fw-orbit-home .aog-of-fig a.orbit-door:nth-of-type(1) > circle:not(.halo){stroke-width:6!important}
+  #fw-orbit-home .aog-of-fig .aog-star{stroke:#C9A24A;stroke-opacity:.75}
+  #fw-orbit-home .aog-of-fig a.orbit-door > text{paint-order:stroke;stroke:rgba(20,22,26,.85);stroke-width:3px;stroke-linejoin:round}
+  #fw-orbit-home .aog-of-fig a.orbit-door:nth-of-type(1) > circle:not(.halo){fill:#1D4E86!important}
+  #fw-orbit-home .aog-of-fig .of-lead line, #fw-orbit-home .aog-of-fig .of-lead circle{vector-effect:non-scaling-stroke}
+  #fw-orbit-home .aog-of-fig .orbit-door:hover circle, #fw-orbit-home .aog-of-fig .orbit-door:focus-visible circle{transform:none!important}
+  /* the district doors stay shut here too */
+  #screen-framework a.h[onclick*="aogGoPilot"]{display:none!important}
+  /* the store stays shut */
+  #panel-align .xa-lock, #panel-align a.xa-ghost[href*="request" i], #panel-align a.xa-ghost[onclick*="equest" i]{display:none!important}
+}
+</style>
+<script id="aog-hero-rose">
+/* ══ AOG-HERO-ROSE-V1 (2026-09-25) — Jimmy: "Can the MAIN HERO get some sort of
+   facelift as well?" Behind the name, a rose window lit from behind: a centre
+   medallion, three rings of pointed petals and lancets, and a border of small
+   roundels, all in jewel glass set in lead, the same glass as the ecosystem
+   flower. Decorative only (aria-hidden), drawn once, fades at its edges. */
+(function(){
+  var host = document.querySelector('#one-framework .aog-of-in'); if (!host || document.getElementById('aogHeroRose')) return;
+  var NS='http://www.w3.org/2000/svg', C=300, J=['#2F63B8','#B8457A','#2E8B57','#B87A12','#7B4FA0','#A8323E','#1F8080','#3F4AA6'];
+  function P(r,a){ return (C+r*Math.cos(a)).toFixed(1)+' '+(C+r*Math.sin(a)).toFixed(1); }
+  var g='';
+  function pane(d,col,op){ g+='<path d="'+d+'" fill="'+col+'" fill-opacity="'+(op||.92)+'" filter="url(#hrGlass)"/>'; }
+  /* centre medallion: 8 wedges */
+  for (var i=0;i<8;i++){ var a0=i*Math.PI/4-Math.PI/2, a1=a0+Math.PI/4;
+    pane('M'+C+' '+C+' L'+P(46,a0)+' A46 46 0 0 1 '+P(46,a1)+' Z', i%2?'#F2C964':'#D9A33B'); }
+  /* rings of pointed petals: [inner, outer, count, rotation] */
+  [[50,112,8,0],[116,188,16,.5],[192,252,24,0]].forEach(function(R,ri){
+    var n=R[2];
+    for (var k=0;k<n;k++){
+      var a0=(k+R[3])*2*Math.PI/n-Math.PI/2, a1=a0+2*Math.PI/n, am=(a0+a1)/2, pk=R[1]+ (ri===2?4:14);
+      pane('M'+P(R[0],a0)+' A'+R[0]+' '+R[0]+' 0 0 1 '+P(R[0],a1)+' L'+P(R[1],a1)+' Q'+P(pk,am)+' '+P(R[1],a0)+' Z', J[(k+ri*3)%J.length]);
+    }
+  });
+  /* border of small roundels */
+  for (var q=0;q<24;q++){ var a=q*2*Math.PI/24-Math.PI/2; var x=C+272*Math.cos(a), y=C+272*Math.sin(a);
+    g+='<circle cx="'+x.toFixed(1)+'" cy="'+y.toFixed(1)+'" r="15" fill="'+J[(q*3)%J.length]+'" fill-opacity=".92" filter="url(#hrGlass)"/>'; }
+  var svg='<svg id="aogHeroRose" viewBox="0 0 600 600" aria-hidden="true" focusable="false">'
+    +'<defs><filter id="hrGlass" x="-5%" y="-5%" width="110%" height="110%"><feTurbulence type="fractalNoise" baseFrequency="0.03" numOctaves="2" seed="21" result="n"/>'
+    +'<feColorMatrix in="n" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0.33 0.33 0.33 0 -0.33" result="sh"/>'
+    +'<feComposite in="sh" in2="SourceAlpha" operator="in" result="s2"/><feMerge><feMergeNode in="SourceGraphic"/><feMergeNode in="s2"/></feMerge></filter>'
+    +'<radialGradient id="hrLight" cx="50%" cy="45%" r="55%"><stop offset="0" stop-color="#FFF6DA" stop-opacity=".55"/><stop offset=".5" stop-color="#fff" stop-opacity=".08"/><stop offset="1" stop-color="#000" stop-opacity=".25"/></radialGradient></defs>'
+    +'<circle cx="300" cy="300" r="292" fill="#15171B"/>'
+    +'<g stroke="#15171B" stroke-width="3.2" stroke-linejoin="round">'+g+'</g>'
+    +'<circle cx="300" cy="300" r="290" fill="url(#hrLight)" style="mix-blend-mode:screen"/>'
+    +'<circle cx="300" cy="300" r="293" fill="none" stroke="#B89A5E" stroke-width="7"/>'
+    +'</svg>';
+  host.insertAdjacentHTML('afterbegin', svg);
+})();
+</script>
+<style id="aog-hero-glass">
+@media screen{
+  #one-framework .aog-of-in{position:relative}
+  #aogHeroRose{position:absolute;left:50%;top:-34px;width:min(660px,92vw);height:auto;transform:translateX(-50%);z-index:0;pointer-events:none;
+    opacity:.24;filter:drop-shadow(0 0 40px rgba(242,201,100,.25));
+    -webkit-mask-image:radial-gradient(circle at 50% 50%,#000 58%,transparent 72%);mask-image:radial-gradient(circle at 50% 50%,#000 58%,transparent 72%)}
+  #one-framework .aog-of-head{position:relative;z-index:1}
+  #one-framework .aog-of-head .ofh-mark{filter:drop-shadow(0 4px 18px rgba(8,20,36,.95)) drop-shadow(0 0 2px rgba(8,20,36,.9))}
+  /* the three doors: leaded, each with a band of its own glass */
+  #aog-thresholds .aogdr-door{border:3px solid #1E1F22!important;box-shadow:0 0 0 1px rgba(242,201,100,.4),inset 0 7px 0 var(--gl),0 18px 40px -26px rgba(0,0,0,.8)!important}
+  #aog-thresholds .aogdr-d2{--gl:#2F63B8} #aog-thresholds .aogdr-d1{--gl:#B8457A} #aog-thresholds .aogdr-d3{--gl:#2E8B57}
+}
+@media (prefers-reduced-motion:no-preference){ #aogHeroRose{animation:aogRoseIn 1.4s ease-out both} @keyframes aogRoseIn{from{opacity:0;transform:translateX(-50%) scale(.96)}to{opacity:.24;transform:translateX(-50%) scale(1)}} }
+@media print{ #aogHeroRose{display:none} }
+</style>
 </body>
 </html>
