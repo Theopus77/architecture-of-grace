@@ -24902,7 +24902,32 @@ window.aogAccToggle = function(btn){
     try{ if (typeof openAdmin === "function") openAdmin(); }catch(e){}
     try{ if (typeof aogSetDashRole === "function") aogSetDashRole("teacher"); }catch(e){}
     setTimeout(function(){ try{ if (typeof aogQsTab === "function") aogQsTab("align"); }catch(e){} }, 260);
+    /* AOG-XWALK-SOLO-V1 (2026-09-25) — Jimmy: "Can the dashboard be removed on top of
+       the CROSS WALK?" Opened from a door, Explore or a link, the Crosswalk stands
+       alone: the dashboard's header, greeting and tab rows step aside. Opening the
+       dashboard itself, or any other screen, brings them back. */
+    /* the old aogCloseExplore() toggles the new bar's menu OPEN; shut every bar menu outright */
+    function shut(){ try{ document.querySelectorAll('.aogtop-menu').forEach(function(m){ m.hidden = true; });
+      document.querySelectorAll('.aogtop [aria-expanded="true"]').forEach(function(b){ b.setAttribute('aria-expanded','false'); }); }catch(e){} }
+    shut(); setTimeout(shut, 60); setTimeout(shut, 400);
+    try { window.__xsAt = Date.now(); document.body.classList.add("aog-xwalk-solo"); window.scrollTo(0,0);
+          setTimeout(function(){ document.body.classList.add("aog-xwalk-solo"); window.scrollTo(0,0); }, 320); } catch(e){}
   };
+  (function(){
+    function off(){ try{ if (Date.now() - (window.__xsAt||0) < 1200) return; document.body.classList.remove("aog-xwalk-solo"); }catch(e){} }
+    var wrapT = setInterval(function(){
+      if (typeof window.showScreen !== "function" || window.showScreen.__xs) return;
+      /* AOG-BAR-SHUT-V1 — moving to a screen always leaves the Explore menu shut. Old
+         screen code "closes" the retired menu by clicking its button, and the new bar
+         (which adopted that button) read the click as "open". */
+      function shutBar(){ try{ document.querySelectorAll('.aogtop-menu').forEach(function(m){ m.hidden = true; });
+        document.querySelectorAll('.aogtop [aria-expanded="true"]').forEach(function(b){ b.setAttribute('aria-expanded','false'); }); }catch(e){} }
+      var o = window.showScreen; window.showScreen = function(){ off(); var r = o.apply(this, arguments); shutBar(); setTimeout(shutBar, 60); setTimeout(shutBar, 450); return r; }; window.showScreen.__xs = 1;
+      var oa = window.openAdmin; if (typeof oa === "function" && !oa.__xs){ window.openAdmin = function(){ off(); return oa.apply(this, arguments); }; window.openAdmin.__xs = 1; }
+      clearInterval(wrapT);
+    }, 300);
+    window.addEventListener("hashchange", function(){ var h=(location.hash||"").toLowerCase(); if(h!=="#alignment"&&h!=="#crosswalks"&&h!=="#align") off(); });
+  })();
   (function(){
     function routeAlign(){ var h=(location.hash||"").toLowerCase(); if(h==="#alignment"||h==="#crosswalks"||h==="#align"){ setTimeout(function(){ if(window.aogOpenAlignment) window.aogOpenAlignment(); }, 140); } }
     window.addEventListener("hashchange", routeAlign);
@@ -61482,6 +61507,8 @@ html.js-reveal .reveal,
     s.textContent = [
       "#aogTodaysPicture{border:1px solid var(--rule,#E4DAC5);border-left:4px solid var(--gold,#D9A33B);border-radius:14px;background:var(--card,#fff);padding:20px 22px;margin:0 0 22px;}",
       "#aogTodaysPicture .tp-top{display:flex;align-items:baseline;justify-content:space-between;gap:14px;flex-wrap:wrap;margin-bottom:4px;}",
+      /* AOG-TP-CLOSE-V1 — the fold's Close sits in the top-right corner; the date keeps clear of it */
+      "#aogTodaysPicture .tp-top{padding-right:78px;}",
       "#aogTodaysPicture .tp-kicker{font-size:11px;font-weight:800;letter-spacing:.13em;text-transform:uppercase;color:var(--gold-deep,#9a6f24);margin:0;}",
       "#aogTodaysPicture .tp-date{font-size:12.5px;color:var(--ink-faint,#8A92A6);font-weight:600;}",
       "#aogTodaysPicture .tp-lead{font-family:var(--font-serif,Georgia,serif);font-size:20px;line-height:1.3;font-weight:600;color:var(--navy,#0A1E33);margin:2px 0 14px;}",
@@ -91833,6 +91860,51 @@ html.js-reveal .reveal,
 }
 @media (prefers-reduced-motion:no-preference){ #aogHeroRose{animation:aogRoseIn 1.4s ease-out both} @keyframes aogRoseIn{from{opacity:0;transform:translateX(-50%) scale(.96)}to{opacity:.24;transform:translateX(-50%) scale(1)}} }
 @media print{ #aogHeroRose{display:none} }
+</style>
+<style id="aog-xwalk-solo-css">
+/* AOG-XWALK-SOLO-V1 — the Crosswalk alone: everything on the dashboard screen but the panel steps aside */
+body.aog-xwalk-solo #screen-admin #panel-align ~ *, body.aog-xwalk-solo #screen-admin .container-wide > :not(#panel-align),
+body.aog-xwalk-solo #screen-admin > :not(.container-wide){display:none!important}
+body.aog-xwalk-solo #screen-admin #panel-align{display:block!important;padding-top:18px}
+body.aog-xwalk-solo #panel-align .xa-head.aogfold-closed{display:none!important}
+body.aog-xwalk-solo #panel-align::before{content:"Standards Crosswalk";display:block;font:600 clamp(28px,6vw,40px)/1.15 Fraunces,Georgia,serif;color:#F4EEE2;margin:6px 0 4px}
+</style>
+<style id="aog-xwalk-elegant">
+/* AOG-XWALK-ELEGANT-V1 (2026-09-25) — Jimmy: "Can the doors in the cross walk look
+   more elegant?" Finer than leaded panes: a gold hairline frame, a slim band of the
+   card's glass across the top, a small glass jewel in the corner, soft light across
+   the face, a serif title, and outlined gold buttons. */
+@media screen{
+  #panel-align .xa-card{position:relative;overflow:hidden;
+    border:1px solid rgba(242,201,100,.42)!important;border-left:1px solid rgba(242,201,100,.42)!important;border-radius:18px!important;
+    background:radial-gradient(120% 70% at 20% 0%,color-mix(in srgb,var(--gl,#C9A24A) 16%,transparent),transparent 60%),linear-gradient(180deg,rgba(255,255,255,.035),rgba(0,0,0,.08)),var(--card,#13314F)!important;
+    box-shadow:0 1px 0 rgba(255,255,255,.06) inset,0 18px 40px -26px rgba(0,0,0,.85)!important;padding-top:26px!important}
+  #panel-align .xa-card::before{content:"";position:absolute;left:18px;right:18px;top:0;height:5px;border-radius:0 0 6px 6px;
+    background:linear-gradient(90deg,transparent,var(--gl,#C9A24A) 18%,var(--gl,#C9A24A) 82%,transparent);box-shadow:0 0 14px var(--gl,#C9A24A)}
+  #panel-align .xa-card::after{content:"";position:absolute;top:16px;right:16px;width:14px;height:14px;border-radius:50%;
+    background-color:var(--gl,#C9A24A)!important;background-image:radial-gradient(circle at 35% 30%,rgba(255,255,255,.7),rgba(255,255,255,0) 55%)!important;opacity:1!important;
+    box-shadow:0 0 0 2px rgba(20,22,26,.9),0 0 0 3px rgba(242,201,100,.6),0 0 12px var(--gl,#C9A24A)}
+  #panel-align .xa-card:hover{border-color:rgba(242,201,100,.8)!important;box-shadow:0 0 0 1px var(--gl,#C9A24A),0 22px 44px -24px var(--gl,#C9A24A)!important;transform:translateY(-2px)}
+  #panel-align .xa-card .xa-k{letter-spacing:.18em!important;color:#E7C46A!important;font-size:11px!important}
+  #panel-align .xa-card .xa-t{font-family:Fraunces,Georgia,serif!important;font-size:21px!important;line-height:1.2!important;color:#F4EEE2!important;margin:6px 28px 8px 0!important}
+  #panel-align .xa-card .xa-link{background:transparent!important;border:1.5px solid rgba(242,201,100,.7)!important;color:#F2C964!important;border-radius:999px!important;box-shadow:none!important}
+  #panel-align .xa-card .xa-link:hover{background:rgba(242,201,100,.14)!important;border-color:#F2C964!important}
+  #panel-align .xa-card .xa-std-btn[aria-expanded="true"]{background:#F2C964!important;color:#0A1E33!important}
+}
+</style>
+<style id="aog-light-glass">
+/* AOG-LIGHT-GLASS-V1 (2026-09-25) — Jimmy: "The background on some of these suck."
+   In light mode the page is warm limestone with soft pools of coloured light, as if
+   the sun were coming through the stained glass onto a stone floor. Fixed behind
+   everything, so it never moves while scrolling (calm rules). */
+@media screen{
+  html[data-theme="light"] #aogFamilyDest .fdx-door, html[data-theme="light"] #aogFamilyDest .fdx-ost,
+  html[data-theme="light"] #screen-privacy .pv-acc{background:rgba(255,253,248,.92)!important}
+  /* the Framework loop list: label and text in two clean columns, never overlapping */
+  .fwl-proof li, .fwl-proof .fwl-row{display:grid!important;grid-template-columns:auto minmax(9.5em,max-content) 1fr;gap:10px;align-items:baseline}
+  .fwl-proof li > *{min-width:0}
+  @media (max-width:560px){ .fwl-proof li, .fwl-proof .fwl-row{grid-template-columns:auto 1fr} .fwl-proof li > :last-child{grid-column:1/-1} }
+}
 </style>
 </body>
 </html>

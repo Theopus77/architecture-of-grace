@@ -2602,6 +2602,13 @@
     css += '.aogtop-menu a[href^="/room' + n + '"],.aogtop-menu a[href^="/lessons' + n + '"],.aogtop-menu a[href^="/wb' + n + '"],.aogtop-menu a[href^="/charts' + n + '"]{--gl:' + ROOM[n] + '}';
   });
   css += '.aogtop-menu a[href^="/files/AoG-Book"]{--gl:#A85A24}.aogtop-menu a[href="/worksheets"]{--gl:#2F63B8}';
+  /* AOG-EXPLORE-3COL-V1 — with door three back, three columns shared a panel sized
+     for two, and long names ran into the next column. Three even columns on a wide
+     screen, names that wrap, and the old one-column fold below 980px unchanged. */
+  css += '@media (min-width:981px){.aogtop-menu{width:min(900px,calc(100vw - 24px))!important;max-width:calc(100vw - 24px)!important;position:fixed!important;top:calc(var(--aogbar-h,52px) + 8px)!important;right:12px!important;left:auto!important}'
+    + '.aogtop-ex:not([hidden]){display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}'
+    + '.aogtop-ex > .aogtop-col{flex:none!important;width:auto!important;min-width:0}}'
+    + '.aogtop-menu .aogtop-tx > span:first-child{white-space:normal!important}';
   css += '.aogtop-blab{--gl:#C9A24A;box-shadow:inset 4px 0 0 var(--gl)!important;padding-left:14px!important}'
     + '.aogtop-blab[aria-expanded="true"]{background:color-mix(in srgb,var(--gl) 12%,transparent)!important;color:inherit!important}';
   /* the room rows carry no link of their own, so each is tinted by its number */
