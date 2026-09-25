@@ -56,6 +56,7 @@ COURSE = dict(
     tl_label=("How we figured it out", "Cómo lo descubrimos"),
     foot=("Architecture of Grace · Science, K–12 · original text following the Illinois (NGSS) storyline · the banner is a drawn scene, not a photograph.",
           "Architecture of Grace · Ciencias, K–12 · texto original que sigue la secuencia de Illinois (NGSS) · el banner es una escena dibujada, no una fotografía."),
+    teach=('The course follows the Illinois (NGSS) science storyline, band by band — units, chapters, sections, numbered lessons — in original text written at each band’s reading level. Every lesson has a main idea, a reading with key words you can tap, a source, a data table or a scenario to think through, and three checks.', 'El curso sigue la secuencia de ciencias de Illinois (NGSS), banda por banda — unidades, capítulos, secciones, lecciones numeradas — en texto original al nivel de lectura de cada banda. Cada lección tiene una idea principal, una lectura con palabras clave, una fuente, una tabla de datos o un escenario, y tres comprobaciones.'),
     bands=[dict(id=b["id"], title=b["title"], es=BAND_ES[b["id"]]) for b in BANDS],
     band_title=lambda b: BAND_TITLE[b],
     jump_groups=jump_groups(),
