@@ -1,0 +1,2992 @@
+{
+ "intro": [
+  "A carpenter checks that a wall is square by measuring 3 feet along one edge, 4 feet along the other, and making sure the diagonal is exactly 5 feet. A bridge engineer bolts steel into triangles because a triangle cannot change shape without breaking a bar. A county board wants a fire station the same distance from three towns. Each of these people is relying on a fact about shapes that is not just usually true but always true, and this unit is about how we know.",
+  "The unit begins with the rules of reasoning: what a definition is, what you are allowed to assume, and how a chain of if-then statements turns into a proof that no one can argue with. Then it uses those rules on real questions. When are two shapes truly the same? Which three measurements pin down a triangle, and which three do not? Where do the special lines of a triangle cross, and why do they cross at all?",
+  "By the end you will be able to write a proof in two columns, in a paragraph or as a flow chart, move a figure on a coordinate grid with a rule, prove two triangles congruent with SSS, SAS, ASA or AAS, and locate the circumcenter, incenter and centroid of any triangle. You will also be able to say, in every case, exactly why the answer is right."
+ ],
+ "bigQuestion": "How can a few accepted rules and careful reasoning prove facts about shapes that are true every time, everywhere?",
+ "timeline": [
+  {
+   "y": "c. 600 BCE",
+   "t": "Thales of Miletus is credited with the first geometric proofs, including that the base angles of an isosceles triangle are equal"
+  },
+  {
+   "y": "c. 300 BCE",
+   "t": "Euclid's Elements organizes geometry into definitions, postulates and proofs, one theorem resting on the last"
+  },
+  {
+   "y": "1482",
+   "t": "The first printed edition of the Elements appears in Venice, and the book becomes a standard school text for centuries"
+  },
+  {
+   "y": "1637",
+   "t": "René Descartes links algebra and geometry with coordinates, making coordinate proofs possible"
+  },
+  {
+   "y": "1733",
+   "t": "Giovanni Saccheri tries to prove Euclid's fifth postulate by contradiction and unknowingly explores a new geometry"
+  },
+  {
+   "y": "1829",
+   "t": "Nikolai Lobachevsky publishes a geometry in which the parallel postulate is false, and nothing contradicts itself"
+  },
+  {
+   "y": "1837",
+   "t": "Pierre Wantzel proves that trisecting a general angle with compass and straightedge is impossible"
+  },
+  {
+   "y": "1860",
+   "t": "Abraham Lincoln of Springfield, Illinois, writes that he nearly mastered six books of Euclid to learn what it means to demonstrate"
+  },
+  {
+   "y": "1872",
+   "t": "Felix Klein describes geometry as the study of what transformations leave unchanged, the view behind rigid motions"
+  },
+  {
+   "y": "1899",
+   "t": "David Hilbert publishes a complete, careful set of axioms for Euclidean geometry, filling gaps Euclid left"
+  },
+  {
+   "y": "1915",
+   "t": "Albert Einstein's general relativity describes gravity using curved, non-Euclidean geometry"
+  },
+  {
+   "y": "2010",
+   "t": "The Common Core standards, adopted in Illinois, define congruence through rigid motions, the approach this unit follows"
+  }
+ ],
+ "wrap": {
+  "words": [
+   {
+    "w": "postulate",
+    "d": "a statement accepted as true without proof; a starting rule of geometry"
+   },
+   {
+    "w": "theorem",
+    "d": "a statement that has been proved from postulates, definitions and earlier theorems"
+   },
+   {
+    "w": "counterexample",
+    "d": "one example that fits the hypothesis but breaks the conclusion, proving a conjecture false"
+   },
+   {
+    "w": "contrapositive",
+    "d": "the statement formed by swapping and negating both parts of a conditional; it always matches the original's truth"
+   },
+   {
+    "w": "transversal",
+    "d": "a line that crosses two or more other lines, creating corresponding and alternate interior angles"
+   },
+   {
+    "w": "rigid motion",
+    "d": "a translation, reflection or rotation; a transformation that preserves distances and angles"
+   },
+   {
+    "w": "congruent",
+    "d": "two figures are congruent if a sequence of rigid motions maps one exactly onto the other"
+   },
+   {
+    "w": "included angle",
+    "d": "the angle between two given sides of a triangle; needed for the SAS criterion"
+   },
+   {
+    "w": "CPCTC",
+    "d": "corresponding parts of congruent triangles are congruent; used after triangles are proved congruent"
+   },
+   {
+    "w": "circumcenter",
+    "d": "the point where the perpendicular bisectors of a triangle meet; equidistant from the three vertices"
+   },
+   {
+    "w": "incenter",
+    "d": "the point where the angle bisectors of a triangle meet; equidistant from the three sides"
+   },
+   {
+    "w": "centroid",
+    "d": "the point where the medians of a triangle meet; two thirds of the way from each vertex, and the balance point"
+   }
+  ],
+  "test": [
+   {
+    "q": "Point B is between A and C. AB = x + 4, BC = 2x − 1 and AC = 21. What is AB?",
+    "choices": [
+     "6",
+     "10",
+     "11",
+     "21"
+    ],
+    "a": 1,
+    "why": "x + 4 + 2x − 1 = 21 gives 3x + 3 = 21, so x = 6 and AB = 6 + 4 = 10. BC = 11, and 10 + 11 = 21."
+   },
+   {
+    "q": "What is the converse of 'If two lines are perpendicular, then they form right angles'?",
+    "choices": [
+     "If two lines are not perpendicular, then they do not form right angles",
+     "If two lines do not form right angles, then they are not perpendicular",
+     "If two lines form right angles, then they are perpendicular",
+     "Two lines are perpendicular only if they are parallel"
+    ],
+    "a": 2,
+    "why": "The converse swaps the hypothesis and the conclusion without negating either one."
+   },
+   {
+    "q": "Which figure is a counterexample to 'Every quadrilateral with four congruent sides is a square'?",
+    "choices": [
+     "a rectangle that is 3 by 5",
+     "a trapezoid",
+     "a square with side 4",
+     "a rhombus with a 60° angle"
+    ],
+    "a": 3,
+    "why": "A rhombus has four congruent sides, but with a 60° angle it is not a square. The rectangle does not even have four congruent sides."
+   },
+   {
+    "q": "Two parallel lines are cut by a transversal. Alternate interior angles measure (4x − 5)° and (2x + 31)°. What is the measure of each angle?",
+    "choices": [
+     "18°",
+     "113°",
+     "67°",
+     "36°"
+    ],
+    "a": 2,
+    "why": "Alternate interior angles are congruent: 4x − 5 = 2x + 31, so x = 18 and each angle is 4(18) − 5 = 67°. The 18 is only x."
+   },
+   {
+    "q": "The proof that vertical angles are congruent depends mainly on which fact?",
+    "choices": [
+     "angles in a linear pair are supplementary",
+     "corresponding angles are congruent",
+     "the angles of a triangle add to 180°",
+     "all right angles are congruent"
+    ],
+    "a": 0,
+    "why": "Each vertical angle forms a linear pair with the same angle, so both equal 180° minus that angle."
+   },
+   {
+    "q": "What is the image of (−3, 7) after a 180° rotation about the origin?",
+    "choices": [
+     "(3, 7)",
+     "(−7, −3)",
+     "(7, 3)",
+     "(3, −7)"
+    ],
+    "a": 3,
+    "why": "A 180° rotation changes the sign of both coordinates: (−3, 7) becomes (3, −7)."
+   },
+   {
+    "q": "What is the image of (5, 2) after a reflection across the y-axis?",
+    "choices": [
+     "(−5, 2)",
+     "(5, −2)",
+     "(2, 5)",
+     "(−5, −2)"
+    ],
+    "a": 0,
+    "why": "Reflecting across the y-axis changes the sign of x and keeps y: (5, 2) becomes (−5, 2)."
+   },
+   {
+    "q": "Two triangles have two pairs of congruent angles and a pair of congruent sides that are not between those angles. Which criterion applies?",
+    "choices": [
+     "ASA",
+     "AAS",
+     "SAS",
+     "SSA"
+    ],
+    "a": 1,
+    "why": "Two angles and a non-included side is AAS. It works because the third angle is forced by the angle sum."
+   },
+   {
+    "q": "Why is SSA not a valid congruence criterion?",
+    "choices": [
+     "Because it uses too few parts",
+     "Because angles cannot be measured exactly",
+     "Because the side opposite the given angle can swing into two different positions, making two triangles",
+     "Because it only works for equilateral triangles"
+    ],
+    "a": 2,
+    "why": "With two sides and a non-included angle, the second side can cross the opposite ray in two places, so two different triangles can share those measurements."
+   },
+   {
+    "q": "In parallelogram ABCD, angle A = (3x + 10)° and angle C = (5x − 30)°. What is the measure of angle B?",
+    "choices": [
+     "70°",
+     "20°",
+     "90°",
+     "110°"
+    ],
+    "a": 3,
+    "why": "Opposite angles are congruent: 3x + 10 = 5x − 30, so x = 20 and angle A = 70°. Angle B is consecutive to A, so it measures 180 − 70 = 110°."
+   },
+   {
+    "q": "A triangle's angles measure 3x, 4x and 5x. What is the largest angle?",
+    "choices": [
+     "15°",
+     "75°",
+     "60°",
+     "45°"
+    ],
+    "a": 1,
+    "why": "3x + 4x + 5x = 12x = 180, so x = 15. The largest angle is 5(15) = 75°."
+   },
+   {
+    "q": "The base angles of an isosceles triangle measure (3x + 8)° and (5x − 14)°. What is the vertex angle?",
+    "choices": [
+     "41°",
+     "11°",
+     "98°",
+     "82°"
+    ],
+    "a": 2,
+    "why": "Base angles are congruent: 3x + 8 = 5x − 14, so x = 11 and each base angle is 41°. The vertex angle is 180 − 41 − 41 = 98°."
+   },
+   {
+    "q": "G is the centroid of a triangle, and AD is a median. If GD = 7, what is the length of AD?",
+    "choices": [
+     "21",
+     "14",
+     "10.5",
+     "28"
+    ],
+    "a": 0,
+    "why": "GD is one third of the median, so AD = 3 × 7 = 21. AG would be 14."
+   },
+   {
+    "q": "Two sides of a triangle measure 6 and 13. Which of these could be the third side?",
+    "choices": [
+     "7",
+     "19",
+     "8",
+     "20"
+    ],
+    "a": 2,
+    "why": "The third side must be greater than 13 − 6 = 7 and less than 13 + 6 = 19, not including the endpoints. Only 8 fits."
+   },
+   {
+    "q": "A right triangle has vertices (0, 0), (0, 8) and (6, 0), with the right angle at the origin. Where is its circumcenter?",
+    "choices": [
+     "(0, 0)",
+     "(2, 8/3)",
+     "(6, 8)",
+     "(3, 4)"
+    ],
+    "a": 3,
+    "why": "The circumcenter of a right triangle is the midpoint of the hypotenuse from (0, 8) to (6, 0): (3, 4). It is 5 units from every vertex. The point (2, 8/3) is the centroid."
+   }
+  ],
+  "write": {
+   "prompt": "Three towns sit at (0, 0), (12, 0) and (0, 10) on a map with units in miles. Find the point that is the same distance from all three towns, show every calculation, and explain why the three perpendicular bisectors must meet at one point. Then explain, using a triangle center, where you would put a station that is instead equally close to the three roads joining the towns.",
+   "tips": [
+    "State your final point clearly and say which triangle center it is.",
+    "Show each step: the midpoint of each side, the equation of each perpendicular bisector, and where they cross.",
+    "Check your answer with the distance formula to all three towns.",
+    "Explain in a sentence why any point on a perpendicular bisector is equidistant from the segment's endpoints.",
+    "Name the second center, say which segments locate it, and explain why it is always inside the triangle."
+   ]
+  }
+ },
+ "n": 20,
+ "title": "Geometry: Reasoning, Congruence and Triangles",
+ "years": "Geometry",
+ "band": "9-10",
+ "chapters": [
+  {
+   "n": 46,
+   "title": "Reasoning and Proof",
+   "years": "Geometry",
+   "bigQuestion": "How can a handful of accepted rules be enough to prove hundreds of facts about shapes?",
+   "story": {
+    "title": "Five Rules and Two Thousand Years",
+    "kicker": "A teacher in ancient Alexandria wrote down five simple rules, and people are still arguing about the last one.",
+    "paragraphs": [
+     "Around 300 BCE, in the city of Alexandria in Egypt, a mathematician named Euclid put together a book called the Elements. He did not invent most of the geometry in it. His real invention was the order. He began with a short list of definitions, five postulates and a few common notions, and then he proved everything else, one statement at a time, each resting only on the statements before it. Thirteen books later he had built up a whole world of lines, triangles, circles and solids from that tiny starting list.",
+     "The five postulates sound almost too simple to matter. You can draw a straight line between any two points. You can extend a segment into a longer line. You can draw a circle with any center and any radius. All right angles are equal to each other. The fifth one was different. It was long and wordy, and it described when two lines will eventually meet. Today we usually state it this way: through a point not on a line, there is exactly one line parallel to the given line. Readers felt that a rule that complicated ought to be provable from the other four.",
+     "For about two thousand years, mathematicians tried. They filled notebooks with attempted proofs, and every one of them quietly assumed the very thing it was trying to show. Then, in the 1800s, a few people asked a braver question: what if the fifth postulate is simply false? They replaced it with a different rule and followed the logic. Nothing broke. They had discovered new geometries, ones that describe curved surfaces, and those geometries later became the language physicists use to describe gravity and the shape of space.",
+     "The habit Euclid started, of asking what you are allowed to assume and then proving everything else, spread far beyond geometry. Abraham Lincoln, working as a lawyer in Springfield, Illinois, carried a copy of the Elements on the road and studied it by candlelight. He said he wanted to understand what it truly means to demonstrate something, to prove it so completely that no honest person could disagree. That is what this chapter is about: not just knowing that a fact is true, but showing exactly why."
+    ],
+    "think": "Why would people spend centuries trying to prove a rule that everyone already believed was true? What did they gain when the attempt failed?"
+   },
+   "sections": [
+    {
+     "title": "Building Blocks of Geometry",
+     "lessons": [
+      {
+       "title": "Points, Lines and Planes",
+       "mainIdea": "Geometry starts with three undefined terms, and every other word is defined from them.",
+       "reading": [
+        "Picture a map of Chicago. A bus stop is a dot on the map. Lake Shore Drive is a long straight stroke. The flat surface of Lake Michigan spreads out in every direction. In geometry these three pictures stand for the three undefined terms: *point*, *line* and *plane*. We describe them, but we never define them using other words, because every chain of definitions has to start somewhere. A point has no size, only a position. A line is perfectly straight, has no thickness, and continues forever in both directions. A plane is a flat surface with no edges.",
+        "Everything else gets a definition built from those three. A *segment* is the part of a line between two endpoints, like the stretch of Michigan Avenue between two cross streets. A ray starts at one endpoint and continues forever in one direction. Points that lie on the same line are *collinear*. Points that lie on the same plane are coplanar. When two different lines cross, they share exactly one point, called their intersection. Read each definition out loud the first time you meet it. A definition is a promise about what a word will mean every single time you use it.",
+        "Names matter. The line through points A and B is called line AB. Segment AB has endpoints A and B. In plain text, the length of that segment is also written AB, so you have to read carefully. Here is a common mistake: treating segment AB and the length AB as the same thing. One is a set of points you can draw. The other is a number, like 7 cm. Keep the object and its measurement separate in your head. Proofs later in this chapter become much easier when you know whether you are talking about a thing or a number."
+       ],
+       "words": [
+        {
+         "w": "point",
+         "d": "an exact position with no size; one of geometry's undefined terms"
+        },
+        {
+         "w": "line",
+         "d": "a straight path with no thickness that goes on forever in both directions"
+        },
+        {
+         "w": "plane",
+         "d": "a flat surface that extends forever in every direction, like an endless tabletop"
+        },
+        {
+         "w": "segment",
+         "d": "the part of a line between two endpoints, including the endpoints"
+        },
+        {
+         "w": "collinear",
+         "d": "lying on the same line; three points are collinear if one line passes through all of them"
+        }
+       ],
+       "look": {
+        "type": "think",
+        "title": "How Many Lines?",
+        "text": "Draw three points A, B and C that do not all lie on one line. Through each pair of points you can draw exactly one line: AB, BC and AC. That makes three lines. Now add a fourth point D that is not on any of those lines. The new lines are AD, BD and CD, so there are six lines in all. Each new point adds one line for every point already there.",
+        "prompt": "How many lines would five points make if no three of them are collinear? Find the pattern before you count them all."
+       },
+       "check": [
+        {
+         "q": "Which of these is an undefined term in geometry?",
+         "choices": [
+          "segment",
+          "point",
+          "ray",
+          "angle"
+         ],
+         "a": 1,
+         "why": "Point, line and plane are described but not defined. Segments, rays and angles are all defined using them."
+        },
+        {
+         "q": "Points A, B and C all lie on the same line. What word describes them?",
+         "choices": [
+          "coplanar",
+          "congruent",
+          "collinear",
+          "parallel"
+         ],
+         "a": 2,
+         "why": "Collinear means on the same line. Coplanar means on the same plane, which is true here too but is not the word for one line."
+        },
+        {
+         "q": "Segment PQ has endpoints P and Q, and PQ = 9 cm. Which statement is true?",
+         "choices": [
+          "Segment PQ is a set of points, and PQ = 9 cm is its length",
+          "Segment PQ goes on forever in both directions",
+          "PQ has only one endpoint",
+          "Segment PQ is a number and 9 cm is a set of points"
+         ],
+         "a": 0,
+         "why": "The segment is the object made of points between P and Q. Its length, 9 cm, is a number that measures it."
+        }
+       ]
+      },
+      {
+       "title": "Postulates and Theorems",
+       "mainIdea": "A postulate is accepted without proof; a theorem must be proved from postulates, definitions and earlier theorems.",
+       "reading": [
+        "Every game needs rules that players agree on before play begins. Geometry's starting rules are called postulates, and each one is a *postulate*. Some books call them axioms. A postulate is a statement accepted as true without proof. Euclid used five. One says that through any two points there is exactly one line. Another says a segment can be extended into a line. You cannot prove these from anything simpler. You accept them, and then you build.",
+        "A *theorem* is a statement that has been proved. The proof uses only definitions, postulates and theorems that were already proved. Here is a small one: if two different lines intersect, they intersect in exactly one point. Suppose two different lines shared two points, P and Q. Then both lines would pass through P and Q. But the postulate says exactly one line passes through two given points, so the two lines would have to be the same line. That contradicts the fact that they were different. So they can share at most one point. Notice how the proof leans on the postulate at the key moment.",
+        "Some postulates are about measuring. The *segment addition postulate* says that if point B is between A and C, then AB + BC = AC. Try it with algebra. Suppose AB = 3x, BC = 2x + 4 and AC = 29. Then 3x + 2x + 4 = 29, so 5x = 25 and x = 5. That gives AB = 15 and BC = 14. Check: 15 + 14 = 29. The angle addition postulate works the same way for two angles that share a side. A common mistake is to solve for x and stop. Read the question again. It may ask for AB, not for x."
+       ],
+       "words": [
+        {
+         "w": "postulate",
+         "d": "a statement accepted as true without proof; a starting rule of geometry"
+        },
+        {
+         "w": "theorem",
+         "d": "a statement that has been proved using definitions, postulates and earlier theorems"
+        },
+        {
+         "w": "segment addition postulate",
+         "d": "if B is between A and C, then AB + BC = AC"
+        },
+        {
+         "w": "axiom",
+         "d": "another name for a postulate"
+        }
+       ],
+       "look": {
+        "type": "source",
+        "title": "Euclid's Common Notions",
+        "text": "Things that are equal to the same thing are also equal to one another. If equals are added to equals, the wholes are equal. If equals are subtracted from equals, the remainders are equal. The whole is greater than the part.",
+        "cite": "Euclid, Elements, Book I, the common notions, about 300 BCE (reworded from an early 1900s English translation)",
+        "paraphrase": true,
+        "prompt": "Which common notion would you use to show that if AB = CD and CD = EF, then AB = EF? Which one lets you add BC to both sides of an equation?"
+       },
+       "check": [
+        {
+         "q": "Point M is between L and N. LM = 2x + 1, MN = 3x − 6 and LN = 40. What is LM?",
+         "choices": [
+          "9",
+          "21",
+          "19",
+          "15"
+         ],
+         "a": 2,
+         "why": "2x + 1 + 3x − 6 = 40 gives 5x − 5 = 40, so x = 9. Then LM = 2(9) + 1 = 19. The 9 is x, not LM, and 21 is MN."
+        },
+        {
+         "q": "What makes a statement a theorem rather than a postulate?",
+         "choices": [
+          "It is about angles instead of segments",
+          "It has been proved from postulates, definitions and earlier theorems",
+          "It was written by Euclid",
+          "It is accepted without proof"
+         ],
+         "a": 1,
+         "why": "Postulates are accepted without proof. Theorems are proved from them and from earlier results."
+        },
+        {
+         "q": "Point D is inside angle ABC. Angle ABD measures 35° and angle DBC measures 48°. What is the measure of angle ABC?",
+         "choices": [
+          "13°",
+          "73°",
+          "93°",
+          "83°"
+         ],
+         "a": 3,
+         "why": "By the angle addition postulate, 35° + 48° = 83°. Subtracting gives 13°, which is the wrong operation."
+        }
+       ]
+      },
+      {
+       "title": "Conjectures and Counterexamples",
+       "mainIdea": "Inductive reasoning spots a pattern and makes a conjecture; deductive reasoning proves it; one counterexample disproves it.",
+       "reading": [
+        "Stand at a bus stop every morning and watch. The bus comes at 7:05, then 7:20, then 7:35, then 7:50. You guess the next one arrives at 8:05. That is *inductive reasoning*: looking at several cases, noticing a pattern, and making a *conjecture*, which is an educated guess that might be true. Inductive reasoning is how most math ideas are born. But it is not proof. The bus schedule might change at 8:00.",
+        "*Deductive reasoning* starts from facts already accepted and reaches a conclusion that must follow. All right angles measure 90°. Angle X is a right angle. So angle X measures 90°. Here is a number example. Conjecture: the sum of two odd numbers is even. Inductive check: 3 + 5 = 8, 7 + 9 = 16, 11 + 1 = 12. Deductive proof: any odd number can be written 2m + 1, and another as 2n + 1. Their sum is 2m + 2n + 2 = 2(m + n + 1), which is 2 times a whole number, so it is even. The proof covers every odd pair at once, not just three of them.",
+        "A *counterexample* is one case where the pattern breaks. One is enough to sink a conjecture. Look at the formula n^2 + n + 41. For n = 1 it gives 43, for n = 2 it gives 47, for n = 3 it gives 53, for n = 4 it gives 61. All prime. It keeps producing primes for a long time, so a student might conjecture it always does. But when n = 40, the formula gives 1600 + 40 + 41 = 1681, and 41 × 41 = 1681. Not prime. Two common mistakes: believing that many examples prove a rule, and believing that one example proves it. Examples suggest. Proofs settle."
+       ],
+       "words": [
+        {
+         "w": "conjecture",
+         "d": "a statement you believe is true based on a pattern, but have not proved"
+        },
+        {
+         "w": "inductive reasoning",
+         "d": "reasoning from specific examples to a general pattern"
+        },
+        {
+         "w": "deductive reasoning",
+         "d": "reasoning from accepted facts to a conclusion that must follow"
+        },
+        {
+         "w": "counterexample",
+         "d": "one example that fits the hypothesis but breaks the conclusion, proving a conjecture false"
+        }
+       ],
+       "look": {
+        "type": "data",
+        "title": "Values of n^2 + n + 41",
+        "rows": [
+         [
+          "n = 1",
+          43
+         ],
+         [
+          "n = 2",
+          47
+         ],
+         [
+          "n = 3",
+          53
+         ],
+         [
+          "n = 4",
+          61
+         ],
+         [
+          "n = 5",
+          71
+         ],
+         [
+          "n = 40",
+          1681
+         ]
+        ],
+        "unit": "value of the formula",
+        "cite": "computed directly from n^2 + n + 41",
+        "prompt": "The first five values are all prime. Is 1681 prime? What does that single row do to the conjecture that the formula always gives a prime?"
+       },
+       "check": [
+        {
+         "q": "A student sees 1, 4, 9, 16, 25 and predicts that 36 comes next. What kind of reasoning is this?",
+         "choices": [
+          "a counterexample",
+          "a theorem",
+          "deductive reasoning",
+          "inductive reasoning"
+         ],
+         "a": 3,
+         "why": "The student looked at examples and found a pattern. That is inductive reasoning. A proof would be deductive."
+        },
+        {
+         "q": "Which number is a counterexample to the claim that every number divisible by 4 is also divisible by 8?",
+         "choices": [
+          "12",
+          "8",
+          "16",
+          "24"
+         ],
+         "a": 0,
+         "why": "12 ÷ 4 = 3, so 12 is divisible by 4, but 12 ÷ 8 is not a whole number. The other choices are divisible by both."
+        },
+        {
+         "q": "Conjecture: if a number is prime, then it is odd. Which statement is correct?",
+         "choices": [
+          "3, 5 and 7 prove the conjecture true",
+          "The number 2 is a counterexample, so the conjecture is false",
+          "No counterexample exists",
+          "The conjecture is true because most primes are odd"
+         ],
+         "a": 1,
+         "why": "2 is prime and even. One counterexample is enough to make the conjecture false, no matter how many primes are odd."
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "title": "If-Then Statements",
+     "lessons": [
+      {
+       "title": "Conditional Statements",
+       "mainIdea": "A conditional has a hypothesis and a conclusion, and it is false only when the hypothesis is true and the conclusion is false.",
+       "reading": [
+        "If it rains on Saturday, then the game is canceled. That sentence is a *conditional statement*. The part after if is the *hypothesis*: it rains on Saturday. The part after then is the *conclusion*: the game is canceled. Mathematicians write a conditional as p → q, read as if p then q. Many geometry facts hide their if-then shape. Vertical angles are congruent really means: if two angles are vertical angles, then they are congruent. Rewriting a fact in if-then form shows you exactly what you are assuming and exactly what you are claiming.",
+        "When is a conditional false? Only in one situation: the hypothesis happens and the conclusion does not. It rains, and the game is played anyway. That breaks the promise. If it does not rain, the promise was never tested, so the statement is still counted as true. Try a number example. If x = 3, then x^2 = 9. That is true, since 3 × 3 = 9. Now flip it: if x^2 = 9, then x = 3. That is false, because x could be −3, and (−3) × (−3) = 9 too. The first statement makes a promise it keeps. The second makes a promise it breaks.",
+        "Two common mistakes. First, assuming the hypothesis always comes first in the sentence. You pass the class if you earn 60 percent puts the hypothesis at the end: earning 60 percent is the if part. Second, treating a conditional as if it works both ways. A conditional only promises one direction. The *negation* of a statement, written not p, says the opposite. The negation of x is greater than 5 is x is not greater than 5, which includes x = 5. Watch that edge case."
+       ],
+       "words": [
+        {
+         "w": "conditional statement",
+         "d": "an if-then statement, written p → q"
+        },
+        {
+         "w": "hypothesis",
+         "d": "the if part of a conditional statement; what is assumed"
+        },
+        {
+         "w": "conclusion",
+         "d": "the then part of a conditional statement; what is claimed to follow"
+        },
+        {
+         "w": "negation",
+         "d": "the opposite of a statement; the negation of 'it is raining' is 'it is not raining'"
+        }
+       ],
+       "look": {
+        "type": "think",
+        "title": "Find the If and the Then",
+        "text": "Three sentences from everyday life: (1) A student who scores 90 or above earns an A. (2) All squares have four congruent sides. (3) You may check out a book when you show a library card. Each one is a conditional in disguise.",
+        "prompt": "Rewrite each sentence in if-then form. Which part is the hypothesis and which is the conclusion? Is each statement true when the hypothesis is false?"
+       },
+       "check": [
+        {
+         "q": "In the statement 'If a polygon has three sides, then it is a triangle,' what is the hypothesis?",
+         "choices": [
+          "it is a triangle",
+          "a polygon has three sides",
+          "a triangle has three sides",
+          "the polygon is a shape"
+         ],
+         "a": 1,
+         "why": "The hypothesis is the if part: a polygon has three sides. The conclusion is that it is a triangle."
+        },
+        {
+         "q": "When is a conditional statement false?",
+         "choices": [
+          "when the hypothesis is false",
+          "when both parts are false",
+          "when the hypothesis is true and the conclusion is false",
+          "when the conclusion is true"
+         ],
+         "a": 2,
+         "why": "A conditional promises the conclusion whenever the hypothesis holds. It fails only when the hypothesis happens and the conclusion does not."
+        },
+        {
+         "q": "Which conditional statement is false?",
+         "choices": [
+          "If x = −4, then x^2 = 16",
+          "If a shape is a square, then it has four sides",
+          "If an angle measures 90°, then it is a right angle",
+          "If x^2 = 25, then x = 5"
+         ],
+         "a": 3,
+         "why": "x = −5 also gives x^2 = 25, so the hypothesis can be true while the conclusion is false. The other three always hold."
+        }
+       ]
+      },
+      {
+       "title": "Converse, Inverse, Contrapositive",
+       "mainIdea": "The contrapositive always matches the original statement's truth; the converse and inverse can be different.",
+       "reading": [
+        "Start with a true statement: if a number ends in 0, then it is divisible by 5. Now build three relatives. The *converse* swaps the two parts: if a number is divisible by 5, then it ends in 0. False, because 15 is divisible by 5 and ends in 5. The *inverse* negates both parts: if a number does not end in 0, then it is not divisible by 5. Also false, and 15 is again the counterexample. The *contrapositive* swaps and negates: if a number is not divisible by 5, then it does not end in 0. True. Every number ending in 0 is divisible by 5, so a number that is not divisible by 5 cannot end in 0.",
+        "That pattern is not a coincidence. A conditional and its contrapositive are *logically equivalent*: they are always both true or both false. Think about the rain promise. If it rains, the game is canceled. Suppose the game is not canceled. Then it must not have rained, or the promise would have been broken. So, if the game is not canceled, then it did not rain. Same promise, stated backward. The converse and inverse are also equivalent to each other, but neither is tied to the original.",
+        "In geometry this matters because converses often need their own proofs, and some converses are false. If two angles are vertical angles, then they are congruent: true. The converse, if two angles are congruent then they are vertical angles, is false, since two separate 30° angles are congruent without being vertical. When a proof seems stuck, try proving the contrapositive instead. Showing that not q leads to not p proves the original just as well. A common mistake is to assume a true statement's converse is automatically true. Check it separately, every time."
+       ],
+       "words": [
+        {
+         "w": "converse",
+         "d": "the statement formed by swapping the hypothesis and conclusion: if q then p"
+        },
+        {
+         "w": "inverse",
+         "d": "the statement formed by negating both parts: if not p then not q"
+        },
+        {
+         "w": "contrapositive",
+         "d": "the statement formed by swapping and negating both parts: if not q then not p"
+        },
+        {
+         "w": "logically equivalent",
+         "d": "two statements that are always both true or both false, like a conditional and its contrapositive"
+        }
+       ],
+       "look": {
+        "type": "think",
+        "title": "Four Versions of One Statement",
+        "text": "Original: if a quadrilateral is a square, then it has four right angles. Write the converse, the inverse and the contrapositive. A rectangle that is 3 cm by 5 cm has four right angles but is not a square. Use that rectangle to test each version.",
+        "prompt": "Which of the four statements are true? Which pairs always agree with each other, and why does the 3 by 5 rectangle break the ones it breaks?"
+       },
+       "check": [
+        {
+         "q": "What is the converse of 'If two angles are complementary, then their measures add to 90°'?",
+         "choices": [
+          "If two angles are not complementary, then their measures do not add to 90°",
+          "If two angles' measures do not add to 90°, then they are not complementary",
+          "If two angles' measures add to 90°, then they are complementary",
+          "Two angles are complementary if and only if their measures add to 90°"
+         ],
+         "a": 2,
+         "why": "The converse swaps the hypothesis and conclusion without negating anything. Here it happens to be true, because that is the definition."
+        },
+        {
+         "q": "Which statement always has the same truth value as the original conditional?",
+         "choices": [
+          "the converse",
+          "the inverse",
+          "the negation",
+          "the contrapositive"
+         ],
+         "a": 3,
+         "why": "A conditional and its contrapositive are logically equivalent. The converse and inverse match each other, not the original."
+        },
+        {
+         "q": "Original: 'If a number is a whole number, then it is an integer.' This is true. What is the inverse, and is it true?",
+         "choices": [
+          "If a number is not a whole number, then it is not an integer; false, since −3 is an integer but not a whole number",
+          "If a number is an integer, then it is a whole number; true",
+          "If a number is not an integer, then it is not a whole number; false",
+          "If a number is not a whole number, then it is not an integer; true"
+         ],
+         "a": 0,
+         "why": "The inverse negates both parts. It fails because −3 is not a whole number but is an integer."
+        }
+       ]
+      },
+      {
+       "title": "Biconditionals and Definitions",
+       "mainIdea": "A biconditional is true when a conditional and its converse are both true, and every good definition is a biconditional.",
+       "reading": [
+        "Two lines are *perpendicular lines* if and only if they meet at a right angle. The phrase *if and only if* means the statement runs both ways. If the lines are perpendicular, they meet at a right angle. And if they meet at a right angle, they are perpendicular. A statement of this shape is a *biconditional*, written p ↔ q. It is true only when the conditional and its converse are both true. If either direction fails, the biconditional is false.",
+        "Every good *definition* is a biconditional, even when it is not written that way. A right angle is an angle that measures 90°. Read forward: if an angle is a right angle, it measures 90°. Read backward: if an angle measures 90°, it is a right angle. Both hold, so the definition works. Now test a bad one: a square is a quadrilateral with four right angles. Forward is fine, since every square has four right angles. Backward fails: a 3 by 5 rectangle has four right angles but is not a square. So that sentence is not a definition of a square. It describes a rectangle.",
+        "Here is an algebra biconditional: x + 5 = 12 if and only if x = 7. Forward: subtract 5 from both sides, and x = 7. Backward: 7 + 5 = 12. Both directions work, so the biconditional is true. Compare it with x^2 = 49 if and only if x = 7. Backward is fine, since 7^2 = 49. Forward fails, because x = −7 also gives 49. That biconditional is false. The common mistake is writing if and only if when only one direction has been checked. Always test both."
+       ],
+       "words": [
+        {
+         "w": "biconditional",
+         "d": "a statement that combines a conditional and its converse, written p ↔ q"
+        },
+        {
+         "w": "if and only if",
+         "d": "the phrase that shows a statement is true in both directions"
+        },
+        {
+         "w": "definition",
+         "d": "a statement of exactly what a word means; it must work as a biconditional"
+        },
+        {
+         "w": "perpendicular lines",
+         "d": "two lines that meet to form a right angle"
+        }
+       ],
+       "look": {
+        "type": "think",
+        "title": "Testing a Definition",
+        "text": "A student proposes this definition: a midpoint is a point that lies on a segment. Forward: if M is a midpoint of segment AB, then M lies on AB. That is true. Backward: if M lies on segment AB, then M is a midpoint of AB. Picture AB as 10 cm long, with M placed 2 cm from A.",
+        "prompt": "Does the backward direction hold? Fix the proposed definition so that both directions are true, and check your new version with the 10 cm segment."
+       },
+       "check": [
+        {
+         "q": "Which conditional can be rewritten as a true biconditional?",
+         "choices": [
+          "If x = 4, then x^2 = 16",
+          "If a triangle has three congruent sides, then it is equilateral",
+          "If two angles are vertical angles, then they are congruent",
+          "If an animal is a dog, then it has four legs"
+         ],
+         "a": 1,
+         "why": "Equilateral means three congruent sides, so the converse is also true. The others have false converses: x = −4, congruent angles need not be vertical, cats have four legs."
+        },
+        {
+         "q": "The biconditional 'x − 3 = 10 if and only if x = 13' is:",
+         "choices": [
+          "true, because both directions hold",
+          "false, because the converse fails",
+          "false, because x could be −13",
+          "true only in the forward direction"
+         ],
+         "a": 0,
+         "why": "Forward: add 3 to both sides, x = 13. Backward: 13 − 3 = 10. Both directions work."
+        },
+        {
+         "q": "Why is 'A square is a quadrilateral with four right angles' not a good definition?",
+         "choices": [
+          "Squares do not have right angles",
+          "The forward direction fails",
+          "A 2 by 5 rectangle has four right angles but is not a square, so the converse fails",
+          "Definitions cannot mention angles"
+         ],
+         "a": 2,
+         "why": "A definition must work both ways. The rectangle is a counterexample to the backward direction."
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "title": "Writing Proofs",
+     "lessons": [
+      {
+       "title": "Two-Column Proofs With Segments",
+       "mainIdea": "A two-column proof lists statements on the left and a reason for each on the right, from the given to what you want to prove.",
+       "reading": [
+        "You already write proofs when you solve equations; you just do not label the reasons. Solve 3x + 7 = 22. Statement 1: 3x + 7 = 22. Reason: *given*. Statement 2: 3x = 15. Reason: subtraction property of equality, since subtracting 7 from both sides keeps the equation true. Statement 3: x = 5. Reason: division property of equality. That is a *two-column proof*. Every line on the left has a reason on the right, and each reason is a definition, a postulate, a property or a theorem. Other properties you will use: the *reflexive property* (a = a), the symmetric property (if a = b then b = a), the *transitive property* (if a = b and b = c then a = c) and the *substitution property* (if a = b, you may replace a with b anywhere).",
+        "Now a segment proof. Points A, B, C and D lie on a line in that order. Given: AB = CD. Prove: AC = BD. Line 1: AB = CD, given. Line 2: BC = BC, reflexive property. Line 3: AB + BC = CD + BC, addition property of equality, since we added the same length to both sides. Line 4: AB + BC = AC and CD + BC = BD, segment addition postulate. Line 5: AC = BD, substitution. Check it with numbers: put A at 0, B at 2, C at 5 and D at 7. Then AB = 2 and CD = 2, while AC = 5 and BD = 5. The proof says it works for any positions, not just these.",
+        "Three habits keep proofs honest. Every statement needs a reason, even the obvious ones. The word given may only be used for facts the problem handed you. And you may never use the statement you are trying to prove as a reason along the way, because that is circular. A common mistake is skipping the reflexive line, BC = BC. It looks silly, but without it there is nothing to justify adding BC to both sides."
+       ],
+       "words": [
+        {
+         "w": "two-column proof",
+         "d": "a proof written as numbered statements on the left with a reason for each on the right"
+        },
+        {
+         "w": "given",
+         "d": "a fact the problem states as true; the starting point of a proof"
+        },
+        {
+         "w": "reflexive property",
+         "d": "any quantity equals itself: AB = AB"
+        },
+        {
+         "w": "transitive property",
+         "d": "if a = b and b = c, then a = c"
+        },
+        {
+         "w": "substitution property",
+         "d": "if two quantities are equal, one can replace the other in any statement"
+        }
+       ],
+       "look": {
+        "type": "think",
+        "title": "The Proof With Numbers",
+        "text": "Points A, B, C and D lie in that order on a line. AB = 4, BC = 6 and CD = 4. Compute AC by adding AB + BC, and compute BD by adding BC + CD. Then move the points: make AB = 9, BC = 1 and CD = 9, and compute both again.",
+        "prompt": "Do AC and BD come out equal both times? Which line of the two-column proof explains why they must be equal whenever AB = CD?"
+       },
+       "check": [
+        {
+         "q": "Which property justifies this step: if AB = CD and CD = EF, then AB = EF?",
+         "choices": [
+          "reflexive property",
+          "transitive property",
+          "substitution property",
+          "addition property"
+         ],
+         "a": 1,
+         "why": "The transitive property links two equalities that share a middle term. Substitution would also work, but transitive names this exact pattern."
+        },
+        {
+         "q": "In a two-column proof that if 2x − 5 = 11 then x = 8, what is the reason for the step 2x = 16?",
+         "choices": [
+          "division property of equality",
+          "given",
+          "addition property of equality",
+          "substitution"
+         ],
+         "a": 2,
+         "why": "Adding 5 to both sides of 2x − 5 = 11 gives 2x = 16. That is the addition property of equality."
+        },
+        {
+         "q": "Points P, Q, R and S lie in that order on a line, and PQ = RS. Which statement is proved by adding QR to both sides?",
+         "choices": [
+          "PS = QR",
+          "PQ = QR",
+          "PR = RS",
+          "PR = QS"
+         ],
+         "a": 3,
+         "why": "PQ + QR = PR and QR + RS = QS by the segment addition postulate, so PR = QS."
+        }
+       ]
+      },
+      {
+       "title": "Angle Proofs",
+       "mainIdea": "Angle proofs rest on two facts: a linear pair adds to 180°, and vertical angles are congruent.",
+       "reading": [
+        "Two streets cross, and four angles appear at the corner. Two angles that share a side and whose other sides form a straight line are a *linear pair*. The linear pair postulate says their measures add to 180°, so they are *supplementary*. Angles that add to 90° are *complementary*. The two angles across from each other at the crossing are *vertical angles*. Number the four angles 1, 2, 3, 4 going around. Angles 1 and 3 are vertical, and so are 2 and 4.",
+        "Here is the proof that vertical angles are congruent, and it uses only the linear pair postulate. Angles 1 and 2 form a linear pair, so m∠1 + m∠2 = 180°. Angles 3 and 2 also form a linear pair, so m∠3 + m∠2 = 180°. Both sums equal 180°, so m∠1 + m∠2 = m∠3 + m∠2 by substitution. Subtract m∠2 from both sides: m∠1 = m∠3. That is the subtraction property of equality. Try it with numbers. If vertical angles measure (3x + 10)° and (5x − 30)°, set them equal: 3x + 10 = 5x − 30, so 40 = 2x and x = 20. Each angle is 70°. Its linear pair partner is 180° − 70° = 110°.",
+        "The same subtraction trick proves two more theorems. If two angles are supplementary to the same angle, they are congruent, because each one equals 180° minus that angle. If two angles are complementary to the same angle, they are congruent for the same reason with 90°. Two common mistakes: setting vertical angles equal to 180° instead of equal to each other, and assuming two angles are congruent because they look alike in a drawing. In a proof, a picture is a hint, not a reason."
+       ],
+       "words": [
+        {
+         "w": "vertical angles",
+         "d": "the two opposite angles formed when two lines cross; they are always congruent"
+        },
+        {
+         "w": "linear pair",
+         "d": "two adjacent angles whose outer sides form a straight line; their measures add to 180°"
+        },
+        {
+         "w": "supplementary",
+         "d": "two angles whose measures add to 180°"
+        },
+        {
+         "w": "complementary",
+         "d": "two angles whose measures add to 90°"
+        }
+       ],
+       "look": {
+        "type": "think",
+        "title": "One Angle Gives All Four",
+        "text": "Two lines cross, forming angles 1, 2, 3 and 4 in order around the point. Angle 1 measures 52°. Angle 2 is its linear pair partner, so angle 2 measures 180° − 52° = 128°. Angle 3 is vertical to angle 1, and angle 4 is vertical to angle 2.",
+        "prompt": "Find angles 3 and 4, then add all four measures. Why should the total be 360° no matter what angle 1 measures?"
+       },
+       "check": [
+        {
+         "q": "Two vertical angles measure (4x + 6)° and (6x − 20)°. What is x?",
+         "choices": [
+          "19.4",
+          "13",
+          "7",
+          "58"
+         ],
+         "a": 1,
+         "why": "Vertical angles are equal: 4x + 6 = 6x − 20, so 26 = 2x and x = 13. Setting the sum to 180° gives 19.4, a common error; 58 is the angle measure."
+        },
+        {
+         "q": "Angles 1 and 2 form a linear pair. Angle 1 measures 115°. What does angle 2 measure?",
+         "choices": [
+          "115°",
+          "25°",
+          "75°",
+          "65°"
+         ],
+         "a": 3,
+         "why": "A linear pair adds to 180°, so 180° − 115° = 65°. The 25° comes from wrongly using 90°."
+        },
+        {
+         "q": "Angle A is supplementary to angle C, and angle B is also supplementary to angle C. What can you conclude?",
+         "choices": [
+          "angle A is congruent to angle B",
+          "angle A and angle B are supplementary",
+          "angle A is congruent to angle C",
+          "angle B measures 90°"
+         ],
+         "a": 0,
+         "why": "Both A and B equal 180° minus angle C, so they are congruent. That is the congruent supplements theorem."
+        }
+       ]
+      },
+      {
+       "title": "Paragraph and Flow Proofs",
+       "mainIdea": "Paragraph, flow and two-column proofs carry the same statements and reasons in different layouts.",
+       "reading": [
+        "A *midpoint* is the point that divides a segment into two congruent segments. Claim: if M is the midpoint of AB, then AM = 1/2 AB. Here it is as a *paragraph proof*, which is a proof written in sentences. Since M is the midpoint of AB, AM = MB by the definition of midpoint. By the segment addition postulate, AM + MB = AB. Substituting AM for MB gives AM + AM = AB, so 2 AM = AB. Dividing both sides by 2 gives AM = 1/2 AB. Every sentence names its reason, exactly as a two-column proof would.",
+        "A *flow proof* shows the same logic as boxes connected by arrows, so you can see which facts feed into which. One box holds M is the midpoint of AB (given). An arrow leads to AM = MB (definition of midpoint). A second starting box holds AM + MB = AB (segment addition postulate). Both arrows meet at 2 AM = AB (substitution), which leads to AM = 1/2 AB (division property). Flow proofs are useful when two separate chains of reasoning join at one conclusion, because the arrows show the joining.",
+        "Check the result with numbers. If AB = 18, then AM should be 9, and 9 + 9 = 18. Now use it in algebra: M is the midpoint of AB, with AM = 3x + 2 and MB = 5x − 8. Since AM = MB, 3x + 2 = 5x − 8, so 10 = 2x and x = 5. Then AM = 17, MB = 17 and AB = 34. The most common mistake in paragraph proofs is dropping the reasons because the sentences flow smoothly. A paragraph proof is still a proof. Every claim has to say why."
+       ],
+       "words": [
+        {
+         "w": "paragraph proof",
+         "d": "a proof written in sentences, where each statement still names its reason"
+        },
+        {
+         "w": "flow proof",
+         "d": "a proof drawn as boxes joined by arrows that show which statements lead to which"
+        },
+        {
+         "w": "midpoint",
+         "d": "the point on a segment that divides it into two congruent segments"
+        }
+       ],
+       "look": {
+        "type": "think",
+        "title": "Three Layouts, One Proof",
+        "text": "Given: M is the midpoint of segment AB, AM = 2x + 7 and MB = 4x − 5. Prove: AB = 38. Start by setting 2x + 7 = 4x − 5, because a midpoint makes AM = MB. Solve for x, find AM, then use the segment addition postulate to reach AB.",
+        "prompt": "Write the argument first as a paragraph proof and then as a flow proof. Do the two versions need any different reasons?"
+       },
+       "check": [
+        {
+         "q": "M is the midpoint of AB. AM = 2x + 3 and MB = 4x − 9. What is AB?",
+         "choices": [
+          "6",
+          "15",
+          "12",
+          "30"
+         ],
+         "a": 3,
+         "why": "2x + 3 = 4x − 9 gives x = 6, so AM = 15. AB = AM + MB = 15 + 15 = 30. The 6 is x and 15 is only half."
+        },
+        {
+         "q": "What does a flow proof use instead of numbered rows?",
+         "choices": [
+          "boxes joined by arrows that show which statements lead to which",
+          "a paragraph with no reasons",
+          "a table of values",
+          "a picture with measurements"
+         ],
+         "a": 0,
+         "why": "A flow proof arranges statements in boxes and uses arrows to show the logical path from givens to the conclusion."
+        },
+        {
+         "q": "Which statement about paragraph proofs is true?",
+         "choices": [
+          "They do not need reasons because they are written in sentences",
+          "They can only prove facts about segments",
+          "Each statement still needs a reason, written into the sentences",
+          "They are less valid than two-column proofs"
+         ],
+         "a": 2,
+         "why": "The layout changes, but the logic does not. Every claim in a paragraph proof must state the definition, postulate or theorem behind it."
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "title": "Parallel Lines and Constructions",
+     "lessons": [
+      {
+       "title": "Parallel Lines and Transversals",
+       "mainIdea": "When a transversal crosses parallel lines, corresponding angles are congruent, and that one fact proves the other angle pairs.",
+       "reading": [
+        "Chicago's streets mostly run in a grid, with east-west streets parallel to each other. A few diagonal streets, like Milwaukee Avenue, slice across the grid. A line that crosses two or more other lines is a *transversal*. Where a transversal crosses two lines, eight angles appear, four at each crossing. Number them 1 through 4 at the top crossing and 5 through 8 at the bottom, in the same order. Angles in the same position at each crossing, like 1 and 5, are *corresponding angles*. Angles between the two lines on opposite sides of the transversal, like 3 and 6, are *alternate interior angles*. Angles between the lines on the same side, like 3 and 5, are *consecutive interior angles*.",
+        "The corresponding angles postulate says: if the two lines are *parallel lines*, then corresponding angles are congruent. From that one rule we can prove the rest. Claim: alternate interior angles 3 and 6 are congruent. Angle 2 corresponds to angle 6, so ∠2 ≅ ∠6. Angle 2 and angle 3 are vertical angles, so ∠2 ≅ ∠3. By the transitive property, ∠3 ≅ ∠6. Consecutive interior angles are supplementary by a similar chain: ∠3 ≅ ∠6 as just shown, and angles 6 and 5 form a linear pair, so m∠3 + m∠5 = m∠6 + m∠5 = 180°.",
+        "Now some numbers. Alternate interior angles measure (2x + 15)° and (3x − 20)°. They are congruent, so 2x + 15 = 3x − 20 and x = 35. Each angle is 85°. A consecutive interior angle next to one of them measures 180° − 85° = 95°. The converses also hold and are how we prove lines parallel: if corresponding angles are congruent, or alternate interior angles are congruent, or consecutive interior angles are supplementary, then the lines are parallel. Two mistakes to avoid: assuming lines are parallel because they look parallel in a sketch, and setting consecutive interior angles equal when they should add to 180°."
+       ],
+       "words": [
+        {
+         "w": "transversal",
+         "d": "a line that crosses two or more other lines"
+        },
+        {
+         "w": "corresponding angles",
+         "d": "angles in the same position at each crossing of a transversal; congruent when the lines are parallel"
+        },
+        {
+         "w": "alternate interior angles",
+         "d": "angles between the two lines on opposite sides of the transversal; congruent when the lines are parallel"
+        },
+        {
+         "w": "consecutive interior angles",
+         "d": "angles between the two lines on the same side of the transversal; supplementary when the lines are parallel"
+        },
+        {
+         "w": "parallel lines",
+         "d": "two lines in the same plane that never meet"
+        }
+       ],
+       "look": {
+        "type": "think",
+        "title": "A Diagonal Across the Grid",
+        "text": "A diagonal avenue crosses two parallel east-west streets. At the northern crossing, the angle on the northeast side measures 118°. Label the eight angles and use vertical angles, linear pairs and corresponding angles to fill in the rest.",
+        "prompt": "What are the measures of all eight angles? How many different measures appear, and why only that many?"
+       },
+       "check": [
+        {
+         "q": "Two parallel lines are cut by a transversal. A pair of consecutive interior angles measure (2x)° and (x + 30)°. What is x?",
+         "choices": [
+          "30",
+          "50",
+          "60",
+          "75"
+         ],
+         "a": 1,
+         "why": "Consecutive interior angles are supplementary: 2x + x + 30 = 180, so 3x = 150 and x = 50. Setting them equal gives 30, a common error."
+        },
+        {
+         "q": "Two parallel lines are cut by a transversal. One of a pair of alternate interior angles measures 74°. What is the other?",
+         "choices": [
+          "106°",
+          "16°",
+          "74°",
+          "148°"
+         ],
+         "a": 2,
+         "why": "Alternate interior angles between parallel lines are congruent, so the other is also 74°. The 106° would be a consecutive interior angle."
+        },
+        {
+         "q": "Which fact lets you conclude that two lines cut by a transversal are parallel?",
+         "choices": [
+          "a pair of vertical angles are congruent",
+          "a pair of consecutive interior angles are congruent",
+          "a pair of alternate interior angles are supplementary",
+          "a pair of corresponding angles are congruent"
+         ],
+         "a": 3,
+         "why": "The converse of the corresponding angles postulate proves lines parallel. Vertical angles are always congruent, so they say nothing about parallelism."
+        }
+       ]
+      },
+      {
+       "title": "Compass and Straightedge",
+       "mainIdea": "A construction uses only a compass and an unmarked straightedge, and every step is backed by a postulate or theorem.",
+       "reading": [
+        "Euclid's first three postulates describe two tools. A *straightedge* draws a line through two points; it has no marks, so it cannot measure. A *compass* draws a circle or arc with a chosen center and radius. A *construction* is a drawing made with only those two tools. Start with copying a segment: draw a ray, set the compass to the length of the original segment, and swing an arc from the ray's endpoint. Where the arc crosses the ray is the copy's other endpoint. No ruler needed.",
+        "Next, the *perpendicular bisector* of segment AB. Open the compass wider than half of AB. Draw an arc from A, then an arc of the same radius from B. The arcs cross at two points, one above the segment and one below. Draw the line through those two points. Why does it work? Each crossing point is the same distance from A as from B, because both arcs used the same radius. A point equidistant from A and B lies on the perpendicular bisector, so the line through two such points is the bisector. It cuts AB at its midpoint and meets it at 90°.",
+        "To draw an *angle bisector*, swing an arc from the vertex V so it crosses both sides at points P and Q. Then draw equal arcs from P and Q that meet at a point R inside the angle. Ray VR splits the angle in half. Triangles VPR and VQR have three pairs of equal sides, which, as the next chapter proves, makes them congruent and their angles at V equal. To draw a line through a point parallel to a given line, copy an angle so that corresponding angles are congruent. Not everything is possible: mathematicians proved in the 1800s that no compass-and-straightedge construction can cut a general angle into three equal parts. The most common construction mistake is changing the compass width between two arcs that must match."
+       ],
+       "words": [
+        {
+         "w": "construction",
+         "d": "a geometric drawing made using only a compass and an unmarked straightedge"
+        },
+        {
+         "w": "straightedge",
+         "d": "a tool for drawing straight lines; it has no marks for measuring"
+        },
+        {
+         "w": "compass",
+         "d": "a tool for drawing circles and arcs with a chosen center and radius"
+        },
+        {
+         "w": "perpendicular bisector",
+         "d": "the line that passes through a segment's midpoint at a right angle"
+        },
+        {
+         "w": "angle bisector",
+         "d": "a ray that divides an angle into two congruent angles"
+        }
+       ],
+       "look": {
+        "type": "think",
+        "title": "Why the Arcs Must Reach",
+        "text": "Segment AB is 6 cm long. Set the compass to 2 cm and try the perpendicular bisector construction: the arc from A reaches only 2 cm out, and the arc from B reaches only 2 cm out, so they never touch. Set the compass to exactly 3 cm and the arcs touch only at the midpoint, giving one point instead of two. Now set it to 4 cm.",
+        "prompt": "Why does the construction need the compass opened to more than half of AB? What goes wrong with one crossing point instead of two?"
+       },
+       "check": [
+        {
+         "q": "When bisecting segment AB with arcs, why must the arcs from A and B have the same radius?",
+         "choices": [
+          "so the drawing looks neat",
+          "so the crossing points are equidistant from A and B, which puts them on the perpendicular bisector",
+          "so the arcs are the same color",
+          "so the segment gets longer"
+         ],
+         "a": 1,
+         "why": "Equal radii make each crossing point the same distance from both endpoints. Such points lie exactly on the perpendicular bisector."
+        },
+        {
+         "q": "Which tools are allowed in a classical construction?",
+         "choices": [
+          "a ruler with inch marks and a protractor",
+          "a protractor and a compass",
+          "an unmarked straightedge and a compass",
+          "a calculator and a ruler"
+         ],
+         "a": 2,
+         "why": "Euclid's postulates allow only drawing lines through points and circles with a given center and radius: straightedge and compass."
+        },
+        {
+         "q": "To construct a line through point P parallel to line m, you should:",
+         "choices": [
+          "measure 90° with a protractor at P",
+          "draw a circle centered at P",
+          "copy an angle so that corresponding angles are congruent",
+          "fold the paper along line m"
+         ],
+         "a": 2,
+         "why": "Congruent corresponding angles guarantee parallel lines by the converse of the corresponding angles postulate. Copying an angle uses only compass and straightedge."
+        }
+       ]
+      }
+     ]
+    }
+   ],
+   "review": [
+    {
+     "q": "Point B is between A and C. AB = 4x − 3, BC = 2x + 5 and AC = 38. What is BC?",
+     "choices": [
+      "6",
+      "17",
+      "21",
+      "38"
+     ],
+     "a": 1,
+     "why": "4x − 3 + 2x + 5 = 38 gives 6x + 2 = 38, so x = 6. BC = 2(6) + 5 = 17, and AB = 21. Check: 21 + 17 = 38."
+    },
+    {
+     "q": "What is the contrapositive of 'If a figure is a square, then it is a rectangle'?",
+     "choices": [
+      "If a figure is a rectangle, then it is a square",
+      "If a figure is not a square, then it is not a rectangle",
+      "If a figure is not a rectangle, then it is not a square",
+      "A figure is a square if and only if it is a rectangle"
+     ],
+     "a": 2,
+     "why": "The contrapositive swaps and negates both parts. It is true, just like the original."
+    },
+    {
+     "q": "Which value of x is a counterexample to 'If x^2 > x, then x > 1'?",
+     "choices": [
+      "2",
+      "3",
+      "1/2",
+      "−2"
+     ],
+     "a": 3,
+     "why": "(−2)^2 = 4, and 4 > −2, so the hypothesis holds, but −2 > 1 is false. For 1/2, the hypothesis fails, so it is not a counterexample."
+    },
+    {
+     "q": "Two angles form a linear pair and measure (3x + 12)° and (2x − 7)°. What is x?",
+     "choices": [
+      "35",
+      "19",
+      "37",
+      "63"
+     ],
+     "a": 0,
+     "why": "A linear pair adds to 180°: 5x + 5 = 180, so x = 35. Setting them equal gives 19, which is the wrong relationship."
+    },
+    {
+     "q": "Two parallel lines are cut by a transversal. Corresponding angles measure (3x)° and (x + 80)°. What is the measure of each angle?",
+     "choices": [
+      "40°",
+      "120°",
+      "60°",
+      "25°"
+     ],
+     "a": 1,
+     "why": "Corresponding angles are congruent: 3x = x + 80, so x = 40 and each angle measures 3(40) = 120°. The 40 is only x."
+    },
+    {
+     "q": "In a proof, what is the reason for the statement AB + BC = AC when B is between A and C?",
+     "choices": [
+      "definition of midpoint",
+      "addition property of equality",
+      "segment addition postulate",
+      "transitive property"
+     ],
+     "a": 2,
+     "why": "The segment addition postulate says the two pieces add up to the whole segment."
+    },
+    {
+     "q": "Which statement is a true biconditional?",
+     "choices": [
+      "A number is even if and only if it is divisible by 2",
+      "x^2 = 16 if and only if x = 4",
+      "Two angles are congruent if and only if they are vertical angles",
+      "A quadrilateral is a square if and only if it has four right angles"
+     ],
+     "a": 0,
+     "why": "Even means divisible by 2, and both directions hold. The others each have a false direction: x = −4, congruent non-vertical angles, and rectangles."
+    },
+    {
+     "q": "A proof that vertical angles are congruent, built from the linear pair postulate, is an example of:",
+     "choices": [
+      "inductive reasoning",
+      "a conjecture",
+      "a counterexample",
+      "deductive reasoning"
+     ],
+     "a": 3,
+     "why": "The proof starts from an accepted postulate and reaches a conclusion that must follow. That is deductive reasoning."
+    }
+   ]
+  },
+  {
+   "n": 47,
+   "title": "Congruence and Transformations",
+   "years": "Geometry",
+   "bigQuestion": "What does it really mean for two shapes to be the same, and how little information do we need to be sure?",
+   "story": {
+    "title": "Why the Triangle Holds",
+    "kicker": "A bridge made of squares would fold flat, and a bridge made of triangles will not. The difference is a theorem.",
+    "paragraphs": [
+     "Stand on the Michigan Avenue bridge in Chicago and look at the steel under the deck, or ride the L over the river and look sideways. You will see triangles everywhere. The beams are bolted into a repeating pattern of triangles called a truss. Bridges, cranes, radio towers and the roof of a gym all use the same trick. Nobody chose triangles because they look nice. They chose them because a triangle cannot change its shape without breaking a bar.",
+     "Try it with four strips of cardboard and four pins. Pin them into a square. Now push on one corner. The square leans into a parallelogram and keeps leaning until it lies flat. The four bars did not change length, and yet the shape changed completely. Four sides do not pin down a four-sided figure. Now pin three strips into a triangle and push. Nothing moves. With the three side lengths fixed, there is only one triangle you can make, so the frame is rigid.",
+     "Engineers in the 1800s built that fact into iron and then steel. One popular design, a long zigzag of equilateral triangles between two straight beams, was patented by an English engineer named James Warren, and Warren trusses still carry trains and trucks today. Every triangle in the truss is a small proof: three lengths, one possible shape. When a load presses down, the bars push and pull on each other, but no angle can open or close, because opening an angle would require a side to stretch.",
+     "Mathematicians call that fact the side-side-side congruence criterion. If two triangles have three pairs of matching side lengths, they are congruent, which means one can be moved onto the other exactly by sliding, turning and flipping. This chapter starts with those motions, defines congruence with them, and then asks the engineer's question: what is the smallest set of measurements that forces a triangle to be one particular shape? Three sides work. Two sides and an angle sometimes work and sometimes do not, and knowing which is which is the whole game."
+    ],
+    "think": "The square frame folded flat while its four sides stayed the same length. What extra piece of information would you have to add to lock the square in place?"
+   },
+   "sections": [
+    {
+     "title": "Moving Shapes Without Changing Them",
+     "lessons": [
+      {
+       "title": "Translations",
+       "mainIdea": "A translation slides every point the same distance in the same direction, and a coordinate rule describes it exactly.",
+       "reading": [
+        "Slide a phone across a table without turning it. Every corner moves the same distance in the same direction. That motion is a *translation*. On a coordinate grid, a translation is written as a rule. The rule (x, y) → (x + 3, y − 2) means: add 3 to every x-coordinate and subtract 2 from every y-coordinate. Point (1, 5) moves to (4, 3). Point (−2, 0) moves to (1, −2). The original point is the *preimage*, and the moved point is the *image*. We mark an image with a prime: A moves to A′, read A prime.",
+        "Try a whole triangle. A(1, 2), B(4, 2) and C(1, 6), with the rule (x, y) → (x + 3, y − 2). Then A′ = (4, 0), B′ = (7, 0) and C′ = (4, 4). Now compare lengths. AB runs from x = 1 to x = 4 along the line y = 2, so AB = 3. A′B′ runs from x = 4 to x = 7, so A′B′ = 3. Every side keeps its length and every angle keeps its measure. A motion that preserves all distances and angles is a *rigid motion*. Translations, reflections and rotations are the three basic rigid motions, and this chapter builds the idea of congruence on them.",
+        "You can also read the rule off a pair of points. If a translation takes (2, 7) to (5, 3), it added 3 to x and subtracted 4 from y, so the rule is (x, y) → (x + 3, y − 4). The pair of numbers, 3 right and 4 down, is called the translation *vector*. Two common mistakes: subtracting when the rule says to add, and applying the change to only one coordinate. Every point gets both changes, every time."
+       ],
+       "words": [
+        {
+         "w": "translation",
+         "d": "a rigid motion that slides every point the same distance in the same direction"
+        },
+        {
+         "w": "preimage",
+         "d": "the original figure before a transformation"
+        },
+        {
+         "w": "image",
+         "d": "the figure after a transformation; its points are marked with primes, like A′"
+        },
+        {
+         "w": "rigid motion",
+         "d": "a transformation that preserves all distances and angle measures"
+        },
+        {
+         "w": "vector",
+         "d": "a quantity with a direction and a length, used to describe a translation"
+        }
+       ],
+       "look": {
+        "type": "think",
+        "title": "Slide the Triangle",
+        "text": "Triangle PQR has vertices P(−3, 1), Q(0, 1) and R(−3, 5). Apply the rule (x, y) → (x + 5, y − 3) to each vertex. Then find the length of PQ and of P′Q′ by counting units along the horizontal side. Finally, find the length of PR and of P′R′ along the vertical side.",
+        "prompt": "Where do P′, Q′ and R′ land? Did any side length change? What rule would slide the image back onto the original?"
+       },
+       "check": [
+        {
+         "q": "What is the image of (−3, 5) under the translation (x, y) → (x + 4, y − 6)?",
+         "choices": [
+          "(1, −1)",
+          "(−7, 11)",
+          "(1, 11)",
+          "(−7, −1)"
+         ],
+         "a": 0,
+         "why": "−3 + 4 = 1 and 5 − 6 = −1, so the image is (1, −1). The other choices subtract 4 or add 6 by mistake."
+        },
+        {
+         "q": "Which statement is true of every rigid motion?",
+         "choices": [
+          "It changes the size of a figure",
+          "It keeps every distance and angle the same",
+          "It moves only one point",
+          "It always turns the figure"
+         ],
+         "a": 1,
+         "why": "Rigid motions preserve distances and angle measures. That is what makes the image congruent to the preimage."
+        },
+        {
+         "q": "A translation moves (2, 7) to (5, 3). What is the rule?",
+         "choices": [
+          "(x, y) → (x − 3, y + 4)",
+          "(x, y) → (x + 3, y + 4)",
+          "(x, y) → (x + 3, y − 4)",
+          "(x, y) → (x + 7, y + 10)"
+         ],
+         "a": 2,
+         "why": "5 − 2 = 3, so x gained 3. 3 − 7 = −4, so y lost 4. The rule is (x + 3, y − 4)."
+        }
+       ]
+      },
+      {
+       "title": "Reflections",
+       "mainIdea": "A reflection flips a figure across a line, and the line is the perpendicular bisector of every segment joining a point to its image.",
+       "reading": [
+        "Hold a letter up to a mirror and its image flips. A *reflection* flips every point across a *line of reflection* so that the line is the perpendicular bisector of the segment joining each point to its image. The point and its image are the same distance from the line, on opposite sides. A point on the line does not move at all. On the coordinate grid, three reflections have simple rules. Across the x-axis: (x, y) → (x, −y). Across the y-axis: (x, y) → (−x, y). Across the line y = x: (x, y) → (y, x).",
+        "Try the point (3, −5). Across the y-axis it becomes (−3, −5): the x-coordinate changes sign, and the point moves from 3 units right of the axis to 3 units left. Across the x-axis it becomes (3, 5). Across y = x, the coordinates swap, giving (−5, 3). Now reflect a triangle with vertices P(1, 1), Q(4, 1) and R(1, 3) across the y-axis: P′(−1, 1), Q′(−4, 1), R′(−1, 3). Side PQ has length 3, and so does P′Q′. A reflection is a rigid motion.",
+        "One thing does change. Read the original triangle's vertices going around: P to Q to R runs counterclockwise. Read the image: P′ to Q′ to R′ runs clockwise. A reflection reverses *orientation*, the direction you travel around the figure. Translations and rotations keep orientation. That is why a mirror flips the writing on a shirt while a slide or a turn does not. Common mistake: changing the sign of the wrong coordinate. Across the x-axis, the point stays on the same vertical line, so x stays and y flips. Say it as: reflect across the x-axis, flip the y."
+       ],
+       "words": [
+        {
+         "w": "reflection",
+         "d": "a rigid motion that flips a figure across a line so each point and its image are the same distance from the line"
+        },
+        {
+         "w": "line of reflection",
+         "d": "the line a figure is flipped across; it is the perpendicular bisector of each point-to-image segment"
+        },
+        {
+         "w": "orientation",
+         "d": "the direction, clockwise or counterclockwise, in which a figure's vertices are read in order"
+        }
+       ],
+       "look": {
+        "type": "think",
+        "title": "Mirror on the Grid",
+        "text": "Triangle ABC has vertices A(2, 1), B(5, 1) and C(2, 4). Reflect it across the x-axis by flipping each y-coordinate. Then reflect the original triangle across the line y = x by swapping each pair of coordinates. Sketch both images if you can.",
+        "prompt": "List the vertices of both images. For each image, is the order A′, B′, C′ clockwise or counterclockwise? Which point would stay fixed if a vertex sat on the line of reflection?"
+       },
+       "check": [
+        {
+         "q": "What is the image of (−2, 6) after a reflection across the x-axis?",
+         "choices": [
+          "(2, 6)",
+          "(2, −6)",
+          "(6, −2)",
+          "(−2, −6)"
+         ],
+         "a": 3,
+         "why": "Reflecting across the x-axis keeps x and flips the sign of y: (−2, 6) becomes (−2, −6)."
+        },
+        {
+         "q": "What is the image of (4, 1) after a reflection across the line y = x?",
+         "choices": [
+          "(1, 4)",
+          "(−4, 1)",
+          "(4, −1)",
+          "(−1, −4)"
+         ],
+         "a": 0,
+         "why": "Reflection across y = x swaps the coordinates, so (4, 1) becomes (1, 4)."
+        },
+        {
+         "q": "How does a reflection differ from a translation?",
+         "choices": [
+          "A reflection changes side lengths",
+          "A reflection reverses the orientation of the figure",
+          "A reflection changes angle measures",
+          "A reflection moves only some of the points"
+         ],
+         "a": 1,
+         "why": "Both are rigid motions, so lengths and angles are preserved. A reflection flips the figure, so clockwise order becomes counterclockwise."
+        }
+       ]
+      },
+      {
+       "title": "Rotations",
+       "mainIdea": "A rotation turns a figure around a fixed center through a given angle, and rotations about the origin follow simple coordinate rules.",
+       "reading": [
+        "A clock hand turns around the center of the clock. A *rotation* turns every point of a figure around a fixed point, the *center of rotation*, through the same *angle of rotation*. Counterclockwise is the standard direction. On the coordinate grid, rotations about the origin have rules. A 90° counterclockwise rotation sends (x, y) to (−y, x). A 180° rotation sends (x, y) to (−x, −y). A 270° counterclockwise rotation, which is the same as a 90° clockwise rotation, sends (x, y) to (y, −x).",
+        "Follow the point (3, 2). After 90° counterclockwise it is at (−2, 3). Check that with a sketch: (3, 2) sits to the right and a bit up, and (−2, 3) sits to the left and up, a quarter turn around. After 180° the point is at (−3, −2), straight through the origin to the opposite side. After 270° it is at (2, −3). One more quarter turn, 360° in all, returns it to (3, 2). Each image is the same distance from the origin: √(9 + 4) = √13 every time, because a rotation is a rigid motion.",
+        "Rotate a triangle with vertices A(1, 1), B(4, 1) and C(4, 3) by 90° counterclockwise about the origin. Using (x, y) → (−y, x): A′(−1, 1), B′(−1, 4) and C′(−3, 4). Side AB was horizontal with length 3; side A′B′ is vertical with length 3. Rotations keep lengths, angles and orientation. The common mistakes are using the 90° rule when the problem says 180°, and forgetting to change the sign in the 90° rule. Write the rule down before you plug in any numbers."
+       ],
+       "words": [
+        {
+         "w": "rotation",
+         "d": "a rigid motion that turns every point around a fixed center through the same angle"
+        },
+        {
+         "w": "center of rotation",
+         "d": "the fixed point a figure turns around; it does not move"
+        },
+        {
+         "w": "angle of rotation",
+         "d": "how many degrees a figure turns, measured counterclockwise unless stated otherwise"
+        }
+       ],
+       "look": {
+        "type": "think",
+        "title": "Quarter Turns",
+        "text": "Point P is at (5, 1). Rotate it 90° counterclockwise about the origin to get P′, then rotate P′ another 90° to get P″, then once more to get P‴. Each time, use the rule (x, y) → (−y, x) on the most recent point.",
+        "prompt": "What are the three images? Compare P″ with the result of the 180° rule applied to P directly. Why do the two methods agree?"
+       },
+       "check": [
+        {
+         "q": "What is the image of (5, −1) after a 180° rotation about the origin?",
+         "choices": [
+          "(−1, 5)",
+          "(1, 5)",
+          "(−5, 1)",
+          "(5, 1)"
+         ],
+         "a": 2,
+         "why": "A 180° rotation changes the sign of both coordinates: (5, −1) becomes (−5, 1)."
+        },
+        {
+         "q": "What is the image of (2, 6) after a 90° counterclockwise rotation about the origin?",
+         "choices": [
+          "(6, −2)",
+          "(−6, 2)",
+          "(−2, −6)",
+          "(6, 2)"
+         ],
+         "a": 1,
+         "why": "The rule (x, y) → (−y, x) gives (−6, 2). The choice (6, −2) is the 90° clockwise image."
+        },
+        {
+         "q": "A 90° clockwise rotation about the origin is the same as which counterclockwise rotation?",
+         "choices": [
+          "90°",
+          "180°",
+          "360°",
+          "270°"
+         ],
+         "a": 3,
+         "why": "Turning 90° one way lands in the same place as turning 270° the other way, since 90° + 270° = 360°."
+        }
+       ]
+      },
+      {
+       "title": "Symmetry",
+       "mainIdea": "A figure has symmetry when a reflection or a rotation maps it onto itself.",
+       "reading": [
+        "Fold a paper heart down the middle and the two halves match. The fold line is a *line of symmetry*: a reflection across it maps the figure onto itself. A figure can have several. A rectangle that is not a square has two, one vertical and one horizontal. A square has four: the two through the midpoints of the sides and the two diagonals. A regular hexagon has six. A scalene triangle has none. The diagonals of a non-square rectangle are not lines of symmetry, which surprises people; fold along one and the corners stick out.",
+        "*Rotational symmetry* means a turn of less than 360° maps the figure onto itself. The smallest such turn is the angle of rotational symmetry. For a regular polygon with n sides, that angle is 360° ÷ n. A square: 360 ÷ 4 = 90°. A regular pentagon: 360 ÷ 5 = 72°. A regular hexagon: 360 ÷ 6 = 60°. The *order* of the symmetry is the number of positions that match in one full turn, which is n for a regular polygon. A non-square rectangle has rotational symmetry of 180° only, so its order is 2.",
+        "Letters make good practice. H has two lines of symmetry and 180° rotational symmetry. A has one vertical line of symmetry and no rotational symmetry. N has no line of symmetry, but turn it 180° and it looks the same, so it has rotational symmetry of order 2. Z is the same story. The common mistake is assuming any figure that looks balanced has both kinds of symmetry. Test each kind separately: fold for line symmetry, turn for rotational symmetry."
+       ],
+       "words": [
+        {
+         "w": "line of symmetry",
+         "d": "a line across which a figure reflects onto itself"
+        },
+        {
+         "w": "rotational symmetry",
+         "d": "the property that a rotation of less than 360° maps a figure onto itself"
+        },
+        {
+         "w": "order",
+         "d": "the number of times a figure matches itself during one full 360° turn"
+        }
+       ],
+       "look": {
+        "type": "data",
+        "title": "Smallest Turn That Matches",
+        "rows": [
+         [
+          "Equilateral triangle",
+          120
+         ],
+         [
+          "Square",
+          90
+         ],
+         [
+          "Regular pentagon",
+          72
+         ],
+         [
+          "Regular hexagon",
+          60
+         ],
+         [
+          "Regular octagon",
+          45
+         ],
+         [
+          "Regular decagon",
+          36
+         ]
+        ],
+        "unit": "degrees of rotation",
+        "cite": "computed as 360° divided by the number of sides",
+        "prompt": "What is the pattern between the number of sides and the angle? What would the angle be for a regular polygon with 12 sides, and how many lines of symmetry would it have?"
+       },
+       "check": [
+        {
+         "q": "What is the smallest angle of rotational symmetry of a regular pentagon?",
+         "choices": [
+          "72°",
+          "60°",
+          "90°",
+          "108°"
+         ],
+         "a": 0,
+         "why": "360° ÷ 5 = 72°. The 108° is the measure of each interior angle, not the rotation."
+        },
+        {
+         "q": "How many lines of symmetry does a rectangle that is not a square have?",
+         "choices": [
+          "0",
+          "1",
+          "2",
+          "4"
+         ],
+         "a": 2,
+         "why": "One vertical and one horizontal line through the center. The diagonals do not work because the corners would not match up."
+        },
+        {
+         "q": "Which capital letter has rotational symmetry but no line of symmetry?",
+         "choices": [
+          "H",
+          "A",
+          "T",
+          "N"
+         ],
+         "a": 3,
+         "why": "N matches itself after a 180° turn but has no fold line. H has both kinds; A and T have a vertical line only."
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "title": "What Congruent Means",
+     "lessons": [
+      {
+       "title": "Congruence by Rigid Motion",
+       "mainIdea": "Two figures are congruent when a sequence of rigid motions maps one exactly onto the other, so every matching part is equal.",
+       "reading": [
+        "Two figures are *congruent* if a sequence of rigid motions maps one onto the other. The sequence can mix translations, reflections and rotations. That is the definition. It says something stronger than same size and same shape. It says you can physically move one figure until it sits exactly on top of the other. Rigid motions preserve lengths and angles, so congruent figures have equal *corresponding parts*. Every side matches a side of the same length. Every angle matches an angle of the same measure.",
+        "The order of the letters tells you which parts correspond. Triangle ABC ≅ triangle DEF means A matches D, B matches E and C matches F. So AB ≅ DE, BC ≅ EF and AC ≅ DF, and angle A ≅ angle D, angle B ≅ angle E, angle C ≅ angle F. Suppose triangle ABC ≅ triangle XYZ, with AB = 5, BC = 7 and angle A = 40°. Then XY = 5, YZ = 7 and angle X = 40°. You know six facts about triangle XYZ without ever seeing it. A *congruence statement* written in the wrong order gives wrong matches, so write it carefully.",
+        "Here is how to show congruence with motions. Triangle ABC has vertices A(0, 0), B(3, 0) and C(0, 4). Triangle DEF has vertices D(5, 2), E(8, 2) and F(5, 6). The translation (x, y) → (x + 5, y + 2) sends A to (5, 2) = D, B to (8, 2) = E, and C to (5, 6) = F. One rigid motion maps every vertex onto its partner, so the triangles are congruent. Sometimes you need two motions, such as a reflection followed by a translation. The common mistake is assuming two figures are congruent because they look alike. The test is a motion, or a criterion proved from motions, not a glance."
+       ],
+       "words": [
+        {
+         "w": "congruent",
+         "d": "two figures are congruent if a sequence of rigid motions maps one exactly onto the other; the symbol is ≅"
+        },
+        {
+         "w": "corresponding parts",
+         "d": "the sides and angles that match up when one figure is mapped onto another"
+        },
+        {
+         "w": "congruence statement",
+         "d": "a statement like triangle ABC ≅ triangle DEF, where the letter order shows which parts correspond"
+        }
+       ],
+       "look": {
+        "type": "think",
+        "title": "Find the Motion",
+        "text": "Triangle JKL has vertices J(1, 1), K(4, 1) and L(1, 3). Triangle MNP has vertices M(−1, 1), N(−4, 1) and P(−1, 3). Compare each vertex of JKL with its partner in MNP. Then try the reflection rule across the y-axis, (x, y) → (−x, y), on J, K and L.",
+        "prompt": "Does one reflection map JKL onto MNP? Write a congruence statement with the letters in the correct order, and name the three pairs of congruent sides."
+       },
+       "check": [
+        {
+         "q": "Triangle PQR ≅ triangle LMN. Which side is congruent to QR?",
+         "choices": [
+          "LM",
+          "MN",
+          "LN",
+          "NL is not determined"
+         ],
+         "a": 1,
+         "why": "Q matches M and R matches N, so QR corresponds to MN."
+        },
+        {
+         "q": "By definition, two figures are congruent when:",
+         "choices": [
+          "they have the same area",
+          "they look the same size",
+          "a sequence of rigid motions maps one onto the other",
+          "they have the same number of sides"
+         ],
+         "a": 2,
+         "why": "Congruence is defined through rigid motions. Same area is not enough: a 2 by 8 rectangle and a 4 by 4 square both have area 16."
+        },
+        {
+         "q": "Triangle ABC ≅ triangle DEF. Angle B = 65° and angle C = 40°. What is angle D?",
+         "choices": [
+          "65°",
+          "40°",
+          "105°",
+          "75°"
+         ],
+         "a": 3,
+         "why": "Angle D matches angle A. The angles of a triangle add to 180°, so angle A = 180° − 65° − 40° = 75°."
+        }
+       ]
+      },
+      {
+       "title": "SSS and SAS",
+       "mainIdea": "Three pairs of congruent sides, or two sides and the included angle, are enough to force two triangles to be congruent.",
+       "reading": [
+        "You do not need all six matching parts to know two triangles are congruent. The bridge truss showed the first shortcut. *SSS* (side-side-side): if three sides of one triangle are congruent to three sides of another, the triangles are congruent. That is exactly why the triangle frame would not fold. With sides 5, 7 and 9, there is only one triangle you can build, so any two triangles with those sides must match. The proof idea: translate one triangle so a side lands on its partner, then a reflection if needed, and the third vertex is forced because it must be the right distance from both ends.",
+        "The second shortcut is *SAS* (side-angle-side): two sides and the *included angle*, the angle between those two sides, congruent to the matching parts of another triangle. Picture two sticks of lengths 6 and 8 hinged at one end. Open the hinge to exactly 40°, and the distance between the far ends is set. Any other pair of 6 and 8 sticks opened to 40° will produce the same triangle. In triangle ABC, the angle included between sides AB and BC is angle B, because B is the letter the two sides share.",
+        "A typical proof. Given: AB ≅ CB and angle ABD ≅ angle CBD. Prove: triangle ABD ≅ triangle CBD. Statement 1: AB ≅ CB, given. Statement 2: angle ABD ≅ angle CBD, given. Statement 3: BD ≅ BD, reflexive property. Statement 4: triangle ABD ≅ triangle CBD by SAS, since the two given sides and the shared side surround the given angle. Common mistake: using an angle that is not between the two sides. Two sides and an angle somewhere else is a different situation, and a later lesson shows why it can fail."
+       ],
+       "words": [
+        {
+         "w": "SSS",
+         "d": "side-side-side: three pairs of congruent sides prove two triangles congruent"
+        },
+        {
+         "w": "SAS",
+         "d": "side-angle-side: two pairs of congruent sides and the congruent included angle prove two triangles congruent"
+        },
+        {
+         "w": "included angle",
+         "d": "the angle formed by two given sides of a triangle; it sits between them at their shared vertex"
+        }
+       ],
+       "look": {
+        "type": "think",
+        "title": "Bars in the Truss",
+        "text": "A steel truss holds two triangles side by side. The first has bars of 4 m, 4 m and 6 m. The second has bars of 4 m, 4 m and 6 m. An inspector measures only the bars, never the angles, and declares the two triangles congruent. A third triangle has bars of 4 m and 4 m with a 90° angle between them.",
+        "prompt": "Which criterion did the inspector use? Is the third triangle congruent to the first two? How could you check without a protractor?"
+       },
+       "check": [
+        {
+         "q": "Two triangles each have sides 3, 4 and 5. Which criterion proves them congruent?",
+         "choices": [
+          "SAS",
+          "ASA",
+          "SSS",
+          "They cannot be proved congruent"
+         ],
+         "a": 2,
+         "why": "Three pairs of congruent sides is exactly SSS. No angle measures are needed."
+        },
+        {
+         "q": "Which set of information fits the SAS criterion?",
+         "choices": [
+          "two sides and the angle between them",
+          "two sides and an angle not between them",
+          "three angles",
+          "one side and two angles"
+         ],
+         "a": 0,
+         "why": "SAS needs the included angle, the one formed by the two given sides."
+        },
+        {
+         "q": "In triangle ABC, which two sides include angle B?",
+         "choices": [
+          "AB and AC",
+          "AC and BC",
+          "AB and BC",
+          "only side AC"
+         ],
+         "a": 2,
+         "why": "The sides that meet at vertex B are AB and BC. Angle B is the included angle between them."
+        }
+       ]
+      },
+      {
+       "title": "ASA and AAS",
+       "mainIdea": "Two angles and the included side, or two angles and any side, are enough to prove two triangles congruent.",
+       "reading": [
+        "A surveyor wants the distance across a river without crossing it. She marks two points A and B on her bank and measures AB. Then she measures the angle at A and the angle at B toward a tree T on the far bank. That is *ASA* (angle-side-angle): two angles and the *included side*, the side between them. Anyone who draws a segment of length AB and opens those two angles at its ends gets the same triangle. The two rays from A and B can meet in only one place. So the surveyor can draw a scale copy at her desk and read off the distance to the tree.",
+        "*AAS* (angle-angle-side) is two angles and a side that is not between them. It works because of the angle sum. If two angles of a triangle are 30° and 80°, the third must be 180° − 30° − 80° = 70°. So knowing two angles means knowing all three, and a side that was not included between the two given angles is included between one of them and the third. AAS turns into ASA every time. Suppose two triangles each have angles of 30° and 80° and a side of 12 opposite the 30° angle. That side lies between the 80° and 70° angles, so ASA applies with those two angles.",
+        "Notice what is missing from the list: AAA, three angles. Three angles do not force a size. A triangle with angles 60°, 60°, 60° and side 2 and another with side 10 have the same angles and are not congruent. They are the same shape at different sizes, which the next unit calls similar. Common mistake: choosing between ASA and AAS by guessing. Ask one question: is the given side between the two given angles? If yes, ASA. If no, AAS."
+       ],
+       "words": [
+        {
+         "w": "ASA",
+         "d": "angle-side-angle: two pairs of congruent angles and the congruent included side prove two triangles congruent"
+        },
+        {
+         "w": "AAS",
+         "d": "angle-angle-side: two pairs of congruent angles and a congruent non-included side prove two triangles congruent"
+        },
+        {
+         "w": "included side",
+         "d": "the side of a triangle that lies between two given angles"
+        }
+       ],
+       "look": {
+        "type": "think",
+        "title": "Across the River",
+        "text": "A surveyor stands at point A on the near bank and marks point B 50 m down the bank. From A, the angle between the bank and the line to a tree T across the river is 60°. From B, the angle between the bank and the line to T is 70°. Back at her desk she draws a 5 cm segment and opens 60° and 70° angles at its ends.",
+        "prompt": "Why must her drawing be a scaled copy of the real triangle ABT? What is the third angle at T? What information would she be missing if she had measured only the two angles and no side?"
+       },
+       "check": [
+        {
+         "q": "Two triangles each have angles of 50° and 60° with a congruent side between those two angles. Which criterion applies?",
+         "choices": [
+          "SSS",
+          "ASA",
+          "AAS",
+          "SAS"
+         ],
+         "a": 1,
+         "why": "Two angles with the included side between them is angle-side-angle."
+        },
+        {
+         "q": "Two triangles have two pairs of congruent angles and a congruent side that is not between them. Which criterion applies?",
+         "choices": [
+          "AAS",
+          "ASA",
+          "SAS",
+          "SSA"
+         ],
+         "a": 0,
+         "why": "Two angles and a non-included side is AAS, which works because the third angle is determined."
+        },
+        {
+         "q": "Why does AAA fail to prove two triangles congruent?",
+         "choices": [
+          "Angles cannot be measured exactly",
+          "Three angles always add to 180°, so they give no information",
+          "Two triangles with the same angles can be different sizes",
+          "AAA only works for right triangles"
+         ],
+         "a": 2,
+         "why": "Same angles fix the shape but not the size. An equilateral triangle with side 2 and one with side 10 both have three 60° angles."
+        }
+       ]
+      },
+      {
+       "title": "Why SSA Fails",
+       "mainIdea": "Two sides and a non-included angle can produce two different triangles, so SSA is not a congruence criterion, except for right triangles.",
+       "reading": [
+        "Take two sticks, one 8 cm and one 5 cm, hinged at a point B. Fix the 8 cm stick along a line and open a 30° angle at B. The 5 cm stick swings from the hinge, and its free end has to land somewhere on a ray that leaves the far end of the 8 cm stick at 30°. Set a compass to 5 cm and swing it from the far end of that ray: it crosses the ray in two places. That gives two different triangles with sides 8 and 5 and a 30° angle opposite the 5. Two sides and a non-included angle, called *SSA*, did not force one shape. That is why SSA is not on the list of criteria.",
+        "The numbers explain it. The shortest possible distance from the swinging stick's pivot to the ray is 8 × sin 30° = 8 × 0.5 = 4 cm. Because 5 is bigger than 4 but smaller than 8, the compass arc reaches the ray twice. Make the swinging stick 4 cm and it touches once, making a right triangle. Make it 3 cm and it never reaches the ray, so no triangle exists. Make it 9 cm, longer than the fixed side, and it crosses the ray once again. So SSA sometimes gives two triangles, sometimes one, sometimes none. A criterion has to work every time.",
+        "One special case does work. In a right triangle, the *hypotenuse* is the side opposite the right angle, and the other two sides are *legs*. The *HL* criterion (hypotenuse-leg) says two right triangles with congruent hypotenuses and one pair of congruent legs are congruent. It looks like SSA, but the right angle rescues it: with hypotenuse 13 and leg 5, the other leg must satisfy 5^2 + b^2 = 13^2, so b^2 = 169 − 25 = 144 and b = 12. Every such triangle has sides 5, 12 and 13, so SSS finishes the job. Common mistake: writing SAS when the angle is not between the sides. Check where the angle sits before you name the criterion."
+       ],
+       "words": [
+        {
+         "w": "SSA",
+         "d": "side-side-angle: two sides and a non-included angle, which does not guarantee congruence"
+        },
+        {
+         "w": "hypotenuse",
+         "d": "the longest side of a right triangle, opposite the right angle"
+        },
+        {
+         "w": "legs",
+         "d": "the two sides of a right triangle that form the right angle"
+        },
+        {
+         "w": "HL",
+         "d": "hypotenuse-leg: a congruent hypotenuse and one congruent leg prove two right triangles congruent"
+        }
+       ],
+       "look": {
+        "type": "think",
+        "title": "The Swinging Door",
+        "text": "A door 8 units wide is hinged at B, and a ray from the far end of the door makes a 30° angle with it. A rod of length 5 is attached at B and can swing. Its tip must land on the ray. The closest point on the ray is 4 units from B, and the rod is 5 units long. Now imagine the rod is 4 units, then 3 units, then 9 units.",
+        "prompt": "For each rod length, how many triangles can be formed? Which length makes a right triangle, and why does that case have only one answer?"
+       },
+       "check": [
+        {
+         "q": "Which combination of congruent parts does NOT guarantee that two triangles are congruent?",
+         "choices": [
+          "SSS",
+          "ASA",
+          "SSA",
+          "SAS"
+         ],
+         "a": 2,
+         "why": "Two sides and a non-included angle can be arranged into two different triangles, so SSA fails."
+        },
+        {
+         "q": "The HL criterion applies to:",
+         "choices": [
+          "any two triangles with two congruent sides",
+          "two right triangles with congruent hypotenuses and a pair of congruent legs",
+          "two triangles with three congruent angles",
+          "two isosceles triangles"
+         ],
+         "a": 1,
+         "why": "HL is a special case for right triangles. The right angle plus the Pythagorean theorem forces the third side."
+        },
+        {
+         "q": "Two right triangles each have a hypotenuse of 13 and a leg of 5. What can you conclude?",
+         "choices": [
+          "They are not necessarily congruent",
+          "They are congruent by SSA",
+          "They are congruent by AAS",
+          "They are congruent by HL, and the other leg is 12 in both"
+         ],
+         "a": 3,
+         "why": "HL applies. The other leg is √(169 − 25) = √144 = 12 in each triangle, so all three sides match."
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "title": "Proofs With Triangles and Quadrilaterals",
+     "lessons": [
+      {
+       "title": "Corresponding Parts",
+       "mainIdea": "Once two triangles are proved congruent, every pair of corresponding parts is congruent, a step called CPCTC.",
+       "reading": [
+        "The congruence criteria are tools for something bigger. Prove two triangles congruent, and every pair of corresponding sides and angles comes free. That step has a name: *CPCTC*, corresponding parts of congruent triangles are congruent. It is the definition of congruence read backward. A proof that uses it has two halves: first prove the triangles congruent with SSS, SAS, ASA, AAS or HL, then use CPCTC to reach the side or angle you actually wanted.",
+        "Example. Given: AB ≅ CB, and BD bisects angle ABC. Prove: AD ≅ CD. Statement 1: AB ≅ CB, given. Statement 2: BD bisects angle ABC, given. Statement 3: angle ABD ≅ angle CBD, definition of angle bisector. Statement 4: BD ≅ BD, reflexive property. Statement 5: triangle ABD ≅ triangle CBD, SAS, because the angle at B is included between AB and BD in one triangle and between CB and BD in the other. Statement 6: AD ≅ CD, CPCTC. Notice that the goal, AD ≅ CD, was never assumed. It fell out of the congruent triangles.",
+        "Now attach numbers. In that figure, AD = 3x + 1 and CD = 5x − 7. Because AD ≅ CD, 3x + 1 = 5x − 7, so 8 = 2x and x = 4. Then AD = 13 and CD = 13. Surveyors use the same idea to measure across a pond. They pick a point P, walk equal distances past it on two lines to make two triangles with vertical angles at P, and the far side of the small triangle they can measure equals the width of the pond by SAS and CPCTC. Common mistake: using CPCTC before the triangles are proved congruent. It is always the step after."
+       ],
+       "words": [
+        {
+         "w": "CPCTC",
+         "d": "corresponding parts of congruent triangles are congruent; used only after triangles are proved congruent"
+        },
+        {
+         "w": "bisects",
+         "d": "divides into two congruent parts; a bisector of an angle makes two congruent angles"
+        },
+        {
+         "w": "included angle",
+         "d": "the angle between two given sides of a triangle"
+        }
+       ],
+       "look": {
+        "type": "think",
+        "title": "Measuring Across a Pond",
+        "text": "A pond stretches from point A to point B. A surveyor picks a point P on dry land, walks from A through P to a point C so that AP = PC, and from B through P to a point D so that BP = PD. Angles APB and CPD are vertical angles. She then measures CD on dry land and gets 84 m.",
+        "prompt": "Which criterion proves triangle APB ≅ triangle CPD? What step then tells her the width AB, and what is it?"
+       },
+       "check": [
+        {
+         "q": "What does CPCTC stand for?",
+         "choices": [
+          "corresponding parts of congruent triangles are congruent",
+          "congruent parts create congruent triangles",
+          "corresponding points of circles are congruent",
+          "congruent perimeters of congruent triangles"
+         ],
+         "a": 0,
+         "why": "CPCTC states that once triangles are congruent, each pair of matching sides and angles is congruent."
+        },
+        {
+         "q": "In the proof that AD ≅ CD, what is the reason for the statement BD ≅ BD?",
+         "choices": [
+          "given",
+          "definition of bisector",
+          "CPCTC",
+          "reflexive property"
+         ],
+         "a": 3,
+         "why": "Any segment is congruent to itself. The shared side is justified by the reflexive property."
+        },
+        {
+         "q": "Triangles ABD and CBD are proved congruent with AD corresponding to CD. AD = 2x + 9 and CD = 4x − 3. What is AD?",
+         "choices": [
+          "6",
+          "15",
+          "21",
+          "33"
+         ],
+         "a": 2,
+         "why": "By CPCTC, 2x + 9 = 4x − 3, so 12 = 2x and x = 6. AD = 2(6) + 9 = 21. The 6 is x, and 33 comes from an arithmetic slip."
+        }
+       ]
+      },
+      {
+       "title": "Parallelograms",
+       "mainIdea": "In a parallelogram, opposite sides and opposite angles are congruent, consecutive angles are supplementary, and the diagonals bisect each other.",
+       "reading": [
+        "A *parallelogram* is a quadrilateral with both pairs of opposite sides parallel. That is the whole definition. Everything else is a theorem proved with congruent triangles. Draw parallelogram ABCD, with vertices in order, and add the *diagonal* AC. Because AB is parallel to DC, the alternate interior angles BAC and DCA are congruent. Because AD is parallel to BC, the alternate interior angles DAC and BCA are congruent. AC is shared, so triangle ABC ≅ triangle CDA by ASA. CPCTC then gives AB ≅ CD and BC ≅ AD: opposite sides of a parallelogram are congruent.",
+        "The same triangles give angle B ≅ angle D, and drawing the other diagonal gives angle A ≅ angle C: opposite angles are congruent. Consecutive angles, like A and B, are same-side interior angles between parallel lines, so they are supplementary. If angle A measures 70°, then B = 110°, C = 70° and D = 110°. Try sides: AB = 2x + 3 and CD = 4x − 9. Opposite sides are congruent, so 2x + 3 = 4x − 9, giving x = 6 and AB = 15. The diagonals also bisect each other: if the diagonals cross at E, then AE = EC and BE = ED. If AE = 7, the full diagonal AC = 14.",
+        "The converses let you prove a quadrilateral is a parallelogram. Any one of these is enough: both pairs of opposite sides congruent, both pairs of opposite angles congruent, diagonals that bisect each other, or one pair of opposite sides that are both parallel and congruent. Common mistake: setting consecutive angles equal to each other. Opposite angles are equal; consecutive angles add to 180°. If a problem gives angle A = 3x and angle B = 2x + 30, write 3x + 2x + 30 = 180, not 3x = 2x + 30."
+       ],
+       "words": [
+        {
+         "w": "parallelogram",
+         "d": "a quadrilateral with both pairs of opposite sides parallel"
+        },
+        {
+         "w": "diagonal",
+         "d": "a segment joining two vertices of a polygon that are not next to each other"
+        },
+        {
+         "w": "consecutive angles",
+         "d": "two angles of a polygon that share a side; in a parallelogram they are supplementary"
+        }
+       ],
+       "look": {
+        "type": "think",
+        "title": "The Folding Frame Again",
+        "text": "The cardboard square from the chapter story leaned into a parallelogram. Its sides stayed 10 cm each, but one angle dropped from 90° to 60°. Use the parallelogram theorems to find the other three angles. Then imagine adding a diagonal bar from one corner to the opposite corner.",
+        "prompt": "What are the four angles now? Why does adding the diagonal bar lock the shape, and which congruence criterion explains it?"
+       },
+       "check": [
+        {
+         "q": "In parallelogram ABCD, angle A measures 64°. What does angle B measure?",
+         "choices": [
+          "64°",
+          "116°",
+          "26°",
+          "296°"
+         ],
+         "a": 1,
+         "why": "Consecutive angles of a parallelogram are supplementary: 180° − 64° = 116°. Angle C, the opposite angle, would be 64°."
+        },
+        {
+         "q": "The diagonals of parallelogram ABCD meet at E. If AC = 18, what is AE?",
+         "choices": [
+          "18",
+          "36",
+          "9",
+          "6"
+         ],
+         "a": 2,
+         "why": "The diagonals bisect each other, so E is the midpoint of AC and AE = 18 ÷ 2 = 9."
+        },
+        {
+         "q": "Which fact by itself proves that a quadrilateral is a parallelogram?",
+         "choices": [
+          "one pair of opposite sides is congruent",
+          "the diagonals are congruent",
+          "two angles are right angles",
+          "both pairs of opposite sides are congruent"
+         ],
+         "a": 3,
+         "why": "Both pairs of opposite sides congruent is a converse theorem for parallelograms. One congruent pair alone could be an isosceles trapezoid."
+        }
+       ]
+      },
+      {
+       "title": "Rectangles, Rhombuses and Squares",
+       "mainIdea": "Special parallelograms add rules about their diagonals: a rectangle's are congruent, a rhombus's are perpendicular, and a square's are both.",
+       "reading": [
+        "Three special parallelograms show up everywhere. A *rectangle* is a parallelogram with four right angles. A *rhombus* is a parallelogram with four congruent sides. A *square* is both: four right angles and four congruent sides. Each has every parallelogram property from the last lesson, plus something extra about its diagonals. In a rectangle, the diagonals are congruent. In a rhombus, the diagonals are perpendicular and each one bisects a pair of opposite angles. In a square, all of that is true at once.",
+        "The rhombus rule turns into a right-triangle problem. The diagonals of a rhombus measure 12 and 16. They bisect each other, so the four triangles they form have legs of 6 and 8. Each triangle is a right triangle because the diagonals are perpendicular. The side of the rhombus is the hypotenuse: 6^2 + 8^2 = 36 + 64 = 100, so the side is √100 = 10. All four sides are 10, as a rhombus requires. For a rectangle, use the congruent diagonals: if AC = 3x + 2 and BD = 5x − 8, then 3x + 2 = 5x − 8, so x = 5 and each diagonal is 17.",
+        "A quadrilateral with exactly one pair of parallel sides is a *trapezoid*, and if its non-parallel legs are congruent it is an isosceles trapezoid, whose base angles are congruent and whose diagonals are congruent. Keep the family tree straight: every square is a rectangle and a rhombus, every rectangle and rhombus is a parallelogram, but a rectangle need not be a rhombus. Common mistake: assuming a rectangle's diagonals are perpendicular. Draw a long, thin rectangle and its diagonals cross at a sharp angle, not 90°. Only the rhombus and square get perpendicular diagonals."
+       ],
+       "words": [
+        {
+         "w": "rectangle",
+         "d": "a parallelogram with four right angles; its diagonals are congruent"
+        },
+        {
+         "w": "rhombus",
+         "d": "a parallelogram with four congruent sides; its diagonals are perpendicular"
+        },
+        {
+         "w": "square",
+         "d": "a parallelogram with four right angles and four congruent sides; both a rectangle and a rhombus"
+        },
+        {
+         "w": "trapezoid",
+         "d": "a quadrilateral with exactly one pair of parallel sides"
+        }
+       ],
+       "look": {
+        "type": "data",
+        "title": "Lines of Symmetry in Quadrilaterals",
+        "rows": [
+         [
+          "Parallelogram (general)",
+          0
+         ],
+         [
+          "Kite",
+          1
+         ],
+         [
+          "Isosceles trapezoid",
+          1
+         ],
+         [
+          "Rectangle",
+          2
+         ],
+         [
+          "Rhombus",
+          2
+         ],
+         [
+          "Square",
+          4
+         ]
+        ],
+        "unit": "lines of symmetry",
+        "cite": "counted from each shape's definition",
+        "prompt": "The rectangle's lines of symmetry pass through the midpoints of its sides, while the rhombus's lines are its diagonals. Why do those two shapes have different lines of symmetry, and why does the square get all four?"
+       },
+       "check": [
+        {
+         "q": "The diagonals of a rhombus measure 10 and 24. What is the length of each side?",
+         "choices": [
+          "17",
+          "34",
+          "13",
+          "26"
+         ],
+         "a": 2,
+         "why": "Half-diagonals are 5 and 12, meeting at a right angle. The side is √(25 + 144) = √169 = 13. The 17 comes from adding the halves."
+        },
+        {
+         "q": "In rectangle ABCD, diagonal AC = 2x + 7 and diagonal BD = 4x − 5. What is AC?",
+         "choices": [
+          "6",
+          "19",
+          "12",
+          "31"
+         ],
+         "a": 1,
+         "why": "A rectangle's diagonals are congruent: 2x + 7 = 4x − 5, so x = 6 and AC = 2(6) + 7 = 19. The 6 is only x."
+        },
+        {
+         "q": "Which quadrilateral always has perpendicular diagonals that are not necessarily congruent?",
+         "choices": [
+          "rhombus",
+          "rectangle",
+          "isosceles trapezoid",
+          "square"
+         ],
+         "a": 0,
+         "why": "A rhombus's diagonals are perpendicular but can have different lengths. A square's are perpendicular and congruent; a rectangle's are congruent but not perpendicular."
+        }
+       ]
+      }
+     ]
+    }
+   ],
+   "review": [
+    {
+     "q": "What is the image of (3, −4) under the translation (x, y) → (x − 2, y + 5)?",
+     "choices": [
+      "(5, −9)",
+      "(1, −9)",
+      "(1, 1)",
+      "(5, 1)"
+     ],
+     "a": 2,
+     "why": "3 − 2 = 1 and −4 + 5 = 1, so the image is (1, 1)."
+    },
+    {
+     "q": "What is the image of (−1, 4) after a 90° counterclockwise rotation about the origin?",
+     "choices": [
+      "(−4, −1)",
+      "(1, −4)",
+      "(4, 1)",
+      "(−4, 1)"
+     ],
+     "a": 0,
+     "why": "The rule (x, y) → (−y, x) gives (−4, −1). The choice (4, 1) would be the 90° clockwise image; the others mix up the signs."
+    },
+    {
+     "q": "What is the image of (6, −2) after a reflection across the line y = x?",
+     "choices": [
+      "(−6, 2)",
+      "(−2, 6)",
+      "(6, 2)",
+      "(2, −6)"
+     ],
+     "a": 1,
+     "why": "Reflection across y = x swaps the coordinates: (6, −2) becomes (−2, 6)."
+    },
+    {
+     "q": "Two triangles have two pairs of congruent angles and a congruent side between those angles. Which criterion applies?",
+     "choices": [
+      "SSS",
+      "SAS",
+      "AAS",
+      "ASA"
+     ],
+     "a": 3,
+     "why": "Two angles with the included side is angle-side-angle."
+    },
+    {
+     "q": "Why is SSA not a congruence criterion?",
+     "choices": [
+      "Because angles cannot be measured",
+      "Because the side opposite the given angle can swing into two different positions",
+      "Because it only works for right triangles",
+      "Because three parts are never enough"
+     ],
+     "a": 1,
+     "why": "With two sides and a non-included angle, the second side can cross the opposite ray in two places, giving two different triangles."
+    },
+    {
+     "q": "In parallelogram ABCD, angle A = (3x)° and angle B = (x + 40)°. What is x?",
+     "choices": [
+      "20",
+      "45",
+      "35",
+      "105"
+     ],
+     "a": 2,
+     "why": "Consecutive angles are supplementary: 3x + x + 40 = 180, so 4x = 140 and x = 35. Setting the angles equal gives 20, which is the wrong relationship. The angles are 105° and 75°."
+    },
+    {
+     "q": "The diagonals of a rhombus measure 18 and 24. What is the length of one side?",
+     "choices": [
+      "21",
+      "30",
+      "12",
+      "15"
+     ],
+     "a": 3,
+     "why": "Half-diagonals 9 and 12 form a right triangle with the side as hypotenuse: √(81 + 144) = √225 = 15."
+    },
+    {
+     "q": "When is CPCTC used in a proof?",
+     "choices": [
+      "before the triangles are proved congruent, to set up the criterion",
+      "as the reason for a shared side",
+      "after the triangles are proved congruent, to conclude that other parts are congruent",
+      "to show two lines are parallel"
+     ],
+     "a": 2,
+     "why": "CPCTC follows a congruence criterion. Once the triangles are congruent, their remaining corresponding parts are congruent."
+    }
+   ]
+  },
+  {
+   "n": 48,
+   "title": "Triangles and Their Centers",
+   "years": "Geometry",
+   "bigQuestion": "What do the angles, sides and special lines of a triangle force to be true, and where does its center actually sit?",
+   "story": {
+    "title": "Where to Build the Fire Station",
+    "kicker": "Three prairie towns share one fire crew, and every town wants the station to be the same distance from its own main street.",
+    "paragraphs": [
+     "Picture three small towns on the flat farmland of central Illinois, the kind of towns where a water tower is the tallest thing for miles. Call them Ashford, Birch Hill and Carlton. They have agreed to share one fire station, and the county board has one rule: the station must be the same distance from all three towns, so no town can complain that the trucks favor another. The board hands the map to a surveyor and asks where to put the pin.",
+     "The surveyor starts with two towns. Every point that is the same distance from Ashford and Birch Hill lies on one line: the perpendicular bisector of the segment joining them. She draws it. Then she does the same for Birch Hill and Carlton. The two lines cross at one point. That point is equally far from Ashford and Birch Hill, and equally far from Birch Hill and Carlton, so it is equally far from all three. She checks by drawing the third bisector, and it passes through the same point. Three lines, one crossing. That is not luck. It is a theorem.",
+     "Then she draws a circle centered at the point, through all three towns, and something interesting shows up. When the three towns form a wide, open triangle, the station lands comfortably inside it. But suppose Carlton sits far off to one side, so the three towns make a long, flat, obtuse triangle. The crossing point of the bisectors slides outside the triangle, out into a cornfield past the far edge. The station would be equally far from all three towns and close to none of them. The rule the board wrote is not the rule they meant.",
+     "So the board asks a different question: what if the station should be the same distance from the three highways that connect the towns, so trucks can reach any road quickly? That is a different center, found with angle bisectors, and it always sits inside the triangle. Or what if the station should sit at the balance point, the spot where a cardboard cutout of the triangle would rest on a pencil tip? That is a third center. A triangle has several centers, each answering a different question. This chapter finds them all and shows why each one exists."
+    ],
+    "think": "The board said 'the same distance from all three towns.' Why did that rule put the station in a cornfield? What would you tell the board to ask for instead?"
+   },
+   "sections": [
+    {
+     "title": "Angles of a Triangle",
+     "lessons": [
+      {
+       "title": "The Angle Sum",
+       "mainIdea": "The three interior angles of any triangle add to 180°, and a line parallel to one side proves it.",
+       "reading": [
+        "Tear the three corners off a paper triangle and lay them side by side with their points touching. They form a straight line. That experiment is inductive reasoning, and it suggests the *triangle angle sum theorem*: the three *interior angles* of a triangle add to 180°. Here is the deductive proof. Take triangle ABC and draw a line through vertex A parallel to side BC. That line makes three angles at A that together form a straight angle, so they add to 180°. The middle one is angle A itself. The one on the left is congruent to angle B, because they are alternate interior angles for the parallel lines with transversal AB. The one on the right is congruent to angle C for the same reason with transversal AC. So angle A + angle B + angle C = 180°.",
+        "Now use it. A triangle has angles measuring 2x, 3x and 4x. Their sum is 9x = 180, so x = 20, and the angles are 40°, 60° and 80°. Check: 40 + 60 + 80 = 180. Another: two angles are 35° and 82°. The third is 180 − 35 − 82 = 63°. A quick consequence: a triangle can have at most one right angle or one obtuse angle, because two of them would already use up 180° or more.",
+        "The theorem also classifies triangles. An *acute triangle* has three angles under 90°. A *right triangle* has one 90° angle, and its other two angles must add to 90°, so they are complementary. An *obtuse triangle* has one angle over 90°. Common mistakes: forgetting that the sum is 180° and not 360°, which is the sum for a quadrilateral, and dropping one of the angles when solving. Write all three angles, add them, and set the sum equal to 180 every time."
+       ],
+       "words": [
+        {
+         "w": "triangle angle sum theorem",
+         "d": "the three interior angles of a triangle add to 180°"
+        },
+        {
+         "w": "interior angles",
+         "d": "the angles inside a polygon at its vertices"
+        },
+        {
+         "w": "acute triangle",
+         "d": "a triangle whose three angles are each less than 90°"
+        },
+        {
+         "w": "right triangle",
+         "d": "a triangle with one 90° angle; its other two angles add to 90°"
+        },
+        {
+         "w": "obtuse triangle",
+         "d": "a triangle with one angle greater than 90°"
+        }
+       ],
+       "look": {
+        "type": "think",
+        "title": "The Torn Corners, Proved",
+        "text": "Triangle ABC has angle B = 50° and angle C = 60°. Draw a line through A parallel to BC. The angle on the left of A equals angle B, and the angle on the right of A equals angle C, by alternate interior angles. The three angles at A together form a straight angle.",
+        "prompt": "What must angle A measure? Which theorem from the last chapter guarantees that the left and right angles at A match angles B and C?"
+       },
+       "check": [
+        {
+         "q": "Two angles of a triangle measure 35° and 82°. What is the third angle?",
+         "choices": [
+          "63°",
+          "117°",
+          "53°",
+          "243°"
+         ],
+         "a": 0,
+         "why": "180 − 35 − 82 = 63. The 117 comes from subtracting only 63 from 180; the 243 comes from using 360°."
+        },
+        {
+         "q": "A triangle's angles measure x, 2x and 3x. What is the largest angle?",
+         "choices": [
+          "30°",
+          "60°",
+          "90°",
+          "120°"
+         ],
+         "a": 2,
+         "why": "x + 2x + 3x = 6x = 180, so x = 30 and the largest angle is 3(30) = 90°."
+        },
+        {
+         "q": "The proof of the angle sum theorem draws a line through one vertex parallel to the opposite side. Why?",
+         "choices": [
+          "To make the triangle into a rectangle",
+          "So that alternate interior angles copy the other two angles of the triangle onto a straight angle",
+          "To find the area of the triangle",
+          "To make all three angles congruent"
+         ],
+         "a": 1,
+         "why": "The parallel line creates alternate interior angles equal to angles B and C. Together with angle A they fill a straight angle, 180°."
+        }
+       ]
+      },
+      {
+       "title": "Exterior Angles",
+       "mainIdea": "An exterior angle of a triangle equals the sum of the two remote interior angles.",
+       "reading": [
+        "Extend one side of a triangle past a vertex. The angle between the extension and the next side is an *exterior angle*. It forms a linear pair with the interior angle at that vertex, so the two add to 180°. The two interior angles that are not at that vertex are the *remote interior angles*. The *exterior angle theorem* says the exterior angle equals the sum of the two remote interior angles. Proof: interior angle C plus the exterior angle at C is 180° (linear pair). Interior angles A + B + C are also 180° (angle sum). Both sums equal 180°, so subtract angle C from each: the exterior angle equals A + B.",
+        "Try it with numbers. A triangle has remote interior angles of 48° and 71°. The exterior angle at the third vertex is 48 + 71 = 119°. Check with the long route: the third interior angle is 180 − 48 − 71 = 61°, and the exterior angle is 180 − 61 = 119°. Both routes agree. Now with algebra: an exterior angle measures (4x + 10)°, and the remote interior angles are (2x + 5)° and (x + 35)°. Set 4x + 10 = 2x + 5 + x + 35, which is 4x + 10 = 3x + 40, so x = 30. The exterior angle is 130°, and the remote interior angles are 65° and 65°. Check: the interior angle at that vertex is 50°, and 50 + 130 = 180.",
+        "Why does this shortcut matter? It saves a step, and it gives an inequality for free: an exterior angle is larger than either remote interior angle alone, since it equals their sum and both are positive. That fact returns later in this chapter when we compare sides and angles. Common mistake: adding the adjacent interior angle instead of the two remote ones. The exterior angle and its neighbor add to 180°; the exterior angle and the two far angles are equal."
+       ],
+       "words": [
+        {
+         "w": "exterior angle",
+         "d": "the angle formed by one side of a triangle and the extension of a neighboring side"
+        },
+        {
+         "w": "remote interior angles",
+         "d": "the two interior angles of a triangle that are not next to a given exterior angle"
+        },
+        {
+         "w": "exterior angle theorem",
+         "d": "an exterior angle of a triangle equals the sum of the two remote interior angles"
+        }
+       ],
+       "look": {
+        "type": "think",
+        "title": "Two Routes to One Angle",
+        "text": "Triangle DEF has angle D = 42° and angle E = 77°. Side DF is extended past F, creating an exterior angle at F. Route 1: add the two remote interior angles. Route 2: find angle F from the angle sum, then subtract it from 180°.",
+        "prompt": "Do both routes give the same exterior angle? Why is that agreement guaranteed rather than a coincidence?"
+       },
+       "check": [
+        {
+         "q": "The remote interior angles of an exterior angle measure 48° and 71°. What is the exterior angle?",
+         "choices": [
+          "61°",
+          "109°",
+          "23°",
+          "119°"
+         ],
+         "a": 3,
+         "why": "48 + 71 = 119. The 61 is the third interior angle, which is the exterior angle's neighbor, not its value."
+        },
+        {
+         "q": "An exterior angle of a triangle measures 140°. One remote interior angle is 55°. What is the other?",
+         "choices": [
+          "85°",
+          "40°",
+          "95°",
+          "125°"
+         ],
+         "a": 0,
+         "why": "140 − 55 = 85. The 40 is the interior angle next to the exterior angle."
+        },
+        {
+         "q": "An exterior angle measures (3x)°. Its remote interior angles are 40° and (x + 50)°. What is the exterior angle?",
+         "choices": [
+          "45°",
+          "95°",
+          "135°",
+          "105°"
+         ],
+         "a": 2,
+         "why": "3x = 40 + x + 50 gives 2x = 90, so x = 45, and the exterior angle is 3(45) = 135°. Check: 40 + 95 = 135."
+        }
+       ]
+      },
+      {
+       "title": "Isosceles and Equilateral",
+       "mainIdea": "If two sides of a triangle are congruent, the angles opposite them are congruent, and the converse is also true.",
+       "reading": [
+        "An *isosceles triangle* has at least two congruent sides, called *legs*. The third side is the *base*, and the two angles at the ends of the base are the *base angles*. The isosceles triangle theorem, sometimes called the base angles theorem, says the base angles are congruent. Proof: in triangle ABC with AB ≅ AC, draw the bisector of angle A and let it meet BC at D. Then AB ≅ AC (given), angle BAD ≅ angle CAD (definition of bisector) and AD ≅ AD (reflexive). Triangle ABD ≅ triangle ACD by SAS, so angle B ≅ angle C by CPCTC.",
+        "The converse also holds: if two angles of a triangle are congruent, the sides opposite them are congruent. Numbers make the theorem useful. If the vertex angle of an isosceles triangle is 40°, the two base angles share the remaining 140°, so each is 70°. If a base angle is 55°, the other base angle is 55° and the vertex angle is 180 − 110 = 70°. With algebra: the base angles are (3x + 5)° and (5x − 21)°. They are congruent, so 3x + 5 = 5x − 21, giving 26 = 2x and x = 13. Each base angle is 44°, and the vertex angle is 180 − 88 = 92°.",
+        "An *equilateral triangle* has three congruent sides. Apply the theorem twice and all three angles are congruent, so each is 180 ÷ 3 = 60°. The converse works too: a triangle with three 60° angles is equilateral. Common mistake: mixing up which angle is the vertex angle. The vertex angle is between the two legs; the base angles are the equal pair. If a problem says one angle of an isosceles triangle is 100°, that angle must be the vertex angle, because two 100° base angles would exceed 180°."
+       ],
+       "words": [
+        {
+         "w": "isosceles triangle",
+         "d": "a triangle with at least two congruent sides"
+        },
+        {
+         "w": "legs",
+         "d": "the two congruent sides of an isosceles triangle"
+        },
+        {
+         "w": "base",
+         "d": "the third side of an isosceles triangle, the one that is not a leg"
+        },
+        {
+         "w": "base angles",
+         "d": "the two angles at the ends of the base; they are congruent"
+        },
+        {
+         "w": "equilateral triangle",
+         "d": "a triangle with three congruent sides and three 60° angles"
+        }
+       ],
+       "look": {
+        "type": "think",
+        "title": "One Angle Tells the Rest",
+        "text": "A roof truss is an isosceles triangle with two 6 m legs. A worker measures one angle as 100° but forgets to write down which corner it was. Two base angles of 100° each would add to 200°, more than a whole triangle allows.",
+        "prompt": "Which angle did the worker measure? What are the other two angles? What if the measured angle had been 50° instead: how many different triangles would be possible then?"
+       },
+       "check": [
+        {
+         "q": "The vertex angle of an isosceles triangle measures 36°. What does each base angle measure?",
+         "choices": [
+          "36°",
+          "144°",
+          "72°",
+          "54°"
+         ],
+         "a": 2,
+         "why": "The base angles share 180 − 36 = 144°, so each is 72°."
+        },
+        {
+         "q": "A base angle of an isosceles triangle measures 55°. What is the vertex angle?",
+         "choices": [
+          "55°",
+          "125°",
+          "35°",
+          "70°"
+         ],
+         "a": 3,
+         "why": "Both base angles are 55°, so the vertex angle is 180 − 55 − 55 = 70°."
+        },
+        {
+         "q": "Triangle XYZ has angle X ≅ angle Z. What can you conclude?",
+         "choices": [
+          "XY ≅ XZ",
+          "YZ ≅ XY",
+          "XZ ≅ YZ",
+          "the triangle is equilateral"
+         ],
+         "a": 1,
+         "why": "By the converse of the base angles theorem, the sides opposite the congruent angles are congruent. Opposite X is YZ; opposite Z is XY."
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "title": "Special Segments and Centers",
+     "lessons": [
+      {
+       "title": "Perpendicular Bisectors and the Circumcenter",
+       "mainIdea": "Every point on a segment's perpendicular bisector is equidistant from its endpoints, so the three bisectors of a triangle meet at one point equidistant from all three vertices.",
+       "reading": [
+        "The fire station surveyor used one fact over and over. The *perpendicular bisector theorem* says: if a point lies on the perpendicular bisector of a segment, it is *equidistant* from the segment's endpoints. Proof sketch: let the bisector cross AB at midpoint M, and let P be any point on the bisector. Then AM ≅ MB, the angles at M are right angles, and PM ≅ PM, so triangle PMA ≅ triangle PMB by SAS and PA ≅ PB by CPCTC. The converse is also true: any point equidistant from A and B lies on the perpendicular bisector.",
+        "Use it with algebra. Point P lies on the perpendicular bisector of AB, with PA = 4x − 1 and PB = 2x + 9. Since PA = PB, 4x − 1 = 2x + 9, so 2x = 10 and x = 5. Then PA = 19 and PB = 19. Now the theorem about triangles: the three perpendicular bisectors of a triangle's sides are *concurrent*, meaning they all pass through one point. That point is the *circumcenter*. It is equidistant from the three vertices, so a circle centered there passes through all three: the circumscribed circle. The chapter story's fire station was the circumcenter.",
+        "Where the circumcenter sits depends on the triangle. For an acute triangle it is inside. For a right triangle it is exactly at the midpoint of the hypotenuse. For an obtuse triangle it is outside, which is what put the fire station in the cornfield. Try a right triangle with vertices at (0, 0), (8, 0) and (0, 6). The hypotenuse runs from (8, 0) to (0, 6), with midpoint (4, 3). Distance from (4, 3) to (0, 0) is √(16 + 9) = 5; to (8, 0) it is √(16 + 9) = 5; to (0, 6) it is √(16 + 9) = 5. All equal, so (4, 3) is the circumcenter. Common mistake: confusing equidistant from the vertices with equidistant from the sides. That second one is the next lesson."
+       ],
+       "words": [
+        {
+         "w": "perpendicular bisector theorem",
+         "d": "a point on a segment's perpendicular bisector is equidistant from the segment's endpoints"
+        },
+        {
+         "w": "equidistant",
+         "d": "the same distance away from two or more things"
+        },
+        {
+         "w": "concurrent",
+         "d": "three or more lines that all pass through a single point"
+        },
+        {
+         "w": "circumcenter",
+         "d": "the point where a triangle's three perpendicular bisectors meet; it is equidistant from the three vertices"
+        }
+       ],
+       "look": {
+        "type": "think",
+        "title": "The Fire Station With Coordinates",
+        "text": "Put Ashford at (0, 0), Birch Hill at (8, 0) and Carlton at (0, 6), with units in miles. The perpendicular bisector of the Ashford-Birch Hill segment is the vertical line x = 4. The perpendicular bisector of the Ashford-Carlton segment is the horizontal line y = 3. They cross at (4, 3).",
+        "prompt": "How far is (4, 3) from each town? What is the radius of the circle through all three towns? Where would the station go if Carlton moved to (0, 60) and made the triangle long and thin?"
+       },
+       "check": [
+        {
+         "q": "Point P lies on the perpendicular bisector of AB. PA = 3x + 4 and PB = 5x − 10. What is PA?",
+         "choices": [
+          "7",
+          "25",
+          "18",
+          "30"
+         ],
+         "a": 1,
+         "why": "PA = PB, so 3x + 4 = 5x − 10, giving x = 7 and PA = 3(7) + 4 = 25. The 7 is only x."
+        },
+        {
+         "q": "Where is the circumcenter of a right triangle?",
+         "choices": [
+          "at the right-angle vertex",
+          "outside the triangle",
+          "at the midpoint of the hypotenuse",
+          "at the center of the longest leg"
+         ],
+         "a": 2,
+         "why": "For a right triangle the perpendicular bisectors meet at the hypotenuse's midpoint, which is equidistant from all three vertices."
+        },
+        {
+         "q": "The circumcenter of a triangle is always the same distance from:",
+         "choices": [
+          "the three sides",
+          "the midpoint of each side",
+          "the centroid",
+          "the three vertices"
+         ],
+         "a": 3,
+         "why": "The circumcenter lies on all three perpendicular bisectors, so it is equidistant from all three vertices. Equal distance to the sides is the incenter."
+        }
+       ]
+      },
+      {
+       "title": "Angle Bisectors and the Incenter",
+       "mainIdea": "Every point on an angle's bisector is equidistant from the angle's two sides, so a triangle's three angle bisectors meet at a point equidistant from all three sides.",
+       "reading": [
+        "The county board's second idea was a station equally far from the three highways. Distance from a point to a line always means the perpendicular distance, the shortest path. The *angle bisector theorem* says: if a point lies on the bisector of an angle, it is equidistant from the two sides of the angle. Proof sketch: from point P on the bisector, drop perpendiculars to the two sides, landing at X and Y. Angle XVP ≅ angle YVP (bisector), the angles at X and Y are right angles, and VP ≅ VP, so triangle VXP ≅ triangle VYP by AAS and PX ≅ PY by CPCTC. The converse holds too.",
+        "With algebra: P is on the bisector of angle V, and its distances to the two sides are 2x + 3 and 4x − 7. Set 2x + 3 = 4x − 7, so 10 = 2x and x = 5. Each distance is 13. In a triangle, the three angle bisectors are concurrent at the *incenter*. The incenter is equidistant from the three sides, so a circle centered there touches all three sides from the inside: the inscribed circle. That circle is the largest one that fits in the triangle, and its radius is the incenter's distance to any side.",
+        "Unlike the circumcenter, the incenter is always inside the triangle, because every angle bisector runs through the triangle's interior. That is why it answers the board's second question so well: a station at the incenter is equally close to all three highways and never ends up in a cornfield. Common mistake: measuring distance from a point to a line along a slanted path. Only the perpendicular counts. If a problem gives a slanted segment, it is not the distance, and the theorem does not apply to it."
+       ],
+       "words": [
+        {
+         "w": "angle bisector theorem",
+         "d": "a point on an angle's bisector is equidistant from the two sides of the angle"
+        },
+        {
+         "w": "incenter",
+         "d": "the point where a triangle's three angle bisectors meet; it is equidistant from the three sides"
+        },
+        {
+         "w": "inscribed circle",
+         "d": "the circle centered at the incenter that touches all three sides of a triangle from the inside"
+        },
+        {
+         "w": "distance from a point to a line",
+         "d": "the length of the perpendicular segment from the point to the line"
+        }
+       ],
+       "look": {
+        "type": "think",
+        "title": "Equal Distance to Three Roads",
+        "text": "Three highways form a triangle around a county. A planner wants a station that is the same perpendicular distance from all three roads, so a truck can reach any of them in the same time. She bisects two of the triangle's angles and marks where the bisectors cross. Then she measures the perpendicular distance from that point to each road and gets 4.2 miles every time.",
+        "prompt": "Why did she need to bisect only two angles? What circle could she draw from that point, and what would its radius be?"
+       },
+       "check": [
+        {
+         "q": "Point P lies on the bisector of angle V. Its distances to the two sides are 3x − 2 and x + 10. What is each distance?",
+         "choices": [
+          "6",
+          "16",
+          "12",
+          "20"
+         ],
+         "a": 1,
+         "why": "3x − 2 = x + 10 gives 2x = 12, so x = 6. Each distance is 3(6) − 2 = 16, which also equals 6 + 10."
+        },
+        {
+         "q": "The incenter of a triangle is:",
+         "choices": [
+          "the point where the perpendicular bisectors meet",
+          "the point where the medians meet",
+          "the point where the angle bisectors meet, equidistant from the sides",
+          "the midpoint of the longest side"
+         ],
+         "a": 2,
+         "why": "The three angle bisectors are concurrent at the incenter, and by the angle bisector theorem it is equidistant from all three sides."
+        },
+        {
+         "q": "Which triangle center is always inside the triangle, no matter its shape?",
+         "choices": [
+          "the circumcenter",
+          "the orthocenter",
+          "none of them",
+          "the incenter"
+         ],
+         "a": 3,
+         "why": "Angle bisectors always pass through the interior, so the incenter is always inside. The circumcenter moves outside for obtuse triangles."
+        }
+       ]
+      },
+      {
+       "title": "Medians and the Centroid",
+       "mainIdea": "The three medians of a triangle meet at the centroid, which sits two thirds of the way from each vertex to the opposite midpoint.",
+       "reading": [
+        "A *median* of a triangle is a segment from a vertex to the midpoint of the opposite side. Every triangle has three, and they are concurrent at a point called the *centroid*. The centroid has a precise location: it lies two thirds of the way along each median, measured from the vertex. If AD is a median with centroid G, then AG = 2/3 AD and GD = 1/3 AD, so AG is twice GD. This is the balance point the county board wondered about. Cut a triangle from stiff cardboard and it will balance on a pencil tip placed at the centroid.",
+        "Numbers first. Median AD is 18 units long. Then AG = 2/3 × 18 = 12 and GD = 18 − 12 = 6. Check: 12 is twice 6. Going the other way: if GD = 5, then AG = 10 and the whole median AD = 15. With algebra, suppose AG = 4x and GD = x + 3. Since AG = 2 GD, 4x = 2(x + 3) = 2x + 6, so 2x = 6 and x = 3. Then AG = 12, GD = 6 and AD = 18.",
+        "Why two thirds? The two medians from B and C cut each other in the same ratio, and a proof using midsegments, which appear in the next lesson, shows that the crossing point sits at the two-thirds mark on each. The centroid is always inside the triangle, since each median runs through the interior. Common mistake: using 1/2 instead of 2/3. A median is not bisected at the centroid. The vertex piece is the long piece, always twice the other."
+       ],
+       "words": [
+        {
+         "w": "median",
+         "d": "a segment from a vertex of a triangle to the midpoint of the opposite side"
+        },
+        {
+         "w": "centroid",
+         "d": "the point where the three medians meet; the triangle's balance point"
+        },
+        {
+         "w": "balance point",
+         "d": "the spot where a flat shape rests level on a single support; for a triangle, the centroid"
+        }
+       ],
+       "look": {
+        "type": "data",
+        "title": "From Vertex to Centroid",
+        "rows": [
+         [
+          "Median of length 9",
+          6
+         ],
+         [
+          "Median of length 12",
+          8
+         ],
+         [
+          "Median of length 15",
+          10
+         ],
+         [
+          "Median of length 21",
+          14
+         ],
+         [
+          "Median of length 30",
+          20
+         ]
+        ],
+        "unit": "units from vertex to centroid",
+        "cite": "computed as two thirds of each median length",
+        "prompt": "What is the distance from the centroid to the midpoint in each row? What fraction of the median is that, and how does it compare with the vertex-to-centroid distance?"
+       },
+       "check": [
+        {
+         "q": "A median of a triangle is 24 units long. How far is the centroid from the vertex on that median?",
+         "choices": [
+          "8",
+          "12",
+          "16",
+          "18"
+         ],
+         "a": 2,
+         "why": "The centroid is two thirds of the way from the vertex: 2/3 × 24 = 16. The 8 is the distance to the midpoint, and 12 would be half."
+        },
+        {
+         "q": "G is the centroid, and AD is a median. If GD = 4, what is AD?",
+         "choices": [
+          "12",
+          "8",
+          "6",
+          "16"
+         ],
+         "a": 0,
+         "why": "GD is one third of the median, so AD = 3 × 4 = 12. AG would be 8."
+        },
+        {
+         "q": "A cardboard triangle balances on a pencil tip at which point?",
+         "choices": [
+          "the circumcenter",
+          "the incenter",
+          "the midpoint of the longest side",
+          "the centroid"
+         ],
+         "a": 3,
+         "why": "The centroid is the triangle's center of mass, so the cutout balances there."
+        }
+       ]
+      },
+      {
+       "title": "Altitudes and Midsegments",
+       "mainIdea": "An altitude is the perpendicular height from a vertex, and a midsegment is parallel to the third side and half its length.",
+       "reading": [
+        "An *altitude* of a triangle is the perpendicular segment from a vertex to the line containing the opposite side. It is the height you use in the area formula. The three altitudes, or the lines that contain them, meet at the *orthocenter*. In an acute triangle the orthocenter is inside. In a right triangle two altitudes are the legs themselves, so the orthocenter is at the right-angle vertex. In an obtuse triangle two altitudes fall outside the triangle, and the orthocenter is outside. Do not confuse an altitude with a median: the altitude is perpendicular to the side, while the median goes to its midpoint. They coincide only in special triangles such as the equilateral triangle.",
+        "A *midsegment* joins the midpoints of two sides of a triangle. The *midsegment theorem* says a midsegment is parallel to the third side and half as long. Suppose D and E are the midpoints of AB and AC. Then DE is parallel to BC and DE = 1/2 BC. If BC = 14, then DE = 7. If DE = 7, then BC = 14. With algebra: DE = 2x + 1 and BC = 6x − 8. Because BC = 2 DE, write 6x − 8 = 2(2x + 1) = 4x + 2, so 2x = 10 and x = 5. Then DE = 11 and BC = 22. Check: 22 is twice 11.",
+        "The three midsegments cut a triangle into four congruent triangles, and the middle one, the midsegment triangle, has half the perimeter of the original. If a triangle has sides 10, 12 and 16, the midsegments are 5, 6 and 8, with perimeter 19, half of 38. Common mistake: doubling the wrong segment. The midsegment is the short one. When you see DE = 3x and BC = 4x + 10, the equation is 4x + 10 = 2(3x), which gives 4x + 10 = 6x and x = 5, so BC = 30 and DE = 15."
+       ],
+       "words": [
+        {
+         "w": "altitude",
+         "d": "a perpendicular segment from a vertex of a triangle to the line containing the opposite side"
+        },
+        {
+         "w": "orthocenter",
+         "d": "the point where the three altitudes of a triangle, or their lines, meet"
+        },
+        {
+         "w": "midsegment",
+         "d": "a segment joining the midpoints of two sides of a triangle"
+        },
+        {
+         "w": "midsegment theorem",
+         "d": "a midsegment is parallel to the third side and half its length"
+        }
+       ],
+       "look": {
+        "type": "think",
+        "title": "The Triangle Inside the Triangle",
+        "text": "Triangle ABC has sides AB = 10, BC = 12 and AC = 16. Mark the midpoints D of AB, E of BC and F of AC, and connect them. Each side of triangle DEF is a midsegment of triangle ABC. Find DE, EF and FD, then add them.",
+        "prompt": "What is the perimeter of triangle DEF? How does it compare with the perimeter of ABC? Which side of DEF is parallel to AB?"
+       },
+       "check": [
+        {
+         "q": "The third side of a triangle measures 26. How long is the midsegment parallel to it?",
+         "choices": [
+          "52",
+          "13",
+          "26",
+          "6.5"
+         ],
+         "a": 1,
+         "why": "A midsegment is half the third side: 26 ÷ 2 = 13."
+        },
+        {
+         "q": "DE is a midsegment parallel to BC. DE = 3x and BC = 4x + 10. What is BC?",
+         "choices": [
+          "5",
+          "15",
+          "20",
+          "30"
+         ],
+         "a": 3,
+         "why": "BC = 2 DE, so 4x + 10 = 6x, giving x = 5. BC = 4(5) + 10 = 30, and DE = 15."
+        },
+        {
+         "q": "Where is the orthocenter of a right triangle?",
+         "choices": [
+          "at the midpoint of the hypotenuse",
+          "outside the triangle",
+          "at the right-angle vertex",
+          "at the centroid"
+         ],
+         "a": 2,
+         "why": "The two legs are altitudes of each other and meet at the right angle, so the orthocenter is that vertex. The hypotenuse midpoint is the circumcenter."
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "title": "Inequalities and Coordinates",
+     "lessons": [
+      {
+       "title": "The Triangle Inequality",
+       "mainIdea": "Any two sides of a triangle must add to more than the third side, or the triangle cannot close.",
+       "reading": [
+        "Walk from the Bean in Millennium Park to the Art Institute, then on to the Harold Washington Library. Or walk straight from the Bean to the library. The two-leg route is always longer than the straight route, because a straight segment is the shortest path between two points. That everyday fact is the *triangle inequality theorem*: the sum of the lengths of any two sides of a triangle is greater than the length of the third side. If it were not, the two short sides could not reach each other across the long side, and the triangle would not close.",
+        "Test some side lengths. Sides 5, 7 and 11: 5 + 7 = 12, and 12 > 11, so a triangle exists. You only need to check the two smallest sides against the largest, because the other two sums are automatically bigger. Sides 4, 5 and 10: 4 + 5 = 9, and 9 is not greater than 10, so no triangle. Sides 4, 4 and 8: 4 + 4 = 8, which equals 8 but is not greater, so no triangle. The two short sides would lie flat along the long one.",
+        "The theorem also gives a range for a missing side. Two sides are 6 and 10. The third side x must satisfy x < 6 + 10 = 16 and x > 10 − 6 = 4. So 4 < x < 16. In words: the third side is less than the sum and greater than the difference of the other two. With sides 3 and 5, the third side is between 2 and 8, so the whole-number possibilities are 3, 4, 5, 6 and 7: five of them. Common mistake: writing the range with ≤ instead of <. The endpoints give a flat, closed-up figure, not a triangle."
+       ],
+       "words": [
+        {
+         "w": "triangle inequality theorem",
+         "d": "the sum of any two side lengths of a triangle is greater than the third side length"
+        },
+        {
+         "w": "sum",
+         "d": "the result of adding two or more numbers"
+        },
+        {
+         "w": "difference",
+         "d": "the result of subtracting one number from another"
+        }
+       ],
+       "look": {
+        "type": "think",
+        "title": "Can These Sticks Make a Triangle?",
+        "text": "You have sticks of length 3, 5, 7, 9 and 12 units. Pick three at a time and test whether they close into a triangle. For 3, 5 and 7: 3 + 5 = 8, and 8 > 7, so yes. For 3, 5 and 9: 3 + 5 = 8, and 8 is not greater than 9, so no. Keep going with other sets, always adding the two shortest.",
+        "prompt": "Which sets of three sticks make a triangle? For the sticks 5 and 12 together, what is the shortest third stick from the list that works, and why does 7 fail?"
+       },
+       "check": [
+        {
+         "q": "Which set of lengths can be the sides of a triangle?",
+         "choices": [
+          "2, 3, 6",
+          "4, 4, 8",
+          "1, 2, 3",
+          "5, 12, 13"
+         ],
+         "a": 3,
+         "why": "5 + 12 = 17 > 13, so that set works. The others fail: 2 + 3 < 6, 4 + 4 = 8 exactly, and 1 + 2 = 3 exactly."
+        },
+        {
+         "q": "Two sides of a triangle measure 8 and 15. The third side must be:",
+         "choices": [
+          "between 7 and 23",
+          "between 8 and 15",
+          "exactly 17",
+          "greater than 23"
+         ],
+         "a": 0,
+         "why": "The third side is greater than 15 − 8 = 7 and less than 15 + 8 = 23."
+        },
+        {
+         "q": "Two sides of a triangle are 3 and 5. How many whole-number lengths are possible for the third side?",
+         "choices": [
+          "8",
+          "3",
+          "5",
+          "7"
+         ],
+         "a": 2,
+         "why": "The third side is between 2 and 8, not including the endpoints. The whole numbers 3, 4, 5, 6 and 7 work: five values."
+        }
+       ]
+      },
+      {
+       "title": "Bigger Angle, Bigger Side",
+       "mainIdea": "In any triangle, the longest side is opposite the largest angle, and the shortest side is opposite the smallest angle.",
+       "reading": [
+        "Open a door a little, and the gap between its edge and the frame is small. Open it wide, and the gap grows. The door, the frame and the gap form a triangle, and the wider angle at the hinge stretches the side across from it. That is the idea behind two inequality theorems. First: if one side of a triangle is longer than another, the angle opposite the longer side is larger than the angle opposite the shorter side. Second, its converse: if one angle is larger than another, the side opposite the larger angle is longer. In short, biggest angle faces longest side, and smallest angle faces shortest side.",
+        "Try it. A triangle has angle A = 50°, angle B = 70° and angle C = 60°. The largest angle is B, so the longest side is the one opposite B, which is AC. The smallest angle is A, so the shortest side is BC. Going the other way: sides AB = 9, BC = 5 and AC = 7. The shortest side BC is opposite angle A, so angle A is the smallest angle. The longest side AB is opposite angle C, so angle C is the largest. You can order all three angles without measuring one of them.",
+        "The door idea has a name: the *hinge theorem*. If two triangles have two pairs of congruent sides, and the *included angle* of one is larger than the included angle of the other, then the third side of the first triangle is longer. Two triangles each have sides 6 and 8. One has a 50° angle between them, the other 65°. The 65° triangle has the longer third side. Its converse also holds: a longer third side means a larger included angle. Common mistake: matching the largest angle with the side next to it instead of the side across from it. Opposite means across, never adjacent."
+       ],
+       "words": [
+        {
+         "w": "opposite side",
+         "d": "the side of a triangle that does not touch a given angle; the side across from it"
+        },
+        {
+         "w": "hinge theorem",
+         "d": "with two pairs of congruent sides, the triangle with the larger included angle has the longer third side"
+        },
+        {
+         "w": "included angle",
+         "d": "the angle between two given sides of a triangle"
+        }
+       ],
+       "look": {
+        "type": "think",
+        "title": "The Clock Hands",
+        "text": "The hour hand of a clock is 6 cm long and the minute hand is 8 cm long. At 1:00 the angle between them is 30°. At 3:00 it is 90°. At 5:00 it is 150°. At each time, picture the triangle formed by the two hands and the segment joining their tips.",
+        "prompt": "At which time are the hand tips farthest apart, and which theorem says so? Which time gives the shortest tip-to-tip distance?"
+       },
+       "check": [
+        {
+         "q": "In triangle ABC, angle A = 50°, angle B = 70° and angle C = 60°. Which side is longest?",
+         "choices": [
+          "AB",
+          "AC",
+          "BC",
+          "all three are equal"
+         ],
+         "a": 1,
+         "why": "The largest angle is B, and the side opposite B is AC. Side AB is opposite the 60° angle at C."
+        },
+        {
+         "q": "In triangle ABC, AB = 9, BC = 5 and AC = 7. Which angle is smallest?",
+         "choices": [
+          "angle B",
+          "angle C",
+          "angle A",
+          "they are all equal"
+         ],
+         "a": 2,
+         "why": "The shortest side is BC = 5, and the angle opposite BC is angle A."
+        },
+        {
+         "q": "Two triangles each have sides of 6 and 8. One has a 50° included angle and the other a 65° included angle. Which statement is true?",
+         "choices": [
+          "The 50° triangle has the longer third side",
+          "The third sides are equal",
+          "The 50° triangle has the larger area",
+          "The 65° triangle has the longer third side"
+         ],
+         "a": 3,
+         "why": "By the hinge theorem, the larger included angle, 65°, produces the longer third side."
+        }
+       ]
+      },
+      {
+       "title": "Coordinate Proofs",
+       "mainIdea": "Placing a figure on a coordinate grid turns geometry statements into calculations with distance, midpoint and slope.",
+       "reading": [
+        "A *coordinate proof* places a figure on the coordinate plane and proves a statement with formulas. Three tools do the work. The *distance formula*: the distance between (x1, y1) and (x2, y2) is √((x2 − x1)^2 + (y2 − y1)^2). The *midpoint formula*: the midpoint is ((x1 + x2)/2, (y1 + y2)/2). And *slope*: (y2 − y1)/(x2 − x1). Equal slopes mean parallel segments. Slopes whose product is −1 mean perpendicular segments. Place the figure smartly: put one vertex at the origin and one side along the x-axis so many coordinates are 0.",
+        "Prove that the triangle with vertices A(0, 0), B(6, 0) and C(3, 4) is isosceles. AC = √((3 − 0)^2 + (4 − 0)^2) = √(9 + 16) = √25 = 5. BC = √((3 − 6)^2 + (4 − 0)^2) = √(9 + 16) = 5. Two sides are congruent, so the triangle is isosceles. Now check the midsegment theorem on the same triangle. The midpoint of AC is (1.5, 2) and the midpoint of BC is (4.5, 2). The midsegment joining them has length 4.5 − 1.5 = 3, which is half of AB = 6, and its slope is 0, the same as AB. Parallel and half as long, exactly as the theorem promised.",
+        "A right angle can be checked two ways. The triangle with vertices (1, 1), (4, 1) and (4, 5) has a horizontal side of length 3 and a vertical side of length 4, and the slanted side is √(9 + 16) = 5. Since 3^2 + 4^2 = 9 + 16 = 25 = 5^2, the triangle is a right triangle. Or notice that the horizontal side has slope 0 and the vertical side has undefined slope, so they are perpendicular. Common mistakes: forgetting to square the differences in the distance formula, and forgetting the square root at the end. Write the formula every time before you plug in."
+       ],
+       "words": [
+        {
+         "w": "coordinate proof",
+         "d": "a proof that places a figure on the coordinate plane and uses formulas to show a statement is true"
+        },
+        {
+         "w": "distance formula",
+         "d": "the distance between two points is √((x2 − x1)^2 + (y2 − y1)^2)"
+        },
+        {
+         "w": "midpoint formula",
+         "d": "the midpoint of two points is the average of the x-coordinates and the average of the y-coordinates"
+        },
+        {
+         "w": "slope",
+         "d": "the steepness of a segment, rise divided by run; equal slopes mean parallel"
+        }
+       ],
+       "look": {
+        "type": "think",
+        "title": "Prove It With Numbers",
+        "text": "Quadrilateral PQRS has vertices P(0, 0), Q(6, 0), R(8, 3) and S(2, 3). Find the slope of PQ and of SR. Then find the slope of PS and of QR. Finally, compute the lengths PQ and SR.",
+        "prompt": "Are both pairs of opposite sides parallel? What kind of quadrilateral is PQRS, and which theorem from the last chapter does your calculation confirm?"
+       },
+       "check": [
+        {
+         "q": "What is the distance between (1, 2) and (7, 10)?",
+         "choices": [
+          "14",
+          "√28",
+          "10",
+          "100"
+         ],
+         "a": 2,
+         "why": "√((7 − 1)^2 + (10 − 2)^2) = √(36 + 64) = √100 = 10. The 100 forgets the square root; 14 adds the differences."
+        },
+        {
+         "q": "What is the midpoint of (−4, 6) and (2, −2)?",
+         "choices": [
+          "(−1, 2)",
+          "(−2, 4)",
+          "(−3, 4)",
+          "(−6, 8)"
+         ],
+         "a": 0,
+         "why": "Average the coordinates: (−4 + 2)/2 = −1 and (6 + (−2))/2 = 2. The midpoint is (−1, 2)."
+        },
+        {
+         "q": "Which calculation shows that the triangle with vertices (1, 1), (4, 1) and (4, 5) is a right triangle?",
+         "choices": [
+          "Its perimeter is 12",
+          "Its sides are 3, 4 and 5, and 9 + 16 = 25",
+          "Its midpoint is (2.5, 3)",
+          "All three sides have the same slope"
+         ],
+         "a": 1,
+         "why": "The side lengths satisfy 3^2 + 4^2 = 5^2, so the triangle has a right angle. Slopes 0 and undefined would also show it."
+        }
+       ]
+      },
+      {
+       "title": "Centers on the Grid",
+       "mainIdea": "On a coordinate grid, the centroid is the average of the three vertices, and the circumcenter of a right triangle is the midpoint of the hypotenuse.",
+       "reading": [
+        "Coordinates make two centers easy to compute. The *centroid* of a triangle is the average of its three vertices: add the three x-coordinates and divide by 3, then do the same for y. For the triangle with vertices (0, 0), (6, 0) and (3, 9), the centroid is ((0 + 6 + 3)/3, (0 + 0 + 9)/3) = (3, 3). Check it against the two-thirds rule. The median from (3, 9) goes to the midpoint of the base, (3, 0). It is vertical with length 9. Two thirds of the way down from (3, 9) is 9 − 6 = 3, so the point (3, 3) is on that median at the right spot.",
+        "For a right triangle, the *circumcenter* is the midpoint of the hypotenuse. Take the triangle with vertices (0, 0), (10, 0) and (0, 4). The right angle is at the origin. So the hypotenuse joins (10, 0) and (0, 4), and its midpoint is (5, 2). Verify it. The distance from (5, 2) to (0, 0) is √(25 + 4) = √29. To (10, 0) it is √(25 + 4) = √29. To (0, 4) it is √(25 + 4) = √29. All three match. So (5, 2) is equidistant from the vertices, exactly what a circumcenter must be. The radius of the circumscribed circle is √29.",
+        "For a triangle that is not a right triangle, write equations for two perpendicular bisectors. The circumcenter is where they cross. The chapter story did this. For towns at (0, 0), (8, 0) and (0, 6), the bisectors x = 4 and y = 3 meet at (4, 3). Two common mistakes: averaging only two vertices for the centroid, and using the midpoint of a leg instead of the hypotenuse. The centroid needs all three vertices, and the circumcenter shortcut needs the side opposite the right angle."
+       ],
+       "words": [
+        {
+         "w": "centroid",
+         "d": "the point where the medians meet; on a grid, the average of the three vertices"
+        },
+        {
+         "w": "circumcenter",
+         "d": "the point equidistant from a triangle's three vertices; for a right triangle, the midpoint of the hypotenuse"
+        },
+        {
+         "w": "average",
+         "d": "the sum of a set of numbers divided by how many numbers there are"
+        }
+       ],
+       "look": {
+        "type": "think",
+        "title": "Two Centers, One Triangle",
+        "text": "Triangle ABC has vertices A(0, 0), B(12, 0) and C(0, 6), with the right angle at A. Compute the centroid by averaging the vertices. Then compute the circumcenter as the midpoint of the hypotenuse BC. Finally, find the distance from the circumcenter to each vertex.",
+        "prompt": "Where are the two centers? Are they the same point? What radius circle passes through all three vertices?"
+       },
+       "check": [
+        {
+         "q": "What is the centroid of the triangle with vertices (2, 1), (8, 3) and (5, 8)?",
+         "choices": [
+          "(15, 12)",
+          "(5, 2)",
+          "(7.5, 6)",
+          "(5, 4)"
+         ],
+         "a": 3,
+         "why": "Average the coordinates: (2 + 8 + 5)/3 = 5 and (1 + 3 + 8)/3 = 4. The centroid is (5, 4). Dividing by 2 gives (7.5, 6), a common error."
+        },
+        {
+         "q": "A right triangle has vertices (0, 0), (10, 0) and (0, 4), with the right angle at the origin. Where is its circumcenter?",
+         "choices": [
+          "(5, 0)",
+          "(5, 2)",
+          "(0, 2)",
+          "(10, 4)"
+         ],
+         "a": 1,
+         "why": "The circumcenter of a right triangle is the midpoint of the hypotenuse, which joins (10, 0) and (0, 4): ((10 + 0)/2, (0 + 4)/2) = (5, 2)."
+        },
+        {
+         "q": "The point (4, 3) is 5 units from each of (0, 0), (8, 0) and (0, 6). What does that show?",
+         "choices": [
+          "(4, 3) is the circumcenter of the triangle",
+          "(4, 3) is the incenter of the triangle",
+          "(4, 3) is the centroid of the triangle",
+          "the triangle is equilateral"
+         ],
+         "a": 0,
+         "why": "A point equidistant from all three vertices is the circumcenter. The centroid of this triangle would be (8/3, 2)."
+        }
+       ]
+      }
+     ]
+    }
+   ],
+   "review": [
+    {
+     "q": "Two angles of a triangle measure 47° and 68°. What is the third angle?",
+     "choices": [
+      "115°",
+      "65°",
+      "75°",
+      "245°"
+     ],
+     "a": 1,
+     "why": "180 − 47 − 68 = 65. The 115 is the exterior angle at the third vertex."
+    },
+    {
+     "q": "An exterior angle of a triangle has remote interior angles of 52° and 63°. What is the exterior angle?",
+     "choices": [
+      "65°",
+      "128°",
+      "115°",
+      "11°"
+     ],
+     "a": 2,
+     "why": "The exterior angle equals the sum of the remote interior angles: 52 + 63 = 115."
+    },
+    {
+     "q": "The vertex angle of an isosceles triangle measures 100°. What does each base angle measure?",
+     "choices": [
+      "80°",
+      "50°",
+      "100°",
+      "40°"
+     ],
+     "a": 3,
+     "why": "The base angles share 180 − 100 = 80°, so each is 40°."
+    },
+    {
+     "q": "A median of a triangle is 27 units long. How far is the centroid from the vertex on that median?",
+     "choices": [
+      "18",
+      "9",
+      "13.5",
+      "27"
+     ],
+     "a": 0,
+     "why": "The centroid is two thirds of the way from the vertex: 2/3 × 27 = 18. The 9 is the distance to the midpoint."
+    },
+    {
+     "q": "A midsegment of a triangle is parallel to a side of length 18. How long is the midsegment?",
+     "choices": [
+      "36",
+      "9",
+      "18",
+      "6"
+     ],
+     "a": 1,
+     "why": "A midsegment is half the length of the parallel side: 18 ÷ 2 = 9."
+    },
+    {
+     "q": "Two sides of a triangle measure 7 and 9. Which describes the possible lengths of the third side?",
+     "choices": [
+      "less than 16",
+      "greater than 2",
+      "between 2 and 16, not including the endpoints",
+      "between 7 and 9"
+     ],
+     "a": 2,
+     "why": "The third side must be greater than 9 − 7 = 2 and less than 9 + 7 = 16."
+    },
+    {
+     "q": "Which point is equidistant from the three vertices of a right triangle?",
+     "choices": [
+      "the right-angle vertex",
+      "the incenter",
+      "the centroid",
+      "the midpoint of the hypotenuse"
+     ],
+     "a": 3,
+     "why": "The circumcenter is equidistant from the vertices, and for a right triangle it lies at the midpoint of the hypotenuse."
+    },
+    {
+     "q": "What is the centroid of the triangle with vertices (0, 0), (9, 0) and (3, 6)?",
+     "choices": [
+      "(4, 2)",
+      "(6, 3)",
+      "(4.5, 3)",
+      "(12, 6)"
+     ],
+     "a": 0,
+     "why": "Average the coordinates: (0 + 9 + 3)/3 = 4 and (0 + 0 + 6)/3 = 2. The centroid is (4, 2)."
+    }
+   ]
+  }
+ ]
+}

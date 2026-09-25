@@ -54,7 +54,7 @@ def main(argv):
         html2, ch = add_course(html)
         if ch:
             open(p, "w", encoding="utf-8").write(html2); done += 1
-    print("pages with #jumpSel: %d · math course added to a Science group: %d" % (seen, done))
+    print("pages with #jumpSel: %d · math course added to a Math group: %d" % (seen, done))
 
 if __name__ == "__main__":
     main(sys.argv[1:])

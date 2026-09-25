@@ -1,0 +1,2378 @@
+{
+ "intro": [
+  "Two roommates borrow the same $12,000 for the same car, and one of them pays about $1,600 more because a rate of 12% is not a rate of 6%. A worker earning $16 an hour finds that the paycheck is smaller than 16 times the hours. A grandparent's savings account quietly loses buying power while prices rise. Every one of these is a math problem, and every one of them is decided, for better or worse, by people who either do the arithmetic or do not.",
+  "The first chapter of this unit is the arithmetic of money: simple and compound interest, the effective rate that lets you compare two offers, the payment on a car loan or a mortgage, the true cost of a credit card minimum payment, saving early versus saving more, take-home pay, budgets and inflation. Interest rates in this unit are examples chosen to make the math clear; real rates change, and the method is what you keep.",
+  "The second chapter is the capstone. You choose a real question, gather and clean data, build a model, compare it to another, test how the answer moves when an input wiggles, draw an honest graph, and write and defend a mathematical argument. A class that times a traffic light shows the whole path. By the end you will be able to do what a village engineer, a loan officer or a data analyst does: turn a question into numbers, and numbers into a decision you can explain."
+ ],
+ "bigQuestion": "How does mathematics turn a money decision or a real-world question into an answer you can check, defend and act on?",
+ "timeline": [
+  {
+   "y": "c. 1800 BCE",
+   "t": "Babylonian clay tablets record loans of grain and silver with interest, some of the oldest financial math"
+  },
+  {
+   "y": "1202",
+   "t": "Fibonacci's Liber Abaci teaches Italian merchants to compute interest, profit shares and currency exchange"
+  },
+  {
+   "y": "1494",
+   "t": "Luca Pacioli publishes a description of double-entry bookkeeping, the system behind modern accounting"
+  },
+  {
+   "y": "1683",
+   "t": "Jacob Bernoulli studies interest compounded more and more often and finds the limit that becomes the number e"
+  },
+  {
+   "y": "1913",
+   "t": "The 16th Amendment lets Congress tax income, and the modern federal income tax begins"
+  },
+  {
+   "y": "1935",
+   "t": "The Social Security Act creates the payroll tax that still appears on every U.S. pay stub"
+  },
+  {
+   "y": "1955",
+   "t": "Mathematicians publish early models of traffic flow, treating streams of cars with equations"
+  },
+  {
+   "y": "1968",
+   "t": "The Truth in Lending Act requires lenders to state the annual percentage rate on loans"
+  },
+  {
+   "y": "1969",
+   "t": "Illinois adopts a state income tax, today a flat rate on wages earned in the state"
+  },
+  {
+   "y": "2009",
+   "t": "The Credit CARD Act requires statements to show how long paying only the minimum would take"
+  },
+  {
+   "y": "2020s",
+   "t": "Free online calculators let anyone test a loan, a budget or a model before signing or deciding"
+  }
+ ],
+ "wrap": {
+  "words": [
+   {
+    "w": "principal",
+    "d": "the original amount borrowed or deposited, before interest"
+   },
+   {
+    "w": "compound interest",
+    "d": "interest added to the balance each period, so later interest is earned on earlier interest"
+   },
+   {
+    "w": "APY",
+    "d": "annual percentage yield, the effective yearly rate once compounding is counted: (1 + r/n)^n − 1"
+   },
+   {
+    "w": "amortized loan",
+    "d": "a loan repaid in equal payments; each payment covers that month's interest first, and the rest lowers the balance"
+   },
+   {
+    "w": "minimum payment",
+    "d": "the smallest payment a card company accepts for the month; paying only this leaves most of the balance and its interest"
+   },
+   {
+    "w": "present value",
+    "d": "what a future amount is worth today: the future amount divided by the growth factor"
+   },
+   {
+    "w": "net pay",
+    "d": "take-home pay: gross pay minus taxes and other deductions"
+   },
+   {
+    "w": "inflation",
+    "d": "a general rise in prices over time, which lowers what a fixed amount of money can buy"
+   },
+   {
+    "w": "mathematical model",
+    "d": "a simplified description of a real situation, built from variables and rules, used to predict or explain"
+   },
+   {
+    "w": "assumption",
+    "d": "a simplification chosen on purpose so a model can be built; each one is written down and its effect checked"
+   },
+   {
+    "w": "mean absolute error",
+    "d": "the average size of a model's misses on the data, ignoring signs"
+   },
+   {
+    "w": "sensitivity analysis",
+    "d": "changing one input at a time to see how much a model's conclusion moves"
+   }
+  ],
+  "test": [
+   {
+    "q": "What is the simple interest on $2,000 at 4% for 3 years?",
+    "choices": [
+     "$24",
+     "$80",
+     "$240",
+     "$2,240"
+    ],
+    "a": 2,
+    "why": "I = 2,000 × 0.04 × 3 = 80 × 3 = $240."
+   },
+   {
+    "q": "$1,000 at 6% compounded monthly for 3 years grows to about which amount? (1.005^36 = 1.1967)",
+    "choices": [
+     "$1,216.00",
+     "$1,180.00",
+     "$1,191.02",
+     "$1,196.68"
+    ],
+    "a": 3,
+    "why": "1,000 × 1.005^36 = 1,000 × 1.1967 = $1,196.68. Yearly compounding gives $1,191.02 and simple interest $1,180."
+   },
+   {
+    "q": "By the rule of 72, about how long does money take to double at 8%?",
+    "choices": [
+     "9 years",
+     "8 years",
+     "12 years",
+     "72 years"
+    ],
+    "a": 0,
+    "why": "72 ÷ 8 = 9 years. Check: 1.08^9 = 2.0, very close to 2."
+   },
+   {
+    "q": "Which account grows fastest in a year?",
+    "choices": [
+     "5% compounded yearly",
+     "5% compounded monthly",
+     "4.9% compounded daily",
+     "5% simple interest"
+    ],
+    "a": 1,
+    "why": "5% monthly has an APY of about 5.12%, above 5% yearly, 5% simple, and 4.9% daily (about 5.02%)."
+   },
+   {
+    "q": "The first payment on a $12,000 loan at 12% is $316.01. How much of it is interest?",
+    "choices": [
+     "$1,440",
+     "$60",
+     "$120",
+     "$196.01"
+    ],
+    "a": 2,
+    "why": "Monthly rate = 0.12 ÷ 12 = 0.01, and 12,000 × 0.01 = $120. The $196.01 is the principal part."
+   },
+   {
+    "q": "You owe $1,000 at 24% APR and pay $50. What is the balance after that payment?",
+    "choices": [
+     "$930",
+     "$990",
+     "$950",
+     "$970"
+    ],
+    "a": 3,
+    "why": "Interest = 1,000 × 0.02 = $20. Balance = 1,000 + 20 − 50 = $970."
+   },
+   {
+    "q": "A $200,000 mortgage at 6% costs $1,199.10 a month for 30 years. About how much total interest is paid?",
+    "choices": [
+     "$231,676",
+     "$200,000",
+     "$31,676",
+     "$431,676"
+    ],
+    "a": 0,
+    "why": "Total paid = 360 × 1,199.10 = $431,676. Interest = 431,676 − 200,000 = $231,676."
+   },
+   {
+    "q": "At 10% per year, what is $1,000 due in 2 years worth today?",
+    "choices": [
+     "$909.09",
+     "$826.45",
+     "$800.00",
+     "$1,210.00"
+    ],
+    "a": 1,
+    "why": "1.10^2 = 1.21, and 1,000 ÷ 1.21 = $826.45. The $909.09 is only one year of discounting."
+   },
+   {
+    "q": "Gross pay is $2,000. Deductions: 10% federal, 6.2% Social Security, 1.45% Medicare, 4.95% Illinois. What is net pay?",
+    "choices": [
+     "$1,647",
+     "$1,452",
+     "$1,548",
+     "$1,800"
+    ],
+    "a": 2,
+    "why": "Deductions total 10 + 6.2 + 1.45 + 4.95 = 22.6%, and 0.226 × 2,000 = $452. Net = 2,000 − 452 = $1,548."
+   },
+   {
+    "q": "Inflation runs 3% a year for 10 years. What does $100 cash buy at the end, in today's terms? (1.03^10 = 1.344)",
+    "choices": [
+     "$97.00",
+     "$134.40",
+     "$70.00",
+     "$74.40"
+    ],
+    "a": 3,
+    "why": "Purchasing power = 100 ÷ 1.344 = $74.40. The $134.40 is the future price of a $100 item, the opposite question."
+   },
+   {
+    "q": "A gym costs $45 a month or $360 a year. At how many months does the yearly plan break even?",
+    "choices": [
+     "8 months",
+     "9 months",
+     "45 months",
+     "12 months"
+    ],
+    "a": 0,
+    "why": "360 ÷ 45 = 8 months. Before 8 months the monthly plan is cheaper; after, the yearly plan is."
+   },
+   {
+    "q": "Cars arrive at 20 per minute during a 45-second red. Using Q = r × R ÷ 60, how many cars queue?",
+    "choices": [
+     "9",
+     "15",
+     "13.5",
+     "900"
+    ],
+    "a": 1,
+    "why": "Q = 20 × 45 ÷ 60 = 900 ÷ 60 = 15 cars."
+   },
+   {
+    "q": "A model's residuals are 1, −1, 2 and 0. What is its mean absolute error?",
+    "choices": [
+     "2",
+     "0.5",
+     "1",
+     "4"
+    ],
+    "a": 2,
+    "why": "Sizes 1, 1, 2, 0 sum to 4, and 4 ÷ 4 = 1. Adding with signs gives 2 ÷ 4 = 0.5, which hides the misses."
+   },
+   {
+    "q": "Changing the evening arrival rate by 20% flips the traffic conclusion, but changing the startup delay by 50% does not. What follows?",
+    "choices": [
+     "Both inputs matter equally",
+     "The startup delay should be measured more carefully",
+     "The model is useless",
+     "The arrival rate is the input to measure most carefully"
+    ],
+    "a": 3,
+    "why": "Sensitivity analysis points effort at the inputs that move the conclusion. The arrival rate does; the startup delay does not."
+   },
+   {
+    "q": "A bar chart shows waits of 40 and 44 seconds on an axis starting at 38. What is the honest fix?",
+    "choices": [
+     "Start the axis at 0 so the bars show the true 10% difference",
+     "Remove the labels",
+     "Use a pie chart",
+     "Start the axis at 40"
+    ],
+    "a": 0,
+    "why": "Bar height is read as size, so the axis must start at zero; then the second bar is 10% taller, matching 44 ÷ 40 = 1.10."
+   }
+  ],
+  "write": {
+   "prompt": "A friend can take a $15,000 car loan at 7% for 60 months or the same loan at 9% for 36 months. Compute the monthly payment and the total interest for each (show the formula and each step), then argue which loan the friend should choose and what about the friend's budget would change your answer.",
+   "tips": [
+    "State your recommendation in the first sentence, then support it.",
+    "Show the monthly rate, the number of payments, and every step of the payment formula for both loans.",
+    "Compare total interest, not just the monthly payment, and say why they can point in different directions.",
+    "Name at least one assumption, such as the friend's monthly budget, and say how the answer changes if it changes.",
+    "Check each payment a second way, for example by confirming that payment × months is larger than the amount borrowed by your interest figure."
+   ]
+  }
+ },
+ "n": 27,
+ "title": "Financial Math and Capstone",
+ "years": "Applied Mathematics",
+ "band": "11-12",
+ "chapters": [
+  {
+   "n": 61,
+   "title": "Financial Math",
+   "years": "Applied Mathematics",
+   "bigQuestion": "How does a small difference in an interest rate turn into a large difference in what you actually pay or earn?",
+   "story": {
+    "title": "Two Roommates, One Car Loan",
+    "kicker": "Two roommates buy the same used car with the same loan, and one of them pays about $1,600 more for it.",
+    "paragraphs": [
+     "Jada and Marco share an apartment in Rogers Park, near the Red Line. In the same month they each buy a used car for $12,000, and each of them borrows the full amount from a lender for 48 months. Jada has paid every bill on time for three years, so the lender offers her a rate of 6% per year. Marco missed some payments on a store card last year, so his lender offers 12%. Both roommates sign, and both think the difference is small. Six versus twelve, what could it matter?",
+     "The first monthly bills arrive. Jada's payment is $281.82. Marco's is $316.01. That is about $34 more every month. Marco shrugs; $34 is a couple of pizzas. Jada, who is taking this course, pulls out a calculator. She multiplies each payment by 48 months. Her loan will cost 48 × $281.82 = $13,527.36 in total. Marco's will cost 48 × $316.01 = $15,168.48. The same car, the same amount borrowed, and Marco pays about $1,641 more.",
+     "Then Jada looks inside the first payment. In the first month, Jada's interest is $12,000 × 0.06 ÷ 12 = $60. Only $60 of her $281.82 goes to the lender as interest; the other $221.82 lowers what she owes. Marco's first-month interest is $12,000 × 0.12 ÷ 12 = $120. Twice as much of his payment disappears as interest, and only $196.01 lowers his debt. Every month, Marco's balance shrinks a little more slowly than Jada's, and the gap keeps growing.",
+     "Marco asks what he can do. Jada shows him two things. If he pays an extra $50 every month, his loan ends early and he saves hundreds in interest. And if he pays every bill on time for a year, he may be able to refinance, which means replacing the old loan with a new one at a lower rate. Both are math decisions, and both depend on understanding how interest works.",
+     "This chapter is about that kind of understanding. You will learn how simple and compound interest grow, why a rate compounded monthly is worth more than the same rate compounded once a year, how loan payments are calculated, what a credit card minimum payment really costs, how a paycheck shrinks into take-home pay, how inflation quietly eats savings, and how to lay two offers side by side and choose with numbers instead of a guess."
+    ],
+    "think": "Marco's monthly payment is only $34 higher than Jada's, but his total cost is about $1,641 higher. Why does a small monthly gap become a large total gap, and which number should a borrower look at first?"
+   },
+   "sections": [
+    {
+     "title": "How Interest Grows",
+     "lessons": [
+      {
+       "title": "Simple Interest",
+       "mainIdea": "Simple interest is charged on the original amount only: interest = principal × rate × time.",
+       "reading": [
+        "Interest is the price of using someone else's money. When you deposit money in a bank, the bank pays you interest. When you borrow, you pay it. The amount you start with is the *principal*. The *rate* is the percent charged per year. With *simple interest*, the rate is applied to the original principal every year, and nothing else. The formula is I = P × r × t, where I is the interest, P the principal, r the yearly rate as a decimal, and t the time in years.",
+        "Suppose you lend a cousin $2,000 at 4% simple interest for 3 years. Write 4% as 0.04. Then I = 2,000 × 0.04 × 3. Multiply in steps: 2,000 × 0.04 = 80, and 80 × 3 = 240. The interest is $240, so your cousin pays back $2,000 + $240 = $2,240 at the end. Notice that the interest is the same $80 every year, because it is always figured on the same $2,000.",
+        "Time does not have to be a whole number of years. A loan of $800 at 5% for 6 months uses t = 0.5, because 6 months is half a year. I = 800 × 0.05 × 0.5 = 40 × 0.5 = $20. A common mistake is to plug in 6 for t, which gives $240, the interest for six years, not six months. Another mistake is writing 5% as 0.5 instead of 0.05, which makes the answer ten times too large. Always convert the percent first and the time second, then multiply.",
+        "Simple interest is the right model for short loans between people, for some savings bonds, and for the interest that builds up on many student loans while the student is still in school. It is also the starting point for everything else in this chapter, because compound interest is what you get when simple interest is charged over and over on a growing balance."
+       ],
+       "words": [
+        {
+         "w": "principal",
+         "d": "the original amount of money borrowed or deposited, before any interest is added"
+        },
+        {
+         "w": "rate",
+         "d": "the percent of the principal charged or paid as interest each year, written as a decimal in formulas"
+        },
+        {
+         "w": "simple interest",
+         "d": "interest figured on the original principal only, the same amount every year: I = P × r × t"
+        }
+       ],
+       "look": {
+        "type": "data",
+        "title": "Simple interest on $1,000 at 5% per year (example rate)",
+        "rows": [
+         [
+          "After 1 year",
+          50
+         ],
+         [
+          "After 2 years",
+          100
+         ],
+         [
+          "After 3 years",
+          150
+         ],
+         [
+          "After 4 years",
+          200
+         ],
+         [
+          "After 5 years",
+          250
+         ]
+        ],
+        "unit": "dollars of interest",
+        "cite": "Computed from I = 1,000 × 0.05 × t; 5% is an example rate",
+        "prompt": "The interest goes up by the same $50 every year. What kind of function is total interest as a function of time, and what is its slope?"
+       },
+       "check": [
+        {
+         "q": "You deposit $1,500 at 6% simple interest for 2 years. How much interest do you earn?",
+         "choices": [
+          "$180",
+          "$90",
+          "$1,680",
+          "$1,800"
+         ],
+         "a": 0,
+         "why": "I = 1,500 × 0.06 × 2 = 90 × 2 = $180. The $1,680 is the total in the account, not the interest, and $90 is only one year."
+        },
+        {
+         "q": "A $800 loan charges 5% simple interest. How much interest is owed after 6 months?",
+         "choices": [
+          "$4",
+          "$20",
+          "$40",
+          "$240"
+         ],
+         "a": 1,
+         "why": "Six months is 0.5 year, so I = 800 × 0.05 × 0.5 = $20. Using t = 6 gives $240, and forgetting the half gives $40."
+        },
+        {
+         "q": "A friend keeps the principal and rate the same but borrows for twice as long. What happens to the simple interest?",
+         "choices": [
+          "It stays the same",
+          "It goes up by the rate",
+          "It doubles",
+          "It is squared"
+         ],
+         "a": 2,
+         "why": "In I = P × r × t, doubling t doubles the product. Simple interest grows in a straight line with time."
+        }
+       ]
+      },
+      {
+       "title": "Compound Interest",
+       "mainIdea": "Compound interest is paid on the principal and on the interest already earned, so a balance grows by a constant factor each period.",
+       "reading": [
+        "Most bank accounts and most loans use *compound interest*: at the end of each period the interest is added to the balance, and the next period's interest is figured on the new, larger balance. Start with $1,000 at 6% compounded once a year. After year one the balance is 1,000 × 1.06 = $1,060. After year two it is 1,060 × 1.06 = $1,123.60. After year three it is 1,123.60 × 1.06 = $1,191.02. Simple interest would have given only 1,000 + 3 × 60 = $1,180. The extra $11.02 is interest earned on interest.",
+        "Instead of multiplying year by year, use the formula A = P × (1 + r/n)^(n × t). Here A is the final amount, P the principal, r the yearly rate as a decimal, n the number of compounding periods per year, and t the number of years. For the account above, n = 1, so A = 1,000 × 1.06^3 = 1,000 × 1.191016 = $1,191.02, the same answer. If the same 6% is compounded monthly, n = 12, the rate per month is 0.06/12 = 0.005, and there are 36 months: A = 1,000 × 1.005^36 = 1,000 × 1.19668 = $1,196.68. More frequent compounding gives a little more.",
+        "Watch for two common errors. First, the rate per period must be the yearly rate divided by n; using the full 6% each month would give a wild answer. Second, the exponent is the total number of periods, n × t, not just t. For $2,000 at 4% compounded quarterly for 1 year, the rate per quarter is 0.01 and there are 4 quarters: A = 2,000 × 1.01^4 = 2,000 × 1.04060 = $2,081.21. A student who uses 1.04^4 gets $2,339.72, which would be 4% every quarter, or 16% a year.",
+        "A handy estimate is the *rule of 72*: divide 72 by the yearly percent rate to estimate how many years money takes to double. At 6%, 72 ÷ 6 = 12 years. Check: 1.06^12 = 2.012, very close to 2. At 8%, doubling takes about 72 ÷ 8 = 9 years. The rule also works for debt: a balance growing at 24% doubles in about 3 years if nothing is paid."
+       ],
+       "words": [
+        {
+         "w": "compound interest",
+         "d": "interest added to the balance at the end of each period, so later interest is earned on earlier interest"
+        },
+        {
+         "w": "compounding period",
+         "d": "the length of time between one addition of interest and the next: a year, a quarter, a month, or a day"
+        },
+        {
+         "w": "rule of 72",
+         "d": "an estimate: money at a yearly rate of r percent doubles in about 72 ÷ r years"
+        },
+        {
+         "w": "exponential growth",
+         "d": "growth by a constant factor each period, like multiplying by 1.06 every year"
+        }
+       ],
+       "look": {
+        "type": "think",
+        "title": "Doubling by the rule of 72",
+        "text": "A grandparent puts $5,000 into an account that earns 6% compounded yearly and forgets about it. The rule of 72 says the money doubles about every 72 ÷ 6 = 12 years. After 12 years: about $10,000. After 24 years: about $20,000. After 36 years: about $40,000. The exact value after 36 years is 5,000 × 1.06^36 = 5,000 × 8.147 = $40,736, so the estimate is close.",
+        "prompt": "If the account paid 9% instead, about how many years would each doubling take, and about how much would $5,000 become after 24 years?"
+       },
+       "check": [
+        {
+         "q": "What is $500 worth after 2 years at 10% compounded yearly?",
+         "choices": [
+          "$610",
+          "$600",
+          "$550",
+          "$605"
+         ],
+         "a": 3,
+         "why": "500 × 1.10 = 550 after year one, and 550 × 1.10 = $605 after year two. Simple interest would give only $600."
+        },
+        {
+         "q": "$2,000 earns 4% compounded quarterly for 1 year. Which expression gives the final amount?",
+         "choices": [
+          "2,000 × 1.01^4",
+          "2,000 × 1.04",
+          "2,000 × 1.01",
+          "2,000 × 1.04^4"
+         ],
+         "a": 0,
+         "why": "The rate per quarter is 0.04 ÷ 4 = 0.01 and there are 4 quarters, so A = 2,000 × 1.01^4 = $2,081.21."
+        },
+        {
+         "q": "Why does compound interest earn more than simple interest at the same rate?",
+         "choices": [
+          "The principal is larger to begin with",
+          "Interest is added to the balance and then earns interest itself",
+          "The bank rounds up each month",
+          "The rate goes up every year"
+         ],
+         "a": 1,
+         "why": "After each period the interest joins the balance, so the next period's interest is figured on a bigger number."
+        }
+       ]
+      },
+      {
+       "title": "The Effective Annual Rate",
+       "mainIdea": "The effective annual rate (APY) is the true percent a balance grows in one year once compounding is counted: APY = (1 + r/n)^n − 1.",
+       "reading": [
+        "Two banks both advertise 6%. One compounds yearly, the other monthly. Which is the better deal? The advertised 6% is the *nominal rate*, sometimes printed as APR, the annual percentage rate. It does not tell you how much a dollar actually grows in a year when interest is compounded more than once. The number that does is the *effective annual rate*, which banks call the *APY*, annual percentage yield.",
+        "To find the APY, grow $1 for one year and see how much it gained. At 6% compounded monthly the monthly rate is 0.005, and there are 12 months: 1.005^12 = 1.061678. So $1 becomes $1.0617, a gain of 6.17%. The formula is APY = (1 + r/n)^n − 1. For 6% compounded quarterly, (1.015)^4 − 1 = 0.0614, or 6.14%. Compounded daily, (1 + 0.06/365)^365 − 1 = 0.0618, or 6.18%. Notice that the gain from compounding more often shrinks quickly: monthly to daily adds only about 0.01%.",
+        "Now compare offers correctly. Bank A pays 4% compounded monthly; Bank B pays 4.05% compounded once a year. Bank B's number looks bigger. But Bank A's APY is (1 + 0.04/12)^12 − 1 = 1.0407 − 1 = 4.07%, which beats 4.05%. A common mistake is to compare nominal rates without checking how often each one compounds. Another is to forget the minus 1, which gives 1.0407 instead of 0.0407.",
+        "The same idea works against you on a credit card. A card that says 24% APR charges 2% a month, and if you paid nothing all year the balance would grow by 1.02^12 − 1 = 0.268, or 26.8%, not 24%. In the United States, lenders must state the APR in a loan offer, and savings accounts advertise the APY. Knowing which number you are looking at is the first step in any comparison."
+       ],
+       "words": [
+        {
+         "w": "nominal rate",
+         "d": "the stated yearly rate before compounding is counted, often labeled APR"
+        },
+        {
+         "w": "effective annual rate",
+         "d": "the actual percent a balance grows in one year with compounding included: (1 + r/n)^n − 1"
+        },
+        {
+         "w": "APY",
+         "d": "annual percentage yield, the name banks use for the effective annual rate on savings"
+        },
+        {
+         "w": "APR",
+         "d": "annual percentage rate, the nominal yearly rate that lenders must state on a loan"
+        }
+       ],
+       "look": {
+        "type": "data",
+        "title": "APY for a 6% nominal rate (example rate) by how often it compounds",
+        "rows": [
+         [
+          "Yearly",
+          6.0
+         ],
+         [
+          "Twice a year",
+          6.09
+         ],
+         [
+          "Quarterly",
+          6.14
+         ],
+         [
+          "Monthly",
+          6.17
+         ],
+         [
+          "Daily",
+          6.18
+         ]
+        ],
+        "unit": "percent per year",
+        "cite": "Computed from (1 + 0.06/n)^n − 1, rounded to hundredths; 6% is an example rate",
+        "prompt": "Each step compounds more often, but the APY rises less each time. Why does the extra benefit of compounding more often keep shrinking?"
+       },
+       "check": [
+        {
+         "q": "What is the APY of 8% compounded quarterly?",
+         "choices": [
+          "8.00%",
+          "8.16%",
+          "8.24%",
+          "8.50%"
+         ],
+         "a": 2,
+         "why": "(1.02)^4 − 1 = 1.0824 − 1 = 0.0824, so 8.24%. The 8.16% would be for compounding twice a year, 1.04^2 − 1."
+        },
+        {
+         "q": "A card charges 12% APR compounded monthly. About what percent would an unpaid balance grow in one year?",
+         "choices": [
+          "12.00%",
+          "12.36%",
+          "13.00%",
+          "12.68%"
+         ],
+         "a": 3,
+         "why": "The monthly rate is 1%, so 1.01^12 − 1 = 1.1268 − 1 = 0.1268, about 12.68%."
+        },
+        {
+         "q": "Bank A offers 4% compounded monthly (APY 4.07%). Bank B offers 4.05% compounded yearly. Which account grows faster?",
+         "choices": [
+          "Bank A, because its APY of 4.07% is higher than 4.05%",
+          "You cannot tell without knowing the deposit",
+          "Bank B, because 4.05 is more than 4",
+          "They grow at exactly the same rate"
+         ],
+         "a": 0,
+         "why": "Compare effective rates: 4.07% beats 4.05%. The size of the deposit does not change which rate is higher."
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "title": "Borrowing",
+     "lessons": [
+      {
+       "title": "Car Loans and Amortization",
+       "mainIdea": "An amortized loan is repaid with equal monthly payments; each payment covers that month's interest first, and the rest lowers the balance.",
+       "reading": [
+        "Jada's $12,000 car loan at 6% for 48 months is an *amortized loan*: the same payment every month, and at the last payment the balance is exactly zero. Each month the lender first charges interest on the current balance. The monthly rate is 0.06 ÷ 12 = 0.005. In month one, interest is 12,000 × 0.005 = $60. Jada's payment is $281.82, so 281.82 − 60 = $221.82 goes to *principal*, and her new balance is 12,000 − 221.82 = $11,778.18.",
+        "In month two the interest is figured on the smaller balance: 11,778.18 × 0.005 = $58.89. Now 281.82 − 58.89 = $222.93 goes to principal. Every month the interest part shrinks and the principal part grows, because the balance keeps falling. A table that lists this month by month is an *amortization schedule*. After 12 payments Jada owes about $9,264; after 24, about $6,359; after 36, about $3,274; after 48, zero.",
+        "Where did $281.82 come from? The lender uses the payment formula M = P × i ÷ (1 − (1 + i)^(−n)), where P is the amount borrowed, i is the monthly rate, and n is the number of payments. For Jada, P = 12,000, i = 0.005, n = 48. First find 1.005^48 = 1.2705, so (1.005)^(−48) = 1 ÷ 1.2705 = 0.7871. Then 1 − 0.7871 = 0.2129. The top is 12,000 × 0.005 = 60. Finally 60 ÷ 0.2129 = $281.82. You do not need to memorize the formula, but you should be able to check a payment with it.",
+        "Marco's 12% loan has a monthly rate of 0.01, and the same formula gives $316.01. His first-month interest is $120, double Jada's. Over 48 months Jada pays 13,527.36 − 12,000 = about $1,527 in interest; Marco pays about $3,168. Two things cut interest: a lower rate, and a shorter loan. A 36-month loan has a higher payment but far less total interest, because the balance is gone sooner."
+       ],
+       "words": [
+        {
+         "w": "amortized loan",
+         "d": "a loan repaid in equal payments over a set number of months, ending with a balance of zero"
+        },
+        {
+         "w": "amortization schedule",
+         "d": "a month-by-month table showing how much of each payment is interest, how much is principal, and the balance left"
+        },
+        {
+         "w": "monthly rate",
+         "d": "the yearly rate divided by 12; for 6% a year it is 0.005 per month"
+        },
+        {
+         "w": "refinance",
+         "d": "replace an existing loan with a new one, usually to get a lower rate or a different length"
+        }
+       ],
+       "look": {
+        "type": "data",
+        "title": "Balance left on a $12,000 loan at 6% for 48 months (example rate)",
+        "rows": [
+         [
+          "Start",
+          12000
+         ],
+         [
+          "After 12 payments",
+          9264
+         ],
+         [
+          "After 24 payments",
+          6359
+         ],
+         [
+          "After 36 payments",
+          3274
+         ],
+         [
+          "After 48 payments",
+          0
+         ]
+        ],
+        "unit": "dollars still owed",
+        "cite": "Computed from an amortization schedule with a $281.82 monthly payment; rounded to the dollar",
+        "prompt": "The balance drops by about $2,736 in the first year but about $3,274 in the last year. Why does the balance fall faster near the end?"
+       },
+       "check": [
+        {
+         "q": "A $9,000 car loan charges 6% per year. How much of the first monthly payment is interest?",
+         "choices": [
+          "$540",
+          "$45",
+          "$4.50",
+          "$90"
+         ],
+         "a": 1,
+         "why": "The monthly rate is 0.06 ÷ 12 = 0.005, and 9,000 × 0.005 = $45. The $540 would be a whole year of interest."
+        },
+        {
+         "q": "The payment on that loan is $211.37. How much of the first payment goes to principal?",
+         "choices": [
+          "$256.37",
+          "$45.00",
+          "$166.37",
+          "$211.37"
+         ],
+         "a": 2,
+         "why": "Principal = payment − interest = 211.37 − 45 = $166.37. Adding the interest instead gives $256.37, which is wrong."
+        },
+        {
+         "q": "Why does the interest part of each payment get smaller month after month?",
+         "choices": [
+          "The payment gets smaller each month",
+          "Interest is only charged in the first year",
+          "The lender lowers the rate over time",
+          "The balance is smaller each month, so the same rate produces less interest"
+         ],
+         "a": 3,
+         "why": "Interest each month = balance × monthly rate. The rate stays the same, but the balance shrinks, so the interest shrinks."
+        }
+       ]
+      },
+      {
+       "title": "Credit Cards and the Minimum Payment",
+       "mainIdea": "A credit card charges monthly interest on whatever you have not paid, so paying only the minimum keeps you in debt for years.",
+       "reading": [
+        "A credit card is a loan with no fixed end date. Each month the card company adds interest to whatever balance you carried over, then asks for at least a *minimum payment*, often a small percent of the balance or a flat amount like $25, whichever is larger. If you pay the full balance every month by the due date, most cards charge no interest at all. If you do not, interest starts and keeps going.",
+        "Take a $1,000 balance on a card with a 24% APR. The monthly rate is 24% ÷ 12 = 2%. In month one the interest is 1,000 × 0.02 = $20. Suppose you pay $50. The new balance is 1,000 + 20 − 50 = $970. Month two: interest is 970 × 0.02 = $19.40, and after another $50 the balance is $939.40. Paying $50 a month, it takes 26 months to clear the $1,000, and you pay about $1,290 in all, so about $290 of interest. That is with no new purchases at all.",
+        "Now suppose the minimum is 3% of the balance or $25, whichever is larger. The first minimum is $30, of which $20 is interest, so the balance drops by only $10. As the balance falls the minimum falls too, until it hits $25. Paying only the minimum on that $1,000, with the same 24% rate, takes about six years and costs about $1,870 in all. That is why the CARD Act of 2009 requires statements to show how long minimum payments would take.",
+        "The two mistakes that cost the most are carrying a balance you could have paid off, and paying only the minimum. The fix is arithmetic: figure the monthly interest, then choose a payment large enough that most of it hits the principal. On a $600 balance at 18% APR the monthly interest is 600 × 0.015 = $9, so a $60 payment sends $51 to principal, while a $25 payment sends only $16."
+       ],
+       "words": [
+        {
+         "w": "minimum payment",
+         "d": "the smallest amount a card company will accept for the month; paying only this keeps most of the balance and its interest"
+        },
+        {
+         "w": "balance",
+         "d": "the amount currently owed on a card or loan"
+        },
+        {
+         "w": "grace period",
+         "d": "the time between a purchase and the due date during which no interest is charged if the full balance is paid"
+        },
+        {
+         "w": "statement",
+         "d": "the monthly report of purchases, interest, the balance, and the minimum payment due"
+        }
+       ],
+       "look": {
+        "type": "data",
+        "title": "A $1,000 card balance at 24% APR, paying $50 a month (example rate)",
+        "rows": [
+         [
+          "After 1 month",
+          970
+         ],
+         [
+          "After 6 months",
+          811
+         ],
+         [
+          "After 12 months",
+          598
+         ],
+         [
+          "After 18 months",
+          358
+         ],
+         [
+          "After 24 months",
+          87
+         ]
+        ],
+        "unit": "dollars still owed",
+        "cite": "Computed month by month: balance × 1.02, then minus $50; rounded to the dollar; no new purchases",
+        "prompt": "The balance drops $159 in the first six months but $271 in the last six shown. Explain, using the interest each month, why the later months clear more debt."
+       },
+       "check": [
+        {
+         "q": "A card charges 18% APR. What is one month's interest on a $600 balance?",
+         "choices": [
+          "$9",
+          "$0.90",
+          "$18",
+          "$108"
+         ],
+         "a": 0,
+         "why": "The monthly rate is 18% ÷ 12 = 1.5%, and 600 × 0.015 = $9. The $108 is a full year of interest."
+        },
+        {
+         "q": "You owe $800 at 24% APR and pay $40 this month. What is the new balance?",
+         "choices": [
+          "$744",
+          "$776",
+          "$792",
+          "$760"
+         ],
+         "a": 1,
+         "why": "Interest is 800 × 0.02 = $16. New balance = 800 + 16 − 40 = $776. Forgetting the interest gives $760."
+        },
+        {
+         "q": "Why does paying only the minimum take so many years to clear a balance?",
+         "choices": [
+          "The balance is recalculated every year",
+          "The card company raises the rate each time",
+          "Most of each small payment is eaten by that month's interest, so little reaches the principal",
+          "Minimum payments are not applied until the balance is under $100"
+         ],
+         "a": 2,
+         "why": "If interest is $20 and the payment is $30, only $10 reduces the balance. The debt shrinks very slowly."
+        }
+       ]
+      },
+      {
+       "title": "Mortgages and Student Loans",
+       "mainIdea": "Long loans use the same payment formula as car loans, but over many years the interest can exceed the amount borrowed.",
+       "reading": [
+        "A *mortgage* is a loan used to buy a home, with the home as the lender's security. Buyers usually pay part of the price up front, the *down payment*, and borrow the rest. On a $250,000 home, a 20% down payment is 0.20 × 250,000 = $50,000, and the mortgage is $200,000. Mortgages commonly run 30 or 15 years, and the payment comes from the same formula as a car loan, with n = 360 or n = 180 months.",
+        "Take $200,000 at 6% for 30 years. The monthly rate is 0.005 and n = 360. Then 1.005^360 = 6.0226, so (1.005)^(−360) = 0.1660, and 1 − 0.1660 = 0.8340. The payment is 200,000 × 0.005 ÷ 0.8340 = 1,000 ÷ 0.8340 = $1,199.10. Over 360 months the borrower pays 360 × 1,199.10 = $431,676, so the interest alone is about $231,676, more than the amount borrowed. The same loan over 15 years has a payment of $1,687.71, and total interest of about $103,788. The 15-year payment is about $489 higher, but it saves about $128,000.",
+        "The rate matters just as much as the length. At 4% the 30-year payment is $954.83 and total interest about $143,739. At 7% the payment is $1,330.60 and total interest about $279,018. One percentage point on a mortgage is worth tens of thousands of dollars. Property taxes and insurance are added on top of the payment, so the monthly cost of owning is higher than the loan payment alone.",
+        "Student loans follow the same rules with one twist. On many loans, interest builds up while the student is still in school, usually as simple interest, and is added to the balance when repayment begins. A $10,000 loan at 6% left alone for 4 years of school gains 10,000 × 0.06 × 4 = $2,400 before the first payment is due. After that, a $20,000 balance at 5% repaid over 10 years costs $212.13 a month and about $5,456 in interest. Paying the interest during school, even in small amounts, keeps the balance from growing."
+       ],
+       "words": [
+        {
+         "w": "mortgage",
+         "d": "a long loan used to buy a home, with the home as security for the lender"
+        },
+        {
+         "w": "down payment",
+         "d": "the part of a purchase price paid up front in cash instead of borrowed"
+        },
+        {
+         "w": "term",
+         "d": "the length of a loan, such as 30 years for a mortgage or 48 months for a car loan"
+        },
+        {
+         "w": "accrue",
+         "d": "to build up over time, as interest does on a loan while no payments are being made"
+        }
+       ],
+       "look": {
+        "type": "data",
+        "title": "Total interest on a $200,000 mortgage (example rates)",
+        "rows": [
+         [
+          "30 years at 4%",
+          143739
+         ],
+         [
+          "30 years at 5%",
+          186512
+         ],
+         [
+          "30 years at 6%",
+          231676
+         ],
+         [
+          "30 years at 7%",
+          279018
+         ],
+         [
+          "15 years at 6%",
+          103788
+         ]
+        ],
+        "unit": "dollars of interest over the whole loan",
+        "cite": "Computed from the standard payment formula, rounded to the dollar; rates are examples",
+        "prompt": "Compare the 30-year and 15-year loans at 6%. The 15-year payment is about $489 higher each month. Show that the total saved is still about $128,000, and explain where the saving comes from."
+       },
+       "check": [
+        {
+         "q": "A home costs $250,000 and the buyer makes a 20% down payment. How much is the mortgage?",
+         "choices": [
+          "$225,000",
+          "$230,000",
+          "$50,000",
+          "$200,000"
+         ],
+         "a": 3,
+         "why": "The down payment is 0.20 × 250,000 = $50,000, so the loan is 250,000 − 50,000 = $200,000."
+        },
+        {
+         "q": "Using the table, which $200,000 loan costs the least total interest?",
+         "choices": [
+          "15 years at 6%",
+          "30 years at 6%",
+          "30 years at 4%",
+          "30 years at 5%"
+         ],
+         "a": 0,
+         "why": "The 15-year loan at 6% has about $103,788 of interest, less than even the 30-year loan at 4% ($143,739), because it is paid off in half the time."
+        },
+        {
+         "q": "A $10,000 student loan accrues 6% simple interest during 4 years of school. How much interest has built up?",
+         "choices": [
+          "$600",
+          "$2,400",
+          "$240",
+          "$12,400"
+         ],
+         "a": 1,
+         "why": "I = 10,000 × 0.06 × 4 = 600 × 4 = $2,400. The $12,400 is the new balance, not the interest alone."
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "title": "Saving and Earning",
+     "lessons": [
+      {
+       "title": "The Time Value of Money",
+       "mainIdea": "A dollar today is worth more than a dollar later because it can earn interest; present value tells what a future amount is worth now.",
+       "reading": [
+        "Would you rather have $500 today or $520 a year from now? If your savings account pays 5%, take the $500: in a year it grows to 500 × 1.05 = $525, which beats $520. This is the *time value of money*. Money now can be put to work, so a future amount has to be larger to be worth the same. To compare amounts at different times, move them to the same date.",
+        "Moving money forward is compound growth. Moving it backward is finding the *present value*: divide by the growth factor instead of multiplying. What is $1,000 five years from now worth today at 5%? The growth factor is 1.05^5 = 1.2763, so the present value is 1,000 ÷ 1.2763 = $783.53. Check: 783.53 × 1.2763 = $1,000. A common mistake is subtracting 5 × 5% = 25% to get $750; that ignores compounding and gives too little.",
+        "Regular saving uses the same idea many times. If you put $200 into an account every month at 6%, the monthly rate is 0.005, and after 10 years (120 deposits) the account holds 200 × (1.005^120 − 1) ÷ 0.005 = 200 × (1.8194 − 1) ÷ 0.005 = 200 × 163.88 = $32,776. You deposited only 120 × 200 = $24,000; the other $8,776 is interest. This is the *future value* of a stream of equal deposits, and the formula is FV = PMT × ((1 + i)^n − 1) ÷ i.",
+        "Time is the most powerful input. At 7%, $100 a month for 10 years grows to about $17,300, but the same $100 a month for 40 years grows to about $262,500, even though you deposit only four times as much. A saver who puts in $100 a month from age 20 to 30 and then stops, letting the money grow for 30 more years, ends with more than a saver who starts at 30 and deposits every month until 60. Starting early beats depositing more."
+       ],
+       "words": [
+        {
+         "w": "time value of money",
+         "d": "the idea that money available now is worth more than the same amount later, because it can earn interest"
+        },
+        {
+         "w": "present value",
+         "d": "what a future amount is worth today: the future amount divided by the growth factor"
+        },
+        {
+         "w": "future value",
+         "d": "what an amount, or a series of deposits, will grow to by a later date at a given rate"
+        },
+        {
+         "w": "annuity",
+         "d": "a series of equal payments made at regular intervals, such as $200 every month"
+        }
+       ],
+       "look": {
+        "type": "data",
+        "title": "$100 deposited every month at 7% compounded monthly (example rate)",
+        "rows": [
+         [
+          "After 10 years",
+          17308
+         ],
+         [
+          "After 20 years",
+          52093
+         ],
+         [
+          "After 30 years",
+          121997
+         ],
+         [
+          "After 40 years",
+          262481
+         ]
+        ],
+        "unit": "dollars in the account",
+        "cite": "Computed from FV = 100 × ((1 + 0.07/12)^n − 1) ÷ (0.07/12); rounded to the dollar; 7% is an example rate",
+        "prompt": "The deposits over 40 years total $48,000. What fraction of the $262,481 is interest, and why does the second 20 years add so much more than the first 20?"
+       },
+       "check": [
+        {
+         "q": "At 10% per year, what is the present value of $1,000 to be received in 2 years?",
+         "choices": [
+          "$1,210.00",
+          "$800.00",
+          "$826.45",
+          "$900.00"
+         ],
+         "a": 2,
+         "why": "The growth factor is 1.10^2 = 1.21, so PV = 1,000 ÷ 1.21 = $826.45. Subtracting 20% gives $800, which ignores compounding."
+        },
+        {
+         "q": "Your account pays 5%. Which is worth more: $500 today or $520 in one year?",
+         "choices": [
+          "$520 in one year, because you avoid the risk",
+          "$520 in one year, because 520 is more than 500",
+          "They are worth the same",
+          "$500 today, because it grows to $525 in a year"
+         ],
+         "a": 3,
+         "why": "500 × 1.05 = 525, which is more than 520. Comparing at the same date shows the $500 wins."
+        },
+        {
+         "q": "Using the table, about how much interest has the $100-a-month saver earned after 20 years?",
+         "choices": [
+          "$28,093",
+          "$12,000",
+          "$24,000",
+          "$52,093"
+         ],
+         "a": 0,
+         "why": "Deposits over 20 years total 240 × 100 = $24,000. Interest = 52,093 − 24,000 = $28,093."
+        }
+       ]
+      },
+      {
+       "title": "Paychecks, Taxes and Budgets",
+       "mainIdea": "Take-home pay is gross pay minus taxes and other deductions, and a budget assigns that smaller number before it is spent.",
+       "reading": [
+        "A job offer says $16 an hour. The number that lands in your bank account is smaller. *Gross pay* is what you earn before anything is taken out. Working 30 hours a week for 4 weeks, gross pay is 16 × 30 × 4 = $1,920. From that, the employer takes *deductions*: federal income tax withholding, Social Security tax, Medicare tax, and in Illinois a flat state income tax. What is left is *net pay*, or take-home pay.",
+        "Here is an example paycheck for someone earning $3,200 a month. In this example the federal withholding is 10%: 0.10 × 3,200 = $320. Social Security is 6.2%: 0.062 × 3,200 = $198.40. Medicare is 1.45%: 0.0145 × 3,200 = $46.40. Illinois state income tax is 4.95%: 0.0495 × 3,200 = $158.40. Add the deductions: 320 + 198.40 + 46.40 + 158.40 = $723.20. Net pay is 3,200 − 723.20 = $2,476.80. About 22.6% of the gross pay never reaches the worker. Actual federal withholding depends on income and the form you fill out, so treat the 10% as an example.",
+        "A *budget* is a plan for the net pay, made before the month starts. One simple plan is the 50/30/20 rule: about 50% for needs like rent, food, transportation and utilities, about 30% for wants, and about 20% for savings and paying down debt. On $2,476.80 of net pay, needs get 0.50 × 2,476.80 = $1,238.40, wants get 0.30 × 2,476.80 = $743.04, and savings get 0.20 × 2,476.80 = $495.36. The exact split is a choice; the point is that every dollar is assigned.",
+        "The most common budget mistake is planning with the gross number. A person who thinks of themselves as making $3,200 and rents a $1,500 apartment believes rent is 47% of pay. Against net pay it is 1,500 ÷ 2,476.80 = 61%, leaving very little room. Always budget from the number on the pay stub, and check the stub itself: a percentage that does not match its line is worth a question to the employer."
+       ],
+       "words": [
+        {
+         "w": "gross pay",
+         "d": "total earnings before any taxes or other deductions are taken out"
+        },
+        {
+         "w": "net pay",
+         "d": "take-home pay: gross pay minus all deductions"
+        },
+        {
+         "w": "deduction",
+         "d": "an amount subtracted from gross pay, such as a tax or an insurance premium"
+        },
+        {
+         "w": "withholding",
+         "d": "income tax an employer sends to the government from each paycheck on the worker's behalf"
+        },
+        {
+         "w": "budget",
+         "d": "a plan that assigns each dollar of expected income to needs, wants, savings or debt before the money is spent"
+        }
+       ],
+       "look": {
+        "type": "data",
+        "title": "Deductions on an example $3,200 monthly paycheck",
+        "rows": [
+         [
+          "Federal withholding (example 10%)",
+          320.0
+         ],
+         [
+          "Social Security (6.2%)",
+          198.4
+         ],
+         [
+          "Medicare (1.45%)",
+          46.4
+         ],
+         [
+          "Illinois state tax (4.95%)",
+          158.4
+         ],
+         [
+          "Net pay",
+          2476.8
+         ]
+        ],
+        "unit": "dollars",
+        "cite": "Computed for this example; federal withholding varies by income and filing choices",
+        "prompt": "Add the four deductions and confirm the net pay. Then find what percent of gross pay the deductions take altogether."
+       },
+       "check": [
+        {
+         "q": "Social Security tax is 6.2%. How much is taken from $2,500 of gross pay?",
+         "choices": [
+          "$36.25",
+          "$155.00",
+          "$1,550.00",
+          "$15.50"
+         ],
+         "a": 1,
+         "why": "0.062 × 2,500 = $155.00. The $36.25 uses the Medicare rate of 1.45%, and $15.50 misplaces the decimal."
+        },
+        {
+         "q": "Under the 50/30/20 rule, how much of $2,000 in net pay goes to savings and debt?",
+         "choices": [
+          "$1,000",
+          "$200",
+          "$400",
+          "$600"
+         ],
+         "a": 2,
+         "why": "Savings and debt get 20%: 0.20 × 2,000 = $400. The $600 is the 30% for wants."
+        },
+        {
+         "q": "A worker earns $16 an hour for 30 hours a week. What is the gross pay for 4 weeks?",
+         "choices": [
+          "$480",
+          "$1,600",
+          "$2,080",
+          "$1,920"
+         ],
+         "a": 3,
+         "why": "16 × 30 = 480 per week, and 480 × 4 = $1,920. The $480 is only one week, and $1,600 drops the hourly rate to $16 × 100 hours."
+        }
+       ]
+      },
+      {
+       "title": "Inflation",
+       "mainIdea": "Inflation makes prices rise by a percent each year, so money that does not grow at least as fast quietly loses buying power.",
+       "reading": [
+        "*Inflation* is a general rise in prices over time. If inflation runs at 3% a year, something that costs $100 today costs about $103 next year, and 103 × 1.03 = $106.09 the year after. Inflation compounds just like interest. Over 10 years at 3%, prices multiply by 1.03^10 = 1.3439, so the $100 item costs about $134.39. A $2.50 bus fare would be about 2.50 × 1.03^20 = 2.50 × 1.806 = $4.52 after 20 years at that rate.",
+        "The flip side is *purchasing power*, what a fixed amount of money can actually buy. Cash under a mattress does not grow, so after 10 years of 3% inflation, $100 buys only what 100 ÷ 1.3439 = $74.41 buys today. A savings account paying 1% grows the dollars but not the buying power: the money grows 1% while prices grow 3%, so the saver falls about 2% behind each year. The *real rate* of return is roughly the nominal rate minus the inflation rate. An account paying 5% during 3% inflation earns a real return of about 2%.",
+        "This is why a fixed income is risky over a long time. A retiree with a pension of $2,000 a month that never changes keeps receiving $2,000, but after 20 years of 3% inflation that money buys what about 2,000 ÷ 1.806 = $1,107 buys today. It is also why long-term savings usually go into investments that historically outpace inflation, rather than into cash, and why many pensions and Social Security include a yearly cost-of-living adjustment.",
+        "The U.S. government tracks inflation with the Consumer Price Index, a measure of the cost of a fixed basket of goods and services. Inflation rates change from year to year, so any long projection should be labeled with the rate it assumes. A common mistake is to compare a price from decades ago with a price today without adjusting; a $5,000 car in a grandparent's story was not a cheap car in that year's dollars."
+       ],
+       "words": [
+        {
+         "w": "inflation",
+         "d": "a general rise in prices over time, usually stated as a percent per year"
+        },
+        {
+         "w": "purchasing power",
+         "d": "how much a fixed amount of money can actually buy; it falls as prices rise"
+        },
+        {
+         "w": "real rate",
+         "d": "a rate of return with inflation removed: roughly the nominal rate minus the inflation rate"
+        },
+        {
+         "w": "cost-of-living adjustment",
+         "d": "a yearly increase in a payment, such as a pension, meant to keep up with inflation"
+        }
+       ],
+       "look": {
+        "type": "think",
+        "title": "The same $20 bill, year after year",
+        "text": "Imagine a $20 bill taped inside a book in 2026 and found 24 years later. Suppose prices rose 3% every year over that time. By the rule of 72, prices double about every 72 ÷ 3 = 24 years, so the bill buys about what $10 buys today. Exact check: 1.03^24 = 2.033, and 20 ÷ 2.033 = $9.84.",
+        "prompt": "If instead the $20 had sat in an account paying 3% a year, what would it be worth after 24 years, and how much could it buy compared with today?"
+       },
+       "check": [
+        {
+         "q": "Prices rise 3% a year. What does a $100 item cost after 2 years?",
+         "choices": [
+          "$106.09",
+          "$109.00",
+          "$103.00",
+          "$106.00"
+         ],
+         "a": 0,
+         "why": "100 × 1.03 = 103, and 103 × 1.03 = 106.09. Adding 3 + 3 gives $106, which forgets the compounding."
+        },
+        {
+         "q": "A savings account pays 5% while inflation is 3%. About what is the real rate of return?",
+         "choices": [
+          "8%",
+          "2%",
+          "5%",
+          "3%"
+         ],
+         "a": 1,
+         "why": "Real rate is about nominal minus inflation: 5% − 3% = 2%. Adding them, 8%, is a common error."
+        },
+        {
+         "q": "Why is a pension that pays the same dollar amount every year risky over decades?",
+         "choices": [
+          "The payments are taxed more each year",
+          "The bank may fail",
+          "Prices rise, so the fixed amount buys less and less",
+          "The payments get smaller each year"
+         ],
+         "a": 2,
+         "why": "The dollars stay the same while inflation raises prices, so purchasing power falls year after year."
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "title": "Deciding With Math",
+     "lessons": [
+      {
+       "title": "Comparing Two Offers",
+       "mainIdea": "To compare offers, put them over the same time span, add every cost, and compare the totals, not the headline numbers.",
+       "reading": [
+        "Offers are written to look good. The math job is to make them comparable. A gym charges $40 a month or $400 for a year paid up front. Over 12 months the monthly plan costs 12 × 40 = $480, so the yearly plan saves $80 if you use it all year. The break-even point is 400 ÷ 40 = 10 months: if you quit before 10 months, the monthly plan was cheaper. The decision depends on an honest guess about yourself, but the math tells you what that guess has to be.",
+        "A phone store offers plan A, $30 a month plus an $800 phone paid today, or plan B, $60 a month with the phone included, both for 24 months. Plan A costs 24 × 30 + 800 = 720 + 800 = $1,520. Plan B costs 24 × 60 = $1,440. Plan B is $80 cheaper over the contract, even though it looks more expensive each month. Now change one input: if you would keep the phone for 36 months on plan A, that plan costs 36 × 30 + 800 = $1,880 while plan B for 36 months costs $2,160. The longer you keep the phone, the more plan A wins. Always state the time span you assumed.",
+        "Car dealers often offer a choice: 0% financing, or a cash rebate with a normal loan. On a $20,000 car over 60 months, 0% financing means 20,000 ÷ 60 = $333.33 a month and $20,000 in all. The other choice is a $2,000 rebate, so you borrow $18,000 at 6%: the payment formula gives $347.99 a month, and 60 × 347.99 = $20,879.40 in all. The 0% deal is cheaper by about $879. But if the loan rate were 2% instead of 6%, the rebate would win. The answer changes with the rate, so compute it; do not guess.",
+        "The method is the same every time. First, choose one time span and use it for both offers. Second, list every cost, including up-front fees, monthly charges and interest. Third, add each side up and compare. Fourth, ask what would have to change for the other choice to win, and decide whether that change is likely. The fourth step is what separates a calculation from a decision."
+       ],
+       "words": [
+        {
+         "w": "break-even point",
+         "d": "the amount of use or time at which two options cost the same"
+        },
+        {
+         "w": "rebate",
+         "d": "money returned to the buyer after a purchase, which lowers the price and the amount borrowed"
+        },
+        {
+         "w": "total cost",
+         "d": "everything an option costs over the chosen time span: up-front payments, monthly charges, fees and interest"
+        },
+        {
+         "w": "assumption",
+         "d": "a value you choose because you do not know it for certain, such as how long you will keep a phone"
+        }
+       ],
+       "look": {
+        "type": "think",
+        "title": "Two ways to buy the same laptop",
+        "text": "A $1,200 laptop can be bought outright, or with a store card at 0% for 12 months and a $40 sign-up fee. Paying outright costs $1,200 today. The card plan costs 1,200 ÷ 12 = $100 a month plus the $40 fee, so $1,240 in all, but $1,200 stays in a savings account at 4% for the year, earning about 4% on the average balance of $600, about $24. Net extra cost of the card plan: about 40 − 24 = $16.",
+        "prompt": "If the sign-up fee were $20 instead of $40, which choice is cheaper, and by roughly how much? What if a single late payment triggered 24% interest on the whole balance?"
+       },
+       "check": [
+        {
+         "q": "A gym is $40 a month or $400 a year. After how many months does the yearly plan become the cheaper choice?",
+         "choices": [
+          "12 months",
+          "40 months",
+          "8 months",
+          "10 months"
+         ],
+         "a": 3,
+         "why": "400 ÷ 40 = 10, so at 10 months the plans cost the same and after that the yearly plan is cheaper."
+        },
+        {
+         "q": "Plan A: $30 a month plus an $800 phone. Plan B: $60 a month, phone included. Over 24 months, which is cheaper and by how much?",
+         "choices": [
+          "Plan B by $80",
+          "Plan A by $720",
+          "Plan B by $800",
+          "Plan A by $80"
+         ],
+         "a": 0,
+         "why": "A: 24 × 30 + 800 = $1,520. B: 24 × 60 = $1,440. Plan B is cheaper by 1,520 − 1,440 = $80."
+        },
+        {
+         "q": "On a $20,000 car, 0% financing costs $20,000 over 60 months. Taking a $2,000 rebate and a 6% loan on $18,000 costs $20,879. What would make the rebate the better deal?",
+         "choices": [
+          "A longer loan on the rebate side",
+          "A lower loan rate on the $18,000",
+          "A smaller rebate",
+          "A higher loan rate"
+         ],
+         "a": 1,
+         "why": "The rebate side loses only because of the interest on $18,000. A low enough rate makes its interest less than the $2,000 rebate."
+        }
+       ]
+      },
+      {
+       "title": "Big Choices Over Time",
+       "mainIdea": "For a decision that lasts years, compare total cost over the same span, include what you would give up, and test how the answer changes.",
+       "reading": [
+        "Some choices last years: rent or buy, take a job with a lower salary and free transit, pay off a loan early or invest. The same four steps apply, but the numbers are bigger and the assumptions matter more. Take renting versus owning. A family in a Chicago suburb can rent a home for $1,600 a month or buy a similar one with a mortgage payment of $1,199, plus about $350 a month in property tax and insurance and about $200 a month in upkeep. Owning costs 1,199 + 350 + 200 = $1,749 a month, $149 more than renting.",
+        "But part of the mortgage payment lowers the loan balance, and that part is not gone; it becomes *equity*, the share of the home the family actually owns. In the first year of the $200,000 loan at 6%, about $2,456 of the payments goes to principal, about $205 a month. Counting that as saving rather than spending, the true monthly cost of owning is about 1,749 − 205 = $1,544, now $56 less than renting. Add the $50,000 down payment, which could have earned interest, and the comparison shifts again. There is no single right answer; there is an honest calculation with its assumptions written down.",
+        "A second kind of choice is between paying debt and saving. Suppose you have an extra $100 a month and a card balance at 24% APR. Paying the card is like earning 24% with no risk, because every dollar paid stops 2% a month of interest. No savings account comes close. But if the debt is a 3% student loan and a retirement account offers an employer match, the match may be worth more. Compare rates on both sides, and remember that a guaranteed 24% saving beats an uncertain 7% return.",
+        "Finally, test the answer. Change one assumption at a time: rent rises 3% a year, the home does not gain value, the family moves after 5 years, the loan rate is 7%. If the choice stays the same under every reasonable change, you can act with confidence. If it flips, you have found the assumption that actually decides the question, and that is the one to investigate. This habit of wiggling the inputs is the heart of the modeling capstone in the next chapter."
+       ],
+       "words": [
+        {
+         "w": "equity",
+         "d": "the part of a home's value that the owner actually owns: the value minus what is still owed"
+        },
+        {
+         "w": "opportunity cost",
+         "d": "what you give up by choosing one option, such as the interest a down payment could have earned"
+        },
+        {
+         "w": "employer match",
+         "d": "money an employer adds to a worker's retirement account, often a percent of what the worker saves"
+        },
+        {
+         "w": "sensitivity",
+         "d": "how much a decision or result changes when one assumption is changed a little"
+        }
+       ],
+       "look": {
+        "type": "think",
+        "title": "Pay the card or fill the savings jar?",
+        "text": "Priya has $1,200 on a card at 24% APR and an extra $100 a month. Option 1: pay the card. Each $100 stops 100 × 0.02 = $2 of interest every month from then on. Option 2: put $100 a month in savings at 4% APY while paying only the card minimum. Each $100 saved earns about 100 × 0.04 ÷ 12 = $0.33 a month. Over a year, option 1 avoids roughly $150 of interest; option 2 earns roughly $25.",
+        "prompt": "Under what condition would saving first make sense, for example if the employer matched every dollar saved? Compare the value of a dollar-for-dollar match with the 2% a month the card charges."
+       },
+       "check": [
+        {
+         "q": "Owning costs $1,749 a month, of which $205 goes to principal. Renting costs $1,600. Counting principal as saving, which is cheaper each month and by how much?",
+         "choices": [
+          "Owning, by $205",
+          "Renting, by $149",
+          "Owning, by $56",
+          "Renting, by $56"
+         ],
+         "a": 2,
+         "why": "True cost of owning = 1,749 − 205 = $1,544. Renting is $1,600, so owning is cheaper by 1,600 − 1,544 = $56."
+        },
+        {
+         "q": "You have an extra $100 a month. Which use gives the surest return?",
+         "choices": [
+          "A student loan at 3%",
+          "Keeping it as cash",
+          "A savings account at 4% APY",
+          "Paying down a card at 24% APR"
+         ],
+         "a": 3,
+         "why": "Every dollar paid on a 24% card stops 2% a month of interest for certain, far more than 4% a year in savings."
+        },
+        {
+         "q": "A rent-or-buy decision flips when the loan rate is changed from 6% to 7%. What does that tell you?",
+         "choices": [
+          "The loan rate is the assumption that decides the question, so it deserves the most attention",
+          "Renting is always better",
+          "The other assumptions do not matter at all",
+          "The calculation was done wrong"
+         ],
+         "a": 0,
+         "why": "Sensitivity testing finds the input that changes the answer. That input is the one to pin down before deciding."
+        }
+       ]
+      }
+     ]
+    }
+   ],
+   "review": [
+    {
+     "q": "What is the simple interest on $3,000 at 4% for 5 years?",
+     "choices": [
+      "$120",
+      "$600",
+      "$3,600",
+      "$1,200"
+     ],
+     "a": 1,
+     "why": "I = 3,000 × 0.04 × 5 = 120 × 5 = $600. The $3,600 is the total repaid, and $120 is one year."
+    },
+    {
+     "q": "$1,000 is compounded yearly at 6% for 3 years. What is the balance?",
+     "choices": [
+      "$1,216.00",
+      "$1,180.00",
+      "$1,191.02",
+      "$1,060.00"
+     ],
+     "a": 2,
+     "why": "1,000 × 1.06^3 = 1,000 × 1.191016 = $1,191.02. Simple interest would give $1,180."
+    },
+    {
+     "q": "Which of these is the APY of 6% compounded monthly?",
+     "choices": [
+      "6.00%",
+      "6.09%",
+      "7.20%",
+      "6.17%"
+     ],
+     "a": 3,
+     "why": "1.005^12 − 1 = 0.0617, so 6.17%. The 6.09% is twice-a-year compounding."
+    },
+    {
+     "q": "The first payment on a $12,000 loan at 6% is $281.82. How much goes to principal?",
+     "choices": [
+      "$221.82",
+      "$341.82",
+      "$60.00",
+      "$281.82"
+     ],
+     "a": 0,
+     "why": "Interest = 12,000 × 0.005 = $60. Principal = 281.82 − 60 = $221.82."
+    },
+    {
+     "q": "You owe $500 on a card at 24% APR and pay $25. What is the new balance?",
+     "choices": [
+      "$475",
+      "$485",
+      "$490",
+      "$510"
+     ],
+     "a": 1,
+     "why": "Interest = 500 × 0.02 = $10. Balance = 500 + 10 − 25 = $485."
+    },
+    {
+     "q": "At 5%, what is the present value of $1,000 received in 5 years (1.05^5 = 1.2763)?",
+     "choices": [
+      "$1,276.30",
+      "$950.00",
+      "$783.53",
+      "$750.00"
+     ],
+     "a": 2,
+     "why": "PV = 1,000 ÷ 1.2763 = $783.53. Subtracting 25% gives $750, which ignores compounding."
+    },
+    {
+     "q": "Gross pay is $3,200 and total deductions are $723.20. Under the 50/30/20 rule, how much goes to needs?",
+     "choices": [
+      "$743.04",
+      "$495.36",
+      "$1,600.00",
+      "$1,238.40"
+     ],
+     "a": 3,
+     "why": "Net pay = 3,200 − 723.20 = 2,476.80, and 50% of that is $1,238.40. Using gross pay gives $1,600, a common error."
+    },
+    {
+     "q": "Inflation is 3% a year. About how much will a $100 item cost in 10 years (1.03^10 = 1.344)?",
+     "choices": [
+      "$134.40",
+      "$74.40",
+      "$130.00",
+      "$103.00"
+     ],
+     "a": 0,
+     "why": "100 × 1.344 = $134.40. The $130 adds 3% ten times without compounding, and $74.40 is the purchasing power of $100, the reverse question."
+    }
+   ]
+  },
+  {
+   "n": 62,
+   "title": "Capstone: Model It",
+   "years": "Modeling",
+   "bigQuestion": "How do you turn a real question into a mathematical model you can build, test, defend and improve?",
+   "story": {
+    "title": "The Traffic Light on Main Street",
+    "kicker": "A student who is tired of waiting at one light decides to find out, with a stopwatch and a notebook, whether the light is really badly timed.",
+    "paragraphs": [
+     "Every school morning Tomas sits at the light where Main Street meets the road to the high school, and every morning he is sure the light is wrong. The red seems to last forever, and the green seems to end just as his car reaches the front. His math teacher hears the complaint and makes an offer: prove it. Not with a feeling, with a model. If the model shows the light is badly timed, the class will write to the village engineer.",
+     "Tomas starts by asking what wrong even means. After some arguing, the class settles on a question they can measure: does the green light on Main Street last long enough to clear the cars that pile up during the red? That question needs three numbers. How long is the red? How fast do cars arrive while it is red? And how fast do cars get through once it turns green?",
+     "For a week, students stand at the corner with phones and stopwatches. The red lasts 45 seconds every cycle. During the morning rush, cars arrive at about 10 per minute, so about 7.5 cars line up during one red. Once the light turns green, the first car takes about 2 seconds to move, and after that a car crosses the line about every 2 seconds. Clearing 7.5 cars takes about 2 + 2 × 7.5 = 17 seconds. The green is 30 seconds. In the morning, the light is fine.",
+     "Then a student who works after school times the same light at 5:15 pm. Cars now arrive at about 20 per minute. During a 45-second red, 15 cars line up, and clearing them takes about 2 + 2 × 15 = 32 seconds, longer than the 30-second green. Two or three cars are left behind every cycle, and the line grows all evening. Tomas was right about the light, but only at the wrong time of day, and only for a reason he could now explain with numbers.",
+     "The class checks the model by changing its inputs. If the evening arrival rate were 16 per minute instead of 20, the line would clear. If the green were 36 seconds instead of 30, it would clear even at 20 per minute. They write these findings, draw a graph with an honest scale, list what they could not measure, and send the letter. This chapter is the path they followed: a question, assumptions, data, a model, a test, and a clear argument."
+    ],
+    "think": "Tomas's feeling was right and wrong at the same time. What did the model add that a week of complaining could not, and what could the model still be missing?"
+   },
+   "sections": [
+    {
+     "title": "Choosing the Question",
+     "lessons": [
+      {
+       "title": "A Question You Can Measure",
+       "mainIdea": "A good modeling question is specific, measurable and bounded: it names the quantity, the place and the time, and a way to decide the answer.",
+       "reading": [
+        "A *mathematical model* is a simplified description of a real situation, built from numbers, variables and rules, that lets you predict or explain something. Every model begins with a question, and vague questions make useless models. Is the light badly timed is a feeling. Does the 30-second green on Main Street clear the cars that arrive during the 45-second red at 5:15 pm is a question with numbers in it. The second one can be answered; the first cannot.",
+        "Test a question with three checks. Is it *measurable*: does it name quantities you can count or time, like cars per minute or seconds of green? Is it *bounded*: does it say where and when, so the data has a clear scope? Is it *decidable*: can you say in advance what result would mean yes and what would mean no? For the traffic light, yes means the clearing time is less than the green, and no means it is more.",
+        "Strong capstone questions usually come from something you already care about and can reach. Does the cafeteria line move faster with two registers than one? How much of a phone battery does one hour of video use? Does the Red Line really run every 6 minutes at rush hour, and how much does it vary? How many more books does the school library lend in October than in March? Each of these names a quantity, a place and a time, and each can be answered with a few days of careful counting.",
+        "Weak questions fail one of the checks. Why is traffic so bad in our town is not bounded. Is our school the best in Illinois is not decidable, because best has no agreed measure. Would a new stadium help the economy is measurable in principle but far beyond a student's data. Before going further, write your question in one sentence and make sure someone else can tell exactly what data would settle it."
+       ],
+       "words": [
+        {
+         "w": "mathematical model",
+         "d": "a simplified description of a real situation, built from numbers, variables and rules, used to predict or explain"
+        },
+        {
+         "w": "measurable",
+         "d": "able to be counted or timed with a clear unit, such as cars per minute or seconds"
+        },
+        {
+         "w": "bounded",
+         "d": "limited to a stated place and time, so the data has a definite scope"
+        },
+        {
+         "w": "decidable",
+         "d": "having a rule, set in advance, for what result would count as a yes and what as a no"
+        }
+       ],
+       "look": {
+        "type": "think",
+        "title": "Sharpening a vague question",
+        "text": "A student writes: Is the school parking lot too small? A partner asks: Too small for what, and when? The student rewrites: On school days between 7:30 and 7:50 am, how many cars try to park in the 180-space student lot, and on what fraction of days does the count pass 180? Now the answer needs a count on each of, say, 10 mornings and a simple comparison with 180.",
+        "prompt": "Rewrite this question so it passes all three checks: Is the cafeteria line too slow? Name the quantity, the place, the time, and what result would mean yes."
+       },
+       "check": [
+        {
+         "q": "Which question is measurable, bounded and decidable?",
+         "choices": [
+          "Is traffic in our town getting worse?",
+          "Does the 30-second green at Main Street clear the cars that arrive during the 45-second red at 5:15 pm on weekdays?",
+          "Should the village fix the traffic lights?",
+          "Are drivers on Main Street patient?"
+         ],
+         "a": 1,
+         "why": "It names the quantities (seconds, cars), the place and time, and yes means clearing time is under 30 seconds."
+        },
+        {
+         "q": "A question fails the decidable check. What is missing?",
+         "choices": [
+          "A place and a time",
+          "A quantity that can be counted",
+          "A rule stated in advance for what result means yes or no",
+          "A graph of the data"
+         ],
+         "a": 2,
+         "why": "Decidable means you know before collecting data what result would answer the question each way."
+        },
+        {
+         "q": "Which of these is a model rather than just a question or a fact?",
+         "choices": [
+          "The light turned green at 7:42",
+          "Cars arrive at 10 per minute",
+          "How long is the red light?",
+          "Cars queued during a red equal the arrival rate times the red time, so a 45-second red at 10 per minute gives 7.5 cars"
+         ],
+         "a": 3,
+         "why": "A model combines measured inputs with a rule to predict something. The others are a single fact or a question."
+        }
+       ]
+      },
+      {
+       "title": "Assumptions and Variables",
+       "mainIdea": "Every model leaves things out on purpose; write down each assumption and each variable so you know what the model can and cannot say.",
+       "reading": [
+        "A model is simpler than the world, and that is its strength. The traffic model assumes cars arrive at a steady rate, that every car needs the same 2 seconds to cross, that no one turns, and that the red is always 45 seconds. None of these is exactly true. They are *assumptions*, choices to ignore some details so the model can be built. The rule is not to avoid assumptions; it is to write every one of them down before you start.",
+        "Next, name the *variables*, the quantities that can change. In the traffic model: the red time R in seconds, the arrival rate r in cars per minute, the green time G in seconds, and the queue Q in cars. Some are *inputs* you measure or set, like R, r and G. Some are *outputs* the model computes, like Q and the clearing time C. Say what each one means and what its unit is. A model with a variable in minutes multiplied by a rate in cars per second will be off by a factor of 60.",
+        "Now write the rules. The queue at the end of a red is Q = r × R ÷ 60, because r is per minute and R is in seconds. With r = 10 and R = 45, Q = 10 × 45 ÷ 60 = 7.5 cars. The clearing time is C = 2 + 2 × Q seconds, so C = 2 + 15 = 17 seconds. The light clears if C ≤ G. With G = 30, it does. Each rule came from an assumption, and if an assumption is wrong the rule is wrong with it.",
+        "Sort the assumptions by how much they matter. Cars arriving in bursts instead of steadily would change Q a little. A truck that takes 5 seconds to move would change C a little. A left-turn lane that blocks through traffic could change everything. The big assumptions are the ones you should plan to check with data, or at least flag in your report as the limits of the model."
+       ],
+       "words": [
+        {
+         "w": "assumption",
+         "d": "a simplification you choose on purpose so the model can be built, such as treating every car as taking 2 seconds to cross"
+        },
+        {
+         "w": "variable",
+         "d": "a quantity in the model that can take different values, with a name and a unit"
+        },
+        {
+         "w": "input",
+         "d": "a variable you measure or choose, which the model uses to compute its outputs"
+        },
+        {
+         "w": "output",
+         "d": "a variable the model computes from its inputs, such as the number of cars queued"
+        },
+        {
+         "w": "parameter",
+         "d": "a fixed number inside a model's rule, such as the 2 seconds per car in C = 2 + 2Q"
+        }
+       ],
+       "look": {
+        "type": "think",
+        "title": "The battery model and its assumptions",
+        "text": "A student wants to model phone battery use. Variables: battery percent B, minutes of video V. Rule: B = 100 − 0.4V, meaning about 0.4 percent per minute of video. Assumptions written down: screen brightness stays the same, no other apps run, the phone is not charging, the battery is healthy, and drain is steady rather than faster near the end. Inputs: V. Output: B. Parameter: 0.4, to be measured.",
+        "prompt": "Which assumption do you think matters most, and how would you design a test that checks it? What does the model predict after 150 minutes, and what does the answer tell you about the model's limits?"
+       },
+       "check": [
+        {
+         "q": "Cars arrive at 12 per minute and the red lasts 45 seconds. Using Q = r × R ÷ 60, how many cars queue up?",
+         "choices": [
+          "9",
+          "12",
+          "7.5",
+          "540"
+         ],
+         "a": 0,
+         "why": "Q = 12 × 45 ÷ 60 = 540 ÷ 60 = 9 cars. Forgetting to divide by 60 gives 540."
+        },
+        {
+         "q": "In the traffic model, which of these is an output?",
+         "choices": [
+          "The green time G",
+          "The clearing time C",
+          "The red time R",
+          "The arrival rate r"
+         ],
+         "a": 1,
+         "why": "C is computed from Q, which is computed from r and R. The others are measured or set."
+        },
+        {
+         "q": "Why should assumptions be written down before building the model?",
+         "choices": [
+          "So the report is longer",
+          "So the model can ignore them later",
+          "So you know what the model leaves out and can check the ones that matter most",
+          "Because a model without assumptions is impossible to graph"
+         ],
+         "a": 2,
+         "why": "Each rule rests on an assumption. Listing them shows the model's limits and points to what to test."
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "title": "Getting Good Data",
+     "lessons": [
+      {
+       "title": "Gathering Data",
+       "mainIdea": "Plan the data before collecting it: decide what to record, in what unit, how often, and by whom, and write it in a table the same way every time.",
+       "reading": [
+        "Data collection is where most student projects go wrong, not in the math. Before anyone stands at the corner, make a *data plan*: what will be recorded, in what unit, over what interval, who records it, and where the sheet lives. For the traffic project the plan was: count cars that stop for the red, one count per red cycle, recorded as a whole number with the clock time, for 10 cycles each morning and evening, by two students who compare sheets afterward.",
+        "Use an interval long enough to smooth out luck. Counting cars for 10 seconds gives numbers like 1 or 3 that swing wildly. Counting for 2 minutes gives numbers like 18 or 22 that settle down. Five morning counts of 18, 22, 21, 19 and 20 cars in 2-minute intervals total 100 cars in 10 minutes, an arrival rate of 100 ÷ 10 = 10 cars per minute. Each single count is noisy; the average is steady.",
+        "Record more than you think you need, in the same layout every time. A row of the traffic sheet held: date, time, red length in seconds, cars queued, seconds to clear, weather, notes. The weather column seemed pointless until a rainy day showed clearing times of 3 seconds per car instead of 2. Keep raw numbers, not rounded ones, and never erase: cross out and write beside, so a strange value can be checked later.",
+        "Think about *sampling*. Ten cycles on one Tuesday morning describe that Tuesday. To say something about weekday mornings, spread the counts across several days. Counting only when a friend is free, or only when the line looks long, builds bias into the data before any math happens. Choose the times in advance and stick to them, even when the corner looks boring."
+       ],
+       "words": [
+        {
+         "w": "data plan",
+         "d": "a written decision, made before collecting, about what to record, in what unit, how often and by whom"
+        },
+        {
+         "w": "interval",
+         "d": "the length of time over which one count or measurement is taken, such as 2 minutes"
+        },
+        {
+         "w": "raw data",
+         "d": "the numbers exactly as recorded, before rounding, cleaning or averaging"
+        },
+        {
+         "w": "sampling",
+         "d": "choosing which times, places or people to measure so that the data represents the whole you care about"
+        },
+        {
+         "w": "bias",
+         "d": "a built-in tilt in the data caused by how it was gathered, such as counting only when the line looks long"
+        }
+       ],
+       "look": {
+        "type": "data",
+        "title": "Morning arrivals on Main Street, five 2-minute counts",
+        "rows": [
+         [
+          "7:30 to 7:32",
+          18
+         ],
+         [
+          "7:32 to 7:34",
+          22
+         ],
+         [
+          "7:34 to 7:36",
+          21
+         ],
+         [
+          "7:36 to 7:38",
+          19
+         ],
+         [
+          "7:38 to 7:40",
+          20
+         ]
+        ],
+        "unit": "cars arriving",
+        "cite": "Class traffic project, example data recorded by two students",
+        "prompt": "Find the total, the average per 2-minute interval, and the arrival rate in cars per minute. Which single count is farthest from the average, and by how much?"
+       },
+       "check": [
+        {
+         "q": "Five 2-minute counts are 18, 22, 21, 19 and 20 cars. What is the arrival rate in cars per minute?",
+         "choices": [
+          "5 cars per minute",
+          "20 cars per minute",
+          "100 cars per minute",
+          "10 cars per minute"
+         ],
+         "a": 3,
+         "why": "Total = 100 cars in 5 × 2 = 10 minutes, so 100 ÷ 10 = 10 cars per minute. The 20 is the average per 2-minute interval."
+        },
+        {
+         "q": "Why count for 2 minutes instead of 10 seconds?",
+         "choices": [
+          "Longer intervals average out random swings, so each count is more stable",
+          "Shorter intervals are illegal",
+          "It makes the total larger",
+          "Ten seconds is too long to hold a stopwatch"
+         ],
+         "a": 0,
+         "why": "A 10-second count might be 1 or 3 by chance; a 2-minute count varies much less around its true rate."
+        },
+        {
+         "q": "A student counts only on days when the line looks long. What is the problem?",
+         "choices": [
+          "The counts will be too small",
+          "The sample is biased toward heavy traffic, so it does not represent typical days",
+          "The interval is too short",
+          "The data cannot be graphed"
+         ],
+         "a": 1,
+         "why": "Choosing when to measure based on what you expect to find tilts the data. Times should be set in advance."
+        }
+       ]
+      },
+      {
+       "title": "Cleaning the Data",
+       "mainIdea": "Before modeling, check the data for typos, mixed units, missing values and outliers, and record every change you make.",
+       "reading": [
+        "Raw data is never clean. The traffic sheets, when typed into a spreadsheet, contained a count of 210 cars in one 2-minute interval. Every other count was between 15 and 25. A single-lane road cannot deliver 210 cars in 2 minutes, so 210 is almost surely a typo for 21. The right move is to check the paper sheet, fix it if the sheet says 21, and write in a *cleaning log*: row 14, changed 210 to 21, matched paper sheet.",
+        "The second problem was units. One student recorded clearing times in seconds, another in minutes and seconds, and a third wrote 0.5 for half a minute. The 0.5 sat next to 17 and 19 and would have crushed the average. Convert everything to one unit, and label the column with it: clearing time (seconds). A quick check that catches most unit mistakes is to sort the column and look at the smallest and largest values.",
+        "Third, missing values. A row with a blank because a phone died is not a zero, and typing 0 would tell the model that no cars came. Leave the cell blank or mark it missing, and count how many rows are missing. If 2 of 40 rows are missing, drop them and say so. If 20 of 40 are missing, the data plan failed and the counts need redoing. Never fill a blank with a guess and then treat it as measured.",
+        "Finally, *outliers*, real values that sit far from the rest. On the rainy day, clearing took 3 seconds per car instead of 2. That is not an error; it is information. Keep it, flag it, and decide whether the question is about all days or about dry days. Removing an outlier is allowed only when you can say why it is not a genuine observation, and the report must state that it was removed."
+       ],
+       "words": [
+        {
+         "w": "cleaning log",
+         "d": "a written list of every change made to the raw data, with the row and the reason"
+        },
+        {
+         "w": "outlier",
+         "d": "a real value far from the rest of the data, to be flagged and explained rather than silently deleted"
+        },
+        {
+         "w": "missing value",
+         "d": "an observation that was never recorded; it must be marked as missing, not entered as zero"
+        },
+        {
+         "w": "unit check",
+         "d": "confirming that every value in a column uses the same unit, often by sorting and looking at the extremes"
+        }
+       ],
+       "look": {
+        "type": "data",
+        "title": "Clearing times typed from the sheets, before cleaning",
+        "rows": [
+         [
+          "Cycle 1",
+          17
+         ],
+         [
+          "Cycle 2",
+          19
+         ],
+         [
+          "Cycle 3",
+          0.5
+         ],
+         [
+          "Cycle 4",
+          18
+         ],
+         [
+          "Cycle 5",
+          170
+         ],
+         [
+          "Cycle 6",
+          16
+         ]
+        ],
+        "unit": "seconds as typed",
+        "cite": "Class traffic project, example raw entries before the cleaning log",
+        "prompt": "Which two entries are suspicious, what most likely happened to each, and what would the average be with them fixed versus with them left in?"
+       },
+       "check": [
+        {
+         "q": "A 2-minute count reads 210 while every other count is 15 to 25. What should you do first?",
+         "choices": [
+          "Keep it, because all data is valid",
+          "Delete the row without a note",
+          "Check the original sheet, fix it if it was a typo, and record the change in the cleaning log",
+          "Change it to the average of the other counts"
+         ],
+         "a": 2,
+         "why": "A value that is physically impossible is likely a typo. Verify against the source and log the correction."
+        },
+        {
+         "q": "A phone died and one clearing time was never recorded. How should the cell be entered?",
+         "choices": [
+          "As 2 seconds per car",
+          "As 0 seconds",
+          "As the previous row's value",
+          "As missing, and the row left out of the average with a note"
+         ],
+         "a": 3,
+         "why": "A zero would claim the cars cleared instantly. A blank marked missing keeps the average honest."
+        },
+        {
+         "q": "Six clearing times are 17, 19, 0.5, 18, 170, 16 seconds. If 0.5 was half a minute and 170 was a typo for 17, what is the cleaned average?",
+         "choices": [
+          "19.5 seconds",
+          "17.0 seconds",
+          "40.1 seconds",
+          "22.5 seconds"
+         ],
+         "a": 0,
+         "why": "Cleaned values: 17, 19, 30, 18, 17, 16. Sum = 117, and 117 ÷ 6 = 19.5 seconds. Leaving the errors in gives about 40.1."
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "title": "Building the Model",
+     "lessons": [
+      {
+       "title": "A First Model",
+       "mainIdea": "Start with the simplest model that could work, fit it to the data, and check its predictions against values it has not seen.",
+       "reading": [
+        "The first model should be the simplest one that could be right. For the traffic question, that is a *linear model*: cars in the queue grow in a straight line with red time. The class timed reds of different lengths at several lights and recorded the queue: 30 seconds gave 5 cars, 45 gave 8, 60 gave 10, 90 gave 14, and 120 gave 21. Plot red time on the horizontal axis and queue on the vertical axis. The points rise roughly along a line through the origin, which makes sense: a red of 0 seconds should have 0 cars.",
+        "Fit the line. A rate of 10 cars per minute means 10 ÷ 60 = 1/6 car per second, so the model is Q = R ÷ 6. Check it against the data: 30 ÷ 6 = 5, matching exactly; 45 ÷ 6 = 7.5, close to 8; 60 ÷ 6 = 10, exact; 90 ÷ 6 = 15, one more than 14; 120 ÷ 6 = 20, one less than 21. The largest miss is 1 car. A spreadsheet's least-squares line gives about Q = 0.17R − 0.14, nearly the same, which is reassuring.",
+        "A model earns trust by predicting values it has not seen. The class held back one measurement: a 75-second red that queued 12 cars. The model predicts 75 ÷ 6 = 12.5, a miss of half a car. That is a *prediction check*, and passing it means more than fitting the original points, because a model can be bent to fit points it was built from. Always keep some data aside for this.",
+        "Then combine the pieces. Queue Q = R ÷ 6 in the morning; clearing time C = 2 + 2Q. For R = 45, Q = 7.5 and C = 17 seconds, under the 30-second green. In the evening the rate doubles, so Q = R ÷ 3 = 15 and C = 32, over the green. The first model already answers the question. Later models will refine it, but a simple model that explains the main effect is worth more than a complicated one nobody can check."
+       ],
+       "words": [
+        {
+         "w": "linear model",
+         "d": "a model whose output changes by the same amount for each unit change in the input; its graph is a straight line"
+        },
+        {
+         "w": "fit",
+         "d": "choose the numbers in a model's rule so its predictions come as close as possible to the data"
+        },
+        {
+         "w": "prediction check",
+         "d": "testing a model on data that was held back and not used to build it"
+        },
+        {
+         "w": "residual",
+         "d": "the difference between a measured value and the model's prediction for it"
+        }
+       ],
+       "look": {
+        "type": "data",
+        "title": "Red time and cars queued, morning rush",
+        "rows": [
+         [
+          "30 seconds",
+          5
+         ],
+         [
+          "45 seconds",
+          8
+         ],
+         [
+          "60 seconds",
+          10
+         ],
+         [
+          "90 seconds",
+          14
+         ],
+         [
+          "120 seconds",
+          21
+         ]
+        ],
+        "unit": "cars queued",
+        "cite": "Class traffic project, example data; model Q = R ÷ 6",
+        "prompt": "Compute the model's prediction and the residual for each row. What is the largest residual, and does the model tend to guess high or low at long reds?"
+       },
+       "check": [
+        {
+         "q": "Using Q = R ÷ 6, how many cars does the model predict for a 90-second red?",
+         "choices": [
+          "540 cars",
+          "15 cars",
+          "14 cars",
+          "9 cars"
+         ],
+         "a": 1,
+         "why": "90 ÷ 6 = 15. The measured value was 14, so the residual is 14 − 15 = −1."
+        },
+        {
+         "q": "Why should some data be held back for a prediction check?",
+         "choices": [
+          "So the graph has fewer points",
+          "To make the fit look better",
+          "Because a model can be bent to fit the points it was built from, so unseen points are a fairer test",
+          "Because spreadsheets cannot handle more than five rows"
+         ],
+         "a": 2,
+         "why": "Fitting and testing on the same points rewards memorizing them. A held-back point tests real predictive power."
+        },
+        {
+         "q": "Evening cars arrive at 20 per minute and the red is 45 seconds. Using C = 2 + 2Q, what is the clearing time?",
+         "choices": [
+          "45 seconds",
+          "17 seconds",
+          "30 seconds",
+          "32 seconds"
+         ],
+         "a": 3,
+         "why": "Q = 20 × 45 ÷ 60 = 15 cars, and C = 2 + 2 × 15 = 32 seconds, which is more than the 30-second green."
+        }
+       ]
+      },
+      {
+       "title": "Comparing Models",
+       "mainIdea": "Compare candidate models by how far their predictions miss the data, and prefer the simpler model unless a more complex one clearly does better.",
+       "reading": [
+        "Two students proposed different lines for the queue data. Model 1 is Q = R ÷ 6. Model 2 is Q = 0.2R − 2, which someone drew by eye. To compare them, compute each model's *residuals*, the measured value minus the prediction, and then the *mean absolute error*, the average size of the residuals. Model 1 predicts 5, 7.5, 10, 15, 20 for the five reds; the residuals are 0, 0.5, 0, −1, 1; the sizes average to (0 + 0.5 + 0 + 1 + 1) ÷ 5 = 0.5 car. Model 2 predicts 4, 7, 10, 16, 22; residuals 1, 1, 0, −2, −1; average size (1 + 1 + 0 + 2 + 1) ÷ 5 = 1.0 car. Model 1 misses by half as much.",
+        "Error is not the only test. A model should also make sense at the edges. Model 2 predicts −2 cars for a red of 0 seconds, which is impossible; Model 1 predicts 0. A model whose formula gives nonsense at natural boundary values, such as negative cars or a queue that keeps growing after the light turns green, has a wrong shape even if its error on the data looks acceptable.",
+        "Sometimes a curved model fits better. Suppose someone proposes Q = 0.0015R^2, a quadratic. At R = 120 it predicts 21.6, close to 21, but at R = 30 it predicts only 1.35, far from 5, so its error is worse overall. Beware of the opposite trap too: a model with enough adjustable numbers can pass through every data point and still be useless, because it is fitting the noise. Prefer the simplest model whose error is small and whose shape makes sense, and add complexity only when the data clearly demands it.",
+        "Write the comparison as a small table: model, formula, mean absolute error, behavior at R = 0, number of adjustable parameters. A reader can then see why you chose what you chose. In the traffic project the table made the decision obvious: the linear model through the origin had the lowest error, one parameter, and a sensible zero."
+       ],
+       "words": [
+        {
+         "w": "mean absolute error",
+         "d": "the average of the sizes of the residuals, ignoring their signs; a single number for how far a model misses"
+        },
+        {
+         "w": "boundary check",
+         "d": "testing whether a model gives sensible answers at natural edge values, such as a red of 0 seconds"
+        },
+        {
+         "w": "overfitting",
+         "d": "building a model with so many adjustable numbers that it follows the noise in the data instead of the pattern"
+        },
+        {
+         "w": "quadratic model",
+         "d": "a model whose rule includes the square of the input, so its graph is a curve"
+        }
+       ],
+       "look": {
+        "type": "data",
+        "title": "Mean absolute error of three candidate queue models",
+        "rows": [
+         [
+          "Q = R ÷ 6",
+          0.5
+         ],
+         [
+          "Q = 0.2R − 2",
+          1.0
+         ],
+         [
+          "Q = 0.0015R^2",
+          3.1
+         ]
+        ],
+        "unit": "cars, average miss",
+        "cite": "Computed from the five morning data points in this chapter",
+        "prompt": "Beyond the error, what does each model predict at R = 0, and which one would you choose? Give two reasons."
+       },
+       "check": [
+        {
+         "q": "A model's residuals on five points are 0, 0.5, 0, −1 and 1. What is the mean absolute error?",
+         "choices": [
+          "0.5",
+          "2.5",
+          "0.3",
+          "0.1"
+         ],
+         "a": 0,
+         "why": "Sizes: 0, 0.5, 0, 1, 1. Sum = 2.5, and 2.5 ÷ 5 = 0.5. Adding with signs gives 0.5 ÷ 5 = 0.1, which hides the misses."
+        },
+        {
+         "q": "Model 2, Q = 0.2R − 2, predicts −2 cars when R = 0. What does that tell you?",
+         "choices": [
+          "Negative cars mean cars leaving the queue",
+          "The model has the wrong shape at the boundary, since a queue cannot be negative",
+          "The data must be wrong",
+          "The model is perfect for long reds"
+         ],
+         "a": 1,
+         "why": "A sensible model gives 0 cars for a 0-second red. Failing the boundary check counts against the model."
+        },
+        {
+         "q": "A model with six adjustable numbers passes through all six data points exactly. Why be suspicious?",
+         "choices": [
+          "It must be a linear model",
+          "Exact fits are not allowed in math",
+          "It probably fits the random noise in the data and will predict new points badly",
+          "Six parameters are too few"
+         ],
+         "a": 2,
+         "why": "With as many parameters as points, any data can be fit exactly. That says nothing about the pattern."
+        }
+       ]
+      },
+      {
+       "title": "Wiggling the Inputs",
+       "mainIdea": "Sensitivity analysis changes one input at a time to see how much the conclusion moves; the inputs that move it most are the ones to measure best.",
+       "reading": [
+        "A model's answer depends on numbers you measured roughly. *Sensitivity analysis* asks: if an input were a bit different, would the conclusion change? Take the evening case: rate 20 cars per minute, red 45 seconds, 2 seconds per car, green 30 seconds. Base result: Q = 15, C = 32 seconds, the light fails by 2 seconds. Now change one input at a time by about 20% and recompute.",
+        "Arrival rate 16 instead of 20: Q = 16 × 45 ÷ 60 = 12, C = 2 + 24 = 26 seconds, the light passes. Rate 24: Q = 18, C = 38, fails badly. Seconds per car 2.4 instead of 2: C = 2 + 2.4 × 15 = 38, fails. Seconds per car 1.6: C = 2 + 24 = 26, passes. Startup delay 3 seconds instead of 2: C = 33, one second worse, barely matters. So the conclusion is sensitive to the arrival rate and to the seconds per car, and nearly insensitive to the startup delay.",
+        "That tells you where to spend effort. Measuring the startup delay more carefully is a waste; measuring the evening arrival rate on more days is not. The class went back and counted five more evenings, getting rates from 18 to 22. Even at the lowest, 18, Q = 13.5 and C = 29 seconds, only one second inside the green, so on most evenings the line does not clear. The conclusion survived, and now it came with a range instead of a single number.",
+        "Sensitivity also answers what-if questions for the people who will read the report. What green would clear 20 cars per minute? Solve 2 + 2 × 15 ≤ G, so G ≥ 32 seconds; a 36-second green leaves margin. What rate could a 30-second green handle? Solve 2 + 2Q ≤ 30, so Q ≤ 14, and Q = r × 45 ÷ 60 ≤ 14 gives r ≤ 18.7 cars per minute. A village engineer can use those two numbers directly."
+       ],
+       "words": [
+        {
+         "w": "sensitivity analysis",
+         "d": "changing one input at a time, by a small amount, to see how much the model's conclusion changes"
+        },
+        {
+         "w": "base case",
+         "d": "the model's result using the best available values for every input, the starting point for sensitivity tests"
+        },
+        {
+         "w": "margin",
+         "d": "the distance between the model's result and the line where the conclusion would flip"
+        },
+        {
+         "w": "range",
+         "d": "the spread of results a model gives when an input varies over the values actually observed"
+        }
+       ],
+       "look": {
+        "type": "data",
+        "title": "Evening clearing time when one input changes (base: 32 seconds)",
+        "rows": [
+         [
+          "Rate 16 per minute",
+          26
+         ],
+         [
+          "Rate 24 per minute",
+          38
+         ],
+         [
+          "1.6 seconds per car",
+          26
+         ],
+         [
+          "2.4 seconds per car",
+          38
+         ],
+         [
+          "3-second startup",
+          33
+         ],
+         [
+          "Red 40 seconds",
+          28.7
+         ]
+        ],
+        "unit": "seconds to clear",
+        "cite": "Computed from Q = r × R ÷ 60 and C = s + p × Q with the base values in this lesson",
+        "prompt": "Which inputs move the clearing time the most? The green is 30 seconds; which single changes would flip the conclusion from fails to passes?"
+       },
+       "check": [
+        {
+         "q": "Evening rate 18 per minute, red 45 seconds, 2 seconds per car, 2-second startup. What is the clearing time?",
+         "choices": [
+          "32 seconds",
+          "26 seconds",
+          "13.5 seconds",
+          "29 seconds"
+         ],
+         "a": 3,
+         "why": "Q = 18 × 45 ÷ 60 = 13.5 cars, and C = 2 + 2 × 13.5 = 29 seconds."
+        },
+        {
+         "q": "Changing the startup delay from 2 to 3 seconds moves the clearing time from 32 to 33 seconds. What does that show?",
+         "choices": [
+          "The conclusion is nearly insensitive to the startup delay, so it is not worth measuring more precisely",
+          "The light passes",
+          "The startup delay is the most important input",
+          "The model is broken"
+         ],
+         "a": 0,
+         "why": "A 50% change in that input moved the result by only 1 second. Effort belongs on inputs that move the result more."
+        },
+        {
+         "q": "With a 30-second green, 2-second startup and 2 seconds per car, what is the largest queue that clears?",
+         "choices": [
+          "15 cars",
+          "14 cars",
+          "28 cars",
+          "16 cars"
+         ],
+         "a": 1,
+         "why": "Solve 2 + 2Q ≤ 30: 2Q ≤ 28, so Q ≤ 14 cars. A queue of 15 needs 32 seconds."
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "title": "Sharing the Result",
+     "lessons": [
+      {
+       "title": "Honest Pictures",
+       "mainIdea": "A graph should let a reader see the true size of an effect: start bar axes at zero, label units, show the data points, and never hide the scale.",
+       "reading": [
+        "A graph can tell the truth or bend it with the same numbers. Suppose the average evening wait rose from 40 seconds to 44 seconds, an increase of 4 ÷ 40 = 10%. On a bar chart whose vertical axis starts at 0, the second bar is 10% taller, which looks like what it is. On a bar chart whose axis starts at 38, the first bar has height 2 and the second has height 6, so it looks three times taller. Same data, a very different impression. Bar charts should start at zero, because the eye reads bar height as size.",
+        "Line graphs and scatter plots can start above zero when the data lives in a narrow band, but then the axis must be clearly labeled and the reader warned. Every axis needs a label with a unit: red time (seconds), cars queued. Show the actual data points, not only the fitted line, so a reader can judge how well the model fits. When you show the model, draw it only over the range where you have data; extending Q = R ÷ 6 out to a 10-minute red claims something you never measured.",
+        "Choose the chart for the question. A scatter plot with a fitted line shows whether queue length grows with red time. A bar chart compares the morning and evening clearing times against the 30-second green, with the green drawn as a horizontal line. A table is best when the reader needs exact numbers, such as the sensitivity results. A pie chart almost never fits a modeling project, because it hides the sizes it claims to show.",
+        "Before you present, do the squint test. Look at each graph from across the room and say aloud the one thing it shows. If what you say is not what the data says, fix the graph. The most common fixes are starting the axis at zero, adding units, removing a 3-D effect that distorts the heights, and using the same scale on two graphs that will be compared."
+       ],
+       "words": [
+        {
+         "w": "truncated axis",
+         "d": "an axis that starts above zero, which makes differences between bars look larger than they are"
+        },
+        {
+         "w": "scatter plot",
+         "d": "a graph with one dot per observation, placed by two measured values, used to see whether they are related"
+        },
+        {
+         "w": "extrapolation",
+         "d": "using a model outside the range of the data it was built from, where it may not hold"
+        },
+        {
+         "w": "axis label",
+         "d": "the name and unit of what an axis measures, such as red time (seconds)"
+        }
+       ],
+       "look": {
+        "type": "think",
+        "title": "The same 10% two ways",
+        "text": "Two bar charts show the evening wait: 40 seconds last year, 44 seconds this year. Chart A starts its axis at 0; the bars are 40 and 44 units tall, and the difference looks modest. Chart B starts its axis at 38; the bars are 2 and 6 units tall, and the second looks three times the first. A reader who does not check the axis would think waits had tripled. The true change is 44 ÷ 40 = 1.10, a 10% rise.",
+        "prompt": "Which chart would you use in a letter to the village engineer, and why? Is there any situation where a truncated axis is honest, as long as it is labeled?"
+       },
+       "check": [
+        {
+         "q": "The average wait rose from 40 seconds to 44 seconds. What is the percent increase?",
+         "choices": [
+          "110%",
+          "4%",
+          "10%",
+          "40%"
+         ],
+         "a": 2,
+         "why": "Increase = 44 − 40 = 4 seconds, and 4 ÷ 40 = 0.10, so 10%."
+        },
+        {
+         "q": "A bar chart of those two waits starts its axis at 38. How do the bar heights compare?",
+         "choices": [
+          "They are equal",
+          "The second is 10% taller",
+          "The second is twice as tall",
+          "The second is three times as tall"
+         ],
+         "a": 3,
+         "why": "Heights above 38 are 2 and 6, and 6 ÷ 2 = 3. The truncated axis triples the visual difference."
+        },
+        {
+         "q": "Why should a fitted line be drawn only over the range of the data?",
+         "choices": [
+          "Because outside the data the model is an extrapolation that was never checked",
+          "Because spreadsheets limit line length",
+          "Because the residuals become zero outside the data",
+          "Because longer lines are harder to draw"
+         ],
+         "a": 0,
+         "why": "The model was fitted and tested only where data exists. Beyond that it is a guess and should look like one."
+        }
+       ]
+      },
+      {
+       "title": "Writing the Argument",
+       "mainIdea": "A mathematical argument states a claim, gives the evidence, explains the reasoning that links them, and names its limits.",
+       "reading": [
+        "A modeling report is an argument, and a good argument has four parts. The *claim* is one sentence: at 5:15 pm on weekdays, the 30-second green on Main Street does not clear the cars that arrive during the 45-second red. The *evidence* is the data: on five evenings, cars arrived at 18 to 22 per minute, and cars cleared at about 2 seconds each after a 2-second start. The *reasoning* is the model: Q = r × 45 ÷ 60 gives 13.5 to 16.5 cars, and C = 2 + 2Q gives 29 to 35 seconds, so on most evenings the clearing time exceeds 30 seconds.",
+        "The fourth part is the *limits*. Say what the model assumed and what would change the answer: arrivals were counted on five evenings in one month; turning cars were counted as through cars; rain slowed clearing to 3 seconds per car and was excluded; the green was measured as 30 seconds on every cycle observed. Then say what you recommend and what it would take: a 36-second green clears 20 cars per minute with margin, but lengthening one green shortens another, which this model did not study.",
+        "Write for a reader who is smart but busy. Put the claim first, not last. Give one clear graph and one small table. Show the key calculation with the actual numbers, so the reader can check it in a minute: Q = 20 × 45 ÷ 60 = 15, C = 2 + 2 × 15 = 32 > 30. Define each variable the first time. Avoid words like obviously and clearly; if it were obvious, you would not need the model.",
+        "Then read it as a skeptic. Where could the reader say so what, or how do you know that? Every place you find one, add the number or the reason that answers it. A common weakness is a claim stronger than the evidence: the light is broken becomes, with the same data, the light's green is too short for evening traffic on most weekdays we measured. The second claim is smaller and much harder to argue with."
+       ],
+       "words": [
+        {
+         "w": "claim",
+         "d": "the one-sentence conclusion the argument supports"
+        },
+        {
+         "w": "evidence",
+         "d": "the measured data the argument rests on, stated with units and how it was gathered"
+        },
+        {
+         "w": "reasoning",
+         "d": "the model and calculation that connect the evidence to the claim"
+        },
+        {
+         "w": "limits",
+         "d": "the assumptions, missing data and untested cases that bound what the claim can say"
+        }
+       ],
+       "look": {
+        "type": "think",
+        "title": "Two versions of the same claim",
+        "text": "Version 1: The light at Main Street is broken and the village needs to fix it. Version 2: On the five weekday evenings we measured, cars arrived at 18 to 22 per minute, and our model predicts clearing times of 29 to 35 seconds against a 30-second green, so the line usually does not clear; a 36-second green would clear it with margin. Version 2 is longer, but every part of it can be checked, and it says exactly what would fix the problem.",
+        "prompt": "Rewrite this claim in the style of Version 2: The cafeteria line is way too slow. Include a number, a model and a limit."
+       },
+       "check": [
+        {
+         "q": "Which part of an argument is this: Q = 20 × 45 ÷ 60 = 15 cars, so C = 2 + 30 = 32 seconds, which exceeds 30?",
+         "choices": [
+          "The evidence",
+          "The reasoning",
+          "The limits",
+          "The claim"
+         ],
+         "a": 1,
+         "why": "It is the calculation that links the measured inputs to the conclusion, which is the reasoning step."
+        },
+        {
+         "q": "Why is the smaller claim, the green is too short on most evenings we measured, better than the light is broken?",
+         "choices": [
+          "Because it avoids numbers",
+          "Because it sounds more polite",
+          "Because it says only what the evidence supports, so it is harder to argue with",
+          "Because shorter claims are always wrong"
+         ],
+         "a": 2,
+         "why": "A claim should not outrun its data. The narrower claim is fully backed by the five evenings and the model."
+        },
+        {
+         "q": "Rainy-day clearing times were excluded from the model. Where does this belong in the report?",
+         "choices": [
+          "In the claim",
+          "In the axis labels only",
+          "Nowhere, since excluded data does not matter",
+          "In the limits, stated clearly with the reason"
+         ],
+         "a": 3,
+         "why": "Any exclusion is an assumption that bounds the claim, so it is stated in the limits with its reason."
+        }
+       ]
+      },
+      {
+       "title": "Presenting and Defending",
+       "mainIdea": "Present the claim, the key number and the graph in the first minute, then answer challenges by returning to the data and the assumptions.",
+       "reading": [
+        "A presentation is the argument spoken, with the same four parts in the same order. Start with the claim and the key number: the evening green needs about 32 seconds and has 30. Show the one graph. Then give the evidence and the reasoning, using the actual calculation on a slide so the audience can follow it. End with the limits and the recommendation. Practice until the whole thing fits in five minutes, because the questions afterward are where the model is really tested.",
+        "Prepare for the challenges you would make yourself. What if you counted on unusually busy days? Answer with the range: five evenings, 18 to 22 per minute, and the light fails at 19 or more. What if drivers speed up when the line is long? Answer with sensitivity: even at 1.6 seconds per car the clearing time is 26 seconds, so that would flip the conclusion, and it is worth measuring. What about the cross street? Answer honestly: not modeled, and it is the first thing to study next.",
+        "When you do not know, say so, and say what you would do to find out. A defense is not a debate to win; it is a check that the model holds up. If a question reveals a real flaw, thank the questioner and write it down. The traffic class was asked whether the counts included cars turning right on red, which never join the queue. They had counted them. Removing an estimated 2 per minute lowered the evening rate to about 18 and the clearing time to 29 seconds, one second under the green. The conclusion weakened to on the busier evenings, and the report was better for it.",
+        "Speak the numbers with their units, point at the graph when you cite it, and keep the model's formula visible so the audience can test any what-if on the spot. A listener who can plug in their own number and get your answer is a listener who believes you."
+       ],
+       "words": [
+        {
+         "w": "key number",
+         "d": "the single most important result of the model, stated with its unit in the first minute"
+        },
+        {
+         "w": "challenge",
+         "d": "a question that tests whether the model, the data or an assumption holds up"
+        },
+        {
+         "w": "defense",
+         "d": "answering challenges by pointing to the data, the sensitivity tests and the stated limits"
+        },
+        {
+         "w": "recommendation",
+         "d": "the action the model supports, stated with the numbers that justify it"
+        }
+       ],
+       "look": {
+        "type": "think",
+        "title": "A challenge and a recalculation",
+        "text": "Questioner: Did your counts include cars turning right on red? Those never wait in the queue. Presenter: Yes, they did, about 2 per minute. Let me redo it. Rate 20 − 2 = 18 per minute, Q = 18 × 45 ÷ 60 = 13.5 cars, C = 2 + 2 × 13.5 = 29 seconds, which is 1 second under the 30-second green. So on an average evening the line just barely clears, and on busier evenings, 20 or more per minute, it does not.",
+        "prompt": "Did the challenge destroy the argument or sharpen it? Write the revised claim in one sentence."
+       },
+       "check": [
+        {
+         "q": "What should come first in a five-minute presentation of a model?",
+         "choices": [
+          "The claim and the key number",
+          "The list of who collected the data",
+          "The cleaning log",
+          "Every assumption in order"
+         ],
+         "a": 0,
+         "why": "A busy audience needs the conclusion first; the evidence, reasoning and limits follow to support it."
+        },
+        {
+         "q": "Removing 2 turning cars per minute lowers the evening rate from 20 to 18. What is the new clearing time?",
+         "choices": [
+          "32 seconds",
+          "29 seconds",
+          "26 seconds",
+          "36 seconds"
+         ],
+         "a": 1,
+         "why": "Q = 18 × 45 ÷ 60 = 13.5 and C = 2 + 2 × 13.5 = 29 seconds."
+        },
+        {
+         "q": "A questioner points out something the model did not include, and it changes the result. What is the best response?",
+         "choices": [
+          "Argue that it does not matter",
+          "Say the model is finished and cannot be changed",
+          "Acknowledge it, recompute if possible, and revise the claim to fit the evidence",
+          "End the presentation"
+         ],
+         "a": 2,
+         "why": "A defense checks the model; a real flaw found is a gift. Revising the claim keeps the argument honest."
+        }
+       ]
+      },
+      {
+       "title": "The Project Plan",
+       "mainIdea": "A capstone runs on a written plan with dated checkpoints: question, data, model, test, report, so that problems show up early enough to fix.",
+       "reading": [
+        "A modeling project fails most often on time, not on math. Plan it in *checkpoints*, each with a date and a thing you can show. For a four-week capstone: week 1, a one-sentence question that passes the three checks, a list of assumptions and variables, and a data plan. Week 2, the raw data, cleaned, with a cleaning log. Week 3, a first model with its error, a comparison to at least one alternative, and a sensitivity table. Week 4, the graph, the written argument, and a practiced presentation.",
+        "Each checkpoint is a chance to catch trouble early. If the week 1 question is not measurable, you find out before wasting a week of counting. If the week 2 data has 20 missing rows, you can recount before building a model on holes. The traffic class discovered at the week 2 checkpoint that nobody had recorded the green time; they had assumed it, and a single evening of timing fixed it. A plan without checkpoints would have found that gap on presentation day.",
+        "Budget the hours honestly. Counting cars for 10 cycles takes about 15 minutes per session, and five sessions morning and evening is about 2.5 hours across the week. Cleaning and entering the data takes another hour. Fitting and comparing models in a spreadsheet takes two hours the first time, and sensitivity tests one more. Writing takes longer than anyone expects; plan three hours and a day away from the draft before rereading it as a skeptic.",
+        "Keep a project log with one line per work session: date, what was done, what is next, what is worrying. The worrying column is the most valuable one, because it becomes the limits section of the report. Finally, decide in week 1 what done means: a claim, one graph, one table, a page of argument and a five-minute talk. A project with a finish line gets finished."
+       ],
+       "words": [
+        {
+         "w": "checkpoint",
+         "d": "a dated point in a project plan with a specific product to show, such as cleaned data with a log"
+        },
+        {
+         "w": "project log",
+         "d": "a running record with one line per work session: what was done, what is next, what is worrying"
+        },
+        {
+         "w": "scope",
+         "d": "what the project will and will not attempt, decided at the start so the work can finish"
+        },
+        {
+         "w": "deliverable",
+         "d": "a finished product the plan promises, such as the graph, the written argument or the talk"
+        }
+       ],
+       "look": {
+        "type": "data",
+        "title": "Planned hours for a four-week traffic capstone",
+        "rows": [
+         [
+          "Question, assumptions, data plan",
+          2
+         ],
+         [
+          "Counting at the corner",
+          2.5
+         ],
+         [
+          "Entering and cleaning data",
+          1
+         ],
+         [
+          "Fitting and comparing models",
+          2
+         ],
+         [
+          "Sensitivity tests",
+          1
+         ],
+         [
+          "Graph and written argument",
+          3
+         ],
+         [
+          "Practicing the talk",
+          1
+         ]
+        ],
+        "unit": "hours",
+        "cite": "Example plan from this chapter's traffic project",
+        "prompt": "Total the hours. If a partner can only give 6 hours, which tasks split well between two people and which should one person own?"
+       },
+       "check": [
+        {
+         "q": "What should be ready at the week 1 checkpoint of a four-week capstone?",
+         "choices": [
+          "The sensitivity table",
+          "The practiced talk",
+          "The finished graph",
+          "A measurable question, the assumptions and variables, and a data plan"
+         ],
+         "a": 3,
+         "why": "Week 1 sets up everything that follows; a bad question found in week 1 costs a day, found in week 4 costs the project."
+        },
+        {
+         "q": "Using the plan table, what is the total planned time?",
+         "choices": [
+          "12.5 hours",
+          "11.5 hours",
+          "13 hours",
+          "10.5 hours"
+         ],
+         "a": 0,
+         "why": "2 + 2.5 + 1 + 2 + 1 + 3 + 1 = 12.5 hours."
+        },
+        {
+         "q": "Why is the what is worrying column of a project log so useful?",
+         "choices": [
+          "It is required by the validator",
+          "It becomes the limits section of the report",
+          "It replaces the cleaning log",
+          "It shortens the presentation"
+         ],
+         "a": 1,
+         "why": "Worries recorded during the work are exactly the assumptions and gaps the report must state as limits."
+        }
+       ]
+      }
+     ]
+    }
+   ],
+   "review": [
+    {
+     "q": "Which of these is the best modeling question?",
+     "choices": [
+      "Why is traffic bad?",
+      "Is our town's traffic terrible?",
+      "How many cars arrive at the Main Street light per minute between 5:00 and 5:30 pm on weekdays, and does a 30-second green clear them?",
+      "Do people like the new light?"
+     ],
+     "a": 2,
+     "why": "It names measurable quantities, a place, a time, and a rule for yes or no."
+    },
+    {
+     "q": "Cars arrive at 15 per minute and the red lasts 60 seconds. Using Q = r × R ÷ 60, how many cars queue?",
+     "choices": [
+      "4",
+      "25",
+      "900",
+      "15"
+     ],
+     "a": 3,
+     "why": "Q = 15 × 60 ÷ 60 = 15 cars."
+    },
+    {
+     "q": "A count of 0 was typed because the counter's phone died. What is the correct treatment?",
+     "choices": [
+      "Mark it missing and note it in the cleaning log",
+      "Replace it with 20",
+      "Delete the whole day",
+      "Keep the 0 as data"
+     ],
+     "a": 0,
+     "why": "A blank is not a zero. Marking it missing keeps the model from believing no cars came."
+    },
+    {
+     "q": "Model A has a mean absolute error of 0.5 car and predicts 0 cars at R = 0. Model B has an error of 1.0 car and predicts −2 cars at R = 0. Which do you choose and why?",
+     "choices": [
+      "Model B, because it has more parameters",
+      "Model A, because its error is lower and it passes the boundary check",
+      "Model B, because negative values are fine",
+      "Neither, because the errors are not zero"
+     ],
+     "a": 1,
+     "why": "Lower error and a sensible value at the boundary both favor Model A. Perfect zero error is not expected."
+    },
+    {
+     "q": "With a 2-second startup and 2 seconds per car, how long does it take to clear 12 cars?",
+     "choices": [
+      "28 seconds",
+      "24 seconds",
+      "26 seconds",
+      "14 seconds"
+     ],
+     "a": 2,
+     "why": "C = 2 + 2 × 12 = 2 + 24 = 26 seconds. Forgetting the startup gives 24."
+    },
+    {
+     "q": "Changing the seconds per car from 2 to 2.4 moved the clearing time from 32 to 38 seconds. What does that tell you?",
+     "choices": [
+      "The green is long enough",
+      "The startup delay matters more",
+      "The model is insensitive to seconds per car",
+      "Seconds per car is an input worth measuring carefully, because the result is sensitive to it"
+     ],
+     "a": 3,
+     "why": "A 20% change in the input moved the result by 6 seconds, enough to matter, so it deserves careful measurement."
+    },
+    {
+     "q": "A bar chart with an axis starting at 38 shows waits of 40 and 44 seconds. What is wrong with it?",
+     "choices": [
+      "The truncated axis makes a 10% rise look like a tripling",
+      "Bar charts cannot show seconds",
+      "The bars should be the same height",
+      "Nothing; all bar charts start above zero"
+     ],
+     "a": 0,
+     "why": "Bars of height 2 and 6 above the axis look like a 3-to-1 ratio; the real change is 44 ÷ 40 = 1.10."
+    },
+    {
+     "q": "Which sentence belongs in the limits section of a report?",
+     "choices": [
+      "Cars arrived at 18 to 22 per minute on five evenings",
+      "Rainy evenings were excluded, and the cross street was not modeled",
+      "The green is too short on most evenings we measured",
+      "Q = 20 × 45 ÷ 60 = 15"
+     ],
+     "a": 1,
+     "why": "Limits state what was assumed, excluded or left unstudied. The others are the claim, the reasoning and the evidence."
+    }
+   ]
+  }
+ ]
+}

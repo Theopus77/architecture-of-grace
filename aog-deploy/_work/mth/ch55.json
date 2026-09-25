@@ -1,0 +1,992 @@
+{
+ "n": 55,
+ "title": "Exponentials and Logarithms",
+ "years": "Algebra",
+ "bigQuestion": "How can one small number on a scale, like a 7 for an earthquake, stand for a change a thousand times bigger?",
+ "story": {
+  "title": "The Earthquake Scale: Why a 7 Is Thirty Times a 6",
+  "kicker": "One April morning a quake in southern Illinois rattled dishes in Chicago, and the number on the news hid an exponent.",
+  "paragraphs": [
+   "Early one April morning in 2008, beds shook in Chicago apartments. The quake was centered near Mount Carmel in southern Illinois, more than 200 miles away, and the news gave it one number: magnitude 5.2. People compared it to the quakes they had heard of, a 6.9 in California, a 9.1 in the Indian Ocean. On a normal number line those numbers sit close together. In real energy they are worlds apart, and the reason is the way the scale is built.",
+   "In 1935 the seismologist Charles Richter wanted a way to compare earthquakes using the wiggle of a needle on a seismograph. Small quakes made wiggles a millimeter wide; big ones made wiggles a meter wide. Numbers that range from 1 to 1,000,000 are hard to print in a newspaper. So Richter recorded the exponent instead of the number. A step of 1 in magnitude means the needle swings 10 times farther. A 6 shakes the needle 10 times more than a 5, and a 7 shakes it 10 × 10 = 100 times more than a 5.",
+   "Energy grows even faster than the wiggle. Seismologists found that each whole step multiplies the energy released by about 10^1.5, which is about 31.6. That is where the saying comes from: a 7 releases about thirty times the energy of a 6, and about 1,000 times the energy of a 5. The Mount Carmel quake at 5.2 was felt across several states; a 7.2 in the same spot would release about 1,000 times as much energy and would be a disaster.",
+   "The trick that makes this work is a scale that counts exponents. Ask 'ten to what power gives this shaking?' and write down the answer. That question has a name: a logarithm. Sound levels in decibels, the acidity of a lemon on the pH scale, the brightness of stars, and the growth of money in a bank all use the same trick in one direction or the other. This chapter builds the exponential functions that grow by multiplying, then the logarithms that undo them."
+  ],
+  "think": "A magnitude 4 quake is barely felt. About how many times more energy does a magnitude 6 release? A magnitude 8? Explain why the second answer is so much bigger than the first."
+ },
+ "sections": [
+  {
+   "title": "Growth by Multiplying",
+   "lessons": [
+    {
+     "title": "Growth by a Constant Factor",
+     "mainIdea": "An exponential function multiplies by the same factor each step, so y = a × b^x with starting value a and growth factor b.",
+     "reading": [
+      "A video posted Monday has 200 views. Each day the count triples. Tuesday: 200 × 3 = 600. Wednesday: 600 × 3 = 1,800. Thursday: 1,800 × 3 = 5,400. After x days the count is 200 × 3^x, because you have multiplied by 3 a total of x times. After 4 days that is 200 × 81 = 16,200. This is an *exponential function*: a starting value times a fixed *growth factor* raised to the number of steps. A linear function adds the same amount each step; an exponential one multiplies by the same amount. That difference is why the count jumps from hundreds to tens of thousands in less than a week.",
+      "Most growth in the world is described in percent, so you need to turn a percent into a factor. A town of 12,000 grows 3% each year. Growing by 3% means keeping 100% and adding 3%, so the factor is 1.03. After 10 years the population is 12,000 × 1.03^10. On a calculator 1.03^10 ≈ 1.344, so the town has about 12,000 × 1.344 ≈ 16,127 people. Shrinking works the same way with a factor less than 1. A car worth $20,000 loses 20% of its value each year: it keeps 80%, so the *decay factor* is 0.80, and after 3 years it is worth 20,000 × 0.8^3 = 20,000 × 0.512 = $10,240.",
+      "The common mistake is to add the percents instead of multiplying the factors. Growing 3% a year for 10 years is not 30% total. Ten steps of × 1.03 give × 1.344, which is 34.4% more, because each year's 3% is taken on a bigger amount. Another mistake is to write the factor as 0.03 or as 3. The rule: factor = 1 + *rate* for growth and 1 − rate for decay, with the rate written as a decimal. Check any exponential model by computing one or two steps by hand before you trust the formula."
+     ],
+     "words": [
+      {
+       "w": "exponential function",
+       "d": "a function of the form y = a × b^x that multiplies by the same factor b at every step"
+      },
+      {
+       "w": "growth factor",
+       "d": "the number you multiply by each step; for 3% growth it is 1.03"
+      },
+      {
+       "w": "decay factor",
+       "d": "a growth factor less than 1; for a 20% loss each year it is 0.80"
+      },
+      {
+       "w": "rate",
+       "d": "the percent change per step, written as a decimal, like 0.03 for 3%"
+      }
+     ],
+     "look": {
+      "type": "think",
+      "title": "Two Savings Plans",
+      "text": "Plan A starts at $1,000 and adds $200 every month. Plan B starts at $10 and doubles every month. Month 1: $1,200 vs $20. Month 5: $2,000 vs $320. Month 7: $2,400 vs $1,280. Month 8: $2,600 vs $2,560. Plan A is 1,000 + 200x; Plan B is 10 × 2^x.",
+      "prompt": "In which month does Plan B first pass Plan A? Compute both plans for month 9 and month 10 to check."
+     },
+     "check": [
+      {
+       "q": "A colony of 500 cells doubles every hour. How many cells are there after 6 hours?",
+       "choices": [
+        "32,000",
+        "3,000",
+        "6,000",
+        "64,000"
+       ],
+       "a": 0,
+       "why": "500 × 2^6 = 500 × 64 = 32,000. Doubling 6 times multiplies by 64, not by 6 or 12."
+      },
+      {
+       "q": "A population grows 4% per year. Which factor goes into the exponential model?",
+       "choices": [
+        "0.04",
+        "1.04",
+        "4",
+        "0.96"
+       ],
+       "a": 1,
+       "why": "Growing 4% keeps 100% and adds 4%, so the factor is 1 + 0.04 = 1.04. A factor of 0.96 would be a 4% loss."
+      },
+      {
+       "q": "A $3,000 laptop loses 25% of its value each year. What is it worth after 2 years?",
+       "choices": [
+        "$1,500.00",
+        "$2,250.00",
+        "$1,687.50",
+        "$187.50"
+       ],
+       "a": 2,
+       "why": "Keep 75% each year: 3,000 × 0.75^2 = 3,000 × 0.5625 = $1,687.50. Subtracting 25% twice from the original would wrongly give $1,500."
+      }
+     ]
+    },
+    {
+     "title": "Compound Interest and the Number e",
+     "mainIdea": "Compounding more often raises the return only a little, and the limit of that process is the number e ≈ 2.71828, the base of continuous growth.",
+     "reading": [
+      "You deposit $1,000 at 6% interest. If the bank pays once a year, after 5 years you have 1,000 × 1.06^5 ≈ $1,338.23. Many banks pay *compound interest* monthly instead: each month they pay 6% ÷ 12 = 0.5%, so the factor is 1.005 and there are 5 × 12 = 60 payments. Now you have 1,000 × 1.005^60 ≈ $1,348.85. The formula is A = P(1 + r/n)^(nt), where P is the *principal*, the starting amount, r is the yearly rate as a decimal, n is the number of payments per year and t is the years. Monthly compounding earned about $10.62 more than yearly. Daily compounding (n = 365) gives about $1,349.83. The gains keep shrinking.",
+      "Push n higher and higher and the amount creeps toward a ceiling. Take the simplest case: $1 at 100% interest for 1 year, so A = (1 + 1/n)^n. With n = 1 you get 2. With n = 2, (1.5)^2 = 2.25. With n = 12, about 2.613. With n = 365, about 2.7146. With n = 10,000, about 2.7181. The values never pass 2.71828…, *the number e*. Like π, e never ends and never repeats. Growth that compounds at every instant is *continuous growth*, and its formula is A = P × e^(rt). For the $1,000 at 6% for 5 years, A = 1,000 × e^0.3 ≈ 1,000 × 1.3499 = $1,349.86, only 3 cents more than daily compounding.",
+      "The number e shows up wherever change happens smoothly and constantly: bacteria, cooling coffee, radioactive atoms and money. The e^x key on a calculator computes it. A common error is to type the rate as a percent, e^(6 × 5) instead of e^(0.06 × 5); the first gives a nonsense answer in the trillions. Another is to mix up n and t: with monthly compounding for 5 years the exponent is 60, not 5. Write the formula, label each letter with its value, then compute."
+     ],
+     "words": [
+      {
+       "w": "compound interest",
+       "d": "interest paid on the principal and on the interest already earned"
+      },
+      {
+       "w": "principal",
+       "d": "the starting amount of money deposited or borrowed"
+      },
+      {
+       "w": "the number e",
+       "d": "2.71828…, the limit of (1 + 1/n)^n as n grows; the base of continuous growth"
+      },
+      {
+       "w": "continuous growth",
+       "d": "growth compounded at every instant, modeled by A = P × e^(rt)"
+      }
+     ],
+     "look": {
+      "type": "data",
+      "title": "One Dollar at 100% Interest, Compounded n Times a Year",
+      "rows": [
+       [
+        "once a year (n = 1)",
+        2
+       ],
+       [
+        "twice a year (n = 2)",
+        2.25
+       ],
+       [
+        "quarterly (n = 4)",
+        2.4414
+       ],
+       [
+        "monthly (n = 12)",
+        2.613
+       ],
+       [
+        "daily (n = 365)",
+        2.7146
+       ],
+       [
+        "n = 10,000",
+        2.7181
+       ]
+      ],
+      "unit": "dollars after one year",
+      "cite": "values of (1 + 1/n)^n, rounded to four decimal places",
+      "prompt": "How much does going from daily to 10,000 times a year add? What does that tell you about where the values are heading?"
+     },
+     "check": [
+      {
+       "q": "$2,000 is deposited at 5% compounded once a year. How much is there after 3 years?",
+       "choices": [
+        "$2,300.00",
+        "$2,100.00",
+        "$2,205.00",
+        "$2,315.25"
+       ],
+       "a": 3,
+       "why": "2,000 × 1.05^3 = 2,000 × 1.157625 = $2,315.25. Simple interest of $100 a year would give only $2,300."
+      },
+      {
+       "q": "$500 grows continuously at 4% per year for 10 years. Which expression gives the amount?",
+       "choices": [
+        "500 × e^(0.4)",
+        "500 × e^(40)",
+        "500 × 1.04^10",
+        "500 × e × 0.4"
+       ],
+       "a": 0,
+       "why": "Continuous growth is P × e^(rt) with r = 0.04 and t = 10, so the exponent is 0.4 and the amount is about 500 × 1.4918 = $745.91."
+      },
+      {
+       "q": "Which statement about the number e is true?",
+       "choices": [
+        "e = 2.5 exactly",
+        "e ≈ 2.718 is the value that (1 + 1/n)^n approaches as n grows",
+        "e is the highest interest rate a bank can pay",
+        "e ≈ 3.14 and measures circles"
+       ],
+       "a": 1,
+       "why": "As n grows, (1 + 1/n)^n climbs toward 2.71828…; that limit is e. The circle number is π."
+      }
+     ]
+    },
+    {
+     "title": "Decay and Half-Life",
+     "mainIdea": "A half-life is the time for an amount to drop to half, and A = A0 × (1/2)^(t/h) counts how many halvings have happened.",
+     "reading": [
+      "A patient takes 200 mg of a medicine whose *half-life* in the body is 6 hours. That means every 6 hours, half of what is left is gone. After 6 hours: 100 mg. After 12 hours: 50 mg. After 18 hours: 25 mg. After 24 hours: 12.5 mg. The pattern is 200 × (1/2)^k, where k is the number of half-lives. To get k from clock time, divide the time by the half-life: 24 ÷ 6 = 4 half-lives, and 200 × (1/2)^4 = 200 ÷ 16 = 12.5 mg. In general A = A0 × (1/2)^(t/h), where A0 is the starting amount, t the time and h the half-life. The exponent can be a fraction: after 9 hours, t/h = 1.5, and 200 × (1/2)^1.5 ≈ 200 × 0.354 = 70.7 mg.",
+      "The same rule dates old bones and wood. Carbon-14 is a radioactive form of carbon with a half-life of about 5,730 years. A living plant keeps a steady amount; when it dies, the carbon-14 starts to *decay* with nothing to replace it. A piece of charcoal from an ancient fire holds 1/4 of the carbon-14 a living plant would have. One quarter is (1/2)^2, so two half-lives have passed: 2 × 5,730 = 11,460 years. If it held 1/8, three half-lives have passed, about 17,190 years. This is *radiocarbon dating*, and it works because the decay factor never changes: half is gone every 5,730 years no matter how much you start with.",
+      "Percent decay and half-life describe the same kind of curve. If a quantity loses 12% each year, the factor is 0.88 and the model is A = A0 × 0.88^t. Both forms are *exponential decay*, with a base below 1. The classic mistake is to think a half-life of 6 hours means everything is gone in 12 hours. Halving twice leaves a quarter, never zero; the curve gets close to zero but never reaches it. Another mistake is to divide the amount by the number of hours. Always count half-lives first, then multiply by 1/2 that many times."
+     ],
+     "words": [
+      {
+       "w": "half-life",
+       "d": "the time it takes for half of a decaying amount to disappear"
+      },
+      {
+       "w": "decay",
+       "d": "to shrink by the same factor every step, like a radioactive substance"
+      },
+      {
+       "w": "radiocarbon dating",
+       "d": "finding the age of old plant or animal material from how much carbon-14 is left"
+      },
+      {
+       "w": "exponential decay",
+       "d": "a model A = A0 × b^t with a factor b between 0 and 1"
+      }
+     ],
+     "look": {
+      "type": "think",
+      "title": "Iodine-131 in the Clinic",
+      "text": "Iodine-131, used in some medical scans, has a half-life of about 8 days. A sample holds 80 mg. After 8 days: 40 mg. After 16 days: 20 mg. After 24 days: 10 mg. After 32 days: 5 mg. Each row is the last row divided by 2.",
+      "prompt": "How many days until less than 1 mg remains? Keep halving and count the half-lives, then multiply by 8."
+     },
+     "check": [
+      {
+       "q": "A 400 mg dose has a half-life of 5 hours. How much remains after 15 hours?",
+       "choices": [
+        "200 mg",
+        "100 mg",
+        "50 mg",
+        "0 mg"
+       ],
+       "a": 2,
+       "why": "15 ÷ 5 = 3 half-lives, so 400 × (1/2)^3 = 400 ÷ 8 = 50 mg. Halving never reaches 0."
+      },
+      {
+       "q": "A bone holds 1/8 of its original carbon-14. Carbon-14's half-life is 5,730 years. About how old is it?",
+       "choices": [
+        "about 5,730 years",
+        "about 11,460 years",
+        "about 45,840 years",
+        "about 17,190 years"
+       ],
+       "a": 3,
+       "why": "1/8 = (1/2)^3, so three half-lives have passed: 3 × 5,730 = 17,190 years."
+      },
+      {
+       "q": "A quantity loses 30% of its value each year. Which model fits?",
+       "choices": [
+        "A = A0 × 0.7^t",
+        "A = A0 × 0.3^t",
+        "A = A0 × 1.3^t",
+        "A = A0 − 0.3t"
+       ],
+       "a": 0,
+       "why": "Losing 30% keeps 70%, so the factor is 0.7 and the model is A0 × 0.7^t. Using 0.3 would lose 70% each year."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "title": "Logarithms Undo Exponents",
+   "lessons": [
+    {
+     "title": "What a Logarithm Asks",
+     "mainIdea": "A logarithm is an exponent: log_b(y) = x means b^x = y, so log_2(32) asks what power of 2 gives 32.",
+     "reading": [
+      "Suppose a colony doubles every hour and you want to know when 1 cell becomes 32. You are asking: 2 to what power is 32? Since 2^5 = 32, the answer is 5. A *logarithm* is exactly this question written as a function. We write log_2(32) = 5, read 'log base 2 of 32 equals 5.' The general rule: log_b(y) = x means the same thing as b^x = y. The *base* b is the growth factor, y is the amount, and the log gives back the *exponent*. So log_10(1,000) = 3 because 10^3 = 1,000, and log_5(25) = 2 because 5^2 = 25.",
+      "Some values follow straight from the definition. log_b(1) = 0 for any base, because b^0 = 1. log_b(b) = 1, because b^1 = b. Negative answers are fine: log_5(1/25) = −2 because 5^(−2) = 1/25. Fractions are fine too: log_4(8) = 1.5 because 4^1.5 = (√4)^3 = 2^3 = 8. What is not fine is a zero or negative input: log_2(0) and log_2(−8) do not exist, because no power of 2 is zero or negative. The *domain* of a logarithm is the positive numbers only.",
+      "Two mistakes come up again and again. The first is dividing instead of asking for an exponent: log_2(8) is not 8 ÷ 2 = 4; it is 3, because 2^3 = 8. The second is switching the base and the input: log_8(2) is 1/3, not 3, since 8^(1/3) = 2. When in doubt, rewrite the log as an exponential sentence and check it. log_3(81) = ? becomes 3^? = 81; since 3 × 3 × 3 × 3 = 81, the answer is 4. That rewriting step is the whole method."
+     ],
+     "words": [
+      {
+       "w": "logarithm",
+       "d": "the exponent you need: log_b(y) is the power of b that equals y"
+      },
+      {
+       "w": "base",
+       "d": "the number being raised to a power; in log_2(32) the base is 2"
+      },
+      {
+       "w": "exponent",
+       "d": "the power a base is raised to; 2^5 has exponent 5"
+      },
+      {
+       "w": "domain",
+       "d": "the inputs a function accepts; for a logarithm, positive numbers only"
+      }
+     ],
+     "look": {
+      "type": "data",
+      "title": "Powers of 2 and Their Logs",
+      "rows": [
+       [
+        "log_2(1)",
+        0
+       ],
+       [
+        "log_2(2)",
+        1
+       ],
+       [
+        "log_2(4)",
+        2
+       ],
+       [
+        "log_2(8)",
+        3
+       ],
+       [
+        "log_2(16)",
+        4
+       ],
+       [
+        "log_2(64)",
+        6
+       ],
+       [
+        "log_2(1024)",
+        10
+       ]
+      ],
+      "unit": "exponent",
+      "cite": "each value from the definition 2^x = y",
+      "prompt": "log_2(1024) = 10 is why a kilobyte is about a thousand bytes. What is log_2(1/8), and why is it negative?"
+     },
+     "check": [
+      {
+       "q": "log_3(81) = ?",
+       "choices": [
+        "27",
+        "4",
+        "3",
+        "9"
+       ],
+       "a": 1,
+       "why": "3^4 = 3 × 3 × 3 × 3 = 81, so the exponent is 4. Dividing 81 by 3 gives 27, which is the wrong operation."
+      },
+      {
+       "q": "Which equation says the same thing as log_7(49) = 2?",
+       "choices": [
+        "2^7 = 49",
+        "49^2 = 7",
+        "7^2 = 49",
+        "7 × 2 = 49"
+       ],
+       "a": 2,
+       "why": "log_b(y) = x means b^x = y. The base 7 raised to the exponent 2 gives 49."
+      },
+      {
+       "q": "log_2(1/16) = ?",
+       "choices": [
+        "4",
+        "1/4",
+        "−8",
+        "−4"
+       ],
+       "a": 3,
+       "why": "2^(−4) = 1/2^4 = 1/16, so the exponent is −4. A fraction between 0 and 1 always has a negative log."
+      }
+     ]
+    },
+    {
+     "title": "Common Logs, Natural Logs and Calculators",
+     "mainIdea": "Calculators give base-10 logs (log) and base-e logs (ln); any other base comes from the change-of-base rule log_b(y) = ln(y) ÷ ln(b).",
+     "reading": [
+      "Two bases matter so much that they get their own keys. The *common logarithm* uses base 10 and is written log(y) with no base shown. It counts powers of ten: log(1,000) = 3, log(1,000,000) = 6, log(0.01) = −2, and log(500) ≈ 2.699 because 500 sits between 10^2 and 10^3, closer to the top. The *natural logarithm* uses base e and is written ln(y). It undoes e^x: ln(e^2) = 2, ln(e) = 1, ln(1) = 0. Since e ≈ 2.718, ln(10) ≈ 2.303 and ln(2) ≈ 0.693. A calculator's LOG key is base 10; the LN key is base e.",
+      "What if the base is 3? Few calculators have a log_3 key, so use the *change-of-base rule*: log_b(y) = log(y) ÷ log(b), and the same with ln. Example: log_3(20) = ln(20) ÷ ln(3) ≈ 2.9957 ÷ 1.0986 ≈ 2.727. Check it: 3^2 = 9 and 3^3 = 27, so an exponent of 2.727 lands sensibly between 2 and 3, near the top. Another: log_2(10) = ln(10) ÷ ln(2) ≈ 2.3026 ÷ 0.6931 ≈ 3.322, meaning it takes about 3.3 doublings to multiply by 10. That number explains why 10 doublings is about 1,000 (2^10 = 1,024).",
+      "The mistake to avoid is dividing the numbers before taking the log: log_3(20) is not log(20 ÷ 3). The rule says log of the input divided by log of the base, two separate logs. A second mistake is expecting a log to grow fast. Logs grow slowly: log(10) = 1, log(100) = 2, log(1,000) = 3. Multiplying the input by 10 adds only 1 to the output. That slow growth is exactly why scientists use logs to tame huge ranges, from earthquake energy to sound intensity."
+     ],
+     "words": [
+      {
+       "w": "common logarithm",
+       "d": "the base-10 logarithm, written log(y); log(1,000) = 3"
+      },
+      {
+       "w": "natural logarithm",
+       "d": "the base-e logarithm, written ln(y); ln(e) = 1"
+      },
+      {
+       "w": "change-of-base rule",
+       "d": "log_b(y) = log(y) ÷ log(b), which lets a calculator find a log in any base"
+      }
+     ],
+     "look": {
+      "type": "think",
+      "title": "Estimate Before You Compute",
+      "text": "log(4,000) lies between log(1,000) = 3 and log(10,000) = 4. Since 4,000 is less than halfway up that range on a multiplying scale, expect about 3.6; the calculator gives 3.602. ln(50) lies between ln(e^3) = 3 and ln(e^4) = 4, since e^3 ≈ 20.1 and e^4 ≈ 54.6; the calculator gives 3.912.",
+      "prompt": "Estimate log(250) and ln(8) the same way, then check each with a calculator."
+     },
+     "check": [
+      {
+       "q": "log(0.001) = ?",
+       "choices": [
+        "−3",
+        "3",
+        "−2",
+        "1/3"
+       ],
+       "a": 0,
+       "why": "0.001 = 10^(−3), so the common log is −3. Inputs below 1 give negative logs."
+      },
+      {
+       "q": "log_5(40) is closest to which value?",
+       "choices": [
+        "8",
+        "2.29",
+        "0.90",
+        "3.69"
+       ],
+       "a": 1,
+       "why": "log_5(40) = ln(40) ÷ ln(5) ≈ 3.689 ÷ 1.609 ≈ 2.29. Check: 5^2 = 25 and 5^3 = 125, so 40 needs an exponent between 2 and 3."
+      },
+      {
+       "q": "Which statement is true?",
+       "choices": [
+        "log(100) = 10",
+        "ln(1) = 1",
+        "ln(e^5) = 5",
+        "log(50) = 5"
+       ],
+       "a": 2,
+       "why": "ln undoes e^x, so ln(e^5) = 5. log(100) = 2, ln(1) = 0, and log(50) ≈ 1.7."
+      }
+     ]
+    },
+    {
+     "title": "The Three Rules for Logs",
+     "mainIdea": "Because logs are exponents, log(ab) = log a + log b, log(a ÷ b) = log a − log b, and log(a^n) = n × log a.",
+     "reading": [
+      "Exponents add when you multiply powers: 2^3 × 2^4 = 2^7. Since logs are exponents, logs add when inputs multiply: log_2(8 × 16) = log_2(8) + log_2(16) = 3 + 4 = 7, and indeed 8 × 16 = 128 = 2^7. This is the *product rule*. The *quotient rule* follows the same way: log_3(81 ÷ 9) = log_3(81) − log_3(9) = 4 − 2 = 2, and 81 ÷ 9 = 9 = 3^2. The *power rule* handles exponents inside the log: log(5^3) = 3 × log(5). With log(5) ≈ 0.699, that gives about 2.097, and 5^3 = 125 is indeed a little past 100 = 10^2.",
+      "These rules let you build many logs from a few. Take log(2) ≈ 0.301 and log(3) ≈ 0.477. Then log(6) = log(2 × 3) ≈ 0.778. log(12) = log(4 × 3) = 2 log(2) + log(3) ≈ 0.602 + 0.477 = 1.079. log(1.5) = log(3 ÷ 2) ≈ 0.477 − 0.301 = 0.176. log(8) = 3 log(2) ≈ 0.903. Before calculators, people did all their multiplying this way: look up two logs, add them, look up the answer. The power rule is the key to solving equations later, because it pulls an unknown exponent down where you can divide it out: log(2^x) = x × log(2).",
+      "The rule students invent that does not exist: log(a + b) = log(a) + log(b). Test it: log(10 + 100) = log(110) ≈ 2.04, but log(10) + log(100) = 1 + 2 = 3. Not equal. Logs turn multiplication into addition, and there is no rule for the log of a sum. Also, log(a) × log(b) is not log(ab), and log(a) ÷ log(b) is not log(a ÷ b); that second one is the change-of-base formula for log_b(a), a different thing. Keep the three true rules on a card and refuse the rest."
+     ],
+     "words": [
+      {
+       "w": "product rule",
+       "d": "log(ab) = log a + log b: the log of a product is the sum of the logs"
+      },
+      {
+       "w": "quotient rule",
+       "d": "log(a ÷ b) = log a − log b: the log of a quotient is the difference of the logs"
+      },
+      {
+       "w": "power rule",
+       "d": "log(a^n) = n × log a: an exponent inside a log comes out front as a multiplier"
+      }
+     ],
+     "look": {
+      "type": "think",
+      "title": "Shrink It First",
+      "text": "Write log_2(32 × 64) as a sum: 5 + 6 = 11. Write log_5(125 ÷ 25) as a difference: 3 − 2 = 1. Write log_3(9^4) with the power rule: 4 × 2 = 8. Each answer says how many times the base was multiplied.",
+      "prompt": "Use log(2) ≈ 0.301 and log(3) ≈ 0.477 to find log(18) and log(2/3) without a calculator."
+     },
+     "check": [
+      {
+       "q": "log_2(8 × 4) = ?",
+       "choices": [
+        "6",
+        "32",
+        "1",
+        "5"
+       ],
+       "a": 3,
+       "why": "log_2(8) + log_2(4) = 3 + 2 = 5, and 8 × 4 = 32 = 2^5. Multiplying the logs (3 × 2 = 6) is the wrong rule."
+      },
+      {
+       "q": "Using log(2) ≈ 0.301, log(32) ≈ ?",
+       "choices": [
+        "1.505",
+        "9.632",
+        "0.602",
+        "1.204"
+       ],
+       "a": 0,
+       "why": "32 = 2^5, so log(32) = 5 × log(2) ≈ 5 × 0.301 = 1.505. Check: 10^1.505 ≈ 32."
+      },
+      {
+       "q": "Which expression equals log(x^2 y)?",
+       "choices": [
+        "2(log x + log y)",
+        "2 log x + log y",
+        "log x + 2 log y",
+        "log 2x + log y"
+       ],
+       "a": 1,
+       "why": "Product rule: log(x^2) + log(y). Power rule: log(x^2) = 2 log x. So 2 log x + log y."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "title": "Solving With Logs",
+   "lessons": [
+    {
+     "title": "Solving Exponential Equations",
+     "mainIdea": "To find an unknown exponent, match bases if you can; otherwise take the log of both sides and use the power rule to bring the exponent down.",
+     "reading": [
+      "A colony of 5 cells doubles every hour. When will it reach 640 cells? Write 5 × 2^x = 640. Divide both sides by 5: 2^x = 128. Now ask the log question: 2 to what power is 128? Since 2^7 = 128, x = 7 hours. When the answer is a whole power of the base, you can *match bases* and read the exponent off. Another example: 9^x = 27. Write both as powers of 3: (3^2)^x = 3^3, so 3^(2x) = 3^3, so 2x = 3 and x = 1.5. Check: 9^1.5 = (√9)^3 = 3^3 = 27.",
+      "Usually the answer is not a whole power. Solve 3^x = 50. No integer works, since 3^3 = 27 and 3^4 = 81. Take the natural log of both sides: ln(3^x) = ln(50). The power rule moves the x out front: x × ln(3) = ln(50). Divide: x = ln(50) ÷ ln(3) ≈ 3.912 ÷ 1.099 ≈ 3.561. Check: 3^3.561 ≈ 50, and 3.561 sits between 3 and 4 as expected. You can use log instead of ln; the ratio comes out the same. This is the standard method for any *exponential equation*: *isolate* the power, take a log of both sides, use the power rule, divide.",
+      "Money questions work the same way. $1,000 at 5% per year: when does it double? 1,000 × 1.05^t = 2,000, so 1.05^t = 2. Take ln: t × ln(1.05) = ln(2), so t = 0.6931 ÷ 0.04879 ≈ 14.2 years. The error to watch for is taking the log before isolating the power: ln(5 × 2^x) is not 5 × ln(2^x). Divide the 5 away first. A second error is dividing the exponent by the base, writing x = 50 ÷ 3. The exponent comes out only through a log."
+     ],
+     "words": [
+      {
+       "w": "exponential equation",
+       "d": "an equation with the unknown in an exponent, like 3^x = 50"
+      },
+      {
+       "w": "match bases",
+       "d": "rewrite both sides as powers of the same base so the exponents can be set equal"
+      },
+      {
+       "w": "isolate",
+       "d": "get the power by itself on one side before taking a log"
+      }
+     ],
+     "look": {
+      "type": "think",
+      "title": "When Does the Debt Triple?",
+      "text": "A debt grows 8% per year with no payments. When has it tripled? 1.08^t = 3. Take ln: t × ln(1.08) = ln(3). ln(1.08) ≈ 0.07696 and ln(3) ≈ 1.0986, so t ≈ 14.3 years. Check: 1.08^14 ≈ 2.94 and 1.08^15 ≈ 3.17, so 14.3 sits right between them.",
+      "prompt": "How long for the same debt to grow by 50%? Set 1.08^t = 1.5 and solve, then check your answer with a power."
+     },
+     "check": [
+      {
+       "q": "Solve 4 × 3^x = 324.",
+       "choices": [
+        "x = 3",
+        "x = 5",
+        "x = 4",
+        "x = 81"
+       ],
+       "a": 2,
+       "why": "Divide by 4: 3^x = 81. Since 3^4 = 81, x = 4."
+      },
+      {
+       "q": "Solve 2^x = 20 to the nearest hundredth.",
+       "choices": [
+        "10",
+        "3.00",
+        "1.30",
+        "4.32"
+       ],
+       "a": 3,
+       "why": "x = ln(20) ÷ ln(2) ≈ 2.996 ÷ 0.693 ≈ 4.32. Check: 2^4 = 16 and 2^5 = 32, so 20 needs an exponent between 4 and 5."
+      },
+      {
+       "q": "What is the first step in solving 7 × 5^x = 875?",
+       "choices": [
+        "Divide both sides by 7 to get 5^x = 125",
+        "Take the log of 7 × 5^x and multiply by 7",
+        "Divide 875 by 5",
+        "Subtract 7 from both sides"
+       ],
+       "a": 0,
+       "why": "Isolate the power first: 875 ÷ 7 = 125. Then 125 = 5^3, so x = 3."
+      }
+     ]
+    },
+    {
+     "title": "Solving Logarithmic Equations",
+     "mainIdea": "Rewrite a log equation as an exponential one, solve, and then reject any solution that makes a log's input zero or negative.",
+     "reading": [
+      "Solve log_2(x + 3) = 5. The equation says: 2 to the 5th power is x + 3. So x + 3 = 32 and x = 29. Check by putting 29 back: log_2(32) = 5. True. The method is the definition run backward: whenever a single log equals a number, rewrite it as base^(number) = *input*. Another: log_3(2x − 1) = 2 becomes 2x − 1 = 9, so x = 5. And ln(x) = 2 becomes x = e^2 ≈ 7.389. If the equation has ln on one side, the base is e.",
+      "When two logs are added, combine them first with the product rule. Solve log(x) + log(x − 3) = 1. Combine: log(x(x − 3)) = 1. Rewrite: x(x − 3) = 10^1 = 10. Expand: x^2 − 3x − 10 = 0, which factors as (x − 5)(x + 2) = 0, so x = 5 or x = −2. Now the essential step: check each in the original. x = 5 gives log(5) + log(2) = log(10) = 1. Good. x = −2 gives log(−2), which does not exist. So x = −2 is an *extraneous solution*, a number the algebra produced that the original equation cannot accept. The only solution is x = 5.",
+      "Extraneous solutions appear because combining logs can create an equation that is true more often than the original. A log's input must be positive, so any candidate that makes an input zero or negative is thrown out. Do not skip the check because the algebra looked fine. Another error is rewriting log(x) + log(x − 3) = 1 as x + (x − 3) = 10; the sum of logs is the log of a product, not the log of a sum. And when both sides are single logs with the same base, as in log_4(3x) = log_4(x + 8), you may set the inputs equal: 3x = x + 8, so x = 4. Check: log_4(12) on both sides."
+     ],
+     "words": [
+      {
+       "w": "logarithmic equation",
+       "d": "an equation with the unknown inside a log, like log_2(x + 3) = 5"
+      },
+      {
+       "w": "extraneous solution",
+       "d": "a number the algebra produces that fails in the original equation and must be thrown out"
+      },
+      {
+       "w": "input",
+       "d": "the number inside the log; it must be positive"
+      }
+     ],
+     "look": {
+      "type": "think",
+      "title": "Two Candidates, One Winner",
+      "text": "Solve log_2(x) + log_2(x − 2) = 3. Combine: log_2(x(x − 2)) = 3, so x(x − 2) = 8, so x^2 − 2x − 8 = 0, so (x − 4)(x + 2) = 0. Candidates: 4 and −2. Test 4: log_2(4) + log_2(2) = 2 + 1 = 3. Test −2: log_2(−2) does not exist. Solution: x = 4.",
+      "prompt": "Solve log_3(x) + log_3(x + 6) = 3 and say which candidate you reject and why."
+     },
+     "check": [
+      {
+       "q": "Solve log_5(x − 1) = 2.",
+       "choices": [
+        "x = 11",
+        "x = 26",
+        "x = 24",
+        "x = 9"
+       ],
+       "a": 1,
+       "why": "Rewrite: 5^2 = x − 1, so 25 = x − 1 and x = 26. Check: log_5(25) = 2."
+      },
+      {
+       "q": "Solve ln(x) = 3, rounded to the nearest hundredth.",
+       "choices": [
+        "8.15",
+        "1000",
+        "20.09",
+        "1.10"
+       ],
+       "a": 2,
+       "why": "ln has base e, so x = e^3 ≈ 20.09. Using base 10 would wrongly give 1000."
+      },
+      {
+       "q": "Solve log(x) + log(x + 3) = 1. What is the solution?",
+       "choices": [
+        "x = −5",
+        "x = 2 and x = −5",
+        "x = 3.5",
+        "x = 2"
+       ],
+       "a": 3,
+       "why": "x(x + 3) = 10 gives x^2 + 3x − 10 = 0, so (x + 5)(x − 2) = 0. Reject −5 because log(−5) does not exist; x = 2 works: log(2) + log(5) = 1."
+      }
+     ]
+    },
+    {
+     "title": "Doubling Time From a Rate",
+     "mainIdea": "Set the growth factor's power equal to 2 (or 1/2) and solve with logs; for continuous growth the doubling time is ln(2) ÷ r, roughly 70 divided by the percent rate.",
+     "reading": [
+      "A city grows 2% a year. How long to double? Set 1.02^t = 2 and take ln: t = ln(2) ÷ ln(1.02) ≈ 0.6931 ÷ 0.0198 ≈ 35 years. For continuous growth at rate r, the model is e^(rt) = 2, so rt = ln(2) and t = ln(2) ÷ r. With r = 0.02, t = 0.6931 ÷ 0.02 ≈ 34.7 years. The two answers are close because 2% is small. Since ln(2) ≈ 0.693, dividing 69.3 by the percent rate gives the *doubling time*; people round to 70 and call it the *rule of 70*. At 7% a year, 70 ÷ 7 = 10 years to double. At 1%, about 70 years.",
+      "Half-life from a *decay rate* uses the same steps with 1/2. A medicine leaves the blood at 5% per hour: 0.95^t = 0.5. Take ln: t × ln(0.95) = ln(0.5), so t = (−0.6931) ÷ (−0.0513) ≈ 13.5 hours. Both logs are negative, and the negatives cancel; a positive time is the sign that you did it right. Rule-of-70 style: 70 ÷ 5 = 14 hours, a fine mental estimate. The reverse question also comes up: a population doubles every 12 years, so what is its yearly rate? Solve b^12 = 2: b = 2^(1/12) ≈ 1.0595, about 5.95% per year, nearly 6%.",
+      "The rule of 70 fails when the rate is large. At 50% a year, 70 ÷ 50 = 1.4 years, but the exact answer is ln(2) ÷ ln(1.5) ≈ 0.6931 ÷ 0.4055 ≈ 1.71 years. Use the rule for quick estimates and the log for real answers. One more trap: the doubling time does not depend on the starting amount. A town of 5,000 and a city of 5 million growing at 2% both double in about 35 years. Exponential growth is about the factor, never the size."
+     ],
+     "words": [
+      {
+       "w": "doubling time",
+       "d": "the time it takes an exponentially growing amount to double"
+      },
+      {
+       "w": "rule of 70",
+       "d": "a quick estimate: doubling time ≈ 70 ÷ (percent growth rate per period)"
+      },
+      {
+       "w": "decay rate",
+       "d": "the percent lost each period, like 5% per hour"
+      }
+     ],
+     "look": {
+      "type": "data",
+      "title": "Doubling Times at Different Yearly Rates",
+      "rows": [
+       [
+        "1% per year",
+        69.7
+       ],
+       [
+        "2% per year",
+        35.0
+       ],
+       [
+        "3% per year",
+        23.4
+       ],
+       [
+        "5% per year",
+        14.2
+       ],
+       [
+        "7% per year",
+        10.2
+       ],
+       [
+        "10% per year",
+        7.3
+       ]
+      ],
+      "unit": "years",
+      "cite": "computed from t = ln(2) ÷ ln(1 + r), rounded to tenths",
+      "prompt": "Compare each row to 70 ÷ rate. Where does the rule of 70 drift the most from the exact value, and why?"
+     },
+     "check": [
+      {
+       "q": "By the rule of 70, a population growing 3.5% per year doubles in about",
+       "choices": [
+        "20 years",
+        "35 years",
+        "7 years",
+        "14 years"
+       ],
+       "a": 0,
+       "why": "70 ÷ 3.5 = 20 years. The exact value, ln(2) ÷ ln(1.035), is about 20.1 years."
+      },
+      {
+       "q": "A quantity decays 10% per year. What is its half-life, to the nearest tenth?",
+       "choices": [
+        "5.0 years",
+        "6.6 years",
+        "7.0 years",
+        "10.0 years"
+       ],
+       "a": 1,
+       "why": "0.9^t = 0.5, so t = ln(0.5) ÷ ln(0.9) ≈ (−0.693) ÷ (−0.105) ≈ 6.6 years. The rule of 70 estimate, 7.0, is close but not exact."
+      },
+      {
+       "q": "An account doubles in 9 years with yearly compounding. What is the yearly rate?",
+       "choices": [
+        "about 11.1%",
+        "about 22.2%",
+        "about 8.0%",
+        "about 4.5%"
+       ],
+       "a": 2,
+       "why": "b^9 = 2, so b = 2^(1/9) ≈ 1.080, a rate of about 8.0%. Check with the rule of 70: 70 ÷ 8 ≈ 8.75 years, close to 9."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "title": "Models Built on Exponents",
+   "lessons": [
+    {
+     "title": "Scales Built on Logs",
+     "mainIdea": "The Richter, decibel and pH scales report the exponent, so each step of 1 means multiplying the real quantity by 10 (or, for earthquake energy, by about 31.6).",
+     "reading": [
+      "Earthquake *magnitude* is a log scale of shaking. A step of 1 in magnitude means the seismograph needle swings 10 times farther. So a magnitude 7 quake shakes 10 times more than a 6 and 10 × 10 = 100 times more than a 5. The difference in magnitude is the exponent: shaking ratio = 10^(difference). Energy grows faster, by about 10^1.5 ≈ 31.6 per step, which is where 'thirty times' comes from. Energy ratio = 10^(1.5 × difference). From 5 to 7, that is 10^3 = 1,000 times the energy. This is why a change from 5.2 to 6.2 is a very different earthquake.",
+      "Sound uses the *decibel*: dB = 10 × log(I ÷ I0), where I is the sound's intensity and I0 is the quietest sound a person can hear. Every 10 dB means 10 times the intensity. A 60 dB conversation is 10^3 = 1,000 times the intensity of a 30 dB whisper. Going the other way, a sound with 500 times the base intensity is 10 × log(500) ≈ 10 × 2.7 = 27 dB. Chemists use *pH* = −log[H+], where [H+] is the hydrogen ion concentration in moles per liter. Pure water has [H+] = 10^(−7), so pH 7. Lemon juice near pH 2 has 10^5 = 100,000 times the hydrogen ion concentration of water. Lower pH means more acid.",
+      "Each *log scale* exists for the same reason: the real quantities span a range far too wide for a normal number line. Earthquake energies differ by factors of billions; the log turns billions into a difference of 6. The trap is to treat the scale as linear. A magnitude 8 is not 'twice' a 4; it releases about 10^6 = 1,000,000 times the energy. A pH of 4 is not 'a little more acid' than 6; it is 100 times more. When you read a log scale, subtract to get the exponent, then raise 10 to that power to get the real ratio."
+     ],
+     "words": [
+      {
+       "w": "magnitude",
+       "d": "the earthquake number; each step of 1 means 10 times the shaking and about 31.6 times the energy"
+      },
+      {
+       "w": "decibel",
+       "d": "the sound unit dB = 10 × log(I ÷ I0); every 10 dB is 10 times the intensity"
+      },
+      {
+       "w": "pH",
+       "d": "−log of the hydrogen ion concentration; pH 7 is neutral and lower is more acidic"
+      },
+      {
+       "w": "log scale",
+       "d": "a scale that reports the exponent, so equal steps mean equal multiplying"
+      }
+     ],
+     "look": {
+      "type": "data",
+      "title": "Energy Released Compared to a Magnitude 4 Quake",
+      "rows": [
+       [
+        "magnitude 4",
+        1
+       ],
+       [
+        "magnitude 5",
+        32
+       ],
+       [
+        "magnitude 6",
+        1000
+       ],
+       [
+        "magnitude 7",
+        31623
+       ],
+       [
+        "magnitude 8",
+        1000000
+       ]
+      ],
+      "unit": "times the energy of a magnitude 4",
+      "cite": "computed from 10^(1.5 × (M − 4)), the standard energy relation, rounded",
+      "prompt": "The 2008 southern Illinois quake was magnitude 5.2. About how many times more energy would a magnitude 6.2 release? A 7.2?"
+     },
+     "check": [
+      {
+       "q": "A magnitude 6 quake shakes a seismograph how many times more than a magnitude 3?",
+       "choices": [
+        "3 times",
+        "30 times",
+        "300 times",
+        "1,000 times"
+       ],
+       "a": 3,
+       "why": "The difference is 3, so the shaking ratio is 10^3 = 1,000. Each step multiplies by 10, not adds 10."
+      },
+      {
+       "q": "Sound A is 40 dB and sound B is 70 dB. B's intensity is",
+       "choices": [
+        "1,000 times A's",
+        "30 times A's",
+        "3 times A's",
+        "100 times A's"
+       ],
+       "a": 0,
+       "why": "30 dB more means 3 steps of 10 dB, each a factor of 10: 10^3 = 1,000 times the intensity."
+      },
+      {
+       "q": "Compared with pH 5, a solution at pH 3 has a hydrogen ion concentration that is",
+       "choices": [
+        "2 times higher",
+        "100 times higher",
+        "100 times lower",
+        "1,000 times higher"
+       ],
+       "a": 1,
+       "why": "pH 3 means 10^(−3) and pH 5 means 10^(−5); the ratio is 10^2 = 100, and lower pH means more ions."
+      }
+     ]
+    },
+    {
+     "title": "Growth That Hits a Ceiling",
+     "mainIdea": "Logistic growth starts like exponential growth, then slows as it nears a limit L, following P = L ÷ (1 + C × e^(−kt)).",
+     "reading": [
+      "A rumor starts with 10 students in a school of 1,000. At first it spreads fast, nearly doubling each day, because almost everyone who hears it has friends who have not. But the rumor cannot pass 1,000 people. As it nears that ceiling it slows: the students still left to tell are getting rare. The curve rises, bends and flattens into an S shape. This is *logistic growth*. The ceiling is called the *carrying capacity*, L. Real populations of deer, bacteria in a dish, or users of an app follow this shape because food, space or new people run out.",
+      "The formula is P(t) = L ÷ (1 + C × e^(−kt)). L is the ceiling, k sets the speed, and C is fixed by the starting value. For the rumor, L = 1,000 and P(0) = 10, so 1,000 ÷ (1 + C) = 10, giving 1 + C = 100 and C = 99. With k = 0.8 per day, P(t) = 1,000 ÷ (1 + 99e^(−0.8t)). Day 5: e^(−4) ≈ 0.0183, so 99 × 0.0183 ≈ 1.81, and P ≈ 1,000 ÷ 2.81 ≈ 356 students. Day 10: e^(−8) ≈ 0.000335, 99 × 0.000335 ≈ 0.033, P ≈ 1,000 ÷ 1.033 ≈ 968. Day 15: about 999. The last five days add only about 30 students; the curve has flattened against its *limit*.",
+      "Where does the S bend? The steepest point is at half the ceiling, P = L ÷ 2 = 500 here. Before that point growth speeds up; after it, growth slows. Find that day by solving 99e^(−0.8t) = 1, so e^(−0.8t) = 1/99, so −0.8t = ln(1/99) ≈ −4.595, so t ≈ 5.74 days. The common mistake is to keep using an exponential model past the point where the limit matters; an exponential rumor would 'reach' 5,000 students in a school of 1,000. When a situation has a hard limit, choose logistic. When the limit is far away, exponential is fine for the early stretch, and the two curves agree there."
+     ],
+     "words": [
+      {
+       "w": "logistic growth",
+       "d": "growth that starts exponential, then slows and levels off at a ceiling, making an S-shaped curve"
+      },
+      {
+       "w": "carrying capacity",
+       "d": "the largest amount a situation can hold; the ceiling L of a logistic model"
+      },
+      {
+       "w": "limit",
+       "d": "a value a curve gets closer and closer to without passing"
+      }
+     ],
+     "look": {
+      "type": "data",
+      "title": "The Rumor, Day by Day",
+      "rows": [
+       [
+        "day 0",
+        10
+       ],
+       [
+        "day 2",
+        48
+       ],
+       [
+        "day 4",
+        199
+       ],
+       [
+        "day 6",
+        551
+       ],
+       [
+        "day 8",
+        859
+       ],
+       [
+        "day 10",
+        968
+       ],
+       [
+        "day 12",
+        993
+       ]
+      ],
+      "unit": "students who have heard it",
+      "cite": "values of P(t) = 1,000 ÷ (1 + 99e^(−0.8t)), rounded to whole students",
+      "prompt": "Between which two days does the count grow the most? Where does the curve flatten, and what number is it heading toward?"
+     },
+     "check": [
+      {
+       "q": "In P = 2,000 ÷ (1 + 19e^(−0.5t)), what is the carrying capacity?",
+       "choices": [
+        "19",
+        "100",
+        "2,000",
+        "0.5"
+       ],
+       "a": 2,
+       "why": "L is the numerator, 2,000. As t grows, e^(−0.5t) goes to 0 and P goes to 2,000 ÷ 1 = 2,000."
+      },
+      {
+       "q": "What is the starting value P(0) of P = 2,000 ÷ (1 + 19e^(−0.5t))?",
+       "choices": [
+        "2,000",
+        "19",
+        "105.3",
+        "100"
+       ],
+       "a": 3,
+       "why": "At t = 0, e^0 = 1, so P = 2,000 ÷ (1 + 19) = 2,000 ÷ 20 = 100."
+      },
+      {
+       "q": "Which situation calls for a logistic model rather than an exponential one?",
+       "choices": [
+        "Fish in a pond with limited food",
+        "Money compounding continuously in an account",
+        "Carbon-14 decaying in a fossil",
+        "Bacteria in their first hour with unlimited nutrients"
+       ],
+       "a": 0,
+       "why": "A pond has a carrying capacity, so growth must level off. Money has no ceiling, decay shrinks, and early bacteria have no limit yet."
+      }
+     ]
+    }
+   ]
+  }
+ ],
+ "review": [
+  {
+   "q": "A video with 800 views grows 50% per day. How many views after 3 days?",
+   "choices": [
+    "2,000",
+    "2,700",
+    "1,200",
+    "3,600"
+   ],
+   "a": 1,
+   "why": "800 × 1.5^3 = 800 × 3.375 = 2,700. Adding 400 three times would wrongly give 2,000."
+  },
+  {
+   "q": "$5,000 is deposited at 4% compounded quarterly for 2 years. How much is there?",
+   "choices": [
+    "$5,400.00",
+    "$5,408.00",
+    "$5,414.28",
+    "$5,200.00"
+   ],
+   "a": 2,
+   "why": "Quarterly rate 1%, 8 periods: 5,000 × 1.01^8 ≈ 5,000 × 1.08286 = $5,414.28. Yearly compounding would give $5,408."
+  },
+  {
+   "q": "log_6(1/36) = ?",
+   "choices": [
+    "2",
+    "−6",
+    "1/2",
+    "−2"
+   ],
+   "a": 3,
+   "why": "6^(−2) = 1/36, so the exponent is −2."
+  },
+  {
+   "q": "Solve 5^x = 200 to the nearest hundredth.",
+   "choices": [
+    "3.29",
+    "40",
+    "2.30",
+    "5.30"
+   ],
+   "a": 0,
+   "why": "x = ln(200) ÷ ln(5) ≈ 5.298 ÷ 1.609 ≈ 3.29. Check: 5^3 = 125 and 5^4 = 625, so 200 needs an exponent between 3 and 4."
+  },
+  {
+   "q": "Which expression equals log(a) − log(b)?",
+   "choices": [
+    "log(a − b)",
+    "log(a ÷ b)",
+    "log(a) ÷ log(b)",
+    "log(b ÷ a)"
+   ],
+   "a": 1,
+   "why": "The quotient rule: the difference of two logs is the log of the quotient, a ÷ b."
+  },
+  {
+   "q": "A substance has a half-life of 3 days. From 160 mg, how much remains after 12 days?",
+   "choices": [
+    "40 mg",
+    "20 mg",
+    "10 mg",
+    "0 mg"
+   ],
+   "a": 2,
+   "why": "12 ÷ 3 = 4 half-lives, so 160 × (1/2)^4 = 160 ÷ 16 = 10 mg."
+  },
+  {
+   "q": "About how many times more energy does a magnitude 7.0 quake release than a magnitude 4.0?",
+   "choices": [
+    "about 1,000",
+    "about 3",
+    "about 100",
+    "about 31,600"
+   ],
+   "a": 3,
+   "why": "Energy ratio = 10^(1.5 × 3) = 10^4.5 ≈ 31,600. The shaking ratio would be 10^3 = 1,000."
+  },
+  {
+   "q": "Solve log_2(x) + log_2(x − 6) = 4.",
+   "choices": [
+    "x = 8",
+    "x = −2",
+    "x = 8 and x = −2",
+    "x = 11"
+   ],
+   "a": 0,
+   "why": "x(x − 6) = 16 gives x^2 − 6x − 16 = 0, so (x − 8)(x + 2) = 0. Reject −2 because log_2(−2) does not exist. Check 8: 3 + 1 = 4."
+  }
+ ]
+}

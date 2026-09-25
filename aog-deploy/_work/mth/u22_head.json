@@ -1,0 +1,283 @@
+{
+ "intro": [
+  "Every day you meet numbers that claim to summarize something bigger: an average test score, a poll result, a headline that says one thing is linked to another. This unit is about looking past the single number to the whole set of data behind it. You will draw dot plots, histograms and box plots, measure where data are centered and how far they spread, and decide what to do when one value sits far from the rest.",
+  "Then you will put two variables on one graph and ask whether they move together. You will draw a line through the cloud of points, read its slope in plain words, check it with residuals, and measure the strength of the pattern with the correlation coefficient. You will also learn when a curve fits better than a line and how far a prediction can safely reach.",
+  "The unit ends with the most important warning in statistics: two things rising together does not mean one causes the other. By the end you will be able to describe a data set honestly, compare two groups fairly, fit and check a model, and read a claim about data with the right mix of trust and suspicion."
+ ],
+ "bigQuestion": "How do we describe what a whole set of data says, and how far can we trust a pattern we find in it?",
+ "timeline": [
+  {
+   "y": "1662",
+   "t": "John Graunt tallies London death records into tables, an early step toward statistics as a way of reading data"
+  },
+  {
+   "y": "1790",
+   "t": "The first United States Census counts the population, a data set that repeats every ten years to this day"
+  },
+  {
+   "y": "1805",
+   "t": "Adrien-Marie Legendre publishes the method of least squares for fitting a line to observations"
+  },
+  {
+   "y": "1809",
+   "t": "Carl Friedrich Gauss publishes his own account of least squares and the bell-shaped error curve"
+  },
+  {
+   "y": "1858",
+   "t": "Florence Nightingale uses graphs of hospital deaths to argue for better sanitation in army hospitals"
+  },
+  {
+   "y": "1886",
+   "t": "Francis Galton describes regression toward the mean while studying the heights of parents and children"
+  },
+  {
+   "y": "1890s",
+   "t": "Karl Pearson develops the correlation coefficient r into the form still used today"
+  },
+  {
+   "y": "1925",
+   "t": "Ronald Fisher's Statistical Methods for Research Workers spreads modern data analysis to scientists"
+  },
+  {
+   "y": "1935",
+   "t": "Fisher's The Design of Experiments explains random assignment, the tool that separates cause from correlation"
+  },
+  {
+   "y": "1973",
+   "t": "Francis Anscombe publishes four data sets with the same line and r but wildly different scatter plots"
+  },
+  {
+   "y": "1977",
+   "t": "John Tukey's Exploratory Data Analysis popularizes the box plot and the habit of graphing data first"
+  }
+ ],
+ "wrap": {
+  "words": [
+   {
+    "w": "distribution",
+    "d": "the whole set of values in a data set and how often each one occurs"
+   },
+   {
+    "w": "histogram",
+    "d": "a graph that groups numbers into equal-width bins and draws a touching bar for each count"
+   },
+   {
+    "w": "median",
+    "d": "the middle value of a sorted data set, or the average of the two middle values"
+   },
+   {
+    "w": "interquartile range",
+    "d": "the third quartile minus the first quartile; the spread of the middle half of the data"
+   },
+   {
+    "w": "standard deviation",
+    "d": "the square root of the average squared deviation from the mean; the typical distance from the mean"
+   },
+   {
+    "w": "outlier",
+    "d": "a value far outside the pattern of the rest of the data, often more than 1.5 IQRs beyond a quartile"
+   },
+   {
+    "w": "conditional relative frequency",
+    "d": "a cell of a two-way table divided by its row or column total"
+   },
+   {
+    "w": "scatter plot",
+    "d": "a graph with one dot for each pair of measurements, one variable on each axis"
+   },
+   {
+    "w": "residual",
+    "d": "the actual value minus the value a line predicts; the vertical gap from a dot to the line"
+   },
+   {
+    "w": "correlation coefficient",
+    "d": "a number r from −1 to 1 that gives the direction and strength of a straight-line relationship"
+   },
+   {
+    "w": "lurking variable",
+    "d": "a variable left out of the graph that affects both plotted variables and creates their correlation"
+   },
+   {
+    "w": "extrapolation",
+    "d": "using a model to predict a value outside the range of the data it was built from"
+   }
+  ],
+  "test": [
+   {
+    "q": "Which set of summaries should you report for a data set that is strongly skewed with outliers?",
+    "choices": [
+     "Mean and range",
+     "Median and IQR",
+     "Mean and standard deviation",
+     "Mode and range"
+    ],
+    "a": 1,
+    "why": "The median and IQR depend on position in the sorted list, so skew and outliers barely move them; the mean, range and standard deviation get pulled."
+   },
+   {
+    "q": "What is the mean of 6, 9, 11, 14 and 20?",
+    "choices": [
+     "11",
+     "12",
+     "14",
+     "15"
+    ],
+    "a": 1,
+    "why": "The sum is 6 + 9 + 11 + 14 + 20 = 60, and 60 ÷ 5 = 12."
+   },
+   {
+    "q": "What is the median of 18, 4, 9, 13, 6, 11?",
+    "choices": [
+     "9",
+     "10",
+     "11",
+     "12"
+    ],
+    "a": 1,
+    "why": "Sorted: 4, 6, 9, 11, 13, 18. The two middle values are 9 and 11, so the median is (9 + 11) ÷ 2 = 10."
+   },
+   {
+    "q": "A sorted data set is 10, 12, 14, 16, 18, 20, 22. What is its interquartile range?",
+    "choices": [
+     "4",
+     "6",
+     "12",
+     "8"
+    ],
+    "a": 3,
+    "why": "The median is 16. Q1 is the middle of 10, 12, 14, which is 12; Q3 is the middle of 18, 20, 22, which is 20. IQR = 20 − 12 = 8."
+   },
+   {
+    "q": "The data set 3, 5, 7 has mean 5. Dividing by the number of values, what is its standard deviation?",
+    "choices": [
+     "0",
+     "About 1.63",
+     "2",
+     "About 2.83"
+    ],
+    "a": 1,
+    "why": "Deviations −2, 0, 2 have squares 4, 0, 4 that add to 8. Variance is 8 ÷ 3 ≈ 2.67, and √2.67 ≈ 1.63."
+   },
+   {
+    "q": "A histogram of 50 commute times has bins 0 to 9, 10 to 19, 20 to 29 and 30 to 39 with counts 8, 17, 15 and 10. What percent of commutes are under 20 minutes?",
+    "choices": [
+     "17%",
+     "25%",
+     "34%",
+     "50%"
+    ],
+    "a": 3,
+    "why": "Under 20 minutes means the first two bins: 8 + 17 = 25, and 25 ÷ 50 = 50%."
+   },
+   {
+    "q": "A data set has Q1 = 40 and Q3 = 60. Which value is an outlier by the 1.5 × IQR rule?",
+    "choices": [
+     "12",
+     "25",
+     "85",
+     "95"
+    ],
+    "a": 3,
+    "why": "IQR = 20 and 1.5 × 20 = 30. The fences are 40 − 30 = 10 and 60 + 30 = 90. Only 95 is past a fence."
+   },
+   {
+    "q": "In a two-way table, 24 of 60 juniors and 18 of 30 seniors have a part-time job. Which statement is true?",
+    "choices": [
+     "Juniors are more likely to have a job, 24 versus 18",
+     "Seniors are more likely to have a job, 60% versus 40%",
+     "The groups are equally likely to have a job",
+     "Juniors are more likely to have a job, 40% versus 60%"
+    ],
+    "a": 1,
+    "why": "Compare conditional relative frequencies, not counts: 24 ÷ 60 = 40% of juniors and 18 ÷ 30 = 60% of seniors."
+   },
+   {
+    "q": "A poll about a new stadium surveys only people leaving a home game. What is the main flaw?",
+    "choices": [
+     "The sample is biased toward fans",
+     "The sample is too large",
+     "The mean should have been used",
+     "The axis is truncated"
+    ],
+    "a": 0,
+    "why": "People leaving a game are far more likely to want a stadium than the general public, so the sample leans one way before any question is asked."
+   },
+   {
+    "q": "What is the slope of the line through (2, 5) and (6, 17)?",
+    "choices": [
+     "12",
+     "4",
+     "3",
+     "2"
+    ],
+    "a": 2,
+    "why": "Slope = (17 − 5) ÷ (6 − 2) = 12 ÷ 4 = 3."
+   },
+   {
+    "q": "A line predicts a taxi fare as f = 3 + 2.5m, with m in miles. What does the 3 mean?",
+    "choices": [
+     "The fare rises $3 per mile",
+     "A ride of 0 miles costs $3, the starting charge",
+     "The longest ride is 3 miles",
+     "The fare is always $3 more than the miles"
+    ],
+    "a": 1,
+    "why": "The intercept is the predicted fare when m = 0: a base charge of $3 before any distance is driven. The 2.5 is the cost per mile."
+   },
+   {
+    "q": "A line predicts 70 for a point whose actual value is 64. What is the residual?",
+    "choices": [
+     "6",
+     "−6",
+     "134",
+     "0.91"
+    ],
+    "a": 1,
+    "why": "Residual = actual − predicted = 64 − 70 = −6, so the point is 6 units below the line."
+   },
+   {
+    "q": "A residual plot shows a clear U shape. What should you conclude?",
+    "choices": [
+     "The line fits the data well",
+     "The correlation must be negative",
+     "A curved model would fit better than a line",
+     "The data have an outlier"
+    ],
+    "a": 2,
+    "why": "A U in the residuals means the line is too high in the middle and too low at the ends: the data bend, and a straight line cannot."
+   },
+   {
+    "q": "Which statement about the correlation coefficient r is true?",
+    "choices": [
+     "r = −0.9 is weaker than r = 0.5 because it is negative",
+     "r changes when you convert inches to centimeters",
+     "r = 0 proves the two variables are unrelated",
+     "r measures only straight-line relationships and can be near 0 for a perfect curve"
+    ],
+    "a": 3,
+    "why": "r has no units, its strength is its distance from 0 regardless of sign, and a U-shaped relationship can give r = 0 even though y depends exactly on x."
+   },
+   {
+    "q": "Cities with more ice cream shops have more sunburn cases. What is the best explanation?",
+    "choices": [
+     "Ice cream causes sunburn",
+     "Sunburn makes people open ice cream shops",
+     "Warm, sunny climate is a lurking variable driving both",
+     "The correlation must be a mistake"
+    ],
+    "a": 2,
+    "why": "A third variable, sunny weather, increases both ice cream demand and sun exposure. The correlation is real, but it shows no cause."
+   }
+  ],
+  "write": {
+   "prompt": "Two classes took the same test. Class A scores: 70, 72, 75, 78, 80, 82, 85. Class B scores: 55, 60, 78, 80, 82, 95, 98. Compute the median, range and IQR for each class, then write a paragraph comparing the two classes. Explain which class did better, which was more consistent, and why the mean alone would not tell the whole story.",
+   "tips": [
+    "Sort each list first, then find the median, Q1 and Q3 before computing anything else.",
+    "Show every subtraction: range is max minus min, IQR is Q3 minus Q1.",
+    "Use shape, center and spread as three separate sentences in your comparison.",
+    "Say what each number means for a student in that class, not just what the number is.",
+    "Check your work by confirming that each class has the same number of scores on each side of its median."
+   ]
+  }
+ }
+}

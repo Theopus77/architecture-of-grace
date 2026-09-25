@@ -1,0 +1,934 @@
+{
+ "n": 56,
+ "title": "Trigonometric Functions",
+ "years": "Trigonometry",
+ "bigQuestion": "How does the motion of a point around a circle explain daylight, tides, sound and every other pattern that repeats?",
+ "story": {
+  "title": "A Year of Chicago Daylight, Drawn as a Wave",
+  "kicker": "Chicago's longest day has about six more hours of light than its shortest, and the path between them traces a curve that repeats forever.",
+  "paragraphs": [
+   "In late December the sun drops behind the Chicago skyline a little after 4 in the afternoon, and the lakefront path is dark before dinner. In late June the same sky glows until well past 8. Anyone who runs the lakefront all year feels the swing: the shortest day gives a bit more than 9 hours of daylight, the longest about 15. That is a difference of six hours, and it does not arrive all at once.",
+   "Write down the daylight hours on the first of each month and plot them, months across and hours up. The points do not make a straight line and they do not make a V. They make a smooth hump: low in December, climbing fast through March, cresting in June, sliding fast through September, and settling back down. The climb is steepest around March 20, when Chicago gains almost three minutes of daylight every day, and flattest around June 21, when the length barely changes from one day to the next.",
+   "That shape has a name and a formula. It is a sine wave: the graph of the height of a point moving around a circle. The midline of Chicago's wave is about 12.2 hours, halfway between 9.2 and 15.2. The wave rises 3 hours above that line and falls 3 hours below. One full cycle takes 365 days, and the wave crosses its midline on the way up near March 20. A model that uses those four facts predicts the daylight on any day of the year, and its answers land within minutes of the almanac.",
+   "Why a circle? The Earth circles the Sun once a year, tilted on its axis, and the tilt as seen from the Sun swings back and forth like the shadow of a spoke on a turning wheel. Anything driven by turning, from the seasons to the tides to a vibrating guitar string to the current in a wall outlet, produces this same wave. This chapter starts with the circle, builds the wave from it, learns to stretch and shift the wave to fit real data, and ends with two laws that solve any triangle."
+  ],
+  "think": "The daylight model changes fastest near March 20 and September 22 and hardly at all near June 21 and December 21. Why would the steepest part of a wave sit at its midline and the flattest part at its peak?"
+ },
+ "sections": [
+  {
+   "title": "Angles and the Unit Circle",
+   "lessons": [
+    {
+     "title": "Measuring Angles in Radians",
+     "mainIdea": "A radian measures an angle by arc length divided by radius, so a full turn is 2π radians and 180° = π radians.",
+     "reading": [
+      "Tie a string to a pin, cut it to the circle's radius, and lay it along the edge of the circle. The angle it spans at the center is one *radian*. Because the whole edge is 2πr long, a full turn holds 2π radians, about 6.28 of them. Half a turn, 180°, is π radians, so 1 radian is 180° ÷ π ≈ 57.3°. Radians measure angles with the circle's own ruler, and every formula in physics and calculus gets simpler when angles are in radians. The trade is one conversion: multiply a *degree* measure by π/180 to get radians, and multiply radians by 180/π to get degrees.",
+      "Convert 60°: 60 × π/180 = π/3 radians. Convert 150°: 150 × π/180 = 5π/6. Convert 3π/4 radians: 3π/4 × 180/π = 135°. Convert 2 radians: 2 × 180/π ≈ 114.6°. Exact answers keep π; use decimals only when a measurement needs them. The fractions to know cold are 30° = π/6, 45° = π/4, 60° = π/3, 90° = π/2, 180° = π, 270° = 3π/2 and 360° = 2π. Any other angle you can build from these: 210° = 180° + 30° = π + π/6 = 7π/6.",
+      "Radians pay off first in *arc length*. Since one radian spans an arc equal to the radius, an angle of θ radians spans an arc of s = rθ. A bike wheel of radius 30 cm turns through 2π/3 radians: the tire rolls 30 × 2π/3 = 20π ≈ 62.8 cm. With degrees you would need the extra factor of 360, s = (120/360) × 2π × 30, and get the same 62.8 cm the long way. The classic mistake is to plug degrees into s = rθ. If someone writes s = 30 × 120 = 3,600 cm, the units give it away: 36 meters from one third of a wheel turn is impossible."
+     ],
+     "words": [
+      {
+       "w": "radian",
+       "d": "the angle whose arc on a circle is as long as the radius; 2π radians make a full turn"
+      },
+      {
+       "w": "degree",
+       "d": "1/360 of a full turn; 180° equals π radians"
+      },
+      {
+       "w": "arc length",
+       "d": "the distance along a circle's edge, s = rθ when θ is in radians"
+      }
+     ],
+     "look": {
+      "type": "think",
+      "title": "The Clock's Minute Hand",
+      "text": "A minute hand 12 cm long moves from 12 to 4, one third of a turn. Angle: 2π/3 radians. Arc traced by the tip: 12 × 2π/3 = 8π ≈ 25.1 cm. From 12 to 9, three quarters of a turn: 3π/2 radians, arc 12 × 3π/2 = 18π ≈ 56.5 cm.",
+      "prompt": "How far does the tip travel in 50 minutes? Give the angle in radians first, then the arc length."
+     },
+     "check": [
+      {
+       "q": "120° in radians is",
+       "choices": [
+        "π/3",
+        "2π/3",
+        "3π/2",
+        "120π"
+       ],
+       "a": 1,
+       "why": "120 × π/180 = 120π/180 = 2π/3. Check: 2π/3 ≈ 2.09 radians, and 120 ÷ 57.3 ≈ 2.09."
+      },
+      {
+       "q": "5π/4 radians in degrees is",
+       "choices": [
+        "45°",
+        "135°",
+        "225°",
+        "315°"
+       ],
+       "a": 2,
+       "why": "5π/4 × 180/π = 5 × 45° = 225°. That is 180° + 45°, halfway into the third quadrant."
+      },
+      {
+       "q": "A circle has radius 8 cm. What arc length does an angle of 1.5 radians cut off?",
+       "choices": [
+        "5.33 cm",
+        "24 cm",
+        "12π cm",
+        "12 cm"
+       ],
+       "a": 3,
+       "why": "s = rθ = 8 × 1.5 = 12 cm. No π appears because the angle was already in radians."
+      }
+     ]
+    },
+    {
+     "title": "Sine and Cosine as Coordinates",
+     "mainIdea": "On the circle of radius 1, an angle θ measured from the positive x-axis lands at the point (cos θ, sin θ).",
+     "reading": [
+      "Draw a circle of radius 1 centered at the origin, the *unit circle*. Start at the point (1, 0) and walk counterclockwise through an angle θ. Wherever you stop, the x-coordinate is the *cosine* of θ and the y-coordinate is the *sine* of θ. That is the whole definition, and it extends the right-triangle ratios to every angle, even past 90° and negative ones. At θ = 0 you are at (1, 0): cos 0 = 1, sin 0 = 0. At θ = π/2 you are at (0, 1): cos(π/2) = 0, sin(π/2) = 1. At θ = π: (−1, 0). At θ = 3π/2: (0, −1).",
+      "Between those, a few exact points come from two special triangles. At π/6 (30°) the point is (√3/2, 1/2): so cos(π/6) ≈ 0.866 and sin(π/6) = 0.5. At π/4 (45°) it is (√2/2, √2/2), both about 0.707. At π/3 (60°) it is (1/2, √3/2). Notice sine and cosine trade places between 30° and 60°. Every other special angle is a reflection of these. 5π/6 (150°) sits in the second *quadrant*, a mirror of π/6 across the y-axis: (−√3/2, 1/2). So cos(5π/6) = −√3/2 and sin(5π/6) = 1/2. 7π/6 (210°) is the mirror through the origin: (−√3/2, −1/2).",
+      "Signs follow the quadrants. In quadrant I both coordinates are positive. In quadrant II, x is negative, so cosine is negative and sine positive. In quadrant III both are negative. In quadrant IV cosine is positive and sine negative. The angle back to the nearest part of the x-axis is the *reference angle*; it tells you the size, and the quadrant tells you the signs. For 4π/3 (240°): reference angle π/3, quadrant III, so the point is (−1/2, −√3/2). The most common mistake is to switch sine and cosine. Remember that x comes first in a point and c comes before s in the alphabet: (cos, sin)."
+     ],
+     "words": [
+      {
+       "w": "unit circle",
+       "d": "the circle of radius 1 centered at the origin"
+      },
+      {
+       "w": "sine",
+       "d": "the y-coordinate of the unit-circle point at angle θ, written sin θ"
+      },
+      {
+       "w": "cosine",
+       "d": "the x-coordinate of the unit-circle point at angle θ, written cos θ"
+      },
+      {
+       "w": "quadrant",
+       "d": "one of the four regions the axes cut the plane into, numbered I to IV counterclockwise"
+      },
+      {
+       "w": "reference angle",
+       "d": "the acute angle between the terminal side and the x-axis; it gives the size of sine and cosine"
+      }
+     ],
+     "look": {
+      "type": "data",
+      "title": "Sine Values Around the Circle",
+      "rows": [
+       [
+        "θ = 0",
+        0
+       ],
+       [
+        "θ = π/6",
+        0.5
+       ],
+       [
+        "θ = π/2",
+        1
+       ],
+       [
+        "θ = 5π/6",
+        0.5
+       ],
+       [
+        "θ = π",
+        0
+       ],
+       [
+        "θ = 7π/6",
+        -0.5
+       ],
+       [
+        "θ = 3π/2",
+        -1
+       ],
+       [
+        "θ = 2π",
+        0
+       ]
+      ],
+      "unit": "sin θ",
+      "cite": "y-coordinates of points on the unit circle",
+      "prompt": "Which two angles in the table share the same cosine? Use the x-coordinates of their points to decide."
+     },
+     "check": [
+      {
+       "q": "cos(π) = ?",
+       "choices": [
+        "−1",
+        "0",
+        "1",
+        "π"
+       ],
+       "a": 0,
+       "why": "At θ = π the point is (−1, 0), and cosine is the x-coordinate, −1."
+      },
+      {
+       "q": "The point on the unit circle at θ = 2π/3 is",
+       "choices": [
+        "(1/2, √3/2)",
+        "(−1/2, √3/2)",
+        "(−√3/2, 1/2)",
+        "(√3/2, −1/2)"
+       ],
+       "a": 1,
+       "why": "2π/3 = 120° is in quadrant II with reference angle π/3, so x is negative: (−1/2, √3/2)."
+      },
+      {
+       "q": "In which quadrant is sine negative and cosine positive?",
+       "choices": [
+        "Quadrant I",
+        "Quadrant II",
+        "Quadrant IV",
+        "Quadrant III"
+       ],
+       "a": 2,
+       "why": "In quadrant IV the point has positive x (cosine) and negative y (sine)."
+      }
+     ]
+    },
+    {
+     "title": "Tangent and the Pythagorean Identity",
+     "mainIdea": "tan θ = sin θ ÷ cos θ, and because every unit-circle point satisfies x^2 + y^2 = 1, sin^2 θ + cos^2 θ = 1 for every angle.",
+     "reading": [
+      "The *tangent* of an angle is the slope of the line from the origin to its unit-circle point: tan θ = sin θ ÷ cos θ = y ÷ x. At π/4 the point is (√2/2, √2/2), so tan(π/4) = 1: the line rises at 45°. At π/3, tan = (√3/2) ÷ (1/2) = √3 ≈ 1.732. At π/6, tan = (1/2) ÷ (√3/2) = 1/√3 = √3/3 ≈ 0.577. At π/2 the point is (0, 1) and you would divide by zero, so tan(π/2) is *undefined*; the line is vertical and has no slope. Tangent is positive where sine and cosine share a sign (quadrants I and III) and negative where they differ (II and IV).",
+      "Every point on the unit circle satisfies x^2 + y^2 = 1, because that is the equation of the circle. Since x = cos θ and y = sin θ, this gives the *Pythagorean identity*: sin^2 θ + cos^2 θ = 1, true for every angle. It is the Pythagorean theorem for a triangle whose hypotenuse is 1. Use it to find one function from the other. Suppose sin θ = 3/5 and θ is in quadrant II. Then cos^2 θ = 1 − 9/25 = 16/25, so cos θ = ±4/5. Quadrant II makes cosine negative: cos θ = −4/5. Then tan θ = (3/5) ÷ (−4/5) = −3/4.",
+      "The sign step is the one people skip. cos^2 θ = 16/25 has two square roots, 4/5 and −4/5, and only the quadrant can pick. Without a quadrant, the honest answer is cos θ = ±4/5. Another slip is reading sin^2 θ as sin(θ^2); the notation sin^2 θ means (sin θ)^2, the sine squared, not the sine of a squared angle. One more example: if cos θ = 5/13 and θ is in quadrant IV, then sin^2 θ = 1 − 25/169 = 144/169, so sin θ = −12/13 (negative in IV), and tan θ = (−12/13) ÷ (5/13) = −12/5."
+     ],
+     "words": [
+      {
+       "w": "tangent",
+       "d": "sin θ ÷ cos θ, the slope of the line from the origin to the unit-circle point"
+      },
+      {
+       "w": "Pythagorean identity",
+       "d": "sin^2 θ + cos^2 θ = 1 for every angle θ"
+      },
+      {
+       "w": "undefined",
+       "d": "has no value; tan(π/2) is undefined because cos(π/2) = 0"
+      }
+     ],
+     "look": {
+      "type": "think",
+      "title": "Fill In the Missing Value",
+      "text": "cos θ = 0.6 and θ is in quadrant IV. Then sin^2 θ = 1 − 0.36 = 0.64, so sin θ = ±0.8, and quadrant IV makes it negative: sin θ = −0.8. tan θ = −0.8 ÷ 0.6 ≈ −1.33.",
+      "prompt": "sin θ = 5/13 and θ is in quadrant II. Find cos θ and tan θ, with the right signs."
+     },
+     "check": [
+      {
+       "q": "tan(π/3) = ?",
+       "choices": [
+        "√3/3",
+        "1/2",
+        "1",
+        "√3"
+       ],
+       "a": 3,
+       "why": "At π/3 the point is (1/2, √3/2), so tan = (√3/2) ÷ (1/2) = √3 ≈ 1.73."
+      },
+      {
+       "q": "sin θ = −4/5 and θ is in quadrant III. What is cos θ?",
+       "choices": [
+        "−3/5",
+        "3/5",
+        "−1/5",
+        "9/25"
+       ],
+       "a": 0,
+       "why": "cos^2 θ = 1 − 16/25 = 9/25, so cos θ = ±3/5. In quadrant III cosine is negative: −3/5."
+      },
+      {
+       "q": "For which angle is tan θ undefined?",
+       "choices": [
+        "π",
+        "3π/2",
+        "π/4",
+        "0"
+       ],
+       "a": 1,
+       "why": "tan θ = sin θ ÷ cos θ, and cos(3π/2) = 0. Dividing by zero is undefined."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "title": "Graphs of the Trig Functions",
+   "lessons": [
+    {
+     "title": "Graphing Sine and Cosine",
+     "mainIdea": "Unwrap the unit circle and the y-coordinates draw the sine wave: period 2π, highest at 1, lowest at −1, crossing the midline at 0, π and 2π.",
+     "reading": [
+      "Let θ increase from 0 to 2π and plot the height sin θ on a graph, with θ across and sin θ up. The point rises from 0 to 1 at π/2, falls back through 0 at π, drops to −1 at 3π/2 and returns to 0 at 2π. Then the circle repeats and so does the graph. The result is the *sine wave*. Its *period* is 2π: after every 2π the pattern starts again, so sin(θ + 2π) = sin θ. Its *amplitude* is 1: the wave rises 1 above and 1 below its center line, the *midline* y = 0. The five key points are (0, 0), (π/2, 1), (π, 0), (3π/2, −1) and (2π, 0).",
+      "The cosine graph plots the x-coordinate instead. It starts at its top: (0, 1), (π/2, 0), (π, −1), (3π/2, 0), (2π, 1). Same period, same amplitude, same midline, but shifted: the cosine wave is the sine wave slid left by π/2, so cos θ = sin(θ + π/2). If you cover the labels, you cannot tell the two apart except by where they start. Sine starts on the midline heading up; cosine starts at a peak. Each is a *periodic function*, which means its values repeat after a fixed interval.",
+      "To sketch either graph by hand, mark the five key points across one period and connect them with a smooth curve, not straight segments and not sharp corners. The common error is drawing a pointed top like a mountain; a sine wave is rounded at its peaks because the point on the circle slows its up-and-down motion near the top. Another error is making the wave cross the axis at π/2; check the circle: at π/2 the height is 1, the maximum. Once you can name the five key points of sine and cosine without thinking, every other wave in this chapter is a stretched or shifted copy."
+     ],
+     "words": [
+      {
+       "w": "sine wave",
+       "d": "the graph of y = sin θ, a smooth repeating curve between −1 and 1"
+      },
+      {
+       "w": "period",
+       "d": "the length of one full cycle of a repeating graph; 2π for sine and cosine"
+      },
+      {
+       "w": "amplitude",
+       "d": "the distance from the midline to the top of a wave; 1 for y = sin θ"
+      },
+      {
+       "w": "midline",
+       "d": "the horizontal line halfway between a wave's top and bottom"
+      },
+      {
+       "w": "periodic function",
+       "d": "a function whose values repeat after a fixed interval"
+      }
+     ],
+     "look": {
+      "type": "think",
+      "title": "Read the Wave",
+      "text": "A sine wave has a peak at (π/2, 1). Next zero: (π, 0). Next trough: (3π/2, −1). Next peak: (5π/2, 1), because peaks repeat every 2π. The trough after that: (7π/2, −1).",
+      "prompt": "Where does the cosine graph have its first trough after θ = 0, and its first peak after that? Give both points."
+     },
+     "check": [
+      {
+       "q": "The value of sin θ at θ = 3π/2 is",
+       "choices": [
+        "0",
+        "1",
+        "−1",
+        "3/2"
+       ],
+       "a": 2,
+       "why": "At 3π/2 the unit-circle point is (0, −1), so the sine, the y-coordinate, is −1: the bottom of the wave."
+      },
+      {
+       "q": "The period of y = cos θ is",
+       "choices": [
+        "π",
+        "1",
+        "π/2",
+        "2π"
+       ],
+       "a": 3,
+       "why": "The circle repeats after one full turn, 2π radians, so cos(θ + 2π) = cos θ."
+      },
+      {
+       "q": "Which statement compares the sine and cosine graphs correctly?",
+       "choices": [
+        "Cosine is the sine graph shifted left by π/2",
+        "Cosine has amplitude 2 and sine has amplitude 1",
+        "Cosine has period π and sine has period 2π",
+        "Cosine crosses the midline at θ = 0"
+       ],
+       "a": 0,
+       "why": "cos θ = sin(θ + π/2): the same wave, slid left a quarter period. Both have amplitude 1 and period 2π, and cosine starts at its peak."
+      }
+     ]
+    },
+    {
+     "title": "Stretching the Wave",
+     "mainIdea": "In y = A sin(Bx) + D, |A| is the amplitude, 2π ÷ B is the period, and y = D is the midline.",
+     "reading": [
+      "A wave rarely has amplitude 1 and period 2π. Take y = 3 sin(2x) + 1. The 3 stretches heights: amplitude 3, so the wave rises 3 above and 3 below its midline. The +1 is a *vertical shift* that lifts the midline to y = 1, so the *maximum* is 1 + 3 = 4 and the *minimum* is 1 − 3 = −2. The 2 inside squeezes the wave sideways: a full cycle now happens when 2x goes from 0 to 2π, that is, when x goes from 0 to π. Period = 2π ÷ B = 2π ÷ 2 = π. So the rule for y = A sin(Bx) + D: amplitude |A|, period 2π/B, midline y = D. A negative A flips the wave upside down, but the amplitude is still |A|.",
+      "Going the other way, build the formula from the facts. A Ferris wheel has radius 20 m, its center sits 22 m above the ground, and one turn takes 4 minutes. Height above ground swings from 2 m to 42 m: midline D = 22, amplitude A = 20. The period is 4 minutes, so B = 2π ÷ 4 = π/2. A rider boards at the bottom, so the height starts at its minimum: use a negative cosine. h(t) = 22 − 20 cos(πt/2). Check: t = 0 gives 22 − 20 = 2. t = 2 gives 22 − 20 cos(π) = 22 + 20 = 42, the top, halfway through the turn. t = 1 gives 22 − 20 cos(π/2) = 22 m, the middle.",
+      "The two errors here are twins. First, the period is 2π ÷ B, not B: y = sin(4x) has period π/2, not 4, and a period of 12 hours needs B = 2π ÷ 12 = π/6. Second, the amplitude is the distance from the midline to the peak, not from the bottom to the top. A wave that runs from 2 to 42 has amplitude 20, not 40; the 40 is the full swing. Find the midline as the average of the maximum and minimum, (42 + 2) ÷ 2 = 22, and the amplitude as half the difference, (42 − 2) ÷ 2 = 20."
+     ],
+     "words": [
+      {
+       "w": "vertical shift",
+       "d": "the number D added to a wave, which moves its midline up or down"
+      },
+      {
+       "w": "maximum",
+       "d": "the highest value a wave reaches: midline plus amplitude"
+      },
+      {
+       "w": "minimum",
+       "d": "the lowest value a wave reaches: midline minus amplitude"
+      }
+     ],
+     "look": {
+      "type": "think",
+      "title": "Match the Numbers",
+      "text": "y = −2 cos(x/3) + 5. Amplitude: 2 (the sign only flips it). Period: 2π ÷ (1/3) = 6π. Midline: y = 5. Maximum: 7, minimum: 3. Because of the minus, the graph starts at its minimum, 3, when x = 0.",
+      "prompt": "For y = 4 sin(πx/6) − 1, give the amplitude, period, midline, maximum and minimum."
+     },
+     "check": [
+      {
+       "q": "The period of y = 5 sin(4x) is",
+       "choices": [
+        "4",
+        "π/2",
+        "8π",
+        "π/4"
+       ],
+       "a": 1,
+       "why": "Period = 2π ÷ B = 2π ÷ 4 = π/2. The 5 is the amplitude and does not affect the period."
+      },
+      {
+       "q": "A wave swings between −3 and 7. Its amplitude and midline are",
+       "choices": [
+        "amplitude 10, midline y = 2",
+        "amplitude 5, midline y = 4",
+        "amplitude 5, midline y = 2",
+        "amplitude 7, midline y = −3"
+       ],
+       "a": 2,
+       "why": "Midline = (7 + (−3)) ÷ 2 = 2; amplitude = (7 − (−3)) ÷ 2 = 5. The full swing of 10 is twice the amplitude."
+      },
+      {
+       "q": "Which function has period 10?",
+       "choices": [
+        "y = sin(10x)",
+        "y = sin(x/10)",
+        "y = 10 sin x",
+        "y = sin(πx/5)"
+       ],
+       "a": 3,
+       "why": "For period 10, B = 2π ÷ 10 = π/5. Check: 2π ÷ (π/5) = 10. y = sin(10x) has period π/5."
+      }
+     ]
+    },
+    {
+     "title": "Phase Shift and the Tangent Graph",
+     "mainIdea": "y = A sin(B(x − C)) + D shifts the wave right by C; tangent has period π and vertical asymptotes wherever cosine is zero.",
+     "reading": [
+      "Slide a sine wave to the right by π/3 and its equation becomes y = sin(x − π/3): every feature happens π/3 later. That horizontal slide is the *phase shift*. In the full form y = A sin(B(x − C)) + D the shift is C, to the right if C is positive and to the left if negative. The catch is that B must be factored out first. y = sin(2x − π/2) looks like a shift of π/2, but factoring gives sin(2(x − π/4)), so the shift is π/4. Divide the inside constant by B, or factor, before you read the shift. For y = 2 sin(3(x − π/6)) + 1: amplitude 2, period 2π/3, shift right π/6, midline 1.",
+      "To graph a shifted wave, find the five *key points* of the plain wave and add C to every x. For y = sin(x − π/3), the plain points x = 0, π/2, π, 3π/2, 2π become π/3, 5π/6, 4π/3, 11π/6, 7π/3, with the same heights 0, 1, 0, −1, 0. A shift of exactly a quarter period turns sine into cosine, which is why both functions exist: cos x = sin(x + π/2). In modeling, the phase shift is where the wave starts; a tide model built on cosine starts at a high tide, so C is the time of a high tide.",
+      "The tangent graph is different. Because tan x = sin x ÷ cos x, it blows up wherever cos x = 0, at x = π/2, 3π/2, and every π after: each of those lines is a *vertical asymptote*, a line the graph approaches but never touches. Between asymptotes the graph climbs from far below through a zero to far above. It passes through (0, 0), (π/4, 1) and (−π/4, −1). Its period is π, not 2π, because the slope of the line through the origin repeats every half turn. For y = tan(3x) the period is π ÷ 3 and the asymptotes are at x = π/6 + kπ/3. The common error is to give tangent the period 2π and to draw it with peaks; it has no maximum or minimum."
+     ],
+     "words": [
+      {
+       "w": "phase shift",
+       "d": "the horizontal slide C in y = A sin(B(x − C)) + D"
+      },
+      {
+       "w": "key points",
+       "d": "the five points that mark one cycle: start, peak, middle, trough, end"
+      },
+      {
+       "w": "vertical asymptote",
+       "d": "a vertical line a graph gets closer and closer to but never crosses"
+      }
+     ],
+     "look": {
+      "type": "think",
+      "title": "Find the Shift",
+      "text": "y = 3 cos(2x + π) + 4. Factor the inside: 2x + π = 2(x + π/2), so the shift is π/2 to the left, not π. Period 2π ÷ 2 = π, amplitude 3, midline y = 4, maximum 7, minimum 1.",
+      "prompt": "Give the amplitude, period, phase shift and midline for y = 5 sin(4x − π) − 2."
+     },
+     "check": [
+      {
+       "q": "The phase shift of y = sin(3x − π) is",
+       "choices": [
+        "π/3 to the right",
+        "π to the right",
+        "3π to the right",
+        "3 to the right"
+       ],
+       "a": 0,
+       "why": "Factor: 3x − π = 3(x − π/3), so C = π/3 and the shift is π/3 to the right."
+      },
+      {
+       "q": "The first vertical asymptote of y = tan x to the right of x = 0 is at",
+       "choices": [
+        "x = π",
+        "x = π/2",
+        "x = 0",
+        "x = 2π"
+       ],
+       "a": 1,
+       "why": "tan x = sin x ÷ cos x is undefined where cos x = 0, and the first such x past 0 is π/2."
+      },
+      {
+       "q": "The period of y = tan(2x) is",
+       "choices": [
+        "π",
+        "4π",
+        "π/2",
+        "2"
+       ],
+       "a": 2,
+       "why": "Tangent's basic period is π, so y = tan(2x) has period π ÷ 2 = π/2."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "title": "Modeling With Waves",
+   "lessons": [
+    {
+     "title": "Daylight and Tides",
+     "mainIdea": "From a maximum, a minimum, the period and the time of a peak or midline crossing, you can write a sine or cosine model for any regular cycle.",
+     "reading": [
+      "Chicago's daylight runs from about 9.2 hours on the shortest day to about 15.2 hours on the longest. Midline: (15.2 + 9.2) ÷ 2 = 12.2 hours. Amplitude: (15.2 − 9.2) ÷ 2 = 3 hours. Period: 365 days, so B = 2π/365. The daylight crosses its midline heading up near March 21, about day 80 of the year, which is where a sine wave starts. So the *model* is D(t) = 12.2 + 3 sin(2π(t − 80)/365), with t the day of the year. Test it: June 21 is day 172; (172 − 80) ÷ 365 × 2π ≈ 1.58 radians, about π/2, so sin ≈ 1 and D ≈ 15.2. Good. January 1: (1 − 80) ÷ 365 × 2π ≈ −1.36, sin ≈ −0.98, D ≈ 12.2 − 2.9 = 9.3 hours.",
+      "Tides follow the same recipe with a shorter clock. Suppose *high tide* at a pier is 8 ft at 2:00 a.m. and low tide is 2 ft at 8:00 a.m., six hours later, so the full *cycle* is 12 hours. Midline: (8 + 2) ÷ 2 = 5 ft. Amplitude: 3 ft. B = 2π ÷ 12 = π/6. A cosine wave starts at its peak, so use cosine with a shift to the peak time: h(t) = 5 + 3 cos(π(t − 2)/6), with t in hours after midnight. Check t = 2: cos(0) = 1, h = 8. Check t = 8: cos(π) = −1, h = 2. Check t = 5: cos(π/2) = 0, h = 5, the midline halfway between. At t = 14 the tide is high again, as it should be 12 hours later.",
+      "Real ocean tides repeat about every 12 hours and 25 minutes, because the Moon moves along its orbit as the Earth turns, so a careful model uses that period instead of 12. Lake Michigan has only tiny tides, a few centimeters, so Chicago beaches never notice this cycle. The recipe: midline from the average of max and min, amplitude from half the difference, B from 2π ÷ period, then pick sine or cosine and a shift that matches where the peak or midline crossing happens. The usual mistake is to shift by the peak time while using sine; sine starts at the midline, so a peak-time shift belongs with cosine."
+     ],
+     "words": [
+      {
+       "w": "model",
+       "d": "a formula chosen to match a real situation closely enough to make predictions"
+      },
+      {
+       "w": "cycle",
+       "d": "one complete repeat of a pattern, like one day of tides or one year of daylight"
+      },
+      {
+       "w": "high tide",
+       "d": "the highest water level in a tide cycle; the peak of the tide wave"
+      }
+     ],
+     "look": {
+      "type": "data",
+      "title": "Daylight From the Model, Chicago",
+      "rows": [
+       [
+        "Jan 1 (day 1)",
+        9.3
+       ],
+       [
+        "Mar 21 (day 80)",
+        12.2
+       ],
+       [
+        "Jun 21 (day 172)",
+        15.2
+       ],
+       [
+        "Sep 22 (day 265)",
+        12.1
+       ],
+       [
+        "Oct 31 (day 304)",
+        10.2
+       ],
+       [
+        "Dec 21 (day 355)",
+        9.2
+       ]
+      ],
+      "unit": "hours of daylight",
+      "cite": "values of D(t) = 12.2 + 3 sin(2π(t − 80)/365), rounded to tenths; close to almanac values",
+      "prompt": "Which two dates in the table have nearly equal daylight, and why does the model put them there?"
+     },
+     "check": [
+      {
+       "q": "A cycle runs from a high of 30 to a low of 10. Its midline and amplitude are",
+       "choices": [
+        "midline 20, amplitude 20",
+        "midline 10, amplitude 20",
+        "midline 30, amplitude 10",
+        "midline 20, amplitude 10"
+       ],
+       "a": 3,
+       "why": "Midline = (30 + 10) ÷ 2 = 20; amplitude = (30 − 10) ÷ 2 = 10."
+      },
+      {
+       "q": "A tide repeats every 12 hours. What is B in the model h = D + A cos(B(t − C))?",
+       "choices": [
+        "π/6",
+        "12",
+        "π/12",
+        "24π"
+       ],
+       "a": 0,
+       "why": "B = 2π ÷ period = 2π ÷ 12 = π/6. Check: 2π ÷ (π/6) = 12."
+      },
+      {
+       "q": "Which function is at its maximum when t = 0?",
+       "choices": [
+        "y = 3 sin(t) + 5",
+        "y = 3 cos(t) + 5",
+        "y = −3 cos(t) + 5",
+        "y = 3 sin(t − π/2) + 5"
+       ],
+       "a": 1,
+       "why": "cos(0) = 1, so 3 cos(t) + 5 starts at 8, its top. Sine starts at the midline, and −3 cos(t) + 5 starts at its bottom, 2."
+      }
+     ]
+    },
+    {
+     "title": "Sound and the Power Grid",
+     "mainIdea": "A pure tone is a sine wave in time; its frequency in hertz is cycles per second, and its period is 1 divided by the frequency.",
+     "reading": [
+      "A tuning fork for the note A vibrates 440 times each second. The air pressure at your ear rises and falls as a sine wave with *frequency* 440 *hertz* (Hz), which means 440 cycles per second. The period is the time for one cycle: T = 1 ÷ f = 1 ÷ 440 ≈ 0.00227 seconds, about 2.3 thousandths of a second. As a function of time, p(t) = A sin(2π × 440 × t) = A sin(880πt). The B value is 2πf because the period must be 2π ÷ B = 1 ÷ f. Doubling the frequency to 880 Hz gives the same note an *octave* higher; halving it to 220 Hz drops an octave.",
+      "Amplitude A is loudness: a louder A has bigger pressure swings but the same 440 cycles per second, so the pitch does not change. A softer A has the same period and a smaller A. A different note has a different B. Middle C is about 262 Hz, so its wave is p(t) = A sin(2π × 262 × t) with period about 0.0038 s. Most real sounds are sums of several sine waves at different frequencies, which is why a violin and a flute playing the same A sound different: the same main wave, with different smaller waves stacked on top.",
+      "The electricity in a U.S. wall outlet is also a sine wave. The voltage swings back and forth 60 times a second, 60 Hz, with a period of 1/60 ≈ 0.0167 s. Its peak is about 170 volts, so v(t) = 170 sin(120πt), where 120π = 2π × 60. The 120 volts printed on appliances is an averaged value, not the peak. When you read any wave in time, translate B into frequency with f = B ÷ 2π and period with T = 1 ÷ f. The common slip is to write sin(440t) for a 440 Hz tone; that wave has period 2π ÷ 440 ≈ 0.0143 s and frequency about 70 Hz, a much lower hum."
+     ],
+     "words": [
+      {
+       "w": "frequency",
+       "d": "the number of cycles per second, f = 1 ÷ period"
+      },
+      {
+       "w": "hertz",
+       "d": "the unit of frequency; 1 Hz is one cycle per second"
+      },
+      {
+       "w": "octave",
+       "d": "the interval between a note and the note with double its frequency"
+      }
+     ],
+     "look": {
+      "type": "data",
+      "title": "Octaves of the Note A",
+      "rows": [
+       [
+        "A2",
+        110
+       ],
+       [
+        "A3",
+        220
+       ],
+       [
+        "A4 (concert A)",
+        440
+       ],
+       [
+        "A5",
+        880
+       ],
+       [
+        "A6",
+        1760
+       ]
+      ],
+      "unit": "Hz",
+      "cite": "standard concert pitch A4 = 440 Hz; each octave doubles the frequency",
+      "prompt": "What is the period of A6 in seconds? How many times more cycles per second does A6 complete than A2?"
+     },
+     "check": [
+      {
+       "q": "A tone has frequency 250 Hz. Its period is",
+       "choices": [
+        "250 s",
+        "0.025 s",
+        "0.004 s",
+        "4 s"
+       ],
+       "a": 2,
+       "why": "T = 1 ÷ f = 1 ÷ 250 = 0.004 seconds, four thousandths of a second per cycle."
+      },
+      {
+       "q": "Which function models a 100 Hz tone?",
+       "choices": [
+        "y = sin(100t)",
+        "y = sin(100πt)",
+        "y = sin(2πt/100)",
+        "y = sin(200πt)"
+       ],
+       "a": 3,
+       "why": "B = 2πf = 2π × 100 = 200π. Check: period = 2π ÷ 200π = 1/100 s, so 100 cycles per second."
+      },
+      {
+       "q": "If a wave's amplitude doubles but its frequency stays 440 Hz, the sound is",
+       "choices": [
+        "louder, at the same pitch",
+        "higher in pitch, at the same loudness",
+        "an octave higher",
+        "the same in every way"
+       ],
+       "a": 0,
+       "why": "Amplitude sets loudness; frequency sets pitch. Doubling the amplitude changes only the loudness."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "title": "Equations and Triangles",
+   "lessons": [
+    {
+     "title": "Solving Trigonometric Equations",
+     "mainIdea": "Isolate the trig function, find the reference angle, use the quadrants where the sign fits, then add multiples of the period for all solutions.",
+     "reading": [
+      "Solve sin x = 1/2 for 0 ≤ x < 2π. The reference angle with sine 1/2 is π/6. Sine is positive in quadrants I and II, so the two solutions on one turn are x = π/6 and x = π − π/6 = 5π/6. Check the second: sin(5π/6) is the y-coordinate of (−√3/2, 1/2), which is 1/2. Because sine repeats every 2π, every solution has the form π/6 + 2πk or 5π/6 + 2πk for any integer k. That is the *general solution*. Most problems ask only for one turn, but 'find all solutions' means to write those families.",
+      "When the equation has extra pieces, *isolate* the trig function first. 2 cos x + 1 = 0 becomes cos x = −1/2. Reference angle: π/3, since cos(π/3) = 1/2. Cosine is negative in quadrants II and III: x = π − π/3 = 2π/3 and x = π + π/3 = 4π/3. For tan x = 1, the reference angle is π/4 and tangent is positive in I and III: x = π/4 and 5π/4. Since tangent's period is π, all solutions are π/4 + πk. For a value that is not special, use the inverse function: sin x = 0.3 gives x = *arcsin*(0.3) ≈ 0.305, and the quadrant II partner is π − 0.305 ≈ 2.837.",
+      "The most common mistake is to stop after one answer. A calculator's arcsin gives only one angle, between −π/2 and π/2, and the second solution on the turn is always π minus that. For cosine, arccos gives an angle between 0 and π, and the partner is 2π minus it. Another mistake is dividing an equation like sin x cos x = 0 by sin x; that throws away the solutions where sin x = 0. Factor instead: sin x = 0 or cos x = 0, giving x = 0, π/2, π, 3π/2. Always test each answer by substituting it back."
+     ],
+     "words": [
+      {
+       "w": "general solution",
+       "d": "all solutions of a trig equation, written with + 2πk (or + πk for tangent)"
+      },
+      {
+       "w": "isolate",
+       "d": "get the trig function alone on one side, like cos x = −1/2"
+      },
+      {
+       "w": "arcsin",
+       "d": "the inverse sine on a calculator; it returns one angle between −π/2 and π/2"
+      }
+     ],
+     "look": {
+      "type": "think",
+      "title": "Two Answers on the Circle",
+      "text": "Solve 2 sin x − √3 = 0 on [0, 2π). Isolate: sin x = √3/2. Reference angle π/3. Sine is positive in I and II: x = π/3 and 2π/3. Check: both points, (1/2, √3/2) and (−1/2, √3/2), have height √3/2.",
+      "prompt": "Solve 2 cos x − √2 = 0 on [0, 2π). Which quadrants are involved, and which two angles?"
+     },
+     "check": [
+      {
+       "q": "The solutions of sin x = −1/2 on [0, 2π) are",
+       "choices": [
+        "π/6 and 5π/6",
+        "7π/6 and 11π/6",
+        "7π/6 only",
+        "5π/6 and 7π/6"
+       ],
+       "a": 1,
+       "why": "Reference angle π/6; sine is negative in quadrants III and IV: π + π/6 = 7π/6 and 2π − π/6 = 11π/6."
+      },
+      {
+       "q": "Solve 2 cos x = 1 on [0, 2π).",
+       "choices": [
+        "π/3 only",
+        "π/6 and 11π/6",
+        "π/3 and 5π/3",
+        "2π/3 and 4π/3"
+       ],
+       "a": 2,
+       "why": "cos x = 1/2, reference angle π/3, cosine positive in I and IV: π/3 and 2π − π/3 = 5π/3."
+      },
+      {
+       "q": "The solutions of tan x = −1 on [0, 2π) are",
+       "choices": [
+        "π/4 and 5π/4",
+        "3π/4 only",
+        "π/4 and 3π/4",
+        "3π/4 and 7π/4"
+       ],
+       "a": 3,
+       "why": "Reference angle π/4; tangent is negative in II and IV: π − π/4 = 3π/4 and 2π − π/4 = 7π/4."
+      }
+     ]
+    },
+    {
+     "title": "The Law of Sines",
+     "mainIdea": "In any triangle, a ÷ sin A = b ÷ sin B = c ÷ sin C, so two angles and one side determine the rest.",
+     "reading": [
+      "A surveyor on the Chicago Riverwalk wants the distance across the water to a doorway on the far bank without crossing. She marks two points A and B on her side, 100 m apart, and calls the doorway C. At A she measures the angle to C as 40°; at B the angle is 60°. The third angle is C = 180° − 40° − 60° = 80°. In any triangle each side is *proportional* to the sine of the angle across from it: a ÷ sin A = b ÷ sin B = c ÷ sin C, the *law of sines*. Here c = 100 is the side across from C. So b = c × sin B ÷ sin C = 100 × sin 60° ÷ sin 80° ≈ 100 × 0.866 ÷ 0.985 ≈ 87.9 m, the distance from A to the doorway.",
+      "The distance from B: a = 100 × sin 40° ÷ sin 80° ≈ 100 × 0.643 ÷ 0.985 ≈ 65.3 m. Check the sizes: the largest side should sit across from the largest angle, and 100 m is across from 80°, the largest, while 65.3 m is across from 40°, the smallest. It fits. The law works because the triangle's height, dropped from any vertex, can be written two ways: h = b sin A = a sin B, and dividing gives a ÷ sin A = b ÷ sin B. Any pair of the three ratios can be used; pick the pair where three of the four pieces are known.",
+      "A second setup: angle A = 30°, angle C = 45°, side a = 8. Then c = 8 × sin 45° ÷ sin 30° = 8 × 0.7071 ÷ 0.5 ≈ 11.3. Watch two traps. First, the law pairs each side with its own *opposite angle*; matching a with B gives nonsense. Second, when you know two sides and an angle that is not between them, the sine may point to two possible triangles, because sin θ = sin(180° − θ). And if the problem gives two sides and the angle between them, no side-angle pair is known, so the law of sines cannot start; that is the job of the law of cosines."
+     ],
+     "words": [
+      {
+       "w": "law of sines",
+       "d": "a ÷ sin A = b ÷ sin B = c ÷ sin C in any triangle"
+      },
+      {
+       "w": "opposite angle",
+       "d": "the angle across from a side; side a is opposite angle A"
+      },
+      {
+       "w": "proportional",
+       "d": "related by a constant ratio; each side divided by the sine of its opposite angle gives the same number"
+      }
+     ],
+     "look": {
+      "type": "think",
+      "title": "Across the Field",
+      "text": "Angles A = 35° and B = 75° with side c = 50 m between them. C = 180° − 35° − 75° = 70°. a = 50 × sin 35° ÷ sin 70° ≈ 50 × 0.5736 ÷ 0.9397 ≈ 30.5 m. b = 50 × sin 75° ÷ sin 70° ≈ 50 × 0.9659 ÷ 0.9397 ≈ 51.4 m.",
+      "prompt": "Angles A = 50° and B = 60°, side a = 20. Find b and c to the nearest tenth."
+     },
+     "check": [
+      {
+       "q": "In a triangle A = 30°, B = 90° and a = 5. Find b.",
+       "choices": [
+        "10",
+        "2.5",
+        "5",
+        "8.66"
+       ],
+       "a": 0,
+       "why": "b = a × sin B ÷ sin A = 5 × 1 ÷ 0.5 = 10. In a 30-60-90 triangle the hypotenuse is twice the short leg."
+      },
+      {
+       "q": "Which set of facts lets you use the law of sines right away?",
+       "choices": [
+        "Two sides and the angle between them",
+        "Two angles and any side",
+        "Three sides",
+        "One angle and one side that is not opposite it"
+       ],
+       "a": 1,
+       "why": "With two angles you get the third, so every side has a known opposite angle. Two sides and the included angle need the law of cosines."
+      },
+      {
+       "q": "A = 40°, C = 65°, c = 18. Find a to the nearest tenth.",
+       "choices": [
+        "25.4",
+        "11.6",
+        "12.8",
+        "18.0"
+       ],
+       "a": 2,
+       "why": "a = 18 × sin 40° ÷ sin 65° ≈ 18 × 0.643 ÷ 0.906 ≈ 12.8. Flipping the ratio would wrongly give 25.4."
+      }
+     ]
+    },
+    {
+     "title": "The Law of Cosines",
+     "mainIdea": "c^2 = a^2 + b^2 − 2ab cos C handles two sides with the included angle, or three sides, and turns into the Pythagorean theorem when C = 90°.",
+     "reading": [
+      "Two roads leave a town at an angle of 60°. One car drives 5 miles on the first road, another drives 7 miles on the second. How far apart are they? That triangle has two sides and the angle between them, so use the *law of cosines*: c^2 = a^2 + b^2 − 2ab cos C, where C is the *included angle* between sides a and b, and c is across from it. Here c^2 = 5^2 + 7^2 − 2 × 5 × 7 × cos 60° = 25 + 49 − 70 × 0.5 = 74 − 35 = 39, so c = √39 ≈ 6.24 miles. If the angle were 90°, cos 90° = 0 and the formula becomes c^2 = a^2 + b^2, the Pythagorean theorem. The extra term corrects for the angle being smaller or larger than a right angle.",
+      "With three sides known, solve for an angle. A triangle has sides 5, 6 and 7. To find the angle C across from the 7: 7^2 = 5^2 + 6^2 − 2 × 5 × 6 × cos C, so 49 = 61 − 60 cos C, so 60 cos C = 12, cos C = 0.2, and C = arccos(0.2) ≈ 78.5°. Another: sides 3, 5, 7, angle across from the 7: 49 = 9 + 25 − 30 cos C, so 30 cos C = −15, cos C = −0.5, C = 120°. A negative cosine means the angle is *obtuse*, and the largest angle sits across from the largest side, as it should.",
+      "Two errors ruin this formula. Dropping the minus sign, writing a^2 + b^2 + 2ab cos C, makes every answer too long; for the two cars it gives c^2 = 109 and 10.4 miles. But at 60° the cars are closer together than they would be at 90°, where the distance would be √74 ≈ 8.6 miles, so 10.4 cannot be right. The second error is to use the wrong angle: the angle in the formula must be the one between the two sides you square. Choosing the law: two angles and a side, law of sines; two sides and the included angle, or three sides, law of cosines."
+     ],
+     "words": [
+      {
+       "w": "law of cosines",
+       "d": "c^2 = a^2 + b^2 − 2ab cos C, where C is the angle between sides a and b"
+      },
+      {
+       "w": "included angle",
+       "d": "the angle between two given sides of a triangle"
+      },
+      {
+       "w": "obtuse",
+       "d": "an angle larger than 90°; its cosine is negative"
+      }
+     ],
+     "look": {
+      "type": "think",
+      "title": "Which Law?",
+      "text": "Sides 8 and 11 with a 40° angle between them: law of cosines. c^2 = 64 + 121 − 176 cos 40° ≈ 185 − 134.8 = 50.2, so c ≈ 7.1. Angles 40° and 75° with the side between them 12: law of sines, after finding the third angle, 65°.",
+      "prompt": "A triangle has sides 4, 6 and 8. Find its largest angle to the nearest degree."
+     },
+     "check": [
+      {
+       "q": "a = 6, b = 8 and the angle between them is 60°. Find c.",
+       "choices": [
+        "10",
+        "about 12.2",
+        "2",
+        "about 7.2"
+       ],
+       "a": 3,
+       "why": "c^2 = 36 + 64 − 2 × 6 × 8 × 0.5 = 100 − 48 = 52, so c = √52 ≈ 7.2. The 10 would need a 90° angle."
+      },
+      {
+       "q": "A triangle has sides 4, 5 and 6. What is the cosine of the angle across from the 6?",
+       "choices": [
+        "0.125",
+        "−0.125",
+        "0.875",
+        "0.625"
+       ],
+       "a": 0,
+       "why": "36 = 16 + 25 − 2 × 4 × 5 × cos C, so 40 cos C = 41 − 36 = 5 and cos C = 5 ÷ 40 = 0.125."
+      },
+      {
+       "q": "When C = 90°, the law of cosines becomes",
+       "choices": [
+        "c^2 = a^2 + b^2 − 2ab",
+        "c^2 = a^2 + b^2",
+        "c = a + b",
+        "c^2 = a^2 − b^2"
+       ],
+       "a": 1,
+       "why": "cos 90° = 0, so the term 2ab cos C vanishes, leaving the Pythagorean theorem."
+      }
+     ]
+    }
+   ]
+  }
+ ],
+ "review": [
+  {
+   "q": "210° in radians is",
+   "choices": [
+    "5π/6",
+    "7π/12",
+    "7π/6",
+    "210π"
+   ],
+   "a": 2,
+   "why": "210 × π/180 = 7π/6. That is π + π/6, a little past half a turn."
+  },
+  {
+   "q": "sin(5π/6) = ?",
+   "choices": [
+    "−1/2",
+    "√3/2",
+    "−√3/2",
+    "1/2"
+   ],
+   "a": 3,
+   "why": "5π/6 = 150° is in quadrant II with reference angle π/6, and sine is positive there: 1/2."
+  },
+  {
+   "q": "cos θ = −3/5 and θ is in quadrant II. What is sin θ?",
+   "choices": [
+    "4/5",
+    "−4/5",
+    "2/5",
+    "3/5"
+   ],
+   "a": 0,
+   "why": "sin^2 θ = 1 − 9/25 = 16/25, so sin θ = ±4/5. Sine is positive in quadrant II: 4/5."
+  },
+  {
+   "q": "For y = 2 sin(3x) − 1, the amplitude, period and midline are",
+   "choices": [
+    "3, 2π/3, y = −1",
+    "2, 2π/3, y = −1",
+    "2, 3, y = −1",
+    "2, 6π, y = −1"
+   ],
+   "a": 1,
+   "why": "Amplitude |A| = 2, period 2π ÷ 3 = 2π/3, midline y = D = −1."
+  },
+  {
+   "q": "Which function is y = sin x shifted π/4 to the right?",
+   "choices": [
+    "y = sin(x + π/4)",
+    "y = sin(x) − π/4",
+    "y = sin(x − π/4)",
+    "y = sin(πx/4)"
+   ],
+   "a": 2,
+   "why": "A shift right by C replaces x with x − C. Adding π/4 inside shifts left; subtracting outside moves the graph down."
+  },
+  {
+   "q": "A quantity swings between a high of 20 and a low of 4 with period 8, peaking at t = 0. Which model fits?",
+   "choices": [
+    "y = 12 + 16 cos(πt/4)",
+    "y = 12 + 8 sin(πt/4)",
+    "y = 12 + 8 cos(8t)",
+    "y = 12 + 8 cos(πt/4)"
+   ],
+   "a": 3,
+   "why": "Midline (20 + 4) ÷ 2 = 12, amplitude (20 − 4) ÷ 2 = 8, B = 2π ÷ 8 = π/4, and cosine starts at its peak."
+  },
+  {
+   "q": "The solutions of cos x = 0 on [0, 2π) are",
+   "choices": [
+    "π/2 and 3π/2",
+    "0 and π",
+    "π/2 only",
+    "0 and 2π"
+   ],
+   "a": 0,
+   "why": "Cosine is the x-coordinate, which is 0 at the top and bottom of the circle: π/2 and 3π/2."
+  },
+  {
+   "q": "Two sides of a triangle are 5 and 8 with a 60° angle between them. The third side is",
+   "choices": [
+    "about 9.4",
+    "7",
+    "about 11.4",
+    "3"
+   ],
+   "a": 1,
+   "why": "c^2 = 25 + 64 − 2 × 5 × 8 × 0.5 = 89 − 40 = 49, so c = 7. Forgetting the last term gives √89 ≈ 9.4."
+  }
+ ]
+}

@@ -1,0 +1,267 @@
+{
+ "n": 60, "title": "Sampling, Inference and Claims", "years": "Statistics",
+ "bigQuestion": "How can a few hundred people tell us about millions, and when should we refuse to believe what a number claims?",
+ "story": {
+  "title": "Two Million Ballots and the Wrong Answer",
+  "kicker": "In 1936 a famous magazine collected more than two million responses and still predicted the wrong president. The problem was not the count.",
+  "paragraphs": [
+   "In the fall of 1936 the Literary Digest, a popular American magazine, ran the biggest straw poll anyone had ever attempted. It mailed roughly ten million postcard ballots asking who the reader would vote for: President Franklin Roosevelt or the Republican challenger, Alf Landon. More than two million cards came back. The magazine had called the previous several elections correctly with the same method, and it announced its forecast with confidence: Landon would win comfortably, with a clear majority of the vote.",
+   "Roosevelt won in a landslide, carrying all but two states and roughly 61% of the popular vote. The magazine had missed by nearly 20 percentage points with a sample a thousand times larger than most polls use today. What went wrong? The Digest had built its mailing list from telephone directories, automobile registrations and its own subscribers. In the middle of the Great Depression, people who owned a phone or a car were, on average, wealthier than people who did not, and wealthier voters leaned toward Landon. The list itself was tilted before a single card was mailed.",
+   "There was a second problem. Only about one card in four came back. People who bother to return a mail-in ballot are not a random slice of the people who received one; they tend to be angrier, more engaged, or more eager for change. That year, the voters most motivated to respond were the ones who wanted Roosevelt out. Two tilts, one in who was asked and one in who answered, pointed the same way, and no amount of extra postcards could fix them. A bigger biased sample is just a bigger mistake.",
+   "Meanwhile a young researcher named George Gallup predicted Roosevelt's win using a sample of only tens of thousands of people, chosen to look like the whole electorate. His question was not 'how many people can we ask?' but 'who are we asking, and who are we missing?' That question is the heart of this chapter. You will learn how a small random sample can stand in for a huge population, how much it can be trusted, how to test a claim against data, and how to read a headline built on numbers without being fooled."
+  ],
+  "think": "Suppose the Literary Digest had mailed twenty million cards instead of ten million, using the same lists. Would its prediction have gotten better, worse, or stayed about the same? Explain."
+ },
+ "sections": [
+  {"title": "Collecting Data That Can Be Trusted", "lessons": [
+   {
+    "title": "Populations, Samples and Statistics",
+    "mainIdea": "A population is the whole group you want to know about; a sample is the part you actually measure, and a statistic from it estimates a parameter of the population.",
+    "reading": [
+     "Chicago Public Schools serves more than 300,000 students. A student newspaper wants to know what fraction of them ride a CTA bus or train to school. Asking every student is a *census*, which is slow and expensive. Instead the paper asks 500 students. The whole group of interest, every CPS student, is the *population*. The 500 who are asked are the *sample*. If 310 of the 500 say yes, the sample proportion is 310 ÷ 500 = 0.62, or 62%.",
+     "That 62% is a *statistic*: a number computed from the sample. The true fraction of all CPS students who ride the CTA, whatever it is, is a *parameter*: a fixed number about the population that we usually never learn exactly. Statistics estimate parameters. A second sample of 500 might give 295 ÷ 500 = 0.59. Neither is wrong; each is an estimate, and the rest of the chapter is about how close such estimates tend to be. Keep the vocabulary straight: parameter goes with population, statistic goes with sample.",
+     "The same words apply to averages. If the mean commute time in the sample of 500 is 34 minutes, that sample mean is a statistic estimating the parameter, the mean commute of all 300,000 students. Two common confusions: calling the sample the population (the 500 students are not 'everyone'), and treating the statistic as if it were exact (writing 'exactly 62% of CPS students ride the CTA'). A careful sentence says 'about 62% of the students surveyed,' and then asks how far off that might be."
+    ],
+    "words": [
+     {"w": "population", "d": "the entire group you want to draw conclusions about"},
+     {"w": "sample", "d": "the part of the population you actually measure"},
+     {"w": "census", "d": "an attempt to measure every member of the population, like the U.S. Census every ten years"},
+     {"w": "parameter", "d": "a number that describes the whole population, usually unknown"},
+     {"w": "statistic", "d": "a number computed from a sample, used to estimate a parameter"}
+    ],
+    "look": {"type": "data", "title": "Counting Everyone: 2020 Census Populations", "rows": [["Illinois", 12813000], ["Cook County", 5276000], ["City of Chicago", 2746000], ["Aurora", 181000], ["Springfield", 114000]], "unit": "people (rounded to the nearest thousand)", "cite": "U.S. Census Bureau, 2020 Census counts, rounded", "prompt": "The Census tries to count everyone rather than sample. About what fraction of Illinois residents live in Chicago? If a pollster wanted a sample that looks like Illinois, why would sampling only in Chicago be a problem?"},
+    "check": [
+     {"q": "A newspaper surveys 500 of the more than 300,000 CPS students. Which is the population?", "choices": ["The 500 students surveyed", "All CPS students", "The 310 who ride the CTA", "The newspaper staff"], "a": 1, "why": "The population is the whole group the paper wants to describe, all CPS students. The 500 are the sample."},
+     {"q": "In the survey, 310 of 500 students ride the CTA. The value 62% is best called what?", "choices": ["A statistic", "A parameter", "A census", "A population"], "a": 0, "why": "62% is computed from the sample, so it is a statistic. The true percent for all students is the parameter it estimates."},
+     {"q": "Why do two random samples of 500 from the same population usually give slightly different percentages?", "choices": ["One of the samples must have been done wrong", "The population changed between samples", "Different samples contain different people, so estimates vary", "Percentages cannot be computed from samples"], "a": 2, "why": "Sampling variability is normal: each random sample is a different set of people, so the statistic moves a little even when the parameter does not."}
+    ]
+   },
+   {
+    "title": "Surveys, Observational Studies and Experiments",
+    "mainIdea": "A survey asks, an observational study watches, and an experiment assigns treatments; only an experiment can show that one thing causes another.",
+    "reading": [
+     "Three ways to collect data answer three different kinds of question. A *survey* asks people to report something: who they will vote for, how many hours they sleep, whether they ride the CTA. An *observational study* records what people already do and looks for patterns, such as comparing the grades of students who eat breakfast with the grades of those who skip it. An *experiment* actively assigns a *treatment*: the researcher decides which students get breakfast and which do not, then compares.",
+     "The difference matters because of *confounding*. Suppose the observational study finds that breakfast eaters average 8 points higher. Did breakfast cause the gain? Maybe. But students who eat breakfast may also sleep more, have more organized mornings, or come from homes with more support, and any of those could be the real reason. A hidden variable tangled up with the one you are studying is a confounder, and observation alone cannot untangle it. The study shows an association, not a cause.",
+     "An experiment breaks the tangle by random assignment. Flip a coin for each of 200 volunteers: heads eats a provided breakfast for a month, tails does not. Chance, not personal habits, decides who is in which group, so sleep, family support and everything else are spread roughly evenly across both groups. If the breakfast group then scores higher, breakfast is the most reasonable explanation. Whenever you read that something 'causes' or 'leads to' an outcome, ask: did the researchers assign it, or just observe it?"
+    ],
+    "words": [
+     {"w": "survey", "d": "a study that collects data by asking people questions"},
+     {"w": "observational study", "d": "a study that records what happens without controlling who gets what"},
+     {"w": "experiment", "d": "a study in which the researcher assigns treatments to subjects, ideally at random"},
+     {"w": "treatment", "d": "the condition given to a group in an experiment, such as a new drug or a new lesson plan"},
+     {"w": "confounding", "d": "when a hidden variable is mixed up with the one being studied, so you cannot tell which caused the result"}
+    ],
+    "look": {"type": "think", "title": "Ice Cream and Drownings", "text": "In many cities, months with higher ice cream sales also have more drownings. Nobody assigned ice cream to anyone; this is an observation. The confounder is summer heat: hot weather sends people both to the ice cream stand and to the pool or lake. Ice cream sales and drownings rise together without one causing the other.", "prompt": "Describe an observational finding you have heard reported as a cause (for example, about screen time, coffee or a diet). Name a possible confounder, then sketch an experiment that could actually test the claim."},
+    "check": [
+     {"q": "Researchers compare test scores of students who chose to attend tutoring with scores of students who did not. What type of study is this?", "choices": ["An experiment", "A census", "A survey", "An observational study"], "a": 3, "why": "The students chose for themselves; the researchers only observed and compared. Nothing was assigned, so it is observational."},
+     {"q": "What is the main advantage of randomly assigning subjects to treatment groups?", "choices": ["It makes the sample larger", "It guarantees every subject improves", "It spreads hidden differences evenly across groups, so the treatment is the likely cause of any difference", "It removes the need for a control group"], "a": 2, "why": "Random assignment balances confounders such as habits or background between groups, so a difference in outcomes can be attributed to the treatment."},
+     {"q": "A study finds that people who own more books have higher incomes. Which is the most careful conclusion?", "choices": ["Buying books raises income", "Owning books and income are associated, but a confounder such as education could explain both", "Higher income causes book buying", "The study proves nothing at all"], "a": 1, "why": "An observational link is an association. Education plausibly drives both book ownership and income, and the study cannot rule it out, but the association is still real information."}
+    ]
+   },
+   {
+    "title": "Random Samples and Sources of Bias",
+    "mainIdea": "A simple random sample gives every group of the same size the same chance of being chosen; anything that tilts who is asked or who answers is bias.",
+    "reading": [
+     "A *simple random sample* is chosen so that every possible group of the chosen size has the same chance of being picked. To draw 60 students at random from a school of 1,200, number the students 1 to 1,200, and let a random number generator pick 60 different numbers. No student can lobby to be included or excluded, and no teacher's opinion of who is 'typical' enters in. That is the point: chance does the choosing, so the sample's tilt, if any, is only the luck of the draw, which the next lessons show how to measure.",
+     "*Bias* is a systematic tilt, a reason the sample tends to differ from the population in a predictable direction. The Literary Digest showed two kinds. *Undercoverage* means parts of the population never had a chance to be picked: no phone, no car, no subscription meant no ballot. *Nonresponse* bias arises when the people who answer differ from those who do not. A third kind, *voluntary response*, is worse still: a website poll that anyone can click answers only the question 'who felt strongly enough to click?' A survey of sports fans who volunteer to rate the team's coach will not describe the average fan.",
+     "Convenience samples, such as asking the first 50 people at the cafeteria door, share the same flaw: the people at the door at 11:15 are not a random slice of the school. Wording matters too. 'Do you support the plan to cut wasteful spending?' and 'Do you support the plan to cut school programs?' can describe the same plan and get opposite answers. When you judge a sample, ask three questions: who was left out, who did not answer, and what exactly was asked?"
+    ],
+    "words": [
+     {"w": "simple random sample", "d": "a sample chosen by chance so every group of the same size is equally likely to be picked"},
+     {"w": "bias", "d": "a systematic tilt that makes a sample differ from the population in a predictable direction"},
+     {"w": "undercoverage", "d": "when part of the population has no chance of being selected"},
+     {"w": "nonresponse", "d": "when the people who refuse or fail to answer differ from those who do"},
+     {"w": "voluntary response", "d": "a sample made of people who chose to participate, usually those with strong opinions"}
+    ],
+    "look": {"type": "think", "title": "Four Ways to Ask the School", "text": "A student council wants to know what fraction of the 1,200 students want a later start time. Plan A: post a poll on social media and count the votes. Plan B: ask the 40 students in the council's own homerooms. Plan C: number all students and pick 100 with a random number generator, then follow up with anyone who does not reply. Plan D: stand at the parking lot exit and ask 100 drivers.", "prompt": "Name the type of bias in Plans A, B and D. Why is the follow-up step in Plan C important, and what would go wrong without it?"},
+    "check": [
+     {"q": "A TV station asks viewers to text in whether they support a new stadium, and 78% say yes. What is the main problem?", "choices": ["The sample is too small", "Voluntary response: only people who felt strongly bothered to text", "Texting is not a valid way to collect data", "The station should have used a census"], "a": 1, "why": "People who choose to respond are not a random slice of the viewers, let alone the city. The 78% describes the texters, not the public."},
+     {"q": "A poll of Illinois voters is drawn only from people with landline phones. What kind of bias is this?", "choices": ["Nonresponse bias", "Wording bias", "Undercoverage", "Random error"], "a": 2, "why": "Voters without a landline never had a chance to be selected, which is undercoverage. Nonresponse concerns people who were selected but did not answer."},
+     {"q": "Which method produces a simple random sample of 60 from a school of 1,200 students?", "choices": ["Number every student and let a random number generator pick 60 distinct numbers", "Take the first 60 students who arrive on Monday", "Ask each teacher to nominate 3 typical students", "Choose 60 students from the honors classes"], "a": 0, "why": "Only the numbered random draw gives every group of 60 the same chance. Arrival time, teacher choice and class type all create bias."}
+    ]
+   }
+  ]},
+  {"title": "How Much Do Samples Vary?", "lessons": [
+   {
+    "title": "Why Samples Differ From Each Other",
+    "mainIdea": "Even perfect random samples give different results each time; the pattern of those results, the sampling distribution, is predictable.",
+    "reading": [
+     "Imagine a jar of 10,000 beads, exactly half red and half white, so the true proportion of red is p = 0.5. Scoop out 100 beads at random and count the red ones. You might get 47. Put them back, stir, scoop again: 53. Again: 49, 55, 44. None of these is wrong. This bead-to-bead wobble is *sampling variability*, and it happens even when the sampling is done perfectly. The parameter never moved; only the sample did.",
+     "Now imagine doing 1,000 scoops of 100 and making a histogram of the 1,000 sample proportions. That histogram is the *sampling distribution*. For random samples it has a beautiful regularity: it is centered at the true value 0.5, it is roughly bell-shaped, and its spread depends on the sample size. Most scoops of 100 fall between 0.40 and 0.60. If instead each scoop held 400 beads, the histogram would be much narrower, with most scoops between 0.45 and 0.55.",
+     "Two lessons follow. First, a single sample's proportion is a draw from this distribution, so it is 'off' by a typical amount you can estimate. Second, bigger samples shrink that typical amount, but only for random samples. If the jar were stirred badly so that red beads sat on top, every scoop would run red, and scooping 400 instead of 100 would not help. Sampling variability is chance and can be reduced by size; bias is a tilt and cannot."
+    ],
+    "words": [
+     {"w": "sampling variability", "d": "the natural chance difference between one random sample's result and the next"},
+     {"w": "sampling distribution", "d": "the pattern of values a statistic takes over many repeated random samples"},
+     {"w": "sample size", "d": "the number of individuals in the sample, written n"}
+    ],
+    "look": {"type": "data", "title": "Ten Random Scoops of 100 Beads From a Half-Red Jar", "rows": [["scoop 1", 47], ["scoop 2", 53], ["scoop 3", 49], ["scoop 4", 55], ["scoop 5", 44], ["scoop 6", 51], ["scoop 7", 50], ["scoop 8", 46]], "unit": "red beads out of 100", "cite": "example results generated for this lesson from a jar with exactly 50% red beads", "prompt": "What is the mean of the eight counts? How far is the farthest scoop from 50? If the jar were 60% red, roughly where would you expect the scoops to cluster?"},
+    "check": [
+     {"q": "A jar is exactly half red. A random scoop of 100 beads has 44 red. What is the best explanation?", "choices": ["The jar is not really half red", "The scoop was done incorrectly", "Sampling variability: random samples naturally vary around the true value", "Counting 44 is impossible for a fair scoop"], "a": 2, "why": "Even from a perfectly mixed jar, scoops of 100 typically range from about 40 to 60 red. A 44 is ordinary chance variation."},
+     {"q": "Which change makes the sampling distribution of a sample proportion narrower?", "choices": ["Using a larger random sample", "Using a smaller random sample", "Asking a more strongly worded question", "Sampling only from people who volunteer"], "a": 0, "why": "Larger random samples vary less from sample to sample. Wording and volunteering add bias, which is a tilt, not a change in spread."},
+     {"q": "A sampling distribution built from many random samples of the same size is centered where?", "choices": ["At zero", "At the largest sample value", "At the sample size n", "At the true population value"], "a": 3, "why": "Random samples scatter evenly around the parameter, so the center of the sampling distribution is the population value itself."}
+    ]
+   },
+   {
+    "title": "Simulating a Sampling Distribution",
+    "mainIdea": "Simulate many random samples with coins, dice or a computer to see how far a statistic typically strays; the spread shrinks like 1 divided by the square root of n.",
+    "reading": [
+     "You do not need a jar of beads. To *simulate* sampling 100 people from a population where half say yes, flip a coin 100 times and count heads. Each run of 100 flips is one simulated sample. Do it 50 times and you have a rough sampling distribution. A computer can do 10,000 runs in a second, but the idea is the same: rebuild the chance process, run it many times, and look at what the results usually do.",
+     "The simulated histogram has a spread you can predict with the binomial formula from the last chapter. For a proportion, the *standard error* is √(p × (1 − p) ÷ n). With p = 0.5 and n = 100: √(0.5 × 0.5 ÷ 100) = √0.0025 = 0.05. So about 95% of simulated sample proportions land within 2 × 0.05 = 0.10 of 0.5, that is, between 0.40 and 0.60, matching the bead scoops. With n = 400: √(0.25 ÷ 400) = √0.000625 = 0.025, so 95% land between 0.45 and 0.55.",
+     "Notice the pattern: quadrupling n from 100 to 400 cut the spread in half, from 0.05 to 0.025. The spread shrinks with the square root of n, not with n itself. To cut it in half again you would need 1,600, and to reach a spread of 0.01 you would need 2,500. Doubling the sample only makes it about 1.4 times more precise. That is why polls of about 1,000 people are so common: they give a standard error near 0.016, a margin of about 3 points, and going to 10,000 people costs ten times as much just to bring the margin down to about 1 point."
+    ],
+    "words": [
+     {"w": "simulate", "d": "imitate a chance process many times with coins, dice, cards or a computer to see its typical results"},
+     {"w": "standard error", "d": "the standard deviation of a statistic across repeated samples; for a proportion it is √(p(1 − p) ÷ n)"},
+     {"w": "square root rule", "d": "the spread of a sample statistic shrinks in proportion to 1 ÷ √n, so four times the sample halves the spread"}
+    ],
+    "look": {"type": "think", "title": "Is 62 Heads in 100 Flips Surprising?", "text": "A student flips a coin 100 times and gets 62 heads, a proportion of 0.62. For a fair coin the standard error is √(0.5 × 0.5 ÷ 100) = 0.05, so 0.62 is (0.62 − 0.50) ÷ 0.05 = 2.4 standard errors above 0.5. In a simulation of 10,000 fair-coin runs of 100 flips, only about 1 run in 100 gives 62 or more heads.", "prompt": "If the student had flipped 400 times and gotten 62% heads, what would the standard error and the number of standard errors be? Which result is stronger evidence that the coin is unfair, and why?"},
+    "check": [
+     {"q": "For a population proportion of 0.5, what is the standard error of a sample proportion when n = 100?", "choices": ["0.25", "0.0025", "0.5", "0.05"], "a": 3, "why": "√(0.5 × 0.5 ÷ 100) = √0.0025 = 0.05. Answering 0.0025 forgets the square root; 0.25 is p × (1 − p) without dividing."},
+     {"q": "A sample proportion has standard error 0.05 with n = 100. To make the standard error 0.025, what sample size is needed?", "choices": ["200", "400", "50", "1,000"], "a": 1, "why": "Halving the spread requires four times the sample, since spread shrinks with √n: √(0.25 ÷ 400) = 0.025."},
+     {"q": "In a simulation of 100 fair-coin flips repeated many times, about what range holds 95% of the sample proportions of heads?", "choices": ["0.45 to 0.55", "0.40 to 0.60", "0.25 to 0.75", "0.49 to 0.51"], "a": 1, "why": "The standard error is 0.05, and about 95% of results fall within 2 standard errors of 0.5: 0.5 ± 0.10 gives 0.40 to 0.60."}
+    ]
+   },
+   {
+    "title": "Margin of Error and Confidence Intervals",
+    "mainIdea": "A confidence interval reports a sample estimate plus and minus a margin of error, a range that captures the true value in about 95% of samples.",
+    "reading": [
+     "A poll of 1,000 Illinois adults finds 54% in favor of a new transit plan. The true percent for all adults is unknown, but the sampling distribution tells us how far a sample of 1,000 typically strays. Standard error: √(0.54 × 0.46 ÷ 1,000) = √0.0002484 ≈ 0.0158. Two standard errors is about 0.032, or 3.2 percentage points. That is the *margin of error*. The *confidence interval* is 54% ± 3.2%, from 50.8% to 57.2%. A pollster would write: '54%, with a margin of error of about 3 points.'",
+     "What does '95% confidence' mean? Not that there is a 95% chance the truth is in this one interval; the truth is a fixed number and is either in it or not. It means the method works 95% of the time: if you took many samples of 1,000 and built an interval from each, about 95 of every 100 intervals would capture the true value and about 5 would miss. You do not know whether yours is one of the 5, which is why a result at 50.8% to 57.2% supports 'more than half' only cautiously.",
+     "A quick rule for a 95% margin of error when p is near 0.5 is 1 ÷ √n. For n = 1,000: 1 ÷ √1,000 ≈ 1 ÷ 31.6 ≈ 0.032, matching the careful calculation. For n = 400 it is 1 ÷ 20 = 0.05, or 5 points; for n = 2,500 it is 1 ÷ 50 = 0.02, or 2 points. Two cautions: the margin of error covers only random sampling variability, not bias, and a poll with 60% ± 5% does not mean '60% is right and the rest is error.' Every value from 55% to 65% is consistent with the data."
+    ],
+    "words": [
+     {"w": "margin of error", "d": "the plus-or-minus amount around a sample estimate, about 2 standard errors for 95% confidence"},
+     {"w": "confidence interval", "d": "the range from estimate minus margin of error to estimate plus margin of error"},
+     {"w": "95% confidence", "d": "the method produces an interval that captures the true value in about 95 out of 100 samples"},
+     {"w": "percentage point", "d": "the difference between two percents; from 54% to 57% is 3 percentage points"}
+    ],
+    "look": {"type": "data", "title": "Quick Margin of Error, 1 ÷ √n, for a Proportion Near 50%", "rows": [["n = 100", 10], ["n = 400", 5], ["n = 900", 3.3], ["n = 1,600", 2.5], ["n = 2,500", 2], ["n = 10,000", 1]], "unit": "percentage points (95% confidence)", "cite": "computed from 1 ÷ √n, a standard approximation", "prompt": "Going from 100 to 400 people cuts the margin from 10 to 5. How many more people does it take to go from 5 to 2.5? From 2.5 to 1? What does that suggest about the cost of extra precision?"},
+    "check": [
+     {"q": "A random sample of 400 people finds 60% support a proposal. Using the 1 ÷ √n rule, what is the approximate 95% confidence interval?", "choices": ["55% to 65%", "58% to 62%", "50% to 70%", "40% to 60%"], "a": 0, "why": "1 ÷ √400 = 1 ÷ 20 = 0.05, so the margin is 5 points and the interval is 60% ± 5%, or 55% to 65%."},
+     {"q": "A pollster wants to cut a margin of error from 4 points to 2 points. Roughly how must the sample size change?", "choices": ["Double it", "Add 2 points worth of people", "Multiply it by 4", "Halve it"], "a": 2, "why": "Margin shrinks with √n, so halving the margin requires 4 times as many people. Doubling n only cuts the margin by a factor of about 1.4."},
+     {"q": "A 95% confidence interval for a proportion is 50.8% to 57.2%. Which interpretation is correct?", "choices": ["There is a 95% chance the sample proportion is in this range", "95% of the population falls between 50.8% and 57.2%", "The true value is definitely between 50.8% and 57.2%", "This method captures the true value in about 95% of samples, and this interval is one such attempt"], "a": 3, "why": "Confidence describes how often the method succeeds over many samples. The sample proportion is known exactly (54%), and the true value may or may not be inside."}
+    ]
+   }
+  ]},
+  {"title": "Testing a Claim", "lessons": [
+   {
+    "title": "The Logic of a Hypothesis Test",
+    "mainIdea": "A hypothesis test assumes the claim is true, asks how surprising the data would then be, and rejects the claim only if the data are very unlikely under it.",
+    "reading": [
+     "A friend hands you a coin and says it is fair. You flip it 100 times and get 60 heads. Fair coins usually give around 50, but 60 is not impossible. How do you decide? A *hypothesis test* works like a courtroom. The claim on trial, called the *null hypothesis*, is 'the coin is fair, p = 0.5.' It gets the benefit of the doubt. The *alternative hypothesis* is what you would conclude if the evidence is strong enough: 'the coin favors heads.' The data are the evidence, and the question is whether they are consistent with the null.",
+     "Assume the null is true and measure how unusual the result is. For a fair coin in 100 flips, the expected count is 50 with standard deviation √(100 × 0.5 × 0.5) = 5. Then 60 heads is (60 − 50) ÷ 5 = 2 standard deviations above expected. From the normal table, a fair coin produces 60 or more heads only about 2.3% of the time. That is rare. If we would see this in fewer than 5 of 100 tries, the usual convention says the result is *statistically significant*, and we reject the null: the evidence points to a coin that favors heads.",
+     "The logic has two sides that students often flip. Rejecting the null does not prove the alternative; it says the data would be surprising if the null were true, so the null is doubtful. And failing to reject does not prove the null; 54 heads is consistent with a fair coin, but also with a coin that has p = 0.52. A test can be wrong in two ways: rejecting a true null (convicting an innocent coin, which happens about 5% of the time at the 5% cutoff), or failing to reject a false null (letting a guilty coin go). Small samples make the second error common."
+    ],
+    "words": [
+     {"w": "hypothesis test", "d": "a procedure that judges a claim by asking how unlikely the observed data would be if the claim were true"},
+     {"w": "null hypothesis", "d": "the claim being tested, usually 'no effect' or 'no difference,' which gets the benefit of the doubt"},
+     {"w": "alternative hypothesis", "d": "the conclusion you adopt if the data make the null hypothesis hard to believe"},
+     {"w": "statistically significant", "d": "so unlikely under the null hypothesis (usually under 5%) that the null is rejected"}
+    ],
+    "look": {"type": "think", "title": "The Cafeteria's Claim", "text": "The cafeteria manager claims 80% of students like the new menu. A random sample of 50 students finds 32 who like it, a proportion of 0.64. Null hypothesis: p = 0.80. Under the null, the standard error is √(0.8 × 0.2 ÷ 50) = √0.0032 ≈ 0.057. The sample sits (0.64 − 0.80) ÷ 0.057 ≈ −2.8 standard errors below the claim. A result that far below happens well under 1% of the time if the claim is true.", "prompt": "State the null and alternative hypotheses in words. Should the manager's claim be rejected? What would you conclude if the sample had found 38 of 50 instead (proportion 0.76)?"},
+    "check": [
+     {"q": "A company claims its battery lasts 10 hours on average. In a test of the claim, what is the null hypothesis?", "choices": ["The battery lasts less than 10 hours", "The battery lasts more than 10 hours", "The test sample was random", "The average battery life is 10 hours"], "a": 3, "why": "The null hypothesis is the claim under test, stated as no difference from what is asserted: mean = 10 hours."},
+     {"q": "A fair coin flipped 100 times gives 60 heads, which is 2 standard deviations above 50. About how often does a fair coin do at least this well?", "choices": ["About 2.3% of the time", "About 16% of the time", "About 50% of the time", "About 0.1% of the time"], "a": 0, "why": "The upper tail beyond 2 standard deviations on a normal curve holds about 2.3%. Answering 16% uses the 1-SD tail."},
+     {"q": "A test fails to reject the null hypothesis that a coin is fair. What can you conclude?", "choices": ["The coin is proven fair", "The coin is definitely unfair", "The data are consistent with a fair coin, but the null is not proven", "The sample must have been too large"], "a": 2, "why": "Failing to reject means the data were not surprising under the null. That is compatibility, not proof; a slightly unfair coin could give the same data."}
+    ]
+   },
+   {
+    "title": "How Surprising Is Surprising? The P-Value",
+    "mainIdea": "The p-value is the chance of a result at least as extreme as yours if the null hypothesis were true; a small p-value is evidence against the null.",
+    "reading": [
+     "The number that measures surprise is the *p-value*: the probability, assuming the null hypothesis is true, of getting a result at least as extreme as the one observed. For the coin with 60 heads in 100 flips, the p-value is about 0.023, the fair-coin chance of 60 or more heads. A p-value is not the chance the null is true; it is the chance of data like yours if the null is true. Those are different sentences, and swapping them is the most common misreading of statistics in news stories.",
+     "You can find a p-value by *simulation* instead of a table. Take the cafeteria claim that 80% of students like the menu, with a sample of 50 that found only 32. Program a computer to draw 50 'students' at random from a population where 80% say yes, count the yeses, and repeat 10,000 times. Then count how many of the 10,000 runs gave 32 or fewer. If about 60 runs did, the p-value is roughly 60 ÷ 10,000 = 0.006. The claim would produce a sample this low only about 6 times in 1,000, so we reject it.",
+     "The usual cutoff, called the *significance level*, is 0.05: reject the null when p is below it. But the cutoff is a convention, not a law of nature. A p-value of 0.06 is barely different from 0.04, and a p-value of 0.30 means the data are ordinary under the null, not that the null is true. Try one: a candidate claims 50% support, a random sample of 200 shows 55%. Standard error √(0.5 × 0.5 ÷ 200) ≈ 0.0354, so 0.55 is about 1.41 standard errors above 0.5, and the upper-tail p-value is about 0.08. Above 0.05, so not significant, even though 55 sounds like more than 50."
+    ],
+    "words": [
+     {"w": "p-value", "d": "the probability, if the null hypothesis were true, of a result at least as extreme as the one observed"},
+     {"w": "significance level", "d": "the cutoff, usually 0.05, below which a p-value leads to rejecting the null hypothesis"},
+     {"w": "simulation", "d": "generating many fake samples from the null hypothesis to see how often results like yours occur"},
+     {"w": "extreme", "d": "farther from what the null hypothesis expects than the observed result"}
+    ],
+    "look": {"type": "data", "title": "Simulated Samples of 50 From a Population That Is 80% Yes", "rows": [["35 or fewer yeses", 6.1], ["36 to 37 yeses", 12.5], ["38 to 41 yeses", 50.7], ["42 to 44 yeses", 25.9], ["45 or more yeses", 4.8]], "unit": "percent of 10,000 runs", "cite": "binomial distribution with n = 50 and p = 0.8, grouped and rounded", "prompt": "The real sample found 32 yeses. Which row contains it, and what does that row's percent tell you about the p-value? Would a sample of 41 yeses give reason to doubt the 80% claim?"},
+    "check": [
+     {"q": "Which sentence correctly describes a p-value of 0.02?", "choices": ["There is a 2% chance the null hypothesis is true", "If the null hypothesis were true, data at least this extreme would occur about 2% of the time", "The alternative hypothesis is 98% likely", "The sample was 2% too small"], "a": 1, "why": "A p-value is a probability about the data given the null, not about the null itself. The first choice is the classic misreading."},
+     {"q": "A candidate claims 50% support. A random sample of 200 shows 55%, about 1.41 standard errors above 0.5, with p-value about 0.08. At the 0.05 level, what is the conclusion?", "choices": ["Reject the claim; 55% is more than 50%", "The sample proves exactly 55% support", "Do not reject the claim; a sample this high is not unusual if support is really 50%", "The sample must have been biased"], "a": 2, "why": "The p-value 0.08 is above 0.05, so the data are within ordinary sampling variability for p = 0.5. Sounding higher is not the same as being significantly higher."},
+     {"q": "In 10,000 simulated samples under the null hypothesis, 30 gave a result as extreme as the real one. What is the estimated p-value?", "choices": ["0.30", "0.03", "0.003", "30"], "a": 2, "why": "30 ÷ 10,000 = 0.003. Answering 0.03 misplaces the decimal; 30 is a count, not a probability."}
+    ]
+   },
+   {
+    "title": "Statistical Versus Practical Significance",
+    "mainIdea": "With a huge sample, even a tiny, unimportant difference becomes statistically significant; always ask how big the effect is, not just whether p is small.",
+    "reading": [
+     "A tutoring company tests a new app on 50,000 students, split at random into two groups. The app group averages 70.5 on a final exam and the control group averages 70.0. Because the samples are enormous, the standard error of the difference is tiny, about 0.2 points, so a 0.5-point gap is 2.5 standard errors and the p-value is below 0.05. The result is statistically significant. It is also nearly worthless: half a point on a 100-point exam changes nobody's grade. The gap is real, but it is not important.",
+     "That is the difference between *statistical significance* and *practical significance*. Statistical significance answers: could this gap be a fluke of sampling? With 50,000 students, almost no gap is a fluke. Practical significance answers: is the gap big enough to matter to a student, a doctor or a city? Only judgment, not a formula, answers that. A report should always give the *effect size*, the actual difference or ratio, alongside the p-value, so a reader can see whether 0.5 points is worth an app subscription.",
+     "The mirror-image mistake happens with small samples. Suppose a new reading program is tried on 12 students and their scores rise 8 points on average, but with only 12 students the standard error is about 5 points, so the gain is 1.6 standard errors and the p-value is about 0.11, not significant. That does not mean the program failed; it means 12 students cannot tell an 8-point gain from noise. An honest summary says 'promising, but the study was too small to be sure.' Sample size decides what a study can detect; it does not decide what matters."
+    ],
+    "words": [
+     {"w": "statistical significance", "d": "a result unlikely to be due to sampling variability alone, usually meaning p is below 0.05"},
+     {"w": "practical significance", "d": "an effect large enough to matter in real life, judged by its size, not by its p-value"},
+     {"w": "effect size", "d": "the actual size of a difference or relationship, such as 0.5 points or a 2% drop in risk"},
+     {"w": "power", "d": "a study's ability to detect a real effect; larger samples give more power"}
+    ],
+    "look": {"type": "think", "title": "Two Headlines, Same Study", "text": "A city tests a new traffic light timing at 200 intersections for a year. Average wait per car drops from 42.0 seconds to 41.6 seconds, and with millions of cars measured the p-value is below 0.001. Headline A: 'New timing significantly cuts wait times.' Headline B: 'New timing saves drivers 0.4 seconds per light.' Both are accurate.", "prompt": "Which headline would you want as a driver, and which would you want as the company selling the system? Write one sentence that reports the finding fairly, with both the p-value and the effect size."},
+    "check": [
+     {"q": "A study of 50,000 students finds a 0.5-point exam gain with a p-value below 0.05. What is the best description?", "choices": ["Statistically significant but of little practical importance", "Not statistically significant", "Practically important but not statistically significant", "Proof that the app should be adopted by every school"], "a": 0, "why": "The huge sample makes even a half-point gap unlikely to be chance, but half a point on a 100-point test barely matters to anyone."},
+     {"q": "Why can a very large sample make a tiny difference statistically significant?", "choices": ["Large samples are always biased toward finding effects", "The standard error shrinks with sample size, so even small gaps become many standard errors wide", "Large samples change the size of the effect", "P-values are only defined for large samples"], "a": 1, "why": "Standard error shrinks like 1 ÷ √n. With n huge, a 0.5-point gap divided by a 0.2-point standard error is 2.5 standard errors and significant."},
+     {"q": "A program tested on 12 students shows an 8-point gain with p = 0.11. What is the fairest conclusion?", "choices": ["The program does not work", "The program definitely works, since 8 points is large", "The gain is promising, but the study was too small to separate it from chance", "The p-value must be a mistake"], "a": 2, "why": "A small sample has little power. Not significant means the data cannot rule out chance, not that the effect is zero; a larger study is the next step."}
+    ]
+   }
+  ]},
+  {"title": "Reading Claims in the Wild", "lessons": [
+   {
+    "title": "Headlines Built on Numbers",
+    "mainIdea": "Before believing a data claim, ask who was sampled, how big the sample was, whether the effect is relative or absolute, and who paid for the study.",
+    "reading": [
+     "'Daily coffee linked to 20% lower risk!' Before sharing that, read it like a statistician. First, linked to is observational language: coffee drinkers may differ in exercise, income or sleep, so this is an association until an experiment says otherwise. Second, 20% lower than what? If the risk falls from 5 in 1,000 to 4 in 1,000, that is a 20% *relative* drop but only 1 in 1,000 in *absolute* terms. Relative percents make small changes sound enormous. Ask for the two actual rates every time.",
+     "Third, look for the sample. 'Nine out of ten dentists' means little without knowing how many dentists were asked, how they were chosen, and who asked them. A survey of 20 dentists selected by a toothpaste company is not the same as a random sample of 2,000. Also look for the margin of error. If a poll says a candidate leads 48% to 46% with a margin of error of 3 points, the intervals overlap, and the honest headline is 'too close to call,' not 'candidate takes the lead.' A 2-point gap inside a 3-point margin is noise.",
+     "Fourth, ask who benefits. A study funded by the company whose product it praises is not automatically wrong, but it deserves a closer look, and so does a result that has never been repeated by anyone else. Finally, watch the axes on any graph: a bar chart whose vertical axis starts at 90 instead of 0 can make a 2% difference look like a cliff. None of these checks requires a formula. They require the habit of asking 'compared to what, measured how, and says who?'"
+    ],
+    "words": [
+     {"w": "relative change", "d": "a change expressed as a percent of the starting value; 5 to 4 per 1,000 is a 20% relative drop"},
+     {"w": "absolute change", "d": "the plain difference between two rates; 5 to 4 per 1,000 is a drop of 1 per 1,000"},
+     {"w": "association", "d": "two things tending to occur together, which does not by itself show one causes the other"},
+     {"w": "replication", "d": "repeating a study with new data to see whether the result holds up"}
+    ],
+    "look": {"type": "think", "title": "Doubles Your Risk", "text": "A headline says a food additive doubles the risk of a rare illness. The study reports the rate rose from 2 in 100,000 to 4 in 100,000 among heavy users. Relative change: 4 ÷ 2 = 2, so the risk did double. Absolute change: 4 − 2 = 2 extra cases per 100,000 people, or 0.002 percentage points. The study was observational, and heavy users of the additive also ate more processed food overall.", "prompt": "Rewrite the headline so a reader sees both the relative and absolute change. Then name a confounder and say what kind of study would be needed to show cause."},
+    "check": [
+     {"q": "A risk falls from 8 in 1,000 to 6 in 1,000. What are the relative and absolute changes?", "choices": ["25% relative drop, 2 per 1,000 absolute drop", "2% relative drop, 25 per 1,000 absolute drop", "25% relative drop, 25 per 1,000 absolute drop", "75% relative drop, 2 per 1,000 absolute drop"], "a": 0, "why": "Absolute: 8 − 6 = 2 per 1,000. Relative: 2 ÷ 8 = 0.25, a 25% drop. Answering 75% confuses the remaining fraction with the drop."},
+     {"q": "A poll shows candidate A at 48% and candidate B at 46% with a margin of error of 3 points. Which headline is most accurate?", "choices": ["A leads by 2 points", "B is gaining on A", "A pulls ahead", "The race is too close to call"], "a": 3, "why": "Both estimates carry a ±3-point margin, so their intervals overlap. A 2-point gap is smaller than the sampling uncertainty."},
+     {"q": "A bar chart shows sales of 96 and 98 units, but the vertical axis starts at 95 so the second bar looks twice as tall. What is the problem?", "choices": ["The data must be fake", "A truncated axis exaggerates a small difference of about 2%", "Bar charts should never be used for sales", "The chart needs a larger sample"], "a": 1, "why": "Starting the axis at 95 makes a 2-unit gap (about 2%) look like a doubling. The numbers are fine; the picture misleads."}
+    ]
+   },
+   {
+    "title": "Experiments That Earn a Cause",
+    "mainIdea": "Random assignment, a control group, blinding and replication are what let an experiment say 'this caused that.'",
+    "reading": [
+     "To show that a treatment causes an outcome, an experiment needs four ingredients. First, a *control group* that does not get the treatment, so there is something to compare against. Second, *random assignment* of subjects to treatment or control, so the groups are alike except for the treatment. Third, when people's expectations could affect the result, a *placebo*, a fake treatment that looks real, and *blinding*, so subjects (and ideally the people measuring them) do not know who got which. Fourth, enough subjects that a real effect is not lost in sampling variability.",
+     "The 1954 field trial of the Salk polio vaccine is the classic example. Hundreds of thousands of American children were randomly assigned to receive the vaccine or a placebo injection, and neither the children nor the doctors diagnosing polio knew which was which. Polio cases were much rarer in the vaccinated group, and because assignment was random and diagnosis was blind, that difference could not be explained by which families volunteered or by doctors expecting vaccinated children to be healthier. The vaccine was declared effective and released to the public.",
+     "Compare a weaker design: give the vaccine to children whose parents ask for it and compare them with everyone else. Parents who ask for a vaccine tend to differ in income, education and health habits, so any difference in polio rates would be tangled with those. The lesson for reading any claim of cause: find the control group, find the word random, and ask whether anyone could have known who got what. When an experiment is impossible or unethical, as with smoking, researchers rely on many observational studies that point the same way, plus a plausible mechanism, and they say so."
+    ],
+    "words": [
+     {"w": "control group", "d": "the subjects who do not receive the treatment, used for comparison"},
+     {"w": "random assignment", "d": "using chance to decide which subjects get which treatment, balancing hidden differences"},
+     {"w": "placebo", "d": "a fake treatment that looks like the real one, used so expectations affect both groups equally"},
+     {"w": "blinding", "d": "keeping subjects, and often researchers, from knowing who received which treatment"}
+    ],
+    "look": {"type": "think", "title": "Design the Sleep Study", "text": "A school wants to know whether a later 8:30 start time improves grades. Design 1: switch the whole school to 8:30 and compare this year's grades with last year's. Design 2: randomly assign half of the homerooms to a study hall that lets them arrive at 8:30, keep the other half at 7:30, and compare grades at the end of the semester. In Design 1, anything else that changed this year, new teachers, a new curriculum, a milder flu season, is a confounder.", "prompt": "Which design could support a cause claim, and why? Name one practical problem with running Design 2 and one thing you would measure besides grades."},
+    "check": [
+     {"q": "What is the purpose of a placebo in a medical experiment?", "choices": ["To cure the control group", "To make the sample larger", "To increase the effect of the real treatment", "So that expectations of being treated affect both groups equally"], "a": 3, "why": "People who believe they are treated often feel better. A placebo gives the control group the same belief, so any extra improvement is due to the real treatment."},
+     {"q": "In the 1954 polio vaccine trial, why was random assignment essential?", "choices": ["It made the groups alike in everything but the vaccine, so the lower polio rate could be credited to the vaccine", "It guaranteed that no vaccinated child got polio", "It let the doctors choose which children needed the vaccine most", "It reduced the cost of the study"], "a": 0, "why": "Random assignment spreads family income, health habits and other hidden factors evenly, so the only systematic difference between groups was the vaccine."},
+     {"q": "A company gives its new app to employees who volunteer and compares their productivity with everyone else's. What is the flaw?", "choices": ["The sample is a census", "Volunteers likely differ from non-volunteers, so the groups are not comparable", "Productivity cannot be measured", "The company should have used a placebo app on everyone"], "a": 1, "why": "Self-selection means the app group may be more motivated to begin with. Without random assignment, that motivation, not the app, could explain the difference."}
+    ]
+   }
+  ]}
+ ],
+ "review": [
+  {"q": "A city surveys 800 randomly chosen residents and finds a mean commute of 34 minutes. The number 34 minutes is best described as a", "choices": ["parameter", "population", "statistic", "census"], "a": 2, "why": "It is computed from the sample of 800, so it is a statistic that estimates the parameter, the mean commute of all residents."},
+  {"q": "The 1936 Literary Digest poll used lists of phone and car owners. Which type of bias does this illustrate?", "choices": ["Sampling variability", "Undercoverage", "Practical significance", "Random assignment"], "a": 1, "why": "Voters without phones or cars had no chance to be selected, so a whole part of the population was left out of the sampling frame."},
+  {"q": "For a proportion near 0.5, the standard error with n = 400 is 0.025. What is it with n = 1,600?", "choices": ["0.00625", "0.1", "0.0125", "0.025"], "a": 2, "why": "Four times the sample halves the standard error: 0.025 ÷ 2 = 0.0125. Check: √(0.25 ÷ 1,600) = √0.00015625 = 0.0125."},
+  {"q": "A random sample of 2,500 voters gives 52% for a measure. Using 1 ÷ √n, what is the approximate 95% confidence interval?", "choices": ["50% to 54%", "47% to 57%", "51% to 53%", "42% to 62%"], "a": 0, "why": "1 ÷ √2,500 = 1 ÷ 50 = 0.02, a 2-point margin, so 52% ± 2% gives 50% to 54%."},
+  {"q": "A coin flipped 100 times shows 58 heads. With mean 50 and standard deviation 5, what is the z-score, and is it significant at the 5% level (one-sided cutoff about 1.65)?", "choices": ["z = 0.8, not significant", "z = 8, significant", "z = 1.6, significant", "z = 1.6, not significant"], "a": 3, "why": "(58 − 50) ÷ 5 = 1.6, which falls just short of the one-sided 5% cutoff of about 1.65, so the result is not significant. Forgetting to divide gives 8."},
+  {"q": "Which statement about a p-value of 0.40 is correct?", "choices": ["The null hypothesis is 40% likely to be true", "Data like these are common if the null hypothesis is true, so there is little evidence against it", "The alternative hypothesis is proven", "The sample must be enlarged by 40%"], "a": 1, "why": "A large p-value means the observed result is ordinary under the null; it neither proves nor strongly challenges the null."},
+  {"q": "A study of 1,000,000 shoppers finds that a new checkout layout saves an average of 1.2 seconds per visit, p below 0.001. Which is the best description?", "choices": ["Not statistically significant", "Practically important but statistically doubtful", "Statistically significant, and the effect size decides whether it matters in practice", "Proof that the layout should be copied everywhere"], "a": 2, "why": "With a million shoppers, a tiny gap is easily significant. Whether 1.2 seconds is worth the cost of the change is a question of effect size and judgment."},
+  {"q": "Which study design could justify the claim 'the new fertilizer causes taller corn'?", "choices": ["Randomly assign plots to fertilizer or no fertilizer and compare heights", "Compare farms that chose the fertilizer with farms that did not", "Survey farmers about whether they think it works", "Measure corn height on one farm before and after using it"], "a": 0, "why": "Only random assignment with a control group balances soil, weather and farmer skill across groups, so height differences can be credited to the fertilizer."}
+ ]
+}

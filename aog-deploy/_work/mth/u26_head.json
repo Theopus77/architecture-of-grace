@@ -1,0 +1,65 @@
+{
+ "intro": [
+  "A nurse says a child is at the 90th percentile. A news site says a candidate leads 48% to 46%. A commercial says a supplement cut risk by 30%. Each of these is a claim built from data, and each can be read well or read badly. This unit is about reading them well. You will learn how a single bell-shaped curve describes heights, test scores and coin flips; how a few hundred randomly chosen people can stand in for millions; and how to decide whether a surprising result is real or just the luck of the draw.",
+  "The tools are few and they build on each other. Center, spread and shape describe a pile of data. Z-scores and percentiles locate one value inside the pile. Probability rules say how likely combinations of events are, and expected value turns those probabilities into decisions. Then the direction flips: instead of using a known population to predict a sample, you use one sample to make a claim about an unknown population, and you attach an honest margin of error to that claim.",
+  "By the end you will be able to compute a percentile from a z-score, test whether a two-way table shows independence, find the expected value of a game, explain why a poll of 1,000 people has a margin of error near 3 points, run the logic of a hypothesis test, and take apart a headline that confuses a 20% relative change with a real difference. Those are skills for a statistics course, and they are also skills for being a citizen who cannot be fooled by a number."
+ ],
+ "bigQuestion": "When can a number computed from a few people be trusted to say something true about everyone, and how do we know how far to trust it?",
+ "timeline": [
+  {"y": "1662", "t": "John Graunt studies London's death records and shows that patterns emerge from counts of many people"},
+  {"y": "1713", "t": "Jacob Bernoulli's Ars Conjectandi proves that sample proportions settle toward the true probability as trials increase"},
+  {"y": "1733", "t": "Abraham de Moivre shows that binomial counts pile up in a bell-shaped curve"},
+  {"y": "1809", "t": "Carl Friedrich Gauss uses the normal curve to describe errors in astronomical measurements"},
+  {"y": "1835", "t": "Adolphe Quetelet applies the bell curve to human heights and other social measurements"},
+  {"y": "1900", "t": "Karl Pearson introduces the chi-square test for comparing observed counts with expected ones"},
+  {"y": "1908", "t": "William Gosset, writing as Student, publishes a method for drawing conclusions from small samples"},
+  {"y": "1925", "t": "Ronald Fisher's Statistical Methods for Research Workers spreads significance testing and randomized design"},
+  {"y": "1936", "t": "The Literary Digest poll fails despite two million responses; Gallup's smaller representative sample succeeds"},
+  {"y": "1948", "t": "Polls that stopped too early help produce the famous wrong headline 'Dewey Defeats Truman'"},
+  {"y": "1954", "t": "The Salk polio vaccine field trial uses random assignment, placebos and blinding on hundreds of thousands of children"},
+  {"y": "Today", "t": "Simulation on computers lets students build sampling distributions and p-values without formulas"}
+ ],
+ "wrap": {
+  "words": [
+   {"w": "standard deviation", "d": "a typical distance of the values from the mean; larger means more spread out"},
+   {"w": "normal curve", "d": "the symmetric bell-shaped curve, fully described by its mean and standard deviation"},
+   {"w": "empirical rule", "d": "for a normal curve, about 68%, 95% and 99.7% of values lie within 1, 2 and 3 standard deviations of the mean"},
+   {"w": "z-score", "d": "how many standard deviations a value lies above (positive) or below (negative) the mean"},
+   {"w": "percentile", "d": "the percent of a group whose values fall below a given value"},
+   {"w": "conditional probability", "d": "the probability of A given that B has happened, written P(A | B)"},
+   {"w": "independent", "d": "two events are independent when one happening does not change the probability of the other"},
+   {"w": "expected value", "d": "the long-run average result per trial: add each outcome times its probability"},
+   {"w": "sampling variability", "d": "the natural chance difference between one random sample's result and the next"},
+   {"w": "bias", "d": "a systematic tilt that makes a sample differ from the population in a predictable direction"},
+   {"w": "margin of error", "d": "the plus-or-minus amount around a sample estimate, about 2 standard errors for 95% confidence"},
+   {"w": "p-value", "d": "the probability, if the null hypothesis were true, of a result at least as extreme as the one observed"}
+  ],
+  "test": [
+   {"q": "The values 6, 7, 8, 9, 10 have mean 8. What is their standard deviation when you divide the squared deviations by the count?", "choices": ["√2 ≈ 1.41", "2", "10", "4"], "a": 0, "why": "Deviations −2, −1, 0, 1, 2; squares 4, 1, 0, 1, 4 sum to 10; 10 ÷ 5 = 2; √2 ≈ 1.41. Stopping at 2 forgets the square root."},
+   {"q": "Scores are normal with mean 500 and standard deviation 100. About what percent of scores are between 400 and 600?", "choices": ["95%", "68%", "34%", "99.7%"], "a": 1, "why": "400 and 600 are each 1 standard deviation from 500, and the empirical rule puts about 68% within 1 standard deviation."},
+   {"q": "With mean 500 and standard deviation 100, what is the z-score of a score of 350?", "choices": ["1.5", "−150", "−1.5", "3.5"], "a": 2, "why": "(350 − 500) ÷ 100 = −150 ÷ 100 = −1.5. Keep the negative sign; −150 forgets to divide."},
+   {"q": "On a normal curve, a z-score of 2 corresponds to about which percentile?", "choices": ["50th", "84th", "95th", "98th"], "a": 3, "why": "About 97.7% of values lie below z = 2, so it is roughly the 98th percentile. The 84th belongs to z = 1."},
+   {"q": "Which data set would a normal model describe poorly, and why?", "choices": ["Household incomes, because a long right tail makes the pile skewed", "Heights of adult women, because they cluster around the mean", "Measurement errors, because they are symmetric", "Scores on a large standardized test, because they are bell-shaped"], "a": 0, "why": "Incomes are right-skewed: most are near the middle but a few huge values stretch the tail, so the mean and empirical rule mislead."},
+   {"q": "A fair coin is flipped 3 times. What is the probability of getting heads all 3 times?", "choices": ["3/6", "1/6", "1/8", "3/8"], "a": 2, "why": "The flips are independent: 1/2 × 1/2 × 1/2 = 1/8. Adding gives 3/6, and 3/8 is the chance of exactly one head."},
+   {"q": "A table shows 120 students play a sport; 40 of those have a job. Overall 70 of 200 students have a job. Which comparison tests whether sport and job are independent?", "choices": ["40/200 versus 70/200", "40/70 versus 120/200", "40/120 versus 120/200", "40/120 versus 70/200"], "a": 3, "why": "Independence means P(job | sport) equals P(job): compare 40/120 ≈ 0.33 with 70/200 = 0.35. They differ slightly, so the events are not quite independent."},
+   {"q": "P(A) = 0.6, P(B) = 0.3 and P(A and B) = 0.2. What is P(A or B)?", "choices": ["0.9", "0.7", "0.18", "1.1"], "a": 1, "why": "0.6 + 0.3 − 0.2 = 0.7. Answering 0.9 forgets to subtract the overlap; 0.18 multiplies instead."},
+   {"q": "A game pays $12 with probability 1/4 and nothing otherwise, and costs $4 to play. What is the expected net result per game?", "choices": ["$3", "$8", "−$4", "−$1"], "a": 3, "why": "Expected payout 12 × 1/4 = $3; subtract the $4 cost: 3 − 4 = −$1."},
+   {"q": "A 25% free-throw shooter takes 48 independent shots. What are the mean and standard deviation of the number of makes?", "choices": ["Mean 12, SD 3", "Mean 12, SD 9", "Mean 24, SD 3.5", "Mean 12, SD 3.5"], "a": 0, "why": "Mean = 48 × 0.25 = 12. SD = √(48 × 0.25 × 0.75) = √9 = 3. Answering 9 forgets the square root; √12 ≈ 3.5 drops the (1 − p) factor."},
+   {"q": "A magazine polls its own subscribers about a statewide election. What is the main weakness?", "choices": ["The sample is too small", "Subscribers are not a random slice of all voters, so the sample is biased", "Magazines cannot conduct polls", "The margin of error is too large to compute"], "a": 1, "why": "Subscribers differ from the general public in predictable ways. That is bias, and a larger biased sample does not fix it."},
+   {"q": "For a proportion near 0.5, which sample size gives a 95% margin of error of about 2 percentage points using 1 ÷ √n?", "choices": ["400", "1,000", "2,500", "10,000"], "a": 2, "why": "1 ÷ √2,500 = 1 ÷ 50 = 0.02, or 2 points. n = 400 gives 5 points; n = 10,000 gives 1 point."},
+   {"q": "A poll of 1,000 people gives 52% support with a margin of error of 3 points. What can be concluded?", "choices": ["Support is exactly 52%", "A majority definitely supports the measure", "The true support is between 49% and 55% with certainty", "Values from 49% to 55% are consistent with the data, so a majority is not certain"], "a": 3, "why": "52% ± 3% runs from 49% to 55%. Since 49% is below half, the poll cannot rule out that support is under 50%, and the method itself misses about 5% of the time."},
+   {"q": "A company claims a defect rate of 2%. A random sample of 1,000 items finds 35 defects. Under the claim, the expected count is 20 with standard deviation about 4.4. What is the z-score, and what does it suggest?", "choices": ["z ≈ 3.4, strong evidence the defect rate is above 2%", "z ≈ 1.75, the claim holds", "z ≈ 0.75, the claim holds", "z ≈ 15, the claim is impossible"], "a": 0, "why": "(35 − 20) ÷ 4.4 ≈ 3.4. A count that far above the expected value would almost never occur if the true rate were 2%, so the claim is doubtful."},
+   {"q": "A headline says a treatment cut risk by 50%. The rates were 2 in 10,000 and 1 in 10,000. What is the absolute change?", "choices": ["50 per 10,000", "1 per 10,000", "5 per 10,000", "Half of all cases in the population"], "a": 1, "why": "2 − 1 = 1 case per 10,000 people. The 50% figure is relative to the original rate of 2, which makes a tiny change sound large."}
+  ],
+  "write": {
+   "prompt": "A random sample of 400 students at a large high school finds 232 who say they get less than 7 hours of sleep. Estimate the fraction of all students who sleep less than 7 hours, give a margin of error and interval, and decide whether the school can claim that more than half its students are short on sleep. Then name one bias the margin of error would not catch.",
+   "tips": [
+    "State the sample proportion first: 232 ÷ 400, as a decimal and a percent.",
+    "Compute the margin of error with 1 ÷ √n and show the arithmetic, then write the interval.",
+    "Say what 95% confidence means using the idea of many repeated samples, not a chance about this one interval.",
+    "Compare the whole interval with 50% before deciding whether 'more than half' is supported.",
+    "Name a specific bias (who was left out, who did not answer, or how the question was worded) and say why a bigger sample would not fix it."
+   ]
+  }
+ }
+}
