@@ -8345,7 +8345,7 @@ window.addEventListener('load',function(){
 
     <div class="tab-panel" id="panel-iep">
       <div class="section-head">
-        <h2 data-dl="dl_iep_h1">IEP Progress Monitor</h2>
+        <h2 data-dl="dl_iep_h1">The Build · IEP progress monitor</h2>
         <div class="small" data-dl="dl_iep_sub">Chart every IEP goal against its aimline &mdash; quick data entry, trend lines, CSV export, and printable per-student reports. It charts what an adult records and observes &mdash; student self-reflection scores never enter it. Private and saved on this device.</div>
       </div>
       <div id="aogIepBody"></div>
@@ -33053,7 +33053,7 @@ window.addEventListener('load', _installToolScreenHook);
     var byWin = {};
     all.forEach(function(r){ var w = r.window || "—"; if (!byWin[w] || new Date(r.timestamp) > new Date(byWin[w].timestamp)) byWin[w] = r; });
     var rows = order.filter(function(w){ return byWin[w]; }).map(function(w){ return byWin[w]; });
-    var head = "<h4>" + (es?"Crecimiento en el tiempo":"Growth over time") + "</h4>";
+    var head = "<h4>" + (es?"Ladrillo a ladrillo":"Brick by brick") + "</h4>";
     if (rows.length <= 1){
       return "<div class=\"aog-sustain\">" + head + "<p class=\"aog-sus-note\">" + (es
         ? "Una autorreflexión hasta ahora. Vuelve a hacer la autorreflexión el próximo período para ver el movimiento — sobre todo después de enviar herramientas."
@@ -47795,7 +47795,7 @@ window.AOG_LESSONS={
   try{
     if(typeof DASH_I18N!=="undefined"){
       DASH_I18N.dl_t_iep={en:"IEP Progress",es:"Progreso IEP"};
-      DASH_I18N.dl_iep_h1={en:"IEP Progress Monitor",es:"Monitor de Progreso IEP"};
+      DASH_I18N.dl_iep_h1={en:"The Build · IEP progress monitor",es:"La Obra · monitor de progreso IEP"};
       DASH_I18N.dl_iep_sub={
         en:"Chart every IEP goal against its aimline — quick data entry, trend lines, CSV export, and printable per-student reports. It charts what an adult records and observes — student self-reflection scores never enter it. Private and saved on this device.",
         es:"Grafica cada meta del IEP contra su línea objetivo — captura rápida de datos, líneas de tendencia, exportación CSV e informes imprimibles por estudiante. Grafica lo que un adulto registra y observa — las autorreflexiones del estudiante nunca entran aquí. Privado y guardado en este dispositivo."
@@ -87795,7 +87795,7 @@ html.js-reveal .reveal,
     var list = seriesFor(m[who]);
     var h =
       '<div class="gc-ey">' + esc(T("From the Sheet", "Desde la hoja")) + '</div>'
-      + '<h3>' + esc(T("Growth over time", "Crecimiento con el tiempo")) + '</h3>'
+      + '<h3>' + esc(T("Brick by brick", "Ladrillo a ladrillo")) + '</h3>'
       + '<p class="gc-sub">' + esc(T(
           "One picture per activity, because eight of ten on one activity and eight of ten on another are not the same measure. Every sheet of one subject and grade is a point on the SAME line — the set number is the position, not a new activity. The line is what was solved with no hint; the shaded band above it is what a hint was still carrying. Where sheets hold different numbers of items the line is a percentage, and each point still prints its own count.",
           "Una imagen por actividad, porque ocho de diez en una actividad y ocho de diez en otra no son la misma medida. Cada hoja de una materia y un grado es un punto de la MISMA línea — el número de grupo es la posición, no una actividad nueva. La línea es lo resuelto sin pista; la banda sombreada encima es lo que una pista todavía sostenía. Cuando las hojas tienen distinto número de ítems la línea es un porcentaje, y cada punto imprime su propio conteo."))
@@ -87809,7 +87809,7 @@ html.js-reveal .reveal,
 
     var w = weakest(list);
     if (w) {
-      h += '<p class="gc-next">' + esc(T("Where the next teaching is: ", "Dónde va la próxima enseñanza: "))
+      h += '<p class="gc-next">' + esc(T("Next brick: ", "Próximo ladrillo: "))
          + '<b>' + esc(w.name) + '</b>'
          + esc(T(" — " + w.last.ind + " of " + w.tot + " without a hint on " + shortDate(w.last.d)
                  + ", the lowest of the " + list.length + " activities " + who + " has sent.",
@@ -88070,7 +88070,7 @@ html.js-reveal .reveal,
 
     var w = a.weakest(series);
     if (w) {
-      h += '<p class="pp-next"><b>' + esc(T("Where the next teaching is: ", "Dónde va la próxima enseñanza: "))
+      h += '<p class="pp-next"><b>' + esc(T("Next brick: ", "Próximo ladrillo: "))
         + esc(w.name) + '</b> &mdash; ' + esc(T(
             w.last.ind + " of " + w.tot + " without a hint on " + a.shortDate(w.last.d) + ", the lowest of the " + series.length + " activities sent.",
             w.last.ind + " de " + w.tot + " sin pista el " + a.shortDate(w.last.d) + ", la más baja de las " + series.length + " actividades enviadas.")) + '</p>';
@@ -89289,14 +89289,14 @@ html.js-reveal .reveal,
     var gs = goalsOf(w), key = w + "|" + act.id;
     var h = '<div class="gcx-panel" data-gcxpanel="' + esc(act.id) + '">';
     if (!gs.length) {
-      h += '<p class="gcx-say">' + esc(T(w + " has no IEP goals on this device yet. Add the goal in the IEP Progress Monitor (the IEP tab of this dashboard), then come back here to add these results to it.",
-        w + " aún no tiene metas del IEP en este dispositivo. Agrega la meta en el Monitor de progreso del IEP (la pestaña IEP de este panel) y vuelve aquí para agregarle estos resultados.")) + '</p>';
+      h += '<p class="gcx-say">' + esc(T(w + " has nothing under construction on this device yet. Start the build in The Build (the IEP tab of this dashboard), then come back here to lay these bricks on it.",
+        w + " aún no tiene nada en construcción en este dispositivo. Empieza la obra en La Obra (la pestaña IEP de este panel) y vuelve aquí para colocar estos ladrillos.")) + '</p>';
       return h + '<div class="gcx-row"><button type="button" data-gcxclose="1">' + esc(T("Close", "Cerrar")) + '</button></div></div>';
     }
     var ok = gs.filter(function (x) { return OK_MEASURES[x.g.measure]; });
     var no = gs.filter(function (x) { return !OK_MEASURES[x.g.measure]; });
     var dl = days(act, "all"), last = dl[dl.length - 1];
-    h += '<label for="gcxGoal">' + esc(T("Which IEP goal", "Qué meta del IEP")) + '</label>';
+    h += '<label for="gcxGoal">' + esc(T("What they're building (IEP goal)", "Lo que está construyendo (meta del IEP)")) + '</label>';
     if (ok.length) {
       h += '<select id="gcxGoal">' + ok.map(function (x) { return '<option value="' + esc(x.id) + '">' + esc(goalLabel(x.g)) + '</option>'; }).join("") + '</select>';
       h += '<label>' + esc(T("Which results", "Qué resultados")) + '</label>'
@@ -89305,7 +89305,7 @@ html.js-reveal .reveal,
         + '<span class="gcx-rad"><input type="radio" name="gcxWhich" value="all"> ' + esc(T("Every day sent", "Cada día enviado")) + ' (' + dl.length + ')</span>'
         + '<p class="gcx-say">' + esc(T("Each point is what was solved with no hint. Sets sent on the same day become one point. A day that already has a point on this goal is skipped, never changed. Every point is marked as coming from student-sent practice.",
           "Cada punto es lo resuelto sin pista. Los grupos enviados el mismo día se vuelven un solo punto. Un día que ya tiene un punto en esta meta se omite, nunca se cambia. Cada punto queda marcado como práctica enviada por el estudiante.")) + '</p>'
-        + '<div class="gcx-row"><button type="button" class="gcx-go" data-gcxadd="' + esc(act.id) + '" style="background:var(--navy,#0A1E33);color:#fff;border:2px solid var(--gold-deep,#7E5B18)">' + esc(T("Add to this goal", "Agregar a esta meta")) + '</button>'
+        + '<div class="gcx-row"><button type="button" class="gcx-go" data-gcxadd="' + esc(act.id) + '" style="background:var(--navy,#0A1E33);color:#fff;border:2px solid var(--gold-deep,#7E5B18)">' + esc(T("Lay them on this build", "Colocarlos en esta obra")) + '</button>'
         + '<button type="button" data-gcxclose="1">' + esc(T("Close", "Cerrar")) + '</button></div>';
     } else {
       h += '<div class="gcx-row"><button type="button" data-gcxclose="1">' + esc(T("Close", "Cerrar")) + '</button></div>';
@@ -89338,7 +89338,7 @@ html.js-reveal .reveal,
         var isOpen = open && open.who === w && open.id === act.id;
         box.innerHTML = (isOpen ? panelHtml(w, act)
           : '<button type="button" data-gcxone="' + i + '">🖨️ ' + esc(T("Print this graph", "Imprimir esta gráfica")) + '</button> '
-            + '<button type="button" data-gcxopen="' + esc(act.id) + '">' + esc(T("Add to an IEP goal", "Agregar a una meta del IEP")) + '</button>'
+            + '<button type="button" data-gcxopen="' + esc(act.id) + '">' + esc(T("Lay these bricks", "Colocar estos ladrillos")) + '</button>'
             + (said[w + "|" + act.id] ? '<span class="gcx-say gcx-ok" style="margin-left:10px">' + esc(said[w + "|" + act.id]) + '</span>' : ""));
         el.appendChild(box);
       });
@@ -89368,7 +89368,7 @@ html.js-reveal .reveal,
       if (!sheet) { sheet = document.createElement("div"); sheet.id = "gcxOnePrint"; document.body.appendChild(sheet); }
       var cl = one.cloneNode(true);
       Array.prototype.forEach.call(cl.querySelectorAll(".gcx-act"), function (n) { n.parentNode.removeChild(n); });
-      sheet.innerHTML = '<div class="gcx1-h"><b>' + esc(w) + '</b> · ' + esc(T("Growth over time", "Crecimiento en el tiempo")) + ' · ' + esc(new Date().toLocaleDateString()) + '</div>';
+      sheet.innerHTML = '<div class="gcx1-h"><b>' + esc(w) + '</b> · ' + esc(T("Brick by brick", "Ladrillo a ladrillo")) + ' · ' + esc(new Date().toLocaleDateString()) + '</div>';
       sheet.appendChild(cl);
       document.body.classList.add("gcx-one");
       var done = function () { document.body.classList.remove("gcx-one"); window.removeEventListener("afterprint", done); };
@@ -89386,9 +89386,9 @@ html.js-reveal .reveal,
       if (!act || !sel || !sel.value) return;
       var res = addPoints(sel.value, act, r ? r.value : "last");
       said[w + "|" + id] = res.added
-        ? T("Added " + res.added + (res.added === 1 ? " point" : " points") + " to the IEP goal" + (res.skipped ? " (" + res.skipped + " day" + (res.skipped === 1 ? "" : "s") + " already had a point and " + (res.skipped === 1 ? "was" : "were") + " skipped)" : "") + ". They show in the IEP Progress Monitor, marked as student-sent practice.",
-            "Se agregaron " + res.added + (res.added === 1 ? " punto" : " puntos") + " a la meta del IEP" + (res.skipped ? " (" + res.skipped + " día(s) ya tenían un punto y se omitieron)" : "") + ". Aparecen en el Monitor de progreso del IEP, marcados como práctica enviada por el estudiante.")
-        : T("Nothing added — every day chosen already has a point on that goal.", "No se agregó nada — cada día elegido ya tiene un punto en esa meta.");
+        ? T("Added " + res.added + (res.added === 1 ? " brick" : " bricks") + " on the build" + (res.skipped ? " (" + res.skipped + " day" + (res.skipped === 1 ? "" : "s") + " already had a brick and " + (res.skipped === 1 ? "was" : "were") + " skipped)" : "") + ". They show in The Build (IEP tab), marked as student-sent practice.",
+            "Se colocaron " + res.added + (res.added === 1 ? " ladrillo" : " ladrillos") + " en la obra" + (res.skipped ? " (" + res.skipped + " día(s) ya tenían un ladrillo y se omitieron)" : "") + ". Aparecen en La Obra (pestaña IEP), marcados como práctica enviada por el estudiante.")
+        : T("Nothing laid — every day chosen already has a brick on that build.", "No se colocó nada — cada día elegido ya tiene un ladrillo en esa obra.");
       open = null; redraw();
     }
   });
