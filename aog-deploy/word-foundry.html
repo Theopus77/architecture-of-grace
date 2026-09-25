@@ -189,6 +189,7 @@ footer{margin-top:48px;color:var(--sub);font-size:.8rem;border-top:1px solid var
   .stem .back[hidden]{display:block !important}
 }
 </style>
+<script src="/aog-iep.js"></script>
 </head>
 <body>
 <script src="/aog-topbar.js"></script>
@@ -1869,6 +1870,7 @@ render();
       source:"link",
       extra:JSON.stringify({series:SERIES, build:BUILD, tally:run})
     };
+    if(window.AOG_IEP){AOG_IEP.fill(payload);} /* AOG-IEP-REC-V1 */
     var body = JSON.stringify(payload);
     sendBusy = true; sendErr = false; paintSendM();
     fetch(DEST.url, {method:"POST", mode:"cors", redirect:"follow",

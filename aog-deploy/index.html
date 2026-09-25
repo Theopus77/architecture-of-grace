@@ -9291,7 +9291,7 @@ window.addEventListener('load',function(){
 
           <div class="voi-form">
             <div class="voi-row">
-              <input id="voiName" type="text" maxlength="40" class="voi-input" placeholder="First name (optional)" data-i18n-ph="voi_name_ph" autocomplete="off">
+              <input id="voiName" type="text" maxlength="40" class="voi-input" placeholder="Enter your name" data-i18n-ph="voi_name_ph" autocomplete="off">
               <select id="voiRole" class="voi-input voi-select">
                 <option value="Teacher" data-i18n="voi_role_teacher">Teacher</option>
                 <option value="Parent" data-i18n="voi_role_parent">Parent</option>
@@ -30529,7 +30529,7 @@ window.addEventListener('load', _installToolScreenHook);
     var m = meta();
     return '<div class="mtss-meta">'
       + '<label>' + t("School / Org", "Escuela / Org") + '<input id="mtssMetaSchool" value="' + esc(m.school || "") + '" placeholder="' + t("e.g. Lincoln Elementary", "p. ej. Primaria Lincoln") + '"></label>'
-      + '<label>' + t("Prepared by", "Preparado por") + '<input id="mtssMetaBy" value="' + esc(m.by || "") + '" placeholder="' + t("your name", "tu nombre") + '"></label>'
+      + '<label>' + t("Prepared by", "Preparado por") + '<input id="mtssMetaBy" value="' + esc(m.by || "") + '" placeholder="' + t("Enter your name", "Escribe tu nombre") + '"></label>'
       + '<label>' + t("Date / range", "Fecha / rango") + '<input id="mtssMetaDate" value="' + esc(m.date || today()) + '"></label>'
       + '</div>';
   }
@@ -87572,7 +87572,9 @@ html.js-reveal .reveal,
         key: key, d: when(r), set: num(r.setNo),
         ind: num(r.independent), sup: num(r.supported) || 0,
         tot: num(r.itemsTotal), hints: num(r.hintsUsed), conf: num(r.confidence),
-        ts: String(r.timestamp || r.date || "")
+        ts: String(r.timestamp || r.date || ""),
+        /* AOG-IEP-REC-V1 — carried so an IEP point can say HOW it was earned */
+        supports: String(r.supports || ""), stds: String(r.standards || "")
       };
       var had = a.seen[key];
       if (had && String(had.ts) > String(pt.ts)) return;
@@ -89260,8 +89262,10 @@ html.js-reveal .reveal,
       var d = String(p.d || "").slice(0, 10);
       if (!/^\d{4}-\d{2}-\d{2}$/.test(d)) return;
       var tot = p.tot || act.tot; if (!tot) return;
-      var x = by[d] || (by[d] = { d: d, ind: 0, tot: 0, sets: [] });
+      var x = by[d] || (by[d] = { d: d, ind: 0, tot: 0, sets: [], sup: [], std: [] });
       x.ind += p.ind || 0; x.tot += tot; if (p.set) x.sets.push(p.set);
+      String(p.supports || "").split(/;\s*/).forEach(function (v) { if (v && x.sup.indexOf(v) < 0) x.sup.push(v); });
+      String(p.stds || "").split(/;\s*/).forEach(function (v) { if (v && x.std.indexOf(v) < 0) x.std.push(v); });
     });
     var list = Object.keys(by).sort().map(function (k) { return by[k]; });
     return which === "last" ? list.slice(-1) : list;
@@ -89275,8 +89279,12 @@ html.js-reveal .reveal,
     days(act, which).forEach(function (x) {
       if (arr.some(function (p) { return p && String(p.date).slice(0, 10) === x.d; })) { skipped++; return; }
       var pt = { date: x.d, year: (window.AOGYear ? window.AOGYear(x.d) : ""), src: "practice",
-        note: T("From student-sent practice · " + act.name + (x.sets.length ? " · set " + x.sets.join(", ") : "") + " · " + x.ind + " of " + x.tot + " without a hint",
-                "De práctica enviada por el estudiante · " + act.name + (x.sets.length ? " · grupo " + x.sets.join(", ") : "") + " · " + x.ind + " de " + x.tot + " sin pista") };
+        note: T("From student-sent practice · " + act.name + (x.sets.length ? " · set " + x.sets.join(", ") : "") + " · " + x.ind + " of " + x.tot + " without a hint"
+                  + (x.sup.length ? " · supports: " + x.sup.join(", ") : " · no supports recorded")
+                  + (x.std.length ? " · standards: " + (x.std.length > 6 ? x.std.slice(0, 6).join(", ") + " +" + (x.std.length - 6) : x.std.join(", ")) : ""),
+                "De práctica enviada por el estudiante · " + act.name + (x.sets.length ? " · grupo " + x.sets.join(", ") : "") + " · " + x.ind + " de " + x.tot + " sin pista"
+                  + (x.sup.length ? " · apoyos: " + x.sup.join(", ") : " · sin apoyos registrados")
+                  + (x.std.length ? " · estándares: " + (x.std.length > 6 ? x.std.slice(0, 6).join(", ") + " +" + (x.std.length - 6) : x.std.join(", ")) : "")) };
       if (g.measure === "percent") pt.value = Math.round(x.ind / x.tot * 100);
       else { pt.value = x.ind; pt.total = x.tot; }
       arr.push(pt); added++;
