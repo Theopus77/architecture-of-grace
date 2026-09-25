@@ -84,50 +84,57 @@ def _person(x, y, h=26, w=8):
 def _b15():
     p = "sb15-"
     defs = (
-        _lin(p+"sky", [(0, "#0B0820", None), (.35, "#2A1A4E", None), (.62, "#5B3A78", None), (.8, "#9A5C6E", None), (.9, "#C98A5A", None)])
-        + _rad(p+"cor", [(0, "#FFFFFF", 1), (.18, "#F4EEFF", .85), (.4, "#C9B8F0", .35), (.7, "#8A70C8", .08), (1, "#8A70C8", 0)])
-        + _lin(p+"far", [(0, "#4B3466", None), (1, "#2C1F44", None)])
-        + _lin(p+"field", [(0, "#4A3A55", None), (1, "#2A1F38", None)])
-        + _lin(p+"river", [(0, "#D8A090", .9), (1, "#5A3F66", .9)])
-        + _lin(p+"ground", [(0, "#241C30", None), (.5, "#1A1424", None), (1, "#0F0B18", None)])
-        + _rad(p+"magma", [(0, "#F0703A", .55), (.5, "#B03A2A", .25), (1, "#B03A2A", 0)], .5, .8, .5)
+        _lin(p+"sky", [(0, "#07051A", None), (.3, "#221646", None), (.5, "#4A2E6E", None), (.66, "#7A4A70", None), (.78, "#C07A56", None), (.84, "#E8A860", None)])
+        + _rad(p+"cor", [(0, "#FFFFFF", 1), (.16, "#F6F0FF", .9), (.3, "#D8CCF8", .45), (.55, "#9A82D8", .12), (1, "#9A82D8", 0)])
+        + _lin(p+"far", [(0, "#3E2A5A", None), (1, "#261A3E", None)])
+        + _lin(p+"field", [(0, "#4A3860", None), (1, "#2C2040", None)])
+        + _lin(p+"river", [(0, "#E8B090", .95), (1, "#6A4A78", .9)])
+        + _lin(p+"rise", [(0, "#1A1226", None), (1, "#0E0A16", None)])
+        + _lin(p+"strata", [(0, "#221A30", None), (.5, "#2A1E36", None), (1, "#120C1C", None)])
+        + _rad(p+"magma", [(0, "#FF8A40", .7), (.5, "#C04A2A", .3), (1, "#C04A2A", 0)], .5, .9, .55)
     )
-    # corona streamers
-    streams = []
-    for i in range(14):
-        a = i * math.pi * 2 / 14 + .2
-        L = 92 if i % 2 else 66
-        x1, y1 = 600 + math.cos(a) * 40, 122 + math.sin(a) * 40
-        x2, y2 = 600 + math.cos(a) * L, 122 + math.sin(a) * L
-        streams.append(f'<path d="M{x1:.0f} {y1:.0f} L{x2:.0f} {y2:.0f}"/>')
-    rows = "".join(f'<path d="M{x} 254 L{x + (x-600)//5} 296"/>' for x in range(360, 1200, 30))
-    crowd = "".join(_person(x, 314 + (x % 5), 24 + (x % 3) * 3) for x in range(150, 470, 23))
-    crowd2 = "".join(_person(x, 320 + (x % 4), 20 + (x % 3) * 2, 7) for x in range(720, 1060, 26))
-    body = f'''
+    # corona: soft tapered wisps radiating from the black disc
+    wisps = []
+    for i in range(16):
+        a = i * math.pi * 2 / 16 + .15
+        L = 120 if i % 2 else 84
+        wd = 14 if i % 2 else 9
+        ca, sa = math.cos(a), math.sin(a)
+        x0, y0 = 600 + ca * 40, 122 + sa * 40
+        xt, yt = 600 + ca * L, 122 + sa * L
+        wisps.append(f'<path d="M{x0 - sa*wd:.0f} {y0 + ca*wd:.0f} Q{x0 + ca*L*.45:.0f} {y0 + sa*L*.45:.0f} {xt:.0f} {yt:.0f} Q{x0 + ca*L*.45:.0f} {y0 + sa*L*.45:.0f} {x0 + sa*wd:.0f} {y0 - ca*wd:.0f}z"/>')
+    rows = "".join(f'<path d="M{x} 244 L{x + (x-600)//4} 290"/>' for x in range(260, 1200, 30))
+    crowd = "".join(_person(x, 298 + (x % 3), 36 + (x % 4) * 4, 11) for x in range(120, 520, 34))
+    crowd2 = "".join(_person(x, 300 + (x % 3), 32 + (x % 3) * 4, 10) for x in range(700, 1140, 36))
+    body = f"""
 <rect width="{W}" height="{H}" fill="url(#{p}sky)"/>
-{_stars(15, 45, 200, "#EDE6FF", ".7")}
-<circle cx="600" cy="122" r="200" fill="url(#{p}cor)"/>
-<g stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" opacity=".55">{"".join(streams)}</g>
-<circle cx="600" cy="122" r="44" fill="#FFFFFF" opacity=".95"/>
-<circle cx="600" cy="122" r="36" fill="#120D22"/>
-<circle cx="600" cy="122" r="37" fill="none" stroke="#FFF4E0" stroke-width="1.5" opacity=".9"/>
-<g fill="#3A2555" opacity=".5"><ellipse cx="200" cy="150" rx="170" ry="8"/><ellipse cx="1000" cy="130" rx="200" ry="9"/><ellipse cx="300" cy="196" rx="120" ry="5"/></g>
-<path d="M0 232 Q160 218 320 228 T680 226 T1000 222 T1200 230 V260 H0z" fill="url(#{p}far)"/>
-<g fill="#2C1F44"><path d="M40 232 q-8 -18 0 -30 q8 12 0 30z M64 232 q-7 -14 0 -26 q7 12 0 26z M1120 230 q-9 -18 0 -32 q9 14 0 32z M1148 230 q-7 -14 0 -26 q7 12 0 26z M900 226 q-6 -12 0 -22 q6 10 0 22z"/></g>
-<path d="M0 252 H1200 V310 H0z" fill="url(#{p}field)"/>
-<g stroke="#5C4A6C" stroke-width="1.2" opacity=".5">{rows}</g>
-<path d="M0 254 Q120 262 180 276 T330 288 T500 296 T560 320 T480 340 T420 360 V420 H0 V340 Q60 320 80 300 T0 280z" fill="url(#{p}river)"/>
-<path d="M0 262 Q120 268 180 282 T330 294 T500 302 T552 322" stroke="#F0C8B8" stroke-width="1" fill="none" opacity=".45"/>
-<path d="M0 312 Q300 300 600 306 T1200 304 V420 H0z" fill="url(#{p}ground)"/>
-<g fill="#0E0A18">{crowd}{crowd2}</g>
-<g fill="#0E0A18"><path d="M560 322 h60 l-6 -22 h-48z"/><path d="M582 300 h16 v-10 h-16z"/><rect x="588" y="282" width="4" height="10"/></g>
-<g stroke="#3A2C4C" stroke-width="1.2" fill="none" opacity=".7"><path d="M0 346 Q300 340 600 344 T1200 342"/><path d="M0 366 Q300 358 600 364 T1200 360"/><path d="M0 386 Q300 380 600 386 T1200 382"/></g>
-<path d="M300 420 Q460 380 640 372 Q820 366 900 420z" fill="url(#{p}magma)"/>
-<path d="M0 404 Q200 396 420 386 Q560 380 620 420 H0z" fill="#3A2A44" opacity=".35"/>
-<path d="M1200 400 Q1000 392 800 382 Q700 378 640 420 H1200z" fill="#3A2A44" opacity=".35"/>
-<path d="M596 340 l34 -40 l34 40z" fill="#1A1424"/><path d="M604 340 l26 -30 l26 30z" fill="#2A1F38"/>
-<path d="M626 306 q4 -14 8 0z" fill="#F0703A" opacity=".7"/>
-'''
+{_stars(15, 40, 150, "#EDE6FF", ".7")}
+<circle cx="600" cy="122" r="230" fill="url(#{p}cor)"/>
+<g fill="#FFFFFF" opacity=".32">{"".join(wisps)}</g>
+<circle cx="600" cy="122" r="52" fill="#FFFFFF" opacity=".55"/>
+<circle cx="600" cy="122" r="43" fill="#FFFFFF" opacity=".95"/>
+<circle cx="600" cy="122" r="38" fill="#0A0716"/>
+<circle cx="600" cy="122" r="38.5" fill="none" stroke="#FFF6E0" stroke-width="1.2"/>
+<circle cx="588" cy="90" r="1.6" fill="#FFFFFF"/><circle cx="960" cy="60" r="2" fill="#FFFFFF"/><circle cx="230" cy="80" r="1.8" fill="#FFFFFF"/>
+<g fill="#4A2E6E" opacity=".45"><ellipse cx="200" cy="170" rx="180" ry="7"/><ellipse cx="1000" cy="160" rx="200" ry="8"/></g>
+<path d="M0 230 Q160 220 320 228 T680 226 T1000 222 T1200 230 V250 H0z" fill="url(#{p}far)"/>
+<g fill="#261A3E"><path d="M40 230 q-8 -18 0 -30 q8 12 0 30z M64 230 q-7 -14 0 -26 q7 12 0 26z M1120 228 q-9 -18 0 -32 q9 14 0 32z M1148 228 q-7 -14 0 -26 q7 12 0 26z M900 224 q-6 -12 0 -22 q6 10 0 22z M92 231 q-5 -10 0 -18 q5 8 0 18z"/></g>
+<g fill="#1E1430"><rect x="1040" y="206" width="8" height="24"/><path d="M1030 218 h28 l-4 -8 h-20z"/><rect x="180" y="214" width="22" height="16"/><path d="M176 214 h30 l-15 -8z"/></g>
+<path d="M0 242 H1200 V296 H0z" fill="url(#{p}field)"/>
+<g stroke="#6A5680" stroke-width="1.2" opacity=".5">{rows}</g>
+<path d="M0 240 Q120 246 200 256 T380 268 T520 274 T600 292 T560 310 H0z" fill="url(#{p}river)"/>
+<path d="M0 246 Q120 252 200 262 T380 274 T520 280 T596 296" stroke="#FFE0C8" stroke-width="1.2" fill="none" opacity=".5"/>
+<path d="M0 300 Q300 288 600 296 T1200 292 V420 H0z" fill="url(#{p}rise)"/>
+<g fill="#0A0712">{crowd}{crowd2}</g>
+<g fill="#0A0712"><path d="M560 300 h74 l-8 -26 h-58z"/><path d="M586 274 h22 v-12 h-22z"/><rect x="594" y="250" width="6" height="12"/></g>
+<path d="M0 330 Q300 324 600 330 T1200 326 V420 H0z" fill="url(#{p}strata)"/>
+<g stroke="#3E2E52" stroke-width="1.5" fill="none" opacity=".8"><path d="M0 350 Q300 344 600 350 T1200 346"/><path d="M0 372 Q300 364 600 372 T1200 366"/><path d="M0 394 Q300 388 600 396 T1200 390"/></g>
+<path d="M300 420 Q460 384 640 376 Q820 370 900 420z" fill="url(#{p}magma)"/>
+<path d="M0 420 Q240 404 480 380 Q600 368 660 420z" fill="#2E2240" opacity=".5"/>
+<path d="M1200 420 Q960 410 760 384 Q680 372 640 420z" fill="#2E2240" opacity=".5"/>
+<path d="M584 330 l46 -52 l46 52z" fill="#160F22"/><path d="M596 330 l34 -38 l34 38z" fill="#2C2040"/>
+<path d="M624 292 q6 -18 12 0z" fill="#FF8A40" opacity=".9"/><path d="M628 280 q2 -22 6 -32 q4 12 2 32z" fill="#FF8A40" opacity=".35"/>
+"""
     return _wrap(15, body, defs)
 
 
@@ -160,23 +167,23 @@ def _b16():
 <path d="M600 6 V170" stroke="#5E7A70" stroke-width="3"/>
 <g fill="url(#{p}shaft)"><path d="M700 40 L760 40 L520 330 L420 330z"/><path d="M820 40 L870 40 L700 330 L610 330z"/><path d="M920 40 L950 40 L880 330 L820 330z"/></g>
 <path d="M0 170 H1200 V236 H0z" fill="url(#{p}wall)"/>
-<g fill="#D9E6D0" opacity=".9"><rect x="120" y="182" width="88" height="48" rx="2"/></g>
-<g transform="translate(164 206)"><ellipse rx="34" ry="16" fill="#B85A46"/><ellipse rx="30" ry="12" fill="#E8A070"/><path d="M-22 -10 v20 M-12 -12 v24 M-2 -12 v24 M8 -12 v24 M18 -10 v20" stroke="#B85A46" stroke-width="3" fill="none"/><path d="M-27 -6 v12 M23 -6 v12" stroke="#B85A46" stroke-width="2"/></g>
+<g fill="#D9E6D0" opacity=".9"><rect x="100" y="176" width="130" height="58" rx="2"/></g>
+<g transform="translate(165 205) scale(1.5)"><ellipse rx="34" ry="16" fill="#B85A46"/><ellipse rx="30" ry="12" fill="#E8A070"/><path d="M-22 -10 v20 M-12 -12 v24 M-2 -12 v24 M8 -12 v24 M18 -10 v20" stroke="#B85A46" stroke-width="3" fill="none"/><path d="M-27 -6 v12 M23 -6 v12" stroke="#B85A46" stroke-width="2"/></g>
 <g stroke="#5E7A70" stroke-width="2" opacity=".7"><path d="M0 170 V236 M300 170 V236 M600 170 V236 M900 170 V236"/></g>
 <path d="M0 236 H1200 V420 H0z" fill="url(#{p}floor)"/>
 <path d="M0 264 Q300 250 520 246 L520 258 Q300 262 0 276z" fill="url(#{p}bench)"/>
 <path d="M0 290 Q300 276 540 270 L540 284 Q300 290 0 304z" fill="url(#{p}bench)"/>
 <path d="M1200 264 Q900 250 680 246 L680 258 Q900 262 1200 276z" fill="url(#{p}bench)"/>
-<g fill="url(#{p}leaf)">{tufts(250, 30, 520, 28, 1.0)}{tufts(275, 20, 540, 30, 1.2)}{tufts(250, 690, 1200, 28, 1.0)}</g>
+<g fill="url(#{p}leaf)">{tufts(250, 30, 520, 40, 1.6)}{tufts(275, 20, 540, 46, 2.1)}{tufts(250, 690, 1200, 40, 1.6)}</g>
 <g fill="#2F6B3A" opacity=".8"><rect x="40" y="248" width="16" height="10" rx="2"/><rect x="96" y="246" width="16" height="10" rx="2"/><rect x="360" y="244" width="16" height="10" rx="2"/><rect x="760" y="245" width="16" height="10" rx="2"/><rect x="1040" y="248" width="16" height="10" rx="2"/></g>
-<path d="M560 296 H660 V304 H560z" fill="url(#{p}bench)"/><path d="M566 304 v40 M654 304 v40" stroke="#3B3122" stroke-width="3"/>
-<g transform="translate(590 292)">
+<path d="M540 296 H680 V306 H540z" fill="url(#{p}bench)"/><path d="M548 306 v40 M672 306 v40" stroke="#3B3122" stroke-width="3"/>
+<g transform="translate(590 292) scale(1.45)">
 <path d="M-24 0 V-46 q0 -6 6 -6 h36 q6 0 6 6 V0z" fill="url(#{p}jar)" stroke="#BFE0F0" stroke-width="1.5"/>
 <rect x="-26" y="-58" width="52" height="8" rx="2" fill="#8CC4DC" opacity=".7"/>
 <path d="M-8 -4 v-26 M-8 -22 q-8 -6 -10 -14 q8 2 10 14 M-8 -14 q8 -6 10 -14 q-8 2 -10 14 M-8 -30 q-6 -6 -6 -12 q6 2 6 12" stroke="#4F9C4A" stroke-width="2" fill="none"/>
 <path d="M10 -4 v-20 h4 v20z" fill="#F4E8C8"/><ellipse cx="12" cy="-32" rx="8" ry="10" fill="url(#{p}flame)"/>
 </g>
-<circle cx="602" cy="262" r="26" fill="url(#{p}flame)" opacity=".25"/>
+<circle cx="607" cy="246" r="40" fill="url(#{p}flame)" opacity=".28"/>
 <g stroke="#0F1A15" stroke-width="1.5" opacity=".6"><path d="M0 330 H1200 M0 372 H1200 M0 414 H1200"/><path d="M200 236 L100 420 M400 236 L340 420 M600 236 V420 M800 236 L860 420 M1000 236 L1100 420"/></g>
 <path d="M480 236 L720 236 L900 420 H300z" fill="#FFF2C4" opacity=".08"/>
 '''
@@ -248,14 +255,14 @@ def _b18():
     )
     g = _lcg(18)
     blades = []
-    for _ in range(150):
+    for _ in range(90):
         x = next(g) % 1200
         h = 18 + next(g) % 28
         y = 262 + next(g) % 30
         sw = 10 + next(g) % 10
         blades.append(f'<path d="M{x} {y} q{sw//2} -{h//2} {sw} -{h}"/>')
     blades2 = []
-    for _ in range(90):
+    for _ in range(60):
         x = next(g) % 1200
         h = 30 + next(g) % 40
         y = 318 + next(g) % 30
@@ -263,22 +270,25 @@ def _b18():
         blades2.append(f'<path d="M{x} {y} q{sw//2} -{h//2} {sw} -{h}"/>')
     city = "".join(f'<rect x="{x}" y="{212-h}" width="{w}" height="{h}"/>' for x, w, h in ((60, 6, 14), (70, 8, 22), (82, 5, 12), (92, 7, 18), (104, 6, 9), (114, 9, 26), (128, 5, 15), (138, 6, 10)))
     def bison(x, y, s):
+        # feet at (x, y); faces left; big shoulder hump, low head, beard, short horns
         return (f'<g transform="translate({x} {y}) scale({s})">'
-                '<path d="M-60 0 v-30 q0 -14 10 -22 q10 -8 20 -14 q14 -10 34 -8 q20 2 32 14 q10 14 4 30 q-2 8 -8 10 l-4 20 h-8 l2 -18 h-20 l-2 18 h-8 l0 -18 q-10 2 -20 -2 l-4 20 h-8 l2 -20 q-8 0 -12 2 v-2z"/>'
-                '<path d="M16 -70 q10 -8 20 -2 q-4 6 -12 6z M-6 -66 q-8 -6 -18 -2 q4 6 12 6z"/>'
-                '<path d="M40 -46 q8 -6 12 0 q-2 8 -8 10z"/></g>')
+                '<path d="M-78 0 l4 -34 q-10 -20 6 -36 q16 -16 40 -20 q30 -6 58 6 q22 10 26 36 q2 18 -8 30 l4 18 h-10 l-6 -16 h-10 l-2 16 h-10 l0 -18 h-60 l-6 18 h-10 l2 -20 q-14 4 -14 12 v0z"/>'
+                '<path d="M-80 -30 q-24 -6 -30 14 q-4 16 4 30 l-14 10 l22 -2 l-2 -20 q6 -2 12 -4 q10 -12 8 -28z"/>'
+                '<path d="M-96 -30 q-10 -14 -4 -22 q4 8 10 16z M-70 -34 q4 -14 12 -12 q-2 8 -8 14z"/>'
+                '<path d="M-100 8 q4 12 8 8 M-92 10 q0 14 4 10" stroke="#2A1A10" stroke-width="3" fill="none"/></g>')
     body = f'''
 <rect width="{W}" height="{H}" fill="url(#{p}sky)"/>
 <g fill="#3E4A6E" opacity=".5"><ellipse cx="300" cy="60" rx="200" ry="8"/><ellipse cx="900" cy="100" rx="240" ry="9"/></g>
 <g fill="#F0B060" opacity=".55"><ellipse cx="640" cy="150" rx="220" ry="5"/><ellipse cx="1000" cy="168" rx="140" ry="4"/></g>
-<path d="M400 60 Q560 40 700 80 Q820 110 940 170 Q1000 200 1200 206 V212 H420z" fill="url(#{p}smoke)"/>
+<g fill="#3E4A6E" opacity=".35"><ellipse cx="520" cy="180" rx="150" ry="14"/><ellipse cx="640" cy="160" rx="120" ry="12"/><ellipse cx="960" cy="176" rx="170" ry="14"/><ellipse cx="1080" cy="150" rx="110" ry="10"/></g>
+<g fill="#F0B060" opacity=".22"><ellipse cx="470" cy="196" rx="90" ry="8"/><ellipse cx="920" cy="196" rx="110" ry="8"/></g>
 <g fill="#2A2438" opacity=".85">{city}</g>
 <path d="M0 214 Q200 208 400 212 T800 208 T1200 212 V236 H0z" fill="url(#{p}far)"/>
 <rect x="380" y="208" width="820" height="6" fill="url(#{p}burn)"/>
 <path d="M420 210 q8 -10 12 0 q2 -6 8 -2 q4 -8 10 0 q6 -12 12 -2 q4 -6 8 -1 q6 -10 12 0" stroke="#FFD070" stroke-width="2" fill="none" opacity=".9"/>
 <path d="M880 210 q6 -10 12 0 q4 -8 10 0 q6 -12 12 -2 q4 -6 8 -1 q6 -8 12 0" stroke="#FFD070" stroke-width="2" fill="none" opacity=".9"/>
 <path d="M0 236 Q300 226 600 232 T1200 228 V300 H0z" fill="url(#{p}mid)"/>
-<g fill="#2A1A10">{bison(300, 296, 1.0)}{bison(470, 288, .72)}{bison(560, 284, .5)}{bison(900, 292, .85)}{bison(1040, 286, .6)}</g>
+<g fill="#2A1A10">{bison(320, 298, 1.0)}{bison(500, 290, .7)}{bison(600, 284, .5)}{bison(930, 294, .85)}{bison(1080, 288, .6)}</g>
 <g fill="none" stroke="url(#{p}grass)" stroke-width="1.6" stroke-linecap="round" opacity=".8">{"".join(blades)}</g>
 <path d="M0 300 Q300 290 600 296 T1200 292 V420 H0z" fill="url(#{p}fg)"/>
 <g fill="none" stroke="#5A3A24" stroke-width="2" stroke-linecap="round" opacity=".75">{"".join(blades2)}</g>
@@ -311,13 +321,15 @@ def _b19():
         if c <= 16: return "#5AD08A"
         if c == 17: return "#D0D05A"
         return "#B080E8"
-    tiles, ox, oy, s = [], 690, 34, 24
+    ox, oy, s = 690, 30, 22
+    by = {}
     for r, cs in cols.items():
         for c in cs:
-            tiles.append(f'<rect x="{ox + (c-1)*s}" y="{oy + (r-1)*s}" width="{s-3}" height="{s-3}" rx="2" fill="{colr(c)}"/>')
+            by.setdefault(colr(c), []).append(f'<rect x="{ox + (c-1)*s}" y="{oy + (r-1)*s}" width="{s-3}" height="{s-3}"/>')
     for c in range(3, 18):
         for r in (0, 1):
-            tiles.append(f'<rect x="{ox + (c-1)*s}" y="{oy + 7*s + 8 + r*s}" width="{s-3}" height="{s-3}" rx="2" fill="#E8709A"/>')
+            by.setdefault("#E8709A", []).append(f'<rect x="{ox + (c-1)*s}" y="{oy + 7*s + 6 + r*s}" width="{s-3}" height="{s-3}"/>')
+    tiles = [f'<g fill="{k}">{"".join(v)}</g>' for k, v in by.items()]
     def flame(x, y, gid, h):
         return (f'<ellipse cx="{x}" cy="{y-h*0.5:.0f}" rx="{h*0.34:.0f}" ry="{h*0.6:.0f}" fill="url(#{gid})"/>'
                 f'<path d="M{x-5} {y+2} h10 v-8 h-10z M{x-9} {y+2} h18 v4 h-18z" fill="#101216"/>')
@@ -325,7 +337,7 @@ def _b19():
 <rect width="{W}" height="{H}" fill="url(#{p}wall)"/>
 <circle cx="300" cy="120" r="220" fill="url(#{p}lamp)"/>
 <path d="M280 0 h40 l10 40 h-60z" fill="#3A3E48"/><path d="M270 40 h60 v6 h-60z" fill="#FFE8B0" opacity=".5"/>
-<rect x="676" y="22" width="460" height="230" rx="4" fill="#111318" opacity=".8"/>
+<rect x="678" y="20" width="420" height="212" rx="4" fill="#111318" opacity=".8"/>
 <g opacity=".92">{"".join(tiles)}</g>
 <g stroke="#3A3E48" stroke-width="2" fill="none" opacity=".8"><path d="M40 30 H600 M40 30 V220 M600 30 V220 M40 220 H600"/><path d="M60 50 h200 v40 h-200z M300 50 h280 v60 h-280z M60 110 h520 v90 h-520z" opacity=".5"/></g>
 <g fill="#22252C"><rect x="60" y="112" width="520" height="86"/></g>
@@ -391,12 +403,20 @@ def _b20():
 <g fill="#12161A" opacity=".85">{stripes}</g>
 <path d="M880 100 H1010 V112 H880z M880 196 H1010 V208 H880z" fill="#12161A" opacity=".6"/>
 <path d="M1010 100 H1200 V246 H1010z" fill="#1E242A"/>
-<g stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round" opacity=".9">{debris}</g>
+<g stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round" opacity=".9">{debris}<path d="M846 100 l-8 -22 M856 96 l2 -26 M838 108 l-20 -12"/></g>
 <path d="M620 246 V226 H840 L860 246z" fill="url(#{p}sled)"/><path d="M620 226 V214 H700 q40 -30 100 0 H840 V226z" fill="#6E7A86"/>
 <g fill="#6E7A86"><circle cx="660" cy="250" r="9"/><circle cx="800" cy="250" r="9"/></g><g fill="#12161A"><circle cx="660" cy="250" r="4"/><circle cx="800" cy="250" r="4"/></g>
-<g fill="#F2C41A"><path d="M716 214 q10 -60 34 -70 l64 -20 l4 8 l-56 24 q-10 6 -12 14 l-6 44z"/><path d="M750 150 q-20 -8 -10 -30 l20 14 l30 -34 l8 8 l-30 32 q-4 12 -18 10z"/><circle cx="836" cy="118" r="18"/><path d="M780 140 q-6 -10 -30 -18 l-40 -8 l-2 10 l38 10 q16 6 30 12z"/></g>
-<path d="M828 118 h16 M836 110 v16" stroke="#12161A" stroke-width="3"/>
-<path d="M836 134 q8 -4 16 4 l20 30" stroke="#F2C41A" stroke-width="10" stroke-linecap="round" fill="none"/>
+<g transform="translate(740 226)">
+<path d="M-30 0 h30 v-14 h-30z" fill="#12161A"/>
+<path d="M-16 -8 l6 -60 q4 -18 22 -18 h10 q16 0 22 14 l14 34 l-12 6 l-12 -26 l-2 22 h-26 l-4 30z" fill="#F2C41A"/>
+<path d="M-14 -8 l10 -30 l22 0 l-4 -22 h-26 l-10 42z" fill="#D8AC14"/>
+<path d="M8 -70 q-22 -6 -40 8 l-12 22 l8 4 l14 -20 q12 -8 30 -6z" fill="#F2C41A"/>
+<path d="M58 -46 q26 -2 48 22 l-6 6 q-20 -20 -44 -18z" fill="#F2C41A"/>
+<path d="M28 -100 q-10 -12 -6 -28 q30 -14 62 -10 q4 20 -12 34z" fill="#F2C41A"/>
+<circle cx="78" cy="-118" r="18" fill="#F2C41A"/><path d="M60 -118 A18 18 0 0 1 78 -136 V-118z M78 -118 h18 A18 18 0 0 1 78 -100z" fill="#12161A"/><circle cx="78" cy="-118" r="18" fill="none" stroke="#12161A" stroke-width="2"/>
+<path d="M50 -104 l10 8" stroke="#12161A" stroke-width="4"/>
+<path d="M-6 -22 h30 M-8 -30 h30" stroke="#12161A" stroke-width="3" opacity=".5"/>
+</g>
 <path d="M440 246 H1200 V270 H440z" fill="url(#{p}beam)" opacity=".18"/>
 <g fill="#FFFFFF" opacity=".5"><path d="M870 120 l4 -30 M876 128 l30 -26 M874 138 l36 -8" stroke="#FFFFFF" stroke-width="1.5"/></g>
 <g stroke="#12161A" stroke-width="1.2" opacity=".4"><path d="M0 320 H1200 M0 372 H1200"/></g>
@@ -438,8 +458,8 @@ def _b21():
 <rect width="{W}" height="{H}" fill="url(#{p}sky)"/>
 <path d="M-40 260 Q300 40 700 20 Q1000 10 1240 90 L1240 150 Q1000 90 700 90 Q400 110 0 320z" fill="url(#{p}mw)"/>
 <path d="M200 220 Q500 110 800 70 Q1000 60 1240 110 L1240 130 Q1000 80 800 90 Q520 130 240 250z" fill="#0A1A44" opacity=".5"/>
-{_stars(21, 160, 300, "#FFFFFF", ".85")}
-{_stars(212, 60, 120, "#BFD8FF", ".6", 400, 1200)}
+{_stars(21, 100, 300, "#FFFFFF", ".85")}
+{_stars(212, 40, 120, "#BFD8FF", ".6", 400, 1200)}
 <circle cx="240" cy="96" r="70" fill="url(#{p}gal)"/>
 <g fill="none" stroke="#E8E0FF" stroke-width="2.5" stroke-linecap="round" opacity=".7"><path d="{arms[0]}"/><path d="{arms[1]}"/></g>
 <ellipse cx="240" cy="96" rx="10" ry="6" fill="#FFF8E8"/>
@@ -598,8 +618,7 @@ def _b24():
     for n in range(1, 9):
         t = (n * n) / 64
         mx, my = x0 + (x1 - x0) * t, y0 + (y1 - y0) * t
-        marks.append(f'<path d="M{mx:.0f} {my - 4:.0f} l3 -14 M{mx:.0f} {my-4:.0f}" stroke-width="{2 if n%2 else 1.4}"/>')
-        marks.append(f'<circle cx="{mx:.0f}" cy="{my - 16:.0f}" r="2" fill="#FFE070" opacity=".3"/>')
+        marks.append(f'<path d="M{mx:.0f} {my + 2:.0f} l3 -{16 if n%2 else 11}" stroke-width="2.2"/>')
     orbit = "M700 30 Q820 8 940 40 Q1080 80 1140 160"
     body = f'''
 <rect width="{W}" height="{H}" fill="url(#{p}sky)"/>
@@ -718,7 +737,8 @@ def _b26():
 <g fill="#B25A5A" opacity=".45"><ellipse cx="240" cy="70" rx="180" ry="7"/><ellipse cx="760" cy="40" rx="200" ry="8"/><ellipse cx="1060" cy="110" rx="120" ry="5"/></g>
 <path d="M0 154 H1200 V420 H0z" fill="url(#{p}gulf)"/>
 <path d="M0 154 H1200 V160 H0z" fill="#F0A070" opacity=".6"/>
-<path d="M470 200 Q560 176 680 190 Q820 206 960 214 Q900 260 780 270 Q660 280 560 258 Q470 240 470 200z" fill="url(#{p}dead)"/>
+<path d="M700 236 Q820 214 980 220 Q1120 226 1160 250 Q1100 280 940 284 Q800 286 740 272 Q690 258 700 236z" fill="url(#{p}dead)"/>
+<path d="M760 250 Q880 240 1000 248 Q1080 254 1100 264" stroke="#8A9A48" stroke-width="3" fill="none" opacity=".5"/>
 <path d="M-40 156 Q100 160 220 172 Q380 186 540 168 Q600 160 620 200 Q640 240 700 246 Q740 250 760 300 Q780 340 700 360 Q640 370 620 340 Q600 320 560 332 Q520 344 500 300 Q480 260 420 250 Q300 240 200 260 Q100 280 -40 270z" fill="url(#{p}land)"/>
 <path d="M600 156 Q596 190 606 216 Q612 234 594 250" stroke="#2A6E80" stroke-width="10" fill="none" stroke-linecap="round"/>
 <g fill="none" stroke="#2A6E80" stroke-width="4" stroke-linecap="round">{channels}</g>
@@ -729,7 +749,7 @@ def _b26():
 <path d="M0 306 Q300 292 600 300 T1200 296" stroke="#4A5A48" stroke-width="2" fill="none"/>
 {panels}
 {"".join(turb)}
-<g transform="translate(760 92)"><path d="M0 0 q-30 -22 -70 -20 q26 6 52 22 q-6 8 -10 20 q20 -10 36 -12 q18 0 30 12 q-4 -14 -12 -20 q40 -2 76 -22 q-42 4 -78 12 q-8 -4 -24 -2z" fill="#1A0E1E"/><path d="M-20 4 q-8 14 -10 36" stroke="#1A0E1E" stroke-width="2" fill="none"/></g>
+<g transform="translate(700 84)" fill="#1A0E1E"><path d="M-10 0 q-40 -30 -84 -34 q30 12 56 34 q-20 6 -30 22 q30 -14 60 -12 l70 4 q30 -6 42 -20 q-30 4 -56 2 q30 -14 44 -40 q-30 22 -60 30 q-18 2 -42 14z"/><path d="M-6 -6 q-16 -4 -30 -12 q-6 -8 -4 -16 q6 6 12 6 l-22 -6 q10 -4 20 -2 q14 4 24 18z"/><path d="M-42 -32 q-8 -8 -4 -14 l-38 -6 l40 0 q6 -2 8 8z"/><path d="M50 12 q30 10 60 18" stroke="#1A0E1E" stroke-width="3" fill="none"/><path d="M70 6 q30 8 56 20" stroke="#1A0E1E" stroke-width="2.5" fill="none"/></g>
 <g fill="#F0A070" opacity=".28"><ellipse cx="900" cy="240" rx="120" ry="5"/><ellipse cx="880" cy="262" rx="90" ry="4"/></g>
 <g stroke="#0C1410" stroke-width="1.2" opacity=".5"><path d="M0 340 Q300 330 600 336 T1200 332 M0 380 Q300 372 600 378 T1200 374"/></g>
 <g fill="#1E3A2A" opacity=".8"><path d="M30 316 q-5 -14 0 -26 q5 12 0 26z M52 320 q-4 -12 0 -22 q4 10 0 22z M1140 314 q-5 -14 0 -26 q5 12 0 26z"/></g>
@@ -768,7 +788,7 @@ def _b27():
 <rect x="60" y="40" width="1080" height="190" rx="3" fill="url(#{p}board)"/>
 <rect x="60" y="40" width="1080" height="190" rx="3" fill="none" stroke="#8A7040" stroke-width="4"/>
 <rect x="60" y="230" width="1080" height="8" fill="#6A5430"/>
-<g stroke="#E8ECF2" stroke-width="2" opacity=".9"><path d="M96 70 V212 H460"/></g>
+<g stroke="#E8ECF2" stroke-width="2" opacity=".9" fill="none"><path d="M96 70 V212 H460"/></g>
 <g stroke="#E8ECF2" stroke-width="1" opacity=".3"><path d="M96 100 H460 M96 140 H460 M96 180 H460"/></g>
 {bars}
 <path d="{trend}" stroke="#F2C24A" stroke-width="3" stroke-linecap="round"/>
