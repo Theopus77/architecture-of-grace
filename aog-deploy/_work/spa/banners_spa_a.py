@@ -204,8 +204,8 @@ def _llama(x, y, s, c, head=1):
             f'<rect x="{x+8*s}" y="{y-30*s}" width="{7*s}" height="{30*s}"/><rect x="{x+20*s}" y="{y-30*s}" width="{7*s}" height="{30*s}"/>'
             f'<path d="M{x+hx-6*s*head} {y-48*s} l{4*s*head} -{44*s} h{10*s*head} l{2*s*head} {44*s}z"/>'
             f'<ellipse cx="{x+hx+6*s*head}" cy="{y-92*s}" rx="{12*s}" ry="{7*s}"/>'
-            f'<path d="M{x+hx} {y-96*s} l-{2*s*head} -{12*s} l{5*s*head} {8*s}z"/><path d="M{x+hx+6*s*head} {y-96*s} l{1*s*head} -{12*s} l{4*s*head} {10*s}z"/>'
-            f'<path d="M{x-34*s*head} {y-44*s} q-{8*s*head} 2 -{8*s*head} {10*s}" stroke="{c}" stroke-width="{5*s}" fill="none"/></g>')
+            f'<path d="M{x+hx} {y-96*s} l{-(2*s*head)} -{12*s} l{5*s*head} {8*s}z"/><path d="M{x+hx+6*s*head} {y-96*s} l{1*s*head} -{12*s} l{4*s*head} {10*s}z"/>'
+            f'<path d="M{x-34*s*head} {y-44*s} q{-(8*s*head)} 2 {-(8*s*head)} {10*s}" stroke="{c}" stroke-width="{5*s}" fill="none"/></g>')
 
 
 def _b4():
