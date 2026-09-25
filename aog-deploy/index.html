@@ -91779,5 +91779,59 @@ html.js-reveal .reveal,
   #panel-align .xa-lock, #panel-align a.xa-ghost[href*="request" i], #panel-align a.xa-ghost[onclick*="equest" i]{display:none!important}
 }
 </style>
+<script id="aog-hero-rose">
+/* ══ AOG-HERO-ROSE-V1 (2026-09-25) — Jimmy: "Can the MAIN HERO get some sort of
+   facelift as well?" Behind the name, a rose window lit from behind: a centre
+   medallion, three rings of pointed petals and lancets, and a border of small
+   roundels, all in jewel glass set in lead, the same glass as the ecosystem
+   flower. Decorative only (aria-hidden), drawn once, fades at its edges. */
+(function(){
+  var host = document.querySelector('#one-framework .aog-of-in'); if (!host || document.getElementById('aogHeroRose')) return;
+  var NS='http://www.w3.org/2000/svg', C=300, J=['#2F63B8','#B8457A','#2E8B57','#B87A12','#7B4FA0','#A8323E','#1F8080','#3F4AA6'];
+  function P(r,a){ return (C+r*Math.cos(a)).toFixed(1)+' '+(C+r*Math.sin(a)).toFixed(1); }
+  var g='';
+  function pane(d,col,op){ g+='<path d="'+d+'" fill="'+col+'" fill-opacity="'+(op||.92)+'" filter="url(#hrGlass)"/>'; }
+  /* centre medallion: 8 wedges */
+  for (var i=0;i<8;i++){ var a0=i*Math.PI/4-Math.PI/2, a1=a0+Math.PI/4;
+    pane('M'+C+' '+C+' L'+P(46,a0)+' A46 46 0 0 1 '+P(46,a1)+' Z', i%2?'#F2C964':'#D9A33B'); }
+  /* rings of pointed petals: [inner, outer, count, rotation] */
+  [[50,112,8,0],[116,188,16,.5],[192,252,24,0]].forEach(function(R,ri){
+    var n=R[2];
+    for (var k=0;k<n;k++){
+      var a0=(k+R[3])*2*Math.PI/n-Math.PI/2, a1=a0+2*Math.PI/n, am=(a0+a1)/2, pk=R[1]+ (ri===2?4:14);
+      pane('M'+P(R[0],a0)+' A'+R[0]+' '+R[0]+' 0 0 1 '+P(R[0],a1)+' L'+P(R[1],a1)+' Q'+P(pk,am)+' '+P(R[1],a0)+' Z', J[(k+ri*3)%J.length]);
+    }
+  });
+  /* border of small roundels */
+  for (var q=0;q<24;q++){ var a=q*2*Math.PI/24-Math.PI/2; var x=C+272*Math.cos(a), y=C+272*Math.sin(a);
+    g+='<circle cx="'+x.toFixed(1)+'" cy="'+y.toFixed(1)+'" r="15" fill="'+J[(q*3)%J.length]+'" fill-opacity=".92" filter="url(#hrGlass)"/>'; }
+  var svg='<svg id="aogHeroRose" viewBox="0 0 600 600" aria-hidden="true" focusable="false">'
+    +'<defs><filter id="hrGlass" x="-5%" y="-5%" width="110%" height="110%"><feTurbulence type="fractalNoise" baseFrequency="0.03" numOctaves="2" seed="21" result="n"/>'
+    +'<feColorMatrix in="n" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0.33 0.33 0.33 0 -0.33" result="sh"/>'
+    +'<feComposite in="sh" in2="SourceAlpha" operator="in" result="s2"/><feMerge><feMergeNode in="SourceGraphic"/><feMergeNode in="s2"/></feMerge></filter>'
+    +'<radialGradient id="hrLight" cx="50%" cy="45%" r="55%"><stop offset="0" stop-color="#FFF6DA" stop-opacity=".55"/><stop offset=".5" stop-color="#fff" stop-opacity=".08"/><stop offset="1" stop-color="#000" stop-opacity=".25"/></radialGradient></defs>'
+    +'<circle cx="300" cy="300" r="292" fill="#15171B"/>'
+    +'<g stroke="#15171B" stroke-width="3.2" stroke-linejoin="round">'+g+'</g>'
+    +'<circle cx="300" cy="300" r="290" fill="url(#hrLight)" style="mix-blend-mode:screen"/>'
+    +'<circle cx="300" cy="300" r="293" fill="none" stroke="#B89A5E" stroke-width="7"/>'
+    +'</svg>';
+  host.insertAdjacentHTML('afterbegin', svg);
+})();
+</script>
+<style id="aog-hero-glass">
+@media screen{
+  #one-framework .aog-of-in{position:relative}
+  #aogHeroRose{position:absolute;left:50%;top:-34px;width:min(660px,92vw);height:auto;transform:translateX(-50%);z-index:0;pointer-events:none;
+    opacity:.24;filter:drop-shadow(0 0 40px rgba(242,201,100,.25));
+    -webkit-mask-image:radial-gradient(circle at 50% 50%,#000 58%,transparent 72%);mask-image:radial-gradient(circle at 50% 50%,#000 58%,transparent 72%)}
+  #one-framework .aog-of-head{position:relative;z-index:1}
+  #one-framework .aog-of-head .ofh-mark{filter:drop-shadow(0 4px 18px rgba(8,20,36,.95)) drop-shadow(0 0 2px rgba(8,20,36,.9))}
+  /* the three doors: leaded, each with a band of its own glass */
+  #aog-thresholds .aogdr-door{border:3px solid #1E1F22!important;box-shadow:0 0 0 1px rgba(242,201,100,.4),inset 0 7px 0 var(--gl),0 18px 40px -26px rgba(0,0,0,.8)!important}
+  #aog-thresholds .aogdr-d2{--gl:#2F63B8} #aog-thresholds .aogdr-d1{--gl:#B8457A} #aog-thresholds .aogdr-d3{--gl:#2E8B57}
+}
+@media (prefers-reduced-motion:no-preference){ #aogHeroRose{animation:aogRoseIn 1.4s ease-out both} @keyframes aogRoseIn{from{opacity:0;transform:translateX(-50%) scale(.96)}to{opacity:.24;transform:translateX(-50%) scale(1)}} }
+@media print{ #aogHeroRose{display:none} }
+</style>
 </body>
 </html>
