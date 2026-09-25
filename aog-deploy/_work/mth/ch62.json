@@ -1,0 +1,280 @@
+{
+ "n": 62, "title": "Capstone: Model It", "years": "Modeling",
+ "bigQuestion": "How do you turn a real question into a mathematical model you can build, test, defend and improve?",
+ "story": {
+  "title": "The Traffic Light on Main Street",
+  "kicker": "A student who is tired of waiting at one light decides to find out, with a stopwatch and a notebook, whether the light is really badly timed.",
+  "paragraphs": [
+   "Every school morning Tomas sits at the light where Main Street meets the road to the high school, and every morning he is sure the light is wrong. The red seems to last forever, and the green seems to end just as his car reaches the front. His math teacher hears the complaint and makes an offer: prove it. Not with a feeling, with a model. If the model shows the light is badly timed, the class will write to the village engineer.",
+   "Tomas starts by asking what wrong even means. After some arguing, the class settles on a question they can measure: does the green light on Main Street last long enough to clear the cars that pile up during the red? That question needs three numbers. How long is the red? How fast do cars arrive while it is red? And how fast do cars get through once it turns green?",
+   "For a week, students stand at the corner with phones and stopwatches. The red lasts 45 seconds every cycle. During the morning rush, cars arrive at about 10 per minute, so about 7.5 cars line up during one red. Once the light turns green, the first car takes about 2 seconds to move, and after that a car crosses the line about every 2 seconds. Clearing 7.5 cars takes about 2 + 2 × 7.5 = 17 seconds. The green is 30 seconds. In the morning, the light is fine.",
+   "Then a student who works after school times the same light at 5:15 pm. Cars now arrive at about 20 per minute. During a 45-second red, 15 cars line up, and clearing them takes about 2 + 2 × 15 = 32 seconds, longer than the 30-second green. Two or three cars are left behind every cycle, and the line grows all evening. Tomas was right about the light, but only at the wrong time of day, and only for a reason he could now explain with numbers.",
+   "The class checks the model by changing its inputs. If the evening arrival rate were 16 per minute instead of 20, the line would clear. If the green were 36 seconds instead of 30, it would clear even at 20 per minute. They write these findings, draw a graph with an honest scale, list what they could not measure, and send the letter. This chapter is the path they followed: a question, assumptions, data, a model, a test, and a clear argument."
+  ],
+  "think": "Tomas's feeling was right and wrong at the same time. What did the model add that a week of complaining could not, and what could the model still be missing?"
+ },
+ "sections": [
+  {"title": "Choosing the Question", "lessons": [
+   {
+    "title": "A Question You Can Measure",
+    "mainIdea": "A good modeling question is specific, measurable and bounded: it names the quantity, the place and the time, and a way to decide the answer.",
+    "reading": [
+     "A *mathematical model* is a simplified description of a real situation, built from numbers, variables and rules, that lets you predict or explain something. Every model begins with a question, and vague questions make useless models. Is the light badly timed is a feeling. Does the 30-second green on Main Street clear the cars that arrive during the 45-second red at 5:15 pm is a question with numbers in it. The second one can be answered; the first cannot.",
+     "Test a question with three checks. Is it *measurable*: does it name quantities you can count or time, like cars per minute or seconds of green? Is it *bounded*: does it say where and when, so the data has a clear scope? Is it *decidable*: can you say in advance what result would mean yes and what would mean no? For the traffic light, yes means the clearing time is less than the green, and no means it is more.",
+     "Strong capstone questions usually come from something you already care about and can reach. Does the cafeteria line move faster with two registers than one? How much of a phone battery does one hour of video use? Does the Red Line really run every 6 minutes at rush hour, and how much does it vary? How many more books does the school library lend in October than in March? Each of these names a quantity, a place and a time, and each can be answered with a few days of careful counting.",
+     "Weak questions fail one of the checks. Why is traffic so bad in our town is not bounded. Is our school the best in Illinois is not decidable, because best has no agreed measure. Would a new stadium help the economy is measurable in principle but far beyond a student's data. Before going further, write your question in one sentence and make sure someone else can tell exactly what data would settle it."
+    ],
+    "words": [
+     {"w": "mathematical model", "d": "a simplified description of a real situation, built from numbers, variables and rules, used to predict or explain"},
+     {"w": "measurable", "d": "able to be counted or timed with a clear unit, such as cars per minute or seconds"},
+     {"w": "bounded", "d": "limited to a stated place and time, so the data has a definite scope"},
+     {"w": "decidable", "d": "having a rule, set in advance, for what result would count as a yes and what as a no"}
+    ],
+    "look": {"type": "think", "title": "Sharpening a vague question", "text": "A student writes: Is the school parking lot too small? A partner asks: Too small for what, and when? The student rewrites: On school days between 7:30 and 7:50 am, how many cars try to park in the 180-space student lot, and on what fraction of days does the count pass 180? Now the answer needs a count on each of, say, 10 mornings and a simple comparison with 180.", "prompt": "Rewrite this question so it passes all three checks: Is the cafeteria line too slow? Name the quantity, the place, the time, and what result would mean yes."},
+    "check": [
+     {"q": "Which question is measurable, bounded and decidable?", "choices": ["Is traffic in our town getting worse?", "Does the 30-second green at Main Street clear the cars that arrive during the 45-second red at 5:15 pm on weekdays?", "Should the village fix the traffic lights?", "Are drivers on Main Street patient?"], "a": 1, "why": "It names the quantities (seconds, cars), the place and time, and yes means clearing time is under 30 seconds."},
+     {"q": "A question fails the decidable check. What is missing?", "choices": ["A place and a time", "A quantity that can be counted", "A rule stated in advance for what result means yes or no", "A graph of the data"], "a": 2, "why": "Decidable means you know before collecting data what result would answer the question each way."},
+     {"q": "Which of these is a model rather than just a question or a fact?", "choices": ["Cars arrive at 10 per minute", "How long is the red light?", "Cars queued during a red equal the arrival rate times the red time, so a 45-second red at 10 per minute gives 7.5 cars", "The light turned green at 7:42"], "a": 2, "why": "A model combines measured inputs with a rule to predict something. The others are a single fact or a question."}
+    ]
+   },
+   {
+    "title": "Assumptions and Variables",
+    "mainIdea": "Every model leaves things out on purpose; write down each assumption and each variable so you know what the model can and cannot say.",
+    "reading": [
+     "A model is simpler than the world, and that is its strength. The traffic model assumes cars arrive at a steady rate, that every car needs the same 2 seconds to cross, that no one turns, and that the red is always 45 seconds. None of these is exactly true. They are *assumptions*, choices to ignore some details so the model can be built. The rule is not to avoid assumptions; it is to write every one of them down before you start.",
+     "Next, name the *variables*, the quantities that can change. In the traffic model: the red time R in seconds, the arrival rate r in cars per minute, the green time G in seconds, and the queue Q in cars. Some are *inputs* you measure or set, like R, r and G. Some are *outputs* the model computes, like Q and the clearing time C. Say what each one means and what its unit is. A model with a variable in minutes multiplied by a rate in cars per second will be off by a factor of 60.",
+     "Now write the rules. The queue at the end of a red is Q = r × R ÷ 60, because r is per minute and R is in seconds. With r = 10 and R = 45, Q = 10 × 45 ÷ 60 = 7.5 cars. The clearing time is C = 2 + 2 × Q seconds, so C = 2 + 15 = 17 seconds. The light clears if C ≤ G. With G = 30, it does. Each rule came from an assumption, and if an assumption is wrong the rule is wrong with it.",
+     "Sort the assumptions by how much they matter. Cars arriving in bursts instead of steadily would change Q a little. A truck that takes 5 seconds to move would change C a little. A left-turn lane that blocks through traffic could change everything. The big assumptions are the ones you should plan to check with data, or at least flag in your report as the limits of the model."
+    ],
+    "words": [
+     {"w": "assumption", "d": "a simplification you choose on purpose so the model can be built, such as treating every car as taking 2 seconds to cross"},
+     {"w": "variable", "d": "a quantity in the model that can take different values, with a name and a unit"},
+     {"w": "input", "d": "a variable you measure or choose, which the model uses to compute its outputs"},
+     {"w": "output", "d": "a variable the model computes from its inputs, such as the number of cars queued"},
+     {"w": "parameter", "d": "a fixed number inside a model's rule, such as the 2 seconds per car in C = 2 + 2Q"}
+    ],
+    "look": {"type": "think", "title": "The battery model and its assumptions", "text": "A student wants to model phone battery use. Variables: battery percent B, minutes of video V. Rule: B = 100 − 0.4V, meaning about 0.4 percent per minute of video. Assumptions written down: screen brightness stays the same, no other apps run, the phone is not charging, the battery is healthy, and drain is steady rather than faster near the end. Inputs: V. Output: B. Parameter: 0.4, to be measured.", "prompt": "Which assumption do you think matters most, and how would you design a test that checks it? What does the model predict after 150 minutes, and what does the answer tell you about the model's limits?"},
+    "check": [
+     {"q": "Cars arrive at 12 per minute and the red lasts 45 seconds. Using Q = r × R ÷ 60, how many cars queue up?", "choices": ["540", "9", "12", "7.5"], "a": 1, "why": "Q = 12 × 45 ÷ 60 = 540 ÷ 60 = 9 cars. Forgetting to divide by 60 gives 540."},
+     {"q": "In the traffic model, which of these is an output?", "choices": ["The red time R", "The arrival rate r", "The green time G", "The clearing time C"], "a": 3, "why": "C is computed from Q, which is computed from r and R. The others are measured or set."},
+     {"q": "Why should assumptions be written down before building the model?", "choices": ["So the model can ignore them later", "So you know what the model leaves out and can check the ones that matter most", "Because a model without assumptions is impossible to graph", "So the report is longer"], "a": 1, "why": "Each rule rests on an assumption. Listing them shows the model's limits and points to what to test."}
+    ]
+   }
+  ]},
+  {"title": "Getting Good Data", "lessons": [
+   {
+    "title": "Gathering Data",
+    "mainIdea": "Plan the data before collecting it: decide what to record, in what unit, how often, and by whom, and write it in a table the same way every time.",
+    "reading": [
+     "Data collection is where most student projects go wrong, not in the math. Before anyone stands at the corner, make a *data plan*: what will be recorded, in what unit, over what interval, who records it, and where the sheet lives. For the traffic project the plan was: count cars that stop for the red, one count per red cycle, recorded as a whole number with the clock time, for 10 cycles each morning and evening, by two students who compare sheets afterward.",
+     "Use an interval long enough to smooth out luck. Counting cars for 10 seconds gives numbers like 1 or 3 that swing wildly. Counting for 2 minutes gives numbers like 18 or 22 that settle down. Five morning counts of 18, 22, 21, 19 and 20 cars in 2-minute intervals total 100 cars in 10 minutes, an arrival rate of 100 ÷ 10 = 10 cars per minute. Each single count is noisy; the average is steady.",
+     "Record more than you think you need, in the same layout every time. A row of the traffic sheet held: date, time, red length in seconds, cars queued, seconds to clear, weather, notes. The weather column seemed pointless until a rainy day showed clearing times of 3 seconds per car instead of 2. Keep raw numbers, not rounded ones, and never erase: cross out and write beside, so a strange value can be checked later.",
+     "Think about *sampling*. Ten cycles on one Tuesday morning describe that Tuesday. To say something about weekday mornings, spread the counts across several days. Counting only when a friend is free, or only when the line looks long, builds bias into the data before any math happens. Choose the times in advance and stick to them, even when the corner looks boring."
+    ],
+    "words": [
+     {"w": "data plan", "d": "a written decision, made before collecting, about what to record, in what unit, how often and by whom"},
+     {"w": "interval", "d": "the length of time over which one count or measurement is taken, such as 2 minutes"},
+     {"w": "raw data", "d": "the numbers exactly as recorded, before rounding, cleaning or averaging"},
+     {"w": "sampling", "d": "choosing which times, places or people to measure so that the data represents the whole you care about"},
+     {"w": "bias", "d": "a built-in tilt in the data caused by how it was gathered, such as counting only when the line looks long"}
+    ],
+    "look": {"type": "data", "title": "Morning arrivals on Main Street, five 2-minute counts", "rows": [["7:30 to 7:32", 18], ["7:32 to 7:34", 22], ["7:34 to 7:36", 21], ["7:36 to 7:38", 19], ["7:38 to 7:40", 20]], "unit": "cars arriving", "cite": "Class traffic project, example data recorded by two students", "prompt": "Find the total, the average per 2-minute interval, and the arrival rate in cars per minute. Which single count is farthest from the average, and by how much?"},
+    "check": [
+     {"q": "Five 2-minute counts are 18, 22, 21, 19 and 20 cars. What is the arrival rate in cars per minute?", "choices": ["20 cars per minute", "100 cars per minute", "10 cars per minute", "5 cars per minute"], "a": 2, "why": "Total = 100 cars in 5 × 2 = 10 minutes, so 100 ÷ 10 = 10 cars per minute. The 20 is the average per 2-minute interval."},
+     {"q": "Why count for 2 minutes instead of 10 seconds?", "choices": ["Longer intervals average out random swings, so each count is more stable", "Shorter intervals are illegal", "It makes the total larger", "Ten seconds is too long to hold a stopwatch"], "a": 0, "why": "A 10-second count might be 1 or 3 by chance; a 2-minute count varies much less around its true rate."},
+     {"q": "A student counts only on days when the line looks long. What is the problem?", "choices": ["The counts will be too small", "The sample is biased toward heavy traffic, so it does not represent typical days", "The interval is too short", "The data cannot be graphed"], "a": 1, "why": "Choosing when to measure based on what you expect to find tilts the data. Times should be set in advance."}
+    ]
+   },
+   {
+    "title": "Cleaning the Data",
+    "mainIdea": "Before modeling, check the data for typos, mixed units, missing values and outliers, and record every change you make.",
+    "reading": [
+     "Raw data is never clean. The traffic sheets, when typed into a spreadsheet, contained a count of 210 cars in one 2-minute interval. Every other count was between 15 and 25. A single-lane road cannot deliver 210 cars in 2 minutes, so 210 is almost surely a typo for 21. The right move is to check the paper sheet, fix it if the sheet says 21, and write in a *cleaning log*: row 14, changed 210 to 21, matched paper sheet.",
+     "The second problem was units. One student recorded clearing times in seconds, another in minutes and seconds, and a third wrote 0.5 for half a minute. The 0.5 sat next to 17 and 19 and would have crushed the average. Convert everything to one unit, and label the column with it: clearing time (seconds). A quick check that catches most unit mistakes is to sort the column and look at the smallest and largest values.",
+     "Third, missing values. A row with a blank because a phone died is not a zero, and typing 0 would tell the model that no cars came. Leave the cell blank or mark it missing, and count how many rows are missing. If 2 of 40 rows are missing, drop them and say so. If 20 of 40 are missing, the data plan failed and the counts need redoing. Never fill a blank with a guess and then treat it as measured.",
+     "Finally, *outliers*, real values that sit far from the rest. On the rainy day, clearing took 3 seconds per car instead of 2. That is not an error; it is information. Keep it, flag it, and decide whether the question is about all days or about dry days. Removing an outlier is allowed only when you can say why it is not a genuine observation, and the report must state that it was removed."
+    ],
+    "words": [
+     {"w": "cleaning log", "d": "a written list of every change made to the raw data, with the row and the reason"},
+     {"w": "outlier", "d": "a real value far from the rest of the data, to be flagged and explained rather than silently deleted"},
+     {"w": "missing value", "d": "an observation that was never recorded; it must be marked as missing, not entered as zero"},
+     {"w": "unit check", "d": "confirming that every value in a column uses the same unit, often by sorting and looking at the extremes"}
+    ],
+    "look": {"type": "data", "title": "Clearing times typed from the sheets, before cleaning", "rows": [["Cycle 1", 17], ["Cycle 2", 19], ["Cycle 3", 0.5], ["Cycle 4", 18], ["Cycle 5", 170], ["Cycle 6", 16]], "unit": "seconds as typed", "cite": "Class traffic project, example raw entries before the cleaning log", "prompt": "Which two entries are suspicious, what most likely happened to each, and what would the average be with them fixed versus with them left in?"},
+    "check": [
+     {"q": "A 2-minute count reads 210 while every other count is 15 to 25. What should you do first?", "choices": ["Delete the row without a note", "Check the original sheet, fix it if it was a typo, and record the change in the cleaning log", "Change it to the average of the other counts", "Keep it, because all data is valid"], "a": 1, "why": "A value that is physically impossible is likely a typo. Verify against the source and log the correction."},
+     {"q": "A phone died and one clearing time was never recorded. How should the cell be entered?", "choices": ["As 0 seconds", "As the previous row's value", "As missing, and the row left out of the average with a note", "As 2 seconds per car"], "a": 2, "why": "A zero would claim the cars cleared instantly. A blank marked missing keeps the average honest."},
+     {"q": "Six clearing times are 17, 19, 0.5, 18, 170, 16 seconds. If 0.5 was half a minute and 170 was a typo for 17, what is the cleaned average?", "choices": ["40.1 seconds", "22.5 seconds", "19.5 seconds", "17.0 seconds"], "a": 2, "why": "Cleaned values: 17, 19, 30, 18, 17, 16. Sum = 117, and 117 ÷ 6 = 19.5 seconds. Leaving the errors in gives about 40.1."}
+    ]
+   }
+  ]},
+  {"title": "Building the Model", "lessons": [
+   {
+    "title": "A First Model",
+    "mainIdea": "Start with the simplest model that could work, fit it to the data, and check its predictions against values it has not seen.",
+    "reading": [
+     "The first model should be the simplest one that could be right. For the traffic question, that is a *linear model*: cars in the queue grow in a straight line with red time. The class timed reds of different lengths at several lights and recorded the queue: 30 seconds gave 5 cars, 45 gave 8, 60 gave 10, 90 gave 14, and 120 gave 21. Plot red time on the horizontal axis and queue on the vertical axis. The points rise roughly along a line through the origin, which makes sense: a red of 0 seconds should have 0 cars.",
+     "Fit the line. A rate of 10 cars per minute means 10 ÷ 60 = 1/6 car per second, so the model is Q = R ÷ 6. Check it against the data: 30 ÷ 6 = 5, matching exactly; 45 ÷ 6 = 7.5, close to 8; 60 ÷ 6 = 10, exact; 90 ÷ 6 = 15, one more than 14; 120 ÷ 6 = 20, one less than 21. The largest miss is 1 car. A spreadsheet's least-squares line gives about Q = 0.17R − 0.14, nearly the same, which is reassuring.",
+     "A model earns trust by predicting values it has not seen. The class held back one measurement: a 75-second red that queued 12 cars. The model predicts 75 ÷ 6 = 12.5, a miss of half a car. That is a *prediction check*, and passing it means more than fitting the original points, because a model can be bent to fit points it was built from. Always keep some data aside for this.",
+     "Then combine the pieces. Queue Q = R ÷ 6 in the morning; clearing time C = 2 + 2Q. For R = 45, Q = 7.5 and C = 17 seconds, under the 30-second green. In the evening the rate doubles, so Q = R ÷ 3 = 15 and C = 32, over the green. The first model already answers the question. Later models will refine it, but a simple model that explains the main effect is worth more than a complicated one nobody can check."
+    ],
+    "words": [
+     {"w": "linear model", "d": "a model whose output changes by the same amount for each unit change in the input; its graph is a straight line"},
+     {"w": "fit", "d": "choose the numbers in a model's rule so its predictions come as close as possible to the data"},
+     {"w": "prediction check", "d": "testing a model on data that was held back and not used to build it"},
+     {"w": "residual", "d": "the difference between a measured value and the model's prediction for it"}
+    ],
+    "look": {"type": "data", "title": "Red time and cars queued, morning rush", "rows": [["30 seconds", 5], ["45 seconds", 8], ["60 seconds", 10], ["90 seconds", 14], ["120 seconds", 21]], "unit": "cars queued", "cite": "Class traffic project, example data; model Q = R ÷ 6", "prompt": "Compute the model's prediction and the residual for each row. What is the largest residual, and does the model tend to guess high or low at long reds?"},
+    "check": [
+     {"q": "Using Q = R ÷ 6, how many cars does the model predict for a 90-second red?", "choices": ["540 cars", "15 cars", "14 cars", "9 cars"], "a": 1, "why": "90 ÷ 6 = 15. The measured value was 14, so the residual is 14 − 15 = −1."},
+     {"q": "Why should some data be held back for a prediction check?", "choices": ["To make the fit look better", "Because a model can be bent to fit the points it was built from, so unseen points are a fairer test", "Because spreadsheets cannot handle more than five rows", "So the graph has fewer points"], "a": 1, "why": "Fitting and testing on the same points rewards memorizing them. A held-back point tests real predictive power."},
+     {"q": "Evening cars arrive at 20 per minute and the red is 45 seconds. Using C = 2 + 2Q, what is the clearing time?", "choices": ["17 seconds", "30 seconds", "32 seconds", "45 seconds"], "a": 2, "why": "Q = 20 × 45 ÷ 60 = 15 cars, and C = 2 + 2 × 15 = 32 seconds, which is more than the 30-second green."}
+    ]
+   },
+   {
+    "title": "Comparing Models",
+    "mainIdea": "Compare candidate models by how far their predictions miss the data, and prefer the simpler model unless a more complex one clearly does better.",
+    "reading": [
+     "Two students proposed different lines for the queue data. Model 1 is Q = R ÷ 6. Model 2 is Q = 0.2R − 2, which someone drew by eye. To compare them, compute each model's *residuals*, the measured value minus the prediction, and then the *mean absolute error*, the average size of the residuals. Model 1 predicts 5, 7.5, 10, 15, 20 for the five reds; the residuals are 0, 0.5, 0, −1, 1; the sizes average to (0 + 0.5 + 0 + 1 + 1) ÷ 5 = 0.5 car. Model 2 predicts 4, 7, 10, 16, 22; residuals 1, 1, 0, −2, −1; average size (1 + 1 + 0 + 2 + 1) ÷ 5 = 1.0 car. Model 1 misses by half as much.",
+     "Error is not the only test. A model should also make sense at the edges. Model 2 predicts −2 cars for a red of 0 seconds, which is impossible; Model 1 predicts 0. A model whose formula gives nonsense at natural boundary values, such as negative cars or a queue that keeps growing after the light turns green, has a wrong shape even if its error on the data looks acceptable.",
+     "Sometimes a curved model fits better. Suppose someone proposes Q = 0.0015R^2, a quadratic. At R = 120 it predicts 21.6, close to 21, but at R = 30 it predicts only 1.35, far from 5, so its error is worse overall. Beware of the opposite trap too: a model with enough adjustable numbers can pass through every data point and still be useless, because it is fitting the noise. Prefer the simplest model whose error is small and whose shape makes sense, and add complexity only when the data clearly demands it.",
+     "Write the comparison as a small table: model, formula, mean absolute error, behavior at R = 0, number of adjustable parameters. A reader can then see why you chose what you chose. In the traffic project the table made the decision obvious: the linear model through the origin had the lowest error, one parameter, and a sensible zero."
+    ],
+    "words": [
+     {"w": "mean absolute error", "d": "the average of the sizes of the residuals, ignoring their signs; a single number for how far a model misses"},
+     {"w": "boundary check", "d": "testing whether a model gives sensible answers at natural edge values, such as a red of 0 seconds"},
+     {"w": "overfitting", "d": "building a model with so many adjustable numbers that it follows the noise in the data instead of the pattern"},
+     {"w": "quadratic model", "d": "a model whose rule includes the square of the input, so its graph is a curve"}
+    ],
+    "look": {"type": "data", "title": "Mean absolute error of three candidate queue models", "rows": [["Q = R ÷ 6", 0.5], ["Q = 0.2R − 2", 1.0], ["Q = 0.0015R^2", 2.9]], "unit": "cars, average miss", "cite": "Computed from the five morning data points in this chapter", "prompt": "Beyond the error, what does each model predict at R = 0, and which one would you choose? Give two reasons."},
+    "check": [
+     {"q": "A model's residuals on five points are 0, 0.5, 0, −1 and 1. What is the mean absolute error?", "choices": ["0.1", "0.5", "2.5", "0.3"], "a": 1, "why": "Sizes: 0, 0.5, 0, 1, 1. Sum = 2.5, and 2.5 ÷ 5 = 0.5. Adding with signs gives 0.5 ÷ 5 = 0.1, which hides the misses."},
+     {"q": "Model 2, Q = 0.2R − 2, predicts −2 cars when R = 0. What does that tell you?", "choices": ["The model has the wrong shape at the boundary, since a queue cannot be negative", "The data must be wrong", "The model is perfect for long reds", "Negative cars mean cars leaving the queue"], "a": 0, "why": "A sensible model gives 0 cars for a 0-second red. Failing the boundary check counts against the model."},
+     {"q": "A model with six adjustable numbers passes through all six data points exactly. Why be suspicious?", "choices": ["Exact fits are not allowed in math", "It probably fits the random noise in the data and will predict new points badly", "Six parameters are too few", "It must be a linear model"], "a": 1, "why": "With as many parameters as points, any data can be fit exactly. That says nothing about the pattern."}
+    ]
+   },
+   {
+    "title": "Wiggling the Inputs",
+    "mainIdea": "Sensitivity analysis changes one input at a time to see how much the conclusion moves; the inputs that move it most are the ones to measure best.",
+    "reading": [
+     "A model's answer depends on numbers you measured roughly. *Sensitivity analysis* asks: if an input were a bit different, would the conclusion change? Take the evening case: rate 20 cars per minute, red 45 seconds, 2 seconds per car, green 30 seconds. Base result: Q = 15, C = 32 seconds, the light fails by 2 seconds. Now change one input at a time by about 20% and recompute.",
+     "Arrival rate 16 instead of 20: Q = 16 × 45 ÷ 60 = 12, C = 2 + 24 = 26 seconds, the light passes. Rate 24: Q = 18, C = 38, fails badly. Seconds per car 2.4 instead of 2: C = 2 + 2.4 × 15 = 38, fails. Seconds per car 1.6: C = 2 + 24 = 26, passes. Startup delay 3 seconds instead of 2: C = 33, one second worse, barely matters. So the conclusion is sensitive to the arrival rate and to the seconds per car, and nearly insensitive to the startup delay.",
+     "That tells you where to spend effort. Measuring the startup delay more carefully is a waste; measuring the evening arrival rate on more days is not. The class went back and counted five more evenings, getting rates from 18 to 22. Even at the lowest, 18, Q = 13.5 and C = 29 seconds, only one second inside the green, so on most evenings the line does not clear. The conclusion survived, and now it came with a range instead of a single number.",
+     "Sensitivity also answers what-if questions for the people who will read the report. What green would clear 20 cars per minute? Solve 2 + 2 × 15 ≤ G, so G ≥ 32 seconds; a 36-second green leaves margin. What rate could a 30-second green handle? Solve 2 + 2Q ≤ 30, so Q ≤ 14, and Q = r × 45 ÷ 60 ≤ 14 gives r ≤ 18.7 cars per minute. A village engineer can use those two numbers directly."
+    ],
+    "words": [
+     {"w": "sensitivity analysis", "d": "changing one input at a time, by a small amount, to see how much the model's conclusion changes"},
+     {"w": "base case", "d": "the model's result using the best available values for every input, the starting point for sensitivity tests"},
+     {"w": "margin", "d": "the distance between the model's result and the line where the conclusion would flip"},
+     {"w": "range", "d": "the spread of results a model gives when an input varies over the values actually observed"}
+    ],
+    "look": {"type": "data", "title": "Evening clearing time when one input changes (base: 32 seconds)", "rows": [["Rate 16 per minute", 26], ["Rate 24 per minute", 38], ["1.6 seconds per car", 26], ["2.4 seconds per car", 38], ["3-second startup", 33], ["Red 40 seconds", 28.7]], "unit": "seconds to clear", "cite": "Computed from Q = r × R ÷ 60 and C = s + p × Q with the base values in this lesson", "prompt": "Which inputs move the clearing time the most? The green is 30 seconds; which single changes would flip the conclusion from fails to passes?"},
+    "check": [
+     {"q": "Evening rate 18 per minute, red 45 seconds, 2 seconds per car, 2-second startup. What is the clearing time?", "choices": ["29 seconds", "32 seconds", "26 seconds", "13.5 seconds"], "a": 0, "why": "Q = 18 × 45 ÷ 60 = 13.5 cars, and C = 2 + 2 × 13.5 = 29 seconds."},
+     {"q": "Changing the startup delay from 2 to 3 seconds moves the clearing time from 32 to 33 seconds. What does that show?", "choices": ["The startup delay is the most important input", "The model is broken", "The conclusion is nearly insensitive to the startup delay, so it is not worth measuring more precisely", "The light passes"], "a": 2, "why": "A 50% change in that input moved the result by only 1 second. Effort belongs on inputs that move the result more."},
+     {"q": "With a 30-second green, 2-second startup and 2 seconds per car, what is the largest queue that clears?", "choices": ["15 cars", "14 cars", "28 cars", "16 cars"], "a": 1, "why": "Solve 2 + 2Q ≤ 30: 2Q ≤ 28, so Q ≤ 14 cars. A queue of 15 needs 32 seconds."}
+    ]
+   }
+  ]},
+  {"title": "Sharing the Result", "lessons": [
+   {
+    "title": "Honest Pictures",
+    "mainIdea": "A graph should let a reader see the true size of an effect: start bar axes at zero, label units, show the data points, and never hide the scale.",
+    "reading": [
+     "A graph can tell the truth or bend it with the same numbers. Suppose the average evening wait rose from 40 seconds to 44 seconds, an increase of 4 ÷ 40 = 10%. On a bar chart whose vertical axis starts at 0, the second bar is 10% taller, which looks like what it is. On a bar chart whose axis starts at 38, the first bar has height 2 and the second has height 6, so it looks three times taller. Same data, a very different impression. Bar charts should start at zero, because the eye reads bar height as size.",
+     "Line graphs and scatter plots can start above zero when the data lives in a narrow band, but then the axis must be clearly labeled and the reader warned. Every axis needs a label with a unit: red time (seconds), cars queued. Show the actual data points, not only the fitted line, so a reader can judge how well the model fits. When you show the model, draw it only over the range where you have data; extending Q = R ÷ 6 out to a 10-minute red claims something you never measured.",
+     "Choose the chart for the question. A scatter plot with a fitted line shows whether queue length grows with red time. A bar chart compares the morning and evening clearing times against the 30-second green, with the green drawn as a horizontal line. A table is best when the reader needs exact numbers, such as the sensitivity results. A pie chart almost never fits a modeling project, because it hides the sizes it claims to show.",
+     "Before you present, do the squint test. Look at each graph from across the room and say aloud the one thing it shows. If what you say is not what the data says, fix the graph. The most common fixes are starting the axis at zero, adding units, removing a 3-D effect that distorts the heights, and using the same scale on two graphs that will be compared."
+    ],
+    "words": [
+     {"w": "truncated axis", "d": "an axis that starts above zero, which makes differences between bars look larger than they are"},
+     {"w": "scatter plot", "d": "a graph with one dot per observation, placed by two measured values, used to see whether they are related"},
+     {"w": "extrapolation", "d": "using a model outside the range of the data it was built from, where it may not hold"},
+     {"w": "axis label", "d": "the name and unit of what an axis measures, such as red time (seconds)"}
+    ],
+    "look": {"type": "think", "title": "The same 10% two ways", "text": "Two bar charts show the evening wait: 40 seconds last year, 44 seconds this year. Chart A starts its axis at 0; the bars are 40 and 44 units tall, and the difference looks modest. Chart B starts its axis at 38; the bars are 2 and 6 units tall, and the second looks three times the first. A reader who does not check the axis would think waits had tripled. The true change is 44 ÷ 40 = 1.10, a 10% rise.", "prompt": "Which chart would you use in a letter to the village engineer, and why? Is there any situation where a truncated axis is honest, as long as it is labeled?"},
+    "check": [
+     {"q": "The average wait rose from 40 seconds to 44 seconds. What is the percent increase?", "choices": ["4%", "10%", "40%", "110%"], "a": 1, "why": "Increase = 44 − 40 = 4 seconds, and 4 ÷ 40 = 0.10, so 10%."},
+     {"q": "A bar chart of those two waits starts its axis at 38. How do the bar heights compare?", "choices": ["The second is 10% taller", "The second is twice as tall", "The second is three times as tall", "They are equal"], "a": 2, "why": "Heights above 38 are 2 and 6, and 6 ÷ 2 = 3. The truncated axis triples the visual difference."},
+     {"q": "Why should a fitted line be drawn only over the range of the data?", "choices": ["Because longer lines are harder to draw", "Because outside the data the model is an extrapolation that was never checked", "Because spreadsheets limit line length", "Because the residuals become zero outside the data"], "a": 1, "why": "The model was fitted and tested only where data exists. Beyond that it is a guess and should look like one."}
+    ]
+   },
+   {
+    "title": "Writing the Argument",
+    "mainIdea": "A mathematical argument states a claim, gives the evidence, explains the reasoning that links them, and names its limits.",
+    "reading": [
+     "A modeling report is an argument, and a good argument has four parts. The *claim* is one sentence: at 5:15 pm on weekdays, the 30-second green on Main Street does not clear the cars that arrive during the 45-second red. The *evidence* is the data: on five evenings, cars arrived at 18 to 22 per minute, and cars cleared at about 2 seconds each after a 2-second start. The *reasoning* is the model: Q = r × 45 ÷ 60 gives 13.5 to 16.5 cars, and C = 2 + 2Q gives 29 to 35 seconds, so on most evenings the clearing time exceeds 30 seconds.",
+     "The fourth part is the *limits*. Say what the model assumed and what would change the answer: arrivals were counted on five evenings in one month; turning cars were counted as through cars; rain slowed clearing to 3 seconds per car and was excluded; the green was measured as 30 seconds on every cycle observed. Then say what you recommend and what it would take: a 36-second green clears 20 cars per minute with margin, but lengthening one green shortens another, which this model did not study.",
+     "Write for a reader who is smart but busy. Put the claim first, not last. Give one clear graph and one small table. Show the key calculation with the actual numbers, so the reader can check it in a minute: Q = 20 × 45 ÷ 60 = 15, C = 2 + 2 × 15 = 32 > 30. Define each variable the first time. Avoid words like obviously and clearly; if it were obvious, you would not need the model.",
+     "Then read it as a skeptic. Where could the reader say so what, or how do you know that? Every place you find one, add the number or the reason that answers it. A common weakness is a claim stronger than the evidence: the light is broken becomes, with the same data, the light's green is too short for evening traffic on most weekdays we measured. The second claim is smaller and much harder to argue with."
+    ],
+    "words": [
+     {"w": "claim", "d": "the one-sentence conclusion the argument supports"},
+     {"w": "evidence", "d": "the measured data the argument rests on, stated with units and how it was gathered"},
+     {"w": "reasoning", "d": "the model and calculation that connect the evidence to the claim"},
+     {"w": "limits", "d": "the assumptions, missing data and untested cases that bound what the claim can say"}
+    ],
+    "look": {"type": "think", "title": "Two versions of the same claim", "text": "Version 1: The light at Main Street is broken and the village needs to fix it. Version 2: On the five weekday evenings we measured, cars arrived at 18 to 22 per minute, and our model predicts clearing times of 29 to 35 seconds against a 30-second green, so the line usually does not clear; a 36-second green would clear it with margin. Version 2 is longer, but every part of it can be checked, and it says exactly what would fix the problem.", "prompt": "Rewrite this claim in the style of Version 2: The cafeteria line is way too slow. Include a number, a model and a limit."},
+    "check": [
+     {"q": "Which part of an argument is this: Q = 20 × 45 ÷ 60 = 15 cars, so C = 2 + 30 = 32 seconds, which exceeds 30?", "choices": ["The claim", "The evidence", "The reasoning", "The limits"], "a": 2, "why": "It is the calculation that links the measured inputs to the conclusion, which is the reasoning step."},
+     {"q": "Why is the smaller claim, the green is too short on most evenings we measured, better than the light is broken?", "choices": ["Because it sounds more polite", "Because it says only what the evidence supports, so it is harder to argue with", "Because shorter claims are always wrong", "Because it avoids numbers"], "a": 1, "why": "A claim should not outrun its data. The narrower claim is fully backed by the five evenings and the model."},
+     {"q": "Rainy-day clearing times were excluded from the model. Where does this belong in the report?", "choices": ["Nowhere, since excluded data does not matter", "In the limits, stated clearly with the reason", "In the claim", "In the axis labels only"], "a": 1, "why": "Any exclusion is an assumption that bounds the claim, so it is stated in the limits with its reason."}
+    ]
+   },
+   {
+    "title": "Presenting and Defending",
+    "mainIdea": "Present the claim, the key number and the graph in the first minute, then answer challenges by returning to the data and the assumptions.",
+    "reading": [
+     "A presentation is the argument spoken, with the same four parts in the same order. Start with the claim and the key number: the evening green needs about 32 seconds and has 30. Show the one graph. Then give the evidence and the reasoning, using the actual calculation on a slide so the audience can follow it. End with the limits and the recommendation. Practice until the whole thing fits in five minutes, because the questions afterward are where the model is really tested.",
+     "Prepare for the challenges you would make yourself. What if you counted on unusually busy days? Answer with the range: five evenings, 18 to 22 per minute, and the light fails at 19 or more. What if drivers speed up when the line is long? Answer with sensitivity: even at 1.6 seconds per car the clearing time is 26 seconds, so that would flip the conclusion, and it is worth measuring. What about the cross street? Answer honestly: not modeled, and it is the first thing to study next.",
+     "When you do not know, say so, and say what you would do to find out. A defense is not a debate to win; it is a check that the model holds up. If a question reveals a real flaw, thank the questioner and write it down. The traffic class was asked whether the counts included cars turning right on red, which never join the queue. They had counted them. Removing an estimated 2 per minute lowered the evening rate to about 18 and the clearing time to 29 seconds, one second under the green. The conclusion weakened to on the busier evenings, and the report was better for it.",
+     "Speak the numbers with their units, point at the graph when you cite it, and keep the model's formula visible so the audience can test any what-if on the spot. A listener who can plug in their own number and get your answer is a listener who believes you."
+    ],
+    "words": [
+     {"w": "key number", "d": "the single most important result of the model, stated with its unit in the first minute"},
+     {"w": "challenge", "d": "a question that tests whether the model, the data or an assumption holds up"},
+     {"w": "defense", "d": "answering challenges by pointing to the data, the sensitivity tests and the stated limits"},
+     {"w": "recommendation", "d": "the action the model supports, stated with the numbers that justify it"}
+    ],
+    "look": {"type": "think", "title": "A challenge and a recalculation", "text": "Questioner: Did your counts include cars turning right on red? Those never wait in the queue. Presenter: Yes, they did, about 2 per minute. Let me redo it. Rate 20 − 2 = 18 per minute, Q = 18 × 45 ÷ 60 = 13.5 cars, C = 2 + 2 × 13.5 = 29 seconds, which is 1 second under the 30-second green. So on an average evening the line just barely clears, and on busier evenings, 20 or more per minute, it does not.", "prompt": "Did the challenge destroy the argument or sharpen it? Write the revised claim in one sentence."},
+    "check": [
+     {"q": "What should come first in a five-minute presentation of a model?", "choices": ["The cleaning log", "Every assumption in order", "The claim and the key number", "The list of who collected the data"], "a": 2, "why": "A busy audience needs the conclusion first; the evidence, reasoning and limits follow to support it."},
+     {"q": "Removing 2 turning cars per minute lowers the evening rate from 20 to 18. What is the new clearing time?", "choices": ["32 seconds", "29 seconds", "26 seconds", "36 seconds"], "a": 1, "why": "Q = 18 × 45 ÷ 60 = 13.5 and C = 2 + 2 × 13.5 = 29 seconds."},
+     {"q": "A questioner points out something the model did not include, and it changes the result. What is the best response?", "choices": ["Argue that it does not matter", "Say the model is finished and cannot be changed", "Acknowledge it, recompute if possible, and revise the claim to fit the evidence", "End the presentation"], "a": 2, "why": "A defense checks the model; a real flaw found is a gift. Revising the claim keeps the argument honest."}
+    ]
+   },
+   {
+    "title": "The Project Plan",
+    "mainIdea": "A capstone runs on a written plan with dated checkpoints: question, data, model, test, report, so that problems show up early enough to fix.",
+    "reading": [
+     "A modeling project fails most often on time, not on math. Plan it in *checkpoints*, each with a date and a thing you can show. For a four-week capstone: week 1, a one-sentence question that passes the three checks, a list of assumptions and variables, and a data plan. Week 2, the raw data, cleaned, with a cleaning log. Week 3, a first model with its error, a comparison to at least one alternative, and a sensitivity table. Week 4, the graph, the written argument, and a practiced presentation.",
+     "Each checkpoint is a chance to catch trouble early. If the week 1 question is not measurable, you find out before wasting a week of counting. If the week 2 data has 20 missing rows, you can recount before building a model on holes. The traffic class discovered at the week 2 checkpoint that nobody had recorded the green time; they had assumed it, and a single evening of timing fixed it. A plan without checkpoints would have found that gap on presentation day.",
+     "Budget the hours honestly. Counting cars for 10 cycles takes about 15 minutes per session, and five sessions morning and evening is about 2.5 hours across the week. Cleaning and entering the data takes another hour. Fitting and comparing models in a spreadsheet takes two hours the first time, and sensitivity tests one more. Writing takes longer than anyone expects; plan three hours and a day away from the draft before rereading it as a skeptic.",
+     "Keep a project log with one line per work session: date, what was done, what is next, what is worrying. The worrying column is the most valuable one, because it becomes the limits section of the report. Finally, decide in week 1 what done means: a claim, one graph, one table, a page of argument and a five-minute talk. A project with a finish line gets finished."
+    ],
+    "words": [
+     {"w": "checkpoint", "d": "a dated point in a project plan with a specific product to show, such as cleaned data with a log"},
+     {"w": "project log", "d": "a running record with one line per work session: what was done, what is next, what is worrying"},
+     {"w": "scope", "d": "what the project will and will not attempt, decided at the start so the work can finish"},
+     {"w": "deliverable", "d": "a finished product the plan promises, such as the graph, the written argument or the talk"}
+    ],
+    "look": {"type": "data", "title": "Planned hours for a four-week traffic capstone", "rows": [["Question, assumptions, data plan", 2], ["Counting at the corner", 2.5], ["Entering and cleaning data", 1], ["Fitting and comparing models", 2], ["Sensitivity tests", 1], ["Graph and written argument", 3], ["Practicing the talk", 1]], "unit": "hours", "cite": "Example plan from this chapter's traffic project", "prompt": "Total the hours. If a partner can only give 6 hours, which tasks split well between two people and which should one person own?"},
+    "check": [
+     {"q": "What should be ready at the week 1 checkpoint of a four-week capstone?", "choices": ["The finished graph", "A measurable question, the assumptions and variables, and a data plan", "The sensitivity table", "The practiced talk"], "a": 1, "why": "Week 1 sets up everything that follows; a bad question found in week 1 costs a day, found in week 4 costs the project."},
+     {"q": "Using the plan table, what is the total planned time?", "choices": ["10.5 hours", "12.5 hours", "11.5 hours", "13 hours"], "a": 1, "why": "2 + 2.5 + 1 + 2 + 1 + 3 + 1 = 12.5 hours."},
+     {"q": "Why is the what is worrying column of a project log so useful?", "choices": ["It becomes the limits section of the report", "It replaces the cleaning log", "It shortens the presentation", "It is required by the validator"], "a": 0, "why": "Worries recorded during the work are exactly the assumptions and gaps the report must state as limits."}
+    ]
+   }
+  ]}
+ ],
+ "review": [
+  {"q": "Which of these is the best modeling question?", "choices": ["Is our town's traffic terrible?", "How many cars arrive at the Main Street light per minute between 5:00 and 5:30 pm on weekdays, and does a 30-second green clear them?", "Do people like the new light?", "Why is traffic bad?"], "a": 1, "why": "It names measurable quantities, a place, a time, and a rule for yes or no."},
+  {"q": "Cars arrive at 15 per minute and the red lasts 60 seconds. Using Q = r × R ÷ 60, how many cars queue?", "choices": ["900", "15", "4", "25"], "a": 1, "why": "Q = 15 × 60 ÷ 60 = 15 cars."},
+  {"q": "A count of 0 was typed because the counter's phone died. What is the correct treatment?", "choices": ["Keep the 0 as data", "Mark it missing and note it in the cleaning log", "Replace it with 20", "Delete the whole day"], "a": 1, "why": "A blank is not a zero. Marking it missing keeps the model from believing no cars came."},
+  {"q": "Model A has a mean absolute error of 0.5 car and predicts 0 cars at R = 0. Model B has an error of 1.0 car and predicts −2 cars at R = 0. Which do you choose and why?", "choices": ["Model B, because it has more parameters", "Model A, because its error is lower and it passes the boundary check", "Model B, because negative values are fine", "Neither, because the errors are not zero"], "a": 1, "why": "Lower error and a sensible value at the boundary both favor Model A. Perfect zero error is not expected."},
+  {"q": "With a 2-second startup and 2 seconds per car, how long does it take to clear 12 cars?", "choices": ["24 seconds", "26 seconds", "14 seconds", "28 seconds"], "a": 1, "why": "C = 2 + 2 × 12 = 2 + 24 = 26 seconds. Forgetting the startup gives 24."},
+  {"q": "Changing the seconds per car from 2 to 2.4 moved the clearing time from 32 to 38 seconds. What does that tell you?", "choices": ["The model is insensitive to seconds per car", "Seconds per car is an input worth measuring carefully, because the result is sensitive to it", "The green is long enough", "The startup delay matters more"], "a": 1, "why": "A 20% change in the input moved the result by 6 seconds, enough to matter, so it deserves careful measurement."},
+  {"q": "A bar chart with an axis starting at 38 shows waits of 40 and 44 seconds. What is wrong with it?", "choices": ["The truncated axis makes a 10% rise look like a tripling", "Bar charts cannot show seconds", "The bars should be the same height", "Nothing; all bar charts start above zero"], "a": 0, "why": "Bars of height 2 and 6 above the axis look like a 3-to-1 ratio; the real change is 44 ÷ 40 = 1.10."},
+  {"q": "Which sentence belongs in the limits section of a report?", "choices": ["The green is too short on most evenings we measured", "Q = 20 × 45 ÷ 60 = 15", "Cars arrived at 18 to 22 per minute on five evenings", "Rainy evenings were excluded, and the cross street was not modeled"], "a": 3, "why": "Limits state what was assumed, excluded or left unstudied. The others are the claim, the reasoning and the evidence."}
+ ]
+}
