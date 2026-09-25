@@ -33,6 +33,8 @@
   window.__aogGrace = 1;
 
   var D = document, H = D.documentElement;
+  /* AOG-LEGIBLE-V1 — every page that carries this file also gets the text guard */
+  try { var lg = D.createElement("script"); lg.src = "/aog-legible.js"; lg.defer = true; (D.head || H).appendChild(lg); } catch (e) {}
   var FONTS = "https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..700&family=Inter:wght@300;400;500;600;700;800&display=swap";
 
   /* ── 0 ── navy, the whole page ─────────────────────────────────────────
