@@ -242,11 +242,13 @@
     for (i = 0; i < all.length; i++) {
       el = all[i];
       if (skip && skip.contains(el)) continue;
-      if (el.tagName === "H1" || el.tagName === "P" || el.tagName === "SPAN" || el.tagName === "A" || el.tagName === "BUTTON") { el.removeAttribute("data-aog-card"); continue; }
+      /* AOG-GRACE-CARDTAGS-V1 (2026-09-25) — a <p class="note"> painted white
+         used to be skipped because it is a P, and kept cream text on white.
+         Any tag that paints its own light ground is a card. */
       var l = luma(getComputedStyle(el).backgroundColor);
       if (l !== null && l > 0.55) { el.setAttribute("data-aog-card", "1"); skip = el; }
       else el.removeAttribute("data-aog-card");
-      if (++n > 600) break;
+      if (++n > 3000) break;
     }
   }
 
@@ -293,6 +295,10 @@
       try {
         new MutationObserver(function () { setTimeout(markCards, 30); })
           .observe(H, { attributes: true, attributeFilter: ["data-theme", "class", "data-accent"] });
+        /* content a page renders later (the Inbox's cards, a pulled list) is checked too */
+        var mt = 0;
+        new MutationObserver(function () { clearTimeout(mt); mt = setTimeout(markCards, 60); })
+          .observe(hero, { childList: true, subtree: true });
       } catch (e) {}
     }
     if (sheet) sheet.addEventListener("load", function () { setTimeout(markCards, 30); setTimeout(clampLedes, 60); });
