@@ -2192,6 +2192,39 @@ G.geom=function(r,c){var b=B(),m=r.pick(c.modes),h='';
       '<div class="row" style="margin-top:7px;gap:12px"><span class="inl">two shortest: '+
       b.f('num',s1+s2,{w:'n'})+' cm together</span>'+b.mc(ok?'yes':'no',['yes','no'])+
       '<span class="hint" style="flex-basis:auto">The two short sides must add to MORE than the long side.</span></div>'}
+  /* AOG-DD-STD8-V1 (2026-09-25) — Grade 8 standards the drafts never asked. transform is 8.G.A.1–4,
+     parallel 8.G.A.5, pdist 8.G.B.8, volcyl 8.G.C.9 (answers in terms of &pi;). */
+  else if(m==='transform'){var px=r.pick([-1,1])*r.i(1,6),py=r.pick([-1,1])*r.i(1,6),tk=r.i(0,4),nx8,ny8,tw;
+    if(tk===0){var dx=r.i(-5,5)||2,dy=r.i(-5,5)||-3;nx8=px+dx;ny8=py+dy;
+      tw='translated '+Math.abs(dx)+' '+(dx>0?'right':'left')+' and '+Math.abs(dy)+' '+(dy>0?'up':'down')}
+    else if(tk===1){nx8=px;ny8=-py;tw='reflected across the x&#8209;axis'}
+    else if(tk===2){nx8=-px;ny8=py;tw='reflected across the y&#8209;axis'}
+    else if(tk===3){nx8=-px;ny8=-py;tw='rotated 180&deg; about the origin'}
+    else{var dk=r.pick([2,3]);nx8=px*dk;ny8=py*dk;tw='dilated by a scale factor of '+dk+' from the origin'}
+    h='The point <b>('+px+', '+py+')</b> is '+tw+'.<div class="row" style="margin-top:7px;gap:10px">'+
+      '<span class="inl">New point ( '+b.f('num',nx8,{w:'n'})+' , '+b.f('num',ny8,{w:'n'})+' )</span>'+
+      '<span class="inl">The new figure is '+b.mc(tk===4?'similar':'congruent',['congruent','similar'])+'</span></div>'}
+  else if(m==='parallel'){var ag=r.i(35,145),ak=r.pick(['corr','alt','same','tri']);
+    if(ak==='tri'){var t1=r.i(30,80),t2=r.i(30,80);
+      h='A triangle has angles of <b>'+t1+'&deg;</b> and <b>'+t2+'&deg;</b>.<div class="row" style="margin-top:6px;gap:12px">'+
+        '<span class="inl">third angle '+b.f('num',180-t1-t2,{w:'n'})+'&deg;</span>'+
+        '<span class="inl">exterior angle next to it '+b.f('num',t1+t2,{w:'n'})+'&deg;</span></div>'}
+    else{var nm8={corr:'corresponding',alt:'alternate interior',same:'same-side interior'}[ak];
+      h='Two parallel lines are cut by a transversal. One angle is <b>'+ag+'&deg;</b>. What is its <b>'+nm8+'</b> angle?'+
+        '<div class="row" style="margin-top:6px"><span class="inl">'+b.f('num',ak==='same'?180-ag:ag,{w:'n'})+'&deg;</span>'+
+        '<span class="hint" style="flex-basis:auto">Corresponding and alternate interior angles are equal. Same-side interior angles add to 180&deg;.</span></div>'}}
+  else if(m==='pdist'){var tr=r.pick([[3,4,5],[6,8,10],[5,12,13],[8,6,10]]),ax=r.i(-4,3),ay=r.i(-4,3);
+    h='Find the distance between <b>('+ax+', '+ay+')</b> and <b>('+(ax+tr[0])+', '+(ay+tr[1])+')</b>.'+
+      '<div class="row" style="margin-top:6px;gap:12px"><span class="inl">across '+b.f('num',tr[0],{w:'n'})+'</span>'+
+      '<span class="inl">up '+b.f('num',tr[1],{w:'n'})+'</span><span class="inl">distance '+b.f('num',tr[2],{w:'n'})+'</span></div>'+
+      '<div class="hint">The two legs make a right triangle: a&sup2; + b&sup2; = c&sup2;.</div>'}
+  else if(m==='volcyl'){var sh=r.pick(['cylinder','cone','sphere']),vr=r.i(2,6),vh=3*r.i(1,4),vv,vd;
+    if(sh==='cylinder'){vv=vr*vr*vh;vd='radius <b>'+vr+'</b> and height <b>'+vh+'</b>'}
+    else if(sh==='cone'){vv=vr*vr*vh/3;vd='radius <b>'+vr+'</b> and height <b>'+vh+'</b>'}
+    else{vr=r.pick([3,6]);vv=4*vr*vr*vr/3;vd='radius <b>'+vr+'</b>'}
+    h='Find the volume of a <b>'+sh+'</b> with '+vd+'. Leave <b>&pi;</b> in your answer.'+
+      '<div class="row" style="margin-top:6px"><span class="inl">V = '+b.f('num',vv,{w:'n'})+'&pi; cubic units</span></div>'+
+      '<div class="hint">Cylinder &pi;r&sup2;h &middot; cone &#8531;&pi;r&sup2;h &middot; sphere &#8308;&#8260;&#8323;&pi;r&sup3;</div>'}
   return done(b,h)};
 
 var UNITS=[['weeks','days',7],['feet','inches',12],['hours','minutes',60],['minutes','seconds',60],
@@ -2343,6 +2376,24 @@ G.data=function(r,c){var b=B(),m=r.pick(c.modes),h='';
       '<span class="inl">P('+ev[2]+') = '+frIn(b,ev[3],ev[1])+'</span>'+
       '<span class="hint" style="flex-basis:auto">Write it as favorable over total.</span></div>'+workPad(2);
     var Lc=b.fields.length;b.fields[Lc-2].t='num';b.fields[Lc-1].t='num'}
+  /* AOG-DD-STD8-V1 (2026-09-25) — Grade 8 standards the drafts never asked. scatter, fitline and
+     twoway are 8.SP.A.1–4. */
+  else if(m==='scatter'){var sc=r.pick([['hours studied','test score','positive'],['outside temperature','hot cocoa sold','negative'],
+      ['shoe size','favorite number','no'],['age of a car','its value','negative'],['height','arm span','positive'],['day of the month','rainfall','no']]);
+    h='A scatter plot compares <b>'+sc[0]+'</b> and <b>'+sc[1]+'</b>. What association would you expect?'+
+      '<div class="row" style="margin-top:7px">'+b.mc(sc[2],['positive','negative','no'])+'</div>'}
+  else if(m==='fitline'){var fs=r.pick([2,3,4,5]),fi=r.i(10,40),fh=r.i(3,9);
+    h='A line of fit for study hours <b>x</b> and quiz score <b>y</b> is <b>y = '+fs+'x + '+fi+'</b>.'+
+      '<div class="row" style="margin-top:6px;gap:12px"><span class="inl">Predicted score after '+fh+' hours '+b.f('num',fs*fh+fi,{w:'n'})+'</span>'+
+      '<span class="inl">Each extra hour adds '+b.f('num',fs,{w:'n'})+' points</span></div>'}
+  else if(m==='twoway'){var aa=r.i(5,20),ab=r.i(5,20),ba=r.i(5,20),bb=r.i(5,20);
+    h='Students were asked about pets and grade.<table class="tw" style="margin-top:6px;border-collapse:collapse;text-align:center">'+
+      '<tr><td></td><th style="padding:2px 10px">Dog</th><th style="padding:2px 10px">No dog</th><th style="padding:2px 10px">Total</th></tr>'+
+      '<tr><th style="padding:2px 10px">7th</th><td>'+aa+'</td><td>'+ab+'</td><td>'+b.f('num',aa+ab,{w:'n'})+'</td></tr>'+
+      '<tr><th style="padding:2px 10px">8th</th><td>'+ba+'</td><td>'+bb+'</td><td>'+b.f('num',ba+bb,{w:'n'})+'</td></tr></table>'+
+      '<div class="row" style="margin-top:6px"><span class="inl">Of the 7th graders, what fraction have a dog? '+frIn(b,aa,aa+ab)+'</span>'+
+      '<span class="hint" style="flex-basis:auto">Write it as dog owners over the row total.</span></div>';
+    var Lt=b.fields.length;b.fields[Lt-2].t='num';b.fields[Lt-1].t='num'}
   return done(b,h)};
 
 /* ---------- 12. decimals ---------- */
@@ -2450,6 +2501,17 @@ G.integers=function(r,c){var b=B(),m=r.pick(c.modes),h='';
     for(var j=0;j<4;j++){var q=r.i(2,9),d2=r.i(2,9),neg=r.chance(.6)?-1:1,neg2=r.chance(.5)?-1:1;
       out2.push('<span class="colp"><span class="oplab">'+t('Divide','Divide')+'</span><span class="inl">'+sg(neg*q*d2)+' ÷ '+sg(neg2*d2)+' = '+b.f('num',neg*neg2*q,{w:'n'})+'</span></span>')}
     h='<div class="row" style="gap:16px">'+out2.join('')+'</div>'}
+  /* AOG-DD-STD8-V1 (2026-09-25) — Grade 8 standards the drafts never asked. irrat and approx are
+     8.NS.A.1–2: sort a number as rational or irrational, then trap a root between
+     two whole numbers. */
+  else if(m==='irrat'){var nx=r.pick([['&radic;'+r.pick([2,3,5,7,10,15,20]),'irrational'],['&radic;'+r.pick([16,25,49,64,81]),'rational'],
+      ['&pi;','irrational'],['0.333&hellip; (the 3 repeats)','rational'],['&minus;'+r.i(2,9)+'/'+r.i(2,9),'rational'],['0.1010010001&hellip; (never repeats)','irrational']]);
+    h='Is <b>'+nx[0]+'</b> rational or irrational?<div class="row" style="margin-top:7px">'+b.mc(nx[1],['rational','irrational'])+'</div>'}
+  else if(m==='approx'){var lo8=r.i(2,11),nn=lo8*lo8+r.i(1,2*lo8);
+    h='Between which two whole numbers is <b>&radic;'+nn+'</b>?<div class="row" style="margin-top:7px;gap:10px">'+
+      '<span class="inl">'+b.f('num',lo8,{w:'n'})+' &lt; &radic;'+nn+' &lt; '+b.f('num',lo8+1,{w:'n'})+'</span>'+
+      '<span class="inl">closer to '+b.f('num',(nn-lo8*lo8)<((lo8+1)*(lo8+1)-nn)?lo8:lo8+1,{w:'n'})+'</span>'+
+      '<span class="hint" style="flex-basis:auto">Think of the perfect squares on either side.</span></div>'}
   return done(b,h)};
 
 /* ---------- 16. expressions & equations ---------- */
@@ -2602,6 +2664,23 @@ G.algebra=function(r,c){var b=B(),m=r.pick(c.modes),h='';
       '<span class="inl">= '+b.f('dec',mul/100,{w:'n'})+'p</span>'+
       '<span class="inl">The new price is '+b.f('num',mul,{w:'n'})+'% of the old price</span></div>'}
   if(m==='write')h+=workPad(2);
+  /* AOG-DD-STD8-V1 (2026-09-25) — Grade 8 standards the drafts never asked. bothsides and nsol are
+     8.EE.C.7, system is 8.EE.C.8. */
+  else if(m==='bothsides'){var xa=r.i(-6,9),pa=r.i(4,9),qa=r.i(1,pa-1),ca=r.i(1,12),da=(pa-qa)*xa+ca;
+    h='Solve for <b>x</b>. Get the <b>x</b> terms on one side first.'+
+      '<div class="row" style="margin-top:8px"><span class="inl eqbig">'+pa+'x + '+ca+' = '+qa+'x '+(da<0?'&minus; '+(-da):'+ '+da)+'</span></div>'+
+      stepList([['subtract '+qa+'x', wkbx(3)+'x + '+ca+' = '+wkbx(3)],['subtract '+ca, wkbx(3)+'x = '+wkbx(3)]])+
+      '<div class="row eqans"><span class="inl">x = '+b.f('num',xa,{w:'n'})+'</span></div>'}
+  else if(m==='nsol'){var ka=r.i(2,6),kb=r.i(1,9),typ=r.pick(['one','none','infinitely many']),
+      rhs8=typ==='one'?(ka+1)+'x + '+kb:(typ==='none'?ka+'x + '+(kb+r.i(1,5)):ka+'x + '+kb);
+    h='How many solutions does <b>'+ka+'x + '+kb+' = '+rhs8+'</b> have?'+
+      '<div class="row" style="margin-top:7px">'+b.mc(typ,['one','none','infinitely many'])+
+      '<span class="hint" style="flex-basis:auto">Same slope and same number: infinitely many. Same slope, different number: none.</span></div>'}
+  else if(m==='system'){var sx=r.i(-3,5),sy=r.i(-3,8),m1=r.i(1,4),m2=-r.i(1,3),b1=sy-m1*sx,b2=sy-m2*sx;
+    function lin(mq,bq){return 'y = '+(mq===1?'':mq===-1?'&minus;':mq<0?'&minus;'+(-mq):mq)+'x'+(bq===0?'':bq<0?' &minus; '+(-bq):' + '+bq)}
+    h='Solve the system. Set the two right sides equal to find <b>x</b>, then find <b>y</b>.'+
+      '<div class="row" style="margin-top:7px;gap:16px"><span class="inl eqbig">'+lin(m1,b1)+'</span><span class="inl eqbig">'+lin(m2,b2)+'</span></div>'+
+      '<div class="row eqans" style="gap:12px"><span class="inl">x = '+b.f('num',sx,{w:'n'})+'</span><span class="inl">y = '+b.f('num',sy,{w:'n'})+'</span></div>'+workPad(2)}
   return done(b,h)};
 
 /* ---------- 17. exponents, roots, scientific notation ---------- */
@@ -2654,6 +2733,28 @@ G.graphing=function(r,c){var b=B(),m=r.pick(c.modes),h='';
     h='Complete the table for <b>y = '+mm2+'x + '+bq2+'</b>.<div class="row" style="margin-top:7px;gap:14px">'+
       [0,1,2,3].map(function(x){return '<span class="vstack" style="align-items:center;gap:3px">'+
         '<span style="font-size:13px;color:#64748b">x = '+x+'</span>'+b.f('num',mm2*x+bq2,{w:'n'})+'</span>'}).join('')+'</div>'}
+  /* AOG-DD-STD8-V1 (2026-09-25) — Grade 8 standards the drafts never asked. isfunc is 8.F.A.1,
+     fromtwo 8.F.B.4, qual 8.F.B.5. */
+  else if(m==='isfunc'){var xs8=r.shuf([1,2,3,4,5,6]).slice(0,4),fn=r.chance(0.5);
+    if(!fn)xs8[3]=xs8[r.i(0,2)];
+    var pr=xs8.map(function(x){return '('+x+', '+r.i(0,9)+')'});
+    if(!fn){var dup=xs8[3],first=xs8.indexOf(dup);
+      var y1=+pr[first].split(', ')[1].replace(')',''),y2=(y1+r.i(1,8))%10;pr[3]='('+dup+', '+y2+')'}
+    h='Is this relation a <b>function</b>? <b>'+pr.join(', ')+'</b>'+
+      '<div class="row" style="margin-top:7px">'+b.mc(fn?'yes':'no',['yes','no'])+
+      '<span class="hint" style="flex-basis:auto">A function gives each x exactly one y.</span></div>'}
+  else if(m==='fromtwo'){var fm=r.pick([-3,-2,2,3,4,5]),fb=r.i(-5,9),fx=r.i(1,3),gx=fx+r.i(1,3);
+    h='A line goes through <b>('+fx+', '+(fm*fx+fb)+')</b> and <b>('+gx+', '+(fm*gx+fb)+')</b>.'+
+      '<div class="row" style="margin-top:6px;gap:12px"><span class="inl">slope m = '+b.f('num',fm,{w:'n'})+'</span>'+
+      '<span class="inl">y&#8209;intercept b = '+b.f('num',fb,{w:'n'})+'</span></div>'+
+      '<div class="hint">m = change in y &divide; change in x. Then put one point into y = mx + b.</div>'}
+  else if(m==='qual'){var qs=r.pick([['A candle burns down. Its height over time is','decreasing'],
+      ['A savings account gets the same deposit every week. The balance over time is','increasing'],
+      ['A car is parked for an hour. Its distance from home during that hour is','constant'],
+      ['A ball is dropped from a roof. Its height as it falls is','decreasing'],
+      ['A plant grows the same amount each day. Its height over time is','increasing'],
+      ['The price of a stamp stays the same all year. Its graph over the year is','constant']]);
+    h=qs[0]+' ____.<div class="row" style="margin-top:7px">'+b.mc(qs[1],['increasing','decreasing','constant'])+'</div>'}
   return done(b,h)};
 
 /* ---------- 19. fraction operations ---------- */
@@ -7882,17 +7983,17 @@ MATH['7']=[
  S('Geometry','Geometría',function(r){return G.geom(r,{modes:['circle','areatri','surf','angsolve','vol','xsect','trimake']})}),
  S('Probability and Statistics','Probabilidad y estadística',function(r){return G.data(r,{modes:['spin','likely','mmm','sample','infer','compare','freq','compound']})})];
 MATH['8']=[
- S('Integer and Rational Fluency','Fluidez con racionales',function(r){return G.integers(r,{modes:['ops','compare','order','real']})}),
+ S('Integer and Rational Fluency','Fluidez con racionales',function(r){return G.integers(r,{modes:['ops','compare','real','irrat','approx']})}),
  S('Exponents and Roots','Exponentes y raíces',function(r){return G.exponents(r,{modes:['pow','root','laws']})}),
  S('Scientific Notation','Notación científica',function(r){return G.exponents(r,{modes:['sci','laws','order']})}),
  S('Percent and Change','Porcentaje y cambio',function(r){return G.percent(r,{modes:['change','tip','of']})}),
  S('Rational Numbers','Números racionales',mix(function(r){return G.fracops(r,{modes:['mult','div']})},
     function(r){return G.decimals(r,{modes:['compare','fracdec']})})),
- S('Problem Solving','Resolución de problemas',function(r){return G.story(r,{modes:['pct','rate','money']})}),
- S('Linear Equations','Ecuaciones lineales',function(r){return G.algebra(r,{modes:['solve2','dist','ineq','eval']})}),
+ S('Data and Statistics','Datos y estadística',function(r){return G.data(r,{modes:['scatter','fitline','twoway']})}),
+ S('Linear Equations','Ecuaciones lineales',function(r){return G.algebra(r,{modes:['solve2','dist','bothsides','nsol','system']})}),
  S('Vocabulary and Symbols','Vocabulario y símbolos',function(r){return G.vocab(r,{bank:'ms'})}),
- S('Geometry','Geometría',function(r){return G.geom(r,{modes:['pyth','vol','surf','circle','angle']})}),
- S('Functions and Graphing','Funciones y gráficas',function(r){return G.graphing(r,{modes:['plot','slope','linear','quad','table']})})];
+ S('Geometry','Geometría',function(r){return G.geom(r,{modes:['pyth','pdist','volcyl','transform','parallel']})}),
+ S('Functions and Graphing','Funciones y gráficas',function(r){return G.graphing(r,{modes:['slope','linear','table','isfunc','fromtwo','qual']})})];
 
 var ELA={};
 function elaPrimary(bank){return [
