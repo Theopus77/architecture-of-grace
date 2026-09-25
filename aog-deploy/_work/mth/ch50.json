@@ -1,0 +1,291 @@
+{
+ "n": 50, "title": "Circles, Area and Volume", "years": "Geometry",
+ "bigQuestion": "What do the angles, arcs and equations of a circle have to do with how much a can, a cone or a ball can hold?",
+ "story": {
+  "title": "Why the Cover Is Round",
+  "kicker": "A public-works crew, a heavy iron lid and a question that turns out to be pure geometry.",
+  "paragraphs": [
+   "On a cold morning a city crew opened a manhole on a street near the river to check a sewer line. The iron cover weighed more than a hundred pounds. One worker tipped it on its edge and rolled it to the curb like a wheel. A student on the sidewalk, waiting for the bus, asked the obvious question. Why are these things always round?",
+   "The crew chief had an answer ready, because everyone asks. \"A round cover can't fall in the hole.\" Think about it. A circle is the same width in every direction. Its widest measurement across is the diameter, and any other straight cut across it, a chord, is shorter than the diameter. So no matter how you tilt a round cover, it is always too wide to drop through a slightly smaller round opening.",
+   "Now imagine a square cover 30 inches on each side. Its sides are 30 inches, but its diagonal is 30√2, about 42.4 inches. Turn the cover so its edge lines up with the hole's diagonal and it slips right through, straight down onto whoever is working below. A round cover has no diagonal to exploit. Every direction is the same.",
+   "There are other reasons. A round cover can be rolled instead of carried. It fits no matter how you set it down, so nobody has to line up corners. And a circular hole is the strongest shape against the weight of traffic overhead, because it spreads the load evenly. (Mathematicians know one other shape that stays the same width in every direction, a rounded triangle called a Reuleaux triangle, but it is far harder to cast and to roll.)",
+   "That morning conversation touches nearly every idea in this chapter: chords and diameters, the angles inside a circle, and the formulas for how much space round things take up. By the end you will be able to find the area of a pizza slice, write the equation of a circle on a map, and compute how much grain fits in a silo."
+  ],
+  "think": "Suppose a manhole cover were shaped like an equilateral triangle. Explain, using the word chord or diagonal, how it could fall through its own hole."
+ },
+ "sections": [
+  {"title": "Angles in a Circle", "lessons": [
+   {
+    "title": "Central Angles and Arcs",
+    "mainIdea": "A central angle has its vertex at the center, and the arc it cuts off has the same measure in degrees.",
+    "reading": [
+     "A pizza is cut into 8 equal slices. Every cut goes through the center. The point of each slice, at the center, forms a *central angle*. Since the eight angles fill the whole circle, and a full turn is 360°, each central angle is 360 ÷ 8 = 45°. The curved crust of a slice is an *arc*. We measure an arc in degrees too, and an arc's measure equals its central angle. One slice's crust is a 45° arc, and three slices together make a 135° arc.",
+     "Some vocabulary. A *radius* runs from the center to the circle. A *chord* is a segment with both ends on the circle. A *diameter* is a chord through the center; it is the longest chord and equals two radii. Two points on a circle split it into two arcs. The smaller one, less than 180°, is the *minor arc*; the larger one is the *major arc*. Their measures add to 360°. If a minor arc is 110°, the major arc is 360 − 110 = 250°.",
+     "A clock is a circle with 12 equal parts, so each hour mark is 360 ÷ 12 = 30° from the next. From 12 to 4 the minute hand turns through 4 × 30 = 120°. From 12 to 9 it turns 270°, and the minor arc between 12 and 9 is only 90°. A common mistake is to think the arc's length in inches matters here. Arc measure in degrees is about the angle at the center, not the size of the circle. A 45° arc on a tiny circle and a 45° arc on a giant one have the same degree measure."
+    ],
+    "words": [
+     {"w": "central angle", "d": "an angle whose vertex is the center of a circle and whose sides are radii"},
+     {"w": "arc", "d": "a connected piece of a circle; its measure in degrees equals its central angle"},
+     {"w": "chord", "d": "a segment whose two endpoints lie on a circle"},
+     {"w": "minor arc", "d": "the smaller of the two arcs between two points on a circle, less than 180°"}
+    ],
+    "look": {"type": "data", "title": "The Hour Hand's Turn", "rows": [["1 hour", 30], ["2 hours", 60], ["3 hours", 90], ["6 hours", 180], ["9 hours", 270], ["12 hours", 360]], "unit": "degrees swept by the hour hand", "cite": "Computed from 360° ÷ 12 hours = 30° per hour", "prompt": "How many degrees does the hour hand turn in 20 minutes? How many degrees does the minute hand turn in the same 20 minutes?"},
+    "check": [
+     {"q": "A circle is divided into 12 equal central angles. How large is each one?", "choices": ["12°", "30°", "36°", "45°"], "a": 1, "why": "360° ÷ 12 = 30°. Dividing by 10 instead gives 36°, and 45° is 360 ÷ 8."},
+     {"q": "Minor arc AB measures 110°. What is the measure of major arc AB?", "choices": ["70°", "110°", "250°", "180°"], "a": 2, "why": "The two arcs fill the circle: 360 − 110 = 250°. Subtracting from 180 gives 70°, which is the mistake of using a half circle."},
+     {"q": "The minute hand of a clock moves from the 12 to the 4. Through how many degrees does it turn?", "choices": ["90°", "40°", "150°", "120°"], "a": 3, "why": "Each hour mark is 30° apart, and 4 marks × 30° = 120°. Using 10° per mark gives 40°."}
+    ]
+   },
+   {
+    "title": "Angles on the Edge",
+    "mainIdea": "An inscribed angle, with its vertex on the circle, measures half the arc it opens onto.",
+    "reading": [
+     "Move the vertex of the angle from the center out to the circle itself. Now you have an *inscribed angle*, with its vertex on the circle and its two sides as chords. The arc between the sides is the *intercepted arc*. Here is the surprising rule: an inscribed angle is half the measure of its intercepted arc. If the arc is 80°, the inscribed angle is 40°. A central angle on that same arc would be the full 80°.",
+     "Why half? Take the simplest case, where one side of the inscribed angle is a diameter. Draw a radius to the far end of the other side. That radius and the diameter's radius are equal, so they make an isosceles triangle with two equal base angles, each equal to the inscribed angle. The central angle is an exterior angle of that triangle, so it equals the sum of the two equal angles, which is twice the inscribed angle. The other cases follow by adding or subtracting this one.",
+     "Three facts follow. First, every inscribed angle that opens onto the same arc has the same measure, since they are all half of the same arc. Second, an inscribed angle whose sides pass through the ends of a diameter intercepts a 180° arc, so it measures 90°. This is often called Thales' theorem. Third, if a four-sided figure has all four corners on a circle, its opposite angles add to 180°, because together they intercept the whole 360° circle.",
+     "Work one. An inscribed angle measures 35°. Its intercepted arc is 2 × 35 = 70°. If another inscribed angle sits anywhere else on the circle and opens onto that same 70° arc, it is also 35°. The common mistake is to forget which angle is which: central angles equal the arc, inscribed angles are half of it."
+    ],
+    "words": [
+     {"w": "inscribed angle", "d": "an angle whose vertex is on the circle and whose sides are chords"},
+     {"w": "intercepted arc", "d": "the arc that lies inside an inscribed angle, between its two sides"},
+     {"w": "isosceles triangle", "d": "a triangle with two equal sides, and therefore two equal angles opposite them"}
+    ],
+    "look": {"type": "think", "title": "Finding the Center of a Round Table", "text": "A carpenter has a round tabletop and needs to drill a hole at its exact center. She lays a carpenter's square (a tool with a right angle) so its corner touches the edge of the table, and marks where its two arms cross the edge. Those two marks are the ends of a diameter, because a 90° inscribed angle always opens onto a half circle. She draws that diameter, moves the square to a new spot, and draws a second diameter.", "prompt": "Where is the center of the table? Why would a 60° angle at the edge not have worked the same way?"},
+    "check": [
+     {"q": "An inscribed angle intercepts an arc of 140°. What is the measure of the angle?", "choices": ["140°", "70°", "280°", "40°"], "a": 1, "why": "Inscribed angle = half the arc = 140 ÷ 2 = 70°. Doubling gives 280°, the wrong direction."},
+     {"q": "An inscribed angle measures 35°. What is the measure of its intercepted arc?", "choices": ["17.5°", "35°", "145°", "70°"], "a": 3, "why": "The arc is twice the inscribed angle: 2 × 35 = 70°. Halving gives 17.5, which is backwards."},
+     {"q": "An angle is inscribed in a circle so that its sides pass through the two ends of a diameter. What is its measure?", "choices": ["90°", "180°", "45°", "It depends on where the vertex is"], "a": 0, "why": "The intercepted arc is a semicircle, 180°, so the inscribed angle is half: 90°. This holds no matter where on the circle the vertex sits."}
+    ]
+   },
+   {
+    "title": "Chords, Tangents and Secants",
+    "mainIdea": "A tangent meets a circle at one point and is perpendicular to the radius there; a perpendicular from the center bisects any chord.",
+    "reading": [
+     "A bicycle wheel sits on flat ground. The ground touches the tire at exactly one point. A line that touches a circle at only one point is a *tangent line*, and the touching point is the *point of tangency*. The spoke from the hub straight down to that point is a radius, and it makes a right angle with the ground. That is always true: a tangent is perpendicular to the radius drawn to the point of tangency.",
+     "That right angle lets you use the Pythagorean theorem. Suppose a point P is 10 cm from the center of a circle of radius 6 cm, and you draw the tangent from P. The radius (6), the tangent segment, and the segment from P to the center (10) form a right triangle with the right angle at the point of tangency. Tangent length = √(10² − 6²) = √(100 − 36) = √64 = 8 cm. From any outside point you can draw two tangents, and their lengths are equal.",
+     "A line that cuts through a circle at two points is a *secant*, and the piece inside is a chord. If you draw a segment from the center perpendicular to a chord, it cuts the chord exactly in half. So the center, the midpoint of the chord and one end of the chord form a right triangle. Example: a circle has radius 13 and a chord sits 5 units from the center. Half the chord is √(13² − 5²) = √(169 − 25) = √144 = 12, so the whole chord is 24.",
+     "The common mistake is to build the right triangle with the wrong sides. The radius to the point of tangency is a leg, not the hypotenuse; the segment from the outside point to the center is the hypotenuse. For chords, the distance from the center reaches the middle of the chord, so remember to double the leg you find."
+    ],
+    "words": [
+     {"w": "tangent line", "d": "a line that touches a circle at exactly one point"},
+     {"w": "point of tangency", "d": "the single point where a tangent line touches a circle"},
+     {"w": "secant", "d": "a line that crosses a circle at two points"},
+     {"w": "bisect", "d": "to cut into two equal pieces"}
+    ],
+    "look": {"type": "think", "title": "The Wheel on the Road", "text": "A bike wheel has a radius of 34 cm. It rests on level pavement, touching at one point. A pebble on the road is 50 cm from the wheel's hub (measured straight through the air from the hub to the pebble). The hub, the touching point and the pebble form a right triangle, with the right angle at the touching point, because the pavement is tangent to the wheel.", "prompt": "How far is the pebble from the point where the tire touches the road? Which side of the triangle is the hypotenuse?"},
+    "check": [
+     {"q": "A circle has radius 5. A point P is 13 units from the center. How long is the tangent segment from P to the circle?", "choices": ["8", "18", "13.9", "12"], "a": 3, "why": "The tangent is a leg of a right triangle with hypotenuse 13 and other leg 5: √(169 − 25) = √144 = 12. Subtracting 13 − 5 = 8 is not the Pythagorean rule."},
+     {"q": "A circle has radius 10. A chord lies 6 units from the center. How long is the chord?", "choices": ["8", "12", "16", "20"], "a": 2, "why": "Half the chord is √(10² − 6²) = √64 = 8, so the whole chord is 2 × 8 = 16. Forgetting to double gives 8."},
+     {"q": "Two tangent segments are drawn to a circle from the same outside point. How do their lengths compare?", "choices": ["They are always equal", "The one on the left is longer", "They add to the diameter", "The longer one is √2 times the shorter"], "a": 0, "why": "Both tangents form right triangles with the same hypotenuse (point to center) and the same leg (the radius), so the other legs, the tangents, are equal."}
+    ]
+   }
+  ]},
+  {"title": "Around and Inside", "lessons": [
+   {
+    "title": "Circumference and Area",
+    "mainIdea": "Circumference is π times the diameter, and cutting a circle into wedges shows why its area is π times the radius squared.",
+    "reading": [
+     "Wrap a string around a can and then measure the string against the can's width. The string is always a little more than 3 times the width, about 3.14 times. That ratio is the same for every circle, and it has a name: *π* (pi), roughly 3.14159. So the distance around a circle, its *circumference*, is C = π × d, or C = 2πr since the diameter is twice the *radius*. A circle with radius 7 cm has circumference 2 × π × 7 = 14π ≈ 44.0 cm.",
+     "Area takes a trick. Cut a circle into many thin wedges, like pizza slices, and lay them side by side, points alternating up and down. They form a shape close to a parallelogram. Its height is the radius r. Its base is half the crust, half the circumference, which is πr. The area of a parallelogram is base × height, so the area of the circle is πr × r = πr². With more, thinner wedges, the shape gets closer to a true parallelogram, and the formula becomes exact.",
+     "Try radius 7 again: area = π × 7² = 49π ≈ 153.9 square cm. Now a circle with diameter 12: first find the radius, 12 ÷ 2 = 6, then area = 36π ≈ 113.1. The most common mistake is to square the diameter instead of the radius, which gives an answer 4 times too big. The second most common is to mix up the two formulas; circumference uses r once (a length), area uses r twice (a length times a length)."
+    ],
+    "words": [
+     {"w": "π (pi)", "d": "the ratio of any circle's circumference to its diameter, about 3.14159"},
+     {"w": "circumference", "d": "the distance around a circle; C = πd = 2πr"},
+     {"w": "radius", "d": "the distance from the center of a circle to any point on it; half the diameter"},
+     {"w": "parallelogram", "d": "a four-sided figure whose opposite sides are parallel; its area is base × height"}
+    ],
+    "look": {"type": "data", "title": "Circumference Grows With Diameter", "rows": [["diameter 1", 3.14], ["diameter 2", 6.28], ["diameter 5", 15.71], ["diameter 10", 31.42], ["diameter 20", 62.83]], "unit": "circumference (same units)", "cite": "Computed from C = πd with π ≈ 3.1416, rounded to two places", "prompt": "Each time the diameter doubles, what happens to the circumference? What would happen to the area when the diameter doubles?"},
+    "check": [
+     {"q": "A circle has radius 5 cm. What is its circumference, to one decimal place?", "choices": ["15.7 cm", "78.5 cm", "31.4 cm", "62.8 cm"], "a": 2, "why": "C = 2πr = 2 × π × 5 = 10π ≈ 31.4 cm. The value 78.5 is the area (25π), and 15.7 uses the radius as the diameter."},
+     {"q": "A circle has diameter 12 m. What is its area, to one decimal place?", "choices": ["452.4 m²", "37.7 m²", "18.8 m²", "113.1 m²"], "a": 3, "why": "Radius = 6, so area = π × 6² = 36π ≈ 113.1 m². Squaring the diameter gives 144π ≈ 452.4, four times too big."},
+     {"q": "Why does the area formula use the radius squared?", "choices": ["Because the diameter is twice the radius", "Because the rearranged wedges form a near-parallelogram with base πr and height r, and πr × r = πr²", "Because π is about 3", "Because a circle has 360 degrees"], "a": 1, "why": "The wedge rearrangement has base equal to half the circumference (πr) and height equal to the radius (r). Base × height is πr²."}
+    ]
+   },
+   {
+    "title": "Pieces of a Circle",
+    "mainIdea": "An arc or a sector is a fraction of the circle, θ/360, times the whole circumference or the whole area.",
+    "reading": [
+     "A slice of a circle is a *sector*, and its curved edge is an arc. If the slice's central angle is θ degrees, the slice is θ/360 of the whole circle. So *arc length* = (θ/360) × 2πr and *sector area* = (θ/360) × πr². One fraction handles both, and the fraction is the same whether the circle is a coin or a running track.",
+     "Work it. A circle has radius 9 and a sector has a 60° angle. The fraction is 60/360 = 1/6. The full circumference is 2π × 9 = 18π, so the arc length is 18π ÷ 6 = 3π ≈ 9.42. The full area is π × 81 = 81π, so the sector area is 81π ÷ 6 = 13.5π ≈ 42.4. Both answers are one sixth of the whole, which is a good way to check.",
+     "Real example: a pizza with radius 8 inches is cut into 6 equal slices. Each slice is 1/6 of the pizza. The whole pizza's area is 64π ≈ 201.1 square inches, so one slice is 201.1 ÷ 6 ≈ 33.5 square inches. The crust on one slice, its arc, is 1/6 of 16π ≈ 50.3 inches, about 8.4 inches.",
+     "Two common mistakes. One is confusing arc length (a distance, measured in inches) with arc measure (an angle, measured in degrees); a 60° arc on a big pizza is longer than a 60° arc on a small one, even though both measure 60°. The other is forgetting the fraction and reporting the whole circumference or whole area."
+    ],
+    "words": [
+     {"w": "sector", "d": "a wedge of a circle bounded by two radii and an arc"},
+     {"w": "arc length", "d": "the distance along an arc; (θ/360) × 2πr for a central angle of θ degrees"},
+     {"w": "sector area", "d": "the area of a sector; (θ/360) × πr² for a central angle of θ degrees"}
+    ],
+    "look": {"type": "think", "title": "The Lawn Sprinkler", "text": "A sprinkler in a park sits at the corner of a square lawn and sprays water 12 meters, sweeping back and forth through a 90° angle. It waters a quarter circle. The whole circle would have area π × 12² = 144π ≈ 452.4 square meters, so the sprinkler waters 452.4 ÷ 4 ≈ 113.1 square meters of grass.", "prompt": "If the sprinkler were moved to the middle of one edge of the lawn and set to sweep 180°, how much area would it water with the same 12 m reach?"},
+    "check": [
+     {"q": "A circle has radius 6. What is the length of a 90° arc, to two decimal places?", "choices": ["9.42", "28.27", "37.70", "4.71"], "a": 0, "why": "The fraction is 90/360 = 1/4. Circumference = 12π ≈ 37.70, and 37.70 ÷ 4 = 9.42. The value 28.27 is the sector area (9π), not the arc length."},
+     {"q": "A circle has radius 10. What is the area of a sector with a 72° central angle, to one decimal place?", "choices": ["12.6", "314.2", "31.4", "62.8"], "a": 3, "why": "72/360 = 1/5. The whole area is 100π ≈ 314.2, and 314.2 ÷ 5 = 62.8. The value 12.6 is the arc length (4π)."},
+     {"q": "A pizza has radius 8 inches and is cut into 6 equal slices. What is the area of one slice, to one decimal place?", "choices": ["201.1 in²", "8.4 in²", "33.5 in²", "16.8 in²"], "a": 2, "why": "Whole area = 64π ≈ 201.1 in², and 201.1 ÷ 6 ≈ 33.5 in². The value 8.4 is the arc (crust) length of one slice."}
+    ]
+   },
+   {
+    "title": "A New Way to Measure Angles",
+    "mainIdea": "One radian is the angle whose arc equals the radius, so a full circle is 2π radians and arc length is simply r × θ.",
+    "reading": [
+     "Degrees are an ancient choice; 360 was handy for old calendars, not for mathematics. Here is a more natural unit. Take a circle and bend a piece of string exactly as long as the radius along the edge. The central angle that string covers is one *radian*. Because the whole circumference is 2πr, the radius fits around the circle 2π times, so a full turn is 2π radians, about 6.28. Half a turn, 180°, is π radians.",
+     "To convert, use 180° = π radians. Degrees to radians: multiply by π/180. Radians to degrees: multiply by 180/π. So 60° = 60 × π/180 = π/3 ≈ 1.047 radians, and π/2 radians = 90°. The quarter turn, 90°, is π/2; the eighth turn, 45°, is π/4; the twelfth turn, 30°, is π/6.",
+     "Radians make arc length simple. Since an angle of θ radians is θ/(2π) of a full turn, the arc is θ/(2π) × 2πr = rθ. No fraction over 360. With radius 9 and angle π/3, the arc is 9 × π/3 = 3π ≈ 9.42, matching the 60° arc from the last lesson. With radius 4 and angle 1.5 radians, the arc is 4 × 1.5 = 6 units, no π needed.",
+     "The common mistake is mixing units: putting degrees into s = rθ gives an absurd answer (60 × 9 = 540 for a circle of circumference 56.5). Convert first. Calculators have a radian mode for this; if sin 30 comes out as −0.988 instead of 0.5, the calculator is in radians."
+    ],
+    "words": [
+     {"w": "radian", "d": "the angle at the center of a circle that cuts off an arc equal in length to the radius; about 57.3°"},
+     {"w": "convert", "d": "to change a measurement from one unit to another without changing its size"},
+     {"w": "full turn", "d": "one complete rotation: 360° or 2π radians"}
+    ],
+    "look": {"type": "data", "title": "Degrees to Radians", "rows": [["30°", 0.524], ["45°", 0.785], ["60°", 1.047], ["90°", 1.571], ["180°", 3.142], ["360°", 6.283]], "unit": "radians", "cite": "Computed from radians = degrees × π/180, rounded to three places", "prompt": "Which row equals π/4? Which row is closest to 1 radian, and about how many degrees is 1 radian?"},
+    "check": [
+     {"q": "How many radians is 90°?", "choices": ["π", "π/2", "π/4", "2π"], "a": 1, "why": "90 × π/180 = π/2. A full turn is 2π, so a quarter turn is 2π ÷ 4 = π/2."},
+     {"q": "How many degrees is π/6 radians?", "choices": ["60°", "15°", "30°", "90°"], "a": 2, "why": "π radians is 180°, so π/6 is 180 ÷ 6 = 30°."},
+     {"q": "A circle has radius 4. What is the arc length for a central angle of 1.5 radians?", "choices": ["2.67", "18.8", "5.5", "6"], "a": 3, "why": "In radians, arc length = rθ = 4 × 1.5 = 6. No conversion or π is needed because the angle is already in radians."}
+    ]
+   }
+  ]},
+  {"title": "Circles on the Coordinate Plane", "lessons": [
+   {
+    "title": "The Equation of a Circle",
+    "mainIdea": "A circle with center (h, k) and radius r is the set of points satisfying (x − h)² + (y − k)² = r², which is the distance formula in disguise.",
+    "reading": [
+     "A radio station's tower sits at the origin of a map, and its signal reaches 50 miles. Which points are exactly 50 miles away? A point (x, y) is at distance √(x² + y²) from the origin, by the Pythagorean theorem. Setting that equal to 50 and squaring both sides gives x² + y² = 2500. That is the *equation of a circle* with center (0, 0) and radius 50. Every point on the circle makes the equation true, and no other point does.",
+     "Move the center to (h, k). The distance from (x, y) to (h, k) is √((x − h)² + (y − k)²). Set it equal to r and square: (x − h)² + (y − k)² = r². This is the *standard form* of a circle. For center (2, −3) and radius 5: (x − 2)² + (y − (−3))² = 25, which is (x − 2)² + (y + 3)² = 25. Watch the signs: a plus inside the parentheses means a negative coordinate.",
+     "Test a point. Is (5, 1) on that circle? Substitute: (5 − 2)² + (1 + 3)² = 3² + 4² = 9 + 16 = 25. Yes. Is (4, 0)? (4 − 2)² + (0 + 3)² = 4 + 9 = 13, which is less than 25, so (4, 0) is inside the circle. A point that gives more than 25, like (8, 0), is outside the circle.",
+     "Reading an equation backwards is just as important. From (x + 1)² + (y − 4)² = 9, the center is (−1, 4), flipping each sign, and the radius is √9 = 3, not 9. Two common mistakes: reading the center as (1, −4), and reporting r² as the radius. Always take the square root of the right side."
+    ],
+    "words": [
+     {"w": "equation of a circle", "d": "(x − h)² + (y − k)² = r² describes every point at distance r from the center (h, k)"},
+     {"w": "standard form", "d": "the form of a circle's equation that shows the center and radius directly"},
+     {"w": "origin", "d": "the point (0, 0) where the x-axis and y-axis cross"}
+    ],
+    "look": {"type": "think", "title": "In Range or Out?", "text": "A weather radar in the suburbs is at the origin of a map and can see storms up to 50 miles away, so its coverage circle is x² + y² = 2500. A storm cell is at (30, 40): 30² + 40² = 900 + 1600 = 2500, exactly on the edge. A second cell at (20, 45): 400 + 2025 = 2425, which is less than 2500, so it is inside the circle and on the radar.", "prompt": "A third cell is at (35, 38). Is it inside, outside or on the coverage circle? How far is it from the radar?"},
+    "check": [
+     {"q": "Write the equation of the circle with center (−1, 4) and radius 3.", "choices": ["(x − 1)² + (y + 4)² = 9", "(x + 1)² + (y − 4)² = 3", "(x + 1)² + (y − 4)² = 9", "(x − 1)² + (y − 4)² = 9"], "a": 2, "why": "Standard form is (x − h)² + (y − k)² = r². With h = −1, k = 4 and r = 3: (x + 1)² + (y − 4)² = 9. The right side is r², so 9, not 3."},
+     {"q": "What are the center and radius of (x − 3)² + (y + 2)² = 49?", "choices": ["center (−3, 2), radius 7", "center (3, −2), radius 49", "center (3, 2), radius 7", "center (3, −2), radius 7"], "a": 3, "why": "Flip the signs inside: h = 3, k = −2. The radius is √49 = 7, not 49."},
+     {"q": "Is the point (6, 2) on the circle x² + y² = 40?", "choices": ["Yes, because 6² + 2² = 36 + 4 = 40", "No, because 6 + 2 is not 40", "No, because 40 is not a perfect square", "Yes, because 6 × 2 = 12 is less than 40"], "a": 0, "why": "Substitute the coordinates: 36 + 4 = 40, which matches the right side, so the point lies on the circle."}
+    ]
+   },
+   {
+    "title": "Finding the Center",
+    "mainIdea": "Completing the square turns an expanded circle equation back into standard form and reveals the center and radius.",
+    "reading": [
+     "Sometimes a circle's equation arrives multiplied out, like x² + y² − 6x + 4y − 12 = 0. The center and radius are hidden. To find them, rebuild the squares. Group the x terms and the y terms: (x² − 6x) + (y² + 4y) = 12. To make x² − 6x into a perfect square, take half of −6, which is −3, and square it: 9. Add 9 to both sides. For y² + 4y, half of 4 is 2, squared is 4; add 4 to both sides.",
+     "Now the left side factors: (x − 3)² + (y + 2)² = 12 + 9 + 4 = 25. The center is (3, −2) and the radius is √25 = 5. This is *completing the square*, the same move used to solve quadratics. Check it by expanding: (x − 3)² = x² − 6x + 9 and (y + 2)² = y² + 4y + 4, so the left side is x² + y² − 6x + 4y + 13, and 13 − 25 = −12 matches the original.",
+     "Another way a circle can be described: by the two ends of a *diameter*. Suppose a diameter runs from (1, 2) to (7, 10). The center is the midpoint: ((1 + 7)/2, (2 + 10)/2) = (4, 6). The radius is half the diameter's length. The diameter's length is √((7 − 1)² + (10 − 2)²) = √(36 + 64) = √100 = 10, so r = 5 and the equation is (x − 4)² + (y − 6)² = 25.",
+     "The common mistake in completing the square is adding the new numbers to only one side of the equation. Whatever you add on the left, add on the right too. Another is halving the wrong coefficient; you halve the number in front of x (or y), never the number in front of x²."
+    ],
+    "words": [
+     {"w": "completing the square", "d": "adding the right constant to turn x² + bx into a perfect square, (x + b/2)²"},
+     {"w": "diameter", "d": "a chord through the center of a circle; the longest chord, equal to two radii"},
+     {"w": "midpoint formula", "d": "the midpoint of (x₁, y₁) and (x₂, y₂) is ((x₁ + x₂)/2, (y₁ + y₂)/2)"}
+    ],
+    "look": {"type": "think", "title": "The Fountain on the Plan", "text": "An architect's drawing describes the rim of a round fountain by the equation x² + y² − 4x − 6y = 12, with units in meters. To place the pump at the center, complete the square: (x² − 4x + 4) + (y² − 6y + 9) = 12 + 4 + 9, which becomes (x − 2)² + (y − 3)² = 25.", "prompt": "Where does the pump go, and how wide is the fountain from rim to rim?"},
+    "check": [
+     {"q": "Find the center and radius of x² + y² + 8x − 2y + 8 = 0.", "choices": ["center (−4, 1), radius 3", "center (4, −1), radius 3", "center (−4, 1), radius 9", "center (−8, 2), radius 3"], "a": 0, "why": "Complete the square: (x + 4)² + (y − 1)² = −8 + 16 + 1 = 9. Center (−4, 1), radius √9 = 3. Halving 8 gives 4, not 8."},
+     {"q": "A diameter of a circle has endpoints (−2, 3) and (4, 3). What are the center and radius?", "choices": ["center (1, 3), radius 6", "center (2, 0), radius 3", "center (1, 3), radius 3", "center (3, 3), radius 3"], "a": 2, "why": "The midpoint is ((−2 + 4)/2, (3 + 3)/2) = (1, 3). The diameter is 6 units long, so the radius is 3."},
+     {"q": "What number must be added to x² + 10x to make it a perfect square?", "choices": ["10", "5", "100", "25"], "a": 3, "why": "Half of 10 is 5, and 5² = 25. Then x² + 10x + 25 = (x + 5)²."}
+    ]
+   }
+  ]},
+  {"title": "Filling Space", "lessons": [
+   {
+    "title": "Prisms and Cylinders",
+    "mainIdea": "The volume of a prism or cylinder is the area of its base times its height, because it is a stack of identical layers.",
+    "reading": [
+     "A can of soup is a *cylinder*: two circular ends and a curved side. Think of it as a stack of thin circular coins. Each coin has area πr², and there are enough of them to reach height h. So the *volume* is V = πr²h. A soup can with radius 4 cm and height 11 cm holds π × 16 × 11 = 176π ≈ 552.9 cubic centimeters, which is about 553 milliliters.",
+     "The same stacking idea gives the volume of any *prism*, a solid with two identical parallel ends and flat sides. Volume = (area of the base) × height, or V = Bh. A rectangular box 5 cm by 4 cm by 12 cm has base area 5 × 4 = 20 and height 12, so V = 240 cubic cm. A triangular prism with a base triangle of area 15 and length 8 has volume 15 × 8 = 120.",
+     "Now tilt the stack of coins so it leans like a fallen tower. Every coin is still there, and each still has the same area, so the volume has not changed. This is *Cavalieri's principle*: if two solids have the same height and the same cross-sectional area at every level, they have the same volume. It is why a slanted cylinder has the same formula as an upright one, as long as h is the straight-up height.",
+     "Doubling the radius of a cylinder multiplies the volume by 4, because the radius is squared; doubling the height only doubles the volume. The common mistake is squaring the diameter, which makes the answer 4 times too big. Units also trip people up: length in cm gives volume in cubic cm (cm³), and 1 cm³ equals 1 milliliter."
+    ],
+    "words": [
+     {"w": "cylinder", "d": "a solid with two identical parallel circular ends joined by a curved side"},
+     {"w": "prism", "d": "a solid with two identical parallel polygon ends joined by flat faces"},
+     {"w": "volume", "d": "the amount of space a solid takes up, measured in cubic units"},
+     {"w": "Cavalieri's principle", "d": "solids with equal heights and equal cross-section areas at every level have equal volumes"}
+    ],
+    "look": {"type": "data", "title": "Volume of a Cylinder With Radius 5 cm", "rows": [["height 1 cm", 78.5], ["height 2 cm", 157.1], ["height 4 cm", 314.2], ["height 8 cm", 628.3], ["height 10 cm", 785.4]], "unit": "cubic centimeters", "cite": "Computed from V = π × 5² × h, rounded to one place", "prompt": "What happens to the volume each time the height doubles? What would the volume be at height 10 cm if the radius were doubled to 10 cm?"},
+    "check": [
+     {"q": "A cylinder has radius 3 cm and height 10 cm. What is its volume, to one decimal place?", "choices": ["94.2 cm³", "188.5 cm³", "282.7 cm³", "565.5 cm³"], "a": 2, "why": "V = π × 3² × 10 = 90π ≈ 282.7 cm³. The value 94.2 (30π) forgets to square the radius, and 565.5 uses the diameter squared."},
+     {"q": "A rectangular box measures 5 cm by 4 cm by 12 cm. What is its volume?", "choices": ["21 cm³", "60 cm³", "100 cm³", "240 cm³"], "a": 3, "why": "Base area 5 × 4 = 20 cm², times height 12 gives 240 cm³. Adding the three dimensions gives 21, the wrong operation."},
+     {"q": "A cylinder's radius is doubled and its height stays the same. What happens to its volume?", "choices": ["It doubles", "It is multiplied by 4", "It is multiplied by 8", "It stays the same"], "a": 1, "why": "V = πr²h. Replacing r with 2r gives π(2r)²h = 4πr²h, four times the original."}
+    ]
+   },
+   {
+    "title": "Cones and Pyramids",
+    "mainIdea": "A cone or pyramid holds exactly one third of the cylinder or prism with the same base and height.",
+    "reading": [
+     "Fill a paper cone with water and pour it into a cylinder that has the same base and the same height. It fills one third. Do it three times and the cylinder is full. That experiment gives the rule: a *cone* has volume V = (1/3)πr²h, and a *pyramid* with base area B has V = (1/3)Bh. The one-third rule holds for every pyramid and cone, whatever the shape of the base.",
+     "Work an example. An ice cream cone has radius 3 cm and height 8 cm. The matching cylinder would hold π × 9 × 8 = 72π. The cone holds a third of that: 24π ≈ 75.4 cubic cm. A square pyramid with base 10 m by 10 m and height 12 m has base area 100, so V = (1/3) × 100 × 12 = 400 cubic meters.",
+     "Two heights matter for a cone. The *height* h goes straight from the tip down to the center of the base. The *slant height* runs along the outside from the tip to the edge of the base. They form a right triangle with the radius: r² + h² = (slant height)². A cone with radius 3 and height 4 has slant height 5. Volume uses h, never the slant height. Using the slant height by mistake makes the volume too large.",
+     "Why one third? Cavalieri's principle and a slicing argument show it. A cube can be cut into three identical square pyramids that meet at the cube's center of one face, so each pyramid is one third of the cube. Then any pyramid or cone with the same base area and height has the same cross-sections at every level, so the same one-third rule applies."
+    ],
+    "words": [
+     {"w": "cone", "d": "a solid with a circular base that narrows to a single point (the apex)"},
+     {"w": "pyramid", "d": "a solid with a polygon base and triangular faces that meet at a point"},
+     {"w": "slant height", "d": "the distance along the outside of a cone or pyramid from the apex to the edge of the base"},
+     {"w": "apex", "d": "the single top point of a cone or pyramid"}
+    ],
+    "look": {"type": "think", "title": "The Great Pyramid", "text": "The Great Pyramid of Giza has a square base about 230 meters on each side and was originally about 146 meters tall. Its base area is about 230 × 230 = 52,900 square meters. Volume = (1/3) × 52,900 × 146 ≈ 2,574,000 cubic meters, about 2.6 million cubic meters of stone.", "prompt": "A prism with the same base and height would hold three times as much. About how many cubic meters is that? Why did the builders' pyramid shape need so much less stone than a box of the same footprint and height?"},
+    "check": [
+     {"q": "A cone has radius 6 cm and height 10 cm. What is its volume, to one decimal place?", "choices": ["1131.0 cm³", "377.0 cm³", "125.7 cm³", "188.5 cm³"], "a": 1, "why": "V = (1/3) × π × 36 × 10 = 120π ≈ 377.0 cm³. The value 1131.0 (360π) is the full cylinder, forgetting the one third."},
+     {"q": "A square pyramid has a base 9 m on a side and a height of 7 m. What is its volume?", "choices": ["567 m³", "63 m³", "189 m³", "21 m³"], "a": 2, "why": "Base area = 81 m², so V = (1/3) × 81 × 7 = 189 m³. Skipping the one third gives 567."},
+     {"q": "A cone and a cylinder have the same base and the same height. How many cone-fulls of water fill the cylinder?", "choices": ["2", "1.5", "4", "3"], "a": 3, "why": "The cone's volume is exactly one third of the cylinder's, so three cones fill it."}
+    ]
+   },
+   {
+    "title": "Spheres and Cavalieri's Principle",
+    "mainIdea": "Comparing a hemisphere with a cylinder minus a cone, slice by slice, gives the sphere's volume: V = (4/3)πr³.",
+    "reading": [
+     "A *sphere* is the set of all points at distance r from a center, a ball. Its volume formula is V = (4/3)πr³. A ball with radius 3 cm holds (4/3) × π × 27 = 36π ≈ 113.1 cubic cm. A *hemisphere*, half a ball, holds half that: (2/3)πr³ = 18π ≈ 56.5 cubic cm for radius 3. Notice that r is cubed, so doubling the radius multiplies the volume by 8.",
+     "Where does 4/3 come from? Cavalieri's principle. Put a hemisphere of radius r flat side down. Next to it put a cylinder of radius r and height r, and scoop out of it a cone, point down, that has the same radius and height. Now slice both solids at some height y above the table. The hemisphere's slice is a circle with radius √(r² − y²), by the Pythagorean theorem, so its area is π(r² − y²). The cylinder's slice is a full circle of area πr² with a hole of radius y (the cone gets wider going up), area πy². The ring's area is πr² − πy².",
+     "The two slices have equal area at every height. By Cavalieri's principle, the solids have equal volume. The cylinder minus the cone is πr² × r − (1/3)πr² × r = (2/3)πr³. That is the hemisphere. Double it for the whole sphere: (4/3)πr³. Archimedes proved this more than two thousand years ago and was so proud of it that he asked for a sphere and cylinder carved on his tombstone.",
+     "Try the check at r = 2 and height y = 1. Hemisphere slice: π(4 − 1) = 3π. Ring: π × 4 − π × 1 = 3π. Equal. The common mistake with spheres is using the surface area formula 4πr² for volume; that formula gives square units, and volume must be cubic units, with r cubed."
+    ],
+    "words": [
+     {"w": "sphere", "d": "the set of all points in space at a fixed distance (the radius) from a center point"},
+     {"w": "hemisphere", "d": "half a sphere, cut through the center"},
+     {"w": "cross-section", "d": "the flat shape you get by slicing a solid with a plane"}
+    ],
+    "look": {"type": "think", "title": "Slicing at Another Height", "text": "Use a hemisphere of radius 2 and the matching cylinder-minus-cone. At height 1 the slices both have area 3π. At height 0, the bottom, the hemisphere's slice is a full circle of area 4π, and the ring is a full circle too, since the cone has no width at its point: 4π − 0 = 4π. At height 2, the top, the hemisphere shrinks to a point (area 0) and the ring vanishes because the cone's radius equals the cylinder's: 4π − 4π = 0.", "prompt": "Compute both slice areas at height 1.5. Do they match? Why does matching at every height force the volumes to be equal?"},
+    "check": [
+     {"q": "A sphere has radius 6 cm. What is its volume, to one decimal place?", "choices": ["452.4 cm³", "113.1 cm³", "904.8 cm³", "3619.1 cm³"], "a": 2, "why": "V = (4/3) × π × 6³ = (4/3) × π × 216 = 288π ≈ 904.8 cm³. The value 452.4 is the surface area, 4π × 36."},
+     {"q": "A hemisphere has radius 3 m. What is its volume, to one decimal place?", "choices": ["113.1 m³", "84.8 m³", "28.3 m³", "56.5 m³"], "a": 3, "why": "Half a sphere: (2/3) × π × 27 = 18π ≈ 56.5 m³. The value 113.1 is the full sphere."},
+     {"q": "A stack of 50 identical coins is pushed so it leans to one side. How does the leaning stack's volume compare to the straight stack's?", "choices": ["It is the same, because every slice (each coin) still has the same area at the same height", "It is smaller, because the stack is shorter", "It is larger, because it spreads out", "It cannot be determined"], "a": 0, "why": "Cavalieri's principle: equal cross-sections at every height means equal volume. The coins have not changed; only their arrangement has."}
+    ]
+   },
+   {
+    "title": "Density and Modeling With Solids",
+    "mainIdea": "Density is an amount divided by the space it fills, and real objects can be modeled by combining simple solids.",
+    "reading": [
+     "Two blocks the same size can have very different weights. The difference is *density*: mass divided by volume, usually in grams per cubic centimeter. Water is the reference at 1.0 g/cm³. A metal block 10 cm by 5 cm by 4 cm has volume 200 cm³. If it has mass 540 g, its density is 540 ÷ 200 = 2.7 g/cm³, which matches aluminum. Iron is about 7.9 g/cm³, so an iron block of the same size would have mass 7.9 × 200 = 1,580 g.",
+     "Real objects are rarely a single simple solid, so *model* them as combinations. A grain silo is a cylinder with a hemisphere on top. With radius 3 m and a cylinder height of 10 m: cylinder = π × 9 × 10 = 90π, hemisphere = (2/3) × π × 27 = 18π, total = 108π ≈ 339.3 cubic meters. A pencil is a cylinder plus a cone. A capsule is a cylinder plus two hemispheres, which together make one sphere.",
+     "Density also describes how crowded a region is. *Population density* is people divided by area. Chicago has roughly 2.7 million people in about 227 square miles, so its density is about 2,700,000 ÷ 227 ≈ 11,900 people per square mile, or about 12,000. A suburb with 40,000 people in 20 square miles has density 2,000 per square mile, six times less crowded.",
+     "The common mistake is dividing in the wrong order. Density is the amount per unit of space, so mass goes on top and volume on the bottom; an answer far less than 1 for a metal is a sign the division was flipped. In modeling, watch for double-counting: a cylinder with a hemisphere on top has no lid, so do not add the cylinder's top circle to the surface area."
+    ],
+    "words": [
+     {"w": "density", "d": "mass divided by volume; how much matter is packed into each unit of space"},
+     {"w": "model", "d": "to represent a real object with simple shapes whose formulas you know"},
+     {"w": "population density", "d": "the number of people divided by the area they live in, such as people per square mile"}
+    ],
+    "look": {"type": "data", "title": "Densities of Common Materials", "rows": [["ice", 0.92], ["water", 1.0], ["aluminum", 2.7], ["iron", 7.9], ["copper", 8.96], ["gold", 19.3]], "unit": "grams per cubic centimeter", "cite": "Standard reference values, rounded", "prompt": "Why does ice float on water? A gold bar and an aluminum bar have the same volume; the gold bar is how many times heavier?"},
+    "check": [
+     {"q": "A block 10 cm by 5 cm by 4 cm has a mass of 540 g. What is its density?", "choices": ["0.37 g/cm³", "2.7 g/cm³", "108,000 g/cm³", "340 g/cm³"], "a": 1, "why": "Volume = 10 × 5 × 4 = 200 cm³. Density = 540 ÷ 200 = 2.7 g/cm³. Dividing the other way gives 0.37."},
+     {"q": "A silo is a cylinder of radius 3 m and height 10 m with a hemisphere on top. What is its total volume, to one decimal place?", "choices": ["282.7 m³", "395.8 m³", "339.3 m³", "56.5 m³"], "a": 2, "why": "Cylinder 90π plus hemisphere 18π is 108π ≈ 339.3 m³. The value 395.8 (126π) adds a whole sphere instead of half."},
+     {"q": "A city has 3,000,000 people living in 250 square miles. What is its population density?", "choices": ["120,000 people per square mile", "1,200 people per square mile", "0.00008 people per square mile", "12,000 people per square mile"], "a": 3, "why": "3,000,000 ÷ 250 = 12,000 people per square mile. Dividing the other way gives 0.00008."}
+    ]
+   }
+  ]}
+ ],
+ "review": [
+  {"q": "A circle is cut into 9 equal sectors. What is the central angle of each?", "choices": ["9°", "40°", "45°", "36°"], "a": 1, "why": "360 ÷ 9 = 40°. The value 45° is 360 ÷ 8, and 36° is 360 ÷ 10."},
+  {"q": "An inscribed angle intercepts a 100° arc. What is the measure of the angle?", "choices": ["100°", "200°", "50°", "25°"], "a": 2, "why": "An inscribed angle is half its intercepted arc: 100 ÷ 2 = 50°."},
+  {"q": "A circle has radius 8. A point is 17 units from the center. How long is the tangent segment from that point to the circle?", "choices": ["15", "9", "25", "18.8"], "a": 0, "why": "Right triangle with hypotenuse 17 and leg 8: √(289 − 64) = √225 = 15."},
+  {"q": "A circle has radius 4. What is its area, to one decimal place?", "choices": ["25.1", "12.6", "201.1", "50.3"], "a": 3, "why": "Area = π × 4² = 16π ≈ 50.3. The value 25.1 is the circumference (8π)."},
+  {"q": "A circle has radius 12. What is the length of a 30° arc, to two decimal places?", "choices": ["37.70", "6.28", "75.40", "3.14"], "a": 1, "why": "30/360 = 1/12. Circumference = 24π ≈ 75.40, and 75.40 ÷ 12 ≈ 6.28. The value 37.70 is the sector's area (12π)."},
+  {"q": "What are the center and radius of (x + 2)² + (y − 5)² = 36?", "choices": ["center (2, −5), radius 6", "center (−2, 5), radius 36", "center (−2, 5), radius 6", "center (2, 5), radius 6"], "a": 2, "why": "Flip the signs inside the parentheses to get the center (−2, 5). The radius is √36 = 6."},
+  {"q": "A cone has radius 3 cm and height 5 cm. What is its volume, to one decimal place?", "choices": ["141.4 cm³", "94.2 cm³", "28.3 cm³", "47.1 cm³"], "a": 3, "why": "V = (1/3) × π × 9 × 5 = 15π ≈ 47.1 cm³. The value 141.4 is the full cylinder (45π)."},
+  {"q": "A sphere has radius 3 cm. What is its volume, to one decimal place?", "choices": ["113.1 cm³", "37.7 cm³", "28.3 cm³", "339.3 cm³"], "a": 0, "why": "V = (4/3) × π × 27 = 36π ≈ 113.1 cm³. The value 37.7 (12π) is a common slip from using r instead of r³."}
+ ]
+}

@@ -1,0 +1,256 @@
+{
+ "n": 42, "title": "Systems of Equations and Inequalities", "years": "Systems",
+ "bigQuestion": "When two conditions must be true at the same time, how do you find the one answer that satisfies both?",
+ "story": {
+  "title": "The Bake Sale Budget",
+  "kicker": "Cookies, brownies, one folding table and a $60 budget: the club needs an answer that fits every limit at once.",
+  "paragraphs": [
+   "The robotics club at a Chicago high school runs a bake sale every October to pay for competition fees. Priya is treasurer this year, and she has last year's ledger in front of her. It says the club sold 120 items and took in $170, cookies at $1 and brownies at $2. Nobody wrote down how many of each. Priya wants to know, because brownies make more money but cost more to bake.",
+   "She writes what she knows as two sentences with letters. Let c be cookies and b be brownies. The count: c + b = 120. The money: 1c + 2b = 170. Two unknowns, two facts. She notices that if every item had been a cookie, the club would have made only $120. The extra $50 must have come from brownies, each of which brings in $1 more than a cookie. So there were 50 brownies and 120 − 50 = 70 cookies. Check: 70 + 50 = 120 items, and 70 + 100 = $170. Both facts are true at once.",
+   "This year is harder. The club's one folding table holds at most 150 items. Ingredients cost about $0.30 per cookie and $0.60 per brownie, and the budget is $60. Each cookie earns $0.70 profit and each brownie $1.50. Priya could bake 100 brownies and no cookies, but the faculty advisor insists on at least 40 cookies for the students who do not like chocolate. What mix makes the most money without breaking any limit?",
+   "Priya draws the limits on a grid, cookies across and brownies up. Each limit cuts the grid with a line, and the allowed region is the shape left in the middle. The best plan, it turns out, sits at a corner of that shape. Finding it takes the whole chapter: solving two equations together, graphing inequalities, and testing corners. By the end, Priya has a number, and the club has its fees."
+  ],
+  "think": "Priya found 50 brownies and 70 cookies by reasoning 'the extra $50 must be brownies.' Try to explain why that reasoning works, using the two equations."
+ },
+ "sections": [
+  {"title": "Two Equations, One Answer", "lessons": [
+   {
+    "title": "What a System Is",
+    "mainIdea": "A system of equations is two or more equations about the same variables, and its solution makes every equation true at once.",
+    "reading": [
+     "A single equation with two variables, like c + b = 120, has endless solutions: 0 and 120, 1 and 119, 60 and 60. It cannot tell you how many cookies were sold. A second fact, c + 2b = 170, also has endless solutions on its own. But only one pair fits both. Two equations that must hold at the same time form a *system of equations*, and the pair that makes both true is the *solution of the system*.",
+     "Test a candidate pair the same way you test a solution of one equation, but check every equation. Is (70, 50), meaning c = 70 and b = 50, the solution? First equation: 70 + 50 = 120, true. Second: 70 + 2(50) = 170, true. So yes. Is (60, 60) the solution? First: 60 + 60 = 120, true. Second: 60 + 120 = 180, not 170. It fails one equation, so it is not the solution. A pair must pass every test.",
+     "You can find a solution by *guess and check* in a table. Try b = 40: then c = 80 and the money is 80 + 80 = 160, too low. Try b = 50: c = 70 and the money is 70 + 100 = 170, right on. Each extra brownie adds $1, so the table climbs by 1 each row, and you can see exactly where it lands. The rest of this chapter replaces the table with faster methods, but the meaning stays the same: find the pair that satisfies both."
+    ],
+    "words": [
+     {"w": "system of equations", "d": "two or more equations that must be true at the same time for the same variables"},
+     {"w": "solution of the system", "d": "the values that make every equation in the system true"},
+     {"w": "guess and check", "d": "trying values in a table and adjusting until every equation is satisfied"}
+    ],
+    "look": {"type": "data", "title": "Trying Brownie Counts", "rows": [["30 brownies, 90 cookies", 150], ["40 brownies, 80 cookies", 160], ["50 brownies, 70 cookies", 170], ["60 brownies, 60 cookies", 180], ["70 brownies, 50 cookies", 190]], "unit": "dollars taken in", "cite": "computed from c + b = 120 and c + 2b = money, with cookies $1 and brownies $2", "prompt": "Each row swaps 10 cookies for 10 brownies. Why does the money go up by exactly $10 each time?"},
+    "check": [
+     {"q": "Which pair (x, y) solves both x + y = 10 and x − y = 4?", "choices": ["(5, 5)", "(6, 4)", "(7, 3)", "(4, 6)"], "a": 2, "why": "7 + 3 = 10 and 7 − 3 = 4, so both equations are true. (6, 4) gives 6 − 4 = 2, not 4."},
+     {"q": "Why is (60, 60) not the solution of c + b = 120 and c + 2b = 170?", "choices": ["It fails the first equation", "It fails the second equation, giving 180", "Both numbers must be different", "It is not a whole-number pair"], "a": 1, "why": "60 + 60 = 120 works, but 60 + 2(60) = 180, not 170. A solution must satisfy every equation."},
+     {"q": "A system of two equations in two variables usually has…", "choices": ["exactly one solution pair", "two solution pairs", "no solutions", "a solution for each equation"], "a": 0, "why": "Each equation alone has endless pairs, but usually only one pair fits both. Special cases with none or infinitely many come later."}
+    ]
+   },
+   {
+    "title": "Solving by Graphing",
+    "mainIdea": "Graph both equations; the point where the lines cross is the solution, and reading it from the graph gives an estimate.",
+    "reading": [
+     "Each equation in a system is a line, and every point on a line satisfies that equation. The solution of the system satisfies both, so it must lie on both lines. That is the *intersection*, the point where they cross. Take y = 2x + 1 and y = −x + 7. The first has *y-intercept* 1 and rises 2 for each step right. The second starts at 7 and falls 1 per step. Plot each line from its intercept and slope, and they cross at (2, 5).",
+     "Confirm by substituting: 2(2) + 1 = 5 and −2 + 7 = 5. Both equations give y = 5 at x = 2, so (2, 5) is the solution. When an equation is not in slope-intercept form, rewrite it first. For c + b = 120, solve for b: b = −c + 120. For c + 2b = 170, solve for b: 2b = −c + 170, so b = −0.5c + 85. The lines cross at c = 70, b = 50, the bake-sale answer.",
+     "Graphing shows the answer, but a hand-drawn graph is an *estimate*. If the lines cross at (2.4, 5.8), reading that from grid paper is hard. Use the graph to see roughly where the answer is and whether it makes sense, then use algebra to get it exactly. If two lines look parallel, expect no solution; if they lie on top of each other, every point is a solution."
+    ],
+    "words": [
+     {"w": "intersection", "d": "the point where two graphs cross; it satisfies both equations"},
+     {"w": "y-intercept", "d": "where a line crosses the vertical axis; the value of y when x is 0"},
+     {"w": "estimate", "d": "an approximate answer read from a graph, to be checked with algebra"}
+    ],
+    "look": {"type": "think", "title": "Two Lines on One Grid", "text": "Graph y = x + 1 and y = −2x + 7. The first starts at (0, 1) and climbs 1 per step. The second starts at (0, 7) and drops 2 per step. At x = 2 the first gives 3 and the second gives 3. They cross at (2, 3). Check: 2 + 1 = 3 and −4 + 7 = 3.", "prompt": "Graph y = 3x − 2 and y = x + 4. Where do they cross? Substitute your point into both equations to confirm."},
+    "check": [
+     {"q": "Where do y = 2x + 1 and y = −x + 7 cross?", "choices": ["(1, 3)", "(3, 4)", "(2, 5)", "(5, 2)"], "a": 2, "why": "At x = 2, both give y = 5: 2(2) + 1 = 5 and −2 + 7 = 5. The other points fit at most one line."},
+     {"q": "Rewrite c + 2b = 170 in slope-intercept form for b.", "choices": ["b = −2c + 170", "b = −0.5c + 85", "b = 0.5c + 85", "b = −c + 170"], "a": 1, "why": "Subtract c: 2b = −c + 170. Divide everything by 2: b = −0.5c + 85."},
+     {"q": "A hand-drawn graph shows two lines crossing near (3.2, 4.7). What should you do next?", "choices": ["Report (3.2, 4.7) as exact", "Round to (3, 5) and stop", "Redraw the graph larger", "Solve with algebra to find the exact point"], "a": 3, "why": "A graph gives an estimate. Algebra, such as substitution or elimination, gives the exact solution, which you then compare with the estimate."}
+    ]
+   }
+  ]},
+  {"title": "Solving Exactly", "lessons": [
+   {
+    "title": "Substitution",
+    "mainIdea": "If one equation tells you what a variable equals, substitute that expression into the other equation and solve.",
+    "reading": [
+     "Solve y = 2x + 1 and 3x + y = 16. The first equation already says what y is. Replace y in the second equation with 2x + 1: 3x + (2x + 1) = 16. Now there is one variable. Combine: 5x + 1 = 16. Subtract 1: 5x = 15. Divide: x = 3. Then find y from the first equation: y = 2(3) + 1 = 7. The solution is (3, 7). This method is *substitution*, and it works best when one equation is already solved for a variable or easily can be.",
+     "Check in both equations: 7 = 2(3) + 1 is true, and 3(3) + 7 = 16 is true. For the bake sale, c + b = 120 gives c = 120 − b. Substitute into c + 2b = 170: (120 − b) + 2b = 170, so 120 + b = 170 and b = 50. Then c = 120 − 50 = 70. The algebra is Priya's 'extra $50' reasoning written out.",
+     "Two errors are common. The first is substituting into the same equation you took the expression from, which gives a useless 0 = 0. Always substitute into the other one. The second is forgetting parentheses: in 4x − (x + 3) = 9, the minus must apply to the whole x + 3, giving 4x − x − 3 = 9, so 3x = 12 and x = 4. Writing 4x − x + 3 = 9 by mistake gives x = 2, and the check fails."
+    ],
+    "words": [
+     {"w": "substitution", "d": "replacing a variable with an expression it equals, so an equation has only one variable"},
+     {"w": "expression", "d": "a combination of numbers and variables, like 2x + 1, that stands for a value"},
+     {"w": "check", "d": "put the solution back into every original equation to confirm both are true"}
+    ],
+    "look": {"type": "think", "title": "Substitute, Then Back-Substitute", "text": "Solve x = y + 4 and 2x + 3y = 23. Replace x in the second equation: 2(y + 4) + 3y = 23. Distribute: 2y + 8 + 3y = 23. Combine: 5y + 8 = 23, so 5y = 15 and y = 3. Then x = 3 + 4 = 7. Check: 2(7) + 3(3) = 14 + 9 = 23.", "prompt": "Solve y = 3x − 5 and 2x + y = 10 by substitution, and check your pair in both equations."},
+    "check": [
+     {"q": "Solve y = 2x + 1 and 3x + y = 16.", "choices": ["(3, 7)", "(5, 1)", "(7, 3)", "(3, 5)"], "a": 0, "why": "3x + (2x + 1) = 16 gives 5x = 15, so x = 3 and y = 2(3) + 1 = 7. Check: 9 + 7 = 16."},
+     {"q": "Solve y = 3x − 5 and 2x + y = 10.", "choices": ["(5, 10)", "(1, −2)", "(2, 6)", "(3, 4)"], "a": 3, "why": "2x + (3x − 5) = 10 gives 5x = 15, so x = 3 and y = 9 − 5 = 4. Check: 6 + 4 = 10."},
+     {"q": "Solving 4x − (x + 3) = 9, a student writes 4x − x + 3 = 9. What went wrong?", "choices": ["The x terms cannot be combined", "The equation has no solution", "The minus sign was not distributed to the 3", "The 9 should have been moved first"], "a": 2, "why": "Subtracting the whole expression gives 4x − x − 3 = 9, so 3x = 12 and x = 4. The student's version gives x = 2, which fails the check."}
+    ]
+   },
+   {
+    "title": "Elimination by Adding",
+    "mainIdea": "Adding two equations together is legal because you add equal amounts to both sides, and it can make one variable disappear.",
+    "reading": [
+     "Take x + y = 10 and x − y = 4. The y terms are opposites: +y and −y. Add the two equations, left side to left side and right side to right side: (x + y) + (x − y) = 10 + 4, which is 2x = 14, so x = 7. The y vanished. Substitute back: 7 + y = 10, so y = 3. Solution (7, 3). Check the second: 7 − 3 = 4. This method is *elimination*.",
+     "Why is adding equations allowed? The second equation says x − y and 4 are the same number. Adding the same number to both sides of the first equation keeps it true; you just wrote that number two different ways. This is the addition property of equality from the first chapter, applied to a whole equation. If the matching terms are equal rather than opposite, subtract instead. From 3x + 2y = 19 and x + 2y = 9, subtracting gives 2x = 10, so x = 5 and then 2y = 4, y = 2.",
+     "Sign errors are the usual trouble. When subtracting, subtract every term of the second equation, including its right side. And after finding one variable, find the other by substituting into an original equation, not into the combined one. Finally, check the pair in both originals: 3(5) + 2(2) = 19 and 5 + 4 = 9. Both true, so (5, 2) is right."
+    ],
+    "words": [
+     {"w": "elimination", "d": "adding or subtracting equations so that one variable cancels out"},
+     {"w": "opposite terms", "d": "terms like +2y and −2y that add to zero"},
+     {"w": "addition property of equality", "d": "adding the same amount to both sides of an equation keeps it true"}
+    ],
+    "look": {"type": "think", "title": "Opposites Cancel", "text": "Solve 2x + 3y = 13 and 4x − 3y = 5. The 3y terms are opposites, so add: 6x = 18 and x = 3. Substitute into the first: 6 + 3y = 13, so 3y = 7 and y = 7/3. Check the second: 4(3) − 3(7/3) = 12 − 7 = 5. Not every answer is a whole number, and that is fine.", "prompt": "Solve 5x + 2y = 16 and 3x − 2y = 8 by adding. Check your answer in both equations."},
+    "check": [
+     {"q": "Solve x + y = 10 and x − y = 4 by elimination.", "choices": ["(3, 7)", "(7, 3)", "(6, 4)", "(5, 5)"], "a": 1, "why": "Adding gives 2x = 14, so x = 7, then y = 3. Check: 7 − 3 = 4."},
+     {"q": "Solve 5x + 2y = 16 and 3x − 2y = 8.", "choices": ["(2, 3)", "(3, 1/2)", "(4, −2)", "(3, −1/2)"], "a": 1, "why": "Adding gives 8x = 24, so x = 3. Then 15 + 2y = 16, so y = 1/2. Check: 9 − 1 = 8."},
+     {"q": "Why can you add two equations of a system together?", "choices": ["Because both sides of each equation are equal, so you add equal amounts to both sides", "Because the variables are the same letters", "Because adding always removes a variable", "Because the equations are both lines"], "a": 0, "why": "The second equation says its two sides are the same number, so adding them to the two sides of the first equation keeps it balanced."}
+    ]
+   },
+   {
+    "title": "Elimination with Multiplying",
+    "mainIdea": "Multiply one or both equations by a number first so that a pair of terms becomes opposites, then add.",
+    "reading": [
+     "Solve 2x + 3y = 12 and 4x − y = 10. Nothing cancels yet: adding gives 6x + 2y = 22, still two variables. But multiplying the whole second equation by 3 gives 12x − 3y = 30, and now the y terms are opposites of the 3y in the first equation. Multiplying both sides by 3 is the multiplication property of equality, so the new equation is *equivalent* to the old one. Add: (2x + 3y) + (12x − 3y) = 12 + 30, so 14x = 42 and x = 3.",
+     "Substitute into an original: 4(3) − y = 10, so y = 2. Check the first: 2(3) + 3(2) = 6 + 6 = 12. Solution (3, 2). Sometimes both equations need multiplying. For 3x + 2y = 7 and 2x + 5y = 12, multiply the first by 2 and the second by −3 to get 6x + 4y = 14 and −6x − 15y = −36. Add: −11y = −22, so y = 2. Then 3x + 4 = 7 gives x = 1. Check the second: 2 + 10 = 12.",
+     "Choose the *multiplier* by finding a common multiple of the two coefficients you want to cancel, and give one of them a negative sign. The classic slip is multiplying only the left side of an equation. Every term, including the constant on the right, gets multiplied. Another is forgetting the sign change, which makes the terms add instead of cancel. When the combined equation still has two variables, look back for one of those two mistakes."
+    ],
+    "words": [
+     {"w": "multiplier", "d": "the number you multiply a whole equation by to set up a cancellation"},
+     {"w": "equivalent", "d": "an equation with the same solutions as another; multiplying both sides by a nonzero number keeps them equivalent"},
+     {"w": "common multiple", "d": "a number that two coefficients both divide into, like 6 for 2 and 3"}
+    ],
+    "look": {"type": "think", "title": "Set Up the Cancel", "text": "Solve 3x + 4y = 26 and 5x − 2y = 13. Multiply the second by 2: 10x − 4y = 26. Add to the first: 13x = 52, so x = 4. Then 12 + 4y = 26, so 4y = 14 and y = 3.5. Check the second: 5(4) − 2(3.5) = 20 − 7 = 13.", "prompt": "Solve 2x + 5y = 1 and 3x + 2y = 7 by multiplying both equations. Which multipliers did you pick and why?"},
+    "check": [
+     {"q": "Solve 2x + 3y = 12 and 4x − y = 10.", "choices": ["(2, 2)", "(3, 2)", "(3, −2)", "(1, 10/3)"], "a": 1, "why": "Multiply the second by 3 and add: 14x = 42, so x = 3. Then 12 − y = 10 gives y = 2. Check: 6 + 6 = 12."},
+     {"q": "To eliminate y from 3x + 2y = 7 and 2x + 5y = 12, which multipliers work?", "choices": ["Multiply the first by 2 and the second by 3", "Multiply the first by 5 and the second by 2, then add", "Multiply the first by 5 and the second by −2", "Multiply only the first by 5"], "a": 2, "why": "10y and −10y cancel: 15x + 10y = 35 and −4x − 10y = −24 add to 11x = 11, so x = 1 and y = 2."},
+     {"q": "A student multiplies 4x − y = 10 by 3 and writes 12x − 3y = 10. What is wrong?", "choices": ["The x term should be 7x", "Nothing is wrong", "The y term should stay −y", "The right side must also be multiplied, giving 30"], "a": 3, "why": "Multiplying both sides by 3 means 10 becomes 30. Leaving the 10 makes the new equation not equivalent to the original."}
+    ]
+   }
+  ]},
+  {"title": "Special Systems and Inequalities", "lessons": [
+   {
+    "title": "No Solution or Infinitely Many",
+    "mainIdea": "Parallel lines give a system no solution, and two forms of the same line give infinitely many.",
+    "reading": [
+     "Consider y = 2x + 1 and y = 2x − 3. Both have slope 2, so they are *parallel lines* that never cross. Try substitution anyway: 2x + 1 = 2x − 3. Subtract 2x from both sides: 1 = −3. That is false no matter what x is. When the variables vanish and leave a false statement, the system has *no solution*. No pair of numbers can be on both lines.",
+     "Now consider 2x + 4y = 8 and x + 2y = 4. Multiply the second by 2: 2x + 4y = 8, identical to the first. They are the same line written two ways, so every point on the line works: (4, 0), (0, 2), (2, 1) and infinitely many more. Elimination shows it: subtract the doubled second equation from the first and you get 0 = 0, a statement that is always true. That signals *infinitely many solutions*.",
+     "So there are three outcomes. If solving gives a specific x, the lines cross once and there is one solution. If the variables cancel and leave something false like 1 = −3, there is no solution. If they cancel and leave something true like 0 = 0, there are infinitely many. In a story, no solution might mean two plans never cost the same, and infinitely many might mean two 'different' facts were really the same fact. A quick slope check predicts the outcome before you solve."
+    ],
+    "words": [
+     {"w": "parallel lines", "d": "lines with the same slope and different intercepts; they never meet"},
+     {"w": "no solution", "d": "a system where no pair of values satisfies both equations"},
+     {"w": "infinitely many solutions", "d": "a system whose equations describe the same line, so every point on it works"}
+    ],
+    "look": {"type": "think", "title": "Predict Before You Solve", "text": "System A: y = 3x + 2 and y = 3x + 5. Same slope, different intercepts, so parallel: no solution. System B: y = 3x + 2 and 2y = 6x + 4. Divide the second by 2 to get y = 3x + 2, the same line: infinitely many. System C: y = 3x + 2 and y = −x + 6. Different slopes, so exactly one solution, at x = 1, y = 5.", "prompt": "Classify 4x + 2y = 10 and 2x + y = 3 without fully solving. Explain what happens if you try elimination."},
+    "check": [
+     {"q": "How many solutions does the system y = 2x + 1 and y = 2x − 3 have?", "choices": ["One", "Two", "Infinitely many", "None"], "a": 3, "why": "Both lines have slope 2 with different intercepts, so they are parallel. Substitution gives 1 = −3, which is false."},
+     {"q": "Solving a system, you end with 0 = 0. What does that mean?", "choices": ["The system has infinitely many solutions", "The system has no solution", "You made an arithmetic error", "The solution is (0, 0)"], "a": 0, "why": "A statement that is always true means the two equations describe the same line, so every point on it is a solution."},
+     {"q": "Which system has exactly one solution?", "choices": ["y = 4x + 1 and y = 4x + 9", "x + y = 5 and 2x + 2y = 10", "y = 4x + 1 and y = −4x + 9", "y = 4x + 1 and 3y = 12x + 3"], "a": 2, "why": "Slopes 4 and −4 differ, so the lines cross once, at x = 1, y = 5. The other pairs are parallel or identical lines."}
+    ]
+   },
+   {
+    "title": "Graphing an Inequality",
+    "mainIdea": "A linear inequality shades a half of the plane; the line is the boundary, and a test point tells you which side.",
+    "reading": [
+     "The equation y = 2x + 1 is a line. The inequality y ≤ 2x + 1 is a whole region: every point on the line or below it. To graph it, first draw the *boundary line* y = 2x + 1. Because the inequality includes 'equal to', draw it solid. Then pick a *test point* not on the line, usually (0, 0): is 0 ≤ 2(0) + 1? Yes, 0 ≤ 1 is true. So the side containing (0, 0), the region below the line, gets shaded. That shaded area is the *half-plane* of solutions.",
+     "For y > −x + 3, the boundary y = −x + 3 is drawn dashed, because points on the line make the inequality false; only 'greater than' counts. Test (0, 0): 0 > 3 is false, so shade the other side, above the line. Any point in the shaded area satisfies the inequality. Check one: (4, 2) gives 2 > −4 + 3, that is 2 > −1, true.",
+     "Rewrite first if needed. For 2x + y ≥ 6, solve for y: y ≥ −2x + 6, solid line, and (0, 0) gives 0 ≥ 6, false, so shade above. Two habits prevent most errors: always test a point rather than guessing 'above for greater,' because the rule flips if you divide by a negative when solving for y, and always match the line style to the symbol, dashed for < and >, solid for ≤ and ≥."
+    ],
+    "words": [
+     {"w": "boundary line", "d": "the line you get by replacing the inequality sign with an equals sign"},
+     {"w": "test point", "d": "a point not on the boundary used to decide which side to shade"},
+     {"w": "half-plane", "d": "everything on one side of a line; the solution region of a linear inequality"}
+    ],
+    "look": {"type": "think", "title": "Solid or Dashed, Above or Below", "text": "Graph y < 0.5x + 2. The boundary y = 0.5x + 2 is dashed, because points on it are not solutions. Test (0, 0): 0 < 0 + 2 is true, so shade the side with the origin, which is below the line. The point (2, 3) gives 3 < 3, false, so it lies on the boundary and is not shaded.", "prompt": "Graph x + y ≥ 4. Is the line solid or dashed? Which side is shaded, and how did the test point tell you?"},
+    "check": [
+     {"q": "Which point is a solution of y ≤ 2x + 1?", "choices": ["(1, 5)", "(0, 2)", "(3, 4)", "(−2, 0)"], "a": 2, "why": "For (3, 4): 4 ≤ 2(3) + 1 = 7, true. For (1, 5): 5 ≤ 3 is false. For (0, 2): 2 ≤ 1 is false. For (−2, 0): 0 ≤ −3 is false."},
+     {"q": "How should the boundary line of y > −x + 3 be drawn?", "choices": ["Solid, since it is a line", "Dashed, because points on it are not solutions", "Solid, because 3 is positive", "Dashed only if the slope is negative"], "a": 1, "why": "With a strict inequality, points on the line make y equal to −x + 3, not greater, so the line is dashed."},
+     {"q": "For 2x + y ≥ 6, the test point (0, 0) gives 0 ≥ 6. What do you conclude?", "choices": ["Shade the side containing (0, 0)", "The inequality has no solutions", "The boundary line must be dashed", "Shade the side not containing (0, 0)"], "a": 3, "why": "The test point makes a false statement, so the solutions are on the other side of the line."}
+    ]
+   },
+   {
+    "title": "Systems of Inequalities and Feasible Regions",
+    "mainIdea": "Graph each inequality and keep only the overlap; that overlap is the feasible region where every constraint holds.",
+    "reading": [
+     "Priya's bake sale has limits. The table holds at most 150 items: c + b ≤ 150. Ingredients cost $0.30 per cookie and $0.60 per brownie, with $60 to spend: 0.30c + 0.60b ≤ 60. And you cannot bake a negative number: c ≥ 0 and b ≥ 0. Together these form a *system of inequalities*. A pair (c, b) is allowed only if it satisfies all four. Graphing each one as a shaded half-plane and keeping the overlap gives the *feasible region*.",
+     "Find the region's edges by turning each ≤ into =. The line c + b = 150 runs from (150, 0) to (0, 150). The budget line 0.30c + 0.60b = 60 runs from (200, 0) to (0, 100). Where do they cross? Multiply the budget equation by 10: 3c + 6b = 600. Multiply the table equation by 3: 3c + 3b = 450. Subtract: 3b = 150, so b = 50 and c = 100. Check the budget: 0.30(100) + 0.60(50) = 30 + 30 = 60.",
+     "The feasible region is the four-sided shape with *vertices* at (0, 0), (150, 0), (100, 50) and (0, 100). Any point inside works: (60, 40) has 100 items and costs 18 + 24 = $42. Any point outside breaks a rule: (120, 60) has 180 items, too many for the table. The vertices are where two limits are both used up at once, and, as the next lesson shows, that is where the best plans live."
+    ],
+    "words": [
+     {"w": "system of inequalities", "d": "several inequalities that must all be true for the same variables"},
+     {"w": "feasible region", "d": "the set of points that satisfy every inequality in the system"},
+     {"w": "vertex", "d": "a corner of the feasible region, where two boundary lines meet"},
+     {"w": "overlap", "d": "the area shaded by all the inequalities at once"}
+    ],
+    "look": {"type": "think", "title": "Inside or Outside", "text": "The constraints are c + b ≤ 150, 0.30c + 0.60b ≤ 60, c ≥ 0 and b ≥ 0. Test (80, 50): 130 items, fine; cost 24 + 30 = 54, fine. Inside. Test (50, 90): 140 items, fine; cost 15 + 54 = 69, over budget. Outside. Test (100, 50): 150 items and cost 60, both limits exactly. A vertex.", "prompt": "Is (40, 80) feasible? Check every constraint, and say which limits, if any, it uses up completely."},
+    "check": [
+     {"q": "Where do c + b = 150 and 0.30c + 0.60b = 60 cross?", "choices": ["(100, 50)", "(50, 100)", "(75, 75)", "(150, 0)"], "a": 0, "why": "Scaling and subtracting gives 3b = 150, so b = 50 and c = 100. Check: 150 items and 30 + 30 = 60 dollars."},
+     {"q": "Which point is NOT in the feasible region?", "choices": ["(60, 40)", "(0, 100)", "(120, 60)", "(100, 50)"], "a": 2, "why": "(120, 60) has 180 items, more than the table's 150. The others satisfy every constraint."},
+     {"q": "What is a vertex of a feasible region?", "choices": ["Any point inside the region", "A test point such as (0, 0)", "The point farthest from the origin", "A corner where two boundary lines meet"], "a": 3, "why": "The region's corners are where two constraints are both used up at the same time."}
+    ]
+   }
+  ]},
+  {"title": "The Best Mix", "lessons": [
+   {
+    "title": "Mixture Problems",
+    "mainIdea": "In a mixture problem, one equation counts the total amount and another counts the total of the ingredient.",
+    "reading": [
+     "A juice stand has a 10% juice drink and a 40% juice drink. It wants 30 liters of a 20% mix. How much of each? Let x be liters of the 10% drink and y be liters of the 40% drink. The amount equation counts liters: x + y = 30. The *concentration* equation counts pure juice: 0.10x + 0.40y is the juice in the mix, and it must equal 20% of 30 liters, which is 0.20 × 30 = 6. So 0.10x + 0.40y = 6.",
+     "Solve by substitution. From the first, y = 30 − x. Substitute: 0.10x + 0.40(30 − x) = 6. Distribute: 0.10x + 12 − 0.40x = 6. Combine: −0.30x + 12 = 6. Subtract 12: −0.30x = −6. Divide: x = 20. Then y = 10. Check: 20 + 10 = 30 liters, and 0.10(20) + 0.40(10) = 2 + 4 = 6 liters of juice, which is 20% of 30. Twenty liters of weak and ten of strong.",
+     "Coin and ticket problems are mixture problems too. A jar holds 40 coins, all nickels and dimes, worth $3.10. Count: n + d = 40. *Value*: 0.05n + 0.10d = 3.10. Substitute n = 40 − d: 0.05(40 − d) + 0.10d = 3.10, so 2 − 0.05d + 0.10d = 3.10, so 0.05d = 1.10 and d = 22, n = 18. Check: 18(0.05) + 22(0.10) = 0.90 + 2.20 = 3.10. The common mistake is writing the value equation with the counts instead of the values per item."
+    ],
+    "words": [
+     {"w": "mixture problem", "d": "a problem that combines two things with different strengths or values into one total"},
+     {"w": "concentration", "d": "the fraction of a mixture that is the pure ingredient, such as 20% juice"},
+     {"w": "value equation", "d": "an equation that totals what the items are worth, not how many there are"}
+    ],
+    "look": {"type": "think", "title": "Nickels and Dimes", "text": "A jar has 40 coins worth $3.10, only nickels and dimes. Count: n + d = 40. Value: 0.05n + 0.10d = 3.10. Reasoning shortcut: if all 40 were nickels, the jar would hold $2.00. The extra $1.10 comes from dimes at 5 cents more each, so 1.10 ÷ 0.05 = 22 dimes and 18 nickels.", "prompt": "A jar has 50 coins worth $6.50, only dimes and quarters. Write both equations and solve."},
+    "check": [
+     {"q": "To make 30 liters of 20% juice from 10% and 40% drinks, how much of the 10% drink is needed?", "choices": ["10 liters", "15 liters", "20 liters", "24 liters"], "a": 2, "why": "x + y = 30 and 0.10x + 0.40y = 6 give x = 20 and y = 10. Check: 2 + 4 = 6 liters of juice."},
+     {"q": "A jar has 40 nickels and dimes worth $3.10. How many dimes?", "choices": ["18", "22", "31", "20"], "a": 1, "why": "0.05n + 0.10d = 3.10 with n = 40 − d gives 0.05d = 1.10, so d = 22. Then 18 nickels: 0.90 + 2.20 = 3.10."},
+     {"q": "Which equation correctly totals the juice in x liters of 10% drink and y liters of 40% drink to make 30 liters of 20%?", "choices": ["10x + 40y = 20", "x + y = 20", "0.10x + 0.40y = 30", "0.10x + 0.40y = 6"], "a": 3, "why": "The mix contains 0.20 × 30 = 6 liters of pure juice, and 0.10x + 0.40y counts the juice coming from each drink."}
+    ]
+   },
+   {
+    "title": "Business Problems and Break-Even",
+    "mainIdea": "A business breaks even where cost equals revenue, and ticket problems split a total count and a total value.",
+    "reading": [
+     "A student startup prints T-shirts. Equipment costs $200 and each shirt costs $3 to make, so cost is C = 200 + 3x for x shirts. Each shirt sells for $8, so *revenue* is R = 8x. The *break-even point* is where R = C: 8x = 200 + 3x. Subtract 3x: 5x = 200. So x = 40. At 40 shirts, both cost and revenue are $320. Selling fewer than 40 loses money; selling more earns *profit*, which is R − C = 5x − 200. At 100 shirts, profit is 500 − 200 = $300.",
+     "Ticket sales are a two-equation problem. A school play sold 200 tickets for $1,520. Adult tickets were $10 and student tickets $6. Let a and s be the counts. Count: a + s = 200. Money: 10a + 6s = 1520. Substitute s = 200 − a: 10a + 6(200 − a) = 1520, so 10a + 1200 − 6a = 1520, so 4a = 320 and a = 80. Then s = 120. Check: 80 + 120 = 200 and 800 + 720 = 1,520.",
+     "Elimination works too: multiply the count equation by 6 to get 6a + 6s = 1200 and subtract it from the money equation to get 4a = 320. Same answer. Whatever method you use, label the answer in words: 80 adult tickets and 120 student tickets. A bare pair like (80, 120) is easy to reverse, and reversed, it fails the money check: 800 + 480 is only $1,280."
+    ],
+    "words": [
+     {"w": "revenue", "d": "the money taken in from sales before costs are subtracted"},
+     {"w": "break-even point", "d": "the number of items where revenue equals cost, so profit is zero"},
+     {"w": "profit", "d": "revenue minus cost; negative profit is a loss"}
+    ],
+    "look": {"type": "data", "title": "T-Shirt Profit by Shirts Sold", "rows": [["0 shirts", -200], ["20 shirts", -100], ["40 shirts", 0], ["60 shirts", 100], ["100 shirts", 300]], "unit": "dollars profit", "cite": "computed from profit = 8x − (200 + 3x) = 5x − 200", "prompt": "Profit rises $100 for every 20 shirts. Use that pattern to find the profit at 140 shirts, then confirm with the formula."},
+    "check": [
+     {"q": "Cost is 200 + 3x and revenue is 8x. What is the break-even number of shirts?", "choices": ["25", "40", "66", "200"], "a": 1, "why": "8x = 200 + 3x gives 5x = 200, so x = 40. Dividing 200 by 8 ignores the $3 per-shirt cost."},
+     {"q": "A play sold 200 tickets for $1,520 at $10 adult and $6 student. How many adult tickets?", "choices": ["120", "152", "80", "100"], "a": 2, "why": "10a + 6(200 − a) = 1520 gives 4a = 320, so a = 80. Check: 800 + 6(120) = 1,520."},
+     {"q": "At 100 shirts, what is the profit if cost is 200 + 3x and revenue is 8x?", "choices": ["$300", "$800", "$500", "$100"], "a": 0, "why": "Revenue 800 minus cost 500 is 300. Using 5x − 200 gives the same 300."}
+    ]
+   },
+   {
+    "title": "The Best Mix Within Limits",
+    "mainIdea": "To find the best plan under several constraints, evaluate the goal at every vertex of the feasible region.",
+    "reading": [
+     "Priya wants the most profit: $0.70 per cookie and $1.50 per brownie, so the goal is P = 0.70c + 1.50b. This is her *objective*. The constraints are the table, c + b ≤ 150; the budget, 0.30c + 0.60b ≤ 60; the advisor's rule, c ≥ 40; and b ≥ 0. Choosing the best point in a feasible region for a linear goal is called *linear programming*, and its key fact is simple: the best value always occurs at a vertex of the region.",
+     "So list the vertices. Two of them come from c = 40. On the c-axis it is (40, 0). On the budget line, 0.30(40) + 0.60b = 60 gives 12 + 0.60b = 60, so b = 80: the point (40, 80). The other corners are (150, 0), where the table is full of cookies, and (100, 50), where the table and budget lines cross. Now evaluate the objective at each: (40, 0) gives 28; (150, 0) gives 105; (100, 50) gives 70 + 75 = 145; (40, 80) gives 28 + 120 = 148.",
+     "The *optimal* plan is 40 cookies and 80 brownies, for $148 profit. Check it against every constraint: 120 items fits the table, 12 + 48 = $60 uses the whole budget, and 40 cookies satisfies the advisor. Notice that the winner is not the corner with the most items; it uses the budget fully on the higher-profit item while meeting the cookie rule. If the constraints change, the region changes, the vertices move, and the best plan can change with them. That is why businesses redo this calculation whenever prices shift."
+    ],
+    "words": [
+     {"w": "objective", "d": "the quantity you want to make as large or as small as possible, such as profit"},
+     {"w": "linear programming", "d": "finding the best value of a linear objective inside a feasible region"},
+     {"w": "optimal", "d": "the best possible under the constraints"}
+    ],
+    "look": {"type": "data", "title": "Profit at Each Vertex", "rows": [["40 cookies, 0 brownies", 28], ["150 cookies, 0 brownies", 105], ["100 cookies, 50 brownies", 145], ["40 cookies, 80 brownies", 148]], "unit": "dollars profit", "cite": "computed from P = 0.70c + 1.50b at the corners of the bake-sale region", "prompt": "Suppose brownie profit drops to $1.00 each. Recompute the four corners. Does the best corner change?"},
+    "check": [
+     {"q": "Which plan gives the most profit for P = 0.70c + 1.50b within the bake-sale constraints?", "choices": ["150 cookies, 0 brownies", "100 cookies, 50 brownies", "40 cookies, 80 brownies", "40 cookies, 0 brownies"], "a": 2, "why": "At (40, 80), P = 28 + 120 = 148, the largest of the vertex values 28, 105, 145 and 148."},
+     {"q": "Where does the line c = 40 meet the budget line 0.30c + 0.60b = 60?", "choices": ["(40, 60)", "(40, 100)", "(40, 110)", "(40, 80)"], "a": 3, "why": "0.30(40) = 12, so 0.60b = 48 and b = 80."},
+     {"q": "Why check only the vertices of the feasible region?", "choices": ["The best value of a linear objective always occurs at a corner", "Points inside the region are never allowed", "Vertices are the only whole-number points", "The objective is zero everywhere else"], "a": 0, "why": "A linear objective grows steadily in one direction, so it reaches its largest allowed value at an edge, and specifically at a corner of the region."}
+    ]
+   }
+  ]}
+ ],
+ "review": [
+  {"q": "Which pair solves x + y = 12 and x − y = 2?", "choices": ["(7, 5)", "(5, 7)", "(6, 6)", "(8, 4)"], "a": 0, "why": "Adding the equations gives 2x = 14, so x = 7 and y = 5. Check: 7 − 5 = 2."},
+  {"q": "Solve y = x + 3 and 2x + y = 12 by substitution.", "choices": ["(4, 7)", "(5, 2)", "(3, 6)", "(2, 5)"], "a": 2, "why": "2x + (x + 3) = 12 gives 3x = 9, so x = 3 and y = 6. Check: 6 + 6 = 12."},
+  {"q": "To eliminate x from 3x + 2y = 16 and 6x − y = 7, what could you do first?", "choices": ["Add the equations as they are", "Multiply the first equation by −2", "Multiply the second equation by 2", "Multiply the first equation by 2"], "a": 1, "why": "Multiplying the first by −2 gives −6x − 4y = −32, which cancels the 6x when added to the second, leaving −5y = −25, so y = 5."},
+  {"q": "How many solutions does y = 3x − 4 and 2y = 6x − 8 have?", "choices": ["None", "One", "Two", "Infinitely many"], "a": 3, "why": "Dividing the second equation by 2 gives y = 3x − 4, the same line, so every point on it is a solution."},
+  {"q": "Which point satisfies y > x − 2?", "choices": ["(5, 1)", "(3, 1)", "(1, 3)", "(4, 2)"], "a": 2, "why": "For (1, 3): 3 > −1 is true. For (5, 1): 1 > 3 is false. For (3, 1): 1 > 1 is false. For (4, 2): 2 > 2 is false."},
+  {"q": "A mix of 10% and 40% juice must make 30 liters at 20%. Which system is correct?", "choices": ["x + y = 30 and 0.10x + 0.40y = 20", "x + y = 20 and 0.10x + 0.40y = 30", "x + y = 30 and 10x + 40y = 30", "x + y = 30 and 0.10x + 0.40y = 6"], "a": 3, "why": "The liters add to 30 and the pure juice adds to 0.20 × 30 = 6 liters."},
+  {"q": "Cost is 150 + 2x and each item sells for $7. What is the break-even number of items?", "choices": ["21", "30", "75", "50"], "a": 1, "why": "7x = 150 + 2x gives 5x = 150, so x = 30. Both cost and revenue are $210 there."},
+  {"q": "Where is the best value of a linear objective found in a feasible region?", "choices": ["At the center of the region", "At the origin", "At a vertex of the region", "Along the longest edge only"], "a": 2, "why": "For a linear objective, the maximum or minimum always occurs at a corner of the feasible region, so you evaluate the objective at each vertex."}
+ ]
+}

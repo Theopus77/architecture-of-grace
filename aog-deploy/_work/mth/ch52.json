@@ -1,0 +1,995 @@
+{
+ "n": 52,
+ "title": "Lines of Fit and Correlation",
+ "years": "Statistics",
+ "bigQuestion": "When two things rise and fall together, how do we measure the pattern, and how do we know whether one is causing the other?",
+ "story": {
+  "title": "The Number That Fooled a Town",
+  "kicker": "A lakeside town council finds a striking pattern in its records and nearly passes a law based on it.",
+  "paragraphs": [
+   "Picture a small town on the shore of Lake Michigan with a public beach and a boardwalk lined with ice cream stands. Every year the town clerk records two numbers for each month: total ice cream sales on the boardwalk and the number of drownings and near-drownings reported by the lifeguards. One autumn a new council member plots the twelve months on a graph, sales on the horizontal axis and water rescues on the vertical axis, and gasps. The dots climb from lower left to upper right in a nearly straight line.",
+   "He brings the graph to the next meeting. In January, sales are close to zero and so are rescues. In July, sales are at their peak and so are rescues. He calculates the correlation coefficient, a number that measures how tightly points hug a line, and gets 0.93, about as strong as real-world data ever gets. His proposal follows: close the ice cream stands, or at least move them off the beach, and drownings will fall. Several council members nod. The pattern is right there in the data.",
+   "The lifeguard captain asks for the floor. She agrees that the graph is accurate. She asks the council to add one more column to the table: the average air temperature for each month. Then she asks two questions. When is it hot? When do people buy ice cream, and when do people swim? The answers are the same word three times: summer. Heat drives people to buy ice cream, and heat drives people into the water. Ice cream and rescues rise together because a third thing pushes both of them.",
+   "The proposal dies, and the town instead hires two more lifeguards for July and August. This story is a classic example that statistics teachers tell, and the two variables change from telling to telling, but the lesson does not. A strong correlation is real information: the two numbers really do move together, and one really can be used to predict the other. What a correlation cannot do, by itself, is say why. That is the central warning of this chapter, and it comes after you learn how to find the line, measure the fit and use it to predict.",
+   "By the end you will be able to draw a line through a cloud of points and say what its slope means, check the line with residuals, read the correlation coefficient without overreading it, recognize when a curve fits better than a line, and know how far from your data a prediction can safely reach. Each skill is a tool. The council member had the tools; he was missing the question the lifeguard asked."
+  ],
+  "think": "The council member's graph was accurate and his correlation was strong. What exactly was his mistake, and what single question would have caught it?"
+ },
+ "sections": [
+  {
+   "title": "Points and Lines",
+   "lessons": [
+    {
+     "title": "Reading a Scatter Plot",
+     "mainIdea": "A scatter plot puts one dot per pair of measurements, and its overall drift up or down shows whether the two variables move together.",
+     "reading": [
+      "Five students record how many hours they studied for a quiz and the score they got: 1 hour and 60 points, 2 hours and 65, 3 hours and 75, 4 hours and 80, 5 hours and 90. Each student gives one pair of numbers, and each pair becomes one dot. A *scatter plot* draws those dots on a grid: hours on the horizontal axis, score on the vertical axis. The student who studied 3 hours and scored 75 is the dot at (3, 75). Five students, five dots.",
+      "Which variable goes on which axis is not random. The *explanatory variable* is the one you think does the explaining or comes first, and it goes on the horizontal axis. Hours of studying come before the quiz, so hours are explanatory. The *response variable* is the outcome you want to predict, and it goes on the vertical axis. The score responds to the studying. In an experiment the explanatory variable is the one you control; in a survey it is the one you would use to predict the other.",
+      "Now look at the drift. As hours go up, scores go up: the dots climb from lower left to upper right. That is a *positive association*. If the dots fell from upper left to lower right, like hours of TV against quiz score, that would be a negative association. If the dots formed a shapeless cloud with no drift, there would be no association. Also note the form, whether the dots follow a straight line or a curve, and the strength, whether they hug the pattern tightly or scatter widely. These five dots follow a nearly straight line, tightly, going up.",
+      "A common mistake is reading a scatter plot as a time graph and connecting the dots in order. Do not connect them. Each dot is a separate student, not a step in a sequence, and the pattern is in the cloud as a whole. Another is describing a single dot as 'high' without saying which axis: the student at (5, 90) is high in hours and high in score, and both facts matter."
+     ],
+     "words": [
+      {
+       "w": "scatter plot",
+       "d": "a graph that draws one dot for each pair of measurements, one variable on each axis"
+      },
+      {
+       "w": "explanatory variable",
+       "d": "the variable placed on the horizontal axis, used to explain or predict the other"
+      },
+      {
+       "w": "response variable",
+       "d": "the variable placed on the vertical axis, the outcome being predicted"
+      },
+      {
+       "w": "positive association",
+       "d": "a pattern in which larger values of one variable go with larger values of the other"
+      }
+     ],
+     "look": {
+      "type": "data",
+      "title": "Hours Studied and Quiz Score",
+      "rows": [
+       [
+        "1 hour",
+        60
+       ],
+       [
+        "2 hours",
+        65
+       ],
+       [
+        "3 hours",
+        75
+       ],
+       [
+        "4 hours",
+        80
+       ],
+       [
+        "5 hours",
+        90
+       ]
+      ],
+      "unit": "points",
+      "cite": "Example data set defined in this lesson",
+      "prompt": "Sketch the five dots. Describe the direction, the form and the strength of the pattern in one sentence each."
+     },
+     "check": [
+      {
+       "q": "In the study-time data, which variable belongs on the horizontal axis?",
+       "choices": [
+        "Quiz score, because it is the result",
+        "Hours studied, because it is the explanatory variable",
+        "Either one, since it makes no difference",
+        "Neither; scatter plots use only one variable"
+       ],
+       "a": 1,
+       "why": "The explanatory variable, the one that comes first and is used to predict, goes on the horizontal axis. Studying comes before the score."
+      },
+      {
+       "q": "The dots in a scatter plot drift from upper left down to lower right. What does this show?",
+       "choices": [
+        "A positive association",
+        "No association",
+        "A negative association",
+        "A time series"
+       ],
+       "a": 2,
+       "why": "As the horizontal variable increases, the vertical one decreases. Larger goes with smaller, which is a negative association."
+      },
+      {
+       "q": "What does the dot at (3, 75) represent?",
+       "choices": [
+        "Three students who each scored 75",
+        "A student who studied 75 hours and scored 3",
+        "The average of all five students",
+        "A student who studied 3 hours and scored 75"
+       ],
+       "a": 3,
+       "why": "Each dot is one pair: the first number is hours on the horizontal axis, the second is the score on the vertical axis."
+      }
+     ]
+    },
+    {
+     "title": "Drawing a Line of Fit",
+     "mainIdea": "A line of fit runs through the middle of the cloud of dots, and its equation lets you predict the response from the explanatory variable.",
+     "reading": [
+      "The five study dots, (1, 60), (2, 65), (3, 75), (4, 80) and (5, 90), nearly form a line. A *line of fit* is a straight line drawn through the cloud so that the dots are balanced around it, about as many above as below and none very far away. To find an equation by hand, pick two points that seem to sit on the trend, not necessarily data points. Here the first and last dots look right. Use (1, 60) and (5, 90).",
+      "The *slope* is rise over run: (90 − 60) ÷ (5 − 1) = 30 ÷ 4 = 7.5. Each extra hour of studying goes with 7.5 more points. Now find the *y-intercept* using one point. If y = 7.5x + b and the point (1, 60) is on the line, then 60 = 7.5 × 1 + b, so b = 52.5. The line is y = 7.5x + 52.5. Check it with a point you did not use: at x = 3, y = 7.5 × 3 + 52.5 = 22.5 + 52.5 = 75, which is exactly the middle dot. At x = 4, y = 30 + 52.5 = 82.5, close to the actual 80.",
+      "A calculator or spreadsheet finds the *least-squares line*. That is the one line that makes the total of the squared vertical gaps as small as possible. For these data it gives y = 7.5x + 51.5, just 1 point below the hand-drawn line. Two people drawing by eye will get slightly different lines. That is fine, as long as each line runs through the middle of the cloud. The least-squares line is the standard answer everyone can agree on. This chapter uses it from here on.",
+      "The most common error is picking the two points badly, such as the highest dot and the lowest dot even when they are off the trend, or forcing the line through the origin. The line does not have to pass through (0, 0); it has to pass through the middle of the data. Another slip is mixing up rise and run. Slope is change in y divided by change in x, vertical over horizontal, always."
+     ],
+     "words": [
+      {
+       "w": "line of fit",
+       "d": "a straight line drawn through a scatter plot so that the dots are balanced around it"
+      },
+      {
+       "w": "slope",
+       "d": "change in y divided by change in x between two points on a line; how much y changes per one unit of x"
+      },
+      {
+       "w": "y-intercept",
+       "d": "the value of y where a line crosses the vertical axis, at x = 0"
+      },
+      {
+       "w": "least-squares line",
+       "d": "the line of fit that makes the sum of the squared vertical gaps from the dots as small as possible"
+      }
+     ],
+     "look": {
+      "type": "think",
+      "title": "Fit by Hand",
+      "text": "Four dots: (2, 10), (4, 15), (6, 22) and (8, 26). Use the points (2, 10) and (6, 22) to write a line of fit. Find the slope from those two points, then use (2, 10) to find the y-intercept.",
+      "prompt": "What is your equation, and how far is each of the other two dots, (4, 15) and (8, 26), from the value your line predicts?"
+     },
+     "check": [
+      {
+       "q": "What is the slope of the line through (2, 10) and (6, 22)?",
+       "choices": [
+        "3",
+        "1/3",
+        "4",
+        "12"
+       ],
+       "a": 0,
+       "why": "Slope is rise over run: (22 − 10) ÷ (6 − 2) = 12 ÷ 4 = 3."
+      },
+      {
+       "q": "Using the line y = 7.5x + 52.5, what score does it predict for 4 hours of studying?",
+       "choices": [
+        "60",
+        "80",
+        "82.5",
+        "90"
+       ],
+       "a": 2,
+       "why": "y = 7.5 × 4 + 52.5 = 30 + 52.5 = 82.5."
+      },
+      {
+       "q": "Which describes a good line of fit?",
+       "choices": [
+        "It passes through the origin",
+        "It connects the first dot to the last dot",
+        "It passes through the highest dot",
+        "It runs through the middle of the cloud with dots balanced above and below"
+       ],
+       "a": 3,
+       "why": "A line of fit follows the trend of the whole cloud, with roughly as many dots above as below, whether or not it hits any particular dot."
+      }
+     ]
+    },
+    {
+     "title": "Slope and Intercept in Context",
+     "mainIdea": "In a line of fit, the slope is the predicted change in the response for each one-unit increase in the explanatory variable, and the intercept is the prediction at zero.",
+     "reading": [
+      "A used-car website fits a line to the ages and prices of a certain model. With age a in years and value v in thousands of dollars, the line is v = 24 − 2.5a. Numbers in an equation are only useful once you can say them in words. The *slope* is −2.5. In context: for each additional year of age, the predicted value drops by 2.5 thousand dollars, that is, $2,500 per year. The *intercept* is 24. In context: a car of age 0, brand new, is predicted to be worth $24,000.",
+      "Use the line to *predict*. A 4-year-old car: v = 24 − 2.5 × 4 = 24 − 10 = 14, so about $14,000. A 6-year-old car: v = 24 − 15 = 9, about $9,000. Notice the word 'predicted' or 'about' in every sentence. The line describes the trend across many cars; any one car can sit above or below it because of mileage, accidents or paint color. A line of fit predicts the typical value, not the exact value.",
+      "Always attach units to slope and intercept. 'The slope is −2.5' is incomplete. 'Value drops by $2,500 per year' is a sentence a car buyer can use. The slope's units are always the response units per one explanatory unit: dollars per year, points per hour, centimeters per month. The intercept has the response's units alone.",
+      "Sometimes the intercept has no real meaning. A line predicting a child's height from age might have an intercept of 50 cm, which is sensible. But a line predicting shoe size from height might have an intercept of −20. Nobody has a negative shoe size. The intercept is just where the line crosses the axis. It only describes reality if x = 0 is a situation that actually occurs in the data. A common mistake is to explain a slope backwards, as 'years per dollar.' Read it as y per x. The response changes this much when the explanatory variable rises by one."
+     ],
+     "words": [
+      {
+       "w": "intercept",
+       "d": "the predicted value of the response when the explanatory variable is 0"
+      },
+      {
+       "w": "predict",
+       "d": "to use a line of fit to estimate the response for a given value of the explanatory variable"
+      },
+      {
+       "w": "rate of change",
+       "d": "the slope of a line read as a rate: how many response units per one explanatory unit"
+      }
+     ],
+     "look": {
+      "type": "think",
+      "title": "Say It in Words",
+      "text": "A bike-repair shop fits a line to its jobs: cost c in dollars and hours of labor h, with c = 25 + 40h. Another line predicts a laptop's battery percent p after m minutes of video: p = 100 − 0.8m.",
+      "prompt": "For each line, say the slope and intercept in a sentence with units. Then predict the cost of a 3-hour job and the battery level after 50 minutes."
+     },
+     "check": [
+      {
+       "q": "In the line v = 24 − 2.5a, what does the slope mean?",
+       "choices": [
+        "The car's predicted value falls by $2,500 for each year of age",
+        "Every car is worth $24,000",
+        "The car loses 2.5 years of use per $1,000",
+        "A new car is worth $2,500"
+       ],
+       "a": 0,
+       "why": "The slope is the change in value per one year of age, and −2.5 thousand dollars is a drop of $2,500 per year."
+      },
+      {
+       "q": "Using v = 24 − 2.5a, what is the predicted value of a 4-year-old car?",
+       "choices": [
+        "$10,000",
+        "$14,000",
+        "$21,500",
+        "$34,000"
+       ],
+       "a": 1,
+       "why": "v = 24 − 2.5 × 4 = 24 − 10 = 14, which is $14,000 since v is in thousands."
+      },
+      {
+       "q": "A line predicting a person's weight from height has an intercept of −90 kg. What is the best interpretation?",
+       "choices": [
+        "People of average height weigh −90 kg",
+        "The slope must be wrong",
+        "The intercept has no real meaning here because a height of 0 does not occur in the data",
+        "The line predicts weight loss"
+       ],
+       "a": 2,
+       "why": "The intercept is the prediction at x = 0, and no person has a height of 0, so this number is just where the line crosses the axis."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "title": "Checking the Line",
+   "lessons": [
+    {
+     "title": "Residuals Measure the Miss",
+     "mainIdea": "A residual is the actual value minus the predicted value; positive means the dot is above the line and negative means below.",
+     "reading": [
+      "A line of fit rarely passes through every dot, so measure the misses. Use the least-squares line for the study data, y = 7.5x + 51.5. For the student at (2, 65), the line predicts y = 7.5 × 2 + 51.5 = 15 + 51.5 = 66.5. The student actually scored 65. The *residual* is actual minus predicted: 65 − 66.5 = −1.5. The dot sits 1.5 points below the line. Negative residual, dot below.",
+      "Do all five. At x = 1 the *predicted value* is 7.5 + 51.5 = 59 and the actual is 60, so the residual is 60 − 59 = 1. At x = 3 the prediction is 22.5 + 51.5 = 74 and the actual is 75, residual 1. At x = 4 the prediction is 30 + 51.5 = 81.5 and the actual is 80, residual −1.5. At x = 5 the prediction is 37.5 + 51.5 = 89 and the actual is 90, residual 1. The residuals are 1, −1.5, 1, −1.5, 1. Add them: 1 − 1.5 + 1 − 1.5 + 1 = 0. That is not a coincidence. The least-squares line always makes the residuals sum to zero; the dots above balance the dots below exactly.",
+      "Residuals are how the least-squares line earns its name. Square each residual: 1, 2.25, 1, 2.25, 1, which add to 7.5. Any other line through these dots gives a bigger total. Try the hand-drawn line y = 7.5x + 52.5 from the last lesson: its residuals are 0, −2.5, 0, −2.5, 0, and their squares add to 12.5, larger than 7.5. Smaller total means better fit, and the least-squares line is the champion by definition.",
+      "Keep the order straight: actual minus predicted, never the reverse. Students who flip it get the right size and the wrong sign, and then describe a dot as above the line when it is below. A second slip is reading the residual off the horizontal axis. A residual is a vertical distance, measured straight up or down from the dot to the line, because it is a miss in the predicted response, not in the explanatory variable."
+     ],
+     "words": [
+      {
+       "w": "residual",
+       "d": "the actual value minus the value the line predicts; the vertical gap from a dot to the line"
+      },
+      {
+       "w": "predicted value",
+       "d": "the y-value the line of fit gives for a particular x"
+      },
+      {
+       "w": "actual value",
+       "d": "the y-value that was really measured for a data point"
+      }
+     ],
+     "look": {
+      "type": "data",
+      "title": "Residuals From y = 7.5x + 51.5",
+      "rows": [
+       [
+        "x = 1, actual 60, predicted 59",
+        1
+       ],
+       [
+        "x = 2, actual 65, predicted 66.5",
+        -1.5
+       ],
+       [
+        "x = 3, actual 75, predicted 74",
+        1
+       ],
+       [
+        "x = 4, actual 80, predicted 81.5",
+        -1.5
+       ],
+       [
+        "x = 5, actual 90, predicted 89",
+        1
+       ]
+      ],
+      "unit": "points (residual)",
+      "cite": "Computed from the study-time data with its least-squares line",
+      "prompt": "Which dots are above the line and which are below? Add the five residuals and explain why the total makes sense."
+     },
+     "check": [
+      {
+       "q": "Using y = 7.5x + 51.5, what is the residual for the point (2, 65)?",
+       "choices": [
+        "−1.5",
+        "1.5",
+        "66.5",
+        "−66.5"
+       ],
+       "a": 0,
+       "why": "Predicted: 7.5 × 2 + 51.5 = 66.5. Residual = actual − predicted = 65 − 66.5 = −1.5."
+      },
+      {
+       "q": "A point has a negative residual. Where is it?",
+       "choices": [
+        "To the left of the line",
+        "Above the line",
+        "Below the line",
+        "On the line"
+       ],
+       "a": 2,
+       "why": "Residual = actual − predicted. A negative result means the actual value is less than the prediction, so the dot sits below the line."
+      },
+      {
+       "q": "A line predicts 44 for a point whose actual value is 50. What is the residual?",
+       "choices": [
+        "−6",
+        "6",
+        "94",
+        "1.14"
+       ],
+       "a": 1,
+       "why": "Residual = actual − predicted = 50 − 44 = 6. The dot is 6 units above the line."
+      }
+     ]
+    },
+    {
+     "title": "Residual Plots and Patterns",
+     "mainIdea": "A residual plot with no pattern says a line fits well; a residual plot with a curve or a fan says the line is the wrong model.",
+     "reading": [
+      "A *residual plot* draws the residuals themselves: x on the horizontal axis and each residual on the vertical axis, with a horizontal line at 0 marking the fit line. For the study data the residuals are 1, −1.5, 1, −1.5, 1. They bounce above and below zero with no trend, all within 1.5 points. That is what a good fit looks like. If a line is the right model, the leftover misses should look like random noise, small and patternless.",
+      "Now try data that grow faster and faster: (1, 2), (2, 5), (3, 10), (4, 17), (5, 26). The least-squares line is y = 6x − 6. Its predictions are 0, 6, 12, 18 and 24. The residuals are 2 − 0 = 2, 5 − 6 = −1, 10 − 12 = −2, 17 − 18 = −1, and 26 − 24 = 2. In order they read 2, −1, −2, −1, 2: positive at both ends, negative in the middle. Plotted, they form a U. The line is too high in the middle and too low at both ends, because the data bend upward and a straight line cannot bend.",
+      "A U or an upside-down U in the residual plot means a curve would fit better than a line. A fan shape is different: residuals are tiny on the left and huge on the right. It means the line's predictions get less reliable as x grows. Either *pattern* is a warning. These patterns are easy to miss on the scatter plot, where the dots may look close to the line. They are impossible to miss once the line is flattened out to zero. That is the point of the residual plot.",
+      "Do not judge a fit by the size of the residuals alone. The U-shaped residuals above are only 2 units off on data that reach 26, which sounds fine, yet the pattern says the *linear model* is wrong and will be badly wrong beyond x = 5. Small residuals with a pattern are a worse sign than larger residuals without one. Also remember that a residual plot uses the same x-values as the scatter plot; only the vertical axis changes."
+     ],
+     "words": [
+      {
+       "w": "residual plot",
+       "d": "a graph of residuals against x, with a horizontal line at zero standing for the line of fit"
+      },
+      {
+       "w": "pattern",
+       "d": "a visible shape in a residual plot, such as a U or a fan, that shows the model is missing something"
+      },
+      {
+       "w": "linear model",
+       "d": "a straight-line equation used to describe and predict a relationship"
+      }
+     ],
+     "look": {
+      "type": "data",
+      "title": "Residuals From y = 6x − 6 on Curving Data",
+      "rows": [
+       [
+        "x = 1",
+        2
+       ],
+       [
+        "x = 2",
+        -1
+       ],
+       [
+        "x = 3",
+        -2
+       ],
+       [
+        "x = 4",
+        -1
+       ],
+       [
+        "x = 5",
+        2
+       ]
+      ],
+      "unit": "residual",
+      "cite": "Computed from the points (1, 2), (2, 5), (3, 10), (4, 17), (5, 26)",
+      "prompt": "Sketch these five residuals against x. What shape do they make, and what does that shape say about using a straight line for these data?"
+     },
+     "check": [
+      {
+       "q": "A residual plot reads 2, −1, −2, −1, 2 from left to right. What does this suggest?",
+       "choices": [
+        "The line fits well",
+        "The data follow a curve, so a line is the wrong model",
+        "The residuals were computed backwards",
+        "The explanatory variable was put on the wrong axis"
+       ],
+       "a": 1,
+       "why": "Positive at both ends and negative in the middle is a U shape, which means the data bend and a straight line misses the bend."
+      },
+      {
+       "q": "A residual plot shows dots scattered randomly above and below zero with no shape. What does this tell you?",
+       "choices": [
+        "The line is a good model for the data",
+        "The data have no association",
+        "The slope is zero",
+        "A quadratic model is needed"
+       ],
+       "a": 0,
+       "why": "When the leftovers look like patternless noise, the line has captured the trend and nothing systematic is left over."
+      },
+      {
+       "q": "For the point (5, 26), the line y = 6x − 6 predicts 24. What is the residual?",
+       "choices": [
+        "−2",
+        "24",
+        "50",
+        "2"
+       ],
+       "a": 3,
+       "why": "Residual = actual − predicted = 26 − 24 = 2."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "title": "Measuring the Relationship",
+   "lessons": [
+    {
+     "title": "The Correlation Coefficient",
+     "mainIdea": "The correlation coefficient r, between −1 and 1, gives the direction and strength of a straight-line relationship in a single number.",
+     "reading": [
+      "Words like 'strong' and 'weak' are vague. The *correlation coefficient*, written r, replaces them with a number. It is always between −1 and 1. The sign gives the *direction*: positive r means the dots drift upward, negative r means they drift downward. The size gives the *strength*: r near 1 or −1 means the dots hug a straight line tightly, and r near 0 means the dots scatter with little straight-line pattern. If every dot sits exactly on an upward line, r = 1. On a downward line, r = −1.",
+      "A calculator computes r from the data. The formula multiplies how far each x is from its mean by how far the matching y is from its mean. It adds those products and scales the total so the result lands between −1 and 1. For the study data, (1, 60) through (5, 90), r ≈ 0.99. That is a very strong positive correlation, and it matches the picture of five dots almost on a line. Here are rough guides for reading r. Above 0.8 in size is strong. From 0.5 to 0.8 is moderate. Below 0.5 is weak. The cutoffs shift by field, though. A medical study may call 0.3 meaningful; a physics lab would call it noise.",
+      "Two facts make r easy to work with. First, r has no units. Change hours to minutes or points to percents and r does not move, because it measures pattern, not scale. Second, r is the same whichever variable you put on which axis, since it treats x and y symmetrically. The slope of the line of fit has neither property; it changes with the units and flips when you swap the axes.",
+      "Students often confuse the strength of r with the steepness of the line. A slope of 0.001 can have r = 1 if the dots sit exactly on that gentle line, and a steep slope of 50 can have r = 0.2 if the dots scatter widely around it. Steepness is slope. Tightness is r. Another mistake is reading r = −0.9 as weaker than r = 0.6 because it is 'negative.' Compare sizes: 0.9 is larger than 0.6, so the negative relationship is the stronger one."
+     ],
+     "words": [
+      {
+       "w": "correlation coefficient",
+       "d": "a number r between −1 and 1 measuring the direction and strength of a straight-line relationship"
+      },
+      {
+       "w": "direction",
+       "d": "whether a relationship is positive (dots drift up) or negative (dots drift down), shown by the sign of r"
+      },
+      {
+       "w": "strength",
+       "d": "how tightly the dots follow a straight line, shown by how close r is to 1 or −1"
+      }
+     ],
+     "look": {
+      "type": "data",
+      "title": "Five Scatter Plots and Their r Values",
+      "rows": [
+       [
+        "Dots exactly on a rising line",
+        1
+       ],
+       [
+        "Tight rising cloud",
+        0.9
+       ],
+       [
+        "Loose rising cloud",
+        0.4
+       ],
+       [
+        "Shapeless blob",
+        0
+       ],
+       [
+        "Tight falling cloud",
+        -0.85
+       ]
+      ],
+      "unit": "r",
+      "cite": "Illustrative values for the pictures described",
+      "prompt": "Rank the five plots from strongest to weakest straight-line relationship, ignoring direction. Which two would you call strong?"
+     },
+     "check": [
+      {
+       "q": "A data set has r = −0.92. Which description fits?",
+       "choices": [
+        "Strong positive",
+        "Weak negative",
+        "Strong negative",
+        "No relationship"
+       ],
+       "a": 2,
+       "why": "The sign is negative, so the dots drift downward, and 0.92 is close to 1 in size, so the relationship is strong."
+      },
+      {
+       "q": "Which correlation coefficient shows the strongest straight-line relationship?",
+       "choices": [
+        "r = −0.95",
+        "r = 0.60",
+        "r = 0.85",
+        "r = −0.30"
+       ],
+       "a": 0,
+       "why": "Strength depends on how close r is to 1 or −1, ignoring the sign. Of the four, −0.95 is farthest from 0."
+      },
+      {
+       "q": "Data measured in inches has r = 0.75. The same data are converted to centimeters. What is r now?",
+       "choices": [
+        "0.75",
+        "1.9",
+        "0.30",
+        "It cannot be known without the data"
+       ],
+       "a": 0,
+       "why": "r has no units and does not change when the units change. Only the slope of the line would change."
+      }
+     ]
+    },
+    {
+     "title": "What r Cannot See",
+     "mainIdea": "The correlation coefficient only measures straight-line pattern, so a curve, an outlier or a cluster can make r badly misleading.",
+     "reading": [
+      "Take five dots that sit perfectly on a U: (−2, 4), (−1, 1), (0, 0), (1, 1) and (2, 4). Every y equals x squared, so the relationship is as exact as a relationship can be. Compute r and you get exactly 0. Why? The left half of the U falls and the right half rises, and the two halves cancel in the formula. A student who looks only at r would say 'no relationship' and be completely wrong. The value r = 0 means no *straight-line* relationship, nothing more. Always look at the scatter plot before you trust r.",
+      "Now the reverse trap. The curving data from the residual lesson, (1, 2), (2, 5), (3, 10), (4, 17), (5, 26), give r ≈ 0.98. That sounds like a perfect line. But the residual plot was a clear U, and the line predicts 6 × 10 − 6 = 54 at x = 10 when the curve y = x^2 + 1 gives 101. A high r does not prove that a line is the right model; it only says the dots rise together. The residual plot catches what r misses.",
+      "A single *outlier* can also swing r. Picture nine dots forming a shapeless blob with r near 0, and then add one dot far away in the upper right. The formula counts that dot's huge distances from both means, and r can jump to 0.7 or more, from a single point. The opposite happens too: one dot far off a tight line can drag r from 0.95 down to 0.5. When r changes a lot after removing one point, report both values and say so.",
+      "Finally, r says nothing about how much y changes per unit of x. That is the slope's job. And r says nothing about why the variables move together, which is the next lesson. The correlation coefficient is one *summary* of one feature of a scatter plot. It is a good summary of that one feature. Everything else, form, outliers, clusters and cause, needs the picture and your judgment."
+     ],
+     "words": [
+      {
+       "w": "straight-line relationship",
+       "d": "a pattern in which the dots follow a line; the only kind of pattern r measures"
+      },
+      {
+       "w": "outlier",
+       "d": "a dot far from the rest of the scatter plot, which can pull the line and change r by a large amount"
+      },
+      {
+       "w": "summary",
+       "d": "one number that captures a single feature of a data set, leaving other features out"
+      }
+     ],
+     "look": {
+      "type": "think",
+      "title": "Perfect Pattern, Zero r",
+      "text": "Plot the points (−3, 9), (−2, 4), (−1, 1), (0, 0), (1, 1), (2, 4) and (3, 9). Every y is x squared. Notice that for each x with a positive value there is a matching negative x with the same y.",
+      "prompt": "Explain in words why the correlation coefficient of these seven points is 0 even though y is completely determined by x. What would you tell someone who says the variables are unrelated?"
+     },
+     "check": [
+      {
+       "q": "A scatter plot shows a clear U shape and r = 0.05. What is the right conclusion?",
+       "choices": [
+        "The variables are unrelated",
+        "The relationship is strong but not a straight line, so r cannot see it",
+        "The data were entered incorrectly",
+        "The correlation is weak, so no model will work"
+       ],
+       "a": 1,
+       "why": "r measures only straight-line pattern. The two arms of a U cancel, giving r near 0 even when y depends exactly on x."
+      },
+      {
+       "q": "The curving data (1, 2) through (5, 26) have r ≈ 0.98, yet their residual plot is a U. What does this show?",
+       "choices": [
+        "A high r proves a line is the right model",
+        "A high r does not guarantee that a line is the right model",
+        "The residual plot must be wrong",
+        "r should be negative for curving data"
+       ],
+       "a": 1,
+       "why": "The dots rise together tightly, so r is high, but the systematic U in the residuals says the pattern bends and a line will predict badly beyond the data."
+      },
+      {
+       "q": "Removing a single dot from a scatter plot changes r from 0.95 to 0.50. What should you report?",
+       "choices": [
+        "Only r = 0.95, the larger value",
+        "Only r = 0.50, since the dot was probably an error",
+        "Neither value, since the data are unusable",
+        "Both values, and identify the dot that caused the change"
+       ],
+       "a": 3,
+       "why": "One point had a large pull on r. Honest reporting gives both values and names the influential dot so readers can judge."
+      }
+     ]
+    },
+    {
+     "title": "Correlation Is Not Causation",
+     "mainIdea": "A strong correlation shows that two variables move together; it does not show that one causes the other, because a third variable may drive both.",
+     "reading": [
+      "In the chapter story, ice cream sales and water rescues had a correlation near 0.93, and a council member concluded that ice cream causes drowning. His graph was right and his conclusion was wrong. Heat, the *lurking variable*, drives both: hot days send people to the ice cream stand and into the lake. A lurking variable is one that was left out of the plot but affects both variables in it. Whenever two things rise and fall together, ask what else changes at the same time.",
+      "Here is another. Among elementary school children, shoe size and reading level are strongly correlated. Bigger feet, better readers. Does buying larger shoes improve reading? Of course not; the lurking variable is age. Older children have bigger feet and have had more years of reading lessons. The correlation is real and could even be used to predict: tell me a child's shoe size and I can guess their reading level better than chance. Prediction works. *Causation*, one thing making another happen, was never shown.",
+      "Correlation can also run backwards. Cities with more police officers tend to have more reported crime. Do officers cause crime? More likely, crime leads cities to hire officers. The direction of cause is not in the scatter plot; both variables are just numbers on axes. And sometimes a correlation is pure coincidence: with thousands of variables being tracked, some pairs will move together by chance, like the number of movies an actor makes and the price of a vegetable.",
+      "How do scientists ever show cause? With an *experiment*: they change the explanatory variable on purpose, assign subjects to groups at random so lurking variables spread evenly, and then compare the responses. A survey or a record book, where nobody controlled anything, is *observational*, and it can show correlation only. Every headline that says 'X linked to Y' is reporting a correlation. The careful reader asks: was this an experiment, or could a lurking variable explain it, or could the cause run the other way?"
+     ],
+     "words": [
+      {
+       "w": "lurking variable",
+       "d": "a variable left out of the analysis that affects both plotted variables and creates the correlation between them"
+      },
+      {
+       "w": "causation",
+       "d": "a relationship in which changing one variable directly makes the other change"
+      },
+      {
+       "w": "experiment",
+       "d": "a study in which the researcher changes the explanatory variable on purpose and assigns subjects to groups at random"
+      },
+      {
+       "w": "observational",
+       "d": "describes a study that records what happens without controlling anything; it can show correlation but not cause"
+      }
+     ],
+     "look": {
+      "type": "think",
+      "title": "Find the Third Thing",
+      "text": "Three real-sounding findings. One: in a city, monthly sunscreen sales and monthly electricity use are strongly correlated. Two: students who own more books score higher on reading tests. Three: hospitals with more patients have more patient deaths per year.",
+      "prompt": "For each finding, name a lurking variable or a reversed direction of cause that could explain the correlation without one thing causing the other."
+     },
+     "check": [
+      {
+       "q": "Ice cream sales and water rescues rise and fall together across the year. What is the most likely explanation?",
+       "choices": [
+        "Eating ice cream makes swimmers drown",
+        "Rescues make people crave ice cream",
+        "The numbers were recorded wrongly",
+        "Hot weather drives both ice cream sales and swimming"
+       ],
+       "a": 3,
+       "why": "Temperature is a lurking variable: it pushes both plotted variables up in summer and down in winter, creating the correlation."
+      },
+      {
+       "q": "Among children, shoe size and reading level are strongly correlated. What is the lurking variable?",
+       "choices": [
+        "Reading ability",
+        "Age",
+        "Shoe brand",
+        "Test difficulty"
+       ],
+       "a": 1,
+       "why": "Older children have both larger feet and more years of reading instruction, so age drives both variables."
+      },
+      {
+       "q": "Which kind of study can show that one variable causes another?",
+       "choices": [
+        "A survey with a very large sample",
+        "A scatter plot with r above 0.9",
+        "A record of past events with a clear trend",
+        "An experiment that changes one variable on purpose with random assignment"
+       ],
+       "a": 3,
+       "why": "Only an experiment controls the explanatory variable and uses random assignment to spread lurking variables evenly across groups."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "title": "Beyond the Straight Line",
+   "lessons": [
+    {
+     "title": "When a Line Fails: Exponential Growth",
+     "mainIdea": "When each step multiplies the response by the same factor instead of adding the same amount, the data follow an exponential model, not a line.",
+     "reading": [
+      "A biology class counts bacteria in a dish every hour: 100 at hour 0, then 200, 400, 800 and 1,600. Try a line. The changes from hour to hour are +100, +200, +400 and +800. A line needs the same change every step, and these changes double. A line fit to these points would be too high at hours 1 and 3 and far too low at hour 4, and the residual plot would show a U. The line fails because the pattern is not additive. It is multiplicative.",
+      "Look at *ratios* instead of differences. 200 ÷ 100 = 2, 400 ÷ 200 = 2, 800 ÷ 400 = 2, 1,600 ÷ 800 = 2. Every hour the count multiplies by 2. A pattern with a constant ratio is *exponential*. Its model is y = a × b^x, where a is the starting value and b is the *growth factor*, the constant ratio. Here y = 100 × 2^x. Check: at x = 3, 100 × 2^3 = 100 × 8 = 800. To predict hour 6, compute 100 × 2^6 = 100 × 64 = 6,400.",
+      "Real data are never this clean, so the test is whether the ratios are roughly constant. Say a savings account shows $1,000, $1,050, $1,102, $1,158 over four years. Ratios: 1.05, 1.0495, 1.0508. Close enough to call it exponential with growth factor about 1.05, or 5% per year. The differences, 50, 52 and 56, creep upward, which is the fingerprint of exponential growth: each year's increase is a little bigger than the last because it is a percent of a bigger amount.",
+      "The test for a line is constant differences; the test for an exponential is constant ratios. Students often check only differences, see them change, and give up. Check ratios next. A second common mistake is writing the growth factor as the percent: 5% growth is a factor of 1.05, not 0.05 or 5. And a ratio less than 1, like 0.9, still gives an exponential model, one that decays, such as a medication leaving the bloodstream by 10% each hour."
+     ],
+     "words": [
+      {
+       "w": "exponential model",
+       "d": "an equation of the form y = a × b^x, where each step in x multiplies y by the same factor b"
+      },
+      {
+       "w": "growth factor",
+       "d": "the constant ratio b between one value and the next in an exponential pattern"
+      },
+      {
+       "w": "ratio",
+       "d": "one value divided by the previous one; constant ratios point to an exponential model"
+      }
+     ],
+     "look": {
+      "type": "data",
+      "title": "Bacteria Count by Hour",
+      "rows": [
+       [
+        "Hour 0",
+        100
+       ],
+       [
+        "Hour 1",
+        200
+       ],
+       [
+        "Hour 2",
+        400
+       ],
+       [
+        "Hour 3",
+        800
+       ],
+       [
+        "Hour 4",
+        1600
+       ]
+      ],
+      "unit": "bacteria",
+      "cite": "Example data set defined in this lesson",
+      "prompt": "Compute the four differences and the four ratios. Which set is constant? Write the model and use it to predict hour 7."
+     },
+     "check": [
+      {
+       "q": "A quantity starts at 5 and triples every step. What is its value after 4 steps?",
+       "choices": [
+        "60",
+        "125",
+        "405",
+        "1,215"
+       ],
+       "a": 2,
+       "why": "y = 5 × 3^4 = 5 × 81 = 405. Adding 3 four times would wrongly give 17; multiplying by 5 each time would give 3,125."
+      },
+      {
+       "q": "Which table of y-values, for x = 0, 1, 2, 3, shows an exponential pattern?",
+       "choices": [
+        "3, 6, 9, 12",
+        "3, 6, 12, 24",
+        "3, 5, 8, 12",
+        "3, 4, 9, 16"
+       ],
+       "a": 1,
+       "why": "3, 6, 12, 24 has a constant ratio of 2. The first list has constant differences (linear); the others have neither."
+      },
+      {
+       "q": "Using y = 100 × 2^x, what is the predicted count at hour 6?",
+       "choices": [
+        "600",
+        "1,200",
+        "3,200",
+        "6,400"
+       ],
+       "a": 3,
+       "why": "2^6 = 64, and 100 × 64 = 6,400."
+      }
+     ]
+    },
+    {
+     "title": "Quadratic Models and Second Differences",
+     "mainIdea": "When first differences change but second differences are constant, the data follow a quadratic model with an x-squared term.",
+     "reading": [
+      "A ball is dropped from a tall building, and a camera records how far it has fallen after each second, in feet: 0, 16, 64, 144, 256. First differences: 16, 48, 80, 112. Not constant, so not a line. Ratios: 64 ÷ 16 = 4, 144 ÷ 64 = 2.25, 256 ÷ 144 ≈ 1.78. Not constant either, so not exponential. Now take differences of the differences: 48 − 16 = 32, 80 − 48 = 32, 112 − 80 = 32. The *second differences* are constant. That is the fingerprint of a *quadratic model*, an equation with an x^2 term.",
+      "Here the model is d = 16t^2, distance in feet after t seconds. Check: at t = 3, 16 × 9 = 144. Predict t = 5: 16 × 25 = 400 feet. A simpler example: y-values 0, 5, 20, 45, 80 for x = 0 through 4 have first differences 5, 15, 25, 35 and second differences 10, 10, 10. The model is y = 5x^2. At x = 6 it predicts 5 × 36 = 180.",
+      "Quadratic patterns show up whenever something speeds up steadily or turns around. A falling object is one example. So is the height of a thrown basketball on its way up and back down. So is the area of a square as its side grows. A calculator can fit a quadratic to messy data just as it fits a line. The same tools apply: look at the residual plot. If a line leaves a U in the residuals and a quadratic leaves patternless noise, the quadratic is the better model.",
+      "Keep the three tests in one place. Constant first differences: linear, y = mx + b. Constant ratios: exponential, y = a × b^x. Constant second differences: quadratic, with an x^2 term. Always check the tests in that order, and only on equally spaced x-values; differences between x = 1 and x = 2 and between x = 2 and x = 5 are not comparable. A common slip is to compute second differences from the original values instead of from the first differences."
+     ],
+     "words": [
+      {
+       "w": "quadratic model",
+       "d": "an equation with an x^2 term, such as y = 5x^2, that fits data which curve up or down and turn around"
+      },
+      {
+       "w": "first differences",
+       "d": "the changes between one y-value and the next for equally spaced x-values"
+      },
+      {
+       "w": "second differences",
+       "d": "the changes between one first difference and the next; constant for a quadratic pattern"
+      }
+     ],
+     "look": {
+      "type": "data",
+      "title": "Distance Fallen by a Dropped Ball",
+      "rows": [
+       [
+        "0 seconds",
+        0
+       ],
+       [
+        "1 second",
+        16
+       ],
+       [
+        "2 seconds",
+        64
+       ],
+       [
+        "3 seconds",
+        144
+       ],
+       [
+        "4 seconds",
+        256
+       ]
+      ],
+      "unit": "feet",
+      "cite": "Idealized values from d = 16t^2, ignoring air resistance",
+      "prompt": "Compute the first and second differences. Which are constant? How far does the model predict the ball falls in 6 seconds?"
+     },
+     "check": [
+      {
+       "q": "A table of y-values for x = 0, 1, 2, 3, 4 has second differences that are all equal and not zero. What kind of model fits?",
+       "choices": [
+        "Linear",
+        "Exponential",
+        "Quadratic",
+        "No model fits"
+       ],
+       "a": 2,
+       "why": "Constant nonzero second differences are the fingerprint of a quadratic model, one with an x^2 term."
+      },
+      {
+       "q": "Using y = 5x^2, what is the predicted value at x = 6?",
+       "choices": [
+        "30",
+        "60",
+        "150",
+        "180"
+       ],
+       "a": 3,
+       "why": "6^2 = 36, and 5 × 36 = 180."
+      },
+      {
+       "q": "For x = 0, 1, 2, 3, the y-values are 3, 7, 11, 15. Which model fits?",
+       "choices": [
+        "Linear, because the first differences are all 4",
+        "Quadratic, because the second differences are 4",
+        "Exponential, because the ratios are constant",
+        "Quadratic, because the values grow"
+       ],
+       "a": 0,
+       "why": "Each step adds 4, so the first differences are constant and the pattern is a line, y = 4x + 3."
+      }
+     ]
+    },
+    {
+     "title": "How Far a Prediction Can Reach",
+     "mainIdea": "Predicting inside the range of the data is interpolation and is usually safe; predicting outside it is extrapolation and can fail badly.",
+     "reading": [
+      "The study-time line, y = 7.5x + 51.5, was built from students who studied 1 to 5 hours. Ask it about 3.5 hours: y = 7.5 × 3.5 + 51.5 = 26.25 + 51.5 = 77.75, about 78 points. That is *interpolation*, a prediction between data points you actually have. Nobody in the data studied exactly 3.5 hours, but people studied 3 and 4, and the line between them is a reasonable guess.",
+      "Now ask about 10 hours: y = 7.5 × 10 + 51.5 = 75 + 51.5 = 126.5. A score of 126.5 on a 100-point quiz is impossible. The line did nothing wrong; it kept going straight, as lines do. The mistake was asking it about a place with no data. That is *extrapolation*, predicting beyond the range that was measured. Real relationships bend, level off or stop, and the line cannot know that. Ask about 0 hours and the line says 51.5, which might be reasonable, or might not; no student in the data studied 0 hours either.",
+      "Extrapolation is not forbidden, but it needs a warning label, and the farther you go, the louder the label. Predicting 5.5 hours from data that reach 5 is a small stretch. Predicting 20 hours is a leap into the dark. Exponential models extrapolate especially badly: the bacteria model y = 100 × 2^x predicts 100 × 2^24, over 1.6 billion, after one day, and the dish would have run out of food long before. Every model has a range where it is trustworthy, and that range is roughly the range of the data that built it.",
+      "When you report a prediction, state the range of the data next to it. For example: 'Based on students who studied 1 to 5 hours.' That one clause tells the reader whether your prediction is interpolation or extrapolation. A frequent mistake is reading a prediction off a line that has been extended on the graph to fill the page. The drawn line may extend to the edges. The data do not. Only the data part deserves trust."
+     ],
+     "words": [
+      {
+       "w": "interpolation",
+       "d": "using a model to predict a value inside the range of the data it was built from"
+      },
+      {
+       "w": "extrapolation",
+       "d": "using a model to predict a value outside the range of the data it was built from"
+      },
+      {
+       "w": "range of the data",
+       "d": "the span from the smallest to the largest x-value that was actually measured"
+      }
+     ],
+     "look": {
+      "type": "think",
+      "title": "Trust the Line?",
+      "text": "A line fit to a child's heights between ages 2 and 10 is h = 34 + 2.5a, height in inches and age in years. It predicts 34 + 2.5 × 6 = 49 inches at age 6 and 34 + 2.5 × 30 = 109 inches at age 30.",
+      "prompt": "Which prediction is interpolation and which is extrapolation? Why is the age-30 prediction absurd, and what does that say about the model beyond the data?"
+     },
+     "check": [
+      {
+       "q": "The line y = 7.5x + 51.5 was built from 1 to 5 hours of study. Predicting a score for 10 hours gives 126.5. What is the main problem?",
+       "choices": [
+        "The slope was computed wrong",
+        "The prediction is an extrapolation far outside the data, and the line cannot know that scores stop at 100",
+        "The intercept should be 0",
+        "Ten hours is interpolation, so the answer must be right"
+       ],
+       "a": 1,
+       "why": "Ten hours is well beyond the 1-to-5-hour range of the data. The line keeps going straight, but the real relationship cannot exceed 100 points."
+      },
+      {
+       "q": "Using y = 7.5x + 51.5, what score is predicted for 2.5 hours of study?",
+       "choices": [
+        "18.75",
+        "70.25",
+        "72.5",
+        "77.75"
+       ],
+       "a": 1,
+       "why": "y = 7.5 × 2.5 + 51.5 = 18.75 + 51.5 = 70.25. Since 2.5 is between 1 and 5, this is interpolation."
+      },
+      {
+       "q": "A model was built from data with x from 20 to 60. Which prediction is interpolation?",
+       "choices": [
+        "x = 10",
+        "x = 65",
+        "x = 100",
+        "x = 45"
+       ],
+       "a": 3,
+       "why": "Only 45 lies inside the measured range from 20 to 60; the others are outside it and would be extrapolations."
+      }
+     ]
+    }
+   ]
+  }
+ ],
+ "review": [
+  {
+   "q": "A scatter plot of car weight against gas mileage drifts from upper left to lower right. Which statement is correct?",
+   "choices": [
+    "Heavier cars tend to get lower mileage: a negative association",
+    "Heavier cars tend to get higher mileage: a positive association",
+    "There is no association",
+    "Weight and mileage are the same variable"
+   ],
+   "a": 0,
+   "why": "As weight increases along the horizontal axis, mileage decreases, so the association is negative."
+  },
+  {
+   "q": "What is the slope of the line through (1, 8) and (5, 20)?",
+   "choices": [
+    "12",
+    "4",
+    "3",
+    "1/3"
+   ],
+   "a": 2,
+   "why": "Slope = (20 − 8) ÷ (5 − 1) = 12 ÷ 4 = 3."
+  },
+  {
+   "q": "A line predicts a plant's height as h = 4 + 1.5w, with w in weeks and h in cm. What does 1.5 mean?",
+   "choices": [
+    "The plant started at 1.5 cm",
+    "The plant grows about 1.5 cm per week",
+    "The plant grows 1.5 weeks per cm",
+    "The plant will be 1.5 cm tall at the end"
+   ],
+   "a": 1,
+   "why": "The slope is the change in height for each additional week: 1.5 cm per week. The intercept, 4, is the starting height."
+  },
+  {
+   "q": "A line predicts 32 for a point whose actual value is 28. What is the residual, and where is the point?",
+   "choices": [
+    "4, above the line",
+    "−4, above the line",
+    "4, below the line",
+    "−4, below the line"
+   ],
+   "a": 3,
+   "why": "Residual = actual − predicted = 28 − 32 = −4. A negative residual means the point is below the line."
+  },
+  {
+   "q": "Which correlation coefficient describes the weakest straight-line relationship?",
+   "choices": [
+    "r = 0.15",
+    "r = −0.80",
+    "r = 0.65",
+    "r = −0.99"
+   ],
+   "a": 0,
+   "why": "Strength is measured by distance from 0 regardless of sign, and 0.15 is closest to 0."
+  },
+  {
+   "q": "A study finds that towns with more churches have more crime. What is the most likely lurking variable?",
+   "choices": [
+    "Church attendance causes crime",
+    "Crime causes people to build churches",
+    "Population: bigger towns have more of both",
+    "The study used the wrong axis"
+   ],
+   "a": 2,
+   "why": "Larger towns have more churches and more crimes simply because they have more people. Population drives both counts."
+  },
+  {
+   "q": "For x = 0, 1, 2, 3, the y-values are 4, 12, 36, 108. Which model fits?",
+   "choices": [
+    "Linear, since the values increase",
+    "Quadratic, since the second differences are constant",
+    "Exponential, since each value is 3 times the last",
+    "No pattern"
+   ],
+   "a": 2,
+   "why": "12 ÷ 4 = 3, 36 ÷ 12 = 3, 108 ÷ 36 = 3. Constant ratios mean an exponential model, y = 4 × 3^x."
+  },
+  {
+   "q": "A line was fit to data with x from 5 to 25. Which prediction is an extrapolation?",
+   "choices": [
+    "x = 6",
+    "x = 15",
+    "x = 24",
+    "x = 40"
+   ],
+   "a": 3,
+   "why": "Only 40 lies outside the measured range of 5 to 25, so predicting there is extrapolation."
+  }
+ ]
+}

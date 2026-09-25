@@ -1,0 +1,919 @@
+{
+ "n": 54,
+ "title": "Rational and Radical Functions",
+ "years": "Algebra",
+ "bigQuestion": "What happens to a function when a variable moves into a denominator or under a root, and how do we solve equations built that way?",
+ "story": {
+  "title": "The Round Trip That Broke the Average",
+  "kicker": "Two speeds, one road, and an average that refuses to land in the middle.",
+  "paragraphs": [
+   "Ms. Alvarez drove her debate team from Chicago to Springfield for the state tournament. The trip is roughly 200 miles each way on the interstate. On the way down, early on a Saturday morning, the van held a steady 60 miles per hour. On the way back Sunday evening, construction and traffic held them to 40 miles per hour for the whole drive. In the van, someone asked what the average speed for the whole trip had been.",
+   "Three students answered at once: 50. The average of 60 and 40 is 50, so the average speed must be 50. Ms. Alvarez smiled and asked them to check it. The 200 miles at 60 miles per hour took 200 ÷ 60 = 3 1/3 hours. The 200 miles back at 40 miles per hour took 200 ÷ 40 = 5 hours. Total distance: 400 miles. Total time: 8 1/3 hours. Average speed: 400 ÷ (25/3) = 400 × 3/25 = 48 miles per hour. Not 50.",
+   "The catch is time. The van spent more hours at the slow speed than at the fast one, so the slow speed pulls harder on the average. The correct formula for going out at speed a and back at speed b is 2ab ÷ (a + b), which for 60 and 40 gives 4800 ÷ 100 = 48. That formula has variables in the denominator. It is a *rational expression*, a fraction whose top and bottom are polynomials.",
+   "Fractions with variables downstairs behave in new ways. They can be undefined at certain inputs. Their graphs can shoot toward infinity next to a line they never touch. Equations with them can produce solutions that turn out to be fake. The same is true of functions with a variable under a square root. This chapter takes those functions apart, then shows how to run a function backward with an inverse."
+  ],
+  "think": "If the team had driven out at 60 and back at 30 miles per hour, would the average be closer to 45, or lower than that? Explain before you compute."
+ },
+ "sections": [
+  {
+   "title": "Rational Expressions",
+   "lessons": [
+    {
+     "title": "Domains and Simplifying",
+     "mainIdea": "A rational expression is undefined where its denominator is zero, and it simplifies by canceling common factors, never common terms.",
+     "reading": [
+      "Splitting a $60 bill among x friends costs each person 60/x dollars. That formula makes no sense when x = 0, because nobody can divide by zero. A *rational expression* is a fraction whose numerator and denominator are polynomials, like (x^2 − 9)/(x^2 − x − 6). Its *domain* is every real number except the ones that make the denominator zero. Those are the *excluded values*.",
+      "Find the excluded values by factoring the denominator and setting each factor to zero. For x^2 − x − 6 = (x − 3)(x + 2), the excluded values are x = 3 and x = −2. Always find them from the original denominator, before any canceling, because canceling can hide a value that is still not allowed.",
+      "To *simplify*, factor the numerator too and cancel factors shared by top and bottom. (x^2 − 9)/(x^2 − x − 6) = (x − 3)(x + 3) / ((x − 3)(x + 2)). The factor x − 3 cancels, leaving (x + 3)/(x + 2), with x ≠ 3 and x ≠ −2 still attached. The expressions agree everywhere in the domain, but the simplified one no longer shows the x = 3 restriction on its own.",
+      "The classic mistake is canceling terms instead of factors. A student sees (x + 3)/(x + 2) and crosses out the x's to get 3/2. Test it: at x = 1, (1 + 3)/(1 + 2) = 4/3, not 3/2. You can only cancel something that multiplies the entire numerator and the entire denominator. When in doubt, plug in a number and compare."
+     ],
+     "words": [
+      {
+       "w": "rational expression",
+       "d": "a fraction whose numerator and denominator are polynomials, such as (x + 3)/(x + 2)"
+      },
+      {
+       "w": "domain",
+       "d": "all input values that give a defined output; for a rational expression, everything except the excluded values"
+      },
+      {
+       "w": "excluded value",
+       "d": "an input that makes a denominator zero, so the expression is undefined there"
+      },
+      {
+       "w": "simplify",
+       "d": "to cancel every factor common to the numerator and the denominator"
+      }
+     ],
+     "look": {
+      "type": "think",
+      "title": "Factor, Then Cancel",
+      "text": "Simplify (2x^2 + 6x)/(x^2 − 9). Numerator: 2x(x + 3). Denominator: (x − 3)(x + 3). Excluded values come first: x = 3 and x = −3. Cancel the shared factor x + 3, leaving 2x/(x − 3). Test with x = 1: original (2 + 6)/(1 − 9) = 8/(−8) = −1, simplified 2/(1 − 3) = −1. They match.",
+      "prompt": "Simplify (x^2 − 4)/(x^2 + 2x) and state its excluded values. Test your result with x = 1."
+     },
+     "check": [
+      {
+       "q": "What are the excluded values of (x + 1)/(x^2 − 4)?",
+       "choices": [
+        "x = −1",
+        "x = 2 only",
+        "x = 2 and x = −2",
+        "x = 4"
+       ],
+       "a": 2,
+       "why": "x^2 − 4 = (x − 2)(x + 2) is zero at x = 2 and x = −2. The numerator does not matter."
+      },
+      {
+       "q": "Simplify (x^2 − 5x + 6)/(x − 2).",
+       "choices": [
+        "x − 3",
+        "x + 3",
+        "x − 6",
+        "x^2 − 3"
+       ],
+       "a": 0,
+       "why": "x^2 − 5x + 6 = (x − 2)(x − 3), and the x − 2 cancels, leaving x − 3 with x ≠ 2."
+      },
+      {
+       "q": "Why is (x + 5)/(x + 2) not equal to 5/2?",
+       "choices": [
+        "Because x is a factor of both",
+        "Because only common factors cancel, not terms in a sum",
+        "Because 5 and 2 share no factor",
+        "Because the domain is all real numbers"
+       ],
+       "a": 1,
+       "why": "The x's are added, not multiplied. At x = 1 the expression equals 6/3 = 2, not 5/2."
+      }
+     ]
+    },
+    {
+     "title": "Multiplying and Dividing",
+     "mainIdea": "Multiply rational expressions by factoring everything and canceling across the fractions; divide by multiplying by the reciprocal of the second fraction.",
+     "reading": [
+      "Multiplying rational expressions is like multiplying 2/3 × 9/4: factor, cancel, then multiply what is left. Take (x^2 − 1)/(x + 2) × (x + 2)/(x − 1). Factor first: (x − 1)(x + 1)/(x + 2) × (x + 2)/(x − 1). Now *cancel* any factor that appears in a numerator and a denominator, even across the two fractions. The x + 2 pair cancels and the x − 1 pair cancels, leaving x + 1. Excluded values: x ≠ −2 and x ≠ 1.",
+      "To divide, multiply by the *reciprocal* of the second fraction, the fraction flipped over. Compute x/(x + 3) ÷ x^2/(x^2 − 9). Flip the second: x/(x + 3) × (x^2 − 9)/x^2. Factor: x/(x + 3) × (x − 3)(x + 3)/(x × x). Cancel one x and the x + 3: the result is (x − 3)/x. Flip only the divisor. Flipping the first fraction gives the reciprocal of the right answer.",
+      "Another trap is canceling before factoring. In (3x)/(x − 4) × (x^2 − 16)/(6x^2), nothing cancels until x^2 − 16 becomes (x − 4)(x + 4). Then x − 4 cancels, 3x against 6x^2 leaves 1 against 2x, and the product is (x + 4)/(2x). Remember that every value that was excluded in the original problem, including any zeros of the divisor's numerator, stays excluded."
+     ],
+     "words": [
+      {
+       "w": "reciprocal",
+       "d": "a fraction flipped over; the reciprocal of x^2/(x^2 − 9) is (x^2 − 9)/x^2"
+      },
+      {
+       "w": "cancel",
+       "d": "to remove a factor that appears in both a numerator and a denominator"
+      },
+      {
+       "w": "factor",
+       "d": "to rewrite a polynomial as a product, such as x^2 − 16 = (x − 4)(x + 4)"
+      }
+     ],
+     "look": {
+      "type": "think",
+      "title": "Flip, Factor, Cancel",
+      "text": "Divide (x + 1)/x by (x + 1)/x^2. Multiply by the reciprocal: (x + 1)/x × x^2/(x + 1). The x + 1 factors cancel, and x^2 over x leaves x. The quotient is x, with x ≠ 0 and x ≠ −1. Test with x = 2: (3/2) ÷ (3/4) = 3/2 × 4/3 = 2. It matches.",
+      "prompt": "Multiply (x − 2)/(x + 5) by (x + 5)/(x^2 − 4). Simplify and list the excluded values."
+     },
+     "check": [
+      {
+       "q": "Multiply (x + 2)/(x − 1) × (x − 1)/(x + 4).",
+       "choices": [
+        "(x + 2)/(x + 4)",
+        "(x − 1)/(x + 4)",
+        "1",
+        "(x + 2)(x − 1)/(x + 4)"
+       ],
+       "a": 0,
+       "why": "The x − 1 factors cancel across the fractions, leaving (x + 2)/(x + 4)."
+      },
+      {
+       "q": "Divide x/(x + 1) by x^2/(x + 1).",
+       "choices": [
+        "x",
+        "x^2",
+        "1/x",
+        "(x + 1)^2/x"
+       ],
+       "a": 2,
+       "why": "x/(x + 1) × (x + 1)/x^2 = x/x^2 = 1/x after canceling x + 1 and one x."
+      },
+      {
+       "q": "A student flips the first fraction instead of the second when dividing. What does that produce?",
+       "choices": [
+        "The same answer",
+        "The reciprocal of the correct answer",
+        "Zero",
+        "Only a change in the domain"
+       ],
+       "a": 1,
+       "why": "Correct: a/b × d/c = ad/(bc). Wrong: b/a × c/d = bc/(ad), which is the reciprocal."
+      }
+     ]
+    },
+    {
+     "title": "Adding and Subtracting",
+     "mainIdea": "To add or subtract rational expressions, rewrite each over the least common denominator, then combine the numerators and simplify.",
+     "reading": [
+      "Adding 1/4 + 1/6 needs a common denominator, 12: 3/12 + 2/12 = 5/12. Rational expressions work the same way. To add 3/x + 2/(x + 1), the *least common denominator* is x(x + 1), the smallest expression both denominators divide. Rewrite each fraction: 3/x = 3(x + 1)/(x(x + 1)) and 2/(x + 1) = 2x/(x(x + 1)). Add the *numerators*: 3(x + 1) + 2x = 3x + 3 + 2x = 5x + 3. The sum is (5x + 3)/(x(x + 1)).",
+      "When denominators share a factor, do not just multiply them. For 1/(x^2 − 4) + 1/(x + 2), factor x^2 − 4 = (x − 2)(x + 2). The LCD is (x − 2)(x + 2), not (x^2 − 4)(x + 2). Only the second fraction needs adjusting: 1/(x + 2) = (x − 2)/((x − 2)(x + 2)). Adding gives (1 + x − 2)/((x − 2)(x + 2)) = (x − 1)/(x^2 − 4).",
+      "Subtraction adds one hazard: the minus sign applies to the whole second numerator. Compute 1/(x − 2) − 1/(x + 2). Over the LCD (x − 2)(x + 2), the numerators are (x + 2) − (x − 2) = x + 2 − x + 2 = 4. The result is 4/(x^2 − 4). Dropping the parentheses gives x + 2 − x − 2 = 0, which is wrong. And never add *denominators*: 1/x + 1/x is 2/x, not 2/(2x)."
+     ],
+     "words": [
+      {
+       "w": "least common denominator",
+       "d": "the smallest expression that every denominator divides into; for x and x + 1 it is x(x + 1)"
+      },
+      {
+       "w": "numerator",
+       "d": "the top of a fraction"
+      },
+      {
+       "w": "denominator",
+       "d": "the bottom of a fraction; it must never be zero"
+      }
+     ],
+     "look": {
+      "type": "think",
+      "title": "Same Bottom First",
+      "text": "Add 2/x + 1/(2x). The least common denominator is 2x, since x divides 2x. Rewrite 2/x as 4/(2x). Now add the numerators: 4/(2x) + 1/(2x) = 5/(2x). Check with x = 1: 2 + 1/2 = 5/2, and 5/(2 × 1) = 5/2.",
+      "prompt": "Add 1/x + 1/(3x). Then compute 5/(x + 1) − 2/(x + 1) and explain why no new denominator is needed."
+     },
+     "check": [
+      {
+       "q": "Add 1/x + 1/(x + 1).",
+       "choices": [
+        "2/(2x + 1)",
+        "(2x + 1)/(x(x + 1))",
+        "1/(x^2 + x)",
+        "2/(x(x + 1))"
+       ],
+       "a": 1,
+       "why": "Over x(x + 1): (x + 1) + x = 2x + 1, so the sum is (2x + 1)/(x(x + 1)). Adding denominators gives the first choice."
+      },
+      {
+       "q": "Simplify 5/(x − 3) − 2/(x − 3).",
+       "choices": [
+        "3/(x − 3)",
+        "3",
+        "7/(x − 3)",
+        "3/(2x − 6)"
+       ],
+       "a": 0,
+       "why": "Same denominator, so subtract numerators: 5 − 2 = 3, giving 3/(x − 3)."
+      },
+      {
+       "q": "What is the least common denominator of 1/(x^2 − 4) and 1/(x + 2)?",
+       "choices": [
+        "(x + 2)(x^2 − 4)",
+        "x + 2",
+        "x − 2",
+        "x^2 − 4"
+       ],
+       "a": 3,
+       "why": "x^2 − 4 = (x − 2)(x + 2) already contains x + 2, so the LCD is x^2 − 4."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "title": "Graphs of Rational Functions",
+   "lessons": [
+    {
+     "title": "Vertical Asymptotes and Holes",
+     "mainIdea": "Where a denominator is zero, the graph has a vertical asymptote if the factor does not cancel and a hole if it does.",
+     "reading": [
+      "Look at f(x) = 1/(x − 2) near x = 2. At x = 2.1 the value is 1/0.1 = 10. At 2.01 it is 100, and at 2.001 it is 1,000. From the other side, f(1.9) = −10 and f(1.99) = −100. The graph shoots up on the right of 2 and down on the left, hugging the line x = 2 without touching it. That line is a *vertical asymptote*. The function is *undefined* at x = 2 itself.",
+      "Now take g(x) = (x^2 − 1)/(x^2 − 3x + 2). The denominator is zero at x = 1 and x = 2, but the two spots behave differently. Factor: (x − 1)(x + 1)/((x − 1)(x − 2)). The factor x − 1 cancels, leaving (x + 1)/(x − 2). The factor x − 2 does not cancel, so x = 2 is a vertical asymptote. At x = 1 the simplified form gives (1 + 1)/(1 − 2) = −2, so the graph is a smooth curve with one missing point at (1, −2). That missing point is a *hole*.",
+      "The rule: factor top and bottom. A denominator factor that cancels makes a hole; a denominator factor that survives makes a vertical asymptote. Both are excluded from the domain. A common error is to cancel first and forget the hole, reporting the domain as everything except 2. The original denominator was zero at 1 too, so 1 stays excluded."
+     ],
+     "words": [
+      {
+       "w": "vertical asymptote",
+       "d": "a vertical line x = c that the graph approaches but never crosses, where the function value grows without bound"
+      },
+      {
+       "w": "hole",
+       "d": "a single missing point on an otherwise smooth graph, from a factor that cancels"
+      },
+      {
+       "w": "undefined",
+       "d": "having no value; a rational function is undefined wherever its denominator is zero"
+      }
+     ],
+     "look": {
+      "type": "data",
+      "title": "f(x) = 1/(x − 2) Near x = 2",
+      "rows": [
+       [
+        "x = 1.5",
+        -2
+       ],
+       [
+        "x = 1.9",
+        -10
+       ],
+       [
+        "x = 1.99",
+        -100
+       ],
+       [
+        "x = 2.01",
+        100
+       ],
+       [
+        "x = 2.1",
+        10
+       ],
+       [
+        "x = 2.5",
+        2
+       ]
+      ],
+      "unit": "f(x)",
+      "cite": "computed from f(x) = 1/(x − 2)",
+      "prompt": "What happens to f(x) as x gets closer to 2 from the left, and from the right? Why can the graph never cross the line x = 2?"
+     },
+     "check": [
+      {
+       "q": "Where is the vertical asymptote of g(x) = (x + 3)/(x − 5)?",
+       "choices": [
+        "x = −3",
+        "x = 5",
+        "x = −5",
+        "y = 1"
+       ],
+       "a": 1,
+       "why": "The denominator x − 5 is zero at x = 5 and does not cancel, so x = 5 is the asymptote."
+      },
+      {
+       "q": "h(x) = (x − 4)/((x − 4)(x + 1)). Describe its graph.",
+       "choices": [
+        "Hole at x = −1, asymptote at x = 4",
+        "Hole at x = 4, asymptote at x = −1",
+        "Vertical asymptotes at x = 4 and x = −1",
+        "Holes at x = 4 and x = −1"
+       ],
+       "a": 1,
+       "why": "x − 4 cancels, making a hole at 4; x + 1 survives, making an asymptote at −1."
+      },
+      {
+       "q": "For g(x) = (x^2 − 1)/(x^2 − 3x + 2), what is the y-coordinate of the hole at x = 1?",
+       "choices": [
+        "0",
+        "2",
+        "1/2",
+        "−2"
+       ],
+       "a": 3,
+       "why": "After canceling, g simplifies to (x + 1)/(x − 2), and at x = 1 that is 2/(−1) = −2."
+      }
+     ]
+    },
+    {
+     "title": "Horizontal Asymptotes",
+     "mainIdea": "Compare the degrees of numerator and denominator: lower on top gives y = 0, equal degrees give the ratio of leading coefficients, higher on top gives no horizontal asymptote.",
+     "reading": [
+      "What does f(x) = (3x^2 + 1)/(x^2 − 4) do when x is huge? At x = 100 the value is 30,001/9,996, which is about 3.001. At x = 1,000 it is even closer to 3. Far to the right and far to the left, the graph flattens toward the line y = 3. That line is a *horizontal asymptote*. It describes end behavior, the same idea as for polynomials, but now the ends level off instead of shooting away.",
+      "For large x only the *leading terms* matter. So compare the *degree* of the numerator with the degree of the denominator. Case one, top degree lower: (x + 1)/(x^2 + 1) behaves like x/x^2 = 1/x. That shrinks toward 0, so the asymptote is y = 0. Case two, degrees equal: (3x^2 + 1)/(x^2 − 4) behaves like 3x^2/x^2 = 3. The asymptote is y = 3, the ratio of the leading coefficients.",
+      "Case three, top degree higher: x^2/(x − 1) behaves like x^2/x = x, which keeps growing. There is no horizontal asymptote. Unlike a vertical asymptote, a horizontal one can be crossed in the middle of the graph; it only governs the far ends. Do not confuse the two kinds: vertical asymptotes come from the denominator's zeros, horizontal ones from comparing degrees."
+     ],
+     "words": [
+      {
+       "w": "horizontal asymptote",
+       "d": "a horizontal line y = c that the graph approaches as x becomes very large or very negative"
+      },
+      {
+       "w": "leading terms",
+       "d": "the highest-power terms of the numerator and the denominator"
+      },
+      {
+       "w": "degree",
+       "d": "the highest power of x in a polynomial"
+      }
+     ],
+     "look": {
+      "type": "think",
+      "title": "Chasing the Level Line",
+      "text": "Let f(x) = (2x − 1)/(x + 3). At x = 10, f = 19/13 ≈ 1.46. At x = 100, f = 199/103 ≈ 1.93. At x = 1,000, f = 1,999/1,003 ≈ 1.99. The values creep toward 2 without reaching it. The degrees are equal, and the leading coefficients are 2 and 1.",
+      "prompt": "Name the horizontal asymptote of f. Then predict, without computing, what f(−1,000) is close to."
+     },
+     "check": [
+      {
+       "q": "What is the horizontal asymptote of (5x^2 − 2)/(2x^2 + 7)?",
+       "choices": [
+        "y = 0",
+        "y = 5/2",
+        "y = 2/5",
+        "None"
+       ],
+       "a": 1,
+       "why": "Equal degrees, so the asymptote is the ratio of leading coefficients, 5/2."
+      },
+      {
+       "q": "What is the horizontal asymptote of (x + 4)/(x^2 − 9)?",
+       "choices": [
+        "y = 0",
+        "y = 1",
+        "y = −4/9",
+        "None"
+       ],
+       "a": 0,
+       "why": "The numerator's degree 1 is less than the denominator's degree 2, so the graph flattens toward y = 0."
+      },
+      {
+       "q": "Which function has no horizontal asymptote?",
+       "choices": [
+        "(x + 1)/x^2",
+        "3/(x − 2)",
+        "4x/(2x + 1)",
+        "(x^3 + 1)/(x^2 + 1)"
+       ],
+       "a": 3,
+       "why": "Its numerator degree 3 exceeds the denominator degree 2, so the values keep growing like x."
+      }
+     ]
+    },
+    {
+     "title": "Inverse Variation",
+     "mainIdea": "Two quantities vary inversely when their product is a constant, so y = k/x and doubling one halves the other.",
+     "reading": [
+      "A 240-mile drive takes 4 hours at 60 miles per hour but 6 hours at 40 miles per hour. Faster speed, less time. The product is always the same: 60 × 4 = 240 and 40 × 6 = 240. When two quantities have a constant product, they show *inverse variation*. In symbols, t = 240/v, or in general y = k/x, where k is the *constant of variation*. Compare that with *direct variation*, y = kx, where the two quantities rise together.",
+      "To solve an inverse variation problem, find k first. Suppose y varies inversely with x, and y = 6 when x = 4. Then k = xy = 24, so the rule is y = 24/x. When x = 8, y = 24/8 = 3. Doubling x from 4 to 8 halved y from 6 to 3. A frequent error is to assume that doubling x doubles y; that is direct variation, and the numbers in the problem will show which kind you have.",
+      "Work crews follow the same pattern. If 12 workers finish a job in 10 hours, the job takes 12 × 10 = 120 worker-hours. With 8 workers, the time is 120/8 = 15 hours. Boyle's law in chemistry is another example: at a fixed temperature, the pressure of a gas times its volume stays constant, so squeezing a gas to half its volume doubles its pressure. The graph of y = k/x is a curve with both axes as asymptotes."
+     ],
+     "words": [
+      {
+       "w": "inverse variation",
+       "d": "a relationship where the product of two quantities is constant: y = k/x"
+      },
+      {
+       "w": "constant of variation",
+       "d": "the fixed number k in y = k/x or y = kx"
+      },
+      {
+       "w": "direct variation",
+       "d": "a relationship y = kx where one quantity is a constant multiple of the other"
+      }
+     ],
+     "look": {
+      "type": "data",
+      "title": "Time for a 240-Mile Trip",
+      "rows": [
+       [
+        "30 mph",
+        8
+       ],
+       [
+        "40 mph",
+        6
+       ],
+       [
+        "48 mph",
+        5
+       ],
+       [
+        "60 mph",
+        4
+       ],
+       [
+        "80 mph",
+        3
+       ]
+      ],
+      "unit": "hours",
+      "cite": "computed from t = 240/v",
+      "prompt": "Multiply speed by time in each row. What do you notice, and what would the time be at 120 miles per hour?"
+     },
+     "check": [
+      {
+       "q": "y varies inversely with x, and y = 6 when x = 4. What is y when x = 8?",
+       "choices": [
+        "12",
+        "3",
+        "2",
+        "48"
+       ],
+       "a": 1,
+       "why": "k = 4 × 6 = 24, so y = 24/8 = 3. Doubling x halves y."
+      },
+      {
+       "q": "Which equation shows inverse variation?",
+       "choices": [
+        "y = 3x",
+        "y = x + 3",
+        "xy = 3",
+        "y = x^2/3"
+       ],
+       "a": 2,
+       "why": "xy = 3 means y = 3/x, a constant product. The first is direct variation."
+      },
+      {
+       "q": "Five painters can finish a gym in 12 hours. How long will six painters take at the same rate?",
+       "choices": [
+        "14.4 hours",
+        "13 hours",
+        "8 hours",
+        "10 hours"
+       ],
+       "a": 3,
+       "why": "The job is 5 × 12 = 60 painter-hours, so six painters need 60/6 = 10 hours."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "title": "Rational Equations",
+   "lessons": [
+    {
+     "title": "Solving and Extraneous Solutions",
+     "mainIdea": "Clear the denominators by multiplying every term by the least common denominator, solve, then reject any answer that makes an original denominator zero.",
+     "reading": [
+      "A *rational equation* has a variable in at least one denominator. Solve 3/x + 1/2 = 2. The least common denominator of x and 2 is 2x. Multiply every term by 2x, a step called *clearing denominators*: 2x × 3/x = 6, 2x × 1/2 = x, and 2x × 2 = 4x. The equation becomes 6 + x = 4x, so 6 = 3x and x = 2. Check in the original: 3/2 + 1/2 = 2. It works.",
+      "Sometimes the algebra produces an answer that the original equation cannot accept. Solve x/(x − 3) = 3/(x − 3) + 2. Multiply every term by x − 3: x = 3 + 2(x − 3) = 3 + 2x − 6 = 2x − 3. So x = 3. But x = 3 makes the original denominators zero, so it is not allowed. It is an *extraneous solution*, an answer created by the multiplication step. This equation has no solution.",
+      "The safe habit is to write down the excluded values before you start. For x/(x − 3), that is x ≠ 3. Solve, then compare each answer with that list. Anything on the list is thrown out. Also multiply every term, including the constants; forgetting to multiply the 2 by x − 3 in the example above is the most common slip."
+     ],
+     "words": [
+      {
+       "w": "rational equation",
+       "d": "an equation with a variable in a denominator, such as 3/x + 1/2 = 2"
+      },
+      {
+       "w": "clearing denominators",
+       "d": "multiplying every term of an equation by the least common denominator"
+      },
+      {
+       "w": "extraneous solution",
+       "d": "an answer produced by the algebra that does not satisfy the original equation"
+      }
+     ],
+     "look": {
+      "type": "think",
+      "title": "Cross the Denominators",
+      "text": "Solve 2/x = 1/(x + 3). Excluded values: x ≠ 0 and x ≠ −3. Multiply both sides by x(x + 3): 2(x + 3) = x, so 2x + 6 = x and x = −6. It is not excluded. Check: 2/(−6) = −1/3, and 1/(−6 + 3) = 1/(−3) = −1/3. Both sides match.",
+      "prompt": "Solve 4/x = 3/(x − 1) the same way. State the excluded values first, then check your answer in the original equation."
+     },
+     "check": [
+      {
+       "q": "Solve 6/x = 2.",
+       "choices": [
+        "x = 12",
+        "x = 3",
+        "x = 1/3",
+        "x = 4"
+       ],
+       "a": 1,
+       "why": "Multiply by x: 6 = 2x, so x = 3. Check: 6/3 = 2."
+      },
+      {
+       "q": "Solve x/(x − 2) = 2/(x − 2) + 3.",
+       "choices": [
+        "x = 2",
+        "x = 0",
+        "No solution",
+        "x = −2"
+       ],
+       "a": 2,
+       "why": "Clearing gives x = 2 + 3x − 6, so x = 2. But x = 2 is excluded, so the solution is extraneous."
+      },
+      {
+       "q": "Solve 1/x + 1/(2x) = 3/4.",
+       "choices": [
+        "x = 2",
+        "x = 4",
+        "x = 1/2",
+        "x = 6"
+       ],
+       "a": 0,
+       "why": "Multiply by 4x: 4 + 2 = 3x, so x = 2. Check: 1/2 + 1/4 = 3/4."
+      }
+     ]
+    },
+    {
+     "title": "Work and Round-Trip Problems",
+     "mainIdea": "Rates add: two workers together complete 1/a + 1/b of a job per hour, and a round trip's average speed is total distance over total time.",
+     "reading": [
+      "Two hoses fill a pool. Alone, the first takes 6 hours and the second takes 3 hours. Together? Think in *work rates*: the first hose fills 1/6 of the pool per hour and the second fills 1/3 per hour. Together they fill 1/6 + 1/3 = 1/6 + 2/6 = 3/6 = 1/2 of the pool per hour, so the job takes 2 hours. In general 1/a + 1/b = 1/t. Averaging the times, (6 + 3)/2 = 4.5, is wrong; two hoses must be faster than the faster hose alone.",
+      "Round trips use the same logic with distance and time. Drive 120 miles out at 60 miles per hour and back at 40. Time out: 120/60 = 2 hours. Time back: 120/40 = 3 hours. *Average speed* is total distance over total time: 240/5 = 48 miles per hour. The general formula for speeds a and b is 2ab/(a + b), which for 60 and 40 gives 4,800/100 = 48. This kind of average is called the *harmonic mean*.",
+      "Now run it backward. You drive out at an unknown speed x, return at 30 miles per hour, and the average speed is 40. Set up 2 × x × 30/(x + 30) = 40. Multiply by x + 30: 60x = 40x + 1,200, so 20x = 1,200 and x = 60. Check: out at 60 and back at 30 over 60 miles takes 1 + 2 = 3 hours for 120 miles, and 120/3 = 40. The slower leg always takes more time, which is why the average leans toward it."
+     ],
+     "words": [
+      {
+       "w": "work rate",
+       "d": "the fraction of a job done per unit of time; a 6-hour job has a rate of 1/6 per hour"
+      },
+      {
+       "w": "average speed",
+       "d": "total distance divided by total time, not the average of the speeds"
+      },
+      {
+       "w": "harmonic mean",
+       "d": "the average 2ab/(a + b) that gives the round-trip average speed for speeds a and b"
+      },
+      {
+       "w": "rate",
+       "d": "a quantity per unit of time, such as miles per hour or jobs per hour"
+      }
+     ],
+     "look": {
+      "type": "think",
+      "title": "Two Printers, One Job",
+      "text": "One printer finishes a stack of flyers in 10 minutes; a second printer takes 15 minutes. Rates: 1/10 and 1/15 per minute. Add them with the common denominator 30: 3/30 + 2/30 = 5/30 = 1/6. Together they finish 1/6 of the stack per minute, so the whole stack takes 6 minutes.",
+      "prompt": "Two printers take 4 minutes and 12 minutes alone. How long do they take together? Explain why the answer must be less than 4 minutes."
+     },
+     "check": [
+      {
+       "q": "Pipe A fills a tank in 4 hours and pipe B in 12 hours. How long do they take together?",
+       "choices": [
+        "8 hours",
+        "3 hours",
+        "16 hours",
+        "6 hours"
+       ],
+       "a": 1,
+       "why": "1/4 + 1/12 = 3/12 + 1/12 = 4/12 = 1/3 per hour, so 3 hours."
+      },
+      {
+       "q": "A trip is 100 miles each way, out at 50 mph and back at 25 mph. What is the average speed?",
+       "choices": [
+        "37.5 mph",
+        "35 mph",
+        "75 mph",
+        "33 1/3 mph"
+       ],
+       "a": 3,
+       "why": "Times: 100/50 = 2 hours and 100/25 = 4 hours. Average: 200 miles / 6 hours = 33 1/3 mph."
+      },
+      {
+       "q": "Why is a round trip's average speed not the mean of the two speeds?",
+       "choices": [
+        "Because the distance changes on the way back",
+        "Because speed is not a rate",
+        "Because more time is spent at the slower speed",
+        "Because the mean of two numbers is always too large"
+       ],
+       "a": 2,
+       "why": "The slow leg takes longer, so it gets more weight. Average speed is total distance over total time."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "title": "Radicals and Inverses",
+   "lessons": [
+    {
+     "title": "Radical Functions and Equations",
+     "mainIdea": "A square root function needs a nonnegative input under the root; to solve a radical equation, isolate the root, square both sides, and check for extraneous answers.",
+     "reading": [
+      "The time for a pendulum to swing, the speed of a wave, the distance to the horizon: many formulas put a variable under a *radical*, a root sign. The function f(x) = √(x − 3) is a *square root function*. Real square roots need nonnegative inputs, so x − 3 ≥ 0 and the domain is x ≥ 3. Its graph starts at (3, 0) and rises slowly: f(4) = 1, f(7) = 2, f(12) = 3. A *cube root* like ∛x has no such limit, because negative numbers have cube roots.",
+      "To solve √(2x + 1) = 5, isolate the root, then square both sides to remove it. That gives 2x + 1 = 25, so 2x = 24 and x = 12. Check in the original: √(24 + 1) = √25 = 5. If the equation has extra terms, move them first. √(x − 1) + 4 = 7 becomes √(x − 1) = 3. Squaring gives x − 1 = 9, so x = 10. For a cube root, cube both sides instead. ∛(x − 1) = 2 gives x − 1 = 8, so x = 9.",
+      "Squaring can invent solutions. Solve √(x + 6) = x. Square: x + 6 = x^2, so x^2 − x − 6 = 0 and (x − 3)(x + 2) = 0. Candidates: x = 3 and x = −2. Check x = 3: √9 = 3, correct. Check x = −2: √4 = 2, but the right side is −2, so it fails. Only x = 3 works; −2 is extraneous. A square root is never negative, so any candidate that makes the root equal a negative number must be thrown out. Always check."
+     ],
+     "words": [
+      {
+       "w": "radical",
+       "d": "a root sign, such as the square root √ or the cube root ∛"
+      },
+      {
+       "w": "square root function",
+       "d": "a function like f(x) = √(x − 3); its input under the root must be 0 or greater"
+      },
+      {
+       "w": "cube root",
+       "d": "the number that, cubed, gives the input; ∛8 = 2 and ∛(−8) = −2"
+      }
+     ],
+     "look": {
+      "type": "data",
+      "title": "Values of f(x) = √(x − 3)",
+      "rows": [
+       [
+        "x = 3",
+        0
+       ],
+       [
+        "x = 4",
+        1
+       ],
+       [
+        "x = 7",
+        2
+       ],
+       [
+        "x = 12",
+        3
+       ],
+       [
+        "x = 19",
+        4
+       ],
+       [
+        "x = 28",
+        5
+       ]
+      ],
+      "unit": "f(x)",
+      "cite": "computed from f(x) = √(x − 3)",
+      "prompt": "Why does the table start at x = 3? How much does x have to grow for f(x) to go from 4 to 5, compared with going from 0 to 1?"
+     },
+     "check": [
+      {
+       "q": "What is the domain of f(x) = √(x + 5)?",
+       "choices": [
+        "x ≥ 5",
+        "x ≥ −5",
+        "x > 0",
+        "All real numbers"
+       ],
+       "a": 1,
+       "why": "Require x + 5 ≥ 0, so x ≥ −5."
+      },
+      {
+       "q": "Solve √(3x − 2) = 4.",
+       "choices": [
+        "x = 2",
+        "x = 14/3",
+        "x = 6",
+        "x = 4"
+       ],
+       "a": 2,
+       "why": "Square: 3x − 2 = 16, so 3x = 18 and x = 6. Check: √16 = 4."
+      },
+      {
+       "q": "Solve √(x + 2) = x.",
+       "choices": [
+        "x = 2 and x = −1",
+        "x = −1 only",
+        "x = 2 only",
+        "No solution"
+       ],
+       "a": 2,
+       "why": "x + 2 = x^2 gives (x − 2)(x + 1) = 0. Check: √4 = 2 works; √1 = 1 ≠ −1 fails, so −1 is extraneous."
+      }
+     ]
+    },
+    {
+     "title": "Inverse Functions",
+     "mainIdea": "An inverse function undoes the original: swap x and y and solve for y, and a function has an inverse only if it passes the horizontal line test.",
+     "reading": [
+      "Converting Celsius to Fahrenheit uses F = 9C/5 + 32. Converting back is the same relationship run in reverse: C = 5(F − 32)/9. Each formula undoes the other. Check: 20°C gives F = 36 + 32 = 68, and 68°F gives C = 5 × 36/9 = 20. Two functions that undo each other are *inverse functions*, written f and f^−1.",
+      "To find an inverse from a formula, swap x and y, then solve for y. For f(x) = 2x + 3, write y = 2x + 3, swap to get x = 2y + 3, and solve: y = (x − 3)/2. So f^−1(x) = (x − 3)/2. Test with a number: f(5) = 13, and f^−1(13) = (13 − 3)/2 = 5. The graph of f^−1 is the graph of f reflected across the line y = x.",
+      "Not every function has an inverse. f(x) = x^2 sends both 2 and −2 to 4, so running it backward from 4 gives two answers, and an inverse must give one. A function has an inverse only if it is *one-to-one*: different inputs always give different outputs. The *horizontal line test* checks this on a graph: if any horizontal line crosses the graph twice, there is no inverse. Restricting x^2 to x ≥ 0 fixes it, and the inverse is √x. Likewise x^3 has the inverse ∛x for all x."
+     ],
+     "words": [
+      {
+       "w": "inverse function",
+       "d": "the function f^−1 that undoes f, so f^−1(f(x)) = x"
+      },
+      {
+       "w": "one-to-one",
+       "d": "a function where different inputs always produce different outputs"
+      },
+      {
+       "w": "horizontal line test",
+       "d": "a function has an inverse only if no horizontal line crosses its graph more than once"
+      }
+     ],
+     "look": {
+      "type": "think",
+      "title": "Swap and Solve",
+      "text": "Find the inverse of f(x) = (x − 4)/3. Write y = (x − 4)/3 and swap: x = (y − 4)/3. Multiply by 3: 3x = y − 4. Add 4: y = 3x + 4. So f^−1(x) = 3x + 4. Check: f(10) = 6/3 = 2, and f^−1(2) = 6 + 4 = 10.",
+      "prompt": "Find the inverse of g(x) = 5x − 1 and check it with g(2). What does the inverse do to the graph of g?"
+     },
+     "check": [
+      {
+       "q": "What is the inverse of f(x) = 3x − 6?",
+       "choices": [
+        "(x − 6)/3",
+        "1/(3x − 6)",
+        "3x + 6",
+        "(x + 6)/3"
+       ],
+       "a": 3,
+       "why": "Swap: x = 3y − 6, so 3y = x + 6 and y = (x + 6)/3. Check: f(4) = 6 and (6 + 6)/3 = 4."
+      },
+      {
+       "q": "Why does f(x) = x^2, defined for all real x, have no inverse function?",
+       "choices": [
+        "It fails the horizontal line test",
+        "It has no y-intercept",
+        "It is not continuous",
+        "Its graph is a line"
+       ],
+       "a": 0,
+       "why": "The line y = 4 crosses the parabola at x = 2 and x = −2, so the function is not one-to-one."
+      },
+      {
+       "q": "f(x) = x^3 + 1. What is f^−1(9)?",
+       "choices": [
+        "730",
+        "2",
+        "8",
+        "3"
+       ],
+       "a": 1,
+       "why": "Find x with x^3 + 1 = 9: x^3 = 8, so x = 2. Plugging 9 into f instead gives 730."
+      }
+     ]
+    },
+    {
+     "title": "Composition of Functions",
+     "mainIdea": "Composing functions feeds one function's output into another, written f(g(x)); the order matters, and inverses compose to give back x.",
+     "reading": [
+      "A jacket is on sale for 20% off, and then sales tax of 10% is added; treat that tax rate as an example figure. Two functions act in turn. The discount is d(p) = 0.8p and the tax is t(p) = 1.1p. On a $50 jacket, first d(50) = 40, then t(40) = 44. Feeding one output into another function is *composition*, written t(d(p)). The *inner function* d acts first, then the *outer function* t.",
+      "Composition with formulas works by substitution. Let f(x) = x + 2 and g(x) = x^2. Then f(g(3)) = f(9) = 11, and g(f(3)) = g(5) = 25. In general f(g(x)) = x^2 + 2, while g(f(x)) = (x + 2)^2. The two are different functions, so order matters: adding 2 then squaring is not the same as squaring then adding 2. Read f(g(x)) from the inside out.",
+      "Composition is the test for inverses. Two functions are inverses exactly when f(g(x)) = x and g(f(x)) = x. Try f(x) = 2x + 3 and g(x) = (x − 3)/2. Compute f(g(x)) = 2 × (x − 3)/2 + 3 = x − 3 + 3 = x. And g(f(x)) = (2x + 3 − 3)/2 = 2x/2 = x. Each undoes the other, so they are inverses. If either composition gives something other than x, the two functions are not inverses."
+     ],
+     "words": [
+      {
+       "w": "composition",
+       "d": "using the output of one function as the input of another, written f(g(x))"
+      },
+      {
+       "w": "inner function",
+       "d": "the function applied first in a composition; g in f(g(x))"
+      },
+      {
+       "w": "outer function",
+       "d": "the function applied last in a composition; f in f(g(x))"
+      }
+     ],
+     "look": {
+      "type": "think",
+      "title": "Inside First",
+      "text": "Let f(x) = 2x and g(x) = x − 3. To find f(g(5)), start inside: g(5) = 2. Then f(2) = 4. Now the other order: f(5) = 10, then g(10) = 7. So f(g(5)) = 4 but g(f(5)) = 7. Same two functions, different results.",
+      "prompt": "Write formulas for f(g(x)) and g(f(x)). For what value of x, if any, do the two compositions give the same output?"
+     },
+     "check": [
+      {
+       "q": "f(x) = x − 1 and g(x) = 3x. What is f(g(4))?",
+       "choices": [
+        "9",
+        "12",
+        "10",
+        "11"
+       ],
+       "a": 3,
+       "why": "Inside first: g(4) = 12. Then f(12) = 11."
+      },
+      {
+       "q": "With the same f(x) = x − 1 and g(x) = 3x, what is g(f(4))?",
+       "choices": [
+        "9",
+        "11",
+        "12",
+        "3"
+       ],
+       "a": 0,
+       "why": "f(4) = 3, then g(3) = 9. The order changed the answer from 11 to 9."
+      },
+      {
+       "q": "f(x) = x^2 + 1 and g(x) = √(x − 1) for x ≥ 1. Which statement is true?",
+       "choices": [
+        "f(g(x)) = x^2",
+        "f(g(x)) = x − 1",
+        "f(g(x)) = x, so g undoes f on that domain",
+        "f(g(x)) = 2x"
+       ],
+       "a": 2,
+       "why": "f(g(x)) = (√(x − 1))^2 + 1 = x − 1 + 1 = x."
+      }
+     ]
+    }
+   ]
+  }
+ ],
+ "review": [
+  {
+   "q": "Simplify (x^2 − 16)/(x + 4).",
+   "choices": [
+    "x − 4",
+    "x + 4",
+    "x − 16",
+    "x^2 − 4"
+   ],
+   "a": 0,
+   "why": "x^2 − 16 = (x − 4)(x + 4), and x + 4 cancels, leaving x − 4 with x ≠ −4."
+  },
+  {
+   "q": "Where is the vertical asymptote of f(x) = (x + 2)/(x − 7)?",
+   "choices": [
+    "x = 7",
+    "x = −2",
+    "x = −7",
+    "y = 1"
+   ],
+   "a": 0,
+   "why": "The denominator is zero at x = 7 and that factor does not cancel."
+  },
+  {
+   "q": "y varies inversely with x, and y = 10 when x = 3. What is y when x = 5?",
+   "choices": [
+    "50",
+    "16 2/3",
+    "6",
+    "2"
+   ],
+   "a": 2,
+   "why": "k = 3 × 10 = 30, so y = 30/5 = 6."
+  },
+  {
+   "q": "Solve 5/x = 1/(x − 4).",
+   "choices": [
+    "x = 4",
+    "x = 20",
+    "x = 5",
+    "x = −5"
+   ],
+   "a": 2,
+   "why": "Cross-multiply: 5(x − 4) = x, so 5x − 20 = x and x = 5. Check: 5/5 = 1 and 1/1 = 1."
+  },
+  {
+   "q": "Solve √(x − 1) = 3.",
+   "choices": [
+    "x = 4",
+    "x = 8",
+    "x = 2",
+    "x = 10"
+   ],
+   "a": 3,
+   "why": "Square both sides: x − 1 = 9, so x = 10. Check: √9 = 3."
+  },
+  {
+   "q": "What is the inverse of f(x) = (x + 2)/4?",
+   "choices": [
+    "4x − 2",
+    "4x + 2",
+    "(x − 2)/4",
+    "4/(x + 2)"
+   ],
+   "a": 0,
+   "why": "Swap: x = (y + 2)/4, so 4x = y + 2 and y = 4x − 2."
+  },
+  {
+   "q": "f(x) = x + 5 and g(x) = 2x. What is g(f(1))?",
+   "choices": [
+    "7",
+    "11",
+    "12",
+    "10"
+   ],
+   "a": 2,
+   "why": "f(1) = 6, then g(6) = 12. The other order gives f(g(1)) = 7."
+  },
+  {
+   "q": "What is the horizontal asymptote of (6x^2 + 1)/(3x^2 − x)?",
+   "choices": [
+    "y = 0",
+    "y = 6",
+    "y = 1/2",
+    "y = 2"
+   ],
+   "a": 3,
+   "why": "Equal degrees, so divide the leading coefficients: 6/3 = 2."
+  }
+ ]
+}

@@ -1,0 +1,898 @@
+{
+ "n": 47,
+ "title": "Congruence and Transformations",
+ "years": "Geometry",
+ "bigQuestion": "What does it really mean for two shapes to be the same, and how little information do we need to be sure?",
+ "story": {
+  "title": "Why the Triangle Holds",
+  "kicker": "A bridge made of squares would fold flat, and a bridge made of triangles will not. The difference is a theorem.",
+  "paragraphs": [
+   "Stand on the Michigan Avenue bridge in Chicago and look at the steel under the deck, or ride the L over the river and look sideways. You will see triangles everywhere. The beams are bolted into a repeating pattern of triangles called a truss. Bridges, cranes, radio towers and the roof of a gym all use the same trick. Nobody chose triangles because they look nice. They chose them because a triangle cannot change its shape without breaking a bar.",
+   "Try it with four strips of cardboard and four pins. Pin them into a square. Now push on one corner. The square leans into a parallelogram and keeps leaning until it lies flat. The four bars did not change length, and yet the shape changed completely. Four sides do not pin down a four-sided figure. Now pin three strips into a triangle and push. Nothing moves. With the three side lengths fixed, there is only one triangle you can make, so the frame is rigid.",
+   "Engineers in the 1800s built that fact into iron and then steel. One popular design, a long zigzag of equilateral triangles between two straight beams, was patented by an English engineer named James Warren, and Warren trusses still carry trains and trucks today. Every triangle in the truss is a small proof: three lengths, one possible shape. When a load presses down, the bars push and pull on each other, but no angle can open or close, because opening an angle would require a side to stretch.",
+   "Mathematicians call that fact the side-side-side congruence criterion. If two triangles have three pairs of matching side lengths, they are congruent, which means one can be moved onto the other exactly by sliding, turning and flipping. This chapter starts with those motions, defines congruence with them, and then asks the engineer's question: what is the smallest set of measurements that forces a triangle to be one particular shape? Three sides work. Two sides and an angle sometimes work and sometimes do not, and knowing which is which is the whole game."
+  ],
+  "think": "The square frame folded flat while its four sides stayed the same length. What extra piece of information would you have to add to lock the square in place?"
+ },
+ "sections": [
+  {
+   "title": "Moving Shapes Without Changing Them",
+   "lessons": [
+    {
+     "title": "Translations",
+     "mainIdea": "A translation slides every point the same distance in the same direction, and a coordinate rule describes it exactly.",
+     "reading": [
+      "Slide a phone across a table without turning it. Every corner moves the same distance in the same direction. That motion is a *translation*. On a coordinate grid, a translation is written as a rule. The rule (x, y) → (x + 3, y − 2) means: add 3 to every x-coordinate and subtract 2 from every y-coordinate. Point (1, 5) moves to (4, 3). Point (−2, 0) moves to (1, −2). The original point is the *preimage*, and the moved point is the *image*. We mark an image with a prime: A moves to A′, read A prime.",
+      "Try a whole triangle. A(1, 2), B(4, 2) and C(1, 6), with the rule (x, y) → (x + 3, y − 2). Then A′ = (4, 0), B′ = (7, 0) and C′ = (4, 4). Now compare lengths. AB runs from x = 1 to x = 4 along the line y = 2, so AB = 3. A′B′ runs from x = 4 to x = 7, so A′B′ = 3. Every side keeps its length and every angle keeps its measure. A motion that preserves all distances and angles is a *rigid motion*. Translations, reflections and rotations are the three basic rigid motions, and this chapter builds the idea of congruence on them.",
+      "You can also read the rule off a pair of points. If a translation takes (2, 7) to (5, 3), it added 3 to x and subtracted 4 from y, so the rule is (x, y) → (x + 3, y − 4). The pair of numbers, 3 right and 4 down, is called the translation *vector*. Two common mistakes: subtracting when the rule says to add, and applying the change to only one coordinate. Every point gets both changes, every time."
+     ],
+     "words": [
+      {
+       "w": "translation",
+       "d": "a rigid motion that slides every point the same distance in the same direction"
+      },
+      {
+       "w": "preimage",
+       "d": "the original figure before a transformation"
+      },
+      {
+       "w": "image",
+       "d": "the figure after a transformation; its points are marked with primes, like A′"
+      },
+      {
+       "w": "rigid motion",
+       "d": "a transformation that preserves all distances and angle measures"
+      },
+      {
+       "w": "vector",
+       "d": "a quantity with a direction and a length, used to describe a translation"
+      }
+     ],
+     "look": {
+      "type": "think",
+      "title": "Slide the Triangle",
+      "text": "Triangle PQR has vertices P(−3, 1), Q(0, 1) and R(−3, 5). Apply the rule (x, y) → (x + 5, y − 3) to each vertex. Then find the length of PQ and of P′Q′ by counting units along the horizontal side. Finally, find the length of PR and of P′R′ along the vertical side.",
+      "prompt": "Where do P′, Q′ and R′ land? Did any side length change? What rule would slide the image back onto the original?"
+     },
+     "check": [
+      {
+       "q": "What is the image of (−3, 5) under the translation (x, y) → (x + 4, y − 6)?",
+       "choices": [
+        "(1, −1)",
+        "(−7, 11)",
+        "(1, 11)",
+        "(−7, −1)"
+       ],
+       "a": 0,
+       "why": "−3 + 4 = 1 and 5 − 6 = −1, so the image is (1, −1). The other choices subtract 4 or add 6 by mistake."
+      },
+      {
+       "q": "Which statement is true of every rigid motion?",
+       "choices": [
+        "It changes the size of a figure",
+        "It keeps every distance and angle the same",
+        "It moves only one point",
+        "It always turns the figure"
+       ],
+       "a": 1,
+       "why": "Rigid motions preserve distances and angle measures. That is what makes the image congruent to the preimage."
+      },
+      {
+       "q": "A translation moves (2, 7) to (5, 3). What is the rule?",
+       "choices": [
+        "(x, y) → (x − 3, y + 4)",
+        "(x, y) → (x + 3, y + 4)",
+        "(x, y) → (x + 3, y − 4)",
+        "(x, y) → (x + 7, y + 10)"
+       ],
+       "a": 2,
+       "why": "5 − 2 = 3, so x gained 3. 3 − 7 = −4, so y lost 4. The rule is (x + 3, y − 4)."
+      }
+     ]
+    },
+    {
+     "title": "Reflections",
+     "mainIdea": "A reflection flips a figure across a line, and the line is the perpendicular bisector of every segment joining a point to its image.",
+     "reading": [
+      "Hold a letter up to a mirror and its image flips. A *reflection* flips every point across a *line of reflection* so that the line is the perpendicular bisector of the segment joining each point to its image. The point and its image are the same distance from the line, on opposite sides. A point on the line does not move at all. On the coordinate grid, three reflections have simple rules. Across the x-axis: (x, y) → (x, −y). Across the y-axis: (x, y) → (−x, y). Across the line y = x: (x, y) → (y, x).",
+      "Try the point (3, −5). Across the y-axis it becomes (−3, −5): the x-coordinate changes sign, and the point moves from 3 units right of the axis to 3 units left. Across the x-axis it becomes (3, 5). Across y = x, the coordinates swap, giving (−5, 3). Now reflect a triangle with vertices P(1, 1), Q(4, 1) and R(1, 3) across the y-axis: P′(−1, 1), Q′(−4, 1), R′(−1, 3). Side PQ has length 3, and so does P′Q′. A reflection is a rigid motion.",
+      "One thing does change. Read the original triangle's vertices going around: P to Q to R runs counterclockwise. Read the image: P′ to Q′ to R′ runs clockwise. A reflection reverses *orientation*, the direction you travel around the figure. Translations and rotations keep orientation. That is why a mirror flips the writing on a shirt while a slide or a turn does not. Common mistake: changing the sign of the wrong coordinate. Across the x-axis, the point stays on the same vertical line, so x stays and y flips. Say it as: reflect across the x-axis, flip the y."
+     ],
+     "words": [
+      {
+       "w": "reflection",
+       "d": "a rigid motion that flips a figure across a line so each point and its image are the same distance from the line"
+      },
+      {
+       "w": "line of reflection",
+       "d": "the line a figure is flipped across; it is the perpendicular bisector of each point-to-image segment"
+      },
+      {
+       "w": "orientation",
+       "d": "the direction, clockwise or counterclockwise, in which a figure's vertices are read in order"
+      }
+     ],
+     "look": {
+      "type": "think",
+      "title": "Mirror on the Grid",
+      "text": "Triangle ABC has vertices A(2, 1), B(5, 1) and C(2, 4). Reflect it across the x-axis by flipping each y-coordinate. Then reflect the original triangle across the line y = x by swapping each pair of coordinates. Sketch both images if you can.",
+      "prompt": "List the vertices of both images. For each image, is the order A′, B′, C′ clockwise or counterclockwise? Which point would stay fixed if a vertex sat on the line of reflection?"
+     },
+     "check": [
+      {
+       "q": "What is the image of (−2, 6) after a reflection across the x-axis?",
+       "choices": [
+        "(2, 6)",
+        "(2, −6)",
+        "(6, −2)",
+        "(−2, −6)"
+       ],
+       "a": 3,
+       "why": "Reflecting across the x-axis keeps x and flips the sign of y: (−2, 6) becomes (−2, −6)."
+      },
+      {
+       "q": "What is the image of (4, 1) after a reflection across the line y = x?",
+       "choices": [
+        "(1, 4)",
+        "(−4, 1)",
+        "(4, −1)",
+        "(−1, −4)"
+       ],
+       "a": 0,
+       "why": "Reflection across y = x swaps the coordinates, so (4, 1) becomes (1, 4)."
+      },
+      {
+       "q": "How does a reflection differ from a translation?",
+       "choices": [
+        "A reflection changes side lengths",
+        "A reflection reverses the orientation of the figure",
+        "A reflection changes angle measures",
+        "A reflection moves only some of the points"
+       ],
+       "a": 1,
+       "why": "Both are rigid motions, so lengths and angles are preserved. A reflection flips the figure, so clockwise order becomes counterclockwise."
+      }
+     ]
+    },
+    {
+     "title": "Rotations",
+     "mainIdea": "A rotation turns a figure around a fixed center through a given angle, and rotations about the origin follow simple coordinate rules.",
+     "reading": [
+      "A clock hand turns around the center of the clock. A *rotation* turns every point of a figure around a fixed point, the *center of rotation*, through the same *angle of rotation*. Counterclockwise is the standard direction. On the coordinate grid, rotations about the origin have rules. A 90° counterclockwise rotation sends (x, y) to (−y, x). A 180° rotation sends (x, y) to (−x, −y). A 270° counterclockwise rotation, which is the same as a 90° clockwise rotation, sends (x, y) to (y, −x).",
+      "Follow the point (3, 2). After 90° counterclockwise it is at (−2, 3). Check that with a sketch: (3, 2) sits to the right and a bit up, and (−2, 3) sits to the left and up, a quarter turn around. After 180° the point is at (−3, −2), straight through the origin to the opposite side. After 270° it is at (2, −3). One more quarter turn, 360° in all, returns it to (3, 2). Each image is the same distance from the origin: √(9 + 4) = √13 every time, because a rotation is a rigid motion.",
+      "Rotate a triangle with vertices A(1, 1), B(4, 1) and C(4, 3) by 90° counterclockwise about the origin. Using (x, y) → (−y, x): A′(−1, 1), B′(−1, 4) and C′(−3, 4). Side AB was horizontal with length 3; side A′B′ is vertical with length 3. Rotations keep lengths, angles and orientation. The common mistakes are using the 90° rule when the problem says 180°, and forgetting to change the sign in the 90° rule. Write the rule down before you plug in any numbers."
+     ],
+     "words": [
+      {
+       "w": "rotation",
+       "d": "a rigid motion that turns every point around a fixed center through the same angle"
+      },
+      {
+       "w": "center of rotation",
+       "d": "the fixed point a figure turns around; it does not move"
+      },
+      {
+       "w": "angle of rotation",
+       "d": "how many degrees a figure turns, measured counterclockwise unless stated otherwise"
+      }
+     ],
+     "look": {
+      "type": "think",
+      "title": "Quarter Turns",
+      "text": "Point P is at (5, 1). Rotate it 90° counterclockwise about the origin to get P′, then rotate P′ another 90° to get P″, then once more to get P‴. Each time, use the rule (x, y) → (−y, x) on the most recent point.",
+      "prompt": "What are the three images? Compare P″ with the result of the 180° rule applied to P directly. Why do the two methods agree?"
+     },
+     "check": [
+      {
+       "q": "What is the image of (5, −1) after a 180° rotation about the origin?",
+       "choices": [
+        "(−1, 5)",
+        "(1, 5)",
+        "(−5, 1)",
+        "(5, 1)"
+       ],
+       "a": 2,
+       "why": "A 180° rotation changes the sign of both coordinates: (5, −1) becomes (−5, 1)."
+      },
+      {
+       "q": "What is the image of (2, 6) after a 90° counterclockwise rotation about the origin?",
+       "choices": [
+        "(6, −2)",
+        "(−6, 2)",
+        "(−2, −6)",
+        "(6, 2)"
+       ],
+       "a": 1,
+       "why": "The rule (x, y) → (−y, x) gives (−6, 2). The choice (6, −2) is the 90° clockwise image."
+      },
+      {
+       "q": "A 90° clockwise rotation about the origin is the same as which counterclockwise rotation?",
+       "choices": [
+        "90°",
+        "180°",
+        "360°",
+        "270°"
+       ],
+       "a": 3,
+       "why": "Turning 90° one way lands in the same place as turning 270° the other way, since 90° + 270° = 360°."
+      }
+     ]
+    },
+    {
+     "title": "Symmetry",
+     "mainIdea": "A figure has symmetry when a reflection or a rotation maps it onto itself.",
+     "reading": [
+      "Fold a paper heart down the middle and the two halves match. The fold line is a *line of symmetry*: a reflection across it maps the figure onto itself. A figure can have several. A rectangle that is not a square has two, one vertical and one horizontal. A square has four: the two through the midpoints of the sides and the two diagonals. A regular hexagon has six. A scalene triangle has none. The diagonals of a non-square rectangle are not lines of symmetry, which surprises people; fold along one and the corners stick out.",
+      "*Rotational symmetry* means a turn of less than 360° maps the figure onto itself. The smallest such turn is the angle of rotational symmetry. For a regular polygon with n sides, that angle is 360° ÷ n. A square: 360 ÷ 4 = 90°. A regular pentagon: 360 ÷ 5 = 72°. A regular hexagon: 360 ÷ 6 = 60°. The *order* of the symmetry is the number of positions that match in one full turn, which is n for a regular polygon. A non-square rectangle has rotational symmetry of 180° only, so its order is 2.",
+      "Letters make good practice. H has two lines of symmetry and 180° rotational symmetry. A has one vertical line of symmetry and no rotational symmetry. N has no line of symmetry, but turn it 180° and it looks the same, so it has rotational symmetry of order 2. Z is the same story. The common mistake is assuming any figure that looks balanced has both kinds of symmetry. Test each kind separately: fold for line symmetry, turn for rotational symmetry."
+     ],
+     "words": [
+      {
+       "w": "line of symmetry",
+       "d": "a line across which a figure reflects onto itself"
+      },
+      {
+       "w": "rotational symmetry",
+       "d": "the property that a rotation of less than 360° maps a figure onto itself"
+      },
+      {
+       "w": "order",
+       "d": "the number of times a figure matches itself during one full 360° turn"
+      }
+     ],
+     "look": {
+      "type": "data",
+      "title": "Smallest Turn That Matches",
+      "rows": [
+       [
+        "Equilateral triangle",
+        120
+       ],
+       [
+        "Square",
+        90
+       ],
+       [
+        "Regular pentagon",
+        72
+       ],
+       [
+        "Regular hexagon",
+        60
+       ],
+       [
+        "Regular octagon",
+        45
+       ],
+       [
+        "Regular decagon",
+        36
+       ]
+      ],
+      "unit": "degrees of rotation",
+      "cite": "computed as 360° divided by the number of sides",
+      "prompt": "What is the pattern between the number of sides and the angle? What would the angle be for a regular polygon with 12 sides, and how many lines of symmetry would it have?"
+     },
+     "check": [
+      {
+       "q": "What is the smallest angle of rotational symmetry of a regular pentagon?",
+       "choices": [
+        "72°",
+        "60°",
+        "90°",
+        "108°"
+       ],
+       "a": 0,
+       "why": "360° ÷ 5 = 72°. The 108° is the measure of each interior angle, not the rotation."
+      },
+      {
+       "q": "How many lines of symmetry does a rectangle that is not a square have?",
+       "choices": [
+        "0",
+        "1",
+        "2",
+        "4"
+       ],
+       "a": 2,
+       "why": "One vertical and one horizontal line through the center. The diagonals do not work because the corners would not match up."
+      },
+      {
+       "q": "Which capital letter has rotational symmetry but no line of symmetry?",
+       "choices": [
+        "H",
+        "A",
+        "T",
+        "N"
+       ],
+       "a": 3,
+       "why": "N matches itself after a 180° turn but has no fold line. H has both kinds; A and T have a vertical line only."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "title": "What Congruent Means",
+   "lessons": [
+    {
+     "title": "Congruence by Rigid Motion",
+     "mainIdea": "Two figures are congruent when a sequence of rigid motions maps one exactly onto the other, so every matching part is equal.",
+     "reading": [
+      "Two figures are *congruent* if a sequence of rigid motions maps one onto the other. The sequence can mix translations, reflections and rotations. That is the definition. It says something stronger than same size and same shape. It says you can physically move one figure until it sits exactly on top of the other. Rigid motions preserve lengths and angles, so congruent figures have equal *corresponding parts*. Every side matches a side of the same length. Every angle matches an angle of the same measure.",
+      "The order of the letters tells you which parts correspond. Triangle ABC ≅ triangle DEF means A matches D, B matches E and C matches F. So AB ≅ DE, BC ≅ EF and AC ≅ DF, and angle A ≅ angle D, angle B ≅ angle E, angle C ≅ angle F. Suppose triangle ABC ≅ triangle XYZ, with AB = 5, BC = 7 and angle A = 40°. Then XY = 5, YZ = 7 and angle X = 40°. You know six facts about triangle XYZ without ever seeing it. A *congruence statement* written in the wrong order gives wrong matches, so write it carefully.",
+      "Here is how to show congruence with motions. Triangle ABC has vertices A(0, 0), B(3, 0) and C(0, 4). Triangle DEF has vertices D(5, 2), E(8, 2) and F(5, 6). The translation (x, y) → (x + 5, y + 2) sends A to (5, 2) = D, B to (8, 2) = E, and C to (5, 6) = F. One rigid motion maps every vertex onto its partner, so the triangles are congruent. Sometimes you need two motions, such as a reflection followed by a translation. The common mistake is assuming two figures are congruent because they look alike. The test is a motion, or a criterion proved from motions, not a glance."
+     ],
+     "words": [
+      {
+       "w": "congruent",
+       "d": "two figures are congruent if a sequence of rigid motions maps one exactly onto the other; the symbol is ≅"
+      },
+      {
+       "w": "corresponding parts",
+       "d": "the sides and angles that match up when one figure is mapped onto another"
+      },
+      {
+       "w": "congruence statement",
+       "d": "a statement like triangle ABC ≅ triangle DEF, where the letter order shows which parts correspond"
+      }
+     ],
+     "look": {
+      "type": "think",
+      "title": "Find the Motion",
+      "text": "Triangle JKL has vertices J(1, 1), K(4, 1) and L(1, 3). Triangle MNP has vertices M(−1, 1), N(−4, 1) and P(−1, 3). Compare each vertex of JKL with its partner in MNP. Then try the reflection rule across the y-axis, (x, y) → (−x, y), on J, K and L.",
+      "prompt": "Does one reflection map JKL onto MNP? Write a congruence statement with the letters in the correct order, and name the three pairs of congruent sides."
+     },
+     "check": [
+      {
+       "q": "Triangle PQR ≅ triangle LMN. Which side is congruent to QR?",
+       "choices": [
+        "LM",
+        "MN",
+        "LN",
+        "NL is not determined"
+       ],
+       "a": 1,
+       "why": "Q matches M and R matches N, so QR corresponds to MN."
+      },
+      {
+       "q": "By definition, two figures are congruent when:",
+       "choices": [
+        "they have the same area",
+        "they look the same size",
+        "a sequence of rigid motions maps one onto the other",
+        "they have the same number of sides"
+       ],
+       "a": 2,
+       "why": "Congruence is defined through rigid motions. Same area is not enough: a 2 by 8 rectangle and a 4 by 4 square both have area 16."
+      },
+      {
+       "q": "Triangle ABC ≅ triangle DEF. Angle B = 65° and angle C = 40°. What is angle D?",
+       "choices": [
+        "65°",
+        "40°",
+        "105°",
+        "75°"
+       ],
+       "a": 3,
+       "why": "Angle D matches angle A. The angles of a triangle add to 180°, so angle A = 180° − 65° − 40° = 75°."
+      }
+     ]
+    },
+    {
+     "title": "SSS and SAS",
+     "mainIdea": "Three pairs of congruent sides, or two sides and the included angle, are enough to force two triangles to be congruent.",
+     "reading": [
+      "You do not need all six matching parts to know two triangles are congruent. The bridge truss showed the first shortcut. *SSS* (side-side-side): if three sides of one triangle are congruent to three sides of another, the triangles are congruent. That is exactly why the triangle frame would not fold. With sides 5, 7 and 9, there is only one triangle you can build, so any two triangles with those sides must match. The proof idea: translate one triangle so a side lands on its partner, then a reflection if needed, and the third vertex is forced because it must be the right distance from both ends.",
+      "The second shortcut is *SAS* (side-angle-side): two sides and the *included angle*, the angle between those two sides, congruent to the matching parts of another triangle. Picture two sticks of lengths 6 and 8 hinged at one end. Open the hinge to exactly 40°, and the distance between the far ends is set. Any other pair of 6 and 8 sticks opened to 40° will produce the same triangle. In triangle ABC, the angle included between sides AB and BC is angle B, because B is the letter the two sides share.",
+      "A typical proof. Given: AB ≅ CB and angle ABD ≅ angle CBD. Prove: triangle ABD ≅ triangle CBD. Statement 1: AB ≅ CB, given. Statement 2: angle ABD ≅ angle CBD, given. Statement 3: BD ≅ BD, reflexive property. Statement 4: triangle ABD ≅ triangle CBD by SAS, since the two given sides and the shared side surround the given angle. Common mistake: using an angle that is not between the two sides. Two sides and an angle somewhere else is a different situation, and a later lesson shows why it can fail."
+     ],
+     "words": [
+      {
+       "w": "SSS",
+       "d": "side-side-side: three pairs of congruent sides prove two triangles congruent"
+      },
+      {
+       "w": "SAS",
+       "d": "side-angle-side: two pairs of congruent sides and the congruent included angle prove two triangles congruent"
+      },
+      {
+       "w": "included angle",
+       "d": "the angle formed by two given sides of a triangle; it sits between them at their shared vertex"
+      }
+     ],
+     "look": {
+      "type": "think",
+      "title": "Bars in the Truss",
+      "text": "A steel truss holds two triangles side by side. The first has bars of 4 m, 4 m and 6 m. The second has bars of 4 m, 4 m and 6 m. An inspector measures only the bars, never the angles, and declares the two triangles congruent. A third triangle has bars of 4 m and 4 m with a 90° angle between them.",
+      "prompt": "Which criterion did the inspector use? Is the third triangle congruent to the first two? How could you check without a protractor?"
+     },
+     "check": [
+      {
+       "q": "Two triangles each have sides 3, 4 and 5. Which criterion proves them congruent?",
+       "choices": [
+        "SAS",
+        "ASA",
+        "SSS",
+        "They cannot be proved congruent"
+       ],
+       "a": 2,
+       "why": "Three pairs of congruent sides is exactly SSS. No angle measures are needed."
+      },
+      {
+       "q": "Which set of information fits the SAS criterion?",
+       "choices": [
+        "two sides and the angle between them",
+        "two sides and an angle not between them",
+        "three angles",
+        "one side and two angles"
+       ],
+       "a": 0,
+       "why": "SAS needs the included angle, the one formed by the two given sides."
+      },
+      {
+       "q": "In triangle ABC, which two sides include angle B?",
+       "choices": [
+        "AB and AC",
+        "AC and BC",
+        "AB and BC",
+        "only side AC"
+       ],
+       "a": 2,
+       "why": "The sides that meet at vertex B are AB and BC. Angle B is the included angle between them."
+      }
+     ]
+    },
+    {
+     "title": "ASA and AAS",
+     "mainIdea": "Two angles and the included side, or two angles and any side, are enough to prove two triangles congruent.",
+     "reading": [
+      "A surveyor wants the distance across a river without crossing it. She marks two points A and B on her bank and measures AB. Then she measures the angle at A and the angle at B toward a tree T on the far bank. That is *ASA* (angle-side-angle): two angles and the *included side*, the side between them. Anyone who draws a segment of length AB and opens those two angles at its ends gets the same triangle. The two rays from A and B can meet in only one place. So the surveyor can draw a scale copy at her desk and read off the distance to the tree.",
+      "*AAS* (angle-angle-side) is two angles and a side that is not between them. It works because of the angle sum. If two angles of a triangle are 30° and 80°, the third must be 180° − 30° − 80° = 70°. So knowing two angles means knowing all three, and a side that was not included between the two given angles is included between one of them and the third. AAS turns into ASA every time. Suppose two triangles each have angles of 30° and 80° and a side of 12 opposite the 30° angle. That side lies between the 80° and 70° angles, so ASA applies with those two angles.",
+      "Notice what is missing from the list: AAA, three angles. Three angles do not force a size. A triangle with angles 60°, 60°, 60° and side 2 and another with side 10 have the same angles and are not congruent. They are the same shape at different sizes, which the next unit calls similar. Common mistake: choosing between ASA and AAS by guessing. Ask one question: is the given side between the two given angles? If yes, ASA. If no, AAS."
+     ],
+     "words": [
+      {
+       "w": "ASA",
+       "d": "angle-side-angle: two pairs of congruent angles and the congruent included side prove two triangles congruent"
+      },
+      {
+       "w": "AAS",
+       "d": "angle-angle-side: two pairs of congruent angles and a congruent non-included side prove two triangles congruent"
+      },
+      {
+       "w": "included side",
+       "d": "the side of a triangle that lies between two given angles"
+      }
+     ],
+     "look": {
+      "type": "think",
+      "title": "Across the River",
+      "text": "A surveyor stands at point A on the near bank and marks point B 50 m down the bank. From A, the angle between the bank and the line to a tree T across the river is 60°. From B, the angle between the bank and the line to T is 70°. Back at her desk she draws a 5 cm segment and opens 60° and 70° angles at its ends.",
+      "prompt": "Why must her drawing be a scaled copy of the real triangle ABT? What is the third angle at T? What information would she be missing if she had measured only the two angles and no side?"
+     },
+     "check": [
+      {
+       "q": "Two triangles each have angles of 50° and 60° with a congruent side between those two angles. Which criterion applies?",
+       "choices": [
+        "SSS",
+        "ASA",
+        "AAS",
+        "SAS"
+       ],
+       "a": 1,
+       "why": "Two angles with the included side between them is angle-side-angle."
+      },
+      {
+       "q": "Two triangles have two pairs of congruent angles and a congruent side that is not between them. Which criterion applies?",
+       "choices": [
+        "AAS",
+        "ASA",
+        "SAS",
+        "SSA"
+       ],
+       "a": 0,
+       "why": "Two angles and a non-included side is AAS, which works because the third angle is determined."
+      },
+      {
+       "q": "Why does AAA fail to prove two triangles congruent?",
+       "choices": [
+        "Angles cannot be measured exactly",
+        "Three angles always add to 180°, so they give no information",
+        "Two triangles with the same angles can be different sizes",
+        "AAA only works for right triangles"
+       ],
+       "a": 2,
+       "why": "Same angles fix the shape but not the size. An equilateral triangle with side 2 and one with side 10 both have three 60° angles."
+      }
+     ]
+    },
+    {
+     "title": "Why SSA Fails",
+     "mainIdea": "Two sides and a non-included angle can produce two different triangles, so SSA is not a congruence criterion, except for right triangles.",
+     "reading": [
+      "Take two sticks, one 8 cm and one 5 cm, hinged at a point B. Fix the 8 cm stick along a line and open a 30° angle at B. The 5 cm stick swings from the hinge, and its free end has to land somewhere on a ray that leaves the far end of the 8 cm stick at 30°. Set a compass to 5 cm and swing it from the far end of that ray: it crosses the ray in two places. That gives two different triangles with sides 8 and 5 and a 30° angle opposite the 5. Two sides and a non-included angle, called *SSA*, did not force one shape. That is why SSA is not on the list of criteria.",
+      "The numbers explain it. The shortest possible distance from the swinging stick's pivot to the ray is 8 × sin 30° = 8 × 0.5 = 4 cm. Because 5 is bigger than 4 but smaller than 8, the compass arc reaches the ray twice. Make the swinging stick 4 cm and it touches once, making a right triangle. Make it 3 cm and it never reaches the ray, so no triangle exists. Make it 9 cm, longer than the fixed side, and it crosses the ray once again. So SSA sometimes gives two triangles, sometimes one, sometimes none. A criterion has to work every time.",
+      "One special case does work. In a right triangle, the *hypotenuse* is the side opposite the right angle, and the other two sides are *legs*. The *HL* criterion (hypotenuse-leg) says two right triangles with congruent hypotenuses and one pair of congruent legs are congruent. It looks like SSA, but the right angle rescues it: with hypotenuse 13 and leg 5, the other leg must satisfy 5^2 + b^2 = 13^2, so b^2 = 169 − 25 = 144 and b = 12. Every such triangle has sides 5, 12 and 13, so SSS finishes the job. Common mistake: writing SAS when the angle is not between the sides. Check where the angle sits before you name the criterion."
+     ],
+     "words": [
+      {
+       "w": "SSA",
+       "d": "side-side-angle: two sides and a non-included angle, which does not guarantee congruence"
+      },
+      {
+       "w": "hypotenuse",
+       "d": "the longest side of a right triangle, opposite the right angle"
+      },
+      {
+       "w": "legs",
+       "d": "the two sides of a right triangle that form the right angle"
+      },
+      {
+       "w": "HL",
+       "d": "hypotenuse-leg: a congruent hypotenuse and one congruent leg prove two right triangles congruent"
+      }
+     ],
+     "look": {
+      "type": "think",
+      "title": "The Swinging Door",
+      "text": "A door 8 units wide is hinged at B, and a ray from the far end of the door makes a 30° angle with it. A rod of length 5 is attached at B and can swing. Its tip must land on the ray. The closest point on the ray is 4 units from B, and the rod is 5 units long. Now imagine the rod is 4 units, then 3 units, then 9 units.",
+      "prompt": "For each rod length, how many triangles can be formed? Which length makes a right triangle, and why does that case have only one answer?"
+     },
+     "check": [
+      {
+       "q": "Which combination of congruent parts does NOT guarantee that two triangles are congruent?",
+       "choices": [
+        "SSS",
+        "ASA",
+        "SSA",
+        "SAS"
+       ],
+       "a": 2,
+       "why": "Two sides and a non-included angle can be arranged into two different triangles, so SSA fails."
+      },
+      {
+       "q": "The HL criterion applies to:",
+       "choices": [
+        "any two triangles with two congruent sides",
+        "two right triangles with congruent hypotenuses and a pair of congruent legs",
+        "two triangles with three congruent angles",
+        "two isosceles triangles"
+       ],
+       "a": 1,
+       "why": "HL is a special case for right triangles. The right angle plus the Pythagorean theorem forces the third side."
+      },
+      {
+       "q": "Two right triangles each have a hypotenuse of 13 and a leg of 5. What can you conclude?",
+       "choices": [
+        "They are not necessarily congruent",
+        "They are congruent by SSA",
+        "They are congruent by AAS",
+        "They are congruent by HL, and the other leg is 12 in both"
+       ],
+       "a": 3,
+       "why": "HL applies. The other leg is √(169 − 25) = √144 = 12 in each triangle, so all three sides match."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "title": "Proofs With Triangles and Quadrilaterals",
+   "lessons": [
+    {
+     "title": "Corresponding Parts",
+     "mainIdea": "Once two triangles are proved congruent, every pair of corresponding parts is congruent, a step called CPCTC.",
+     "reading": [
+      "The congruence criteria are tools for something bigger. Prove two triangles congruent, and every pair of corresponding sides and angles comes free. That step has a name: *CPCTC*, corresponding parts of congruent triangles are congruent. It is the definition of congruence read backward. A proof that uses it has two halves: first prove the triangles congruent with SSS, SAS, ASA, AAS or HL, then use CPCTC to reach the side or angle you actually wanted.",
+      "Example. Given: AB ≅ CB, and BD bisects angle ABC. Prove: AD ≅ CD. Statement 1: AB ≅ CB, given. Statement 2: BD bisects angle ABC, given. Statement 3: angle ABD ≅ angle CBD, definition of angle bisector. Statement 4: BD ≅ BD, reflexive property. Statement 5: triangle ABD ≅ triangle CBD, SAS, because the angle at B is included between AB and BD in one triangle and between CB and BD in the other. Statement 6: AD ≅ CD, CPCTC. Notice that the goal, AD ≅ CD, was never assumed. It fell out of the congruent triangles.",
+      "Now attach numbers. In that figure, AD = 3x + 1 and CD = 5x − 7. Because AD ≅ CD, 3x + 1 = 5x − 7, so 8 = 2x and x = 4. Then AD = 13 and CD = 13. Surveyors use the same idea to measure across a pond. They pick a point P, walk equal distances past it on two lines to make two triangles with vertical angles at P, and the far side of the small triangle they can measure equals the width of the pond by SAS and CPCTC. Common mistake: using CPCTC before the triangles are proved congruent. It is always the step after."
+     ],
+     "words": [
+      {
+       "w": "CPCTC",
+       "d": "corresponding parts of congruent triangles are congruent; used only after triangles are proved congruent"
+      },
+      {
+       "w": "bisects",
+       "d": "divides into two congruent parts; a bisector of an angle makes two congruent angles"
+      },
+      {
+       "w": "included angle",
+       "d": "the angle between two given sides of a triangle"
+      }
+     ],
+     "look": {
+      "type": "think",
+      "title": "Measuring Across a Pond",
+      "text": "A pond stretches from point A to point B. A surveyor picks a point P on dry land, walks from A through P to a point C so that AP = PC, and from B through P to a point D so that BP = PD. Angles APB and CPD are vertical angles. She then measures CD on dry land and gets 84 m.",
+      "prompt": "Which criterion proves triangle APB ≅ triangle CPD? What step then tells her the width AB, and what is it?"
+     },
+     "check": [
+      {
+       "q": "What does CPCTC stand for?",
+       "choices": [
+        "corresponding parts of congruent triangles are congruent",
+        "congruent parts create congruent triangles",
+        "corresponding points of circles are congruent",
+        "congruent perimeters of congruent triangles"
+       ],
+       "a": 0,
+       "why": "CPCTC states that once triangles are congruent, each pair of matching sides and angles is congruent."
+      },
+      {
+       "q": "In the proof that AD ≅ CD, what is the reason for the statement BD ≅ BD?",
+       "choices": [
+        "given",
+        "definition of bisector",
+        "CPCTC",
+        "reflexive property"
+       ],
+       "a": 3,
+       "why": "Any segment is congruent to itself. The shared side is justified by the reflexive property."
+      },
+      {
+       "q": "Triangles ABD and CBD are proved congruent with AD corresponding to CD. AD = 2x + 9 and CD = 4x − 3. What is AD?",
+       "choices": [
+        "6",
+        "15",
+        "21",
+        "33"
+       ],
+       "a": 2,
+       "why": "By CPCTC, 2x + 9 = 4x − 3, so 12 = 2x and x = 6. AD = 2(6) + 9 = 21. The 6 is x, and 33 comes from an arithmetic slip."
+      }
+     ]
+    },
+    {
+     "title": "Parallelograms",
+     "mainIdea": "In a parallelogram, opposite sides and opposite angles are congruent, consecutive angles are supplementary, and the diagonals bisect each other.",
+     "reading": [
+      "A *parallelogram* is a quadrilateral with both pairs of opposite sides parallel. That is the whole definition. Everything else is a theorem proved with congruent triangles. Draw parallelogram ABCD, with vertices in order, and add the *diagonal* AC. Because AB is parallel to DC, the alternate interior angles BAC and DCA are congruent. Because AD is parallel to BC, the alternate interior angles DAC and BCA are congruent. AC is shared, so triangle ABC ≅ triangle CDA by ASA. CPCTC then gives AB ≅ CD and BC ≅ AD: opposite sides of a parallelogram are congruent.",
+      "The same triangles give angle B ≅ angle D, and drawing the other diagonal gives angle A ≅ angle C: opposite angles are congruent. Consecutive angles, like A and B, are same-side interior angles between parallel lines, so they are supplementary. If angle A measures 70°, then B = 110°, C = 70° and D = 110°. Try sides: AB = 2x + 3 and CD = 4x − 9. Opposite sides are congruent, so 2x + 3 = 4x − 9, giving x = 6 and AB = 15. The diagonals also bisect each other: if the diagonals cross at E, then AE = EC and BE = ED. If AE = 7, the full diagonal AC = 14.",
+      "The converses let you prove a quadrilateral is a parallelogram. Any one of these is enough: both pairs of opposite sides congruent, both pairs of opposite angles congruent, diagonals that bisect each other, or one pair of opposite sides that are both parallel and congruent. Common mistake: setting consecutive angles equal to each other. Opposite angles are equal; consecutive angles add to 180°. If a problem gives angle A = 3x and angle B = 2x + 30, write 3x + 2x + 30 = 180, not 3x = 2x + 30."
+     ],
+     "words": [
+      {
+       "w": "parallelogram",
+       "d": "a quadrilateral with both pairs of opposite sides parallel"
+      },
+      {
+       "w": "diagonal",
+       "d": "a segment joining two vertices of a polygon that are not next to each other"
+      },
+      {
+       "w": "consecutive angles",
+       "d": "two angles of a polygon that share a side; in a parallelogram they are supplementary"
+      }
+     ],
+     "look": {
+      "type": "think",
+      "title": "The Folding Frame Again",
+      "text": "The cardboard square from the chapter story leaned into a parallelogram. Its sides stayed 10 cm each, but one angle dropped from 90° to 60°. Use the parallelogram theorems to find the other three angles. Then imagine adding a diagonal bar from one corner to the opposite corner.",
+      "prompt": "What are the four angles now? Why does adding the diagonal bar lock the shape, and which congruence criterion explains it?"
+     },
+     "check": [
+      {
+       "q": "In parallelogram ABCD, angle A measures 64°. What does angle B measure?",
+       "choices": [
+        "64°",
+        "116°",
+        "26°",
+        "296°"
+       ],
+       "a": 1,
+       "why": "Consecutive angles of a parallelogram are supplementary: 180° − 64° = 116°. Angle C, the opposite angle, would be 64°."
+      },
+      {
+       "q": "The diagonals of parallelogram ABCD meet at E. If AC = 18, what is AE?",
+       "choices": [
+        "18",
+        "36",
+        "9",
+        "6"
+       ],
+       "a": 2,
+       "why": "The diagonals bisect each other, so E is the midpoint of AC and AE = 18 ÷ 2 = 9."
+      },
+      {
+       "q": "Which fact by itself proves that a quadrilateral is a parallelogram?",
+       "choices": [
+        "one pair of opposite sides is congruent",
+        "the diagonals are congruent",
+        "two angles are right angles",
+        "both pairs of opposite sides are congruent"
+       ],
+       "a": 3,
+       "why": "Both pairs of opposite sides congruent is a converse theorem for parallelograms. One congruent pair alone could be an isosceles trapezoid."
+      }
+     ]
+    },
+    {
+     "title": "Rectangles, Rhombuses and Squares",
+     "mainIdea": "Special parallelograms add rules about their diagonals: a rectangle's are congruent, a rhombus's are perpendicular, and a square's are both.",
+     "reading": [
+      "Three special parallelograms show up everywhere. A *rectangle* is a parallelogram with four right angles. A *rhombus* is a parallelogram with four congruent sides. A *square* is both: four right angles and four congruent sides. Each has every parallelogram property from the last lesson, plus something extra about its diagonals. In a rectangle, the diagonals are congruent. In a rhombus, the diagonals are perpendicular and each one bisects a pair of opposite angles. In a square, all of that is true at once.",
+      "The rhombus rule turns into a right-triangle problem. The diagonals of a rhombus measure 12 and 16. They bisect each other, so the four triangles they form have legs of 6 and 8. Each triangle is a right triangle because the diagonals are perpendicular. The side of the rhombus is the hypotenuse: 6^2 + 8^2 = 36 + 64 = 100, so the side is √100 = 10. All four sides are 10, as a rhombus requires. For a rectangle, use the congruent diagonals: if AC = 3x + 2 and BD = 5x − 8, then 3x + 2 = 5x − 8, so x = 5 and each diagonal is 17.",
+      "A quadrilateral with exactly one pair of parallel sides is a *trapezoid*, and if its non-parallel legs are congruent it is an isosceles trapezoid, whose base angles are congruent and whose diagonals are congruent. Keep the family tree straight: every square is a rectangle and a rhombus, every rectangle and rhombus is a parallelogram, but a rectangle need not be a rhombus. Common mistake: assuming a rectangle's diagonals are perpendicular. Draw a long, thin rectangle and its diagonals cross at a sharp angle, not 90°. Only the rhombus and square get perpendicular diagonals."
+     ],
+     "words": [
+      {
+       "w": "rectangle",
+       "d": "a parallelogram with four right angles; its diagonals are congruent"
+      },
+      {
+       "w": "rhombus",
+       "d": "a parallelogram with four congruent sides; its diagonals are perpendicular"
+      },
+      {
+       "w": "square",
+       "d": "a parallelogram with four right angles and four congruent sides; both a rectangle and a rhombus"
+      },
+      {
+       "w": "trapezoid",
+       "d": "a quadrilateral with exactly one pair of parallel sides"
+      }
+     ],
+     "look": {
+      "type": "data",
+      "title": "Lines of Symmetry in Quadrilaterals",
+      "rows": [
+       [
+        "Parallelogram (general)",
+        0
+       ],
+       [
+        "Kite",
+        1
+       ],
+       [
+        "Isosceles trapezoid",
+        1
+       ],
+       [
+        "Rectangle",
+        2
+       ],
+       [
+        "Rhombus",
+        2
+       ],
+       [
+        "Square",
+        4
+       ]
+      ],
+      "unit": "lines of symmetry",
+      "cite": "counted from each shape's definition",
+      "prompt": "The rectangle's lines of symmetry pass through the midpoints of its sides, while the rhombus's lines are its diagonals. Why do those two shapes have different lines of symmetry, and why does the square get all four?"
+     },
+     "check": [
+      {
+       "q": "The diagonals of a rhombus measure 10 and 24. What is the length of each side?",
+       "choices": [
+        "17",
+        "34",
+        "13",
+        "26"
+       ],
+       "a": 2,
+       "why": "Half-diagonals are 5 and 12, meeting at a right angle. The side is √(25 + 144) = √169 = 13. The 17 comes from adding the halves."
+      },
+      {
+       "q": "In rectangle ABCD, diagonal AC = 2x + 7 and diagonal BD = 4x − 5. What is AC?",
+       "choices": [
+        "6",
+        "19",
+        "12",
+        "31"
+       ],
+       "a": 1,
+       "why": "A rectangle's diagonals are congruent: 2x + 7 = 4x − 5, so x = 6 and AC = 2(6) + 7 = 19. The 6 is only x."
+      },
+      {
+       "q": "Which quadrilateral always has perpendicular diagonals that are not necessarily congruent?",
+       "choices": [
+        "rhombus",
+        "rectangle",
+        "isosceles trapezoid",
+        "square"
+       ],
+       "a": 0,
+       "why": "A rhombus's diagonals are perpendicular but can have different lengths. A square's are perpendicular and congruent; a rectangle's are congruent but not perpendicular."
+      }
+     ]
+    }
+   ]
+  }
+ ],
+ "review": [
+  {
+   "q": "What is the image of (3, −4) under the translation (x, y) → (x − 2, y + 5)?",
+   "choices": [
+    "(5, −9)",
+    "(1, −9)",
+    "(1, 1)",
+    "(5, 1)"
+   ],
+   "a": 2,
+   "why": "3 − 2 = 1 and −4 + 5 = 1, so the image is (1, 1)."
+  },
+  {
+   "q": "What is the image of (−1, 4) after a 90° counterclockwise rotation about the origin?",
+   "choices": [
+    "(−4, −1)",
+    "(1, −4)",
+    "(4, 1)",
+    "(−4, 1)"
+   ],
+   "a": 0,
+   "why": "The rule (x, y) → (−y, x) gives (−4, −1). The choice (4, 1) would be the 90° clockwise image; the others mix up the signs."
+  },
+  {
+   "q": "What is the image of (6, −2) after a reflection across the line y = x?",
+   "choices": [
+    "(−6, 2)",
+    "(−2, 6)",
+    "(6, 2)",
+    "(2, −6)"
+   ],
+   "a": 1,
+   "why": "Reflection across y = x swaps the coordinates: (6, −2) becomes (−2, 6)."
+  },
+  {
+   "q": "Two triangles have two pairs of congruent angles and a congruent side between those angles. Which criterion applies?",
+   "choices": [
+    "SSS",
+    "SAS",
+    "AAS",
+    "ASA"
+   ],
+   "a": 3,
+   "why": "Two angles with the included side is angle-side-angle."
+  },
+  {
+   "q": "Why is SSA not a congruence criterion?",
+   "choices": [
+    "Because angles cannot be measured",
+    "Because the side opposite the given angle can swing into two different positions",
+    "Because it only works for right triangles",
+    "Because three parts are never enough"
+   ],
+   "a": 1,
+   "why": "With two sides and a non-included angle, the second side can cross the opposite ray in two places, giving two different triangles."
+  },
+  {
+   "q": "In parallelogram ABCD, angle A = (3x)° and angle B = (x + 40)°. What is x?",
+   "choices": [
+    "20",
+    "45",
+    "35",
+    "105"
+   ],
+   "a": 2,
+   "why": "Consecutive angles are supplementary: 3x + x + 40 = 180, so 4x = 140 and x = 35. Setting the angles equal gives 20, which is the wrong relationship. The angles are 105° and 75°."
+  },
+  {
+   "q": "The diagonals of a rhombus measure 18 and 24. What is the length of one side?",
+   "choices": [
+    "21",
+    "30",
+    "12",
+    "15"
+   ],
+   "a": 3,
+   "why": "Half-diagonals 9 and 12 form a right triangle with the side as hypotenuse: √(81 + 144) = √225 = 15."
+  },
+  {
+   "q": "When is CPCTC used in a proof?",
+   "choices": [
+    "before the triangles are proved congruent, to set up the criterion",
+    "as the reason for a shared side",
+    "after the triangles are proved congruent, to conclude that other parts are congruent",
+    "to show two lines are parallel"
+   ],
+   "a": 2,
+   "why": "CPCTC follows a congruence criterion. Once the triangles are congruent, their remaining corresponding parts are congruent."
+  }
+ ]
+}

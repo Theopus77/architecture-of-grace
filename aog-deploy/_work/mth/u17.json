@@ -1,0 +1,2881 @@
+{
+ "intro": [
+  "How tall is a seventh grader? Is this coin fair? Does more sleep really go with better grades? None of these questions has a single answer you can look up. Each one asks about a whole group, or about chance, and the honest answer comes from collecting data and reading it carefully. That is what statistics and probability do. They turn a pile of numbers into a picture, a few summary values and a claim you can defend.",
+  "In this unit you will measure a class and describe it with dot plots, histograms and box plots. You will use the mean and median for the center, and the range, IQR and MAD for the spread. You will put a number on chance, from 0 for impossible to 1 for certain. You will list every outcome of a compound event and run simulations. You will learn why a random sample of 50 students can tell you something true about 800. Finally you will plot two measurements at once, fit a line by eye, and read its slope and intercept. You will also sort categories into two-way tables.",
+  "Along the way you will learn what data can and cannot prove. A bigger sample beats a smaller one. But a biased sample of a million is worse than a random sample of a hundred. Two things that rise together are associated, but association is not cause. By the end you will be able to answer a statistical question from start to finish. You will explain, with numbers, why your answer deserves to be believed."
+ ],
+ "bigQuestion": "How do we use data and chance to make claims about a whole group that we can actually defend?",
+ "timeline": [
+  {
+   "y": "1654",
+   "t": "Pascal and Fermat exchange letters about games of chance, starting the mathematics of probability"
+  },
+  {
+   "y": "1662",
+   "t": "John Graunt studies London's death records and publishes some of the first statistical tables"
+  },
+  {
+   "y": "1713",
+   "t": "Jacob Bernoulli's Ars Conjectandi is published, proving that long runs of trials settle near the true probability"
+  },
+  {
+   "y": "1763",
+   "t": "Thomas Bayes's essay on updating probabilities with evidence is published after his death"
+  },
+  {
+   "y": "1786",
+   "t": "William Playfair prints some of the first bar charts and line graphs of economic data"
+  },
+  {
+   "y": "1790",
+   "t": "The first United States Census counts about 3.9 million people"
+  },
+  {
+   "y": "1805–1809",
+   "t": "Legendre and Gauss publish the method of least squares for fitting a line to scattered data"
+  },
+  {
+   "y": "1858",
+   "t": "Florence Nightingale uses diagrams of hospital deaths to argue for better sanitation"
+  },
+  {
+   "y": "1880s",
+   "t": "Francis Galton describes regression and correlation from measurements of parents and children"
+  },
+  {
+   "y": "1900",
+   "t": "Karl Pearson introduces the chi-square test for comparing counts in tables"
+  },
+  {
+   "y": "1977",
+   "t": "John Tukey's Exploratory Data Analysis popularizes the box plot"
+  }
+ ],
+ "wrap": {
+  "words": [
+   {
+    "w": "statistical question",
+    "d": "a question whose answers vary across a group, so it takes data to answer"
+   },
+   {
+    "w": "mean",
+    "d": "the sum of the values divided by how many there are"
+   },
+   {
+    "w": "median",
+    "d": "the middle value of the ordered data"
+   },
+   {
+    "w": "interquartile range",
+    "d": "Q3 minus Q1, the spread of the middle half of the data"
+   },
+   {
+    "w": "mean absolute deviation",
+    "d": "the average distance of the values from the mean"
+   },
+   {
+    "w": "box plot",
+    "d": "a picture of the minimum, Q1, median, Q3 and maximum"
+   },
+   {
+    "w": "probability",
+    "d": "a number from 0 to 1 that says how likely an event is"
+   },
+   {
+    "w": "sample space",
+    "d": "the organized list of every possible outcome"
+   },
+   {
+    "w": "random sample",
+    "d": "a sample where every member of the population had an equal chance of being picked"
+   },
+   {
+    "w": "scatter plot",
+    "d": "a graph with one point for each pair of measurements"
+   },
+   {
+    "w": "line of fit",
+    "d": "a straight line drawn through the middle of a linear cloud of points"
+   },
+   {
+    "w": "two-way table",
+    "d": "a table that counts how many fall into each pair of categories"
+   }
+  ],
+  "test": [
+   {
+    "q": "What is the mean of 4, 8, 9 and 15?",
+    "choices": [
+     "36",
+     "12",
+     "8.5",
+     "9"
+    ],
+    "a": 3,
+    "why": "4 + 8 + 9 + 15 = 36, and 36 ÷ 4 = 9."
+   },
+   {
+    "q": "What is the median of 9, 2, 6, 11, 5?",
+    "choices": [
+     "6",
+     "9",
+     "5",
+     "6.6"
+    ],
+    "a": 0,
+    "why": "In order: 2, 5, 6, 9, 11. The middle value is 6. The mean is 6.6."
+   },
+   {
+    "q": "What is the IQR of 3, 5, 7, 9, 11, 13, 15, 17?",
+    "choices": [
+     "14",
+     "8",
+     "10",
+     "6"
+    ],
+    "a": 1,
+    "why": "Lower half 3, 5, 7, 9 gives Q1 = 6; upper half 11, 13, 15, 17 gives Q3 = 14. IQR = 14 − 6 = 8."
+   },
+   {
+    "q": "What is the MAD of 4, 8, 12, 16?",
+    "choices": [
+     "0",
+     "16",
+     "4",
+     "5"
+    ],
+    "a": 2,
+    "why": "Mean = 40 ÷ 4 = 10. Distances 6, 2, 2, 6 add to 16, and 16 ÷ 4 = 4."
+   },
+   {
+    "q": "Data: 12, 14, 15, 15, 16, 80. Which measure of center best describes a typical value?",
+    "choices": [
+     "the mean, because it uses every value",
+     "the range, because it includes 80",
+     "the maximum, because it is the largest",
+     "the median, because 80 is an outlier that pulls the mean up"
+    ],
+    "a": 3,
+    "why": "The mean is 152 ÷ 6, about 25.3, above five of the six values. The median is 15."
+   },
+   {
+    "q": "A bag has 2 red and 6 blue marbles. What is P(red)?",
+    "choices": [
+     "1/4",
+     "1/3",
+     "2/6",
+     "3/4"
+    ],
+    "a": 0,
+    "why": "2 red out of 8 marbles: 2/8 = 1/4."
+   },
+   {
+    "q": "A spinner is spun 25 times and lands on green 10 times. What is the experimental probability of green?",
+    "choices": [
+     "0.25",
+     "0.4",
+     "0.6",
+     "2.5"
+    ],
+    "a": 1,
+    "why": "10 ÷ 25 = 0.4."
+   },
+   {
+    "q": "You flip two coins and roll one die. How many outcomes are in the sample space?",
+    "choices": [
+     "10",
+     "12",
+     "24",
+     "36"
+    ],
+    "a": 2,
+    "why": "2 × 2 × 6 = 24."
+   },
+   {
+    "q": "Two dice are rolled. What is the probability that both show an even number?",
+    "choices": [
+     "1/2",
+     "1/6",
+     "3/4",
+     "1/4"
+    ],
+    "a": 3,
+    "why": "Each die shows even with probability 1/2, and the rolls are independent: 1/2 × 1/2 = 1/4."
+   },
+   {
+    "q": "Which is a random sample of a school's students?",
+    "choices": [
+     "30 students chosen by a random number generator from the full enrollment list",
+     "30 students in the library after school",
+     "the 30 students on the honor roll",
+     "30 students who reply to a text survey"
+    ],
+    "a": 0,
+    "why": "Only the random draw from the full list gives every student an equal chance."
+   },
+   {
+    "q": "In a random sample of 75 students, 30 prefer soccer. The school has 1,500 students. About how many prefer soccer?",
+    "choices": [
+     "30",
+     "600",
+     "450",
+     "750"
+    ],
+    "a": 1,
+    "why": "30/75 = 0.4, and 0.4 × 1,500 = 600."
+   },
+   {
+    "q": "What is the slope of a line through (3, 8) and (7, 20)?",
+    "choices": [
+     "4",
+     "12",
+     "3",
+     "1/3"
+    ],
+    "a": 2,
+    "why": "Rise 20 − 8 = 12, run 7 − 3 = 4, so 12 ÷ 4 = 3."
+   },
+   {
+    "q": "Using y = 4x − 6, what is y when x = 5?",
+    "choices": [
+     "26",
+     "20",
+     "3.5",
+     "14"
+    ],
+    "a": 3,
+    "why": "4 × 5 = 20, and 20 − 6 = 14. Adding 6 gives 26 by mistake."
+   },
+   {
+    "q": "18 of 60 girls and 12 of 30 boys ride the bus. Which group has the higher share of bus riders?",
+    "choices": [
+     "boys, 40% versus 30%",
+     "girls, because 18 is more than 12",
+     "they are equal",
+     "it cannot be told from counts"
+    ],
+    "a": 0,
+    "why": "18 ÷ 60 = 0.3 and 12 ÷ 30 = 0.4. Compare percents, not counts, when groups differ in size."
+   },
+   {
+    "q": "A scatter plot of hours of sleep and quiz score rises to the right. Which describes it?",
+    "choices": [
+     "a negative association",
+     "a positive association",
+     "no association",
+     "a two-way table"
+    ],
+    "a": 1,
+    "why": "As sleep increases, scores tend to increase, so the association is positive."
+   }
+  ],
+  "write": {
+   "prompt": "Two classes took the same quiz. Class A: mean 78, MAD 4. Class B: mean 84, MAD 4. Is Class B really doing better, or could the difference be chance? Find how many MADs apart the means are, decide, and explain each step. Then say what else you would want to know before trusting the conclusion.",
+   "tips": [
+    "State your decision in the first sentence.",
+    "Show the subtraction and the division that give the number of MADs.",
+    "Explain what a difference of that many MADs means about how much the two groups overlap.",
+    "Say how the classes were chosen and whether that could bias the comparison.",
+    "Check your arithmetic a second time before you finish."
+   ]
+  }
+ },
+ "n": 17,
+ "title": "Statistics and Probability",
+ "years": "Statistics and Probability",
+ "band": "6-8",
+ "chapters": [
+  {
+   "n": 37,
+   "title": "Describing Data",
+   "years": "Statistics",
+   "bigQuestion": "How can a few numbers and one picture describe a whole group fairly?",
+   "story": {
+    "title": "Twenty-Eight Heights, One Class",
+    "kicker": "A seventh-grade class in Chicago tries to answer a simple question and finds that one number is never enough.",
+    "paragraphs": [
+     "Ms. Ortiz wrote one question on the board: How tall is a seventh grader? Her class of 28 laughed. Jamal stood up and said, \"I am 158 centimeters, so that is the answer.\" Priya shook her head. \"You are one seventh grader. The question asks about all of us.\" So they taped a measuring tape to the wall and took turns. By the end of the period they had 28 numbers, from 141 centimeters up to 176.",
+     "The list on the board was a mess of numbers in the order students had been measured. Nobody could see a pattern in it. Ms. Ortiz asked, \"Can one number describe this class?\" Jamal said the tallest, 176. Priya said \"most of us are between 152 and 162.\" Devon added all 28 heights and divided by 28 and got 157.5. Three students, three different answers, and every one of them was telling the truth about something.",
+     "Then Priya drew a number line from 140 to 180 and put one dot above each height. Suddenly the class could see itself. The dots piled up between 152 and 162. A few sat lower. One dot, Marcus, stood alone at 176. Ms. Ortiz showed them the middle dot when the 28 were put in order: 157. The mean, 157.5, was a little higher, and the class figured out why. Marcus's 176 pulled it up, while the middle dot did not care how tall the tallest student was.",
+     "Next door, the eighth-grade class had done the same thing. When the two dot plots were drawn on the same line, the eighth-grade dots sat a bit to the right, but the two piles overlapped a lot. Was the eighth grade really taller, or just a little different by chance? Answering that takes more than a mean. It takes a way to measure how spread out each pile is. That is what this chapter builds: pictures of data, numbers for the center, numbers for the spread, and a way to compare two groups."
+    ],
+    "think": "If a new student who was 190 centimeters tall joined the class, which would change more, the mean or the middle value? Why?"
+   },
+   "sections": [
+    {
+     "title": "Questions and Pictures of Data",
+     "lessons": [
+      {
+       "title": "Statistical Questions",
+       "mainIdea": "A statistical question expects answers that vary, and you answer it by collecting and describing data from a group.",
+       "reading": [
+        "Ask one friend, \"How many pets do you have?\" You get one answer, maybe 2. Ask the same question to everyone in your class and you get a whole set of answers: 0, 0, 1, 2, 3, 0, 1, and so on. That set of answers is *data*. A *statistical question* is a question you expect to have many different answers, so you need data to answer it. \"How many pets does Ana have?\" is not statistical. \"How many pets do students in our class have?\" is.",
+        "The word for the differences among the answers is *variability*. Heights vary, bus wait times vary, and the number of pets varies. If there is no variability, you do not need statistics. \"How many days are in a week?\" has one answer, so it is not a statistical question. \"How many minutes did students in Illinois spend on homework last night?\" has thousands of answers, so it is.",
+        "To answer a statistical question, follow four steps. First, ask the question clearly. Second, collect the data from a group. Third, organize and picture the data with a plot. Fourth, describe the data with numbers such as the center and the spread. A common mistake is to stop after one answer, like \"My cousin has 3 pets, so seventh graders have 3 pets.\" One answer is a fact about one person, not a description of a group."
+       ],
+       "words": [
+        {
+         "w": "data",
+         "d": "a set of answers or measurements collected from a group"
+        },
+        {
+         "w": "statistical question",
+         "d": "a question whose answers vary from person to person, so it takes data to answer"
+        },
+        {
+         "w": "variability",
+         "d": "the differences among the values in a set of data"
+        }
+       ],
+       "look": {
+        "type": "think",
+        "title": "Sorting Questions",
+        "text": "Read these five questions: How old is the Willis Tower? How many text messages did students in your grade send yesterday? What is 7 times 8? How long does it take students at our school to get to school in the morning? How many stops does the CTA Red Line have?",
+        "prompt": "Which two are statistical questions? What kind of answers would you collect for each of them?"
+       },
+       "check": [
+        {
+         "q": "Which question is a statistical question?",
+         "choices": [
+          "How many minutes do students in our school spend on the bus each morning?",
+          "How many minutes are in an hour?",
+          "How tall is the tallest student in the class?",
+          "What is 12 × 4?"
+         ],
+         "a": 0,
+         "why": "Bus times vary from student to student, so you need data from many students to answer it. The others have one fixed answer."
+        },
+        {
+         "q": "Why is \"How many pets does Marcus have?\" not a statistical question?",
+         "choices": [
+          "Pets are not a kind of data.",
+          "It has one answer, so there is no variability to describe.",
+          "Marcus might have zero pets.",
+          "It uses a person's name."
+         ],
+         "a": 1,
+         "why": "Marcus has one number of pets. A statistical question needs answers that vary across a group."
+        },
+        {
+         "q": "A class collects 28 heights. What is the next step in answering the statistical question?",
+         "choices": [
+          "Pick the tallest height as the answer.",
+          "Ask one more student and use that answer.",
+          "Organize the heights in a plot and describe the center and spread.",
+          "Add all the heights and stop there."
+         ],
+         "a": 2,
+         "why": "After collecting data, you picture it and describe it with numbers. One value, or a bare total, does not describe the group."
+        }
+       ]
+      },
+      {
+       "title": "Dot Plots",
+       "mainIdea": "A dot plot stacks one dot per data value above a number line, so you can see every value and where they pile up.",
+       "reading": [
+        "Ten students report their number of pets: 1, 0, 2, 1, 3, 0, 1, 2, 0, 1. A *dot plot* shows this on a number line from 0 to 3. Put one dot above the number for each answer and stack repeats. Above 0 you stack 3 dots, above 1 you stack 4 dots, above 2 you stack 2 dots, and above 3 you place 1 dot. Count the dots: 3 + 4 + 2 + 1 = 10, which matches the ten students. Always check that total.",
+        "The dot plot answers questions at a glance. The tallest stack shows the most common value, called the *mode*; here it is 1 pet. The dots spread from 0 to 3, so the smallest and largest values are easy to spot. You can also count how many students have at least 2 pets: 2 + 1 = 3 students, which is 3 out of 10. The height of each stack is that value's *frequency*.",
+        "A common mistake is to put the dot in the wrong place, for example stacking a dot at 2 when the student said 3 pets. Another is skipping numbers on the line. The line must include every whole number from the smallest value to the largest, even if a number has no dots. A gap with no dots is information too. Dot plots work best for small sets of whole numbers, like pets or siblings. For hundreds of values, or measurements like 157.3 cm, a histogram works better."
+       ],
+       "words": [
+        {
+         "w": "dot plot",
+         "d": "a graph with one dot above the number line for each data value, stacking repeats"
+        },
+        {
+         "w": "mode",
+         "d": "the value that appears most often in a data set"
+        },
+        {
+         "w": "frequency",
+         "d": "how many times a value appears in the data"
+        }
+       ],
+       "look": {
+        "type": "data",
+        "title": "Pets Reported by Ten Students",
+        "rows": [
+         [
+          "0 pets",
+          3
+         ],
+         [
+          "1 pet",
+          4
+         ],
+         [
+          "2 pets",
+          2
+         ],
+         [
+          "3 pets",
+          1
+         ]
+        ],
+        "unit": "students",
+        "cite": "Class survey used in this lesson (made-up example)",
+        "prompt": "How many students have fewer than 2 pets? What fraction of the class is that?"
+       },
+       "check": [
+        {
+         "q": "In the pets dot plot, how many students have fewer than 2 pets?",
+         "choices": [
+          "3",
+          "4",
+          "2",
+          "7"
+         ],
+         "a": 3,
+         "why": "Fewer than 2 means 0 or 1 pet: 3 + 4 = 7 students."
+        },
+        {
+         "q": "A dot plot of shoe sizes has 2 dots above 5, 5 dots above 6, 4 dots above 7 and 1 dot above 8. How many students were surveyed?",
+         "choices": [
+          "12",
+          "4",
+          "26",
+          "5"
+         ],
+         "a": 0,
+         "why": "Add the dots in every stack: 2 + 5 + 4 + 1 = 12. Adding the shoe sizes themselves (26) or counting the stacks (4) is a different question."
+        },
+        {
+         "q": "Which value is the mode of that shoe-size dot plot?",
+         "choices": [
+          "5",
+          "6",
+          "8",
+          "7"
+         ],
+         "a": 1,
+         "why": "Size 6 has the tallest stack, 5 dots. The mode is the most frequent value, not the smallest or largest."
+        }
+       ]
+      },
+      {
+       "title": "Histograms",
+       "mainIdea": "A histogram groups data into equal-width intervals and shows how many values fall in each one, with bars that touch.",
+       "reading": [
+        "Twenty students record last night's homework time in minutes; the values range from 5 to 75. A dot plot with a dot at 5, 12, 18, 23, 25, 27 and so on would be hard to read. Instead, group the values into equal *intervals*: 0–19, 20–39, 40–59 and 60–79 minutes. Count how many values land in each: 3, 8, 6 and 3. Check: 3 + 8 + 6 + 3 = 20. A *histogram* draws a bar for each interval, with height equal to the count. The bars touch because the intervals sit next to each other on the number line.",
+        "Reading the histogram: the tallest bar is 20–39 minutes, so most students spent between 20 and 39 minutes. Nine students (6 + 3) spent 40 minutes or more. Nine out of twenty is 9/20 = 0.45, or 45% of the class. You cannot see exact values, only the interval each value belongs to. That is the trade-off: a histogram shows the shape clearly but hides the details.",
+        "Two common mistakes: using intervals of different widths, which makes bars unfair to compare, and putting a value on the wrong side of a boundary. Decide ahead of time that 20 minutes belongs to 20–39, not 0–19, and stick with it. Changing the interval width changes the picture. Intervals of 10 minutes would give eight bars and more detail; intervals of 40 would give two bars and almost no detail."
+       ],
+       "words": [
+        {
+         "w": "histogram",
+         "d": "a bar graph of counts in equal intervals, with bars that touch"
+        },
+        {
+         "w": "interval",
+         "d": "a range of values grouped together, like 20 to 39 minutes"
+        }
+       ],
+       "look": {
+        "type": "data",
+        "title": "Homework Minutes for Twenty Students",
+        "rows": [
+         [
+          "0–19 min",
+          3
+         ],
+         [
+          "20–39 min",
+          8
+         ],
+         [
+          "40–59 min",
+          6
+         ],
+         [
+          "60–79 min",
+          3
+         ]
+        ],
+        "unit": "students",
+        "cite": "Class data used in this lesson (made-up example)",
+        "prompt": "How many students spent fewer than 40 minutes? What percent of the class is that?"
+       },
+       "check": [
+        {
+         "q": "In the homework histogram, how many students spent fewer than 40 minutes?",
+         "choices": [
+          "8",
+          "9",
+          "11",
+          "14"
+         ],
+         "a": 2,
+         "why": "Fewer than 40 minutes covers the first two intervals: 3 + 8 = 11 students."
+        },
+        {
+         "q": "What percent of the 20 students spent 40 minutes or more?",
+         "choices": [
+          "9%",
+          "55%",
+          "40%",
+          "45%"
+         ],
+         "a": 3,
+         "why": "6 + 3 = 9 students; 9 ÷ 20 = 0.45, which is 45%."
+        },
+        {
+         "q": "Why do the bars of a histogram touch?",
+         "choices": [
+          "The intervals sit next to each other on the number line with no gaps.",
+          "It makes the graph look neater.",
+          "Every interval has the same count.",
+          "Histograms only show whole numbers."
+         ],
+         "a": 0,
+         "why": "Each bar covers a stretch of the number line, and the next bar starts where the last one ended."
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "title": "Finding the Center",
+     "lessons": [
+      {
+       "title": "The Mean",
+       "mainIdea": "The mean is the fair-share value: add all the values and divide by how many there are.",
+       "reading": [
+        "Five friends bring cookies to share: 3, 7, 4, 6 and 5 cookies. If they pool the cookies and share equally, how many does each get? Add: 3 + 7 + 4 + 6 + 5 = 25. Divide by the 5 friends: 25 ÷ 5 = 5. Each friend gets 5 cookies. That fair-share number is the *mean*, also called the average. The mean is the value every data point would have if the total were spread out evenly.",
+        "Try it with four test scores: 80, 90, 70 and 100. The *sum* is 80 + 90 + 70 + 100 = 340. Divide by 4 scores: 340 ÷ 4 = 85. The mean score is 85. Notice that the mean does not have to be one of the values, and it can be a decimal. The mean of 2, 3 and 5 is 10 ÷ 3, which is about 3.33.",
+        "You can also work backward. Suppose four numbers have a mean of 10, and three of them are 7, 9 and 12. The total must be 4 × 10 = 40. The three known numbers add to 28, so the missing number is 40 − 28 = 12. A common mistake is dividing by the wrong count, such as dividing 340 by 3 because you skipped a score. Another is forgetting a zero: if one friend brought 0 cookies, that friend still counts in the division."
+       ],
+       "words": [
+        {
+         "w": "mean",
+         "d": "the sum of the values divided by the number of values; the fair-share value"
+        },
+        {
+         "w": "sum",
+         "d": "the total you get by adding all the values"
+        }
+       ],
+       "look": {
+        "type": "think",
+        "title": "Balancing the Bags",
+        "text": "Six bags of apples weigh 2, 3, 3, 4, 5 and 7 pounds. Imagine pouring all the apples together and refilling the six bags so each holds the same weight. Add the weights, then divide by the number of bags.",
+        "prompt": "What is the mean weight? Which bags are above the mean, and by how much in total? Compare that to how far the light bags are below it."
+       },
+       "check": [
+        {
+         "q": "What is the mean of 12, 15, 9 and 20?",
+         "choices": [
+          "56",
+          "14",
+          "18.67",
+          "11"
+         ],
+         "a": 1,
+         "why": "12 + 15 + 9 + 20 = 56, and 56 ÷ 4 = 14. Forgetting to divide gives 56; dividing by 3 gives about 18.67."
+        },
+        {
+         "q": "The mean of five numbers is 8. What is their sum?",
+         "choices": [
+          "8",
+          "13",
+          "40",
+          "1.6"
+         ],
+         "a": 2,
+         "why": "Mean × count = sum: 8 × 5 = 40."
+        },
+        {
+         "q": "Four numbers have a mean of 10. Three of them are 7, 9 and 12. What is the fourth?",
+         "choices": [
+          "10",
+          "28",
+          "2",
+          "12"
+         ],
+         "a": 3,
+         "why": "The total is 4 × 10 = 40. The known three add to 28, so 40 − 28 = 12."
+        }
+       ]
+      },
+      {
+       "title": "The Median",
+       "mainIdea": "The median is the middle value of the ordered data; half the values are at or below it and half at or above.",
+       "reading": [
+        "Five students' heights, in centimeters, are 155, 150, 160, 152 and 158. To find the *median*, first put the values in order: 150, 152, 155, 158, 160. The middle value is 155, with two values below and two above. The median height is 155 cm. The ordering step matters. If you take the middle of the unordered list you get 160, which is wrong.",
+        "When the count is even there are two middle values, and the median is their mean. Six values: 2, 3, 5, 8, 9, 12. The two middle values are 5 and 8. Their mean is (5 + 8) ÷ 2 = 13 ÷ 2 = 6.5. So the median is 6.5, even though 6.5 is not in the list. A quick way to find the middle: cross off the smallest and largest together, again and again, until one or two values remain.",
+        "The median is a position, not a total. Change the largest height from 160 to 200 cm. The median does not move; it is still 155. That makes the median a good choice when a few values are far from the rest. Watch out for repeated values: in 4, 4, 4, 9, 10, the median is 4, and each 4 counts as its own value in the *ordered list*."
+       ],
+       "words": [
+        {
+         "w": "median",
+         "d": "the middle value when the data are in order, or the mean of the two middle values"
+        },
+        {
+         "w": "ordered list",
+         "d": "the data written from smallest to largest"
+        }
+       ],
+       "look": {
+        "type": "think",
+        "title": "Wait Times at the Bus Stop",
+        "text": "Nine mornings in a row, a student times the wait for the bus in minutes: 4, 12, 3, 7, 5, 9, 2, 6, 25. Write the nine times in order from smallest to largest. Cross off the smallest and largest together until one value is left.",
+        "prompt": "What is the median wait? Why is the median a fairer typical wait here than the mean, which is about 8.1 minutes?"
+       },
+       "check": [
+        {
+         "q": "What is the median of 7, 2, 9, 4, 5?",
+         "choices": [
+          "5",
+          "9",
+          "4",
+          "5.4"
+         ],
+         "a": 0,
+         "why": "In order: 2, 4, 5, 7, 9. The middle value is 5. Taking the middle of the unordered list gives 9, and 5.4 is the mean."
+        },
+        {
+         "q": "What is the median of 10, 20, 30, 40?",
+         "choices": [
+          "20",
+          "25",
+          "30",
+          "35"
+         ],
+         "a": 1,
+         "why": "There are two middle values, 20 and 30. Their mean is (20 + 30) ÷ 2 = 25."
+        },
+        {
+         "q": "The data set 3, 3, 4, 8, 9, 10, 12, 15 has median 8.5. If the 15 is changed to 50, what is the new median?",
+         "choices": [
+          "12.9",
+          "10",
+          "8.5",
+          "9"
+         ],
+         "a": 2,
+         "why": "The two middle values are still 8 and 9, so the median stays (8 + 9) ÷ 2 = 8.5. Only the mean would change."
+        }
+       ]
+      },
+      {
+       "title": "Mean or Median?",
+       "mainIdea": "Use the mean when values are fairly even; use the median when a few extreme values would drag the mean away from the typical value.",
+       "reading": [
+        "Six workers at a small shop earn these yearly amounts, in thousands of dollars: 30, 32, 35, 38, 40 and 200. The 200 is the owner. The mean is (30 + 32 + 35 + 38 + 40 + 200) ÷ 6 = 375 ÷ 6 = 62.5, so \"the average worker earns $62,500.\" But five of the six earn under $41,000. The median is the mean of the two middle values, (35 + 38) ÷ 2 = 36.5, or $36,500. The median describes a typical worker far better.",
+        "A value far from the rest is called an *outlier*. Outliers pull the mean toward them because the mean uses every value in its sum. The median ignores how far away an outlier is; it only counts it as one value. When the data have outliers or a long tail on one side, the median is usually the better *measure of center*. When the data are roughly symmetric, the mean and median are close, and either works.",
+        "Ask two questions before choosing. Are there outliers? Does the total matter? If you want the total, like the total cookies to buy, the mean is the right tool, because mean × count = total. If you want a typical value, like a typical home price in a Chicago neighborhood, the median is safer, because one mansion sale would distort the mean. A common mistake is to call the mean \"more accurate.\" Both are exact; they just answer different questions."
+       ],
+       "words": [
+        {
+         "w": "outlier",
+         "d": "a value that sits far from the rest of the data"
+        },
+        {
+         "w": "measure of center",
+         "d": "a single number, like the mean or median, that describes a typical value"
+        }
+       ],
+       "look": {
+        "type": "data",
+        "title": "Yearly Pay at a Small Shop (example)",
+        "rows": [
+         [
+          "Worker A",
+          30
+         ],
+         [
+          "Worker B",
+          32
+         ],
+         [
+          "Worker C",
+          35
+         ],
+         [
+          "Worker D",
+          38
+         ],
+         [
+          "Worker E",
+          40
+         ],
+         [
+          "Owner",
+          200
+         ]
+        ],
+        "unit": "thousand dollars",
+        "cite": "Made-up example for this lesson",
+        "prompt": "Remove the owner. What are the mean and median of the five remaining values? Why are they now close together?"
+       },
+       "check": [
+        {
+         "q": "Data: 5, 6, 6, 7, 8, 40. Which statement is true?",
+         "choices": [
+          "The outlier pulls the median up.",
+          "The mean and median are equal.",
+          "The mean is smaller than the median.",
+          "The outlier pulls the mean up, so the median is a better measure of the typical value."
+         ],
+         "a": 3,
+         "why": "Mean = 72 ÷ 6 = 12, but the median is (6 + 7) ÷ 2 = 6.5. The 40 drags the mean far above the typical value."
+        },
+        {
+         "q": "For which purpose is the mean the better choice?",
+         "choices": [
+          "Finding how many juice boxes to buy for a party, given the number each student drinks.",
+          "Describing a typical home price when one home sold for ten times the others.",
+          "Describing a typical wait when one wait was two hours.",
+          "Finding the middle finisher in a race."
+         ],
+         "a": 0,
+         "why": "Mean × count gives the total needed. The other cases have outliers or ask for a middle position, where the median fits."
+        },
+        {
+         "q": "A set has mean 20 and median 20. A value of 100 is added. What happens?",
+         "choices": [
+          "Both stay at 20.",
+          "The mean increases more than the median.",
+          "The median increases more than the mean.",
+          "The mean stays at 20 and the median rises."
+         ],
+         "a": 1,
+         "why": "The 100 adds a lot to the sum, so the mean jumps. The median moves at most to the next value in the ordered list."
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "title": "Measuring Spread",
+     "lessons": [
+      {
+       "title": "Range and Interquartile Range",
+       "mainIdea": "Range measures the full spread; interquartile range measures the spread of the middle half and is not thrown off by outliers.",
+       "reading": [
+        "Eight students count their books at home: 4, 6, 7, 9, 10, 12, 15, 18. The *range* is the largest value minus the smallest: 18 − 4 = 14. The range is quick, but it depends only on two values. One student with 200 books would push the range to 196, and it would say nothing about the other seven.",
+        "The *interquartile range*, or IQR, measures the spread of the middle half of the data. First find the median: the two middle values are 9 and 10, so the median is 9.5. The lower half is 4, 6, 7, 9; its median is (6 + 7) ÷ 2 = 6.5. That is the first *quartile*, Q1. The upper half is 10, 12, 15, 18; its median is (12 + 15) ÷ 2 = 13.5. That is the third quartile, Q3. IQR = Q3 − Q1 = 13.5 − 6.5 = 7. The middle half of the students have roughly 6.5 to 13.5 books.",
+        "With an odd count, leave the median out of both halves. For 2, 4, 5, 7, 8, 10, 11, the median is 7. The lower half is 2, 4, 5, so Q1 = 4. The upper half is 8, 10, 11, so Q3 = 10. IQR = 10 − 4 = 6. Common mistakes: forgetting to order the data first, and subtracting the wrong pair. Range uses max and min; IQR uses Q3 and Q1. If one value becomes an outlier, the range jumps but the IQR barely moves."
+       ],
+       "words": [
+        {
+         "w": "range",
+         "d": "the largest value minus the smallest value"
+        },
+        {
+         "w": "interquartile range",
+         "d": "Q3 minus Q1; the spread of the middle half of the data"
+        },
+        {
+         "w": "quartile",
+         "d": "a value that splits the ordered data into quarters; Q1 is the median of the lower half, Q3 of the upper half"
+        }
+       ],
+       "look": {
+        "type": "think",
+        "title": "Two Ways to Measure Spread",
+        "text": "Points scored by a player in seven games: 10, 12, 14, 15, 16, 18, 40. The 40 came in one wild overtime game. Find the range. Then find the median, Q1, Q3 and the IQR.",
+        "prompt": "Which measure of spread better describes the player's usual games, and why?"
+       },
+       "check": [
+        {
+         "q": "What is the range of 3, 11, 8, 15, 6?",
+         "choices": [
+          "15",
+          "9",
+          "12",
+          "8"
+         ],
+         "a": 2,
+         "why": "Largest minus smallest: 15 − 3 = 12."
+        },
+        {
+         "q": "Data: 2, 4, 5, 7, 8, 10, 11. What is the IQR?",
+         "choices": [
+          "9",
+          "7",
+          "10",
+          "6"
+         ],
+         "a": 3,
+         "why": "Median 7; lower half 2, 4, 5 gives Q1 = 4; upper half 8, 10, 11 gives Q3 = 10. IQR = 10 − 4 = 6. The range is 9."
+        },
+        {
+         "q": "Which measure of spread changes the least when one outlier is added?",
+         "choices": [
+          "the interquartile range",
+          "the range",
+          "the maximum value",
+          "both change by the same amount"
+         ],
+         "a": 0,
+         "why": "The IQR uses the middle half of the data, so one extreme value barely moves it. The range and the maximum jump right away."
+        }
+       ]
+      },
+      {
+       "title": "Box Plots",
+       "mainIdea": "A box plot draws the five-number summary, so each of its four pieces holds about a quarter of the data.",
+       "reading": [
+        "Ten quiz scores, in order: 5, 6, 6, 7, 8, 8, 9, 9, 10, 10. Find five numbers. Minimum: 5. Maximum: 10. Median: the middle two are 8 and 8, so 8. The lower half 5, 6, 6, 7, 8 has median 6, so Q1 = 6. The upper half 8, 9, 9, 10, 10 has median 9, so Q3 = 9. The *five-number summary* is 5, 6, 8, 9, 10.",
+        "A *box plot* draws these on a number line. Draw a box from Q1 = 6 to Q3 = 9. Draw a line inside the box at the median, 8. Draw lines called *whiskers* from the box out to the minimum 5 and the maximum 10. The box covers the middle half of the scores. Its width is the IQR, 9 − 6 = 3. Each of the four pieces (whisker, half-box, half-box, whisker) holds about 25% of the data.",
+        "Reading a box plot takes care. A long whisker means the values in that quarter are spread out. It does not mean there are more of them. A common mistake is to think a longer box or whisker holds more data. It holds the same quarter, spread across more space. Box plots hide the exact values and the count. They are best for comparing groups side by side, like two classes' quiz scores on one number line."
+       ],
+       "words": [
+        {
+         "w": "box plot",
+         "d": "a graph showing the minimum, Q1, median, Q3 and maximum as a box with whiskers"
+        },
+        {
+         "w": "five-number summary",
+         "d": "minimum, first quartile, median, third quartile, maximum"
+        },
+        {
+         "w": "whisker",
+         "d": "the line from the box out to the minimum or the maximum"
+        }
+       ],
+       "look": {
+        "type": "think",
+        "title": "Sketch It",
+        "text": "A box plot for minutes spent reading has minimum 10, Q1 20, median 30, Q3 50 and maximum 90. Picture the box from 20 to 50, the line at 30, and the whiskers out to 10 and 90.",
+        "prompt": "What is the IQR? Which quarter of the readers is most spread out, and what does the long right whisker tell you?"
+       },
+       "check": [
+        {
+         "q": "A box plot has Q1 = 14 and Q3 = 22. What is the IQR?",
+         "choices": [
+          "36",
+          "8",
+          "18",
+          "4"
+         ],
+         "a": 1,
+         "why": "IQR = Q3 − Q1 = 22 − 14 = 8."
+        },
+        {
+         "q": "Data: 5, 6, 6, 7, 8, 8, 9, 9, 10, 10. What is the median shown by the line inside the box?",
+         "choices": [
+          "7.5",
+          "6",
+          "8",
+          "9"
+         ],
+         "a": 2,
+         "why": "The two middle values are 8 and 8, so the median is 8. Q1 is 6 and Q3 is 9."
+        },
+        {
+         "q": "About what fraction of the data lies inside the box of a box plot?",
+         "choices": [
+          "one quarter",
+          "three quarters",
+          "it depends on how wide the box is",
+          "one half"
+         ],
+         "a": 3,
+         "why": "The box runs from Q1 to Q3, which covers the middle two quarters, or about half the data, no matter its width."
+        }
+       ]
+      },
+      {
+       "title": "Mean Absolute Deviation",
+       "mainIdea": "Mean absolute deviation (MAD) is the average distance of the values from the mean; a bigger MAD means more spread.",
+       "reading": [
+        "Four friends scored 2, 4, 6 and 8 in a game. The mean is (2 + 4 + 6 + 8) ÷ 4 = 20 ÷ 4 = 5. How far is each score from the mean? 2 is 3 away, 4 is 1 away, 6 is 1 away, 8 is 3 away. These distances are *absolute deviations*; distance is never negative, so ignore the sign. Average the distances: (3 + 1 + 1 + 3) ÷ 4 = 8 ÷ 4 = 2. The *mean absolute deviation*, or MAD, is 2. On average, a score sits 2 points from the mean.",
+        "Try 10, 12, 14, 20. Mean: 56 ÷ 4 = 14. Distances from 14: 4, 2, 0, 6. MAD: (4 + 2 + 0 + 6) ÷ 4 = 12 ÷ 4 = 3. A data set where every value is the same, like 6, 6, 6, 6, has MAD 0, because nothing deviates. The larger the MAD, the more spread out the values are around their mean.",
+        "Common mistakes: using signed differences, which always add to zero and give a MAD of 0 by accident; dividing by the wrong count; and measuring from the median instead of the mean. MAD goes with the mean, the way IQR goes with the median. When you report a mean as the center, report MAD as the spread. When you report a median, report the IQR."
+       ],
+       "words": [
+        {
+         "w": "mean absolute deviation",
+         "d": "the average distance of the data values from the mean"
+        },
+        {
+         "w": "absolute deviation",
+         "d": "the distance of one value from the mean, with no sign"
+        }
+       ],
+       "look": {
+        "type": "data",
+        "title": "Distances From the Mean of 5",
+        "rows": [
+         [
+          "Score 2",
+          3
+         ],
+         [
+          "Score 4",
+          1
+         ],
+         [
+          "Score 6",
+          1
+         ],
+         [
+          "Score 8",
+          3
+         ]
+        ],
+        "unit": "points from the mean",
+        "cite": "Worked example from this lesson",
+        "prompt": "Add the four distances and divide by 4. What MAD do you get, and what would the MAD be if the scores were 4, 5, 5, 6?"
+       },
+       "check": [
+        {
+         "q": "What is the MAD of 1, 3, 5, 7, 9?",
+         "choices": [
+          "2.4",
+          "0",
+          "5",
+          "3"
+         ],
+         "a": 0,
+         "why": "Mean = 25 ÷ 5 = 5. Distances: 4, 2, 0, 2, 4, which add to 12. 12 ÷ 5 = 2.4. Using signed differences gives 0 by mistake."
+        },
+        {
+         "q": "What is the MAD of the two values 3 and 7?",
+         "choices": [
+          "4",
+          "2",
+          "5",
+          "0"
+         ],
+         "a": 1,
+         "why": "Mean = 5. Each value is 2 away, so (2 + 2) ÷ 2 = 2."
+        },
+        {
+         "q": "Two classes have the same mean score of 80. Class A has MAD 2 and Class B has MAD 12. What does this mean?",
+         "choices": [
+          "Class B scored higher on average.",
+          "Class A's scores are more spread out.",
+          "Class B's scores are more spread out around 80 than Class A's.",
+          "Class B has more students."
+         ],
+         "a": 2,
+         "why": "MAD measures spread, not center or size. A larger MAD means values sit farther from the mean on average."
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "title": "Shape and Comparison",
+     "lessons": [
+      {
+       "title": "The Shape of a Distribution",
+       "mainIdea": "Describe a distribution by its shape, symmetric or skewed, its peaks, clusters, gaps and outliers, before you pick a measure of center.",
+       "reading": [
+        "A *distribution* is the whole pattern of the data: which values appear and how often. When you look at a dot plot or histogram, describe its shape first. If the left and right sides are close to mirror images, the shape is *symmetric*. Heights of students in one grade are usually close to symmetric, with a hump in the middle and fewer very short or very tall students.",
+        "If one side stretches out much farther than the other, the shape is *skewed*. Number of pets is skewed to the right: most students have 0, 1 or 2, and a few have 5 or 6, so the tail points right toward the large values. In a right-skewed set, the mean is usually larger than the median, because the tail pulls the mean. In a left-skewed set, the mean is usually smaller. Also look for peaks. Two peaks might mean two different groups are mixed together, like the heights of sixth graders and eighth graders on one plot.",
+        "Finally, look for clusters, gaps and outliers. A cluster is a bunch of values close together. A gap is a stretch of the number line with no values. An outlier sits far from the rest. A complete description of homework minutes might be: \"The data are skewed right, with a cluster from 20 to 40 minutes. There is a gap from 60 to 74 and one outlier at 120 minutes.\" A common mistake is to describe the bars instead of the data, like calling a histogram \"tall.\" Say where the values pile up and where they thin out."
+       ],
+       "words": [
+        {
+         "w": "distribution",
+         "d": "the pattern of which values appear in the data and how often"
+        },
+        {
+         "w": "symmetric",
+         "d": "a shape whose left and right sides are close to mirror images"
+        },
+        {
+         "w": "skewed",
+         "d": "a shape with one tail stretched much farther than the other"
+        }
+       ],
+       "look": {
+        "type": "think",
+        "title": "Two Plots in Words",
+        "text": "Plot A shows the number of siblings for 30 students: a tall stack at 1, shorter stacks at 0 and 2, a few dots at 3 and 4, and one dot at 8. Plot B shows shoe sizes: stacks rise from 5 to a peak at 7 and fall evenly to 9.",
+        "prompt": "Describe each plot's shape. In which plot would you expect the mean to be noticeably larger than the median, and why?"
+       },
+       "check": [
+        {
+         "q": "A dot plot of family sizes has most dots at 3 and 4, a few at 5, 6 and 7, and one at 12. How would you describe the shape?",
+         "choices": [
+          "symmetric with no outliers",
+          "skewed left with an outlier at 12",
+          "two peaks with a gap",
+          "skewed right with an outlier at 12"
+         ],
+         "a": 3,
+         "why": "The tail stretches toward the large values on the right, and 12 sits far from the rest."
+        },
+        {
+         "q": "In a distribution that is skewed right, which is usually true?",
+         "choices": [
+          "The mean is greater than the median.",
+          "The mean equals the median.",
+          "The mean is less than the median.",
+          "The median equals the mode."
+         ],
+         "a": 0,
+         "why": "The long right tail adds large values to the sum, pulling the mean above the middle value."
+        },
+        {
+         "q": "A histogram of ages at a family reunion has one peak near 10 and another near 40. What is the most likely explanation?",
+         "choices": [
+          "The data were entered wrong.",
+          "Two groups, children and their parents, are mixed together.",
+          "The intervals are too wide.",
+          "The mean must be 25."
+         ],
+         "a": 1,
+         "why": "Two peaks usually signal two different groups combined in one data set."
+        }
+       ]
+      },
+      {
+       "title": "Comparing Two Groups",
+       "mainIdea": "To compare two groups, compare their centers, then judge the difference against the spread: a gap of about 2 MADs or more matters; a gap much smaller than the MAD may not.",
+       "reading": [
+        "Two seventh-grade classes measure their heights. Class A has a mean of 152 cm with a MAD of 4 cm. Class B has a mean of 160 cm with a MAD of 4 cm. The *difference in means* is 160 − 152 = 8 cm. How big is that? Compare it to the spread: 8 ÷ 4 = 2, so the difference is 2 MADs. When the gap between centers is about 2 or more MADs, the groups clearly sit in different places; most students in B are taller than most in A.",
+        "Now compare two classes' quiz scores. Class C has mean 78 with MAD 8; Class D has mean 80 with MAD 8. The difference is 2 points, only 2 ÷ 8 = 0.25 of a MAD. The dot plots would *overlap* almost completely. You should not conclude that Class D does better. A small difference in the center is not meaningful when the spread is large.",
+        "You can do the same with box plots, using medians and IQRs. Draw both box plots on one number line. If the boxes barely overlap, the groups differ. If one box sits mostly inside the other, they are similar. A common mistake is to compare only the maximum values: \"Class A has the tallest student, so Class A is taller.\" One student is not a group. Compare centers, then spreads, then shapes."
+       ],
+       "words": [
+        {
+         "w": "difference in means",
+         "d": "one group's mean minus the other's; judge it by how many MADs it is"
+        },
+        {
+         "w": "overlap",
+         "d": "how much of the number line two groups' values share"
+        }
+       ],
+       "look": {
+        "type": "data",
+        "title": "Two Classes, Same MAD (example)",
+        "rows": [
+         [
+          "Class A mean",
+          152
+         ],
+         [
+          "Class A MAD",
+          4
+         ],
+         [
+          "Class B mean",
+          160
+         ],
+         [
+          "Class B MAD",
+          4
+         ]
+        ],
+        "unit": "cm",
+        "cite": "Made-up example from this lesson",
+        "prompt": "How many MADs apart are the two means? What if both MADs were 16 cm instead?"
+       },
+       "check": [
+        {
+         "q": "Group X: mean 40, MAD 5. Group Y: mean 55, MAD 5. How many MADs apart are the means?",
+         "choices": [
+          "15",
+          "5",
+          "3",
+          "0.33"
+         ],
+         "a": 2,
+         "why": "55 − 40 = 15, and 15 ÷ 5 = 3 MADs."
+        },
+        {
+         "q": "Two groups have means of 62 and 64, and both have a MAD of 10. What should you conclude?",
+         "choices": [
+          "The second group is clearly higher.",
+          "The first group has less spread.",
+          "The difference is 2 MADs.",
+          "The difference is small compared to the spread, so the groups are similar."
+         ],
+         "a": 3,
+         "why": "64 − 62 = 2, and 2 ÷ 10 = 0.2 MAD. That gap is tiny next to the spread."
+        },
+        {
+         "q": "Which is the best evidence that Class B is generally taller than Class A?",
+         "choices": [
+          "Class B's median is 8 cm higher and the two box plots barely overlap.",
+          "Class B has the single tallest student.",
+          "Class B has more students.",
+          "Class B's range is larger."
+         ],
+         "a": 0,
+         "why": "A higher center with little overlap describes the whole group. One tall student, a bigger count or a bigger range does not."
+        }
+       ]
+      }
+     ]
+    }
+   ],
+   "review": [
+    {
+     "q": "What is the mean of 6, 9, 12 and 13?",
+     "choices": [
+      "40",
+      "10",
+      "13.3",
+      "9"
+     ],
+     "a": 1,
+     "why": "6 + 9 + 12 + 13 = 40, and 40 ÷ 4 = 10."
+    },
+    {
+     "q": "What is the median of 15, 3, 8, 11, 20, 4?",
+     "choices": [
+      "8",
+      "11",
+      "9.5",
+      "10.17"
+     ],
+     "a": 2,
+     "why": "In order: 3, 4, 8, 11, 15, 20. The middle two are 8 and 11, so (8 + 11) ÷ 2 = 9.5."
+    },
+    {
+     "q": "What is the range of 21, 14, 30, 9, 17?",
+     "choices": [
+      "30",
+      "9",
+      "16",
+      "21"
+     ],
+     "a": 3,
+     "why": "30 − 9 = 21."
+    },
+    {
+     "q": "A histogram uses intervals 0–9, 10–19 and 20–29 with counts 4, 10 and 6. How many values are 10 or more?",
+     "choices": [
+      "16",
+      "10",
+      "6",
+      "20"
+     ],
+     "a": 0,
+     "why": "10 + 6 = 16 values fall in the last two intervals."
+    },
+    {
+     "q": "Which is a statistical question?",
+     "choices": [
+      "How many hours are in a day?",
+      "How many hours do students at our school sleep on a school night?",
+      "What time does school start?",
+      "How old is our principal?"
+     ],
+     "a": 1,
+     "why": "Sleep hours vary from student to student, so it takes data to answer."
+    },
+    {
+     "q": "What is the IQR of 1, 3, 5, 7, 9, 11?",
+     "choices": [
+      "10",
+      "12",
+      "6",
+      "3"
+     ],
+     "a": 2,
+     "why": "Median 6; lower half 1, 3, 5 gives Q1 = 3; upper half 7, 9, 11 gives Q3 = 9. IQR = 9 − 3 = 6."
+    },
+    {
+     "q": "What is the MAD of 5, 7, 9, 11?",
+     "choices": [
+      "0",
+      "8",
+      "6",
+      "2"
+     ],
+     "a": 3,
+     "why": "Mean = 32 ÷ 4 = 8. Distances: 3, 1, 1, 3, total 8. 8 ÷ 4 = 2."
+    },
+    {
+     "q": "Data: 20, 22, 23, 24, 25, 90. Which is the best measure of a typical value, and why?",
+     "choices": [
+      "The median, because the outlier 90 pulls the mean up.",
+      "The mean, because it uses every value.",
+      "The range, because it shows the spread.",
+      "The mode, because 90 appears once."
+     ],
+     "a": 0,
+     "why": "The mean is 204 ÷ 6 = 34, above five of the six values. The median, 23.5, describes a typical value."
+    }
+   ]
+  },
+  {
+   "n": 38,
+   "title": "Probability and Sampling",
+   "years": "Probability",
+   "bigQuestion": "How can we make reliable claims about chance and about a whole group when we can only see part of it?",
+   "story": {
+    "title": "One Hundred Flips",
+    "kicker": "A student flips a coin 100 times, gets 56 heads, and has to decide whether the coin is cheating.",
+    "paragraphs": [
+     "Devon's little brother lost four coin flips in a row and announced that the quarter was rigged. Devon did not think so, but saying \"it's fair\" was not going to settle anything. So Devon sat at the kitchen table with the quarter and a sheet of paper and flipped it 100 times, making a tally mark for each result. The final count was 56 heads and 44 tails. His brother pointed at the paper. \"See? More heads. It's not fair.\"",
+     "Devon thought about it. A fair coin has a probability of 1/2 for heads, so in 100 flips you expect about 50 heads. But expect is not the same as guarantee. Devon looked back at the tally marks. The first 10 flips had 7 heads. The next 10 had only 4. The counts wandered up and down the whole time; 56 was just where they happened to land at flip number 100.",
+     "The next day Devon brought the question to math class, and the teacher turned it into an experiment. Twenty-five students each flipped a coin 100 times. Their head counts ranged from 41 to 59, and most sat between 45 and 55. Nobody claimed those coins were rigged. Devon's 56 was on the high side but well inside what fair coins had produced. When the class added everything up, 2,500 flips had produced 1,261 heads: a fraction of 0.5044, remarkably close to one half.",
+     "That is the heart of this chapter. Probability is a long-run number. Any short run can wander, and the wandering shrinks as the number of trials grows. The same idea explains why a random sample of 25 students can tell you something true about a whole school, and why a bigger sample tells you more. Devon's brother was not convinced, so Devon offered a deal: 1,000 more flips, and the loser does the dishes."
+    ],
+    "think": "If Devon had gotten 80 heads out of 100 flips, would you still believe the coin is fair? What would you do next to find out?"
+   },
+   "sections": [
+    {
+     "title": "What Probability Means",
+     "lessons": [
+      {
+       "title": "A Number From 0 to 1",
+       "mainIdea": "Probability is a number from 0 to 1 that tells how likely an event is: 0 means impossible, 1 means certain, and 1/2 means as likely as not.",
+       "reading": [
+        "Will it snow in Chicago in January? Very likely. Will it snow in July? Almost impossible. *Probability* turns words like \"likely\" into numbers. The probability of an *event* is a number from 0 to 1. A probability of 0 means the event cannot happen. A probability of 1 means it is certain. A probability of 1/2, or 0.5, means the event is as likely to happen as not, like a fair coin landing heads.",
+        "Probabilities can be written as fractions, decimals or percents. 1/4 = 0.25 = 25% all describe the same chance. Events near 0, like 0.05, are unlikely. Events near 1, like 0.9, are *likely*. Rolling a 7 on a regular six-sided die has probability 0, since no face shows 7. Rolling a number less than 7 has probability 1, since every face does.",
+        "A common mistake is to write a probability bigger than 1 or less than 0. If you get 7/6 or 120%, something went wrong, usually a count on top that is too large. Another mistake is to think \"unlikely\" means \"will not happen.\" An event with probability 0.1 happens about 1 time in 10 in the long run. It still happens."
+       ],
+       "words": [
+        {
+         "w": "probability",
+         "d": "a number from 0 to 1 that tells how likely an event is"
+        },
+        {
+         "w": "event",
+         "d": "something that may or may not happen, like rolling an even number"
+        },
+        {
+         "w": "likely",
+         "d": "having a probability closer to 1 than to 0"
+        }
+       ],
+       "look": {
+        "type": "think",
+        "title": "Place Them on the Line",
+        "text": "Picture a number line from 0 to 1. Place these events on it: the sun rises tomorrow; a fair coin lands tails; you roll a 6 on one die; you roll a number less than 7; a randomly chosen day of the week starts with the letter T.",
+        "prompt": "Which events sit at 0 or 1? Which two are closest together, and what are their probabilities as fractions?"
+       },
+       "check": [
+        {
+         "q": "Which probability describes an event that is unlikely but possible?",
+         "choices": [
+          "0",
+          "0.1",
+          "1",
+          "0.9"
+         ],
+         "a": 1,
+         "why": "0.1 is close to 0 but not 0, so the event can happen but usually does not. 0 is impossible; 0.9 and 1 are likely or certain."
+        },
+        {
+         "q": "A student says the probability of rain tomorrow is 1.3. What is wrong?",
+         "choices": [
+          "It should be written as a percent.",
+          "Rain cannot be given a probability.",
+          "A probability cannot be greater than 1.",
+          "Nothing; 1.3 means very likely."
+         ],
+         "a": 2,
+         "why": "Every probability is between 0 and 1. A value of 1.3 signals a counting mistake."
+        },
+        {
+         "q": "What is the probability of rolling a number less than 7 on a six-sided die?",
+         "choices": [
+          "6/7",
+          "0",
+          "1/6",
+          "1"
+         ],
+         "a": 3,
+         "why": "All six faces show a number less than 7, so 6/6 = 1. The event is certain."
+        }
+       ]
+      },
+      {
+       "title": "Theoretical Probability",
+       "mainIdea": "When all outcomes are equally likely, probability = number of favorable outcomes ÷ total number of outcomes.",
+       "reading": [
+        "A spinner has 8 equal sections; 3 are red and 5 are blue. Each section is an *outcome*, and because the sections are the same size, the outcomes are *equally likely*. The *theoretical probability* of red is the number of red sections divided by the total: 3/8 = 0.375. You do not need to spin at all. This is what should happen in the long run.",
+        "A regular die has six equally likely outcomes: 1, 2, 3, 4, 5, 6. The probability of an even number is 3/6 = 1/2, because 2, 4 and 6 are the three favorable outcomes. A bag holds 4 red and 6 blue marbles. P(red) = 4/10 = 2/5 = 0.4. P(blue) = 6/10 = 3/5 = 0.6. The two add to 1, because a marble must be red or blue. The probability that an event does not happen is 1 minus the probability that it does: P(not red) = 1 − 0.4 = 0.6.",
+        "You can predict counts too. If you roll a die 60 times, you expect a 3 about 1/6 of the time: 60 × 1/6 = 10 times. Expect, not guarantee. Common mistakes: treating outcomes as equally likely when they are not (a spinner with one big section and three small ones), and putting the wrong number on top. P(red) uses the red count on top and the total, 10, on the bottom, not the blue count."
+       ],
+       "words": [
+        {
+         "w": "outcome",
+         "d": "one possible result, like one section of a spinner"
+        },
+        {
+         "w": "theoretical probability",
+         "d": "favorable outcomes divided by total outcomes, when all outcomes are equally likely"
+        },
+        {
+         "w": "equally likely",
+         "d": "outcomes that each have the same chance of happening"
+        }
+       ],
+       "look": {
+        "type": "data",
+        "title": "Events on One Fair Die",
+        "rows": [
+         [
+          "P(rolling a 1)",
+          0.167
+         ],
+         [
+          "P(even number)",
+          0.5
+         ],
+         [
+          "P(number greater than 4)",
+          0.333
+         ],
+         [
+          "P(number less than 7)",
+          1
+         ]
+        ],
+        "unit": "probability (rounded)",
+        "cite": "Theoretical probabilities for a fair six-sided die",
+        "prompt": "Write each probability as a fraction with denominator 6. Why does P(number less than 7) equal 1?"
+       },
+       "check": [
+        {
+         "q": "What is the probability of rolling a number greater than 4 on a fair die?",
+         "choices": [
+          "1/3",
+          "1/2",
+          "2/3",
+          "1/6"
+         ],
+         "a": 0,
+         "why": "Only 5 and 6 are greater than 4: 2 favorable out of 6, and 2/6 = 1/3."
+        },
+        {
+         "q": "A bag holds 5 green, 3 yellow and 2 white marbles. What is P(not green)?",
+         "choices": [
+          "1/5",
+          "1/2",
+          "3/10",
+          "2/3"
+         ],
+         "a": 1,
+         "why": "There are 10 marbles and 5 are not green: 5/10 = 1/2. Or 1 − P(green) = 1 − 5/10 = 1/2."
+        },
+        {
+         "q": "A spinner has 4 equal sections numbered 1 to 4. In 80 spins, about how many times would you expect it to land on 2?",
+         "choices": [
+          "4",
+          "40",
+          "20",
+          "25"
+         ],
+         "a": 2,
+         "why": "P(2) = 1/4, and 80 × 1/4 = 20."
+        }
+       ]
+      },
+      {
+       "title": "Experimental Probability",
+       "mainIdea": "Experimental probability = times the event happened ÷ number of trials; with more trials it usually settles near the theoretical probability.",
+       "reading": [
+        "Devon's class spins the 3-red, 5-blue spinner 50 times and records 18 reds. The *experimental probability* of red is the number of reds divided by the number of *trials*: 18/50 = 0.36. The theoretical probability was 3/8 = 0.375. They are close but not identical. That is normal. Fifty spins are not enough to land exactly on 0.375; in fact, 0.375 × 50 = 18.75 is not even a whole number.",
+        "The more trials you run, the closer the experimental probability tends to get to the theoretical one. Ten flips of a coin might give 7 heads, an experimental probability of 0.7. A hundred flips gave 56 heads, or 0.56. Devon's class combined 2,500 flips and got 1,261 heads, which is 1,261 ÷ 2,500 = 0.5044. Each bigger set of trials sits closer to 0.5.",
+        "Experimental probability is the only choice when you cannot count equally likely outcomes. What is the chance a thumbtack lands point up? A tack is not symmetric, so you drop it 200 times and count. If it lands point up 130 times, the experimental probability is 130/200 = 0.65. Common mistakes: dividing by the number of successes instead of the number of trials, and trusting a tiny experiment. Three flips that all land heads do not mean P(heads) = 1."
+       ],
+       "words": [
+        {
+         "w": "experimental probability",
+         "d": "times an event happened divided by the number of trials"
+        },
+        {
+         "w": "trial",
+         "d": "one run of an experiment, like one spin or one flip"
+        }
+       ],
+       "look": {
+        "type": "data",
+        "title": "Heads in Devon's Flips",
+        "rows": [
+         [
+          "First 10 flips",
+          7
+         ],
+         [
+          "First 50 flips",
+          27
+         ],
+         [
+          "All 100 flips",
+          56
+         ],
+         [
+          "Whole class, 2,500 flips",
+          1261
+         ]
+        ],
+        "unit": "heads",
+        "cite": "Story data from this chapter (made-up example)",
+        "prompt": "Compute the experimental probability of heads for each row. What happens to the values as the number of flips grows?"
+       },
+       "check": [
+        {
+         "q": "A coin is flipped 40 times and lands heads 24 times. What is the experimental probability of heads?",
+         "choices": [
+          "0.5",
+          "0.4",
+          "1.67",
+          "0.6"
+         ],
+         "a": 3,
+         "why": "24 ÷ 40 = 0.6. Dividing 40 by 24 gives 1.67, which cannot be a probability."
+        },
+        {
+         "q": "A marble is drawn from a bag and put back 200 times. Red comes up 30 times. What is the experimental probability of red?",
+         "choices": [
+          "0.15",
+          "0.3",
+          "30",
+          "0.85"
+         ],
+         "a": 0,
+         "why": "30 ÷ 200 = 0.15. The count 30 is not a probability, and 0.85 is the probability of not red."
+        },
+        {
+         "q": "Which experiment gives the best estimate of a spinner's true probability of landing on green?",
+         "choices": [
+          "5 spins",
+          "500 spins",
+          "20 spins",
+          "50 spins"
+         ],
+         "a": 1,
+         "why": "More trials make the experimental probability settle closer to the true value."
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "title": "Compound Events",
+     "lessons": [
+      {
+       "title": "Listing Every Outcome",
+       "mainIdea": "For a compound event, list the sample space in an organized way; then probability is favorable outcomes over total outcomes.",
+       "reading": [
+        "Flip two coins. What are the possible results? Students often say three: two heads, two tails, or one of each. But list them carefully, first coin then second: HH, HT, TH, TT. There are four outcomes, and they are equally likely. The full list is the *sample space*. \"One head and one tail\" happens in two of the four, HT and TH, so its probability is 2/4 = 1/2, not 1/3. This is why the organized list matters.",
+        "Now flip a coin and roll a die. For each of the 2 coin results there are 6 die results, so the sample space has 2 × 6 = 12 outcomes. They are H1, H2, H3, H4, H5, H6, T1, T2, T3, T4, T5, T6. P(heads and an even number) = 3/12 = 1/4, since H2, H4 and H6 are favorable. A quick check: multiply the number of outcomes for each part. That product is the size of the sample space for a *compound event*.",
+        "A table works well for two dice. The rows are the first die (1 to 6) and the columns are the second (1 to 6), giving 6 × 6 = 36 cells. Count the cells whose sum is 7: (1,6), (2,5), (3,4), (4,3), (5,2), (6,1). That is 6, so P(sum of 7) = 6/36 = 1/6. A sum of 2 appears in only one cell, (1,1), so P(sum of 2) = 1/36. Common mistake: treating (2,5) and (5,2) as one outcome. They are different rolls."
+       ],
+       "words": [
+        {
+         "w": "sample space",
+         "d": "the organized list of every possible outcome"
+        },
+        {
+         "w": "compound event",
+         "d": "an event made of two or more parts, like a coin flip and a die roll together"
+        }
+       ],
+       "look": {
+        "type": "think",
+        "title": "Two-Dice Table",
+        "text": "Draw a 6-by-6 table. Label the rows 1 to 6 for the first die and the columns 1 to 6 for the second. Write the sum in each cell. Count how many cells show a sum of 8: (2,6), (3,5), (4,4), (5,3), (6,2).",
+        "prompt": "What is P(sum of 8)? Which sum has the most cells, and what is its probability?"
+       },
+       "check": [
+        {
+         "q": "A lunch has 3 sandwich choices and 2 drink choices. How many different lunches are possible?",
+         "choices": [
+          "5",
+          "9",
+          "6",
+          "3"
+         ],
+         "a": 2,
+         "why": "Each of the 3 sandwiches pairs with each of the 2 drinks: 3 × 2 = 6. Adding gives 5 by mistake."
+        },
+        {
+         "q": "Two fair coins are flipped. What is the probability of two heads?",
+         "choices": [
+          "1/3",
+          "1/2",
+          "3/4",
+          "1/4"
+         ],
+         "a": 3,
+         "why": "The sample space is HH, HT, TH, TT. Only HH works: 1/4. Counting three outcomes gives 1/3 by mistake."
+        },
+        {
+         "q": "Two dice are rolled. What is P(sum of 2)?",
+         "choices": [
+          "1/36",
+          "1/6",
+          "2/36",
+          "1/12"
+         ],
+         "a": 0,
+         "why": "Only (1,1) gives a sum of 2, and there are 36 equally likely cells."
+        }
+       ]
+      },
+      {
+       "title": "Tree Diagrams",
+       "mainIdea": "A tree diagram branches once for each choice; each path from start to tip is one outcome, and the number of tips is the product of the branch counts.",
+       "reading": [
+        "A cafe sells sandwiches with 2 breads (white, wheat) and 3 fillings (turkey, cheese, veggie). A *tree diagram* starts with 2 branches for bread. From each bread, draw 3 branches for filling. Count the ends: 2 × 3 = 6 sandwiches: white-turkey, white-cheese, white-veggie, wheat-turkey, wheat-cheese, wheat-veggie. Each path from the start to a tip is one outcome.",
+        "Add a third choice, 2 drinks (water, juice). From each of the 6 sandwich tips draw 2 more branches. Now there are 2 × 3 × 2 = 12 complete meals. If a customer picks each choice at random, every path is equally likely, so the probability of any one meal, such as wheat-cheese-juice, is 1/12. The probability of \"a wheat sandwich with juice\" counts 3 paths, one for each filling, so it is 3/12 = 1/4.",
+        "Tree diagrams shine when the *branches* are not the same at every step. Suppose a game: flip a coin; if heads, you roll a die; if tails, you spin a 4-section spinner. The tree has 6 tips under heads and 4 under tails, 10 total, but the tips are not equally likely, because heads and tails each get half the probability. Common mistake: multiplying counts when the choices depend on each other. Draw the tree and count paths instead of assuming."
+       ],
+       "words": [
+        {
+         "w": "tree diagram",
+         "d": "a drawing that branches once for each choice, so every path is one outcome"
+        },
+        {
+         "w": "branch",
+         "d": "one line in a tree diagram, standing for one option at that step"
+        }
+       ],
+       "look": {
+        "type": "think",
+        "title": "Draw the Tree",
+        "text": "A shirt comes in 4 colors, 3 sizes and 2 sleeve lengths. Draw a tree with 4 branches for color, then 3 for size from each color, then 2 for sleeve length from each size.",
+        "prompt": "How many tips does the tree have? If you pick one shirt at random, what is the probability it is a small, short-sleeve shirt of any color?"
+       },
+       "check": [
+        {
+         "q": "A tree diagram has 4 branches for color, then 3 for size, then 2 for sleeve length. How many outcomes are there?",
+         "choices": [
+          "9",
+          "24",
+          "12",
+          "6"
+         ],
+         "a": 1,
+         "why": "4 × 3 × 2 = 24 tips. Adding the counts gives 9 by mistake."
+        },
+        {
+         "q": "In the cafe with 2 breads, 3 fillings and 2 drinks, what is the probability of choosing wheat-cheese-juice at random?",
+         "choices": [
+          "1/7",
+          "1/6",
+          "1/12",
+          "3/12"
+         ],
+         "a": 2,
+         "why": "There are 2 × 3 × 2 = 12 equally likely meals, and only one is wheat-cheese-juice."
+        },
+        {
+         "q": "Why draw a tree diagram instead of only multiplying?",
+         "choices": [
+          "Multiplying is never allowed for compound events.",
+          "Trees always give a bigger number.",
+          "Trees are required for single events.",
+          "It shows every outcome, and it works when later choices depend on earlier ones."
+         ],
+         "a": 3,
+         "why": "Multiplying gives the count, but the tree shows which outcomes exist, even when the branches differ from step to step."
+        }
+       ]
+      },
+      {
+       "title": "Probability of Compound Events",
+       "mainIdea": "Find the probability of a compound event by counting favorable outcomes in the sample space, or by multiplying the probabilities of independent parts.",
+       "reading": [
+        "Spin a 4-section spinner (1, 2, 3, 4) and flip a coin. The sample space has 4 × 2 = 8 equally likely outcomes. What is P(3 and heads)? Only one outcome, 3H, so 1/8. What is P(even number and tails)? Two outcomes, 2T and 4T, so 2/8 = 1/4. Counting always works when outcomes are equally likely.",
+        "There is a shortcut when the parts do not affect each other, which we call *independent events*. The spinner does not change the coin. So P(3 and heads) = P(3) × P(heads) = 1/4 × 1/2 = 1/8, the same answer. For two dice, P(both show 6) = 1/6 × 1/6 = 1/36. For three coin flips, P(all heads) = 1/2 × 1/2 × 1/2 = 1/8.",
+        "\"At least one\" events are easier through the opposite, called the *complement*. P(at least one head in two flips) = 1 − P(no heads) = 1 − P(TT) = 1 − 1/4 = 3/4. Check by listing: HH, HT, TH are three of the four outcomes. One common mistake is adding when you should multiply. For \"3 and heads,\" 1/4 + 1/2 = 3/4 is far too large. Another is multiplying when the events are not independent, like drawing two marbles without putting the first back."
+       ],
+       "words": [
+        {
+         "w": "independent events",
+         "d": "events where one result does not change the chances of the other"
+        },
+        {
+         "w": "complement",
+         "d": "the event not happening; its probability is 1 minus the event's probability"
+        }
+       ],
+       "look": {
+        "type": "think",
+        "title": "Three Flips",
+        "text": "List all outcomes of three coin flips: HHH, HHT, HTH, HTT, THH, THT, TTH, TTT. That is 8 equally likely outcomes.",
+        "prompt": "What is P(exactly two heads)? What is P(at least one tail)? Check the second one using 1 minus P(all heads)."
+       },
+       "check": [
+        {
+         "q": "Three fair coins are flipped. What is P(all three land heads)?",
+         "choices": [
+          "1/8",
+          "1/3",
+          "1/2",
+          "3/8"
+         ],
+         "a": 0,
+         "why": "1/2 × 1/2 × 1/2 = 1/8, and HHH is 1 of the 8 outcomes."
+        },
+        {
+         "q": "A spinner with 3 equal colors is spun twice. What is P(red both times)?",
+         "choices": [
+          "2/3",
+          "1/9",
+          "1/3",
+          "1/6"
+         ],
+         "a": 1,
+         "why": "The spins are independent: 1/3 × 1/3 = 1/9. Adding gives 2/3 by mistake."
+        },
+        {
+         "q": "Two fair coins are flipped. What is P(at least one head)?",
+         "choices": [
+          "1/2",
+          "1/4",
+          "3/4",
+          "1"
+         ],
+         "a": 2,
+         "why": "1 − P(TT) = 1 − 1/4 = 3/4. Listing: HH, HT, TH are 3 of 4 outcomes."
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "title": "Simulations and Samples",
+     "lessons": [
+      {
+       "title": "Simulating Chance",
+       "mainIdea": "A simulation uses a random tool matched to the real probabilities, run many times, to estimate a probability that is hard to compute.",
+       "reading": [
+        "The forecast says a 30% chance of rain each day this week. What is the probability of rain on at least 2 of the 5 school days? Computing this by hand is messy. Instead, run a *simulation*. Use *random digits* 0 to 9. Let 0, 1 and 2 stand for rain; that is 3 out of 10 digits, matching 30%. Digits 3 to 9 mean no rain. Take 5 random digits for one week: 8 1 4 2 7 means rain on Tuesday and Thursday, 2 rainy days.",
+        "One week is one trial. Run 50 trials, count how many have 2 or more rainy days, and divide by 50. If 24 trials qualify, the estimate is 24/50 = 0.48. The key rule: the tool must match the real probability. For a basketball player who makes 80% of free throws, let digits 0 to 7 mean make and 8, 9 mean miss. For a 1/6 chance, roll a die and pick one face. For 1/4, use a spinner with four equal sections, or two coin flips where HH counts.",
+        "Common mistakes: matching the wrong number of digits, since 0 to 3 gives 40%, not 30%. Reusing the same digits every trial. Stopping after a handful of trials. A simulation is an experiment, so its answer is an experimental probability. It gets more trustworthy with more trials, but it is still an estimate."
+       ],
+       "words": [
+        {
+         "w": "simulation",
+         "d": "an experiment with a random tool that stands in for a real situation"
+        },
+        {
+         "w": "random digits",
+         "d": "digits 0 to 9 produced so that each is equally likely, used to model chance"
+        }
+       ],
+       "look": {
+        "type": "data",
+        "title": "Matching a Random Tool to a Probability",
+        "rows": [
+         [
+          "Rain 30%: digits 0–2 of 10",
+          0.3
+         ],
+         [
+          "Free throw 80%: digits 0–7 of 10",
+          0.8
+         ],
+         [
+          "One face of a die",
+          0.167
+         ],
+         [
+          "Two coins both heads",
+          0.25
+         ]
+        ],
+        "unit": "probability",
+        "cite": "Simulation setups from this lesson (die value rounded)",
+        "prompt": "Which tool would you use to simulate a 1/5 chance? Explain how the digits or faces would be assigned."
+       },
+       "check": [
+        {
+         "q": "You want to simulate a 40% chance with random digits 0–9. Which assignment works?",
+         "choices": [
+          "Digits 0–4 mean yes; 5–9 mean no.",
+          "Digits 0–3 mean yes; 4–7 mean no; skip 8 and 9.",
+          "Even digits mean yes; odd digits mean no.",
+          "Digits 0, 1, 2 and 3 mean yes; 4–9 mean no."
+         ],
+         "a": 3,
+         "why": "Four of ten digits is 4/10 = 40%. The other assignments give 5/10 or 4/8, which are both 50%."
+        },
+        {
+         "q": "A simulation of 5-day weeks runs 40 trials; 14 of them have at least 2 rainy days. What is the estimated probability?",
+         "choices": [
+          "0.35",
+          "0.14",
+          "0.4",
+          "0.65"
+         ],
+         "a": 0,
+         "why": "14 ÷ 40 = 0.35."
+        },
+        {
+         "q": "Which random tool best simulates a 1/6 chance?",
+         "choices": [
+          "one coin flip",
+          "one roll of a fair die, with one face meaning yes",
+          "a spinner with 4 equal sections",
+          "random digits 0–5 meaning yes"
+         ],
+         "a": 1,
+         "why": "A die has 6 equally likely faces, so one face has probability exactly 1/6. Digits 0–5 give 6/10."
+        }
+       ]
+      },
+      {
+       "title": "Random Samples",
+       "mainIdea": "A random sample gives every member of the population an equal chance of being chosen, so the sample is likely to look like the whole.",
+       "reading": [
+        "You want to know how many hours students at your school sleep, but the school has 800 students. Asking all 800 is a census. Asking a smaller group is taking a *sample*. The whole group you care about is the *population*. A sample only helps if it looks like the population, and the best way to get that is to choose at random: every student has the same chance of being picked.",
+        "Random does not mean careless. Put every student's name or ID number in a list, then use a random number generator, or draw numbers from a hat, to pick 50. That is a *random sample*. Compare that to asking the 50 students in the cafeteria line at 7:30 a.m., who are early risers, or asking the basketball team, who are taller than average. Those samples are *biased*: some students had a much better chance of being chosen than others, so the sample leans one way.",
+        "Random samples still vary. Two random samples of 50 students might give mean sleep of 7.1 and 7.4 hours. Larger samples vary less. The U.S. Census counts every person once every ten years; between counts, the government estimates by sampling. Common mistake: thinking a big biased sample beats a small random one. A million responses to an online poll that only night owls saw still tell you about night owls."
+       ],
+       "words": [
+        {
+         "w": "population",
+         "d": "the whole group you want to learn about"
+        },
+        {
+         "w": "sample",
+         "d": "a smaller group taken from the population"
+        },
+        {
+         "w": "random sample",
+         "d": "a sample in which every member of the population had an equal chance of being chosen"
+        },
+        {
+         "w": "biased",
+         "d": "leaning one way because some members were more likely to be chosen than others"
+        }
+       ],
+       "look": {
+        "type": "data",
+        "title": "U.S. Population by Census Count (rounded)",
+        "rows": [
+         [
+          "1790",
+          3.9
+         ],
+         [
+          "1900",
+          76
+         ],
+         [
+          "2000",
+          281
+         ],
+         [
+          "2020",
+          331
+         ]
+        ],
+        "unit": "million people",
+        "cite": "U.S. Census Bureau decennial counts, rounded",
+        "prompt": "A census counts everyone. Why might a school survey use a random sample instead of a census?"
+       },
+       "check": [
+        {
+         "q": "Which sample of a school's 800 students is a random sample?",
+         "choices": [
+          "The first 50 students through the front door.",
+          "The 50 students on sports teams.",
+          "50 students chosen by drawing ID numbers from the list of all 800.",
+          "50 students who volunteer online."
+         ],
+         "a": 2,
+         "why": "Drawing from the full list gives every student the same chance. The others favor early arrivers, athletes or volunteers."
+        },
+        {
+         "q": "A survey about lunch is given only to students who buy lunch. What is the problem?",
+         "choices": [
+          "The sample is too large.",
+          "Lunch is not a statistical topic.",
+          "Random samples cannot be about food.",
+          "Students who bring lunch had no chance to be chosen, so the sample is biased."
+         ],
+         "a": 3,
+         "why": "A random sample must give everyone in the population a chance. Leaving out lunch-bringers tilts the results."
+        },
+        {
+         "q": "Which will vary least from the true population value?",
+         "choices": [
+          "a random sample of 200",
+          "a random sample of 20",
+          "a random sample of 50",
+          "all samples vary by the same amount"
+         ],
+         "a": 0,
+         "why": "Larger random samples bounce around less, so their results sit closer to the population value."
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "title": "Making Inferences",
+     "lessons": [
+      {
+       "title": "From Sample to Population",
+       "mainIdea": "Find the proportion in a random sample, then multiply by the population size to estimate the count in the whole population.",
+       "reading": [
+        "A random sample of 50 students at an 800-student school is asked their favorite lunch. 20 pick pizza. The sample *proportion* is 20/50 = 0.4, or 40%. If the sample looks like the school, about 40% of all 800 students prefer pizza: 0.4 × 800 = 320 students. This is an *inference*: a conclusion about the population drawn from the sample.",
+        "Another: a random sample of 40 students shows 12 walk to school, so 12/40 = 0.3. In a district of 1,200 students, estimate 0.3 × 1,200 = 360 walkers. The estimate is not exact. A second sample might show 10 or 14 walkers, giving 300 or 420. Report it as \"about 360,\" and remember that larger samples give tighter estimates.",
+        "The same idea works for quality checks. A factory pulls a random sample of 100 light bulbs and finds 3 that fail. The proportion is 3/100 = 0.03. In a shipment of 20,000 bulbs, expect about 0.03 × 20,000 = 600 failures. Common mistakes: multiplying the sample count by the population instead of using the proportion (20 × 800 is nonsense), and making inferences from a biased sample. A sample of the pizza line will always say pizza."
+       ],
+       "words": [
+        {
+         "w": "proportion",
+         "d": "the part divided by the whole, like 20/50 = 0.4"
+        },
+        {
+         "w": "inference",
+         "d": "a conclusion about a population based on a sample"
+        }
+       ],
+       "look": {
+        "type": "think",
+        "title": "Gumballs in the Jar",
+        "text": "A jar holds 500 gumballs in several colors. You cannot count them all, so you shake the jar and scoop out 40. In the scoop, 14 are blue. Set up the proportion 14/40 and use it to estimate the blue gumballs in the jar.",
+        "prompt": "About how many blue gumballs are in the jar? Why does shaking the jar first matter?"
+       },
+       "check": [
+        {
+         "q": "In a random sample of 50 students, 20 prefer pizza. About how many of the school's 800 students prefer pizza?",
+         "choices": [
+          "20",
+          "320",
+          "200",
+          "400"
+         ],
+         "a": 1,
+         "why": "20/50 = 0.4, and 0.4 × 800 = 320."
+        },
+        {
+         "q": "A random sample of 40 students shows 12 walk to school. In a district of 1,200 students, about how many walk?",
+         "choices": [
+          "12",
+          "300",
+          "360",
+          "480"
+         ],
+         "a": 2,
+         "why": "12/40 = 0.3, and 0.3 × 1,200 = 360."
+        },
+        {
+         "q": "A scoop of 40 gumballs from a jar of 500 has 14 blue. About how many blue gumballs are in the jar?",
+         "choices": [
+          "140",
+          "14",
+          "350",
+          "175"
+         ],
+         "a": 3,
+         "why": "14/40 = 0.35, and 0.35 × 500 = 175."
+        }
+       ]
+      },
+      {
+       "title": "Comparing Two Populations",
+       "mainIdea": "Compare random samples from two populations the way you compare two groups: look at the difference in centers relative to the spread.",
+       "reading": [
+        "Do seventh graders and eighth graders spend different amounts of time on homework? You cannot ask everyone, so take a random sample of 30 from each grade. Seventh-grade sample: mean 45 minutes, MAD 10. Eighth-grade sample: mean 65 minutes, MAD 10. The difference in means is 65 − 45 = 20 minutes, which is 20 ÷ 10 = 2 MADs. That is a large, visible separation, so you can infer that eighth graders in this school generally spend more time.",
+        "Change the numbers: seventh-grade mean 52, eighth-grade mean 55, both MAD 12. The difference is 3 minutes, or 3 ÷ 12 = 0.25 MAD. Two random samples from the same population could easily differ by that much. Do not claim a real difference. Say the samples overlap too much to tell. A *meaningful difference* is one that is large compared with the spread.",
+        "Repeating the sampling shows why. If you drew many pairs of samples of 30, the difference in sample means would bounce around by a few minutes even when the populations were identical. That bounce is *sampling variability*. A difference must be big compared to that bounce, and compared to the spread within each group, to mean something. Common mistakes: comparing two biased samples, and comparing samples of very different sizes without noticing. Sizes of 30 and 3 do not carry equal weight."
+       ],
+       "words": [
+        {
+         "w": "meaningful difference",
+         "d": "a gap between two centers that is large compared with the spread, usually 2 or more MADs"
+        },
+        {
+         "w": "sampling variability",
+         "d": "the natural bouncing around of results from one random sample to the next"
+        }
+       ],
+       "look": {
+        "type": "data",
+        "title": "Two Homework Samples (example)",
+        "rows": [
+         [
+          "7th grade mean",
+          45
+         ],
+         [
+          "7th grade MAD",
+          10
+         ],
+         [
+          "8th grade mean",
+          65
+         ],
+         [
+          "8th grade MAD",
+          10
+         ]
+        ],
+        "unit": "minutes",
+        "cite": "Made-up example from this lesson",
+        "prompt": "How many MADs apart are the sample means? What conclusion is reasonable?"
+       },
+       "check": [
+        {
+         "q": "Sample A: mean 45, MAD 10. Sample B: mean 65, MAD 10. How many MADs apart are the means?",
+         "choices": [
+          "2",
+          "20",
+          "10",
+          "0.5"
+         ],
+         "a": 0,
+         "why": "65 − 45 = 20, and 20 ÷ 10 = 2 MADs."
+        },
+        {
+         "q": "Two random samples have means of 52 and 55, each with a MAD of 12. What is the best conclusion?",
+         "choices": [
+          "Eighth graders clearly spend more time.",
+          "The difference is small compared to the spread, so no real difference is shown.",
+          "The difference is 3 MADs.",
+          "The samples must be biased."
+         ],
+         "a": 1,
+         "why": "55 − 52 = 3, and 3 ÷ 12 = 0.25 MAD, well within normal sampling variability."
+        },
+        {
+         "q": "Which change would make a difference between two sample means more convincing?",
+         "choices": [
+          "Smaller samples.",
+          "Asking only students who like homework.",
+          "Larger random samples with the same difference.",
+          "A larger MAD in each sample."
+         ],
+         "a": 2,
+         "why": "Bigger random samples bounce less, so the same gap stands out more clearly. Bias or more spread would weaken the case."
+        }
+       ]
+      }
+     ]
+    }
+   ],
+   "review": [
+    {
+     "q": "A bag has 3 red and 9 blue marbles. What is P(red)?",
+     "choices": [
+      "1/3",
+      "3/9",
+      "3/4",
+      "1/4"
+     ],
+     "a": 3,
+     "why": "There are 12 marbles in all: 3/12 = 1/4. Dividing by the blue count gives 3/9 by mistake."
+    },
+    {
+     "q": "A fair die is rolled 120 times. About how many times should it show a 5?",
+     "choices": [
+      "20",
+      "5",
+      "24",
+      "60"
+     ],
+     "a": 0,
+     "why": "120 × 1/6 = 20."
+    },
+    {
+     "q": "A coin is flipped 50 times and lands tails 22 times. What is the experimental probability of tails?",
+     "choices": [
+      "0.5",
+      "0.44",
+      "0.56",
+      "22"
+     ],
+     "a": 1,
+     "why": "22 ÷ 50 = 0.44. The theoretical value is 0.5, and 0.56 is heads."
+    },
+    {
+     "q": "How many outcomes are in the sample space when you flip a coin and roll a die?",
+     "choices": [
+      "8",
+      "6",
+      "12",
+      "36"
+     ],
+     "a": 2,
+     "why": "2 × 6 = 12 outcomes."
+    },
+    {
+     "q": "Two dice are rolled. What is P(sum of 7)?",
+     "choices": [
+      "1/36",
+      "7/36",
+      "1/12",
+      "1/6"
+     ],
+     "a": 3,
+     "why": "Six of the 36 cells give a sum of 7: 6/36 = 1/6."
+    },
+    {
+     "q": "Which sample of a school is random?",
+     "choices": [
+      "Names drawn from a hat holding every student's name.",
+      "Students who sit in the front row.",
+      "Students who answer a poll on the school website.",
+      "The first 30 students to arrive."
+     ],
+     "a": 0,
+     "why": "Only the hat gives every student the same chance of being chosen."
+    },
+    {
+     "q": "In a random sample of 60 students, 15 ride bikes to school. The school has 900 students. About how many ride bikes?",
+     "choices": [
+      "15",
+      "225",
+      "150",
+      "60"
+     ],
+     "a": 1,
+     "why": "15/60 = 0.25, and 0.25 × 900 = 225."
+    },
+    {
+     "q": "A player makes 70% of free throws. Which digit assignment simulates one shot?",
+     "choices": [
+      "Digits 0–7 mean make; 8–9 mean miss.",
+      "Digits 0–5 mean make; 6–9 mean miss.",
+      "Digits 0–6 mean make; 7–9 mean miss.",
+      "Even digits mean make; odd digits mean miss."
+     ],
+     "a": 2,
+     "why": "Digits 0 through 6 are 7 of the 10 digits, matching 70%. The others give 80%, 60% or 50%."
+    }
+   ]
+  },
+  {
+   "n": 39,
+   "title": "Two-Variable Data",
+   "years": "Statistics",
+   "bigQuestion": "When two things are measured together, how can we tell whether they move together, and what a pattern between them does and does not prove?",
+   "story": {
+    "title": "Sleep and Scores",
+    "kicker": "Twenty-four students track their sleep for a week, and a scatter plot reveals a pattern no single number could show.",
+    "paragraphs": [
+     "It started as an argument in Ms. Bell's class. Nadia said students who sleep more get better grades. Leo said that was nonsense; he knew someone who slept ten hours a night and failed everything. Ms. Bell did not take sides. She handed out a sheet and asked each of the 24 students to record their hours of sleep every night for a week and then write down their score on Friday's quiz. By Monday the class had 24 pairs of numbers: an average sleep time and a quiz score for every student.",
+     "The table was hard to read. Twenty-four rows of two numbers each did not say much. Then Nadia drew two number lines at a right angle, hours of sleep going across and quiz score going up, and put one dot for each student. Ms. Bell called it a scatter plot. The moment the last dot went on, the class could see it: the dots formed a loose cloud that rose from the lower left to the upper right. Less sleep, lower scores. More sleep, higher scores. Not perfectly, but clearly.",
+     "Leo pointed at one dot sitting all by itself: nine hours of sleep and a score of 55. \"That's me,\" he said. \"I was sick on Friday.\" The class agreed that his dot did not follow the pattern, and that there was a good reason. Most of the other dots crowded between six and a half and eight hours. Nadia laid a ruler across the middle of the cloud and drew a line. The line rose about 5 points for every extra hour of sleep.",
+     "Then Ms. Bell asked the hard question. Does more sleep cause higher scores? Or do students who sleep more also finish their homework earlier, or worry less, or have quieter homes? The dots showed that the two things moved together. They could not, by themselves, show why. The class also realized some questions do not have number answers at all. Did you study with a group, yes or no? Did you pass, yes or no? For questions like those, they would need a different tool: a table with two ways in."
+    ],
+    "think": "Which is more convincing: one student who slept 10 hours and scored 98, or 24 dots that mostly rise together? Why?"
+   },
+   "sections": [
+    {
+     "title": "Scatter Plots",
+     "lessons": [
+      {
+       "title": "Two Measurements Per Point",
+       "mainIdea": "A scatter plot shows two measurements for each person or thing as one point, with one variable on each axis.",
+       "reading": [
+        "Five students report hours of sleep and quiz score: (5, 68), (6, 72), (7, 80), (8, 85), (9, 88). Each pair is one student. A *scatter plot* puts sleep on the horizontal axis and score on the vertical axis and marks one point per student. The student who slept 7 hours and scored 80 is the point 7 units to the right and 80 units up. Five students, five points. The data now have two *variables*, sleep and score, and the plot lets you see them together.",
+        "Choose axes carefully. The variable you think might explain the other usually goes across (sleep), and the one being explained goes up (score). Pick scales that fit the data: sleep from 4 to 10 hours, score from 50 to 100. A scale that starts at 0 on both axes would squeeze the points into one corner. A plot with 24 students has 24 points, one for each pair of measurements.",
+        "Watch for three mistakes. Drawing two separate dot plots loses the pairing. Swapping the coordinates puts (5, 68) at 68 across and 5 up. Connecting the points with lines suggests a path. Points in a scatter plot are separate people, not a path. Leave them as dots and look for a pattern in the cloud."
+       ],
+       "words": [
+        {
+         "w": "scatter plot",
+         "d": "a graph with one point for each pair of measurements, one variable on each axis"
+        },
+        {
+         "w": "variable",
+         "d": "something measured that can take different values, like hours of sleep"
+        }
+       ],
+       "look": {
+        "type": "data",
+        "title": "Sleep and Quiz Score for Five Students",
+        "rows": [
+         [
+          "5 hours",
+          68
+         ],
+         [
+          "6 hours",
+          72
+         ],
+         [
+          "7 hours",
+          80
+         ],
+         [
+          "8 hours",
+          85
+         ],
+         [
+          "9 hours",
+          88
+         ]
+        ],
+        "unit": "quiz score",
+        "cite": "Class data used in this chapter (made-up example)",
+        "prompt": "Sketch the five points. As sleep goes up by one hour, about how much does the score go up?"
+       },
+       "check": [
+        {
+         "q": "A student slept 6 hours and scored 72. Where is that point on a scatter plot with sleep across and score up?",
+         "choices": [
+          "72 units right and 6 units up",
+          "at 78, the sum of the two numbers",
+          "6 units right on the sleep axis and 72 units up on the score axis",
+          "on both dot plots at once"
+         ],
+         "a": 2,
+         "why": "The first number is the horizontal position and the second is the vertical position, matching the axes."
+        },
+        {
+         "q": "How many points does a scatter plot of 24 students' sleep and scores have?",
+         "choices": [
+          "48",
+          "12",
+          "2",
+          "24"
+         ],
+         "a": 3,
+         "why": "Each student is one point that carries both measurements."
+        },
+        {
+         "q": "Why should you not connect the points in a scatter plot?",
+         "choices": [
+          "Each point is a different student, not a step in a sequence.",
+          "Lines are only allowed in histograms.",
+          "Connecting them changes the scores.",
+          "It is fine to connect them."
+         ],
+         "a": 0,
+         "why": "The points have no order in time, so a connecting line would suggest a path that does not exist."
+        }
+       ]
+      },
+      {
+       "title": "Reading a Scatter Plot",
+       "mainIdea": "Read a scatter plot by asking: as one variable increases, what happens to the other, and how tightly do the points follow that trend?",
+       "reading": [
+        "Look at the sleep-and-score plot. Start at the left: students with little sleep have lower scores. Move right: scores climb. The cloud of points rises from lower left to upper right. This is an *association* between sleep and score: knowing one tells you something about the other. Now ask how tight the pattern is. If the points hug a line, the association is strong. If they spread widely, it is weak.",
+        "You can read individual facts too. Find the student with 8 hours of sleep: the point at 8 across sits at 85 up, so that student scored 85. Find the highest scorer: the top point, at 88, belongs to the 9-hour sleeper. Find how many students slept under 7 hours: count the points left of 7. In the five-student data, that is 2.",
+        "Be careful about what an association does not prove. More sleep goes with higher scores, but sleep might not be the cause. Students who sleep more may also finish homework earlier, or worry less. A scatter plot shows that two variables follow a *trend* together; it cannot by itself show that one causes the other. Common mistake: reading the plot as if the points were in time order. The leftmost point is the least sleep, not the first day."
+       ],
+       "words": [
+        {
+         "w": "association",
+         "d": "a pattern where knowing one variable tells you something about the other"
+        },
+        {
+         "w": "trend",
+         "d": "the general direction the points follow across the plot"
+        }
+       ],
+       "look": {
+        "type": "think",
+        "title": "Ice Cream and Temperature",
+        "text": "A shop records the day's high temperature and the number of cones sold on 10 summer days. On the scatter plot, hot days sit at the right with high sales, and cool days sit at the left with low sales. The points rise to the right in a fairly tight band.",
+        "prompt": "Describe the association in one sentence. Does heat cause people to buy cones, or could something else explain it?"
+       },
+       "check": [
+        {
+         "q": "On a scatter plot of sleep (across) and score (up), the point at 8 across is 85 up. What does it mean?",
+         "choices": [
+          "Eight students scored 85.",
+          "A student who slept 8 hours scored 85.",
+          "A student who slept 85 hours scored 8.",
+          "The score went up by 8 points."
+         ],
+         "a": 1,
+         "why": "The horizontal value is that student's sleep, and the vertical value is that student's score."
+        },
+        {
+         "q": "Points on a scatter plot rise to the right but are widely spread. Which describes it?",
+         "choices": [
+          "a strong positive association",
+          "a strong negative association",
+          "a weak positive association",
+          "no association"
+         ],
+         "a": 2,
+         "why": "Rising to the right is positive; wide spread means the pattern is weak."
+        },
+        {
+         "q": "Cities with more ice cream sales also have more sunburns. What can you conclude?",
+         "choices": [
+          "Ice cream causes sunburn.",
+          "Sunburn causes ice cream sales.",
+          "The data must be wrong.",
+          "The two are associated; hot weather may explain both."
+         ],
+         "a": 3,
+         "why": "An association shows the two move together. A third factor, hot sunny weather, can drive both."
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "title": "Patterns in the Points",
+     "lessons": [
+      {
+       "title": "Positive and Negative Association",
+       "mainIdea": "A positive association means both variables rise together; a negative association means one falls as the other rises; a shapeless cloud shows no association.",
+       "reading": [
+        "Sleep and score rise together: that is a *positive association*. Now picture a plot of a car's age (across) and its price (up). Older cars generally cost less, so the points fall from upper left to lower right. That is a *negative association*. Both can be strong or weak. A third possibility: a plot of shoe size and quiz score shows a shapeless cloud, because the two have nothing to do with each other. That is *no association*.",
+        "A quick test: slide your hand across the plot from left to right. If the points under your hand move up, the association is positive. If they move down, it is negative. If they stay level or jump around, there is none. Words matter: negative does not mean bad. A negative association between minutes of exercise and resting heart rate is good news.",
+        "Examples to sort. Hours of TV and hours of homework: likely negative. Height and arm span: positive and strong. Day of the month and high temperature in Chicago: no clear association within one month. Common mistake: calling a plot negative because the values are low, or positive because the values are high. Direction comes from the slope of the cloud, not from where it sits."
+       ],
+       "words": [
+        {
+         "w": "positive association",
+         "d": "as one variable increases, the other tends to increase"
+        },
+        {
+         "w": "negative association",
+         "d": "as one variable increases, the other tends to decrease"
+        },
+        {
+         "w": "no association",
+         "d": "the points show no trend; one variable tells you nothing about the other"
+        }
+       ],
+       "look": {
+        "type": "think",
+        "title": "Sort the Pairs",
+        "text": "Think about scatter plots for these pairs: (1) outdoor temperature and heating bill; (2) hours practiced and free-throw percentage; (3) a student's locker number and their height; (4) a phone's age and its battery life.",
+        "prompt": "Label each pair positive, negative or no association. For which pair would the points be most tightly packed?"
+       },
+       "check": [
+        {
+         "q": "As outdoor temperature rises, heating bills fall. Which kind of association is this?",
+         "choices": [
+          "negative",
+          "positive",
+          "none",
+          "cannot tell"
+         ],
+         "a": 0,
+         "why": "One variable goes up while the other goes down, so the points fall to the right."
+        },
+        {
+         "q": "A scatter plot of height and arm span shows points in a tight band rising to the right. Which describes it?",
+         "choices": [
+          "weak positive",
+          "strong positive",
+          "strong negative",
+          "none"
+         ],
+         "a": 1,
+         "why": "Rising to the right is positive, and a tight band means strong."
+        },
+        {
+         "q": "Which pair would most likely show no association?",
+         "choices": [
+          "hours of practice and free throws made",
+          "age of a phone and battery life",
+          "locker number and height",
+          "temperature and cones sold"
+         ],
+         "a": 2,
+         "why": "Locker numbers are assigned without regard to height, so the points would form a shapeless cloud."
+        }
+       ]
+      },
+      {
+       "title": "Clusters, Outliers and Curves",
+       "mainIdea": "Besides direction, look for clusters, outliers and whether the pattern is a line or a curve.",
+       "reading": [
+        "On the sleep plot, most points bunch between 6.5 and 8 hours. That bunch is a *cluster*. A cluster can hint at a group: maybe most students have a similar bedtime. Two clusters might mean two kinds of students, like those with after-school jobs and those without. Name clusters by where they sit on both axes: \"a cluster around 7 hours and 80 points.\"",
+        "One student slept 9 hours but scored 55. That point sits far below the rising band. It is an *outlier* in the scatter plot: it does not follow the pattern the others follow. An outlier can be a data-entry error, a special case (Leo was sick), or a real surprise. Do not delete it silently. Note it, find out why if you can, and describe the pattern \"with one outlier at (9, 55).\"",
+        "Not every pattern is a line. Plot the height of a thrown ball against time and the points rise, then fall, in an arch. That is a *nonlinear* association. Plot a bacteria count against hours and the points bend upward faster and faster. When the points bend, a straight line will fit badly, and you should say the association is nonlinear. Common mistake: forcing a line through a curved pattern and reporting its slope as if it held for all values."
+       ],
+       "words": [
+        {
+         "w": "cluster",
+         "d": "a group of points bunched close together on the plot"
+        },
+        {
+         "w": "outlier",
+         "d": "a point that sits far from the pattern the other points follow"
+        },
+        {
+         "w": "nonlinear",
+         "d": "a pattern that bends instead of following a straight line"
+        }
+       ],
+       "look": {
+        "type": "think",
+        "title": "Describe the Whole Plot",
+        "text": "A scatter plot of hours of practice (across) and points scored (up) for a team has most points in a rising band from (2, 5) to (8, 20), a tight group near (5, 12), and one point at (9, 2).",
+        "prompt": "Write a full description: direction, strength, clusters and outliers. What might explain the point at (9, 2)?"
+       },
+       "check": [
+        {
+         "q": "A point at (9, 55) sits far below a rising band of points. What is it?",
+         "choices": [
+          "a cluster",
+          "the mean",
+          "a negative association",
+          "an outlier"
+         ],
+         "a": 3,
+         "why": "A single point far from the pattern is an outlier. A cluster is a group, and association describes the whole cloud."
+        },
+        {
+         "q": "Points rise, then fall, in an arch. Which describes the pattern?",
+         "choices": [
+          "nonlinear association",
+          "strong linear positive association",
+          "no association",
+          "two clusters"
+         ],
+         "a": 0,
+         "why": "The pattern bends, so it is not a line. There is a clear pattern, so it is not no association."
+        },
+        {
+         "q": "What should you do with an outlier in a scatter plot?",
+         "choices": [
+          "Always delete it.",
+          "Note it and try to find out why before deciding how to treat it.",
+          "Move it onto the line.",
+          "Ignore it because it is only one point."
+         ],
+         "a": 1,
+         "why": "An outlier might be an error or a real special case. Investigate first; never silently drop or move data."
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "title": "Fitting a Line",
+     "lessons": [
+      {
+       "title": "A Line by Eye",
+       "mainIdea": "When points show a linear pattern, draw a straight line through the middle of the cloud with about as many points above as below, then use it to predict.",
+       "reading": [
+        "The five sleep points (5, 68), (6, 72), (7, 80), (8, 85), (9, 88) rise in a nearly straight band. Lay a ruler on the plot and draw a *line of fit*. It should follow the direction of the cloud and pass close to as many points as you can. A good line has about as many points above it as below it. The points above should not all sit at one end. The line does not have to touch any point.",
+        "One easy line goes through (5, 68) and (9, 88). Its steepness is (88 − 68) ÷ (9 − 5) = 20 ÷ 4 = 5. Check the middle: at 7 hours, this line gives 68 + 2 × 5 = 78, close to the actual 80. At 8 hours it gives 83, close to 85. It sits a little low in the middle, so a slightly better line is score = 5 × hours + 43, which gives 68, 73, 78, 83 and 88 at 5 through 9 hours. It is above the data twice, below twice, and exact twice.",
+        "Use the line to make a *prediction*. For 6.5 hours, the line gives 5 × 6.5 + 43 = 32.5 + 43 = 75.5, so predict about 75 or 76. Predictions inside the range of the data are reasonable. Predictions far outside, like 20 hours of sleep, are not; the line would say 143, which is not even a possible score. Common mistakes: drawing the line from the lowest point to the highest point no matter where the rest sit, and running it through two outliers."
+       ],
+       "words": [
+        {
+         "w": "line of fit",
+         "d": "a straight line drawn through the middle of a linear cloud of points to summarize the trend"
+        },
+        {
+         "w": "prediction",
+         "d": "a value read from the line of fit for an input you did not measure"
+        }
+       ],
+       "look": {
+        "type": "think",
+        "title": "Choose the Better Line",
+        "text": "Two lines are drawn on the sleep plot. Line 1 passes above all five points. Line 2 passes through the middle, with two points above it and two below. Both have the same steepness.",
+        "prompt": "Which line fits better and why? Using score = 5 × hours + 43 for Line 2, what score does it predict for 7.5 hours of sleep?"
+       },
+       "check": [
+        {
+         "q": "Which is a sign of a good line of fit?",
+         "choices": [
+          "The line passes through the lowest and highest points.",
+          "All the points are above the line.",
+          "About as many points lie above the line as below it, spread along its length.",
+          "The line is horizontal."
+         ],
+         "a": 2,
+         "why": "A line through the middle of the cloud balances the points on both sides, so it summarizes the trend."
+        },
+        {
+         "q": "Using score = 5 × hours + 43, what score does the line predict for 6.5 hours of sleep?",
+         "choices": [
+          "32.5",
+          "48",
+          "80.5",
+          "75.5"
+         ],
+         "a": 3,
+         "why": "5 × 6.5 = 32.5, and 32.5 + 43 = 75.5. Forgetting to add 43 gives 32.5."
+        },
+        {
+         "q": "Why is predicting the score for 20 hours of sleep from this line unreasonable?",
+         "choices": [
+          "20 hours is far outside the data, and the line gives an impossible score above 100.",
+          "The slope changes at 10 hours.",
+          "Lines can only predict whole hours.",
+          "The prediction would be too low."
+         ],
+         "a": 0,
+         "why": "5 × 20 + 43 = 143. The pattern was only observed from 5 to 9 hours, so the line has no support out there."
+        }
+       ]
+      },
+      {
+       "title": "Slope of a Fitted Line",
+       "mainIdea": "The slope of a fitted line tells how much the vertical variable changes, on average, for each 1-unit increase in the horizontal variable.",
+       "reading": [
+        "A line of fit through plant-growth data passes through (1, 4) and (4, 13): after 1 week the plant was 4 cm, after 4 weeks it was 13 cm. *Slope* is rise over run: (13 − 4) ÷ (4 − 1) = 9 ÷ 3 = 3. The slope is 3 cm per week. It means: for each extra week, the line predicts about 3 cm more height. Always attach both units, the vertical unit per one horizontal unit.",
+        "Slope can be negative. A line through used-car data passes through (1, 20) and (5, 12), with age in years and price in thousands of dollars. Slope = (12 − 20) ÷ (5 − 1) = −8 ÷ 4 = −2. Each extra year of age goes with about $2,000 less in price. The sign tells the direction of the association, and the size tells how steep it is.",
+        "In the sleep line, score = 5 × hours + 43, the slope is 5 points per hour. Each extra hour of sleep goes with about 5 more quiz points, on average. \"On average\" matters; individual students sit above or below the line. Common mistakes: dividing run by rise, which gives 1/3 instead of 3. Subtracting in different orders on top and bottom, which gives −3. Forgetting that slope is a *rate of change*, not a total."
+       ],
+       "words": [
+        {
+         "w": "slope",
+         "d": "rise divided by run: how much the line goes up for each 1 unit it goes right"
+        },
+        {
+         "w": "rate of change",
+         "d": "how much one quantity changes for each unit of another, like 3 cm per week"
+        }
+       ],
+       "look": {
+        "type": "data",
+        "title": "Points on the Plant-Growth Line",
+        "rows": [
+         [
+          "Week 1",
+          4
+         ],
+         [
+          "Week 2",
+          7
+         ],
+         [
+          "Week 3",
+          10
+         ],
+         [
+          "Week 4",
+          13
+         ]
+        ],
+        "unit": "cm",
+        "cite": "Line of fit defined in this lesson: height = 3 × weeks + 1",
+        "prompt": "Confirm the slope by checking any two rows. What height does the line predict at week 6?"
+       },
+       "check": [
+        {
+         "q": "A fitted line passes through (0, 5) and (4, 17). What is its slope?",
+         "choices": [
+          "12",
+          "3",
+          "1/3",
+          "4"
+         ],
+         "a": 1,
+         "why": "Rise 17 − 5 = 12, run 4 − 0 = 4, so 12 ÷ 4 = 3."
+        },
+        {
+         "q": "A line passes through (1, 20) and (5, 12). What is its slope?",
+         "choices": [
+          "2",
+          "−1/2",
+          "−2",
+          "−8"
+         ],
+         "a": 2,
+         "why": "Rise 12 − 20 = −8, run 5 − 1 = 4, so −8 ÷ 4 = −2. Dropping the sign gives 2."
+        },
+        {
+         "q": "A line of fit for car age (years) and price (thousands of dollars) has slope −2. What does it mean?",
+         "choices": [
+          "The car loses $2 each year.",
+          "Each extra year adds $2,000 to the price.",
+          "The car costs $2,000 when new.",
+          "Each extra year of age goes with about $2,000 less in price."
+         ],
+         "a": 3,
+         "why": "Slope is the change in price per year. Negative means price falls, and the unit is thousands of dollars."
+        }
+       ]
+      },
+      {
+       "title": "Intercept and Predictions",
+       "mainIdea": "The y-intercept is the line's value when the horizontal variable is 0; it means something only if 0 is inside or near the data.",
+       "reading": [
+        "In the line score = 5 × hours + 43, set hours to 0 and the score is 43. That number is the *y-intercept*, where the line crosses the vertical axis. Does it mean a student with no sleep would score 43? No. No student in the data slept 0 hours; the least was 5. The intercept here is a mathematical anchor, not a fact about zero-sleep students.",
+        "Sometimes the intercept does mean something. A line for taxi fares, fare = 2.5 × miles + 3, has intercept 3. At 0 miles the fare is $3, which is the flat fee for getting in the cab. Here 0 miles is a real starting point. To predict, plug in: 8 miles gives 2.5 × 8 + 3 = 20 + 3 = 23 dollars. A line with slope −2 and intercept 50, y = −2x + 50, gives y = −2 × 15 + 50 = −30 + 50 = 20 when x = 15.",
+        "Always ask two questions about a prediction. Is the input inside the *range of the data*? Does the answer make sense? A line for ice cream sales, cones = 4 × temp − 100, predicts 4 × 80 − 100 = 220 cones at 80°F, which is sensible. At 20°F it predicts 4 × 20 − 100 = −20 cones, which is impossible; that temperature is far outside the summer data. Common mistake: reading the intercept as \"the starting value\" in every situation."
+       ],
+       "words": [
+        {
+         "w": "y-intercept",
+         "d": "the value of the line where the horizontal variable is 0"
+        },
+        {
+         "w": "range of the data",
+         "d": "the stretch from the smallest to the largest measured input; predictions are safest inside it"
+        }
+       ],
+       "look": {
+        "type": "think",
+        "title": "Taxi Fare Line",
+        "text": "A line of fit for cab rides in a city is fare = 2.5 × miles + 3, with fare in dollars and distance in miles.",
+        "prompt": "What does the intercept 3 mean here? What fare does the line predict for a 6-mile ride, and for a 12-mile ride?"
+       },
+       "check": [
+        {
+         "q": "Using y = 2.5x + 10, what is y when x = 8?",
+         "choices": [
+          "30",
+          "20",
+          "12.5",
+          "40"
+         ],
+         "a": 0,
+         "why": "2.5 × 8 = 20, and 20 + 10 = 30."
+        },
+        {
+         "q": "A line has slope −2 and y-intercept 50. What is y when x = 15?",
+         "choices": [
+          "80",
+          "20",
+          "35",
+          "−30"
+         ],
+         "a": 1,
+         "why": "−2 × 15 = −30, and −30 + 50 = 20. Adding 30 instead gives 80."
+        },
+        {
+         "q": "For the taxi line fare = 2.5 × miles + 3, what does the intercept 3 mean?",
+         "choices": [
+          "Each mile costs $3.",
+          "A 3-mile ride is free.",
+          "A ride costs $3 before any miles are driven, like a flat fee.",
+          "The intercept has no meaning here."
+         ],
+         "a": 2,
+         "why": "At 0 miles the fare is 2.5 × 0 + 3 = 3. Zero miles is a real starting point, so the intercept is the base charge."
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "title": "Categories in Tables",
+     "lessons": [
+      {
+       "title": "Two-Way Tables",
+       "mainIdea": "A two-way table counts people by two categories at once; row and column totals let you check the count and answer how-many questions.",
+       "reading": [
+        "Some data are categories, not numbers: grade level, cat or dog, yes or no. This is *categorical data*. A *two-way table* organizes counts by two categories at once. Survey 100 students: do you prefer cats or dogs? Rows are grade (7th, 8th), columns are the pet. Seventh grade: 20 cats, 30 dogs. Eighth grade: 15 cats, 35 dogs. Add each row: 7th total 50, 8th total 50. Add each column: cats 35, dogs 65. The grand total is 100 either way, which confirms the table.",
+        "Each *cell* answers one how-many question. How many eighth graders prefer dogs? 35. How many students prefer cats? Read the column total: 35. How many seventh graders were surveyed? Read the row total: 50. Given some cells, you can find missing ones by subtraction. If 80 students are surveyed, 50 play a sport, and 18 of those also play an instrument, then 50 − 18 = 32 play a sport but no instrument.",
+        "Common mistakes: mixing up row and column when reading a cell, and double-counting when categories overlap. Each person belongs in exactly one cell. Also, do not use a two-way table when a variable is numerical, like exact height; use a scatter plot for two numerical variables. Two categories, two-way table; two numbers, scatter plot."
+       ],
+       "words": [
+        {
+         "w": "categorical data",
+         "d": "data sorted into groups with names, like yes/no or cat/dog, instead of numbers"
+        },
+        {
+         "w": "two-way table",
+         "d": "a table that counts how many fall into each pair of categories"
+        },
+        {
+         "w": "cell",
+         "d": "one box in the table, holding the count for one pair of categories"
+        }
+       ],
+       "look": {
+        "type": "data",
+        "title": "Pet Preference by Grade (100 students)",
+        "rows": [
+         [
+          "7th grade, cats",
+          20
+         ],
+         [
+          "7th grade, dogs",
+          30
+         ],
+         [
+          "8th grade, cats",
+          15
+         ],
+         [
+          "8th grade, dogs",
+          35
+         ]
+        ],
+        "unit": "students",
+        "cite": "Class survey used in this lesson (made-up example)",
+        "prompt": "Find the row totals, the column totals and the grand total. How many students prefer dogs?"
+       },
+       "check": [
+        {
+         "q": "In the pet table, how many students in all prefer cats?",
+         "choices": [
+          "20",
+          "65",
+          "15",
+          "35"
+         ],
+         "a": 3,
+         "why": "Add the cat column: 20 + 15 = 35. The dog column adds to 65."
+        },
+        {
+         "q": "80 students are surveyed: 50 play a sport, and 18 of those also play an instrument. How many play a sport but no instrument?",
+         "choices": [
+          "32",
+          "18",
+          "30",
+          "68"
+         ],
+         "a": 0,
+         "why": "50 − 18 = 32."
+        },
+        {
+         "q": "Which pair of variables belongs in a two-way table?",
+         "choices": [
+          "height and arm span",
+          "grade level and favorite lunch",
+          "hours of sleep and quiz score",
+          "car age and price"
+         ],
+         "a": 1,
+         "why": "Both are categories. The other pairs are two numerical measurements, which belong on a scatter plot."
+        }
+       ]
+      },
+      {
+       "title": "Relative Frequencies",
+       "mainIdea": "Divide a cell by its row total (or column total) to get a relative frequency, which lets you compare groups of different sizes.",
+       "reading": [
+        "Counts alone can mislead when groups differ in size. Use *relative frequency*: a count divided by a total. In the pet table, 30 of the 50 seventh graders prefer dogs: 30/50 = 0.6, or 60%. For eighth graders, 35/50 = 0.7, or 70%. Dividing by the *row total* gives row relative frequencies. Because both grades had 50 students, the counts and the percents tell the same story here.",
+        "Now a table with unequal groups. 80 students: 50 play a sport and 30 do not. Of the sport players, 18 play an instrument. Of the non-players, 12 do. Raw counts, 18 versus 12, make it look like sport players play instruments more. But 18/50 = 0.36, or 36%, and 12/30 = 0.4, or 40%. The non-players actually have the higher share. Compare percents, not counts, when the groups are different sizes.",
+        "You can also divide by the grand total to get the share of everyone: 18/80 = 0.225, so 22.5% of all students play both a sport and an instrument. Choose the total that matches the question. \"What percent of sport players\" means divide by the sport row. \"What percent of all students\" means divide by 80. Common mistake: dividing by the wrong total, or mixing a row percent with a column percent in one comparison."
+       ],
+       "words": [
+        {
+         "w": "relative frequency",
+         "d": "a count divided by a total, written as a fraction, decimal or percent"
+        },
+        {
+         "w": "row total",
+         "d": "the sum of all the cells in one row of the table"
+        }
+       ],
+       "look": {
+        "type": "data",
+        "title": "Sport and Instrument (80 students)",
+        "rows": [
+         [
+          "Plays sport, instrument",
+          18
+         ],
+         [
+          "Plays sport, no instrument",
+          32
+         ],
+         [
+          "No sport, instrument",
+          12
+         ],
+         [
+          "No sport, no instrument",
+          18
+         ]
+        ],
+        "unit": "students",
+        "cite": "Class survey used in this lesson (made-up example)",
+        "prompt": "What percent of sport players play an instrument? What percent of non-players do? Which group has the higher share?"
+       },
+       "check": [
+        {
+         "q": "Of 50 sport players, 18 play an instrument. What is the row relative frequency?",
+         "choices": [
+          "18%",
+          "22.5%",
+          "36%",
+          "64%"
+         ],
+         "a": 2,
+         "why": "18 ÷ 50 = 0.36, or 36%. Dividing by 80 gives 22.5%, the share of all students."
+        },
+        {
+         "q": "12 of the 30 non-players play an instrument. What percent is that?",
+         "choices": [
+          "12%",
+          "15%",
+          "60%",
+          "40%"
+         ],
+         "a": 3,
+         "why": "12 ÷ 30 = 0.4, or 40%."
+        },
+        {
+         "q": "Why compare relative frequencies instead of counts?",
+         "choices": [
+          "Groups of different sizes can be compared fairly as percents.",
+          "Counts are always wrong.",
+          "Percents are always larger than counts.",
+          "Relative frequencies do not need totals."
+         ],
+         "a": 0,
+         "why": "A percent puts each group on the same scale, so 18 of 50 and 12 of 30 can be compared directly."
+        }
+       ]
+      },
+      {
+       "title": "Association in a Table",
+       "mainIdea": "Two categories are associated when the row percents differ noticeably between rows; similar percents mean little or no association.",
+       "reading": [
+        "Is there an association between playing a sport and playing an instrument? Compare the row percents: 36% of sport players play an instrument, and 40% of non-players do. Those are close, only 4 *percentage points* apart. Knowing whether a student plays a sport tells you little about instruments. That is weak or no association.",
+        "Now a different survey of 200 students: studied with a group or alone, and passed or did not. Group: 60 passed, 20 did not, total 80. Alone: 60 passed, 60 did not, total 120. Row percents: group 60/80 = 0.75, or 75% passed. Alone 60/120 = 0.5, or 50% passed. Notice the raw pass counts are the same, 60 and 60, but the percents differ by 25 percentage points. That is a clear *association*: students who studied in groups passed at a higher rate.",
+        "Association again is not proof of cause. Group studiers might already be stronger students. Also, a difference of a couple of percentage points in small groups is not convincing; 5 of 10 versus 6 of 10 is one student. Common mistakes: comparing counts across rows of different size, and comparing a row percent to a column percent. Pick one direction, compute both rows, then compare."
+       ],
+       "words": [
+        {
+         "w": "association",
+         "d": "in a table, a difference in the row percents that shows the two categories are linked"
+        },
+        {
+         "w": "percentage point",
+         "d": "the difference between two percents, like 75% minus 50% = 25 percentage points"
+        }
+       ],
+       "look": {
+        "type": "data",
+        "title": "Study Method and Passing (200 students)",
+        "rows": [
+         [
+          "Group, passed",
+          60
+         ],
+         [
+          "Group, did not pass",
+          20
+         ],
+         [
+          "Alone, passed",
+          60
+         ],
+         [
+          "Alone, did not pass",
+          60
+         ]
+        ],
+        "unit": "students",
+        "cite": "Survey used in this lesson (made-up example)",
+        "prompt": "Compute the percent passing in each row. Is there an association? Does it prove that group study causes passing?"
+       },
+       "check": [
+        {
+         "q": "Group: 60 of 80 passed. Alone: 60 of 120 passed. What percent of each group passed?",
+         "choices": [
+          "60% and 60%",
+          "75% and 50%",
+          "50% and 75%",
+          "30% and 30%"
+         ],
+         "a": 1,
+         "why": "60 ÷ 80 = 0.75 and 60 ÷ 120 = 0.5. The counts match, but the percents do not."
+        },
+        {
+         "q": "Two row percents are 36% and 40%. What does this suggest?",
+         "choices": [
+          "a strong association",
+          "the second row caused the first",
+          "little or no association between the two categories",
+          "the table has an error"
+         ],
+         "a": 2,
+         "why": "A gap of 4 percentage points is small, so knowing the row tells you little about the column."
+        },
+        {
+         "q": "Which is the fairest way to look for an association in a two-way table?",
+         "choices": [
+          "Compare the raw counts in one column.",
+          "Compare a row percent to a column percent.",
+          "Compare the grand total to one cell.",
+          "Compare the percent in each row that falls in the same column."
+         ],
+         "a": 3,
+         "why": "Row percents put rows of different sizes on the same scale, so a difference between them shows a real link."
+        }
+       ]
+      }
+     ]
+    }
+   ],
+   "review": [
+    {
+     "q": "Points on a scatter plot fall from upper left to lower right. Which association is this?",
+     "choices": [
+      "negative",
+      "positive",
+      "none",
+      "nonlinear"
+     ],
+     "a": 0,
+     "why": "One variable decreases as the other increases, so the trend is negative."
+    },
+    {
+     "q": "What is the slope of a line through (2, 10) and (6, 22)?",
+     "choices": [
+      "12",
+      "3",
+      "4",
+      "1/3"
+     ],
+     "a": 1,
+     "why": "Rise 22 − 10 = 12, run 6 − 2 = 4, so 12 ÷ 4 = 3."
+    },
+    {
+     "q": "Using y = 3x + 5, what is y when x = 10?",
+     "choices": [
+      "18",
+      "30",
+      "35",
+      "8"
+     ],
+     "a": 2,
+     "why": "3 × 10 = 30, and 30 + 5 = 35."
+    },
+    {
+     "q": "A point sits far from a rising band of points. What is it called?",
+     "choices": [
+      "a cluster",
+      "the intercept",
+      "the slope",
+      "an outlier"
+     ],
+     "a": 3,
+     "why": "A point that does not follow the pattern the others follow is an outlier."
+    },
+    {
+     "q": "In a two-way table of 100 students, 35 prefer cats and the rest prefer dogs. How many prefer dogs?",
+     "choices": [
+      "65",
+      "35",
+      "50",
+      "30"
+     ],
+     "a": 0,
+     "why": "100 − 35 = 65."
+    },
+    {
+     "q": "24 of 40 seventh graders bring lunch; 30 of 60 eighth graders do. Which grade has the higher share?",
+     "choices": [
+      "8th grade, because 30 is more than 24",
+      "7th grade, 60% versus 50%",
+      "They are equal.",
+      "It cannot be determined."
+     ],
+     "a": 1,
+     "why": "24 ÷ 40 = 0.6 and 30 ÷ 60 = 0.5. Counts mislead because the groups differ in size."
+    },
+    {
+     "q": "What is the y-intercept of y = −2x + 50?",
+     "choices": [
+      "−2",
+      "25",
+      "50",
+      "0"
+     ],
+     "a": 2,
+     "why": "When x = 0, y = −2 × 0 + 50 = 50."
+    },
+    {
+     "q": "A line of fit was made from students who slept 5 to 9 hours. Why not use it to predict a score for 20 hours?",
+     "choices": [
+      "Lines can only predict values under 10.",
+      "The slope would become negative.",
+      "Predictions must use whole numbers.",
+      "20 hours is far outside the range of the data, so the line may not apply."
+     ],
+     "a": 3,
+     "why": "A line of fit is only supported where there are data. Far outside that range it can give impossible values."
+    }
+   ]
+  }
+ ]
+}

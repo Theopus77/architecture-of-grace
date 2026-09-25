@@ -1,0 +1,263 @@
+{
+ "n": 59, "title": "Distributions and the Normal Curve", "years": "Statistics",
+ "bigQuestion": "How can one curve describe heights, test scores and coin flips, and when should we refuse to trust it?",
+ "story": {
+  "title": "The Chart on the Wall of Exam Room 3",
+  "kicker": "A little sister, a nurse with a pencil, and a number on a chart that sounds like a grade but is not one.",
+  "paragraphs": [
+   "Marcus takes his six-year-old sister Nia to her checkup at a clinic on Chicago's West Side because their mother cannot leave work. The nurse measures Nia against the wall, writes 48 inches on a clipboard, and finds the spot on a chart taped beside the door. She makes a small dot, looks up and says, 'She is right around the 90th percentile for height.' Nia grins. Marcus nods, but on the bus home he admits he is not sure what that meant. Was 90 a score? Did she pass?",
+   "A *percentile* is not a grade. It is a position in a crowd. Saying Nia is at the 90th percentile means that if you lined up 100 six-year-old girls by height, about 90 of them would be shorter than Nia and about 10 would be taller. The chart on the wall was built by measuring many thousands of children and recording where each height fell. The curves printed on it, one for the 5th percentile, one for the 50th, one for the 95th, are simply lines drawn through those positions at every age.",
+   "Here is the part that surprised Marcus when he looked it up. Heights at a given age pile up in the middle and thin out at both ends in a very regular way. Most six-year-old girls are close to the average, a few are quite short, a few are quite tall, and the drop-off on each side is nearly the same. That bell-shaped pile has a name, the normal curve, and once you know its center and its spread you can predict what percent of children fall in any range without measuring anyone new.",
+   "That is the promise of this chapter. One curve, described by two numbers, turns a height into a percentile, a test score into a rank, and a run of coin flips into a probability. But the same tools also tell you when the curve is the wrong model, when the pile of data leans hard to one side, or when a count cannot possibly go below zero. Marcus wanted to know what 90 meant. By the end of the chapter you will be able to explain it to him, and to say when the chart would lie."
+  ],
+  "think": "If Nia is at the 90th percentile and a classmate is at the 50th, does that mean Nia is almost twice as tall? Explain what the two numbers actually compare."
+ },
+ "sections": [
+  {"title": "Describing a Pile of Data", "lessons": [
+   {
+    "title": "Center, Spread and Shape",
+    "mainIdea": "To describe a set of numbers, report its center, how far the numbers spread from that center, and the shape of the pile.",
+    "reading": [
+     "Eight students report how many hours they slept last night: 2, 4, 4, 4, 5, 5, 7, 9. The *mean* is the total divided by the count: 2 + 4 + 4 + 4 + 5 + 5 + 7 + 9 = 40, and 40 ÷ 8 = 5 hours. The *median* is the middle value when the numbers are in order. With eight values the middle is between the 4th and 5th, which are 4 and 5, so the median is 4.5 hours. Mean and median are both measures of center, but they answer slightly different questions: the mean balances the total, the median splits the group in half.",
+     "Center alone is not enough. Two classes can both average 5 hours while one class is tightly packed near 5 and the other ranges from 1 to 10. The *standard deviation* measures spread as a typical distance from the mean. For the sleep data: subtract the mean from each value to get −3, −1, −1, −1, 0, 0, 2, 4. Square each: 9, 1, 1, 1, 0, 0, 4, 16, which sum to 32. Divide by the count, 32 ÷ 8 = 4, and take the square root: √4 = 2. The standard deviation is 2 hours, so a typical student is about 2 hours from the mean. A calculator's sample standard deviation divides by one less than the count and gives a slightly larger number; either way, bigger means more spread out.",
+     "Shape is the third piece. Draw a *histogram*, a bar for each range of values, and look at the pile. If the left and right halves are mirror images, the shape is *symmetric*, and the mean and median match. If one tail stretches far out on the right, as with household incomes where a few very large numbers pull the mean up, the shape is *skewed* right and the mean sits above the median. In the sleep data the 9 pulls the mean (5) above the median (4.5), a small right skew. A common mistake is to report the mean for skewed data as if it were typical; for skewed data the median is usually the more honest center."
+    ],
+    "words": [
+     {"w": "mean", "d": "the total of the values divided by how many values there are"},
+     {"w": "median", "d": "the middle value when the numbers are placed in order; half the values sit below it"},
+     {"w": "standard deviation", "d": "a typical distance of the values from the mean; larger means more spread out"},
+     {"w": "histogram", "d": "a bar graph where each bar counts how many values fall in a range"},
+     {"w": "symmetric", "d": "a shape whose left and right halves mirror each other"},
+     {"w": "skewed", "d": "a shape with one tail stretched much farther out than the other"}
+    ],
+    "look": {"type": "think", "title": "Two Classes, One Mean", "text": "Class A quiz scores: 7, 8, 8, 9. Class B quiz scores: 4, 6, 10, 12. Both totals are 32, so both means are 32 ÷ 4 = 8. For Class A the deviations are −1, 0, 0, 1; squares 1, 0, 0, 1; sum 2; 2 ÷ 4 = 0.5; standard deviation √0.5 ≈ 0.71. For Class B the deviations are −4, −2, 2, 4; squares 16, 4, 4, 16; sum 40; 40 ÷ 4 = 10; standard deviation √10 ≈ 3.16.", "prompt": "Both classes average 8. Which class would you rather be a random student in if you needed to score at least a 6, and how does the standard deviation tell you that?"},
+    "check": [
+     {"q": "The values 4, 8, 9 and 11 have what mean?", "choices": ["8", "8.5", "9", "32"], "a": 0, "why": "4 + 8 + 9 + 11 = 32, and 32 ÷ 4 = 8. Choosing 8.5 comes from averaging the two middle values (the median), and 32 is the total, not the mean."},
+     {"q": "For the sleep data 2, 4, 4, 4, 5, 5, 7, 9 (mean 5), what is the standard deviation when you divide the squared deviations by the count?", "choices": ["1", "4", "2", "32"], "a": 2, "why": "The squared deviations sum to 32; 32 ÷ 8 = 4; √4 = 2. Answering 4 forgets the square root, and 32 stops at the sum."},
+     {"q": "A histogram of home prices in a city has a long tail stretching to the right. Which statement is true?", "choices": ["The mean and median are equal", "The median is larger than the mean", "The distribution is symmetric", "The mean is larger than the median"], "a": 3, "why": "A few very expensive homes pull the mean up, so in a right-skewed distribution the mean sits above the median."}
+    ]
+   },
+   {
+    "title": "The Normal Curve and the 68-95-99.7 Rule",
+    "mainIdea": "When data follow a normal curve, about 68% fall within 1 standard deviation of the mean, 95% within 2, and 99.7% within 3.",
+    "reading": [
+     "Many measurements, such as heights of adults of the same sex, pile up in a smooth bell shape: highest at the mean, symmetric, tails thinning out on both sides. This bell is the *normal curve*, and it is completely described by two numbers, its mean and its standard deviation. Suppose a model for adult women's heights uses a mean of 64 inches and a standard deviation of 2.5 inches. The peak of the bell is at 64. One standard deviation on each side reaches from 64 − 2.5 = 61.5 to 64 + 2.5 = 66.5 inches.",
+     "The *empirical rule* says what fraction of a normal pile sits in those bands. About 68% of values lie within 1 standard deviation of the mean, about 95% within 2, and about 99.7% within 3. For the height model: about 68% of women are between 61.5 and 66.5 inches; about 95% are between 64 − 5 = 59 and 64 + 5 = 69 inches; about 99.7% are between 56.5 and 71.5 inches. Because the curve is symmetric, each half of a band holds half its percent. So 34% are between 64 and 66.5, and 34% are between 61.5 and 64.",
+     "Now the ends. If 95% are within 2 standard deviations, the other 5% are outside, split evenly: 2.5% below 59 inches and 2.5% above 69 inches. If 68% are within 1 standard deviation, 32% are outside, so 16% are above 66.5 inches. A common error is to forget the split and say 32% are above 66.5. Another is to add standard deviations without multiplying: 2 standard deviations above 64 is 64 + 2 × 2.5 = 69, not 64 + 2 = 66. Write the band endpoints first, then read off the percents."
+    ],
+    "words": [
+     {"w": "normal curve", "d": "the symmetric bell-shaped curve, described entirely by its mean and standard deviation"},
+     {"w": "empirical rule", "d": "for a normal curve, about 68%, 95% and 99.7% of values lie within 1, 2 and 3 standard deviations of the mean"},
+     {"w": "tail", "d": "the thin far ends of a distribution, where few values fall"}
+    ],
+    "look": {"type": "data", "title": "How Much of the Bell Is in Each Band", "rows": [["within 1 SD of the mean", 68.3], ["within 2 SD of the mean", 95.4], ["within 3 SD of the mean", 99.7], ["more than 2 SD above the mean", 2.3], ["more than 3 SD above the mean", 0.1]], "unit": "percent of values", "cite": "standard normal distribution, standard table values rounded to one decimal", "prompt": "Using the 95% band, what percent of values are more than 2 standard deviations below the mean? Why does the table's 2.3 differ slightly from your answer?"},
+    "check": [
+     {"q": "Scores on a test are normal with mean 100 and standard deviation 15. Between which two scores do about 95% of people fall?", "choices": ["85 and 115", "70 and 130", "55 and 145", "98 and 102"], "a": 1, "why": "Two standard deviations is 2 × 15 = 30, so the 95% band runs from 100 − 30 = 70 to 100 + 30 = 130. The 85-to-115 band holds only 68%."},
+     {"q": "With the same mean of 100 and standard deviation of 15, about what percent of people score above 115?", "choices": ["32%", "68%", "16%", "34%"], "a": 2, "why": "115 is 1 standard deviation above the mean. 68% are within 1 SD, so 32% are outside, and half of those, 16%, are above."},
+     {"q": "Using the 68-95-99.7 rule, about what percent of values fall between the mean and 1 standard deviation above the mean?", "choices": ["68%", "50%", "16%", "34%"], "a": 3, "why": "68% lie within 1 SD on both sides; by symmetry half of that, 34%, lies on the upper side between the mean and 1 SD above."}
+    ]
+   },
+   {
+    "title": "Z-Scores Measure Distance in Standard Deviations",
+    "mainIdea": "A z-score tells how many standard deviations a value sits above or below the mean, so scores from different scales can be compared.",
+    "reading": [
+     "A history test has mean 70 and standard deviation 8. Jada scores 82. How unusual is that? Measure her distance from the mean in units of standard deviation: 82 − 70 = 12 points above the mean, and 12 ÷ 8 = 1.5 standard deviations. That number, 1.5, is her *z-score*. The formula is z = (value − mean) ÷ standard deviation. A score of 58 gives z = (58 − 70) ÷ 8 = −12 ÷ 8 = −1.5, the same distance but below the mean. The sign matters: positive means above, negative means below.",
+     "Z-scores let you compare things measured on different scales. Suppose Test A has mean 500 and standard deviation 100, and Test B has mean 20 and standard deviation 5. Luis scores 650 on Test A and 28 on Test B. Which is the stronger result? On A: z = (650 − 500) ÷ 100 = 150 ÷ 100 = 1.5. On B: z = (28 − 20) ÷ 5 = 8 ÷ 5 = 1.6. The 28 is slightly farther above its mean, so it is the stronger performance, even though 650 is a much bigger number.",
+     "You can also go backwards. If a value has z = 2 on the 100-and-15 scale, it is 2 × 15 = 30 points above 100, so the value is 130. In general, value = mean + z × standard deviation. Two mistakes are common: dividing the raw value by the standard deviation without subtracting the mean first (82 ÷ 8 ≈ 10.25, which means nothing), and dropping the negative sign on values below the mean. Always subtract, then divide, and keep the sign."
+    ],
+    "words": [
+     {"w": "z-score", "d": "how many standard deviations a value is above (positive) or below (negative) the mean"},
+     {"w": "standardize", "d": "convert a value into a z-score so it can be compared with values on other scales"},
+     {"w": "raw score", "d": "the original measured value before it is turned into a z-score"}
+    ],
+    "look": {"type": "think", "title": "Which Runner Had the Better Day?", "text": "In a girls' cross-country league, 5K times have mean 22.0 minutes and standard deviation 2.0 minutes. In the boys' league the mean is 19.0 minutes and the standard deviation is 1.5 minutes. Ana runs 19.0 minutes; Theo runs 16.6 minutes. For times, a faster run is a lower number, so a more negative z-score is better. Ana: z = (19.0 − 22.0) ÷ 2.0 = −1.5. Theo: z = (16.6 − 19.0) ÷ 1.5 = −1.6.", "prompt": "Who ran farther below their league's average, measured in standard deviations? Could the answer change if the boys' standard deviation were 2.0 instead of 1.5? Work it out."},
+    "check": [
+     {"q": "A distribution has mean 50 and standard deviation 10. What is the z-score of the value 35?", "choices": ["1.5", "−1.5", "3.5", "−15"], "a": 1, "why": "z = (35 − 50) ÷ 10 = −15 ÷ 10 = −1.5. Dropping the sign gives 1.5; forgetting to divide gives −15."},
+     {"q": "On a scale with mean 100 and standard deviation 15, which raw score has a z-score of 2?", "choices": ["102", "115", "130", "200"], "a": 2, "why": "value = 100 + 2 × 15 = 130. Answering 115 uses only 1 standard deviation; 102 adds z without multiplying."},
+     {"q": "Test A: mean 80, SD 4, Priya scores 86. Test B: mean 60, SD 10, Priya scores 72. Which result is relatively stronger?", "choices": ["Test B, because 72 is a bigger gain of 12 points", "They are equally strong", "Test B, because its z-score is 1.5", "Test A, because its z-score of 1.5 beats Test B's 1.2"], "a": 3, "why": "Test A: (86 − 80) ÷ 4 = 1.5. Test B: (72 − 60) ÷ 10 = 1.2. The larger z-score, 1.5, is the stronger relative result even though the point gain is smaller."}
+    ]
+   }
+  ]},
+  {"title": "Percentiles and the Limits of the Model", "lessons": [
+   {
+    "title": "From a Z-Score to a Percentile",
+    "mainIdea": "A percentile is the percent of values below a given value; on a normal curve, the z-score tells you the percentile through a standard table.",
+    "reading": [
+     "Back to Nia's height chart. A *percentile* is the percent of the group that falls below a value. On a normal curve, each z-score matches one percentile, and a short table gives the match. A value exactly at the mean has z = 0 and is the 50th percentile: half the group is below. A value with z = 1 is at about the 84th percentile, because 50% are below the mean and another 34% are between the mean and 1 standard deviation above, and 50 + 34 = 84. A value with z = −1 is at about the 16th percentile, since 50 − 34 = 16.",
+     "The table fills in the values between. The z-score for the 90th percentile is about 1.28. If six-year-old girls' heights are modeled with mean 45 inches and standard deviation 2 inches, then the 90th percentile height is 45 + 1.28 × 2 = 45 + 2.56 ≈ 47.6 inches. That is roughly where the nurse's dot for Nia fell. Going the other way, a score of 82 on the test with mean 70 and standard deviation 8 has z = 1.5, and the table gives about 93% below, so 82 is at the 93rd percentile.",
+     "To find the percent between two values, find each percentile and subtract. Between z = −1 (about 15.9%) and z = 0.5 (about 69.1%): 69.1 − 15.9 = 53.2% of values. Two cautions. First, a percentile is a rank, not an amount: the 90th percentile is not twice the 45th. Second, the table only works if the data are actually normal, which is the subject of the next lesson. A student who plugs a skewed data set into a z-table will get a tidy percent that is simply wrong."
+    ],
+    "words": [
+     {"w": "percentile", "d": "the percent of the group whose values fall below a given value; the 90th percentile is above 90% of the group"},
+     {"w": "z-table", "d": "a table that gives, for each z-score, the percent of a normal curve below it"},
+     {"w": "rank", "d": "a position in an ordered group, as opposed to an amount"}
+    ],
+    "look": {"type": "data", "title": "Percent of a Normal Curve Below Each Z-Score", "rows": [["z = −2", 2.3], ["z = −1", 15.9], ["z = −0.5", 30.9], ["z = 0", 50], ["z = 0.5", 69.1], ["z = 1", 84.1], ["z = 1.28", 90], ["z = 2", 97.7]], "unit": "percent below", "cite": "standard normal table, rounded to one decimal", "prompt": "A student's z-score is 0.5 on one test and −0.5 on another. Use the table to find each percentile, then find the percent of the group that scored between those two z-scores."},
+    "check": [
+     {"q": "On a normal curve, a value with z-score 1 is at about which percentile?", "choices": ["68th", "34th", "16th", "84th"], "a": 3, "why": "50% lie below the mean and 34% lie between the mean and 1 SD above, so 50 + 34 = 84%. The 16th percentile belongs to z = −1."},
+     {"q": "A test has mean 70 and standard deviation 8. Using the table (z = 1.5 gives about 93.3% below), at what percentile is a score of 82?", "choices": ["93rd", "82nd", "84th", "50th"], "a": 0, "why": "z = (82 − 70) ÷ 8 = 1.5, and the table gives about 93% of scores below, so 82 is at the 93rd percentile."},
+     {"q": "Using the table, about what percent of values lie between z = −1 (15.9% below) and z = 0.5 (69.1% below)?", "choices": ["85%", "53.2%", "15.9%", "69.1%"], "a": 1, "why": "Subtract the lower percentile from the upper: 69.1 − 15.9 = 53.2%. Adding them (85%) counts the wrong region."}
+    ]
+   },
+   {
+    "title": "When the Normal Model Fits",
+    "mainIdea": "Use the normal model only when the data are roughly symmetric and bell-shaped; skewed, two-peaked or bounded data break it.",
+    "reading": [
+     "The normal curve is a model, and a model can be wrong. Before using z-scores or the empirical rule, look at a histogram. Heights of adult men, measurement errors, and averages of many small effects tend to be close to normal. Household income is not: most households are near the middle, but a few earn enormous amounts, and the tail on the right stretches for miles. Time waiting in line is not either: it cannot go below zero, but it can run very long. A normal model applied to either would predict percents that never happen.",
+     "Here is a quick test. Suppose a data set of wait times has mean 10 minutes and standard deviation 8 minutes. If the data were normal, the empirical rule would put 2.5% of waits below 10 − 2 × 8 = −6 minutes. A negative wait is impossible, so the model cannot fit. Any time the mean is less than about two standard deviations from a hard boundary such as zero, the normal curve is a poor choice. A second test is to count: if far fewer than 68% of the values are within 1 standard deviation of the mean, the shape is not a bell.",
+     "*Bimodal* data, which have two separate peaks, also break the model. Ages at a middle-school open house are bimodal: one hump near 13 for students and one near 42 for parents. The mean, somewhere around 28, describes almost nobody, and a z-score built from it is meaningless. When the model does not fit, use percentiles computed directly from the sorted data instead of from a z-table, and report the median and the middle 50% rather than the mean and standard deviation."
+    ],
+    "words": [
+     {"w": "model", "d": "a simplified mathematical description of real data that may fit well or badly"},
+     {"w": "bimodal", "d": "a distribution with two distinct peaks, often from two different groups mixed together"},
+     {"w": "boundary", "d": "a hard limit that values cannot cross, such as zero for a wait time"},
+     {"w": "right-skewed", "d": "having a long tail of large values on the right, so the mean exceeds the median"}
+    ],
+    "look": {"type": "think", "title": "Three Data Sets, One Question", "text": "Set 1: the number of siblings for 200 students; most have 0, 1 or 2, a few have 6 or more, and none can have fewer than 0. Set 2: the heights of 200 adult women, with mean 64 inches, standard deviation 2.5 inches, and 137 of the 200 within 61.5 to 66.5 inches. Set 3: the ages of 200 people at a school open house, with a peak near 13 and another near 42.", "prompt": "For each set, decide whether a normal model fits and name the specific feature (boundary, skew, two peaks, or a good 68% check) that decided it. Note that 137 ÷ 200 = 68.5%."},
+    "check": [
+     {"q": "Which data set is most likely to be well described by a normal curve?", "choices": ["Heights of adult men in Illinois", "Household incomes in Chicago", "Number of cars owned per household", "Ages of everyone at a middle-school open house"], "a": 0, "why": "Adult heights pile up symmetrically around the mean. Incomes are right-skewed, car counts are bounded at zero and skewed, and open-house ages are bimodal."},
+     {"q": "A data set of delivery times has mean 20 minutes and standard deviation 15 minutes. Why does the normal model fit poorly?", "choices": ["The standard deviation is too small", "The mean is too large", "The model would put about 2.5% of deliveries below −10 minutes, which is impossible", "The model would put 95% of deliveries above 50 minutes"], "a": 2, "why": "Two standard deviations below the mean is 20 − 30 = −10 minutes. A normal model expects 2.5% of values there, but a negative time cannot occur."},
+     {"q": "A histogram shows two clear peaks. What is the best description?", "choices": ["Normal with a large standard deviation", "Symmetric and bell-shaped", "Skewed right", "Bimodal, likely two groups mixed together"], "a": 3, "why": "Two peaks mean the data are bimodal, usually because two different groups were combined; a single normal curve has only one peak."}
+    ]
+   }
+  ]},
+  {"title": "Rules of Probability", "lessons": [
+   {
+    "title": "Independence and the Multiplication Rule",
+    "mainIdea": "When two events are independent, the probability that both happen is the product of their separate probabilities.",
+    "reading": [
+     "Flip a coin twice. The chance of heads on the first flip is 1/2, and the coin has no memory, so the chance of heads on the second flip is still 1/2 no matter what happened first. Two events are *independent* when one happening does not change the probability of the other. For independent events, the *multiplication rule* gives the chance that both happen: P(A and B) = P(A) × P(B). So P(heads, then heads) = 1/2 × 1/2 = 1/4. You can check by listing the four equally likely outcomes, HH, HT, TH, TT: exactly one of the four is HH.",
+     "A basketball player makes 80% of her free throws. If her shots are independent, the chance she makes two in a row is 0.8 × 0.8 = 0.64. The chance she misses at least one of the two is everything else: 1 − 0.64 = 0.36. That subtraction uses the *complement*: P(not A) = 1 − P(A). The chance of three makes in a row is 0.8 × 0.8 × 0.8 = 0.512, so even a good shooter misses at least one of three shots almost half the time.",
+     "Drawing without replacement is the classic case where independence fails. Pull one card from a standard 52-card deck: P(ace) = 4/52. Keep it out and pull a second: if the first was an ace, only 3 aces remain among 51 cards, so P(second ace) = 3/51. The chance of two aces is 4/52 × 3/51 = 12/2652 = 1/221. A common mistake is to multiply 4/52 × 4/52 as if the deck had been reset; that overstates the chance. Before multiplying, ask whether the first event changes the odds for the second."
+    ],
+    "words": [
+     {"w": "independent", "d": "two events are independent when one happening does not change the probability of the other"},
+     {"w": "multiplication rule", "d": "for independent events, P(A and B) = P(A) × P(B)"},
+     {"w": "complement", "d": "the event that A does not happen; P(not A) = 1 − P(A)"},
+     {"w": "without replacement", "d": "drawing items and not putting them back, so later draws have changed probabilities"}
+    ],
+    "look": {"type": "think", "title": "Two Alarms", "text": "Devon sets two independent alarms to wake up for the train. Each alarm goes off on time with probability 0.9. The chance both alarms fail is 0.1 × 0.1 = 0.01, so the chance at least one alarm works is 1 − 0.01 = 0.99. If the two alarms were on the same phone and that phone's battery dies 10% of the time, the failures would not be independent: one dead battery kills both alarms.", "prompt": "With three independent alarms each at 0.9, what is the chance at least one works? Then explain why two alarms on one phone might be no better than one."},
+    "check": [
+     {"q": "A fair die is rolled twice. What is the probability of rolling a 6 both times?", "choices": ["1/36", "2/6", "1/6", "1/12"], "a": 0, "why": "The rolls are independent, so P = 1/6 × 1/6 = 1/36. Adding the probabilities (2/6) is the mistake of using the wrong rule."},
+     {"q": "Three independent parts each work with probability 0.9. What is the probability all three work?", "choices": ["2.7", "0.729", "0.9", "0.271"], "a": 1, "why": "0.9 × 0.9 × 0.9 = 0.729. Adding gives 2.7, which is impossible for a probability; 0.271 is the chance at least one fails."},
+     {"q": "Which pair of events is NOT independent?", "choices": ["Two flips of a fair coin", "Rolling a die today and rolling it tomorrow", "Drawing two cards from a deck without replacement", "Two spins of a fair spinner"], "a": 2, "why": "Once a card is removed, the makeup of the deck changes, so the second draw's probabilities depend on the first. The other pairs have no such link."}
+    ]
+   },
+   {
+    "title": "Conditional Probability and Two-Way Tables",
+    "mainIdea": "A conditional probability restricts attention to one row or column of a table; if it matches the overall probability, the events are independent.",
+    "reading": [
+     "A survey of 200 students asks two yes-or-no questions: do you play a school sport, and do you have a part-time job? The results fit in a *two-way table*. Of the 120 who play a sport, 40 have a job and 80 do not. Of the 80 who do not play a sport, 30 have a job and 50 do not. Column totals: 70 have a job, 130 do not. The overall chance that a randomly chosen student has a job is 70/200 = 0.35.",
+     "A *conditional probability* asks about a smaller group. Given that a student plays a sport, what is the chance they have a job? Now only the 120 sport players matter, and 40 of them have jobs: P(job | sport) = 40/120 = 1/3 ≈ 0.333. The vertical bar reads 'given.' Flip the condition: P(sport | job) = 40/70 = 4/7 ≈ 0.571, because now the 70 job holders are the whole world and 40 of them play a sport. Notice these two are different numbers; mixing them up is the most common error in this topic.",
+     "Conditional probability gives a clean test for independence: two events are independent exactly when P(A | B) = P(A). Here P(job | sport) ≈ 0.333 but P(job) = 0.35, and P(job | not sport) = 30/80 = 0.375. The numbers are close but not equal, so job and sport are slightly linked: sport players are a little less likely to hold a job. When a table has raw counts, always divide by the total of the row or column you are conditioning on, never by the grand total."
+    ],
+    "words": [
+     {"w": "two-way table", "d": "a table that counts how many items fall into each combination of two categories"},
+     {"w": "conditional probability", "d": "the probability of A given that B is known to have happened, written P(A | B)"},
+     {"w": "given", "d": "the word that signals a condition: 'the chance of rain given that it is cloudy'"},
+     {"w": "grand total", "d": "the total count of everything in a two-way table"}
+    ],
+    "look": {"type": "think", "title": "Cracked Screens", "text": "A repair shop logs 100 phones. Among the 60 phones that had a case, 10 had a cracked screen and 50 did not. Among the 40 phones without a case, 20 had a cracked screen and 20 did not. So 30 of the 100 phones were cracked overall. P(cracked | case) = 10/60 = 1/6 ≈ 0.17. P(cracked | no case) = 20/40 = 1/2 = 0.5.", "prompt": "Find P(cracked) for all 100 phones and compare it to the two conditional probabilities. Are having a case and cracking the screen independent? What does the comparison suggest, and what does it not prove?"},
+    "check": [
+     {"q": "In the student survey (120 play a sport, 40 of them have a job), what is P(job | sport)?", "choices": ["40/200", "40/70", "40/120", "120/200"], "a": 2, "why": "Condition on the 120 sport players; 40 of them have a job, so 40/120 = 1/3. Dividing by 200 uses the grand total, and 40/70 is P(sport | job)."},
+     {"q": "Same survey: 70 students have a job and 40 of those play a sport. What is P(sport | job)?", "choices": ["4/7", "1/3", "7/20", "2/5"], "a": 0, "why": "Condition on the 70 job holders: 40/70 = 4/7 ≈ 0.57. The answer 1/3 is the reversed condition P(job | sport)."},
+     {"q": "Two events A and B are independent exactly when which statement is true?", "choices": ["P(A) + P(B) = 1", "P(A and B) = 0", "P(A | B) is larger than P(A)", "P(A | B) = P(A)"], "a": 3, "why": "Independence means knowing B does not change the chance of A, so the conditional probability equals the plain probability."}
+    ]
+   },
+   {
+    "title": "The Addition Rule",
+    "mainIdea": "To find the chance that A or B happens, add their probabilities and subtract the overlap so nothing is counted twice.",
+    "reading": [
+     "Draw one card from a standard deck. What is the chance it is an ace or a heart? There are 4 aces and 13 hearts, but the ace of hearts is in both groups. Adding 4 + 13 = 17 counts that card twice. The *addition rule* fixes this: P(A or B) = P(A) + P(B) − P(A and B). So P(ace or heart) = 4/52 + 13/52 − 1/52 = 16/52 = 4/13. Check by counting: 4 aces plus the 12 hearts that are not aces gives 16 favorable cards out of 52.",
+     "Some events cannot happen together. Rolling a 1 and rolling a 2 on the same die are *mutually exclusive*: the overlap is empty and P(A and B) = 0. Then the rule simplifies to P(A or B) = P(A) + P(B) = 1/6 + 1/6 = 2/6 = 1/3. Now try 'even or greater than 4.' Even is {2, 4, 6}, probability 3/6. Greater than 4 is {5, 6}, probability 2/6. Both at once is {6}, probability 1/6. So P = 3/6 + 2/6 − 1/6 = 4/6 = 2/3. Listing the winning faces, {2, 4, 5, 6}, confirms 4 out of 6.",
+     "Two mistakes come up again and again. The first is adding probabilities for events that overlap without subtracting: a student says P(even or greater than 4) = 5/6, which counts the 6 twice. The second is confusing 'or' with 'and': 'and' asks for both, which is the overlap and is found by multiplying (when independent) or by reading the table cell, never by adding. Word the question to yourself first: is it 'both,' or is it 'at least one'?"
+    ],
+    "words": [
+     {"w": "addition rule", "d": "P(A or B) = P(A) + P(B) − P(A and B); subtract the overlap so it is not counted twice"},
+     {"w": "mutually exclusive", "d": "two events that cannot both happen at once, so their overlap has probability 0"},
+     {"w": "overlap", "d": "the outcomes that belong to both events, written A and B"}
+    ],
+    "look": {"type": "think", "title": "Coffee or Tea", "text": "At a school fundraiser, 50% of adults order coffee, 30% order tea, and 10% order both. The chance an adult orders coffee or tea is 0.5 + 0.3 − 0.1 = 0.7, so 30% order neither. Check with a picture: two overlapping circles, with 0.1 in the overlap, 0.4 in coffee only, 0.2 in tea only, and 0.3 outside both, adding to 1.0.", "prompt": "Suppose instead that nobody orders both. What would P(coffee or tea) be, and what would the picture look like? Then explain why P(coffee or tea) can never be larger than 0.8 in the original setup."},
+    "check": [
+     {"q": "P(A) = 0.5, P(B) = 0.3 and P(A and B) = 0.1. What is P(A or B)?", "choices": ["0.8", "0.15", "0.7", "0.9"], "a": 2, "why": "0.5 + 0.3 − 0.1 = 0.7. Answering 0.8 forgets to subtract the overlap; 0.15 multiplies instead of adding."},
+     {"q": "One roll of a fair die: what is the probability of an even number or a number greater than 4?", "choices": ["5/6", "1/6", "3/6", "2/3"], "a": 3, "why": "P(even) = 3/6, P(greater than 4) = 2/6, overlap {6} = 1/6, so 3/6 + 2/6 − 1/6 = 4/6 = 2/3. The winning faces are 2, 4, 5 and 6."},
+     {"q": "What does it mean for two events to be mutually exclusive?", "choices": ["Each one's probability is 1/2", "They cannot both happen on the same trial", "One event causes the other", "Their probabilities add to 1"], "a": 1, "why": "Mutually exclusive events have no shared outcomes, so P(A and B) = 0 and the addition rule needs no subtraction."}
+    ]
+   }
+  ]},
+  {"title": "Expected Value and Repeated Trials", "lessons": [
+   {
+    "title": "Expected Value and Decisions",
+    "mainIdea": "Expected value is the long-run average result per trial: multiply each outcome by its probability and add.",
+    "reading": [
+     "A club sells 100 raffle tickets at $2 each, and one ticket wins a $100 prize. If you buy one ticket, what do you get back on average? You win $100 with probability 1/100 and $0 with probability 99/100. The *expected value* of the prize is 100 × 1/100 + 0 × 99/100 = $1. You paid $2, so your expected net result is 1 − 2 = −$1 per ticket. That does not mean you lose exactly $1; you lose $2 or gain $98. It means that over many tickets your average result is a loss of $1 each, which is exactly how the club makes money.",
+     "The general recipe: list every outcome, multiply each by its probability, and add the products. A game pays the number of dollars showing on one roll of a fair die. The expected payout is 1 × 1/6 + 2 × 1/6 + 3 × 1/6 + 4 × 1/6 + 5 × 1/6 + 6 × 1/6 = 21/6 = $3.50. A fair price to play would be $3.50; at $4 the house wins 50 cents per game on average. A common error is to average the outcomes without their probabilities, which only works when all outcomes are equally likely, as they happen to be here.",
+     "Expected value guides decisions, but it is not the only consideration. A phone-repair plan costs $60 a year. Suppose a phone breaks with probability 0.1 in a year and the repair costs $300. Expected repair cost without the plan: 0.1 × 300 + 0.9 × 0 = $30. The plan costs $60, twice the expected loss, so on average it is a bad deal. But a person who could not possibly pay $300 at once might reasonably buy it anyway: expected value tells you the average, not how much a bad outcome would hurt. Report the expected value, then talk about the risk."
+    ],
+    "words": [
+     {"w": "expected value", "d": "the long-run average result per trial, found by adding each outcome times its probability"},
+     {"w": "fair game", "d": "a game whose expected net result is zero for the player"},
+     {"w": "risk", "d": "how far the actual outcomes can swing from the expected value, and how much a bad swing would hurt"},
+     {"w": "net result", "d": "what you gain or lose after subtracting what you paid"}
+    ],
+    "look": {"type": "data", "title": "Payouts on One Spin of a Prize Wheel", "rows": [["$0 (probability 0.6)", 0], ["$1 (probability 0.25)", 1], ["$5 (probability 0.1)", 5], ["$20 (probability 0.05)", 20]], "unit": "dollars paid out", "cite": "example wheel defined for this lesson; probabilities sum to 1", "prompt": "Compute the expected payout: 0 × 0.6 + 1 × 0.25 + 5 × 0.1 + 20 × 0.05. If a spin costs $2, what is the expected net result, and who comes out ahead over 1,000 spins?"},
+    "check": [
+     {"q": "A spinner pays $10 with probability 0.2 and costs you $2 with probability 0.8. What is the expected net result per spin?", "choices": ["$0.40", "$8", "−$1.60", "$2"], "a": 0, "why": "10 × 0.2 = 2 gained, 2 × 0.8 = 1.6 lost, and 2 − 1.6 = 0.40. Forgetting the loss side gives $2; forgetting the win side gives −$1.60."},
+     {"q": "A raffle sells 1,000 tickets at $5 each and gives one $2,000 prize. What is the expected net result of buying one ticket?", "choices": ["−$5", "$2", "−$3", "$1,995"], "a": 2, "why": "Expected prize is 2,000 × 1/1,000 = $2. Subtract the $5 cost: 2 − 5 = −$3 per ticket on average."},
+     {"q": "Option A pays a sure $50. Option B pays $120 with probability 0.5 and $0 otherwise. Which statement is correct?", "choices": ["A has the higher expected value, $50 versus $40", "Both have expected value $50", "B has the higher expected value, but it is also riskier", "B has the higher expected value and no extra risk"], "a": 2, "why": "B's expected value is 120 × 0.5 = $60, more than A's $50, but B can pay nothing half the time while A never does."}
+    ]
+   },
+   {
+    "title": "The Binomial Setting",
+    "mainIdea": "When you repeat the same independent yes-or-no trial a fixed number of times, the count of successes follows a binomial distribution.",
+    "reading": [
+     "A free-throw shooter who makes half her shots takes 4 shots. How likely is exactly 2 makes? This is a *binomial setting*: a fixed number of trials (4), each with two outcomes (make or miss), the same probability of success on each (0.5), and independent trials. Write all 16 equally likely sequences of M and X. Exactly 2 makes happens in 6 of them: MMXX, MXMX, MXXM, XMMX, XMXM, XXMM. So P(exactly 2) = 6/16 = 0.375.",
+     "Counting sequences by hand gets slow, so use the pattern. The number of ways to choose which k of the n trials are successes is written C(n, k). For n = 4: C(4, 0) = 1, C(4, 1) = 4, C(4, 2) = 6, C(4, 3) = 4, C(4, 4) = 1. Each specific sequence with k successes has probability p^k × (1 − p)^(n − k). Multiply: P(k successes) = C(n, k) × p^k × (1 − p)^(n − k). For an 80% shooter taking 3 shots, P(exactly 2 makes) = C(3, 2) × 0.8^2 × 0.2^1 = 3 × 0.64 × 0.2 = 0.384.",
+     "Check the whole distribution for that shooter: P(0) = 1 × 0.2^3 = 0.008; P(1) = 3 × 0.8 × 0.04 = 0.096; P(2) = 0.384; P(3) = 0.8^3 = 0.512. The four add to 1.000, which is a good sign that nothing was dropped. Two things break the binomial setting: a probability that changes from trial to trial (drawing cards without replacement), and a number of trials that is not fixed in advance (shooting until the first miss). Check the four conditions before using the formula."
+    ],
+    "words": [
+     {"w": "binomial setting", "d": "a fixed number of independent trials, each a success or failure with the same probability"},
+     {"w": "trial", "d": "one repetition of the chance process, such as one shot or one flip"},
+     {"w": "success", "d": "the outcome being counted, whatever it is; a 'success' can even be a defect"},
+     {"w": "C(n, k)", "d": "the number of ways to choose which k of n trials are successes; C(4, 2) = 6"}
+    ],
+    "look": {"type": "data", "title": "Four Fair Coin Flips: Chance of Each Number of Heads", "rows": [["0 heads", 6.25], ["1 head", 25], ["2 heads", 37.5], ["3 heads", 25], ["4 heads", 6.25]], "unit": "percent", "cite": "binomial distribution with n = 4 and p = 0.5; counts 1, 4, 6, 4, 1 out of 16", "prompt": "Why is the table symmetric? What would change about the shape if the coin landed heads 80% of the time? Compute the new chance of 4 heads."},
+    "check": [
+     {"q": "A fair coin is flipped 3 times. What is the probability of exactly 1 head?", "choices": ["1/3", "3/8", "1/8", "1/2"], "a": 1, "why": "Three sequences have exactly one head (HTT, THT, TTH) out of 8 equally likely sequences, so 3/8. Answering 1/8 counts only one sequence."},
+     {"q": "A player makes 80% of free throws. In 3 independent shots, what is the probability of exactly 2 makes?", "choices": ["0.64", "0.128", "0.512", "0.384"], "a": 3, "why": "C(3, 2) × 0.8^2 × 0.2 = 3 × 0.64 × 0.2 = 0.384. Forgetting the 3 ways gives 0.128; 0.512 is all three makes."},
+     {"q": "Which situation is a binomial setting?", "choices": ["Counting the number of sixes in 10 rolls of a fair die", "Drawing cards without replacement until you find an ace", "Measuring the height of 10 students", "Rolling a die until the first six appears"], "a": 0, "why": "Ten fixed independent rolls, each a six or not with probability 1/6, meets all four conditions. The others have changing probabilities, a non-fixed number of trials, or no yes-or-no outcome."}
+    ]
+   },
+   {
+    "title": "Mean and Spread of a Binomial Count",
+    "mainIdea": "In a binomial setting the expected count is n × p and the standard deviation is √(n × p × (1 − p)), which tells you which counts are unusual.",
+    "reading": [
+     "If a 70% free-throw shooter takes 100 shots, how many makes should we expect? Common sense says about 70, and the formula agrees: the *mean* of a binomial count is n × p = 100 × 0.7 = 70. The count varies from night to night, and its *standard deviation* is √(n × p × (1 − p)) = √(100 × 0.7 × 0.3) = √21 ≈ 4.6 makes. For a large n the binomial pile is close to a normal curve, so the empirical rule applies: on about 95% of 100-shot nights she makes between 70 − 2 × 4.6 ≈ 61 and 70 + 2 × 4.6 ≈ 79.",
+     "That spread lets you judge a claim. A student guesses randomly on a 20-question multiple-choice test with 4 choices each, so p = 0.25. Mean = 20 × 0.25 = 5 correct. Standard deviation = √(20 × 0.25 × 0.75) = √3.75 ≈ 1.94. Suppose the student gets 12 right. The z-score is (12 − 5) ÷ 1.94 ≈ 3.6, far beyond 3 standard deviations. Pure guessing almost never produces that, so the honest conclusion is that the student knew something (or copied). The formula turned a hunch into a number.",
+     "Flip a coin 100 times and get 65 heads. Is the coin fair? For a fair coin, mean = 50 and standard deviation = √(100 × 0.5 × 0.5) = √25 = 5. Then 65 heads is (65 − 50) ÷ 5 = 3 standard deviations above the mean, a result the empirical rule puts at about 1 in 1,000 for the upper tail alone. That is strong evidence against fairness, and it is the first step toward the hypothesis tests of the next chapter. A common slip is to take √(n × p) and forget the (1 − p) factor: √50 ≈ 7.1 would wrongly make 65 heads look ordinary."
+    ],
+    "words": [
+     {"w": "binomial mean", "d": "the expected number of successes, n × p"},
+     {"w": "binomial standard deviation", "d": "the spread of the success count, √(n × p × (1 − p))"},
+     {"w": "unusual", "d": "a result more than about 2 standard deviations from what the model expects"}
+    ],
+    "look": {"type": "think", "title": "The Unlucky Sixes", "text": "Rowan rolls a die 180 times and gets only 18 sixes. Expected sixes: 180 × 1/6 = 30. Standard deviation: √(180 × 1/6 × 5/6) = √25 = 5. The z-score for 18 is (18 − 30) ÷ 5 = −2.4, more than 2 standard deviations below the mean. Under a fair die this happens on fewer than 1 in 100 tries.", "prompt": "Is 18 sixes unusual enough to suspect the die? Now suppose Rowan had rolled 24 sixes instead. Find that z-score and decide whether it would raise your suspicion."},
+    "check": [
+     {"q": "A fair coin is flipped 400 times. What are the mean and standard deviation of the number of heads?", "choices": ["Mean 200, SD 100", "Mean 200, SD 10", "Mean 400, SD 20", "Mean 200, SD 14.1"], "a": 1, "why": "Mean = 400 × 0.5 = 200. SD = √(400 × 0.5 × 0.5) = √100 = 10. Forgetting the square root gives 100; using √(n × p) gives √200 ≈ 14.1."},
+     {"q": "A process succeeds 20% of the time. In 50 independent tries, what is the expected number of successes?", "choices": ["20", "25", "10", "40"], "a": 2, "why": "n × p = 50 × 0.2 = 10. Answering 20 confuses the percent with the count."},
+     {"q": "A coin flipped 100 times gives 65 heads. Using mean 50 and standard deviation 5, what is the z-score, and what does it suggest?", "choices": ["z = 1.5, ordinary", "z = 0.65, ordinary", "z = 15, impossible", "z = 3, strong evidence the coin is not fair"], "a": 3, "why": "(65 − 50) ÷ 5 = 3. A result 3 standard deviations above the mean is expected on only about 1 in 1,000 fair-coin tries."}
+    ]
+   }
+  ]}
+ ],
+ "review": [
+  {"q": "For the values 3, 5, 5, 7 (mean 5), what is the standard deviation when you divide by the count?", "choices": ["√2 ≈ 1.41", "2", "8", "1"], "a": 0, "why": "Deviations −2, 0, 0, 2; squares 4, 0, 0, 4 sum to 8; 8 ÷ 4 = 2; √2 ≈ 1.41. Stopping at 2 forgets the square root."},
+  {"q": "Heights are modeled as normal with mean 64 inches and standard deviation 2.5 inches. About what percent are taller than 69 inches?", "choices": ["5%", "2.5%", "16%", "32%"], "a": 1, "why": "69 is 2 standard deviations above 64. About 5% lie outside the 95% band, and half of those, 2.5%, are above."},
+  {"q": "Which z-score corresponds to a raw score of 58 when the mean is 70 and the standard deviation is 8?", "choices": ["1.5", "−12", "−1.5", "7.25"], "a": 2, "why": "(58 − 70) ÷ 8 = −12 ÷ 8 = −1.5. Keeping the sign matters; −12 forgets to divide."},
+  {"q": "A test score is at the 84th percentile of a normal distribution. About what is its z-score?", "choices": ["0.84", "2", "−1", "1"], "a": 3, "why": "The 84th percentile matches z = 1, since 50% are below the mean and 34% more lie within 1 SD above it."},
+  {"q": "A two-way table shows 60 phones with a case, 10 of them cracked, and 40 without a case, 20 of them cracked. What is P(cracked | no case)?", "choices": ["1/2", "3/10", "1/6", "1/5"], "a": 0, "why": "Condition on the 40 phones without a case: 20/40 = 1/2. The overall rate 30/100 = 3/10 uses the wrong total."},
+  {"q": "P(A) = 0.4, P(B) = 0.5, and A and B are independent. What is P(A or B)?", "choices": ["0.9", "0.7", "0.2", "0.1"], "a": 1, "why": "Independent, so P(A and B) = 0.4 × 0.5 = 0.2. Then 0.4 + 0.5 − 0.2 = 0.7. Answering 0.9 forgets to subtract the overlap."},
+  {"q": "A game pays $6 with probability 1/3 and $0 otherwise, and costs $3 to play. What is the expected net result?", "choices": ["$3", "$2", "−$1", "$0"], "a": 2, "why": "Expected payout is 6 × 1/3 = $2. Subtract the $3 cost: 2 − 3 = −$1 per game."},
+  {"q": "A shooter makes 60% of free throws and takes 100 independent shots. What is the standard deviation of the number of makes?", "choices": ["24", "60", "7.7", "4.9"], "a": 3, "why": "√(100 × 0.6 × 0.4) = √24 ≈ 4.9. Answering 24 forgets the square root; √60 ≈ 7.7 drops the (1 − p) factor."}
+ ]
+}
