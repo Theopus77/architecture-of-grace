@@ -43,7 +43,9 @@ EXTRA_TITLES = {
              13: "Clean Hands", 14: "Hot, Cold and Sharp", 15: "Everyday Food and Sometimes Food", 16: "A Job Done to the End",
              17: "Measure It Right", 18: "The Needle and the Button", 19: "Money and Choices", 20: "Plan It, Cook It, Clean It Up"},
 }
-EXTRA_BANDS = {"econ": lambda n: "9-10", "facs": lambda n: ("6-8" if n <= 12 else "k-2")}
+EXTRA_BANDS = {"econ": lambda n: "9-10",
+               # the FACS hub's own bands: 1–4 grades 6–8, 5–8 grades 9–10, 9–12 grades 11–12, 13–16 K–2, 17–20 grades 3–5
+               "facs": lambda n: ("6-8" if n <= 4 else "9-10" if n <= 8 else "11-12" if n <= 12 else "k-2" if n <= 16 else "3-5")}
 
 
 def exists(rel):
