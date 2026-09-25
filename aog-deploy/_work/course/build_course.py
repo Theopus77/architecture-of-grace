@@ -85,7 +85,7 @@ def spiral_items(u, all_units):
 
 def sendbox(kind):
     return ('<div class="csend no-print" data-kind="%s" hidden><span class="ck">%s</span>'
-            '<input type="text" class="cwho" autocomplete="off" aria-label="Your name or code" placeholder="Your name or code">'
+            '<input type="text" class="cwho" autocomplete="off" aria-label="Enter your name" placeholder="Enter your name">'
             '<button type="button" class="btn csendb">%s</button><span class="cst" aria-live="polite"></span></div>'
             % (kind, span("Send it to your teacher","Envíaselo a tu maestro"), span("Send to my teacher","Enviar a mi maestro")))
 
@@ -672,7 +672,7 @@ def chapter_html(u, c):
   <section class="review" data-review="r{c["n"]}" id="rev{c["n"]}" data-kind="chapter-review" data-std="{E("; ".join(unit_std(u["n"])))}" data-title="{E("Chapter %d review: %s" % (c["n"], c["title"]))}">
     <div class="rh"><div><div class="k">{span("Chapter review","Repaso del capítulo")}</div><h3>{E(c["title"])}</h3></div><div class="rscore" data-rscore aria-live="polite">0 / {len(c["review"])}</div></div>
     <div class="rbody">{review}</div>
-    <div class="rfoot"><button type="button" class="btn reset-r">{span("Try again","Otra vez")}</button><span class="verdict" data-verdict></span></div>
+    <div class="rfoot"><button type="button" class="btn reset-r">{span("Try again","Otra vez")}</button><button type="button" class="btn print-r no-print">{span("Print this test","Imprimir esta prueba")}</button><span class="verdict" data-verdict></span></div>
     {sendbox("chapter-review")}
   </section>
 </section>'''
@@ -713,7 +713,7 @@ def unit_page(u, all_units):
   <section class="review" data-review="s{n}" id="spiral" data-kind="spiral" data-std="{E("; ".join(sstd))}" data-title="{E("Unit %d spiral review" % n)}">
     <div class="rh"><div><div class="k">{span("Spiral review","Repaso en espiral")}</div><h3>{span("Five questions from earlier units","Cinco preguntas de unidades anteriores")}</h3></div><div class="rscore" data-rscore aria-live="polite">0 / {len(sp)}</div></div>
     <div class="rbody">{sq}</div>
-    <div class="rfoot"><button type="button" class="btn reset-r">{span("Try again","Otra vez")}</button><span class="verdict" data-verdict></span></div>
+    <div class="rfoot"><button type="button" class="btn reset-r">{span("Try again","Otra vez")}</button><button type="button" class="btn print-r no-print">{span("Print this test","Imprimir esta prueba")}</button><span class="verdict" data-verdict></span></div>
     {sendbox("spiral")}
   </section>'''
     tips = "".join("<li>%s</li>" % E(t) for t in w["write"]["tips"])
@@ -793,7 +793,7 @@ def unit_page(u, all_units):
   <section class="review" data-review="t{n}" id="test" data-kind="unit-test" data-std="{E("; ".join(unit_std(n)))}" data-title="{E("Unit %d test: %s" % (n, u["title"]))}">
     <div class="rh"><div><div class="k">{span("Unit test","Examen de la unidad")}</div><h3>{span("Fifteen questions across the unit","Quince preguntas de toda la unidad")}</h3></div><div class="rscore" data-rscore aria-live="polite">0 / {len(w["test"])}</div></div>
     <div class="rbody">{test}</div>
-    <div class="rfoot"><button type="button" class="btn reset-r">{span("Try again","Otra vez")}</button><span class="verdict" data-verdict></span></div>
+    <div class="rfoot"><button type="button" class="btn reset-r">{span("Try again","Otra vez")}</button><button type="button" class="btn print-r no-print">{span("Print this test","Imprimir esta prueba")}</button><span class="verdict" data-verdict></span></div>
     {sendbox("unit-test")}
   </section>
 {spiral_html}
@@ -933,6 +933,57 @@ Array.prototype.forEach.call(document.querySelectorAll(".reset-r"), function(b){
 Array.prototype.forEach.call(document.querySelectorAll(".q"), paintQ);
 paintScores();
 
+/* ── AOG-IEP-REC-V1: every question of a scored section, as answered ──
+   Used by the send (the teacher's record) and by Print this test. */
+function qText(q){ var e = q.querySelector(".qq"); if(!e) return ""; var c = e.cloneNode(true); var n = c.querySelector(".qn"); if(n) n.remove(); return c.textContent.trim(); }
+function optText(q, i){ var o = q.querySelector('.opt[data-i="'+i+'"] span:last-child'); return o ? o.textContent.trim() : ""; }
+function firstPick(q){ var s = qState(q), a = +q.getAttribute("data-a"); if(!s || s.first === null || s.first === undefined) return null; return s.first ? a : (s.tried && s.tried.length ? s.tried[0] : null); }
+function qaList(r){
+  var kindLab = {"chapter-review":"Chapter review","unit-test":"Unit test","spiral":"Spiral review"}[r.getAttribute("data-kind")] || "";
+  return Array.prototype.map.call(r.querySelectorAll(".q"), function(q, j){
+    var a = +q.getAttribute("data-a"), f = firstPick(q), s = qState(q), f2 = q.getAttribute("data-from");
+    var it = {g: f === null ? "" : optText(q, f).slice(0,120)};
+    if(f !== null){ it.ok = !!(s && s.first); if(!it.ok) it.c = optText(q, a).slice(0,120); }
+    return {b: j+1, s: f2 ? ("Unit "+f2) : kindLab, q: qText(q).slice(0,240), a: [it]};
+  });
+}
+/* ── Print this test: just this section, on clean paper ── */
+Array.prototype.forEach.call(document.querySelectorAll(".print-r"), function(b){
+  b.addEventListener("click", function(){
+    var r = b.closest(".review"), CO = window.AOG_COURSE || {}, L = "ABCD";
+    var who = ""; try{ who = localStorage.getItem(KEY+"who") || ""; }catch(e){}
+    var qs = r.querySelectorAll(".q"), k = 0, seen = 0;
+    Array.prototype.forEach.call(qs, function(q){ var s = qState(q); if(s && s.done) seen++; if(s && s.first) k++; });
+    var answered = seen > 0;
+    function h(t){ return String(t).replace(/[&<>"]/g, function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]; }); }
+    var body = Array.prototype.map.call(qs, function(q, j){
+      var a = +q.getAttribute("data-a"), f = firstPick(q), opts = q.querySelectorAll(".opt");
+      var li = Array.prototype.map.call(opts, function(o, i){
+        var mark = "";
+        if(answered && f !== null){ if(i === f) mark = (i === a) ? " picked ok" : " picked no"; else if(i === a && f !== a) mark = " key"; }
+        return '<li class="o'+mark+'"><span class="l">'+L.charAt(i)+'</span> '+h(optText(q, i))+'</li>';
+      }).join("");
+      return '<div class="pq"><p><b>'+(j+1)+'.</b> '+h(qText(q))+'</p><ul>'+li+'</ul></div>';
+    }).join("");
+    var doc = '<!doctype html><html><head><meta charset="utf-8"><title>'+h(r.getAttribute("data-title")||"Test")+'</title><style>'
+      + 'body{font:15px/1.45 Georgia,serif;color:#000;margin:28px}h1{font-size:20px;margin:0 0 4px}.sub{font:13px sans-serif;color:#333;margin:0 0 14px}'
+      + '.fields{display:flex;gap:28px;font:14px sans-serif;margin:0 0 18px}.fields span{border-bottom:1px solid #000;min-width:190px;display:inline-block;padding:0 4px}'
+      + '.pq{break-inside:avoid;margin:0 0 14px}.pq p{margin:0 0 6px}ul{list-style:none;margin:0;padding:0 0 0 18px}'
+      + '.o{margin:3px 0}.l{display:inline-block;width:22px;height:22px;border:1.5px solid #000;border-radius:50%;text-align:center;font:bold 13px/20px sans-serif;margin-right:6px}'
+      + '.picked.ok .l{background:#000;color:#fff}.picked.no{text-decoration:line-through}.picked.no .l{background:#777;color:#fff}.key{font-weight:bold}.key:after{content:"  ← answer";font:italic 12px sans-serif}'
+      + '.score{font:bold 15px sans-serif;border:2px solid #000;display:inline-block;padding:4px 10px;margin:0 0 14px}</style></head><body>'
+      + '<h1>'+h(r.getAttribute("data-title")||"")+'</h1><p class="sub">'+h(document.title.replace(/ — .*$/,""))+'</p>'
+      + '<div class="fields">Name <span>'+h(answered ? who : "")+'</span> Date <span>'+(answered ? new Date().toLocaleDateString() : "")+'</span></div>'
+      + (answered ? '<div class="score">First try: '+k+' / '+qs.length+'</div>' : '<p class="sub">Circle the letter of the best answer.</p>')
+      + body + '</body></html>';
+    var fr = document.createElement("iframe");
+    fr.style.cssText = "position:fixed;right:0;bottom:0;width:0;height:0;border:0";
+    document.body.appendChild(fr);
+    var w = fr.contentWindow; w.document.open(); w.document.write(doc); w.document.close();
+    setTimeout(function(){ try{ w.focus(); w.print(); }catch(e){} setTimeout(function(){ fr.remove(); }, 1500); }, 250);
+  });
+});
+
 /* ── AOG-IEP-REC-V1: send a scored section to the teacher ──
    Same destination rules as every other sender on the site: a ?dest= link
    wins, the site config (aog-sync-config.js, with a non-empty schools list)
@@ -956,7 +1007,7 @@ paintScores();
     try{ inp.value = localStorage.getItem(whoKey) || ""; }catch(e){}
     btn.addEventListener("click", function(){
       var who = inp.value.trim();
-      if(!who){ st.textContent = T("Write your name or code first.","Escribe primero tu nombre o código."); inp.focus(); return; }
+      if(!who){ st.textContent = T("Enter your name first.","Escribe primero tu nombre."); inp.focus(); return; }
       try{ localStorage.setItem(whoKey, who); }catch(e){}
       var qs = r.querySelectorAll(".q"), n = qs.length, k = 0, seen = 0, retry = 0, answers = [], units = {};
       Array.prototype.forEach.call(qs, function(q){
@@ -973,7 +1024,11 @@ paintScores();
         activityId:"crs-"+CO.id+"-u"+CO.unit+"-"+rid, activityName:r.getAttribute("data-title")||"", skill:CO.title||"",
         setNo:CO.unit, itemsTotal:n, independent:k, supported:retry, hintsUsed:"", confidence:"", source:"link",
         course:CO.id, unit:CO.unit, assessment:kind,
-        extra:JSON.stringify({series:"course", build:"course send v1", lang:lang, review:rid, firstTry:answers})
+        /* AOG-IEP-REC-V1 — an OBJECT, not a string: the sheet keeps objects
+           up to 20,000 characters. answers is the Daily Drafts shape the
+           dashboard's record sheet prints: every question, the answer given
+           first, right or struck, and the key beside a miss. */
+        extra:{series:"course", build:"course send v2", lang:lang, review:rid, firstTry:answers, answers:qaList(r), correct:k, total:n}
       };
       if(window.AOG_IEP){ AOG_IEP.fill(payload, {correct:k, total:n, standards:r.getAttribute("data-std")||"",
         byStrand:Object.keys(units).length ? Object.keys(units).map(function(u){return units[u]}) : "",
