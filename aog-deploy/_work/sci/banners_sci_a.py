@@ -36,7 +36,7 @@ CREDITS = {
     11: "Drawn scene: a roller coaster's first hill against a summer sunset sky, cars at the crest and a Ferris wheel far off",
     12: "Drawn scene: a spinning record and tonearm close up with sound waves as arcs, a radio tower on a hill sending signal arcs and a telescope under a night sky",
     13: "Drawn scene: a microscope on a lab bench with its eyepiece view shown as a large circle of onion cells, a beaker and a notebook",
-    14: "Drawn scene: a Galapagos rocky shore with finches on a cactus, a tortoise and waves, with a pea-plant trellis in the foreground corner",
+    14: "Drawn scene: a rocky lakeshore with a flowering plant and waves, with a pea-plant trellis in the foreground corner",
 }
 
 
@@ -618,7 +618,7 @@ def _b13():
     return _wrap(13, body, defs)
 
 
-# ───────────────────────── 14  Ecosystems, Heredity and Evolution: Galapagos shore ─────────────────────────
+# ───────────────────────── 14  Ecosystems and Heredity: a rocky lakeshore ─────────────────────────
 def _b14():
     p = "sb14-"
     defs = (
@@ -651,9 +651,6 @@ def _b14():
 <path d="M310 240 v-100 q-2 -14 6 -22" stroke="#5E8A3E" stroke-width="10" stroke-linecap="round" fill="none"/>
 <g fill="#7BB35A"><ellipse cx="290" cy="150" rx="18" ry="30" transform="rotate(-30 290 150)"/><ellipse cx="338" cy="140" rx="18" ry="30" transform="rotate(30 338 140)"/><ellipse cx="316" cy="98" rx="16" ry="28"/><ellipse cx="270" cy="110" rx="14" ry="24" transform="rotate(-50 270 110)"/><ellipse cx="360" cy="100" rx="14" ry="24" transform="rotate(50 360 100)"/><ellipse cx="290" cy="196" rx="16" ry="24" transform="rotate(-20 290 196)"/><ellipse cx="336" cy="200" rx="16" ry="24" transform="rotate(20 336 200)"/></g>
 <g fill="#F5D94A"><circle cx="316" cy="68" r="6"/><circle cx="256" cy="92" r="5"/><circle cx="372" cy="80" r="5"/></g>
-{finch(248, 84, .9, "l12 -2 l-11 6z")}{finch(322, 62, .9, "l8 -4 l-7 6z")}{finch(384, 118, .8, "l7 -1 l-6 4z")}{finch(216, 226, 1, "l9 -3 l-8 6z")}
-<g fill="#6A5E3A"><path d="M596 236 q-24 -30 -46 -30 q-14 2 -12 14 q2 8 12 6 l8 6 q10 8 26 8z"/><circle cx="548" cy="214" r="11"/><circle cx="552" cy="211" r="2.2" fill="#1E1A10"/><path d="M552 218 l-8 2" stroke="#1E1A10" stroke-width="1.5"/><path d="M598 246 h30 l-2 24 h-26z M694 246 h30 l-2 24 h-26z"/><path d="M732 240 q10 8 8 20" stroke="#6A5E3A" stroke-width="5" fill="none"/></g>
-<path d="M586 246 q-8 -60 64 -66 q72 -4 78 62 q-30 10 -142 4z" fill="url(#{p}shell)"/><g fill="#B09A5A" opacity=".55">{scutes}</g><path d="M584 246 q70 10 146 -4 q-2 8 -6 10 q-70 8 -134 2z" fill="#3E3420"/>
 <path d="M0 300 H860 Q900 290 940 300 V420 H0z" fill="url(#{p}shore)"/>
 <g fill="#6A4E2C" opacity=".6"><ellipse cx="200" cy="314" rx="60" ry="8"/><ellipse cx="520" cy="318" rx="80" ry="8"/></g>
 <path d="M900 300 H1200 V420 H900z" fill="url(#{p}fg)"/>

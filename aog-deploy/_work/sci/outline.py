@@ -133,16 +133,13 @@ UNITS = [
        topics="Photosynthesis and cellular respiration as the flow of matter and energy; sensory receptors, nerves and the brain; memories and behavior; animal behaviors and plant structures that help reproduction (courtship, seed dispersal, flowers and pollinators); environmental and genetic factors in growth.",
        story="The bee, the flower and a deal millions of years old"),
  ]),
- dict(n=14, band="6-8", title="Ecosystems, Heredity and Evolution", strand="Life Science", chapters=[
+ dict(n=14, band="6-8", title="Ecosystems and Heredity", strand="Life Science", chapters=[
   dict(n=30, title="Ecosystems and Populations", strand="Ecosystems",
        topics="Resource availability limits populations; competition, predation and mutualism; energy flow and matter cycling through food webs; photosynthesis and decomposers; biodiversity and ecosystem services; disruptions (invasive carp in Illinois rivers, drought, wildfire) and resilience; designing a solution to protect an ecosystem.",
        story="The carp that jumped into the boat: an invader in the Illinois River"),
   dict(n=31, title="Heredity and Genes", strand="Heredity",
        topics="Chromosomes, genes and proteins; sexual and asexual reproduction and variation; Punnett squares and probability; mutations — harmful, helpful, neutral; selective breeding and genetic engineering; the Human Genome Project; Gregor Mendel's peas.",
        story="Mendel's garden: 28,000 pea plants and a pattern"),
-  dict(n=32, title="Natural Selection and Evolution", strand="Evolution",
-       topics="Fossils and rock layers; anatomical similarities across species and embryos; natural selection step by step; adaptation and how populations change over generations; the Galápagos finches; antibiotic resistance today; artificial selection; humans and the great apes.",
-       story="Darwin's finches and the beak that changed with the rain"),
  ]),
  dict(n=15, band="6-8", title="Earth and Space Systems", strand="Earth and Space Science", chapters=[
   dict(n=33, title="Earth's Systems: Rock, Water and Weather", strand="Earth's Systems",
@@ -165,13 +162,10 @@ UNITS = [
        topics="Photosynthesis inputs and outputs; cellular respiration and ATP; fermentation; the carbon cycle at the cell scale; cell division — mitosis and the cell cycle; cancer as division gone wrong; stem cells and differentiation; body systems as interacting parts.",
        story="Priestley's mouse, the sprig of mint and the air that came back"),
  ]),
- dict(n=17, band="9-10", title="Biology: Genetics and Evolution", strand="Life Science", chapters=[
+ dict(n=17, band="9-10", title="Biology: Genetics and Inheritance", strand="Life Science", chapters=[
   dict(n=38, title="DNA, Genes and Inheritance", strand="Genetics",
        topics="DNA structure and replication; transcription, translation and proteins; mutations; meiosis and genetic variation; Mendelian and non-Mendelian inheritance (incomplete dominance, codominance, sex-linked traits); pedigrees; biotechnology, genome sequencing and CRISPR with their ethics; Rosalind Franklin's Photo 51.",
        story="Photo 51: the picture that showed the shape of DNA"),
-  dict(n=39, title="Evolution and Its Evidence", strand="Evolution",
-       topics="Evidence for common ancestry (fossils, anatomy, embryology, DNA); natural selection and its conditions; adaptation, fitness and populations; speciation and extinction; Hardy–Weinberg idea in plain terms; evolution observed today — pesticide resistance, Darwin's finches, peppered moths; the tree of life.",
-       story="Tiktaalik: the fish with a neck, found on Ellesmere Island"),
  ]),
  dict(n=18, band="9-10", title="Biology: Ecosystems and Human Impact", strand="Life Science", chapters=[
   dict(n=40, title="Ecosystems, Energy and Cycles", strand="Ecology",
@@ -275,10 +269,10 @@ LINKS = {
  11: [("/b15", "Forces, energy and waves — cards, quiz and lab")],
  12: [("/b15", "Forces, energy and waves — cards, quiz and lab"), ("/waves", "The wave bench"), ("/drums", "The drum bench"), ("/decks", "The turntables"), ("/telescope", "The telescope")],
  13: [("/b2", "The cell system — cards, quiz and lab"), ("/b3", "Body systems — cards, quiz and lab"), ("/b4", "Reproduction — cards, quiz and lab"), ("/microscope", "The microscope")],
- 14: [("/b1", "Living things in the biosphere"), ("/b5", "Ecosystems"), ("/b6", "Populations"), ("/b7", "Heredity"), ("/b8", "Natural selection"), ("/vocab", "Science words, five ways")],
+ 14: [("/b1", "Living things in the biosphere"), ("/b5", "Ecosystems"), ("/b6", "Populations"), ("/b7", "Heredity"), ("/vocab", "Science words, five ways")],
  15: [("/b16", "Earth's systems — cards, quiz and lab"), ("/b17", "Space systems — cards, quiz and lab"), ("/telescope", "The telescope")],
  16: [("/b32", "Biology: cells and energy — cards, quiz and lab"), ("/microscope", "The microscope")],
- 17: [("/b33", "Biology: genetics and evolution — cards, quiz and lab")],
+ 17: [("/vocab", "Science words, five ways")],
  18: [("/b34", "Biology: ecosystems and human impact — cards, quiz and lab")],
  19: [("/b35", "Physical science: matter and reactions — cards, quiz and lab")],
  20: [("/b36", "Physical science: forces, energy, waves — cards, quiz and lab"), ("/waves", "The wave bench"), ("/decks", "The turntables")],
