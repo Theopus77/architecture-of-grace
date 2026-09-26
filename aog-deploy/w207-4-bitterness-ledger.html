@@ -1100,7 +1100,7 @@ body.wsprev{overflow:hidden}
    the teacher AND the student lands on a preview of what they built. No
    destination resolved → this page adds nothing. Never an automatic retry. */
 (function(){
-  var CFG = {"id": "w207-4", "name": "The Bitterness Ledger"};
+  var CFG = {"id": "w207-4", "name": "The Bitterness Ledger", "private": true};
   var DEST_RE = /^https:\/\/script\.google\.com\/[^\s]*\/exec$/;
   function destDecode(raw){
     try{
@@ -1135,7 +1135,7 @@ body.wsprev{overflow:hidden}
   try {
     [].slice.call(document.querySelectorAll("p")).some(function (fp) {
       if (fp.textContent.indexOf("sends nothing out") < 0) return false;
-      fp.textContent = "This page loads no fonts, scripts, or images from the internet. Your writing is stored in this browser \u2014 and sent to your teacher only when you tap FINISHED.";
+      fp.textContent = "This page loads no fonts, scripts, or images from the internet. Your writing is stored in this browser and is never sent anywhere.";
       return true;
     });
   } catch (e) {}
@@ -1175,6 +1175,16 @@ body.wsprev{overflow:hidden}
   var acts = main.querySelector(".lock-acts");
   if(acts) main.insertBefore(card, acts); else main.appendChild(card);
 
+  /* AOG-WS-PRIVATE-V1 (2026-09-26) — this worksheet says, in its own words, that it is never
+     collected, graded or shared. So the station never sends: the work stays on this computer,
+     the student can print it or erase it, and nothing leaves the page. */
+  if (CFG.private) {
+    card.innerHTML =
+      '<h2>This sheet stays yours.</h2>' +
+      '<p>Nothing here is sent to anyone. Your writing stays on this computer until you erase it. ' +
+      'Print my copy if you want to keep it on paper.</p>';
+    return;
+  }
   /* ── the preview ── */
   var prev = document.createElement("div");
   prev.id = "wsPrev"; prev.hidden = true;
