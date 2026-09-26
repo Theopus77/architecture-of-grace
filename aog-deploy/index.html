@@ -65892,6 +65892,12 @@ html.js-reveal .reveal,
         try {
           var p = new URLSearchParams(window.location.search);
           var v = code(p.get(PARAM) || "");
+          /* AOG-SID-SAVED-V1 (2026-09-26) — Jimmy: "They are still making us do a code name." A slip
+             opened on the device where a student already typed their name under Your work today
+             (dashboard, aog.dash2.student) uses that name when the link itself names nobody. */
+          if (!v && (p.has("checkin") || p.has("exit") || p.has("slip"))) {
+            try { var sv = JSON.parse(localStorage.getItem("aog.dash2.student") || '""'); v = code(sv || localStorage.getItem("aog.drops.who") || ""); } catch (e0) { v = ""; }
+          }
           if (v && v.length <= 24) {
             sessionStorage.setItem(SKEY, v);
           } else if (p.has("checkin") || p.has("exit") || p.has("slip")) {
