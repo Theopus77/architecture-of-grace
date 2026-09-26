@@ -92060,8 +92060,32 @@ html.js-reveal .reveal,
   /* centre medallion: 8 wedges */
   for (var i=0;i<8;i++){ var a0=i*Math.PI/4-Math.PI/2, a1=a0+Math.PI/4;
     pane('M'+C+' '+C+' L'+P(46,a0)+' A46 46 0 0 1 '+P(46,a1)+' Z', i%2?'#F2C964':'#D9A33B'); }
+  /* AOG-HERO-CYCLE-V1 (2026-09-26) — Jimmy: "have the stained glass go through a
+     cycle of the different ones … including a new one that is a ROSE or flower with
+     a stem." A different window each visit, never moving while the page is open
+     (the calm rule): 0 classic rose · 1 star · 2 lancet · 3 kaleidoscope · 4 the
+     rose on a stem. The choice advances by one on each visit, on this device. */
+  var V=0; try{ V=(+(localStorage.getItem("aog.hero.win")||0)+1)%5; localStorage.setItem("aog.hero.win",V); }catch(eV){}
+  if(V===4){
+    /* the rose with a stem: layered petals, a gold heart, a green stem with two leaves */
+    for (var rr=0; rr<3; rr++){ var n2=[6,8,10][rr], R0=[20,70,120][rr], R1=[80,130,178][rr];
+      for (var k2=0;k2<n2;k2++){ var b0=(k2+rr*.5)*2*Math.PI/n2-Math.PI/2, b1=b0+2*Math.PI/n2, bm=(b0+b1)/2;
+        pane('M'+P(R0,b0)+' Q'+P(R1+30,bm)+' '+P(R0,b1)+' Z', ['#A8323E','#B8457A','#C9577D'][rr]); } }
+    pane('M'+C+' '+C+' m-24 0 a24 24 0 1 0 48 0 a24 24 0 1 0 -48 0', '#F2C964');
+    pane('M292 470 L308 470 L312 596 L288 596 Z', '#2E8B57');
+    pane('M300 520 Q220 470 196 520 Q250 548 300 530 Z', '#3E9E62');
+    pane('M300 556 Q380 506 404 556 Q350 584 300 566 Z', '#3E9E62');
+  } else if(V===1){
+    for (var s2=0;s2<16;s2++){ var c0=s2*Math.PI/8-Math.PI/2, cm=c0+Math.PI/16, c1=c0+Math.PI/8;
+      pane('M'+C+' '+C+' L'+P(90,c0)+' L'+P(250,cm)+' L'+P(90,c1)+' Z', J[s2%J.length]); }
+  } else if(V===2){
+    for (var l=0;l<5;l++){ var x0=120+l*72; pane('M'+x0+' 540 L'+x0+' 200 Q'+(x0+30)+' 110 '+(x0+60)+' 200 L'+(x0+60)+' 540 Z', J[(l*2)%J.length]); }
+  } else if(V===3){
+    for (var h=0;h<3;h++) for (var k3=0;k3<12;k3++){ var d0=k3*Math.PI/6+h*.26-Math.PI/2, d1=d0+Math.PI/6, r0=40+h*70, r1=r0+70;
+      pane('M'+P(r0,d0)+' L'+P(r1,(d0+d1)/2)+' L'+P(r0,d1)+' Z', J[(k3+h*3)%J.length]); }
+  }
   /* rings of pointed petals: [inner, outer, count, rotation] */
-  [[50,112,8,0],[116,188,16,.5],[192,252,24,0]].forEach(function(R,ri){
+  if(V===0) [[50,112,8,0],[116,188,16,.5],[192,252,24,0]].forEach(function(R,ri){
     var n=R[2];
     for (var k=0;k<n;k++){
       var a0=(k+R[3])*2*Math.PI/n-Math.PI/2, a1=a0+2*Math.PI/n, am=(a0+a1)/2, pk=R[1]+ (ri===2?4:14);
