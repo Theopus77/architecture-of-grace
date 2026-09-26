@@ -365,6 +365,16 @@ function toggleTheme() {
   go(); window.addEventListener("hashchange",go,true); })();
 </script>
 <style>
+/* AOG-CHIP-PICKED-V1 (2026-09-26) — Jimmy: "You can't choose one of these icons... ARGHT." The tap
+   worked, but a later tint painted over the gold, so a picked feeling looked untouched. Picked
+   chips are now unmistakable: solid gold, dark ink, a ring and a check. */
+#aogFamilyDest .fdx-chip[aria-pressed="true"], #aogFamilyDest .fdx-chip[aria-pressed="true"]:hover, .fdx-chip[aria-pressed="true"], .fdx-chip[aria-pressed="true"]:hover{ background:#E2B04A !important; border-color:#8A6116 !important;
+  color:#1A140E !important; box-shadow:0 0 0 3px rgba(226,176,74,.35) !important; font-weight:800 !important; }
+.fdx-chip[aria-pressed="true"]::after{ content:"\2713"; margin-left:6px; font-weight:900; color:#1A140E; }
+/* AOG-DARK-LIGHTER-V1 — the home page's rooms painted their own near-black (#06121F) over the
+   page ground; in dark mode they now let the lighter evening navy show through. */
+html[data-theme="dark"] body section.screen[id]{ background-color:transparent !important; }
+:root[data-theme="dark"] body #screen-teacher-tools.active, :root[data-theme="dark"] body #screen-pecs.active{ background:linear-gradient(180deg,#1E3D62,#173252) !important; }
 /* AOG-HERO-FIT-V1 (2026-09-26) — Jimmy: "at 100% it overtakes the screen." On a laptop window the
    name alone filled the view and the three doors fell below it. The hero now sizes to the window's
    height as well as its width, so the doors start on the first screen. Phones are unchanged. */
