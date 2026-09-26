@@ -63183,6 +63183,9 @@ html.js-reveal .reveal,
   var OPEN = "aog.dash.unlock";        /* sessionStorage — timestamp */
   var IDLE_MS = 30 * 60 * 1000;
   var tries = 0;
+  /* AOG-NOLOCK-V1 (2026-09-26) — Jimmy: "I don't like the password to the dashboard. Eliminate for all things right now." No code is asked for anywhere; a code set earlier is cleared. */
+  try { localStorage.removeItem(LOCK); localStorage.removeItem(SKIP); } catch (e) {}
+  return;
 
   function T(en, es) { try { return (typeof DT === "function") ? DT(en, es) : en; } catch (e) { return en; } }
   function esc(x) { return String(x == null ? "" : x).replace(/[&<>"]/g, function (c) {
@@ -66974,11 +66977,11 @@ html.js-reveal .reveal,
     /* AOG-DD-LINK-TEN-V1 (2026-09-23) - subjects seven to ten. Codes are the page's
        own SUBJ keys: 'religion' is SINGULAR there, 'foundry' grades are u1..u30. */
     { v:"facs",           en:"Family & Consumer Sciences", es:"Ciencias de la Familia y del Consumidor" },
-    { v:"religion",       en:"World Religions (9–12)",     es:"Religiones del Mundo (9–12)" },
+    { v:"religion",       en:"World Religions",            es:"Religiones del Mundo" },
     { v:"bible",          en:"Bible Study",                es:"Estudio bíblico" },
     { v:"quran",          en:"Qur’an Study",               es:"Estudio del Corán" },
     { v:"talmud",         en:"Talmud Study",               es:"Estudio del Talmud" },
-    { v:"economics",      en:"Economics (9–12)",           es:"Economía (9–12)" },
+    { v:"economics",      en:"Economics",                  es:"Economía" },
     { v:"foundry",        en:"Word Foundry (by unit)",     es:"Word Foundry (por unidad)" }
   ];
   var DDGRADE = ["K","1","2","3","4","5","6","7","8","9-10","11-12"];   /* AOG-DD-HS-V1: two high-school bands */
@@ -66987,7 +66990,6 @@ html.js-reveal .reveal,
      the Word Foundry goes by class unit. A link to a grade a subject lacks draws nothing. */
   var DDUNITS = (function () { var a = []; for (var i = 1; i <= 30; i++) a.push("u" + i); return a; })();
   function ddGrades(s) {
-    if (s === "religion" || s === "economics") return ["9-10", "11-12"];
     if (s === "foundry") return DDUNITS;
     return DDGRADE;
   }
@@ -92346,6 +92348,9 @@ body.aog-xwalk-solo:has(#panel-align.active) #panel-align::before{content:"Stand
 <script>
 /* AOG-OPENTOOL-V1 (2026-09-26) — a tool by link: /#opentool=disclosure opens that tool, so the new
    dashboard can put buried teacher tools one tap away. */
+/* AOG-OPENMTSS-V1 — /#openmtss opens the MTSS Report straight from the new dashboard's Reports page. */
+(function(){ function go(){ if(location.hash!=="#openmtss") return; var n=0,t=setInterval(function(){ if(typeof window.aogOpenMTSS==="function"){ clearInterval(t); try{ history.replaceState(null,"","#dashboard"); }catch(e){} try{ if(typeof window.showScreen==="function") window.showScreen("screen-admin"); }catch(e){} setTimeout(function(){ window.aogOpenMTSS(); },150); } else if(++n>80) clearInterval(t); },100); }
+  go(); window.addEventListener("hashchange",go); })();
 (function(){ function go(){ var m=/^#opentool=([a-z0-9-]+)$/.exec(location.hash||""); if(!m) return;
   var n=0,t=setInterval(function(){ if(typeof window.toolOpen==="function"){ clearInterval(t); try{ history.replaceState(null,"","#tools"); }catch(e){} window.toolOpen(m[1]); } else if(++n>60) clearInterval(t); },100); }
   go(); window.addEventListener("hashchange",go); })();
