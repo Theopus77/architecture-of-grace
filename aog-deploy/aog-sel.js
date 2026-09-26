@@ -64,9 +64,13 @@
         };
         var apply = function (sec, entry) {
           var path = mode === "full" ? null : entry[mode];
-          var steps = sec.querySelectorAll(".step");
+          var steps = sec.querySelectorAll(".step"), lastN = 0, strand = false;
           for (var i = 0; i < steps.length; i++) {
             var st = steps[i], sn = (st.querySelector(".sn") || {}).textContent, sm = st.querySelector(".sm");
+            /* Room 18 embeds a strand lesson after some lessons, numbered from 01 again: it is its
+               own session and stays as written under every path */
+            var nN = parseInt(sn, 10) || 0; if (nN <= lastN) strand = true; lastN = nN;
+            if (strand) { var blkS = stepBlock(st); for (var q = 0; q < blkS.length; q++) blkS[q].removeAttribute("data-aog-cut"); if (sm && sm.hasAttribute("data-aog-sm")) sm.textContent = sm.getAttribute("data-aog-sm"); continue; }
             var keep = !path || (path.steps && path.steps[String(sn).trim()] != null);
             var blk = stepBlock(st);
             for (var j = 0; j < blk.length; j++) { if (keep) blk[j].removeAttribute("data-aog-cut"); else blk[j].setAttribute("data-aog-cut", "1"); }
