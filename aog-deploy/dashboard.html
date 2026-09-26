@@ -202,7 +202,7 @@ function rows(k){ try{ const v=JSON.parse(localStorage.getItem(k)||"[]"); return
 function day(r){ return String(r.date||r.timestamp||"").slice(0,10); }
 function who(r){ return String(r.studentId||r.respondentId||"").trim(); }
 function data(){
-  const ci=rows("aog.checkin.remote").filter(r=>String(r.checkinType||"")!=="thisisme"), pr=rows("aog.practice.remote");
+  const ci=rows("aog.checkin.remote").filter(r=>String(r.checkinType||"")!=="thisisme"&&!isAdultRow(r)), pr=rows("aog.practice.remote");
   const S={};
   const S_=n=>S[n]||(S[n]={name:n,ci:[],pr:[],last:""});
   ci.forEach(r=>{ const n=who(r); if(!n) return; const s=S_(n); s.ci.push(r); if(day(r)>s.last) s.last=day(r); });
@@ -215,7 +215,7 @@ function data(){
 function flagged(r){ return r.followUp===true||String(r.followUp)==="true"||String(r.unsafeFlag)==="true"||String(r.trustedAdultFlag)==="true"||/yes|now|soon/i.test(String(r.tellAdult||"")); }
 function feel(r){ return String(r.feelingWords||"").split(/[,;·]/).map(x=>x.trim()).filter(Boolean); }
 function nice(d){ if(!d) return "—"; const t=new Date(d+"T12:00:00"); return isNaN(t)?d:t.toLocaleDateString(L()==="es"?"es":"en",{month:"short",day:"numeric"}); }
-function noData(){ return '<section class="card"><p class="s" style="margin:0">'+T("pullFirst")+'</p><div class="row"><a class="btn solid" href="/#dashboard">'+T("openClassic")+' ›</a></div></section>'; }
+function noData(){ return '<section class="card"><p class="s" style="margin:0 0 10px">'+T("pullFirst")+'</p>'+pullBtn()+'</section>'; }
 function students(){
   const D=data(), list=Object.values(D.S), q=(get("aog.dash2.q","")||"").toLowerCase(); let sel=get("aog.dash2.sel",""); try{ const m=/[?&]stu=([^&]+)/.exec(location.hash); if(m){ sel=decodeURIComponent(m[1]); put("aog.dash2.sel",sel); history.replaceState(null,"","#students"); } }catch(e){}
   if(sel && D.S[sel]) return oneStudent(D.S[sel]);
@@ -313,6 +313,7 @@ function reports(){
    either place shows in both. ═══════════════════════════════════════════════════════════════ */
 const t2=(en,es)=>L()==="es"?es:en;
 function mtssRows(){ const seen={}, out=[]; rows("aogScreener.v2.results").concat(rows("aog.reflect.remote")).forEach(r=>{ if(!r||!r.studentId) return; const k=String(r.studentId)+"|"+String(r.timestamp||""); if(seen[k]) return; seen[k]=1; out.push(r); }); return out; }
+function mTs(r){ const v=r&&r.timestamp; const n=typeof v==="number"?v:Date.parse(v); return isNaN(n)?0:n; }
 function mNum(v){ return (v==null||isNaN(v))?null:Math.round(+v); }
 function mComp(r){ const c=mNum(r.normComposite); if(c!=null) return c; return Math.round(((+r.normA||0)+(+r.normB||0)+(+r.normC||0))/3); }
 function mTier(r){ if(r.tier==="High Risk") return 3; if(r.tier==="Some Risk") return 2; if(r.tier==="Low Risk") return 1; const c=mComp(r); return c<50?3:c<75?2:1; }
@@ -344,6 +345,20 @@ function mEvidence(name){
   const I=iep(), goals=Object.keys(I.goals).filter(id=>!I.goals[id].archived&&String(I.goals[id].student||"").trim().toLowerCase()===name.toLowerCase()).map(id=>{ const g=I.goals[id], pts=I.data[id]||[], last=pts.length?+pts[pts.length-1].value:null, base=g.baseline&&+g.baseline.value, tgt=g.target&&+g.target.value; const pct=(last!=null&&tgt!=null&&base!=null&&tgt!==base)?Math.max(0,Math.min(100,Math.round(100*(last-base)/(tgt-base)))):null; return {title:g.title||g.area||"",last,tgt,pct}; });
   return {ci:s.ci.length,ci30:ci30.length,flags:s.ci.filter(flagged).length,flags30:ci30.filter(flagged).length,topF,pr:s.pr.length,pr30:pr30.length,acc:s.acc,dd:dd.length,ddAcc:acc(dd),checks:checks.length,checksAcc:acc(checks),tests:tests.length,testsAcc:acc(tests),panes:s.pr.length,goals,last:s.last};
 }
+/* what adults observed: the team / period logs (regulated · used a strategy · connected · engaged), scored the way periodStats does */
+function mAdult(name){
+  const cut=Date.now()-30*864e5, es=L()==="es";
+  const rowsA=rows("aog.checkin.remote").filter(r=>who(r).toLowerCase()===name.toLowerCase()&&isAdultRow(r)&&new Date(day(r)+"T12:00:00")>=cut);
+  const K=[["regulated",es?"Regulado":"Regulated"],["usedStrategy",es?"Usó una estrategia":"Used a strategy"],["connected",es?"Conectado":"Connected"],["engaged",es?"Participó":"Engaged"]];
+  const tot={}, got={}, adults=new Set(), flags=[];
+  rowsA.forEach(r=>{ adults.add(String(r.observer||r.staffName||r.adultName||r.respondentId||r.staffRole||"?"));
+    if(Array.isArray(r.flags)) r.flags.forEach(f=>flags.push(String(f))); else if(typeof r.flags==="string"&&r.flags) r.flags.split(/[,;·]/).forEach(f=>{ if(f.trim()) flags.push(f.trim()); });
+    K.forEach(([k])=>{ if(k==="engaged"&&!Object.prototype.hasOwnProperty.call(r,"engaged")) return; if(!(k in r)&&!Object.prototype.hasOwnProperty.call(r,k)) return; tot[k]=(tot[k]||0)+1; if(r[k]===true||String(r[k]).toLowerCase()==="true"||r[k]===1||r[k]==="1") got[k]=(got[k]||0)+1; }); });
+  const pct=K.filter(([k])=>tot[k]).map(([k,l])=>[l,Math.round(100*(got[k]||0)/tot[k])]);
+  const fc={}; flags.forEach(f=>fc[f]=(fc[f]||0)+1);
+  return {n:rowsA.length,adults:adults.size,pct,flags:Object.entries(fc).sort((a,b)=>b[1]-a[1]).slice(0,4)};
+}
+function isAdultRow(r){ const role=String(r.respondentRole||r.who||"").toLowerCase(); if(role==="student") return false; return role==="staff"||role==="adult"||["regulated","usedStrategy","connected","engaged","checks"].some(k=>Object.prototype.hasOwnProperty.call(r,k)); }
 function mEvidenceHtml(name){
   /* every count is a door to where the data lives */
   const e=mEvidence(name), q=encodeURIComponent(name), box=(n,l,sub,href)=>'<a class="stat" style="text-decoration:none;color:inherit" href="'+href+'"><b>'+n+'</b><span>'+l+(sub?'<br><small>'+sub+'</small>':'')+'<br><small style="color:var(--goldInk)">'+t2("open ›","abrir ›")+'</small></span></a>';
@@ -353,7 +368,7 @@ function mEvidenceHtml(name){
    +box(e.ci30,t2("check-ins, last 30 days","registros, últimos 30 días"),e.ci+" "+t2("in all","en total"),"#students?stu="+q)
    +box(e.flags30,t2("follow-up flags, last 30 days","alertas, últimos 30 días"),e.flags+" "+t2("in all","en total"),"#checkins")
    +box(e.panes,t2("Blueprint panes","paneles del plano"),e.pr30+" "+t2("in the last 30 days","en los últimos 30 días"),"/turn-ins.html?blueprint="+q)
-   +box(e.acc==null?"—":e.acc+"%",t2("right on the first try","bien al primer intento"),t2("all practice","toda la práctica"),"/turn-ins.html?student="+q)
+   +box(e.acc==null?"—":e.acc+"%",t2("right on the first try","bien al primer intento"),t2("across those panes","en esos paneles"),"/turn-ins.html?student="+q)
    +'</div>';
   h+='<div class="grid3" style="grid-template-columns:repeat(2,minmax(0,1fr))">';
   h+='<section class="card"><p class="k" style="color:var(--goldInk)">'+t2("Academics","Lo académico")+'</p><table class="tbl"><tbody>'
@@ -361,6 +376,13 @@ function mEvidenceHtml(name){
    +'<tr><td>'+t2("Lesson checks (Check yourself)","Comprobaciones de lección")+'</td><td><b>'+e.checks+'</b></td><td>'+(e.checksAcc==null?"—":e.checksAcc+"%")+'</td></tr>'
    +'<tr><td>'+t2("Unit tests (one shot)","Exámenes de unidad")+'</td><td><b>'+e.tests+'</b></td><td>'+(e.testsAcc==null?"—":e.testsAcc+"%")+'</td></tr>'
    +'</tbody></table></section>';
+  const ad=mAdult(name);
+  h+='<section class="card"><p class="k" style="color:var(--goldInk)"><a href="#checkins" style="color:inherit">'+t2("What adults observed, last 30 days","Lo que observaron los adultos, últimos 30 días")+' ›</a></p>'
+   +(ad.n?'<p class="s" style="margin:0 0 6px"><b>'+ad.n+'</b> '+t2("period entries","registros de periodo")+' · <b>'+ad.adults+'</b> '+t2(ad.adults===1?"adult":"adults",ad.adults===1?"adulto":"adultos")+'</p>'
+     +ad.pct.map(([l,v])=>'<div style="display:flex;align-items:center;gap:10px;margin:4px 0"><span style="flex:0 0 130px;font-size:13px">'+l+'</span><div class="bar" style="flex:1"><i style="width:'+v+'%;background:'+mBand(v)+'"></i></div><b style="width:40px;text-align:right">'+v+'%</b></div>').join("")
+     +(ad.flags.length?'<p class="s" style="margin:8px 0 0">'+t2("Notes passed","Notas")+': '+ad.flags.map(([f,n])=>'<span class="chip">'+esc(f)+' · '+n+'</span>').join(" ")+'</p>':'')
+     :'<p class="empty">'+t2("No adult team check-ins for this student yet.","Aún no hay registros del equipo de adultos para este estudiante.")+'</p>')
+   +'</section>';
   h+='<section class="card"><p class="k" style="color:var(--goldInk)">'+t2("Feelings named, last 30 days","Sentimientos nombrados, últimos 30 días")+'</p>'+(e.topF.length?e.topF.map(([f,n])=>'<span class="chip">'+esc(f)+' · '+n+'</span>').join(""):'<p class="empty">—</p>')
    +(e.goals.length?'<p class="k" style="color:var(--goldInk);margin-top:12px"><a href="#brick" style="color:inherit">'+t2("IEP goals","Metas del IEP")+' ›</a></p>'+e.goals.map(g=>'<div style="margin:4px 0"><b>'+esc(g.title)+'</b> · '+(g.last==null?"—":g.last)+(g.tgt!=null?" / "+g.tgt:"")+(g.pct!=null?' · '+g.pct+'%':'')+'</div>').join(""):'')
    +'</section></div>';
@@ -370,16 +392,16 @@ function mtss(){
   const all=mtssRows(), band=get("aog.dash2.mtssBand",""), view=get("aog.dash2.mtssView","individual"), m=mMeta();
   const present={}; all.forEach(r=>present[mBandKey(r)]=1);
   const rowsB=band&&present[band]?all.filter(r=>mBandKey(r)===band):all;
-  const byS={}; rowsB.forEach(r=>{ const id=String(r.studentId||"—"); (byS[id]=byS[id]||[]).push(r); }); Object.values(byS).forEach(a=>a.sort((x,y)=>(+x.timestamp||0)-(+y.timestamp||0)));
+  const byS={}; rowsB.forEach(r=>{ const id=String(r.studentId||"—"); (byS[id]=byS[id]||[]).push(r); }); Object.values(byS).forEach(a=>a.sort((x,y)=>mTs(x)-mTs(y)));
   const latest=Object.keys(byS).map(k=>byS[k][byS[k].length-1]).sort((a,b)=>mTier(b)-mTier(a)||mComp(a)-mComp(b));
   /* students with other evidence but no reflection yet still get a page */
   const D=data(), extra=Object.keys(D.S).filter(n=>!byS[n]).sort();
-  const head='<div class="hello"><div><h1>'+T("mtss")+'</h1><p>'+t2("Tiers from the self-reflection, then everything else this device knows about the student. A reflection, not a diagnosis.","Niveles según la autorreflexión, y luego todo lo demás que sabe este aparato sobre el estudiante. Una reflexión, no un diagnóstico.")+'</p></div><button class="btn solid" type="button" onclick="window.print()">🖨 '+t2("Print / save PDF","Imprimir / guardar PDF")+'</button></div>';
+  const head='<div class="hello"><div><h1>'+T("mtss")+'</h1><p>'+t2("Tiers from the self-reflection, then everything else this device knows about the student. A reflection, not a diagnosis.","Niveles según la autorreflexión, y luego todo lo demás que sabe este aparato sobre el estudiante. Una reflexión, no un diagnóstico.")+'</p></div><div style="display:flex;gap:8px;flex-wrap:wrap">'+pullBtn()+'<button class="btn" type="button" onclick="window.print()">🖨 '+t2("Print / save PDF","Imprimir / guardar PDF")+'</button></div></div>';
   const ctrl='<div class="row" style="margin-bottom:14px"><label>'+t2("View","Vista")+' <select id="mtssView">'+[["individual",t2("One student","Un estudiante")],["class",t2("Class & group","Clase y grupo")],["school",t2("School-wide","Toda la escuela")]].map(([v,l])=>opt(v,l,v===view)).join("")+'</select></label>'
    +'<label>'+t2("Grades","Grados")+' <select id="mtssBand">'+opt("",t2("All grades","Todos los grados"),!band)+Object.keys(MBAND).filter(k=>present[k]).map(k=>opt(k,Array.isArray(MBAND[k])?MBAND[k][L()==="es"?1:0]:MBAND[k],k===band)).join("")+'</select></label></div>';
   const meta='<section class="card" style="margin-bottom:16px"><div class="grid3" style="grid-template-columns:repeat(3,minmax(0,1fr));gap:10px">'
    +[["school",t2("School / org","Escuela / org")],["by",t2("Prepared by","Preparado por")],["date",t2("Date / range","Fecha / rango")]].map(([f,l])=>'<label class="f">'+l+'<input type="text" data-meta="'+f+'" value="'+esc(m[f]||(f==="date"?new Date().toLocaleDateString():""))+'"></label>').join("")+'</div></section>';
-  if(!latest.length&&!extra.length) return head+'<section class="card"><p class="s" style="margin:0">'+t2("No self-reflections on this device yet. Pull from your Sheet on the classic dashboard, or have students take the eighteen questions.","Aún no hay autorreflexiones en este aparato. Trae de tu Hoja en el panel clásico, o pide a los estudiantes que respondan las dieciocho preguntas.")+'</p><div class="row"><a class="btn solid" href="/#dashboard">'+T("openClassic")+' ›</a></div></section>';
+  if(!latest.length&&!extra.length) return head+'<section class="card"><p class="s" style="margin:0">'+t2("No self-reflections on this device yet. Refresh from your Sheet, or have students take the eighteen questions.","Aún no hay autorreflexiones en este aparato. Actualiza desde tu Hoja, o pide a los estudiantes que respondan las dieciocho preguntas.")+'</p>'+pullBtn()+'</section>';
   let body="";
   if(view==="individual"){
     const names=latest.map(r=>String(r.studentId||"—")).concat(extra), sel0=get("aog.dash2.mtssStu",""), cur=names.includes(sel0)?sel0:names[0];
@@ -429,6 +451,31 @@ function mtss(){
   }
   return head+ctrl+meta+body;
 }
+
+/* ══ AOG-DASH-PULL-V1 (2026-09-26) — "Refresh from your Sheet" lives here now, so nobody has to open the
+   classic dashboard first. Same two POSTs the classic page makes (action pull, action pullCheckins), read-
+   gated by the ADMIN_PULL_KEY saved on this device (aog.sync.key), never by the write key. What comes back
+   is saved where every page already reads it: aog.reflect.remote, aog.checkin.remote, aog.practice.remote. */
+function canRead(){ return !!(raw("aog.sync.url")&&raw("aog.sync.key")); }
+function pullBtn(){ return '<span class="pullwrap" style="display:inline-flex;align-items:center;gap:10px;flex-wrap:wrap"><button class="btn solid" type="button" data-pull="1"'+(canRead()?'':' disabled')+'>⟳ '+t2("Refresh from your Sheet","Actualizar desde tu Hoja")+'</button><span class="s" data-pullst style="margin:0">'+(canRead()?(get("aog.dash2.pulledAt","")?t2("Last refreshed","Última actualización")+" "+new Date(get("aog.dash2.pulledAt","")).toLocaleString():""):t2("Connect your Sheet with the read key first (Set up).","Conecta tu Hoja con la clave de lectura primero (Configurar)."))+'</span></span>'; }
+async function pullAll(btn){
+  const url=raw("aog.sync.url"), key=raw("aog.sync.key"), st=document.querySelector("[data-pullst]"), say=m=>{ if(st) st.textContent=m; };
+  if(!url||!key){ say(t2("Connect your Sheet with the read key first.","Conecta tu Hoja con la clave de lectura primero.")); return; }
+  if(btn) btn.disabled=true; say(t2("Pulling…","Trayendo…"));
+  const post=b=>fetch(url,{method:"POST",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify(b)}).then(r=>r.json());
+  try{
+    const [a,b]=await Promise.all([post({action:"pull",passcode:key}).catch(e=>({error:String(e)})),post({action:"pullCheckins",passcode:key}).catch(e=>({error:String(e)}))]);
+    const errs=[];
+    if(a&&a.error) errs.push(a.error); else if(a&&"records" in a){ const num=v=>{ const n=parseFloat(v); return isNaN(n)?null:n; };
+      const recs=(a.records||[]).filter(r=>r&&r.timestamp).map(r=>({timestamp:r.timestamp,studentId:String(r.studentId==null?"":r.studentId),grade:r.grade,window:r.window,mode:r.mode==="depth"?"depth":"rapid",population:(r.population==="adult"||String(r.grade)==="Adult")?"adult":"k12",normA:num(r.normA),normB:num(r.normB),normC:num(r.normC),normComposite:num(r.normComposite),tier:r.tier||"",trustedAdultFlag:String(r.trustedAdultFlag).toUpperCase()==="TRUE",unsafeFlag:String(r.unsafeFlag).toUpperCase()==="TRUE",synced:true}));
+      put("aog.reflect.remote",recs); }
+    if(b&&b.error) errs.push(b.error); else if(b&&"checkins" in b){ const rowsC=[], pr=[]; (b.checkins||[]).forEach(r=>{ if(String((r&&r.checkinType)||"")==="practice") pr.push(r); else rowsC.push(r); });
+      put("aog.checkin.remote",rowsC); put("aog.practice.remote",(b.practice||[]).concat(pr)); }
+    if(errs.length){ say(errs.join(" · ")); }
+    else { put("aog.dash2.pulledAt",new Date().toISOString()); say("✓ "+t2("Updated","Actualizado")); render(); }
+  }catch(e){ say(t2("Couldn’t reach the Sheet. Confirm the Web App is deployed to “Anyone” and try again.","No se pudo conectar con la Hoja. Confirma que la Web App esté desplegada para “Cualquiera” e inténtalo otra vez.")); }
+  if(btn) btn.disabled=false;
+}
 /* ── the interface ── */
 const L=()=> (document.documentElement.lang||"en").slice(0,2)==="es"?"es":"en", T=k=>TXT[L()][k];
 let VIEW=QS.get("view")==="student"||HAND?"student":get(K.view,"teacher"), PAGE=location.hash.slice(1).replace(/\?.*$/,"")||"today";
@@ -447,7 +494,7 @@ function today(){
   const dd=get(K.dd,{s:"math",g:"3",n:1}), as=get(K.as,{k:"unit",p:"mth",f:"mth-u1.html",i:"m1"}), sl=get(K.sl,{i:"checkin"});
   const units=CAT.units[as.p]||[];
   const tr=get(K.tray,[]), link=classLink();
-  return '<div class="hello"><div><h1>'+hi+'.</h1><p>'+T("sub")+'</p></div><span class="pill '+(conn?"ok":"")+'"><span class="dot"></span>'+T(conn?"ok":"no")+'</span></div>'
+  return '<div class="hello"><div><h1>'+hi+'.</h1><p>'+T("sub")+'</p></div><div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">'+pullBtn()+'<span class="pill '+(conn?"ok":"")+'"><span class="dot"></span>'+T(conn?"ok":"no")+'</span></div></div>'
   +'<div class="grid3">'
   +'<section class="card hand" style="--ac:var(--c1)"><div class="ic">'+svg("dd")+'</div><p class="k">'+T("hand")+'</p><h2>'+T("dd")+'</h2><p class="s">'+T("ddS")+'</p>'
     +'<label class="f" for="ddS">'+T("subject")+'</label><select id="ddS">'+SUBJ.map(s=>opt(s[0],lang==="es"?s[2]:s[1],s[0]===dd.s)).join("")+'</select>'
@@ -484,6 +531,7 @@ function student(){
 function setup(){
   const conn=!!destParam();
   return '<div class="hello"><div><h1>'+T("setupH")+'</h1><p>'+T("setupS")+'</p></div><span class="pill '+(conn?"ok":"")+'"><span class="dot"></span>'+T(conn?"ok":"no")+'</span></div>'
+   +'<section class="card" style="margin-bottom:16px"><p class="k" style="color:var(--goldInk)">'+t2("Bring in what students sent","Trae lo que enviaron los estudiantes")+'</p><p class="s">'+t2("Reflections, check-ins, team logs and finished practice come back from your Sheet to this device. Reading needs the ADMIN_PULL_KEY saved as the passcode.","Reflexiones, registros, notas del equipo y práctica terminada vuelven de tu Hoja a este aparato. Leer requiere la ADMIN_PULL_KEY guardada como contraseña.")+'</p>'+pullBtn()+(canRead()?'':'<p class="s" style="margin:10px 0 0">'+t2("Reading is not set up on this device yet: this device can send, but not read back.","Este aparato aún no puede leer: puede enviar, pero no traer de vuelta.")+'</p>')+'</section>'
    +'<div class="grid3" style="grid-template-columns:repeat(2,minmax(0,1fr))">'
    +'<section class="card hand" style="--ac:var(--c2)"><div class="ic">'+svg("setup")+'</div><h2>'+T("conn")+'</h2><p class="s">'+T("connS")+'</p><div class="row"><a class="btn solid" href="/#dashboard">'+T("openConn")+'</a><a class="btn" href="/AoG-Screener-Sync-Code.gs" download>⬇ '+T("gs")+'</a><a class="btn" href="/AoG-Sheet-Setup.pdf" target="_blank" rel="noopener">📄 '+T("guide")+'</a></div></section>'
    +'<section class="card hand" style="--ac:var(--c4)"><div class="ic">'+svg("reports")+'</div><h2>'+T("classic")+'</h2><p class="s">'+T("classicS")+'</p><div class="row"><a class="btn solid" href="/#dashboard">'+T("openClassic")+'</a></div></section>'
@@ -501,6 +549,7 @@ function saveDD(){ put(K.dd,{s:val("ddS"),g:val("ddG"),n:+val("ddN")}); }
 const val=id=>{const e=document.getElementById(id);return e?e.value:""};
 function wire(){
   const on=(id,ev,f)=>{const e=document.getElementById(id); if(e) e.addEventListener(ev,f);};
+  document.querySelectorAll("[data-pull]").forEach(b=>b.addEventListener("click",()=>pullAll(b)));
   on("mtssView","change",()=>{ put("aog.dash2.mtssView",val("mtssView")); render(); });
   on("mtssBand","change",()=>{ put("aog.dash2.mtssBand",val("mtssBand")); render(); });
   on("mtssStu","change",()=>{ put("aog.dash2.mtssStu",val("mtssStu")); render(); });
