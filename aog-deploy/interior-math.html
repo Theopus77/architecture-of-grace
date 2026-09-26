@@ -1564,5 +1564,26 @@ button{font:inherit; color:inherit; cursor:pointer;}
 document.getElementById('aogSubRail').hidden=false;
 </script>
 <script src="/aog-jump.js" defer></script>
+<style id="aog-im-folds">
+/* AOG-HUB-FOLDS-V1 (2026-09-26) — Jimmy: "instead of having one big scroll."
+   Each activity shows its name and Open; the description drops down from the
+   small arrow beside Show on the board. Print still shows everything. */
+@media screen{
+  .mwrap.aog-shut .mwhat{display:none}
+  .mfoot .aog-mfold{display:inline-grid;place-items:center;width:36px;height:36px;margin-left:6px;border-radius:999px;border:1.5px solid #C9A24A;background:transparent;color:inherit;cursor:pointer;vertical-align:middle}
+  .mfoot .aog-mfold[aria-expanded="true"] svg{transform:rotate(180deg)}
+  .mcard{min-height:0!important;height:auto!important}
+  .mcards{align-items:start}
+}
+</style>
+<script>
+(function(){function go(){document.querySelectorAll(".mwrap:not([data-aogfold])").forEach(function(w){
+  w.setAttribute("data-aogfold","1");var d=w.querySelector(".mwhat"),f=w.querySelector(".mfoot");if(!d||!f)return;
+  w.classList.add("aog-shut");var b=document.createElement("button");b.type="button";b.className="aog-mfold";
+  b.setAttribute("aria-expanded","false");b.setAttribute("aria-label",/^es/i.test(document.documentElement.lang||"")?"Ver la descripci\u00f3n":"Show the description");
+  b.innerHTML='<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>';
+  b.onclick=function(){var o=w.classList.toggle("aog-shut")===false;b.setAttribute("aria-expanded",o?"true":"false");};f.appendChild(b);});}
+if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",go);else go();})();
+</script>
 </body>
 </html>

@@ -50,6 +50,29 @@
     if (ROOMS[slug]) {
       H.classList.add("aog-glass-rooms"); H.style.setProperty("--room", ROOMS[slug]);
       var gl = D.createElement("link"); gl.rel = "stylesheet"; gl.href = "/aog-glass-rooms.css"; (D.head || H).appendChild(gl);
+      /* AOG-HUB-FOLDS-V1 (2026-09-26) — Jimmy: "Can all the old tabs get a drop
+         down menu tab instead of having one big scroll." Each unit card shows its
+         name and its buttons; the long description drops down when the name is
+         tapped. Screen only: a printed hub still shows everything. */
+      var foldUnits = function () {
+        var us = D.querySelectorAll(".unit:not([data-aogfold])");
+        for (var i = 0; i < us.length; i++) {
+          var u = us[i], t = u.querySelector(".t"), d = u.querySelector(".d");
+          u.setAttribute("data-aogfold", "1");
+          if (!t || !d) continue;
+          var b = D.createElement("button");
+          b.type = "button"; b.className = "aog-ufold"; b.setAttribute("aria-expanded", "false");
+          b.setAttribute("aria-label", (/^es/i.test(H.lang || "") ? "Ver la descripci\u00f3n" : "Show the description"));
+          b.innerHTML = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>';
+          t.appendChild(b); u.classList.add("aog-shut");
+          (function (u, b) {
+            var flip = function (e) { if (e.target.closest("a, .doors")) return; var open = u.classList.toggle("aog-shut") === false; b.setAttribute("aria-expanded", open ? "true" : "false"); };
+            t.addEventListener("click", flip); t.style.cursor = "pointer";
+          })(u, b);
+        }
+      };
+      if (D.readyState === "loading") D.addEventListener("DOMContentLoaded", foldUnits); else foldUnits();
+      setTimeout(foldUnits, 1000);
     }
   } catch (e) {}
   /* AOG-PRACTICE-GLASS-V1 (2026-09-26) — the practice pages (c1…, h1…, m1…,
