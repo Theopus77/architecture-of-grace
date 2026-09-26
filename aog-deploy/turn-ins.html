@@ -1057,6 +1057,17 @@ else document.documentElement.classList.add("aog-embed");</script>
      To bring it back, put "SEL · Room 36" back in this list. */
   var SUBJECTS=["All","Math","Language Arts","Writing","Science","Social Studies","Spanish","FACS","Religions","Economics","Foundry","English","Other"];
   var curK="all", curF="All", curView="stu", sheetOnly=false;
+  /* AOG-INBOX-LINKIN-V1 (2026-09-26) — Jimmy: "The academic box should be interactive as well." A link can
+     open the Inbox already narrowed to one student (?student=) and one kind of work (?work=dd | checks |
+     tests | course), the way the MTSS page's academics rows do. A note at the top says so, with a way out. */
+  var URL_STU="", URL_STU_RAW="", URL_WORK="";
+  (function(){ try{ var q=new URLSearchParams(location.search); URL_STU_RAW=String(q.get("student")||"").replace(/\s+/g," ").trim(); URL_STU=URL_STU_RAW.toLowerCase(); URL_WORK=String(q.get("work")||"").trim(); if(URL_WORK) curK="turnin"; }catch(e){} })();
+  function workMatch(it,w){ if(it.kind!=="turnin") return false; var x=xparse(it.raw||{}), id=String((it.raw||{}).activityId||"");
+    if(w==="dd") return x.series==="daily-drops"; if(w==="course") return x.series==="course";
+    if(w==="checks") return x.series==="course" && /-chk-/.test(id); if(w==="tests") return x.series==="course" && ((it.raw||{}).assessment==="unit-test" || /-t\d+$/.test(id)); return true; }
+  function linkinNote(){ if(!URL_STU && !URL_WORK) return null; var WN={dd:"Daily Drafts sheets",checks:"lesson checks",tests:"unit tests",course:"course work"};
+    var d=document.createElement("p"); d.className="pst no-print"; d.style.margin="0 0 12px";
+    d.innerHTML="Showing "+(WN[URL_WORK]||"everything")+(URL_STU?" for <b>"+URL_STU_RAW.replace(/</g,"&lt;")+"</b>":"")+" · <a href=\"/turn-ins.html\">Show everything</a>"; return d; }
 
   var kwrap=document.getElementById("kinds"), fwrap=document.getElementById("filters");
   function countsBy(items){
@@ -1485,8 +1496,11 @@ else document.documentElement.classList.add("aog-embed");</script>
     buildKinds();
     var box=document.getElementById("inbox"); box.innerHTML="";
     var ub=undoBar(); if(ub) box.appendChild(ub);
+    var ln=linkinNote(); if(ln) box.appendChild(ln);
     var all=allItems().filter(function(it){
       if(sheetOnly && !it.sheet) return false;
+      if(URL_STU && String(it.student||"").replace(/\s+/g," ").trim().toLowerCase()!==URL_STU) return false;
+      if(URL_WORK && !workMatch(it,URL_WORK)) return false;
       if(curK!=="all" && it.kind!==curK) return false;
       if(it.kind==="turnin" && curF!=="All" && it.subj!==curF) return false;
       return true;
