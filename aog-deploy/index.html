@@ -337,7 +337,7 @@ function toggleTheme() {
 <link rel="stylesheet" href="aog-calm.css">
 <link rel="stylesheet" href="aog-dash-facelift.css?v=4501">
 <script src="aog-legible.js?v=4495" defer></script>
-<script src="aog-dropdowns.js?v=4710" defer></script>
+<script src="aog-dropdowns.js?v=4920" defer></script>
 <script src="aog-forms.js?v=4495" defer></script>
 <script src="aog-chapel.js?v=4503" defer></script>
 <script src="aog-mine.js"></script>
@@ -18735,6 +18735,8 @@ async function pullFromSheet() {
     }
     const _0x5d6553 = _0x5d706a && _0x5d706a.records || [];
     REMOTE_RECORDS = _0x5d6553.map(mapSheetRowToRecord).filter(Boolean);
+    /* AOG-REFLECT-REMOTE-V1 — the new dashboard (/dashboard) builds its MTSS report from the disk; pulled reflections were memory-only */
+    try { localStorage.setItem("aog.reflect.remote", JSON.stringify(REMOTE_RECORDS)); } catch (eR) {}
     aogSyncStampSet(REMOTE_RECORDS.length);
     const _0x5e831b = new Set(getLocalRecords().map(recordKey));
     const _0x134e28 = REMOTE_RECORDS.filter(_0x5f1aaf => !_0x5e831b.has(recordKey(_0x5f1aaf))).length;

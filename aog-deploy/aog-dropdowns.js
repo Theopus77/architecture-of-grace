@@ -97,7 +97,8 @@
     ".aogdd-demo{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:0 0 14px}.aogdd-demo[hidden]{display:none}" +
     ".aogdd-demo-btn{min-height:44px;padding:0 18px;border-radius:999px;border:2px solid #1E1F22;background:#C9A24A;color:#0A1E33;font:700 15px/1 Inter,system-ui,sans-serif;cursor:pointer}" +
     ".aogdd-demo-tx{font:500 14px/1.4 Inter,system-ui,sans-serif;color:#15202E}html[data-theme=dark] .aogdd-demo-tx{color:#F4EEE2}" +
-    ".aogdd-lab:empty{display:none}.aogdd-lab{color:inherit;font-size:11px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;opacity:.8}" +
+    ".aogdd-lab:empty{display:none}.aogdd-lab{color:inherit;font-size:11px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;opacity:.8;flex:0 0 7.5em;min-width:7.5em}" +
+    ".aogdd .aogdd-sel{flex:0 1 280px}" +
     ".aogdd-sel{min-height:44px;min-width:min(100%,280px);max-width:100%;padding:8px 38px 8px 14px;border-radius:12px;border:1.5px solid #C9A24A;" +
     "background:#FFFDF8 url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%237a5a12' stroke-width='2.4' stroke-linecap='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E\") no-repeat right 12px center/16px;" +
     "color:#0A1E33;font:600 16px/1.3 Inter,system-ui,sans-serif;-webkit-appearance:none;appearance:none;cursor:pointer}" +
