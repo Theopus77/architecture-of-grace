@@ -38,3 +38,25 @@ select, textarea { font-size: max(16px, 1em) !important; }
 }
 
 :focus-visible { outline: 3px solid #F2C964; outline-offset: 2px; }
+/* selected text stays readable: a soft gold wash, the words keep their colour */
+::selection { background: rgba(242,201,100,.42); color: inherit; }
+
+/* ══ AOG-GROUND-V1 (2026-09-25) — ONE BACKGROUND FOR EVERY PAGE ══════════════
+   Jimmy: "Every background should have the same settings." Light: warm limestone
+   with soft pools of coloured light, as if sun came through stained glass. Dark:
+   the same pools, faint, over the site's navy. Fixed, so it never moves. */
+@media screen {
+  html[data-theme="light"] body { background:
+    radial-gradient(38% 30% at 12% 18%, rgba(47,99,184,.10), transparent 70%),
+    radial-gradient(34% 28% at 88% 22%, rgba(184,69,122,.09), transparent 70%),
+    radial-gradient(40% 32% at 80% 78%, rgba(46,139,87,.09), transparent 70%),
+    radial-gradient(36% 30% at 18% 82%, rgba(184,122,18,.10), transparent 70%),
+    linear-gradient(180deg, #FBF7EE, #F3ECDD) !important; background-attachment: fixed !important; }
+  html[data-theme="dark"] body { background:
+    radial-gradient(38% 30% at 12% 18%, rgba(47,99,184,.12), transparent 70%),
+    radial-gradient(34% 28% at 88% 22%, rgba(184,69,122,.08), transparent 70%),
+    radial-gradient(40% 32% at 80% 78%, rgba(46,139,87,.08), transparent 70%),
+    radial-gradient(36% 30% at 18% 82%, rgba(184,122,18,.09), transparent 70%),
+    linear-gradient(180deg, #0B2036, #081828) !important; background-attachment: fixed !important; }
+  html[data-theme] .screen, html[data-theme] main, html[data-theme] .wrap, html[data-theme] .stage { background-color: transparent !important; }
+}
