@@ -137,7 +137,7 @@ html.aog-grace [data-aog-hero] .pullrow .pst{color:var(--ag-cream-soft,#C8D4E2)}
 .ti .sum{width:100%;color:var(--sub);font-size:.84rem}
 .ti .body{border-top:1px dashed var(--line);padding:12px 15px 15px}
 .ti .acts{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0 0}
-.ti .acts button{border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:9px;padding:7px 12px;font:700 .8rem var(--sans);cursor:pointer}
+.ti .acts button,.ti .acts a.ws{border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:9px;padding:7px 12px;font:700 .8rem var(--sans);cursor:pointer}
 .ti .acts button:hover{border-color:var(--navy)}
 /* ══ .30hj — Remove ══ */
 .ti .acts button.del{border-color:var(--u3);color:var(--u3)}
@@ -158,6 +158,7 @@ html.aog-grace [data-aog-hero] .pullrow .pst{color:var(--ag-cream-soft,#C8D4E2)}
 .ti.k-refl{border-left-color:var(--u1)} .ti.k-voice{border-left-color:var(--brass)}
 .ti .prov{font:700 .64rem var(--sans);letter-spacing:.09em;text-transform:uppercase;
   color:var(--good);background:var(--good-soft);border-radius:999px;padding:2px 8px;white-space:nowrap}
+.acts a.ws{text-decoration:none;display:inline-flex;align-items:center;background:var(--ink)!important;color:var(--bg)!important;border-color:var(--ink)!important}
 .fchip.zero{opacity:.42}
 .fchip.zero.on{opacity:1}
 #filters[hidden]{display:none}
@@ -377,7 +378,7 @@ html.a11y-dyslexic body{letter-spacing:.02em;word-spacing:.09em;line-height:1.8}
          with no next step. The destructive path stays in ONE place — this
          only points at it. */
       '<p class="f">Forgotten it? There is no way to read the code back. ' +
-      'Open the <a href="/#dashboard">dashboard</a> and use ' +
+      'Open the <a href="/dashboard">dashboard</a> and use ' +
       '<b>&ldquo;Clear this device and start again&rdquo;</b> \u2014 that clears what is ' +
       'stored on THIS device only; your Google Sheet is untouched, and ' +
       '<b>Refresh</b> brings the rows back.</p></div>';
@@ -431,7 +432,7 @@ else document.documentElement.classList.add("aog-embed");</script>
         <a role="menuitem" href="/#curriculum"><span class="t">The Curriculum, K&ndash;12</span><span class="s">Five books and the Adult edition.</span></a>
         <a role="menuitem" href="/#library"><span class="t">Library</span><span class="s">Every open preview, sample lesson and pack.</span></a>
         <div class="lab">In the classroom</div>
-        <a role="menuitem" href="/#results"><span class="t">Dashboard</span><span class="s">Hand it out, read the group, find the lesson.</span></a>
+        <a role="menuitem" href="/dashboard"><span class="t">Dashboard</span><span class="s">Hand it out, read the group, find the lesson.</span></a>
         <a role="menuitem" href="/#talk"><span class="t">Talk It Out</span><span class="s">Discussion prompts for the whole room.</span></a>
         <a role="menuitem" href="/#tools"><span class="t">Calm &amp; Regulation Tools</span><span class="s">Quiet Space and the calming corner.</span></a>
         <a role="menuitem" href="/turnins"><span class="t">Turn-ins</span><span class="s">Every FINISHED worksheet and result, one inbox.</span></a>
@@ -489,7 +490,7 @@ else document.documentElement.classList.add("aog-embed");</script>
 </header>
 <div id="inbox"></div>
 <footer>
-  <a href="/#results">&larr; The dashboard</a>
+  <a href="/dashboard">&larr; The dashboard</a>
   <span>The framework is portable. They are taking it with them.</span>
 </footer>
 </div>
@@ -644,7 +645,7 @@ else document.documentElement.classList.add("aog-embed");</script>
                      write:["Writing","s-wri"], science:["Science","s-sci"],
                      "social-studies":["Social Studies","s-soc"],
                      spanish:["Spanish","s-spa"], facs:["FACS","s-facs"],
-                     religion:["Religions","s-rel"], bible:["Bible Study","s-rel"], quran:["Qur’an Study","s-rel"], talmud:["Talmud Study","s-rel"], economics:["Economics","s-eco"],
+                     religion:["Religions","s-rel"], bible:["The Bible","s-rel"], quran:["Qur’an Study","s-rel"], talmud:["Talmud Study","s-rel"], economics:["Economics","s-eco"],
                      foundry:["Foundry","s-fdy"] })[dd[1]];
     if(s==="daily-drops") return ["Daily Drafts","s-oth"];
     return ["Other","s-oth"];
@@ -1068,6 +1069,17 @@ else document.documentElement.classList.add("aog-embed");</script>
   var SUBJECTS=["All","SEL","Math","Language Arts","Writing","Science","Social Studies","Spanish","FACS","Religions","Economics","Foundry","English","Other"];
   /* 2026-09-26: one SEL chip for every room (SEL · Room 12 … 207), now that every worksheet and workbook lands here with its room */
   var curK="all", curF="All", curView="stu", sheetOnly=false;
+  /* AOG-INBOX-LINKIN-V1 (2026-09-26) — Jimmy: "The academic box should be interactive as well." A link can
+     open the Inbox already narrowed to one student (?student=) and one kind of work (?work=dd | checks |
+     tests | course), the way the MTSS page's academics rows do. A note at the top says so, with a way out. */
+  var URL_STU="", URL_STU_RAW="", URL_WORK="";
+  (function(){ try{ var q=new URLSearchParams(location.search); URL_STU_RAW=String(q.get("student")||"").replace(/\s+/g," ").trim(); URL_STU=URL_STU_RAW.toLowerCase(); URL_WORK=String(q.get("work")||"").trim(); if(URL_WORK) curK="turnin"; }catch(e){} })();
+  function workMatch(it,w){ if(it.kind!=="turnin") return false; var x=xparse(it.raw||{}), id=String((it.raw||{}).activityId||"");
+    if(w==="dd") return x.series==="daily-drops"; if(w==="course") return x.series==="course";
+    if(w==="checks") return x.series==="course" && /-chk-/.test(id); if(w==="tests") return x.series==="course" && ((it.raw||{}).assessment==="unit-test" || /-t\d+$/.test(id)); return true; }
+  function linkinNote(){ if(!URL_STU && !URL_WORK) return null; var WN={dd:"Daily Drafts sheets",checks:"lesson checks",tests:"unit tests",course:"course work"};
+    var d=document.createElement("p"); d.className="pst no-print"; d.style.margin="0 0 12px";
+    d.innerHTML="Showing "+(WN[URL_WORK]||"everything")+(URL_STU?" for <b>"+URL_STU_RAW.replace(/</g,"&lt;")+"</b>":"")+" · <a href=\"/turn-ins.html\">Show everything</a>"; return d; }
 
   var kwrap=document.getElementById("kinds"), fwrap=document.getElementById("filters");
   function countsBy(items){
@@ -1361,6 +1373,32 @@ else document.documentElement.classList.add("aog-embed");</script>
     UNDO=null; paint();
   }
 
+  /* ══ AOG-INBOX-WORKSHEET-V1 (2026-09-26) — Jimmy: "the printouts from the inbox should have the original
+     sheet with the right and wrong answers … not just what answers, but the actual worksheet." A Daily
+     Drafts sheet is made from its subject, grade and number, so the same sheet comes back on demand; the
+     student's answers ride in the link and the page marks them (daily-drops.html, ?review=). One tap
+     opens the marked worksheet; the other opens it and prints. */
+  function worksheetLink(it, print){
+    var r=it.raw||{}, x=xparse(r);
+    if(x.series==="course"){
+      /* a course unit: the page is <course>-u<unit>.html, the section is the row's review id */
+      var FILE={ss:"ssc"}, cid=String(r.course||(String(r.activityId||"").match(/^crs-([a-z]+)-u/)||[])[1]||""), unit=r.unit||(String(r.activityId||"").match(/-u(\d+)-/)||[])[1], rid=x.review||(String(r.activityId||"").match(/-u\d+-(.+)$/)||[])[1];
+      if(!cid||!unit||!rid||!Array.isArray(x.answers)) return "";
+      var rvc={who:r.studentId||"", date:String(r.date||r.timestamp||"").slice(0,10), rid:rid, a:x.answers.map(function(q){ var it=(q.a||[])[0]; return it&&it.g!=null?String(it.g):""; })};
+      var b64c=btoa(unescape(encodeURIComponent(JSON.stringify(rvc)))).replace(/\+/g,"-").replace(/\//g,"_").replace(/=+$/,"");
+      return "/"+(FILE[cid]||cid)+"-u"+unit+".html?review="+b64c+(print?"&print=1":"");
+    }
+    if(x.series!=="daily-drops"||x.kind==="writing"||!Array.isArray(x.answers)||!x.answers.length) return "";
+    var subj=x.subject||"", grade=x.grade||"", sheet=x.sheet||r.setNo||"";
+    if(!subj||!grade||!sheet) return "";
+    var rv={who:r.studentId||"", date:String(r.date||r.timestamp||"").slice(0,10), a:x.answers.map(function(bx){ return (bx.a||[]).map(function(a){ return a&&a.g!=null?String(a.g):""; }); })};
+    var b64=btoa(unescape(encodeURIComponent(JSON.stringify(rv)))).replace(/\+/g,"-").replace(/\//g,"_").replace(/=+$/,"");
+    return "/daily-drops.html?subject="+encodeURIComponent(subj)+"&grade="+encodeURIComponent(grade)+"&sheet="+encodeURIComponent(sheet)+(x.lang==="es"?"&lang=es":"")+"&review="+b64+(print?"&print=1":"");
+  }
+  function worksheetBtns(it){
+    var u=worksheetLink(it,false); if(!u) return "";
+    return '<a class="ws" href="'+esc(u)+'" target="_blank" rel="noopener">See the worksheet</a><a class="ws" href="'+esc(worksheetLink(it,true))+'" target="_blank" rel="noopener">Print the worksheet</a>';
+  }
   /* ═══════════ the card ═══════════ */
   function card(it){
     var d=document.createElement("details"); d.className="ti "+(it.cls||"");
@@ -1420,7 +1458,7 @@ else document.documentElement.classList.add("aog-embed");</script>
       var norm=function(x){ return String(x||"").toUpperCase().replace(/[^A-Z0-9]/g,""); };
       var who=norm(it.student), goals=[];
       if(store&&store.goals) Object.keys(store.goals).forEach(function(id){ var g=store.goals[id]; if(g&&!g.archived&&norm(g.student)===who) goals.push([id,g]); });
-      if(!goals.length){ st.innerHTML='No IEP goal for '+esc(it.student||"this student")+' yet. Open <a href="/#dashboard">IEP Progress</a>, pick ＋ '+esc(it.student||"")+' in the Student menu, then lay the brick.'; return; }
+      if(!goals.length){ st.innerHTML='No IEP goal for '+esc(it.student||"this student")+' yet. Open <a href="/dashboard">IEP Progress</a>, pick ＋ '+esc(it.student||"")+' in the Student menu, then lay the brick.'; return; }
       var L=[]; try{ L=it.evidence(it)||[]; }catch(e){ L=[]; }
       var stamp=new Date().toLocaleDateString();
       var brick="▣ "+stamp+" · "+(it.kindLab||"Evidence")+" · "+L.join(" · ");
@@ -1475,8 +1513,11 @@ else document.documentElement.classList.add("aog-embed");</script>
     buildKinds();
     var box=document.getElementById("inbox"); box.innerHTML="";
     var ub=undoBar(); if(ub) box.appendChild(ub);
+    var ln=linkinNote(); if(ln) box.appendChild(ln);
     var all=allItems().filter(function(it){
       if(sheetOnly && !it.sheet) return false;
+      if(URL_STU && String(it.student||"").replace(/\s+/g," ").trim().toLowerCase()!==URL_STU) return false;
+      if(URL_WORK && !workMatch(it,URL_WORK)) return false;
       if(curK!=="all" && it.kind!==curK) return false;
       if(it.kind==="turnin" && curF!=="All" && !(curF==="SEL" ? /^SEL/.test(String(it.subj||"")) : it.subj===curF)) return false;
       return true;
@@ -1648,7 +1689,7 @@ else document.documentElement.classList.add("aog-embed");</script>
   var SOLO=/[?&]solo=1/.test(location.search);
   if(SOLO){ document.documentElement.classList.add("bp-solo"); try{ localStorage.setItem("aog.learner","1"); }catch(e){} curView="bp"; }
   (function(){ var m=/[?&]blueprint=([^&]*)/.exec(location.search); if(m && m[1]){ curView="bp"; bpWho=decodeURIComponent(m[1].replace(/\+/g," ")).replace(/\s+/g," ").trim().toLowerCase(); } })();
-  function learner(){ return lsGet("aog.learner")==="1"; }
+  function learner(){ if(/[?&]teacher=1/.test(location.search)) return false; return lsGet("aog.learner")==="1"; }
   function bpStrength(it){
     var r=it.raw||{}, a=+r.independent, n=+r.itemsTotal;
     if(n>0 && a>=0) return Math.max(0,Math.min(1,a/n));

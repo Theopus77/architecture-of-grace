@@ -188,12 +188,42 @@ footer{margin-top:48px;color:var(--sub);font-size:.8rem;border-top:1px solid var
   .stem .o{display:none !important}
   .stem .back[hidden]{display:block !important}
 }
+
+/* ══ AOG-WF-FACELIFT-V1 (2026-09-26) — Jimmy: "Can the foundry, grammar and words within the word lists get a
+   FACELIFT and structural upgrade." Structure: the 28 list chips and the 8 activity tabs are two drop-downs.
+   Look: quiet and grown-up. Stem cards carry a coloured rule for Latin or Greek and a serif stem; the words on
+   the back are a real list, one word a line with its meaning; quiz choices are tall enough for a thumb; one
+   navy button. Nothing moves. */
+.listnow{margin:8px 0 14px;font:400 .95rem var(--sans);color:var(--sub)}.listnow b{color:var(--ink);font-family:var(--serif);font-size:1.05rem}
+.grid{gap:14px;grid-template-columns:repeat(auto-fill,minmax(210px,1fr))}
+.stem{border:1px solid var(--line);border-top:4px solid var(--latin);border-radius:14px;padding:16px 18px;min-height:104px;box-shadow:0 10px 24px -22px rgba(10,30,51,.5)}
+.stem.grk{border-top-color:var(--greek)}
+.stem .s{font-size:1.55rem;letter-spacing:-.01em;line-height:1.1}
+.stem .o{font-size:.66rem;letter-spacing:.12em;margin-top:6px}
+.stem .back{margin-top:10px;font-size:.95rem;line-height:1.45}
+.stem .back>b{display:block;font-family:var(--serif);font-size:1.05rem;margin-bottom:6px}
+.stem .back .wl{list-style:none;margin:6px 0 0;padding:0}
+.stem .back .wl li{margin:0;padding:7px 0;border-top:1px solid var(--line)}
+.stem .back .wl b{font-family:var(--serif);font-size:1.02rem;display:block;margin-bottom:1px}
+.stem .back .twin{margin-top:8px;font-size:.85rem;color:var(--sub)}
+.qcard{border-radius:16px;padding:22px 22px 20px}
+.opts{display:grid;gap:8px}
+.opt{min-height:48px;border-radius:12px;padding:11px 16px;font-size:1rem;line-height:1.3}
+.opt.right{background:var(--good-soft);border-color:var(--good)}
+.next,.lvlb.on{background:var(--ink);color:var(--bg)}
+.next{min-height:44px;border-radius:12px;padding:10px 20px;font-size:.95rem}
+h2{font-size:1.6rem;letter-spacing:-.01em}
+.hint{font-size:.95rem}
+.myst,.dev{border-radius:14px}
+.legend{margin-top:10px}
+@media (max-width:700px){.grid{grid-template-columns:1fr 1fr;gap:10px}.stem{padding:14px}.stem .s{font-size:1.35rem}}
 </style>
 <script src="/aog-iep.js"></script>
 </head>
 <body>
 <script src="/aog-topbar.js"></script>
 <script src="/aog-grace.js" defer></script>
+<script src="/aog-dropdowns.js?v=4920" defer></script>
 
 <div class="wrap">
 <header>
@@ -209,8 +239,9 @@ footer{margin-top:48px;color:var(--sub);font-size:.8rem;border-top:1px solid var
   </div>
 </header>
 <nav class="engstrip no-print" aria-label="English"><span class="eng-k">English</span><a href="/english" data-en="All of English" data-es="Todo Ingl&eacute;s">All of English</a><a href="/words" aria-current="page" data-en="Word Study" data-es="Estudio de palabras">Word Study</a><a href="/units" data-en="Class Units" data-es="Unidades de clase">Class Units</a><a href="/b11" data-en="Grammar" data-es="Gram&aacute;tica">Grammar</a></nav>
-<nav class="lists" id="listNav" aria-label="Stem lists"></nav>
-<nav class="tabs" id="tabNav" aria-label="Activities"></nav>
+<nav class="lists" id="listNav" aria-label="Stem lists" data-aog-dropdown="Word list|Lista de palabras"></nav>
+<p class="listnow" id="listNow"></p>
+<nav class="tabs" id="tabNav" aria-label="Activities" data-aog-dropdown="Activity|Actividad"></nav>
 <main id="content"></main>
 <footer>
   <p id="footNet">This page loads no fonts, scripts, or images from the internet and works with the network off. Your work is saved in this browser only, and this page has no way to send anything.</p>
@@ -1572,9 +1603,12 @@ function esc(t){return String(t).replace(/&/g,"&amp;").replace(/</g,"&lt;");}
 function shuffle(a){a=a.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var x=a[i];a[i]=a[j];a[j]=x;}return a;}
 function store(k,v){try{if(v===undefined)return localStorage.getItem(k);localStorage.setItem(k,v);}catch(e){return null;}}
 function nav(){
-  function chips(g){return LISTS.map(function(l,i){return l.g===g?'<button class="lchip'+(i===cur?" on":"")+'" data-l="'+i+'" aria-label="'+label(l)+'">'+l.tag+'</button>':"";}).join("");}
-  $("#listNav").innerHTML='<span class="lgrp">Class units</span>'+chips("unit")+'<span class="lgrp">Sets</span>'+chips("set")
-    +'<span class="score" style="align-self:center;flex-basis:100%">'+esc(LISTS[cur].name)+(LISTS[cur].g==="unit"?' · <a href="/units">study guide and test rehearsal →</a>':'')+'</span>';
+  /* AOG-WF-MENU-V1 (2026-09-26) — the wall of 28 chips is one drop-down (aog-dropdowns.js reads this row);
+     each button carries the list's full name so the menu reads plainly. The "where am I" line sits under it. */
+  function chips(g){return LISTS.map(function(l,i){return l.g===g?'<button class="lchip'+(i===cur?" on":"")+'" data-l="'+i+'">'+esc(l.name)+'</button>':"";}).join("");}
+  $("#listNav").innerHTML=chips("unit")+chips("set");
+  /* say the list's name once (the heading below has it); this line only carries the study-guide door for a unit */
+  $("#listNow").innerHTML=LISTS[cur].g==="unit"?'<a href="/units">Study guide and test rehearsal for this unit →</a>':'';
   $("#tabNav").innerHTML=TABS.map(function(t){return '<button class="tab'+(tab===t[0]?" on":"")+'" data-t="'+t[0]+'">'+t[1]+'</button>';}).join("");
 }
 $("#listNav").addEventListener("click",function(e){var b=e.target.closest("[data-l]");if(!b)return;cur=+b.getAttribute("data-l");try{localStorage.setItem(KEY+"cur",String(cur));}catch(e){}render();});

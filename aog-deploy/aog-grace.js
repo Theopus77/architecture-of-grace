@@ -37,6 +37,19 @@
   try { var lg = D.createElement("script"); lg.src = "/aog-legible.js"; lg.defer = true; (D.head || H).appendChild(lg); } catch (e) {}
   /* AOG-CALM-V1 — the stillness rules, on every page that carries this file */
   try { if (!D.querySelector('link[href$="aog-calm.css"]')) { var cl = D.createElement("link"); cl.rel = "stylesheet"; cl.href = "/aog-calm.css"; (D.head || H).appendChild(cl); } } catch (e) {}
+  /* AOG-SMOOTH-V1 — soft crossfades between pages and, by hash change or showScreen, between rooms */
+  try { if (!D.querySelector('link[href$="aog-smooth.css"]')) { var sm = D.createElement("link"); sm.rel = "stylesheet"; sm.href = "/aog-smooth.css"; (D.head || H).appendChild(sm); } } catch (e) {}
+  try {
+    var fadeIn = function (el) { if (!el) return; el.classList.remove("aog-fade"); void el.offsetWidth; el.classList.add("aog-fade"); };
+    var fadeMain = function () { fadeIn(D.querySelector("#app, main, [role=main], .app")); };
+    window.addEventListener("hashchange", function () { setTimeout(fadeMain, 0); });
+    window.addEventListener("load", function () {
+      var ss = window.showScreen; if (typeof ss === "function" && !ss.__aogFade) {
+        window.showScreen = function (id) { var r = ss.apply(this, arguments); try { fadeIn(D.getElementById(id)); } catch (e) {} return r; };
+        window.showScreen.__aogFade = 1;
+      }
+    });
+  } catch (e) {}
   /* AOG-GLASS-ROOMS-V1 — the fourteen rooms behind the doors get the stained glass */
   try {
     var ROOMS = { "math-hub":"#2F63B8", "science-hub":"#2E8B57", "social-studies-hub":"#A8323E", "english-hub":"#B87A12",
@@ -124,7 +137,7 @@
     }
   } catch (e) {}
   /* AOG-PAGES-V1 — course units show one section per page, with Back and Next */
-  try { var pgs = D.createElement("script"); pgs.src = "/aog-pages.js?v=4"; (D.head || H).appendChild(pgs); } catch (e) {}
+  try { var pgs = D.createElement("script"); pgs.src = "/aog-pages.js?v=5"; (D.head || H).appendChild(pgs); } catch (e) {}
   /* AOG-SLIDES-V1 — the Start-here pictures on every lesson page get the facelift */
   try { var sl = D.createElement("script"); sl.src = "/aog-slides.js?v=1"; (D.head || H).appendChild(sl); } catch (e) {}
   /* AOG-MINE-V1 — a private copy of what this learner sends, for their own Blueprint */

@@ -32,9 +32,9 @@
 <meta name="twitter:description" content="K–12 academics rebuilt for the students the standard lesson wasn't written for, and the language that runs alongside them. Built by a special education teacher.">
 <meta name="twitter:image" content="https://architectureofgrace.org/og-image.png?v=3"><!-- SWAP to your .com when live -->
 <link rel="icon" href="/favicon.ico" sizes="any">
-<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png?v=rose">
-<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png?v=rose">
-<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png?v=rose">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png?v=arch">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png?v=arch">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png?v=arch">
 <!-- ===== END LINK PREVIEW + ICONS ===================================== -->
 <!-- ===== PWA ===== -->
 <link rel="manifest" href="/manifest.json">
@@ -16808,7 +16808,11 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 });
+/* AOG-CLASSIC-OFF-V1 (2026-09-26) — Jimmy: "the CLASSIC DASHBOARD COMPLETELY REMOVED and everything switched
+   over." Every door that used to open the classic screen now goes to /dashboard. ?classic=1 still opens the old
+   screen for one visit, so nothing a teacher saved is out of reach. */
 function openAdmin() {
+  try { if (!/[?&]classic=1/.test(location.search)) { location.href = "/dashboard"; return; } } catch (e) {}
   if (typeof showScreen === "function") showScreen("screen-admin");
   try { window.scrollTo({ top: 0, behavior: "instant" }); } catch (e) { try { window.scrollTo(0, 0); } catch (_e) {} }
   try { if (typeof setDashLang === "function" && typeof lang !== "undefined") setDashLang(lang); } catch (_eL) {}
@@ -51411,7 +51415,7 @@ window.AOG_AUTOPULL_ENABLED = false;
 <!-- .30k0: was a speech-balloon EMOJI as a data: URI, so the tab of the Talk It Out
      window wore an emoji while every other tab wore the mark. Same file, same origin. -->
 <link rel="icon" href="/favicon.ico" sizes="any">
-<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png?v=rose">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png?v=arch">
 <meta property="og:title" content="Architecture of Grace — a complete social-emotional system for every classroom">
 <meta property="og:description" content="A complete social-emotional system for every classroom — private, no-name check-ins, calming tools, and the K–12 lessons that answer them. Built by a teacher. Grace over performance.">
 <meta property="og:type" content="website">
@@ -65888,6 +65892,12 @@ html.js-reveal .reveal,
         try {
           var p = new URLSearchParams(window.location.search);
           var v = code(p.get(PARAM) || "");
+          /* AOG-SID-SAVED-V1 (2026-09-26) — Jimmy: "They are still making us do a code name." A slip
+             opened on the device where a student already typed their name under Your work today
+             (dashboard, aog.dash2.student) uses that name when the link itself names nobody. */
+          if (!v && (p.has("checkin") || p.has("exit") || p.has("slip"))) {
+            try { var sv = JSON.parse(localStorage.getItem("aog.dash2.student") || '""'); v = code(sv || localStorage.getItem("aog.drops.who") || ""); } catch (e0) { v = ""; }
+          }
           if (v && v.length <= 24) {
             sessionStorage.setItem(SKEY, v);
           } else if (p.has("checkin") || p.has("exit") || p.has("slip")) {
@@ -66980,7 +66990,7 @@ html.js-reveal .reveal,
        own SUBJ keys: 'religion' is SINGULAR there, 'foundry' grades are u1..u30. */
     { v:"facs",           en:"Family & Consumer Sciences", es:"Ciencias de la Familia y del Consumidor" },
     { v:"religion",       en:"World Religions",            es:"Religiones del Mundo" },
-    { v:"bible",          en:"Bible Study",                es:"Estudio bíblico" },
+    { v:"bible",          en:"The Bible",                 es:"La Biblia" },
     { v:"quran",          en:"Qur’an Study",               es:"Estudio del Corán" },
     { v:"talmud",         en:"Talmud Study",               es:"Estudio del Talmud" },
     { v:"economics",      en:"Economics",                  es:"Economía" },
@@ -92273,39 +92283,72 @@ body.aog-xwalk-solo:has(#panel-align.active) #panel-align::before{content:"Stand
 }
 </style>
 <style id="aog-slips-glass">
-/* AOG-SLIPS-GLASS-V1 (2026-09-25) — Jimmy: "None of the check-in slips work … they
-   all need facelifts." The daily check-in, the exit slip and My Voice, each a
-   leaded glass card with a band of its own glass: check-in sapphire, exit slip
-   amber, My Voice rose. Serif heading, a gold-lit Start button, a code box you
-   can see. Screen only; calm rules hold (no motion). */
-@media screen{
-  #screen-daily-checkin .sc-wrap{--gl:#2F63B8} #screen-exit-slip .xs-wrap{--gl:#B87A12} #aogTimOv .tim-sheet{--gl:#B8457A}
-  #screen-daily-checkin .sc-wrap, #screen-exit-slip .xs-wrap, #aogTimOv .tim-sheet{
-    box-sizing:border-box;max-width:620px;margin:22px auto!important;padding:26px 22px 22px!important;position:relative;
-    background:linear-gradient(180deg,color-mix(in srgb,var(--gl) 9%,transparent),transparent 140px),rgba(255,253,248,.94)!important;
-    border:3px solid #1E1F22!important;border-radius:22px!important;
-    box-shadow:0 0 0 1px rgba(242,201,100,.55),inset 0 8px 0 var(--gl),0 22px 50px -30px rgba(0,0,0,.6)!important}
-  html[data-theme="dark"] #screen-daily-checkin .sc-wrap, html[data-theme="dark"] #screen-exit-slip .xs-wrap, html[data-theme="dark"] #aogTimOv .tim-sheet{
-    background:linear-gradient(180deg,color-mix(in srgb,var(--gl) 18%,transparent),transparent 160px),#13314F!important}
-  #screen-daily-checkin .sc-wrap h1, #screen-daily-checkin .sc-wrap h2, #screen-exit-slip .xs-wrap h1, #screen-exit-slip .xs-wrap h2, #aogTimOv .tim-head{
-    font-family:Fraunces,Georgia,serif!important;letter-spacing:-.01em}
-  #aogTimOv .tim-sheet{background:linear-gradient(180deg,color-mix(in srgb,var(--gl) 9%,#FFFDF8),#FFFDF8 160px)!important;margin-top:64px!important}
-  html[data-theme="dark"] #aogTimOv .tim-sheet{background:linear-gradient(180deg,color-mix(in srgb,var(--gl) 18%,#13314F),#13314F 160px)!important}
-  #screen-daily-checkin input.sc-in, #screen-exit-slip input.xs-ta, #aogTimOv #aogTimWho{
-    border:2px solid color-mix(in srgb,var(--gl) 60%,#1E1F22)!important;border-radius:14px!important;min-height:52px;font-size:18px!important;letter-spacing:.06em}
-  #screen-daily-checkin input.sc-in:focus, #screen-exit-slip input.xs-ta:focus, #aogTimOv #aogTimWho:focus{border-color:#C9A24A!important;box-shadow:0 0 0 3px rgba(242,201,100,.35)!important;outline:none}
-  #screen-daily-checkin .sc-next,
-  #screen-exit-slip .xs-next, #aogTimOv .tim-btn{
-    background-color:var(--gl)!important;color:#fff!important;border:2px solid #1E1F22!important;
-    background-image:radial-gradient(120% 90% at 30% 15%,rgba(255,255,255,.35),rgba(255,255,255,0) 60%)!important;
-    box-shadow:0 0 0 1px rgba(242,201,100,.6),0 8px 18px -10px var(--gl)!important}
-  #screen-daily-checkin .sc-chips button, #screen-exit-slip .xs-chips button, #aogTimOv .tim-chip{
-    border:1.5px solid color-mix(in srgb,var(--gl) 55%,transparent)!important;border-radius:12px!important;background:color-mix(in srgb,var(--gl) 8%,transparent)!important}
-  #screen-daily-checkin .sc-chips button[aria-pressed="true"], #screen-exit-slip .xs-chips button[aria-pressed="true"], #aogTimOv .tim-chip[aria-pressed="true"]{
-    background:var(--gl)!important;color:#fff!important;border-color:#1E1F22!important}
-  #screen-daily-checkin .sc-ribbon, #screen-exit-slip .xs-ribbon{background:var(--gl)!important}
-}
-</style>
+/* AOG-SLIPS-V3 (2026-09-26) — the daily check-in, the exit slip and My Voice. */
+/* AOG-SLIPS-QUIET-V1 (2026-09-26) — Jimmy: "I don't want it to look so childish (or at least have the
+   option to have multiple versions for the teacher to select from)." Two looks now, the teacher's choice
+   (dashboard → Set up → How the slips look; it rides on the class link as look=):
+     quiet  · this block · the default. Cream paper, thin lines, navy button, the site serif. Grown-up.
+     glass  · the block above · the stained-glass window with jewel panes and a gold Next.
+   Same questions, same answers, same storage either way; only the clothes change. Nothing moves. */
+@media screen{ html{
+  #screen-daily-checkin, #screen-exit-slip{background:var(--cream,#F6F1E7)}
+  #screen-daily-checkin .sc-wrap, #screen-exit-slip .xs-wrap{
+    box-sizing:border-box;max-width:600px;margin:12px auto 18px!important;padding:22px 20px 18px!important;
+    background:#FFFDF8!important;border:1px solid #1B2A3D!important;border-radius:14px!important;box-shadow:0 12px 30px -26px rgba(10,30,51,.5)!important}
+  &[data-theme="dark"] #screen-daily-checkin .sc-wrap, &[data-theme="dark"] #screen-exit-slip .xs-wrap{background:#13314F!important;border-color:#0A1E33!important}
+  #screen-daily-checkin .sc-top, #screen-exit-slip .xs-top{padding:10px 0 0!important}
+  #screen-daily-checkin .sc-ribbon, #screen-exit-slip .xs-ribbon, #screen-daily-checkin .sc-meta, #screen-exit-slip .xs-meta{max-width:600px}
+  #screen-daily-checkin .sc-beat i, #screen-exit-slip .xs-beat i{height:4px!important;background:#E6DECB!important}
+  #screen-daily-checkin .sc-beat.done i, #screen-exit-slip .xs-beat.done i{background:#8A93A0!important}
+  #screen-daily-checkin .sc-beat.now i, #screen-exit-slip .xs-beat.now i{background:#0A1E33!important}
+  #screen-daily-checkin .sc-beat b, #screen-exit-slip .xs-beat b{color:#5E6B7A!important}
+  #screen-daily-checkin .sc-beat.now b, #screen-exit-slip .xs-beat.now b{color:var(--ink,#15202E)!important}
+  &[data-theme="dark"] #screen-daily-checkin .sc-beat.now i, &[data-theme="dark"] #screen-exit-slip .xs-beat.now i{background:#F2C964!important}
+  &[data-theme="dark"] #screen-daily-checkin .sc-beat b, &[data-theme="dark"] #screen-exit-slip .xs-beat b{color:#B9C4D0!important}
+  &[data-theme="dark"] #screen-daily-checkin .sc-beat.now b, &[data-theme="dark"] #screen-exit-slip .xs-beat.now b{color:#F4EEE2!important}
+  #screen-daily-checkin .sc-meta, #screen-exit-slip .xs-meta{font-size:13px!important;color:#5E6B7A!important;flex-wrap:nowrap;white-space:nowrap}
+  &[data-theme="dark"] #screen-daily-checkin .sc-meta, &[data-theme="dark"] #screen-exit-slip .xs-meta{color:#B9C4D0!important}
+  #screen-daily-checkin .sc-q, #screen-exit-slip .xs-q, #screen-daily-checkin .sc-wrap h1, #screen-daily-checkin .sc-wrap h2, #screen-exit-slip .xs-wrap h1, #screen-exit-slip .xs-wrap h2{
+    font-family:Fraunces,var(--serif,Georgia),serif!important;font-weight:600!important;font-size:clamp(22px,5.6vw,28px)!important;line-height:1.2!important;color:var(--ink,#15202E)!important}
+  #screen-daily-checkin .sc-sub, #screen-exit-slip .xs-sub{font-size:15.5px!important;color:var(--ink,#15202E)!important;opacity:.8}
+  /* answers: plain rows, thin line, navy when chosen */
+  #screen-daily-checkin .sc-s, #screen-exit-slip .xs-day, #screen-exit-slip .xs-cls, #screen-exit-slip .xs-gate{
+    min-height:52px;border:1px solid #B9B2A3!important;border-radius:10px!important;background:#fff!important;color:var(--ink,#15202E)!important;font-size:16.5px!important;font-weight:600!important;box-shadow:none!important}
+  &[data-theme="dark"] #screen-daily-checkin .sc-s, &[data-theme="dark"] #screen-exit-slip .xs-day, &[data-theme="dark"] #screen-exit-slip .xs-cls, &[data-theme="dark"] #screen-exit-slip .xs-gate{background:#0A1E33!important;color:#F4EEE2!important;border-color:#3D4A58!important}
+  #screen-daily-checkin .sc-s .sc-dot{width:32px!important;height:32px!important;background:#F6F1E7!important;color:#3D4A58!important;box-shadow:none!important}
+  #screen-daily-checkin .sc-s.on, #screen-exit-slip .xs-day.on, #screen-exit-slip .xs-cls.on, #screen-exit-slip .xs-gate.on{background:#0A1E33!important;color:#F4EEE2!important;border-color:#0A1E33!important}
+  &[data-theme="dark"] #screen-daily-checkin .sc-s.on, &[data-theme="dark"] #screen-exit-slip .xs-day.on, &[data-theme="dark"] #screen-exit-slip .xs-cls.on, &[data-theme="dark"] #screen-exit-slip .xs-gate.on{background:#F4EEE2!important;color:#0A1E33!important;border-color:#F4EEE2!important}
+  #screen-daily-checkin .sc-s.on .sc-dot{background:rgba(255,255,255,.14)!important;color:inherit!important;box-shadow:none!important}
+  #screen-daily-checkin .sc-s:focus-visible, #screen-exit-slip .xs-day:focus-visible, #screen-exit-slip .xs-cls:focus-visible{outline:3px solid #C9A24A!important;outline-offset:2px}
+  #screen-daily-checkin .sc-chips button, #screen-exit-slip .xs-chips button{
+    min-height:44px;border:1px solid #B9B2A3!important;border-radius:10px!important;background:#fff!important;color:var(--ink,#15202E)!important;font-size:15.5px!important;font-weight:600!important}
+  &[data-theme="dark"] #screen-daily-checkin .sc-chips button, &[data-theme="dark"] #screen-exit-slip .xs-chips button{background:#0A1E33!important;color:#F4EEE2!important;border-color:#3D4A58!important}
+  #screen-daily-checkin .sc-chips button[aria-pressed="true"], #screen-daily-checkin .sc-chip.on, #screen-exit-slip .xs-chips button[aria-pressed="true"], #screen-exit-slip .xs-chip.on{background:#0A1E33!important;color:#F4EEE2!important;border-color:#0A1E33!important}
+  &[data-theme="dark"] #screen-daily-checkin .sc-chip.on, &[data-theme="dark"] #screen-exit-slip .xs-chip.on{background:#F4EEE2!important;color:#0A1E33!important;border-color:#F4EEE2!important}
+  #screen-daily-checkin .sc-esc .sc-chip, #screen-exit-slip .xs-esc .xs-chip{background:transparent!important;border-style:dashed!important}
+  #screen-daily-checkin .sc-gh, #screen-exit-slip .xs-gh{color:var(--ink,#15202E)!important;border-bottom:1px solid #B9B2A3!important;letter-spacing:.12em!important}
+  &[data-theme="dark"] #screen-daily-checkin .sc-gh, &[data-theme="dark"] #screen-exit-slip .xs-gh{color:#F4EEE2!important}
+  #screen-daily-checkin .sc-more, #screen-exit-slip .xs-more{border:1px solid #B9B2A3!important;color:var(--ink,#15202E)!important;min-height:44px}
+  &[data-theme="dark"] #screen-daily-checkin .sc-more, &[data-theme="dark"] #screen-exit-slip .xs-more{color:#F4EEE2!important}
+  #screen-daily-checkin input.sc-in, #screen-exit-slip input.xs-ta, #screen-daily-checkin .sc-text, #screen-exit-slip textarea.xs-ta{border:1px solid #1B2A3D!important;border-radius:10px!important;min-height:48px;font-size:17px!important;background:#fff!important;color:var(--ink,#15202E)!important}
+  &[data-theme="dark"] #screen-daily-checkin input.sc-in, &[data-theme="dark"] #screen-daily-checkin .sc-text, &[data-theme="dark"] #screen-exit-slip textarea.xs-ta{background:#0A1E33!important;color:#F4EEE2!important}
+  #screen-daily-checkin .sc-seen, #screen-daily-checkin .sc-talk, #screen-daily-checkin .sc-hand, #screen-exit-slip .xs-hand{border:1px solid #B9B2A3!important;border-radius:10px!important;background:#F6F1E7!important}
+  &[data-theme="dark"] #screen-daily-checkin .sc-seen, &[data-theme="dark"] #screen-daily-checkin .sc-talk, &[data-theme="dark"] #screen-daily-checkin .sc-hand, &[data-theme="dark"] #screen-exit-slip .xs-hand{background:#0A1E33!important}
+  #screen-daily-checkin .sc-imp-b.on{background:#0A1E33!important;color:#F4EEE2!important;border-color:#0A1E33!important}
+  #screen-daily-checkin .sc-nav, #screen-exit-slip .xs-nav{border-top:1px solid #E6DECB!important}
+  #screen-daily-checkin .sc-back, #screen-exit-slip .xs-back, #screen-daily-checkin .sc-skip, #screen-exit-slip .xs-skip{color:var(--ink,#15202E)!important;opacity:.8;min-height:44px}
+  &[data-theme="dark"] #screen-daily-checkin .sc-back, &[data-theme="dark"] #screen-exit-slip .xs-back, &[data-theme="dark"] #screen-daily-checkin .sc-skip, &[data-theme="dark"] #screen-exit-slip .xs-skip{color:#F4EEE2!important}
+  #screen-daily-checkin .sc-next, #screen-exit-slip .xs-next{background:#0A1E33!important;color:#F4EEE2!important;border:1px solid #0A1E33!important;border-radius:10px!important;min-height:48px;font-size:16.5px!important;font-weight:700!important;box-shadow:none!important;background-image:none!important}
+  &[data-theme="dark"] #screen-daily-checkin .sc-next, &[data-theme="dark"] #screen-exit-slip .xs-next{background:#F4EEE2!important;color:#0A1E33!important;border-color:#F4EEE2!important}
+  #screen-daily-checkin .sc-next[disabled], #screen-exit-slip .xs-next[disabled]{opacity:1!important;background:#E6DECB!important;color:#3D4A58!important;border-color:#B9B2A3!important}
+  #screen-daily-checkin .sc-next:focus-visible, #screen-exit-slip .xs-next:focus-visible{outline:3px solid #C9A24A!important;outline-offset:2px}
+  #screen-daily-checkin .sc-ghost, #screen-exit-slip .xs-ghost{border:1px solid #1B2A3D!important;color:var(--ink,#15202E)!important}
+  #screen-daily-checkin .aog-ci-calm{background:#fff!important;color:#0A1E33!important;border:1px solid #1B2A3D!important;font-size:13px!important;padding:8px 12px!important;min-height:36px}
+  @media (max-width:600px){ body.aog-survey-focus #screen-daily-checkin .sc-ribbon, body.aog-survey-focus #screen-daily-checkin .sc-meta{padding-right:132px!important} body.aog-survey-focus #screen-daily-checkin .sc-meta > span:first-child{display:none} #screen-exit-slip .xs-classes{grid-template-columns:1fr!important} }
+  #screen-daily-checkin .sc-done h2, #screen-exit-slip .xs-done h2{font-family:Fraunces,var(--serif,Georgia),serif!important;font-weight:600!important}
+}}
+</style></style>
+
 <script id="aog-weekly-links">
 /* AOG-WEEKLY-V1 — the weekly check-in links, built with this teacher's Sheet on them (dest=) */
 (function(){
@@ -92351,7 +92394,7 @@ body.aog-xwalk-solo:has(#panel-align.active) #panel-align::before{content:"Stand
 /* AOG-OPENTOOL-V1 (2026-09-26) — a tool by link: /#opentool=disclosure opens that tool, so the new
    dashboard can put buried teacher tools one tap away. */
 /* AOG-OPENMTSS-V1 — /#openmtss opens the MTSS Report straight from the new dashboard's Reports page. */
-(function(){ function go(){ if(location.hash!=="#openmtss") return; var n=0,t=setInterval(function(){ if(typeof window.aogOpenMTSS==="function"){ clearInterval(t); try{ history.replaceState(null,"","#dashboard"); }catch(e){} try{ if(typeof window.showScreen==="function") window.showScreen("screen-admin"); }catch(e){} setTimeout(function(){ window.aogOpenMTSS(); },150); } else if(++n>80) clearInterval(t); },100); }
+(function(){ function go(){ if(location.hash!=="#openmtss") return; if(!/[?&]classic=1/.test(location.search)){ location.replace("/dashboard#mtss"); return; } var n=0,t=setInterval(function(){ if(typeof window.aogOpenMTSS==="function"){ clearInterval(t); try{ history.replaceState(null,"","#dashboard"); }catch(e){} try{ if(typeof window.showScreen==="function") window.showScreen("screen-admin"); }catch(e){} setTimeout(function(){ window.aogOpenMTSS(); },150); } else if(++n>80) clearInterval(t); },100); }
   go(); window.addEventListener("hashchange",go); })();
 (function(){ function go(){ var m=/^#opentool=([a-z0-9-]+)$/.exec(location.hash||""); if(!m) return;
   var n=0,t=setInterval(function(){ if(typeof window.toolOpen==="function"){ clearInterval(t); try{ history.replaceState(null,"","#tools"); }catch(e){} window.toolOpen(m[1]); } else if(++n>60) clearInterval(t); },100); }

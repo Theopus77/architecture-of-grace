@@ -1,0 +1,20 @@
+/* ══ AOG-SMOOTH-V1 (2026-09-26) — SOFT CROSSFADES, SITE-WIDE ═══════════════════
+   Jimmy: "Can the transitions in the dashboard and in fact across the whole site
+   be smoother!?" Every page change is a short crossfade: opacity only, under a
+   quarter of a second. Nothing slides, zooms, bounces or moves; that stays
+   forbidden by aog-calm.css. With "reduce motion" set, pages simply appear. ═══ */
+@view-transition { navigation: auto; }
+::view-transition-old(root) { animation: aog-vt-out .16s ease both; }
+::view-transition-new(root) { animation: aog-vt-in .22s ease both; }
+@keyframes aog-vt-out { to { opacity: 0; } }
+@keyframes aog-vt-in { from { opacity: 0; } }
+/* in-page: a room, screen or panel that just appeared fades in the same way */
+.aog-fade { animation: aog-fade-in .22s ease-out both; }
+@keyframes aog-fade-in { from { opacity: 0; } to { opacity: 1; } }
+/* buttons and links settle into hover / press instead of snapping */
+a, button, .btn, summary { transition: background-color .15s ease, border-color .15s ease, box-shadow .15s ease; }
+/* text colour is never transitioned: aog-legible.js corrects it on load and a fade would blur that check */
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(root), ::view-transition-new(root) { animation: none; }
+  ::view-transition-group(*), ::view-transition-image-pair(*) { animation: none; }
+}
