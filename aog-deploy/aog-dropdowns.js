@@ -110,17 +110,20 @@
   function demoBar() {
     var real = D.getElementById("btnDemoData"); if (!real) return;
     var wrap = D.getElementById("aogDemoWrap"); if (wrap) wrap.style.display = "none";
-    var on = !!D.querySelector('#dashModes .dmode[data-mode="student"].active');
+    /* AOG-DEMO-TOP-V1 (2026-09-26) — Jimmy: "The demo data tool should be up by the MTSS Report
+       and school sync." One button in the header, on every tab. */
     var bar = D.getElementById("aogDemoBar");
     if (!bar) {
-      var anchor = D.querySelector("#screen-admin .container-wide > .aogdd");
+      var anchor = D.getElementById("aogDemoWrap") || D.querySelector("#dashHero .admin-actions");
       if (!anchor) return;
-      bar = D.createElement("div"); bar.id = "aogDemoBar"; bar.className = "aogdd-demo no-print";
-      bar.innerHTML = '<button type="button" class="aogdd-demo-btn"></button><span class="aogdd-demo-tx"></span>';
-      anchor.parentNode.insertBefore(bar, anchor.nextSibling);
+      bar = D.createElement("span"); bar.id = "aogDemoBar"; bar.className = "aogdd-demo-top no-print";
+      bar.innerHTML = '<button type="button" class="btn btn-sm aogdd-demo-btn"></button><span class="aogdd-demo-tx" hidden></span>';
+      anchor.parentNode.insertBefore(bar, anchor);
       bar.querySelector("button").addEventListener("click", function () { real.click(); setTimeout(demoBar, 120); });
+      var st = D.createElement("style");
+      st.textContent = ".aogdd-demo-top .aogdd-demo-btn{background:transparent!important;border:1.5px solid #F2C964!important;color:#F2C964!important;font-weight:800;min-height:40px;border-radius:999px;padding:0 14px}";
+      D.head.appendChild(st);
     }
-    bar.hidden = !on;
     var isOn = /clear/i.test(real.textContent || "");
     bar.querySelector("button").textContent = isOn ? (es() ? "Quitar los datos de demostración" : "Clear demo data")
                                                     : (es() ? "Probar con datos de demostración" : "Try demo data");
