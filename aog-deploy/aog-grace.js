@@ -96,13 +96,10 @@
      flips to light gets the cream sheet and is left alone after that. */
   var NAVY_KEY = "aog.grace.navy.v1";
   try {
-    if (!localStorage.getItem(NAVY_KEY)) {
-      localStorage.setItem("aog.theme", "dark");
-      localStorage.setItem("aog.interior.ws.v1.theme", "dark");
-      localStorage.setItem(NAVY_KEY, "1");
-      H.setAttribute("data-theme", "dark");
-    }
-  } catch (e) { if (!H.getAttribute("data-theme")) H.setAttribute("data-theme", "dark"); }
+    /* AOG-LIGHT-START-V1 (2026-09-26) — Jimmy: "Start all the pages in this color scheme"
+       (navy masthead, cream page). New visitors are no longer put into the dark theme. */
+    if (!localStorage.getItem(NAVY_KEY)) localStorage.setItem(NAVY_KEY, "1");
+  } catch (e) {}
 
   /* ── 1 ── the faces and the sheet ─────────────────────────────────────── */
   function link(rel, href, extra) {
