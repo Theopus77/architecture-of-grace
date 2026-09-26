@@ -45,6 +45,16 @@
     box-shadow:0 0 0 2px var(--room) !important;
   }
 
+  /* AOG-HUB-FOLDS-V1 — the description drops down from the unit's name */
+  html.aog-glass-rooms .unit.aog-shut .d, html.aog-glass-rooms .unit.aog-shut .yrs { display:none !important; }
+  html.aog-glass-rooms .unit .t { display:flex; align-items:flex-start; justify-content:space-between; gap:8px; }
+  html.aog-glass-rooms .aog-ufold { flex:none; display:inline-grid; place-items:center; width:32px; height:32px; margin:-4px -4px 0 0;
+    border:1.5px solid color-mix(in srgb, var(--gl, var(--room)) 60%, transparent); border-radius:999px; background:transparent; color:inherit; cursor:pointer; }
+  html.aog-glass-rooms .aog-ufold svg { transition:transform .15s ease; }
+  html.aog-glass-rooms .aog-ufold[aria-expanded="true"] svg { transform:rotate(180deg); }
+  html.aog-glass-rooms .unit { min-height:0 !important; height:auto !important; }
+  html.aog-glass-rooms .grid { align-items:start; }
+
   /* ── SEL rooms ────────────────────────────────────────────────────────── */
   html.aog-glass-rooms article.xcard,
   html.aog-glass-rooms article.mcard,
