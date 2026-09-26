@@ -1844,7 +1844,7 @@ else document.documentElement.classList.add("aog-embed");</script>
         got.push(rows.length+" check-ins"); got.push(practice.length+" turn-ins");
         /* AOG-INBOX-ARRIVED-V1 (2026-09-26) — what actually arrived, by activity id, so a row that lands in the Sheet
            but never shows here can be seen at the door (Jimmy: "the Practice tab is getting the Bible stuff"). */
-        try{ var byId={}, noWho=0; practice.forEach(function(r){ var id=String((r&&r.activityId)||"?").replace(/-g?[a-z0-9-]*$/i,""); var m=/^(dd-[a-z-]+?|crs-[a-z]+|wf|[a-z]+)/i.exec(String((r&&r.activityId)||"")); id=m?m[1]:"(no id)"; byId[id]=(byId[id]||0)+1; if(!(r&&(r.studentId||r.respondentId))) noWho++; });
+        try{ var byId={}, noWho=0; practice.forEach(function(r){ var id=String((r&&r.activityId)||"?").replace(/-g?[a-z0-9-]*$/i,""); var aid=String((r&&r.activityId)||""), m=/^(dd-[a-z-]+)-g[^-]*-s\d+$/i.exec(aid)||/^(crs-[a-z]+)/i.exec(aid)||/^(wf)-/i.exec(aid)||/^([a-z]+\d*)/i.exec(aid); id=m?m[1]:"(no id)"; byId[id]=(byId[id]||0)+1; if(!(r&&(r.studentId||r.respondentId))) noWho++; });
           var parts=Object.keys(byId).sort().map(function(k){ return k+" "+byId[k]; }); if(parts.length) got.push("arrived by id: "+parts.join(", ")+(noWho?" · "+noWho+" with no student name":"")); }catch(e){}
         /* v18 scripts say which tabs hold rows; older ones do not, and the Inbox says so */
         if(out.tabs && typeof out.tabs==="object"){ var tl=Object.keys(out.tabs).map(function(k){ return k.replace(/^Practice · /,"")+" "+out.tabs[k]; }); if(tl.length) got.push("Sheet tabs: "+tl.join(", ")); lsSet("aog.sheet.tabs", JSON.stringify(out.tabs)); }
