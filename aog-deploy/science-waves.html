@@ -87,11 +87,12 @@ header { display:flex; flex-wrap:wrap; justify-content:space-between; align-item
 @media (min-width:640px){ .knobs { grid-template-columns:1fr 1fr; } }
 label.knob { display:block; }
 label.knob span { display:flex; justify-content:space-between; font-size:.75rem; font-weight:700; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); }
-.scope-knob { -webkit-appearance:none; appearance:none; width:100%; height:44px; background:transparent; margin:0; }
-.scope-knob::-webkit-slider-runnable-track { height:8px; border-radius:999px; background:var(--chip); }
+.scope-knob { -webkit-appearance:none; appearance:none; width:100%; height:52px; background:transparent; margin:0; touch-action:none; cursor:pointer; }
+/* AOG-SCOPE-SMOOTH-V1 (2026-09-26) — Jimmy: the sliders were stiff. A bigger thumb and track to grab, no page scroll fighting the finger. */
+.scope-knob::-webkit-slider-runnable-track { height:12px; border-radius:999px; background:var(--chip); }
 .scope-knob::-moz-range-track { height:8px; border-radius:999px; background:var(--chip); }
-.scope-knob::-webkit-slider-thumb { -webkit-appearance:none; width:28px; height:28px; margin-top:-10px; border-radius:999px; background:var(--steel); border:2px solid var(--card); }
-.scope-knob::-moz-range-thumb { width:28px; height:28px; border-radius:999px; background:var(--steel); border:2px solid var(--card); }
+.scope-knob::-webkit-slider-thumb { -webkit-appearance:none; width:40px; height:40px; margin-top:-14px; border-radius:999px; background:var(--steel); border:2px solid var(--card); }
+.scope-knob::-moz-range-thumb { width:40px; height:40px; border-radius:999px; background:var(--steel); border:2px solid var(--card); }
 .readout { font-variant-numeric:tabular-nums; font-weight:700; color:var(--steel); }
 .opts { display:grid; gap:.5rem; margin-top:1rem; }
 .opt { min-height:48px; text-align:left; padding:.75rem 1rem; border-radius:8px; border:1px solid var(--line); background:var(--card); font-weight:600; }
@@ -683,7 +684,7 @@ function paint(){
       const k=inp.getAttribute("data-knob");
       if(k==="hz"){ S.hz=+inp.value; const el=document.getElementById("hzRead"); if(el) el.textContent=S.hz+" Hz"; if(osc) osc.frequency.value=S.hz; }
       if(k==="amp"){ S.amp=(+inp.value)/100; const el=document.getElementById("ampRead"); if(el) el.textContent=Math.round(S.amp*100)+"%"; if(gain) gain.gain.value=Math.min(0.18,0.06+S.amp*0.12); }
-      persist();
+      clearTimeout(inp.__pt); inp.__pt=setTimeout(persist,300); /* AOG-SCOPE-SMOOTH-V1: save after the hand stops, not on every step */
     };
   });
   view.querySelectorAll("[data-act]").forEach(b=>b.onclick=()=>{
