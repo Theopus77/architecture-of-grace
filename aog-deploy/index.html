@@ -335,6 +335,7 @@ function toggleTheme() {
 <!-- AOG-CONN-KEEP-V1: keeps the Sheet connection when the browser drops it; must load before anything reads aog.sync.url -->
 <script src="aog-conn-keep.js"></script>
 <link rel="stylesheet" href="aog-calm.css">
+<link rel="stylesheet" href="aog-dash-facelift.css">
 <script src="aog-legible.js" defer></script>
 <script src="aog-dropdowns.js" defer></script>
 <script src="aog-forms.js" defer></script>
@@ -5469,7 +5470,8 @@ window.addEventListener('load',function(){
           }
           var hd = headOf(el); var es2 = false;
           try { es2 = (typeof dashLang !== "undefined" && dashLang === "es"); } catch(e){}
-          ob.textContent = (hd ? hd.textContent.trim().slice(0, 80) : "") + (es2 ? " — abrir" : " — open");
+          ob.textContent = (hd ? hd.textContent.trim().slice(0, 80) : "");
+          ob.setAttribute("aria-label", ob.textContent + (es2 ? " — abrir" : " — open")); /* AOG-DASH-FACELIFT-V1: the arrow says open; the words don't need to */
           ob.setAttribute("aria-expanded", "false");
           for (var ci = 0; ci < el.children.length; ci++){ var ch = el.children[ci]; if (ch !== ob && ch.tagName !== "STYLE" && ch.tagName !== "SCRIPT") ch.setAttribute("inert", ""); }
         } else {
@@ -42253,15 +42255,11 @@ window.AOG_BUILD = "2026.09.30k6 · THE PAGE NOW BUDGETS ITS OWN PAYLOAD, SO A Q
     window.aogTodayCard=function(es){
       var h=base.apply(this,arguments);
       var scr=document.getElementById("screen-admin"); var role=(scr&&scr.getAttribute("data-role"))||"teacher";
-      /* AOG-TESTRUN-V1 — the teacher's own tries go in a test lane */
-      if(role!=="student"){
-        var tOn=false; try{ tOn=localStorage.getItem("aog.testmode")==="1"; }catch(e){}
-        return h+'<div style="margin-top:12px;display:flex;align-items:center;gap:10px;flex-wrap:wrap">'
-          +'<button type="button" onclick="aogToggleTest()" style="min-height:40px;padding:0 16px;border-radius:999px;font-weight:700;cursor:pointer;border:1.5px solid '+(tOn?'#B3303F;background:#B3303F;color:#fff':'var(--gold,#F2C964);background:transparent;color:inherit')+'">'
-          +(es?(tOn?"Pruebas: activadas":"Pruebas: desactivadas"):(tOn?"Test runs: ON":"Test runs: off"))+'</button>'
-          +'<span style="font-size:13px;opacity:.85;max-width:60ch">'+(es?"Actívalo cuando pruebes una actividad tú mismo: lo que envíes llega a la hoja como “(test)” y nunca se mezcla con un estudiante real."
-            :"Turn this on when you try an activity yourself. Your sends are marked “(test)” and never mix with a real student.")+'</span></div>';
-      }
+      /* AOG-TESTRUN-V1 retired (2026-09-26) — Jimmy: "Get rid of the test run
+         nonsense." No switch on the dashboard, and the flag is cleared so no
+         send is ever marked "(test)" again. */
+      try{ localStorage.removeItem("aog.testmode"); }catch(e){}
+      if(role!=="student") return h;
       /* AOG-WHO-V1 — never guess who is building. Pick from the names this
          device knows, or add a new one. */
       var nick=""; try{ nick=localStorage.getItem("aog.builder")||""; }catch(e){}
