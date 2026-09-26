@@ -287,6 +287,19 @@ html.a11y-dyslexic body{letter-spacing:.02em;word-spacing:.09em;line-height:1.8}
 .acts .pst button{margin:4px 4px 0 0}
 .acts .open{display:inline-flex;align-items:center;min-height:36px;padding:6px 12px;border-radius:999px;border:1px solid var(--line);background:var(--card);color:var(--navy);font:700 .84rem var(--sans);text-decoration:none;margin-right:6px}
 .acts .open:hover{border-color:var(--navy)}
+
+/* AOG-INBOX-COMPACT-V1 (2026-09-26) — Jimmy, from the iPad: "That inbox is HUGE!!!" From 700px up the masthead is a
+   band, not a billboard: a smaller heading, one line of lead, and the three menus side by side. Phones unchanged. */
+@media (min-width:700px){
+  header.page{padding:14px 0 4px}
+  h1{font-size:clamp(1.6rem,2.6vw,2rem);margin:6px 0 0}
+  .tag{font-size:15.5px;margin:4px 0 0;max-width:60ch}
+  .pullrow{margin:10px 0 0}
+  .pullrow{margin:12px 0 6px;padding-bottom:12px;border-bottom:1px solid rgba(255,255,255,.18)}
+  header.page .aogdd{display:inline-flex;vertical-align:top;margin:12px 18px 4px 0;width:auto}
+  header.page .aogdd .aogdd-lab{flex:0 0 auto;min-width:0;margin-right:2px}
+  header.page .aogdd select{min-width:150px;min-height:42px;font-size:15px}
+}
 </style>
 <script src="aog-sync-config.js"></script>
 <!-- ══ DASHBOARD-CODE GATE (2026-09-09) ═══════════════════════════════════
@@ -1068,7 +1081,9 @@ else document.documentElement.classList.add("aog-embed");</script>
      To bring it back, put "SEL · Room 36" back in this list. */
   var SUBJECTS=["All","SEL","Math","Language Arts","Writing","Science","Social Studies","Spanish","FACS","Religions","Economics","Foundry","English","Other"];
   /* 2026-09-26: one SEL chip for every room (SEL · Room 12 … 207), now that every worksheet and workbook lands here with its room */
-  var curK="all", curF="All", curView="stu", sheetOnly=false;
+  /* AOG-INBOX-KIND-V1 (2026-09-26) — Jimmy: "it should NOT start on Everything." What kind opens on Turn-ins (the
+     students' work) the first time, and after that on whatever was chosen last on this device. */
+  var curK=(function(){ try{ var v=localStorage.getItem("aog.inbox.kind"); return v||"turnin"; }catch(e){ return "turnin"; } })(), curF="All", curView="stu", sheetOnly=false;
   /* AOG-INBOX-LINKIN-V1 (2026-09-26) — Jimmy: "The academic box should be interactive as well." A link can
      open the Inbox already narrowed to one student (?student=) and one kind of work (?work=dd | checks |
      tests | course), the way the MTSS page's academics rows do. A note at the top says so, with a way out. */
@@ -1096,7 +1111,7 @@ else document.documentElement.classList.add("aog-embed");</script>
       b.type="button"; b.className="fchip"+(k[0]===curK?" on":"");
       b.textContent=k[1]+(n?("  "+n):"");
       if(!n && k[0]!=="all") b.classList.add("zero");
-      b.addEventListener("click",function(){ curK=k[0]; paint(); });
+      b.addEventListener("click",function(){ curK=k[0]; try{ localStorage.setItem("aog.inbox.kind",curK); }catch(e){} paint(); });
       kwrap.appendChild(b);
     });
     /* the subject row only means anything for turn-ins */
