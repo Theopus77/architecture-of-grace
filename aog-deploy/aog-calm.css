@@ -65,3 +65,12 @@ canvas, img, video, svg:not([width]) { max-width: 100%; }
      near-black (#081828) up to a soft evening navy; the colour pools stay faint. */
   html[data-theme] .screen, html[data-theme] main, html[data-theme] .wrap, html[data-theme] .stage { background-color: transparent !important; }
 }
+
+/* AOG-PRINT-COLOUR-V1 (2026-09-26) — Jimmy: "Why does the printout look black and white only? I
+   do have the option to print color" … "Do it across the site. The graphs would be nice in color."
+   Browsers drop background colours on paper unless told otherwise (Safari's "Print backgrounds"
+   box is off by default). Every page now asks for its colours to print as they are: graphs, bars,
+   badges, strand tabs. A printer set to black & white still prints black & white. */
+@media print {
+  *, *::before, *::after { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+}
