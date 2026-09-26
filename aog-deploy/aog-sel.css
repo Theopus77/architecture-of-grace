@@ -192,3 +192,30 @@ html.aog-sel .aog-cardpager .nv-btn[disabled]{ opacity:.45; cursor:default; }
 html.aog-sel .aog-cards-tab2{ display:none !important; }
 html.aog-sel .botdoor{ display:flex; flex-wrap:wrap; gap:10px; justify-content:flex-start; margin:18px 0 14px; }
 html.aog-sel .wstab, html.aog-sel .cardsdoor{ min-height:48px; border-radius:14px; }
+
+/* ══ AOG-SEL-UNIT-COLOURS-V1 (2026-09-26) — THE CARDS' UNIT COLOURS, FOR REAL. Jimmy: "I don't see
+   any color difference." The card pages promise "color-coded by unit: Navy = Unit 1, Teal = Unit 2,
+   Purple = Unit 3, Green = Unit 4" and paint everything with --uc, which points at --u1…--u4 —
+   which no card page ever defined, so every card came out plain. The four colours live here now,
+   and they are made visible: a solid band across the top of every card with its code, the unit
+   heading and lesson label in the unit's colour, and the Unit buttons in their own colour. */
+html.aog-sel{ --u1:#1B3A5F; --u2:#17646B; --u3:#6B4696; --u4:#2E7D4F; }
+html.aog-sel .card{ border-top:0; overflow:hidden; padding-top:0; }
+html.aog-sel .card .ch{ display:flex; align-items:center; gap:10px; margin:0 -16px 10px; padding:8px 16px; background:var(--uc,#0A1E33); color:#fff; }
+html.aog-sel .card .ch .code{ background:rgba(255,255,255,.18); color:#fff; border-radius:999px; height:28px; padding:0 12px; }
+html.aog-sel .card .tick{ top:8px; right:12px; border-color:rgba(255,255,255,.7); background:rgba(255,255,255,.15); color:transparent; }
+html.aog-sel .card.used .tick, html.aog-sel .card[data-used="1"] .tick{ background:#fff; border-color:#fff; color:var(--uc,#2E7D4F); }
+html.aog-sel .unit-spread .uh h2, html.aog-sel .unit-spread .uh .k, html.aog-sel .lessonblk .sh .sn{ color:var(--uc,#0A1E33); }
+html.aog-sel .unit-spread .uh{ border-bottom:3px solid var(--uc,#0A1E33); }
+html.aog-sel .funit[data-unit]{ border-left:6px solid var(--uc,#0A1E33); }
+html.aog-sel .funit[data-unit][aria-pressed="true"]{ background:var(--uc,#0A1E33) !important; border-color:var(--uc,#0A1E33) !important; color:#fff !important; }
+html.aog-sel .dealu[data-unit="u1"]{ border-left:6px solid var(--u1) !important; }
+html.aog-sel .dealu[data-unit="u2"]{ border-left:6px solid var(--u2) !important; }
+html.aog-sel .dealu[data-unit="u3"]{ border-left:6px solid var(--u3) !important; }
+html.aog-sel .dealu[data-unit="u4"]{ border-left:6px solid var(--u4) !important; }
+html.aog-sel .aog-cardpager select optgroup{ font-weight:800; }
+html.aog-sel[data-theme="dark"]{ --u1:#6FB0F0; --u2:#6FD3C8; --u3:#A98BF0; --u4:#86D36F; }
+html.aog-sel[data-theme="dark"] .card .ch{ color:#0A1E33; }
+html.aog-sel[data-theme="dark"] .card .ch .code{ background:rgba(10,30,51,.18); color:#0A1E33; }
+html.aog-sel[data-theme="dark"] .funit[data-unit][aria-pressed="true"]{ color:#0A1E33 !important; }
+@media print{ html.aog-sel .card .ch{ -webkit-print-color-adjust:exact; print-color-adjust:exact; } }
