@@ -250,8 +250,8 @@ button,a,label,input[type=range],.pill,.pad,.platter,canvas{touch-action:manipul
 
 /* AOG-TOOL-THIN-V1 (2026-09-26) — Jimmy: "They all don't need the two bars stating the name. Just keep the
    blue bar. However the blue bar is to be thinner." One masthead, half the height; the brand row above it goes. */
-html.aog-grace [data-aog-hero]{padding-top:18px!important;padding-bottom:16px!important;margin-bottom:14px}
-html.aog-grace [data-aog-hero] h1{font-size:clamp(26px,3.2vw,38px)!important;margin:.15rem 0 .25rem!important}
+html.aog-grace #toolMast[data-aog-hero]{padding-top:18px!important;padding-bottom:16px!important;margin-bottom:14px}
+html.aog-grace #toolMast[data-aog-hero] h1{font-size:clamp(26px,3.2vw,38px)!important;margin:.15rem 0 .25rem!important}
 html.aog-grace [data-aog-hero] .lead{font-size:.95rem;margin:0}
 html.aog-grace [data-aog-hero] .kicker{font-size:.66rem}
 body>.wrap>header:first-child,.wrap>header.no-print:first-child{display:none!important}
@@ -280,9 +280,8 @@ body>.wrap>header:first-child,.wrap>header.no-print:first-child{display:none!imp
       <button type="button" class="pill" id="themeBtn">Dark</button>
     </div>
   </header>
-  <p class="kicker" id="eyebrow"></p>
-  <h1 id="title"></h1>
-  <p class="lead" id="tag"></p>
+  <!-- AOG-TOOL-MAST-V1 — the same static masthead the other benches carry, so the thin rule reaches it -->
+  <section class="mast" id="toolMast"><p class="kicker" id="eyebrow"></p><h1 id="title"></h1><p class="lead" id="tag"></p></section>
   <nav class="nav no-print" aria-label="Activity"><a href="music-decks.html" class="on" id="navDecks">Turntables</a><a href="music-drums.html" id="navDrums">Drum machine</a><a href="/decks-guide" id="navGuide">Picture guide</a></nav>
   <div class="bench-switch no-print" role="group" aria-label="Bench" id="benchSwitch"><b id="benchLab">Bench</b>
     <button type="button" class="pill on" data-bench="simple" id="benchSimple">Simple bench</button>
@@ -311,6 +310,7 @@ body>.wrap>header:first-child,.wrap>header.no-print:first-child{display:none!imp
     <div id="bench" class="bench"></div>
     <div id="takes" class="takes"></div>
   </div>
+  <p class="lead" id="tagLong" style="margin:1rem 0 .4rem;font-size:.92rem"></p>
   <details class="pg no-print" id="pgPanel">
     <summary><span class="chev">&#9656;</span>Picture guide<span class="pgsub">Almost no reading &#183; prints on 7 pages</span></summary>
     <div class="pgbody">
@@ -330,8 +330,9 @@ body>.wrap>header:first-child,.wrap>header.no-print:first-child{display:none!imp
    A song is a file the student picks; it is decoded here and never sent. */
 const STR = {
   app:{en:"The Turntables",es:"Los tocadiscos"},
-  eyebrow:{en:"Load a song from this computer. Then move the platter.",es:"Carga una canción de esta computadora. Luego mueve el plato."},
-  tag:{en:"Two decks with weight. Grab a platter and it follows your hand — forward, back, fast, slow — and the record goes quiet the moment you hold it still, the way vinyl does. Let go and the motor pulls it back up to speed. The crossfader mixes them, and Record keeps the take as a .wav you can save or drop back onto a platter. We do not provide songs, and a song never leaves this computer.",es:"Dos platos con peso. Agarra un plato y sigue tu mano — adelante, atrás, rápido, lento — y el disco se calla en cuanto lo detienes, como el vinilo de verdad. Suéltalo y el motor lo devuelve a su velocidad. El crossfader los mezcla, y Grabar guarda la toma como un .wav que puedes conservar o volver a poner en un plato. No damos canciones, y una canción nunca sale de esta computadora."},
+  eyebrow:{en:"Load a song. Then move the platter.",es:"Carga una canción. Luego mueve el plato."},
+  tag:{en:"Two decks with weight. Grab a platter and it follows your hand; let go and the motor takes it back.",es:"Dos platos con peso. Agarra un plato y sigue tu mano; suéltalo y el motor lo retoma."},
+  tagLong:{en:"Two decks with weight. Grab a platter and it follows your hand — forward, back, fast, slow — and the record goes quiet the moment you hold it still, the way vinyl does. Let go and the motor pulls it back up to speed. The crossfader mixes them, and Record keeps the take as a .wav you can save or drop back onto a platter. We do not provide songs, and a song never leaves this computer.",es:"Dos platos con peso. Agarra un plato y sigue tu mano — adelante, atrás, rápido, lento — y el disco se calla en cuanto lo detienes, como el vinilo de verdad. Suéltalo y el motor lo devuelve a su velocidad. El crossfader los mezcla, y Grabar guarda la toma como un .wav que puedes conservar o volver a poner en un plato. No damos canciones, y una canción nunca sale de esta computadora."},
   load:{en:"Load a song",es:"Cargar una canción"},
   dockH:{en:"Your songs. Tap one to put it on.",es:"Tus canciones. Toca una para ponerla."},
   dockNone:{en:"No songs yet. Add one from this device and it stays here.",es:"Aún no hay canciones. Agrega una de este aparato y se queda aquí."},
@@ -1652,6 +1653,7 @@ function paintChrome(){
   document.getElementById("title").textContent = t("app");
   document.getElementById("eyebrow").textContent = t("eyebrow");
   document.getElementById("tag").textContent = t("tag");
+  { const tl=document.getElementById("tagLong"); if(tl) tl.textContent = t("tagLong"); }
   document.getElementById("xfLabel").textContent = t("mix");
   document.getElementById("curveBtn").textContent = t("curve")+": "+(curve==="sharp"?t("sharp"):t("smooth"));
   document.getElementById("noiseBtn").textContent = noiseOn ? t("noiseOn") : t("noiseOff");
