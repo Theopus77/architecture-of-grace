@@ -17840,6 +17840,7 @@ const AOG_SUB_TO_HASH = {
   library: "downloads",
   voices: "voices"
 };
+try { window.addEventListener("hashchange", function(){ window.__aogHashAt = Date.now(); }, true); window.addEventListener("popstate", function(){ window.__aogHashAt = Date.now(); }, true); } catch (e) {}
 function aogSetHash(_0xcb963) {
   try {
     var _aogTarget = _0xcb963 ? "#" + _0xcb963 : location.pathname + location.search;
@@ -17847,6 +17848,14 @@ function aogSetHash(_0xcb963) {
     // Item 4: distinct destinations get their own history entry (pushState) so the
     // browser Back button returns to the previous screen; same-screen updates just
     // replace, to avoid piling up duplicate entries.
+    /* AOG-BACK-NOLOOP-V1 (2026-09-26) — Jimmy: the conversation starters "get stuck in the
+       little bedroom". Tapping a link already made one history entry; the router then pushed
+       #family and the page again, so Back bounced between copies. Right after the address
+       changes (a link or Back), the router only replaces. */
+    if (window.__aogHashAt && Date.now() - window.__aogHashAt < 600) {
+      history.replaceState({ aogIdx: (history.state && history.state.aogIdx) || window.__aogIdx || 0 }, "", _aogTarget);
+      return;
+    }
     if ((_0xcb963 || "") !== _aogCur) {
       // Item 1: stamp each pushed entry with an incrementing in-app index so
       // goBack() can tell whether there is a prior in-app step to return to
@@ -30078,7 +30087,7 @@ window.addEventListener('load', _installToolScreenHook);
     var strip = (typeof window.pecsStrip !== 'undefined') ? window.pecsStrip : [];
     var overlay = document.createElement('div');
     overlay.className = 'pecs-sos-overlay';
-    var head = '<div class="pecs-sos-head"><span class="pecs-sos-badge">' + T('PLEASE READ', 'POR FAVOR LEE') + '</span><button class="pecs-sos-close" aria-label="' + T('Close', 'Cerrar') + '">✕</button></div>';
+    var head = '<div class="pecs-sos-head"><span class="pecs-sos-badge">' + T('PLEASE READ', 'POR FAVOR LEE') + '</span><button class="pecs-sos-close" style="width:auto;min-height:44px;padding:0 16px;border-radius:999px;font-weight:800;font-size:16px" aria-label="' + T('Close', 'Cerrar') + '">✕ ' + T('Close', 'Cerrar') + '</button></div>';
     var body;
     if (!strip.length) {
       body = '<div class="pecs-sos-empty">' + T('Add cards first, then hold this up.', 'Agrega tarjetas primero y luego muestra esto.') + '</div>';
@@ -30088,7 +30097,14 @@ window.addEventListener('load', _installToolScreenHook);
       }).join('') + '</div>';
     }
     overlay.innerHTML = head + body;
-    overlay.addEventListener('click', function (e) { if (e.target === overlay || e.target.classList.contains('pecs-sos-close')) overlay.remove(); });
+    /* AOG-SOS-BACK-V1 (2026-09-26) — Jimmy: "this page doesn't go back." The full-screen card
+       now takes one history step, so Back (or Escape, or Close) takes it down. */
+    var shut = function (viaBack) { if (!overlay.parentNode) return; overlay.remove(); window.removeEventListener('popstate', onPop); document.removeEventListener('keydown', onKey); if (!viaBack) { try { if (history.state && history.state.aogSos) history.back(); } catch (e) {} } };
+    var onPop = function () { shut(true); };
+    var onKey = function (e) { if (e.key === 'Escape') shut(false); };
+    overlay.addEventListener('click', function (e) { if (e.target === overlay || e.target.closest('.pecs-sos-close')) shut(false); });
+    try { history.pushState({ aogSos: 1 }, '', location.href); } catch (e) {}
+    window.addEventListener('popstate', onPop); document.addEventListener('keydown', onKey);
     document.body.appendChild(overlay);
     try { if (window.GraceAudio) GraceAudio.playHum && GraceAudio.playHum(); } catch (e) {}
   };
@@ -92278,6 +92294,16 @@ body.aog-xwalk-solo:has(#panel-align.active) #panel-align::before{content:"Stand
     var u=b.getAttribute("data-wkcopy"); try{ navigator.clipboard.writeText(u); b.textContent=T("Copied","Copiado"); }catch(x){} });
   if(document.readyState==="loading") document.addEventListener("DOMContentLoaded",function(){ setTimeout(mount,1200); }); else setTimeout(mount,1200);
   setTimeout(mount,3200);
+})();
+</script>
+<script>
+/* AOG-DOOR3-HOME-LAST-V1 (2026-09-26) — Jimmy: "since AT HOME conversation starters and cards is so
+   big, it should be at the bottom of the door." Other scripts add rows to door three after load,
+   so the At-home group is moved back to the end each time. */
+(function(){
+  function last(){ var f=document.getElementById("aogdrBeyondHome"); if(!f) return; var h=f.previousElementSibling, ul=f.parentNode;
+    if(!h||!ul) return; if(ul.lastElementChild!==f){ ul.appendChild(h); ul.appendChild(f); } }
+  [0,400,1200,2500,5000].forEach(function(t){ setTimeout(last,t); });
 })();
 </script>
 </body>
