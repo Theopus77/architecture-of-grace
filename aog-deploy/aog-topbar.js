@@ -2589,7 +2589,7 @@
    folds or navigates changes. ═══════════════════════════════════════════ */
 (function () {
   if (document.getElementById("aog-explore-glass")) return;
-  var G = { "/#dashboard":"#3F4AA6", "/#tools":"#1F8080", "/drops":"#A85A24", "/math":"#2F63B8", "/science":"#2E8B57",
+  var G = { "/#dashboard":"#3F4AA6", "/dashboard":"#3F4AA6", "/#tools":"#1F8080", "/drops":"#A85A24", "/math":"#2F63B8", "/science":"#2E8B57",
     "/social":"#A8323E", "/english":"#B87A12", "/spanish":"#B8457A", "/facs":"#7B4FA0", "/economics":"#6E7C22",
     "/prep":"#5E6B7A", "/#talk":"#1F8080", "/#pilot":"#B87A12", "/#framework":"#3F4AA6", "/#curriculum":"#A85A24",
     "/#family":"#B8457A", "/#schools":"#2F63B8", "/#about":"#2E8B57", "/#library":"#7B4FA0", "/#privacy":"#5E6B7A",

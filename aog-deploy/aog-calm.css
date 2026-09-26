@@ -8,8 +8,11 @@
    1. STILL SIDEWAYS — the page never pans or bounces left and right.
    2. NO ZOOM ON TAP — every field is at least 16px, the size under which iOS
       zooms the whole page when a box is tapped.
-   3. NO MOTION ON TOUCH — on phones and tablets nothing animates, fades or
-      smooth-scrolls; with "reduce motion" set, the same on any device.
+   3. NO MOTION ON TOUCH — on phones and tablets nothing animates, slides or
+      smooth-scrolls; with "reduce motion" set, the same on any device. The
+      one exception (2026-09-26, "make the transitions smoother"): a page or
+      panel may crossfade in for under a quarter of a second (aog-smooth.css,
+      class .aog-fade). Opacity only; nothing moves.
       Durations go to a hair above zero rather than none, so code that waits
       for an animation or transition to end still hears it end.
    4. NO RUBBER-BANDING — scroll chaining and overscroll bounce are off.
@@ -24,7 +27,7 @@ select, textarea { font-size: max(16px, 1em) !important; }
 canvas, img, video, svg:not([width]) { max-width: 100%; }
 
 @media (hover: none) {
-  *, *::before, *::after {
+  *:not(.aog-fade), *::before, *::after {
     animation-duration: .01ms !important; animation-delay: 0s !important; animation-iteration-count: 1 !important;
     transition-duration: .01ms !important; transition-delay: 0s !important;
     scroll-behavior: auto !important;

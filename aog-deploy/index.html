@@ -16808,7 +16808,11 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 });
+/* AOG-CLASSIC-OFF-V1 (2026-09-26) — Jimmy: "the CLASSIC DASHBOARD COMPLETELY REMOVED and everything switched
+   over." Every door that used to open the classic screen now goes to /dashboard. ?classic=1 still opens the old
+   screen for one visit, so nothing a teacher saved is out of reach. */
 function openAdmin() {
+  try { if (!/[?&]classic=1/.test(location.search)) { location.href = "/dashboard"; return; } } catch (e) {}
   if (typeof showScreen === "function") showScreen("screen-admin");
   try { window.scrollTo({ top: 0, behavior: "instant" }); } catch (e) { try { window.scrollTo(0, 0); } catch (_e) {} }
   try { if (typeof setDashLang === "function" && typeof lang !== "undefined") setDashLang(lang); } catch (_eL) {}
@@ -92351,7 +92355,7 @@ body.aog-xwalk-solo:has(#panel-align.active) #panel-align::before{content:"Stand
 /* AOG-OPENTOOL-V1 (2026-09-26) — a tool by link: /#opentool=disclosure opens that tool, so the new
    dashboard can put buried teacher tools one tap away. */
 /* AOG-OPENMTSS-V1 — /#openmtss opens the MTSS Report straight from the new dashboard's Reports page. */
-(function(){ function go(){ if(location.hash!=="#openmtss") return; var n=0,t=setInterval(function(){ if(typeof window.aogOpenMTSS==="function"){ clearInterval(t); try{ history.replaceState(null,"","#dashboard"); }catch(e){} try{ if(typeof window.showScreen==="function") window.showScreen("screen-admin"); }catch(e){} setTimeout(function(){ window.aogOpenMTSS(); },150); } else if(++n>80) clearInterval(t); },100); }
+(function(){ function go(){ if(location.hash!=="#openmtss") return; if(!/[?&]classic=1/.test(location.search)){ location.replace("/dashboard#mtss"); return; } var n=0,t=setInterval(function(){ if(typeof window.aogOpenMTSS==="function"){ clearInterval(t); try{ history.replaceState(null,"","#dashboard"); }catch(e){} try{ if(typeof window.showScreen==="function") window.showScreen("screen-admin"); }catch(e){} setTimeout(function(){ window.aogOpenMTSS(); },150); } else if(++n>80) clearInterval(t); },100); }
   go(); window.addEventListener("hashchange",go); })();
 (function(){ function go(){ var m=/^#opentool=([a-z0-9-]+)$/.exec(location.hash||""); if(!m) return;
   var n=0,t=setInterval(function(){ if(typeof window.toolOpen==="function"){ clearInterval(t); try{ history.replaceState(null,"","#tools"); }catch(e){} window.toolOpen(m[1]); } else if(++n>60) clearInterval(t); },100); }

@@ -376,7 +376,7 @@ html.a11y-dyslexic body{letter-spacing:.02em;word-spacing:.09em;line-height:1.8}
          with no next step. The destructive path stays in ONE place — this
          only points at it. */
       '<p class="f">Forgotten it? There is no way to read the code back. ' +
-      'Open the <a href="/#dashboard">dashboard</a> and use ' +
+      'Open the <a href="/dashboard">dashboard</a> and use ' +
       '<b>&ldquo;Clear this device and start again&rdquo;</b> \u2014 that clears what is ' +
       'stored on THIS device only; your Google Sheet is untouched, and ' +
       '<b>Refresh</b> brings the rows back.</p></div>';
@@ -430,7 +430,7 @@ else document.documentElement.classList.add("aog-embed");</script>
         <a role="menuitem" href="/#curriculum"><span class="t">The Curriculum, K&ndash;12</span><span class="s">Five books and the Adult edition.</span></a>
         <a role="menuitem" href="/#library"><span class="t">Library</span><span class="s">Every open preview, sample lesson and pack.</span></a>
         <div class="lab">In the classroom</div>
-        <a role="menuitem" href="/#results"><span class="t">Dashboard</span><span class="s">Hand it out, read the group, find the lesson.</span></a>
+        <a role="menuitem" href="/dashboard"><span class="t">Dashboard</span><span class="s">Hand it out, read the group, find the lesson.</span></a>
         <a role="menuitem" href="/#talk"><span class="t">Talk It Out</span><span class="s">Discussion prompts for the whole room.</span></a>
         <a role="menuitem" href="/#tools"><span class="t">Calm &amp; Regulation Tools</span><span class="s">Quiet Space and the calming corner.</span></a>
         <a role="menuitem" href="/turnins"><span class="t">Turn-ins</span><span class="s">Every FINISHED worksheet and result, one inbox.</span></a>
@@ -488,7 +488,7 @@ else document.documentElement.classList.add("aog-embed");</script>
 </header>
 <div id="inbox"></div>
 <footer>
-  <a href="/#results">&larr; The dashboard</a>
+  <a href="/dashboard">&larr; The dashboard</a>
   <span>The framework is portable. They are taking it with them.</span>
 </footer>
 </div>
@@ -1430,7 +1430,7 @@ else document.documentElement.classList.add("aog-embed");</script>
       var norm=function(x){ return String(x||"").toUpperCase().replace(/[^A-Z0-9]/g,""); };
       var who=norm(it.student), goals=[];
       if(store&&store.goals) Object.keys(store.goals).forEach(function(id){ var g=store.goals[id]; if(g&&!g.archived&&norm(g.student)===who) goals.push([id,g]); });
-      if(!goals.length){ st.innerHTML='No IEP goal for '+esc(it.student||"this student")+' yet. Open <a href="/#dashboard">IEP Progress</a>, pick ＋ '+esc(it.student||"")+' in the Student menu, then lay the brick.'; return; }
+      if(!goals.length){ st.innerHTML='No IEP goal for '+esc(it.student||"this student")+' yet. Open <a href="/dashboard">IEP Progress</a>, pick ＋ '+esc(it.student||"")+' in the Student menu, then lay the brick.'; return; }
       var L=[]; try{ L=it.evidence(it)||[]; }catch(e){ L=[]; }
       var stamp=new Date().toLocaleDateString();
       var brick="▣ "+stamp+" · "+(it.kindLab||"Evidence")+" · "+L.join(" · ");

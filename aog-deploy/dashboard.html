@@ -26,6 +26,9 @@ body{margin:0;color:var(--ink);background:linear-gradient(to right,var(--navy) 2
 .app{display:grid;grid-template-columns:240px 1fr;min-height:calc(100vh - 56px);align-items:stretch;background:linear-gradient(to right,var(--navy) 240px,transparent 240px)}
 .rail{background:var(--navy);color:#EAF0F6;padding:18px 12px;position:sticky;top:var(--aogbar-h,52px);height:calc(100vh - var(--aogbar-h,52px));overflow:auto}
 .rail .brand{font:600 13px Inter,sans-serif;letter-spacing:.16em;text-transform:uppercase;color:var(--gold2);padding:4px 10px 14px}
+.railpull{margin:0 4px 14px}.railpull button{width:100%;min-height:44px;border:0;border-radius:12px;background:var(--gold2);color:#0A1E33;font:700 15px inherit;font-family:inherit;cursor:pointer}.railpull button:disabled{background:#B9C4D0;color:#0A1E33;cursor:default}.railpull .st{display:block;color:#DCE5EE;font-size:12px;margin:6px 4px 0;line-height:1.35}
+.fld{display:grid;gap:6px;margin:0 0 12px}.fld label{font:700 13px inherit;color:var(--ink)}.fld input,.fld select,.fld textarea{min-height:44px;font-size:16px;padding:8px 12px;border:1.5px solid var(--line);border-radius:12px;background:var(--card);color:var(--ink);font-family:inherit}.fld textarea{min-height:72px}.f2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.btn.danger{border-color:#8B2A2A;color:#8B2A2A}
 .view{display:flex;background:rgba(255,255,255,.08);border-radius:12px;padding:4px;margin:0 4px 16px}
 .view button{flex:1;min-height:40px;border:0;border-radius:9px;background:transparent;color:#DCE5EE;font:700 14px inherit;font-family:inherit;cursor:pointer}
 .view button[aria-pressed=true]{background:var(--gold2);color:var(--navy)}
@@ -36,6 +39,8 @@ body{margin:0;color:var(--ink);background:linear-gradient(to right,var(--navy) 2
 .nav .sep{height:1px;background:rgba(255,255,255,.12);margin:12px 8px}
 .nav small{display:block;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#9FB1C4;padding:8px 12px 2px}
 #app{padding:26px clamp(16px,3vw,48px) 60px;width:100%;min-width:0;background:var(--cream)}
+/* AOG-DASH-WIDTH-V1 — Jimmy: "on the iPad and computer it seems too wide." The page keeps a reading width and sits centred. */
+#app>*{max-width:1080px;margin-left:auto;margin-right:auto}#app .hello{max-width:1080px}
 #app>*{max-width:1500px}
 .hello{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:12px;margin:0 0 20px}
 .hello h1{font:600 clamp(28px,4vw,40px)/1.1 Fraunces,Georgia,serif;margin:0;color:var(--ink)!important;opacity:1!important;-webkit-text-fill-color:currentColor!important;background:none!important}
@@ -108,6 +113,7 @@ select,input[type=text]{width:100%;font:inherit;font-size:16px;min-height:44px;p
   <aside class="rail no-print" aria-label="Dashboard">
     <div class="brand">Dashboard</div>
     <div class="view" role="group" aria-label="View"><button type="button" data-view="teacher" aria-pressed="true">Teacher</button><button type="button" data-view="student" aria-pressed="false">Student</button></div>
+    <div class="railpull" id="railPull"></div>
     <nav class="nav" id="nav"></nav>
   </aside>
   <div id="app" role="main"></div>
@@ -121,7 +127,7 @@ const UNITNAME={mth:["Math","Matemáticas"],sci:["Science","Ciencias"],ssc:["Soc
 const SLIPS=[["checkin","Daily check-in","Registro diario"],["exit","Exit slip","Boleto de salida"],["reflection","Self-reflection","Autorreflexión"],["myvoice","My Voice","Mi voz"],["weekly?w=mon","Weekly · Monday","Semanal · lunes"],["weekly?w=mid","Weekly · midweek","Semanal · mitad de semana"],["weekly?w=fri","Weekly · Friday","Semanal · viernes"]];
 const TOOLS=[["disclosure","If a student discloses","Si un estudiante revela"],["coreg","Co-regulation script","Guion de co-regulación"],["findfunction","Find the function","Encuentra la función"],["scenarios","When a student…","Cuando un estudiante…"],["reflection","Teacher reflection","Reflexión docente"],["convostarters","Conversation starters","Para iniciar conversaciones"],["glossary","Glossary","Glosario"]];
 const TXT={
- en:{mtss:"MTSS Report",today:"Today",hand:"Hand out",students:"Students",checkins:"Check-ins",trends:"Trends",brick:"Brick by brick",inbox:"Inbox",reports:"Reports",setup:"Set up",more:"More in the classic dashboard",
+ en:{mtss:"MTSS Report",today:"Today",hand:"Hand out",students:"Students",checkins:"Check-ins",trends:"Trends",brick:"Brick by brick",inbox:"Inbox",reports:"Reports",setup:"Set up",more:"More",
   hi:["Good morning","Good afternoon","Good evening"],sub:"Pick what the class does today. Add it to today's handout, then share one link.",
   ok:"Your Sheet is connected",no:"No Sheet yet — answers stay on each device",
   dd:"Daily Drafts",ddS:"Ten lines a day, checked on the spot. Print a stack, or hand it out on screen.",subject:"Subject",grade:"Grade",sheet:"Sheet number",
@@ -130,11 +136,11 @@ const TXT={
   tray:"Today's handout",trayE:"Nothing yet. Add a Daily Draft, an assignment or a slip above.",link:"The class link",copy:"Copy link",copied:"Copied",show:"Show it big",open:"Open as a student",
   bigLead:"Open this on your device:",bigSub:"Type it in the address bar. It opens today's work.",close:"Close",
   nosheet:"This link works, but answers stay on each student's device until you connect your Sheet in Set up.",
-  soon:"This room is being rebuilt. For now it opens in the classic dashboard.",
+  soon:"That room isn’t here. Start from Today.",
   sw:"Your work today",swS:"Tap one to start. When you finish, press Send.",name:"Your name or code",nameS:"Use the same one every time.",sentTick:"Sent to your teacher",nothing:"Your teacher hasn't handed anything out on this device yet. Open the class link your teacher shares.",
   setupH:"Set up",setupS:"Only the things you need once.",conn:"Connect & sync",connS:"Your Google Sheet, where student work arrives.",gs:"Download Code.gs",guide:"One-page setup guide",openConn:"Open Connect & sync",
-  classic:"The classic dashboard",inboxS:"Everything students turned in, by student.",fullPage:"Open full page",goal:"Goal",trendS:"How the class has been doing, day by day.",printPage:"Print this page",checkinsDay:"Check-ins each day",accDay:"On their own, % each day",flagDay:"Follow-ups each day",brickS:"Each IEP goal: where it started, where it is, where it is going.",noGoals:"No IEP goals on this device yet. Add them in the classic dashboard.",baseline:"Baseline",now:"Now",laid:"Bricks laid",editGoals:"Add or edit goals",repS:"Everything to print or share, in one place.",open2:"Open",pullFirst:"Nothing pulled from your Sheet on this device yet. Open the classic dashboard, pull once, and it shows here.",stuS:"Everyone the Sheet knows. Tap a name.",find:"Find a student",name:"Name",lastSeen:"Last seen",practice:"Practice",indep:"On their own",follow:"follow up",blueprint:"Their Blueprint",feelings:"Feelings",latest:"Latest day",thatDay:"Check-ins that day",followWeek:"To follow up this week",lastDays:"Last 5 days",needYou:"Might need you",roomFeel:"How the room felt",kind:"Kind",tools:"Teacher tools",allTools:"All calm tools",classicS:"Everything else, while the new one is built.",openClassic:"Open the classic dashboard"},
- es:{mtss:"Informe MTSS",today:"Hoy",hand:"Repartir",students:"Estudiantes",checkins:"Registros",trends:"Tendencias",brick:"Ladrillo a ladrillo",inbox:"Bandeja",reports:"Informes",setup:"Configurar",more:"Más en el panel clásico",
+  classic:"The classic dashboard",inboxS:"Everything students turned in, by student.",fullPage:"Open full page",goal:"Goal",trendS:"How the class has been doing, day by day.",printPage:"Print this page",checkinsDay:"Check-ins each day",accDay:"On their own, % each day",flagDay:"Follow-ups each day",brickS:"Each IEP goal: where it started, where it is, where it is going.",noGoals:"No IEP goals on this device yet. Press New goal to add one.",baseline:"Baseline",now:"Now",laid:"Bricks laid",editGoals:"Add or edit goals",repS:"Everything to print or share, in one place.",open2:"Open",pullFirst:"Nothing pulled from your Sheet on this device yet. Open the classic dashboard, pull once, and it shows here.",stuS:"Everyone the Sheet knows. Tap a name.",find:"Find a student",name:"Name",lastSeen:"Last seen",practice:"Practice",indep:"On their own",follow:"follow up",blueprint:"Their Blueprint",feelings:"Feelings",latest:"Latest day",thatDay:"Check-ins that day",followWeek:"To follow up this week",lastDays:"Last 5 days",needYou:"Might need you",roomFeel:"How the room felt",kind:"Kind",tools:"Teacher tools",allTools:"All calm tools",classicS:"Everything else, while the new one is built.",openClassic:"Open the classic dashboard"},
+ es:{mtss:"Informe MTSS",today:"Hoy",hand:"Repartir",students:"Estudiantes",checkins:"Registros",trends:"Tendencias",brick:"Ladrillo a ladrillo",inbox:"Bandeja",reports:"Informes",setup:"Configurar",more:"Más",
   hi:["Buenos días","Buenas tardes","Buenas noches"],sub:"Elige lo que la clase hará hoy. Agrégalo al reparto de hoy y comparte un solo enlace.",
   ok:"Tu Hoja está conectada",no:"Aún no hay Hoja — las respuestas quedan en cada aparato",
   dd:"Daily Drafts",ddS:"Diez líneas al día, revisadas al momento. Imprime un montón o repártelo en pantalla.",subject:"Materia",grade:"Grado",sheet:"Número de hoja",
@@ -143,10 +149,10 @@ const TXT={
   tray:"El reparto de hoy",trayE:"Nada aún. Agrega un Daily Draft, una tarea o un boleto.",link:"El enlace de la clase",copy:"Copiar enlace",copied:"Copiado",show:"Mostrar en grande",open:"Abrir como estudiante",
   bigLead:"Abre esto en tu aparato:",bigSub:"Escríbelo en la barra de direcciones. Abre el trabajo de hoy.",close:"Cerrar",
   nosheet:"Este enlace funciona, pero las respuestas quedan en cada aparato hasta que conectes tu Hoja en Configurar.",
-  soon:"Esta sala se está reconstruyendo. Por ahora se abre en el panel clásico.",
+  soon:"Esa sala no está aquí. Empieza en Hoy.",
   sw:"Tu trabajo de hoy",swS:"Toca uno para empezar. Al terminar, pulsa Enviar.",name:"Tu nombre o código",nameS:"Usa el mismo siempre.",sentTick:"Enviado a tu maestro",nothing:"Tu maestro aún no ha repartido nada en este aparato. Abre el enlace de la clase.",
   setupH:"Configurar",setupS:"Solo lo que necesitas una vez.",conn:"Conectar y sincronizar",connS:"Tu Hoja de Google, donde llega el trabajo.",gs:"Descargar Code.gs",guide:"Guía de una página",openConn:"Abrir Conectar y sincronizar",
-  classic:"El panel clásico",inboxS:"Todo lo que entregaron, por estudiante.",fullPage:"Abrir página completa",goal:"Meta",trendS:"Cómo le ha ido a la clase, día a día.",printPage:"Imprimir esta página",checkinsDay:"Registros por día",accDay:"Por su cuenta, % por día",flagDay:"Seguimientos por día",brickS:"Cada meta del IEP: dónde empezó, dónde está, a dónde va.",noGoals:"Aún no hay metas IEP en este aparato. Agrégalas en el panel clásico.",baseline:"Inicio",now:"Ahora",laid:"Ladrillos puestos",editGoals:"Agregar o editar metas",repS:"Todo para imprimir o compartir, en un lugar.",open2:"Abrir",pullFirst:"Aún no se ha traído nada de tu Hoja en este aparato. Abre el panel clásico, trae los datos una vez y aparecen aquí.",stuS:"Todos los que conoce la Hoja. Toca un nombre.",find:"Buscar estudiante",name:"Nombre",lastSeen:"Última vez",practice:"Práctica",indep:"Por su cuenta",follow:"dar seguimiento",blueprint:"Su plano",feelings:"Sentimientos",latest:"Último día",thatDay:"Registros ese día",followWeek:"Para seguimiento esta semana",lastDays:"Últimos 5 días",needYou:"Podrían necesitarte",roomFeel:"Cómo se sintió el salón",kind:"Tipo",tools:"Herramientas del maestro",allTools:"Todas las herramientas",classicS:"Todo lo demás, mientras se construye el nuevo.",openClassic:"Abrir el panel clásico"}
+  classic:"El panel clásico",inboxS:"Todo lo que entregaron, por estudiante.",fullPage:"Abrir página completa",goal:"Meta",trendS:"Cómo le ha ido a la clase, día a día.",printPage:"Imprimir esta página",checkinsDay:"Registros por día",accDay:"Por su cuenta, % por día",flagDay:"Seguimientos por día",brickS:"Cada meta del IEP: dónde empezó, dónde está, a dónde va.",noGoals:"Aún no hay metas del IEP en este aparato. Pulsa Nueva meta para agregar una.",baseline:"Inicio",now:"Ahora",laid:"Ladrillos puestos",editGoals:"Agregar o editar metas",repS:"Todo para imprimir o compartir, en un lugar.",open2:"Abrir",pullFirst:"Aún no se ha traído nada de tu Hoja en este aparato. Abre el panel clásico, trae los datos una vez y aparecen aquí.",stuS:"Todos los que conoce la Hoja. Toca un nombre.",find:"Buscar estudiante",name:"Nombre",lastSeen:"Última vez",practice:"Práctica",indep:"Por su cuenta",follow:"dar seguimiento",blueprint:"Su plano",feelings:"Sentimientos",latest:"Último día",thatDay:"Registros ese día",followWeek:"Para seguimiento esta semana",lastDays:"Últimos 5 días",needYou:"Podrían necesitarte",roomFeel:"Cómo se sintió el salón",kind:"Tipo",tools:"Herramientas del maestro",allTools:"Todas las herramientas",classicS:"Todo lo demás, mientras se construye el nuevo.",openClassic:"Abrir el panel clásico"}
 };
 const ICON={today:'<path d="M3 10h18M7 3v4M17 3v4"/><rect x="3" y="5" width="18" height="16" rx="3"/>',students:'<circle cx="9" cy="8" r="3.5"/><path d="M2 20c0-3.5 3-6 7-6s7 2.5 7 6"/><path d="M16 4a3.5 3.5 0 0 1 0 7M22 20c0-3-2-5-5-5.7"/>',checkins:'<path d="M20 6 9 17l-5-5"/>',trends:'<path d="M3 17l6-6 4 4 8-8"/><path d="M14 7h7v7"/>',brick:'<rect x="3" y="4" width="8" height="6" rx="1"/><rect x="13" y="4" width="8" height="6" rx="1"/><rect x="8" y="14" width="8" height="6" rx="1"/>',inbox:'<path d="M22 12h-6l-2 3h-4l-2-3H2"/><path d="M5.5 5h13l3.5 7v6a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-6z"/>',reports:'<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>',setup:'<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1A1.7 1.7 0 0 0 9 19.4a1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1A1.7 1.7 0 0 0 4.6 9a1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/>',dd:'<path d="M4 4h16v16H4z"/><path d="M8 9h8M8 13h8M8 17h5"/>',as:'<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>',sl:'<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>'};
 const svg=n=>'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+ICON[n]+'</svg>';
@@ -196,6 +202,10 @@ const HAND=readHand(), QS=new URLSearchParams(location.search);
 if(HAND){ put("aog.dash2.handed",{items:HAND,dest:QS.get("dest")||"",org:QS.get("org")||"",at:Date.now()}); }
 function studentHref(it){ const h=get("aog.dash2.handed",null); let p=itemPath(it); const q=[];
   const d=(h&&h.dest)||destParam(), o=(h&&h.org)||orgId(); if(d) q.push("dest="+encodeURIComponent(d)); if(o) q.push("org="+encodeURIComponent(o));
+  /* AOG-DASH-SID-V1 — Jimmy: "It asks for a student code after I entered as myself." The name typed under
+     Your work today rides on every slip as sid=, the same param a teacher's link carries, so the slip
+     opens already knowing who it is about. Only the slips: the other pages ask on their own screen. */
+  if(it.t==="slip"){ const nm=String(get(K.stu,"")||"").trim().slice(0,24); if(nm) q.push("sid="+encodeURIComponent(nm)); }
   return q.length? p+(p.indexOf("?")<0?"?":"&")+q.join("&") : p; }
 /* ── what the Sheet sent back (pulled on the classic dashboard, saved on this device) ── */
 function rows(k){ try{ const v=JSON.parse(localStorage.getItem(k)||"[]"); return Array.isArray(v)?v:[]; }catch(e){ return []; } }
@@ -279,7 +289,9 @@ function trends(){
 function iep(){ try{ const o=JSON.parse(localStorage.getItem("aog.iep.v1")||"{}"); return {goals:o.goals||{},data:o.data||{}}; }catch(e){ return {goals:{},data:{}}; } }
 function brick(){
   const I=iep(), ids=Object.keys(I.goals).filter(id=>!I.goals[id].archived);
-  if(!ids.length) return '<div class="hello"><div><h1>'+T("brick")+'</h1><p>'+T("brickS")+'</p></div></div><section class="card"><p class="s" style="margin:0">'+T("noGoals")+'</p><div class="row"><a class="btn solid" href="/#dashboard">'+T("openClassic")+' ›</a></div></section>';
+  const ed=get("aog.dash2.gEdit",""), form=ed==="new"?goalForm(null,""):(ed&&I.goals[ed])?goalForm(I.goals[ed],ed):"";
+  const newBtn='<button class="btn solid" type="button" id="gNew">+ '+t2("New goal","Nueva meta")+'</button>';
+  if(!ids.length) return '<div class="hello"><div><h1>'+T("brick")+'</h1><p>'+T("brickS")+'</p></div><div>'+newBtn+'</div></div>'+form+(form?'':'<section class="card"><p class="s" style="margin:0">'+T("noGoals")+'</p></section>');
   const by={}; ids.forEach(id=>{ const st=I.goals[id].student||"—"; (by[st]=by[st]||[]).push(id); });
   const sel=get("aog.dash2.iepStu",""), names=Object.keys(by).sort(), cur=by[sel]?sel:names[0];
   const cards=by[cur].map(id=>{ const g=I.goals[id], pts=(I.data[id]||[]).map(p=>({l:nice(String(p.date).slice(0,10)),v:+p.value}));
@@ -289,10 +301,9 @@ function brick(){
     return '<section class="card"><p class="k" style="color:var(--goldInk)">'+esc(g.area||"")+' · '+esc(g.intervalLabel||"")+'</p><h2>'+esc(g.title||"")+'</h2>'
      +'<div class="stats" style="grid-template-columns:repeat(3,minmax(0,1fr));margin:10px 0"><div class="stat"><b>'+(base==null?"—":base)+'</b><span>'+T("baseline")+'</span></div><div class="stat"><b>'+(last==null?"—":last)+'</b><span>'+T("now")+'</span></div><div class="stat"><b>'+(tgt==null?"—":tgt)+'</b><span>'+T("goal")+'</span></div></div>'
      +lineSvg(pts,{target:tgt,base:base,c:"#2F63B8"})
-     +'<p class="k" style="color:var(--goldInk);margin-top:10px">'+T("laid")+(pct==null?"":" · "+pct+"%")+'</p><div>'+bricks+'</div></section>'; }).join("");
-  return '<div class="hello"><div><h1>'+T("brick")+'</h1><p>'+T("brickS")+'</p></div><div style="display:flex;gap:8px;flex-wrap:wrap"><select id="iepStu" style="min-width:220px">'+names.map(n=>opt(n,n,n===cur)).join("")+'</select><button class="btn" type="button" onclick="window.print()">🖨 '+T("printPage")+'</button></div></div>'
-   +'<div class="grid3" style="grid-template-columns:repeat(auto-fit,minmax(420px,1fr))">'+cards+'</div>'
-   +'<div class="row"><a class="btn" href="/#dashboard">'+T("editGoals")+' ›</a></div>';
+     +'<p class="k" style="color:var(--goldInk);margin-top:10px">'+T("laid")+(pct==null?"":" · "+pct+"%")+'</p><div>'+bricks+'</div>'+pointForm(id,g)+pointList(id,g)+'</section>'; }).join("");
+  return '<div class="hello"><div><h1>'+T("brick")+'</h1><p>'+T("brickS")+'</p></div><div style="display:flex;gap:8px;flex-wrap:wrap"><select id="iepStu" style="min-width:220px">'+names.map(n=>opt(n,n,n===cur)).join("")+'</select>'+newBtn+'<button class="btn" type="button" onclick="window.print()">🖨 '+T("printPage")+'</button></div></div>'+form
+   +'<div class="grid3" style="grid-template-columns:repeat(auto-fit,minmax(420px,1fr))">'+cards+'</div>';
 }
 function reports(){
   const R=[["mtss","MTSS Report","Informe MTSS","Tiers, movement and a summary for your team.","Niveles, movimiento y resumen para tu equipo.","#mtss","c4"],
@@ -459,7 +470,7 @@ function mtss(){
 function canRead(){ return !!(raw("aog.sync.url")&&raw("aog.sync.key")); }
 function pullBtn(){ return '<span class="pullwrap" style="display:inline-flex;align-items:center;gap:10px;flex-wrap:wrap"><button class="btn solid" type="button" data-pull="1"'+(canRead()?'':' disabled')+'>⟳ '+t2("Refresh from your Sheet","Actualizar desde tu Hoja")+'</button><span class="s" data-pullst style="margin:0">'+(canRead()?(get("aog.dash2.pulledAt","")?t2("Last refreshed","Última actualización")+" "+new Date(get("aog.dash2.pulledAt","")).toLocaleString():""):t2("Connect your Sheet with the read key first (Set up).","Conecta tu Hoja con la clave de lectura primero (Configurar)."))+'</span></span>'; }
 async function pullAll(btn){
-  const url=raw("aog.sync.url"), key=raw("aog.sync.key"), st=document.querySelector("[data-pullst]"), say=m=>{ if(st) st.textContent=m; };
+  const url=raw("aog.sync.url"), key=raw("aog.sync.key"), say=m=>{ document.querySelectorAll("[data-pullst]").forEach(st=>{ st.textContent=m; }); };
   if(!url||!key){ say(t2("Connect your Sheet with the read key first.","Conecta tu Hoja con la clave de lectura primero.")); return; }
   if(btn) btn.disabled=true; say(t2("Pulling…","Trayendo…"));
   const post=b=>fetch(url,{method:"POST",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify(b)}).then(r=>r.json());
@@ -476,6 +487,98 @@ async function pullAll(btn){
   }catch(e){ say(t2("Couldn’t reach the Sheet. Confirm the Web App is deployed to “Anyone” and try again.","No se pudo conectar con la Hoja. Confirma que la Web App esté desplegada para “Cualquiera” e inténtalo otra vez.")); }
   if(btn) btn.disabled=false;
 }
+
+/* ══ AOG-DASH-OVER-V1 (2026-09-26) — everything the classic dashboard still held for a teacher lives here now:
+   the Sheet connection (same three keys, same URL rule, Disconnect is the only thing that erases them),
+   a backup file, Delete everything (keep-list, like the classic page), IEP goals and data points in the same
+   aog.iep.v1 shape the classic charts read, and the adult observation link with the same staff token. */
+const SYNC_RE=/^https:\/\/script\.google\.com\/.*\/exec$/;
+function connectCard(){
+  const u=raw("aog.sync.url"), k=raw("aog.sync.key"), w=raw("aog.sync.writekey");
+  return '<section class="card" style="margin-bottom:16px"><p class="k" style="color:var(--goldInk)">'+T("conn")+'</p><p class="s">'+t2("Paste the Web App link from your Apps Script. The write key lets student links send to your Sheet. The read key (ADMIN_PULL_KEY) lets this device pull answers back.","Pega el enlace de la Web App de tu Apps Script. La clave de escritura deja que los enlaces envíen a tu Hoja. La clave de lectura (ADMIN_PULL_KEY) deja que este aparato traiga las respuestas.")+'</p>'
+   +'<div class="fld"><label for="syU">'+t2("Web App link (ends in /exec)","Enlace de la Web App (termina en /exec)")+'</label><input type="url" id="syU" value="'+esc(u)+'" placeholder="https://script.google.com/…/exec" autocomplete="off" spellcheck="false"></div>'
+   +'<div class="f2"><div class="fld"><label for="syW">'+t2("Write key","Clave de escritura")+'</label><input type="text" id="syW" value="'+esc(w)+'" autocomplete="off"></div><div class="fld"><label for="syK">'+t2("Read key (ADMIN_PULL_KEY)","Clave de lectura (ADMIN_PULL_KEY)")+'</label><input type="text" id="syK" value="'+esc(k)+'" autocomplete="off"></div></div>'
+   +'<div class="row"><button class="btn solid" type="button" id="syS">'+t2("Save","Guardar")+'</button><button class="btn" type="button" id="syT">'+t2("Send a test","Enviar prueba")+'</button>'+(u?'<button class="btn danger" type="button" id="syD">'+t2("Disconnect","Desconectar")+'</button>':'')+'<a class="btn" href="/AoG-Screener-Sync-Code.gs" download>⬇ '+T("gs")+'</a><a class="btn" href="/AoG-Sheet-Setup.pdf" target="_blank" rel="noopener">📄 '+T("guide")+'</a></div>'
+   +'<p class="s" id="syMsg" style="margin:10px 0 0" aria-live="polite"></p></section>';
+}
+function dangerCard(){
+  return '<section class="card"><p class="k" style="color:var(--goldInk)">'+t2("This device","Este aparato")+'</p><p class="s">'+t2("Save a copy of everything on this device, or clear it all. Your Sheet is not touched either way.","Guarda una copia de todo lo que hay en este aparato, o bórralo todo. Tu Hoja no se toca.")+'</p>'
+   +'<div class="row"><button class="btn" type="button" id="bkUp">⬇ '+t2("Download a backup","Descargar copia")+'</button><button class="btn danger" type="button" id="delAll">'+t2("Delete everything on this device","Borrar todo en este aparato")+'</button></div><p class="s" id="delMsg" style="margin:10px 0 0" aria-live="polite"></p></section>';
+}
+const PV_KEEP=/^(aog\.a11y|aog\.theme|aog\.dash\.(role|mode)|aog\.ov\.|aog\.qs\.|aog\.esbanner|aog\.seenNudge|aog\.fv\.|aog\.internal|aog\.lang|aog\.sync\.(url|key|writekey))/;
+function backup(){
+  const device={}; try{ for(let i=0;i<localStorage.length;i++){ const k=localStorage.key(i); if(!k||!/^(aog|grace)/i.test(k)) continue; const v=localStorage.getItem(k); try{ device[k]=JSON.parse(v); }catch(e){ device[k]=v; } } }catch(e){}
+  const blob=new Blob([JSON.stringify({exportedAt:new Date().toISOString(),note:"Architecture of Grace — everything this device holds. Made on your computer, sent nowhere.",device:device},null,1)],{type:"application/json"});
+  const a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download="aog-backup-"+new Date().toISOString().slice(0,10)+".json"; document.body.appendChild(a); a.click(); setTimeout(()=>{ URL.revokeObjectURL(a.href); a.remove(); },500);
+}
+function deleteAll(){
+  if(!confirm(t2("Delete ALL Architecture of Grace data on this device? Every reflection, check-in, IEP goal and data point, and everything pulled from your Sheet. Your Sheet itself keeps its rows. This cannot be undone.","¿Borrar TODOS los datos de Architecture of Grace en este aparato? Cada reflexión, registro, meta del IEP y dato, y todo lo traído de tu Hoja. Tu Hoja conserva sus filas. No se puede deshacer."))) return;
+  /* keep-list, never a delete-list: a new store is erased by default. The Sheet connection survives, as the standing rule says. */
+  const doomed=[]; try{ for(let i=0;i<localStorage.length;i++){ const k=localStorage.key(i); if(k&&/^(aog|grace)/i.test(k)&&!PV_KEEP.test(k)) doomed.push(k); } doomed.forEach(k=>localStorage.removeItem(k)); }catch(e){}
+  try{ sessionStorage.clear(); }catch(e){}
+  const m=document.getElementById("delMsg"); if(m) m.textContent="✓ "+t2("Cleared. This device holds no student data now.","Borrado. Este aparato ya no guarda datos de estudiantes.");
+  setTimeout(render,900);
+}
+function syncSay(m){ const e=document.getElementById("syMsg"); if(e) e.textContent=m; }
+function syncSave(){
+  const u=val("syU").trim(), k=val("syK").trim(), w=val("syW").trim();
+  if(u&&!SYNC_RE.test(u)){ syncSay(t2("That doesn’t look like an Apps Script Web App link. It should start with https://script.google.com/ and end in /exec.","Ese enlace no parece de una Web App de Apps Script. Debe empezar con https://script.google.com/ y terminar en /exec.")); return; }
+  try{ if(u) localStorage.setItem("aog.sync.url",u); else localStorage.removeItem("aog.sync.url"); if(k) localStorage.setItem("aog.sync.key",k); else localStorage.removeItem("aog.sync.key"); if(w) localStorage.setItem("aog.sync.writekey",w); else localStorage.removeItem("aog.sync.writekey"); }catch(e){}
+  render(); syncSay(u?(w?t2("Saved. Student links now send to your Sheet.","Guardado. Los enlaces ahora envían a tu Hoja."):t2("Saved. Add the write key so student links send to your Sheet.","Guardado. Agrega la clave de escritura para que los enlaces envíen a tu Hoja.")):t2("Cleared. Answers stay on each device.","Borrado. Las respuestas quedan en cada aparato."));
+}
+async function syncTest(){
+  const u=val("syU").trim(), k=val("syK").trim(); if(!u){ syncSay(t2("Paste the Web App link first.","Pega el enlace primero.")); return; }
+  syncSay(t2("Sending a test…","Enviando prueba…"));
+  try{ await fetch(u,{method:"POST",mode:"no-cors",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify({passcode:k,ping:true,timestamp:new Date().toISOString()})});
+    syncSay(t2("Sent. Open your Sheet and look for a row marked “(connection test)”. If it’s there, you’re connected.","Enviado. Abre tu Hoja y busca una fila marcada “(connection test)”. Si está, ya estás conectado.")); }
+  catch(e){ syncSay(t2("Couldn’t reach that link. Check the Web App is deployed to “Anyone” and ends in /exec.","No se pudo abrir ese enlace. Revisa que la Web App esté desplegada para “Cualquiera” y termine en /exec.")); }
+}
+function syncDrop(){ if(!confirm(t2("Disconnect this device from your Sheet? Nothing in the Sheet is deleted.","¿Desconectar este aparato de tu Hoja? Nada en la Hoja se borra."))) return; try{ ["aog.sync.url","aog.sync.key","aog.sync.writekey"].forEach(k=>localStorage.removeItem(k)); }catch(e){} render(); syncSay(t2("Disconnected. Answers stay on each device.","Desconectado. Las respuestas quedan en cada aparato.")); }
+
+/* ── the adult observation link: same door and the same staff token as the classic dashboard ── */
+function staffTokenFor(parts){ const msg="AoG-staff-link-v1|"+parts.join("|"); let h1=5381,h2=52711; for(let i=0;i<msg.length;i++){ const c=msg.charCodeAt(i); h1=((h1<<5)+h1+c)|0; h2=((h2<<5)+h2+(c^0x5f))|0; } return ((h1>>>0).toString(36)+(h2>>>0).toString(36)).slice(0,12); }
+function teamLink(){ const p=new URLSearchParams(); p.set("checkin","support"); p.set("who","staff"); p.set("sync","on"); if(L()==="es") p.set("lang","es"); p.set("staffRole","teacher"); const o=orgId(); if(o) p.set("org",o); const d=destParam(); if(d) p.set("dest",d); p.set("sk",staffTokenFor(["support","",""])); return location.origin+"/support?"+p.toString(); }
+function teamCard(){ const u=teamLink(); return '<section class="card" style="margin-top:22px"><p class="k" style="color:var(--goldInk)">'+t2("Adult observation link","Enlace de observación del adulto")+'</p><p class="s">'+t2("For you and your team. It opens the adult form, not a student one. Keep it off the board.","Para ti y tu equipo. Abre el formulario del adulto, no el de un estudiante. No lo pongas en la pizarra.")+'</p><div class="linkbox"><code id="tlk">'+esc(u)+'</code><button class="btn gold" type="button" id="tcp">'+T("copy")+'</button><a class="btn" href="'+esc(u)+'" target="_blank" rel="noopener">'+t2("Open","Abrir")+' ›</a></div></section>'; }
+
+/* ── Brick by brick: goals and data points, in the shape the classic charts read ── */
+const AREAS={math:["Math","Matemáticas"],reading:["Reading","Lectura"],writing:["Writing","Escritura"],social:["Social work","Trabajo social"],speech:["Speech & language","Habla y lenguaje"],ot:["Occupational therapy","Terapia ocupacional"],pt:["Physical therapy","Fisioterapia"],exec:["Executive functioning","Funcionamiento ejecutivo"],behavior:["Behavior","Conducta"],tr_emp:["Transition: Employment","Transición: Empleo"],tr_edu:["Transition: Education & training","Transición: Educación y formación"],tr_ind:["Transition: Independent living","Transición: Vida independiente"],other:["Other","Otro"]};
+const MEAS={percent:["Percent (0–100%)","Porcentaje (0–100%)"],count:["Count / frequency","Conteo / frecuencia"],wcpm:["Words correct per minute","Palabras correctas por minuto"],trials:["Trials (x of y)","Ensayos (x de y)"],duration:["Duration (minutes)","Duración (minutos)"],rating:["Rating (1–5)","Escala (1–5)"],latency:["Latency (time to start)","Latencia (tiempo hasta empezar)"],steps:["Task analysis (x of y steps)","Análisis de tareas (x de y pasos)"],interval:["Frequency per interval","Frecuencia por intervalo"]};
+function iepSave(I){ put("aog.iep.v1",{goals:I.goals,data:I.data}); }
+const todayISO=()=>{ const d=new Date(); return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0"); };
+function goalForm(g,id){
+  g=g||{}; const es=L()==="es", sel=(m,v)=>Object.keys(m).map(k=>opt(k,m[k][es?1:0],k===v)).join("");
+  return '<section class="card" id="gForm" style="margin-bottom:16px"><p class="k" style="color:var(--goldInk)">'+(id?t2("Edit goal","Editar meta"):t2("New goal","Nueva meta"))+'</p>'
+   +'<div class="f2"><div class="fld"><label for="gStu">'+t2("Student","Estudiante")+'</label><input type="text" id="gStu" value="'+esc(g.student||get("aog.dash2.iepStu","")||"")+'" maxlength="60"></div><div class="fld"><label for="gGr">'+T("grade")+'</label><input type="text" id="gGr" value="'+esc(g.grade||"")+'" maxlength="8"></div></div>'
+   +'<div class="fld"><label for="gTitle">'+t2("The goal, in one line","La meta, en una línea")+'</label><input type="text" id="gTitle" value="'+esc(g.title||"")+'" maxlength="160"></div>'
+   +'<div class="f2"><div class="fld"><label for="gArea">'+t2("Area","Área")+'</label><select id="gArea">'+sel(AREAS,g.area||"reading")+'</select></div><div class="fld"><label for="gMeas">'+t2("How it is measured","Cómo se mide")+'</label><select id="gMeas">'+sel(MEAS,g.measure||"percent")+'</select></div></div>'
+   +'<div class="f2"><div class="fld"><label for="gBd">'+t2("Baseline date","Fecha de inicio")+'</label><input type="date" id="gBd" value="'+esc((g.baseline&&g.baseline.date)||todayISO())+'"></div><div class="fld"><label for="gBv">'+t2("Baseline value","Valor de inicio")+'</label><input type="number" id="gBv" step="any" value="'+esc(g.baseline?g.baseline.value:"")+'"></div></div>'
+   +'<div class="f2"><div class="fld"><label for="gTd">'+t2("Target date","Fecha meta")+'</label><input type="date" id="gTd" value="'+esc((g.target&&g.target.date)||"")+'"></div><div class="fld"><label for="gTv">'+t2("Target value","Valor meta")+'</label><input type="number" id="gTv" step="any" value="'+esc(g.target?g.target.value:"")+'"></div></div>'
+   +'<div class="f2"><div class="fld"><label for="gUnit">'+t2("Unit (optional)","Unidad (opcional)")+'</label><input type="text" id="gUnit" value="'+esc(g.unit||"")+'" maxlength="30"></div><div class="fld"><label for="gLow" style="display:flex;gap:8px;align-items:center;min-height:44px"><input type="checkbox" id="gLow" style="min-height:0;width:22px;height:22px"'+(g.lowerBetter?' checked':'')+'> '+t2("Lower is better","Menos es mejor")+'</label></div></div>'
+   +'<div class="fld"><label for="gNotes">'+t2("Notes","Notas")+'</label><textarea id="gNotes" maxlength="600">'+esc(g.notes||"")+'</textarea></div>'
+   +'<div class="row"><button class="btn solid" type="button" id="gSave" data-gid="'+esc(id||"")+'">'+t2("Save goal","Guardar meta")+'</button><button class="btn" type="button" id="gCancel">'+t2("Cancel","Cancelar")+'</button>'+(id?'<button class="btn danger" type="button" id="gArch" data-gid="'+esc(id)+'">'+t2("Archive this goal","Archivar esta meta")+'</button>':'')+'</div><p class="s" id="gMsg" style="margin:10px 0 0" aria-live="polite"></p></section>';
+}
+function goalSave(){
+  const id=document.getElementById("gSave").dataset.gid||("g"+Date.now().toString(36)+Math.random().toString(36).slice(2,7));
+  const stu=val("gStu").trim(), title=val("gTitle").trim(), bd=val("gBd"), td=val("gTd"), bv=val("gBv"), tv=val("gTv"), msg=document.getElementById("gMsg");
+  const ok=/^\d{4}-\d{2}-\d{2}$/;
+  if(!stu||!title){ msg.textContent=t2("Give the student a name and the goal one line.","Pon el nombre del estudiante y la meta en una línea."); return; }
+  if(!ok.test(bd)||!ok.test(td)||bv===""||tv===""){ msg.textContent=t2("Both dates and both values are needed for the aimline.","Se necesitan las dos fechas y los dos valores para la línea meta."); return; }
+  const I=iep(), prev=I.goals[id]||{};
+  I.goals[id]={student:stu,grade:val("gGr").trim(),area:AREAS[val("gArea")]?val("gArea"):"other",title:title,measure:MEAS[val("gMeas")]?val("gMeas"):"percent",unit:val("gUnit").trim(),baseline:{date:bd,value:+bv},target:{date:td,value:+tv},notes:val("gNotes").trim(),archived:!!prev.archived,lowerBetter:document.getElementById("gLow").checked,intervalLabel:prev.intervalLabel||"",xofy:prev.xofy||null,created:prev.created||new Date().toISOString(),updated:new Date().toISOString()};
+  I.data[id]=I.data[id]||[]; iepSave(I); put("aog.dash2.iepStu",stu); put("aog.dash2.gEdit",""); render();
+}
+function pointForm(id,g){ const xy=g.measure==="trials"||g.measure==="steps"||g.measure==="wcpm";
+  return '<div class="f2" style="margin-top:12px"><div class="fld"><label for="pD'+id+'">'+t2("Date","Fecha")+'</label><input type="date" id="pD'+id+'" value="'+todayISO()+'"></div><div class="fld"><label for="pV'+id+'">'+(g.measure==="wcpm"?t2("Words correct","Palabras correctas"):g.measure==="trials"?t2("Trials correct","Ensayos correctos"):g.measure==="steps"?t2("Steps done","Pasos hechos"):t2("Value","Valor"))+'</label><input type="number" id="pV'+id+'" step="any"></div></div>'
+   +(xy?'<div class="fld"><label for="pT'+id+'">'+(g.measure==="wcpm"?t2("Errors","Errores"):t2("Out of","De un total de"))+'</label><input type="number" id="pT'+id+'" step="1" min="0"></div>':'')
+   +'<div class="fld"><label for="pN'+id+'">'+t2("Note (optional)","Nota (opcional)")+'</label><input type="text" id="pN'+id+'" maxlength="140"></div>'
+   +'<div class="row"><button class="btn solid" type="button" data-pt="'+id+'">'+t2("Add data point","Agregar dato")+'</button><button class="btn" type="button" data-gedit="'+id+'">'+t2("Edit goal","Editar meta")+'</button></div>'; }
+function pointSave(id){ const I=iep(), g=I.goals[id]; if(!g) return; const d=val("pD"+id), v=val("pV"+id); if(!/^\d{4}-\d{2}-\d{2}$/.test(d)||v==="") return;
+  const p={date:d,value:+v}; const t=document.getElementById("pT"+id); if(t&&t.value!=="") p.total=+t.value; const n=val("pN"+id).trim(); if(n) p.note=n;
+  I.data[id]=(I.data[id]||[]).concat([p]).sort((a,b)=>a.date<b.date?-1:a.date>b.date?1:0); iepSave(I); render(); }
+function pointDrop(id,i){ const I=iep(); if(!I.data[id]) return; I.data[id].splice(i,1); iepSave(I); render(); }
+function pointList(id,g){ const pts=iep().data[id]||[]; if(!pts.length) return '<p class="s" style="margin:10px 0 0">'+t2("No data points yet.","Aún no hay datos.")+'</p>';
+  return '<details style="margin-top:10px"><summary class="s" style="cursor:pointer">'+pts.length+' '+t2("data points","datos")+'</summary><table class="tbl" style="width:100%;margin-top:6px"><tbody>'+pts.map((p,i)=>'<tr><td>'+nice(String(p.date).slice(0,10))+'</td><td>'+esc(String(p.value))+(p.total!=null?' / '+esc(String(p.total)):'')+'</td><td class="s">'+esc(p.note||"")+'</td><td style="text-align:right"><button class="btn" type="button" style="min-height:32px;padding:0 10px;font-size:13px" data-pdel="'+id+'|'+i+'">✕</button></td></tr>').join("")+'</tbody></table></details>'; }
+
 /* ── the interface ── */
 const L=()=> (document.documentElement.lang||"en").slice(0,2)==="es"?"es":"en", T=k=>TXT[L()][k];
 let VIEW=QS.get("view")==="student"||HAND?"student":get(K.view,"teacher"), PAGE=location.hash.slice(1).replace(/\?.*$/,"")||"today";
@@ -484,6 +587,7 @@ function nav(){
   const items=[["today","today"],["students","students"],["checkins","checkins"],["trends","trends"],["brick","brick"],["inbox","inbox"],["reports","reports"],["mtss","mtss"],["setup","setup"]];
   document.getElementById("nav").innerHTML= VIEW==="student"? '<a href="#today" aria-current="page">'+svg("today")+T("today")+'</a>'
     : items.map(([k,i])=>'<a href="#'+k+'"'+(PAGE===k?' aria-current="page"':'')+'>'+svg(i)+T(k)+'</a>'+(k==="mtss"?'<div class="sep"></div>':'')).join("");
+  const rp=document.getElementById("railPull"); if(rp) rp.innerHTML= VIEW==="student"? "" : '<button type="button" data-pull="1"'+(canRead()?"":" disabled")+'>⟳ '+t2("Pull from Sheet","Traer de la Hoja")+'</button><span class="st" data-pullst>'+(canRead()?(get("aog.dash2.pulledAt","")?t2("Last pulled","Última vez")+" "+new Date(get("aog.dash2.pulledAt","")).toLocaleString([],{dateStyle:"short",timeStyle:"short"}):t2("Brings back what students sent.","Trae lo que enviaron los estudiantes.")):t2("Add the read key in Set up first.","Agrega la clave de lectura en Configurar."))+'</span>';
   document.querySelectorAll("[data-view]").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.view===VIEW)));
   /* a student who came by the class link never sees the teacher switch */
   const v=document.querySelector('.view'); if(v) v.style.display=(HAND||QS.get('view')==='student')?'none':'';
@@ -517,7 +621,7 @@ function today(){
     +(tr.length?'<p class="k" style="color:var(--goldInk)">'+T("link")+'</p><div class="linkbox"><code id="lk">'+esc(link)+'</code><button class="btn gold" type="button" id="cp">'+T("copy")+'</button><button class="btn" type="button" id="bg">'+T("show")+'</button><a class="btn" href="'+esc(link)+'" target="_blank" rel="noopener">'+T("open")+'</a></div>'
       +(conn?'':'<p class="warn">'+T("nosheet")+'</p>'):'')
   +'</section>'
-  +'<section class="card" style="margin-top:22px" data-aog-after-tray><p class="k" style="color:var(--goldInk)">'+T("tools")+'</p><div class="row">'+TOOLS.map(x=>'<a class="btn" href="/#opentool='+x[0]+'">'+x[lang==="es"?2:1]+'</a>').join("")+'<a class="btn" href="/#tools">'+T("allTools")+' ›</a></div></section>';
+  +'<section class="card" style="margin-top:22px" data-aog-after-tray><p class="k" style="color:var(--goldInk)">'+T("tools")+'</p><div class="row">'+TOOLS.map(x=>'<a class="btn" href="/#opentool='+x[0]+'">'+x[lang==="es"?2:1]+'</a>').join("")+'<a class="btn" href="/#tools">'+T("allTools")+' ›</a></div></section>'+teamCard();
 }
 /* AOG-DASH-SENT-V1 — a tick on today's work once something from that page went to the teacher from this device */
 function sentToday(it){ const f=itemPath(it).replace(/^\/|\?.*$/g,""), d=new Date().toISOString().slice(0,10); return get("aog.dash2.sent",[]).some(x=>x&&x.f===f&&String(x.at||"").slice(0,10)===d); }
@@ -532,13 +636,13 @@ function setup(){
   const conn=!!destParam();
   return '<div class="hello"><div><h1>'+T("setupH")+'</h1><p>'+T("setupS")+'</p></div><span class="pill '+(conn?"ok":"")+'"><span class="dot"></span>'+T(conn?"ok":"no")+'</span></div>'
    +'<section class="card" style="margin-bottom:16px"><p class="k" style="color:var(--goldInk)">'+t2("Bring in what students sent","Trae lo que enviaron los estudiantes")+'</p><p class="s">'+t2("Reflections, check-ins, team logs and finished practice come back from your Sheet to this device. Reading needs the ADMIN_PULL_KEY saved as the passcode.","Reflexiones, registros, notas del equipo y práctica terminada vuelven de tu Hoja a este aparato. Leer requiere la ADMIN_PULL_KEY guardada como contraseña.")+'</p>'+pullBtn()+(canRead()?'':'<p class="s" style="margin:10px 0 0">'+t2("Reading is not set up on this device yet: this device can send, but not read back.","Este aparato aún no puede leer: puede enviar, pero no traer de vuelta.")+'</p>')+'</section>'
-   +'<div class="grid3" style="grid-template-columns:repeat(2,minmax(0,1fr))">'
-   +'<section class="card hand" style="--ac:var(--c2)"><div class="ic">'+svg("setup")+'</div><h2>'+T("conn")+'</h2><p class="s">'+T("connS")+'</p><div class="row"><a class="btn solid" href="/#dashboard">'+T("openConn")+'</a><a class="btn" href="/AoG-Screener-Sync-Code.gs" download>⬇ '+T("gs")+'</a><a class="btn" href="/AoG-Sheet-Setup.pdf" target="_blank" rel="noopener">📄 '+T("guide")+'</a></div></section>'
-   +'<section class="card hand" style="--ac:var(--c4)"><div class="ic">'+svg("reports")+'</div><h2>'+T("classic")+'</h2><p class="s">'+T("classicS")+'</p><div class="row"><a class="btn solid" href="/#dashboard">'+T("openClassic")+'</a></div></section>'
-   +'</div>';
+   +connectCard()+dangerCard();
 }
-function inbox(){ return '<div class="hello"><div><h1>'+T("inbox")+'</h1><p>'+T("inboxS")+'</p></div><a class="btn" href="/turn-ins.html" target="_blank" rel="noopener">'+T("fullPage")+' ›</a></div><iframe src="/turn-ins.html?embed=1" title="'+T("inbox")+'" style="width:100%;height:calc(100vh - 190px);min-height:520px;border:1px solid var(--line);border-radius:18px;background:#fff;box-shadow:var(--shadow)"></iframe>'; }
-function soon(){ return '<div class="hello"><div><h1>'+T(PAGE)+'</h1><p>'+T("soon")+'</p></div></div><div class="row"><a class="btn solid" href="/#dashboard">'+T("openClassic")+' ›</a>'+(PAGE==="inbox"?'<a class="btn" href="/turn-ins.html">'+T("inbox")+' ›</a>':'')+'</div>'; }
+function inbox(){ const head='<div class="hello"><div><h1>'+T("inbox")+'</h1><p>'+T("inboxS")+'</p></div><a class="btn" href="/turn-ins.html" target="_blank" rel="noopener">'+T("fullPage")+' ›</a></div>';
+  /* AOG-DASH-INBOX-PHONE-V1 — a page inside a page stutters when a phone scrolls it (Jimmy: "freezing"). On a phone the Inbox opens as its own page. */
+  if(matchMedia("(max-width:760px)").matches) return head+'<section class="card"><p class="s">'+t2("On a phone the Inbox opens as its own page, so it scrolls smoothly.","En un teléfono la Bandeja se abre como su propia página, para que se deslice bien.")+'</p><div class="row"><a class="btn solid" href="/turn-ins.html">'+t2("Open the Inbox","Abrir la Bandeja")+' ›</a></div></section>';
+  return head+'<iframe src="/turn-ins.html?embed=1" title="'+T("inbox")+'" style="width:100%;height:calc(100vh - 190px);min-height:520px;border:1px solid var(--line);border-radius:18px;background:#fff;box-shadow:var(--shadow)"></iframe>'; }
+function soon(){ return '<div class="hello"><div><h1>'+T("today")+'</h1><p>'+T("soon")+'</p></div></div><div class="row"><a class="btn solid" href="#today">'+T("today")+' ›</a></div>'; }
 function render(){
   nav(); const app=document.getElementById("app");
   app.innerHTML = VIEW==="student"? student() : PAGE==="today"? today() : PAGE==="setup"? setup() : PAGE==="students"? students() : PAGE==="checkins"? checkins() : PAGE==="trends"? trends() : PAGE==="brick"? brick() : PAGE==="reports"? reports() : PAGE==="mtss"? mtss() : PAGE==="inbox"? inbox() : soon();
@@ -576,6 +680,14 @@ function wire(){
   on("q","input",()=>{ put("aog.dash2.q",val("q")); const c=document.getElementById("q").selectionStart; render(); const e=document.getElementById("q"); if(e){e.focus();e.setSelectionRange(c,c);} });
   document.querySelectorAll("[data-stu]").forEach(e=>e.addEventListener("click",()=>{ put("aog.dash2.sel",e.dataset.stu); if(PAGE!=="students"){ location.hash="students"; } else render(); window.scrollTo(0,0); }));
   on("iepStu","change",()=>{ put("aog.dash2.iepStu",val("iepStu")); render(); });
+  on("syS","click",syncSave); on("syT","click",syncTest); on("syD","click",syncDrop); on("bkUp","click",backup); on("delAll","click",deleteAll);
+  on("tcp","click",async()=>{ const b=document.getElementById("tcp"); try{ await navigator.clipboard.writeText(teamLink()); b.textContent=T("copied"); }catch(e){ const r=document.createRange(); r.selectNode(document.getElementById("tlk")); getSelection().removeAllRanges(); getSelection().addRange(r); } });
+  on("gNew","click",()=>{ put("aog.dash2.gEdit","new"); render(); const f=document.getElementById("gForm"); if(f) f.scrollIntoView({block:"start"}); });
+  on("gCancel","click",()=>{ put("aog.dash2.gEdit",""); render(); }); on("gSave","click",goalSave);
+  on("gArch","click",()=>{ const id=document.getElementById("gArch").dataset.gid, I=iep(); if(!I.goals[id]) return; if(!confirm(t2("Archive this goal? Its data stays saved.","¿Archivar esta meta? Sus datos se conservan."))) return; I.goals[id].archived=true; iepSave(I); put("aog.dash2.gEdit",""); render(); });
+  document.querySelectorAll("[data-gedit]").forEach(b=>b.onclick=()=>{ put("aog.dash2.gEdit",b.dataset.gedit); render(); const f=document.getElementById("gForm"); if(f) f.scrollIntoView({block:"start"}); });
+  document.querySelectorAll("[data-pt]").forEach(b=>b.onclick=()=>pointSave(b.dataset.pt));
+  document.querySelectorAll("[data-pdel]").forEach(b=>b.onclick=()=>{ const [id,i]=b.dataset.pdel.split("|"); pointDrop(id,+i); });
   on("backStu","click",()=>{ put("aog.dash2.sel",""); render(); });
   on("stN","input",()=>{ const v=val("stN"); put(K.stu,v); try{ localStorage.setItem("aog.drops.who",v); }catch(e){} });
 }
