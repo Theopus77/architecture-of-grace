@@ -16,7 +16,7 @@
     /* feelings */
     "good":"🙂","calm":"😌","focused":"🎯","confident":"💪","hopeful":"🌱","proud":"⭐","happy":"😊","excited":"🎉",
     "wired":"⚡","tired":"😴","worried":"😟","sad":"😢","lonely":"🫂","overwhelmed":"🌊","frustrated":"😤","angry":"😠",
-    "embarrassed":"😳","numb":"😶","i’m not sure":"🤔","i'm not sure":"🤔","i’d rather not say":"🔒","i'd rather not say":"🔒",
+    "embarrassed":"😳","stretched thin":"🪢","happy":"😊","mad":"😠","scared":"😨","silly":"🤪","loved":"💛","bored":"😐","nervous":"😬","safe":"🏡","grumpy":"😒","numb":"😶","i’m not sure":"🤔","i'm not sure":"🤔","i’d rather not say":"🔒","i'd rather not say":"🔒",
     /* needs */
     "i’m okay":"👍","i'm okay":"👍","a quiet minute":"🤫","a break":"☕","to move":"🏃","some space":"🫧","help":"🙋",
     "help getting started":"🚦","more time":"⏳","clearer directions":"🧭","someone to listen":"👂","encouragement":"💬",
@@ -34,7 +34,7 @@
       var dot = b.querySelector(".sc-dot");
       if (dot) { dot.innerHTML = '<span class="aogic" aria-hidden="true">' + STEP[v] + "</span>"; }
     });
-    D.querySelectorAll("#screen-daily-checkin .sc-chip:not([data-aogic]), #screen-exit-slip .xs-chip:not([data-aogic])").forEach(function (b, i) {
+    D.querySelectorAll("#screen-daily-checkin .sc-chip:not([data-aogic]), #screen-exit-slip .xs-chip:not([data-aogic]), .fdx-chip:not([data-aogic])").forEach(function (b, i) {
       b.setAttribute("data-aogic", "1");
       var ic = IC[key(b)] || IC[String(b.textContent || "").trim().toLowerCase()];
       if (ic) b.insertAdjacentHTML("afterbegin", '<span class="aogic" aria-hidden="true">' + ic + "</span>");
@@ -54,7 +54,7 @@
     "background-image:radial-gradient(120% 90% at 30% 15%,rgba(255,255,255,.3),rgba(255,255,255,0) 60%)!important}",
     "#screen-daily-checkin .sc-s[aria-pressed=true] .lab{color:#fff!important}",
     /* feelings, needs and classes: tiles with a picture */
-    "#screen-daily-checkin .sc-chip, #screen-exit-slip .xs-chip{display:inline-flex!important;align-items:center;gap:8px;min-height:48px!important;",
+    "#screen-daily-checkin .sc-chip, #screen-exit-slip .xs-chip, .fdx-chip{display:inline-flex!important;align-items:center;gap:8px;min-height:48px!important;",
     "border:2px solid #1E1F22!important;border-radius:14px!important;background:#FFFDF8!important;color:#15202E!important;",
     "box-shadow:0 0 0 1px rgba(242,201,100,.45)!important;padding:8px 14px!important;font-weight:600!important}",
     "#screen-daily-checkin .sc-chip .aogic, #screen-exit-slip .xs-chip .aogic{font-size:20px}",

@@ -121,6 +121,27 @@
   }
   var t = 0;
   function soon() { clearTimeout(t); t = setTimeout(run, 120); }
+  /* AOG-BACK-RESCUE-V1 (2026-09-26) — Jimmy: pressing Back sometimes left a blank
+     page ("the stoppage … THESE ALL HAVE THE BACK ISSUE"). After any Back, Forward
+     or return from the browser's page cache: if no room is showing words, route
+     the address again; if still nothing, go home. And never leave the page
+     scrolled past the end of a shorter room. */
+  function rescue() {
+    var act = D.querySelector("section.screen.active");
+    var empty = !act || act.offsetHeight < 80 || (act.innerText || "").replace(/\s+/g, "").length < 20;
+    if (empty) {
+      try { if (typeof window.aogRouteFromHash === "function") window.aogRouteFromHash(); } catch (e) {}
+      setTimeout(function () {
+        var a2 = D.querySelector("section.screen.active");
+        if ((!a2 || (a2.innerText || "").replace(/\s+/g, "").length < 20) && typeof window.showScreen === "function") { try { window.showScreen("screen-welcome"); } catch (e) {} }
+      }, 300);
+    }
+    var maxY = Math.max(0, D.documentElement.scrollHeight - window.innerHeight);
+    if (window.scrollY > maxY - 2 || empty) window.scrollTo(0, 0);
+  }
+  window.addEventListener("popstate", function () { setTimeout(rescue, 350); });
+  window.addEventListener("hashchange", function () { setTimeout(rescue, 350); });
+  window.addEventListener("pageshow", function (e) { if (e.persisted) setTimeout(rescue, 350); });
   function start() {
     D.head.appendChild(css); run();
     /* the rooms are drawn a moment after load and on every page switch: look again then */
