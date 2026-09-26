@@ -259,7 +259,11 @@
   var accent = get(K_ACCENT, "gold");
   if (accent && accent !== "gold" && /^(teal|violet|rose|sky|green)$/.test(accent)) H.setAttribute("data-accent", accent);
 
-  var storedTheme = get(K_THEME, null) || get(K_THEME_LEGACY, null);
+  /* AOG-LIGHT-START-V1 (2026-09-26) — Jimmy: "Start all the pages in this color scheme."
+     Every page opens light: navy masthead, cream page. Once, on each device, any old saved
+     choice goes back to light; after that the Dark button still works and is remembered. */
+  if (get("aog.theme.lightstart.v1", null) !== "1") { set(K_THEME, "light"); set(K_THEME_LEGACY, "light"); set("aog.theme.lightstart.v1", "1"); }
+  var storedTheme = get(K_THEME, null) || get(K_THEME_LEGACY, null) || "light";
   if (storedTheme === "dark" || storedTheme === "light") {
     H.setAttribute("data-theme", storedTheme);
     set(K_THEME, storedTheme); set(K_THEME_LEGACY, storedTheme);
