@@ -426,6 +426,9 @@ const STR = {
   polarizer:{en:"Polarizer",es:"Polarizador"},
   crossed:{en:"Crossed",es:"Cruzados"},
   oil:{en:"Immersion oil",es:"Aceite de inmersión"},
+  lens:{en:"Lenses",es:"Lentes"},
+  quartz:{en:"Quartz",es:"Cuarzo"},
+  glass:{en:"Glass",es:"Vidrio"},
   oilOn:{en:"On the 100×",es:"En el 100×"},
   oilOff:{en:"Wipe off",es:"Sin aceite"},
   oilNeed:{en:"100× is built to look through a drop of oil. Without it the image stays dim and soft — that is physics, not a broken lens.",es:"El 100× está hecho para mirar a través de una gota de aceite. Sin él la imagen se queda tenue y blanda — eso es física, no un lente roto."},
@@ -820,7 +823,7 @@ const S = {
   page:"home", lang:"en", theme:"light", teacher:"open",
   met:{}, findBest:0, jobBest:0, cracked:0, missions:{low:true},
   sel:null, walk:-1, playing:false, moreOpen:false,
-  lab:{lightOn:false,clipped:false,cracked:false,obj:4,coarse:18,fine:40,dia:70,eyeTwist:22,spec:"e",panX:0,panY:0,illum:"bright",stain:"none",filter:"day",graticule:false,measure:false,polar:90,oil:false,mA:null,mB:null,prism:false,band:88,dfNote:false},
+  lab:{lightOn:false,clipped:false,cracked:false,obj:4,coarse:18,fine:40,dia:70,eyeTwist:22,spec:"e",panX:0,panY:0,illum:"bright",stain:"none",filter:"day",graticule:false,measure:false,polar:90,oil:false,mA:null,mB:null,prism:false,band:88,dfNote:false,quartz:true},
   find:null, job:null
 };
 try {
@@ -994,6 +997,7 @@ function instrumentHTML(){
     <div class="row"><span class="tiny">${t("lamp")}</span><span>${btn(L.lightOn,"lamp1",t("on"))}${btn(!L.lightOn,"lamp0",t("off"))}</span></div>
     <div class="row"><span class="tiny">${t("clips")}</span><span>${btn(L.clipped,"clip1",t("seated"))}${btn(!L.clipped,"clip0",t("loose"))}</span></div>
     <div class="row"><span class="tiny">${t("objective")}</span><span>${objs.map(o=>btn(L.obj===o,"obj"+o,o+"×")).join("")}</span></div>
+    <div class="row"><span class="tiny">${t("lens")}</span><span>${btn(L.quartz,"quartz1",t("quartz"))}${btn(!L.quartz,"quartz0",t("glass"))}</span></div>
     ${L.obj===100?`<div class="row"><span class="tiny">${t("oil")}</span><span>${btn(L.oil,"oil1",t("oilOn"))}${btn(!L.oil,"oil0",t("oilOff"))}</span></div>`:""}
     ${step>=2?`<div class="row"><span class="tiny">${t("stain")}</span><span>${STAINS.filter(s=>stains.includes(s.id)).map(s=>btn(L.stain===s.id,"stain-"+s.id,`<i class="swatch" style="background:${s.color}"></i>${s.id==="none"?(S.lang==="es"?"Nada":"None"):s.id==="methylene"?(S.lang==="es"?"Metileno":"Methylene"):t(s.key)}`)).join("")}</span></div>
     <div class="row"><span class="tiny">${t("illum")}</span><span>${illumBtns}</span></div>`:""}
@@ -2642,7 +2646,7 @@ function drawCheek(ctx,L){
    Jimmy: "a dog hair with ticks ... the artist of the 1%." A hard-tick nymph (8 legs, about
    1.2 mm) holding on across dog guard hairs and fine undercoat. Everything is drawn in slide
    units, so 4× shows the whole animal and 1000× shows the barbs on its mouthparts. */
-const DOG_W=300, DOG_H=220;
+const DOG_W=440, DOG_H=330;
 const TICK={x:6,y:4,a:-.42};
 function dogHairs(){
   if(dogHairs.v) return dogHairs.v;
@@ -2711,31 +2715,61 @@ function dogHair(ctx,h,det,L,ob){
   ctx.restore();
 }
 /* the tick, in its own frame: front (mouthparts) toward -y, about 140 units nose to tail */
-function tickLegPts(side,i){
-  const base=[[28,-34],[34,-24],[36,-12],[35,0]][i], th0=[-1.05,-.38,.22,.72][i];
+/* AOG-SCOPE-TICK-LIVE-V1 (2026-09-26) — Jimmy: "the tick should be alive and moving." It walks
+   the hairs slowly with the gait ticks use (legs in two alternating sets), stops now and then and
+   waves its first legs — questing, the way a tick searches for a host. Reduced motion: it holds still. */
+const TICKPOSE={x:TICK.x,y:TICK.y,a:TICK.a,gp:0,mv:0,q:0,pp:0};
+function tickPose(now,reduced){
+  const P=TICKPOSE;
+  if(reduced){ P.x=TICK.x; P.y=TICK.y; P.a=TICK.a; P.gp=0; P.mv=0; P.q=0; P.pp=0; return P; }
+  const t=now/1000, rate=.5*(1+Math.cos(.35*t)), u=.036*(t+Math.sin(.35*t)/.35);
+  P.x=TICK.x+24*Math.sin(u); P.y=TICK.y+10*Math.sin(u*1.7+1);
+  const dx=24*Math.cos(u), dy=17*Math.cos(u*1.7+1);
+  P.a=Math.atan2(dy,dx)+Math.PI/2; P.mv=rate; P.gp=u*95; P.q=t; P.pp=t*2.1;
+  return P;
+}
+function tickLegPts(side,i,pose){
+  const base=[[28,-34],[34,-24],[36,-12],[35,0]][i];
+  let th0=[-1.05,-.38,.22,.72][i];
+  if(pose){
+    const setA=(side>0)===(i%2===0), sw=.2*pose.mv;
+    th0+=sw*Math.sin(pose.gp+(setA?0:Math.PI));
+    if(i===0) th0+=.32*(1-pose.mv)*Math.sin(pose.q*2.6+(side>0?0:1.3));
+  }
   const bend=[[-.25,-.12,.28,.12,.1,.05],[.02,.1,.3,.1,.1,.05],[.02,.2,.28,.15,.08,.04],[.0,.18,.24,.1,.08,.04]][i];
   const len=[7,6,17,9,13,13].map(v=>v*(i===0?1.05:i===3?1.08:1)), wid=[7.6,7,6.4,5.4,4.6,3.6];
   let x=base[0], y=base[1], th=th0; const pts=[[x,y]];
   for(let k=0;k<6;k++){ th+=bend[k]; x+=Math.cos(th)*len[k]; y+=Math.sin(th)*len[k]; pts.push([x,y]); }
   return {pts:pts.map(p=>[p[0]*side,p[1]]), wid};
 }
-function tickLeg(ctx,side,i,det){
-  const {pts,wid}=tickLegPts(side,i);
+function tickLeg(ctx,side,i,det,pose){
+  const {pts,wid}=tickLegPts(side,i,pose);
+  const pat=det?chitinPattern(ctx):null;
   for(let k=0;k<6;k++){
-    const p=pts[k], q=pts[k+1], w=wid[k];
-    ctx.lineCap="round";
-    ctx.beginPath(); ctx.moveTo(p[0],p[1]); ctx.lineTo(q[0],q[1]);
-    ctx.strokeStyle="rgba(86,44,18,.95)"; ctx.lineWidth=w; ctx.stroke();
-    ctx.strokeStyle="rgba(176,112,58,.95)"; ctx.lineWidth=w*.74; ctx.stroke();
-    const nx=-(q[1]-p[1]), ny=(q[0]-p[0]), nl=Math.hypot(nx,ny)||1, ox=nx/nl*w*.18, oy=ny/nl*w*.18;
-    ctx.beginPath(); ctx.moveTo(p[0]-ox,p[1]-oy); ctx.lineTo(q[0]-ox,q[1]-oy); ctx.strokeStyle="rgba(236,190,130,.55)"; ctx.lineWidth=w*.2; ctx.stroke();
-    ctx.beginPath(); ctx.arc(q[0],q[1],w*.42,0,Math.PI*2); ctx.fillStyle="rgba(96,52,22,.55)"; ctx.fill();
+    const p=pts[k], q=pts[k+1], w0=wid[k]*.5, w1=(k<5?wid[k+1]:wid[k]*.7)*.5*.92;
+    const dx=q[0]-p[0], dy=q[1]-p[1], L=Math.hypot(dx,dy)||1, ux=dx/L, uy=dy/L, nx=-uy, ny=ux;
+    /* a segment: narrow at each joint, fuller in the middle */
+    const seg=()=>{ ctx.beginPath();
+      const m=[p[0]+dx*.5,p[1]+dy*.5], wm=Math.max(w0,w1)*1.08;
+      ctx.moveTo(p[0]+nx*w0*.8,p[1]+ny*w0*.8);
+      ctx.quadraticCurveTo(m[0]+nx*wm*1.05,m[1]+ny*wm*1.05,q[0]+nx*w1*.8,q[1]+ny*w1*.8);
+      ctx.lineTo(q[0]-nx*w1*.8,q[1]-ny*w1*.8);
+      ctx.quadraticCurveTo(m[0]-nx*wm*1.05,m[1]-ny*wm*1.05,p[0]-nx*w0*.8,p[1]-ny*w0*.8);
+      ctx.closePath(); };
+    seg();
+    const g=ctx.createLinearGradient(p[0]+nx*w0*1.1,p[1]+ny*w0*1.1,p[0]-nx*w0*1.1,p[1]-ny*w0*1.1);
+    g.addColorStop(0,"rgba(88,50,22,.96)"); g.addColorStop(.22,"rgba(150,98,50,.9)"); g.addColorStop(.5,"rgba(196,146,88,.82)");
+    g.addColorStop(.78,"rgba(146,94,46,.9)"); g.addColorStop(1,"rgba(80,44,18,.96)");
+    ctx.fillStyle=g; ctx.fill();
+    if(pat){ ctx.save(); ctx.globalCompositeOperation="multiply"; ctx.globalAlpha=.35; ctx.fillStyle=pat; ctx.fill(); ctx.restore(); }
+    ctx.strokeStyle="rgba(60,32,12,.55)"; ctx.lineWidth=det?.22:.4; ctx.stroke();
+    /* pale joint membrane where segments meet */
+    ctx.beginPath(); ctx.ellipse(q[0],q[1],w1*.62,w1*.28,Math.atan2(dy,dx)+Math.PI/2,0,Math.PI*2); ctx.fillStyle="rgba(226,196,150,.55)"; ctx.fill();
     if(det){
-      /* bristles, angled toward the foot */
-      const dx=(q[0]-p[0]), dy=(q[1]-p[1]), rng=mulberry32(i*31+k*7+(side>0?1:2));
-      ctx.beginPath();
-      for(let s=0;s<3+k;s++){ const t=.15+rng()*.75, bx=p[0]+dx*t, by=p[1]+dy*t, sd=rng()<.5?-1:1, ex=bx+sd*nx/nl*w*.9+dx/Math.hypot(dx,dy)*w*.6, ey=by+sd*ny/nl*w*.9+dy/Math.hypot(dx,dy)*w*.6; ctx.moveTo(bx+sd*nx/nl*w*.36,by+sd*ny/nl*w*.36); ctx.lineTo(ex,ey); }
-      ctx.strokeStyle="rgba(90,50,20,.7)"; ctx.lineWidth=.22; ctx.stroke();
+      const rng=mulberry32(i*31+k*7+(side>0?1:2)); ctx.beginPath();
+      for(let s2=0;s2<5+k*2;s2++){ const t=.1+rng()*.85, sd=rng()<.5?-1:1, bx=p[0]+dx*t+nx*sd*Math.max(w0,w1)*.85, by=p[1]+dy*t+ny*sd*Math.max(w0,w1)*.85, l=1.2+rng()*1.8;
+        ctx.moveTo(bx,by); ctx.quadraticCurveTo(bx+nx*sd*l*.5+ux*l*.3,by+ny*sd*l*.5+uy*l*.3,bx+nx*sd*l*.6+ux*l,by+ny*sd*l*.6+uy*l); }
+      ctx.strokeStyle="rgba(58,30,10,.55)"; ctx.lineWidth=.12; ctx.stroke();
     }
   }
   /* the foot: two hooked claws and a pad */
@@ -2747,6 +2781,21 @@ function tickLeg(ctx,side,i,det){
   if(i===0&&det){ /* Haller's organ: a sensing pit on the first foot */
     const m=[(pts[5][0]+pts[6][0])/2,(pts[5][1]+pts[6][1])/2]; ctx.beginPath(); ctx.ellipse(m[0],m[1],1.1,.7,ang,0,Math.PI*2); ctx.fillStyle="rgba(60,30,12,.6)"; ctx.fill(); ctx.strokeStyle="rgba(240,210,160,.6)"; ctx.lineWidth=.18; ctx.stroke();
   }
+}
+/* a mottled, translucent chitin texture — transmitted light shows thick and thin cuticle */
+function chitinPattern(ctx){
+  if(!chitinPattern.c){
+    const c=mkCan(256,256), g=c.getContext("2d"), r=mulberry32(0xc417);
+    g.fillStyle="#808080"; g.fillRect(0,0,256,256);
+    for(let i=0;i<1400;i++){ const x=r()*256, y=r()*256, rr=2+r()*14, v=r()<.5?40:215;
+      const gr=g.createRadialGradient(x,y,0,x,y,rr); gr.addColorStop(0,`rgba(${v},${v},${v},${.05+r()*.12})`); gr.addColorStop(1,`rgba(${v},${v},${v},0)`);
+      g.fillStyle=gr; g.fillRect(x-rr,y-rr,rr*2,rr*2); }
+    for(let i=0;i<9000;i++){ const v=r()<.5?60:200; g.fillStyle=`rgba(${v},${v},${v},${.05+r()*.1})`; g.fillRect(r()*256,r()*256,1,1); }
+    chitinPattern.c=c;
+  }
+  const pat=ctx.createPattern(chitinPattern.c,"repeat");
+  try{ pat.setTransform(new DOMMatrix().scale(.12)); }catch(e){}
+  return pat;
 }
 function tickBodyPath(ctx){
   ctx.beginPath();
@@ -2760,16 +2809,18 @@ function tickBodyPath(ctx){
     ctx.quadraticCurveTo(xm,ym,x1,y1); }
   ctx.closePath();
 }
-function drawTick(ctx,det,ob){
-  ctx.save(); ctx.translate(TICK.x,TICK.y); ctx.rotate(TICK.a);
+function drawTick(ctx,det,ob,pose){
+  const T=pose||TICK;
+  ctx.save(); ctx.translate(T.x,T.y); ctx.rotate(T.a);
   /* shadow on the hairs and the glass */
   ctx.save(); ctx.translate(2.4,3.2); tickBodyPath(ctx); ctx.fillStyle="rgba(30,18,8,.22)"; ctx.fill(); ctx.restore();
-  for(let i=0;i<4;i++){ tickLeg(ctx,1,i,det); tickLeg(ctx,-1,i,det); }
+  for(let i=0;i<4;i++){ tickLeg(ctx,1,i,det,pose); tickLeg(ctx,-1,i,det,pose); }
   /* body: leathery, translucent at the rim, the gut darker inside */
   tickBodyPath(ctx);
   const bg=ctx.createRadialGradient(-6,4,4,0,10,56);
-  bg.addColorStop(0,"rgba(206,150,86,.96)"); bg.addColorStop(.7,"rgba(168,108,54,.96)"); bg.addColorStop(1,"rgba(112,62,26,.97)");
+  bg.addColorStop(0,"rgba(196,146,90,.9)"); bg.addColorStop(.6,"rgba(160,108,60,.92)"); bg.addColorStop(.92,"rgba(110,66,30,.95)"); bg.addColorStop(1,"rgba(70,38,14,.97)");
   ctx.fillStyle=bg; ctx.fill();
+  if(det){ ctx.save(); ctx.globalCompositeOperation="multiply"; ctx.globalAlpha=.45; ctx.fillStyle=chitinPattern(ctx); ctx.fill(); ctx.restore(); }
   ctx.save(); tickBodyPath(ctx); ctx.clip();
   const rng=mulberry32(0x71c4);
   ctx.beginPath(); ctx.ellipse(0,14,11,30,0,0,Math.PI*2);
@@ -2777,9 +2828,9 @@ function drawTick(ctx,det,ob){
   ctx.filter="blur(3px)"; ctx.fillStyle="rgba(70,32,10,.13)"; ctx.fill(); ctx.filter="none";
   if(det){
     /* the cuticle: fine ridges running round the body like a fingerprint */
-    ctx.strokeStyle="rgba(80,40,14,.2)"; ctx.lineWidth=ob>=40?.12:.25;
+    ctx.strokeStyle="rgba(70,36,12,.09)"; ctx.lineWidth=ob>=40?.1:.2;
     for(let k=1;k<(ob>=40?60:26);k++){ const f=k/(ob>=40?60:26); ctx.beginPath(); for(let t=0;t<=64;t++){ const a=t/64*Math.PI*2, wob=Math.sin(a*9+k)*.5+Math.sin(a*23+k*1.7)*.25; const x=Math.cos(a)*(36*f+wob), y=10+Math.sin(a)*(50*f+wob); t?ctx.lineTo(x,y):ctx.moveTo(x,y); } ctx.stroke(); }
-    ctx.strokeStyle="rgba(255,230,190,.12)"; ctx.lineWidth=.08;
+    ctx.strokeStyle="rgba(255,230,190,.05)"; ctx.lineWidth=.08;
     for(let k=1;k<30;k++){ const f=k/30+.008; ctx.beginPath(); ctx.ellipse(0,10,36*f,50*f,0,0,Math.PI*2); ctx.stroke(); }
     /* body bristles in pairs */
     ctx.beginPath();
@@ -2798,12 +2849,13 @@ function drawTick(ctx,det,ob){
   /* the shield (scutum): harder, darker, glossy, pitted */
   const sc=()=>{ ctx.beginPath(); ctx.moveTo(-23,-41); ctx.bezierCurveTo(-34,-30,-33,-10,-20,0); ctx.quadraticCurveTo(0,12,20,0); ctx.bezierCurveTo(33,-10,34,-30,23,-41); ctx.closePath(); };
   sc(); const sg=ctx.createRadialGradient(-8,-26,2,0,-18,34);
-  sg.addColorStop(0,"rgba(150,78,38,.98)"); sg.addColorStop(.6,"rgba(112,52,24,.98)"); sg.addColorStop(1,"rgba(74,32,14,.98)");
+  sg.addColorStop(0,"rgba(128,74,40,.97)"); sg.addColorStop(.6,"rgba(98,54,26,.98)"); sg.addColorStop(1,"rgba(58,28,10,.98)");
   ctx.fillStyle=sg; ctx.fill(); ctx.strokeStyle="rgba(50,20,8,.9)"; ctx.lineWidth=.5; ctx.stroke();
   ctx.save(); sc(); ctx.clip();
   /* cream enamel marks, the pattern many dog ticks carry */
   ctx.beginPath(); ctx.ellipse(-15,-16,6,10,.35,0,Math.PI*2); ctx.ellipse(15,-16,6,10,-.35,0,Math.PI*2); ctx.ellipse(0,-4,9,4,0,0,Math.PI*2);
-  ctx.filter="blur(1.5px)"; ctx.fillStyle="rgba(226,208,176,.26)"; ctx.fill(); ctx.filter="none";
+  ctx.filter="blur(3px)"; ctx.fillStyle="rgba(206,180,140,.12)"; ctx.fill(); ctx.filter="none";
+  if(det){ ctx.save(); ctx.globalCompositeOperation="multiply"; ctx.globalAlpha=.5; ctx.fillStyle=chitinPattern(ctx); ctx.fillRect(-40,-50,80,70); ctx.restore(); }
   ctx.beginPath(); ctx.moveTo(-12,-40); ctx.quadraticCurveTo(-9,-24,-14,-8); ctx.moveTo(12,-40); ctx.quadraticCurveTo(9,-24,14,-8);
   ctx.strokeStyle="rgba(50,20,8,.5)"; ctx.lineWidth=.9; ctx.stroke();
   if(det){
@@ -2812,7 +2864,7 @@ function drawTick(ctx,det,ob){
     ctx.fillStyle="rgba(40,14,4,.32)"; ctx.fill();
     ctx.beginPath(); pits.forEach(([x,y,r])=>{ ctx.moveTo(x+r*.4-.15,y-r*.3); ctx.arc(x-.15,y-r*.3,r*.4,0,Math.PI*2); }); ctx.fillStyle="rgba(255,220,180,.22)"; ctx.fill();
   }
-  const gl=ctx.createLinearGradient(-20,-40,10,0); gl.addColorStop(0,"rgba(255,240,220,.28)"); gl.addColorStop(.35,"rgba(255,240,220,0)");
+  const gl=ctx.createLinearGradient(-20,-40,10,0); gl.addColorStop(0,"rgba(255,240,220,.1)"); gl.addColorStop(.35,"rgba(255,240,220,0)");
   ctx.fillStyle=gl; ctx.fillRect(-40,-50,80,60);
   ctx.restore();
   /* eyes at the shield edge */
@@ -2834,11 +2886,13 @@ function drawTick(ctx,det,ob){
   }
   /* palps: club-shaped, two visible segments each, bristled */
   [-1,1].forEach(s=>{
+    ctx.save(); if(pose){ ctx.translate(s*4,-50); ctx.rotate(s*.08*Math.sin(pose.pp+(s>0?0:1.1))); ctx.translate(-s*4,50); }
     ctx.beginPath(); ctx.moveTo(s*4,-50); ctx.quadraticCurveTo(s*11,-54,s*10.5,-63); ctx.quadraticCurveTo(s*9.5,-70,s*5.6,-69); ctx.quadraticCurveTo(s*4.2,-60,s*4,-50); ctx.closePath();
     const pg=ctx.createLinearGradient(s*4,0,s*11,0); pg.addColorStop(0,"rgba(186,122,64,.97)"); pg.addColorStop(1,"rgba(120,62,26,.97)");
     ctx.fillStyle=pg; ctx.fill(); ctx.strokeStyle="rgba(56,24,8,.9)"; ctx.lineWidth=.4; ctx.stroke();
     ctx.beginPath(); ctx.moveTo(s*4.4,-58); ctx.quadraticCurveTo(s*8,-59.5,s*10.8,-58); ctx.strokeStyle="rgba(60,26,10,.6)"; ctx.lineWidth=.35; ctx.stroke();
     if(det){ ctx.beginPath(); for(let k=0;k<7;k++){ const y=-52-k*2.4; ctx.moveTo(s*(9+Math.sin(k)*.8),y); ctx.lineTo(s*(12.4+Math.sin(k)*.8),y-1.4); } ctx.strokeStyle="rgba(70,32,12,.75)"; ctx.lineWidth=.22; ctx.stroke(); }
+    ctx.restore();
   });
   ctx.restore();
 }
@@ -2847,17 +2901,18 @@ function dogBg(ctx){
   speckle(ctx,DOG_W,DOG_H,0xd07,6000,[120,100,70],.02,.06,.35);
   airBubble(ctx,-110,-70,9); airBubble(ctx,120,80,6);
 }
-function drawDog(ctx,L){
+function drawDog(ctx,L,now,reduced){
   ctx.fillStyle="#ede7d4"; ctx.fillRect(-900,-900,1800,1800);
-  if(!SLIDE.dog) SLIDE.dog=bakeUnits(DOG_W,DOG_H,6,c=>{ dogBg(c); dogHairs().forEach(h=>dogHair(c,h,false,null,4)); drawTick(c,false,4); });
-  if(!L||L.obj<10){ blit(ctx,SLIDE.dog); return; }
+  if(!SLIDE.dog) SLIDE.dog=bakeUnits(DOG_W,DOG_H,6,c=>{ dogBg(c); dogHairs().forEach(h=>dogHair(c,h,false,null,4)); });
+  const pose=tickPose(now||0, reduced||!L);
+  if(!L||L.obj<10){ blit(ctx,SLIDE.dog); drawTick(ctx,false,4,pose); return; }
   cachedView(ctx,L,"dog",vc=>{
     dogBg(vc);
     const hs=dogHairs(), under=hs.filter(h=>h.k==="under"), guard=hs.filter(h=>h.k==="guard");
     under.forEach(h=>dogHair(vc,h,true,L,L.obj));
     guard.forEach(h=>dogHair(vc,h,true,L,L.obj));
-    if(inView(L,TICK.x,TICK.y,90)) drawTick(vc,true,L.obj);
   });
+  if(inView(L,pose.x,pose.y,90)) drawTick(ctx,true,L.obj,pose);
 }
 function ensureSlides(){
   if(SLIDE.ready) return;
@@ -3477,7 +3532,7 @@ function drawSpec(ctx, now, L, reduced, dt){
   else if(L.spec==="diatom") drawDiatoms(ctx, L);
   else if(L.spec==="crystal") drawCrystals(ctx, L);
   else if(L.spec==="hairs") drawHairs(ctx, L);
-  else if(L.spec==="dog") drawDog(ctx, L);
+  else if(L.spec==="dog") drawDog(ctx, L, now, reduced);
   else if(L.spec==="bact"){
     blit(ctx, SLIDE.bact);
     const step=dt||0.016;
@@ -3538,7 +3593,10 @@ function specNote(spec){
   if(o===100 && !L.oil && spec.id!=="scale" && spec.id!=="e")
     line+=es?" Sin aceite el 100× se queda blando.":" Without oil the 100× stays soft.";
   if(L.dfNote) line+=t("dfBlock");
-  if(L.lightOn) line+=S.lang==="es"
+  if(L.lightOn && L.quartz!==false) line+=es
+    ? " Lentes de cuarzo fundido: el vidrio más puro, sin borde de color, y dejan pasar el ultravioleta. Más nítido — pero la luz sigue siendo el límite."
+    : " Fused-quartz lenses: the purest glass, no colour fringe, and they pass ultraviolet. Sharper — but light is still the limit.";
+  else if(L.lightOn) line+=S.lang==="es"
     ? " Un borde violeta es el acromático, no la muestra. El polvo que gira con el ocular está en el ocular."
     : " A purple edge is the achromat, not the specimen. Dust that turns with the eyepiece is on the eyepiece.";
   return line;
@@ -3671,6 +3729,8 @@ function startEye(){
       const iris=.35+(L.dia/100)*.65, bright=.35+(L.dia/100)*.7;
       let blur=blurPx(L.coarse,L.fine,L.obj) + (L.obj===100 && !L.oil ? 7 : 0);
       if(L.prism) blur *= 0.84 + (bandNm(L.band)-420)/230*0.26;
+      /* AOG-SCOPE-QUARTZ-V1 — fused-quartz objectives: purer glass, no colour fringe, a crisper edge */
+      if(L.quartz!==false) blur *= 0.78;
       const zoom=(L.obj/4)*(w/420);
       if(!startEye.field) startEye.field=mkCan(64,64);
       const field=startEye.field;
@@ -3684,7 +3744,7 @@ function startEye(){
       drawSpec(fctx, now, L, reduced, dt);
       fctx.restore();
       applyOptics(fctx, w, h, L);
-      achromatFringe(fctx, field, w, h, w/2, h/2, Math.min(w,h)*.46, L.obj===4?0.28:L.obj===10?0.5:L.obj===40?0.95:1.2);
+      achromatFringe(fctx, field, w, h, w/2, h/2, Math.min(w,h)*.46, (L.obj===4?0.28:L.obj===10?0.5:L.obj===40?0.95:1.2)*(L.quartz!==false?0.12:1));
       if(blur<0.7){
         ctx.drawImage(field, 0, 0);
       } else {
@@ -3842,6 +3902,7 @@ function paint(){
         L.obj=100;
         if(L.illum==="dark"){ L.illum="bright"; L.dfNote=true; }
       }
+      if(a==="quartz1") L.quartz=true; if(a==="quartz0") L.quartz=false;
       if(a==="oil1") L.oil=true; if(a==="oil0") L.oil=false;
       if(a==="rife"){ L.lightOn=true; L.clipped=true; L.spec="pond"; L.stain="none"; L.illum="dark"; L.filter="day"; L.prism=false; L.obj=4; L.oil=false; L.dfNote=false; L.panX=0; L.panY=0; L.mA=null; L.mB=null; if(L.cracked){ L.cracked=false; L.coarse=18; L.fine=40; } }
       if(a==="universal"){
