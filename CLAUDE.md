@@ -56,6 +56,20 @@ buttons, instructions, help text and empty-state messages, in English and Spanis
 - Leave curriculum content alone (lessons, novels, worksheets, questions,
   crosswalks, quoted standards): those words are the teaching.
 
+## Drop-down menus, not walls of tabs (standing order from Jimmy, 2026-09-26)
+
+"There is too much happening … We need drop down menus … make it a permanent
+call moving forward." On the Educator Dashboard and every page after it:
+
+- A row of four or more section, tab or link choices is a drop-down, not a
+  row of buttons. `aog-dropdowns.js` does this: list the row in its `ROWS`, or
+  give the row `data-aog-dropdown="Label|Etiqueta"`. The old buttons stay in
+  the page and the menu presses them, so nothing else has to change.
+- Rows of actions (Save, Copy, Download) stay as buttons; only choices of
+  *where to look* become menus.
+- Say a thing once. One short line per screen, not the same description in
+  three places.
+
 ## Housekeeping
 
 - Bump `const CACHE` in `aog-deploy/sw.js` whenever a page changes, so browsers

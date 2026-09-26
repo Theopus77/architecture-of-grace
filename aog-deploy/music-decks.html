@@ -309,9 +309,9 @@ const STR = {
   filter:{en:"Filter",es:"Filtro"},
   bpmWait:{en:"listening…",es:"escuchando…"},
   noBeat:{en:"no steady beat",es:"sin pulso claro"},
-  bench:{en:"From the drum bench",es:"Del banco de ritmo"},
-  benchNone:{en:"Bounce a pattern from the drum bench and it lands here.",es:"Rebota un patrón del banco de ritmo y aparece aquí."},
-  benchGo:{en:"Open the drum bench",es:"Abrir el banco de ritmo"},
+  bench:{en:"From the drum machine",es:"De la caja de ritmos"},
+  benchNone:{en:"Bounce a pattern from the drum machine and it lands here.",es:"Rebota un patrón de la caja de ritmos y aparece aquí."},
+  benchGo:{en:"Open the drum machine",es:"Abrir la caja de ritmos"},
   crateNext:{en:"Up next — the crate",es:"Lo que sigue — la caja"},
   crateNextNone:{en:"Line up the songs you plan to spin, before you start. They stay here, even if you close the tab.",es:"Prepara las canciones que vas a tocar antes de empezar. Se quedan aquí aunque cierres la pestaña."},
   crateAdd:{en:"Add songs",es:"Agregar canciones"},
@@ -336,7 +336,7 @@ const STR = {
   toA:{en:"Onto deck A",es:"Al plato A"},
   toB:{en:"Onto deck B",es:"Al plato B"},
   full:{en:"Ten minutes is the limit — recording stopped.",es:"Diez minutos es el límite — grabación detenida."},
-  drums:{en:"Drum bench",es:"Banco de ritmo"},
+  drums:{en:"Drum machine",es:"Caja de ritmos"},
   sci:{en:"Science door",es:"Puerta de ciencias"},
   dark:{en:"Dark",es:"Oscuro"}, light:{en:"Light",es:"Claro"}
 };
@@ -372,7 +372,7 @@ function ctx(){
   if(!actx){
     const AC = window.AudioContext||window.webkitAudioContext;
     actx = new AC({ latencyHint:"interactive" });
-    /* AOG-DECKS-LOUDNESS-V1 — the same treatment the drum bench got: a normal
+    /* AOG-DECKS-LOUDNESS-V1 — the same treatment the drum machine got: a normal
        level with a real limiter behind it, so two loud songs at once still
        cannot clip. The last 6% is deliberately left alone. */
     master = actx.createGain(); master.gain.value = 0.94;
@@ -671,7 +671,7 @@ function paintTape(){
   });
 }
 /* ══ AOG-DECKS-FROM-BENCH-V1 (2026-09-23) ════════════════════════════════════
-   The drum bench bounces its pattern onto a shelf both benches can reach
+   The drum machine bounces its pattern onto a shelf both benches can reach
    (aog-handoff.js); here it is a beat you drop on a platter. So: your own beat
    on deck B, a song on deck A, scratch over it, and Record keeps the lot. */
 let benchTake = null;

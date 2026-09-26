@@ -1,0 +1,32 @@
+/* ══ AOG-PRACTICE-GLASS-V1 (2026-09-26) — the practice pages, upgraded ═══════
+   Jimmy asked for the inside of the practice pages to get the same upgrade as
+   the check-in: glass tiles, a picture on every choice, one clear gold next
+   step. aog-grace.js loads this on the practice pages (c1…, h1…, m1…, v1…).
+   Screen only; nothing moves; every tile 44px or taller. */
+@media screen {
+  /* answer tiles and choices: leaded glass */
+  .tile, .opt, .choice2 .btn, .nl-acts .btn-big {
+    min-height:48px; border:2px solid #1E1F22 !important; border-radius:14px !important;
+    box-shadow:0 0 0 1px rgba(242,201,100,.45), inset 0 4px 0 var(--pg, #2F63B8) !important;
+  }
+  .tiles > :nth-child(4n+1), .opts > :nth-child(4n+1){--pg:#2F63B8} .tiles > :nth-child(4n+2), .opts > :nth-child(4n+2){--pg:#B8457A}
+  .tiles > :nth-child(4n+3), .opts > :nth-child(4n+3){--pg:#2E8B57} .tiles > :nth-child(4n+4), .opts > :nth-child(4n+4){--pg:#B87A12}
+  /* the confidence row: five glass panes, storm to sun */
+  .conf-row .conf-b {
+    min-height:64px; border:2px solid #1E1F22 !important; border-radius:14px !important;
+    box-shadow:0 0 0 1px rgba(242,201,100,.45), inset 0 5px 0 var(--pg) !important;
+  }
+  .conf-row .conf-b:nth-child(1){--pg:#4A5A8C} .conf-row .conf-b:nth-child(2){--pg:#3F4AA6} .conf-row .conf-b:nth-child(3){--pg:#1F8080}
+  .conf-row .conf-b:nth-child(4){--pg:#2E8B57} .conf-row .conf-b:nth-child(5){--pg:#B87A12}
+  .conf-row .conf-b[aria-pressed="true"], .conf-row .conf-b.on, .conf-row .conf-b.sel {
+    background:var(--pg) !important; color:#fff !important;
+    background-image:radial-gradient(120% 90% at 30% 15%,rgba(255,255,255,.3),rgba(255,255,255,0) 60%) !important;
+  }
+  .conf-row .conf-b[aria-pressed="true"] *, .conf-row .conf-b.on *, .conf-row .conf-b.sel * { color:#fff !important; }
+  .aogpic { display:block; font-size:22px; line-height:1.1; font-family:"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif; }
+  /* one clear next step: the accent buttons are gold glass */
+  .btn.btn-accent {
+    background:#C9A24A !important; color:#0A1E33 !important; border:2px solid #1E1F22 !important;
+    background-image:radial-gradient(120% 90% at 30% 15%,rgba(255,255,255,.35),rgba(255,255,255,0) 60%) !important;
+  }
+}

@@ -1,7 +1,7 @@
 /* ══ AOG-MUSIC-HANDOFF-V1 (2026-09-23) ════════════════════════════════════════
    A shelf the two music benches can both reach. Jimmy: "Can we hook up the drum
    sampler to these?" Two pages cannot share one audio engine — a browser gives
-   each tab its own — so the drum bench BOUNCES its pattern to audio and leaves
+   each tab its own — so the drum machine BOUNCES its pattern to audio and leaves
    it here, and the Turntables pick it up and put it on a platter. Nothing goes
    near a network: this is IndexedDB, on this computer, in this browser.
    Anything left here is replaced by the next bounce. ═══════════════════════ */

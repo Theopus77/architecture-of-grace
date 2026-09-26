@@ -7,7 +7,7 @@
      250 Hz, a bell at 1 kHz, a high shelf at 4 kHz — each ±26 dB, each with a
      KILL that takes the band out completely. That is what a Pioneer or a Rane
      does, and it is what a hand reaches for mid-mix.
-   · THE DRUM BENCH gets a console strip: four bands, and the two middle ones
+   · THE DRUM MACHINE gets a console strip: four bands, and the two middle ones
      SWEEP — you hunt for the frequency, then cut or lift it. That is how a
      record was EQ'd onto tape in 1987, one drum at a time.
    · THE CURVE IS NOT A DRAWING. What the display shows is the filters' own

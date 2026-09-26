@@ -52,6 +52,15 @@
       var gl = D.createElement("link"); gl.rel = "stylesheet"; gl.href = "/aog-glass-rooms.css"; (D.head || H).appendChild(gl);
     }
   } catch (e) {}
+  /* AOG-PRACTICE-GLASS-V1 (2026-09-26) — the practice pages (c1…, h1…, m1…,
+     v1…) get the same glass tiles and pictures as the check-in. */
+  try {
+    var ps = (location.pathname.split("/").pop() || "");
+    if (/^[chmv]\d+-/.test(ps)) {
+      var pl = D.createElement("link"); pl.rel = "stylesheet"; pl.href = "/aog-practice.css"; (D.head || H).appendChild(pl);
+      var pj = D.createElement("script"); pj.src = "/aog-practice.js"; pj.defer = true; (D.head || H).appendChild(pj);
+    }
+  } catch (e) {}
   /* AOG-MINE-V1 — a private copy of what this learner sends, for their own Blueprint */
   try { var mn = D.createElement("script"); mn.src = "/aog-mine.js"; (D.head || H).appendChild(mn); } catch (e) {}
   var FONTS = "https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..700&family=Inter:wght@300;400;500;600;700;800&display=swap";
