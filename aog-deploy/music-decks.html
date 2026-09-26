@@ -36,8 +36,13 @@ header{display:flex;justify-content:space-between;align-items:center;gap:.75rem;
 button,label.file{font:inherit;cursor:pointer;touch-action:none}
 .kicker{font-size:.75rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--steel)}
 .lead{max-width:66ch;color:var(--muted)}
-.decks{display:grid;gap:1rem;margin-top:1rem}
-@media(min-width:800px){.decks{grid-template-columns:1fr 1fr}}
+/* AOG-DECKS-FIT-V1 (2026-09-26): Jimmy's iPhone showed Deck B wider than the
+   screen once a song loaded. The waveform is drawn at twice its width, and a
+   grid column of plain 1fr lets that picture push the column wider every
+   redraw. minmax(0,1fr) and min-width:0 keep each deck the width of the screen. */
+.decks{display:grid;gap:1rem;margin-top:1rem;grid-template-columns:minmax(0,1fr)}
+.deck{min-width:0}
+@media(min-width:800px){.decks{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}}
 .deck{
   background:radial-gradient(140% 90% at 50% -10%,#4a545f,#171c22 70%);
   border-radius:20px;padding:14px;color:#efe8dc;border:1px solid #0c0f13;
