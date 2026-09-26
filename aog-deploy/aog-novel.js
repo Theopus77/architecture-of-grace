@@ -61,8 +61,31 @@
   var pretty = function (k) { return String(k || "").toLowerCase().replace(/(^|\s|-)\S/g, function (m) { return m.toUpperCase(); }); };
 
   /* ── render one section ───────────────────────────────────────────────── */
+  /* the book's Contents, as the manuscript has it: every part and chapter a link (AOG-NOVEL-TOC-V1 —
+     Jimmy: "They were interactive fyi" — the PDFs' contents pages and outline jump to each chapter) */
+  var renderToc = function (push) {
+    at = -1; stopSay();
+    page.className = "nv-page toc";
+    var h = '<p class="kicker">' + esc(book.room) + '</p><h2>' + T("Contents", "Índice") + '</h2><p class="where">' + esc(book.title) + '</p><ol class="toc">';
+    for (var i = 0; i < book.sections.length; i++) {
+      var s = book.sections[i];
+      if (s.kind === "part") h += '<li class="part"><a href="?ch=' + i + '" data-go="' + i + '"><span class="k">' + esc(pretty(s.kicker) || T("Part", "Parte") + " " + s.n) + '</span><span class="t">' + esc(s.title) + '</span></a></li>';
+      else if (s.kind === "chapter") h += '<li><a href="?ch=' + i + '" data-go="' + i + '"><span class="k">' + esc(pretty(s.kicker) || T("Chapter", "Capítulo") + " " + s.n) + '</span><span class="t">' + esc(s.title) + '</span></a></li>';
+      else h += '<li class="note"><a href="?ch=' + i + '" data-go="' + i + '"><span class="t">' + esc(s.title) + '</span></a></li>';
+    }
+    h += "</ol>";
+    page.innerHTML = h;
+    $("#nvPick").value = "-1";
+    pager.innerHTML = '<span></span><button class="nv-btn next primary" type="button" data-go="0"><small>' + T("Begin", "Empezar") + '</small><span class="t">' + esc(label(book.sections[0])) + "</span></button>";
+    $("#nvPrev").disabled = true; $("#nvNext").disabled = false;
+    ls.set("aog.novel." + KEY + ".at", -1);
+    try { var u = new URL(location.href); u.searchParams.set("ch", "toc"); if (push) history.pushState({ ch: -1 }, "", u); else history.replaceState({ ch: -1 }, "", u); } catch (e) {}
+    D.title = T("Contents", "Índice") + " · " + book.title + " · Architecture of Grace";
+    if (push) window.scrollTo(0, Math.max(0, page.getBoundingClientRect().top + window.pageYOffset - 120));
+  };
   var render = function (i, push) {
     if (!book) return;
+    if (i < 0) return renderToc(push);
     i = Math.max(0, Math.min(book.sections.length - 1, i | 0));
     at = i; stopSay();
     var s = book.sections[i];
@@ -88,9 +111,10 @@
     /* the pager */
     var prev = i > 0 ? book.sections[i - 1] : null, next = i < book.sections.length - 1 ? book.sections[i + 1] : null;
     pager.innerHTML =
-      (prev ? '<button class="nv-btn prev" type="button" data-go="' + (i - 1) + '"><small>' + T("Previous", "Anterior") + '</small><span class="t">' + esc(label(prev)) + "</span></button>" : "<span></span>") +
+      (prev ? '<button class="nv-btn prev" type="button" data-go="' + (i - 1) + '"><small>' + T("Previous", "Anterior") + '</small><span class="t">' + esc(label(prev)) + "</span></button>"
+            : '<button class="nv-btn prev" type="button" data-go="-1"><small>' + T("Back to", "Volver a") + '</small><span class="t">' + T("Contents", "Índice") + "</span></button>") +
       (next ? '<button class="nv-btn next primary" type="button" data-go="' + (i + 1) + '"><small>' + T("Next", "Siguiente") + '</small><span class="t">' + esc(label(next)) + "</span></button>" : "<span></span>");
-    $("#nvPrev").disabled = !prev; $("#nvNext").disabled = !next;
+    $("#nvPrev").disabled = false; $("#nvNext").disabled = !next;
     ls.set("aog.novel." + KEY + ".at", i);
     try {
       var u = new URL(location.href); u.searchParams.set("ch", i);
@@ -138,6 +162,7 @@
   $("#nvPrev").addEventListener("click", function () { render(at - 1, true); });
   $("#nvNext").addEventListener("click", function () { render(at + 1, true); });
   pager.addEventListener("click", function (e) { var b = e.target.closest("[data-go]"); if (b) render(parseInt(b.getAttribute("data-go"), 10), true); });
+  page.addEventListener("click", function (e) { var b = e.target.closest("[data-go]"); if (b) { e.preventDefault(); render(parseInt(b.getAttribute("data-go"), 10), true); } });
   window.addEventListener("popstate", function (e) { if (e.state && typeof e.state.ch === "number") render(e.state.ch, false); });
   D.addEventListener("keydown", function (e) {
     if (e.altKey || e.ctrlKey || e.metaKey) return;
@@ -161,7 +186,7 @@
       if (s.kind === "chapter") { s.n = ++nc; chapters.push(i); }
       if (s.kind === "part") s.n = ++np;
     }
-    var pick = $("#nvPick"), h = "", grp = null;
+    var pick = $("#nvPick"), h = '<option value="-1">' + T("Contents", "Índice") + "</option>", grp = null;
     for (var j = 0; j < book.sections.length; j++) {
       var sec = book.sections[j];
       if (sec.kind === "part") { if (grp) h += "</optgroup>"; grp = sec; h += '<optgroup label="' + esc(T("Part", "Parte") + " " + sec.n + " · " + sec.title) + '">'; }
@@ -170,9 +195,9 @@
     if (grp) h += "</optgroup>";
     pick.innerHTML = h;
     foot.innerHTML = esc(book.title) + " · " + esc(book.author) + ' · <a href="' + esc(book.pdf) + '" target="_blank" rel="noopener">' + T("The whole book (PDF)", "El libro entero (PDF)") + "</a>";
-    var want = 0;
-    try { var q = new URL(location.href).searchParams.get("ch"); if (q != null && q !== "") want = parseInt(q, 10); else { var m = parseInt(ls.get("aog.novel." + KEY + ".at"), 10); if (m >= 0) want = m; } } catch (e) {}
-    if (!(want >= 0)) want = 0;
+    var want = -1;   /* a first visit opens on the Contents */
+    try { var q = new URL(location.href).searchParams.get("ch"); if (q === "toc") want = -1; else if (q != null && q !== "") want = parseInt(q, 10); else { var m = parseInt(ls.get("aog.novel." + KEY + ".at"), 10); if (m >= -1) want = m; } } catch (e) {}
+    if (!(want >= -1)) want = -1;
     render(want, false);
   };
   try {
