@@ -106,6 +106,63 @@
         }
       }).catch(function () {});
     } catch (e) {}
+    /* 1c — AOG-SEL-CARDPAGES-V1 (2026-09-26) — ONE LESSON'S CARDS AT A TIME. Jimmy: "I don't like
+       all the scrolling between lessons and units." The scenario-card pages showed every card in
+       one long wall. Now a Lesson menu (units → lessons), Previous / Next, and only that lesson's
+       cards on screen; "All lessons" brings the wall back; a #u1l3 link from a lesson page opens
+       that lesson. Screen only: Print the deck still prints everything. */
+    try {
+      if (/^room-(12|18|36|104|207)-cards$/.test(slug)) {
+        var es2 = /^es/i.test(H.lang || "");
+        var blocksC = Array.prototype.slice.call(D.querySelectorAll(".lessonblk[id]"));
+        if (blocksC.length > 2) {
+          var KEYC = "aog.sel.cards." + slug, ALL = "all";
+          var labelOf = function (b) { var sh = b.querySelector(".sh"); if (!sh) return b.id; var n = sh.querySelector(".sn"), t = sh.querySelector("h3, h4"); return (n && t) ? n.textContent.trim() + " · " + t.textContent.trim() : sh.textContent.replace(/\s+/g, " ").trim(); };
+          var unitOf = function (b) { var u = b.closest(".unit-spread"); var h = u && u.querySelector("h2"); return h ? h.textContent.replace(/\s+/g, " ").trim() : (b.getAttribute("data-unit") || ""); };
+          var boxC = D.createElement("div"); boxC.className = "aog-cardpager no-print";
+          var selC = D.createElement("select"); selC.setAttribute("aria-label", es2 ? "Elige una lección" : "Pick a lesson");
+          var oAllC = D.createElement("option"); oAllC.value = ALL; oAllC.textContent = es2 ? "Todas las lecciones" : "All lessons"; selC.appendChild(oAllC);
+          var gC = null, gnameC = "";
+          blocksC.forEach(function (b) {
+            var un = unitOf(b);
+            if (un !== gnameC) { gC = D.createElement("optgroup"); gC.label = un; selC.appendChild(gC); gnameC = un; }
+            var oC = D.createElement("option"); oC.value = b.id; oC.textContent = labelOf(b); (gC || selC).appendChild(oC);
+          });
+          var prevC = D.createElement("button"), nextC = D.createElement("button");
+          prevC.type = nextC.type = "button"; prevC.className = "nv-btn"; nextC.className = "nv-btn primary";
+          prevC.innerHTML = "&#8249; " + (es2 ? "Anterior" : "Previous"); nextC.innerHTML = (es2 ? "Siguiente" : "Next") + " &#8250;";
+          var labC = D.createElement("label"); labC.innerHTML = '<span class="k">' + (es2 ? "Lección" : "Lesson") + "</span>"; labC.appendChild(selC);
+          boxC.appendChild(labC); boxC.appendChild(prevC); boxC.appendChild(nextC);
+          var firstC = D.querySelector(".unit-spread"); if (firstC) firstC.parentNode.insertBefore(boxC, firstC);
+          var curC = ALL;
+          var showC = function (id, push) {
+            curC = id; selC.value = id;
+            var idx = -1;
+            blocksC.forEach(function (b, i) { var on = id === ALL || b.id === id; if (b.id === id) idx = i; if (on) b.removeAttribute("data-aog-page"); else b.setAttribute("data-aog-page", "1"); });
+            Array.prototype.forEach.call(D.querySelectorAll(".unit-spread"), function (u) { var any = u.querySelector(".lessonblk:not([data-aog-page])"); if (any) u.removeAttribute("data-aog-page"); else u.setAttribute("data-aog-page", "1"); });
+            prevC.disabled = id === ALL || idx <= 0; nextC.disabled = id === ALL || idx >= blocksC.length - 1;
+            ls.set(KEYC, id);
+            try { var u2 = new URL(location.href); if (id === ALL) u2.searchParams["delete"]("lesson"); else u2.searchParams.set("lesson", id); u2.hash = ""; if (push) history.pushState({ lesson: id }, "", u2); else history.replaceState({ lesson: id }, "", u2); } catch (e) {}
+            if (push) { try { boxC.scrollIntoView({ block: "start", behavior: "auto" }); window.scrollBy(0, -70); } catch (e) {} }
+          };
+          selC.addEventListener("change", function () { showC(selC.value, true); });
+          prevC.addEventListener("click", function () { var i = blocksC.findIndex(function (b) { return b.id === curC; }); if (i > 0) showC(blocksC[i - 1].id, true); });
+          nextC.addEventListener("click", function () { var i = blocksC.findIndex(function (b) { return b.id === curC; }); if (i < blocksC.length - 1) showC(blocksC[i + 1].id, true); });
+          window.addEventListener("popstate", function (e) { if (e.state && e.state.lesson) showC(e.state.lesson, false); });
+          /* the unit buttons already on the page ("Show Unit 1") open that unit's first lesson */
+          var startC = ALL;
+          try {
+            var h = (location.hash || "").replace("#", ""), q = new URL(location.href).searchParams.get("lesson");
+            if (q && D.getElementById(q)) startC = q;
+            else if (h && D.getElementById(h) && D.getElementById(h).classList.contains("lessonblk")) startC = h;
+            else if (h && D.getElementById(h) && D.getElementById(h).closest(".lessonblk")) startC = D.getElementById(h).closest(".lessonblk").id;
+            else { var m = ls.get(KEYC); if (m && (m === ALL || D.getElementById(m))) startC = m; else startC = blocksC[0].id; }
+          } catch (e) { startC = blocksC[0].id; }
+          showC(startC, false);
+          if (startC !== ALL && location.hash) { var tgt = D.getElementById(location.hash.slice(1)); if (tgt) setTimeout(function () { tgt.scrollIntoView({ block: "start" }); window.scrollBy(0, -80); }, 50); }
+        }
+      }
+    } catch (e) {}
     /* 2 — the novel in the room menu */
     try {
       if (room && NOVELS[room]) {
