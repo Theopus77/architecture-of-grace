@@ -2714,3 +2714,33 @@
   }
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", add); else add();
 })();
+/* AOG-BENCH-PAIRS-V1 (2026-09-26) — Jimmy: "Can it go lab then manual, lab then its manual."
+   Wherever the benches are listed (the home door, the Explore menu), each manual moves to sit
+   right under its own instrument. The drum machine and turntables manuals are the picture guides. */
+(function () {
+  var PAIRS = [
+    [/microscope-guide/, /(^|\/)(microscope|science-microscope(\.html)?)$/],
+    [/telescope-guide/, /(^|\/)(telescope|science-telescope|telescope\.html)$/],
+    [/oscilloscope-guide/, /(^|\/)(oscilloscope|waves|science-waves(\.html)?)$/],
+    [/drums-guide/, /(^|\/)(drums|drum-machine|music-drums(\.html)?)$/],
+    [/decks-guide/, /(^|\/)(turntables|decks|music-decks(\.html)?)$/]
+  ];
+  function item(a) { var li = a.closest("li"); return li && li.parentNode === a.parentNode.parentNode ? li : (li || a); }
+  function pair() {
+    var mans = document.querySelectorAll('a[href*="-guide"]');
+    Array.prototype.forEach.call(mans, function (m) {
+      var href = m.getAttribute("href") || "", pr = null;
+      PAIRS.forEach(function (p) { if (p[0].test(href)) pr = p; }); if (!pr) return;
+      var mi = item(m), box = mi.parentNode; if (!box) return;
+      var labs = box.querySelectorAll("a[href]"), lab = null;
+      Array.prototype.forEach.call(labs, function (a) { var h = (a.getAttribute("href") || "").split(/[?#]/)[0]; if (!lab && pr[1].test(h)) lab = a; });
+      if (!lab) return;
+      var li = item(lab); if (li.parentNode !== box) return;
+      if (li.nextElementSibling !== mi) box.insertBefore(mi, li.nextElementSibling);
+    });
+  }
+  function go() { pair(); }
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", go); else go();
+  [300, 1200, 3000].forEach(function (t) { setTimeout(go, t); });
+  document.addEventListener("click", function () { setTimeout(go, 60); }, true);
+})();
