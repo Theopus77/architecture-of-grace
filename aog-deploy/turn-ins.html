@@ -137,7 +137,7 @@ html.aog-grace [data-aog-hero] .pullrow .pst{color:var(--ag-cream-soft,#C8D4E2)}
 .ti .sum{width:100%;color:var(--sub);font-size:.84rem}
 .ti .body{border-top:1px dashed var(--line);padding:12px 15px 15px}
 .ti .acts{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0 0}
-.ti .acts button{border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:9px;padding:7px 12px;font:700 .8rem var(--sans);cursor:pointer}
+.ti .acts button,.ti .acts a.ws{border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:9px;padding:7px 12px;font:700 .8rem var(--sans);cursor:pointer}
 .ti .acts button:hover{border-color:var(--navy)}
 /* ══ .30hj — Remove ══ */
 .ti .acts button.del{border-color:var(--u3);color:var(--u3)}
@@ -158,6 +158,7 @@ html.aog-grace [data-aog-hero] .pullrow .pst{color:var(--ag-cream-soft,#C8D4E2)}
 .ti.k-refl{border-left-color:var(--u1)} .ti.k-voice{border-left-color:var(--brass)}
 .ti .prov{font:700 .64rem var(--sans);letter-spacing:.09em;text-transform:uppercase;
   color:var(--good);background:var(--good-soft);border-radius:999px;padding:2px 8px;white-space:nowrap}
+.acts a.ws{text-decoration:none;display:inline-flex;align-items:center;background:var(--ink)!important;color:var(--bg)!important;border-color:var(--ink)!important}
 .fchip.zero{opacity:.42}
 .fchip.zero.on{opacity:1}
 #filters[hidden]{display:none}
@@ -1349,6 +1350,24 @@ else document.documentElement.classList.add("aog-embed");</script>
     UNDO=null; paint();
   }
 
+  /* ══ AOG-INBOX-WORKSHEET-V1 (2026-09-26) — Jimmy: "the printouts from the inbox should have the original
+     sheet with the right and wrong answers … not just what answers, but the actual worksheet." A Daily
+     Drafts sheet is made from its subject, grade and number, so the same sheet comes back on demand; the
+     student's answers ride in the link and the page marks them (daily-drops.html, ?review=). One tap
+     opens the marked worksheet; the other opens it and prints. */
+  function worksheetLink(it, print){
+    var r=it.raw||{}, x=xparse(r);
+    if(x.series!=="daily-drops"||x.kind==="writing"||!Array.isArray(x.answers)||!x.answers.length) return "";
+    var subj=x.subject||"", grade=x.grade||"", sheet=x.sheet||r.setNo||"";
+    if(!subj||!grade||!sheet) return "";
+    var rv={who:r.studentId||"", date:String(r.date||r.timestamp||"").slice(0,10), a:x.answers.map(function(bx){ return (bx.a||[]).map(function(a){ return a&&a.g!=null?String(a.g):""; }); })};
+    var b64=btoa(unescape(encodeURIComponent(JSON.stringify(rv)))).replace(/\+/g,"-").replace(/\//g,"_").replace(/=+$/,"");
+    return "/daily-drops.html?subject="+encodeURIComponent(subj)+"&grade="+encodeURIComponent(grade)+"&sheet="+encodeURIComponent(sheet)+(x.lang==="es"?"&lang=es":"")+"&review="+b64+(print?"&print=1":"");
+  }
+  function worksheetBtns(it){
+    var u=worksheetLink(it,false); if(!u) return "";
+    return '<a class="ws" href="'+esc(u)+'" target="_blank" rel="noopener">See the worksheet</a><a class="ws" href="'+esc(worksheetLink(it,true))+'" target="_blank" rel="noopener">Print the worksheet</a>';
+  }
   /* ═══════════ the card ═══════════ */
   function card(it){
     var d=document.createElement("details"); d.className="ti "+(it.cls||"");
@@ -1362,7 +1381,7 @@ else document.documentElement.classList.add("aog-embed");</script>
       + (it.sum?'<span class="sum">'+esc(it.sum)+"</span>":"")
       + "</summary>"
       + '<div class="body">'+body
-      + '<div class="acts no-print"><button type="button" data-a="print">Print this one</button>'
+      + '<div class="acts no-print">'+worksheetBtns(it)+'<button type="button" data-a="print">Print this one</button>'
       + '<button type="button" data-a="lay" class="iep-only lay" title="Adds this result to the student\'s IEP goal as evidence">Lay the brick down</button>'
       + '<button type="button" data-a="iep" class="iep-only" title="Copies this result as IEP evidence">Copy this brick</button>'
       + '<button type="button" class="del" data-a="del">Remove</button>'
