@@ -18,12 +18,12 @@
      on one link (?hand=…) that opens the student view with just those items. -->
 <style>
 :root{--navy:#0A1E33;--navy2:#13314F;--ink:#1a232c;--soft:#556270;--faint:#7d8896;--cream:#FBF7EE;--card:#fff;--line:#E7DDC8;
- --gold:#C9A24A;--gold2:#F2C964;--good:#2E7D4F;--c1:#2F63B8;--c2:#B87A12;--c3:#2E8B57;--c4:#A8323E;--c5:#7B4FA0;--shadow:0 1px 2px rgba(10,30,51,.06),0 14px 34px -22px rgba(10,30,51,.45)}
-[data-theme="dark"]{--ink:#EEF2F6;--soft:#B9C4D0;--faint:#93A0AE;--cream:#1A3657;--card:#22436A;--line:rgba(255,255,255,.14);--shadow:0 16px 34px -22px rgba(0,0,0,.7)}
+ --gold:#C9A24A;--goldInk:#8A6516;--gold2:#F2C964;--good:#2E7D4F;--c1:#2F63B8;--c2:#B87A12;--c3:#2E8B57;--c4:#A8323E;--c5:#7B4FA0;--shadow:0 1px 2px rgba(10,30,51,.06),0 14px 34px -22px rgba(10,30,51,.45)}
+[data-theme="dark"]{--goldInk:#F2C964;--ink:#EEF2F6;--soft:#B9C4D0;--faint:#93A0AE;--cream:#1A3657;--card:#22436A;--line:rgba(255,255,255,.14);--shadow:0 16px 34px -22px rgba(0,0,0,.7)}
 *{box-sizing:border-box}
 html{background:var(--cream)}
-body{margin:0;color:var(--ink);background:var(--cream);font:16px/1.5 -apple-system,"Segoe UI",Inter,Roboto,Arial,sans-serif}
-.app{display:grid;grid-template-columns:240px 1fr;min-height:calc(100vh - 56px);background:linear-gradient(to right,var(--navy) 240px,transparent 240px)}
+body{margin:0;color:var(--ink);background:linear-gradient(to right,var(--navy) 240px,var(--cream) 240px) !important;font:16px/1.5 -apple-system,"Segoe UI",Inter,Roboto,Arial,sans-serif}
+.app{display:grid;grid-template-columns:240px 1fr;min-height:calc(100vh - 56px);align-items:stretch;background:linear-gradient(to right,var(--navy) 240px,transparent 240px)}
 .rail{background:var(--navy);color:#EAF0F6;padding:18px 12px;position:sticky;top:var(--aogbar-h,52px);height:calc(100vh - var(--aogbar-h,52px));overflow:auto}
 .rail .brand{font:600 13px Inter,sans-serif;letter-spacing:.16em;text-transform:uppercase;color:var(--gold2);padding:4px 10px 14px}
 .view{display:flex;background:rgba(255,255,255,.08);border-radius:12px;padding:4px;margin:0 4px 16px}
@@ -35,13 +35,29 @@ body{margin:0;color:var(--ink);background:var(--cream);font:16px/1.5 -apple-syst
 .nav svg{width:18px;height:18px;flex:none;opacity:.9}
 .nav .sep{height:1px;background:rgba(255,255,255,.12);margin:12px 8px}
 .nav small{display:block;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#9FB1C4;padding:8px 12px 2px}
-main{padding:26px clamp(16px,3vw,40px) 60px;max-width:1180px}
+#app{padding:26px clamp(16px,3vw,48px) 60px;width:100%;min-width:0;background:var(--cream)}
+#app>*{max-width:1500px}
 .hello{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:12px;margin:0 0 20px}
-.hello h1{font:600 clamp(28px,4vw,40px)/1.1 Fraunces,Georgia,serif;margin:0}
+.hello h1{font:600 clamp(28px,4vw,40px)/1.1 Fraunces,Georgia,serif;margin:0;color:var(--ink)!important;opacity:1!important;-webkit-text-fill-color:currentColor!important;background:none!important}
 .hello p{margin:4px 0 0;color:var(--soft)}
 .pill{display:inline-flex;align-items:center;gap:8px;min-height:36px;padding:0 14px;border-radius:999px;font-size:14px;font-weight:700;border:1.5px solid var(--line);background:var(--card)}
 .pill .dot{width:9px;height:9px;border-radius:50%;background:#C7931F}.pill.ok .dot{background:var(--good)}
-.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin:0 0 18px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px 18px;box-shadow:var(--shadow)}
+.stat b{display:block;font:600 34px/1 Fraunces,Georgia,serif}.stat span{color:var(--soft);font-size:14px}
+.stat.flag b{color:#B3261E}
+.tbl{width:100%;border-collapse:separate;border-spacing:0}
+.tbl th{text-align:left;font:800 11.5px Inter,sans-serif;letter-spacing:.12em;text-transform:uppercase;color:var(--faint);padding:10px 12px;border-bottom:1px solid var(--line)}
+.tbl td{padding:12px;border-bottom:1px solid var(--line);vertical-align:top}
+.tbl tr.pick{cursor:pointer}.tbl tr.pick:hover td{background:rgba(201,162,74,.08)}
+.chip{display:inline-block;padding:3px 10px;border-radius:999px;font-size:13px;font-weight:700;background:rgba(10,30,51,.07);margin:2px 4px 2px 0}
+.chip.warn{background:rgba(179,38,30,.12)!important;color:#8E1F18!important;border:0!important;box-shadow:none!important;padding:3px 10px!important;font-size:13px!important}.chip.good{background:rgba(46,125,79,.14);color:#1E5A38}
+[data-theme="dark"] .chip{background:rgba(255,255,255,.1)}[data-theme="dark"] .chip.warn{color:#FFB4AB}[data-theme="dark"] .chip.good{color:#BFE6CC}
+.bar{height:10px;border-radius:999px;background:rgba(10,30,51,.08);overflow:hidden;min-width:80px}.bar i{display:block;height:100%;background:var(--good)}
+.search{max-width:360px;margin:0 0 14px}
+.spark{display:flex;align-items:flex-end;gap:3px;height:44px}.spark i{width:10px;border-radius:3px 3px 0 0;background:var(--c1)}
+@media (max-width:1100px){.stats{grid-template-columns:repeat(2,minmax(0,1fr))}}
 .card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:20px;box-shadow:var(--shadow);position:relative;overflow:hidden}
 .card.hand::before{content:"";position:absolute;inset:0 0 auto 0;height:5px;background:var(--ac)}
 .card h2{font:600 22px/1.2 Fraunces,Georgia,serif;margin:4px 0 6px}
@@ -81,7 +97,7 @@ select,input[type=text]{width:100%;font:inherit;font-size:16px;min-height:44px;p
 .stu a.go b{display:block;font-size:18px}.stu a.go span{color:var(--soft);font-size:14px}
 .stu a.go .arr{margin-left:auto;font-size:26px;color:var(--faint)}
 @media (max-width:980px){.grid3{grid-template-columns:1fr}}
-@media (max-width:760px){.app{grid-template-columns:1fr;background:none}.rail{position:static;height:auto;display:block}
+@media (max-width:760px){body{background:var(--cream)!important}.app{grid-template-columns:1fr;background:none}.rail{position:static;height:auto;display:block}
  .nav{display:flex;overflow-x:auto;gap:4px}.nav a{white-space:nowrap}.nav .sep,.nav small{display:none}}
 </style>
 </head>
@@ -93,7 +109,7 @@ select,input[type=text]{width:100%;font:inherit;font-size:16px;min-height:44px;p
     <div class="view" role="group" aria-label="View"><button type="button" data-view="teacher" aria-pressed="true">Teacher</button><button type="button" data-view="student" aria-pressed="false">Student</button></div>
     <nav class="nav" id="nav"></nav>
   </aside>
-  <main id="app"></main>
+  <div id="app" role="main"></div>
 </div>
 <div class="big" id="big" role="dialog" aria-modal="true"><p id="bigLead"></p><div class="u" id="bigU"></div><p id="bigSub"></p><button class="btn gold" type="button" id="bigClose"></button></div>
 <script>
@@ -116,7 +132,7 @@ const TXT={
   soon:"This room is being rebuilt. For now it opens in the classic dashboard.",
   sw:"Your work today",swS:"Tap one to start. When you finish, press Send.",name:"Your name or code",nameS:"Use the same one every time.",nothing:"Your teacher hasn't handed anything out on this device yet. Open the class link your teacher shares.",
   setupH:"Set up",setupS:"Only the things you need once.",conn:"Connect & sync",connS:"Your Google Sheet, where student work arrives.",gs:"Download Code.gs",guide:"One-page setup guide",openConn:"Open Connect & sync",
-  classic:"The classic dashboard",tools:"Teacher tools",allTools:"All calm tools",classicS:"Everything else, while the new one is built.",openClassic:"Open the classic dashboard"},
+  classic:"The classic dashboard",pullFirst:"Nothing pulled from your Sheet on this device yet. Open the classic dashboard, pull once, and it shows here.",stuS:"Everyone the Sheet knows. Tap a name.",find:"Find a student",name:"Name",lastSeen:"Last seen",practice:"Practice",indep:"On their own",follow:"follow up",blueprint:"Their Blueprint",feelings:"Feelings",latest:"Latest day",thatDay:"Check-ins that day",followWeek:"To follow up this week",lastDays:"Last 5 days",needYou:"Might need you",roomFeel:"How the room felt",kind:"Kind",tools:"Teacher tools",allTools:"All calm tools",classicS:"Everything else, while the new one is built.",openClassic:"Open the classic dashboard"},
  es:{today:"Hoy",hand:"Repartir",students:"Estudiantes",checkins:"Registros",trends:"Tendencias",brick:"Ladrillo a ladrillo",inbox:"Bandeja",reports:"Informes",setup:"Configurar",more:"Más en el panel clásico",
   hi:["Buenos días","Buenas tardes","Buenas noches"],sub:"Elige lo que la clase hará hoy. Agrégalo al reparto de hoy y comparte un solo enlace.",
   ok:"Tu Hoja está conectada",no:"Aún no hay Hoja — las respuestas quedan en cada aparato",
@@ -129,7 +145,7 @@ const TXT={
   soon:"Esta sala se está reconstruyendo. Por ahora se abre en el panel clásico.",
   sw:"Tu trabajo de hoy",swS:"Toca uno para empezar. Al terminar, pulsa Enviar.",name:"Tu nombre o código",nameS:"Usa el mismo siempre.",nothing:"Tu maestro aún no ha repartido nada en este aparato. Abre el enlace de la clase.",
   setupH:"Configurar",setupS:"Solo lo que necesitas una vez.",conn:"Conectar y sincronizar",connS:"Tu Hoja de Google, donde llega el trabajo.",gs:"Descargar Code.gs",guide:"Guía de una página",openConn:"Abrir Conectar y sincronizar",
-  classic:"El panel clásico",tools:"Herramientas del maestro",allTools:"Todas las herramientas",classicS:"Todo lo demás, mientras se construye el nuevo.",openClassic:"Abrir el panel clásico"}
+  classic:"El panel clásico",pullFirst:"Aún no se ha traído nada de tu Hoja en este aparato. Abre el panel clásico, trae los datos una vez y aparecen aquí.",stuS:"Todos los que conoce la Hoja. Toca un nombre.",find:"Buscar estudiante",name:"Nombre",lastSeen:"Última vez",practice:"Práctica",indep:"Por su cuenta",follow:"dar seguimiento",blueprint:"Su plano",feelings:"Sentimientos",latest:"Último día",thatDay:"Registros ese día",followWeek:"Para seguimiento esta semana",lastDays:"Últimos 5 días",needYou:"Podrían necesitarte",roomFeel:"Cómo se sintió el salón",kind:"Tipo",tools:"Herramientas del maestro",allTools:"Todas las herramientas",classicS:"Todo lo demás, mientras se construye el nuevo.",openClassic:"Abrir el panel clásico"}
 };
 const ICON={today:'<path d="M3 10h18M7 3v4M17 3v4"/><rect x="3" y="5" width="18" height="16" rx="3"/>',students:'<circle cx="9" cy="8" r="3.5"/><path d="M2 20c0-3.5 3-6 7-6s7 2.5 7 6"/><path d="M16 4a3.5 3.5 0 0 1 0 7M22 20c0-3-2-5-5-5.7"/>',checkins:'<path d="M20 6 9 17l-5-5"/>',trends:'<path d="M3 17l6-6 4 4 8-8"/><path d="M14 7h7v7"/>',brick:'<rect x="3" y="4" width="8" height="6" rx="1"/><rect x="13" y="4" width="8" height="6" rx="1"/><rect x="8" y="14" width="8" height="6" rx="1"/>',inbox:'<path d="M22 12h-6l-2 3h-4l-2-3H2"/><path d="M5.5 5h13l3.5 7v6a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-6z"/>',reports:'<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>',setup:'<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1A1.7 1.7 0 0 0 9 19.4a1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1A1.7 1.7 0 0 0 4.6 9a1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/>',dd:'<path d="M4 4h16v16H4z"/><path d="M8 9h8M8 13h8M8 17h5"/>',as:'<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>',sl:'<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>'};
 const svg=n=>'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+ICON[n]+'</svg>';
@@ -174,6 +190,56 @@ if(HAND){ put("aog.dash2.handed",{items:HAND,dest:QS.get("dest")||"",org:QS.get(
 function studentHref(it){ const h=get("aog.dash2.handed",null); let p=itemPath(it); const q=[];
   const d=(h&&h.dest)||destParam(), o=(h&&h.org)||orgId(); if(d) q.push("dest="+encodeURIComponent(d)); if(o) q.push("org="+encodeURIComponent(o));
   return q.length? p+(p.indexOf("?")<0?"?":"&")+q.join("&") : p; }
+/* ── what the Sheet sent back (pulled on the classic dashboard, saved on this device) ── */
+function rows(k){ try{ const v=JSON.parse(localStorage.getItem(k)||"[]"); return Array.isArray(v)?v:[]; }catch(e){ return []; } }
+function day(r){ return String(r.date||r.timestamp||"").slice(0,10); }
+function who(r){ return String(r.studentId||r.respondentId||"").trim(); }
+function data(){
+  const ci=rows("aog.checkin.remote").filter(r=>String(r.checkinType||"")!=="thisisme"), pr=rows("aog.practice.remote");
+  const S={};
+  const S_=n=>S[n]||(S[n]={name:n,ci:[],pr:[],last:""});
+  ci.forEach(r=>{ const n=who(r); if(!n) return; const s=S_(n); s.ci.push(r); if(day(r)>s.last) s.last=day(r); });
+  pr.forEach(r=>{ const n=who(r); if(!n) return; const s=S_(n); s.pr.push(r); if(day(r)>s.last) s.last=day(r); });
+  Object.values(S).forEach(s=>{ s.ci.sort((a,b)=>day(a)<day(b)?1:-1); s.pr.sort((a,b)=>day(a)<day(b)?1:-1);
+    s.flags=s.ci.filter(r=>flagged(r)).length;
+    const scored=s.pr.filter(r=>+r.itemsTotal>0); s.acc=scored.length?Math.round(100*scored.reduce((a,r)=>a+(+r.independent||0),0)/scored.reduce((a,r)=>a+(+r.itemsTotal||0),0)):null; });
+  return {ci,pr,S};
+}
+function flagged(r){ return r.followUp===true||String(r.followUp)==="true"||String(r.unsafeFlag)==="true"||String(r.trustedAdultFlag)==="true"||/yes|now|soon/i.test(String(r.tellAdult||"")); }
+function feel(r){ return String(r.feelingWords||"").split(/[,;·]/).map(x=>x.trim()).filter(Boolean); }
+function nice(d){ if(!d) return "—"; const t=new Date(d+"T12:00:00"); return isNaN(t)?d:t.toLocaleDateString(L()==="es"?"es":"en",{month:"short",day:"numeric"}); }
+function noData(){ return '<section class="card"><p class="s" style="margin:0">'+T("pullFirst")+'</p><div class="row"><a class="btn solid" href="/#dashboard">'+T("openClassic")+' ›</a></div></section>'; }
+function students(){
+  const D=data(), list=Object.values(D.S), q=(get("aog.dash2.q","")||"").toLowerCase(), sel=get("aog.dash2.sel","");
+  if(sel && D.S[sel]) return oneStudent(D.S[sel]);
+  const rowsH=list.filter(s=>!q||s.name.toLowerCase().includes(q)).sort((a,b)=>b.flags-a.flags||(a.last<b.last?1:-1)).map(s=>'<tr class="pick" data-stu="'+esc(s.name)+'"><td><b>'+esc(s.name)+'</b></td><td>'+nice(s.last)+'</td><td>'+s.ci.length+'</td><td>'+s.pr.length+'</td><td>'+(s.acc==null?"—":'<div class="bar" title="'+s.acc+'%"><i style="width:'+s.acc+'%"></i></div> '+s.acc+'%')+'</td><td>'+(s.flags?'<span class="chip warn">'+s.flags+' '+T("follow")+'</span>':'')+'</td></tr>').join("");
+  return '<div class="hello"><div><h1>'+T("students")+'</h1><p>'+T("stuS")+'</p></div><span class="pill">'+list.length+' '+T("students").toLowerCase()+'</span></div>'
+   +(list.length?'<input type="text" class="search" id="q" placeholder="'+T("find")+'" value="'+esc(get("aog.dash2.q",""))+'"><section class="card" style="padding:6px 8px;overflow-x:auto"><table class="tbl"><thead><tr><th>'+T("name")+'</th><th>'+T("lastSeen")+'</th><th>'+T("checkins")+'</th><th>'+T("practice")+'</th><th>'+T("indep")+'</th><th></th></tr></thead><tbody>'+rowsH+'</tbody></table></section>':noData());
+}
+function oneStudent(s){
+  const last10=s.ci.slice(0,10), feels={}; s.ci.forEach(r=>feel(r).forEach(f=>feels[f]=(feels[f]||0)+1));
+  const top=Object.entries(feels).sort((a,b)=>b[1]-a[1]).slice(0,8);
+  const prRows=s.pr.slice(0,12).map(r=>'<tr><td>'+nice(day(r))+'</td><td>'+esc(String(r.activityName||r.activityId||"").replace(/^Daily D(rafts|rops) — /,"Daily Drafts · "))+'</td><td>'+(+r.itemsTotal?(r.independent||0)+" / "+r.itemsTotal:"—")+'</td></tr>').join("");
+  const ciRows=last10.map(r=>'<tr><td>'+nice(day(r))+'</td><td>'+esc(r.slipType||r.checkinType||"")+'</td><td>'+feel(r).map(f=>'<span class="chip">'+esc(f)+'</span>').join("")+'</td><td>'+(flagged(r)?'<span class="chip warn">'+T("follow")+'</span>':'')+'</td></tr>').join("");
+  return '<div class="hello"><div><button class="btn" type="button" id="backStu">‹ '+T("students")+'</button><h1 style="margin-top:12px">'+esc(s.name)+'</h1><p>'+T("lastSeen")+': '+nice(s.last)+'</p></div><a class="btn solid" href="/turn-ins.html?blueprint='+encodeURIComponent(s.name)+'">'+T("blueprint")+' ›</a></div>'
+   +'<div class="stats"><div class="stat"><b>'+s.ci.length+'</b><span>'+T("checkins")+'</span></div><div class="stat"><b>'+s.pr.length+'</b><span>'+T("practice")+'</span></div><div class="stat"><b>'+(s.acc==null?"—":s.acc+"%")+'</b><span>'+T("indep")+'</span></div><div class="stat'+(s.flags?" flag":"")+'"><b>'+s.flags+'</b><span>'+T("follow")+'</span></div></div>'
+   +(top.length?'<section class="card" style="margin-bottom:16px"><p class="k" style="color:var(--goldInk)">'+T("feelings")+'</p>'+top.map(([f,n])=>'<span class="chip">'+esc(f)+' · '+n+'</span>').join("")+'</section>':'')
+   +'<div class="grid3" style="grid-template-columns:repeat(2,minmax(0,1fr))"><section class="card" style="overflow-x:auto"><p class="k" style="color:var(--goldInk)">'+T("checkins")+'</p>'+(ciRows?'<table class="tbl"><tbody>'+ciRows+'</tbody></table>':'<p class="empty">—</p>')+'</section>'
+   +'<section class="card" style="overflow-x:auto"><p class="k" style="color:var(--goldInk)">'+T("practice")+'</p>'+(prRows?'<table class="tbl"><tbody>'+prRows+'</tbody></table>':'<p class="empty">—</p>')+'</section></div>';
+}
+function checkins(){
+  const D=data(); if(!D.ci.length) return '<div class="hello"><div><h1>'+T("checkins")+'</h1></div></div>'+noData();
+  const days=[...new Set(D.ci.map(day))].sort().reverse(), today=days[0], week=days.slice(0,5);
+  const tday=D.ci.filter(r=>day(r)===today), flags=D.ci.filter(r=>flagged(r)&&week.includes(day(r)));
+  const counts=week.slice().reverse().map(d=>D.ci.filter(r=>day(r)===d).length), mx=Math.max(1,...counts);
+  const feels={}; tday.forEach(r=>feel(r).forEach(f=>feels[f]=(feels[f]||0)+1));
+  const list=tday.map(r=>'<tr class="pick" data-stu="'+esc(who(r))+'"><td><b>'+esc(who(r))+'</b></td><td>'+esc(r.slipType||r.checkinType||"")+'</td><td>'+feel(r).map(f=>'<span class="chip">'+esc(f)+'</span>').join("")+'</td><td>'+(flagged(r)?'<span class="chip warn">'+T("follow")+'</span>':'')+'</td></tr>').join("");
+  return '<div class="hello"><div><h1>'+T("checkins")+'</h1><p>'+T("latest")+': '+nice(today)+'</p></div></div>'
+   +'<div class="stats"><div class="stat"><b>'+tday.length+'</b><span>'+T("thatDay")+'</span></div><div class="stat'+(flags.length?" flag":"")+'"><b>'+flags.length+'</b><span>'+T("followWeek")+'</span></div><div class="stat"><b>'+Object.keys(D.S).length+'</b><span>'+T("students")+'</span></div><div class="stat"><span>'+T("lastDays")+'</span><div class="spark">'+counts.map(c=>'<i style="height:'+Math.max(6,Math.round(44*c/mx))+'px" title="'+c+'"></i>').join("")+'</div></div></div>'
+   +(flags.length?'<section class="card" style="margin-bottom:16px;border-color:#B3261E"><p class="k" style="color:#B3261E">'+T("needYou")+'</p>'+flags.map(r=>'<span class="chip warn" data-stu="'+esc(who(r))+'" style="cursor:pointer">'+esc(who(r))+' · '+nice(day(r))+'</span>').join("")+'</section>':'')
+   +(Object.keys(feels).length?'<section class="card" style="margin-bottom:16px"><p class="k" style="color:var(--goldInk)">'+T("roomFeel")+'</p>'+Object.entries(feels).sort((a,b)=>b[1]-a[1]).map(([f,n])=>'<span class="chip">'+esc(f)+' · '+n+'</span>').join("")+'</section>':'')
+   +'<section class="card" style="overflow-x:auto"><table class="tbl"><thead><tr><th>'+T("name")+'</th><th>'+T("kind")+'</th><th>'+T("feelings")+'</th><th></th></tr></thead><tbody>'+list+'</tbody></table></section>';
+}
 /* ── the interface ── */
 const L=()=> (document.documentElement.lang||"en").slice(0,2)==="es"?"es":"en", T=k=>TXT[L()][k];
 let VIEW=QS.get("view")==="student"||HAND?"student":get(K.view,"teacher"), PAGE=location.hash.slice(1)||"today";
@@ -210,10 +276,10 @@ function today(){
     +'<label class="f" for="slI">'+T("slip")+'</label><select id="slI">'+SLIPS.map(s=>opt(s[0],lang==="es"?s[2]:s[1],s[0]===sl.i)).join("")+'</select>'
     +'<div class="row"><button class="btn add" type="button" data-add="sl">+ '+T("add")+'</button></div></section>'
   +'</div>'
-  +'<section class="card" style="margin-top:22px"><p class="k" style="color:var(--gold)">'+T("tools")+'</p><div class="row">'+TOOLS.map(x=>'<a class="btn" href="/#opentool='+x[0]+'">'+x[lang==="es"?2:1]+'</a>').join("")+'<a class="btn" href="/#tools">'+T("allTools")+' ›</a></div></section>'
-  +'<section class="card tray"><p class="k" style="color:var(--gold)">'+T("tray")+'</p>'
+  +'<section class="card" style="margin-top:22px"><p class="k" style="color:var(--goldInk)">'+T("tools")+'</p><div class="row">'+TOOLS.map(x=>'<a class="btn" href="/#opentool='+x[0]+'">'+x[lang==="es"?2:1]+'</a>').join("")+'<a class="btn" href="/#tools">'+T("allTools")+' ›</a></div></section>'
+  +'<section class="card tray"><p class="k" style="color:var(--goldInk)">'+T("tray")+'</p>'
     +'<div class="items">'+(tr.length?tr.map((it,i)=>'<div class="item" style="--ac:'+TAG[it.t][1]+'"><span class="tag">'+TAG[it.t][0]+'</span><b>'+esc(itemLabel(it,lang))+'</b><button type="button" data-del="'+i+'" aria-label="Remove">✕</button></div>').join(""):'<p class="empty">'+T("trayE")+'</p>')+'</div>'
-    +(tr.length?'<p class="k" style="color:var(--gold)">'+T("link")+'</p><div class="linkbox"><code id="lk">'+esc(link)+'</code><button class="btn gold" type="button" id="cp">'+T("copy")+'</button><button class="btn" type="button" id="bg">'+T("show")+'</button><a class="btn" href="'+esc(link)+'" target="_blank" rel="noopener">'+T("open")+'</a></div>'
+    +(tr.length?'<p class="k" style="color:var(--goldInk)">'+T("link")+'</p><div class="linkbox"><code id="lk">'+esc(link)+'</code><button class="btn gold" type="button" id="cp">'+T("copy")+'</button><button class="btn" type="button" id="bg">'+T("show")+'</button><a class="btn" href="'+esc(link)+'" target="_blank" rel="noopener">'+T("open")+'</a></div>'
       +(conn?'':'<p class="warn">'+T("nosheet")+'</p>'):'')
   +'</section>';
 }
@@ -235,7 +301,7 @@ function setup(){
 function soon(){ return '<div class="hello"><div><h1>'+T(PAGE)+'</h1><p>'+T("soon")+'</p></div></div><div class="row"><a class="btn solid" href="/#dashboard">'+T("openClassic")+' ›</a>'+(PAGE==="inbox"?'<a class="btn" href="/turn-ins.html">'+T("inbox")+' ›</a>':'')+'</div>'; }
 function render(){
   nav(); const app=document.getElementById("app");
-  app.innerHTML = VIEW==="student"? student() : PAGE==="today"? today() : PAGE==="setup"? setup() : soon();
+  app.innerHTML = VIEW==="student"? student() : PAGE==="today"? today() : PAGE==="setup"? setup() : PAGE==="students"? students() : PAGE==="checkins"? checkins() : soon();
   wire();
 }
 function asGet(){ return Object.assign({k:"unit",p:"mth",f:"mth-u1.html",i:"m1"},get(K.as,{})); }
@@ -260,12 +326,15 @@ function wire(){
   document.querySelectorAll("[data-del]").forEach(b=>b.onclick=()=>{ const tr=get(K.tray,[]); tr.splice(+b.dataset.del,1); put(K.tray,tr); render(); });
   on("cp","click",async()=>{ try{ await navigator.clipboard.writeText(classLink()); }catch(e){ const r=document.createRange(); r.selectNode(document.getElementById("lk")); getSelection().removeAllRanges(); getSelection().addRange(r); document.execCommand("copy"); } const b=document.getElementById("cp"); b.textContent=T("copied")+" ✓"; setTimeout(()=>{ if(b.isConnected) b.textContent=T("copy"); },1600); });
   on("bg","click",()=>{ const u=classLink(); document.getElementById("bigLead").textContent=T("bigLead"); document.getElementById("bigU").textContent=u.replace(/^https?:\/\//,"").split("?")[0]+"…"; document.getElementById("bigSub").textContent=T("bigSub"); document.getElementById("bigClose").textContent=T("close"); document.getElementById("big").classList.add("on"); });
+  on("q","input",()=>{ put("aog.dash2.q",val("q")); const c=document.getElementById("q").selectionStart; render(); const e=document.getElementById("q"); if(e){e.focus();e.setSelectionRange(c,c);} });
+  document.querySelectorAll("[data-stu]").forEach(e=>e.addEventListener("click",()=>{ put("aog.dash2.sel",e.dataset.stu); if(PAGE!=="students"){ location.hash="students"; } else render(); window.scrollTo(0,0); }));
+  on("backStu","click",()=>{ put("aog.dash2.sel",""); render(); });
   on("stN","input",()=>{ const v=val("stN"); put(K.stu,v); try{ localStorage.setItem("aog.drops.who",v); }catch(e){} });
 }
 document.getElementById("bigClose").onclick=()=>document.getElementById("big").classList.remove("on");
 document.addEventListener("keydown",e=>{ if(e.key==="Escape") document.getElementById("big").classList.remove("on"); });
 document.querySelectorAll("[data-view]").forEach(b=>b.onclick=()=>{ VIEW=b.dataset.view; put(K.view,VIEW); render(); });
-window.addEventListener("hashchange",()=>{ PAGE=location.hash.slice(1)||"today"; render(); window.scrollTo(0,0); });
+window.addEventListener("hashchange",()=>{ PAGE=location.hash.slice(1)||"today"; if(PAGE!=="students") put("aog.dash2.sel",""); render(); window.scrollTo(0,0); });
 new MutationObserver(render).observe(document.documentElement,{attributes:true,attributeFilter:["lang"]});
 render();
 </script>
