@@ -17,6 +17,8 @@
   var BANDS = ["#2F63B8", "#B8457A", "#2E8B57", "#B87A12", "#7B4FA0", "#1F8080"];
   function es() { return /^es/i.test(H.lang || ""); }
   function lum(s) {
+    var cm = /color\(srgb\s+([^)]+)\)/.exec(s || "");
+    if (cm) { var w = cm[1].split(/[\s\/]+/).filter(Boolean).map(Number); if (w.length > 3 && w[3] < 0.5) return null; return 0.2126 * w[0] + 0.7152 * w[1] + 0.0722 * w[2]; }
     var m = /rgba?\(([^)]+)\)/.exec(s || ""); if (!m) return null;
     var v = m[1].split(/[\s,\/]+/).map(Number); if (v.length > 3 && v[3] < 0.5) return null;
     return (0.2126 * v[0] + 0.7152 * v[1] + 0.0722 * v[2]) / 255;
@@ -84,7 +86,7 @@
     ".aog-lede-more{text-align:inherit}.aog-lede-more .aog-lede-rest{font:inherit;margin-top:.6em}" +
     /* the words in these rooms: cream on the glass (buttons that paint their own light face keep their ink) */
     ROOMS.split(",").map(function (x) { return x.trim(); }).map(function (r) {
-      return r + " :is(p,li,span,small,em,strong,b,i,td,th,label,dd,dt,h4,h5,h6,figcaption,blockquote):not(button *):not([class*=\"btn\"] *)";
+      return r + " :is(p,li,span,small,em,strong,b,i,td,th,label,dd,dt,h4,h5,h6,figcaption,blockquote):not(button *):not([class*=\"btn\"] *):not([data-aog-inkdark]):not([data-aog-inkdark] *)";
     }).join(",") + "{color:#EDE7DA!important}" +
     /* every word on a glass pane is cream, unless it sits on a small light face of its own */
     "[data-aog-pane] :is(div,p,span,li,h1,h2,h3,h4,h5,small,em,strong,b,i,label,dt,dd,td,th):not([data-aog-inkdark]):not([data-aog-inkdark] *){color:#EDE7DA!important}" +
@@ -92,13 +94,17 @@
     "[data-aog-pane] a:not([data-aog-inkdark]):not([class*=btn]){color:#F2C964!important}" +
     ROOMS.split(",").map(function (x) { return x.trim() + " :is(.wp-personal-t,.wp-personal-s,.wp-personal-tx *)"; }).join(",") + "{color:#EDE7DA!important}" +
     "[data-aog-inkdark],[data-aog-inkdark] *{color:#0A1E33!important}" +
+    ROOMS.split(",").map(function (x) { x = x.trim(); return x + " [data-aog-inkdark]," + x + " [data-aog-inkdark] *"; }).join(",") + "{color:#0A1E33!important}" +
+    ROOMS.split(",").map(function (x) { x = x.trim(); return x + " :is(.eyebrow,.ey,[class*=eyebrow]):not([data-aog-inkdark]):not([data-aog-inkdark] *)"; }).join(",") + "{color:#E7C46A!important}" +
+    ROOMS.split(",").map(function (x) { x = x.trim(); return x + " :is(.small,.ed-s,small):not([data-aog-inkdark] *)"; }).join(",") + "{color:#C8D4E2!important}" +
+    ROOMS.split(",").map(function (x) { x = x.trim(); return x + " a:not([class*=btn]):not([data-aog-inkdark]):not([data-aog-inkdark] *):not(.aogtop *)"; }).join(",") + "{color:#F2C964!important}" +
+    ROOMS.split(",").map(function (x) { x = x.trim(); return x + " [class*=btn] *"; }).join(",") + "{color:inherit!important}" +
     ROOMS.split(",").map(function (x) { return x.trim() + " button:not([data-aog-inkdark]):not([class*=btn]):not(.fw-tab)"; }).join(",") + "{color:#EDE7DA!important;opacity:1!important}" +
     /* tab rows and quiet links inside the rooms: cream, the chosen one gold */
     ROOMS.split(",").map(function (x) { return x.trim() + " :is([role=tab],.tab,.gtab,.seg button,[class*=tab]:is(button,a)):not([data-aog-inkdark])"; }).join(",") + "{color:#EDE7DA!important;opacity:1!important}" +
     ROOMS.split(",").map(function (x) { return x.trim() + " :is([role=tab][aria-selected=true],.tab.active,.active[class*=tab])"; }).join(",") + "{color:#F2C964!important}" +
-    ROOMS.split(",").map(function (x) { return x.trim() + " :is(.found-tag,.eco-chip)"; }).join(",") + "{color:#0A1E33!important;font-family:Inter,system-ui,sans-serif!important;letter-spacing:.08em}" +
+    ROOMS.split(",").map(function (x) { return x.trim() + " :is(.found-tag,.eco-chip,.pill)"; }).join(",") + "{color:#0A1E33!important;font-family:Inter,system-ui,sans-serif!important;letter-spacing:.08em}" +
     ROOMS.split(",").map(function (x) { return x.trim() + " .btn-secondary"; }).join(",") + "{background:transparent!important;color:#F2C964!important;border:2px solid #C9A24A!important}" +
-    "#screen-framework .fwl-node .fwl-lbl{color:#0A1E33!important}" +
     ":is(#screen-checkin,#screen-framework,#screen-choose,#screen-workplace,#screen-adult) :is(.mode-card,.mode-card *,.mode-desc,.pv-strip a,.qd-s,.mode-name,h1,h2,h3,h4):not([data-aog-inkdark]):not([data-aog-inkdark] *){color:#F4EEE2!important}" +
     ":is(#screen-checkin,#screen-framework,#screen-choose) :is(.mode-kicker,.mode-eyebrow,.mode-time){color:#E7C46A!important}" +
     "#screen-checkin .btn:not(.btn-secondary){background:#C9A24A!important;color:#0A1E33!important;border:2px solid #1E1F22!important}#screen-checkin .btn:not(.btn-secondary) *{color:#0A1E33!important}" +
@@ -111,11 +117,18 @@
     "}@media print{.aog-readmore>summary{display:none}}";
   function run() {
     changed = 0;
+    /* AOG-CHAPEL-SAFE-V1 (2026-09-26) — the colours only switch on AFTER every light
+       box in the room has been found and turned into a dark pane, and they are
+       measured with the chapel colours off. Before, Safari could paint the cream
+       words before the boxes turned dark: cream on cream. Now a room is either
+       fully chapel or fully its original self — readable either way. */
+    css.disabled = true;
     var act = Array.prototype.map.call(D.querySelectorAll(ROOMS.replace(/,/g, ".active,") + ".active"), function (x) { return x.id; }).join();
     if (act !== seenScreen) { seenScreen = act; changed++; }
     D.querySelectorAll(ROOMS).forEach(function (r) {
       if (r.id === "aog-origin" || r.classList.contains("active")) { panes(r); fold(r); trimLedes(r); }
     });
+    css.disabled = false;
     /* only when this layer actually repainted something — a steady page is never re-swept (no flicker) */
     if (changed) try { if (window.aogLegibleRefresh) window.aogLegibleRefresh(); } catch (e) {}
   }
