@@ -976,6 +976,11 @@ function clock(sec){
   const m=Math.floor(sec/60), s=Math.floor(sec%60);
   return m+":"+(s<10?"0":"")+s;
 }
+/* AOG-DECKS-TAP-V1 (2026-09-26) — Jimmy: "the word START can't be tapped."
+   paintDeck runs every frame; rewriting the button's words 60 times a second
+   swaps the text under a finger, and Safari drops the tap. Only write words
+   when they change. */
+function setT(el, v){ if(el.textContent !== v) el.textContent = v; }
 function paintDeck(d){
   const el = document.getElementById("deck"+d.id);
   if(!el) return;
@@ -984,17 +989,17 @@ function paintDeck(d){
   const arm = el.querySelector(".arm");
   if(arm && d.buf) arm.style.transform = "rotate("+(16 + 13*Math.min(1, d.pos/d.buf.length)).toFixed(2)+"deg)";
   const song = el.querySelector(".song");
-  if(song) song.textContent = d.note || d.name || t("none");
+  if(song) setT(song, d.note || d.name || t("none"));
   const btn = el.querySelector(".go");
-  if(btn) btn.textContent = d.motor ? t("stop") : t("play");
+  if(btn) setT(btn, d.motor ? t("stop") : t("play"));
   const time = el.querySelector(".time");
-  if(time) time.textContent = d.buf ? (clock(d.pos/d.buf.sampleRate)+" / "+clock(d.buf.duration)) : "0:00";
+  if(time) setT(time, d.buf ? (clock(d.pos/d.buf.sampleRate)+" / "+clock(d.buf.duration)) : "0:00");
   const bar = el.querySelector(".meter i");
   if(bar) bar.style.width = Math.min(100, d.level*140)+"%";
   el.classList.toggle("spinning", Math.abs(d.rate) > 0.02);
   const bp = el.querySelector("[data-bpm]");
-  if(bp) bp.textContent = d.bpm > 0 ? (d.bpm*d.pitch*d.rpm).toFixed(1)+" BPM"
-                        : d.bpm === -1 ? t("bpmWait") : (d.buf ? t("noBeat") : "");
+  if(bp) setT(bp, d.bpm > 0 ? (d.bpm*d.pitch*d.rpm).toFixed(1)+" BPM"
+                        : d.bpm === -1 ? t("bpmWait") : (d.buf ? t("noBeat") : ""));
   el.querySelectorAll("[data-hot]").forEach(b=>{
     b.classList.toggle("on", d.cues[+b.getAttribute("data-i")] != null);
   });
