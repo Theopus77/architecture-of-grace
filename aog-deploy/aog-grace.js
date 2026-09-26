@@ -250,6 +250,8 @@
     return out;
   }
   function findHero() {
+    /* AOG-NOHERO-V1 — a page that draws its own frame (the new dashboard) opts out */
+    if (H.hasAttribute("data-aog-nohero")) return null;
     var hs = realH1s(), i, host;
     /* 1 · a title inside a real masthead */
     for (i = 0; i < hs.length; i++) {

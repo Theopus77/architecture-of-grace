@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-aog-nohero>
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -96,7 +96,8 @@ select,input[type=text]{width:100%;font:inherit;font-size:16px;min-height:44px;p
 .stu a.go .ic{margin:0}
 .stu a.go b{display:block;font-size:18px}.stu a.go span{color:var(--soft);font-size:14px}
 .stu a.go .arr{margin-left:auto;font-size:26px;color:var(--faint)}
-@media (max-width:980px){.grid3{grid-template-columns:1fr}}
+@media (max-width:980px){.grid3{grid-template-columns:1fr!important}}
+@media print{.rail,.aogtop,.aogtop-spacer,.hello .btn,.hello select,.row{display:none!important}.app{display:block}body{background:#fff!important}#app{padding:0}.card{break-inside:avoid;box-shadow:none}}
 @media (max-width:760px){body{background:var(--cream)!important}.app{grid-template-columns:1fr;background:none}.rail{position:static;height:auto;display:block}
  .nav{display:flex;overflow-x:auto;gap:4px}.nav a{white-space:nowrap}.nav .sep,.nav small{display:none}}
 </style>
@@ -132,7 +133,7 @@ const TXT={
   soon:"This room is being rebuilt. For now it opens in the classic dashboard.",
   sw:"Your work today",swS:"Tap one to start. When you finish, press Send.",name:"Your name or code",nameS:"Use the same one every time.",nothing:"Your teacher hasn't handed anything out on this device yet. Open the class link your teacher shares.",
   setupH:"Set up",setupS:"Only the things you need once.",conn:"Connect & sync",connS:"Your Google Sheet, where student work arrives.",gs:"Download Code.gs",guide:"One-page setup guide",openConn:"Open Connect & sync",
-  classic:"The classic dashboard",pullFirst:"Nothing pulled from your Sheet on this device yet. Open the classic dashboard, pull once, and it shows here.",stuS:"Everyone the Sheet knows. Tap a name.",find:"Find a student",name:"Name",lastSeen:"Last seen",practice:"Practice",indep:"On their own",follow:"follow up",blueprint:"Their Blueprint",feelings:"Feelings",latest:"Latest day",thatDay:"Check-ins that day",followWeek:"To follow up this week",lastDays:"Last 5 days",needYou:"Might need you",roomFeel:"How the room felt",kind:"Kind",tools:"Teacher tools",allTools:"All calm tools",classicS:"Everything else, while the new one is built.",openClassic:"Open the classic dashboard"},
+  classic:"The classic dashboard",goal:"Goal",trendS:"How the class has been doing, day by day.",printPage:"Print this page",checkinsDay:"Check-ins each day",accDay:"On their own, % each day",flagDay:"Follow-ups each day",brickS:"Each IEP goal: where it started, where it is, where it is going.",noGoals:"No IEP goals on this device yet. Add them in the classic dashboard.",baseline:"Baseline",now:"Now",laid:"Bricks laid",editGoals:"Add or edit goals",repS:"Everything to print or share, in one place.",open2:"Open",pullFirst:"Nothing pulled from your Sheet on this device yet. Open the classic dashboard, pull once, and it shows here.",stuS:"Everyone the Sheet knows. Tap a name.",find:"Find a student",name:"Name",lastSeen:"Last seen",practice:"Practice",indep:"On their own",follow:"follow up",blueprint:"Their Blueprint",feelings:"Feelings",latest:"Latest day",thatDay:"Check-ins that day",followWeek:"To follow up this week",lastDays:"Last 5 days",needYou:"Might need you",roomFeel:"How the room felt",kind:"Kind",tools:"Teacher tools",allTools:"All calm tools",classicS:"Everything else, while the new one is built.",openClassic:"Open the classic dashboard"},
  es:{today:"Hoy",hand:"Repartir",students:"Estudiantes",checkins:"Registros",trends:"Tendencias",brick:"Ladrillo a ladrillo",inbox:"Bandeja",reports:"Informes",setup:"Configurar",more:"Más en el panel clásico",
   hi:["Buenos días","Buenas tardes","Buenas noches"],sub:"Elige lo que la clase hará hoy. Agrégalo al reparto de hoy y comparte un solo enlace.",
   ok:"Tu Hoja está conectada",no:"Aún no hay Hoja — las respuestas quedan en cada aparato",
@@ -145,7 +146,7 @@ const TXT={
   soon:"Esta sala se está reconstruyendo. Por ahora se abre en el panel clásico.",
   sw:"Tu trabajo de hoy",swS:"Toca uno para empezar. Al terminar, pulsa Enviar.",name:"Tu nombre o código",nameS:"Usa el mismo siempre.",nothing:"Tu maestro aún no ha repartido nada en este aparato. Abre el enlace de la clase.",
   setupH:"Configurar",setupS:"Solo lo que necesitas una vez.",conn:"Conectar y sincronizar",connS:"Tu Hoja de Google, donde llega el trabajo.",gs:"Descargar Code.gs",guide:"Guía de una página",openConn:"Abrir Conectar y sincronizar",
-  classic:"El panel clásico",pullFirst:"Aún no se ha traído nada de tu Hoja en este aparato. Abre el panel clásico, trae los datos una vez y aparecen aquí.",stuS:"Todos los que conoce la Hoja. Toca un nombre.",find:"Buscar estudiante",name:"Nombre",lastSeen:"Última vez",practice:"Práctica",indep:"Por su cuenta",follow:"dar seguimiento",blueprint:"Su plano",feelings:"Sentimientos",latest:"Último día",thatDay:"Registros ese día",followWeek:"Para seguimiento esta semana",lastDays:"Últimos 5 días",needYou:"Podrían necesitarte",roomFeel:"Cómo se sintió el salón",kind:"Tipo",tools:"Herramientas del maestro",allTools:"Todas las herramientas",classicS:"Todo lo demás, mientras se construye el nuevo.",openClassic:"Abrir el panel clásico"}
+  classic:"El panel clásico",goal:"Meta",trendS:"Cómo le ha ido a la clase, día a día.",printPage:"Imprimir esta página",checkinsDay:"Registros por día",accDay:"Por su cuenta, % por día",flagDay:"Seguimientos por día",brickS:"Cada meta del IEP: dónde empezó, dónde está, a dónde va.",noGoals:"Aún no hay metas IEP en este aparato. Agrégalas en el panel clásico.",baseline:"Inicio",now:"Ahora",laid:"Ladrillos puestos",editGoals:"Agregar o editar metas",repS:"Todo para imprimir o compartir, en un lugar.",open2:"Abrir",pullFirst:"Aún no se ha traído nada de tu Hoja en este aparato. Abre el panel clásico, trae los datos una vez y aparecen aquí.",stuS:"Todos los que conoce la Hoja. Toca un nombre.",find:"Buscar estudiante",name:"Nombre",lastSeen:"Última vez",practice:"Práctica",indep:"Por su cuenta",follow:"dar seguimiento",blueprint:"Su plano",feelings:"Sentimientos",latest:"Último día",thatDay:"Registros ese día",followWeek:"Para seguimiento esta semana",lastDays:"Últimos 5 días",needYou:"Podrían necesitarte",roomFeel:"Cómo se sintió el salón",kind:"Tipo",tools:"Herramientas del maestro",allTools:"Todas las herramientas",classicS:"Todo lo demás, mientras se construye el nuevo.",openClassic:"Abrir el panel clásico"}
 };
 const ICON={today:'<path d="M3 10h18M7 3v4M17 3v4"/><rect x="3" y="5" width="18" height="16" rx="3"/>',students:'<circle cx="9" cy="8" r="3.5"/><path d="M2 20c0-3.5 3-6 7-6s7 2.5 7 6"/><path d="M16 4a3.5 3.5 0 0 1 0 7M22 20c0-3-2-5-5-5.7"/>',checkins:'<path d="M20 6 9 17l-5-5"/>',trends:'<path d="M3 17l6-6 4 4 8-8"/><path d="M14 7h7v7"/>',brick:'<rect x="3" y="4" width="8" height="6" rx="1"/><rect x="13" y="4" width="8" height="6" rx="1"/><rect x="8" y="14" width="8" height="6" rx="1"/>',inbox:'<path d="M22 12h-6l-2 3h-4l-2-3H2"/><path d="M5.5 5h13l3.5 7v6a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-6z"/>',reports:'<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>',setup:'<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1A1.7 1.7 0 0 0 9 19.4a1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1A1.7 1.7 0 0 0 4.6 9a1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/>',dd:'<path d="M4 4h16v16H4z"/><path d="M8 9h8M8 13h8M8 17h5"/>',as:'<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>',sl:'<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>'};
 const svg=n=>'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+ICON[n]+'</svg>';
@@ -240,6 +241,62 @@ function checkins(){
    +(Object.keys(feels).length?'<section class="card" style="margin-bottom:16px"><p class="k" style="color:var(--goldInk)">'+T("roomFeel")+'</p>'+Object.entries(feels).sort((a,b)=>b[1]-a[1]).map(([f,n])=>'<span class="chip">'+esc(f)+' · '+n+'</span>').join("")+'</section>':'')
    +'<section class="card" style="overflow-x:auto"><table class="tbl"><thead><tr><th>'+T("name")+'</th><th>'+T("kind")+'</th><th>'+T("feelings")+'</th><th></th></tr></thead><tbody>'+list+'</tbody></table></section>';
 }
+/* ── stage 3: trends, brick by brick (IEP), reports ── */
+function lineSvg(pts,opt){ opt=opt||{}; const W=opt.w||560,H=opt.h||180,P=28; if(!pts.length) return "";
+  const ys=pts.map(p=>p.v).concat([opt.target,opt.base].filter(v=>v!=null&&!isNaN(v))), lo0=Math.min(opt.min!=null?opt.min:Math.min(...ys),...ys), hi0=Math.max(opt.max!=null?opt.max:Math.max(...ys),...ys,lo0+1), pad=(opt.min==null&&opt.max==null)?(hi0-lo0)*.08:0, lo=lo0-pad, hi=hi0+pad;
+  const X=i=>P+(W-2*P)*(pts.length<2?0.5:i/(pts.length-1)), Y=v=>H-P-(H-2*P)*((v-lo)/(hi-lo));
+  const path=pts.map((p,i)=>(i?"L":"M")+X(i).toFixed(1)+" "+Y(p.v).toFixed(1)).join(" ");
+  let g='<svg viewBox="0 0 '+W+' '+H+'" style="width:100%;height:auto" role="img">';
+  [0,.5,1].forEach(t=>{ const y=P+(H-2*P)*t; g+='<line x1="'+P+'" x2="'+(W-P)+'" y1="'+y+'" y2="'+y+'" stroke="currentColor" stroke-opacity=".12"/>'; g+='<text x="2" y="'+(y+4)+'" font-size="11" fill="currentColor" fill-opacity=".6">'+Math.round(hi-(hi-lo)*t)+'</text>'; });
+  if(opt.target!=null){ const y=Y(opt.target); g+='<line x1="'+P+'" x2="'+(W-P)+'" y1="'+y+'" y2="'+y+'" stroke="#2E7D4F" stroke-dasharray="6 5" stroke-width="2"/><text x="'+(W-P)+'" y="'+(y-5)+'" font-size="11" text-anchor="end" fill="#2E7D4F" font-weight="700">'+T("goal")+' '+opt.target+'</text>'; }
+  if(opt.base!=null){ const y=Y(opt.base); g+='<line x1="'+P+'" x2="'+(W-P)+'" y1="'+y+'" y2="'+y+'" stroke="#B8893A" stroke-dasharray="3 5" stroke-width="1.5"/>'; }
+  g+='<path d="'+path+'" fill="none" stroke="'+(opt.c||"#2F63B8")+'" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>';
+  pts.forEach((p,i)=>{ g+='<circle cx="'+X(i)+'" cy="'+Y(p.v)+'" r="4.5" fill="'+(opt.c||"#2F63B8")+'"><title>'+esc(p.l||"")+' · '+p.v+'</title></circle>'; });
+  const n=pts.length; [0,Math.floor((n-1)/2),n-1].filter((v,i,a)=>a.indexOf(v)===i).forEach(i=>{ g+='<text x="'+X(i)+'" y="'+(H-6)+'" font-size="11" text-anchor="middle" fill="currentColor" fill-opacity=".6">'+esc(pts[i].l||"")+'</text>'; });
+  return g+'</svg>';
+}
+function trends(){
+  const D=data(); if(!D.ci.length&&!D.pr.length) return '<div class="hello"><div><h1>'+T("trends")+'</h1></div></div>'+noData();
+  const days=[...new Set(D.ci.concat(D.pr).map(day))].filter(Boolean).sort().slice(-20);
+  const ciPts=days.map(d=>({l:nice(d),v:D.ci.filter(r=>day(r)===d).length}));
+  const accPts=days.map(d=>{ const rs=D.pr.filter(r=>day(r)===d&&+r.itemsTotal>0); return rs.length?{l:nice(d),v:Math.round(100*rs.reduce((a,r)=>a+(+r.independent||0),0)/rs.reduce((a,r)=>a+(+r.itemsTotal||0),0))}:null; }).filter(Boolean);
+  const flagPts=days.map(d=>({l:nice(d),v:D.ci.filter(r=>day(r)===d&&flagged(r)).length}));
+  const feels={}; D.ci.forEach(r=>feel(r).forEach(f=>feels[f]=(feels[f]||0)+1)); const topF=Object.entries(feels).sort((a,b)=>b[1]-a[1]).slice(0,10), mx=topF.length?topF[0][1]:1;
+  return '<div class="hello"><div><h1>'+T("trends")+'</h1><p>'+T("trendS")+'</p></div><button class="btn" type="button" onclick="window.print()">🖨 '+T("printPage")+'</button></div>'
+   +'<div class="grid3" style="grid-template-columns:repeat(2,minmax(0,1fr))">'
+   +'<section class="card"><p class="k" style="color:var(--goldInk)">'+T("checkinsDay")+'</p>'+lineSvg(ciPts,{min:0,c:"#2F63B8"})+'</section>'
+   +'<section class="card"><p class="k" style="color:var(--goldInk)">'+T("accDay")+'</p>'+(accPts.length?lineSvg(accPts,{min:0,max:100,c:"#2E7D4F"}):'<p class="empty">—</p>')+'</section>'
+   +'<section class="card"><p class="k" style="color:var(--goldInk)">'+T("flagDay")+'</p>'+lineSvg(flagPts,{min:0,c:"#B3261E"})+'</section>'
+   +'<section class="card"><p class="k" style="color:var(--goldInk)">'+T("feelings")+'</p>'+topF.map(([f,n])=>'<div style="display:flex;align-items:center;gap:10px;margin:6px 0"><span style="width:110px">'+esc(f)+'</span><div class="bar" style="flex:1"><i style="width:'+Math.round(100*n/mx)+'%;background:var(--c5)"></i></div><b style="width:30px;text-align:right">'+n+'</b></div>').join("")+'</section>'
+   +'</div>';
+}
+function iep(){ try{ const o=JSON.parse(localStorage.getItem("aog.iep.v1")||"{}"); return {goals:o.goals||{},data:o.data||{}}; }catch(e){ return {goals:{},data:{}}; } }
+function brick(){
+  const I=iep(), ids=Object.keys(I.goals).filter(id=>!I.goals[id].archived);
+  if(!ids.length) return '<div class="hello"><div><h1>'+T("brick")+'</h1><p>'+T("brickS")+'</p></div></div><section class="card"><p class="s" style="margin:0">'+T("noGoals")+'</p><div class="row"><a class="btn solid" href="/#dashboard">'+T("openClassic")+' ›</a></div></section>';
+  const by={}; ids.forEach(id=>{ const st=I.goals[id].student||"—"; (by[st]=by[st]||[]).push(id); });
+  const sel=get("aog.dash2.iepStu",""), names=Object.keys(by).sort(), cur=by[sel]?sel:names[0];
+  const cards=by[cur].map(id=>{ const g=I.goals[id], pts=(I.data[id]||[]).map(p=>({l:nice(String(p.date).slice(0,10)),v:+p.value}));
+    const last=pts.length?pts[pts.length-1].v:null, base=g.baseline&&+g.baseline.value, tgt=g.target&&+g.target.value;
+    const pct=(last!=null&&tgt!=null&&base!=null&&tgt!==base)?Math.max(0,Math.min(100,Math.round(100*(last-base)/(tgt-base)))):null;
+    const bricks=Array.from({length:10},(_,i)=>'<i style="display:inline-block;width:22px;height:12px;margin:2px;border-radius:2px;background:'+(pct!=null&&i<Math.round(pct/10)?"#B8893A":"rgba(10,30,51,.1)")+'"></i>').join("");
+    return '<section class="card"><p class="k" style="color:var(--goldInk)">'+esc(g.area||"")+' · '+esc(g.intervalLabel||"")+'</p><h2>'+esc(g.title||"")+'</h2>'
+     +'<div class="stats" style="grid-template-columns:repeat(3,minmax(0,1fr));margin:10px 0"><div class="stat"><b>'+(base==null?"—":base)+'</b><span>'+T("baseline")+'</span></div><div class="stat"><b>'+(last==null?"—":last)+'</b><span>'+T("now")+'</span></div><div class="stat"><b>'+(tgt==null?"—":tgt)+'</b><span>'+T("goal")+'</span></div></div>'
+     +lineSvg(pts,{target:tgt,base:base,c:"#2F63B8"})
+     +'<p class="k" style="color:var(--goldInk);margin-top:10px">'+T("laid")+(pct==null?"":" · "+pct+"%")+'</p><div>'+bricks+'</div></section>'; }).join("");
+  return '<div class="hello"><div><h1>'+T("brick")+'</h1><p>'+T("brickS")+'</p></div><div style="display:flex;gap:8px;flex-wrap:wrap"><select id="iepStu" style="min-width:220px">'+names.map(n=>opt(n,n,n===cur)).join("")+'</select><button class="btn" type="button" onclick="window.print()">🖨 '+T("printPage")+'</button></div></div>'
+   +'<div class="grid3" style="grid-template-columns:repeat(auto-fit,minmax(420px,1fr))">'+cards+'</div>'
+   +'<div class="row"><a class="btn" href="/#dashboard">'+T("editGoals")+' ›</a></div>';
+}
+function reports(){
+  const R=[["mtss","MTSS Report","Informe MTSS","Tiers, movement and a summary for your team.","Niveles, movimiento y resumen para tu equipo.","/#dashboard","c4"],
+   ["inbox","Inbox — every turn-in","Bandeja — todo lo entregado","Worksheets, workbooks and practice, by student.","Hojas, cuadernos y práctica, por estudiante.","/turn-ins.html","c1"],
+   ["bp","Blueprints","Planos","Each student's stained-glass window. Prints in colour.","El vitral de cada estudiante. Se imprime a color.","/turn-ins.html?view=bp","c5"],
+   ["iep","IEP progress (printable)","Progreso IEP (imprimible)","Goal graphs for a meeting.","Gráficas de metas para una reunión.","#brick","c2"],
+   ["trends","Class trends (printable)","Tendencias (imprimible)","Check-ins, accuracy and feelings over time.","Registros, precisión y sentimientos en el tiempo.","#trends","c3"]];
+  return '<div class="hello"><div><h1>'+T("reports")+'</h1><p>'+T("repS")+'</p></div></div><div class="grid3">'
+   +R.map(r=>'<a class="card hand" style="--ac:var(--'+r[6]+');text-decoration:none;color:inherit" href="'+r[5]+'"><div class="ic">'+svg("reports")+'</div><h2>'+(L()==="es"?r[2]:r[1])+'</h2><p class="s">'+(L()==="es"?r[4]:r[3])+'</p><span class="btn solid">'+T("open2")+' ›</span></a>').join("")+'</div>';
+}
 /* ── the interface ── */
 const L=()=> (document.documentElement.lang||"en").slice(0,2)==="es"?"es":"en", T=k=>TXT[L()][k];
 let VIEW=QS.get("view")==="student"||HAND?"student":get(K.view,"teacher"), PAGE=location.hash.slice(1)||"today";
@@ -301,7 +358,7 @@ function setup(){
 function soon(){ return '<div class="hello"><div><h1>'+T(PAGE)+'</h1><p>'+T("soon")+'</p></div></div><div class="row"><a class="btn solid" href="/#dashboard">'+T("openClassic")+' ›</a>'+(PAGE==="inbox"?'<a class="btn" href="/turn-ins.html">'+T("inbox")+' ›</a>':'')+'</div>'; }
 function render(){
   nav(); const app=document.getElementById("app");
-  app.innerHTML = VIEW==="student"? student() : PAGE==="today"? today() : PAGE==="setup"? setup() : PAGE==="students"? students() : PAGE==="checkins"? checkins() : soon();
+  app.innerHTML = VIEW==="student"? student() : PAGE==="today"? today() : PAGE==="setup"? setup() : PAGE==="students"? students() : PAGE==="checkins"? checkins() : PAGE==="trends"? trends() : PAGE==="brick"? brick() : PAGE==="reports"? reports() : soon();
   wire();
 }
 function asGet(){ return Object.assign({k:"unit",p:"mth",f:"mth-u1.html",i:"m1"},get(K.as,{})); }
@@ -328,6 +385,7 @@ function wire(){
   on("bg","click",()=>{ const u=classLink(); document.getElementById("bigLead").textContent=T("bigLead"); document.getElementById("bigU").textContent=u.replace(/^https?:\/\//,"").split("?")[0]+"…"; document.getElementById("bigSub").textContent=T("bigSub"); document.getElementById("bigClose").textContent=T("close"); document.getElementById("big").classList.add("on"); });
   on("q","input",()=>{ put("aog.dash2.q",val("q")); const c=document.getElementById("q").selectionStart; render(); const e=document.getElementById("q"); if(e){e.focus();e.setSelectionRange(c,c);} });
   document.querySelectorAll("[data-stu]").forEach(e=>e.addEventListener("click",()=>{ put("aog.dash2.sel",e.dataset.stu); if(PAGE!=="students"){ location.hash="students"; } else render(); window.scrollTo(0,0); }));
+  on("iepStu","change",()=>{ put("aog.dash2.iepStu",val("iepStu")); render(); });
   on("backStu","click",()=>{ put("aog.dash2.sel",""); render(); });
   on("stN","input",()=>{ const v=val("stN"); put(K.stu,v); try{ localStorage.setItem("aog.drops.who",v); }catch(e){} });
 }
