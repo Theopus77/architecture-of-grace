@@ -18,7 +18,21 @@
   /* THE STANDING RULE (CLAUDE.md): any row of four or more section or tab
      choices is a drop-down. A new row opts in with one attribute:
        <div data-aog-dropdown="Label|Etiqueta"> <button>…</button> … </div> */
+  /* any row of more than six name chips (e.g. the exit-slip student filter) becomes a menu */
+  function chipRows() {
+    var out = [];
+    D.querySelectorAll("#screen-admin div, #screen-admin span").forEach(function (el) {
+      if (el.__aogChip || el.classList.contains("aogdd-src") || el.closest(".aogdd, .aogtop")) return;
+      var bs = Array.prototype.filter.call(el.children, function (k) { return k.tagName === "BUTTON"; });
+      if (bs.length < 7 || bs.length !== el.children.length) return;
+      if (!/^(everyone|todos|all)$/i.test((bs[0].textContent || "").trim())) return;
+      el.__aogChip = 1; if (!el.id) el.id = "aogdd-chip-" + out.length + "-" + Math.random().toString(36).slice(2, 6);
+      el.setAttribute("data-aog-dropdown", "Student|Estudiante");
+    });
+    return out;
+  }
   function extra() {
+    try { chipRows(); } catch (e) {}
     return Array.prototype.map.call(D.querySelectorAll("[data-aog-dropdown]"), function (el, i) {
       if (!el.id) el.id = "aogdd-auto-" + i;
       var l = (el.getAttribute("data-aog-dropdown") || "Choose|Elige").split("|");
@@ -68,7 +82,7 @@
     var lab = es() ? cfg.es : cfg.en;
     sel.setAttribute("aria-label", lab);
     /* a visible label only where the page has none of its own nearby */
-    box.querySelector(".aogdd-lab").textContent = cfg.show ? lab : "";
+    box.querySelector(".aogdd-lab").textContent = lab;
     box.hidden = list.length < 2;
   }
   var t = 0;

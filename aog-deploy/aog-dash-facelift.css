@@ -106,3 +106,29 @@
   }
   #screen-admin .aogfold-host.aogfold-closed > :not(.aogfold-o) { visibility:hidden; }
 }
+
+/* ══ AOG-DASH-FOLDS-V2 (2026-09-26) — Jimmy: "not a fan of the collapsible
+   throughout the dashboard. THEY NEED TO BE OVERHAULED AND RENEWED." A closed
+   panel is now one clean glass bar: its title in the site's serif, a line
+   saying "Tap to open", and a round gold chevron. No half-cut text peeking
+   through a fade. Menus read as labelled buttons, not empty boxes. */
+@media screen {
+  #screen-admin .aogfold-closed{ max-height:none !important; height:auto !important; min-height:64px; overflow:hidden !important; }
+  #screen-admin .aogfold-closed > :not(.aogfold-o):not(.aogfold-x){ display:none !important; }
+  #screen-admin .aogfold-closed::after{ content:none !important; }
+  #screen-admin .aogfold-closed::before{ content:"⌄" !important; width:34px !important; height:34px !important; font-size:18px !important;
+    background:#C9A24A !important; color:#0A1E33 !important; border:2px solid #1E1F22 !important; right:16px !important; z-index:6 !important; }
+  #screen-admin .aogfold-closed .aogfold-o{ position:relative !important; inset:auto !important; display:flex !important; flex-direction:column; justify-content:center;
+    min-height:64px; width:100%; padding:12px 64px 12px 20px !important; color:#F4EEE2 !important;
+    font:600 19px/1.3 Fraunces,Georgia,serif !important; }
+  #screen-admin .aogfold-closed .aogfold-o::after{ content:"Tap to open"; font:600 12.5px/1.3 Inter,system-ui,sans-serif; color:#C8D4E2; margin-top:3px; letter-spacing:.02em; }
+  html[lang^=es] #screen-admin .aogfold-closed .aogfold-o::after{ content:"Toca para abrir"; }
+  #screen-admin .aogfold-closed:hover{ box-shadow:0 0 0 2px #C9A24A, inset 0 5px 0 var(--pane,#C9A24A) !important; }
+  #screen-admin .aogfold-x{ background:transparent !important; color:#F2C964 !important; border:1.5px solid #C9A24A !important; padding:4px 12px !important; }
+
+  /* menus: a gold-edged pill with its label inside the frame */
+  #screen-admin .aogdd{ gap:10px !important; }
+  #screen-admin .aogdd .aogdd-sel{ min-height:48px !important; border-radius:999px !important; padding:0 44px 0 18px !important;
+    background-color:#0E2740 !important; color:#F4EEE2 !important; border:2px solid #C9A24A !important; font:700 16px/1 Inter,system-ui,sans-serif !important; }
+  #screen-admin .aogdd .aogdd-lab:empty{ display:none; }
+}
