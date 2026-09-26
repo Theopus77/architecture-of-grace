@@ -56,7 +56,8 @@
     + ".aogpg-mid{flex:0 0 auto;display:flex;flex-direction:column;align-items:center;justify-content:center;font:700 13px Inter,sans-serif;color:inherit;opacity:.8;gap:6px}"
     + ".aogpg-mid select{font:inherit;font-size:16px;min-height:40px;border-radius:10px;max-width:180px}"
     + "@media (max-width:600px){.aogpg-bar{flex-wrap:wrap}.aogpg-mid{order:-1;flex-basis:100%}}"
-    + "@media print{.aogpg-off{display:block!important}.aogpg-bar{display:none!important}}";
+    + ".aogpg-mid .pp{min-height:40px;border-radius:999px;border:1.5px solid rgba(10,30,51,.25);background:#fff;color:#0A1E33;font:inherit;font-size:14px;font-weight:800;padding:0 14px;cursor:pointer}"
+    + "@media print{.aogpg-off{display:block!important}.aogpg-bar{display:none!important}html.aogpg-one .aogpg-off{display:none!important}}";
   (D.head || D.documentElement).appendChild(st);
   var bar = D.createElement("nav"); bar.className = "aogpg-bar no-print"; bar.setAttribute("aria-label", "Pages");
   var cur = -1;
@@ -76,7 +77,7 @@
     var P = pages[i - 1], N = pages[i + 1];
     bar.innerHTML = '<button type="button" class="prev"' + (P ? "" : " disabled") + '><span>‹ ' + (es() ? "Atrás" : "Back") + "</span><small>" + (P ? label(P) : "") + "</small></button>"
       + '<div class="aogpg-mid"><span>' + (es() ? "Página " : "Page ") + (i + 1) + (es() ? " de " : " of ") + pages.length + "</span>"
-      + '<select aria-label="' + (es() ? "Ir a una página" : "Go to a page") + '">' + pages.map(function (p, k) { return '<option value="' + k + '"' + (k === i ? " selected" : "") + ">" + (k + 1) + ". " + label(p) + "</option>"; }).join("") + "</select></div>"
+      + '<select aria-label="' + (es() ? "Ir a una página" : "Go to a page") + '">' + pages.map(function (p, k) { return '<option value="' + k + '"' + (k === i ? " selected" : "") + ">" + (k + 1) + ". " + label(p) + "</option>"; }).join("") + '</select><button type="button" class="pp">' + (es() ? "Imprimir esta página" : "Print this page") + "</button></div>"
       + '<button type="button" class="next"' + (N ? "" : " disabled") + "><span>" + (es() ? "Siguiente" : "Next") + " ›</span><small>" + (N ? label(N) : "") + "</small></button>";
     var anchor = pages[i].els[pages[i].els.length - 1];
     anchor.parentNode.insertBefore(bar, anchor.nextSibling);
@@ -84,6 +85,12 @@
     bar.querySelector(".prev").onclick = function () { go(cur - 1); };
     bar.querySelector(".next").onclick = function () { go(cur + 1); };
     bar.querySelector("select").onchange = function () { go(+this.value); };
+    /* Jimmy: "Section printing should be an option." Prints only the page on screen. */
+    bar.querySelector(".pp").onclick = function () {
+      D.documentElement.classList.add("aogpg-one");
+      var off = function () { D.documentElement.classList.remove("aogpg-one"); window.removeEventListener("afterprint", off); };
+      window.addEventListener("afterprint", off); window.print(); setTimeout(off, 1500);
+    };
     if (scroll) { var top = (pages[i].els[0].closest("section.chap") || pages[i].els[0]); try { top.scrollIntoView({ block: "start" }); } catch (e) { top.scrollIntoView(); } }
   }
   function go(i) {
