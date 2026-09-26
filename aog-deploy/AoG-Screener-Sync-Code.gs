@@ -1589,3 +1589,47 @@ function readTeamEvidence_() {
   }
   return out;
 }
+
+/* ═══ v18 · SET THE KEYS FROM INSIDE THE SHEET ═════════════════════════════
+   Jimmy, on an iPad: "Add script property … that is not there." The Apps
+   Script settings page does not always draw that button on a tablet. So the
+   Sheet gets a menu of its own: reload the spreadsheet, open
+   "Architecture of Grace" in the menu bar, and choose "Set the keys". Two
+   prompts, two passphrases you make up, saved as the script properties the
+   script already reads. "Check the keys" says whether they are set, never
+   what they are. Nothing else about the script changes. */
+function onOpen() {
+  try {
+    SpreadsheetApp.getUi()
+      .createMenu('Architecture of Grace')
+      .addItem('Set the keys', 'aogSetKeys')
+      .addItem('Check the keys', 'aogCheckKeys')
+      .addToUi();
+  } catch (e) {}
+}
+function aogSetKeys() {
+  var ui = SpreadsheetApp.getUi();
+  var props = PropertiesService.getScriptProperties();
+  var w = ui.prompt('Write key (BACKEND_AUTH_KEY)',
+    'Make up a passphrase. Students\' pages send with it. Type the same one into Dashboard ▸ Set up ▸ Write key.',
+    ui.ButtonSet.OK_CANCEL);
+  if (w.getSelectedButton() !== ui.Button.OK) { return; }
+  var wv = String(w.getResponseText() || '').trim();
+  var r = ui.prompt('Read key (ADMIN_PULL_KEY)',
+    'Make up a different passphrase. Only your dashboard uses it, to pull answers back. Type the same one into Dashboard ▸ Set up ▸ Read key.',
+    ui.ButtonSet.OK_CANCEL);
+  if (r.getSelectedButton() !== ui.Button.OK) { return; }
+  var rv = String(r.getResponseText() || '').trim();
+  if (wv.length < 6 || rv.length < 6) { ui.alert('Each key needs at least 6 characters. Nothing was changed.'); return; }
+  if (wv === rv) { ui.alert('The two keys must be different. Nothing was changed.'); return; }
+  props.setProperty('BACKEND_AUTH_KEY', wv);
+  props.setProperty('ADMIN_PULL_KEY', rv);
+  ui.alert('Saved. Now Deploy ▸ Manage deployments ▸ Edit ▸ New version ▸ Deploy, then put the same two keys into the dashboard\'s Set up.');
+}
+function aogCheckKeys() {
+  var props = PropertiesService.getScriptProperties();
+  var w = props.getProperty('BACKEND_AUTH_KEY'), r = props.getProperty('ADMIN_PULL_KEY');
+  SpreadsheetApp.getUi().alert(
+    'Write key (BACKEND_AUTH_KEY): ' + (w ? 'set (' + w.length + ' characters)' : 'NOT SET — sends are refused') + '\n' +
+    'Read key (ADMIN_PULL_KEY): ' + (r ? 'set (' + r.length + ' characters)' : 'NOT SET — the dashboard cannot pull'));
+}
