@@ -40,6 +40,36 @@ button,label.file{font:inherit;cursor:pointer;touch-action:none}
    screen once a song loaded. The waveform is drawn at twice its width, and a
    grid column of plain 1fr lets that picture push the column wider every
    redraw. minmax(0,1fr) and min-width:0 keep each deck the width of the screen. */
+
+/* ══ AOG-DECKS-SIMPLE-V1 (2026-09-26) — same recipe as the drum machine. Two decks carried
+   ~55 controls before the crossfader. SIMPLE BENCH (default): Load, Take it off, Start, CUE,
+   the platter, Speed and Volume per deck; the crossfader and Record. FULL BENCH brings back
+   hot cues, loops, sync, key/slip, nudge, filter, echo, EQ and kills. On a phone in Simple,
+   a Deck A / Deck B / Mix row shows one thing at a time so a platter and its controls share
+   one screen. Sliders are colour-coded by job: gold speed, white volume, green EQ, blue
+   filter and echo. ═══════════════════════════════════════════════════════════════════ */
+.bench-switch{display:flex;gap:.5rem;align-items:center;margin:.9rem 0 0;flex-wrap:wrap}
+.bench-switch b{font-size:.72rem;letter-spacing:.14em;color:var(--muted);font-weight:800;text-transform:uppercase;margin-right:.2rem}
+.bench-switch .pill.on{background:#f0c26e;color:#2a1a08;border-color:#f0c26e}
+.decktabs{display:none;gap:.4rem;margin:.7rem 0 0}
+.decktabs .pill{flex:1;justify-content:center;font-weight:800}
+.decktabs .pill.on{background:var(--ink);color:var(--card);border-color:var(--ink)}
+body.bench-simple .deck .row.tr,body.bench-simple .deck .drophint,body.bench-simple .deck .zoom,
+body.bench-simple .deck label.knob:has([data-filter]),body.bench-simple .deck label.knob:has([data-echo]),body.bench-simple .deck label.knob:has([data-eq]),
+body.bench-simple .deck .row:has([data-nudge]),body.bench-simple .deck [data-setcue],body.bench-simple .deck [data-wide],
+body.bench-simple .xrow #curveBtn,body.bench-simple .xrow #noiseBtn,body.bench-simple .xrow #touchBtn,body.bench-simple .eqwrap{display:none}
+body.bench-simple .deck .row .file,body.bench-simple .deck .row .go{min-height:52px;font-size:1.02rem;padding:0 1.1rem}
+body.bench-simple .deck .row .ghost{min-height:48px}
+.deck label.knob:has([data-speed]){color:#f0c26e}.deck [data-speed]{accent-color:#f0c26e}
+.deck label.knob:has([data-vol]){color:#f4efe4}.deck [data-vol]{accent-color:#f4efe4}
+.deck label.knob:has([data-eq]){color:#9fd4a0}.deck [data-eq]{accent-color:#9fd4a0}
+.deck label.knob:has([data-filter]),.deck label.knob:has([data-echo]){color:#7fc7f5}.deck [data-filter],.deck [data-echo]{accent-color:#7fc7f5}
+@media (max-width:700px){
+  body.bench-simple .decktabs{display:flex}
+  body.bench-simple[data-decktab="A"] #deckB,body.bench-simple[data-decktab="A"] .xfade,
+  body.bench-simple[data-decktab="B"] #deckA,body.bench-simple[data-decktab="B"] .xfade,
+  body.bench-simple[data-decktab="mix"] #deckA,body.bench-simple[data-decktab="mix"] #deckB{display:none}
+}
 .decks{display:grid;gap:1rem;margin-top:1rem;grid-template-columns:minmax(0,1fr)}
 .deck{min-width:0}
 @media(min-width:800px){.decks{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}}
@@ -237,6 +267,15 @@ button,a,label,input[type=range],.pill,.pad,.platter,canvas{touch-action:manipul
   <p class="kicker" id="eyebrow"></p>
   <h1 id="title"></h1>
   <p class="lead" id="tag"></p>
+  <div class="bench-switch no-print" role="group" aria-label="Bench" id="benchSwitch"><b id="benchLab">Bench</b>
+    <button type="button" class="pill on" data-bench="simple" id="benchSimple">Simple bench</button>
+    <button type="button" class="pill" data-bench="full" id="benchFull">Full bench</button>
+  </div>
+  <div class="decktabs no-print" role="tablist" id="decktabs">
+    <button type="button" class="pill on" data-decktab="A">Deck A</button>
+    <button type="button" class="pill" data-decktab="B">Deck B</button>
+    <button type="button" class="pill" data-decktab="mix" id="decktabMix">Mix</button>
+  </div>
   <div class="decks" id="decks"></div>
   <div class="xfade no-print">
     <span><b id="labA">A</b><b id="xfLabel"></b><b id="labB">B</b></span>
@@ -1628,6 +1667,24 @@ document.getElementById("themeBtn").onclick = ()=>{ S.theme = S.theme==="dark"?"
 document.addEventListener("visibilitychange", ()=>{
   if(document.hidden) decks.forEach(d=>{ if(d.motor){ d.motor=false; send(d,{t:"motor",on:false}); } });
 });
+/* AOG-DECKS-SIMPLE-V1 — the bench switch and the phone's deck tabs */
+(function(){
+  let bench="simple", tab="A";
+  try{ bench=localStorage.getItem("aog.decks.bench")||"simple"; }catch(e){}
+  function paintSw(){
+    document.body.classList.toggle("bench-simple", bench!=="full");
+    document.body.setAttribute("data-decktab", tab);
+    document.querySelectorAll("[data-bench]").forEach(b=>{ const on=b.getAttribute("data-bench")===bench; b.classList.toggle("on",on); b.setAttribute("aria-pressed",on?"true":"false"); });
+    document.querySelectorAll("[data-decktab]").forEach(b=>{ const on=b.getAttribute("data-decktab")===tab; b.classList.toggle("on",on); b.setAttribute("aria-selected",on?"true":"false"); });
+    const es=S.lang==="es";
+    const L={benchLab:["Bench","Banco"],benchSimple:["Simple bench","Banco sencillo"],benchFull:["Full bench","Banco completo"],decktabMix:["Mix","Mezcla"]};
+    Object.keys(L).forEach(id=>{ const e=document.getElementById(id); if(e) e.textContent=L[id][es?1:0]; });
+  }
+  document.querySelectorAll("[data-bench]").forEach(b=>b.onclick=()=>{ bench=b.getAttribute("data-bench"); try{ localStorage.setItem("aog.decks.bench",bench); }catch(e){} paintSw(); });
+  document.querySelectorAll("[data-decktab]").forEach(b=>b.onclick=()=>{ tab=b.getAttribute("data-decktab"); paintSw(); });
+  const lb=document.getElementById("langBtn"); if(lb){ const o=lb.onclick; lb.onclick=function(){ if(o) o.apply(this,arguments); paintSw(); }; }
+  paintSw();
+})();
 paintChrome(); shell(); requestAnimationFrame(loop);
 checkBench();
 crateOpen();
