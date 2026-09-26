@@ -2645,3 +2645,40 @@
   var st = document.createElement("style"); st.id = "aog-explore-glass"; st.textContent = css;
   (document.head || document.documentElement).appendChild(st);
 })();
+/* AOG-BAR-SAFE-BACK-V1 (2026-09-26) — Jimmy, on the home-screen app: "the top bar is all
+   screwed up ... there is no back button and everything goes back to the telescope."
+   The installed app draws under the phone's clock (black-translucent), so the bar now
+   pads itself below the notch. And an installed app has no browser Back, so every page
+   but home gets a Back button: back one page, or home if there is nowhere to go back to. */
+(function () {
+  var st = document.createElement("style"); st.id = "aog-bar-safe";
+  st.textContent = ".aogtop{padding-top:calc(7px + env(safe-area-inset-top,0px))!important;"
+    + "padding-left:max(14px,env(safe-area-inset-left,0px))!important;padding-right:max(14px,env(safe-area-inset-right,0px))!important}"
+    + ".aogtop-back{display:inline-flex;align-items:center;gap:4px;min-height:40px;padding:0 12px 0 8px;margin-right:8px;flex:none;"
+    + "border-radius:999px;border:1.5px solid var(--bar-rule);background:transparent;color:var(--bar-ink);"
+    + "font:700 14px/1 inherit;font-family:inherit;cursor:pointer}"
+    + ".aogtop-back:hover{background:var(--bar-wash)}.aogtop-back svg{width:18px;height:18px}"
+    + ".aogtop-lead{display:flex;align-items:center;min-width:0}"
+    + "@media (max-width:520px){.aogtop-back .lbl{display:none}.aogtop-back{padding:0 10px}}"
+    + "@media (max-width:440px){.aogtop-acts{gap:5px!important}.aogtop-div{display:none!important}.aogtop-lang button{padding:5px 8px!important}.aogtop-back{margin-right:5px;padding:0 7px}.aogtop-pill{padding:6px 8px!important}.aogtop-ico{width:32px;height:32px}}";
+  (document.head || document.documentElement).appendChild(st);
+  var p = location.pathname;
+  if (p === "/" || p === "/index.html") return;
+  function add() {
+    var bar = document.getElementById("aogTopbar"), brand = bar && bar.querySelector(".aogtop-brand");
+    if (!brand) return setTimeout(add, 60);
+    if (bar.querySelector(".aogtop-back")) return;
+    var es = (document.documentElement.lang || "").indexOf("es") === 0;
+    var b = document.createElement("button");
+    b.type = "button"; b.className = "aogtop-back"; b.setAttribute("aria-label", es ? "Atrás" : "Back");
+    b.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg><span class="lbl">' + (es ? "Atrás" : "Back") + "</span>";
+    b.addEventListener("click", function () {
+      var same = false;
+      try { same = document.referrer && new URL(document.referrer).origin === location.origin; } catch (e) {}
+      if (same && history.length > 1) history.back(); else location.href = "/";
+    });
+    var lead = document.createElement("div"); lead.className = "aogtop-lead";
+    brand.parentNode.insertBefore(lead, brand); lead.appendChild(b); lead.appendChild(brand);
+  }
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", add); else add();
+})();
