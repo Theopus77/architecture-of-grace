@@ -194,18 +194,18 @@ function packTray(tr){ return tr.map(it=>it.t==="dd"?["d",it.s,it.g,it.n]:it.t==
 function unpack(a){ return (a||[]).map(x=>x[0]==="d"?{t:"dd",s:x[1],g:x[2],n:x[3]}:x[0]==="u"?{t:"unit",p:x[1],f:x[2]}:x[0]==="p"?{t:"prac",i:x[1]}:{t:"slip",i:x[1]}); }
 function classLink(){ const tr=get(K.tray,[]); if(!tr.length) return "";
   const h=btoa(unescape(encodeURIComponent(JSON.stringify(packTray(tr))))).replace(/\+/g,"-").replace(/\//g,"_").replace(/=+$/,"");
-  return location.origin+withDest("/dashboard.html?view=student&hand="+h); }
+  const lk=raw("aog.slip.look"); return location.origin+withDest("/dashboard.html?view=student&hand="+h+((lk==="glass"||lk==="quiet")?"&look="+lk:"")); }
 function readHand(){ const q=new URLSearchParams(location.search), h=q.get("hand"); if(!h) return null;
   try{ let s=h.replace(/-/g,"+").replace(/_/g,"/"); while(s.length%4) s+="="; return unpack(JSON.parse(decodeURIComponent(escape(atob(s))))); }catch(e){ return null; } }
 /* a student who arrived by the class link keeps today's work and the teacher's Sheet for every page they open */
 const HAND=readHand(), QS=new URLSearchParams(location.search);
-if(HAND){ put("aog.dash2.handed",{items:HAND,dest:QS.get("dest")||"",org:QS.get("org")||"",at:Date.now()}); }
+if(HAND){ const lk=QS.get("look")||""; put("aog.dash2.handed",{items:HAND,dest:QS.get("dest")||"",org:QS.get("org")||"",look:(lk==="glass"||lk==="quiet")?lk:"",at:Date.now()}); if(lk==="glass"||lk==="quiet"){ try{ localStorage.setItem("aog.slip.look",lk); }catch(e){} } }
 function studentHref(it){ const h=get("aog.dash2.handed",null); let p=itemPath(it); const q=[];
   const d=(h&&h.dest)||destParam(), o=(h&&h.org)||orgId(); if(d) q.push("dest="+encodeURIComponent(d)); if(o) q.push("org="+encodeURIComponent(o));
   /* AOG-DASH-SID-V1 — Jimmy: "It asks for a student code after I entered as myself." The name typed under
      Your work today rides on every slip as sid=, the same param a teacher's link carries, so the slip
      opens already knowing who it is about. Only the slips: the other pages ask on their own screen. */
-  if(it.t==="slip"){ const nm=String(get(K.stu,"")||"").trim().slice(0,24); if(nm) q.push("sid="+encodeURIComponent(nm)); }
+  if(it.t==="slip"){ const nm=String(get(K.stu,"")||"").trim().slice(0,24); if(nm) q.push("sid="+encodeURIComponent(nm)); const lk=(h&&h.look)||raw("aog.slip.look"); if(lk==="glass"||lk==="quiet") q.push("look="+lk); }
   return q.length? p+(p.indexOf("?")<0?"?":"&")+q.join("&") : p; }
 /* ── what the Sheet sent back (pulled on the classic dashboard, saved on this device) ── */
 function rows(k){ try{ const v=JSON.parse(localStorage.getItem(k)||"[]"); return Array.isArray(v)?v:[]; }catch(e){ return []; } }
@@ -493,6 +493,11 @@ async function pullAll(btn){
    a backup file, Delete everything (keep-list, like the classic page), IEP goals and data points in the same
    aog.iep.v1 shape the classic charts read, and the adult observation link with the same staff token. */
 const SYNC_RE=/^https:\/\/script\.google\.com\/.*\/exec$/;
+function lookCard(){ const v=raw("aog.slip.look")==="glass"?"glass":"quiet";
+  const o=(k,en,es,d1,d2)=>'<label class="card" style="display:flex;gap:12px;align-items:flex-start;cursor:pointer;border:1.5px solid '+(v===k?"var(--navy)":"var(--line)")+'"><input type="radio" name="slipLook" value="'+k+'"'+(v===k?' checked':'')+' style="width:22px;height:22px;min-height:0;margin-top:2px"><span><b style="display:block;margin-bottom:4px">'+t2(en,es)+'</b><span class="s">'+t2(d1,d2)+'</span></span></label>';
+  return '<section class="card" style="margin-bottom:16px"><p class="k" style="color:var(--goldInk)">'+t2("How the slips look","Cómo se ven los boletos")+'</p><p class="s">'+t2("The daily check-in and exit slip can wear either. Your choice rides on the class link, so students see the same one.","El registro diario y el boleto de salida pueden verse de dos formas. Tu elección viaja en el enlace de la clase, así que los estudiantes ven la misma.")+'</p>'
+   +'<div class="f2">'+o("quiet","Quiet","Sereno","Plain and grown-up: cream paper, thin lines, a navy button.","Sencillo y adulto: papel crema, líneas finas, botón azul marino.")+o("glass","Glass","Vidrio","Stained-glass window: coloured answer panes, gold stones, a gold button.","Vitral: respuestas de vidrio de colores, piedras doradas, botón dorado.")+'</div>'
+   +'<div class="row" style="margin-top:12px"><a class="btn" href="/index.html?checkin=daily&who=student&look='+v+'" target="_blank" rel="noopener">'+t2("Preview the check-in","Ver el registro")+' ›</a><a class="btn" href="/index.html?exit=1&who=student&look='+v+'" target="_blank" rel="noopener">'+t2("Preview the exit slip","Ver el boleto de salida")+' ›</a></div></section>'; }
 function connectCard(){
   const u=raw("aog.sync.url"), k=raw("aog.sync.key"), w=raw("aog.sync.writekey");
   return '<section class="card" style="margin-bottom:16px"><p class="k" style="color:var(--goldInk)">'+T("conn")+'</p><p class="s">'+t2("Paste the Web App link from your Apps Script. The write key lets student links send to your Sheet. The read key (ADMIN_PULL_KEY) lets this device pull answers back.","Pega el enlace de la Web App de tu Apps Script. La clave de escritura deja que los enlaces envíen a tu Hoja. La clave de lectura (ADMIN_PULL_KEY) deja que este aparato traiga las respuestas.")+'</p>'
@@ -636,7 +641,7 @@ function setup(){
   const conn=!!destParam();
   return '<div class="hello"><div><h1>'+T("setupH")+'</h1><p>'+T("setupS")+'</p></div><span class="pill '+(conn?"ok":"")+'"><span class="dot"></span>'+T(conn?"ok":"no")+'</span></div>'
    +'<section class="card" style="margin-bottom:16px"><p class="k" style="color:var(--goldInk)">'+t2("Bring in what students sent","Trae lo que enviaron los estudiantes")+'</p><p class="s">'+t2("Reflections, check-ins, team logs and finished practice come back from your Sheet to this device. Reading needs the ADMIN_PULL_KEY saved as the passcode.","Reflexiones, registros, notas del equipo y práctica terminada vuelven de tu Hoja a este aparato. Leer requiere la ADMIN_PULL_KEY guardada como contraseña.")+'</p>'+pullBtn()+(canRead()?'':'<p class="s" style="margin:10px 0 0">'+t2("Reading is not set up on this device yet: this device can send, but not read back.","Este aparato aún no puede leer: puede enviar, pero no traer de vuelta.")+'</p>')+'</section>'
-   +connectCard()+dangerCard();
+   +lookCard()+connectCard()+dangerCard();
 }
 function inbox(){ const head='<div class="hello"><div><h1>'+T("inbox")+'</h1><p>'+T("inboxS")+'</p></div><a class="btn" href="/turn-ins.html" target="_blank" rel="noopener">'+T("fullPage")+' ›</a></div>';
   /* AOG-DASH-INBOX-PHONE-V1 — a page inside a page stutters when a phone scrolls it (Jimmy: "freezing"). On a phone the Inbox opens as its own page. */
@@ -680,6 +685,7 @@ function wire(){
   on("q","input",()=>{ put("aog.dash2.q",val("q")); const c=document.getElementById("q").selectionStart; render(); const e=document.getElementById("q"); if(e){e.focus();e.setSelectionRange(c,c);} });
   document.querySelectorAll("[data-stu]").forEach(e=>e.addEventListener("click",()=>{ put("aog.dash2.sel",e.dataset.stu); if(PAGE!=="students"){ location.hash="students"; } else render(); window.scrollTo(0,0); }));
   on("iepStu","change",()=>{ put("aog.dash2.iepStu",val("iepStu")); render(); });
+  document.querySelectorAll("[name=slipLook]").forEach(r=>r.addEventListener("change",()=>{ try{ localStorage.setItem("aog.slip.look",r.value); }catch(e){} render(); }));
   on("syS","click",syncSave); on("syT","click",syncTest); on("syD","click",syncDrop); on("bkUp","click",backup); on("delAll","click",deleteAll);
   on("tcp","click",async()=>{ const b=document.getElementById("tcp"); try{ await navigator.clipboard.writeText(teamLink()); b.textContent=T("copied"); }catch(e){ const r=document.createRange(); r.selectNode(document.getElementById("tlk")); getSelection().removeAllRanges(); getSelection().addRange(r); } });
   on("gNew","click",()=>{ put("aog.dash2.gEdit","new"); render(); const f=document.getElementById("gForm"); if(f) f.scrollIntoView({block:"start"}); });
