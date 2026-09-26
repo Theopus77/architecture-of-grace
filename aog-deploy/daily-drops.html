@@ -122,9 +122,10 @@ button{font:inherit; color:inherit}
    two-column grid in a rounded panel, every tab the same width. Jimmy: "the social studies draft
    doesn't appear, it lays off the screen." */
 @media (max-width:560px){
-  #subjSeg{display:grid; grid-template-columns:1fr 1fr; width:100%; border-radius:16px}
+  #subjSeg{width:100%; border-radius:16px}
+  #subjSeg .bs{display:grid; grid-template-columns:1fr 1fr; gap:8px}
   #subjSeg button{border-radius:12px; padding:8px 6px; text-align:center}
-  #subjSeg button:last-child:nth-child(odd){grid-column:1/-1}
+  #subjSeg .bs button:last-child:nth-child(odd){grid-column:1/-1}
 }
 .seg button{min-height:42px; border:0; background:transparent; color:var(--ink-soft); font-weight:700;
   font-size:.92rem; padding:8px 16px; border-radius:999px; cursor:pointer}
@@ -1171,7 +1172,12 @@ body.review .box .ptcell, body.review .box .ew, body.review .box textarea{pointe
      get a facelift as well?" Each subject is a tile of its own glass (the same
      colours as the Blueprint); the chosen one is lit. Grade and Draft match. */
   .rail{border:3px solid #1E1F22!important;box-shadow:0 0 0 1px rgba(242,201,100,.35),0 10px 26px -18px rgba(0,0,0,.6)!important}
-  .rail .seg{background:transparent!important;padding:0;gap:8px}
+  .rail .seg{background:transparent!important;padding:0;gap:8px;display:grid!important;grid-template-columns:1fr}
+  .rail .sgrp{display:grid;grid-template-columns:118px 1fr;gap:8px 12px;align-items:center;padding:6px 0;border-top:1px dashed rgba(30,31,34,.18)}
+  .rail .sgrp:first-child{border-top:0;padding-top:0}
+  .rail .sg-k{font:800 11px Inter,system-ui,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-soft,#46506E)}
+  .rail .bs{display:flex;flex-wrap:wrap;gap:8px}
+  @media (max-width:640px){.rail .sgrp{grid-template-columns:1fr;gap:6px}.rail .sgrp{padding:8px 0}}
   .rail .seg button[data-s="math"]{--gl:#2F63B8}
   .rail .seg button[data-s="ela"]{--gl:#B87A12}
   .rail .seg button[data-s="write"]{--gl:#C2552A}
@@ -1244,20 +1250,29 @@ body.review .box .ptcell, body.review .box .ew, body.review .box textarea{pointe
 <div class="rail no-print">
   <div class="fg">
     <span class="lbl" data-en="Subject" data-es="Materia">Subject</span>
+    <!-- AOG-DD-SUBJ-GROUPS-V1 (2026-09-26) — Jimmy: "Can these be paired up better?" Thirteen subjects in three
+         families, each on its own row with a small name, so the eye finds Bible next to Qur'an and Talmud, and
+         Math next to Science, instead of one long shuffle. Same buttons, same data-s, same handler. -->
     <div class="seg" id="subjSeg" role="group" aria-label="Subject">
+      <div class="sgrp"><span class="sg-k" data-en="Core" data-es="Básicas">Core</span><div class="bs">
       <button data-s="math" aria-pressed="true" data-en="Math" data-es="Matemáticas">Math</button>
       <button data-s="ela" aria-pressed="false" data-en="Language Arts" data-es="Lenguaje">Language Arts</button>
-<button data-s="write" aria-pressed="false" data-en="Writing" data-es="Escritura">Writing</button>
+      <button data-s="write" aria-pressed="false" data-en="Writing" data-es="Escritura">Writing</button>
       <button data-s="science" aria-pressed="false" data-en="Science" data-es="Ciencias">Science</button>
       <button data-s="social-studies" aria-pressed="false" data-en="Social Studies" data-es="Estudios Sociales">Social Studies</button>
+      </div></div>
+      <div class="sgrp"><span class="sg-k" data-en="Languages &amp; life" data-es="Idiomas y vida">Languages &amp; life</span><div class="bs">
       <button data-s="spanish" aria-pressed="false" data-en="Spanish" data-es="Español">Spanish</button>
+      <button data-s="foundry" aria-pressed="false" title="Word Foundry" data-en="Foundry" data-es="Foundry">Foundry</button>
       <button data-s="facs" aria-pressed="false" title="Family and Consumer Sciences" data-en="FACS" data-es="CFC">FACS</button>
+      <button data-s="economics" aria-pressed="false" title="Economics" data-en="Economics" data-es="Econom&#237;a">Economics</button>
+      </div></div>
+      <div class="sgrp"><span class="sg-k" data-en="Faith &amp; texts" data-es="Fe y textos">Faith &amp; texts</span><div class="bs">
       <button data-s="religion" aria-pressed="false" title="World Religions" data-en="Religions" data-es="Religiones">Religions</button>
-      <button data-s="bible" aria-pressed="false" title="Bible Study" data-en="Bible" data-es="Biblia">Bible</button>
+      <button data-s="bible" aria-pressed="false" title="The Bible" data-en="The Bible" data-es="La Biblia">The Bible</button>
       <button data-s="quran" aria-pressed="false" title="Qur’an Study" data-en="Qur’an" data-es="Corán">Qur’an</button>
       <button data-s="talmud" aria-pressed="false" title="Talmud Study" data-en="Talmud" data-es="Talmud">Talmud</button>
-      <button data-s="economics" aria-pressed="false" title="Economics" data-en="Economics" data-es="Econom&#237;a">Economics</button>
-      <button data-s="foundry" aria-pressed="false" title="Word Foundry" data-en="Foundry" data-es="Foundry">Foundry</button>
+      </div></div>
     </div>
   </div>
   <div class="fg">
@@ -17214,7 +17229,7 @@ var SUBJN={math:['Mathematics','Matem\u00e1ticas'], ela:['Language Arts','Lengua
   spanish:['Spanish','Español'],
   facs:['Family and Consumer Sciences','Ciencias de la Familia y del Consumidor'],
   religion:['World Religions','Religiones del Mundo'],
-  bible:['Bible Study','Estudio bíblico'],
+  bible:["The Bible","La Biblia"],
   quran:['Qur’an Study','Estudio del Corán'],
   talmud:['Talmud Study','Estudio del Talmud'],
   economics:['Economics','Econom\u00eda'],
