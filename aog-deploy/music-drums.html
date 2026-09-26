@@ -110,6 +110,10 @@ header { display:flex; flex-wrap:wrap; justify-content:space-between; align-item
 .simple-strip .s-play.go{background:linear-gradient(#ffb1a4,#c4452a);color:#2a0c08}
 .simple-strip .s-clear{border-color:#c4452a;color:#ffb1a4}
 .simple-strip .s-decks{border-color:#5b8fd6;color:#cfe2ff}
+.simple-row{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:.45rem 0 0}
+.simple-row>span{font-size:.72rem;letter-spacing:.14em;color:#9a9488;font-weight:800;text-transform:uppercase;min-width:4.2rem}
+.simple-row>em{font-style:normal;color:#b7f7a8;font-size:.82rem;margin-left:.3rem}
+.simple-row .sp-key{min-width:2.6rem;font-size:.85rem}
 .simple-line{color:#d7cbb8;font-size:.95rem;margin:.2rem 0 .6rem;line-height:1.4}
 @media (max-width:520px){ .simple-strip{grid-template-columns:1fr 1fr} .simple-strip .s-play{grid-column:1 / -1} }
 .machine.simple .sp-keys,.machine.simple .sp-banks,.machine.simple .scope-bezel,.machine.simple .sp-eq,.machine.simple .fader,.machine.simple .seg-label{display:none}
@@ -424,6 +428,7 @@ const STR = {
   clear:{en:"Clear grid",es:"Vaciar"},
   benchLab:{en:"Bench",es:"Banco"}, benchSimple:{en:"Simple bench",es:"Banco sencillo"}, benchFull:{en:"Full bench",es:"Banco completo"},
   sPlay:{en:"▶ Play the beat",es:"▶ Tocar el ritmo"}, sStop:{en:"■ Stop",es:"■ Parar"}, sClear:{en:"Clear the beat",es:"Borrar el ritmo"}, sDecks:{en:"Send to the turntables",es:"Enviar a los platos"},
+  sKit:{en:"Sounds",es:"Sonidos"}, sPart:{en:"Part",es:"Parte"},
   sLine:{en:"Tap a pad to hear it. Tap the squares to build a beat. Then press Play.",es:"Toca un pad para oírlo. Toca los cuadros para armar un ritmo. Luego pulsa Tocar."},
   tempo:{en:"Tempo",es:"Tempo"},
   swing:{en:"Swing",es:"Swing"},
@@ -502,6 +507,7 @@ const S = { bench:(function(){ try{ return localStorage.getItem("aog.drums.bench
   eq:{low:0, lmid:0, lmidF:400, hmid:0, hmidF:2500, high:0, hp:20} };
 const USER = {A:{}, B:{}, C:{}, D:{}};
 const ROM = {};
+const ROMK = {C:{}, D:{}};   /* AOG-SP-KITCD-V1 — the electro and dusty kits */
 const ROM_LEN = {};
 function emptyGrid(){
   const g={}; VOICES.forEach(v=> g[v.id]=Array(16).fill(0)); return g;
@@ -684,7 +690,77 @@ function noiseHit(ac, dest, t0, type, freq, q, peak, decay){
   const g=envGain(ac, dest, t0, peak, decay);
   src.connect(f); f.connect(g); src.start(t0); src.stop(t0+decay+0.03);
 }
-function renderVoice(id, t0, dest, ac){
+/* AOG-SP-KITCD-V1 (2026-09-26) — Jimmy: "fill up C & D with other sounds you think would fit the
+   SP-1200 the best." Bank C is the ELECTRO kit the machine was famous for pairing with — a long
+   808-style boom, a snapping snare, a cowbell and a conga, a zap. Bank D is the DUSTY kit — the
+   found percussion of a breakbeat: a thumping kick with a click, a cracking rimshot snare, a shaker,
+   a tambourine, a finger snap, a timbale, a woodblock, a triangle. Both are baked through the same
+   twelve bits and 26,040 Hz as A, so they crunch the same way. A sample loaded onto a pad still
+   wins over the kit sound on that pad. */
+const KIT_NAME={C:{kick:"BOOM",snare:"SNAP",ch:"TICK",oh:"HISS",clap:"CLAP2",tom:"CONGA",rim:"COWBEL",bell:"ZAP"},
+                D:{kick:"THUMP",snare:"CRACK",ch:"SHAKER",oh:"TAMB",clap:"FSNAP",tom:"TIMBAL",rim:"BLOCK",bell:"TRIANG"}};
+const KIT_LABEL={A:["Kit A · the classic","Kit A · el clásico"],B:["Kit B · the classic, retuned","Kit B · el clásico, reafinado"],C:["Kit C · electro","Kit C · electro"],D:["Kit D · dusty breaks","Kit D · breaks polvorientos"]};
+function romFor(bank){ return (bank==="C"||bank==="D") ? ROMK[bank] : ROM; }
+function renderVoiceC(id, t0, dest, ac){
+  if(id==="kick"){            /* the 808 boom: a sine that sags from 62 to 38 Hz and hangs on */
+    tone(ac, dest, t0, "sine", 62, 38, 0.95, 0.85);
+    tone(ac, dest, t0, "square", 900, 200, 0.08, 0.008);
+  } else if(id==="snare"){    /* short, snapping, more noise than tone */
+    tone(ac, dest, t0, "triangle", 210, 170, 0.22, 0.07);
+    noiseHit(ac, dest, t0, "bandpass", 2600, 0.8, 0.5, 0.11);
+    noiseHit(ac, dest, t0, "highpass", 6000, 0.7, 0.2, 0.05);
+  } else if(id==="ch"){       /* a tick: very short metallic burst */
+    noiseHit(ac, dest, t0, "highpass", 8000, 0.9, 0.3, 0.03);
+    tone(ac, dest, t0, "square", 5200, 5200, 0.05, 0.02);
+  } else if(id==="oh"){       /* a hiss that breathes out */
+    noiseHit(ac, dest, t0, "highpass", 6500, 0.6, 0.22, 0.3);
+    tone(ac, dest, t0, "square", 4100, 4100, 0.03, 0.22);
+  } else if(id==="clap"){     /* the big electro clap: five bursts then a room */
+    [0, 0.01, 0.02, 0.03, 0.045].forEach((off,i)=>noiseHit(ac, dest, t0+off, "bandpass", 1200+i*120, 0.9, 0.3, 0.08));
+    noiseHit(ac, dest, t0+0.05, "bandpass", 1500, 0.7, 0.18, 0.28);
+  } else if(id==="tom"){      /* a conga: a bright tap that drops fast */
+    tone(ac, dest, t0, "sine", 330, 215, 0.6, 0.16);
+    tone(ac, dest, t0, "triangle", 660, 430, 0.12, 0.03);
+  } else if(id==="rim"){      /* the cowbell: two square waves a fifth-ish apart */
+    tone(ac, dest, t0, "square", 540, 540, 0.12, 0.14);
+    tone(ac, dest, t0, "square", 800, 800, 0.1, 0.12);
+  } else if(id==="bell"){     /* the zap: a fast fall from high to low */
+    tone(ac, dest, t0, "sawtooth", 2400, 90, 0.22, 0.1);
+    tone(ac, dest, t0, "sine", 1200, 60, 0.18, 0.12);
+  }
+}
+function renderVoiceD(id, t0, dest, ac){
+  if(id==="kick"){            /* a thump with the beater's click on the front */
+    tone(ac, dest, t0, "sine", 120, 52, 0.85, 0.2);
+    noiseHit(ac, dest, t0, "lowpass", 900, 0.5, 0.18, 0.015);
+    tone(ac, dest, t0, "triangle", 1400, 300, 0.1, 0.01);
+  } else if(id==="snare"){    /* the rimshot crack: ring plus wire */
+    tone(ac, dest, t0, "triangle", 240, 190, 0.3, 0.09);
+    tone(ac, dest, t0, "square", 1900, 1400, 0.14, 0.03);
+    noiseHit(ac, dest, t0, "bandpass", 3400, 0.6, 0.42, 0.15);
+    noiseHit(ac, dest, t0, "highpass", 7000, 0.6, 0.16, 0.08);
+  } else if(id==="ch"){       /* a shaker: three grains of sand */
+    [0, 0.014, 0.03].forEach((off,i)=>noiseHit(ac, dest, t0+off, "highpass", 5500+i*800, 0.5, 0.16-i*0.03, 0.035));
+  } else if(id==="oh"){       /* a tambourine: jingles ringing over a slap */
+    noiseHit(ac, dest, t0, "bandpass", 5200, 0.7, 0.2, 0.22);
+    [4200, 5600, 7100, 8900].forEach((f,i)=>tone(ac, dest, t0+i*0.006, "square", f, f*0.98, 0.035, 0.2));
+  } else if(id==="clap"){     /* a finger snap: one dry pop */
+    noiseHit(ac, dest, t0, "bandpass", 2200, 1.2, 0.5, 0.045);
+    tone(ac, dest, t0, "sine", 700, 300, 0.12, 0.02);
+  } else if(id==="tom"){      /* a timbale: a metal shell, ringing */
+    tone(ac, dest, t0, "sine", 262, 210, 0.5, 0.22);
+    tone(ac, dest, t0, "square", 1050, 1000, 0.07, 0.08);
+    noiseHit(ac, dest, t0, "bandpass", 3000, 0.8, 0.12, 0.03);
+  } else if(id==="rim"){      /* a woodblock: hollow and quick */
+    tone(ac, dest, t0, "sine", 880, 840, 0.4, 0.05);
+    tone(ac, dest, t0, "triangle", 1760, 1700, 0.12, 0.02);
+  } else if(id==="bell"){     /* a triangle: high, thin, and it lasts */
+    [[2960,0.12],[4420,0.08],[7200,0.04]].forEach(p=>tone(ac, dest, t0, "sine", p[0], p[0]*0.995, p[1], 0.55));
+  }
+}
+function renderVoice(id, t0, dest, ac, bank){
+  if(bank==="C") return renderVoiceC(id, t0, dest, ac);
+  if(bank==="D") return renderVoiceD(id, t0, dest, ac);
   if(id==="kick"){
     tone(ac, dest, t0, "sine", 168, 48, 0.9, 0.36);
     tone(ac, dest, t0, "triangle", 880, 150, 0.16, 0.016);
@@ -852,8 +928,7 @@ function chanMsg(id, when, accent){
 function bankEmpty(){ return VOICES.every(v=>!padHasSound(v.id)) }
 function padHasSound(id){
   if(USER[S.bank] && USER[S.bank][id]) return true;
-  if(S.bank==="A" || S.bank==="B") return true;
-  return false;
+  return true;   /* AOG-SP-KITCD-V1 — every bank ships with a kit now */
 }
 function memUsed(){
   let s=0;
@@ -878,8 +953,7 @@ function cutPad(src, id){
 function padSource(id){                /* what the trim page is looking at */
   const u=USER[S.bank] && USER[S.bank][id];
   if(u) return u;
-  if(S.bank==="A" || S.bank==="B") return ROM[id] || null;
-  return null;
+  return romFor(S.bank)[id] || null;
 }
 function pushPad(id){
   if(!engine) return;
@@ -887,13 +961,11 @@ function pushPad(id){
   if(u){
     const copy=cutPad(u, id);
     engine.port.postMessage({type:"kit", id:id, rate:26040, samples:copy.buffer}, [copy.buffer]);
-  } else if(S.bank==="A" || S.bank==="B"){
-    const rom=ROM[id];
-    if(!rom) return;
+  } else {
+    const rom=romFor(S.bank)[id];
+    if(!rom){ engine.port.postMessage({type:"clear", id:id}); return; }
     const copy=cutPad(rom, id);
     engine.port.postMessage({type:"kit", id:id, rate:26040, samples:copy.buffer}, [copy.buffer]);
-  } else {
-    engine.port.postMessage({type:"clear", id:id});
   }
 }
 function pushBank(){ VOICES.forEach(v=>pushPad(v.id)); }
@@ -927,10 +999,16 @@ async function bootSampler(){
         const q=quantize12(audio.getChannelData(0));
         ROM[v.id]=q;
         ROM_LEN[v.id]=q.length/26040;
-        const copy=new Float32Array(q);
-        engine.port.postMessage({type:"kit", id:v.id, rate:rate, samples:copy.buffer}, [copy.buffer]);
+        for(const bk of ["C","D"]){
+          const off2=new OC(1, frames, rate);
+          const d2=off2.createGain(); d2.gain.value=0.72; d2.connect(off2.destination);
+          renderVoice(v.id, 0.004, d2, off2, bk);
+          const a2=await off2.startRendering();
+          ROMK[bk][v.id]=quantize12(a2.getChannelData(0));
+        }
       }
       kitReady=true;
+      pushBank();
       refreshLcd();
     }catch(err){
       try{ if(engine) engine.disconnect(); }catch(e){}
@@ -974,8 +1052,8 @@ function hit(id, time, fromSeq, accent){
   if(!padHasSound(id)) return;
   if(engine && kitReady){
     engine.port.postMessage(chanMsg(id, t0, accent));
-  } else if(S.bank==="A" || S.bank==="B"){
-    renderVoice(id, t0, bus, c);
+  } else {
+    renderVoice(id, t0, bus, c, S.bank);
     bootSampler();
   }
 }
@@ -1168,7 +1246,6 @@ function lcdText(){
      had four banks and only the ones you sampled into made a sound. But the panel
      never said so — the pads read EMPTY and nothing else told you what to do about
      it. The screen says it now, in the machine's own voice. */
-  if(bankEmpty()) return "BANK "+S.bank+" IS EMPTY\nTAP A PAD TO LOAD A SOUND\n"+free+"s FREE  ·  A AND B ARE FULL";
   const seg="SEG 0"+(S.seg+1)+"  LEN "+segLen();
   const trk=S.track.length ? ("TRK "+(S.trackOn?((S.trkI%S.track.length)+1):"-")+"/"+S.track.length+" "+S.track.map(n=>n+1).join("")) : "TRK --";
   return seg+"   "+bpm+" BPM\n"+S.bank+" SW "+sw+"% TC "+S.tc+" "+run+rec+"\n"+trk+"   "+free+"s";
@@ -1263,6 +1340,7 @@ function padCaption(v){
   const named=USER_NAME[S.bank] && USER_NAME[S.bank][v.id];
   if(named) return named;
   if(!padHasSound(v.id)) return S.lang==="es"?"VACÍO":"EMPTY";
+  if(KIT_NAME[S.bank]) return KIT_NAME[S.bank][v.id]||v.face;
   return v.face;
 }
 const USER_NAME={A:{},B:{},C:{},D:{}};
@@ -1288,7 +1366,10 @@ function machineHtml(){
       <button type="button" class="s-play${S.playing?" go":""}" data-simple="play">${S.playing?t("sStop"):t("sPlay")}</button>
       <button type="button" class="s-clear" data-simple="clear">${t("sClear")}</button>
       <button type="button" class="s-decks" data-simple="decks">${t("sDecks")}</button>
-    </div><p class="simple-line">${t("sLine")}</p>`:"";
+    </div>
+    <div class="simple-row"><span>${t("sKit")}</span>${["A","B","C","D"].map(b=>`<button type="button" class="sp-key${S.bank===b?" on":""}" data-simple-bank="${b}" title="${(KIT_LABEL[b]||["",""])[S.lang==="es"?1:0]}">${b}</button>`).join("")}<em>${(KIT_LABEL[S.bank]||["",""])[S.lang==="es"?1:0]}</em></div>
+    <div class="simple-row"><span>${t("sPart")}</span>${Array.from({length:SEGS},(_,i)=>`<button type="button" class="sp-key${S.seg===i?" on":""}" data-simple-seg="${i}">${i+1}</button>`).join("")}</div>
+    <p class="simple-line">${t("sLine")}</p>`:"";
   return `<div class="machine no-print${simple?" simple":""}">
     <div class="chassis-top">
       <div class="screws"><span class="screw"><i></i></span><span class="screw"><i></i></span></div>
@@ -1554,7 +1635,7 @@ async function bounceToDecks(){
     eq.output.connect(g); g.connect(lim); lim.connect(off.destination);
     VOICES.forEach(v=>{
       const u=USER[S.bank] && USER[S.bank][v.id];
-      const src=u ? u : ((S.bank==="A"||S.bank==="B") ? ROM[v.id] : null);
+      const src=u ? u : (romFor(S.bank)[v.id] || null);
       if(!src) return;
       const copy=new Float32Array(src);
       node.port.postMessage({type:"kit", id:v.id, rate:26040, samples:copy.buffer},[copy.buffer]);
@@ -1816,6 +1897,8 @@ async function openWorkFile(file){
 function bind(){
   document.body.classList.toggle("bench-simple", S.bench!=="full");
   document.querySelectorAll("[data-bench]").forEach(b=>b.onclick=()=>{ S.bench=b.getAttribute("data-bench"); try{ localStorage.setItem("aog.drums.bench", S.bench); }catch(e){} paint(); });
+  document.querySelectorAll("[data-simple-bank]").forEach(b=>b.onclick=()=>{ const r=document.querySelector('[data-bank="'+b.getAttribute("data-simple-bank")+'"]'); if(r) r.click(); });
+  document.querySelectorAll("[data-simple-seg]").forEach(b=>b.onclick=()=>{ const r=document.querySelector('[data-seg="'+b.getAttribute("data-simple-seg")+'"]'); if(r) r.click(); document.querySelectorAll("[data-simple-seg]").forEach(x=>x.classList.toggle("on", x===b)); });
   document.querySelectorAll("[data-simple]").forEach(b=>b.onclick=()=>{ const id={play:"playBtn",clear:"clearBtn",decks:"toDecks"}[b.getAttribute("data-simple")]; const r=document.getElementById(id); if(r) r.click(); });
   const play=document.getElementById("playBtn");
   if(play) play.onclick=()=>{ S.playing?stop():start(); };
