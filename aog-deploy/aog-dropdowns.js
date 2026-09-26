@@ -72,12 +72,14 @@
     box.hidden = list.length < 2;
   }
   var t = 0;
-  function refresh() { clearTimeout(t); t = setTimeout(function () { ROWS.concat(extra()).forEach(build); try { demoBar(); } catch (e) {} try { iepPick(); } catch (e) {} }, 40); }
+  function refresh() { clearTimeout(t); t = setTimeout(function () { ROWS.concat(extra()).forEach(build); try { demoBar(); } catch (e) {} try { iepPick(); } catch (e) {} try { gsBar(); } catch (e) {} }, 40); }
   var css = D.createElement("style");
   css.textContent =
     ".aogdd-src{position:absolute!important;width:1px!important;height:1px!important;overflow:hidden!important;clip:rect(0 0 0 0)!important;white-space:nowrap!important}" +
     ".aogdd{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:10px 0 14px;font:600 14px/1.3 Inter,system-ui,sans-serif}" +
     ".aogdd[hidden]{display:none}" +
+    ".aogdd-gs{display:flex;flex-wrap:wrap;align-items:center;gap:8px 10px;margin:-4px 0 14px;font:600 14px/1.3 Inter,system-ui,sans-serif;color:#F4EEE2}" +
+    ".aogdd-gsb{display:inline-flex;align-items:center;min-height:40px;padding:0 14px;border-radius:999px;border:1.5px solid #C9A24A;background:transparent;color:#F2C964;text-decoration:none;font:700 14px/1 Inter,system-ui,sans-serif;cursor:pointer}" +
     ".aogdd-demo{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:0 0 14px}.aogdd-demo[hidden]{display:none}" +
     ".aogdd-demo-btn{min-height:44px;padding:0 18px;border-radius:999px;border:2px solid #1E1F22;background:#C9A24A;color:#0A1E33;font:700 15px/1 Inter,system-ui,sans-serif;cursor:pointer}" +
     ".aogdd-demo-tx{font:500 14px/1.4 Inter,system-ui,sans-serif;color:#15202E}html[data-theme=dark] .aogdd-demo-tx{color:#F4EEE2}" +
@@ -164,6 +166,27 @@
       else if (window.aogIepWizFor) window.aogIepWizFor(v.slice(1));
       setTimeout(refresh, 80);
     };
+  }
+  /* AOG-GS-BAR-V1 (2026-09-26) — Jimmy: "Put the GS code more out there with the
+     ones I just referenced." Under Which link?, one bar: the Sheet script and its
+     one-page setup guide, and a way to the connection page. */
+  function gsBar() {
+    var dd = D.querySelector('#screen-admin select[aria-label="Which link?"], #screen-admin select[aria-label="¿Qué enlace?"]');
+    if (!dd) return;
+    var box = dd.closest(".aogdd"); if (!box) return;
+    var bar = D.getElementById("aogGsBar");
+    if (!bar) {
+      bar = D.createElement("div"); bar.id = "aogGsBar"; bar.className = "aogdd-gs no-print";
+      box.parentNode.insertBefore(bar, box.nextSibling);
+    }
+    var h = es() ? ['Tu Hoja de Google:', 'Descargar Code.gs', 'Guía de una página', 'Conectar y sincronizar →']
+                 : ['Your Google Sheet:', 'Download Code.gs', 'One-page setup guide', 'Connect & sync →'];
+    var html = '<b>' + h[0] + '</b> <a class="aogdd-gsb" href="AoG-Screener-Sync-Code.gs" download="AoG-Screener-Sync-Code.gs">⬇ ' + h[1] + '</a>'
+      + ' <a class="aogdd-gsb" href="AoG-Sheet-Setup.pdf" target="_blank" rel="noopener">📄 ' + h[2] + '</a>'
+      + ' <button type="button" class="aogdd-gsb" data-gsconnect="1">' + h[3] + '</button>';
+    if (bar.__h !== html) { bar.innerHTML = html; bar.__h = html; }
+    var b = bar.querySelector("[data-gsconnect]");
+    b.onclick = function () { var o = Array.prototype.find.call(dd.options, function (x) { return /Connect|Conectar/.test(x.text); }); if (o) { dd.value = o.value; dd.selectedIndex = o.index; dd.dispatchEvent(new Event("change")); } };
   }
   function start() {
     D.head.appendChild(css); refresh();
