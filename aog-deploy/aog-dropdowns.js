@@ -11,7 +11,6 @@
   var ROWS = [
     { sel: "#screen-admin .container-wide > .tabs", en: "Section", es: "Sección" },
     { sel: "#aogDistTabs", en: "Which link?", es: "¿Qué enlace?", show: 1 },
-    { sel: "#screen-admin .dash-roles-seg", en: "View as", es: "Ver como" },
     { sel: "#screen-admin .cps-bands", en: "Grade band", es: "Grados" },
     { sel: "#screen-admin .xv-range", en: "Show", es: "Mostrar" },
     { sel: "#aogIepPwBar", en: "Show", es: "Mostrar" }
@@ -73,17 +72,46 @@
     box.hidden = list.length < 2;
   }
   var t = 0;
-  function refresh() { clearTimeout(t); t = setTimeout(function () { ROWS.concat(extra()).forEach(build); }, 40); }
+  function refresh() { clearTimeout(t); t = setTimeout(function () { ROWS.concat(extra()).forEach(build); try { demoBar(); } catch (e) {} }, 40); }
   var css = D.createElement("style");
   css.textContent =
     ".aogdd-src{position:absolute!important;width:1px!important;height:1px!important;overflow:hidden!important;clip:rect(0 0 0 0)!important;white-space:nowrap!important}" +
     ".aogdd{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:10px 0 14px;font:600 14px/1.3 Inter,system-ui,sans-serif}" +
     ".aogdd[hidden]{display:none}" +
+    ".aogdd-demo{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:0 0 14px}.aogdd-demo[hidden]{display:none}" +
+    ".aogdd-demo-btn{min-height:44px;padding:0 18px;border-radius:999px;border:2px solid #1E1F22;background:#C9A24A;color:#0A1E33;font:700 15px/1 Inter,system-ui,sans-serif;cursor:pointer}" +
+    ".aogdd-demo-tx{font:500 14px/1.4 Inter,system-ui,sans-serif;color:#15202E}html[data-theme=dark] .aogdd-demo-tx{color:#F4EEE2}" +
     ".aogdd-lab:empty{display:none}.aogdd-lab{color:inherit;font-size:11px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;opacity:.8}" +
     ".aogdd-sel{min-height:44px;min-width:min(100%,280px);max-width:100%;padding:8px 38px 8px 14px;border-radius:12px;border:1.5px solid #C9A24A;" +
     "background:#FFFDF8 url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%237a5a12' stroke-width='2.4' stroke-linecap='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E\") no-repeat right 12px center/16px;" +
     "color:#0A1E33;font:600 16px/1.3 Inter,system-ui,sans-serif;-webkit-appearance:none;appearance:none;cursor:pointer}" +
     ".aogdd .aogdd-sel{background-image:url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23C9A24A' stroke-width='2.4' stroke-linecap='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E\")!important;background-repeat:no-repeat!important;background-position:right 12px center!important;background-size:16px!important;padding-right:38px!important}";
+  /* AOG-DEMO-IN-CHECKINS-V1 (2026-09-26) — Jimmy: "DEMO DATA should go into the
+     student check-in page that produces that amazing data." The header's Demo
+     menu steps aside; on Student Check-ins a clear button presses the same
+     Try demo data / Clear demo data switch (real records are stashed and come
+     back on Clear, exactly as before). */
+  function demoBar() {
+    var real = D.getElementById("btnDemoData"); if (!real) return;
+    var wrap = D.getElementById("aogDemoWrap"); if (wrap) wrap.style.display = "none";
+    var on = !!D.querySelector('#dashModes .dmode[data-mode="student"].active');
+    var bar = D.getElementById("aogDemoBar");
+    if (!bar) {
+      var anchor = D.querySelector("#screen-admin .container-wide > .aogdd");
+      if (!anchor) return;
+      bar = D.createElement("div"); bar.id = "aogDemoBar"; bar.className = "aogdd-demo no-print";
+      bar.innerHTML = '<button type="button" class="aogdd-demo-btn"></button><span class="aogdd-demo-tx"></span>';
+      anchor.parentNode.insertBefore(bar, anchor.nextSibling);
+      bar.querySelector("button").addEventListener("click", function () { real.click(); setTimeout(demoBar, 120); });
+    }
+    bar.hidden = !on;
+    var isOn = /clear/i.test(real.textContent || "");
+    bar.querySelector("button").textContent = isOn ? (es() ? "Quitar los datos de demostración" : "Clear demo data")
+                                                    : (es() ? "Probar con datos de demostración" : "Try demo data");
+    bar.querySelector(".aogdd-demo-tx").textContent = isOn
+      ? (es() ? "Estás viendo estudiantes de ejemplo. Tus datos reales vuelven al quitar la demostración." : "You are seeing sample students. Your real data comes back when you clear the demo.")
+      : (es() ? "Llena esta página con estudiantes de ejemplo para ver cómo se ve." : "Fill this page with sample students to see what it can show.");
+  }
   function start() {
     D.head.appendChild(css); refresh();
     new MutationObserver(function (list) {

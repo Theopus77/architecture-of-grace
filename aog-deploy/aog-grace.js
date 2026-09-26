@@ -86,7 +86,7 @@
   } catch (e) {}
   /* AOG-MINE-V1 — a private copy of what this learner sends, for their own Blueprint */
   try { var mn = D.createElement("script"); mn.src = "/aog-mine.js"; (D.head || H).appendChild(mn); } catch (e) {}
-  var FONTS = "https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..700&family=Inter:wght@300;400;500;600;700;800&display=swap";
+  var FONTS = "https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..700&family=Inter:wght@300;400;500;600;700;800&display=optional";
 
   /* ── 0 ── navy, the whole page ─────────────────────────────────────────
      Jimmy: "I wanted the whole page like this, not just the top." The home
@@ -267,13 +267,19 @@
     try {
       H.style.setProperty("--aog-vw", H.clientWidth + "px");
       if (!hero) return;
-      var top = hero.getBoundingClientRect().top;
+      /* AOG-GRACE-STILL-V1 (2026-09-26) — Jimmy: pages "look all jittery" on load.
+         The pull was measured AFTER the last pull had moved the masthead, so
+         every measure undid the one before and the page bounced 39px up and
+         down. Measure where the masthead would sit with no pull, and only
+         write when the answer changes. */
+      var prev = parseFloat(hero.style.getPropertyValue("--aog-pull")) || 0;
+      var top = hero.getBoundingClientRect().top + prev;
       var above = edgeAbove(hero);
       var pull = above === null ? 0 : Math.max(0, Math.round(top - above));
       /* never reach up more than a comfortable margin; a page that stacks
          things above its masthead keeps them */
       if (pull > 160) pull = 0;
-      hero.style.setProperty("--aog-pull", pull + "px");
+      if (pull !== prev) hero.style.setProperty("--aog-pull", pull + "px");
     } catch (e) {}
   }
 
@@ -325,7 +331,7 @@
     try { els = hero.querySelectorAll(LEDE); } catch (e) { els = hero.querySelectorAll(".deck, .tag, .tagline, .lede, .say, p.sub"); }
     for (var i = 0; i < els.length; i++) {
       var el = els[i];
-      if (el.closest("[data-aog-card]") || el.querySelector("input, button, select") || el.classList.contains("aog-clamp")) continue;
+      if (el.closest("[data-aog-card]") || el.querySelector("input, button, select") || el.classList.contains("aog-clamp") || el.hasAttribute("data-aog-fits")) continue;
       if ((el.textContent || "").replace(/\s+/g, " ").trim().length < 140) continue;
       el.classList.add("aog-clamp");
       var more = D.createElement("button");
@@ -343,7 +349,7 @@
       }; })(el, more));
       el.parentNode.insertBefore(more, el.nextSibling);
       /* only keep the link when there is something to open */
-      (function (p, b) { setTimeout(function () { if (p.scrollHeight <= p.clientHeight + 2) { b.remove(); p.classList.remove("aog-clamp"); } }, 50); })(el, more);
+      (function (p, b) { setTimeout(function () { if (p.scrollHeight <= p.clientHeight + 2) { b.remove(); p.classList.remove("aog-clamp"); p.setAttribute("data-aog-fits", "1"); /* AOG-GRACE-STILL-V1: never clamp it again — that loop made pages jitter */ } }, 50); })(el, more);
     }
   }
 

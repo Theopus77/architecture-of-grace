@@ -1,0 +1,108 @@
+/* ══ AOG-DASH-FACELIFT-V1 (2026-09-26) — THE EDUCATOR DASHBOARD, REDONE ══════
+   Jimmy: "This WHOLE DASHBOARD NEEDS A FACELIFT … and a facelift in all the
+   doors / rooms that are inside the dashboard as well."
+   What was wrong: navy boxes of every width and weight floating on a pale
+   ground, each drawn a little differently. What this does, for every room
+   inside the dashboard at once:
+     · the whole dashboard sits on the site's own night-navy chapel ground,
+       with the same soft pools of stained-glass light as the home page;
+     · every card, fold and header is one kind of leaded-glass pane: dark
+       lead, a gold hairline, a band of glass along the top, one radius, one
+       rhythm of spacing;
+     · headings in the site's serif, eyebrows in gold, body text in cream;
+     · the menus and the four big buttons read as glass tiles.
+   Screen only; nothing moves; no text or number changes. ══════════════════ */
+@media screen {
+  /* the ground */
+  #screen-admin.active {
+    background:
+      radial-gradient(40% 30% at 12% 10%, rgba(47,99,184,.22), transparent 70%),
+      radial-gradient(34% 28% at 90% 18%, rgba(184,69,122,.14), transparent 70%),
+      radial-gradient(40% 32% at 80% 85%, rgba(46,139,87,.14), transparent 70%),
+      radial-gradient(36% 30% at 15% 90%, rgba(184,122,18,.14), transparent 70%),
+      linear-gradient(180deg, #0B2036, #081828) !important;
+    color:#F4EEE2;
+    padding-bottom:48px;
+    min-height:100vh;
+  }
+  #screen-admin .container-wide { max-width:1180px; margin-left:auto; margin-right:auto; }
+
+  /* one kind of pane for every room */
+  #screen-admin .section-head,
+  #screen-admin .table-card,
+  #screen-admin .aogfold-host,
+  #screen-admin .tp-door, #screen-admin .gc-card, #screen-admin .tv-card, #screen-admin .xv-card,
+  #screen-admin .dl-card, #screen-admin .hct-card, #screen-admin .filter-bar, #screen-admin .pc-empty,
+  #screen-admin [data-aog-pullbar], #screen-admin .aogdd-demo {
+    border:2px solid #1E1F22 !important;
+    border-radius:18px !important;
+    box-shadow:0 0 0 1px rgba(242,201,100,.40), inset 0 5px 0 var(--pane,#C9A24A), 0 18px 40px -26px rgba(0,0,0,.85) !important;
+    background-color:#13314F !important;
+    background-image:linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,0) 90px) !important;
+    color:#F4EEE2;
+    margin-bottom:18px !important;
+  }
+  /* each kind of room keeps its own glass colour along the top */
+  #screen-admin .section-head { --pane:#2F63B8; }
+  #screen-admin .table-card   { --pane:#2E8B57; }
+  #screen-admin .tp-door, #screen-admin .gc-card { --pane:#B8457A; }
+  #screen-admin .tv-card, #screen-admin .xv-card { --pane:#1F8080; }
+  #screen-admin .dl-card, #screen-admin .hct-card { --pane:#7B4FA0; }
+
+  /* headings: the site's serif, cream; small labels gold */
+  #screen-admin .tab-panel h2, #screen-admin .tab-panel h3,
+  #screen-admin .section-head h2, #screen-admin .section-head h3 {
+    font-family:Fraunces, Georgia, serif !important; color:#F4EEE2 !important; letter-spacing:-.005em;
+  }
+  #screen-admin .tab-panel h2 { font-size:clamp(22px,3vw,28px) !important; }
+
+  /* the hero: roomier, a leaded frame, a clear greeting */
+  #dashModes { gap:10px !important; padding:14px !important; }
+  #dashModes .dmode {
+    border:2px solid #1E1F22 !important; border-radius:14px !important; min-height:52px;
+    box-shadow:0 0 0 1px rgba(242,201,100,.35) !important;
+    background-image:linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,0)) !important;
+  }
+  #dashModes .dmode.active {
+    background-color:#C9A24A !important; color:#0A1E33 !important;
+    background-image:radial-gradient(120% 90% at 30% 15%, rgba(255,255,255,.4), rgba(255,255,255,0) 60%) !important;
+  }
+
+  /* every pane the full width of the room */
+  #screen-admin .aogfold-host, #screen-admin .table-card, #screen-admin .section-head { width:auto !important; max-width:none !important; }
+  #screen-admin .aogfold-o { font-family:Fraunces, Georgia, serif !important; font-size:18px !important; color:#F4EEE2 !important; }
+
+  /* the section menu and Which link? read as part of the pane below them */
+  #screen-admin .aogdd { margin:18px 0 12px !important; }
+  #screen-admin .aogdd-sel {
+    background-color:#13314F !important; color:#F4EEE2 !important;
+    border:2px solid #1E1F22 !important; box-shadow:0 0 0 1px rgba(242,201,100,.5) !important;
+    min-width:min(100%,320px) !important; font-weight:700 !important;
+  }
+  #screen-admin .aogdd-lab { color:#E7C46A !important; opacity:1 !important; }
+  #screen-admin .aogdd-demo { padding:14px 16px !important; --pane:#C9A24A; }
+  #screen-admin .aogdd-demo-tx { color:#F4EEE2 !important; }
+
+  /* fields inside the rooms: one look */
+  #screen-admin .tab-panel input:not([type=checkbox]):not([type=radio]):not([type=range]),
+  #screen-admin .tab-panel select:not(.aogdd-sel), #screen-admin .tab-panel textarea {
+    border-radius:12px !important; border:1.5px solid rgba(242,201,100,.45) !important;
+    background-color:#0E2740 !important; color:#F4EEE2 !important; min-height:44px;
+  }
+
+  /* the phone: slimmer lead, a little less padding, never wider than the screen */
+  @media (max-width:560px) {
+    #screen-admin .section-head, #screen-admin .table-card, #screen-admin .aogfold-host,
+    #screen-admin .tp-door, #screen-admin .gc-card, #screen-admin .tv-card, #screen-admin .xv-card,
+    #screen-admin .dl-card, #screen-admin .hct-card, #screen-admin .filter-bar, #screen-admin .pc-empty,
+    #screen-admin [data-aog-pullbar] { border-width:1.5px !important; border-radius:14px !important; }
+  }
+}
+@media screen {
+  /* a header inside a folding pane is part of that pane, not a pane of its own */
+  #screen-admin .aogfold-host .section-head, #screen-admin .aogfold-host .table-card,
+  #screen-admin .table-card .section-head, #screen-admin .table-card .filter-bar {
+    border:0 !important; box-shadow:none !important; background:none !important; margin-bottom:0 !important;
+  }
+  #screen-admin .aogfold-host.aogfold-closed > :not(.aogfold-o) { visibility:hidden; }
+}

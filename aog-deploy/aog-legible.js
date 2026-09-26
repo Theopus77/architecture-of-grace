@@ -68,8 +68,18 @@
   var SKIP = "script,style,noscript,svg,option,[hidden],[aria-hidden=true],.sr-only,.visually-hidden,[data-aog-legible-off]";
   function sweep(root, mark) {
     if (D.hidden) return;
-    var w = D.createTreeWalker(root || D.body, NodeFilter.SHOW_TEXT), seen = [], t, n = 0;
-    while ((t = w.nextNode()) && n < 6000) {
+    /* AOG-LEGIBLE-REACH-V1 (2026-09-26): the walk used to stop after 6,000 pieces
+       of text, and index.html holds far more than that in screens nobody is
+       looking at, so the Framework was never reached. Hidden screens and
+       hidden boxes are now skipped whole, and the budget is larger. */
+    var w = D.createTreeWalker(root || D.body, NodeFilter.SHOW_TEXT | NodeFilter.SHOW_ELEMENT, { acceptNode: function (x) {
+      if (x.nodeType === 1) {
+        if (x.hidden || (x.classList.contains("screen") && !x.classList.contains("active")) || /^(SCRIPT|STYLE|NOSCRIPT|TEMPLATE|svg)$/.test(x.tagName)) return NodeFilter.FILTER_REJECT;
+        return NodeFilter.FILTER_SKIP;
+      }
+      return NodeFilter.FILTER_ACCEPT;
+    } }), seen = [], t, n = 0;
+    while ((t = w.nextNode()) && n < 20000) {
       if (!/\S/.test(t.nodeValue)) continue;
       var el = t.parentElement; if (!el || el.__aogL === sweep.gen) continue;
       el.__aogL = sweep.gen; n++;
@@ -111,7 +121,10 @@
 
   function hoverCheck(t) {
     if (!t || t.nodeType !== 1 || t === D.body || t === H) { reset("data-aog-legible-hover"); hov = null; return; }
-    var row = t.closest("tr, li, a, button, label, summary, [role=button], .card, section, article, div") || t;
+    /* only a small thing under the pointer (a row, a card, a button) — never a whole
+       page section, or the rest of the page would be left out of the main sweep */
+    var row = t.closest("tr, li, a, button, label, summary, [role=button], .card");
+    if (!row || row.getBoundingClientRect().height > 260) { reset("data-aog-legible-hover"); hov = null; return; }
     if (row === hov) return;
     reset("data-aog-legible-hover"); hov = row;
     setTimeout(function () { if (hov === row) { busy = true; try { sweep.gen++; sweep(row, "data-aog-legible-hover"); } catch (e) {} setTimeout(function () { busy = false; }, 0); } }, 30);
@@ -125,6 +138,8 @@
       setTimeout(function () { busy = false; }, 0);
     }, full ? 80 : 250);
   }
+  /* other layers that repaint a room (aog-chapel.js) ask for a fresh look */
+  window.aogLegibleRefresh = function () { soon(true); };
   function start() {
     soon(false);
     window.addEventListener("load", function () { soon(false); setTimeout(function () { soon(false); }, 900); });

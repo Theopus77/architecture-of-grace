@@ -6,13 +6,13 @@
 <script>
 (function(){var t="light";try{if(localStorage.getItem("aog.interior.ws.v1.theme")==="dark")t="dark";}catch(e){}document.documentElement.setAttribute("data-theme",t);if(t==="dark")document.documentElement.classList.add("dark");})();
 </script>
-<title>The Wave Bench — Architecture of Grace</title>
+<title>The Oscilloscope — Architecture of Grace</title>
 <meta name="description" content="Meet a wave first. Pitch, loudness, and wave shape — sine, square, triangle, saw. Classroom-safe tones. Print the sheet.">
 <link rel="canonical" href="https://architectureofgrace.org/waves">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Architecture of Grace">
 <meta property="og:locale" content="en_US">
-<meta property="og:title" content="The Wave Bench — Architecture of Grace">
+<meta property="og:title" content="The Oscilloscope — Architecture of Grace">
 <meta property="og:description" content="A moving wave first. Names after you tap. Pitch, loudness, and four wave shapes.">
 <meta property="og:url" content="https://architectureofgrace.org/waves">
 <meta property="og:image" content="https://architectureofgrace.org/og-science.png?v=1">
@@ -21,7 +21,7 @@
 <link rel="icon" href="/favicon.ico" sizes="any">
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 <meta name="robots" content="noindex">
-<!-- AOG-WAVE-BENCH-V1 (2026-09-22) — Jimmy: classroom wave bench, same craft as the microscope.
+<!-- AOG-WAVE-BENCH-V1 (2026-09-22) — Jimmy: classroom oscilloscope, same craft as the microscope.
      Wordless object first. School words after tap. Safe hearing range only. No medical claims.
      AOG-WAVE-SHAPE-V1 — sine / square / triangle / saw. Same pitch, different sound. Timbre.
      AOG-WAVE-LAB-V1 — Jimmy: experimental science. One variable, three trials, notebook, CER. -->
@@ -71,6 +71,13 @@ header { display:flex; flex-wrap:wrap; justify-content:space-between; align-item
 .card { background:var(--card); border:1px solid var(--line); border-radius:12px; box-shadow:var(--shadow); }
 .kicker { font-size:.75rem; font-weight:700; letter-spacing:.12em; text-transform:uppercase; color:var(--steel); }
 .wavebox { background:#0b0e12; border-radius:16px; padding:.6rem; border:1px solid var(--line); }
+/* AOG-SCOPE-FACELIFT-V1 — the screen sits in an instrument's bezel: warm grey
+   metal, a dark rubber rim around the glass, a gold label; cards are leaded glass. */
+.wavebox { background:linear-gradient(180deg,#e4ded0,#b9b1a0) !important; border:2px solid #1E1F22 !important; border-radius:18px !important;
+  padding:12px 12px 26px !important; position:relative; box-shadow:0 0 0 1px rgba(242,201,100,.45), 0 14px 30px -18px rgba(0,0,0,.7) !important; }
+.wavebox::after { content:"CH1 · 1 V/div · 5 ms/div"; position:absolute; left:14px; bottom:6px; font:700 10px/1 ui-monospace,Menlo,monospace; letter-spacing:.12em; color:#3b3528; }
+.wavebox canvas { border:3px solid #22211d !important; border-radius:10px !important; box-shadow:inset 0 0 0 1px rgba(125,255,174,.2); }
+.card { border:2px solid #1E1F22 !important; border-radius:16px !important; box-shadow:0 0 0 1px rgba(242,201,100,.4), inset 0 5px 0 #1F8080, 0 14px 30px -22px rgba(0,0,0,.75) !important; }
 .wavebox canvas { width:100%; height:auto; display:block; border-radius:10px; }
 .chips { display:flex; flex-wrap:wrap; gap:.4rem; margin:1rem 0; }
 .chip { min-height:44px; border-radius:999px; border:1px solid var(--line); background:var(--chip); padding:0 .75rem; font-weight:600; font-size:.85rem; }
@@ -134,7 +141,7 @@ body:has(.aogtop) header .tools { display:none; }
 </script>
 <div class="wrap">
   <header class="no-print">
-    <a class="brand" href="#home" id="brand">The Wave Bench</a>
+    <a class="brand" href="#home" id="brand">The Oscilloscope</a>
     <div class="tools">
       <button type="button" class="pill" id="langBtn">ES</button>
       <button type="button" class="pill" id="themeBtn">Dark</button>
@@ -204,7 +211,7 @@ const SHAPES = [
    blurb_es:"Sube despacio, cae de golpe. Brillante y zumbante. Armónicos pares e impares. Una cuerda con arco."}
 ];
 const STR = {
-  app:{en:"The Wave Bench",es:"El banco de ondas"},
+  app:{en:"The Oscilloscope",es:"El osciloscopio"},
   eyebrow:{en:"A moving wave first. Names after you tap.",es:"Primero la onda. Los nombres después de tocar."},
   tag:{en:"Change how fast it wiggles, how tall it is, and the shape of the line. Then run a fair test: one variable, three trials, a claim from the data. School science — not a medical machine.",es:"Cambia qué tan rápido oscila, qué tan alta es y la forma de la línea. Luego haz una prueba justa: una variable, tres ensayos, una afirmación desde los datos. Ciencia escolar — no una máquina médica."},
   priv:{en:"Everything stays on this computer.",es:"Todo se queda en esta computadora."},
@@ -247,7 +254,7 @@ const STR = {
   q6:{en:"Orchestra A is ________ Hz. Middle C is about ________ Hz.",es:"El la de orquesta es ________ Hz. El do central es unos ________ Hz."},
   drawA:{en:"Draw a sine wave and a square wave. Same height, same width.",es:"Dibuja una onda seno y una cuadrada. Misma altura, mismo ancho."},
   drawB:{en:"Draw a triangle wave and a saw wave.",es:"Dibuja una onda triangular y una de sierra."},
-  foot:{en:"The Wave Bench · Architecture of Grace · school science only",es:"El banco de ondas · Architecture of Grace · solo ciencia escolar"},
+  foot:{en:"The Oscilloscope · Architecture of Grace · school science only",es:"El osciloscopio · Architecture of Grace · solo ciencia escolar"},
   backSci:{en:"Science door",es:"Puerta de ciencias"},
   doneFind:{en:"You found the parts.",es:"Encontraste las partes."},
   doneJob:{en:"You named the jobs.",es:"Nombraste los trabajos."},
@@ -403,10 +410,16 @@ function wavePath(w,h,cycles,amp,phase){
 function drawWave(c, opt){
   const w=c.width, h=c.height, ctx=c.getContext("2d");
   ctx.clearRect(0,0,w,h);
-  ctx.fillStyle=getComputedStyle(document.documentElement).getPropertyValue("--bg")? "#0b0e12":"#0b0e12";
-  ctx.fillRect(0,0,w,h);
-  ctx.strokeStyle="#2a3340"; ctx.lineWidth=1;
-  ctx.beginPath(); ctx.moveTo(0,h/2); ctx.lineTo(w,h/2); ctx.stroke();
+  /* AOG-SCOPE-FACELIFT-V1 (2026-09-26) — a real oscilloscope screen: dark green
+     phosphor glass, the graticule grid, a glowing green trace. Still, never moving. */
+  const bg=ctx.createRadialGradient(w/2,h/2,10,w/2,h/2,Math.max(w,h)*.7);
+  bg.addColorStop(0,"#0f3320"); bg.addColorStop(1,"#03110a");
+  ctx.fillStyle=bg; ctx.fillRect(0,0,w,h);
+  ctx.strokeStyle="rgba(90,190,130,.22)"; ctx.lineWidth=1; ctx.beginPath();
+  for(let i=1;i<10;i++){ const x=Math.round(w*i/10)+.5; ctx.moveTo(x,0); ctx.lineTo(x,h); }
+  for(let j=1;j<8;j++){ const y=Math.round(h*j/8)+.5; ctx.moveTo(0,y); ctx.lineTo(w,y); }
+  ctx.stroke();
+  ctx.strokeStyle="rgba(120,230,160,.45)"; ctx.beginPath(); ctx.moveTo(0,h/2); ctx.lineTo(w,h/2); ctx.moveTo(w/2,0); ctx.lineTo(w/2,h); ctx.stroke();
   const cycles=opt.cycles, amp=opt.amp, phase=opt.phase||0, kind=opt.shape||"sine";
   const A=(h*0.38)*amp;
   function sample(th){
@@ -416,13 +429,13 @@ function drawWave(c, opt){
     if(kind==="sawtooth") return -1+2*(t/(Math.PI*2));
     return Math.sin(th);
   }
-  ctx.strokeStyle="#7fb4c7"; ctx.lineWidth=3; ctx.beginPath();
+  ctx.strokeStyle="#7dffae"; ctx.lineWidth=3; ctx.shadowColor="rgba(125,255,174,.8)"; ctx.shadowBlur=10; ctx.beginPath();
   for(let x=0;x<=w;x++){
     const th=(x/w)*cycles*Math.PI*2 + phase;
     const y=h/2 - sample(th)*A;
     if(x===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
   }
-  ctx.stroke();
+  ctx.stroke(); ctx.shadowBlur=0;
   if(opt.marks){
     const crestX=w*(0.25/cycles + (phase?0:0));
     // first crest at sin=1 => phase + 2pi cycles * x/w = pi/2
