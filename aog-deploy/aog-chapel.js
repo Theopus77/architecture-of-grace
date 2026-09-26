@@ -95,7 +95,7 @@
     ROOMS.split(",").map(function (x) { return x.trim() + " :is(.wp-personal-t,.wp-personal-s,.wp-personal-tx *)"; }).join(",") + "{color:#EDE7DA!important}" +
     "[data-aog-inkdark],[data-aog-inkdark] *{color:#0A1E33!important}" +
     ROOMS.split(",").map(function (x) { x = x.trim(); return x + " [data-aog-inkdark]," + x + " [data-aog-inkdark] *"; }).join(",") + "{color:#0A1E33!important}" +
-    ROOMS.split(",").map(function (x) { x = x.trim(); return x + " :is(.eyebrow,.ey,[class*=eyebrow]):not([data-aog-inkdark]):not([data-aog-inkdark] *)"; }).join(",") + "{color:#E7C46A!important}" +
+    ROOMS.split(",").map(function (x) { x = x.trim(); return x + " :is(.eyebrow,.ey,[class*=eyebrow],.fwl-proof-h,[class*=kicker],[class*=-kick]):not([data-aog-inkdark]):not([data-aog-inkdark] *)"; }).join(",") + "{color:#E7C46A!important}" +
     ROOMS.split(",").map(function (x) { x = x.trim(); return x + " :is(.small,.ed-s,small):not([data-aog-inkdark] *)"; }).join(",") + "{color:#C8D4E2!important}" +
     ROOMS.split(",").map(function (x) { x = x.trim(); return x + " a:not([class*=btn]):not([data-aog-inkdark]):not([data-aog-inkdark] *):not(.aogtop *)"; }).join(",") + "{color:#F2C964!important}" +
     ROOMS.split(",").map(function (x) { x = x.trim(); return x + " [class*=btn] *"; }).join(",") + "{color:inherit!important}" +
@@ -122,13 +122,13 @@
        measured with the chapel colours off. Before, Safari could paint the cream
        words before the boxes turned dark: cream on cream. Now a room is either
        fully chapel or fully its original self — readable either way. */
-    css.disabled = true;
+    if (css.sheet) css.sheet.disabled = true;
     var act = Array.prototype.map.call(D.querySelectorAll(ROOMS.replace(/,/g, ".active,") + ".active"), function (x) { return x.id; }).join();
     if (act !== seenScreen) { seenScreen = act; changed++; }
     D.querySelectorAll(ROOMS).forEach(function (r) {
       if (r.id === "aog-origin" || r.classList.contains("active")) { panes(r); fold(r); trimLedes(r); }
     });
-    css.disabled = false;
+    if (css.sheet) css.sheet.disabled = false;
     /* only when this layer actually repainted something — a steady page is never re-swept (no flicker) */
     if (changed) try { if (window.aogLegibleRefresh) window.aogLegibleRefresh(); } catch (e) {}
   }
@@ -159,8 +159,8 @@
     D.head.appendChild(css); run();
     /* the rooms are drawn a moment after load and on every page switch: look again then */
     window.addEventListener("load", function () { setTimeout(run, 300); setTimeout(run, 1500); });
-    window.addEventListener("hashchange", function () { setTimeout(run, 250); });
-    D.addEventListener("click", function () { setTimeout(soon, 200); }, true);
+    window.addEventListener("hashchange", function () { setTimeout(run, 250); setTimeout(run, 900); });
+    D.addEventListener("click", function () { setTimeout(soon, 200); setTimeout(run, 700); setTimeout(run, 1600); }, true);
     new MutationObserver(function (list) {
       for (var i = 0; i < list.length; i++) { var x = list[i].target; if (x.closest && x.closest(".aog-readmore")) continue; soon(); return; }
     }).observe(D.body, { childList: true, subtree: true, attributes: true, attributeFilter: ["class"] });
