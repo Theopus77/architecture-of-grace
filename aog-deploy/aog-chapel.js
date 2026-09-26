@@ -158,6 +158,16 @@
   window.addEventListener("popstate", function () { setTimeout(rescue, 350); });
   window.addEventListener("hashchange", function () { setTimeout(rescue, 350); });
   window.addEventListener("pageshow", function (e) { if (e.persisted) setTimeout(rescue, 350); });
+  /* AOG-ECO-ROUTE-V1 — #eco-parents, #eco-educators … open their own room when typed or shared */
+  function ecoRoute() {
+    var m = /^#eco-(home|bridge|parents|educators|adult|overview)$/.exec(location.hash || "");
+    if (!m || typeof window.aogOpenEco !== "function") return;
+    var act = D.querySelector("section.screen.active");
+    if (act && act.id === "screen-eco-" + m[1]) return;
+    window.aogOpenEco(m[1]);
+  }
+  window.addEventListener("hashchange", function () { setTimeout(ecoRoute, 60); });
+  window.addEventListener("load", function () { setTimeout(ecoRoute, 400); setTimeout(ecoRoute, 1500); });
   function start() {
     D.head.appendChild(css); run();
     /* the rooms are drawn a moment after load and on every page switch: look again then */
