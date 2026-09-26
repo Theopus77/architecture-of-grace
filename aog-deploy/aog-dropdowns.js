@@ -18,7 +18,21 @@
   /* THE STANDING RULE (CLAUDE.md): any row of four or more section or tab
      choices is a drop-down. A new row opts in with one attribute:
        <div data-aog-dropdown="Label|Etiqueta"> <button>…</button> … </div> */
+  /* any row of more than six name chips (e.g. the exit-slip student filter) becomes a menu */
+  function chipRows() {
+    var out = [];
+    D.querySelectorAll("#screen-admin div, #screen-admin span").forEach(function (el) {
+      if (el.__aogChip || el.classList.contains("aogdd-src") || el.closest(".aogdd, .aogtop")) return;
+      var bs = Array.prototype.filter.call(el.children, function (k) { return k.tagName === "BUTTON"; });
+      if (bs.length < 7 || bs.length !== el.children.length) return;
+      if (!/^(everyone|todos|all)$/i.test((bs[0].textContent || "").trim())) return;
+      el.__aogChip = 1; if (!el.id) el.id = "aogdd-chip-" + out.length + "-" + Math.random().toString(36).slice(2, 6);
+      el.setAttribute("data-aog-dropdown", "Student|Estudiante");
+    });
+    return out;
+  }
   function extra() {
+    try { chipRows(); } catch (e) {}
     return Array.prototype.map.call(D.querySelectorAll("[data-aog-dropdown]"), function (el, i) {
       if (!el.id) el.id = "aogdd-auto-" + i;
       var l = (el.getAttribute("data-aog-dropdown") || "Choose|Elige").split("|");
@@ -68,16 +82,18 @@
     var lab = es() ? cfg.es : cfg.en;
     sel.setAttribute("aria-label", lab);
     /* a visible label only where the page has none of its own nearby */
-    box.querySelector(".aogdd-lab").textContent = cfg.show ? lab : "";
+    box.querySelector(".aogdd-lab").textContent = lab;
     box.hidden = list.length < 2;
   }
   var t = 0;
-  function refresh() { clearTimeout(t); t = setTimeout(function () { ROWS.concat(extra()).forEach(build); try { demoBar(); } catch (e) {} try { iepPick(); } catch (e) {} }, 40); }
+  function refresh() { if (t) return; t = setTimeout(function () { t = 0; try { ROWS.concat(extra()).forEach(function (r) { try { build(r); } catch (e) {} }); } catch (e) {} try { demoBar(); } catch (e) {} try { iepPick(); } catch (e) {} try { gsBar(); } catch (e) {} try { practiceFilter(); } catch (e) {} }, 40); }
   var css = D.createElement("style");
   css.textContent =
     ".aogdd-src{position:absolute!important;width:1px!important;height:1px!important;overflow:hidden!important;clip:rect(0 0 0 0)!important;white-space:nowrap!important}" +
     ".aogdd{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:10px 0 14px;font:600 14px/1.3 Inter,system-ui,sans-serif}" +
     ".aogdd[hidden]{display:none}" +
+    ".aogdd-gs{display:flex;flex-wrap:wrap;align-items:center;gap:8px 10px;margin:-4px 0 14px;font:600 14px/1.3 Inter,system-ui,sans-serif;color:#F4EEE2}" +
+    ".aogdd-gsb{display:inline-flex;align-items:center;min-height:40px;padding:0 14px;border-radius:999px;border:1.5px solid #C9A24A;background:transparent;color:#F2C964;text-decoration:none;font:700 14px/1 Inter,system-ui,sans-serif;cursor:pointer}" +
     ".aogdd-demo{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:0 0 14px}.aogdd-demo[hidden]{display:none}" +
     ".aogdd-demo-btn{min-height:44px;padding:0 18px;border-radius:999px;border:2px solid #1E1F22;background:#C9A24A;color:#0A1E33;font:700 15px/1 Inter,system-ui,sans-serif;cursor:pointer}" +
     ".aogdd-demo-tx{font:500 14px/1.4 Inter,system-ui,sans-serif;color:#15202E}html[data-theme=dark] .aogdd-demo-tx{color:#F4EEE2}" +
@@ -164,6 +180,50 @@
       else if (window.aogIepWizFor) window.aogIepWizFor(v.slice(1));
       setTimeout(refresh, 80);
     };
+  }
+  /* AOG-GS-BAR-V1 (2026-09-26) — Jimmy: "Put the GS code more out there with the
+     ones I just referenced." Under Which link?, one bar: the Sheet script and its
+     one-page setup guide, and a way to the connection page. */
+  function gsBar() {
+    var dd = D.querySelector('#screen-admin select[aria-label="Which link?"], #screen-admin select[aria-label="¿Qué enlace?"]');
+    if (!dd) return;
+    var box = dd.closest(".aogdd"); if (!box) return;
+    var bar = D.getElementById("aogGsBar");
+    if (!bar) {
+      bar = D.createElement("div"); bar.id = "aogGsBar"; bar.className = "aogdd-gs no-print";
+      box.parentNode.insertBefore(bar, box.nextSibling);
+    }
+    var h = es() ? ['Tu Hoja de Google:', 'Descargar Code.gs', 'Guía de una página', 'Conectar y sincronizar →']
+                 : ['Your Google Sheet:', 'Download Code.gs', 'One-page setup guide', 'Connect & sync →'];
+    var html = '<b>' + h[0] + '</b> <a class="aogdd-gsb" href="AoG-Screener-Sync-Code.gs" download="AoG-Screener-Sync-Code.gs">⬇ ' + h[1] + '</a>'
+      + ' <a class="aogdd-gsb" href="AoG-Sheet-Setup.pdf" target="_blank" rel="noopener">📄 ' + h[2] + '</a>'
+      + ' <button type="button" class="aogdd-gsb" data-gsconnect="1">' + h[3] + '</button>';
+    if (bar.__h !== html) { bar.innerHTML = html; bar.__h = html; }
+    var b = bar.querySelector("[data-gsconnect]");
+    b.onclick = function () { var o = Array.prototype.find.call(dd.options, function (x) { return /Connect|Conectar/.test(x.text); }); if (o) { dd.value = o.value; dd.selectedIndex = o.index; dd.dispatchEvent(new Event("change")); } };
+  }
+  /* AOG-PRACTICE-FOLLOWS-V1 (2026-09-26) — Jimmy: "That list needs to fold in. It
+     was on Mia but everyone showed up." The practice table shows only the student
+     picked above it, with one button to show everyone. */
+  var showAll = false;
+  function practiceFilter() {
+    var sc = D.querySelector("#screen-admin .pc-scroll"); if (!sc || !sc.getClientRects().length) return;
+    var tb = sc.querySelector("table"); if (!tb || !tb.tBodies[0]) return;
+    var chip = D.querySelector("#screen-admin .gc-chip[aria-pressed=true], #screen-admin .pb-chip[aria-pressed=true]");
+    var who = chip ? chip.textContent.trim() : "";
+    var bar = D.getElementById("aogPcWho");
+    if (!bar) { bar = D.createElement("div"); bar.id = "aogPcWho"; bar.className = "aogdd-demo no-print"; sc.parentNode.insertBefore(bar, sc);
+      bar.addEventListener("click", function (e) { if (e.target.closest("button")) { showAll = !showAll; practiceFilter(); } }); }
+    var n = 0;
+    Array.prototype.forEach.call(tb.tBodies[0].rows, function (r) {
+      var c = r.cells[0], nm = c ? c.textContent.trim() : "";
+      var keep = showAll || !who || !nm || nm === who || r.classList.contains("pc-sub") || (!r.cells[0].textContent.trim());
+      if (nm && nm !== who && !showAll && who) keep = false;
+      r.style.display = keep ? "" : "none"; if (keep && nm) n++;
+    });
+    var t = showAll ? (es() ? "Mostrando a todos · " : "Showing everyone · ") : (who ? (es() ? "Mostrando solo a " : "Showing only ") + who + " · " : "");
+    var html = '<span class="aogdd-demo-tx">' + t + n + (es() ? " filas" : " rows") + '</span><button type="button" class="aogdd-gsb">' + (showAll ? (es() ? "Solo " : "Only ") + (who || "") : (es() ? "Mostrar a todos" : "Show everyone")) + '</button>';
+    if (bar.__h !== html) { bar.innerHTML = html; bar.__h = html; }
   }
   function start() {
     D.head.appendChild(css); refresh();

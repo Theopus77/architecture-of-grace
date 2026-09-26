@@ -62,9 +62,10 @@
   }
   /* a long intro under a title: its first sentence shows, the rest waits behind Read more */
   function trimLedes(root) {
-    root.querySelectorAll("p.lede, .lede > p, p.sub, p.deck").forEach(function (p) {
-      if (p.hasAttribute("data-aog-trim") || p.closest(".aog-readmore")) return;
-      var tx = (p.textContent || "").trim(); if (tx.length < 220) return;
+    root.querySelectorAll("p").forEach(function (p) {
+      if (p.hasAttribute("data-aog-trim") || p.closest(".aog-readmore, form, label, button, li, td, .aogtop, [data-aog-notrim]")) return;
+      if (p.querySelector("a, button, input, select, textarea")) return;
+      var tx = (p.textContent || "").trim(); if (tx.length < 170) return;
       var m = /^(.{40,220}?[.!?])\s/.exec(tx); if (!m) return;
       p.setAttribute("data-aog-trim", "1"); changed++;
       var full = p.innerHTML;
@@ -111,7 +112,8 @@
     "#screen-framework .fw-tab:not(.active):not([aria-selected=true]){color:#F4EEE2!important}" +
     "#screen-framework .fw-tab:not(.active):not([aria-selected=true]) *{color:inherit!important}" +
     ".aog-readmore{margin:.4em 0 .8em}.aog-readmore>summary{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 16px;border-radius:999px;" +
-    "border:1.5px solid #C9A24A;color:#F2C964;font:700 14px/1 Inter,system-ui,sans-serif;cursor:pointer;list-style:none}" +
+    "border:1.5px solid #C9A24A;color:#7d5a15;background:#FFFDF8;font:700 14px/1 Inter,system-ui,sans-serif;cursor:pointer;list-style:none}" +
+    ROOMS.split(",").map(function (x) { return x.trim() + " .aog-readmore>summary"; }).join(",") + "{color:#F2C964!important;background:transparent!important}" +
     ".aog-readmore>summary::-webkit-details-marker{display:none}.aog-readmore>summary::after{content:'\\25BE';font-size:12px}" +
     ".aog-readmore[open]>summary::after{content:'\\25B4'}.aog-readmore[open]>summary span::after{content:''}" +
     "}@media print{.aog-readmore>summary{display:none}}";
@@ -125,6 +127,7 @@
     if (css.sheet) css.sheet.disabled = true;
     var act = Array.prototype.map.call(D.querySelectorAll(ROOMS.replace(/,/g, ".active,") + ".active"), function (x) { return x.id; }).join();
     if (act !== seenScreen) { seenScreen = act; changed++; }
+    D.querySelectorAll("#screen-family.active, #screen-privacy.active").forEach(function (r) { trimLedes(r); });
     D.querySelectorAll(ROOMS).forEach(function (r) {
       if (r.id === "aog-origin" || r.classList.contains("active")) { panes(r); fold(r); trimLedes(r); }
     });
@@ -155,6 +158,16 @@
   window.addEventListener("popstate", function () { setTimeout(rescue, 350); });
   window.addEventListener("hashchange", function () { setTimeout(rescue, 350); });
   window.addEventListener("pageshow", function (e) { if (e.persisted) setTimeout(rescue, 350); });
+  /* AOG-ECO-ROUTE-V1 — #eco-parents, #eco-educators … open their own room when typed or shared */
+  function ecoRoute() {
+    var m = /^#eco-(home|bridge|parents|educators|adult|overview)$/.exec(location.hash || "");
+    if (!m || typeof window.aogOpenEco !== "function") return;
+    var act = D.querySelector("section.screen.active");
+    if (act && act.id === "screen-eco-" + m[1]) return;
+    window.aogOpenEco(m[1]);
+  }
+  window.addEventListener("hashchange", function () { setTimeout(ecoRoute, 60); });
+  window.addEventListener("load", function () { setTimeout(ecoRoute, 400); setTimeout(ecoRoute, 1500); });
   function start() {
     D.head.appendChild(css); run();
     /* the rooms are drawn a moment after load and on every page switch: look again then */
