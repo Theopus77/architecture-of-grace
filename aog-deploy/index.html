@@ -89519,6 +89519,13 @@ html.js-reveal .reveal,
     font:inherit;font-size:13.5px;font-weight:600;cursor:pointer;padding:8px 14px;border-radius:10px;
     border:1px solid var(--rule,#E4DAC5);background:var(--paper,#FCF8F0);color:var(--ink,#0A1E33);min-height:40px}
   .gcx-bar button.gcx-go{background:var(--navy,#0A1E33);color:#fff;border:2px solid var(--gold-deep,#7E5B18)}
+  .gcx-sugg{margin:14px 0;padding:16px 18px;border-radius:16px;border:2px solid #1E1F22;background:#13314F;color:#F4EEE2;box-shadow:0 0 0 1px rgba(242,201,100,.45),inset 0 5px 0 #C9A24A}
+  .gcx-sugg-h{font:700 19px/1.3 Fraunces,Georgia,serif;margin:0 0 4px;color:#F4EEE2}
+  .gcx-sugg .gcx-say{color:#C8D4E2;font-size:13.5px;margin:0 0 10px}
+  .gcx-sugg-row{display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap;padding:10px 0;border-top:1px solid rgba(242,201,100,.25)}
+  .gcx-sugg-t{font-size:13.5px;color:#C8D4E2;margin-top:2px}
+  .gcx-sugg button.gcx-go{min-height:44px;padding:0 18px;border-radius:999px;background:#C9A24A;color:#0A1E33;border:2px solid #1E1F22;font-weight:800;cursor:pointer}
+  .gcx-sugg .gcx-ok{color:#8FE3B0}
   .gcx-act{margin:8px 0 2px}
   .gcx-panel{margin:8px 0 4px;padding:12px 14px;border:1px dashed var(--rule,#E4DAC5);border-radius:12px;background:var(--card,#fff)}
   .gcx-panel label{display:block;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-soft,#46506E);font-weight:700;margin:8px 0 4px}
@@ -89645,6 +89652,37 @@ html.js-reveal .reveal,
     return h + '</div>';
   }
   var busy = false;
+  /* AOG-SUGGEST-GOALS-V1 (2026-09-26) — Jimmy: "compile all the independent data
+     and suggest goals to move forward with, based on what the children produced
+     in the fall and winter." For the student on screen: every activity they sent,
+     what they solved with NO hint in the fall (Aug–Nov) and the winter (Dec–Feb),
+     and where they are now. The three lowest that are still under 80% become
+     suggested goals, each one press from being started and filled with its bricks.
+     A suggestion, never a decision: the team writes the IEP. */
+  function season(d) { var m = +String(d).slice(5, 7); return m >= 8 && m <= 11 ? "fall" : (m === 12 || m <= 2) ? "winter" : m >= 3 && m <= 5 ? "spring" : "summer"; }
+  function pct(list) { var i = 0, t = 0; list.forEach(function (x) { i += x.ind; t += x.tot; }); return t ? Math.round(i / t * 100) : null; }
+  function suggestHtml(w) {
+    var have = goalsOf(w).map(function (x) { return String(x.g.title || ""); }).join(" | ");
+    var rows = series().map(function (act) {
+      var dl = days(act, "all"); if (!dl.length) return null;
+      var f = dl.filter(function (x) { return season(x.d) === "fall"; }), wi = dl.filter(function (x) { return season(x.d) === "winter"; });
+      var last = dl[dl.length - 1], now = Math.round(last.ind / last.tot * 100);
+      return { act: act, fall: pct(f), winter: pct(wi), now: now, last: last, n: dl.length, inBuild: have.indexOf(act.name) >= 0 };
+    }).filter(function (r) { return r; }).sort(function (a, b) { return a.now - b.now; });
+    rows = rows.filter(function (r) { return r.now < 100; }).slice(0, 3);
+    if (!rows.length) return "";
+    var h = '<div class="gcx-sugg"><div class="gcx-sugg-h">' + esc(T("Suggested next goals for " + w, "Metas sugeridas para " + w)) + '</div>'
+      + '<p class="gcx-say">' + esc(T("From what " + w + " solved with no hint, lowest first. Under 80% aims for 80% or more; already strong work aims a little higher. A starting point for the team, not a decision.", "De lo que " + w + " resolvió sin pista, de menor a mayor. Por debajo de 80% apunta a 80% o más; el trabajo ya fuerte apunta un poco más alto. Un punto de partida para el equipo, no una decisión.")) + '</p>';
+    rows.forEach(function (r) {
+      var tgt = r.now < 80 ? Math.min(95, Math.max(80, r.now + 25)) : Math.min(100, r.now + 8);
+      var trail = [r.fall != null ? T("Fall ", "Otoño ") + r.fall + "%" : "", r.winter != null ? T("Winter ", "Invierno ") + r.winter + "%" : "", T("Now ", "Ahora ") + r.now + "%"].filter(Boolean).join(" → ");
+      h += '<div class="gcx-sugg-row"><div><b>' + esc(T("Increase independent accuracy on ", "Aumentar la precisión independiente en ") + r.act.name) + '</b>'
+        + '<div class="gcx-sugg-t">' + esc(trail + " · " + T("aim ", "meta ") + tgt + "% " + T("in a year", "en un año") + " · " + r.n + T(" days of work", " días de trabajo")) + '</div></div>'
+        + (r.inBuild ? '<span class="gcx-say gcx-ok">' + esc(T("Already in the build", "Ya está en la obra")) + '</span>'
+          : '<button type="button" class="gcx-go" data-gcxstart="' + esc(r.act.id) + '" data-base="latest" data-tgt="' + tgt + '">' + esc(T("Start this goal", "Empezar esta meta")) + '</button>') + '</div>';
+    });
+    return h + '</div>';
+  }
   function decorate() {
     var c = document.getElementById("aogPracticeChart");
     if (!c || c.hidden || busy) return;
@@ -89658,6 +89696,10 @@ html.js-reveal .reveal,
           + '<a class="gcx-bp" href="turn-ins.html?blueprint=' + encodeURIComponent(w) + '" style="display:inline-flex;align-items:center;padding:0 14px;min-height:40px;border-radius:999px;border:1.5px solid var(--gold-deep,#9a6f24);font-weight:700;text-decoration:none;color:inherit">◎ ' + esc(T("Open " + w + "’s Blueprint", "Abrir el Plano de " + w)) + '</a>';
         var anchor = c.querySelector(".gc-next") || c.querySelector(".gc-who");
         if (anchor && anchor.nextSibling) c.insertBefore(bar, anchor.nextSibling); else c.appendChild(bar);
+      }
+      if (!c.querySelector(".gcx-sugg-host")) {
+        var sh = document.createElement("div"); sh.className = "gcx-sugg-host"; sh.innerHTML = suggestHtml(w);
+        var bar2 = c.querySelector(".gcx-bar"); if (bar2 && bar2.nextSibling) c.insertBefore(sh, bar2.nextSibling); else c.appendChild(sh);
       }
       var list = series(), acts = c.querySelectorAll(".gc-act");
       Array.prototype.forEach.call(acts, function (el, i) {
@@ -89674,7 +89716,7 @@ html.js-reveal .reveal,
   }
   function redraw() {
     var c = document.getElementById("aogPracticeChart"); if (!c) return;
-    Array.prototype.forEach.call(c.querySelectorAll(".gcx-act"), function (n) { n.parentNode.removeChild(n); });
+    Array.prototype.forEach.call(c.querySelectorAll(".gcx-act, .gcx-sugg-host"), function (n) { n.parentNode.removeChild(n); });
     decorate();
   }
   document.addEventListener("click", function (e) {
@@ -89713,12 +89755,13 @@ html.js-reveal .reveal,
       var dd = a2 ? days(a2, "all") : []; if (!dd.length) return;
       var st2 = jload(IEPK, { goals: {}, data: {} }); st2.goals = st2.goals || {}; st2.data = st2.data || {};
       var gid = "g" + Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
-      var b0 = dd[0].d, yr = new Date(Date.parse(b0)); yr.setFullYear(yr.getFullYear() + 1);
+      var fromLatest = t.getAttribute("data-base") === "latest", bd = fromLatest ? dd[dd.length - 1] : dd[0];
+      var b0 = bd.d, yr = new Date(Date.parse(b0)); yr.setFullYear(yr.getFullYear() + 1);
       var nm = String(a2.name || "");
       var area = /math/i.test(nm) ? "math" : /writ/i.test(nm) ? "writing" : /(ela|language|reading)/i.test(nm) ? "reading" : "other";
       st2.goals[gid] = { student: w, grade: "", area: area, title: T("Increase independent accuracy on ", "Aumentar la precisión independiente en ") + nm,
-        measure: "percent", unit: "", baseline: { date: b0, value: Math.round(dd[0].ind / dd[0].tot * 100) },
-        target: { date: yr.toISOString().slice(0, 10), value: 80 }, notes: T("Started from student-sent practice on the Brick by brick screen.", "Iniciada desde la práctica enviada en la pantalla Ladrillo a ladrillo."),
+        measure: "percent", unit: "", baseline: { date: b0, value: Math.round(bd.ind / bd.tot * 100) },
+        target: { date: yr.toISOString().slice(0, 10), value: +(t.getAttribute("data-tgt") || 80) }, notes: T("Started from student-sent practice on the Brick by brick screen.", "Iniciada desde la práctica enviada en la pantalla Ladrillo a ladrillo."),
         archived: false, lowerBetter: false, intervalLabel: "", xofy: null };
       st2.data[gid] = [];
       jsave(IEPK, st2);
