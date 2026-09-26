@@ -808,6 +808,38 @@ function family(){
   return head+add+(cards||'<p class="s" style="margin:0 0 16px">'+t2("No children added yet.","Aún no hay niños.")+'</p>')+link+home;
 }
 
+
+/* ══ AOG-DASH-ITEM-ICONS-V1 (2026-09-26) — Jimmy, on a Bible · Adult Daily Draft in Your work today: "Can they all get
+   their own display icon?" Every subject, course and slip carries its own small drawing and its own colour (the same
+   hues Daily Drafts paints its subject buttons), so a child can tell the Bible from Math at a glance. */
+const SICON={
+  math:'<path d="M5 12h14M12 5v14"/><circle cx="12" cy="12" r="9"/>',
+  ela:'<path d="M4 5h6a3 3 0 0 1 3 3v12a2 2 0 0 0-2-2H4z"/><path d="M20 5h-6a3 3 0 0 0-3 3v12a2 2 0 0 1 2-2h7z"/>',
+  write:'<path d="M4 20l4-1 11-11-3-3L5 16z"/><path d="M13 7l3 3"/>',
+  science:'<path d="M9 3h6M10 3v6L4 20h16l-6-11V3"/><path d="M7 16h10"/>',
+  'social-studies':'<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/>',
+  spanish:'<path d="M4 5h16v10H9l-5 4z"/><path d="M8 9h8M8 12h5"/>',
+  facs:'<path d="M3 11l9-7 9 7v9H3z"/><path d="M10 20v-6h4v6"/>',
+  religion:'<circle cx="12" cy="12" r="9"/><path d="M12 3v18M5.5 6.5l13 11M18.5 6.5l-13 11M3 12h18"/>',
+  bible:'<path d="M5 4h12a2 2 0 0 1 2 2v14H7a2 2 0 0 1-2-2z"/><path d="M12 8v7M9.5 10.5h5"/>',
+  quran:'<path d="M15 3a9 9 0 1 0 6 15.5A7 7 0 0 1 15 3z"/><path d="M18 8l1 2 2 .3-1.5 1.4.4 2.2L18 13l-1.9.9.4-2.2L15 10.3l2-.3z"/>',
+  talmud:'<path d="M6 4h12v16H6z"/><path d="M6 8h12M6 12h12M6 16h12M12 4v16"/>',
+  economics:'<circle cx="12" cy="12" r="9"/><path d="M14.5 9.5a2.5 2.5 0 0 0-5 0c0 3 5 2 5 5a2.5 2.5 0 0 1-5 0M12 6v2M12 16v2"/>',
+  foundry:'<path d="M4 15h6l2 3h4l2-3h2v4H4z"/><path d="M8 11h8v4H8zM10 5h4v6h-4z"/>',
+  mth:'<path d="M5 12h14M12 5v14"/><circle cx="12" cy="12" r="9"/>', sci:'<path d="M9 3h6M10 3v6L4 20h16l-6-11V3"/><path d="M7 16h10"/>',
+  ssc:'<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/>', ush:'<path d="M4 4h16v16H4z"/><path d="M4 9h16M4 14h16M9 4v16"/>',
+  fcs:'<path d="M3 11l9-7 9 7v9H3z"/><path d="M10 20v-6h4v6"/>', rel:'<circle cx="12" cy="12" r="9"/><path d="M12 3v18M3 12h18"/>', spa:'<path d="M4 5h16v10H9l-5 4z"/><path d="M8 9h8M8 12h5"/>',
+  eco:'<circle cx="12" cy="12" r="9"/><path d="M14.5 9.5a2.5 2.5 0 0 0-5 0c0 3 5 2 5 5a2.5 2.5 0 0 1-5 0M12 6v2M12 16v2"/>',
+  checkin:'<circle cx="12" cy="12" r="9"/><path d="M8 13s1.5 2 4 2 4-2 4-2M9 9h.01M15 9h.01"/>', exit:'<path d="M14 4h6v16h-6"/><path d="M4 12h10M10 8l4 4-4 4"/>',
+  reflection:'<path d="M12 3a7 7 0 0 0-4 12.8V19h8v-3.2A7 7 0 0 0 12 3z"/><path d="M10 22h4"/>', myvoice:'<rect x="9" y="3" width="6" height="11" rx="3"/><path d="M6 11a6 6 0 0 0 12 0M12 17v4"/>',
+  weekly:'<path d="M3 10h18M7 3v4M17 3v4"/><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M8 14h3M13 14h3M8 17h3"/>', prac:'<path d="M4 4h16v16H4z"/><path d="M8 9h8M8 13h8M8 17h5"/>'
+};
+const SCOL={math:"#2F63B8",ela:"#B87A12",write:"#C2552A",science:"#2E8B57",'social-studies':"#A8323E",spanish:"#B8457A",facs:"#7B4FA0",religion:"#3F4AA6",bible:"#7A3B2E",quran:"#1F6B4A",talmud:"#2E5A8A",economics:"#6E7C22",foundry:"#A85A24",
+  mth:"#2F63B8",sci:"#2E8B57",ssc:"#A8323E",ush:"#A8323E",fcs:"#7B4FA0",rel:"#3F4AA6",spa:"#B8457A",eco:"#6E7C22",checkin:"#1F8080",exit:"#B87A12",reflection:"#3F4AA6",myvoice:"#B8457A",weekly:"#1F8080",prac:"#5E6B7A"};
+function itemKey(it){ if(it.t==="dd") return it.s; if(it.t==="unit") return it.p; if(it.t==="prac") return "prac"; if(it.t==="slip") return /^weekly/.test(it.i)?"weekly":it.i; return "prac"; }
+function itemIcon(it){ const k=itemKey(it); return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+(SICON[k]||SICON.prac)+'</svg>'; }
+function itemColor(it){ return SCOL[itemKey(it)]||"#5E6B7A"; }
+
 /* ── the interface ── */
 const L=()=> (document.documentElement.lang||"en").slice(0,2)==="es"?"es":"en", T=k=>TXT[L()][k];
 let VIEW=QS.get("view")==="family"?"family":(QS.get("view")==="student"||HAND?"student":get(K.view,"teacher")), PAGE=location.hash.slice(1).replace(/\?.*$/,"")||"today";
@@ -848,7 +880,7 @@ function today(){
     +'<div class="row"><button class="btn add" type="button" data-add="sl">+ '+T("add")+'</button></div></section>'
   +'</div>'
   +'<section class="card tray"><p class="k" style="color:var(--goldInk)">'+T("tray")+'</p>'
-    +'<div class="items">'+(tr.length?tr.map((it,i)=>'<div class="item" style="--ac:'+TAG[it.t][1]+'"><span class="tag">'+TAG[it.t][0]+'</span><b>'+esc(itemLabel(it,lang))+'</b><button type="button" data-del="'+i+'" aria-label="Remove">✕</button></div>').join(""):'<p class="empty">'+T("trayE")+'</p>')+'</div>'
+    +'<div class="items">'+(tr.length?tr.map((it,i)=>'<div class="item" style="--ac:'+itemColor(it)+'"><span class="tag" style="display:inline-flex;align-items:center;gap:6px"><span style="display:inline-flex;width:16px;height:16px;color:var(--ac)">'+itemIcon(it)+'</span>'+TAG[it.t][0]+'</span><b>'+esc(itemLabel(it,lang))+'</b><button type="button" data-del="'+i+'" aria-label="Remove">✕</button></div>').join(""):'<p class="empty">'+T("trayE")+'</p>')+'</div>'
     +(tr.length?'<p class="k" style="color:var(--goldInk)">'+T("link")+'</p><div class="linkbox"><code id="lk">'+esc(link)+'</code><button class="btn gold" type="button" id="cp">'+T("copy")+'</button><button class="btn" type="button" id="bg">'+T("show")+'</button><a class="btn" href="'+esc(link)+'" target="_blank" rel="noopener">'+T("open")+'</a></div>'
       +(conn?'':'<p class="warn">'+T("nosheet")+'</p>'):'')
   +'</section>'
@@ -861,7 +893,7 @@ function student(){
   const ic={dd:"dd",unit:"as",prac:"as",slip:"sl"}, ac={dd:"var(--c1)",unit:"var(--c3)",prac:"var(--c3)",slip:"var(--c5)"};
   return '<div class="stu"><div class="hello"><div><h1>'+T("sw")+'</h1><p>'+T("swS")+'</p></div></div>'
    +'<section class="card"><label class="f" for="stN">'+T("name")+'</label><input type="text" id="stN" maxlength="40" autocomplete="off" value="'+esc(nm)+'"><p class="note">'+T("nameS")+'</p></section>'
-   +'<div class="work">'+(items.length?items.map(it=>{ const dn=sentToday(it); return '<a class="go'+(dn?' sent':'')+'" style="--ac:'+ac[it.t]+'" href="'+esc(studentHref(it))+'"><span class="ic">'+svg(ic[it.t])+'</span><span><b>'+esc(itemLabel(it,lang))+'</b><span>'+(dn?T("sentTick"):TAG[it.t][0])+'</span></span><span class="arr">'+(dn?'✓':'›')+'</span></a>'; }).join(""):'<p class="empty">'+T("nothing")+'</p>')+'</div></div>';
+   +'<div class="work">'+(items.length?items.map(it=>{ const dn=sentToday(it); return '<a class="go'+(dn?' sent':'')+'" style="--ac:'+itemColor(it)+'" href="'+esc(studentHref(it))+'"><span class="ic">'+itemIcon(it)+'</span><span><b>'+esc(itemLabel(it,lang))+'</b><span>'+(dn?T("sentTick"):TAG[it.t][0])+'</span></span><span class="arr">'+(dn?'✓':'›')+'</span></a>'; }).join(""):'<p class="empty">'+T("nothing")+'</p>')+'</div></div>';
 }
 function setup(){
   const conn=!!destParam();
