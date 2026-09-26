@@ -618,7 +618,20 @@ function doPost(e) {
         if (!col) { return ''; }
         return cellValue_(body[col]);
       });
-      aogAppend_(ciSheet, ciRow);
+      try {
+        aogAppend_(ciSheet, ciRow);
+      } catch (errRow) {
+        // v18 — never lose a send. A cell over Sheets' 50,000-character limit (almost always `extra`) throws;
+        // the row goes in again with extra shortened, and the log says which student and activity it was.
+        console.log('ROW WRITE FAILED (' + String(errRow && errRow.message) + ') · retrying without extra · ' +
+                    body.checkinType + ' · ' + body.studentId + ' · ' + String(body.activityId || ''));
+        var ciRow2 = ciHeader.map(function (col) {
+          if (!col) { return ''; }
+          if (col === 'extra') { return String(cellValue_(body[col]) || '').slice(0, 2000) + ' …[shortened: the full record was over the cell limit]'; }
+          return cellValue_(body[col]);
+        });
+        aogAppend_(ciSheet, ciRow2);
+      }
       console.log(
         'CHECKIN SAVED · ' +
         body.checkinType + ' · student ' + body.studentId +
@@ -679,12 +692,21 @@ function doPost(e) {
       }
       var checkins = readCheckins_();
       var practice = readAllPractice_();
+      // v18 — which tabs hold rows, and how many: the Inbox shows this after a refresh
+      var tabs = {};
+      try {
+        var ssT = SpreadsheetApp.getActiveSpreadsheet();
+        var names = [PRACTICE_SHEET_NAME].concat(Object.keys(PRACTICE_TABS).map(function (g) { return PRACTICE_TABS[g]; }));
+        names.forEach(function (nm) { var sh = ssT.getSheetByName(nm); if (sh && sh.getLastRow() > 1) { tabs[nm] = sh.getLastRow() - 1; } });
+      } catch (errTabs) {}
       console.log('CHECKIN PULL OK · returning ' + checkins.length +
                   ' rows and ' + practice.length + ' practice rows');
       return json_({
         ok: true,
         checkins: checkins,
-        practice: practice
+        practice: practice,
+        tabs: tabs,
+        script: 'v18'
       });
     }
     if (body.action === 'home') {
