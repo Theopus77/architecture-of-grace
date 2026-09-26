@@ -1641,7 +1641,7 @@ or <b>Print it blank</b> (a clean paper worksheet). Each also appears inside its
 
 <!-- .30gf / .30gp: the doors stay at the BOTTOM of the page (Jimmy: "I was talking about bringing this to the bottom of the page, not the top."). The chart door builds the lesson's anchor chart; the cards door opens the lesson's scenario cards. -->
 <div class="botdoor no-print">
-  <a id="wsTab" class="wstab" href="?l=worksheets" data-mode="tab" aria-current="false">The Worksheets \u2014 the interactive 4 \u2191</a>
+  <a id="wsTab" class="wstab" href="?l=worksheets" data-mode="tab" aria-current="false">The Worksheets — the interactive 4 ↑</a>
   <a id="cardsDoor" class="cardsdoor" href="room-12-cards.html" hidden><span data-en="This lesson’s scenario cards — the deck →" data-es="Las tarjetas de escenario de esta lección →">This lesson’s scenario cards — the deck →</span></a>
 </div>
 
@@ -1723,8 +1723,8 @@ function show(id, push){
   /* .30gp — the bottom door builds the CHART on a lesson, opens the Worksheets screen elsewhere */
   var wsTab=document.getElementById("wsTab"), c=CHARTDOOR[id];
   wsTab.setAttribute("aria-current", String(id==="worksheets"));
-  if(c){ wsTab.setAttribute("data-mode","direct"); wsTab.setAttribute("href","AoG-Anchor-Charts-12.html#"+c); wsTab.textContent="Build this lesson\\u2019s anchor chart \\u2014 the live board \\u2192"; }
-  else { wsTab.setAttribute("data-mode","tab"); wsTab.setAttribute("href","?l=worksheets"); wsTab.innerHTML="The Worksheets \\u2014 the interactive 4 \\u2191"; }
+  if(c){ wsTab.setAttribute("data-mode","direct"); wsTab.setAttribute("href","AoG-Anchor-Charts-12.html#"+c); wsTab.textContent="Build this lesson\\u2019s anchor chart — the live board \\u2192"; }
+  else { wsTab.setAttribute("data-mode","tab"); wsTab.setAttribute("href","?l=worksheets"); wsTab.innerHTML="The Worksheets — the interactive 4 ↑"; }
   var cd=document.getElementById("cardsDoor"); var hasCards=!!sec(id).querySelector(".box.cards");
   cd.hidden=!hasCards; cd.setAttribute("href","room-12-cards.html#"+id);
   try{ var q=new URLSearchParams(location.search); q.set("l",id); (push?history.pushState:history.replaceState).call(history,null,"","?"+q.toString()); }catch(e){}
