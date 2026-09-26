@@ -594,6 +594,17 @@ const SPECIMENS = [
     note40_es:"Los cubos grandes de sal tienen escalones adentro, como una pirámide hueca — un cristal tolva. Los bordes se ven oscuros porque ahí se dobla la luz.",
     note100_en:"One crystal edge fills the hole. On the research bench, try Polarized: salt goes black, sugar lights up in colours.",
     note100_es:"Un borde de cristal llena el agujero. En el banco de investigación, prueba Polarizado: la sal se vuelve negra, el azúcar se enciende en colores."},
+  {id:"hairs",en:"Leaf hairs",es:"Pelos de hoja",
+    note_en:"A leaf covered in tiny hairs. Some are hooks. Some are glass beads on stalks.",
+    note_es:"Una hoja cubierta de pelitos. Unos son ganchos. Otros son cuentas de vidrio en tallitos.",
+    note4_en:"A green leaflet with a toothed edge. A pale midrib, and side veins that each run out to a tooth. The leaf looks frosted.",
+    note4_es:"Una hojita verde con borde dentado. Una vena central clara, y venas que terminan cada una en un diente. La hoja se ve escarchada.",
+    note10_en:"The frost is hairs. Short white hooks all point toward the tip. Round shiny dots are glands.",
+    note10_es:"La escarcha son pelos. Ganchitos blancos que apuntan hacia la punta. Los puntos redondos y brillantes son glándulas.",
+    note40_en:"Each hook is one cell, with a small crystal in its round base. The glands are clear beads, some on stalks, some sitting flat. They hold the plant's oils and smell. Mint, tomato and sage have them too.",
+    note40_es:"Cada gancho es una sola célula, con un cristal chico en su base redonda. Las glándulas son cuentas claras, unas en tallito, otras planas. Guardan los aceites y el olor de la planta. La menta, el tomate y la salvia también las tienen.",
+    note100_en:"Under a bead, a ring of little cells that make the oil. The bead turns from clear to amber as it ages.",
+    note100_es:"Bajo cada cuenta, un anillo de celulitas que hacen el aceite. La cuenta pasa de clara a ámbar con el tiempo."},
   {id:"scale",en:"Stage micrometer",es:"Micrómetro de platina",
     note_en:"A 1 mm ruler, 100 ticks of 10 µm. This is how the eyepiece scale learns the truth.",
     note_es:"Una regla de 1 mm, 100 marcas de 10 µm. Así la escala del ocular aprende la verdad.",
@@ -722,9 +733,10 @@ const STAIN_FOR={
   wing:["none"],
   leaf:["none","iodine"],
   diatom:["none"],
-  crystal:["none"]
+  crystal:["none"],
+  hairs:["none"]
 };
-const DEFAULT_STAIN={e:"none",onion:"none",pond:"none",blood:"wright",cheek:"none",hair:"none",elodea:"none",scale:"none",bact:"none",virus:"none",pollen:"none",wing:"none",leaf:"none",diatom:"none",crystal:"none"};
+const DEFAULT_STAIN={e:"none",onion:"none",pond:"none",blood:"wright",cheek:"none",hair:"none",elodea:"none",scale:"none",bact:"none",virus:"none",pollen:"none",wing:"none",leaf:"none",diatom:"none",crystal:"none",hairs:"none"};
 function fovUm(obj){return 18000/obj}
 function unitUm(obj){return fovUm(obj)*(10/18)/100}
 function allowedStains(spec){return STAIN_FOR[spec]||["none"]}
@@ -739,8 +751,8 @@ function stainNote(id){
 }
 function stainKills(L){ return L.stain && L.stain!=="none" && (L.spec==="pond"||L.spec==="elodea"||L.spec==="bact"); }
 function specShort(s){
-  const en={e:"e",onion:"Onion",pond:"Pond",blood:"Blood",cheek:"Cheek",hair:"Hair",elodea:"Elodea",scale:"Scale",bact:"Bacteria",virus:"Virus?",pollen:"Pollen",wing:"Wing",leaf:"Stomata",diatom:"Diatoms",crystal:"Crystals"};
-  const es={e:"e",onion:"Cebolla",pond:"Estanque",blood:"Sangre",cheek:"Mejilla",hair:"Pelo",elodea:"Elodea",scale:"Escala",bact:"Bacterias",virus:"¿Virus?",pollen:"Polen",wing:"Ala",leaf:"Estomas",diatom:"Diatomeas",crystal:"Cristales"};
+  const en={e:"e",onion:"Onion",pond:"Pond",blood:"Blood",cheek:"Cheek",hair:"Hair",elodea:"Elodea",scale:"Scale",bact:"Bacteria",virus:"Virus?",pollen:"Pollen",wing:"Wing",leaf:"Stomata",diatom:"Diatoms",crystal:"Crystals",hairs:"Hairs"};
+  const es={e:"e",onion:"Cebolla",pond:"Estanque",blood:"Sangre",cheek:"Mejilla",hair:"Pelo",elodea:"Elodea",scale:"Escala",bact:"Bacterias",virus:"¿Virus?",pollen:"Polen",wing:"Ala",leaf:"Estomas",diatom:"Diatomeas",crystal:"Cristales",hairs:"Pelos"};
   return (S.lang==="es"?es:en)[s.id]||(S.lang==="es"?s.es:s.en);
 }
 function fmtUm(u){
@@ -1854,6 +1866,19 @@ function bakeBactBg(){
    Drawn as shapes in slide units (1 unit ≈ 10.7 µm), so they stay sharp at 400× and 1000×:
    a baked picture for 4×/10×, live vector drawing (only what is in the hole) above that. */
 function inView(L,x,y,r){ if(!L) return true; const R=840/L.obj+2, dx=x+L.panX, dy=y+L.panY; return dx*dx+dy*dy<(R+r)*(R+r); }
+/* a still slide only needs drawing again when the view moves */
+function cachedView(ctx,L,name,paint){
+  const m=ctx.getTransform(), cv=ctx.canvas;
+  const key=[name,cv.width,cv.height,m.a.toFixed(4),m.b.toFixed(4),m.e.toFixed(2),m.f.toFixed(2),L.stain].join("|");
+  let c=cachedView[name];
+  if(!c||c.key!==key){
+    if(!c){ c=cachedView[name]={can:mkCan(cv.width,cv.height),key:""}; }
+    if(c.can.width!==cv.width||c.can.height!==cv.height){ c.can.width=cv.width; c.can.height=cv.height; }
+    const g=c.can.getContext("2d"); g.setTransform(1,0,0,1,0,0); g.clearRect(0,0,cv.width,cv.height);
+    g.setTransform(m); paint(g); c.key=key;
+  }
+  ctx.save(); ctx.setTransform(1,0,0,1,0,0); ctx.drawImage(c.can,0,0); ctx.restore();
+}
 function hiPow(L){ return L && L.obj>=40; }
 function bakeUnits(wu,hu,ppu,paint){
   const c=mkCan(Math.round(wu*ppu),Math.round(hu*ppu)), ctx=c.getContext("2d");
@@ -1883,6 +1908,27 @@ function pollenList(){
   }
   return (pollenList.v=o);
 }
+/* AOG-SCOPE-CRAFT-V1 — what makes a grain read as a ball under a lens: the edge darkens
+   (limb), a bright Becke line sits just outside it, the lamp makes one soft highlight. */
+function sphereFinish(ctx,rx,ry,det,tone){
+  const lg=ctx.createRadialGradient(-rx*.12,-ry*.15,Math.min(rx,ry)*.35,0,0,Math.max(rx,ry));
+  lg.addColorStop(0,"rgba(0,0,0,0)"); lg.addColorStop(.7,tone||"rgba(70,36,0,.08)"); lg.addColorStop(1,tone?tone.replace(/[\d.]+\)$/,".42)"):"rgba(70,36,0,.42)");
+  ctx.beginPath(); ctx.ellipse(0,0,rx,ry,0,0,Math.PI*2); ctx.fillStyle=lg; ctx.fill();
+  if(det){
+    ctx.beginPath(); ctx.ellipse(0,0,rx*1.035,ry*1.035,0,0,Math.PI*2);
+    ctx.strokeStyle="rgba(255,252,236,.55)"; ctx.lineWidth=Math.min(rx,ry)*.045; ctx.stroke();
+    ctx.beginPath(); ctx.ellipse(0,0,rx*1.08,ry*1.08,0,0,Math.PI*2);
+    ctx.strokeStyle="rgba(60,40,10,.12)"; ctx.lineWidth=Math.min(rx,ry)*.05; ctx.stroke();
+  }
+  const sp=ctx.createRadialGradient(-rx*.36,-ry*.4,0,-rx*.36,-ry*.4,Math.min(rx,ry)*.42);
+  sp.addColorStop(0,"rgba(255,255,250,.5)"); sp.addColorStop(1,"rgba(255,255,250,0)");
+  ctx.beginPath(); ctx.ellipse(0,0,rx,ry,0,0,Math.PI*2); ctx.fillStyle=sp; ctx.fill();
+}
+function granules(ctx,rx,ry,rng,n,col){
+  ctx.beginPath();
+  for(let i=0;i<n;i++){ const a=rng()*Math.PI*2, d=Math.sqrt(rng())*.75, x=Math.cos(a)*rx*d, y=Math.sin(a)*ry*d, s=Math.min(rx,ry)*(.02+rng()*.03); ctx.moveTo(x+s,y); ctx.arc(x,y,s,0,Math.PI*2); }
+  ctx.fillStyle=col; ctx.fill();
+}
 function pollenGrain(ctx,g,det){
   const r=g.r, rng=mulberry32(g.seed);
   ctx.save(); ctx.translate(g.x,g.y); ctx.rotate(g.a);
@@ -1904,6 +1950,7 @@ function pollenGrain(ctx,g,det){
     if(big) body("rgba(252,244,206,.95)","rgba(236,214,140,.88)","rgba(170,132,50,.9)",r,r);
     else body("#f7dc8a","#dca63c","#9c6a18",r,r);
     ctx.strokeStyle=big?"rgba(120,92,30,.75)":"rgba(90,56,10,.8)"; ctx.lineWidth=r*.045; ctx.stroke();
+    if(det) granules(ctx,r,r,rng,big?120:40,big?"rgba(150,120,50,.18)":"rgba(120,70,10,.2)");
     if(det){
       /* spines seen end-on across the face: a dark ring with a bright tip */
       const N=big?70:22;
@@ -1940,12 +1987,16 @@ function pollenGrain(ctx,g,det){
     if(det){
       /* the net (reticulum): pits and ridges */
       ctx.save(); ctx.beginPath(); ctx.ellipse(0,0,rx*.97,ry*.97,0,0,Math.PI*2); ctx.clip();
-      const cs=r*.2; ctx.beginPath();
-      for(let y=-ry;y<ry;y+=cs) for(let x=-rx;x<rx;x+=cs){
-        const px=x+(rng()-.5)*cs*.35, py=y+(rng()-.5)*cs*.35;
-        ctx.moveTo(px+cs*.33,py); ctx.ellipse(px,py,cs*.33,cs*.28,rng(),0,Math.PI*2);
+      /* lumina (pits) with bright muri (ridges) between them, smaller toward the furrow */
+      const cs=r*.2, lum=new Path2D(), mur=new Path2D();
+      for(let row=0, y=-ry; y<ry; y+=cs*.87, row++) for(let x=-rx+(row&1?cs/2:0); x<rx; x+=cs){
+        const k=.72+.28*Math.min(1,Math.abs(y)/(ry*.35)), rr=cs*.5*k, px=x+(rng()-.5)*cs*.18, py=y+(rng()-.5)*cs*.18;
+        for(let i=0;i<6;i++){ const a=i/6*Math.PI*2+Math.PI/6+(rng()-.5)*.25, q=rr*(.86+rng()*.14), X=px+Math.cos(a)*q, Y=py+Math.sin(a)*q; if(i){ lum.lineTo(X,Y); mur.lineTo(X,Y); } else { lum.moveTo(X,Y); mur.moveTo(X,Y); } }
+        lum.closePath(); mur.closePath();
       }
-      ctx.fillStyle="rgba(140,70,10,.32)"; ctx.fill();
+      ctx.fillStyle="rgba(128,58,6,.34)"; ctx.fill(lum);
+      ctx.strokeStyle="rgba(255,228,168,.62)"; ctx.lineWidth=cs*.13; ctx.stroke(mur);
+      ctx.strokeStyle="rgba(110,50,0,.22)"; ctx.lineWidth=cs*.04; ctx.stroke(mur);
       ctx.restore();
     }
     ctx.beginPath(); ctx.ellipse(0,0,rx*.78,ry*.1,0,0,Math.PI*2); ctx.fillStyle="rgba(255,236,190,.7)"; ctx.fill();
@@ -1958,7 +2009,9 @@ function pollenGrain(ctx,g,det){
     ctx.beginPath(); ctx.arc(px,py,r*.08,0,Math.PI*2); ctx.fillStyle="rgba(90,60,20,.6)"; ctx.fill();
     if(det){ ctx.beginPath(); ctx.arc(-r*.1,r*.15,r*.55,0,Math.PI*2); ctx.fillStyle="rgba(200,170,90,.16)"; ctx.fill(); }
   }
-  ctx.beginPath(); ctx.ellipse(-r*.35,-r*.4,r*.2,r*.1,-.6,0,Math.PI*2); ctx.fillStyle="rgba(255,255,255,.35)"; ctx.fill();
+  if(g.k==="lily") sphereFinish(ctx,r*1.9,r*1.15,det);
+  else if(g.k==="pine") sphereFinish(ctx,r*.95,r*.8,det);
+  else sphereFinish(ctx,r,r,det,g.k==="mallow"?"rgba(90,70,20,.06)":null);
   ctx.restore();
 }
 function pollenBg(ctx){
@@ -1972,8 +2025,10 @@ function pollenBg(ctx){
 function drawPollen(ctx,L){
   if(!SLIDE.pollenBg){ SLIDE.pollenBg=bakeUnits(POLLEN_W,POLLEN_H,6,pollenBg); SLIDE.pollen=bakeUnits(POLLEN_W,POLLEN_H,8,c=>{ pollenBg(c); pollenList().forEach(g=>pollenGrain(c,g,false)); }); }
   if(!hiPow(L)){ blit(ctx,SLIDE.pollen); return; }
-  blit(ctx,SLIDE.pollenBg);
-  pollenList().forEach(g=>{ if(inView(L,g.x,g.y,g.r*2.2)) pollenGrain(ctx,g,true); });
+  cachedView(ctx,L,"pollen",vc=>{
+  blit(vc,SLIDE.pollenBg);
+  pollenList().forEach(g=>{ if(inView(L,g.x,g.y,g.r*2.2)) pollenGrain(vc,g,true); });
+  });
 }
 
 /* ── butterfly wing ─────────────────────────────────── */
@@ -2019,6 +2074,8 @@ function scalePath(ctx,s){
 function wingScale(ctx,s,det,ob){
   ctx.save(); ctx.translate(s.x,s.y); ctx.rotate(s.a);
   const [r,g,b]=s.c;
+  /* each tile throws a soft shadow on the row beneath it */
+  ctx.save(); ctx.translate(.18,.14); scalePath(ctx,s); ctx.fillStyle="rgba(10,6,2,.28)"; ctx.fill(); ctx.restore();
   scalePath(ctx,s);
   const gr=ctx.createLinearGradient(0,0,s.L,0);
   gr.addColorStop(0,`rgba(${r*.72|0},${g*.72|0},${b*.72|0},.97)`);
@@ -2033,6 +2090,11 @@ function wingScale(ctx,s,det,ob){
     ctx.beginPath();
     for(let y=-s.W/2+.12;y<s.W/2;y+=.17){ ctx.moveTo(.8,y*.8); ctx.lineTo(s.L,y); }
     ctx.stroke();
+    const pr=mulberry32((s.x*997+s.y*131)|0); ctx.beginPath();
+    for(let i=0;i<40;i++){ const x=1+pr()*(s.L-1.3), y=(pr()-.5)*s.W*.9, q=.03+pr()*.04; ctx.moveTo(x+q,y); ctx.arc(x,y,q,0,Math.PI*2); }
+    ctx.fillStyle=s.blue?"rgba(20,40,120,.25)":"rgba(0,0,0,.14)"; ctx.fill();
+    const cv=ctx.createLinearGradient(0,0,s.L,0); cv.addColorStop(0,"rgba(0,0,0,.25)"); cv.addColorStop(.25,"rgba(0,0,0,0)"); cv.addColorStop(.92,"rgba(0,0,0,0)"); cv.addColorStop(1,"rgba(0,0,0,.18)");
+    ctx.fillStyle=cv; ctx.fillRect(0,-s.W/2,s.L,s.W);
     if(ob>=100){
       ctx.strokeStyle="rgba(0,0,0,.12)"; ctx.lineWidth=.02; ctx.beginPath();
       for(let x=1;x<s.L;x+=.09){ ctx.moveTo(x,-s.W/2); ctx.lineTo(x,s.W/2); }
@@ -2058,8 +2120,10 @@ function wingBg(ctx){
 function drawWing(ctx,L){
   if(!SLIDE.wingBg){ SLIDE.wingBg=bakeUnits(WING_W,WING_H,6,wingBg); SLIDE.wing=bakeUnits(WING_W,WING_H,8,c=>{ wingBg(c); wingList().forEach(s=>wingScale(c,s,false,4)); }); }
   if(!hiPow(L)){ blit(ctx,SLIDE.wing); return; }
-  blit(ctx,SLIDE.wingBg);
-  wingList().forEach(s=>{ if(inView(L,s.x+s.L/2,s.y,s.L)) wingScale(ctx,s,true,L.obj); });
+  cachedView(ctx,L,"wing",vc=>{
+  blit(vc,SLIDE.wingBg);
+  wingList().forEach(s=>{ if(inView(L,s.x+s.L/2,s.y,s.L)) wingScale(vc,s,true,L.obj); });
+  });
 }
 
 /* ── leaf peel: jigsaw cells and stomata ─────────────── */
@@ -2113,11 +2177,14 @@ function leafCell(ctx,s,det,iodine){
   if(s.st){
     ctx.save(); ctx.translate(s.x,s.y); ctx.rotate(s.a);
     const A=1.5, B=1.05;
+    if(det){ ctx.beginPath(); ctx.ellipse(0,0,A*1.75,B*2.05,0,0,Math.PI*2); ctx.strokeStyle="rgba(70,60,80,.3)"; ctx.lineWidth=.06; ctx.stroke(); }
     [-1,1].forEach(side=>{
       ctx.beginPath(); ctx.ellipse(0,0,A,B,0,side<0?Math.PI:0,side<0?Math.PI*2:Math.PI);
       ctx.ellipse(0,0,A*.62,B*.16,0,side<0?Math.PI*2:Math.PI,side<0?Math.PI:0,true);
       ctx.closePath();
-      ctx.fillStyle="rgba(164,196,120,.9)"; ctx.fill();
+      const gg=ctx.createRadialGradient(0,side*B*.62,B*.05,0,side*B*.55,A*.95);
+      gg.addColorStop(0,"rgba(196,224,150,.95)"); gg.addColorStop(.65,"rgba(150,186,104,.92)"); gg.addColorStop(1,"rgba(92,128,56,.95)");
+      ctx.fillStyle=gg; ctx.fill();
       ctx.strokeStyle="rgba(40,60,20,.8)"; ctx.lineWidth=det?.07:.12; ctx.stroke();
     });
     ctx.beginPath(); ctx.ellipse(0,0,A*.6,B*.12,0,0,Math.PI*2); ctx.fillStyle="rgba(30,34,20,.85)"; ctx.fill();
@@ -2148,9 +2215,11 @@ function leafBg(ctx){
 function drawLeaf(ctx,L){
   if(!SLIDE.leafBg){ SLIDE.leafBg=bakeUnits(LEAF_W,LEAF_H,6,leafBg); SLIDE.leaf=bakeUnits(LEAF_W,LEAF_H,8,c=>{ leafBg(c); leafCells().forEach(s=>leafCell(c,s,false,false)); airBubble(c,40,-30,4.5); }); }
   if(!hiPow(L)){ blit(ctx,SLIDE.leaf); return; }
-  blit(ctx,SLIDE.leafBg);
+  cachedView(ctx,L,"leaf",vc=>{
+  blit(vc,SLIDE.leafBg);
   const iod=L.stain==="iodine";
-  leafCells().forEach(s=>{ if(inView(L,s.x,s.y,6)) leafCell(ctx,s,true,iod); });
+  leafCells().forEach(s=>{ if(inView(L,s.x,s.y,6)) leafCell(vc,s,true,iod); });
+  });
 }
 
 /* ── diatoms: glass boxes ───────────────────────────── */
@@ -2304,6 +2373,103 @@ function drawCrystals(ctx,L){
     blit(ctx,SLIDE.cryBg);
   }
   cryList().forEach(c=>{ if(inView(L,c.x,c.y,(c.s||c.L)*1.2)) crystal(ctx,c,L); });
+}
+/* ── leaf hairs (trichomes) ─────────────────────────── */
+const HAIR_W=160, HAIR_H=120;
+function leafHalf(x){ const t=(x+95)/190; return t<=0||t>=1?0:46*Math.pow(Math.sin(Math.PI*t),.75); }
+function leafEdge(x){ const h=leafHalf(x), ph=((x%6)+6)%6/6; return h>0?h*(1-.08*ph):0; }
+function hairList(){
+  if(hairList.v) return hairList.v;
+  const rng=mulberry32(0x7a1c), o=[];
+  const onLeaf=(x,y)=>Math.abs(y)<leafEdge(x)-.8;
+  for(let i=0;i<1400&&o.length<760;i++){
+    const x=(rng()-.5)*HAIR_W, y=(rng()-.5)*HAIR_H; if(!onLeaf(x,y)) continue;
+    const r=rng(), vein=Math.abs(y)<2.4;
+    if(r<.58) o.push({k:"hook",x,y,L:1.4+rng()*1.2,a:(rng()-.5)*.5+(vein?0:.1*Math.sign(y)),c:rng()});
+    else if(r<.8) o.push({k:"cap",x,y,r:.42+rng()*.2,lx:(rng()-.5)*.9,ly:(rng()-.5)*.9,amb:rng()});
+    else o.push({k:"ses",x,y,r:.34+rng()*.12,amb:rng()});
+  }
+  o.sort((a,b)=>(a.k==="hook"?0:1)-(b.k==="hook"?0:1));
+  return (hairList.v=o);
+}
+function leafShape(ctx){
+  ctx.beginPath(); ctx.moveTo(-95,0);
+  for(let x=-95;x<=95;x+=.5) ctx.lineTo(x,-leafEdge(x));
+  for(let x=95;x>=-95;x-=.5) ctx.lineTo(x,leafEdge(x));
+  ctx.closePath();
+}
+function hairsBg(ctx,polar){
+  ctx.fillStyle=polar?"#020203":"#e9e6d6"; ctx.fillRect(-HAIR_W/2,-HAIR_H/2,HAIR_W,HAIR_H);
+  leafShape(ctx);
+  const g=ctx.createLinearGradient(0,-46,0,46);
+  if(polar){ g.addColorStop(0,"#07100a"); g.addColorStop(.5,"#0b160d"); g.addColorStop(1,"#07100a"); }
+  else { g.addColorStop(0,"#6f9a48"); g.addColorStop(.5,"#86ad58"); g.addColorStop(1,"#6a9444"); }
+  ctx.fillStyle=g; ctx.fill();
+  if(!polar){ ctx.strokeStyle="rgba(40,64,20,.8)"; ctx.lineWidth=.35; ctx.stroke(); }
+  ctx.save(); leafShape(ctx); ctx.clip();
+  if(!polar){
+    /* the epidermis: a fine mosaic of cells */
+    const rng=mulberry32(0x7a1d); ctx.strokeStyle="rgba(40,70,22,.22)"; ctx.lineWidth=.08; ctx.beginPath();
+    for(let y=-48;y<48;y+=1.3) for(let x=-HAIR_W/2;x<HAIR_W/2;x+=1.7){ const px=x+(Math.round(y/1.3)&1?.85:0)+(rng()-.5)*.3; ctx.moveTo(px,y); ctx.lineTo(px+1.7,y+(rng()-.5)*.2); ctx.moveTo(px,y); ctx.lineTo(px+(rng()-.5)*.3,y+1.3); }
+    ctx.stroke();
+    speckle(ctx,HAIR_W,HAIR_H,0x7a1e,5000,[30,60,15],.03,.07,.3);
+  }
+  /* midrib and side veins that each run out to a tooth */
+  const vc=polar?"rgba(40,60,40,.5)":"rgba(170,200,120,.75)", vd=polar?"rgba(0,0,0,0)":"rgba(40,64,20,.45)";
+  const vein=(w)=>{ ctx.beginPath(); ctx.moveTo(-95,0); ctx.lineTo(95,0); for(let x0=-84;x0<84;x0+=12){ [-1,1].forEach(sd=>{ const x1=x0+22; ctx.moveTo(x0,0); ctx.quadraticCurveTo(x0+9,sd*leafEdge(x1)*.45,x1,sd*leafEdge(x1)*.96); }); } ctx.lineWidth=w; ctx.stroke(); };
+  ctx.strokeStyle=vd; vein(1.6); ctx.strokeStyle=vc; vein(1.0);
+  ctx.beginPath(); ctx.moveTo(-95,0); ctx.lineTo(95,0); ctx.strokeStyle=polar?"rgba(40,60,40,.6)":"rgba(186,212,140,.85)"; ctx.lineWidth=2.4; ctx.stroke();
+  ctx.restore();
+}
+function hairDraw(ctx,h,det,polar){
+  ctx.save(); ctx.translate(h.x,h.y);
+  if(h.k==="hook"){
+    /* a one-celled hook pointing toward the leaf tip, a crystal (cystolith) in its bulb */
+    ctx.rotate(h.a);
+    const L=h.L, b=.36;
+    if(!polar){
+      ctx.beginPath(); ctx.moveTo(0,-b); ctx.quadraticCurveTo(L*.55,-b*.8,L,-b*.1-.15*h.c); ctx.quadraticCurveTo(L*.5,b*.5,0,b); ctx.closePath();
+      ctx.fillStyle="rgba(236,242,226,.72)"; ctx.fill();
+      if(det){ ctx.strokeStyle="rgba(50,70,40,.65)"; ctx.lineWidth=.05; ctx.stroke(); ctx.beginPath(); ctx.moveTo(.2,-b*.35); ctx.quadraticCurveTo(L*.5,-b*.45,L*.9,-.12); ctx.strokeStyle="rgba(255,255,255,.7)"; ctx.lineWidth=.05; ctx.stroke(); }
+      ctx.beginPath(); ctx.ellipse(.05,0,b*1.05,b*.95,0,0,Math.PI*2); ctx.fillStyle="rgba(214,226,196,.8)"; ctx.fill();
+      if(det){ ctx.strokeStyle="rgba(50,70,40,.5)"; ctx.lineWidth=.04; ctx.stroke(); }
+    }
+    ctx.beginPath(); ctx.ellipse(.05,0,b*.55,b*.45,.3,0,Math.PI*2);
+    ctx.fillStyle=polar?"rgba(255,246,214,.95)":"rgba(150,150,130,.55)"; ctx.fill();
+    if(polar){ ctx.beginPath(); ctx.ellipse(.05,0,b*.95,b*.8,.3,0,Math.PI*2); ctx.fillStyle="rgba(255,236,180,.18)"; ctx.fill(); }
+  } else {
+    /* a gland: a clear bead on a short stalk (cap) or sitting flat (ses) */
+    const r=h.r, amb=h.amb, cx=h.k==="cap"?h.lx:0, cy=h.k==="cap"?h.ly:0;
+    if(polar){ ctx.beginPath(); ctx.arc(cx,cy,r,0,Math.PI*2); ctx.strokeStyle="rgba(120,130,110,.25)"; ctx.lineWidth=.05; ctx.stroke(); ctx.restore(); return; }
+    if(h.k==="cap"){
+      ctx.beginPath(); ctx.moveTo(-.12,0); ctx.lineTo(cx-.1,cy); ctx.lineTo(cx+.1,cy); ctx.lineTo(.12,0); ctx.closePath();
+      ctx.fillStyle="rgba(210,224,190,.8)"; ctx.fill();
+      ctx.beginPath(); ctx.arc(cx+.2,cy+.25,r*1.05,0,Math.PI*2); ctx.fillStyle="rgba(20,40,10,.25)"; ctx.fill();
+    }
+    const g=ctx.createRadialGradient(cx-r*.3,cy-r*.35,r*.05,cx,cy,r);
+    const a0=[255,250,236], a1=[236+amb*14|0,214-amb*50|0,150-amb*100|0];
+    g.addColorStop(0,`rgba(${a0},.95)`); g.addColorStop(.55,`rgba(${a1},.62)`); g.addColorStop(1,`rgba(${a1[0]-60},${a1[1]-70},${Math.max(0,a1[2]-60)},.9)`);
+    ctx.beginPath(); ctx.arc(cx,cy,r,0,Math.PI*2); ctx.fillStyle=g; ctx.fill();
+    if(det){
+      ctx.strokeStyle="rgba(90,70,30,.7)"; ctx.lineWidth=.04; ctx.stroke();
+      ctx.beginPath(); ctx.arc(cx,cy,r*1.08,0,Math.PI*2); ctx.strokeStyle="rgba(255,255,240,.55)"; ctx.lineWidth=.05; ctx.stroke();
+      /* the ring of secretory cells under the bead */
+      ctx.beginPath(); for(let i=0;i<8;i++){ const a=i/8*Math.PI*2; ctx.moveTo(cx,cy); ctx.lineTo(cx+Math.cos(a)*r*.55,cy+Math.sin(a)*r*.55); }
+      ctx.arc(cx,cy,r*.55,0,Math.PI*2); ctx.strokeStyle="rgba(140,110,50,.3)"; ctx.lineWidth=.03; ctx.stroke();
+    }
+    ctx.beginPath(); ctx.ellipse(cx-r*.35,cy-r*.4,r*.28,r*.14,-.6,0,Math.PI*2); ctx.fillStyle="rgba(255,255,255,.8)"; ctx.fill();
+  }
+  ctx.restore();
+}
+function drawHairs(ctx,L){
+  const polar=L&&L.illum==="polar";
+  if(!SLIDE.hairs){ SLIDE.hairs=bakeUnits(HAIR_W,HAIR_H,8,c=>{ hairsBg(c,false); hairList().forEach(h=>hairDraw(c,h,false,false)); }); }
+  ctx.fillStyle=polar?"#020203":"#e9e6d6"; ctx.fillRect(-900,-900,1800,1800);
+  if(!hiPow(L)&&!polar){ blit(ctx,SLIDE.hairs); return; }
+  cachedView(ctx,L,"hairs"+(polar?"P":""),vc=>{
+    hairsBg(vc,polar);
+    hairList().forEach(h=>{ if(inView(L,h.x,h.y,3)) hairDraw(vc,h,hiPow(L),polar); });
+  });
 }
 function ensureSlides(){
   if(SLIDE.ready) return;
@@ -2832,7 +2998,7 @@ function applyOptics(ctx, w, h, L){
   applyFilterTint(ctx, w, h, L);
   if(L.illum==="dark"){ if(L.spec!=="pond"&&L.spec!=="diatom") applyDarkfield(ctx, w, h); }
   else if(L.illum==="slit") applySlit(ctx, w, h);
-  else if(L.illum==="polar"){ if(L.spec!=="crystal") applyPolar(ctx, w, h, L); }
+  else if(L.illum==="polar"){ if(L.spec!=="crystal"&&L.spec!=="hairs") applyPolar(ctx, w, h, L); }
 }
 function drawGraticule(ctx, cx, cy, r, L, w){
   const dark=L.illum==="dark"||L.illum==="polar"||L.illum==="slit";
@@ -2919,6 +3085,7 @@ function drawSpec(ctx, now, L, reduced, dt){
   else if(L.spec==="leaf") drawLeaf(ctx, L);
   else if(L.spec==="diatom") drawDiatoms(ctx, L);
   else if(L.spec==="crystal") drawCrystals(ctx, L);
+  else if(L.spec==="hairs") drawHairs(ctx, L);
   else if(L.spec==="bact"){
     blit(ctx, SLIDE.bact);
     const step=dt||0.016;
@@ -2972,6 +3139,8 @@ function specNote(spec){
     line+=es?" El fondo está oscuro a propósito. Lo vivo se ve porque dispersa la luz.":" The background is dark on purpose. What is alive shows because it scatters the light.";
   if(spec.id==="crystal" && L.illum==="polar")
     line+=es?" Filtros cruzados: la sal es igual en toda dirección, así que queda negra. El azúcar dobla la luz y brilla en colores. Gira el ángulo: cada barra se apaga cuatro veces por vuelta.":" Crossed filters: salt is the same in every direction, so it stays black. Sugar bends the light and glows in colours. Turn the angle: each bar goes dark four times a turn.";
+  if(spec.id==="hairs" && L.illum==="polar")
+    line+=es?" Filtros cruzados: solo brillan los cristales en la base de los ganchos. Son de carbonato de calcio, como la tiza.":" Crossed filters: only the crystals in the hook bases shine. They are calcium carbonate, like chalk.";
   if(spec.id==="diatom" && (L.illum==="dark"||L.illum==="slit"))
     line+=es?" En campo oscuro el vidrio brilla. Así se ven mejor.":" In darkfield the glass shines. This is the best way to see them.";
   if(o===100 && !L.oil && spec.id!=="scale" && spec.id!=="e")
