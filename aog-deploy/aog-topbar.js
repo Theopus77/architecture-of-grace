@@ -96,8 +96,8 @@
             <a role=\"menuitem\" class=\"flat aogtop-man\" href=\"/microscope-guide\"><svg viewBox=\"0 0 24 24\" width=\"16\" height=\"16\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M4 19.5A2.5 2.5 0 0 1 6.5 17H20\"/><path d=\"M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z\"/></svg><span class=\"aogtop-tx\"><span data-en=\"The microscope manual\" data-es=\"Manual del microscopio\">The microscope manual</span></span></a>\n\
             <a role=\"menuitem\" class=\"flat aogtop-man\" href=\"/telescope-guide\"><svg viewBox=\"0 0 24 24\" width=\"16\" height=\"16\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M4 19.5A2.5 2.5 0 0 1 6.5 17H20\"/><path d=\"M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z\"/></svg><span class=\"aogtop-tx\"><span data-en=\"The telescope manual\" data-es=\"Manual del telescopio\">The telescope manual</span></span></a>\n\
             <a role=\"menuitem\" class=\"flat aogtop-man\" href=\"/oscilloscope-guide\"><svg viewBox=\"0 0 24 24\" width=\"16\" height=\"16\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M4 19.5A2.5 2.5 0 0 1 6.5 17H20\"/><path d=\"M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z\"/></svg><span class=\"aogtop-tx\"><span data-en=\"The oscilloscope manual\" data-es=\"Manual del osciloscopio\">The oscilloscope manual</span></span></a>\n\
-            <a role=\"menuitem\" class=\"flat aogtop-man\" href=\"/drums-guide\"><svg viewBox=\"0 0 24 24\" width=\"16\" height=\"16\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M4 19.5A2.5 2.5 0 0 1 6.5 17H20\"/><path d=\"M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z\"/></svg><span class=\"aogtop-tx\"><span data-en=\"The drum machine manual\" data-es=\"Manual de la caja de ritmos\">The drum machine manual</span></span></a>\n\
-            <a role=\"menuitem\" class=\"flat aogtop-man\" href=\"/decks-guide\"><svg viewBox=\"0 0 24 24\" width=\"16\" height=\"16\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M4 19.5A2.5 2.5 0 0 1 6.5 17H20\"/><path d=\"M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z\"/></svg><span class=\"aogtop-tx\"><span data-en=\"The turntables manual\" data-es=\"Manual de los tocadiscos\">The turntables manual</span></span></a>\n\
+            <a role=\"menuitem\" class=\"flat aogtop-man\" href=\"/mastering-drums\"><svg viewBox=\"0 0 24 24\" width=\"16\" height=\"16\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M4 19.5A2.5 2.5 0 0 1 6.5 17H20\"/><path d=\"M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z\"/></svg><span class=\"aogtop-tx\"><span data-en=\"The drum machine manual\" data-es=\"Manual de la caja de ritmos\">The drum machine manual</span></span></a>\n\
+            <a role=\"menuitem\" class=\"flat aogtop-man\" href=\"/mastering-turntables\"><svg viewBox=\"0 0 24 24\" width=\"16\" height=\"16\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M4 19.5A2.5 2.5 0 0 1 6.5 17H20\"/><path d=\"M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z\"/></svg><span class=\"aogtop-tx\"><span data-en=\"The turntables manual\" data-es=\"Manual de los tocadiscos\">The turntables manual</span></span></a>\n\
           </div>\n\
 \n\
           <div class=\"aogtop-door first\" data-fold=\"aogbarDoor2\">\n\
@@ -2722,12 +2722,12 @@
     [/microscope-guide/, /(^|\/)(microscope|science-microscope(\.html)?)$/],
     [/telescope-guide/, /(^|\/)(telescope|science-telescope|telescope\.html)$/],
     [/oscilloscope-guide/, /(^|\/)(oscilloscope|waves|science-waves(\.html)?)$/],
-    [/drums-guide/, /(^|\/)(drums|drum-machine|music-drums(\.html)?)$/],
-    [/decks-guide/, /(^|\/)(turntables|decks|music-decks(\.html)?)$/]
+    [/drums-guide|mastering-drums/, /(^|\/)(drums|drum-machine|music-drums(\.html)?)$/],
+    [/decks-guide|mastering-turntables/, /(^|\/)(turntables|decks|music-decks(\.html)?)$/]
   ];
   function item(a) { var li = a.closest("li"); return li && li.parentNode === a.parentNode.parentNode ? li : (li || a); }
   function pair() {
-    var mans = document.querySelectorAll('a[href*="-guide"]');
+    var mans = document.querySelectorAll('a[href*="-guide"],a[href*="mastering-"]');
     Array.prototype.forEach.call(mans, function (m) {
       var href = m.getAttribute("href") || "", pr = null;
       PAIRS.forEach(function (p) { if (p[0].test(href)) pr = p; }); if (!pr) return;

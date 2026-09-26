@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script>(function(){var t="light";try{if(localStorage.getItem("aog.interior.ws.v1.theme")==="dark")t="dark";}catch(e){}document.documentElement.setAttribute("data-theme",t);})();</script>
+<title>Mastering the Turntables · Architecture of Grace</title>
+<meta name="description" content="Eleven lessons, from loading one song to mixing a full set, with beatmatching by ear and real scratches.">
+<link rel="canonical" href="https://architectureofgrace.org/mastering-turntables">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="stylesheet" href="/aog-crosswalk.css">
+<!-- AOG-MASTERING-V1 (2026-09-26) — Jimmy: "I want these uploaded, but with pictures when appropriate."
+     Built from his Mastering course PDF (words unchanged), with screenshots of the real instrument
+     at the lessons they teach. -->
+<style>
+.mg-jump{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:0 0 18px}
+.mg-jump label{font:800 12px Inter,sans-serif;letter-spacing:.12em;text-transform:uppercase;opacity:.8}
+.mg-jump select{font:inherit;font-size:16px;font-weight:700;min-height:44px;padding:0 12px;border-radius:12px;border:1.5px solid var(--gl);background:#fff;color:#1a232c;max-width:100%}
+.xw h2{scroll-margin-top:80px}
+.mg-fig{margin:14px 0 20px;background:#11161c;border-radius:14px;padding:10px;box-shadow:0 14px 30px -22px rgba(0,0,0,.6)}
+.mg-fig img{display:block;width:100%;height:auto;border-radius:8px}
+.mg-fig figcaption{color:#dfe6ee;font-size:14px;line-height:1.45;padding:8px 4px 2px}
+p.step{border-left:5px solid var(--gl);background:rgba(255,255,255,.6);padding:10px 14px;border-radius:0 10px 10px 0}
+p.step.doit{border-color:#B8893A} p.step.check{border-color:#2E8B57}
+[data-theme="dark"] p.step{background:rgba(255,255,255,.06)}
+.mg-beatrow td{background:#11161c!important;padding:8px!important}
+.mg-beat{display:block;width:100%;max-width:520px;height:auto}
+.mg-beat .bl{fill:#cfd8e2;font:700 10px Inter,sans-serif;letter-spacing:.06em}
+.mg-beat .bn{fill:#9aa6b2;font:700 10px Inter,sans-serif;text-anchor:middle}
+.mg-beat rect.off{fill:#2a2118} .mg-beat rect.on{fill:#E0A33C} .mg-beat rect.loud{fill:#FFD27A} .mg-beat rect.soft{fill:#6FBF73}
+.mg-key{display:flex;gap:14px;flex-wrap:wrap;font-size:14px;margin:6px 0 12px}
+.mg-key i{display:inline-block;width:14px;height:12px;border-radius:3px;vertical-align:-1px;margin-right:6px}
+@media print{.mg-fig{break-inside:avoid;background:none;box-shadow:none;padding:0}.mg-fig figcaption{color:#333}.mg-beatrow td{background:#fff!important}}
+</style>
+</head>
+<body>
+<script src="/aog-topbar.js"></script>
+<main class="xw" style="--gl:#B8457A">
+<header class="xw-hero">
+  <p class="xw-ey">The Benches · The mastering course</p>
+  <h1>Mastering the Turntables</h1>
+  <p class="xw-lede">Eleven lessons, from loading one song to mixing a full set, with beatmatching by ear and real scratches.</p>
+  <div class="xw-meta"><span class="xw-pill">Music</span><span class="xw-pill">11 lessons</span><span class="xw-pill">With pictures</span></div>
+</header>
+<div class="xw-bar no-print">
+  <a class="xw-btn solid" href="/music-decks.html">Open the turntables</a>
+  <a class="xw-btn" href="/decks-guide">Picture guide</a>
+  <button class="xw-btn" type="button" onclick="window.print()">Print this course</button>
+</div>
+<div class="mg-jump no-print"><label for="mgJump">Jump to a lesson</label>
+<select id="mgJump" onchange="var e=document.getElementById(this.value);if(e)e.scrollIntoView({behavior:'smooth'});"><option value="how-to-use-this-course">How to use this course</option><option value="lesson-1-a-tour-of-the-two-decks-and-the">Lesson 1 — A tour of the two decks and the mixer</option><option value="lesson-2-getting-music-on">Lesson 2 — Getting music on</option><option value="lesson-3-start-cue-set-cue-and-hot-cues">Lesson 3 — Start, CUE, Set cue and hot cues</option><option value="lesson-4-loops">Lesson 4 — Loops</option><option value="lesson-5-tempo-bpm-pitch-wide-33-45-and-">Lesson 5 — Tempo: BPM, PITCH, WIDE, 33/45 and SYNC</option><option value="lesson-6-beatmatching-by-ear">Lesson 6 — Beatmatching by ear</option><option value="lesson-7-the-crossfader-blend-and-cut">Lesson 7 — The crossfader: Blend and Cut</option><option value="lesson-8-eq-and-the-kill-buttons-the-bas">Lesson 8 — EQ and the KILL buttons: the bass swap</option><option value="lesson-9-scratching">Lesson 9 — Scratching</option><option value="lesson-10-mixing-a-set">Lesson 10 — Mixing a set</option><option value="lesson-11-the-drum-bench-and-the-decks-t">Lesson 11 — The Drum Bench and the decks together</option><option value="practice-plan-and-the-mastery-checklist">Practice plan and the mastery checklist</option><option value="when-something-goes-wrong">When something goes wrong</option></select></div>
+<section class="xw-sec">
+<h2 id="how-to-use-this-course">How to use this course</h2>
+<p>Eleven lessons take you from loading one song to mixing a full set, with beatmatching by ear and real scratches. Do them in order, with the Turntables page open beside this doc.</p>
+<p><b>You need:</b></p>
+<ul>
+<li><b>Headphones or real speakers.</b> Beatmatching is done by ear, and a laptop speaker can't play the kick drums you're matching.</li>
+<li><b>Two songs with a steady drum beat,</b> as MP3, M4A or WAV files on the computer (Lesson 2 says where to get them legally). Songs within about 10 BPM of each other are easiest to start with.</li>
+<li><b>One beat from the Drum Bench</b> (optional but useful): it has a perfectly steady tempo, which makes it the best practice partner.</li>
+</ul>
+<p>Every lesson has three parts, like the Drum Bench course:</p>
+<ul>
+<li><b>Learn:</b> what the control does and why DJs use it.</li>
+<li><b>Do it now:</b> an exercise on the real decks.</li>
+<li><b>Check yourself:</b> a test you pass by ear. Don't move on until you can.</li>
+</ul>
+<p><b>Counting:</b> DJs count in beats and bars. Four beats make a bar; 8 bars (32 beats) make a phrase, the building block of almost every dance, pop and hip-hop song. Lessons 6 and 10 are built around that.</p>
+<h2 id="lesson-1-a-tour-of-the-two-decks-and-the">Lesson 1 — A tour of the two decks and the mixer</h2>
+<p>There are two identical decks, A and B, side by side, and a mixer strip under them. Learn one deck and you know both.</p>
+<figure class="mg-fig"><img src="/guides/t-decks.png" alt="Deck A and deck B, side by side. Learn one and you know both." loading="lazy"><figcaption>Deck A and deck B, side by side. Learn one and you know both.</figcaption></figure>
+<p><b>On each deck, top to bottom</b></p>
+<table class="xw-t"><thead><tr><th>Part</th><th>What it's for</th></tr></thead><tbody>
+<tr><td data-label="Part">The waveform</td><td data-label="What it's for">The whole song. Orange is bass (kicks), green is mids, blue is highs. Click or drag anywhere on it to move the needle there.</td></tr>
+<tr><td data-label="Part">The close-up strip</td><td data-label="What it's for">A zoomed view of where the needle is right now. Also clickable.</td></tr>
+<tr><td data-label="Part">The record (platter)</td><td data-label="What it's for">Grab and drag it to scratch; hold it still and the sound stops, like real vinyl.</td></tr>
+<tr><td data-label="Part">Load a song · ⏏ Take it off · Start · CUE · Set cue</td><td data-label="What it's for">Getting music on and off, playing, and cueing (Lessons 2–3).</td></tr>
+<tr><td data-label="Part">Hot cues 1 2 3 · Loops 1b 2b 4b · SYNC · BPM</td><td data-label="What it's for">Jump points, loops, and tempo (Lessons 3–5). The yellow number is the song's tempo.</td></tr>
+<tr><td data-label="Part">KEY · SLIP · REV · TAP · ½× · 2×</td><td data-label="What it's for">Performance tools and tempo fixes (Lessons 5 and 9).</td></tr>
+<tr><td data-label="Part">− Nudge · + Nudge · 33⅓ · 45</td><td data-label="What it's for">Beat alignment and record speed (Lessons 5– 6).</td></tr>
+<tr><td data-label="Part">Pitch (with WIDE)</td><td data-label="What it's for">Fine speed control, the heart of beatmatching.</td></tr>
+<tr><td data-label="Part">Filter · Echo</td><td data-label="What it's for">Sweep effects (Lesson 10).</td></tr>
+<tr><td data-label="Part">High · Mid · Low · KILL LOW/MID/HIGH · FLAT</td><td data-label="What it's for">The deck's EQ (Lesson 8).</td></tr>
+<tr><td data-label="Part">Volume</td><td data-label="What it's for">This deck's level.</td></tr>
+</tbody></table>
+<p><b>Under the decks (the mixer)</b></p>
+<table class="xw-t"><thead><tr><th>Part</th><th>What it's for</th></tr></thead><tbody>
+<tr><td data-label="Part">Crossfader</td><td data-label="What it's for">Slides the sound from deck A (left) to deck B (right).</td></tr>
+<tr><td data-label="Part">Fader: Blend / Cut</td><td data-label="What it's for">How the crossfader behaves: a slow blend for mixing, an instant cut for scratching (Lesson 7).</td></tr>
+<tr><td data-label="Part">Vinyl noise: on/off</td><td data-label="What it's for">Adds record crackle.</td></tr>
+<tr><td data-label="Part">Platter: fine / normal / 1:1 vinyl</td><td data-label="What it's for">How far the music moves when you move the record (Lesson 9).</td></tr>
+<tr><td data-label="Part">● Record</td><td data-label="What it's for">Records what both decks play, as a .wav take (Lesson 10).</td></tr>
+<tr><td data-label="Part">The curve screen</td><td data-label="What it's for">Shows each deck's EQ and filter as a coloured line: gold for A, blue for B.</td></tr>
+<tr><td data-label="Part">From the drum bench</td><td data-label="What it's for">Beats sent from the Drum Bench arrive here (Lesson 11).</td></tr>
+</tbody></table>
+<p><b>One thing this setup doesn't have:</b> a headphone cue. Club mixers let you hear the next song in headphones before the crowd does. Here, both decks play through the same speakers, so you prepare the next song with the waveform, the BPM number and the crossfader. Lesson 6 shows how.</p>
+<p class="step doit"><b>Do it now:</b> load any song on deck A. Click three different places on its waveform, then press Start and watch the close-up strip scroll.</p>
+<p class="step check"><b>Check yourself:</b> point to the orange marks on the waveform, and say where the song's first big drop or chorus probably is from the shape alone.</p>
+<h2 id="lesson-2-getting-music-on">Lesson 2 — Getting music on</h2>
+<p>A song is a file on this computer. The page reads it in the browser and never uploads it anywhere.</p>
+<figure class="mg-fig"><img src="/guides/t-dock.png" alt="Load a song opens your song library. Songs you add stay here." loading="lazy"><figcaption>Load a song opens your song library. Songs you add stay here.</figcaption></figure>
+<p><b>Three ways to load a deck</b></p>
+<ol>
+<li>Press <b>Load a song</b> and pick a file. MP3, M4A, WAV and AAC work everywhere.</li>
+<li>Drag a song file from a folder straight onto a deck.</li>
+<li>Press <b>Onto deck A</b> or <b>Onto deck B</b> on a Drum Bench beat or on one of your own</li>
+</ol>
+<ul>
+<li>recorded takes.</li>
+</ul>
+<p>While the deck works out the tempo, the BPM spot says <b>listening…</b>. If the song has no steady drum beat, it says <b>no steady beat</b>; that song is fine to play but can't be synced (Lesson 5). <b>⏏</b><b> Take it off</b> clears the deck.</p>
+<p><b>The deck remembers each song.</b> The tempo, the beat grid and your hot cues are saved for the last 40 songs you've loaded, so they're waiting the next time you load the same file.</p>
+<p><b>Where to get music legally</b></p>
+<table class="xw-t"><thead><tr><th>Source</th><th>What it's good for</th></tr></thead><tbody>
+<tr><td data-label="Source">Your own Drum Bench beats</td><td data-label="What it's good for">Perfectly steady practice partners (Lesson 11)</td></tr>
+<tr><td data-label="Source">YouTube Audio Library</td><td data-label="What it's good for">Free, downloadable tracks cleared for use</td></tr>
+<tr><td data-label="Source">ccMixter</td><td data-label="What it's good for">Free remixable tracks, and a cappellas (vocals only) that are great for scratching</td></tr>
+<tr><td data-label="Source">Free Music Archive, Internet Archive</td><td data-label="What it's good for">Large free collections; check each track's licence</td></tr>
+<tr><td data-label="Source">Songs you've bought as DRM-free files, or your own CDs</td><td data-label="What it's good for">Anything you legally own as a file</td></tr>
+</tbody></table>
+<p>Downloads inside streaming apps (Spotify, Apple Music, YouTube Music) are locked copies, not files, so they can't be loaded, and ripping them breaks those services' rules.</p>
+<p><b>Picking practice songs:</b> choose two songs with a clear kick drum, within about 10 BPM of each other (for example 95 and 100). Avoid songs with live, drifting tempos to start with.</p>
+<p class="step doit"><b>Do it now:</b> load one song on deck A and a different one on deck B. Write down both BPM numbers.</p>
+<p class="step check"><b>Check yourself:</b> tap your foot to deck A. Does the yellow BPM number feel right? If it's twice as fast or half as fast as your foot, fix it with ½× or 2× (Lesson 5).</p>
+<h2 id="lesson-3-start-cue-set-cue-and-hot-cues">Lesson 3 — Start, CUE, Set cue and hot cues</h2>
+<p>A cue point is a bookmark on the exact spot you want a song to start. Good DJs cue on the first beat of a bar, almost always a kick drum.</p>
+<figure class="mg-fig"><img src="/guides/t-top.png" alt="The waveform, the close-up strip, the record, and Start · CUE · Set cue." loading="lazy"><figcaption>The waveform, the close-up strip, the record, and Start · CUE · Set cue.</figcaption></figure>
+<table class="xw-t"><thead><tr><th>Button</th><th>What it does</th></tr></thead><tbody>
+<tr><td data-label="Button">Start</td><td data-label="What it does">Starts the record turning, or stops it.</td></tr>
+<tr><td data-label="Button">Set cue</td><td data-label="What it does">Puts the cue point where the needle is now. Before you set one, the cue is the very start of the song.</td></tr>
+<tr><td data-label="Button">CUE</td><td data-label="What it does">Hold it down: the song plays from the cue point. Let go: it jumps back to the cue point and stops, ready.</td></tr>
+<tr><td data-label="Button">Hot cue 1, 2, 3</td><td data-label="What it does">An empty one saves the spot you're on (it lights up). A lit one jumps there instantly, even while playing. Hold it for about a second (or Alt-click it) to clear it.</td></tr>
+</tbody></table>
+<p><b>Finding the first kick exactly</b></p>
+<ol>
+<li>Click the waveform just before the first orange mark (the first kick).</li>
+<li>Put your hand on the record and turn it slowly forward until you hear the kick begin.</li>
+<li>Back it up a tiny amount so the needle sits just before the hit.</li>
+<li>Press <b>Set cue</b>.</li>
+<li>Press and release <b>CUE</b> a few times. You should hear a clean "boom" each time, with</li>
+</ol>
+<ul>
+<li>nothing before it.</li>
+</ul>
+<p><b>Hot cue ideas:</b> 1 = the first beat, 2 = where the vocal starts, 3 = the drop or chorus. Tapping a hot cue on the beat makes an instant remix; tapping CUE quickly in rhythm makes the classic stutter start.</p>
+<p class="step doit"><b>Do it now:</b> set a perfect cue on the first kick of both songs. Then set hot cues 1, 2 and 3 on deck A at three musical moments.</p>
+<p class="step check"><b>Check yourself:</b> with deck A stopped on its cue, press Start exactly on a beat you count out loud ("1, 2, 3, 4, go"). The song's first kick should land on your "go".</p>
+<h2 id="lesson-4-loops">Lesson 4 — Loops</h2>
+<p>A loop repeats a piece of the song forever until you let it go. It's the DJ's way to make an intro longer, hold a great drum break, or build tension.</p>
+<figure class="mg-fig"><img src="/guides/t-cues.png" alt="Hot cues 1 2 3, loops 1b 2b 4b, SYNC and the BPM number." loading="lazy"><figcaption>Hot cues 1 2 3, loops 1b 2b 4b, SYNC and the BPM number.</figcaption></figure>
+<table class="xw-t"><thead><tr><th>Button</th><th>Loop length</th></tr></thead><tbody>
+<tr><td data-label="Button">1b</td><td data-label="Loop length">1 bar (4 beats)</td></tr>
+<tr><td data-label="Button">2b</td><td data-label="Loop length">2 bars (8 beats)</td></tr>
+<tr><td data-label="Button">4b</td><td data-label="Loop length">4 bars (16 beats)</td></tr>
+</tbody></table>
+<p>Pressing a loop button starts the loop on the <b>nearest beat</b> to the needle, using the tempo the deck measured, so it stays in time. The lit button shows the loop that's running. Press the same button again to let go; the song carries on from there. Loops need a BPM, so they don't work on a song showing "no steady beat".</p>
+<p><b>Three classic uses</b></p>
+<ol>
+<li><b>Stretch an intro.</b> Loop the drums-only intro of the incoming song for 4 bars while you</li>
+</ol>
+<ul>
+<li>finish the mix (Lesson 10).</li>
+</ul>
+<ol>
+<li><b>Hold a break.</b> When a song hits a great drum section, loop it and scratch or mix over</li>
+</ol>
+<ul>
+<li>the top.</li>
+</ul>
+<ol>
+<li><b>The build-up.</b> Press 4b, then after 4 bars press 2b, then 1b. The loop gets shorter and</li>
+</ol>
+<ul>
+<li>tighter, and the crowd feels something coming. Let go on the next bar's first beat for the drop.</li>
+</ul>
+<p class="step doit"><b>Do it now:</b> start deck A. On the first beat of a bar, press 4b. Count the four bars out loud as it loops, then press 4b again to release it. Then try the 4b → 2b → 1b build-up.</p>
+<p class="step check"><b>Check yourself:</b> a clean loop has no hiccup where it jumps back. If you hear a skip or a doubled kick, the BPM is probably wrong: fix it with TAP, ½× or 2× (Lesson 5) and try again.</p>
+<h2 id="lesson-5-tempo-bpm-pitch-wide-33-45-and-">Lesson 5 — Tempo: BPM, PITCH, WIDE, 33/45 and SYNC</h2>
+<p>Two songs mix cleanly only when they play at the same tempo. The yellow BPM number on each deck is the tempo it's <b>playing at right now</b>, including any pitch change, so your job is simple to state: make the two numbers match.</p>
+<figure class="mg-fig"><img src="/guides/t-pitch.png" alt="Nudge, 33⅓ / 45 and the PITCH slider with WIDE." loading="lazy"><figcaption>Nudge, 33⅓ / 45 and the PITCH slider with WIDE.</figcaption></figure>
+<table class="xw-t"><thead><tr><th>Control</th><th>What it does</th></tr></thead><tbody>
+<tr><td data-label="Control">PITCH</td><td data-label="What it does">Speeds the record up or slows it down by ±8%, in half-percent steps. The readout shows the change, e.g. +3.5%.</td></tr>
+<tr><td data-label="Control">WIDE</td><td data-label="What it does">Opens PITCH to ±50% for big jumps. Turn it off and PITCH goes back to ±8%.</td></tr>
+<tr><td data-label="Control">33⅓ / 45</td><td data-label="What it does">Record speed. 45 plays 35% faster (and higher), like a real turntable.</td></tr>
+<tr><td data-label="Control">KEY</td><td data-label="What it does">Key lock: PITCH changes the speed without changing how high or low the voice sounds. Scratching still bends the pitch. KEY starts switched on.</td></tr>
+<tr><td data-label="Control">TAP</td><td data-label="What it does">Tap it 3 to 5 times on the beat to replace the deck's tempo guess with yours. Tap on real beats: it also lines the beat grid up with where you tapped.</td></tr>
+<tr><td data-label="Control">½× / 2×</td><td data-label="What it does">Fixes a tempo read at half or double speed (a 90 BPM song shown as 180, for example).</td></tr>
+<tr><td data-label="Control">SYNC</td><td data-label="What it does">Matches this deck's tempo to the other deck's and jumps to the nearest beat. It stays locked, adjusting a hair at a time so the beats don't drift. Press again to unlock.</td></tr>
+</tbody></table>
+<p><b>The math.</b> Pitch percent = (target BPM ÷ song BPM − 1) × 100. To play a 100 BPM song with a 106.8 BPM song, deck B needs +6.8%. SYNC does this sum for you and turns on WIDE if more than 8% is needed. It also counts half and double time, so 70 and 140 BPM songs can sync.</p>
+<p><b>About SYNC.</b> It's a real tool and working DJs use it. But learn to beatmatch by ear first (Lesson 6). A mix synced by a button still needs your ears for phrasing, EQ and the crossfader, and SYNC can't help with a song that has no steady beat.</p>
+<p><b>Do it now</b></p>
+<ol>
+<li>Load your two practice songs. Note both BPMs.</li>
+<li>Work out the pitch deck B needs with the formula, and set it with PITCH until the two</li>
+</ol>
+<ul>
+<li>numbers match.</li>
+</ul>
+<ol>
+<li>With KEY lit (it starts on), move deck B's PITCH to +8% and back. Then turn KEY off</li>
+</ol>
+<ul>
+<li>and do it again. Hear the difference in the voice.</li>
+</ul>
+<ol>
+<li>Press SYNC on deck B and check it arrives at the same pitch you worked out.</li>
+</ol>
+<p class="step check"><b>Check yourself:</b> given a 94 BPM song and a 100 BPM song, say which deck to change and by how much, without the machine. (Answer: the 94 up by about 6.4%, or the 100 down by 6%.)</p>
+<h2 id="lesson-6-beatmatching-by-ear">Lesson 6 — Beatmatching by ear</h2>
+<p>Beatmatching means getting two songs' kick drums to land at exactly the same moment and stay there. It's the core DJ skill, and it takes a few weeks of practice to feel easy.</p>
+<p>Two things have to match:</p>
+<ul>
+<li><b>Speed (tempo):</b> both BPM numbers the same. You fix it with PITCH (Lesson 5).</li>
+<li><b>Position (phase):</b> the kicks landing together. You fix it with Nudge, or with your hand on the record.</li>
+</ul>
+<p><b>Nudge</b> speeds the record up (+ Nudge) or slows it down (− Nudge) by 4% only while you hold it. Let go and it goes back to its set speed. Short taps make small moves.</p>
+<p><b>Hearing it without headphones.</b> This setup plays both decks through the same speakers, so you listen to both at once:</p>
+<ol>
+<li>Deck A playing, crossfader hard left.</li>
+<li>Deck B cued on its first kick, PITCH set so the BPM numbers match.</li>
+<li>Count A's bars out loud. On A's "1", press Start on deck B.</li>
+<li>Move the crossfader a little toward the middle so B is quiet but audible under A.</li>
+<li>Listen to the kicks. <b>One clean thump</b> means they're matched. <b>"Ga-dump, ga-dump"</b></li>
+</ol>
+<ul>
+<li>(like a galloping horse) means they aren't.</li>
+</ul>
+<ol>
+<li>Watch the two close-up strips. If B's orange marks come <b>after</b> A's, B is behind: tap +</li>
+</ol>
+<ul>
+<li>Nudge. If they come <b>before</b>, B is ahead: tap − Nudge.</li>
+</ul>
+<ol>
+<li>If B keeps drifting the same way after you've nudged it into place, the speed is slightly</li>
+</ol>
+<ul>
+<li>off: move B's PITCH a hair (half a percent) in the direction you kept nudging.</li>
+</ul>
+<p><b>By hand, like vinyl DJs:</b> instead of Nudge, rest a finger on deck B's record and push it slightly forward or drag it back. It takes more practice but it's faster once you have it.</p>
+<p><b>Counting phrases.</b> Songs are built in phrases of 8 bars (32 beats). Start deck B on the first beat of one of A's phrases, not in the middle, or the two songs' changes will clash. Count "1, 2, 3, 4" for beats and keep a finger count of bars.</p>
+<p class="step doit"><b>Do it now:</b> practise with a Drum Bench beat on deck A (perfectly steady) and a song on deck B. Match by ear, never touching SYNC. Do it five times in a row.</p>
+<p class="step check"><b>Check yourself:</b> get the two decks matched and let them play for 32 beats (8 bars) without touching anything. No gallop means you've matched both the speed and the position.</p>
+<h2 id="lesson-7-the-crossfader-blend-and-cut">Lesson 7 — The crossfader: Blend and Cut</h2>
+<p>The crossfader decides how much of each deck you hear: hard left is only A, hard right is only B, the middle is both. The <b>Fader</b> button under the decks switches how it gets there.</p>
+<figure class="mg-fig"><img src="/guides/t-mixer.png" alt="The crossfader, Fader: Blend / Cut, Record, and the curve screen." loading="lazy"><figcaption>The crossfader, Fader: Blend / Cut, Record, and the curve screen.</figcaption></figure>
+<table class="xw-t"><thead><tr><th>Setting</th><th>How it behaves</th><th>Use it for</th></tr></thead><tbody>
+<tr><td data-label="Setting">Fader: Blend</td><td data-label="How it behaves">A smooth fade. At the middle, both decks play at about 70% so the total loudness doesn't dip.</td><td data-label="Use it for">Mixing one song into another</td></tr>
+<tr><td data-label="Setting">Fader: Cut</td><td data-label="How it behaves">Opens almost instantly: a hair away from the edge, the deck is nearly at full volume.</td><td data-label="Use it for">Scratching (Lesson 9) and quick cuts between songs</td></tr>
+</tbody></table>
+<p><b>Two ways to mix</b></p>
+<ol>
+<li><b>Crossfader mix:</b> both deck Volume sliders up, and you slide the crossfader from A to B</li>
+</ol>
+<ul>
+<li>over 8 to 16 bars. Simple and smooth.</li>
+</ul>
+<ol>
+<li><b>Volume mix:</b> crossfader in the middle, and you bring deck B's <b>Volume</b> up while you</li>
+</ol>
+<ul>
+<li>bring deck A's down. It gives more control, and it's how most club DJs mix.</li>
+</ul>
+<p><b>The cut.</b> With Fader: Cut, flick the crossfader from A to B exactly on a "1". It's an instant switch, great for hip-hop, where songs often change on a hard cut rather than a long blend.</p>
+<p><b>Do it now</b></p>
+<ol>
+<li>With your two matched songs (Lesson 6), set Fader: Blend and slide from A to B over</li>
+</ol>
+<ul>
+<li>exactly 16 beats, counting out loud.</li>
+</ul>
+<ol>
+<li>Do the same mix again using only the two Volume sliders, crossfader in the middle.</li>
+<li>Switch to Fader: Cut and practise flicking from A to B on the "1" of a bar.</li>
+</ol>
+<p class="step check"><b>Check yourself:</b> during a Blend mix, the overall loudness should stay steady, with no dip or bump in the middle. On a cut, the new song should come in exactly on its first beat.</p>
+<h2 id="lesson-8-eq-and-the-kill-buttons-the-bas">Lesson 8 — EQ and the KILL buttons: the bass swap</h2>
+<p>Two basslines playing at once sound muddy and messy, even when the beats are matched perfectly. The EQ lets you run two songs together while only one of them carries the bass.</p>
+<figure class="mg-fig"><img src="/guides/t-eq.png" alt="High · Mid · Low, and the KILL buttons." loading="lazy"><figcaption>High · Mid · Low, and the KILL buttons.</figcaption></figure>
+<table class="xw-t"><thead><tr><th>Control</th><th>Range</th><th>What it does</th></tr></thead><tbody>
+<tr><td data-label="Control">High</td><td data-label="Range">±26 dB</td><td data-label="What it does">Hats, cymbals, the sparkle on a voice</td></tr>
+<tr><td data-label="Control">Mid</td><td data-label="Range">±26 dB</td><td data-label="What it does">Vocals, snares, most instruments</td></tr>
+<tr><td data-label="Control">Low</td><td data-label="Range">±26 dB</td><td data-label="What it does">Kick drum and bassline</td></tr>
+<tr><td data-label="Control">KILL LOW / MID / HIGH</td><td data-label="Range">on or off</td><td data-label="What it does">Removes that band completely while lit. Press again to bring it back.</td></tr>
+<tr><td data-label="Control">FLAT</td><td data-label="Range">—</td><td data-label="What it does">Resets that deck's EQ, its kills and its Filter to normal</td></tr>
+</tbody></table>
+<p>The curve screen draws each deck's EQ as a line (gold for A, blue for B), so you can see what you've done.</p>
+<p><b>The bass swap: the most useful mix in DJing</b></p>
+<table class="xw-t"><thead><tr><th>When</th><th>Deck A (outgoing)</th><th>Deck B (incoming)</th></tr></thead><tbody>
+<tr><td data-label="When">Before the mix</td><td data-label="Deck A (outgoing)">Playing, full EQ</td><td data-label="Deck B (incoming)">Cued, beatmatched, KILL LOW on</td></tr>
+<tr><td data-label="When">Beat 1 of a phrase</td><td data-label="Deck A (outgoing)">Still full</td><td data-label="Deck B (incoming)">Bring it in with the crossfader or Volume</td></tr>
+<tr><td data-label="When">Beats 1–16</td><td data-label="Deck A (outgoing)">Full</td><td data-label="Deck B (incoming)">Mids and highs only, adding the new song's feel</td></tr>
+<tr><td data-label="When">Beat 17 (half-way)</td><td data-label="Deck A (outgoing)">KILL LOW on</td><td data-label="Deck B (incoming)">KILL LOW off at the same moment</td></tr>
+<tr><td data-label="When">Beats 17–32</td><td data-label="Deck A (outgoing)">Losing its bass; fade it out</td><td data-label="Deck B (incoming)">Now carrying the bass</td></tr>
+<tr><td data-label="When">Beat 1 of the next phrase</td><td data-label="Deck A (outgoing)">Gone</td><td data-label="Deck B (incoming)">The new song, full</td></tr>
+</tbody></table>
+<p>The two kill buttons must switch on the same beat. Practise pressing both at once, one finger each.</p>
+<p><b>Other EQ moves</b></p>
+<ul>
+<li><b>Clean vocal over a beat:</b> KILL MID on the beat song so a singer on the other deck sits clearly.</li>
+<li><b>Tease:</b> KILL LOW and KILL HIGH on the incoming song so only its mids leak in, then open them one at a time.</li>
+</ul>
+<p class="step doit"><b>Do it now:</b> do the bass swap on your two practice songs, counting 32 beats out loud, swapping on 17.</p>
+<p class="step check"><b>Check yourself:</b> during beats 1–16, you should hear only one kick and one bassline. At the swap, the bass should change hands with no gap and no doubled boom.</p>
+<h2 id="lesson-9-scratching">Lesson 9 — Scratching</h2>
+<p>A scratch is two hands doing two different jobs: one moves the record, the other opens and closes the crossfader. Learn each hand alone before putting them together.</p>
+<p><b>How the record behaves.</b> Grab the platter and the music follows your hand: forward, back, fast or slow. Hold it still and the sound stops, just like vinyl. Let go and the motor pulls it back up to speed.</p>
+<p><b>Platter setting</b> (button under the decks, click to change):</p>
+<table class="xw-t"><thead><tr><th>Setting</th><th>Feel</th><th>Who it's for</th></tr></thead><tbody>
+<tr><td data-label="Setting">fine (starts here)</td><td data-label="Feel">Your hand moves a long way, the music moves a little</td><td data-label="Who it's for">Learning; easiest to control</td></tr>
+<tr><td data-label="Setting">normal</td><td data-label="Feel">In between</td><td data-label="Who it's for">Once your hand is steady</td></tr>
+<tr><td data-label="Setting">1:1 vinyl</td><td data-label="Feel">Like a real record: half a turn is about 0.9 seconds of music</td><td data-label="Who it's for">Advanced; a small move makes a big sound</td></tr>
+</tbody></table>
+<p><b>Set up for scratching:</b> Fader: Cut, the sound on deck B, deck A stopped or playing a beat. Pick a short sound: one word or "ahh" from an a cappella is ideal. Cue it exactly on the start of the sound (Lesson 3).</p>
+<p><b>Four scratches, easiest first</b></p>
+<table class="xw-t"><thead><tr><th>Scratch</th><th>Record hand</th><th>Fader hand</th></tr></thead><tbody>
+<tr><td data-label="Scratch">Baby</td><td data-label="Record hand">Push forward, pull back, in rhythm</td><td data-label="Fader hand">Leave it open the whole time</td></tr>
+<tr><td data-label="Scratch">Forward</td><td data-label="Record hand">Push forward</td><td data-label="Fader hand">Open on the push, closed (cut) on the pull back</td></tr>
+<tr><td data-label="Scratch">Chirp</td><td data-label="Record hand">Push forward, pull back</td><td data-label="Fader hand">Open as you start the push, close just as the push ends, open again as you start the pull</td></tr>
+<tr><td data-label="Scratch">Transform</td><td data-label="Record hand">Push forward slowly</td><td data-label="Fader hand">Tap the fader open and shut quickly in rhythm while the record moves</td></tr>
+</tbody></table>
+<p>Practise each scratch on beats: one move per beat, then two, then four.</p>
+<p><b>SLIP and REV.</b> <b>SLIP starts switched on. With it</b> on, the song keeps playing silently underneath while you scratch; let go and it carries on exactly where it would have been, still in time. Turn SLIP off when you want the record to stay where your hand leaves it. Hold <b>REV</b> to play backwards; with SLIP on, letting go puts you straight back on the beat. That's the classic "rewind" drop.</p>
+<p class="step doit"><b>Do it now:</b> on fine, do 16 baby scratches in time with a Drum Bench beat. Then 16 forwards. Try chirps only when both feel smooth.</p>
+<p class="step check"><b>Check yourself:</b> do forwards over a beat for 8 bars. You should hear only the forward sound, never the backward one: if you hear the pull back, your fader hand is late.</p>
+<h2 id="lesson-10-mixing-a-set">Lesson 10 — Mixing a set</h2>
+<p>A set is a few songs joined so the music never stops and the energy goes where you want it. Everything from Lessons 3 to 8 comes together here.</p>
+<figure class="mg-fig"><img src="/guides/t-crate.png" alt="Up next — the crate. Line up your set before you start." loading="lazy"><figcaption>Up next — the crate. Line up your set before you start.</figcaption></figure>
+<p><b>Mix outro into intro.</b> Most dance and hip-hop songs start and end with 16 or 32 beats of mostly drums. Mix the end of the outgoing song over the start of the incoming one, phrase to phrase. Use the waveform: the thin, drums-only start and end are easy to spot.</p>
+<p><b>The full 32-beat mix</b></p>
+<ol>
+<li>Cue deck B on its first kick. Match its BPM to deck A (Lesson 5 or 6).</li>
+<li>Put KILL LOW on deck B.</li>
+<li>On beat 1 of one of A's phrases, start B and bring it in over 8 beats.</li>
+<li>On beat 17, swap the bass (Lesson 8).</li>
+<li>Over beats 17 to 32, fade A out. If A's outro is too short, loop it (Lesson 4).</li>
+<li>Take A's EQ to FLAT and load the next song.</li>
+</ol>
+<p><b>Effects for transitions</b></p>
+<table class="xw-t"><thead><tr><th>Effect</th><th>How it works</th><th>Transition move</th></tr></thead><tbody>
+<tr><td data-label="Effect">Filter</td><td data-label="How it works">Left of centre muffles the song (low- pass); right thins it out (high-pass). Centre is off.</td><td data-label="Transition move">Sweep the outgoing song slowly right over 8 bars as the new one comes in.</td></tr>
+<tr><td data-label="Effect">Echo</td><td data-label="How it works">Repeats the sound on a dotted-eighth note timed to the song's BPM.</td><td data-label="Transition move">"Echo out": raise Echo on the last beat, then cut the deck. The echoes ring on in time.</td></tr>
+</tbody></table>
+<p><b>Planning energy.</b> Order songs so the tempo and intensity climb, peak, then settle. Moves of 2–6 BPM between songs feel smooth. For a big jump, use a hard cut (Lesson 7) or an echo out instead of a long blend.</p>
+<p><b>Record your set.</b> Press <b>●</b><b> Record</b> under the decks. It records what both decks play (never a microphone), up to 10 minutes. Press <b>■</b><b> Stop recording</b> and the take appears in the Takes list, where you can play it back, <b>Save as .wav</b>, or put it onto a deck.</p>
+<p class="step doit"><b>Do it now:</b> plan a 4-song set on paper (song, BPM, the phrase you'll mix on), then record the whole thing in one take.</p>
+<p class="step check"><b>Check yourself:</b> listen back. Every mix should be phrase to phrase with one bassline at a time, and no gap or clash anywhere.</p>
+<h2 id="lesson-11-the-drum-bench-and-the-decks-t">Lesson 11 — The Drum Bench and the decks together</h2>
+<p>The two machines are built to feed each other: beats go from the Drum Bench to the decks, and your recorded takes can go back into the Drum Bench as samples.</p>
+<p><b>Bench to decks.</b> On the Drum Bench, press <b>TO THE DECKS</b>. On the Turntables page, the</p>
+<p><b>From the drum bench</b> strip shows the beat with <b>Onto deck A</b> and <b>Onto deck B</b>. It's about 20 seconds long, so loop it (Lesson 4) to keep it going.</p>
+<p><b>Five things to do with it</b></p>
+<ol>
+<li><b>The perfect practice partner.</b> A Drum Bench beat never drifts, so it's the best way to</li>
+</ol>
+<ul>
+<li>learn beatmatching (Lesson 6).</li>
+</ul>
+<ol>
+<li><b>Your own beat under a song.</b> TAP the song's tempo into the Drum Bench (its TAP key),</li>
+</ol>
+<ul>
+<li>program a beat at that tempo, send it, and mix it in under the song with the bass swap.</li>
+</ul>
+<ol>
+<li><b>Scratch over your own beat.</b> Beat on deck A, a cappella on deck B, Fader: Cut (Lesson</li>
+</ol>
+<ul>
+<li>9).</li>
+</ul>
+<ol>
+<li><b>Stems.</b> SOLO the hats on the Drum Bench before sending: only the hats arrive. Layer</li>
+</ol>
+<ul>
+<li>them over a song that needs more energy.</li>
+</ul>
+<ol>
+<li><b>Resampling.</b> Record a scratch or a short mix on the decks, <b>Save as .wav</b>, then load it</li>
+</ol>
+<ul>
+<li>onto a Drum Bench pad with SAMPLE (the first 2.5 seconds). That's how SP-1200 producers built new sounds from old records.</li>
+</ul>
+<p class="step doit"><b>Do it now:</b> make a 90 BPM beat on the Drum Bench, send it to deck A, and loop it. Put an a cappella or a song at about 90 BPM on deck B, beatmatch it, and record 2 minutes.</p>
+<p class="step check"><b>Check yourself:</b> SAMPLE one of your own recorded scratches onto Drum Bench bank C, pad 1, and program it into a beat.</p>
+<h2 id="practice-plan-and-the-mastery-checklist">Practice plan and the mastery checklist</h2>
+<p>Twenty to thirty minutes a day for four weeks. Beatmatching is the slowest skill, so it appears every week.</p>
+<table class="xw-t"><thead><tr><th>Week</th><th>Daily practice</th></tr></thead><tbody>
+<tr><td data-label="Week">1</td><td data-label="Daily practice">Lessons 1–5, one a day. Then 10 minutes of cueing on the first kick (Lesson 3).</td></tr>
+<tr><td data-label="Week">2</td><td data-label="Daily practice">Lesson 6 every day: beatmatch a Drum Bench beat against a song by ear, 5 times. Add Lesson 7 by the end of the week.</td></tr>
+<tr><td data-label="Week">3</td><td data-label="Daily practice">Lessons 8 and 9. Warm up with 5 minutes of baby and forward scratches before every session.</td></tr>
+<tr><td data-label="Week">4</td><td data-label="Daily practice">Lessons 10 and 11. Record one 4-song set a day and listen back.</td></tr>
+</tbody></table>
+<p><b>Daily warm-up (5 minutes):</b> one clean cue, one match by ear with no SYNC, 16 forward scratches in time.</p>
+<p><b>Mastery checklist</b></p>
+<ul>
+<li>Name every control on a deck and on the mixer</li>
+<li>Cue any song exactly on its first kick</li>
+<li>Set, use and clear hot cues</li>
+<li>Loop a bar in time and do the 4-2-1 build-up</li>
+<li>Work out the pitch needed between two BPMs in your head</li>
+<li>Beatmatch two songs by ear, with no SYNC, in under a minute</li>
+<li>Hold a match for 32 beats with no gallop</li>
+<li>Blend with the crossfader and with the Volume sliders</li>
+<li>Do a clean bass swap on beat 17</li>
+<li>Do baby, forward, chirp and transform scratches in time</li>
+<li>Use SLIP and REV for a rewind that lands on the beat</li>
+<li>Record a 4-song set, phrase to phrase, with no clashes</li>
+<li>Send a Drum Bench beat to the decks and mix a song over it</li>
+</ul>
+<h2 id="when-something-goes-wrong">When something goes wrong</h2>
+<table class="xw-t"><thead><tr><th>What you see or hear</th><th>Why</th><th>Fix</th></tr></thead><tbody>
+<tr><td data-label="What you see or hear">"This browser could not read…"</td><td data-label="Why">The file type isn't supported, or it's a locked streaming download</td><td data-label="Fix">Use an MP3, M4A, WAV or AAC file</td></tr>
+<tr><td data-label="What you see or hear">BPM says "no steady beat"</td><td data-label="Why">The song has no clear, steady drum</td><td data-label="Fix">It still plays, but SYNC and loops won't work; pick another song to practise with</td></tr>
+<tr><td data-label="What you see or hear">BPM is twice or half what you feel</td><td data-label="Why">The tempo was read at double or half time</td><td data-label="Fix">Press ½× or 2×, or TAP it in</td></tr>
+<tr><td data-label="What you see or hear">Loops skip or double a kick</td><td data-label="Why">The BPM or beat grid is slightly off</td><td data-label="Fix">TAP 4 times exactly on the kicks, then loop again</td></tr>
+<tr><td data-label="What you see or hear">The mix gallops ("ga- dump")</td><td data-label="Why">The kicks aren't lined up</td><td data-label="Fix">Tap + Nudge or − Nudge until one clean thump (Lesson 6)</td></tr>
+<tr><td data-label="What you see or hear">Matched, then drifts apart</td><td data-label="Why">The tempos are slightly different</td><td data-label="Fix">Move PITCH half a percent in the direction you keep nudging</td></tr>
+<tr><td data-label="What you see or hear">PITCH won't go far enough</td><td data-label="Why">It's limited to ±8%</td><td data-label="Fix">Turn on WIDE for ±50%</td></tr>
+<tr><td data-label="What you see or hear">Voice sounds chipmunky or slow</td><td data-label="Why">KEY is off, or 45 is lit</td><td data-label="Fix">Turn KEY on; check the speed is 33⅓</td></tr>
+<tr><td data-label="What you see or hear">Scratching feels too fast to control</td><td data-label="Why">Platter is on normal or 1:1 vinyl</td><td data-label="Fix">Click Platter until it says fine</td></tr>
+<tr><td data-label="What you see or hear">The pull-back is heard in a forward</td><td data-label="Why">Fader: Blend, or the fader hand is late</td><td data-label="Fix">Switch to Fader: Cut; close the fader just before you pull</td></tr>
+<tr><td data-label="What you see or hear">The record jumps ahead after a scratch</td><td data-label="Why">SLIP is on (it keeps time underneath)</td><td data-label="Fix">That's intended; turn SLIP off to stay where your hand left it</td></tr>
+<tr><td data-label="What you see or hear">Muddy, boomy mix</td><td data-label="Why">Two basslines at once</td><td data-label="Fix">KILL LOW on one deck (Lesson 8)</td></tr>
+<tr><td data-label="What you see or hear">One deck is silent</td><td data-label="Why">Crossfader all the way to the other side, or its Volume is down</td><td data-label="Fix">Check the crossfader and the deck's Volume</td></tr>
+<tr><td data-label="What you see or hear">Everything sounds thin or muffled</td><td data-label="Why">A Filter or EQ was left on</td><td data-label="Fix">Press FLAT on that deck</td></tr>
+<tr><td data-label="What you see or hear">Recording stopped by itself</td><td data-label="Why">Takes are limited to 10 minutes</td><td data-label="Fix">Start a new take</td></tr>
+<tr><td data-label="What you see or hear">No Drum Bench beat in the strip</td><td data-label="Why">Nothing has been sent yet</td><td data-label="Fix">On the Drum Bench, press TO THE DECKS</td></tr>
+</tbody></table>
+</section>
+<footer class="xw-foot">Mastering the Turntables · Architecture of Grace · everything stays on this computer.</footer>
+</main>
+<script src="/aog-grace.js" defer></script>
+</body>
+</html>

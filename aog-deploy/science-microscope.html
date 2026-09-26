@@ -612,8 +612,8 @@ const SPECIMENS = [
   {id:"dog",en:"Dog hair & tick",es:"Pelo de perro y garrapata",
     note_en:"A young tick holding on to a dog's hairs. Eight legs, a hard shield, and mouthparts built to stay in.",
     note_es:"Una garrapata joven agarrada a los pelos de un perro. Ocho patas, un escudo duro y una boca hecha para quedarse.",
-    note4_en:"The whole animal fits in the hole — about 1.2 mm. Count the legs: eight, so it is an arachnid, like a spider, not an insect.",
-    note4_es:"El animal entero cabe en el agujero — cerca de 1.2 mm. Cuenta las patas: ocho, así que es un arácnido, como una araña, no un insecto.",
+    note4_en:"The whole animal fits easily in the hole — a young tick, under 1 mm. Count the legs: eight, so it is an arachnid, like a spider, not an insect.",
+    note4_es:"El animal entero cabe de sobra en el agujero — una garrapata joven, de menos de 1 mm. Cuenta las patas: ocho, así que es un arácnido, como una araña, no un insecto.",
     note10_en:"The dark shield on its back is the scutum. Two shiny eyes sit at its edges. The scalloped back edge is the festoons. The thick hair has a wide dark core.",
     note10_es:"El escudo oscuro de la espalda es el escudo dorsal. Dos ojos brillantes están en sus bordes. El borde de atrás, en ondas, son los festones. El pelo grueso tiene un centro oscuro y ancho.",
     note40_en:"Look at the front. Two club-shaped feelers (palps) guard a blade with rows of teeth that point backward — that is why a tick is hard to pull out. The dog hair's core is wide and full of air cells. Put a human hair next to it: its core is thin, broken, or missing.",
@@ -2723,8 +2723,8 @@ function tickPose(now,reduced){
   const P=TICKPOSE;
   if(reduced){ P.x=TICK.x; P.y=TICK.y; P.a=TICK.a; P.gp=0; P.mv=0; P.q=0; P.pp=0; return P; }
   const t=now/1000, rate=.5*(1+Math.cos(.35*t)), u=.036*(t+Math.sin(.35*t)/.35);
-  P.x=TICK.x+24*Math.sin(u); P.y=TICK.y+10*Math.sin(u*1.7+1);
-  const dx=24*Math.cos(u), dy=17*Math.cos(u*1.7+1);
+  P.x=TICK.x+16*Math.sin(u); P.y=TICK.y+7*Math.sin(u*1.7+1);
+  const dx=16*Math.cos(u), dy=11.9*Math.cos(u*1.7+1);
   P.a=Math.atan2(dy,dx)+Math.PI/2; P.mv=rate; P.gp=u*95; P.q=t; P.pp=t*2.1;
   return P;
 }
@@ -2811,7 +2811,8 @@ function tickBodyPath(ctx){
 }
 function drawTick(ctx,det,ob,pose){
   const T=pose||TICK;
-  ctx.save(); ctx.translate(T.x,T.y); ctx.rotate(T.a);
+  /* Jimmy: "the tick is HUGE at 4x" — drawn at 60%, a small nymph under a millimetre */
+  ctx.save(); ctx.translate(T.x,T.y); ctx.rotate(T.a); ctx.scale(.6,.6);
   /* shadow on the hairs and the glass */
   ctx.save(); ctx.translate(2.4,3.2); tickBodyPath(ctx); ctx.fillStyle="rgba(30,18,8,.22)"; ctx.fill(); ctx.restore();
   for(let i=0;i<4;i++){ tickLeg(ctx,1,i,det,pose); tickLeg(ctx,-1,i,det,pose); }
