@@ -83,7 +83,7 @@ header { display:flex; flex-wrap:wrap; justify-content:space-between; align-item
 .stats { display:flex; flex-wrap:wrap; gap:.5rem 1rem; font-size:.8rem; color:var(--muted); font-variant-numeric:tabular-nums; margin:.8rem 0; }
 .split { display:grid; gap:1.25rem; margin-top:1.25rem; }
 @media (min-width:768px){
-  .grid-home { grid-template-columns: minmax(0,340px) minmax(0,1fr); }
+  .grid-home { grid-template-columns: minmax(0,340px) minmax(0,1fr); align-items:start; }
   .split { grid-template-columns: minmax(240px,400px) minmax(0,1fr); }
   .lab-grid { grid-template-columns: minmax(0,1fr) minmax(280px,360px); }
   .sticky { position:sticky; top:.75rem; }
@@ -240,6 +240,27 @@ html{background:#081828}
   .eye-wrap canvas{width:100%!important;height:auto!important}
   .eye-box{padding:12px!important}
 }
+
+/* AOG-TOOL-THIN-V1 (2026-09-26) — Jimmy: "They all don't need the two bars stating the name. Just keep the
+   blue bar. However the blue bar is to be thinner." One masthead, half the height; the brand row above it goes. */
+html.aog-grace #toolMast[data-aog-hero]{padding-top:18px!important;padding-bottom:16px!important;margin-bottom:14px}
+html.aog-grace #toolMast[data-aog-hero] h1{font-size:clamp(26px,3.2vw,38px)!important;margin:.15rem 0 .25rem!important}
+html.aog-grace #toolMast[data-aog-hero] .lead{font-size:.95rem;margin:0}
+html.aog-grace #toolMast[data-aog-hero] .kicker{font-size:.66rem}
+html.aog-grace #toolMast[data-aog-hero]{min-height:158px;box-sizing:border-box}
+html.aog-grace #toolMast[data-aog-hero] .lead{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;max-width:62ch}
+html.aog-grace #toolMast[data-aog-hero] .aog-more{display:none!important}
+html.aog-grace #toolMast[data-aog-hero] .kicker{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+body>.wrap>header:first-child,.wrap>header.no-print:first-child{display:none!important}
+
+/* AOG-BENCH-NAV-V1 (2026-09-26) — Jimmy: "all of them should have the same line up … one connective tissue."
+   One row on every bench: Bench · Meet … · Use … · Find … · Name the job · Print · Picture guide · the partner. */
+.nav{display:flex;gap:4px;overflow-x:auto;border-bottom:2px solid var(--line);margin:.2rem 0 1.1rem;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+.nav::-webkit-scrollbar{display:none}
+.nav a{flex:0 0 auto;min-height:44px;display:inline-flex;align-items:center;padding:0 .75rem;text-decoration:none;color:var(--muted);font-weight:600;font-size:.9rem;border-bottom:2px solid transparent;margin-bottom:-2px;white-space:nowrap}
+.nav a.on{color:var(--ink);border-color:var(--steel,#2F63B8)}
+.nav a.sep{margin-left:auto;padding-left:.5rem}
+.nav a.sep+a.sep{margin-left:0}
 </style>
 </head>
 <body>
@@ -306,12 +327,13 @@ const PAPER_POS = {eyepiece:[404,76],tube:[34,170],nosepiece:[34,226],objectives
 const PAPER_TO = {eyepiece:[237,90],tube:[194,166],nosepiece:[178,222],objectives:[170,258],arm:[334,250],stage:[97,348],clips:[138,320],diaphragm:[178,380],light:[197,466],coarse:[365,352],fine:[335,411],base:[98,526]};
 const STR = {
   app:{en:"The Microscope Lab",es:"El laboratorio del microscopio"},
-  eyebrow:{en:"Parts, functions, a brass universal",es:"Partes, funciones, un universal de bronce"},
-  tag:{en:"Twelve parts, a research eyepiece, and every one has a job. Meet the machine — then look through it. Stain, darkfield, measure, oil the 100×, and keep the high-power lens off the glass.",es:"Doce partes, un ocular de investigación, y cada una tiene un trabajo. Conoce la máquina — y luego mira por ella. Tiñe, campo oscuro, mide, aceita el 100× y no estrelles el lente de alto aumento."},
+  eyebrow:{en:"A brass universal",es:"Partes, funciones, un universal de bronce"},
+  tag:{en:"Twelve parts, a research eyepiece, and every one has a job. Meet the machine, then look through it.",es:"Doce partes, un ocular de investigación, y cada una tiene un trabajo. Conoce la máquina y luego mira por ella."},
   priv:{en:"Everything stays on this computer.",es:"Todo se queda en esta computadora."},
   dark:{en:"Dark",es:"Oscuro"}, light:{en:"Light",es:"Claro"},
+  guideNav:{en:"Picture guide",es:"Guía en imágenes"}, partnerNav:{en:"The telescope",es:"El telescopio"},
   home:{en:"Bench",es:"Mesa"}, meet:{en:"Meet the machine",es:"Conoce la máquina"}, lab:{en:"Look through it",es:"Mira por él"},
-  find:{en:"Find the part",es:"Encuentra la parte"}, job:{en:"Name the job",es:"Nombra el trabajo"}, print:{en:"Print it",es:"Imprimir"},
+  find:{en:"Find the part",es:"Encuentra la parte"}, job:{en:"Name the job",es:"Nombra el trabajo"}, print:{en:"Print",es:"Imprimir"},
   meetNav:{en:"Meet",es:"Máquina"}, labNav:{en:"Lab",es:"Ocular"}, findNav:{en:"Find",es:"Parte"}, jobNav:{en:"Job",es:"Trabajo"}, printNav:{en:"Print",es:"Imprimir"},
   meetHint:{en:"Tap any part of the machine, or walk the path of light. A mark appears on each one you have met.",es:"Toca cualquier parte de la máquina, o camina la luz. Aparece una marca en cada una que ya conociste."},
   tapPart:{en:"Tap a part",es:"Toca una parte"}, startAnywhere:{en:"Start anywhere",es:"Empieza donde quieras"},
@@ -960,33 +982,41 @@ function paintChrome(){
   document.getElementById("foot").textContent=t("foot");
   document.documentElement.lang=S.lang;
   const NAV=[["home","home","home"],["meet","meet","meetNav"],["lab","lab","labNav"],["find","find","findNav"],["job","job","jobNav"],["print","print","printNav"]];
-  document.getElementById("nav").innerHTML=NAV.map(([id,full,sh])=>`<a href="#${id}" class="${S.page===id?"on":""}"><span class="full">${t(full)}</span><span class="short">${t(sh)}</span></a>`).join("");
+  document.getElementById("nav").innerHTML=NAV.map(([id,full,sh])=>`<a href="#${id}" class="${S.page===id?"on":""}">${t(full)}</a>`).join("")
+    +`<a class="sep" href="/microscope-guide">${t("guideNav")}</a><a class="sep" href="/telescope">${t("partnerNav")}</a>`;
 }
 
 function pageHome(){
-  const met=Object.keys(S.met).length;
+  /* AOG-MIC-HOME-V2 (2026-09-26) — Jimmy: "Can this page get a face lift. Telescope length of the content …
+     can all the benches carry the same style introduction page." The instrument on the left; the four doors
+     and the seven missions on the right; the seven bench notes fold shut below. */
+  const met=Object.keys(S.met).length, es=S.lang==="es";
   const stairN=STAIR.reduce((n,m)=>n+m.steps.length,0);
-  const done=STAIR.reduce((n,m)=>n+m.steps.filter(id=>S.missions[id]).length,0);
+  const done=STAIR.reduce((n,m)=>n+m.steps.filter(id=>S.missions[id]).length,0), step=stairNow();
   const cards=[
     ["meet","meet",t("cardMeet"),t("openMeet"),false],
     ["lab","lab",t("cardLab"),t("openLab"),true],
     ["find","find",t("cardFind"),t("openFind"),false,S.findBest],
     ["job","job",t("cardJob"),t("openJob"),false,S.jobBest]
   ];
-  return `    <p class="muted" style="font-size:.9rem">${t("priv")}</p>
-    <p class="muted" style="font-size:.9rem"><a href="/telescope.html">${S.lang==="es"?"El telescopio es el otro ocular.":"The telescope is the other eyepiece."}</a></p>
-    <div class="stats"><span>${met}/12 ${t("partsMet")}</span><span>·</span><span>${done}/${stairN} ${t("stations")}</span><span>·</span><span>${S.cracked} ${t("slidesCracked")}</span></div>
-    <div class="grid-home">
-      <div class="card" style="padding:.75rem">${scopeSVG({cls:"home-scope"})}</div>
+  return `<div class="grid-home">
+      <div class="card" style="padding:.75rem">${scopeSVG({cls:"home-scope"})}
+        <div class="stats" style="margin:.6rem .3rem .2rem"><span>${met}/12 ${t("partsMet")}</span><span>·</span><span>${done}/${stairN} ${t("stations")}</span><span>·</span><span>${S.cracked} ${t("slidesCracked")}</span></div>
+        <p class="muted" style="font-size:.85rem;margin:.3rem .3rem 0">${t("priv")} <a href="/telescope.html">${es?"El telescopio es el otro ocular.":"The telescope is the other eyepiece."}</a></p>
+      </div>
       <div class="cards">${cards.map(c=>`<a class="card act" href="#${c[0]}">
         <p class="kicker">${t(c[1])}${c[4]?`<span class="badge">${t("newBadge")}</span>`:""}</p>
         <p style="margin:.4rem 0 .6rem">${c[2]}</p>
-        <p class="muted" style="font-size:.9rem">${c[3]}${c[5]?` · ${t("best")} ${c[5]}`:""}</p>
-      </a>`).join("")}</div>
+        <p class="muted" style="font-size:.9rem">${c[3]}${c[5]?` · ${t("best")} ${c[5]}`:""} ›</p>
+      </a>`).join("")}
+      <div class="card" style="padding:1rem 1.2rem"><p class="kicker">${es?"Las siete misiones":"The seven missions"} · ${done}/${stairN}</p>
+        <ol class="stair" style="margin-top:.6rem">${STAIR.map((m,i)=>{ const st=i<step?"done":i===step?"now":"later"; return `<li class="${st}"><p class="mk" style="margin:0;font-size:.72rem;color:var(--muted)">${es?"Misión":"Mission"} ${i+1}${st==="done"?" · ✓":""}</p><h3 style="margin:.1rem 0 0;font-size:1rem">${es?m.es:m.en}</h3></li>`; }).join("")}</ol>
+      </div></div>
     </div>
-    <div style="display:grid;gap:.75rem;margin-top:1.5rem">
-      ${[["carry","carryBody"],["magTile","magBody"],["focusRule","focusBody"],["royalCard","royalBody"],["illumTile","illumBody"],["stainTile","stainBody"],["scaleTile","scaleBody"]].map(([h,b])=>`<div class="card side"><p class="tiny">${t(h)}</p><p style="margin:.4rem 0 0">${h==="magTile"?`<strong>${t("magFormula")}</strong>. `:""}${t(b)}</p></div>`).join("")}
-    </div>`;
+    <details class="card" style="margin-top:1.25rem;padding:.6rem 1rem"><summary style="cursor:pointer;font-weight:700;min-height:44px;display:flex;align-items:center">${es?"Siete notas del banco — cómo se carga, el aumento, el enfoque, la luz, la tinción, la escala":"Seven bench notes — how it is carried, magnification, focus, light, stain, scale"}</summary>
+      <div style="display:grid;gap:.75rem;margin:.5rem 0 .4rem">
+      ${[["carry","carryBody"],["magTile","magBody"],["focusRule","focusBody"],["royalCard","royalBody"],["illumTile","illumBody"],["stainTile","stainBody"],["scaleTile","scaleBody"]].map(([h,b])=>`<div class="card side"><p class="tiny">${t(h)}</p><p style="margin:.35rem 0 0">${t(b)}</p></div>`).join("")}
+      </div></details>`;
 }
 
 function pageMeet(){

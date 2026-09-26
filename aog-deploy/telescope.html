@@ -95,6 +95,12 @@ label.knob span { display:flex; justify-content:space-between; font-size:.72rem;
 .home-grid { display:grid; gap:1rem; margin-top:1rem; }
 @media (min-width:800px){ .home-grid { grid-template-columns:280px 1fr; align-items:center; } }
 svg.scope { width:100%; height:auto; }
+.grid-home { display:grid; gap:1rem; margin-top:.5rem; }
+.cards { display:grid; gap:.75rem; align-content:start; }
+.act { display:block; padding:1.1rem 1.2rem; text-decoration:none; color:inherit; }
+.act:hover { border-color:var(--steel); }
+.badge { display:inline-flex; align-items:center; background:var(--steel-soft); color:var(--steel); border-radius:999px; padding:.15rem .5rem; font-size:.75rem; font-weight:700; }
+@media (min-width:768px){ .grid-home { grid-template-columns: minmax(0,300px) minmax(0,1fr); align-items:start; } }
 
 /* AOG-SCIPIC-PANEL-V1 (2026-09-23) - Jimmy: "Can the Microscope missions and the TELESCOPE
    Missions get their own walk throughs like the TURN tables and sp-1200 just recieved?
@@ -113,6 +119,27 @@ svg.scope { width:100%; height:auto; }
 .pg .pgfoot{padding:.65rem 1rem;border-top:1px solid var(--line);font-size:.88rem;color:var(--muted);margin:0}
 .pg .pgfoot a{color:inherit;font-weight:700}
 @media print{ .pg{display:none !important} }
+
+/* AOG-TOOL-THIN-V1 (2026-09-26) — Jimmy: "They all don't need the two bars stating the name. Just keep the
+   blue bar. However the blue bar is to be thinner." One masthead, half the height; the brand row above it goes. */
+html.aog-grace #toolMast[data-aog-hero]{padding-top:18px!important;padding-bottom:16px!important;margin-bottom:14px}
+html.aog-grace #toolMast[data-aog-hero] h1{font-size:clamp(26px,3.2vw,38px)!important;margin:.15rem 0 .25rem!important}
+html.aog-grace #toolMast[data-aog-hero] .lead{font-size:.95rem;margin:0}
+html.aog-grace #toolMast[data-aog-hero] .kicker{font-size:.66rem}
+html.aog-grace #toolMast[data-aog-hero]{min-height:158px;box-sizing:border-box}
+html.aog-grace #toolMast[data-aog-hero] .lead{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;max-width:62ch}
+html.aog-grace #toolMast[data-aog-hero] .aog-more{display:none!important}
+html.aog-grace #toolMast[data-aog-hero] .kicker{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+body>.wrap>header:first-child,.wrap>header.no-print:first-child{display:none!important}
+
+/* AOG-BENCH-NAV-V1 (2026-09-26) — Jimmy: "all of them should have the same line up … one connective tissue."
+   One row on every bench: Bench · Meet … · Use … · Find … · Name the job · Print · Picture guide · the partner. */
+.nav{display:flex;gap:4px;overflow-x:auto;border-bottom:2px solid var(--line);margin:.2rem 0 1.1rem;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+.nav::-webkit-scrollbar{display:none}
+.nav a{flex:0 0 auto;min-height:44px;display:inline-flex;align-items:center;padding:0 .75rem;text-decoration:none;color:var(--muted);font-weight:600;font-size:.9rem;border-bottom:2px solid transparent;margin-bottom:-2px;white-space:nowrap}
+.nav a.on{color:var(--ink);border-color:var(--steel,#2F63B8)}
+.nav a.sep{margin-left:auto;padding-left:.5rem}
+.nav a.sep+a.sep{margin-left:0}
 </style>
 </head>
 <body>
@@ -160,7 +187,7 @@ const THEME_KEY = "aog.interior.ws.v1.theme";
 function mulberry32(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return ((t^t>>>14)>>>0)/4294967296};}
 const STR = {
   app:{en:"The Telescope",es:"El telescopio"},
-  home:{en:"Bench",es:"Mesa"}, lab:{en:"Eyepiece",es:"Ocular"},
+  home:{en:"Bench",es:"Mesa"}, lab:{en:"Look through it",es:"Mira por él"},
   eyebrow:{en:"90 mm brass refractor",es:"Refractor de bronce de 90 mm"},
   tag:{en:"One lens, a working eyepiece, and a ceiling. The Moon will fill this glass. The lander will not.",es:"Un lente, un ocular de verdad, y un techo. La Luna llena este vidrio. El módulo lunar, no."},
   priv:{en:"Everything stays on this computer.",es:"Todo se queda en esta computadora."},
@@ -1015,26 +1042,32 @@ function knob(id,label,val){
   return `<label class="knob"><span>${label}<b>${show}</b></span><input class="scope-knob" type="range" min="0" max="100" value="${val}" data-knob="${id}"></label>`;
 }
 function pageHome(){
+  /* AOG-TELE-HOME-V2 (2026-09-26) — Jimmy: "the telescope needs to look better, yuck." The same welcome the
+     microscope has: the instrument on the left, doors on the right, the missions as a stair, the manual below. */
   const done=STAIR.reduce((n,m)=>n+m.steps.filter(id=>S.missions[id]).length,0);
-  const total=STAIR.reduce((n,m)=>n+m.steps.length,0);
-  return `
-    <p class="muted">${t("priv")} ${done}/${total}</p>
-    <div class="home-grid">
-      <svg class="scope" viewBox="0 0 280 160" aria-hidden="true">
-        <rect width="280" height="160" fill="none"/>
-        <g fill="none" stroke="#8a6116" stroke-width="3">
-          <path d="M40 110 h70 l20-46 h80" />
-          <circle cx="214" cy="64" r="16" fill="#1a232c"/>
-          <path d="M40 110 v18 h24" stroke-width="4"/>
-        </g>
-        <rect x="78" y="58" width="92" height="14" rx="7" fill="#c4a056" stroke="#8a6116"/>
-        <circle cx="214" cy="64" r="6" fill="#d7e4ea"/>
-      </svg>
-      <div>
-        <p>${S.lang==="es"?"90 mm, 900 mm de focal. Separa 1.3″. El aumento útil se acaba cerca de 180×. El módulo lunar mide 0.002″.":"90 mm, 900 mm of focal length. It splits 1.3″. Useful power ends near 180×. The lander is 0.002″."}</p>
-        <p><a class="btn btn-steel" href="#lab">${t("open")}</a></p>
-        <p class="muted"><a href="/science-microscope.html">${t("other")}</a></p>
+  const total=STAIR.reduce((n,m)=>n+m.steps.length,0), step=stairNow(), es=S.lang==="es";
+  const cards=[
+    ["lab",t("lab"),es?"Un campo de visión vivo en un refractor de 90 mm. La Luna, Júpiter, Saturno, Orión, las Pléyades, una estrella doble — y el techo.":"A live field of view on a 90 mm refractor. The Moon, Jupiter, Saturn, Orion, the Pleiades, a double star — and the ceiling.",t("open"),true],
+    ["lab",es?"Las misiones":"The missions",es?`${done} de ${total} pasos hechos · misión ${Math.min(step+1,STAIR.length)} de ${STAIR.length}`:`${done} of ${total} steps done · mission ${Math.min(step+1,STAIR.length)} of ${STAIR.length}`,es?"Seguir":"Continue",false]
+  ];
+  return `<div class="grid-home">
+      <div class="card" style="padding:1rem">
+        <svg class="scope" viewBox="0 0 280 160" aria-hidden="true">
+          <rect width="280" height="160" fill="none"/>
+          <g fill="none" stroke="#8a6116" stroke-width="3"><path d="M40 110 h70 l20-46 h80" /><circle cx="214" cy="64" r="16" fill="#1a232c"/><path d="M40 110 v18 h24" stroke-width="4"/></g>
+          <rect x="78" y="58" width="92" height="14" rx="7" fill="#c4a056" stroke="#8a6116"/><circle cx="214" cy="64" r="6" fill="#d7e4ea"/>
+        </svg>
+        <p class="muted" style="font-size:.9rem;margin:.6rem 0 0">${es?"90 mm, 900 mm de focal. Separa 1.3″. El aumento útil se acaba cerca de 180×. El módulo lunar mide 0.002″.":"90 mm, 900 mm of focal length. It splits 1.3″. Useful power ends near 180×. The lander is 0.002″."}</p>
+        <p class="muted" style="font-size:.85rem;margin:.6rem 0 0">${t("priv")} <a href="/science-microscope.html">${t("other")}</a></p>
       </div>
+      <div class="cards">${cards.map(c=>`<a class="card act" href="#${c[0]}">
+        <p class="kicker">${c[1]}${c[4]?`<span class="badge" style="margin-left:.5rem">${es?"Nuevo":"New"}</span>`:""}</p>
+        <p style="margin:.4rem 0 .6rem">${c[2]}</p>
+        <p class="muted" style="font-size:.9rem">${c[3]} ›</p>
+      </a>`).join("")}
+      <div class="card" style="padding:1rem 1.2rem"><p class="kicker">${es?"Las seis misiones":"The six missions"}</p>
+        <ol class="stair" style="margin-top:.6rem">${STAIR.map((m,i)=>{ const st=i<step?"done":i===step?"now":"later"; return `<li class="${st}"><p class="mk" style="margin:0;font-size:.72rem;color:var(--muted)">${es?"Misión":"Mission"} ${i+1}${st==="done"?" · ✓":""}</p><h3 style="margin:.1rem 0 0;font-size:1rem">${es?m.es:m.en}</h3></li>`; }).join("")}</ol>
+      </div></div>
     </div>`;
 }
 function pageLab(){
@@ -1276,7 +1309,8 @@ function paint(){
   document.getElementById("langBtn").textContent=S.lang==="es"?"EN":"ES";
   document.getElementById("themeBtn").textContent=S.theme==="dark"?t("light"):t("dark");
   document.getElementById("foot").textContent=t("foot");
-  document.getElementById("nav").innerHTML=[["home","home"],["lab","lab"]].map(([id,k])=>`<a href="#${id}" class="${S.page===id?"on":""}">${t(k)}</a>`).join("");
+  document.getElementById("nav").innerHTML=[["home","home"],["lab","lab"]].map(([id,k])=>`<a href="#${id}" class="${S.page===id?"on":""}">${t(k)}</a>`).join("")
+    +`<a class="sep" href="/telescope-guide">${S.lang==="es"?"Guía en imágenes":"Picture guide"}</a><a class="sep" href="/microscope">${S.lang==="es"?"El microscopio":"The microscope"}</a>`;
   const view=document.getElementById("view");
   view.innerHTML=S.page==="lab"?pageLab():pageHome();
   if (S.page!=="lab") return;
