@@ -1056,6 +1056,16 @@ body.review .box .ptcell, body.review .box .ew, body.review .box textarea{pointe
   body.review .sol{color:#1c7a3c !important; font-weight:800}
 }
 
+/* AOG-DD-PRINT-COLOUR-V1 (2026-09-26) — on paper each strand's number tab carries its own colour
+   (the same ten the screen uses), so a colour printer shows which strand is which. */
+@media print{
+  .boxes>.bw:nth-child(1) .bnum{background:#2F63B8!important} .boxes>.bw:nth-child(2) .bnum{background:#B87A12!important}
+  .boxes>.bw:nth-child(3) .bnum{background:#2E8B57!important} .boxes>.bw:nth-child(4) .bnum{background:#A8323E!important}
+  .boxes>.bw:nth-child(5) .bnum{background:#7B4FA0!important} .boxes>.bw:nth-child(6) .bnum{background:#1F8080!important}
+  .boxes>.bw:nth-child(7) .bnum{background:#B8457A!important} .boxes>.bw:nth-child(8) .bnum{background:#A85A24!important}
+  .boxes>.bw:nth-child(9) .bnum{background:#3F4AA6!important} .boxes>.bw:nth-child(10) .bnum{background:#6E7C22!important}
+  .boxes>.bw .bnum, .boxes>.bw .bnum *{color:#fff!important}
+}
 /* AOG-DD-SPANISH-V1 — the English, one tap away. Only Spanish items emit these. */
 /* AOG-DD-SPANISH-K12-V1 — K-5 do not hide the gloss behind anything. A six-
    year-old should not have to find the support, so GL() prints it in the open
@@ -1201,7 +1211,7 @@ body.review .box .ptcell, body.review .box .ew, body.review .box textarea{pointe
   <div>
     <div class="k" data-en="The Resource Room — Daily Practice" data-es="La Sala de Recursos — Práctica diaria">The Resource Room — Daily Practice</div>
     <h1 data-en="Daily Drafts — K–12 Spiral Review" data-es="Daily Drafts — Repaso en espiral K–12">Daily Drafts — K–12 Spiral Review</h1>
-    <!-- AOG-DD-INTRO-TEN-V1 --><p class="deck" data-en="Ten small things a day, every day, until they hold. One page of spiral review in math, language arts, writing, science, social studies, Spanish, family and consumer sciences, world religions or economics, for any grade K–8 and the high-school bands 9–10 and 11–12 (world religions and economics are high school only) — or in the Word Foundry, one class unit at a time. Each page is marked the moment it is finished, so the practice tells the truth while the student is still sitting there. Every problem is generated from the grade or unit and the sheet number, so draft 12 is the same draft for every student in the room." data-es="Diez cosas pequeñas al día, todos los días, hasta que se afiancen. Una página de repaso en espiral en matemáticas, lenguaje, escritura, ciencias, estudios sociales, español, ciencias de la familia y del consumidor, religiones del mundo o economía, para cualquier grado K–8 y las bandas de secundaria 9–10 y 11–12 (religiones del mundo y economía son solo de secundaria) — o en el Word Foundry, una unidad de clase a la vez. Cada hoja se califica en el momento en que se termina, para que la práctica diga la verdad mientras el estudiante todavía está ahí sentado. Cada problema se genera a partir del grado o la unidad y del número de hoja, así que el borrador 12 es el mismo borrador para todos los estudiantes del salón. El contenido de práctica de lenguaje y del Word Foundry queda en inglés.">Ten small things a day, every day, until they hold. One page of spiral review in math, language arts, writing, science, social studies, Spanish, family and consumer sciences, world religions or economics, for any grade K–8 and the high-school bands 9–10 and 11–12 (world religions and economics are high school only) — or in the Word Foundry, one class unit at a time. Each page is marked the moment it is finished, so the practice tells the truth while the student is still sitting there. Every problem is generated from the grade or unit and the sheet number, so draft 12 is the same draft for every student in the room.</p>
+    <!-- AOG-DD-INTRO-TEN-V1 --><!-- AOG-DD-INTRO-SHORT-V1 (2026-09-26) — Jimmy: "too much words". --><p class="deck" data-en="Ten small things a day, checked the moment you finish. Pick a subject and a grade." data-es="Diez cosas pequeñas al día, revisadas en cuanto terminas. Elige una materia y un grado.">Ten small things a day, checked the moment you finish. Pick a subject and a grade.</p>
     <!-- the way out. THE HREF IS THE HUB'S FILENAME, not its short link — the
          filename resolves on the site, on localhost, and from a folder on disk. -->
     <p class="hubline no-print"><a data-en='← Back to the Resource Room' data-es='← Volver a la Sala de Recursos' href='/' id='hubLink'>← Back to the Resource Room</a></p>
@@ -1243,7 +1253,7 @@ body.review .box .ptcell, body.review .box .ew, body.review .box textarea{pointe
   </div>
   <span class="grow"></span>
   <button class="btn" id="keyBtn" type="button" aria-pressed="false" data-en="Answer key" data-es="Clave">Answer key</button>
-  <button class="btn solid" id="checkBtn" type="button" data-en="Review draft" data-es="Revisar el borrador">Review draft</button>
+  <button class="btn solid" id="checkBtn" type="button" data-en="Inspect my build" data-es="Inspeccionar mi obra">Inspect my build</button>
 </div>
 
 <div class="strip no-print">
@@ -1266,8 +1276,8 @@ body.review .box .ptcell, body.review .box .ew, body.review .box textarea{pointe
 <div class="sheet" id="sheet"></div>
 
 <div class="acts no-print" id="sheetActs">
-  <button class="btn solid" id="checkBtn2" type="button" data-en="Review draft" data-es="Revisar el borrador">Review draft</button>
-  <button class="btn" id="tryBtn" type="button" data-en="Try the misses again" data-es="Reintentar las falladas">Try the misses again</button>
+  <button class="btn solid" id="checkBtn2" type="button" data-en="Inspect my build" data-es="Inspeccionar mi obra">Inspect my build</button>
+  <button class="btn" id="tryBtn" type="button" data-en="Repair the cracks" data-es="Reparar las grietas">Repair the cracks</button>
   <button class="btn" id="clearBtn" type="button" data-en="Clear sheet" data-es="Borrar hoja">Clear sheet</button>
   <button class="btn" id="printBtn" type="button" data-en="Print" data-es="Imprimir">Print</button>
   <button class="btn" id="packBtn" type="button" data-en="Print several…" data-es="Imprimir varios…">Print several…</button>
@@ -1287,7 +1297,7 @@ body.review .box .ptcell, body.review .box .ew, body.review .box textarea{pointe
 </div>
 <div id="packPack" aria-hidden="true"></div>
 
-<p class="sheet-foot" id="footNet" data-en="This page loads no fonts, scripts, or images from the internet, and your work is saved in this browser as you go. When a student signs their name and taps Send, this page sends that work to the teacher&#39;s connected sheet: for a practice sheet, the answers given and the score; for a writing page, what was written, the planning notes and the rubric numbers. It sends once, the moment a student signs their name (or checks their work with a name on the line); Send again re-sends it; and with no teacher destination in the link it has no way to send at all. Daily Drops is original practice written for the Architecture of Grace; it is not a reproduction of any published workbook." data-es="Esta página no carga fuentes, scripts ni imágenes de internet, y tu trabajo se guarda en este navegador mientras avanzas. Cuando un estudiante firma su nombre y toca Enviar, esta página envía ese trabajo a la hoja conectada del maestro: en una hoja de práctica, las respuestas y el puntaje; en una página de escritura, lo que escribió, las notas de planificación y los números de la rúbrica. No envía nada hasta que se toca Enviar, nunca envía sola, y sin un destino del maestro en el enlace no tiene forma de enviar. Daily Drops es práctica original escrita para Architecture of Grace; no es una reproducción de ningún cuaderno publicado.">This page loads no fonts, scripts, or images from the internet, and your work is saved in this browser as you go. When a student signs their name and taps Send, this page sends that work to the teacher&#39;s connected sheet: for a practice sheet, the answers given and the score; for a writing page, what was written, the planning notes and the rubric numbers. It sends once, the moment a student signs their name (or checks their work with a name on the line); Send again re-sends it; and with no teacher destination in the link it has no way to send at all. Daily Drops is original practice written for the Architecture of Grace; it is not a reproduction of any published workbook.</p>
+<p class="sheet-foot" id="footNet" data-en="Your work saves in this browser as you go. When you sign your name, it goes once to your teacher&#39;s Sheet: your answers and score, or your writing, plan and rubric. Send again sends it again. With no teacher link, nothing leaves this device. Nothing loads from the internet. Original practice, written for the Architecture of Grace." data-es="Tu trabajo se guarda en este navegador mientras avanzas. Cuando firmas con tu nombre, va una vez a la Hoja de tu maestro: tus respuestas y tu puntaje, o tu escritura, tu plan y la rúbrica. Enviar otra vez lo reenvía. Sin enlace del maestro, nada sale de este aparato. Nada se carga de internet. Práctica original, escrita para Architecture of Grace.">Your work saves in this browser as you go. When you sign your name, it goes once to your teacher&#39;s Sheet: your answers and score, or your writing, plan and rubric. Send again sends it again. With no teacher link, nothing leaves this device. Nothing loads from the internet. Original practice, written for the Architecture of Grace.</p>
 </main>
 </div>
 <div class="toast" id="toast"></div>

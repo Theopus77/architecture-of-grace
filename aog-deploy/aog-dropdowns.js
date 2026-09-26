@@ -195,12 +195,21 @@
     }
     var h = es() ? ['Tu Hoja de Google:', 'Descargar Code.gs', 'Guía de una página', 'Conectar y sincronizar →']
                  : ['Your Google Sheet:', 'Download Code.gs', 'One-page setup guide', 'Connect & sync →'];
-    var html = '<b>' + h[0] + '</b> <a class="aogdd-gsb" href="AoG-Screener-Sync-Code.gs" download="AoG-Screener-Sync-Code.gs">⬇ ' + h[1] + '</a>'
+    /* AOG-GS-QUIET-V1 (2026-09-26) — Jimmy: "The Google script does not have to sit there all the
+       time." Once this device has a Sheet connected, the row folds to one small button. */
+    var connected = false; try { connected = !!localStorage.getItem("aog.sync.url"); } catch (e) {}
+    var open = bar.__open || !connected;
+    var html = !open
+      ? '<button type="button" class="aogdd-gsb" data-gsopen="1">✓ ' + (es() ? "Tu Hoja está conectada · herramientas de la Hoja" : "Your Sheet is connected · Sheet tools") + ' ▸</button>'
+      : '<b>' + h[0] + '</b> <a class="aogdd-gsb" href="AoG-Screener-Sync-Code.gs" download="AoG-Screener-Sync-Code.gs">⬇ ' + h[1] + '</a>'
       + ' <a class="aogdd-gsb" href="AoG-Sheet-Setup.pdf" target="_blank" rel="noopener">📄 ' + h[2] + '</a>'
-      + ' <button type="button" class="aogdd-gsb" data-gsconnect="1">' + h[3] + '</button>';
+      + ' <button type="button" class="aogdd-gsb" data-gsconnect="1">' + h[3] + '</button>'
+      + (connected ? ' <button type="button" class="aogdd-gsb" data-gsopen="0">' + (es() ? "Ocultar" : "Hide") + '</button>' : '');
     if (bar.__h !== html) { bar.innerHTML = html; bar.__h = html; }
+    var tg = bar.querySelector("[data-gsopen]");
+    if (tg) tg.onclick = function () { bar.__open = tg.getAttribute("data-gsopen") === "1"; gsBar(); };
     var b = bar.querySelector("[data-gsconnect]");
-    b.onclick = function () { var o = Array.prototype.find.call(dd.options, function (x) { return /Connect|Conectar/.test(x.text); }); if (o) { dd.value = o.value; dd.selectedIndex = o.index; dd.dispatchEvent(new Event("change")); } };
+    if (b) b.onclick = function () { var o = Array.prototype.find.call(dd.options, function (x) { return /Connect|Conectar/.test(x.text); }); if (o) { dd.value = o.value; dd.selectedIndex = o.index; dd.dispatchEvent(new Event("change")); } };
   }
   /* AOG-PRACTICE-FOLLOWS-V1 (2026-09-26) — Jimmy: "That list needs to fold in. It
      was on Mia but everyone showed up." The practice table shows only the student
