@@ -2686,3 +2686,31 @@
   }
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", add); else add();
 })();
+/* AOG-EXPLORE-FIT-V1 (2026-09-26) — Jimmy: the Explore menu "doesn't have the At home conversation
+   starters" and "at 100% it overtakes the screen." Door three gains At home; the panel is tighter,
+   never taller than the window, and scrolls inside itself. */
+(function () {
+  var st = document.createElement("style"); st.id = "aog-explore-fit";
+  st.textContent = "@media (min-width:981px){.aogtop-menu{width:min(820px,calc(100vw - 24px))!important;max-height:calc(100vh - var(--aogbar-h,52px) - 18px)!important;overflow-y:auto!important;padding:5px!important}"
+    + ".aogtop-menu a{font-size:13.5px!important;padding:5px 10px!important;gap:9px!important}"
+    + ".aogtop-menu .aogtop-sub{font-size:11px!important;line-height:1.25!important}"
+    + ".aogtop-menu a img.aogtop-real{width:28px!important;height:28px!important}"
+    + ".aogtop-menu a > svg:first-child{padding:5px!important;width:14px!important;height:14px!important}"
+    + ".aogtop-dname{font-size:15px!important}.aogtop-door{padding:8px 10px 4px!important}"
+    + ".aogtop-blab{padding:7px 10px 6px!important}}"
+    + "#aogbarDoor3 > a.aogtop-athome{display:flex!important}";
+  (document.head || document.documentElement).appendChild(st);
+  function add() {
+    var d3 = document.getElementById("aogbarDoor3"); if (!d3) return setTimeout(add, 80);
+    if (d3.querySelector(".aogtop-athome")) return;
+    var fam = d3.querySelector('a[href="/#family"]');
+    var es = (document.documentElement.lang || "").indexOf("es") === 0;
+    var a = document.createElement("a");
+    a.className = "aogtop-athome"; a.style.setProperty("display", "flex", "important"); a.setAttribute("role", "menuitem"); a.href = "/grace-at-home.html"; a.style.setProperty("--gl", "#B8457A");
+    a.innerHTML = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/><path d="M10 20v-5h4v5"/></svg>'
+      + '<span class="aogtop-tx"><span data-en="At home · conversation starters" data-es="En casa · para conversar">' + (es ? "En casa · para conversar" : "At home · conversation starters") + '</span>'
+      + '<span class="aogtop-sub" data-en="One question a week, for the table." data-es="Una pregunta por semana, para la mesa.">' + (es ? "Una pregunta por semana, para la mesa." : "One question a week, for the table.") + "</span></span>";
+    if (fam && fam.nextSibling) fam.parentNode.insertBefore(a, fam.nextSibling); else d3.appendChild(a);
+  }
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", add); else add();
+})();
