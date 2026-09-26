@@ -87,11 +87,12 @@ header { display:flex; flex-wrap:wrap; justify-content:space-between; align-item
 @media (min-width:640px){ .knobs { grid-template-columns:1fr 1fr; } }
 label.knob { display:block; }
 label.knob span { display:flex; justify-content:space-between; font-size:.75rem; font-weight:700; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); }
-.scope-knob { -webkit-appearance:none; appearance:none; width:100%; height:44px; background:transparent; margin:0; }
-.scope-knob::-webkit-slider-runnable-track { height:8px; border-radius:999px; background:var(--chip); }
+.scope-knob { -webkit-appearance:none; appearance:none; width:100%; height:52px; background:transparent; margin:0; touch-action:none; cursor:pointer; }
+/* AOG-SCOPE-SMOOTH-V1 (2026-09-26) — Jimmy: the sliders were stiff. A bigger thumb and track to grab, no page scroll fighting the finger. */
+.scope-knob::-webkit-slider-runnable-track { height:12px; border-radius:999px; background:var(--chip); }
 .scope-knob::-moz-range-track { height:8px; border-radius:999px; background:var(--chip); }
-.scope-knob::-webkit-slider-thumb { -webkit-appearance:none; width:28px; height:28px; margin-top:-10px; border-radius:999px; background:var(--steel); border:2px solid var(--card); }
-.scope-knob::-moz-range-thumb { width:28px; height:28px; border-radius:999px; background:var(--steel); border:2px solid var(--card); }
+.scope-knob::-webkit-slider-thumb { -webkit-appearance:none; width:40px; height:40px; margin-top:-14px; border-radius:999px; background:var(--steel); border:2px solid var(--card); }
+.scope-knob::-moz-range-thumb { width:40px; height:40px; border-radius:999px; background:var(--steel); border:2px solid var(--card); }
 .readout { font-variant-numeric:tabular-nums; font-weight:700; color:var(--steel); }
 .opts { display:grid; gap:.5rem; margin-top:1rem; }
 .opt { min-height:48px; text-align:left; padding:.75rem 1rem; border-radius:8px; border:1px solid var(--line); background:var(--card); font-weight:600; }
@@ -127,6 +128,7 @@ body:has(.aogtop) header .tools { display:none; }
 </style>
 </head>
 <body>
+<script src="/aog-sound-handoff.js"></script>
 <script src="/aog-grace.js" defer></script>
 <script>
 (function(){
@@ -372,6 +374,20 @@ function hush(){
   try{ if(osc){ osc.stop(); osc.disconnect(); } if(gain) gain.disconnect(); }catch(e){}
   osc=null; gain=null;
 }
+/* AOG-SOUND-HANDOFF-V1 — render the tone on screen (shape, pitch, loudness) for two
+   seconds, silently, and hand it to the drum machine or the turntables. */
+async function recordSound(where){
+  const OC=window.OfflineAudioContext||window.webkitOfflineAudioContext; if(!OC) return;
+  const sr=44100, off=new OC(1, sr*2, sr), o=off.createOscillator(), g=off.createGain();
+  o.type=S.shape||"sine"; o.frequency.value=S.hz; g.gain.setValueAtTime(0,0); g.gain.linearRampToValueAtTime(0.25+S.amp*0.6,0.01);
+  g.gain.setValueAtTime(0.25+S.amp*0.6,1.9); g.gain.linearRampToValueAtTime(0,2);
+  o.connect(g); g.connect(off.destination); o.start(0); o.stop(2);
+  const buf=await off.startRendering(), blob=window.aogWav(buf);
+  const name=(S.shape||"sine")+"-"+S.hz+"hz.wav";
+  if(where==="saveWav"){ const a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download=name; document.body.appendChild(a); a.click(); a.remove(); return; }
+  await window.aogHandoffPut({ name:name, blob:blob, at:Date.now() });
+  location.href = where==="toDrums" ? "/music-drums.html?take=1" : "/music-decks.html?take=1";
+}
 function hear(){
   try{
     const AC=window.AudioContext||window.webkitAudioContext;
@@ -486,23 +502,30 @@ function pagePlay(){
   const chips=SHAPES.map(x=>`<button type="button" class="chip${S.shape===x.id?" on":""}" data-shape="${x.id}">${S.lang==="en"?x.en:x.es}</button>`).join("");
   return `<p class="kicker">${t("playNav")}</p><h1>${t("play")}</h1>
     <p class="lead">${t("playLead")}</p>
-    <div class="wavebox"><canvas id="playWave" width="900" height="240"></canvas></div>
-    <p class="tiny">${t("shape")}</p>
-    <div class="chips">${chips}</div>
-    <div class="card side" style="margin-bottom:1rem"><p>${S.lang==="en"?sh.blurb_en:sh.blurb_es}</p></div>
-    <p class="tiny">${t("freqs")}</p>
-    <p class="muted" style="margin:.2rem 0 .5rem">${t("freqHint")}</p>
-    <div class="chips" id="freqChips">${FREQS.map(f=>`<button type="button" class="chip${S.hz===f.hz?" on":""}" data-hz="${f.hz}">${f.hz} · ${S.lang==="en"?f.en:f.es}</button>`).join("")}</div>
+    <div class="wavebox"><canvas id="playWave" width="900" height="120"></canvas></div>
+    <!-- AOG-SCOPE-ORDER-V1 (2026-09-26) — Jimmy: sliders above the shape row, Hear/Silence beside the shapes, the description under the named frequencies. -->
     <div class="knobs">
       <label class="knob"><span>${t("pitch")} <b class="readout" id="hzRead">${S.hz} Hz</b></span>
         <input class="scope-knob" type="range" min="220" max="880" step="1" value="${S.hz}" data-knob="hz"></label>
       <label class="knob"><span>${t("loud")} <b class="readout" id="ampRead">${Math.round(S.amp*100)}%</b></span>
         <input class="scope-knob" type="range" min="15" max="100" step="1" value="${Math.round(S.amp*100)}" data-knob="amp"></label>
     </div>
-    <div class="chips">
+    <p class="tiny">${t("shape")}</p>
+    <div class="chips">${chips}
+      <span style="flex:1 1 20px"></span>
       <button type="button" class="btn btn-steel" data-act="hear">${t("hear")}</button>
       <button type="button" class="btn" data-act="hush">${t("hush")}</button>
     </div>
+    <div class="chips" style="margin-top:.4rem">
+      <span class="tiny" style="margin:0 .4rem 0 0">${S.lang==="en"?"Record this sound (2 seconds) and send it to":"Graba este sonido (2 segundos) y envíalo a"}</span>
+      <button type="button" class="btn btn-steel" data-act="toDrums">${S.lang==="en"?"🥁 The Drum Machine":"🥁 La caja de ritmos"}</button>
+      <button type="button" class="btn btn-steel" data-act="toDecks">${S.lang==="en"?"💿 The Turntables":"💿 Los tocadiscos"}</button>
+      <button type="button" class="btn" data-act="saveWav">${S.lang==="en"?"⬇ Save the file":"⬇ Guardar el archivo"}</button>
+    </div>
+    <p class="tiny">${t("freqs")}</p>
+    <p class="muted" style="margin:.2rem 0 .5rem">${t("freqHint")}</p>
+    <div class="chips" id="freqChips">${FREQS.map(f=>`<button type="button" class="chip${S.hz===f.hz?" on":""}" data-hz="${f.hz}">${f.hz} · ${S.lang==="en"?f.en:f.es}</button>`).join("")}</div>
+    <div class="card side" style="margin:1rem 0">${`<p>${S.lang==="en"?sh.blurb_en:sh.blurb_es}</p>`}</div>
     <h2>${t("compare")}</h2>
     <div class="compare">
       <div class="card side"><div class="tiny">${S.lang==="en"?"Sine":"Seno"}</div><div class="wavebox"><canvas id="shSine" width="420" height="120"></canvas></div></div>
@@ -682,13 +705,14 @@ function paint(){
       const k=inp.getAttribute("data-knob");
       if(k==="hz"){ S.hz=+inp.value; const el=document.getElementById("hzRead"); if(el) el.textContent=S.hz+" Hz"; if(osc) osc.frequency.value=S.hz; }
       if(k==="amp"){ S.amp=(+inp.value)/100; const el=document.getElementById("ampRead"); if(el) el.textContent=Math.round(S.amp*100)+"%"; if(gain) gain.gain.value=Math.min(0.18,0.06+S.amp*0.12); }
-      persist();
+      clearTimeout(inp.__pt); inp.__pt=setTimeout(persist,300); /* AOG-SCOPE-SMOOTH-V1: save after the hand stops, not on every step */
     };
   });
   view.querySelectorAll("[data-act]").forEach(b=>b.onclick=()=>{
     const a=b.getAttribute("data-act");
     if(a==="hear") hear();
     if(a==="hush") hush();
+    if(a==="toDrums"||a==="toDecks"||a==="saveWav") recordSound(a);
     if(a==="doprint") window.print();
     if(a==="findagain"){ S.find=null; paint(); }
     if(a==="jobagain"){ S.job=null; paint(); }

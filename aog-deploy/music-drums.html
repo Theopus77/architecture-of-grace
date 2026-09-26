@@ -307,6 +307,7 @@ button,a,label,input[type=range],.pill,.pad,.platter,canvas{touch-action:manipul
 <script src="aog-eq.js"></script>
 </head>
 <body>
+<script src="/aog-sound-handoff.js"></script>
 <script src="/aog-grace.js" defer></script>
 <script>
 (function(){
@@ -2106,6 +2107,10 @@ idbGet().then(function(o){
 </script>
 <script>/* AOG-MUSIC-TOUCH-V1 — wake Safari's audio on the first touch, every time it sleeps */
 (function(){ function wake(){ try{ if(typeof actx!=="undefined"&&actx&&actx.state!=="running") actx.resume(); }catch(e){} }
-  ["touchstart","pointerdown","keydown"].forEach(function(t){ document.addEventListener(t, wake, {capture:true, passive:true}); }); })();</script>
+  ["touchstart","pointerdown","keydown"].forEach(function(t){ document.addEventListener(t, wake, {capture:true, passive:true}); }); })();
+/* AOG-SOUND-HANDOFF-V1 — a sound sent from the oscilloscope becomes this pad's sample */
+(function(){ if(!/[?&]take=1/.test(location.search)||!window.aogHandoffTake) return;
+  setTimeout(function(){ window.aogHandoffTake().then(function(v){ if(v&&v.blob) takeSample(new File([v.blob], v.name||"scope.wav", {type:"audio/wav"})); }); }, 900); })();
+</script>
 </body>
 </html>

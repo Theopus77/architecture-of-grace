@@ -13,7 +13,7 @@
 (function () {
   "use strict";
   var D = document, H = D.documentElement;
-  var ROOMS = "#screen-framework, #screen-checkin, #screen-choose, #aog-origin, #screen-workplace, #screen-adult, #screen-starthere, #screen-ecosystem, #screen-words, #screen-eco-home, #screen-eco-bridge, #screen-eco-parents, #screen-eco-educators, #screen-eco-adult, #screen-eco-overview, #screen-about, #screen-guide, #screen-library, #screen-curriculum, #screen-teacher-tools, #screen-myresults, #screen-thanks, #screen-closing, #screen-farewell, #screen-charts";
+  var ROOMS = "#screen-framework, #screen-checkin, #screen-choose, #aog-origin, #screen-workplace, #screen-adult, #screen-starthere, #screen-ecosystem, #screen-words, #screen-eco-home, #screen-eco-bridge, #screen-eco-parents, #screen-eco-educators, #screen-eco-adult, #screen-eco-overview, #screen-about, #screen-guide, #screen-library, #screen-curriculum, #screen-teacher-tools, #screen-myresults, #screen-thanks, #screen-closing, #screen-farewell";
   var BANDS = ["#2F63B8", "#B8457A", "#2E8B57", "#B87A12", "#7B4FA0", "#1F8080"];
   function es() { return /^es/i.test(H.lang || ""); }
   function lum(s) {
@@ -32,7 +32,7 @@
       if (wasInk) el.removeAttribute("data-aog-inkdark");
       if (el.hasAttribute("data-aog-pane") || el.closest("svg, canvas, .aogtop, [data-aog-nopane]")) continue;
       var cs = getComputedStyle(el), l = lum(cs.backgroundColor);
-      if (l === null && cs.backgroundImage && cs.backgroundImage !== "none") { var m1 = /rgba?\([^)]+\)/.exec(cs.backgroundImage); if (m1) l = lum(m1[0]); }
+      if (l === null && cs.backgroundImage && cs.backgroundImage !== "none") { var m1 = /(rgba?\([^)]+\)|color\(srgb[^)]+\))/.exec(cs.backgroundImage); if (m1) l = lum(m1[0]); }
       if (l === null || l < 0.6) { if (wasInk) changed++; continue; }
       var r = el.getBoundingClientRect(); if (!r.width || !r.height) continue; /* hidden now: judged when it shows */
       /* small light things (a pill, a loop node, a white button) keep their light face and get dark ink */
@@ -95,9 +95,12 @@
     "[data-aog-pane] a:not([data-aog-inkdark]):not([class*=btn]){color:#F2C964!important}" +
     ROOMS.split(",").map(function (x) { return x.trim() + " :is(.wp-personal-t,.wp-personal-s,.wp-personal-tx *)"; }).join(",") + "{color:#EDE7DA!important}" +
     "[data-aog-inkdark],[data-aog-inkdark] *{color:#0A1E33!important}" +
+    "#screen-teacher-tools button.aog-corner-primary.aog-corner-primary{background:#C9A24A!important;color:#0A1E33!important;border:2px solid #1E1F22!important}" +
+    "#screen-teacher-tools .aog-corner-secondary{background:transparent!important;color:#F2C964!important;border:2px solid #C9A24A!important}" +
+    "#screen-teacher-tools summary:not([data-aog-inkdark] *){color:#F4EEE2!important}" +
     ROOMS.split(",").map(function (x) { x = x.trim(); return x + " [data-aog-inkdark]," + x + " [data-aog-inkdark] *"; }).join(",") + "{color:#0A1E33!important}" +
     ROOMS.split(",").map(function (x) { x = x.trim(); return x + " :is(.eyebrow,.ey,[class*=eyebrow],.fwl-proof-h,[class*=kicker],[class*=-kick]):not([data-aog-inkdark]):not([data-aog-inkdark] *)"; }).join(",") + "{color:#E7C46A!important}" +
-    ROOMS.split(",").map(function (x) { x = x.trim(); return x + " :is(.small,.ed-s,small):not([data-aog-inkdark] *)"; }).join(",") + "{color:#C8D4E2!important}" +
+    ROOMS.split(",").map(function (x) { x = x.trim(); return x + " :is(.small,.ed-s,small,.tt-need,[class*=muted],[class*=-sub]):not([data-aog-inkdark] *)"; }).join(",") + "{color:#C8D4E2!important}" +
     ROOMS.split(",").map(function (x) { x = x.trim(); return x + " a:not([class*=btn]):not([data-aog-inkdark]):not([data-aog-inkdark] *):not(.aogtop *)"; }).join(",") + "{color:#F2C964!important}" +
     ROOMS.split(",").map(function (x) { x = x.trim(); return x + " [class*=btn] *"; }).join(",") + "{color:inherit!important}" +
     ROOMS.split(",").map(function (x) { return x.trim() + " button:not([data-aog-inkdark]):not([class*=btn]):not(.fw-tab)"; }).join(",") + "{color:#EDE7DA!important;opacity:1!important}" +
