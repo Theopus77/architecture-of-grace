@@ -2,7 +2,7 @@ Tonight's files. The three older zips are the earlier microscope, the sewing sho
 
 science-microscope.html   the microscope
 telescope.html            the telescope
-science-waves.html        the wave bench
+science-waves.html        the oscilloscope
 music-drums.html          the drum machine. SAVE writes drum-bench.json. OPEN reads one.
 music-decks.html          the turntables
 daily-drops.html          Daily Drafts — the math updates
