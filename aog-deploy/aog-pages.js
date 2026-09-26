@@ -208,3 +208,109 @@
   D.addEventListener("click", function (ev) { if (ev.target.closest(".checks .opt")) setTimeout(sweep, 50); });
   sweep();
 })();
+
+/* AOG-PG-STRICTTEST-V1 (2026-09-26) — Jimmy, on whether a student should see the right answers
+   before sending: "Sure on the tests." The UNIT TEST is now one shot: a student picks an answer
+   for every question and sees nothing — no green, no strike, no Why — until they press Send
+   (or "Check my test" when no teacher link is on the page). Then every question is marked, the
+   key is shown beside a miss, and the score appears. Picks can be changed until then. Lesson
+   checks and chapter reviews keep their try-again behaviour. Try again clears the test. */
+(function () {
+  var D = document, main = D.getElementById("main");
+  if (!main) return;
+  var r = main.querySelector('.review[data-kind="unit-test"]'); if (!r || !r.querySelector(".q")) return;
+  var DEST_RE = /^https:\/\/script\.google\.com\/[^\s]*\/exec$/, DEST = null;
+  try { var dm = /[?&]dest=([^&]+)/.exec(location.search || "");
+    if (dm) { var tt = decodeURIComponent(dm[1]).replace(/-/g, "+").replace(/_/g, "/"); while (tt.length % 4) tt += "=";
+      var o = JSON.parse(atob(tt)); if (o && typeof o.u === "string" && DEST_RE.test(o.u)) DEST = { url: o.u, key: (typeof o.k === "string" ? o.k : "") }; } } catch (e) {}
+  if (!DEST) { try { var cfg = window.AOG_SYNC_DEFAULTS;
+    if (cfg && !cfg.destinations && typeof cfg.url === "string" && DEST_RE.test(cfg.url) && Object.prototype.toString.call(cfg.schools) === "[object Array]" && cfg.schools.length)
+      DEST = { url: cfg.url, key: (typeof cfg.key === "string" ? cfg.key : "") }; } catch (e) {} }
+  var CO = window.AOG_COURSE || {}, KEYP = "aog.interior.ws.v1." + (CO.id || "x") + (CO.unit || ""), rid = r.getAttribute("data-review") || "t";
+  var SK = KEYP + "test:" + rid;
+  var es = function () { return (D.documentElement.lang || "").indexOf("es") === 0; };
+  function T(en, sp) { return es() ? sp : en; }
+  function ls(k, v) { try { if (v === undefined) return localStorage.getItem(k) || ""; localStorage.setItem(k, v); } catch (e) {} return ""; }
+  function who() { return (ls(KEYP + "who") || ls("aog.drops.who") || "").trim(); }
+  function setWho(v) { ls(KEYP + "who", v); ls("aog.drops.who", v); try { localStorage.setItem("aog.dash2.student", JSON.stringify(v)); } catch (e) {} }
+  function load() { try { return JSON.parse(ls(SK) || "{}") || {}; } catch (e) { return {}; } }
+  var S = load(); S.picks = S.picks || {};
+  function save() { ls(SK, JSON.stringify(S)); }
+  function qs() { return r.querySelectorAll(".q"); }
+  function optText(q, i) { var o = q.querySelector('.opt[data-i="' + i + '"] span:last-child'); return o ? o.textContent.trim() : ""; }
+  function qText(q) { var e = q.querySelector(".qq"); if (!e) return ""; var c = e.cloneNode(true); var n = c.querySelector(".qn"); if (n) n.remove(); return c.textContent.trim(); }
+  function today() { var x = new Date(); return x.getFullYear() + "-" + ("0" + (x.getMonth() + 1)).slice(-2) + "-" + ("0" + x.getDate()).slice(-2); }
+  try { var cs = D.createElement("style"); cs.textContent =
+    '.review[data-kind="unit-test"] .csend{display:none!important}' +
+    '.review[data-kind="unit-test"]:not(.aogrev) [data-rscore],.review[data-kind="unit-test"]:not(.aogrev) [data-verdict]{visibility:hidden}' +
+    '.review[data-kind="unit-test"] .opt[data-pick]{border-color:var(--navy-2,#1E3D62);box-shadow:inset 0 0 0 2px var(--navy-2,#1E3D62);font-weight:700}' +
+    '.review[data-kind="unit-test"] .opt[data-pick] .l{background:var(--navy-2,#1E3D62);border-color:var(--navy-2,#1E3D62);color:#fff}' +
+    '.aogtest{margin:14px 0 0;padding:14px;border:2px solid var(--navy-2,#1E3D62);border-radius:14px;display:flex;flex-wrap:wrap;gap:10px 12px;align-items:end}' +
+    '.aogtest .aogtest-h{flex:1 1 100%;margin:0;font-weight:800}.aogtest .aogtest-n{flex:1 1 100%;margin:0;font-size:.95rem}' +
+    '.aogtest label{display:flex;flex-direction:column;gap:4px;flex:1 1 200px;font-weight:700;font-size:.95rem}.aogtest input{font-size:16px;padding:9px 10px;border:1px solid var(--rule,#c9c2b3);border-radius:8px;min-height:44px}' +
+    '.aogtest .aogtest-st{flex:1 1 100%;margin:0;font-weight:700}.aogtest .aogtest-st:empty{display:none}.review.aogrev .aogtest label,.review.aogrev .aogtest button{display:none}';
+    (D.head || D.documentElement).appendChild(cs); } catch (e) {}
+  var box = D.createElement("div"); box.className = "aogtest no-print";
+  var foot = r.querySelector(".rfoot"); if (foot && foot.parentNode) foot.parentNode.insertBefore(box, foot); else r.appendChild(box);
+  function paintBox() {
+    var n = qs().length, k = Object.keys(S.picks).length;
+    box.innerHTML = '<p class="aogtest-h">' + T("One shot: answer every question, then press the button.", "Una sola oportunidad: responde todas las preguntas y luego pulsa el botón.") + '</p>' +
+      '<p class="aogtest-n">' + T("Answered", "Respondidas") + ": " + k + " / " + n + '</p>' +
+      (DEST ? '<label><span>' + T("Your name or code", "Tu nombre o código") + '</span><input type="text" maxlength="40" autocomplete="off" value="' + who().replace(/"/g, "&quot;") + '"></label>' : "") +
+      '<button type="button" class="btn solid">' + (DEST ? T("Send to my teacher", "Enviar a mi maestro") : T("Check my test", "Revisar mi prueba")) + '</button><p class="aogtest-st" aria-live="polite">' + (S.st || "") + '</p>';
+    box.querySelector("button").addEventListener("click", submit);
+  }
+  function say(m) { S.st = m; save(); var e = box.querySelector(".aogtest-st"); if (e) e.textContent = m; }
+  function paintPicks() { Array.prototype.forEach.call(qs(), function (q) { var id = q.getAttribute("data-q"), p = S.picks[id];
+    Array.prototype.forEach.call(q.querySelectorAll(".opt"), function (o) { if (!S.revealed && +o.getAttribute("data-i") === p) o.setAttribute("data-pick", "1"); else o.removeAttribute("data-pick"); }); }); }
+  function reveal() {
+    var n = 0, k = 0;
+    Array.prototype.forEach.call(qs(), function (q) { var a = +q.getAttribute("data-a"), p = S.picks[q.getAttribute("data-q")]; n++;
+      Array.prototype.forEach.call(q.querySelectorAll(".opt"), function (o) { var i = +o.getAttribute("data-i"); o.disabled = true; o.removeAttribute("data-pick"); o.removeAttribute("data-st");
+        if (i === a) o.setAttribute("data-st", "right"); else if (i === p) o.setAttribute("data-st", "tried"); });
+      if (p === a) k++; var w = q.querySelector(".why"); if (w) w.hidden = false; var s = q.querySelector(".say"); if (s) s.textContent = (p === a) ? "" : T("Not this one — the right answer is marked.", "Esta no — la correcta está marcada."); });
+    r.classList.add("aogrev");
+    var sc = r.querySelector("[data-rscore]"); if (sc) sc.textContent = k + " / " + n;
+    var v = r.querySelector("[data-verdict]"); if (v) { var pct = n ? k / n : 0; v.textContent = pct >= .9 ? T("Strong. You own this unit.", "Fuerte. Esta unidad es tuya.") : pct >= .7 ? T("Good — read the ones you missed.", "Bien — lee las que fallaste.") : T("Read the unit again, then try again.", "Vuelve a leer la unidad y prueba otra vez."); }
+    return { k: k, n: n };
+  }
+  function submit() {
+    var n = qs().length, k = Object.keys(S.picks).length;
+    if (k < n) { say(T("Answer every question first.", "Responde primero todas las preguntas.")); return; }
+    var nm = ""; if (DEST) { var inp = box.querySelector("input"); nm = inp ? inp.value.trim() : ""; if (!nm) { say(T("Enter your name first.", "Escribe primero tu nombre.")); if (inp) inp.focus(); return; } setWho(nm); }
+    var answers = [], first = [], right = 0;
+    Array.prototype.forEach.call(qs(), function (q, j) { var a = +q.getAttribute("data-a"), p = S.picks[q.getAttribute("data-q")], ok = p === a; if (ok) right++;
+      var it = { g: optText(q, p).slice(0, 120), ok: ok }; if (!ok) it.c = optText(q, a).slice(0, 120);
+      first.push(ok ? 1 : 0); answers.push({ b: j + 1, s: T("Unit test", "Examen de la unidad"), q: qText(q).slice(0, 240), a: [it] }); });
+    S.revealed = true; S.revealedAt = new Date().toISOString(); save(); reveal();
+    if (!DEST) { say(T("Checked. Your score is above.", "Revisado. Tu puntaje está arriba.")); return; }
+    var payload = { action: "checkin", checkinType: "practice", _backendAuth: DEST.key, studentId: nm, timestamp: new Date().toISOString(), date: today(),
+      activityId: "crs-" + CO.id + "-u" + CO.unit + "-" + rid, activityName: r.getAttribute("data-title") || "", skill: CO.title || "",
+      setNo: CO.unit, itemsTotal: n, independent: right, supported: 0, hintsUsed: "", confidence: "", source: "link",
+      course: CO.id, unit: CO.unit, assessment: "unit-test",
+      extra: { series: "course", build: "strict test v1", lang: es() ? "es" : "en", review: rid, oneShot: true, firstTry: first, answers: answers, correct: right, total: n } };
+    if (window.AOG_IEP) { try { AOG_IEP.fill(payload, { correct: right, total: n, standards: r.getAttribute("data-std") || "", byStrand: "", supports: es() ? ["spanish"] : [] }); } catch (e) {} }
+    var body = JSON.stringify(payload); say(T("Sending…", "Enviando…"));
+    function ok() { S.sentAt = new Date().toISOString(); save(); say(T("Sent. Your teacher has it.", "Enviado. Tu maestro lo tiene."));
+      try { var f = location.pathname.replace(/^.*\//, ""), a = JSON.parse(localStorage.getItem("aog.dash2.sent") || "[]"); a.push({ f: f, at: S.sentAt }); localStorage.setItem("aog.dash2.sent", JSON.stringify(a.slice(-200))); } catch (e) {} }
+    function bad() { say(T("Could not send. Your score is above; tell your teacher.", "No se pudo enviar. Tu puntaje está arriba; avisa a tu maestro.")); }
+    fetch(DEST.url, { method: "POST", mode: "cors", redirect: "follow", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: body })
+      .then(function (x) { return x.json(); }).then(function (j) { if (j && j.ok) ok(); else bad(); })
+      .catch(function () { fetch(DEST.url, { method: "POST", mode: "no-cors", redirect: "follow", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: body }).then(ok).catch(bad); });
+  }
+  /* picks: caught before the page's own handler, so nothing is marked until the reveal */
+  D.addEventListener("click", function (ev) {
+    var o = ev.target.closest && ev.target.closest(".opt"); if (!o || !r.contains(o)) return;
+    ev.stopPropagation(); ev.preventDefault(); if (S.revealed || o.disabled) return;
+    var q = o.closest(".q"); S.picks[q.getAttribute("data-q")] = +o.getAttribute("data-i"); save(); paintPicks();
+    var e = box.querySelector(".aogtest-n"); if (e) e.textContent = T("Answered", "Respondidas") + ": " + Object.keys(S.picks).length + " / " + qs().length;
+  }, true);
+  /* Try again clears the one shot; the page's own reset runs after this */
+  D.addEventListener("click", function (ev) { var b = ev.target.closest && ev.target.closest(".reset-r"); if (!b || !r.contains(b)) return;
+    S = { picks: {} }; save(); r.classList.remove("aogrev");
+    Array.prototype.forEach.call(r.querySelectorAll(".opt"), function (o) { o.disabled = false; o.removeAttribute("data-pick"); o.removeAttribute("data-st"); });
+    Array.prototype.forEach.call(r.querySelectorAll(".why"), function (w) { w.hidden = true; }); paintBox(); }, true);
+  new MutationObserver(function () { if (!S.revealed) paintBox(); }).observe(D.documentElement, { attributes: true, attributeFilter: ["lang"] });
+  paintBox();
+  if (S.revealed) { setTimeout(function () { reveal(); }, 0); } else paintPicks();
+})();
