@@ -270,124 +270,220 @@ function btn(on,act,lab){ return `<button class="btn${on?" btn-steel":""}" data-
 function tfovArcmin(mag){ return (SCOPE.afov/mag)*60; }
 
 let MOON=null;
+/* AOG-TELE-REALMOON-V1 (2026-09-26) — Jimmy: "Can the images from the telescope be more real?"
+   The Moon is now drawn from where things actually are: the seas by their real outlines in
+   selenographic longitude and latitude, forty named craters at their true places and sizes
+   (Tycho and Copernicus with their rays, Plato with its dark floor, Clavius with the arc of
+   craterlets), the Apennines, Alps and Caucasus as ridges, and a sphere lit by one sun so the
+   terminator is the soft line where the light runs out, with long shadows next to it. */
 function bakeMoon(){
-  const N=1024, H=new Float32Array(N*N), alb=new Float32Array(N*N);
-  const cx=N/2, cy=N/2, R=N*0.5-2, RAD=15.5;
-  const toP=(ax,ay)=>[cx+(ax/RAD)*R, cy+(ay/RAD)*R];
-  const mares=[[-2,-6,5.2,4.2,.2],[2.2,-4.6,3.4,2.8,-.3],[6.2,.8,4.2,3.1,.15],[8.6,5.4,2.6,2.1,.4],[11.2,-.4,1.7,1.35,0],[-1.5,6.5,4.4,2.6,.5],[-6,2,2.2,1.6,-.4]];
+  const N=1400, H=new Float32Array(N*N), alb=new Float32Array(N*N), mareM=new Uint8Array(N*N);
+  const cx=N/2, cy=N/2, R=N*0.5-3, RAD=15.5;
+  const D2R=Math.PI/180;
+  /* selenographic → disk pixels (north up, east right, the naked-eye view) */
+  const ll=(lat,lon)=>{ const la=lat*D2R, lo=lon*D2R; return [cx+Math.cos(la)*Math.sin(lo)*R, cy-Math.sin(la)*R, Math.cos(la)*Math.cos(lo)]; };
   function hsh(ix,iy){ let n=(ix*374761393+iy*668265263)|0; n=(n^(n>>>13))*1274126177; return ((n^(n>>>16))>>>0)/4294967296; }
   function vnoise(x,y){
     const x0=Math.floor(x), y0=Math.floor(y), fx=x-x0, fy=y-y0, u=fx*fx*(3-2*fx), v=fy*fy*(3-2*fy);
     const a=hsh(x0,y0), b=hsh(x0+1,y0), c=hsh(x0,y0+1), d=hsh(x0+1,y0+1);
     return a+(b-a)*u+(c-a)*v+(a-b-c+d)*u*v;
   }
-  function mareW(px,py){
-    const amx=(px-cx)/R*RAD, amy=(py-cy)/R*RAD;
+  const fbm=(x,y)=>vnoise(x,y)*.5+vnoise(x*2.1+7,y*2.1)*.25+vnoise(x*4.3+3,y*4.3+9)*.125+vnoise(x*8.7,y*8.7+5)*.0625;
+  /* the seas: [lat, lon, half-width°, half-height°, tilt, edge roughness] */
+  const MARIA=[
+    [18,-57,25,15,0.35,1.4],   /* Oceanus Procellarum, the big irregular one */
+    [33,-16,16,13,0,1],        /* Imbrium */
+    [28,17.5,10,9,0,0.8],      /* Serenitatis */
+    [8.5,31,13,10,0.2,1.3],    /* Tranquillitatis */
+    [-8,51,9,11,0.3,1.2],      /* Fecunditatis */
+    [17,59,8,5.5,0.1,0.6],     /* Crisium, the oval near the limb */
+    [-15,35,5,5.5,0,0.7],      /* Nectaris */
+    [-21,-17,11,9,0.2,1.3],    /* Nubium */
+    [-24,-39,6.5,6,0,0.7],     /* Humorum */
+    [56,1,30,5,0,1.2],         /* Frigoris, the long thin one across the north */
+    [13,3,4,3.5,0.4,0.8],      /* Vaporum */
+    [-10,-23,5,4,0,0.8],       /* Cognitum */
+    [3,-2,4,3,0,0.9],          /* Sinus Medii */
+    [45,-32,7,5,0.5,1.0],      /* Sinus Iridum bay, off Imbrium */
+    [-5,-68,4.5,4.5,0,0.5],    /* Grimaldi, dark floor */
+    [24,-44,6,5,0,1.0]         /* Sinus Roris / west Procellarum reach */
+  ];
+  function mareW(x,y){
+    /* back from the disk to lat/lon, then test each sea in its own frame */
+    const dx=(x-cx)/R, dy=(cy-y)/R, rr=dx*dx+dy*dy; if(rr>=1) return 0;
+    const lat=Math.asin(dy), lon=Math.atan2(dx, Math.sqrt(1-rr));
     let w=0;
-    for(const [mx,my,rx,ry,rot] of mares){
-      const dx=amx-mx, dy=amy-my, c=Math.cos(-rot), s=Math.sin(-rot);
-      const lx=dx*c-dy*s, ly=dx*s+dy*c, e=(lx*lx)/(rx*rx)+(ly*ly)/(ry*ry);
-      if(e<1){
-        const shore=vnoise(px/38, py/38);
-        const edge=1-e;
-        const keep=edge>0.22 || shore>0.42 ? edge : edge*(shore/0.42);
-        w=Math.max(w, keep);
-      }
+    for(const [la,lo,hw,hh,rot,rough] of MARIA){
+      let dlo=(lon/D2R-lo)*Math.cos(la*D2R), dla=lat/D2R-la;
+      const c=Math.cos(rot), s=Math.sin(rot), lx=dlo*c-dla*s, ly=dlo*s+dla*c;
+      const shore=fbm(lx*0.22+la*0.1, ly*0.22+lo*0.1)-0.5;
+      const e=(lx*lx)/((hw*(1+shore*rough*0.5))**2)+(ly*ly)/((hh*(1+shore*rough*0.5))**2);
+      if(e<1){ const u=1-e; w=Math.max(w, u<0.4?(u/0.4)*(u/0.4)*(3-2*u/0.4):1); }
     }
     return w;
   }
   for(let y=1;y<N-1;y++) for(let x=1;x<N-1;x++){
     const dx=x-cx, dy=y-cy; if(dx*dx+dy*dy>R*R) continue;
-    const m=mareW(x,y);
-    const n=vnoise(x/70,y/70)*.4+vnoise(x/28,y/28)*.12;
-    H[y*N+x]=(n-.5)*(m?0.45:1.35) - m*2.15;
-    alb[y*N+x]=m?0.46+0.06*(1-m):0.82+(n-.5)*.04;
+    const m=mareW(x,y), i=y*N+x;
+    const n=fbm(x/90,y/90);
+    mareM[i]=m>0.02?1:0;
+    /* highlands are rough and high; the seas are flat lava, a little lower, with gentle wrinkle ridges */
+    H[i]=m?(-1.6*m+(fbm(x/22,y/22)-.5)*.22+Math.sin(x/9+y/23)*.05*m):(n-.5)*1.6+(fbm(x/14,y/14)-.5)*.35;
+    const ab=0.46+0.06*(1-m)+(fbm(x/40,y/40)-.5)*.05, ah=0.80+(n-.5)*.10; alb[i]=ah+(ab-ah)*m;
   }
-  function stamp(amx,amy,rArc){
-    const [px,py]=toP(amx,amy), Rr=rArc/RAD*R;
-    if(Rr<0.55) return;
-    const depth=Math.min(Rr*.38, 5+Rr*.2), rimH=Rr*.13, sig=Math.max(1.1, Rr*.12);
-    const x0=Math.max(1,px-Rr*1.8|0), x1=Math.min(N-2,px+Rr*1.8|0);
-    const y0=Math.max(1,py-Rr*1.8|0), y1=Math.min(N-2,py+Rr*1.8|0);
+  /* mountain ranges as ridges: Apennines (SE rim of Imbrium), Alps, Caucasus, Carpathians */
+  function ridge(pts,height,width){
+    for(let k=1;k<pts.length;k++){
+      const [ax,ay]=ll(pts[k-1][0],pts[k-1][1]), [bx,by]=ll(pts[k][0],pts[k][1]);
+      const L=Math.hypot(bx-ax,by-ay);
+      for(let s=0;s<=L;s+=1){ const px=ax+(bx-ax)*s/L, py=ay+(by-ay)*s/L;
+        for(let q=-width*2;q<=width*2;q++) for(let r=-width*2;r<=width*2;r++){
+          const x=px+q|0, y=py+r|0; if(x<1||y<1||x>=N-1||y>=N-1) continue;
+          const d=Math.hypot(q,r), f=Math.exp(-d*d/(2*width*width))*(0.7+0.6*vnoise(x/7,y/7));
+          H[y*N+x]+=height*f*0.035;
+        } }
+    }
+  }
+  ridge([[15,-6],[19,-3],[24,0],[28,2]],18,6);       /* Apennines */
+  ridge([[43,-4],[46,0],[49,3]],12,5);               /* Alps */
+  ridge([[33,6],[37,9],[41,11]],11,4);               /* Caucasus */
+  ridge([[14,-24],[15,-18],[14,-12]],8,4);           /* Carpathians */
+  function stamp(px,py,Rr,opt){
+    opt=opt||{};
+    if(Rr<0.6) return;
+    const depth=(opt.depth||1)*Math.min(Rr*.36, 6+Rr*.18), rimH=Rr*.14*(opt.rim||1), sig=Math.max(1.2, Rr*.11);
+    const x0=Math.max(1,px-Rr*1.9|0), x1=Math.min(N-2,px+Rr*1.9|0), y0=Math.max(1,py-Rr*1.9|0), y1=Math.min(N-2,py+Rr*1.9|0);
     for(let y=y0;y<=y1;y++) for(let x=x0;x<=x1;x++){
       const d=Math.hypot(x-px,y-py), i=y*N+x;
-      if(d<=Rr){ const u=d/Rr; H[i]-=depth*(1-u*u); }
+      if(d<=Rr){ const u=d/Rr; H[i]-=depth*(opt.flat?Math.min(1,(1-u)*4):(1-u*u)); if(opt.floor!=null) alb[i]=opt.floor; }
       H[i]+=rimH*Math.exp(-((d-Rr)*(d-Rr))/(2*sig*sig));
-      if(d>Rr && d<Rr*1.7){ H[i]+=rimH*.18*(1-(d-Rr)/(Rr*.7)); alb[i]=Math.min(.98, alb[i]+.035); }
+      if(d>Rr && d<Rr*1.8){ H[i]+=rimH*.16*(1-(d-Rr)/(Rr*.8)); alb[i]=Math.min(.98, alb[i]+(opt.bright||.03)); }
     }
-    if(Rr>18){
-      const pr=Rr*.14;
+    if(Rr>14 && opt.peak!==false){ const pr=Rr*.13;
       for(let y=py-pr*3|0; y<=py+pr*3; y++) for(let x=px-pr*3|0; x<=px+pr*3; x++){
-        if(x<1||y<1||x>=N-1||y>=N-1) continue;
-        const d=Math.hypot(x-px,y-py);
-        H[y*N+x]+=depth*.22*Math.exp(-(d*d)/(2*pr*pr));
-      }
-    }
+        if(x<1||y<1||x>=N-1||y>=N-1) continue; const d=Math.hypot(x-px,y-py); H[y*N+x]+=depth*.3*Math.exp(-(d*d)/(2*pr*pr)); } }
   }
+  const kmPx=R/1737;   /* pixels per km at the disk centre */
+  function crater(lat,lon,km,opt){ const [px,py,fore]=ll(lat,lon); if(fore<=0.05) return; stamp(px,py,km/2*kmPx*Math.sqrt(fore*0.35+0.65),opt); }
+  /* the named craters: [lat, lon, diameter km, options] */
+  const CR=[
+    [-43.3,-11.4,86,{bright:.09,depth:1.2}],          /* Tycho */
+    [9.6,-20.1,93,{bright:.06,depth:1.1}],            /* Copernicus */
+    [8.1,-38,32,{bright:.06}],                         /* Kepler */
+    [23.7,-47.4,40,{bright:.12}],                      /* Aristarchus, the brightest spot */
+    [51.6,-9.3,101,{flat:true,floor:.40,rim:.8,peak:false}],   /* Plato, dark floor */
+    [-58.4,-14.4,225,{depth:.7,rim:.7}],               /* Clavius */
+    [-9.2,-1.8,153,{flat:true,floor:.62,rim:.6,peak:false}],   /* Ptolemaeus */
+    [-13.4,-2.8,110,{flat:true,floor:.6,rim:.7}],      /* Alphonsus */
+    [-18.2,-1.9,97,{depth:1}],                         /* Arzachel */
+    [29.7,-4,83,{flat:true,floor:.5,rim:.8,peak:false}],       /* Archimedes */
+    [14.5,-11.3,58,{}],                                /* Eratosthenes */
+    [-11.4,26.4,100,{depth:1.1}],                      /* Theophilus */
+    [-8.9,60.9,132,{}],                                /* Langrenus */
+    [-25.3,60.4,177,{depth:.8}],                       /* Petavius */
+    [31.8,29.9,95,{flat:true,floor:.55,rim:.7,peak:false}],    /* Posidonius */
+    [27.7,55.5,126,{depth:.8}],                        /* Cleomedes */
+    [53.6,56.5,125,{flat:true,floor:.5,rim:.7,peak:false}],    /* Endymion */
+    [-17.5,-39.9,110,{flat:true,floor:.58,rim:.7,peak:false}], /* Gassendi */
+    [-44.4,-55.1,227,{flat:true,floor:.6,rim:.5,peak:false}],  /* Schickard */
+    [-20.7,-22.2,61,{depth:1.1}],                      /* Bullialdus */
+    [-32.4,54.1,75,{}],                                /* Stevinus */
+    [-16.2,-34.1,15,{}],                               /* Mersenius area small */
+    [-14.6,-13.7,29,{}],                               /* Lubiniezky-ish */
+    [-42.4,-1.1,55,{}],                                /* Maginus-ish small */
+    [-50.2,-6.3,163,{depth:.7,rim:.6}],                /* Maginus */
+    [-38.5,-1.4,43,{}],                                /* Walter-ish */
+    [-33.1,-0.8,140,{depth:.7,rim:.6}],                /* Walther */
+    [-2.5,-16.2,45,{}],                                /* Reinhold */
+    [43.5,-18.7,8,{}],                                 /* Sinus Iridum inner */
+    [40.9,-2.6,40,{}],                                 /* Cassini */
+    [37.4,-23.6,26,{}],                                /* Helicon area */
+    [23.7,-12,15,{}],                                  /* Timocharis-ish */
+    [26.7,-13,34,{}],                                  /* Timocharis */
+    [17.7,20.8,9,{}],                                  /* small in Serenitatis */
+    [8.7,24.4,22,{}],                                  /* Sabine */
+    [-3.2,30.4,29,{}],                                 /* Torricelli-ish */
+    [4.5,28.5,18,{}],                                  /* Arago */
+    [26.5,63.5,28,{}],                                 /* Picard region */
+    [-11.5,64.5,56,{}],                                /* Vendelinus small */
+    [-16.3,63.3,147,{depth:.6,rim:.5}],                /* Vendelinus */
+    [16.3,-3.8,9,{}],                                  /* tiny */
+    [64.5,-8,45,{}],                                   /* northern highland */
+    [-62,-12,60,{}],[-70,-5,90,{depth:.6}],[-66,20,70,{depth:.6}],[-54,25,80,{depth:.6}],[-48,12,52,{}],[-35,-30,68,{}],[-28,-45,54,{}],
+    [-38,40,60,{}],[-45,50,56,{}],[-30,20,48,{}],[-24,10,60,{}],[-20,32,42,{}],[-50,-30,84,{depth:.6}],[-56,-40,70,{depth:.6}],[-64,30,66,{depth:.6}],
+    [60,20,58,{}],[64,40,50,{}],[70,10,64,{depth:.6}],[58,-30,52,{}],[62,-45,70,{depth:.6}],[48,50,60,{}],[36,45,44,{}],[12,45,30,{}],[-2,58,40,{}],
+    [-6,-30,20,{}],[2,-45,24,{}],[12,-58,30,{}],[-28,-60,60,{}],[-35,-63,52,{}],[30,-60,44,{}],[42,-56,48,{}]
+  ];
+  CR.forEach(c=>crater(c[0],c[1],c[2],c[3]));
+  /* the unnamed thousands: highlands are saturated with them, the seas are nearly clean */
   const rng=mulberry32(0x51a0e1);
-  for(let i=0;i<380;i++){
-    const a=rng()*6.283, rr=Math.sqrt(rng())*13.1;
-    stamp(Math.cos(a)*rr, Math.sin(a)*rr, .07+Math.pow(rng(),1.7)*.85);
+  for(let i=0;i<2600;i++){
+    const lat=(rng()*2-1)*88, lon=(rng()*2-1)*88;
+    const [px,py,fore]=ll(lat,lon); if(fore<=0.05) continue;
+    const sea=mareM[(py|0)*N+(px|0)];
+    if(sea && rng()<0.86) continue;
+    const km=2+Math.pow(rng(),2.4)*(sea?14:38);
+    stamp(px,py,km/2*kmPx*Math.sqrt(fore*0.35+0.65),{bright:.02});
   }
-  [[-4.5,.4,1.55],[-5.4,2.4,.9],[-3.3,-1.5,.7],[-1.15,-2.3,1.15],[.9,10.1,1.1],[2.3,-7,.95],[-2.3,-8.9,1.25],[6.7,1.5,.42],[5.2,-.2,.36]].forEach(p=>stamp(p[0],p[1],p[2]));
-  const [tx,ty]=toP(.9,10.1);
-  function rayFan(ox,oy,n,reach){
+  /* ray systems: Tycho's reach across the south, Copernicus and Kepler shorter and knotted */
+  function rayFan(lat,lon,n,reach,strength,seed){
+    const [ox,oy]=ll(lat,lon); const rr=mulberry32(seed);
     for(let k=0;k<n;k++){
-      const a=k/n*6.283+(k%2?0.07:-0.04);
-      const len=R*reach*(0.72+(k%3)*0.16);
-      const width=2.4+(k%4)*0.7;
-      for(let s=R*0.035;s<len;s+=1.15){
-        const wob=Math.sin(s*0.05+k*1.7)*1.6;
-        const px=ox+Math.cos(a)*s+Math.cos(a+1.57)*wob;
-        const py=oy+Math.sin(a)*s+Math.sin(a+1.57)*wob;
-        for(let q=-width;q<=width;q+=1.1){
+      const a=k/n*6.283+(rr()-.5)*.5, len=R*reach*(0.5+rr()*.7), width=1.6+rr()*2.4;
+      for(let s=R*0.04;s<len;s+=1.1){
+        const wob=Math.sin(s*0.04+k*1.7)*2.2;
+        const px=ox+Math.cos(a)*s+Math.cos(a+1.57)*wob, py=oy+Math.sin(a)*s+Math.sin(a+1.57)*wob;
+        for(let q=-width;q<=width;q+=1){
           const x=px+Math.cos(a+1.57)*q|0, y=py+Math.sin(a+1.57)*q|0;
           if(x<2||y<2||x>=N-2||y>=N-2) continue;
           const dx=x-cx, dy=y-cy; if(dx*dx+dy*dy>R*R) continue;
-          const fall=(1-s/len)*(1-Math.abs(q)/width);
-          alb[y*N+x]=Math.min(1, alb[y*N+x]+0.085*fall*fall);
+          const fall=(1-s/len)*(1-Math.abs(q)/width)*(0.6+0.8*vnoise(x/9,y/9));
+          alb[y*N+x]=Math.min(1, alb[y*N+x]+strength*fall*fall);
         }
       }
     }
   }
-  rayFan(tx,ty,8,0.62);
-  const cop=toP(2.3,-7);
-  rayFan(cop[0],cop[1],6,0.28);
-  const termX=cx-R*.18, gapA=new Float32Array(N*N);
+  rayFan(-43.3,-11.4,14,0.95,0.11,11);
+  rayFan(9.6,-20.1,9,0.32,0.09,12);
+  rayFan(8.1,-38,7,0.2,0.07,13);
+  rayFan(23.7,-47.4,5,0.12,0.06,14);
+  /* one sun. A waxing gibbous: the terminator runs down the west (left) at about 0.2 R. */
+  const phase=78.5*D2R, Lx=Math.sin(phase), Lz=Math.cos(phase);   /* sun from the right and in front: terminator at −0.2 R */
+  /* long shadows: march toward the sun and remember the highest thing in the way */
+  const gapA=new Float32Array(N*N);
   for(let y=1;y<N-1;y++){
     let cover=-1e9;
     for(let x=N-2;x>=1;x--){
-      const dx=x-cx, dy=y-cy;
-      if(dx*dx+dy*dy>R*R){ cover=-1e9; continue; }
-      const day=(x-termX)/R;
-      const elev=day<0?-1.1:0.025+day*.7;
-      cover-=elev*2.4;
+      const dx=(x-cx)/R, dy=(y-cy)/R, rr=dx*dx+dy*dy;
+      if(rr>1){ cover=-1e9; continue; }
+      const nz=Math.sqrt(1-rr), sunEl=dx*Lx+nz*Lz;            /* sun elevation on the sphere: 1 at noon, 0 at the terminator */
+      const drop=Math.max(0.02, sunEl)*3.2;                    /* a low sun throws a long shadow */
+      cover-=drop;
       const h=H[y*N+x];
       gapA[y*N+x]=cover-h;
       if(h>cover) cover=h;
     }
   }
-  const Lx=.88, Ly=.03, Lz=.32, Ll=Math.hypot(Lx,Ly,Lz);
   const img=new ImageData(N,N), data=img.data;
   for(let y=1;y<N-1;y++) for(let x=1;x<N-1;x++){
-    const dx=x-cx, dy=y-cy, rr=dx*dx+dy*dy;
-    if(rr>R*R) continue;
-    const idx=y*N+x, hx=H[idx+1]-H[idx-1], hy=H[idx+N]-H[idx-N];
-    let nx=-hx, ny=-hy, nz=4.6, nl=Math.hypot(nx,ny,nz)||1;
-    nx/=nl; ny/=nl; nz/=nl;
-    let nd=nx*(Lx/Ll)+ny*(Ly/Ll)+nz*(Lz/Ll); if(nd<0) nd=0;
-    const day=(x-termX)/R, gap=gapA[idx];
-    let light=nd;
-    if(day<-0.08) light=0.09;
-    else if(day<0.02) light=0.09+(nd-0.09)*((day+0.08)/0.1);
-    else if(gap>0.2) light=nd*Math.exp(-gap*.85)*.55;
-    const limb=Math.pow(Math.max(0,1-rr/(R*R)),.42);
-    light*=0.78+0.22*limb;
-    const a=alb[idx], mare=a<0.62, k=a*(0.1+light*1.15);
+    const dx=(x-cx)/R, dy=(y-cy)/R, rr=dx*dx+dy*dy;
+    if(rr>1) continue;
+    const idx=y*N+x, nz0=Math.sqrt(1-rr);
+    /* sphere normal plus the terrain's tilt */
+    const hx=(H[idx+1]-H[idx-1])*0.9, hy=(H[idx+N]-H[idx-N])*0.9;
+    let nx=dx*4.6-hx, ny=dy*4.6-hy, nz=nz0*4.6, nl=Math.hypot(nx,ny,nz)||1; nx/=nl; ny/=nl; nz/=nl;
+    let nd=nx*Lx+nz*Lz; if(nd<0) nd=0;
+    const sunEl=dx*Lx+nz0*Lz;
+    let light=Math.pow(nd,0.9);
+    if(gapA[idx]>0.25) light*=Math.exp(-gapA[idx]*.9)*.5;
+    /* near the terminator the light is grazing and everything is relief; past it, night with a breath of earthshine */
+    const night=sunEl<0.015?0.045:0;
+    const a=alb[idx], mare=a<0.6;
+    const k=a*(night+light*1.18);
     const o=(y*N+x)*4;
-    data[o]=Math.min(255, k*(mare?214:250));
-    data[o+1]=Math.min(255, k*(mare?202:238));
-    data[o+2]=Math.min(255, k*(mare?184:214));
+    data[o]=Math.min(255, k*(mare?206:246)+night*10);
+    data[o+1]=Math.min(255, k*(mare?200:238)+night*11);
+    data[o+2]=Math.min(255, k*(mare?190:222)+night*14);
     data[o+3]=255;
   }
   const c=document.createElement("canvas"); c.width=c.height=N;
@@ -565,29 +661,45 @@ function drawSaturn(ctx){
   ctx.restore();
   airy(ctx, 3.15, 0.5, 8.2, "#f0e2c4");
 }
+/* AOG-TELE-REALORION-V1 — M42 as the eye sees it in a 90 mm: a bright fan around the Trapezium,
+   the dark bay (the "fish's mouth") cutting in from the north-east, two wings sweeping out to the
+   south-west and south-east like a bat, M43 as a separate comma to the north with its own star,
+   and a faint outer loop. Grey-green: the eye has no colour at these light levels. */
 function bakeOrion(){
-  const N=680, SPAN=22;
+  const N=760, SPAN=26;
   function hsh(ix,iy){ let n=(ix*374761393+iy*668265263)|0; n=(n^(n>>>13))*1274126177; return ((n^(n>>>16))>>>0)/4294967296; }
   function vn(x,y){
     const x0=Math.floor(x), y0=Math.floor(y), fx=x-x0, fy=y-y0, u=fx*fx*(3-2*fx), v=fy*fy*(3-2*fy);
     const a=hsh(x0,y0), b=hsh(x0+1,y0), c=hsh(x0,y0+1), d=hsh(x0+1,y0+1);
     return a+(b-a)*u+(c-a)*v+(a-b-c+d)*u*v;
   }
+  const fbm=(x,y)=>vn(x,y)*.5+vn(x*2.2+3,y*2.2)*.3+vn(x*4.7,y*4.7+2)*.2;
+  const blob=(ax,ay,x0,y0,rx,ry,rot)=>{ const c=Math.cos(rot),s=Math.sin(rot),dx=ax-x0,dy=ay-y0,lx=dx*c-dy*s,ly=dx*s+dy*c; return Math.exp(-((lx*lx)/(rx*rx)+(ly*ly)/(ry*ry))); };
   const img=new ImageData(N,N), data=img.data;
   for(let y=0;y<N;y++) for(let x=0;x<N;x++){
     const ax=(x-N/2)/(N/2)*SPAN, ay=(y-N/2)/(N/2)*SPAN;
-    const core=Math.exp(-(ax*ax+ay*ay)/7.5);
-    const wing=Math.exp(-((ax-3.2)*(ax-3.2)/26+(ay-5.5)*(ay-5.5)/16));
-    const wing2=Math.exp(-((ax+2.4)*(ax+2.4)/18+(ay+4.2)*(ay+4.2)/12));
-    const north=Math.exp(-((ax-1.2)*(ax-1.2)/10+(ay+11)*(ay+11)/8))*0.35;
-    const mouth=Math.exp(-((ax-1.6)*(ax-1.6)/2.4+(ay-0.2)*(ay-0.2)/1.15));
-    let v=core*0.9+wing*0.5+wing2*0.32+north;
-    v*=1-0.86*mouth;
-    v*=0.62+0.7*vn(ax*0.55, ay*0.55);
-    v*=0.85+0.3*vn(ax*1.6+4, ay*1.6);
+    /* the Huygens region: a bright fan just south-west of the Trapezium */
+    let v=0.62*blob(ax,ay,-0.6,0.9,2.4,1.7,-0.5);
+    v+=0.55*blob(ax,ay,-1.2,2.2,5.5,3.2,-0.3);              /* the bright inner wings */
+    v+=0.32*blob(ax,ay,-6.5,7.5,7.5,3.4,-0.75);             /* the long south-west wing */
+    v+=0.28*blob(ax,ay,5.8,6.2,6.0,3.2,0.65);               /* the south-east wing */
+    v+=0.12*blob(ax,ay,-10,14,7,4,-0.6);                    /* the wing's faint tail */
+    v+=0.10*blob(ax,ay,10,12,6,4,0.6);
+    v+=0.07*blob(ax,ay,0,6,15,10,0);                        /* the faint outer glow */
+    v+=0.42*blob(ax,ay,1.8,-6.8,2.4,2.9,0.2);               /* M43, the comma to the north */
+    v+=0.16*blob(ax,ay,2.6,-9.5,2.2,3.2,0.4);
+    /* the dark bay biting in from the north-east toward the Trapezium, and the dark lane that isolates M43 */
+    const bay=blob(ax,ay,2.6,-1.4,3.2,1.5,0.55)+0.5*blob(ax,ay,5.5,-2.6,3.6,1.3,0.45);
+    v*=1-0.92*Math.min(1,bay);
+    const lane=blob(ax,ay,1.2,-4.0,5,0.7,0.35);
+    v*=1-0.8*Math.min(1,lane);
+    /* texture: mottling and streaks that run with the wings */
+    v*=0.7+0.5*fbm(ax*0.35+1, ay*0.35);
+    v*=0.86+0.28*vn(ax*0.9+ay*0.5, ay*0.8);
     v=Math.max(0,v);
     const o=(y*N+x)*4;
-    data[o]=150; data[o+1]=172; data[o+2]=156; data[o+3]=Math.min(210, v*230);
+    const t=Math.min(1,v);
+    data[o]=150+40*t; data[o+1]=170+44*t; data[o+2]=158+40*t; data[o+3]=Math.min(205, v*215);
   }
   const c=document.createElement("canvas"); c.width=c.height=N;
   c.getContext("2d").putImageData(img,0,0);
@@ -597,7 +709,7 @@ function drawOrion(ctx){
   ORI_FIELD.forEach(s=>airy(ctx,s.x,s.y,s.m,s.c));
   if(!ORI) ORI=bakeOrion();
   ctx.imageSmoothingEnabled=true; ctx.imageSmoothingQuality="high";
-  ctx.drawImage(ORI,-22,-22,44,44);
+  ctx.drawImage(ORI,-26,-26,52,52);
   [[0.02,-0.02,5.0,"#f7f9ff"],[0.16,0.04,6.6,"#e8eeff"],[-0.07,0.12,6.9,"#e4ecff"],[0.05,-0.14,7.4,"#f4f7ff"]].forEach(s=>airy(ctx,s[0],s[1],s[2],s[3]));
   airy(ctx, 0.4, -16, 4.5, "#dce6ff");
   airy(ctx, 1.1, 18, 3.1, "#dbe7ff");

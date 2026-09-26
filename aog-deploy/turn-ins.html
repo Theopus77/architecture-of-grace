@@ -457,16 +457,14 @@ else document.documentElement.classList.add("aog-embed");</script>
     </div>
   </div>
   <h1>The Inbox</h1>
-  <p class="tag">Everything pulled from your Sheet, in one place &mdash; check-ins, what the team saw,
-  exit slips, home check-ins, self-reflections, My Voice pages, and every FINISHED worksheet, workbook and practice
-  page. Grouped by student, readable the way they built it, printable, ready to lay as bricks toward a goal (IEP evidence).</p>
+  <p class="tag">Everything your students turned in, by student. Pick a kind, a subject, and how to show it.</p>
   <div class="pullrow no-print">
     <button class="btn-pull" type="button" id="pullBtn">Refresh everything from your Sheet</button>
     <span class="pst" id="pullSt"></span>
   </div>
-  <div class="filters" id="kinds" role="group" aria-label="Filter by kind"></div>
-  <div class="filters" id="filters" role="group" aria-label="Filter by subject"></div>
-  <div class="viewrow no-print">
+  <div class="filters" id="kinds" role="group" aria-label="Filter by kind" data-aog-dropdown="What kind|Qué tipo"></div>
+  <div class="filters" id="filters" role="group" aria-label="Filter by subject" data-aog-dropdown="Subject|Materia"></div>
+  <div class="viewrow no-print" id="viewrow" data-aog-dropdown="Show|Mostrar">
     <button class="fchip on" id="viewStu" type="button">By student</button>
     <button class="fchip" id="viewNew" type="button">Newest first</button>
     <button class="fchip" id="viewBp" type="button">Blueprint</button>
@@ -1833,5 +1831,6 @@ else document.documentElement.classList.add("aog-embed");</script>
 (function(){ if(window.parent===window||!/[?&](embed|solo)=1/.test(location.search)) return;
   var last=0; function post(){ var h=document.documentElement.scrollHeight; if(Math.abs(h-last)>4){ last=h; try{ parent.postMessage({aogFrameH:h, src:location.search}, location.origin); }catch(e){} } }
   setInterval(post,600); window.addEventListener("load",post); })();</script>
+<script src="/aog-dropdowns.js?v=4910" defer></script>
 </body>
 </html>
