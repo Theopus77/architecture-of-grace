@@ -227,6 +227,18 @@ footer { margin-top:3rem; max-width:70ch; font-size:.9rem; color:var(--muted); }
 .pg .pgfoot{padding:.65rem 1rem;border-top:1px solid var(--line);font-size:.88rem;color:var(--muted);margin:0}
 .pg .pgfoot a{color:inherit;font-weight:700}
 @media print{ .pg{display:none !important} }
+
+/* AOG-MIC-WIDE-V1 (2026-09-26) — Jimmy: sweet when the iPad is tall, yucky when wide.
+   Wide and short screens: the eyepiece is sized to the screen's height so it, the
+   four knobs and the controls panel all fit without scrolling; the page's navy
+   ground runs to the bottom (no white band). */
+html{background:#081828}
+@media (orientation:landscape) and (min-width:900px){
+  .lab-grid{grid-template-columns:minmax(0,1fr) minmax(300px,420px)!important;align-items:start}
+  .eye-wrap{width:min(100%, calc(100vh - 360px))!important;height:auto!important;aspect-ratio:1;margin:0 auto}
+  .eye-wrap canvas{width:100%!important;height:auto!important}
+  .eye-box{padding:12px!important}
+}
 </style>
 </head>
 <body>
