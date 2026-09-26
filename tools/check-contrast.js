@@ -36,8 +36,17 @@ function probe() {
     const layers = [];
     for (let n = el; n; n = n.parentElement) {
       const cs = getComputedStyle(n);
-      if (cs.backgroundImage && cs.backgroundImage !== "none" && !/url\(/.test(cs.backgroundImage)) return null; // gradient: can't judge
       if (n.hasAttribute && n.hasAttribute("data-aog-hero")) { layers.push({ r: 10, g: 30, b: 51, a: 1 }); break; }
+      /* AOG-CONTRAST-GRADIENT-V1 (2026-09-26): a gradient used to make the
+         checker give up, and dark pills on the navy crosswalk banner slipped
+         through. Inside the masthead keep walking to the navy; elsewhere judge
+         against the gradient's own solid colour (its most opaque stop). */
+      if (cs.backgroundImage && cs.backgroundImage !== "none" && !/url\(/.test(cs.backgroundImage)) {
+        if (n.closest && n.closest("[data-aog-hero]")) continue;
+        const stops = (cs.backgroundImage.match(/(rgba?\([^)]+\)|color\(srgb[^)]+\))/g) || []).map(px).filter(c => c && c.a >= 0.99);
+        if (!stops.length) return null;
+        layers.push(stops[0]); break;
+      }
       const c = px(cs.backgroundColor);
       if (c && c.a > 0) { layers.push(c); if (c.a >= 0.99) break; }
     }
@@ -57,6 +66,7 @@ function probe() {
     let op = 1; for (let n = el; n; n = n.parentElement) op *= +getComputedStyle(n).opacity;
     if (op < 0.3) continue;
     if (el.closest("button:disabled,[disabled]")) continue;
+      if (/text/.test(cs.backgroundClip + " " + cs.webkitBackgroundClip)) continue; // gradient-filled lettering
     const fg = px(cs.color); if (!fg) continue;
     const bg = bgOf(el); if (!bg) continue;
     const k = ratio(mix(fg, bg), bg);

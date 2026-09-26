@@ -38,8 +38,16 @@
     var layers = [];
     for (var n = el; n && n.nodeType === 1; n = n.parentElement) {
       var cs = getComputedStyle(n);
-      if (cs.backgroundImage && cs.backgroundImage !== "none" && !/url\(/.test(cs.backgroundImage)) return null;
       if (n.hasAttribute("data-aog-hero")) { layers.push(NAVY); break; }
+      /* AOG-LEGIBLE-GRADIENT-V1 (2026-09-26): a gradient used to make the guard
+         give up (dark pills on the navy crosswalk banner). In the masthead keep
+         walking to the navy; elsewhere use the gradient's first solid colour. */
+      if (cs.backgroundImage && cs.backgroundImage !== "none" && !/url\(/.test(cs.backgroundImage)) {
+        if (n.closest("[data-aog-hero]")) continue;
+        var st = (cs.backgroundImage.match(/(rgba?\([^)]+\)|color\(srgb[^)]+\))/g) || []).map(px).filter(function (c) { return c && c.a >= 0.99; });
+        if (!st.length) return null;
+        layers.push(st[0]); break;
+      }
       var c = px(cs.backgroundColor);
       if (c && c.a > 0) { layers.push(c); if (c.a >= 0.99) break; }
     }
@@ -56,10 +64,11 @@
     }
     return end;
   }
+  var hov = null;
   var SKIP = "script,style,noscript,svg,option,[hidden],[aria-hidden=true],.sr-only,.visually-hidden,[data-aog-legible-off]";
-  function sweep() {
+  function sweep(root, mark) {
     if (D.hidden) return;
-    var w = D.createTreeWalker(D.body, NodeFilter.SHOW_TEXT), seen = [], t, n = 0;
+    var w = D.createTreeWalker(root || D.body, NodeFilter.SHOW_TEXT), seen = [], t, n = 0;
     while ((t = w.nextNode()) && n < 6000) {
       if (!/\S/.test(t.nodeValue)) continue;
       var el = t.parentElement; if (!el || el.__aogL === sweep.gen) continue;
@@ -72,24 +81,40 @@
     for (var i = 0; i < seen.length; i++) {
       var e = seen[i], cs = getComputedStyle(e);
       if (cs.visibility !== "visible" || +cs.opacity < 0.3 || parseFloat(cs.fontSize) < 2) continue;
+      if (/text/.test(cs.backgroundClip + " " + cs.webkitBackgroundClip)) continue; // gradient-filled lettering
       var fg = px(cs.color); if (!fg) continue;
       var bg = bgOf(e); if (!bg) continue;
       var shown = mix(fg, bg);
       if (ratio(shown, bg) >= FLOOR) continue;
       var c = toward(shown, bg);
-      if (!e.hasAttribute("data-aog-legible")) e.setAttribute("data-aog-legible", e.style.getPropertyValue("color") || "");
+      if (!mark && hov && hov.contains(e)) continue; // the hovered row is judged by hoverCheck
+      if (mark) { if (e.hasAttribute("data-aog-legible")) continue; e.setAttribute(mark, e.style.getPropertyValue("color") || ""); }
+      else if (!e.hasAttribute("data-aog-legible")) e.setAttribute("data-aog-legible", e.style.getPropertyValue("color") || "");
       e.style.setProperty("color", "rgb(" + c.r + "," + c.g + "," + c.b + ")", "important");
     }
   }
   sweep.gen = 1;
-  function reset() {
+  function reset(attr) {
     /* the theme flipped: every correction was for the old colours */
-    var fixed = D.querySelectorAll("[data-aog-legible]");
+    attr = attr || "data-aog-legible";
+    var fixed = D.querySelectorAll("[" + attr + "]");
     for (var i = 0; i < fixed.length; i++) {
-      var old = fixed[i].getAttribute("data-aog-legible");
+      var old = fixed[i].getAttribute(attr);
       if (old) fixed[i].style.setProperty("color", old); else fixed[i].style.removeProperty("color");
-      fixed[i].removeAttribute("data-aog-legible");
+      fixed[i].removeAttribute(attr);
     }
+  }
+  /* AOG-LEGIBLE-HOVER-V1 (2026-09-26) — Jimmy: a standards row went white
+     under cream text when the mouse sat on it. A hover can change what is
+     behind the words, so the row under the pointer (or the focused control)
+     is checked again, and those fixes are undone when the pointer leaves. */
+
+  function hoverCheck(t) {
+    if (!t || t.nodeType !== 1 || t === D.body || t === H) { reset("data-aog-legible-hover"); hov = null; return; }
+    var row = t.closest("tr, li, a, button, label, summary, [role=button], .card, section, article, div") || t;
+    if (row === hov) return;
+    reset("data-aog-legible-hover"); hov = row;
+    setTimeout(function () { if (hov === row) { busy = true; try { sweep.gen++; sweep(row, "data-aog-legible-hover"); } catch (e) {} setTimeout(function () { busy = false; }, 0); } }, 30);
   }
   var timer = 0, busy = false;
   function soon(full) {
@@ -111,6 +136,8 @@
         for (var i = 0; i < list.length; i++) if (list[i].type === "childList" || list[i].attributeName !== "style") { soon(false); return; }
       }).observe(D.body, { childList: true, subtree: true, attributes: true, attributeFilter: ["class", "hidden", "open"] });
     }
+    D.addEventListener("pointerover", function (e) { hoverCheck(e.target); }, true);
+    D.addEventListener("focusin", function (e) { hoverCheck(e.target); }, true);
     try { matchMedia("(prefers-color-scheme: dark)").addEventListener("change", function () { soon(true); }); } catch (e) {}
   }
   if (D.readyState === "loading") D.addEventListener("DOMContentLoaded", start); else start();

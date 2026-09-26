@@ -271,6 +271,18 @@
       else el.removeAttribute("data-aog-card");
       if (++n > 3000) break;
     }
+    /* AOG-GRACE-INK-V1 (2026-09-26) — Jimmy: "The words are WHITED OUT …
+       MAKE IT A PERMANENT FIX." A page's own stylesheet can give text dark ink
+       (the crosswalk pills did), and on the navy masthead that disappears.
+       Any text outside a card that still reads dark is stamped data-aog-ink
+       and the stylesheet turns it cream. */
+    for (i = 0; i < all.length && i < 3000; i++) {
+      el = all[i];
+      if (el.closest("[data-aog-card]")) { el.removeAttribute("data-aog-ink"); continue; }
+      el.removeAttribute("data-aog-ink");
+      var c = luma(getComputedStyle(el).color);
+      if (c !== null && c < 0.45) el.setAttribute("data-aog-ink", "1");
+    }
   }
 
   /* ── 4b ── the lede, two lines ────────────────────────────────────────── */

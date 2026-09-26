@@ -19,6 +19,9 @@ html { overflow-x: clip; overscroll-behavior: none; -webkit-text-size-adjust: 10
 body { overflow-x: clip; overscroll-behavior: none; }
 input:not([type=range]):not([type=checkbox]):not([type=radio]):not([type=color]):not([type=file]),
 select, textarea { font-size: max(16px, 1em) !important; }
+/* 6. NOTHING WIDER THAN THE SCREEN (2026-09-26) — a drawing, picture or video
+   never pushes its box past the edge; it shrinks to fit (the turntables did). */
+canvas, img, video, svg:not([width]) { max-width: 100%; }
 
 @media (hover: none) {
   *, *::before, *::after {

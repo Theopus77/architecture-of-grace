@@ -36,8 +36,13 @@ header{display:flex;justify-content:space-between;align-items:center;gap:.75rem;
 button,label.file{font:inherit;cursor:pointer;touch-action:none}
 .kicker{font-size:.75rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--steel)}
 .lead{max-width:66ch;color:var(--muted)}
-.decks{display:grid;gap:1rem;margin-top:1rem}
-@media(min-width:800px){.decks{grid-template-columns:1fr 1fr}}
+/* AOG-DECKS-FIT-V1 (2026-09-26): Jimmy's iPhone showed Deck B wider than the
+   screen once a song loaded. The waveform is drawn at twice its width, and a
+   grid column of plain 1fr lets that picture push the column wider every
+   redraw. minmax(0,1fr) and min-width:0 keep each deck the width of the screen. */
+.decks{display:grid;gap:1rem;margin-top:1rem;grid-template-columns:minmax(0,1fr)}
+.deck{min-width:0}
+@media(min-width:800px){.decks{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}}
 .deck{
   background:radial-gradient(140% 90% at 50% -10%,#4a545f,#171c22 70%);
   border-radius:20px;padding:14px;color:#efe8dc;border:1px solid #0c0f13;
@@ -127,6 +132,10 @@ footer a{color:inherit}
 /* AOG-DECKS-CRATE-V1 */
 .crate{display:grid;gap:.6rem;margin-top:.6rem}
 .crate h3{margin:.2rem 0 0;font-size:.95rem}
+.crate .find{list-style:none;margin:0;padding:0;display:grid;gap:.4rem;grid-template-columns:repeat(auto-fill,minmax(min(100%,15rem),1fr))}
+.crate .find li{display:flex;flex-wrap:wrap;align-items:center;gap:.2rem .5rem;padding:.55rem .75rem;border-radius:12px;border:1px solid rgba(201,162,74,.45);min-height:44px}
+.crate .find a{font-weight:700;color:inherit;text-decoration-color:#C9A24A;text-underline-offset:3px}
+.crate .find span{font-size:.85rem;color:var(--muted)}
 .crate .take .nm{flex:1 1 8rem;text-transform:none;letter-spacing:0;color:var(--ink);font-size:.95rem;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:600}
 .crate .take.empty{color:var(--muted)}
 .crate label.ghost{cursor:pointer}
@@ -306,6 +315,8 @@ const STR = {
   crateNext:{en:"Up next — the crate",es:"Lo que sigue — la caja"},
   crateNextNone:{en:"Line up the songs you plan to spin, before you start. They stay here, even if you close the tab.",es:"Prepara las canciones que vas a tocar antes de empezar. Se quedan aquí aunque cierres la pestaña."},
   crateAdd:{en:"Add songs",es:"Agregar canciones"},
+  findH:{en:"Where to find acapellas and samples",es:"Dónde encontrar acapellas y samples"},
+  findHint:{en:"Free sites. Download a file, then tap Load a song or Add songs. Each site says how you may use its sounds — check before you share a mix.",es:"Sitios gratis. Descarga un archivo y luego toca Cargar una canción o Agregar canciones. Cada sitio dice cómo puedes usar sus sonidos: revísalo antes de compartir una mezcla."},
   crateHint:{en:"Drag a record out of the crate onto a deck, or press A or B.",es:"Arrastra un disco de la caja a un plato, o pulsa A o B."},
   cratePrev:{en:"Previously spun",es:"Tocadas antes"},
   cratePrevNone:{en:"Every record you put on a platter shows up here.",es:"Cada disco que pones en un plato aparece aquí."},
@@ -776,6 +787,21 @@ function crateTake(i, d){
   loadFile(d, crateFile(r)); paintCrate();
 }
 function esc(s){ return String(s).replace(/[&<>"]/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c])); }
+/* AOG-DECKS-FIND-V1 (2026-09-26) — Jimmy: "when you go to load a song [there]
+   should [be] direct links to websites that offer acapellas and samples
+   (lyrical / voice and music)." Free, well-known sources; each opens in a new tab. */
+const FIND = [
+  {u:"https://ccmixter.org/view/media/samples/acappellas", n:"ccMixter", en:"acapellas · voice", es:"acapellas · voz"},
+  {u:"https://www.looperman.com/acapellas", n:"Looperman", en:"acapellas · loops", es:"acapellas · loops"},
+  {u:"https://freesound.org/", n:"Freesound", en:"samples · voice and sounds", es:"samples · voz y sonidos"},
+  {u:"https://pixabay.com/music/", n:"Pixabay Music", en:"full songs", es:"canciones completas"},
+  {u:"https://freemusicarchive.org/", n:"Free Music Archive", en:"full songs", es:"canciones completas"},
+  {u:"https://musopen.org/music/", n:"Musopen", en:"classical recordings", es:"grabaciones clásicas"},
+  {u:"https://sound-effects.bbcrewind.co.uk/", n:"BBC Sound Effects", en:"sound effects", es:"efectos de sonido"}
+];
+function findLinks(){
+  return `<h3>${t("findH")}</h3><ul class="find">${FIND.map(f=>`<li><a href="${f.u}" target="_blank" rel="noopener noreferrer">${f.n}</a> <span>${f[S.lang]||f.en}</span></li>`).join("")}</ul><p class="rechint" style="margin:0">${t("findHint")}</p>`;
+}
 function paintCrate(){
   const box = document.getElementById("crate"); if(!box) return;
   box.innerHTML = `
@@ -786,6 +812,7 @@ function paintCrate(){
       <label class="ghost">${t("crateAdd")}<input type="file" multiple id="crateAdd" accept="audio/*,video/mp4,.mp3,.m4a,.aac,.wav,.aif,.aiff,.ogg,.opus,.flac,.webm"></label>
       ${CRATE.next.length?`<button type="button" class="ghost" data-crateclear="next">${t("crateClear")}</button>`:""}
     </div>
+    ${findLinks()}
     <h3>${t("cratePrev")}</h3>
     ${CRATE.prev.map((r,i)=>crateRow(r,i,"prev")).join("") || `<div class="take empty">${t("cratePrevNone")}</div>`}
     ${CRATE.prev.length?`<div class="take" style="background:none;border:0;padding:0"><button type="button" class="ghost" data-crateclear="prev">${t("crateClear")}</button></div>`:""}`;
