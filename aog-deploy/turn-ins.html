@@ -1357,6 +1357,14 @@ else document.documentElement.classList.add("aog-embed");</script>
      opens the marked worksheet; the other opens it and prints. */
   function worksheetLink(it, print){
     var r=it.raw||{}, x=xparse(r);
+    if(x.series==="course"){
+      /* a course unit: the page is <course>-u<unit>.html, the section is the row's review id */
+      var FILE={ss:"ssc"}, cid=String(r.course||(String(r.activityId||"").match(/^crs-([a-z]+)-u/)||[])[1]||""), unit=r.unit||(String(r.activityId||"").match(/-u(\d+)-/)||[])[1], rid=x.review||(String(r.activityId||"").match(/-u\d+-(.+)$/)||[])[1];
+      if(!cid||!unit||!rid||!Array.isArray(x.answers)) return "";
+      var rvc={who:r.studentId||"", date:String(r.date||r.timestamp||"").slice(0,10), rid:rid, a:x.answers.map(function(q){ var it=(q.a||[])[0]; return it&&it.g!=null?String(it.g):""; })};
+      var b64c=btoa(unescape(encodeURIComponent(JSON.stringify(rvc)))).replace(/\+/g,"-").replace(/\//g,"_").replace(/=+$/,"");
+      return "/"+(FILE[cid]||cid)+"-u"+unit+".html?review="+b64c+(print?"&print=1":"");
+    }
     if(x.series!=="daily-drops"||x.kind==="writing"||!Array.isArray(x.answers)||!x.answers.length) return "";
     var subj=x.subject||"", grade=x.grade||"", sheet=x.sheet||r.setNo||"";
     if(!subj||!grade||!sheet) return "";

@@ -111,7 +111,7 @@
     }
   } catch (e) {}
   /* AOG-PAGES-V1 — course units show one section per page, with Back and Next */
-  try { var pgs = D.createElement("script"); pgs.src = "/aog-pages.js?v=4"; (D.head || H).appendChild(pgs); } catch (e) {}
+  try { var pgs = D.createElement("script"); pgs.src = "/aog-pages.js?v=5"; (D.head || H).appendChild(pgs); } catch (e) {}
   /* AOG-SLIDES-V1 — the Start-here pictures on every lesson page get the facelift */
   try { var sl = D.createElement("script"); sl.src = "/aog-slides.js?v=1"; (D.head || H).appendChild(sl); } catch (e) {}
   /* AOG-MINE-V1 — a private copy of what this learner sends, for their own Blueprint */
