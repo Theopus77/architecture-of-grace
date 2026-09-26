@@ -88142,8 +88142,8 @@ html.js-reveal .reveal,
       '<div class="gc-ey">' + esc(T("From the Sheet", "Desde la hoja")) + '</div>'
       + '<h3>' + esc(T("Brick by brick", "Ladrillo a ladrillo")) + '</h3>'
       + '<p class="gc-sub">' + esc(T(
-          "One picture per activity, because eight of ten on one activity and eight of ten on another are not the same measure. Every sheet of one subject and grade is a point on the SAME line — the set number is the position, not a new activity. The line is what was solved with no hint; the shaded band above it is what a hint was still carrying. Where sheets hold different numbers of items the line is a percentage, and each point still prints its own count.",
-          "Una imagen por actividad, porque ocho de diez en una actividad y ocho de diez en otra no son la misma medida. Cada hoja de una materia y un grado es un punto de la MISMA línea — el número de grupo es la posición, no una actividad nueva. La línea es lo resuelto sin pista; la banda sombreada encima es lo que una pista todavía sostenía. Cuando las hojas tienen distinto número de ítems la línea es un porcentaje, y cada punto imprime su propio conteo."))
+          "One graph per activity. The line is what the student got right with no hint. The shaded part above it is what they got with a hint.",
+          "Una gráfica por actividad. La línea es lo que el estudiante acertó sin pista. La parte sombreada encima es lo que logró con una pista."))
       + '</p>'
       + '<div class="gc-who"><span class="gc-lb">' + esc(T("Student", "Estudiante")) + '</span>'
       + names.map(function (s) {
@@ -88594,8 +88594,8 @@ html.js-reveal .reveal,
     var h = '<div class="pb-ey">' + esc(T("From the Sheet", "Desde la hoja")) + '</div>'
       + '<h3>' + esc(T("Print a practice record", "Imprimir un registro de práctica")) + '</h3>'
       + '<p class="pb-sub">' + esc(T(
-          "One page per student, from this computer — the picture, the read and every probe behind it. Print to paper or save it as a PDF for a meeting.",
-          "Una página por estudiante, desde esta computadora — la imagen, la lectura y cada sondeo detrás de ella. Imprime en papel o guárdalo como PDF para una reunión.")) + '</p>'
+          "One page per student: their graph and every sheet they did. Print it or save it as a PDF for a meeting.",
+          "Una página por estudiante: su gráfica y cada hoja que hizo. Imprímela o guárdala como PDF para una reunión.")) + '</p>'
       + (order.length > 1
           ? '<div class="pb-who"><span class="pb-wlb">' + esc(T("Student", "Estudiante")) + '</span>'
             + order.map(function (sid) {
@@ -89399,11 +89399,11 @@ html.js-reveal .reveal,
     pickAct = a0;
     var dd = ddParse(a0);
     var h = '<div class="pb-sec"><div class="pb-lb">'
-      + esc(T("Probe record sheets — the item-by-item page", "Hojas de registro del sondeo — la página ítem por ítem"))
+      + esc(T("Question-by-question sheets", "Hojas pregunta por pregunta"))
       + '</div>'
       + '<p class="pb-sub">' + esc(T(
-          "The same sheet the activity prints on the student's device, rebuilt here: what happened, the item-by-item map, what it says, and the three sets over time. One page per probe.",
-          "La misma hoja que la actividad imprime en el dispositivo del estudiante, reconstruida aquí: lo que pasó, el mapa ítem por ítem, lo que dice y los tres grupos en el tiempo. Una página por sondeo.")) + '</p>'
+          "A “probe” is one practice sheet a student sent. This prints that sheet showing each question: right on their own, right with a hint, or not yet.",
+          "Un “sondeo” es una hoja de práctica que envió un estudiante. Esto imprime esa hoja con cada pregunta: bien solo, bien con pista, o todavía no.")) + '</p>'
       + '<div class="pb-row">'
       + (sel ? '<button type="button" class="pb-go" data-ppsheet="marked" data-ppa="' + esc(sel) + '">'
              + esc(T("Print the marked worksheet", "Imprimir la hoja corregida")) + '</button>' : "")
@@ -89436,8 +89436,8 @@ html.js-reveal .reveal,
           : "")
       + '<button type="button" data-ppsheet="blank">' + esc(T("Print blank record sheets", "Imprimir hojas de registro en blanco")) + '</button>'
       + '<span class="pb-note">' + esc(dd ? T(
-          "The class set is the draft itself — the questions, blank, one page per student, with a single answer key at the end for you. Record sheets are the recording form for a pencil.",
-          "El juego en blanco es el borrador mismo — las preguntas, en blanco, una página por estudiante, con una sola clave al final para ti. Las hojas de registro son el formulario para lápiz.") : T(
+          "Blank class set: the questions on paper, one page per student, with the answer key at the end.",
+          "Juego en blanco: las preguntas en papel, una página por estudiante, con la clave al final.") : T(
           "Blank sheets are the paper version of the same probe — run it with a pencil and fill it in by hand.",
           "Las hojas en blanco son la versión en papel del mismo sondeo — aplícalo con lápiz y complétalo a mano.")) + '</span>'
       /* ⚠ A PLACE FOR THE BUTTON TO SPEAK. Empty until something needs saying. */
