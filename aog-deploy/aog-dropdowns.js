@@ -86,7 +86,7 @@
     box.hidden = list.length < 2;
   }
   var t = 0;
-  function refresh() { clearTimeout(t); t = setTimeout(function () { ROWS.concat(extra()).forEach(build); try { demoBar(); } catch (e) {} try { iepPick(); } catch (e) {} try { gsBar(); } catch (e) {} }, 40); }
+  function refresh() { if (t) return; t = setTimeout(function () { t = 0; try { ROWS.concat(extra()).forEach(function (r) { try { build(r); } catch (e) {} }); } catch (e) {} try { demoBar(); } catch (e) {} try { iepPick(); } catch (e) {} try { gsBar(); } catch (e) {} try { practiceFilter(); } catch (e) {} }, 40); }
   var css = D.createElement("style");
   css.textContent =
     ".aogdd-src{position:absolute!important;width:1px!important;height:1px!important;overflow:hidden!important;clip:rect(0 0 0 0)!important;white-space:nowrap!important}" +
@@ -201,6 +201,29 @@
     if (bar.__h !== html) { bar.innerHTML = html; bar.__h = html; }
     var b = bar.querySelector("[data-gsconnect]");
     b.onclick = function () { var o = Array.prototype.find.call(dd.options, function (x) { return /Connect|Conectar/.test(x.text); }); if (o) { dd.value = o.value; dd.selectedIndex = o.index; dd.dispatchEvent(new Event("change")); } };
+  }
+  /* AOG-PRACTICE-FOLLOWS-V1 (2026-09-26) — Jimmy: "That list needs to fold in. It
+     was on Mia but everyone showed up." The practice table shows only the student
+     picked above it, with one button to show everyone. */
+  var showAll = false;
+  function practiceFilter() {
+    var sc = D.querySelector("#screen-admin .pc-scroll"); if (!sc || !sc.getClientRects().length) return;
+    var tb = sc.querySelector("table"); if (!tb || !tb.tBodies[0]) return;
+    var chip = D.querySelector("#screen-admin .gc-chip[aria-pressed=true], #screen-admin .pb-chip[aria-pressed=true]");
+    var who = chip ? chip.textContent.trim() : "";
+    var bar = D.getElementById("aogPcWho");
+    if (!bar) { bar = D.createElement("div"); bar.id = "aogPcWho"; bar.className = "aogdd-demo no-print"; sc.parentNode.insertBefore(bar, sc);
+      bar.addEventListener("click", function (e) { if (e.target.closest("button")) { showAll = !showAll; practiceFilter(); } }); }
+    var n = 0;
+    Array.prototype.forEach.call(tb.tBodies[0].rows, function (r) {
+      var c = r.cells[0], nm = c ? c.textContent.trim() : "";
+      var keep = showAll || !who || !nm || nm === who || r.classList.contains("pc-sub") || (!r.cells[0].textContent.trim());
+      if (nm && nm !== who && !showAll && who) keep = false;
+      r.style.display = keep ? "" : "none"; if (keep && nm) n++;
+    });
+    var t = showAll ? (es() ? "Mostrando a todos · " : "Showing everyone · ") : (who ? (es() ? "Mostrando solo a " : "Showing only ") + who + " · " : "");
+    var html = '<span class="aogdd-demo-tx">' + t + n + (es() ? " filas" : " rows") + '</span><button type="button" class="aogdd-gsb">' + (showAll ? (es() ? "Solo " : "Only ") + (who || "") : (es() ? "Mostrar a todos" : "Show everyone")) + '</button>';
+    if (bar.__h !== html) { bar.innerHTML = html; bar.__h = html; }
   }
   function start() {
     D.head.appendChild(css); refresh();
