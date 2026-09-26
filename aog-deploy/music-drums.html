@@ -6,13 +6,13 @@
 <script>
 (function(){var t="light";try{if(localStorage.getItem("aog.interior.ws.v1.theme")==="dark")t="dark";}catch(e){}document.documentElement.setAttribute("data-theme",t);if(t==="dark")document.documentElement.classList.add("dark");})();
 </script>
-<title>The Drum Bench — Architecture of Grace</title>
+<title>The Drum Machine — Architecture of Grace</title>
 <meta name="description" content="Meet a beat first. Sixteen steps, eight classroom voices, a kind volume. Patterns stay on this computer. Print the sheet.">
 <link rel="canonical" href="https://architectureofgrace.org/drums">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Architecture of Grace">
 <meta property="og:locale" content="en_US">
-<meta property="og:title" content="The Drum Bench — Architecture of Grace">
+<meta property="og:title" content="The Drum Machine — Architecture of Grace">
 <meta property="og:description" content="A moving beat first. Names after you tap. Sixteen steps. School voices only.">
 <meta property="og:url" content="https://architectureofgrace.org/drums">
 <meta property="og:image" content="https://architectureofgrace.org/og-science.png?v=1">
@@ -321,7 +321,7 @@ button,a,label,input[type=range],.pill,.pad,.platter,canvas{touch-action:manipul
 </script>
 <div class="wrap">
   <header class="no-print">
-    <a class="brand" href="#home" id="brand">The Drum Bench</a>
+    <a class="brand" href="#home" id="brand">The Drum Machine</a>
     <div class="tools">
       <a class="pill" href="/drums-guide" style="text-decoration:none">Picture guide</a>
       <button type="button" class="pill" id="langBtn">ES</button>
@@ -333,7 +333,7 @@ button,a,label,input[type=range],.pill,.pad,.platter,canvas{touch-action:manipul
   <details class="pg no-print" id="pgPanel">
     <summary><span class="chev">&#9656;</span>Picture guide<span class="pgsub">Almost no reading &#183; prints on 5 pages</span></summary>
     <div class="pgbody">
-      <iframe id="pgFrame" data-src="/drums-guide?embed=1" title="The Drum Bench, in pictures" loading="lazy"></iframe>
+      <iframe id="pgFrame" data-src="/drums-guide?embed=1" title="The Drum Machine, in pictures" loading="lazy"></iframe>
     </div>
     <p class="pgfoot">To print it, <a href="/drums-guide">open the picture guide on its own page</a>.</p>
   </details>
@@ -374,7 +374,7 @@ const PRESETS = [
    map:{kick:[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], snare:[0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,1], rim:[1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0], bell:[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]}}
 ];
 const STR = {
-  app:{en:"The Drum Bench",es:"El banco de ritmo"},
+  app:{en:"The Drum Machine",es:"La caja de ritmos"},
   eyebrow:{en:"A moving beat first. Names after you tap.",es:"Primero el ritmo. Los nombres después de tocar."},
   tag:{en:"The panel of the 1987 sampler. Eight pads, a slider over each one, four banks, and swing in the six steps that machine actually had.",es:"El panel del sampler de 1987. Ocho almohadillas, un deslizador sobre cada una, cuatro bancos, y el swing en los seis pasos que esa máquina tenía."},
   priv:{en:"Twelve bits. 26,040 samples a second. Ten seconds of memory, and no sample longer than 2.5. Save writes a file you can send. Open reads a file someone sent you. This computer also keeps the last session, so closing the page does not throw the work away.",es:"Doce bits. 26.040 muestras por segundo. Diez segundos de memoria, y ninguna muestra de más de 2.5. Guardar escribe un archivo que puedes enviar. Abrir lee un archivo que alguien te mandó. Esta computadora también guarda la última sesión, así que cerrar la página no tira el trabajo."},
@@ -414,7 +414,7 @@ const STR = {
   hear:{en:"This is built to the SP-1200 manual, not to the logo. Swing is 50, 54, 58, 63, 67 or 71. It waits on the second eighth note, not on every other sixteenth. Tune is plus or minus a fifth. The sliders are mix, tune, or decay — the switch above the pads. Banks C and D are empty until you sample into the lit pad. What you sample is cut to 26,040 a second and twelve bits. This is not an E-mu, and it does not load that machine's disks.",es:"Esto está hecho según el manual del SP-1200, no según el logo. El swing es 50, 54, 58, 63, 67 o 71. Espera en la segunda corchea, no en cada semicorchea. La afinación es más o menos una quinta. Los deslizadores son mezcla, afinación o caída — el interruptor sobre las almohadillas. Los bancos C y D están vacíos hasta que grabes en la almohadilla encendida. Lo que grabas se corta a 26.040 por segundo y doce bits. Esto no es un E-mu, y no carga los discos de esa máquina."},
   outF:{en:"Output filter",es:"Filtro de salida"},
   mix:{en:"Mix",es:"Mezcla"},
-  foot:{en:"The Drum Bench · Architecture of Grace · twelve-bit school sampler, not a studio account",es:"El banco de ritmo · Architecture of Grace · sampler escolar de doce bits, no una cuenta de estudio"},
+  foot:{en:"The Drum Machine · Architecture of Grace · twelve-bit school sampler, not a studio account",es:"La caja de ritmos · Architecture of Grace · sampler escolar de doce bits, no una cuenta de estudio"},
   backSci:{en:"Science door",es:"Puerta de ciencias"},
   thatsIt:{en:"That's the one.",es:"Esa es."},
   notThat:{en:"Not that voice. Try again.",es:"No es esa voz. Inténtalo otra vez."},
@@ -1540,7 +1540,7 @@ async function bounceToDecks(){
     const blob=wavBlob(L,R,sr);
     const bars=Math.max(1, Math.round(loops*chain.length*4*
       (chain.reduce((n,i)=>n + Math.max(4, Math.min(16, (S.segs[i]&&S.segs[i].len)||16)), 0)/chain.length)/16/4));
-    const name=(S.lang==="es"?"Banco de ritmo":"Drum bench")+" · "+Math.round(S.bpm)+" BPM · "+bars+(S.lang==="es"?" compases":" bars")+((S.trackOn&&S.track.length)?(S.lang==="es"?" · pista":" · track"):"");
+    const name=(S.lang==="es"?"Caja de ritmos":"Drum machine")+" · "+Math.round(S.bpm)+" BPM · "+bars+(S.lang==="es"?" compases":" bars")+((S.trackOn&&S.track.length)?(S.lang==="es"?" · pista":" · track"):"");
     await AOGHandoff.put("drumbench", { name:name, bpm:S.bpm, bars:bars, bank:S.bank, at:Date.now(), wav:blob });
     /* a muted or soloed pad is not in the bounce either — say so, or the kick
        goes missing on the turntables and nobody knows why */
