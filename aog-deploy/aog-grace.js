@@ -84,6 +84,8 @@
       var pj = D.createElement("script"); pj.src = "/aog-practice.js"; pj.defer = true; (D.head || H).appendChild(pj);
     }
   } catch (e) {}
+  /* AOG-SLIDES-V1 — the Start-here pictures on every lesson page get the facelift */
+  try { var sl = D.createElement("script"); sl.src = "/aog-slides.js?v=1"; (D.head || H).appendChild(sl); } catch (e) {}
   /* AOG-MINE-V1 — a private copy of what this learner sends, for their own Blueprint */
   try { var mn = D.createElement("script"); mn.src = "/aog-mine.js"; (D.head || H).appendChild(mn); } catch (e) {}
   var FONTS = "https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..700&family=Inter:wght@300;400;500;600;700;800&display=optional";
