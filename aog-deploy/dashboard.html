@@ -377,6 +377,8 @@ function mEvidenceHtml(name){
   /* every count is a door to where the data lives */
   const e=mEvidence(name), q=encodeURIComponent(name), box=(n,l,sub,href)=>'<a class="stat" style="text-decoration:none;color:inherit" href="'+href+'"><b>'+n+'</b><span>'+l+(sub?'<br><small>'+sub+'</small>':'')+'<br><small style="color:var(--goldInk)">'+t2("open ›","abrir ›")+'</small></span></a>';
   const goStu=()=>{ put("aog.dash2.sel",name); };
+  /* each academics row opens the Inbox narrowed to this student and that kind of work */
+  const arow=(w,l,n,acc)=>'<tr><td><a href="/turn-ins.html?student='+q+'&work='+w+'" style="color:inherit;font-weight:600">'+l+'</a></td><td><b>'+n+'</b></td><td>'+acc+' <a href="/turn-ins.html?student='+q+'&work='+w+'" style="color:var(--goldInk);font-size:13px;white-space:nowrap">'+t2("open ›","abrir ›")+'</a></td></tr>';
   let h='<p class="k" style="color:var(--goldInk);margin-top:16px">'+t2("Beyond the self-reflection — what else this device knows","Más allá de la autorreflexión — lo demás que sabe este aparato")+'</p>';
   h+='<div class="stats">'
    +box(e.ci30,t2("check-ins, last 30 days","registros, últimos 30 días"),e.ci+" "+t2("in all","en total"),"#students?stu="+q)
@@ -386,9 +388,9 @@ function mEvidenceHtml(name){
    +'</div>';
   h+='<div class="grid3" style="grid-template-columns:repeat(2,minmax(0,1fr))">';
   h+='<section class="card"><p class="k" style="color:var(--goldInk)">'+t2("Academics","Lo académico")+'</p><table class="tbl"><tbody>'
-   +'<tr><td>'+t2("Daily Drafts sheets","Hojas de Daily Drafts")+'</td><td><b>'+e.dd+'</b></td><td>'+(e.ddAcc==null?"—":e.ddAcc+"% "+t2("first try","primer intento"))+'</td></tr>'
-   +'<tr><td>'+t2("Lesson checks (Check yourself)","Comprobaciones de lección")+'</td><td><b>'+e.checks+'</b></td><td>'+(e.checksAcc==null?"—":e.checksAcc+"%")+'</td></tr>'
-   +'<tr><td>'+t2("Unit tests (one shot)","Exámenes de unidad")+'</td><td><b>'+e.tests+'</b></td><td>'+(e.testsAcc==null?"—":e.testsAcc+"%")+'</td></tr>'
+   +arow("dd",t2("Daily Drafts sheets","Hojas de Daily Drafts"),e.dd,e.ddAcc==null?"—":e.ddAcc+"% "+t2("first try","primer intento"))
+   +arow("checks",t2("Lesson checks (Check yourself)","Comprobaciones de lección"),e.checks,e.checksAcc==null?"—":e.checksAcc+"%")
+   +arow("tests",t2("Unit tests (one shot)","Exámenes de unidad"),e.tests,e.testsAcc==null?"—":e.testsAcc+"%")
    +'</tbody></table></section>';
   const ad=mAdult(name);
   h+='<section class="card"><p class="k" style="color:var(--goldInk)"><a href="#checkins" style="color:inherit">'+t2("What adults observed, last 30 days","Lo que observaron los adultos, últimos 30 días")+' ›</a></p>'
