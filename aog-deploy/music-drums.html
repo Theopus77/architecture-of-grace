@@ -114,6 +114,10 @@ header { display:flex; flex-wrap:wrap; justify-content:space-between; align-item
 .simple-row>span{font-size:.72rem;letter-spacing:.14em;color:#9a9488;font-weight:800;text-transform:uppercase;min-width:4.2rem}
 .simple-row>em{font-style:normal;color:#b7f7a8;font-size:.82rem;margin-left:.3rem}
 .simple-row .sp-key{min-width:2.6rem;font-size:.85rem}
+.simple-row .s-len,.simple-row .s-swing{border-color:#6ea56a;min-width:0;padding:0 .7rem}
+.simple-row .s-len{margin-left:auto}
+.simple-row .s-reset{border-color:#c4452a;color:#ffb1a4;min-width:0;margin-left:auto}
+.simple-note{color:#ffd9a8;font-size:.9rem;margin:.3rem 0 0}
 .simple-line{color:#d7cbb8;font-size:.95rem;margin:.2rem 0 .6rem;line-height:1.4}
 @media (max-width:520px){ .simple-strip{grid-template-columns:1fr 1fr} .simple-strip .s-play{grid-column:1 / -1} }
 .machine.simple .sp-keys,.machine.simple .sp-banks,.machine.simple .scope-bezel,.machine.simple .sp-eq,.machine.simple .fader,.machine.simple .seg-label{display:none}
@@ -428,7 +432,7 @@ const STR = {
   clear:{en:"Clear grid",es:"Vaciar"},
   benchLab:{en:"Bench",es:"Banco"}, benchSimple:{en:"Simple bench",es:"Banco sencillo"}, benchFull:{en:"Full bench",es:"Banco completo"},
   sPlay:{en:"▶ Play the beat",es:"▶ Tocar el ritmo"}, sStop:{en:"■ Stop",es:"■ Parar"}, sClear:{en:"Clear the beat",es:"Borrar el ritmo"}, sDecks:{en:"Send to the turntables",es:"Enviar a los platos"},
-  sKit:{en:"Sounds",es:"Sonidos"}, sPart:{en:"Part",es:"Parte"},
+  sKit:{en:"Sounds",es:"Sonidos"}, sLen:{en:"Length",es:"Largo"}, sSwing:{en:"Swing",es:"Swing"}, sReset:{en:"Put the kit sounds back",es:"Devolver los sonidos del kit"}, sHolds:{en:"Your own samples are on pad",es:"Tus propias muestras están en el pad"}, sPart:{en:"Part",es:"Parte"},
   sLine:{en:"Tap a pad to hear it. Tap the squares to build a beat. Then press Play.",es:"Toca un pad para oírlo. Toca los cuadros para armar un ritmo. Luego pulsa Tocar."},
   tempo:{en:"Tempo",es:"Tempo"},
   swing:{en:"Swing",es:"Swing"},
@@ -700,6 +704,10 @@ function noiseHit(ac, dest, t0, type, freq, q, peak, decay){
 const KIT_NAME={C:{kick:"BOOM",snare:"SNAP",ch:"TICK",oh:"HISS",clap:"CLAP2",tom:"CONGA",rim:"COWBEL",bell:"ZAP"},
                 D:{kick:"THUMP",snare:"CRACK",ch:"SHAKER",oh:"TAMB",clap:"FSNAP",tom:"TIMBAL",rim:"BLOCK",bell:"TRIANG"}};
 const KIT_LABEL={A:["Kit A · the classic","Kit A · el clásico"],B:["Kit B · the classic, retuned","Kit B · el clásico, reafinado"],C:["Kit C · electro","Kit C · electro"],D:["Kit D · dusty breaks","Kit D · breaks polvorientos"]};
+/* AOG-SP-KITBACK-V1 — Jimmy: "something is up with sound A, it is a bell." A sample he had loaded
+   onto pad 1 of bank A was playing in place of the kick. The Simple bench now says which pads hold
+   your own samples and offers one tap to put the kit sounds back on that bank. */
+function userPads(){ const u=USER[S.bank]||{}; return VOICES.map(v=>v.id).filter(id=>!!u[id]); }
 function romFor(bank){ return (bank==="C"||bank==="D") ? ROMK[bank] : ROM; }
 function renderVoiceC(id, t0, dest, ac){
   if(id==="kick"){            /* the 808 boom: a sine that sags from 62 to 38 Hz and hangs on */
@@ -1367,8 +1375,9 @@ function machineHtml(){
       <button type="button" class="s-clear" data-simple="clear">${t("sClear")}</button>
       <button type="button" class="s-decks" data-simple="decks">${t("sDecks")}</button>
     </div>
-    <div class="simple-row"><span>${t("sKit")}</span>${["A","B","C","D"].map(b=>`<button type="button" class="sp-key${S.bank===b?" on":""}" data-simple-bank="${b}" title="${(KIT_LABEL[b]||["",""])[S.lang==="es"?1:0]}">${b}</button>`).join("")}<em>${(KIT_LABEL[S.bank]||["",""])[S.lang==="es"?1:0]}</em></div>
-    <div class="simple-row"><span>${t("sPart")}</span>${Array.from({length:SEGS},(_,i)=>`<button type="button" class="sp-key${S.seg===i?" on":""}" data-simple-seg="${i}">${i+1}</button>`).join("")}</div>
+    <div class="simple-row"><span>${t("sKit")}</span>${["A","B","C","D"].map(b=>`<button type="button" class="sp-key${S.bank===b?" on":""}" data-simple-bank="${b}" title="${(KIT_LABEL[b]||["",""])[S.lang==="es"?1:0]}">${b}</button>`).join("")}<em>${(KIT_LABEL[S.bank]||["",""])[S.lang==="es"?1:0]}</em>${userPads().length?`<button type="button" class="sp-key s-reset" data-simple-resetkit="1">${t("sReset")}</button>`:""}</div>
+    ${userPads().length?`<p class="simple-note">${t("sHolds")} ${userPads().map(v=>(padIndex(v)+1)+" · "+(USER_NAME[S.bank][v]||"SAMP")).join(", ")}.</p>`:""}
+    <div class="simple-row"><span>${t("sPart")}</span>${Array.from({length:SEGS},(_,i)=>`<button type="button" class="sp-key${S.seg===i?" on":""}" data-simple-seg="${i}">${i+1}</button>`).join("")}<button type="button" class="sp-key s-len" data-simple-press="lenBtn">${t("sLen")} ${segLen()}</button><button type="button" class="sp-key s-swing" data-simple-press="swingBtn">${t("sSwing")} ${swingPct()}%</button></div>
     <p class="simple-line">${t("sLine")}</p>`:"";
   return `<div class="machine no-print${simple?" simple":""}">
     <div class="chassis-top">
@@ -1897,6 +1906,10 @@ async function openWorkFile(file){
 function bind(){
   document.body.classList.toggle("bench-simple", S.bench!=="full");
   document.querySelectorAll("[data-bench]").forEach(b=>b.onclick=()=>{ S.bench=b.getAttribute("data-bench"); try{ localStorage.setItem("aog.drums.bench", S.bench); }catch(e){} paint(); });
+  /* Jimmy: "The LEN should be on the simple machine as well … and swing" — both press the real key and read the new value back */
+  document.querySelectorAll("[data-simple-press]").forEach(b=>b.onclick=()=>{ const r=document.getElementById(b.getAttribute("data-simple-press")); if(r) r.click();
+    setTimeout(()=>{ b.textContent=(b.classList.contains("s-len")?t("sLen")+" "+segLen():t("sSwing")+" "+swingPct()+"%"); },0); });
+  document.querySelectorAll("[data-simple-resetkit]").forEach(b=>b.onclick=()=>{ USER[S.bank]={}; USER_NAME[S.bank]={}; if(S.trim) S.trim[S.bank]={}; pushBank(); save(); paint(); });
   document.querySelectorAll("[data-simple-bank]").forEach(b=>b.onclick=()=>{ const r=document.querySelector('[data-bank="'+b.getAttribute("data-simple-bank")+'"]'); if(r) r.click(); });
   document.querySelectorAll("[data-simple-seg]").forEach(b=>b.onclick=()=>{ const r=document.querySelector('[data-seg="'+b.getAttribute("data-simple-seg")+'"]'); if(r) r.click(); document.querySelectorAll("[data-simple-seg]").forEach(x=>x.classList.toggle("on", x===b)); });
   document.querySelectorAll("[data-simple]").forEach(b=>b.onclick=()=>{ const id={play:"playBtn",clear:"clearBtn",decks:"toDecks"}[b.getAttribute("data-simple")]; const r=document.getElementById(id); if(r) r.click(); });
