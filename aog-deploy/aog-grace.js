@@ -84,6 +84,32 @@
       var pj = D.createElement("script"); pj.src = "/aog-practice.js"; pj.defer = true; (D.head || H).appendChild(pj);
     }
   } catch (e) {}
+  /* AOG-SEND-ONCE-V1 (2026-09-26) — Jimmy: "I keep on getting two for everything Luke or myself
+     have been sending." Every send page posts to the teacher's Apps Script with mode:"cors" and,
+     if the reply cannot be read, posts the SAME body again with mode:"no-cors". Google very often
+     saves the first post and only the reply is unreadable (its redirect answers without CORS
+     headers), so the "backup" was a second, identical row. Here the backup is skipped whenever
+     the same body already went to the same Apps Script a moment ago; the page is told it went. */
+  try {
+    if (window.fetch && !window.fetch.__aogOnce) {
+      var _f = window.fetch, recent = [];
+      var isGas = function (u) { return /^https:\/\/script\.google(usercontent)?\.com\//.test(String(u || "")); };
+      var once = function (input, init) {
+        try {
+          var url = typeof input === "string" ? input : (input && input.url), m = init && String(init.method || "").toUpperCase();
+          if (m === "POST" && isGas(url) && init && typeof init.body === "string") {
+            var now = Date.now(); recent = recent.filter(function (r) { return now - r.t < 120000; });
+            if (init.mode === "no-cors") {
+              for (var i = 0; i < recent.length; i++) if (recent[i].u === url && recent[i].b === init.body)
+                return Promise.resolve(new Response(null, { status: 200 }));
+            } else recent.push({ u: url, b: init.body, t: now });
+          }
+        } catch (e) {}
+        return _f.apply(this, arguments);
+      };
+      once.__aogOnce = 1; window.fetch = once;
+    }
+  } catch (e) {}
   /* AOG-PAGES-V1 — course units show one section per page, with Back and Next */
   try { var pgs = D.createElement("script"); pgs.src = "/aog-pages.js?v=1"; (D.head || H).appendChild(pgs); } catch (e) {}
   /* AOG-SLIDES-V1 — the Start-here pictures on every lesson page get the facelift */
