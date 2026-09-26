@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<script>(function(){var t="light";try{if(localStorage.getItem("aog.interior.ws.v1.theme")==="dark")t="dark";}catch(e){}document.documentElement.setAttribute("data-theme",t);})();</script>
+<title>Dashboard — Architecture of Grace</title>
+<meta name="description" content="Hand out Daily Drafts, assignments and slips in one link. A teacher view and a student view.">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<meta name="theme-color" content="#0A1E33">
+<!-- AOG-DASH2-V1 (2026-09-26) — Jimmy: "The WHOLE DASHBOARD needs a complete new interface and
+     engine behind it … a masterpiece in craftsmanship." Stage 1 of the new dashboard: the frame,
+     Today (hand out Daily Drafts, assignments and slips), the teacher and student views, and Set up.
+     It reads the same saved connection as the classic dashboard (aog.sync.url / .writekey /
+     aog.org.id) and never writes or erases it. Links carry dest= and org= built exactly as the
+     classic builder builds them, so every answer still lands in the teacher's Sheet.
+     THE CLASS LINK: a student device cannot see the teacher's device, so today's handout travels
+     on one link (?hand=…) that opens the student view with just those items. -->
+<style>
+:root{--navy:#0A1E33;--navy2:#13314F;--ink:#1a232c;--soft:#556270;--faint:#7d8896;--cream:#FBF7EE;--card:#fff;--line:#E7DDC8;
+ --gold:#C9A24A;--gold2:#F2C964;--good:#2E7D4F;--c1:#2F63B8;--c2:#B87A12;--c3:#2E8B57;--c4:#A8323E;--c5:#7B4FA0;--shadow:0 1px 2px rgba(10,30,51,.06),0 14px 34px -22px rgba(10,30,51,.45)}
+[data-theme="dark"]{--ink:#EEF2F6;--soft:#B9C4D0;--faint:#93A0AE;--cream:#1A3657;--card:#22436A;--line:rgba(255,255,255,.14);--shadow:0 16px 34px -22px rgba(0,0,0,.7)}
+*{box-sizing:border-box}
+html{background:var(--cream)}
+body{margin:0;color:var(--ink);background:var(--cream);font:16px/1.5 -apple-system,"Segoe UI",Inter,Roboto,Arial,sans-serif}
+.app{display:grid;grid-template-columns:240px 1fr;min-height:calc(100vh - 56px);background:linear-gradient(to right,var(--navy) 240px,transparent 240px)}
+.rail{background:var(--navy);color:#EAF0F6;padding:18px 12px;position:sticky;top:var(--aogbar-h,52px);height:calc(100vh - var(--aogbar-h,52px));overflow:auto}
+.rail .brand{font:600 13px Inter,sans-serif;letter-spacing:.16em;text-transform:uppercase;color:var(--gold2);padding:4px 10px 14px}
+.view{display:flex;background:rgba(255,255,255,.08);border-radius:12px;padding:4px;margin:0 4px 16px}
+.view button{flex:1;min-height:40px;border:0;border-radius:9px;background:transparent;color:#DCE5EE;font:700 14px inherit;font-family:inherit;cursor:pointer}
+.view button[aria-pressed=true]{background:var(--gold2);color:var(--navy)}
+.nav a{display:flex;align-items:center;gap:10px;min-height:44px;padding:0 12px;border-radius:12px;color:#DCE5EE;text-decoration:none;font-weight:650;margin:2px 0}
+.nav a[aria-current=page]{background:rgba(242,201,100,.16);color:#fff;box-shadow:inset 3px 0 0 var(--gold2)}
+.nav a:hover{background:rgba(255,255,255,.07)}
+.nav svg{width:18px;height:18px;flex:none;opacity:.9}
+.nav .sep{height:1px;background:rgba(255,255,255,.12);margin:12px 8px}
+.nav small{display:block;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#9FB1C4;padding:8px 12px 2px}
+main{padding:26px clamp(16px,3vw,40px) 60px;max-width:1180px}
+.hello{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:12px;margin:0 0 20px}
+.hello h1{font:600 clamp(28px,4vw,40px)/1.1 Fraunces,Georgia,serif;margin:0}
+.hello p{margin:4px 0 0;color:var(--soft)}
+.pill{display:inline-flex;align-items:center;gap:8px;min-height:36px;padding:0 14px;border-radius:999px;font-size:14px;font-weight:700;border:1.5px solid var(--line);background:var(--card)}
+.pill .dot{width:9px;height:9px;border-radius:50%;background:#C7931F}.pill.ok .dot{background:var(--good)}
+.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:20px;box-shadow:var(--shadow);position:relative;overflow:hidden}
+.card.hand::before{content:"";position:absolute;inset:0 0 auto 0;height:5px;background:var(--ac)}
+.card h2{font:600 22px/1.2 Fraunces,Georgia,serif;margin:4px 0 6px}
+.card .k{font:800 11.5px Inter,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:var(--ac,var(--gold))}
+.card p.s{color:var(--soft);margin:0 0 14px;font-size:15px}
+.ic{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;background:var(--ac);color:#fff;margin-bottom:10px;box-shadow:0 8px 16px -10px var(--ac)}
+.ic svg{width:22px;height:22px}
+label.f{display:block;font:700 12px Inter,sans-serif;letter-spacing:.1em;text-transform:uppercase;color:var(--faint);margin:10px 0 4px}
+select,input[type=text]{width:100%;font:inherit;font-size:16px;min-height:44px;padding:0 12px;border-radius:12px;border:1.5px solid var(--line);background:var(--card);color:var(--ink)}
+.row{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+.btn{min-height:44px;padding:0 16px;border-radius:999px;border:1.5px solid var(--line);background:var(--card);color:var(--ink);font:700 15px inherit;font-family:inherit;cursor:pointer;display:inline-flex;align-items:center;gap:8px;text-decoration:none}
+.btn.solid{background:var(--navy);border-color:var(--navy);color:#F4EEE2}
+.btn.add{background:var(--ac);border-color:var(--ac);color:#fff}
+.btn.gold{background:var(--gold2);border-color:#B8893A;color:var(--navy)}
+.btn:disabled{opacity:.45;cursor:default}
+.tray{margin-top:22px}
+.tray .items{display:grid;gap:10px;margin:12px 0}
+.item{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:14px;border:1px solid var(--line);background:var(--cream)}
+.item .tag{font:800 11px Inter,sans-serif;letter-spacing:.12em;text-transform:uppercase;padding:4px 8px;border-radius:8px;color:#fff;background:var(--ac)}
+.item b{flex:1}
+.item button{min-height:36px;min-width:36px;border-radius:50%;border:1px solid var(--line);background:var(--card);color:var(--ink);cursor:pointer;font-size:16px}
+.empty{color:var(--soft);font-style:italic;padding:8px 2px}
+.linkbox{display:flex;gap:8px;flex-wrap:wrap;align-items:center;background:var(--navy);color:#F4EEE2;border-radius:16px;padding:14px}
+.linkbox code{flex:1 1 260px;font:13px ui-monospace,Menlo,monospace;word-break:break-all;color:#E8EEF4}
+.note{font-size:14px;color:var(--soft);margin:8px 0 0}
+.warn{border-left:4px solid #C7931F;background:rgba(199,147,31,.1);padding:10px 14px;border-radius:0 12px 12px 0;margin:12px 0;font-size:15px}
+.stage{display:none}.stage.on{display:block}
+.big{position:fixed;inset:0;z-index:9500;background:var(--navy);color:#fff;display:none;flex-direction:column;align-items:center;justify-content:center;gap:24px;padding:24px;text-align:center}
+.big.on{display:flex}
+.big .u{font:700 clamp(28px,6vw,72px)/1.2 Inter,sans-serif;word-break:break-all;color:var(--gold2)}
+.big p{font-size:clamp(18px,2.5vw,26px);margin:0;color:#DCE5EE}
+/* student view */
+.stu{max-width:760px;margin:0 auto}
+.stu .work{display:grid;gap:14px;margin-top:16px}
+.stu a.go{display:flex;align-items:center;gap:14px;padding:18px;border-radius:18px;background:var(--card);border:1px solid var(--line);box-shadow:var(--shadow);text-decoration:none;color:var(--ink)}
+.stu a.go .ic{margin:0}
+.stu a.go b{display:block;font-size:18px}.stu a.go span{color:var(--soft);font-size:14px}
+.stu a.go .arr{margin-left:auto;font-size:26px;color:var(--faint)}
+@media (max-width:980px){.grid3{grid-template-columns:1fr}}
+@media (max-width:760px){.app{grid-template-columns:1fr;background:none}.rail{position:static;height:auto;display:block}
+ .nav{display:flex;overflow-x:auto;gap:4px}.nav a{white-space:nowrap}.nav .sep,.nav small{display:none}}
+</style>
+</head>
+<body>
+<script src="/aog-topbar.js"></script>
+<div class="app">
+  <aside class="rail no-print" aria-label="Dashboard">
+    <div class="brand">Dashboard</div>
+    <div class="view" role="group" aria-label="View"><button type="button" data-view="teacher" aria-pressed="true">Teacher</button><button type="button" data-view="student" aria-pressed="false">Student</button></div>
+    <nav class="nav" id="nav"></nav>
+  </aside>
+  <main id="app"></main>
+</div>
+<div class="big" id="big" role="dialog" aria-modal="true"><p id="bigLead"></p><div class="u" id="bigU"></div><p id="bigSub"></p><button class="btn gold" type="button" id="bigClose"></button></div>
+<script>
+const CAT={"units": {"mth": [[1, "Unit 1 · Counting and Numbers", "mth-u1.html"], [2, "Unit 2 · Adding and Subtracting", "mth-u2.html"], [3, "Unit 3 · Place Value to 1,000", "mth-u3.html"], [4, "Unit 4 · Measuring, Time and Money", "mth-u4.html"], [5, "Unit 5 · Shapes and Equal Shares", "mth-u5.html"], [6, "Unit 6 · Multiplication and Division", "mth-u6.html"], [7, "Unit 7 · Place Value and Multi-Digit Arithmetic", "mth-u7.html"], [8, "Unit 8 · Fractions", "mth-u8.html"], [9, "Unit 9 · Decimals", "mth-u9.html"], [10, "Unit 10 · Measurement and Data", "mth-u10.html"], [11, "Unit 11 · Geometry and the Coordinate Plane", "mth-u11.html"], [12, "Unit 12 · Ratios, Rates and Proportions", "mth-u12.html"], [13, "Unit 13 · The Number System", "mth-u13.html"], [14, "Unit 14 · Expressions, Equations and Inequalities", "mth-u14.html"], [15, "Unit 15 · Functions and Linear Equations", "mth-u15.html"], [16, "Unit 16 · Geometry", "mth-u16.html"], [17, "Unit 17 · Statistics and Probability", "mth-u17.html"], [18, "Unit 18 · Algebra I: Linear Equations, Functions and Systems", "mth-u18.html"], [19, "Unit 19 · Algebra I: Exponents, Polynomials and Quadratics", "mth-u19.html"], [20, "Unit 20 · Geometry: Reasoning, Congruence and Triangles", "mth-u20.html"], [21, "Unit 21 · Geometry: Similarity, Trigonometry and Circles", "mth-u21.html"], [22, "Unit 22 · Statistics in Algebra I", "mth-u22.html"], [23, "Unit 23 · Algebra II: Polynomial, Rational and Radical Functions", "mth-u23.html"], [24, "Unit 24 · Algebra II: Exponential, Logarithmic and Trigonometric Functions", "mth-u24.html"], [25, "Unit 25 · Sequences, Series and Modeling", "mth-u25.html"], [26, "Unit 26 · Statistics: From a Sample to a Claim", "mth-u26.html"], [27, "Unit 27 · Financial Math and Capstone", "mth-u27.html"]], "ush": [[1, "Unit 1 · Early Encounters", "ush-u1.html"], [2, "Unit 2 · English Settlement", "ush-u2.html"], [3, "Unit 3 · A New Nation", "ush-u3.html"], [4, "Unit 4 · The Early Republic", "ush-u4.html"], [5, "Unit 5 · Pushing National Boundaries", "ush-u5.html"], [6, "Unit 6 · Civil War and Reconstruction", "ush-u6.html"], [7, "Unit 7 · America on the Move", "ush-u7.html"], [8, "Unit 8 · Twentieth-Century Crises", "ush-u8.html"], [9, "Unit 9 · Postwar America", "ush-u9.html"], [10, "Unit 10 · America in a Changing World", "ush-u10.html"]], "sci": [[1, "Unit 1 · Pushes, Pulls and Stuff", "sci-u1.html"], [2, "Unit 2 · Light, Sound and Waves", "sci-u2.html"], [3, "Unit 3 · Living Things and Where They Live", "sci-u3.html"], [4, "Unit 4 · Earth, Sky and Weather", "sci-u4.html"], [5, "Unit 5 · Forces, Motion and Energy", "sci-u5.html"], [6, "Unit 6 · Matter and Waves", "sci-u6.html"], [7, "Unit 7 · Life: Cycles, Traits and Survival", "sci-u7.html"], [8, "Unit 8 · Ecosystems and the Flow of Energy", "sci-u8.html"], [9, "Unit 9 · Earth, Weather and Space", "sci-u9.html"], [10, "Unit 10 · Matter and Its Interactions", "sci-u10.html"], [11, "Unit 11 · Forces, Motion and Energy", "sci-u11.html"], [12, "Unit 12 · Waves and Information", "sci-u12.html"], [13, "Unit 13 · Cells, Bodies and Reproduction", "sci-u13.html"], [14, "Unit 14 · Ecosystems and Heredity", "sci-u14.html"], [15, "Unit 15 · Earth and Space Systems", "sci-u15.html"], [16, "Unit 16 · Biology: Cells and Energy", "sci-u16.html"], [17, "Unit 17 · Biology: Genetics and Inheritance", "sci-u17.html"], [18, "Unit 18 · Biology: Ecosystems and Human Impact", "sci-u18.html"], [19, "Unit 19 · Physical Science: Matter and Reactions", "sci-u19.html"], [20, "Unit 20 · Physical Science: Forces, Energy and Waves", "sci-u20.html"], [21, "Unit 21 · Earth and Space", "sci-u21.html"], [22, "Unit 22 · Chemistry: Atoms, Bonding and Reactions", "sci-u22.html"], [23, "Unit 23 · Chemistry: Stoichiometry, Solutions and Energy", "sci-u23.html"], [24, "Unit 24 · Physics: Motion and Forces", "sci-u24.html"], [25, "Unit 25 · Physics: Energy, Waves and Electricity", "sci-u25.html"], [26, "Unit 26 · Environmental Science", "sci-u26.html"], [27, "Unit 27 · Capstone: Argue From Evidence", "sci-u27.html"]], "ssc": [[1, "Unit 1 · Me, My Family, My School", "ssc-u1.html"], [2, "Unit 2 · Our Community", "ssc-u2.html"], [3, "Unit 3 · Maps and Places", "ssc-u3.html"], [4, "Unit 4 · Then and Now, and Our Country", "ssc-u4.html"], [5, "Unit 5 · Illinois: Land and People", "ssc-u5.html"], [6, "Unit 6 · The First Peoples of North America", "ssc-u6.html"], [7, "Unit 7 · Colonies to a New Nation", "ssc-u7.html"], [8, "Unit 8 · Government: Local, State, National", "ssc-u8.html"], [9, "Unit 9 · Money, Markets and Regions", "ssc-u9.html"], [10, "Unit 10 · The First Civilizations", "ssc-u10.html"], [11, "Unit 11 · Classical Worlds", "ssc-u11.html"], [12, "Unit 12 · Faiths, Empires and Exchange", "ssc-u12.html"], [13, "Unit 13 · Geography of the World", "ssc-u13.html"], [14, "Unit 14 · Citizens of Illinois", "ssc-u14.html"], [15, "Unit 15 · World History: Empires and Exchange", "ssc-u15.html"], [16, "Unit 16 · Revolutions and the Modern World", "ssc-u16.html"], [17, "Unit 17 · The Twentieth-Century World", "ssc-u17.html"], [18, "Unit 18 · Human Geography", "ssc-u18.html"], [19, "Unit 19 · Civics: Rights, Power and Participation", "ssc-u19.html"], [20, "Unit 20 · U.S. History: Industry to the Progressive Era", "ssc-u20.html"], [21, "Unit 21 · U.S. History: World Wars and the Cold War", "ssc-u21.html"], [22, "Unit 22 · U.S. History: Civil Rights to Today", "ssc-u22.html"], [23, "Unit 23 · Government and Economics", "ssc-u23.html"], [24, "Unit 24 · Capstone: Inquiry from the Sources", "ssc-u24.html"]], "fcs": [[1, "Unit 1 · Clean Hands", "fcs-u1.html"], [2, "Unit 2 · Hot, Cold and Sharp", "fcs-u2.html"], [3, "Unit 3 · Everyday Food and Sometimes Food", "fcs-u3.html"], [4, "Unit 4 · A Job Done to the End", "fcs-u4.html"], [5, "Unit 5 · Measure It Right", "fcs-u5.html"], [6, "Unit 6 · The Needle and the Button", "fcs-u6.html"], [7, "Unit 7 · Money and Choices", "fcs-u7.html"], [8, "Unit 8 · Plan It, Cook It, Clean It Up", "fcs-u8.html"], [9, "Unit 9 · Kitchen Safety and Sanitation", "fcs-u9.html"], [10, "Unit 10 · Knife Skills", "fcs-u10.html"], [11, "Unit 11 · Measuring and Reading a Recipe", "fcs-u11.html"], [12, "Unit 12 · Hand Sewing", "fcs-u12.html"], [13, "Unit 13 · The Sewing Machine", "fcs-u13.html"], [14, "Unit 14 · Fabric, Fibers and Patterns", "fcs-u14.html"], [15, "Unit 15 · Cooking Methods and Heat", "fcs-u15.html"], [16, "Unit 16 · Nutrition and Meal Planning", "fcs-u16.html"], [17, "Unit 17 · Food Science: What Happens When You Cook", "fcs-u17.html"], [18, "Unit 18 · Child Development and Care", "fcs-u18.html"], [19, "Unit 19 · Independent Living and Money", "fcs-u19.html"], [20, "Unit 20 · Capstone: Plan, Cost, Produce", "fcs-u20.html"]], "ela": [[1, "Unit 1 · Sounds and Letters", "ela-u1.html"], [2, "Unit 2 · Words and Sentences", "ela-u2.html"], [3, "Unit 3 · Stories and True Books", "ela-u3.html"], [4, "Unit 4 · Writing and Telling", "ela-u4.html"], [5, "Unit 5 · Word Power", "ela-u5.html"], [6, "Unit 6 · Reading Stories", "ela-u6.html"], [7, "Unit 7 · Reading to Learn", "ela-u7.html"], [8, "Unit 8 · Writing", "ela-u8.html"], [9, "Unit 9 · Grammar, Speaking and Listening", "ela-u9.html"], [10, "Unit 10 · The Novel", "ela-u10.html"], [11, "Unit 11 · Nonfiction and Argument", "ela-u11.html"], [12, "Unit 12 · Words: Stems and Meaning", "ela-u12.html"], [13, "Unit 13 · Grammar and Style", "ela-u13.html"], [14, "Unit 14 · Writing Across Forms", "ela-u14.html"], [15, "Unit 15 · Literature: Close Reading", "ela-u15.html"], [16, "Unit 16 · The Language of Persuasion", "ela-u16.html"], [17, "Unit 17 · Words and Structure", "ela-u17.html"], [18, "Unit 18 · Grammar for Writers", "ela-u18.html"], [19, "Unit 19 · Research and Writing", "ela-u19.html"], [20, "Unit 20 · Literary Devices and American Voices", "ela-u20.html"], [21, "Unit 21 · Diction, Syntax and Style", "ela-u21.html"], [22, "Unit 22 · Reasoning and Argument", "ela-u22.html"], [23, "Unit 23 · Advanced Grammar and Usage", "ela-u23.html"], [24, "Unit 24 · Capstone: Research, Cite, Defend", "ela-u24.html"]], "spa": [[1, "Unit 1 · Sounds of Spanish", "spa-u1.html"], [2, "Unit 2 · Colors and Numbers", "spa-u2.html"], [3, "Unit 3 · El and La: Naming Things", "spa-u3.html"], [4, "Unit 4 · One and Many, Big and Little", "spa-u4.html"], [5, "Unit 5 · A Whole Thought in Spanish", "spa-u5.html"], [6, "Unit 6 · Soy and Estoy", "spa-u6.html"], [7, "Unit 7 · Who, Where, When, Why", "spa-u7.html"], [8, "Unit 8 · First, Then, Last: Telling a Day", "spa-u8.html"], [9, "Unit 9 · Greetings and Introductions", "spa-u9.html"], [10, "Unit 10 · Numbers, Time and Dates", "spa-u10.html"], [11, "Unit 11 · The Classroom: Nouns and Articles", "spa-u11.html"], [12, "Unit 12 · Ser, Estar and Describing People", "spa-u12.html"], [13, "Unit 13 · The Present Tense", "spa-u13.html"], [14, "Unit 14 · Tener, Gustar and Stem Changes", "spa-u14.html"], [15, "Unit 15 · The Preterite: What Happened", "spa-u15.html"], [16, "Unit 16 · The Imperfect and Telling a Story", "spa-u16.html"], [17, "Unit 17 · Pronouns, Reflexives and Commands", "spa-u17.html"], [18, "Unit 18 · The Subjunctive", "spa-u18.html"], [19, "Unit 19 · The Spanish-Speaking World and Register", "spa-u19.html"], [20, "Unit 20 · Capstone: Present and Defend", "spa-u20.html"]], "rel": [[1, "Unit 1 · How to Read a Sacred Text", "rel-u1.html"], [2, "Unit 2 · The Biblical Lens I: The Hebrew Bible", "rel-u2.html"], [3, "Unit 3 · The Biblical Lens II: The New Testament", "rel-u3.html"], [4, "Unit 4 · Judaism: Torah, Talmud and a People", "rel-u4.html"], [5, "Unit 5 · Islam: The Qur'an and the Five Pillars", "rel-u5.html"], [6, "Unit 6 · Hinduism: Dharma, Karma and the Gita", "rel-u6.html"], [7, "Unit 7 · Buddhism: The Four Noble Truths", "rel-u7.html"], [8, "Unit 8 · Confucianism and Daoism", "rel-u8.html"], [9, "Unit 9 · Sikhism, Jainism, and the Traditions of Africa and the Americas", "rel-u9.html"], [10, "Unit 10 · Religion and the World", "rel-u10.html"], [11, "Unit 11 · One Question, Many Lenses", "rel-u11.html"], [12, "Unit 12 · Capstone: The Sources Speak", "rel-u12.html"]], "eco": [[1, "Unit 1 · Scarcity, Choice and Opportunity Cost", "eco-u1.html"], [2, "Unit 2 · Supply, Demand and the Market", "eco-u2.html"], [3, "Unit 3 · Prices, Controls and Market Failure", "eco-u3.html"], [4, "Unit 4 · Competition, Firms and Market Structure", "eco-u4.html"], [5, "Unit 5 · Measuring the Economy", "eco-u5.html"], [6, "Unit 6 · The Business Cycle and Fiscal Policy", "eco-u6.html"], [7, "Unit 7 · Money, Banking and the Federal Reserve", "eco-u7.html"], [8, "Unit 8 · Trade, Taxes and the World Economy", "eco-u8.html"]]}, "acts": [["drops", "Daily Drafts · K–12 practice", "Daily Drafts · práctica K–12"], ["m1", "One-Step Equations", "Ecuaciones de un paso"], ["m2", "Where It Goes", "Dónde va"], ["m3", "Walk the Line", "Camina la recta"], ["m4", "How Far From Zero", "Qué tan lejos de cero"], ["m5", "Sign and Size", "Signo y tamaño"], ["m6", "Both Ways", "En ambos sentidos"], ["m7", "What Goes First", "Qué va primero"], ["m8", "Like and Unlike", "Semejantes y no semejantes"], ["m9", "Land On It", "Cae en él"], ["m10", "Smaller Steps", "Pasos más pequeños"], ["m11", "Two Names", "Dos nombres"], ["m12", "Name the Move", "Nombra el movimiento"], ["m13", "Say It in Math", "Dilo en matemáticas"], ["m14", "Last On, First Off", "Lo último se quita primero"], ["c1", "Cut It Fair", "Córtalo justo"], ["c2", "Top and Bottom", "Arriba y abajo"], ["c3", "More Than a Whole?", "¿Más que un entero?"], ["c4", "Close To What?", "¿Cerca de qué?"], ["c5", "Which Is Bigger?", "¿Cuál es más grande?"], ["c6", "Same Amount, New Name", "La misma cantidad, otro nombre"], ["c7", "Make It Even", "Empareja las torres"], ["c8", "The Middle Number", "El número del medio"], ["c9", "The Odd One Out", "El que no encaja"], ["c10", "Stems and Leaves", "Tallos y hojas"], ["c11", "X Marks the Number", "La X marca el número"], ["c12", "Bring It Down", "Bájalo"], ["c13", "Trade a Ten", "Cambia una decena"], ["v1", "Match the Meaning", "Une el significado"], ["v2", "Build the Word", "Construye la palabra"], ["v3", "Say It in a Sentence", "Dilo en una oración"], ["v4", "Picture It", "Dibújalo"], ["v5", "Which One Doesn't Belong", "Cuál no encaja"], ["h1", "Order the Story", "Ordena la historia"], ["h2", "Because of That", "Por eso pasó"], ["h3", "Whose Voice?", "¿De quién es la voz?"], ["h4", "The Main Idea", "La idea principal"], ["h5", "Words of a New Nation", "Palabras de una nación nueva"], ["h6", "Map of a Growing Nation", "Mapa de una nación que crece"], ["h7", "Back It Up", "Respáldalo"], ["h8", "One Person, Big Ripple", "Una persona, gran onda"], ["h9", "The Third Branch", "La tercera rama"], ["h10", "The First Branch", "La primera rama"], ["h11", "The Second Branch", "La segunda rama"], ["h12", "The Blueprint", "El plano"], ["h13", "Rights in Writing", "Derechos por escrito"], ["h14", "How a Bill Becomes a Law", "Cómo un proyecto se vuelve ley"], ["h15", "The Illinois Constitution", "La Constitución de Illinois"], ["h16", "Put It All Together", "Júntalo Todo"], ["b1", "Living Things", "Los seres vivos"], ["b2", "The Cell System", "El sistema celular"], ["b3", "Body Systems", "Sistemas del cuerpo"], ["b4", "Reproduction", "Reproducción"], ["b5", "Ecosystems", "Ecosistemas"], ["b6", "Populations", "Poblaciones"], ["b7", "Heredity", "Herencia"], ["b8", "Natural Selection", "Selección natural"], ["b9", "A More Perfect Union — New Nation", "Una Unión Más Perfecta — Nación nueva"], ["b10", "Math — The Fall Skills", "Matemáticas — Habilidades del otoño"], ["b11", "English — Grammar", "Inglés — Gramática"], ["b12", "Math — 6th Grade Review (Quiz)", "Matemáticas — Repaso de 6.º (Quiz)"], ["b13", "Math — 6th Grade Review (In Class & HW)", "Matemáticas — Repaso de 6.º (Clase y tarea)"]]};
+const SUBJ=[["math","Math","Matemáticas"],["ela","Language Arts","Lenguaje"],["write","Writing","Escritura"],["science","Science","Ciencias"],["social-studies","Social Studies","Estudios Sociales"],["spanish","Spanish","Español"],["facs","Family & Consumer Sciences","Ciencias de la Familia"],["religion","World Religions (9–12)","Religiones del Mundo (9–12)"],["economics","Economics (9–12)","Economía (9–12)"],["foundry","Word Foundry (by unit)","Word Foundry (por unidad)"]];
+const GRADES=["K","1","2","3","4","5","6","7","8","9-10","11-12"];
+const UNITNAME={mth:["Math","Matemáticas"],sci:["Science","Ciencias"],ssc:["Social Studies","Estudios Sociales"],ush:["U.S. History","Historia de EE. UU."],ela:["English","Inglés"],spa:["Spanish","Español"],fcs:["Family & Consumer Sciences","Ciencias de la Familia"],eco:["Economics","Economía"],rel:["World Religions","Religiones del Mundo"]};
+const SLIPS=[["checkin","Daily check-in","Registro diario"],["exit","Exit slip","Boleto de salida"],["reflection","Self-reflection","Autorreflexión"],["support","I need support","Necesito apoyo"],["myvoice","My Voice","Mi voz"],["weekly?w=mon","Weekly · Monday","Semanal · lunes"],["weekly?w=mid","Weekly · midweek","Semanal · mitad de semana"],["weekly?w=fri","Weekly · Friday","Semanal · viernes"],["home","Home check-in (families)","Registro en casa (familias)"]];
+const TXT={
+ en:{today:"Today",hand:"Hand out",students:"Students",checkins:"Check-ins",trends:"Trends",brick:"Brick by brick",inbox:"Inbox",reports:"Reports",setup:"Set up",more:"More in the classic dashboard",
+  hi:["Good morning","Good afternoon","Good evening"],sub:"Pick what the class does today. Add it to today's handout, then share one link.",
+  ok:"Your Sheet is connected",no:"No Sheet yet — answers stay on each device",
+  dd:"Daily Drafts",ddS:"Ten lines a day, checked on the spot. Print a stack, or hand it out on screen.",subject:"Subject",grade:"Grade",sheet:"Sheet number",
+  print:"Open to print",add:"Add to today",as:"Assignment",asS:"A unit lesson or a practice page. Students send their work to your Sheet.",kind:"Kind",unit:"Course unit",prac:"Practice page",pick:"Which one",
+  sl:"Slips",slS:"Check-ins and exit slips. No names shown to classmates.",slip:"Which slip",
+  tray:"Today's handout",trayE:"Nothing yet. Add a Daily Draft, an assignment or a slip above.",link:"The class link",copy:"Copy link",copied:"Copied",show:"Show it big",open:"Open as a student",
+  bigLead:"Open this on your device:",bigSub:"Type it in the address bar. It opens today's work.",close:"Close",
+  nosheet:"This link works, but answers stay on each student's device until you connect your Sheet in Set up.",
+  soon:"This room is being rebuilt. For now it opens in the classic dashboard.",
+  sw:"Your work today",swS:"Tap one to start. When you finish, press Send.",name:"Your name or code",nameS:"Use the same one every time.",nothing:"Your teacher hasn't handed anything out on this device yet. Open the class link your teacher shares.",
+  setupH:"Set up",setupS:"Only the things you need once.",conn:"Connect & sync",connS:"Your Google Sheet, where student work arrives.",gs:"Download Code.gs",guide:"One-page setup guide",openConn:"Open Connect & sync",
+  classic:"The classic dashboard",classicS:"Everything else, while the new one is built.",openClassic:"Open the classic dashboard"},
+ es:{today:"Hoy",hand:"Repartir",students:"Estudiantes",checkins:"Registros",trends:"Tendencias",brick:"Ladrillo a ladrillo",inbox:"Bandeja",reports:"Informes",setup:"Configurar",more:"Más en el panel clásico",
+  hi:["Buenos días","Buenas tardes","Buenas noches"],sub:"Elige lo que la clase hará hoy. Agrégalo al reparto de hoy y comparte un solo enlace.",
+  ok:"Tu Hoja está conectada",no:"Aún no hay Hoja — las respuestas quedan en cada aparato",
+  dd:"Daily Drafts",ddS:"Diez líneas al día, revisadas al momento. Imprime un montón o repártelo en pantalla.",subject:"Materia",grade:"Grado",sheet:"Número de hoja",
+  print:"Abrir para imprimir",add:"Agregar a hoy",as:"Tarea",asS:"Una lección de unidad o una página de práctica. El trabajo llega a tu Hoja.",kind:"Tipo",unit:"Unidad del curso",prac:"Página de práctica",pick:"Cuál",
+  sl:"Boletos",slS:"Registros y boletos de salida. Los compañeros no ven nombres.",slip:"Qué boleto",
+  tray:"El reparto de hoy",trayE:"Nada aún. Agrega un Daily Draft, una tarea o un boleto.",link:"El enlace de la clase",copy:"Copiar enlace",copied:"Copiado",show:"Mostrar en grande",open:"Abrir como estudiante",
+  bigLead:"Abre esto en tu aparato:",bigSub:"Escríbelo en la barra de direcciones. Abre el trabajo de hoy.",close:"Cerrar",
+  nosheet:"Este enlace funciona, pero las respuestas quedan en cada aparato hasta que conectes tu Hoja en Configurar.",
+  soon:"Esta sala se está reconstruyendo. Por ahora se abre en el panel clásico.",
+  sw:"Tu trabajo de hoy",swS:"Toca uno para empezar. Al terminar, pulsa Enviar.",name:"Tu nombre o código",nameS:"Usa el mismo siempre.",nothing:"Tu maestro aún no ha repartido nada en este aparato. Abre el enlace de la clase.",
+  setupH:"Configurar",setupS:"Solo lo que necesitas una vez.",conn:"Conectar y sincronizar",connS:"Tu Hoja de Google, donde llega el trabajo.",gs:"Descargar Code.gs",guide:"Guía de una página",openConn:"Abrir Conectar y sincronizar",
+  classic:"El panel clásico",classicS:"Todo lo demás, mientras se construye el nuevo.",openClassic:"Abrir el panel clásico"}
+};
+const ICON={today:'<path d="M3 10h18M7 3v4M17 3v4"/><rect x="3" y="5" width="18" height="16" rx="3"/>',students:'<circle cx="9" cy="8" r="3.5"/><path d="M2 20c0-3.5 3-6 7-6s7 2.5 7 6"/><path d="M16 4a3.5 3.5 0 0 1 0 7M22 20c0-3-2-5-5-5.7"/>',checkins:'<path d="M20 6 9 17l-5-5"/>',trends:'<path d="M3 17l6-6 4 4 8-8"/><path d="M14 7h7v7"/>',brick:'<rect x="3" y="4" width="8" height="6" rx="1"/><rect x="13" y="4" width="8" height="6" rx="1"/><rect x="8" y="14" width="8" height="6" rx="1"/>',inbox:'<path d="M22 12h-6l-2 3h-4l-2-3H2"/><path d="M5.5 5h13l3.5 7v6a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-6z"/>',reports:'<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>',setup:'<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1A1.7 1.7 0 0 0 9 19.4a1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1A1.7 1.7 0 0 0 4.6 9a1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/>',dd:'<path d="M4 4h16v16H4z"/><path d="M8 9h8M8 13h8M8 17h5"/>',as:'<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>',sl:'<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>'};
+const svg=n=>'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+ICON[n]+'</svg>';
+/* ── the engine: saved state, the teacher's connection (read only), and the link builder ── */
+const K={tray:"aog.dash2.tray",view:"aog.dash2.view",dd:"aog.dash2.dd",as:"aog.dash2.as",sl:"aog.dash2.sl",stu:"aog.dash2.student"};
+const get=(k,d)=>{try{const v=localStorage.getItem(k);return v==null?d:JSON.parse(v)}catch(e){return d}};
+const put=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}};
+const raw=k=>{try{return String(localStorage.getItem(k)||"").trim()}catch(e){return ""}};
+function destParam(){ const u=raw("aog.sync.url"),k=raw("aog.sync.writekey"); if(!u||!k) return "";
+  try{ return btoa(unescape(encodeURIComponent(JSON.stringify({u:u,k:k})))).replace(/\+/g,"-").replace(/\//g,"_").replace(/=+$/,""); }catch(e){ return ""; } }
+function orgId(){ return raw("aog.org.id"); }
+function withDest(path){ const q=[],d=destParam(),o=orgId(); if(d) q.push("dest="+encodeURIComponent(d)); if(o) q.push("org="+encodeURIComponent(o));
+  return q.length? path+(path.indexOf("?")<0?"?":"&")+q.join("&") : path; }
+function itemPath(it){
+  if(it.t==="dd") return "/daily-drops.html?subject="+encodeURIComponent(it.s)+"&grade="+encodeURIComponent(it.g)+"&sheet="+it.n+"&lock=on";
+  if(it.t==="unit") return "/"+it.f;
+  if(it.t==="prac") return "/"+it.i;
+  if(it.t==="slip") return "/"+it.i;
+  return "/";
+}
+function itemLabel(it,L){
+  if(it.t==="dd"){ const s=SUBJ.find(x=>x[0]===it.s)||SUBJ[0]; return "Daily Drafts · "+(L==="es"?s[2]:s[1])+" · "+gradeLabel(it.g,L)+" · #"+it.n; }
+  if(it.t==="unit"){ const u=(CAT.units[it.p]||[]).find(x=>x[2]===it.f); return (UNITNAME[it.p]?UNITNAME[it.p][L==="es"?1:0]+" · ":"")+(u?u[1]:it.f); }
+  if(it.t==="prac"){ const a=CAT.acts.find(x=>x[0]===it.i); return a?(L==="es"?a[2]:a[1]):it.i; }
+  if(it.t==="slip"){ const s=SLIPS.find(x=>x[0]===it.i); return s?(L==="es"?s[2]:s[1]):it.i; }
+  return "";
+}
+const TAG={dd:["Daily Draft","var(--c1)"],unit:["Assignment","var(--c3)"],prac:["Practice","var(--c3)"],slip:["Slip","var(--c5)"]};
+function gradeLabel(g,L){ if(g==="K") return L==="es"?"Kínder":"Kindergarten"; if(/^u\d+$/.test(g)) return (L==="es"?"Unidad ":"Unit ")+g.slice(1); if(g.indexOf("-")>0) return (L==="es"?"Grados ":"Grades ")+g.replace("-","–"); return (L==="es"?"Grado ":"Grade ")+g; }
+function gradesFor(s){ if(s==="religion"||s==="economics") return ["9-10","11-12"]; if(s==="foundry"){ const a=[]; for(let i=1;i<=30;i++) a.push("u"+i); return a; } return GRADES; }
+/* the class link: today's items, packed small, with the teacher's Sheet on it */
+function packTray(tr){ return tr.map(it=>it.t==="dd"?["d",it.s,it.g,it.n]:it.t==="unit"?["u",it.p,it.f]:it.t==="prac"?["p",it.i]:["s",it.i]); }
+function unpack(a){ return (a||[]).map(x=>x[0]==="d"?{t:"dd",s:x[1],g:x[2],n:x[3]}:x[0]==="u"?{t:"unit",p:x[1],f:x[2]}:x[0]==="p"?{t:"prac",i:x[1]}:{t:"slip",i:x[1]}); }
+function classLink(){ const tr=get(K.tray,[]); if(!tr.length) return "";
+  const h=btoa(unescape(encodeURIComponent(JSON.stringify(packTray(tr))))).replace(/\+/g,"-").replace(/\//g,"_").replace(/=+$/,"");
+  return location.origin+withDest("/dashboard.html?view=student&hand="+h); }
+function readHand(){ const q=new URLSearchParams(location.search), h=q.get("hand"); if(!h) return null;
+  try{ let s=h.replace(/-/g,"+").replace(/_/g,"/"); while(s.length%4) s+="="; return unpack(JSON.parse(decodeURIComponent(escape(atob(s))))); }catch(e){ return null; } }
+/* a student who arrived by the class link keeps today's work and the teacher's Sheet for every page they open */
+const HAND=readHand(), QS=new URLSearchParams(location.search);
+if(HAND){ put("aog.dash2.handed",{items:HAND,dest:QS.get("dest")||"",org:QS.get("org")||"",at:Date.now()}); }
+function studentHref(it){ const h=get("aog.dash2.handed",null); let p=itemPath(it); const q=[];
+  const d=(h&&h.dest)||destParam(), o=(h&&h.org)||orgId(); if(d) q.push("dest="+encodeURIComponent(d)); if(o) q.push("org="+encodeURIComponent(o));
+  return q.length? p+(p.indexOf("?")<0?"?":"&")+q.join("&") : p; }
+/* ── the interface ── */
+const L=()=> (document.documentElement.lang||"en").slice(0,2)==="es"?"es":"en", T=k=>TXT[L()][k];
+let VIEW=QS.get("view")==="student"||HAND?"student":get(K.view,"teacher"), PAGE=location.hash.slice(1)||"today";
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+function nav(){
+  const items=[["today","today"],["students","students"],["checkins","checkins"],["trends","trends"],["brick","brick"],["inbox","inbox"],["reports","reports"],["setup","setup"]];
+  document.getElementById("nav").innerHTML= VIEW==="student"? '<a href="#today" aria-current="page">'+svg("today")+T("today")+'</a>'
+    : items.map(([k,i])=>'<a href="#'+k+'"'+(PAGE===k?' aria-current="page"':'')+'>'+svg(i)+T(k)+'</a>'+(k==="reports"?'<div class="sep"></div>':'')).join("");
+  document.querySelectorAll("[data-view]").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.view===VIEW)));
+  /* a student who came by the class link never sees the teacher switch */
+  const v=document.querySelector('.view'); if(v) v.style.display=(HAND||QS.get('view')==='student')?'none':'';
+}
+function opt(v,t,sel){ return '<option value="'+esc(v)+'"'+(sel?' selected':'')+'>'+esc(t)+'</option>'; }
+function today(){
+  const lang=L(), hr=new Date().getHours(), hi=T("hi")[hr<12?0:hr<17?1:2], conn=!!destParam();
+  const dd=get(K.dd,{s:"math",g:"3",n:1}), as=get(K.as,{k:"unit",p:"mth",f:"mth-u1.html",i:"m1"}), sl=get(K.sl,{i:"checkin"});
+  const units=CAT.units[as.p]||[];
+  const tr=get(K.tray,[]), link=classLink();
+  return '<div class="hello"><div><h1>'+hi+'.</h1><p>'+T("sub")+'</p></div><span class="pill '+(conn?"ok":"")+'"><span class="dot"></span>'+T(conn?"ok":"no")+'</span></div>'
+  +'<div class="grid3">'
+  +'<section class="card hand" style="--ac:var(--c1)"><div class="ic">'+svg("dd")+'</div><p class="k">'+T("hand")+'</p><h2>'+T("dd")+'</h2><p class="s">'+T("ddS")+'</p>'
+    +'<label class="f" for="ddS">'+T("subject")+'</label><select id="ddS">'+SUBJ.map(s=>opt(s[0],lang==="es"?s[2]:s[1],s[0]===dd.s)).join("")+'</select>'
+    +'<label class="f" for="ddG">'+T("grade")+'</label><select id="ddG">'+gradesFor(dd.s).map(g=>opt(g,gradeLabel(g,lang),g===dd.g)).join("")+'</select>'
+    +'<label class="f" for="ddN">'+T("sheet")+'</label><select id="ddN">'+Array.from({length:180},(_,i)=>opt(i+1,"#"+(i+1),i+1===+dd.n)).join("")+'</select>'
+    +'<div class="row"><a class="btn solid" id="ddPrint" target="_blank" rel="noopener" href="'+esc("/daily-drops.html?subject="+dd.s+"&grade="+dd.g+"&sheet="+dd.n)+'">🖨 '+T("print")+'</a><button class="btn add" type="button" data-add="dd">+ '+T("add")+'</button></div></section>'
+  +'<section class="card hand" style="--ac:var(--c3)"><div class="ic">'+svg("as")+'</div><p class="k">'+T("hand")+'</p><h2>'+T("as")+'</h2><p class="s">'+T("asS")+'</p>'
+    +'<label class="f" for="asK">'+T("kind")+'</label><select id="asK">'+opt("unit",T("unit"),as.k==="unit")+opt("prac",T("prac"),as.k==="prac")+'</select>'
+    +(as.k==="unit"
+      ? '<label class="f" for="asP">'+T("subject")+'</label><select id="asP">'+Object.keys(UNITNAME).filter(k=>CAT.units[k]).map(k=>opt(k,UNITNAME[k][lang==="es"?1:0],k===as.p)).join("")+'</select>'
+       +'<label class="f" for="asF">'+T("pick")+'</label><select id="asF">'+units.map(u=>opt(u[2],u[1],u[2]===as.f)).join("")+'</select>'
+      : '<label class="f" for="asI">'+T("pick")+'</label><select id="asI">'+CAT.acts.filter(a=>a[0]!=="drops").map(a=>opt(a[0],lang==="es"?a[2]:a[1],a[0]===as.i)).join("")+'</select>')
+    +'<div class="row"><button class="btn add" type="button" data-add="as">+ '+T("add")+'</button></div></section>'
+  +'<section class="card hand" style="--ac:var(--c5)"><div class="ic">'+svg("sl")+'</div><p class="k">'+T("hand")+'</p><h2>'+T("sl")+'</h2><p class="s">'+T("slS")+'</p>'
+    +'<label class="f" for="slI">'+T("slip")+'</label><select id="slI">'+SLIPS.map(s=>opt(s[0],lang==="es"?s[2]:s[1],s[0]===sl.i)).join("")+'</select>'
+    +'<div class="row"><button class="btn add" type="button" data-add="sl">+ '+T("add")+'</button></div></section>'
+  +'</div>'
+  +'<section class="card tray"><p class="k" style="color:var(--gold)">'+T("tray")+'</p>'
+    +'<div class="items">'+(tr.length?tr.map((it,i)=>'<div class="item" style="--ac:'+TAG[it.t][1]+'"><span class="tag">'+TAG[it.t][0]+'</span><b>'+esc(itemLabel(it,lang))+'</b><button type="button" data-del="'+i+'" aria-label="Remove">✕</button></div>').join(""):'<p class="empty">'+T("trayE")+'</p>')+'</div>'
+    +(tr.length?'<p class="k" style="color:var(--gold)">'+T("link")+'</p><div class="linkbox"><code id="lk">'+esc(link)+'</code><button class="btn gold" type="button" id="cp">'+T("copy")+'</button><button class="btn" type="button" id="bg">'+T("show")+'</button><a class="btn" href="'+esc(link)+'" target="_blank" rel="noopener">'+T("open")+'</a></div>'
+      +(conn?'':'<p class="warn">'+T("nosheet")+'</p>'):'')
+  +'</section>';
+}
+function student(){
+  const lang=L(), h=get("aog.dash2.handed",null), items=(h&&h.items)||(QS.get("view")==="student"?[]:get(K.tray,[])), nm=get(K.stu,"");
+  const ic={dd:"dd",unit:"as",prac:"as",slip:"sl"}, ac={dd:"var(--c1)",unit:"var(--c3)",prac:"var(--c3)",slip:"var(--c5)"};
+  return '<div class="stu"><div class="hello"><div><h1>'+T("sw")+'</h1><p>'+T("swS")+'</p></div></div>'
+   +'<section class="card"><label class="f" for="stN">'+T("name")+'</label><input type="text" id="stN" maxlength="40" autocomplete="off" value="'+esc(nm)+'"><p class="note">'+T("nameS")+'</p></section>'
+   +'<div class="work">'+(items.length?items.map(it=>'<a class="go" style="--ac:'+ac[it.t]+'" href="'+esc(studentHref(it))+'"><span class="ic">'+svg(ic[it.t])+'</span><span><b>'+esc(itemLabel(it,lang))+'</b><span>'+TAG[it.t][0]+'</span></span><span class="arr">›</span></a>').join(""):'<p class="empty">'+T("nothing")+'</p>')+'</div></div>';
+}
+function setup(){
+  const conn=!!destParam();
+  return '<div class="hello"><div><h1>'+T("setupH")+'</h1><p>'+T("setupS")+'</p></div><span class="pill '+(conn?"ok":"")+'"><span class="dot"></span>'+T(conn?"ok":"no")+'</span></div>'
+   +'<div class="grid3" style="grid-template-columns:repeat(2,minmax(0,1fr))">'
+   +'<section class="card hand" style="--ac:var(--c2)"><div class="ic">'+svg("setup")+'</div><h2>'+T("conn")+'</h2><p class="s">'+T("connS")+'</p><div class="row"><a class="btn solid" href="/#dashboard">'+T("openConn")+'</a><a class="btn" href="/AoG-Screener-Sync-Code.gs" download>⬇ '+T("gs")+'</a><a class="btn" href="/AoG-Sheet-Setup.pdf" target="_blank" rel="noopener">📄 '+T("guide")+'</a></div></section>'
+   +'<section class="card hand" style="--ac:var(--c4)"><div class="ic">'+svg("reports")+'</div><h2>'+T("classic")+'</h2><p class="s">'+T("classicS")+'</p><div class="row"><a class="btn solid" href="/#dashboard">'+T("openClassic")+'</a></div></section>'
+   +'</div>';
+}
+function soon(){ return '<div class="hello"><div><h1>'+T(PAGE)+'</h1><p>'+T("soon")+'</p></div></div><div class="row"><a class="btn solid" href="/#dashboard">'+T("openClassic")+' ›</a>'+(PAGE==="inbox"?'<a class="btn" href="/turn-ins.html">'+T("inbox")+' ›</a>':'')+'</div>'; }
+function render(){
+  nav(); const app=document.getElementById("app");
+  app.innerHTML = VIEW==="student"? student() : PAGE==="today"? today() : PAGE==="setup"? setup() : soon();
+  wire();
+}
+function asGet(){ return Object.assign({k:"unit",p:"mth",f:"mth-u1.html",i:"m1"},get(K.as,{})); }
+function saveDD(){ put(K.dd,{s:val("ddS"),g:val("ddG"),n:+val("ddN")}); }
+const val=id=>{const e=document.getElementById(id);return e?e.value:""};
+function wire(){
+  const on=(id,ev,f)=>{const e=document.getElementById(id); if(e) e.addEventListener(ev,f);};
+  on("ddS","change",()=>{ const s=val("ddS"), g=gradesFor(s); put(K.dd,{s:s,g:g.indexOf(val("ddG"))>=0?val("ddG"):g[0],n:+val("ddN")}); render(); });
+  on("ddG","change",()=>{ saveDD(); render(); }); on("ddN","change",()=>{ saveDD(); render(); });
+  on("asK","change",()=>{ const a=asGet(); a.k=val("asK"); put(K.as,a); render(); });
+  on("asP","change",()=>{ const a=asGet(); a.p=val("asP"); a.f=(CAT.units[a.p]||[[0,"",""]])[0][2]; put(K.as,a); render(); });
+  on("asF","change",()=>{ const a=asGet(); a.f=val("asF"); put(K.as,a); });
+  on("asI","change",()=>{ const a=asGet(); a.i=val("asI"); put(K.as,a); });
+  on("slI","change",()=>{ put(K.sl,{i:val("slI")}); });
+  document.querySelectorAll("[data-add]").forEach(b=>b.onclick=()=>{
+    const tr=get(K.tray,[]), w=b.dataset.add;
+    if(w==="dd") tr.push({t:"dd",s:val("ddS"),g:val("ddG"),n:+val("ddN")});
+    if(w==="as"){ if(val("asK")==="unit") tr.push({t:"unit",p:val("asP"),f:val("asF")}); else tr.push({t:"prac",i:val("asI")}); }
+    if(w==="sl") tr.push({t:"slip",i:val("slI")});
+    put(K.tray,tr); render();
+  });
+  document.querySelectorAll("[data-del]").forEach(b=>b.onclick=()=>{ const tr=get(K.tray,[]); tr.splice(+b.dataset.del,1); put(K.tray,tr); render(); });
+  on("cp","click",async()=>{ try{ await navigator.clipboard.writeText(classLink()); }catch(e){ const r=document.createRange(); r.selectNode(document.getElementById("lk")); getSelection().removeAllRanges(); getSelection().addRange(r); document.execCommand("copy"); } const b=document.getElementById("cp"); b.textContent=T("copied")+" ✓"; setTimeout(()=>{ if(b.isConnected) b.textContent=T("copy"); },1600); });
+  on("bg","click",()=>{ const u=classLink(); document.getElementById("bigLead").textContent=T("bigLead"); document.getElementById("bigU").textContent=u.replace(/^https?:\/\//,"").split("?")[0]+"…"; document.getElementById("bigSub").textContent=T("bigSub"); document.getElementById("bigClose").textContent=T("close"); document.getElementById("big").classList.add("on"); });
+  on("stN","input",()=>{ const v=val("stN"); put(K.stu,v); try{ localStorage.setItem("aog.drops.who",v); }catch(e){} });
+}
+document.getElementById("bigClose").onclick=()=>document.getElementById("big").classList.remove("on");
+document.addEventListener("keydown",e=>{ if(e.key==="Escape") document.getElementById("big").classList.remove("on"); });
+document.querySelectorAll("[data-view]").forEach(b=>b.onclick=()=>{ VIEW=b.dataset.view; put(K.view,VIEW); render(); });
+window.addEventListener("hashchange",()=>{ PAGE=location.hash.slice(1)||"today"; render(); window.scrollTo(0,0); });
+new MutationObserver(render).observe(document.documentElement,{attributes:true,attributeFilter:["lang"]});
+render();
+</script>
+<script src="/aog-grace.js" defer></script>
+</body>
+</html>
