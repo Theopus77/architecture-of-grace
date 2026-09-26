@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script>(function(){var t="light";try{if(localStorage.getItem("aog.interior.ws.v1.theme")==="dark")t="dark";}catch(e){}document.documentElement.setAttribute("data-theme",t);})();</script>
+<title>Weekly check-in — Architecture of Grace</title>
+<meta name="description" content="A short weekly check-in: how the weekend went, how the week is going, and what is coming up. Tap answers, and write more if you want to.">
+<link rel="canonical" href="https://architectureofgrace.org/weekly">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<meta name="theme-color" content="#0A1E33">
+<!-- AOG-WEEKLY-V1 (2026-09-26) — Jimmy: "A How was your weekend one (for
+     Monday), a midweek one, and an end-of-the-week one about the week and any
+     weekend plans. Closed and open-ended questions, with the option to write,
+     as some of the children like to write."
+     One page, three check-ins: ?w=mon | mid | fri. Every question can be
+     answered with a tap; every question also has an optional "write more" box.
+     Sends ONE row with checkinType "weekly" through the same results channel
+     the practice pages use (?dest= from the teacher's link, else the site
+     config). No destination: it still works and says so, and nothing leaves. -->
+<style>
+:root{--ink:#F4EEE2;--soft:#C8D4E2;--gold:#C9A24A;--gold2:#F2C964;--lead:#1E1F22;--pane:#13314F;--wash:#0E2740}
+*{box-sizing:border-box}
+html{background:#081828}
+body{margin:0;color:var(--ink);font:17px/1.55 -apple-system,"Segoe UI",Inter,Roboto,Arial,sans-serif;
+  background:radial-gradient(40% 30% at 12% 10%,rgba(47,99,184,.22),transparent 70%),radial-gradient(34% 28% at 90% 18%,rgba(184,69,122,.14),transparent 70%),
+  radial-gradient(40% 32% at 80% 85%,rgba(46,139,87,.14),transparent 70%),linear-gradient(180deg,#0B2036,#081828) fixed;min-height:100vh}
+main{max-width:720px;margin:0 auto;padding:18px 16px 60px}
+.ey{font:800 12px/1.3 Inter,sans-serif;letter-spacing:.18em;text-transform:uppercase;color:var(--gold2);margin:14px 0 6px}
+h1{font:600 clamp(28px,6vw,40px)/1.15 Fraunces,Georgia,serif;margin:0 0 8px}
+.lede{color:var(--soft);margin:0 0 18px}
+.pick{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 18px}
+.pick a{min-height:44px;display:inline-flex;align-items:center;padding:0 16px;border-radius:999px;border:1.5px solid var(--gold);color:var(--ink);text-decoration:none;font-weight:700}
+.pick a[aria-current=true]{background:var(--gold);color:#0A1E33}
+.card{background:var(--pane);border:2px solid var(--lead);border-radius:18px;padding:18px 18px 16px;margin:0 0 16px;
+  box-shadow:0 0 0 1px rgba(242,201,100,.4),inset 0 5px 0 var(--band,#2F63B8),0 18px 40px -26px rgba(0,0,0,.85)}
+.card:nth-of-type(5n+2){--band:#2E8B57}.card:nth-of-type(5n+3){--band:#B8457A}.card:nth-of-type(5n+4){--band:#B87A12}.card:nth-of-type(5n+5){--band:#7B4FA0}
+.q{font:600 20px/1.3 Fraunces,Georgia,serif;margin:0 0 12px}
+.opts{display:flex;flex-wrap:wrap;gap:8px}
+.opts button{display:inline-flex;align-items:center;gap:8px;min-height:48px;padding:8px 14px;border-radius:14px;border:2px solid var(--lead);
+  background:#FFFDF8;color:#15202E;font:600 16px/1.2 inherit;cursor:pointer;box-shadow:0 0 0 1px rgba(242,201,100,.45)}
+.opts button .i{font-size:22px;line-height:1}
+.opts button[aria-pressed=true]{background:#1F5F8B;color:#fff}
+.scale button{flex:1 1 90px;flex-direction:column;justify-content:center}
+.more{margin-top:10px}
+.more summary{display:inline-flex;align-items:center;gap:6px;min-height:40px;cursor:pointer;color:var(--gold2);font-weight:700;list-style:none}
+.more summary::-webkit-details-marker{display:none}
+textarea,input[type=text]{width:100%;font:16px/1.5 inherit;color:var(--ink);background:var(--wash);border:1.5px solid rgba(242,201,100,.45);border-radius:12px;padding:10px 12px;min-height:48px}
+textarea{min-height:96px;resize:vertical}
+label.lab{display:block;font-weight:700;margin:0 0 6px}
+.talk{display:flex;align-items:center;gap:10px;min-height:48px;font-weight:600}
+.talk input{width:22px;height:22px}
+.go{min-height:52px;padding:0 26px;border-radius:999px;border:2px solid var(--lead);background:var(--gold);color:#0A1E33;font:800 17px inherit;cursor:pointer}
+.st{margin:10px 0 0;color:var(--soft)}
+.done{text-align:center}
+:focus-visible{outline:3px solid var(--gold2);outline-offset:2px}
+</style>
+</head>
+<body>
+<script src="/aog-topbar.js"></script>
+<main id="app"></main>
+<script src="aog-sync-config.js"></script>
+<script>
+(function(){
+"use strict";
+var ES=/^es/i.test(document.documentElement.lang||"")||/[?&]lang=es/.test(location.search);
+function T(en,es){return ES?es:en;}
+function esc(s){return String(s==null?"":s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c];});}
+var SCALE=[["⛈️",T("Rough","Difícil")],["🌧️",T("Heavy","Pesado")],["⛅",T("Okay","Más o menos")],["🌤️",T("Pretty good","Bastante bien")],["☀️",T("Great","Genial")]];
+var SETS={
+ mon:{t:T("How was your weekend?","¿Cómo estuvo tu fin de semana?"),ey:T("Monday check-in","Registro del lunes"),
+  lede:T("A few taps about the weekend and how you are starting the week. Write more on any question if you want to.","Unos toques sobre el fin de semana y cómo empiezas la semana. Escribe más en cualquier pregunta si quieres."),
+  q:[{id:"weekend",k:"scale",q:T("How was your weekend?","¿Cómo estuvo tu fin de semana?")},
+   {id:"did",k:"multi",q:T("What did you do?","¿Qué hiciste?"),o:[["😴",T("Rested","Descansé")],["👨‍👩‍👧",T("Family time","Tiempo en familia")],["🧑‍🤝‍🧑",T("Friends","Amigos")],["🌳",T("Outside","Afuera")],["⚽",T("Sports","Deportes")],["🎮",T("Games or screens","Juegos o pantallas")],["🎨",T("Made something","Hice algo")],["🧹",T("Helped at home","Ayudé en casa")],["🙏",T("Faith or community","Fe o comunidad")],["🤷",T("Not much","No mucho")]]},
+   {id:"start",k:"scale",q:T("How are you starting the week?","¿Cómo empiezas la semana?")},
+   {id:"best",k:"write",q:T("One good moment from the weekend (optional)","Un buen momento del fin de semana (opcional)")}]},
+ mid:{t:T("How is your week going?","¿Cómo va tu semana?"),ey:T("Midweek check-in","Registro de mitad de semana"),
+  lede:T("Halfway there. Tap what fits, and write more if you want to.","Vas a la mitad. Toca lo que encaje y escribe más si quieres."),
+  q:[{id:"sofar",k:"scale",q:T("How is the week going so far?","¿Cómo va la semana hasta ahora?")},
+   {id:"hard",k:"multi",q:T("What has been hard?","¿Qué ha sido difícil?"),o:[["📚",T("Schoolwork","Tareas escolares")],["🧑‍🤝‍🧑",T("Friends","Amigos")],["😴",T("Tired","Cansancio")],["🏠",T("Home","Casa")],["😟",T("Worried","Preocupación")],["⏳",T("Not enough time","Poco tiempo")],["👍",T("Nothing much","Nada en especial")]]},
+   {id:"help",k:"multi",q:T("What has been helping?","¿Qué te ha ayudado?"),o:[["🫁",T("Breathing","Respirar")],["🚶",T("Moving","Moverme")],["💬",T("Talking to someone","Hablar con alguien")],["🎧",T("Music","Música")],["☕",T("A break","Un descanso")],["🙋",T("Asking for help","Pedir ayuda")],["🤔",T("Not sure","No sé")]]},
+   {id:"energy",k:"one",q:T("Your energy right now","Tu energía ahora"),o:[["🔋",T("Low","Baja")],["🔋🔋",T("Medium","Media")],["🔋🔋🔋",T("High","Alta")]]},
+   {id:"note",k:"write",q:T("Anything else about your week? (optional)","¿Algo más sobre tu semana? (opcional)")}]},
+ fri:{t:T("How was your week?","¿Cómo estuvo tu semana?"),ey:T("Friday check-in","Registro del viernes"),
+  lede:T("Look back at the week, and ahead to the weekend. Tap, or write as much as you like.","Mira la semana que pasó y el fin de semana que viene. Toca o escribe todo lo que quieras."),
+  q:[{id:"week",k:"scale",q:T("How was your week?","¿Cómo estuvo tu semana?")},
+   {id:"proud",k:"multi",q:T("Something you are proud of","Algo de lo que estás orgulloso/a"),o:[["⭐",T("I tried hard","Me esforcé")],["📖",T("I learned something","Aprendí algo")],["🤝",T("I helped someone","Ayudé a alguien")],["🧘",T("I stayed calm","Me mantuve en calma")],["🔄",T("I made it right","Lo arreglé")],["🙋",T("I asked for help","Pedí ayuda")]]},
+   {id:"again",k:"write",q:T("Something you would do differently next week (optional)","Algo que harías diferente la próxima semana (opcional)")},
+   {id:"plans",k:"multi",q:T("Weekend plans","Planes para el fin de semana"),o:[["😴",T("Rest","Descansar")],["👨‍👩‍👧",T("Family","Familia")],["🧑‍🤝‍🧑",T("Friends","Amigos")],["🌳",T("Outside","Afuera")],["⚽",T("Sports","Deportes")],["🚗",T("A trip","Un viaje")],["🎮",T("Games","Juegos")],["🙏",T("Faith or community","Fe o comunidad")],["🤷",T("Not sure yet","Todavía no sé")]]},
+   {id:"tell",k:"write",q:T("Anything you want your teacher to know before the weekend? (optional)","¿Algo que quieras que sepa tu maestro/a antes del fin de semana? (opcional)")}]}
+};
+var qs=new URLSearchParams(location.search);
+var W=qs.get("w"); if(!SETS[W]){var d=new Date().getDay();W=d===1?"mon":d>=4||d===0||d===6?"fri":"mid";}
+var S=SETS[W], A={}, MORE={}, OPEN={};
+/* the results channel — same ladder as the practice pages */
+var DEST_RE=/^https:\/\/script\.google\.com\/[^\s]*\/exec$/, DEST=null;
+try{var dm=/[?&]dest=([^&]+)/.exec(location.search||"");if(dm){var t=decodeURIComponent(dm[1]).replace(/-/g,"+").replace(/_/g,"/");while(t.length%4)t+="=";var o=JSON.parse(decodeURIComponent(escape(atob(t))));if(o&&DEST_RE.test(o.u))DEST={url:o.u,key:o.k||""};}}catch(e){}
+if(!DEST){try{var cfg=window.AOG_SYNC_DEFAULTS;if(cfg&&!cfg.destinations&&DEST_RE.test(cfg.url||"")&&Array.isArray(cfg.schools)&&cfg.schools.length)DEST={url:cfg.url,key:cfg.key||""};}catch(e){}}
+var whoKey="aog.weekly.who";
+function who(){try{return localStorage.getItem(whoKey)||qs.get("who")||"";}catch(e){return qs.get("who")||"";}}
+function btn(i,v,lab,on){return '<button type="button" data-q="'+i+'" data-v="'+esc(v)+'" aria-pressed="'+(on?"true":"false")+'"><span class="i" aria-hidden="true">'+lab[0]+'</span><span>'+esc(lab[1])+'</span></button>';}
+function paint(){
+ var h='<p class="ey">'+esc(S.ey)+'</p><h1>'+esc(S.t)+'</h1><p class="lede">'+esc(S.lede)+'</p>';
+ h+='<nav class="pick" aria-label="'+esc(T("Which check-in","Qué registro"))+'">'+[["mon",T("Monday","Lunes")],["mid",T("Midweek","Mitad de semana")],["fri",T("Friday","Viernes")]].map(function(x){return '<a href="?w='+x[0]+(qs.get("dest")?"&dest="+encodeURIComponent(qs.get("dest")):"")+'" aria-current="'+(x[0]===W)+'">'+esc(x[1])+'</a>';}).join("")+'</nav>';
+ h+='<section class="card"><label class="lab" for="who">'+esc(T("Your first name or the code your teacher gave you","Tu nombre o el código que te dio tu maestro/a"))+'</label><input type="text" id="who" maxlength="40" autocomplete="off" value="'+esc(who())+'"></section>';
+ S.q.forEach(function(q){
+  h+='<section class="card"><p class="q">'+esc(q.q)+'</p>';
+  if(q.k==="scale") h+='<div class="opts scale">'+SCALE.map(function(s,i){return btn(q.id,String(i+1),s,A[q.id]===String(i+1));}).join("")+'</div>';
+  if(q.k==="one"||q.k==="multi") h+='<div class="opts">'+q.o.map(function(o){var v=o[1];var on=q.k==="multi"?(A[q.id]||[]).indexOf(v)>=0:A[q.id]===v;return btn(q.id,v,o,on);}).join("")+'</div>';
+  if(q.k==="write") h+='<textarea data-w="'+q.id+'" aria-label="'+esc(q.q)+'">'+esc(A[q.id]||"")+'</textarea>';
+  else h+='<details class="more"'+(OPEN[q.id]||MORE[q.id]?" open":"")+'><summary>✎ '+esc(T("Write more (optional)","Escribe más (opcional)"))+'</summary><textarea data-m="'+q.id+'" aria-label="'+esc(T("Write more","Escribe más"))+'">'+esc(MORE[q.id]||"")+'</textarea></details>';
+  h+='</section>';
+ });
+ h+='<section class="card"><label class="talk"><input type="checkbox" id="talk"> '+esc(T("I would like to talk to an adult","Me gustaría hablar con un adulto"))+'</label></section>';
+ h+='<button type="button" class="go" id="go">'+esc(DEST?T("Send to my teacher","Enviar a mi maestro/a"):T("I'm done","Terminé"))+'</button><p class="st" id="st" aria-live="polite">'+(DEST?"":esc(T("This link is not connected to a teacher's Sheet, so your answers stay on this device.","Este enlace no está conectado a la Hoja de un maestro, así que tus respuestas se quedan en este dispositivo.")))+'</p>';
+ document.getElementById("app").innerHTML=h;
+}
+document.addEventListener("click",function(e){
+ var b=e.target.closest&&e.target.closest("button[data-q]");
+ if(b){var id=b.getAttribute("data-q"),v=b.getAttribute("data-v"),q=S.q.filter(function(x){return x.id===id;})[0];
+  if(q.k==="multi"){var a=A[id]||(A[id]=[]),i=a.indexOf(v);if(i>=0)a.splice(i,1);else a.push(v);}else A[id]=A[id]===v?"":v;
+  var y=window.scrollY;keep();paint();window.scrollTo(0,y);return;}
+ if(e.target.id==="go")send();
+});
+
+function keep(){
+ document.querySelectorAll("textarea[data-w]").forEach(function(t){A[t.getAttribute("data-w")]=t.value;});
+ document.querySelectorAll("details.more").forEach(function(d){var t=d.querySelector("textarea");var k=t.getAttribute("data-m");MORE[k]=t.value;OPEN[k]=d.open;});
+ var w=document.getElementById("who");if(w)try{localStorage.setItem(whoKey,w.value.trim().slice(0,40));}catch(e){}
+}
+function send(){
+ keep();var st=document.getElementById("st"),w=who().trim();
+ if(!w){st.textContent=T("Add your name or code first.","Primero escribe tu nombre o código.");document.getElementById("who").focus();return;}
+ var answers={};S.q.forEach(function(q){var v=A[q.id];var label=v;if(q.k==="scale"&&v)label=SCALE[+v-1][1];answers[q.id]={q:q.q,a:Array.isArray(v)?v.join(", "):(label||""),more:MORE[q.id]||""};});
+ var talk=document.getElementById("talk").checked;
+ try{var log=JSON.parse(localStorage.getItem("aog.weekly.mine")||"[]");log.push({w:W,who:w,ts:new Date().toISOString(),answers:answers,talk:talk});localStorage.setItem("aog.weekly.mine",JSON.stringify(log.slice(-60)));}catch(e){}
+ function thanks(msg){document.getElementById("app").innerHTML='<section class="card done"><p class="ey">'+esc(S.ey)+'</p><h1>'+esc(T("Thank you.","Gracias."))+'</h1><p class="lede">'+esc(msg)+'</p>'+(talk?'<p>'+esc(T("You asked to talk to an adult. Your teacher will see that.","Pediste hablar con un adulto. Tu maestro/a lo verá."))+'</p>':"")+'</section>';}
+ if(!DEST){thanks(T("Your answers are saved on this device.","Tus respuestas se guardaron en este dispositivo."));return;}
+ var d=new Date(),day=d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
+ var body=JSON.stringify({action:"checkin",checkinType:"weekly",_backendAuth:DEST.key,studentId:w,timestamp:d.toISOString(),date:day,
+  weekly:W,tellAdult:talk,source:"link",extra:JSON.stringify({kind:"weekly",w:W,lang:ES?"es":"en",answers:answers})});
+ st.textContent=T("Sending…","Enviando…");
+ fetch(DEST.url,{method:"POST",mode:"cors",redirect:"follow",headers:{"Content-Type":"text/plain;charset=utf-8"},body:body})
+  .then(function(r){return r.json();}).then(function(j){if(j&&j.ok)thanks(T("Your teacher has it.","Tu maestro/a ya lo tiene."));else st.textContent=T("That didn't send. Try again in a moment.","No se envió. Intenta de nuevo en un momento.");})
+  .catch(function(){fetch(DEST.url,{method:"POST",mode:"no-cors",redirect:"follow",headers:{"Content-Type":"text/plain;charset=utf-8"},body:body}).then(function(){thanks(T("Sent.","Enviado."));}).catch(function(){st.textContent=T("That didn't send. Check the internet and try again.","No se envió. Revisa el internet e intenta de nuevo.");});});
+}
+paint();
+})();
+</script>
+<script src="/aog-grace.js" defer></script>
+</body>
+</html>

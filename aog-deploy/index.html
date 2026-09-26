@@ -63661,6 +63661,10 @@ html.js-reveal .reveal,
     { id: "thisisme", en: "Student This Is Me page", es: "Página Este soy yo del estudiante",
       hintEn: "The student's own page for their own IEP meeting — strengths, what helps, what is hard, how they have grown, what they want to ask their team. Every line is written, chosen or approved by them. Leave the code box empty and ONE link works for a whole class: whoever opens it types their own short code. ⚠ The page lives on their device; a finished page sends itself, and only the lines they KEPT ever travel — private lines never leave.",
       hintEs: "La página propia del estudiante para su propia reunión de IEP — fortalezas, qué le ayuda, qué le cuesta, cómo ha crecido, qué quiere preguntarle a su equipo. Cada línea la escribe, la elige o la aprueba él. Deja la casilla del código vacía y UN enlace sirve para toda la clase: quien lo abra escribe su propio código corto. ⚠ La página vive en su dispositivo; una página terminada se envía sola, y solo viajan las líneas que CONSERVÓ — las líneas privadas nunca salen." },
+    /* AOG-WEEKLY-V1 (2026-09-26) — the Monday, midweek and Friday check-ins */
+    { id: "weekly", en: "Student weekly check-ins", es: "Registros semanales del estudiante",
+      hintEn: "Three short check-ins: Monday (how was your weekend?), midweek (how is the week going?) and Friday (the week, and weekend plans). Tap answers, and a box to write more on every question.",
+      hintEs: "Tres registros cortos: lunes (¿cómo estuvo tu fin de semana?), mitad de semana (¿cómo va la semana?) y viernes (la semana y los planes del fin de semana). Respuestas con un toque y un espacio para escribir más en cada pregunta." },
     { id: "support", en: "Adult team check-in", es: "Registro del equipo de adultos",
       hintEn: "For a team around ONE student \u2014 a Tier 2 plan, a Tier 3 plan, an IEP. Every adult who sees that child logs what they saw from their own device, each entry signed with their own name, and they all meet on one timeline. Most teachers never open this tab, and that is the point of it having its own door.",
       hintEs: "Para un equipo alrededor de UN estudiante \u2014 un plan de Nivel 2, de Nivel 3, un IEP. Cada adulto que ve a ese ni\u00f1o anota lo que vio desde su propio dispositivo, cada entrada firmada con su nombre, y todas se re\u00fanen en una l\u00ednea de tiempo. La mayor\u00eda de los maestros nunca abren esta pesta\u00f1a, y por eso tiene su propia puerta." },
@@ -63755,6 +63759,7 @@ html.js-reveal .reveal,
       if (b.rest[i].id === "aogHcLgCard" || (b.rest[i].querySelector && b.rest[i].querySelector("#aogHcLgCard"))) return "homeci";
       if (b.rest[i].id === "aogPrLgCard" || (b.rest[i].querySelector && b.rest[i].querySelector("#aogPrLgCard"))) return "practice";
       if (b.rest[i].id === "aogTimLgCard" || (b.rest[i].querySelector && b.rest[i].querySelector("#aogTimLgCard"))) return "thisisme";
+      if (b.rest[i].id === "aogWkLgCard" || (b.rest[i].querySelector && b.rest[i].querySelector("#aogWkLgCard"))) return "weekly";
     }
     return "connect";      /* anything new lands in the admin tab, never in a link tab */
   }
@@ -92146,5 +92151,36 @@ body.aog-xwalk-solo:has(#panel-align.active) #panel-align::before{content:"Stand
   #screen-daily-checkin .sc-ribbon, #screen-exit-slip .xs-ribbon{background:var(--gl)!important}
 }
 </style>
+<script id="aog-weekly-links">
+/* AOG-WEEKLY-V1 — the weekly check-in links, built with this teacher's Sheet on them (dest=) */
+(function(){
+  function T(en,es){ try{ return (typeof DT==="function")?DT(en,es):en; }catch(e){ return en; } }
+  function link(w){ var d=""; try{ d=window.aogDestParam_?window.aogDestParam_():""; }catch(e){}
+    return location.origin+"/weekly?w="+w+(d?"&dest="+encodeURIComponent(d):""); }
+  function paint(card){
+    var rows=[["mon",T("Monday · How was your weekend?","Lunes · ¿Cómo estuvo tu fin de semana?")],["mid",T("Midweek · How is your week going?","Mitad de semana · ¿Cómo va tu semana?")],["fri",T("Friday · The week, and weekend plans","Viernes · La semana y los planes")]];
+    card.innerHTML='<p style="margin:0 0 12px">'+T("One link for the whole class. Post it on the day, or show it on the board. Every question can be tapped, and every question has a box to write more.","Un enlace para toda la clase. Publícalo ese día o muéstralo en la pizarra. Cada pregunta se puede tocar y cada una tiene un espacio para escribir más.")+'</p>'+
+      rows.map(function(r){ var u=link(r[0]); return '<div style="margin:0 0 14px"><div style="font-weight:800;margin:0 0 6px">'+r[1]+'</div><div style="display:flex;gap:8px;flex-wrap:wrap"><input readonly value="'+u.replace(/"/g,"&quot;")+'" style="flex:1 1 260px;min-height:44px"><button type="button" class="btn" data-wkcopy="'+u.replace(/"/g,"&quot;")+'">'+T("Copy link","Copiar enlace")+'</button><a class="btn btn-secondary" target="_blank" rel="noopener" href="'+u.replace(/"/g,"&quot;")+'">'+T("Open","Abrir")+'</a></div></div>'; }).join("")+
+      (link("mon").indexOf("dest=")<0?'<p style="margin:0;color:#E7C46A">'+T("Connect your Sheet under Connect & sync first, or answers stay on the student's device.","Conecta tu Hoja en Conectar y sincronizar primero, o las respuestas se quedan en el dispositivo del estudiante.")+'</p>':"");
+  }
+  function mount(){
+    var panel=document.getElementById("panel-distribute"); if(!panel) return;
+    var card=document.getElementById("aogWkLgCard");
+    if(!card){
+      var head=document.createElement("div"); head.className="section-head"; head.innerHTML='<h2>'+T("Weekly check-ins","Registros semanales")+'</h2>';
+      var wrap=document.createElement("div"); wrap.className="table-card"; wrap.style.padding="18px";
+      card=document.createElement("div"); card.id="aogWkLgCard"; wrap.appendChild(card);
+      var panes=document.getElementById("aogDistPanes");
+      panel.appendChild(head); panel.appendChild(wrap);
+      if(window.__aogDistRebuild) window.__aogDistRebuild();
+    }
+    paint(card);
+  }
+  document.addEventListener("click",function(e){ var b=e.target.closest&&e.target.closest("[data-wkcopy]"); if(!b) return;
+    var u=b.getAttribute("data-wkcopy"); try{ navigator.clipboard.writeText(u); b.textContent=T("Copied","Copiado"); }catch(x){} });
+  if(document.readyState==="loading") document.addEventListener("DOMContentLoaded",function(){ setTimeout(mount,1200); }); else setTimeout(mount,1200);
+  setTimeout(mount,3200);
+})();
+</script>
 </body>
 </html>
