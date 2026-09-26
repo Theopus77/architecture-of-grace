@@ -34,6 +34,15 @@
 
   var ready = function (fn) { if (D.readyState === "loading") D.addEventListener("DOMContentLoaded", fn); else fn(); };
   ready(function () {
+    /* 0 — the workbook tally drives a progress bar (aog-sel.css draws it from --p) */
+    try {
+      var tallies = D.querySelectorAll(".tally[data-total]");
+      var paint = function (t) { var n = parseInt((t.querySelector(".tn") || {}).textContent, 10) || 0, tot = parseInt(t.getAttribute("data-total"), 10) || 1; t.style.setProperty("--p", Math.round(100 * n / tot)); };
+      for (var k = 0; k < tallies.length; k++) {
+        paint(tallies[k]);
+        if (window.MutationObserver) new MutationObserver(function (t) { return function () { paint(t); }; }(tallies[k])).observe(tallies[k], { childList: true, subtree: true, characterData: true });
+      }
+    } catch (e) {}
     /* 2 — the novel in the room menu */
     try {
       if (room && NOVELS[room]) {
