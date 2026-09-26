@@ -1,0 +1,185 @@
+/* ══ AOG-SEL-V1 (2026-09-26) — ONE SKIN FOR THE WHOLE SEL CURRICULUM ═══════════
+   Jimmy: "look over all of it, including the novels, anchor charts, scenario
+   cards, worksheets … don't mess with the curriculum (wordage etc.); the
+   engine and such can be revamped if necessary so all fit on the same thing."
+
+   aog-grace.js loads this file (and aog-sel.js) on every SEL page: the five
+   rooms' curriculum / lessons / cards / workbook pages, the worksheets, the
+   anchor charts, the novels, the crosswalks and the Four Pillars sheets.
+   Those pages came from four different generators with four palettes, four
+   mastheads and their own control styles. This sheet sits on top of all of
+   them and makes them one family. It changes NO words and NO markup: only
+   the type, the tokens, the shape of the controls and the size of what a
+   finger has to hit. Every rule is scoped to html.aog-sel. ═══════════════════ */
+
+/* ── 1. one type, one palette ─────────────────────────────────────────────────
+   The lessons/cards/worksheets/charts family uses --ground/--field/--ink/--gold;
+   the curriculum/workbook family uses --bg/--card/--ink/--navy/--brass. Both
+   families now resolve to the same values (the lessons pages'), and both
+   serif and sans tokens point at the home page's faces, which aog-grace.js
+   already loads. aog-grace.css keeps remapping them in dark. */
+html.aog-sel{
+  --serif:"Fraunces","Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+  --sans:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  --ground:#F5F1E8; --bg:#F5F1E8; --field:#FFFFFF; --card:#FFFFFF; --field-2:#EFEAE0; --chip:#EFEAE0;
+  --ink:#1D2733; --ink-soft:#57626F; --sub:#57626F; --ink-faint:#5F6B78;
+  --rule:rgba(29,39,51,.16); --rule-soft:rgba(29,39,51,.08); --line:rgba(29,39,51,.16);
+  --focus:#B8893A;
+}
+html.aog-sel body{ font-family:var(--sans); }
+html.aog-sel h1:not(.aogtop *){ font-family:var(--serif); font-weight:600; letter-spacing:-.015em; }
+/* the worksheets spell their faces out instead of using the tokens */
+html.aog-sel .sheet, html.aog-sel .sheet p, html.aog-sel .sheet li, html.aog-sel .sheet textarea, html.aog-sel .sheet input,
+html.aog-sel .q .stem, html.aog-sel .card .sit, html.aog-sel .prose{ font-family:var(--serif); }
+html.aog-sel.a11y-dyslexic *:not(.aogtop *){ font-family:"OpenDyslexic","Comic Sans MS","Trebuchet MS",Verdana,sans-serif !important; }
+
+/* ── 2. the unit banners ───────────────────────────────────────────────────────
+   The drawn scene's credit line sat on top of the title on phones (the
+   worksheets' generator scoped its rule to a class the page never got). The
+   credit is a small italic note in the corner on wide screens and is gone on
+   phones, on every page that has a banner. */
+html.aog-sel .spread{ position:relative; }
+html.aog-sel .spread .credit{ position:absolute; right:14px; bottom:10px; z-index:2; font:italic 500 .7rem var(--serif);
+  color:rgba(245,241,232,.62); max-width:46%; text-align:right; line-height:1.25; pointer-events:none; }
+@media (max-width:720px){ html.aog-sel .spread .credit{ display:none; } }
+
+/* ── 3. controls a finger can hit ─────────────────────────────────────────────
+   Every choice on these pages is a pill at least 44px tall: the unit rails,
+   the lesson strip, the print/theme tools, the section links, the chapter
+   filters, the workbook answers, the anchor-chart segments, the drawing-pad
+   tools. Shapes and colours stay the page's own; only the size grows. */
+html.aog-sel .teach .mats a, html.aog-sel .mats a, html.aog-sel .tools button, html.aog-sel .tools a,
+html.aog-sel .lbtns a, html.aog-sel .lbtns button, html.aog-sel nav.toc a, html.aog-sel .filters .fchip,
+html.aog-sel .chipbtn, html.aog-sel .pill, html.aog-sel .seg button, html.aog-sel .bar .btn,
+html.aog-sel .padtools button, html.aog-sel .sheet-foot .btn, html.aog-sel .lock-acts .btn,
+html.aog-sel .aog-more, html.aog-sel .deal button, html.aog-sel .show button, html.aog-sel .rail button, html.aog-sel .rail a,
+html.aog-sel .lstrip a, html.aog-sel .lstrip button, html.aog-sel .pager2 a, html.aog-sel .pager2 button,
+html.aog-sel .drawer button, html.aog-sel .cjump select, html.aog-sel .jump select, html.aog-sel .r36top .pill{
+  min-height:44px; box-sizing:border-box; }
+html.aog-sel .opts .opt{ min-height:46px; display:flex; align-items:center; }
+html.aog-sel .padtools button.sw{ min-width:36px; min-height:36px; }
+html.aog-sel .card .tick, html.aog-sel .les .tick{ width:34px; height:34px; }
+html.aog-sel .mats a{ display:inline-flex; align-items:center; }
+html.aog-sel .hubline a, html.aog-sel .foot-home a, html.aog-sel footer a, html.aog-sel .eyebrow a{ display:inline-block; padding:8px 0; }
+/* a wide, empty gap opens under the sticky rail on phones when its wrap has no top padding */
+html.aog-sel select, html.aog-sel input:not([type=checkbox]):not([type=radio]), html.aog-sel textarea{ font-size:max(16px,1em); }
+
+/* ── 4. the same paper for every box ──────────────────────────────────────────
+   Boxes on the curriculum/workbook pages had square-ish 9–10px corners and a
+   flat shadow; the lessons/cards family has 16–22px corners and a lift.
+   One radius family now. */
+html.aog-sel .q, html.aog-sel .box, html.aog-sel .xcard, html.aog-sel .ow, html.aog-sel .panel, html.aog-sel .mcard,
+html.aog-sel .how, html.aog-sel .blab, html.aog-sel .kv, html.aog-sel .card, html.aog-sel .sheet{ border-radius:16px; }
+html.aog-sel .opt, html.aog-sel .toc a, html.aog-sel .fchip{ border-radius:999px; }
+html.aog-sel .opt{ padding-left:16px; padding-right:16px; }
+
+/* ── 5. dark: the workbook and curriculum pages never had a dark of their own
+   (they began in light and stayed there). Now that they carry the site bar and
+   its theme, the grace tokens do the work; a few hard-coded whites give way. */
+html.aog-sel[data-theme="dark"] .opt, html.aog-sel[data-theme="dark"] .q, html.aog-sel[data-theme="dark"] .panel,
+html.aog-sel[data-theme="dark"] .mcard, html.aog-sel[data-theme="dark"] .how{ background:var(--field); color:var(--ink); border-color:var(--rule); }
+html.aog-sel[data-theme="dark"] .opt.right, html.aog-sel[data-theme="dark"] .q.done .opt.right{ background:rgba(111,191,139,.18); border-color:#6FBF8B; color:#E4F0E8; }
+html.aog-sel[data-theme="dark"] .opt.wrong{ background:rgba(240,139,139,.14); border-color:#F08B8B; }
+html.aog-sel[data-theme="dark"] .toc a, html.aog-sel[data-theme="dark"] .fchip, html.aog-sel[data-theme="dark"] .tools button, html.aog-sel[data-theme="dark"] .pill{
+  background:var(--field); color:var(--ink); border-color:var(--rule); }
+html.aog-sel[data-theme="dark"] .fchip.on, html.aog-sel[data-theme="dark"] .toc a.on{ background:#F2C964; color:#0A1E33; border-color:#F2C964; }
+
+/* ── 6. print: the controls leave, the paper stays white ─────────────────── */
+@media print{
+  html.aog-sel .aogtop, html.aog-sel .aogtop-spacer, html.aog-sel .jump, html.aog-sel .cjump, html.aog-sel .r36top{ display:none !important; }
+}
+
+/* ══ AOG-SEL-INTERACTIVE-V1 (2026-09-26) — THE WORKING PARTS GET THE FACE LIFT ═══
+   Jimmy: "Can the interactive material get a face lift?" The answers a learner
+   taps, the box the workbook explains itself in, the writing lines, the drawing
+   pad and its tools, the dealt scenario card. Same words, same behaviour; the
+   check-in's glass-tile language, everywhere a finger lands. Screen only. */
+@media screen{
+  /* — choose-the-answer: a glass tile with the letter in a coin — */
+  html.aog-sel .opts{ gap:9px; }
+  html.aog-sel .opts .opt{ display:flex; align-items:center; gap:12px; padding:9px 14px 9px 9px; border:1.5px solid var(--rule);
+    border-radius:16px; background:var(--field); box-shadow:var(--lift-sm); font:500 1rem/1.4 var(--sans); }
+  html.aog-sel .opts .opt:hover{ border-color:#B8893A; }
+  html.aog-sel .opts .opt .ol{ flex:none; width:34px; height:34px; border-radius:50%; display:inline-flex; align-items:center; justify-content:center;
+    border:2px solid var(--rule); font:800 .9rem var(--sans); color:var(--ink-soft); background:var(--field-2); }
+  html.aog-sel .q.done .opt.picked[data-ok="1"], html.aog-sel .q.done .opt[data-ok="1"]{ background:rgba(46,125,79,.1); border-color:#2E7D4F; }
+  html.aog-sel .q.done .opt[data-ok="1"] .ol{ background:#2E7D4F; border-color:#2E7D4F; color:#fff; }
+  html.aog-sel .q.done .opt.picked[data-ok="1"]::after{ content:"\2713"; margin-left:auto; font-weight:800; color:#2E7D4F; }
+  html.aog-sel .q.done .opt.picked[data-ok="0"]{ background:rgba(179,38,30,.08); border-color:#B3261E; }
+  html.aog-sel .q.done .opt.picked[data-ok="0"] .ol{ background:#B3261E; border-color:#B3261E; color:#fff; }
+  html.aog-sel .q.done .opt.picked[data-ok="0"]::after{ content:"\2715"; margin-left:auto; font-weight:800; color:#B3261E; }
+  html.aog-sel .q.done .opt:not(.picked):not([data-ok="1"]){ opacity:.55; }
+  html.aog-sel[data-theme="dark"] .q.done .opt[data-ok="1"]{ background:rgba(111,191,139,.16); border-color:#6FBF8B; }
+  html.aog-sel[data-theme="dark"] .q.done .opt.picked[data-ok="0"]{ background:rgba(240,139,139,.14); border-color:#F08B8B; }
+  /* — the workbook explains itself: a note with a gold edge — */
+  html.aog-sel .q .why{ margin-top:12px; padding:12px 14px 12px 16px; border-radius:12px; background:var(--field-2);
+    border-left:4px solid #B8893A; font:400 .96rem/1.55 var(--serif); color:var(--ink); }
+  html.aog-sel .q .why b{ font-family:var(--sans); color:#2E7D4F; }
+  html.aog-sel[data-theme="dark"] .q .why{ background:rgba(242,201,100,.1); border-left-color:#F2C964; }
+  html.aog-sel[data-theme="dark"] .q .why b{ color:#BFE6CC; }
+  /* — the tally becomes a bar you can read at a glance — */
+  html.aog-sel .tally{ position:relative; padding:10px 0 18px; font:600 .92rem var(--sans); color:var(--ink-soft); }
+  html.aog-sel .tally::before{ content:""; position:absolute; left:0; right:0; bottom:6px; height:8px; border-radius:999px; background:var(--field-2); border:1px solid var(--rule-soft); }
+  html.aog-sel .tally::after{ content:""; position:absolute; left:0; bottom:6px; height:8px; width:calc(var(--p,0) * 1%); max-width:100%; border-radius:999px;
+    background:linear-gradient(90deg,#B8893A,#F2C964); border:1px solid #B8893A; box-sizing:border-box; }
+  /* — writing lines: paper you can type on — */
+  html.aog-sel .ow textarea, html.aog-sel .pen .fld, html.aog-sel textarea.fld{
+    background:var(--field) repeating-linear-gradient(180deg, transparent 0, transparent calc(1.85em - 1px), var(--rule-soft) calc(1.85em - 1px), var(--rule-soft) 1.85em) local;
+    background-position:0 .55em; line-height:1.85; font-size:16.5px; padding:8px 12px 6px; border:1.5px solid var(--rule); border-radius:12px; resize:none; }
+  html.aog-sel .ow textarea:focus, html.aog-sel .pen .fld:focus, html.aog-sel textarea.fld:focus{ border-color:#B8893A; outline-offset:2px; }
+  html.aog-sel .pen .fld{ border-bottom-width:1.5px; }
+  html.aog-sel .pane.hi .fld{ background-color:rgba(28,84,153,.05); }
+  html.aog-sel[data-theme="dark"] .pane.hi .fld{ background-color:rgba(156,194,232,.1); }
+  /* — the drawing pad: dotted paper, and tools you can find with a thumb — */
+  html.aog-sel .pad{ background:#fff radial-gradient(circle, rgba(29,39,51,.18) 1px, transparent 1.5px) 0 0/18px 18px;
+    border:1.5px solid var(--rule); border-radius:16px; box-shadow:inset 0 1px 6px rgba(29,39,51,.08), var(--lift-sm); }
+  html.aog-sel .padtools{ gap:10px; margin-top:12px; align-items:center; }
+  html.aog-sel .padtools .sw{ width:38px; height:38px; min-width:38px; min-height:38px; border:3px solid #fff; box-shadow:0 0 0 1.5px var(--rule), var(--lift-sm); }
+  html.aog-sel .padtools .sw[aria-pressed="true"]{ box-shadow:0 0 0 3px #B8893A, var(--lift-sm); transform:scale(1.08); }
+  html.aog-sel .padtools button[data-padtool]{ min-height:44px; padding:8px 16px; border-radius:999px; border:1.5px solid var(--rule); background:var(--field); font:700 .9rem var(--sans); box-shadow:var(--lift-sm); }
+  html.aog-sel .padtools button[data-padtool][aria-pressed="true"]{ background:#0A1E33; color:#F5F1E8; border-color:#0A1E33; }
+  html.aog-sel[data-theme="dark"] .padtools button[data-padtool][aria-pressed="true"]{ background:#F2C964; color:#0A1E33; border-color:#F2C964; }
+  /* — the dealt scenario card: a real card on the board — */
+  html.aog-sel .board .sheet{ border-radius:24px; border-top-width:12px; box-shadow:0 40px 90px rgba(0,0,0,.55), 0 0 0 1px rgba(255,255,255,.08); }
+  html.aog-sel .board .sheet .bh .code{ display:inline-flex; align-items:center; min-height:30px; padding:2px 12px; border-radius:999px; background:var(--uc,#0A1E33); color:#fff; font:800 .78rem var(--sans); letter-spacing:.12em; }
+  html.aog-sel .board .sheet .bb .k{ font:800 .7rem/1.4 var(--sans); letter-spacing:.2em; text-transform:uppercase; color:#B8893A; margin:14px 0 6px; }
+  html.aog-sel .board .sheet .bb .sit{ font:400 clamp(1.1rem,2.2vw,1.35rem)/1.6 var(--serif); }
+  html.aog-sel .board .sheet .bb ol{ list-style:none; padding:0; margin:0; counter-reset:q; }
+  html.aog-sel .board .sheet .bb ol li{ counter-increment:q; display:flex; gap:12px; align-items:flex-start; margin:0 0 10px; padding:10px 14px; border-radius:14px;
+    background:var(--field-2); font:400 clamp(1rem,1.9vw,1.2rem)/1.5 var(--serif); }
+  html.aog-sel .board .sheet .bb ol li::before{ content:counter(q); flex:none; width:30px; height:30px; border-radius:50%; background:#B8893A; color:#0A1E33; font:800 .85rem/30px var(--sans); text-align:center; }
+  html.aog-sel .board .sheet .bf .btn{ min-height:44px; border-radius:999px; padding:8px 16px; font-weight:700; }
+  html.aog-sel .board .sheet .bh #bClose{ min-width:44px; min-height:44px; border-radius:50%; }
+  html.aog-sel[data-theme="dark"] .board .sheet .bb .k{ color:#F2C964; }
+  /* — the cards on the page: the number on the coin, the tick a real check — */
+  html.aog-sel .card .tick{ top:12px; right:12px; box-shadow:var(--lift-sm); }
+  html.aog-sel .card.used .tick, html.aog-sel .card[data-used="1"] .tick{ background:#2E7D4F; border-color:#2E7D4F; color:#fff; }
+  /* — anchor-chart branches: the typed word lands as a chip you can see — */
+  html.aog-sel .stage input[type="text"]{ border-radius:12px; border:2px dashed var(--rule); background:var(--field); padding:10px 14px; min-height:46px; }
+  html.aog-sel .stage input[type="text"]:focus{ border-style:solid; border-color:#B8893A; }
+}
+
+/* ══ AOG-SEL-PATHS-V1 — two paths for every lesson (aog-sel.js) ═══════════════ */
+[data-aog-cut]{ display:none !important; }
+html.aog-sel .aog-path{ display:flex; flex-wrap:wrap; align-items:center; gap:10px 14px; margin:10px 0 6px; padding:10px 14px; border-radius:16px;
+  background:var(--field); border:1px solid var(--rule); box-shadow:var(--lift-sm); }
+html.aog-sel .aog-path label{ display:inline-flex; align-items:center; gap:10px; }
+html.aog-sel .aog-path .k{ font:800 .7rem/1.4 var(--sans); letter-spacing:.16em; text-transform:uppercase; color:var(--ink-soft); }
+html.aog-sel .aog-path select{ min-height:44px; border-radius:999px; border:1.5px solid var(--rule); background:var(--field-2); color:var(--ink); font:700 16px var(--sans); padding:6px 14px; }
+html.aog-sel .aog-path .aog-path-badge{ display:inline-flex; align-items:center; min-height:32px; padding:4px 12px; border-radius:999px; background:#0A1E33; color:#F5F1E8; font:800 .8rem var(--sans); letter-spacing:.06em; }
+html.aog-sel[data-theme="dark"] .aog-path .aog-path-badge{ background:#F2C964; color:#0A1E33; }
+html.aog-sel .aog-path .aog-path-note{ flex-basis:100%; margin:0; font:italic 500 .95rem/1.45 var(--serif); color:var(--ink-soft); }
+@media print{ html.aog-sel .aog-path{ display:none !important; } }
+
+/* ══ AOG-SEL-CARDPAGES-V1 — one lesson's cards at a time (aog-sel.js) ══════════ */
+@media screen{ [data-aog-page]{ display:none !important; } }
+html.aog-sel .aog-cardpager{ position:sticky; top:calc(var(--aogbar-h,55px) + 62px); z-index:29; display:flex; flex-wrap:wrap; align-items:center; gap:10px; margin:14px 0 10px; padding:10px 14px;
+  border-radius:16px; background:var(--field); border:1px solid var(--rule); box-shadow:var(--lift-sm); }
+html.aog-sel .aog-cardpager label{ flex:1 1 240px; display:flex; align-items:center; gap:10px; min-width:0; }
+html.aog-sel .aog-cardpager .k{ font:800 .7rem/1.4 var(--sans); letter-spacing:.16em; text-transform:uppercase; color:var(--ink-soft); }
+html.aog-sel .aog-cardpager select{ flex:1 1 0; min-width:0; width:100%; min-height:44px; border-radius:999px; border:1.5px solid var(--rule); background:var(--field-2); color:var(--ink); font:700 16px var(--sans); padding:6px 14px; }
+html.aog-sel .aog-cardpager .nv-btn{ display:inline-flex; align-items:center; justify-content:center; min-height:44px; min-width:44px; padding:8px 16px; border-radius:999px; border:1px solid var(--rule); background:var(--field); color:var(--ink); font:700 .92rem var(--sans); cursor:pointer; box-shadow:var(--lift-sm); }
+html.aog-sel .aog-cardpager .nv-btn.primary{ background:#0A1E33; color:#F5F1E8; border-color:#0A1E33; }
+html.aog-sel[data-theme="dark"] .aog-cardpager .nv-btn.primary{ background:#F2C964; color:#0A1E33; border-color:#F2C964; }
+html.aog-sel .aog-cardpager .nv-btn[disabled]{ opacity:.45; cursor:default; }
+@media (max-width:640px){ html.aog-sel .aog-cardpager{ top:calc(var(--aogbar-h,55px) + 84px); } }

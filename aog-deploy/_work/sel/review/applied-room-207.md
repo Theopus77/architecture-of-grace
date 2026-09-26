@@ -1,0 +1,112 @@
+# Room 207 review — applied (judgment rows and structural work)
+
+Applied after the sure rows (commit e90c8a4). One line per change.
+
+- `room-207-curriculum.html` — Legend: ★/★★ flags now follow the aligned lesson, with the pointer to that lesson's Legal/PPRA note.
+- `room-207-curriculum.html` — Cohort line: '(last year)' made clear.
+- `room-207-curriculum.html` — Ch. 1 lesson alignment → U1·L1 The Exit Interview.
+- `room-207-curriculum.html` — Ch. 1 anchor chart → The Threshold — Leaving and Arriving.
+- `room-207-curriculum.html` — Ch. 2 anchor chart → The Threshold chart plus the Five Questions poster.
+- `room-207-curriculum.html` — Ch. 5 filed under Unit 2 (★, U2·L2 is PPRA-designated).
+- `room-207-curriculum.html` — Ch. 5 lesson alignment → U2·L2 Forgiving the Younger Self.
+- `room-207-curriculum.html` — Ch. 5 anchor chart → Forgiving the Younger Self — Grief vs. Resentment.
+- `room-207-curriculum.html` — Ch. 5 neuro panel: grief is live, not six months old.
+- `room-207-curriculum.html` — Ch. 9 carries ★ (U3·L3 is PPRA-designated).
+- `room-207-curriculum.html` — Ch. 9 lesson alignment → U3·L3 Complex Reconciliation.
+- `room-207-curriculum.html` — Ch. 9 anchor chart → Complex Reconciliation — The Space Between.
+- `room-207-curriculum.html` — Ch. 9 neuro panel matches the corrected scene (a year in her head; unlocked, not open).
+- `room-207-curriculum.html` — Ch. 10 carries ★ (U1·L3 is PPRA-designated).
+- `room-207-curriculum.html` — Ch. 10 lesson alignment → U1·L3 Values Under Fire.
+- `room-207-curriculum.html` — Ch. 10 anchor chart → The Values-Behavior Gap.
+- `room-207-curriculum.html` — Ch. 11 lesson alignment → U2·L3 Mental Health Literacy & Advocacy.
+- `room-207-curriculum.html` — Ch. 11 anchor chart → Mental Health Literacy — The Continuum.
+- `room-207-curriculum.html` — Ch. 12 filed under Unit 2 with ★ (U2·L6 is PPRA-designated).
+- `room-207-curriculum.html` — Ch. 12 lesson alignment → U2·L6 The Inheritance of Grace; chart → The Inheritance of Grace — What Has Been Given.
+- `room-207-curriculum.html` — Ch. 13 filed under Unit 1.
+- `room-207-curriculum.html` — Ch. 13 lesson alignment → U1·L4 Values in the Workplace; chart → Values in Institutional Contexts.
+- `room-207-curriculum.html` — Ch. 15 anchor chart → Complex Reconciliation — The Space Between.
+- `room-207-curriculum.html` — Ch. 17 carries ★★ (aligned to U3·L7).
+- `room-207-curriculum.html` — Ch. 17 lesson alignment → U3·L7 The Graduation of the Heart; chart → the Graduation of the Heart wall / Forgiveness as Legacy; neuro panel matches the corrected scene.
+- `room-207-curriculum.html` — Ch. 18 ★ flag removed (U2·L5 is a standard-risk lesson).
+- `room-207-curriculum.html` — Ch. 18 lesson alignment → U2·L5 The Forgiveness Fatigue; chart → Forgiveness Fatigue — The Honest Acknowledgment.
+- `room-207-curriculum.html` — Ch. 20 lesson alignment → U4·L6 The Graduation Charter; chart → The Graduation Charter.
+- `room-207-curriculum.html` — Ch. 20 neuro panel uses Theo's three prompts from the corrected scene.
+- `room-207-curriculum.html` — Ch. 22 lesson alignment → U4·L5 The Mentor Path; chart → The Mentor Path.
+- `room-207-curriculum.html` — Ch. 22 marker prompt re-tied to the corrected scene (the regret question, the unnamed teacher, the Mentor Path).
+- `room-207-curriculum.html` — Ch. 23 lesson alignment → U4·L2 Radical Generosity; chart → Radical Generosity.
+- `room-207-curriculum.html` — Ch. 25 lesson alignment → U4·L7 The Final Celebration; chart → the Final Celebration wall.
+- `room-207-curriculum.html` — Ch. 25: Divine Mode parenthesis removed from the Universal Edition.
+- `room-207-curriculum.html` — Ch. 26 lesson alignment → U4·L7; chart → The Graduation Charter (goes with the class).
+- `room-207-curriculum.html` — Marker Ch. 17 rewritten around Darius; the fraction prompt tied to Kezia's unlocked door.
+- `room-207-curriculum.html` — Marker Ch. 20: the ★ TEACHER NOTE moved out of the script quotes into its own note panel; the script is words said to the room and matches the corrected scene.
+- `room-207-curriculum.html` — CSS: a .mpanel.note style for the marker-guide teacher note.
+- `room-207-curriculum.html` — Marker Ch. 20 prompt uses the three prompts and the return date.
+- `room-207-curriculum.html` — Grace in Practice close: 'since first grade' → 'since kindergarten'.
+- `room-207-cards.html` — B5-10A: the unnamed-scientist 'Failure as a Prerequisite' card retired; U2·L3 now carries Marcus at the student health center (help-seeking as strength).
+- `room-207-cards.html` — B5-10B: Nia's 'door in the rejection' retired; U2·L3 now carries Amara's friend (mental health as maintenance).
+- `room-207-cards.html` — B5-11A: U2·L4 The Sustainable Soul now carries Priya's daily practice (re-seated from B5-12A).
+- `room-207-cards.html` — B5-11B: U2·L4 now carries Jonah's rest as a skill (re-seated from B5-12B).
+- `room-207-cards.html` — B5-12A: new Forgiveness Fatigue card — Priya and Hannah after the rejection (Ch. 18).
+- `room-207-cards.html` — B5-12B: new Forgiveness Fatigue card — Darius forgiving his father in pieces (Ch. 17).
+- `room-207-cards.html` — B5-13A: 'Integrity over Image' (Layla's colleague) retired; U2·L6 now carries Amara and her grandmother (Ch. 12, named grace).
+- `room-207-cards.html` — B5-13B: Marcus's friend's business idea retired; U2·L6 now carries Marcus asked not to name Ms. Calloway (Ch. 22, grace handed on).
+- `room-207-cards.html` — B5-7A: Amara's Compass rewritten to the N-S-E-W four points (West — values still forming).
+- `room-207-cards.html` — B5-7B: Jonah's 'non-negotiables quadrant' rewritten to the East point (values tested that held).
+- `room-207-cards.html` — B5-17A: Three-Tier Model replaced by the lesson's own 'space between' language.
+- `room-207-cards.html` — B5-21A: the 'Letter of Release… places it down' ceremony replaced by the private journal; Amara now forgives a person, not a story.
+- `room-207-cards.html` — B5-21B: Darius writes Section 5 — If not yet ready — in the private journal; no ceremony, nothing placed down.
+- `room-207-cards.html` — B5-1A/B, 27A/B, 28A/B: ★ badge and empty 'Safety note' footer dropped (U1·L1, U4·L6, U4·L7 are Standard risk).
+- `room-207-cards.html` — Deck intro: one line says some cards imagine the cohort a few years on, and which names are not from the novel.
+- `AoG-Anchor-Charts-207.html` — CHARTS bitter: 'Accelerated aging markers' dropped (over-claim).
+- `AoG-Anchor-Charts-207.html` — CHARTS bitter: ★★ notice added (counselor in the room, crisis lines posted, no personal disclosures).
+- `AoG-Anchor-Charts-207.html` — WALLS wall1: the Compass described by its four points (N-S-E-W), matching the worksheet.
+- `AoG-Anchor-Charts-207.html` — WALLS wall2: the Compassionate Witness named as a Book 4 chart, not a Book 5 permanent.
+- `room-207-workbook.html` — U1 Q7 option A names the N-S-E-W four points (data-ok stays on A).
+- `room-207-workbook.html` — U1 Q7 why-note matches the four points.
+- `room-207-workbook.html` — U1 printed key Q7 matches the four points.
+- `room-207-workbook.html` — U1 Q8 option C uses the same triad as Part B (data-ok stays on C).
+- `room-207-workbook.html` — U3 Q1 stem: 'acknowledged, apologized or changed' (matches the chart).
+- `room-207-workbook.html` — Year-End Q4 option A: witnessed by a classmate (U4·L7 is a pair exchange); data-ok stays on A.
+- `room-207-workbook.html` — Year-End Q4 why-note and printed key name the pair exchange.
+- `room-207-lessons.html` — Card text under U1·L7, U2·L3–L6, U3·L3 and U3·L7 mirrors the re-seated / rewritten deck (B5-7A/B, 10A/B, 11A/B, 12A/B, 13A/B, 17A, 21A/B).
+- `room-207-lessons.html` — B5-25A/B and B5-26A under U4·L4/L5 now match the deck: 'charitable interpretation' and 'the generous reading' spelled out (no 'CI', no 'Pause Practice'); Priya's mentee is a first-year college student.
+- `room-207-lessons.html` — B5-1A/B, 27A/B, 28A/B headers lose the ★ Safety note (Standard-risk lessons), matching the deck.
+- `room-207-lessons.html` — B5-14A/B headers: literal '**' asterisks replaced by '★★ High disclosure — counselor present'.
+- `room-207-lessons.html` — Facilitation notes for U1·L2–L7, U2·L1–L6, U3·L1–L7 rewritten against the cards actually printed under each lesson (names, situation, key question).
+- `room-207-lessons.html` — U1·L3 step 2: the Deja example (no such card) replaced by Amara's selectively chosen data (B5-3B).
+- `room-207-lessons.html` — Español button: one-line note under it, in both languages — menus in Spanish, lesson text in English.
+- `room-207-lessons.html` — CSS for the language note.
+- `room-207-lessons.html` — U2·L7 MATERIALS names the one worksheet (w207-3 / the reproducible).
+- `room-207-lessons.html` — U2·L7: the second, Tier-2 'B5-U2-WS2' Final Backpack Audit sheet removed; the lesson carries one worksheet.
+- `room-207-lessons.html` — U2·L7 reproducible: its four blocks numbered Section 1–4 to match w207-3 (it already carries the crisis footer).
+- `room-207-lessons.html` — U2·L7 timing: 'Buffer 10 min — do not fill it.'
+- `room-207-lessons.html` — U2·L7 worksheet link no longer says 'turn it in' (★★, never collected).
+- `room-207-lessons.html` — U3·L5 worksheet link no longer says 'turn it in' (★★, never collected).
+- `room-207-lessons.html` — U1·L7 Tier-2 'B5-U1-WS2 · Compass of Integrity' rewritten to the N-S-E-W four points plus the carry-forward statement (matches w207-1).
+- `room-207-lessons.html` — U2·L7 wall list: the Compassionate Witness is a Book 4 chart brought back, not a permanent (workbook Year-End Q1 lists Book 4's five).
+- `room-207-lessons.html` — U3·L7 wall list: Book 4's five permanents + Book 5's two, the Compassionate Witness brought back, the five Unit 3 boards listed as unit charts.
+- `room-207-lessons.html` — U3·L5 step 2: 'the Johns Hopkins studies' → research summarized by Enright and Worthington, reviewed by Johns Hopkins Medicine; 'accelerated aging markers' dropped.
+- `room-207-lessons.html` — U3·L5 anchor chart text: 'Accelerated aging markers' dropped.
+- `room-207-lessons.html` — U4·L1 step 1: 'two years' → 'since Book 4 — some of you for far longer'.
+- `room-207-lessons.html` — U4·L5: Step 04 added — scenario cards B5-26A (pairs) and B5-26B (whole-class), 20 min — so the lesson fills its 50–55 min slot.
+- `room-207-lessons.html` — U4·L7 in-lesson scan: 'a hand on the shoulder' → 'a word at the door'.
+- `room-207-lessons.html` — Unit 4 label: 'Grace & Generativity' → 'Grace & Generosity' (one plain name, matching the routing table).
+- `room-207-lessons.html` — Routing tables (Units 1–4) regenerated from the corrected crosswalk: real lesson names, real scenes, CHARTS names, ★/★★ flags carried from the lesson.
+
+## Choices made where the report offered options
+- Ch. 13 (Jordan's gap-year call) → U1·L4 Values in the Workplace (the report's first choice), chart Values in Institutional Contexts.
+- Ch. 2 (the Five Questions) stays a year-long anchor; its chart cell names The Threshold (U1·L1) with the Five Questions as a classroom poster beside it, since no Five Questions board exists in CHARTS.
+- Ch. 17 and Ch. 25/26 point at the L7 walls (Graduation of the Heart / Final Celebration) with the permanent chart named, since L7 lessons have walls, not boards.
+- The Compassionate Witness is treated as a Book 4 chart brought back for U2·L7 and U3·L7, not a permanent; the workbook's "Book 4's five" stands.
+- Unit 2 card slots keep their B5-numbers (B5-10 = U2·L3 …); content re-seated: Mental Health cards into B5-10, Sustainable Soul into B5-11, new Fatigue cards (Priya/Hannah, Darius in pieces) in B5-12, new Inheritance cards (Amara's grandmother, Marcus/Ms. Calloway) in B5-13. The unnamed-scientist, Nia's door, Layla's colleague and Marcus's friend's business idea cards are retired.
+- Unit 1 cards stay in place (the report called their fit a judgment call); the facilitation notes now cite them.
+
+## Left as the report allowed
+- U3·L7 reflection "Thirteen years" — left.
+- w207-3 shared banner alt text — left. No w207-* file needed a change for the remaining rows (all w207 rows were "sure" and already applied); the FINISHED-station blocks were not touched.
+- B5-19A ledger "what it gives" — left (w207-4 already has the field).
+- Under-timed U1·L1, U2·L2, U2·L5 — not filled (only U4·L5 was asked for).
+- The curriculum overview line "In Divine Mode the faith overlay can engage doctrine fully" describes the editions and was not the row flagged; only the Ch. 25 parenthesis was removed.
+- `sw.js` not bumped (per instructions) — bump `const CACHE` before pushing.
+
+Checks: `node tools/check-contrast.js` and `node tools/check-calm.js` pass on all five changed pages (light and dark; phone width).

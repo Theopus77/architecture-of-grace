@@ -285,6 +285,8 @@ html.a11y-dyslexic body{letter-spacing:.02em;word-spacing:.09em;line-height:1.8}
 }
 .acts button.lay{background:#C9A24A!important;color:#0A1E33!important;border:2px solid #1E1F22!important;font-weight:800}
 .acts .pst button{margin:4px 4px 0 0}
+.acts .open{display:inline-flex;align-items:center;min-height:36px;padding:6px 12px;border-radius:999px;border:1px solid var(--line);background:var(--card);color:var(--navy);font:700 .84rem var(--sans);text-decoration:none;margin-right:6px}
+.acts .open:hover{border-color:var(--navy)}
 </style>
 <script src="aog-sync-config.js"></script>
 <!-- ══ DASHBOARD-CODE GATE (2026-09-09) ═══════════════════════════════════
@@ -618,10 +620,19 @@ else document.documentElement.classList.add("aog-embed");</script>
   function bits(list){ return list.filter(nz).join(" · "); }
 
   /* ── the subject classifier, unchanged: it belongs to turn-ins only ── */
+  /* AOG-INBOX-SEL-LINKS-V1 (2026-09-26) — Jimmy: "Make sure all the worksheets and stuff are
+     linked back to the blueprint in the dashboard … and the inbox." Every SEL worksheet and
+     companion workbook, by the id it sends: its page, its name, the lesson it belongs to and
+     its room. Rows are labelled by room, and each card carries Open-the-worksheet and
+     Open-the-lesson buttons (the Blueprint pane shows the same card). Generated from the
+     worksheets' own CFG ids and hub links — regenerate if a worksheet is added. */
+  var SEL_PAGES={"w1":{"page":"w1-identity-audit.html","name":"Identity Audit","lesson":"room-36-lessons.html?l=u1l1","room":"36"},"w104-1":{"page":"w104-1-identity-shield.html","name":"The Identity Shield","lesson":"room-104-lessons.html?l=u1l7","room":"104"},"w104-2":{"page":"w104-2-backpack-audit.html","name":"The Backpack Audit","lesson":"room-104-lessons.html?l=u2l7","room":"104"},"w12-1":{"page":"w12-1-my-identity-web.html","name":"My Identity Web","lesson":"room-12-lessons.html?l=u1l1","room":"12"},"w12-2":{"page":"w12-2-i-can-change-and-grow.html","name":"I Can Change and Grow","lesson":"room-12-lessons.html?l=u1l6","room":"12"},"w12-3":{"page":"w12-3-where-my-feelings-live.html","name":"Where My Feelings Live","lesson":"room-12-lessons.html?l=u2l2","room":"12"},"w12-4":{"page":"w12-4-being-kind-to-myself.html","name":"Being Kind to Myself","lesson":"room-12-lessons.html?l=u2l4","room":"12"},"w18-1":{"page":"w18-1-identity-web.html","name":"My Identity Web","lesson":"room-18-lessons.html?l=u1l1","room":"18"},"w18-10":{"page":"w18-10-my-regulation-toolkit.html","name":"My Regulation Toolkit","lesson":"room-18-lessons.html?l=u1","room":"18"},"w18-11":{"page":"w18-11-my-recovery-map.html","name":"My Recovery Map","lesson":"room-18-lessons.html?l=u2","room":"18"},"w18-12":{"page":"w18-12-my-repair-plan.html","name":"My Repair Plan","lesson":"room-18-lessons.html?l=u3","room":"18"},"w18-13":{"page":"w18-13-my-limit-statements.html","name":"My Limit Statements","lesson":"room-18-lessons.html?l=u4","room":"18"},"w18-2":{"page":"w18-2-guilt-vs-shame.html","name":"Sorting: Guilt vs. Shame","lesson":"room-18-lessons.html?l=u1l5","room":"18"},"w18-3":{"page":"w18-3-two-voices.html","name":"Two Voices — One Choice","lesson":"room-18-lessons.html?l=u1l4","room":"18"},"w18-4":{"page":"w18-4-accountability-map.html","name":"The Three-Part Accountability Map","lesson":"room-18-lessons.html?l=u2l3","room":"18"},"w18-5":{"page":"w18-5-letter-from-your-best-friend.html","name":"Letter From Your Best Friend","lesson":"room-18-lessons.html?l=u2l4","room":"18"},"w18-6":{"page":"w18-6-forgiveness-vs-trust.html","name":"Two Separate Decisions: Forgiveness vs. Trust","lesson":"room-18-lessons.html?l=u3l3","room":"18"},"w18-7":{"page":"w18-7-three-panel-story.html","name":"My Three-Panel Story — Narrative Reclaim","lesson":"room-18-lessons.html?l=u3l5","room":"18"},"w18-8":{"page":"w18-8-grace-gap.html","name":"Grace Gap Field Assignment","lesson":"room-18-lessons.html?l=u4l4","room":"18"},"w18-9":{"page":"w18-9-pause-practice.html","name":"The Pause Practice — Four Steps","lesson":"room-18-lessons.html?l=u4l3","room":"18"},"w2":{"page":"w2-values-under-pressure.html","name":"Values Under Pressure","lesson":"room-36-lessons.html?l=u1l4","room":"36"},"w207-1":{"page":"w207-1-compass-of-integrity.html","name":"The Compass of Integrity","lesson":"room-207-lessons.html?l=u1l7","room":"207"},"w207-2":{"page":"w207-2-living-amend-design.html","name":"The Living Amend Design","lesson":"room-207-lessons.html?l=u2l1","room":"207"},"w207-3":{"page":"w207-3-backpack-audit.html","name":"The Final Backpack Audit","lesson":"room-207-lessons.html?l=u2l7","room":"207"},"w207-4":{"page":"w207-4-bitterness-ledger.html","name":"The Bitterness Ledger","lesson":"room-207-lessons.html?l=u3l5","room":"207"},"w207-5":{"page":"w207-5-graduation-charter.html","name":"The Graduation Charter","lesson":"room-207-lessons.html?l=u4l6","room":"207"},"w3":{"page":"w3-choice-agency-map.html","name":"The Choice-Agency Map","lesson":"room-36-lessons.html?l=u1l6","room":"36"},"w4":{"page":"w4-letter-to-my-future-self.html","name":"A Letter to My Future Self","lesson":"room-36-lessons.html?l=u1l7","room":"36"},"w5":{"page":"w5-perfectionism-spectrum.html","name":"The Perfectionism Spectrum","lesson":"room-36-lessons.html?l=u2l3","room":"36"},"w6":{"page":"w6-rewriting-the-script.html","name":"Rewriting the Script","lesson":"room-36-lessons.html?l=u2l6","room":"36"},"w7":{"page":"w7-internal-critic-profile.html","name":"Internal Critic Profile","lesson":"room-36-lessons.html?l=u2l1","room":"36"},"wb12":{"page":"room-12-workbook.html","name":"Room 12 — The Companion Workbook","lesson":"room-12-lessons.html","room":"12"},"wb18":{"page":"room-18-workbook.html","name":"Room 18 — The Companion Workbook","lesson":"room-18-lessons.html","room":"18"},"wb36":{"page":"room-36-workbook.html","name":"Room 36 — The Companion Workbook","lesson":"room-36-lessons.html","room":"36"},"wb104":{"page":"room-104-workbook.html","name":"Room 104 — The Companion Workbook","lesson":"room-104-lessons.html","room":"104"},"wb207":{"page":"room-207-workbook.html","name":"Room 207 — The Companion Workbook","lesson":"room-207-lessons.html","room":"207"}};
+  function selPage(r){ var id=String((r&&r.activityId)||""); return SEL_PAGES[id]||null; }
   function subjectOf(r){
     var s=""; try{ s=String((xparse(r)||{}).series||""); }catch(e){}
     var id=String(r.activityId||"");
-    if(/^sel-/.test(s) || /^w[1-6]$/.test(id) || id==="wb36") return ["SEL · Room 36","s-sel"];
+    /* 2026-09-26, Jimmy: "just keep it to name like we have done across the site" — one plain label */
+    if(selPage(r) || /^sel-/.test(s) || /^w[1-6]$/.test(id) || id==="wb36") return ["SEL","s-sel"];
     if(s==="word-study" || id==="b11" || /^wf/.test(id)) return ["English","s-eng"];
     if(s==="science" || /^v\d/.test(id) || id==="sci-scope" || /^b[1-8]$/.test(id)) return ["Science","s-sci"];
     if(/^h\d+/.test(id) || id==="b9") return ["Social Studies","s-soc"];
@@ -1055,7 +1066,8 @@ else document.documentElement.classList.add("aog-embed");</script>
      The chip is dropped from the row; rows that classify as SEL still appear
      under All (their label is unchanged), they just have no chip of their own.
      To bring it back, put "SEL · Room 36" back in this list. */
-  var SUBJECTS=["All","Math","Language Arts","Writing","Science","Social Studies","Spanish","FACS","Religions","Economics","Foundry","English","Other"];
+  var SUBJECTS=["All","SEL","Math","Language Arts","Writing","Science","Social Studies","Spanish","FACS","Religions","Economics","Foundry","English","Other"];
+  /* 2026-09-26: one SEL chip for every room (SEL · Room 12 … 207), now that every worksheet and workbook lands here with its room */
   var curK="all", curF="All", curView="stu", sheetOnly=false;
   /* AOG-INBOX-LINKIN-V1 (2026-09-26) — Jimmy: "The academic box should be interactive as well." A link can
      open the Inbox already narrowed to one student (?student=) and one kind of work (?work=dd | checks |
@@ -1400,7 +1412,12 @@ else document.documentElement.classList.add("aog-embed");</script>
       + (it.sum?'<span class="sum">'+esc(it.sum)+"</span>":"")
       + "</summary>"
       + '<div class="body">'+body
-      + '<div class="acts no-print">'+worksheetBtns(it)+'<button type="button" data-a="print">Print this one</button>'
+      + '<div class="acts no-print">'
+      + (function(){ var sp=(it.kind==="turnin")?selPage(it.raw):null; if(!sp) return "";
+          var wb=/^wb/.test(String(it.raw.activityId||""));
+          return '<a class="open" href="/'+esc(sp.page)+'">'+(wb?"Open the workbook":"Open the worksheet")+'</a>'
+               + (sp.lesson?'<a class="open" href="/'+esc(sp.lesson)+'">Open the lesson</a>':""); })()
+      + '<button type="button" data-a="print">Print this one</button>'
       + '<button type="button" data-a="lay" class="iep-only lay" title="Adds this result to the student\'s IEP goal as evidence">Lay the brick down</button>'
       + '<button type="button" data-a="iep" class="iep-only" title="Copies this result as IEP evidence">Copy this brick</button>'
       + '<button type="button" class="del" data-a="del">Remove</button>'
@@ -1502,7 +1519,7 @@ else document.documentElement.classList.add("aog-embed");</script>
       if(URL_STU && String(it.student||"").replace(/\s+/g," ").trim().toLowerCase()!==URL_STU) return false;
       if(URL_WORK && !workMatch(it,URL_WORK)) return false;
       if(curK!=="all" && it.kind!==curK) return false;
-      if(it.kind==="turnin" && curF!=="All" && it.subj!==curF) return false;
+      if(it.kind==="turnin" && curF!=="All" && !(curF==="SEL" ? /^SEL/.test(String(it.subj||"")) : it.subj===curF)) return false;
       return true;
     });
     all.sort(function(a,b){ return String(b.ts||"").localeCompare(String(a.ts||"")); });
@@ -1555,8 +1572,8 @@ else document.documentElement.classList.add("aog-embed");</script>
      ring by ring. Jewel glass per subject; a pane done without a hint glows. */
   var BP_GLASS={"Math":"#2F63B8","Language Arts":"#E0A22E","English":"#E0A22E","Writing":"#D2602C",
     "Science":"#2E9A62","Social Studies":"#B3303F","Spanish":"#CC4C86","FACS":"#8452B0","Religions":"#4146A6",
-    "Economics":"#93A62E","Foundry":"#B8702E","SEL · Room 36":"#2C9CA8","Other":"#6B7A8C"};
-  function bpGlass(it){ if(it.kind==="voice") return "#E58FB0"; if(it.kind!=="turnin") return "#9FC3E0"; return BP_GLASS[it.subj]||BP_GLASS.Other; }
+    "Economics":"#93A62E","Foundry":"#B8702E","SEL":"#2C9CA8","SEL · Room 36":"#2C9CA8","Other":"#6B7A8C"};
+  function bpGlass(it){ if(it.kind==="voice") return "#E58FB0"; if(it.kind!=="turnin") return "#9FC3E0"; return BP_GLASS[it.subj]||(/^SEL/.test(String(it.subj||""))?BP_GLASS["SEL · Room 36"]:null)||BP_GLASS.Other; }
   /* ══ AOG-BLUEPRINT-GLASS-V1 (2026-09-25) — FIVE WINDOWS ═══════════════════
      Jimmy: "the builder had an option to build a different type of stained
      glass mosaic … realism to the ceiling of real … 3-5?" Five real forms,
@@ -1700,7 +1717,7 @@ else document.documentElement.classList.add("aog-embed");</script>
     var dl=Object.keys(days).sort(), streak=0;
     if(dl.length){ var d=new Date(dl[dl.length-1]+"T12:00:00"); while(days[d.toISOString().slice(0,10)]){ streak++; d.setDate(d.getDate()-1); } }
     var top=Object.keys(subj).sort(function(a,b){ return subj[b]-subj[a]; })[0];
-    var legend=Object.keys(subj).sort().map(function(k){ return '<span class="bp-lg"><i style="background:'+(BP_GLASS[k]||BP_GLASS.Other)+'"></i>'+esc(k)+' '+subj[k]+'</span>'; }).join("");
+    var legend=Object.keys(subj).sort().map(function(k){ return '<span class="bp-lg"><i style="background:'+(BP_GLASS[k]||(/^SEL/.test(k)?BP_GLASS["SEL · Room 36"]:null)||BP_GLASS.Other)+'"></i>'+esc(k)+' '+subj[k]+'</span>'; }).join("");
     wrap.innerHTML=chips
       +'<div class="bp-card">'
       +'<div class="bp-top"><div><div class="bp-ey">'+(me?"My Blueprint":"Blueprint")+'</div><h2>'+esc(me?"What "+name+" is building":name+"’s Blueprint")+'</h2></div>'

@@ -1,0 +1,55 @@
+# Room 12 — judgment-call rows applied (2026-09-26)
+
+Source: _work/sel/review/room-12.md. Sure rows were applied earlier. Novels and sw.js untouched. Future-self letters stay December/May on these pages (workbook U4 Q8 and charts wall2 unchanged).
+
+- room-12-lessons.html: Lesson 2.4 header: 'PPRA · Counselor Briefed' → '★ ELEVATED · PPRA · Counselor Briefed'
+- room-12-lessons.html: Lesson 2.5 header: 'PPRA · Counselor Briefed' → '★ ELEVATED · PPRA · Counselor Briefed'
+- room-12-lessons.html: Lesson 2.4 Safety Check: added 'Crisis resources visible: 988 … HOME to 741741.'
+- room-12-lessons.html: Lesson 2.5 Safety Check: added 'Crisis resources visible: 988 … HOME to 741741.'
+- room-12-lessons.html: Lesson 3.5 Safety Check: added 'Crisis resources visible: 988 … HOME to 741741.'
+- room-12-lessons.html: Lesson 4.7 Safety Check: added 'Crisis resources visible: 988 … HOME to 741741.'
+- room-12-lessons.html: Lesson 1.3 step 05: 'You are a learner, not a failure.' → 'You are a learner. Learners make mistakes.'
+- room-12-lessons.html: Lesson 2.4 step 04: 'Part Three — Mindfulness · 5 MIN' → 'Part Three — Mindfulness + Kind Message card · 8 MIN'
+- room-12-lessons.html: Lesson 2.6 step 02: 'Step Two — Talk to Someone You Trust · 6 MIN' → '… + Build the Support Web · 12 MIN'
+- room-12-lessons.html: Lesson 3.6 OBJECTIVE: 'hear stories … many forms across many cultures' → 'hear a story of someone practicing forgiveness and map it to the three panels'
+- room-12-lessons.html: Lesson 3.6 MATERIALS: dropped 'and/or Each Kindness (Jacqueline Woodson)'
+- room-12-lessons.html: U1 crosswalk Ch. 6 anchor chart: 'I AM GROWING' → 'I AM A WORK IN PROGRESS'
+- room-12-lessons.html: Header: added note after the Español button — 'Menus in Spanish; lesson text in English.' / 'Menús en español; el texto de las lecciones en inglés.'
+- room-12-lessons.html: Lesson 2.6 KINDERGARTEN box: added 'Offer a holding box with a lid for a stone a child is not ready to put down.'
+- room-12-curriculum.html: Ch. 3 card: 'The class learns that mistakes are part of being a person…' → 'Marcus bumps the table and Jaylen’s tower falls. Sammy separates … Oops, Fix It, Try Again.'
+- room-12-curriculum.html: Ch. 6 card: seeds/sprout quote → 'Ms. Calloway: “You are not finished. You are a work in progress.” The kids draw Me in September and Me Now. Maya looks up.'
+- room-12-curriculum.html: Ch. 6 anchor chart trigger: 'I AM GROWING (K-2)' → 'I AM A WORK IN PROGRESS (K-2)' (matches the lessons crosswalk rename)
+- room-12-curriculum.html: Ch. 22 card: 'A hug when they pushed… Grace List' → 'Sammy: “Grace is chosen kindness — given to somebody who did not earn it.” Marcus realizes Jaylen rebuilding the tower was grace.'
+- room-12-curriculum.html: Ch. 27 card: wooden-box quote → 'The kids open their letters from December (classroom timeline kept). Ms. Calloway reads one true thing she saw in each child. Sammy goes back in the box for the summer.'
+- room-12-curriculum.html: Register line: dropped the Divine Mode sentence from the universal edition
+- room-12-curriculum.html: Grace in Practice #5 teacher cue: 'Mr. Lopez … He drives our bus … You saw him.' → 'Ms. Patricia … She drives our bus … You saw her.'
+- room-12-cards.html: Card 2-C Q3: 'What would you put in Nadia’s backpack to help her carry less?' → 'What is one stone Nadia could take OUT of her backpack?'
+- room-12-cards.html: Card 4-C: 'Sofia texted her friend group…' → 'Sofia told her friends she could not come to the birthday party. Nobody said anything back. Her first thought was, “They are mad at me.”'
+- room-12-cards.html: Card 4-C Q1 (follows the rewrite): 'nobody wrote back' → 'nobody said anything back'
+- room-12-cards.html: Card 3-F: 'His counselor encouraged him to forgive them.' → 'A grown-up told him he should forgive them.'
+- room-12-cards.html: Card 4-D Q3: 'Practice saying the charitable interpretation out loud.' → 'Practice saying the kind story out loud.'
+- room-12-cards.html: Card 1-F: 'Sam forgot his part…' → 'Leo forgot his part…'
+- room-12-cards.html: Card 1-F Q2: 'say to Sam?' → 'say to Leo?'
+- room-12-cards.html: Card 1-F Q3: 'step Sam could do?' → 'step Leo could do?'
+- room-12-cards.html: Card 3-B: 'Two years ago, Marcus’s best friend' → 'Last year, Marcus’s best friend'
+- room-12-cards.html: Card 2-J: 'class play two years ago' → 'class play last year'
+- room-12-cards.html: Card 3-C: 'During a class presentation,' → 'During share time,'
+- room-12-cards.html: Card 3-D: 'After being left out of a group project,' → 'After being left out of a game at recess,'
+- room-12-cards.html: Card 4-E: 'Ms. Abuelo' → 'Ms. Alvarez'
+- room-12-cards.html: Card 1-J: 'Lily started crying' → 'Nora started crying'
+- room-12-cards.html: Card 1-J Q1/Q2: 'Lily’s identity' / 'Lily’s thought' → 'Nora’s …'
+- room-12-cards.html: Subtitle data-es: 'Salón 12 · Grados K–2' → 'Salón 12 · Grados K–2 · 34 tarjetas'
+- room-12-cards.html: Header: added note after the Español button — 'Menus in Spanish; card text in English.' / 'Menús en español; el texto de las tarjetas en inglés.'
+- room-12-workbook.html: Unit 2 Q2 stem: 'Forgiveness is NOT —' → 'Which one is a forgiveness MYTH?'
+- room-12-workbook.html: Unit 2 Q2 options rewritten as full sentences; the myth stays at B (key letter unchanged): A 'Forgiving means letting go of angry feelings.' B 'Forgiving means forgetting.' (correct) C 'Forgiving is for my own peace.' D 'Forgiving is something I can practice.'
+- room-12-workbook.html: Unit 3 Q3 stem: 'Forgiveness is ______. Trust is ______.' → 'Forgiveness is for ME. Trust must be ______.'
+- room-12-workbook.html: Unit 3 Q3 options: A 'forgotten' B 'given to everybody' C 'earned' (correct, key letter C unchanged) D 'the same as forgiveness'
+- room-12-workbook.html: Unit 3 Part B 3: 'Draw the Forgiveness Path with six stations.' → 'Draw the Forgiveness Path. Use three stations or six.'
+- room-12-workbook.html: Unit 1 Q7: '“I am stupid” is ______.' → '“I am bad” is ______.'
+- room-12-workbook.html: Unit 4 Q2 explanation (why-note and printed key): '…The difference is CHOICE. Grace is wise sometimes — and not wise other times. Both are true.' → 'Grace is not a doormat. A doormat has no choice. Grace is a choice. That is the difference.'
+- w12-3-where-my-feelings-live.html: Body words table: 'Wobbly' → 'Jumpy'
+- w12-2-i-can-change-and-grow.html: Sammy quote: added 'I am still learning others.' before 'That is what GROWING is.'
+- AoG-Anchor-Charts-12.html: CHARTS: added lines-form chart 'Words for Real Hurt' (id hurtwords, Unit 3 Lesson 1) before 'forgtrust'; lines from lesson 3.1 step 03
+- AoG-Anchor-Charts-12.html: CHARTS: added lines-form chart 'Grace With Limits' (id limits, Unit 4 Lesson 5) at the end of the array; lines verbatim from novel Ch. 25 (You CAN / You DO NOT HAVE TO)
+
+Skipped: none. Both checks pass (node tools/check-contrast.js / check-calm.js on the 7 changed pages).
