@@ -44,6 +44,18 @@ PRESENT AND FUTURE." Every page, now and every page added later:
 - Neuro-affirming words: describe what a learner can do and what helps; never
   deficit labels.
 
+## Plain words (standing order from Jimmy, 2026-09-26)
+
+The words people read to *use* the site are written plainly: headings, intros,
+buttons, instructions, help text and empty-state messages, in English and Spanish.
+
+- Short sentences. One idea each. Everyday words; no jargon or legal phrasing.
+- Say what to do or what happens, not how the system works inside.
+- Warm and direct, like a good teacher talking; never cold or clinical.
+- Rewriting never changes a fact, a promise or a privacy claim.
+- Leave curriculum content alone (lessons, novels, worksheets, questions,
+  crosswalks, quoted standards): those words are the teaching.
+
 ## Housekeeping
 
 - Bump `const CACHE` in `aog-deploy/sw.js` whenever a page changes, so browsers
