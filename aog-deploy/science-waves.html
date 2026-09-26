@@ -133,6 +133,9 @@ textarea.cer { width:100%; min-height:88px; font:inherit; font-size:16px; paddin
 @media (min-width:640px){ .vars { grid-template-columns:1fr 1fr 1fr; } }
 .vars .card { padding:.85rem 1rem; }
 body:has(.aogtop) header .tools { display:none; }
+.rec-btn{background:#fff;color:#9c2a22!important;border:1.5px solid #c0392b!important;font-weight:800}
+.rec-on{background:#c0392b!important;color:#fff!important;border-color:#c0392b!important;font-weight:800}
+.rec-take{padding:.5rem .6rem;border-radius:12px;border:1px dashed var(--line)}
 </style>
 </head>
 <body>
@@ -384,14 +387,35 @@ function hush(){
 }
 /* AOG-SOUND-HANDOFF-V1 — render the tone on screen (shape, pitch, loudness) for two
    seconds, silently, and hand it to the drum machine or the turntables. */
+/* AOG-SCOPE-RECORD-V1 (2026-09-26) — Jimmy: "as soon as you press the drum machine or
+   turntables it jumps to them. THERE IS NO RECORD BUTTON." Record now captures what you do —
+   every slider move and shape change — for up to 8 seconds. Then the take waits: play it back,
+   and only send it when you choose where. */
+const REC={on:false,t0:0,log:[],take:null,iv:0,url:""};
+function recSample(){ const tt=(performance.now()-REC.t0)/1000; REC.log.push({t:tt,hz:S.hz,amp:S.amp,shape:S.shape||"sine"}); const el=document.getElementById("recBtn"); if(el) el.textContent=(S.lang==="en"?"■ Stop  ":"■ Parar  ")+tt.toFixed(1)+" s"; if(tt>=8) recStop(); }
+function recStart(){ REC.on=true; REC.t0=performance.now(); REC.log=[]; REC.take=null; recSample(); REC.iv=setInterval(recSample,25); paint(); }
+async function recStop(){
+  if(!REC.on) return; clearInterval(REC.iv); REC.on=false;
+  const log=REC.log, dur=Math.max(.3,log[log.length-1].t+.05);
+  const OC=window.OfflineAudioContext||window.webkitOfflineAudioContext; if(!OC){ paint(); return; }
+  const sr=44100, off=new OC(1, Math.ceil(sr*dur), sr), g=off.createGain(); g.connect(off.destination);
+  /* one oscillator per stretch of the same shape; pitch and loudness follow the log */
+  let seg=null; const segs=[];
+  log.forEach(e=>{ if(!seg||seg.shape!==e.shape){ seg={shape:e.shape,t0:e.t,pts:[]}; segs.push(seg); } seg.pts.push(e); });
+  segs.forEach((sg,i)=>{ const o=off.createOscillator(), og=off.createGain(); o.type=sg.shape; o.connect(og); og.connect(g);
+    const end=i<segs.length-1?segs[i+1].t0:dur;
+    sg.pts.forEach((e,k)=>{ if(k===0){ o.frequency.setValueAtTime(e.hz,e.t); og.gain.setValueAtTime(0,e.t); og.gain.linearRampToValueAtTime(0.2+e.amp*0.6,e.t+.008); } else { o.frequency.linearRampToValueAtTime(e.hz,e.t); og.gain.linearRampToValueAtTime(0.2+e.amp*0.6,e.t); } });
+    og.gain.setValueAtTime(og.gain.value||0.4,Math.max(sg.t0,end-.008)); og.gain.linearRampToValueAtTime(0,end);
+    o.start(sg.t0); o.stop(end); });
+  const buf=await off.startRendering();
+  REC.take={blob:window.aogWav(buf), dur, name:(log[0].shape)+"-take-"+Math.round(dur*10)/10+"s.wav"};
+  if(REC.url) URL.revokeObjectURL(REC.url); REC.url=URL.createObjectURL(REC.take.blob);
+  paint();
+}
+function recPlay(){ if(!REC.url) return; const a=new Audio(REC.url); a.volume=.6; a.play().catch(()=>{}); }
 async function recordSound(where){
-  const OC=window.OfflineAudioContext||window.webkitOfflineAudioContext; if(!OC) return;
-  const sr=44100, off=new OC(1, sr*2, sr), o=off.createOscillator(), g=off.createGain();
-  o.type=S.shape||"sine"; o.frequency.value=S.hz; g.gain.setValueAtTime(0,0); g.gain.linearRampToValueAtTime(0.25+S.amp*0.6,0.01);
-  g.gain.setValueAtTime(0.25+S.amp*0.6,1.9); g.gain.linearRampToValueAtTime(0,2);
-  o.connect(g); g.connect(off.destination); o.start(0); o.stop(2);
-  const buf=await off.startRendering(), blob=window.aogWav(buf);
-  const name=(S.shape||"sine")+"-"+S.hz+"hz.wav";
+  if(!REC.take) return;
+  const blob=REC.take.blob, name=REC.take.name;
   if(where==="saveWav"){ const a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download=name; document.body.appendChild(a); a.click(); a.remove(); return; }
   await window.aogHandoffPut({ name:name, blob:blob, at:Date.now() });
   location.href = where==="toDrums" ? "/music-drums.html?take=1" : "/music-decks.html?take=1";
@@ -524,11 +548,16 @@ function pagePlay(){
       <button type="button" class="btn" data-act="hush">${t("hush")}</button>
     </div>
     <div class="chips" style="margin-top:.4rem">
-      <span class="tiny" style="margin:0 .4rem 0 0">${S.lang==="en"?"Record this sound (2 seconds) and send it to":"Graba este sonido (2 segundos) y envíalo a"}</span>
-      <button type="button" class="btn btn-steel" data-act="toDrums">${S.lang==="en"?"🥁 The Drum Machine":"🥁 La caja de ritmos"}</button>
-      <button type="button" class="btn btn-steel" data-act="toDecks">${S.lang==="en"?"💿 The Turntables":"💿 Los tocadiscos"}</button>
-      <button type="button" class="btn" data-act="saveWav">${S.lang==="en"?"⬇ Save the file":"⬇ Guardar el archivo"}</button>
+      <span class="tiny" style="margin:0 .4rem 0 0">${S.lang==="en"?"Record what you play — move the sliders while it runs (up to 8 s)":"Graba lo que tocas — mueve los controles mientras graba (hasta 8 s)"}</span>
+      ${REC.on?`<button type="button" class="btn rec-on" id="recBtn" data-act="recStop">${S.lang==="en"?"■ Stop":"■ Parar"}</button>`:`<button type="button" class="btn rec-btn" data-act="recStart">${REC.take?(S.lang==="en"?"● Record again":"● Grabar otra vez"):(S.lang==="en"?"● Record":"● Grabar")}</button>`}
     </div>
+    ${REC.take&&!REC.on?`<div class="chips rec-take" style="margin-top:.4rem">
+      <span class="tiny" style="margin:0 .4rem 0 0">${S.lang==="en"?"Your take":"Tu toma"} · ${REC.take.dur.toFixed(1)} s</span>
+      <button type="button" class="btn" data-act="recPlay">${S.lang==="en"?"▶ Play it back":"▶ Escúchala"}</button>
+      <button type="button" class="btn btn-steel" data-act="toDrums">${S.lang==="en"?"Send to the Drum Machine":"Enviar a la caja de ritmos"}</button>
+      <button type="button" class="btn btn-steel" data-act="toDecks">${S.lang==="en"?"Send to the Turntables":"Enviar a los tocadiscos"}</button>
+      <button type="button" class="btn" data-act="saveWav">${S.lang==="en"?"⬇ Save the file":"⬇ Guardar el archivo"}</button>
+    </div>`:""}
     <p class="tiny">${t("freqs")}</p>
     <p class="muted" style="margin:.2rem 0 .5rem">${t("freqHint")}</p>
     <div class="chips" id="freqChips">${FREQS.map(f=>`<button type="button" class="chip${S.hz===f.hz?" on":""}" data-hz="${f.hz}">${f.hz} · ${S.lang==="en"?f.en:f.es}</button>`).join("")}</div>
@@ -720,6 +749,9 @@ function paint(){
     if(a==="hear") hear();
     if(a==="hush") hush();
     if(a==="toDrums"||a==="toDecks"||a==="saveWav") recordSound(a);
+    if(a==="recStart") recStart();
+    if(a==="recStop") recStop();
+    if(a==="recPlay") recPlay();
     if(a==="doprint") window.print();
     if(a==="findagain"){ S.find=null; paint(); }
     if(a==="jobagain"){ S.job=null; paint(); }
