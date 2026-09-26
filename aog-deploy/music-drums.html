@@ -92,6 +92,42 @@ header { display:flex; flex-wrap:wrap; justify-content:space-between; align-item
 .plate-block { position:relative; text-align:center; line-height:1.15; }
 .plate { letter-spacing:.28em; font-size:.78rem; color:#d7d2c8; }
 .plate small { display:block; letter-spacing:.22em; font-size:.58rem; color:#8d887e; margin-top:.2rem; }
+
+/* ══ AOG-SP-SIMPLE-V1 (2026-09-26) — Jimmy: "build as you think is best". The machine has
+   33 keys, 11 sliders and a 128-cell grid on one screen. A learner who has never seen an
+   SP-1200 cannot tell which three things to touch. SIMPLE BENCH is now the default: pads,
+   the grid, Play, Clear, Send to the turntables, Tempo, Volume and the starter patterns.
+   Everything else is still in the page and comes back with FULL BENCH. One colour per job
+   in both modes: orange = transport, green = shapes the sound, red outline = erases,
+   blue = files. ═══════════════════════════════════════════════════════════════════ */
+.bench-switch{display:flex;gap:.5rem;align-items:center;margin:.6rem 0 .2rem;flex-wrap:wrap}
+.bench-switch b{font-size:.62rem;letter-spacing:.16em;color:#9a9488;font-weight:800;text-transform:uppercase;margin-right:.2rem}
+.bench-switch button{min-height:44px;border-radius:999px;border:1px solid #0a0b0d;background:linear-gradient(#3a3e44,#1c1f23);color:#e6e1d6;padding:0 1.1rem;font-weight:800;font-size:.95rem;letter-spacing:.02em;box-shadow:inset 0 1px 0 rgba(255,255,255,.16),0 2px 0 #07080a}
+.bench-switch button.on{background:linear-gradient(#ffe8b0,#e0a640);color:#2a1a08}
+.simple-strip{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.6rem;margin:.6rem 0 .3rem}
+.simple-strip button{min-height:56px;border-radius:12px;border:1px solid #0a0b0d;font-weight:800;font-size:1.02rem;letter-spacing:.02em;padding:.4rem .5rem;line-height:1.15;color:#f3efe6;background:linear-gradient(#3a3e44,#1c1f23);box-shadow:inset 0 1px 0 rgba(255,255,255,.16),0 3px 0 #07080a}
+.simple-strip .s-play{background:linear-gradient(#ffe08a,#e09020);color:#2a1a08}
+.simple-strip .s-play.go{background:linear-gradient(#ffb1a4,#c4452a);color:#2a0c08}
+.simple-strip .s-clear{border-color:#c4452a;color:#ffb1a4}
+.simple-strip .s-decks{border-color:#5b8fd6;color:#cfe2ff}
+.simple-line{color:#d7cbb8;font-size:.95rem;margin:.2rem 0 .6rem;line-height:1.4}
+@media (max-width:520px){ .simple-strip{grid-template-columns:1fr 1fr} .simple-strip .s-play{grid-column:1 / -1} }
+.machine.simple .sp-keys,.machine.simple .sp-banks,.machine.simple .scope-bezel,.machine.simple .sp-eq,.machine.simple .fader,.machine.simple .seg-label{display:none}
+.machine.simple .sp-top{grid-template-columns:1fr}
+.machine.simple .sp-perf{grid-template-columns:repeat(4,minmax(0,1fr));gap:.55rem}
+.machine.simple .sp-pad{min-height:64px;font-size:.85rem}
+.machine.simple .sp-pad small{font-size:.62rem}
+/* the grid scrolls sideways on a phone instead of shrinking to 18px cells; the voice name stays put */
+.machine.simple .grid{grid-template-columns:64px repeat(16,minmax(34px,1fr));overflow-x:auto;padding-bottom:.35rem;-webkit-overflow-scrolling:touch}
+.machine.simple .vname{position:sticky;left:0;background:linear-gradient(90deg,#15110d 82%,rgba(21,17,13,0));z-index:1}
+.machine.simple .cell{min-height:38px}
+body.bench-simple .hear,body.bench-simple #hearNow,body.bench-simple .k-priv,body.bench-simple .bitchip,body.bench-simple .knob.k-outf{display:none}
+/* one colour per job, in both benches */
+.sp-key,.sp-run,.sp-rec{min-height:44px;font-size:.7rem}
+#clearBtn,#eraseBtn,#trkClr{border-color:#c4452a;color:#ffb1a4}
+#eraseBtn.on{background:linear-gradient(#ffb1a4,#c4452a);color:#2a0c08}
+[data-mode],#revBtn,#swingBtn,#eqFlat,#metroBtn{border-color:#6ea56a}
+#saveWork,#toDecks,.file-sample{border-color:#5b8fd6;color:#cfe2ff}
 .sp-top { position:relative; display:grid; grid-template-columns: 1fr auto; gap:10px; align-items:stretch; margin:.15rem 0 .7rem; }
 .lcd {
   font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
@@ -386,6 +422,9 @@ const STR = {
   homeNav:{en:"Bench",es:"Mesa"}, meetNav:{en:"Voices",es:"Voces"}, wordsNav:{en:"Words",es:"Palabras"}, printNav:{en:"Print",es:"Imprimir"},
   play:{en:"Play",es:"Tocar"}, stop:{en:"Silence",es:"Silencio"},
   clear:{en:"Clear grid",es:"Vaciar"},
+  benchLab:{en:"Bench",es:"Banco"}, benchSimple:{en:"Simple bench",es:"Banco sencillo"}, benchFull:{en:"Full bench",es:"Banco completo"},
+  sPlay:{en:"▶ Play the beat",es:"▶ Tocar el ritmo"}, sStop:{en:"■ Stop",es:"■ Parar"}, sClear:{en:"Clear the beat",es:"Borrar el ritmo"}, sDecks:{en:"Send to the turntables",es:"Enviar a los platos"},
+  sLine:{en:"Tap a pad to hear it. Tap the squares to build a beat. Then press Play.",es:"Toca un pad para oírlo. Toca los cuadros para armar un ritmo. Luego pulsa Tocar."},
   tempo:{en:"Tempo",es:"Tempo"},
   swing:{en:"Swing",es:"Swing"},
   reso:{en:"Filter resonance",es:"Resonancia del filtro"},
@@ -455,7 +494,7 @@ function snapSwing(x){
    hand cannot do both. All of that is here now, in the same panel, with the same
    keys. ════════════════════════════════════════════════════════════════════ */
 const SEGS = 8;
-const S = { lang: localStorage.getItem("aog.lang")==="es"?"es":"en", theme: document.documentElement.getAttribute("data-theme")||"light",
+const S = { bench:(function(){ try{ return localStorage.getItem("aog.drums.bench")||"simple"; }catch(e){ return "simple"; } })(), lang: localStorage.getItem("aog.lang")==="es"?"es":"en", theme: document.documentElement.getAttribute("data-theme")||"light",
   view:"home", bpm:96, swing:0.50, vol:0.8, outF:0.78, bit:true, sliderMode:"mix",
   playing:false, rec:false, metro:false, bank:"A", sel:"kick", step:0, grid: emptyGrid(), met:{}, chan: freshChans(),
   seg:0, segs:null, track:[], trackOn:false, trkI:0, tc:"1/16", trim:{A:{},B:{},C:{},D:{}}, clip:null,
@@ -1244,12 +1283,23 @@ function machineHtml(){
   const banks=["A","B","C","D"].map(b=>`<button type="button" class="sp-key${S.bank===b?" on":""}" data-bank="${b}">${b}</button>`).join("");
   const segs=Array.from({length:SEGS},(_,i)=>`<button type="button" class="sp-key${S.seg===i?" on":""}" data-seg="${i}">${i+1}</button>`).join("");
   const modes=[["mix","MIX"],["tune","TUNE"],["decay","DECAY"],["trim","TRIM"]].map(([id,lab])=>`<button type="button" class="sp-key${S.sliderMode===id?" on":""}" data-mode="${id}">${lab}</button>`).join("");
-  return `<div class="machine no-print">
+  const simple=S.bench!=="full";
+  const strip=simple?`<div class="simple-strip">
+      <button type="button" class="s-play${S.playing?" go":""}" data-simple="play">${S.playing?t("sStop"):t("sPlay")}</button>
+      <button type="button" class="s-clear" data-simple="clear">${t("sClear")}</button>
+      <button type="button" class="s-decks" data-simple="decks">${t("sDecks")}</button>
+    </div><p class="simple-line">${t("sLine")}</p>`:"";
+  return `<div class="machine no-print${simple?" simple":""}">
     <div class="chassis-top">
       <div class="screws"><span class="screw"><i></i></span><span class="screw"><i></i></span></div>
       <div class="plate-block"><div class="plate">SP-1200</div><small>SAMPLING PERCUSSION · 26.04 kHz · 12-BIT</small></div>
       <div class="screws"><span class="screw"><i></i></span><span class="screw"><i></i></span></div>
     </div>
+    <div class="bench-switch" role="group" aria-label="${t("benchLab")}"><b>${t("benchLab")}</b>
+      <button type="button" class="${simple?"on":""}" data-bench="simple" aria-pressed="${simple}">${t("benchSimple")}</button>
+      <button type="button" class="${simple?"":"on"}" data-bench="full" aria-pressed="${!simple}">${t("benchFull")}</button>
+    </div>
+    ${strip}
     <div class="sp-top">
       <div class="lcd" id="lcd">${lcdText()}</div>
       <div class="sp-keys">
@@ -1310,12 +1360,12 @@ function homeView(){
   return `<p class="kicker">${t("eyebrow")}</p>
     <h1>${t("app")}</h1>
     <p class="lead">${t("tag")}</p>
-    <p class="muted">${t("priv")}</p>
+    <p class="muted k-priv">${t("priv")}</p>
     ${machineHtml()}
     <div class="knobs no-print">
       <label class="knob"><span>${t("tempo")} <b class="readout" id="bpmOut">${S.bpm}</b></span>
         <input class="scope-knob" id="bpm" type="range" min="40" max="240" step="1" value="${S.bpm}"></label>
-      <label class="knob"><span>${t("outF")} <b class="readout" id="filtOut">${cutoffHz(S.outF)}</b></span>
+      <label class="knob k-outf"><span>${t("outF")} <b class="readout" id="filtOut">${cutoffHz(S.outF)}</b></span>
         <input class="scope-knob" id="outF" type="range" min="0" max="1" step="0.01" value="${S.outF}"></label>
       <label class="knob"><span>${t("vol")} <b class="readout" id="volOut">${Math.round(S.vol*100)}</b></span>
         <input class="scope-knob" id="vol" type="range" min="0.05" max="1" step="0.01" value="${S.vol}"></label>
@@ -1764,6 +1814,9 @@ async function openWorkFile(file){
   if(!applySession(o)){ S.lcdNote="NOT A BENCH FILE"; refreshLcd(); }
 }
 function bind(){
+  document.body.classList.toggle("bench-simple", S.bench!=="full");
+  document.querySelectorAll("[data-bench]").forEach(b=>b.onclick=()=>{ S.bench=b.getAttribute("data-bench"); try{ localStorage.setItem("aog.drums.bench", S.bench); }catch(e){} paint(); });
+  document.querySelectorAll("[data-simple]").forEach(b=>b.onclick=()=>{ const id={play:"playBtn",clear:"clearBtn",decks:"toDecks"}[b.getAttribute("data-simple")]; const r=document.getElementById(id); if(r) r.click(); });
   const play=document.getElementById("playBtn");
   if(play) play.onclick=()=>{ S.playing?stop():start(); };
   const clear=document.getElementById("clearBtn");
