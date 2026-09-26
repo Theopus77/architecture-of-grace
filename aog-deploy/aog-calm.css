@@ -77,3 +77,11 @@ canvas, img, video, svg:not([width]) { max-width: 100%; }
 @media print {
   *, *::before, *::after { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
 }
+
+/* 7. BOOK-SIZE ON AN IPAD AND A COMPUTER (2026-09-26) — Jimmy: "everything is SO LARGE at 100%. I feel like
+   an old man looking at it … can this be applied across the board for everything?" … "It feels big at the
+   normal point on the iPad as well." From 700px up every page renders at 94%, from 1000px up at 92%: the
+   same as pressing Cmd-minus once, so type, buttons, cards and the site bar shrink together and nothing
+   falls out of proportion. Phones are untouched (16px fields keep iOS from zooming); print is untouched. */
+@media screen and (min-width: 700px) { body { zoom: .94; } }
+@media screen and (min-width: 1000px) { body { zoom: .92; } }
