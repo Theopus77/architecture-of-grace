@@ -107,7 +107,15 @@ select,input[type=text]{width:100%;font:inherit;font-size:16px;min-height:44px;p
 @media (max-width:980px){.grid3{grid-template-columns:1fr!important}}
 @media print{.rail,.aogtop,.aogtop-spacer,.hello .btn,.hello select,.row{display:none!important}.app{display:block}body{background:#fff!important}#app{padding:0}.card{break-inside:avoid;box-shadow:none}}
 @media (max-width:760px){body{background:var(--cream)!important}.app{grid-template-columns:1fr;background:none}.rail{position:static;height:auto;display:block}
- .nav{display:flex;overflow-x:auto;gap:4px}.nav a{white-space:nowrap}.nav .sep,.nav small{display:none}}
+ /* AOG-DASH-PHONE-NAV-V1 (2026-09-26) — Jimmy: "I don't like the scrolling tool box on the iPhone." No sideways
+    strip: on a phone the rooms are one drop-down, and Pull and Demo sit side by side under it. */
+ .nav{display:none}.railsel{display:block;margin:0 4px 12px}.railsel label{display:block;font:700 11px Inter,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:var(--gold2);margin:0 0 6px 2px}
+ .railsel select{width:100%;min-height:48px;font-size:16px;font-weight:700;padding:8px 40px 8px 14px;border-radius:12px;border:1.5px solid rgba(255,255,255,.35);background:#0F2A47 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23F2C964' stroke-width='2.5'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E") no-repeat right 12px center/18px;color:#F4EEE2;font-family:inherit;-webkit-appearance:none;appearance:none}
+ .railrow{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:0 4px 12px}.railrow .railpull,.railrow .raildemo{margin:0}.railrow .st{display:none}
+ .rail{padding:14px 12px 6px}.view{margin-bottom:12px}
+ /* the sidebar already has Pull on a phone: the page headers do not repeat it */
+ .hello .pullwrap{display:none}}
+@media (min-width:761px){.railsel{display:none}}
 </style>
 </head>
 <body>
@@ -117,8 +125,9 @@ select,input[type=text]{width:100%;font:inherit;font-size:16px;min-height:44px;p
   <aside class="rail no-print" aria-label="Dashboard">
     <div class="brand">Dashboard</div>
     <div class="view" role="group" aria-label="View"><button type="button" data-view="teacher" aria-pressed="true">Teacher</button><button type="button" data-view="student" aria-pressed="false">Student</button></div>
-    <div class="railpull" id="railPull"></div>
-    <div class="raildemo" id="railDemo"></div>
+    <div class="railsel" id="railSel"></div>
+    <div class="railrow"><div class="railpull" id="railPull"></div>
+    <div class="raildemo" id="railDemo"></div></div>
     <nav class="nav" id="nav"></nav>
   </aside>
   <div id="app" role="main"></div>
@@ -769,6 +778,7 @@ function nav(){
   const items=[["today","today"],["students","students"],["checkins","checkins"],["trends","trends"],["brick","brick"],["papers","papers"],["inbox","inbox"],["blueprint","blueprint"],["reports","reports"],["mtss","mtss"],["setup","setup"]];
   document.getElementById("nav").innerHTML= VIEW==="student"? '<a href="#today" aria-current="page">'+svg("today")+T("today")+'</a>'
     : items.map(([k,i])=>'<a href="#'+k+'"'+(PAGE===k?' aria-current="page"':'')+'>'+svg(i)+T(k)+'</a>'+(k==="mtss"?'<div class="sep"></div>':'')).join("");
+  const rs=document.getElementById("railSel"); if(rs) rs.innerHTML= VIEW==="student"? "" : '<label for="navSel">'+t2("Where to","A dónde")+'</label><select id="navSel">'+items.map(([k])=>'<option value="'+k+'"'+(PAGE===k?' selected':'')+'>'+T(k)+'</option>').join("")+'</select>';
   const rp=document.getElementById("railPull"); if(rp) rp.innerHTML= VIEW==="student"? "" : '<button type="button" data-pull="1"'+(canRead()?"":" disabled")+'>⟳ '+t2("Pull from Sheet","Traer de la Hoja")+'</button><span class="st" data-pullst>'+(canRead()?(get("aog.dash2.pulledAt","")?t2("Last pulled","Última vez")+" "+new Date(get("aog.dash2.pulledAt","")).toLocaleString([],{dateStyle:"short",timeStyle:"short"}):t2("Brings back what students sent.","Trae lo que enviaron los estudiantes.")):t2("Add the read key in Set up first.","Agrega la clave de lectura en Configurar."))+'</span>';
   const rd=document.getElementById("railDemo"); if(rd) rd.innerHTML= VIEW==="student"? "" : '<button type="button" id="demoBtn" class="'+(demoOn()?"on":"")+'" aria-pressed="'+(demoOn()?"true":"false")+'">'+(demoOn()?"✓ ":"")+t2("Demo data","Datos de muestra")+(demoOn()?t2(" is on"," activados"):"")+'</button><span class="st">'+(demoOn()?t2("Made-up students. Turn it off to see your own.","Estudiantes inventados. Apágalo para ver los tuyos."):t2("Try the dashboard with made-up students.","Prueba el panel con estudiantes inventados."))+'</span>';
   document.querySelectorAll("[data-view]").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.view===VIEW)));
@@ -871,6 +881,7 @@ function wire(){
   on("iepStu","change",()=>{ put("aog.dash2.iepStu",val("iepStu")); render(); });
   if(PAGE==="papers") pwWire();
   on("demoBtn","click",demoToggle);
+  on("navSel","change",()=>{ location.hash=val("navSel"); });
   on("bpStu","change",()=>{ put("aog.dash2.bpStu",val("bpStu")); render(); });
   on("syS","click",syncSave); on("syT","click",syncTest); on("syD","click",syncDrop); on("bkUp","click",backup); on("delAll","click",deleteAll);
   on("tcp","click",async()=>{ const b=document.getElementById("tcp"); try{ await navigator.clipboard.writeText(teamLink()); b.textContent=T("copied"); }catch(e){ const r=document.createRange(); r.selectNode(document.getElementById("tlk")); getSelection().removeAllRanges(); getSelection().addRange(r); } });
