@@ -1056,6 +1056,21 @@ body.review .box .ptcell, body.review .box .ew, body.review .box textarea{pointe
   body.review .sol{color:#1c7a3c !important; font-weight:800}
 }
 
+/* AOG-DD-ALG-PRINT-V1 (2026-09-26) — Jimmy, on a printed Grade 3 sheet: "the algorithms take up
+   two pages … and the cent line is not even." On paper the column problems now sit on ONE row
+   (narrower columns, no wrap), and the unit (¢, $) column is ruled at the same height as the
+   answer line instead of carrying its own short, higher rule. */
+.cg .unitc.ruled{align-self:stretch;display:flex;align-items:center;justify-content:center}
+@media print{
+  .row.algrow{display:flex!important;flex-wrap:nowrap!important;justify-content:space-between;gap:10px!important;overflow:visible!important}
+  .algrow>.colp{flex:1 1 0!important;min-width:0!important;margin:0!important;padding:4px 6px!important}
+  .algrow .cg{--cw:24px!important;gap:3px 2px!important}
+  .algrow .cg .cell,.algrow .cg input{width:24px!important;font-size:15px!important}
+  .algrow .cg .unitc.ruled{border-bottom:2px solid #000!important;align-self:stretch;padding-bottom:4px}
+  .algrow .cg .unitc.ruled::after{display:none!important}
+  .box.tall .algrow{margin-bottom:0!important}
+  .box:has(.algrow){break-inside:avoid}
+}
 /* AOG-DD-PRINT-COLOUR-V1 (2026-09-26) — on paper each strand's number tab carries its own colour
    (the same ten the screen uses), so a colour printer shows which strand is which. */
 @media print{
