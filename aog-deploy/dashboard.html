@@ -124,7 +124,7 @@ select,input[type=text]{width:100%;font:inherit;font-size:16px;min-height:44px;p
 <div class="app">
   <aside class="rail no-print" aria-label="Dashboard">
     <div class="brand">Dashboard</div>
-    <div class="view" role="group" aria-label="View"><button type="button" data-view="teacher" aria-pressed="true">Teacher</button><button type="button" data-view="student" aria-pressed="false">Student</button></div>
+    <div class="view" role="group" aria-label="View"><button type="button" data-view="teacher" aria-pressed="true">Teacher</button><button type="button" data-view="family" aria-pressed="false">Family</button><button type="button" data-view="student" aria-pressed="false">Student</button></div>
     <div class="railsel" id="railSel"></div>
     <div class="railrow"><div class="railpull" id="railPull"></div>
     <div class="raildemo" id="railDemo"></div></div>
@@ -227,15 +227,21 @@ function day(r){ return String(r.date||r.timestamp||"").slice(0,10); }
 function who(r){ return String(r.studentId||r.respondentId||"").trim(); }
 function data(){
   const ci=rows("aog.checkin.remote").filter(r=>String(r.checkinType||"")!=="thisisme"&&!isAdultRow(r)), pr=rows("aog.practice.remote");
+  /* AOG-DASH-ONEWHO-V2 (2026-09-26) — Jimmy: "help merge the two Rockin' Ramsden, or at least tell me which one is
+     different so I can fix it in the Sheet." One student, however the name was typed: a curly apostrophe (’) and a
+     straight one ('), a stray space, a capital. The first spelling seen is the one shown; every spelling is kept
+     in s.variants, and the Students page lists any name spelled more than one way so the Sheet can be fixed. */
   const S={};
-  const S_=n=>S[n]||(S[n]={name:n,ci:[],pr:[],last:""});
+  const S_=n=>{ const k=fold(n); const s=S[k]||(S[k]={name:String(n).replace(/\s+/g," ").trim(),ci:[],pr:[],last:"",variants:[]}); if(s.variants.indexOf(n)<0) s.variants.push(n); return s; };
   ci.forEach(r=>{ const n=who(r); if(!n) return; const s=S_(n); s.ci.push(r); if(day(r)>s.last) s.last=day(r); });
   pr.forEach(r=>{ const n=who(r); if(!n) return; const s=S_(n); s.pr.push(r); if(day(r)>s.last) s.last=day(r); });
   Object.values(S).forEach(s=>{ s.ci.sort((a,b)=>day(a)<day(b)?1:-1); s.pr.sort((a,b)=>day(a)<day(b)?1:-1);
     s.flags=s.ci.filter(r=>flagged(r)).length;
     const scored=s.pr.filter(r=>+r.itemsTotal>0); s.acc=scored.length?Math.round(100*scored.reduce((a,r)=>a+(+r.independent||0),0)/scored.reduce((a,r)=>a+(+r.itemsTotal||0),0)):null; });
-  return {ci,pr,S};
+  const out={}; Object.values(S).forEach(s=>{ out[s.name]=s; }); return {ci,pr,S:out};
 }
+function fold(n){ return String(n==null?"":n).replace(/[’‘`´]/g,"'").replace(/[“”]/g,'"').replace(/\s+/g," ").trim().toLowerCase(); }
+function findS(D,name){ if(D.S[name]) return D.S[name]; const k=fold(name); const key=Object.keys(D.S).find(x=>fold(x)===k); return key?D.S[key]:null; }
 function flagged(r){ return r.followUp===true||String(r.followUp)==="true"||String(r.unsafeFlag)==="true"||String(r.trustedAdultFlag)==="true"||/yes|now|soon/i.test(String(r.tellAdult||"")); }
 function feel(r){ return String(r.feelingWords||"").split(/[,;·]/).map(x=>x.trim()).filter(Boolean); }
 function nice(d){ if(!d) return "—"; const t=new Date(d+"T12:00:00"); return isNaN(t)?d:t.toLocaleDateString(L()==="es"?"es":"en",{month:"short",day:"numeric"}); }
@@ -243,8 +249,10 @@ function noData(){ return '<section class="card"><p class="s" style="margin:0 0 
 function students(){
   const D=data(), list=Object.values(D.S), q=(get("aog.dash2.q","")||"").toLowerCase(); let sel=get("aog.dash2.sel",""); try{ const m=/[?&]stu=([^&]+)/.exec(location.hash); if(m){ sel=decodeURIComponent(m[1]); put("aog.dash2.sel",sel); history.replaceState(null,"","#students"); } }catch(e){}
   if(sel && D.S[sel]) return oneStudent(D.S[sel]);
+  const dup=list.filter(s=>(s.variants||[]).length>1);
+  const dupCard=dup.length?'<section class="card" style="margin-bottom:16px"><p class="k" style="color:var(--goldInk)">'+t2("Spelled more than one way in your Sheet","Escrito de más de una forma en tu Hoja")+'</p><p class="s">'+t2("These are counted as one student here. To tidy the Sheet, make the studentId column match one spelling.","Aquí cuentan como un solo estudiante. Para ordenar la Hoja, haz que la columna studentId use una sola forma.")+'</p><ul style="margin:0;padding-left:18px">'+dup.map(s=>'<li><b>'+esc(s.name)+'</b>: '+s.variants.map(v=>'<code>'+esc(v.replace(/ /g,"␣"))+'</code>').join(" · ")+'</li>').join("")+'</ul></section>':'';
   const rowsH=list.filter(s=>!q||s.name.toLowerCase().includes(q)).sort((a,b)=>b.flags-a.flags||(a.last<b.last?1:-1)).map(s=>'<tr class="pick" data-stu="'+esc(s.name)+'"><td><b>'+esc(s.name)+'</b></td><td>'+nice(s.last)+'</td><td>'+s.ci.length+'</td><td>'+s.pr.length+'</td><td>'+(s.acc==null?"—":'<div class="bar" title="'+s.acc+'%"><i style="width:'+s.acc+'%"></i></div> '+s.acc+'%')+'</td><td>'+(s.flags?'<span class="chip warn">'+s.flags+' '+T("follow")+'</span>':'')+'</td></tr>').join("");
-  return '<div class="hello"><div><h1>'+T("students")+'</h1><p>'+T("stuS")+'</p></div><span class="pill">'+list.length+' '+T("students").toLowerCase()+'</span></div>'
+  return '<div class="hello"><div><h1>'+T("students")+'</h1><p>'+T("stuS")+'</p></div><span class="pill">'+list.length+' '+T("students").toLowerCase()+'</span></div>'+dupCard
    +(list.length?'<input type="text" class="search" id="q" placeholder="'+T("find")+'" value="'+esc(get("aog.dash2.q",""))+'"><section class="card" style="padding:6px 8px;overflow-x:auto"><table class="tbl"><thead><tr><th>'+T("name")+'</th><th>'+T("lastSeen")+'</th><th>'+T("checkins")+'</th><th>'+T("practice")+'</th><th>'+T("indep")+'</th><th></th></tr></thead><tbody>'+rowsH+'</tbody></table></section>':noData());
 }
 function oneStudent(s){
@@ -359,7 +367,7 @@ function pmAll(){ return get("aog.mtss.pm.v1",{})||{}; } function pmSave(sid,f,v
 function mMeta(){ return get("aog.mtss.meta",{})||{}; }
 /* everything else this device knows about one student */
 function mEvidence(name){
-  const D=data(), s=D.S[name]||{ci:[],pr:[],flags:0,acc:null}, cut=Date.now()-30*864e5;
+  const D=data(), s=findS(D,name)||{ci:[],pr:[],flags:0,acc:null,last:""}, cut=Date.now()-30*864e5;
   const ci30=s.ci.filter(r=>new Date(day(r)+"T12:00:00")>=cut), pr30=s.pr.filter(r=>new Date(day(r)+"T12:00:00")>=cut);
   const feels={}; ci30.forEach(r=>feel(r).forEach(f=>feels[f]=(feels[f]||0)+1));
   const topF=Object.entries(feels).sort((a,b)=>b[1]-a[1]).slice(0,4);
@@ -773,17 +781,39 @@ function demoToggle(){
   put("aog.dash2.sel",""); put("aog.dash2.pwDoc",""); render();
 }
 
+
+/* ══ AOG-DASH-FAMILY-V1 (2026-09-26) — Jimmy: "a lot of this I am doing with my children … everything with Luke and
+   Eliana should be under family or parent mode, which hence the Blueprint concept that one can hand a parent."
+   A third switch beside Teacher and Student. A family names its children once (aog.dash2.kids); each child gets a
+   card: open their work today (as them), their Blueprint, everything they turned in, and a link a parent can keep.
+   The family link (?view=family&kids=…) opens this same view on any device, carrying the children and, if the
+   family has one, the Sheet. No teacher tools show in this view. Grace at Home sits beside it. */
+function kids(){ const a=get("aog.dash2.kids",[]); return Array.isArray(a)?a.filter(Boolean):[]; }
+(function(){ const k=QS.get("kids"); if(!k) return; try{ let z=k.replace(/-/g,"+").replace(/_/g,"/"); while(z.length%4) z+="="; const arr=JSON.parse(decodeURIComponent(escape(atob(z)))); if(Array.isArray(arr)) put("aog.dash2.kids",arr.map(x=>String(x).trim().slice(0,40)).filter(Boolean).slice(0,12)); }catch(e){} })();
+function familyLink(){ const h=btoa(unescape(encodeURIComponent(JSON.stringify(kids())))).replace(/\+/g,"-").replace(/\//g,"_").replace(/=+$/,""); const tr=get(K.tray,[]); const hand=tr.length?"&hand="+btoa(unescape(encodeURIComponent(JSON.stringify(packTray(tr))))).replace(/\+/g,"-").replace(/\//g,"_").replace(/=+$/,""):""; return location.origin+withDest("/dashboard.html?view=family&kids="+h+hand); }
+function family(){
+  const D=data(), ks=kids(), lang=L();
+  const head='<div class="hello"><div><h1>'+t2("Our family","Nuestra familia")+'</h1><p>'+t2("The children you learn with at home. Each one gets their own work, their own Blueprint, and a page you can hand to a parent.","Los niños con quienes aprendes en casa. Cada uno tiene su trabajo, su Plano y una página que puedes dar a un padre.")+'</p></div></div>';
+  const add='<section class="card" style="margin-bottom:16px"><label class="f" for="kidN">'+t2("Add a child","Agregar un niño")+'</label><div class="row" style="align-items:stretch"><input type="text" id="kidN" maxlength="40" autocomplete="off" placeholder="'+t2("First name or nickname","Nombre o apodo")+'" style="flex:1;min-width:200px"><button class="btn solid" type="button" id="kidAdd">+ '+t2("Add","Agregar")+'</button></div><p class="note">'+t2("The same name they type under Your work today, so their work lines up.","El mismo nombre que escriben en Tu trabajo de hoy, para que su trabajo coincida.")+'</p></section>';
+  const cards=ks.map(n=>{ const sInfo=D.S[n]||D.S[Object.keys(D.S).find(k=>k.toLowerCase()===n.toLowerCase())||""]||{ci:[],pr:[],flags:0,acc:null,last:""}, q=encodeURIComponent(n);
+    return '<section class="card" style="margin-bottom:14px"><div style="display:flex;justify-content:space-between;gap:10px;align-items:baseline;flex-wrap:wrap"><h2 style="margin:0">'+esc(n)+'</h2><span class="s" style="margin:0">'+(sInfo.last?t2("last seen","última vez")+" "+nice(sInfo.last):t2("nothing yet","nada aún"))+' · '+sInfo.ci.length+' '+t2("check-ins","registros")+' · '+sInfo.pr.length+' '+t2("panes","paneles")+'</span></div>'
+     +'<div class="row" style="margin-top:12px"><button class="btn solid" type="button" data-kidgo="'+esc(n)+'">'+t2("Open their work today","Abrir su trabajo de hoy")+' ›</button><a class="btn" href="/turn-ins.html?solo=1&teacher=1&blueprint='+q+'">'+t2("Their Blueprint","Su Plano")+'</a><a class="btn" href="/turn-ins.html?student='+q+'">'+t2("Everything they turned in","Todo lo que entregaron")+'</a><button class="btn" type="button" data-kiddel="'+esc(n)+'" style="margin-left:auto">✕</button></div></section>'; }).join("");
+  const link=ks.length?'<section class="card" style="margin-bottom:16px"><p class="k" style="color:var(--goldInk)">'+t2("Hand this to a parent","Entregar esto a un padre")+'</p><p class="s">'+t2("One link opens this family page on their phone: the children, today's work, and each Blueprint.","Un enlace abre esta página familiar en su teléfono: los niños, el trabajo de hoy y cada Plano.")+'</p><div class="linkbox"><code id="flk">'+esc(familyLink())+'</code><button class="btn gold" type="button" id="fcp">'+T("copy")+'</button></div></section>':'';
+  const home='<section class="card"><p class="k" style="color:var(--goldInk)">'+t2("At home","En casa")+'</p><div class="row"><a class="btn" href="/at-home">'+t2("Grace at Home — one pillar a week","Gracia en casa — un pilar por semana")+' ›</a><a class="btn" href="/family">'+t2("Family letters","Cartas a la familia")+' ›</a></div></section>';
+  return head+add+(cards||'<p class="s" style="margin:0 0 16px">'+t2("No children added yet.","Aún no hay niños.")+'</p>')+link+home;
+}
+
 /* ── the interface ── */
 const L=()=> (document.documentElement.lang||"en").slice(0,2)==="es"?"es":"en", T=k=>TXT[L()][k];
-let VIEW=QS.get("view")==="student"||HAND?"student":get(K.view,"teacher"), PAGE=location.hash.slice(1).replace(/\?.*$/,"")||"today";
+let VIEW=QS.get("view")==="family"?"family":(QS.get("view")==="student"||HAND?"student":get(K.view,"teacher")), PAGE=location.hash.slice(1).replace(/\?.*$/,"")||"today";
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 function nav(){
   const items=[["today","today"],["students","students"],["checkins","checkins"],["trends","trends"],["brick","brick"],["papers","papers"],["inbox","inbox"],["blueprint","blueprint"],["reports","reports"],["mtss","mtss"],["setup","setup"]];
-  document.getElementById("nav").innerHTML= VIEW==="student"? '<a href="#today" aria-current="page">'+svg("today")+T("today")+'</a>'
+  document.getElementById("nav").innerHTML= VIEW==="student"? '<a href="#today" aria-current="page">'+svg("today")+T("today")+'</a>' : VIEW==="family"? '<a href="#today" aria-current="page">'+svg("students")+t2("Our family","Nuestra familia")+'</a>'
     : items.map(([k,i])=>'<a href="#'+k+'"'+(PAGE===k?' aria-current="page"':'')+'>'+svg(i)+T(k)+'</a>'+(k==="mtss"?'<div class="sep"></div>':'')).join("");
-  const rs=document.getElementById("railSel"); if(rs) rs.innerHTML= VIEW==="student"? "" : '<label for="navSel">'+t2("Where to","A dónde")+'</label><select id="navSel">'+items.map(([k])=>'<option value="'+k+'"'+(PAGE===k?' selected':'')+'>'+T(k)+'</option>').join("")+'</select>';
-  const rp=document.getElementById("railPull"); if(rp) rp.innerHTML= VIEW==="student"? "" : '<button type="button" data-pull="1"'+(canRead()?"":" disabled")+'>⟳ '+t2("Pull from Sheet","Traer de la Hoja")+'</button><span class="st" data-pullst>'+(canRead()?(get("aog.dash2.pulledAt","")?t2("Last pulled","Última vez")+" "+new Date(get("aog.dash2.pulledAt","")).toLocaleString([],{dateStyle:"short",timeStyle:"short"}):t2("Brings back what students sent.","Trae lo que enviaron los estudiantes.")):t2("Add the read key in Set up first.","Agrega la clave de lectura en Configurar."))+'</span>';
-  const rd=document.getElementById("railDemo"); if(rd) rd.innerHTML= VIEW==="student"? "" : '<button type="button" id="demoBtn" class="'+(demoOn()?"on":"")+'" aria-pressed="'+(demoOn()?"true":"false")+'">'+(demoOn()?"✓ ":"")+t2("Demo data","Datos de muestra")+(demoOn()?t2(" is on"," activados"):"")+'</button><span class="st">'+(demoOn()?t2("Made-up students. Turn it off to see your own.","Estudiantes inventados. Apágalo para ver los tuyos."):t2("Try the dashboard with made-up students.","Prueba el panel con estudiantes inventados."))+'</span>';
+  const rs=document.getElementById("railSel"); if(rs) rs.innerHTML= VIEW!=="teacher"? "" : '<label for="navSel">'+t2("Where to","A dónde")+'</label><select id="navSel">'+items.map(([k])=>'<option value="'+k+'"'+(PAGE===k?' selected':'')+'>'+T(k)+'</option>').join("")+'</select>';
+  const rp=document.getElementById("railPull"); if(rp) rp.innerHTML= VIEW!=="teacher"? "" : '<button type="button" data-pull="1"'+(canRead()?"":" disabled")+'>⟳ '+t2("Pull from Sheet","Traer de la Hoja")+'</button><span class="st" data-pullst>'+(canRead()?(get("aog.dash2.pulledAt","")?t2("Last pulled","Última vez")+" "+new Date(get("aog.dash2.pulledAt","")).toLocaleString([],{dateStyle:"short",timeStyle:"short"}):t2("Brings back what students sent.","Trae lo que enviaron los estudiantes.")):t2("Add the read key in Set up first.","Agrega la clave de lectura en Configurar."))+'</span>';
+  const rd=document.getElementById("railDemo"); if(rd) rd.innerHTML= VIEW!=="teacher"? "" : '<button type="button" id="demoBtn" class="'+(demoOn()?"on":"")+'" aria-pressed="'+(demoOn()?"true":"false")+'">'+(demoOn()?"✓ ":"")+t2("Demo data","Datos de muestra")+(demoOn()?t2(" is on"," activados"):"")+'</button><span class="st">'+(demoOn()?t2("Made-up students. Turn it off to see your own.","Estudiantes inventados. Apágalo para ver los tuyos."):t2("Try the dashboard with made-up students.","Prueba el panel con estudiantes inventados."))+'</span>';
   document.querySelectorAll("[data-view]").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.view===VIEW)));
   /* a student who came by the class link never sees the teacher switch */
   const v=document.querySelector('.view'); if(v) v.style.display=(HAND||QS.get('view')==='student')?'none':'';
@@ -847,7 +877,7 @@ function inbox(){ const head='<div class="hello"><div><h1>'+T("inbox")+'</h1><p>
 function soon(){ return '<div class="hello"><div><h1>'+T("today")+'</h1><p>'+T("soon")+'</p></div></div><div class="row"><a class="btn solid" href="#today">'+T("today")+' ›</a></div>'; }
 function render(){
   nav(); const app=document.getElementById("app");
-  app.innerHTML = VIEW==="student"? student() : PAGE==="today"? today() : PAGE==="setup"? setup() : PAGE==="students"? students() : PAGE==="checkins"? checkins() : PAGE==="trends"? trends() : PAGE==="brick"? brick() : PAGE==="reports"? reports() : PAGE==="mtss"? mtss() : PAGE==="papers"? papers() : PAGE==="inbox"? inbox() : PAGE==="blueprint"? blueprint() : soon();
+  app.innerHTML = VIEW==="student"? student() : VIEW==="family"? family() : PAGE==="today"? today() : PAGE==="setup"? setup() : PAGE==="students"? students() : PAGE==="checkins"? checkins() : PAGE==="trends"? trends() : PAGE==="brick"? brick() : PAGE==="reports"? reports() : PAGE==="mtss"? mtss() : PAGE==="papers"? papers() : PAGE==="inbox"? inbox() : PAGE==="blueprint"? blueprint() : soon();
   wire();
 }
 function asGet(){ return Object.assign({k:"unit",p:"mth",f:"mth-u1.html",i:"m1"},get(K.as,{})); }
@@ -884,6 +914,11 @@ function wire(){
   on("iepStu","change",()=>{ put("aog.dash2.iepStu",val("iepStu")); render(); });
   if(PAGE==="papers") pwWire();
   on("demoBtn","click",demoToggle);
+  on("kidAdd","click",()=>{ const n=val("kidN").trim().slice(0,40); if(!n) return; const a=kids(); if(a.map(x=>x.toLowerCase()).indexOf(n.toLowerCase())<0) a.push(n); put("aog.dash2.kids",a.slice(0,12)); render(); });
+  const kn=document.getElementById("kidN"); if(kn) kn.addEventListener("keydown",e=>{ if(e.key==="Enter"){ e.preventDefault(); const b=document.getElementById("kidAdd"); if(b) b.click(); } });
+  document.querySelectorAll("[data-kiddel]").forEach(b=>b.onclick=()=>{ put("aog.dash2.kids",kids().filter(x=>x!==b.dataset.kiddel)); render(); });
+  document.querySelectorAll("[data-kidgo]").forEach(b=>b.onclick=()=>{ put(K.stu,b.dataset.kidgo); try{ localStorage.setItem("aog.drops.who",b.dataset.kidgo); }catch(e){} VIEW="student"; put(K.view,"student"); render(); window.scrollTo(0,0); });
+  on("fcp","click",async()=>{ try{ await navigator.clipboard.writeText(familyLink()); document.getElementById("fcp").textContent=T("copied"); }catch(e){} });
   on("navSel","change",()=>{ location.hash=val("navSel"); });
   on("bpStu","change",()=>{ put("aog.dash2.bpStu",val("bpStu")); render(); });
   on("syS","click",syncSave); on("syT","click",syncTest); on("syD","click",syncDrop); on("bkUp","click",backup); on("delAll","click",deleteAll);
