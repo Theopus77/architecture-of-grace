@@ -630,8 +630,8 @@ else document.documentElement.classList.add("aog-embed");</script>
   function subjectOf(r){
     var s=""; try{ s=String((xparse(r)||{}).series||""); }catch(e){}
     var id=String(r.activityId||"");
-    var sp=selPage(r); if(sp) return ["SEL · Room "+sp.room,"s-sel"];
-    if(/^sel-/.test(s) || /^w[1-6]$/.test(id) || id==="wb36") return ["SEL · Room 36","s-sel"];
+    /* 2026-09-26, Jimmy: "just keep it to name like we have done across the site" — one plain label */
+    if(selPage(r) || /^sel-/.test(s) || /^w[1-6]$/.test(id) || id==="wb36") return ["SEL","s-sel"];
     if(s==="word-study" || id==="b11" || /^wf/.test(id)) return ["English","s-eng"];
     if(s==="science" || /^v\d/.test(id) || id==="sci-scope" || /^b[1-8]$/.test(id)) return ["Science","s-sci"];
     if(/^h\d+/.test(id) || id==="b9") return ["Social Studies","s-soc"];
@@ -1531,7 +1531,7 @@ else document.documentElement.classList.add("aog-embed");</script>
      ring by ring. Jewel glass per subject; a pane done without a hint glows. */
   var BP_GLASS={"Math":"#2F63B8","Language Arts":"#E0A22E","English":"#E0A22E","Writing":"#D2602C",
     "Science":"#2E9A62","Social Studies":"#B3303F","Spanish":"#CC4C86","FACS":"#8452B0","Religions":"#4146A6",
-    "Economics":"#93A62E","Foundry":"#B8702E","SEL · Room 36":"#2C9CA8","Other":"#6B7A8C"};
+    "Economics":"#93A62E","Foundry":"#B8702E","SEL":"#2C9CA8","SEL · Room 36":"#2C9CA8","Other":"#6B7A8C"};
   function bpGlass(it){ if(it.kind==="voice") return "#E58FB0"; if(it.kind!=="turnin") return "#9FC3E0"; return BP_GLASS[it.subj]||(/^SEL/.test(String(it.subj||""))?BP_GLASS["SEL · Room 36"]:null)||BP_GLASS.Other; }
   /* ══ AOG-BLUEPRINT-GLASS-V1 (2026-09-25) — FIVE WINDOWS ═══════════════════
      Jimmy: "the builder had an option to build a different type of stained
