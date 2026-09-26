@@ -1658,7 +1658,7 @@ else document.documentElement.classList.add("aog-embed");</script>
   var SOLO=/[?&]solo=1/.test(location.search);
   if(SOLO){ document.documentElement.classList.add("bp-solo"); try{ localStorage.setItem("aog.learner","1"); }catch(e){} curView="bp"; }
   (function(){ var m=/[?&]blueprint=([^&]*)/.exec(location.search); if(m && m[1]){ curView="bp"; bpWho=decodeURIComponent(m[1].replace(/\+/g," ")).replace(/\s+/g," ").trim().toLowerCase(); } })();
-  function learner(){ return lsGet("aog.learner")==="1"; }
+  function learner(){ if(/[?&]teacher=1/.test(location.search)) return false; return lsGet("aog.learner")==="1"; }
   function bpStrength(it){
     var r=it.raw||{}, a=+r.independent, n=+r.itemsTotal;
     if(n>0 && a>=0) return Math.max(0,Math.min(1,a/n));
