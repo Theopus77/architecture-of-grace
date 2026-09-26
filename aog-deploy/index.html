@@ -92277,37 +92277,110 @@ body.aog-xwalk-solo:has(#panel-align.active) #panel-align::before{content:"Stand
 }
 </style>
 <style id="aog-slips-glass">
-/* AOG-SLIPS-GLASS-V1 (2026-09-25) — Jimmy: "None of the check-in slips work … they
-   all need facelifts." The daily check-in, the exit slip and My Voice, each a
-   leaded glass card with a band of its own glass: check-in sapphire, exit slip
-   amber, My Voice rose. Serif heading, a gold-lit Start button, a code box you
-   can see. Screen only; calm rules hold (no motion). */
+/* AOG-SLIPS-GLASS-V2 (2026-09-26) — Jimmy: "THE DAILY CHECK-IN needs a complete face lift."
+   V1 (2026-09-25) tinted the old card; this is the new look, worn by the check-in and the exit slip
+   (one product language) and by My Voice. iPhone first.
+   · The heavy black-rimmed card is gone. The slip is a stained-glass window: a cream pane with a thin
+     lead edge and a gold hairline, a band of its own glass across the top (check-in sapphire, exit
+     slip amber, My Voice rose), and the question in the site's serif.
+   · Progress is eight small stones under the band; the one you are on is lit gold. The four beat
+     words stay for screen readers, out of the way.
+   · Each answer is a big glass pane, one per line, 60px tall, with its own soft jewel tint and a lead
+     edge; the chosen pane lights to its full colour with a gold tick. No numbers, no traffic lights.
+   · Feelings and choices are glass tiles in two columns, not a sea of pills.
+   · Next is one full-width gold button. Back and Skip are quiet words above it.
+   Screen only. Nothing moves (aog-calm.css); no severity colours (the DS §07 rule holds). */
 @media screen{
-  #screen-daily-checkin .sc-wrap{--gl:#2F63B8} #screen-exit-slip .xs-wrap{--gl:#B87A12} #aogTimOv .tim-sheet{--gl:#B8457A}
+  #screen-daily-checkin{--gl:#2F63B8;--gl2:#3F4AA6} #screen-exit-slip{--gl:#B87A12;--gl2:#A85A24} #aogTimOv .tim-sheet{--gl:#B8457A}
+  #screen-daily-checkin, #screen-exit-slip{background:var(--cream,#F6F1E7)}
+  /* the window */
   #screen-daily-checkin .sc-wrap, #screen-exit-slip .xs-wrap, #aogTimOv .tim-sheet{
-    box-sizing:border-box;max-width:620px;margin:22px auto!important;padding:26px 22px 22px!important;position:relative;
-    background:linear-gradient(180deg,color-mix(in srgb,var(--gl) 9%,transparent),transparent 140px),rgba(255,253,248,.94)!important;
-    border:3px solid #1E1F22!important;border-radius:22px!important;
-    box-shadow:0 0 0 1px rgba(242,201,100,.55),inset 0 8px 0 var(--gl),0 22px 50px -30px rgba(0,0,0,.6)!important}
-  html[data-theme="dark"] #screen-daily-checkin .sc-wrap, html[data-theme="dark"] #screen-exit-slip .xs-wrap, html[data-theme="dark"] #aogTimOv .tim-sheet{
-    background:linear-gradient(180deg,color-mix(in srgb,var(--gl) 18%,transparent),transparent 160px),#13314F!important}
-  #screen-daily-checkin .sc-wrap h1, #screen-daily-checkin .sc-wrap h2, #screen-exit-slip .xs-wrap h1, #screen-exit-slip .xs-wrap h2, #aogTimOv .tim-head{
-    font-family:Fraunces,Georgia,serif!important;letter-spacing:-.01em}
-  #aogTimOv .tim-sheet{background:linear-gradient(180deg,color-mix(in srgb,var(--gl) 9%,#FFFDF8),#FFFDF8 160px)!important;margin-top:64px!important}
-  html[data-theme="dark"] #aogTimOv .tim-sheet{background:linear-gradient(180deg,color-mix(in srgb,var(--gl) 18%,#13314F),#13314F 160px)!important}
-  #screen-daily-checkin input.sc-in, #screen-exit-slip input.xs-ta, #aogTimOv #aogTimWho{
-    border:2px solid color-mix(in srgb,var(--gl) 60%,#1E1F22)!important;border-radius:14px!important;min-height:52px;font-size:18px!important;letter-spacing:.06em}
-  #screen-daily-checkin input.sc-in:focus, #screen-exit-slip input.xs-ta:focus, #aogTimOv #aogTimWho:focus{border-color:#C9A24A!important;box-shadow:0 0 0 3px rgba(242,201,100,.35)!important;outline:none}
-  #screen-daily-checkin .sc-next,
-  #screen-exit-slip .xs-next, #aogTimOv .tim-btn{
-    background-color:var(--gl)!important;color:#fff!important;border:2px solid #1E1F22!important;
-    background-image:radial-gradient(120% 90% at 30% 15%,rgba(255,255,255,.35),rgba(255,255,255,0) 60%)!important;
-    box-shadow:0 0 0 1px rgba(242,201,100,.6),0 8px 18px -10px var(--gl)!important}
+    box-sizing:border-box;max-width:600px;margin:10px auto 18px!important;padding:22px 18px 18px!important;position:relative;
+    background:#FFFDF8!important;border:1.5px solid #1B2A3D!important;border-radius:24px!important;
+    box-shadow:0 0 0 1px rgba(201,162,74,.55),inset 0 12px 0 var(--gl),0 18px 40px -28px rgba(10,30,51,.55)!important}
+  html[data-theme="dark"] #screen-daily-checkin .sc-wrap, html[data-theme="dark"] #screen-exit-slip .xs-wrap, html[data-theme="dark"] #aogTimOv .tim-sheet{background:#13314F!important;border-color:#0A1E33!important}
+  #aogTimOv .tim-sheet{margin-top:64px!important}
+  /* the band above: name + stones */
+  #screen-daily-checkin .sc-top, #screen-exit-slip .xs-top{padding:8px 0 0!important}
+  #screen-daily-checkin .sc-meta, #screen-exit-slip .xs-meta{max-width:600px;padding:0 22px!important;margin:0 auto!important;font-size:13px!important;
+    font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--gl)!important}
+  html[data-theme="dark"] #screen-daily-checkin .sc-meta, html[data-theme="dark"] #screen-exit-slip .xs-meta{color:#F2C964!important}
+  #screen-daily-checkin .sc-count, #screen-exit-slip .xs-count{letter-spacing:.02em;text-transform:none;font-weight:600;color:var(--ink-faint,#5E6B7A)!important}
+  /* the four beat words become the stones: label hidden, the bar is a row of stones */
+  #screen-daily-checkin .sc-ribbon, #screen-exit-slip .xs-ribbon{background:transparent!important;gap:6px!important;padding:0 22px 8px!important;max-width:600px}
+  #screen-daily-checkin .sc-beat b, #screen-exit-slip .xs-beat b{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);margin:0!important}
+  #screen-daily-checkin .sc-beat i, #screen-exit-slip .xs-beat i{height:8px!important;border-radius:99px!important;background:#E6DECB!important;box-shadow:inset 0 0 0 1px #1B2A3D}
+  #screen-daily-checkin .sc-beat.done i, #screen-exit-slip .xs-beat.done i{background:var(--gl)!important}
+  #screen-daily-checkin .sc-beat.now i, #screen-exit-slip .xs-beat.now i{background:linear-gradient(180deg,#F2C964,#C9A24A)!important}
+  /* the question */
+  #screen-daily-checkin .sc-q, #screen-exit-slip .xs-q, #screen-daily-checkin .sc-wrap h1, #screen-daily-checkin .sc-wrap h2, #screen-exit-slip .xs-wrap h1, #screen-exit-slip .xs-wrap h2, #aogTimOv .tim-head{
+    font-family:Fraunces,var(--serif,Georgia),serif!important;font-weight:700!important;font-size:clamp(24px,6.2vw,31px)!important;line-height:1.15!important;letter-spacing:-.012em;color:var(--ink,#15202E)!important}
+  #screen-daily-checkin .sc-sub, #screen-exit-slip .xs-sub{font-size:16px!important;line-height:1.45!important;color:var(--ink,#15202E)!important;opacity:.82}
+  #screen-daily-checkin .sc-micro{opacity:.75}
+  #screen-daily-checkin .sc-head{padding-top:12px!important}
+  /* answers: big glass panes, one per line */
+  #screen-daily-checkin .sc-scale{gap:10px!important}
+  #screen-daily-checkin .sc-s, #screen-exit-slip .xs-day, #screen-exit-slip .xs-cls{
+    min-height:60px;padding:10px 14px!important;border-radius:16px!important;border:1.5px solid #1B2A3D!important;
+    background:linear-gradient(180deg,rgba(255,255,255,.75),rgba(255,255,255,0) 60%),color-mix(in srgb,var(--pane,var(--gl)) 12%,#FFFDF8)!important;
+    color:var(--ink,#15202E)!important;font-size:17px!important;font-weight:700!important;box-shadow:inset 0 0 0 1px rgba(255,255,255,.6)}
+  html[data-theme="dark"] #screen-daily-checkin .sc-s, html[data-theme="dark"] #screen-exit-slip .xs-day, html[data-theme="dark"] #screen-exit-slip .xs-cls{
+    background:color-mix(in srgb,var(--pane,var(--gl)) 26%,#13314F)!important;color:#F4EEE2!important;border-color:#0A1E33!important;box-shadow:none}
+  #screen-daily-checkin .sc-s:nth-child(1){--pane:#3F4AA6} #screen-daily-checkin .sc-s:nth-child(2){--pane:#2F63B8}
+  #screen-daily-checkin .sc-s:nth-child(3){--pane:#1F8080} #screen-daily-checkin .sc-s:nth-child(4){--pane:#2E8B57} #screen-daily-checkin .sc-s:nth-child(5){--pane:#8A5A12}
+  #screen-daily-checkin .sc-s .sc-dot{width:40px!important;height:40px!important;background:#FFFDF8!important;color:var(--pane,var(--gl))!important;box-shadow:inset 0 0 0 1.5px #1B2A3D!important;font-size:22px}
+  #screen-daily-checkin .sc-s.on, #screen-exit-slip .xs-day.on, #screen-exit-slip .xs-cls.on, #screen-exit-slip .xs-gate.on{
+    background:linear-gradient(180deg,rgba(255,255,255,.22),rgba(255,255,255,0) 55%),var(--pane,var(--gl))!important;color:#fff!important;border-color:#1B2A3D!important;
+    box-shadow:0 0 0 2px #F2C964,0 0 0 3.5px #1B2A3D!important}
+  #screen-daily-checkin .sc-s.on .sc-dot{background:rgba(255,255,255,.18)!important;color:#fff!important;box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.7)!important}
+  #screen-daily-checkin .sc-s.on::after, #screen-exit-slip .xs-day.on::after, #screen-exit-slip .xs-cls.on::after{content:"✓";margin-left:auto;font-size:18px;font-weight:800;color:#F2C964}
+  #screen-daily-checkin .sc-s:focus-visible, #screen-exit-slip .xs-day:focus-visible, #screen-exit-slip .xs-cls:focus-visible{outline:3px solid #C9A24A!important;outline-offset:3px}
+  /* chips: glass tiles in two columns */
+  #screen-daily-checkin .sc-chips, #screen-exit-slip .xs-chips{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px!important}
   #screen-daily-checkin .sc-chips button, #screen-exit-slip .xs-chips button, #aogTimOv .tim-chip{
-    border:1.5px solid color-mix(in srgb,var(--gl) 55%,transparent)!important;border-radius:12px!important;background:color-mix(in srgb,var(--gl) 8%,transparent)!important}
-  #screen-daily-checkin .sc-chips button[aria-pressed="true"], #screen-exit-slip .xs-chips button[aria-pressed="true"], #aogTimOv .tim-chip[aria-pressed="true"]{
-    background:var(--gl)!important;color:#fff!important;border-color:#1E1F22!important}
-  #screen-daily-checkin .sc-ribbon, #screen-exit-slip .xs-ribbon{background:var(--gl)!important}
+    min-height:52px;padding:8px 12px!important;border-radius:14px!important;border:1.5px solid #1B2A3D!important;
+    background:linear-gradient(180deg,rgba(255,255,255,.7),rgba(255,255,255,0) 60%),color-mix(in srgb,var(--gl) 10%,#FFFDF8)!important;color:var(--ink,#15202E)!important;font-size:16px!important;font-weight:650!important;line-height:1.2}
+  html[data-theme="dark"] #screen-daily-checkin .sc-chips button, html[data-theme="dark"] #screen-exit-slip .xs-chips button{background:color-mix(in srgb,var(--gl) 24%,#13314F)!important;color:#F4EEE2!important;border-color:#0A1E33!important}
+  #screen-daily-checkin .sc-chips button[aria-pressed="true"], #screen-daily-checkin .sc-chip.on, #screen-exit-slip .xs-chips button[aria-pressed="true"], #screen-exit-slip .xs-chip.on, #aogTimOv .tim-chip[aria-pressed="true"]{
+    background:var(--gl)!important;color:#fff!important;border-color:#1B2A3D!important;box-shadow:0 0 0 2px #F2C964,0 0 0 3.5px #1B2A3D!important}
+  #screen-daily-checkin .sc-esc .sc-chip, #screen-exit-slip .xs-esc .xs-chip{background:transparent!important;border-style:dashed!important;border-color:#8A93A0!important;font-weight:600!important}
+  #screen-daily-checkin .sc-esc .sc-chip.on, #screen-exit-slip .xs-esc .xs-chip.on{background:#0A1E33!important;border-style:solid!important;color:#F4EEE2!important}
+  #screen-daily-checkin .sc-gh, #screen-exit-slip .xs-gh{font-size:12px!important;letter-spacing:.14em!important;color:var(--gl)!important;border-bottom:2px solid #C9A24A!important}
+  html[data-theme="dark"] #screen-daily-checkin .sc-gh, html[data-theme="dark"] #screen-exit-slip .xs-gh{color:#F2C964!important}
+  #screen-daily-checkin .sc-more, #screen-exit-slip .xs-more{border:1.5px solid #1B2A3D!important;color:var(--ink,#15202E)!important;background:#FFFDF8!important;min-height:44px}
+  html[data-theme="dark"] #screen-daily-checkin .sc-more, html[data-theme="dark"] #screen-exit-slip .xs-more{background:#0A1E33!important;color:#F4EEE2!important}
+  /* writing, the who-reads-this panel, the code box */
+  #screen-daily-checkin input.sc-in, #screen-exit-slip input.xs-ta, #aogTimOv #aogTimWho, #screen-daily-checkin .sc-text, #screen-exit-slip textarea.xs-ta{
+    border:1.5px solid #1B2A3D!important;border-radius:14px!important;min-height:52px;font-size:17px!important;background:#FFFDF8!important;color:var(--ink,#15202E)!important}
+  html[data-theme="dark"] #screen-daily-checkin input.sc-in, html[data-theme="dark"] #screen-daily-checkin .sc-text, html[data-theme="dark"] #screen-exit-slip textarea.xs-ta{background:#0A1E33!important;color:#F4EEE2!important}
+  #screen-daily-checkin input.sc-in:focus, #screen-exit-slip input.xs-ta:focus, #aogTimOv #aogTimWho:focus, #screen-daily-checkin .sc-text:focus{border-color:#C9A24A!important;box-shadow:0 0 0 3px rgba(242,201,100,.35)!important;outline:none}
+  #screen-daily-checkin .sc-seen, #screen-daily-checkin .sc-talk{border:1.5px solid #1B2A3D!important;border-radius:14px!important;background:color-mix(in srgb,var(--gl) 8%,#FFFDF8)!important}
+  html[data-theme="dark"] #screen-daily-checkin .sc-seen, html[data-theme="dark"] #screen-daily-checkin .sc-talk{background:color-mix(in srgb,var(--gl) 22%,#13314F)!important}
+  #screen-daily-checkin .sc-imp-b{border:1.5px solid #1B2A3D!important;border-radius:12px!important;min-height:44px}
+  #screen-daily-checkin .sc-imp-b.on{background:var(--gl)!important;color:#fff!important}
+  /* the nav: quiet words, then one gold button */
+  #screen-daily-checkin .sc-nav, #screen-exit-slip .xs-nav{display:grid!important;grid-template-columns:auto 1fr auto;gap:6px 10px!important;border-top:1px solid #E6DECB!important;padding:10px 0 4px!important}
+  #screen-daily-checkin .sc-back, #screen-exit-slip .xs-back{grid-column:1;grid-row:1;color:var(--ink,#15202E)!important;opacity:.8;font-weight:600;min-height:44px}
+  #screen-daily-checkin .sc-skip, #screen-exit-slip .xs-skip{grid-column:3;grid-row:1;color:var(--ink,#15202E)!important;opacity:.8;font-weight:600;min-height:44px}
+  #screen-daily-checkin .sc-next, #screen-exit-slip .xs-next, #aogTimOv .tim-btn{
+    grid-column:1 / -1;grid-row:2;width:100%;min-height:56px;margin:0!important;border-radius:16px!important;
+    background:linear-gradient(180deg,#F2C964,#D9A33B)!important;color:#0A1E33!important;border:1.5px solid #1B2A3D!important;font-size:18px!important;font-weight:800!important;
+    box-shadow:0 0 0 1px rgba(201,162,74,.7),0 10px 22px -14px rgba(10,30,51,.7)!important}
+  #screen-daily-checkin .sc-next[disabled], #screen-exit-slip .xs-next[disabled]{opacity:1!important;background:#E6DECB!important;color:#3D4A58!important;border-color:#8A93A0!important;box-shadow:none!important}
+  #screen-daily-checkin .sc-next:focus-visible, #screen-exit-slip .xs-next:focus-visible{outline:3px solid #0A1E33!important;outline-offset:3px}
+  #screen-daily-checkin .sc-ghost, #screen-exit-slip .xs-ghost{border:1.5px solid #1B2A3D!important;color:var(--ink,#15202E)!important;min-height:48px}
+  #screen-exit-slip .xs-gate{border:1.5px solid #1B2A3D!important;border-radius:16px!important;background:color-mix(in srgb,var(--gl) 12%,#FFFDF8)!important;color:var(--ink,#15202E)!important}
+  html[data-theme="dark"] #screen-exit-slip .xs-gate{background:color-mix(in srgb,var(--gl) 26%,#13314F)!important;color:#F4EEE2!important}
+  /* the closing screen */
+  #screen-daily-checkin .sc-done h2, #screen-exit-slip .xs-done h2{font-family:Fraunces,var(--serif,Georgia),serif!important;font-size:clamp(26px,7vw,34px)!important}
+  #screen-daily-checkin .sc-hand, #screen-exit-slip .xs-hand{border:1.5px solid #1B2A3D!important;border-radius:16px!important;background:color-mix(in srgb,var(--gl) 8%,#FFFDF8)!important}
+  html[data-theme="dark"] #screen-daily-checkin .sc-hand, html[data-theme="dark"] #screen-exit-slip .xs-hand{background:color-mix(in srgb,var(--gl) 22%,#13314F)!important}
+  /* the Quiet Space pill (phones only): navy glass, and the stones and count stop short of it */
+  #screen-daily-checkin .aog-ci-calm{background:#0A1E33!important;color:#F4EEE2!important;border:1.5px solid #1B2A3D!important;box-shadow:0 0 0 1px rgba(201,162,74,.6);font-size:13px!important;padding:8px 12px!important;min-height:36px}
+  @media (max-width:600px){ body.aog-survey-focus #screen-daily-checkin .sc-ribbon, body.aog-survey-focus #screen-daily-checkin .sc-meta{padding-right:132px!important} body.aog-survey-focus #screen-daily-checkin .sc-meta > span:first-child{display:none} }
+  #screen-daily-checkin .sc-meta, #screen-exit-slip .xs-meta{flex-wrap:nowrap;white-space:nowrap}
+  @media (max-width:600px){ #screen-exit-slip .xs-classes{grid-template-columns:1fr!important} }
+  @media (min-width:700px){ #screen-daily-checkin .sc-chips, #screen-exit-slip .xs-chips{grid-template-columns:repeat(3,minmax(0,1fr))} #screen-daily-checkin .sc-wrap, #screen-exit-slip .xs-wrap{padding:28px 30px 24px!important} }
 }
 </style>
 <script id="aog-weekly-links">
