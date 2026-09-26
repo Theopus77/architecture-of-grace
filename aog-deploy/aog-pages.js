@@ -139,6 +139,7 @@
 (function () {
   var D = document, main = D.getElementById("main");
   if (!main || !main.querySelector(".checks .q")) return;
+  if (/[?&]review=/.test(location.search)) return;   /* AOG-PG-REVIEW-V1: a reviewed copy is read, not worked */
   var DEST_RE = /^https:\/\/script\.google\.com\/[^\s]*\/exec$/, DEST = null;
   try { var dm = /[?&]dest=([^&]+)/.exec(location.search || "");
     if (dm) { var tt = decodeURIComponent(dm[1]).replace(/-/g, "+").replace(/_/g, "/"); while (tt.length % 4) tt += "=";
@@ -174,13 +175,15 @@
   }
   function say(c, msg, keepForm) { var b = box(c); b.querySelector(".aogchk-st").textContent = msg; b.classList.toggle("done", !keepForm); }
   function send(c, force) {
+    send.busy = send.busy || {};
     var lid = c.getAttribute("data-lesson") || "", qs = c.querySelectorAll(".q"), n = qs.length, k = 0, seen = 0, retry = 0, answers = [];
     Array.prototype.forEach.call(qs, function (q, j) { var s = st(q), a = +q.getAttribute("data-a");
       if (s && s.done) seen++; if (s && s.first) k++; if (s && s.first === false) retry++;
       var f = s ? (s.first ? a : (s.tried && s.tried.length ? s.tried[0] : null)) : null, it = { g: f === null ? "" : optText(q, f).slice(0, 120) };
       if (f !== null) { it.ok = !!(s && s.first); if (!it.ok) it.c = optText(q, a).slice(0, 120); }
       answers.push({ b: j + 1, s: T("Check yourself", "Compruébalo"), q: qText(q).slice(0, 240), a: [it] }); });
-    if (seen < n) return; if (sent()[lid] && !force) return;
+    if (seen < n) return; if ((sent()[lid] || send.busy[lid]) && !force) return;
+    send.busy[lid] = 1;
     var nm = who(); if (!nm) { say(c, T("Done. Sign your name to send it to your teacher.", "Listo. Firma tu nombre para enviárselo a tu maestro."), true); return; }
     var les = c.closest(".les"), h4 = les && les.querySelector("h4"), ln = les && les.querySelector(".ln");
     var title = (ln ? ln.textContent.trim() + " " : "") + (h4 ? h4.textContent.trim() : lid);
@@ -192,8 +195,8 @@
     if (window.AOG_IEP) { try { AOG_IEP.fill(payload, { correct: k, total: n, standards: "", byStrand: "", supports: es() ? ["spanish"] : [] }); } catch (e) {} }
     var body = JSON.stringify(payload);
     say(c, T("Sending…", "Enviando…"));
-    function ok() { markSent(lid); say(c, T("Sent to your teacher.", "Enviado a tu maestro.")); }
-    function bad() { say(c, T("Could not send. Tap to try again.", "No se pudo enviar. Toca para intentar de nuevo."), true); }
+    function ok() { delete send.busy[lid]; markSent(lid); say(c, T("Sent to your teacher.", "Enviado a tu maestro.")); }
+    function bad() { delete send.busy[lid]; say(c, T("Could not send. Tap to try again.", "No se pudo enviar. Toca para intentar de nuevo."), true); }
     fetch(DEST.url, { method: "POST", mode: "cors", redirect: "follow", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: body })
       .then(function (r) { return r.json(); }).then(function (j) { if (j && j.ok) ok(); else bad(); })
       .catch(function () { fetch(DEST.url, { method: "POST", mode: "no-cors", redirect: "follow", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: body }).then(ok).catch(bad); });
@@ -219,6 +222,7 @@
   var D = document, main = D.getElementById("main");
   if (!main) return;
   var r = main.querySelector('.review[data-kind="unit-test"]'); if (!r || !r.querySelector(".q")) return;
+  if (/[?&]review=/.test(location.search)) return;   /* AOG-PG-REVIEW-V1: a reviewed copy is read, not worked */
   var DEST_RE = /^https:\/\/script\.google\.com\/[^\s]*\/exec$/, DEST = null;
   try { var dm = /[?&]dest=([^&]+)/.exec(location.search || "");
     if (dm) { var tt = decodeURIComponent(dm[1]).replace(/-/g, "+").replace(/_/g, "/"); while (tt.length % 4) tt += "=";
@@ -313,4 +317,49 @@
   new MutationObserver(function () { if (!S.revealed) paintBox(); }).observe(D.documentElement, { attributes: true, attributeFilter: ["lang"] });
   paintBox();
   if (S.revealed) { setTimeout(function () { reveal(); }, 0); } else paintPicks();
+})();
+
+/* AOG-PG-REVIEW-V1 (2026-09-26) — the Inbox's "See / Print the worksheet" for course units. The row
+   carries the section (a chapter review, the unit test, or a lesson check) and the answer the student
+   picked for each question; the page rebuilds itself around them: their pick marked right in green or
+   struck in red with the key beside it, the Why open, a Reviewed copy banner, and the page turned to
+   that section. ?print=1 prints it. Nothing here writes to the student's saved state. */
+(function () {
+  var D = document, m = /[?&]review=([^&]+)/.exec(location.search || ""); if (!m) return;
+  var rv; try { var s = decodeURIComponent(m[1]).replace(/-/g, "+").replace(/_/g, "/"); while (s.length % 4) s += "="; rv = JSON.parse(decodeURIComponent(escape(atob(s)))); } catch (e) { return; }
+  if (!rv || !rv.rid) return;
+  var es = (D.documentElement.lang || "").indexOf("es") === 0, T = function (a, b) { return es ? b : a; };
+  function run() {
+    var sec = /^chk-/.test(rv.rid) ? D.querySelector('.checks[data-lesson="' + rv.rid.slice(4) + '"]') : D.querySelector('.review[data-review="' + rv.rid + '"]');
+    if (!sec) return;
+    var qs = sec.querySelectorAll(".q"), norm = function (x) { return String(x == null ? "" : x).replace(/\s+/g, " ").trim().toLowerCase(); }, right = 0, n = 0;
+    Array.prototype.forEach.call(qs, function (q, j) {
+      var a = +q.getAttribute("data-a"), opts = q.querySelectorAll(".opt"), g = rv.a ? rv.a[j] : null, pick = -1;
+      if (g != null && g !== "") Array.prototype.forEach.call(opts, function (o, i) { var tx = o.querySelector("span:last-child"); if (pick < 0 && tx && norm(tx.textContent) === norm(g)) pick = i; });
+      n++; if (pick === a) right++;
+      Array.prototype.forEach.call(opts, function (o, i) { o.disabled = true; o.removeAttribute("data-st"); if (i === a) o.setAttribute("data-st", "right"); else if (i === pick) o.setAttribute("data-st", "tried"); });
+      var w = q.querySelector(".why"); if (w) w.hidden = false;
+      var say = q.querySelector(".say"); if (say) say.textContent = pick < 0 ? T("No answer given.", "Sin respuesta.") : (pick === a ? "" : T("Their pick is struck; the right answer is green.", "Su elección está tachada; la correcta está en verde."));
+    });
+    var rs = sec.querySelector("[data-rscore]"); if (rs) rs.textContent = right + " / " + n;
+    var v = sec.querySelector("[data-verdict]"); if (v) v.textContent = "";
+    var sc = sec.querySelector("[data-score]"); if (sc) sc.textContent = right + " / " + n;
+    Array.prototype.forEach.call(sec.querySelectorAll(".csend, .aogchk, .aogtest, .reset-r"), function (e) { e.style.display = "none"; });
+    D.body.classList.add("aog-reviewed");
+    var b = D.createElement("div"); b.className = "aogrv no-print-keep";
+    b.innerHTML = '<span><span class="k">' + T("Reviewed copy", "Copia revisada") + '</span><br><b>' + String(rv.who || "").replace(/[<>&]/g, "") + '</b></span><span><span class="k">' + T("Date", "Fecha") + '</span><br><b>' + String(rv.date || "").replace(/[<>&]/g, "") + '</b></span><span><span class="k">' + T("Score", "Puntaje") + '</span><br><b>' + right + " / " + n + '</b></span><span class="lg"><i class="g"></i>' + T("right", "correcta") + ' &nbsp; <i class="r"></i>' + T("their pick, when wrong", "su elección, si fue incorrecta") + '</span>';
+    sec.insertBefore(b, sec.firstChild);
+    try { var st = D.createElement("style"); st.textContent = '.aogrv{display:flex;flex-wrap:wrap;gap:14px 26px;align-items:end;border:2px solid var(--navy-2,#1E3D62);border-radius:12px;padding:10px 14px;margin:0 0 12px;font-size:.95rem}.aogrv .k{font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;opacity:.75}.aogrv .lg i{display:inline-block;width:12px;height:12px;border-radius:3px;vertical-align:-1px;margin-right:4px}.aogrv .lg i.g{background:#1c7a3c}.aogrv .lg i.r{background:#b3261e}' +
+      'body.aog-reviewed .opt[data-st="right"]{border-color:#1c7a3c!important;background:#e6f4ea!important;font-weight:700}body.aog-reviewed .opt[data-st="tried"]{opacity:1!important;border-color:#b3261e!important;background:#fbe9e7!important;text-decoration:line-through}body.aog-reviewed .opt[data-st="tried"] .l{background:#b3261e;border-color:#b3261e;color:#fff}' +
+      '@media print{body.aog-reviewed .aogrv{border-color:#000}body.aog-reviewed .opt[data-st="right"]{color:#1c7a3c!important;border-color:#1c7a3c!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}body.aog-reviewed .opt[data-st="tried"]{color:#b3261e!important;border-color:#b3261e!important;text-decoration:line-through}body.aog-reviewed .aogpg-off,body.aog-reviewed .aog-rv-hide{display:none!important}body.aog-reviewed .review,body.aog-reviewed .checks{display:block!important}}';
+      (D.head || D.documentElement).appendChild(st); } catch (e) {}
+    /* on paper, only the reviewed section and its banner: every sibling on the way up is hidden */
+    try { var node = sec; while (node && node !== D.body) { var par = node.parentElement; if (!par) break; Array.prototype.forEach.call(par.children, function (k) { if (k !== node && !/SCRIPT|STYLE|LINK/.test(k.tagName)) k.classList.add("aog-rv-hide"); }); node = par; } } catch (e) {}
+    /* turn to that page */
+    try { var P = window.aogPages; if (P && P.pages) { for (var i = 0; i < P.pages.length; i++) { if (P.pages[i].els.some(function (e) { return e === sec || e.contains(sec); })) { P.go(i); break; } } } } catch (e) {}
+    try { sec.scrollIntoView({ block: "start" }); } catch (e) {}
+    D.title = (rv.who ? rv.who + " · " : "") + D.title;
+    if (/[?&]print=1/.test(location.search)) setTimeout(function () { try { window.print(); } catch (e) {} }, 700);
+  }
+  if (D.readyState === "loading") D.addEventListener("DOMContentLoaded", function () { setTimeout(run, 50); }); else setTimeout(run, 50);
 })();
