@@ -1854,6 +1854,19 @@ function bakeBactBg(){
    Drawn as shapes in slide units (1 unit ≈ 10.7 µm), so they stay sharp at 400× and 1000×:
    a baked picture for 4×/10×, live vector drawing (only what is in the hole) above that. */
 function inView(L,x,y,r){ if(!L) return true; const R=840/L.obj+2, dx=x+L.panX, dy=y+L.panY; return dx*dx+dy*dy<(R+r)*(R+r); }
+/* a still slide only needs drawing again when the view moves */
+function cachedView(ctx,L,name,paint){
+  const m=ctx.getTransform(), cv=ctx.canvas;
+  const key=[name,cv.width,cv.height,m.a.toFixed(4),m.b.toFixed(4),m.e.toFixed(2),m.f.toFixed(2),L.stain].join("|");
+  let c=cachedView[name];
+  if(!c||c.key!==key){
+    if(!c){ c=cachedView[name]={can:mkCan(cv.width,cv.height),key:""}; }
+    if(c.can.width!==cv.width||c.can.height!==cv.height){ c.can.width=cv.width; c.can.height=cv.height; }
+    const g=c.can.getContext("2d"); g.setTransform(1,0,0,1,0,0); g.clearRect(0,0,cv.width,cv.height);
+    g.setTransform(m); paint(g); c.key=key;
+  }
+  ctx.save(); ctx.setTransform(1,0,0,1,0,0); ctx.drawImage(c.can,0,0); ctx.restore();
+}
 function hiPow(L){ return L && L.obj>=40; }
 function bakeUnits(wu,hu,ppu,paint){
   const c=mkCan(Math.round(wu*ppu),Math.round(hu*ppu)), ctx=c.getContext("2d");
@@ -1883,6 +1896,27 @@ function pollenList(){
   }
   return (pollenList.v=o);
 }
+/* AOG-SCOPE-CRAFT-V1 — what makes a grain read as a ball under a lens: the edge darkens
+   (limb), a bright Becke line sits just outside it, the lamp makes one soft highlight. */
+function sphereFinish(ctx,rx,ry,det,tone){
+  const lg=ctx.createRadialGradient(-rx*.12,-ry*.15,Math.min(rx,ry)*.35,0,0,Math.max(rx,ry));
+  lg.addColorStop(0,"rgba(0,0,0,0)"); lg.addColorStop(.7,tone||"rgba(70,36,0,.08)"); lg.addColorStop(1,tone?tone.replace(/[\d.]+\)$/,".42)"):"rgba(70,36,0,.42)");
+  ctx.beginPath(); ctx.ellipse(0,0,rx,ry,0,0,Math.PI*2); ctx.fillStyle=lg; ctx.fill();
+  if(det){
+    ctx.beginPath(); ctx.ellipse(0,0,rx*1.035,ry*1.035,0,0,Math.PI*2);
+    ctx.strokeStyle="rgba(255,252,236,.55)"; ctx.lineWidth=Math.min(rx,ry)*.045; ctx.stroke();
+    ctx.beginPath(); ctx.ellipse(0,0,rx*1.08,ry*1.08,0,0,Math.PI*2);
+    ctx.strokeStyle="rgba(60,40,10,.12)"; ctx.lineWidth=Math.min(rx,ry)*.05; ctx.stroke();
+  }
+  const sp=ctx.createRadialGradient(-rx*.36,-ry*.4,0,-rx*.36,-ry*.4,Math.min(rx,ry)*.42);
+  sp.addColorStop(0,"rgba(255,255,250,.5)"); sp.addColorStop(1,"rgba(255,255,250,0)");
+  ctx.beginPath(); ctx.ellipse(0,0,rx,ry,0,0,Math.PI*2); ctx.fillStyle=sp; ctx.fill();
+}
+function granules(ctx,rx,ry,rng,n,col){
+  ctx.beginPath();
+  for(let i=0;i<n;i++){ const a=rng()*Math.PI*2, d=Math.sqrt(rng())*.75, x=Math.cos(a)*rx*d, y=Math.sin(a)*ry*d, s=Math.min(rx,ry)*(.02+rng()*.03); ctx.moveTo(x+s,y); ctx.arc(x,y,s,0,Math.PI*2); }
+  ctx.fillStyle=col; ctx.fill();
+}
 function pollenGrain(ctx,g,det){
   const r=g.r, rng=mulberry32(g.seed);
   ctx.save(); ctx.translate(g.x,g.y); ctx.rotate(g.a);
@@ -1904,6 +1938,7 @@ function pollenGrain(ctx,g,det){
     if(big) body("rgba(252,244,206,.95)","rgba(236,214,140,.88)","rgba(170,132,50,.9)",r,r);
     else body("#f7dc8a","#dca63c","#9c6a18",r,r);
     ctx.strokeStyle=big?"rgba(120,92,30,.75)":"rgba(90,56,10,.8)"; ctx.lineWidth=r*.045; ctx.stroke();
+    if(det) granules(ctx,r,r,rng,big?120:40,big?"rgba(150,120,50,.18)":"rgba(120,70,10,.2)");
     if(det){
       /* spines seen end-on across the face: a dark ring with a bright tip */
       const N=big?70:22;
@@ -1940,12 +1975,16 @@ function pollenGrain(ctx,g,det){
     if(det){
       /* the net (reticulum): pits and ridges */
       ctx.save(); ctx.beginPath(); ctx.ellipse(0,0,rx*.97,ry*.97,0,0,Math.PI*2); ctx.clip();
-      const cs=r*.2; ctx.beginPath();
-      for(let y=-ry;y<ry;y+=cs) for(let x=-rx;x<rx;x+=cs){
-        const px=x+(rng()-.5)*cs*.35, py=y+(rng()-.5)*cs*.35;
-        ctx.moveTo(px+cs*.33,py); ctx.ellipse(px,py,cs*.33,cs*.28,rng(),0,Math.PI*2);
+      /* lumina (pits) with bright muri (ridges) between them, smaller toward the furrow */
+      const cs=r*.2, lum=new Path2D(), mur=new Path2D();
+      for(let row=0, y=-ry; y<ry; y+=cs*.87, row++) for(let x=-rx+(row&1?cs/2:0); x<rx; x+=cs){
+        const k=.72+.28*Math.min(1,Math.abs(y)/(ry*.35)), rr=cs*.5*k, px=x+(rng()-.5)*cs*.18, py=y+(rng()-.5)*cs*.18;
+        for(let i=0;i<6;i++){ const a=i/6*Math.PI*2+Math.PI/6+(rng()-.5)*.25, q=rr*(.86+rng()*.14), X=px+Math.cos(a)*q, Y=py+Math.sin(a)*q; if(i){ lum.lineTo(X,Y); mur.lineTo(X,Y); } else { lum.moveTo(X,Y); mur.moveTo(X,Y); } }
+        lum.closePath(); mur.closePath();
       }
-      ctx.fillStyle="rgba(140,70,10,.32)"; ctx.fill();
+      ctx.fillStyle="rgba(128,58,6,.34)"; ctx.fill(lum);
+      ctx.strokeStyle="rgba(255,228,168,.62)"; ctx.lineWidth=cs*.13; ctx.stroke(mur);
+      ctx.strokeStyle="rgba(110,50,0,.22)"; ctx.lineWidth=cs*.04; ctx.stroke(mur);
       ctx.restore();
     }
     ctx.beginPath(); ctx.ellipse(0,0,rx*.78,ry*.1,0,0,Math.PI*2); ctx.fillStyle="rgba(255,236,190,.7)"; ctx.fill();
@@ -1958,7 +1997,9 @@ function pollenGrain(ctx,g,det){
     ctx.beginPath(); ctx.arc(px,py,r*.08,0,Math.PI*2); ctx.fillStyle="rgba(90,60,20,.6)"; ctx.fill();
     if(det){ ctx.beginPath(); ctx.arc(-r*.1,r*.15,r*.55,0,Math.PI*2); ctx.fillStyle="rgba(200,170,90,.16)"; ctx.fill(); }
   }
-  ctx.beginPath(); ctx.ellipse(-r*.35,-r*.4,r*.2,r*.1,-.6,0,Math.PI*2); ctx.fillStyle="rgba(255,255,255,.35)"; ctx.fill();
+  if(g.k==="lily") sphereFinish(ctx,r*1.9,r*1.15,det);
+  else if(g.k==="pine") sphereFinish(ctx,r*.95,r*.8,det);
+  else sphereFinish(ctx,r,r,det,g.k==="mallow"?"rgba(90,70,20,.06)":null);
   ctx.restore();
 }
 function pollenBg(ctx){
@@ -1972,8 +2013,10 @@ function pollenBg(ctx){
 function drawPollen(ctx,L){
   if(!SLIDE.pollenBg){ SLIDE.pollenBg=bakeUnits(POLLEN_W,POLLEN_H,6,pollenBg); SLIDE.pollen=bakeUnits(POLLEN_W,POLLEN_H,8,c=>{ pollenBg(c); pollenList().forEach(g=>pollenGrain(c,g,false)); }); }
   if(!hiPow(L)){ blit(ctx,SLIDE.pollen); return; }
-  blit(ctx,SLIDE.pollenBg);
-  pollenList().forEach(g=>{ if(inView(L,g.x,g.y,g.r*2.2)) pollenGrain(ctx,g,true); });
+  cachedView(ctx,L,"pollen",vc=>{
+  blit(vc,SLIDE.pollenBg);
+  pollenList().forEach(g=>{ if(inView(L,g.x,g.y,g.r*2.2)) pollenGrain(vc,g,true); });
+  });
 }
 
 /* ── butterfly wing ─────────────────────────────────── */
@@ -2019,6 +2062,8 @@ function scalePath(ctx,s){
 function wingScale(ctx,s,det,ob){
   ctx.save(); ctx.translate(s.x,s.y); ctx.rotate(s.a);
   const [r,g,b]=s.c;
+  /* each tile throws a soft shadow on the row beneath it */
+  ctx.save(); ctx.translate(.18,.14); scalePath(ctx,s); ctx.fillStyle="rgba(10,6,2,.28)"; ctx.fill(); ctx.restore();
   scalePath(ctx,s);
   const gr=ctx.createLinearGradient(0,0,s.L,0);
   gr.addColorStop(0,`rgba(${r*.72|0},${g*.72|0},${b*.72|0},.97)`);
@@ -2033,6 +2078,11 @@ function wingScale(ctx,s,det,ob){
     ctx.beginPath();
     for(let y=-s.W/2+.12;y<s.W/2;y+=.17){ ctx.moveTo(.8,y*.8); ctx.lineTo(s.L,y); }
     ctx.stroke();
+    const pr=mulberry32((s.x*997+s.y*131)|0); ctx.beginPath();
+    for(let i=0;i<40;i++){ const x=1+pr()*(s.L-1.3), y=(pr()-.5)*s.W*.9, q=.03+pr()*.04; ctx.moveTo(x+q,y); ctx.arc(x,y,q,0,Math.PI*2); }
+    ctx.fillStyle=s.blue?"rgba(20,40,120,.25)":"rgba(0,0,0,.14)"; ctx.fill();
+    const cv=ctx.createLinearGradient(0,0,s.L,0); cv.addColorStop(0,"rgba(0,0,0,.25)"); cv.addColorStop(.25,"rgba(0,0,0,0)"); cv.addColorStop(.92,"rgba(0,0,0,0)"); cv.addColorStop(1,"rgba(0,0,0,.18)");
+    ctx.fillStyle=cv; ctx.fillRect(0,-s.W/2,s.L,s.W);
     if(ob>=100){
       ctx.strokeStyle="rgba(0,0,0,.12)"; ctx.lineWidth=.02; ctx.beginPath();
       for(let x=1;x<s.L;x+=.09){ ctx.moveTo(x,-s.W/2); ctx.lineTo(x,s.W/2); }
@@ -2058,8 +2108,10 @@ function wingBg(ctx){
 function drawWing(ctx,L){
   if(!SLIDE.wingBg){ SLIDE.wingBg=bakeUnits(WING_W,WING_H,6,wingBg); SLIDE.wing=bakeUnits(WING_W,WING_H,8,c=>{ wingBg(c); wingList().forEach(s=>wingScale(c,s,false,4)); }); }
   if(!hiPow(L)){ blit(ctx,SLIDE.wing); return; }
-  blit(ctx,SLIDE.wingBg);
-  wingList().forEach(s=>{ if(inView(L,s.x+s.L/2,s.y,s.L)) wingScale(ctx,s,true,L.obj); });
+  cachedView(ctx,L,"wing",vc=>{
+  blit(vc,SLIDE.wingBg);
+  wingList().forEach(s=>{ if(inView(L,s.x+s.L/2,s.y,s.L)) wingScale(vc,s,true,L.obj); });
+  });
 }
 
 /* ── leaf peel: jigsaw cells and stomata ─────────────── */
@@ -2113,11 +2165,14 @@ function leafCell(ctx,s,det,iodine){
   if(s.st){
     ctx.save(); ctx.translate(s.x,s.y); ctx.rotate(s.a);
     const A=1.5, B=1.05;
+    if(det){ ctx.beginPath(); ctx.ellipse(0,0,A*1.75,B*2.05,0,0,Math.PI*2); ctx.strokeStyle="rgba(70,60,80,.3)"; ctx.lineWidth=.06; ctx.stroke(); }
     [-1,1].forEach(side=>{
       ctx.beginPath(); ctx.ellipse(0,0,A,B,0,side<0?Math.PI:0,side<0?Math.PI*2:Math.PI);
       ctx.ellipse(0,0,A*.62,B*.16,0,side<0?Math.PI*2:Math.PI,side<0?Math.PI:0,true);
       ctx.closePath();
-      ctx.fillStyle="rgba(164,196,120,.9)"; ctx.fill();
+      const gg=ctx.createRadialGradient(0,side*B*.62,B*.05,0,side*B*.55,A*.95);
+      gg.addColorStop(0,"rgba(196,224,150,.95)"); gg.addColorStop(.65,"rgba(150,186,104,.92)"); gg.addColorStop(1,"rgba(92,128,56,.95)");
+      ctx.fillStyle=gg; ctx.fill();
       ctx.strokeStyle="rgba(40,60,20,.8)"; ctx.lineWidth=det?.07:.12; ctx.stroke();
     });
     ctx.beginPath(); ctx.ellipse(0,0,A*.6,B*.12,0,0,Math.PI*2); ctx.fillStyle="rgba(30,34,20,.85)"; ctx.fill();
@@ -2148,9 +2203,11 @@ function leafBg(ctx){
 function drawLeaf(ctx,L){
   if(!SLIDE.leafBg){ SLIDE.leafBg=bakeUnits(LEAF_W,LEAF_H,6,leafBg); SLIDE.leaf=bakeUnits(LEAF_W,LEAF_H,8,c=>{ leafBg(c); leafCells().forEach(s=>leafCell(c,s,false,false)); airBubble(c,40,-30,4.5); }); }
   if(!hiPow(L)){ blit(ctx,SLIDE.leaf); return; }
-  blit(ctx,SLIDE.leafBg);
+  cachedView(ctx,L,"leaf",vc=>{
+  blit(vc,SLIDE.leafBg);
   const iod=L.stain==="iodine";
-  leafCells().forEach(s=>{ if(inView(L,s.x,s.y,6)) leafCell(ctx,s,true,iod); });
+  leafCells().forEach(s=>{ if(inView(L,s.x,s.y,6)) leafCell(vc,s,true,iod); });
+  });
 }
 
 /* ── diatoms: glass boxes ───────────────────────────── */
