@@ -46788,6 +46788,8 @@ window.AOG_LESSONS={
     st.report.weeks=w; save(st); render();
   };
   window.aogIepWizOpen=function(){ if(!(ST.formOpen&&!ST.editId&&WZ)) openWiz(null); ST.wizFocus=true; render(); };
+  /* AOG-IEP-PICK-V1 — start a goal already filled in with a student's code (the student menu uses this) */
+  window.aogIepWizFor=function(stu){ openWiz({student:String(stu||"")}); ST.wizFocus=true; render(); };
   window.aogIepToggleForm=function(){ if(ST.formOpen){ window.aogIepCancel(); } else { window.aogIepWizOpen(); } };
   window.aogIepWizDismiss=function(kind){
     var c=aogIepWizCloseKind(kind||"cancel"); if(!c.close) return;
