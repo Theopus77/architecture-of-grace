@@ -76,6 +76,14 @@ header { display:flex; flex-wrap:wrap; justify-content:space-between; align-item
 .wavebox { background:linear-gradient(180deg,#e4ded0,#b9b1a0) !important; border:2px solid #1E1F22 !important; border-radius:18px !important;
   padding:12px 12px 26px !important; position:relative; box-shadow:0 0 0 1px rgba(242,201,100,.45), 0 14px 30px -18px rgba(0,0,0,.7) !important; }
 .wavebox::after { content:"CH1 · 1 V/div · 5 ms/div"; position:absolute; left:14px; bottom:6px; font:700 10px/1 ui-monospace,Menlo,monospace; letter-spacing:.12em; color:#3b3528; }
+/* AOG-SCOPE-WIDE-V1 (2026-09-26) — Jimmy uses it wide: on a wide screen the scope sits on the
+   left, tall, and every control on the right, so nothing is a long thin strip. */
+@media (min-width:900px) and (orientation:landscape){
+  .play-grid{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:22px;align-items:start}
+  .play-scope{position:sticky;top:70px}
+  .play-scope #playWave{aspect-ratio:900/560}
+  .play-ctl .knobs{margin-top:0}
+}
 .wavebox canvas { border:3px solid #22211d !important; border-radius:10px !important; box-shadow:inset 0 0 0 1px rgba(125,255,174,.2); }
 .card { border:2px solid #1E1F22 !important; border-radius:16px !important; box-shadow:0 0 0 1px rgba(242,201,100,.4), inset 0 5px 0 #1F8080, 0 14px 30px -22px rgba(0,0,0,.75) !important; }
 .wavebox canvas { width:100%; height:auto; display:block; border-radius:10px; }
@@ -502,7 +510,7 @@ function pagePlay(){
   const chips=SHAPES.map(x=>`<button type="button" class="chip${S.shape===x.id?" on":""}" data-shape="${x.id}">${S.lang==="en"?x.en:x.es}</button>`).join("");
   return `<p class="kicker">${t("playNav")}</p><h1>${t("play")}</h1>
     <p class="lead">${t("playLead")}</p>
-    <div class="wavebox"><canvas id="playWave" width="900" height="120"></canvas></div>
+    <div class="play-grid"><div class="play-scope"><div class="wavebox"><canvas id="playWave" width="900" height="120"></canvas></div></div><div class="play-ctl">
     <!-- AOG-SCOPE-ORDER-V1 (2026-09-26) — Jimmy: sliders above the shape row, Hear/Silence beside the shapes, the description under the named frequencies. -->
     <div class="knobs">
       <label class="knob"><span>${t("pitch")} <b class="readout" id="hzRead">${S.hz} Hz</b></span>
@@ -512,7 +520,6 @@ function pagePlay(){
     </div>
     <p class="tiny">${t("shape")}</p>
     <div class="chips">${chips}
-      <span style="flex:1 1 20px"></span>
       <button type="button" class="btn btn-steel" data-act="hear">${t("hear")}</button>
       <button type="button" class="btn" data-act="hush">${t("hush")}</button>
     </div>
@@ -525,7 +532,7 @@ function pagePlay(){
     <p class="tiny">${t("freqs")}</p>
     <p class="muted" style="margin:.2rem 0 .5rem">${t("freqHint")}</p>
     <div class="chips" id="freqChips">${FREQS.map(f=>`<button type="button" class="chip${S.hz===f.hz?" on":""}" data-hz="${f.hz}">${f.hz} · ${S.lang==="en"?f.en:f.es}</button>`).join("")}</div>
-    <div class="card side" style="margin:1rem 0">${`<p>${S.lang==="en"?sh.blurb_en:sh.blurb_es}</p>`}</div>
+    <div class="card side" style="margin:1rem 0">${`<p>${S.lang==="en"?sh.blurb_en:sh.blurb_es}</p>`}</div></div></div>
     <h2>${t("compare")}</h2>
     <div class="compare">
       <div class="card side"><div class="tiny">${S.lang==="en"?"Sine":"Seno"}</div><div class="wavebox"><canvas id="shSine" width="420" height="120"></canvas></div></div>
