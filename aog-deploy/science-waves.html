@@ -136,6 +136,21 @@ body:has(.aogtop) header .tools { display:none; }
 .rec-btn{background:#fff;color:#9c2a22!important;border:1.5px solid #c0392b!important;font-weight:800}
 .rec-on{background:#c0392b!important;color:#fff!important;border-color:#c0392b!important;font-weight:800}
 .rec-take{padding:.5rem .6rem;border-radius:12px;border:1px dashed var(--line)}
+
+/* AOG-SCIPIC-PANEL-V1 — the picture guide, on the page, like the other benches */
+.pg{margin:1.4rem 0 0;border:1px solid var(--line);border-radius:14px;background:var(--card);overflow:hidden}
+.pg>summary{list-style:none;cursor:pointer;padding:.8rem 1rem;display:flex;align-items:center;gap:.7rem;
+  font-weight:700;font-size:.98rem;min-height:44px}
+.pg>summary::-webkit-details-marker{display:none}
+.pg>summary::marker{content:""}
+.pg .chev{flex:0 0 auto;transition:transform .15s ease;color:var(--muted);font-size:.9rem}
+.pg[open] .chev{transform:rotate(90deg)}
+.pg .pgsub{font-weight:400;color:var(--muted);font-size:.86rem;margin-left:auto;text-align:right}
+.pg .pgbody{border-top:1px solid var(--line)}
+.pg iframe{display:block;width:100%;border:0;min-height:60vh;background:var(--bg)}
+.pg .pgfoot{padding:.65rem 1rem;border-top:1px solid var(--line);font-size:.88rem;color:var(--muted);margin:0}
+.pg .pgfoot a{color:inherit;font-weight:700}
+@media print{ .pg{display:none !important} }
 </style>
 </head>
 <body>
@@ -160,8 +175,19 @@ body:has(.aogtop) header .tools { display:none; }
       <button type="button" class="pill" id="themeBtn">Dark</button>
     </div>
   </header>
+  <!-- AOG-TOOL-MAST-V1 (2026-09-26) — Jimmy: "I like the header on the turntables page … it should be applied to
+       the other tools." A static masthead outside #view, so aog-grace paints it navy like the turntables and a
+       re-render of the view never wipes it. paint() keeps its words in the current language. -->
+  <section class="mast" id="toolMast"><p class="kicker" id="mastK"></p><h1 id="mastH"></h1><p class="lead" id="mastL"></p></section>
   <nav class="nav no-print" id="nav" aria-label="Activity"></nav>
   <main id="view"></main>
+  <details class="pg no-print" id="pgPanel">
+    <summary><span class="chev">&#9656;</span>Picture guide<span class="pgsub">The manual &#183; prints on its own page</span></summary>
+    <div class="pgbody">
+      <iframe id="pgFrame" data-src="/oscilloscope-guide?embed=1" title="The Oscilloscope, the manual" loading="lazy"></iframe>
+    </div>
+    <p class="pgfoot">To print it, <a href="/oscilloscope-guide">open the manual on its own page</a>.</p>
+  </details>
   <footer class="no-print" id="foot"></footer>
 </div>
 <script>
@@ -439,6 +465,7 @@ function hear(){
 function paintChrome(){
   document.title = t("app")+" — Architecture of Grace";
   document.getElementById("brand").textContent=t("app");
+  { const k=document.getElementById("mastK"), h=document.getElementById("mastH"), l=document.getElementById("mastL"); if(k) k.textContent=t("eyebrow"); if(h) h.textContent=t("app"); if(l) l.textContent=t("tag"); }
   document.getElementById("langBtn").textContent=S.lang==="en"?"ES":"EN";
   document.getElementById("themeBtn").textContent=t(S.theme==="dark"?"light":"dark");
   const nav=document.getElementById("nav");
@@ -511,9 +538,7 @@ function drawWave(c, opt){
   }
 }
 function pageHome(){
-  return `<p class="kicker">${t("eyebrow")}</p>
-    <h1>${t("app")}</h1>
-    <p class="lead">${t("tag")}</p>
+  return `
     <div class="wavebox" style="margin:1rem 0"><canvas id="homeWave" width="900" height="220"></canvas></div>
     <div class="grid-home">
       <a class="card act" href="#meet"><span class="kicker">${t("meetNav")}</span><h3>${t("meet")}</h3><p class="muted">${t("meetHint")}</p></a>
@@ -830,6 +855,21 @@ window.addEventListener("afterprint", function(){ try{ if(S._back){ location.has
 window.addEventListener("hashchange", paint);
 window.addEventListener("pagehide", hush);
 paint();
+</script>
+<script>
+(function(){
+  var d=document.getElementById("pgPanel"); if(!d) return;
+  var f=document.getElementById("pgFrame"); if(!f) return;
+  function fit(){
+    try{ var b=f.contentDocument&&f.contentDocument.body;
+         if(b){ var h=b.scrollHeight; if(h>240) f.style.height=(h+28)+"px"; } }catch(e){}
+  }
+  d.addEventListener("toggle", function(){
+    if(d.open && !f.getAttribute("src")) f.setAttribute("src", f.getAttribute("data-src"));
+  });
+  f.addEventListener("load", function(){ fit(); setTimeout(fit,250); setTimeout(fit,1200); });
+  var t; window.addEventListener("resize", function(){ clearTimeout(t); t=setTimeout(fit,150); });
+})();
 </script>
 </body>
 </html>

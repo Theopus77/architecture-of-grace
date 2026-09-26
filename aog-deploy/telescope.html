@@ -41,6 +41,7 @@ body:has(.aogtop) header .tools { display:none; }
 .nav { display:flex; gap:4px; overflow-x:auto; border-bottom:2px solid var(--line); margin-bottom:1rem; }
 .nav a { min-height:44px; display:inline-flex; align-items:center; padding:0 .8rem; text-decoration:none; color:var(--muted); font-weight:600; border-bottom:2px solid transparent; margin-bottom:-2px; }
 .nav a.on { color:var(--ink); border-color:var(--steel); }
+header { display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; gap:.75rem; margin-bottom:1rem; }
 .kicker { font-size:.75rem; font-weight:700; letter-spacing:.12em; text-transform:uppercase; color:var(--steel); }
 .muted, .note-line { color:var(--muted); }
 .lead { max-width:62ch; color:var(--muted); }
@@ -128,7 +129,7 @@ svg.scope { width:100%; height:auto; }
 })();
 </script>
 <div class="wrap">
-  <header>
+  <header class="no-print">
     <a class="brand" href="/" id="brand">The Telescope</a>
     <div class="tools">
       <a class="pill" href="/telescope-guide" style="text-decoration:none">Picture guide</a>
@@ -136,7 +137,11 @@ svg.scope { width:100%; height:auto; }
       <button type="button" class="pill" id="themeBtn">Dark</button>
     </div>
   </header>
-  <nav class="nav" id="nav"></nav>
+  <!-- AOG-TOOL-MAST-V1 (2026-09-26) — Jimmy: "I like the header on the turntables page … it should be applied to
+       the other tools." A static masthead outside #view, so aog-grace paints it navy like the turntables and a
+       re-render of the view never wipes it. paint() keeps its words in the current language. -->
+  <section class="mast" id="toolMast"><p class="kicker" id="mastK"></p><h1 id="mastH"></h1><p class="lead" id="mastL"></p></section>
+  <nav class="nav no-print" id="nav" aria-label="Activity"></nav>
   <main id="view"></main>
   <!-- AOG-SCIPIC-PANEL-V1 -->
   <details class="pg no-print" id="pgPanel">
@@ -900,8 +905,7 @@ function knob(id,label,val){
 function pageHome(){
   const done=STAIR.reduce((n,m)=>n+m.steps.filter(id=>S.missions[id]).length,0);
   const total=STAIR.reduce((n,m)=>n+m.steps.length,0);
-  return `<p class="kicker">${t("eyebrow")}</p><h1>${t("app")}</h1>
-    <p class="lead">${t("tag")}</p>
+  return `
     <p class="muted">${t("priv")} ${done}/${total}</p>
     <div class="home-grid">
       <svg class="scope" viewBox="0 0 280 160" aria-hidden="true">
@@ -1156,6 +1160,7 @@ function paint(){
   document.documentElement.setAttribute("data-theme", S.theme);
   document.documentElement.classList.toggle("dark", S.theme==="dark");
   document.getElementById("brand").textContent=t("app");
+  { const k=document.getElementById("mastK"), h=document.getElementById("mastH"), l=document.getElementById("mastL"); if(k) k.textContent=t("eyebrow"); if(h) h.textContent=t("app"); if(l) l.textContent=t("tag"); }
   document.getElementById("langBtn").textContent=S.lang==="es"?"EN":"ES";
   document.getElementById("themeBtn").textContent=S.theme==="dark"?t("light"):t("dark");
   document.getElementById("foot").textContent=t("foot");

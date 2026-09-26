@@ -373,6 +373,10 @@ button,a,label,input[type=range],.pill,.pad,.platter,canvas{touch-action:manipul
       <button type="button" class="pill" id="themeBtn">Dark</button>
     </div>
   </header>
+  <!-- AOG-TOOL-MAST-V1 (2026-09-26) — Jimmy: "I like the header on the turntables page … it should be applied to
+       the other tools." A static masthead outside #view, so aog-grace paints it navy like the turntables and a
+       re-render of the view never wipes it. paint() keeps its words in the current language. -->
+  <section class="mast" id="toolMast"><p class="kicker" id="mastK"></p><h1 id="mastH"></h1><p class="lead" id="mastL"></p></section>
   <nav class="nav no-print" id="nav" aria-label="Activity"></nav>
   <main id="view"></main>
   <details class="pg no-print" id="pgPanel">
@@ -1447,9 +1451,7 @@ function machineHtml(){
 }
 
 function homeView(){
-  return `<p class="kicker">${t("eyebrow")}</p>
-    <h1>${t("app")}</h1>
-    <p class="lead">${t("tag")}</p>
+  return `
     <p class="muted k-priv">${t("priv")}</p>
     ${machineHtml()}
     <div class="knobs no-print">
@@ -1567,6 +1569,7 @@ function paint(){
   S.view=hash();
   if(!["home","meet","words","print"].includes(S.view)) S.view="home";
   document.getElementById("brand").textContent=t("app");
+  { const k=document.getElementById("mastK"), h=document.getElementById("mastH"), l=document.getElementById("mastL"); if(k) k.textContent=t("eyebrow"); if(h) h.textContent=t("app"); if(l) l.textContent=t("tag"); }
   document.getElementById("nav").innerHTML=navHtml();
   document.getElementById("themeBtn").textContent=S.theme==="dark"?t("light"):t("dark");
   document.getElementById("langBtn").textContent=S.lang==="es"?"EN":"ES";
