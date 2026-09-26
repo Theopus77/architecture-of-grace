@@ -337,8 +337,8 @@ const STR = {
   teachOpen:{en:"Open",es:"Abiertas"},
   teachLocked:{en:"Locked. Each mission opens the next control.",es:"Cerradas. Cada misión abre el control siguiente."},
   teachOpenNote:{en:"Open. Every control is on the bench. Lock this before a student sits down.",es:"Abiertas. Todos los controles están en la mesa. Ciérralas antes de que se siente un estudiante."},
-  practicalHint:{en:"Six missions. Each one opens the next. The last is the research bench — the slit, polarized light, the prism. The ceiling does not move.",es:"Seis misiones. Cada una abre la siguiente. La última es el banco de investigación — la rendija, la luz polarizada, el prisma. El techo no se mueve."},
-  practicalDone:{en:"Six missions done. You read the number. Violet did not find the virus.",es:"Seis misiones hechas. Leíste el número. El violeta no encontró el virus."},
+  practicalHint:{en:"Seven missions. Each one opens the next. The sixth is the research bench — the slit, polarized light, the prism. The ceiling does not move. The seventh reads three ancient texts.",es:"Siete misiones. Cada una abre la siguiente. La última es el banco de investigación — la rendija, la luz polarizada, el prisma. El techo no se mueve."},
+  practicalDone:{en:"Seven missions done. You read the number, and you read three ancient texts by their material.",es:"Siete misiones hechas. Leíste el número, y leíste tres textos antiguos por su material."},
   researchK:{en:"Research bench",es:"Banco de investigación"},
   researchBody:{en:"Risley, polarized light, the slit, lamp color. Open it above. Shorter light splits a slightly smaller gap. It still cannot draw a virus.",es:"Risley, luz polarizada, la rendija, color de lámpara. Ábrelo arriba. La luz más corta separa un hueco un poco menor. Sigue sin poder dibujar un virus."},
   researchDone:{en:"You read the number. Violet did not find the virus.",es:"Leíste el número. El violeta no encontró el virus."},
@@ -587,6 +587,45 @@ const SPECIMENS = [
     note40_es:"Líneas cruzando los botes y filas de puntos en las monedas. La línea del centro del bote es el rafe — una rendija con la que se desliza.",
     note100_en:"The dots are pores, less than a micrometer apart. Lens makers once tested their best lenses on diatoms: if the rows showed, the lens was good.",
     note100_es:"Los puntos son poros, a menos de un micrómetro. Antes los fabricantes probaban sus mejores lentes con diatomeas: si se veían las filas, el lente era bueno."},
+  /* AOG-SCOPE-ANCIENT-V1 (2026-09-26) — Jimmy: "Could the Microscope have some biblical / ancient
+     texts to examine?" Three slides a conservator would put under the lens: papyrus with carbon
+     ink (the material of Egyptian and early Greek scripture), a parchment fragment with iron-gall
+     ink in a Hebrew square hand (what a Dead Sea Scroll is made of), and a clay tablet with
+     cuneiform (the oldest writing). Drawn as material: fibres, follicles, ink corrosion, wedge
+     impressions. The words are shapes, not a quoted text. */
+  {id:"papyrus",en:"Papyrus with ink",es:"Papiro con tinta",
+    note_en:"A scrap of papyrus with a line of Greek letters in carbon ink. Papyrus is a plant, pressed into a sheet.",
+    note_es:"Un pedazo de papiro con una línea de letras griegas en tinta de carbón. El papiro es una planta prensada en una hoja.",
+    note4_en:"A tan sheet with a woven look. Dark letters sit on top. One edge is torn and frayed.",
+    note4_es:"Una hoja color arena con aspecto tejido. Letras oscuras encima. Un borde está roto y deshilachado.",
+    note10_en:"The weave is two layers of strips: one running across, one running down, pressed together. The ink follows the strips — it sat on the surface and never soaked in.",
+    note10_es:"El tejido son dos capas de tiras: una atravesada, otra hacia abajo, prensadas. La tinta sigue las tiras — quedó en la superficie y nunca se empapó.",
+    note40_en:"Each strip is made of long plant cells with thin walls, like straws laid side by side. The ink is soot in gum: tiny black particles caught in the fibres, thicker where the pen started a stroke.",
+    note40_es:"Cada tira está hecha de células vegetales largas de pared delgada, como pajitas una junto a otra. La tinta es hollín en goma: partículas negras diminutas atrapadas en las fibras, más gruesa donde la pluma empezó el trazo.",
+    note100_en:"Single fibre cells with their pitted walls. Carbon ink is chemically dead — it does not fade or eat the page, which is why Egyptian papyri are still legible after 3,000 years. Try the polarized bench: the cellulose lights up, the ink stays black.",
+    note100_es:"Células de fibra individuales con sus paredes punteadas. La tinta de carbón es químicamente inerte — no se decolora ni come la página; por eso los papiros egipcios siguen legibles tras 3.000 años. Prueba el banco polarizado: la celulosa se ilumina, la tinta queda negra."},
+  {id:"scroll",en:"Scroll fragment (parchment)",es:"Fragmento de rollo (pergamino)",
+    note_en:"A fragment of parchment with Hebrew square letters in iron-gall ink — the material of the Dead Sea Scrolls. Parchment is animal skin, scraped thin.",
+    note_es:"Un fragmento de pergamino con letras hebreas cuadradas en tinta ferrogálica — el material de los Rollos del Mar Muerto. El pergamino es piel de animal raspada.",
+    note4_en:"A cream skin with a smooth, slightly shiny face. Brown-black letters hang from faint ruled lines. Dark spots and a crack along one side.",
+    note4_es:"Una piel color crema con cara lisa, algo brillante. Letras marrón-negras cuelgan de líneas guía tenues. Manchas oscuras y una grieta en un lado.",
+    note10_en:"The letters hang below the line — that is how Hebrew scribes ruled a page. The ruling was scored with a dry point, not drawn. Tiny dots in a pattern are hair follicles: this side was the hair side of the skin.",
+    note10_es:"Las letras cuelgan bajo la línea — así regían la página los escribas hebreos. La guía se marcó con punta seca, no dibujada. Puntitos en patrón son folículos: este lado era el lado del pelo de la piel.",
+    note40_en:"Iron-gall ink bites into the skin. Around each stroke the parchment is browned — the acid halo. Where the ink was thick it has cracked and lifted in flakes. The follicles are small pits with a raised rim.",
+    note40_es:"La tinta ferrogálica muerde la piel. Alrededor de cada trazo el pergamino está pardo — el halo ácido. Donde la tinta fue gruesa se agrietó y se levanta en escamas. Los folículos son hoyitos con borde levantado.",
+    note100_en:"Collagen fibres of the skin, matted flat by scraping. Inside a stroke, the ink is a crust with an orange rim of rust. Conservators read this rim to date the damage, and they never touch it with water. The scrolls survived because the caves were dry.",
+    note100_es:"Fibras de colágeno de la piel, aplastadas por el raspado. Dentro de un trazo, la tinta es una costra con un borde naranja de óxido. Los conservadores leen ese borde para fechar el daño, y nunca lo tocan con agua. Los rollos sobrevivieron porque las cuevas eran secas."},
+  {id:"tablet",en:"Clay tablet (cuneiform)",es:"Tablilla de arcilla (cuneiforme)",
+    note_en:"A corner of a clay tablet with cuneiform — the oldest writing, pressed into wet clay with a reed. Under the lens it is a landscape of wedges.",
+    note_es:"Una esquina de una tablilla de arcilla con cuneiforme — la escritura más antigua, marcada en arcilla húmeda con una caña. Bajo la lente es un paisaje de cuñas.",
+    note4_en:"Grey-brown clay, rows of small triangular dents in lines. A chipped corner. This is reflected light: the lamp is above, not below — clay is not see-through.",
+    note4_es:"Arcilla gris-parda, filas de hendiduras triangulares en líneas. Una esquina astillada. Es luz reflejada: la lámpara está arriba, no abajo — la arcilla no es transparente.",
+    note10_en:"Each sign is a group of wedges: a deep head where the reed corner went in first, then a shallowing tail. The scribe held the reed at one angle, so every wedge points the same way.",
+    note10_es:"Cada signo es un grupo de cuñas: una cabeza profunda donde entró primero la esquina de la caña, luego una cola que se va aplanando. El escriba sostuvo la caña en un ángulo, así todas las cuñas apuntan igual.",
+    note40_en:"The clay is grains of silt and tiny mica flakes that glint. Inside a wedge the walls are smooth — the reed pressed, it did not cut. A hairline crack runs from the chipped corner: the tablet was baked, or burned in a fire that saved it.",
+    note40_es:"La arcilla son granos de limo y escamitas de mica que brillan. Dentro de una cuña las paredes son lisas — la caña presionó, no cortó. Una grieta fina sale de la esquina astillada: la tablilla fue cocida, o se quemó en un incendio que la salvó.",
+    note100_en:"Mica flakes and quartz grains at the edge of a wedge. A fingerprint ridge on the flat between two signs — the scribe's own thumb, 4,000 years ago. Baked clay is the most permanent writing surface people have made.",
+    note100_es:"Escamas de mica y granos de cuarzo al borde de una cuña. Una cresta de huella dactilar en el plano entre dos signos — el pulgar del escriba, hace 4.000 años. La arcilla cocida es la superficie de escritura más permanente que la gente ha hecho."},
   {id:"crystal",en:"Salt & sugar",es:"Sal y azúcar",
     note_en:"A drop of salt water and a drop of sugar water, dried. Salt makes cubes. Sugar makes slanted bars.",
     note_es:"Una gota de agua con sal y una de agua con azúcar, secas. La sal hace cubos. El azúcar hace barras inclinadas.",
@@ -656,7 +695,12 @@ const STAIR = [
   {id:"m6", en:"The research bench", es:"El banco de investigación",
     blurb_en:"The slit, then polarized light, then the prism. Read the number. It stays above 0.10 µm.",
     blurb_es:"La rendija, luego la luz polarizada, luego el prisma. Lee el número. Se queda sobre 0.10 µm.",
-    steps:["slit","polar","prism"]}
+    steps:["slit","polar","prism"]},
+  /* AOG-SCOPE-ANCIENT-V1 — Jimmy: "update the microscope mission and manual now with ancient manuscripts" */
+  {id:"m7", en:"Read an ancient text", es:"Lee un texto antiguo",
+    blurb_en:"Papyrus at 10×: find the two layers of strips. Scroll at 40×: find the brown halo round the ink. Tablet at 40×: find a wedge's deep head. Then polarize the papyrus.",
+    blurb_es:"Papiro a 10×: encuentra las dos capas de tiras. Rollo a 40×: encuentra el halo pardo alrededor de la tinta. Tablilla a 40×: encuentra la cabeza profunda de una cuña. Luego polariza el papiro.",
+    steps:["papyrus","scroll","tablet","inkpolar"]}
 ];
 const STEP = {
   lamp:{en:"Turn on the lamp",es:"Enciende la lámpara"},
@@ -672,7 +716,11 @@ const STEP = {
   limit:{en:"Oil the 100× on Virus?",es:"Aceita el 100× en ¿Virus?"},
   slit:{en:"Open the slit",es:"Abre la rendija"},
   polar:{en:"Polarize the onion",es:"Polariza la cebolla"},
-  prism:{en:"Seat the prism on Virus? and read the number",es:"Monta el prisma en ¿Virus? y lee el número"}
+  prism:{en:"Seat the prism on Virus? and read the number",es:"Monta el prisma en ¿Virus? y lee el número"},
+  papyrus:{en:"Focus the papyrus at 10×",es:"Enfoca el papiro a 10×"},
+  scroll:{en:"Focus the scroll fragment at 40×",es:"Enfoca el fragmento de rollo a 40×"},
+  tablet:{en:"Focus the clay tablet at 40×",es:"Enfoca la tablilla de arcilla a 40×"},
+  inkpolar:{en:"Polarize the papyrus",es:"Polariza el papiro"}
 };
 function stairNow(){
   for(let i=0;i<STAIR.length;i++) if(!STAIR[i].steps.every(id=>S.missions[id])) return i;
@@ -749,10 +797,13 @@ const STAIN_FOR={
   leaf:["none","iodine"],
   diatom:["none"],
   crystal:["none"],
+  papyrus:["none"],
+  scroll:["none"],
+  tablet:["none"],
   hairs:["none"],
   dog:["none"]
 };
-const DEFAULT_STAIN={e:"none",onion:"none",pond:"none",blood:"wright",cheek:"none",hair:"none",elodea:"none",scale:"none",bact:"none",virus:"none",pollen:"none",wing:"none",leaf:"none",diatom:"none",crystal:"none",hairs:"none",dog:"none"};
+const DEFAULT_STAIN={e:"none",onion:"none",pond:"none",blood:"wright",cheek:"none",hair:"none",elodea:"none",scale:"none",bact:"none",virus:"none",pollen:"none",wing:"none",leaf:"none",diatom:"none",crystal:"none",hairs:"none",dog:"none",papyrus:"none",scroll:"none",tablet:"none"};
 function fovUm(obj){return 18000/obj}
 function unitUm(obj){return fovUm(obj)*(10/18)/100}
 function allowedStains(spec){return STAIN_FOR[spec]||["none"]}
@@ -774,7 +825,8 @@ const SLIDE_TRAYS=[
   {en:"Plants",es:"Plantas",ids:["onion","elodea","leaf","hairs","pollen"]},
   {en:"Animals and people",es:"Animales y personas",ids:["cheek","blood","hair","dog","wing"]},
   {en:"Tiny life",es:"Vida diminuta",ids:["pond","bact","diatom","virus"]},
-  {en:"Crystals",es:"Cristales",ids:["crystal"]}
+  {en:"Crystals",es:"Cristales",ids:["crystal"]},
+  {en:"Ancient texts",es:"Textos antiguos",ids:["papyrus","scroll","tablet"]}
 ];
 function slideMenu(list){
   const L=S.lab, es=S.lang==="es", have=new Set(list.map(s=>s.id));
@@ -784,8 +836,8 @@ function slideMenu(list){
     <span hidden>${list.map(s=>`<button type="button" data-act="spec-${s.id}"></button>`).join("")}</span>`;
 }
 function specShort(s){
-  const en={e:"e",onion:"Onion",pond:"Pond",blood:"Blood",cheek:"Cheek",hair:"Hair",elodea:"Elodea",scale:"Scale",bact:"Bacteria",virus:"Virus?",pollen:"Pollen",wing:"Wing",leaf:"Stomata",diatom:"Diatoms",crystal:"Crystals",hairs:"Hairs",dog:"Tick"};
-  const es={e:"e",onion:"Cebolla",pond:"Estanque",blood:"Sangre",cheek:"Mejilla",hair:"Pelo",elodea:"Elodea",scale:"Escala",bact:"Bacterias",virus:"¿Virus?",pollen:"Polen",wing:"Ala",leaf:"Estomas",diatom:"Diatomeas",crystal:"Cristales",hairs:"Pelos",dog:"Garrapata"};
+  const en={e:"e",onion:"Onion",pond:"Pond",blood:"Blood",cheek:"Cheek",hair:"Hair",elodea:"Elodea",scale:"Scale",bact:"Bacteria",virus:"Virus?",pollen:"Pollen",wing:"Wing",leaf:"Stomata",diatom:"Diatoms",crystal:"Crystals",hairs:"Hairs",dog:"Tick",papyrus:"Papyrus",scroll:"Scroll",tablet:"Tablet"};
+  const es={e:"e",onion:"Cebolla",pond:"Estanque",blood:"Sangre",cheek:"Mejilla",hair:"Pelo",elodea:"Elodea",scale:"Escala",bact:"Bacterias",virus:"¿Virus?",pollen:"Polen",wing:"Ala",leaf:"Estomas",diatom:"Diatomeas",crystal:"Cristales",hairs:"Pelos",dog:"Garrapata",papyrus:"Papiro",scroll:"Rollo",tablet:"Tablilla"};
   return (S.lang==="es"?es:en)[s.id]||(S.lang==="es"?s.es:s.en);
 }
 function fmtUm(u){
@@ -2408,6 +2460,181 @@ function drawCrystals(ctx,L){
   }
   cryList().forEach(c=>{ if(inView(L,c.x,c.y,(c.s||c.L)*1.2)) crystal(ctx,c,L); });
 }
+
+/* ── ancient texts ──────────────────────────────────── AOG-SCOPE-ANCIENT-V1 */
+const ANC_W=170, ANC_H=130;
+/* Greek capitals as stroke lists in a 1×1 box (x right, y down) */
+const GREEK={A:[[0,1,.5,0,1,1],[.2,.6,.8,.6]],E:[[.9,0,.1,0,.1,1,.9,1],[.1,.5,.7,.5]],N:[[.1,1,.1,0,.9,1,.9,0]],T:[[0,0,1,0],[.5,0,.5,1]],O:"o",S:[[.9,.1,.1,.2,.9,.8,.1,.9]],I:[[.5,0,.5,1]],K:[[.15,0,.15,1],[.9,0,.15,.55],[.35,.45,.9,1]],L:[[0,1,.5,0,1,1]],M:[[0,1,0,0,.5,.6,1,0,1,1]],P:[[.1,1,.1,0,.9,0,.9,1]],H:[[.1,0,.1,1],[.1,.5,.9,.5],[.9,0,.9,1]],C:"c",Y:[[.1,0,.5,.45,.9,0],[.5,.45,.5,1]],D:[[0,1,.5,0,1,1,0,1]],X:[[0,0,1,1],[1,0,0,1]]};
+const GREEK_LINE="ENAPXHHNOLOGOS KAIOLOGOSHN";   /* letter shapes only; a torn line, not a quotation */
+function inkStroke(ctx,pts,w,jit,rng,col,feather){
+  /* one clean stroke, then a ragged second pass so the edge reads as a reed pen on fibre, not a marker */
+  const path=(j)=>{ ctx.beginPath(); for(let i=0;i<pts.length;i+=2){ const x=pts[i]+(rng()-.5)*j, y=pts[i+1]+(rng()-.5)*j; i?ctx.lineTo(x,y):ctx.moveTo(x,y); } };
+  ctx.lineCap="round"; ctx.lineJoin="round";
+  path(jit); ctx.lineWidth=w; ctx.strokeStyle=col; ctx.stroke();
+  path(jit*2.5); ctx.lineWidth=w*1.18; ctx.strokeStyle=col.replace(/[\d.]+\)$/,".22)"); ctx.stroke();
+  path(jit*1.5); ctx.lineWidth=w*.55; ctx.strokeStyle=col.replace(/[\d.]+\)$/,".5)"); ctx.stroke();
+  if(feather){ /* ink wicks sideways along the fibres */
+    ctx.lineWidth=w*.1; ctx.strokeStyle=col.replace(/[\d.]+\)$/,".4)"); ctx.beginPath();
+    for(let i=2;i<pts.length;i+=2){ const n=6; for(let k=0;k<n;k++){ const tt=(k+rng())/n, x=pts[i-2]+(pts[i]-pts[i-2])*tt, y=pts[i-1]+(pts[i+1]-pts[i-1])*tt; ctx.moveTo(x-w*.5,y); ctx.lineTo(x-w*.5-rng()*w*1.2,y); ctx.moveTo(x+w*.5,y); ctx.lineTo(x+w*.5+rng()*w*1.2,y); } }
+    ctx.stroke(); }
+}
+function greekLetter(ctx,ch,x,y,h,w,rng,col,det){
+  const g=GREEK[ch]; if(!g) return;
+  ctx.save(); ctx.translate(x,y);
+  if(g==="o"||g==="c"){ ctx.beginPath(); ctx.ellipse(w/2,h/2,w*.42,h*.48,0,g==="c"?.5:0,g==="c"?Math.PI*2-.5:Math.PI*2); ctx.lineWidth=h*.14; ctx.strokeStyle=col; ctx.lineCap="round"; ctx.stroke(); }
+  else g.forEach(s=>inkStroke(ctx,s.map((v,i)=>i%2?v*h:v*w),h*.14,det?.06:.02,rng,col,det));
+  if(det){ /* soot: a few loose particles beside every stroke, a blob where the pen started */
+    ctx.fillStyle="rgba(20,16,12,.55)"; for(let i=0;i<14;i++){ ctx.fillRect(rng()*w,rng()*h,.05+rng()*.06,.05+rng()*.05); }
+    ctx.beginPath(); ctx.arc(w*.1,h*.05,h*.09,0,Math.PI*2); ctx.fillStyle="rgba(24,20,16,.7)"; ctx.fill();
+  }
+  ctx.restore();
+}
+function papyrusTorn(ctx){ /* the sheet's outline: three cut edges, one torn */
+  ctx.beginPath(); ctx.moveTo(-78,-58); ctx.lineTo(74,-58); ctx.lineTo(74,56);
+  const rng=mulberry32(0x9a91); for(let x=74;x>-78;x-=3){ ctx.lineTo(x,56-Math.abs(Math.sin(x*.7))*9-rng()*4); }
+  ctx.lineTo(-78,56); ctx.closePath();
+}
+function papyrusBg(ctx,polar,det){
+  ctx.fillStyle=polar?"#020203":"#d9d2c1"; ctx.fillRect(-ANC_W/2,-ANC_H/2,ANC_W,ANC_H);
+  const rng=mulberry32(0x9a90);
+  ctx.save(); papyrusTorn(ctx); ctx.clip();
+  ctx.fillStyle=polar?"#1b1608":"#cbb078"; ctx.fillRect(-ANC_W/2,-ANC_H/2,ANC_W,ANC_H);
+  /* two layers of strips: horizontal on top, vertical showing through the gaps */
+  for(let y=-60;y<60;y+=4.2){ const w=3.6+rng()*.5, c=polar?`rgba(${120+rng()*80|0},${100+rng()*70|0},${30+rng()*30|0},.5)`:`rgba(${190+rng()*30|0},${150+rng()*30|0},${80+rng()*30|0},.85)`; ctx.fillStyle=c; ctx.fillRect(-90,y,180,w); }
+  for(let x=-90;x<90;x+=4.6){ const w=3.9+rng()*.5; ctx.fillStyle=polar?"rgba(90,70,20,.35)":"rgba(150,115,55,.28)"; ctx.fillRect(x,-70,w,140); }
+  /* fibre cells inside every strip — long, thin, slightly wavy */
+  ctx.lineWidth=.07; ctx.strokeStyle=polar?"rgba(230,210,150,.55)":"rgba(110,80,30,.28)";
+  ctx.beginPath();
+  for(let y=-62;y<62;y+=.55){ let x=-90; ctx.moveTo(x,y); while(x<90){ x+=6+rng()*8; ctx.lineTo(x,y+(rng()-.5)*.25); } }
+  ctx.stroke();
+  if(det){ /* pits in the fibre walls, dark seams between strips */
+    ctx.fillStyle=polar?"rgba(255,240,200,.35)":"rgba(80,55,20,.22)"; for(let i=0;i<9000;i++){ ctx.fillRect((rng()-.5)*180,(rng()-.5)*128,.09,.05); }
+    ctx.strokeStyle=polar?"rgba(0,0,0,.6)":"rgba(90,60,20,.35)"; ctx.lineWidth=.12; ctx.beginPath(); for(let y=-60;y<60;y+=4.2){ ctx.moveTo(-90,y); ctx.lineTo(90,y+(rng()-.5)*.4); } ctx.stroke();
+  }
+  speckle(ctx,ANC_W,ANC_H,0x9a92,1800,[70,50,20],.03,.08,.25);
+  ctx.restore();
+  /* the torn edge frays into loose fibres */
+  ctx.strokeStyle=polar?"rgba(220,200,140,.6)":"rgba(160,125,60,.7)"; ctx.lineWidth=.14; ctx.beginPath();
+  for(let x=-76;x<72;x+=1.3){ const y=56-Math.abs(Math.sin(x*.7))*9-rng()*4; ctx.moveTo(x,y); ctx.lineTo(x+(rng()-.5)*1.2,y+2+rng()*5); } ctx.stroke();
+  if(!polar){ papyrusTorn(ctx); ctx.strokeStyle="rgba(90,60,20,.5)"; ctx.lineWidth=.3; ctx.stroke(); }
+}
+function papyrusInk(ctx,det){
+  const rng=mulberry32(0x9a93), col=det?"rgba(22,18,14,.92)":"rgba(28,22,16,.9)";
+  let x=-66; const h=9, w=6.4;
+  for(let i=0;i<GREEK_LINE.length;i++){ const ch=GREEK_LINE[i]; if(ch===" "){ x+=4; continue; } if(x>66) break; greekLetter(ctx,ch,x,-22+(rng()-.5)*.6,h,w,rng,col,det); x+=w+1.6; }
+  x=-66; const line2="OYTOSHNENAPXH";
+  for(let i=0;i<line2.length;i++){ const ch=line2[i]; if(x>20) break; greekLetter(ctx,ch,x,-2+(rng()-.5)*.6,h,w,rng,col,det); x+=w+1.6; }
+  /* a third line lost to the tear: only tops of letters survive */
+  ctx.save(); ctx.beginPath(); ctx.rect(-80,18,160,10); ctx.clip();
+  x=-60; for(let i=0;i<12;i++){ greekLetter(ctx,"THEOSKAILOGO"[i],x,20,h,w,rng,col,det); x+=w+1.6; }
+  ctx.restore();
+}
+function drawPapyrus(ctx,L){
+  const polar=L&&L.illum==="polar";
+  if(!SLIDE.papyrus){ SLIDE.papyrus=bakeUnits(ANC_W,ANC_H,8,c=>{ papyrusBg(c,false,false); papyrusInk(c,false); }); SLIDE.papyrusP=bakeUnits(ANC_W,ANC_H,8,c=>{ papyrusBg(c,true,false); papyrusInk(c,false); }); }
+  if(!hiPow(L)){ blit(ctx,polar?SLIDE.papyrusP:SLIDE.papyrus); return; }
+  cachedView(ctx,L,"papyrus"+(polar?"P":""),vc=>{ papyrusBg(vc,polar,true); papyrusInk(vc,true); airBubble(vc,52,-44,3.4); });
+}
+/* Hebrew square letters, hanging from the line: stroke lists in a 1×1 box */
+const HEB={a:[[.1,.1,.9,.9],[.5,.5,.1,.9],[.5,.5,.9,.1]],b:[[.1,.1,.9,.1,.9,.9,.05,.9]],r:[[.1,.1,.9,.1,.9,.9]],sh:[[.1,.1,.1,.9,.9,.9,.9,.1],[.5,.2,.5,.9]],y:[[.5,.1,.7,.1,.7,.5]],t:[[.1,.2,.4,.1,.4,.9],[.6,.1,.9,.1,.9,.9]],m:[[.1,.9,.1,.2,.9,.2,.9,.9],[.4,.2,.4,.9]],h:[[.1,.1,.9,.1,.9,.9],[.1,.4,.1,.9]],v:[[.5,.1,.5,.9]],l:[[.3,0,.5,.3,.9,.3,.9,.9,.1,.9]],n:[[.4,.1,.7,.1,.7,.9,.2,.9]],k:[[.1,.1,.9,.1,.9,.9,.1,.9]]};
+const HEB_LINES=[["b","r","a","sh","y","t"," ","b","r","a"," ","a","l","h","y","m"],["a","t"," ","h","sh","m","y","m"," ","v","a","t"," ","h","a","r"],["v","h","a","r","ts"," ","h","y","t","h"," ","t","h","v"]];
+function hebLetter(ctx,ch,x,y,h,w,rng,det){
+  const g=HEB[ch]; if(!g) return; ctx.save(); ctx.translate(x,y);
+  g.forEach(s=>inkStroke(ctx,s.map((v,i)=>i%2?v*h:v*w),h*.17,det?.05:.02,rng,"rgba(48,30,14,.95)"));
+  if(det){ /* the acid halo, then cracks and lifted flakes where the ink is thick */
+    ctx.globalCompositeOperation="multiply";
+    g.forEach(s=>inkStroke(ctx,s.map((v,i)=>i%2?v*h:v*w),h*.34,0,rng,"rgba(150,95,40,.22)"));
+    ctx.globalCompositeOperation="source-over";
+    ctx.strokeStyle="rgba(230,205,160,.8)"; ctx.lineWidth=.04; ctx.beginPath();
+    for(let i=0;i<5;i++){ const sx=rng()*w, sy=rng()*h; ctx.moveTo(sx,sy); ctx.lineTo(sx+(rng()-.5)*.6,sy+(rng()-.5)*.5); } ctx.stroke();
+    ctx.fillStyle="rgba(200,110,40,.35)"; for(let i=0;i<4;i++){ ctx.beginPath(); ctx.arc(rng()*w,rng()*h,.08+rng()*.08,0,Math.PI*2); ctx.fill(); }
+  }
+  ctx.restore();
+}
+function scrollBg(ctx,polar,det){
+  const rng=mulberry32(0x5c01);
+  ctx.fillStyle=polar?"#020203":"#d9d2c1"; ctx.fillRect(-ANC_W/2,-ANC_H/2,ANC_W,ANC_H);
+  /* the fragment: an irregular, cockled piece */
+  const edge=()=>{ ctx.beginPath(); ctx.moveTo(-70,-50); ctx.quadraticCurveTo(-10,-58,60,-48); ctx.quadraticCurveTo(76,-10,64,40); ctx.quadraticCurveTo(20,58,-30,50); ctx.quadraticCurveTo(-74,44,-70,-50); ctx.closePath(); };
+  ctx.save(); edge(); ctx.clip();
+  const g=ctx.createLinearGradient(-70,-50,64,50);
+  if(polar){ g.addColorStop(0,"#1a1610"); g.addColorStop(1,"#2a2418"); } else { g.addColorStop(0,"#e6d7b4"); g.addColorStop(.5,"#dcc79c"); g.addColorStop(1,"#c9ad7a"); }
+  ctx.fillStyle=g; ctx.fillRect(-90,-70,180,140);
+  /* collagen: matted fibres running mostly one way */
+  ctx.strokeStyle=polar?"rgba(200,180,140,.35)":"rgba(120,90,50,.16)"; ctx.lineWidth=.06; ctx.beginPath();
+  for(let i=0;i<(det?4200:900);i++){ const x=(rng()-.5)*180,y=(rng()-.5)*140,a=.25+(rng()-.5)*.4,l=1.5+rng()*4; ctx.moveTo(x,y); ctx.lineTo(x+Math.cos(a)*l,y+Math.sin(a)*l); } ctx.stroke();
+  /* hair follicles in a loose pattern of threes */
+  for(let i=0;i<260;i++){ const x=(rng()-.5)*170,y=(rng()-.5)*120,r=.28+rng()*.18;
+    ctx.beginPath(); ctx.arc(x,y,r,0,Math.PI*2); ctx.fillStyle=polar?"rgba(0,0,0,.6)":"rgba(120,85,45,.35)"; ctx.fill();
+    if(det){ ctx.beginPath(); ctx.arc(x,y,r*1.5,0,Math.PI*2); ctx.strokeStyle="rgba(255,245,220,.5)"; ctx.lineWidth=.08; ctx.stroke(); } }
+  /* dry-point ruling: scored, not inked — a bright line with a shadow */
+  for(let k=0;k<3;k++){ const y=-30+k*22; ctx.beginPath(); ctx.moveTo(-72,y); ctx.lineTo(70,y+.6); ctx.strokeStyle=polar?"rgba(255,255,255,.18)":"rgba(255,250,235,.7)"; ctx.lineWidth=.3; ctx.stroke(); ctx.beginPath(); ctx.moveTo(-72,y+.35); ctx.lineTo(70,y+.95); ctx.strokeStyle="rgba(90,60,30,.35)"; ctx.lineWidth=.16; ctx.stroke(); }
+  /* stains and a crack */
+  for(let i=0;i<7;i++){ const x=-60+rng()*120,y=-40+rng()*80,r=3+rng()*6; const s=ctx.createRadialGradient(x,y,0,x,y,r); s.addColorStop(0,"rgba(90,60,30,.28)"); s.addColorStop(1,"rgba(90,60,30,0)"); ctx.fillStyle=s; ctx.fillRect(x-r,y-r,2*r,2*r); }
+  ctx.beginPath(); ctx.moveTo(62,-30); for(let y=-30;y<40;y+=2){ ctx.lineTo(62+Math.sin(y*.5)*1.5-(y+30)*.1,y); } ctx.strokeStyle=polar?"#000":"rgba(60,40,20,.8)"; ctx.lineWidth=.35; ctx.stroke();
+  speckle(ctx,ANC_W,ANC_H,0x5c02,1400,[80,60,30],.03,.07,.22);
+  ctx.restore();
+  if(!polar){ edge(); ctx.strokeStyle="rgba(100,70,35,.6)"; ctx.lineWidth=.35; ctx.stroke(); }
+}
+function scrollInk(ctx,det){
+  const rng=mulberry32(0x5c03), h=6.2, w=5;
+  HEB_LINES.forEach((ln,k)=>{ let x=56; ln.forEach(ch=>{ if(ch===" "){ x-=3.6; return; } if(x<-64) return; hebLetter(ctx,ch,x-w,-30+k*22+.9,h,w,rng,det); x-=w+1.3; }); });
+}
+function drawScroll(ctx,L){
+  const polar=L&&L.illum==="polar";
+  if(!SLIDE.scroll){ SLIDE.scroll=bakeUnits(ANC_W,ANC_H,8,c=>{ scrollBg(c,false,false); scrollInk(c,false); }); SLIDE.scrollP=bakeUnits(ANC_W,ANC_H,8,c=>{ scrollBg(c,true,false); scrollInk(c,false); }); }
+  if(!hiPow(L)){ blit(ctx,polar?SLIDE.scrollP:SLIDE.scroll); return; }
+  cachedView(ctx,L,"scroll"+(polar?"P":""),vc=>{ scrollBg(vc,polar,true); scrollInk(vc,true); });
+}
+/* cuneiform: every sign is a few wedges, each a deep triangular head and a tapering tail */
+function wedge(ctx,x,y,len,ang,det,rng){
+  ctx.save(); ctx.translate(x,y); ctx.rotate(ang);
+  const hw=len*.22;
+  ctx.beginPath(); ctx.moveTo(0,-hw); ctx.lineTo(len,0); ctx.lineTo(0,hw); ctx.closePath();
+  const g=ctx.createLinearGradient(0,-hw,0,hw); g.addColorStop(0,"rgba(255,240,215,.55)"); g.addColorStop(.45,"rgba(60,45,30,.55)"); g.addColorStop(1,"rgba(30,22,15,.75)");
+  ctx.fillStyle=g; ctx.fill();
+  ctx.beginPath(); ctx.moveTo(0,-hw); ctx.lineTo(len,0); ctx.strokeStyle="rgba(255,245,225,.7)"; ctx.lineWidth=det?.06:.12; ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(0,hw); ctx.lineTo(len,0); ctx.strokeStyle="rgba(20,14,8,.7)"; ctx.lineWidth=det?.08:.14; ctx.stroke();
+  /* the head is the deepest point: a soft pit that fades along the tail */
+  const hg=ctx.createLinearGradient(0,0,len*.6,0); hg.addColorStop(0,"rgba(15,10,6,.55)"); hg.addColorStop(1,"rgba(15,10,6,0)");
+  ctx.beginPath(); ctx.moveTo(0,-hw); ctx.lineTo(len,0); ctx.lineTo(0,hw); ctx.closePath(); ctx.fillStyle=hg; ctx.fill();
+  ctx.restore();
+}
+function tabletSigns(){
+  if(tabletSigns.v) return tabletSigns.v;
+  const rng=mulberry32(0xc0e1), o=[];
+  for(let row=0;row<5;row++){ let x=-70; const y=-46+row*22;
+    while(x<60){ const n=2+(rng()*4|0); for(let i=0;i<n;i++){ const k=rng(); if(k<.5) o.push({x:x+i*3.4,y:y+(rng()-.5)*1.5,len:5+rng()*4,a:0}); else if(k<.8) o.push({x:x+i*3.4+1,y:y-4,len:6+rng()*3,a:Math.PI/2}); else o.push({x:x+i*3.4,y:y+2,len:5+rng()*3,a:-Math.PI/4}); }
+      x+=n*3.6+5+rng()*4; } }
+  return (tabletSigns.v=o);
+}
+function tabletBg(ctx,det){
+  const rng=mulberry32(0xc0e0);
+  ctx.fillStyle="#3b3a36"; ctx.fillRect(-ANC_W/2,-ANC_H/2,ANC_W,ANC_H);
+  /* the corner of a tablet: a chipped corner top-right, a curved edge */
+  const edge=()=>{ ctx.beginPath(); ctx.moveTo(-84,-62); ctx.lineTo(48,-62); ctx.lineTo(62,-44); ctx.lineTo(70,20); ctx.quadraticCurveTo(72,56,40,60); ctx.lineTo(-84,62); ctx.closePath(); };
+  ctx.save(); edge(); ctx.clip();
+  const g=ctx.createRadialGradient(-20,-20,10,0,0,120); g.addColorStop(0,"#b9a68a"); g.addColorStop(.6,"#9e8a6c"); g.addColorStop(1,"#7a684f");
+  ctx.fillStyle=g; ctx.fillRect(-90,-70,180,140);
+  /* silt grains, then the mica that glints */
+  /* silt: soft round grains, not squares */
+  for(let i=0;i<(det?9000:2200);i++){ const x=(rng()-.5)*180,y=(rng()-.5)*140,r=det?.06+rng()*.12:.12+rng()*.2; ctx.beginPath(); ctx.arc(x,y,r,0,Math.PI*2); ctx.fillStyle=`rgba(${60+rng()*40|0},${45+rng()*30|0},${30+rng()*20|0},${.06+rng()*.12})`; ctx.fill(); }
+  for(let i=0;i<(det?3000:800);i++){ const x=(rng()-.5)*180,y=(rng()-.5)*140,r=det?.08+rng()*.12:.14+rng()*.18; ctx.beginPath(); ctx.arc(x,y,r,0,Math.PI*2); ctx.fillStyle=`rgba(${200+rng()*30|0},${185+rng()*30|0},${150+rng()*30|0},${.08+rng()*.12})`; ctx.fill(); }
+  for(let i=0;i<(det?900:260);i++){ const x=(rng()-.5)*180,y=(rng()-.5)*140,r=.12+rng()*.22; ctx.beginPath(); ctx.ellipse(x,y,r,r*.5,rng()*3,0,Math.PI*2); ctx.fillStyle=`rgba(255,${230+rng()*25|0},${180+rng()*50|0},${.35+rng()*.45})`; ctx.fill(); }
+  /* firing crack from the chipped corner */
+  ctx.beginPath(); ctx.moveTo(52,-50); let cx=52,cy=-50; for(let i=0;i<40;i++){ cx-=1.4+rng(); cy+=1.2+rng()*.8; ctx.lineTo(cx,cy); } ctx.strokeStyle="rgba(30,22,14,.7)"; ctx.lineWidth=det?.16:.3; ctx.stroke();
+  if(det){ /* a fingerprint ridge pattern on a flat between signs */
+    ctx.save(); ctx.translate(-30,10); ctx.strokeStyle="rgba(60,48,35,.28)"; ctx.lineWidth=.07; for(let r=.6;r<5;r+=.55){ ctx.beginPath(); ctx.ellipse(0,0,r*1.3,r,.3,.2,Math.PI*1.6); ctx.stroke(); } ctx.restore(); }
+  ctx.restore();
+  /* the chipped corner shows raw broken clay, lighter and rough */
+  ctx.beginPath(); ctx.moveTo(48,-62); ctx.lineTo(62,-44); ctx.lineTo(70,-62); ctx.closePath(); ctx.fillStyle="#c9b898"; ctx.fill(); ctx.save(); ctx.translate(58,-56); speckle(ctx,14,10,0xc0e4,500,[90,70,50],.06,.14,.2); ctx.restore();
+  edge(); ctx.strokeStyle="rgba(25,18,10,.85)"; ctx.lineWidth=.6; ctx.stroke();
+}
+function drawTablet(ctx,L){
+  if(!SLIDE.tablet) SLIDE.tablet=bakeUnits(ANC_W,ANC_H,8,c=>{ tabletBg(c,false); const rng=mulberry32(1); tabletSigns().forEach(s=>wedge(c,s.x,s.y,s.len,s.a,false,rng)); });
+  if(!hiPow(L)){ blit(ctx,SLIDE.tablet); return; }
+  cachedView(ctx,L,"tablet",vc=>{ tabletBg(vc,true); const rng=mulberry32(2); tabletSigns().forEach(s=>{ if(inView(L,s.x,s.y,s.len*1.2)) wedge(vc,s.x,s.y,s.len,s.a,true,rng); }); });
+}
 /* ── leaf hairs (trichomes) ─────────────────────────── */
 const HAIR_W=160, HAIR_H=120;
 function leafHalf(x){ const t=(x+95)/190; return t<=0||t>=1?0:46*Math.pow(Math.sin(Math.PI*t),.75); }
@@ -3532,6 +3759,9 @@ function drawSpec(ctx, now, L, reduced, dt){
   else if(L.spec==="leaf") drawLeaf(ctx, L);
   else if(L.spec==="diatom") drawDiatoms(ctx, L);
   else if(L.spec==="crystal") drawCrystals(ctx, L);
+  else if(L.spec==="papyrus") drawPapyrus(ctx, L);
+  else if(L.spec==="scroll") drawScroll(ctx, L);
+  else if(L.spec==="tablet") drawTablet(ctx, L);
   else if(L.spec==="hairs") drawHairs(ctx, L);
   else if(L.spec==="dog") drawDog(ctx, L, now, reduced);
   else if(L.spec==="bact"){
@@ -3839,6 +4069,11 @@ function tickMissions(){
   if(L.spec==="bact"&&L.stain!=="none"&&L.obj>=40&&band==="in"&&L.lightOn&&!L.cracked) S.missions.bact=true;
   if(L.spec==="virus"&&L.obj===100&&L.oil&&band==="in"&&L.lightOn&&!L.cracked) S.missions.limit=true;
   if(L.prism&&L.spec==="virus"&&L.obj===100&&L.oil&&L.lightOn&&!L.cracked) S.missions.prism=true;
+  /* AOG-SCOPE-ANCIENT-V1 — mission 7 */
+  if(L.spec==="papyrus"&&L.obj===10&&band==="in"&&L.lightOn&&!L.cracked) S.missions.papyrus=true;
+  if(L.spec==="scroll"&&L.obj===40&&band==="in"&&L.lightOn&&!L.cracked) S.missions.scroll=true;
+  if(L.spec==="tablet"&&L.obj===40&&band==="in"&&L.lightOn&&!L.cracked) S.missions.tablet=true;
+  if(L.spec==="papyrus"&&L.illum==="polar"&&L.lightOn&&!L.cracked) S.missions.inkpolar=true;
   persist();
 }
 
