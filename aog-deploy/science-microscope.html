@@ -2471,12 +2471,147 @@ function drawHairs(ctx,L){
     hairList().forEach(h=>{ if(inView(L,h.x,h.y,3)) hairDraw(vc,h,hiPow(L),polar); });
   });
 }
+/* AOG-SCOPE-CRAFT-ORIG-V1 (2026-09-26) — Jimmy: "do it on the original slides as well."
+   Blood and cheek are rebuilt as drawn cells (one list feeds every power), so 1000× shows a
+   real biconcave disc, a lobed neutrophil and a folded squame instead of a stretched picture. */
+const BLOOD_W=96, BLOOD_H=59;
+function bloodList(){
+  if(bloodList.v) return bloodList.v;
+  const rng=mulberry32(0xb100d), o=[], sp=.8;
+  for(let y=-BLOOD_H/2; y<BLOOD_H/2; y+=sp*.9) for(let x=-BLOOD_W/2; x<BLOOD_W/2; x+=sp){
+    /* the feathered edge thins out; the thick end crowds */
+    const dens=.55+.4*((x+BLOOD_W/2)/BLOOD_W);
+    if(rng()>dens) continue;
+    const px=x+(rng()-.5)*sp*.5+(Math.round(y/(sp*.9))&1?sp/2:0), py=y+(rng()-.5)*sp*.4;
+    const r=rng();
+    if(r<.006) o.push({k:"neut",x:px,y:py,r:.6+rng()*.08,a:rng()*6,seed:(rng()*1e9)|0});
+    else if(r<.009) o.push({k:"lymph",x:px,y:py,r:.42+rng()*.06,a:rng()*6,seed:(rng()*1e9)|0});
+    else if(r<.07) o.push({k:"plt",x:px+(rng()-.5)*.4,y:py,r:.1+rng()*.07,a:rng()*6,seed:(rng()*1e9)|0});
+    else o.push({k:"rbc",x:px,y:py,r:.34+rng()*.05,e:1+rng()*.08,a:rng()*6,crenate:rng()<.02});
+  }
+  o.sort((a,b)=>(a.k==="rbc"?0:1)-(b.k==="rbc"?0:1));
+  return (bloodList.v=o);
+}
+function bloodCell(ctx,c,det){
+  ctx.save(); ctx.translate(c.x,c.y); ctx.rotate(c.a);
+  if(c.k==="rbc"){
+    const r=c.r, ry=r/c.e;
+    const g=ctx.createRadialGradient(0,0,0,0,0,r);
+    g.addColorStop(0,"rgba(236,186,164,.9)"); g.addColorStop(.38,"rgba(230,170,150,.9)");
+    g.addColorStop(.7,"rgba(204,108,92,.95)"); g.addColorStop(.92,"rgba(186,90,78,.97)"); g.addColorStop(1,"rgba(150,64,56,.9)");
+    ctx.beginPath();
+    if(c.crenate){ const n=14; for(let i=0;i<=n*2;i++){ const a=i/(n*2)*Math.PI*2, q=i%2?r*.86:r*1.02; i?ctx.lineTo(Math.cos(a)*q,Math.sin(a)*q/c.e):ctx.moveTo(Math.cos(a)*q,Math.sin(a)*q/c.e); } ctx.closePath(); }
+    else ctx.ellipse(0,0,r,ry,0,0,Math.PI*2);
+    ctx.fillStyle=g; ctx.fill();
+    if(det){
+      ctx.strokeStyle="rgba(120,44,40,.55)"; ctx.lineWidth=.025; ctx.stroke();
+      ctx.beginPath(); ctx.ellipse(0,0,r*1.06,ry*1.06,0,0,Math.PI*2); ctx.strokeStyle="rgba(255,244,230,.4)"; ctx.lineWidth=.03; ctx.stroke();
+    }
+  } else if(c.k==="plt"){
+    const rng=mulberry32(c.seed); ctx.beginPath();
+    for(let i=0;i<6;i++){ const a=rng()*6.3, d=rng()*c.r*.6, q=c.r*(.35+rng()*.3); ctx.moveTo(Math.cos(a)*d+q,Math.sin(a)*d); ctx.arc(Math.cos(a)*d,Math.sin(a)*d,q,0,Math.PI*2); }
+    ctx.fillStyle="rgba(170,140,200,.5)"; ctx.fill();
+    ctx.beginPath(); for(let i=0;i<5;i++){ const a=rng()*6.3, d=rng()*c.r*.4; ctx.moveTo(Math.cos(a)*d+.03,Math.sin(a)*d); ctx.arc(Math.cos(a)*d,Math.sin(a)*d,.03,0,Math.PI*2); }
+    ctx.fillStyle="rgba(90,40,120,.85)"; ctx.fill();
+  } else {
+    const r=c.r, rng=mulberry32(c.seed), neut=c.k==="neut";
+    const g=ctx.createRadialGradient(-r*.2,-r*.2,r*.1,0,0,r);
+    g.addColorStop(0,neut?"rgba(236,214,226,.95)":"rgba(196,214,236,.95)"); g.addColorStop(1,neut?"rgba(214,184,206,.95)":"rgba(150,180,220,.95)");
+    ctx.beginPath(); ctx.arc(0,0,r,0,Math.PI*2); ctx.fillStyle=g; ctx.fill();
+    ctx.strokeStyle="rgba(120,90,130,.5)"; ctx.lineWidth=.03; ctx.stroke();
+    if(neut){
+      if(det){ ctx.beginPath(); for(let i=0;i<120;i++){ const a=rng()*6.3, d=Math.sqrt(rng())*r*.92, x=Math.cos(a)*d, y=Math.sin(a)*d; ctx.moveTo(x+.012,y); ctx.arc(x,y,.012,0,Math.PI*2); } ctx.fillStyle="rgba(170,110,160,.55)"; ctx.fill(); }
+      /* three to four lobes joined by thin threads */
+      const n=3+(rng()<.4?1:0), pts=[];
+      for(let i=0;i<n;i++){ const a=-1.4+i*(2.8/(n-1))+(rng()-.5)*.3; pts.push([Math.cos(a)*r*.45,Math.sin(a)*r*.45+r*.1]); }
+      ctx.strokeStyle="rgba(84,34,110,.85)"; ctx.lineWidth=.05; ctx.beginPath(); pts.forEach((p,i)=>i?ctx.lineTo(p[0],p[1]):ctx.moveTo(p[0],p[1])); ctx.stroke();
+      pts.forEach(p=>{ const q=ctx.createRadialGradient(p[0]-.04,p[1]-.05,.01,p[0],p[1],r*.26); q.addColorStop(0,"rgba(120,60,150,.95)"); q.addColorStop(1,"rgba(70,24,96,.95)"); ctx.beginPath(); ctx.ellipse(p[0],p[1],r*.26,r*.2,rng()*3,0,Math.PI*2); ctx.fillStyle=q; ctx.fill(); });
+    } else {
+      const q=ctx.createRadialGradient(-r*.1,-r*.12,r*.05,r*.04,0,r*.84); q.addColorStop(0,"rgba(110,60,150,.95)"); q.addColorStop(1,"rgba(64,24,100,.97)");
+      ctx.beginPath(); ctx.ellipse(r*.06,0,r*.82,r*.78,0,0,Math.PI*2); ctx.fillStyle=q; ctx.fill();
+      if(det){ ctx.beginPath(); for(let i=0;i<50;i++){ const a=rng()*6.3, d=Math.sqrt(rng())*r*.7, x=r*.06+Math.cos(a)*d, y=Math.sin(a)*d; ctx.moveTo(x+.03,y); ctx.arc(x,y,.03,0,Math.PI*2); } ctx.fillStyle="rgba(40,10,70,.35)"; ctx.fill(); }
+    }
+  }
+  ctx.restore();
+}
+function drawBlood(ctx,L){
+  if(!SLIDE.bloodV){ SLIDE.bloodV=bakeUnits(BLOOD_W,BLOOD_H,22,c=>{ c.fillStyle="#efe2c8"; c.fillRect(-BLOOD_W/2,-BLOOD_H/2,BLOOD_W,BLOOD_H); speckle(c,BLOOD_W,BLOOD_H,0xb10f,3000,[150,100,90],.02,.05,.15); bloodList().forEach(b=>bloodCell(c,b,false)); }); }
+  ctx.fillStyle="#efe2c8"; ctx.fillRect(-900,-900,1800,1800);
+  if(!L||L.obj<100){ blit(ctx,SLIDE.bloodV); return; }
+  cachedView(ctx,L,"blood",vc=>{
+    vc.fillStyle="#efe2c8"; vc.fillRect(-BLOOD_W/2,-BLOOD_H/2,BLOOD_W,BLOOD_H);
+    bloodList().forEach(b=>{ if(inView(L,b.x,b.y,1)) bloodCell(vc,b,true); });
+  });
+}
+
+const CHEEK_W=148, CHEEK_H=111;
+function cheekList(){
+  if(cheekList.v) return cheekList.v;
+  const rng=mulberry32(0xc4ee), o=[];
+  /* a scrape leaves sheets and clumps: most cells near a few centres, one right under the lens */
+  const hubs=[[0,0],[-38,22],[30,-28],[48,30],[-45,-30]];
+  for(let i=0;i<340;i++){
+    const r=2.4+rng()*1.6, n=13, pts=[];
+    for(let k=0;k<n;k++){ const a=k/n*Math.PI*2, q=r*(.78+rng()*.36); pts.push([Math.cos(a)*q,Math.sin(a)*q*(.75+rng()*.15)]); }
+    const bact=[]; const nb=rng()<.6?(rng()*14|0):0;
+    for(let b=0;b<nb;b++){ const a=rng()*6.3, d=rng()*r*.8; bact.push({x:Math.cos(a)*d,y:Math.sin(a)*d,a:rng()*3,L:.06+rng()*.12,c:rng()<.3}); }
+    const hb=hubs[i%hubs.length], spread=i%3===2?60:9+rng()*6;
+    const hx=i%3===2?(rng()-.5)*(CHEEK_W-8):hb[0]+(rng()+rng()-1)*spread, hy=i%3===2?(rng()-.5)*(CHEEK_H-8):hb[1]+(rng()+rng()-1)*spread*.8;
+    o.push({x:hx,y:hy,a:rng()*6.3,r,pts,nx:(rng()-.5)*r*.5,ny:(rng()-.5)*r*.4,seed:(rng()*1e9)|0,bact,fold:rng()});
+  }
+  return (cheekList.v=o);
+}
+function cheekPath(ctx,pts){
+  ctx.beginPath();
+  for(let i=0;i<pts.length;i++){ const p=pts[i], q=pts[(i+1)%pts.length], m=[(p[0]+q[0])/2,(p[1]+q[1])/2]; if(!i){ const z=pts[pts.length-1]; ctx.moveTo((z[0]+p[0])/2,(z[1]+p[1])/2); } ctx.quadraticCurveTo(p[0],p[1],m[0],m[1]); }
+  ctx.closePath();
+}
+function cheekCell(ctx,c,det,stain){
+  ctx.save(); ctx.translate(c.x,c.y); ctx.rotate(c.a);
+  const blue=stain==="methylene", io=stain==="iodine";
+  cheekPath(ctx,c.pts);
+  ctx.fillStyle=blue?"rgba(160,182,228,.5)":io?"rgba(228,196,112,.5)":"rgba(226,214,188,.55)"; ctx.fill();
+  ctx.strokeStyle=blue?"rgba(40,60,130,.7)":"rgba(100,86,60,.66)"; ctx.lineWidth=det?.06:.1; ctx.stroke();
+  if(det){
+    ctx.beginPath(); cheekPath(ctx,c.pts.map(p=>[p[0]*1.02,p[1]*1.02])); ctx.strokeStyle="rgba(255,255,248,.45)"; ctx.lineWidth=.04; ctx.stroke();
+    /* folds where the thin cell creased on the glass */
+    const rng=mulberry32(c.seed); ctx.save(); cheekPath(ctx,c.pts); ctx.clip();
+    for(let i=0;i<3;i++){ const a=rng()*6.3, x=(rng()-.5)*c.r, y=(rng()-.5)*c.r; ctx.beginPath(); ctx.moveTo(x,y); ctx.quadraticCurveTo(x+Math.cos(a)*c.r*.5+(rng()-.5),y+Math.sin(a)*c.r*.5,x+Math.cos(a)*c.r,y+Math.sin(a)*c.r); ctx.strokeStyle=blue?"rgba(50,70,140,.22)":"rgba(120,100,70,.2)"; ctx.lineWidth=.07; ctx.stroke(); ctx.strokeStyle="rgba(255,255,255,.3)"; ctx.lineWidth=.025; ctx.stroke(); }
+    ctx.beginPath(); for(let i=0;i<90;i++){ const x=(rng()-.5)*c.r*1.6, y=(rng()-.5)*c.r*1.3, q=.015+rng()*.025; ctx.moveTo(x+q,y); ctx.arc(x,y,q,0,Math.PI*2); }
+    ctx.fillStyle=blue?"rgba(40,60,140,.2)":"rgba(110,90,60,.16)"; ctx.fill(); ctx.restore();
+  }
+  const nr=.34;
+  const ng=ctx.createRadialGradient(c.nx-.08,c.ny-.08,.02,c.nx,c.ny,nr);
+  ng.addColorStop(0,blue?"rgba(60,80,170,.85)":io?"rgba(150,100,20,.75)":"rgba(150,130,100,.55)"); ng.addColorStop(1,blue?"rgba(20,34,110,.95)":io?"rgba(110,64,10,.85)":"rgba(110,92,64,.7)");
+  ctx.beginPath(); ctx.ellipse(c.nx,c.ny,nr,nr*.82,c.fold*3,0,Math.PI*2); ctx.fillStyle=ng; ctx.fill();
+  if(det){
+    const rng=mulberry32(c.seed^0x55); ctx.beginPath(); for(let i=0;i<24;i++){ const a=rng()*6.3, d=Math.sqrt(rng())*nr*.8, x=c.nx+Math.cos(a)*d, y=c.ny+Math.sin(a)*d; ctx.moveTo(x+.025,y); ctx.arc(x,y,.025,0,Math.PI*2); }
+    ctx.fillStyle=blue?"rgba(10,20,70,.45)":"rgba(70,50,20,.35)"; ctx.fill();
+    ctx.beginPath(); ctx.arc(c.nx+.08,c.ny-.05,.07,0,Math.PI*2); ctx.fillStyle=blue?"rgba(10,16,60,.8)":"rgba(70,50,24,.7)"; ctx.fill();
+    /* mouth bacteria resting on the cell: rods and pairs of cocci */
+    c.bact.forEach(b=>{
+      ctx.save(); ctx.translate(b.x,b.y); ctx.rotate(b.a);
+      ctx.fillStyle=blue?"rgba(30,44,130,.9)":"rgba(90,80,56,.75)";
+      if(b.c){ ctx.beginPath(); ctx.arc(-.045,0,.04,0,Math.PI*2); ctx.arc(.045,0,.04,0,Math.PI*2); ctx.fill(); }
+      else { const w=.035; ctx.beginPath(); ctx.moveTo(-b.L+w,-w); ctx.lineTo(b.L-w,-w); ctx.arc(b.L-w,0,w,-Math.PI/2,Math.PI/2); ctx.lineTo(-b.L+w,w); ctx.arc(-b.L+w,0,w,Math.PI/2,Math.PI*1.5); ctx.fill(); }
+      ctx.restore();
+    });
+  }
+  ctx.restore();
+}
+function drawCheek(ctx,L){
+  if(!SLIDE.cheekV){ SLIDE.cheekV=bakeUnits(CHEEK_W,CHEEK_H,8,c=>{ c.fillStyle="#efe8d6"; c.fillRect(-CHEEK_W/2,-CHEEK_H/2,CHEEK_W,CHEEK_H); speckle(c,CHEEK_W,CHEEK_H,0xc4ef,3000,[120,110,80],.02,.05,.25); cheekList().forEach(k=>cheekCell(c,k,false,"none")); airBubble(c,30,-25,4); }); }
+  ctx.fillStyle="#efe8d6"; ctx.fillRect(-900,-900,1800,1800);
+  if(!hiPow(L)){ blit(ctx,SLIDE.cheekV); return; }
+  cachedView(ctx,L,"cheek",vc=>{
+    vc.fillStyle="#efe8d6"; vc.fillRect(-CHEEK_W/2,-CHEEK_H/2,CHEEK_W,CHEEK_H);
+    cheekList().forEach(k=>{ if(inView(L,k.x,k.y,k.r*1.3)) cheekCell(vc,k,true,L.stain); });
+  });
+}
 function ensureSlides(){
   if(SLIDE.ready) return;
   SLIDE.e=bakeLetterE();
   SLIDE.onion=bakeOnion();
-  SLIDE.blood=bakeBlood();
-  SLIDE.cheek=bakeCheek();
   SLIDE.hair=bakeHair();
   SLIDE.elodea=bakeElodea();
   SLIDE.pondBg=bakePondBg();
@@ -2769,7 +2904,10 @@ function drawBactLive(ctx, now, reduced){
     if(b.kind==="coccus"){
       const n=b.n||4;
       for(let i=0;i<n;i++){
-        ctx.beginPath(); ctx.arc((i-(n-1)/2)*b.W*2.15, 0, b.W, 0, Math.PI*2); ctx.fill();
+        const cx=(i-(n-1)/2)*b.W*2.05;
+        ctx.beginPath(); ctx.arc(cx, 0, b.W, 0, Math.PI*2); ctx.fill();
+        ctx.beginPath(); ctx.arc(cx-b.W*.3, -b.W*.32, b.W*.32, 0, Math.PI*2); ctx.fillStyle=`rgba(255,255,255,${stain==="none"?.22:.3})`; ctx.fill();
+        ctx.fillStyle=`rgba(${tint[0]},${tint[1]},${tint[2]},${a})`;
       }
     } else if(b.kind==="spir"){
       ctx.lineWidth=b.W*1.7; ctx.lineCap="round"; ctx.beginPath();
@@ -2779,7 +2917,9 @@ function drawBactLive(ctx, now, reduced){
       }
       ctx.stroke();
     } else {
-      ctx.beginPath(); ctx.ellipse(0,0,b.L,b.W,0,0,Math.PI*2); ctx.fill();
+      const w=b.W, l=b.L;
+      ctx.beginPath(); ctx.moveTo(-l+w,-w); ctx.lineTo(l-w,-w); ctx.arc(l-w,0,w,-Math.PI/2,Math.PI/2); ctx.lineTo(-l+w,w); ctx.arc(-l+w,0,w,Math.PI/2,Math.PI*1.5); ctx.closePath();
+      ctx.fill();
       ctx.lineWidth=Math.max(.04,b.W*.28);
       ctx.strokeStyle=`rgba(${Math.max(0,tint[0]-40)},${Math.max(0,tint[1]-24)},${Math.max(0,tint[2]-24)},.9)`;
       ctx.stroke();
@@ -2846,8 +2986,8 @@ function applyStain(ctx, w, h, L){
   const s=L.stain||"none", spec=L.spec;
   ctx.save();
   if(s==="none"){
-    if(spec==="onion"||spec==="cheek"){
-      ctx.fillStyle="rgba(238,230,206,.78)"; ctx.fillRect(0,0,w,h);
+    if(spec==="onion"){
+      ctx.fillStyle="rgba(238,230,206,.4)"; ctx.fillRect(0,0,w,h);
     } else if(spec==="blood"){
       ctx.globalCompositeOperation="multiply";
       ctx.fillStyle="rgba(232,214,170,.62)"; ctx.fillRect(0,0,w,h);
@@ -3074,8 +3214,8 @@ function drawSpec(ctx, now, L, reduced, dt){
     blit(ctx, SLIDE.e);
   }
   else if(L.spec==="onion") blit(ctx, SLIDE.onion);
-  else if(L.spec==="blood") blit(ctx, SLIDE.blood);
-  else if(L.spec==="cheek") blit(ctx, SLIDE.cheek);
+  else if(L.spec==="blood") drawBlood(ctx, L);
+  else if(L.spec==="cheek") drawCheek(ctx, L);
   else if(L.spec==="hair") blit(ctx, SLIDE.hair);
   else if(L.spec==="scale") blit(ctx, SLIDE.scale);
   else if(L.spec==="elodea"){ blit(ctx, SLIDE.elodea); if(live) drawElodeaLive(ctx, now, reduced); else drawElodeaLive(ctx, 0, true); }
