@@ -89606,7 +89606,14 @@ html.js-reveal .reveal,
     if (!gs.length) {
       h += '<p class="gcx-say">' + esc(T(w + " has nothing under construction on this device yet. Start the build in The Build (the IEP tab of this dashboard), then come back here to lay these bricks on it.",
         w + " aún no tiene nada en construcción en este dispositivo. Empieza la obra en La Obra (la pestaña IEP de este panel) y vuelve aquí para colocar estos ladrillos.")) + '</p>';
-      return h + '<div class="gcx-row"><button type="button" data-gcxclose="1">' + esc(T("Close", "Cerrar")) + '</button></div></div>';
+      /* AOG-GCX-STARTBUILD-V1 (2026-09-26) — Jimmy: "the option of starting your
+         own build right here, right now … embedded in the building process."
+         One press starts the goal from this activity (percent solved with no
+         hint, from the first day sent to 80% a year on) and lays every brick. */
+      var dl0 = days(act, "all");
+      if (dl0.length) h += '<p class="gcx-say">' + esc(T("Or start " + w + "’s build right here: a goal for " + act.name + ", measured as the percent solved with no hint, starting from " + dl0[0].d + " (" + Math.round(dl0[0].ind / dl0[0].tot * 100) + "%) and aiming for 80% a year from then. Every day sent becomes a brick. You can change any of it later in The Build.",
+        "O empieza la obra de " + w + " aquí mismo: una meta para " + act.name + ", medida como porcentaje resuelto sin pista, desde " + dl0[0].d + " (" + Math.round(dl0[0].ind / dl0[0].tot * 100) + "%) hasta 80% en un año. Cada día enviado se vuelve un ladrillo. Puedes cambiar todo después en La Obra.")) + '</p>';
+      return h + '<div class="gcx-row">' + (dl0.length ? '<button type="button" class="gcx-go" data-gcxstart="' + esc(act.id) + '" style="background:#C9A24A;color:#0A1E33;border:2px solid #1E1F22;font-weight:800">' + esc(T("Start " + w + "’s build here and lay these bricks", "Empezar la obra de " + w + " aquí y colocar estos ladrillos")) + '</button>' : "") + '<button type="button" data-gcxclose="1">' + esc(T("Close", "Cerrar")) + '</button></div></div>';
     }
     var ok = gs.filter(function (x) { return OK_MEASURES[x.g.measure]; });
     var no = gs.filter(function (x) { return !OK_MEASURES[x.g.measure]; });
@@ -89666,7 +89673,7 @@ html.js-reveal .reveal,
     decorate();
   }
   document.addEventListener("click", function (e) {
-    var t = e.target && e.target.closest ? e.target.closest("[data-gcxprint],[data-gcxone],[data-gcxopen],[data-gcxclose],[data-gcxadd]") : null;
+    var t = e.target && e.target.closest ? e.target.closest("[data-gcxprint],[data-gcxone],[data-gcxopen],[data-gcxclose],[data-gcxadd],[data-gcxstart]") : null;
     if (!t) return;
     var c = document.getElementById("aogPracticeChart"); if (!c || !c.contains(t)) return;
     var w = who();
@@ -89695,6 +89702,27 @@ html.js-reveal .reveal,
     }
     if (t.hasAttribute("data-gcxopen")) { open = { who: w, id: t.getAttribute("data-gcxopen") }; redraw(); return; }
     if (t.hasAttribute("data-gcxclose")) { open = null; redraw(); return; }
+    if (t.hasAttribute("data-gcxstart")) {
+      var sid2 = t.getAttribute("data-gcxstart"), a2 = null;
+      series().forEach(function (a) { if (a.id === sid2) a2 = a; });
+      var dd = a2 ? days(a2, "all") : []; if (!dd.length) return;
+      var st2 = jload(IEPK, { goals: {}, data: {} }); st2.goals = st2.goals || {}; st2.data = st2.data || {};
+      var gid = "g" + Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
+      var b0 = dd[0].d, yr = new Date(Date.parse(b0)); yr.setFullYear(yr.getFullYear() + 1);
+      var nm = String(a2.name || "");
+      var area = /math/i.test(nm) ? "math" : /writ/i.test(nm) ? "writing" : /(ela|language|reading)/i.test(nm) ? "reading" : "other";
+      st2.goals[gid] = { student: w, grade: "", area: area, title: T("Increase independent accuracy on ", "Aumentar la precisión independiente en ") + nm,
+        measure: "percent", unit: "", baseline: { date: b0, value: Math.round(dd[0].ind / dd[0].tot * 100) },
+        target: { date: yr.toISOString().slice(0, 10), value: 80 }, notes: T("Started from student-sent practice on the Brick by brick screen.", "Iniciada desde la práctica enviada en la pantalla Ladrillo a ladrillo."),
+        archived: false, lowerBetter: false, intervalLabel: "", xofy: null };
+      st2.data[gid] = [];
+      jsave(IEPK, st2);
+      var r2 = addPoints(gid, a2, "all");
+      said[w + "|" + sid2] = T("Build started: " + w + "’s goal for " + nm + ", with " + r2.added + " bricks laid. Open The Build (IEP tab) to see the aimline.",
+        "Obra empezada: la meta de " + w + " para " + nm + ", con " + r2.added + " ladrillos. Abre La Obra (pestaña IEP) para ver la línea meta.");
+      try { if (typeof window.aogRenderIep === "function") window.aogRenderIep(); } catch (e) {}
+      open = null; redraw(); return;
+    }
     if (t.hasAttribute("data-gcxadd")) {
       var id = t.getAttribute("data-gcxadd"), act = null;
       series().forEach(function (a) { if (a.id === id) act = a; });
