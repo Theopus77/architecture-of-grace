@@ -765,9 +765,15 @@ input[type=range].slider::-moz-range-thumb{
 <label class="lab" for="fld-b4ws2-keep">What I am keeping</label>
 <div class="pen"><textarea class="fld" id="fld-b4ws2-keep" data-f="keep" rows="4"></textarea></div>
 <div class="blank-lines" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div></div>
+<div class="blk">
+<div class="lab">What I choose to do with this paper</div>
+<p class="hint">Decide at the end of the lesson. Nothing here is saved or sent — it is your choice to make.</p>
+<p class="hint">☐ Keep it &nbsp;&nbsp; ☐ Seal it &nbsp;&nbsp; ☐ Tear it up &nbsp;&nbsp; ☐ Not ready to decide yet</p>
+</div>
 <div class="fam">
 <div class="k">If this brings up something heavy</div>
 <p>You do not have to carry it alone. Tell one trusted adult, or write it and let an adult read it. 988 Suicide &amp; Crisis Lifeline — call or text 988. Crisis Text Line — text HOME to 741741.</p>
+<p>School counselor: ______________________________ (your teacher fills this in before printing)</p>
 </div>
 
   <div class="sheet-foot no-print">
@@ -1113,7 +1119,7 @@ body.wsprev{overflow:hidden}
    the teacher AND the student lands on a preview of what they built. No
    destination resolved → this page adds nothing. Never an automatic retry. */
 (function(){
-  var CFG = {"id": "w104-2", "name": "The Backpack Audit"};
+  var CFG = {"id": "w104-2", "name": "The Backpack Audit", "private": true};
   var DEST_RE = /^https:\/\/script\.google\.com\/[^\s]*\/exec$/;
   function destDecode(raw){
     try{
@@ -1148,7 +1154,7 @@ body.wsprev{overflow:hidden}
   try {
     [].slice.call(document.querySelectorAll("p")).some(function (fp) {
       if (fp.textContent.indexOf("sends nothing out") < 0) return false;
-      fp.textContent = "This page loads no fonts, scripts, or images from the internet. Your writing is stored in this browser \u2014 and sent to your teacher only when you tap FINISHED.";
+      fp.textContent = "This page loads no fonts, scripts, or images from the internet. Your writing is stored in this browser and is never sent anywhere.";
       return true;
     });
   } catch (e) {}
@@ -1188,6 +1194,16 @@ body.wsprev{overflow:hidden}
   var acts = main.querySelector(".lock-acts");
   if(acts) main.insertBefore(card, acts); else main.appendChild(card);
 
+  /* AOG-WS-PRIVATE-V1 (2026-09-26) — this worksheet says, in its own words, that it is never
+     collected, graded or shared. So the station never sends: the work stays on this computer,
+     the student can print it or erase it, and nothing leaves the page. */
+  if (CFG.private) {
+    card.innerHTML =
+      '<h2>This sheet stays yours.</h2>' +
+      '<p>Nothing here is sent to anyone. Your writing stays on this computer until you erase it. ' +
+      'Print my copy if you want to keep it on paper.</p>';
+    return;
+  }
   /* ── the preview ── */
   var prev = document.createElement("div");
   prev.id = "wsPrev"; prev.hidden = true;

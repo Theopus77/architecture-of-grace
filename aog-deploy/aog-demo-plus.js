@@ -359,6 +359,66 @@
         extra: JSON.stringify({ series: sci ? "b8" : "m12", lang: "en", build: "demo", tally: { n: n, ind: ind, sup: n - ind, hints: 3 - (si % 3) } })
       });
     });
+    /* AOG-DEMO-SEL-V1 (2026-09-26) — Jimmy: "Can this be incorporated into the demo data?"
+       The SEL worksheets and companion workbooks a class turns in with FINISHED, one row
+       each, in the exact shape the sheets send (series sel-worksheet / sel-workbook, the
+       worksheet's own id, its responses keyed the way the page keys them). The Inbox and
+       the Blueprint read them with the Open-the-worksheet and Open-the-lesson buttons.
+       Only sheets that send are here: the private ones (both Backpack Audits, the Identity
+       Shield, Compass of Integrity, Living Amend, Bitterness Ledger) never post anything. */
+    var SEL = {
+      k2:  { wb: "wb12",  wbName: "Room 12 \u2014 The Companion Workbook",
+             ws: [["w12-1", "My Identity Web", "b1ws1", { words: "I love drawing. I am good at running fast. My family cooks together on Sundays." }],
+                  ["w12-4", "Being Kind to Myself", "b1ws4", { three: "1. I can try again. 2. Everybody makes oopses. 3. I am still learning." }]],
+             prompts: [["u1", 1, "Draw or write your own Identity Web \u2014 one thing for each branch.", "I love my dog. I am good at puzzles. Pizza makes me happy."],
+                       ["u2", 1, "Name one stone you could put down this week.", "The time I yelled at my brother. I said sorry and we played after."]] },
+      g35: { wb: "wb18",  wbName: "Room 18 \u2014 The Companion Workbook",
+             ws: [["w18-1", "My Identity Web", "b2ws1", { b1: "Soccer, my grandma\u2019s house, drawing comics", b2: "Math facts, making people laugh, remembering things", b3: "Being fair, my little sister, animals" }],
+                  ["w18-3", "Two Voices \u2014 One Choice", "b2ws3", { a_crit: "You always mess up. You studied and it didn\u2019t even matter.", a_coach: "That didn\u2019t go the way I wanted. What can I learn from it? I can ask for help on fractions.", b_crit: "You\u2019re not good enough for the play." }],
+                  ["w18-2", "Sorting: Guilt vs. Shame", "b2ws2", { rewrite: "I forgot my library book \u2014 that is a mistake, not who I am. I can bring it tomorrow.", exit: "Guilt is about what I did. Shame says I am bad. Guilt helps me fix it." }]],
+             prompts: [["u1", 1, "Draw or write your own Identity Web \u2014 one thing for each branch.", "I love soccer and drawing. I am good at math facts. Being fair matters to me."],
+                       ["u1", 2, "Pick one emotion you felt this week. What was it trying to tell you?", "Nervous before the spelling test. It was telling me I cared about doing well."]] },
+      g68: { wb: "wb36",  wbName: "Room 36 \u2014 The Companion Workbook",
+             ws: [["w1", "Identity Audit", "ia", { perform: "Funny, loud, always has a comeback, never looks stressed.", notperform: "Quieter. I read a lot. I worry about my grades more than I let on.", gap: "The gap is that people think nothing bothers me. Some things do." }],
+                  ["w2", "Values Under Pressure", "vup", { value: "Honesty \u2014 I will not lie to cover for someone, even a friend.", person: "My cousin Dev. He would back me up if I said no." }],
+                  ["w6", "Rewriting the Script", "rts", { s1: "\u201cYou are the one who always messes up group work.\u201d", s2: "Sixth grade, the science project that fell apart the night before.", s3: "One project went badly. I have finished eleven since then." }]],
+             prompts: [["u1", 1, "Describe one mask you wear and what it protects.", "The class-clown mask. It protects me from anyone seeing when I don\u2019t get it."],
+                       ["u2", 2, "Write one line your Inner Critic says, then the Compassionate Witness\u2019s answer.", "Critic: everyone else finds this easy. Witness: three people asked the same question today."]] },
+      g910:{ wb: "wb104", wbName: "Room 104 \u2014 The Companion Workbook", ws: [],
+             prompts: [["u1", 1, "Name one place your curated self and your real self differ.", "Online I look like I never study. I study every night."],
+                       ["u2", 1, "What did the audit feel like to do \u2014 not what was in it?", "Heavier than I expected at first, then lighter by the end."]] },
+      g1112:{ wb: "wb207", wbName: "Room 207 \u2014 The Companion Workbook",
+             ws: [["w207-5", "The Graduation Charter", "b5ws5", { witness: "A class that stopped pretending it was fine and started telling each other the truth.", carry: "The pause. Asking one question before deciding what someone meant.", protect: "Find one person in the first month who I can be honest with." }]],
+             prompts: [["u1", 1, "Who have you been, and who are you arriving as?", "I have been the one who fixes everything. I am arriving as someone who can also ask."],
+                       ["u4", 2, "One line for the charter.", "We tell the truth early, while it is still small."]] }
+    };
+    function bandOf(g) { return g <= 2 ? "k2" : g <= 5 ? "g35" : g <= 8 ? "g68" : g <= 10 ? "g910" : "g1112"; }
+    people.slice(0, 16).forEach(function (st, si) {
+      var band = SEL[bandOf(st.g)];
+      band.ws.forEach(function (w, wi) {
+        if (h(st.id + w[0]) % 3 === 0) return;                        /* not every sheet, every student */
+        var d = days[Math.min(2 + wi * 3 + (si % 3), days.length - 1)], resp = {}; resp[w[2]] = w[3];
+        rows.push({
+          timestamp: stamp(d, 9 + wi, 5 + si), date: d, checkinType: "practice",
+          activityId: w[0], activityName: "SEL Worksheet \u2014 " + w[1],
+          skill: "SEL Worksheet \u2014 " + w[1], setNo: "", itemsTotal: "", independent: "", supported: "", hintsUsed: "", confidence: "",
+          studentId: st.id, note: "", source: "link", group: "sel",
+          extra: JSON.stringify({ series: "sel-worksheet", build: "demo", worksheet: w[0], finished: true, responses: resp })
+        });
+      });
+      if (h(st.id + "wb") % 2 === 0) {
+        var dw = days[Math.min(6 + (si % 4), days.length - 1)], units = {};
+        band.prompts.forEach(function (pr) { units[pr[0]] = units[pr[0]] || { checked: 8, firstTry: clamp(4 + Math.round(st.comp / 25), 3, 8) }; });
+        rows.push({
+          timestamp: stamp(dw, 13, 15 + si), date: dw, checkinType: "practice",
+          activityId: band.wb, activityName: band.wbName, skill: band.wbName,
+          setNo: "", itemsTotal: "", independent: "", supported: "", hintsUsed: "", confidence: "",
+          studentId: st.id, note: "", source: "link", group: "sel",
+          extra: JSON.stringify({ series: "sel-workbook", build: "demo", finished: true,
+            responses: { prompts: band.prompts.map(function (pr) { return { unit: pr[0], n: pr[1], prompt: pr[2], answer: pr[3] }; }), units: units } })
+        });
+      }
+    });
     return rows;
   }
 

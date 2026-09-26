@@ -1124,7 +1124,7 @@ body.wsprev{overflow:hidden}
   try {
     [].slice.call(document.querySelectorAll("p")).some(function (fp) {
       if (fp.textContent.indexOf("sends nothing out") < 0) return false;
-      fp.textContent = "This page loads no fonts, scripts, or images from the internet. Your writing is stored in this browser \u2014 and sent to your teacher only when you tap FINISHED.";
+      fp.textContent = "This page loads no fonts, scripts, or images from the internet. Your writing is stored in this browser \u2014 and sent to your teacher only when you tap FINISHED. Your drawings are never sent.";
       return true;
     });
   } catch (e) {}
@@ -1146,6 +1146,10 @@ body.wsprev{overflow:hidden}
         if(typeof f.value === "string" && f.value.trim() !== "") out[id][f.getAttribute("data-f")] = f.value;
       });
     });
+    /* AOG-WS-DRAWING-PRIVATE-V1 (2026-09-26) — the page promises "Drawings are never collected":
+       the drawing pads stay on this computer and never ride along with FINISHED. */
+    var pads = [].slice.call(document.querySelectorAll("canvas[data-pad]")).map(function(c){ return c.getAttribute("data-pad"); });
+    Object.keys(out).forEach(function(k){ pads.forEach(function(p){ if(out[k] && typeof out[k] === "object") delete out[k][p]; }); });
     return out;
   }
 

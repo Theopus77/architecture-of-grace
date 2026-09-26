@@ -1,0 +1,184 @@
+# Room 104 — judgment-call rows and structural work applied (2026-09-26)
+
+One line per change. The lessons page is canonical; the interactive sheets (w104-1, w104-2) are canonical for the worksheets.
+
+- room-104-curriculum.html: Cohort card: Ms. Calloway's real role
+- room-104-curriculum.html: Cohort card: add Olivia and Hannah
+- room-104-curriculum.html: Ch. 1: ★ HIGH RISK removed
+- room-104-curriculum.html: Ch. 1: lesson alignment -> U1·L3 The Integrity Anchor
+- room-104-curriculum.html: Ch. 1: anchor chart -> THE INTEGRITY ANCHOR
+- room-104-curriculum.html: Ch. 1: Identity Anchor Card -> Integrity Anchor card (the U1·L3 tool)
+- room-104-curriculum.html: Ch. 2: lesson alignment -> U4·L1
+- room-104-curriculum.html: Ch. 2: chart -> GRACE CULTURE VS. PERFORMANCE CULTURE; the novel's four Wall rules quoted
+- room-104-curriculum.html: Ch. 2: wallet-card rules match the novel
+- room-104-curriculum.html: Ch. 3: ★ HIGH RISK removed
+- room-104-curriculum.html: Ch. 3: lesson alignment -> U1·L6 Silencing the Noise
+- room-104-curriculum.html: Ch. 3: chart -> SIGNAL VS. NOISE — THE INTERNAL COACH
+- room-104-curriculum.html: Ch. 3: Critic Catch Card -> the U1·L6 Signal-vs-Noise Pause card
+- room-104-curriculum.html: Ch. 3 marker: Critic Catch Card -> Signal-vs-Noise card
+- room-104-curriculum.html: Ch. 4: lesson alignment -> U1·L4 Authenticity in Action
+- room-104-curriculum.html: Ch. 4: chart -> THE AUTHENTICITY GRADIENT
+- room-104-curriculum.html: Ch. 4 (★): protocol line added
+- room-104-curriculum.html: Ch. 8: lesson alignment -> U3·L5 Contextual Empathy
+- room-104-curriculum.html: Ch. 8: chart -> CONTEXTUAL EMPATHY
+- room-104-curriculum.html: Ch. 9: lesson alignment -> U2·L6 The Compassionate Witness
+- room-104-curriculum.html: Ch. 9: chart -> THE COMPASSIONATE WITNESS — THE FRIEND TEST
+- room-104-curriculum.html: Ch. 9 (★): protocol line added
+- room-104-curriculum.html: Ch. 9 neuro: 'self-care regression' reworded
+- room-104-curriculum.html: Ch. 9 marker: same question, eight years of trust
+- room-104-curriculum.html: Ch. 11: lesson alignment -> U2·L5
+- room-104-curriculum.html: Ch. 11: chart -> SELF-CARE VS. AVOIDANCE — THE RESTORATION TEST
+- room-104-curriculum.html: Ch. 13: ★ HIGH RISK added
+- room-104-curriculum.html: Ch. 13 (★): protocol line added
+- room-104-curriculum.html: Ch. 13: lesson alignment -> U4·L3 Bearing Witness
+- room-104-curriculum.html: Ch. 13: chart -> BEARING WITNESS
+- room-104-curriculum.html: Ch. 14 (★): protocol line added
+- room-104-curriculum.html: Ch. 14: theme matches the corrected scene
+- room-104-curriculum.html: Ch. 14: lesson alignment -> U2·L6 The Compassionate Witness
+- room-104-curriculum.html: Ch. 14: chart -> THE COMPASSIONATE WITNESS — THE FRIEND TEST
+- room-104-curriculum.html: Ch. 14 neuro: matches the Amara/Iris scene
+- room-104-curriculum.html: Ch. 17: lesson alignment -> U3·L2 Forgiveness vs. Reconciliation
+- room-104-curriculum.html: Ch. 17: chart -> FORGIVENESS VS. RECONCILIATION
+- room-104-curriculum.html: Ch. 17 marker script: Olivia moved away; no chance meeting
+- room-104-curriculum.html: Ch. 17 marker prompt: the Dear ___ paper, not the four-section Letter
+- room-104-curriculum.html: Ch. 18: lesson alignment -> U4·L1 (grief strand dropped)
+- room-104-curriculum.html: Ch. 18: chart -> GRACE CULTURE VS. PERFORMANCE CULTURE
+- room-104-curriculum.html: Ch. 18 neuro: grief panel -> the unseen work
+- room-104-curriculum.html: Ch. 19: lesson alignment -> U4·L6 The Grace Legacy
+- room-104-curriculum.html: Ch. 19: chart -> THE GRACE LEGACY — THE ORCHARD FRAME
+- room-104-curriculum.html: Ch. 20: lesson alignment -> U4·L7
+- room-104-curriculum.html: Ch. 20: chart -> THE GRACE LEGACY — THE ORCHARD FRAME
+- room-104-curriculum.html: Ch. 20 marker location matches the chapter
+- room-104-curriculum.html: Ch. 20 marker script: the returned sentence, not Sammy
+- room-104-curriculum.html: Ch. 21: invented quote replaced with the chapter's real line and scene
+- room-104-curriculum.html: Ch. 21: lesson alignment -> U4·L7 Year-end Celebration
+- room-104-curriculum.html: Ch. 21: chart -> the Unit 4 wall
+- room-104-lessons.html: Unit 1 routing table re-pointed at real lessons/charts (Ch. 1 -> U1·L3 anchor; Ch. 4 -> U1·L4 gradient; Ch. 3 -> U1·L6 signal); Ch. 14 row moved to Unit 2
+- room-104-lessons.html: Unit 2 routing table re-pointed (Ch. 14 and Ch. 9 -> U2·L6 witness; Ch. 11 -> U2·L5 restore); Ch. 3 row moved to Unit 1, Ch. 13 row moved to Unit 4
+- room-104-lessons.html: Unit 3 routing table re-pointed (Ch. 8 -> U3·L5 empathy; Ch. 17 -> U3·L2 forgrec)
+- room-104-lessons.html: Unit 4 routing table re-pointed (Ch. 13 -> U4·L3 bearwit; Ch. 18 -> U4·L1 culture; Ch. 19 -> U4·L6 orchard; Ch. 21 -> U4·L7 wall)
+- room-104-lessons.html: U1 L4 scan: 'authenticity deficit' -> 'authenticity gap'
+- room-104-lessons.html: U2 L1 scan: 'Clinically significant' -> 'Note for the counselor'
+- room-104-lessons.html: U2 L3 scan: 'self-compassion deficit' reworded
+- room-104-lessons.html: U1 L1 opening ritual: applications -> profile
+- room-104-lessons.html: U4 L4 anchor chart middle column: one Grace Recovery Protocol (notice · pause · choose — then the repair sentence)
+- room-104-lessons.html: U3 L3 family letter: consequence wording
+- room-104-lessons.html: U3 L3 counselor note: B4-17A/B condition added
+- room-104-lessons.html: U3 L3 card copy B4-17A: ★★ -> ★ to match the lesson
+- room-104-lessons.html: U3 L3 card copy B4-17B: ★★ -> ★ to match the lesson
+- room-104-lessons.html: U1 L7 duplicate NOTE Identity Shield (Strengths/Values/Non-negotiables/Gap) removed; the reproducible that matches w104-1 stays
+- room-104-lessons.html: U1 L7 family letter: quadrants match w104-1
+- room-104-lessons.html: U1 L7 WHAT THIS UNIT BUILT: quadrants match w104-1
+- room-104-lessons.html: U2 L7 duplicate NOTE Backpack Audit (B4-U2-WS3, Sections 1–4) removed; the reproducible that matches w104-2 stays
+- room-104-lessons.html: U2 L7 intro script: 'Section 1' -> 'the inventory' (w104-2 sections)
+- room-104-lessons.html: U2 L7 scan: 'Section 1' -> 'the inventory'
+- room-104-lessons.html: U2 L7 worksheet link: no turn-in wording
+- room-104-lessons.html: U3 L1 notes cite B4-15A Marcus / B4-15B Nia
+- room-104-lessons.html: U3 L1 script: Nia-and-her-mom example -> B4-15A Marcus
+- room-104-lessons.html: U3 L2 notes cite B4-16A Jonah / B4-16B Amara
+- room-104-lessons.html: U3 L2 script: Amara example tied to B4-16B
+- room-104-lessons.html: U3 L3 notes cite B4-17A Ryn / B4-17B Yusuf's uncle
+- room-104-lessons.html: U3 L3 script: Yusuf's friend -> Yusuf's uncle (B4-17B)
+- room-104-lessons.html: U3 L4 notes cite B4-18A Layla / B4-18B Marcus and Darius
+- room-104-lessons.html: U3 L4 script: Diego -> B4-18A Layla
+- room-104-lessons.html: U3 L5 notes cite B4-19A Amara / B4-19B Theo
+- room-104-lessons.html: U3 L6 notes cite B4-20A / B4-20B Marcus
+- room-104-lessons.html: U3 L6 script: Deja/Yusuf -> Priya on B4-20A
+- room-104-lessons.html: U3 L7 notes cite B4-21A Layla / B4-21B Marcus
+- room-104-lessons.html: U3 L7 step: Nia -> Layla (B4-21A)
+- room-104-lessons.html: U4 L1 notes cite B4-22A / B4-22B Nia
+- room-104-lessons.html: U4 L2 notes cite B4-23A Zach / B4-23B Marcus
+- room-104-lessons.html: U4 L2 script: Theo scenario -> B4-23A Zach
+- room-104-lessons.html: U4 L3 notes cite B4-24A Priya / B4-24B Marcus
+- room-104-lessons.html: U4 L3 script: Nia's mom -> B4-24A Priya
+- room-104-lessons.html: U4 L4 notes cite B4-25A Nia / B4-25B Darius
+- room-104-lessons.html: U4 L5 notes cite B4-26A Priya / B4-26B Marcus
+- room-104-lessons.html: U4 L5 script: Nia's team -> B4-26A Priya
+- room-104-lessons.html: U4 L6 notes cite B4-27A / B4-27B Jonah
+- room-104-lessons.html: U4 L6 script: Deja's orchard -> B4-27A
+- room-104-lessons.html: U4 L7 note: B4-28A descriptor matches the card
+- room-104-lessons.html: B4-1B: college interview -> scholarship interview
+- room-104-cards.html: B4-1B: college interview -> scholarship interview
+- room-104-lessons.html: B4-2A: college fairs -> club fairs
+- room-104-cards.html: B4-2A: college fairs -> club fairs
+- room-104-lessons.html: B4-2B: roommate -> cousin
+- room-104-cards.html: B4-2B: roommate -> cousin
+- room-104-lessons.html: B4-4B: new job -> new school
+- room-104-cards.html: B4-4B: new job -> new school
+- room-104-lessons.html: B4-4B: easy to work with -> easy to have around
+- room-104-cards.html: B4-4B: easy to work with -> easy to have around
+- room-104-lessons.html: B4-4B question: matches the new wording
+- room-104-cards.html: B4-4B question: matches the new wording
+- room-104-lessons.html: B4-4B: parking lot -> front door
+- room-104-cards.html: B4-4B: parking lot -> front door
+- room-104-lessons.html: B4-6A: tenth grade -> eighth grade
+- room-104-cards.html: B4-6A: tenth grade -> eighth grade
+- room-104-lessons.html: B4-6A: eleventh grade -> ninth grade
+- room-104-cards.html: B4-6A: eleventh grade -> ninth grade
+- room-104-lessons.html: B4-8B: college essays -> honors application essays
+- room-104-cards.html: B4-8B: college essays -> honors application essays
+- room-104-lessons.html: B4-9B: early decision -> cut from the team
+- room-104-cards.html: B4-9B: early decision -> cut from the team
+- room-104-lessons.html: B4-9B question: deferral -> being cut
+- room-104-cards.html: B4-9B question: deferral -> being cut
+- room-104-lessons.html: B4-9B question: deferral -> cut
+- room-104-cards.html: B4-9B question: deferral -> cut
+- room-104-lessons.html: B4-9B question: deferral -> being cut
+- room-104-cards.html: B4-9B question: deferral -> being cut
+- room-104-lessons.html: B4-11A: three years -> a year
+- room-104-cards.html: B4-11A: three years -> a year
+- room-104-lessons.html: B4-11A question: three years -> the year
+- room-104-cards.html: B4-11A question: three years -> the year
+- room-104-lessons.html: B4-11B: sophomore year -> eighth grade
+- room-104-cards.html: B4-11B: sophomore year -> eighth grade
+- room-104-lessons.html: B4-11B: two years -> a year
+- room-104-cards.html: B4-11B: two years -> a year
+- room-104-lessons.html: B4-12B: roommate -> older brother
+- room-104-cards.html: B4-12B: roommate -> older brother
+- room-104-lessons.html: B4-12B question: roommate -> brother
+- room-104-cards.html: B4-12B question: roommate -> brother
+- room-104-lessons.html: B4-12B question: roommate -> brother
+- room-104-cards.html: B4-12B question: roommate -> brother
+- room-104-lessons.html: B4-14B: four years -> two years
+- room-104-cards.html: B4-14B: four years -> two years
+- room-104-lessons.html: B4-19B: varsity as a junior -> made the team as a freshman
+- room-104-cards.html: B4-19B: varsity as a junior -> made the team as a freshman
+- room-104-lessons.html: B4-20A: three years ago -> two years ago
+- room-104-cards.html: B4-20A: three years ago -> two years ago
+- room-104-lessons.html: B4-20A: junior -> sophomore
+- room-104-cards.html: B4-20A: junior -> sophomore
+- room-104-lessons.html: B4-24B: got into colleges -> tryouts and club placements
+- room-104-cards.html: B4-24B: got into colleges -> tryouts and club placements
+- room-104-lessons.html: B4-26A: senior -> sophomore
+- room-104-cards.html: B4-26A: senior -> sophomore
+- room-104-lessons.html: B4-26A: junior -> sophomore
+- room-104-cards.html: B4-26A: junior -> sophomore
+- room-104-lessons.html: B4-26B: junior -> sophomore
+- room-104-cards.html: B4-26B: junior -> sophomore
+- room-104-lessons.html: B4-27A: senior class -> tenth-grade class
+- room-104-cards.html: B4-27A: senior class -> tenth-grade class
+- room-104-lessons.html: B4-27A: senior -> tenth-grader
+- room-104-cards.html: B4-27A: senior -> tenth-grader
+- room-104-lessons.html: B4-27A: seniors -> tenth-graders
+- room-104-cards.html: B4-27A: seniors -> tenth-graders
+- room-104-cards.html: B4-17A ★★ -> ★ (data-risk, badge, Safety line) to match U3 L3
+- room-104-cards.html: B4-17B ★★ -> ★ (data-risk, badge, Safety line) to match U3 L3
+- room-104-workbook.html: u1-q2 option A: no introvert presumption
+- room-104-workbook.html: u1-q7 why + printed key: Shield quadrants match w104-1; carry-forward sentence lives in the journal
+- room-104-workbook.html: u4-q4 option D (still correct, data-ok=1): one Grace Recovery Protocol
+- room-104-workbook.html: u4-q4 why-note: the lesson's protocol
+- room-104-workbook.html: u4-q4 printed key: matches the why-note
+- room-104-workbook.html: Year-End q4 why + key: 'next year' -> 'in Book 5'
+- room-104-workbook.html: U2 Part B 4: no stone is written into a turned-in workbook
+- room-104-workbook.html: privacy line ('These answers can stay private…') added above Part B in Units 2 and 3
+- w104-2-backpack-audit.html: keep / seal / tear-up (and not-ready) choice added before the crisis footer, unstored; school-counselor line added to the crisis footer
+- AoG-Anchor-Charts-104.html: perfect chart formLabel gets '★ PPRA lesson'
+- AoG-Anchor-Charts-104.html: account chart formLabel gets '★ PPRA lesson'
+- room-104-novel.html: data-es subtitle: 'La Fachada' added
+
+## Skipped (quote not found on the page)
+- Lessons U3 L6 Step 3 "THE GRACE AUDIT — GIVING AND RECEIVING" rename: no such step heading exists on the lessons page (the daily check lives only in the U3 L7 worksheet as "THE TWO-PART DAILY GRACE AUDIT"), so nothing to rename.
+- Lessons U2 L7 anchor-chart note "Return student journals from L1": not on the page.
+- Curriculum Ch. 11 row still describes Sofia (the report's either/or "sure" row was left as is); it is now routed to a real lesson (U2·L5) but the scene itself was not re-pointed to Marcus.
+- w104-1-identity-shield.html: no change — it is canonical, so the lessons page was aligned to it instead.
+- Checks: `node tools/check-contrast.js` and `node tools/check-calm.js` pass on all 7 changed pages.

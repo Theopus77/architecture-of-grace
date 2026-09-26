@@ -1,0 +1,179 @@
+/* ══ AOG-NOVEL-V1 (2026-09-26) — THE NOVELS, ON THE SITE ═══════════════════════
+   Jimmy: look over the SEL curriculum "including the NOVELS" for a visual
+   upgrade, and "don't mess with the curriculum (wordage etc.)". The six books
+   were PDFs opened in a new tab. Each now has a reader page in the site's own
+   skin: the same masthead, bar, tokens and type as the room pages, one chapter
+   at a time, remembered where you left off. The words are the PDF's, exactly
+   (novels/*.json, pulled by _work/sel/novels/extract_novels.py). The PDF link
+   stays on every page. Tokens are the lessons pages' (--ground/--field/--ink),
+   so aog-grace.css re-tints the reader in dark the same way. ═══════════════ */
+:root{
+  --ground:#F5F1E8; --field:#FFFFFF; --field-2:#EFEAE0;
+  --ink:#1D2733; --ink-soft:#57626F; --ink-faint:#5F6B78;
+  --navy:#0A1E33; --navy-2:#1B3A5F; --gold:#B8893A; --gold-deep:#7A5C1F;
+  --rule:rgba(29,39,51,.16); --rule-soft:rgba(29,39,51,.08);
+  --lift:0 1px 0 rgba(255,255,255,.7), 0 20px 44px -30px rgba(29,39,51,.55);
+  --lift-sm:0 1px 2px rgba(29,39,51,.07), 0 8px 20px -16px rgba(29,39,51,.4);
+  --focus:#B8893A;
+  --serif:"Fraunces","Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+  --sans:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  --nv-size:1.0;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0; background:var(--ground); color:var(--ink); font:400 17px/1.6 var(--sans)}
+.wrap{max-width:860px; margin:0 auto; padding:0 16px 60px}
+.mast{padding:30px 0 22px}
+.mast .k{font:700 .72rem/1.4 var(--sans); letter-spacing:.18em; text-transform:uppercase; color:var(--gold)}
+.mast h1{font:600 clamp(30px,5vw,44px)/1.1 var(--serif); letter-spacing:-.015em; margin:8px 0 10px}
+.mast .deck{font-size:1.05rem; color:var(--ink-soft); max-width:60ch; margin:0 0 10px}
+.mast .hubline{margin:0}
+.mast .hubline a{color:var(--gold-deep); font-weight:700; text-decoration:underline; text-underline-offset:3px}
+
+/* the room jump, as the room pages carry it */
+.jump{margin:14px 0 10px}
+.jump label{display:block; font:600 .95rem var(--sans); color:var(--ink-soft)}
+.jump select{display:block; width:100%; margin-top:6px; min-height:46px; font:600 16px var(--sans); color:var(--ink);
+  background:var(--field); border:1px solid var(--rule); border-radius:12px; padding:8px 12px; box-shadow:var(--lift-sm)}
+
+/* the reader's controls: one row of pills, then the chapter drop-down */
+.nv-tools{position:sticky; top:var(--aogbar-h,55px); z-index:30; margin:0 -16px; padding:10px 16px;
+  background:color-mix(in srgb,var(--ground) 88%,transparent); backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--rule-soft)}
+.nv-tools .row{display:flex; flex-wrap:wrap; gap:8px; align-items:center}
+.nv-tools label.pick{flex:1 1 220px; display:flex; align-items:center; gap:10px; font:700 .78rem var(--sans); letter-spacing:.12em; text-transform:uppercase; color:var(--ink-soft)}
+.nv-tools select{flex:1 1 0; min-width:0; width:100%; min-height:44px; font:600 16px var(--sans); color:var(--ink); background:var(--field);
+  border:1px solid var(--rule); border-radius:999px; padding:6px 14px; box-shadow:var(--lift-sm); max-width:100%}
+.nv-btn{display:inline-flex; align-items:center; justify-content:center; gap:6px; min-height:44px; min-width:44px; padding:8px 16px;
+  border-radius:999px; border:1px solid var(--rule); background:var(--field); color:var(--ink); font:700 .92rem var(--sans);
+  cursor:pointer; text-decoration:none; box-shadow:var(--lift-sm)}
+.nv-btn:hover{border-color:var(--gold)}
+.nv-btn.primary{background:var(--navy); color:#F5F1E8; border-color:var(--navy)}
+.nv-btn[disabled]{opacity:.45; cursor:default}
+.nv-btn.on{background:var(--gold); color:#0A1E33; border-color:var(--gold)}
+.nv-btn svg{width:18px; height:18px; flex:none}
+.nv-size{display:inline-flex; border:1px solid var(--rule); border-radius:999px; background:var(--field); box-shadow:var(--lift-sm)}
+.nv-size button{min-height:44px; min-width:44px; border:0; background:none; color:var(--ink); font:700 1rem var(--sans); cursor:pointer; padding:0 12px}
+.nv-size button + button{border-left:1px solid var(--rule-soft)}
+.nv-size button:first-child{font-size:.85rem}
+.nv-size button:last-child{font-size:1.2rem}
+
+/* the page: paper on the ground, the book's own measure */
+.nv-page{--py:clamp(22px,5vw,56px); --px:clamp(18px,6vw,72px); margin:22px 0 0; background:var(--field); border:1px solid var(--rule-soft); border-radius:22px; box-shadow:var(--lift);
+  padding:var(--py) var(--px)}
+/* AOG-NOVEL-SCENES-V1 — the unit's drawn scene, full-bleed across the top of the page */
+.nv-page .nv-scene{display:block; width:calc(100% + 2 * var(--px)); max-width:none; margin:calc(-1 * var(--py)) calc(-1 * var(--px)) 22px; height:auto; aspect-ratio:1200/220; object-fit:cover; border-radius:21px 21px 0 0; background:#0A1E33}
+.nv-page .nv-scene.big{aspect-ratio:1200/420}
+.nv-page.part .nv-scene{margin-bottom:26px}
+.nv-page .kicker{font:700 .72rem/1.4 var(--sans); letter-spacing:.22em; text-transform:uppercase; color:var(--gold); text-align:center; margin:0 0 8px}
+.nv-page h2{font:600 clamp(26px,4.4vw,38px)/1.15 var(--serif); letter-spacing:-.012em; text-align:center; margin:0 0 6px; color:var(--ink)}
+.nv-page .where{font:500 .9rem var(--sans); color:var(--ink-faint); text-align:center; margin:0 0 26px}
+.nv-page .q{font:italic 500 clamp(19px,2.8vw,24px)/1.4 var(--serif); text-align:center; color:var(--ink-soft); max-width:36ch; margin:18px auto 22px}
+.nv-page .text{font:400 calc(1.12rem * var(--nv-size))/1.72 var(--serif); color:var(--ink); max-width:62ch; margin:0 auto}
+.nv-page .text p{margin:0 0 1em}
+.nv-page .text p.c{text-align:center; margin:0 0 .35em; font-style:italic; color:var(--ink-soft)}
+.nv-page .text p.c + p:not(.c){margin-top:1em}
+.nv-page .text p.i{font-style:italic}
+.nv-page .text p.i em, .nv-page .text p.c em, .nv-page .q em{font-style:normal}
+.nv-page .text p.sig{text-align:right; font-style:italic; color:var(--ink-soft)}
+.nv-page .text em{font-style:italic}
+.nv-page .text hr{border:0; margin:1.6em auto; width:100%; text-align:center; overflow:visible; height:1em}
+.nv-page .text hr::before{content:"\25C6\2003\25C6\2003\25C6"; color:var(--gold); font-size:.8rem; letter-spacing:.2em}
+.nv-page.part{text-align:center; background:linear-gradient(155deg,#1B3A5F,#0A1E33); color:#F5F1E8; border-color:rgba(242,201,100,.36)}
+.nv-page.part h2,.nv-page.part .q,.nv-page.part .text,.nv-page.part .text p{color:#F5F1E8}
+.nv-page.part .kicker{color:#F2C964}
+.nv-page.part .text p.c{color:#E5DDC8}
+.nv-page.part .where{color:#C8D4E2}
+
+/* previous / next */
+.nv-pager{display:flex; justify-content:space-between; gap:10px; margin:18px 0 0}
+.nv-pager .nv-btn{flex:1 1 0; min-height:54px; text-align:left; justify-content:flex-start; padding:10px 16px; line-height:1.25}
+.nv-pager .nv-btn.next{text-align:right; justify-content:flex-end}
+.nv-pager .nv-btn small{display:block; width:100%; font:700 .68rem var(--sans); letter-spacing:.14em; text-transform:uppercase; color:var(--gold-deep)}
+.nv-pager .nv-btn.primary small{color:#F2C964}
+.nv-pager .nv-btn .t{display:block; width:100%; font-weight:600}
+
+.nv-foot{margin:26px 0 0; font-size:.92rem; color:var(--ink-soft); text-align:center}
+.nv-foot a{color:var(--gold-deep); font-weight:700; text-decoration:underline; text-underline-offset:3px}
+.nv-msg{margin:30px 0; padding:18px 20px; background:var(--field); border:1px solid var(--rule); border-radius:16px; color:var(--ink)}
+.nv-msg a{color:var(--gold-deep); font-weight:700}
+.sr{position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0)}
+.no-print{}
+
+/* the listen highlight: the paragraph being read gets a soft gold edge */
+.nv-page .text p.reading{box-shadow:-4px 0 0 var(--gold); padding-left:12px; margin-left:-16px; border-radius:2px}
+
+/* dark: aog-grace.css remaps the tokens; the paper takes the deep field */
+html[data-theme="dark"] .nv-btn.primary{background:#F2C964; color:#0A1E33; border-color:#F2C964}
+html[data-theme="dark"] .nv-pager .nv-btn.primary small{color:#0A1E33}
+html[data-theme="dark"] .nv-tools{background:color-mix(in srgb,#1A3657 88%,transparent)}
+html[data-theme="dark"] .nv-page.part{border-color:rgba(242,201,100,.36)}
+html[data-theme="dark"] .mast .hubline a,html[data-theme="dark"] .nv-foot a{color:#F2C964}
+html[data-theme="dark"] .nv-pager .nv-btn small{color:#F2C964}
+
+/* the OpenDyslexic setting from the site bar reaches the book */
+html.a11y-dyslexic .nv-page .text{font-family:"OpenDyslexic","Comic Sans MS","Trebuchet MS",Verdana,sans-serif; letter-spacing:.02em; word-spacing:.09em; line-height:1.9}
+
+@media (max-width:640px){
+  .nv-tools label.pick{flex-basis:100%}
+  .nv-tools .row .nv-btn .lbl{display:none}
+  .nv-tools .row .nv-btn{padding:8px 12px}
+  .nv-page{margin-left:-4px; margin-right:-4px; border-radius:18px}
+}
+@media print{
+  .aogtop,.aogtop-spacer,.jump,.nv-tools,.nv-pager,.nv-foot .no-print,.no-print{display:none !important}
+  body{background:#fff; color:#000}
+  .nv-page{box-shadow:none; border:0; padding:0; background:#fff; color:#000}
+  .nv-page.part{background:#fff; color:#000}
+  .nv-page.part h2,.nv-page.part .q,.nv-page.part .text p{color:#000}
+  .nv-page .text{max-width:none; font-size:12pt; line-height:1.55}
+  .mast h1{font-size:20pt}
+}
+
+/* ══ AOG-NOVEL-COVERS-V1 (2026-09-26) — THE COVERS ═════════════════════════════
+   Jimmy: "Did you give the novel cover a face lift?" — "Covers." The PDFs carry
+   real painted covers; they now open every reader page as a book on the navy
+   (novels/cover-*.jpg, pulled from page one of each PDF), and novels.html is
+   the shelf, all six side by side. Nothing moves on its own. */
+.mast.has-cover{display:grid; grid-template-columns:minmax(150px,220px) 1fr; gap:26px; align-items:center}
+.mast .cover{display:block; position:relative; aspect-ratio:2/3; border-radius:4px 12px 12px 4px; overflow:hidden;
+  box-shadow:0 1px 0 rgba(255,255,255,.35) inset, 0 30px 50px -22px rgba(0,0,0,.75), 0 8px 18px -10px rgba(0,0,0,.6);
+  background:#0A1E33; outline-offset:4px}
+.mast .cover img{display:block; width:100%; height:100%; object-fit:cover}
+.mast .cover::before{content:""; position:absolute; inset:0 auto 0 0; width:14px; z-index:1; pointer-events:none;
+  background:linear-gradient(90deg,rgba(0,0,0,.28),rgba(0,0,0,0) 45%,rgba(255,255,255,.12) 60%,rgba(0,0,0,.08))}
+.mast .cover::after{content:""; position:absolute; inset:0; z-index:1; pointer-events:none; border-radius:inherit;
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.14)}
+@media (max-width:640px){
+  .mast.has-cover{grid-template-columns:1fr; gap:18px; justify-items:start}
+  .mast .cover{width:min(58vw,190px)}
+}
+@media print{ .mast .cover{display:none} }
+
+/* the shelf */
+.shelfwrap{max-width:1100px}
+.shelf{display:grid; grid-template-columns:repeat(auto-fill,minmax(180px,1fr)); gap:26px 22px; padding:8px 0 40px; align-items:start}
+.shelf .book{display:block; text-decoration:none; color:var(--ink); border-radius:14px; outline-offset:6px}
+.shelf .book img{display:block; width:100%; height:auto; aspect-ratio:2/3; object-fit:cover; border-radius:4px 12px 12px 4px;
+  box-shadow:0 26px 40px -22px rgba(29,39,51,.7), 0 6px 14px -8px rgba(29,39,51,.5); background:#0A1E33}
+.shelf .book:hover img{box-shadow:0 30px 48px -22px rgba(29,39,51,.8), 0 0 0 3px var(--gold)}
+.shelf .who{display:block; padding:12px 4px 0}
+.shelf .who .r{display:block; font:700 .7rem/1.3 var(--sans); letter-spacing:.14em; text-transform:uppercase; color:var(--gold-deep)}
+.shelf .who .t{display:block; font:600 1.12rem/1.25 var(--serif); margin:3px 0 2px}
+.shelf .who .n{display:block; font:500 .84rem var(--sans); color:var(--ink-soft)}
+html[data-theme="dark"] .shelf .who .r{color:#F2C964}
+@media (max-width:640px){ .shelf{grid-template-columns:repeat(2,1fr); gap:20px 14px} }
+
+/* ══ AOG-NOVEL-TOC-V1 — the Contents, every line a door ═══════════════════════ */
+.nv-page ol.toc{list-style:none; margin:10px auto 0; padding:0; max-width:56ch}
+.nv-page ol.toc li{margin:0}
+.nv-page ol.toc a{display:flex; align-items:baseline; gap:14px; padding:12px 10px; min-height:48px; border-bottom:1px solid var(--rule-soft); color:var(--ink); text-decoration:none; border-radius:8px}
+.nv-page ol.toc a:hover{background:var(--field-2)}
+.nv-page ol.toc .k{flex:0 0 9.5em; font:700 .7rem/1.5 var(--sans); letter-spacing:.14em; text-transform:uppercase; color:var(--gold-deep)}
+.nv-page ol.toc .t{font:500 1.05rem/1.35 var(--serif)}
+.nv-page ol.toc li.part a{margin-top:18px; border-bottom:2px solid var(--gold); background:none}
+.nv-page ol.toc li.part .k{color:var(--gold)}
+.nv-page ol.toc li.part .t{font-weight:600; font-size:1.2rem}
+.nv-page ol.toc li.note .t{font-style:italic}
+html[data-theme="dark"] .nv-page ol.toc .k{color:#F2C964}
+@media (max-width:640px){ .nv-page ol.toc a{flex-direction:column; gap:2px} .nv-page ol.toc .k{flex:none} }

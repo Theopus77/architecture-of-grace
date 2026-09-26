@@ -723,7 +723,7 @@ input[type=range].slider::-moz-range-thumb{
 <p>This drawing is private and belongs to the child. Drawings are never collected, graded, or displayed unless the child offers them. Your teacher will not look at the paper copy without an invitation.</p>
 </div>
 <div class="blk"><span class="lab">Body words from the lesson</span>
-<table class="reft"><tbody><tr><td>Tight</td><td>Busy</td></tr><tr><td>Heavy</td><td>Drooping</td></tr><tr><td>Hot</td><td>Wobbly</td></tr></tbody></table></div>
+<table class="reft"><tbody><tr><td>Tight</td><td>Busy</td></tr><tr><td>Heavy</td><td>Drooping</td></tr><tr><td>Hot</td><td>Jumpy</td></tr></tbody></table></div>
 <div class="blk">
 <span class="lab">Draw your body outline</span>
 <p class="hint">Color the place that talks the most when a feeling is heavy. Use any color you want.</p>
@@ -1115,7 +1115,7 @@ body.wsprev{overflow:hidden}
   try {
     [].slice.call(document.querySelectorAll("p")).some(function (fp) {
       if (fp.textContent.indexOf("sends nothing out") < 0) return false;
-      fp.textContent = "This page loads no fonts, scripts, or images from the internet. Your writing is stored in this browser \u2014 and sent to your teacher only when you tap FINISHED.";
+      fp.textContent = "This page loads no fonts, scripts, or images from the internet. Your writing is stored in this browser \u2014 and sent to your teacher only when you tap FINISHED. Your drawings are never sent.";
       return true;
     });
   } catch (e) {}
@@ -1137,6 +1137,10 @@ body.wsprev{overflow:hidden}
         if(typeof f.value === "string" && f.value.trim() !== "") out[id][f.getAttribute("data-f")] = f.value;
       });
     });
+    /* AOG-WS-DRAWING-PRIVATE-V1 (2026-09-26) — the page promises "Drawings are never collected":
+       the drawing pads stay on this computer and never ride along with FINISHED. */
+    var pads = [].slice.call(document.querySelectorAll("canvas[data-pad]")).map(function(c){ return c.getAttribute("data-pad"); });
+    Object.keys(out).forEach(function(k){ pads.forEach(function(p){ if(out[k] && typeof out[k] === "object") delete out[k][p]; }); });
     return out;
   }
 
