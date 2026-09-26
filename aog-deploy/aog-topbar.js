@@ -165,6 +165,14 @@
             <a role=\"menuitem\" class=\"flat\" href=\"/room207#practice\"><svg viewBox=\"0 0 24 24\" width=\"16\" height=\"16\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l8.8 8.8 8.8-8.8a5.5 5.5 0 0 0 0-7.8z\"/></svg><span class=\"aogtop-tx\"><span data-en=\"Grace in Practice\" data-es=\"La gracia en la pr\u00e1ctica\">Grace in Practice</span></span></a>\n\
             <a role=\"menuitem\" class=\"flat\" href=\"/#talk\"><svg viewBox=\"0 0 24 24\" width=\"16\" height=\"16\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M21 12a8 8 0 0 1-8 8H7l-4 3v-5.6A8 8 0 0 1 3 12a8 8 0 0 1 8-8h2a8 8 0 0 1 8 8z\"/></svg><span class=\"aogtop-tx\"><span data-en=\"Talk It Out\" data-es=\"Talk It Out\">Talk It Out</span></span></a>\n\
           </div>\n\
+            <button type=\"button\" class=\"aogtop-lab aogtop-blab\" data-band=\"benches\" aria-expanded=\"false\" aria-controls=\"aogbarBandBenches\"><span data-en=\"The Benches \u00b7 hands-on tools\" data-es=\"Los bancos \u00b7 herramientas pr\u00e1cticas\">The Benches \u00b7 hands-on tools</span><svg class=\"aogtop-chev\" viewBox=\"0 0 24 24\" width=\"13\" height=\"13\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.4\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M6 9l6 6 6-6\"/></svg></button>\n\
+            <div class=\"aogtop-bfold shut\" id=\"aogbarBandBenches\">\n\
+            <a role=\"menuitem\" class=\"flat\" href=\"/microscope\"><svg viewBox=\"0 0 24 24\" width=\"16\" height=\"16\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><circle cx=\"12\" cy=\"12\" r=\"9\"/><circle cx=\"12\" cy=\"12\" r=\"2\"/></svg><span class=\"aogtop-tx\"><span data-en=\"The Microscope Lab\" data-es=\"El laboratorio del microscopio\">The Microscope Lab</span></span></a>\n\
+            <a role=\"menuitem\" class=\"flat\" href=\"/telescope\"><svg viewBox=\"0 0 24 24\" width=\"16\" height=\"16\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><circle cx=\"12\" cy=\"12\" r=\"9\"/><circle cx=\"12\" cy=\"12\" r=\"2\"/></svg><span class=\"aogtop-tx\"><span data-en=\"The Telescope\" data-es=\"El telescopio\">The Telescope</span></span></a>\n\
+            <a role=\"menuitem\" class=\"flat\" href=\"/waves\"><svg viewBox=\"0 0 24 24\" width=\"16\" height=\"16\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><circle cx=\"12\" cy=\"12\" r=\"9\"/><circle cx=\"12\" cy=\"12\" r=\"2\"/></svg><span class=\"aogtop-tx\"><span data-en=\"The Wave Bench\" data-es=\"El banco de ondas\">The Wave Bench</span></span></a>\n\
+            <a role=\"menuitem\" class=\"flat\" href=\"/drums\"><svg viewBox=\"0 0 24 24\" width=\"16\" height=\"16\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><circle cx=\"12\" cy=\"12\" r=\"9\"/><circle cx=\"12\" cy=\"12\" r=\"2\"/></svg><span class=\"aogtop-tx\"><span data-en=\"The Drum Bench\" data-es=\"El banco de tambores\">The Drum Bench</span></span></a>\n\
+            <a role=\"menuitem\" class=\"flat\" href=\"/turntables\"><svg viewBox=\"0 0 24 24\" width=\"16\" height=\"16\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><circle cx=\"12\" cy=\"12\" r=\"9\"/><circle cx=\"12\" cy=\"12\" r=\"2\"/></svg><span class=\"aogtop-tx\"><span data-en=\"The Turntables\" data-es=\"Los tocadiscos\">The Turntables</span></span></a>\n\
+          </div>\n\
             </div>\n\
         </div>\n\
 \n\
@@ -2610,7 +2618,8 @@
     + '.aogtop-ex > .aogtop-col{flex:none!important;width:auto!important;min-width:0}}'
     + '.aogtop-menu .aogtop-tx > span:first-child{white-space:normal!important}';
   css += '.aogtop-blab{--gl:#C9A24A;box-shadow:inset 4px 0 0 var(--gl)!important;padding-left:14px!important}'
-    + '.aogtop-blab[aria-expanded="true"]{background:color-mix(in srgb,var(--gl) 12%,transparent)!important;color:inherit!important}';
+    + '.aogtop-blab[aria-expanded="true"]{background:color-mix(in srgb,var(--gl) 12%,transparent)!important;color:var(--bar-ink,#0A1E33)!important}'
+    + '.aogtop-blab[data-band="benches"]{--gl:#1F8080}';
   /* the room rows carry no link of their own, so each is tinted by its number */
   function tagRooms() {
     var bl = document.querySelectorAll(".aogtop-blab");
