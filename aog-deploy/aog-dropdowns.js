@@ -72,7 +72,7 @@
     box.hidden = list.length < 2;
   }
   var t = 0;
-  function refresh() { clearTimeout(t); t = setTimeout(function () { ROWS.concat(extra()).forEach(build); try { demoBar(); } catch (e) {} }, 40); }
+  function refresh() { clearTimeout(t); t = setTimeout(function () { ROWS.concat(extra()).forEach(build); try { demoBar(); } catch (e) {} try { iepPick(); } catch (e) {} }, 40); }
   var css = D.createElement("style");
   css.textContent =
     ".aogdd-src{position:absolute!important;width:1px!important;height:1px!important;overflow:hidden!important;clip:rect(0 0 0 0)!important;white-space:nowrap!important}" +
@@ -111,6 +111,59 @@
     bar.querySelector(".aogdd-demo-tx").textContent = isOn
       ? (es() ? "Estás viendo estudiantes de ejemplo. Tus datos reales vuelven al quitar la demostración." : "You are seeing sample students. Your real data comes back when you clear the demo.")
       : (es() ? "Llena esta página con estudiantes de ejemplo para ver cómo se ve." : "Fill this page with sample students to see what it can show.");
+  }
+
+  /* AOG-IEP-PICK-V1 (2026-09-26) — Jimmy: "The student list needs to be in a drop
+     down … the two names blend in", and pulled check-ins gave him nothing to act
+     on. The IEP tab strip becomes one menu: every student with a goal, then every
+     student the pulled check-ins and practice know who has no goal yet — pick one
+     of those and a new goal opens already filled in with their code. */
+  function jl(k) { try { return JSON.parse(localStorage.getItem(k) || "null"); } catch (e) { return null; } }
+  function dataStudents() {
+    var seen = {};
+    function add(v) { v = String(v || "").trim(); if (v && v.length < 40 && !/\((test|home)\)$/.test(v) && !/·|^(Mr|Mrs|Ms|Dr|Coach|Parent)\b/.test(v)) seen[v] = 1; }
+    ["aog.checkin.remote", "aog.practice.remote", "aogScreener.v2.results", "aog.checkin.student.v1", "aog.practice.mine"].forEach(function (k) {
+      var v = jl(k); if (!v) return;
+      var arr = Array.isArray(v) ? v : (v.rows || v.records || v.items || Object.keys(v.students || {}).map(function (x) { return { studentId: x }; }));
+      (arr || []).forEach(function (r) { if (r) add(r.studentId || r.student || r.code || r.sid || r.name); });
+    });
+    return Object.keys(seen).sort();
+  }
+  function iepPick() {
+    var strip = Array.prototype.filter.call(D.querySelectorAll(".iep-tabs"), function (x) { return x.getClientRects().length || x.classList.contains("aogdd-src"); })
+      .filter(function (x) { var p = x.parentNode; return p && p.getClientRects().length; })[0];
+    if (!strip) return;
+    var tabs = Array.prototype.slice.call(strip.querySelectorAll("button.iep-tab"));
+    var have = tabs.map(function (b) { return (b.childNodes[0] && b.childNodes[0].nodeValue || b.textContent).trim(); });
+    var extra = dataStudents().filter(function (n) { return have.indexOf(n) < 0; });
+    var sig = have.join("|") + "#" + extra.join("|") + "#" + tabs.map(function (b) { return b.getAttribute("aria-selected"); }).join();
+    if (strip.__aogSig === sig) return; strip.__aogSig = sig;
+    var box = strip.previousElementSibling && strip.previousElementSibling.classList.contains("aogdd-iep") ? strip.previousElementSibling : null;
+    if (!box) { box = D.createElement("label"); box.className = "aogdd aogdd-iep no-print"; box.innerHTML = '<span class="aogdd-lab"></span><select class="aogdd-sel"></select>'; strip.parentNode.insertBefore(box, strip); }
+    strip.classList.add("aogdd-src");
+    box.querySelector(".aogdd-lab").textContent = es() ? "Estudiante" : "Student";
+    var sel = box.querySelector("select"), h = "", on = 0;
+    function esc(t) { return String(t).replace(/&/g, "&amp;").replace(/</g, "&lt;"); }
+    h += '<optgroup label="' + (es() ? "Con metas" : "With IEP goals") + '">';
+    tabs.forEach(function (b, i) {
+      var n = b.querySelector(".n"); var c = n ? " · " + n.textContent + (es() ? " metas" : " goals") : "";
+      var att = b.querySelector(".fu") ? (es() ? " · necesita atención" : " · needs attention") : "";
+      h += '<option value="t' + i + '">' + esc(have[i] + c + att) + "</option>";
+      if (b.getAttribute("aria-selected") === "true") on = i;
+    });
+    h += "</optgroup>";
+    if (extra.length) {
+      h += '<optgroup label="' + (es() ? "Con datos, sin meta todavía — elige para crear una" : "Have check-in data, no goal yet — pick to start one") + '">';
+      extra.forEach(function (n) { h += '<option value="n' + esc(n) + '">＋ ' + esc(n) + "</option>"; });
+      h += "</optgroup>";
+    }
+    sel.innerHTML = h; sel.selectedIndex = on;
+    sel.onchange = function () {
+      var v = sel.value;
+      if (v.charAt(0) === "t") { var b = tabs[+v.slice(1)]; if (b) b.click(); }
+      else if (window.aogIepWizFor) window.aogIepWizFor(v.slice(1));
+      setTimeout(refresh, 80);
+    };
   }
   function start() {
     D.head.appendChild(css); refresh();

@@ -7,6 +7,7 @@ The site is static and lives in `aog-deploy/` (Netlify publishes that folder).
 Text must never be unreadable against what is behind it: no cream or light text
 on a white box, no dark text on navy, in light or dark theme, on any page.
 
+- The check also opens every room inside index.html (#framework, #workplace …); add new rooms to ROOMS in tools/check-contrast.js.
 - Before every commit that touches an `.html`, `.css`, or `aog-grace.*` file, run:
 
       node tools/check-contrast.js <the pages you changed>

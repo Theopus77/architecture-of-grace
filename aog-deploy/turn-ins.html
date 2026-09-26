@@ -268,6 +268,8 @@ html.a11y-dyslexic body{letter-spacing:.02em;word-spacing:.09em;line-height:1.8}
   
   body.bpprint .bp-card{box-shadow:none;border:0}
 }
+.acts button.lay{background:#C9A24A!important;color:#0A1E33!important;border:2px solid #1E1F22!important;font-weight:800}
+.acts .pst button{margin:4px 4px 0 0}
 </style>
 <script src="aog-sync-config.js"></script>
 <!-- ══ DASHBOARD-CODE GATE (2026-09-09) ═══════════════════════════════════
@@ -1346,6 +1348,7 @@ else document.documentElement.classList.add("aog-embed");</script>
       + "</summary>"
       + '<div class="body">'+body
       + '<div class="acts no-print"><button type="button" data-a="print">Print this one</button>'
+      + '<button type="button" data-a="lay" class="iep-only lay" title="Adds this result to the student\'s IEP goal as evidence">Lay the brick down</button>'
       + '<button type="button" data-a="iep" class="iep-only" title="Copies this result as IEP evidence">Copy this brick</button>'
       + '<button type="button" class="del" data-a="del">Remove</button>'
       + '<span class="pst" aria-live="polite"></span></div></div>';
@@ -1372,6 +1375,31 @@ else document.documentElement.classList.add("aog-embed");</script>
       }
       EV.forEach(function(e){ window.addEventListener(e,restore,true); });
       window.print();
+    });
+    /* AOG-LAY-BRICK-V1 (2026-09-26) — Jimmy: "a button that says lay the brick
+       down, which is YOU building the IEP from the bricks (data) we are sending."
+       One press writes this result into the evidence notes of the student's IEP
+       goal on this device (the same notes the goal form keeps). More than one
+       goal: pick which. No goal yet: says so and points to IEP Progress. Nothing
+       leaves the device; the note says where it came from and when. */
+    d.querySelector('[data-a="lay"]').addEventListener("click",function(){
+      var st=d.querySelector(".acts .pst"), store=null;
+      try{ store=JSON.parse(localStorage.getItem("aog.iep.v1")||"null"); }catch(e){}
+      var norm=function(x){ return String(x||"").toUpperCase().replace(/[^A-Z0-9]/g,""); };
+      var who=norm(it.student), goals=[];
+      if(store&&store.goals) Object.keys(store.goals).forEach(function(id){ var g=store.goals[id]; if(g&&!g.archived&&norm(g.student)===who) goals.push([id,g]); });
+      if(!goals.length){ st.innerHTML='No IEP goal for '+esc(it.student||"this student")+' yet. Open <a href="/#dashboard">IEP Progress</a>, pick ＋ '+esc(it.student||"")+' in the Student menu, then lay the brick.'; return; }
+      var L=[]; try{ L=it.evidence(it)||[]; }catch(e){ L=[]; }
+      var stamp=new Date().toLocaleDateString();
+      var brick="▣ "+stamp+" · "+(it.kindLab||"Evidence")+" · "+L.join(" · ");
+      function lay(id){
+        var g=store.goals[id]; g.notes=(g.notes?String(g.notes).replace(/\s+$/,"")+"\n":"")+brick;
+        try{ localStorage.setItem("aog.iep.v1",JSON.stringify(store)); st.textContent="Laid on the build: added to "+(it.student||"")+"’s goal “"+String(g.title||"").slice(0,60)+"”."; }
+        catch(e){ st.textContent="Couldn't save on this device — use Copy this brick instead."; }
+      }
+      if(goals.length===1){ lay(goals[0][0]); return; }
+      st.innerHTML='Which goal? '+goals.map(function(x,i){ return '<button type="button" data-g="'+i+'">'+esc(String(x[1].title||"Goal "+(i+1)).slice(0,48))+'</button>'; }).join(" ");
+      st.querySelectorAll("button[data-g]").forEach(function(b){ b.addEventListener("click",function(){ lay(goals[+b.getAttribute("data-g")][0]); }); });
     });
     d.querySelector('[data-a="iep"]').addEventListener("click",function(){
       var L=[]; try{ L=it.evidence(it)||[]; }catch(e){ L=[]; }

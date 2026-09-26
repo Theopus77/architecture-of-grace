@@ -46788,6 +46788,8 @@ window.AOG_LESSONS={
     st.report.weeks=w; save(st); render();
   };
   window.aogIepWizOpen=function(){ if(!(ST.formOpen&&!ST.editId&&WZ)) openWiz(null); ST.wizFocus=true; render(); };
+  /* AOG-IEP-PICK-V1 — start a goal already filled in with a student's code (the student menu uses this) */
+  window.aogIepWizFor=function(stu){ openWiz({student:String(stu||"")}); ST.wizFocus=true; render(); };
   window.aogIepToggleForm=function(){ if(ST.formOpen){ window.aogIepCancel(); } else { window.aogIepWizOpen(); } };
   window.aogIepWizDismiss=function(kind){
     var c=aogIepWizCloseKind(kind||"cancel"); if(!c.close) return;
@@ -63659,6 +63661,10 @@ html.js-reveal .reveal,
     { id: "thisisme", en: "Student This Is Me page", es: "Página Este soy yo del estudiante",
       hintEn: "The student's own page for their own IEP meeting — strengths, what helps, what is hard, how they have grown, what they want to ask their team. Every line is written, chosen or approved by them. Leave the code box empty and ONE link works for a whole class: whoever opens it types their own short code. ⚠ The page lives on their device; a finished page sends itself, and only the lines they KEPT ever travel — private lines never leave.",
       hintEs: "La página propia del estudiante para su propia reunión de IEP — fortalezas, qué le ayuda, qué le cuesta, cómo ha crecido, qué quiere preguntarle a su equipo. Cada línea la escribe, la elige o la aprueba él. Deja la casilla del código vacía y UN enlace sirve para toda la clase: quien lo abra escribe su propio código corto. ⚠ La página vive en su dispositivo; una página terminada se envía sola, y solo viajan las líneas que CONSERVÓ — las líneas privadas nunca salen." },
+    /* AOG-WEEKLY-V1 (2026-09-26) — the Monday, midweek and Friday check-ins */
+    { id: "weekly", en: "Student weekly check-ins", es: "Registros semanales del estudiante",
+      hintEn: "Three short check-ins: Monday (how was your weekend?), midweek (how is the week going?) and Friday (the week, and weekend plans). Tap answers, and a box to write more on every question.",
+      hintEs: "Tres registros cortos: lunes (¿cómo estuvo tu fin de semana?), mitad de semana (¿cómo va la semana?) y viernes (la semana y los planes del fin de semana). Respuestas con un toque y un espacio para escribir más en cada pregunta." },
     { id: "support", en: "Adult team check-in", es: "Registro del equipo de adultos",
       hintEn: "For a team around ONE student \u2014 a Tier 2 plan, a Tier 3 plan, an IEP. Every adult who sees that child logs what they saw from their own device, each entry signed with their own name, and they all meet on one timeline. Most teachers never open this tab, and that is the point of it having its own door.",
       hintEs: "Para un equipo alrededor de UN estudiante \u2014 un plan de Nivel 2, de Nivel 3, un IEP. Cada adulto que ve a ese ni\u00f1o anota lo que vio desde su propio dispositivo, cada entrada firmada con su nombre, y todas se re\u00fanen en una l\u00ednea de tiempo. La mayor\u00eda de los maestros nunca abren esta pesta\u00f1a, y por eso tiene su propia puerta." },
@@ -63753,6 +63759,7 @@ html.js-reveal .reveal,
       if (b.rest[i].id === "aogHcLgCard" || (b.rest[i].querySelector && b.rest[i].querySelector("#aogHcLgCard"))) return "homeci";
       if (b.rest[i].id === "aogPrLgCard" || (b.rest[i].querySelector && b.rest[i].querySelector("#aogPrLgCard"))) return "practice";
       if (b.rest[i].id === "aogTimLgCard" || (b.rest[i].querySelector && b.rest[i].querySelector("#aogTimLgCard"))) return "thisisme";
+      if (b.rest[i].id === "aogWkLgCard" || (b.rest[i].querySelector && b.rest[i].querySelector("#aogWkLgCard"))) return "weekly";
     }
     return "connect";      /* anything new lands in the admin tab, never in a link tab */
   }
@@ -77662,7 +77669,54 @@ html.js-reveal .reveal,
         ".hd-qrprint .hd-qrsay{font-family:ui-sans-serif,system-ui,sans-serif;font-size:9.5pt;line-height:1.45;color:#2A3440;}",
         ".hd-noprint{display:none !important;}",
       "}",
-      ".hd-qrprint{display:none;}"
+      ".hd-qrprint{display:none;}",
+      /* ══ AOG-PAPER-APEX-V1 (2026-09-26) — Jimmy: the printables that come from
+         the data "look meh … the FACELIFT PULLED UP TO THE CEILING as the apex."
+         Every record this layer draws (IEP progress, exit slips, check-ins,
+         self-reflections, anything shared or printed from the data) gets one
+         architecture: a navy masthead lit with a rose window and a gold rule,
+         leaded section headers, tiles with a band of stained glass, a framed
+         chart, and a signed foot. Paper keeps its colours (print-color-adjust),
+         and four tiles sit in one row so a goal no longer sprawls over pages. */
+      ".hd-doc{font-family:Georgia,'Iowan Old Style',serif;}",
+      ".hd-mast{position:relative;overflow:hidden;background:#0A1E33;color:#F4EEE2;border:0 !important;border-radius:16px;",
+        "padding:22px 26px 20px 118px;margin:0 0 26px;box-shadow:inset 0 -5px 0 #C9A24A;",
+        "-webkit-print-color-adjust:exact;print-color-adjust:exact;}",
+      ".hd-mast::before{content:'';position:absolute;left:22px;top:50%;width:76px;height:76px;margin-top:-38px;border-radius:50%;",
+        "background:radial-gradient(circle,#0A1E33 0 34%,transparent 35%),",
+        "conic-gradient(#2F63B8 0 12.5%,#B8457A 0 25%,#2E8B57 0 37.5%,#B87A12 0 50%,#7B4FA0 0 62.5%,#1F8080 0 75%,#A8323E 0 87.5%,#3F4AA6 0);",
+        "box-shadow:0 0 0 3px #1E1F22,0 0 0 5px #C9A24A;-webkit-print-color-adjust:exact;print-color-adjust:exact;}",
+      ".hd-mast::after{content:'A';position:absolute;left:22px;top:50%;width:76px;line-height:76px;margin-top:-38px;text-align:center;",
+        "font:700 30px/76px Georgia,serif;color:#F2C964;}",
+      ".hd-mast .hd-brand{color:#E7C46A !important;letter-spacing:.22em;}",
+      ".hd-mast h1{color:#F4EEE2 !important;font-size:30px;letter-spacing:-.01em;}",
+      ".hd-mast .hd-sub{color:#D6DEE8 !important;}",
+      ".hd-mast .hd-code{background:#C9A24A !important;color:#0A1E33 !important;}",
+      ".hd-h{display:flex;align-items:center;gap:10px;color:#7d5a15 !important;letter-spacing:.14em;}",
+      ".hd-h::before{content:'';width:26px;height:3px;border-radius:2px;background:#C9A24A;flex:none;",
+        "-webkit-print-color-adjust:exact;print-color-adjust:exact;}",
+      ".hd-note{border-left:4px solid #C9A24A !important;background:#FBF6EA;border-radius:0 12px 12px 0;padding:12px 16px !important;",
+        "-webkit-print-color-adjust:exact;print-color-adjust:exact;}",
+      ".hd-tiles{grid-template-columns:repeat(auto-fit,minmax(140px,1fr));}",
+      ".hd-tile{position:relative;border:1.5px solid #1E1F22 !important;border-radius:12px;padding:16px 14px 12px !important;overflow:hidden;",
+        "-webkit-print-color-adjust:exact;print-color-adjust:exact;}",
+      ".hd-tile::before{content:'';position:absolute;left:0;right:0;top:0;height:5px;background:#2F63B8;}",
+      ".hd-tile:nth-child(4n+2)::before{background:#2E8B57;}.hd-tile:nth-child(4n+3)::before{background:#B87A12;}.hd-tile:nth-child(4n+4)::before{background:#7B4FA0;}",
+      ".hd-tv{font-size:17px;}",
+      ".hd-chartwrap{border:1.5px solid #1E1F22 !important;box-shadow:inset 0 5px 0 #1F8080;padding:16px 10px 10px !important;",
+        "-webkit-print-color-adjust:exact;print-color-adjust:exact;}",
+      ".hd-prov{border:1.5px solid #1E1F22 !important;box-shadow:inset 0 5px 0 #C9A24A;-webkit-print-color-adjust:exact;print-color-adjust:exact;}",
+      ".hd-foot{justify-content:center;text-align:center;border-top:2px solid #C9A24A !important;font-style:italic;}",
+      "@media print{",
+        ".hd-mast{background:#0A1E33 !important;}",
+        ".hd-mast h1{font-size:22pt !important;color:#F4EEE2 !important;}",
+        ".hd-mast .hd-brand{color:#E7C46A !important;}.hd-mast .hd-sub{color:#D6DEE8 !important;}",
+        ".hd-tiles{grid-template-columns:repeat(4,1fr) !important;gap:8pt !important;}",
+        ".hd-tv{font-size:12.5pt !important;}",
+        ".hd-tile{border-color:#1E1F22 !important;}",
+        ".hd-note{background:#FBF6EA !important;}",
+        ".hd-sec{margin-bottom:16pt !important;}",
+      "}"
     ].join("\n");
     (document.head || document.documentElement).appendChild(s);
   }
@@ -89465,6 +89519,13 @@ html.js-reveal .reveal,
     font:inherit;font-size:13.5px;font-weight:600;cursor:pointer;padding:8px 14px;border-radius:10px;
     border:1px solid var(--rule,#E4DAC5);background:var(--paper,#FCF8F0);color:var(--ink,#0A1E33);min-height:40px}
   .gcx-bar button.gcx-go{background:var(--navy,#0A1E33);color:#fff;border:2px solid var(--gold-deep,#7E5B18)}
+  .gcx-sugg{margin:14px 0;padding:16px 18px;border-radius:16px;border:2px solid #1E1F22;background:#13314F;color:#F4EEE2;box-shadow:0 0 0 1px rgba(242,201,100,.45),inset 0 5px 0 #C9A24A}
+  .gcx-sugg-h{font:700 19px/1.3 Fraunces,Georgia,serif;margin:0 0 4px;color:#F4EEE2}
+  .gcx-sugg .gcx-say{color:#C8D4E2;font-size:13.5px;margin:0 0 10px}
+  .gcx-sugg-row{display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap;padding:10px 0;border-top:1px solid rgba(242,201,100,.25)}
+  .gcx-sugg-t{font-size:13.5px;color:#C8D4E2;margin-top:2px}
+  .gcx-sugg button.gcx-go{min-height:44px;padding:0 18px;border-radius:999px;background:#C9A24A;color:#0A1E33;border:2px solid #1E1F22;font-weight:800;cursor:pointer}
+  .gcx-sugg .gcx-ok{color:#8FE3B0}
   .gcx-act{margin:8px 0 2px}
   .gcx-panel{margin:8px 0 4px;padding:12px 14px;border:1px dashed var(--rule,#E4DAC5);border-radius:12px;background:var(--card,#fff)}
   .gcx-panel label{display:block;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-soft,#46506E);font-weight:700;margin:8px 0 4px}
@@ -89557,7 +89618,14 @@ html.js-reveal .reveal,
     if (!gs.length) {
       h += '<p class="gcx-say">' + esc(T(w + " has nothing under construction on this device yet. Start the build in The Build (the IEP tab of this dashboard), then come back here to lay these bricks on it.",
         w + " aún no tiene nada en construcción en este dispositivo. Empieza la obra en La Obra (la pestaña IEP de este panel) y vuelve aquí para colocar estos ladrillos.")) + '</p>';
-      return h + '<div class="gcx-row"><button type="button" data-gcxclose="1">' + esc(T("Close", "Cerrar")) + '</button></div></div>';
+      /* AOG-GCX-STARTBUILD-V1 (2026-09-26) — Jimmy: "the option of starting your
+         own build right here, right now … embedded in the building process."
+         One press starts the goal from this activity (percent solved with no
+         hint, from the first day sent to 80% a year on) and lays every brick. */
+      var dl0 = days(act, "all");
+      if (dl0.length) h += '<p class="gcx-say">' + esc(T("Or start " + w + "’s build right here: a goal for " + act.name + ", measured as the percent solved with no hint, starting from " + dl0[0].d + " (" + Math.round(dl0[0].ind / dl0[0].tot * 100) + "%) and aiming for 80% a year from then. Every day sent becomes a brick. You can change any of it later in The Build.",
+        "O empieza la obra de " + w + " aquí mismo: una meta para " + act.name + ", medida como porcentaje resuelto sin pista, desde " + dl0[0].d + " (" + Math.round(dl0[0].ind / dl0[0].tot * 100) + "%) hasta 80% en un año. Cada día enviado se vuelve un ladrillo. Puedes cambiar todo después en La Obra.")) + '</p>';
+      return h + '<div class="gcx-row">' + (dl0.length ? '<button type="button" class="gcx-go" data-gcxstart="' + esc(act.id) + '" style="background:#C9A24A;color:#0A1E33;border:2px solid #1E1F22;font-weight:800">' + esc(T("Start " + w + "’s build here and lay these bricks", "Empezar la obra de " + w + " aquí y colocar estos ladrillos")) + '</button>' : "") + '<button type="button" data-gcxclose="1">' + esc(T("Close", "Cerrar")) + '</button></div></div>';
     }
     var ok = gs.filter(function (x) { return OK_MEASURES[x.g.measure]; });
     var no = gs.filter(function (x) { return !OK_MEASURES[x.g.measure]; });
@@ -89584,6 +89652,37 @@ html.js-reveal .reveal,
     return h + '</div>';
   }
   var busy = false;
+  /* AOG-SUGGEST-GOALS-V1 (2026-09-26) — Jimmy: "compile all the independent data
+     and suggest goals to move forward with, based on what the children produced
+     in the fall and winter." For the student on screen: every activity they sent,
+     what they solved with NO hint in the fall (Aug–Nov) and the winter (Dec–Feb),
+     and where they are now. The three lowest that are still under 80% become
+     suggested goals, each one press from being started and filled with its bricks.
+     A suggestion, never a decision: the team writes the IEP. */
+  function season(d) { var m = +String(d).slice(5, 7); return m >= 8 && m <= 11 ? "fall" : (m === 12 || m <= 2) ? "winter" : m >= 3 && m <= 5 ? "spring" : "summer"; }
+  function pct(list) { var i = 0, t = 0; list.forEach(function (x) { i += x.ind; t += x.tot; }); return t ? Math.round(i / t * 100) : null; }
+  function suggestHtml(w) {
+    var have = goalsOf(w).map(function (x) { return String(x.g.title || ""); }).join(" | ");
+    var rows = series().map(function (act) {
+      var dl = days(act, "all"); if (!dl.length) return null;
+      var f = dl.filter(function (x) { return season(x.d) === "fall"; }), wi = dl.filter(function (x) { return season(x.d) === "winter"; });
+      var last = dl[dl.length - 1], now = Math.round(last.ind / last.tot * 100);
+      return { act: act, fall: pct(f), winter: pct(wi), now: now, last: last, n: dl.length, inBuild: have.indexOf(act.name) >= 0 };
+    }).filter(function (r) { return r; }).sort(function (a, b) { return a.now - b.now; });
+    rows = rows.filter(function (r) { return r.now < 100; }).slice(0, 3);
+    if (!rows.length) return "";
+    var h = '<div class="gcx-sugg"><div class="gcx-sugg-h">' + esc(T("Suggested next goals for " + w, "Metas sugeridas para " + w)) + '</div>'
+      + '<p class="gcx-say">' + esc(T("From what " + w + " solved with no hint, lowest first. Under 80% aims for 80% or more; already strong work aims a little higher. A starting point for the team, not a decision.", "De lo que " + w + " resolvió sin pista, de menor a mayor. Por debajo de 80% apunta a 80% o más; el trabajo ya fuerte apunta un poco más alto. Un punto de partida para el equipo, no una decisión.")) + '</p>';
+    rows.forEach(function (r) {
+      var tgt = r.now < 80 ? Math.min(95, Math.max(80, r.now + 25)) : Math.min(100, r.now + 8);
+      var trail = [r.fall != null ? T("Fall ", "Otoño ") + r.fall + "%" : "", r.winter != null ? T("Winter ", "Invierno ") + r.winter + "%" : "", T("Now ", "Ahora ") + r.now + "%"].filter(Boolean).join(" → ");
+      h += '<div class="gcx-sugg-row"><div><b>' + esc(T("Increase independent accuracy on ", "Aumentar la precisión independiente en ") + r.act.name) + '</b>'
+        + '<div class="gcx-sugg-t">' + esc(trail + " · " + T("aim ", "meta ") + tgt + "% " + T("in a year", "en un año") + " · " + r.n + T(" days of work", " días de trabajo")) + '</div></div>'
+        + (r.inBuild ? '<span class="gcx-say gcx-ok">' + esc(T("Already in the build", "Ya está en la obra")) + '</span>'
+          : '<button type="button" class="gcx-go" data-gcxstart="' + esc(r.act.id) + '" data-base="latest" data-tgt="' + tgt + '">' + esc(T("Start this goal", "Empezar esta meta")) + '</button>') + '</div>';
+    });
+    return h + '</div>';
+  }
   function decorate() {
     var c = document.getElementById("aogPracticeChart");
     if (!c || c.hidden || busy) return;
@@ -89597,6 +89696,10 @@ html.js-reveal .reveal,
           + '<a class="gcx-bp" href="turn-ins.html?blueprint=' + encodeURIComponent(w) + '" style="display:inline-flex;align-items:center;padding:0 14px;min-height:40px;border-radius:999px;border:1.5px solid var(--gold-deep,#9a6f24);font-weight:700;text-decoration:none;color:inherit">◎ ' + esc(T("Open " + w + "’s Blueprint", "Abrir el Plano de " + w)) + '</a>';
         var anchor = c.querySelector(".gc-next") || c.querySelector(".gc-who");
         if (anchor && anchor.nextSibling) c.insertBefore(bar, anchor.nextSibling); else c.appendChild(bar);
+      }
+      if (!c.querySelector(".gcx-sugg-host")) {
+        var sh = document.createElement("div"); sh.className = "gcx-sugg-host"; sh.innerHTML = suggestHtml(w);
+        var bar2 = c.querySelector(".gcx-bar"); if (bar2 && bar2.nextSibling) c.insertBefore(sh, bar2.nextSibling); else c.appendChild(sh);
       }
       var list = series(), acts = c.querySelectorAll(".gc-act");
       Array.prototype.forEach.call(acts, function (el, i) {
@@ -89613,11 +89716,11 @@ html.js-reveal .reveal,
   }
   function redraw() {
     var c = document.getElementById("aogPracticeChart"); if (!c) return;
-    Array.prototype.forEach.call(c.querySelectorAll(".gcx-act"), function (n) { n.parentNode.removeChild(n); });
+    Array.prototype.forEach.call(c.querySelectorAll(".gcx-act, .gcx-sugg-host"), function (n) { n.parentNode.removeChild(n); });
     decorate();
   }
   document.addEventListener("click", function (e) {
-    var t = e.target && e.target.closest ? e.target.closest("[data-gcxprint],[data-gcxone],[data-gcxopen],[data-gcxclose],[data-gcxadd]") : null;
+    var t = e.target && e.target.closest ? e.target.closest("[data-gcxprint],[data-gcxone],[data-gcxopen],[data-gcxclose],[data-gcxadd],[data-gcxstart]") : null;
     if (!t) return;
     var c = document.getElementById("aogPracticeChart"); if (!c || !c.contains(t)) return;
     var w = who();
@@ -89646,6 +89749,28 @@ html.js-reveal .reveal,
     }
     if (t.hasAttribute("data-gcxopen")) { open = { who: w, id: t.getAttribute("data-gcxopen") }; redraw(); return; }
     if (t.hasAttribute("data-gcxclose")) { open = null; redraw(); return; }
+    if (t.hasAttribute("data-gcxstart")) {
+      var sid2 = t.getAttribute("data-gcxstart"), a2 = null;
+      series().forEach(function (a) { if (a.id === sid2) a2 = a; });
+      var dd = a2 ? days(a2, "all") : []; if (!dd.length) return;
+      var st2 = jload(IEPK, { goals: {}, data: {} }); st2.goals = st2.goals || {}; st2.data = st2.data || {};
+      var gid = "g" + Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
+      var fromLatest = t.getAttribute("data-base") === "latest", bd = fromLatest ? dd[dd.length - 1] : dd[0];
+      var b0 = bd.d, yr = new Date(Date.parse(b0)); yr.setFullYear(yr.getFullYear() + 1);
+      var nm = String(a2.name || "");
+      var area = /math/i.test(nm) ? "math" : /writ/i.test(nm) ? "writing" : /(ela|language|reading)/i.test(nm) ? "reading" : "other";
+      st2.goals[gid] = { student: w, grade: "", area: area, title: T("Increase independent accuracy on ", "Aumentar la precisión independiente en ") + nm,
+        measure: "percent", unit: "", baseline: { date: b0, value: Math.round(bd.ind / bd.tot * 100) },
+        target: { date: yr.toISOString().slice(0, 10), value: +(t.getAttribute("data-tgt") || 80) }, notes: T("Started from student-sent practice on the Brick by brick screen.", "Iniciada desde la práctica enviada en la pantalla Ladrillo a ladrillo."),
+        archived: false, lowerBetter: false, intervalLabel: "", xofy: null };
+      st2.data[gid] = [];
+      jsave(IEPK, st2);
+      var r2 = addPoints(gid, a2, "all");
+      said[w + "|" + sid2] = T("Build started: " + w + "’s goal for " + nm + ", with " + r2.added + " bricks laid. Open The Build (IEP tab) to see the aimline.",
+        "Obra empezada: la meta de " + w + " para " + nm + ", con " + r2.added + " ladrillos. Abre La Obra (pestaña IEP) para ver la línea meta.");
+      try { if (typeof window.aogRenderIep === "function") window.aogRenderIep(); } catch (e) {}
+      open = null; redraw(); return;
+    }
     if (t.hasAttribute("data-gcxadd")) {
       var id = t.getAttribute("data-gcxadd"), act = null;
       series().forEach(function (a) { if (a.id === id) act = a; });
@@ -92069,5 +92194,36 @@ body.aog-xwalk-solo:has(#panel-align.active) #panel-align::before{content:"Stand
   #screen-daily-checkin .sc-ribbon, #screen-exit-slip .xs-ribbon{background:var(--gl)!important}
 }
 </style>
+<script id="aog-weekly-links">
+/* AOG-WEEKLY-V1 — the weekly check-in links, built with this teacher's Sheet on them (dest=) */
+(function(){
+  function T(en,es){ try{ return (typeof DT==="function")?DT(en,es):en; }catch(e){ return en; } }
+  function link(w){ var d=""; try{ d=window.aogDestParam_?window.aogDestParam_():""; }catch(e){}
+    return location.origin+"/weekly?w="+w+(d?"&dest="+encodeURIComponent(d):""); }
+  function paint(card){
+    var rows=[["mon",T("Monday · How was your weekend?","Lunes · ¿Cómo estuvo tu fin de semana?")],["mid",T("Midweek · How is your week going?","Mitad de semana · ¿Cómo va tu semana?")],["fri",T("Friday · The week, and weekend plans","Viernes · La semana y los planes")]];
+    card.innerHTML='<p style="margin:0 0 12px">'+T("One link for the whole class. Post it on the day, or show it on the board. Every question can be tapped, and every question has a box to write more.","Un enlace para toda la clase. Publícalo ese día o muéstralo en la pizarra. Cada pregunta se puede tocar y cada una tiene un espacio para escribir más.")+'</p>'+
+      rows.map(function(r){ var u=link(r[0]); return '<div style="margin:0 0 14px"><div style="font-weight:800;margin:0 0 6px">'+r[1]+'</div><div style="display:flex;gap:8px;flex-wrap:wrap"><input readonly value="'+u.replace(/"/g,"&quot;")+'" style="flex:1 1 260px;min-height:44px"><button type="button" class="btn" data-wkcopy="'+u.replace(/"/g,"&quot;")+'">'+T("Copy link","Copiar enlace")+'</button><a class="btn btn-secondary" target="_blank" rel="noopener" href="'+u.replace(/"/g,"&quot;")+'">'+T("Open","Abrir")+'</a></div></div>'; }).join("")+
+      (link("mon").indexOf("dest=")<0?'<p style="margin:0;color:#E7C46A">'+T("Connect your Sheet under Connect & sync first, or answers stay on the student's device.","Conecta tu Hoja en Conectar y sincronizar primero, o las respuestas se quedan en el dispositivo del estudiante.")+'</p>':"");
+  }
+  function mount(){
+    var panel=document.getElementById("panel-distribute"); if(!panel) return;
+    var card=document.getElementById("aogWkLgCard");
+    if(!card){
+      var head=document.createElement("div"); head.className="section-head"; head.innerHTML='<h2>'+T("Weekly check-ins","Registros semanales")+'</h2>';
+      var wrap=document.createElement("div"); wrap.className="table-card"; wrap.style.padding="18px";
+      card=document.createElement("div"); card.id="aogWkLgCard"; wrap.appendChild(card);
+      var panes=document.getElementById("aogDistPanes");
+      panel.appendChild(head); panel.appendChild(wrap);
+      if(window.__aogDistRebuild) window.__aogDistRebuild();
+    }
+    paint(card);
+  }
+  document.addEventListener("click",function(e){ var b=e.target.closest&&e.target.closest("[data-wkcopy]"); if(!b) return;
+    var u=b.getAttribute("data-wkcopy"); try{ navigator.clipboard.writeText(u); b.textContent=T("Copied","Copiado"); }catch(x){} });
+  if(document.readyState==="loading") document.addEventListener("DOMContentLoaded",function(){ setTimeout(mount,1200); }); else setTimeout(mount,1200);
+  setTimeout(mount,3200);
+})();
+</script>
 </body>
 </html>

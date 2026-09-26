@@ -596,30 +596,33 @@
     var es = T("en", "es") === "es";
     /* check-ins */
     var ci = [], days = findLog(jload(CK, {}), sid);
-    Object.keys(days).forEach(function (d) { if (d >= since) (days[d] || []).forEach(function (r) { ci.push(r); }); });
+    var ciPts = [];
+    Object.keys(days).forEach(function (d) { if (d >= since) (days[d] || []).forEach(function (r) { ci.push(r); ciPts.push([d, [word(es ? ARR_ES : ARR, r.arrival), word(es ? CON_ES : CON, r.connection), r.challenge && r.challenge !== "Nothing today" ? r.challenge : "", r.tellAdult ? T("asked for an adult", "pidió un adulto") : ""].filter(Boolean).join(" · ")]); }); });
     if (ci.length) {
       var tells = ci.filter(function (r) { return r.tellAdult; }).length;
-      out.push({ h: T("Daily check-ins", "Registros diarios"), n: ci.length, unit: T("in the last 30 days", "en los últimos 30 días"),
+      out.push({ pts: ciPts, h: T("Daily check-ins", "Registros diarios"), n: ci.length, unit: T("in the last 30 days", "en los últimos 30 días"),
         lines: [T("Arriving", "Al llegar") + ": " + word(es ? ARR_ES : ARR, avg(ci.map(function (r) { return r.arrival; }))) + " · " + T("Connection", "Conexión") + ": " + word(es ? CON_ES : CON, avg(ci.map(function (r) { return r.connection; }))) + " · " + T("Ready to learn", "Listo/a para aprender") + ": " + word(es ? RDY_ES : RDY, avg(ci.map(function (r) { return r.readiness; }))),
           T("Named barriers", "Barreras nombradas") + ": " + (top(ci.map(function (r) { return r.challenge !== "Nothing today" ? r.challenge : ""; }), 3).join(", ") || T("none", "ninguna")),
           tells ? T("Asked to talk to an adult", "Pidió hablar con un adulto") + ": " + tells + " " + T("time(s)", "vez/veces") : ""] });
     }
     /* exit slips */
     var xs = [], xd = findLog(jload(XK, {}), sid);
-    Object.keys(xd).forEach(function (d) { if (d >= since) (xd[d] || []).forEach(function (r) { xs.push(r); }); });
+    var xsPts = [];
+    Object.keys(xd).forEach(function (d) { if (d >= since) (xd[d] || []).forEach(function (r) { xs.push(r); xsPts.push([d, [r.dayWord, r.hardClass ? T("hard: ", "difícil: ") + r.hardClass + (r.hardWhy ? " — " + r.hardWhy : "") : "", r.favClass ? T("favorite: ", "favorita: ") + r.favClass : ""].filter(Boolean).join(" · ")]); }); });
     if (xs.length) {
-      out.push({ h: T("Exit slips", "Boletas de salida"), n: xs.length, unit: T("in the last 30 days", "en los últimos 30 días"),
+      out.push({ pts: xsPts, h: T("Exit slips", "Boletas de salida"), n: xs.length, unit: T("in the last 30 days", "en los últimos 30 días"),
         lines: [T("The day, in their word", "El día, en su palabra") + ": " + (top(xs.map(function (r) { return r.dayWord; }), 3).join(", ") || "—"),
           T("Class named hard", "Clase nombrada como difícil") + ": " + (top(xs.map(function (r) { return r.hardClass; }), 2).join(", ") || T("none", "ninguna")) + (xs.some(function (r) { return r.hardWhy; }) ? " — " + top(xs.map(function (r) { return r.hardWhy; }), 1).join("").replace(/ ×\d+$/, "") : ""),
           T("Favorite", "Favorita") + ": " + (top(xs.map(function (r) { return r.favClass; }), 1).join("").replace(/ ×\d+$/, "") || "—")] });
     }
     /* adults' observations (daily log, incl. support check-ins from other adults) */
     var ps = [], dd = findLog(jload(DK, {}), sid), adults = {};
-    Object.keys(dd).forEach(function (d) { if (d >= since) ((dd[d] || {}).periods || []).forEach(function (p) { ps.push(p); if (p.respondentId) adults[p.respondentId] = p.respondentRole || ""; }); });
+    var psPts = [];
+    Object.keys(dd).forEach(function (d) { if (d >= since) ((dd[d] || {}).periods || []).forEach(function (p) { ps.push(p); psPts.push([d, [p.period || "", p.respondentId || "", p.regulated ? T("regulated", "regulado") : "", p.usedStrategy ? T("used a strategy", "usó estrategia") : "", p.connected ? T("connected", "conectado") : ""].filter(Boolean).join(" · ")]); if (p.respondentId) adults[p.respondentId] = p.respondentRole || ""; }); });
     if (ps.length) {
       function share(k) { var n = 0; ps.forEach(function (p) { if (p[k]) n++; }); return Math.round(n / ps.length * 100) + "%"; }
       var names = Object.keys(adults);
-      out.push({ h: T("What adults observed", "Lo que observaron los adultos"), n: ps.length, unit: T("period entries", "registros por periodo") + (names.length ? " · " + names.length + " " + T("adults", "adultos") : ""),
+      out.push({ pts: psPts, h: T("What adults observed", "Lo que observaron los adultos"), n: ps.length, unit: T("period entries", "registros por periodo") + (names.length ? " · " + names.length + " " + T("adults", "adultos") : ""),
         lines: [T("Regulated", "Regulado/a") + " " + share("regulated") + " · " + T("Used a strategy", "Usó una estrategia") + " " + share("usedStrategy") + " · " + T("Connected", "Conectado/a") + " " + share("connected"),
           names.length ? names.map(function (n) { var rl = ""; try { rl = window.aogRoleLabel ? window.aogRoleLabel(adults[n]) : ""; } catch (e) {} return n + (rl ? " (" + rl + ")" : ""); }).join(" · ") : ""] });
     }
@@ -635,7 +638,7 @@
         var trend = a.length > 1 && !isNaN(fi) && !isNaN(li) ? (li > fi ? " ↑" : li < fi ? " ↓" : " →") : "";
         return String(l.activityName || k).replace(/ · .*$/, "") + ": " + (isNaN(li) ? "—" : li + (tot ? "/" + tot : "")) + " " + T("independent", "independiente") + trend + " (" + a.length + " " + T(a.length === 1 ? "send" : "sends", a.length === 1 ? "envío" : "envíos") + ")";
       });
-      out.push({ h: T("Practice", "Práctica"), n: pr.length, unit: T("summary rows from the sheet", "filas de resumen de la hoja"), lines: lines });
+      out.push({ pts: pr.map(function (r) { return [String(r.date || r.timestamp || "").slice(0, 10), String(r.activityName || r.activityId || "") + ": " + (r.independent != null ? r.independent + (r.itemsTotal ? "/" + r.itemsTotal : "") + " " + T("independent", "independiente") : "")]; }), h: T("Practice", "Práctica"), n: pr.length, unit: T("summary rows from the sheet", "filas de resumen de la hoja"), lines: lines });
     }
     /* IEP goals */
     try {
@@ -685,8 +688,14 @@
     }
     h += '<p class="mtss-p mtss-plus-lead">' + esc(T("What the other pulls know about this student — counts and plain words, no new score.", "Lo que saben las otras fuentes sobre este estudiante — conteos y palabras sencillas, sin un puntaje nuevo.")) + '</p>';
     h += '<div class="mtss-plus">' + ev.map(function (e) {
+      /* AOG-BOX-TO-DATA-V1 (2026-09-26) — Jimmy: "the boxes should be linked to the
+         data points so the teacher can scan them quickly." Tap a box and every data
+         point behind its number drops open, newest first. */
+      var pts = (e.pts || []).slice().sort(function (a, b) { return a[0] < b[0] ? 1 : -1; });
+      var drop = pts.length ? '<details class="mtss-plus-pts"><summary>' + esc(T("See the " + pts.length + " data points", "Ver los " + pts.length + " datos")) + '</summary><table>' +
+        pts.map(function (q) { return '<tr><td>' + esc(q[0]) + '</td><td>' + esc(q[1] || "—") + '</td></tr>'; }).join("") + '</table></details>' : "";
       return '<div class="mtss-plus-card"><div class="mtss-plus-top"><span class="mtss-plus-n">' + e.n + '</span><div><div class="mtss-plus-h">' + esc(e.h) + '</div><div class="mtss-plus-u">' + esc(e.unit) + '</div></div></div>'
-        + '<ul class="mtss-plus-l">' + e.lines.filter(Boolean).map(function (l) { return '<li>' + esc(l) + '</li>'; }).join("") + '</ul></div>';
+        + '<ul class="mtss-plus-l">' + e.lines.filter(Boolean).map(function (l) { return '<li>' + esc(l) + '</li>'; }).join("") + '</ul>' + drop + '</div>';
     }).join("") + '</div>';
     return h;
   }
@@ -717,6 +726,12 @@
     + '#mtssOverlay .mtss-plus-strip{grid-template-columns:repeat(auto-fit,minmax(130px,1fr))}'
     + '#mtssOverlay .mtss-plus-tile{display:flex;gap:10px;align-items:center}'
     + '#mtssOverlay .mtss-plus-lead{margin-top:0}'
+    + '#mtssOverlay .mtss-plus-pts{margin-top:8px;border-top:1px dashed var(--rule,#D9CBA8);padding-top:6px}'
+    + '#mtssOverlay .mtss-plus-pts summary{cursor:pointer;font-weight:800;font-size:12.5px;color:#7d5a15;min-height:32px;display:flex;align-items:center}'
+    + '#mtssOverlay .mtss-plus-pts table{width:100%;border-collapse:collapse;font-size:12px;margin-top:4px}'
+    + '#mtssOverlay .mtss-plus-pts td{border-top:1px solid var(--rule,#E4DAC5);padding:4px 6px;vertical-align:top;color:var(--ink,#1B3A5F)}'
+    + '#mtssOverlay .mtss-plus-pts td:first-child{white-space:nowrap;font-variant-numeric:tabular-nums;color:var(--ink-soft,#5B6478)}'
+    + '#mtssOverlay .mtss-plus-card{cursor:default}'
     + '@media print{.mtss-plus{display:grid!important;grid-template-columns:repeat(2,1fr)!important}.mtss-plus-card{break-inside:avoid;border-color:#bbb!important}}';
 
   function injectCss() { if (document.getElementById("aog-demo-plus-css")) return; var s = document.createElement("style"); s.id = "aog-demo-plus-css"; s.textContent = CSS; document.head.appendChild(s); }
