@@ -290,6 +290,9 @@ html.a11y-dyslexic body{letter-spacing:.02em;word-spacing:.09em;line-height:1.8}
   var LOCK = "aog.dash.lock.v1", OPEN = "aog.dash.unlock", IDLE_MS = 30 * 60 * 1000;
   function lget(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
   function rec() { try { return JSON.parse(lget(LOCK) || "") || null; } catch (e) { return null; } }
+  /* AOG-NOLOCK-V1 (2026-09-26) — Jimmy: "I don't like the password to the dashboard. Eliminate for all things right now." No code is asked for anywhere; a code set earlier is cleared. */
+  try { localStorage.removeItem(LOCK); } catch (e) {}
+  return;
   var R = rec();
   if (!R || !R.hash) return;                    /* no code set on this device — day one is not blocked */
   function unlocked() {
