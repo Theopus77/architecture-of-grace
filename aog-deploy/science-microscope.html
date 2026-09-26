@@ -264,6 +264,8 @@ html{background:#081828}
       <button type="button" class="pill" id="themeBtn">Dark</button>
     </div>
   </header>
+  <!-- AOG-TOOL-MAST-V1 — the same navy masthead as the turntables; static, so a view re-render never wipes it -->
+  <section class="mast" id="toolMast"><p class="kicker" id="mastK"></p><h1 id="mastH"></h1><p class="lead" id="mastL"></p></section>
   <nav class="nav no-print" id="nav" aria-label="Activity"></nav>
   <main id="view"></main>
   <!-- AOG-SCIPIC-PANEL-V1 -->
@@ -952,6 +954,7 @@ function hashPage(){ const h=(location.hash||"#home").replace("#",""); return ["
 
 function paintChrome(){
   document.getElementById("brand").textContent=t("app");
+  { const k=document.getElementById("mastK"), h=document.getElementById("mastH"), l=document.getElementById("mastL"); if(k) k.textContent=t("eyebrow"); if(h) h.textContent=t("app"); if(l) l.textContent=t("tag"); }
   document.getElementById("langBtn").textContent=S.lang==="es"?"EN":"ES";
   document.getElementById("themeBtn").textContent=S.theme==="dark"?t("light"):t("dark");
   document.getElementById("foot").textContent=t("foot");
@@ -970,10 +973,7 @@ function pageHome(){
     ["find","find",t("cardFind"),t("openFind"),false,S.findBest],
     ["job","job",t("cardJob"),t("openJob"),false,S.jobBest]
   ];
-  return `<h1>${t("app")}</h1>
-    <p class="kicker">${t("eyebrow")}</p>
-    <p class="lead">${t("tag")}</p>
-    <p class="muted" style="font-size:.9rem">${t("priv")}</p>
+  return `    <p class="muted" style="font-size:.9rem">${t("priv")}</p>
     <p class="muted" style="font-size:.9rem"><a href="/telescope.html">${S.lang==="es"?"El telescopio es el otro ocular.":"The telescope is the other eyepiece."}</a></p>
     <div class="stats"><span>${met}/12 ${t("partsMet")}</span><span>·</span><span>${done}/${stairN} ${t("stations")}</span><span>·</span><span>${S.cracked} ${t("slidesCracked")}</span></div>
     <div class="grid-home">
