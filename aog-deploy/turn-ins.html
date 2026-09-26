@@ -687,7 +687,7 @@ else document.documentElement.classList.add("aog-embed");</script>
       if(nz(r.confidence)) sm.push("confidence "+r.confidence+"/5");
       if(x.finished) sm.push("FINISHED");
       return { kind:"turnin", kindLab:"Turn-in", cls:sj[1], subj:sj[0],
-               student:r.studentId, ts:r.timestamp||r.date||"",
+               student:r.studentId||r.student||r.respondentId||r.name||r.who||"", ts:r.timestamp||r.date||"",
                title:r.activityName||r.activityId||"Practice",
                sum:sm.join(" · "), sheet:!!r.__sheet, raw:r,
                detail:turninDetail, evidence:turninEvidence };
@@ -798,7 +798,7 @@ else document.documentElement.classList.add("aog-embed");</script>
       return { kind: isStu?"checkin":"team",
                kindLab: isStu?"Student check-in":"Team check-in",
                cls: isStu?"k-ci":"k-team", subj:"",
-               student:r.studentId, ts:r.timestamp||r.date||"",
+               student:r.studentId||r.student||r.respondentId||r.name||r.who||"", ts:r.timestamp||r.date||"",
                title: isStu?"Morning check-in":("Observed by "+(r.respondentId||"a colleague")),
                sum:bits(sm), sheet:true, raw:r, stu:isStu,
                detail:ciDetail, evidence:ciEvidence };
@@ -1074,7 +1074,9 @@ else document.documentElement.classList.add("aog-embed");</script>
     READERS.forEach(function(fn){
       try{ out=out.concat(fn()||[]); }catch(e){ /* one bad store never blanks the page */ }
     });
-    return out.filter(function(it){ return it && nz(it.student); });
+    /* AOG-INBOX-NONAME-V1 (2026-09-26) — a row with no name is still a row. It used to be dropped here without a
+       word; now it shows under "(no name)" so a tab whose column is headed differently is seen, not lost. */
+    return out.filter(function(it){ return !!it; }).map(function(it){ if(!nz(it.student)) it.student="(no name)"; return it; });
   }
 
   /* ═══════════ the filters ═══════════ */
@@ -1842,6 +1844,10 @@ else document.documentElement.classList.add("aog-embed");</script>
         lsSet("aog.practice.remote", JSON.stringify(practice));
         lsSet("aog.practice.remote.at", new Date().toISOString());
         got.push(rows.length+" check-ins"); got.push(practice.length+" turn-ins");
+        /* AOG-INBOX-ARRIVED-V1 (2026-09-26) — what actually arrived, by activity id, so a row that lands in the Sheet
+           but never shows here can be seen at the door (Jimmy: "the Practice tab is getting the Bible stuff"). */
+        try{ var byId={}, noWho=0; practice.forEach(function(r){ var id=String((r&&r.activityId)||"?").replace(/-g?[a-z0-9-]*$/i,""); var aid=String((r&&r.activityId)||""), m=/^(dd-[a-z-]+)-g[^-]*-s\d+$/i.exec(aid)||/^(crs-[a-z]+)/i.exec(aid)||/^(wf)-/i.exec(aid)||/^([a-z]+\d*)/i.exec(aid); id=m?m[1]:"(no id)"; byId[id]=(byId[id]||0)+1; if(!(r&&(r.studentId||r.respondentId))) noWho++; });
+          var parts=Object.keys(byId).sort().map(function(k){ return k+" "+byId[k]; }); if(parts.length) got.push("arrived by id: "+parts.join(", ")+(noWho?" · "+noWho+" with no student name":"")); }catch(e){}
         /* v18 scripts say which tabs hold rows; older ones do not, and the Inbox says so */
         if(out.tabs && typeof out.tabs==="object"){ var tl=Object.keys(out.tabs).map(function(k){ return k.replace(/^Practice · /,"")+" "+out.tabs[k]; }); if(tl.length) got.push("Sheet tabs: "+tl.join(", ")); lsSet("aog.sheet.tabs", JSON.stringify(out.tabs)); }
         else got.push("(Apps Script older than v18 — Set up ▸ Download Code.gs and redeploy to see which tabs hold rows)");

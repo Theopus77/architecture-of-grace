@@ -227,7 +227,7 @@ function studentHref(it){ const h=get("aog.dash2.handed",null); let p=itemPath(i
 /* ── what the Sheet sent back (pulled on the classic dashboard, saved on this device) ── */
 function rows(k){ try{ const v=JSON.parse(localStorage.getItem(k)||"[]"); return Array.isArray(v)?v:[]; }catch(e){ return []; } }
 function day(r){ return String(r.date||r.timestamp||"").slice(0,10); }
-function who(r){ return String(r.studentId||r.respondentId||"").trim(); }
+function who(r){ return String(r.studentId||r.student||r.respondentId||r.name||r.who||"").trim(); }
 function data(){
   const ci=rows("aog.checkin.remote").filter(r=>String(r.checkinType||"")!=="thisisme"&&!isAdultRow(r));
   /* AOG-ONESEND-V1 — the same pile the Inbox counts: rows from the Sheet plus the copies this device kept of its own
