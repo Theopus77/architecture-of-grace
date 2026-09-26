@@ -1610,13 +1610,13 @@ function onOpen() {
 function aogSetKeys() {
   var ui = SpreadsheetApp.getUi();
   var props = PropertiesService.getScriptProperties();
-  var w = ui.prompt('Write key (BACKEND_AUTH_KEY)',
-    'Make up a passphrase. Students\' pages send with it. Type the same one into Dashboard ▸ Set up ▸ Write key.',
+  var w = ui.prompt('BACKEND_AUTH_KEY',
+    'The write key. Students\' pages send with it. Type the same one into Dashboard ▸ Set up ▸ BACKEND_AUTH_KEY.',
     ui.ButtonSet.OK_CANCEL);
   if (w.getSelectedButton() !== ui.Button.OK) { return; }
   var wv = String(w.getResponseText() || '').trim();
-  var r = ui.prompt('Read key (ADMIN_PULL_KEY)',
-    'Make up a different passphrase. Only your dashboard uses it, to pull answers back. Type the same one into Dashboard ▸ Set up ▸ Read key.',
+  var r = ui.prompt('ADMIN_PULL_KEY',
+    'The read key. Only your dashboard uses it, to pull answers back. Type the same one into Dashboard ▸ Set up ▸ ADMIN_PULL_KEY.',
     ui.ButtonSet.OK_CANCEL);
   if (r.getSelectedButton() !== ui.Button.OK) { return; }
   var rv = String(r.getResponseText() || '').trim();
@@ -1630,6 +1630,6 @@ function aogCheckKeys() {
   var props = PropertiesService.getScriptProperties();
   var w = props.getProperty('BACKEND_AUTH_KEY'), r = props.getProperty('ADMIN_PULL_KEY');
   SpreadsheetApp.getUi().alert(
-    'Write key (BACKEND_AUTH_KEY): ' + (w ? 'set (' + w.length + ' characters)' : 'NOT SET — sends are refused') + '\n' +
-    'Read key (ADMIN_PULL_KEY): ' + (r ? 'set (' + r.length + ' characters)' : 'NOT SET — the dashboard cannot pull'));
+    'BACKEND_AUTH_KEY (write): ' + (w ? 'set (' + w.length + ' characters)' : 'NOT SET — sends are refused') + '\n' +
+    'ADMIN_PULL_KEY (read): ' + (r ? 'set (' + r.length + ' characters)' : 'NOT SET — the dashboard cannot pull'));
 }
