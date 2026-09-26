@@ -467,7 +467,8 @@ body{background:var(--bg);color:var(--ink);font:16px/1.55 var(--sans);}
 .sheet-head{padding:0;border:0;margin:0 0 4px}
 .sheet-head .k{font:800 .72rem var(--sans);letter-spacing:.14em;text-transform:uppercase;color:var(--sub)}
 .sheet-head .say{color:var(--sub);font-style:normal;font-family:var(--sans);font-size:1rem;margin:6px 0 0}
-.modrow{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+/* AOG-GR-MENU-V1 (2026-09-26) — the sixteen module pills were a wall; the module drop-down that was already here is the way to choose. */
+.modpills{display:none !important}.modrow{margin-top:18px}
 nav.lists{display:flex;gap:8px;flex-wrap:wrap;margin:18px 0 10px}
 .modpills .lchip{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:999px;padding:7px 14px;font:600 .85rem var(--sans);cursor:pointer;min-height:36px}
 .modpills .lchip.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
@@ -685,12 +686,26 @@ input.gnum:focus{outline:2px solid var(--accent, currentColor); outline-offset:1
   .ctext{display:none}
   body.print-key #paneLab{display:none!important}
 }
+
+/* ══ AOG-GR-FACELIFT-V1 (2026-09-26) — Jimmy: "the foundry, grammar and words within the word lists get a
+   FACELIFT and structural upgrade." Structure: choose the module from the drop-down that was already here;
+   the four study views and the four tier chips are drop-downs too. Look: quiet and grown-up. Study cards carry
+   their tier as a coloured rule, the question in the serif; quiz choices are tall enough for a thumb. */
+.cards{gap:14px}
+.reveal{border-radius:14px;border-top:4px solid var(--rule)}
+.reveal:has(.tiertag.t1){border-top-color:var(--lock)}.reveal:has(.tiertag.t2){border-top-color:var(--gold)}.reveal:has(.tiertag.t3){border-top-color:var(--caution)}
+.reveal .rf{font-size:17.5px}
+.reveal .rb{font-size:15px;line-height:1.5}
+.opt{min-height:48px;border-radius:12px;line-height:1.3}
+.hintcard{border-radius:16px}
+.sheet-head h2{font-size:clamp(24px,4vw,34px)}
 </style>
 <script src="/aog-iep.js"></script>
 </head>
 <body>
 <script src="/aog-topbar.js"></script>
 <script src="/aog-grace.js" defer></script>
+<script src="/aog-dropdowns.js?v=4920" defer></script>
 
 <script>document.body.className="js-on";</script>
 
@@ -740,7 +755,7 @@ input.gnum:focus{outline:2px solid var(--accent, currentColor); outline-offset:1
   <nav class="lists modpills no-print" id="modPills" aria-label="Modules"></nav>
   <p class="mod-sub" id="modSub"></p>
 
-  <div class="tabs no-print" role="group" aria-label="Views">
+  <div class="tabs no-print" role="group" aria-label="Views" data-aog-dropdown="Study|Estudiar">
     <button class="tab" type="button" id="tabCards" aria-pressed="true" data-en="Study Cards" data-es="Tarjetas de Estudio">Study Cards</button>
     <button class="tab" type="button" id="tabHints" aria-pressed="false" data-en="Helpful Hints" data-es="Pistas Útiles">Helpful Hints</button>
     <button class="tab" type="button" id="tabQuiz" aria-pressed="false" data-en="Practice Quiz" data-es="Quiz de Práctica">Practice Quiz</button>
@@ -1646,7 +1661,7 @@ sa:[
   function paintCards(){
     var m = M(), host = $("panelCards");
     var filter = paintCards.filter || 0;
-    var chips = '<div class="chips" role="group" aria-label="Tier filter">'
+    var chips = '<div class="chips" role="group" aria-label="Tier filter" data-aog-dropdown="Tier|Nivel">'
       + [0,1,2,3].map(function(t){
           var lab = t===0 ? T("All tiers","Todos los niveles") : TIERS[t];
           return '<button class="chip" type="button" data-cf="'+t+'" aria-pressed="'+(filter===t)+'">'+lab+'</button>';
