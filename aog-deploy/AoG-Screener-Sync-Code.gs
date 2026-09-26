@@ -1,8 +1,17 @@
-/* Architecture of Grace — Sheet sync · Apps Script · v17
+/* Architecture of Grace — Sheet sync · Apps Script · v18
    Trimmed 2026-09-20: comments stripped, and five functions nothing ever
    called were removed (runWriteTest, checkKeys, checkinSelfTest — editor-only
    tools — plus safe_ and getPracticeSheet). What runs is unchanged. The fully
    annotated original: _not-deployed/AoG-Screener-Sync-Code.annotated.gs
+
+   v18 (2026-09-26): every Daily Drafts subject gets its own tab. Jimmy:
+   "There is no Daily Drafts for the Bible on the Google Sheets, or any of
+   the new stuff." A v17 script still took those rows — they landed in the
+   plain Practice tab. Now The Bible, Qur'an, Talmud, FACS, World Religions
+   and Economics each get "Practice · Daily Drafts · <subject>", and any
+   subject added later lands in "Practice · Daily Drafts · Other" instead of
+   disappearing into Practice. Paste this over the old script and deploy a
+   new version (Deploy ▸ Manage deployments ▸ Edit ▸ New version).
 
    v17 (2026-09-21): Word Foundry test rehearsals get their own tab,
    "Practice · Word Foundry". A v16 script still takes those rows — they
@@ -262,6 +271,14 @@ var PRACTICE_TABS = {
   'drops-social':  'Practice · Daily Drafts · Social Studies',
   'drops-write':   'Practice · Daily Drafts · Writing',
   'drops-spanish': 'Practice · Daily Drafts · Spanish',
+  // v18 — the newer subjects, and a catch-all so nothing new is ever lost
+  'drops-facs':      'Practice · Daily Drafts · FACS',
+  'drops-religion':  'Practice · Daily Drafts · World Religions',
+  'drops-bible':     'Practice · Daily Drafts · The Bible',
+  'drops-quran':     'Practice · Daily Drafts · Qur\'an',
+  'drops-talmud':    'Practice · Daily Drafts · Talmud',
+  'drops-economics': 'Practice · Daily Drafts · Economics',
+  'drops-other':     'Practice · Daily Drafts · Other',
   'reading':       'Practice · Reading',
   'writing':       'Practice · Writing',
   'grammar':       'Practice · English Grammar',
@@ -310,8 +327,15 @@ var PRACTICE_PATTERNS = [
   [/^dd-social-studies\b/i, 'drops-social'],
   [/^dd-write\b/i,          'drops-write'],
   [/^dd-spanish\b/i,        'drops-spanish'],
+  [/^dd-facs\b/i,           'drops-facs'],
+  [/^dd-religion\b/i,       'drops-religion'],
+  [/^dd-bible\b/i,          'drops-bible'],
+  [/^dd-quran\b/i,          'drops-quran'],
+  [/^dd-talmud\b/i,         'drops-talmud'],
+  [/^dd-economics\b/i,      'drops-economics'],
   [/^wf-u\d+/i,             'wordfoundry'],
   [/^dd-foundry\b/i,        'wordfoundry'],  // AOG-DD-FOUNDRY-V1: the Foundry's Daily Drafts land with its test rehearsals
+  [/^dd-/i,                 'drops-other'],  // v18: a Daily Drafts subject this script has not met yet
   [/^crs-(sci|mth|ela|ss|ush|eco|rel|spa|fcs)-/i, function (m) { return 'course-' + m[1].toLowerCase(); }]
 ];
 
