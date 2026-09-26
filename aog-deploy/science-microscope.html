@@ -252,6 +252,15 @@ html.aog-grace #toolMast[data-aog-hero] .lead{display:-webkit-box;-webkit-line-c
 html.aog-grace #toolMast[data-aog-hero] .aog-more{display:none!important}
 html.aog-grace #toolMast[data-aog-hero] .kicker{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 body>.wrap>header:first-child,.wrap>header.no-print:first-child{display:none!important}
+
+/* AOG-BENCH-NAV-V1 (2026-09-26) — Jimmy: "all of them should have the same line up … one connective tissue."
+   One row on every bench: Bench · Meet … · Use … · Find … · Name the job · Print · Picture guide · the partner. */
+.nav{display:flex;gap:4px;overflow-x:auto;border-bottom:2px solid var(--line);margin:.2rem 0 1.1rem;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+.nav::-webkit-scrollbar{display:none}
+.nav a{flex:0 0 auto;min-height:44px;display:inline-flex;align-items:center;padding:0 .75rem;text-decoration:none;color:var(--muted);font-weight:600;font-size:.9rem;border-bottom:2px solid transparent;margin-bottom:-2px;white-space:nowrap}
+.nav a.on{color:var(--ink);border-color:var(--steel,#2F63B8)}
+.nav a.sep{margin-left:auto;padding-left:.5rem}
+.nav a.sep+a.sep{margin-left:0}
 </style>
 </head>
 <body>
@@ -322,8 +331,9 @@ const STR = {
   tag:{en:"Twelve parts, a research eyepiece, and every one has a job. Meet the machine, then look through it.",es:"Doce partes, un ocular de investigación, y cada una tiene un trabajo. Conoce la máquina y luego mira por ella."},
   priv:{en:"Everything stays on this computer.",es:"Todo se queda en esta computadora."},
   dark:{en:"Dark",es:"Oscuro"}, light:{en:"Light",es:"Claro"},
+  guideNav:{en:"Picture guide",es:"Guía en imágenes"}, partnerNav:{en:"The telescope",es:"El telescopio"},
   home:{en:"Bench",es:"Mesa"}, meet:{en:"Meet the machine",es:"Conoce la máquina"}, lab:{en:"Look through it",es:"Mira por él"},
-  find:{en:"Find the part",es:"Encuentra la parte"}, job:{en:"Name the job",es:"Nombra el trabajo"}, print:{en:"Print it",es:"Imprimir"},
+  find:{en:"Find the part",es:"Encuentra la parte"}, job:{en:"Name the job",es:"Nombra el trabajo"}, print:{en:"Print",es:"Imprimir"},
   meetNav:{en:"Meet",es:"Máquina"}, labNav:{en:"Lab",es:"Ocular"}, findNav:{en:"Find",es:"Parte"}, jobNav:{en:"Job",es:"Trabajo"}, printNav:{en:"Print",es:"Imprimir"},
   meetHint:{en:"Tap any part of the machine, or walk the path of light. A mark appears on each one you have met.",es:"Toca cualquier parte de la máquina, o camina la luz. Aparece una marca en cada una que ya conociste."},
   tapPart:{en:"Tap a part",es:"Toca una parte"}, startAnywhere:{en:"Start anywhere",es:"Empieza donde quieras"},
@@ -972,7 +982,8 @@ function paintChrome(){
   document.getElementById("foot").textContent=t("foot");
   document.documentElement.lang=S.lang;
   const NAV=[["home","home","home"],["meet","meet","meetNav"],["lab","lab","labNav"],["find","find","findNav"],["job","job","jobNav"],["print","print","printNav"]];
-  document.getElementById("nav").innerHTML=NAV.map(([id,full,sh])=>`<a href="#${id}" class="${S.page===id?"on":""}"><span class="full">${t(full)}</span><span class="short">${t(sh)}</span></a>`).join("");
+  document.getElementById("nav").innerHTML=NAV.map(([id,full,sh])=>`<a href="#${id}" class="${S.page===id?"on":""}">${t(full)}</a>`).join("")
+    +`<a class="sep" href="/microscope-guide">${t("guideNav")}</a><a class="sep" href="/telescope">${t("partnerNav")}</a>`;
 }
 
 function pageHome(){

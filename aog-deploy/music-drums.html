@@ -358,6 +358,14 @@ html.aog-grace #toolMast[data-aog-hero] .lead{display:-webkit-box;-webkit-line-c
 html.aog-grace #toolMast[data-aog-hero] .aog-more{display:none!important}
 html.aog-grace #toolMast[data-aog-hero] .kicker{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 body>.wrap>header:first-child,.wrap>header.no-print:first-child{display:none!important}
+/* AOG-BENCH-NAV-V1 (2026-09-26) — Jimmy: "all of them should have the same line up … one connective tissue."
+   One row on every bench: Bench · Meet … · Use … · Find … · Name the job · Print · Picture guide · the partner. */
+.nav{display:flex;gap:4px;overflow-x:auto;border-bottom:2px solid var(--line);margin:.2rem 0 1.1rem;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+.nav::-webkit-scrollbar{display:none}
+.nav a{flex:0 0 auto;min-height:44px;display:inline-flex;align-items:center;padding:0 .75rem;text-decoration:none;color:var(--muted);font-weight:600;font-size:.9rem;border-bottom:2px solid transparent;margin-bottom:-2px;white-space:nowrap}
+.nav a.on{color:var(--ink);border-color:var(--steel,#2F63B8)}
+.nav a.sep{margin-left:auto;padding-left:.5rem}
+.nav a.sep+a.sep{margin-left:0}
 </style>
 <script src="aog-handoff.js"></script>
 <script src="aog-eq.js"></script>
@@ -443,7 +451,7 @@ const STR = {
   dark:{en:"Dark",es:"Oscuro"}, light:{en:"Light",es:"Claro"},
   home:{en:"Bench",es:"Mesa"}, meet:{en:"Meet the voices",es:"Conoce las voces"},
   words:{en:"Name the job",es:"Nombra el trabajo"}, print:{en:"Print it",es:"Imprimir"},
-  homeNav:{en:"Bench",es:"Mesa"}, meetNav:{en:"Voices",es:"Voces"}, wordsNav:{en:"Words",es:"Palabras"}, printNav:{en:"Print",es:"Imprimir"},
+  homeNav:{en:"Bench",es:"Mesa"}, meetNav:{en:"Meet the voices",es:"Conoce las voces"}, wordsNav:{en:"Name the job",es:"Nombra el trabajo"}, printNav:{en:"Print",es:"Imprimir"},
   play:{en:"Play",es:"Tocar"}, stop:{en:"Silence",es:"Silencio"},
   clear:{en:"Clear grid",es:"Vaciar"},
   benchLab:{en:"Bench",es:"Banco"}, benchSimple:{en:"Simple bench",es:"Banco sencillo"}, benchFull:{en:"Full bench",es:"Banco completo"},
@@ -1167,7 +1175,7 @@ function paintLang(){
 function navHtml(){
   const items=[["home","homeNav"],["meet","meetNav"],["words","wordsNav"],["print","printNav"]];
   return items.map(([id,k])=>`<a href="#${id}" class="${S.view===id?"on":""}">${t(k)}</a>`).join("")+
-    `<a href="music-decks.html">${S.lang==="es"?"Tocadiscos":"Turntables"}</a>`;
+    `<a class="sep" href="/drums-guide">${S.lang==="es"?"Guía en imágenes":"Picture guide"}</a><a class="sep" href="music-decks.html">${S.lang==="es"?"Los tocadiscos":"The turntables"}</a>`;
 }
 
 function flashVoice(id){

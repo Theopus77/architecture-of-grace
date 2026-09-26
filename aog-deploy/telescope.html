@@ -131,6 +131,15 @@ html.aog-grace #toolMast[data-aog-hero] .lead{display:-webkit-box;-webkit-line-c
 html.aog-grace #toolMast[data-aog-hero] .aog-more{display:none!important}
 html.aog-grace #toolMast[data-aog-hero] .kicker{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 body>.wrap>header:first-child,.wrap>header.no-print:first-child{display:none!important}
+
+/* AOG-BENCH-NAV-V1 (2026-09-26) — Jimmy: "all of them should have the same line up … one connective tissue."
+   One row on every bench: Bench · Meet … · Use … · Find … · Name the job · Print · Picture guide · the partner. */
+.nav{display:flex;gap:4px;overflow-x:auto;border-bottom:2px solid var(--line);margin:.2rem 0 1.1rem;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+.nav::-webkit-scrollbar{display:none}
+.nav a{flex:0 0 auto;min-height:44px;display:inline-flex;align-items:center;padding:0 .75rem;text-decoration:none;color:var(--muted);font-weight:600;font-size:.9rem;border-bottom:2px solid transparent;margin-bottom:-2px;white-space:nowrap}
+.nav a.on{color:var(--ink);border-color:var(--steel,#2F63B8)}
+.nav a.sep{margin-left:auto;padding-left:.5rem}
+.nav a.sep+a.sep{margin-left:0}
 </style>
 </head>
 <body>
@@ -178,7 +187,7 @@ const THEME_KEY = "aog.interior.ws.v1.theme";
 function mulberry32(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return ((t^t>>>14)>>>0)/4294967296};}
 const STR = {
   app:{en:"The Telescope",es:"El telescopio"},
-  home:{en:"Bench",es:"Mesa"}, lab:{en:"Eyepiece",es:"Ocular"},
+  home:{en:"Bench",es:"Mesa"}, lab:{en:"Look through it",es:"Mira por él"},
   eyebrow:{en:"90 mm brass refractor",es:"Refractor de bronce de 90 mm"},
   tag:{en:"One lens, a working eyepiece, and a ceiling. The Moon will fill this glass. The lander will not.",es:"Un lente, un ocular de verdad, y un techo. La Luna llena este vidrio. El módulo lunar, no."},
   priv:{en:"Everything stays on this computer.",es:"Todo se queda en esta computadora."},
@@ -1300,7 +1309,8 @@ function paint(){
   document.getElementById("langBtn").textContent=S.lang==="es"?"EN":"ES";
   document.getElementById("themeBtn").textContent=S.theme==="dark"?t("light"):t("dark");
   document.getElementById("foot").textContent=t("foot");
-  document.getElementById("nav").innerHTML=[["home","home"],["lab","lab"]].map(([id,k])=>`<a href="#${id}" class="${S.page===id?"on":""}">${t(k)}</a>`).join("");
+  document.getElementById("nav").innerHTML=[["home","home"],["lab","lab"]].map(([id,k])=>`<a href="#${id}" class="${S.page===id?"on":""}">${t(k)}</a>`).join("")
+    +`<a class="sep" href="/telescope-guide">${S.lang==="es"?"Guía en imágenes":"Picture guide"}</a><a class="sep" href="/microscope">${S.lang==="es"?"El microscopio":"The microscope"}</a>`;
   const view=document.getElementById("view");
   view.innerHTML=S.page==="lab"?pageLab():pageHome();
   if (S.page!=="lab") return;

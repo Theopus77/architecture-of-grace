@@ -259,6 +259,14 @@ html.aog-grace #toolMast[data-aog-hero] .lead{display:-webkit-box;-webkit-line-c
 html.aog-grace #toolMast[data-aog-hero] .aog-more{display:none!important}
 html.aog-grace #toolMast[data-aog-hero] .kicker{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 body>.wrap>header:first-child,.wrap>header.no-print:first-child{display:none!important}
+/* AOG-BENCH-NAV-V1 (2026-09-26) — Jimmy: "all of them should have the same line up … one connective tissue."
+   One row on every bench: Bench · Meet … · Use … · Find … · Name the job · Print · Picture guide · the partner. */
+.nav{display:flex;gap:4px;overflow-x:auto;border-bottom:2px solid var(--line);margin:.2rem 0 1.1rem;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+.nav::-webkit-scrollbar{display:none}
+.nav a{flex:0 0 auto;min-height:44px;display:inline-flex;align-items:center;padding:0 .75rem;text-decoration:none;color:var(--muted);font-weight:600;font-size:.9rem;border-bottom:2px solid transparent;margin-bottom:-2px;white-space:nowrap}
+.nav a.on{color:var(--ink);border-color:var(--steel,#2F63B8)}
+.nav a.sep{margin-left:auto;padding-left:.5rem}
+.nav a.sep+a.sep{margin-left:0}
 </style>
 </head>
 <body>
@@ -286,7 +294,7 @@ body>.wrap>header:first-child,.wrap>header.no-print:first-child{display:none!imp
   </header>
   <!-- AOG-TOOL-MAST-V1 — the same static masthead the other benches carry, so the thin rule reaches it -->
   <section class="mast" id="toolMast"><p class="kicker" id="eyebrow"></p><h1 id="title"></h1><p class="lead" id="tag"></p></section>
-  <nav class="nav no-print" aria-label="Activity"><a href="music-decks.html" class="on" id="navDecks">Turntables</a><a href="music-drums.html" id="navDrums">Drum machine</a><a href="/decks-guide" id="navGuide">Picture guide</a></nav>
+  <nav class="nav no-print" aria-label="Activity"><a href="music-decks.html" class="on" id="navDecks">Bench</a><a class="sep" href="/decks-guide" id="navGuide">Picture guide</a><a class="sep" href="music-drums.html" id="navDrums">The drum machine</a></nav>
   <div class="bench-switch no-print" role="group" aria-label="Bench" id="benchSwitch"><b id="benchLab">Bench</b>
     <button type="button" class="pill on" data-bench="simple" id="benchSimple">Simple bench</button>
     <button type="button" class="pill" data-bench="full" id="benchFull">Full bench</button>
@@ -1700,7 +1708,7 @@ document.addEventListener("visibilitychange", ()=>{
     document.querySelectorAll("[data-bench]").forEach(b=>{ const on=b.getAttribute("data-bench")===bench; b.classList.toggle("on",on); b.setAttribute("aria-pressed",on?"true":"false"); });
     document.querySelectorAll("[data-decktab]").forEach(b=>{ const on=b.getAttribute("data-decktab")===tab; b.classList.toggle("on",on); b.setAttribute("aria-selected",on?"true":"false"); });
     const es=S.lang==="es";
-    const L={navDecks:["Turntables","Tocadiscos"],navDrums:["Drum machine","Caja de ritmos"],navGuide:["Picture guide","Guía en imágenes"],benchLab:["Bench","Banco"],benchSimple:["Simple bench","Banco sencillo"],benchFull:["Full bench","Banco completo"],decktabMix:["Mix","Mezcla"]};
+    const L={navDecks:["Bench","Mesa"],navDrums:["The drum machine","La caja de ritmos"],navGuide:["Picture guide","Guía en imágenes"],benchLab:["Bench","Banco"],benchSimple:["Simple bench","Banco sencillo"],benchFull:["Full bench","Banco completo"],decktabMix:["Mix","Mezcla"]};
     Object.keys(L).forEach(id=>{ const e=document.getElementById(id); if(e) e.textContent=L[id][es?1:0]; });
   }
   document.querySelectorAll("[data-bench]").forEach(b=>b.onclick=()=>{ bench=b.getAttribute("data-bench"); try{ localStorage.setItem("aog.decks.bench",bench); }catch(e){} paintSw(); });
