@@ -27,6 +27,7 @@ body{margin:0;color:var(--ink);background:linear-gradient(to right,var(--navy) 2
 .rail{background:var(--navy);color:#EAF0F6;padding:18px 12px;position:sticky;top:var(--aogbar-h,52px);height:calc(100vh - var(--aogbar-h,52px));overflow:auto}
 .rail .brand{font:600 13px Inter,sans-serif;letter-spacing:.16em;text-transform:uppercase;color:var(--gold2);padding:4px 10px 14px}
 .railpull{margin:0 4px 14px}.railpull button{width:100%;min-height:44px;border:0;border-radius:12px;background:var(--gold2);color:#0A1E33;font:700 15px inherit;font-family:inherit;cursor:pointer}.railpull button:disabled{background:#B9C4D0;color:#0A1E33;cursor:default}.railpull .st{display:block;color:#DCE5EE;font-size:12px;margin:6px 4px 0;line-height:1.35}
+.raildemo{margin:0 4px 14px}.raildemo button{width:100%;min-height:44px;border:1.5px solid rgba(255,255,255,.45);border-radius:12px;background:transparent;color:#F4EEE2;font:700 14px inherit;font-family:inherit;cursor:pointer}.raildemo button.on{background:#F4EEE2;color:#0A1E33;border-color:#F4EEE2}.raildemo .st{display:block;color:#DCE5EE;font-size:12px;margin:6px 4px 0;line-height:1.35}
 .fld{display:grid;gap:6px;margin:0 0 12px}.fld label{font:700 13px inherit;color:var(--ink)}.fld input,.fld select,.fld textarea{min-height:44px;font-size:16px;padding:8px 12px;border:1.5px solid var(--line);border-radius:12px;background:var(--card);color:var(--ink);font-family:inherit}.fld textarea{min-height:72px}.f2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}@media (max-width:600px){.f2{grid-template-columns:1fr}}
 .btn.danger{border-color:#8B2A2A;color:#8B2A2A}
 .pw pre{white-space:pre-wrap;font:15px/1.55 inherit;font-family:inherit;margin:0;color:var(--ink)}.pw .doc h3{font:700 12.5px Inter,sans-serif;letter-spacing:.12em;text-transform:uppercase;color:var(--goldInk);margin:18px 0 6px}.pw .doc h3:first-child{margin-top:0}.pw .chart svg{width:100%;height:auto;max-width:640px}.pw .dot{display:inline-block;width:9px;height:9px;border-radius:50%;border:2px solid var(--goldInk);margin-right:6px;vertical-align:middle}.pw .dot.on{background:var(--goldInk)}.pw .fld{margin-bottom:14px}.pw .sub{font:700 15px inherit;color:var(--ink);margin:16px 0 6px}
@@ -117,6 +118,7 @@ select,input[type=text]{width:100%;font:inherit;font-size:16px;min-height:44px;p
     <div class="brand">Dashboard</div>
     <div class="view" role="group" aria-label="View"><button type="button" data-view="teacher" aria-pressed="true">Teacher</button><button type="button" data-view="student" aria-pressed="false">Student</button></div>
     <div class="railpull" id="railPull"></div>
+    <div class="raildemo" id="railDemo"></div>
     <nav class="nav" id="nav"></nav>
   </aside>
   <div id="app" role="main"></div>
@@ -197,18 +199,18 @@ function packTray(tr){ return tr.map(it=>it.t==="dd"?["d",it.s,it.g,it.n]:it.t==
 function unpack(a){ return (a||[]).map(x=>x[0]==="d"?{t:"dd",s:x[1],g:x[2],n:x[3]}:x[0]==="u"?{t:"unit",p:x[1],f:x[2]}:x[0]==="p"?{t:"prac",i:x[1]}:{t:"slip",i:x[1]}); }
 function classLink(){ const tr=get(K.tray,[]); if(!tr.length) return "";
   const h=btoa(unescape(encodeURIComponent(JSON.stringify(packTray(tr))))).replace(/\+/g,"-").replace(/\//g,"_").replace(/=+$/,"");
-  const lk=raw("aog.slip.look"); return location.origin+withDest("/dashboard.html?view=student&hand="+h+((lk==="glass"||lk==="quiet")?"&look="+lk:"")); }
+  return location.origin+withDest("/dashboard.html?view=student&hand="+h); }
 function readHand(){ const q=new URLSearchParams(location.search), h=q.get("hand"); if(!h) return null;
   try{ let s=h.replace(/-/g,"+").replace(/_/g,"/"); while(s.length%4) s+="="; return unpack(JSON.parse(decodeURIComponent(escape(atob(s))))); }catch(e){ return null; } }
 /* a student who arrived by the class link keeps today's work and the teacher's Sheet for every page they open */
 const HAND=readHand(), QS=new URLSearchParams(location.search);
-if(HAND){ const lk=QS.get("look")||""; put("aog.dash2.handed",{items:HAND,dest:QS.get("dest")||"",org:QS.get("org")||"",look:(lk==="glass"||lk==="quiet")?lk:"",at:Date.now()}); if(lk==="glass"||lk==="quiet"){ try{ localStorage.setItem("aog.slip.look",lk); }catch(e){} } }
+if(HAND){ put("aog.dash2.handed",{items:HAND,dest:QS.get("dest")||"",org:QS.get("org")||"",at:Date.now()}); }
 function studentHref(it){ const h=get("aog.dash2.handed",null); let p=itemPath(it); const q=[];
   const d=(h&&h.dest)||destParam(), o=(h&&h.org)||orgId(); if(d) q.push("dest="+encodeURIComponent(d)); if(o) q.push("org="+encodeURIComponent(o));
   /* AOG-DASH-SID-V1 — Jimmy: "It asks for a student code after I entered as myself." The name typed under
      Your work today rides on every slip as sid=, the same param a teacher's link carries, so the slip
      opens already knowing who it is about. Only the slips: the other pages ask on their own screen. */
-  if(it.t==="slip"){ const nm=String(get(K.stu,"")||"").trim().slice(0,24); if(nm) q.push("sid="+encodeURIComponent(nm)); const lk=(h&&h.look)||raw("aog.slip.look"); if(lk==="glass"||lk==="quiet") q.push("look="+lk); }
+  if(it.t==="slip"){ const nm=String(get(K.stu,"")||"").trim().slice(0,24); if(nm) q.push("sid="+encodeURIComponent(nm)); }
   return q.length? p+(p.indexOf("?")<0?"?":"&")+q.join("&") : p; }
 /* ── what the Sheet sent back (pulled on the classic dashboard, saved on this device) ── */
 function rows(k){ try{ const v=JSON.parse(localStorage.getItem(k)||"[]"); return Array.isArray(v)?v:[]; }catch(e){ return []; } }
@@ -498,11 +500,6 @@ async function pullAll(btn){
    a backup file, Delete everything (keep-list, like the classic page), IEP goals and data points in the same
    aog.iep.v1 shape the classic charts read, and the adult observation link with the same staff token. */
 const SYNC_RE=/^https:\/\/script\.google\.com\/.*\/exec$/;
-function lookCard(){ const v=raw("aog.slip.look")==="glass"?"glass":"quiet";
-  const o=(k,en,es,d1,d2)=>'<label class="card" style="display:flex;gap:12px;align-items:flex-start;cursor:pointer;border:1.5px solid '+(v===k?"var(--navy)":"var(--line)")+'"><input type="radio" name="slipLook" value="'+k+'"'+(v===k?' checked':'')+' style="width:22px;height:22px;min-height:0;margin-top:2px"><span><b style="display:block;margin-bottom:4px">'+t2(en,es)+'</b><span class="s">'+t2(d1,d2)+'</span></span></label>';
-  return '<section class="card" style="margin-bottom:16px"><p class="k" style="color:var(--goldInk)">'+t2("How the slips look","Cómo se ven los boletos")+'</p><p class="s">'+t2("The daily check-in and exit slip can wear either. Your choice rides on the class link, so students see the same one.","El registro diario y el boleto de salida pueden verse de dos formas. Tu elección viaja en el enlace de la clase, así que los estudiantes ven la misma.")+'</p>'
-   +'<div class="f2">'+o("quiet","Quiet","Sereno","Plain and grown-up: cream paper, thin lines, a navy button.","Sencillo y adulto: papel crema, líneas finas, botón azul marino.")+o("glass","Glass","Vidrio","Stained-glass window: coloured answer panes, gold stones, a gold button.","Vitral: respuestas de vidrio de colores, piedras doradas, botón dorado.")+'</div>'
-   +'<div class="row" style="margin-top:12px"><a class="btn" href="/index.html?checkin=daily&who=student&look='+v+'" target="_blank" rel="noopener">'+t2("Preview the check-in","Ver el registro")+' ›</a><a class="btn" href="/index.html?exit=1&who=student&look='+v+'" target="_blank" rel="noopener">'+t2("Preview the exit slip","Ver el boleto de salida")+' ›</a></div></section>'; }
 function connectCard(){
   const u=raw("aog.sync.url"), k=raw("aog.sync.key"), w=raw("aog.sync.writekey");
   return '<section class="card" style="margin-bottom:16px"><p class="k" style="color:var(--goldInk)">'+T("conn")+'</p><p class="s">'+t2("Paste the Web App link from your Apps Script. The write key lets student links send to your Sheet. The read key (ADMIN_PULL_KEY) lets this device pull answers back.","Pega el enlace de la Web App de tu Apps Script. La clave de escritura deja que los enlaces envíen a tu Hoja. La clave de lectura (ADMIN_PULL_KEY) deja que este aparato traiga las respuestas.")+'</p>'
@@ -525,7 +522,7 @@ function deleteAll(){
   if(!confirm(t2("Delete ALL Architecture of Grace data on this device? Every reflection, check-in, IEP goal and data point, and everything pulled from your Sheet. Your Sheet itself keeps its rows. This cannot be undone.","¿Borrar TODOS los datos de Architecture of Grace en este aparato? Cada reflexión, registro, meta del IEP y dato, y todo lo traído de tu Hoja. Tu Hoja conserva sus filas. No se puede deshacer."))) return;
   /* keep-list, never a delete-list: a new store is erased by default. The Sheet connection survives, as the standing rule says. */
   const doomed=[]; try{ for(let i=0;i<localStorage.length;i++){ const k=localStorage.key(i); if(k&&/^(aog|grace)/i.test(k)&&!PV_KEEP.test(k)) doomed.push(k); } doomed.forEach(k=>localStorage.removeItem(k)); }catch(e){}
-  try{ sessionStorage.clear(); }catch(e){}
+  try{ sessionStorage.clear(); localStorage.removeItem("aog.dash2.demo"); localStorage.removeItem("aog.dash2.demoStash"); }catch(e){}
   const m=document.getElementById("delMsg"); if(m) m.textContent="✓ "+t2("Cleared. This device holds no student data now.","Borrado. Este aparato ya no guarda datos de estudiantes.");
   setTimeout(render,900);
 }
@@ -714,6 +711,56 @@ function pwWire(){
     w.document.close(); w.focus(); setTimeout(()=>{ try{ w.print(); }catch(e){} },400); });
 }
 
+
+/* ══ AOG-DASH-DEMO-V1 (2026-09-26) — Jimmy: "There needs to be a button on the left to turn on and off demo
+   data." One button in the sidebar. On: everything real on this device is put aside (aog.dash2.demoStash)
+   and a made-up class fills the stores every page reads — check-ins, adult observations, practice and
+   Daily Drafts sends, self-reflections, IEP goals. Off: the real data comes back exactly as it was.
+   The Sheet connection is never touched. Names are made up; dates are the last six school weeks. */
+const DEMO_KEYS=["aog.checkin.remote","aog.practice.remote","aog.reflect.remote","aogScreener.v2.results","aog.iep.v1","aog.iepdocs.v1","aog.dash2.pulledAt","aog.mtss.pm.v1","aog.mtss.meta"];
+function demoOn(){ return raw("aog.dash2.demo")==="1"; }
+function demoRand(seed){ let t=seed>>>0; return ()=>{ t+=0x6D2B79F5; let r=Math.imul(t^(t>>>15),1|t); r^=r+Math.imul(r^(r>>>7),61|r); return ((r^(r>>>14))>>>0)/4294967296; }; }
+function demoBuild(){
+  const R=demoRand(2026), pick=a=>a[Math.floor(R()*a.length)], iso=d=>d.toISOString().slice(0,10);
+  const STU=[["Aaliyah J.",4.1,"6"],["Ben K.",3.2,"6"],["Carmen L.",2.4,"7"],["Diego M.",3.8,"7"],["Elena P.",4.4,"7"],["Farah S.",2.1,"8"],["Gabe T.",3.5,"8"],["Hana W.",3.9,"6"],["Isaiah B.",2.8,"7"],["Jules N.",4.0,"8"],["Kai O.",3.1,"6"],["Luz V.",3.6,"8"]];
+  const FEEL=["Good","Tired","Calm","Worried","Focused","Frustrated","Happy","Overwhelmed","Confident","Numb"], NEED=["I’m okay","A quiet minute","Help getting started","More time","Encouragement","Nothing right now"], CHAL=["Nothing today","Schoolwork","I’m distracted","Sleep","Something with friends","I’m stuck"], AGCY=["Ask for help","Use the Pause","Start the hard thing first","Take a real break"], PER=["Advisory","Period 1","Period 2","Period 3","Period 5"];
+  const days=[]; for(let d=new Date(), n=0; days.length<30 && n<60; n++){ const x=new Date(d); x.setDate(d.getDate()-n); if(x.getDay()>0&&x.getDay()<6) days.push(x); } days.reverse();
+  const ci=[], pr=[], rf=[];
+  STU.forEach(([name,mean,grade],si)=>{
+    days.forEach((d,di)=>{
+      if(R()<0.72){ const arr=Math.max(1,Math.min(5,Math.round(mean+(R()-0.5)*2.2))), rough=arr<=2;
+        ci.push({timestamp:iso(d)+"T08:1"+si%10+":00.000Z",date:iso(d),slipType:"checkin",checkinType:"daily",grade:grade,period:pick(PER),studentId:name,respondentId:name,respondentRole:"student",arrival:arr,feelingWords:(rough?pick(["Tired","Worried","Frustrated","Overwhelmed"]):pick(FEEL))+(R()<0.4?", "+pick(FEEL):""),need:rough?pick(NEED.slice(1)):pick(NEED),connection:Math.max(1,Math.min(5,arr+Math.round((R()-0.5)*2))),challenge:rough?pick(CHAL.slice(1)):pick(CHAL),readiness:Math.max(1,Math.min(5,arr+Math.round((R()-0.5)*2))),tellAdult:(rough&&R()<0.25)?"yes":"",agency:pick(AGCY),note:"",followUp:rough&&R()<0.18,source:"link"}); }
+      if(si<6 && di%2===0 && R()<0.8){ const good=mean>3.3; ["Mr. Reyes","Ms. Cole"].slice(0,1+(si%2)).forEach(ad=>ci.push({timestamp:iso(d)+"T13:05:00.000Z",date:iso(d),slipType:"checkin",checkinType:"support",grade:grade,period:pick(PER),studentId:name,respondentId:ad,respondentRole:"staff",staffRole:si%2?"counselor":"teacher",regulated:R()<(good?0.8:0.4),usedStrategy:R()<(good?0.6:0.3),connected:R()<(good?0.75:0.45),engaged:R()<(good?0.8:0.5),flags:(!good&&R()<0.2)?"needs a check-in":"",source:"link"})); }
+      if(R()<0.55){ const sub=pick(["math","ela","science"]), sheet=1+Math.floor(R()*20), tot=10, ind=Math.max(2,Math.min(10,Math.round(tot*(0.45+mean/9)+(R()-0.5)*3)));
+        pr.push({timestamp:iso(d)+"T10:2"+si%10+":00.000Z",studentId:name,activityId:"dd-"+sub+"-"+grade+"-"+sheet,activityName:"Daily Drafts · "+(sub==="ela"?"Language Arts":sub==="math"?"Math":"Science")+" · Grade "+grade+" · #"+sheet,itemsTotal:tot,independent:ind,extra:JSON.stringify({series:"daily-drops",subject:sub,grade:grade,sheet:sheet})}); }
+      if(di%5===2 && R()<0.7){ const u=1+Math.floor(R()*4), l=1+Math.floor(R()*5), tot=4, ind=Math.max(1,Math.min(4,Math.round(tot*(0.5+mean/10)+(R()-0.5)*2)));
+        pr.push({timestamp:iso(d)+"T11:00:00.000Z",studentId:name,activityId:"crs-mth-u"+u+"-chk-l"+l,activityName:"Math · Unit "+u+" · Check yourself "+l,itemsTotal:tot,independent:ind,extra:JSON.stringify({series:"course",subject:"math",unit:u})}); }
+      if(di===11||di===24){ const u=di===11?1:2, tot=10, ind=Math.max(3,Math.min(10,Math.round(tot*(0.45+mean/9)+(R()-0.5)*2)));
+        pr.push({timestamp:iso(d)+"T11:30:00.000Z",studentId:name,activityId:"crs-mth-u"+u+"-t1",activityName:"Math · Unit "+u+" · Unit test",assessment:"unit-test",itemsTotal:tot,independent:ind,extra:JSON.stringify({series:"course",subject:"math",unit:u})}); }
+    });
+    [["Fall",days[2]],["Spring",days[27]]].forEach(([w,d],wi)=>{ const base=35+mean*12+(wi?6:0), A=Math.round(Math.max(10,Math.min(98,base+(R()-0.5)*20))), B=Math.round(Math.max(10,Math.min(98,base+(R()-0.5)*20))), C=Math.round(Math.max(10,Math.min(98,base+(R()-0.5)*20))), comp=Math.round((A+B+C)/3);
+      rf.push({timestamp:iso(d)+"T11:35:00.000Z",studentId:name,grade:grade,window:w,mode:"rapid",population:"k12",normA:A,normB:B,normC:C,normComposite:comp,tier:comp<50?"High Risk":comp<75?"Some Risk":"Low Risk",trustedAdultFlag:false,unsafeFlag:false}); });
+  });
+  const g=(id,student,grade,area,title,measure,b,t,pts)=>({id,student,grade,area,title,measure,b,t,pts});
+  const goals={}, data={}, mk=(id,student,grade,area,title,measure,unit,b,t,pts)=>{ goals[id]={student,grade,area,title,measure,unit,baseline:{date:iso(days[0]),value:b},target:{date:iso(new Date(days[29].getTime()+120*864e5)),value:t},notes:"",archived:false,lowerBetter:false,intervalLabel:"weekly",created:new Date().toISOString()}; data[id]=pts.map((v,i)=>({date:iso(days[Math.min(29,3+i*5)]),value:v})); };
+  mk("demo-g1","Carmen L.","7","reading","Read a grade-level passage at 90 words correct per minute","wcpm","",52,90,[54,58,61,63,68,70]);
+  mk("demo-g2","Farah S.","8","exec","Start independent work within 2 minutes of directions, 4 of 5 days","percent","%",40,80,[40,45,55,50,60,65]);
+  mk("demo-g3","Isaiah B.","7","math","Solve two-step equations with 80% accuracy","percent","%",35,80,[38,42,50,55,58]);
+  return {ci,pr,rf,iep:{goals,data}};
+}
+function demoToggle(){
+  if(demoOn()){
+    const st=get("aog.dash2.demoStash",{}); DEMO_KEYS.forEach(k=>{ try{ if(st[k]==null) localStorage.removeItem(k); else localStorage.setItem(k,st[k]); }catch(e){} });
+    try{ localStorage.removeItem("aog.dash2.demoStash"); localStorage.removeItem("aog.dash2.demo"); }catch(e){}
+  } else {
+    const st={}; DEMO_KEYS.forEach(k=>{ try{ st[k]=localStorage.getItem(k); }catch(e){ st[k]=null; } }); put("aog.dash2.demoStash",st);
+    const D=demoBuild(); put("aog.checkin.remote",D.ci); put("aog.practice.remote",D.pr); put("aog.reflect.remote",D.rf); put("aog.iep.v1",D.iep);
+    ["aogScreener.v2.results","aog.iepdocs.v1","aog.mtss.pm.v1","aog.mtss.meta","aog.dash2.pulledAt"].forEach(k=>{ try{ localStorage.removeItem(k); }catch(e){} });
+    try{ localStorage.setItem("aog.dash2.demo","1"); }catch(e){}
+  }
+  put("aog.dash2.sel",""); put("aog.dash2.pwDoc",""); render();
+}
+
 /* ── the interface ── */
 const L=()=> (document.documentElement.lang||"en").slice(0,2)==="es"?"es":"en", T=k=>TXT[L()][k];
 let VIEW=QS.get("view")==="student"||HAND?"student":get(K.view,"teacher"), PAGE=location.hash.slice(1).replace(/\?.*$/,"")||"today";
@@ -723,6 +770,7 @@ function nav(){
   document.getElementById("nav").innerHTML= VIEW==="student"? '<a href="#today" aria-current="page">'+svg("today")+T("today")+'</a>'
     : items.map(([k,i])=>'<a href="#'+k+'"'+(PAGE===k?' aria-current="page"':'')+'>'+svg(i)+T(k)+'</a>'+(k==="mtss"?'<div class="sep"></div>':'')).join("");
   const rp=document.getElementById("railPull"); if(rp) rp.innerHTML= VIEW==="student"? "" : '<button type="button" data-pull="1"'+(canRead()?"":" disabled")+'>⟳ '+t2("Pull from Sheet","Traer de la Hoja")+'</button><span class="st" data-pullst>'+(canRead()?(get("aog.dash2.pulledAt","")?t2("Last pulled","Última vez")+" "+new Date(get("aog.dash2.pulledAt","")).toLocaleString([],{dateStyle:"short",timeStyle:"short"}):t2("Brings back what students sent.","Trae lo que enviaron los estudiantes.")):t2("Add the read key in Set up first.","Agrega la clave de lectura en Configurar."))+'</span>';
+  const rd=document.getElementById("railDemo"); if(rd) rd.innerHTML= VIEW==="student"? "" : '<button type="button" id="demoBtn" class="'+(demoOn()?"on":"")+'" aria-pressed="'+(demoOn()?"true":"false")+'">'+(demoOn()?"✓ ":"")+t2("Demo data","Datos de muestra")+(demoOn()?t2(" is on"," activados"):"")+'</button><span class="st">'+(demoOn()?t2("Made-up students. Turn it off to see your own.","Estudiantes inventados. Apágalo para ver los tuyos."):t2("Try the dashboard with made-up students.","Prueba el panel con estudiantes inventados."))+'</span>';
   document.querySelectorAll("[data-view]").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.view===VIEW)));
   /* a student who came by the class link never sees the teacher switch */
   const v=document.querySelector('.view'); if(v) v.style.display=(HAND||QS.get('view')==='student')?'none':'';
@@ -771,7 +819,7 @@ function setup(){
   const conn=!!destParam();
   return '<div class="hello"><div><h1>'+T("setupH")+'</h1><p>'+T("setupS")+'</p></div><span class="pill '+(conn?"ok":"")+'"><span class="dot"></span>'+T(conn?"ok":"no")+'</span></div>'
    +'<section class="card" style="margin-bottom:16px"><p class="k" style="color:var(--goldInk)">'+t2("Bring in what students sent","Trae lo que enviaron los estudiantes")+'</p><p class="s">'+t2("Reflections, check-ins, team logs and finished practice come back from your Sheet to this device. Reading needs the ADMIN_PULL_KEY saved as the passcode.","Reflexiones, registros, notas del equipo y práctica terminada vuelven de tu Hoja a este aparato. Leer requiere la ADMIN_PULL_KEY guardada como contraseña.")+'</p>'+pullBtn()+(canRead()?'':'<p class="s" style="margin:10px 0 0">'+t2("Reading is not set up on this device yet: this device can send, but not read back.","Este aparato aún no puede leer: puede enviar, pero no traer de vuelta.")+'</p>')+'</section>'
-   +lookCard()+connectCard()+dangerCard();
+   +connectCard()+dangerCard();
 }
 /* AOG-DASH-BLUEPRINT-V1 — Jimmy: "their blueprint should be a tab on the left." One student's stained-glass Blueprint, from the Inbox page. */
 function blueprint(){ const names=Object.keys(data().S).sort(), sel=get("aog.dash2.bpStu","")||names[0]||"";
@@ -821,8 +869,8 @@ function wire(){
   on("q","input",()=>{ put("aog.dash2.q",val("q")); const c=document.getElementById("q").selectionStart; render(); const e=document.getElementById("q"); if(e){e.focus();e.setSelectionRange(c,c);} });
   document.querySelectorAll("[data-stu]").forEach(e=>e.addEventListener("click",()=>{ put("aog.dash2.sel",e.dataset.stu); if(PAGE!=="students"){ location.hash="students"; } else render(); window.scrollTo(0,0); }));
   on("iepStu","change",()=>{ put("aog.dash2.iepStu",val("iepStu")); render(); });
-  document.querySelectorAll("[name=slipLook]").forEach(r=>r.addEventListener("change",()=>{ try{ localStorage.setItem("aog.slip.look",r.value); }catch(e){} render(); }));
   if(PAGE==="papers") pwWire();
+  on("demoBtn","click",demoToggle);
   on("bpStu","change",()=>{ put("aog.dash2.bpStu",val("bpStu")); render(); });
   on("syS","click",syncSave); on("syT","click",syncTest); on("syD","click",syncDrop); on("bkUp","click",backup); on("delAll","click",deleteAll);
   on("tcp","click",async()=>{ const b=document.getElementById("tcp"); try{ await navigator.clipboard.writeText(teamLink()); b.textContent=T("copied"); }catch(e){ const r=document.createRange(); r.selectNode(document.getElementById("tlk")); getSelection().removeAllRanges(); getSelection().addRange(r); } });
