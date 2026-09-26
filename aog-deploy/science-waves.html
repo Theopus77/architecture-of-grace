@@ -128,6 +128,7 @@ body:has(.aogtop) header .tools { display:none; }
 </style>
 </head>
 <body>
+<script src="/aog-sound-handoff.js"></script>
 <script src="/aog-grace.js" defer></script>
 <script>
 (function(){
@@ -373,6 +374,20 @@ function hush(){
   try{ if(osc){ osc.stop(); osc.disconnect(); } if(gain) gain.disconnect(); }catch(e){}
   osc=null; gain=null;
 }
+/* AOG-SOUND-HANDOFF-V1 — render the tone on screen (shape, pitch, loudness) for two
+   seconds, silently, and hand it to the drum machine or the turntables. */
+async function recordSound(where){
+  const OC=window.OfflineAudioContext||window.webkitOfflineAudioContext; if(!OC) return;
+  const sr=44100, off=new OC(1, sr*2, sr), o=off.createOscillator(), g=off.createGain();
+  o.type=S.shape||"sine"; o.frequency.value=S.hz; g.gain.setValueAtTime(0,0); g.gain.linearRampToValueAtTime(0.25+S.amp*0.6,0.01);
+  g.gain.setValueAtTime(0.25+S.amp*0.6,1.9); g.gain.linearRampToValueAtTime(0,2);
+  o.connect(g); g.connect(off.destination); o.start(0); o.stop(2);
+  const buf=await off.startRendering(), blob=window.aogWav(buf);
+  const name=(S.shape||"sine")+"-"+S.hz+"hz.wav";
+  if(where==="saveWav"){ const a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download=name; document.body.appendChild(a); a.click(); a.remove(); return; }
+  await window.aogHandoffPut({ name:name, blob:blob, at:Date.now() });
+  location.href = where==="toDrums" ? "/music-drums.html?take=1" : "/music-decks.html?take=1";
+}
 function hear(){
   try{
     const AC=window.AudioContext||window.webkitAudioContext;
@@ -487,7 +502,7 @@ function pagePlay(){
   const chips=SHAPES.map(x=>`<button type="button" class="chip${S.shape===x.id?" on":""}" data-shape="${x.id}">${S.lang==="en"?x.en:x.es}</button>`).join("");
   return `<p class="kicker">${t("playNav")}</p><h1>${t("play")}</h1>
     <p class="lead">${t("playLead")}</p>
-    <div class="wavebox"><canvas id="playWave" width="900" height="240"></canvas></div>
+    <div class="wavebox"><canvas id="playWave" width="900" height="120"></canvas></div>
     <!-- AOG-SCOPE-ORDER-V1 (2026-09-26) — Jimmy: sliders above the shape row, Hear/Silence beside the shapes, the description under the named frequencies. -->
     <div class="knobs">
       <label class="knob"><span>${t("pitch")} <b class="readout" id="hzRead">${S.hz} Hz</b></span>
@@ -500,6 +515,12 @@ function pagePlay(){
       <span style="flex:1 1 20px"></span>
       <button type="button" class="btn btn-steel" data-act="hear">${t("hear")}</button>
       <button type="button" class="btn" data-act="hush">${t("hush")}</button>
+    </div>
+    <div class="chips" style="margin-top:.4rem">
+      <span class="tiny" style="margin:0 .4rem 0 0">${S.lang==="en"?"Record this sound (2 seconds) and send it to":"Graba este sonido (2 segundos) y envíalo a"}</span>
+      <button type="button" class="btn btn-steel" data-act="toDrums">${S.lang==="en"?"🥁 The Drum Machine":"🥁 La caja de ritmos"}</button>
+      <button type="button" class="btn btn-steel" data-act="toDecks">${S.lang==="en"?"💿 The Turntables":"💿 Los tocadiscos"}</button>
+      <button type="button" class="btn" data-act="saveWav">${S.lang==="en"?"⬇ Save the file":"⬇ Guardar el archivo"}</button>
     </div>
     <p class="tiny">${t("freqs")}</p>
     <p class="muted" style="margin:.2rem 0 .5rem">${t("freqHint")}</p>
@@ -691,6 +712,7 @@ function paint(){
     const a=b.getAttribute("data-act");
     if(a==="hear") hear();
     if(a==="hush") hush();
+    if(a==="toDrums"||a==="toDecks"||a==="saveWav") recordSound(a);
     if(a==="doprint") window.print();
     if(a==="findagain"){ S.find=null; paint(); }
     if(a==="jobagain"){ S.job=null; paint(); }

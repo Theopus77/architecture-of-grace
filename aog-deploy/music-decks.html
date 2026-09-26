@@ -202,6 +202,7 @@ button,a,label,input[type=range],.pill,.pad,.platter,canvas{touch-action:manipul
 </style>
 </head>
 <body>
+<script src="/aog-sound-handoff.js"></script>
 <script src="/aog-grace.js" defer></script>
 <script>
 (function(){
@@ -1580,6 +1581,11 @@ window.addEventListener("focus", checkBench);
 </script>
 <script>/* AOG-MUSIC-TOUCH-V1 — wake Safari's audio on the first touch, every time it sleeps */
 (function(){ function wake(){ try{ if(typeof actx!=="undefined"&&actx&&actx.state!=="running") actx.resume(); }catch(e){} }
-  ["touchstart","pointerdown","keydown"].forEach(function(t){ document.addEventListener(t, wake, {capture:true, passive:true}); }); })();</script>
+  ["touchstart","pointerdown","keydown"].forEach(function(t){ document.addEventListener(t, wake, {capture:true, passive:true}); }); })();
+/* AOG-SOUND-HANDOFF-V1 — a sound sent from the oscilloscope goes into Up next */
+(function(){ if(!/[?&]take=1/.test(location.search)||!window.aogHandoffTake) return;
+  setTimeout(function(){ window.aogHandoffTake().then(function(v){ if(!v||!v.blob) return; const f=new File([v.blob], v.name||"scope.wav", {type:"audio/wav"});
+    CRATE.next.push({ id:crateId(f), name:f.name, blob:f, at:Date.now() }); cratePut("next", CRATE.next); paintCrate(); }); }, 1200); })();
+</script>
 </body>
 </html>
