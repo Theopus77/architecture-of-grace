@@ -92,6 +92,12 @@
     page.className = "nv-page" + (s.kind === "part" ? " part" : "");
     var h = "";
     var where = book.room + " · " + book.title;
+    /* AOG-NOVEL-SCENES-V1 — Jimmy: "enhance what is already there." The lesson pages' drawn
+       scene for each unit opens the novel's matching part and heads its chapters. */
+    var rm = (KEY.match(/^room-(\d+)$/) || [])[1];
+    if (rm && s.part >= 1 && s.part <= 4 && s.kind !== "note") {
+      h += '<img class="nv-scene' + (s.kind === "part" ? " big" : "") + '" src="/novels/scenes/room-' + rm + "-u" + s.part + '.svg" alt="" width="1200" height="420" loading="eager" decoding="async">';
+    }
     if (s.kicker) h += '<p class="kicker">' + esc(pretty(s.kicker)) + "</p>";
     else if (s.kind === "note") h += '<p class="kicker">' + esc(book.room) + "</p>";
     h += "<h2>" + esc(s.title) + "</h2>";
@@ -185,6 +191,7 @@
       var s = book.sections[i];
       if (s.kind === "chapter") { s.n = ++nc; chapters.push(i); }
       if (s.kind === "part") s.n = ++np;
+      s.part = np;                       /* which of the four parts (units) this section sits in */
     }
     var pick = $("#nvPick"), h = '<option value="-1">' + T("Contents", "Índice") + "</option>", grp = null;
     for (var j = 0; j < book.sections.length; j++) {

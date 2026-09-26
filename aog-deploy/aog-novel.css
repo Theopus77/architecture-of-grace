@@ -59,8 +59,12 @@ body{margin:0; background:var(--ground); color:var(--ink); font:400 17px/1.6 var
 .nv-size button:last-child{font-size:1.2rem}
 
 /* the page: paper on the ground, the book's own measure */
-.nv-page{margin:22px 0 0; background:var(--field); border:1px solid var(--rule-soft); border-radius:22px; box-shadow:var(--lift);
-  padding:clamp(22px,5vw,56px) clamp(18px,6vw,72px)}
+.nv-page{--py:clamp(22px,5vw,56px); --px:clamp(18px,6vw,72px); margin:22px 0 0; background:var(--field); border:1px solid var(--rule-soft); border-radius:22px; box-shadow:var(--lift);
+  padding:var(--py) var(--px)}
+/* AOG-NOVEL-SCENES-V1 — the unit's drawn scene, full-bleed across the top of the page */
+.nv-page .nv-scene{display:block; width:calc(100% + 2 * var(--px)); max-width:none; margin:calc(-1 * var(--py)) calc(-1 * var(--px)) 22px; height:auto; aspect-ratio:1200/220; object-fit:cover; border-radius:21px 21px 0 0; background:#0A1E33}
+.nv-page .nv-scene.big{aspect-ratio:1200/420}
+.nv-page.part .nv-scene{margin-bottom:26px}
 .nv-page .kicker{font:700 .72rem/1.4 var(--sans); letter-spacing:.22em; text-transform:uppercase; color:var(--gold); text-align:center; margin:0 0 8px}
 .nv-page h2{font:600 clamp(26px,4.4vw,38px)/1.15 var(--serif); letter-spacing:-.012em; text-align:center; margin:0 0 6px; color:var(--ink)}
 .nv-page .where{font:500 .9rem var(--sans); color:var(--ink-faint); text-align:center; margin:0 0 26px}
