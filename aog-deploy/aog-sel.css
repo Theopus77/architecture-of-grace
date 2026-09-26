@@ -1,0 +1,90 @@
+/* ══ AOG-SEL-V1 (2026-09-26) — ONE SKIN FOR THE WHOLE SEL CURRICULUM ═══════════
+   Jimmy: "look over all of it, including the novels, anchor charts, scenario
+   cards, worksheets … don't mess with the curriculum (wordage etc.); the
+   engine and such can be revamped if necessary so all fit on the same thing."
+
+   aog-grace.js loads this file (and aog-sel.js) on every SEL page: the five
+   rooms' curriculum / lessons / cards / workbook pages, the worksheets, the
+   anchor charts, the novels, the crosswalks and the Four Pillars sheets.
+   Those pages came from four different generators with four palettes, four
+   mastheads and their own control styles. This sheet sits on top of all of
+   them and makes them one family. It changes NO words and NO markup: only
+   the type, the tokens, the shape of the controls and the size of what a
+   finger has to hit. Every rule is scoped to html.aog-sel. ═══════════════════ */
+
+/* ── 1. one type, one palette ─────────────────────────────────────────────────
+   The lessons/cards/worksheets/charts family uses --ground/--field/--ink/--gold;
+   the curriculum/workbook family uses --bg/--card/--ink/--navy/--brass. Both
+   families now resolve to the same values (the lessons pages'), and both
+   serif and sans tokens point at the home page's faces, which aog-grace.js
+   already loads. aog-grace.css keeps remapping them in dark. */
+html.aog-sel{
+  --serif:"Fraunces","Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+  --sans:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  --ground:#F5F1E8; --bg:#F5F1E8; --field:#FFFFFF; --card:#FFFFFF; --field-2:#EFEAE0; --chip:#EFEAE0;
+  --ink:#1D2733; --ink-soft:#57626F; --sub:#57626F; --ink-faint:#5F6B78;
+  --rule:rgba(29,39,51,.16); --rule-soft:rgba(29,39,51,.08); --line:rgba(29,39,51,.16);
+  --focus:#B8893A;
+}
+html.aog-sel body{ font-family:var(--sans); }
+html.aog-sel h1:not(.aogtop *){ font-family:var(--serif); font-weight:600; letter-spacing:-.015em; }
+/* the worksheets spell their faces out instead of using the tokens */
+html.aog-sel .sheet, html.aog-sel .sheet p, html.aog-sel .sheet li, html.aog-sel .sheet textarea, html.aog-sel .sheet input,
+html.aog-sel .q .stem, html.aog-sel .card .sit, html.aog-sel .prose{ font-family:var(--serif); }
+html.aog-sel.a11y-dyslexic *:not(.aogtop *){ font-family:"OpenDyslexic","Comic Sans MS","Trebuchet MS",Verdana,sans-serif !important; }
+
+/* ── 2. the unit banners ───────────────────────────────────────────────────────
+   The drawn scene's credit line sat on top of the title on phones (the
+   worksheets' generator scoped its rule to a class the page never got). The
+   credit is a small italic note in the corner on wide screens and is gone on
+   phones, on every page that has a banner. */
+html.aog-sel .spread{ position:relative; }
+html.aog-sel .spread .credit{ position:absolute; right:14px; bottom:10px; z-index:2; font:italic 500 .7rem var(--serif);
+  color:rgba(245,241,232,.62); max-width:46%; text-align:right; line-height:1.25; pointer-events:none; }
+@media (max-width:720px){ html.aog-sel .spread .credit{ display:none; } }
+
+/* ── 3. controls a finger can hit ─────────────────────────────────────────────
+   Every choice on these pages is a pill at least 44px tall: the unit rails,
+   the lesson strip, the print/theme tools, the section links, the chapter
+   filters, the workbook answers, the anchor-chart segments, the drawing-pad
+   tools. Shapes and colours stay the page's own; only the size grows. */
+html.aog-sel .teach .mats a, html.aog-sel .mats a, html.aog-sel .tools button, html.aog-sel .tools a,
+html.aog-sel .lbtns a, html.aog-sel .lbtns button, html.aog-sel nav.toc a, html.aog-sel .filters .fchip,
+html.aog-sel .chipbtn, html.aog-sel .pill, html.aog-sel .seg button, html.aog-sel .bar .btn,
+html.aog-sel .padtools button, html.aog-sel .sheet-foot .btn, html.aog-sel .lock-acts .btn,
+html.aog-sel .aog-more, html.aog-sel .deal button, html.aog-sel .show button, html.aog-sel .rail button, html.aog-sel .rail a,
+html.aog-sel .lstrip a, html.aog-sel .lstrip button, html.aog-sel .pager2 a, html.aog-sel .pager2 button,
+html.aog-sel .drawer button, html.aog-sel .cjump select, html.aog-sel .jump select, html.aog-sel .r36top .pill{
+  min-height:44px; box-sizing:border-box; }
+html.aog-sel .opts .opt{ min-height:46px; display:flex; align-items:center; }
+html.aog-sel .padtools button.sw{ min-width:36px; min-height:36px; }
+html.aog-sel .card .tick, html.aog-sel .les .tick{ width:34px; height:34px; }
+html.aog-sel .mats a{ display:inline-flex; align-items:center; }
+html.aog-sel .hubline a, html.aog-sel .foot-home a, html.aog-sel footer a, html.aog-sel .eyebrow a{ display:inline-block; padding:8px 0; }
+/* a wide, empty gap opens under the sticky rail on phones when its wrap has no top padding */
+html.aog-sel select, html.aog-sel input:not([type=checkbox]):not([type=radio]), html.aog-sel textarea{ font-size:max(16px,1em); }
+
+/* ── 4. the same paper for every box ──────────────────────────────────────────
+   Boxes on the curriculum/workbook pages had square-ish 9–10px corners and a
+   flat shadow; the lessons/cards family has 16–22px corners and a lift.
+   One radius family now. */
+html.aog-sel .q, html.aog-sel .box, html.aog-sel .xcard, html.aog-sel .ow, html.aog-sel .panel, html.aog-sel .mcard,
+html.aog-sel .how, html.aog-sel .blab, html.aog-sel .kv, html.aog-sel .card, html.aog-sel .sheet{ border-radius:16px; }
+html.aog-sel .opt, html.aog-sel .toc a, html.aog-sel .fchip{ border-radius:999px; }
+html.aog-sel .opt{ padding-left:16px; padding-right:16px; }
+
+/* ── 5. dark: the workbook and curriculum pages never had a dark of their own
+   (they began in light and stayed there). Now that they carry the site bar and
+   its theme, the grace tokens do the work; a few hard-coded whites give way. */
+html.aog-sel[data-theme="dark"] .opt, html.aog-sel[data-theme="dark"] .q, html.aog-sel[data-theme="dark"] .panel,
+html.aog-sel[data-theme="dark"] .mcard, html.aog-sel[data-theme="dark"] .how{ background:var(--field); color:var(--ink); border-color:var(--rule); }
+html.aog-sel[data-theme="dark"] .opt.right, html.aog-sel[data-theme="dark"] .q.done .opt.right{ background:rgba(111,191,139,.18); border-color:#6FBF8B; color:#E4F0E8; }
+html.aog-sel[data-theme="dark"] .opt.wrong{ background:rgba(240,139,139,.14); border-color:#F08B8B; }
+html.aog-sel[data-theme="dark"] .toc a, html.aog-sel[data-theme="dark"] .fchip, html.aog-sel[data-theme="dark"] .tools button, html.aog-sel[data-theme="dark"] .pill{
+  background:var(--field); color:var(--ink); border-color:var(--rule); }
+html.aog-sel[data-theme="dark"] .fchip.on, html.aog-sel[data-theme="dark"] .toc a.on{ background:#F2C964; color:#0A1E33; border-color:#F2C964; }
+
+/* ── 6. print: the controls leave, the paper stays white ─────────────────── */
+@media print{
+  html.aog-sel .aogtop, html.aog-sel .aogtop-spacer, html.aog-sel .jump, html.aog-sel .cjump, html.aog-sel .r36top{ display:none !important; }
+}

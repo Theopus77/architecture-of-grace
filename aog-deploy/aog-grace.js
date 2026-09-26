@@ -75,6 +75,19 @@
       setTimeout(foldUnits, 1000);
     }
   } catch (e) {}
+  /* AOG-SEL-V1 (2026-09-26) — Jimmy: the SEL curriculum, "including the NOVELS … anchor
+     charts, scenario cards, worksheets", should "all fit on the same thing". Every SEL page
+     gets one skin (aog-sel.css) and one small engine (aog-sel.js): the rooms' curriculum,
+     lessons, cards and workbook pages, the worksheets, the anchor charts, the novels, the
+     crosswalks and the Four Pillars sheets. The words of the curriculum are never touched. */
+  try {
+    var ss = (location.pathname.split("/").pop() || "").replace(/\.html$/, "");
+    if (/^(room-(12|18|36|104|207)-(curriculum|lessons|cards|workbook|novel)|w\d+-|w(12|18|104|207)-\d+-|AoG-Anchor-Charts|AoG-Four-Pillars|AoG-Interior-Worksheets|xw-casel|xw-illinois-sel|the-dwelling)/.test(ss)) {
+      H.classList.add("aog-sel");
+      var sc = D.createElement("link"); sc.rel = "stylesheet"; sc.href = "/aog-sel.css"; (D.head || H).appendChild(sc);
+      var sj = D.createElement("script"); sj.src = "/aog-sel.js"; sj.defer = true; (D.head || H).appendChild(sj);
+    }
+  } catch (e) {}
   /* AOG-PRACTICE-GLASS-V1 (2026-09-26) — the practice pages (c1…, h1…, m1…,
      v1…) get the same glass tiles and pictures as the check-in. */
   try {
