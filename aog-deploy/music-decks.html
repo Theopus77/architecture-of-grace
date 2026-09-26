@@ -86,6 +86,16 @@ button,label.file{font:inherit;cursor:pointer;touch-action:none}
 .go{background:#c4452a;color:#fff8f3;border:0}
 label.file{min-height:44px;border-radius:999px;padding:0 .9rem;display:inline-flex;align-items:center;background:#efe8dc;color:#1a140e;font-weight:700}
 label.file input{display:none}
+button.file{min-height:44px;border-radius:999px;padding:0 .9rem;display:inline-flex;align-items:center;background:#efe8dc;color:#1a140e;font-weight:700;border:0}
+.dock{margin:.6rem 0;padding:.8rem;border-radius:14px;background:#1a140e;border:1px solid #5a4630}
+.dock[hidden]{display:none}
+.dockh,.dockempty{margin:0 0 .5rem;color:#efe8dc;font-size:.95rem}
+.docklist{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:.45rem;max-height:260px;overflow-y:auto;overscroll-behavior:contain}
+.dsong{min-height:44px;border-radius:10px;border:1px solid #5a4630;background:#2a2016;color:#f4ecdc;font-weight:700;text-align:left;padding:.4rem .7rem;overflow:hidden}
+.dsong span{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.dsong.rm{border-color:#c0523a;background:#3a1e16}
+.dsong.rm span::before{content:"✕ ";color:#f0a090}
+.dockrow{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:.6rem}
 .song{font-size:.85rem;color:#c9bfae;min-height:1.3em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .knob{display:block;margin-top:.35rem;font-size:.72rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#c9bfae}
 .knob input{width:100%;height:36px}
@@ -267,6 +277,11 @@ const STR = {
   eyebrow:{en:"Load a song from this computer. Then move the platter.",es:"Carga una canción de esta computadora. Luego mueve el plato."},
   tag:{en:"Two decks with weight. Grab a platter and it follows your hand — forward, back, fast, slow — and the record goes quiet the moment you hold it still, the way vinyl does. Let go and the motor pulls it back up to speed. The crossfader mixes them, and Record keeps the take as a .wav you can save or drop back onto a platter. We do not provide songs, and a song never leaves this computer.",es:"Dos platos con peso. Agarra un plato y sigue tu mano — adelante, atrás, rápido, lento — y el disco se calla en cuanto lo detienes, como el vinilo de verdad. Suéltalo y el motor lo devuelve a su velocidad. El crossfader los mezcla, y Grabar guarda la toma como un .wav que puedes conservar o volver a poner en un plato. No damos canciones, y una canción nunca sale de esta computadora."},
   load:{en:"Load a song",es:"Cargar una canción"},
+  dockH:{en:"Your songs. Tap one to put it on.",es:"Tus canciones. Toca una para ponerla."},
+  dockNone:{en:"No songs yet. Add one from this device and it stays here.",es:"Aún no hay canciones. Agrega una de este aparato y se queda aquí."},
+  dockAdd:{en:"+ From this device",es:"+ De este aparato"},
+  dockEdit:{en:"Remove songs",es:"Quitar canciones"},
+  dockDone:{en:"Done",es:"Listo"},
   none:{en:"No song yet.",es:"Aún no hay canción."},
   play:{en:"Start",es:"Arrancar"},
   stop:{en:"Stop",es:"Parar"},
@@ -480,7 +495,7 @@ async function loadFile(d, file, opts){
     d.bpm = -1; d.bands = null; d.cues = [null,null,null];
     d.loopOn = false; d.loopBars = 0; send(d, { t:"loop", on:false, a:0, b:0 });
     d.trackKey = (file.name||"?") + "·" + (file.size||0) + "·" + Math.round(buf.duration*100);
-    if(!opts || !opts.restore) crateSpun(d, file);
+    if(!opts || !opts.restore) crateSpun(d, file, arr);
     const known = marksLoad(d);
     setTimeout(()=>{
       try{ analyse(d); }catch(e){ d.bpm = 0; }
@@ -709,7 +724,7 @@ function paintBench(){
      with the same two records on, parked where you left them;
    · the last eight records you played, one tap to put any back on a deck;
    · UP NEXT — songs you line up before the set, played in order. ══════════ */
-const CRATE = { db:"aog-crate", store:"crate", prev:[], next:[], max:8 };
+const CRATE = { db:"aog-crate", store:"crate", prev:[], next:[], lib:[], max:8 };
 function crateDb(){
   return new Promise((ok, no)=>{
     if(!window.indexedDB){ no(new Error("no indexedDB")); return; }
@@ -739,8 +754,22 @@ async function cratePut(k, v){
 }
 const crateId = f => (f.name||"?") + "·" + (f.size||0);
 function crateFile(r){ return new File([r.blob], r.name, { type:r.blob.type||"" }); }
-function crateSpun(d, file){
-  const rec = { id:crateId(file), name:file.name, blob:file, at:Date.now() };
+/* AOG-DECKS-LIBRARY-V1 (2026-09-26) — Jimmy: "the music comes and goes ... make it a permanent
+   fixture ... installed in the Load a song dock." iPhone hands the page a borrowed file that can
+   vanish later, so every song is copied into the page's own storage the moment it arrives, and
+   every song ever added lives in the library that Load a song opens. */
+async function crateCopy(file, arr){
+  const buf = arr || await file.arrayBuffer();
+  return new Blob([buf.slice ? buf.slice(0) : buf], { type:file.type||"" });
+}
+async function crateInstall(file, arr){
+  const rec = { id:crateId(file), name:file.name, blob:await crateCopy(file, arr), at:Date.now() };
+  CRATE.lib = [rec].concat(CRATE.lib.filter(x=>x.id!==rec.id)).slice(0, 60);
+  cratePut("lib", CRATE.lib); paintDocks();
+  return rec;
+}
+async function crateSpun(d, file, arr){
+  const rec = await crateInstall(file, arr);
   cratePut("deck-"+d.id, rec);
   CRATE.prev = [rec].concat(CRATE.prev.filter(x=>x.id!==rec.id)).slice(0, CRATE.max);
   cratePut("prev", CRATE.prev);
@@ -753,7 +782,10 @@ function crateKeepPlace(){
 async function crateOpen(){
   CRATE.prev = (await crateGet("prev")) || [];
   CRATE.next = (await crateGet("next")) || [];
-  paintCrate();
+  CRATE.lib = (await crateGet("lib")) || [];
+  /* songs saved before the library existed join it */
+  CRATE.next.concat(CRATE.prev).forEach(r=>{ if(r && r.blob && !CRATE.lib.some(x=>x.id===r.id)) CRATE.lib.push(r); });
+  paintCrate(); paintDocks();
   /* the two records that were on when the tab closed go back on, stopped */
   for(const d of decks){
     const r = await crateGet("deck-"+d.id);
@@ -820,8 +852,10 @@ function paintCrate(){
   const add = document.getElementById("crateAdd");
   add.onchange = ()=>{
     const fs = Array.from(add.files||[]); if(!fs.length) return;
-    fs.forEach(f=>{ if(!CRATE.next.some(x=>x.id===crateId(f))) CRATE.next.push({ id:crateId(f), name:f.name, blob:f, at:Date.now() }); });
-    cratePut("next", CRATE.next); paintCrate();
+    (async ()=>{
+      for(const f of fs){ const rec = await crateInstall(f); if(!CRATE.next.some(x=>x.id===rec.id)) CRATE.next.push(rec); }
+      cratePut("next", CRATE.next); paintCrate();
+    })();
   };
   box.querySelectorAll("[data-crate]").forEach(b=>{
     b.onclick = ()=>{
@@ -1079,13 +1113,14 @@ function shell(){
       </div>
       <div class="meter" aria-hidden="true"><i></i></div>
       <div class="row">
-        <label class="file">${t("load")}<input type="file" data-load="${d.id}" accept="audio/*,video/mp4,.mp3,.m4a,.m4b,.aac,.wav,.wave,.aif,.aiff,.aifc,.ogg,.oga,.opus,.flac,.caf,.mp4,.webm,.3gp,.amr,.wma,.mid,.midi"></label>
+        <button type="button" class="file" data-dock="${d.id}" aria-expanded="false">${t("load")}</button>
         <button type="button" class="ghost" data-eject="${d.id}">${t("eject")}</button>
         <button type="button" class="go" data-play="${d.id}">${t("play")}</button>
         <button type="button" class="ghost" data-cue="${d.id}">${t("cueHold")}</button>
         <button type="button" class="ghost" data-setcue="${d.id}">${t("setCue")}</button>
         <span class="time">0:00</span>
       </div>
+      <div class="dock" id="dock${d.id}" hidden></div>
       <div class="row tr">
         <span class="grp" role="group" aria-label="${t("hot")}">
           ${[0,1,2].map(i=>`<button type="button" class="ghost sm" data-hot="${d.id}" data-i="${i}">${i+1}</button>`).join("")}
@@ -1133,7 +1168,44 @@ function shell(){
   bind();
   decks.forEach(d=>{ drawWave(d); drawZoom(d); });
 }
+function dockHTML(id){
+  return `<p class="dockh">${t("dockH")}</p>
+    ${CRATE.lib.length ? `<div class="docklist">${CRATE.lib.map((r,i)=>`<button type="button" class="dsong" data-dsong="${i}" title="${esc(r.name)}"><span>${esc(r.name.replace(/\.[^.]+$/,""))}</span></button>`).join("")}</div>` : `<p class="dockempty">${t("dockNone")}</p>`}
+    <div class="dockrow"><label class="file">${t("dockAdd")}<input type="file" data-dockload="${id}" accept="audio/*,video/mp4,.mp3,.m4a,.m4b,.aac,.wav,.wave,.aif,.aiff,.aifc,.ogg,.oga,.opus,.flac,.caf,.mp4,.webm,.3gp,.amr,.wma,.mid,.midi"></label>
+    ${CRATE.lib.length ? `<button type="button" class="ghost" data-dockedit="${id}">${t("dockEdit")}</button>` : ""}</div>`;
+}
+function paintDocks(){
+  document.querySelectorAll(".dock").forEach(box=>{
+    const id = box.id.slice(4), editing = box.classList.contains("editing");
+    box.innerHTML = dockHTML(id);
+    box.querySelectorAll("[data-dsong]").forEach(b=>{
+      if(editing) b.classList.add("rm");
+      b.onclick = ()=>{
+        const r = CRATE.lib[+b.getAttribute("data-dsong")]; if(!r) return;
+        if(box.classList.contains("editing")){ CRATE.lib = CRATE.lib.filter(x=>x!==r); cratePut("lib", CRATE.lib); paintDocks(); return; }
+        box.hidden = true; const tg=document.querySelector(`[data-dock="${id}"]`); if(tg) tg.setAttribute("aria-expanded","false");
+        loadFile(decks.find(x=>x.id===id), crateFile(r));
+      };
+    });
+    const ed = box.querySelector("[data-dockedit]");
+    if(ed){ ed.textContent = editing ? t("dockDone") : t("dockEdit"); ed.onclick = ()=>{ box.classList.toggle("editing"); paintDocks(); }; }
+    const inp = box.querySelector("[data-dockload]");
+    if(inp) inp.onchange = async ()=>{
+      const file = inp.files && inp.files[0]; if(!file) return;
+      box.hidden = true;
+      await loadFile(decks.find(x=>x.id===id), file);
+    };
+  });
+}
 function bind(){
+  paintDocks();
+  document.querySelectorAll("[data-dock]").forEach(b=>{
+    b.onclick = ()=>{
+      const box = document.getElementById("dock"+b.getAttribute("data-dock")); if(!box) return;
+      box.hidden = !box.hidden; box.classList.remove("editing"); paintDocks();
+      b.setAttribute("aria-expanded", box.hidden ? "false" : "true");
+    };
+  });
   document.querySelectorAll("[data-load]").forEach(inp=>{
     inp.onchange = async ()=>{
       const file = inp.files && inp.files[0]; if(!file) return;
