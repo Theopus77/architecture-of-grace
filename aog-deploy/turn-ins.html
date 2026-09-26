@@ -665,13 +665,20 @@ else document.documentElement.classList.add("aog-embed");</script>
   }
 
   /* ═══════════ READER 1 · TURN-INS — aog.practice.remote ═══════════ */
+  function foldWho(n){ return String(n==null?"":n).replace(/[’‘`´]/g,"'").replace(/\s+/g," ").trim().toLowerCase(); }
+  function sameSend(a,b){ if(!a||!b) return false; if(foldWho(a.studentId)!==foldWho(b.studentId)) return false; if(String(a.activityId||"")!==String(b.activityId||"")) return false;
+    if(String(a.itemsTotal||"")!==String(b.itemsTotal||"")||String(a.independent||"")!==String(b.independent||"")) return false;
+    var ta=Date.parse(a.timestamp||a.date||""), tb=Date.parse(b.timestamp||b.date||""); if(isNaN(ta)||isNaN(tb)) return String(a.timestamp||"").slice(0,16)===String(b.timestamp||"").slice(0,16); return Math.abs(ta-tb)<=3*60*1000; }
   function readTurnins(){
     /* AOG-MINE-V1 — rows this device sent itself, beside rows pulled from the
        Sheet; one row that is in both is shown once */
-    var remote=arrOf("aog.practice.remote"), seenR={};
-    remote.forEach(function(r){ seenR[String(r.studentId)+"|"+String(r.activityId||"")+"|"+String(r.timestamp||"").slice(0,16)]=1; });
-    var mine=arrOf("aog.practice.mine").filter(function(r){ return !seenR[String(r.studentId)+"|"+String(r.activityId||"")+"|"+String(r.timestamp||"").slice(0,16)]; });
-    return remote.concat(mine).map(function(r){
+    /* AOG-ONESEND-V1 (2026-09-26) — Jimmy: "These numbers don't match: 6 panes but 7 items." The Sheet hands a
+       timestamp back a little differently from the copy the device kept (4:32 vs 4:33), so an exact-minute match
+       missed and one send showed twice. One rule now, shared with the dashboard: the same student, the same
+       activity and the same score within three minutes is one send. The device's copy is labelled as its own. */
+    var remote=arrOf("aog.practice.remote");
+    var mine=arrOf("aog.practice.mine").filter(function(m){ return !remote.some(function(r){ return sameSend(r,m); }); });
+    return remote.map(function(r){ r=Object.assign({},r); r.__sheet=true; return r; }).concat(mine).map(function(r){
       var sj=subjectOf(r), x=xparse(r);
       var sm=[];
       if(nz(r.itemsTotal)) sm.push((nz(r.independent)?r.independent:"?")+" of "+r.itemsTotal+" with no hint");
@@ -682,7 +689,7 @@ else document.documentElement.classList.add("aog-embed");</script>
       return { kind:"turnin", kindLab:"Turn-in", cls:sj[1], subj:sj[0],
                student:r.studentId, ts:r.timestamp||r.date||"",
                title:r.activityName||r.activityId||"Practice",
-               sum:sm.join(" · "), sheet:true, raw:r,
+               sum:sm.join(" · "), sheet:!!r.__sheet, raw:r,
                detail:turninDetail, evidence:turninEvidence };
     });
   }
@@ -1423,7 +1430,7 @@ else document.documentElement.classList.add("aog-embed");</script>
       + '<span class="act">'+esc(it.title||"")+'</span>'
       + '<span class="who">'+esc(it.student||"")+'</span>'
       + '<span class="dt">'+esc(when(it.ts))+"</span>"
-      + (it.sheet?'<span class="prov">from the Sheet</span>':"")
+      + (it.sheet?'<span class="prov">from the Sheet</span>':(it.kind==="turnin"?'<span class="prov">on this device</span>':""))
       + (it.sum?'<span class="sum">'+esc(it.sum)+"</span>":"")
       + "</summary>"
       + '<div class="body">'+body

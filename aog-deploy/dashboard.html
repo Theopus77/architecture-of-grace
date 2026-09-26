@@ -226,7 +226,11 @@ function rows(k){ try{ const v=JSON.parse(localStorage.getItem(k)||"[]"); return
 function day(r){ return String(r.date||r.timestamp||"").slice(0,10); }
 function who(r){ return String(r.studentId||r.respondentId||"").trim(); }
 function data(){
-  const ci=rows("aog.checkin.remote").filter(r=>String(r.checkinType||"")!=="thisisme"&&!isAdultRow(r)), pr=rows("aog.practice.remote");
+  const ci=rows("aog.checkin.remote").filter(r=>String(r.checkinType||"")!=="thisisme"&&!isAdultRow(r));
+  /* AOG-ONESEND-V1 — the same pile the Inbox counts: rows from the Sheet plus the copies this device kept of its own
+     sends that the Sheet has not handed back yet; the same send counted once (same student, activity and score
+     within three minutes). */
+  const remote=rows("aog.practice.remote"), mine=rows("aog.practice.mine").filter(m=>!remote.some(r=>sameSend(r,m))), pr=remote.concat(mine);
   /* AOG-DASH-ONEWHO-V2 (2026-09-26) — Jimmy: "help merge the two Rockin' Ramsden, or at least tell me which one is
      different so I can fix it in the Sheet." One student, however the name was typed: a curly apostrophe (’) and a
      straight one ('), a stray space, a capital. The first spelling seen is the one shown; every spelling is kept
@@ -240,6 +244,7 @@ function data(){
     const scored=s.pr.filter(r=>+r.itemsTotal>0); s.acc=scored.length?Math.round(100*scored.reduce((a,r)=>a+(+r.independent||0),0)/scored.reduce((a,r)=>a+(+r.itemsTotal||0),0)):null; });
   const out={}; Object.values(S).forEach(s=>{ out[s.name]=s; }); return {ci,pr,S:out};
 }
+function sameSend(a,b){ if(!a||!b) return false; if(fold(a.studentId)!==fold(b.studentId)) return false; if(String(a.activityId||"")!==String(b.activityId||"")) return false; if(String(a.itemsTotal||"")!==String(b.itemsTotal||"")||String(a.independent||"")!==String(b.independent||"")) return false; const ta=Date.parse(a.timestamp||a.date||""), tb=Date.parse(b.timestamp||b.date||""); if(isNaN(ta)||isNaN(tb)) return String(a.timestamp||"").slice(0,16)===String(b.timestamp||"").slice(0,16); return Math.abs(ta-tb)<=3*60*1000; }
 function fold(n){ return String(n==null?"":n).replace(/[’‘`´]/g,"'").replace(/[“”]/g,'"').replace(/\s+/g," ").trim().toLowerCase(); }
 function findS(D,name){ if(D.S[name]) return D.S[name]; const k=fold(name); const key=Object.keys(D.S).find(x=>fold(x)===k); return key?D.S[key]:null; }
 function flagged(r){ return r.followUp===true||String(r.followUp)==="true"||String(r.unsafeFlag)==="true"||String(r.trustedAdultFlag)==="true"||/yes|now|soon/i.test(String(r.tellAdult||"")); }
