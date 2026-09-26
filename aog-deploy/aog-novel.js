@@ -76,9 +76,10 @@
     var body = "";
     for (var b = 0; b < s.blocks.length; b++) {
       var k = s.blocks[b];
+      var txt = k.h != null ? k.h : esc(k.t);      /* k.h carries the manuscript's italics as <em> */
       if (k.k === "break") body += "<hr>";
-      else if (k.k === "q") h += '<p class="q">' + esc(k.t) + "</p>";
-      else body += '<p class="' + (k.k === "c" ? "c" : "") + '">' + esc(k.t) + "</p>";
+      else if (k.k === "q") h += '<p class="q">' + txt + "</p>";
+      else body += '<p class="' + (k.k === "c" ? "c" : k.k === "i" ? "i" : k.k === "sig" ? "sig" : "") + '">' + txt + "</p>";
     }
     h += '<div class="text">' + body + "</div>";
     page.innerHTML = h;
