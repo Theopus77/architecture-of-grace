@@ -117,6 +117,8 @@
     if (!id) return -1; var t = D.getElementById(id); if (!t) return -1;
     for (var i = 0; i < pages.length; i++) if (pages[i].id === id || pages[i].els.some(function (e) { return e === t || e.contains(t); })) return i;
     var ch = t.closest && t.closest("section.chap"); if (ch) for (var j = 0; j < pages.length; j++) if (pages[j].id === ch.id) return j;
+    /* AOG-PG-WRAPLINK-V1 (2026-09-27): a link to a container (e.g. #wrap, "Unit wrap-up") opens its first page */
+    for (var k = 0; k < pages.length; k++) if (pages[k].els.some(function (e) { return t.contains(e); })) return k;
     return -1;
   }
   function fromHash(scroll) {
