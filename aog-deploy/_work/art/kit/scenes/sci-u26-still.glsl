@@ -1,7 +1,7 @@
 /* Science Unit 26 "Environmental Science" — pencil still life: a model wind turbine, a small
    solar panel on its stand, and a seedling growing in a pot. */
-#define CAM_POS vec3(-0.9621,0.5120,-1.3270)
-#define CAM_TGT vec3(-0.3685,0.0746,0.2353)
+#define CAM_POS vec3(-0.6824,0.3554,-0.9448)
+#define CAM_TGT vec3(-0.2541,0.0398,0.1820)
 #define CAM_FOV 30.
 #define SUN_DIR vec3(-.7,.85,-.3)
 #define MAXT 8.
@@ -23,18 +23,18 @@ vec2 turbine(vec3 p){ vec3 q=p-WC;
     float t=clamp(b.y/.15,0.,1.); float w=.012*(1.-t)+.004;
     bl=min(bl,max(sdRBox(b-vec3(0.,.075,0.),vec3(w,.075,.002),.0015),-b.y)); }
   return vec2(min(base,tower),min(min(nac,hub),bl)); }
-vec3 sq(vec3 p){ vec3 q=p-vec3(-.25,.07,.02); q.xz=rot(.45)*q.xz; q.yz=rot(-.75)*q.yz; return q; }
+vec3 sq(vec3 p){ vec3 q=p-vec3(-.13,.07,.0); q.xz=rot(.45)*q.xz; q.yz=rot(-.75)*q.yz; return q; }
 vec2 solar(vec3 p){ vec3 q=sq(p);
   float fr=sdRBox(q,vec3(.09,.004,.06),.002);
   float cells=sdBox(q-vec3(0.,.003,0.),vec3(.085,.002,.055));
-  vec3 s=p-vec3(-.25,0.,.02); s.xz=rot(.45)*s.xz;
+  vec3 s=p-vec3(-.13,0.,.0); s.xz=rot(.45)*s.xz;
   float leg=min(sdCapsule(s,vec3(-.05,0.,.04),vec3(-.05,.07,.0),.004),sdCapsule(s,vec3(.05,0.,.04),vec3(.05,.07,.0),.004));
   leg=min(leg,min(sdCapsule(s,vec3(-.05,0.,-.03),vec3(-.05,.04,-.03),.004),sdCapsule(s,vec3(.05,0.,-.03),vec3(.05,.04,-.03),.004)));
   return vec2(min(fr,leg),cells); }
 float leaf(vec3 q,vec3 base,float ay,float tilt,float L){
   vec3 l=q-base; l.xz=rot(ay)*l.xz; l.xy=rot(tilt)*l.xy; l.y+=.25*l.x*l.x/L;
   return .6*sdEll(l-vec3(L*.5,0.,0.),vec3(L*.5,.004,L*.3)); }
-#define PC vec3(.3,0.,.02)
+#define PC vec3(.15,0.,-.04)
 vec2 pot(vec3 p){ vec3 q=(p-PC)/.8;
   float body=sdCone(q-vec3(0.,.05,0.),.045,.06,.05)-.002; body=max(body,-(sdCylY(q-vec3(0.,.11,0.),.052,.02)));
   float rim=sdCylY(q-vec3(0.,.095,0.),.067,.011)-.003; rim=max(rim,-sdCylY(q-vec3(0.,.1,0.),.056,.03));
@@ -45,7 +45,7 @@ vec2 pot(vec3 p){ vec3 q=(p-PC)/.8;
   return vec2(min(body,rim),min(soil,pl))*.8; }
 vec2 map(vec3 p){
   vec2 r=vec2(p.y,1.); r=U(r,.9-p.z,2.);
-  vec2 t=turbine(p); r=U(r,t.x,3.); r=U(r,t.y,4.);
+  vec2 t=turbine(WC+(p-WC)/.7)*.7; r=U(r,t.x,3.); r=U(r,t.y,4.);
   vec2 s=solar(p); r=U(r,s.x,5.); r=U(r,s.y,6.);
   vec2 k=pot(p); r=U(r,k.x,7.); r=U(r,k.y,8.);
   return r; }
