@@ -1575,6 +1575,8 @@ function isWall(id){ return id.indexOf("wall") === 0; }
 function go(id){
   current = id;
   if(isWall(id)) renderWall(id); else renderChart(id);
+  /* crosswalk links (#id) land on an element with that id */
+  try{ var st = document.getElementById("stage"), rt = st && st.firstElementChild; if(rt && !document.getElementById(id)) rt.id = id; }catch(e){}
   paintRail();
   paintBar();
   document.body.classList.remove("rail-open");
