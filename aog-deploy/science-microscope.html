@@ -89,6 +89,8 @@ header { display:flex; flex-wrap:wrap; justify-content:space-between; align-item
   .sticky { position:sticky; top:.75rem; }
 }
 .scope { width:100%; height:auto; display:block; }
+/* AOG-SCOPE-PENCIL-V1 — Jimmy: "the microscope needs to be drawn, with all the specs it has." Every part in pencil; a picked or answered part shows in colour. */
+svg.scope > :not(.scope-part):not(.scope-beam):not(defs), svg.scope .scope-part:not(.sel):not(.glow):not(.right):not(.wrong){ filter:url(#aogPencil); }
 .scope-part { cursor:pointer; touch-action:manipulation; }
 .scope-part .hit { fill:transparent; stroke:transparent; stroke-width:18; pointer-events:all; }
 .scope-part.sel .shape { stroke:var(--steel)!important; stroke-width:3!important; }
