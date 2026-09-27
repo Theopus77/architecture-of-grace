@@ -113,8 +113,7 @@ float potD(vec3 q,float s){ q/=s;
   float y=q.y; float r=.05*sin(clamp(y/.1,0.,1.)*2.6+.35)+.002;
   r=max(r,.022+.01*smoothstep(.1,.125,y));
   float body=(length(q.xz)-r)*.8; body=max(body,max(-y,y-.13));
-  body=max(body,-(length(q.xz)-(r-.004)));      /* a hollow neck */
-  body=max(body,-max(-(y-.1),length(q.xz)-.03));
+  body=max(body,-max(length(q.xz)-.018,.09-y));      /* a hollow mouth */
   float lip=sdTorus(q-vec3(0.,.13,0.),.03,.0045);
   float foot=sdCylY(q-vec3(0.,.003,0.),.03,.003)-.001;
   return min(min(body,lip),foot)*s; }
