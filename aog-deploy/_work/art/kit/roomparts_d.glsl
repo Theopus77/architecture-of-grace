@@ -33,3 +33,15 @@ float bowlD(vec3 q,float R,float H){
   float s=length(c*vec3(1.,R/H,1.))-R; s=abs(s)-.003; s=max(s,q.y-H*1.05);
   float foot=sdCylY(q-vec3(0.,.004,0.),R*.45,.004)-.001;
   return min(s*.8,foot); }
+/* the vowels, in the same -0.5..0.5 box as glyph(): A E I O U (65 69 73 79 85) */
+float glyphV(vec2 p,int g){
+  if(g==65) return glyph(p,65);
+  if(g==69){ float d=seg(p,vec2(-.2,-.4),vec2(-.2,.4)); d=min(d,seg(p,vec2(-.2,.4),vec2(.22,.4)));
+    d=min(d,seg(p,vec2(-.2,0.),vec2(.14,0.))); return min(d,seg(p,vec2(-.2,-.4),vec2(.22,-.4))); }
+  if(g==73){ float d=seg(p,vec2(0.,-.4),vec2(0.,.4)); d=min(d,seg(p,vec2(-.14,.4),vec2(.14,.4))); return min(d,seg(p,vec2(-.14,-.4),vec2(.14,-.4))); }
+  if(g==79){ return abs(length(p*vec2(1.,.78))-.3); }
+  if(g==85){ float d=seg(p,vec2(-.24,.4),vec2(-.24,-.12)); d=min(d,seg(p,vec2(.24,.4),vec2(.24,-.12)));
+    return min(d,arc(p,vec2(0.,-.12),.24,PI,2.*PI)); }
+  return 1e3; }
+float carveV(float d3,vec2 uv,int g,float sz,float w,float z,float dep){
+  float gd=glyphV(uv/sz,g)*sz-w; return max(d3,-max(gd,abs(z)-dep)); }

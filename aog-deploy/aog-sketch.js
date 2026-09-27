@@ -206,7 +206,7 @@
   ].join("\n");
   function mast(id) {
     var h1 = D.querySelector("main h1") || D.querySelector("h1");
-    var h = D.querySelector("header.mast, .mast") || (h1 && h1.closest("header"));
+    var h = (h1 && h1.closest("header.mast, .mast, header")) || D.querySelector("header.mast, .mast");   /* the title's own header, never a panel inside a tool */
     if (!h || h.querySelector(".aog-mast-sketch")) return;
     var box = D.createElement("span"); box.className = "aog-mast-sketch"; box.setAttribute("aria-hidden", "true");
     var b = "/img/banners/" + id + "-pencil";
@@ -271,7 +271,7 @@
   }
   function mastBoot() { tabsHome(); hubCards();
     var pg = (location.pathname.split("/").pop() || "").replace(/\.html$/, "");
-    if (/^(music-drums|music-decks|science-waves|slip)$/.test(pg)) return;   /* instruments and tools keep their own faces */
+    if (/^(slip)$/.test(pg)) return;   /* instruments and tools keep their own faces */
     if (PAGE[pg]) { mast(PAGE[pg]); return; }
     var tries = 0;
     (function wait() {
