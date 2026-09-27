@@ -1,7 +1,7 @@
-/* Qur'an Unit 10 "Major Themes" — pencil still life: a young sprouting plant in a clay pot, a clay oil lamp with a small flame and a closed book with a framed cover: growth, light and guidance.
+/* Qur'an Unit 10 "Major Themes" — pencil still life: a young palm sprouting in a clay pot, a clay oil lamp with a small flame and a closed book with a framed cover: growth, light and guidance.
    Pages carry only an ornamental frame and hint-lines, never words. No figures. */
-#define CAM_POS vec3(-0.6780,0.3632,-0.9725)
-#define CAM_TGT vec3(-0.2926,-0.0222,0.0739)
+#define CAM_POS vec3(-0.6471,0.3449,-0.9391)
+#define CAM_TGT vec3(-0.2765,-0.0258,0.0667)
 #define CAM_FOV 30.
 #define SUN_DIR vec3(-.7,.85,-.3)
 #define MAXT 8.
@@ -198,12 +198,7 @@ float crownD(vec3 q){ if(length(q-vec3(0,.26,0))>.2) return length(q-vec3(0,.26,
 
 
 #define PP vec3(-.02,0.,.06)
-float plant(vec3 p){ vec3 q=p-PP; if(length(q-vec3(0,.2,0))>.2) return length(q-vec3(0,.2,0))-.15;
-  float d=sdCapsule(q,vec3(0,.09,0),vec3(.008,.24,-.004),.0045);
-  d=smin(d,sdEll(q-vec3(0,.092,0),vec3(.068,.01,.068)),.01);
-  for(int i=0;i<5;i++){ float a=float(i)*2.4+.5; float y=.14+float(i)*.022; vec3 c=q-vec3(.004,y,0); c.xz=rot(a)*c.xz; c.xy=rot(.25-float(i)*.14)*c.xy;
-    d=min(d,leafD(c,.08-float(i)*.008,.03-float(i)*.003)); }
-  return d; }
+float plant(vec3 p){ vec3 q=p-PP-vec3(0,.085,0); return min(palmD(q,.13),sdEll(q-vec3(0,.006,0),vec3(.066,.01,.066))); }
 #define LP vec3(.25,0.,-.08)
 vec3 kQ(vec3 p){ return place(p,vec3(-.2,0.,-.13),.25); }
 vec2 map(vec3 p){ vec2 r=vec2(p.y,1.); r=U(r,1.4-p.z,2.);
