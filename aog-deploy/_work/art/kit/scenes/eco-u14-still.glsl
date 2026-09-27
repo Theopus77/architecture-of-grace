@@ -41,7 +41,7 @@ float toneAlb(float id,vec3 p,vec3 n){
   if(id==1.) return .75;
   if(id==2.) return .9;
   if(id==3.) return shopTone(sq(p,S1,-.2),.15);
-  if(id==5.) return shopTone(sq(p,S2,-.35),.18)-.12;
+  if(id==5.) return shopTone(sq(p,S2,-.35),.18)-.04;
   if(id==4.){ vec3 q=sq(p,S1,-.2); return fract(q.x/.03)<.5?.3:.92; }
   if(id==6.){ vec3 q=sq(p,S2,-.35); return fract(q.x/.04)<.5?.92:.45; }
   if(id==7.){ if(abs(n.y)>.7) return .72; return .5; }
