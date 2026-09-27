@@ -1,7 +1,7 @@
 /* Spanish Unit 1 "Sounds of Spanish" — pencil still life: four wooden vowel blocks carved
    A, E, I and O (O stacked on top), with a painted maraca lying beside them. */
-#define CAM_POS vec3(-0.3889,0.3566,-0.6731)
-#define CAM_TGT vec3(-0.1988,-0.0237,0.1306)
+#define CAM_POS vec3(-0.3874,0.3552,-0.6663)
+#define CAM_TGT vec3(-0.1986,-0.0221,0.1313)
 #define CAM_FOV 30.
 #define SUN_DIR vec3(-.65,.85,-.3)
 #define MAXT 8.
