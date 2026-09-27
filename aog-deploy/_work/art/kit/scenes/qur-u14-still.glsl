@@ -1,7 +1,7 @@
-/* Qur'an Unit 14 "The Qur'an and the Bible" — pencil still life: two closed books standing upright side by side, their decorated covers facing us, with a lit candle in a candlestick between and before them.
+/* Qur'an Unit 14 "The Qur'an and the Bible" — pencil still life: two closed books with decorated covers lying side by side on one table, with a lit candle in a candlestick behind them.
    Pages carry only an ornamental frame and hint-lines, never words. No figures. */
-#define CAM_POS vec3(-0.7032,0.4148,-0.9113)
-#define CAM_TGT vec3(-0.3273,0.0388,0.1090)
+#define CAM_POS vec3(-0.7643,0.4523,-1.0321)
+#define CAM_TGT vec3(-0.3427,0.0309,0.1118)
 #define CAM_FOV 30.
 #define SUN_DIR vec3(-.7,.85,-.3)
 #define MAXT 8.
@@ -197,20 +197,19 @@ float crownD(vec3 q){ if(length(q-vec3(0,.26,0))>.2) return length(q-vec3(0,.26,
   return (d+.018*fbm3(q*45.)-.006)*.7; }
 
 
-vec3 fQ(vec3 p,vec3 c,float ry,vec3 s){ vec3 q=place(p,c,ry); q.yz=rot(-.1)*q.yz; return vec3(q.x,-q.z+s.y,q.y-s.z); }
-#define S1 vec3(.1,.02,.14)
-#define S2 vec3(.085,.017,.12)
-#define A1 vec3(-.07,0.,.12)
-#define A2 vec3(.14,0.,.1)
-#define CP vec3(.03,0.,-.1)
+#define S1 vec3(.12,.022,.085)
+#define S2 vec3(.105,.018,.075)
+vec3 q1(vec3 p){ return place(p,vec3(-.14,0.,.0),.2); }
+vec3 q2(vec3 p){ return place(p,vec3(.14,0.,-.04),-.25); }
+#define CP vec3(.01,0.,.16)
 vec2 map(vec3 p){ vec2 r=vec2(p.y,1.); r=U(r,1.4-p.z,2.);
-  vec2 a=bookC(fQ(p,A1,.12,S1),S1); vec2 b=bookC(fQ(p,A2,-.14,S2),S2);
+  vec2 a=bookC(q1(p),S1); vec2 b=bookC(q2(p),S2);
   r=U(r,min(a.x,b.x),3.); r=U(r,a.y,4.); r=U(r,b.y,5.);
   r=U(r,stickD(p-CP),6.); r=U(r,candleD(p-CP),7.); r=U(r,candleFlame(p-CP),8.); return r; }
 float toneAlb(float id,vec3 p,vec3 n){
   if(id==1.) return .75; if(id==2.) return .9;
   if(id==3.) return fract(p.y/.0025)<.3?.72:.9;
-  if(id==4.) return coverT(fQ(p,A1,.12,S1),S1,.68);
-  if(id==5.) return coverT(fQ(p,A2,-.14,S2),S2,.74);
+  if(id==4.) return coverT(q1(p),S1,.45);
+  if(id==5.) return coverT(q2(p),S2,.6);
   if(id==7.) return .94; if(id==8.) return .97; return .45; }
 
