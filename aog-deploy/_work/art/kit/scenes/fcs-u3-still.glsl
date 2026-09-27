@@ -1,7 +1,7 @@
 /* FCS Unit 3 "Everyday Food and Sometimes Food" — pencil still life: a plate with an apple, two
    carrots and a slice of bread, and a frosted cupcake with a cherry set a little apart. */
-#define CAM_POS vec3(-0.30,0.40,-0.84)
-#define CAM_TGT vec3(-0.05,0.02,0.09)
+#define CAM_POS vec3(-0.3610,0.2990,-0.6558)
+#define CAM_TGT vec3(-0.1564,-0.0120,0.1055)
 #define CAM_FOV 30.
 #define SUN_DIR vec3(-.65,.85,-.3)
 #define MAXT 8.
