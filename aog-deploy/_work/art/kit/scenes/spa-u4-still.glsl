@@ -1,7 +1,7 @@
 /* Spanish Unit 4 "One and Many, Big and Little" — pencil still life: one big striped ball, a
    middle-sized ball, and a small crowd of little marbles rolled together in front. */
-#define CAM_POS vec3(-0.30,0.36,-0.84)
-#define CAM_TGT vec3(-0.05,0.03,0.09)
+#define CAM_POS vec3(-0.4455,0.2933,-0.7338)
+#define CAM_TGT vec3(-0.2160,-0.0099,0.1204)
 #define CAM_FOV 30.
 #define SUN_DIR vec3(-.65,.85,-.3)
 #define MAXT 8.
