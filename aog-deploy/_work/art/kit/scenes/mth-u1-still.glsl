@@ -1,8 +1,8 @@
 /* Math Unit 1 "Counting and Numbers" — pencil still life: a wooden counting frame (an
    abacus with ten beads on each rod, some slid across as if counting) beside three number
    blocks carved 1, 2 and 3. */
-#define CAM_POS vec3(-0.468,0.298,-0.989)
-#define CAM_TGT vec3(-0.326,0.050,0.120)
+#define CAM_POS vec3(-0.3860,0.2496,-0.8227)
+#define CAM_TGT vec3(-0.2665,0.0410,0.1104)
 #define CAM_FOV 30.
 #define SUN_DIR vec3(-.7,.85,-.3)
 #define MAXT 8.
@@ -49,6 +49,6 @@ float toneAlb(float id,vec3 p,vec3 n){
   if(id==1.) return .75;
   if(id==2.) return .9;
   if(id==3.) return .45;
-  if(id==4.){ vec3 q=aq(p); float r=floor((q.y-.075)/.047+.5); return mod(r,2.)<.5?.3:.75; }
+  if(id==4.){ vec3 q=aq(p); int r=int(floor((q.y-.075)/.047+.5)); float n=counted(r); float edge=-.148+(n-.5)*.0205; return q.x<edge+.004?.28:.86; }
   if(id>=5.) return .78;
   return .7; }
