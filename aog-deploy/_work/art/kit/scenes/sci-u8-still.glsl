@@ -1,7 +1,7 @@
 /* Science Unit 8 "Ecosystems and the Flow of Energy" — pencil still life: a mossy log with
    mushrooms growing on it (decomposers at work), an oak leaf and an acorn. */
-#define CAM_POS vec3(-0.6056,0.2806,-0.8400)
-#define CAM_TGT vec3(-0.2255,0.0006,0.1601)
+#define CAM_POS vec3(-0.5457,0.2637,-0.7867)
+#define CAM_TGT vec3(-0.1906,0.0022,0.1473)
 #define CAM_FOV 30.
 #define SUN_DIR vec3(-.7,.85,-.3)
 #define MAXT 8.
@@ -18,15 +18,15 @@ float logD(vec3 p){ vec3 q=lq(p);
   d+=.0015*sin(atan(q.z,q.y)*28.+fbm(q.xy*30.)*4.)*step(abs(q.x),.186);
   float br=sdCapsule(q,vec3(-.06,.04,-.01),vec3(-.1,.1,-.03),.012); br=max(br,-(length(q.yz)-.04));
   return min(d,br); }
-float shroom(vec3 q,float s){ q/=s;
-  float stem=sdCapsule(q,vec3(0.),vec3(0.,.04,0.),.008);
-  float cap=sdEll(q-vec3(0.,.045,0.),vec3(.03,.018,.03)); cap=max(cap,-(q.y-.04));
-  float gill=sdCylY(q-vec3(0.,.041,0.),.028,.002);
-  return min(min(stem,cap),gill)*s; }
+float shroom(vec3 q,float s){ q/=s;   /* a round-capped mushroom: domed cap, curled rim, thick stem */
+  float stem=sdCone(q-vec3(0.,.018,0.),.011,.008,.018);
+  float cap=sdEll(q-vec3(0.,.034,0.),vec3(.026,.024,.026)); cap=max(cap,-(q.y-.03));
+  float rim=sdTorus(q-vec3(0.,.031,0.),.022,.0045);
+  return min(min(stem,cap),rim)*s; }
 vec2 mush(vec3 p){ vec3 q=lq(p);
   float d=shroom(q-vec3(.05,.052,-.02),2.);
   d=min(d,shroom(q-vec3(.11,.048,-.028),1.4));
-  vec3 g=p-vec3(-.31,0.,-.02); d=min(d,shroom(g,2.2));
+  vec3 g=p-vec3(-.29,0.,-.02); d=min(d,shroom(g,1.6));
   d=min(d,shroom(g-vec3(.05,0.,.03),1.4));
   return vec2(d,0.); }
 vec3 oq(vec3 p){ vec3 q=p-vec3(.33,.005,-.02); q.xz=rot(.7)*q.xz; return q; }
@@ -53,7 +53,7 @@ float toneAlb(float id,vec3 p,vec3 n){
   if(id==1.) return .75; if(id==2.) return .9;
   if(id==3.){ vec3 q=lq(p); if(abs(q.x)>.186){ float r=length(q.yz); return fract(r/.008)<.3?.35:.65; }
     return .35+.2*fbm(q.yz*60.); }
-  if(id==4.){ return n.y<-.2?.4:.8; }
+  if(id==4.){ float c=.72; if(n.y>.3&&fract((p.x*37.+p.z*53.)*9.)<.06) c=.45; return n.y<-.2?.4:c; }
   if(id==5.){ vec3 q=oq(p)/1.8; if(abs(q.z)<.0015) return .25; float v=abs(fract((q.x+abs(q.z)*1.2)/.025)-.5); return v<.05&&abs(q.z)<.03?.35:.55; }
   if(id==6.) return .55;
   if(id==7.){ vec3 q=p; return fract((q.x+q.z)*300.)<.4?.3:.5; }
