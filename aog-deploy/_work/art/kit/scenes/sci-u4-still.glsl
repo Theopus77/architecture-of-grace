@@ -1,7 +1,7 @@
 /* Science Unit 4 "Earth, Sky and Weather" — pencil still life: a school globe on its
    stand, an open umbrella resting on the table, and a rain gauge with its scale marks. */
-#define CAM_POS vec3(-0.7372,0.3255,-0.8204)
-#define CAM_TGT vec3(-0.3438,0.0357,0.2147)
+#define CAM_POS vec3(-0.7470,0.3522,-0.8150)
+#define CAM_TGT vec3(-0.3518,0.0611,0.2249)
 #define CAM_FOV 30.
 #define SUN_DIR vec3(-.7,.85,-.3)
 #define MAXT 8.
@@ -23,8 +23,8 @@ vec2 globe(vec3 p){ vec3 q=p-GC;
   float axle=sdCylY(g,.003,.118);
   float ball=length(g)-.1;
   return vec2(min(min(base,stem),min(mer,axle)),ball); }
-/* open umbrella resting on its rim, tipped back, handle toward the viewer */
-vec3 uq(vec3 p){ vec3 q=p-vec3(-.3,.125,.1); q.xz=rot(.5)*q.xz; q.xy=rot(1.0)*q.xy; return q; }
+/* open umbrella standing upright on its hooked handle */
+vec3 uq(vec3 p){ vec3 q=p-vec3(-.29,.222,.1); q.xy=rot(.12)*q.xy; q.xz=rot(.4)*q.xz; return q; }
 float umb(vec3 p){ vec3 q=uq(p); q.y-=.0;
 
   float a=atan(q.z,q.x); float s=6.2832/8.; float fa=abs(mod(a,s)-s*.5)/(s*.5);   /* 0 at a rib, 1 mid-panel */
@@ -61,7 +61,7 @@ float toneAlb(float id,vec3 p,vec3 n){
   if(id==4.){ vec3 d=normalize(gq(p)); float l=land(d);
     if(abs(l-.55)<.012) return .2;               /* coast */
     if(l>.55) return .62; float lat=abs(fract(asin(d.y)/.35)-.5); return lat<.03?.55:.82; }
-  if(id==5.){ vec3 q=uq(p); if(q.y<-.05) return .3; float a=atan(q.z,q.x); return fract(a/6.2832*4.)<.5?.35:.82; }
+  if(id==5.){ vec3 q=uq(p); if(q.y<-.075) return .3; float a=atan(q.z,q.x); return fract(a/6.2832*4.)<.5?.35:.82; }
   if(id==6.){ vec3 q=p-RC; float m=fract(q.y/.02); if(q.y>.02&&q.y<.19&&m<.12&&q.z<-.01&&abs(q.x)<.012) return .2; return .88; }
   if(id==7.) return .6;
   return .7; }
