@@ -194,7 +194,9 @@
     "AoG-Interior-Worksheets": "page-worksheets",
     "english-hub": "page-english-hub", "math-hub": "page-math-hub", "science-hub": "page-science-hub", "social-studies-hub": "page-social-studies-hub",
     "spanish-hub": "page-spanish-hub", "facs-hub": "page-facs-hub", "dashboard": "page-dashboard", "turn-ins": "page-turn-ins",
-    "daily-drops": "page-daily-drops", "quiet-space": "page-quiet-space" };
+    "daily-drops": "page-daily-drops", "quiet-space": "page-quiet-space",
+    "music-drums": "music-drums", "drums-lessons": "music-drums", "music-decks": "music-decks", "decks-lessons": "music-decks",
+    "science-waves": "science-waves", "waves-lessons": "science-waves", "word-foundry": "word-foundry" };
   var MCSS = [
     ".aog-mast-host{ position:relative; }", ".aog-mast-sketch{ overflow:hidden; }",
     ".aog-mast-host > :not(.aog-mast-sketch){ position:relative; z-index:1; }",
@@ -269,7 +271,19 @@
       f.appendChild(im); d.insertBefore(f, d.firstChild);
     }
   }
-  function mastBoot() { tabsHome(); hubCards();
+  /* any page can ask for a pencil drawing by id: <div data-aog-sketch-id="proj-3"></div> (FACS projects, …) */
+  function sketchSlots() {
+    var n = D.querySelectorAll("[data-aog-sketch-id]:not([data-sk-done])");
+    for (var i = 0; i < n.length; i++) {
+      var el = n[i]; el.setAttribute("data-sk-done", "1");
+      var im = D.createElement("img"); im.alt = ""; im.loading = "lazy"; im.className = "aog-slot-sketch";
+      im.src = "/img/banners/" + el.getAttribute("data-aog-sketch-id") + "-pencil-900.webp";
+      im.onerror = (function (e) { return function () { e.style.display = "none"; }; })(el);
+      el.appendChild(im);
+    }
+  }
+  TCSS += "\n.aog-slot-sketch{ display:block; width:100%; height:150px; object-fit:cover; object-position:75% 42%; border-radius:10px; border:1px solid rgba(42,38,34,.35); }";
+  function mastBoot() { tabsHome(); hubCards(); sketchSlots();
     var pg = (location.pathname.split("/").pop() || "").replace(/\.html$/, "");
     if (/^(slip)$/.test(pg)) return;   /* instruments and tools keep their own faces */
     if (PAGE[pg]) { mast(PAGE[pg]); return; }
@@ -281,4 +295,41 @@
     })();
   }
   if (D.readyState === "loading") D.addEventListener("DOMContentLoaded", mastBoot); else mastBoot();
+  /* AOG-ONE-PAINT-V1 — show the page once, when it is built: after the fonts (or 0.8 s), two frames later */
+  (function () {
+    var done = false; function show() { if (done) return; done = true; D.documentElement.classList.add("aog-ready"); }
+    var go = function () { requestAnimationFrame(function () { requestAnimationFrame(show); }); };
+    try { Promise.race([D.fonts && D.fonts.ready ? D.fonts.ready : Promise.resolve(), new Promise(function (r) { setTimeout(r, 800); })]).then(go, go); } catch (e) { show(); }
+    setTimeout(show, 1000);
+  })();
+})();
+/* AOG-UNIT-COLORS-V1: course pages use each unit's own color (same order as the hub
+   doors), small flat numbers, and a readable "Course contents" button. */
+(function(){
+  var PAL=["#2F63B8","#B8457A","#2E8B57","#B87A12","#7B4FA0","#A8323E","#1F8080","#3F4AA6"];
+  var css=".unit-spread .badge{background:var(--aog-uc,#2F63B8)!important;color:#fff!important;width:36px!important;height:36px!important;border-radius:9px!important;font-size:1.1rem!important;box-shadow:none!important}"
+   +".unit-spread .unum b{background:var(--aog-uc,#2F63B8)!important;color:#fff!important;min-width:36px!important;width:36px!important;height:36px!important;border-radius:9px!important;font-size:1.1rem!important;box-shadow:none!important}"
+   +".cl-btn,.cl-btn:visited{background:#0A1E33!important;color:#F7F2E6!important;opacity:1!important;filter:none!important}"
+   +".cl-btn:hover{background:#1D3A5C!important;color:#fff!important}";
+  function go(){
+    var st=document.createElement("style");st.id="aog-unit-colors";st.textContent=css;document.head.appendChild(st);
+    var n=0;[].forEach.call(document.querySelectorAll(".bandhead,.unit-spread"),function(el){
+      if(el.classList.contains("bandhead")){n=0;return;}
+      el.style.setProperty("--aog-uc",PAL[n++%8]);
+    });
+  }
+  if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",go);else go();
+})();
+
+/* AOG-CALM-SCROLL-V1 — Jimmy: "make sure everything in the site is neurodivergent for scrolling".
+   aog-calm.css stops CSS smooth scrolling on touch screens and with "reduce motion", but a page
+   script can still ask for a smooth glide. Here every such request becomes an instant jump. */
+(function(){
+  try{
+    var calm = matchMedia("(hover: none), (pointer: coarse), (prefers-reduced-motion: reduce)");
+    function fix(o){ if(calm.matches && o && typeof o === "object" && o.behavior === "smooth"){ var c = {}; for(var k in o) c[k] = o[k]; c.behavior = "auto"; return c; } return o; }
+    function wrap(obj, name){ var f = obj[name]; if(!f || f.__aogCalm) return; var g = function(a){ var args = [].slice.call(arguments); args[0] = fix(a); return f.apply(this, args); }; g.__aogCalm = 1; obj[name] = g; }
+    wrap(Element.prototype, "scrollIntoView"); wrap(Element.prototype, "scrollTo"); wrap(Element.prototype, "scrollBy");
+    wrap(window, "scrollTo"); wrap(window, "scroll"); wrap(window, "scrollBy");
+  }catch(e){}
 })();

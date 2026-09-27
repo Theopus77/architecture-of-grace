@@ -116,3 +116,15 @@ html body .daily:has(> a.gr:nth-of-type(15)):not(:has(> a.gr:nth-of-type(16))) {
 /* AOG-PRINT-STILL-V1 (2026-09-27) — Jimmy's Safari print of a unit came out pale at the top: Safari prints the
    page mid fade-in. Nothing animates or fades on paper; everything prints at full strength. */
 @media print { *, *::before, *::after { animation:none !important; transition:none !important; } .aog-fade { opacity:1 !important; } }
+
+/* AOG-CALM-NO-SIDE-SCROLL (2026-09-27) — Jimmy: "I don't like the scrolling inside a box."
+   On a phone the unit timeline stacks straight down the page and the chapter chips wrap. */
+@media (max-width: 700px) {
+  .tl .track { flex-direction: column !important; overflow: visible !important; scroll-snap-type: none !important; padding: 4px 0 4px 34px !important; gap: 14px !important; }
+  .tl .track::before { left: 11px !important; right: auto !important; top: 6px !important; bottom: 6px !important; width: 3px !important; height: auto !important; background: linear-gradient(180deg, var(--red, #9B2C2C), var(--gold, #C9A24A)) !important; }
+  .tl .pin { flex: 0 0 auto !important; width: auto !important; padding: 0 !important; }
+  .tl .pin::before { left: -31px !important; top: 2px !important; }
+  .tl .pin .y { margin: 0 0 4px 0 !important; }
+  .tl .pin .t { border-top: 0 !important; padding-top: 0 !important; }
+  .rail .in { flex-wrap: wrap !important; overflow: visible !important; }
+}
