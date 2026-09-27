@@ -388,51 +388,9 @@ function toggleTheme() {
 }
 </style>
 <style id="aog-sketch-glass">
-/* AOG-SKETCH-GLASS-V1 (2026-09-27) — the rose is gone: a pencil-sketched window of jewel glass sits
-   behind the name, and "Your window" shows a student's own progress in six glass panes. Still. */
-@media screen{
-  #aogHeroRose.aog-sketch-window{height:auto;aspect-ratio:1}
-  #aogYourWindow{position:relative;z-index:1;max-width:760px;margin:26px auto 0;padding:0 16px;text-align:center}
-  #aogYourWindow h2{font:600 15px/1.2 system-ui,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:#F2C964;margin:0 0 12px}
-  .sg-panes{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(6,1fr);gap:12px}
-  .sg-pane{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:4px;min-height:112px;padding:26px 8px 12px;
-    color:#F7F2E6;background:linear-gradient(180deg,rgba(255,255,255,.10),rgba(0,0,0,.18)),repeating-linear-gradient(38deg,rgba(10,30,51,.22) 0 2px,transparent 2px 7px),var(--g);
-    border:2px solid #E9E3D3;border-radius:52px 52px 8px 8px;box-shadow:0 10px 24px -14px rgba(0,0,0,.8)}
-  .sg-pane::before{content:"";position:absolute;inset:-4px -3px -3px -4px;border:1.2px solid rgba(233,227,211,.55);border-radius:inherit;transform:rotate(-.8deg);pointer-events:none}
-  .sg-pane b{font:700 30px/1 Fraunces,Georgia,serif;color:#FFFFFF}
-  .sg-pane span{font:600 13px/1.25 system-ui,sans-serif;color:#F7F2E6}
-  .sg-note{font-size:14px;line-height:1.45;color:#E9E3D3;margin:12px auto 0;max-width:46ch}
-  @media (max-width:720px){ .sg-panes{grid-template-columns:repeat(3,1fr);gap:10px} .sg-pane{min-height:100px} }
-}
-@media print{ #aogYourWindow{display:none} }
+/* AOG-SKETCH-GLASS-V1 — the rose is gone: a pencil-sketched window of jewel glass behind the name. Still. */
+@media screen{ #aogHeroRose.aog-sketch-window{height:auto;aspect-ratio:1} }
 </style>
-<script id="aog-sketch-glass-js">
-/* AOG-SKETCH-GLASS-V1 — count what this device already keeps; read only, nothing is written or sent. */
-(function(){
-  function run(){
-    var les=0, unit=0, right=0, write=0, courses={}, streak=0;
-    try{
-      for(var i=0;i<localStorage.length;i++){
-        var k=localStorage.key(i), m=/^aog\.interior\.ws\.v1\.([a-z]+)(\d+)$/.exec(k||"");
-        if(!m) continue;
-        var d={}; try{ d=JSON.parse(localStorage.getItem(k))||{}; }catch(e){}
-        var l=0, q=0, x;
-        for(x in (d.les||{})) if(d.les[x]) l++;
-        for(x in (d.q||{})) if(d.q[x] && d.q[x].done && d.q[x].first===true) q++; else if(d.q[x] && d.q[x].done) q++;
-        if(l||q||d.write){ unit++; courses[m[1]]=1; }
-        les+=l; right+=q; if(d.write && String(d.write).trim()) write++;
-      }
-      var last=localStorage.getItem("aog.drops.last")||"", s=+(localStorage.getItem("aog.drops.streak")||0);
-      var day=864e5, t=new Date(); t.setHours(0,0,0,0);
-      if(last){ var ld=new Date(last+"T00:00:00"); if(t-ld<=day) streak=s; }
-      if(localStorage.getItem("aog.drops.write")) write++;
-    }catch(e){}
-    var v={les:les,unit:unit,right:right,course:Object.keys(courses).length,streak:streak,write:write};
-    for(var id in v){ var el=document.getElementById("sgv-"+id); if(el) el.textContent=v[id]; }
-  }
-  if(document.readyState==="loading") document.addEventListener("DOMContentLoaded",run); else run();
-})();
-</script>
 </head>
 <body>
 <!-- AOG-BAR-ONEBAR-V1: the home page runs the same site bar as every other page.
@@ -1312,7 +1270,7 @@ function aogToggleBand(e, b){
           <div class="ofh-plain2 ofh-moves" data-en="Every subject, rebuilt with pictures first and one idea at a time. Beside it, a shared language for who you are, making mistakes, and making things right. One framework, start to finish." data-es="Cada materia, rehecha con im&aacute;genes primero y una idea a la vez. A su lado, un lenguaje compartido para qui&eacute;n eres, equivocarte y reparar. Un solo marco, de principio a fin.">Every subject, rebuilt with pictures first and one idea at a time. Beside it, a shared language for who you are, making mistakes, and making things right. One framework, start to finish.</div>
           <div class="ofh-tag" data-aog-retired="1" data-en="Grace Over Performance" data-es="La gracia por encima del rendimiento"><!-- .30hq — Jimmy replaced the hero's promise copy with the framework's own definition and the question it answers. The slogan is RETIRED, NOT DELETED: it still lives in the schema.org slogan, the og/twitter cards and the meta description. Drop this attribute to bring it back to the hero. -->Grace Over Performance</div>
           <div class="ofh-lede" data-en-html="<p class='hl-ask'>How do we learn to live with ourselves&mdash;<br>and one another&mdash;when none of us gets it right?</p>" data-es-html="<p class='hl-ask'>&iquest;C&oacute;mo aprendemos a vivir con nosotros mismos&mdash;<br>y con los dem&aacute;s&mdash;cuando ninguno lo hace del todo bien?</p>"><p class="hl-ask">How do we learn to live with ourselves&mdash;<br>and one another&mdash;when none of us gets it right?</p></div>
-<section id="aogYourWindow" class="aog-fade" aria-labelledby="sgTitle"><h2 id="sgTitle" data-en="Your window" data-es="Tu ventana">Your window</h2><ul class="sg-panes"><li class="sg-pane" style="--g:#1F4E8C"><b id="sgv-les">0</b><span data-en="Lessons done" data-es="Lecciones hechas">Lessons done</span></li><li class="sg-pane" style="--g:#1F6B4A"><b id="sgv-unit">0</b><span data-en="Units started" data-es="Unidades empezadas">Units started</span></li><li class="sg-pane" style="--g:#8A2A3A"><b id="sgv-right">0</b><span data-en="Checks right" data-es="Respuestas correctas">Checks right</span></li><li class="sg-pane" style="--g:#6A4A12"><b id="sgv-course">0</b><span data-en="Courses explored" data-es="Cursos explorados">Courses explored</span></li><li class="sg-pane" style="--g:#4A2F7A"><b id="sgv-streak">0</b><span data-en="Daily Drafts streak" data-es="Racha de Daily Drafts">Daily Drafts streak</span></li><li class="sg-pane" style="--g:#1F6363"><b id="sgv-write">0</b><span data-en="Pieces of writing" data-es="Escritos">Pieces of writing</span></li></ul><p class="sg-note" data-en="Each pane fills in as you learn. It is counted on this device only and never sent anywhere." data-es="Cada panel se llena mientras aprendes. Se cuenta solo en este aparato y nunca se envía a ningún lugar.">Each pane fills in as you learn. It is counted on this device only and never sent anywhere.</p></section>
+
 
           <div class="ofh-cta" data-aog-retired="1"><!-- .30ho — Jimmy: get rid of the other two doors. Retired, NOT deleted: markup, handlers and i18n intact. Neither is orphaned — the dashboard has its own line under the doors and Explore is still in the top bar. Drop this attribute to restore. -->
             <a class="ofh-btn ofh-gold" id="heroCheckinBtn" data-aog-retired="1" href="#" role="button" onclick="event.preventDefault(); if(typeof startCheckin==='function'){startCheckin();}" data-en="Start the Self-Reflection &rarr;" data-es="Comienza la Autorreflexión &rarr;">Start the Self-Reflection &rarr;</a>
