@@ -17868,8 +17868,8 @@ function sigRow(){
   return '<div class="sig"><label for="nameIn">'+t('Name','Nombre')+'</label>'+
     '<input id="nameIn" autocomplete="off" placeholder="'+t('Enter your name','Escribe tu nombre')+'">'+
     '<span class="signote">'+t(
-      'Sign it when you are done. Use your name or the code your teacher gave you — and use the <b>same one every time</b>, or your teacher will see you as two different students.',
-      'Fírmala cuando termines. Usa tu nombre o el código que te dio tu maestro — y usa <b>siempre el mismo</b>, o tu maestro te verá como dos estudiantes distintos.')+'</span></div>'}
+      'Sign with your name or class code. Use the <b>same one every time</b>.',
+      'Firma con tu nombre o tu código de clase. Usa <b>siempre el mismo</b>.')+'</span></div>'}
 
 /* AOG-DD-PACK-V1 — the sheet's own markup, built from ST as it stands. render()
    puts it on the page; the print pack asks for it once per draft with pack=true,
@@ -19152,7 +19152,7 @@ function refresh(){if(!hasGrade(ST.subj,ST.grade))ST.grade=fitGrade(ST.subj);try
     box.className="sendbox no-print"; box.id="sendBox";
     box.innerHTML=
       '<span class="sk" data-en="Send it to your teacher" data-es="Env&iacute;aselo a tu maestro">Send it to your teacher</span>'
-      +'<p class="snote" data-en="It sends your work for this sheet — your answers, your score, and the name you sign. It goes the moment you sign your name; tap the button to send it again." data-es="Env&iacute;a tu trabajo de esta hoja — tus respuestas, tu puntaje y el nombre que firmas. No se env&iacute;a nada hasta que tocas el bot&oacute;n.">It sends your work for this sheet — your answers, your score, and the name you sign. It goes the moment you sign your name; tap the button to send it again.</p>'
+      +'<p class="snote" data-en="Your answers and score go to your teacher when you sign. Tap to send again." data-es="Tus respuestas y tu puntaje le llegan a tu maestro cuando firmas. Toca para enviarlo otra vez.">Your answers and score go to your teacher when you sign. Tap to send again.</p>'
       +'<div class="srow"><button class="btn solid" type="button">Send to my teacher</button></div>'
       +'<p class="sst" aria-live="polite"></p>';
     /* Jimmy: "Have send to teacher next to or above print and clear sheets."
@@ -19186,10 +19186,10 @@ function refresh(){if(!hasGrade(ST.subj,ST.grade))ST.grade=fitGrade(ST.subj);try
     if(!ui)return;
     var note=ui.box.querySelector('.snote');
     if(note){note.textContent=(ST.subj==='write')
-      ? T("It sends what you wrote, your plan, how many words, and the six rubric numbers if they are filled in — under the name you sign. It goes the moment you sign your name; tap the button to send it again.",
-          "Env&iacute;a lo que escribiste, tu plan, cu&aacute;ntas palabras y los seis n&uacute;meros de la r&uacute;brica si est&aacute;n puestos — con el nombre que firmas. No se env&iacute;a nada hasta tocar el bot&oacute;n.")
-      : T("It sends your answers for this sheet, your score, how you did on each of the ten boxes, and the name you sign. It goes the moment you sign your name; tap the button to send it again.",
-          "Env\u00eda tus respuestas de esta hoja, tu puntaje, c\u00f3mo te fue en cada una de las diez casillas, y el nombre que firmas. No se env\u00eda nada hasta que tocas el bot\u00f3n.")}
+      ? T("Your writing, plan and rubric go to your teacher when you sign. Tap to send again.",
+          "Tu escrito, tu plan y la rúbrica le llegan a tu maestro cuando firmas. Toca para enviarlo otra vez.")
+      : T("Your answers and score go to your teacher when you sign. Tap to send again.",
+          "Tus respuestas y tu puntaje le llegan a tu maestro cuando firmas. Toca para enviarlo otra vez.")}
     /* a new sheet is a new row waiting to be earned */
     var k=sheetKey(); if(k!==lastKey){lastKey=k;sentAt=null;sentHow="";sendErr=false}
     /* THE DOOR IS ALWAYS HERE. It does not appear when the work is done —
