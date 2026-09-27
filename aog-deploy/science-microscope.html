@@ -2270,7 +2270,7 @@ function bakeVirus(){
     ctx.fillRect(rng()*W,rng()*H,1,1);
   }
   function cell(x,y,rx,ry,cpe){
-    ctx.save(); ctx.translate(x,y); ctx.rotate(rng()*Math.PI);
+    ctx.save(); ctx.translate(x,y); ctx.rotate(cpe||bakeVirus.rot==null?rng()*Math.PI:bakeVirus.rot);
     const g=ctx.createRadialGradient(-rx*.15,-ry*.2, rx*.08, 0,0, Math.max(rx,ry));
     if(cpe){
       g.addColorStop(0,"rgba(255,250,236,.96)");
@@ -2309,14 +2309,21 @@ function bakeVirus(){
     ctx.fillStyle="rgba(70,42,24,.5)"; ctx.fill();
     ctx.restore();
   }
-  for(let row=0;row<5;row++){
-    for(let col=0;col<6;col++){
-      const cpe=rng()>0.84;
-      const rx=cpe?42+rng()*14:78+rng()*36;
-      const ry=cpe?38+rng()*12:52+rng()*26;
-      cell(150+col*270+(rng()-.5)*50, 130+row*250+(rng()-.5)*40, rx, ry, cpe);
-    }
+  /* AOG-SCOPE-REALISM-V1 — a real culture flask: a packed sheet of long, spindle-shaped cells that stream in
+     swirls, and one plaque where the virus has worked — cells rounded up, bright and shrunken, with bare
+     glass and debris between them. No grid. */
+  const placed=[], PX=1150, PY=820, PR=300;
+  for(let tries=0;tries<9000&&placed.length<520;tries++){
+    const x=rng()*W, y=rng()*H, inP=Math.hypot(x-PX,y-PY)<PR*(0.9+rng()*.2);
+    const md=inP?46:52;
+    if(placed.some(p=>Math.hypot(p[0]-x,p[1]-y)<md)) continue;
+    placed.push([x,y]);
+    if(inP){ if(rng()<.35) continue; const r=22+rng()*14; ctx.save(); cell(x,y,r,r*(.85+rng()*.2),true); ctx.restore(); continue; }
+    const flow=Math.sin(x*.0024)+Math.cos(y*.003)*.8;
+    bakeVirus.rot=flow+(rng()-.5)*.4; cell(x,y,70+rng()*50,20+rng()*16,false);
   }
+  /* debris in the plaque */
+  for(let i=0;i<160;i++){ const a=rng()*6.3, d=Math.sqrt(rng())*PR; ctx.fillStyle=`rgba(90,70,40,${.15+rng()*.25})`; ctx.beginPath(); ctx.arc(PX+Math.cos(a)*d,PY+Math.sin(a)*d,1.5+rng()*4,0,Math.PI*2); ctx.fill(); }
   airBubble(ctx, 260, 160, 36);
   return {c, w:168, h:130};
 }
@@ -2743,8 +2750,16 @@ function diatom(ctx,d,det,glow,ob){
   diaShape(ctx,d);
   ctx.fillStyle=glow?"rgba(120,150,190,.08)":"rgba(206,214,190,.4)"; ctx.fill();
   if(glow){ ctx.strokeStyle=tint+".35)"; ctx.lineWidth=.3; ctx.stroke(); ctx.strokeStyle="rgba(245,248,255,.95)"; ctx.lineWidth=.08; ctx.stroke(); }
-  else { ctx.strokeStyle="rgba(40,48,36,.75)"; ctx.lineWidth=.12; ctx.stroke(); ctx.strokeStyle="rgba(255,255,255,.7)"; ctx.lineWidth=.04; ctx.stroke(); }
+  else { ctx.strokeStyle="rgba(40,48,36,.75)"; ctx.lineWidth=.2; ctx.stroke(); ctx.strokeStyle="rgba(255,255,255,.7)"; ctx.lineWidth=.05; ctx.stroke(); }
   ctx.save(); diaShape(ctx,d); ctx.clip();
+  /* AOG-SCOPE-REALISM-V1 — most diatoms in a pond drop are alive: two golden-brown plate chloroplasts lie
+     along the glass box, with a few shining oil drops; empty boxes are clear glass */
+  if(!glow && (d.seed%5)<3){
+    const L2=d.L||d.r||3, W2=d.W||d.r||1.5, pr=mulberry32(d.seed^0x9d);
+    [-1,1].forEach(sd=>{ const gg=ctx.createLinearGradient(0,sd*W2*.1,0,sd*W2*.8); gg.addColorStop(0,"rgba(176,128,40,.7)"); gg.addColorStop(1,"rgba(130,92,24,.35)");
+      ctx.beginPath(); ctx.ellipse(0,sd*W2*.42,L2*.78,W2*.33,0,0,Math.PI*2); ctx.fillStyle=gg; ctx.fill(); });
+    for(let i=0;i<4;i++){ const x=(pr()-.5)*L2*1.2, y=(pr()-.5)*W2*.6, r=Math.min(W2,L2)*(.06+pr()*.06); ctx.beginPath(); ctx.arc(x,y,r,0,Math.PI*2); ctx.fillStyle="rgba(255,250,220,.8)"; ctx.fill(); ctx.strokeStyle="rgba(90,70,20,.6)"; ctx.lineWidth=r*.3; ctx.stroke(); }
+  }
   const ink=glow?tint+(det?".55)":".35)"):(det?"rgba(50,60,40,.42)":"rgba(50,60,40,.25)");
   const fine=det?(ob>=100?1:1.6):3.2;
   ctx.strokeStyle=ink; ctx.fillStyle=ink;
@@ -4823,8 +4838,12 @@ function dnaItem(ctx,c,det){
     for(let i=0;i<(det?40:14);i++){ const a=rng()*6.3, x=c.x+(rng()-.5)*c.r, y=c.y+(rng()-.5)*c.r; ctx.beginPath(); ctx.moveTo(x,y); ctx.quadraticCurveTo(x+Math.cos(a)*c.r,y+Math.sin(a)*c.r*.5,x+Math.cos(a+1)*c.r*1.4,y+Math.sin(a+1)*c.r); ctx.stroke(); }
     ctx.restore();
   } else {
-    ctx.beginPath(); ctx.arc(c.x,c.y,c.r,0,Math.PI*2); ctx.fillStyle=`rgba(${120+rng()*60|0},${110+rng()*50|0},${90+rng()*40|0},${.2+rng()*.3})`; ctx.fill();
-    if(det){ ctx.strokeStyle="rgba(60,55,45,.4)"; ctx.lineWidth=.06; ctx.stroke(); }
+    /* AOG-SCOPE-REALISM-V1 — cell rubbish and fat droplets: droplets are clear lenses (bright middle, dark rim);
+       rubbish is irregular, grainy and grey */
+    if(rng()<.45){ const g=ctx.createRadialGradient(c.x-c.r*.2,c.y-c.r*.25,c.r*.05,c.x,c.y,c.r); g.addColorStop(0,"rgba(255,255,250,.85)"); g.addColorStop(.6,"rgba(230,228,220,.4)"); g.addColorStop(.85,"rgba(90,88,80,.5)"); g.addColorStop(1,"rgba(40,38,34,.7)");
+      ctx.beginPath(); ctx.arc(c.x,c.y,c.r,0,Math.PI*2); ctx.fillStyle=g; ctx.fill(); }
+    else { blobPath(ctx,c.x,c.y,c.r,rng,9,.55); ctx.fillStyle=`rgba(${120+rng()*40|0},${116+rng()*36|0},${104+rng()*30|0},${.25+rng()*.25})`; ctx.fill();
+      if(det){ ctx.strokeStyle="rgba(60,55,45,.35)"; ctx.lineWidth=.05; ctx.stroke(); ctx.fillStyle="rgba(50,46,40,.35)"; for(let k=0;k<12;k++) ctx.fillRect(c.x+(rng()-.5)*c.r*1.4,c.y+(rng()-.5)*c.r*1.4,.08,.08); } }
   }
 }
 function dnaBg(ctx){
