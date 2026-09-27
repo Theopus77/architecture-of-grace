@@ -1,7 +1,7 @@
 /* FCS Unit 2 "Hot, Cold and Sharp" — pencil still life: a stovetop kettle with a curled handle
    and a wisp of steam, a quilted oven mitt, a glass of ice cubes and a paring knife in its sheath. */
-#define CAM_POS vec3(-0.5259,0.3962,-0.9567)
-#define CAM_TGT vec3(-0.2333,0.0099,0.1321)
+#define CAM_POS vec3(-0.5306,0.3912,-0.9477)
+#define CAM_TGT vec3(-0.2401,0.0078,0.1332)
 #define CAM_FOV 30.
 #define SUN_DIR vec3(-.65,.85,-.3)
 #define MAXT 8.
