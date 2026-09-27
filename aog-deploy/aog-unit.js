@@ -155,7 +155,7 @@
     var m = D.createElement("aside"); m.className = "aog-more no-print";
     var q = encodeURIComponent(b.title);
     m.innerHTML = '<div class="k">' + sp("More to explore", "Para explorar más") + "</div><ul>" + (b.cite ? '<li class="src">' + sp("Source in this lesson: ", "Fuente de esta lección: ") + esc(b.cite) + "</li>" : "") +
-      picks.map(function (id) { var s = SITES[id]; return '<li><a href="' + s[1] + q + '" target="_blank" rel="noopener">' + esc(s[0]) + ": " + esc(b.title) + "</a></li>"; }).join("") + "</ul>";
+      picks.map(function (id) { var s = SITES[id]; return '<li class="srch"><a href="' + s[1] + q + '" target="_blank" rel="noopener">' + esc(s[0]) + ": " + esc(b.title) + "</a></li>"; }).join("") + "</ul>";
     var body = les.querySelector(".body") || les; body.appendChild(m);
   });
   /* ── 4. AOG-SOURCES-V1 — Jimmy: "Make sure primary sources are provided throughout the
@@ -249,6 +249,34 @@
   });
   /* reviews, stories and chapter openers carry sources too */
   Array.prototype.forEach.call(D.querySelectorAll("section.review .look cite, article.story cite, .chap .look cite"), linkify);
+
+  /* ── 5. AOG-RESOURCES-V1 — the lesson's "More to explore" draws on the Resource
+     library (aog-resources.json): 2–3 resources whose topics or title share words
+     with the lesson, kept to the unit's grade band. The search links stay only
+     when nothing in the library fits. "Read the original" stays first. ── */
+  var LIB = { mth: "math", sci: "science", ssc: "social-studies", ush: "social-studies", ela: "english", spa: "spanish", fcs: "facs", eco: "economics",
+    rel: "religions", bib: "bible", heb: "hebrew-bible", qur: "quran", tal: "talmud" }[CO.id];
+  function useLib() {
+    var R = window.aogResources; if (!R || !LIB) return;
+    var md = D.querySelector('meta[name="description"]'), band = R.bandOf((md && md.content) || "") || R.bandOf(D.title);
+    R.load().then(function (data) {
+      if (!data) return;
+      PAGES.forEach(function (les) {
+        var ul = les.querySelector(".aog-more ul"); if (!ul || ul.querySelector(".lib")) return;
+        var b = lessonBits(les);
+        var text = [b.title, b.title, b.mi, b.words.map(function (w) { return w.w; }).join(" ")].join(" ");
+        var got = R.pick(data, LIB, text, band, 3);
+        if (got.length < 2) got = R.pick(data, LIB, text + " " + (CO.title || "") + " " + (CO.title || ""), band, 3);
+        if (!got.length) return;
+        Array.prototype.forEach.call(ul.querySelectorAll("li.srch"), function (li) { li.remove(); });
+        ul.insertAdjacentHTML("beforeend", got.map(function (it) {
+          return '<li class="lib"><a href="' + esc(it.url) + '" target="_blank" rel="noopener">' + esc(it.title) + "</a> <span class=\"org\">(" + esc(it.org) + ")</span> — " + esc(it.note) + "</li>";
+        }).join(""));
+      });
+    });
+  }
+  if (window.aogResources) useLib();
+  else if (LIB) { var rs = D.createElement("script"); rs.src = "/aog-resources.js"; rs.defer = true; rs.onload = useLib; D.head.appendChild(rs); }
 
 
 })();

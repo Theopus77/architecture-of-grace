@@ -1,0 +1,284 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>Rose window render</title>
+<style>html,body{margin:0;background:#000}canvas{display:block}</style></head>
+<body><canvas id="c"></canvas>
+<script>
+/* Offline render of the home-page rose window (AOG-HERO-ROSE-PHOTO).
+   A relief scene lit two ways: a floodlight behind the glass (transmitted through
+   cathedral glass of uneven thickness, streaks and seed bubbles, refracted by a
+   wavy surface) and a dim warm lamp in front (lead came highlights, solder blobs,
+   limestone grain, chips, occlusion). Pass 1 renders HDR radiance, pass 2/3 blur
+   the brights for bloom, pass 4 tonemaps. Driven by render.js with Playwright. */
+const S = +(new URLSearchParams(location.search).get('s') || 1600);
+const cv = document.getElementById('c'); cv.width = cv.height = S;
+const gl = cv.getContext('webgl2', {preserveDrawingBuffer:true, antialias:false});
+gl.getExtension('EXT_color_buffer_float');
+const VS = `#version 300 es
+in vec2 p; out vec2 uv; void main(){ uv=p*.5+.5; gl_Position=vec4(p,0,1); }`;
+
+const SCENE = `#version 300 es
+precision highp float; in vec2 uv; out vec4 o;
+uniform float S;
+#define PI 3.14159265
+float h1(vec2 p){ p=fract(p*vec2(123.34,456.21)); p+=dot(p,p+45.32); return fract(p.x*p.y); }
+vec2 h2(vec2 p){ float a=h1(p); return vec2(a,h1(p+a*17.1)); }
+float vn(vec2 p){ vec2 i=floor(p),f=fract(p); f=f*f*(3.-2.*f);
+  return mix(mix(h1(i),h1(i+vec2(1,0)),f.x),mix(h1(i+vec2(0,1)),h1(i+vec2(1,1)),f.x),f.y); }
+float fbm(vec2 p){ float s=0.,a=.5; for(int i=0;i<5;i++){ s+=a*vn(p); p=p*2.03+vec2(1.7,9.2); a*=.5; } return s; }
+mat2 rot(float a){ float c=cos(a),s=sin(a); return mat2(c,-s,s,c); }
+
+/* ---------- tracery: signed distance to the glass openings (neg = glass) ---------- */
+float lancet(vec2 q){ /* q: x radial, y across, in sector frame */
+  float half_ = PI/16.;
+  float wedge = abs(q.y) - (q.x*tan(half_) - .016);
+  float inner = .31 - q.x;
+  float xs=.535, ws=xs*tan(half_)-.016;
+  float arch = -1e3;
+  if(q.x>xs){ float c1=length(q-vec2(xs,-ws))-2.*ws, c2=length(q-vec2(xs,ws))-2.*ws; arch=max(c1,c2); }
+  return max(max(wedge,inner),arch);
+}
+/* returns d, and region id: 0 medallion, 1 lancet, 2 foil, 3 roundel; idx = which */
+float tracery(vec2 p, out int reg, out float idx, out vec2 lq){
+  float r=length(p), a=atan(p.y,p.x);
+  float d=r-.255; reg=0; idx=0.; lq=p;
+  float sec=2.*PI/16.; float k=floor((a+sec*.5)/sec); vec2 q=rot(k*sec)*p;
+  float dl=lancet(q); if(dl<d){ d=dl; reg=1; idx=mod(k+16.,16.); lq=q; }
+  float k2=floor(a/sec); vec2 f=rot((k2+.5)*sec)*p;
+  float df=length(f-vec2(.668,0))-.03; if(df<d){ d=df; reg=2; idx=mod(k2+16.,16.); lq=f-vec2(.668,0); }
+  float s3=2.*PI/24.; float k3=floor((a+s3*.5)/s3); vec2 g=rot(k3*s3)*p;
+  float dr=length(g-vec2(.812,0))-.046; if(dr<d){ d=dr; reg=3; idx=mod(k3+24.,24.); lq=g-vec2(.812,0); }
+  d = max(d, r-.87);
+  return d;
+}
+float traceryD(vec2 p){ int a; float b; vec2 c; return tracery(p,a,b,c); }
+
+/* ---------- lead network inside the glass ---------- */
+/* e1: distance to nearest lead line centre, e2: to a second distinct line (joints), id: pane id */
+void voro(vec2 x, float sc, out float e1, out float e2, out vec2 id){
+  x*=sc; vec2 n=floor(x), f=fract(x); vec2 mg, mr; float md=8.;
+  for(int j=-1;j<=1;j++)for(int i=-1;i<=1;i++){ vec2 g=vec2(i,j), o=.15+.7*h2(n+g); vec2 r=g+o-f; float d=dot(r,r); if(d<md){md=d;mr=r;mg=g;} }
+  e1=8.; e2=8.;
+  for(int j=-2;j<=2;j++)for(int i=-2;i<=2;i++){ vec2 g=mg+vec2(i,j), o=.15+.7*h2(n+g); vec2 r=g+o-f;
+    if(dot(mr-r,mr-r)>1e-5){ float d=dot(.5*(mr+r),normalize(r-mr)); if(d<e1){e2=e1;e1=d;} else if(d<e2) e2=d; } }
+  e1/=sc; e2/=sc; id=n+mg;
+}
+struct Pane { float e1; float e2; vec3 col; float seed; float edge; };
+vec3 PAL(int i){
+  if(i==0) return vec3(.030,.090,.55);   // sapphire
+  if(i==1) return vec3(.62,.020,.035);   // ruby
+  if(i==2) return vec3(.020,.36,.12);    // emerald
+  if(i==3) return vec3(.95,.58,.10);     // gold
+  if(i==4) return vec3(.16,.035,.38);     // amethyst
+  if(i==5) return vec3(.012,.035,.22);   // navy
+  if(i==6) return vec3(.80,.62,.30);     // pale
+  return vec3(.10,.40,.46);              // teal
+}
+Pane pane(vec2 p, int reg, float idx, vec2 lq, float dOpen){
+  Pane P; float e1,e2; vec2 id; int c=0; float seed=0.;
+  float wob = (fbm(p*23.)-.5)*.006;             // hand-cut: lines are never quite true
+  if(reg==0){
+    float r=length(p)+wob, a=atan(p.y,p.x)+wob*6.;
+    float rings[3]; rings[0]=.07; rings[1]=.155; rings[2]=.215;
+    float dr=8.,dr2=8.; int ri=0;
+    for(int i=0;i<3;i++){ float d=abs(r-rings[i]); if(d<dr){dr2=dr;dr=d;} else if(d<dr2) dr2=d; if(r>rings[i]) ri=i+1; }
+    float n = ri==0?1.:(ri==1?8.:(ri==2?16.:16.));
+    float off = ri==2?.5:0.;
+    float s=2.*PI/n, t=(a+PI*2.)/s+off; float k=ri==0?0.:floor(t); float da = ri==0?8.:abs(fract(t)-.5)*0.;
+    da = ri==0?8.:(min(fract(t),1.-fract(t))*s*r);
+    e1=min(dr,da); e2=max(dr,da); if(dr2<e2 && dr2>e1) e2=dr2;
+    if(ri==0){ c=0; } else if(ri==1){ c= mod(k,2.)<1.?3:1; } else if(ri==2){ c= mod(k,2.)<1.?1:4; } else { c= mod(k,2.)<1.?3:2; }
+    seed = float(ri)*31.+k;
+  } else if(reg==1){
+    vec2 q=lq; q.x+=wob; q.y+=wob*.7;
+    float band = -dOpen;                          // distance inside the opening
+    float border = abs(band-.028);
+    voro(q*vec2(1.,1.35)+vec2(idx*3.1,0.), 19., e1,e2,id); e1/=1.15; e2/=1.15;
+    if(band<.028){ e1=border; e2=8.; float kk=floor(q.x*11.); float dd=abs(fract(q.x*11.)-.5)/11.;
+      /* border strip of short pieces */
+      if(dd<e1){ e2=e1; e1=dd; } else e2=min(e2,dd);
+      c = mod(kk,2.)<1.?3:1; seed=kk+idx*50.+500.; }
+    else {
+      e2=min(e2, e1+border); e1=min(e1,border);
+      float h=h1(id+idx*7.);
+      bool odd = mod(idx,2.)>0.5;
+      if((id.x+.5)/19.<.39) c = h<.55?3:(h<.9?1:6);           // gold/ruby foot of each lancet
+      else if(odd) c = h<.6?1:(h<.72?4:(h<.88?0:3));
+      else c = h<.6?0:(h<.78?2:(h<.95?5:4));
+      seed=h*997.+idx;
+    }
+  } else if(reg==2){
+    float r=length(lq)+wob, a=atan(lq.y,lq.x); float dr=abs(r-.013);
+    float s=2.*PI/3., da=(min(fract(a/s),1.-fract(a/s)))*s*r; if(r<.013) da=8.;
+    e1=min(dr,da); e2=max(dr,da); c = r<.013?3:2; seed=idx*13.+floor(a/s);
+  } else {
+    float r=length(lq)+wob, a=atan(lq.y,lq.x)+.3; float dr=abs(r-.02);
+    float s=2.*PI/6., da=(min(fract(a/s),1.-fract(a/s)))*s*r; if(r<.02) da=8.;
+    e1=min(dr,da); e2=max(dr,da);
+    int pat=int(mod(idx,4.));
+    if(r<.02) c= pat==0?3:(pat==1?0:(pat==2?3:1)); if(r<.02) seed+=.5; else c= pat==0?0:(pat==1?1:(pat==2?4:2));
+    seed=idx*17.+floor(a/s)+(r<.02?100.:0.);
+  }
+  /* the came against the stone rebate counts as a lead line too */
+  float eo = -dOpen; if(eo<e1){ e2=e1; e1=eo; } else e2=min(e2,eo);
+  vec3 base=PAL(c);
+  /* antique glass: every sheet a little different */
+  float v=h1(vec2(seed,3.7));
+  base *= mix(.5,1.2,v);
+  base = mix(base, base.gbr*.4+base*.8, (h1(vec2(seed,9.1))-.5)*.25);
+  P.e1=e1; P.e2=e2; P.col=base; P.seed=seed; P.edge=eo; return P;
+}
+
+/* ---------- height fields ---------- */
+const float LW = .0052;     // half-width of the came
+float stoneH(vec2 p, float d){
+  /* d>0 in stone. a rolled moulding into a deep reveal, carved grain and wear */
+  float r=length(p);
+  float reveal = smoothstep(0.,.022,d);                 // splay into the opening
+  float roll = .35*exp(-pow((d-.012)/.007,2.));          // bead moulding along every opening
+  float ring = .25*exp(-pow((r-.935)/.02,2.)) + .18*exp(-pow((r-.885)/.008,2.));
+  float out_ = r>.99? -.2*smoothstep(.99,1.02,r):0.;
+  float grain = (fbm(p*vec2(60.,140.)*rot(.3))-.5)*.018 + (fbm(p*9.)-.5)*.05;
+  float pits = -smoothstep(.6,.9,fbm(p*120.))*.015;
+  float chip = -smoothstep(.72,.95,fbm(p*18.+3.))*.12;  // old chips and weathering
+  return reveal*.8+roll+ring+out_+grain+pits+chip;
+}
+float leadH(float e1,float e2,vec2 p){
+  float w=LW*(1.+.18*(vn(p*90.)-.5));
+  float h = e1<w? sqrt(1.-pow(e1/w,2.)) : 0.;
+  float jb = LW*1.6*(.85+.3*h1(floor(p*140.)));
+  float jd = length(vec2(e1,e2*.8))/jb;
+  float joint = jd<1. ? sqrt(1.-jd*jd)*(1.05+.08*(vn(p*260.)-.5)) : 0.;
+  return max(h*.8, joint);
+}
+struct Hit { int kind; float h; Pane P; float dOpen; };
+Hit scene(vec2 p){
+  Hit H; int reg; float idx; vec2 lq;
+  float d = tracery(p, reg, idx, lq);
+  H.dOpen=d;
+  if(d>0.){ H.kind=0; H.h=stoneH(p,d); return H; }
+  Pane P=pane(p,reg,idx,lq,d); H.P=P;
+  float lh=leadH(P.e1,P.e2,p);
+  if(lh>0.){ H.kind=1; H.h=lh*.9; return H; }
+  H.kind=2; H.h=(fbm(p*38.+P.seed)-.5)*.05 + (vn(p*170.+P.seed)-.5)*.012; return H;
+}
+float hOnly(vec2 p){ return scene(p).h; }
+
+void main(){
+  vec2 px = (uv*2.-1.)*1.04;                  // window radius 1 ≈ 96% of the frame
+  px.y = -px.y;
+  Hit H = scene(px);
+  float e = 1.2/S;
+  float hs = H.kind==1?.005:(H.kind==0?.025:.004);
+  float hx = (hOnly(px+vec2(e,0))-hOnly(px-vec2(e,0)))/(2.*e);
+  float hy = (hOnly(px+vec2(0,e))-hOnly(px-vec2(0,e)))/(2.*e);
+  vec3 N = normalize(vec3(-hx*hs, -hy*hs, 1.));
+  vec3 V = vec3(0,0,1);
+  /* front lamp: warm, low and to the left, dim — the nave at night */
+  vec3 Lf = normalize(vec3(-.55,-.45,.6)); vec3 Cf = vec3(1.,.72,.45)*.42;
+  vec3 Lf2 = normalize(vec3(.6,.2,.8)); vec3 Cf2 = vec3(.45,.55,.8)*.08;
+  float r = length(px);
+  /* the floodlight behind the window: brightest a little above centre, soft falloff */
+  float back = 2.6*exp(-dot(px-vec2(.05,.12),px-vec2(.05,.12))*2.2) + 1.1;
+  vec3 col;
+  if(H.kind==2){
+    Pane P=H.P;
+    /* waviness refracts the backlight: brighter and darker drifts across a sheet */
+    vec2 off = N.xy*.25;
+    float bl = (2.6*exp(-dot(px+off-vec2(.05,.12),px+off-vec2(.05,.12))*2.2)+1.1)*(.8+.45*fbm(px*6.+off*40.));
+    float thick = .75 + 1.5*fbm(px*vec2(18.,5.)*rot(P.seed) + P.seed);            // streaky, uneven thickness
+    float streak = vn(vec2(dot(px, vec2(cos(P.seed),sin(P.seed)))*260., P.seed));
+    thick += (streak-.5)*.2;
+    vec3 T = pow(clamp(P.col,0.,1.), vec3(thick));
+    /* seeds: small bubbles caught in the melt */
+    float sd = 0.; vec2 g = px*420.+P.seed*3.; vec2 gi=floor(g), gf=fract(g);
+    vec2 bc = .2+.6*h2(gi); float bh=h1(gi+5.3);
+    if(bh>.82){ float br = .08+.22*h1(gi+1.1); float dd=length(gf-bc)/br; if(dd<1.){ sd = dd<.6? .9: -1.2*(dd-.6); } }
+    vec2 g2 = px*95.+P.seed; vec2 gi2=floor(g2), gf2=fract(g2); vec2 bc2=.25+.5*h2(gi2+9.);
+    if(h1(gi2+2.2)>.93){ float dd=length(gf2-bc2)/(.07+.1*h1(gi2)); if(dd<1.) sd = dd<.55? 1.1 : -1.5*(dd-.55); }
+    float hammer = .78 + .45*fbm(px*150.+P.seed*1.3) ;   // cathedral glass: rolled, hammered surface
+    float edgeDark = smoothstep(0., .006, P.e1-LW);                               // came shadow and thicker rims
+    float grime = (.5 + .75*fbm(px*26.+P.seed*.37)) * (.85+.3*fbm(px*90.+P.seed));   // matting and weathering inside the sheet
+    col = T*bl*grime*hammer*mix(.62,1.,edgeDark)*(1.+.9*sd*step(0.,sd)) * (1.+min(sd,0.)*.6);
+    /* crizzle and faint surface reflections of the lamp */
+    float spec = pow(max(dot(reflect(-Lf,N),V),0.),60.);
+    col += Cf*spec*.25 + vec3(.012,.011,.01);
+  } else if(H.kind==1){
+    /* lead: dark, oxidised, with a soft specular sheen along each came */
+    vec3 base = vec3(.045,.045,.05)*(.8+.4*fbm(px*80.));
+    float dif = max(dot(N,Lf),0.), dif2=max(dot(N,Lf2),0.);
+    vec3 Hh = normalize(Lf+V); float sp = pow(max(dot(N,Hh),0.),38.);
+    vec3 Hh2 = normalize(Lf2+V); float sp2 = pow(max(dot(N,Hh2),0.),30.);
+    col = base*(dif*Cf+dif2*Cf2+.02) + Cf*sp*1.6 + Cf2*sp2*1.2;
+    /* glow from the neighbouring glass wraps the edges of the came */
+    float rim = 1.-N.z; col += back*.05*vec3(1.,.85,.6)*rim*H.P.col*2.;
+  } else {
+    /* limestone: warm grey, grained, lit dimly from the nave; glow spills onto the reveals */
+    float tone = .45+.3*fbm(px*7.)+.15*fbm(px*55.);
+    vec3 alb = vec3(.50,.48,.45)*tone;
+    alb *= 1.-.35*smoothstep(.6,.95,fbm(px*4.+7.));                                // soot and age
+    float dif = max(dot(N,Lf),0.), dif2=max(dot(N,Lf2),0.);
+    float d = H.dOpen;
+    float ao = mix(.2,1.,smoothstep(0.,.035,d)) * (r>.98? 1.-smoothstep(.98,1.03,r)*.8 : 1.);
+    vec3 spill = vec3(1.,.72,.42)*back*.035*exp(-d/.006);
+    col = alb*(pow(dif,1.5)*Cf*.8+dif2*Cf2+.02)*ao + alb*spill;
+    float sp = pow(max(dot(reflect(-Lf,N),V),0.),12.); col += Cf*sp*.05*ao;
+    /* ashlar wall beyond the window: coursed blocks, darker, fading into the night */
+    if(r>1.005){ vec2 w=px*vec2(7.,11.); w.x+=floor(w.y)*.5; vec2 f=fract(w);
+      float jt=min(min(f.x,1.-f.x)/7.,min(f.y,1.-f.y)/11.); col *= mix(.35,1.,smoothstep(.0,.004,jt))*(.8+.4*h1(floor(w))); }
+    col *= smoothstep(1.2,.97,r)*.85+.15;
+  }
+  o = vec4(col,1.);
+}`;
+
+const BLUR = `#version 300 es
+precision highp float; in vec2 uv; out vec4 o; uniform sampler2D t; uniform vec2 dir; uniform float th;
+void main(){ vec3 s=vec3(0.); float w=0.;
+  for(int i=-24;i<=24;i++){ float k=exp(-float(i*i)/220.); vec3 c=texture(t,uv+dir*float(i)).rgb; if(th>0.) c=max(c-th,0.); s+=c*k; w+=k; }
+  o=vec4(s/w,1.); }`;
+
+const COMP = `#version 300 es
+precision highp float; in vec2 uv; out vec4 o; uniform sampler2D a; uniform sampler2D b; uniform sampler2D c2; uniform float S;
+float h1(vec2 p){ p=fract(p*vec2(123.34,456.21)); p+=dot(p,p+45.32); return fract(p.x*p.y); }
+vec3 aces(vec3 x){ return clamp((x*(2.51*x+.03))/(x*(2.43*x+.59)+.14),0.,1.); }
+void main(){
+  vec3 c = texture(a,uv).rgb + texture(b,uv).rgb*.9 + texture(c2,uv).rgb*.7;
+  c *= .5;
+  c = aces(c);
+  vec2 q=uv-.5; c *= 1.-.35*dot(q,q)*2.;
+  c = pow(c, vec3(1./2.2));
+  c += (h1(uv*S)-.5)*.018;                   // sensor grain
+  o=vec4(c,1.); }`;
+
+function sh(t,s){ const x=gl.createShader(t); gl.shaderSource(x,s); gl.compileShader(x); if(!gl.getShaderParameter(x,gl.COMPILE_STATUS)) throw new Error(gl.getShaderInfoLog(x)); return x; }
+function prog(fs){ const p=gl.createProgram(); gl.attachShader(p,sh(gl.VERTEX_SHADER,VS)); gl.attachShader(p,sh(gl.FRAGMENT_SHADER,fs)); gl.bindAttribLocation(p,0,'p'); gl.linkProgram(p); if(!gl.getProgramParameter(p,gl.LINK_STATUS)) throw new Error(gl.getProgramInfoLog(p)); return p; }
+function tex(w,h){ const t=gl.createTexture(); gl.bindTexture(gl.TEXTURE_2D,t); gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA16F,w,h,0,gl.RGBA,gl.HALF_FLOAT,null);
+  gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.LINEAR); gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MAG_FILTER,gl.LINEAR);
+  gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_S,gl.CLAMP_TO_EDGE); gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_T,gl.CLAMP_TO_EDGE);
+  const f=gl.createFramebuffer(); gl.bindFramebuffer(gl.FRAMEBUFFER,f); gl.framebufferTexture2D(gl.FRAMEBUFFER,gl.COLOR_ATTACHMENT0,gl.TEXTURE_2D,t,0); return {t,f,w,h}; }
+const vb=gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER,vb); gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([-1,-1,1,-1,-1,1,1,1]),gl.STATIC_DRAW);
+gl.enableVertexAttribArray(0); gl.vertexAttribPointer(0,2,gl.FLOAT,false,0,0);
+function draw(p,target,uni,strips){ gl.useProgram(p); gl.bindFramebuffer(gl.FRAMEBUFFER,target?target.f:null);
+  const w=target?target.w:S,h=target?target.h:S; gl.viewport(0,0,w,h); uni&&uni(p);
+  const n=strips||1; gl.enable(gl.SCISSOR_TEST);
+  for(let i=0;i<n;i++){ gl.scissor(0,Math.floor(i*h/n),w,Math.ceil(h/n)+1); gl.drawArrays(gl.TRIANGLE_STRIP,0,4); gl.finish(); }
+  gl.disable(gl.SCISSOR_TEST); }
+window.render = function(){
+  const P1=prog(SCENE), PB=prog(BLUR), PC=prog(COMP);
+  const A=tex(S,S), q=S/4, B1=tex(q,q), B2=tex(q,q), C1=tex(q/4,q/4), C2=tex(q/4,q/4);
+  draw(P1,A,p=>gl.uniform1f(gl.getUniformLocation(p,'S'),S),32);
+  const bl=(src,dst,dx,dy,th)=>{ draw(PB,dst,p=>{ gl.activeTexture(gl.TEXTURE0); gl.bindTexture(gl.TEXTURE_2D,src.t); gl.uniform1i(gl.getUniformLocation(p,'t'),0);
+    gl.uniform2f(gl.getUniformLocation(p,'dir'),dx,dy); gl.uniform1f(gl.getUniformLocation(p,'th'),th); }); };
+  const k=S/1600; bl(A,B1,k/q*1.3,0,.9); bl(B1,B2,0,k/q*1.3,0); bl(B2,C1,4*k/q,0,0); bl(C1,C2,0,4*k/q,0);
+  draw(PC,null,p=>{ [A,B2,C2].forEach((x,i)=>{ gl.activeTexture(gl.TEXTURE0+i); gl.bindTexture(gl.TEXTURE_2D,x.t); });
+    gl.uniform1i(gl.getUniformLocation(p,'a'),0); gl.uniform1i(gl.getUniformLocation(p,'b'),1); gl.uniform1i(gl.getUniformLocation(p,'c2'),2);
+    gl.uniform1f(gl.getUniformLocation(p,'S'),S); });
+  gl.finish(); return 'ok';
+};
+/* downscale in steps and encode */
+window.encode = function(size, type, q){
+  let src=cv, w=S;
+  while(w/2>=size){ const c=document.createElement('canvas'); c.width=c.height=w/2; const x=c.getContext('2d'); x.imageSmoothingQuality='high'; x.drawImage(src,0,0,w/2,w/2); src=c; w/=2; }
+  const c=document.createElement('canvas'); c.width=c.height=size; const x=c.getContext('2d'); x.imageSmoothingQuality='high'; x.drawImage(src,0,0,size,size);
+  return c.toDataURL(type,q);
+};
+</script></body></html>
