@@ -85,6 +85,20 @@ button{font:inherit; color:inherit}
 .actions{display:flex; gap:12px; flex-wrap:wrap; align-items:center; margin-top:14px}
 .check{display:flex; align-items:center; gap:10px; min-height:48px; font-weight:700; cursor:pointer}
 .check input{width:26px; height:26px; font-size:16px; accent-color:var(--good)}
+/* AOG-FCS-WS-V1: a worksheet for every project, on screen and on paper */
+.ws{background:var(--field-2); color:var(--ink); border:1px solid var(--rule); border-radius:12px; padding:14px 16px; margin-top:14px}
+.ws h3{margin:0 0 4px}
+.ws .sub{color:var(--ink-soft); margin:0 0 10px}
+.ws .part{margin:14px 0 0; padding-top:10px; border-top:1px solid var(--rule)}
+.ws h4{margin:0 0 6px; font-size:1rem}
+.ws .who{display:grid; grid-template-columns:1fr 1fr; gap:10px}
+.ws label.f{display:block; font-weight:700; font-size:.9rem; margin:8px 0 4px}
+.ws input[type=text],.ws textarea{width:100%; box-sizing:border-box; font:inherit; font-size:16px; padding:10px 12px; border:1px solid var(--rule); border-radius:10px; background:var(--field); color:var(--ink)}
+.ws textarea{min-height:76px; resize:vertical}
+.ws .tick{display:flex; gap:10px; align-items:flex-start; min-height:44px; padding:4px 0; cursor:pointer}
+.ws .tick input{width:24px; height:24px; flex:0 0 auto; margin-top:2px; accent-color:var(--good)}
+.ws .yn{display:flex; gap:18px; flex-wrap:wrap}
+.ws .saved{color:var(--ink-soft); font-size:.9rem; margin:10px 0 0}
 .btn{min-height:48px; padding:8px 18px; border:1px solid var(--rule); border-radius:10px; background:var(--field-2); color:var(--ink); font-weight:700; cursor:pointer}
 .tally{color:var(--ink-soft); font-weight:600}
 .foot{margin-top:40px; color:var(--ink-soft); font-size:.9rem}
@@ -294,7 +308,9 @@ function render(){
       '<div class="safe"><h3>' + T("Stay safe","Cuídate") + '</h3><ul>' + lis(p.safe) + '</ul></div>' +
       '<div class="madeit"><h3>' + T("You made it when…","Lo lograste cuando…") + '</h3><p>' + esc(L(p.done)) + '</p></div>' +
       '<div class="actions"><label class="check"><input type="checkbox" data-done="' + p.n + '"' + (done[p.n] ? " checked" : "") + '> ' + T("We made it","¡Lo hicimos!") + '</label>' +
-      '<button class="btn" type="button" data-print="' + p.n + '">' + T("Print this project","Imprimir este proyecto") + '</button></div>' +
+      '<button class="btn" type="button" data-print="' + p.n + '">' + T("Print this project","Imprimir este proyecto") + '</button>' +
+      '<button class="btn" type="button" data-ws="' + p.n + '" aria-expanded="' + (wsOpen[p.n] ? "true" : "false") + '">' + (wsOpen[p.n] ? T("Close the worksheet","Cerrar la hoja") : T("Worksheet","Hoja de trabajo")) + '</button></div>' +
+      (wsOpen[p.n] ? wsHtml(p) : "") +
       '</div></details>';
   });
   list.innerHTML = html;
@@ -305,6 +321,75 @@ function render(){
   var n = Object.keys(done).filter(function(k){ return done[k]; }).length;
   document.getElementById("tally").textContent = T("Your class has made " + n + " of 17 projects.", "Tu clase ha hecho " + n + " de 17 proyectos.");
 }
+
+/* AOG-FCS-WS-V1 — Jimmy: "I want an interactive / printable worksheet like everyone else has."
+   Each project gets a worksheet: plan and gather, the steps as a checklist, safety in your own
+   words, check your work, think back, and a space to draw what you made. Answers stay on this
+   device. Print gives a clean paper copy. */
+var wsOpen = {};
+function wsGet(n){ try{ return JSON.parse(localStorage.getItem("aog.fcsprojects.ws." + n) || "{}") || {}; }catch(e){ return {}; } }
+function wsPut(n, o){ try{ localStorage.setItem("aog.fcsprojects.ws." + n, JSON.stringify(o)); }catch(e){} }
+function wsHtml(p){
+  var S = wsGet(p.n), k = 0;
+  function part(en, es, inner){ k++; return '<div class="part"><h4>' + k + ". " + T(en, es) + '</h4>' + inner + '</div>'; }
+  function tick(name, label){ return '<label class="tick"><input type="checkbox" name="' + name + '"' + (S[name] ? " checked" : "") + '><span>' + esc(label) + '</span></label>'; }
+  function ta(name, ph){ return '<textarea name="' + name + '" placeholder="' + esc(ph) + '">' + esc(S[name] || "") + '</textarea>'; }
+  var gather = p.tools.concat(p.mats);
+  var h = '<div class="ws" data-wsn="' + p.n + '"><h3>' + T("Worksheet","Hoja de trabajo") + ": " + esc(L(p.t)) + '</h3>' +
+    '<p class="sub">' + T("Fill it in as you go. Short answers are fine.","Llénala mientras trabajas. Las respuestas cortas están bien.") + '</p>' +
+    '<div class="who"><div><label class="f">' + T("Name","Nombre") + '</label><input type="text" name="who" value="' + esc(S.who || "") + '"></div>' +
+    '<div><label class="f">' + T("Date","Fecha") + '</label><input type="text" name="date" value="' + esc(S.date || "") + '"></div></div>';
+  h += part("Gather what you need","Junta lo que necesitas", gather.map(function(x, i){ return tick("g" + i, L(x)); }).join(""));
+  h += part("Do the steps","Haz los pasos", p.steps.map(function(x, i){ return tick("s" + i, (i + 1) + ". " + L(x)); }).join(""));
+  h += part("Stay safe","Cuídate", '<p>' + T("Pick one safety rule. Say it in your own words.","Elige una regla de seguridad. Dila con tus palabras.") + '</p>' + ta("safe", T("One rule, my way","Una regla, a mi manera")));
+  h += part("Check your work","Revisa tu trabajo", '<p><i>' + esc(L(p.done)) + '</i></p>' +
+    '<div class="yn"><label class="tick"><input type="radio" name="made" value="yes"' + (S.made === "yes" ? " checked" : "") + '><span>' + T("Yes, it is done","Sí, está listo") + '</span></label>' +
+    '<label class="tick"><input type="radio" name="made" value="notyet"' + (S.made === "notyet" ? " checked" : "") + '><span>' + T("Not yet","Todavía no") + '</span></label></div>' +
+    ta("fix", T("What I will fix or try next","Lo que voy a arreglar o probar después")));
+  h += part("Think back","Piensa en lo que hiciste", '<label class="f">' + T("What went well?","¿Qué salió bien?") + '</label>' + ta("well", "") +
+    '<label class="f">' + T("What was tricky, and what helped?","¿Qué fue difícil y qué te ayudó?") + '</label>' + ta("help", ""));
+  h += part("Show what you made","Muestra lo que hiciste", '<p>' + T("Draw it on paper, or tell it here in one or two lines.","Dibújalo en papel, o cuéntalo aquí en una o dos líneas.") + '</p>' + ta("show", T("What I made","Lo que hice")));
+  h += '<div class="actions"><button class="btn" type="button" data-wsprint="' + p.n + '">' + T("Print the worksheet","Imprimir la hoja") + '</button></div>' +
+    '<p class="saved">' + T("Your answers save on this device as you type.","Tus respuestas se guardan en este aparato mientras escribes.") + '</p></div>';
+  return h;
+}
+function wsSave(box){
+  var n = box.getAttribute("data-wsn"), o = {};
+  Array.prototype.forEach.call(box.querySelectorAll("input,textarea"), function(el){
+    if(el.type === "checkbox"){ if(el.checked) o[el.name] = 1; }
+    else if(el.type === "radio"){ if(el.checked) o[el.name] = el.value; }
+    else if(el.value) o[el.name] = el.value;
+  });
+  wsPut(n, o);
+}
+function wsPrint(p){
+  var S = wsGet(p.n), k = 0;
+  function part(en, es, inner){ k++; return "<section><h2>" + k + ". " + esc(T(en, es)) + "</h2>" + inner + "</section>"; }
+  function box(on, label){ return '<p class="bx"><span class="sq">' + (on ? "&#10003;" : "") + "</span>" + esc(label) + "</p>"; }
+  function lines(v, n){ if(v) return "<p class=\"ans\">" + esc(v) + "</p>"; var s = ""; for(var i = 0; i < n; i++) s += '<div class="ln"></div>'; return s; }
+  var h = "<h1>" + esc(T("Worksheet","Hoja de trabajo")) + ": " + esc(L(p.t)) + "</h1><p class=\"sub\">" + esc(T("Family and Consumer Sciences · Project ","Ciencias de la Familia y del Consumidor · Proyecto ") + p.n + " · " + L(p.time)) + "</p>";
+  h += '<div class="fields">' + esc(T("Name","Nombre")) + " <span>" + esc(S.who || "") + "</span> " + esc(T("Date","Fecha")) + " <span>" + esc(S.date || "") + "</span></div>";
+  h += part("Gather what you need","Junta lo que necesitas", p.tools.concat(p.mats).map(function(x, i){ return box(S["g" + i], L(x)); }).join(""));
+  h += part("Do the steps","Haz los pasos", p.steps.map(function(x, i){ return box(S["s" + i], (i + 1) + ". " + L(x)); }).join(""));
+  h += part("Stay safe","Cuídate", "<p>" + esc(T("Pick one safety rule. Say it in your own words.","Elige una regla de seguridad. Dila con tus palabras.")) + "</p>" + lines(S.safe, 2));
+  h += part("Check your work","Revisa tu trabajo", "<p><i>" + esc(L(p.done)) + "</i></p>" + box(S.made === "yes", T("Yes, it is done","Sí, está listo")) + box(S.made === "notyet", T("Not yet","Todavía no")) + "<p>" + esc(T("What I will fix or try next:","Lo que voy a arreglar o probar después:")) + "</p>" + lines(S.fix, 2));
+  h += part("Think back","Piensa en lo que hiciste", "<p>" + esc(T("What went well?","¿Qué salió bien?")) + "</p>" + lines(S.well, 2) + "<p>" + esc(T("What was tricky, and what helped?","¿Qué fue difícil y qué te ayudó?")) + "</p>" + lines(S.help, 2));
+  h += part("Show what you made","Muestra lo que hiciste", (S.show ? "<p class=\"ans\">" + esc(S.show) + "</p>" : "") + '<div class="pad"></div>');
+  var css = "body{font:15px/1.45 Georgia,serif;color:#000;margin:0}h1{font-size:20px;margin:0 0 4px}h2{font:bold 15px sans-serif;margin:16px 0 6px;border-bottom:1px solid #ccc;padding-bottom:3px;break-after:avoid}.sub{font:13px sans-serif;color:#333;margin:0 0 12px}.fields{display:flex;gap:28px;font:14px sans-serif;margin:0 0 10px}.fields span{border-bottom:1px solid #000;min-width:190px;display:inline-block;padding:0 4px}p{margin:4px 0}.bx{display:flex;gap:10px;align-items:flex-start}.sq{flex:0 0 auto;width:14px;height:14px;border:1px solid #555;border-radius:3px;font:bold 12px/14px sans-serif;text-align:center;margin-top:3px}.ln{border-bottom:1px solid #9a9a9a;height:26px}.ans{font-style:italic}.pad{border:1px solid #9a9a9a;border-radius:8px;height:150px;margin-top:8px}section{break-inside:avoid;page-break-inside:avoid;margin:0 0 6px}@page{margin:14mm}";
+  var doc = '<!doctype html><html lang="' + lang + '"><head><meta charset="utf-8"><title>' + esc(L(p.t)) + "</title><style>" + css + "</style></head><body>" + h + "</body></html>";
+  var fr = document.createElement("iframe"); fr.setAttribute("aria-hidden", "true"); fr.style.cssText = "position:fixed;right:0;bottom:0;width:0;height:0;border:0";
+  document.body.appendChild(fr);
+  var w = fr.contentWindow; w.document.open(); w.document.write(doc); w.document.close();
+  setTimeout(function(){ try{ w.focus(); w.print(); }catch(e){} setTimeout(function(){ fr.remove(); }, 1500); }, 250);
+}
+document.getElementById("list").addEventListener("input", function(e){ var b = e.target.closest(".ws"); if(b) wsSave(b); });
+document.getElementById("list").addEventListener("change", function(e){ var b = e.target.closest(".ws"); if(b) wsSave(b); });
+document.getElementById("list").addEventListener("click", function(e){
+  var b = e.target.closest("button[data-ws]");
+  if(b){ var n = b.getAttribute("data-ws"); wsOpen[n] = !wsOpen[n]; render(); var box = document.querySelector('.ws[data-wsn="' + n + '"]'); if(box) box.scrollIntoView({block:"start"}); return; }
+  var pb = e.target.closest("button[data-wsprint]");
+  if(pb){ var pn = +pb.getAttribute("data-wsprint"); wsPrint(P.filter(function(x){ return x.n === pn; })[0]); }
+});
 
 document.getElementById("bands").addEventListener("click", function(e){
   var b = e.target.closest("button[data-band]"); if(!b) return;
