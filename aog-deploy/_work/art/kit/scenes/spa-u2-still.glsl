@@ -1,7 +1,7 @@
 /* Spanish Unit 2 "Colors and Numbers" — pencil still life: an open box of crayons in six shades, two more
    crayons on the table, beside number blocks 1, 2 and 3. */
-#define CAM_POS vec3(-0.4342,0.3667,-0.6190)
-#define CAM_TGT vec3(-0.2271,-0.0228,0.1513)
+#define CAM_POS vec3(-0.4343,0.3750,-0.6325)
+#define CAM_TGT vec3(-0.2236,-0.0212,0.1512)
 #define CAM_FOV 30.
 #define SUN_DIR vec3(-.65,.85,-.3)
 #define MAXT 8.
