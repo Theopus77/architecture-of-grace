@@ -171,6 +171,19 @@
     ".aogj-chip[aria-pressed=\"true\"]{background:var(--navy);border-color:var(--navy);color:var(--aogj-on-navy);box-shadow:inset 0 1px 0 rgba(255,255,255,.18),inset 0 -2px 0 rgba(0,0,0,.18)}",
     ".aogj-chip:focus-visible{outline:3px solid var(--focus);outline-offset:2px}",
     ".aogj-body{flex:1 1 auto;min-height:0;overflow-y:auto;overscroll-behavior:contain;padding:4px 10px 12px;border-top:1px solid var(--rule-soft);scroll-padding-top:12px}",
+    /* AOG-JUMP-SCROLL-V2 (2026-09-27) — Jimmy: "make the scroll bar more obvious but elegant". Phones and
+       Macs hide the native bar until you scroll, so the panel draws its own: a slim soft track down the right
+       edge and a gold handle that shows where you are; drag it, tap the track, or scroll as usual. */
+    ".aogj-bodywrap{position:relative;flex:1 1 auto;min-height:0;display:flex;flex-direction:column}",
+    ".aogj-body{scrollbar-width:none;padding-right:22px}",
+    ".aogj-body::-webkit-scrollbar{display:none}",
+    ".aogj-ybar{position:absolute;top:8px;bottom:8px;right:6px;width:8px;border-radius:8px;background:rgba(27,58,95,.09);cursor:pointer;touch-action:none}",
+    ".aogj-ybar[hidden]{display:none}",
+    ".aogj-ythumb{position:absolute;left:0;right:0;top:0;min-height:36px;border-radius:8px;background:linear-gradient(180deg,#D8B660,#B8913A);box-shadow:0 1px 2px rgba(0,0,0,.18),inset 0 1px 0 rgba(255,255,255,.35);cursor:grab}",
+    ".aogj-ybar:hover .aogj-ythumb,.aogj-ythumb.drag{background:linear-gradient(180deg,#C9A24B,#9E7A2A);cursor:grabbing}",
+    ".aogj-ybar::after{content:'';position:absolute;inset:-8px -6px}",
+    ":root[data-theme=dark] .aogj-ybar{background:rgba(255,255,255,.10)}",
+    ":root[data-theme=dark] .aogj-ythumb{background:linear-gradient(180deg,#F2D892,#E0B85A)}",
     ".aogj-subj{margin:6px 0 0}",
     ".aogj-subj+.aogj-subj{border-top:1px solid var(--rule-soft);padding-top:6px}",
     ".aogj-subjhead{display:flex;align-items:center;gap:10px;width:100%;min-height:48px;padding:6px 8px 6px 10px;border:0;border-radius:12px;background:transparent;color:var(--ink);font:inherit;text-align:left;cursor:pointer}",
@@ -431,7 +444,35 @@
       var live = el("div", "aogj-sr"); live.setAttribute("aria-live", "polite");
       var empty = leaf("div", "aogj-empty", STR.none.en, STR.none.es); empty.hidden = true;
       body.appendChild(live);
-      panel.appendChild(body);
+      /* AOG-JUMP-SCROLL-V2 — the drawn scroll bar */
+      var bwrap = el("div", "aogj-bodywrap"); bwrap.appendChild(body); panel.appendChild(bwrap);
+      var ybar = el("div", "aogj-ybar"); ybar.setAttribute("aria-hidden", "true");
+      var ythumb = el("div", "aogj-ythumb"); ybar.appendChild(ythumb); bwrap.appendChild(ybar);
+      var ySync = function () {
+        var sh = body.scrollHeight, ch = body.clientHeight, tr = ybar.clientHeight;
+        if (sh <= ch + 2 || !tr) { ybar.hidden = true; return; }
+        ybar.hidden = false;
+        var th = Math.max(36, Math.round(tr * ch / sh));
+        ythumb.style.height = th + "px";
+        ythumb.style.transform = "translateY(" + Math.round((tr - th) * body.scrollTop / (sh - ch)) + "px)";
+      };
+      body.addEventListener("scroll", ySync, { passive: true });
+      if (window.ResizeObserver) new ResizeObserver(ySync).observe(body);
+      if (window.MutationObserver) new MutationObserver(function () { requestAnimationFrame(ySync); }).observe(body, { childList: true, subtree: true, attributes: true, attributeFilter: ["hidden", "aria-expanded"] });
+      var yDrag = null;
+      ybar.addEventListener("pointerdown", function (e) {
+        e.preventDefault();
+        var r = ybar.getBoundingClientRect(), th = ythumb.offsetHeight, sh = body.scrollHeight, ch = body.clientHeight;
+        var tRect = ythumb.getBoundingClientRect();
+        var grab = (e.clientY >= tRect.top && e.clientY <= tRect.bottom) ? e.clientY - tRect.top : th / 2;
+        var move = function (y) { var f = (y - r.top - grab) / Math.max(1, r.height - th); body.scrollTop = Math.max(0, Math.min(1, f)) * (sh - ch); };
+        move(e.clientY); yDrag = move; ythumb.classList.add("drag");
+        try { ybar.setPointerCapture(e.pointerId); } catch (err) {}
+      });
+      ybar.addEventListener("pointermove", function (e) { if (yDrag) yDrag(e.clientY); });
+      var yEnd = function () { yDrag = null; ythumb.classList.remove("drag"); };
+      ybar.addEventListener("pointerup", yEnd); ybar.addEventListener("pointercancel", yEnd);
+      setTimeout(ySync, 0);
 
       var openSubject = null;
       data.subjects.forEach(function (S) { if (S.hasCur && !openSubject) openSubject = S; });
@@ -537,8 +578,9 @@
         if (rec.chip) rec.chip.setAttribute("aria-pressed", on ? "true" : "false");
       }
 
-      /* footer: the subject hubs */
-      if (data.hubs.length) {
+      /* footer: the subject hubs — AOG-JUMP-NOHUBS-V1 (2026-09-27): Jimmy, "Remove the subject hub at the
+         bottom of the box." The hubs stay in the Explore menu and the subject chips above. */
+      if (false && data.hubs.length) {
         var foot = el("div", "aogj-foot");
         foot.appendChild(leaf("span", "aogj-footlab", STR.hubs.en, STR.hubs.es));
         var hubs = el("div", "aogj-hubs");
