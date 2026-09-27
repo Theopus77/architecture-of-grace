@@ -60,15 +60,18 @@ scene defines:
 On the page, a navy cover darkens the left and bottom of the picture (behind the title). On a
 wide screen the picture is shown at `object-position: 85% 45%`. So:
 
-- **Where:** the whole subject group sits inside **x 44% to 97%** and **y 6% to 64%** of the
+- **Where:** the whole subject group sits inside **x 44% to 90%** and **y 6% to 64%** of the
   1600 x 560 frame.
-- **Focal point:** the focal object's centre is near **(70%, 35%)**.
+- **Focal point:** the focal object's centre is near **(68%, 35%)**.
 - **How big:** the group is **50% to 60% of the frame height** and about **40% to 50% of its
   width**. The focal object alone is 35% to 55% of the frame height.
 - **Keep clear:** the left 40% is only table, wall and paper. The bottom 35% is only table and
   cast shadow.
 - **Composition:** use a table line (horizon) at about 25% to 40% from the top, with
   overlapping objects for depth. Cast shadows fall to the right, away from the light.
+- **Fit it automatically:** run `python3 pencil/frame.py <id>`. It moves the camera
+  (dolly and pan only, never a new angle) until the objects' box meets this rule. It prints
+  the box after each pass.
 - **Check it:** make a quick tone preview:
 
       node kit/gbuf.js <id>-still OUTDIR 800 280
