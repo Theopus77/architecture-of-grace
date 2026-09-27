@@ -1,7 +1,7 @@
 /* Spanish Unit 17 "Pronouns, Reflexives and Commands" — pencil still life of a morning routine
    (me lavo, me peino): a cup holding a toothbrush, a comb, and a bar of soap on a folded washcloth. */
-#define CAM_POS vec3(-0.30,0.36,-0.84)
-#define CAM_TGT vec3(-0.05,0.05,0.09)
+#define CAM_POS vec3(-0.4352,0.3040,-0.8131)
+#define CAM_TGT vec3(-0.1873,-0.0034,0.1091)
 #define CAM_FOV 30.
 #define SUN_DIR vec3(-.65,.85,-.3)
 #define MAXT 8.
