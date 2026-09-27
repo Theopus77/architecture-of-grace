@@ -77,6 +77,11 @@ html[data-theme="dark"] .linkbox code{color:#E8EEF4!important}
 .tbl th{text-align:left;font:800 11.5px Inter,sans-serif;letter-spacing:.12em;text-transform:uppercase;color:var(--faint);padding:10px 12px;border-bottom:1px solid var(--line)}
 .tbl td{padding:12px;border-bottom:1px solid var(--line);vertical-align:top}
 .tbl tr.pick{cursor:pointer}.tbl tr.pick:hover td{background:rgba(201,162,74,.08)}
+/* AOG-NO-BOX-SCROLL: on phones each row becomes a small card, no sideways scrolling */
+@media (max-width:700px){section.card,div[style*="overflow-x:auto"]{overflow-x:visible!important}
+.tbl thead{display:none}.tbl,.tbl tbody,.tbl tr,.tbl td{display:block;width:100%;box-sizing:border-box}
+.tbl tr{padding:8px 0;border-bottom:1px solid var(--line)}.tbl td{border:0;padding:4px 8px;overflow-wrap:anywhere}
+.tbl td[data-label]:not([data-label=""])::before{content:attr(data-label);display:block;font:800 11px Inter,sans-serif;letter-spacing:.1em;text-transform:uppercase;color:var(--faint)}}
 .chip{display:inline-block;padding:3px 10px;border-radius:999px;font-size:13px;font-weight:700;background:rgba(10,30,51,.07);margin:2px 4px 2px 0}
 .chip.warn{background:rgba(179,38,30,.12)!important;color:#8E1F18!important;border:0!important;box-shadow:none!important;padding:3px 10px!important;font-size:13px!important}.chip.good{background:rgba(46,125,79,.14);color:#1E5A38}
 [data-theme="dark"] .chip{background:rgba(255,255,255,.1)}[data-theme="dark"] .chip.warn{color:#FFB4AB}[data-theme="dark"] .chip.good{color:#BFE6CC}
@@ -1096,5 +1101,6 @@ new MutationObserver(render).observe(document.documentElement,{attributes:true,a
 render();
 </script>
 <script src="/aog-grace.js" defer></script>
+<script>/* AOG-NO-BOX-SCROLL labels */(function(){function L(){document.querySelectorAll("table.tbl").forEach(function(t){var h=[].map.call(t.querySelectorAll("thead th"),function(x){return x.textContent.trim()});if(!h.length)return;t.querySelectorAll("tbody tr").forEach(function(r){[].forEach.call(r.children,function(c,i){if(!c.hasAttribute("data-label"))c.setAttribute("data-label",h[i]||"")})})})}new MutationObserver(L).observe(document.body,{childList:true,subtree:true});L()})();</script>
 </body>
 </html>
