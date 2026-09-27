@@ -219,3 +219,21 @@ html.aog-sel[data-theme="dark"] .card .ch{ color:#0A1E33; }
 html.aog-sel[data-theme="dark"] .card .ch .code{ background:rgba(10,30,51,.18); color:#0A1E33; }
 html.aog-sel[data-theme="dark"] .funit[data-unit][aria-pressed="true"]{ color:#0A1E33 !important; }
 @media print{ html.aog-sel .card .ch{ -webkit-print-color-adjust:exact; print-color-adjust:exact; } }
+
+/* AOG-SEL-KVPAIR-V1 (2026-09-27) — Jimmy: "Words overlap on the page." Some lesson boxes use the
+   label/value row (.kv) as a two-column table: Kindergarten | Grades 1–2, Grades 9·10 | 11·12,
+   and the side-by-side comparisons. aog-sel.js marks those .kv-pair: two equal columns, the first
+   row as small headings, the text at reading size. Nothing in the words changes. */
+html.aog-sel .kv.kv-pair .kvr{ grid-template-columns:1fr 1fr; gap:6px 18px; }
+html.aog-sel .kv.kv-pair .kvk{ font-size:.93rem; font-weight:500; letter-spacing:.01em; text-transform:none; color:var(--ink,#1B2430); padding-top:0; line-height:1.5; }
+html.aog-sel .kv.kv-pair .kvv p{ font-size:.93rem; line-height:1.5; }
+html.aog-sel .kv.kv-pair .kvr.kv-head .kvk,
+html.aog-sel .kv.kv-pair .kvr.kv-head .kvv p{ font-size:.72rem; font-weight:800; letter-spacing:.1em; text-transform:uppercase; color:var(--sub,#5B6470); margin:0; }
+html.aog-sel .kv.kv-pair .kvr.kv-head{ background:rgba(27,58,95,.05); }
+html[data-theme="dark"].aog-sel .kv.kv-pair .kvk{ color:var(--ink,#EDE7DA); }
+html[data-theme="dark"].aog-sel .kv.kv-pair .kvr.kv-head{ background:rgba(255,255,255,.05); }
+@media (max-width:420px){
+  html.aog-sel .kv.kv-pair .kvr{ grid-template-columns:1fr; }
+  html.aog-sel .kv.kv-pair .kvr > span[data-h]::before{ content:attr(data-h); display:block; font:800 .7rem/1.4 system-ui,sans-serif; letter-spacing:.1em; text-transform:uppercase; color:var(--sub,#5B6470); margin:6px 0 2px; }
+  html.aog-sel .kv.kv-pair .kvr.kv-head{ display:none; }
+}

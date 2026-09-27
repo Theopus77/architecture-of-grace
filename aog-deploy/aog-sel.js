@@ -191,3 +191,31 @@
     } catch (e) {}
   });
 })();
+
+/* AOG-SEL-KVPAIR-V1 (2026-09-27) — Jimmy: "Words overlap on the page." A .kv block used as a
+   two-column table (a long left cell, or a first row of two headings like Kindergarten | Grades
+   1–2) becomes .kv-pair: equal columns, first row as headings; on a narrow phone each cell keeps
+   its heading above it. See aog-sel.css. */
+(function () {
+  function run() {
+    Array.prototype.forEach.call(document.querySelectorAll(".kv"), function (kv) {
+      if (kv.classList.contains("kv-pair")) return;
+      var rows = kv.querySelectorAll(":scope > .kvr"); if (!rows.length) return;
+      var t = function (el) { return el ? el.textContent.replace(/\s+/g, " ").trim() : ""; };
+      var first = rows[0], k0 = t(first.querySelector(".kvk")), v0 = t(first.querySelector(".kvv"));
+      var longLeft = Array.prototype.some.call(rows, function (r) { return t(r.querySelector(".kvk")).length > 26; });
+      var headRow = rows.length > 1 && /^(KINDERGARTEN|GRADES?\b|L\d)/i.test(k0) && /^(GRADES?\b|L\d)/i.test(v0);
+      if (!longLeft && !headRow) return;
+      kv.classList.add("kv-pair");
+      if (headRow) {
+        first.classList.add("kv-head");
+        for (var i = 1; i < rows.length; i++) {
+          var c = rows[i].children;
+          if (c[0]) c[0].setAttribute("data-h", k0);
+          if (c[1]) c[1].setAttribute("data-h", v0);
+        }
+      }
+    });
+  }
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", run); else run();
+})();
