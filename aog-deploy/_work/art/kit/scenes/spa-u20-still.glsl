@@ -1,8 +1,8 @@
 /* Spanish Unit 20 "Capstone: Present and Defend" — pencil still life: a wooden speaker's lectern
    with a microphone on a gooseneck, a stack of note cards on its slanted top, and a small
    trophy cup on the table beside it. */
-#define CAM_POS vec3(-0.30,0.36,-0.84)
-#define CAM_TGT vec3(-0.05,0.08,0.09)
+#define CAM_POS vec3(-0.6623,0.4023,-1.0224)
+#define CAM_TGT vec3(-0.3448,0.0465,0.1591)
 #define CAM_FOV 30.
 #define SUN_DIR vec3(-.65,.85,-.3)
 #define MAXT 8.
