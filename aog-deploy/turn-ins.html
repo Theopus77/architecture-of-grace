@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <script>/* .30eg: begin in light. Same key as the other activity pages. */
-(function(){var t="light";try{if(localStorage.getItem("aog.interior.ws.v1.theme")==="dark")t="dark";}catch(e){}document.documentElement.setAttribute("data-theme",t);})();</script>
+(function(){var t="light";try{if(localStorage.getItem("aog.theme.lightstart.v1")==="1"&&localStorage.getItem("aog.interior.ws.v1.theme")==="dark")t="dark";}catch(e){}document.documentElement.setAttribute("data-theme",t);})();</script>
 <title>The Inbox — Architecture of Grace</title>
 <meta name="description" content="Everything pulled from your Sheet in one place — check-ins, team check-ins, exit slips, home check-ins, self-reflections and every FINISHED worksheet, readable and printable.">
 <!-- ═══ AOG ICONS + LINK PREVIEW · managed block · .30k0 ═══
@@ -1080,7 +1080,7 @@ else document.documentElement.classList.add("aog-embed");</script>
 
   /* ═══════════ every reader, one list ═══════════ */
   /* AOG-SLIP-ENGINE-V1 — the slips from /slip.html: one kind, labelled by which slip, the answers in words */
-  var SLIPNAME={test:"Before a test",repair:"After a hard moment",goal:"Goal check",home:"Home · evening",team:"Group work",unit:"End of unit"};
+  var SLIPNAME={test:"Before a test",posttest:"After a test",repair:"After a hard moment",goal:"Goal check",home:"Home · evening",team:"Group work",unit:"End of unit"};
   function readSlips(){
     var remote=arrOf("aog.checkin.remote").filter(function(r){ return r && /^slip-/.test(String(r.checkinType||"")); });
     var mine=arrOf("aog.slips.mine").filter(function(m){ return !remote.some(function(r){ return String(r.studentId)===String(m.studentId)&&String(r.checkinType)===String(m.checkinType)&&Math.abs(Date.parse(r.timestamp)-Date.parse(m.timestamp))<180000; }); });
