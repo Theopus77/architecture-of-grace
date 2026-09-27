@@ -1,7 +1,7 @@
 /* FCS Unit 12 "Hand Sewing" — pencil still life: a tomato pincushion stuck with round-headed
    pins, a pair of sewing scissors, a thimble and a small spool of thread. */
-#define CAM_POS vec3(-0.30,0.36,-0.84)
-#define CAM_TGT vec3(-0.05,0.04,0.09)
+#define CAM_POS vec3(-0.3039,0.1938,-0.5304)
+#define CAM_TGT vec3(-0.1365,-0.0204,0.0925)
 #define CAM_FOV 30.
 #define SUN_DIR vec3(-.65,.85,-.3)
 #define MAXT 8.
