@@ -171,6 +171,29 @@ body>.wrap>header:first-child,.wrap>header.no-print:first-child{display:none!imp
 .nav a.on{color:var(--ink);border-color:var(--steel,#2F63B8)}
 .nav a.sep{margin-left:auto;padding-left:.5rem}
 .nav a.sep+a.sep{margin-left:0}
+/* AOG-SCOPE-LESSONS-V1 (2026-09-27) — the Lessons room: the fuller scope, its controls, and the lesson ladder */
+.wavebox[data-read]::after{content:attr(data-read)}
+.les-grid{display:grid;gap:1rem;margin-top:1rem}
+@media (min-width:900px){ .les-grid{grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);grid-template-areas:"scope lesson" "ctl lesson";align-items:start}
+  .les-scope{grid-area:scope} .les-lesson{grid-area:lesson;position:sticky;top:70px} .les-ctl{grid-area:ctl} }
+.scope-sel{width:100%;min-height:44px;margin-top:.25rem;padding:.4rem 2.2rem .4rem .7rem;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--ink);font:inherit;font-size:16px;font-weight:600;-webkit-appearance:none;appearance:none;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%235c6670' stroke-width='2.4' stroke-linecap='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;background-size:16px}
+.les-pick{margin:.3rem 0 .5rem}
+.stair-steps{list-style:none;margin:.25rem 0 0;padding:0}
+.stair-steps li.step{display:flex;gap:.5rem;align-items:flex-start;padding:.3rem 0;font-size:.92rem;border-top:1px solid var(--line)}
+.stair-steps li.step:first-child{border-top:0}
+.stair-steps .mark{flex:0 0 auto;width:1.25rem;height:1.25rem;border-radius:99px;border:1px solid var(--line);text-align:center;line-height:1.2rem;font-size:.8rem;color:var(--good);margin-top:.1rem}
+.stair-steps .mark.ok{border-color:var(--good);background:var(--good-soft)}
+.stair-steps .did{text-decoration:line-through;color:var(--muted)}
+.stair-steps .did .ans,.stair-steps .did .ans-text{text-decoration:none}
+.ans-row{display:inline-flex;align-items:center;gap:.4rem;margin-left:.5rem;vertical-align:middle}
+.ans{min-height:44px;width:7.5rem;padding:.3rem .6rem;border-radius:8px;border:1px solid var(--line);background:var(--card);color:var(--ink);font:inherit;font-size:16px;font-variant-numeric:tabular-nums}
+.ans-text{display:block;width:100%;margin-top:.3rem}
+.ans-check{display:flex;gap:.5rem;align-items:center;margin-top:.3rem;min-height:44px}
+.ans-check input{width:1.3rem;height:1.3rem;accent-color:var(--good)}
+.ok-line{color:var(--good);font-weight:700;margin:.5rem 0 0}
+.warn-line{color:var(--warn);font-weight:700;margin:.2rem 0 .4rem}
+.les-lesson .btn{text-decoration:none}
 </style>
 </head>
 <body>
@@ -403,6 +426,347 @@ const OBS = [
   {id:"mid", k:"obsMid"},
   {id:"high", k:"obsHigh"}
 ];
+/* ══ AOG-SCOPE-LESSONS-V1 (2026-09-27) — Jimmy: "The bench tools should have their own
+   missions or lessons with worksheets … the oscilloscope should get about 17 lessons."
+   A second, fuller scope lives in the Lessons room: power, a 10×8 graticule, volts/div,
+   ms/div, trigger, two channels, phase, AC/DC coupling, a 10× probe, noise and averaging,
+   a pulse source and a mystery signal. Seventeen lessons climb a STAIR like the
+   microscope's missions; every step is read from the scope's own state, never from a
+   button that says "done". Progress stays in localStorage with the rest of the bench.
+   Worksheets: /waves-lessons.html?l=N  ══ */
+const VDIV=[0.1,0.2,0.5,1,2,5];
+const TDIV=[0.1,0.2,0.5,1,2,5,10,20,50,100,200,500];
+const PULSE_HZ=1.25; /* 75 beats a minute */
+const LSTR={
+  lessonsNav:{en:"Lessons",es:"Lecciones"},
+  lessonsH:{en:"Learn the scope",es:"Aprende el osciloscopio"},
+  lessonsLead:{en:"Seventeen short lessons. Each one is a few moves on the real controls. A check appears when the scope sees you did it.",es:"Diecisiete lecciones cortas. Cada una son unos pocos movimientos en los controles reales. Aparece una marca cuando el osciloscopio ve que lo hiciste."},
+  pickLesson:{en:"Lesson",es:"Lección"},
+  lessonOf:{en:"Lesson",es:"Lección"},
+  ofN:{en:"of 17",es:"de 17"},
+  doneN:{en:"done",es:"listas"},
+  worksheet:{en:"Open the worksheet",es:"Abrir la hoja de trabajo"},
+  nextLesson:{en:"Next lesson",es:"Siguiente lección"},
+  lessonDone:{en:"Lesson done. Nice work.",es:"Lección lista. Buen trabajo."},
+  allDone:{en:"All seventeen lessons are done. You can read a scope.",es:"Las diecisiete lecciones están listas. Ya sabes leer un osciloscopio."},
+  signal:{en:"The signal",es:"La señal"},
+  scope:{en:"The scope",es:"El osciloscopio"},
+  ch2:{en:"Channel 2",es:"Canal 2"},
+  power:{en:"Power",es:"Encendido"}, on:{en:"On",es:"Encendido"}, off:{en:"Off",es:"Apagado"},
+  source:{en:"Source",es:"Fuente"},
+  srcSine:{en:"Sine",es:"Seno"}, srcSquare:{en:"Square",es:"Cuadrada"}, srcTri:{en:"Triangle",es:"Triangular"}, srcSaw:{en:"Saw",es:"Sierra"},
+  srcPulse:{en:"Pulse (heartbeat-style)",es:"Pulso (tipo latido)"}, srcMys:{en:"Mystery signal",es:"Señal misteriosa"},
+  freq:{en:"Frequency",es:"Frecuencia"}, height:{en:"Height (V peak to peak)",es:"Altura (V pico a pico)"},
+  offset:{en:"Offset (DC volts)",es:"Desplazamiento (voltios DC)"},
+  hidden:{en:"hidden — you measure it",es:"oculto — tú lo mides"},
+  vdiv:{en:"Volts per division",es:"Voltios por división"}, tdiv:{en:"Time per division",es:"Tiempo por división"},
+  trig:{en:"Trigger",es:"Disparo"}, trigOff:{en:"Off (trace runs)",es:"Apagado (la traza corre)"}, trigRise:{en:"Rising edge",es:"Flanco de subida"}, trigFall:{en:"Falling edge",es:"Flanco de bajada"},
+  coup:{en:"Coupling",es:"Acoplamiento"}, coupDC:{en:"DC (show everything)",es:"DC (muestra todo)"}, coupAC:{en:"AC (drop the offset)",es:"AC (quita el desplazamiento)"},
+  probe:{en:"Probe plugged in",es:"Sonda conectada"}, probeSet:{en:"Probe setting on the scope",es:"Ajuste de sonda en el osciloscopio"},
+  noise:{en:"Noise",es:"Ruido"}, avg:{en:"Averaging",es:"Promedio"}, avgOff:{en:"Off (1)",es:"Apagado (1)"},
+  harm:{en:"Build from sines",es:"Construir con senos"}, harmOff:{en:"Off (show the real shape)",es:"Apagado (forma real)"}, harmN:{en:"harmonics",es:"armónicos"},
+  ch2on:{en:"Channel 2",es:"Canal 2"}, g2:{en:"Channel 2 height",es:"Altura del canal 2"}, ph2:{en:"Channel 2 shift",es:"Desfase del canal 2"},
+  hearIt:{en:"Hear it",es:"Escúchalo"},
+  record:{en:"Your number",es:"Tu número"},
+  turnOn:{en:"The screen is dark. Turn the power on.",es:"La pantalla está oscura. Enciende el osciloscopio."}
+};
+Object.assign(STR, LSTR);
+const LESSONS=[
+  {id:"L1", en:"Power and a trace", es:"Encender y ver una traza",
+   blurb_en:"Turn it on. Pick a signal. Make a line big enough to see.", blurb_es:"Enciéndelo. Elige una señal. Haz una línea que se vea.",
+   steps:["l1on","l1sine","l1big"]},
+  {id:"L2", en:"The grid: divisions", es:"La cuadrícula: divisiones",
+   blurb_en:"The screen is a grid. Count the boxes. Every reading starts with a count.", blurb_es:"La pantalla es una cuadrícula. Cuenta las cajas. Toda lectura empieza contando.",
+   steps:["l2v","l2t","l2across","l2tall"]},
+  {id:"L3", en:"Volts per division", es:"Voltios por división",
+   blurb_en:"Height is volts. Boxes tall times volts per box.", blurb_es:"La altura son voltios. Cajas de alto por voltios por caja.",
+   steps:["l3src","l3fit","l3read"]},
+  {id:"L4", en:"Time per division", es:"Tiempo por división",
+   blurb_en:"Width is time. One cycle across is the period.", blurb_es:"El ancho es tiempo. Un ciclo de ancho es el periodo.",
+   steps:["l4f","l4two","l4T"]},
+  {id:"L5", en:"Frequency from the period", es:"Frecuencia desde el periodo",
+   blurb_en:"Frequency is one divided by the period. Read T, then compute f.", blurb_es:"La frecuencia es uno entre el periodo. Lee T y calcula f.",
+   steps:["l5f","l5cyc","l5ans"]},
+  {id:"L6", en:"Sine, square, triangle, saw", es:"Seno, cuadrada, triangular, sierra",
+   blurb_en:"Same pitch, different shape. Look at all four.", blurb_es:"Mismo tono, distinta forma. Mira las cuatro.",
+   steps:["l6sq","l6tri","l6saw","l6back"]},
+  {id:"L7", en:"The trigger", es:"El disparo",
+   blurb_en:"Without a trigger the trace runs. A trigger holds it still.", blurb_es:"Sin disparo la traza corre. El disparo la deja quieta.",
+   steps:["l7off","l7rise","l7fall"]},
+  {id:"L8", en:"Two channels", es:"Dos canales",
+   blurb_en:"A second trace on the same screen. Make both fit.", blurb_es:"Una segunda traza en la misma pantalla. Haz que quepan las dos.",
+   steps:["l8on","l8half","l8fit"]},
+  {id:"L9", en:"Phase", es:"Fase",
+   blurb_en:"Two waves can be alike but shifted in time. That shift is phase.", blurb_es:"Dos ondas pueden ser iguales pero corridas en el tiempo. Ese corrimiento es la fase.",
+   steps:["l9on","l9q","l9h"]},
+  {id:"L10", en:"Amplitude and loudness", es:"Amplitud y volumen",
+   blurb_en:"Double the height and hear it. Twice the volts is about 6 dB more.", blurb_es:"Duplica la altura y escúchala. El doble de voltios es unos 6 dB más.",
+   steps:["l10one","l10two","l10db"]},
+  {id:"L11", en:"Harmonics: a square is many sines", es:"Armónicos: la cuadrada son muchos senos",
+   blurb_en:"Build a square wave out of sines, one at a time.", blurb_es:"Construye una onda cuadrada con senos, uno a la vez.",
+   steps:["l11sq","l11h1","l11h3","l11h9"]},
+  {id:"L12", en:"Measure a pulse", es:"Mide un pulso",
+   blurb_en:"A heartbeat-style pulse repeats slowly. Slow the timebase and count beats.", blurb_es:"Un pulso tipo latido se repite despacio. Baja la base de tiempo y cuenta latidos.",
+   steps:["l12src","l12two","l12bpm"]},
+  {id:"L13", en:"Noise and averaging", es:"Ruido y promedio",
+   blurb_en:"Real signals are fuzzy. Averaging cleans them up.", blurb_es:"Las señales reales son borrosas. Promediar las limpia.",
+   steps:["l13on","l13avg4","l13avg16"]},
+  {id:"L14", en:"AC and DC coupling", es:"Acoplamiento AC y DC",
+   blurb_en:"An offset lifts the whole wave. AC coupling drops the lift.", blurb_es:"Un desplazamiento sube toda la onda. El acoplamiento AC quita la subida.",
+   steps:["l14dc","l14see","l14ac"]},
+  {id:"L15", en:"The 10× probe", es:"La sonda 10×",
+   blurb_en:"A 10× probe shrinks the signal ten times. Tell the scope, or the numbers lie.", blurb_es:"Una sonda 10× encoge la señal diez veces. Díselo al osciloscopio, o los números mienten.",
+   steps:["l15plug","l15set","l15read"]},
+  {id:"L16", en:"Design a measurement", es:"Diseña una medición",
+   blurb_en:"A mystery signal. Find its frequency and its height on your own.", blurb_es:"Una señal misteriosa. Encuentra su frecuencia y su altura por tu cuenta.",
+   steps:["l16src","l16fit","l16f","l16v"]},
+  {id:"L17", en:"Write it up and hand it in", es:"Escríbelo y entrégalo",
+   blurb_en:"Open the worksheet, write your claim, and turn it in.", blurb_es:"Abre la hoja, escribe tu afirmación y entrégala.",
+   steps:["l17open","l17claim","l17done"]}
+];
+const LSTEP={
+  l1on:{en:"Turn the scope on",es:"Enciende el osciloscopio"},
+  l1sine:{en:"Pick the sine source",es:"Elige la fuente seno"},
+  l1big:{en:"Make the wave at least one box tall",es:"Haz la onda de al menos una caja de alto"},
+  l2v:{en:"Set 1 volt per division",es:"Pon 1 voltio por división"},
+  l2t:{en:"Set 1 ms per division",es:"Pon 1 ms por división"},
+  l2across:{en:"Count the boxes across the screen",es:"Cuenta las cajas a lo ancho",ans:{k:"across",unit:""}},
+  l2tall:{en:"Count the boxes up and down",es:"Cuenta las cajas a lo alto",ans:{k:"tall",unit:""}},
+  l3src:{en:"Sine source, height set to 2 V",es:"Fuente seno, altura en 2 V"},
+  l3fit:{en:"Choose volts/div so the wave is 3 to 5 boxes tall",es:"Elige voltios/div para que la onda mida de 3 a 5 cajas"},
+  l3read:{en:"Read the height: boxes × volts per box",es:"Lee la altura: cajas × voltios por caja",ans:{k:"vpp3",unit:"V"}},
+  l4f:{en:"Set the frequency between 200 and 300 Hz",es:"Pon la frecuencia entre 200 y 300 Hz"},
+  l4two:{en:"Choose ms/div so about two cycles show",es:"Elige ms/div para que se vean unos dos ciclos"},
+  l4T:{en:"Read one period: boxes × ms per box",es:"Lee un periodo: cajas × ms por caja",ans:{k:"T4",unit:"ms"}},
+  l5f:{en:"Set any frequency from 100 to 1000 Hz",es:"Pon cualquier frecuencia de 100 a 1000 Hz"},
+  l5cyc:{en:"Show one to four cycles",es:"Muestra de uno a cuatro ciclos"},
+  l5ans:{en:"Compute f = 1000 ÷ T(ms), within 5%",es:"Calcula f = 1000 ÷ T(ms), con 5% de margen",ans:{k:"f5",unit:"Hz"}},
+  l6sq:{en:"Look at the square",es:"Mira la cuadrada"},
+  l6tri:{en:"Look at the triangle",es:"Mira la triangular"},
+  l6saw:{en:"Look at the saw",es:"Mira la sierra"},
+  l6back:{en:"Back to the sine",es:"Vuelve al seno"},
+  l7off:{en:"Turn the trigger off and watch the trace run",es:"Apaga el disparo y mira correr la traza"},
+  l7rise:{en:"Trigger on the rising edge",es:"Dispara en el flanco de subida"},
+  l7fall:{en:"Trigger on the falling edge",es:"Dispara en el flanco de bajada"},
+  l8on:{en:"Turn channel 2 on",es:"Enciende el canal 2"},
+  l8half:{en:"Set channel 2 to half height (50%)",es:"Pon el canal 2 a media altura (50%)"},
+  l8fit:{en:"Choose volts/div so both fit: 2 to 7 boxes",es:"Elige voltios/div para que quepan las dos: de 2 a 7 cajas"},
+  l9on:{en:"Channel 2 on",es:"Canal 2 encendido"},
+  l9q:{en:"Shift channel 2 by 90°",es:"Desfasa el canal 2 90°"},
+  l9h:{en:"Shift channel 2 by 180° (upside down)",es:"Desfasa el canal 2 180° (al revés)"},
+  l10one:{en:"Set the height to 1 V and hear it",es:"Pon la altura en 1 V y escúchala"},
+  l10two:{en:"Set the height to 2 V and hear it",es:"Pon la altura en 2 V y escúchala"},
+  l10db:{en:"How many dB louder is twice the volts?",es:"¿Cuántos dB más fuerte es el doble de voltios?",ans:{k:"db10",unit:"dB"}},
+  l11sq:{en:"Pick the square source",es:"Elige la fuente cuadrada"},
+  l11h1:{en:"Build from sines: 1 harmonic (just a sine)",es:"Construir con senos: 1 armónico (solo un seno)"},
+  l11h3:{en:"Build from sines: 3 harmonics",es:"Construir con senos: 3 armónicos"},
+  l11h9:{en:"Build from sines: 9 or more",es:"Construir con senos: 9 o más"},
+  l12src:{en:"Pick the pulse source",es:"Elige la fuente de pulso"},
+  l12two:{en:"Slow the timebase until 2 to 4 beats show",es:"Baja la base de tiempo hasta ver de 2 a 4 latidos"},
+  l12bpm:{en:"Beats per minute = 60 ÷ seconds per beat",es:"Latidos por minuto = 60 ÷ segundos por latido",ans:{k:"bpm12",unit:"bpm"}},
+  l13on:{en:"Turn noise on",es:"Enciende el ruido"},
+  l13avg4:{en:"Average 4 sweeps",es:"Promedia 4 barridos"},
+  l13avg16:{en:"Average 16 sweeps",es:"Promedia 16 barridos"},
+  l14dc:{en:"Add an offset of 2 V",es:"Agrega un desplazamiento de 2 V"},
+  l14see:{en:"DC coupling: watch the wave ride up",es:"Acoplamiento DC: mira la onda subir"},
+  l14ac:{en:"AC coupling: it comes back to the middle",es:"Acoplamiento AC: vuelve al centro"},
+  l15plug:{en:"Plug in the 10× probe",es:"Conecta la sonda 10×"},
+  l15set:{en:"Set the scope's probe setting to 10×",es:"Pon el ajuste de sonda del osciloscopio en 10×"},
+  l15read:{en:"Read the true height, within 5%",es:"Lee la altura real, con 5% de margen",ans:{k:"vpp15",unit:"V"}},
+  l16src:{en:"Pick the mystery signal",es:"Elige la señal misteriosa"},
+  l16fit:{en:"Fit it: 1 to 4 cycles, 3 to 7 boxes tall",es:"Ajústala: de 1 a 4 ciclos, de 3 a 7 cajas de alto"},
+  l16f:{en:"Its frequency, within 5%",es:"Su frecuencia, con 5% de margen",ans:{k:"f16",unit:"Hz"}},
+  l16v:{en:"Its height, within 5%",es:"Su altura, con 5% de margen",ans:{k:"vpp16",unit:"V"}},
+  l17open:{en:"Open the worksheet for this lesson",es:"Abre la hoja de trabajo de esta lección"},
+  l17claim:{en:"Write one sentence: what a scope measures",es:"Escribe una oración: qué mide un osciloscopio",ans:{k:"claim17",type:"text"}},
+  l17done:{en:"Tap FINISHED on the worksheet, then mark it here",es:"Toca TERMINADO en la hoja y márcalo aquí",ans:{k:"handed17",type:"check",en:"I handed it in",es:"Ya la entregué"}}
+};
+function scDefaults(){ return {on:false,src:"sine",hz:440,vpp:1.5,dc:0,vdiv:2,tdiv:4,trig:"rise",coup:"dc",probe:1,probeSet:1,noise:false,avg:1,harm:0,ch2:false,g2:1,ph2:0,lesson:0,ans:{},heard:{},wsOpened:false,mys:null}; }
+function scFix(){
+  const d=Object.assign(scDefaults(), S.sc||{});
+  d.hz=Math.min(2000,Math.max(1,+d.hz||440)); d.vpp=Math.min(8,Math.max(0.2,+d.vpp||1.5)); d.dc=Math.min(3,Math.max(-3,+d.dc||0));
+  d.vdiv=Math.min(VDIV.length-1,Math.max(0,d.vdiv|0)); d.tdiv=Math.min(TDIV.length-1,Math.max(0,d.tdiv|0));
+  d.ans=d.ans||{}; d.heard=d.heard||{};
+  if(!d.mys){ d.mys={f:[130,340,560,720,910][Math.floor(Math.random()*5)]+Math.floor(Math.random()*40), vpp:[0.8,1.4,2.6,3.4,5.2][Math.floor(Math.random()*5)]}; }
+  S.sc=d; S.lessons=S.lessons||{};
+}
+function scHz(){ const c=S.sc; return c.src==="pulse"?PULSE_HZ: c.src==="mystery"?c.mys.f: c.hz; }
+function scVpp(){ const c=S.sc; return c.src==="mystery"?c.mys.vpp: c.vpp; }
+function divsTall(){ const c=S.sc; return scVpp()/c.probe/VDIV[c.vdiv]; }
+function cyclesShown(){ return scHz()*TDIV[S.sc.tdiv]*10/1000; }
+function within5(a,b){ a=parseFloat(a); if(!isFinite(a)||!isFinite(b)||!b) return false; return Math.abs(a-b)/Math.abs(b)<=0.05; }
+function near(a,b,tol){ return Math.abs(a-b)<=tol; }
+function lessonNow(){ for(let i=0;i<LESSONS.length;i++) if(!LESSONS[i].steps.every(id=>S.lessons[id])) return i; return LESSONS.length; }
+function lessonDoneCount(){ return LESSONS.filter(m=>m.steps.every(id=>S.lessons[id])).length; }
+function tickLessons(){
+  const c=S.sc, L=S.lessons, A=c.ans, on=c.on;
+  const set=(id,ok)=>{ if(ok) L[id]=true; };
+  set("l1on",on); set("l1sine",on&&c.src==="sine"); set("l1big",on&&c.src!=="mystery"&&divsTall()>=1);
+  set("l2v",on&&VDIV[c.vdiv]===1); set("l2t",on&&TDIV[c.tdiv]===1); set("l2across",+A.across===10); set("l2tall",+A.tall===8);
+  const sine2=on&&c.src==="sine"&&near(c.vpp,2,0.1);
+  set("l3src",sine2); const fit3=sine2&&divsTall()>=3&&divsTall()<=5; set("l3fit",fit3); set("l3read",fit3&&within5(A.vpp3,scVpp()*c.probeSet/c.probe));
+  const f4=on&&c.src==="sine"&&c.hz>=200&&c.hz<=300; set("l4f",f4); const two4=f4&&cyclesShown()>=1.5&&cyclesShown()<=3; set("l4two",two4); set("l4T",two4&&within5(A.T4,1000/c.hz));
+  const f5=on&&c.src==="sine"&&c.hz>=100&&c.hz<=1000; set("l5f",f5); const cyc5=f5&&cyclesShown()>=1&&cyclesShown()<=4; set("l5cyc",cyc5); set("l5ans",cyc5&&within5(A.f5,c.hz));
+  set("l6sq",on&&c.src==="square"); set("l6tri",on&&c.src==="triangle"); set("l6saw",on&&c.src==="sawtooth"); set("l6back",on&&c.src==="sine"&&L.l6sq&&L.l6tri&&L.l6saw);
+  set("l7off",on&&c.trig==="off"); set("l7rise",on&&L.l7off&&c.trig==="rise"); set("l7fall",on&&L.l7off&&c.trig==="fall");
+  set("l8on",on&&c.ch2); set("l8half",on&&c.ch2&&near(c.g2,0.5,0.05)); set("l8fit",on&&c.ch2&&divsTall()>=2&&divsTall()<=7&&c.src!=="mystery");
+  set("l9on",on&&c.ch2); set("l9q",on&&c.ch2&&near(c.ph2,90,5)); set("l9h",on&&c.ch2&&near(c.ph2,180,5));
+  set("l10one",on&&c.src!=="mystery"&&c.src!=="pulse"&&near(c.vpp,1,0.05)&&c.heard["1"]); set("l10two",on&&c.src!=="mystery"&&c.src!=="pulse"&&near(c.vpp,2,0.1)&&c.heard["2"]); set("l10db",near(parseFloat(A.db10),6,1));
+  set("l11sq",on&&c.src==="square"); set("l11h1",on&&c.src==="square"&&c.harm===1); set("l11h3",on&&c.src==="square"&&c.harm===3); set("l11h9",on&&c.src==="square"&&c.harm>=9);
+  set("l12src",on&&c.src==="pulse"); const two12=on&&c.src==="pulse"&&cyclesShown()>=2&&cyclesShown()<=4; set("l12two",two12); set("l12bpm",two12&&within5(A.bpm12,PULSE_HZ*60));
+  set("l13on",on&&c.noise); set("l13avg4",on&&c.noise&&c.avg===4); set("l13avg16",on&&c.noise&&c.avg===16);
+  const dc14=on&&c.src!=="mystery"&&c.dc>=1.5; set("l14dc",dc14); set("l14see",dc14&&c.coup==="dc"); set("l14ac",dc14&&L.l14see&&c.coup==="ac");
+  set("l15plug",on&&c.probe===10); set("l15set",on&&c.probe===10&&c.probeSet===10); set("l15read",on&&c.probe===10&&c.probeSet===10&&within5(A.vpp15,scVpp()));
+  set("l16src",on&&c.src==="mystery"); const fit16=on&&c.src==="mystery"&&cyclesShown()>=1&&cyclesShown()<=4&&divsTall()>=3&&divsTall()<=7; set("l16fit",fit16); set("l16f",fit16&&within5(A.f16,c.mys.f)); set("l16v",fit16&&within5(A.vpp16,c.mys.vpp));
+  set("l17open",!!c.wsOpened); set("l17claim",String(A.claim17||"").trim().length>=20); set("l17done",A.handed17===true);
+  persist();
+}
+/* ── the shapes, all rising through zero at θ=0 so a rising-edge trigger holds them ── */
+function shapeAt(kind,th){
+  const T=Math.PI*2; const t=((th%T)+T)%T;
+  if(kind==="square") return t<Math.PI?1:-1;
+  if(kind==="triangle") return t<Math.PI/2? t/(Math.PI/2) : t<3*Math.PI/2? 2-t/(Math.PI/2) : -4+t/(Math.PI/2);
+  if(kind==="sawtooth") return t<Math.PI? t/Math.PI : t/Math.PI-2;
+  if(kind==="pulse"){ const u=t/T; const g=(m,w,a)=>a*Math.exp(-((u-m)*(u-m))/(2*w*w));
+    return g(0.12,0.03,0.18)+g(0.25,0.012,1)-g(0.30,0.012,0.28)+g(0.48,0.045,0.32)-0.05; }
+  return Math.sin(th);
+}
+function sigAt(th){ const c=S.sc; const kind=c.src==="mystery"?"sine":c.src;
+  if(kind==="square"&&c.harm>0){ let s=0; for(let k=1;k<=c.harm;k+=2) s+=Math.sin(k*th)/k; return s*4/Math.PI; }
+  return shapeAt(kind,th); }
+let lesDrift=0, lesFrame=0;
+function drawScope(cv){
+  const c=S.sc, w=cv.width, h=cv.height, ctx=cv.getContext("2d");
+  ctx.clearRect(0,0,w,h);
+  const bg=ctx.createRadialGradient(w/2,h/2,10,w/2,h/2,Math.max(w,h)*.7);
+  if(c.on){ bg.addColorStop(0,"#0f3320"); bg.addColorStop(1,"#03110a"); } else { bg.addColorStop(0,"#101512"); bg.addColorStop(1,"#070907"); }
+  ctx.fillStyle=bg; ctx.fillRect(0,0,w,h);
+  ctx.strokeStyle=c.on?"rgba(90,190,130,.26)":"rgba(90,110,100,.12)"; ctx.lineWidth=1; ctx.beginPath();
+  for(let i=1;i<10;i++){ const x=Math.round(w*i/10)+.5; ctx.moveTo(x,0); ctx.lineTo(x,h); }
+  for(let j=1;j<8;j++){ const y=Math.round(h*j/8)+.5; ctx.moveTo(0,y); ctx.lineTo(w,y); }
+  ctx.stroke();
+  ctx.strokeStyle=c.on?"rgba(120,230,160,.5)":"rgba(90,110,100,.2)"; ctx.beginPath(); ctx.moveTo(0,h/2); ctx.lineTo(w,h/2); ctx.moveTo(w/2,0); ctx.lineTo(w/2,h); ctx.stroke();
+  /* small ticks on the centre lines, five per division, like the glass of a real scope */
+  ctx.strokeStyle=c.on?"rgba(120,230,160,.5)":"rgba(90,110,100,.2)"; ctx.beginPath();
+  for(let i=0;i<50;i++){ const x=w*i/50; ctx.moveTo(x,h/2-4); ctx.lineTo(x,h/2+4); }
+  for(let j=0;j<40;j++){ const y=h*j/40; ctx.moveTo(w/2-4,y); ctx.lineTo(w/2+4,y); }
+  ctx.stroke();
+  if(!c.on) return;
+  const reduce=window.matchMedia&&window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const f=scHz(), Tscr=TDIV[c.tdiv]*10/1000, vdiv=VDIV[c.vdiv], pxDiv=h/8;
+  const th0 = c.trig==="rise"?0 : c.trig==="fall"?Math.PI : lesDrift;
+  const mean = c.src==="pulse"?0.08:0;
+  const nz = c.noise ? 0.22*scVpp()/Math.sqrt(c.avg) : 0;
+  let seed = reduce ? 7 : lesFrame; const rnd=()=>{ seed=(seed*1103515245+12345)&0x7fffffff; return seed/0x7fffffff-0.5; };
+  const trace=(color,fn)=>{ ctx.strokeStyle=color; ctx.lineWidth=3; ctx.shadowColor=color; ctx.shadowBlur=10; ctx.beginPath();
+    for(let x=0;x<=w;x++){ const t=(x/w)*Tscr; const th=2*Math.PI*f*t+th0; let v=fn(th)+nz*rnd()*2; const y=h/2-(v/c.probe/vdiv)*pxDiv; const yy=Math.max(-8,Math.min(h+8,y)); if(x===0) ctx.moveTo(x,yy); else ctx.lineTo(x,yy); }
+    ctx.stroke(); ctx.shadowBlur=0; };
+  if(c.ch2) trace("#ffc46b", th=>c.g2*scVpp()/2*sigAt(th+c.ph2*Math.PI/180));
+  trace("#7dffae", th=>{ const dc=c.src==="mystery"?0:c.dc; let v=dc+scVpp()/2*sigAt(th); if(c.coup==="ac") v-=dc+mean*scVpp()/2; return v; });
+  /* the trigger mark on the left edge */
+  if(c.trig!=="off"){ ctx.fillStyle="#d9a84e"; ctx.beginPath(); ctx.moveTo(0,h/2-9); ctx.lineTo(10,h/2); ctx.lineTo(0,h/2+9); ctx.fill(); }
+}
+function scReadout(){ const c=S.sc; if(!c.on) return "OFF"; const v=VDIV[c.vdiv]*c.probeSet; const tr=c.trig==="off"?"FREE":c.trig==="rise"?"TRIG ↑":"TRIG ↓";
+  return `CH1 · ${v<1?v.toFixed(1):v} V/div · ${TDIV[c.tdiv]} ms/div · ${tr}${c.ch2?" · CH2":""}${c.coup==="ac"?" · AC":""}${c.avg>1?" · AVG "+c.avg:""}`; }
+function lesHear(){ const c=S.sc; if(!c.on) return; try{ const AC=window.AudioContext||window.webkitAudioContext; if(!AC) return; if(!audio) audio=new AC(); if(audio.state==="suspended") audio.resume(); hush();
+  osc=audio.createOscillator(); gain=audio.createGain(); const kind=c.src==="mystery"||c.src==="pulse"?"sine":c.src; osc.type=kind; osc.frequency.value=Math.min(880,Math.max(220,scHz()));
+  gain.gain.value=Math.min(0.18, 0.02+scVpp()/8*0.14); osc.connect(gain); gain.connect(audio.destination); osc.start(); setTimeout(hush,1500); }catch(e){}
+  if(near(c.vpp,1,0.05)) c.heard["1"]=true; if(near(c.vpp,2,0.1)) c.heard["2"]=true; tickLessons(); }
+function hzToPos(hz){ return Math.round(Math.log10(Math.max(1,hz))/Math.log10(2000)*1000); }
+function posToHz(p){ return Math.round(Math.pow(10, (p/1000)*Math.log10(2000))); }
+function lesSel(id,label,opts,cur){ return `<label class="knob"><span>${label}</span><select class="scope-sel" data-sc="${id}">${opts.map(([v,l])=>`<option value="${v}"${String(v)===String(cur)?" selected":""}>${l}</option>`).join("")}</select></label>`; }
+function lesKnob(id,label,min,max,step,val,shown){ return `<label class="knob"><span>${label} <b class="readout" id="rd-${id}">${shown}</b></span><input class="scope-knob" type="range" min="${min}" max="${max}" step="${step}" value="${val}" data-sck="${id}"></label>`; }
+function lesToggle(id,label,on){ return `<button type="button" class="chip${on?" on":""}" data-sct="${id}" aria-pressed="${on?"true":"false"}">${label}: ${on?t("on"):t("off")}</button>`; }
+function lessonCard(){
+  const now=lessonNow(), i=Math.min(S.sc.lesson,LESSONS.length-1), m=LESSONS[i], es=S.lang==="es";
+  const done=m.steps.every(id=>S.lessons[id]);
+  const opts=LESSONS.map((x,k)=>{ const d=x.steps.every(id=>S.lessons[id]); return `<option value="${k}"${k===i?" selected":""}>${k+1}. ${es?x.es:x.en}${d?" ✓":""}</option>`; }).join("");
+  const steps=m.steps.map(id=>{ const st=LSTEP[id], ok=!!S.lessons[id]; let extra="";
+    if(st.ans){ const a=st.ans, v=S.sc.ans[a.k];
+      if(a.type==="check") extra=`<label class="ans-check"><input type="checkbox" data-ans="${a.k}"${v===true?" checked":""}> ${es?a.es:a.en}</label>`;
+      else if(a.type==="text") extra=`<input type="text" class="ans ans-text" data-ans="${a.k}" value="${esc(v||"")}" maxlength="200" aria-label="${es?st.es:st.en}">`;
+      else extra=`<span class="ans-row"><input type="number" inputmode="decimal" step="any" class="ans" data-ans="${a.k}" value="${v==null?"":esc(v)}" aria-label="${t("record")}"><span class="muted">${a.unit}</span></span>`; }
+    return `<li class="step"><span class="mark${ok?" ok":""}" data-stepmark="${id}">${ok?"✓":""}</span><span class="${ok?"did":""}">${es?st.es:st.en}${extra}</span></li>`; }).join("");
+  return `<div class="tiny">${t("lessonOf")} ${i+1} ${t("ofN")} · ${lessonDoneCount()} ${t("doneN")}</div>
+    <label class="knob les-pick"><select class="scope-sel" id="lessonPick" aria-label="${t("pickLesson")}">${opts}</select></label>
+    <h3 style="margin:.4rem 0 .1rem">${es?m.es:m.en}</h3>
+    <p class="muted" style="margin:.1rem 0 .4rem">${es?m.blurb_es:m.blurb_en}</p>
+    ${!S.sc.on?`<p class="warn-line">${t("turnOn")}</p>`:""}
+    <ol class="stair-steps">${steps}</ol>
+    ${done?`<p class="ok-line">${t("lessonDone")}</p>`:""}
+    <div class="chips" style="margin:.6rem 0 0">
+      ${i>0?`<button type="button" class="btn" data-act="prevLesson">←</button>`:""}
+      <a class="btn" href="/waves-lessons.html?l=${i+1}" data-ws="1">${t("worksheet")} ${i+1} →</a>
+      ${done&&i<LESSONS.length-1?`<button type="button" class="btn btn-steel" data-act="nextLesson">${t("nextLesson")}</button>`:""}
+    </div>
+    ${now>=LESSONS.length?`<p class="ok-line">${t("allDone")}</p>`:""}`;
+}
+function pageLessons(){
+  const c=S.sc, es=S.lang==="es";
+  const srcOpts=[["sine",t("srcSine")],["square",t("srcSquare")],["triangle",t("srcTri")],["sawtooth",t("srcSaw")],["pulse",t("srcPulse")],["mystery",t("srcMys")]];
+  const hidden=c.src==="mystery", pulse=c.src==="pulse";
+  return `<p class="kicker">${t("lessonsNav")}</p><h1>${t("lessonsH")}</h1><p class="lead">${t("lessonsLead")}</p>
+  <div class="les-grid">
+    <div class="les-scope"><div class="wavebox" data-read="${esc(scReadout())}"><canvas id="lesWave" width="900" height="560"></canvas></div></div>
+    <div class="les-lesson"><div class="card side" id="lesCard">${lessonCard()}</div></div>
+    <div class="les-ctl">
+      <div class="card side"><p class="tiny">${t("signal")}</p>
+        <div class="knobs">${lesSel("src",t("source"),srcOpts,c.src)}
+          ${hidden||pulse?`<p class="muted" style="margin:.4rem 0">${t("freq")}: ${pulse?PULSE_HZ+" Hz":t("hidden")} · ${t("height")}: ${pulse?c.vpp+" V":t("hidden")}</p>`:lesKnob("hz",t("freq"),0,1000,1,hzToPos(c.hz),c.hz+" Hz")}
+          ${hidden?"":lesKnob("vpp",t("height"),0.2,8,0.1,c.vpp,c.vpp.toFixed(1)+" V")}
+          ${hidden?"":lesKnob("dc",t("offset"),-3,3,0.1,c.dc,(c.dc>0?"+":"")+c.dc.toFixed(1)+" V")}
+        </div>
+        <div class="chips" style="margin:.6rem 0 0">${lesToggle("noise",t("noise"),c.noise)}<button type="button" class="btn btn-steel" data-act="lesHear">${t("hearIt")}</button></div>
+      </div>
+      <div class="card side" style="margin-top:.75rem"><p class="tiny">${t("scope")}</p>
+        <div class="chips" style="margin:.3rem 0 .6rem">${lesToggle("on",t("power"),c.on)}</div>
+        <div class="knobs">
+          ${lesSel("vdiv",t("vdiv"),VDIV.map((v,i)=>[i,v+" V/div"]),c.vdiv)}
+          ${lesSel("tdiv",t("tdiv"),TDIV.map((v,i)=>[i,v+" ms/div"]),c.tdiv)}
+          ${lesSel("trig",t("trig"),[["off",t("trigOff")],["rise",t("trigRise")],["fall",t("trigFall")]],c.trig)}
+          ${lesSel("coup",t("coup"),[["dc",t("coupDC")],["ac",t("coupAC")]],c.coup)}
+          ${lesSel("probe",t("probe"),[[1,"1×"],[10,"10×"]],c.probe)}
+          ${lesSel("probeSet",t("probeSet"),[[1,"1×"],[10,"10×"]],c.probeSet)}
+          ${lesSel("avg",t("avg"),[[1,t("avgOff")],[4,"4"],[16,"16"]],c.avg)}
+          ${lesSel("harm",t("harm"),[[0,t("harmOff")],[1,"1"],[3,"3"],[5,"5"],[9,"9"],[15,"15"]],c.harm)}
+        </div>
+      </div>
+      <div class="card side" style="margin-top:.75rem"><p class="tiny">${t("ch2")}</p>
+        <div class="chips" style="margin:.3rem 0 .6rem">${lesToggle("ch2",t("ch2on"),c.ch2)}</div>
+        ${c.ch2?`<div class="knobs">${lesKnob("g2",t("g2"),10,100,5,Math.round(c.g2*100),Math.round(c.g2*100)+"%")}${lesKnob("ph2",t("ph2"),0,360,5,c.ph2,c.ph2+"°")}</div>`:""}
+      </div>
+    </div>
+  </div>`;
+}
+function lesRefreshMarks(){
+  const before=lessonNow(); tickLessons();
+  document.querySelectorAll("[data-stepmark]").forEach(el=>{ const ok=!!S.lessons[el.getAttribute("data-stepmark")]; el.classList.toggle("ok",ok); el.textContent=ok?"✓":""; const tx=el.nextElementSibling; if(tx) tx.classList.toggle("did",ok); });
+  const box=document.querySelector("#lesWave") && document.querySelector("#lesWave").parentNode; if(box) box.setAttribute("data-read",scReadout());
+  return lessonNow()!==before;
+}
+function bindLessons(view){
+  view.querySelectorAll("[data-sc]").forEach(sel=>sel.onchange=()=>{ const k=sel.getAttribute("data-sc"), v=sel.value;
+    if(k==="src"||k==="trig"||k==="coup") S.sc[k]=v; else S.sc[k]=+v; tickLessons(); paint(); });
+  view.querySelectorAll("[data-sct]").forEach(b=>b.onclick=()=>{ const k=b.getAttribute("data-sct"); S.sc[k]=!S.sc[k]; tickLessons(); paint(); });
+  view.querySelectorAll("[data-sck]").forEach(inp=>{
+    inp.oninput=()=>{ const k=inp.getAttribute("data-sck"), rd=document.getElementById("rd-"+k);
+      if(k==="hz"){ S.sc.hz=posToHz(+inp.value); if(rd) rd.textContent=S.sc.hz+" Hz"; }
+      if(k==="vpp"){ S.sc.vpp=+inp.value; if(rd) rd.textContent=S.sc.vpp.toFixed(1)+" V"; }
+      if(k==="dc"){ S.sc.dc=+inp.value; if(rd) rd.textContent=(S.sc.dc>0?"+":"")+S.sc.dc.toFixed(1)+" V"; }
+      if(k==="g2"){ S.sc.g2=(+inp.value)/100; if(rd) rd.textContent=Math.round(S.sc.g2*100)+"%"; }
+      if(k==="ph2"){ S.sc.ph2=+inp.value; if(rd) rd.textContent=S.sc.ph2+"°"; }
+      lesRefreshMarks(); };
+    inp.onchange=()=>{ if(lesRefreshMarks()) paint(); else { const d=document.querySelector("#lesCard .ok-line"); if(!d && LESSONS[S.sc.lesson].steps.every(id=>S.lessons[id])) paint(); } };
+  });
+  view.querySelectorAll("[data-ans]").forEach(inp=>{
+    const k=inp.getAttribute("data-ans");
+    inp.oninput=()=>{ S.sc.ans[k]= inp.type==="checkbox"? inp.checked : inp.value; lesRefreshMarks(); };
+    inp.onchange=()=>{ S.sc.ans[k]= inp.type==="checkbox"? inp.checked : inp.value; if(lesRefreshMarks() || LESSONS[S.sc.lesson].steps.every(id=>S.lessons[id])) paint(); };
+  });
+  const pick=view.querySelector("#lessonPick"); if(pick) pick.onchange=()=>{ S.sc.lesson=+pick.value; persist(); paint(); };
+  view.querySelectorAll("[data-ws]").forEach(a=>a.onclick=()=>{ S.sc.wsOpened=true; tickLessons(); });
+}
+
 function t(k){ const s=STR[k]; return s ? s[S.lang]||s.en : k; }
 function esc(s){ return String(s||"").replace(/&/g,"&").replace(/</g,"<").replace(/>/g,">"); }
 function obsText(id){ const o=OBS.find(x=>x.id===id); return o?t(o.k):(id||""); }
@@ -419,12 +783,14 @@ function load(){
   d.lab.reason=d.lab.reason||{};
   return d;
 }
-function persist(){ try{ localStorage.setItem(STORE, JSON.stringify({lang:S.lang,theme:S.theme,met:S.met,hz:S.hz,amp:S.amp,shape:S.shape,findBest:S.findBest,jobBest:S.jobBest,lab:S.lab})); }catch(e){} }
+function persist(){ try{ localStorage.setItem(STORE, JSON.stringify({lang:S.lang,theme:S.theme,met:S.met,hz:S.hz,amp:S.amp,shape:S.shape,findBest:S.findBest,jobBest:S.jobBest,lab:S.lab,sc:S.sc,lessons:S.lessons})); }catch(e){} }
 function setTheme(th){ S.theme=th; document.documentElement.setAttribute("data-theme",th); document.documentElement.classList.toggle("dark",th==="dark"); try{ localStorage.setItem("aog.interior.ws.v1.theme",th); }catch(e){} }
-function hashPage(){ const h=(location.hash||"#home").replace("#",""); return ["home","meet","play","lab","find","job","print"].indexOf(h)>=0?h:"home"; }
+function hashPage(){ const h=(location.hash||"#home").replace("#",""); return ["home","meet","play","lab","lessons","find","job","print"].indexOf(h)>=0?h:"home"; }
 const S=load();
 S.page=hashPage();
 S.theme=document.documentElement.getAttribute("data-theme")||"light";
+scFix();
+try{ const lm=/[?&]l=(\d+)/.exec(location.search||""); if(lm){ S.sc.lesson=Math.min(LESSONS.length-1,Math.max(0,+lm[1]-1)); if(!location.hash) location.hash="lessons"; } }catch(e){}
 
 let audio=null, osc=null, gain=null;
 function hush(){
@@ -489,7 +855,7 @@ function paintChrome(){
   document.getElementById("langBtn").textContent=S.lang==="en"?"ES":"EN";
   document.getElementById("themeBtn").textContent=t(S.theme==="dark"?"light":"dark");
   const nav=document.getElementById("nav");
-  const items=[["home","home"],["meet","meetNav"],["play","playNav"],["lab","labNav"],["find","findNav"],["job","jobNav"],["print","printNav"]];
+  const items=[["home","home"],["meet","meetNav"],["play","playNav"],["lab","labNav"],["lessons","lessonsNav"],["find","findNav"],["job","jobNav"],["print","printNav"]];
   nav.innerHTML=items.map(([id,k])=>`<a href="#${id}" class="${S.page===id?"on":""}">${t(k)}</a>`).join("")
     +`<a class="sep" href="/oscilloscope-guide">${S.lang==="es"?"Guía en imágenes":"Picture guide"}</a><a class="sep" href="/microscope">${S.lang==="es"?"El microscopio":"The microscope"}</a>`;
   document.getElementById("foot").innerHTML=`<p>${t("priv")}</p><p><a href="/science">${t("backSci")}</a> · <a href="/microscope">${S.lang==="en"?"The microscope":"El microscopio"}</a></p><p>${t("foot")}</p>`;
@@ -565,6 +931,7 @@ function pageHome(){
       <a class="card act" href="#meet"><span class="kicker">${t("meetNav")}</span><h3>${t("meet")}</h3><p class="muted">${t("meetHint")}</p></a>
       <a class="card act" href="#play"><span class="kicker">${t("playNav")}</span><h3>${t("play")}</h3><p class="muted">${t("playLead")}</p></a>
       <a class="card act" href="#lab"><span class="kicker">${t("labNav")}</span><h3>${t("lab")}</h3><p class="muted">${t("labLead")}</p></a>
+      <a class="card act" href="#lessons"><span class="kicker">${t("lessonsNav")}</span><h3>${t("lessonsH")}</h3><p class="muted">${t("lessonsLead")}</p></a>
     </div>`;
 }
 function pageMeet(){
@@ -748,6 +1115,7 @@ function startAnim(){
     const shTri=document.getElementById("shTri");
     const shSaw=document.getElementById("shSaw");
     const lab=document.getElementById("labWave");
+    const les=document.getElementById("lesWave");
     const cycles = waveCycles();
     if(home) drawWave(home,{cycles:3,amp:0.7,phase,shape:S.shape,marks:false});
     if(meet) drawWave(meet,{cycles:2.5,amp:0.75,phase,shape:"sine",marks:true,dim:true});
@@ -757,18 +1125,24 @@ function startAnim(){
     if(shSq) drawWave(shSq,{cycles:2.2,amp:0.8,phase,shape:"square",marks:false});
     if(shTri) drawWave(shTri,{cycles:2.2,amp:0.8,phase,shape:"triangle",marks:false});
     if(shSaw) drawWave(shSaw,{cycles:2.2,amp:0.8,phase,shape:"sawtooth",marks:false});
-    if(home||meet||play||lab||shSine||shSq||shTri||shSaw) raf=requestAnimationFrame(tick);
+    if(les){ /* AOG-SCOPE-LESSONS-V1: the trace only moves when it is untriggered (that is the lesson) or noisy; still with reduced motion */
+      const live = S.sc.on && (S.sc.trig==="off" || S.sc.noise) && !reduce;
+      if(live){ lesFrame++; if(S.sc.trig==="off") lesDrift+=0.05; }
+      if(live || !les.__drawn || les.__key!==JSON.stringify(S.sc)){ drawScope(les); les.__drawn=true; les.__key=JSON.stringify(S.sc); }
+    }
+    if(home||meet||play||lab||les||shSine||shSq||shTri||shSaw) raf=requestAnimationFrame(tick);
   }
   tick();
 }
 function paint(){
   const next=hashPage();
-  if(next!=="play" && next!=="lab") hush();
+  if(next!=="play" && next!=="lab" && next!=="lessons") hush();
   S.page=next;
   paintChrome();
   const view=document.getElementById("view");
-  view.innerHTML = S.page==="meet"?pageMeet(): S.page==="play"?pagePlay(): S.page==="lab"?pageLab(): S.page==="find"?pageFind(): S.page==="job"?pageJob(): S.page==="print"?pagePrint(): pageHome();
+  view.innerHTML = S.page==="meet"?pageMeet(): S.page==="play"?pagePlay(): S.page==="lab"?pageLab(): S.page==="lessons"?pageLessons(): S.page==="find"?pageFind(): S.page==="job"?pageJob(): S.page==="print"?pagePrint(): pageHome();
   startAnim();
+  if(S.page==="lessons") bindLessons(view);
   view.querySelectorAll("[data-part]").forEach(b=>b.onclick=()=>{ S.sel=b.getAttribute("data-part"); S.met[S.sel]=true; persist(); paint(); });
   view.querySelectorAll("[data-hz]").forEach(b=>b.onclick=()=>{
     S.hz=+b.getAttribute("data-hz"); persist();
@@ -799,6 +1173,9 @@ function paint(){
     if(a==="recStop") recStop();
     if(a==="recPlay") recPlay();
     if(a==="doprint") window.print();
+    if(a==="lesHear") lesHear();
+    if(a==="prevLesson"){ S.sc.lesson=Math.max(0,S.sc.lesson-1); persist(); paint(); }
+    if(a==="nextLesson"){ S.sc.lesson=Math.min(LESSONS.length-1,S.sc.lesson+1); persist(); paint(); }
     if(a==="findagain"){ S.find=null; paint(); }
     if(a==="jobagain"){ S.job=null; paint(); }
     if(a==="record"){
