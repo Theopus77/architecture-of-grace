@@ -121,6 +121,41 @@ other course's injector → `plumb_<id>.py` (bumps `sw.js` CACHE, adds redirects
 (and on every page after a shared change) → screenshots at iPhone, iPad and desktop → commit. `run_course.sh` runs the
 chain for one course.
 
+## Build-wave prep (done 2026-09-27, decisions 3–5 approved)
+
+- **Decision 3 — checked.** `daily-drops.html` has subjects `hindu`, `buddhist`, `chinese`, each with banks K, 1–8,
+  9-10, 11-12 (and adult). Every `_dd()` grade in the three `outline.py` files (K, 1–8, 9-10, 11-12) exists, and
+  `_redirects` routes `/drops/:subject/:grade`. Nothing to change.
+- **Decision 4 — added, not run.** `make_hubs.py` COURSES has `hin`, `bud`, `chn` (hindu-texts-hub.html,
+  buddhist-texts-hub.html, chinese-classics-hub.html; resource library `religions`). `dash_catalog.py` lists the
+  three tuples (it only lists units whose pages exist). Run both only after the course pages exist.
+- **Decision 5 — held on purpose.** `aog-jump.js` reads the `<select>` as it is: it never checks whether a page
+  exists and never hides an empty group. Options pointing at `hin-u1.html` … would be broken links in view, and
+  empty groups would show three subjects with "0 units". So nothing is injected yet. The injector is ready and
+  re-runnable (tested on a copy: second run adds 0). In the build wave, BEFORE `build_<id>.py`:
+
+      cd aog-deploy
+      python3 _work/course/inject_groups.py hin
+      python3 _work/course/inject_groups.py bud
+      python3 _work/course/inject_groups.py chn
+
+  It puts the fifteen empty groups ("Hindu Texts · Grades K–2" … "Chinese Classics · Grades 11–12") after
+  Talmud Study on every page's `#jumpSel`. Then `build_<id>.py` and `inject_<id>_jump.py` fill them.
+
+### Door 03 switch-on (home page, index.html)
+
+Three folds (Hindu Texts, Buddhist Texts, Chinese Classics, each "Every grade" + "Course contents") sit inside
+`<!-- AOG-DOOR3-OFF-START … AOG-DOOR3-OFF-END -->` under the comment AOG-DOOR3-MORE-COURSES. Once all three
+courses are built and `plumb_<id>.py` has added `/hindu-texts`, `/hindu-texts-course`, `/buddhist-texts`,
+`/buddhist-texts-course`, `/chinese-classics`, `/chinese-classics-course` to `_redirects`:
+
+1. In index.html delete the line containing `<!-- AOG-DOOR3-OFF-START` and the line containing
+   `AOG-DOOR3-OFF-END -->` (the folds between them stay).
+2. On the `<p class="aogdr-count" data-aog-door3-count …>` line change `5 courses` / `5 cursos` (all three places)
+   to `8 courses` / `8 cursos`.
+3. `node tools/check-contrast.js index.html` and `node tools/check-calm.js index.html`, bump `CACHE` in `sw.js`.
+   If a course is late, switch on only its two `<li>` lines (move them above the OFF-START line) and count 6 or 7.
+
 ## Unit lists
 
 ### Hindu Texts (`_work/hin`, 17 units, 34 chapters)
