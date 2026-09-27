@@ -352,6 +352,20 @@ function toggleTheme() {
    Curriculum, Library, Voices) stay shut. */
 #aog-thresholds .aogdr-d3 .aogdr-rooms > li:not(.aogdr-keep), #aog-thresholds .aogdr-d3 .aogdr-foot{ display:none !important; }
 </style>
+<!-- AOG-HERO-EARLY-V1 (2026-09-27) — Jimmy: the rose window showed page-sized for a moment, then the doors
+     jolted in. Its size rules lived at the end of this long file, so they arrived late. They are here now, in the
+     head, and the rose and the doors fade in softly (opacity only; off when "reduce motion" is set). -->
+<style id="aog-hero-early">
+@media screen{
+  #aogHeroRose{position:absolute;left:50%;top:-34px;width:min(660px,92vw);transform:translateX(-50%);z-index:0;pointer-events:none;opacity:.5}
+  #aogHeroRose img{display:block;width:100%;height:auto;aspect-ratio:1}
+  #aogHeroRose, #one-framework .aog-of-head, #aog-thresholds{animation:aogHeroIn .7s ease-out both}
+  #aog-thresholds{animation-delay:.15s}
+  @keyframes aogHeroIn{from{opacity:0}}
+}
+@media (prefers-reduced-motion:reduce){ #aogHeroRose, #one-framework .aog-of-head, #aog-thresholds{animation:none} }
+@media print{ #aogHeroRose{display:none} }
+</style>
 </head>
 <body>
 <!-- AOG-BAR-ONEBAR-V1: the home page runs the same site bar as every other page.
@@ -1223,8 +1237,8 @@ function aogToggleBand(e, b){
         }
       </style>
       <div class="aog-of-in">
-<picture id="aogHeroRose" role="none"><source type="image/webp" srcset="img/rose-window-640.webp 640w, img/rose-window-1000.webp 1000w, img/rose-window-1600.webp 1600w" sizes="(max-width:720px) 92vw, 660px"><img src="img/rose-window-1000.jpg" width="1000" height="1000" alt="" decoding="async" fetchpriority="low"></picture>
-<div class="aog-of-head">
+<picture id="aogHeroRose" class="aog-fade" role="none"><source type="image/webp" srcset="img/rose-window-640.webp 640w, img/rose-window-1000.webp 1000w, img/rose-window-1600.webp 1600w" sizes="(max-width:720px) 92vw, 660px"><img src="img/rose-window-1000.jpg" width="1000" height="1000" alt="" decoding="async" fetchpriority="low"></picture>
+<div class="aog-of-head aog-fade">
           <h1 class="ofh-mark"><span class="ofh-l1">Architecture of</span><span class="ofh-l2">Grace</span></h1>
           <!-- .30k3 &mdash; Jimmy: "'designed to influence the other 167 hours' is the single best sentence on the site. It's nowhere near your hero." The sentence is quoted verbatim from the ecosystem screen (#screen-ecosystem .ex-hours), which keeps its own copy. RETIRED, NOT DELETED &mdash; the premise line this replaced read: "Architecture of Grace is a relationship-centered framework, built on the premise that students need more than emotional regulation &mdash; they need a framework for navigating imperfection:" (ES: "Architecture of Grace es un marco centrado en las relaciones, construido sobre la premisa de que los estudiantes necesitan m&aacute;s que regulaci&oacute;n emocional &mdash; necesitan un marco para navegar la imperfecci&oacute;n:"). Restoring it means also reverting the moves line below to "how they understand themselves" / "c&oacute;mo se entienden a s&iacute; mismos", which was only reworded because the colon above it went away. -->
 <div class="ofh-plain ofh-premise" data-en="Built by a special education teacher, for the students the usual lesson leaves out." data-es="Hecho por un maestro de educaci&oacute;n especial, para los estudiantes que la lecci&oacute;n de siempre deja fuera.">Built by a special education teacher, for the students the usual lesson leaves out.</div>
@@ -1261,7 +1275,7 @@ function aogToggleBand(e, b){
        Self-contained: scoped styles + markup. EN/ES on data-en/data-es,
        picked up by the global #aog-global-dataen net.
        ============================================================ -->
-<section id="aog-thresholds" aria-label="Ways in">
+<section class="aog-fade" id="aog-thresholds" aria-label="Ways in">
 <style id="aog-thresholds-css">
   /* .30ho — the doors moved INSIDE the hero, so the band paints no ground of its
      own and carries no heading: the hero's own copy is the heading. */
