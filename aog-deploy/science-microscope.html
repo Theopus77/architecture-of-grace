@@ -261,6 +261,34 @@ body>.wrap>header:first-child,.wrap>header.no-print:first-child{display:none!imp
 .nav a.on{color:var(--ink);border-color:var(--steel,#2F63B8)}
 .nav a.sep{margin-left:auto;padding-left:.5rem}
 .nav a.sep+a.sep{margin-left:0}
+/* ══ AOG-SCOPE-LESSONS-V1 (2026-09-27) — Jimmy: "The missions should be called the lessons and mimic the
+   beautiful set up that THE DRUM MACHINE LESSON HAS." Same cards as the drum machine's Lessons view. ══ */
+.lesson-box{padding:.9rem 1rem 1rem;margin:1rem 0 .4rem}
+.lesson-box h3{margin:.05rem 0 .15rem;font-size:1.15rem}
+.lesson-pick{display:grid;gap:.3rem;margin:0 0 .7rem}
+.lesson-pick span{font-size:.72rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.lesson-pick select{min-height:48px;font:inherit;font-size:16px;color:var(--ink);background:var(--card);border:1px solid var(--line);border-radius:12px;padding:0 .75rem;max-width:100%;width:100%}
+.lsteps{list-style:none;margin:.3rem 0 0;padding:0}
+.lsteps li{display:flex;gap:.5rem;align-items:flex-start;padding:.22rem 0;font-size:.95rem}
+.lsteps li .tick{flex:0 0 auto;width:1.25rem;height:1.25rem;border-radius:99px;border:1px solid var(--line);text-align:center;line-height:1.15rem;font-size:.8rem;color:var(--good);margin-top:.1rem}
+.lsteps li.ok .tick{border-color:var(--good);background:var(--good-soft)}
+.lsteps li.ok s{color:var(--muted)}
+.lesson-acts{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:.8rem;align-items:center}
+.lesson-acts .pill{text-decoration:none}
+.lesson-acts .note-line{flex-basis:100%;margin:.2rem 0 0}
+.ok-line{color:var(--good);font-weight:700;margin:.7rem 0 0}
+.lessons-wrap{display:grid;gap:1rem;grid-template-columns:1fr}
+@media (min-width:820px){.lessons-wrap{grid-template-columns:1fr 1fr;align-items:start}}
+.ladder-box{padding:.9rem 1rem 1rem;margin:1rem 0 .4rem}
+.ladder{list-style:none;margin:.4rem 0 0;padding:0;display:flex;flex-direction:column;gap:.3rem}
+.ladder li{border:1px solid var(--line);border-radius:10px;padding:.45rem .7rem;display:flex;gap:.6rem;align-items:center;flex-wrap:wrap;min-height:44px;cursor:pointer}
+.ladder li:focus-visible{outline:3px solid var(--steel);outline-offset:2px}
+.ladder li.later .lt{color:var(--muted)}
+.ladder li.done .mk{color:var(--good)}
+.ladder li.picked{border-color:var(--steel);background:var(--steel-soft)}
+.ladder .mk{font-size:.68rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--steel);min-width:5.6rem}
+.ladder .lt{font-weight:600}
+.lab-lesson{margin-top:1rem}
 </style>
 </head>
 <body>
@@ -291,7 +319,7 @@ body>.wrap>header:first-child,.wrap>header.no-print:first-child{display:none!imp
   <main id="view"></main>
   <!-- AOG-SCIPIC-PANEL-V1 -->
   <details class="pg no-print" id="pgPanel">
-    <summary><span class="chev">&#9656;</span>Picture guide<span class="pgsub">Every mission in pictures &#183; prints on 9 pages</span></summary>
+    <summary><span class="chev">&#9656;</span>Picture guide<span class="pgsub">Every lesson in pictures &#183; prints on 9 pages</span></summary>
     <div class="pgbody">
       <iframe id="pgFrame" data-src="/microscope-guide?embed=1" title="The Microscope, in pictures" loading="lazy"></iframe>
     </div>
@@ -356,13 +384,14 @@ const STR = {
   darkField:{en:"The lamp is off. Check the light before you blame the focus.",es:"La lámpara está apagada. Revisa la luz antes de culpar al enfoque."},
   cracked:{en:"Crack. The coarse knob drove the 40× lens into the slide. Fine knob only on high power.",es:"Crac. El macrométrico estrelló el lente de 40× contra la lámina. En alto aumento, solo el micrométrico."},
   newSlide:{en:"New slide",es:"Nueva lámina"}, practical:{en:"Bench practical",es:"Práctica de mesa"},
-  teach:{en:"Missions",es:"Misiones"},
+  teach:{en:"Lessons",es:"Lecciones"},
+  lessons:{en:"Lessons",es:"Lecciones"},
   teachLock:{en:"Locked",es:"Cerradas"},
   teachOpen:{en:"Open",es:"Abiertas"},
-  teachLocked:{en:"Locked. Each mission opens the next control.",es:"Cerradas. Cada misión abre el control siguiente."},
+  teachLocked:{en:"Locked. Each lesson opens the next control.",es:"Cerradas. Cada lección abre el control siguiente."},
   teachOpenNote:{en:"Open. Every control is on the bench. Lock this before a student sits down.",es:"Abiertas. Todos los controles están en la mesa. Ciérralas antes de que se siente un estudiante."},
-  practicalHint:{en:"Seven missions. Each one opens the next. The sixth is the research bench — the slit, polarized light, the prism. The ceiling does not move. The seventh reads three ancient texts.",es:"Siete misiones. Cada una abre la siguiente. La última es el banco de investigación — la rendija, la luz polarizada, el prisma. El techo no se mueve."},
-  practicalDone:{en:"Seven missions done. You read the number, and you read three ancient texts by their material.",es:"Siete misiones hechas. Leíste el número, y leíste tres textos antiguos por su material."},
+  practicalHint:{en:"Seven lessons. Each one opens the next. The sixth is the research bench — the slit, polarized light, the prism. The ceiling does not move. The seventh reads three ancient texts.",es:"Siete lecciones. Cada una abre la siguiente. La última es el banco de investigación — la rendija, la luz polarizada, el prisma. El techo no se mueve."},
+  practicalDone:{en:"Seven lessons done. You read the number, and you read three ancient texts by their material.",es:"Siete lecciones hechas. Leíste el número, y leíste tres textos antiguos por su material."},
   researchK:{en:"Research bench",es:"Banco de investigación"},
   researchBody:{en:"Risley, polarized light, the slit, lamp color. Open it above. Shorter light splits a slightly smaller gap. It still cannot draw a virus.",es:"Risley, luz polarizada, la rendija, color de lámpara. Ábrelo arriba. La luz más corta separa un hueco un poco menor. Sigue sin poder dibujar un virus."},
   researchDone:{en:"You read the number. Violet did not find the virus.",es:"Leíste el número. El violeta no encontró el virus."},
@@ -394,7 +423,7 @@ const STR = {
   focusRule:{en:"The first rule of focus",es:"La primera regla del enfoque"},
   focusBody:{en:"Start on the lowest-power objective, focus with the coarse knob, and switch up. On high power, the fine knob only — the coarse knob can drive the lens into the slide.",es:"Empieza con el objetivo de menor aumento, enfoca con el tornillo macrométrico y sube. En alto aumento, solo el micrométrico — el macrométrico puede estrellar el lente contra la lámina."},
   foot:{en:"This page loads no student data to a server. Your practice is saved in this browser only.",es:"Esta página no envía datos del estudiante a ningún servidor. Tu práctica se guarda solo en este navegador."},
-  newBadge:{en:"New",es:"Nuevo"}, partsMet:{en:"parts met",es:"partes conocidas"}, slidesCracked:{en:"slides cracked",es:"láminas rotas"}, stations:{en:"stations",es:"estaciones"},
+  newBadge:{en:"New",es:"Nuevo"}, partsMet:{en:"parts met",es:"partes conocidas"}, slidesCracked:{en:"slides cracked",es:"láminas rotas"}, stations:{en:"lesson steps",es:"pasos de lección"},
   openLab:{en:"Open the eyepiece",es:"Abre el ocular"}, openMeet:{en:"Meet the twelve",es:"Conoce las doce"}, openFind:{en:"Tap the machine",es:"Toca la máquina"}, openJob:{en:"Twelve questions",es:"Doce preguntas"},
   best:{en:"Best",es:"Mejor"},
   cardMeet:{en:"Every part, its job, why it matters, and the classic mistake.",es:"Cada parte, su trabajo, por qué importa y el error clásico."},
@@ -1033,7 +1062,7 @@ function bindScope(root, fn){
 
 /* ════ pages ════ */
 function go(page){ S.page=page; location.hash=page; paint(); }
-function hashPage(){ const h=(location.hash||"#home").replace("#",""); return ["home","meet","lab","find","job","print"].includes(h)?h:"home"; }
+function hashPage(){ const h=(location.hash||"#home").replace("#",""); return ["home","meet","lab","lessons","find","job","print"].includes(h)?h:"home"; }
 
 function paintChrome(){
   document.getElementById("brand").textContent=t("app");
@@ -1042,7 +1071,7 @@ function paintChrome(){
   document.getElementById("themeBtn").textContent=S.theme==="dark"?t("light"):t("dark");
   document.getElementById("foot").textContent=t("foot");
   document.documentElement.lang=S.lang;
-  const NAV=[["home","home","home"],["meet","meet","meetNav"],["lab","lab","labNav"],["find","find","findNav"],["job","job","jobNav"],["print","print","printNav"]];
+  const NAV=[["home","home","home"],["meet","meet","meetNav"],["lab","lab","labNav"],["lessons","lessons","lessons"],["find","find","findNav"],["job","job","jobNav"],["print","print","printNav"]];
   document.getElementById("nav").innerHTML=NAV.map(([id,full,sh])=>`<a href="#${id}" class="${S.page===id?"on":""}">${t(full)}</a>`).join("")
     +`<a class="sep" href="/microscope-guide">${t("guideNav")}</a><a class="sep" href="/telescope">${t("partnerNav")}</a>`;
 }
@@ -1050,7 +1079,7 @@ function paintChrome(){
 function pageHome(){
   /* AOG-MIC-HOME-V2 (2026-09-26) — Jimmy: "Can this page get a face lift. Telescope length of the content …
      can all the benches carry the same style introduction page." The instrument on the left; the four doors
-     and the seven missions on the right; the seven bench notes fold shut below. */
+     and the seven lessons on the right; the seven bench notes fold shut below. */
   const met=Object.keys(S.met).length, es=S.lang==="es";
   const stairN=STAIR.reduce((n,m)=>n+m.steps.length,0);
   const done=STAIR.reduce((n,m)=>n+m.steps.filter(id=>S.missions[id]).length,0), step=stairNow();
@@ -1070,8 +1099,8 @@ function pageHome(){
         <p style="margin:.4rem 0 .6rem">${c[2]}</p>
         <p class="muted" style="font-size:.9rem">${c[3]}${c[5]?` · ${t("best")} ${c[5]}`:""} ›</p>
       </a>`).join("")}
-      <div class="card" style="padding:1rem 1.2rem"><p class="kicker">${es?"Las siete misiones":"The seven missions"} · ${done}/${stairN}</p>
-        <ol class="stair" style="margin-top:.6rem">${STAIR.map((m,i)=>{ const st=i<step?"done":i===step?"now":"later"; return `<li class="${st}"><p class="mk" style="margin:0;font-size:.72rem;color:var(--muted)">${es?"Misión":"Mission"} ${i+1}${st==="done"?" · ✓":""}</p><h3 style="margin:.1rem 0 0;font-size:1rem">${es?m.es:m.en}</h3></li>`; }).join("")}</ol>
+      <div class="card" style="padding:1rem 1.2rem"><p class="kicker">${es?"Las siete lecciones":"The seven lessons"} · ${done}/${stairN}</p>
+        <ol class="ladder" style="margin-top:.6rem">${ladderHtml().replace(/data-pick=/g,"data-open data-pick=")}</ol>
       </div></div>
     </div>
     <details class="card" style="margin-top:1.25rem;padding:.6rem 1rem"><summary style="cursor:pointer;font-weight:700;min-height:44px;display:flex;align-items:center">${es?"Siete notas del banco — cómo se carga, el aumento, el enfoque, la luz, la tinción, la escala":"Seven bench notes — how it is carried, magnification, focus, light, stain, scale"}</summary>
@@ -1228,24 +1257,79 @@ function missionActs(i){
     +(L.prism?`<div style="flex-basis:100%">${knob("band", t("risley"), L.band, false, bandNm(L.band)+" nm")}</div><p class="note-line abbe">${abbeSentence()}</p>`:"");
   return "";
 }
-function practicalCard(){
-  const step=stairNow();
-  const done=step>=STAIR.length;
-  const mark=id=>S.missions[id]?"✓":"";
-  return `<div class="card side practical-box">
-          <p class="tiny">${t("practical")}</p>
-          <p class="note-line">${t("practicalHint")}</p>
-          <ol class="stair">${STAIR.map((m,i)=>{
-            const state=i<step?"done":i===step?"now":"later";
-            const title=S.lang==="es"?m.es:m.en;
-            const blurb=S.lang==="es"?m.blurb_es:m.blurb_en;
-            if(state==="done") return `<li class="done"><p class="mk">${S.lang==="es"?"Misión":"Mission"} ${i+1} · ✓</p><h3>${title}</h3></li>`;
-            if(state==="later") return `<li class="later"><p class="mk">${S.lang==="es"?"Misión":"Mission"} ${i+1}</p><h3>${title}</h3></li>`;
-            const steps=`<ol>${m.steps.map(id=>`<li class="step"><span style="width:1.05rem;height:1.05rem;border-radius:99px;border:1px solid ${S.missions[id]?"var(--good)":"var(--line)"};background:${S.missions[id]?"var(--good-soft)":"transparent"};flex:0 0 auto;text-align:center;line-height:.95rem;font-size:.75rem;color:var(--good)">${mark(id)}</span><span style="${S.missions[id]?"text-decoration:line-through;color:var(--muted)":""}">${S.lang==="es"?STEP[id].es:STEP[id].en}</span></li>`).join("")}</ol>`;
-            return `<li class="now"><p class="mk">${S.lang==="es"?"Misión":"Mission"} ${i+1}</p><h3>${title}</h3><p class="note-line" style="margin:0">${blurb}</p>${steps}<div class="do">${missionActs(i)}</div></li>`;
-          }).join("")}</ol>
-          ${done?`<p class="ok" style="margin:.65rem 0 0">${t("practicalDone")}</p>`:""}
-        </div>`;
+function practicalCard(){ return lessonBoxHtml(true); }
+/* ══ AOG-SCOPE-LESSONS-V1 (2026-09-27) — Jimmy: "The missions should be called the lessons and mimic the
+   beautiful set up that THE DRUM MACHINE LESSON HAS." The drum machine's Lessons view, built on this page's
+   own STAIR, STEP and S.missions (names kept so saved progress stays). The picked lesson is the shaded one. ══ */
+const LPICK_KEY="aog.micro.pick";
+let LPICK=null;
+try{ const v=localStorage.getItem(LPICK_KEY); if(v!=null&&v!==""&&!isNaN(+v)) LPICK=+v; }catch(e){}
+const LSTR={
+  lessonsNav:{en:"Lessons",es:"Lecciones"},
+  lessonsLead:{en:"Seven lessons. Pick one, then try its steps at the eyepiece. Each step ticks itself when you do it.",es:"Siete lecciones. Elige una y prueba sus pasos en el ocular. Cada paso se marca solo cuando lo haces."},
+  lessonPick:{en:"Which lesson?",es:"¿Qué lección?"},
+  lessonK:{en:"Lesson",es:"Lección"},
+  lessonsAll:{en:"All 7 lessons",es:"Las siete lecciones"},
+  doneMark:{en:"done",es:"lista"},
+  next:{en:"Next lesson",es:"Siguiente lección"},
+  toLab:{en:"Try it at the eyepiece",es:"Pruébala en el ocular"},
+  toHome:{en:"Back to the bench",es:"Volver a la mesa"},
+  wait:{en:"Finish lesson {n} first. Each lesson opens the next.",es:"Termina primero la lección {n}. Cada lección abre la siguiente."}
+};
+function lt(k){ const o=LSTR[k]; return o?o[S.lang==="es"?"es":"en"]:k; }
+function lessonDone(m){ return m.steps.every(id=>S.missions[id]); }
+function lessonNow(){ return stairNow(); }
+function lessonPicked(){ const n=lessonNow(); if(LPICK==null||LPICK<0||LPICK>=STAIR.length) return Math.min(n,STAIR.length-1); return LPICK; }
+function setLessonPick(i){ LPICK=Math.max(0,Math.min(STAIR.length-1,+i||0)); try{ localStorage.setItem(LPICK_KEY,String(LPICK)); }catch(e){} }
+function lessonSelect(){
+  const p=lessonPicked();
+  return `<label class="lesson-pick"><span>${lt("lessonPick")}</span><select id="lessonPick">${STAIR.map((m,i)=>
+    `<option value="${i}"${i===p?" selected":""}>${i+1} · ${S.lang==="es"?m.es:m.en}${lessonDone(m)?" ✓":""}</option>`).join("")}</select></label>`;
+}
+function lessonCard(inLab){
+  const p=lessonPicked(), m=STAIR[p], now=lessonNow(), es=S.lang==="es";
+  const done=lessonDone(m), allDone=now>=STAIR.length;
+  const steps=`<ol class="lsteps">${m.steps.map(id=>{ const ok=!!S.missions[id], w=es?STEP[id].es:STEP[id].en;
+    return `<li class="${ok?"ok":""}"><span class="tick" aria-hidden="true">${ok?"✓":""}</span><span>${ok?`<s>${w}</s>`:w}</span></li>`; }).join("")}</ol>`;
+  const waiting=(typeof missionsOpen==="function" && !missionsOpen() && p>now)?`<p class="note-line">${lt("wait").replace("{n}",now+1)}</p>`:"";
+  const acts=inLab
+    ? `${(typeof missionActs==="function"?missionActs(p):"")}${done && p<STAIR.length-1?`<button type="button" class="pill" data-lesson-next="1">${lt("next")} →</button>`:""}`
+    : `<a class="pill btn-steel" href="#lab">${lt("toLab")} →</a>${done && p<STAIR.length-1?`<button type="button" class="pill" data-lesson-next="1">${lt("next")} →</button>`:""}`;
+  return `<p class="kicker">${lt("lessonK")} ${p+1}${done?` · ✓ ${lt("doneMark")}`:""}</p>
+    <h3>${es?m.es:m.en}</h3>
+    <p class="muted" style="margin:.1rem 0 .4rem">${es?m.blurb_es:m.blurb_en}</p>
+    ${steps}${waiting}
+    <div class="lesson-acts${inLab?" do":""}">${acts}</div>
+    ${allDone?`<p class="ok-line">${t("practicalDone")}</p>`:""}`;
+}
+function lessonBoxHtml(inLab){ return `<div class="card lesson-box${inLab?" lab-lesson practical-box":""}" id="lessonBox">${lessonSelect()}${lessonCard(inLab)}</div>`; }
+function ladderHtml(){
+  const now=lessonNow(), p=lessonPicked();
+  return STAIR.map((m,i)=>{
+    const done=lessonDone(m), cls=done?"done":(i===now?"now":"later");
+    return `<li class="${cls}${i===p?" picked":""}" data-pick="${i}" role="button" tabindex="0"${i===p?' aria-current="true"':""}><span class="mk">${lt("lessonK")} ${i+1}${done?" · ✓":""}</span><span class="lt">${S.lang==="es"?m.es:m.en}</span></li>`;
+  }).join("");
+}
+function lessonsView(){
+  return `<p class="kicker">${lt("lessonsNav")}</p>
+    <h1>${lt("lessonsNav")}</h1>
+    <p class="lead">${lt("lessonsLead")}</p>
+    <div class="lessons-wrap">
+      ${lessonBoxHtml(false)}
+      <div class="card ladder-box"><p class="tiny">${lt("lessonsAll")}</p><ol class="ladder" id="lessonLadder">${ladderHtml()}</ol>
+        <div class="lesson-acts"><a class="pill" href="#home">${lt("toHome")}</a></div></div>
+    </div>`;
+}
+function bindLessonBox(root){
+  root=root||document;
+  const sel=root.querySelector("#lessonPick");
+  if(sel) sel.onchange=()=>{ setLessonPick(sel.value); paint(); const s=document.getElementById("lessonPick"); if(s) s.focus(); };
+  root.querySelectorAll("[data-lesson-next]").forEach(b=>b.onclick=()=>{ setLessonPick(lessonPicked()+1); paint(); });
+  root.querySelectorAll("[data-pick]").forEach(li=>{
+    const go=()=>{ setLessonPick(li.getAttribute("data-pick")); if(li.hasAttribute("data-open")) location.hash="lessons"; else paint(); };
+    li.onclick=go;
+    li.onkeydown=e=>{ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); go(); } };
+  });
 }
 function knob(id,label,val,dis,shown){const show=shown==null?Math.round(val):shown;return `<label class="knob"><span>${label}<b style="color:var(--ink);font-family:ui-monospace,monospace">${show}</b></span><input class="scope-knob" type="range" min="0" max="100" value="${val}" data-knob="${id}" ${dis?"disabled":""}></label>`}
 
@@ -4796,7 +4880,8 @@ function paint(){
   S.page=hashPage();
   paintChrome();
   const view=document.getElementById("view");
-  view.innerHTML = S.page==="meet"?pageMeet(): S.page==="lab"?pageLab(): S.page==="find"?pageFind(): S.page==="job"?pageJob(): S.page==="print"?pagePrint(): pageHome();
+  view.innerHTML = S.page==="meet"?pageMeet(): S.page==="lab"?pageLab(): S.page==="lessons"?lessonsView(): S.page==="find"?pageFind(): S.page==="job"?pageJob(): S.page==="print"?pagePrint(): pageHome();
+  bindLessonBox(view);
   if(S.page==="meet"){
     bindScope(document.getElementById("meetScope"), id=>{ S.sel=id; S.met[id]=true; persist(); paint(); });
     view.querySelectorAll("[data-part]").forEach(b=>b.onclick=()=>{ S.sel=b.getAttribute("data-part"); S.met[S.sel]=true; persist(); paint(); });
@@ -4898,10 +4983,10 @@ function paint(){
         const bar=document.getElementById("wdbar"); const w=wd(L.coarse,L.fine);
         if(bar){ bar.style.width=Math.round(w*100)+"%"; bar.style.background=w<.22?"var(--bad)":w<.4?"var(--warn)":"var(--good)"; }
       };
-      inp.onchange=()=>{ if(stairNow()!==S.lastStair) paint(); };
+      inp.onchange=()=>{ if(stairNow()!==S.lastStair || JSON.stringify(S.missions)!==S.lastSig) paint(); };
     });
     const stepNow=stairNow();
-    S.lastStair=stepNow;
+    S.lastStair=stepNow; S.lastSig=JSON.stringify(S.missions);
   }
   if(S.page==="find" && S.find && !S.find.done){
     bindScope(document.getElementById("findScope"), id=>{
