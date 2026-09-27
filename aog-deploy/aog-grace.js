@@ -111,6 +111,8 @@
       H.classList.add("aog-practice-room"); H.style.setProperty("--room", PR[prSub]);
       var prl = D.createElement("link"); prl.rel = "stylesheet"; prl.href = "/aog-practice-rooms.css"; (D.head || H).appendChild(prl);
       var prj = D.createElement("script"); prj.src = "/aog-rooms.js"; prj.defer = true; (D.head || H).appendChild(prj);
+      /* AOG-MAST-SKETCH-V1 — the room's pencil drawing (and the card pencil) live in aog-sketch.js */
+      if (!D.getElementById("aog-sketch-js")) { var skj = D.createElement("script"); skj.id = "aog-sketch-js"; skj.src = "/aog-sketch.js"; skj.defer = true; (D.head || H).appendChild(skj); }
       var prReady = function (fn) { if (D.readyState === "loading") D.addEventListener("DOMContentLoaded", fn); else fn(); };
       /* a new b… room says its subject in its kicker ("The Interior — Mathematics") */
       prReady(function () {
@@ -148,6 +150,13 @@
         ms2.onload = prBand; ms2.onerror = function () {};
         (D.head || H).appendChild(ms2);
       });
+    }
+  } catch (e) {}
+  /* AOG-MAST-SKETCH-V1 + AOG-SKETCH-EVERYWHERE (2026-09-27) — Jimmy: "Everything sketched." Every page loads the
+     sketch pad: emoji become pencil drawings, pictures get the pencil, mastheads get their drawing. */
+  try {
+    if (!D.getElementById("aog-sketch-js")) {
+      var skw = D.createElement("script"); skw.id = "aog-sketch-js"; skw.src = "/aog-sketch.js"; skw.defer = true; (D.head || H).appendChild(skw);
     }
   } catch (e) {}
   /* AOG-MARKUP-V1 (2026-09-27) — Jimmy: "INTERACTIVE TEXT THROUGHOUT THE ECOSYSTEM." Every

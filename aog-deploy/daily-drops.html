@@ -1218,6 +1218,35 @@ body.review .box .ptcell, body.review .box .ew, body.review .box textarea{pointe
 .q .wfu{display:inline-block;margin-right:6px;padding:1px 8px;border-radius:999px;font-size:.78em;font-weight:800;letter-spacing:.04em;border:1px solid currentColor;opacity:.8}
 @media print{.q .wfu{opacity:1}}</style>
 <script src="/aog-iep.js"></script>
+<style id="aog-dd-shelf">
+/* AOG-DD-SHELF-V1 (2026-09-27) — Jimmy: "Can the daily drafts subject doors look like a book shelf and one is
+   choosing a book off the shelf?" Each subject group is a wooden shelf; each subject a book standing on it, drawn
+   in pencil line with its own colour on the spine and its name on a paper label. The chosen book is lifted off
+   the shelf. Still: it moves only when tapped, and not at all with "reduce motion" or on touch screens. */
+#subjSeg .sgrp{border-top:0 !important;padding:10px 0 4px !important}
+#subjSeg .bs{display:flex !important;flex-wrap:wrap;align-items:flex-end;gap:14px 5px !important;padding:16px 12px 0 !important;
+  background:repeating-linear-gradient(180deg, transparent 0 92px, #7A4E2B 92px 95px, #9A6A40 95px 101px, #5E3A1E 101px 104px, transparent 104px 118px) 0 0/100% 118px content-box !important;background-clip:content-box !important;
+  border-radius:4px;max-width:none !important}
+#subjSeg .bs button{position:relative;isolation:isolate;height:92px;min-height:92px !important;margin:0 0 12px !important;padding:0 12px !important;
+  border-radius:4px 4px 2px 2px !important;border:1.6px solid #2A2622 !important;color:#1D2733 !important;font-weight:700;
+  background:
+    linear-gradient(180deg, transparent 10px, rgba(0,0,0,.28) 10px 12px, transparent 12px calc(100% - 12px), rgba(0,0,0,.28) calc(100% - 12px) calc(100% - 10px), transparent 0),
+    repeating-linear-gradient(38deg, rgba(20,18,16,.16) 0 1.2px, transparent 1.2px 5px),
+    var(--gl, #5E6B7A) !important;
+  box-shadow:inset 3px 0 0 rgba(255,255,255,.18), inset -3px 0 0 rgba(0,0,0,.22), 0 1px 0 #2A2622 !important;
+  transform:none;transition:transform .18s ease, box-shadow .18s ease}
+#subjSeg .bs button::before{content:"";position:absolute;left:6px;right:6px;top:50%;height:2.3em;transform:translateY(-50%);z-index:-1;
+  background:#FBF8F0;border:1px solid #2A2622;border-radius:2px;box-shadow:1px 1px 0 rgba(42,38,34,.35)}
+#subjSeg .bs button:nth-child(3n+2){height:84px;min-height:84px !important;margin-top:8px !important}
+#subjSeg .bs button:nth-child(4n+3){height:88px;min-height:88px !important;margin-top:4px !important}
+#subjSeg .bs button[aria-pressed="true"]{transform:translateY(-14px) rotate(-2deg);box-shadow:inset 3px 0 0 rgba(255,255,255,.18), inset -3px 0 0 rgba(0,0,0,.22), 0 14px 18px -8px rgba(0,0,0,.45) !important;outline:none}
+#subjSeg .bs button[aria-pressed="true"]::before{background:#FFF6D8;border-width:2px}
+#subjSeg .bs button:focus-visible{outline:3px solid #F2C964 !important;outline-offset:3px}
+@media (hover:hover){ #subjSeg .bs button[aria-pressed="false"]:hover{transform:translateY(-5px)} }
+@media (prefers-reduced-motion: reduce), (hover:none){ #subjSeg .bs button{transition:none} }
+@media (max-width:720px){ #subjSeg .bs{gap:14px 4px !important;padding:12px 6px 0 !important;background:repeating-linear-gradient(180deg, transparent 0 64px, #7A4E2B 64px 66px, #9A6A40 66px 71px, #5E3A1E 71px 73px, transparent 73px 87px) 0 0/100% 87px content-box !important;background-clip:content-box !important} #subjSeg .bs button, #subjSeg .bs button:nth-child(n){height:64px;min-height:64px !important;margin:0 0 9px !important;padding:0 9px !important;font-size:14px} }
+@media print{ #subjSeg .bs{background:none !important} }
+</style>
 </head>
 <body>
 <script src="/aog-grace.js" defer></script>
@@ -19553,5 +19582,6 @@ else watch();
   setTimeout(schedule, 800);
 })();
 </script>
+<script src="/aog-sketch.js" data-pad=".sheet" data-inline=".sheet" defer></script>
 </body>
 </html>

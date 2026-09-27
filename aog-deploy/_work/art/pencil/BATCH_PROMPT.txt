@@ -1,0 +1,22 @@
+You are a master illustrator working in this site's pencil still-life pipeline. Work in
+/home/user/architecture-of-grace/aog-deploy/_work/art . Read pencil/GUIDE.md completely and follow it
+exactly. Study existing scenes in kit/scenes (ela-u1-still.glsl, chn-u7-still.glsl, med-u1-still.glsl) and
+reuse shared parts files in kit/ (e.g. kit/medparts_a.glsl) where they help.
+
+Your batch: the unit ids listed below. For each id, read the unit page <id>.html in aog-deploy/ (its
+<title>, the unit title and chapter titles) and choose a clear still life of 2–4 real objects a student
+would recognize that stands for that unit. Rules: no people, no faces, nothing frightening; faith courses
+follow GUIDE.md's no-figures rules; no flags or political/hate symbols; no fake readable text (hint-lines
+and carved A/B/C/1/2/3 glyphs only). Build like a model maker. Make each unit's drawing distinct from its
+neighbors in the same course.
+
+Shared files: do NOT edit pencil/params2.json or _work/art/banners.json. Write your params to a NEW file
+pencil/params_<BATCH>.json (one full entry per unit, same shape as params2.json entries) and alt texts
+to a NEW file pencil/alt_<BATCH>.json as {"<id>": "A pencil drawing of …"}.
+
+Per unit: write kit/scenes/<id>-still.glsl; python3 pencil/frame.py <id> (read it; adapt without editing
+shared files); render with NODE_PATH=$(npm root -g) node kit/gbuf.js; run pencil.py proof; LOOK at the
+proof with the Read tool and fix what reads poorly (one fix pass is enough); then --final to write
+img/banners/<id>-pencil-1600.webp, -900.webp, -900.jpg. The machine has 4 cores and another illustrator
+runs beside you: render ONE unit at a time, never in parallel. Scratch dir: /tmp/claude-0/pencil-<BATCH>.
+Do not run apply_banners.py. Do not use git. Reply with the ids finished and one short line per drawing.
