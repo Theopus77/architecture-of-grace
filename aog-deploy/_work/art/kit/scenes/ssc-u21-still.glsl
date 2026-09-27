@@ -1,8 +1,8 @@
 /* Social Studies Unit 21 "U.S. History: World Wars and the Cold War" — pencil still life: a
    soldier's steel helmet resting on the table, a round satellite model with four long
    antennas on a stand (the space race), and a folded letter. */
-#define CAM_POS vec3(-0.4090,0.2173,-0.8105)
-#define CAM_TGT vec3(-0.2896,0.0077,0.0879)
+#define CAM_POS vec3(-0.4123,0.2149,-0.8080)
+#define CAM_TGT vec3(-0.2932,0.0060,0.0880)
 #define CAM_FOV 30.
 #define SUN_DIR vec3(-.7,.85,-.3)
 #define MAXT 8.
@@ -13,12 +13,14 @@
 #include "studio.glsl"
 #include "ssceco.glsl"
 #define HC vec3(-.02,0.,.1)
-vec2 helmet(vec3 p){
-  vec3 q=p-HC; q.xz=rot(.3)*q.xz;
-  float dome=max(abs(length((q-vec3(0.,.012,0.))*vec3(1.,1.15,1.1))-.08)-.004,.012-q.y);
-  float brim=max(abs(length(q.xz*vec2(1.,1.08))-.084)-.008,abs(q.y-.012)-.003);
-  float strap=sdTorus((q-vec3(0.,.0,-.02)).xyz,.06,.003); strap=max(strap,q.y-.01);
-  return vec2(min(dome,brim),strap); }
+vec2 helmet(vec3 p){   /* a wide-brimmed steel helmet, tipped up toward us on its rim */
+  vec3 q=p-HC; q.xz=rot(.3)*q.xz; q.yz=rot(-.3)*q.yz; q.y-=.03;
+  float dome=max(abs(length((q-vec3(0.,.0,0.))*vec3(1.,1.25,1.))-.068)-.004,-q.y);
+  float r=length(q.xz);
+  float brim=max(abs(r-.09)-.024,abs(q.y+.008*(r-.066)/.024-.002)-.003);
+  float lip=sdTorus(q-vec3(0.,-.008,0.),.114,.004);
+  float strap=max(abs(length(q.yz-vec2(-.03,0.))-.05)-.002,abs(q.x-.0)-.006); strap=max(strap,q.y);
+  return vec2(min(min(dome,brim),lip),1e5); }
 #define SC vec3(.22,.17,.18)
 vec2 satellite(vec3 p){
   vec3 q=p-SC;
@@ -49,7 +51,7 @@ vec2 map(vec3 p){
 float toneAlb(float id,vec3 p,vec3 n){
   if(id==1.) return .75;
   if(id==2.) return .9;
-  if(id==3.) return .35+.1*fbm3(p*90.);
+  if(id==3.) return .5+.1*fbm3(p*90.);
   if(id==4.) return .3;
   if(id==5.) return .82;
   if(id==6.) return .4;

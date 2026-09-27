@@ -1,7 +1,7 @@
 /* Science Unit 4 "Earth, Sky and Weather" — pencil still life: a school globe on its
    stand, an open umbrella resting on the table, and a rain gauge with its scale marks. */
-#define CAM_POS vec3(-0.7708,0.3303,-0.8656)
-#define CAM_TGT vec3(-0.3590,0.0269,0.2181)
+#define CAM_POS vec3(-0.7470,0.3522,-0.8150)
+#define CAM_TGT vec3(-0.3518,0.0611,0.2249)
 #define CAM_FOV 30.
 #define SUN_DIR vec3(-.7,.85,-.3)
 #define MAXT 8.
@@ -23,18 +23,24 @@ vec2 globe(vec3 p){ vec3 q=p-GC;
   float axle=sdCylY(g,.003,.118);
   float ball=length(g)-.1;
   return vec2(min(min(base,stem),min(mer,axle)),ball); }
-vec3 uq(vec3 p){ vec3 q=p-vec3(-.3,.085,.1); q.xz=rot(-.3)*q.xz; q.xy=rot(-1.0)*q.xy; return q-vec3(0.,.02,0.); }
-float umb(vec3 p){ vec3 q=uq(p);
-  float a=atan(q.z,q.x); float s=6.2832/8.; float fa=abs(mod(a,s)-s*.5)/(s*.5);
-  float R=.19; vec3 c=vec3(0.,-.12,0.);
-  float cap=abs(length(q-c)-R)-.002; float cut=.1+.012*(1.-fa*fa);
-  cap=max(cap,-(q.y-(.0-.012*fa*fa)));
-  float ribs=1e5; float aa=mod(a+s*.5,s)-s*.5; vec2 r2=length(q.xz)*vec2(cos(aa),sin(aa));
-  ribs=max(abs(length(q-c)-R+.003)-.003,max(abs(r2.y)-.0025,-(q.y+.005)));
-  float shaft=sdCapsule(q,vec3(0.,.075,0.),vec3(0.,-.22,0.),.004);
-  vec3 h=q-vec3(.025,-.22,0.); float hook=max(length(vec2(length(h.xy)-.025,h.z))-.007,h.y);
-  float tip=sdCapsule(q,vec3(0.,.07,0.),vec3(0.,.09,0.),.003);
-  return min(min(cap,ribs),min(min(shaft,hook),tip)); }
+/* open umbrella standing upright on its hooked handle */
+vec3 uq(vec3 p){ vec3 q=p-vec3(-.29,.222,.1); q.xy=rot(.12)*q.xy; q.xz=rot(.4)*q.xz; return q; }
+float umb(vec3 p){ vec3 q=uq(p); q.y-=.0;
+
+  float a=atan(q.z,q.x); float s=6.2832/8.; float fa=abs(mod(a,s)-s*.5)/(s*.5);   /* 0 at a rib, 1 mid-panel */
+  float R=.16; vec3 c=vec3(0.,-.07,0.);
+  float r=length(q.xz);
+  float sag=.006*(1.-fa*fa);                 /* panels sag a little between ribs */
+  float cap=abs(length(q-c)-R+sag)-.0022;
+  float rimY=.012*(1.-fa*fa);                /* scalloped hem */
+  cap=max(cap,-(q.y-rimY));
+  float aa=mod(a+s*.5,s)-s*.5; vec2 r2=r*vec2(cos(aa),sin(aa));
+  float ribs=max(abs(length(q-c)-R)-.004,max(abs(r2.y)-.003,-(q.y-.0)));
+  float tipsR=1e5; for(int i=0;i<8;i++){ float t=float(i)*s; float ry=0.; vec3 e=vec3(cos(t)*.1437,0.,sin(t)*.1437); tipsR=min(tipsR,length(q-e)-.005); }
+  float shaft=sdCapsule(q,vec3(0.,.1,0.),vec3(0.,-.19,0.),.0045);
+  vec3 h=q-vec3(.022,-.19,0.); float hook=max(length(vec2(length(h.xy)-.022,h.z))-.0075,h.y);
+  float grip=sdCapsule(q,vec3(0.,-.19,0.),vec3(0.,-.13,0.),.0085);
+  return .7*min(min(min(cap,ribs),tipsR),min(min(shaft,hook),grip)); }
 #define RC vec3(.28,0.,.07)
 vec2 gauge(vec3 p){ vec3 q=p-RC;
   float tube=abs(sdCylY(q-vec3(0.,.1,0.),.028,.1))-.002; tube=max(tube,q.y-.199);
@@ -55,7 +61,7 @@ float toneAlb(float id,vec3 p,vec3 n){
   if(id==4.){ vec3 d=normalize(gq(p)); float l=land(d);
     if(abs(l-.55)<.012) return .2;               /* coast */
     if(l>.55) return .62; float lat=abs(fract(asin(d.y)/.35)-.5); return lat<.03?.55:.82; }
-  if(id==5.){ vec3 q=uq(p); float a=atan(q.z,q.x); return fract(a/6.2832*4.)<.5?.35:.8; }
+  if(id==5.){ vec3 q=uq(p); if(q.y<-.075) return .3; float a=atan(q.z,q.x); return fract(a/6.2832*4.)<.5?.35:.82; }
   if(id==6.){ vec3 q=p-RC; float m=fract(q.y/.02); if(q.y>.02&&q.y<.19&&m<.12&&q.z<-.01&&abs(q.x)<.012) return .2; return .88; }
   if(id==7.) return .6;
   return .7; }

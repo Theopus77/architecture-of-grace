@@ -1,7 +1,7 @@
 /* Spanish Unit 17 "Pronouns, Reflexives and Commands" — pencil still life of a morning routine
    (me lavo, me peino): a cup holding a toothbrush, a comb, and a bar of soap on a folded washcloth. */
-#define CAM_POS vec3(-0.4352,0.3040,-0.8131)
-#define CAM_TGT vec3(-0.1873,-0.0034,0.1091)
+#define CAM_POS vec3(-0.4596,0.3068,-0.8746)
+#define CAM_TGT vec3(-0.1960,-0.0200,0.1059)
 #define CAM_FOV 30.
 #define SUN_DIR vec3(-.65,.85,-.3)
 #define MAXT 8.
@@ -19,13 +19,13 @@ float brush(vec3 p){ vec3 q=tbq(p);
   float head=sdRBox(q-vec3(.21,.0,0.),vec3(.016,.004,.005),.003);
   float bristle=sdRBox(q-vec3(.21,.012,0.),vec3(.015,.008,.0045),.001);
   return min(min(hdl,head),bristle); }
-float comb(vec3 p){ vec3 q=p-vec3(-.14,.004,-.06); q.xz=rot(.25)*q.xz;
+float comb(vec3 p){ vec3 q=(p-vec3(-.09,.006,-.12))/1.5; q.xz=rot(.1)*q.xz;
   float spine=sdRBox(q-vec3(0.,0.,.012),vec3(.08,.004,.008),.003);
   float teeth=max(sdBox(q-vec3(0.,0.,-.01),vec3(.075,.0025,.016)),abs(fract(q.x/.007)-.5)*.007-.0015);
-  return min(spine,teeth); }
+  return min(spine,teeth)*1.5; }
 vec3 clq(vec3 p){ vec3 q=p-vec3(.2,0.,-.03); q.xz=rot(-.3)*q.xz; return q; }
 float cloth(vec3 p){ vec3 q=clq(p); return min(sdRBox(q-vec3(0.,.006,0.),vec3(.07,.006,.055),.005),sdRBox(q-vec3(.005,.017,0.),vec3(.065,.005,.052),.005)); }
-float soap(vec3 p){ vec3 q=clq(p)-vec3(-.005,.037,0.); q.xz=rot(.3)*q.xz; return sdRBox(q,vec3(.045,.015,.028),.013); }
+float soap(vec3 p){ vec3 q=clq(p)-vec3(-.005,.037,0.); q.xz=rot(.3)*q.xz; return sdRBox(q,vec3(.055,.019,.034),.016); }
 vec2 map(vec3 p){
   vec2 r=vec2(p.y,1.);
   r=U(r,.9-p.z,2.);
@@ -40,7 +40,7 @@ float toneAlb(float id,vec3 p,vec3 n){
   if(id==2.) return .9;
   if(id==3.){ vec3 q=p-CU; return abs(q.y-.08)<.004?.3:.8; }
   if(id==4.){ vec3 q=tbq(p); if(q.y>.005&&q.x>.19) return fract(q.x/.004)<.4?.5:.92; return q.x>.12&&q.x<.18?.3:.5; }
-  if(id==5.) return .35;
+  if(id==5.) return .2;
   if(id==6.){ vec3 q=clq(p); return fract(q.x/.01)<.3?.6:.78; }
   if(id==7.) return .88;
   return .7; }

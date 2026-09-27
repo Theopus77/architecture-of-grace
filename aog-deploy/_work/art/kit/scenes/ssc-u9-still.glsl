@@ -1,7 +1,7 @@
 /* Social Studies Unit 9 "Money, Markets and Regions" — pencil still life: a wooden market
    crate full of apples, an old shop scale with a pan, and a stack of coins. */
-#define CAM_POS vec3(-0.3134,0.1984,-0.8582)
-#define CAM_TGT vec3(-0.1902,-0.0179,0.0688)
+#define CAM_POS vec3(-0.3152,0.2210,-0.8580)
+#define CAM_TGT vec3(-0.1914,0.0036,0.0740)
 #define CAM_FOV 30.
 #define SUN_DIR vec3(-.7,.85,-.3)
 #define MAXT 8.
@@ -14,12 +14,18 @@
 #define KC vec3(.02,0.,.14)
 #define KRY -.25
 vec3 kq(vec3 p){ vec3 q=p-KC; q.xz=rot(KRY)*q.xz; return q; }
+float apple1(vec3 q){
+  float r=length(q*vec3(1.,1.12,1.))-.03;
+  r+=.012*exp(-length(q.xz)*90.)*step(0.,q.y);                 /* dimple at the top */
+  float stem=sdCapsule(q,vec3(0.,.02,0.),vec3(.004,.04,.002),.0025);
+  return min(r*.85,stem); }
 float apples(vec3 q){
   float d=1e5;
-  for(int i=0;i<4;i++) for(int j=0;j<3;j++){
-    vec2 o=(h22(vec2(float(i),float(j)))-.5)*.012;
-    vec3 c=vec3(-.09+float(i)*.06+o.x,.128+o.y*.8,-.045+float(j)*.045+o.y);
-    d=min(d,length((q-c)*vec3(1.,1.1,1.))-.027); }
+  for(int i=0;i<3;i++) for(int j=0;j<2;j++){
+    vec2 o=(h22(vec2(float(i),float(j)))-.5)*.01;
+    vec3 c=vec3(-.07+float(i)*.07+o.x,.118,-.03+float(j)*.06+o.y);
+    vec3 a=q-c; a.xy=rot(o.x*20.)*a.xy; d=min(d,apple1(a)); }
+  d=min(d,apple1(q-vec3(-.035,.165,.0))); d=min(d,apple1(q-vec3(.035,.163,.01)));
   return d; }
 vec2 crate(vec3 p){
   vec3 q=kq(p);
@@ -54,7 +60,7 @@ float toneAlb(float id,vec3 p,vec3 n){
   if(id==1.) return .75;
   if(id==2.) return .9;
   if(id==3.){ vec3 q=kq(p); if(abs(fract(q.y/.033)-.5)>.46) return .25; return .62+.1*grain(q.zxy,40.); }   /* slat gaps and grain */
-  if(id==4.) return .42;
+  if(id==4.){ return abs(n.y)>.85?.3:.4; }
   if(id==5.) return .45;
   if(id==6.){ vec3 q=sq(p)-vec3(0.,.07,-.03); float r=length(q.xy);
     if(q.z<-.004&&r<.03){ float a=atan(q.y,q.x); if(r>.022&&fract(a*20./6.2832)<.15) return .2;
