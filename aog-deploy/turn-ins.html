@@ -669,7 +669,7 @@ else document.documentElement.classList.add("aog-embed");</script>
                      write:["Writing","s-wri"], science:["Science","s-sci"],
                      "social-studies":["Social Studies","s-soc"],
                      spanish:["Spanish","s-spa"], facs:["FACS","s-facs"],
-                     religion:["Religions","s-rel"], bible:["Bible Study","s-rel"], quran:["Qur’an Study","s-rel"], talmud:["Talmud Study","s-rel"], hindu:["Hindu Texts","s-rel"], buddhist:["Buddhist Texts","s-rel"], chinese:["Chinese Classics","s-rel"], economics:["Economics","s-eco"],
+                     religion:["Religions","s-rel"], bible:["The Bible","s-rel"], quran:["The Qur’an","s-rel"], talmud:["The Talmud","s-rel"], hindu:["Hindu Texts","s-rel"], buddhist:["Buddhist Texts","s-rel"], chinese:["Chinese Classics","s-rel"], economics:["Economics","s-eco"],
                      foundry:["Foundry","s-fdy"] })[dd[1]];
     if(s==="daily-drops") return ["Daily Drafts","s-oth"];
     return ["Other","s-oth"];
@@ -1080,7 +1080,7 @@ else document.documentElement.classList.add("aog-embed");</script>
 
   /* ═══════════ every reader, one list ═══════════ */
   /* AOG-SLIP-ENGINE-V1 — the slips from /slip.html: one kind, labelled by which slip, the answers in words */
-  var SLIPNAME={test:"Before a test",posttest:"After a test",repair:"After a hard moment",goal:"Goal check",home:"Home · evening",team:"Group work",unit:"End of unit"};
+  var SLIPNAME={test:"Before a test",posttest:"After a test",endclass:"End of class",repair:"After a hard moment",goal:"Goal check",home:"Home · evening",team:"Group work",unit:"End of unit"};
   function readSlips(){
     var remote=arrOf("aog.checkin.remote").filter(function(r){ return r && /^slip-/.test(String(r.checkinType||"")); });
     var mine=arrOf("aog.slips.mine").filter(function(m){ return !remote.some(function(r){ return String(r.studentId)===String(m.studentId)&&String(r.checkinType)===String(m.checkinType)&&Math.abs(Date.parse(r.timestamp)-Date.parse(m.timestamp))<180000; }); });
