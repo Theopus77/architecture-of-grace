@@ -8,7 +8,8 @@
  * not run on this file. Forget the bump and returning visitors keep the stale
  * page from their cache.
  */
-const CACHE = 'aog-cache-2026.09.27.m7107'   // MERGE: MICROSCOPE SLIDE LESSONS (m7106) + MAKE IT 21 PROJECTS (m7081). previous: m7106
+const CACHE = 'aog-cache-2026.09.27.m7108'   // DAILY DRAFTS: SUBJECTS AS PENCIL BOOK SPINES, TITLES DOWN THE SPINE. previous: m7107
+// const CACHE = 'aog-cache-2026.09.27.m7107'   // MERGE: MICROSCOPE SLIDE LESSONS (m7106) + MAKE IT 21 PROJECTS (m7081). previous: m7106
 // const CACHE = 'aog-cache-2026.09.27.m7106'   // MICROSCOPE: A LESSON FOR EACH SLIDE (18-44), WORKSHEETS AND GUIDE; LESSON-DONE FIX. previous: m7105
 // const CACHE = 'aog-cache-2026.09.27.m7105'   // MICROSCOPE PICTURE GUIDE: ALL 17 LESSONS, EN+ES STEPS, SLIDE MENU AND LENSES, EVERY PICTURE RE-SHOT. previous: m7104
 // const CACHE = 'aog-cache-2026.09.27.m7104'   // TELESCOPE: A LESSON FOR EACH TARGET (LESSONS 18–36) AND 19 NEW WORKSHEETS. previous: m7102

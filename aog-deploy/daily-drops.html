@@ -1246,6 +1246,38 @@ body.review .box .ptcell, body.review .box .ew, body.review .box textarea{pointe
 @media (prefers-reduced-motion: reduce), (hover:none){ #subjSeg .bs button{transition:none} }
 @media (max-width:720px){ #subjSeg .bs{gap:14px 4px !important;padding:12px 6px 0 !important;background:repeating-linear-gradient(180deg, transparent 0 64px, #7A4E2B 64px 66px, #9A6A40 66px 71px, #5E3A1E 71px 73px, transparent 73px 87px) 0 0/100% 87px content-box !important;background-clip:content-box !important} #subjSeg .bs button, #subjSeg .bs button:nth-child(n){height:64px;min-height:64px !important;margin:0 0 9px !important;padding:0 9px !important;font-size:14px} }
 @media print{ #subjSeg .bs{background:none !important} }
+
+/* AOG-DD-SHELF-V2 (2026-09-27) — Jimmy: "Can the subjects get the sketch feel? They don't look like a book on a
+   shelf. I figure the subjects would be written vertical." Each subject is a tall pencil-drawn spine, title running
+   down it, a hatched band of its colour top and bottom; the shelf is a pencil-drawn plank. */
+#subjSeg .bs{gap:18px 6px !important;padding:14px 10px 0 !important;
+  background:
+    repeating-linear-gradient(180deg, transparent 0 172px, #2A2622 172px 173.5px, #EFE6D2 173.5px 180px, #2A2622 180px 181.5px, transparent 181.5px 200px) 0 0/100% 200px content-box,
+    repeating-linear-gradient(180deg, transparent 0 151.5px, transparent 151.5px 158px, transparent 158px 178px) !important;
+  background-clip:content-box !important}
+#subjSeg .bs button, #subjSeg .bs button:nth-child(n){writing-mode:vertical-rl;text-orientation:mixed;
+  height:172px;min-height:172px !important;width:44px;min-width:44px !important;margin:0 0 28px !important;padding:10px 0 !important;
+  display:inline-flex;align-items:center;justify-content:center;white-space:nowrap;font:700 14px/1 var(--sans, system-ui, sans-serif) !important;letter-spacing:.02em;
+  color:#1D2733 !important;border:1.5px solid #2A2622 !important;border-radius:3px 3px 1px 1px !important;
+  background:
+    linear-gradient(180deg, var(--gl,#5E6B7A) 0 14px, #2A2622 14px 15.2px, transparent 15.2px calc(100% - 15.2px), #2A2622 calc(100% - 15.2px) calc(100% - 14px), var(--gl,#5E6B7A) calc(100% - 14px)),
+    repeating-linear-gradient(40deg, rgba(42,38,34,.10) 0 1px, transparent 1px 6px),
+    #FBF8F0 !important;
+  box-shadow:1.5px 0 0 -0.3px rgba(42,38,34,.45), -1px 1px 0 -0.4px rgba(42,38,34,.3) !important}
+#subjSeg .bs button::before{content:none !important}
+#subjSeg .bs button:nth-child(3n+2){height:162px;min-height:162px !important;margin-top:10px !important;width:40px;min-width:40px !important}
+#subjSeg .bs button:nth-child(4n+3){height:168px;min-height:168px !important;margin-top:4px !important;width:48px;min-width:48px !important}
+#subjSeg .bs button:nth-child(5n+4){transform:rotate(1.2deg)}
+#subjSeg .bs button[aria-pressed="true"]{background:
+    linear-gradient(180deg, var(--gl,#5E6B7A) 0 14px, #2A2622 14px 15.2px, transparent 15.2px calc(100% - 15.2px), #2A2622 calc(100% - 15.2px) calc(100% - 14px), var(--gl,#5E6B7A) calc(100% - 14px)),
+    #FFF3CC !important;border-width:2.5px !important;transform:translateY(-12px) !important}
+@media (max-width:720px){
+  #subjSeg .bs{gap:14px 4px !important;padding:10px 4px 0 !important;
+    background:repeating-linear-gradient(180deg, transparent 0 160px, #2A2622 160px 161.5px, #EFE6D2 161.5px 167px, #2A2622 167px 168.5px, transparent 168.5px 184px) 0 0/100% 184px content-box !important;background-clip:content-box !important}
+  #subjSeg .bs button, #subjSeg .bs button:nth-child(n){height:160px;min-height:160px !important;width:38px;min-width:38px !important;margin:0 0 24px !important;font-size:12.5px !important;transform:none}
+  #subjSeg .bs button[aria-pressed="true"]{transform:translateY(-8px) !important}
+}
+@media (prefers-reduced-motion: reduce), (hover:none){ #subjSeg .bs button[aria-pressed="true"]{transform:none !important} }
 </style>
 </head>
 <body>
@@ -1287,7 +1319,7 @@ body.review .box .ptcell, body.review .box .ew, body.review .box textarea{pointe
     <!-- AOG-DD-SUBJ-GROUPS-V1 (2026-09-26) — Jimmy: "Can these be paired up better?" Thirteen subjects in three
          families, each on its own row with a small name, so the eye finds Bible next to Qur'an and Talmud, and
          Math next to Science, instead of one long shuffle. Same buttons, same data-s, same handler. -->
-    <div class="seg" id="subjSeg" role="group" aria-label="Subject">
+    <div class="seg" id="subjSeg" role="group" aria-label="Subject" data-aog-legible-off>
       <div class="sgrp"><span class="sg-k" data-en="Core" data-es="Básicas">Core</span><div class="bs">
       <button data-s="math" aria-pressed="true" data-en="Math" data-es="Matemáticas">Math</button>
       <button data-s="ela" aria-pressed="false" data-en="Language Arts" data-es="Lenguaje">Language Arts</button>
