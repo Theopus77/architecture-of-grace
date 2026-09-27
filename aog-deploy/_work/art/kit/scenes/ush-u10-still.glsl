@@ -2,8 +2,8 @@
    still life: a standing slab of the Berlin Wall with its rounded top, chipped and broken at
    one edge, a hammer and a chisel lying before it, and a few broken chunks of concrete on
    the table. No figures, no graffiti words. */
-#define CAM_POS vec3(-0.4543,0.5219,-1.0326)
-#define CAM_TGT vec3(-0.2824,-0.0315,0.1207)
+#define CAM_POS vec3(-0.5844,0.6651,-1.2699)
+#define CAM_TGT vec3(-0.3738,-0.0129,0.1432)
 #define CAM_FOV 30.
 #define SUN_DIR vec3(-.65,.85,-.3)
 #define MAXT 8.
@@ -36,7 +36,7 @@ float chisel(vec3 q){ float s=sdCylX(q-vec3(0,.006,0),.006,.06); vec3 t=q-vec3(.
 vec2 map(vec3 p){
   vec2 r=vec2(p.y,1.);
   r=U(r,.9-p.z,2.);
-  r=U(r,wall(wq(p)),3.);
+  r=U(r,wall(wq(p)/1.35)*1.35,3.);
   r=U(r,chunks(L(p,vec3(.2,0.,.02),.3)),4.);
   r=U(r,hammer(L(p,vec3(-.1,0.,-.11),-.25)),5.);
   r=U(r,chisel(L(p,vec3(.08,0.,-.13),.35)),6.);
@@ -44,10 +44,10 @@ vec2 map(vec3 p){
 float toneAlb(float id,vec3 p,vec3 n){
   if(id==1.) return .7;
   if(id==2.) return .9;
-  if(id==3.){ vec3 q=wq(p); float a=.66-.1*fbm(q.xy*50.);
+  if(id==3.){ vec3 q=wq(p)/1.35; float a=.66-.1*fbm(q.xy*50.);
     if(q.z<-.009&&q.y>.03&&q.y<.21){ float s=fbm(q.xy*9.); if(s>.55) a=.42; if(abs(s-.55)<.012) a=.25; if(s<.38) a=.8; }
     if(abs(q.x)<.0015&&q.y<.22) a=.4; return a; }
   if(id==4.) return .55;
-  if(id==5.){ vec3 q=L(p,vec3(-.1,0.,-.11),-.25); return q.x>.036?.3:.55+.1*grain(q.zyx,30.); }
-  if(id==6.) return .38;
+  if(id==5.){ vec3 q=L(p,vec3(-.1,0.,-.11),-.25); return q.x>.036?.2:.35+.1*grain(q.zyx,30.); }
+  if(id==6.) return .22;
   return .7; }
