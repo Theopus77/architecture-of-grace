@@ -1,7 +1,7 @@
 /* FCS Unit 6 "The Needle and the Button" — pencil still life: a big wooden spool of thread, a
    needle threaded through a large four-hole button, and two more buttons on the table. */
-#define CAM_POS vec3(-0.30,0.36,-0.84)
-#define CAM_TGT vec3(-0.05,0.05,0.09)
+#define CAM_POS vec3(-0.3632,0.2575,-0.6903)
+#define CAM_TGT vec3(-0.1511,-0.0054,0.0988)
 #define CAM_FOV 30.
 #define SUN_DIR vec3(-.65,.85,-.3)
 #define MAXT 8.
