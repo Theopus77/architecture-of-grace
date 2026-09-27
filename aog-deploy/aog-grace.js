@@ -465,7 +465,7 @@
   }
 
   /* ── 4b ── the lede, two lines ────────────────────────────────────────── */
-  var LEDE = ".deck, .tag, .tagline, .lede, .say, p.sub, :scope > p, :scope > div > p";
+  var LEDE = ".deck, .tag, .tagline, .lede, .say, p.sub, p"; /* AOG-HERO-TRIM-V1 (2026-09-27): any long paragraph in the masthead, at any depth */
   function clampLedes() {
     if (!hero) return;
     var els;
