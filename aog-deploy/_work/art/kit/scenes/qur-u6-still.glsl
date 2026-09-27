@@ -101,8 +101,7 @@ float jugD(vec3 q,float H){ if(length(q-vec3(0,H*.5,0))>H*.8) return length(q-ve
   float y=q.y/H; float body=.16+.24*sin(3.1416*clamp(y/.8,0.,1.)); float r=mix(body,.12,smoothstep(.62,.82,y))+.03*smoothstep(.93,1.,y);
   r*=H; float d=(length(q.xz)-r)*.7; d=max(d,max(-q.y,q.y-H));
   d=max(d,-max(length(q.xz)-r+.004,H*.9-q.y));
-  float hd=sdTorus((q-vec3(-.13*H,.72*H,0)).xzy*vec3(1.,1.,1.),.13*H,.018*H);
-  hd=max(hd,-q.x-.1*H); hd=max(hd,q.x+.0*H);
+  float hd=sdTorus((q-vec3(-.25*H,.66*H,0)).xzy,.12*H,.02*H);
   return min(d,hd); }
 /* a potted plant pot; base at y=0, height h */
 float potD(vec3 q,float r,float h){ float y=q.y; float rr=r*(.78+.22*y/h); float d=(length(q.xz)-rr)*.9; d=max(d,max(-y,y-h));
@@ -199,7 +198,7 @@ float crownD(vec3 q){ if(length(q-vec3(0,.26,0))>.2) return length(q-vec3(0,.26,
 
 
 vec3 aQ(vec3 p){ return place(p,vec3(0.,0.,.05),-.35); }
-float hull(vec3 q){ float d=sdEll(q-vec3(0,.085,0),vec3(.22,.085,.08)); d=max(d,q.y-.085);
+float hull(vec3 q){ q.z/=max(1.-.55*pow(abs(q.x)/.22,2.),.2); float d=sdEll(q-vec3(0,.085,0),vec3(.22,.085,.08))*.6; d=max(d,q.y-.085);
   d=max(d,-sdEll(q-vec3(0,.09,0),vec3(.205,.07,.068))*1.);
   float deck=max(sdEll(q-vec3(0,.085,0),vec3(.215,.2,.075)),abs(q.y-.075)-.004);
   float rim=max(sdEll(q-vec3(0,.085,0),vec3(.222,.2,.082)),abs(q.y-.087)-.004); rim=max(rim,-sdEll(q-vec3(0,.085,0),vec3(.2,.3,.064)));
