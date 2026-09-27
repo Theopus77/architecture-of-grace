@@ -152,10 +152,9 @@
       });
     }
   } catch (e) {}
-  /* AOG-MAST-SKETCH-V1 + AOG-SKETCH-EVERYWHERE (2026-09-27) — Jimmy: "Everything sketched." Every page loads the
-     sketch pad: emoji become pencil drawings, pictures get the pencil, mastheads get their drawing. */
+  /* AOG-MAST-SKETCH-V1 — the worksheets and the bench guides get their pencil drawing too */
   try {
-    if (!D.getElementById("aog-sketch-js")) {
+    if (!D.getElementById("aog-sketch-js")) {   /* every page loads the sketch pad: emoji and marks become pencil (Jimmy, 2026-09-27) */
       var skw = D.createElement("script"); skw.id = "aog-sketch-js"; skw.src = "/aog-sketch.js"; skw.defer = true; (D.head || H).appendChild(skw);
     }
   } catch (e) {}

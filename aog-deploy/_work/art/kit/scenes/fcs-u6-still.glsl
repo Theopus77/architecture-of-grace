@@ -1,7 +1,7 @@
 /* FCS Unit 6 "The Needle and the Button" — pencil still life: a big wooden spool of thread, a
-   needle threaded through a large four-hole button, and two more buttons on the table. */
-#define CAM_POS vec3(-0.3632,0.2575,-0.6903)
-#define CAM_TGT vec3(-0.1511,-0.0054,0.0988)
+   needle lying threaded in front, a large four-hole button, and two more buttons on the table. */
+#define CAM_POS vec3(-0.3951,0.2603,-0.7413)
+#define CAM_TGT vec3(-0.1693,-0.0196,0.0989)
 #define CAM_FOV 30.
 #define SUN_DIR vec3(-.65,.85,-.3)
 #define MAXT 8.
@@ -21,7 +21,7 @@ float thread(vec3 p){ vec3 q=p-SP; float r=length(q.xz);
   float t=max(abs(r-.047)-.009,abs(q.y-.09)-.068); t+=.0012*abs(sin(q.y*900.+atan(q.z,q.x)*.3));
   /* a loose end that drapes to the table and runs to the needle */
   float tail=sdCapsule(p,SP+vec3(-.055,.1,-.02),SP+vec3(-.095,.004,-.06),.0022);
-  tail=min(tail,sdCapsule(p,SP+vec3(-.095,.004,-.06),vec3(-.08,.005,-.07),.0022));
+  vec3 e=vec3(-.02,.004,-.11)+vec3(-.088*cos(.25),0.,-.088*sin(.25)); tail=min(tail,sdCapsule(p,SP+vec3(-.095,.004,-.06),e,.0022)); tail=min(tail,sdCapsule(p,e,e+vec3(.02,0.,-.03),.0022));
   return min(t,tail); }
 /* a four-hole button: centre c (on the table), radius r, thickness h */
 float button(vec3 p,vec3 c,float r,float h,float tilt){ vec3 q=p-c-vec3(0.,h,0.); q.yz=rot(tilt)*q.yz;
@@ -29,10 +29,11 @@ float button(vec3 p,vec3 c,float r,float h,float tilt){ vec3 q=p-c-vec3(0.,h,0.)
   vec2 u=abs(q.xz)-vec2(r*.22); d=max(d,-(length(vec3(u.x,0.,u.y))-r*.085+abs(q.y)*0.));
   return d; }
 #define BN vec3(-.13,0.,-.04)
-float needle(vec3 p){ vec3 q=p-BN-vec3(.0,.03,.0); q.xy=rot(-.9)*q.xy; q.xz=rot(.3)*q.xz;
-  float body=sdCapsule(q,vec3(-.08,0.,0.),vec3(.06,0.,0.),.0024); float tip=sdCone(q.yxz-vec3(0.,.075,0.),.0024,.0002,.015);
-  float eye=sdTorus((q-vec3(-.075,0.,0.)).xzy,.0035,.0012);
-  return min(min(body,tip),eye); }
+vec3 nq(vec3 p){ vec3 q=p-vec3(-.02,.004,-.11); q.xz=rot(-.25)*q.xz; return q; }
+float needle(vec3 p){ vec3 q=nq(p);
+  float body=sdCapsule(q,vec3(-.1,0.,0.),vec3(.08,0.,0.),.0038); float tip=sdCone(q.yxz-vec3(0.,.1,0.),.0038,.0003,.022);
+  float eye=max(body,-sdRBox(q-vec3(-.088,0.,0.),vec3(.007,.01,.0014),.001));
+  return min(eye,tip); }
 vec2 map(vec3 p){
   vec2 r=vec2(p.y,1.);
   r=U(r,.9-p.z,2.);
@@ -50,5 +51,5 @@ float toneAlb(float id,vec3 p,vec3 n){
   if(id==4.) return .32;
   if(id==5.) return .55;
   if(id==6.) return p.x>.25?.35:.8;
-  if(id==7.) return .5;
+  if(id==7.) return .35;
   return .7; }

@@ -1,8 +1,8 @@
 /* Buddhist Texts Unit 14 "Jatakas and Hard Questions" — pencil still life: a small bamboo raft
    of lashed poles resting on the table (the parable of the raft), with a wooden paddle laid
    across it and a few smooth river stones. Objects only. */
-#define CAM_POS vec3(-0.2387,0.3652,-0.7525)
-#define CAM_TGT vec3(-0.1472,-0.0543,0.0103)
+#define CAM_POS vec3(-0.2581,0.3868,-0.7201)
+#define CAM_TGT vec3(-0.1682,-0.0249,0.0289)
 #define CAM_FOV 30.
 #define SUN_DIR vec3(-.7,.85,-.3)
 #define MAXT 8.
@@ -13,7 +13,7 @@
 #include "studio.glsl"
 #include "hinbud.glsl"
 #define RC vec3(.06,0.,.08)
-vec3 rQ(vec3 p){ vec3 q=ry(p-RC,-.25); q.y-=.012; q.xy=rot(.13)*q.xy; return q; }
+vec3 rQ(vec3 p){ vec3 q=ry(p-RC,-.25); q.y-=.03; q.xy=rot(.2)*q.xy; q.yz=rot(-.15)*q.yz; return q; }
 float raft(vec3 p){ vec3 q=rQ(p); float d=1e5;
   for(int i=0;i<7;i++){ float z=-.09+float(i)*.03; float L=.2+.012*sin(float(i)*3.1);
     vec3 c=q-vec3(.005*sin(float(i)*1.7),.015,z); float pole=max(length(c.yz)-.014,abs(c.x)-L);
@@ -27,7 +27,7 @@ float paddle(vec3 p){ vec3 q=pQ(p); float sh=max(length(q.yz)-.008,abs(q.x+.06)-
   vec3 b=q-vec3(.15,0.,0.); float bl=sdRBox(b,vec3(.06,.004,.028-.01*smoothstep(-.06,.06,-b.x)),.004);
   float grip=max(length(q.yz)-.011,abs(q.x+.22)-.015);
   return min(min(sh,bl),grip); }
-float stones(vec3 p){ float d=sdEll(p-vec3(.24,.02,.12),vec3(.06,.03,.05))+.003*vn3(p*120.); d=min(d,sdEll(p-vec3(-.2,.012,-.12),vec3(.03,.012,.022))); d=min(d,sdEll(ry(p-vec3(-.15,.009,-.16),.8),vec3(.022,.009,.017))); d=min(d,sdEll(p-vec3(.3,.01,-.1),vec3(.025,.01,.02))); return d; }
+float stones(vec3 p){ float d=sdEll(p-vec3(.24,.02,.12),vec3(.06,.03,.05))+.003*vn3(p*120.); d=min(d,sdEll(p-vec3(-.1,.012,-.1),vec3(.03,.012,.022))); d=min(d,sdEll(ry(p-vec3(-.05,.009,-.13),.8),vec3(.022,.009,.017))); d=min(d,sdEll(p-vec3(.2,.01,-.1),vec3(.025,.01,.02))); return d; }
 vec2 map(vec3 p){
   vec2 r=vec2(p.y,1.);
   r=U(r,.42-p.z,2.);

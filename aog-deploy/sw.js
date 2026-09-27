@@ -334,7 +334,7 @@ const PRECACHE_LESSONS = [
 // Cached best-effort — a failure here must NEVER block install of the core.
 const PRECACHE_OPTIONAL = [
   './aog-glass.js',   // AOG-GLASS-V1 — the Blueprint windows painted as real glass
-  './aog-resources.json', './aog-resources.js', './aog-resources.css',   // AOG-RESOURCES-V1 — the resource library
+  './aog-resources.json', './aog-resources.js', './aog-resources.css', './aog-crosswalk.js',   // AOG-RESOURCES-V1 — the resource library
   'https://cdn.jsdelivr.net/npm/@fontsource/opendyslexic@5.0.0/files/opendyslexic-latin-400-normal.woff2',
   'https://cdn.jsdelivr.net/npm/@fontsource/opendyslexic@5.0.0/files/opendyslexic-latin-700-normal.woff2'
 ];
