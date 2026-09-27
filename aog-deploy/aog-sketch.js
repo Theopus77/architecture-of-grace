@@ -215,6 +215,16 @@
     + "\n.aog-door-sketch{ display:block; height:120px; margin:0 0 12px; border-radius:10px; overflow:hidden; border:1px solid rgba(242,201,100,.35); }"
     + "\n.aog-door-sketch img{ display:block; width:100%; height:100%; object-fit:cover; object-position:75% 42%; transform:scale(1.6); transform-origin:68% 40%; }"
     + "\n@media print{ .aog-door-sketch{ display:none; } }";
+  /* AOG-SKETCHBOOK-PAGES-V1 (2026-09-27) — Jimmy: the curriculum "read from a sketch book … same with the test
+     questions." Lessons, chapter reviews, unit tests, writing tasks and the room quizzes become sketchbook
+     pages: a spiral binding across the top and a pencil margin line down the left. The words sit on plain paper,
+     in the same clear font and dark ink; nothing behind them, nothing moves. Light theme only. */
+  var PAGES = ".les, section.review, section.wrap-up, section.write, .qstage";
+  TCSS += "\nhtml:not([data-theme=\"dark\"]) :is(" + PAGES + "){ padding-top:34px !important; padding-left:36px !important;"
+    + " background-image:radial-gradient(circle at 11px 9px, rgba(29,39,51,.6) 0 2.4px, transparent 2.9px), radial-gradient(ellipse 5px 8px at 11px 7px, transparent 0 3px, #8C939B 3.2px 4.4px, transparent 4.6px), linear-gradient(90deg, transparent 22px, rgba(184,69,70,.42) 22px 23.5px, transparent 23.5px) !important;"
+    + " background-size:22px 18px, 22px 18px, 100% 100% !important; background-repeat:repeat-x, repeat-x, no-repeat !important; background-position:12px 4px, 12px 4px, 0 0 !important; }"
+    + "\n@media (max-width:720px){ html:not([data-theme=\"dark\"]) :is(" + PAGES + "){ padding-left:30px !important; background-image:radial-gradient(circle at 11px 9px, rgba(29,39,51,.6) 0 2.4px, transparent 2.9px), radial-gradient(ellipse 5px 8px at 11px 7px, transparent 0 3px, #8C939B 3.2px 4.4px, transparent 4.6px), linear-gradient(90deg, transparent 18px, rgba(184,69,70,.42) 18px 19.5px, transparent 19.5px) !important; } }"
+    + "\n@media print{ :is(" + PAGES + "){ background-image:none !important; } }";
   function tabsHome() {
     if (!D.getElementById("aog-tabs-css")) { var ts = D.createElement("style"); ts.id = "aog-tabs-css"; ts.appendChild(D.createTextNode(TCSS)); (D.head || D.documentElement).appendChild(ts); }
     var doors = D.querySelectorAll(".aogdr-door");
