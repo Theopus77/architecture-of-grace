@@ -41,8 +41,14 @@
   var T=null;
   function textures(){
     if(T) return T;
+    var tq=(window.performance&&performance.now)?performance.now():0;
+    try{ return build(); } finally { if(tq) T.ms=Math.round(performance.now()-tq); }
+  }
+  function build(){
     var S=256;
-    var m=fbm(S,4,4,4,11), st=fbm(S,2,20,3,23), wv=fbm(S,6,6,3,37), fine=fbm(S,32,32,2,41), big=fbm(S,3,3,3,53), g=fbm(S,1,12,3,61);
+    var m=fbm(S,4,4,4,11), st=fbm(S,2,20,3,23), wv=fbm(S,6,6,3,37), F={};
+    /* frame noise is made only for the frame being drawn */
+    function N(k){ return F[k]||(F[k]=k==='fine'?fbm(S,32,32,2,41):k==='big'?fbm(S,3,3,3,53):fbm(S,1,12,3,61)); }
     T={
       /* mottling: mid-grey based, for overlay */
       mottle: texFrom(S,function(i){ var v=cl(128+(m[i]-0.5)*330); return [v,v,v]; }),
@@ -51,17 +57,17 @@
       /* the rolled surface: soft ridges that catch the room light */
       wave: texFrom(S,function(i){ var r=1-Math.abs(2*wv[i]-1); r=Math.pow(r,7); return [255,255,255,cl(r*255)]; }),
       /* weathered limestone */
-      stone: texFrom(S,function(i,x,y){ var n=big[i]*0.45+m[i]*0.25+fine[i]*0.3, sp=(hash(i*7+3)%1000)/1000;
+      get stone(){ if(this._stone) return this._stone; var fine=N('fine'), big=N('big'); return (this._stone=texFrom(S,function(i,x,y){ var n=big[i]*0.45+m[i]*0.25+fine[i]*0.3, sp=(hash(i*7+3)%1000)/1000;
         var k=0.52+n*0.62-(sp<0.06?0.2*sp/0.06+0.08:0)+(sp>0.97?0.1:0); var y2=Math.max(0,(0.5-big[i])*0.5);
-        return [cl(198*k-y2*30),cl(186*k-y2*30),cl(160*k-y2*20)]; }),
+        return [cl(198*k-y2*30),cl(186*k-y2*30),cl(160*k-y2*20)]; })); },
       /* cast bronze with verdigris in the hollows */
-      bronze: texFrom(S,function(i){ var n=m[i], p=Math.max(0,Math.min(1,(fine[i]*0.6+big[i]*0.4-0.58)*6))*0.8, k=0.62+n*0.5+fine[i]*0.15;
-        return [cl((104*(1-p)+64*p)*k),cl((72*(1-p)+104*p)*k),cl((34*(1-p)+88*p)*k)]; }),
+      get bronze(){ if(this._bronze) return this._bronze; var fine=N('fine'), big=N('big'); return (this._bronze=texFrom(S,function(i){ var n=m[i], p=Math.max(0,Math.min(1,(fine[i]*0.6+big[i]*0.4-0.58)*6))*0.8, k=0.62+n*0.5+fine[i]*0.15;
+        return [cl((104*(1-p)+64*p)*k),cl((72*(1-p)+104*p)*k),cl((34*(1-p)+88*p)*k)]; })); },
       /* carved walnut: long grain */
-      wood: texFrom(S,function(i,x,y){ var gr=Math.sin((x/S*26+g[i]*9)*Math.PI*2)*0.5+0.5; gr=Math.pow(gr,3); var k=0.62+big[i]*0.35+gr*0.22+fine[i]*0.1;
-        return [cl(112*k),cl(72*k),cl(40*k)]; }),
+      get wood(){ if(this._wood) return this._wood; var fine=N('fine'), big=N('big'), g=N('g'); return (this._wood=texFrom(S,function(i,x,y){ var gr=Math.sin((x/S*26+g[i]*9)*Math.PI*2)*0.5+0.5; gr=Math.pow(gr,3); var k=0.62+big[i]*0.35+gr*0.22+fine[i]*0.1;
+        return [cl(112*k),cl(72*k),cl(40*k)]; })); },
       /* mortar between tesserae */
-      mortar: texFrom(S,function(i){ var k=0.65+m[i]*0.5+fine[i]*0.2; return [cl(122*k),cl(92*k),cl(40*k)]; })
+      get mortar(){ if(this._mortar) return this._mortar; var fine=N('fine'), big=N('big'); return (this._mortar=texFrom(S,function(i){ var k=0.65+m[i]*0.5+fine[i]*0.2; return [cl(122*k),cl(92*k),cl(40*k)]; })); }
     };
     return T;
   }
@@ -116,7 +122,7 @@
       var t0=(window.performance&&performance.now)?performance.now():0;
       paint(ctx, spec, S);
       if(key){ var keep=mk(cv.width,cv.height); keep.getContext("2d").drawImage(cv,0,0); memo={}; memo[key]=keep; }
-      if(t0) cv.setAttribute("data-ms", String(Math.round(performance.now()-t0)));
+      if(t0) cv.setAttribute("data-ms", String(Math.round(performance.now()-t0))+(T&&T.ms!=null?" tex "+T.ms:""));
       return true;
     }catch(e){ try{ console.warn("AOGGlass", e); }catch(_){} return false; }
   }
@@ -144,7 +150,7 @@
       var p=panes[k], r=mul(hash(st+"|"+k+"|"+p.color)), pd=p.tf?p.d:warp(p.d), sc=scan(pd), path=new Path2D(pd);
       var tf=p.tf, b=sc.box, bw=Math.max(4,b[2]-b[0]), bh=Math.max(4,b[3]-b[1]);
       ctx.save();
-      if(tf){ tf=p.tf=[tf[0]+(r()-0.5)*0.8,tf[1]+(r()-0.5)*0.8,tf[2]+(r()-0.5)*9]; ctx.translate(tf[0],tf[1]); ctx.rotate(tf[2]*Math.PI/180); var zs=0.9+r()*0.12; ctx.scale(zs,zs*(0.94+r()*0.1)); }
+      if(tf){ tf=p._tf=[tf[0]+(r()-0.5)*0.8,tf[1]+(r()-0.5)*0.8,tf[2]+(r()-0.5)*9,0.9+r()*0.12]; tf[4]=tf[3]*(0.94+r()*0.1); ctx.translate(tf[0],tf[1]); ctx.rotate(tf[2]*Math.PI/180); ctx.scale(tf[3],tf[4]); }
       ctx.save(); ctx.clip(path);
       var col=rgb(p.color), op=p.op, dense;
       /* density keeps the old meaning: fill-opacity over a dark opening → a darker, denser glass of the same hue */
@@ -154,25 +160,24 @@
       var jit=(r()-0.5)*0.16, base=[0,1,2].map(function(i){ var v=col[i]*(1+jit); return v*(0.18+0.82*dense)+18*(1-dense); });
       /* distance from the light behind the window: panes near it are lit harder */
       var mx=(b[0]+b[2])/2, my=(b[1]+b[3])/2; if(tf){ mx=tf[0]; my=tf[1]; }
-      ctx.fillStyle=css(base); ctx.fillRect(b[0]-30,b[1]-30,bw+60,bh+60);
+      ctx.fillStyle=css(base); ctx.fillRect(b[0]-3,b[1]-3,bw+6,bh+6);
       if(!byz || !p.empty){
         /* mottled colour: two passes of noise at a per-pane offset and angle */
         ctx.globalCompositeOperation="overlay";
-        ctx.globalAlpha=0.7+r()*0.3; ctx.fillStyle=pat(ctx,tx.mottle,0.11+r()*0.08,r()*360,r()*256,r()*256); ctx.fillRect(b[0]-30,b[1]-30,bw+60,bh+60);
+        ctx.globalAlpha=0.7+r()*0.3; ctx.fillStyle=pat(ctx,tx.mottle,0.11+r()*0.08,r()*360,r()*256,r()*256); ctx.fillRect(b[0]-3,b[1]-3,bw+6,bh+6);
         ctx.globalCompositeOperation="soft-light";
-        ctx.globalAlpha=0.85; ctx.fillStyle=pat(ctx,tx.streak,0.18+r()*0.14,sheet+(r()*30-15),r()*256,r()*256); ctx.fillRect(b[0]-30,b[1]-30,bw+60,bh+60);
-        ctx.globalAlpha=0.45; ctx.fillStyle=pat(ctx,tx.mottle,0.045,r()*360,r()*256,r()*256); ctx.fillRect(b[0]-30,b[1]-30,bw+60,bh+60);
+        ctx.globalAlpha=0.85; ctx.fillStyle=pat(ctx,tx.streak,0.18+r()*0.14,sheet+(r()*30-15),r()*256,r()*256); ctx.fillRect(b[0]-3,b[1]-3,bw+6,bh+6);
         /* hue drift: one side of a sheet is a touch warmer, the other cooler */
         ctx.globalCompositeOperation="soft-light"; ctx.globalAlpha=0.35;
         var ga=r()*Math.PI*2, gr=ctx.createLinearGradient(mx-Math.cos(ga)*bw/2,my-Math.sin(ga)*bh/2,mx+Math.cos(ga)*bw/2,my+Math.sin(ga)*bh/2);
-        gr.addColorStop(0,"#ffe6b0"); gr.addColorStop(1,"#1a2a55"); ctx.fillStyle=gr; ctx.fillRect(b[0]-30,b[1]-30,bw+60,bh+60);
+        gr.addColorStop(0,"#ffe6b0"); gr.addColorStop(1,"#1a2a55"); ctx.fillStyle=gr; ctx.fillRect(b[0]-3,b[1]-3,bw+6,bh+6);
       }
       if(byz && p.empty){
         /* gold smalti: a leaf under glass, catching the room */
-        ctx.globalCompositeOperation="overlay"; ctx.globalAlpha=0.6; ctx.fillStyle=pat(ctx,tx.mottle,0.12,r()*360,r()*256,r()*256); ctx.fillRect(b[0]-30,b[1]-30,bw+60,bh+60);
+        ctx.globalCompositeOperation="overlay"; ctx.globalAlpha=0.6; ctx.fillStyle=pat(ctx,tx.mottle,0.12,r()*360,r()*256,r()*256); ctx.fillRect(b[0]-3,b[1]-3,bw+6,bh+6);
         ctx.globalCompositeOperation="source-over"; ctx.globalAlpha=0.35+r()*0.4;
         var gg=ctx.createLinearGradient(b[0],b[1],b[2],b[3]); gg.addColorStop(0,"#fff4c2"); gg.addColorStop(0.5,"rgba(255,230,150,0)"); gg.addColorStop(1,"rgba(90,60,10,.8)");
-        ctx.fillStyle=gg; ctx.fillRect(b[0]-30,b[1]-30,bw+60,bh+60);
+        ctx.fillStyle=gg; ctx.fillRect(b[0]-3,b[1]-3,bw+6,bh+6);
       }
       ctx.globalCompositeOperation="source-over";
       /* seed bubbles: many tiny, a few larger; some drawn out along the pull of the sheet */
@@ -199,6 +204,8 @@
       p._path=path; p._sc=sc;
     }
 
+    /* fine seedy texture over every sheet at once */
+    ctx.globalCompositeOperation="soft-light"; ctx.globalAlpha=0.5; ctx.fillStyle=pat(ctx,tx.mottle,0.05,33,17,91); ctx.fillRect(0,0,W,H); ctx.globalAlpha=1;
     /* 3 · the light behind: a soft sun just above the middle, falling off to the edges */
     ctx.globalCompositeOperation="multiply";
     var bl=ctx.createRadialGradient(lx,ly,10,lx,ly,Math.max(W,H)*0.62);
@@ -221,24 +228,24 @@
     /* 4 · bloom: the brightest glass spills a little light over its lead */
     var cvs=ctx.canvas, sw=Math.max(8,cvs.width/10|0), shh=Math.max(8,cvs.height/10|0), sm=mk(sw,shh), smx=sm.getContext("2d");
     smx.drawImage(cvs,0,0,sw,shh);
-    var id=smx.getImageData(0,0,sw,shh), dd=id.data;
-    for(var i=0;i<dd.length;i+=4){ var lum=(dd[i]*0.3+dd[i+1]*0.59+dd[i+2]*0.11)/255, f=Math.max(0,lum-0.3)/0.7; f=Math.min(1,f*1.6); dd[i]*=f; dd[i+1]*=f; dd[i+2]*=f; }
-    smx.putImageData(id,0,0);
+    /* keep only the bright glass: multiplying the image by itself sinks the darks (no pixel read-back, so the GPU never stalls) */
+    smx.globalCompositeOperation="multiply"; smx.drawImage(sm,0,0); smx.drawImage(sm,0,0);
+    smx.globalCompositeOperation="lighter"; smx.drawImage(sm,0,0); smx.globalCompositeOperation="source-over";
     var md=mk(sw*3,shh*3), mdx=md.getContext("2d"); mdx.imageSmoothingQuality="high"; mdx.drawImage(sm,0,0,sw*3,shh*3);
     ctx.save(); ctx.clip(glass);
 
     /* 5 · lead came: dark rounded strips with a thin ridge of light, width a little uneven */
     var L=byz?1.3:2.9;
     function came(path, tf, w, gold){
-      ctx.save(); if(tf){ ctx.translate(tf[0],tf[1]); ctx.rotate(tf[2]*Math.PI/180); }
+      ctx.save(); if(tf){ ctx.translate(tf[0],tf[1]); ctx.rotate(tf[2]*Math.PI/180); ctx.scale(tf[3],tf[4]); }
       ctx.save(); ctx.translate(0.5,0.8); ctx.strokeStyle="rgba(0,0,0,.45)"; ctx.lineWidth=w+1.4; ctx.stroke(path); ctx.restore();
       ctx.strokeStyle=gold?"#6b4e16":"#1d1e22"; ctx.lineWidth=w; ctx.stroke(path);
       ctx.strokeStyle=gold?"#a8802e":"#34363c"; ctx.lineWidth=w*0.62; ctx.stroke(path);
       ctx.save(); ctx.translate(-0.3,-0.4); ctx.strokeStyle=gold?"rgba(255,226,140,.8)":"rgba(210,216,228,.42)"; ctx.lineWidth=Math.max(0.35,w*0.16); ctx.stroke(path); ctx.restore();
       ctx.restore();
     }
-    for(k=0;k<panes.length;k++){ var pp=panes[k], rr=mul(hash("lead"+st+k)); if(!pp.key) came(pp._path, pp.tf, L*(0.88+rr()*0.26), false); }
-    for(k=0;k<panes.length;k++){ pp=panes[k]; if(pp.key) came(pp._path, pp.tf, L*1.15, true); }
+    for(k=0;k<panes.length;k++){ var pp=panes[k], rr=mul(hash("lead"+st+k)); if(!pp.key) came(pp._path, pp._tf, L*(0.88+rr()*0.26), false); }
+    for(k=0;k<panes.length;k++){ pp=panes[k]; if(pp.key) came(pp._path, pp._tf, L*1.15, true); }
 
     /* 6 · solder where leads meet: irregular grey blobs with a soft shine */
     if(!byz){
