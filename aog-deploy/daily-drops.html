@@ -1246,6 +1246,49 @@ body.review .box .ptcell, body.review .box .ew, body.review .box textarea{pointe
 @media (prefers-reduced-motion: reduce), (hover:none){ #subjSeg .bs button{transition:none} }
 @media (max-width:720px){ #subjSeg .bs{gap:14px 4px !important;padding:12px 6px 0 !important;background:repeating-linear-gradient(180deg, transparent 0 64px, #7A4E2B 64px 66px, #9A6A40 66px 71px, #5E3A1E 71px 73px, transparent 73px 87px) 0 0/100% 87px content-box !important;background-clip:content-box !important} #subjSeg .bs button, #subjSeg .bs button:nth-child(n){height:64px;min-height:64px !important;margin:0 0 9px !important;padding:0 9px !important;font-size:14px} }
 @media print{ #subjSeg .bs{background:none !important} }
+
+/* AOG-DD-SHELF-V2 (2026-09-27) — Jimmy: "Can the subjects get the sketch feel? They don't look like a book on a
+   shelf. I figure the subjects would be written vertical." Each subject is a tall pencil-drawn spine, title running
+   down it, a hatched band of its colour top and bottom; the shelf is a pencil-drawn plank. */
+#subjSeg .bs{gap:18px 6px !important;padding:14px 10px 0 !important;
+  background:
+    repeating-linear-gradient(180deg, transparent 0 172px, #2A2622 172px 173.5px, #EFE6D2 173.5px 180px, #2A2622 180px 181.5px, transparent 181.5px 200px) 0 0/100% 200px content-box,
+    repeating-linear-gradient(180deg, transparent 0 151.5px, transparent 151.5px 158px, transparent 158px 178px) !important;
+  background-clip:content-box !important}
+#subjSeg .bs button, #subjSeg .bs button:nth-child(n){writing-mode:vertical-rl;text-orientation:mixed;
+  height:172px;min-height:172px !important;width:44px;min-width:44px !important;margin:0 0 28px !important;padding:10px 0 !important;
+  display:inline-flex;align-items:center;justify-content:center;white-space:nowrap;font:700 14px/1 var(--sans, system-ui, sans-serif) !important;letter-spacing:.02em;
+  color:#1D2733 !important;border:1.5px solid #2A2622 !important;border-radius:3px 3px 1px 1px !important;
+  background:
+    repeating-linear-gradient(40deg, rgba(42,38,34,.10) 0 1px, transparent 1px 6px),
+    #FBF8F0 !important;
+  box-shadow:1.5px 0 0 -0.3px rgba(42,38,34,.45), -1px 1px 0 -0.4px rgba(42,38,34,.3) !important}
+#subjSeg .bs button::before,#subjSeg .bs button::after{content:"" !important;position:absolute;left:0;right:0;height:14px;background:var(--gl,#5E6B7A);z-index:0;pointer-events:none;transform:none !important;top:auto;bottom:auto;border:0;box-shadow:none;border-radius:0}
+#subjSeg .bs button::before{top:0 !important;border-bottom:1.2px solid #2A2622 !important}
+#subjSeg .bs button::after{bottom:0 !important;border-top:1.2px solid #2A2622 !important}
+#subjSeg .bs button:nth-child(3n+2){height:162px;min-height:162px !important;margin-top:10px !important;width:40px;min-width:40px !important}
+#subjSeg .bs button:nth-child(4n+3){height:168px;min-height:168px !important;margin-top:4px !important;width:48px;min-width:48px !important}
+#subjSeg .bs button:nth-child(5n+4){transform:rotate(1.2deg)}
+#subjSeg .bs button[aria-pressed="true"]{background:
+    #FFF3CC !important;border-width:2.5px !important;transform:translateY(-12px) !important}
+@media (max-width:720px){
+  #subjSeg .bs{gap:14px 4px !important;padding:10px 4px 0 !important;
+    background:repeating-linear-gradient(180deg, transparent 0 160px, #2A2622 160px 161.5px, #EFE6D2 161.5px 167px, #2A2622 167px 168.5px, transparent 168.5px 184px) 0 0/100% 184px content-box !important;background-clip:content-box !important}
+  #subjSeg .bs button, #subjSeg .bs button:nth-child(n){height:160px;min-height:160px !important;width:38px;min-width:38px !important;margin:0 0 24px !important;font-size:12.5px !important;transform:none}
+  #subjSeg .bs button[aria-pressed="true"]{transform:translateY(-8px) !important}
+}
+@media (prefers-reduced-motion: reduce), (hover:none){ #subjSeg .bs button[aria-pressed="true"]{transform:none !important} }
+#subjSeg .bs button[aria-pressed="true"]::before{background:var(--gl,#5E6B7A) !important}
+</style>
+<style id="aog-dd-sendbyname">
+/* the send box beside the name line: one row, no repeated heading */
+.sig + #sendBox{margin:10px 0 4px !important;padding:10px 14px !important;display:flex;flex-wrap:wrap;align-items:center;gap:6px 14px;max-width:none !important}
+.sig + #sendBox .sk{display:none !important}
+.sig + #sendBox .snote{flex:1 1 260px;margin:0 !important;font-size:14px !important}
+.sig + #sendBox .srow{margin:0 !important;order:-1}
+.sig + #sendBox .sst{flex-basis:100%;margin:0 !important}
+.sig + #sendBox .sst:empty{display:none}
+@media print{ #sendBox{display:none !important} }
 </style>
 </head>
 <body>
@@ -1304,13 +1347,13 @@ body.review .box .ptcell, body.review .box .ew, body.review .box textarea{pointe
       <button data-s="health" aria-pressed="false" title="Medicine and Health" data-en="Medicine &amp; Health" data-es="Medicina y salud">Medicine &amp; Health</button>
       </div></div>
       <div class="sgrp"><span class="sg-k" data-en="Faith &amp; texts" data-es="Fe y textos">Faith &amp; texts</span><div class="bs">
-      <button data-s="religion" aria-pressed="false" title="World Religions" data-en="Religions" data-es="Religiones">Religions</button>
       <button data-s="bible" aria-pressed="false" title="The Bible" data-en="The Bible" data-es="La Biblia">The Bible</button>
       <button data-s="quran" aria-pressed="false" title="The Qur’an" data-en="The Qur’an" data-es="El Corán">The Qur’an</button>
       <button data-s="talmud" aria-pressed="false" title="The Talmud" data-en="The Talmud" data-es="El Talmud">The Talmud</button>
       <button data-s="hindu" aria-pressed="false" title="Hindu Texts" data-en="Hindu Texts" data-es="Textos hindúes">Hindu Texts</button>
       <button data-s="buddhist" aria-pressed="false" title="Buddhist Texts" data-en="Buddhist Texts" data-es="Textos budistas">Buddhist Texts</button>
       <button data-s="chinese" aria-pressed="false" title="Chinese Classics: the Analects and the Daodejing" data-en="Chinese Classics" data-es="Clásicos chinos">Chinese Classics</button>
+      <button data-s="religion" aria-pressed="false" title="World Religions" data-en="Religions" data-es="Religiones">Religions</button>
       </div></div>
     </div>
   </div>
@@ -17825,8 +17868,8 @@ function sigRow(){
   return '<div class="sig"><label for="nameIn">'+t('Name','Nombre')+'</label>'+
     '<input id="nameIn" autocomplete="off" placeholder="'+t('Enter your name','Escribe tu nombre')+'">'+
     '<span class="signote">'+t(
-      'Sign it when you are done. Use your name or the code your teacher gave you — and use the <b>same one every time</b>, or your teacher will see you as two different students.',
-      'Fírmala cuando termines. Usa tu nombre o el código que te dio tu maestro — y usa <b>siempre el mismo</b>, o tu maestro te verá como dos estudiantes distintos.')+'</span></div>'}
+      'Sign with your name or class code. Use the <b>same one every time</b>.',
+      'Firma con tu nombre o tu código de clase. Usa <b>siempre el mismo</b>.')+'</span></div>'}
 
 /* AOG-DD-PACK-V1 — the sheet's own markup, built from ST as it stands. render()
    puts it on the page; the print pack asks for it once per draft with pack=true,
@@ -19109,7 +19152,7 @@ function refresh(){if(!hasGrade(ST.subj,ST.grade))ST.grade=fitGrade(ST.subj);try
     box.className="sendbox no-print"; box.id="sendBox";
     box.innerHTML=
       '<span class="sk" data-en="Send it to your teacher" data-es="Env&iacute;aselo a tu maestro">Send it to your teacher</span>'
-      +'<p class="snote" data-en="It sends your work for this sheet — your answers, your score, and the name you sign. It goes the moment you sign your name; tap the button to send it again." data-es="Env&iacute;a tu trabajo de esta hoja — tus respuestas, tu puntaje y el nombre que firmas. No se env&iacute;a nada hasta que tocas el bot&oacute;n.">It sends your work for this sheet — your answers, your score, and the name you sign. It goes the moment you sign your name; tap the button to send it again.</p>'
+      +'<p class="snote" data-en="Your answers and score go to your teacher when you sign. Tap to send again." data-es="Tus respuestas y tu puntaje le llegan a tu maestro cuando firmas. Toca para enviarlo otra vez.">Your answers and score go to your teacher when you sign. Tap to send again.</p>'
       +'<div class="srow"><button class="btn solid" type="button">Send to my teacher</button></div>'
       +'<p class="sst" aria-live="polite"></p>';
     /* Jimmy: "Have send to teacher next to or above print and clear sheets."
@@ -19122,6 +19165,11 @@ function refresh(){if(!hasGrade(ST.subj,ST.grade))ST.grade=fitGrade(ST.subj);try
             || document.querySelector("main > .acts")
             || document.querySelector(".sheet-foot");
     anchor.parentNode.insertBefore(box,anchor);
+    /* AOG-DD-SEND-BY-NAME (2026-09-27) — Jimmy: "Should the send to my teacher box be right next to the write
+       your name line? Just when it prints remove it." The box settles right under the name line each time the
+       sheet redraws (the sheet is rebuilt, so it cannot live inside it); off the printout as before. */
+    function byName(){ var sg=document.querySelector(".sig"); if(sg&&sg.nextElementSibling!==box) sg.parentNode.insertBefore(box,sg.nextSibling); }
+    byName(); new MutationObserver(byName).observe(document.querySelector("main")||document.body,{childList:true,subtree:true});
     ui={box:box,go:box.querySelector("button"),st:box.querySelector(".sst")};
     ui.go.addEventListener("click",function(){
       if(sendBusy)return;
@@ -19138,10 +19186,10 @@ function refresh(){if(!hasGrade(ST.subj,ST.grade))ST.grade=fitGrade(ST.subj);try
     if(!ui)return;
     var note=ui.box.querySelector('.snote');
     if(note){note.textContent=(ST.subj==='write')
-      ? T("It sends what you wrote, your plan, how many words, and the six rubric numbers if they are filled in — under the name you sign. It goes the moment you sign your name; tap the button to send it again.",
-          "Env&iacute;a lo que escribiste, tu plan, cu&aacute;ntas palabras y los seis n&uacute;meros de la r&uacute;brica si est&aacute;n puestos — con el nombre que firmas. No se env&iacute;a nada hasta tocar el bot&oacute;n.")
-      : T("It sends your answers for this sheet, your score, how you did on each of the ten boxes, and the name you sign. It goes the moment you sign your name; tap the button to send it again.",
-          "Env\u00eda tus respuestas de esta hoja, tu puntaje, c\u00f3mo te fue en cada una de las diez casillas, y el nombre que firmas. No se env\u00eda nada hasta que tocas el bot\u00f3n.")}
+      ? T("Your writing, plan and rubric go to your teacher when you sign. Tap to send again.",
+          "Tu escrito, tu plan y la rúbrica le llegan a tu maestro cuando firmas. Toca para enviarlo otra vez.")
+      : T("Your answers and score go to your teacher when you sign. Tap to send again.",
+          "Tus respuestas y tu puntaje le llegan a tu maestro cuando firmas. Toca para enviarlo otra vez.")}
     /* a new sheet is a new row waiting to be earned */
     var k=sheetKey(); if(k!==lastKey){lastKey=k;sentAt=null;sentHow="";sendErr=false}
     /* THE DOOR IS ALWAYS HERE. It does not appear when the work is done —
