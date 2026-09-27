@@ -778,7 +778,7 @@ else document.documentElement.classList.add("aog-embed");</script>
      aog.daily.v1 precisely so periodStats() cannot score them 0%. */
   function readCheckins(){
     return arrOf("aog.checkin.remote").filter(function(r){
-      return r && String(r.checkinType||"")!=="practice" && !isVoiceRow(r);
+      return r && String(r.checkinType||"")!=="practice" && !/^slip-/.test(String(r.checkinType||"")) && !isVoiceRow(r);
     }).map(function(r){
       var role=String(r.respondentRole||"").toLowerCase();
       var isStu = role==="student";
@@ -1068,7 +1068,19 @@ else document.documentElement.classList.add("aog-embed");</script>
   }
 
   /* ═══════════ every reader, one list ═══════════ */
-  var READERS=[readTurnins, readCheckins, readExit, readHomeCi, readReflect, readVoice];
+  /* AOG-SLIP-ENGINE-V1 — the slips from /slip.html: one kind, labelled by which slip, the answers in words */
+  var SLIPNAME={test:"Before a test",repair:"After a hard moment",goal:"Goal check",home:"Home · evening",team:"Group work",unit:"End of unit"};
+  function readSlips(){
+    var remote=arrOf("aog.checkin.remote").filter(function(r){ return r && /^slip-/.test(String(r.checkinType||"")); });
+    var mine=arrOf("aog.slips.mine").filter(function(m){ return !remote.some(function(r){ return String(r.studentId)===String(m.studentId)&&String(r.checkinType)===String(m.checkinType)&&Math.abs(Date.parse(r.timestamp)-Date.parse(m.timestamp))<180000; }); });
+    return remote.map(function(r){ r=Object.assign({},r); r.__sheet=true; return r; }).concat(mine).map(function(r){
+      var x=xparse(r), sid=String(r.checkinType||"").slice(5), a=x.answers||{};
+      var sum=Object.keys(a).map(function(k){ return a[k]; }).filter(Boolean).join(" · ");
+      return { kind:"slip", kindLab:SLIPNAME[sid]||"Slip", cls:"k-ci", subj:"", student:r.studentId||"", ts:r.timestamp||r.date||"",
+               title:(SLIPNAME[sid]||"Slip")+(x.goalTitle?" — "+x.goalTitle:"")+(x.unit?" — "+x.unit:""), sum:sum+(r.followUp?" · FOLLOW-UP":""), sheet:!!r.__sheet, raw:r };
+    });
+  }
+  var READERS=[readTurnins, readCheckins, readSlips, readExit, readHomeCi, readReflect, readVoice];
   function allItems(){
     var out=[];
     READERS.forEach(function(fn){
@@ -1080,7 +1092,7 @@ else document.documentElement.classList.add("aog-embed");</script>
   }
 
   /* ═══════════ the filters ═══════════ */
-  var KINDS=[["all","Everything"],["turnin","Turn-ins"],["checkin","Student check-ins"],
+  var KINDS=[["all","Everything"],["turnin","Turn-ins"],["checkin","Student check-ins"],["slip","Slips"],
              ["voice","My Voice"],
              ["team","Team check-ins"],["exit","Exit slips"],["homeci","Home check-ins"],
              ["reflect","Self-reflections"]];

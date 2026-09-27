@@ -1,0 +1,201 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Slip — Architecture of Grace</title>
+<meta name="description" content="A short slip: a few taps, no typing needed, sent to your teacher.">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png?v=arch">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png?v=arch">
+<meta name="theme-color" content="#0A1E33">
+<link rel="stylesheet" href="/aog-calm.css">
+<!-- AOG-SLIP-ENGINE-V1 (2026-09-27) — Jimmy: "Make sure all slips are on a shared engine … even the old ones if
+     that is possible." ONE page for every slip: a slip is a few lines of config (SLIPS below), and this page gives
+     it the same quiet look, the same no-typing-needed answers, the same name buttons and the same send.
+     Every slip lands in the teacher's Check-ins tab as checkinType "slip-<id>", its answers in `extra`, so the
+     Sheet script needs no change and the dashboard and Inbox read it back like any check-in.
+     Links: /slip.html?s=test|repair|goal|home|team|unit  &sid=<name>  &dest=<b64> or &d=<script id>.<key>
+            goal adds &goal=<id>&gt=<goal title>;  unit adds &u=<unit name>.
+     Calm rules: nothing moves, every field is 16px or larger, no endless motion, plain words. -->
+<style>
+:root{--navy:#0A1E33;--ink:#15202E;--soft:#4A5563;--cream:#FBF7EE;--card:#fff;--line:#E2D8C3;--gold:#C9A24A;--goldInk:#7A5A12;--good:#2E7D4F;--pick:#0A1E33;--pickInk:#F4EEE2}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--ink:#EEF2F6;--soft:#C2CCD6;--cream:#12263D;--card:#1A3657;--line:rgba(255,255,255,.16);--goldInk:#F2C964;--pick:#F4EEE2;--pickInk:#0A1E33}}
+:root[data-theme="dark"]{--ink:#EEF2F6;--soft:#C2CCD6;--cream:#12263D;--card:#1A3657;--line:rgba(255,255,255,.16);--goldInk:#F2C964;--pick:#F4EEE2;--pickInk:#0A1E33}
+*{box-sizing:border-box}
+html,body{background:var(--cream)}
+body{margin:0;color:var(--ink);font:16px/1.5 Inter,system-ui,-apple-system,"Segoe UI",sans-serif}
+.wrap{max-width:620px;margin:0 auto;padding:18px 16px 60px}
+.k{font:800 12px/1.2 Inter,system-ui,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:var(--goldInk);margin:0 0 6px}
+h1{font-family:Fraunces,Georgia,"Times New Roman",serif;font-weight:600;font-size:clamp(24px,6vw,30px);line-height:1.2;margin:0 0 6px}
+.lead{color:var(--soft);margin:0 0 18px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px 16px;margin:0 0 14px;box-shadow:0 12px 30px -26px rgba(10,30,51,.5)}
+.q{font-family:Fraunces,Georgia,serif;font-weight:600;font-size:19px;line-height:1.3;margin:0 0 4px}
+.hint{color:var(--soft);font-size:14.5px;margin:0 0 12px}
+.opts{display:grid;gap:8px}
+.opts.chips{grid-template-columns:repeat(2,minmax(0,1fr))}
+@media (min-width:560px){.opts.chips{grid-template-columns:repeat(3,minmax(0,1fr))}}
+.opt{min-height:48px;padding:10px 14px;border:1px solid #B9B2A3;border-radius:10px;background:var(--card);color:var(--ink);font:600 16px/1.25 inherit;font-family:inherit;text-align:left;cursor:pointer;display:flex;align-items:center;gap:10px}
+.opt .n{flex:0 0 26px;height:26px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:13px;border:1px solid currentColor;opacity:.7}
+.opt[aria-pressed="true"]{background:var(--pick);color:var(--pickInk);border-color:var(--pick)}
+.opt:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+textarea,input[type=text]{width:100%;min-height:48px;font:16px/1.4 inherit;font-family:inherit;padding:10px 12px;border:1px solid #1B2A3D;border-radius:10px;background:var(--card);color:var(--ink)}
+textarea{min-height:84px;resize:vertical}
+.names{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 10px}
+.names button{min-height:40px;padding:0 14px;border-radius:999px;border:1px solid #B9B2A3;background:var(--card);color:var(--ink);font:600 15px inherit;font-family:inherit;cursor:pointer}
+.names button[aria-pressed="true"]{background:var(--pick);color:var(--pickInk);border-color:var(--pick)}
+.send{width:100%;min-height:54px;border:0;border-radius:12px;background:var(--navy);color:#F4EEE2;font:700 17px inherit;font-family:inherit;cursor:pointer}
+.send:disabled{background:#B9C4D0;color:#15202E;cursor:default}
+.st{margin:10px 0 0;font-weight:600}
+.st.ok{color:var(--good)} .st.bad{color:#8B2A2A}
+.done{text-align:center;padding:26px 16px}
+.done h2{font-family:Fraunces,Georgia,serif;font-size:26px;margin:0 0 8px}
+.back{display:inline-flex;align-items:center;min-height:44px;padding:0 16px;border-radius:999px;border:1px solid #1B2A3D;color:var(--ink);text-decoration:none;font-weight:600;margin-top:12px}
+.goalbox{border-left:4px solid var(--gold);padding:8px 12px;background:rgba(201,162,74,.10);border-radius:8px;margin:0 0 14px;font-weight:600}
+@media print{.send,.st,.names{display:none}}
+</style>
+</head>
+<body>
+<script src="/aog-topbar.js"></script>
+<div class="wrap" id="app" role="main"></div>
+<script>
+(function(){
+"use strict";
+var Q=new URLSearchParams(location.search);
+var ES=(Q.get("lang")||document.documentElement.lang||"en").slice(0,2)==="es";
+function t(en,es){ return ES?es:en; }
+function esc(s){ return String(s==null?"":s).replace(/[&<>"']/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];}); }
+function lsGet(k,d){ try{ var v=localStorage.getItem(k); return v==null?d:v; }catch(e){ return d; } }
+function lsSet(k,v){ try{ localStorage.setItem(k,v); }catch(e){} }
+function jGet(k,d){ try{ var v=localStorage.getItem(k); return v==null?d:JSON.parse(v); }catch(e){ return d; } }
+function jSet(k,v){ lsSet(k,JSON.stringify(v)); }
+
+/* ══ THE SLIPS — each is a few lines. kind: scale (five steps, one pick), one (one pick), pick (up to max), note (optional words).
+   Nothing is required except the name; a slip can be sent with every question skipped. ══ */
+var SCALE_READY=[["Not yet","Todavía no"],["A little","Un poco"],["Getting there","Casi"],["Ready","Listo"],["Very ready","Muy listo"]];
+var SLIPS={
+  test:{ k:["Before a test","Antes de un examen"], h:["How ready do you feel?","¿Qué tan listo te sientes?"],
+    lead:["Three taps. It tells your teacher what to go over before the test.","Tres toques. Le dice a tu maestro qué repasar antes del examen."],
+    qs:[{id:"ready",kind:"scale",q:["How ready do you feel for this test?","¿Qué tan listo te sientes para este examen?"],o:SCALE_READY},
+        {id:"shaky",kind:"pick",max:3,q:["What feels shaky?","¿Qué se siente inseguro?"],hint:["Pick up to three.","Elige hasta tres."],o:[["Remembering the words","Recordar las palabras"],["The steps in a problem","Los pasos de un problema"],["Reading the questions","Leer las preguntas"],["Writing my answers","Escribir mis respuestas"],["Running out of time","Quedarme sin tiempo"],["Nothing feels shaky","Nada se siente inseguro"]]},
+        {id:"help",kind:"pick",max:2,q:["What would help before the test?","¿Qué te ayudaría antes del examen?"],o:[["A review sheet","Una hoja de repaso"],["One more example together","Un ejemplo más juntos"],["Studying with a partner","Estudiar con un compañero"],["Quiet time to practice","Tiempo tranquilo para practicar"],["Asking my teacher a question","Hacerle una pregunta a mi maestro"],["I'm set","Estoy listo"]]},
+        {id:"topic",kind:"note",q:["Which part, in your own words? (optional)","¿Qué parte, en tus palabras? (opcional)"]}]},
+  repair:{ k:["After a hard moment","Después de un momento difícil"], h:["Reset and repair","Reiniciar y reparar"],
+    lead:["No one is in trouble here. This helps you and your teacher plan what helps next time.","Aquí nadie está en problemas. Esto ayuda a planear qué sirve la próxima vez."],
+    qs:[{id:"what",kind:"one",q:["What happened?","¿Qué pasó?"],o:[["I got upset","Me enojé"],["I shut down","Me cerré"],["I had a disagreement","Tuve un desacuerdo"],["I left the room","Salí del salón"],["Something else","Otra cosa"]]},
+        {id:"needed",kind:"pick",max:3,q:["What did I need?","¿Qué necesitaba?"],o:[["Space","Espacio"],["A break","Un descanso"],["Someone to listen","Que alguien me escuchara"],["To be understood","Que me entendieran"],["Help with the work","Ayuda con el trabajo"],["I'm not sure","No estoy seguro"]]},
+        {id:"next",kind:"one",q:["What will I try next time?","¿Qué intentaré la próxima vez?"],o:[["Ask for a break","Pedir un descanso"],["Use a calm-down tool","Usar una herramienta para calmarme"],["Talk to an adult","Hablar con un adulto"],["Slow breaths","Respiraciones lentas"],["Walk away and come back","Alejarme y regresar"],["Not sure yet","Aún no sé"]]},
+        {id:"now",kind:"scale",q:["How do you feel now?","¿Cómo te sientes ahora?"],o:[["Still upset","Todavía molesto"],["A bit better","Un poco mejor"],["Okay","Bien"],["Calm","Tranquilo"],["Ready to go","Listo para seguir"]]},
+        {id:"words",kind:"note",q:["Anything else you want to say? (optional)","¿Algo más que quieras decir? (opcional)"]}],
+    follow:function(a){ return (a.now!=null&&a.now<=1); } },
+  goal:{ k:["Goal check","Revisión de mi meta"], h:["How am I doing on my goal?","¿Cómo voy con mi meta?"],
+    lead:["Your answer sits beside your teacher's chart, so both views are in the room.","Tu respuesta va junto a la gráfica de tu maestro, para que ambas miradas estén presentes."],
+    qs:[{id:"close",kind:"scale",q:["How close am I to my goal?","¿Qué tan cerca estoy de mi meta?"],o:[["Just starting","Apenas empiezo"],["Some progress","Algo de progreso"],["Halfway","A la mitad"],["Almost there","Casi lo logro"],["I did it","Lo logré"]]},
+        {id:"week",kind:"one",q:["This week I…","Esta semana yo…"],o:[["Worked hard on it","Trabajé duro en ella"],["Did some","Hice algo"],["Forgot about it","Me olvidé"],["Needed more help","Necesité más ayuda"]]},
+        {id:"helps",kind:"pick",max:3,q:["What helps me most?","¿Qué me ayuda más?"],o:[["Practice","Practicar"],["Reminders","Recordatorios"],["Seeing my progress","Ver mi progreso"],["Working with an adult","Trabajar con un adulto"],["A quiet place","Un lugar tranquilo"],["Breaks","Descansos"]]},
+        {id:"words",kind:"note",q:["Anything you want your team to know? (optional)","¿Algo que quieras que tu equipo sepa? (opcional)"]}] },
+  home:{ k:["Home · Evening check-in","Casa · Registro de la tarde"], h:["How was the evening?","¿Cómo estuvo la tarde?"], parent:true,
+    lead:["A short note from home. Your child's teacher sees it before school tomorrow.","Una nota corta de casa. El maestro la verá antes de la escuela mañana."],
+    qs:[{id:"sleep",kind:"one",q:["Sleep last night","Sueño anoche"],o:[["Good","Bien"],["Okay","Regular"],["Short","Poco"],["Rough","Difícil"]]},
+        {id:"mood",kind:"scale",q:["Mood this evening","Ánimo esta tarde"],o:[["Rough","Difícil"],["Low","Bajo"],["Okay","Bien"],["Good","Bueno"],["Great","Muy bueno"]]},
+        {id:"today",kind:"pick",max:3,q:["Anything from today?","¿Algo de hoy?"],o:[["Big day, tired","Día largo, cansado"],["Something upset them","Algo le molestó"],["Didn't eat well","No comió bien"],["Great day","Buen día"],["Medicine change","Cambio de medicina"],["Nothing new","Nada nuevo"]]},
+        {id:"words",kind:"note",q:["Anything the teacher should know tomorrow? (optional)","¿Algo que el maestro deba saber mañana? (opcional)"]}],
+    follow:function(a){ return (a.mood!=null&&a.mood<=0)||/upset|Medicine|molest|medicina/i.test(String(a.today||"")); } },
+  team:{ k:["Group work","Trabajo en grupo"], h:["How did our team do?","¿Cómo le fue a nuestro equipo?"],
+    lead:["About the team and about you. No one else sees your answers.","Sobre el equipo y sobre ti. Nadie más ve tus respuestas."],
+    qs:[{id:"team",kind:"scale",q:["How well did our team work together?","¿Qué tan bien trabajó nuestro equipo?"],o:[["Not well","No bien"],["A little","Un poco"],["Okay","Bien"],["Well","Muy bien"],["Really well","Excelente"]]},
+        {id:"me",kind:"scale",q:["How much did I help?","¿Cuánto ayudé yo?"],o:[["Not much","Poco"],["A little","Algo"],["My share","Mi parte"],["A lot","Mucho"],["I led","Guié al equipo"]]},
+        {id:"good",kind:"pick",max:3,q:["Our team was good at…","Nuestro equipo fue bueno en…"],o:[["Listening","Escuchar"],["Sharing jobs","Repartir tareas"],["Staying on task","Mantenerse en la tarea"],["Kind words","Palabras amables"],["Solving problems","Resolver problemas"],["Finishing on time","Terminar a tiempo"]]},
+        {id:"next",kind:"one",q:["Next time we should…","La próxima vez deberíamos…"],o:[["Plan first","Planear primero"],["Share the work more evenly","Repartir el trabajo mejor"],["Listen more","Escuchar más"],["Check in with each other","Revisar entre nosotros"],["Keep doing what we did","Seguir igual"]]}] },
+  unit:{ k:["End of unit","Fin de la unidad"], h:["What stuck, and what didn't?","¿Qué se quedó y qué no?"],
+    lead:["It helps your teacher plan the review, and pairs with the unit test.","Ayuda a tu maestro a planear el repaso y va con el examen de la unidad."],
+    qs:[{id:"stuck",kind:"pick",max:3,q:["What stuck?","¿Qué se quedó?"],o:[["The new words","Las palabras nuevas"],["The big ideas","Las ideas grandes"],["How to solve the problems","Cómo resolver los problemas"],["The examples","Los ejemplos"],["The reading","La lectura"],["Not much yet","Todavía poco"]]},
+        {id:"notyet",kind:"pick",max:3,q:["What hasn't stuck yet?","¿Qué no se ha quedado todavía?"],o:[["The new words","Las palabras nuevas"],["The big ideas","Las ideas grandes"],["How to solve the problems","Cómo resolver los problemas"],["The examples","Los ejemplos"],["The reading","La lectura"],["It all stuck","Todo se quedó"]]},
+        {id:"conf",kind:"scale",q:["How confident do I feel for the unit test?","¿Qué tan seguro me siento para el examen?"],o:SCALE_READY},
+        {id:"how",kind:"one",q:["I learned best this unit by…","Aprendí mejor esta unidad con…"],o:[["Examples","Ejemplos"],["Practice","Práctica"],["Talking it out","Conversando"],["Reading","Leyendo"],["Pictures and videos","Imágenes y videos"]]}] }
+};
+
+var id=String(Q.get("s")||"").toLowerCase(), S=SLIPS[id], app=document.getElementById("app");
+if(!S){ app.innerHTML='<div class="card"><p class="k">'+t("Slips","Boletos")+'</p><h1>'+t("Which slip?","¿Qué boleto?")+'</h1><p class="lead">'+t("This link is missing its slip. Open the class link your teacher shared.","A este enlace le falta el boleto. Abre el enlace que compartió tu maestro.")+'</p><a class="back" href="/today">'+t("Your work today","Tu trabajo de hoy")+' ›</a></div>'; return; }
+document.title=t(S.k[0],S.k[1])+" — Architecture of Grace";
+
+/* ── where it goes: the link's own Sheet wins (dest= or the short d=), then what this device handed out, then this device's own ── */
+function destFrom(){
+  var raw=Q.get("dest");
+  if(raw){ try{ var s=raw.replace(/-/g,"+").replace(/_/g,"/"); while(s.length%4) s+="="; var o=JSON.parse(decodeURIComponent(escape(atob(s)))); if(o&&o.u) return {u:o.u,k:o.k||""}; }catch(e){} }
+  var d=Q.get("d"); if(d){ var i=d.indexOf("."); if(i>0) return {u:"https://script.google.com/macros/s/"+d.slice(0,i)+"/exec",k:d.slice(i+1)}; }
+  var h=jGet("aog.dash2.handed",null); if(h&&h.dest){ try{ var s2=h.dest.replace(/-/g,"+").replace(/_/g,"/"); while(s2.length%4) s2+="="; var o2=JSON.parse(decodeURIComponent(escape(atob(s2)))); if(o2&&o2.u) return {u:o2.u,k:o2.k||""}; }catch(e){} }
+  var u=lsGet("aog.sync.url",""), k=lsGet("aog.sync.writekey","")||lsGet("aog.sync.key",""); if(u&&k) return {u:u,k:k};
+  return null;
+}
+var DEST=destFrom();
+
+/* ── the name: the link's, else this device's; every name used here is a button (shared with the dashboard) ── */
+function names(){ var a=(jGet("aog.dash2.names",[])||[]).concat(jGet("aog.dash2.kids",[])||[]), seen={}, out=[]; a.forEach(function(n){ n=String(n||"").trim(); var k=n.toLowerCase(); if(n&&!seen[k]){ seen[k]=1; out.push(n); } }); return out.slice(0,8); }
+function remember(n){ n=String(n||"").trim(); if(!n) return; var a=(jGet("aog.dash2.names",[])||[]).filter(function(x){ return String(x).toLowerCase()!==n.toLowerCase(); }); a.unshift(n); jSet("aog.dash2.names",a.slice(0,8)); jSet("aog.dash2.student",n); lsSet("aog.drops.who",n); }
+var who=(Q.get("sid")||"").trim()||String(jGet("aog.dash2.student","")||"").trim()||lsGet("aog.drops.who","");
+var A={}, sent=false, busy=false, err="";
+
+function paint(){
+  var h='<p class="k">'+esc(t(S.k[0],S.k[1]))+'</p><h1>'+esc(t(S.h[0],S.h[1]))+'</h1><p class="lead">'+esc(t(S.lead[0],S.lead[1]))+'</p>';
+  if(sent){ app.innerHTML=h+'<div class="card done"><h2>'+t("Sent. Thank you.","Enviado. Gracias.")+'</h2><p class="lead" style="margin:0">'+(DEST?t("Your teacher will see it.","Tu maestro lo verá."):t("Saved on this device. This link has no Sheet, so show this screen to your teacher.","Guardado en este aparato. Este enlace no tiene Hoja; muéstrale esta pantalla a tu maestro."))+'</p><a class="back" href="/today">'+t("Back to your work today","Volver a tu trabajo de hoy")+' ›</a></div>'; return; }
+  var ns=names();
+  h+='<div class="card"><label class="q" for="who">'+(S.parent?t("Your child's name","El nombre de su hijo"):t("Your name","Tu nombre"))+'</label>'
+    +(ns.length?'<div class="names" style="margin-top:8px">'+ns.map(function(n){ return '<button type="button" data-who="'+esc(n)+'" aria-pressed="'+(n.toLowerCase()===who.toLowerCase())+'">'+esc(n)+'</button>'; }).join("")+'</div>':'')
+    +'<input type="text" id="who" maxlength="40" autocomplete="off" autocorrect="off" autocapitalize="words" spellcheck="false" value="'+esc(who)+'"></div>';
+  var gt=Q.get("gt"); if(id==="goal"&&gt) h+='<div class="goalbox">'+t("My goal: ","Mi meta: ")+esc(gt)+'</div>';
+  var un=Q.get("u"); if(id==="unit"&&un) h+='<div class="goalbox">'+esc(un)+'</div>';
+  S.qs.forEach(function(q){
+    h+='<div class="card"><p class="q">'+esc(t(q.q[0],q.q[1]))+'</p>'+(q.hint?'<p class="hint">'+esc(t(q.hint[0],q.hint[1]))+'</p>':'<p class="hint"></p>');
+    if(q.kind==="note"){ h+='<textarea data-note="'+q.id+'" maxlength="400">'+esc(A[q.id]||"")+'</textarea>'; }
+    else{ var multi=q.kind==="pick", cur=A[q.id]; h+='<div class="opts'+(q.kind==="scale"?"":" chips")+'" role="group">'+q.o.map(function(o,i){ var on=multi?((cur||[]).indexOf(i)>=0):(cur===i); return '<button type="button" class="opt" data-q="'+q.id+'" data-i="'+i+'" aria-pressed="'+on+'">'+(q.kind==="scale"?'<span class="n">'+(i+1)+'</span>':'')+esc(t(o[0],o[1]))+'</button>'; }).join("")+'</div>'; }
+    h+='</div>';
+  });
+  h+='<button type="button" class="send" id="send"'+(busy?' disabled':'')+'>'+(busy?t("Sending…","Enviando…"):t("Send to my teacher","Enviar a mi maestro"))+'</button><p class="st'+(err?" bad":"")+'" id="st" aria-live="polite">'+esc(err)+'</p>';
+  app.innerHTML=h; wire();
+}
+function wire(){
+  var w=document.getElementById("who"); if(w) w.addEventListener("input",function(){ who=w.value; });
+  app.querySelectorAll("[data-who]").forEach(function(b){ b.onclick=function(){ who=b.getAttribute("data-who"); paint(); }; });
+  app.querySelectorAll("[data-note]").forEach(function(tx){ tx.addEventListener("input",function(){ A[tx.getAttribute("data-note")]=tx.value; }); });
+  app.querySelectorAll(".opt").forEach(function(b){ b.onclick=function(){ var qid=b.getAttribute("data-q"), i=+b.getAttribute("data-i"), q=S.qs.filter(function(x){ return x.id===qid; })[0];
+    if(q.kind==="pick"){ var a=(A[qid]||[]).slice(), p=a.indexOf(i); if(p>=0) a.splice(p,1); else { if(a.length>=(q.max||3)) a.shift(); a.push(i); } A[qid]=a; }
+    else A[qid]=(A[qid]===i?null:i);
+    b.closest(".opts").querySelectorAll(".opt").forEach(function(x){ var j=+x.getAttribute("data-i"); x.setAttribute("aria-pressed", String(q.kind==="pick"?(A[qid]||[]).indexOf(j)>=0:A[qid]===j)); }); }; });
+  var s=document.getElementById("send"); if(s) s.onclick=send;
+}
+/* the answers as words (what a teacher reads) and as numbers (what a chart plots) */
+function readable(){ var out={}, nums={}; S.qs.forEach(function(q){ var v=A[q.id]; if(v==null||v===""||(Array.isArray(v)&&!v.length)) return;
+  if(q.kind==="note") out[q.id]=String(v).trim().slice(0,400);
+  else if(q.kind==="pick") out[q.id]=v.map(function(i){ return q.o[i][0]; }).join("; ");
+  else { out[q.id]=q.o[v][0]; if(q.kind==="scale") nums[q.id]=v+1; } }); return {words:out,nums:nums}; }
+function send(){
+  who=String((document.getElementById("who")||{}).value||who||"").trim().slice(0,40);
+  if(!who){ err=t("Put a name at the top first.","Primero pon un nombre arriba."); paint(); var w=document.getElementById("who"); if(w) w.scrollIntoView({block:"center"}); return; }
+  remember(who);
+  var r=readable(), now=new Date(), d=now.getFullYear()+"-"+String(now.getMonth()+1).padStart(2,"0")+"-"+String(now.getDate()).padStart(2,"0");
+  var follow=!!(S.follow&&S.follow(Object.keys(r.nums).reduce(function(o,k){ o[k]=r.nums[k]-1; return o; },{ today:r.words.today })));
+  var row={ action:"checkin", checkinType:"slip-"+id, slipType:id, studentId:who, respondentId:S.parent?"parent":who, respondentRole:S.parent?"parent":"student",
+    timestamp:now.toISOString(), date:d, period:Q.get("period")||"", classId:Q.get("classId")||"", grade:Q.get("grade")||"",
+    note:[r.words.words,r.words.topic].filter(Boolean).join(" · "), followUp:follow, source:"link",
+    extra:JSON.stringify({ series:"slip", slip:id, v:1, lang:ES?"es":"en", answers:r.words, scale:r.nums, goalId:Q.get("goal")||"", goalTitle:Q.get("gt")||"", unit:Q.get("u")||"" }) };
+  var mine=jGet("aog.slips.mine",[])||[]; mine.push(Object.assign({},row,{mine:true})); jSet("aog.slips.mine",mine.slice(-300));
+  if(!DEST){ sent=true; paint(); return; }
+  busy=true; err=""; paint();
+  var body=JSON.stringify(Object.assign({_backendAuth:DEST.k},row));
+  fetch(DEST.u,{method:"POST",mode:"cors",redirect:"follow",headers:{"Content-Type":"text/plain;charset=utf-8"},body:body})
+    .then(function(res){ return res.json(); })
+    .then(function(j){ busy=false; if(j&&j.ok){ sent=true; } else { err=t("It didn’t go through: ","No se envió: ")+String((j&&j.error)||"no answer"); } paint(); })
+    .catch(function(){
+      /* one blind send and an honest word, never a silent retry loop */
+      fetch(DEST.u,{method:"POST",mode:"no-cors",redirect:"follow",headers:{"Content-Type":"text/plain;charset=utf-8"},body:body})
+        .then(function(){ busy=false; sent=true; paint(); })
+        .catch(function(){ busy=false; err=t("Couldn’t reach the Sheet. It’s saved on this device; try again in a moment.","No se pudo llegar a la Hoja. Está guardado en este aparato; inténtalo en un momento."); paint(); });
+    });
+}
+paint();
+})();
+</script>
+<script src="/aog-grace.js" defer></script>
+</body>
+</html>
