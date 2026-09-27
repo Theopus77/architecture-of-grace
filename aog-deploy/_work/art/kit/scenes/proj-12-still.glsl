@@ -19,11 +19,13 @@
 vec3 pL(vec3 p){ vec3 q=p-PB; q.xz=rot(-.45)*q.xz; q.yz=rot(-.08)*q.yz; q.y-=HS; return q; }
 float puff(vec2 u){ vec2 a=clamp(abs(u)/HS,0.,1.); return .068*(1.-a.x*a.x)*(1.-a.y*a.y)+.005; }
 float pillow(vec3 p){ vec3 q=pL(p);
+  float bound=sdBox(q,vec3(HS+.004,HS+.004,.078));
+  if(bound>.01) return bound;
   vec2 a=abs(q.xy)/HS; float side=max(abs(q.x)+.016*(1.-a.y*a.y),abs(q.y)+.016*(1.-a.x*a.x))-HS;
   float t=puff(q.xy);
   float lip=q.z<0.&&q.y<.035&&q.y>-.06?.0035*smoothstep(-.06,.03,q.y):0.;   /* the top flap lies over the lower one */
   float d=max(side,abs(q.z)-t-lip);
-  return d*.4; }
+  return max(d*.5,bound); }
 float spool(vec3 p){ vec3 q=p-vec3(.19,0.,-.07);
   float f1=sdCylY(q-vec3(0.,.004,0.),.024,.004)-.0015, f2=sdCylY(q-vec3(0.,.056,0.),.024,.004)-.0015;
   float core=sdCylY(q-vec3(0.,.03,0.),.019,.024)+.0006*abs(sin(q.y*800.));

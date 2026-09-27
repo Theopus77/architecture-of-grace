@@ -1,6 +1,6 @@
 /* FACS project 18 "Build-your-own hoagie" — pencil still life: a long hoagie roll cut in half
    on a slant, the two halves pulled apart on a wooden board so the layers show (cheese, folded
-   meat, lettuce and tomato), and a tomato slice beside the board. */
+   meat, lettuce and tomato), each half held with a toothpick, and a tomato slice beside it. */
 #define CAM_POS vec3(-0.2963,0.2980,-0.5617)
 #define CAM_TGT vec3(-0.1192,-0.0142,0.0973)
 #define CAM_FOV 30.
@@ -36,7 +36,7 @@ vec2 sand(vec3 p){ float s; vec3 q=hL(p,s); float cp=cutPlane(q,s);
   float f=max(max(fill(q),cp),end);
   float id=q.y<.028?5.:q.y<.033?4.:q.y<.038?6.:7.;
   r=U(r,f,id);
-  vec3 t=q-vec3(-s*.07,.0,0.); r=U(r,min(sdCapsule(t,vec3(0.,.02,0.),vec3(0.,.11,0.),.0022),length(t-vec3(0.,.112,0.))-.006),8.);
+  vec3 t=q-vec3(s*.08,.0,0.); r=U(r,min(sdCapsule(t,vec3(0.,.02,0.),vec3(0.,.11,0.),.0022),length(t-vec3(0.,.112,0.))-.006),8.);
   return r; }
 float tomato(vec3 p){ vec3 q=p-vec3(.2,.004,-.1); return sdCylY(q,.028,.0035)-.001; }
 vec2 map(vec3 p){
