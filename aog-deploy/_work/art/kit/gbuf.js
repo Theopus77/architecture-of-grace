@@ -9,7 +9,8 @@ const base=rd('scenes/'+scene+'.glsl').replace(/#include\s+"([a-z_.]+)"/g,(_,f)=
     args:['--use-gl=angle','--use-angle=swiftshader','--enable-unsafe-swiftshader','--ignore-gpu-blocklist']});
   const p=await b.newPage(); p.setDefaultTimeout(0); p.on('pageerror',e=>console.log('ERR',e.message));
   await p.setContent('<canvas id=c></canvas>');
-  for(const mode of [0,1]){
+  const modes=/toneAlb/.test(base)?[0,1,2,3]:[0,1];
+  for(const mode of modes){
     const src='#version 300 es\nprecision highp float; out vec4 o;\n#define GMODE '+mode+'\n'+base+'\n'+rd('gbuf.glsl');
     const url=await p.evaluate(([src,W,H])=>{
       const cv=document.getElementById('c'); cv.width=W; cv.height=H;
@@ -23,7 +24,7 @@ const base=rd('scenes/'+scene+'.glsl').replace(/#include\s+"([a-z_.]+)"/g,(_,f)=
       gl.enable(gl.SCISSOR_TEST); for(let y=0;y<H;y+=16){ gl.scissor(0,y,W,16); gl.drawArrays(gl.TRIANGLE_STRIP,0,4); gl.finish(); }
       return cv.toDataURL('image/png');
     },[src,W,H]);
-    fs.writeFileSync(path.join(out,scene+(mode?'-d':'-n')+'.png'),Buffer.from(url.split(',')[1],'base64'));
+    fs.writeFileSync(path.join(out,scene+['-n','-d','-photo','-t'][mode]+'.png'),Buffer.from(url.split(',')[1],'base64'));
     await p.evaluate(()=>{const c=document.getElementById('c');const n=document.createElement('canvas');n.id='c';c.replaceWith(n);});
   }
   await b.close(); console.log(scene,'done');

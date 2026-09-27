@@ -103,7 +103,7 @@ def flow_field(nrm, sky, P, depth=None, cam=None):
         e = .02 * t; qx, qz = px - vnz * e, pz + vnx * e
         sx = qx / qz - px / pz; sy = -(py / qz - py / pz)
         pa = np.arctan2(sy, sx)
-        wv = smooth01(.75, .45, np.abs(vny)) * P.get('persp', 1.0)
+        wv = smooth01(.75, .45, np.abs(vny)) * smooth01(.12, .45, np.abs(vnx)) * P.get('persp', 1.0)
         c2 = (1 - wv) * c2 + wv * np.cos(2 * pa); s2 = (1 - wv) * s2 + wv * np.sin(2 * pa)
     c2 = blur(c2, 5 * S); s2 = blur(s2, 5 * S)
     c2[sky] = math.cos(2 * math.radians(P.get('skyang', -8))); s2[sky] = math.sin(2 * math.radians(P.get('skyang', -8)))
@@ -213,15 +213,85 @@ def hatch_layer(theta, T, depth, ids, style, rng, thr, spacing, length, off, wid
             draw_stroke(dr, pts, width * (1 - .3 * far), strength, rng)
     return np.asarray(img, np.float32) / 255.
 
+def slice_phases(P, uid, nrm, ids, gdir, layers):
+    """Cross-contour hatching: hatch lines are where parallel planes in the scene cut the
+    surface, so they wrap round every form in true perspective (a cylinder gets rings, a
+    block face gets parallel lines that converge). Spacing is set per object in pixels."""
+    import re as _re
+    sc = open(os.path.join(HERE, '..', 'kit', 'scenes', P.get('scene', uid) + '.glsl')).read()
+    v3 = lambda k: np.array([float(x) for x in _re.search(r'#define ' + k + r'\s+vec3\(([^)]*)\)', sc).group(1).split(',')])
+    cp, ct = v3('CAM_POS'), v3('CAM_TGT')
+    fov = float(_re.search(r'#define CAM_FOV\s+([\d.]+)', sc).group(1)); maxt = float(_re.search(r'#define MAXT\s+([\d.]+)', sc).group(1))
+    f = (ct - cp) / np.linalg.norm(ct - cp); r = np.cross([0, 1, 0], f); r /= np.linalg.norm(r); u = np.cross(f, r)
+    k = math.tan(math.radians(fov) / 2)
+    tp = np.asarray(Image.open(os.path.join(gdir, uid + '-t.png')).convert('RGB').resize((W, H), Image.NEAREST), np.float32)
+    t = (tp[..., 0] + tp[..., 1] / 255.) / 255. * maxt
+    yy, xx = np.mgrid[0:H, 0:W].astype(np.float32)
+    ux = (2 * (xx + .5) / W - 1) * W / H * k; uy = -(2 * (yy + .5) / H - 1) * k
+    rd = f[None, None] + ux[..., None] * r[None, None] + uy[..., None] * u[None, None]
+    rd /= np.linalg.norm(rd, axis=-1, keepdims=True)
+    p = cp[None, None] + rd * t[..., None]
+    nw = nrm[..., 0:1] * r + nrm[..., 1:2] * u - nrm[..., 2:3] * f
+    fp = t * 2 * k / H
+    fpo = np.zeros_like(fp)
+    for i in np.unique(ids): m = ids == i; fpo[m] = np.median(fp[m])
+    out = []
+    for (A, B, spc) in layers:
+        A = np.array(A, float); A /= np.linalg.norm(A); B = np.array(B, float); B /= np.linalg.norm(B)
+        useB = np.abs(nw @ A) > .82
+        d = np.where(useB, p @ B, p @ A)
+        out.append(d / (spc * S * fpo + 1e-9))
+    return out
+
+def face_theta(theta, ids, sig):
+    """Smooth the hatch direction inside each object only (no bleeding across edges)."""
+    c2, s2 = np.cos(2 * theta), np.sin(2 * theta)
+    oc, os_ = np.zeros_like(c2), np.zeros_like(s2)
+    for k in np.unique(ids):
+        m = (ids == k).astype(np.float32); w = blur(m, sig) + 1e-6
+        oc += m * blur(c2 * m, sig) / w; os_ += m * blur(s2 * m, sig) / w
+    return .5 * np.arctan2(os_, oc)
+
+def proc_hatch(theta, T, ids, rng, thr, spacing, off, width, dark, soft=.05, ph=None):
+    """Evenly spaced hatching laid like a draughtsman's: parallel lines that bend with the
+    direction field, broken into strokes of varied length with staggered ends and pressure."""
+    yy, xx = np.mgrid[0:H, 0:W].astype(np.float32)
+    wob = noise(rng, 70 * S) * .18
+    if ph is None:
+        a = theta + off; ca, sa = np.cos(a), np.sin(a)
+        ph = (-xx * sa + yy * ca) / spacing + wob
+    else:
+        gy, gx = np.gradient(blur(ph, 2 * S)); gn = np.hypot(gx, gy) + 1e-6
+        ca, sa = -gy / gn, gx / gn
+        ph = ph + wob
+    row = np.floor(ph); hr = np.sin(row * 91.7 + 3.1) * 5413.7; hr -= np.floor(hr)
+    fr = ph - row - .5 - (hr - .5) * .3
+    u = (xx * ca + yy * sa)
+    # per-row random stroke length & offset -> segments along the line
+    h1 = np.sin(row * 12.9898 + 78.233) * 43758.5453; h1 -= np.floor(h1)
+    h2 = np.sin(row * 39.3468 + 11.135) * 24634.6345; h2 -= np.floor(h2)
+    L = (70 + 110 * h1) * S
+    t = (u / L + h2 * 7.)
+    seg = np.floor(t); tf = t - seg
+    h3 = np.sin(seg * 7.13 + row * 3.71) * 9573.13; h3 -= np.floor(h3)
+    press = np.sin(np.clip(tf, 0, 1) * math.pi) ** .35 * (.6 + .4 * h3) * (.8 + .2 * hr)
+    gap = (tf > .02) & (tf < .985)
+    line = np.clip(1 - np.abs(fr) * spacing / (width * (.6 + .5 * press)), 0, 1)
+    # value mask with staggered ends: each stroke decides for itself where to stop
+    m = smooth01(thr + soft, thr - soft, T + (h3 - .5) * .09)
+    return line * press * gap * m * dark
+
 # ------------------------------------------------------------------ contours
 def contours(nrm, depth, ids, T, rng, P):
     # depth discontinuity (relative, in log depth), normal crease, material break
-    dz = np.hypot(nd.sobel(depth, 1), nd.sobel(depth, 0))
+    db = blur(depth, 1.2 * S)
+    dz = np.hypot(nd.sobel(db, 1), nd.sobel(db, 0))
     e_d = smooth01(P.get('ed0', .012), P.get('ed1', .05), dz)
     dn = sum(np.hypot(nd.sobel(nrm[..., c], 1), nd.sobel(nrm[..., c], 0)) for c in range(3))
     e_n = smooth01(P.get('en0', 1.2), P.get('en1', 2.6), dn) * P.get('crease', .6)
     idc = (nd.maximum_filter(ids, 3) != nd.minimum_filter(ids, 3)).astype(np.float32)
     e = np.maximum(np.maximum(e_d, e_n), idc * P.get('idline', .7))
+    if P.get('bg'): e = np.where(np.isin(ids, P['bg']), idc * P.get('idline', .7), e)
     e = nd.maximum_filter(e, 2)
     # weight: heavy on the shadow side and close by, thin/lost in light and in distance
     near = 1 - smooth01(P.get('cn0', .45), P.get('cn1', .85), nd.minimum_filter(depth, 5))
@@ -303,10 +373,28 @@ def render(uid, gdir, P):
     sp = P.get('spacing', 1.0) * S
     notsky = ~sky
     # four pencils. (threshold, spacing, length, angle offset, width, darkness)
-    L1 = hatch_layer(theta, T, depth, ids, style, rng, P.get('t1', .93), 5.2 * sp, 34 * S, 0.0, 1.2 * S, .34)          # H
-    L2 = hatch_layer(theta, T, depth, ids, style, rng, P.get('t2', .76), 4.6 * sp, 28 * S, math.radians(58), 1.35 * S, .5, mask=notsky, layer=2)  # HB cross
-    L3 = hatch_layer(theta, T, depth, ids, style, rng, P.get('t3', .56), 3.6 * sp, 22 * S, math.radians(-28), 1.6 * S, .7, mask=notsky, layer=3)  # 2B
-    L4 = hatch_layer(theta, T, depth, ids, style, rng, P.get('t4', .33), 3.0 * sp, 16 * S, math.radians(88), 2.0 * S, .88, curve=2, mask=notsky, layer=4)  # 6B
+    if P.get('slice'):
+        LY = P.get('slayers', [[[1, 1.3, .2], [0, 1, 0], 9, .93, 1.3, .4], [[-1, 1, .3], [1, 0, 0], 8, .74, 1.35, .5],
+                               [[0, 1, 0], [1, 0, 0], 6.5, .55, 1.5, .62], [[1, .35, .15], [0, 0, 1], 4.5, .34, 1.9, .82]])
+        phs = slice_phases(P, uid, nrm, ids, gdir, [(a, b, c) for a, b, c, *_ in LY])
+        bg = np.isin(ids, P.get('bg', []))
+        if bg.any():   # table and wall: plain screen-space hatching, loose and straight
+            yy, xx = np.mgrid[0:H, 0:W].astype(np.float32)
+            for i, l in enumerate(LY):
+                a = math.radians(P.get('bgang', -35) + [0, 50, -45, 8][i]); sp_ = l[2] * S * 1.2
+                phs[i] = np.where(bg, (-xx * math.sin(a) + yy * math.cos(a)) / sp_, phs[i])
+        L1, L2, L3, L4 = [proc_hatch(None, T, ids, rng, l[3], 1, 0, l[4] * S, l[5], ph=ph) for l, ph in zip(LY, phs)]
+    elif P.get('proc'):
+        th2 = face_theta(theta, ids, 6 * S)
+        hl = []
+        for (thr, spc, off, wd, dk) in P.get('layers', [[.93, 9, 0, 1.3, .4], [.74, 8, 48, 1.35, .5], [.55, 6.5, -42, 1.5, .62], [.34, 4.5, 6, 1.9, .82]]):
+            hl.append(proc_hatch(th2, T, ids, rng, thr, spc * S, math.radians(off), wd * S, dk))
+        L1, L2, L3, L4 = hl
+    else:
+      L1 = hatch_layer(theta, T, depth, ids, style, rng, P.get('t1', .93), 5.2 * sp, 34 * S, 0.0, 1.2 * S, .34)          # H
+      L2 = hatch_layer(theta, T, depth, ids, style, rng, P.get('t2', .76), 4.6 * sp, 28 * S, math.radians(58), 1.35 * S, .5, mask=notsky, layer=2)  # HB cross
+      L3 = hatch_layer(theta, T, depth, ids, style, rng, P.get('t3', .56), 3.6 * sp, 22 * S, math.radians(-28), 1.6 * S, .7, mask=notsky, layer=3)  # 2B
+      L4 = hatch_layer(theta, T, depth, ids, style, rng, P.get('t4', .33), 3.0 * sp, 16 * S, math.radians(88), 2.0 * S, .88, curve=2, mask=notsky, layer=4)  # 6B
     tooth = paper_tooth(rng)
     # tooth breaks the hard pencils most; soft graphite fills the valleys
     def bite(L, soft):
@@ -323,7 +411,11 @@ def render(uid, gdir, P):
     if P.get('texlines'):
         # surface pattern (tiles, brick courses, letters, a picture on a page) as light line
         # work picked out of the render, not as tone
-        lb = blur(lum, .7 * S); gm = np.hypot(nd.sobel(lb, 1), nd.sobel(lb, 0))
+        lb = blur(lum, .7 * S)
+        if P.get('ridge'):   # painted marks: a single line down the middle of each dark mark
+            gm = np.clip(blur(lum, 3.5 * S) - lb, 0, 1) * 4
+        else:
+            gm = np.hypot(nd.sobel(lb, 1), nd.sobel(lb, 0))
         tl = np.zeros((H, W), np.float32)
         for k, (a0, a1, st) in P['texlines'].items():
             sel = nd.binary_erosion(ids == int(k), iterations=2 * S)
@@ -355,7 +447,6 @@ def render(uid, gdir, P):
     img = Image.fromarray((col * 255).astype(np.uint8)).resize((1600, 560), Image.LANCZOS)
     return img
 
-SCENES = json.load(open(os.path.join(HERE, 'params.json'))) if os.path.exists(os.path.join(HERE, 'params.json')) else {}
 
 def save_final(img, uid):
     out = os.path.join(ROOT, 'img', 'banners')
@@ -371,9 +462,9 @@ def save_final(img, uid):
 
 if __name__ == '__main__':
     ap = argparse.ArgumentParser(); ap.add_argument('uid'); ap.add_argument('--gbuf', required=True)
-    ap.add_argument('--out', default='.'); ap.add_argument('--final', action='store_true')
+    ap.add_argument('--out', default='.'); ap.add_argument('--params', default=os.path.join(HERE, 'params.json')); ap.add_argument('--final', action='store_true')
     a = ap.parse_args()
-    P = SCENES.get(a.uid, {})
+    P = json.load(open(a.params)).get(a.uid, {})
     img = render(a.uid, a.gbuf, P)
     os.makedirs(a.out, exist_ok=True)
     img.save(os.path.join(a.out, 'pencil-%s.png' % a.uid))
