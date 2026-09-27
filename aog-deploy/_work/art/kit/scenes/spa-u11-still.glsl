@@ -1,7 +1,7 @@
 /* Spanish Unit 11 "The Classroom: Nouns and Articles" — pencil still life: a pencil cup holding
    pencils and a ruler, a stack of two school books, a pair of scissors and an eraser. */
-#define CAM_POS vec3(-0.30,0.36,-0.84)
-#define CAM_TGT vec3(-0.05,0.06,0.09)
+#define CAM_POS vec3(-0.4225,0.2889,-0.7678)
+#define CAM_TGT vec3(-0.1868,0.0059,0.1093)
 #define CAM_FOV 30.
 #define SUN_DIR vec3(-.65,.85,-.3)
 #define MAXT 8.
