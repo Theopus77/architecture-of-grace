@@ -210,7 +210,7 @@ vec2 map(vec3 p){ vec2 r=vec2(p.y,1.); r=U(r,1.4-p.z,2.);
 float toneAlb(float id,vec3 p,vec3 n){
   if(id==1.) return .75; if(id==2.) return .9;
   if(id==3.) return fract(p.y/.0025)<.3?.72:.9;
-  if(id==4.) return coverT(fQ(p,A1,.12,S1),S1,.45);
-  if(id==5.) return coverT(fQ(p,A2,-.14,S2),S2,.58);
+  if(id==4.) return coverT(fQ(p,A1,.12,S1),S1,.68);
+  if(id==5.) return coverT(fQ(p,A2,-.14,S2),S2,.74);
   if(id==7.) return .94; if(id==8.) return .97; return .45; }
 
