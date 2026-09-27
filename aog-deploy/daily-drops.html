@@ -1260,16 +1260,16 @@ body.review .box .ptcell, body.review .box .ew, body.review .box textarea{pointe
   display:inline-flex;align-items:center;justify-content:center;white-space:nowrap;font:700 14px/1 var(--sans, system-ui, sans-serif) !important;letter-spacing:.02em;
   color:#1D2733 !important;border:1.5px solid #2A2622 !important;border-radius:3px 3px 1px 1px !important;
   background:
-    linear-gradient(180deg, var(--gl,#5E6B7A) 0 14px, #2A2622 14px 15.2px, transparent 15.2px calc(100% - 15.2px), #2A2622 calc(100% - 15.2px) calc(100% - 14px), var(--gl,#5E6B7A) calc(100% - 14px)),
     repeating-linear-gradient(40deg, rgba(42,38,34,.10) 0 1px, transparent 1px 6px),
     #FBF8F0 !important;
   box-shadow:1.5px 0 0 -0.3px rgba(42,38,34,.45), -1px 1px 0 -0.4px rgba(42,38,34,.3) !important}
-#subjSeg .bs button::before{content:none !important}
+#subjSeg .bs button::before,#subjSeg .bs button::after{content:"" !important;position:absolute;left:0;right:0;height:14px;background:var(--gl,#5E6B7A);z-index:0;pointer-events:none;transform:none !important;top:auto;bottom:auto;border:0;box-shadow:none;border-radius:0}
+#subjSeg .bs button::before{top:0 !important;border-bottom:1.2px solid #2A2622 !important}
+#subjSeg .bs button::after{bottom:0 !important;border-top:1.2px solid #2A2622 !important}
 #subjSeg .bs button:nth-child(3n+2){height:162px;min-height:162px !important;margin-top:10px !important;width:40px;min-width:40px !important}
 #subjSeg .bs button:nth-child(4n+3){height:168px;min-height:168px !important;margin-top:4px !important;width:48px;min-width:48px !important}
 #subjSeg .bs button:nth-child(5n+4){transform:rotate(1.2deg)}
 #subjSeg .bs button[aria-pressed="true"]{background:
-    linear-gradient(180deg, var(--gl,#5E6B7A) 0 14px, #2A2622 14px 15.2px, transparent 15.2px calc(100% - 15.2px), #2A2622 calc(100% - 15.2px) calc(100% - 14px), var(--gl,#5E6B7A) calc(100% - 14px)),
     #FFF3CC !important;border-width:2.5px !important;transform:translateY(-12px) !important}
 @media (max-width:720px){
   #subjSeg .bs{gap:14px 4px !important;padding:10px 4px 0 !important;
@@ -1278,6 +1278,7 @@ body.review .box .ptcell, body.review .box .ew, body.review .box textarea{pointe
   #subjSeg .bs button[aria-pressed="true"]{transform:translateY(-8px) !important}
 }
 @media (prefers-reduced-motion: reduce), (hover:none){ #subjSeg .bs button[aria-pressed="true"]{transform:none !important} }
+#subjSeg .bs button[aria-pressed="true"]::before{background:var(--gl,#5E6B7A) !important}
 </style>
 </head>
 <body>
@@ -1319,7 +1320,7 @@ body.review .box .ptcell, body.review .box .ew, body.review .box textarea{pointe
     <!-- AOG-DD-SUBJ-GROUPS-V1 (2026-09-26) — Jimmy: "Can these be paired up better?" Thirteen subjects in three
          families, each on its own row with a small name, so the eye finds Bible next to Qur'an and Talmud, and
          Math next to Science, instead of one long shuffle. Same buttons, same data-s, same handler. -->
-    <div class="seg" id="subjSeg" role="group" aria-label="Subject" data-aog-legible-off>
+    <div class="seg" id="subjSeg" role="group" aria-label="Subject">
       <div class="sgrp"><span class="sg-k" data-en="Core" data-es="Básicas">Core</span><div class="bs">
       <button data-s="math" aria-pressed="true" data-en="Math" data-es="Matemáticas">Math</button>
       <button data-s="ela" aria-pressed="false" data-en="Language Arts" data-es="Lenguaje">Language Arts</button>
@@ -1336,13 +1337,13 @@ body.review .box .ptcell, body.review .box .ew, body.review .box textarea{pointe
       <button data-s="health" aria-pressed="false" title="Medicine and Health" data-en="Medicine &amp; Health" data-es="Medicina y salud">Medicine &amp; Health</button>
       </div></div>
       <div class="sgrp"><span class="sg-k" data-en="Faith &amp; texts" data-es="Fe y textos">Faith &amp; texts</span><div class="bs">
-      <button data-s="religion" aria-pressed="false" title="World Religions" data-en="Religions" data-es="Religiones">Religions</button>
       <button data-s="bible" aria-pressed="false" title="The Bible" data-en="The Bible" data-es="La Biblia">The Bible</button>
       <button data-s="quran" aria-pressed="false" title="The Qur’an" data-en="The Qur’an" data-es="El Corán">The Qur’an</button>
       <button data-s="talmud" aria-pressed="false" title="The Talmud" data-en="The Talmud" data-es="El Talmud">The Talmud</button>
       <button data-s="hindu" aria-pressed="false" title="Hindu Texts" data-en="Hindu Texts" data-es="Textos hindúes">Hindu Texts</button>
       <button data-s="buddhist" aria-pressed="false" title="Buddhist Texts" data-en="Buddhist Texts" data-es="Textos budistas">Buddhist Texts</button>
       <button data-s="chinese" aria-pressed="false" title="Chinese Classics: the Analects and the Daodejing" data-en="Chinese Classics" data-es="Clásicos chinos">Chinese Classics</button>
+      <button data-s="religion" aria-pressed="false" title="World Religions" data-en="Religions" data-es="Religiones">Religions</button>
       </div></div>
     </div>
   </div>
