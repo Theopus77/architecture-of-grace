@@ -1,7 +1,7 @@
-/* Talmud Unit 14 "Law and Story Together" — pencil still life: a book lying open with lines of text and a rolled scroll lying beside it: law and story side by side.
+/* Talmud Unit 1 "A Very Big Book of Questions" — pencil still life: a very large book lying open, each page laid out with a central block of lines and finer commentary lines round it, beside a stack of three thick closed volumes.
    Pages carry only an ornamental frame and hint-lines, never words. No figures. */
-#define CAM_POS vec3(-0.5455,0.3321,-0.9214)
-#define CAM_TGT vec3(-0.1923,-0.0211,0.0373)
+#define CAM_POS vec3(-0.8471,0.4132,-1.1362)
+#define CAM_TGT vec3(-0.3907,-0.0432,0.1023)
 #define CAM_FOV 30.
 #define SUN_DIR vec3(-.7,.85,-.3)
 #define MAXT 8.
@@ -197,19 +197,23 @@ float crownD(vec3 q){ if(length(q-vec3(0,.26,0))>.2) return length(q-vec3(0,.26,
   return (d+.018*fbm3(q*45.)-.006)*.7; }
 
 
-vec3 oQ0(vec3 p){ return place(p,vec3(-.04,0.,.07),-0.1); }
-vec3 oQ(vec3 p){ vec3 q=oQ0(p); q.y-=0.03; q.yz=rot(-0.3)*q.yz; return q; }
-float oProp(vec3 p){ vec3 q=oQ0(p); return sdRBox(q-vec3(0,0.03*.6,.07),vec3(.18,0.03*.6,.05),.006); }
+vec3 oQ0(vec3 p){ return place(p,vec3(.06,0.,-.02),-0.12); }
+vec3 oQ(vec3 p){ vec3 q=oQ0(p); q.y-=0.035; q.yz=rot(-0.28)*q.yz; return q; }
+float oProp(vec3 p){ vec3 q=oQ0(p); return sdRBox(q-vec3(0,0.035*.6,.07),vec3(.18,0.035*.6,.05),.006); }
 
-vec3 sQ(vec3 p){ return place(p,vec3(.26,0.,-.14),-.55); }
-float spec(vec3 p){ vec3 q=oQ(p)/2.; q-=vec3(-.055,.017,-.02); q.xz=rot(.35)*q.xz; return specD(q)*2.; }
+vec3 k1(vec3 p){ return place(p,vec3(-.36,0.,.1),.2); }
+vec3 k2(vec3 p){ return place(p,vec3(-.355,.05,.1),.05); }
+vec3 k3(vec3 p){ return place(p,vec3(-.36,.096,.1),.25); }
+#define K1 vec3(.12,.025,.085)
+#define K2 vec3(.115,.023,.08)
+#define K3 vec3(.11,.022,.078)
 vec2 map(vec3 p){ vec2 r=vec2(p.y,1.); r=U(r,1.4-p.z,2.);
-  vec2 b=bookO(oQ(p),1.5); r=U(r,b.x,3.); r=U(r,min(b.y,oProp(p)),4.);
-  r=U(r,scrollD(sQ(p)),5.); return r; }
+  vec2 b=bookO(oQ(p),2.1); r=U(r,b.x,3.); r=U(r,min(b.y,oProp(p)),4.);
+  vec2 a=bookC(k1(p),K1); vec2 c=bookC(k2(p),K2); vec2 e=bookC(k3(p),K3);
+  r=U(r,min(a.x,min(c.x,e.x)),5.); r=U(r,a.y,6.); r=U(r,c.y,7.); r=U(r,e.y,8.); return r; }
 float toneAlb(float id,vec3 p,vec3 n){
   if(id==1.) return .75; if(id==2.) return .9;
-  if(id==3.) return pageT(oQ(p),1.5); if(id==4.) return .35;
-  if(id==5.){ vec3 q=sQ(p); if(abs(abs(q.x)-.1)<.004) return .35; return .82; }
-  if(id==6.){ vec3 q=oQ(p)/2.; q-=vec3(-.055,.017,-.02); q.xz=rot(.35)*q.xz; if(min(length(q.xz-vec2(-.027,0.)),length(q.xz-vec2(.027,0.)))<.018) return .9; return .3; }
-  return .5; }
+  if(id==3.) return pageTal(oQ(p),2.1); if(id==4.) return .35;
+  if(id==5.) return fract(p.y/.0025)<.3?.72:.9;
+  if(id==6.) return coverT(k1(p),K1,.4); if(id==7.) return coverT(k2(p),K2,.52); if(id==8.) return coverT(k3(p),K3,.45); return .5; }
 
