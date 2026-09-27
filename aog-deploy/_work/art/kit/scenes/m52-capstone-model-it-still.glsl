@@ -1,7 +1,7 @@
 /* m52 "Capstone: Model It" — a pocket calculator with its keys and blank display, a sheet of
    graph paper with a rising line drawn on it and a pencil, and four stacks of coins growing taller. */
-#define CAM_POS vec3(-0.3318,0.1750,-0.5659)
-#define CAM_TGT vec3(-0.1282,-0.0424,0.0725)
+#define CAM_POS vec3(-0.4475,0.2594,-0.7281)
+#define CAM_TGT vec3(-0.1843,-0.0217,0.0974)
 #define CAM_FOV 30.
 #define SUN_DIR vec3(-.7,.85,-.3)
 #define MAXT 8.
@@ -12,9 +12,15 @@
 #include "studio.glsl"
 #include "medparts_a.glsl"
 #include "roomparts_d.glsl"
-vec3 gQ(vec3 p){ vec3 q=p-vec3(.06,0.,-.02); q.xz=rot(.08)*q.xz; return q; }
-float graph(vec3 p){ vec3 q=gQ(p); return sdBox(q-vec3(0.,.0008,0.),vec3(.12,.0008,.09)); }
-vec3 cQ(vec3 p){ vec3 q=p-vec3(-.14,.0,.06); q.xz=rot(-.35)*q.xz; q.yz=rot(-.12)*q.yz; return q; }
+#define SA 1.05
+vec3 gK(vec3 p){ vec3 k=p-vec3(-.07,0.,.12); k.xz=rot(-.2)*k.xz; return k; }
+vec3 gQ(vec3 p){ vec3 k=gK(p); vec3 v=vec3(0.,sin(SA),cos(SA)), n=vec3(0.,cos(SA),-sin(SA));
+  return vec3(k.x,dot(k,n),dot(k,v)-.1); }
+float graph(vec3 p){ vec3 q=gQ(p); float d=sdRBox(q-vec3(0.,-.006,0.),vec3(.125,.006,.1),.003);
+  d=min(d,sdBox(q-vec3(0.,.0008,-.004),vec3(.118,.0008,.09)));
+  vec3 k=gK(p); float leg=sdRBox(k-vec3(0.,.085,.2*cos(SA)+.012),vec3(.1,.085,.005),.002);
+  return max(min(d,leg),-p.y); }
+vec3 cQ(vec3 p){ vec3 q=p-vec3(-.02,.0,-.12); q.xz=rot(-.45)*q.xz; q.yz=rot(-.12)*q.yz; return q; }
 float calc(vec3 p){ vec3 q=cQ(p);
   float b=sdRBox(q-vec3(0.,.011,0.),vec3(.045,.009,.07),.006);
   vec2 k=q.xz-vec2(0.,-.02); vec2 c=clamp(floor(k/.019+.5),vec2(-1.,-2.),vec2(2.,1.)); vec2 o=k-c*.019;
@@ -23,9 +29,9 @@ float calc(vec3 p){ vec3 q=cQ(p);
   float disp=sdRBox(q-vec3(0.,.02,.042),vec3(.034,.0015,.013),.002);
   return min(b,min(key,disp)); }
 float stacks(vec3 p){ float d=1e5;
-  for(int i=0;i<4;i++){ float fi=float(i); d=min(d,coinStack(p-vec3(.02+fi*.05,0.,.16-fi*.012),.019,.0045,3+i*4)); }
+  for(int i=0;i<4;i++){ float fi=float(i); d=min(d,coinStack(p-vec3(.1+fi*.045,0.,.06-fi*.03),.019,.0045,4+i*5)); }
   return d; }
-vec3 pnQ(vec3 p){ vec3 q=p-vec3(.12,.0068,-.13); q.xz=rot(.25)*q.xz; return q; }
+vec3 pnQ(vec3 p){ vec3 q=p-vec3(.14,.0068,-.14); q.xz=rot(.2)*q.xz; return q; }
 float pen(vec3 p){ return pencilD2(pnQ(p),.075); }
 vec2 map(vec3 p){
   vec2 r=vec2(p.y,1.);
@@ -38,7 +44,7 @@ vec2 map(vec3 p){
 float toneAlb(float id,vec3 p,vec3 n){
   if(id==1.) return .72;
   if(id==2.) return .9;
-  if(id==3.){ vec3 q=gQ(p); vec2 u=q.xz; float a=.95;
+  if(id==3.){ vec3 q=gQ(p); if(q.y<-.0005||abs(q.x)>.118||abs(q.z+.004)>.09) return .45; vec2 u=vec2(q.x,q.z+.004); float a=.95;
     vec2 g=abs(fract(u/.012)-.5); if(min(g.x,g.y)<.06) a=.78;
     if(abs(u.x+.1)<.0013&&u.y>-.075&&u.y<.075) a=.3; if(abs(u.y+.075)<.0013&&u.x>-.1&&u.x<.11) a=.3;
     float y=-.075+(u.x+.1)*.55+.012*sin(u.x*40.); if(abs(u.y-y)<.0022&&u.x>-.1&&u.x<.08) a=.15;

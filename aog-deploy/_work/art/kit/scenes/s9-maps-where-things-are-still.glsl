@@ -17,7 +17,7 @@
 vec3 sK(vec3 p){ vec3 k=p-vec3(-.03,0.,.1); k.xz=rot(-.15)*k.xz; return k; }
 vec3 mQ(vec3 p){ vec3 k=sK(p); vec3 v=vec3(0.,sin(SA),cos(SA)), n=vec3(0.,cos(SA),-sin(SA));
   return vec3(k.x,dot(k,n),dot(k,v)-.1); }
-float mapD(vec3 p){ vec3 q=mQ(p); float pn=.055; float fold=.005*abs(fract(q.x/pn)-.5)*2.;   /* accordion folds */
+float mapD(vec3 p){ vec3 q=mQ(p); float pn=.055; float fold=.0015*abs(fract(q.x/pn)-.5)*2.;   /* accordion folds */
   float d=sdBox(q-vec3(0.,fold,0.),vec3(.15,.0008,.095))*.7;
   vec3 k=sK(p); float leg=sdRBox(k-vec3(0.,.08,.19*cos(SA)+.012),vec3(.1,.08,.005),.002);
   return max(min(d,leg),-p.y); }
@@ -45,13 +45,15 @@ float toneAlb(float id,vec3 p,vec3 n){
   if(id==1.) return .72;
   if(id==2.) return .9;
   if(id==3.){ vec3 q=mQ(p); if(abs(q.x)>.15||abs(q.z)>.095||q.y<-.002) return .45; vec2 u=q.xz; float a=.93;
-    float coast=fbm(u*12.+vec2(2.,5.))-.5+(u.x+.02)*2.5; if(coast<0.) a=.78; if(abs(coast)<.015) a=.25;   /* shoreline */
+    float coast=fbm(u*12.+vec2(2.,5.))-.5+(u.x+.02)*2.5; if(coast<0.){ a=.66; vec2 w=vec2(u.x*1.,u.y); float row=fract(w.y/.016); float wv=abs(row-.5-.12*sin(w.x*180.));
+      if(wv<.07&&fract(w.x/.03+floor(w.y/.016)*.5)<.55&&coast<-.03) a=.4; }
+    if(abs(coast)<.015) a=.2;   /* shoreline */
     float riv=u.y-.03*sin(u.x*40.)-.01; if(abs(riv)<.0022&&coast>0.) a=.4;                                  /* river */
     float rd1=sdSeg2(u,vec2(-.02,-.09),vec2(.14,.08)); float rd2=sdSeg2(u,vec2(.0,.09),vec2(.14,-.08));
     if((rd1<.002||rd2<.002)&&coast>0.) a=.2;
-    if(coast>0.&&length(u-vec2(.075,.005))<.008) a=.2;                                                      /* a town */
+    if(length(u-vec2(.07,.005))<.009) a=.15;                                                      /* a town */
     vec2 c=u-vec2(-.11,-.06); float rose=min(sdSeg2(c,vec2(0.,-.024),vec2(0.,.024)),sdSeg2(c,vec2(-.018,0.),vec2(.018,0.)));
-    if(rose<.0016) a=.2; if(abs(length(c)-.013)<.001) a=.3;
+    if(rose<.0016) a=.15; if(abs(length(c)-.013)<.001) a=.25;
     if(abs(fract(q.x/.055)-.5)>.485) a=min(a,.7);                                                         /* creases */
     return a; }
   if(id==4.){ vec3 q=cQ(p); if(q.y>.018&&length(q.xz)<.03){ float a=atan(q.z,q.x); float r=length(q.xz);
