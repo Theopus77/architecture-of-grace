@@ -1,7 +1,7 @@
 /* Spanish Unit 8 "First, Then, Last: Telling a Day" — pencil still life: a twin-bell alarm clock
    (morning), a breakfast cup on its saucer with a spoon, and a small candle in a holder (night). */
-#define CAM_POS vec3(-0.30,0.36,-0.84)
-#define CAM_TGT vec3(-0.05,0.06,0.09)
+#define CAM_POS vec3(-0.4614,0.3061,-0.7922)
+#define CAM_TGT vec3(-0.2164,0.0121,0.1193)
 #define CAM_FOV 30.
 #define SUN_DIR vec3(-.65,.85,-.3)
 #define MAXT 8.
