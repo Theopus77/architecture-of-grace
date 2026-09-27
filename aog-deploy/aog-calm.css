@@ -84,4 +84,27 @@ canvas, img, video, svg:not([width]) { max-width: 100%; }
    same as pressing Cmd-minus once, so type, buttons, cards and the site bar shrink together and nothing
    falls out of proportion. Phones are untouched (16px fields keep iOS from zooming); print is untouched. */
 @media screen and (min-width: 700px) { body { zoom: .94; } }
-@media screen and (min-width: 1000px) { body { zoom: .92; } }
+@media screen and (min-width: 1000px) { body { zoom: .85; } } /* Jimmy 2026-09-27: 85% on a computer */
+
+/* AOG-DAILY-ROW-V1 (2026-09-27) — Jimmy: "Fix it so all the grades / numbers are in one row and apply that to all
+   current and future builds." Every "Every day" strip: the name, then one line of words, then the grade buttons in
+   ONE even row on an iPad or computer (two even rows on a phone). The column count follows the number of buttons. */
+html body .daily { display:grid !important; grid-template-columns:repeat(12,minmax(0,1fr)); gap:8px 6px !important; align-items:center; }
+html body .daily > :not(a) { grid-column:1 / -1; margin:0 !important; }
+html body .daily > a.gr { min-width:0 !important; width:100%; padding:0 2px !important; box-sizing:border-box; white-space:nowrap; font-size:.85rem; }
+html body .daily:has(> a.gr:nth-of-type(1)):not(:has(> a.gr:nth-of-type(2))) { grid-template-columns:repeat(1,minmax(0,1fr)); }
+html body .daily:has(> a.gr:nth-of-type(2)):not(:has(> a.gr:nth-of-type(3))) { grid-template-columns:repeat(2,minmax(0,1fr)); }
+html body .daily:has(> a.gr:nth-of-type(3)):not(:has(> a.gr:nth-of-type(4))) { grid-template-columns:repeat(3,minmax(0,1fr)); }
+html body .daily:has(> a.gr:nth-of-type(4)):not(:has(> a.gr:nth-of-type(5))) { grid-template-columns:repeat(4,minmax(0,1fr)); }
+html body .daily:has(> a.gr:nth-of-type(5)):not(:has(> a.gr:nth-of-type(6))) { grid-template-columns:repeat(5,minmax(0,1fr)); }
+html body .daily:has(> a.gr:nth-of-type(6)):not(:has(> a.gr:nth-of-type(7))) { grid-template-columns:repeat(6,minmax(0,1fr)); }
+html body .daily:has(> a.gr:nth-of-type(7)):not(:has(> a.gr:nth-of-type(8))) { grid-template-columns:repeat(7,minmax(0,1fr)); }
+html body .daily:has(> a.gr:nth-of-type(8)):not(:has(> a.gr:nth-of-type(9))) { grid-template-columns:repeat(8,minmax(0,1fr)); }
+html body .daily:has(> a.gr:nth-of-type(9)):not(:has(> a.gr:nth-of-type(10))) { grid-template-columns:repeat(9,minmax(0,1fr)); }
+html body .daily:has(> a.gr:nth-of-type(10)):not(:has(> a.gr:nth-of-type(11))) { grid-template-columns:repeat(10,minmax(0,1fr)); }
+html body .daily:has(> a.gr:nth-of-type(11)):not(:has(> a.gr:nth-of-type(12))) { grid-template-columns:repeat(11,minmax(0,1fr)); }
+html body .daily:has(> a.gr:nth-of-type(12)):not(:has(> a.gr:nth-of-type(13))) { grid-template-columns:repeat(12,minmax(0,1fr)); }
+html body .daily:has(> a.gr:nth-of-type(13)):not(:has(> a.gr:nth-of-type(14))) { grid-template-columns:repeat(13,minmax(0,1fr)); }
+html body .daily:has(> a.gr:nth-of-type(14)):not(:has(> a.gr:nth-of-type(15))) { grid-template-columns:repeat(14,minmax(0,1fr)); }
+html body .daily:has(> a.gr:nth-of-type(15)):not(:has(> a.gr:nth-of-type(16))) { grid-template-columns:repeat(15,minmax(0,1fr)); }
+@media (max-width:699px) { html body .daily, html body .daily[class] { grid-template-columns:repeat(6,minmax(0,1fr)) !important; } }
