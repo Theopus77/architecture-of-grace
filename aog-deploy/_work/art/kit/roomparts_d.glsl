@@ -8,7 +8,7 @@ float coinD(vec3 q,float R,float H){
   return min(d,rim); }
 /* a stack of n coins, a little jittered */
 float coinStack(vec3 q,float R,float H,int n){ float d=1e5;
-  for(int i=0;i<12;i++){ if(i>=n) break; float fi=float(i);
+  for(int i=0;i<16;i++){ if(i>=n) break; float fi=float(i);
     vec3 o=vec3(.0015*sin(fi*2.3),fi*H,.0015*cos(fi*1.7)); d=min(d,coinD(q-o,R,H*.9)); }
   return d; }
 /* a spur gear lying flat (axis y), centre at q=0, thickness 2h */
