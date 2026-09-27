@@ -1,7 +1,7 @@
 /* Science Unit 8 "Ecosystems and the Flow of Energy" — pencil still life: a mossy log with
    mushrooms growing on it (decomposers at work), an oak leaf and an acorn. */
-#define CAM_POS vec3(-0.5457,0.2637,-0.7867)
-#define CAM_TGT vec3(-0.1906,0.0022,0.1473)
+#define CAM_POS vec3(-0.5523,0.2754,-0.7985)
+#define CAM_TGT vec3(-0.1918,0.0099,0.1498)
 #define CAM_FOV 30.
 #define SUN_DIR vec3(-.7,.85,-.3)
 #define MAXT 8.
@@ -17,10 +17,10 @@ float logD(vec3 p){ vec3 q=lq(p);
   float d=max(length(q.yz)-r,abs(q.x)-.19);
   d+=.0015*sin(atan(q.z,q.y)*28.+fbm(q.xy*30.)*4.)*step(abs(q.x),.186);
   float br=sdCapsule(q,vec3(-.06,.04,-.01),vec3(-.1,.1,-.03),.012); br=max(br,-(length(q.yz)-.04));
-  return min(d,br); }
+  return d; }
 float shroom(vec3 q,float s){ q/=s;   /* a round-capped mushroom: domed cap, curled rim, thick stem */
   float stem=sdCone(q-vec3(0.,.018,0.),.011,.008,.018);
-  float cap=sdEll(q-vec3(0.,.034,0.),vec3(.026,.024,.026)); cap=max(cap,-(q.y-.03));
+  float cap=sdEll(q-vec3(0.,.034,0.),vec3(.028,.034,.028)); cap=max(cap,-(q.y-.03));
   float rim=sdTorus(q-vec3(0.,.031,0.),.022,.0045);
   return min(min(stem,cap),rim)*s; }
 vec2 mush(vec3 p){ vec3 q=lq(p);
