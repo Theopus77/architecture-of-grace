@@ -301,3 +301,20 @@
     setTimeout(show, 1000);
   })();
 })();
+/* AOG-UNIT-COLORS-V1: course pages use each unit's own color (same order as the hub
+   doors), small flat numbers, and a readable "Course contents" button. */
+(function(){
+  var PAL=["#2F63B8","#B8457A","#2E8B57","#B87A12","#7B4FA0","#A8323E","#1F8080","#3F4AA6"];
+  var css=".unit-spread .badge{background:var(--aog-uc,#2F63B8)!important;color:#fff!important;width:36px!important;height:36px!important;border-radius:9px!important;font-size:1.1rem!important;box-shadow:none!important}"
+   +".unit-spread .unum b{background:var(--aog-uc,#2F63B8)!important;color:#fff!important;min-width:36px!important;width:36px!important;height:36px!important;border-radius:9px!important;font-size:1.1rem!important;box-shadow:none!important}"
+   +".cl-btn,.cl-btn:visited{background:#0A1E33!important;color:#F7F2E6!important;opacity:1!important;filter:none!important}"
+   +".cl-btn:hover{background:#1D3A5C!important;color:#fff!important}";
+  function go(){
+    var st=document.createElement("style");st.id="aog-unit-colors";st.textContent=css;document.head.appendChild(st);
+    var n=0;[].forEach.call(document.querySelectorAll(".bandhead,.unit-spread"),function(el){
+      if(el.classList.contains("bandhead")){n=0;return;}
+      el.style.setProperty("--aog-uc",PAL[n++%8]);
+    });
+  }
+  if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",go);else go();
+})();
