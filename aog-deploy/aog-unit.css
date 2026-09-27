@@ -51,3 +51,47 @@
 .les .body>.aog-ws,.les .body>.aog-more{grid-column:1/-1}
 .aog-srclink{color:inherit;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px}
 .aog-srclink:hover,.aog-srclink:focus-visible{text-decoration-thickness:2px}
+/* ══ AOG-UNIT-PRINT-V2 (2026-09-27) — the unit on paper, like a good textbook ══
+   Jimmy printed /bib1 and it came out with a blank page 1, a watermark through
+   the words, a chart split from its own heading and only one lesson. This is
+   shared by every course unit page (<course>-u<N>.html). */
+@media print{
+  @page{size:letter;margin:0.7in 0.75in 0.8in}
+  html,body{background:#fff!important;color:#111!important}
+  body{font:11pt/1.5 Georgia,"Times New Roman",serif!important}
+  .aog-cwm{display:none!important}
+  [data-aogcwm]{position:static!important}
+  #main{max-width:none!important}
+  /* compact header on page 1 */
+  .spread{background:#fff!important;color:#111!important;border-bottom:2pt solid #111!important;margin:0 0 10pt!important}
+  .spread img,.spread svg,.spread picture,.spread .art,.spread .bg{display:none!important}
+  .spread .txt{padding:0 0 8pt!important;position:static!important}
+  .spread *{color:#111!important;text-shadow:none!important;background:none!important}
+  .spread h1,.spread h2{font-size:22pt!important;line-height:1.1!important}
+  /* chapters flow on; they start a new page only by heading-keeping below */
+  .chap,section.chap{break-before:auto!important;page-break-before:auto!important;margin-top:18pt!important}
+  .chap + .chap,.chap ~ .chap{break-before:page!important}
+  h1,h2,h3,h4,h5,h6,.chead,.sh,.lh,.rh,.k,.kick,.wh{break-after:avoid!important;page-break-after:avoid!important}
+  .sh,.chead,.lh,.rh{break-inside:avoid}
+  /* a lesson may run across pages; its pieces never split */
+  .les,.sec,.review,.rbody{break-inside:auto!important;page-break-inside:auto!important}
+  .main-idea,.look,.story .say,.words,.q,.opts,.aog-ws .part,.aog-ws .wq,.chart,figure,blockquote,.cite,.think,.source,.data,dl,.door{break-inside:avoid!important;page-break-inside:avoid!important}
+  p{orphans:3;widows:3}
+  /* ink-friendly: white cards, thin rules, no fills */
+  .les,.look,.story,.review,.q,.words,.main-idea,.sec,.chead,.aog-ws,.opt,.why{background:#fff!important;box-shadow:none!important;border-radius:4pt!important}
+  .les{border:0!important;border-top:1pt solid #888!important;padding:6pt 0 0!important;margin:14pt 0 0!important}
+  .les .lh{background:none!important;padding:0 0 4pt!important}
+  .main-idea{border:0!important;border-left:3pt solid #7d5a15!important;padding:4pt 10pt!important}
+  .look,.words,.q{border:0.75pt solid #aaa!important;padding:8pt 10pt!important}
+  .look.data svg.chart{max-width:4.6in!important;margin:4pt auto 0!important}
+  .chart rect.bar{fill:#555!important}
+  .chart text{fill:#111!important}
+  .les .pin,.les .tick,.les .lh .ck,.aogpg-bar,.aogchk,.aogtest,.no-print,.lbtns,.lbtn,.aog-ws .btns,.aog-ws .st,.aog-ws .chkw{display:none!important}
+  .opt{border:0.75pt solid #999!important;color:#111!important}
+  .aog-ws input,.aog-ws textarea{background:#fff!important;border:0!important;border-bottom:0.75pt solid #777!important;border-radius:0!important}
+  .aog-ws input::placeholder,.aog-ws textarea::placeholder{color:transparent!important}
+  a{color:inherit!important;text-decoration:none!important}
+}
+@media print{.tl{overflow:visible!important;flex-wrap:wrap!important;row-gap:10pt}.tl .pin{flex:0 0 22%!important}}
+@media print{.spread::before,.spread::after,.spread .shade{display:none!important;background:none!important}.kw{color:#111!important;display:inline!important}.review .opt{display:inline-flex!important}}
+@media print{.les .reading,.les .body>*{max-width:none!important}.les .main-idea{break-after:avoid!important}}

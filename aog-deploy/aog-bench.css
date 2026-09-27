@@ -1,0 +1,97 @@
+/* AOG-BENCH-TOP-V1 (2026-09-27) — Jimmy: every hands-on tool (the benches) looks the same at the top.
+   The Turntables are the model. Top to bottom, on every bench:
+     1. #toolMast.mast   the navy masthead: kicker, title, one-line lead (aog-grace.js paints it)
+     2. .bench-bar       ONE bar (AOG-BENCH-BAR-V1, Jimmy: "THESE SHOULD have lessons in the bar with bench"):
+                         left  — the Bench tab (or the Go to menu), [Simple bench] [Full bench] where they exist, LESSON [menu]
+                         right — Picture guide and the sister tool
+                         phone — the links on one line, the controls on the next
+     3. section.lessons  "Lessons · n/N", the Worksheet button, the current lesson and its steps
+     4. the tool itself
+   A bench that lacks a piece leaves out only that piece. Linked last in <head>, so these rules win. */
+
+/* one type family for the top of every bench (the Turntables' stack) */
+:root{--bench-sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;--bench-display:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif}
+.wrap>.bench-bar,.wrap>.lessons{font-family:var(--bench-sans)}
+
+/* the page column: one width on every bench */
+body>.wrap{max-width:1100px;margin:0 auto;box-sizing:border-box;
+  padding:max(1.1rem,env(safe-area-inset-top)) max(1rem,env(safe-area-inset-right)) max(4rem,env(safe-area-inset-bottom)) max(1rem,env(safe-area-inset-left))}
+/* aog-calm.css zooms the body to .94/.85 on bigger screens, but not on pages with a canvas. A bench that
+   shows a canvas on one view and not another would jump in size; every bench stays at full size instead. */
+@media screen{ body:has(>.wrap>#toolMast){zoom:1!important} }
+
+/* 1 · the masthead (AOG-TOOL-THIN-V1) — one thin navy bar; the old brand row above it goes */
+html.aog-grace #toolMast[data-aog-hero]{padding-top:18px!important;padding-bottom:16px!important;margin-bottom:14px;min-height:158px;box-sizing:border-box}
+html.aog-grace #toolMast[data-aog-hero] h1{font-size:clamp(26px,3.2vw,38px)!important;margin:.15rem 0 .25rem!important}
+html.aog-grace #toolMast[data-aog-hero] .lead{font-size:.95rem;margin:0;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;max-width:62ch}
+html.aog-grace #toolMast[data-aog-hero] .kicker{font-size:.66rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+html.aog-grace #toolMast[data-aog-hero] .aog-more{display:none!important}
+body>.wrap>header:first-child,.wrap>header.no-print:first-child{display:none!important}
+
+/* 2 · the one bar. The nav's own box steps aside (display:contents) so its links, the bench switch and the
+   lesson menu line up as one row; order puts Picture guide and the sister tool last, on the right. */
+.wrap>.bench-bar{display:flex;flex-wrap:wrap;align-items:center;gap:4px .5rem;border-bottom:2px solid var(--line);margin:.2rem 0 0;padding:0 0 .35rem}
+.bench-bar>.nav{display:contents}
+.bench-bar .nav a{order:1;flex:0 0 auto;min-height:44px;display:inline-flex;align-items:center;padding:0 .75rem;text-decoration:none;color:var(--muted);font-weight:600;font-size:.9rem;border-bottom:2px solid transparent;white-space:nowrap}
+.bench-bar .nav a.on{color:var(--ink);border-color:var(--steel,#2F63B8)}
+.bench-bar .nav a.sep{order:3;padding:0 .5rem}
+.bench-bar .nav a.sep:not(.sep ~ .sep){margin-left:auto}
+.bench-bar .nav>span,.bench-bar .nav>.aogdd{order:1}
+/* a bench with four or more places to look lists them in one menu (CLAUDE.md: drop-downs, not walls of tabs) */
+.bench-bar .nav .aogdd{margin:0;flex:0 0 auto;gap:0}
+.bench-bar .nav .aogdd .aogdd-lab{display:none}
+.bench-bar .nav .aogdd .aogdd-sel{flex:0 0 auto;min-width:0;min-height:44px;border:0;border-bottom:2px solid var(--steel,#2F63B8);border-radius:0;
+  background-color:transparent;color:var(--ink);font:700 16px/1.2 var(--bench-sans);padding:0 34px 0 .75rem}
+.bench-bar .nav .aogdd-src{position:absolute!important;width:1px!important;height:1px!important;overflow:hidden!important;clip:rect(0 0 0 0)!important;white-space:nowrap!important}
+
+/* the controls in the bar: [Simple bench] [Full bench]  LESSON [menu] */
+.bench-bar>.bench-switch{order:2;display:flex;gap:.5rem;align-items:center;flex-wrap:wrap;margin:0 0 0 .5rem}
+.bench-bar>.bench-switch[hidden]{display:none}
+.bench-bar>.bench-switch>b{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}  /* the Bench tab already says it */
+.bench-bar>.bench-switch>button{min-height:44px;border-radius:999px;border:1px solid var(--line);background:var(--card);color:var(--ink);
+  padding:0 .9rem;font:600 1rem/1.2 var(--bench-sans);display:inline-flex;align-items:center;box-shadow:none;letter-spacing:0;cursor:pointer;text-decoration:none}
+.bench-bar>.bench-switch>button.on{background:#f0c26e;color:#2a1a08;border-color:#f0c26e}
+.bench-lesson{display:inline-flex;align-items:center;margin-left:.5rem;max-width:100%;min-width:0}
+.bench-lesson:first-child{margin-left:0}
+.bench-lesson .aogdd{margin:0;max-width:100%}
+.bench-lesson .aogdd-sel{max-width:100%}
+.bench-lesson .aogdd-lab{flex:0 0 auto!important;min-width:0!important;margin-right:.4rem}
+#lessonRow{display:flex;flex-wrap:wrap;gap:.35rem;margin-top:0}
+@media (max-width:700px){
+  .bench-bar>.bench-switch{order:4;flex:1 0 100%;margin:.2rem 0 0}
+  .bench-lesson{flex:1 1 auto;margin-left:0}
+  .bench-lesson .aogdd{flex-wrap:nowrap;flex:1 1 auto}
+  .bench-lesson .aogdd-sel{flex:1 1 auto!important;min-width:0!important;width:100%}
+}
+
+/* 4 · the Lessons card */
+.wrap>.lessons{margin:.9rem 0 0;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:.85rem 1rem 1rem;color:var(--ink)}
+.wrap>.lessons[hidden]{display:none}
+.wrap>.lessons .lhead{min-height:44px;display:flex;justify-content:space-between;align-items:center;gap:.6rem;flex-wrap:wrap}
+.wrap>.lessons .lhead .kicker{margin:0;font-size:.75rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--steel)}
+.wrap>.lessons .pill{min-height:44px;border-radius:999px;border:1px solid var(--line);background:var(--card);color:var(--ink);padding:0 .9rem;
+  font:600 .9rem/1.2 var(--bench-sans);display:inline-flex;align-items:center;text-decoration:none;cursor:pointer;box-shadow:none}
+.wrap>.lessons .pill[hidden]{display:none}
+.wrap>.lessons .mk{margin:.5rem 0 0;font-size:.68rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--steel)}
+.wrap>.lessons h3{margin:.1rem 0 .15rem;font-size:1.08rem;font-family:var(--bench-display);color:var(--ink)}
+.wrap>.lessons .lblurb{margin:0;color:var(--muted);font-size:.92rem}
+.wrap>.lessons .lsteps{list-style:none;margin:.45rem 0 0;padding:0}
+.wrap>.lessons .lstep{display:flex;gap:.5rem;align-items:flex-start;padding:.2rem 0;font-size:.95rem}
+.wrap>.lessons .lstep .lck{flex:0 0 auto;width:1.2rem;height:1.2rem;border-radius:99px;border:1px solid var(--line);text-align:center;line-height:1.1rem;font-size:.75rem;color:var(--steel);margin-top:.1rem}
+.wrap>.lessons .lstep.ok .lck{border-color:var(--steel);background:var(--steel);color:var(--steel-fg)}
+.wrap>.lessons .lstep.ok>span:last-child{text-decoration:line-through;color:var(--muted)}
+.wrap>.lessons .lstep.ok input{text-decoration:none}
+.wrap>.lessons .lok{margin:.55rem 0 0;font-weight:700;display:flex;align-items:center;gap:.6rem;flex-wrap:wrap}
+.wrap>.lessons .lacts{display:flex;flex-wrap:wrap;gap:.5rem;margin:.6rem 0 0}
+.wrap>.lessons .lacts:empty{display:none}
+
+/* 5 · the tool starts one even gap below the Lessons card */
+.wrap>.lessons+*{margin-top:1rem}
+
+@media print{ .wrap>.bench-bar .bench-switch,.wrap>.lessons{display:none!important} }
+/* phones: the links fit one line */
+@media (max-width:700px){
+  .bench-bar .nav a{padding:0 .3rem;font-size:.82rem}
+  .wrap>.bench-bar{column-gap:0}
+  .bench-bar .nav .aogdd .aogdd-sel{width:7.6rem!important;min-width:0!important;max-width:7.6rem!important;flex:0 0 auto!important;padding-left:.4rem;padding-right:28px;background-position:right 6px center!important}
+}
