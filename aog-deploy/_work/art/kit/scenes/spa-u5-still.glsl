@@ -1,8 +1,8 @@
 /* Spanish Unit 5 "A Whole Thought in Spanish" — pencil still life: a wooden letter rack holding
    a sentence made of tiles, opening with a carved ¿ block and closing with a carved ? block,
    with a pencil lying in front. */
-#define CAM_POS vec3(-0.30,0.36,-0.84)
-#define CAM_TGT vec3(-0.05,0.03,0.09)
+#define CAM_POS vec3(-0.3651,0.2191,-0.6120)
+#define CAM_TGT vec3(-0.1735,-0.0338,0.1006)
 #define CAM_FOV 30.
 #define SUN_DIR vec3(-.65,.85,-.3)
 #define MAXT 8.
