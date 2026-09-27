@@ -1,7 +1,7 @@
 /* WCS Unit 7 "Festivals, Arts and Everyday Life" — a hand drum with a laced body and two
-   drumsticks resting on its skin, and a wooden flute with finger holes lying in front. */
-#define CAM_POS vec3(-0.3090,0.3939,-0.8361)
-#define CAM_TGT vec3(-0.1704,-0.0524,0.0939)
+   drumsticks leaning on it, and a wooden flute with finger holes lying in front. */
+#define CAM_POS vec3(-0.2858,0.4034,-0.8551)
+#define CAM_TGT vec3(-0.1447,-0.0506,0.0909)
 #define CAM_FOV 30.
 #define SUN_DIR vec3(-.7,.85,-.3)
 #define MAXT 8.
@@ -15,9 +15,11 @@ float drum(vec3 p){ vec3 q=p-DC; float r=.1-.012*sin(q.y/.15*3.1416);
   float d=max(length(q.xz)-r,abs(q.y-.075)-.075);
   d=min(d,sdTorus(q-vec3(0.,.148,0.),.1,.006)); d=min(d,sdTorus(q-vec3(0.,.004,0.),.1,.005));
   return d; }
-float sticks(vec3 p){ vec3 a=DC+vec3(-.05,.158,-.03);
-  float d=sdCapsule(p,a,a+vec3(.2,.02,-.1),.0045); d=min(d,length(p-a)-.011);
-  vec3 b=DC+vec3(-.02,.158,.04); d=min(d,sdCapsule(p,b,b+vec3(.21,.03,-.05),.0045)); d=min(d,length(p-b)-.011);
+float sticks(vec3 p){ /* two drumsticks leaning on the drum, feet on the table */
+  vec3 a=DC+vec3(.2,.006,-.13), b=DC+vec3(.055,.162,-.065);
+  float d=sdCapsule(p,a,b,.0045); d=min(d,length(p-b)-.011);
+  a=DC+vec3(.23,.006,-.06); b=DC+vec3(.08,.162,-.01);
+  d=min(d,sdCapsule(p,a,b,.0045)); d=min(d,length(p-b)-.011);
   return d; }
 #define FL vec3(.12,.012,-.14)
 float flute(vec3 p){ vec3 q=p-FL; q.xz=rot(.18)*q.xz; float d=sdCylX(q,.012,.15)-.001;

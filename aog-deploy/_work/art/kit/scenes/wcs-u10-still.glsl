@@ -1,8 +1,8 @@
 /* WCS Unit 10 "Societies of the Americas" — pencil still life: a round clay pot with a painted
    step-fret band, an Inca quipu (knotted cords) hanging from a wooden rack, and a small
    stepped-pyramid model in stone. */
-#define CAM_POS vec3(-0.5331,0.2682,-1.1257)
-#define CAM_TGT vec3(-0.2577,0.0178,0.1129)
+#define CAM_POS vec3(-0.5325,0.2652,-1.1231)
+#define CAM_TGT vec3(-0.2578,0.0154,0.1124)
 #define CAM_FOV 30.
 #define SUN_DIR vec3(-.7,.85,-.3)
 #define MAXT 8.
@@ -28,13 +28,13 @@ float rack(vec3 p){ vec3 q=p-vec3(QX,0.,QZ);
   float bar=sdCylX(q-vec3(.15,.3,0.),.009,.175);
   return min(min(min(b1,b2),min(p1,p2)),bar); }
 float quipu(vec3 p){ vec3 q=p-vec3(QX,0.,QZ);
-  float d=sdTorus((q-vec3(.15,.3,0.)).yxz*vec3(1.,1.,1.),.0,.0)+1.;
-  d=min(d,sdCylX(q-vec3(.15,.3,0.),.0135,.15));
-  for(int i=0;i<9;i++){ float fi=float(i); float x=.035+fi*.029; float L=.13+.07*fract(sin(fi*7.1)*43.);
-    vec3 a=vec3(x,.29,0.), b=vec3(x+.006*sin(fi*2.),.29-L,-.004*cos(fi));
-    d=min(d,sdCapsule(q,a,b,.0032));
-    for(int k=0;k<3;k++){ float t=.25+.22*float(k)+.1*fract(sin(fi*3.3+float(k))*91.); if(t*L<L-.01){
-      d=min(d,length((q-mix(a,b,t))*vec3(1.,.8,1.))-.0068); } } }
+  float d=sdCylX(q-vec3(.15,.3,-.012),.0075,.14);
+  if(abs(q.x-.15)>.2||q.y<.02||q.y>.32) return min(d,.02);
+  for(int i=0;i<13;i++){ float fi=float(i); float x=.04+fi*.0183; float L=.12+.1*fract(sin(fi*7.1)*43.);
+    vec3 a=vec3(x,.297,-.012), b=vec3(x+.004*sin(fi*2.),.297-L,-.012-.003*cos(fi));
+    d=min(d,sdCapsule(q,a,b,.0022));
+    for(int k=0;k<3;k++){ float t=.3+.2*float(k)+.08*fract(sin(fi*3.3+float(k))*91.);
+      vec3 c=mix(a,b,t); d=min(d,length((q-c)*vec3(1.,.55,1.))-.0042); } }
   return d; }
 float pyr(vec3 p){ vec3 q=p-vec3(-.2,0.,-.1); q.xz=rot(.5)*q.xz; float d=1e5;
   for(int i=0;i<4;i++){ float fi=float(i); d=min(d,sdRBox(q-vec3(0.,.012+fi*.024,0.),vec3(.075-fi*.017,.012,.075-fi*.017),.002)); }

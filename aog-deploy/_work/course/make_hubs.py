@@ -244,13 +244,16 @@ def course_art(contents):
     out = {}
     for p in parts[1:]:
         n = int(re.match(r'<section class="unit-spread" id="u(\d+)"', p).group(1))
-        m = re.search(r'<div class="scene" aria-hidden="true">(<svg.*?</svg>)</div>', p, re.S)
+        m = (re.search(r'<div class="scene" aria-hidden="true">(<svg.*?</svg>)</div>', p, re.S)
+             or re.search(r'<div class="scene" aria-hidden="true" data-aog-render="[^"]*"[^>]*>(<picture.*?</picture>)', p, re.S))   # AOG-PENCIL-DOORS: a drawn picture
         body = p.split("</section>", 1)[0] if "</section>" in p else p
         out[n] = (m.group(1) if m else "", body.count('class="lrow"'))
     return out
 
 def svg_scoped(svg, pre, cls=""):
     """a banner, re-id'd so the same scene can sit twice on one page, and silent to screen readers"""
+    if svg.startswith("<picture"):   # a pencil drawing: silent, lazy, filling its tile
+        return re.sub(r'\salt="[^"]*"', ' alt=""', svg).replace("<img ", '<img aria-hidden="true" class="%s" style="width:100%%;height:100%%;object-fit:cover;object-position:75%% 40%%" ' % cls, 1)
     ids = re.findall(r'\sid="([^"]+)"', svg)
     for i in sorted(set(ids), key=len, reverse=True):
         svg = svg.replace('id="%s"' % i, 'id="%s-%s"' % (pre, i)).replace("url(#%s)" % i, "url(#%s-%s)" % (pre, i)).replace('href="#%s"' % i, 'href="#%s-%s"' % (pre, i))

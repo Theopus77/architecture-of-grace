@@ -1,8 +1,8 @@
 /* WCS Unit 14 "Class and Culture Today" — pencil still life: an old leather suitcase standing
    on end with straps and a handle (migration), beside three stacks of coins of very different
    heights (inequality). */
-#define CAM_POS vec3(-0.4557,0.2964,-1.0508)
-#define CAM_TGT vec3(-0.1980,0.0619,0.1085)
+#define CAM_POS vec3(-0.4484,0.3004,-1.0609)
+#define CAM_TGT vec3(-0.1889,0.0642,0.1070)
 #define CAM_FOV 30.
 #define SUN_DIR vec3(-.7,.85,-.3)
 #define MAXT 8.
@@ -21,7 +21,8 @@ float fittings(vec3 p){ vec3 q=sQ(p);
   hd=max(sdTorus(vec3(h.x*.55,h.y,h.z).xzy,.022,.007),-h.y+.0);
   hd=min(hd,sdRBox(h-vec3(-.035,-.006,0.),vec3(.01,.006,.012),.003)); hd=min(hd,sdRBox(h-vec3(.035,-.006,0.),vec3(.01,.006,.012),.003));
   d=min(d,hd);
-  vec3 c=vec3(abs(q.x)-.15,abs(q.y-.15)-.14,q.z); d=min(d,length(max(abs(c)-vec3(.018,.018,.06),0.))-.008);
+  vec3 c=vec3(abs(q.x)-.155,abs(q.y-.15)-.145,abs(q.z)-.05); d=min(d,length(c)-.014);
+  d=min(d,sdRBox(q-vec3(-.045,.3,-.05),vec3(.012,.006,.008),.002)); d=min(d,sdRBox(q-vec3(.045,.3,-.05),vec3(.012,.006,.008),.002));
   return d; }
 float coins(vec3 p){ float d=1e5; vec3 cs[3]; cs[0]=vec3(.2,0.,-.08); cs[1]=vec3(.29,0.,-.03); cs[2]=vec3(.37,0.,-.1);
   int nn[3]; nn[0]=2; nn[1]=6; nn[2]=13;

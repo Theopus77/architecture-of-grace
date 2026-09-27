@@ -1,7 +1,7 @@
 /* WCS Unit 6 "How Countries Are Governed" — a wooden ballot box with a slot in its lid and a
    folded ballot going in, two more ballots with tick boxes on the table and a pencil. */
-#define CAM_POS vec3(-0.3090,0.3939,-0.8361)
-#define CAM_TGT vec3(-0.1704,-0.0524,0.0939)
+#define CAM_POS vec3(-0.3099,0.4886,-1.0042)
+#define CAM_TGT vec3(-0.1458,-0.0396,0.0964)
 #define CAM_FOV 30.
 #define SUN_DIR vec3(-.7,.85,-.3)
 #define MAXT 8.

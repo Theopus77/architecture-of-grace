@@ -1,4 +1,4 @@
-/* WCS Unit 5 "Rich and Poor, Then and Now" — a jewelled king's crown on a tasselled cushion,
+/* WCS Unit 5 "Rich and Poor, Then and Now" — a jewelled king's crown on a soft cushion,
    beside a plain wooden bowl with a few coins spilled on the table. */
 #define CAM_POS vec3(-0.2061,0.3058,-0.6431)
 #define CAM_TGT vec3(-0.0973,-0.0445,0.0869)
@@ -11,9 +11,9 @@
 #include "lib.glsl"
 #include "studio.glsl"
 #define KC vec3(-.02,0.,.05)
-float cushion(vec3 p){ vec3 q=p-KC; float d=sdRBox(q-vec3(0.,.03,0.),vec3(.1,.012,.1),.022);
-  d-=.006*(1.-smoothstep(0.,.1,max(abs(q.x),abs(q.z)))); return d; }
-float crown(vec3 p){ vec3 q=p-KC-vec3(0.,.055,0.); float r=length(q.xz); float a=atan(q.z,q.x);
+float cushion(vec3 p){ vec3 q=p-KC; float d=sdRBox(q-vec3(0.,.03,0.),vec3(.1,.028,.1),.028);
+  d-=.008*(1.-smoothstep(0.,.1,max(abs(q.x),abs(q.z))))-.01*smoothstep(.08,.1,max(abs(q.x),abs(q.z))); return d; }
+float crown(vec3 p){ vec3 q=p-KC-vec3(0.,.062,0.); float r=length(q.xz); float a=atan(q.z,q.x);
   float sp=pow(abs(cos(a*3.)),6.); float top=.035+.04*sp;
   float d=max(abs(r-.065)-.004,max(-q.y,q.y-top));
   d=min(d,sdTorus(q-vec3(0.,.004,0.),.066,.005));
@@ -38,7 +38,7 @@ float toneAlb(float id,vec3 p,vec3 n){
   if(id==1.) return .72;
   if(id==2.) return .9;
   if(id==3.){ vec3 q=p-KC; if(abs(max(abs(q.x),abs(q.z))-.085)<.003) return .3; return .5; }
-  if(id==4.){ vec3 q=p-KC-vec3(0.,.055,0.); if(q.y<.03&&q.y>.008&&length(q.xz)>.069) return .25; if(q.y>.07) return .35; return .72; }
+  if(id==4.){ vec3 q=p-KC-vec3(0.,.062,0.); if(q.y<.03&&q.y>.008&&length(q.xz)>.069) return .25; if(q.y>.07) return .35; return .72; }
   if(id==5.) return .45+.14*grain(p,50.);
   if(id==6.) return n.y>.7?(fract(length(p.xz)*300.)<.2?.5:.8):.55;
   return .7; }

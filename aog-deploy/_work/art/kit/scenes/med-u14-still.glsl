@@ -1,7 +1,7 @@
 /* Medicine Unit 14 "Global Health" — pencil still life: a desk globe on a stand with a
    meridian ring, beside a folded mosquito net (a neat stack of fine-mesh folds). */
-#define CAM_POS vec3(-0.4653,0.2898,-1.0141)
-#define CAM_TGT vec3(-0.2149,0.0621,0.1123)
+#define CAM_POS vec3(-0.3773,0.2764,-1.0119)
+#define CAM_TGT vec3(-0.1319,0.0532,0.0921)
 #define CAM_FOV 30.
 #define SUN_DIR vec3(-.7,.85,-.3)
 #define MAXT 8.
@@ -33,12 +33,12 @@ vec2 map(vec3 p){
   r=U(r,net(p),6.);
   return r; }
 float land(vec2 ll){ /* soft invented continents from noise, lon/lat */
-  return fbm(ll*vec2(1.3,1.8)+vec2(3.,1.)); }
+  return fbm(ll*vec2(1.6,2.2)+vec2(3.,1.)); }
 float toneAlb(float id,vec3 p,vec3 n){
   if(id==1.) return .72;
   if(id==2.) return .9;
   if(id==3.){ vec3 q=normalize(gq(p)); vec2 ll=vec2(atan(q.z,q.x),asin(q.y));
-    float l=land(ll); if(abs(l-.55)<.012) return .2; if(l>.55) return .55;
+    float l=land(ll); if(abs(l-.5)<.01) return .2; if(l>.5) return .5;
     if(fract(ll.y*5.73/1.)<.03||fract(ll.x*5.73/1.)<.02) return .7; return .88; }
   if(id==4.) return .35;
   if(id==5.) return .4;

@@ -1,7 +1,7 @@
 /* WCS Unit 15 "Comparing Systems" — pencil still life: a desk globe on a tilted meridian ring
    and turned stand, with a pair of round reading glasses resting on a closed book. */
-#define CAM_POS vec3(-0.4448,0.3018,-1.0823)
-#define CAM_TGT vec3(-0.1810,0.0618,0.1046)
+#define CAM_POS vec3(-0.4451,0.3042,-1.0945)
+#define CAM_TGT vec3(-0.1787,0.0618,0.1041)
 #define CAM_FOV 30.
 #define SUN_DIR vec3(-.7,.85,-.3)
 #define MAXT 8.
@@ -14,7 +14,7 @@
 #define TL .41
 vec3 gQ(vec3 p){ vec3 q=p-GC; q.xy=rot(TL)*q.xy; return q; }
 float globe(vec3 p){ return length(p-GC)-.11; }
-float ring(vec3 p){ vec3 q=gQ(p); float d=max(abs(length(q.xy)-.12)-.004,abs(q.z)-.005)-.001;
+float ring(vec3 p){ vec3 q=gQ(p); float d=max(abs(length(q.xy)-.122)-.005,abs(q.z)-.007)-.001;
   d=max(d,-(q.x+.02)); d=min(d,sdCylY(q-vec3(0.,.12,0.),.005,.012)); d=min(d,sdCylY(q+vec3(0.,.12,0.),.005,.012)); return d; }
 float stand(vec3 p){ vec3 q=p-vec3(GC.x,0.,GC.z);
   float d=sdCylY(q-vec3(0.,.01,0.),.07,.01)-.004; d=min(d,sdCone(q-vec3(0.,.045,0.),.03,.012,.025));
@@ -23,14 +23,14 @@ float stand(vec3 p){ vec3 q=p-vec3(GC.x,0.,GC.z);
 vec3 bQ(vec3 p){ vec3 q=p-vec3(.24,0.,-.03); q.xz=rot(-.2)*q.xz; return q; }
 float book(vec3 p){ vec3 q=bQ(p); float c=sdRBox(q-vec3(0.,.02,0.),vec3(.12,.02,.085),.004); return c; }
 float pages(vec3 p){ vec3 q=bQ(p); return sdRBox(q-vec3(.006,.02,0.),vec3(.117,.016,.08),.001); }
-float glasses(vec3 p){ vec3 q=bQ(p)-vec3(0.,.046,-.01); q.xz=rot(.25)*q.xz;
+float glasses(vec3 p){ vec3 q=bQ(p)-vec3(0.,.048,-.01); q.xz=rot(.25)*q.xz; q/=1.4;
   vec3 a=q-vec3(-.035,.0,0.), b=q-vec3(.035,.0,0.); a.yz=rot(-.12)*a.yz; b.yz=rot(-.12)*b.yz;
   float d=min(sdTorus(a.xzy.xzy,.026,.0028),sdTorus(b,.026,.0028));
   d=min(sdTorus(a,.026,.0028),sdTorus(b,.026,.0028));
   float br=sdTorus((q-vec3(0.,.0,.008)).xzy*vec3(1.,1.,1.),.009,.002); br=max(br,-(q.z-.008));
   d=min(d,max(sdTorus(vec3(q.x,q.y,q.z-.008).xzy,.0,.0)+1.,br));
   d=min(d,sdCapsule(q,vec3(-.06,.0,.004),vec3(-.075,.0,.08),.0022)); d=min(d,sdCapsule(q,vec3(.06,.0,.004),vec3(.07,.0,.08),.0022));
-  return d; }
+  return d*1.4; }
 vec2 map(vec3 p){
   vec2 r=vec2(p.y,1.);
   r=U(r,.9-p.z,2.);

@@ -50,6 +50,6 @@ float toneAlb(float id,vec3 p,vec3 n){
   if(id==4.) return .9;
   if(id==5.||id==6.) return .85;
   if(id==7.){ vec3 q=p-D1; float c=min(length(q.xz-vec2(.02,.015))-.012,min(length(q.xz-vec2(-.025,-.01))-.009,length(q.xz-vec2(.01,-.035))-.007));
-    if(abs(c)<.0015) return .25; if(c<0.) return .45; return .7; }
+    if(abs(c)<.002) return .15; if(c<0.) return .35; return .7; }
   if(id==8.){ vec3 q=p-vec3(-.17,0.,-.02); if(q.y>.1) return .3; if(q.y>.03&&q.y<.06) return .92; return .45; }
   return .7; }

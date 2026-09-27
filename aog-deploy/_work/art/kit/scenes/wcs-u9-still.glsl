@@ -1,7 +1,7 @@
 /* WCS Unit 9 "Social Order in Asia" — a scholar's ink brush resting on a carved ink stone, an
    open folding fan standing behind, and a small cylindrical ink stick. */
-#define CAM_POS vec3(-0.3090,0.3939,-0.8361)
-#define CAM_TGT vec3(-0.1704,-0.0524,0.0939)
+#define CAM_POS vec3(-0.2420,0.3651,-0.6991)
+#define CAM_TGT vec3(-0.1225,-0.0196,0.1025)
 #define CAM_FOV 30.
 #define SUN_DIR vec3(-.7,.85,-.3)
 #define MAXT 8.

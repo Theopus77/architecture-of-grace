@@ -22,7 +22,7 @@ float appleD(vec3 q,float r){
   d*=.8;
   float stem=sdCapsule(q,vec3(0.,.62*r,0.),vec3(.12*r,1.18*r,.02*r),.055*r);
   return min(d,stem); }
-float appleLeaf(vec3 q,float r){ vec3 l=q-vec3(.3*r,1.02*r,0.); l.xy=rot(-.5)*l.xy; return sdEll(l,vec3(.32*r,.03*r,.13*r)); }
+float appleLeaf(vec3 q,float r){ vec3 l=q-vec3(.3*r,1.02*r,0.); l.xy=rot(-.5)*l.xy; return sdEll(l,vec3(.34*r,.06*r,.15*r)); }
 /* a toothbrush standing along +y from its tail at q=0; bristles face +z */
 float brushD(vec3 q){
   float h=sdCapsule(q,vec3(0.),vec3(0.,.155,0.),.0055);

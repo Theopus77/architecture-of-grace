@@ -1,7 +1,7 @@
 /* Medicine Unit 12 "How Medicine Knows" — pencil still life: a wooden rack of four glass test
    tubes (two with liquid), a clipboard with a bar chart and hint-lines, and a pencil. */
-#define CAM_POS vec3(-0.4653,0.2898,-1.0141)
-#define CAM_TGT vec3(-0.2149,0.0621,0.1123)
+#define CAM_POS vec3(-0.2276,0.1623,-0.8137)
+#define CAM_TGT vec3(-0.0342,-0.0138,0.0568)
 #define CAM_FOV 30.
 #define SUN_DIR vec3(-.7,.85,-.3)
 #define MAXT 8.
@@ -54,8 +54,8 @@ float toneAlb(float id,vec3 p,vec3 n){
   if(id==5.) return .5;
   if(id==6.) return .4;
   if(id==7.){ vec3 q=cbQ(p); vec2 u=vec2(q.x,q.z);
-    if(u.y>.0){ float bx=floor((u.x+.06)/.03); float hgt=.02+.018*fract(sin(bx*7.1)*43.)+bx*.008;
-      if(u.x>-.06&&u.x<.06&&fract((u.x+.06)/.03)<.6&&u.y<.01+hgt) return .35;
+    if(u.y>.0){ float bx=floor((u.x+.06)/.03); float hgt=.02+bx*.015;
+      if(u.x>-.06&&u.x<.06&&fract((u.x+.06)/.03)>.2&&fract((u.x+.06)/.03)<.8&&u.y<.01+hgt) return .45;
       if(abs(u.y-.008)<.001&&abs(u.x)<.065) return .2; }
     if(u.y<-.02&&u.y>-.1&&abs(u.x)<.06&&fract(u.y/.014)<.18) return .6;
     return .95; }

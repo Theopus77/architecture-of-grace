@@ -1,8 +1,8 @@
 /* WCS Unit 16 "Propaganda, Extremism and Civic Life" — pencil still life: an old desk radio
    microphone on a round stand, a folded stack of newspapers, and a hand loudspeaker (megaphone)
    lying on its side. */
-#define CAM_POS vec3(-0.5520,0.2861,-1.1201)
-#define CAM_TGT vec3(-0.2763,0.0353,0.1205)
+#define CAM_POS vec3(-0.5507,0.2848,-1.1138)
+#define CAM_TGT vec3(-0.2764,0.0353,0.1205)
 #define CAM_FOV 30.
 #define SUN_DIR vec3(-.7,.85,-.3)
 #define MAXT 8.
@@ -23,7 +23,7 @@ float yoke(vec3 p){ vec3 q=hQ(p); float d=max(abs(length(q.xy)-.07)-.004,abs(q.z
 vec3 nQ(vec3 p){ vec3 q=p-vec3(.25,0.,.03); q.xz=rot(-.3)*q.xz; return q; }
 float papers(vec3 p){ vec3 q=nQ(p); float d=1e5; for(int i=0;i<5;i++){ float fi=float(i); vec3 o=q-vec3(.006*sin(fi*2.7),.006+fi*.012,.005*cos(fi*1.9));
     o.xz=rot(.05*sin(fi*3.1))*o.xz; d=min(d,sdRBox(o,vec3(.13,.0045,.09),.004)); } return d; }
-vec3 mQ(vec3 p){ vec3 q=p-vec3(-.17,.0,-.08); q.xz=rot(-.5)*q.xz; return q; }
+vec3 mQ(vec3 p){ vec3 q=p-vec3(-.2,.0,-.1); q.xz=rot(2.5)*q.xz; return q; }
 float mega(vec3 p){ vec3 q=mQ(p); vec3 c=q-vec3(0.,.055,0.); float t=clamp((c.x+.1)/.2,0.,1.); float r=.018+.037*t*t*.6+.022*t;
   float d=max(abs(length(c.yz)-r)-.003,abs(c.x)-.1)*.8;
   d=min(d,sdTorus((c-vec3(.1,0.,0.)).yxz,r+.0,.004));

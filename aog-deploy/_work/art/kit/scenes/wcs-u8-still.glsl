@@ -1,7 +1,7 @@
 /* WCS Unit 8 "Social Class in Europe" — a tall castle chess rook with crenellations, a large
    iron cog wheel from a factory machine, and a rolled parchment scroll. */
-#define CAM_POS vec3(-0.3090,0.3939,-0.8361)
-#define CAM_TGT vec3(-0.1704,-0.0524,0.0939)
+#define CAM_POS vec3(-0.3495,0.5038,-0.9913)
+#define CAM_TGT vec3(-0.1855,-0.0244,0.1096)
 #define CAM_FOV 30.
 #define SUN_DIR vec3(-.7,.85,-.3)
 #define MAXT 8.

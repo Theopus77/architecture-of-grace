@@ -1,7 +1,7 @@
 /* WCS Unit 4 "Continents and Cultures" — a tilted desk globe on a wooden stand with a
    brass meridian ring, beside a stack of three books. */
-#define CAM_POS vec3(-0.3090,0.3939,-0.8361)
-#define CAM_TGT vec3(-0.1704,-0.0524,0.0939)
+#define CAM_POS vec3(-0.2858,0.5298,-0.9575)
+#define CAM_TGT vec3(-0.1253,0.0133,0.1188)
 #define CAM_FOV 30.
 #define SUN_DIR vec3(-.7,.85,-.3)
 #define MAXT 8.

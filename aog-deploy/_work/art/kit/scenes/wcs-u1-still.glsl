@@ -35,7 +35,6 @@ vec2 map(vec3 p){
   r=U(r,.9-p.z,2.);
   r=U(r,house(p),3.);
   r=U(r,igloo(p),4.);
-  r=U(r,bushes(p),5.);
   return r; }
 float toneAlb(float id,vec3 p,vec3 n){
   if(id==1.) return .72;
