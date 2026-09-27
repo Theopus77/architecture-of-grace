@@ -3,9 +3,12 @@
    be smoother!?" Every page change is a short crossfade: opacity only, under a
    quarter of a second. Nothing slides, zooms, bounces or moves; that stays
    forbidden by aog-calm.css. With "reduce motion" set, pages simply appear. ═══ */
-@view-transition { navigation: auto; }
-::view-transition-old(root) { animation: aog-vt-out .16s ease both; }
-::view-transition-new(root) { animation: aog-vt-in .22s ease both; }
+/* AOG-NO-PAGE-FLASH-V1 (2026-09-27) — Jimmy: "WHEN I AM SWITCHING BETWEEN pages i get the flash of an image …
+   make sure this DOES NOT HAPPEN ANYMORE ACROSS THE ENTIRE WEBSITE." The cross-page fade showed a still picture of
+   the old page while the new one loaded. Page changes are plain now: the new page simply appears.
+   Never turn cross-document view transitions back on. */
+@view-transition { navigation: none; }
+::view-transition-old(root), ::view-transition-new(root) { animation: none !important; }
 @keyframes aog-vt-out { to { opacity: 0; } }
 @keyframes aog-vt-in { from { opacity: 0; } }
 /* in-page: a room, screen or panel that just appeared fades in the same way */
