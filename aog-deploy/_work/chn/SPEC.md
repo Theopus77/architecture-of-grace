@@ -85,9 +85,8 @@ Invent your own section and lesson titles (short, 2–6 words, clear, not cute).
   certain of; anything else is `"paraphrase": true` in your own words.
 - Quote only U.S.-public-domain translations, and name them: James Legge's *Confucian Analects* (The Chinese
   Classics vol. 1, 1861; 2nd ed. 1893), Legge's *The Tao Teh King* (Sacred Books of the East 39, 1891) and Legge's
-  *The Works of Mencius* (The Chinese Classics vol. 2, 1861; 2nd ed. 1895). Check every quotation word for word
-  against the named edition and say which edition. Everything else is `"paraphrase": true`: the Zhuangzi (even
-  Legge's SBE 39–40 version, unless the owner clears it — see TEXTS_PLAN.md), Xunzi, Mozi, Han Feizi, the Great
+  *The Works of Mencius* (The Chinese Classics vol. 2, 1861; 2nd ed. 1895), and Legge's *The Writings of Kwang-ze* (the Zhuangzi, Sacred Books of the East 39–40, 1891; cleared by the owner 2026-09-27). Check every quotation word for word
+  against the named edition and say which edition. Everything else is `"paraphrase": true`: any other Zhuangzi translation, Xunzi, Mozi, Han Feizi, the Great
   Learning, commentaries (Wang Bi, Zhu Xi, Wang Yangming) and every modern translation (Waley, Lau, Slingerland,
   Ames, Mitchell, Le Guin, Red Pine). For K–2 and 3–5, retell in simple words and cite the text (e.g. "Analects,
   book 2").

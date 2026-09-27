@@ -309,11 +309,12 @@ html{background:#081828}
     <span class="bench-lesson"><div id="lessonRow" data-aog-dropdown="Lesson|Lección"></div></span>
   </div>
   </div>
+  <main id="view"></main>
+  <!-- AOG-TOOL-LESSONS-BELOW-V1 (2026-09-27) — Jimmy: the lesson card sits under the instrument, not above it (as on the Turntables). The Lesson menu stays in the top bar. -->
   <section class="lessons no-print" id="lessons" aria-label="Lessons">
     <div class="lhead"><p class="kicker" id="lKick">Lessons</p><a class="pill" id="lSheet" href="#print" hidden>Worksheet</a></div>
     <div id="lessonBody"></div>
   </section>
-  <main id="view"></main>
   <!-- AOG-SCIPIC-PANEL-V1 -->
   <details class="pg no-print" id="pgPanel">
     <summary><span class="chev">&#9656;</span>Picture guide<span class="pgsub">Every lesson in pictures &#183; prints on 9 pages</span></summary>
@@ -387,8 +388,8 @@ const STR = {
   teachOpen:{en:"Open",es:"Abiertas"},
   teachLocked:{en:"Locked. Each lesson opens the next control.",es:"Cerradas. Cada lección abre el control siguiente."},
   teachOpenNote:{en:"Open. Every control is on the bench. Lock this before a student sits down.",es:"Abiertas. Todos los controles están en la mesa. Ciérralas antes de que se siente un estudiante."},
-  practicalHint:{en:"Seven lessons. Each one opens the next. The sixth is the research bench — the slit, polarized light, the prism. The ceiling does not move. The seventh reads three ancient texts.",es:"Siete lecciones. Cada una abre la siguiente. La última es el banco de investigación — la rendija, la luz polarizada, el prisma. El techo no se mueve."},
-  practicalDone:{en:"Seven lessons done. You read the number, and you read three ancient texts by their material.",es:"Siete lecciones hechas. Leíste el número, y leíste tres textos antiguos por su material."},
+  practicalHint:{en:"Seventeen lessons. Each one opens the next. They climb from the lamp to oil, stains, measuring and polarized light. The ceiling does not move.",es:"Diecisiete lecciones. Cada una abre la siguiente. Suben de la lámpara al aceite, las tinciones, las medidas y la luz polarizada. El techo no se mueve."},
+  practicalDone:{en:"All seventeen lessons done. You can light, stain, measure and read a slide like a scientist.",es:"Las diecisiete lecciones hechas. Sabes iluminar, teñir, medir y leer una lámina como un científico."},
   researchK:{en:"Research bench",es:"Banco de investigación"},
   researchBody:{en:"Risley, polarized light, the slit, lamp color. Open it above. Shorter light splits a slightly smaller gap. It still cannot draw a virus.",es:"Risley, luz polarizada, la rendija, color de lámpara. Ábrelo arriba. La luz más corta separa un hueco un poco menor. Sigue sin poder dibujar un virus."},
   researchDone:{en:"You read the number. Violet did not find the virus.",es:"Leíste el número. El violeta no encontró el virus."},
@@ -765,6 +766,29 @@ const SPECIMENS = [
     note40_es:"Las cuerdas se separan en hilos. Cada hilo sigue siendo millones de moléculas de ADN pegadas.",
     note100_en:"This is as close as light gets. One DNA molecule is 2 nanometers wide, about 100 times finer than the smallest thing this microscope can show. You are seeing the crowd, not the person.",
     note100_es:"Hasta aquí llega la luz. Una molécula de ADN mide 2 nanómetros de ancho, unas 100 veces más fina que lo más pequeño que este microscopio puede mostrar. Ves la multitud, no a la persona."},
+  /* AOG-SCOPE-SLIDES17-V1 (2026-09-27) — two new slides for the 17 lessons; nothing here repeats a slide above */
+  {id:"sand",en:"Beach sand",es:"Arena de playa",
+    note_en:"Dry sand on glass. Most grains are quartz. A few are something else.",
+    note_es:"Arena seca sobre vidrio. Casi todos los granos son cuarzo. Algunos son otra cosa.",
+    note4_en:"Grains of many sizes. Most are clear or pale. A few are black, pink, or flat and gold.",
+    note4_es:"Granos de muchos tamaños. Casi todos son claros o pálidos. Unos pocos son negros, rosados, o planos y dorados.",
+    note10_en:"Clear grains with dark edges are quartz. Cloudy ones with straight breaks are feldspar. Black beads are magnetite. Pink is garnet. Measure one grain here.",
+    note10_es:"Los granos claros con bordes oscuros son cuarzo. Los turbios con cortes rectos son feldespato. Las cuentas negras son magnetita. Lo rosado es granate. Mide un grano aquí.",
+    note40_en:"The surface is frosted with tiny pits from wind and waves. Only one level is sharp. The grain is thicker than the focus. Turn the fine knob to move through it.",
+    note40_es:"La superficie está escarchada con hoyitos del viento y las olas. Solo un nivel está nítido. El grano es más grueso que el foco. Gira el micrométrico para recorrerlo.",
+    note100_en:"Inside the quartz: trails of tiny bubbles. Water was trapped there when the crystal grew, long ago.",
+    note100_es:"Dentro del cuarzo: filas de burbujitas. El agua quedó atrapada ahí cuando creció el cristal, hace mucho."},
+  {id:"yeast",en:"Baker's yeast",es:"Levadura de pan",
+    note_en:"A drop of live yeast. Each tiny oval is one whole living thing.",
+    note_es:"Una gota de levadura viva. Cada óvalo diminuto es un ser vivo entero.",
+    note4_en:"A fine gray haze. The cells are too small to see one by one at 4×.",
+    note4_es:"Una bruma gris fina. Las células son demasiado chicas para verlas una por una a 4×.",
+    note10_en:"Tiny grains, some in clumps. Still too small to see inside.",
+    note10_es:"Granitos diminutos, algunos en grupos. Aún muy chicos para ver adentro.",
+    note40_en:"Small ovals, 4 to 8 µm long. Some have a smaller bead stuck on: a bud, a new cell growing. Cells above or below focus look like soft gray rings.",
+    note40_es:"Óvalos chicos, de 4 a 8 µm. Algunos tienen una cuenta más chica pegada: una yema, una célula nueva creciendo. Las células arriba o abajo del foco se ven como anillos grises suaves.",
+    note100_en:"Now you can see inside: a clear round vacuole, a thin dark wall, a few grains. With methylene blue, living cells clear the dye. Dead cells stay blue.",
+    note100_es:"Ahora ves adentro: una vacuola clara y redonda, una pared fina y oscura, unos granos. Con azul de metileno, las células vivas aclaran el tinte. Las muertas se quedan azules."},
   {id:"scale",en:"Stage micrometer",es:"Micrómetro de platina",
     note_en:"A 1 mm ruler, 100 ticks of 10 µm. This is how the eyepiece scale learns the truth.",
     note_es:"Una regla de 1 mm, 100 marcas de 10 µm. Así la escala del ocular aprende la verdad.",
@@ -777,6 +801,8 @@ const SPECIMENS = [
     note100_en:"One or two ticks fill the hole. At 1,000× with oil each eyepiece unit is 1 µm. The ruler did not get smaller. You got closer.",
     note100_es:"Una o dos marcas llenan el agujero. A 1,000× con aceite cada unidad del ocular es 1 µm. La regla no encogió. Tú te acercaste."}
 ];
+/* AOG-SCOPE-LESSONS17-V1 (2026-09-27) — Jimmy: 17 lessons, like the Turntables. The first seven keep their
+   ids (m1–m7) so saved progress stays; the ten new ones (m8–m17) sit where they belong on the ladder. */
 const STAIR = [
   {id:"m1", en:"Make the microscope work", es:"Haz funcionar el microscopio",
     blurb_en:"Light, then the clips, then 4×, then the coarse knob.",
@@ -786,27 +812,67 @@ const STAIR = [
     blurb_en:"10×, then 40×, then the fine knob only.",
     blurb_es:"10×, luego 40×, luego solo el micrométrico.",
     steps:["ten","forty","fine"]},
+  {id:"m8", en:"Set the light", es:"Ajusta la luz",
+    blurb_en:"Too much light washes a clear cell away. Close the iris until the edges show. Real labs call the full routine Köhler lighting. The iris is the part you can set here.",
+    blurb_es:"Demasiada luz borra una célula clara. Cierra el iris hasta que se vean los bordes. En los laboratorios la rutina completa se llama iluminación de Köhler. El iris es la parte que puedes ajustar aquí.",
+    steps:["iris","irisCheek"]},
   {id:"m3", en:"Change what you see", es:"Cambia lo que ves",
     blurb_en:"Stain the onion. Then darkfield a live drop — no stain on that one.",
     blurb_es:"Tiñe la cebolla. Luego campo oscuro en una gota viva — esa, sin tinción.",
     steps:["stain","dark"]},
+  {id:"m9", en:"Stains tell parts apart", es:"Las tinciones separan las partes",
+    blurb_en:"Each stain grabs different parts. Blue shows a cheek cell's nucleus. Red shows an onion's walls. On yeast, blue tells the living from the dead.",
+    blurb_es:"Cada tinción se pega a partes distintas. El azul muestra el núcleo de una célula de mejilla. El rojo muestra las paredes de la cebolla. En la levadura, el azul separa las vivas de las muertas.",
+    steps:["cheekBlue","safOnion","yeastBlue"]},
   {id:"m4", en:"Measure", es:"Medir",
     blurb_en:"Eyepiece scale in. Two taps on a cell at 400×.",
     blurb_es:"Escala del ocular puesta. Dos toques en una célula a 400×.",
     steps:["micrometer"]},
+  {id:"m10", en:"Calibrate the scale", es:"Calibra la escala",
+    blurb_en:"The eyepiece scale has no units until you check it against a real ruler. Lay it on the stage micrometer at 10× and at 40×.",
+    blurb_es:"La escala del ocular no tiene unidades hasta que la comparas con una regla real. Ponla sobre el micrómetro de platina a 10× y a 40×.",
+    steps:["calib10","calib40"]},
+  {id:"m11", en:"Field of view math", es:"Cálculo del campo de visión",
+    blurb_en:"The circle you see is 18 mm divided by the objective. At 4× that is 4.5 mm. See it on the ruler, then measure at 10×.",
+    blurb_es:"El círculo que ves mide 18 mm dividido por el objetivo. A 4× son 4.5 mm. Míralo en la regla, luego mide a 10×.",
+    steps:["fov4","measure10"]},
+  {id:"m12", en:"Measure real things", es:"Mide cosas reales",
+    blurb_en:"Three sizes, three powers. A hair at 40×, a red blood cell at 40×, a sand grain at 10×. Write each one down.",
+    blurb_es:"Tres tamaños, tres aumentos. Un pelo a 40×, un glóbulo rojo a 40×, un grano de arena a 10×. Anota cada uno.",
+    steps:["hairW","rbcW","sandW"]},
+  {id:"m13", en:"Oil immersion", es:"Inmersión en aceite",
+    blurb_en:"A drop of oil lets the 100× lens catch more light. Oil it on a cheek cell. Then find stained bacteria at 1,000×.",
+    blurb_es:"Una gota de aceite deja que el lente de 100× capte más luz. Úsalo en una célula de mejilla. Luego encuentra bacterias teñidas a 1,000×.",
+    steps:["oil","bact100"]},
   {id:"m5", en:"What can't this microscope see?", es:"¿Qué no puede ver este microscopio?",
     blurb_en:"Oil the 100×. Load Virus?. The guest is smaller than the lamp.",
     blurb_es:"Aceita el 100×. Carga ¿Virus? El huésped es más chico que la lámpara.",
     steps:["limit"]},
+  {id:"m14", en:"Draw what you see", es:"Dibuja lo que ves",
+    blurb_en:"Scientists draw to look harder. Focus three slides at 40×. Draw each in a circle, with the power and a scale bar.",
+    blurb_es:"Los científicos dibujan para mirar mejor. Enfoca tres láminas a 40×. Dibuja cada una en un círculo, con el aumento y una barra de escala.",
+    steps:["onion","pollen40","stomata40"]},
+  {id:"m15", en:"Living cells", es:"Células vivas",
+    blurb_en:"Nothing stained, so nothing killed. Watch green chloroplasts, a pond drop, and budding yeast at 40×.",
+    blurb_es:"Nada teñido, así que nada muerto. Mira cloroplastos verdes, una gota de estanque y levadura con yemas a 40×.",
+    steps:["elodea40","pond40","yeast40"]},
   {id:"m6", en:"The research bench", es:"El banco de investigación",
     blurb_en:"The slit, then polarized light, then the prism. Read the number. It stays above 0.10 µm.",
     blurb_es:"La rendija, luego la luz polarizada, luego el prisma. Lee el número. Se queda sobre 0.10 µm.",
     steps:["slit","polar","prism"]},
+  {id:"m16", en:"Polarized light", es:"Luz polarizada",
+    blurb_en:"Crossed filters make the field black. Crystals that bend light glow. Try salt and sugar, sand, and cloth. Turn the angle and watch them go dark.",
+    blurb_es:"Los filtros cruzados ponen negro el campo. Los cristales que doblan la luz brillan. Prueba sal y azúcar, arena y tela. Gira el ángulo y mira cómo se apagan.",
+    steps:["cryPolar","sandPolar","fabricPolar"]},
   /* AOG-SCOPE-ANCIENT-V1 — Jimmy: "update the microscope mission and manual now with ancient manuscripts" */
   {id:"m7", en:"Read an ancient text", es:"Lee un texto antiguo",
     blurb_en:"Papyrus at 10×: find the two layers of strips. Scroll at 40×: find the brown halo round the ink. Tablet at 40×: find a wedge's deep head. Then polarize the papyrus.",
     blurb_es:"Papiro a 10×: encuentra las dos capas de tiras. Rollo a 40×: encuentra el halo pardo alrededor de la tinta. Tablilla a 40×: encuentra la cabeza profunda de una cuña. Luego polariza el papiro.",
-    steps:["papyrus","scroll","tablet","inkpolar"]}
+    steps:["papyrus","scroll","tablet","inkpolar"]},
+  {id:"m17", en:"Evidence under glass", es:"Pruebas bajo el vidrio",
+    blurb_en:"Crime labs compare fibers side by side. Look at a human hair, a dog hair, and cloth. Measure a fiber. Say what tells them apart.",
+    blurb_es:"Los laboratorios forenses comparan fibras lado a lado. Mira un pelo humano, un pelo de perro y tela. Mide una fibra. Di qué las distingue.",
+    steps:["hair","dog40","fabricW"]}
 ];
 const STEP = {
   lamp:{en:"Turn on the lamp",es:"Enciende la lámpara"},
@@ -826,7 +892,33 @@ const STEP = {
   papyrus:{en:"Focus the papyrus at 10×",es:"Enfoca el papiro a 10×"},
   scroll:{en:"Focus the scroll fragment at 40×",es:"Enfoca el fragmento de rollo a 40×"},
   tablet:{en:"Focus the clay tablet at 40×",es:"Enfoca la tablilla de arcilla a 40×"},
-  inkpolar:{en:"Polarize the papyrus",es:"Polariza el papiro"}
+  inkpolar:{en:"Polarize the papyrus",es:"Polariza el papiro"},
+  iris:{en:"Set the iris between a quarter and three quarters open, in focus",es:"Pon el iris entre un cuarto y tres cuartos abierto, en foco"},
+  irisCheek:{en:"Unstained cheek cell at 40×, iris closed to half or less",es:"Célula de mejilla sin teñir a 40×, iris cerrado a la mitad o menos"},
+  cheekBlue:{en:"Cheek cells with methylene blue, sharp at 40×",es:"Células de mejilla con azul de metileno, nítidas a 40×"},
+  safOnion:{en:"Onion with safranin, sharp at 40×",es:"Cebolla con safranina, nítida a 40×"},
+  yeastBlue:{en:"Yeast with methylene blue, sharp at 40× or 100×",es:"Levadura con azul de metileno, nítida a 40× o 100×"},
+  calib10:{en:"Scale on, stage micrometer sharp at 10×",es:"Escala puesta, micrómetro de platina nítido a 10×"},
+  calib40:{en:"Scale on, stage micrometer sharp at 40×",es:"Escala puesta, micrómetro de platina nítido a 40×"},
+  fov4:{en:"Stage micrometer sharp at 4×",es:"Micrómetro de platina nítido a 4×"},
+  measure10:{en:"Measure something at 10× (two taps)",es:"Mide algo a 10× (dos toques)"},
+  hairW:{en:"Measure a hair's width at 40×",es:"Mide el ancho de un pelo a 40×"},
+  rbcW:{en:"Measure a red blood cell at 40×",es:"Mide un glóbulo rojo a 40×"},
+  sandW:{en:"Measure a sand grain at 10×",es:"Mide un grano de arena a 10×"},
+  oil:{en:"Oil the 100× and sharpen a cheek cell",es:"Aceita el 100× y afina una célula de mejilla"},
+  bact100:{en:"Stained bacteria, oiled and sharp at 100×",es:"Bacterias teñidas, con aceite y nítidas a 100×"},
+  onion:{en:"Stained onion, sharp at 40×",es:"Cebolla teñida, nítida a 40×"},
+  pollen40:{en:"Pollen, sharp at 40×",es:"Polen, nítido a 40×"},
+  stomata40:{en:"Leaf peel stomata, sharp at 40×",es:"Estomas de la piel de hoja, nítidos a 40×"},
+  elodea40:{en:"Living elodea, unstained and sharp at 40×",es:"Elodea viva, sin teñir y nítida a 40×"},
+  pond40:{en:"Pond drop, unstained and sharp at 40×",es:"Gota de estanque, sin teñir y nítida a 40×"},
+  yeast40:{en:"Living yeast, unstained and sharp at 40×",es:"Levadura viva, sin teñir y nítida a 40×"},
+  cryPolar:{en:"Polarize salt and sugar",es:"Polariza la sal y el azúcar"},
+  sandPolar:{en:"Polarize the sand",es:"Polariza la arena"},
+  fabricPolar:{en:"Polarize the cloth",es:"Polariza la tela"},
+  hair:{en:"Human hair, sharp at 40×",es:"Cabello humano, nítido a 40×"},
+  dog40:{en:"Dog hair, sharp at 10× or 40×",es:"Pelo de perro, nítido a 10× o 40×"},
+  fabricW:{en:"Measure a cloth fiber at 40×",es:"Mide una fibra de tela a 40×"}
 };
 function stairNow(){
   for(let i=0;i<STAIR.length;i++) if(!STAIR[i].steps.every(id=>S.missions[id])) return i;
@@ -834,6 +926,8 @@ function stairNow(){
 }
 function missionsOpen(){ return S.teacher!=="locked"; }
 function benchStep(){ return missionsOpen() ? STAIR.length : stairNow(); }
+/* AOG-SCOPE-LESSONS17-V1: controls open when a named lesson is reached (the numbers moved when lessons were added) */
+function LX(id){ const i=STAIR.findIndex(m=>m.id===id); return i<0?0:i; }
 function researchOpen(){ return benchStep()>=STAIR.length; }
 const SCENARIOS = [
   {q_en:"Everything is blurry at 400× (high power). Which part fixes it?",q_es:"Todo se ve borroso a 400× (alto aumento). ¿Qué parte lo arregla?",a:"fine",wrong:["coarse","diaphragm","nosepiece"]},
@@ -912,9 +1006,11 @@ const STAIN_FOR={
   fly:["none"],
   fern:["none"],
   fabric:["none"],
-  dna:["none"]
+  dna:["none"],
+  sand:["none"],
+  yeast:["none","methylene"]
 };
-const DEFAULT_STAIN={e:"none",onion:"none",pond:"none",blood:"wright",cheek:"none",hair:"none",elodea:"none",scale:"none",bact:"none",virus:"none",pollen:"none",wing:"none",leaf:"none",diatom:"none",crystal:"none",hairs:"none",dog:"none",papyrus:"none",scroll:"none",tablet:"none",section:"none",fly:"none",fern:"none",fabric:"none",dna:"none"};
+const DEFAULT_STAIN={e:"none",onion:"none",pond:"none",blood:"wright",cheek:"none",hair:"none",elodea:"none",scale:"none",bact:"none",virus:"none",pollen:"none",wing:"none",leaf:"none",diatom:"none",crystal:"none",hairs:"none",dog:"none",papyrus:"none",scroll:"none",tablet:"none",section:"none",fly:"none",fern:"none",fabric:"none",dna:"none",sand:"none",yeast:"none"};
 function fovUm(obj){return 18000/obj}
 function unitUm(obj){return fovUm(obj)*(10/18)/100}
 function allowedStains(spec){return STAIN_FOR[spec]||["none"]}
@@ -935,8 +1031,8 @@ const SLIDE_TRAYS=[
   {en:"Start here",es:"Empieza aquí",ids:["e","scale"]},
   {en:"Plants",es:"Plantas",ids:["onion","elodea","leaf","section","hairs","pollen","fern"]},
   {en:"Animals and people",es:"Animales y personas",ids:["cheek","blood","hair","dog","wing","fly"]},
-  {en:"Tiny life",es:"Vida diminuta",ids:["pond","bact","diatom","virus","dna"]},
-  {en:"Crystals and cloth",es:"Cristales y tela",ids:["crystal","fabric"]},
+  {en:"Tiny life",es:"Vida diminuta",ids:["pond","yeast","bact","diatom","virus","dna"]},
+  {en:"Crystals, sand and cloth",es:"Cristales, arena y tela",ids:["crystal","sand","fabric"]},
   {en:"Ancient texts",es:"Textos antiguos",ids:["papyrus","scroll","tablet"]}
 ];
 function slideMenu(list){
@@ -947,8 +1043,8 @@ function slideMenu(list){
     <span hidden>${list.map(s=>`<button type="button" data-act="spec-${s.id}"></button>`).join("")}</span>`;
 }
 function specShort(s){
-  const en={e:"e",onion:"Onion",pond:"Pond",blood:"Blood",cheek:"Cheek",hair:"Hair",elodea:"Elodea",scale:"Scale",bact:"Bacteria",virus:"Virus?",pollen:"Pollen",wing:"Wing",leaf:"Stomata",diatom:"Diatoms",crystal:"Crystals",hairs:"Hairs",dog:"Tick",papyrus:"Papyrus",scroll:"Scroll",tablet:"Tablet",section:"Section",fly:"Fly wing",fern:"Fern",fabric:"Cloth",dna:"DNA"};
-  const es={e:"e",onion:"Cebolla",pond:"Estanque",blood:"Sangre",cheek:"Mejilla",hair:"Pelo",elodea:"Elodea",scale:"Escala",bact:"Bacterias",virus:"¿Virus?",pollen:"Polen",wing:"Ala",leaf:"Estomas",diatom:"Diatomeas",crystal:"Cristales",hairs:"Pelos",dog:"Garrapata",papyrus:"Papiro",scroll:"Rollo",tablet:"Tablilla",section:"Corte",fly:"Ala de mosca",fern:"Helecho",fabric:"Tela",dna:"ADN"};
+  const en={e:"e",onion:"Onion",pond:"Pond",blood:"Blood",cheek:"Cheek",hair:"Hair",elodea:"Elodea",scale:"Scale",bact:"Bacteria",virus:"Virus?",pollen:"Pollen",wing:"Wing",leaf:"Stomata",diatom:"Diatoms",crystal:"Crystals",hairs:"Hairs",dog:"Tick",papyrus:"Papyrus",scroll:"Scroll",tablet:"Tablet",section:"Section",fly:"Fly wing",fern:"Fern",fabric:"Cloth",dna:"DNA",sand:"Sand",yeast:"Yeast"};
+  const es={e:"e",onion:"Cebolla",pond:"Estanque",blood:"Sangre",cheek:"Mejilla",hair:"Pelo",elodea:"Elodea",scale:"Escala",bact:"Bacterias",virus:"¿Virus?",pollen:"Polen",wing:"Ala",leaf:"Estomas",diatom:"Diatomeas",crystal:"Cristales",hairs:"Pelos",dog:"Garrapata",papyrus:"Papiro",scroll:"Rollo",tablet:"Tablilla",section:"Corte",fly:"Ala de mosca",fern:"Helecho",fabric:"Tela",dna:"ADN",sand:"Arena",yeast:"Levadura"};
   return (S.lang==="es"?es:en)[s.id]||(S.lang==="es"?s.es:s.en);
 }
 function fmtUm(u){
@@ -1077,7 +1173,7 @@ function paintChrome(){
 function pageHome(){
   /* AOG-MIC-HOME-V2 (2026-09-26) — Jimmy: "Can this page get a face lift. Telescope length of the content …
      can all the benches carry the same style introduction page." The instrument on the left; the four doors
-     and the seven lessons on the right; the seven bench notes fold shut below. */
+     and the seventeen lessons on the right; the seven bench notes fold shut below. */
   const met=Object.keys(S.met).length, es=S.lang==="es";
   const stairN=STAIR.reduce((n,m)=>n+m.steps.length,0);
   const done=STAIR.reduce((n,m)=>n+m.steps.filter(id=>S.missions[id]).length,0), step=stairNow();
@@ -1097,7 +1193,7 @@ function pageHome(){
         <p style="margin:.4rem 0 .6rem">${c[2]}</p>
         <p class="muted" style="font-size:.9rem">${c[3]}${c[5]?` · ${t("best")} ${c[5]}`:""} ›</p>
       </a>`).join("")}
-      <div class="card" style="padding:1rem 1.2rem"><p class="kicker">${es?"Las siete lecciones":"The seven lessons"} · ${done}/${stairN}</p>
+      <div class="card" style="padding:1rem 1.2rem"><p class="kicker">${es?"Las diecisiete lecciones":"The seventeen lessons"} · ${done}/${stairN}</p>
         <ol class="ladder" style="margin-top:.6rem">${ladderHtml().replace(/data-pick=/g,"data-open data-pick=")}</ol>
       </div></div>
     </div>
@@ -1153,11 +1249,11 @@ function instrumentHTML(){
   const L=S.lab;
   const stains=allowedStains(L.spec);
   const step=benchStep();
-  const research=step>=5;
-  const specs=step<2?SPECIMENS.filter(s=>s.id==="e"):SPECIMENS;
+  const research=step>=LX("m6");
+  const specs=step<LX("m8")?SPECIMENS.filter(s=>s.id==="e"):SPECIMENS;
   const objs=[4];
-  if(step>=1) objs.push(10,40);
-  if(step>=4) objs.push(100);
+  if(step>=LX("m2")) objs.push(10,40);
+  if(step>=LX("m13")) objs.push(100);
   const illumBtns=ILLUMS.filter(([id])=>id==="bright"||id==="dark")
     .map(([id,k])=>btn(L.illum===id,"illum-"+id, t(k))).join("");
   return `
@@ -1169,9 +1265,9 @@ function instrumentHTML(){
     <div class="row"><span class="tiny">${t("objective")}</span><span>${objs.map(o=>btn(L.obj===o,"obj"+o,o+"×")).join("")}</span></div>
     <div class="row"><span class="tiny">${t("lens")}</span><span>${btn(L.quartz,"quartz1",t("quartz"))}${btn(!L.quartz,"quartz0",t("glass"))}</span></div>
     ${L.obj===100?`<div class="row"><span class="tiny">${t("oil")}</span><span>${btn(L.oil,"oil1",t("oilOn"))}${btn(!L.oil,"oil0",t("oilOff"))}</span></div>`:""}
-    ${step>=2?`<div class="row"><span class="tiny">${t("stain")}</span><span>${STAINS.filter(s=>stains.includes(s.id)).map(s=>btn(L.stain===s.id,"stain-"+s.id,`<i class="swatch" style="background:${s.color}"></i>${s.id==="none"?(S.lang==="es"?"Nada":"None"):s.id==="methylene"?(S.lang==="es"?"Metileno":"Methylene"):t(s.key)}`)).join("")}</span></div>
+    ${step>=LX("m3")?`<div class="row"><span class="tiny">${t("stain")}</span><span>${STAINS.filter(s=>stains.includes(s.id)).map(s=>btn(L.stain===s.id,"stain-"+s.id,`<i class="swatch" style="background:${s.color}"></i>${s.id==="none"?(S.lang==="es"?"Nada":"None"):s.id==="methylene"?(S.lang==="es"?"Metileno":"Methylene"):t(s.key)}`)).join("")}</span></div>
     <div class="row"><span class="tiny">${t("illum")}</span><span>${illumBtns}</span></div>`:""}
-    ${step>=3?`<div class="row"><span class="tiny">${t("ocular")}</span><span>${btn(L.graticule,"grat1",t("scaleOn"))}${btn(!L.graticule,"grat0",t("scaleOff"))}${btn(L.measure,"meas1",t("measure"))}</span></div>`:""}
+    ${step>=LX("m4")?`<div class="row"><span class="tiny">${t("ocular")}</span><span>${btn(L.graticule,"grat1",t("scaleOn"))}${btn(!L.graticule,"grat0",t("scaleOff"))}${btn(L.measure,"meas1",t("measure"))}</span></div>`:""}
     ${research?`<details class="more-light"${S.moreOpen?" open":""}>
       <summary>${t("researchK")}</summary>
       <div class="row"><span class="tiny">${t("illum")}</span><span>${ILLUMS.filter(([id])=>id==="slit"||id==="polar").map(([id,k])=>btn(L.illum===id,"illum-"+id, t(k))).join("")}</span></div>
@@ -1237,7 +1333,28 @@ function specCard(){
           <p style="margin-top:.7rem"><button class="btn btn-steel" data-act="rife">${t("researchLook")}</button> <button class="btn" data-act="universal">${t("seatPrism")}</button></p>
         </div>`;
 }
-function missionActs(i){
+function missionActs(p){
+  /* AOG-SCOPE-LESSONS17-V1: the buttons for each lesson, found by its id */
+  const id=STAIR[p]&&STAIR[p].id, L=S.lab, es=S.lang==="es";
+  const name=x=>specShort(SPECIMENS.find(s=>s.id===x));
+  const sp=x=>btn(L.spec===x,"spec-"+x,name(x)), ob=n=>btn(L.obj===n,"obj"+n,n+"×"), st=x=>btn(L.stain===x,"stain-"+x,x==="methylene"?(es?"Metileno":"Methylene"):x==="none"?(es?"Nada":"None"):t(x));
+  const grat=btn(L.graticule,"grat1",t("scaleOn")), meas=btn(L.measure,"meas1",t("measure")), oil=btn(L.oil,"oil1",t("oilOn")), pol=btn(L.illum==="polar","illum-polar",t("polarized"));
+  const note=(en,es2)=>`<p class="note-line">${es?es2:en}</p>`;
+  const OLD={m1:0,m2:1,m3:2,m4:3,m5:4,m6:5,m7:6};
+  if(id in OLD) return missionActsOld(OLD[id]);
+  if(id==="m8") return ob(40)+sp("cheek")+st("none")+note("The iris knob is under the circle. Close it until the cell's edge shows.","El iris está debajo del círculo. Ciérralo hasta que se vea el borde de la célula.");
+  if(id==="m9") return ob(40)+sp("cheek")+st("methylene")+sp("onion")+st("safranin")+sp("yeast");
+  if(id==="m10") return sp("scale")+grat+ob(10)+ob(40);
+  if(id==="m11") return sp("scale")+ob(4)+ob(10)+grat+meas+note(t("tapMeasure"),t("tapMeasure"));
+  if(id==="m12") return grat+meas+sp("hair")+sp("blood")+ob(40)+sp("sand")+ob(10);
+  if(id==="m13") return sp("cheek")+ob(100)+oil+sp("bact")+st("methylene")+note("Fine knob only at 100×.","Solo el micrométrico a 100×.");
+  if(id==="m14") return ob(40)+sp("onion")+st("iodine")+sp("pollen")+sp("leaf");
+  if(id==="m15") return ob(40)+st("none")+sp("elodea")+sp("pond")+sp("yeast");
+  if(id==="m16") return pol+sp("crystal")+sp("sand")+sp("fabric");
+  if(id==="m17") return sp("hair")+sp("dog")+sp("fabric")+ob(40)+grat+meas;
+  return "";
+}
+function missionActsOld(i){
   const L=S.lab, es=S.lang==="es";
   const name=id=>specShort(SPECIMENS.find(s=>s.id===id));
   if(i===0) return btn(L.lightOn,"lamp1",t("on"))+btn(L.clipped,"clip1",t("seated"))+btn(L.obj===4,"obj4","4×");
@@ -1272,16 +1389,16 @@ const LSTR={
   printOne:{en:"Print my copy",es:"Imprimir mi copia"},
   printBlank:{en:"Print it blank",es:"Imprimir en blanco"},
   printAllK:{en:"Every lesson",es:"Todas las lecciones"},
-  printAllSay:{en:"All 7 worksheets, one lesson per page.",es:"Las 7 hojas, una lección por página."},
-  printAll:{en:"Print all 7 worksheets",es:"Imprimir las 7 hojas"},
+  printAllSay:{en:"All 17 worksheets, one lesson per page.",es:"Las 17 hojas, una lección por página."},
+  printAll:{en:"Print all 17 worksheets",es:"Imprimir las 17 hojas"},
   printGuideK:{en:"The picture guide",es:"La guía en imágenes"},
   printGuideSay:{en:"The microscope drawn and labeled, with each lesson in pictures.",es:"El microscopio dibujado y rotulado, con cada lección en imágenes."},
   printGuide:{en:"Print the picture guide",es:"Imprimir la guía en imágenes"},
   printPartsK:{en:"The parts sheet",es:"La hoja de las partes"},
-  lessonsLead:{en:"Seven lessons. Pick one, then try its steps at the eyepiece. Each step ticks itself when you do it.",es:"Siete lecciones. Elige una y prueba sus pasos en el ocular. Cada paso se marca solo cuando lo haces."},
+  lessonsLead:{en:"Seventeen lessons. Pick one, then try its steps at the eyepiece. Each step ticks itself when you do it.",es:"Diecisiete lecciones. Elige una y prueba sus pasos en el ocular. Cada paso se marca solo cuando lo haces."},
   lessonPick:{en:"Which lesson?",es:"¿Qué lección?"},
   lessonK:{en:"Lesson",es:"Lección"},
-  lessonsAll:{en:"All 7 lessons",es:"Las siete lecciones"},
+  lessonsAll:{en:"All 17 lessons",es:"Las diecisiete lecciones"},
   doneMark:{en:"done",es:"lista"},
   next:{en:"Next lesson",es:"Siguiente lección"},
   toLab:{en:"Try it at the eyepiece",es:"Pruébala en el ocular"},
@@ -1315,6 +1432,11 @@ function lessonCard(inLab){
     <div class="lacts${inLab?" do":""}">${acts}</div>
     ${done?`<p class="lok">${allDone?t("practicalDone"):(es?"Lección hecha.":"Lesson done.")} ${next}</p>`:""}`;
 }
+/* AOG-TOOL-LESSONS-BELOW-V1 — the Lessons card sits under the instrument. On the bench page it moves in
+   right under the instrument; a re-render first puts it back under <main>, so it is never wiped. */
+function lessonsHome(){ const box=document.getElementById("lessons"), v=document.getElementById("view"); if(box&&v&&v.contains(box)) v.after(box); }
+function lessonsBelow(){ const box=document.getElementById("lessons"), v=document.getElementById("view"); if(!box||!v) return;
+  const at=v.querySelector(".lab-stack"); if(at) at.after(box); else if(box.previousElementSibling!==v) v.after(box); }
 function paintLessonsTop(){
   const top=["home","lab","lessons"].includes(S.page);
   const sw=document.getElementById("benchSwitch"), box=document.getElementById("lessons");
@@ -2698,6 +2820,184 @@ function drawCrystals(ctx,L){
   cryList().forEach(c=>{ if(inView(L,c.x,c.y,(c.s||c.L)*1.2)) crystal(ctx,c,L); });
 }
 
+/* ── beach sand ─────────────────────────────────────── AOG-SCOPE-SLIDES17-V1 (2026-09-27)
+   Jimmy: "IF WE NEED TO MAKE MORE SLIDES UP THEN let's do it" and "REALISM IS THE KEY".
+   A dry mount of medium beach sand. One slide unit is about 10.7 µm, so grains run 0.15–0.6 mm.
+   Mostly quartz (clear, frosted, thick dark rims from high relief in air), some feldspar (cloudy,
+   straight cleavage), black magnetite, pink garnet, shell bits with growth lines, a gold mica flake.
+   Grains are thick: only one level is sharp, the rest sit above or below focus.
+   Crossed polars: quartz, feldspar, shell and mica glow in colours and go dark four times a turn;
+   garnet and magnetite stay black (garnet is the same in every direction; magnetite lets no light through). */
+const SAND_W=470, SAND_H=380;
+function sandList(){
+  if(sandList.v) return sandList.v;
+  const rng=mulberry32(0x5a4d), o=[];
+  const pick=()=>{ const u=rng(); return u<.66?"qz":u<.78?"fs":u<.87?"mag":u<.92?"gar":u<.97?"shell":"mica"; };
+  for(let tries=0;tries<9000&&o.length<330;tries++){
+    const k=pick();
+    const r=k==="mag"?3+rng()*4:k==="gar"?5+rng()*6:k==="mica"?7+rng()*6:k==="shell"?8+rng()*10:7+rng()*18;
+    const x=(rng()-.5)*(SAND_W-20), y=(rng()-.5)*(SAND_H-20);
+    if(o.some(g=>Math.hypot(g.x-x,g.y-y)<(g.r+r)*.86)) continue;
+    const n=36, pts=[], ang=k==="fs"||k==="shell"?.22:k==="mica"?.12:k==="mag"||k==="gar"?.05:.08+rng()*.12;
+    const h=[1,2,3,4,5,6].map(q=>[(rng()-.5)*ang/(q*.55),rng()*6.3]);
+    for(let i=0;i<n;i++){ const a=i/n*Math.PI*2; let m=1; h.forEach((c,q)=>{ m+=c[0]*Math.cos((q+1)*a+c[1]); }); pts.push([Math.cos(a)*r*m,Math.sin(a)*r*m*(.78+rng()*.02)]); }
+    if(k==="fs"||k==="shell"||k==="mica"){ /* broken grains keep flat faces: snap a few runs of points onto straight lines */
+      for(let f=0;f<3;f++){ const s=(rng()*n)|0, len=4+(rng()*5|0), a0=pts[s], a1=pts[(s+len)%n];
+        for(let j=1;j<len;j++){ const tt=j/len, p=pts[(s+j)%n]; p[0]=a0[0]+(a1[0]-a0[0])*tt; p[1]=a0[1]+(a1[1]-a0[1])*tt; } } }
+    o.push({k,x,y,r,pts,rot:rng()*Math.PI,z:(rng()-.5)*2,seed:(rng()*1e9)|0,tint:rng()});
+  }
+  for(let i=0;i<700;i++) o.push({k:"silt",x:(rng()-.5)*SAND_W,y:(rng()-.5)*SAND_H,r:.3+rng()*1.1,rot:rng()*3,z:(rng()-.5)*2,seed:(rng()*1e9)|0,tint:rng(),pts:null});
+  return (sandList.v=o);
+}
+function sandPath(ctx,g,s){ ctx.beginPath(); g.pts.forEach((p,i)=>{ const x=p[0]*(s||1), y=p[1]*(s||1); i?ctx.lineTo(x,y):ctx.moveTo(x,y); }); ctx.closePath(); }
+/* rough interference colours for thick loose grains: high orders wash toward pastel pink, green, cream */
+const SAND_BIRE=[[236,230,210],[250,214,120],[236,120,150],[120,110,220],[90,200,210],[150,220,110],[250,190,170],[210,240,200]];
+function sandGrain(ctx,g,det,polar,L,scale){
+  const rng=mulberry32(g.seed);
+  ctx.save(); ctx.translate(g.x,g.y); ctx.rotate(g.rot);
+  const off=Math.abs(g.z)>.55 ? (Math.abs(g.z)-.55)*g.r*.16 : 0;   /* above or below the sharp level */
+  if(off>0 && scale) ctx.filter=`blur(${Math.min(14,off*scale*.35).toFixed(1)}px)`;
+  if(g.k==="silt"){
+    ctx.beginPath(); ctx.ellipse(0,0,g.r,g.r*.7,0,0,Math.PI*2);
+    ctx.fillStyle=polar?(g.tint<.7?`rgba(${200+g.tint*50|0},${190+g.tint*40|0},170,.8)`:"rgba(0,0,0,0)"):(g.tint<.2?"rgba(20,18,16,.85)":`rgba(${120+g.tint*60|0},${105+g.tint*50|0},80,.55)`);
+    ctx.fill(); ctx.restore(); return;
+  }
+  const th=(L&&L.polar||0)*Math.PI/180, ext=Math.pow(Math.sin(2*(g.rot-th)),2);
+  if(polar){
+    if(g.k==="mag"||g.k==="gar"){ ctx.restore(); return; }            /* isotropic or opaque: black */
+    const I=.4+.75*ext;
+    const base=g.k==="shell"?[244,236,214]:g.k==="fs"?[205,205,205]:SAND_BIRE[(g.seed>>>3)%SAND_BIRE.length];
+    /* colour bands step in toward the middle, where the grain is thickest */
+    if(scale) ctx.filter=`blur(${Math.max(.5,g.r*scale*.012).toFixed(1)}px)`;   /* the colours melt into each other, as in a real grain */
+    for(let b=0;b<7;b++){ const s=1-b*.12, c=b===0?[40,40,60]:SAND_BIRE[((g.seed>>>(b+2))+b)%SAND_BIRE.length];
+      const mix=b===0?.7:b<3?.6:.3, col=[0,1,2].map(i=>Math.min(255,Math.round((c[i]*mix+base[i]*(1-mix))*I)));
+      sandPath(ctx,g,s); ctx.fillStyle=`rgba(${col[0]},${col[1]},${col[2]},${b===0?.95:.6})`; ctx.fill(); }
+    ctx.filter="none"; if(off>0 && scale) ctx.filter=`blur(${Math.min(14,off*scale*.35).toFixed(1)}px)`;
+    if(g.k==="fs"){ /* plagioclase twins: stripes that swap light and dark as you turn */
+      ctx.save(); sandPath(ctx,g,1); ctx.clip();
+      for(let x=-g.r;x<g.r;x+=g.r*.18){ ctx.fillStyle=`rgba(${Math.round(230*(1-ext))},${Math.round(230*(1-ext))},${Math.round(235*(1-ext))},.55)`; ctx.fillRect(x,-g.r*1.2,g.r*.09,g.r*2.4); }
+      ctx.restore(); }
+    ctx.restore(); return;
+  }
+  /* bright field, dry mount */
+  const body={qz:g.tint<.25?[236,214,170]:[236,234,226],fs:[228,206,194],gar:[196,92,104],shell:[240,234,220],mica:[214,184,120],mag:[24,22,22]}[g.k];
+  const clear=g.k==="qz"?.55:g.k==="gar"?.6:g.k==="mica"?.75:g.k==="shell"?.35:.25;
+  ctx.save(); ctx.translate(g.r*.02,g.r*.03); sandPath(ctx,g,1.01); ctx.fillStyle="rgba(40,34,26,.10)"; ctx.fill(); ctx.restore();
+  sandPath(ctx,g,1);
+  if(g.k==="mag"){
+    const gr=ctx.createRadialGradient(-g.r*.3,-g.r*.35,g.r*.05,0,0,g.r); gr.addColorStop(0,"rgba(120,118,112,.95)"); gr.addColorStop(.35,"rgba(30,28,28,1)"); gr.addColorStop(1,"rgba(8,8,8,1)");
+    ctx.fillStyle=gr; ctx.fill(); ctx.restore(); return;
+  }
+  const rim=g.k==="mica"?.1:g.k==="shell"?.3:.62;       /* relief: how dark the edge goes */
+  const gr=ctx.createRadialGradient(-g.r*.15,-g.r*.2,g.r*.05,0,0,g.r*1.05);
+  gr.addColorStop(0,`rgba(${body[0]},${body[1]},${body[2]},${1-clear*.6})`);
+  gr.addColorStop(.62,`rgba(${body[0]*.92|0},${body[1]*.9|0},${body[2]*.86|0},${1-clear*.5})`);
+  gr.addColorStop(.86,`rgba(${body[0]*.5|0},${body[1]*.46|0},${body[2]*.42|0},${.5+rim*.4})`);
+  gr.addColorStop(1,`rgba(26,22,18,${.35+rim*.6})`);
+  ctx.fillStyle=gr; ctx.fill();
+  ctx.save(); sandPath(ctx,g,1); ctx.clip();
+  /* light focused through the grain: a bright lens spot off-centre */
+  if(g.k==="qz"||g.k==="gar"){ const lx=-g.r*.12, ly=-g.r*.18, lg=ctx.createRadialGradient(lx,ly,0,lx,ly,g.r*.45); lg.addColorStop(0,"rgba(255,255,250,.75)"); lg.addColorStop(1,"rgba(255,255,250,0)"); ctx.fillStyle=lg; ctx.fillRect(-g.r,-g.r,g.r*2,g.r*2); }
+  /* iron stain in the hollows */
+  if(g.k==="qz"&&g.tint<.45){ for(let i=0;i<4;i++){ const a=rng()*6.3, d=g.r*(.55+rng()*.35), x=Math.cos(a)*d, y=Math.sin(a)*d, R=g.r*(.15+rng()*.2), sg=ctx.createRadialGradient(x,y,0,x,y,R); sg.addColorStop(0,"rgba(190,110,40,.35)"); sg.addColorStop(1,"rgba(190,110,40,0)"); ctx.fillStyle=sg; ctx.fillRect(x-R,y-R,R*2,R*2); } }
+  if(g.k==="fs"){ ctx.strokeStyle="rgba(120,90,80,.28)"; ctx.lineWidth=g.r*.012+.05; ctx.beginPath(); for(let y=-g.r;y<g.r;y+=g.r*(.08+rng()*.06)){ ctx.moveTo(-g.r,y); ctx.lineTo(g.r,y+g.r*.05); } ctx.stroke(); }
+  if(g.k==="shell"){ ctx.strokeStyle="rgba(150,130,100,.3)"; ctx.lineWidth=g.r*.015+.04; for(let i=1;i<9;i++){ ctx.beginPath(); ctx.arc(-g.r*.9,g.r*.9,g.r*i*.25,-1.4,.1); ctx.stroke(); } }
+  if(g.k==="mica"){ ctx.strokeStyle="rgba(120,90,40,.35)"; ctx.lineWidth=.08; for(let i=1;i<4;i++){ sandPath(ctx,g,1-i*.12); ctx.stroke(); } }
+  const n=det?Math.round(g.r*g.r*9):Math.round(g.r*g.r*1.2);
+  for(let i=0;i<n;i++){ /* frosting: tiny pits from being blown and rolled */
+    const x=(rng()-.5)*2*g.r, y=(rng()-.5)*2*g.r, s=(det?.06:.2)*(.5+rng());
+    ctx.fillStyle=rng()<.5?`rgba(60,50,40,${.08+rng()*.14})`:`rgba(255,255,250,${.1+rng()*.2})`; ctx.fillRect(x,y,s,s); }
+  if(det&&(g.k==="qz"||g.k==="fs")){
+    ctx.strokeStyle="rgba(60,50,40,.3)"; ctx.lineWidth=.05;   /* conchoidal fractures: shell-shaped arcs */
+    for(let i=0;i<4;i++){ const a=rng()*6.3, d=g.r*(.4+rng()*.5); ctx.beginPath(); ctx.arc(Math.cos(a)*d,Math.sin(a)*d,g.r*(.12+rng()*.25),a+2,a+4.2); ctx.stroke(); }
+    ctx.fillStyle="rgba(30,26,22,.55)";                           /* fluid inclusions: trails of tiny bubbles */
+    for(let t=0;t<2;t++){ let x=(rng()-.5)*g.r, y=(rng()-.5)*g.r; const a=rng()*6.3; for(let i=0;i<14;i++){ x+=Math.cos(a)*g.r*.03; y+=Math.sin(a)*g.r*.03; ctx.beginPath(); ctx.arc(x,y,.05+rng()*.08,0,6.3); ctx.fill(); } }
+  }
+  ctx.restore();
+  sandPath(ctx,g,1); ctx.strokeStyle=`rgba(20,16,12,${.3+rim*.55})`; ctx.lineWidth=g.r*(.02+rim*.05); ctx.stroke();
+  ctx.restore();
+}
+function sandPaint(ctx,det,polar,L,scale){
+  ctx.fillStyle=polar?"#020203":"#eeebe2"; ctx.fillRect(-SAND_W/2,-SAND_H/2,SAND_W,SAND_H);
+  if(!polar) speckle(ctx,SAND_W,SAND_H,0x5a4e,det?1400:5200,[110,100,90],.03,.07,.3);
+  const list=sandList().slice().sort((a,b)=>a.z-b.z);
+  list.forEach(g=>{ if(!det||inView(L,g.x,g.y,g.r*1.3)) sandGrain(ctx,g,det,polar,L,scale); });
+}
+function drawSand(ctx,L){
+  const polar=L&&L.illum==="polar";
+  ctx.fillStyle=polar?"#020203":"#eeebe2"; ctx.fillRect(-900,-900,1800,1800);
+  if(!hiPow(L)&&!polar){ if(!SLIDE.sand) SLIDE.sand=bakeUnits(SAND_W,SAND_H,5,c=>sandPaint(c,false,false,null,5)); blit(ctx,SLIDE.sand); return; }
+  cachedView(ctx,L,"sand"+(polar?"P"+Math.round(L.polar||0):""),vc=>{ const m=vc.getTransform(); sandPaint(vc,hiPow(L),polar,L,Math.hypot(m.a,m.b)); });
+}
+
+/* ── baker's yeast ──────────────────────────────────── AOG-SCOPE-SLIDES17-V1
+   A drop of live yeast (Saccharomyces) under a cover slip. Cells are 4–8 µm ovals (0.35–0.75 slide
+   units), so 40× shows small beads and the 100× oil lens shows the clear vacuole and the buds.
+   Methylene blue is a live/dead test: a living cell clears the dye; a dead cell stays blue. */
+const YEAST_W=170, YEAST_H=130;
+function yeastList(){
+  if(yeastList.v) return yeastList.v;
+  const rng=mulberry32(0x7ea5), o=[];
+  const hubs=Array.from({length:40},()=>[(rng()-.5)*YEAST_W*.95,(rng()-.5)*YEAST_H*.95,4+rng()*10]);
+  for(let i=0;i<16000;i++){
+    let x,y; if(rng()<.6){ const h=hubs[(rng()*hubs.length)|0], a=rng()*6.3, d=Math.pow(rng(),.7)*h[2]; x=h[0]+Math.cos(a)*d; y=h[1]+Math.sin(a)*d; }
+    else { x=(rng()-.5)*YEAST_W; y=(rng()-.5)*YEAST_H; }
+    const r=.2+rng()*.16, bud=rng()<.24?{a:rng()*6.3,s:.35+rng()*.45}:null;
+    o.push({x,y,r,asp:1.02+rng()*.2,rot:rng()*3.14,bud,dead:rng()<.12,z:(rng()-.5)*2,seed:(rng()*1e9)|0,vac:.28+rng()*.22,vx:(rng()-.5)*.4,vy:(rng()-.5)*.4});
+  }
+  for(let i=0;i<40;i++) o.push({k:"bit",x:(rng()-.5)*YEAST_W,y:(rng()-.5)*YEAST_H,r:.4+rng()*1.8,z:(rng()-.5)*2,seed:(rng()*1e9)|0,rot:rng()*3});
+  return (yeastList.v=o);
+}
+function yeastCell(ctx,c,det,st,scale){
+  const blue=st==="methylene", r=c.r;
+  const off=Math.abs(c.z)>.5?(Math.abs(c.z)-.5):0;
+  ctx.save(); ctx.translate(c.x,c.y); ctx.rotate(c.rot);
+  if(c.k==="bit"){ if(off&&scale) ctx.filter=`blur(${Math.min(10,off*scale*.25).toFixed(1)}px)`;
+    const rng=mulberry32(c.seed); ctx.beginPath(); for(let i=0;i<9;i++){ const a=i/9*6.3, m=c.r*(.6+rng()*.6); i?ctx.lineTo(Math.cos(a)*m,Math.sin(a)*m*.7):ctx.moveTo(Math.cos(a)*m,Math.sin(a)*m*.7); } ctx.closePath();
+    ctx.fillStyle=blue?"rgba(40,60,120,.35)":"rgba(110,100,80,.3)"; ctx.fill(); ctx.restore(); return; }
+  if(!det){
+    ctx.beginPath(); ctx.ellipse(0,0,r*c.asp,r,0,0,6.3);
+    ctx.fillStyle=blue&&c.dead?"rgba(40,70,170,.85)":"rgba(110,104,86,.55)"; ctx.fill();
+    if(c.bud){ ctx.beginPath(); ctx.arc(Math.cos(c.bud.a)*r*(c.asp+c.bud.s*.8),Math.sin(c.bud.a)*r*(1+c.bud.s*.8),r*c.bud.s,0,6.3); ctx.fill(); }
+    ctx.restore(); return;
+  }
+  if(off&&scale){
+    /* out of the focal plane: a soft grey disc with a bright or dark middle, as in a real wet mount */
+    ctx.filter=`blur(${Math.min(8,off*r*scale*.9).toFixed(1)}px)`;
+    ctx.beginPath(); ctx.ellipse(0,0,r*c.asp*1.1,r*1.1,0,0,6.3); ctx.fillStyle=blue&&c.dead?"rgba(50,80,170,.45)":"rgba(80,78,70,.32)"; ctx.fill();
+    ctx.beginPath(); ctx.arc(0,0,r*.45,0,6.3); ctx.fillStyle=c.z>0?"rgba(255,255,245,.45)":"rgba(40,38,34,.25)"; ctx.fill();
+    ctx.restore(); return;
+  }
+  const one=(R,asp,vac)=>{
+    ctx.beginPath(); ctx.ellipse(0,0,R*asp,R,0,0,6.3);
+    const g=ctx.createRadialGradient(-R*.2,-R*.25,R*.1,0,0,R*asp);
+    if(blue&&c.dead){ g.addColorStop(0,"rgba(70,100,200,.95)"); g.addColorStop(.8,"rgba(36,62,160,.95)"); g.addColorStop(1,"rgba(20,34,110,.95)"); }
+    else if(blue){ g.addColorStop(0,"rgba(214,220,230,.92)"); g.addColorStop(.75,"rgba(182,192,210,.95)"); g.addColorStop(1,"rgba(96,106,140,.95)"); }
+    else { g.addColorStop(0,"rgba(214,208,186,.92)"); g.addColorStop(.75,"rgba(184,176,150,.95)"); g.addColorStop(1,"rgba(96,90,72,.95)"); }
+    ctx.fillStyle=g; ctx.fill();
+    ctx.lineWidth=R*.14; ctx.strokeStyle=blue&&c.dead?"rgba(14,22,80,.8)":"rgba(40,38,32,.7)"; ctx.stroke();   /* the cell wall: a dark refractile line */
+    ctx.beginPath(); ctx.ellipse(0,0,R*asp*.84,R*.84,0,0,6.3); ctx.lineWidth=R*.05; ctx.strokeStyle="rgba(255,255,250,.45)"; ctx.stroke();
+    if(vac&&!(blue&&c.dead)){ const rng=mulberry32(c.seed); ctx.beginPath(); ctx.arc(R*(rng()-.5)*.5,R*(rng()-.5)*.5,R*vac,0,6.3); ctx.fillStyle="rgba(250,250,244,.55)"; ctx.fill(); ctx.lineWidth=R*.04; ctx.strokeStyle="rgba(80,76,64,.35)"; ctx.stroke();
+      ctx.fillStyle="rgba(50,46,40,.5)"; for(let i=0;i<4;i++){ ctx.beginPath(); ctx.arc(R*(rng()-.5)*1.2,R*(rng()-.5)*1.2,R*.05,0,6.3); ctx.fill(); } }
+  };
+  one(r,c.asp,c.vac);
+  if(c.bud){ ctx.save(); ctx.translate(Math.cos(c.bud.a)*r*(c.asp*.95+c.bud.s*.72),Math.sin(c.bud.a)*r*(.95+c.bud.s*.72)); one(r*c.bud.s,1.02,c.bud.s>.6?c.vac*.8:0); ctx.restore(); }
+  ctx.restore();
+}
+function yeastPaint(ctx,det,L,scale){
+  const st=(L&&L.stain)||"none";
+  ctx.fillStyle=st==="methylene"?"#dfe6f0":"#eeeadc"; ctx.fillRect(-YEAST_W/2,-YEAST_H/2,YEAST_W,YEAST_H);
+  speckle(ctx,YEAST_W,YEAST_H,0x7ea6,det?900:2400,[100,96,84],.02,.05,.2);
+  yeastList().forEach(c=>{ if(!det||inView(L,c.x,c.y,1.5)) yeastCell(ctx,c,det,st,scale); });
+  airBubble(ctx,40,-30,9); airBubble(ctx,-58,44,5.5); airBubble(ctx,-6,8,1.6);
+}
+function drawYeast(ctx,L){
+  const st=(L&&L.stain)||"none";
+  ctx.fillStyle=st==="methylene"?"#dfe6f0":"#eeeadc"; ctx.fillRect(-900,-900,1800,1800);
+  if(!hiPow(L)){ if(!SLIDE.yeastV) SLIDE.yeastV={}; if(!SLIDE.yeastV[st]) SLIDE.yeastV[st]=bakeUnits(YEAST_W,YEAST_H,8,c=>yeastPaint(c,false,{stain:st},8)); blit(ctx,SLIDE.yeastV[st]); return; }
+  cachedView(ctx,L,"yeast",vc=>{ const m=vc.getTransform(); yeastPaint(vc,true,L,Math.hypot(m.a,m.b)); });
+}
+
 /* ── ancient texts ──────────────────────────────────── AOG-SCOPE-ANCIENT-V1 */
 const ANC_W=170, ANC_H=130;
 /* Greek capitals as stroke lists in a 1×1 box (x right, y down) */
@@ -3790,7 +4090,7 @@ function applyStain(ctx, w, h, L){
     ctx.globalCompositeOperation="multiply";
     ctx.fillStyle="rgba(188,130,12,.28)"; ctx.fillRect(0,0,w,h);
   } else if(s==="methylene"){
-    const soft=spec==="cheek"||spec==="onion";   /* on a peel or a scrape the dye sits in the cells; the glass round them stays almost clear */
+    const soft=spec==="cheek"||spec==="onion"||spec==="yeast";   /* on a peel or a scrape the dye sits in the cells; the glass round them stays almost clear */
     ctx.globalCompositeOperation="multiply";
     ctx.fillStyle=`rgba(20,48,170,${soft?.14:.55})`; ctx.fillRect(0,0,w,h);
     ctx.globalCompositeOperation="source-over";
@@ -3931,7 +4231,7 @@ function applyOptics(ctx, w, h, L){
   applyFilterTint(ctx, w, h, L);
   if(L.illum==="dark"){ if(L.spec!=="pond"&&L.spec!=="diatom") applyDarkfield(ctx, w, h); }
   else if(L.illum==="slit") applySlit(ctx, w, h);
-  else if(L.illum==="polar"){ if(L.spec!=="crystal"&&L.spec!=="hairs") applyPolar(ctx, w, h, L); }
+  else if(L.illum==="polar"){ if(L.spec!=="crystal"&&L.spec!=="hairs"&&L.spec!=="sand") applyPolar(ctx, w, h, L); }
 }
 function drawGraticule(ctx, cx, cy, r, L, w){
   const dark=L.illum==="dark"||L.illum==="polar"||L.illum==="slit";
@@ -4593,6 +4893,8 @@ function drawSpec(ctx, now, L, reduced, dt){
   else if(L.spec==="leaf") drawLeaf(ctx, L);
   else if(L.spec==="diatom") drawDiatoms(ctx, L);
   else if(L.spec==="crystal") drawCrystals(ctx, L);
+  else if(L.spec==="sand") drawSand(ctx, L);
+  else if(L.spec==="yeast") drawYeast(ctx, L);
   else if(L.spec==="papyrus") drawPapyrus(ctx, L);
   else if(L.spec==="scroll") drawScroll(ctx, L);
   else if(L.spec==="tablet") drawTablet(ctx, L);
@@ -4904,11 +5206,35 @@ function tickMissions(){
   if(L.spec==="bact"&&L.stain!=="none"&&L.obj>=40&&band==="in"&&L.lightOn&&!L.cracked) S.missions.bact=true;
   if(L.spec==="virus"&&L.obj===100&&L.oil&&band==="in"&&L.lightOn&&!L.cracked) S.missions.limit=true;
   if(L.prism&&L.spec==="virus"&&L.obj===100&&L.oil&&L.lightOn&&!L.cracked) S.missions.prism=true;
-  /* AOG-SCOPE-ANCIENT-V1 — mission 7 */
+  /* AOG-SCOPE-ANCIENT-V1 — the ancient-text lesson */
   if(L.spec==="papyrus"&&L.obj===10&&band==="in"&&L.lightOn&&!L.cracked) S.missions.papyrus=true;
   if(L.spec==="scroll"&&L.obj===40&&band==="in"&&L.lightOn&&!L.cracked) S.missions.scroll=true;
   if(L.spec==="tablet"&&L.obj===40&&band==="in"&&L.lightOn&&!L.cracked) S.missions.tablet=true;
   if(L.spec==="papyrus"&&L.illum==="polar"&&L.lightOn&&!L.cracked) S.missions.inkpolar=true;
+  /* AOG-SCOPE-LESSONS17-V1 — lessons 8–17 */
+  const ok=L.lightOn&&!L.cracked, sharp=ok&&band==="in", meas=L.graticule&&L.mA&&L.mB&&ok;
+  if(L.spec==="cheek"&&L.stain==="none"&&L.obj===40&&sharp&&L.dia<=50) S.missions.irisCheek=true;
+  if(L.spec==="cheek"&&L.stain==="methylene"&&L.obj===40&&sharp) S.missions.cheekBlue=true;
+  if(L.spec==="onion"&&L.stain==="safranin"&&L.obj===40&&sharp) S.missions.safOnion=true;
+  if(L.spec==="yeast"&&L.stain==="methylene"&&L.obj>=40&&sharp&&(L.obj<100||L.oil)) S.missions.yeastBlue=true;
+  if(L.spec==="scale"&&L.graticule&&L.obj===10&&sharp) S.missions.calib10=true;
+  if(L.spec==="scale"&&L.graticule&&L.obj===40&&sharp) S.missions.calib40=true;
+  if(L.spec==="scale"&&L.obj===4&&sharp) S.missions.fov4=true;
+  if(meas&&L.obj===10) S.missions.measure10=true;
+  if(meas&&L.spec==="hair"&&L.obj===40) S.missions.hairW=true;
+  if(meas&&L.spec==="blood"&&L.obj===40) S.missions.rbcW=true;
+  if(meas&&L.spec==="sand"&&L.obj===10) S.missions.sandW=true;
+  if(L.spec==="bact"&&L.stain!=="none"&&L.obj===100&&L.oil&&sharp) S.missions.bact100=true;
+  if(L.spec==="pollen"&&L.obj===40&&sharp) S.missions.pollen40=true;
+  if(L.spec==="leaf"&&L.obj===40&&sharp) S.missions.stomata40=true;
+  if(L.spec==="elodea"&&L.stain==="none"&&L.obj===40&&sharp) S.missions.elodea40=true;
+  if(L.spec==="pond"&&L.stain==="none"&&L.obj===40&&sharp) S.missions.pond40=true;
+  if(L.spec==="yeast"&&L.stain==="none"&&L.obj===40&&sharp) S.missions.yeast40=true;
+  if(L.illum==="polar"&&ok&&L.spec==="crystal") S.missions.cryPolar=true;
+  if(L.illum==="polar"&&ok&&L.spec==="sand") S.missions.sandPolar=true;
+  if(L.illum==="polar"&&ok&&L.spec==="fabric") S.missions.fabricPolar=true;
+  if(L.spec==="dog"&&(L.obj===10||L.obj===40)&&sharp) S.missions.dog40=true;
+  if(meas&&L.spec==="fabric"&&L.obj===40) S.missions.fabricW=true;
   persist();
 }
 
@@ -4927,10 +5253,12 @@ function paint(){
   cancelAnimationFrame(eyeRaf);
   S.page=hashPage();
   paintChrome();
+  lessonsHome();
   const view=document.getElementById("view");
   view.innerHTML = S.page==="meet"?pageMeet(): S.page==="lab"?pageLab(): S.page==="lessons"?lessonsView(): S.page==="find"?pageFind(): S.page==="job"?pageJob(): S.page==="print"?pagePrint(): pageHome();
   bindLessonBox(view);
   paintLessonsTop();   /* AOG-BENCH-TOP-V1 */
+  lessonsBelow();
   if(S.page==="meet"){
     bindScope(document.getElementById("meetScope"), id=>{ S.sel=id; S.met[id]=true; persist(); paint(); });
     view.querySelectorAll("[data-part]").forEach(b=>b.onclick=()=>{ S.sel=b.getAttribute("data-part"); S.met[S.sel]=true; persist(); paint(); });
@@ -4955,14 +5283,14 @@ function paint(){
       if(a==="teach-lock"){ S.teacher="locked"; persist(); paint(); return; }
       if(a==="teach-open"){ S.teacher="open"; persist(); paint(); return; }
       const step=benchStep();
-      const locked = (a==="obj10"||a==="obj40")&&step<1
-        || a==="obj100"&&step<4
-        || a==="illum-dark"&&step<2
-        || (a==="illum-slit"||a==="illum-polar"||a==="prism1"||a==="rife"||a==="universal")&&step<5
-        || a.startsWith("filter-")&&step<5
-        || a.startsWith("stain-")&&a!=="stain-none"&&step<2
-        || (a==="grat1"||a==="meas1")&&step<3
-        || a.startsWith("spec-")&&a!=="spec-e"&&step<2;
+      const locked = (a==="obj10"||a==="obj40")&&step<LX("m2")
+        || a==="obj100"&&step<LX("m13")
+        || a==="illum-dark"&&step<LX("m3")
+        || (a==="illum-slit"||a==="illum-polar"||a==="prism1"||a==="rife"||a==="universal")&&step<LX("m6")
+        || a.startsWith("filter-")&&step<LX("m6")
+        || a.startsWith("stain-")&&a!=="stain-none"&&step<LX("m3")
+        || (a==="grat1"||a==="meas1")&&step<LX("m4")
+        || a.startsWith("spec-")&&a!=="spec-e"&&step<LX("m8");
       if(locked) return;
       if(a==="lamp1") L.lightOn=true;
       if(a==="lamp0") L.lightOn=false;
