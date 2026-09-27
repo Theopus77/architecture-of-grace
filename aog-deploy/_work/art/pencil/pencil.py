@@ -304,7 +304,9 @@ def contours(nrm, depth, ids, T, rng, P):
         # each pass wanders a little: a hand redrawing the same edge
         ox = noise(rng, 30 * S) * (1.2 + k * .9) * S; oy = noise(rng, 30 * S) * (1.2 + k * .9) * S
         ek = nd.map_coordinates(e * wgt, [yy + oy, xx + ox], order=1, mode='nearest')
-        thin = blur(ek, .45 * S) * (1.0 if k == 0 else .55)
+        heavy = blur(nd.maximum_filter(ek, size=int(1 + 1.5 * S)), .6 * S)
+        wv = np.clip(smooth01(-.8, 1.2, noise(rng, 28 * S)) * .7 + tone * .5, 0, 1)
+        thin = (blur(ek, .45 * S) * (1 - wv) + heavy * wv) * (1.0 if k == 0 else .5)
         press = .55 + .45 * smooth01(-1, 1, noise(rng, 45 * S))
         out = np.maximum(out, thin * press) if k == 0 else 1 - (1 - out) * (1 - .6 * thin * press)
     return np.clip(out * 1.25, 0, 1), e
@@ -318,6 +320,29 @@ def paper_tooth(rng):
     laid = laid / (laid.std() + 1e-6)
     t = .6 * grain + .25 * laid + .15 * noise(rng, 6 * S)
     return (t - t.min()) / (t.max() - t.min())
+
+def sketch_lines(emask, ids, rng, P):
+    """A draughtsman's searching lines: the long straight edges of the objects carried a
+    little past their corners, faint and slightly off, as if laid in before the drawing."""
+    from skimage.transform import probabilistic_hough_line
+    img = Image.new('L', (W, H), 0); dr = ImageDraw.Draw(img)
+    m = (emask > .5) & ~np.isin(ids, P.get('bg', []))
+    segs = probabilistic_hough_line(m[::2, ::2], threshold=12, line_length=int(28 * S / 2), line_gap=3, rng=int(P.get('seed', 7)))
+    segs = sorted(segs, key=lambda s: -math.hypot(s[1][0] - s[0][0], s[1][1] - s[0][1]))[:P.get('nsketch', 22)]
+    for (x0, y0), (x1, y1) in segs:
+        x0, y0, x1, y1 = [v * 2 for v in (x0, y0, x1, y1)]
+        L = math.hypot(x1 - x0, y1 - y0); ux, uy = (x1 - x0) / L, (y1 - y0) / L
+        a0, a1 = rng.uniform(.04, .16) * L + 6 * S, rng.uniform(.04, .16) * L + 6 * S
+        off = rng.normal(0, 1.2 * S); nx, ny = -uy * off, ux * off
+        tw = rng.normal(0, .006)
+        pts = [(x0 - ux * a0 + nx, y0 - uy * a0 + ny), (x1 + (ux + tw * uy) * a1 + nx, y1 + (uy - tw * ux) * a1 + ny)]
+        n = 24
+        for i in range(n):
+            t0, t1 = i / n, (i + 1) / n
+            p = math.sin(math.pi * (t0 + t1) / 2) ** .5
+            dr.line([(pts[0][0] + (pts[1][0] - pts[0][0]) * t0, pts[0][1] + (pts[1][1] - pts[0][1]) * t0),
+                     (pts[0][0] + (pts[1][0] - pts[0][0]) * t1, pts[0][1] + (pts[1][1] - pts[0][1]) * t1)], fill=int(95 * p), width=S)
+    return np.asarray(img, np.float32) / 255.
 
 def construction(rng, P):
     img = Image.new('L', (W, H), 0); dr = ImageDraw.Draw(img)
@@ -426,7 +451,9 @@ def render(uid, gdir, P):
         tl *= .55 + .45 * smooth01(-1.2, .8, noise(rng, 10 * S))       # pressure: lines come and go
         tl = blur(tl, .35 * S) * (.4 + .6 * np.clip((tooth - .1) / .5, 0, 1))
         cont = 1 - (1 - cont) * (1 - tl)
-    cons = construction(rng, P) * (.5 + .5 * tooth)
+    cons = construction(rng, P)
+    if P.get('slice'): cons = np.maximum(cons, sketch_lines(emask, ids, rng, P))
+    cons = cons * (.5 + .5 * tooth)
     # drawing vignettes out to paper at the sheet edges (how a sketch sits on the page)
     yy, xx = np.mgrid[0:H, 0:W].astype(np.float32)
     ex = np.minimum(xx, W - 1 - xx) / W; ey = np.minimum(yy, H - 1 - yy) / H

@@ -2,8 +2,8 @@
    a carved wooden rahle (the X-shaped folding stand, with pierced star openings and arched
    feet), before a panel of eight-point star tiles. Pages carry an ornamental frame and
    hint-lines only, no writing. No figures. */
-#define CAM_POS vec3(-0.985,0.814,-1.603)
-#define CAM_TGT vec3(-0.536,0.330,0.250)
+#define CAM_POS vec3(-1.2801,0.7609,-2.2836)
+#define CAM_TGT vec3(-0.6724,0.1058,0.2246)
 #define CAM_FOV 30.
 #define SUN_DIR vec3(-.75,.8,-.35)
 #define MAXT 8.
@@ -27,13 +27,13 @@ float board(vec3 q,float s){
   d=max(d,-(length(vec2(a.x,(a.y+.34)*.8))-.1));
   return d; }
 float rahle(vec3 p){ vec3 q=rq(p); float d=min(board(q,1.),board(q,-1.)); return max(d,-q.y); }
-vec3 bq(vec3 p){ vec3 q=rq(p); q-=vec3(0.,.555,-.02); q.yz=rot(-.62)*q.yz; return q; }
+vec3 bq(vec3 p){ vec3 q=rq(p); q-=vec3(0.,.565,-.02); q.yz=rot(-.62)*q.yz; return q; }
 vec2 book(vec3 p){
-  vec3 q=bq(p); float x=abs(q.x);
+  vec3 q=bq(p)/1.22; float x=abs(q.x);
   float curl=.02*sin(clamp(x/.2,0.,1.)*3.1416)+.022*(1.-exp(-x*25.));
   float pages=sdBox(vec3(x-.1,q.y-curl*.8,q.z),vec3(.097,.014,.14))-.001;
   float cover=sdRBox(vec3(x-.104,q.y+.014+curl*.3,q.z),vec3(.107,.004,.149),.002);
-  return vec2(pages,cover); }
+  return vec2(pages,cover)*1.22; }
 vec2 map(vec3 p){
   vec2 r=vec2(p.y,1.);
   r=U(r,wallD(p),2.);
@@ -45,7 +45,7 @@ float toneAlb(float id,vec3 p,vec3 n){
   if(id==2.){ vec2 t=tile(p.xy); float a=t.y>.5?.6:.88; if(abs(t.x)<.0022) a=.35;
     vec2 c=p.xy/.16; vec2 f=c-floor(c+.5); if(star2(f)<.12) a=.4; if(abs(star2(f)-.2)<.012) a=.45; return a; }
   if(id==3.) return .5;
-  if(id==4.){ vec3 q=bq(p); float x=abs(q.x); float a=.94;
+  if(id==4.){ vec3 q=bq(p)/1.22; float x=abs(q.x); float a=.94;
     vec2 b=abs(vec2(x-.1,q.z))-vec2(.078,.118); float m=max(b.x,b.y);
     if(abs(m)<.002||abs(m+.007)<.0012) a=.45;                      /* ornamental frame */
     if(m<-.012){ float l=fract((q.z+.2)/.0155); if(l<.2) a=.66; }   /* hint lines */

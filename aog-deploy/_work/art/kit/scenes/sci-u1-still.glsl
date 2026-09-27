@@ -1,8 +1,8 @@
 /* Science Unit 1 "Pushes, Pulls and Stuff" — pencil still life: a toy wagon with its
    pull handle raised, a ball that has just been pushed, and a horseshoe magnet pulling
    two paper clips. */
-#define CAM_POS vec3(-0.482,0.278,-0.962)
-#define CAM_TGT vec3(-0.341,0.030,0.100)
+#define CAM_POS vec3(-0.3801,0.2486,-0.9196)
+#define CAM_TGT vec3(-0.2468,0.0144,0.0838)
 #define CAM_FOV 30.
 #define SUN_DIR vec3(-.7,.85,-.3)
 #define MAXT 8.
@@ -60,7 +60,8 @@ float toneAlb(float id,vec3 p,vec3 n){
   if(id==2.) return .9;
   if(id==3.) return .4;
   if(id==4.) return .3;
-  if(id==5.){ vec3 q=p-vec3(-.29,.05,.04); q.xy=rot(.5)*q.xy; return abs(abs(q.y)-.022)<.0035?.35:.82; }  /* a ball with a band */
+  if(id==5.){ vec3 q=normalize(p-vec3(-.29,.05,.04)); q.xy=rot(.5)*q.xy; q.yz=rot(.4)*q.yz;   /* a play ball: two seams */
+    float s1=abs(q.y), s2=abs(q.x*.8+q.z*.6); return (s1<.045||s2<.045)?.3:.78; }
   if(id==6.){ vec3 q=mq(p); return q.y<.03?.88:.35; }                                       /* painted pole tips */
   if(id==7.) return .6;
   return .7; }
