@@ -1,7 +1,7 @@
 /* Spanish Unit 10 "Numbers, Time and Dates" — pencil still life: a flip desk calendar on a
    wire loop showing a grid of days, an open pocket watch on its chain, and number blocks 4 and 5. */
-#define CAM_POS vec3(-0.30,0.36,-0.84)
-#define CAM_TGT vec3(-0.05,0.06,0.09)
+#define CAM_POS vec3(-0.3075,0.2253,-0.6363)
+#define CAM_TGT vec3(-0.1136,-0.0074,0.0854)
 #define CAM_FOV 30.
 #define SUN_DIR vec3(-.65,.85,-.3)
 #define MAXT 8.
