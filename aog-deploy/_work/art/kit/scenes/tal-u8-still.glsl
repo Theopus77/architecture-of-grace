@@ -101,8 +101,7 @@ float jugD(vec3 q,float H){ if(length(q-vec3(0,H*.5,0))>H*.8) return length(q-ve
   float y=q.y/H; float body=.16+.24*sin(3.1416*clamp(y/.8,0.,1.)); float r=mix(body,.12,smoothstep(.62,.82,y))+.03*smoothstep(.93,1.,y);
   r*=H; float d=(length(q.xz)-r)*.7; d=max(d,max(-q.y,q.y-H));
   d=max(d,-max(length(q.xz)-r+.004,H*.9-q.y));
-  float hd=sdTorus((q-vec3(-.13*H,.72*H,0)).xzy*vec3(1.,1.,1.),.13*H,.018*H);
-  hd=max(hd,-q.x-.1*H); hd=max(hd,q.x+.0*H);
+  float hd=sdTorus((q-vec3(-.25*H,.66*H,0)).xzy,.12*H,.02*H);
   return min(d,hd); }
 /* a potted plant pot; base at y=0, height h */
 float potD(vec3 q,float r,float h){ float y=q.y; float rr=r*(.78+.22*y/h); float d=(length(q.xz)-rr)*.9; d=max(d,max(-y,y-h));
@@ -209,7 +208,7 @@ float stand(vec3 p){ vec3 q=place(p,ST,-.08); vec3 b=sQ(p);
   return min(min(board,lip),body); }
 vec3 bQ(vec3 p){ return sQ(p)-vec3(0,.0,.01); }
 #define C1 vec3(.32,0.,.02)
-vec2 map(vec3 p){ vec2 r=vec2(p.y,1.); r=U(r,.9-p.z,2.);
+vec2 map(vec3 p){ vec2 r=vec2(p.y,1.); r=U(r,1.4-p.z,2.);
   vec2 b=bookO(bQ(p),2.); r=U(r,b.x,3.); r=U(r,b.y,4.); r=U(r,stand(p),5.);
   r=U(r,stickD(p-C1),6.); r=U(r,candleD(p-C1),7.); r=U(r,candleFlame(p-C1),8.); return r; }
 float toneAlb(float id,vec3 p,vec3 n){
