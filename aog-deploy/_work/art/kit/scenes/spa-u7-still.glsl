@@ -1,7 +1,7 @@
 /* Spanish Unit 7 "Who, Where, When, Why" — pencil still life: a desk globe on its stand (where),
    a round alarm clock (when) and a magnifying glass lying on a closed notebook (who, why). */
-#define CAM_POS vec3(-0.30,0.36,-0.84)
-#define CAM_TGT vec3(-0.05,0.06,0.09)
+#define CAM_POS vec3(-0.3871,0.3077,-0.7723)
+#define CAM_TGT vec3(-0.1511,0.0246,0.1057)
 #define CAM_FOV 30.
 #define SUN_DIR vec3(-.65,.85,-.3)
 #define MAXT 8.
