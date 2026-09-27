@@ -1,8 +1,8 @@
 /* FCS Unit 14 "Fabric, Fibers and Patterns" — pencil still life: a stack of three folded cloths
    (plain, striped and checked), a ball of yarn with two knitting needles through it, and a
    rolled tape measure. */
-#define CAM_POS vec3(-0.30,0.36,-0.84)
-#define CAM_TGT vec3(-0.05,0.05,0.09)
+#define CAM_POS vec3(-0.3085,0.2123,-0.5875)
+#define CAM_TGT vec3(-0.1266,-0.0133,0.0895)
 #define CAM_FOV 30.
 #define SUN_DIR vec3(-.65,.85,-.3)
 #define MAXT 8.
