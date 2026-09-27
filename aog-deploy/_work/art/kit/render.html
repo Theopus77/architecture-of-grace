@@ -1,0 +1,87 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>Banner render kit</title>
+<style>html,body{margin:0;background:#000}canvas{display:block}</style></head>
+<body><canvas id="c"></canvas>
+<script>
+/* AOG render kit page. render.js injects the scene source and calls
+   render(src, W, H, SS, opts). Pass 1 renders HDR radiance at W*SS x H*SS into a
+   half-float target in scissored strips; pass 2 box-filters it down to W x H, adds a
+   soft bloom from the mip chain, exposes, tonemaps (ACES fit), grades, vignettes and
+   adds film grain. encode(width, type, q) returns a data URL at a smaller width. */
+const cv=document.getElementById('c');
+const gl=cv.getContext('webgl2',{preserveDrawingBuffer:true,antialias:false});
+gl.getExtension('EXT_color_buffer_float'); gl.getExtension('OES_texture_float_linear');
+const VS=`#version 300 es
+in vec2 p; void main(){ gl_Position=vec4(p,0,1); }`;
+const HEAD=`#version 300 es
+precision highp float; out vec4 o;
+`;
+const FINAL=`#version 300 es
+precision highp float; out vec4 o;
+uniform sampler2D T; uniform int SS; uniform vec2 OUT; uniform float EXPO, BLOOM, GRAIN, VIG, WARM, SAT, SEED;
+float h1(vec2 p){ p=fract(p*vec2(123.34,456.21)+SEED); p+=dot(p,p+45.32); return fract(p.x*p.y); }
+vec3 aces(vec3 x){ return clamp((x*(2.51*x+.03))/(x*(2.43*x+.59)+.14),0.,1.); }
+void main(){
+  ivec2 b=ivec2(gl_FragCoord.xy)*SS; vec3 c=vec3(0);
+  for(int j=0;j<4;j++) for(int i=0;i<4;i++){ if(i<SS&&j<SS) c+=texelFetch(T,b+ivec2(i,j),0).rgb; }
+  c/=float(SS*SS);
+  vec2 uv=gl_FragCoord.xy/OUT;
+  vec3 bl=textureLod(T,uv,3.).rgb*.25+textureLod(T,uv,5.).rgb*.35+textureLod(T,uv,7.).rgb*.4;
+  c+=max(bl-vec3(1.2),0.)*BLOOM + bl*BLOOM*.04;
+  c*=EXPO;
+  /* white balance toward warm, then filmic curve */
+  c*=vec3(1.+.06*WARM,1.,1.-.08*WARM);
+  c=aces(c);
+  float l=dot(c,vec3(.2126,.7152,.0722));
+  c=mix(vec3(l),c,SAT);
+  /* split tone: warm highlights, faintly cool shadows */
+  c=mix(c*vec3(.97,.99,1.04),c*vec3(1.03,1.,.95),smoothstep(.2,.8,l));
+  c=pow(c,vec3(1./2.2));
+  vec2 q=uv-.5; c*=1.-VIG*dot(q*vec2(1.,.8),q*vec2(1.,.8))*1.6;
+  float g=(h1(gl_FragCoord.xy)+h1(gl_FragCoord.xy+.37)-1.); c+=g*GRAIN*(1.-l*.5);
+  c+=(h1(gl_FragCoord.xy*1.7)-.5)/255.;
+  o=vec4(c,1.);
+}`;
+function sh(t,s){ const x=gl.createShader(t); gl.shaderSource(x,s); gl.compileShader(x);
+  if(!gl.getShaderParameter(x,gl.COMPILE_STATUS)){ const log=gl.getShaderInfoLog(x); throw new Error(log+'\n'+s.split('\n').map((l,i)=>(i+1)+': '+l).filter((l,i)=>{const m=log.match(/0:(\d+)/g)||[];return m.some(k=>Math.abs(+k.slice(2)-(i+1))<3)}).join('\n')); } return x; }
+function prog(fs){ const p=gl.createProgram(); gl.attachShader(p,sh(gl.VERTEX_SHADER,VS)); gl.attachShader(p,sh(gl.FRAGMENT_SHADER,fs));
+  gl.bindAttribLocation(p,0,'p'); gl.linkProgram(p); if(!gl.getProgramParameter(p,gl.LINK_STATUS)) throw new Error(gl.getProgramInfoLog(p)); return p; }
+const vb=gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER,vb);
+gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([-1,-1,1,-1,-1,1,1,1]),gl.STATIC_DRAW);
+gl.enableVertexAttribArray(0); gl.vertexAttribPointer(0,2,gl.FLOAT,false,0,0);
+
+function render(src,W,H,SS,opt){
+  opt=Object.assign({expo:1,bloom:.6,grain:.018,vig:.35,warm:.5,sat:1.04,seed:.123},opt||{});
+  const t0=performance.now();
+  const P=prog(HEAD+src), F=prog(FINAL);
+  const w=W*SS,h=H*SS;
+  const tex=gl.createTexture(); gl.bindTexture(gl.TEXTURE_2D,tex);
+  const lv=Math.floor(Math.log2(Math.max(w,h)))+1;
+  gl.texStorage2D(gl.TEXTURE_2D,lv,gl.RGBA16F,w,h);
+  gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.LINEAR_MIPMAP_LINEAR);
+  gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MAG_FILTER,gl.LINEAR);
+  gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_S,gl.CLAMP_TO_EDGE); gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_T,gl.CLAMP_TO_EDGE);
+  const fb=gl.createFramebuffer(); gl.bindFramebuffer(gl.FRAMEBUFFER,fb);
+  gl.framebufferTexture2D(gl.FRAMEBUFFER,gl.COLOR_ATTACHMENT0,gl.TEXTURE_2D,tex,0);
+  gl.viewport(0,0,w,h); gl.useProgram(P); gl.uniform2f(gl.getUniformLocation(P,'R'),w,h);
+  gl.enable(gl.SCISSOR_TEST); const strip=Math.max(8,Math.floor(24*SS));
+  for(let y=0;y<h;y+=strip){ gl.scissor(0,y,w,strip); gl.drawArrays(gl.TRIANGLE_STRIP,0,4); gl.finish(); }
+  gl.disable(gl.SCISSOR_TEST);
+  gl.generateMipmap(gl.TEXTURE_2D);
+  gl.bindFramebuffer(gl.FRAMEBUFFER,null); cv.width=W; cv.height=H; gl.viewport(0,0,W,H);
+  gl.useProgram(F); const u=n=>gl.getUniformLocation(F,n);
+  gl.uniform1i(u('T'),0); gl.uniform1i(u('SS'),SS); gl.uniform2f(u('OUT'),W,H);
+  gl.uniform1f(u('EXPO'),opt.expo); gl.uniform1f(u('BLOOM'),opt.bloom); gl.uniform1f(u('GRAIN'),opt.grain);
+  gl.uniform1f(u('VIG'),opt.vig); gl.uniform1f(u('WARM'),opt.warm); gl.uniform1f(u('SAT'),opt.sat); gl.uniform1f(u('SEED'),opt.seed);
+  gl.drawArrays(gl.TRIANGLE_STRIP,0,4); gl.finish();
+  return ((performance.now()-t0)/1000).toFixed(1)+'s '+W+'x'+H+' ss'+SS;
+}
+function encode(width,type,q){
+  let src=cv, w=cv.width, h=cv.height;
+  while(w/2>=width){ const c=document.createElement('canvas'); c.width=Math.round(w/2); c.height=Math.round(h/2);
+    const x=c.getContext('2d'); x.imageSmoothingQuality='high'; x.drawImage(src,0,0,c.width,c.height); src=c; w=c.width; h=c.height; }
+  const c=document.createElement('canvas'); c.width=width; c.height=Math.round(cv.height*width/cv.width);
+  const x=c.getContext('2d'); x.imageSmoothingQuality='high'; x.drawImage(src,0,0,c.width,c.height);
+  return c.toDataURL(type,q);
+}
+</script></body></html>
