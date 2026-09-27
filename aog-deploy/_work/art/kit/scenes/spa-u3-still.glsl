@@ -1,7 +1,7 @@
 /* Spanish Unit 3 "El and La: Naming Things" — pencil still life: an apple, a cup and a stack of
    two books, each with a small folded name card standing in front of it (hint-lines only). */
-#define CAM_POS vec3(-0.30,0.36,-0.84)
-#define CAM_TGT vec3(-0.05,0.03,0.09)
+#define CAM_POS vec3(-0.3362,0.2014,-0.6032)
+#define CAM_TGT vec3(-0.1497,-0.0447,0.0903)
 #define CAM_FOV 30.
 #define SUN_DIR vec3(-.65,.85,-.3)
 #define MAXT 8.
