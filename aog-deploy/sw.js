@@ -8,7 +8,8 @@
  * not run on this file. Forget the bump and returning visitors keep the stale
  * page from their cache.
  */
-const CACHE = 'aog-cache-2026.09.27.m7065'   // THE ROSE IS GONE: A PENCIL-SKETCHED GLASS WINDOW, AND YOUR WINDOW (six glass panes of a student's own progress, this device only). previous: m7064
+const CACHE = 'aog-cache-2026.09.27.m7066'   // WORLD CULTURES: PENCIL DRAWINGS ON UNITS 10-17. previous: m7065
+// previous: THE ROSE IS GONE: A PENCIL-SKETCHED GLASS WINDOW, AND YOUR WINDOW (six glass panes of a student's own progress, this device only). previous: m7064
 // previous: PENCIL DRAWINGS FOR ALL 17 MEDICINE AND HEALTH UNITS. previous: m7063
 // previous: PENCIL DRAWINGS FOR WORLD CULTURES (units 1-9) AND THE NEW COURSE DOORS. previous: m7062
 // previous: MEDICINE AND HEALTH AS A COURSE. /medicine-health-course, /medicine-health and /med1…: a K–12 course built by _work/med/build_med.py; every page's Medicine and Health jump groups list the course first. previous: m7061   // WORLD CULTURES AS A COURSE. /world-cultures-course, /world-cultures and /wcs1…: a K–12 course built by _work/wcs/build_wcs.py; every page's World Cultures jump groups list the course first. previous: m7060   // DAILY DRAFTS: WORLD CULTURES AND MEDICINE & HEALTH (1,000 items, K to Adult). previous: m7059
