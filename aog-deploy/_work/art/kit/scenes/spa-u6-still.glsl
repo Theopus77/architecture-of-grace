@@ -1,7 +1,7 @@
 /* Spanish Unit 6 "Soy and Estoy" — pencil still life: a round standing mirror on a wooden foot
    (who I am), a pocket compass lying open (where I am), and a name badge with hint-lines. */
-#define CAM_POS vec3(-0.30,0.36,-0.84)
-#define CAM_TGT vec3(-0.05,0.06,0.09)
+#define CAM_POS vec3(-0.5151,0.3621,-0.9318)
+#define CAM_TGT vec3(-0.2308,0.0209,0.1259)
 #define CAM_FOV 30.
 #define SUN_DIR vec3(-.65,.85,-.3)
 #define MAXT 8.
