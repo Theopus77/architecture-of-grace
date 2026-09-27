@@ -8,7 +8,8 @@
  * not run on this file. Forget the bump and returning visitors keep the stale
  * page from their cache.
  */
-const CACHE = 'aog-cache-2026.09.27.m7066'   // WORLD CULTURES: PENCIL DRAWINGS ON UNITS 10-17. previous: m7065
+const CACHE = 'aog-cache-2026.09.27.m7067'   // THE SKETCH PAD: pencil drawings replace card and slip emoji (721 drawings), spiral-bound study cards, Foundry cards and Daily Drafts sheets, pencil drawings in room, microscope, telescope and worksheet mastheads. previous: m7066
+// previous: WORLD CULTURES: PENCIL DRAWINGS ON UNITS 10-17. previous: m7065
 // previous: THE ROSE IS GONE: A PENCIL-SKETCHED GLASS WINDOW, AND YOUR WINDOW (six glass panes of a student's own progress, this device only). previous: m7064
 // previous: PENCIL DRAWINGS FOR ALL 17 MEDICINE AND HEALTH UNITS. previous: m7063
 // previous: PENCIL DRAWINGS FOR WORLD CULTURES (units 1-9) AND THE NEW COURSE DOORS. previous: m7062
