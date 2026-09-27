@@ -167,6 +167,23 @@ COURSES = [
                 "Diez líneas cortas al día: una lectura, palabras clave y preguntas rápidas de los clásicos chinos."),
          sources=("Quotations come from public-domain translations, or are retold in plain words. A teaching is always named as someone’s: “Confucius taught…”. Everything else is original text written for this course.",
                   "Las citas vienen de traducciones de dominio público, o se cuentan con palabras sencillas. Una enseñanza siempre se presenta como de alguien: “Confucio enseñaba…”. Todo lo demás es texto original escrito para este curso.")),
+    # AOG-WCS-MED-V1 (2026-09-27) — two new courses. Run `doors wcs` / `doors med` after each *-course.html exists.
+    dict(cid="wcs", file="world-cultures-hub.html", slug="world-cultures", name=("World Cultures and Societies", "Culturas y sociedades del mundo"), contents="world-cultures-course",
+         drops="cultures", res="social-studies", kicker=("A course of study · K–12", "Un curso de estudio · K–12"),
+         lede=("How people live together around the world: families, customs, social class and political ideas from left to right, K–12.",
+               "Cómo vive la gente en el mundo: familias, costumbres, clases sociales e ideas políticas de izquierda a derecha, K–12."),
+         daily=("Ten short lines a day: key words, places, people and ideas.",
+                "Diez líneas cortas al día: palabras clave, lugares, personas e ideas."),
+         sources=("Every idea is described with what its supporters and its critics say. The course never tells you which side to take. Everything is original text written for this course.",
+                  "Cada idea se describe con lo que dicen sus partidarios y sus críticos. El curso nunca te dice qué lado elegir. Todo es texto original escrito para este curso.")),
+    dict(cid="med", file="medicine-health-hub.html", slug="medicine-health", name=("Medicine and Health", "Medicina y salud"), contents="medicine-health-course",
+         drops="health", res="science", kicker=("A course of study · K–12", "Un curso de estudio · K–12"),
+         lede=("Healthy habits, the body, and how people have cared for the sick, West and East, K–12.",
+               "Hábitos sanos, el cuerpo y cómo la gente ha cuidado a los enfermos, en Occidente y Oriente, K–12."),
+         daily=("Ten short lines a day: the body, staying well and the history of medicine.",
+                "Diez líneas cortas al día: el cuerpo, estar sano y la historia de la medicina."),
+         sources=("Traditions are described with respect, and the course says plainly what the evidence shows. It is for learning, not medical advice: ask a doctor or nurse about your own health.",
+                  "Las tradiciones se describen con respeto, y el curso dice con claridad lo que muestra la evidencia. Es para aprender, no es consejo médico: pregunta a un médico o enfermera sobre tu salud.")),
 ]
 
 # More to explore: every place a band links to, named once, with one plain line.
@@ -227,13 +244,16 @@ def course_art(contents):
     out = {}
     for p in parts[1:]:
         n = int(re.match(r'<section class="unit-spread" id="u(\d+)"', p).group(1))
-        m = re.search(r'<div class="scene" aria-hidden="true">(<svg.*?</svg>)</div>', p, re.S)
+        m = (re.search(r'<div class="scene" aria-hidden="true">(<svg.*?</svg>)</div>', p, re.S)
+             or re.search(r'<div class="scene" aria-hidden="true" data-aog-render="[^"]*"[^>]*>(<picture.*?</picture>)', p, re.S))   # AOG-PENCIL-DOORS: a drawn picture
         body = p.split("</section>", 1)[0] if "</section>" in p else p
         out[n] = (m.group(1) if m else "", body.count('class="lrow"'))
     return out
 
 def svg_scoped(svg, pre, cls=""):
     """a banner, re-id'd so the same scene can sit twice on one page, and silent to screen readers"""
+    if svg.startswith("<picture"):   # a pencil drawing: silent, lazy, filling its tile
+        return re.sub(r'\salt="[^"]*"', ' alt=""', svg).replace("<img ", '<img aria-hidden="true" class="%s" style="width:100%%;height:100%%;object-fit:cover;object-position:75%% 40%%" ' % cls, 1)
     ids = re.findall(r'\sid="([^"]+)"', svg)
     for i in sorted(set(ids), key=len, reverse=True):
         svg = svg.replace('id="%s"' % i, 'id="%s-%s"' % (pre, i)).replace("url(#%s)" % i, "url(#%s-%s)" % (pre, i)).replace('href="#%s"' % i, 'href="#%s-%s"' % (pre, i))
