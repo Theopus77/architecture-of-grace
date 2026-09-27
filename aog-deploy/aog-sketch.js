@@ -38,7 +38,20 @@
     + '<feMorphology in="SourceAlpha" operator="dilate" radius="1.1" result="dil"/>'
     + '<feComposite in="dil" in2="SourceAlpha" operator="out" result="ring"/>'
     + '<feColorMatrix in="ring" type="matrix" values="0 0 0 0 .2 0 0 0 0 .19 0 0 0 0 .17 0 0 0 .85 0" result="line"/>'
-    + '<feMerge><feMergeNode in="body"/><feMergeNode in="line"/></feMerge></filter></svg>';
+    + '<feMerge><feMergeNode in="body"/><feMergeNode in="line"/></feMerge></filter>'
+    + '<filter id="aogScene" x="-8%" y="-8%" width="116%" height="116%" color-interpolation-filters="sRGB">'
+    + '<feColorMatrix in="SourceGraphic" type="matrix" values=".3 .59 .11 0 0 .3 .59 .11 0 0 .3 .59 .11 0 0 0 0 0 1 0" result="g"/>'
+    + '<feColorMatrix in="g" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 -1 0 0 0 1" result="darkA"/>'
+    + '<feImage href="data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'7\' height=\'7\'><path d=\'M-1 8 L8 -1 M-1 1 L1 -1 M6 8 L8 6\' stroke=\'black\' stroke-width=\'1.1\'/></svg>" width="7" height="7" result="tile"/><feTile in="tile" result="lines"/>'
+    + '<feComposite in="lines" in2="darkA" operator="arithmetic" k1="1" k2="0" k3="0" k4="0" result="hatchA"/>'
+    + '<feComponentTransfer in="g" result="light"><feFuncR type="linear" slope=".42" intercept=".55"/><feFuncG type="linear" slope=".42" intercept=".54"/><feFuncB type="linear" slope=".42" intercept=".51"/></feComponentTransfer>'
+    + '<feComposite in="light" in2="SourceAlpha" operator="in" result="paper"/>'
+    + '<feFlood flood-color="#34302A" result="ink"/><feComposite in="ink" in2="hatchA" operator="in" result="hatch"/>'
+    + '<feComposite in="hatch" in2="SourceAlpha" operator="in" result="hatchIn"/>'
+    + '<feMorphology in="SourceAlpha" operator="erode" radius="1" result="er"/><feComposite in="SourceAlpha" in2="er" operator="out" result="rim"/>'
+    + '<feComposite in="ink" in2="rim" operator="in" result="line"/>'
+    + '<feMerge><feMergeNode in="paper"/><feMergeNode in="hatchIn"/><feMergeNode in="line"/></feMerge></filter>'
+    + '</svg>';
   var CSS = [
     PICS.split(",").map(function (s) { return s + ":not([data-sk=\"1\"]){ filter:url(#aogPencil) !important; }"; }).join("\n"),
     "#cardHost .aogc-card .em{ font-size:3.8rem !important; }",
@@ -107,7 +120,12 @@
     }
   }
   CSS += "\n.aog-sk-in{ width:2em; height:2em; margin:0 .15em .1em 0; }";
-  function sweep() { inline(D); var n = D.querySelectorAll(PICS); for (var i = 0; i < n.length; i++) swap(n[i]); }
+  /* the Start Here scenes: every drawn shape gets the scene pencil (a stylesheet rule, so the
+     scene's own repaints keep it); words and numbers stay crisp */
+  function scenes() {}
+  CSS += "\n:is(#groundPic, .ground-pic) svg :is(path,rect,circle,ellipse,polygon,polyline,line,use,image):not(defs *, clipPath *, mask *, pattern *, marker *, text *){ filter:url(#aogScene) !important; }";
+  CSS += "\n#groundPic, .ground-pic{ background:repeating-linear-gradient(0deg, rgba(29,39,51,.03) 0 1px, transparent 1px 5px), #FBF8F0 !important; }";
+  function sweep() { scenes(); inline(D); var n = D.querySelectorAll(PICS); for (var i = 0; i < n.length; i++) swap(n[i]); }
   CSS += "\n.aog-sk{ display:inline-block; width:1.35em; height:1.35em; object-fit:contain; vertical-align:middle; }"
     + "\n#cardHost .aogc-card .em .aog-sk{ width:96px; height:96px; }"
     + "\n[data-sk=\"1\"]{ filter:none !important; }";
