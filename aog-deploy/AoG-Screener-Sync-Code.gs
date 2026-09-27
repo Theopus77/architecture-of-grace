@@ -280,6 +280,8 @@ var PRACTICE_TABS = {
   'drops-hindu':     'Practice · Daily Drafts · Hindu Texts',
   'drops-buddhist':  'Practice · Daily Drafts · Buddhist Texts',
   'drops-chinese':   'Practice · Daily Drafts · Chinese Classics',
+  'drops-cultures':  'Practice · Daily Drafts · World Cultures',
+  'drops-health':    'Practice · Daily Drafts · Medicine & Health',
   'drops-economics': 'Practice · Daily Drafts · Economics',
   'drops-other':     'Practice · Daily Drafts · Other',
   'reading':       'Practice · Reading',
@@ -338,6 +340,8 @@ var PRACTICE_PATTERNS = [
   [/^dd-hindu\b/i,          'drops-hindu'],
   [/^dd-buddhist\b/i,       'drops-buddhist'],
   [/^dd-chinese\b/i,        'drops-chinese'],
+  [/^dd-cultures\b/i,       'drops-cultures'],
+  [/^dd-health\b/i,         'drops-health'],
   [/^dd-economics\b/i,      'drops-economics'],
   [/^wf-u\d+/i,             'wordfoundry'],
   [/^dd-foundry\b/i,        'wordfoundry'],  // AOG-DD-FOUNDRY-V1: the Foundry's Daily Drafts land with its test rehearsals
