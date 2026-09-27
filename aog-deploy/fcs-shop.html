@@ -213,7 +213,7 @@ const STR={
   warnHot:{en:"The handle can be hot. Use a dry pot holder.",es:"El mango puede estar caliente. Usa un agarrador seco."},
   warnWater:{en:"Turn on the water first. Soap works on wet hands.",es:"Primero abre el agua. El jabón funciona con las manos mojadas."},
   lessons:{en:"Lessons",es:"Lecciones"}, lessonK:{en:"Lesson",es:"Lección"},
-  progress:{en:"{d} of {t} steps done · lesson {n} of 17",es:"{d} de {t} pasos hechos · lección {n} de 17"},
+  progress:{en:"{d} of {t} steps done · {n} of 17 lessons finished",es:"{d} de {t} pasos hechos · {n} de 17 lecciones terminadas"},
   check:{en:"Check",es:"Comprueba"},
   checkWait:{en:"Do the steps above first. Each one ticks itself when you do it in the drawing.",es:"Primero haz los pasos de arriba. Cada uno se marca solo cuando lo haces en el dibujo."},
   right:{en:"Yes. Lesson done.",es:"Sí. Lección hecha."},
@@ -399,7 +399,7 @@ function fire(ev){
   save();
 }
 function tapObj(k){
-  S.sel=k; S.warn=null;
+  S.sel=k; S.warn=null; S.showFoot=false;
   if(k==="faucet"){ S.water=!S.water; fire(S.water?"act:water-on":"act:water-off"); }
   if(k==="knob"){ S.burner=!S.burner; fire(S.burner?"act:burner-on":"act:burner-off"); }
   if(k==="soap" && !S.water) S.warn="warnWater";
@@ -408,7 +408,7 @@ function tapObj(k){
   paint();
 }
 function act(a){
-  S.warn=null;
+  S.warn=null; S.showFoot=(a==="foot");
   if(a==="burner"){ S.burner=!S.burner; fire(S.burner?"act:burner-on":"act:burner-off"); }
   else if(a==="water"){ S.water=!S.water; fire(S.water?"act:water-on":"act:water-off"); }
   else if(a==="scrub"){ if(!S.water) S.warn="warnWater"; else if(!S.scrub) startScrub(); }
@@ -453,7 +453,7 @@ function sceneHtml(){
       +`<span class="chip" style="left:${s.x+2}%;top:${s.y+s.h-9}%">${esc(t("waterOn"))}</span>`;
   } else {
     const ft=box("foot"), n=box("needle");
-    if(ft) marks+=`<span class="chip" style="left:${Math.max(0,ft.x-6)}%;top:${Math.min(92,ft.y+ft.h+6)}%">${esc(S.foot?t("footDown"):t("footUp"))}</span>`;
+    if(ft && S.showFoot) marks+=`<span class="chip" style="left:${Math.max(0,ft.x-6)}%;top:${Math.min(92,ft.y+ft.h+6)}%">${esc(S.foot?t("footDown"):t("footUp"))}</span>`;
     if(S.sewing&&n) marks+=`<span class="chip" style="left:${Math.max(0,n.x-12)}%;top:${Math.max(0,n.y-6)}%">${esc(t("sewing2"))}</span>`;
   }
   const on=b.find(o=>o.k===S.sel);
@@ -484,7 +484,7 @@ function allHtml(){
   const ids=[...L.keys()];
   return `<div class="card" style="padding:1rem 1.1rem"><p class="kicker">${esc(t("all"))}</p>
     <p class="lead" style="margin:.3rem 0 0">${esc(t("allLead"))}</p>
-    <p style="margin:.5rem 0 0;font-weight:700">${esc(t("progress",{d:stepsDone(),t:TOTAL,n:firstOpen()+1}))}</p>
+    <p style="margin:.5rem 0 0;font-weight:700">${esc(t("progress",{d:stepsDone(),t:TOTAL,n:L.filter((l,i)=>done(i)).length}))}</p>
     <p class="tiny lgroup">${esc(t("kitchenG"))}</p><ol class="ladder">${ids.filter(i=>L[i].room==="kitchen").map(row).join("")}</ol>
     <p class="tiny lgroup">${esc(t("sewingG"))}</p><ol class="ladder">${ids.filter(i=>L[i].room==="sewing").map(row).join("")}</ol></div>`;
 }
@@ -503,7 +503,7 @@ function lessonHtml(){
   const acts=`<div class="lacts">${p.q&&i<L.length-1?`<button type="button" class="pill btn-steel" data-next="1">${esc(t("next"))} →</button>`:""}${p.s?`<button type="button" class="pill" data-redo="1">${esc(t("redo"))}</button>`:""}</div>`;
   return `<p class="mk">${esc(t("lessonK"))} ${i+1} · ${esc(t(l.room))}${done(i)?` · ✓ ${esc(t("doneMark"))}`:""}</p>
     <h3>${esc(es()?l.es:l.en)}</h3>
-    <p class="lblurb">${esc(t("progress",{d:stepsDone(),t:TOTAL,n:firstOpen()+1}))}</p>
+    <p class="lblurb">${esc(t("progress",{d:stepsDone(),t:TOTAL,n:L.filter((l,i)=>done(i)).length}))}</p>
     ${away}<ol class="lsteps">${steps}</ol>${l.note?`<p class="lnote">${esc(es()?l.note.es:l.note.en)}</p>`:""}${check}${acts}`;
 }
 function pickLesson(i){ S.lesson=Math.max(0,Math.min(L.length-1,+i||0)); S.answer=null; save(); }
