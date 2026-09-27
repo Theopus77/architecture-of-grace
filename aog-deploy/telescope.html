@@ -145,6 +145,34 @@ body>.wrap>header:first-child,.wrap>header.no-print:first-child{display:none!imp
 .nav a.on{color:var(--ink);border-color:var(--steel,#2F63B8)}
 .nav a.sep{margin-left:auto;padding-left:.5rem}
 .nav a.sep+a.sep{margin-left:0}
+/* ══ AOG-SCOPE-LESSONS-V1 (2026-09-27) — Jimmy: "The missions should be called the lessons and mimic the
+   beautiful set up that THE DRUM MACHINE LESSON HAS." Same cards as the drum machine's Lessons view. ══ */
+.lesson-box{padding:.9rem 1rem 1rem;margin:1rem 0 .4rem}
+.lesson-box h3{margin:.05rem 0 .15rem;font-size:1.15rem}
+.lesson-pick{display:grid;gap:.3rem;margin:0 0 .7rem}
+.lesson-pick span{font-size:.72rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.lesson-pick select{min-height:48px;font:inherit;font-size:16px;color:var(--ink);background:var(--card);border:1px solid var(--line);border-radius:12px;padding:0 .75rem;max-width:100%;width:100%}
+.lsteps{list-style:none;margin:.3rem 0 0;padding:0}
+.lsteps li{display:flex;gap:.5rem;align-items:flex-start;padding:.22rem 0;font-size:.95rem}
+.lsteps li .tick{flex:0 0 auto;width:1.25rem;height:1.25rem;border-radius:99px;border:1px solid var(--line);text-align:center;line-height:1.15rem;font-size:.8rem;color:var(--good);margin-top:.1rem}
+.lsteps li.ok .tick{border-color:var(--good);background:var(--good-soft)}
+.lsteps li.ok s{color:var(--muted)}
+.lesson-acts{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:.8rem;align-items:center}
+.lesson-acts .pill{text-decoration:none}
+.lesson-acts .note-line{flex-basis:100%;margin:.2rem 0 0}
+.ok-line{color:var(--good);font-weight:700;margin:.7rem 0 0}
+.lessons-wrap{display:grid;gap:1rem;grid-template-columns:1fr}
+@media (min-width:820px){.lessons-wrap{grid-template-columns:1fr 1fr;align-items:start}}
+.ladder-box{padding:.9rem 1rem 1rem;margin:1rem 0 .4rem}
+.ladder{list-style:none;margin:.4rem 0 0;padding:0;display:flex;flex-direction:column;gap:.3rem}
+.ladder li{border:1px solid var(--line);border-radius:10px;padding:.45rem .7rem;display:flex;gap:.6rem;align-items:center;flex-wrap:wrap;min-height:44px;cursor:pointer}
+.ladder li:focus-visible{outline:3px solid var(--steel);outline-offset:2px}
+.ladder li.later .lt{color:var(--muted)}
+.ladder li.done .mk{color:var(--good)}
+.ladder li.picked{border-color:var(--steel);background:var(--steel-soft)}
+.ladder .mk{font-size:.68rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--steel);min-width:5.6rem}
+.ladder .lt{font-weight:600}
+.lab-lesson{margin-top:1rem}
 </style>
 </head>
 <body>
@@ -178,7 +206,7 @@ body>.wrap>header:first-child,.wrap>header.no-print:first-child{display:none!imp
   <main id="view"></main>
   <!-- AOG-SCIPIC-PANEL-V1 -->
   <details class="pg no-print" id="pgPanel">
-    <summary><span class="chev">&#9656;</span>Picture guide<span class="pgsub">Every mission in pictures &#183; prints on 9 pages</span></summary>
+    <summary><span class="chev">&#9656;</span>Picture guide<span class="pgsub">Every lesson in pictures &#183; prints on 9 pages</span></summary>
     <div class="pgbody">
       <iframe id="pgFrame" data-src="/telescope-guide?embed=1" title="The Telescope, in pictures" loading="lazy"></iframe>
     </div>
@@ -218,13 +246,13 @@ const STR = {
   sun:{en:"No filter on the front of the tube. An unfiltered Sun burns the eye, so the cap stays. A filter that screws into the eyepiece can crack. The safe one goes on the front.",es:"No hay filtro al frente del tubo. Un Sol sin filtro quema el ojo, así que la tapa se queda. Un filtro que se enrosca en el ocular se puede romper. El seguro va al frente."},
   filter:{en:"Solar filter",es:"Filtro solar"}, none:{en:"None",es:"Ninguno"}, front:{en:"Front",es:"Al frente"},
   practical:{en:"Bench practical",es:"Práctica de mesa"},
-  teach:{en:"Missions",es:"Misiones"},
+  teach:{en:"Lessons",es:"Lecciones"},
   teachLock:{en:"Locked",es:"Cerradas"},
   teachOpen:{en:"Open",es:"Abiertas"},
-  teachLocked:{en:"Locked. Each mission opens the next control.",es:"Cerradas. Cada misión abre el control siguiente."},
+  teachLocked:{en:"Locked. Each lesson opens the next control.",es:"Cerradas. Cada lección abre el control siguiente."},
   teachOpenNote:{en:"Open. Every control is on the bench. Lock this before a student sits down.",es:"Abiertas. Todos los controles están en la mesa. Ciérralas antes de que se siente un estudiante."},
-  hint:{en:"Six missions. Each one opens the next. The last one is the ceiling: larger is not finer.",es:"Seis misiones. Cada una abre la siguiente. La última es el techo: más grande no es más fino."},
-  done:{en:"Six missions done. You read 1.3″. The lander was never in this glass.",es:"Seis misiones hechas. Leíste 1.3″. El módulo lunar nunca estuvo en este vidrio."},
+  hint:{en:"Six lessons. Each one opens the next. The last one is the ceiling: larger is not finer.",es:"Seis lecciones. Cada una abre la siguiente. La última es el techo: más grande no es más fino."},
+  done:{en:"Six lessons done. You read 1.3″. The lander was never in this glass.",es:"Seis lecciones hechas. Leíste 1.3″. El módulo lunar nunca estuvo en este vidrio."},
   fineHint:{en:"The fine knob is under the circle. Changing the eyepiece throws the focus off.",es:"El micrométrico está debajo del círculo. Cambiar el ocular saca el foco."},
   moon:{en:"Moon",es:"Luna"}, jupiter:{en:"Jupiter",es:"Júpiter"}, saturn:{en:"Saturn",es:"Saturno"},
   orion:{en:"Orion",es:"Orión"}, pleiades:{en:"Pleiades",es:"Pléyades"}, albireo:{en:"Albireo",es:"Albireo"}, pair:{en:"The pair",es:"El par"},
@@ -1324,20 +1352,79 @@ function missionActs(i){
   return "";
 }
 function mark(id){ return S.missions[id]?"✓":""; }
-function practicalCard(){
-  const step=stairNow(), done=step>=STAIR.length;
-  return `<div class="card practical-box">
-    <p class="tiny">${t("practical")}</p>
-    <p class="note-line">${t("hint")}</p>
-    <ol class="stair">${STAIR.map((m,i)=>{
-      const state=i<step?"done":i===step?"now":"later";
-      const title=S.lang==="es"?m.es:m.en;
-      if (state!=="now") return `<li class="${state}"><p class="mk">${S.lang==="es"?"Misión":"Mission"} ${i+1}${state==="done"?" · ✓":""}</p><h3>${title}</h3></li>`;
-      const steps=`<ol>${m.steps.map(id=>`<li class="step"><span style="width:1.05rem;color:var(--good)">${mark(id)}</span><span style="${S.missions[id]?"text-decoration:line-through;color:var(--muted)":""}">${S.lang==="es"?STEP[id].es:STEP[id].en}</span></li>`).join("")}</ol>`;
-      return `<li class="now"><p class="mk">${S.lang==="es"?"Misión":"Mission"} ${i+1}</p><h3>${title}</h3><p class="note-line" style="margin:0">${S.lang==="es"?m.blurb_es:m.blurb_en}</p>${steps}<div class="do">${missionActs(i)}</div></li>`;
-    }).join("")}</ol>
-    ${done?`<p class="ok">${t("done")}</p>`:""}
-  </div>`;
+function practicalCard(){ return lessonBoxHtml(true); }
+/* ══ AOG-SCOPE-LESSONS-V1 (2026-09-27) — Jimmy: "The missions should be called the lessons and mimic the
+   beautiful set up that THE DRUM MACHINE LESSON HAS." The drum machine's Lessons view, built on this page's
+   own STAIR, STEP and S.missions (names kept so saved progress stays). The picked lesson is the shaded one. ══ */
+const LPICK_KEY="aog.tele.pick";
+let LPICK=null;
+try{ const v=localStorage.getItem(LPICK_KEY); if(v!=null&&v!==""&&!isNaN(+v)) LPICK=+v; }catch(e){}
+const LSTR={
+  lessonsNav:{en:"Lessons",es:"Lecciones"},
+  lessonsLead:{en:"Six lessons. Pick one, then try its steps at the eyepiece. Each step ticks itself when you do it.",es:"Seis lecciones. Elige una y prueba sus pasos en el ocular. Cada paso se marca solo cuando lo haces."},
+  lessonPick:{en:"Which lesson?",es:"¿Qué lección?"},
+  lessonK:{en:"Lesson",es:"Lección"},
+  lessonsAll:{en:"All 6 lessons",es:"Las seis lecciones"},
+  doneMark:{en:"done",es:"lista"},
+  next:{en:"Next lesson",es:"Siguiente lección"},
+  toLab:{en:"Try it at the eyepiece",es:"Pruébala en el ocular"},
+  toHome:{en:"Back to the bench",es:"Volver a la mesa"},
+  wait:{en:"Finish lesson {n} first. Each lesson opens the next.",es:"Termina primero la lección {n}. Cada lección abre la siguiente."}
+};
+function lt(k){ const o=LSTR[k]; return o?o[S.lang==="es"?"es":"en"]:k; }
+function lessonDone(m){ return m.steps.every(id=>S.missions[id]); }
+function lessonNow(){ return stairNow(); }
+function lessonPicked(){ const n=lessonNow(); if(LPICK==null||LPICK<0||LPICK>=STAIR.length) return Math.min(n,STAIR.length-1); return LPICK; }
+function setLessonPick(i){ LPICK=Math.max(0,Math.min(STAIR.length-1,+i||0)); try{ localStorage.setItem(LPICK_KEY,String(LPICK)); }catch(e){} }
+function lessonSelect(){
+  const p=lessonPicked();
+  return `<label class="lesson-pick"><span>${lt("lessonPick")}</span><select id="lessonPick">${STAIR.map((m,i)=>
+    `<option value="${i}"${i===p?" selected":""}>${i+1} · ${S.lang==="es"?m.es:m.en}${lessonDone(m)?" ✓":""}</option>`).join("")}</select></label>`;
+}
+function lessonCard(inLab){
+  const p=lessonPicked(), m=STAIR[p], now=lessonNow(), es=S.lang==="es";
+  const done=lessonDone(m), allDone=now>=STAIR.length;
+  const steps=`<ol class="lsteps">${m.steps.map(id=>{ const ok=!!S.missions[id], w=es?STEP[id].es:STEP[id].en;
+    return `<li class="${ok?"ok":""}"><span class="tick" aria-hidden="true">${ok?"✓":""}</span><span>${ok?`<s>${w}</s>`:w}</span></li>`; }).join("")}</ol>`;
+  const waiting=(typeof missionsOpen==="function" && !missionsOpen() && p>now)?`<p class="note-line">${lt("wait").replace("{n}",now+1)}</p>`:"";
+  const acts=inLab
+    ? `${(typeof missionActs==="function"?missionActs(p):"")}${done && p<STAIR.length-1?`<button type="button" class="pill" data-lesson-next="1">${lt("next")} →</button>`:""}`
+    : `<a class="pill btn-steel" href="#lab">${lt("toLab")} →</a>${done && p<STAIR.length-1?`<button type="button" class="pill" data-lesson-next="1">${lt("next")} →</button>`:""}`;
+  return `<p class="kicker">${lt("lessonK")} ${p+1}${done?` · ✓ ${lt("doneMark")}`:""}</p>
+    <h3>${es?m.es:m.en}</h3>
+    <p class="muted" style="margin:.1rem 0 .4rem">${es?m.blurb_es:m.blurb_en}</p>
+    ${steps}${waiting}
+    <div class="lesson-acts${inLab?" do":""}">${acts}</div>
+    ${allDone?`<p class="ok-line">${t("done")}</p>`:""}`;
+}
+function lessonBoxHtml(inLab){ return `<div class="card lesson-box${inLab?" lab-lesson practical-box":""}" id="lessonBox">${lessonSelect()}${lessonCard(inLab)}</div>`; }
+function ladderHtml(){
+  const now=lessonNow(), p=lessonPicked();
+  return STAIR.map((m,i)=>{
+    const done=lessonDone(m), cls=done?"done":(i===now?"now":"later");
+    return `<li class="${cls}${i===p?" picked":""}" data-pick="${i}" role="button" tabindex="0"${i===p?' aria-current="true"':""}><span class="mk">${lt("lessonK")} ${i+1}${done?" · ✓":""}</span><span class="lt">${S.lang==="es"?m.es:m.en}</span></li>`;
+  }).join("");
+}
+function lessonsView(){
+  return `<p class="kicker">${lt("lessonsNav")}</p>
+    <h1>${lt("lessonsNav")}</h1>
+    <p class="lead">${lt("lessonsLead")}</p>
+    <div class="lessons-wrap">
+      ${lessonBoxHtml(false)}
+      <div class="card ladder-box"><p class="tiny">${lt("lessonsAll")}</p><ol class="ladder" id="lessonLadder">${ladderHtml()}</ol>
+        <div class="lesson-acts"><a class="pill" href="#home">${lt("toHome")}</a></div></div>
+    </div>`;
+}
+function bindLessonBox(root){
+  root=root||document;
+  const sel=root.querySelector("#lessonPick");
+  if(sel) sel.onchange=()=>{ setLessonPick(sel.value); paint(); const s=document.getElementById("lessonPick"); if(s) s.focus(); };
+  root.querySelectorAll("[data-lesson-next]").forEach(b=>b.onclick=()=>{ setLessonPick(lessonPicked()+1); paint(); });
+  root.querySelectorAll("[data-pick]").forEach(li=>{
+    const go=()=>{ setLessonPick(li.getAttribute("data-pick")); if(li.hasAttribute("data-open")) location.hash="lessons"; else paint(); };
+    li.onclick=go;
+    li.onkeydown=e=>{ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); go(); } };
+  });
 }
 function knob(id,label,val){
   const show=id==="eyeTwist"?Math.round(val/100*360)+"°":Math.round(val);
@@ -1345,12 +1432,12 @@ function knob(id,label,val){
 }
 function pageHome(){
   /* AOG-TELE-HOME-V2 (2026-09-26) — Jimmy: "the telescope needs to look better, yuck." The same welcome the
-     microscope has: the instrument on the left, doors on the right, the missions as a stair, the manual below. */
+     microscope has: the instrument on the left, doors on the right, the lessons as a ladder, the manual below. */
   const done=STAIR.reduce((n,m)=>n+m.steps.filter(id=>S.missions[id]).length,0);
   const total=STAIR.reduce((n,m)=>n+m.steps.length,0), step=stairNow(), es=S.lang==="es";
   const cards=[
     ["lab",t("lab"),es?"Un campo de visión vivo en un refractor de 90 mm. La Luna, Júpiter, Saturno, Orión, las Pléyades, una estrella doble — y el techo.":"A live field of view on a 90 mm refractor. The Moon, Jupiter, Saturn, Orion, the Pleiades, a double star — and the ceiling.",t("open"),true],
-    ["lab",es?"Las misiones":"The missions",es?`${done} de ${total} pasos hechos · misión ${Math.min(step+1,STAIR.length)} de ${STAIR.length}`:`${done} of ${total} steps done · mission ${Math.min(step+1,STAIR.length)} of ${STAIR.length}`,es?"Seguir":"Continue",false]
+    ["lessons",es?"Las lecciones":"The lessons",es?`${done} de ${total} pasos hechos · lección ${Math.min(step+1,STAIR.length)} de ${STAIR.length}`:`${done} of ${total} steps done · lesson ${Math.min(step+1,STAIR.length)} of ${STAIR.length}`,es?"Seguir":"Continue",false]
   ];
   return `<div class="grid-home">
       <div class="card" style="padding:1rem">
@@ -1367,8 +1454,8 @@ function pageHome(){
         <p style="margin:.4rem 0 .6rem">${c[2]}</p>
         <p class="muted" style="font-size:.9rem">${c[3]} ›</p>
       </a>`).join("")}
-      <div class="card" style="padding:1rem 1.2rem"><p class="kicker">${es?"Las seis misiones":"The six missions"}</p>
-        <ol class="stair" style="margin-top:.6rem">${STAIR.map((m,i)=>{ const st=i<step?"done":i===step?"now":"later"; return `<li class="${st}"><p class="mk" style="margin:0;font-size:.72rem;color:var(--muted)">${es?"Misión":"Mission"} ${i+1}${st==="done"?" · ✓":""}</p><h3 style="margin:.1rem 0 0;font-size:1rem">${es?m.es:m.en}</h3></li>`; }).join("")}</ol>
+      <div class="card" style="padding:1rem 1.2rem"><p class="kicker">${es?"Las seis lecciones":"The six lessons"}</p>
+        <ol class="ladder" style="margin-top:.6rem">${ladderHtml().replace(/data-pick=/g,"data-open data-pick=")}</ol>
       </div></div>
     </div>`;
 }
@@ -1600,7 +1687,7 @@ function centerTarget(id){
 function paint(){
   cancelAnimationFrame(eyeRaf);
   const h=(location.hash||"#home").replace("#","");
-  S.page=h==="lab"?"lab":"home";
+  S.page=h==="lab"?"lab":h==="lessons"?"lessons":"home";
   document.documentElement.lang=S.lang;
   document.documentElement.setAttribute("data-theme", S.theme);
   document.documentElement.classList.toggle("dark", S.theme==="dark");
@@ -1609,10 +1696,11 @@ function paint(){
   document.getElementById("langBtn").textContent=S.lang==="es"?"EN":"ES";
   document.getElementById("themeBtn").textContent=S.theme==="dark"?t("light"):t("dark");
   document.getElementById("foot").textContent=t("foot");
-  document.getElementById("nav").innerHTML=[["home","home"],["lab","lab"]].map(([id,k])=>`<a href="#${id}" class="${S.page===id?"on":""}">${t(k)}</a>`).join("")
+  document.getElementById("nav").innerHTML=[["home","home"],["lab","lab"],["lessons","lessons"]].map(([id,k])=>`<a href="#${id}" class="${S.page===id?"on":""}">${k==="lessons"?lt("lessonsNav"):t(k)}</a>`).join("")
     +`<a class="sep" href="/telescope-guide">${S.lang==="es"?"Guía en imágenes":"Picture guide"}</a><a class="sep" href="/microscope">${S.lang==="es"?"El microscopio":"The microscope"}</a>`;
   const view=document.getElementById("view");
-  view.innerHTML=S.page==="lab"?pageLab():pageHome();
+  view.innerHTML=S.page==="lab"?pageLab():S.page==="lessons"?lessonsView():pageHome();
+  bindLessonBox(view);
   if (S.page!=="lab") return;
   startEye(); tick();
   view.querySelectorAll("[data-act]").forEach(b=>b.onclick=()=>{
@@ -1654,9 +1742,9 @@ function paint(){
       document.querySelectorAll(".fieldnote").forEach(el=>{ el.textContent=fieldNote(); });
       tick();
     };
-    inp.onchange=()=>{ if(stairNow()!==S.lastStair) paint(); };
+    inp.onchange=()=>{ if(stairNow()!==S.lastStair || JSON.stringify(S.missions)!==S.lastSig) paint(); };
   });
-  S.lastStair=stairNow();
+  S.lastStair=stairNow(); S.lastSig=JSON.stringify(S.missions);
 }
 document.getElementById("langBtn").onclick=()=>{ S.lang=S.lang==="en"?"es":"en"; persist(); paint(); };
 document.getElementById("themeBtn").onclick=()=>{ S.theme=S.theme==="dark"?"light":"dark"; persist(); paint(); };

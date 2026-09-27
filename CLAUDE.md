@@ -44,6 +44,13 @@ PRESENT AND FUTURE." Every page, now and every page added later:
 - No endless animations, nothing that moves on its own, no surprise sounds.
 - Neuro-affirming words: describe what a learner can do and what helps; never
   deficit labels.
+- No page-change fade or flash (Jimmy, 2026-09-27). `@view-transition` stays
+  `navigation: none` in `aog-smooth.css`; a new page simply appears.
+- Pages show at 85% on a computer (`aog-calm.css`), except pages with a canvas,
+  which draw at full size so a pen lands exactly under the finger. Keep it so.
+- A row of grade buttons (the "Every day" strip, class `daily`) sits in one even
+  row on an iPad or computer; the shared rule in `aog-calm.css` does it. Reuse
+  that markup for new subjects.
 
 ## Plain words (standing order from Jimmy, 2026-09-26)
 
