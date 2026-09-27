@@ -8,7 +8,8 @@
  * not run on this file. Forget the bump and returning visitors keep the stale
  * page from their cache.
  */
-const CACHE = 'aog-cache-2026.09.27.m7070'   // HOME: YOUR WINDOW REMOVED (Jimmy). The sketched glass window stays. previous: m7069
+const CACHE = 'aog-cache-2026.09.27.m7071'   // HIGHLIGHTS: tap one for Remove / Add a note / Close; My notes removes any one, or clears all. previous: m7070
+// previous: HOME: YOUR WINDOW REMOVED (Jimmy). The sketched glass window stays. previous: m7069
 // previous: DAILY DRAFTS BOOKSHELF: each subject a pencil-lined book on a wooden shelf; the chosen one is lifted off. previous: m7068
 // previous: SKETCH EVERYWHERE: every page swaps emoji for pencil drawings (770), old colour banners and bench icons wear the pencil, Start Here scenes hatched. previous: m7067
 // previous: THE SKETCH PAD: pencil drawings replace card and slip emoji (721 drawings), spiral-bound study cards, Foundry cards and Daily Drafts sheets, pencil drawings in room, microscope, telescope and worksheet mastheads. previous: m7066
