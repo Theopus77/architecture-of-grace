@@ -1,7 +1,7 @@
 /* FCS Unit 4 "A Job Done to the End" — pencil still life: a clipboard with a checklist where
    every box is ticked, leaning on a cleaning bucket with a sponge on its rim. */
-#define CAM_POS vec3(-0.30,0.36,-0.84)
-#define CAM_TGT vec3(-0.05,0.05,0.09)
+#define CAM_POS vec3(-0.4848,0.3357,-0.8038)
+#define CAM_TGT vec3(-0.2336,0.0242,0.1308)
 #define CAM_FOV 30.
 #define SUN_DIR vec3(-.65,.85,-.3)
 #define MAXT 8.
