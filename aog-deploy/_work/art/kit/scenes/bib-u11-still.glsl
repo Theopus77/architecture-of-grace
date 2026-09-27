@@ -1,6 +1,6 @@
 /* Bible Unit 11 "The History Books and the Ancient Near East" - a broken inscribed stone, potsherds and an archaeologist's trowel. */
-#define CAM_POS vec3(-0.6107,0.7316,-1.4044)
-#define CAM_TGT vec3(-0.3774,-0.0010,0.1445)
+#define CAM_POS vec3(-0.6640,0.8000,-1.5154)
+#define CAM_TGT vec3(-0.4124,0.0100,0.1550)
 #define CAM_FOV 30.
 #define SUN_DIR vec3(-.68,.85,-.3)
 #define MAXT 8.
@@ -172,13 +172,16 @@ float t_fish(vec3 q){ vec3 c=q-vec3(0,.016,0); if(length(c.xz-vec2(.048,.007))<.
 float o_coin(vec3 q){ float d=sdCylY(q-vec3(0,.003,0),.022,.003)-.0006; d=min(d,max(abs(length(q.xz)-.021)-.0015,abs(q.y-.004)-.0028)); return d; }
 float t_coin(vec3 q){ float r=length(q.xz); float a=atan(q.z,q.x); if(r>.012&&r<.017&&fract(a*14./6.2832)<.45) return .3; if(r<.006) return .35; return .55; }
 /* leather purse: a pinched sack with a drawstring */
-float o_purse(vec3 q){ float y=q.y; float r=.055*sin(3.1416*clamp(y/.1,0.,1.)*.75)+.01; r=y>.075?.018+.03*smoothstep(.09,.12,y):r;
-  float d=(length(q.xz*vec2(1.,1.2))-r)*.6; d=max(d,max(-y,y-.12)); d=min(d,sdTorus(q-vec3(0,.078,0),.02,.004)); return d+.002*fbm3(q*90.); }
+float o_purse(vec3 q){ float body=sdEll(q-vec3(0,.045,0),vec3(.062,.047,.056));
+  float neck=sdCylY(q-vec3(0,.095,0),.016,.012); float a=atan(q.z,q.x);
+  float ruff=sdCone(q-vec3(0,.12,0),.016,.03+.006*sin(a*9.),.014); ruff=max(ruff,-sdCone(q-vec3(0,.125,0),.01,.025,.014));
+  float d=smin(smin(body,neck,.02),ruff,.006); d=min(d,sdTorus(q-vec3(0,.097,0),.018,.004));
+  d=min(d,sdCapsule(q,vec3(.018,.097,0),vec3(.05,.06,-.03),.0025)); return d+.0015*fbm3(q*90.); }
 float t_purse(vec3 q){ return abs(q.y-.078)<.006?.25:.45; }
 /* ------------ broken stone stele with rounded top, standing, face toward -z ------------ */
 float o_stele(vec3 q){ vec3 c=q-vec3(0,.13,0); float d=sdRBox(c,vec3(.085,.13,.02),.006);
   d=min(d,max(sdCylZ(c-vec3(0,.13,0),.085,.02)-.004,-c.y+.13));
-  float brk=dot(c,normalize(vec3(.8,.6,0)))-.06+.012*fbm(c.xy*60.); d=max(d,brk);
+  float brk=dot(c,normalize(vec3(.75,.66,0)))-.135+.012*fbm(c.xy*60.); d=max(d,brk);
   d=max(d,-(abs(c.z+.02)-.002)*0.-1e5); d+=.0015*fbm3(q*80.);
   return d; }
 float t_stele(vec3 q){ vec3 c=q-vec3(0,.13,0); if(c.z<-.017&&abs(c.x)<.07&&c.y<.12&&c.y>-.1&&fract(c.y/.017)<.22) return .35; return .55; }
