@@ -1,7 +1,7 @@
 /* Spanish Unit 13 "The Present Tense" — pencil still life of things people use while they do
    something now: a soccer ball, a coach's whistle on its cord, and a sports water bottle. */
-#define CAM_POS vec3(-0.30,0.36,-0.84)
-#define CAM_TGT vec3(-0.05,0.05,0.09)
+#define CAM_POS vec3(-0.5644,0.3121,-0.8600)
+#define CAM_TGT vec3(-0.2973,-0.0191,0.1335)
 #define CAM_FOV 30.
 #define SUN_DIR vec3(-.65,.85,-.3)
 #define MAXT 8.
