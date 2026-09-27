@@ -1,6 +1,6 @@
 /* Bible Unit 18 "The Bible in Culture" - a stack of books for literature, a judge's gavel for law and a paint brush for art. */
-#define CAM_POS vec3(-0.4660,0.4610,-1.0380)
-#define CAM_TGT vec3(-0.2952,-0.0759,0.0967)
+#define CAM_POS vec3(-0.4791,0.5650,-1.3066)
+#define CAM_TGT vec3(-0.2698,-0.0932,0.0845)
 #define CAM_FOV 30.
 #define SUN_DIR vec3(-.68,.85,-.3)
 #define MAXT 8.
@@ -368,17 +368,20 @@ float t_torch2(vec3 q){ if(q.y>.238) return fract(q.y/.008)<.4?.2:.4; if(q.y<.03
 float o_bigflame(vec3 q){ return o_flame(q/2.2)*2.2; }
 float t_bigflame(vec3 q){ return .97; }
 /* ---- round 3 ---- */
-float o_doorpost(vec3 q){ float d=sdRBox(q-vec3(0,.18,0),vec3(.05,.18,.04),.004); d=min(d,sdRBox(q-vec3(0,.012,0),vec3(.07,.012,.06),.004)); return d; }
+float o_doorpost(vec3 q){ float d=sdRBox(q-vec3(0,.12,0),vec3(.05,.12,.04),.004); d=min(d,sdRBox(q-vec3(0,.012,0),vec3(.07,.012,.06),.004)); return d; }
 float t_doorpost(vec3 q){ return .5+.15*step(.5,fract(q.y*70.+sin(q.x*60.)*1.5)); }
-vec3 mzQ(vec3 q){ vec3 c=q-vec3(0,.2,-.052); c.xy=rot(.35)*c.xy; return c; }
+vec3 mzQ(vec3 q){ vec3 c=q-vec3(0,.13,-.052); c.xy=rot(.35)*c.xy; return c; }
 float o_mezuzah2(vec3 q){ vec3 c=mzQ(q); float d=sdRBox(c,vec3(.014,.075,.012),.009); d=min(d,length(c-vec3(0,.06,-.009))-.007); return d; }
 float t_mezuzah2(vec3 q){ vec3 c=mzQ(q); if(abs(c.x)<.01&&c.y<.045&&c.y>-.06&&fract(c.y/.014)<.25) return .3; return .45; }
+float o_gavel2(vec3 q){ vec3 c=q-vec3(0,.03,0); float r=.028-.004*smoothstep(.02,.04,abs(c.z)); float head=sdCylZ(c,r,.042)-.002;
+  head=min(head,sdCylZ(c,.031,.006)); float h=sdCapsule(q,vec3(.02,.03,0),vec3(.19,.012,.0),.008-.002*clamp(q.x/.19,0.,1.)); return min(head,h); }
+float t_gavel2(vec3 q){ vec3 c=q-vec3(0,.03,0); if(abs(c.x)<.035&&abs(c.z)<.006) return .25; if(abs(c.x)<.035&&abs(abs(c.z)-.042)<.004) return .3; return .45+.12*sin(q.x*300.+sin(q.z*90.)*3.); }
 
 vec3 Q3(vec3 p){  vec3 q=p-vec3(0.02,0.,0.06); q.xz=rot(0.1)*q.xz; q/=1.; return q; }
 vec3 Q4(vec3 p){  vec3 q=p-vec3(0.03,0.04,0.055); q.xz=rot(-0.08)*q.xz; q/=1.; return q; }
 vec3 Q5(vec3 p){  vec3 q=p-vec3(0.015,0.076,0.06); q.xz=rot(0.2)*q.xz; q/=1.; return q; }
 vec3 Q6(vec3 p){  vec3 q=p-vec3(0.02,0.108,0.06); q.xz=rot(0.02)*q.xz; q/=1.; return q; }
-vec3 Q7(vec3 p){  vec3 q=p-vec3(0.3,0.,-0.04); q.xz=rot(0.5)*q.xz; q/=1.5; return q; }
+vec3 Q7(vec3 p){  vec3 q=p-vec3(0.3,0.,-0.04); q.xz=rot(-0.35)*q.xz; q/=1.5; return q; }
 vec3 Q8(vec3 p){  vec3 q=p-vec3(0.33,0.,0.14); q/=1.4; return q; }
 vec3 Q9(vec3 p){  vec3 q=p-vec3(-0.22,0.,-0.12); q.xz=rot(-0.3)*q.xz; q/=1.5; return q; }
 vec2 map(vec3 p){
@@ -388,7 +391,7 @@ vec2 map(vec3 p){
   { r=U(r,o_bookc(Q4(p),vec3(0.09,0.018,0.125))*1.,4.); }
   { r=U(r,o_bookc(Q5(p),vec3(0.095,0.016,0.12))*1.,5.); }
   { r=U(r,o_bookc(Q6(p),vec3(0.08,0.015,0.11))*1.,6.); }
-  { r=U(r,o_gavel(Q7(p))*1.5,7.); }
+  { r=U(r,o_gavel2(Q7(p))*1.5,7.); }
   { r=U(r,o_block(Q8(p))*1.4,8.); }
   { r=U(r,o_brush(Q9(p))*1.5,9.); }
   return r; }
@@ -399,7 +402,7 @@ float toneAlb(float id,vec3 p,vec3 n){
   if(id==4.) return t_bookc(Q4(p),vec3(0.09,0.018,0.125));
   if(id==5.) return t_bookc(Q5(p),vec3(0.095,0.016,0.12));
   if(id==6.) return t_bookc(Q6(p),vec3(0.08,0.015,0.11));
-  if(id==7.) return t_gavel(Q7(p));
+  if(id==7.) return t_gavel2(Q7(p));
   if(id==8.) return t_block(Q8(p));
   if(id==9.) return t_brush(Q9(p));
   return .7; }
