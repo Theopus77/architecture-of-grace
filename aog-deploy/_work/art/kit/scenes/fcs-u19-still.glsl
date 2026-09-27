@@ -1,7 +1,7 @@
 /* FCS Unit 19 "Independent Living and Money" — pencil still life: a small wooden model house,
    a ring of house keys with a tag lying in front of it, and a pocket calculator. */
-#define CAM_POS vec3(-0.30,0.36,-0.84)
-#define CAM_TGT vec3(-0.05,0.06,0.09)
+#define CAM_POS vec3(-0.3325,0.2422,-0.6912)
+#define CAM_TGT vec3(-0.1232,-0.0090,0.0875)
 #define CAM_FOV 30.
 #define SUN_DIR vec3(-.65,.85,-.3)
 #define MAXT 8.
