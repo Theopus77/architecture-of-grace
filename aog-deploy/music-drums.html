@@ -378,6 +378,8 @@ button,a,label,input[type=range],.pill,.pad,.platter,canvas{touch-action:manipul
 .ladder li.picked{border-color:var(--steel);background:var(--steel-soft)}
 .ladder .mk{font-size:.68rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--steel);min-width:5.6rem}
 .ladder .lt{font-weight:600}
+.ladder li.lgroup{border:0;padding:.7rem .2rem .1rem}                     /* AOG-DRUM-SONGS-V1: "Songs we make" */
+.ladder li.lgroup .lt{font-size:.8rem;letter-spacing:.12em;text-transform:uppercase;color:var(--steel)}
 </style>
 <link rel="stylesheet" href="/aog-bench.css">
 <script src="aog-handoff.js"></script>
@@ -1786,6 +1788,79 @@ const LSTEP = {
   kickdecay:{en:"Shape the kick's tail with its DECAY slider",es:"Da forma a la cola del bombo con su deslizador DECAY"},
   bounce:{en:"Press TO THE DECKS (full bench)",es:"Pulsa A LOS PLATOS (banco completo)"}
 };
+/* ══ AOG-DRUM-SONGS-V1 (2026-09-27) — Jimmy: "The drum machine should have [us] make 17
+   songs together!" Lessons 18–34, "Songs we make": each one is a whole, original beat a
+   class builds together, from a march to a class song. A song lists its tempo and swing
+   and, row by row, the exact boxes that are on. The steps tick only while that song is
+   the lesson you picked, and "play" ticks only when the whole song is on the grid.
+   Boxes are written 1–16 here, as the learner counts them. ═════════════════════════ */
+const SONGS = [{"n": 18, "en": "A steady march", "es": "Una marcha firme", "bpm": 100, "swing": 50, "blurb_en": "Marching bands keep a whole parade in step. A kick on every beat is like feet on the ground.", "blurb_es": "Las bandas de marcha mantienen a todo el desfile al paso. Un bombo en cada pulso es como los pies en el suelo.", "tog_en": "Everyone marches in place. Your feet land with the kick.", "tog_es": "Todos marchan en su lugar. Los pies caen con el bombo.", "steps": [{"k": "feel"}, {"k": "rows", "rows": {"kick": [1, 5, 9, 13]}}, {"k": "rows", "rows": {"snare": [5, 13, 15, 16]}}, {"k": "play"}], "kw": [["march", "marcha"], ["beat", "pulso"], ["roll", "redoble"]], "q1_en": "Where does your foot land when you march to this beat?", "q1_es": "¿Dónde cae tu pie cuando marchas con este ritmo?", "q2_en": "What do the snares on boxes 15 and 16 do at the end of the bar?", "q2_es": "¿Qué hacen las cajas de los cuadros 15 y 16 al final del compás?"}, {"n": 19, "en": "Rock backbeat", "es": "Contratiempo de rock", "bpm": 112, "swing": 50, "blurb_en": "Rock grew out of blues and rhythm and blues in the 1950s. Its heart is a strong snare on beats 2 and 4.", "blurb_es": "El rock nació del blues y del rhythm and blues en los años 50. Su corazón es una caja fuerte en los pulsos 2 y 4.", "tog_en": "Half the class taps their knees on the kick. The other half claps on the snare.", "tog_es": "La mitad de la clase se toca las rodillas con el bombo. La otra mitad aplaude con la caja.", "steps": [{"k": "feel"}, {"k": "rows", "rows": {"kick": [1, 9, 11], "snare": [5, 13]}}, {"k": "rows", "rows": {"ch": [1, 3, 5, 7, 9, 11, 13, 15]}}, {"k": "play"}], "kw": [["backbeat", "contratiempo"], ["eighth notes", "corcheas"], ["rock", "rock"]], "q1_en": "Which beats does the snare land on? How does that feel in your body?", "q1_es": "¿En qué pulsos cae la caja? ¿Cómo se siente en tu cuerpo?", "q2_en": "What does the extra kick on box 11 add?", "q2_es": "¿Qué agrega el bombo extra del cuadro 11?"}, {"n": 20, "en": "Class clap-along chant", "es": "Canto de aplausos de la clase", "bpm": 96, "swing": 50, "blurb_en": "School chants and playground claps are rhythm everyone can join. It is simple, strong, and loud on the clap.", "blurb_es": "Los cantos de la escuela y los aplausos del recreo son ritmo en el que todos pueden entrar. Es sencillo, fuerte y suena en el aplauso.", "tog_en": "Say a class line on the bell, all together: \"We are here, we are ready.\" Clap with the clap.", "tog_es": "Digan juntos una frase con la campana: \"Aquí estamos, estamos listos.\" Aplaudan con el aplauso.", "steps": [{"k": "feel"}, {"k": "rows", "rows": {"kick": [1, 9]}}, {"k": "rows", "rows": {"clap": [5, 13, 14]}}, {"k": "rows", "rows": {"bell": [1, 5, 9, 13]}}, {"k": "play"}], "kw": [["chant", "canto"], ["clap", "aplauso"], ["call and response", "llamada y respuesta"]], "q1_en": "Write the class line you chanted. Which words land on the bell?", "q1_es": "Escribe la frase que cantó la clase. ¿Qué palabras caen en la campana?", "q2_en": "Why is a clap-along easy for a big group to join?", "q2_es": "¿Por qué es fácil que un grupo grande se una a un canto con aplausos?"}, {"n": 21, "en": "Funk with ghost notes", "es": "Funk con notas fantasma", "bpm": 100, "swing": 54, "blurb_en": "Funk came from US soul bands in the 1960s. Everything locks to beat 1, and quiet snares keep it moving.", "blurb_es": "El funk salió de las bandas de soul de EE. UU. en los años 60. Todo se engancha al pulso 1, y las cajas suaves lo mantienen en movimiento.", "tog_en": "Everyone nods on beat 1. A few learners whisper \"tk\" on the quiet snares.", "tog_es": "Todos asienten en el pulso 1. Algunos susurran \"tk\" en las cajas suaves.", "steps": [{"k": "feel"}, {"k": "rows", "rows": {"kick": [1, 4, 11]}}, {"k": "rows", "rows": {"snare": {"on": [5, 13], "soft": [8, 10, 15]}}}, {"k": "rows", "rows": {"ch": [1, 3, 5, 7, 9, 11, 13, 15]}}, {"k": "play"}], "kw": [["funk", "funk"], ["ghost note", "nota fantasma"], ["the one", "el uno"]], "q1_en": "What happens to the groove if you take the soft snares out?", "q1_es": "¿Qué le pasa al ritmo si quitas las cajas suaves?", "q2_en": "Why do funk players care so much about beat 1?", "q2_es": "¿Por qué a los músicos de funk les importa tanto el pulso 1?"}, {"n": 22, "en": "Boom-bap", "es": "Boom-bap", "bpm": 90, "swing": 63, "blurb_en": "Boom-bap is hip-hop from New York in the late 1980s and 1990s. Boom is the kick, bap is the snare, and swing makes it bounce.", "blurb_es": "El boom-bap es hip-hop de Nueva York de finales de los 80 y los 90. Boom es el bombo, bap es la caja, y el swing lo hace rebotar.", "tog_en": "Say \"boom\" on the kick and \"bap\" on the snare, all together.", "tog_es": "Digan \"boom\" con el bombo y \"bap\" con la caja, todos juntos.", "steps": [{"k": "feel"}, {"k": "rows", "rows": {"kick": [1, 8, 11]}}, {"k": "rows", "rows": {"snare": [5, 13]}}, {"k": "rows", "rows": {"ch": [1, 3, 5, 7, 9, 11, 13, 15]}}, {"k": "play"}], "kw": [["boom-bap", "boom-bap"], ["swing", "swing"], ["sampler", "sampler"]], "q1_en": "Play it at swing 50%, then 63%. What changed?", "q1_es": "Tócalo con swing 50% y luego 63%. ¿Qué cambió?", "q2_en": "Which kick is off the beat? How can you tell?", "q2_es": "¿Qué bombo está fuera del pulso? ¿Cómo lo sabes?"}, {"n": 23, "en": "Reggae one drop", "es": "Reggae one drop", "bpm": 76, "swing": 54, "blurb_en": "The one drop comes from Jamaica in the 1970s. Beat 1 is left open. The kick and rim land together on beat 3.", "blurb_es": "El one drop viene de Jamaica en los años 70. El pulso 1 queda libre. El bombo y el aro caen juntos en el pulso 3.", "tog_en": "Everyone rests on beat 1, then taps the desk together on beat 3.", "tog_es": "Todos descansan en el pulso 1, y luego tocan la mesa juntos en el pulso 3.", "steps": [{"k": "feel"}, {"k": "rows", "rows": {"kick": [9], "rim": [9]}}, {"k": "rows", "rows": {"ch": [3, 7, 11, 15]}}, {"k": "play"}], "kw": [["one drop", "one drop"], ["off-beat", "contratiempo"], ["space", "espacio"]], "q1_en": "How does it feel to leave beat 1 empty?", "q1_es": "¿Cómo se siente dejar vacío el pulso 1?", "q2_en": "The hats sit on the off-beats. What does that do?", "q2_es": "Los charles están en los contratiempos. ¿Qué logran?"}, {"n": 24, "en": "Bossa-style groove", "es": "Ritmo estilo bossa", "bpm": 120, "swing": 50, "blurb_en": "Bossa nova began in Brazil in the late 1950s. A soft, rocking kick and a rim pattern gently pull against each other.", "blurb_es": "La bossa nova nació en Brasil a finales de los 50. Un bombo suave que se mece y un patrón de aro se tiran uno del otro con calma.", "tog_en": "Sway side to side with the kick. A few learners tap the rim pattern with a pencil.", "tog_es": "Mézanse de lado a lado con el bombo. Algunos tocan el patrón del aro con un lápiz.", "steps": [{"k": "feel"}, {"k": "rows", "rows": {"kick": [1, 4, 5, 8, 9, 12, 13, 16]}}, {"k": "rows", "rows": {"rim": [1, 4, 7, 11, 14]}}, {"k": "rows", "rows": {"ch": [1, 3, 5, 7, 9, 11, 13, 15]}}, {"k": "play"}], "kw": [["bossa nova", "bossa nova"], ["rim", "aro"], ["syncopation", "síncopa"]], "q1_en": "The kick comes in pairs. Where are the pairs?", "q1_es": "El bombo viene en pares. ¿Dónde están los pares?", "q2_en": "Which rim hits land between the beats?", "q2_es": "¿Qué golpes de aro caen entre los pulsos?"}, {"n": 25, "en": "Second-line parade", "es": "Desfile second line", "bpm": 96, "swing": 58, "blurb_en": "Second line is the parade drumming of New Orleans. A brass band leads, and the crowd behind it dances along.", "blurb_es": "El second line es el ritmo de desfile de Nueva Orleans. Una banda de metales va delante, y la gente detrás baila con ella.", "tog_en": "The class walks in a line around the room. Wave a hand on every bell.", "tog_es": "La clase camina en fila por el salón. Saluden con la mano en cada campana.", "steps": [{"k": "feel"}, {"k": "rows", "rows": {"kick": [1, 7, 9, 15]}}, {"k": "rows", "rows": {"snare": [4, 5, 8, 11, 13, 16]}}, {"k": "rows", "rows": {"bell": [1, 5, 9, 13]}}, {"k": "play"}], "kw": [["second line", "second line"], ["parade", "desfile"], ["brass band", "banda de metales"]], "q1_en": "Why do you think it is called the \"second line\"?", "q1_es": "¿Por qué crees que se llama \"second line\" (segunda fila)?", "q2_en": "Which snare hits come just before a beat?", "q2_es": "¿Qué golpes de caja llegan justo antes de un pulso?"}, {"n": 26, "en": "Afrobeat-inspired groove", "es": "Ritmo inspirado en el afrobeat", "bpm": 110, "swing": 54, "blurb_en": "Afrobeat grew in Nigeria in the 1970s. It blends West African rhythm with jazz and funk, and the hats keep moving.", "blurb_es": "El afrobeat creció en Nigeria en los años 70. Mezcla ritmo de África occidental con jazz y funk, y los charles no paran.", "tog_en": "Make three groups. One claps the bell, one taps the hats, one stomps the kick.", "tog_es": "Hagan tres grupos. Uno aplaude la campana, otro toca los charles y otro pisa fuerte el bombo.", "steps": [{"k": "feel"}, {"k": "rows", "rows": {"kick": [1, 8, 11], "snare": [5, 13]}}, {"k": "rows", "rows": {"ch": [1, 2, 3, 4, 5, 6, 8, 9, 10, 11, 12, 13, 14, 16], "oh": [7, 15]}}, {"k": "rows", "rows": {"bell": [1, 4, 7, 9, 12]}}, {"k": "play"}], "kw": [["afrobeat", "afrobeat"], ["layers", "capas"], ["bell pattern", "patrón de campana"]], "q1_en": "Listen to just the bell (solo it). Can you clap it?", "q1_es": "Escucha solo la campana (ponla en solo). ¿Puedes aplaudirla?", "q2_en": "Many drums play small parts. How do they fit together?", "q2_es": "Muchos tambores tocan partes pequeñas. ¿Cómo encajan?"}, {"n": 27, "en": "Cumbia-style groove", "es": "Ritmo estilo cumbia", "bpm": 94, "swing": 50, "blurb_en": "Cumbia comes from the Caribbean coast of Colombia. Its scraper plays a \"long, short-short\" shuffle that gets people dancing.", "blurb_es": "La cumbia viene de la costa caribe de Colombia. Su guacharaca toca un \"largo, corto-corto\" que pone a la gente a bailar.", "tog_en": "Everyone says \"chh, chk-chk\" with the hats. Step side to side on the kick.", "tog_es": "Todos dicen \"chh, chk-chk\" con los charles. Den un paso al lado con el bombo.", "steps": [{"k": "feel"}, {"k": "rows", "rows": {"kick": [1, 9]}}, {"k": "rows", "rows": {"rim": [5, 13]}}, {"k": "rows", "rows": {"ch": [1, 3, 4, 5, 7, 8, 9, 11, 12, 13, 15, 16]}}, {"k": "play"}], "kw": [["cumbia", "cumbia"], ["scraper", "guacharaca"], ["shuffle", "vaivén"]], "q1_en": "Say the hat pattern out loud. Where are the \"long\" sounds?", "q1_es": "Di el patrón del charles en voz alta. ¿Dónde están los sonidos \"largos\"?", "q2_en": "How is this beat like the march? How is it different?", "q2_es": "¿En qué se parece este ritmo a la marcha? ¿En qué es distinto?"}, {"n": 28, "en": "House four-on-the-floor", "es": "House de cuatro en el suelo", "bpm": 124, "swing": 50, "blurb_en": "House music began in Chicago in the early 1980s. A kick on every beat keeps the whole room moving together.", "blurb_es": "La música house nació en Chicago a principios de los 80. Un bombo en cada pulso mantiene a todo el salón moviéndose junto.", "tog_en": "Everyone bounces gently on each kick. Say \"tss\" on each open hat.", "tog_es": "Todos rebotan suave en cada bombo. Digan \"tss\" en cada charles abierto.", "steps": [{"k": "feel"}, {"k": "rows", "rows": {"kick": [1, 5, 9, 13]}}, {"k": "rows", "rows": {"clap": [5, 13]}}, {"k": "rows", "rows": {"oh": [3, 7, 11, 15]}}, {"k": "play"}], "kw": [["house", "house"], ["four on the floor", "cuatro en el suelo"], ["open hat", "charles abierto"]], "q1_en": "The march also had a kick on every beat. What makes this one feel like dancing?", "q1_es": "La marcha también tenía un bombo en cada pulso. ¿Qué hace que este se sienta para bailar?", "q2_en": "Where do the open hats sit, and why there?", "q2_es": "¿Dónde están los charles abiertos, y por qué ahí?"}, {"n": 29, "en": "Drum and bass-style fast break", "es": "Break rápido estilo drum and bass", "bpm": 170, "swing": 50, "blurb_en": "Drum and bass came from the UK in the 1990s. The drums run fast on top, while the feel underneath stays slow and deep.", "blurb_es": "El drum and bass viene del Reino Unido en los años 90. Los tambores corren rápido arriba, y abajo la sensación es lenta y profunda.", "tog_en": "Half the class taps the fast hats on their knees. The other half claps slowly, only on the snare.", "tog_es": "La mitad de la clase toca los charles rápidos en las rodillas. La otra mitad aplaude despacio, solo con la caja.", "steps": [{"k": "feel"}, {"k": "rows", "rows": {"kick": [1, 11]}}, {"k": "rows", "rows": {"snare": [5, 13]}}, {"k": "rows", "rows": {"ch": [1, 3, 5, 7, 9, 11, 13, 15]}}, {"k": "play"}], "kw": [["drum and bass", "drum and bass"], ["break", "break"], ["tempo", "tempo"]], "q1_en": "This tempo is 170. Can you feel a slower beat inside it?", "q1_es": "Este tempo es 170. ¿Sientes un pulso más lento adentro?", "q2_en": "Compare it with the rock beat. What moved?", "q2_es": "Compáralo con el ritmo de rock. ¿Qué se movió?"}, {"n": 30, "en": "Trap hats at half time", "es": "Charles de trap a medio tiempo", "bpm": 140, "swing": 50, "blurb_en": "Trap grew in Atlanta in the 2000s. The clap waits for beat 3, so fast hats feel slow and heavy.", "blurb_es": "El trap creció en Atlanta en los años 2000. El aplauso espera al pulso 3, así que los charles rápidos se sienten lentos y pesados.", "tog_en": "Everyone claps only on beat 3. Finger-tap the hat roll at the end of the bar.", "tog_es": "Todos aplauden solo en el pulso 3. Toquen con los dedos el redoble de charles al final del compás.", "steps": [{"k": "feel"}, {"k": "rows", "rows": {"kick": [1, 4, 11]}}, {"k": "rows", "rows": {"clap": [9]}}, {"k": "rows", "rows": {"ch": [1, 3, 5, 7, 9, 11, 13, 14, 15, 16]}}, {"k": "play"}], "kw": [["trap", "trap"], ["half time", "medio tiempo"], ["hat roll", "redoble de charles"]], "q1_en": "Why does one clap per bar make the beat feel slower?", "q1_es": "¿Por qué un solo aplauso por compás hace que el ritmo se sienta más lento?", "q2_en": "Where is the hat roll? What does it lead into?", "q2_es": "¿Dónde está el redoble de charles? ¿A qué lleva?"}, {"n": 31, "en": "Son clave 3-2", "es": "Clave de son 3-2", "bpm": 100, "swing": 50, "blurb_en": "Son clave comes from Cuba. Its five hits, three and then two, are the key the whole band lines up with.", "blurb_es": "La clave de son viene de Cuba. Sus cinco golpes, tres y luego dos, son la llave con la que se alinea toda la banda.", "tog_en": "Everyone claps the clave, three then two. Say \"one, two, three ... one, two.\"", "tog_es": "Todos aplauden la clave, tres y luego dos. Digan \"uno, dos, tres ... uno, dos.\"", "steps": [{"k": "feel"}, {"k": "rows", "rows": {"rim": [1, 4, 7, 11, 13]}}, {"k": "rows", "rows": {"kick": [1, 4, 9, 12]}}, {"k": "rows", "rows": {"bell": [1, 5, 9, 13]}}, {"k": "play"}], "kw": [["clave", "clave"], ["3-2", "3-2"], ["son", "son"]], "q1_en": "Clap the clave. Which side feels busier, the 3 or the 2?", "q1_es": "Aplaude la clave. ¿Qué lado se siente más lleno, el 3 o el 2?", "q2_en": "Why might a whole band need one pattern to line up with?", "q2_es": "¿Por qué una banda entera necesitaría un patrón para alinearse?"}, {"n": 32, "en": "A waltz in 3", "es": "Un vals en 3", "bpm": 90, "swing": 50, "len": 12, "blurb_en": "A waltz counts in 3: ONE, two, three. It became a favourite dance in Vienna, Austria, in the 1800s.", "blurb_es": "Un vals cuenta en 3: UNO, dos, tres. Se volvió un baile favorito en Viena, Austria, en el siglo XIX.", "tog_en": "Everyone counts \"ONE, two, three\" out loud and sways on ONE.", "tog_es": "Todos cuentan \"UNO, dos, tres\" en voz alta y se mecen en UNO.", "steps": [{"k": "len"}, {"k": "feel"}, {"k": "rows", "rows": {"kick": [1], "snare": [5, 9]}}, {"k": "rows", "rows": {"ch": [1, 3, 5, 7, 9, 11]}}, {"k": "play"}], "kw": [["waltz", "vals"], ["3/4 time", "compás de 3/4"], ["downbeat", "primer pulso"]], "q1_en": "Why does the bar need 12 boxes for a waltz?", "q1_es": "¿Por qué el compás necesita 12 cuadros para un vals?", "q2_en": "How is counting in 3 different from counting in 4?", "q2_es": "¿En qué se diferencia contar en 3 de contar en 4?"}, {"n": 33, "en": "A song with parts", "es": "Una canción con partes", "bpm": 104, "swing": 50, "parts": true, "blurb_en": "Real songs have parts. An intro starts it, a verse carries it, a fill turns the corner, and an outro ends it.", "blurb_es": "Las canciones de verdad tienen partes. Una intro la empieza, un verso la lleva, un redoble da la vuelta y un final la cierra.", "tog_en": "Make four groups. Each group builds one part. Stand up when your part plays.", "tog_es": "Hagan cuatro grupos. Cada grupo arma una parte. Pónganse de pie cuando suene su parte.", "steps": [{"k": "rows", "seg": 1, "name_en": "intro", "name_es": "intro", "rows": {"kick": [], "snare": [], "ch": [1, 3, 5, 7, 9, 11, 13, 15]}}, {"k": "rows", "seg": 2, "name_en": "verse", "name_es": "verso", "rows": {"kick": [1, 9], "snare": [5, 13], "ch": [1, 3, 5, 7, 9, 11, 13, 15]}}, {"k": "rows", "seg": 3, "name_en": "fill", "name_es": "redoble", "rows": {"tom": [9, 10, 11, 12], "snare": [13, 14, 15, 16]}}, {"k": "rows", "seg": 4, "name_en": "outro", "name_es": "final", "rows": {"kick": [1], "oh": [1], "snare": []}}, {"k": "trackplay", "track": [1, 2, 2, 3, 4]}], "kw": [["intro", "intro"], ["verse", "verso"], ["outro", "final"]], "q1_en": "Which part was your group's? What did you put in it?", "q1_es": "¿Qué parte fue la de tu grupo? ¿Qué pusieron en ella?", "q2_en": "How does the fill tell listeners something new is coming?", "q2_es": "¿Cómo avisa el redoble que viene algo nuevo?"}, {"n": 34, "en": "Our class song", "es": "La canción de nuestra clase", "bpm": 100, "swing": 50, "parts": true, "free": true, "blurb_en": "Everyone adds something. Each group builds one part, and the machine plays them all as one song.", "blurb_es": "Todos aportan algo. Cada grupo arma una parte, y la máquina las toca todas como una sola canción.", "tog_en": "Each group builds one part. When your part comes round, your group stands and claps along.", "tog_es": "Cada grupo arma una parte. Cuando llega su parte, su grupo se pone de pie y aplaude.", "steps": [{"k": "parts4"}, {"k": "parts4diff"}, {"k": "track8"}, {"k": "trackplay8"}], "kw": [["arrangement", "arreglo"], ["collaboration", "colaboración"], ["song mode", "modo canción"]], "q1_en": "What did your group add to the class song?", "q1_es": "¿Qué aportó tu grupo a la canción de la clase?", "q2_en": "What helped everyone's parts fit together?", "q2_es": "¿Qué ayudó a que las partes de todos encajaran?"}];
+function songBoxes(a, es){
+  if(a.length===1) return (es?"el cuadro ":"box ")+a[0];
+  return (es?"los cuadros ":"boxes ")+a.slice(0,-1).join(", ")+(es?" y ":" and ")+a[a.length-1];
+}
+function songRowSpec(spec){ return Array.isArray(spec)? {on:spec, soft:[]} : {on:spec.on||[], soft:spec.soft||[]}; }
+function songRowText(id, spec, es){
+  const v=VOICES.find(x=>x.id===id), nm=es?v.es:v.en, r=songRowSpec(spec);
+  if(!r.on.length && !r.soft.length) return (es?"Sin ":"No ")+nm.toLowerCase();
+  let s=nm+(es?" en ":" on ")+songBoxes(r.on, es);
+  if(r.soft.length) s+=es?(", y suave en "+songBoxes(r.soft, true)+" (toca tres veces)"):(", plus soft on "+songBoxes(r.soft, false)+" (tap three times)");
+  return s;
+}
+function songStepText(sg, st, es){
+  if(st.k==="feel") return (es?"Tempo ":"Tempo ")+sg.bpm+", swing "+sg.swing+"%";
+  if(st.k==="len") return (es?"Pon el largo en ":"Set the length to ")+sg.len;
+  if(st.k==="play") return es?"Pulsa Tocar y escucha":"Press Play and listen";
+  if(st.k==="rows"){
+    const n=Object.keys(st.rows).length;
+    const body=Object.keys(st.rows).map(id=>songRowText(id, st.rows[id], es)).join(". ");
+    const only=es?(n>1?" (nada más en esas filas)":" (nada más en esa fila)"):(n>1?" (nothing else in those rows)":" (nothing else in that row)");
+    return (st.seg?((es?"Parte ":"Part ")+st.seg+" ("+(es?st.name_es:st.name_en)+"): "):"")+body+only;
+  }
+  if(st.k==="trackplay") return es?("Banco completo: arma la pista "+st.track.join(", ")+" con + SEG, pulsa PLAY TRACK y tócala"):("Full bench: make the track "+st.track.join(", ")+" with + SEG, press PLAY TRACK, and play it");
+  if(st.k==="parts4") return es?"Las partes 1, 2, 3 y 4 tienen cuatro golpes o más cada una":"Parts 1, 2, 3 and 4 each have four or more hits";
+  if(st.k==="parts4diff") return es?"Las partes 1 a 4 son todas distintas":"Parts 1 to 4 are all different from each other";
+  if(st.k==="track8") return es?"Banco completo: una pista de 8 partes o más que usa las partes 1, 2, 3 y 4 (+ SEG)":"Full bench: a track 8 or more parts long that uses parts 1, 2, 3 and 4 (+ SEG)";
+  if(st.k==="trackplay8") return es?"Pulsa PLAY TRACK y toca toda la canción de la clase":"Press PLAY TRACK and play the whole class song";
+  return "";
+}
+/* the new detector: is this row exactly these boxes (and soft where it says soft)? */
+function songRowOk(grid, id, spec){
+  const r=songRowSpec(spec), row=(grid&&grid[id])||[];
+  for(let i=0;i<16;i++){
+    const b=i+1, want=r.on.indexOf(b)>=0 || r.soft.indexOf(b)>=0;
+    if(!!row[i]!==want) return false;
+    if(r.soft.indexOf(b)>=0 && row[i]!==3) return false;
+  }
+  return true;
+}
+function songSegGrid(n){ const sg=S.segs&&S.segs[n-1]; return sg? sg.grid : null; }
+function songParts4(){ return !!S.segs && [0,1,2,3].every(i=>S.segs[i] && hitsIn(S.segs[i].grid)>=4); }
+function songCheck(sg, st){
+  switch(st.k){
+    case "feel": return S.bpm===sg.bpm && snapSwing(S.swing)===Math.round(sg.swing)/100;
+    case "len": return segLen()===sg.len;
+    case "rows": { const g=st.seg?songSegGrid(st.seg):S.grid; return !!g && Object.keys(st.rows).every(id=>songRowOk(g, id, st.rows[id])); }
+    case "play": return sg.steps.every(o=>o.k==="play" || songCheck(sg, o));
+    case "trackplay": return S.trackOn && S.track.map(i=>i+1).join(",")===st.track.join(",") && sg.steps.every(o=>o.k!=="rows" || songCheck(sg, o));
+    case "parts4": return songParts4();
+    case "parts4diff": return songParts4() && new Set([0,1,2,3].map(i=>JSON.stringify(S.segs[i].grid))).size===4;
+    case "track8": return S.track.length>=8 && [0,1,2,3].every(i=>S.track.indexOf(i)>=0);
+    case "trackplay8": return S.trackOn && songCheck(sg,{k:"track8"}) && songCheck(sg,{k:"parts4diff"});
+  }
+  return false;
+}
+const SONG_PLAYED={play:1, trackplay:1, trackplay8:1};     /* these tick only when the music starts */
+SONGS.forEach(sg=>{
+  const ids=sg.steps.map((st,j)=>"s"+sg.n+"_"+(j+1));
+  sg.steps.forEach((st,j)=>{ LSTEP[ids[j]]={en:songStepText(sg, st, false), es:songStepText(sg, st, true)}; });
+  LESSONS.push({id:"l"+sg.n, en:sg.en, es:sg.es, blurb_en:sg.blurb_en, blurb_es:sg.blurb_es, steps:ids, song:sg});
+});
+function songPicked(){ const m=LESSONS[lessonPicked()]; return (m && m.song)? m : null; }
+function songTick(played){
+  const m=songPicked(); if(!m) return;
+  m.song.steps.forEach((st,j)=>{ if(!!SONG_PLAYED[st.k]===!!played && songCheck(m.song, st)) LS.done[m.steps[j]]=true; });
+}
 const LKEY="aog.drums.lessons.v1";
 const LS={done:{}, pick:null, title:""};
 try{ const r=JSON.parse(localStorage.getItem(LKEY)||"null"); if(r){ LS.done=r.done||{}; LS.pick=(typeof r.pick==="number")?r.pick:null; LS.title=r.title||"";
@@ -1873,6 +1948,7 @@ function tickLessons(){
   if(lv("kick")>=0.8 && VOICES.every(v=>v.id==="kick"||lv(v.id)<lv("kick"))) d.kicktop=true;
   if(lv("ch")<=0.605) d.hatdown=true;
   if(S.chan.kick && Math.abs((S.chan.kick.decay==null?0.85:S.chan.kick.decay)-0.85)>0.03) d.kickdecay=true;
+  songTick(false);                                                   /* AOG-DRUM-SONGS-V1 */
   saveLessons();
 }
 /* the steps that are a thing you did — set by the machine when it happens */
@@ -1896,6 +1972,7 @@ function lessonPlayed(){
   if(S.bpm>=136 && S.bpm<=175 && rowHas("kick",[0,2,10]) && rowHas("snare",[4,12])) d.playamen=true;
   if(segLen()===12 && [0,3,6,9].every(i=>(S.grid.kick||[])[i]) && [0,4,8].every(i=>(S.grid.bell||[])[i])) d.playpoly=true;
   if(S.trackOn && S.track.length>=6 && new Set(S.track).size>=4) d.arrplay=true;
+  songTick(true);                                                    /* AOG-DRUM-SONGS-V1 */
   saveLessons(); paintLessonBox();
 }
 function lessonStopped(){ if(LS.done.play){ mark("stop"); paintLessonBox(); } }
@@ -1913,17 +1990,24 @@ const LSTR = {
   lessonsNav:{en:"Lessons",es:"Lecciones"},
   lessonK:{en:"Lesson",es:"Lección"},
   lessonPick:{en:"Which lesson?",es:"¿Qué lección?"},
-  lessonsLead:{en:"Seventeen short lessons, from your first pad to producer-level beats. Do the steps on the machine and the boxes tick themselves. Each lesson has a worksheet.",es:"Diecisiete lecciones cortas, desde tu primer pad hasta ritmos de productor. Haz los pasos en la máquina y las casillas se marcan solas. Cada lección tiene una hoja."},
-  lessonsAll:{en:"All 17 lessons",es:"Las 17 lecciones"},
+  lessonsLead:{en:"Seventeen short lessons take you from your first pad to producer-level beats. Then come seventeen songs we make together. Do the steps on the machine and the boxes tick themselves. Each lesson has a worksheet.",es:"Diecisiete lecciones cortas te llevan de tu primer pad a ritmos de productor. Después vienen diecisiete canciones que hacemos juntos. Haz los pasos en la máquina y las casillas se marcan solas. Cada lección tiene una hoja."},
+  lessonsAll:{en:"All lessons",es:"Todas las lecciones"},
   worksheet:{en:"Open the worksheet",es:"Abrir la hoja"},
   toBench:{en:"Go to the bench",es:"Ir a la mesa"},
-  lessonsDone:{en:"All 17 lessons done. You make beats like a producer.",es:"Las 17 lecciones listas. Haces ritmos como un productor."},
+  lessonsDone:{en:"Every lesson and every song is done. You make beats like a producer, and you make music together.",es:"Todas las lecciones y canciones están listas. Haces ritmos como un productor, y hacen música juntos."},
+  songsGroup:{en:"Songs we make",es:"Canciones que hacemos"},
+  songWord:{en:"Song",es:"Canción"},
+  together:{en:"Together",es:"Juntos"},
+  settings:{en:"Set the machine",es:"Prepara la máquina"},
+  freeTempo:{en:"Tempo and swing: your class chooses",es:"Tempo y swing: los elige tu clase"},
   beatName:{en:"Name your beat",es:"Nombre de tu ritmo"},
   next:{en:"Next lesson",es:"Siguiente lección"},
   doneMark:{en:"done",es:"lista"},
   resetLessons:{en:"Start the lessons over",es:"Empezar las lecciones de nuevo"}
 };
 function lt(k){ const o=LSTR[k]; return o? o[S.lang]:k; }
+/* AOG-DRUM-SONGS-V1: how a lesson is named in the menu and the ladder */
+function lessonName(m){ const es=S.lang==="es", t=es?m.es:m.en; return m.song? (lt("songWord")+" "+(m.song.n-17)+": "+t) : t; }
 /* AOG-BENCH-TOP-V1 (2026-09-27) — the lessons sit at the top, the same as the Turntables:
    BENCH [Simple] [Full]  LESSON [menu], then one Lessons card (aog-bench.css). */
 function lessonCard(){
@@ -1932,10 +2016,14 @@ function lessonCard(){
   const steps=`<ol class="lsteps">${m.steps.map(id=>`<li class="lstep${LS.done[id]?" ok":""}"><span class="lck" aria-hidden="true">${LS.done[id]?"✓":""}</span><span>${LSTEP[id][S.lang]}</span></li>`).join("")}</ol>`;
   const name=(m.id==="l17")?`<label class="lesson-name"><span>${lt("beatName")}</span><input id="beatName" type="text" maxlength="40" value="${(LS.title||"").replace(/"/g,"&quot;")}" autocomplete="off"></label>`:"";
   const next=p<LESSONS.length-1?`<button type="button" class="pill" data-lesson-next="1">${lt("next")} →</button>`:"";
-  return `<p class="mk">${lt("lessonK")} ${p+1} ${es?"de":"of"} ${LESSONS.length}${done?" · ✓":""}</p>
+  const sg=m.song;
+  const songTop=sg?`<p class="mk">${lt("songsGroup")} · ${lt("songWord")} ${sg.n-17} ${es?"de":"of"} ${SONGS.length}</p>`:"";
+  const songSet=sg?`<p class="lblurb"><b>${lt("settings")}:</b> ${sg.free?lt("freeTempo"):("Tempo "+sg.bpm+" · Swing "+sg.swing+"%"+(sg.len?(" · "+(es?"Largo ":"Length ")+sg.len):""))}</p>`:"";
+  const songTog=sg?`<p class="lblurb"><b>${lt("together")}:</b> ${es?sg.tog_es:sg.tog_en}</p>`:"";
+  return `<p class="mk">${lt("lessonK")} ${p+1} ${es?"de":"of"} ${LESSONS.length}${done?" · ✓":""}</p>${songTop}
     <h3>${es?m.es:m.en}</h3>
-    <p class="lblurb">${es?m.blurb_es:m.blurb_en}</p>
-    ${steps}${name}
+    <p class="lblurb">${es?m.blurb_es:m.blurb_en}</p>${songSet}
+    ${steps}${songTog}${name}
     ${done?`<p class="lok">${allDone?lt("lessonsDone"):(es?"Lección hecha.":"Lesson done.")} ${next}</p>`:""}`;
 }
 function bindLessonBox(){
@@ -1959,7 +2047,7 @@ function paintLessonBox(){
   const doneN=LESSONS.filter(m=>m.steps.every(id=>LS.done[id])).length;
   const row=document.getElementById("lessonRow");
   const rowHtml=LESSONS.map((m,i)=>{ const d=m.steps.every(id=>LS.done[id]);
-    return `<button type="button" class="ghost sm${i===p?" on":""}" data-lesson="${i}" aria-pressed="${i===p}">${i+1}${d?" ✓":""} · ${es?m.es:m.en}</button>`; }).join("");
+    return `<button type="button" class="ghost sm${i===p?" on":""}" data-lesson="${i}" aria-pressed="${i===p}">${i+1}${d?" ✓":""} · ${lessonName(m)}</button>`; }).join("");
   if(row && row.__html!==rowHtml){ row.innerHTML=rowHtml; row.__html=rowHtml;
     row.querySelectorAll("[data-lesson]").forEach(b=>b.onclick=()=>{ LS.pick=+b.getAttribute("data-lesson"); saveLessons(); paintLessonBox(); }); }
   document.getElementById("lKick").textContent=lt("lessonsNav")+" · "+doneN+"/"+LESSONS.length;
@@ -1975,7 +2063,8 @@ function ladderHtml(){
   return LESSONS.map((m,i)=>{
     const done=m.steps.every(id=>LS.done[id]);
     const cls=done?"done":(i===now?"now":"later");
-    return `<li class="${cls}${i===p?" picked":""}" data-pick="${i}"><span class="mk">${lt("lessonK")} ${i+1}${done?" · ✓":""}</span><span class="lt">${S.lang==="es"?m.es:m.en}</span></li>`;
+    const head=(m.song && m.song.n===18)?`<li class="lgroup" aria-hidden="true"><span class="lt">${lt("songsGroup")}</span></li>`:"";   /* AOG-DRUM-SONGS-V1 */
+    return `${head}<li class="${cls}${i===p?" picked":""}" data-pick="${i}"><span class="mk">${lt("lessonK")} ${i+1}${done?" · ✓":""}</span><span class="lt">${lessonName(m)}</span></li>`;
   }).join("");
 }
 function lessonsView(){
@@ -2432,6 +2521,7 @@ function bind(){
     trkBtn.classList.toggle("on", S.trackOn);
     if(S.trackOn){ S.trkI=0; useSeg(S.track[0]); repaintGrid(); }
     refreshLcd(); save();
+    if(S.trackOn && S.playing){ try{ lessonPlayed(); }catch(e){} }   /* AOG-DRUM-SONGS-V1: song mode switched on mid-beat counts as playing the track */
     const h=document.getElementById("hearNow"); if(h) h.textContent=hearNow();
   };
   const eqMap=[["eqLow","low"],["eqLM","lmid"],["eqLMF","lmidF"],["eqHM","hmid"],["eqHMF","hmidF"],["eqHigh","high"],["eqHp","hp"]];

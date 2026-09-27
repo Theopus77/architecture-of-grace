@@ -184,6 +184,11 @@ footer a{color:inherit}
 .crate .take .nm{flex:1 1 8rem;text-transform:none;letter-spacing:0;color:var(--ink);font-size:.95rem;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:600}
 .crate .take.empty{color:var(--muted)}
 .crate label.ghost{cursor:pointer}
+.crate .starter{list-style:none;margin:0;padding:0;display:grid;gap:.3rem;grid-template-columns:repeat(auto-fill,minmax(min(100%,14rem),1fr))}
+.crate .starter li{display:flex;flex-wrap:wrap;gap:.1rem .5rem;align-items:baseline;padding:.4rem .7rem;border-radius:10px;border:1px solid rgba(201,162,74,.45);font-size:.9rem}
+.crate .starter li b{color:var(--ink)}
+.crate .starter li span{color:var(--muted);font-size:.85rem}
+.crate .starter-msg{margin:0;font-size:.95rem;color:var(--ink)}
 .crate label.ghost input{display:none}
 /* AOG-DECKS-CRATE-BOX-V1 — Up next is a real crate: sleeves standing in a wooden box */
 .cbox{position:relative;display:flex;gap:.7rem;overflow-x:auto;padding:1rem .9rem 1.3rem;border-radius:10px;
@@ -277,7 +282,7 @@ button,a,label,input[type=range],.pill,.pad,.platter,canvas{touch-action:manipul
   <!-- AOG-TOOL-MAST-V1 — the same static masthead the other benches carry, so the thin rule reaches it -->
   <section class="mast" id="toolMast"><p class="kicker" id="eyebrow"></p><h1 id="title"></h1><p class="lead" id="tag"></p></section>
   <div class="bench-bar"><!-- AOG-BENCH-BAR-V1 (2026-09-27) — Jimmy: "THESE SHOULD have lessons in the bar with bench." One bar: places to look, the bench switch, the lesson menu; Picture guide and the sister tool on the right. -->
-  <nav class="nav no-print" aria-label="Activity"><a href="music-decks.html" class="on" id="navDecks">Bench</a><a class="sep" href="/decks-guide" id="navGuide">Picture guide</a><a class="sep" href="music-drums.html" id="navDrums">The drum machine</a></nav>
+  <nav class="nav no-print" aria-label="Activity"><span id="navViews" class="aogdd-src" data-aog-dropdown="Go to|Ir a"><a href="music-decks.html" class="on" id="navDecks">Bench</a><a href="decks-tracks.html" id="navTracks">Track list</a></span><a class="sep" href="/decks-guide" id="navGuide">Picture guide</a><a class="sep" href="music-drums.html" id="navDrums">The drum machine</a></nav>
   <div class="bench-switch no-print" role="group" aria-label="Bench" id="benchSwitch"><b id="benchLab">Bench</b>
     <button type="button" class="pill on" data-bench="simple" id="benchSimple">Simple bench</button>
     <button type="button" class="pill" data-bench="full" id="benchFull">Full bench</button>
@@ -393,6 +398,13 @@ const STR = {
   crateNext:{en:"Up next — the crate",es:"Lo que sigue — la caja"},
   crateNextNone:{en:"Line up the songs you plan to spin, before you start. They stay here, even if you close the tab.",es:"Prepara las canciones que vas a tocar antes de empezar. Se quedan aquí aunque cierres la pestaña."},
   crateAdd:{en:"Add songs",es:"Agregar canciones"},
+  starterH:{en:"Starter crate",es:"Caja inicial"},
+  starterLead:{en:"Eleven short tracks we made for you, from 80 to 128 BPM. Each one keeps a steady beat, so they are good for practice. Press the button to put them in Up next.",es:"Once pistas cortas que hicimos para ti, de 80 a 128 BPM. Cada una lleva un pulso fijo, así que sirven para practicar. Pulsa el botón para ponerlas en Lo que sigue."},
+  starterGo:{en:"Load the starter crate",es:"Cargar la caja inicial"},
+  starterBusy:{en:"Loading %n of %t…",es:"Cargando %n de %t…"},
+  starterDone:{en:"Done. The starter tracks are in Up next.",es:"Listo. Las pistas iniciales están en Lo que sigue."},
+  starterFail:{en:"Some tracks did not load. Check the internet and try again.",es:"Algunas pistas no cargaron. Revisa el internet y vuelve a intentarlo."},
+  starterList:{en:"More: a track list for every lesson",es:"Más: una lista de canciones para cada lección"},
   findH:{en:"Where to find acapellas and samples",es:"Dónde encontrar acapellas y samples"},
   findHint:{en:"Free sites. Download a file, then tap Load a song or Add songs. Each site says how you may use its sounds — check before you share a mix.",es:"Sitios gratis. Descarga un archivo y luego toca Cargar una canción o Agregar canciones. Cada sitio dice cómo puedes usar sus sonidos: revísalo antes de compartir una mezcla."},
   crateHint:{en:"Drag a record out of the crate onto a deck, or press A or B.",es:"Arrastra un disco de la caja a un plato, o pulsa A o B."},
@@ -562,7 +574,12 @@ async function loadFile(d, file, opts){
     setTimeout(()=>{
       try{ analyse(d); }catch(e){ d.bpm = 0; }
       if(known){ d.bpm = known.bpm; d.beat0 = known.beat0; d.cues = known.cues || [null,null,null]; }
-      else marksSave(d);
+      else {
+        /* a starter track: the tempo is exact and beat one is the very first sound */
+        const sb = starterBpm(file.name);
+        if(sb){ d.bpm = sb; const a0 = buf.getChannelData(0); let i0 = 0; while(i0 < a0.length && Math.abs(a0[i0]) < 0.05) i0++; d.beat0 = i0 < a0.length ? i0/buf.sampleRate : 0; }
+        marksSave(d);
+      }
       paintDeck(d); drawWave(d); drawZoom(d);
     }, 30);
     const L = Float32Array.from(buf.getChannelData(0));
@@ -897,7 +914,59 @@ const FIND = [
   {u:"https://sound-effects.bbcrewind.co.uk/", n:"BBC Sound Effects", en:"sound effects", es:"efectos de sonido"}
 ];
 function findLinks(){
-  return `<h3>${t("findH")}</h3><ul class="find">${FIND.map(f=>`<li><a href="${f.u}" target="_blank" rel="noopener noreferrer">${f.n}</a> <span>${f[S.lang]||f.en}</span></li>`).join("")}</ul><p class="rechint" style="margin:0">${t("findHint")}</p>`;
+  return `<h3>${t("findH")}</h3><ul class="find">${FIND.map(f=>`<li><a href="${f.u}" target="_blank" rel="noopener noreferrer">${f.n}</a> <span>${f[S.lang]||f.en}</span></li>`).join("")}</ul><p class="rechint" style="margin:0">${t("findHint")}</p><p class="rechint" style="margin:0"><a href="decks-tracks.html" id="starterList" style="color:inherit;font-weight:700">${t("starterList")}</a></p>`;
+}
+/* AOG-DECKS-STARTER-V1 (2026-09-27) — Jimmy: "Could the team gather tracks for the
+   turntables to set up in advance?" Eleven short tracks made for the site (see
+   _work/crate/make_crate.py: synthesized, no samples), each at an exact tempo.
+   Nothing loads until the learner presses the button; then each file goes in
+   through crateInstall, the same path as Add songs, and joins Up next. */
+const STARTER = [
+  ["01-paper-kites","Paper Kites","Cometas de papel",90,"Boom-bap","Boom-bap"],
+  ["02-porch-light","Porch Light","Luz del porche",80,"Slow jam","Balada lenta"],
+  ["03-island-morning","Island Morning","Mañana en la isla",84,"Reggae one-drop","Reggae one-drop"],
+  ["04-sunday-clap","Sunday Clap","Aplauso del domingo",100,"Clap-along","Para aplaudir"],
+  ["05-practice-pair","Practice Pair","Pareja de práctica",102,"Soul groove","Groove soul"],
+  ["06-brass-bus","Brass Bus","Autobús de metales",106,"Funk","Funk"],
+  ["07-bell-garden","Bell Garden","Jardín de campanas",110,"Bell and tom groove","Campana y tom"],
+  ["08-rooftop-break","Rooftop Break","Break en la azotea",114,"Breakbeat","Breakbeat"],
+  ["09-blue-lamp","Blue Lamp","Lámpara azul",120,"House","House"],
+  ["10-night-market","Night Market","Mercado de noche",124,"House","House"],
+  ["11-fast-lane","Fast Lane","Carril rápido",128,"House","House"]
+];
+const starterName = x => x[1] + " - " + x[3] + " BPM - " + x[4] + ".mp3";
+/* a starter track's tempo is known exactly; the deck uses it instead of a guess */
+function starterBpm(name){ const x = STARTER.find(r=>starterName(r)===name); return x ? x[3] : 0; }
+let starterMsg = "";
+async function starterLoad(btn){
+  if(btn) btn.disabled = true;
+  let bad = 0;
+  for(let i=0;i<STARTER.length;i++){
+    const x = STARTER[i];
+    starterMsg = t("starterBusy").replace("%n", i+1).replace("%t", STARTER.length);
+    const m = document.getElementById("starterMsg"); if(m) m.textContent = starterMsg;
+    try{
+      const r = await fetch("audio/crate/" + x[0] + ".mp3");
+      if(!r.ok) throw new Error(r.status);
+      const blob = await r.blob();
+      const f = new File([blob], starterName(x), { type:"audio/mpeg" });
+      const rec = await crateInstall(f);
+      if(!CRATE.next.some(y=>y.id===rec.id)) CRATE.next.push(rec);
+    }catch(e){ bad++; }
+  }
+  cratePut("next", CRATE.next);
+  starterMsg = bad ? t("starterFail") : t("starterDone");
+  paintCrate();
+}
+function starterHtml(){
+  const es = S.lang === "es";
+  return `<h3>${t("starterH")}</h3>
+    <p class="rechint" style="margin:0">${t("starterLead")}</p>
+    <ul class="starter">${STARTER.map(x=>`<li><b>${esc(es?x[2]:x[1])}</b> <span>${x[3]} BPM · ${esc(es?x[5]:x[4])}</span></li>`).join("")}</ul>
+    <div class="take" style="background:none;border:0;padding:0">
+      <button type="button" class="ghost" id="starterGo">${t("starterGo")}</button>
+    </div>
+    <p class="starter-msg" id="starterMsg" role="status" aria-live="polite">${starterMsg}</p>`;
 }
 function paintCrate(){
   const box = document.getElementById("crate"); if(!box) return;
@@ -909,10 +978,13 @@ function paintCrate(){
       <label class="ghost">${t("crateAdd")}<input type="file" multiple id="crateAdd" accept="audio/*,video/mp4,.mp3,.m4a,.aac,.wav,.aif,.aiff,.ogg,.opus,.flac,.webm"></label>
       ${CRATE.next.length?`<button type="button" class="ghost" data-crateclear="next">${t("crateClear")}</button>`:""}
     </div>
+    ${starterHtml()}
     ${findLinks()}
     <h3>${t("cratePrev")}</h3>
     ${CRATE.prev.map((r,i)=>crateRow(r,i,"prev")).join("") || `<div class="take empty">${t("cratePrevNone")}</div>`}
     ${CRATE.prev.length?`<div class="take" style="background:none;border:0;padding:0"><button type="button" class="ghost" data-crateclear="prev">${t("crateClear")}</button></div>`:""}`;
+  const sg = document.getElementById("starterGo");
+  if(sg) sg.onclick = ()=>starterLoad(sg);
   const add = document.getElementById("crateAdd");
   add.onchange = ()=>{
     const fs = Array.from(add.files||[]); if(!fs.length) return;
@@ -1710,7 +1782,7 @@ document.addEventListener("visibilitychange", ()=>{
     document.querySelectorAll("[data-bench]").forEach(b=>{ const on=b.getAttribute("data-bench")===bench; b.classList.toggle("on",on); b.setAttribute("aria-pressed",on?"true":"false"); });
     document.querySelectorAll("[data-decktab]").forEach(b=>{ const on=b.getAttribute("data-decktab")===tab; b.classList.toggle("on",on); b.setAttribute("aria-selected",on?"true":"false"); });
     const es=S.lang==="es";
-    const L={navDecks:["Bench","Mesa"],navDrums:["The drum machine","La caja de ritmos"],navGuide:["Picture guide","Guía en imágenes"],benchLab:["Bench","Banco"],benchSimple:["Simple bench","Banco sencillo"],benchFull:["Full bench","Banco completo"],decktabMix:["Mix","Mezcla"]};
+    const L={navDecks:["Bench","Mesa"],navDrums:["The drum machine","La caja de ritmos"],navGuide:["Picture guide","Guía en imágenes"],navTracks:["Track list","Lista de canciones"],benchLab:["Bench","Banco"],benchSimple:["Simple bench","Banco sencillo"],benchFull:["Full bench","Banco completo"],decktabMix:["Mix","Mezcla"]};
     Object.keys(L).forEach(id=>{ const e=document.getElementById(id); if(e) e.textContent=L[id][es?1:0]; });
   }
   document.querySelectorAll("[data-bench]").forEach(b=>b.onclick=()=>{ bench=b.getAttribute("data-bench"); try{ localStorage.setItem("aog.decks.bench",bench); }catch(e){} paintSw(); });
