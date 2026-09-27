@@ -26,7 +26,7 @@ float ballot(vec3 p){ vec3 q=p-BC; q.xz=rot(-.25)*q.xz; q-=vec3(.005,.245,0.); q
 float cushion(vec3 p){ vec3 q=p-CC; q.xz=rot(.35)*q.xz;
   float d=sdRBox(q-vec3(0.,.04,0.),vec3(.08,.012,.08),.028);
   d+=.004*smoothstep(.0,.06,.06-length(q.xz));
-  vec2 c=abs(q.xz)-vec2(.098); float t=length(vec3(c.x,q.y-.04,c.y)*vec3(1.,.8,1.))-.01;
+  vec2 c=abs(q.xz)-vec2(.084); float t=length(vec3(c.x,q.y-.035,c.y)*vec3(1.,.7,1.))-.009;
   return min(d,t); }
 float crown(vec3 p){ vec3 q=p-CC-vec3(0.,.075,0.); float r=length(q.xz); float a=atan(q.z,q.x);
   float sec=6.2832/8.; float aa=mod(a,sec)-sec*.5; float f=abs(aa)/(sec*.5);

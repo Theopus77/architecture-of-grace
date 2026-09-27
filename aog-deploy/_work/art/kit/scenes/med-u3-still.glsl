@@ -1,7 +1,7 @@
 /* Medicine and Health Unit 3 "Healthy Ways Around the World" — pencil still life: a round
    teapot, a stone mortar with its pestle, and a small bundle of herbs tied with string. */
-#define CAM_POS vec3(-0.3330,0.3339,-0.7771)
-#define CAM_TGT vec3(-0.1964,-0.0112,0.0419)
+#define CAM_POS vec3(-0.3320,0.3356,-0.7813)
+#define CAM_TGT vec3(-0.1947,-0.0112,0.0416)
 #define CAM_FOV 30.
 #define SUN_DIR vec3(-.7,.85,-.3)
 #define MAXT 8.

@@ -1,7 +1,7 @@
 /* Medicine and Health Unit 1 "My Healthy Body" — pencil still life: a toothbrush standing in
    a cup, a bar of soap on a little dish, and an apple (clean hands, clean teeth, good food). */
-#define CAM_POS vec3(-0.3194,0.3970,-0.8083)
-#define CAM_TGT vec3(-0.1761,0.0429,0.0180)
+#define CAM_POS vec3(-0.3497,0.3923,-0.8099)
+#define CAM_TGT vec3(-0.2058,0.0365,0.0204)
 #define CAM_FOV 30.
 #define SUN_DIR vec3(-.7,.85,-.3)
 #define MAXT 8.

@@ -1,8 +1,8 @@
 /* Medicine and Health Unit 5 "Germs, Vaccines and First Aid" — pencil still life: a metal
    first-aid tin with a plus sign on its lid and a carry handle, a rolled bandage, and two
    sticking plasters lying on the table. */
-#define CAM_POS vec3(-0.2560,0.2551,-0.5794)
-#define CAM_TGT vec3(-0.1531,-0.0048,0.0373)
+#define CAM_POS vec3(-0.2515,0.2563,-0.5832)
+#define CAM_TGT vec3(-0.1481,-0.0048,0.0365)
 #define CAM_FOV 30.
 #define SUN_DIR vec3(-.7,.85,-.3)
 #define MAXT 8.

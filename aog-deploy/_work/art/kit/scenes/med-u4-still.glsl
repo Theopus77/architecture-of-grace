@@ -1,8 +1,8 @@
 /* Medicine and Health Unit 4 "How the Body Works" (food as fuel) — pencil still life: a
    long loaf of bread with a scored crust, a boiled egg in an egg cup, and a pear, on a
    wooden board. */
-#define CAM_POS vec3(-0.2884,0.2521,-0.6552)
-#define CAM_TGT vec3(-0.1746,-0.0359,0.0278)
+#define CAM_POS vec3(-0.2883,0.2534,-0.6547)
+#define CAM_TGT vec3(-0.1745,-0.0346,0.0283)
 #define CAM_FOV 30.
 #define SUN_DIR vec3(-.7,.85,-.3)
 #define MAXT 8.

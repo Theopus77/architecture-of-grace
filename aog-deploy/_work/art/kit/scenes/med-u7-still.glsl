@@ -1,8 +1,8 @@
 /* Medicine and Health Unit 7 "Mind and Body" — pencil still life: a young leafy plant in a
    clay pot (growing and changing), a closed notebook for feelings with a pencil on it, and
    two smooth calm stones. */
-#define CAM_POS vec3(-0.2881,0.3278,-0.7460)
-#define CAM_TGT vec3(-0.1573,0.0047,0.0386)
+#define CAM_POS vec3(-0.2867,0.3174,-0.7249)
+#define CAM_TGT vec3(-0.1595,0.0030,0.0383)
 #define CAM_FOV 30.
 #define SUN_DIR vec3(-.7,.85,-.3)
 #define MAXT 8.
@@ -28,15 +28,15 @@ float leafAt(vec3 q,vec3 base,float yaw,float tilt,float L){
   d+= .004*abs(l.z)/L*0.;
   return d; }
 float plantD(vec3 p){ vec3 q=p-PT;
-  float d=sdCapsule(q,vec3(0.,.08,0.),vec3(.003,.19,.0),.0035);
-  for(int i=0;i<9;i++){ float fi=float(i); float y=.1+fi*.011; float yaw=fi*2.4; float L=.042-fi*.0028;
-    vec3 base=vec3(.003*fi/9.,y,0.);
-    /* a pointed leaf: two arcs meeting at the tip, arching out and down */
-    vec3 l=q-base; l.xz=rot(yaw)*l.xz; l.xy=rot(.55-fi*.03)*l.xy;
-    float t=clamp(l.x/L,0.,1.); float w=L*.34*sin(t*3.1416)*(1.-.3*t);
-    float droop=-.25*l.x*l.x/L;
-    float lf=max(abs(l.z)-w,abs(l.y-droop)-.0018); lf=max(lf,max(-l.x,l.x-L));
-    d=min(d,lf*.7); }
+  float d=sdCapsule(q,vec3(0.,.08,0.),vec3(.003,.175,.0),.004);
+  for(int i=0;i<7;i++){ float fi=float(i); float y=.1+fi*.012; float yaw=fi*2.4+.5; float L=.055-fi*.004;
+    vec3 l=q-vec3(0.,y,0.); l.xz=rot(yaw)*l.xz; l.xy=rot(.3+fi*.05)*l.xy;
+    l.y+=.35*l.x*l.x/L;                                            /* the leaf arches down */
+    l.x-=L*.95;
+    float t=clamp(l.x/L*.5+.5,0.,1.);
+    vec3 m=vec3(l.x,l.y,l.z/(1.05-.75*t));                          /* narrows to a point */
+    d=min(d,sdEll(m,vec3(L,.003,L*.4))*.7);
+    d=min(d,sdCapsule(q-vec3(0.,y,0.),vec3(0.),vec3(0.),.0)); }
   return d; }
 vec3 nbQ(vec3 p){ return place(p,NB,-.2); }
 float noteD(vec3 p){ vec3 q=nbQ(p);
@@ -63,7 +63,7 @@ float toneAlb(float id,vec3 p,vec3 n){
   if(id==2.) return .9;
   if(id==3.){ vec3 q=p-PT; if(q.y>.07&&q.y<.073) return .35; return .6; }
   if(id==4.) return .25;
-  if(id==5.){ return .45; }
+  if(id==5.){ vec3 q=p-PT; float a=atan(q.z,q.x); return .45; }
   if(id==6.){ vec3 q=nbQ(p); if(abs(q.x-.06)<.005) return .3; if(q.y<.022&&abs(q.x)<.083&&abs(q.z)<.105&&n.y<.5) return fract(q.y/.0018)<.3?.7:.95; return .5; }
   if(id==7.) return pencilTone(pcQ(p),.075);
   if(id==8.) return .55;

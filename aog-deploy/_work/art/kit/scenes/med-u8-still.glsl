@@ -1,7 +1,7 @@
 /* Medicine and Health Unit 8 "Ancient Medicine" — pencil still life: a two-handled clay
    jar for oils and herbs, a rolled scroll tied with a cord, and a small clay oil lamp. */
-#define CAM_POS vec3(-0.3972,0.3670,-0.8316)
-#define CAM_TGT vec3(-0.2499,0.0112,0.0533)
+#define CAM_POS vec3(-0.3977,0.3722,-0.8448)
+#define CAM_TGT vec3(-0.2482,0.0112,0.0530)
 #define CAM_FOV 30.
 #define SUN_DIR vec3(-.7,.85,-.3)
 #define MAXT 8.

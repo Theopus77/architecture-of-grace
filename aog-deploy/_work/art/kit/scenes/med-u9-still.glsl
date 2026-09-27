@@ -1,8 +1,8 @@
 /* Medicine and Health Unit 9 "From the Islamic Golden Age to the Renaissance" — pencil still
    life: an old brass microscope on a horseshoe foot, a thick leather-bound book with raised
    bands on its spine, and a feather quill standing in an ink pot. */
-#define CAM_POS vec3(-0.5520,0.5316,-1.1784)
-#define CAM_TGT vec3(-0.3428,0.0394,0.0768)
+#define CAM_POS vec3(-0.5736,0.5340,-1.1811)
+#define CAM_TGT vec3(-0.3634,0.0394,0.0802)
 #define CAM_FOV 30.
 #define SUN_DIR vec3(-.7,.85,-.3)
 #define MAXT 8.
