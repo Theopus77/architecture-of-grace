@@ -94,21 +94,20 @@ float bellD(vec3 q,float s){ q/=s;
   return min(min(min(shell,top),min(lip,knop)),min(min(stem,cap),clap))*s; }
 
 /* ---- a lotus flower: two rings of pointed petals round a seed pod ---- */
-float petal(vec3 q,float L,float W,float tilt){   /* one petal along +x, tilted up by tilt */
-  q.xy=rot(-tilt)*q.xy; float t=clamp(q.x/L,0.,1.);
-  float w=W*sin(3.1416*pow(t,.7))*(1.-.3*t);
-  float cup=q.y-.35*W*(q.z*q.z)/(W*W+1e-4)*.8;
-  float d=max(abs(cup)-.0018,max(abs(q.z)-w,max(-q.x,q.x-L)));
+float petal(vec3 q,float L,float W,float tilt){   /* one petal: a pointed, cupped oval along +x, tilted up by tilt */
+  q.xy=rot(tilt)*q.xy; vec3 c=q-vec3(L*.5,0.,0.);
+  c.y-=.9*c.z*c.z/L;                                     /* cupped */
+  float t=clamp(q.x/L,0.,1.); float w=W*pow(sin(3.1416*pow(t,.8)),.7);
+  float d=max(sdEll(c,vec3(L*.5,.006,W)),abs(c.z)-w);
   return d; }
 float lotus(vec3 q,float s){ q/=s;
-  vec3 a=q-vec3(0.,.012,0.);
+  vec3 a=q-vec3(0.,.006,0.);
   float d=1e5;
-  vec3 p1=prep(a,8.); d=min(d,petal(p1,.06,.022,.35));
-  vec3 p2=prep(ry(a,.39),8.); d=min(d,petal(p2-vec3(0.,.006,0.),.05,.02,.85));
-  vec3 p3=prep(ry(a,.2),6.); d=min(d,petal(p3-vec3(0.,.014,0.),.036,.016,1.25));
-  float pod=sdCylY(a-vec3(0.,.02,0.),.013,.008)-.002;
-  return min(d,pod)*s*.8; }
-
+  vec3 p1=prep(a,8.); d=min(d,petal(p1-vec3(.006,0.,0.),.06,.02,.28));
+  vec3 p2=prep(ry(a,.39),8.); d=min(d,petal(p2-vec3(.004,.006,0.),.052,.018,.75));
+  vec3 p3=prep(ry(a,.2),6.); d=min(d,petal(p3-vec3(.002,.012,0.),.04,.015,1.15));
+  float pod=sdCylY(a-vec3(0.,.018,0.),.008,.007)-.002;
+  return min(d,pod)*s*.6; }
 /* ---- a round-bellied metal or clay pot (kalash) with a narrow neck and a lip ---- */
 float potD(vec3 q,float s){ q/=s;
   float y=q.y; float r=.05*sin(clamp(y/.1,0.,1.)*2.6+.35)+.002;
