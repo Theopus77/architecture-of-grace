@@ -338,8 +338,29 @@ function lineSvg(pts,opt){ opt=opt||{}; const W=opt.w||560,H=opt.h||180,P=28; if
   const n=pts.length; [0,Math.floor((n-1)/2),n-1].filter((v,i,a)=>a.indexOf(v)===i).forEach(i=>{ g+='<text x="'+X(i)+'" y="'+(H-6)+'" font-size="11" text-anchor="middle" fill="currentColor" fill-opacity=".6">'+esc(pts[i].l||"")+'</text>'; });
   return g+'</svg>';
 }
+/* AOG-SLIP-TRENDS-V1 — every 1-to-5 answer on a slip, as a daily average, for the class or one student.
+   Slips stay apart from the check-in counts; this is their own chart. */
+const SLIPSCALE={"slip-test":{ready:["Ready for the test","Listo para el examen"]},"slip-repair":{now:["How they felt after","Cómo se sintió después"]},"slip-goal":{close:["Close to their goal","Cerca de su meta"]},"slip-home":{mood:["Mood at home","Ánimo en casa"]},"slip-team":{team:["Team worked well","El equipo trabajó bien"],me:["How much they helped","Cuánto ayudó"]},"slip-unit":{conf:["Ready for the unit test","Listo para el examen de la unidad"]}};
+let SLIPSTU="";
+function slipRows(){ const seen={}, out=[]; rows("aog.checkin.remote").concat(rows("aog.slips.mine")).forEach(r=>{ const ty=String(r.checkinType||""); if(!SLIPSCALE[ty]) return; let x={}; try{ x=typeof r.extra==="string"?JSON.parse(r.extra):(r.extra||{}); }catch(e){} const k=ty+"|"+who(r).toLowerCase()+"|"+String(r.timestamp||day(r)); if(seen[k]) return; seen[k]=1; out.push({ty,who:who(r),d:day(r),sc:x.scale||{}}); }); return out; }
+function slipTrends(){ const all=slipRows(); if(!all.length) return "";
+  const names=[...new Set(all.map(r=>r.who).filter(Boolean))].sort((a,b)=>a.localeCompare(b));
+  if(SLIPSTU&&!names.includes(SLIPSTU)) SLIPSTU="";
+  const rs=SLIPSTU?all.filter(r=>r.who===SLIPSTU):all;
+  let cards="";
+  Object.keys(SLIPSCALE).forEach(ty=>{ Object.keys(SLIPSCALE[ty]).forEach(q=>{
+    const pts0=rs.filter(r=>r.ty===ty&&+r.sc[q]>0); if(!pts0.length) return;
+    const days=[...new Set(pts0.map(r=>r.d))].filter(Boolean).sort().slice(-20);
+    const pts=days.map(d=>{ const v=pts0.filter(r=>r.d===d).map(r=>+r.sc[q]); return {l:nice(d),v:Math.round(10*v.reduce((a,b)=>a+b,0)/v.length)/10}; });
+    const nm=SLIPS.find(x=>x[0]===ty), lab=SLIPSCALE[ty][q];
+    cards+='<section class="card"><p class="k" style="color:var(--goldInk)">'+esc(L()==="es"?lab[1]:lab[0])+'</p><p style="margin:0 0 6px;font-size:14px">'+esc(nm?(L()==="es"?nm[2]:nm[1]).split(" · ")[0]:ty)+' · '+pts0.length+(L()==="es"?(pts0.length===1?" respuesta":" respuestas")+" · de 1 a 5":(pts0.length===1?" answer":" answers")+" · 1 to 5")+'</p>'+lineSvg(pts,{min:1,max:5,c:SCOL[ty]||"#2F63B8"})+'</section>'; }); });
+  if(!cards) return "";
+  return '<h2 style="margin:24px 0 6px">'+(L()==="es"?"Boletos":"Slips")+'</h2><p style="margin:0 0 10px">'+(L()==="es"?"El promedio de cada día. 5 es lo más alto.":"The average for each day. 5 is the highest.")+'</p>'
+   +'<label style="display:block;margin:0 0 12px"><span style="display:block;font-weight:700;margin-bottom:4px">'+(L()==="es"?"Mostrar":"Show")+'</span><select id="slipStu" style="font-size:16px;min-height:44px;max-width:100%"><option value="">'+(L()==="es"?"Toda la clase":"The whole class")+'</option>'+names.map(n=>'<option'+(n===SLIPSTU?' selected':'')+'>'+esc(n)+'</option>').join("")+'</select></label>'
+   +'<div class="grid3" style="grid-template-columns:repeat(auto-fit,minmax(260px,1fr))">'+cards+'</div>';
+}
 function trends(){
-  const D=data(); if(!D.ci.length&&!D.pr.length) return '<div class="hello"><div><h1>'+T("trends")+'</h1></div></div>'+noData();
+  const D=data(); if(!D.ci.length&&!D.pr.length) return '<div class="hello"><div><h1>'+T("trends")+'</h1></div></div>'+(slipTrends()||noData());
   const days=[...new Set(D.ci.concat(D.pr).map(day))].filter(Boolean).sort().slice(-20);
   const ciPts=days.map(d=>({l:nice(d),v:D.ci.filter(r=>day(r)===d).length}));
   const accPts=days.map(d=>{ const rs=D.pr.filter(r=>day(r)===d&&+r.itemsTotal>0); return rs.length?{l:nice(d),v:Math.round(100*rs.reduce((a,r)=>a+(+r.independent||0),0)/rs.reduce((a,r)=>a+(+r.itemsTotal||0),0))}:null; }).filter(Boolean);
@@ -351,7 +372,7 @@ function trends(){
    +'<section class="card"><p class="k" style="color:var(--goldInk)">'+T("accDay")+'</p>'+(accPts.length?lineSvg(accPts,{min:0,max:100,c:"#2E7D4F"}):'<p class="empty">—</p>')+'</section>'
    +'<section class="card"><p class="k" style="color:var(--goldInk)">'+T("flagDay")+'</p>'+lineSvg(flagPts,{min:0,c:"#B3261E"})+'</section>'
    +'<section class="card"><p class="k" style="color:var(--goldInk)">'+T("feelings")+'</p>'+topF.map(([f,n])=>'<div style="display:flex;align-items:center;gap:10px;margin:6px 0"><span style="width:110px">'+esc(f)+'</span><div class="bar" style="flex:1"><i style="width:'+Math.round(100*n/mx)+'%;background:var(--c5)"></i></div><b style="width:30px;text-align:right">'+n+'</b></div>').join("")+'</section>'
-   +'</div>';
+   +'</div>'+slipTrends();
 }
 function iep(){ try{ const o=JSON.parse(localStorage.getItem("aog.iep.v1")||"{}"); return {goals:o.goals||{},data:o.data||{}}; }catch(e){ return {goals:{},data:{}}; } }
 function brick(){
@@ -991,6 +1012,7 @@ function asGet(){ return Object.assign({k:"unit",p:"mth",f:"mth-u1.html",i:"m1"}
 function saveDD(){ put(K.dd,{s:val("ddS"),g:val("ddG"),n:+val("ddN")}); }
 const val=id=>{const e=document.getElementById(id);return e?e.value:""};
 function wire(){
+  const ss=document.getElementById("slipStu"); if(ss) ss.onchange=()=>{ SLIPSTU=ss.value; render(); };
   const on=(id,ev,f)=>{const e=document.getElementById(id); if(e) e.addEventListener(ev,f);};
   document.querySelectorAll("[data-pull]").forEach(b=>b.addEventListener("click",()=>pullAll(b)));
   on("mtssView","change",()=>{ put("aog.dash2.mtssView",val("mtssView")); render(); });
