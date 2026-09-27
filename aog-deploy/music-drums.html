@@ -348,25 +348,7 @@ input,textarea,[contenteditable]{-webkit-user-select:text;user-select:text;-webk
 button,a,label,input[type=range],.pill,.pad,.platter,canvas{touch-action:manipulation}
 .platter,canvas.wave,canvas.zoom{touch-action:none}
 
-/* AOG-TOOL-THIN-V1 (2026-09-26) — Jimmy: "They all don't need the two bars stating the name. Just keep the
-   blue bar. However the blue bar is to be thinner." One masthead, half the height; the brand row above it goes. */
-html.aog-grace #toolMast[data-aog-hero]{padding-top:18px!important;padding-bottom:16px!important;margin-bottom:14px}
-html.aog-grace #toolMast[data-aog-hero] h1{font-size:clamp(26px,3.2vw,38px)!important;margin:.15rem 0 .25rem!important}
-html.aog-grace #toolMast[data-aog-hero] .lead{font-size:.95rem;margin:0}
-html.aog-grace #toolMast[data-aog-hero] .kicker{font-size:.66rem}
-html.aog-grace #toolMast[data-aog-hero]{min-height:158px;box-sizing:border-box}
-html.aog-grace #toolMast[data-aog-hero] .lead{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;max-width:62ch}
-html.aog-grace #toolMast[data-aog-hero] .aog-more{display:none!important}
-html.aog-grace #toolMast[data-aog-hero] .kicker{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-body>.wrap>header:first-child,.wrap>header.no-print:first-child{display:none!important}
-/* AOG-BENCH-NAV-V1 (2026-09-26) — Jimmy: "all of them should have the same line up … one connective tissue."
-   One row on every bench: Bench · Meet … · Use … · Find … · Name the job · Print · Picture guide · the partner. */
-.nav{display:flex;gap:4px;overflow-x:auto;border-bottom:2px solid var(--line);margin:.2rem 0 1.1rem;-webkit-overflow-scrolling:touch;scrollbar-width:none}
-.nav::-webkit-scrollbar{display:none}
-.nav a{flex:0 0 auto;min-height:44px;display:inline-flex;align-items:center;padding:0 .75rem;text-decoration:none;color:var(--muted);font-weight:600;font-size:.9rem;border-bottom:2px solid transparent;margin-bottom:-2px;white-space:nowrap}
-.nav a.on{color:var(--ink);border-color:var(--steel,#2F63B8)}
-.nav a.sep{margin-left:auto;padding-left:.5rem}
-.nav a.sep+a.sep{margin-left:0}
+/* AOG-BENCH-TOP-V1: the masthead, nav row, bench switch and Lessons card live in /aog-bench.css */
 /* ══ AOG-DRUM-LESSONS-V1 — the lesson ladder ══ */
 .lesson-box{padding:.9rem 1rem 1rem;margin:1rem 0 .4rem}
 .lesson-box h3{margin:.05rem 0 .15rem;font-size:1.15rem}
@@ -383,6 +365,7 @@ body>.wrap>header:first-child,.wrap>header.no-print:first-child{display:none!imp
 .lesson-acts .pill{text-decoration:none}
 .ok-line{color:var(--good);font-weight:700;margin:.7rem 0 0}
 .lessons-wrap{display:grid;gap:1rem;grid-template-columns:1fr}
+.lessons-wrap.lessons-one{grid-template-columns:1fr!important}
 @media (min-width:820px){.lessons-wrap{grid-template-columns:1fr 1fr;align-items:start}}
 .ladder-box{padding:.9rem 1rem 1rem;margin:1rem 0 .4rem}
 .ladder{list-style:none;margin:.4rem 0 0;padding:0;display:flex;flex-direction:column;gap:.3rem}
@@ -394,12 +377,14 @@ body>.wrap>header:first-child,.wrap>header.no-print:first-child{display:none!imp
 .ladder .mk{font-size:.68rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--steel);min-width:5.6rem}
 .ladder .lt{font-weight:600}
 </style>
+<link rel="stylesheet" href="/aog-bench.css">
 <script src="aog-handoff.js"></script>
 <script src="aog-eq.js"></script>
 </head>
 <body>
 <script src="/aog-sound-handoff.js"></script>
 <script src="/aog-grace.js" defer></script>
+<script src="/aog-dropdowns.js" defer></script>
 <script>
 (function(){
   function add(src){
@@ -424,8 +409,22 @@ body>.wrap>header:first-child,.wrap>header.no-print:first-child{display:none!imp
        the other tools." A static masthead outside #view, so aog-grace paints it navy like the turntables and a
        re-render of the view never wipes it. paint() keeps its words in the current language. -->
   <section class="mast" id="toolMast"><p class="kicker" id="mastK"></p><h1 id="mastH"></h1><p class="lead" id="mastL"></p></section>
+  <div class="bench-bar"><!-- AOG-BENCH-BAR-V1 (2026-09-27) — Jimmy: "THESE SHOULD have lessons in the bar with bench." One bar: places to look, the bench switch, the lesson menu; Picture guide and the sister tool on the right. -->
   <nav class="nav no-print" id="nav" aria-label="Activity"></nav>
+  <!-- AOG-BENCH-TOP-V1 (2026-09-27): the same control row and Lessons card as the Turntables -->
+  <div class="bench-switch no-print" role="group" aria-label="Bench" id="benchSwitch"><b id="benchLab">Bench</b>
+    <button type="button" class="pill on" data-bench="simple" id="benchSimple">Simple bench</button>
+    <button type="button" class="pill" data-bench="full" id="benchFull">Full bench</button>
+    <span class="bench-lesson"><div id="lessonRow" data-aog-dropdown="Lesson|Lección"></div></span>
+  </div>
+  </div>
   <main id="view"></main>
+  <!-- AOG-DRUMS-LESSONS-BELOW-V1 (2026-09-27) — Jimmy: the lesson card does not sit on top of the tool.
+       It lives here, and paint() slips it in under the tempo and volume row on the bench. -->
+  <section class="lessons no-print" id="lessons" aria-label="Lessons">
+    <div class="lhead"><p class="kicker" id="lKick">Lessons</p><a class="pill" id="lSheet" href="drums-lessons.html#l1">Worksheet 1</a></div>
+    <div id="lessonBody"></div>
+  </section>
   <details class="pg no-print" id="pgPanel">
     <summary><span class="chev">&#9656;</span>Picture guide<span class="pgsub">Almost no reading &#183; prints on 5 pages</span></summary>
     <div class="pgbody">
@@ -1204,7 +1203,8 @@ function paintLang(){
 
 function navHtml(){
   const items=[["home","homeNav"],["lessons","lessonsNav"],["meet","meetNav"],["words","wordsNav"],["print","printNav"]];
-  return items.map(([id,k])=>`<a href="#${id}" class="${S.view===id?"on":""}">${t(k)}</a>`).join("")+
+  /* AOG-BENCH-TOP-V1: five places to look, so one menu (aog-dropdowns.js reads the span) */
+  return `<span id="navViews" class="aogdd-src" data-aog-dropdown="Go to|Ir a">`+items.map(([id,k])=>`<a href="#${id}" class="${S.view===id?"on":""}">${t(k)}</a>`).join("")+`</span>`+
     `<a class="sep" href="/drums-guide">${S.lang==="es"?"Guía en imágenes":"Picture guide"}</a><a class="sep" href="music-decks.html">${S.lang==="es"?"Los tocadiscos":"The turntables"}</a>`;
 }
 
@@ -1439,10 +1439,6 @@ function machineHtml(){
       <div class="plate-block"><div class="plate">SP-1200</div><small>SAMPLING PERCUSSION · 26.04 kHz · 12-BIT</small></div>
       <div class="screws"><span class="screw"><i></i></span><span class="screw"><i></i></span></div>
     </div>
-    <div class="bench-switch" role="group" aria-label="${t("benchLab")}"><b>${t("benchLab")}</b>
-      <button type="button" class="${simple?"on":""}" data-bench="simple" aria-pressed="${simple}">${t("benchSimple")}</button>
-      <button type="button" class="${simple?"":"on"}" data-bench="full" aria-pressed="${!simple}">${t("benchFull")}</button>
-    </div>
     ${strip}
     <div class="sp-top">
       <div class="lcd" id="lcd">${lcdText()}</div>
@@ -1512,7 +1508,6 @@ function homeView(){
       <label class="knob"><span>${t("vol")} <b class="readout" id="volOut">${Math.round(S.vol*100)}</b></span>
         <input class="scope-knob" id="vol" type="range" min="0.05" max="1" step="0.01" value="${S.vol}"></label>
     </div>
-    ${lessonBoxHtml()}
     <div class="chips no-print">
       <button type="button" class="chip bitchip${S.bit?" on":""}" id="bitBtn">${S.bit?t("bitOn"):t("bitOff")}</button>
     </div>
@@ -1626,74 +1621,83 @@ function printView(){
    Paste, Save). Progress lives in localStorage. Each lesson has a worksheet on
    drums-lessons.html. ═══════════════════════════════════════════════════════════════ */
 const LESSONS = [
+  /* AOG-DRUM-BLEND-V1 (2026-09-27) — Jimmy: "Make some of the drum lessons expert level
+     BEAT MAKING!!!" then "BLEND THE TWO together." Still seventeen lessons, one ladder:
+     the first half is the machine and how a beat is built; the last eight are producer
+     work — boom-bap swing, ghost notes, trap rolls, house, breakbeat chops, polyrhythm,
+     arrangement with drops, and a mix that knocks. Every step reads the machine: the
+     three step levels (normal · accent · soft), swing, live REC with TIME CORRECT (1/32
+     and OFF keep where the hand landed), a part's length (4–16), song mode, mute, the
+     MIX and DECAY sliders, and TO THE DECKS. Progress is kept by STEP id, so ticks from
+     the old ladder carry over to any lesson that still uses them. */
   {id:"l1", en:"Turn it on and hear one pad", es:"Enciéndela y escucha un pad",
     blurb_en:"Tap a pad. Press Play. Press Stop. That is the whole machine.",
     blurb_es:"Toca un pad. Pulsa Tocar. Pulsa Parar. Esa es toda la máquina.",
-    steps:["pad","play","stop"]},
+    steps:["pad", "play", "stop"]},
   {id:"l2", en:"Tempo", es:"Tempo",
     blurb_en:"Tempo is how fast the beat goes. Slow it down, speed it up, then tap it in.",
     blurb_es:"El tempo es qué tan rápido va el ritmo. Bájalo, súbelo, y luego márcalo con TAP.",
-    steps:["bpm80","bpm120","tap"]},
+    steps:["bpm80", "bpm120", "tap"]},
   {id:"l3", en:"The grid: 4 beats", es:"La cuadrícula: 4 pulsos",
     blurb_en:"Sixteen boxes make one bar. Every fourth box is a beat.",
     blurb_es:"Dieciséis cuadros hacen un compás. Cada cuarto cuadro es un pulso.",
-    steps:["len16","kick4","playgrid"]},
+    steps:["len16", "kick4", "playgrid"]},
   {id:"l4", en:"Kick and snare: the backbeat", es:"Bombo y caja: el contratiempo",
     blurb_en:"Kick on 1 and 3. Snare on 2 and 4. Most songs you know start here.",
     blurb_es:"Bombo en 1 y 3. Caja en 2 y 4. Casi todas las canciones que conoces empiezan aquí.",
-    steps:["kick13","snare24","playback"]},
-  {id:"l5", en:"Hi-hats in eighths", es:"Charles en corcheas",
-    blurb_en:"A closed hat on every other box keeps the time.",
-    blurb_es:"Un charles cerrado cada dos cuadros lleva el tiempo.",
-    steps:["hat8","hatback","playhat8"]},
-  {id:"l6", en:"Sixteenths", es:"Semicorcheas",
-    blurb_en:"A hat on every box. Open one hat at the very end so the bar breathes.",
-    blurb_es:"Un charles en cada cuadro. Abre un charles al final para que el compás respire.",
-    steps:["hat16","oh14","play16"]},
-  {id:"l7", en:"Swing", es:"Swing",
-    blurb_en:"Swing pushes the in-between hits late. Try 58, then 67, and play both.",
-    blurb_es:"El swing retrasa los golpes intermedios. Prueba 58, luego 67, y toca ambos.",
-    steps:["swing58","swing67","playswing"]},
-  {id:"l8", en:"Loud and soft: accents", es:"Fuerte y suave: acentos",
+    steps:["kick13", "snare24", "playback"]},
+  {id:"l5", en:"Hi-hats: eighths, then sixteenths", es:"Charles: corcheas, luego semicorcheas",
+    blurb_en:"A hat on every other box keeps the time. A hat on every box drives it. An open hat lets it breathe.",
+    blurb_es:"Un charles cada dos cuadros lleva el tiempo. Uno en cada cuadro lo empuja. Un charles abierto lo deja respirar.",
+    steps:["hat8", "hat16", "oh14", "play16"]},
+  {id:"l6", en:"Loud and soft: accents", es:"Fuerte y suave: acentos",
     blurb_en:"Tap a box again to make it an accent. Tap once more to make it soft.",
     blurb_es:"Toca un cuadro otra vez para acentuarlo. Una vez más para hacerlo suave.",
-    steps:["accent","soft","accsnare"]},
-  {id:"l9", en:"Fills", es:"Redobles",
+    steps:["accent", "soft", "accsnare"]},
+  {id:"l7", en:"Fills", es:"Redobles",
     blurb_en:"The last four boxes are where a drummer shows off. Fill them.",
     blurb_es:"Los últimos cuatro cuadros son donde el baterista se luce. Llénalos.",
-    steps:["fill","tomfill","playfill"]},
-  {id:"l10", en:"A second pattern", es:"Un segundo patrón",
-    blurb_en:"Part 2 is a new bar. Copy part 1 into it, then change something.",
-    blurb_es:"La parte 2 es un compás nuevo. Copia la parte 1 y cambia algo.",
-    steps:["seg2","paste","seg2diff"]},
-  {id:"l11", en:"Song mode: chain the parts", es:"Modo canción: encadena las partes",
-    blurb_en:"Add parts to the track, then play the track. The machine plays them in order.",
-    blurb_es:"Agrega partes a la pista y toca la pista. La máquina las toca en orden.",
-    steps:["trk2","trkmix","trkplay"]},
-  {id:"l12", en:"Tempo maps for styles", es:"Tempos por estilo",
-    blurb_en:"Hip-hop lives near 90. House near 124. Drum and bass near 170. Visit all three.",
-    blurb_es:"El hip-hop vive cerca de 90. El house cerca de 124. El drum and bass cerca de 170. Visita los tres.",
-    steps:["bpm90","bpm124","bpm170"]},
-  {id:"l13", en:"Sounds and the pads", es:"Sonidos y los pads",
-    blurb_en:"Open the full bench. Try kit B. Tune a drum up or down with its slider.",
-    blurb_es:"Abre el banco completo. Prueba el kit B. Afina un tambor con su deslizador.",
-    steps:["full","bankB","tune"]},
-  {id:"l14", en:"Mute, solo and arrangement", es:"Silenciar, solo y arreglo",
-    blurb_en:"Mute takes a drum out. Solo leaves only one in. Then bring everything back.",
-    blurb_es:"Silenciar quita un tambor. Solo deja uno. Luego devuelve todo.",
-    steps:["mute","solo","allback"]},
-  {id:"l15", en:"Write your own 8 bars", es:"Escribe tus propios 8 compases",
-    blurb_en:"Four parts with beats in them, chained into a track that is eight bars long.",
-    blurb_es:"Cuatro partes con ritmo, encadenadas en una pista de ocho compases.",
-    steps:["four","track8","trkplay8"]},
-  {id:"l16", en:"Perform it live", es:"Tócalo en vivo",
-    blurb_en:"While the beat runs, take drums out and put them back with your hands.",
-    blurb_es:"Con el ritmo andando, quita tambores y devuélvelos con tus manos.",
-    steps:["livemute","livesolo","liveback"]},
-  {id:"l17", en:"Save, name it, hand it in", es:"Guarda, ponle nombre y entrégalo",
-    blurb_en:"Give your beat a name. Save the file. Open the worksheet and finish it.",
-    blurb_es:"Ponle nombre a tu ritmo. Guarda el archivo. Abre la hoja y termínala.",
-    steps:["named","saved","handin"]}
+    steps:["fill", "tomfill", "playfill"]},
+  {id:"l8", en:"Parts and song mode", es:"Partes y modo canción",
+    blurb_en:"Copy part 1 into part 2 and change it. Chain the parts in the track and play it.",
+    blurb_es:"Copia la parte 1 en la parte 2 y cámbiala. Encadena las partes en la pista y tócala.",
+    steps:["paste", "seg2diff", "trk2", "trkplay"]},
+  {id:"l9", en:"Mute and solo, live", es:"Silenciar y solo, en vivo",
+    blurb_en:"Mute takes a drum out. Solo leaves only one in. Do it with your hands while the beat runs.",
+    blurb_es:"Silenciar quita un tambor. Solo deja uno. Hazlo con tus manos mientras suena el ritmo.",
+    steps:["mute", "solo", "livemute", "liveback"]},
+  {id:"l10", en:"Boom-bap swing", es:"Swing boom-bap",
+    blurb_en:"The 1990s sampler sound. A slow tempo, deep swing, and a snare that leans back a little.",
+    blurb_es:"El sonido de los samplers de los 90. Tempo lento, swing profundo y una caja que se recuesta un poco.",
+    steps:["bbfeel", "bbpat", "bblazy", "playbb"]},
+  {id:"l11", en:"Ghost notes", es:"Notas fantasma",
+    blurb_en:"Quiet snares between the loud ones make a beat sound played by a person.",
+    blurb_es:"Cajas suaves entre las fuertes hacen que el ritmo suene tocado por una persona.",
+    steps:["ghost", "backacc", "hatvel", "playghost"]},
+  {id:"l12", en:"Trap hi-hats and rolls", es:"Charles de trap y redobles",
+    blurb_en:"A fast tempo, a half-time snare, and hat rolls. TC 1/32 lets a hat land between two boxes.",
+    blurb_es:"Tempo rápido, caja a medio tiempo y redobles de charles. TC 1/32 deja caer un charles entre dos cuadros.",
+    steps:["trapbase", "hatroll", "roll32", "playtrap"]},
+  {id:"l13", en:"Four-on-the-floor house", es:"House de cuatro en el suelo",
+    blurb_en:"A kick on every beat, a clap on 2 and 4, and an open hat on every off-beat.",
+    blurb_es:"Un bombo en cada pulso, un aplauso en 2 y 4, y un charles abierto en cada contratiempo.",
+    steps:["housebpm", "house4", "ohoff", "playhouse"]},
+  {id:"l14", en:"Breakbeat chops", es:"Cortes de breakbeat",
+    blurb_en:"Build an Amen-style break: busy kicks and a snare that jumps. Then chop it in part 2.",
+    blurb_es:"Arma un break estilo Amen: bombos ocupados y una caja que salta. Luego córtalo en la parte 2.",
+    steps:["amenbpm", "amenpat", "amenchop", "playamen"]},
+  {id:"l15", en:"Polyrhythm: 3 against 4", es:"Polirritmo: 3 contra 4",
+    blurb_en:"Make a part 12 boxes long. Four even kicks and three even bells play at the same time.",
+    blurb_es:"Haz una parte de 12 cuadros. Cuatro bombos parejos y tres campanas parejas suenan a la vez.",
+    steps:["len12", "poly4", "poly3", "playpoly"]},
+  {id:"l16", en:"Arrange a song with drops", es:"Arregla una canción con caídas",
+    blurb_en:"Intro, verse, hook and bridge. Chain them in song mode, and take the kick out for a drop.",
+    blurb_es:"Intro, verso, coro y puente. Encadénalos en modo canción, y quita el bombo para una caída.",
+    steps:["arr4", "drop", "arrmute", "arrplay"]},
+  {id:"l17", en:"Make it knock, then hand it in", es:"Que pegue fuerte, y entrégalo",
+    blurb_en:"Mix the kit so the kick hits hardest and the hats sit back. Send it to the Turntables. Name it and save it.",
+    blurb_es:"Mezcla el kit para que el bombo pegue más y los charles queden atrás. Mándalo a los Tocadiscos. Ponle nombre y guárdalo.",
+    steps:["kicktop", "hatdown", "kickdecay", "bounce", "named", "saved"]}
 ];
 const LSTEP = {
   pad:{en:"Tap any pad and hear it",es:"Toca cualquier pad y escúchalo"},
@@ -1746,11 +1750,47 @@ const LSTEP = {
   liveback:{en:"Bring every drum back while it plays",es:"Devuelve todos los tambores mientras suena"},
   named:{en:"Type a name for your beat",es:"Escribe un nombre para tu ritmo"},
   saved:{en:"Press SAVE and keep the file",es:"Pulsa GUARDAR y conserva el archivo"},
-  handin:{en:"Open the worksheet for this lesson",es:"Abre la hoja de esta lección"}
+  handin:{en:"Open the worksheet for this lesson",es:"Abre la hoja de esta lección"},
+  bbfeel:{en:"Tempo 84 to 96, swing 58% or 63%",es:"Tempo de 84 a 96, swing de 58% o 63%"},
+  bbpat:{en:"Kick on box 1 and one kick off the beat. Snare on 5 and 13",es:"Bombo en el cuadro 1 y un bombo fuera del pulso. Caja en 5 y 13"},
+  bblazy:{en:"Set TC to OFF, press REC, and play a snare a hair late",es:"Pon TC en OFF, pulsa REC y toca una caja un poquito tarde"},
+  playbb:{en:"Play the boom-bap beat",es:"Toca el ritmo boom-bap"},
+  ghost:{en:"Two or more soft snares (ghost notes) off the backbeat",es:"Dos o más cajas suaves (notas fantasma) fuera del contratiempo"},
+  backacc:{en:"Accent the snare on both 5 and 13",es:"Acentúa la caja en 5 y en 13"},
+  hatvel:{en:"Closed hats with at least one accent and one soft",es:"Charles cerrados con al menos un acento y uno suave"},
+  playghost:{en:"Play it and listen for the ghosts",es:"Tócalo y escucha las fantasmas"},
+  trapbase:{en:"Tempo 130 to 150, snare or clap on box 9 only",es:"Tempo de 130 a 150, caja o aplauso solo en el cuadro 9"},
+  hatroll:{en:"Four closed hats in a row somewhere in the bar",es:"Cuatro charles cerrados seguidos en algún lugar del compás"},
+  roll32:{en:"Set TC to 1/32, press REC, and play a hat between two boxes",es:"Pon TC en 1/32, pulsa REC y toca un charles entre dos cuadros"},
+  playtrap:{en:"Play the trap beat",es:"Toca el ritmo trap"},
+  housebpm:{en:"Tempo 120 to 128",es:"Tempo de 120 a 128"},
+  house4:{en:"Kick on 1, 5, 9, 13 and clap on 5 and 13",es:"Bombo en 1, 5, 9, 13 y aplauso en 5 y 13"},
+  ohoff:{en:"Open hat on 3, 7, 11 and 15 (the off-beats)",es:"Charles abierto en 3, 7, 11 y 15 (los contratiempos)"},
+  playhouse:{en:"Play the house beat",es:"Toca el ritmo house"},
+  amenbpm:{en:"Tempo 136 to 175",es:"Tempo de 136 a 175"},
+  amenpat:{en:"Kick on 1, 3 and 11. Snare on 5 and 13 plus two more",es:"Bombo en 1, 3 y 11. Caja en 5 y 13 y dos más"},
+  amenchop:{en:"Paste it into part 2 and move hits around (a chop)",es:"Pégalo en la parte 2 y mueve golpes (un corte)"},
+  playamen:{en:"Play the break",es:"Toca el break"},
+  len12:{en:"Set the length to 12",es:"Pon el largo en 12"},
+  poly4:{en:"Kick on boxes 1, 4, 7 and 10 (four groups of 3)",es:"Bombo en los cuadros 1, 4, 7 y 10 (cuatro grupos de 3)"},
+  poly3:{en:"Bell on boxes 1, 5 and 9 (three groups of 4)",es:"Campana en los cuadros 1, 5 y 9 (tres grupos de 4)"},
+  playpoly:{en:"Play it and hear 3 against 4",es:"Tócalo y escucha 3 contra 4"},
+  arr4:{en:"A track with four different parts in it",es:"Una pista con cuatro partes distintas"},
+  drop:{en:"One part in the track with beats but no kick (a drop)",es:"Una parte de la pista con golpes pero sin bombo (una caída)"},
+  arrmute:{en:"Play the track and mute a drum while it runs",es:"Toca la pista y silencia un tambor mientras suena"},
+  arrplay:{en:"Play a track of six or more parts",es:"Toca una pista de seis o más partes"},
+  kicktop:{en:"Kick slider (MIX) the loudest of all eight",es:"Deslizador del bombo (MIX) el más alto de los ocho"},
+  hatdown:{en:"Closed hat MIX at 60 or lower",es:"MIX del charles cerrado en 60 o menos"},
+  kickdecay:{en:"Shape the kick's tail with its DECAY slider",es:"Da forma a la cola del bombo con su deslizador DECAY"},
+  bounce:{en:"Press TO THE DECKS (full bench)",es:"Pulsa A LOS PLATOS (banco completo)"}
 };
 const LKEY="aog.drums.lessons.v1";
 const LS={done:{}, pick:null, title:""};
-try{ const r=JSON.parse(localStorage.getItem(LKEY)||"null"); if(r){ LS.done=r.done||{}; LS.pick=(typeof r.pick==="number")?r.pick:null; LS.title=r.title||""; } }catch(e){}
+try{ const r=JSON.parse(localStorage.getItem(LKEY)||"null"); if(r){ LS.done=r.done||{}; LS.pick=(typeof r.pick==="number")?r.pick:null; LS.title=r.title||"";
+  /* AOG-DRUM-BLEND-V1: the ladder was rebuilt. Ticks are kept by step id; the lesson a
+     learner had open now means something else, so it goes back to "where you are up to". */
+  if(r.ladder!==2) LS.pick=null; } }catch(e){}
+LS.ladder=2;
 function saveLessons(){ try{ localStorage.setItem(LKEY, JSON.stringify(LS)); }catch(e){} }
 function lessonNow(){ for(let i=0;i<LESSONS.length;i++) if(!LESSONS[i].steps.every(id=>LS.done[id])) return i; return LESSONS.length; }
 function lessonPicked(){ const n=lessonNow(); if(LS.pick==null||LS.pick<0||LS.pick>=LESSONS.length) return Math.min(n, LESSONS.length-1); return LS.pick; }
@@ -1800,6 +1840,37 @@ function tickLessons(){
   if(S.segs && S.segs.filter(sg=>hitsIn(sg.grid)>=4).length>=4) d.four=true;
   if(S.track.length>=8) d.track8=true;
   if((LS.title||"").trim().length>=2) d.named=true;
+  /* AOG-DRUM-BLEND-V1 — the producer-level steps read the same machine */
+  const row=(id)=>g[id]||[], L=segLen();
+  const offs=(id)=>((S.off&&S.off[id])||[]);
+  if(S.bpm>=84 && S.bpm<=96 && (sw===0.58||sw===0.63)) d.bbfeel=true;
+  if(row("kick")[0] && row("kick").some((x,i)=>x && i%4!==0) && rowHas("snare",[4,12])) d.bbpat=true;
+  if(S.tc==="OFF" && offs("snare").some(x=>x>0.04)) d.bblazy=true;
+  if(row("snare").filter((x,i)=>x===3 && i!==4 && i!==12).length>=2) d.ghost=true;
+  if(row("snare")[4]===2 && row("snare")[12]===2) d.backacc=true;
+  if(row("ch").some(x=>x===2) && row("ch").some(x=>x===3)) d.hatvel=true;
+  const halfTime=(rowIs("snare",[8])||rowIs("clap",[8]));
+  if(S.bpm>=130 && S.bpm<=150 && halfTime) d.trapbase=true;
+  const run4=(r)=>{ let n=0; for(let i=0;i<L;i++){ n=r[i]?n+1:0; if(n>=4) return true; } return false; };
+  if(run4(row("ch"))) d.hatroll=true;
+  if(S.tc==="1/32" && offs("ch").some((x,i)=>row("ch")[i] && Math.abs(x)>=0.25)) d.roll32=true;
+  if(S.bpm>=120 && S.bpm<=128) d.housebpm=true;
+  if(rowHas("kick",[0,4,8,12]) && rowHas("clap",[4,12])) d.house4=true;
+  if(rowHas("oh",[2,6,10,14])) d.ohoff=true;
+  if(S.bpm>=136 && S.bpm<=175) d.amenbpm=true;
+  const amenOk=(gr)=>{ const k=gr.kick||[], sn=gr.snare||[]; return k[0]&&k[2]&&k[10]&&sn[4]&&sn[12]&&sn.filter((x,i)=>x&&i!==4&&i!==12).length>=2; };
+  if(amenOk(g)) d.amenpat=true;
+  if(S.segs && S.segs[0] && S.segs[1] && amenOk(S.segs[0].grid) && hitsIn(S.segs[1].grid)>=6 && JSON.stringify(S.segs[1].grid)!==JSON.stringify(S.segs[0].grid) && (d.paste||d.amenchop)) d.amenchop=true;
+  if(L===12) d.len12=true;
+  const polyK=()=>[0,3,6,9].every(i=>row("kick")[i]), polyB=()=>[0,4,8].every(i=>row("bell")[i]);
+  if(polyK()) d.poly4=true;
+  if(polyB()) d.poly3=true;
+  if(new Set(S.track).size>=4) d.arr4=true;
+  if(S.track.some(i=>{ const sg=S.segs&&S.segs[i]; return sg && hitsIn(sg.grid)>=2 && !(sg.grid.kick||[]).some(x=>x); })) d.drop=true;
+  const lv=(id)=>(S.chan[id]&&typeof S.chan[id].level==="number")?S.chan[id].level:0.84;
+  if(lv("kick")>=0.8 && VOICES.every(v=>v.id==="kick"||lv(v.id)<lv("kick"))) d.kicktop=true;
+  if(lv("ch")<=0.605) d.hatdown=true;
+  if(S.chan.kick && Math.abs((S.chan.kick.decay==null?0.85:S.chan.kick.decay)-0.85)>0.03) d.kickdecay=true;
   saveLessons();
 }
 /* the steps that are a thing you did — set by the machine when it happens */
@@ -1815,6 +1886,14 @@ function lessonPlayed(){
   if([12,13,14,15].filter(i=>(S.grid.snare||[])[i]).length>=3) d.playfill=true;
   if(S.trackOn && S.track.length>=2) d.trkplay=true;
   if(S.trackOn && S.track.length>=8) d.trkplay8=true;
+  /* AOG-DRUM-BLEND-V1 — "play it" ticks only when the part in front of you is the lesson's beat */
+  if(d.bbfeel && d.bbpat && rowHas("snare",[4,12]) && sw>=0.58) d.playbb=true;
+  if((S.grid.snare||[]).filter((x,i)=>x===3 && i!==4 && i!==12).length>=2) d.playghost=true;
+  if(S.bpm>=130 && S.bpm<=150 && (rowIs("snare",[8])||rowIs("clap",[8])) && (S.grid.ch||[]).filter(x=>x).length>=8) d.playtrap=true;
+  if(S.bpm>=120 && S.bpm<=128 && rowHas("kick",[0,4,8,12]) && rowHas("oh",[2,6,10,14])) d.playhouse=true;
+  if(S.bpm>=136 && S.bpm<=175 && rowHas("kick",[0,2,10]) && rowHas("snare",[4,12])) d.playamen=true;
+  if(segLen()===12 && [0,3,6,9].every(i=>(S.grid.kick||[])[i]) && [0,4,8].every(i=>(S.grid.bell||[])[i])) d.playpoly=true;
+  if(S.trackOn && S.track.length>=6 && new Set(S.track).size>=4) d.arrplay=true;
   saveLessons(); paintLessonBox();
 }
 function lessonStopped(){ if(LS.done.play){ mark("stop"); paintLessonBox(); } }
@@ -1824,6 +1903,7 @@ function lessonMuteTouched(){
     if(muted && S.padMode==="mute") mark("livemute");
     if(soloed && S.padMode==="solo") mark("livesolo");
     if((LS.done.livemute||LS.done.livesolo) && !muted && !soloed) mark("liveback");
+    if(muted && S.trackOn && S.track.length>=2) mark("arrmute");      /* AOG-DRUM-BLEND-V1: a drop, by hand, in song mode */
   }
   tickLessons(); paintLessonBox();
 }
@@ -1831,48 +1911,38 @@ const LSTR = {
   lessonsNav:{en:"Lessons",es:"Lecciones"},
   lessonK:{en:"Lesson",es:"Lección"},
   lessonPick:{en:"Which lesson?",es:"¿Qué lección?"},
-  lessonsLead:{en:"Seventeen short lessons. Do the steps on the machine and the boxes tick themselves. Each lesson has a worksheet.",es:"Diecisiete lecciones cortas. Haz los pasos en la máquina y las casillas se marcan solas. Cada lección tiene una hoja."},
+  lessonsLead:{en:"Seventeen short lessons, from your first pad to producer-level beats. Do the steps on the machine and the boxes tick themselves. Each lesson has a worksheet.",es:"Diecisiete lecciones cortas, desde tu primer pad hasta ritmos de productor. Haz los pasos en la máquina y las casillas se marcan solas. Cada lección tiene una hoja."},
   lessonsAll:{en:"All 17 lessons",es:"Las 17 lecciones"},
   worksheet:{en:"Open the worksheet",es:"Abrir la hoja"},
   toBench:{en:"Go to the bench",es:"Ir a la mesa"},
-  lessonsDone:{en:"All 17 lessons done. You can run this machine.",es:"Las 17 lecciones listas. Sabes manejar esta máquina."},
+  lessonsDone:{en:"All 17 lessons done. You make beats like a producer.",es:"Las 17 lecciones listas. Haces ritmos como un productor."},
   beatName:{en:"Name your beat",es:"Nombre de tu ritmo"},
   next:{en:"Next lesson",es:"Siguiente lección"},
   doneMark:{en:"done",es:"lista"},
   resetLessons:{en:"Start the lessons over",es:"Empezar las lecciones de nuevo"}
 };
 function lt(k){ const o=LSTR[k]; return o? o[S.lang]:k; }
-function lessonSelect(){
-  const now=lessonNow(), p=lessonPicked();
-  return `<label class="lesson-pick"><span>${lt("lessonPick")}</span><select id="lessonPick">${LESSONS.map((m,i)=>{
-    const done=i<now || m.steps.every(id=>LS.done[id]);
-    return `<option value="${i}"${i===p?" selected":""}>${i+1} · ${S.lang==="es"?m.es:m.en}${done?" ✓":""}</option>`; }).join("")}</select></label>`;
-}
+/* AOG-BENCH-TOP-V1 (2026-09-27) — the lessons sit at the top, the same as the Turntables:
+   BENCH [Simple] [Full]  LESSON [menu], then one Lessons card (aog-bench.css). */
 function lessonCard(){
-  const p=lessonPicked(), m=LESSONS[p], now=lessonNow();
-  const allDone=now>=LESSONS.length;
-  const steps=`<ol class="lsteps">${m.steps.map(id=>`<li class="${LS.done[id]?"ok":""}"><span class="tick" aria-hidden="true">${LS.done[id]?"✓":""}</span><span>${LS.done[id]?`<s>${LSTEP[id][S.lang]}</s>`:LSTEP[id][S.lang]}</span></li>`).join("")}</ol>`;
-  const done=m.steps.every(id=>LS.done[id]);
-  const name=(p===LESSONS.length-1)?`<label class="lesson-name"><span>${lt("beatName")}</span><input id="beatName" type="text" maxlength="40" value="${(LS.title||"").replace(/"/g,"&quot;")}" autocomplete="off"></label>`:"";
-  return `<p class="kicker">${lt("lessonK")} ${p+1} ${done?`· ✓ ${lt("doneMark")}`:""}</p>
-    <h3>${S.lang==="es"?m.es:m.en}</h3>
-    <p class="muted" style="margin:.1rem 0 .4rem">${S.lang==="es"?m.blurb_es:m.blurb_en}</p>
+  const p=lessonPicked(), m=LESSONS[p], now=lessonNow(), es=S.lang==="es";
+  const allDone=now>=LESSONS.length, done=m.steps.every(id=>LS.done[id]);
+  const steps=`<ol class="lsteps">${m.steps.map(id=>`<li class="lstep${LS.done[id]?" ok":""}"><span class="lck" aria-hidden="true">${LS.done[id]?"✓":""}</span><span>${LSTEP[id][S.lang]}</span></li>`).join("")}</ol>`;
+  const name=(m.id==="l17")?`<label class="lesson-name"><span>${lt("beatName")}</span><input id="beatName" type="text" maxlength="40" value="${(LS.title||"").replace(/"/g,"&quot;")}" autocomplete="off"></label>`:"";
+  const next=p<LESSONS.length-1?`<button type="button" class="pill" data-lesson-next="1">${lt("next")} →</button>`:"";
+  return `<p class="mk">${lt("lessonK")} ${p+1} ${es?"de":"of"} ${LESSONS.length}${done?" · ✓":""}</p>
+    <h3>${es?m.es:m.en}</h3>
+    <p class="lblurb">${es?m.blurb_es:m.blurb_en}</p>
     ${steps}${name}
-    <div class="lesson-acts">
-      <a class="pill" data-ws="${p+1}" href="drums-lessons.html#l${p+1}">${lt("worksheet")}</a>
-      ${done && p<LESSONS.length-1?`<button type="button" class="pill" data-lesson-next="1">${lt("next")} →</button>`:""}
-    </div>
-    ${allDone?`<p class="ok-line">${lt("lessonsDone")}</p>`:""}`;
+    ${done?`<p class="lok">${allDone?lt("lessonsDone"):(es?"Lección hecha.":"Lesson done.")} ${next}</p>`:""}`;
 }
-function lessonBoxHtml(){ return `<div class="card lesson-box" id="lessonBox">${lessonSelect()}${lessonCard()}</div>`; }
 function bindLessonBox(){
-  const sel=document.getElementById("lessonPick");
-  if(sel) sel.onchange=()=>{ LS.pick=+sel.value; saveLessons(); paintLessonBox(); };
   const nx=document.querySelector("[data-lesson-next]");
   if(nx) nx.onclick=()=>{ LS.pick=Math.min(LESSONS.length-1, lessonPicked()+1); saveLessons(); paintLessonBox(); };
   const nm=document.getElementById("beatName");
   if(nm) nm.oninput=()=>{ LS.title=nm.value; tickLessons(); paintLessonBoxSoon(); };
-  document.querySelectorAll("[data-ws]").forEach(a=>a.onclick=()=>{ if(+a.getAttribute("data-ws")===LESSONS.length) mark("handin"); });
+  const ws=document.getElementById("lSheet");
+  if(ws) ws.onclick=()=>{ if(LESSONS[lessonPicked()].id==="l17"){ mark("handin"); paintLessonBoxSoon(); } };
   document.querySelectorAll("[data-pick]").forEach(li=>li.onclick=()=>{ LS.pick=+li.getAttribute("data-pick"); saveLessons(); paintLessonBox(); });
   const rs=document.getElementById("lessonReset");
   if(rs) rs.onclick=()=>{ LS.done={}; LS.pick=0; saveLessons(); paint(); };
@@ -1880,13 +1950,23 @@ function bindLessonBox(){
 let lessonSoon=0;
 function paintLessonBoxSoon(){ clearTimeout(lessonSoon); lessonSoon=setTimeout(paintLessonBox, 400); }
 function paintLessonBox(){
-  const box=document.getElementById("lessonBox");
+  const box=document.getElementById("lessons");
   if(!box) return;
   if(document.activeElement && document.activeElement.id==="beatName") return;   /* never rebuild under a typing hand */
-  box.innerHTML=lessonSelect()+lessonCard();
+  const es=S.lang==="es", p=lessonPicked();
+  const doneN=LESSONS.filter(m=>m.steps.every(id=>LS.done[id])).length;
+  const row=document.getElementById("lessonRow");
+  const rowHtml=LESSONS.map((m,i)=>{ const d=m.steps.every(id=>LS.done[id]);
+    return `<button type="button" class="ghost sm${i===p?" on":""}" data-lesson="${i}" aria-pressed="${i===p}">${i+1}${d?" ✓":""} · ${es?m.es:m.en}</button>`; }).join("");
+  if(row && row.__html!==rowHtml){ row.innerHTML=rowHtml; row.__html=rowHtml;
+    row.querySelectorAll("[data-lesson]").forEach(b=>b.onclick=()=>{ LS.pick=+b.getAttribute("data-lesson"); saveLessons(); paintLessonBox(); }); }
+  document.getElementById("lKick").textContent=lt("lessonsNav")+" · "+doneN+"/"+LESSONS.length;
+  const sh=document.getElementById("lSheet");
+  sh.href="drums-lessons.html#l"+(p+1); sh.textContent=(es?"Hoja de trabajo":"Worksheet")+" "+(p+1);
+  document.getElementById("lessonBody").innerHTML=lessonCard();
   bindLessonBox();
   const ladder=document.getElementById("lessonLadder");
-  if(ladder) ladder.innerHTML=ladderHtml();
+  if(ladder){ ladder.innerHTML=ladderHtml(); bindLessonBox(); }
 }
 function ladderHtml(){
   const now=lessonNow(), p=lessonPicked();
@@ -1900,8 +1980,7 @@ function lessonsView(){
   return `<p class="kicker">${lt("lessonsNav")}</p>
     <h1>${lt("lessonsNav")}</h1>
     <p class="lead">${lt("lessonsLead")}</p>
-    <div class="lessons-wrap">
-      ${lessonBoxHtml()}
+    <div class="lessons-wrap lessons-one">
       <div class="card ladder-box"><p class="tiny">${lt("lessonsAll")}</p><ol class="ladder" id="lessonLadder">${ladderHtml()}</ol>
         <div class="lesson-acts"><a class="pill" href="#home">${lt("toBench")}</a><button type="button" class="pill" id="lessonReset">${lt("resetLessons")}</button></div></div>
     </div>`;
@@ -1914,13 +1993,21 @@ function paint(){
   document.getElementById("brand").textContent=t("app");
   { const k=document.getElementById("mastK"), h=document.getElementById("mastH"), l=document.getElementById("mastL"); if(k) k.textContent=t("eyebrow"); if(h) h.textContent=t("app"); if(l) l.textContent=t("tag"); }
   document.getElementById("nav").innerHTML=navHtml();
+  { const top=S.view==="home"||S.view==="lessons";                 /* AOG-BENCH-TOP-V1 */
+    document.getElementById("benchSwitch").hidden=!top; document.getElementById("lessons").hidden=!top;
+    const L={benchLab:["Bench","Mesa"],benchSimple:["Simple bench","Banco sencillo"],benchFull:["Full bench","Banco completo"]};
+    Object.keys(L).forEach(id=>{ const el=document.getElementById(id); if(el) el.textContent=L[id][S.lang==="es"?1:0]; });
+    document.querySelectorAll("#benchSwitch [data-bench]").forEach(b=>{ const on=b.getAttribute("data-bench")===(S.bench==="full"?"full":"simple"); b.classList.toggle("on",on); b.setAttribute("aria-pressed",on?"true":"false"); }); }
   document.getElementById("themeBtn").textContent=S.theme==="dark"?t("light"):t("dark");
   document.getElementById("langBtn").textContent=S.lang==="es"?"EN":"ES";
   const map={home:homeView,meet:meetView,words:wordsView,print:printView,lessons:lessonsView};
-  document.getElementById("view").innerHTML=(map[S.view]||homeView)();
+  { const vw=document.getElementById("view"), lb=document.getElementById("lessons");
+    if(lb && vw.contains(lb)) vw.after(lb);                             /* AOG-DRUMS-LESSONS-BELOW-V1: keep the card safe … */
+    vw.innerHTML=(map[S.view]||homeView)();
+    const kn=vw.querySelector(".knobs"); if(lb && kn) kn.after(lb); }  /* … then set it under Tempo and Volume */
   document.getElementById("foot").innerHTML=`<p>${t("foot")}</p><p><a href="music-decks.html">${S.lang==="es"?"Tocadiscos":"Turntables"}</a> · <a href="/science">${t("backSci")}</a></p>`;
   bind();
-  bindLessonBox();
+  paintLessonBox();
 }
 
 /* ══ AOG-DRUM-TO-DECKS-V1 (2026-09-23) ═══════════════════════════════════════
@@ -2037,6 +2124,7 @@ async function bounceToDecks(){
     S.lcdNote = soloed.length ? ("SENT · SOLO "+soloed.join(" ").toUpperCase())
               : muted.length ? ("SENT · MUTED "+muted.join(" ").toUpperCase())
               : "SENT TO DECKS";
+    try{ mark("bounce"); paintLessonBoxSoon(); }catch(e){}           /* AOG-DRUM-BLEND-V1 */
     refreshLcd();
     setTimeout(()=>{ if(/^SENT/.test(S.lcdNote)){ S.lcdNote=""; refreshLcd(); } }, 3500);
   }catch(e){
