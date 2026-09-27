@@ -158,4 +158,97 @@
       picks.map(function (id) { var s = SITES[id]; return '<li><a href="' + s[1] + q + '" target="_blank" rel="noopener">' + esc(s[0]) + ": " + esc(b.title) + "</a></li>"; }).join("") + "</ul>";
     var body = les.querySelector(".body") || les; body.appendChild(m);
   });
+  /* ── 4. AOG-SOURCES-V1 — Jimmy: "Make sure primary sources are provided throughout the
+     material with actual links." Every citation the page can read becomes a link to the
+     original text; each lesson's More-to-explore box leads with "Read the original". ── */
+  var BIBLE = "Genesis Exodus Leviticus Numbers Deuteronomy Joshua Judges Ruth 1_Samuel 2_Samuel 1_Kings 2_Kings 1_Chronicles 2_Chronicles Ezra Nehemiah Esther Job Psalm Psalms Proverbs Ecclesiastes Song_of_Songs Song_of_Solomon Isaiah Jeremiah Lamentations Ezekiel Daniel Hosea Joel Amos Obadiah Jonah Micah Nahum Habakkuk Zephaniah Haggai Zechariah Malachi Matthew Mark Luke John Acts Romans 1_Corinthians 2_Corinthians Galatians Ephesians Philippians Colossians 1_Thessalonians 2_Thessalonians 1_Timothy 2_Timothy Titus Philemon Hebrews James 1_Peter 2_Peter 1_John 2_John 3_John Jude Revelation".split(" ").map(function (b) { return b.replace(/_/g, " "); });
+  var TRACT = "Berakhot Peah Shabbat Eruvin Pesachim Yoma Sukkah Beitzah Rosh_Hashanah Taanit Ta'anit Megillah Moed_Katan Chagigah Hagigah Yevamot Ketubot Nedarim Nazir Sotah Gittin Kiddushin Bava_Kamma Bava_Metzia Bava_Batra Sanhedrin Makkot Shevuot Avodah_Zarah Horayot Zevachim Menachot Chullin Bekhorot Arakhin Temurah Keritot Meilah Tamid Niddah Kelim Yadayim Eduyot Avot".split(" ").map(function (b) { return b.replace(/_/g, " "); });
+  var BOOKS = [
+    [/Wealth of Nations/i, "Adam Smith, The Wealth of Nations", "Wealth of Nations Adam Smith"],
+    [/Ricardo|Principles of Political Economy/i, "David Ricardo, Principles", "Ricardo Principles of Political Economy"],
+    [/Douglass/i, "Narrative of the Life of Frederick Douglass", "Narrative of the Life of Frederick Douglass"],
+    [/Principia/i, "Isaac Newton, Principia", "Newton Principia"],
+    [/Dhammapada/i, "The Dhammapada (Müller)", "Dhammapada"],
+    [/Analects/i, "The Analects (Legge)", "Analects Confucius"],
+    [/Daodejing|Tao Te Ching|Tao Teh King/i, "The Daodejing (Legge)", "Tao Teh King"],
+    [/Bhagavad Gita/i, "The Bhagavad Gita", "Bhagavad Gita"],
+    [/Upanishad/i, "The Upanishads", "Upanishads"],
+    [/Darwin|Origin of Species/i, "Darwin, On the Origin of Species", "Origin of Species Darwin"],
+    [/Federalist/i, "The Federalist Papers", "Federalist Papers"],
+    [/Walden|Thoreau/i, "Thoreau", "Thoreau"],
+    [/Uncle Tom/i, "Uncle Tom's Cabin", "Uncle Tom's Cabin"]];
+  var GOV = [
+    [/Declaration of Independence/i, "https://www.archives.gov/founding-docs/declaration-transcript", "The Declaration of Independence (National Archives)"],
+    [/Bill of Rights|First Amendment|Amendment/i, "https://www.archives.gov/founding-docs/bill-of-rights-transcript", "The Bill of Rights (National Archives)"],
+    [/Constitution of the United States|U\.S\. Constitution|US Constitution|Constitution, Art/i, "https://www.archives.gov/founding-docs/constitution-transcript", "The U.S. Constitution (National Archives)"],
+    [/Emancipation Proclamation/i, "https://www.archives.gov/exhibits/featured-documents/emancipation-proclamation/transcript.html", "The Emancipation Proclamation (National Archives)"],
+    [/Gettysburg/i, "https://www.loc.gov/resource/rbpe.24404500/", "The Gettysburg Address (Library of Congress)"],
+    [/Universal Declaration of Human Rights/i, "https://www.un.org/en/about-us/universal-declaration-of-human-rights", "Universal Declaration of Human Rights (United Nations)"],
+    [/NASA/i, "https://nssdc.gsfc.nasa.gov/planetary/factsheet/", "NASA planetary fact sheets"],
+    [/Census/i, "https://www.census.gov/library/publications.html", "U.S. Census Bureau publications"],
+    [/Bureau of Labor Statistics|BLS/i, "https://www.bls.gov/", "U.S. Bureau of Labor Statistics"],
+    [/Federal Reserve|FRED/i, "https://fred.stlouisfed.org/", "FRED, Federal Reserve Bank of St. Louis"],
+    [/Pew/i, "https://www.pewresearch.org/religion/", "Pew Research Center"]];
+  function sourceLink(txt) {
+    var t = String(txt || "").replace(/&#x27;|’/g, "'").replace(/\s+/g, " ").trim();
+    if (!t || /made-up|written for this lesson|built for this lesson|counted for this lesson from the/i.test(t) && !/Genesis|Qur|Talmud|Mishnah/.test(t)) {
+      if (!/counted for this lesson from ([A-Z])/.test(t)) return null;
+    }
+    var m, jps = /JPS|Jewish Publication/i.test(t);
+    m = /Qur'?an[^0-9]*(\d{1,3}):(\d{1,3})(?:\s*[-–]\s*(\d{1,3}))?/i.exec(t);
+    if (m) return { url: "https://quran.com/" + m[1] + "/" + m[2] + (m[3] ? "-" + m[3] : ""), label: "Qur'an " + m[1] + ":" + m[2] + (m[3] ? "–" + m[3] : "") + " on Quran.com" };
+    m = /(?:Mishnah\s+)?(?:Pirkei\s+)?Avot\s+(\d+):(\d+)/i.exec(t);
+    if (m) return { url: "https://www.sefaria.org/Pirkei_Avot." + m[1] + "." + m[2], label: "Pirkei Avot " + m[1] + ":" + m[2] + " on Sefaria" };
+    m = /Mishnah\s+([A-Z][A-Za-z' ]+?)\s+(\d+):(\d+)/.exec(t);
+    if (m && TRACT.indexOf(m[1].trim()) > -1) return { url: "https://www.sefaria.org/Mishnah_" + m[1].trim().replace(/'/g, "").replace(/ /g, "_") + "." + m[2] + "." + m[3], label: "Mishnah " + m[1].trim() + " " + m[2] + ":" + m[3] + " on Sefaria" };
+    for (var i = 0; i < TRACT.length; i++) {
+      var re = new RegExp("(?:Talmud,?\\s*)?\\b" + TRACT[i].replace(/'/g, "'?") + "\\s+(\\d{1,3})([ab])\\b");
+      m = re.exec(t);
+      if (m) { var tr = TRACT[i].replace(/'/g, "").replace(/ /g, "_").replace(/^Hagigah$/, "Chagigah"); return { url: "https://www.sefaria.org/" + tr + "." + m[1] + m[2], label: TRACT[i] + " " + m[1] + m[2] + " (Talmud) on Sefaria" }; }
+    }
+    for (var j = 0; j < BIBLE.length; j++) {
+      var bre = new RegExp("(?:^|[^A-Za-z])(" + BIBLE[j].replace(/ /g, "\\s+") + ")(?:\\s*\\([^)]*\\))?\\s+(\\d{1,3}(?::\\d{1,3})?(?:\\s*[-–]\\s*\\d{1,3}(?::\\d{1,3})?)?)");
+      m = bre.exec(t);
+      if (m) {
+        var ref = (BIBLE[j] === "Psalm" ? "Psalms" : BIBLE[j]) + " " + m[2].replace(/\s+/g, "").replace("–", "-");
+        if (jps && j < 39) return { url: "https://www.sefaria.org/" + ref.replace(/ (?=\d)/, ".").replace(/ /g, "_").replace(/:/g, ".") , label: ref + " (Tanakh) on Sefaria" };
+        var ver = /ASV|American Standard/i.test(t) ? "ASV" : /WEB|World English/i.test(t) ? "WEB" : "KJV";
+        return { url: "https://www.biblegateway.com/passage/?search=" + encodeURIComponent(ref) + "&version=" + ver, label: ref + " (" + ver + ") on Bible Gateway" };
+      }
+    }
+    for (var g = 0; g < GOV.length; g++) if (GOV[g][0].test(t)) return { url: GOV[g][1], label: GOV[g][2] };
+    for (var k = 0; k < BOOKS.length; k++) if (BOOKS[k][0].test(t)) return { url: "https://www.gutenberg.org/ebooks/search/?query=" + encodeURIComponent(BOOKS[k][2]), label: BOOKS[k][1] + " (free on Project Gutenberg)" };
+    m = /counted for this lesson from ([^,]+),\s*([^,]+)/.exec(t);
+    if (!m && /\b1[0-9]{3}\b|\b20[0-2][0-9]\b/.test(t) && !/made-up|example|written for this lesson|built for this lesson|counted for this lesson/i.test(t)) {
+      var q = t.replace(/\([^)]*\)/g, "").replace(/[“”"]/g, "").replace(/\s+/g, " ").trim().slice(0, 120);
+      if (/^(ela|spa)$/.test(CO.id)) return { url: "https://www.gutenberg.org/ebooks/search/?query=" + encodeURIComponent(q), label: q + " (Project Gutenberg)" };
+      return { url: "https://www.loc.gov/search/?q=" + encodeURIComponent(q), label: q + " (Library of Congress)" };
+    }
+    if (m) return { url: "https://www.gutenberg.org/ebooks/search/?query=" + encodeURIComponent(m[1] + " " + m[2]), label: m[2].trim() + ", " + m[1].trim() + " (Project Gutenberg)" };
+    return null;
+  }
+  function linkify(el) {
+    if (!el || el.querySelector("a")) return null;
+    var L = sourceLink(el.textContent); if (!L) return null;
+    var a = D.createElement("a"); a.href = L.url; a.target = "_blank"; a.rel = "noopener"; a.className = "aog-srclink";
+    a.title = T("Read the original", "Leer el original") + ": " + L.label;
+    while (el.firstChild) a.appendChild(el.firstChild);
+    a.appendChild(D.createTextNode(" ↗")); el.appendChild(a);
+    return L;
+  }
+  PAGES.forEach(function (les) {
+    var found = [];
+    Array.prototype.forEach.call(les.querySelectorAll(".look cite, .look .cite, .source cite"), function (c) { var L = linkify(c); if (L) found.push(L); });
+    var more = les.querySelector(".aog-more ul");
+    if (more && found.length) {
+      var seen = {}, html = "";
+      found.forEach(function (L) { if (seen[L.url]) return; seen[L.url] = 1; html += '<li><a href="' + esc(L.url) + '" target="_blank" rel="noopener">' + sp("Read the original", "Leer el original") + ": " + esc(L.label) + "</a></li>"; });
+      var src = more.querySelector(".src"); if (src) src.remove();
+      more.insertAdjacentHTML("afterbegin", html);
+    }
+  });
+  /* reviews, stories and chapter openers carry sources too */
+  Array.prototype.forEach.call(D.querySelectorAll("section.review .look cite, article.story cite, .chap .look cite"), linkify);
+
+
 })();

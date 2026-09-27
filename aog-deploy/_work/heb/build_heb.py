@@ -47,7 +47,7 @@ COURSE = dict(
     contents_desc=lambda ch, les: "A free K–12 course on the Hebrew Bible — the Tanakh: Torah, Nevi'im and Ketuvim, read from the public-domain 1917 JPS translation with the Jewish reading traditions, described for a public-school classroom: %d chapters, %d numbered lessons with readings, key words, sources, checks, chapter reviews and unit tests. Original text, free to use." % (ch, les),
     contents_back=("← The Hebrew Bible, the whole course", "← La Biblia Hebrea, el curso completo"),
     search_ph="Try “Torah”, “parashah” or “midrash”",
-    hub="daily-drops.html?subject=bible", hub_back=("← Daily Drafts — The Hebrew Bible", "← Borradores diarios — La Biblia Hebrea"),
+    hub="hebrew-bible-hub.html", hub_back=("← The Hebrew Bible, every band", "← La Biblia Hebrea, cada banda"),
     k_line=("The Interior — The Hebrew Bible", "El Interior — La Biblia Hebrea"),
     desc_lead=lambda u: "The Hebrew Bible, %s" % BAND_TITLE.get(u.get("band"), "K–12").lower(),
     tl_label=("When it happened", "Cuándo ocurrió"),

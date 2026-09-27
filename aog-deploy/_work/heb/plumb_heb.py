@@ -27,7 +27,7 @@ def redirects():
     p = DEPLOY / "_redirects"; s = p.read_text(encoding="utf-8")
     add = []
     if "/hebrew-bible-course " not in s: add.append("/hebrew-bible-course".ljust(28) + "/hebrew-bible-course.html".ljust(42) + "200")
-    if "/hebrew-bible " not in s: add.append("/hebrew-bible".ljust(28) + "/hebrew-bible-course.html".ljust(42) + "200")
+    if "/hebrew-bible " not in s: add.append("/hebrew-bible".ljust(28) + "/hebrew-bible-hub.html".ljust(42) + "200")
     for u in UNITS:
         n = u["n"]
         if "/heb%d " % n not in s: add.append(("/heb%d" % n).ljust(28) + ("/heb-u%d.html" % n).ljust(42) + "200")

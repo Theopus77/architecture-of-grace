@@ -47,7 +47,7 @@ COURSE = dict(
     contents_desc=lambda ch, les: "A free K–12 course on the Talmud — Mishnah and Gemara, how a page is read, argument and mercy, famous passages in paraphrase and, in high school, real passages in public-domain translation, described for a public-school classroom: %d chapters, %d numbered lessons with readings, key words, sources, checks, chapter reviews and unit tests. Original text, free to use." % (ch, les),
     contents_back=("← Talmud Study, the whole course", "← Estudio del Talmud, el curso completo"),
     search_ph="Try “Mishnah”, “sugya” or “chavruta”",
-    hub="daily-drops.html?subject=talmud", hub_back=("← Daily Drafts — Talmud Study", "← Borradores diarios — Estudio del Talmud"),
+    hub="talmud-hub.html", hub_back=("← Talmud Study, every band", "← Estudio del Talmud, cada banda"),
     k_line=("The Interior — Talmud Study", "El Interior — Estudio del Talmud"),
     desc_lead=lambda u: "Talmud Study, %s" % BAND_TITLE.get(u.get("band"), "K–12").lower(),
     tl_label=("When it happened", "Cuándo ocurrió"),
