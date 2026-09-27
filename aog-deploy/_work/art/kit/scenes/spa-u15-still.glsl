@@ -1,8 +1,8 @@
 /* Spanish Unit 15 "The Preterite: What Happened" — pencil still life of things that are done:
    an hourglass whose sand has all run to the bottom, a candle burned low in its holder, and a
    spent match lying beside it. */
-#define CAM_POS vec3(-0.30,0.36,-0.84)
-#define CAM_TGT vec3(-0.05,0.06,0.09)
+#define CAM_POS vec3(-0.4917,0.2876,-0.7629)
+#define CAM_TGT vec3(-0.2528,0.0010,0.1255)
 #define CAM_FOV 30.
 #define SUN_DIR vec3(-.65,.85,-.3)
 #define MAXT 8.
