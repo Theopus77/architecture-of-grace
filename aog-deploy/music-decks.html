@@ -281,7 +281,8 @@ body>.wrap>header:first-child,.wrap>header.no-print:first-child{display:none!imp
 .lstep.ok .lck{border-color:var(--steel);background:var(--steel);color:var(--steel-fg)}
 .lstep.ok span:last-child{text-decoration:line-through;color:var(--muted)}
 .lessons .lok{margin:.55rem 0 0;font-weight:700;display:flex;align-items:center;gap:.6rem;flex-wrap:wrap}
-#lessonRow{display:flex;flex-wrap:wrap;gap:.35rem;margin-top:.5rem}
+#lessonRow{display:flex;flex-wrap:wrap;gap:.35rem;margin-top:0}
+.bench-lesson{display:inline-flex;align-items:center;margin-left:.75rem}
 #lessonRow .ghost{background:var(--chip);color:var(--ink);border:1px solid var(--line)}
 #lessonRow .ghost.on{background:var(--ink);color:var(--card);border-color:var(--ink)}
 </style>
@@ -315,10 +316,12 @@ body>.wrap>header:first-child,.wrap>header.no-print:first-child{display:none!imp
   <div class="bench-switch no-print" role="group" aria-label="Bench" id="benchSwitch"><b id="benchLab">Bench</b>
     <button type="button" class="pill on" data-bench="simple" id="benchSimple">Simple bench</button>
     <button type="button" class="pill" data-bench="full" id="benchFull">Full bench</button>
+    <span class="bench-lesson"><!-- AOG-DECKS-LESSONPICK-V1: the lesson menu sits beside the bench choice (Jimmy, 2026-09-27) -->
+      <div id="lessonRow" data-aog-dropdown="Lesson|Lección"></div>
+    </span>
   </div>
   <section class="lessons no-print" id="lessons" aria-label="Lessons">
     <div class="lhead"><p class="kicker" id="lKick">Lessons</p><a class="pill" id="lSheet" href="decks-lessons.html#l1">Worksheet 1</a></div>
-    <div id="lessonRow" data-aog-dropdown="Lesson|Lección"></div>
     <div id="lessonBody"></div>
   </section>
   <div class="decktabs no-print" role="tablist" id="decktabs">
