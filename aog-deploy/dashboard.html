@@ -140,6 +140,21 @@ select,input[type=text]{width:100%;font:inherit;font-size:16px;min-height:44px;p
  .hello .pullwrap{display:none}}
 @media (min-width:761px){.railsel{display:none}}
 </style>
+<style id="aog-link-door">
+/* AOG-LINK-DOOR-V1 (2026-09-27) — Jimmy: "The link looks ugly. They are all so long. Can't we make it into a
+   copyable door the person clicks on?" A link box is a paper door now: a link icon, the short start of the
+   address on one line (the rest is hidden, never broken across lines), and one big "Copy link" button.
+   Tapping the address copies it too. The whole address is still what gets copied and opened. */
+.linkbox{width:fit-content;max-width:100%;box-sizing:border-box;background:#FBF8F0 !important;color:#1F2630 !important;border:1.6px solid #2A2622 !important;border-radius:14px !important;
+  padding:12px 14px !important;box-shadow:2px 3px 0 rgba(42,38,34,.18) !important;flex-wrap:nowrap !important;gap:10px !important}
+.linkbox::before{content:"";flex:0 0 26px;height:26px;background:no-repeat center/22px url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%232A2622' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7'/%3E%3Cpath d='M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7'/%3E%3C/svg%3E")}
+.linkbox code{flex:1 1 auto !important;min-width:0;white-space:nowrap !important;overflow:hidden;text-overflow:ellipsis;word-break:normal !important;
+  color:#4A5563 !important;font:14px Inter,system-ui,sans-serif !important;cursor:copy;max-width:28ch}
+.linkbox .btn{flex:0 0 auto;min-height:44px}
+html[data-theme="dark"] .linkbox{width:fit-content;max-width:100%;box-sizing:border-box;background:#FBF8F0 !important;color:#1F2630 !important;border-color:#2A2622 !important}
+html[data-theme="dark"] .linkbox code{color:#4A5563 !important}
+@media (max-width:560px){ .linkbox{display:grid !important;grid-template-columns:26px minmax(0,1fr);align-items:center} .linkbox code{max-width:none} .linkbox .btn{grid-column:span 1} .linkbox > :nth-child(n+2){grid-column:1 / -1} .linkbox > code{grid-column:2} }
+</style>
 </head>
 <body>
 <script src="aog-sync-config.js"></script><!-- same-origin and optional; a 404 changes nothing -->
@@ -1102,5 +1117,7 @@ render();
 </script>
 <script src="/aog-grace.js" defer></script>
 <script>/* AOG-NO-BOX-SCROLL labels */(function(){function L(){document.querySelectorAll("table.tbl").forEach(function(t){var h=[].map.call(t.querySelectorAll("thead th"),function(x){return x.textContent.trim()});if(!h.length)return;t.querySelectorAll("tbody tr").forEach(function(r){[].forEach.call(r.children,function(c,i){if(!c.hasAttribute("data-label"))c.setAttribute("data-label",h[i]||"")})})})}new MutationObserver(L).observe(document.body,{childList:true,subtree:true});L()})();</script>
+<script>/* AOG-LINK-DOOR-V1: tapping the address presses its own Copy button */
+document.addEventListener("click",function(e){var c=e.target.closest&&e.target.closest(".linkbox code");if(!c)return;var b=c.parentNode.querySelector("button");if(b)b.click();});</script>
 </body>
 </html>
